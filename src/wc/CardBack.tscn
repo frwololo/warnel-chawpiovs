@@ -20,7 +20,7 @@ font_data = ExtResource( 2 )
 [node name="CGFCardBack" type="Panel"]
 margin_right = 150.0
 margin_bottom = 240.0
-rect_min_size = Vector2( 150, 240 )
+rect_min_size = Vector2( 150, 210 )
 mouse_filter = 2
 custom_styles/panel = SubResource( 1 )
 script = ExtResource( 3 )
@@ -49,8 +49,8 @@ margin_top = 105.0
 margin_right = 150.0
 margin_bottom = 121.0
 rect_min_size = Vector2( 150, 16 )
-custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 1, 0.2, 0, 1 )
+custom_fonts/font = SubResource( 2 )
 text = "Card Game Framework"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -60,7 +60,7 @@ __meta__ = {
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_min_size = Vector2( 150, 240 )
+rect_min_size = Vector2( 150, 210 )
 mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
@@ -93,19 +93,16 @@ modulate = Color( 1.7, 1, 1, 1 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_bottom = 1.52588e-05
-rect_min_size = Vector2( 150, 240 )
+rect_min_size = Vector2( 150, 210 )
 texture = ExtResource( 4 )
 expand = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="TextureRect2" type="TextureRect" parent="."]
 modulate = Color( 2, 1, 1, 1 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_bottom = 1.52588e-05
-rect_min_size = Vector2( 150, 240 )
+rect_min_size = Vector2( 150, 210 )
 texture = ExtResource( 5 )
 expand = true
 __meta__ = {

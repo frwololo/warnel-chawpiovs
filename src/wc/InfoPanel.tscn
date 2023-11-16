@@ -6,9 +6,6 @@
 margin_right = 264.0
 margin_bottom = 28.0
 mouse_filter = 2
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Details" type="Label" parent="."]
 margin_left = 7.0

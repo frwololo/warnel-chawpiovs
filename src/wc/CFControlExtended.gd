@@ -35,10 +35,14 @@ func load_card_definitions() -> Dictionary:
 		var json_card_data : Array
 		json_card_data = WCUtils.read_json_file("user://Sets/" + set_file)
 		for card_data in json_card_data:
-			#skip unknown types gracefully: don't load cards with unknown type
-			#TODO: assign them a generic type
-			if _is_type_known(card_data[CardConfig.SCENE_PROPERTY]):
-				combined_sets[card_data["Name"]] = card_data
+			#Fixing missing Data
+			if not card_data.has("Tags"):
+				card_data["Tags"] = []
+			#Unknown types get assigned a generic template.
+			#They most likely won't work in game
+			if not _is_type_known(card_data[CardConfig.SCENE_PROPERTY]):
+				card_data[CardConfig.SCENE_PROPERTY] = "Unknown"	
+			combined_sets[card_data["Name"]] = card_data
 	return(combined_sets)
 
 

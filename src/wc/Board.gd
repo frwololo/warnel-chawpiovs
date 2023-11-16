@@ -137,4 +137,4 @@ func _on_DeckBuilder_hide() -> void:
 
 func _on_BackToMain_pressed() -> void:
 	cfc.quit_game()
-	get_tree().change_scene("res://src/custom/MainMenu.tscn")
+	get_tree().change_scene("res://src/wc/MainMenu.tscn")

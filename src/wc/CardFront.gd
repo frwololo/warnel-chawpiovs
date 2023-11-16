@@ -1,5 +1,7 @@
 extends CardFront
 
+onready var art := $Art
+
 func _ready() -> void:
 	_card_text = find_node("CardText")
 	# Map your card text label layout here. We use this when scaling
@@ -40,3 +42,13 @@ func _ready() -> void:
 				original_font_sizes[label] = 25
 			_:
 				original_font_sizes[label] = 16
+
+
+func set_card_art(filename) -> void:
+	var new_texture = WCUtils.load_img(filename)
+	if not new_texture:
+		return
+	art.texture = new_texture
+	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	# In case the generic art has been modulated, we switch it back to normal colour
+	art.self_modulate = Color(1,1,1)

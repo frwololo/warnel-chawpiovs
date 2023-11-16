@@ -23,16 +23,20 @@ static func debug_message(msg):
 #load Texture from jpeg/png file		
 static func load_img(file):
 	var img_file = File.new()
-	img_file.open(file, File.READ)
+	if img_file.open(file, File.READ):
+		return null
 	var bytes = img_file.get_buffer(img_file.get_len())
 	var img = Image.new()
 	
 	var extension = file.get_extension().to_lower()
-	var data
+	var error_code = 0
 	if extension == "png":
-		data = img.load_png_from_buffer(bytes)
+		error_code = img.load_png_from_buffer(bytes)
 	else:
-		data = img.load_jpg_from_buffer(bytes)
+		error_code = img.load_jpg_from_buffer(bytes)
+	if error_code:
+		img_file.close()
+		return null
 	var imgtex = ImageTexture.new()
 	imgtex.create_from_image(img)
 	img_file.close()

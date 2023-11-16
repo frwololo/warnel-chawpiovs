@@ -165,3 +165,9 @@ custom_fonts/font = SubResource( 3 )
 text = "0"
 align = 2
 valign = 1
+
+[node name="Art" type="TextureRect" parent="."]
+margin_left = 2.0
+margin_right = 148.0
+margin_bottom = 240.0
+expand = true

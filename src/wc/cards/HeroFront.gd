@@ -11,6 +11,8 @@ func _ready():
 	card_labels["Health"] = find_node("Health")
 	card_label_min_sizes["Health"] = Vector2(16,16)
 	original_font_sizes["Health"] = 15
+	
+
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

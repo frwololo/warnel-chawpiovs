@@ -319,6 +319,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/core/ViewportCardFocus.gd"
 }, {
+"base": "Card",
+"class": "WCCard",
+"language": "GDScript",
+"path": "res://src/wc/CardTemplate.gd"
+}, {
 "base": "Reference",
 "class": "WCUtils",
 "language": "GDScript",
@@ -392,6 +397,7 @@ _global_script_class_icons={
 "Token": "",
 "TokenDrawer": "",
 "ViewportCardFocus": "",
+"WCCard": "",
 "WCUtils": "",
 "perMessage": ""
 }

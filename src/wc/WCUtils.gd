@@ -1,0 +1,39 @@
+class_name WCUtils
+extends "res://src/core/CFUtils.gd"
+
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = "text"
+
+#Read json file into dictionary
+static func read_json_file(file_path):
+	var file = File.new()
+	file.open(file_path, File.READ)
+	var content_as_text = file.get_as_text()
+	var content_as_dictionary = parse_json(content_as_text)
+	return content_as_dictionary
+
+#Print debug message
+static func debug_message(msg):
+	if OS.has_feature("debug") and not cfc.is_testing:
+		print_debug(msg)
+		
+
+#load Texture from jpeg/png file		
+static func load_img(file):
+	var img_file = File.new()
+	img_file.open(file, File.READ)
+	var bytes = img_file.get_buffer(img_file.get_len())
+	var img = Image.new()
+	
+	var extension = file.get_extension().to_lower()
+	var data
+	if extension == "png":
+		data = img.load_png_from_buffer(bytes)
+	else:
+		data = img.load_jpg_from_buffer(bytes)
+	var imgtex = ImageTexture.new()
+	imgtex.create_from_image(img)
+	img_file.close()
+	return imgtex		

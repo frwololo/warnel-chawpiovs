@@ -1,0 +1,53 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://src/core/CardViewer/DeckBuilder/DeckBuilder.tscn" type="PackedScene" id=1]
+[ext_resource path="res://src/custom/CGFInfoPanel.tscn" type="PackedScene" id=2]
+[ext_resource path="res://src/core/CardViewer/DeckBuilder/DBDeckSummaries.tscn" type="PackedScene" id=3]
+[ext_resource path="res://src/custom/CGFDeckbuilder/CGFDeckBuilder.gd" type="Script" id=4]
+[ext_resource path="res://src/core/CardViewer/DeckBuilder/DBDeckCardObject.tscn" type="PackedScene" id=5]
+
+[node name="DeckBuilder" instance=ExtResource( 1 )]
+script = ExtResource( 4 )
+info_panel_scene = ExtResource( 2 )
+random_adverb_miss = 10
+random_adjective_miss = 1.1
+random_append_miss = 2
+second_noun_miss = 3
+max_quantity = 3
+deck_minimum = 52
+deck_maximum = 60
+deck_card_object_scene = ExtResource( 5 )
+deck_summary_scene = ExtResource( 3 )
+
+[node name="VBC" parent="." index="0"]
+margin_right = 1280.0
+margin_bottom = 720.0
+
+[node name="Title" parent="VBC" index="0"]
+margin_right = 1280.0
+
+[node name="HBC" parent="VBC" index="1"]
+margin_right = 1280.0
+margin_bottom = 720.0
+
+[node name="Back" type="Button" parent="VBC/HBC/DeckMC/CurrentDeck/Buttons" index="4"]
+margin_left = 202.0
+margin_right = 244.0
+margin_bottom = 20.0
+text = "Back"
+
+[node name="MC" parent="VBC/HBC" index="1"]
+margin_right = 1280.0
+margin_bottom = 702.0
+
+[node name="AvailableCards" parent="VBC/HBC/MC" index="0"]
+margin_bottom = 697.0
+
+[node name="ScrollContainer" parent="VBC/HBC/MC/AvailableCards" index="4"]
+margin_bottom = 653.0
+
+[node name="Settings" parent="VBC/HBC/MC/AvailableCards" index="5"]
+margin_top = 657.0
+margin_bottom = 697.0
+
+[editable path="VBC/HBC/DeckMC"]

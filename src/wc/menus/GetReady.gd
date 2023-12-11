@@ -20,13 +20,13 @@ func _ready() -> void:
 
 func on_button_pressed(_button_name : String) -> void:
 	match _button_name:
-		"SinglePlayer":
+		"Host":
 			# warning-ignore:return_value_discarded
-			get_tree().change_scene(CFConst.PATH_CUSTOM + 'Main.tscn')
-		"Multiplayer":
-			get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/MultiplayerMenu1.tscn')
-		"Exit":
-			get_tree().quit()
+			get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/MultiplayerWait.tscn')
+		"Join":
+			get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/MultiplayerJoin.tscn')
+		"Cancel":
+			get_tree().change_scene(CFConst.PATH_CUSTOM + 'MainMenu.tscn')
 
 	
 func _on_Menu_resized() -> void:

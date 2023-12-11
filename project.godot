@@ -199,6 +199,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/core/DetailPanels.gd"
 }, {
+"base": "Node",
+"class": "GameData",
+"language": "GDScript",
+"path": "res://src/wc/GameData.gd"
+}, {
 "base": "Reference",
 "class": "GameStats",
 "language": "GDScript",
@@ -373,6 +378,7 @@ _global_script_class_icons={
 "DeckLoader": "",
 "DeckNameRandomizer": "",
 "DetailPanels": "",
+"GameData": "",
 "GameStats": "",
 "GutHookScript": "",
 "GutTest": "",
@@ -411,6 +417,7 @@ config/icon="res://icon.png"
 [autoload]
 
 cfc="*res://src/wc/CFControlExtended.gd"
+gameData="*res://src/wc/GameData.gd"
 
 [display]
 

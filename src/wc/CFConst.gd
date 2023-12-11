@@ -243,3 +243,5 @@ const TOKENS_MAP := {
 }
 const STATS_URI := "http://127.0.0.1"
 const STATS_PORT := 8000
+
+const MULTIPLAYER_PORT:= 7777

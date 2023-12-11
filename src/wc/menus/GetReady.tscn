@@ -2,7 +2,7 @@
 
 [ext_resource path="res://themes/darktheme/darktheme.theme" type="Theme" id=1]
 [ext_resource path="res://themes/darktheme/fonts/Bangers/Bangers-Regular.ttf" type="DynamicFontData" id=2]
-[ext_resource path="res://src/wc/MainMenu.gd" type="Script" id=3]
+[ext_resource path="res://src/wc/menus/GetReady.gd" type="Script" id=3]
 
 [sub_resource type="DynamicFont" id=2]
 size = 107
@@ -39,7 +39,7 @@ margin_top = 106.0
 margin_right = 1280.0
 margin_bottom = 221.0
 custom_fonts/font = SubResource( 2 )
-text = "WC"
+text = "Multiplayer"
 align = 1
 
 [node name="Center" type="CenterContainer" parent="MainMenu/VBox"]
@@ -56,25 +56,25 @@ margin_bottom = 169.0
 rect_min_size = Vector2( 192, 0 )
 custom_constants/separation = 10
 
-[node name="SinglePlayer" type="Button" parent="MainMenu/VBox/Center/VButtons"]
+[node name="Host" type="Button" parent="MainMenu/VBox/Center/VButtons"]
 margin_right = 192.0
 margin_bottom = 27.0
-text = "Single Player"
+text = "Host"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Multiplayer" type="Button" parent="MainMenu/VBox/Center/VButtons"]
+[node name="Join" type="Button" parent="MainMenu/VBox/Center/VButtons"]
 margin_top = 37.0
 margin_right = 192.0
 margin_bottom = 64.0
-text = "Multiplayer"
+text = "Join"
 
-[node name="Exit" type="Button" parent="MainMenu/VBox/Center/VButtons"]
+[node name="Cancel" type="Button" parent="MainMenu/VBox/Center/VButtons"]
 margin_top = 74.0
 margin_right = 192.0
 margin_bottom = 101.0
-text = "Exit"
+text = "Cancel"
 
 [node name="Margin2" type="MarginContainer" parent="MainMenu/VBox"]
 margin_top = 482.0

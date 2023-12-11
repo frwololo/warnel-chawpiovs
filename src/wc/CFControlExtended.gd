@@ -6,7 +6,8 @@ extends CFControl
 
 #cache variables
 var known_types : Dictionary
-var unknown_types: Dictionary
+var unknown_types : Dictionary
+var next_scene_params : Dictionary
 
 func _is_type_known(type) -> bool:
 	if known_types.has(type):
@@ -51,4 +52,9 @@ func load_script_definitions() -> void:
 	.load_script_definitions();
 	#TODO load scripts from user folder
 
-
+#A poor man's mechanism to pass parameters betwen scenes
+func set_next_scene_params(params : Dictionary):
+	next_scene_params = params.duplicate()
+	
+func get_next_scene_params() -> Dictionary:
+	return next_scene_params

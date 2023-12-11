@@ -6,10 +6,12 @@ const menu_switch_time = 0.35
 onready var v_buttons := $MainMenu/VBox/Center/VButtons
 onready var main_menu := $MainMenu
 onready var v_folder_label := $MainMenu/VBox/Margin2/Label
-
+onready var v_join_button := $MainMenu/VBox/Center/VButtons/JoinBox/Join
+onready var v_host_ip_box := $MainMenu/VBox/Center/VButtons/JoinBox/HostIp
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	v_join_button.connect('pressed', self, 'on_button_pressed', ["Join"])
 	for option_button in v_buttons.get_children():
 		if option_button.has_signal('pressed'):
 			option_button.connect('pressed', self, 'on_button_pressed', [option_button.name])
@@ -20,14 +22,17 @@ func _ready() -> void:
 
 func on_button_pressed(_button_name : String) -> void:
 	match _button_name:
-		"SinglePlayer":
-			# warning-ignore:return_value_discarded
-			get_tree().change_scene(CFConst.PATH_CUSTOM + 'Main.tscn')
-		"Multiplayer":
-			get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/MultiplayerMenu1.tscn')
-		"Exit":
-			get_tree().quit()
+		"Join":
+			join_game(v_host_ip_box.text)
+		"Cancel":
+			get_tree().change_scene(CFConst.PATH_CUSTOM + 'MainMenu.tscn')
 
+func join_game(ip_address : String):
+	var next_scene_params = {
+		"host_ip" : ip_address,
+		} 
+	cfc.set_next_scene_params(next_scene_params)
+	get_tree().change_scene(CFConst.PATH_CUSTOM + 'lobby/MultiplayerLobby.tscn')
 	
 func _on_Menu_resized() -> void:
 	for tab in [main_menu]:

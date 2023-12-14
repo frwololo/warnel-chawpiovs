@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://src/wc/lobby/HeroSelect.gd" type="Script" id=1]
+
+[node name="HeroSelect" type="VBoxContainer"]
+script = ExtResource( 1 )
+
+[node name="HeroPicture" type="TextureRect" parent="."]
+unique_name_in_owner = true
+margin_right = 14.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 14, 20 )
+
+[node name="HeroName" type="Label" parent="."]
+unique_name_in_owner = true
+margin_top = 24.0
+margin_right = 14.0
+margin_bottom = 38.0
+
+[connection signal="gui_input" from="." to="." method="_on_HeroSelect_gui_input"]

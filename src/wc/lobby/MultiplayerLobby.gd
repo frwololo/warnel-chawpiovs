@@ -144,7 +144,7 @@ remote func launch_client_game():
 	
 func _launch_game():	
 	# server pressed on launch, start the game!
-	gameData.network_players = players.duplicate() #TODO cleaner way?
+	gameData.init_network_players(players)
 	var game = load(CFConst.PATH_CUSTOM + "lobby/TeamSelection.tscn").instance()
 	# Connect deferred so we can safely erase it from the callback.
 	game.connect("game_finished", self, "_end_game", [], CONNECT_DEFERRED)

@@ -36,9 +36,11 @@ margin_bottom = 23.0
 text = "HEROES"
 
 [node name="Heroes" type="GridContainer" parent="MainMenu/Outercontainer/LeftRight/HeroesPanel"]
+unique_name_in_owner = true
 margin_top = 26.0
 margin_right = 72.0
 margin_bottom = 26.0
+columns = 3
 
 [node name="ScenarioTeamPanel" type="VBoxContainer" parent="MainMenu/Outercontainer/LeftRight"]
 margin_left = 75.0
@@ -56,6 +58,7 @@ margin_bottom = 25.0
 text = "Scenario"
 
 [node name="ScenarioSelect" type="OptionButton" parent="MainMenu/Outercontainer/LeftRight/ScenarioTeamPanel/ScenarioContainer"]
+unique_name_in_owner = true
 margin_left = 79.0
 margin_right = 95.0
 margin_bottom = 27.0

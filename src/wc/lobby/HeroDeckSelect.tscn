@@ -11,6 +11,7 @@ margin_right = 140.0
 margin_bottom = 20.0
 
 [node name="HeroPicture" type="TextureRect" parent="."]
+unique_name_in_owner = true
 margin_top = 24.0
 margin_right = 140.0
 margin_bottom = 224.0
@@ -20,3 +21,5 @@ rect_min_size = Vector2( 140, 200 )
 margin_top = 228.0
 margin_right = 140.0
 margin_bottom = 248.0
+
+[connection signal="gui_input" from="." to="." method="_on_HeroDeckSelect_gui_input"]

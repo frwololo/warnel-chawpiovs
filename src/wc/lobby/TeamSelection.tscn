@@ -24,11 +24,11 @@ margin_bottom = 720.0
 
 [node name="LeftRight" type="HBoxContainer" parent="MainMenu/Outercontainer"]
 margin_right = 1280.0
-margin_bottom = 33.0
+margin_bottom = 60.0
 
 [node name="HeroesPanel" type="VBoxContainer" parent="MainMenu/Outercontainer/LeftRight"]
 margin_right = 72.0
-margin_bottom = 33.0
+margin_bottom = 60.0
 
 [node name="HeroesTitle" type="Label" parent="MainMenu/Outercontainer/LeftRight/HeroesPanel"]
 margin_right = 72.0
@@ -44,11 +44,11 @@ columns = 3
 
 [node name="ScenarioTeamPanel" type="VBoxContainer" parent="MainMenu/Outercontainer/LeftRight"]
 margin_left = 75.0
-margin_right = 170.0
-margin_bottom = 33.0
+margin_right = 192.0
+margin_bottom = 60.0
 
 [node name="ScenarioContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/LeftRight/ScenarioTeamPanel"]
-margin_right = 95.0
+margin_right = 117.0
 margin_bottom = 27.0
 
 [node name="ScenarioTitle" type="Label" parent="MainMenu/Outercontainer/LeftRight/ScenarioTeamPanel/ScenarioContainer"]
@@ -66,18 +66,31 @@ margin_bottom = 27.0
 [node name="TeamContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/LeftRight/ScenarioTeamPanel"]
 unique_name_in_owner = true
 margin_top = 30.0
-margin_right = 95.0
+margin_right = 117.0
 margin_bottom = 30.0
 
 [node name="ReadyLaunch" type="HBoxContainer" parent="MainMenu/Outercontainer/LeftRight/ScenarioTeamPanel"]
 margin_top = 33.0
-margin_right = 95.0
-margin_bottom = 33.0
+margin_right = 117.0
+margin_bottom = 60.0
+
+[node name="ReadyButton" type="Button" parent="MainMenu/Outercontainer/LeftRight/ScenarioTeamPanel/ReadyLaunch"]
+unique_name_in_owner = true
+margin_right = 52.0
+margin_bottom = 27.0
+text = "Ready"
+
+[node name="LaunchButton" type="Button" parent="MainMenu/Outercontainer/LeftRight/ScenarioTeamPanel/ReadyLaunch"]
+unique_name_in_owner = true
+margin_left = 55.0
+margin_right = 117.0
+margin_bottom = 27.0
+text = "Launch"
 
 [node name="Margin2" type="MarginContainer" parent="MainMenu/Outercontainer"]
-margin_top = 36.0
+margin_top = 63.0
 margin_right = 1280.0
-margin_bottom = 149.0
+margin_bottom = 176.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 custom_constants/margin_top = 90

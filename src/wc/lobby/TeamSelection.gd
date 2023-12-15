@@ -25,13 +25,25 @@ onready var main_menu := $MainMenu
 onready var scenarios_container: OptionButton = get_node("%ScenarioSelect")
 onready var all_heroes_container = get_node("%Heroes")
 onready var heroes_container = get_node("%TeamContainer")
+onready var ready_button = get_node("%ReadyButton")
+onready var launch_button = get_node("%LaunchButton")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	# If nothing's setup, start server for Single player mode
+	if (not get_tree().get_network_peer()):
+		gameData.init_1player()
+	
+	
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')
 	_create_team_container()
 	_create_hero_container()
 	_load_scenarios()
+	
+	ready_button.hide() #todo do something with this guy
+	launch_button.hide()
+	launch_button.connect('pressed', self, 'on_button_pressed', [launch_button.name])
+	
 	
 func _load_scenarios():
 	for scenario_id in cfc.scenarios:
@@ -79,6 +91,10 @@ remotesync func assign_hero(hero_id, slot):
 	var hero_deck_select = heroes_container.get_child(slot)
 	hero_deck_select.load_hero(hero_id)
 	
+	if (hero_id and cfc.is_game_master()):
+		launch_button.show()
+	
+	
 func request_release_hero_slot(hero_id):
 	rpc_id(1, "release_hero_slot",hero_id)
 
@@ -87,11 +103,19 @@ func request_release_hero_slot(hero_id):
 remotesync func release_hero_slot(hero_id) -> int:
 	if (not get_tree().is_network_server()):
 		return -1
-	var client_id = get_tree().get_rpc_sender_id() 
+	var client_id = get_tree().get_rpc_sender_id()
+	var remaining_team_members = 0;
+	for i in HERO_COUNT:
+		var data: HeroDeckData = team[i]
+		if (data.hero_id):
+			remaining_team_members += 1
 	for i in HERO_COUNT:
 		var data: HeroDeckData = team[i]
 		if (data.owner.network_id == client_id and data.hero_id == hero_id):
 			rpc("assign_hero", "", i)
+			remaining_team_members -=1
+			if (not remaining_team_members):
+				launch_button.hide()
 			return i
 	return -1			
 
@@ -108,6 +132,41 @@ remote func remote_owner_changed (id, index):
 	var heroDeckSelect = heroes_container.get_child(index)
 	heroDeckSelect.set_owner(id)
 
+func deck_changed(_deck_id, hero_index):
+	team[hero_index].deck_id = _deck_id
+	rpc("remote_deck_changed",_deck_id, hero_index)	
+
+remote func remote_deck_changed (_deck_id, hero_index):
+	#update data
+	team[hero_index].deck_id = _deck_id
+	#update GUI
+	var heroDeckSelect = heroes_container.get_child(hero_index)
+	heroDeckSelect.set_deck(_deck_id)
+
+func _launch_server_game():
+	# Finalize Network players data
+	#var i = 0
+	#for player in players:
+	#	rpc("set_network_player_index", player, i)
+	#	i+=1
+	rpc("launch_client_game")	
+	_launch_game()
+	
+remote func launch_client_game():
+	_launch_game() 	
+	
+func _launch_game():	
+	# server pressed on launch, start the game!
+	gameData.set_team_data(team)
+	get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/GetReady.tscn')
+
+func on_button_pressed(_button_name : String) -> void:
+	match _button_name:
+		"LaunchButton":
+			_launch_server_game()		
+		#"Cancel":
+			#TODO disconnect?
+		#	get_tree().change_scene(CFConst.PATH_CUSTOM + 'MainMenu.tscn')
 
 func _on_Menu_resized() -> void:
 	for tab in [main_menu]:

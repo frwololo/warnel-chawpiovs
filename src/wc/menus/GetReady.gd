@@ -7,27 +7,52 @@ onready var v_buttons := $MainMenu/VBox/Center/VButtons
 onready var main_menu := $MainMenu
 onready var v_folder_label := $MainMenu/VBox/Margin2/Label
 
+var ready = false
+var clients_ready = {}
+var game
+var loader = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	for option_button in v_buttons.get_children():
-		if option_button.has_signal('pressed'):
-			option_button.connect('pressed', self, 'on_button_pressed', [option_button.name])
-	# warning-ignore:return_value_discarded
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')
 	v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
 
+	#do loading related stuff
 
-func on_button_pressed(_button_name : String) -> void:
-	match _button_name:
-		"Host":
-			# warning-ignore:return_value_discarded
-			get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/MultiplayerWait.tscn')
-		"Join":
-			get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/MultiplayerJoin.tscn')
-		"Cancel":
-			get_tree().change_scene(CFConst.PATH_CUSTOM + 'MainMenu.tscn')
+func _process(delta):
+	if (not ready):
+		if (not loader):
+			loader = ResourceLoader.load_interactive(CFConst.PATH_CUSTOM + "Main.tscn")
+		if loader.poll() == ERR_FILE_EOF:
+			game = loader.get_resource()
+			#I'm ready, tell myself then tell the server
+			clients_ready[get_tree().get_network_unique_id()] = true;
+			ready = true;
+			rpc_id(1, "client_ready")
+	
+remotesync func client_ready():
+	var client_id = get_tree().get_rpc_sender_id()
+	clients_ready[client_id] = true;
+	if (get_tree().is_network_server()):
+		if (clients_ready.size() == gameData.network_players.size()):
+			_launch_server_game()
 
+
+func _launch_server_game():
+	# Finalize Network players data
+	#var i = 0
+	#for player in players:
+	#	rpc("set_network_player_index", player, i)
+	#	i+=1
+	rpc("launch_client_game")	
+	_launch_game()
+	
+remote func launch_client_game():
+	_launch_game() 	
+	
+func _launch_game():	
+	# server said start the game!
+	get_tree().change_scene_to(game)
 	
 func _on_Menu_resized() -> void:
 	for tab in [main_menu]:

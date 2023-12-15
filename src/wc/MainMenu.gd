@@ -22,7 +22,7 @@ func on_button_pressed(_button_name : String) -> void:
 	match _button_name:
 		"SinglePlayer":
 			# warning-ignore:return_value_discarded
-			get_tree().change_scene(CFConst.PATH_CUSTOM + 'Main.tscn')
+			get_tree().change_scene(CFConst.PATH_CUSTOM + 'lobby/TeamSelection.tscn')
 		"Multiplayer":
 			get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/MultiplayerMenu1.tscn')
 		"Exit":

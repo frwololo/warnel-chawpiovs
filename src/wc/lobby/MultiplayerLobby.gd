@@ -46,8 +46,6 @@ func on_button_pressed(_button_name : String) -> void:
 	match _button_name:
 		"Launch":
 			_launch_server_game()
-			
-			pass
 		"Cancel":
 			#TODO disconnect?
 			get_tree().change_scene(CFConst.PATH_CUSTOM + 'MainMenu.tscn')
@@ -203,9 +201,7 @@ func _set_status(text, isok):
 		status_msg.set_text(text)
 
 func _join_as_server():
-	peer = NetworkedMultiplayerENet.new()
-	peer.set_compression_mode(NetworkedMultiplayerENet.COMPRESS_RANGE_CODER)
-	var err = peer.create_server(CFConst.MULTIPLAYER_PORT, 3) # Maximum of 3 peers. TODO make this a config
+	var err = gameData.init_as_server()
 	if err != OK:
 		# Is another server running?
 		_set_status("Can't host, address in use.",false)
@@ -213,7 +209,6 @@ func _join_as_server():
 		get_tree().change_scene(CFConst.PATH_CUSTOM + 'lobby/MultiplayerLobby.tscn')
 		return #does this ever run?
 
-	get_tree().set_network_peer(peer)
 	my_info.name = "Player 1"
 	_set_status("Waiting for players...", true)
 

@@ -15,6 +15,9 @@ var scenarios : Array
 var deck_definitions : Dictionary
 
 func get_card_by_id(id):
+	if (not id):
+		WCUtils.debug_message("no id passed to get_card_by_id")
+		return null	
 	var card_name = idx_card_id_to_name[id]
 	if (not card_name):
 		WCUtils.debug_message("no matching data for " + str(id))
@@ -130,7 +133,13 @@ func get_next_scene_params() -> Dictionary:
 #
 # These functions live here for lack of a better place. Todo create classes?
 func get_img_filename(card_id) -> String:
+	if (not card_id):
+		print_debug("CFCExtended: no id passed to get_img_filename")
+		return ""
 	var card = get_card_by_id(card_id)
+	if (not card):
+		print_debug("CFCExtended: couldn't find card matching id" + card_id)
+		return ""	
 	var card_code = card["_code"]
 	var card_set = card["_set"]
 	if card_code and card_set:

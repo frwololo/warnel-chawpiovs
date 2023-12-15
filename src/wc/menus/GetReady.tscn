@@ -39,7 +39,7 @@ margin_top = 106.0
 margin_right = 1280.0
 margin_bottom = 221.0
 custom_fonts/font = SubResource( 2 )
-text = "Multiplayer"
+text = "Get Ready!"
 align = 1
 
 [node name="Center" type="CenterContainer" parent="MainMenu/VBox"]
@@ -47,34 +47,6 @@ margin_top = 241.0
 margin_right = 1280.0
 margin_bottom = 479.0
 size_flags_vertical = 3
-
-[node name="VButtons" type="VBoxContainer" parent="MainMenu/VBox/Center"]
-margin_left = 544.0
-margin_top = 68.0
-margin_right = 736.0
-margin_bottom = 169.0
-rect_min_size = Vector2( 192, 0 )
-custom_constants/separation = 10
-
-[node name="Host" type="Button" parent="MainMenu/VBox/Center/VButtons"]
-margin_right = 192.0
-margin_bottom = 27.0
-text = "Host"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Join" type="Button" parent="MainMenu/VBox/Center/VButtons"]
-margin_top = 37.0
-margin_right = 192.0
-margin_bottom = 64.0
-text = "Join"
-
-[node name="Cancel" type="Button" parent="MainMenu/VBox/Center/VButtons"]
-margin_top = 74.0
-margin_right = 192.0
-margin_bottom = 101.0
-text = "Cancel"
 
 [node name="Margin2" type="MarginContainer" parent="MainMenu/VBox"]
 margin_top = 482.0

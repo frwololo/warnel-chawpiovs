@@ -339,10 +339,20 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/wc/CardTemplate.gd"
 }, {
+"base": "VBoxContainer",
+"class": "WCHeroZone",
+"language": "GDScript",
+"path": "res://src/wc/board/WCHeroZone.gd"
+}, {
 "base": "Reference",
 "class": "WCUtils",
 "language": "GDScript",
 "path": "res://src/wc/WCUtils.gd"
+}, {
+"base": "Node2D",
+"class": "WCZone",
+"language": "GDScript",
+"path": "res://src/wc/board/_WCZone.gd"
 }, {
 "base": "Reference",
 "class": "perMessage",
@@ -416,7 +426,9 @@ _global_script_class_icons={
 "TokenDrawer": "",
 "ViewportCardFocus": "",
 "WCCard": "",
+"WCHeroZone": "",
 "WCUtils": "",
+"WCZone": "",
 "perMessage": ""
 }
 

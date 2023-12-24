@@ -6,6 +6,7 @@ var network_players := {}
 
 var id_to_network_id:= {}
 
+#1 indexed
 var team := {}
 
 # Called when the node enters the scene tree for the first time.
@@ -25,10 +26,9 @@ func set_team_data(_team:Dictionary):
 	for hero_idx in _team:
 		var hero_data:HeroDeckData = _team[hero_idx]
 		if (hero_data.deck_id and hero_data.hero_id):
-			team[hero_count] = hero_data
 			hero_count += 1
-	return 0		
-		
+			team[hero_count] = hero_data
+	return 0				
 
 func get_player_by_index(id):
 	return network_players[id_to_network_id[id]]
@@ -48,3 +48,8 @@ func init_as_server():
 	get_tree().set_network_peer(peer)
 	return err	
 
+func get_team_size():
+	return team.size()
+
+func get_team_member(id:int):
+	return team[id]

@@ -12,6 +12,7 @@ var idx_card_id_to_name : Dictionary
 var idx_hero_to_deck_ids : Dictionary
 var scenarios : Array
 
+#deck data identified by integer id (marvelcdb id)
 var deck_definitions : Dictionary
 
 func get_card_by_id(id):
@@ -93,7 +94,7 @@ func load_deck_definitions() -> Dictionary:
 		#Fixing missing Data
 		#nothing for now
 		if (_is_deck_valid(json_deck_data)):
-			var deck_id = json_deck_data["id"]
+			var deck_id: int = json_deck_data["id"]
 			var hero_id = json_deck_data["investigator_code"]
 			combined_decks[deck_id] = json_deck_data
 			if (not idx_hero_to_deck_ids.has(hero_id)):

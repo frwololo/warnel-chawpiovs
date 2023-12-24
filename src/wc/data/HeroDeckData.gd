@@ -14,3 +14,15 @@ func _init():
 # var a = 2
 # var b = "text"
 
+func get_deck_cards(): #todo cache?
+	var result : Array = []
+	if (not deck_id):
+		return result
+	var deck_data = cfc.deck_definitions[deck_id]
+	var slots = deck_data.slots
+	for card_id in slots:
+		var quantity = slots[card_id]
+		for i in range (quantity):
+			result.append(card_id)
+	return result
+

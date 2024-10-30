@@ -149,6 +149,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/core/CardViewer/CardViewer.gd"
 }, {
+"base": "Reference",
+"class": "CardZone",
+"language": "GDScript",
+"path": "res://src/wc/data/CardZone.gd"
+}, {
 "base": "Control",
 "class": "Counters",
 "language": "GDScript",
@@ -274,6 +279,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/wc/SP.gd"
 }, {
+"base": "Reference",
+"class": "ScenarioDeckData",
+"language": "GDScript",
+"path": "res://src/wc/data/ScenarioDeckData.gd"
+}, {
 "base": "ScriptObject",
 "class": "ScriptAlter",
 "language": "GDScript",
@@ -388,6 +398,7 @@ _global_script_class_icons={
 "CardLabel": "",
 "CardLibrary": "",
 "CardViewer": "",
+"CardZone": "",
 "Counters": "",
 "CustomScripts": "",
 "DBDeckCardObject": "",
@@ -413,6 +424,7 @@ _global_script_class_icons={
 "PlayerData": "",
 "QuantityNumberButton": "",
 "SP": "",
+"ScenarioDeckData": "",
 "ScriptAlter": "",
 "ScriptObject": "",
 "ScriptPer": "",

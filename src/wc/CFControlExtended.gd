@@ -10,9 +10,15 @@ var unknown_types : Dictionary
 var next_scene_params : Dictionary
 var idx_card_id_to_name : Dictionary
 var idx_hero_to_deck_ids : Dictionary
+
+var obligations : Dictionary
+var schemes: Dictionary 
+var cards_by_set: Dictionary
+
+var primitives: Dictionary
 var scenarios : Array
 
-#deck data identified by integer id (marvelcdb id)
+#Hero deck data identified by integer id (marvelcdb id)
 var deck_definitions : Dictionary
 
 func get_card_by_id(id):
@@ -45,8 +51,19 @@ func _setup():
 	deck_definitions = load_deck_definitions()
 	
 
+func load_card_primitives():
+	var json_card_data : Array
+	json_card_data = WCUtils.read_json_file("user://Sets/_primitives.json")	
+	for card_data in json_card_data:
+		#creating entries for both id and name so I never have to remember which one to use...
+		primitives[card_data["code"]] = card_data;
+		primitives[card_data["name"]] = card_data;
+
 # Returns a Dictionary with the combined Card definitions of all set files
+# loaded in card_definitions variable by core engine
 func load_card_definitions() -> Dictionary:
+	if (primitives.empty()):
+		load_card_primitives()
 	var combined_sets := .load_card_definitions();
 	# Load from external user files as well	
 	var loaded_definitions : Array
@@ -60,24 +77,48 @@ func load_card_definitions() -> Dictionary:
 			#Fixing missing Data
 			if not card_data.has("Tags"):
 				card_data["Tags"] = []			
+
+			#TODO 2024/10/30 is this error new?
+			if not card_data.has("card_set_name"):
+				card_data["card_set_name"] = "ERROR"	
+				
+			var card_type = card_data[CardConfig.SCENE_PROPERTY]
+			var set_name = card_data["card_set_name"]
+			var lc_set_name = set_name.to_lower()
+			
+			#Villains: multiple cards have the same name.
+			#Hack to "fix" this by adding stage number
+			#e.g. "Rhino_2"
+			if (card_type == "Villain"):
+				card_data["Name"] = card_data["Name"] + "_" + String(card_data["stage"])
 			
 			var card_id = card_data["_code"]
 			#caching and indexing
 			idx_card_id_to_name[card_id] = card_data["Name"]
 			
-			var card_type = card_data[CardConfig.SCENE_PROPERTY]
-			#load scenarios
+			
+			#scenarios cache
 			if (card_type == "Main_scheme"):
+				if (not schemes.has(lc_set_name)):
+					schemes[lc_set_name] = []
+				schemes[lc_set_name].push_back(card_data)	
 				if(card_data["stage"] == 1):
 					scenarios.push_back(card_id)
 			
+			#obligations cache
+			if (card_type == "obligation"):
+				obligations[lc_set_name] = card_data
+				
+			#encounter/set cache
+			if (not cards_by_set.has(lc_set_name)):
+				cards_by_set[lc_set_name] = []
+			cards_by_set[lc_set_name].push_back(card_data)				
+				
 			#Unknown types get assigned a generic template.
 			#They most likely won't work in game
 			if not _is_type_known(card_type):
 				card_data[CardConfig.SCENE_PROPERTY] = "Unknown"	
 			combined_sets[card_data["Name"]] = card_data
-			
-
 			
 			
 	return(combined_sets)
@@ -101,6 +142,29 @@ func load_deck_definitions() -> Dictionary:
 				idx_hero_to_deck_ids[hero_id] = []
 			idx_hero_to_deck_ids[hero_id].push_back(deck_id)	
 	return(combined_decks)
+
+#card database related functions
+func get_hero_obligation(hero_id:String):
+	#todo error handling
+	var hero_data = get_card_by_id(hero_id)
+	var hero_name = hero_data["Name"]
+	var obligation = obligations[hero_name.to_lower()]
+	return obligation
+	
+func sort_stage(a, b):
+	if a["stage"] < b["stage"]:
+		return true
+	return false
+		
+func get_schemes(set_name:String):	
+	#todo error handling
+	var schemes = schemes[set_name.to_lower()]
+	schemes.sort_custom(cfc.sort_stage)
+	return schemes
+
+func get_encounter_cards(set_name:String):
+	var encounters = cards_by_set[set_name.to_lower()]
+	return encounters
 
 #check if a given deck is valid (we must own all cards)
 func _is_deck_valid(deck) -> bool:

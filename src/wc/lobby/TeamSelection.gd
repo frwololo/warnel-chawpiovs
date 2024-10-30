@@ -158,6 +158,7 @@ remote func launch_client_game():
 func _launch_game():	
 	# server pressed on launch, start the game!
 	gameData.set_team_data(team)
+	gameData.set_scenario_data({"card_set_name" : scenarios_container.get_selected_id()})
 	get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/GetReady.tscn')
 
 func on_button_pressed(_button_name : String) -> void:

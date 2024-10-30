@@ -6,8 +6,10 @@ var network_players := {}
 
 var id_to_network_id:= {}
 
-#1 indexed
+#1 indexed {id: HeroDeckData}
 var team := {}
+
+var scenario:ScenarioDeckData
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -29,6 +31,12 @@ func set_team_data(_team:Dictionary):
 			hero_count += 1
 			team[hero_count] = hero_data
 	return 0				
+
+func set_scenario_data(_scenario:Dictionary):
+	if (!scenario):
+		print_debug("scenario variable is not set")
+		return
+	scenario.load_from_dict(_scenario)
 
 func get_player_by_index(id):
 	return network_players[id_to_network_id[id]]

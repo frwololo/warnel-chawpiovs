@@ -1,3 +1,8 @@
+#Stores all global game data, multiplayer info, etc...
+
+# Hero vs Player:
+# Generally speaking: Player is the physical person, Hero is the currently playing Hero
+# Important distinction since you can play multiple heroes per player
 class_name GameData
 extends Node
 
@@ -10,6 +15,9 @@ var id_to_network_id:= {}
 var team := {}
 
 var scenario:ScenarioDeckData
+
+# Hero currently playing. We might need another one for interruptions
+var current_hero_id := 1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -61,3 +69,6 @@ func get_team_size():
 
 func get_team_member(id:int):
 	return team[id]
+	
+func get_current_hero_id():
+	return current_hero_id

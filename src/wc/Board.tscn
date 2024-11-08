@@ -1,5 +1,6 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
+[ext_resource path="res://src/wc/PhaseButton.gd" type="Script" id=1]
 [ext_resource path="res://src/wc/board/WCHand.tscn" type="PackedScene" id=3]
 [ext_resource path="res://src/wc/Board.gd" type="Script" id=5]
 [ext_resource path="res://src/custom/CGFCounters.tscn" type="PackedScene" id=6]
@@ -161,6 +162,13 @@ margin_top = 2.0
 margin_right = -2.0
 margin_bottom = -2.0
 custom_styles/panel = SubResource( 3 )
+
+[node name="PhaseButton" type="Button" parent="."]
+anchor_left = 0.797
+anchor_top = 0.932
+anchor_right = 0.973
+anchor_bottom = 0.959
+script = ExtResource( 1 )
 
 [connection signal="toggled" from="FancyMovementToggle" to="." method="_on_FancyMovementToggle_toggled"]
 [connection signal="toggled" from="EnableAttach" to="." method="_on_EnableAttach_toggled"]

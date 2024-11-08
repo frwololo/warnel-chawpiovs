@@ -152,6 +152,7 @@ func _setup() -> void:
 	if OS.get_name() == "HTML5":
 		load_script_definitions()
 	else:
+		#load_script_definitions()
 		script_load_thread = Thread.new()
 		script_load_thread.start(self, "load_script_definitions")
 	var scripts_load_end_time = OS.get_ticks_msec()

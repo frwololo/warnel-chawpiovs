@@ -33,6 +33,7 @@ rect_min_size = Vector2( 150, 210 )
 
 [node name="Discard" parent="Row4/ControlDiscard" instance=ExtResource( 4 )]
 script = ExtResource( 3 )
+faceup_cards = true
 
 [node name="Control" parent="Row4/ControlDiscard/Discard" index="0"]
 rect_min_size = Vector2( 150, 210 )

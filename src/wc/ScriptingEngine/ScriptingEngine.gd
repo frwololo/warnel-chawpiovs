@@ -28,6 +28,21 @@ func move_card_to_container(script: ScriptTask) -> int:
 	var result = .move_card_to_container(script)
 	script.script_definition = backup
 	return result
+	
+func pay_regular_cost(script: ScriptTask) -> int:
+	#TODO might be better to be able to duplicate scriptTasks ?
+	#var modified_script:ScriptTask = script.duplicate
+	var backup:Dictionary = script.script_definition.duplicate()
+	
+	#Replace all occurrences of "current_hero" with the actual id
+	#This ensures we use e.g. the correct discard pile, etc...
+	var current_hero_id = gameData.get_current_hero_id()
+	search_and_replace(script.script_definition, "{current_hero}", str(current_hero_id))
+	
+	
+	var result = .move_card_to_container(script)
+	script.script_definition = backup
+	return result	
 
 # TODO move to a utility file
 # we operate directly on the dictionary without suplicate for speed reasons. Make a copy prior if needed

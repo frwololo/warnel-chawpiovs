@@ -1,3 +1,4 @@
+# Data of a Network player (not to be confused with a Hero. a single Player can play multiple heroes)
 class_name PlayerData
 extends Reference
 

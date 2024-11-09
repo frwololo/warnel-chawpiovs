@@ -16,6 +16,8 @@ var team := {}
 
 var scenario:ScenarioDeckData
 
+
+
 # Hero currently playing. We might need another one for interruptions
 var current_hero_id := 1
 
@@ -37,7 +39,10 @@ func set_team_data(_team:Dictionary):
 		var hero_data:HeroDeckData = _team[hero_idx]
 		if (hero_data.deck_id and hero_data.hero_id):
 			hero_count += 1
-			team[hero_count] = hero_data
+			team[hero_count] = { 
+				"hero_data" : hero_data,
+				"manapool" : ManaPool.new(),
+				}
 	return 0				
 
 func set_scenario_data(_scenario:Dictionary):

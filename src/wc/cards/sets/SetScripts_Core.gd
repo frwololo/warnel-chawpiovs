@@ -115,7 +115,7 @@ func get_scripts(card_name: String, get_modified = true) -> Dictionary:
 						SP.KEY_SELECTION_OPTIONAL: false,
 						SP.KEY_SELECTION_IGNORE_SELF: true,
 						"src_container": "hand",
-						"dest_container": "discard{current_hero}", #TODO need to update based on player
+						"dest_container": "discard{current_hero}",
 					},
 					{
 						"name": "move_card_to_board",
@@ -124,5 +124,16 @@ func get_scripts(card_name: String, get_modified = true) -> Dictionary:
 				]
 			}
 		}
+	elif (card.has("Cost"))	: #Card has a cost but it's zero
+		playFromHand = {
+			"manual": {
+				"hand": [
+					{
+						"name": "move_card_to_board",
+						"subject": "self",
+					},
+				]
+			}
+		}		
 	script.merge(playFromHand)
 	return script

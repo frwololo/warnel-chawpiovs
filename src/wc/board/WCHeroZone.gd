@@ -15,7 +15,7 @@ func _ready():
 	if (not my_id):
 		print_debug("WCHeroZone: error, called ready before id set")
 		return	
-	hero_deck_data = gameData.get_team_member(my_id)
+	hero_deck_data = gameData.get_team_member(my_id)["hero_data"]
 	var ckey = cfc.idx_card_id_to_name[hero_deck_data.hero_id]
 	var card = cfc.instance_card(ckey)
 	card.set_is_faceup(true)

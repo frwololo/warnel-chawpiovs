@@ -1,3 +1,5 @@
+#Data that represents the Deck of cards of a hero
+
 class_name HeroDeckData
 extends Reference
 
@@ -11,6 +13,13 @@ func _init():
 	deck_id = 0
 	hero_id = ""
 
+func get_hero_card_data() -> Dictionary:
+	return cfc.get_card_by_id(hero_id)
+	
+func get_alter_ego_card_data() -> Dictionary:
+	var card_data = get_hero_card_data()
+	var alter_ego_data = card_data["linked_card"]
+	return alter_ego_data	
 
 func get_deck_cards(): #todo cache?
 	var result : Array = []

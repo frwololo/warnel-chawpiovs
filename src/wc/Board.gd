@@ -1,6 +1,7 @@
 # Code for a sample playspace, you're expected to provide your own ;)
 extends Board
 
+var waiting_for_shuffle_end 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	counters = $Counters
@@ -20,6 +21,13 @@ func _ready() -> void:
 		cfc.game_rng_seed = CFUtils.generate_random_seed()
 		$SeedLabel.text = "Game Seed is: " + cfc.game_rng_seed
 	load_cards()
+	shuffle_decks()
+	#Need to wait after shuffling decks
+	for i in range(gameData.get_team_size()):
+		var pile = cfc.NMAP["deck" + str(i+1)]	
+		yield(pile, "shuffle_completed")
+	draw_starting_hand()
+	offer_to_mulligan()
 	# warning-ignore:return_value_discarded
 	$DeckBuilderPopup.connect('popup_hide', self, '_on_DeckBuilder_hide')
 
@@ -91,7 +99,7 @@ func _on_Debug_toggled(button_pressed: bool) -> void:
 func load_cards() -> void:
 	for i in range(gameData.get_team_size()):
 		var card_array = []
-		var hero_deck_data: HeroDeckData = gameData.team[i+1] #Todo actually load my player's stuff
+		var hero_deck_data: HeroDeckData = gameData.get_team_member(i+1)["hero_data"] #TODO actually load my player's stuff
 		var card_ids = hero_deck_data.get_deck_cards()
 		for card_id in card_ids:
 			#cards.append(ckey)
@@ -102,6 +110,25 @@ func load_cards() -> void:
 			cfc.NMAP["deck" + str(i+1)].add_child(card)
 			#card.set_is_faceup(false,true)
 			card._determine_idle_state()
+			
+func shuffle_decks() -> void:
+	for i in range(gameData.get_team_size()):
+		var pile = cfc.NMAP["deck" + str(i+1)]
+		while pile.are_cards_still_animating():
+			yield(pile.get_tree().create_timer(0.2), "timeout")
+		pile.shuffle_cards()
+	
+func draw_starting_hand() -> void:
+	for i in range(gameData.get_team_size()):
+		var hero_deck_data: HeroDeckData = gameData.get_team_member(i+1)["hero_data"] #TODO actually load my player's stuff
+		var alter_ego_data = hero_deck_data.get_alter_ego_card_data()
+		var hand_size = alter_ego_data["hand_size"]
+		var pile = cfc.NMAP["deck" + str(i+1)]
+		for j in range(hand_size):
+			cfc.NMAP["hand"].draw_card (pile)
+	
+func offer_to_mulligan() -> void:
+	pass				
 
 func _on_DeckBuilder_pressed() -> void:
 	cfc.game_paused = true

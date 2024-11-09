@@ -100,7 +100,8 @@ func _on_Card_gui_input(event) -> void:
 					#TODO
 					#NOTE ERWAN
 					#Modified here so that drag to board mimics the effect of a double click	
-					if (destination == cfc.NMAP.board) :
+					var parentHost = get_parent()
+					if (destination == cfc.NMAP.board) and (parentHost == cfc.NMAP.hand):
 						move_to(cfc.NMAP.hand)
 						if (check_play_costs() != CFConst.CostsState.IMPOSSIBLE):
 							cfc.card_drag_ongoing = null

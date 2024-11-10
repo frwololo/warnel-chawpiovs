@@ -9,21 +9,27 @@
 script = ExtResource( 1 )
 card_back_design = ExtResource( 4 )
 card_front_design = ExtResource( 3 )
-canonical_size = Vector2( 150, 210 )
 
 [node name="CollisionShape2D" parent="." index="0"]
 position = Vector2( 75, 105 )
 
 [node name="Control" parent="." index="1"]
-margin_right = 150.0
-margin_bottom = 210.0
-rect_min_size = Vector2( 150, 210 )
+margin_right = 200.0
+margin_bottom = 280.0
+rect_min_size = Vector2( 200, 280 )
 __meta__ = {
 "_edit_group_": true
 }
 
+[node name="Highlight" parent="Control" index="0"]
+margin_right = -3.0
+margin_bottom = -3.0
+
 [node name="Back" parent="Control" index="1"]
 visible = true
+
+[node name="Front" parent="Control" index="2"]
+rect_min_size = Vector2( 200, 280 )
 
 [node name="state" parent="Debug" index="1"]
 margin_top = 18.0

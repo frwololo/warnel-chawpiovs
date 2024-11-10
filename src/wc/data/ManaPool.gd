@@ -2,33 +2,72 @@
 class_name ManaPool
 extends ManaCost
 
-
+signal manapool_modified(card,trigger,details)
 
 # Called when the node enters the scene tree for the first time.
 func _init():
-	pass
+	pool[Resource.UNCOLOR] = 1 #TODO Temp for tests
+	self.connect("manapool_modified", self, "_on_manapool_modified")
 
+
+
+### 
+### Parent Overrides
+###
+func reset() :
+	var temp_pool:ManaCost = ManaCost.new()
+	temp_pool.set_cost(self.pool)
+	.reset()
+	var diff:ManaCost = compute_diff(temp_pool)
+	if not diff.is_zero():
+		emit_signal(
+			"manapool_modified",
+			null, #TODO Requesting object - better to have a card here?
+			"manapool_modified",
+			{
+				#TODO
+			}
+		)
+
+func add_resource(type, amount) :
+	.add_resource(type, amount)
+	emit_signal(
+		"manapool_modified",
+		null, #TODO Requesting object - better to have a card here?
+		"manapool_modified",
+		{
+			#TODO
+		}
+	)	
+
+#computes raw diff between two mana costs without any clever logic	
+func compute_diff(cost:ManaCost) -> ManaCost:
+	var result:ManaCost = ManaCost.new()
+	for k in cost.pool.keys():
+		result.pool[k] = self.pool[k] - cost.pool[k]
+	return result	
 
 #Pays a Manacost and goes into negatives as needed, to understand what kind of Mana is still missing to pay the cost
-func compute_missing(cost:ManaCost) :
+func compute_missing(cost:ManaCost) -> ManaCost: 
 	# We go from the most specific (Wild)  to the least specific (uncolor) and loop over all the others
 	# We create a duplicate and pay from it in order to remove mana progressively
-	var temp_pool:ManaPool = self.duplicate()
+	var temp_pool:ManaCost = ManaCost.new()
+	temp_pool.set_cost(self.pool)
 	
 	#WILD Cost first 
-	temp_pool.pool[Resource.WILD] -= cost[Resource.WILD]	
+	temp_pool.pool[Resource.WILD] -= cost.pool[Resource.WILD]	
 	
 	#All Colored Mana/Energy
 	for k in cost.pool.keys():
 		#skip specific cases
 		if (Resource.WILD == k) or (Resource.UNCOLOR == k):
 			continue
-		temp_pool.pool[k] -= cost[k]
+		temp_pool.pool[k] -= cost.pool[k]
 
 	#UNCOLORED Cost last
-	var remaining = cost[Resource.UNCOLOR]
+	var remaining = cost.pool[Resource.UNCOLOR]
 	var i = Resource.WILD
-	while (remaining and i >= Resource.UNCOLOR) :
+	while (remaining and i > Resource.UNCOLOR) :
 		if (temp_pool.pool[i] >= remaining):
 			temp_pool.pool[i] -= remaining
 			remaining = 0
@@ -36,15 +75,12 @@ func compute_missing(cost:ManaCost) :
 			remaining -= temp_pool.pool[i]
 			temp_pool.pool[i] = 0
 		i-=1
+	
+	temp_pool.pool[Resource.UNCOLOR] -= remaining
 		
 	return temp_pool	
 	
-#Return true if this mana pool represents a cost deficit (at least one of its members is negative)	
-func is_negative() :		
-	for v in pool.values():
-		if v < 0 :
-			return true
-	return false
+
 
 #Returns null if the cost can't be paid, or a new manapool object post payment if cost can be paid	
 func can_pay_total_cost(cost:ManaCost) :
@@ -62,3 +98,11 @@ func pay_total_cost(cost:ManaCost) :
 	#Apply change
 	self.pool = temp_pool.pool	
 	return CFConst.ReturnCode.CHANGED		
+
+
+func _on_manapool_modified(trigger_card: Card, trigger: String, details: Dictionary):
+	for v in ManaCost.Resource.values() :
+			var retcode: int = cfc.NMAP.board.counters.mod_counter(
+			ManaCost.RESOURCE_TEXT[v],
+			pool[v],
+			true)

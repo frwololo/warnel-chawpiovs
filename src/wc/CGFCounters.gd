@@ -16,12 +16,11 @@ func _ready() -> void:
 	counters_container = $VBC
 	value_node = "Value"
 	needed_counters = {
-		"credits": {
-			"CounterTitle": "Available Credits: ",
-			"Value": 100},
-		"research":{
-			 "CounterTitle": "Research: ",
-			"Value": 0},
 	}
+	
+	#TODO Manapool is currently connected to this display, need something more advanced
+	var manapool:ManaPool = gameData.get_current_team_member()["manapool"]
+	for v in ManaCost.Resource.values() :
+		needed_counters[ManaCost.RESOURCE_TEXT[v]] = {"CounterTitle": ManaCost.RESOURCE_TEXT[v], "Value": manapool.pool[v]}
 	# warning-ignore:return_value_discarded
 	spawn_needed_counters()

@@ -9,8 +9,8 @@ size = 107
 font_data = ExtResource( 3 )
 
 [node name="Lobby" type="Panel"]
-margin_right = 1280.0
-margin_bottom = 720.0
+margin_right = 1920.0
+margin_bottom = 1080.0
 theme = ExtResource( 2 )
 script = ExtResource( 1 )
 
@@ -19,53 +19,53 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 
 [node name="ColorRect" type="ColorRect" parent="MainMenu"]
-margin_right = 1280.0
-margin_bottom = 720.0
+margin_right = 1920.0
+margin_bottom = 1080.0
 color = Color( 0.0705882, 0.0705882, 0.0705882, 1 )
 
 [node name="VBox" type="VBoxContainer" parent="MainMenu"]
-margin_right = 1280.0
-margin_bottom = 720.0
+margin_right = 1920.0
+margin_bottom = 1080.0
 
 [node name="Margin" type="MarginContainer" parent="MainMenu/VBox"]
-margin_right = 1280.0
-margin_bottom = 205.0
+margin_right = 1920.0
+margin_bottom = 316.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/margin_top = 90
 
 [node name="Label" type="Label" parent="MainMenu/VBox/Margin"]
-margin_top = 90.0
-margin_right = 1280.0
-margin_bottom = 205.0
+margin_top = 145.0
+margin_right = 1920.0
+margin_bottom = 260.0
 custom_fonts/font = SubResource( 2 )
 text = "Lobby"
 align = 1
 
 [node name="WaitingMsg" type="Label" parent="MainMenu/VBox"]
-margin_top = 208.0
-margin_right = 1280.0
-margin_bottom = 231.0
+margin_top = 319.0
+margin_right = 1920.0
+margin_bottom = 342.0
 text = "Waiting for Players..."
 valign = 2
 
 [node name="Players" type="VBoxContainer" parent="MainMenu/VBox"]
-margin_top = 234.0
-margin_right = 1280.0
-margin_bottom = 534.0
+margin_top = 345.0
+margin_right = 1920.0
+margin_bottom = 645.0
 rect_min_size = Vector2( 0, 300 )
 
 [node name="Center" type="CenterContainer" parent="MainMenu/VBox"]
-margin_top = 537.0
-margin_right = 1280.0
-margin_bottom = 604.0
+margin_top = 648.0
+margin_right = 1920.0
+margin_bottom = 964.0
 size_flags_vertical = 3
 
 [node name="VButtons" type="VBoxContainer" parent="MainMenu/VBox/Center"]
-margin_left = 544.0
-margin_top = 1.0
-margin_right = 736.0
-margin_bottom = 65.0
+margin_left = 864.0
+margin_top = 126.0
+margin_right = 1056.0
+margin_bottom = 190.0
 rect_min_size = Vector2( 192, 0 )
 custom_constants/separation = 10
 alignment = 2
@@ -82,16 +82,16 @@ margin_bottom = 64.0
 text = "Cancel"
 
 [node name="Margin2" type="MarginContainer" parent="MainMenu/VBox"]
-margin_top = 607.0
-margin_right = 1280.0
-margin_bottom = 720.0
+margin_top = 967.0
+margin_right = 1920.0
+margin_bottom = 1080.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 custom_constants/margin_top = 90
 
 [node name="Label" type="Label" parent="MainMenu/VBox/Margin2"]
 margin_top = 90.0
-margin_right = 1280.0
+margin_right = 1920.0
 margin_bottom = 113.0
 text = "user folder:"
 valign = 2

@@ -64,7 +64,7 @@ func load_card_primitives():
 func load_card_definitions() -> Dictionary:
 	if (primitives.empty()):
 		load_card_primitives()
-	var combined_sets := .load_card_definitions();
+	var combined_sets := .load_card_definitions(); #TODO Remove the call to parent eventually ?
 	# Load from external user files as well	
 	var loaded_definitions : Array
 	var set_files = CFUtils.list_files_in_directory(
@@ -185,8 +185,42 @@ func _is_deck_valid(deck) -> bool:
 	
 # Returns a Dictionary with the combined Script definitions of all set files
 func load_script_definitions() -> void:
-	.load_script_definitions();
-	#TODO load scripts from user folder
+	var set_files = CFUtils.list_files_in_directory(
+			"user://Sets/", CFConst.CARD_SET_NAME_PREPEND)
+			
+	for set_file in set_files:
+		var json_card_data : Array
+		json_card_data = WCUtils.read_json_file("user://Sets/" + set_file)
+		for card_data in json_card_data:
+			#Fixing missing Data
+			if not card_data.has("Tags"):
+				card_data["Tags"] = []			
+	
+	var script_overrides = load(CFConst.PATH_SETS + "SetScripts_Core.gd").new()
+	
+	var combined_scripts := {}
+	var script_definition_files := CFUtils.list_files_in_directory(
+				"user://Sets/", CFConst.SCRIPT_SET_NAME_PREPEND)
+	WCUtils.debug_message("Found " + str(script_definition_files.size()) + " script files")			
+	for script_file in script_definition_files:
+		var json_card_data : Dictionary
+		json_card_data = WCUtils.read_json_file("user://Sets/" + script_file)
+		for card_name in json_card_data.keys():
+			if not combined_scripts.get(card_name):
+				combined_scripts[card_name]	= json_card_data[card_name]	
+					
+
+	for card_name in card_definitions.keys():
+		var card_script = script_overrides.get_scripts(combined_scripts, card_name)
+		var unmodified_card_script = script_overrides.get_scripts(combined_scripts, card_name, false)
+#		print(unmodified_card_script)
+		if not card_script.empty():
+			combined_scripts[card_name] = card_script
+			set_scripts[card_name] = card_script
+			unmodified_set_scripts[card_name] = unmodified_card_script
+	emit_signal("scripts_loaded")
+	scripts_loading = false	
+
 
 #A poor man's mechanism to pass parameters betwen scenes
 func set_next_scene_params(params : Dictionary):

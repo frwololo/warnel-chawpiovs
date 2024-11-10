@@ -152,9 +152,9 @@ func _setup() -> void:
 	if OS.get_name() == "HTML5":
 		load_script_definitions()
 	else:
-		#load_script_definitions()
-		script_load_thread = Thread.new()
-		script_load_thread.start(self, "load_script_definitions")
+		load_script_definitions()
+		#script_load_thread = Thread.new()
+		#script_load_thread.start(self, "load_script_definitions")
 	var scripts_load_end_time = OS.get_ticks_msec()
 	if OS.has_feature("debug") and not cfc.is_testing:
 		print_debug("DEBUG INFO:CFControl: card scripts load time = %sms" % [str(scripts_load_end_time - load_start_time)])	

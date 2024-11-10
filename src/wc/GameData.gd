@@ -77,3 +77,6 @@ func get_team_member(id:int):
 	
 func get_current_hero_id():
 	return current_hero_id
+	
+func get_current_team_member():
+	return team[current_hero_id]	

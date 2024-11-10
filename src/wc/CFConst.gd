@@ -42,11 +42,11 @@ const GAME_VERSION := "1.0.0"
 # This will also adjust all CardContainers to match
 # If you modify this property, you **must** adjust
 # the min_rect of the various control nodes inside the card front and back scenes.
-const CARD_SIZE := Vector2(150,210)
+const CARD_SIZE := Vector2(200,280)
 # This is the resolution the game was developed in. It is used to adjust the card sizes
 # for smaller resolutions. Any lower resoluton will adjust its card sizes for previews/thumbnails
 # based on the percentage of difference between the two resolutions in absolute pixel number.
-const DESIGN_RESOLUTION := Vector2(1280,720)
+const DESIGN_RESOLUTION := Vector2(1920,1080)
 # Switch this off to disable fancy movement of cards during draw/discard
 const FANCY_MOVEMENT := true
 # The focus style selected for this game. See enum `FocusStyle`
@@ -231,15 +231,16 @@ const SHOW_TOKEN_BUTTONS := false
 # be constructed using the PATH_TOKENS variable
 #
 # This allows us to reuse a token image for more than 1 token type
+# TODO Move to something more generic?
 const TOKENS_MAP := {
-	'tech': 'blue.svg',
-	'plasma': 'blue.svg',
-	'bio': 'green.svg',
-	'industry': 'grey.svg',
-	'magic': 'purple.svg',
-	'blood': 'red.svg',
-	'gold coin': 'yellow.svg',
-	'void': 'black.svg',
+	'web': 'blue.svg',
+#	'plasma': 'blue.svg',
+#	'bio': 'green.svg',
+#	'industry': 'grey.svg',
+#	'magic': 'purple.svg',
+#	'blood': 'red.svg',
+#	'gold coin': 'yellow.svg',
+#	'void': 'black.svg',
 }
 const STATS_URI := "http://127.0.0.1"
 const STATS_PORT := 8000

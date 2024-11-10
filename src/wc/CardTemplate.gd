@@ -112,3 +112,68 @@ func _on_Card_gui_input(event) -> void:
 		else:
 			_process_more_card_inputs(event)
 		
+
+# This function can be overriden by any class extending Card, in order to provide
+# a way of running special functions on an extended scripting engine.
+#
+# It is called after the scripting engine is initiated, but before it's run
+# the first time
+#
+# Used to hijack the scripts at runtime if needed
+# Current use case: check manapool before asking to pay for cards
+func common_pre_run(_sceng) -> void:
+	var scripts_queue: Array = _sceng.scripts_queue
+	var new_queue: Array = []
+	for task in scripts_queue:
+		var script: ScriptTask = task
+		var script_definition = script.script_definition
+		match script_definition["name"]:
+			# To pay for cards: We check if the manapool has some mana
+			# If so, use that in "priority" and reduce the actual cost of the card
+			# We then replace the "pay" trigger with a combination of
+			# 1) discard the appropriate number of cards from hand (minored by what's available in manapool)
+			# 2) empty the manapool
+			"pay_regular_cost":
+				var additional_task := ScriptTask.new(
+					script.owner,
+					{"name": "pay_from_manapool"}, #TODO more advanced
+					script.trigger_object,
+					script.trigger_details)
+				new_queue.append(additional_task)
+					
+				var new_script = pay_regular_cost_replacement(script_definition)
+				if (new_script) :
+					script.script_definition = new_script
+					script.script_name = script.get_property("name") #TODO something cleaner? Maybe part of the script itself?
+					new_queue.append(script)
+			_:
+				new_queue.append(task)
+	_sceng.scripts_queue = new_queue	
+
+func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:		
+	var manapool:ManaPool = gameData.get_current_team_member()["manapool"]
+	var manacost:ManaCost = ManaCost.new()
+	manacost.init_from_expression(script_definition["cost"]) #TODO better name?
+	var missing_mana:ManaCost = manapool.compute_missing(manacost)
+	
+	var result = {}
+	#Manapool not enough, need to discard cards
+	if missing_mana.is_negative() :
+		var current_hero_id = gameData.get_current_hero_id()
+		#Replace the script with a move condition
+		result ={
+				"name": "move_card_to_container",
+				"is_cost": true,
+				"subject": "index",
+				"subject_count": "all",
+				"subject_index": "top",
+				SP.KEY_NEEDS_SELECTION: true,
+				SP.KEY_SELECTION_COUNT: -missing_mana.pool[ManaCost.Resource.UNCOLOR], #TODO put real missing cost here
+				SP.KEY_SELECTION_TYPE: "equal",
+				SP.KEY_SELECTION_OPTIONAL: false,
+				SP.KEY_SELECTION_IGNORE_SELF: true,
+				"src_container": "hand",
+				"dest_container": "discard" + str(current_hero_id),
+			}		
+
+	return result	

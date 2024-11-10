@@ -469,8 +469,11 @@ gameData="*res://src/wc/GameData.gd"
 
 [display]
 
-window/size/width=1280
-window/size/height=720
+window/size/width=1920
+window/size/height=1080
+window/size/test_width=1280
+window/size/test_height=720
+window/stretch/mode="viewport"
 window/stretch/aspect="keep"
 
 [editor_plugins]

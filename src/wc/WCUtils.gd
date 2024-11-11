@@ -76,3 +76,9 @@ static func merge_dict(dict_1: Dictionary, dict_2: Dictionary, deep_merge: bool 
 		else:
 			new_dict[key] = dict_2[key]
 	return new_dict
+
+
+static func sort_stage(a, b):
+	if a["stage"] < b["stage"]:
+		return true
+	return false

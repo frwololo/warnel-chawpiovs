@@ -106,7 +106,7 @@ func load_card_definitions() -> Dictionary:
 					scenarios.push_back(card_id)
 			
 			#obligations cache
-			if (card_type == "obligation"):
+			if (card_type == "Obligation"):
 				obligations[lc_set_name] = card_data
 				
 			#encounter/set cache
@@ -150,17 +150,12 @@ func get_hero_obligation(hero_id:String):
 	var hero_name = hero_data["Name"]
 	var obligation = obligations[hero_name.to_lower()]
 	return obligation
-	
-func sort_stage(a, b):
-	if a["stage"] < b["stage"]:
-		return true
-	return false
 		
 func get_schemes(set_name:String):	
 	#todo error handling
-	var schemes = schemes[set_name.to_lower()]
-	schemes.sort_custom(cfc.sort_stage)
-	return schemes
+	var my_schemes = schemes[set_name.to_lower()]
+	my_schemes.sort_custom(WCUtils, "sort_stage")
+	return my_schemes
 
 func get_encounter_cards(set_name:String):
 	var encounters = cards_by_set[set_name.to_lower()]

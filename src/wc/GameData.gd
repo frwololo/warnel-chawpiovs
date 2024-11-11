@@ -16,7 +16,8 @@ var team := {}
 
 var scenario:ScenarioDeckData
 
-
+func _init():
+	scenario = ScenarioDeckData.new()
 
 # Hero currently playing. We might need another one for interruptions
 var current_hero_id := 1

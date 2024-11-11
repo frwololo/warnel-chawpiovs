@@ -12,7 +12,11 @@ func _init():
 
 func load_from_dict(_scenario:Dictionary):
 	var set_name = _scenario["card_set_name"]
-	schemes = cfc.get_schemes[set_name]
+	schemes = cfc.get_schemes(set_name)
+	
+	#Preload
+	get_villains()
+	get_encounter_deck()
 
 func get_villains():
 	if (schemes.empty()):
@@ -66,7 +70,8 @@ func get_encounter_deck():
 				
 	#add hero obligations
 	#for all heroes in game data, add hero's obligation
-	for hero_data in gameData.team.values():
+	for hero in gameData.team.values():
+		var hero_data = hero["hero_data"]
 		var obligation_card = cfc.get_hero_obligation(hero_data.hero_id)
 		encounter_deck.push_back(obligation_card)
 	return encounter_deck

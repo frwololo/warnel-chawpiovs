@@ -158,7 +158,11 @@ remote func launch_client_game():
 func _launch_game():	
 	# server pressed on launch, start the game!
 	gameData.set_team_data(team)
-	gameData.set_scenario_data({"card_set_name" : scenarios_container.get_selected_id()})
+	
+	#TODO this is gross based on display text. NEed to do something ID based
+	var scenario_dropdown_id = scenarios_container.get_selected_id()
+	var scenario_name = scenarios_container.get_item_text(scenario_dropdown_id)
+	gameData.set_scenario_data({"card_set_name" : scenario_name})
 	get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/GetReady.tscn')
 
 func on_button_pressed(_button_name : String) -> void:

@@ -3,6 +3,7 @@ extends Board
 
 var heroZone = preload("res://src/wc/board/WCHeroZone.tscn")
 var basicGrid = preload("res://src/wc/grids/BasicGrid.tscn")
+onready var villain := $VillainZone
 
 const GRID_SETUP := {
 	"villain" : {
@@ -74,8 +75,8 @@ func _ready() -> void:
 		grid.rect_position = Vector2(grid_info.x, grid_info.y)
 		grid.auto_extend = true
 	
-
 	
+	villain.load_scenario()
 
 	#Game setup - Todo move somewhere else ?
 	load_cards()

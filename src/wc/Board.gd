@@ -1,11 +1,47 @@
 # Code for a sample playspace, you're expected to provide your own ;)
 extends Board
 
-var waiting_for_shuffle_end 
+var heroZone = preload("res://src/wc/board/WCHeroZone.tscn")
+var basicGrid = preload("res://src/wc/grids/BasicGrid.tscn")
+
+const GRID_SETUP := {
+	"villain" : {
+		"x" : 300,
+		"y" : 0,
+	},
+	"schemes" : {
+		"x" : 500,
+		"y" : 0,
+	},
+	"villain_misc" : {
+		"x" : 1500,
+		"y" : 0,
+	},
+	"enemies" : {
+		"x" : 500,
+		"y" : 200,
+	},
+	"identity" : {
+		"x" : 500,
+		"y" : 400,
+	},
+	"allies" : {
+		"x" : 800,
+		"y" : 400,
+	},
+	"upgrade_support" : {
+		"x" : 800,
+		"y" : 600,
+	},									
+}
+
+func _init():
+	init_hero_zones()
+	
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	cfc.map_node(self)	
 	counters = $Counters
-	cfc.map_node(self)
 	# We use the below while to wait until all the nodes we need have been mapped
 	# "hand" should be one of them.
 	# We're assigning our positions programmatically,
@@ -20,6 +56,28 @@ func _ready() -> void:
 	if not cfc.ut:
 		cfc.game_rng_seed = CFUtils.generate_random_seed()
 		$SeedLabel.text = "Game Seed is: " + cfc.game_rng_seed
+
+	# warning-ignore:return_value_discarded
+	$DeckBuilderPopup.connect('popup_hide', self, '_on_DeckBuilder_hide')	
+	
+	for grid_name in GRID_SETUP.keys():
+		var grid_info = GRID_SETUP[grid_name]
+		var grid_scene = grid_info.get("grid_scene", basicGrid)
+		var grid: BoardPlacementGrid = grid_scene.instance()
+		grid.add_to_group("placement_grid")
+		# A small delay to allow the instance to be added
+		add_child(grid)
+		# If the grid name is empty, we use the predefined names in the scene.
+		if grid_name != "":
+			grid.name = grid_name
+			grid.name_label.text = grid_name
+		grid.rect_position = Vector2(grid_info.x, grid_info.y)
+		grid.auto_extend = true
+	
+
+	
+
+	#Game setup - Todo move somewhere else ?
 	load_cards()
 	shuffle_decks()
 	#Need to wait after shuffling decks
@@ -28,17 +86,23 @@ func _ready() -> void:
 		yield(pile, "shuffle_completed")
 	draw_starting_hand()
 	offer_to_mulligan()
-	# warning-ignore:return_value_discarded
-	$DeckBuilderPopup.connect('popup_hide', self, '_on_DeckBuilder_hide')
 
+
+func init_hero_zones():
+	var hero_count: int = gameData.get_team_size()
+	for i in range (hero_count): 
+		var new_hero_zone = heroZone.instance()
+		add_child(new_hero_zone)
+		new_hero_zone.set_player(i+1)
+		new_hero_zone.rect_position = Vector2(500, 600) #TODO better than this		
 
 # Returns an array with all children nodes which are of Card class
 func get_all_cards() -> Array:
 	var cardsArray := []
 	for obj in get_children():
 		if obj as Card: cardsArray.append(obj)
+		if obj as WCHeroZone: cardsArray.append(obj.get_all_cards())
 	cardsArray.append_array($VillainZone.get_all_cards())
-	cardsArray.append_array($TeamZone.get_all_cards())	
 	return(cardsArray)
 
 

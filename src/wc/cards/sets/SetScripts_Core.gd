@@ -1,5 +1,9 @@
 extends Reference
 
+const TYPECODE_TO_PILE := {
+	"event" : "discard{current_hero}"
+}
+
 const TYPECODE_TO_GRID := {
 	"ally" : "allies",
 	"upgrade" : "upgrade_support",
@@ -8,14 +12,27 @@ const TYPECODE_TO_GRID := {
 
 # This fuction merges text files scripts for a given card 
 # with default rules for the game (rules that apply to all cards)
+# Specifically, it converts card keywords (cost, threat,...) into actual scripts for the engine
 func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) -> Dictionary:
 
 	var card = cfc.card_definitions[card_name]
 	var	cost = card["Cost"] if (card && card.has("Cost")) else 0
 	
 	#Grid position depending on card type
-	var type_code = card["type_code"] if (card && card.has("type_code")) else ""
+	var type_code:String = card["type_code"] if (card && card.has("type_code")) else ""
 	var grid = TYPECODE_TO_GRID.get(type_code, "")
+	var move_after_play : Dictionary = {
+		"name": "move_card_to_board",
+		"subject": "self",
+		"grid_name" : grid
+	}	
+	if TYPECODE_TO_PILE.has(type_code):
+		move_after_play  = {
+		"name": "move_card_to_container",
+		"subject": "self",
+		"dest_container" : TYPECODE_TO_PILE[type_code]
+	}
+
 	
 	var script:Dictionary = scripts.get(card_name,{})
 	if script :
@@ -25,7 +42,7 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 	#Add game specific rules valid for all cards
 	
 	#Play From hand: discard a specific number of cards to play
-	#TODO this is not specific to core set and should therefore be moved somewhere else more general
+	#TODO limit to player cards ?
 	var playFromHand: Dictionary = { }
 	if (cost):
 		playFromHand = {
@@ -36,28 +53,7 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 						"is_cost": true,
 						"cost" : cost,
 					},
-#			"manual": {
-#				"hand": [
-#					{
-#						"name": "pay_regular_cost",
-#						"is_cost": true,
-#						"subject": "index",
-#						"subject_count": "all",
-#						"subject_index": "top",
-#						SP.KEY_NEEDS_SELECTION: true,
-#						SP.KEY_SELECTION_COUNT: cost,
-#						"cost" : cost,
-#						SP.KEY_SELECTION_TYPE: "equal",
-#						SP.KEY_SELECTION_OPTIONAL: false,
-#						SP.KEY_SELECTION_IGNORE_SELF: true,
-#						"src_container": "hand",
-#						"dest_container": "discard{current_hero}",
-#					},
-					{
-						"name": "move_card_to_board",
-						"subject": "self",
-						"grid_name" : grid
-					},
+					move_after_play
 				]
 			}
 		}
@@ -65,13 +61,91 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 		playFromHand = {
 			"manual": {
 				"hand": [
-					{
-						"name": "move_card_to_board",
-						"subject": "self",
-						"grid_name" : grid
-					},
+					move_after_play
 				]
 			}
 		}		
 	script = WCUtils.merge_dict(script, playFromHand, true)
+	
+	if "scheme" in type_code:
+		var base_threat = card.get("base_threat", 0)
+		var scheme_comes_to_play: Dictionary = { 
+			"card_moved_to_board": {
+				"trigger": "self",
+				"board": [
+					{
+						"name": "mod_tokens",
+						"subject": "self",
+						"modification": base_threat,
+						"token_name":  "threat",
+					},
+					{
+						"name": "rotate_card",
+						"subject": "self",
+						"degrees": 90,
+					},					
+				]
+			}
+		}
+		
+		script = WCUtils.merge_dict(script,scheme_comes_to_play, true)
+
+	if card.get("horizontal", false):
+		var horizontal_comes_to_play: Dictionary = { 
+			"card_moved_to_board": {
+				"trigger": "self",
+				"board": [
+					{
+						"name": "rotate_card",
+						"subject": "self",
+						"degrees": 90,
+					},					
+				]
+			}
+		}
+		script = WCUtils.merge_dict(script,horizontal_comes_to_play, true)
+	
+	if type_code == "ally":
+		var base_threat = card.get("base_threat", 0)
+		var ally_actions: Dictionary = { 
+			"manual": {
+				"board": {
+					"thwart": [
+						{
+							"name": "rotate_card",
+							"subject": "self",
+							"degrees": 90,
+							"is_cost" : true,
+						},						
+						{
+							"name": "thwart",
+							"subject": "target",
+							"needs_subject": true,
+							"filter_state_subject": [{
+								"filter_group": "schemes"
+							},],						
+						},					
+					],
+					"attack" :[
+						{
+							"name": "rotate_card",
+							"subject": "self",
+							"degrees": 90,
+							"is_cost" : true,
+						},						
+						{
+							"name": "attack",
+							"subject": "target",
+							"needs_subject": true,
+							"filter_state_subject": [{
+								"filter_group" : "enemies"
+							},],						
+						},					
+					],
+				}
+			}
+		}
+		
+		script = WCUtils.merge_dict(script,ally_actions, true)
+	
 	return script

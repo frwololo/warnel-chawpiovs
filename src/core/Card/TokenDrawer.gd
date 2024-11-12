@@ -110,7 +110,7 @@ func mod_token(
 	var retcode : int
 	# If the player requested a token name that has not been defined by the game
 	# we return a failure
-	if not CFConst.TOKENS_MAP.get(token_name, null):
+	if 0 : #not CFConst.TOKENS_MAP.get(token_name, null):
 		retcode = CFConst.ReturnCode.FAILED
 	else:
 		var token : Token = get_all_tokens().get(token_name, null)

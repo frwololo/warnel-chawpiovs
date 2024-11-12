@@ -68,9 +68,9 @@ static func merge_dict(dict_1: Dictionary, dict_2: Dictionary, deep_merge: bool 
 	for key in dict_2:
 		if key in new_dict:
 			if deep_merge and dict_1[key] is Dictionary and dict_2[key] is Dictionary:
-				new_dict[key] = merge_dict(dict_1[key], dict_2[key])
+				new_dict[key] = merge_dict(dict_1[key], dict_2[key], deep_merge)
 			elif deep_merge and dict_1[key] is Array and dict_2[key] is Array:
-				new_dict[key] = merge_array(dict_1[key], dict_2[key])
+				new_dict[key] = merge_array(dict_1[key], dict_2[key], deep_merge)
 			else:
 				new_dict[key] = dict_2[key]
 		else:

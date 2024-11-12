@@ -169,6 +169,12 @@ func focus_card(card: Card, show_preview := true) -> void:
 		# I.e. the card doesn't appear mid-screen for no reason etc
 		card_focus.rect_size = Vector2(0,0)
 		$VBC.rect_size = Vector2(0,0)
+		
+		#handle rendering horizontal cards
+		if (card.properties.get("horizontal", 0)):
+			$VBC.rect_rotation = 90
+		else:
+			$VBC.rect_rotation = 0
 
 
 

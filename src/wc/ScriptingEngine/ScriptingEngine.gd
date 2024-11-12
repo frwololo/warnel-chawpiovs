@@ -12,6 +12,24 @@ func _init(state_scripts: Array,
 		_trigger_details) -> void:
 	pass
 
+#Scripting functions 
+
+#Abilities that add energy	
+func add_mana(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+
+	var counter_name: String = script.get_property(SP.KEY_COUNTER_NAME)
+	#TODO the scripting engine has better ways to handle alterations, etc... need to mimic that? See mod_counter
+	var modification: int  = script.get_property(SP.KEY_MODIFICATION)
+	# var set_to_mod: bool = script.get_property(SP.KEY_SET_TO_MOD)
+
+	var manapool:ManaPool = gameData.get_current_team_member()["manapool"]
+	manapool.add_resource(counter_name, modification)
+	return retcode	
+
+
 
 #override for parent
 func move_card_to_container(script: ScriptTask) -> int:
@@ -41,48 +59,112 @@ func pay_from_manapool(script: ScriptTask) -> int:
 	#TODO something more subtle than that?
 	manapool.reset()	
 	return retcode	
-	
-func add_mana(script: ScriptTask) -> int:
+
+func deal_damage(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
 
-	var counter_name: String = script.get_property(SP.KEY_COUNTER_NAME)
-	#TODO the scripting engine has better ways to handle alterations, etc... need to mimic that? See mod_counter
-	var modification: int  = script.get_property(SP.KEY_MODIFICATION)
-	# var set_to_mod: bool = script.get_property(SP.KEY_SET_TO_MOD)
-
-	var manapool:ManaPool = gameData.get_current_team_member()["manapool"]
-	manapool.add_resource(counter_name, modification)
-	return retcode		
 	
-#func pay_regular_cost(script: ScriptTask) -> int:
-#	#TODO might be better to be able to duplicate scriptTasks ?
-#	#var modified_script:ScriptTask = script.duplicate
-#	var backup:Dictionary = script.script_definition.duplicate()
-#
-#	#Replace all occurrences of "current_hero" with the actual id
-#	#This ensures we use e.g. the correct discard pile, etc...
-#	var current_hero_id = gameData.get_current_hero_id()
-#	search_and_replace(script.script_definition, "{current_hero}", str(current_hero_id))
-#
-#	var manapool:ManaPool = gameData.get_current_team_member()["manapool"]
-#	var manacost:ManaCost = ManaCost.new()
-#	manacost.init_from_expression(script.script_definition["cost"]) #TODO better name?
-#	var missing_mana:ManaCost = manapool.compute_missing(manacost)
-#
-#	var result = CFConst.ReturnCode.CHANGED #IS this correct???
-#	#Manapool not enough, need to discard cards
-#	if missing_mana.is_negative() :
-#		#Replace the script with a move condition
-#		script.script_definition[SP.KEY_SELECTION_COUNT] = -missing_mana.pool[ManaCost.Resource.UNCOLOR] #TODO put real missing cost here
-#		result = .move_card_to_container(script)
-#
-#	if not costs_dry_run(): #IS this correct? Should we check result ?
-#		manapool.reset()
-#
-#	script.script_definition = backup
-#	return result	
+	return retcode	
+	
+func deal_thwart(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+
+	
+	return retcode		
+
+func attack(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+
+	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
+	var token_name = "damage" #TODO move to const
+	
+	var damage = script.script_definition.get("amount", 0)
+	if not damage:
+		var owner_properties = script.owner.properties
+		damage = owner_properties.get("attack", 0)
+	
+	var token_diff = damage
+	
+	for card in script.subjects:
+		var current_tokens = card.tokens.get_token_count(token_name)
+		#if current_tokens - modification < 0:
+		#	token_diff = current_tokens
+		retcode = card.tokens.mod_token(token_name,
+				token_diff,false,costs_dry_run(), tags)
+
+	consequential_damage(script)
+
+	return retcode	
+
+func receive_damage(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+	
+	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
+	var amount = script.script_definition["amount"]
+	
+	for card in script.subjects:
+		retcode = card.tokens.mod_token("damage",
+				amount,false,costs_dry_run(), tags)	
+	
+	#TODO face damage consequences e.g. death
+
+	return retcode
+				
+	
+func consequential_damage(script: ScriptTask) -> int:	
+	var retcode: int = CFConst.ReturnCode.OK
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+
+	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
+
+	var owner_properties = script.owner.properties
+	var damage = owner_properties.get("attack_cost", 0)
+	
+	match script.script_name:
+		"thwart":
+			damage = owner_properties.get("thwart_cost",0)
+
+	var additional_task := ScriptTask.new(
+		script.owner,
+		{"name": "receive_damage", "amount" : damage, "subject" : "self"}, #TODO more advanced
+		script.trigger_object,
+		script.trigger_details)
+	additional_task.prime([], CFInt.RunType.NORMAL,0) #TODO gross
+	retcode = receive_damage(additional_task)
+	
+	return retcode
+
+	
+func thwart(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+
+	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
+	var token_name = "threat" #TODO move to const
+	var owner_properties = script.owner.properties
+	var modification = owner_properties["thwart"]
+	var token_diff = modification
+	
+	for card in script.subjects:
+		var current_tokens = card.tokens.get_token_count(token_name)
+		if current_tokens - modification < 0:
+			token_diff = current_tokens
+		retcode = card.tokens.mod_token(token_name,
+				-token_diff,false,costs_dry_run(), tags)
+
+
+	consequential_damage(script)
+	return retcode	
 
 # TODO move to a utility file
 # we operate directly on the dictionary without suplicate for speed reasons. Make a copy prior if needed

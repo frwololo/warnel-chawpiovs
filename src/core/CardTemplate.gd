@@ -69,38 +69,6 @@ const _TARGETING_SCENE_FILE = CFConst.PATH_CORE + "Card/TargetingArrow.tscn"
 const _TARGETING_SCENE = preload(_TARGETING_SCENE_FILE)
 
 
-# Emitted whenever the card is rotated
-# The signal must send its name as well (in the trigger var)
-# Because it's sent by the SignalPropagator to all cards and they use it
-# To filter.
-signal card_rotated(card,trigger,details)
-# Emitted whenever the card flips up/down
-signal card_flipped(card,trigger,details)
-# Emitted whenever the card is viewed while face-down
-signal card_viewed(card,trigger,details)
-# Emited whenever the card is moved to the board
-signal card_moved_to_board(card,trigger,details)
-# Emited whenever the card is moved to a pile
-signal card_moved_to_pile(card,trigger,details)
-# Emited whenever the card is moved to a hand
-signal card_moved_to_hand(card,trigger,details)
-# Emited whenever the card's tokens are modified
-# warning-ignore:unused_signal
-signal card_token_modified(card,trigger,details)
-# Emited whenever the card attaches to another
-signal card_attached(card,trigger,details)
-# Emited whenever the card unattaches from another
-signal card_unattached(card,trigger,details)
-# Emited whenever the card properties are modified
-signal card_properties_modified(card,trigger,details)
-# Emited whenever the card is targeted by another card.
-# This signal is not fired by this card directly, but by the card
-# doing the targeting.
-# warning-ignore:unused_signal
-signal card_targeted(card,trigger,details)
-## These signals are not connected to the signal propagator and are expected to be
-## used internally from this object
-
 # Sent when the player start dragging the card
 signal dragging_started(card)
 # Sent when the card's state changes
@@ -318,7 +286,8 @@ func _ready() -> void:
 	# warning-ignore:return_value_discarded
 	$Control.connect("gui_input", self, "_on_Card_gui_input")
 	$Control.connect("tree_exiting", self, "_on_tree_exiting")
-	cfc.signal_propagator.connect_new_card(self)
+#	cfc.signal_propagator.connect_new_card(self)
+	scripting_bus.connect("scripting_event_triggered", self, "execute_scripts")
 
 func _init_card_layout() -> void:
 	# Because we duplicate the card when adding to the viewport focus
@@ -581,6 +550,7 @@ func setup() -> void:
 				read_properties[property],
 				false,
 				["Init"])
+	
 
 
 # Changes the property stored in the properties dictionary of this card
@@ -639,10 +609,9 @@ func modify_property(
 				retcode = CFConst.ReturnCode.FAILED
 			else:
 				if not is_init:
-					emit_signal(
+					scripting_bus.emit_signal(
 							"card_properties_modified",
 							self,
-							"card_properties_modified",
 							{
 								"property_name": property,
 								"new_property_value": value,
@@ -903,10 +872,9 @@ func set_is_faceup(
 		# When the faceup has the instant switch, it's typically a built-in
 		# action, which we don't want trigerring scripts
 		if not instant:
-			emit_signal(
+			scripting_bus.emit_signal(
 					"card_flipped",
 					self,
-					"card_flipped",
 					{
 						"is_faceup": value,
 						"tags": tags,
@@ -949,7 +917,7 @@ func set_is_viewed(value: bool) -> int:
 			retcode = CFConst.ReturnCode.CHANGED
 			# We only emit a signal when we view the card
 			# not when we unview it as that happens naturally
-			emit_signal("card_viewed", self, "card_viewed",  {"is_viewed": true})
+			scripting_bus.emit_signal("card_viewed", self,  {"is_viewed": true})
 	else:
 		if value == is_viewed:
 			retcode = CFConst.ReturnCode.OK
@@ -1081,9 +1049,8 @@ func set_card_rotation(
 			#$Control/Tokens.rotation_degrees = -value # need to figure this out
 			# When the card actually changes orientation
 			# We report that it changed.
-			emit_signal(
+			scripting_bus.emit_signal(
 					"card_rotated", self,
-					"card_rotated",
 					{
 						"degrees": value,
 						"tags": tags,
@@ -1224,9 +1191,8 @@ func move_to(targetHost: Node,
 			card_rotation = 0
 			_target_rotation = _recalculate_rotation()
 			set_state(CardState.MOVING_TO_CONTAINER)
-			emit_signal("card_moved_to_hand",
+			scripting_bus.emit_signal("card_moved_to_hand",
 					self,
-					"card_moved_to_hand",
 					 {
 						"destination": targetHost.name,
 						"source": parentHost.name,
@@ -1264,9 +1230,8 @@ func move_to(targetHost: Node,
 				_target_position = targetHost.get_stack_position(self)
 				_target_rotation = 0.0
 				set_state(CardState.MOVING_TO_CONTAINER)
-				emit_signal("card_moved_to_pile",
+				scripting_bus.emit_signal("card_moved_to_pile",
 						self,
-						"card_moved_to_pile",
 						{
 							"destination": targetHost.name,
 							"source": parentHost.name,
@@ -1308,9 +1273,8 @@ func move_to(targetHost: Node,
 					_determine_target_position_from_mouse()
 				raise()
 			set_state(CardState.DROPPING_TO_BOARD)
-			emit_signal("card_moved_to_board",
+			scripting_bus.emit_signal("card_moved_to_board",
 					self,
-					"card_moved_to_board",
 					 {
 						"destination": targetHost.name,
 						"source": parentHost.name,
@@ -1585,9 +1549,8 @@ func attach_to_host(
 		# also became an attachment here.
 		if current_host_card and not is_following_previous_host:
 			current_host_card.attachments.erase(self)
-			emit_signal("card_unattached",
+			scripting_bus.emit_signal("card_unattached",
 					self,
-					"card_unattached",
 					{"host": current_host_card, "tags": tags})
 		# If card was on a grid slot, we clear that occupation
 		if _placement_slot:
@@ -1616,9 +1579,8 @@ func attach_to_host(
 				* CFConst.ATTACHMENT_OFFSET[attachment_offset].x,
 				(attach_index + 1)* card_size.y
 				* CFConst.ATTACHMENT_OFFSET[attachment_offset].y))
-		emit_signal("card_attached",
+		scripting_bus.emit_signal("card_attached",
 				self,
-				"card_attached",
 				{"host": host, "tags": tags})
 
 
@@ -2072,9 +2034,8 @@ func _tween_interpolate_visibility(visibility: float, time: float) -> void:
 # It is typically called when a card is removed from the table
 func _clear_attachment_status(tags := ["Manual"]) -> void:
 	if current_host_card:
-		emit_signal("card_unattached",
+		scripting_bus.emit_signal("card_unattached",
 				self,
-				"card_unattached",
 				{"host": current_host_card, "tags": tags})
 		current_host_card.attachments.erase(self)
 		current_host_card = null
@@ -2636,6 +2597,7 @@ func _process_card_state() -> void:
 				yield(_tween, "tween_all_completed")
 				_tween_stuck_time = 0
 				move_to(spawn_destination)
+				scripting_bus.emit_signal("card_spawned", self, {"tags": ["Scripted", "Spawned"]})
 				spawn_destination = null
 
 

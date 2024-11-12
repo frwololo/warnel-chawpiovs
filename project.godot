@@ -319,6 +319,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/core/ScriptingEngine/ScriptTask.gd"
 }, {
+"base": "Node",
+"class": "ScriptingBus",
+"language": "GDScript",
+"path": "res://src/core/ScriptingBus.gd"
+}, {
 "base": "Reference",
 "class": "ScriptingEngine",
 "language": "GDScript",
@@ -363,6 +368,11 @@ _global_script_classes=[ {
 "class": "WCHeroZone",
 "language": "GDScript",
 "path": "res://src/wc/board/WCHeroZone.gd"
+}, {
+"base": "ScriptingBus",
+"class": "WCScriptingBus",
+"language": "GDScript",
+"path": "res://src/wc/ScriptingEngine/ScriptingBus.gd"
 }, {
 "base": "Reference",
 "class": "WCUtils",
@@ -442,6 +452,7 @@ _global_script_class_icons={
 "ScriptPer": "",
 "ScriptProperties": "",
 "ScriptTask": "",
+"ScriptingBus": "",
 "ScriptingEngine": "",
 "SelectionWindow": "",
 "SetPreload": "",
@@ -451,6 +462,7 @@ _global_script_class_icons={
 "ViewportCardFocus": "",
 "WCCard": "",
 "WCHeroZone": "",
+"WCScriptingBus": "",
 "WCUtils": "",
 "WCZone": "",
 "perMessage": ""
@@ -466,6 +478,7 @@ config/icon="res://icon.png"
 
 cfc="*res://src/wc/CFControlExtended.gd"
 gameData="*res://src/wc/GameData.gd"
+scripting_bus="*res://src/wc/ScriptingEngine/ScriptingBus.gd"
 
 [display]
 

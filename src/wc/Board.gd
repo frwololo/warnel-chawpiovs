@@ -74,9 +74,6 @@ func _ready() -> void:
 			grid.name_label.text = grid_name
 		grid.rect_position = Vector2(grid_info.x, grid_info.y)
 		grid.auto_extend = true
-	
-	
-	villain.load_scenario()
 
 	#Game setup - Todo move somewhere else ?
 	load_cards()
@@ -84,9 +81,17 @@ func _ready() -> void:
 	#Need to wait after shuffling decks
 	for i in range(gameData.get_team_size()):
 		var pile = cfc.NMAP["deck" + str(i+1)]	
-		yield(pile, "shuffle_completed")
+		yield(pile, "shuffle_completed")	
+	
+	villain.load_scenario()
+
+
 	draw_starting_hand()
 	offer_to_mulligan()
+	
+	#Tests
+	draw_cheat("Mockingbird")
+	draw_cheat("Swinging Web Kick")
 
 
 func init_hero_zones():
@@ -191,6 +196,12 @@ func draw_starting_hand() -> void:
 		var pile = cfc.NMAP["deck" + str(i+1)]
 		for j in range(hand_size):
 			cfc.NMAP["hand"].draw_card (pile)
+
+func draw_cheat(cardName : String) -> void:
+	var card = cfc.instance_card(cardName)
+	var pile = cfc.NMAP["deck1"]
+	pile.add_child(card)
+	cfc.NMAP["hand"].draw_card (pile)
 	
 func offer_to_mulligan() -> void:
 	pass				

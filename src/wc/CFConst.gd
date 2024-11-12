@@ -231,10 +231,11 @@ const SHOW_TOKEN_BUTTONS := false
 # be constructed using the PATH_TOKENS variable
 #
 # This allows us to reuse a token image for more than 1 token type
-# TODO Move to something more generic?
+# 'default' is required
 const TOKENS_MAP := {
-	'web': 'blue.svg',
-#	'plasma': 'blue.svg',
+	'default': 'blue.svg',
+	'threat' : 'black.svg',
+	'damage': 'red.svg',
 #	'bio': 'green.svg',
 #	'industry': 'grey.svg',
 #	'magic': 'purple.svg',
@@ -242,6 +243,21 @@ const TOKENS_MAP := {
 #	'gold coin': 'yellow.svg',
 #	'void': 'black.svg',
 }
+
+const TYPES_TO_GROUPS := {
+	"main_scheme" : ["schemes"],
+	"player_scheme" : ["schemes"],
+	"side_scheme" : ["schemes"],
+	"minion" : ["enemies"],
+	"villain" : ["enemies"]
+}
+
+const FORCE_HORIZONTAL_CARDS := {
+	"main_scheme" : true,
+	"player_scheme" : true,
+	"side_scheme" : true,
+}
+
 const STATS_URI := "http://127.0.0.1"
 const STATS_PORT := 8000
 

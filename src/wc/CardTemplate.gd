@@ -9,12 +9,24 @@ extends Card
 
 func setup() -> void:
 	.setup()
+	_init_groups()	
 	set_card_art()
 
 func set_card_art():
 	var filename = cfc.get_img_filename(get_property("_code"))
 	if (filename):
 		card_front.set_card_art(filename)
+
+
+func _init_groups() -> void :
+	var type_code = properties.get("type_code", "")
+	
+	var groups:Array = CFConst.TYPES_TO_GROUPS.get(type_code, [])
+	
+	for group in groups:
+		self.add_to_group(group)
+		
+		
 		
 		
 # A signal for whenever the player clicks on a card

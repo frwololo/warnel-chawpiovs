@@ -78,11 +78,18 @@ func load_card_definitions() -> Dictionary:
 			if not card_data.has("Tags"):
 				card_data["Tags"] = []			
 
+			var card_type:String = card_data[CardConfig.SCENE_PROPERTY]
+			
+			#enriching data
+			var lc_card_type = card_type.to_lower()
+			var force_horizontal = CFConst.FORCE_HORIZONTAL_CARDS.get(lc_card_type, false)
+			card_data["horizontal"] = force_horizontal
+
 			#TODO 2024/10/30 is this error new?
 			if not card_data.has("card_set_name"):
 				card_data["card_set_name"] = "ERROR"	
 				
-			var card_type = card_data[CardConfig.SCENE_PROPERTY]
+
 			var set_name = card_data["card_set_name"]
 			var lc_set_name = set_name.to_lower()
 			

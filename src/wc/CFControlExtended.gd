@@ -83,7 +83,7 @@ func load_card_definitions() -> Dictionary:
 			#enriching data
 			var lc_card_type = card_type.to_lower()
 			var force_horizontal = CFConst.FORCE_HORIZONTAL_CARDS.get(lc_card_type, false)
-			card_data["horizontal"] = force_horizontal
+			card_data["_horizontal"] = force_horizontal
 
 			#TODO 2024/10/30 is this error new?
 			if not card_data.has("card_set_name"):

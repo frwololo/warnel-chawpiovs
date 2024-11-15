@@ -107,8 +107,8 @@ func get_all_cards() -> Array:
 	var cardsArray := []
 	for obj in get_children():
 		if obj as Card: cardsArray.append(obj)
-		if obj as WCHeroZone: cardsArray.append(obj.get_all_cards())
-	cardsArray.append_array($VillainZone.get_all_cards())
+		if obj as WCHeroZone: cardsArray += obj.get_all_cards()
+	cardsArray += $VillainZone.get_all_cards()
 	return(cardsArray)
 
 
@@ -189,13 +189,8 @@ func shuffle_decks() -> void:
 		pile.shuffle_cards()
 	
 func draw_starting_hand() -> void:
-	for i in range(gameData.get_team_size()):
-		var hero_deck_data: HeroDeckData = gameData.get_team_member(i+1)["hero_data"] #TODO actually load my player's stuff
-		var alter_ego_data = hero_deck_data.get_alter_ego_card_data()
-		var hand_size = alter_ego_data["hand_size"]
-		var pile = cfc.NMAP["deck" + str(i+1)]
-		for j in range(hand_size):
-			cfc.NMAP["hand"].draw_card (pile)
+	gameData.draw_all_players()
+
 
 func draw_cheat(cardName : String) -> void:
 	var card = cfc.instance_card(cardName)

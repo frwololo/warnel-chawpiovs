@@ -171,7 +171,7 @@ func focus_card(card: Card, show_preview := true) -> void:
 		$VBC.rect_size = Vector2(0,0)
 		
 		#handle rendering horizontal cards
-		if (card.properties.get("horizontal", 0)):
+		if (card.properties.get("_horizontal", 0)):
 			$VBC.rect_rotation = 90
 		else:
 			$VBC.rect_rotation = 0

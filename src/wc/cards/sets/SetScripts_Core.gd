@@ -90,7 +90,7 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 		
 		script = WCUtils.merge_dict(script,scheme_comes_to_play, true)
 
-	if card.get("horizontal", false):
+	if card.get("_horizontal", false):
 		var horizontal_comes_to_play: Dictionary = { 
 			"card_moved_to_board": {
 				"trigger": "self",

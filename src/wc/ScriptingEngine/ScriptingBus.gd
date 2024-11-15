@@ -12,14 +12,16 @@ signal card_removed(card,details)
 signal selection_window_opened(selection_window, details)
 # warning-ignore:unused_signal
 signal card_selected(selection_window, details)
-# warning-ignore:unused_signal
-signal player_turn_started(turn)
-# warning-ignore:unused_signal
-signal player_turn_ended(turn)
-# warning-ignore:unused_signal
-signal enemy_turn_started(turn)
-# warning-ignore:unused_signal
-signal enemy_turn_ended(turn)
 
 # warning-ignore:unused_signal
 signal setup_complete()
+
+#Game Phases
+# warning-ignore:unused_signal
+signal step_about_to_start(details)
+# warning-ignore:unused_signal
+signal step_started(details)
+# warning-ignore:unused_signal
+signal step_about_to_end(details)
+# warning-ignore:unused_signal
+signal step_ended(details)

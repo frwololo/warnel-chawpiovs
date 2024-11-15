@@ -125,6 +125,24 @@ func _on_Card_gui_input(event) -> void:
 			_process_more_card_inputs(event)
 		
 
+# Game specific code and/or shortcuts
+func readyme(toggle := false,
+			start_tween := true,
+			check := false,
+			tags := ["Manual"]) :
+	var retcode = set_card_rotation(0, toggle, start_tween, check, tags)
+	return retcode
+	
+func exhaustme(toggle := false,
+			start_tween := true,
+			check := false,
+			tags := ["Manual"]) :
+	var retcode = set_card_rotation(90, toggle, start_tween, check, tags)
+	return retcode	
+	
+func add_threat(threat : int):
+	tokens.mod_token("threat",threat)	
+
 # This function can be overriden by any class extending Card, in order to provide
 # a way of running special functions on an extended scripting engine.
 #

@@ -141,16 +141,20 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 					{
 						"name": "defend",
 						"subject": "boardseek",	
-						#"is_cost": true,
+						"is_cost": true,
 						"subject_count": "all",
 						SP.KEY_NEEDS_SELECTION: true,
 						SP.KEY_SELECTION_COUNT: 1,
 						SP.KEY_SELECTION_TYPE: "max",
-						SP.KEY_SELECTION_OPTIONAL: false,
+						SP.KEY_SELECTION_OPTIONAL: true,
 						"filter_state_seek": [{
 							"filter_group": "defenders"
 						},],
-					}
+					},
+					{
+						"name": "undefend",	
+						"is_else": true,
+					}					
 				]
 			}
 		}

@@ -15,11 +15,7 @@ func _ready():
 	if (not my_id):
 		print_debug("WCHeroZone: error, called ready before id set")
 		return	
-	hero_deck_data = gameData.get_team_member(my_id)["hero_data"]
-	var ckey = cfc.idx_card_id_to_name[hero_deck_data.hero_id]
-	var card = cfc.instance_card(ckey)
-	card.set_is_faceup(true)
-	row2.add_child(card)
+	
 
 func set_player(id:int):
 	my_id = id
@@ -31,11 +27,29 @@ func set_player(id:int):
 	$Row4/ControlDeck/Deck.name = deck_name
 	$Row4/ControlDiscard/Discard.name = discard_name
 
+func load_hero():
+	hero_deck_data = gameData.get_team_member(my_id)["hero_data"]
+	var ckey = cfc.idx_card_id_to_name[hero_deck_data.hero_id]
+	var card = cfc.instance_card(ckey)
+	
+	#TODO better
+	cfc.NMAP["deck" + str(my_id)].add_child(card)
+	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid("identity")
+	var slot: BoardPlacementSlot
+	if grid:
+		slot = grid.find_available_slot()
+		if slot:
+			card.move_to(cfc.NMAP.board, -1, slot)		
+	card.set_is_faceup(true)
+		
+
 func get_player():
 	return my_id
 
 func get_hero_card() -> Card:
-	var result:Card = row2.get_child(0)
+	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid("identity")
+	var slot: BoardPlacementSlot = grid.get_slot(0)	
+	var result:Card = slot.occupying_card
 	return result
 	
 # Returns an array with all children nodes which are of Card class

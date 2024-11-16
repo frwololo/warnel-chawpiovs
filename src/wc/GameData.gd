@@ -132,7 +132,7 @@ func enemy_activates() -> int :
 	var enemy:Card = attackers.pop_front()
 	if (enemy):
 		var sceng = enemy.execute_scripts(enemy, "automated_enemy_attack")
-		while sceng is GDScriptFunctionState:
+		if sceng is GDScriptFunctionState:
 			sceng = yield(sceng, "completed")
 		return CFConst.ReturnCode.OK
 	return CFConst.ReturnCode.FAILED

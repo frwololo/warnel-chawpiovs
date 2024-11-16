@@ -56,7 +56,8 @@ func initiate_selection(
 		card_array: Array,
 		_selection_count := 0,
 		_selection_type := 'min',
-		_selection_optional := false) -> void:
+		_selection_optional := false,
+		_script: ScriptObject = null) -> void:
 	if OS.has_feature("debug") and not cfc.is_testing:
 		print("DEBUG INFO:SelectionWindow: Initiated Selection")
 	# We don't allow the player to close the popup with the close button
@@ -109,6 +110,11 @@ func initiate_selection(
 			window_title = "Select exactly " + str(selection_count) + " cards."
 		"display":
 			window_title = "Press OK to continue"
+	
+	if (_script):
+		window_title = cfc.enrich_window_title(_script, window_title)
+			
+	
 	for c in _card_grid.get_children():
 		c.queue_free()
 	# We use this to quickly store a copy of a card object to use to get

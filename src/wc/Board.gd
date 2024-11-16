@@ -45,6 +45,7 @@ const GRID_SETUP := {
 
 var heroZones: Dictionary = {}
 
+
 func _init():
 	init_hero_zones()
 	
@@ -99,6 +100,7 @@ func _ready() -> void:
 
 	#Game setup - Todo move somewhere else ?
 	load_cards()
+	load_heroes()
 	shuffle_decks()
 	#Need to wait after shuffling decks
 	for i in range(gameData.get_team_size()):
@@ -115,7 +117,11 @@ func _ready() -> void:
 	draw_cheat("Mockingbird")
 	draw_cheat("Swinging Web Kick")
 
-
+func load_heroes():
+	var hero_count: int = gameData.get_team_size()
+	for i in range (hero_count): 
+		heroZones[i+1].load_hero()
+		
 
 func init_hero_zones():
 	var hero_count: int = gameData.get_team_size()
@@ -133,6 +139,7 @@ func get_all_cards() -> Array:
 		if obj as Card: cardsArray.append(obj)
 		if obj as WCHeroZone: cardsArray += obj.get_all_cards()
 	cardsArray += $VillainZone.get_all_cards()
+
 	return(cardsArray)
 
 

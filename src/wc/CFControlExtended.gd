@@ -223,6 +223,17 @@ func load_script_definitions() -> void:
 	emit_signal("scripts_loaded")
 	scripts_loading = false	
 
+func enrich_window_title(script:ScriptObject, title:String) -> String:
+	var result:String = title
+	var script_definitions = script.script_definition
+	var script_name = script_definitions.name
+	var owner = script.owner
+	
+	match script_name:
+		"defend":
+			result = owner.name + " attacks. Choose at most 1 defender, cancel for undefended" 
+
+	return result;
 
 #A poor man's mechanism to pass parameters betwen scenes
 func set_next_scene_params(params : Dictionary):
@@ -255,6 +266,7 @@ func get_hero_portrait(card_id) -> Image:
 	var area = 	Rect2 ( 60, 40, 170, 180 )
 	var sub_img = img_data.get_rect(area) #Todo more flexible?
 	return sub_img	
+
 
 #
 # Network related functions

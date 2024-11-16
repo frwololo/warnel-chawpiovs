@@ -419,6 +419,9 @@ func _exit_tree():
 	if script_load_thread:
 		script_load_thread.wait_to_finish()
 
+#A function to override as needed
+func enrich_window_title(script:ScriptObject, title:String) -> String:
+	return title
 
 # The SignalPropagator is responsible for collecting all card signals
 # and asking all cards to check if there's any automation they need to perform

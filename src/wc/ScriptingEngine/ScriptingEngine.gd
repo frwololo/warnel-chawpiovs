@@ -144,6 +144,9 @@ func defend(script: ScriptTask) -> int:
 
 	script.script_definition["amount"] = amount
 	return receive_damage(script)
+
+func undefend(script: ScriptTask) -> int:
+	return defend(script)
 	
 func consequential_damage(script: ScriptTask) -> int:	
 	var retcode: int = CFConst.ReturnCode.OK

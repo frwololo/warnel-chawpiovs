@@ -79,37 +79,28 @@ func _step_started(
 			pass
 		PHASE_STEP.PLAYER_DISCARD:
 			_player_discard()
-			request_next_phase()
 		PHASE_STEP.PLAYER_DRAW:
 			_player_draw()			
-			request_next_phase()
 		PHASE_STEP.PLAYER_READY:
-			_player_ready()			
-			request_next_phase()			
+			_player_ready()						
 		PHASE_STEP.PLAYER_END:
 			request_next_phase()
 		PHASE_STEP.VILLAIN_THREAT:
 			_villain_threat()
-			request_next_phase()
 		PHASE_STEP.VILLAIN_ACTIVATES:
-			_villain_activates()
-			request_next_phase()			
+			_villain_activates()			
 		PHASE_STEP.VILLAIN_MINIONS_ACTIVATE:
-			_minions_activate()
-			request_next_phase()				
+			_minions_activate()				
 		PHASE_STEP.VILLAIN_DEAL_ENCOUNTER:
-			_deal_encounters()
-			request_next_phase()			
+			_deal_encounters()			
 		PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER:
-			_reveal_encounters()
-			request_next_phase()			
+			_reveal_encounters()			
 		PHASE_STEP.VILLAIN_PASS_PLAYER_TOKEN:
 			request_next_phase()
 		PHASE_STEP.VILLAIN_END:
 			request_next_phase()
 		PHASE_STEP.ROUND_END:
 			_round_end()
-			request_next_phase()
 	return 0
 	
 func request_next_phase():
@@ -126,20 +117,22 @@ func request_next_phase():
 	update_text()
 	
 func _player_discard():
-	#TODO
+	request_next_phase()
 	pass
 
 func _player_draw():
 	gameData.draw_all_players()
-	#TODO wait until cards drawn
+	request_next_phase()
 	pass	
 	
 func _player_ready():
 	gameData.ready_all_player_cards()
+	request_next_phase()	
 	pass	
 	
 func _villain_threat():
 	gameData.villain_threat()
+	request_next_phase()
 	pass	
 
 func _after_villain_threat():
@@ -148,6 +141,7 @@ func _after_villain_threat():
 	
 func _villain_activates():
 	gameData.enemy_activates()
+	request_next_phase()
 	pass	
 	
 func _minions_activate():
@@ -156,19 +150,23 @@ func _minions_activate():
 	var activated_ok = CFConst.ReturnCode.OK 
 	while activated_ok == CFConst.ReturnCode.OK:
 		activated_ok = gameData.enemy_activates()
-		while activated_ok is GDScriptFunctionState:
+		if activated_ok is GDScriptFunctionState:
 			activated_ok = yield(activated_ok, "completed")
+	request_next_phase()
 	pass					
 
 func _deal_encounters():
 	gameData.deal_encounters()
 	yield(get_tree().create_timer(2), "timeout")
+	request_next_phase()
 	pass
 	
 func _reveal_encounters():
 	gameData.reveal_encounters()
+	request_next_phase()
 	pass	
 
 func _round_end():
 	gameData.end_round()
+	request_next_phase()	
 	pass

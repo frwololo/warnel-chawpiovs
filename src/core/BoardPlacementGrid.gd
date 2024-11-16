@@ -81,6 +81,13 @@ func find_available_slot() -> BoardPlacementSlot:
 func get_all_slots() -> Array:
 	return($GridContainer.get_children())
 
+func get_all_cards() -> Array:
+	var results:Array = []
+	var slots:Array = get_all_slots()
+	for slot in slots:
+		var card = slot.occupying_card
+		if card : results.append(card)
+	return results
 
 # Returns the amount of BoardPlacementSlot contained.
 func get_slot_count() -> int:

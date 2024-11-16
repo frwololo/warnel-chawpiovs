@@ -20,6 +20,7 @@ var scenario:ScenarioDeckData
 var current_hero_id := 1
 
 var _villain_current_hero_target :=1
+var attackers:Array = []
 
 func _init():
 	scenario = ScenarioDeckData.new()
@@ -111,16 +112,30 @@ func _find_main_scheme() :
 func end_round():
 	_villain_current_hero_target = 1
 
+func villain_init_attackers():
+	attackers = []
+	var current_target = _villain_current_hero_target
+	#TODO per player
+	attackers.append(get_villain())
+	attackers += get_minions_engaged_with_player(current_target)
+	var temp = attackers.size()
+	temp = 0
+
 func villain_next_target() -> int:
 	_villain_current_hero_target += 1
 	if _villain_current_hero_target > get_team_size():
 		return 0
 	return 	_villain_current_hero_target
 
-func villain_activates():
+func enemy_activates() -> int :
 	var target_id = _villain_current_hero_target
-	var villain:Card = get_villain()
-	villain.execute_scripts(villain, "automated_villain_attack")
+	var enemy:Card = attackers.pop_front()
+	if (enemy):
+		var sceng = enemy.execute_scripts(enemy, "automated_enemy_attack")
+		while sceng is GDScriptFunctionState:
+			sceng = yield(sceng, "completed")
+		return CFConst.ReturnCode.OK
+	return CFConst.ReturnCode.FAILED
 	
 func villain_threat():
 	var scheme:Card = _find_main_scheme()
@@ -178,6 +193,13 @@ func get_villain() -> Card :
 		var slot: BoardPlacementSlot = grid.get_slot(0)
 		return slot.occupying_card
 	return null
+	
+func get_minions_engaged_with_player(player_id:int):
+	var results = []
+	var minionsGrid:BoardPlacementGrid = cfc.NMAP.board.get_grid("enemies") #TODO per player
+	if minionsGrid:
+		results = minionsGrid.get_all_cards()
+	return results
 	
 #Returns Hero currently being targeted by the villain and his minions	
 func get_current_target_hero() -> Card:

@@ -54,6 +54,7 @@ func update_text():
 func _ready():
 	self.connect("pressed", self, "_button_pressed")
 	scripting_bus.connect("step_started", self, "_step_started")
+	scripting_bus.connect("step_ended", self, "_step_ended")
 	update_text()
 
 #TODO - Actually verify with server what happens:
@@ -62,6 +63,13 @@ func _ready():
 #- Update information
 func _button_pressed():
 	request_next_phase()
+
+func _step_ended(	
+		trigger_details: Dictionary = {}):
+	var step = trigger_details["step"]
+	match step:
+		PHASE_STEP.VILLAIN_THREAT:
+			_after_villain_threat()
 
 func _step_started(	
 		trigger_details: Dictionary = {}):
@@ -133,13 +141,23 @@ func _player_ready():
 func _villain_threat():
 	gameData.villain_threat()
 	pass	
+
+func _after_villain_threat():
+	gameData.villain_init_attackers()
+	pass
 	
 func _villain_activates():
-	gameData.villain_activates()
+	gameData.enemy_activates()
 	pass	
 	
 func _minions_activate():
-	#TODO
+	while cfc.game_paused:
+		yield(get_tree().create_timer(0.05), "timeout")	
+	var activated_ok = CFConst.ReturnCode.OK 
+	while activated_ok == CFConst.ReturnCode.OK:
+		activated_ok = gameData.enemy_activates()
+		while activated_ok is GDScriptFunctionState:
+			activated_ok = yield(activated_ok, "completed")
 	pass					
 
 func _deal_encounters():

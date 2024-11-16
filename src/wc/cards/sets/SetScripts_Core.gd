@@ -134,9 +134,9 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 		}		
 		script = WCUtils.merge_dict(script,ally_actions, true)
 	
-	if type_code == "villain" :
+	if type_code == "villain" or type_code == "minion":
 		var villain_attack: Dictionary = { 
-			"automated_villain_attack": {
+			"automated_enemy_attack": {
 				"board": [
 					{
 						"name": "defend",

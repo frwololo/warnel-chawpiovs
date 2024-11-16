@@ -151,7 +151,7 @@ func add_threat(threat : int):
 
 func common_pre_execution_scripts(_trigger: String, _trigger_details: Dictionary) -> void:
 	match _trigger:
-		"automated_villain_attack":
+		"automated_enemy_attack":
 			gameData.compute_potential_defenders()
 
 func can_defend():

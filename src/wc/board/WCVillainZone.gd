@@ -52,7 +52,8 @@ func load_scenario():
 		card._determine_idle_state()
 		
 	load_villain()
-	load_scheme()	
+	load_scheme()
+	shuffle_deck()
 	
 func load_villain():	
 	var villain_data = scenario_data.villains[0]
@@ -75,7 +76,7 @@ func load_scheme():
 	var scheme_data = scenario_data.schemes[0]
 	var ckey = scheme_data["Name"] #TODO we have name and "Name" which is a problem here...
 	var card = cfc.instance_card(ckey)
-	card.set_is_faceup(true)	
+	#card.set_is_faceup(true)	
 	#TODO cleaner way to add the villain there?
 	cfc.NMAP["deck_villain"].add_child(card)
 	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid("schemes")
@@ -85,3 +86,10 @@ func load_scheme():
 		if slot:
 			card.move_to(cfc.NMAP.board, -1, slot)		
 	pass
+
+
+func shuffle_deck() -> void:
+	var pile = cfc.NMAP["deck_villain"]
+	while pile.are_cards_still_animating():
+		yield(pile.get_tree().create_timer(0.2), "timeout")
+	pile.shuffle_cards()

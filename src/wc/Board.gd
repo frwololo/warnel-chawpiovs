@@ -3,6 +3,8 @@ extends Board
 
 var heroZone = preload("res://src/wc/board/WCHeroZone.tscn")
 var basicGrid = preload("res://src/wc/grids/BasicGrid.tscn")
+var basicPile = preload("res://src/core/Pile.tscn")
+
 onready var villain := $VillainZone
 
 const GRID_SETUP := {
@@ -18,8 +20,13 @@ const GRID_SETUP := {
 		"x" : 1500,
 		"y" : 0,
 	},
-	"enemies" : {
+	"encounters_facedown" :{
 		"x" : 500,
+		"y" : 200,
+		"type" : "pile"
+	},
+	"enemies" : {
+		"x" : 800,
 		"y" : 200,
 	},
 	"identity" : {
@@ -61,19 +68,32 @@ func _ready() -> void:
 	# warning-ignore:return_value_discarded
 	$DeckBuilderPopup.connect('popup_hide', self, '_on_DeckBuilder_hide')	
 	
+	
 	for grid_name in GRID_SETUP.keys():
 		var grid_info = GRID_SETUP[grid_name]
-		var grid_scene = grid_info.get("grid_scene", basicGrid)
-		var grid: BoardPlacementGrid = grid_scene.instance()
-		grid.add_to_group("placement_grid")
-		# A small delay to allow the instance to be added
-		add_child(grid)
-		# If the grid name is empty, we use the predefined names in the scene.
-		if grid_name != "":
-			grid.name = grid_name
-			grid.name_label.text = grid_name
-		grid.rect_position = Vector2(grid_info.x, grid_info.y)
-		grid.auto_extend = true
+		if "pile" == grid_info.get("type", ""):
+			var scene = grid_info.get("scene", basicPile)
+			var pile: Pile = scene.instance()
+			pile.add_to_group("piles")
+			pile.name = grid_name
+			pile.set_pile_name(grid_name)
+			pile.set_position(Vector2(grid_info["x"], grid_info["y"]))
+			pile.set_global_position(Vector2(grid_info["x"], grid_info["y"]))
+			pile.scale = Vector2(0.5, 0.5)
+			pile.faceup_cards = false
+			add_child(pile)
+		else:
+			var grid_scene = grid_info.get("scene", basicGrid)
+			var grid: BoardPlacementGrid = grid_scene.instance()
+			grid.add_to_group("placement_grid")
+			# A small delay to allow the instance to be added
+			add_child(grid)
+			# If the grid name is empty, we use the predefined names in the scene.
+			if grid_name != "":
+				grid.name = grid_name
+				grid.name_label.text = grid_name
+			grid.rect_position = Vector2(grid_info["x"], grid_info["y"])
+			grid.auto_extend = true
 
 	#Game setup - Todo move somewhere else ?
 	load_cards()
@@ -92,6 +112,7 @@ func _ready() -> void:
 	#Tests
 	draw_cheat("Mockingbird")
 	draw_cheat("Swinging Web Kick")
+
 
 
 func init_hero_zones():

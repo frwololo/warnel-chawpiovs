@@ -38,9 +38,6 @@ __meta__ = {
 self_modulate = Color( 1, 1, 1, 0.5 )
 mouse_filter = 1
 custom_styles/panel = SubResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Highlight" parent="Control" instance=ExtResource( 3 )]
 

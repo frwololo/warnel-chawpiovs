@@ -258,6 +258,18 @@ const FORCE_HORIZONTAL_CARDS := {
 	"side_scheme" : true,
 }
 
+const TYPECODE_TO_PILE := {
+	"event" : "discard{current_hero}"
+}
+
+const TYPECODE_TO_GRID := {
+	"ally" : "allies",
+	"upgrade" : "upgrade_support",
+	"support" : "upgrade_support",
+	"minion" : "enemies",
+	"side_scheme" : "schemes",
+}
+
 const STATS_URI := "http://127.0.0.1"
 const STATS_PORT := 8000
 

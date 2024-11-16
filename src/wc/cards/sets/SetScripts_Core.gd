@@ -1,14 +1,6 @@
 extends Reference
 
-const TYPECODE_TO_PILE := {
-	"event" : "discard{current_hero}"
-}
 
-const TYPECODE_TO_GRID := {
-	"ally" : "allies",
-	"upgrade" : "upgrade_support",
-	"support" : "upgrade_support",
-}
 
 # This fuction merges text files scripts for a given card 
 # with default rules for the game (rules that apply to all cards)
@@ -20,17 +12,17 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 	
 	#Grid position depending on card type
 	var type_code:String = card["type_code"] if (card && card.has("type_code")) else ""
-	var grid = TYPECODE_TO_GRID.get(type_code, "")
+	var grid = CFConst.TYPECODE_TO_GRID.get(type_code, "")
 	var move_after_play : Dictionary = {
 		"name": "move_card_to_board",
 		"subject": "self",
 		"grid_name" : grid
 	}	
-	if TYPECODE_TO_PILE.has(type_code):
+	if CFConst.TYPECODE_TO_PILE.has(type_code):
 		move_after_play  = {
 		"name": "move_card_to_container",
 		"subject": "self",
-		"dest_container" : TYPECODE_TO_PILE[type_code]
+		"dest_container" : CFConst.TYPECODE_TO_PILE[type_code]
 	}
 
 	
@@ -78,11 +70,6 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 						"subject": "self",
 						"modification": base_threat,
 						"token_name":  "threat",
-					},
-					{
-						"name": "rotate_card",
-						"subject": "self",
-						"degrees": 90,
 					},					
 				]
 			}

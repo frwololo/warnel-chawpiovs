@@ -140,7 +140,8 @@ func _minions_activate():
 	pass					
 
 func _deal_encounters():
-	#TODO might need to create a new pile of facedown cards
+	gameData.deal_encounters()
+	yield(get_tree().create_timer(2), "timeout")
 	pass
 	
 func _reveal_encounters():

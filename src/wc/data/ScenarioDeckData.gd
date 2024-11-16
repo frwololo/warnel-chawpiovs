@@ -65,8 +65,9 @@ func get_encounter_deck():
 		var encounter_set : Array = cfc.get_encounter_cards(encounter_set_name)
 		for card_data in encounter_set:
 			var card_type = card_data[CardConfig.SCENE_PROPERTY]
-			if (card_type != "Main_Scheme" and card_type != "Villain"): #skip villain and schemes from the deck
-				encounter_deck.push_back(card_data)
+			if (card_type != "Main_scheme" and card_type != "Villain"): #skip villain and schemes from the deck
+				if (card_type == "Minion" or card_type == "Side_scheme"): #TODO debug
+					encounter_deck.push_back(card_data)
 				
 	#add hero obligations
 	#for all heroes in game data, add hero's obligation

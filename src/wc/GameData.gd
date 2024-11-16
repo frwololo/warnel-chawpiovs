@@ -117,19 +117,41 @@ func villain_threat():
 	scheme.add_threat(escalation_threat)
 
 #TODO need something much more advanced here, per player, etc...
-func reveal_encounters():
+func deal_encounters():
 	var villain_deck:Pile = cfc.NMAP["deck_villain"]
 	var encounter:Card = villain_deck.get_top_card()
 	
-	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid("enemies")
-	var slot: BoardPlacementSlot
+	var destination  = cfc.NMAP["encounters_facedown"] #TODO per player 
+	encounter.move_to(destination)
+
+	
+
+#TODO need something much more advanced here, per player, etc...
+func reveal_encounters():
+	var facedown_encounters:Pile = cfc.NMAP["encounters_facedown"]
+	var encounter:Card = facedown_encounters.get_top_card()
+
+	while Card.CardState.MOVING_TO_CONTAINER == encounter.state:
+		yield(get_tree().create_timer(0.05), "timeout")
+	
+	var typecode = encounter.properties.get("type_code", "")
+	var grid_name = CFConst.TYPECODE_TO_GRID.get(typecode, "villain_misc")
+	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(grid_name)
+	
 	if grid:
-		slot = grid.find_available_slot()
+		var slot: BoardPlacementSlot = grid.find_available_slot()
 		if slot:
 			#Needs a bit of a timer to ensure the slot gets created	
+			
 			yield(get_tree().create_timer(0.05), "timeout")
-			encounter.move_to(cfc.NMAP.board, -1, slot)	
-			encounter.set_is_faceup(true)
+			# How to get rid of this mess?
+			# We have to flip the card in order for the script to execute
+			# But in the main scheme setup this works flawlessly...
+			encounter.set_is_faceup(true,true)
+			encounter.move_to(cfc.NMAP.board, -1, slot)
+			#encounter.set_is_faceup(false, true)
+			#encounter.set_is_faceup(true)
+			
 			
 
 	pass

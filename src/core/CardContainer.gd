@@ -319,10 +319,13 @@ func translate_card_index_to_node_index(index: int) -> int:
 # Adjusts the placement of the node, according to the placement var
 # So that it always stays in the same approximate location
 func re_place():
-		var place := Vector2(0,0)
+		var place := Vector2(0,0)	
+
 		# Here we match the adjust the default position based on the anchor
 		# First we adjust the x position
 		match placement:
+			Anchors.NONE:
+				place = position
 			# Left position always start from x == 0,
 			# which means left side of the viewport
 			Anchors.TOP_LEFT, Anchors.LEFT_MIDDLE, Anchors.BOTTOM_LEFT:

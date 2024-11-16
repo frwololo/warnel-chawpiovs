@@ -131,8 +131,29 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 					],
 				}
 			}
-		}
-		
+		}		
 		script = WCUtils.merge_dict(script,ally_actions, true)
+	
+	if type_code == "villain" :
+		var villain_attack: Dictionary = { 
+			"automated_villain_attack": {
+				"board": [
+					{
+						"name": "defend",
+						"subject": "boardseek",	
+						#"is_cost": true,
+						"subject_count": "all",
+						SP.KEY_NEEDS_SELECTION: true,
+						SP.KEY_SELECTION_COUNT: 1,
+						SP.KEY_SELECTION_TYPE: "max",
+						SP.KEY_SELECTION_OPTIONAL: false,
+						"filter_state_seek": [{
+							"filter_group": "defenders"
+						},],
+					}
+				]
+			}
+		}
+		script = WCUtils.merge_dict(script,villain_attack, true)	
 	
 	return script

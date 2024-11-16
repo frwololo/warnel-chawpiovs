@@ -139,9 +139,28 @@ func exhaustme(toggle := false,
 			tags := ["Manual"]) :
 	var retcode = set_card_rotation(90, toggle, start_tween, check, tags)
 	return retcode	
+
+func is_ready() :
+	return get_card_rotation() == 0
+
+func is_exhausted():
+	return (not is_ready())	
 	
 func add_threat(threat : int):
 	tokens.mod_token("threat",threat)	
+
+func common_pre_execution_scripts(_trigger: String, _trigger_details: Dictionary) -> void:
+	match _trigger:
+		"automated_villain_attack":
+			gameData.compute_potential_defenders()
+
+func can_defend():
+	if is_exhausted() : return false
+
+	var type_code = properties.type_code
+	if type_code != "hero" and type_code != "ally": return false
+	
+	return true
 
 # This function can be overriden by any class extending Card, in order to provide
 # a way of running special functions on an extended scripting engine.

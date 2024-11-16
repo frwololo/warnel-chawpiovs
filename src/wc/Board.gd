@@ -43,6 +43,8 @@ const GRID_SETUP := {
 	},									
 }
 
+var heroZones: Dictionary = {}
+
 func _init():
 	init_hero_zones()
 	
@@ -121,7 +123,8 @@ func init_hero_zones():
 		var new_hero_zone = heroZone.instance()
 		add_child(new_hero_zone)
 		new_hero_zone.set_player(i+1)
-		new_hero_zone.rect_position = Vector2(500, 600) #TODO better than this		
+		new_hero_zone.rect_position = Vector2(500, 600) #TODO better than this
+		heroZones[i+1] = new_hero_zone		
 
 # Returns an array with all children nodes which are of Card class
 func get_all_cards() -> Array:
@@ -233,3 +236,5 @@ func _on_DeckBuilder_hide() -> void:
 func _on_BackToMain_pressed() -> void:
 	cfc.quit_game()
 	get_tree().change_scene("res://src/wc/MainMenu.tscn")
+
+

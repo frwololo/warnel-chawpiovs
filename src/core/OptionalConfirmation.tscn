@@ -31,14 +31,19 @@ __meta__ = {
 }
 
 [node name="HorizontalHighlights" type="Panel" parent="."]
-margin_right = 40.0
-margin_bottom = 40.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 192.0
+margin_bottom = 34.0
 mouse_filter = 2
 custom_styles/panel = SubResource( 1 )
 
 [node name="VecticalHighlights" type="Panel" parent="."]
-margin_right = 40.0
-margin_bottom = 40.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 192.0
+margin_bottom = 34.0
 mouse_filter = 2
 custom_styles/panel = SubResource( 2 )
+
 [connection signal="confirmed" from="." to="." method="_on_OptionalConfirmation_confirmed"]

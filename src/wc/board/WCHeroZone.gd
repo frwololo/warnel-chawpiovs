@@ -33,6 +33,10 @@ func set_player(id:int):
 
 func get_player():
 	return my_id
+
+func get_hero_card() -> Card:
+	var result:Card = row2.get_child(0)
+	return result
 	
 # Returns an array with all children nodes which are of Card class
 func get_all_cards() -> Array:

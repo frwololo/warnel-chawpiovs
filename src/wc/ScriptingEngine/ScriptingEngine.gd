@@ -118,6 +118,32 @@ func receive_damage(script: ScriptTask) -> int:
 
 	return retcode
 				
+
+func defend(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		for card in script.subjects:
+			if (not card.can_defend()):
+				return CFConst.ReturnCode.FAILED
+		return retcode
+		
+	var attacker = script.owner
+	var amount = attacker.properties["attack"]
+	var defender = null
+	if (not script.subjects.empty()):
+		defender = script.subjects[0]
+	
+	if defender:
+		defender.exhaustme()
+		var damage_reduction = defender.properties.get("defense", 0)
+		amount = max(amount-damage_reduction, 0)
+	else:
+		var my_hero:Card = gameData.get_current_target_hero()
+		script.subjects.append(my_hero)
+		#TODO add variable stating attack was undefended
+
+	script.script_definition["amount"] = amount
+	return receive_damage(script)
 	
 func consequential_damage(script: ScriptTask) -> int:	
 	var retcode: int = CFConst.ReturnCode.OK

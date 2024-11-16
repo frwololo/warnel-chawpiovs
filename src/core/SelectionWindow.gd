@@ -152,6 +152,9 @@ func initiate_selection(
 		thumbnail_scale = card_sample.thumbnail_scale
 	var popup_size_x = (card_size.x * thumbnail_scale * shown_columns * cfc.curr_scale)\
 			+ _card_grid.get("custom_constants/vseparation") * shown_columns
+			
+	#TODO There is a bug where the ok button doesn't show up if the length is lower than 600 px
+	popup_size_x = max(popup_size_x, 600)		
 	# The height will be automatically adjusted based on the amount of cards
 	rect_size = Vector2(popup_size_x,0)
 	popup_centered_minsize()

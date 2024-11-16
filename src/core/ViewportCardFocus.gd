@@ -229,6 +229,9 @@ func _input(event):
 		img.convert(Image.FORMAT_RGBA8)
 		img.flip_y()
 		img.save_png("user://" + _current_focus_source.canonical_name + ".png")
+		
+	if event.is_action_pressed("toggle_fullscreen"):
+		OS.set_window_fullscreen(!OS.window_fullscreen)	
 
 
 # Takes care to resize the child viewport, when the main viewport is resized

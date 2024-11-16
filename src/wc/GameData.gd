@@ -16,11 +16,13 @@ var team := {}
 
 var scenario:ScenarioDeckData
 
-func _init():
-	scenario = ScenarioDeckData.new()
-
 # Hero currently playing. We might need another one for interruptions
 var current_hero_id := 1
+
+var _villain_current_hero_target :=1
+
+func _init():
+	scenario = ScenarioDeckData.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -105,6 +107,20 @@ func _find_main_scheme() :
 		if "main_scheme" == card.properties.get("type_code", "false"):
 			return card
 	return null
+
+func end_round():
+	_villain_current_hero_target = 1
+
+func villain_next_target() -> int:
+	_villain_current_hero_target += 1
+	if _villain_current_hero_target > get_team_size():
+		return 0
+	return 	_villain_current_hero_target
+
+func villain_activates():
+	var target_id = _villain_current_hero_target
+	var villain:Card = get_villain()
+	villain.execute_scripts(villain, "automated_villain_attack")
 	
 func villain_threat():
 	var scheme:Card = _find_main_scheme()
@@ -155,3 +171,24 @@ func reveal_encounters():
 			
 
 	pass
+
+func get_villain() -> Card :
+	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid("villain")
+	if grid:
+		var slot: BoardPlacementSlot = grid.get_slot(0)
+		return slot.occupying_card
+	return null
+	
+#Returns Hero currently being targeted by the villain and his minions	
+func get_current_target_hero() -> Card:
+	var board:Board = cfc.NMAP.board
+	var heroZone:WCHeroZone = board.heroZones[_villain_current_hero_target]
+	return heroZone.get_hero_card()
+
+func compute_potential_defenders():
+	var board:Board = cfc.NMAP.board
+	for c in board.get_all_cards():
+		if c.can_defend():
+			c.add_to_group("defenders")
+		else:
+			c.remove_from_group("defenders")	

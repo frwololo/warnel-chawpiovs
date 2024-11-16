@@ -249,7 +249,9 @@ const TYPES_TO_GROUPS := {
 	"player_scheme" : ["schemes"],
 	"side_scheme" : ["schemes"],
 	"minion" : ["enemies"],
-	"villain" : ["enemies"]
+	"villain" : ["enemies"],
+	"hero" : ["allies"],
+	"ally" : ["allies"],
 }
 
 const FORCE_HORIZONTAL_CARDS := {

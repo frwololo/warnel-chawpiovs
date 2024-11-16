@@ -100,6 +100,7 @@ func _step_started(
 		PHASE_STEP.VILLAIN_END:
 			request_next_phase()
 		PHASE_STEP.ROUND_END:
+			_round_end()
 			request_next_phase()
 	return 0
 	
@@ -108,6 +109,8 @@ func request_next_phase():
 	scripting_bus.emit_signal("step_ended",  {"step" : current_step})
 	if (current_step == PHASE_STEP.ROUND_END):
 		current_step = PHASE_STEP.PLAYER_TURN
+	elif ((current_step == PHASE_STEP.VILLAIN_MINIONS_ACTIVATE) and gameData.villain_next_target()):
+		current_step = PHASE_STEP.VILLAIN_ACTIVATES
 	else:
 		current_step+=1
 	scripting_bus.emit_signal("step_about_to_start",  {"step" : current_step})
@@ -132,7 +135,7 @@ func _villain_threat():
 	pass	
 	
 func _villain_activates():
-	#TODO
+	gameData.villain_activates()
 	pass	
 	
 func _minions_activate():
@@ -147,3 +150,7 @@ func _deal_encounters():
 func _reveal_encounters():
 	gameData.reveal_encounters()
 	pass	
+
+func _round_end():
+	gameData.end_round()
+	pass

@@ -162,6 +162,20 @@ func can_defend():
 	
 	return true
 
+func die():
+	var type_code = properties.get("type_code", "")
+	match type_code:
+		"hero":
+			gameData.hero_died(self)
+		"ally":
+			move_to(cfc.NMAP["discard1"]) #TODO per hero
+		"minion":
+			move_to(cfc.NMAP["discard_villain"])	
+		"villain":
+			gameData.villain_died(self)
+			
+	return CFConst.ReturnCode.OK		
+
 # This function can be overriden by any class extending Card, in order to provide
 # a way of running special functions on an extended scripting engine.
 #

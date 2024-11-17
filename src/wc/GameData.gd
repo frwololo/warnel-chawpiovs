@@ -214,3 +214,13 @@ func compute_potential_defenders():
 			c.add_to_group("defenders")
 		else:
 			c.remove_from_group("defenders")	
+
+func hero_died(card:Card):
+	#TODO check if other heroes are alive
+	var board:Board = cfc.NMAP.board
+	board.end_game("defeat")
+
+func villain_died(card:Card):
+	#TODO get next villain stage
+	var board:Board = cfc.NMAP.board
+	board.end_game("victory")

@@ -89,15 +89,8 @@ func attack(script: ScriptTask) -> int:
 		var owner_properties = script.owner.properties
 		damage = owner_properties.get("attack", 0)
 	
-	var token_diff = damage
-	
-	for card in script.subjects:
-		var current_tokens = card.tokens.get_token_count(token_name)
-		#if current_tokens - modification < 0:
-		#	token_diff = current_tokens
-		retcode = card.tokens.mod_token(token_name,
-				token_diff,false,costs_dry_run(), tags)
-
+	script.script_definition["amount"] = damage 
+	receive_damage(script)
 	consequential_damage(script)
 
 	return retcode	
@@ -113,6 +106,12 @@ func receive_damage(script: ScriptTask) -> int:
 	for card in script.subjects:
 		retcode = card.tokens.mod_token("damage",
 				amount,false,costs_dry_run(), tags)	
+				
+		var total_damage:int =  card.tokens.get_token_count("damage")
+		var health = card.properties.get("health", 0)
+		
+		if total_damage >= health:
+			card.die()		
 	
 	#TODO face damage consequences e.g. death
 

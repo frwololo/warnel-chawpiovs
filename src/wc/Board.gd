@@ -142,7 +142,26 @@ func get_all_cards() -> Array:
 
 	return(cardsArray)
 
+func _close_game():
+	cfc.quit_game()
+	get_tree().change_scene("res://src/wc/MainMenu.tscn")
+	
+func _retry_game(message:String):
+	#TODO
+	cfc.quit_game()
+	get_tree().change_scene("res://src/wc/MainMenu.tscn")	
 
+func end_game(result:String):
+	cfc.set_game_paused(true)
+	var end_dialog:AcceptDialog = AcceptDialog.new()
+	end_dialog.window_title = result
+	end_dialog.add_button ( "retry", true, "retry")
+	end_dialog.connect("custom_action", self, "_retry_game")
+	end_dialog.connect("confirmed", self, "_close_game")
+	add_child(end_dialog)
+	end_dialog.popup_centered()
+	
+	
 # This function is to avoid relating the logic in the card objects
 # to a node which might not be there in another game
 # You can remove this function and the FancyMovementToggle button

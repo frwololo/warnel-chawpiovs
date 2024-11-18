@@ -1,63 +1,6 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=2 format=2]
 
 [ext_resource path="res://src/wc/board/WCHeroZone.gd" type="Script" id=1]
-[ext_resource path="res://src/wc/Deck.gd" type="Script" id=2]
-[ext_resource path="res://src/wc/Discard.gd" type="Script" id=3]
-[ext_resource path="res://src/core/Pile.tscn" type="PackedScene" id=4]
 
 [node name="HeroZone" type="VBoxContainer"]
 script = ExtResource( 1 )
-
-[node name="Row1" type="HBoxContainer" parent="."]
-margin_right = 304.0
-
-[node name="Row2" type="HBoxContainer" parent="."]
-margin_top = 4.0
-margin_right = 304.0
-margin_bottom = 4.0
-
-[node name="Row3" type="HBoxContainer" parent="."]
-margin_top = 8.0
-margin_right = 304.0
-margin_bottom = 8.0
-
-[node name="Row4" type="HBoxContainer" parent="."]
-margin_top = 12.0
-margin_right = 304.0
-margin_bottom = 222.0
-
-[node name="ControlDiscard" type="Control" parent="Row4"]
-margin_right = 150.0
-margin_bottom = 210.0
-rect_min_size = Vector2( 150, 210 )
-
-[node name="Discard" parent="Row4/ControlDiscard" instance=ExtResource( 4 )]
-script = ExtResource( 3 )
-faceup_cards = true
-
-[node name="Control" parent="Row4/ControlDiscard/Discard" index="0"]
-rect_min_size = Vector2( 150, 210 )
-
-[node name="VBoxContainer" parent="Row4/ControlDiscard/Discard/Control/CenterContainer" index="0"]
-margin_left = 44.0
-margin_right = 106.0
-
-[node name="ControlDeck" type="Control" parent="Row4"]
-margin_left = 154.0
-margin_right = 304.0
-margin_bottom = 210.0
-rect_min_size = Vector2( 150, 210 )
-
-[node name="Deck" parent="Row4/ControlDeck" instance=ExtResource( 4 )]
-position = Vector2( -4, 0 )
-script = ExtResource( 2 )
-
-[node name="Control" parent="Row4/ControlDeck/Deck" index="0"]
-rect_min_size = Vector2( 150, 210 )
-
-[node name="VBoxContainer" parent="Row4/ControlDeck/Deck/Control/CenterContainer" index="0"]
-margin_left = 44.0
-margin_right = 106.0
-
-[editable path="Row4/ControlDiscard/Discard"]
-[editable path="Row4/ControlDeck/Deck"]

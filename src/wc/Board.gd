@@ -19,27 +19,40 @@ const GRID_SETUP := {
 	"villain_misc" : {
 		"x" : 1500,
 		"y" : 0,
-	},
+	}
+}
+const HERO_GRID_SETUP := {
 	"encounters_facedown" :{
-		"x" : 500,
-		"y" : 200,
+		"x" : 0,
+		"y" : 0,
 		"type" : "pile"
 	},
+	"deck" :{
+		"x" : 150,
+		"y" : 400,
+		"type" : "pile"
+	},
+	"discard" :{
+		"x" : 0,
+		"y" : 400,
+		"type" : "pile",
+		"faceup" : true
+	},	
 	"enemies" : {
-		"x" : 800,
-		"y" : 200,
+		"x" : 300,
+		"y" : 00,
 	},
 	"identity" : {
-		"x" : 500,
-		"y" : 400,
+		"x" : 000,
+		"y" : 200,
 	},
 	"allies" : {
-		"x" : 800,
-		"y" : 400,
+		"x" : 300,
+		"y" : 200,
 	},
 	"upgrade_support" : {
-		"x" : 800,
-		"y" : 600,
+		"x" : 300,
+		"y" : 400,
 	},									
 }
 
@@ -91,12 +104,49 @@ func _ready() -> void:
 			grid.add_to_group("placement_grid")
 			# A small delay to allow the instance to be added
 			add_child(grid)
-			# If the grid name is empty, we use the predefined names in the scene.
-			if grid_name != "":
-				grid.name = grid_name
-				grid.name_label.text = grid_name
+			grid.name = grid_name
+			grid.name_label.text = grid_name
 			grid.rect_position = Vector2(grid_info["x"], grid_info["y"])
 			grid.auto_extend = true
+
+	for i in range(gameData.get_team_size()):
+		var hero_id = i+1
+		var scale = 1
+		var start_x = 500
+		var start_y = 200
+		
+		if (hero_id > 1):
+			scale = 0.5
+			start_x = 0
+			start_y = 200 + (hero_id * 200)
+			
+		for grid_name in HERO_GRID_SETUP.keys():
+			var grid_info = HERO_GRID_SETUP[grid_name]
+			var x = start_x + grid_info["x"]*scale
+			var y = start_y + grid_info["y"]*scale	
+			var real_grid_name = grid_name + str(hero_id)		
+			if "pile" == grid_info.get("type", ""):
+				var scene = grid_info.get("scene", basicPile)
+				var pile: Pile = scene.instance()
+				pile.add_to_group("piles")
+				pile.name = real_grid_name
+				pile.set_pile_name(real_grid_name)
+				pile.set_position(Vector2(x,y))
+				pile.set_global_position(Vector2(x,y))
+				pile.scale = Vector2(0.5*scale, 0.5*scale)
+				pile.faceup_cards = grid_info.get("faceup", false)
+				add_child(pile)
+			else:
+				var grid_scene = grid_info.get("scene", basicGrid)
+				var grid: BoardPlacementGrid = grid_scene.instance()
+				grid.add_to_group("placement_grid")
+				# A small delay to allow the instance to be added
+				add_child(grid)
+				grid.name = real_grid_name
+				grid.name_label.text = real_grid_name
+				grid.rect_position = Vector2(x,y)
+				#TODO set scale
+				grid.auto_extend = true
 
 	#Game setup - Todo move somewhere else ?
 	load_cards()
@@ -137,7 +187,6 @@ func get_all_cards() -> Array:
 	var cardsArray := []
 	for obj in get_children():
 		if obj as Card: cardsArray.append(obj)
-		if obj as WCHeroZone: cardsArray += obj.get_all_cards()
 	cardsArray += $VillainZone.get_all_cards()
 
 	return(cardsArray)

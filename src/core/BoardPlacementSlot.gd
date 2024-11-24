@@ -14,10 +14,21 @@ onready var owner_grid = get_parent().get_parent()
 func _ready() -> void:
 	# We set the initial size of our highlight and area, to 
 	# fit the size of the cards on the board.
-	rect_min_size = owner_grid.card_size * owner_grid.card_play_scale
-	$Highlight.rect_min_size = rect_min_size
-	$Area2D/CollisionShape2D.shape.extents = rect_min_size / 2
-	$Area2D/CollisionShape2D.position = rect_min_size / 2
+
+#	rect_min_size = Vector2(0,0)
+#	self.rect_size = Vector2(0,0)
+#
+#	#$Area2D/CollisionShape2D.scale = Vector2(0.1, 0.1)
+#
+#	$Area2D/CollisionShape2D.shape.extents = Vector2(0,0)
+#	$Area2D/CollisionShape2D.position = Vector2(0,0)
+#
+#	$Highlight.rect_min_size = Vector2(0,0)
+#	$Highlight.rect_size = Vector2(0,0)
+	
+
+	
+	rescale()
 
 
 # Returns true if this slot is highlighted, else false
@@ -37,3 +48,18 @@ func set_highlight(requested: bool,
 # This is typically used with CFConst.BoardDropPlacement.SPECIFIC_GRID
 func get_grid_name() -> String:
 	return(owner_grid.name_label.text)
+
+func rescale():
+	if (!owner_grid):
+		return
+	var tmp = owner_grid.card_size *  owner_grid.card_play_scale
+	rect_min_size = tmp
+	self.rect_size = rect_min_size		
+	
+	$Area2D/CollisionShape2D.shape.extents = rect_min_size / 2
+	$Area2D/CollisionShape2D.position = rect_min_size / 2
+	
+	$Highlight.rect_min_size = tmp
+	$Highlight.rect_size = tmp	
+	
+

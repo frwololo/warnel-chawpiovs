@@ -31,7 +31,7 @@ export var card_play_scale := CFConst.PLAY_AREA_SCALE
 onready var name_label = $Control/Label
 
 func _ready() -> void:
-	rect_size = (card_size * card_play_scale) + Vector2(4,4)
+	rescale(card_play_scale)
 	# We ensure the separation of the grid slots is always 1 pixel larger
 	# Than the radius of the mouse pointer collision area.
 	# This ensures that we don't highlight 2 slots at the same time.
@@ -106,3 +106,12 @@ func get_available_slots() -> Array:
 # Returns the count of all available slots
 func count_available_slots() -> int:
 	return(get_available_slots().size())
+	
+	
+func rescale(scale):
+	card_play_scale = scale
+	rect_size = (card_size * card_play_scale) + Vector2(4,4)
+
+	var slots:Array = get_all_slots()
+	for slot in slots:
+		slot.rescale()		

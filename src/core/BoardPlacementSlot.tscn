@@ -33,16 +33,11 @@ corner_radius_bottom_left = 15
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 60, 96 )
 
-[node name="BoardPlacementSlot" type="Control" groups=[
-"placement_slot",
-]]
+[node name="BoardPlacementSlot" type="Control" groups=["placement_slot"]]
 margin_right = 120.0
 margin_bottom = 192.0
 rect_min_size = Vector2( 120, 192 )
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Highlight" type="MarginContainer" parent="."]
 visible = false

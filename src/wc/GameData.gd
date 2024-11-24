@@ -124,6 +124,7 @@ func villain_init_attackers():
 func villain_next_target() -> int:
 	_villain_current_hero_target += 1
 	if _villain_current_hero_target > get_team_size():
+		_villain_current_hero_target = 1 #Is this the right place? Causes lots of errors otherwise...
 		return 0
 	return 	_villain_current_hero_target
 
@@ -147,27 +148,39 @@ func villain_threat():
 		escalation_threat *= get_team_size()
 	scheme.add_threat(escalation_threat)
 
+#TODO fix
+func get_facedown_encounters_pile() -> Pile :
+	var pile  = cfc.NMAP["encounters_facedown" + str(_villain_current_hero_target)]
+	#var pile  = cfc.NMAP["encounters_facedown1"]
+	return pile
+	
+func get_enemies_grid() -> BoardPlacementGrid :
+	var grid  = cfc.NMAP.board.get_grid("enemies" + str(_villain_current_hero_target))
+	#var grid  = cfc.NMAP.board.get_grid("enemies1")
+
+	return grid	
+
 #TODO need something much more advanced here, per player, etc...
 func deal_encounters():
 	var villain_deck:Pile = cfc.NMAP["deck_villain"]
 	var encounter:Card = villain_deck.get_top_card()
-	
-	var destination  = cfc.NMAP["encounters_facedown"] #TODO per player 
-	encounter.move_to(destination)
-
+	if encounter:
+		var destination  = get_facedown_encounters_pile() 
+		encounter.move_to(destination)
+	else:
+		#TODO shuffle deck + acceleration
+		pass
 	
 
 #TODO need something much more advanced here, per player, etc...
 func reveal_encounters():
-	var facedown_encounters:Pile = cfc.NMAP["encounters_facedown"]
+	var facedown_encounters:Pile = get_facedown_encounters_pile()
 	var encounter:Card = facedown_encounters.get_top_card()
 
 	while Card.CardState.MOVING_TO_CONTAINER == encounter.state:
 		yield(get_tree().create_timer(0.05), "timeout")
 	
-	var typecode = encounter.properties.get("type_code", "")
-	var grid_name = CFConst.TYPECODE_TO_GRID.get(typecode, "villain_misc")
-	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(grid_name)
+	var grid: BoardPlacementGrid = get_encounter_target_grid(encounter)
 	
 	if grid:
 		var slot: BoardPlacementSlot = grid.find_available_slot()
@@ -182,10 +195,28 @@ func reveal_encounters():
 			encounter.move_to(cfc.NMAP.board, -1, slot)
 			#encounter.set_is_faceup(false, true)
 			#encounter.set_is_faceup(true)
-			
+	else:
+		push_error("ERROR: Missing target grid in reval_encounters")		
 			
 
 	pass
+
+#TODO need to move thi to some configuration driven logic
+func get_encounter_target_grid (encounter) -> BoardPlacementGrid:
+	var typecode = encounter.properties.get("type_code", "")
+	var grid_name = CFConst.TYPECODE_TO_GRID.get(typecode, "villain_misc")
+	
+	match grid_name:
+		"villain_misc":
+			pass
+		"schemes":
+			pass
+		_:
+			grid_name = grid_name + str(_villain_current_hero_target)
+	
+	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(grid_name)
+	
+	return grid	
 
 func get_villain() -> Card :
 	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid("villain")
@@ -196,7 +227,7 @@ func get_villain() -> Card :
 	
 func get_minions_engaged_with_player(player_id:int):
 	var results = []
-	var minionsGrid:BoardPlacementGrid = cfc.NMAP.board.get_grid("enemies") #TODO per player
+	var minionsGrid:BoardPlacementGrid = get_enemies_grid()
 	if minionsGrid:
 		results = minionsGrid.get_all_cards()
 	return results

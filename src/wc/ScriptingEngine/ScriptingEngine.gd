@@ -127,6 +127,7 @@ func receive_damage(script: ScriptTask) -> int:
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
 	var amount = script.script_definition["amount"]
 	
+	#TODO BUG sometimes subjects contains a null card?
 	for card in script.subjects:
 		retcode = card.tokens.mod_token("damage",
 				amount,false,costs_dry_run(), tags)	
@@ -137,7 +138,6 @@ func receive_damage(script: ScriptTask) -> int:
 		if total_damage >= health:
 			card.die()		
 	
-	#TODO face damage consequences e.g. death
 
 	return retcode
 				

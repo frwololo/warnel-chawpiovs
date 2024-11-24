@@ -1,3 +1,4 @@
+class_name PhaseButton
 extends Button
 
 #Notes on the phases
@@ -42,6 +43,7 @@ const StepStrings = [
 ]
 
 var current_step = PHASE_STEP.PLAYER_TURN
+var current_step_complete:bool = false
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -57,11 +59,46 @@ func _ready():
 	scripting_bus.connect("step_ended", self, "_step_ended")
 	update_text()
 
+#Moving to next step needs to happen outside of the signal processing to avoid infinite loops or recursive signals
+func _process(_delta: float) -> void:
+	if (!current_step_complete) :
+		return
+		
+	match current_step:
+		PHASE_STEP.PLAYER_TURN:
+			return
+		PHASE_STEP.PLAYER_DISCARD:
+			request_next_phase()
+		PHASE_STEP.PLAYER_DRAW:
+			request_next_phase()		
+		PHASE_STEP.PLAYER_READY:
+			request_next_phase()					
+		PHASE_STEP.PLAYER_END:
+			request_next_phase()
+		PHASE_STEP.VILLAIN_THREAT:
+			request_next_phase()
+		PHASE_STEP.VILLAIN_ACTIVATES:
+			request_next_phase()			
+		PHASE_STEP.VILLAIN_MINIONS_ACTIVATE:
+			request_next_phase()			
+		PHASE_STEP.VILLAIN_DEAL_ENCOUNTER:
+			request_next_phase()		
+		PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER:
+			request_next_phase()			
+		PHASE_STEP.VILLAIN_PASS_PLAYER_TOKEN:
+			request_next_phase()
+		PHASE_STEP.VILLAIN_END:
+			request_next_phase()
+		PHASE_STEP.ROUND_END:
+			request_next_phase()	
+	
+
 #TODO - Actually verify with server what happens:
 #- Ask server to update phase
 #- Server tells us phase has changed
 #- Update information
 func _button_pressed():
+	current_step_complete = true
 	request_next_phase()
 
 func _step_ended(	
@@ -69,11 +106,13 @@ func _step_ended(
 	var step = trigger_details["step"]
 	match step:
 		PHASE_STEP.VILLAIN_THREAT:
-			_after_villain_threat()
+			_after_villain_threat()	
 
 func _step_started(	
 		trigger_details: Dictionary = {}):
 	var step = trigger_details["step"]
+	current_step_complete = false
+	
 	match step:
 		PHASE_STEP.PLAYER_TURN:
 			pass
@@ -84,7 +123,7 @@ func _step_started(
 		PHASE_STEP.PLAYER_READY:
 			_player_ready()						
 		PHASE_STEP.PLAYER_END:
-			request_next_phase()
+			current_step_complete = true # Do nothing
 		PHASE_STEP.VILLAIN_THREAT:
 			_villain_threat()
 		PHASE_STEP.VILLAIN_ACTIVATES:
@@ -96,14 +135,17 @@ func _step_started(
 		PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER:
 			_reveal_encounters()			
 		PHASE_STEP.VILLAIN_PASS_PLAYER_TOKEN:
-			request_next_phase()
+			current_step_complete = true # Do nothing
 		PHASE_STEP.VILLAIN_END:
-			request_next_phase()
+			current_step_complete = true # Do nothing
 		PHASE_STEP.ROUND_END:
 			_round_end()
 	return 0
 	
 func request_next_phase():
+	if (!current_step_complete) :
+		return	
+	
 	scripting_bus.emit_signal("step_about_to_end",  {"step" : current_step})
 	scripting_bus.emit_signal("step_ended",  {"step" : current_step})
 	if (current_step == PHASE_STEP.ROUND_END):
@@ -117,31 +159,34 @@ func request_next_phase():
 	update_text()
 	
 func _player_discard():
-	request_next_phase()
+	current_step_complete = true	
 	pass
 
 func _player_draw():
 	gameData.draw_all_players()
-	request_next_phase()
+	current_step_complete = true
 	pass	
 	
 func _player_ready():
 	gameData.ready_all_player_cards()
-	request_next_phase()	
+	current_step_complete = true	
 	pass	
 	
 func _villain_threat():
 	gameData.villain_threat()
-	request_next_phase()
+	current_step_complete = true
 	pass	
 
 func _after_villain_threat():
 	gameData.villain_init_attackers()
+	current_step_complete = true
 	pass
 	
 func _villain_activates():
-	gameData.enemy_activates()
-	request_next_phase()
+	var activated_ok = gameData.enemy_activates()
+	if activated_ok is GDScriptFunctionState:
+		activated_ok = yield(activated_ok, "completed")
+	current_step_complete = true
 	pass	
 	
 func _minions_activate():
@@ -152,21 +197,21 @@ func _minions_activate():
 		activated_ok = gameData.enemy_activates()
 		if activated_ok is GDScriptFunctionState:
 			activated_ok = yield(activated_ok, "completed")
-	request_next_phase()
+	current_step_complete = true
 	pass					
 
 func _deal_encounters():
 	gameData.deal_encounters()
 	yield(get_tree().create_timer(2), "timeout")
-	request_next_phase()
+	current_step_complete = true
 	pass
 	
 func _reveal_encounters():
 	gameData.reveal_encounters()
-	request_next_phase()
+	current_step_complete = true
 	pass	
 
 func _round_end():
 	gameData.end_round()
-	request_next_phase()	
+	current_step_complete = true	
 	pass

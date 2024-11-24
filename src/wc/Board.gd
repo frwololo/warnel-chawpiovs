@@ -86,6 +86,7 @@ func _ready() -> void:
 	
 	
 	for grid_name in GRID_SETUP.keys():
+
 		var grid_info = GRID_SETUP[grid_name]
 		if "pile" == grid_info.get("type", ""):
 			var scene = grid_info.get("scene", basicPile)
@@ -116,7 +117,7 @@ func _ready() -> void:
 		var start_y = 200
 		
 		if (hero_id > 1):
-			scale = 0.5
+			scale = 0.3
 			start_x = 0
 			start_y = 200 + (hero_id * 200)
 			
@@ -140,12 +141,12 @@ func _ready() -> void:
 				var grid_scene = grid_info.get("scene", basicGrid)
 				var grid: BoardPlacementGrid = grid_scene.instance()
 				grid.add_to_group("placement_grid")
-				# A small delay to allow the instance to be added
+				# Need to rescale before adding ???
+				grid.rescale(CFConst.PLAY_AREA_SCALE * scale)
 				add_child(grid)
 				grid.name = real_grid_name
 				grid.name_label.text = real_grid_name
 				grid.rect_position = Vector2(x,y)
-				#TODO set scale
 				grid.auto_extend = true
 
 	#Game setup - Todo move somewhere else ?

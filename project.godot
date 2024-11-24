@@ -269,6 +269,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/core/OverridableUtils.gd"
 }, {
+"base": "Button",
+"class": "PhaseButton",
+"language": "GDScript",
+"path": "res://src/wc/PhaseButton.gd"
+}, {
 "base": "CardContainer",
 "class": "Pile",
 "language": "GDScript",
@@ -442,6 +447,7 @@ _global_script_class_icons={
 "ManipulationButtons": "",
 "MousePointer": "",
 "OVUtils": "",
+"PhaseButton": "",
 "Pile": "",
 "PlayerData": "",
 "QuantityNumberButton": "",

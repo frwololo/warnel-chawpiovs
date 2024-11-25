@@ -25,3 +25,7 @@ signal step_started(details)
 signal step_about_to_end(details)
 # warning-ignore:unused_signal
 signal step_ended(details)
+
+#GUI and game Interface signals
+# warning-ignore:unused_signal
+signal current_playing_hero_changed(details) #before, after

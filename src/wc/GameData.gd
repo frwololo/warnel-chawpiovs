@@ -148,10 +148,8 @@ func villain_threat():
 		escalation_threat *= get_team_size()
 	scheme.add_threat(escalation_threat)
 
-#TODO fix
 func get_facedown_encounters_pile() -> Pile :
 	var pile  = cfc.NMAP["encounters_facedown" + str(_villain_current_hero_target)]
-	#var pile  = cfc.NMAP["encounters_facedown1"]
 	return pile
 	
 func get_enemies_grid() -> BoardPlacementGrid :
@@ -255,3 +253,8 @@ func villain_died(card:Card):
 	#TODO get next villain stage
 	var board:Board = cfc.NMAP.board
 	board.end_game("victory")
+
+func select_current_playing_hero(hero_index):
+	var previous_hero_id = current_hero_id
+	current_hero_id = hero_index
+	scripting_bus.emit_signal("current_playing_hero_changed",  {"before": previous_hero_id,"after": current_hero_id })

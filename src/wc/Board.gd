@@ -167,6 +167,9 @@ func _ready() -> void:
 	#Tests
 	draw_cheat("Mockingbird")
 	draw_cheat("Swinging Web Kick")
+	
+	#Signals
+	scripting_bus.connect("current_playing_hero_changed", self, "_current_playing_hero_changed")
 
 func load_heroes():
 	var hero_count: int = gameData.get_team_size()
@@ -313,4 +316,6 @@ func _on_BackToMain_pressed() -> void:
 	cfc.quit_game()
 	get_tree().change_scene("res://src/wc/MainMenu.tscn")
 
-
+#TODO switch  piles/grids
+func _current_playing_hero_changed (trigger_details: Dictionary = {}):
+	pass	

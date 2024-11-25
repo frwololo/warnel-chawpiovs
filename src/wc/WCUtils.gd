@@ -82,3 +82,12 @@ static func sort_stage(a, b):
 	if a["stage"] < b["stage"]:
 		return true
 	return false
+	
+static func to_grayscale(texture : Texture) -> Texture:
+	var image = texture.get_data()
+	image.convert(Image.FORMAT_LA8)
+	image.convert(Image.FORMAT_RGBA8) # Not strictly necessary
+	
+	var image_texture = ImageTexture.new()
+	image_texture.create_from_image(image)
+	return image_texture	

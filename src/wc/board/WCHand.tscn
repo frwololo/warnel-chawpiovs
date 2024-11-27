@@ -17,3 +17,8 @@ margin_bottom = 26.0
 mouse_filter = 1
 custom_fonts/font = SubResource( 1 )
 text = "R"
+
+[node name="Debug" parent="." index="2"]
+__meta__ = {
+"_edit_group_": true
+}

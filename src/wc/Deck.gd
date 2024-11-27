@@ -9,7 +9,7 @@ func _ready() -> void:
 	# warning-ignore:return_value_discarded
 	$Control.connect("gui_input", self, "_on_Deck_input_event")
 	# warning-ignore:return_value_discarded
-	connect("draw_card", cfc.NMAP.hand, "draw_card")
+	connect("draw_card", cfc.NMAP.hand1, "draw_card") #TODO fix
 	#print(get_signal_connection_list("input_event")[0]['target'].name)
 
 func _on_Deck_input_event(event) -> void:

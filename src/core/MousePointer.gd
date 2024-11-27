@@ -45,7 +45,7 @@ func _process(_delta: float) -> void:
 		if current_focused_card.get_parent() == cfc.NMAP.board \
 				and current_focused_card.state == Card.CardState.ON_PLAY_BOARD:
 			current_focused_card.state = Card.CardState.FOCUSED_ON_BOARD
-		if current_focused_card.get_parent() == cfc.NMAP.hand \
+		if current_focused_card.get_parent().is_in_group("hands") \
 				and current_focused_card.state == Card.CardState.IN_HAND:
 			current_focused_card.state = Card.CardState.FOCUSED_IN_HAND
 	if cfc.card_drag_ongoing and cfc.card_drag_ongoing != current_focused_card:

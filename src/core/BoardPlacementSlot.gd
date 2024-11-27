@@ -49,6 +49,11 @@ func set_highlight(requested: bool,
 func get_grid_name() -> String:
 	return(owner_grid.name_label.text)
 
+func reposition(new_position:Vector2):
+	if (occupying_card):
+		occupying_card.move_to(cfc.NMAP.board, -1, self)
+	pass
+
 func rescale():
 	if (!owner_grid):
 		return
@@ -62,4 +67,7 @@ func rescale():
 	$Highlight.rect_min_size = tmp
 	$Highlight.rect_size = tmp	
 	
-
+func get_scale_modifier() -> float:
+	if (!owner_grid):
+		return CFConst.PLAY_AREA_SCALE	
+	return owner_grid.card_play_scale

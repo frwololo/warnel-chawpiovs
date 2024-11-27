@@ -135,7 +135,8 @@ func _step_ended(
 	var step = trigger_details["step"]
 	match step:
 		PHASE_STEP.VILLAIN_THREAT:
-			_after_villain_threat()	
+			#_after_villain_threat()
+			pass	
 
 func _step_started(	
 		trigger_details: Dictionary = {}):
@@ -156,6 +157,7 @@ func _step_started(
 		PHASE_STEP.VILLAIN_THREAT:
 			_villain_threat()
 		PHASE_STEP.VILLAIN_ACTIVATES:
+			gameData.villain_init_attackers()
 			_villain_activates()			
 		PHASE_STEP.VILLAIN_MINIONS_ACTIVATE:
 			_minions_activate()				

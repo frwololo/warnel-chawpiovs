@@ -235,6 +235,11 @@ _global_script_classes=[ {
 "path": "res://src/wc/data/HeroDeckData.gd"
 }, {
 "base": "Control",
+"class": "HeroPhase",
+"language": "GDScript",
+"path": "res://src/wc/board/HeroPhase.gd"
+}, {
+"base": "Control",
 "class": "Highlight",
 "language": "GDScript",
 "path": "res://src/core/Highlight.gd"
@@ -268,11 +273,6 @@ _global_script_classes=[ {
 "class": "OVUtils",
 "language": "GDScript",
 "path": "res://src/core/OverridableUtils.gd"
-}, {
-"base": "Button",
-"class": "PhaseButton",
-"language": "GDScript",
-"path": "res://src/wc/PhaseButton.gd"
 }, {
 "base": "CardContainer",
 "class": "Pile",
@@ -440,6 +440,7 @@ _global_script_class_icons={
 "GutTest": "",
 "Hand": "",
 "HeroDeckData": "",
+"HeroPhase": "",
 "Highlight": "",
 "IntegerLineEdit": "",
 "ManaCost": "",
@@ -447,7 +448,6 @@ _global_script_class_icons={
 "ManipulationButtons": "",
 "MousePointer": "",
 "OVUtils": "",
-"PhaseButton": "",
 "Pile": "",
 "PlayerData": "",
 "QuantityNumberButton": "",

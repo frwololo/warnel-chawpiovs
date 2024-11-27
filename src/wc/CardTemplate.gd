@@ -2,10 +2,6 @@ class_name WCCard
 extends Card
 
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-
 
 func setup() -> void:
 	.setup()
@@ -113,8 +109,8 @@ func _on_Card_gui_input(event) -> void:
 					#NOTE ERWAN
 					#Modified here so that drag to board mimics the effect of a double click	
 					var parentHost = get_parent()
-					if (destination == cfc.NMAP.board) and (parentHost == cfc.NMAP.hand):
-						move_to(cfc.NMAP.hand)
+					if (destination == cfc.NMAP.board) and (parentHost.is_in_group("hands")):
+						move_to(parentHost)
 						if (check_play_costs() != CFConst.CostsState.IMPOSSIBLE):
 							cfc.card_drag_ongoing = null
 							execute_scripts()
@@ -190,6 +186,13 @@ func common_pre_run(_sceng) -> void:
 	for task in scripts_queue:
 		var script: ScriptTask = task
 		var script_definition = script.script_definition
+		
+		var current_hero_id = gameData.get_current_hero_id()
+		for v in ["hand", "encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
+			#TODO move to const
+			WCUtils.search_and_replace(script_definition, v, v+str(current_hero_id), true)
+	
+		
 		match script_definition["name"]:
 			# To pay for cards: We check if the manapool has some mana
 			# If so, use that in "priority" and reduce the actual cost of the card
@@ -235,7 +238,7 @@ func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:
 				SP.KEY_SELECTION_TYPE: "equal",
 				SP.KEY_SELECTION_OPTIONAL: false,
 				SP.KEY_SELECTION_IGNORE_SELF: true,
-				"src_container": "hand",
+				"src_container": "hand" + str(current_hero_id),
 				"dest_container": "discard" + str(current_hero_id),
 			}		
 

@@ -40,11 +40,11 @@ func move_card_to_board(script: ScriptTask) -> int:
 	var current_hero_id = gameData.get_current_hero_id()
 	
 	#Not needed anymore ?
-	search_and_replace(script.script_definition, "{current_hero}", str(current_hero_id))
+	WCUtils.search_and_replace(script.script_definition, "{current_hero}", str(current_hero_id))
 	
 	for v in ["encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
 		#TODO move to const
-		search_and_replace(script.script_definition, v, v+str(current_hero_id), true)
+		WCUtils.search_and_replace(script.script_definition, v, v+str(current_hero_id), true)
 	
 	var result = .move_card_to_board(script)
 	script.script_definition = backup
@@ -61,11 +61,11 @@ func move_card_to_container(script: ScriptTask) -> int:
 	var current_hero_id = gameData.get_current_hero_id()
 	
 	#Not needed anymore ?
-	search_and_replace(script.script_definition, "{current_hero}", str(current_hero_id))
+	WCUtils.search_and_replace(script.script_definition, "{current_hero}", str(current_hero_id))
 	
 	for v in ["encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
 		#TODO move to const
-		search_and_replace(script.script_definition, v, v+str(current_hero_id), true)
+		WCUtils.search_and_replace(script.script_definition, v, v+str(current_hero_id), true)
 	
 	var result = .move_card_to_container(script)
 	script.script_definition = backup
@@ -218,18 +218,4 @@ func thwart(script: ScriptTask) -> int:
 	consequential_damage(script)
 	return retcode	
 
-# TODO move to a utility file
-# we operate directly on the dictionary without suplicate for speed reasons. Make a copy prior if needed
-func search_and_replace (script_definition : Dictionary, from: String, to:String, exact_match: bool = false) -> Dictionary:
-	for key in script_definition.keys():
-		var value = script_definition[key]
-		if typeof(value) == TYPE_STRING:
-			if ((!exact_match) or (value == from)):
-				script_definition[key] = value.replace(from, to)
-		elif typeof(value) == TYPE_ARRAY:
-			for x in value:
-				search_and_replace(x,from, to, exact_match)
-		elif typeof(value) == TYPE_DICTIONARY:
-			search_and_replace(value,from, to, exact_match)	
-	return script_definition;
-		
+

@@ -28,7 +28,29 @@ script = ExtResource( 5 )
 
 [node name="VillainZone" parent="." instance=ExtResource( 7 )]
 
-[node name="Hand" parent="." instance=ExtResource( 3 )]
+[node name="Hand1" parent="." instance=ExtResource( 3 )]
+unique_name_in_owner = true
+position = Vector2( 506, 826 )
+placement = 7
+show_manipulation_buttons = false
+
+[node name="Hand2" parent="." instance=ExtResource( 3 )]
+unique_name_in_owner = true
+visible = false
+position = Vector2( 506, 826 )
+placement = 7
+show_manipulation_buttons = false
+
+[node name="Hand3" parent="." instance=ExtResource( 3 )]
+unique_name_in_owner = true
+visible = false
+position = Vector2( 506, 826 )
+placement = 7
+show_manipulation_buttons = false
+
+[node name="Hand4" parent="." instance=ExtResource( 3 )]
+unique_name_in_owner = true
+visible = false
 position = Vector2( 506, 826 )
 placement = 7
 show_manipulation_buttons = false

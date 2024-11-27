@@ -91,7 +91,7 @@ func draw_all_players() :
 		var hero_deck_data: HeroDeckData = get_team_member(i+1)["hero_data"]
 		var alter_ego_data = hero_deck_data.get_alter_ego_card_data()
 		var hand_size = alter_ego_data["hand_size"]
-		var hand:Hand = cfc.NMAP["hand"] # + str(i+1)]
+		var hand:Hand = cfc.NMAP["hand" + str(i+1)]
 		hand_size = hand_size - hand.get_card_count()
 		for j in range(hand_size):
 			hand.draw_card (cfc.NMAP["deck" + str(i+1)])	
@@ -161,41 +161,49 @@ func get_enemies_grid() -> BoardPlacementGrid :
 #TODO need something much more advanced here, per player, etc...
 func deal_encounters():
 	var villain_deck:Pile = cfc.NMAP["deck_villain"]
-	var encounter:Card = villain_deck.get_top_card()
-	if encounter:
-		var destination  = get_facedown_encounters_pile() 
-		encounter.move_to(destination)
-	else:
-		#TODO shuffle deck + acceleration
-		pass
+	while true: #loop through all heroes. see villain_next_target call below
+		var encounter:Card = villain_deck.get_top_card()
+		if encounter:
+			var destination  = get_facedown_encounters_pile() 
+			encounter.move_to(destination)
+		else:
+			#TODO shuffle deck + acceleration
+			pass
+		if (!villain_next_target()): # This forces to change the next facedown destination
+			return
 	
 
 #TODO need something much more advanced here, per player, etc...
 func reveal_encounters():
-	var facedown_encounters:Pile = get_facedown_encounters_pile()
-	var encounter:Card = facedown_encounters.get_top_card()
-
-	while Card.CardState.MOVING_TO_CONTAINER == encounter.state:
-		yield(get_tree().create_timer(0.05), "timeout")
-	
-	var grid: BoardPlacementGrid = get_encounter_target_grid(encounter)
-	
-	if grid:
-		var slot: BoardPlacementSlot = grid.find_available_slot()
-		if slot:
-			#Needs a bit of a timer to ensure the slot gets created	
+	while true: #loop through all heroes. see villain_next_target call below
+		var facedown_encounters:Pile = get_facedown_encounters_pile()
+		var encounter:Card = facedown_encounters.get_top_card()
+		while (encounter): #Loop through all encounters in the current facedown pile
+			while Card.CardState.MOVING_TO_CONTAINER == encounter.state:
+				yield(get_tree().create_timer(0.05), "timeout")
 			
-			yield(get_tree().create_timer(0.05), "timeout")
-			# How to get rid of this mess?
-			# We have to flip the card in order for the script to execute
-			# But in the main scheme setup this works flawlessly...
-			encounter.set_is_faceup(true,true)
-			encounter.move_to(cfc.NMAP.board, -1, slot)
-			#encounter.set_is_faceup(false, true)
-			#encounter.set_is_faceup(true)
-	else:
-		push_error("ERROR: Missing target grid in reval_encounters")		
+			var grid: BoardPlacementGrid = get_encounter_target_grid(encounter)
 			
+			if grid:
+				var slot: BoardPlacementSlot = grid.find_available_slot()
+				if slot:
+					#Needs a bit of a timer to ensure the slot gets created	
+					
+					yield(get_tree().create_timer(0.05), "timeout")
+					# How to get rid of this mess?
+					# We have to flip the card in order for the script to execute
+					# But in the main scheme setup this works flawlessly...
+					encounter.set_is_faceup(true,true)
+					encounter.move_to(cfc.NMAP.board, -1, slot)
+					#encounter.set_is_faceup(false, true)
+					#encounter.set_is_faceup(true)
+			else:
+				push_error("ERROR: Missing target grid in reval_encounters")		
+		
+			encounter = facedown_encounters.get_top_card()
+		
+		if (!villain_next_target()): # This forces to change the next facedown destination
+			return	
 
 	pass
 

@@ -24,3 +24,12 @@ func _ready() -> void:
 		needed_counters[ManaCost.RESOURCE_TEXT[v]] = {"CounterTitle": ManaCost.RESOURCE_TEXT[v], "Value": manapool.pool[v]}
 	# warning-ignore:return_value_discarded
 	spawn_needed_counters()
+	
+	#Signals
+	scripting_bus.connect("current_playing_hero_changed", self, "_current_playing_hero_changed")
+	
+func _current_playing_hero_changed (trigger_details: Dictionary = {}):
+	var manapool:ManaPool = gameData.get_current_team_member()["manapool"]
+	for v in ManaCost.Resource.values() :
+		mod_counter(ManaCost.RESOURCE_TEXT[v],manapool.pool[v], true) 
+

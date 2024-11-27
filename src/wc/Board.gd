@@ -226,7 +226,7 @@ func _on_FancyMovementToggle_toggled(_button_pressed) -> void:
 
 func _on_OvalHandToggle_toggled(_button_pressed: bool) -> void:
 	cfc.set_setting("hand_use_oval_shape", $OvalHandToggle.pressed)
-	for c in cfc.NMAP.hand.get_all_cards():
+	for c in cfc.NMAP.hand1.get_all_cards(): #TODO fix? Or delete
 		c.reorganize_self()
 
 
@@ -299,7 +299,7 @@ func draw_cheat(cardName : String) -> void:
 	var card = cfc.instance_card(cardName)
 	var pile = cfc.NMAP["deck1"]
 	pile.add_child(card)
-	cfc.NMAP["hand"].draw_card (pile)
+	cfc.NMAP["hand1"].draw_card (pile)
 	
 func offer_to_mulligan() -> void:
 	pass				
@@ -316,6 +316,52 @@ func _on_BackToMain_pressed() -> void:
 	cfc.quit_game()
 	get_tree().change_scene("res://src/wc/MainMenu.tscn")
 
-#TODO switch  piles/grids
 func _current_playing_hero_changed (trigger_details: Dictionary = {}):
-	pass	
+	var previous_hero_id = trigger_details["before"]
+	var new_hero_id = trigger_details["after"]
+
+	#TODO move to config
+	#TODO convert to nice animation
+	var scale_new = 1
+	var scale_previous = 0.3	
+			
+	for grid_name in HERO_GRID_SETUP.keys():
+		var previous_grid_name = grid_name + str(previous_hero_id)
+		var new_grid_name = grid_name + str(new_hero_id)	
+		var grid_info = HERO_GRID_SETUP[grid_name]
+
+
+		if "pile" == grid_info.get("type", ""):
+			var previous_pile: Pile = cfc.NMAP[previous_grid_name]
+			var new_pile: Pile = cfc.NMAP[new_grid_name]
+			var backup_position:Vector2 = previous_pile.global_position
+			previous_pile.set_position(new_pile.global_position)
+			previous_pile.set_global_position(new_pile.global_position)			
+			previous_pile.scale = Vector2(0.5*scale_previous, 0.5*scale_previous)
+			
+			new_pile.set_position(backup_position)
+			new_pile.set_global_position(backup_position)			
+			new_pile.scale = Vector2(0.5*scale_new, 0.5*scale_new)			
+		else:			
+			var previous_grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(previous_grid_name)
+			var new_grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(new_grid_name)
+			var backup_position:Vector2 = previous_grid.rect_position
+			
+			previous_grid.rescale(CFConst.PLAY_AREA_SCALE * scale_previous)
+			previous_grid.reposition(new_grid.rect_position)
+				
+			new_grid.rescale(CFConst.PLAY_AREA_SCALE * scale_new)
+			new_grid.reposition(backup_position)			
+	
+	#exchange hands
+	var old_hand: Hand = get_node("%Hand" + str(previous_hero_id))	
+	old_hand.remove_from_group("bottom") #todo fix hack
+	WCUtils.disable_and_hide_node(old_hand)
+	old_hand.re_place()
+	old_hand.position = Vector2(20000, 20000)
+	var new_hand: Hand = get_node("%Hand" + str(new_hero_id))
+	WCUtils.enable_and_show_node(new_hand)
+	new_hand.re_place()
+
+	
+

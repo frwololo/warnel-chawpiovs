@@ -2428,9 +2428,13 @@ func _process_card_state() -> void:
 			set_focus(false)
 			set_control_mouse_filters(true)
 			buttons.set_active(false)
+			#TODO this messes up attached components such as the targeting arrow
+			var target_scale = play_area_scale
+			if (_placement_slot):
+				target_scale = _placement_slot.get_scale_modifier()
 			if not $Tween.is_active() and \
-					not scale.is_equal_approx(Vector2(1,1) * play_area_scale):
-				_add_tween_scale(scale, Vector2(1,1) * play_area_scale,
+					not scale.is_equal_approx(Vector2(1,1) * target_scale):
+				_add_tween_scale(scale, Vector2(1,1) * target_scale,
 					on_board_tween_duration, Tween.TRANS_SINE, Tween.EASE_OUT)
 				$Tween.start()
 			_organize_attachments()

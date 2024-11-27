@@ -107,11 +107,19 @@ func get_available_slots() -> Array:
 func count_available_slots() -> int:
 	return(get_available_slots().size())
 	
+func reposition(new_position:Vector2):
+	rect_position = new_position
+	
+	var slots:Array = get_all_slots()
+	for slot in slots:
+		slot.reposition(new_position)			
 	
 func rescale(scale):
 	card_play_scale = scale
-	rect_size = (card_size * card_play_scale) + Vector2(4,4)
 
 	var slots:Array = get_all_slots()
 	for slot in slots:
 		slot.rescale()		
+		
+	rect_size = (card_size * card_play_scale) + Vector2(4,4)
+	

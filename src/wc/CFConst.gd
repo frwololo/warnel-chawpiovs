@@ -245,13 +245,13 @@ const TOKENS_MAP := {
 }
 
 const TYPES_TO_GROUPS := {
-	"main_scheme" : ["schemes"],
-	"player_scheme" : ["schemes"],
-	"side_scheme" : ["schemes"],
-	"minion" : ["enemies"],
-	"villain" : ["enemies"],
-	"hero" : ["allies"],
-	"ally" : ["allies"],
+	"main_scheme" : ["group_schemes"],
+	"player_scheme" : ["group_schemes"],
+	"side_scheme" : ["group_schemes"],
+	"minion" : ["group_enemies"],
+	"villain" : ["group_enemies"],
+	"hero" : ["group_allies", "group_identities"],
+	"ally" : ["group_allies"],
 }
 
 const FORCE_HORIZONTAL_CARDS := {

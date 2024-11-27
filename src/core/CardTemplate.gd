@@ -699,7 +699,9 @@ func refresh_card_front() -> void:
 # Retrieves the value of a property. This should always be used instead of
 # properties.get() as it takes into account the temp_properties_modifiers var
 # and also checks for alterant scripts
-func get_property(property: String):
+func get_property(property: String, default = null):
+	if not (properties.has(property)):
+		return default
 	return(get_property_and_alterants(property).value)
 
 

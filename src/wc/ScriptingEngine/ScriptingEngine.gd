@@ -110,8 +110,8 @@ func attack(script: ScriptTask) -> int:
 	
 	var damage = script.script_definition.get("amount", 0)
 	if not damage:
-		var owner_properties = script.owner.properties
-		damage = owner_properties.get("attack", 0)
+		var owner = script.owner
+		damage = owner.get_property("attack", 0)
 	
 	script.script_definition["amount"] = damage 
 	receive_damage(script)
@@ -133,7 +133,7 @@ func receive_damage(script: ScriptTask) -> int:
 				amount,false,costs_dry_run(), tags)	
 				
 		var total_damage:int =  card.tokens.get_token_count("damage")
-		var health = card.properties.get("health", 0)
+		var health = card.get_property("health", 0)
 		
 		if total_damage >= health:
 			card.die()		
@@ -151,14 +151,14 @@ func defend(script: ScriptTask) -> int:
 		return retcode
 		
 	var attacker = script.owner
-	var amount = attacker.properties["attack"]
-	var defender = null
+	var amount = attacker.get_property("attack", 0)
+	var defender:WCCard = null
 	if (not script.subjects.empty()):
 		defender = script.subjects[0]
 	
 	if defender:
 		defender.exhaustme()
-		var damage_reduction = defender.properties.get("defense", 0)
+		var damage_reduction = defender.get_property("defense", 0)
 		amount = max(amount-damage_reduction, 0)
 	else:
 		var my_hero:Card = gameData.get_current_target_hero()
@@ -178,12 +178,12 @@ func consequential_damage(script: ScriptTask) -> int:
 
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
 
-	var owner_properties = script.owner.properties
-	var damage = owner_properties.get("attack_cost", 0)
+	var owner:WCCard = script.owner
+	var damage = owner.get_property("attack_cost", 0)
 	
 	match script.script_name:
 		"thwart":
-			damage = owner_properties.get("thwart_cost",0)
+			damage = owner.get_property("thwart_cost",0)
 
 	var additional_task := ScriptTask.new(
 		script.owner,
@@ -203,8 +203,8 @@ func thwart(script: ScriptTask) -> int:
 
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
 	var token_name = "threat" #TODO move to const
-	var owner_properties = script.owner.properties
-	var modification = owner_properties["thwart"]
+	var owner:WCCard = script.owner
+	var modification = owner.get_property("thwart")
 	var token_diff = modification
 	
 	for card in script.subjects:
@@ -218,4 +218,37 @@ func thwart(script: ScriptTask) -> int:
 	consequential_damage(script)
 	return retcode	
 
+func move_to_player_zone(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
 
+	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
+
+	var this_card:WCCard = script.owner
+	
+	for subject in script.subjects:
+		retcode = CFConst.ReturnCode.FAILED
+		var hero:WCCard = subject
+		
+		#Get my current zone
+		var current_grid_name = this_card.get_grid_name()
+		if (current_grid_name):
+			#hack to new zone
+			var new_grid_name = current_grid_name.left(current_grid_name.length() -1)
+			new_grid_name = new_grid_name + str(hero.get_owner_hero_id())
+			var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(new_grid_name)
+			var slot: BoardPlacementSlot
+			if grid:
+				slot = grid.find_available_slot()			
+				this_card.move_to(cfc.NMAP.board, -1, slot)
+				retcode = CFConst.ReturnCode.CHANGED	
+			pass
+
+	return retcode
+			
+
+
+
+	consequential_damage(script)
+	return retcode	

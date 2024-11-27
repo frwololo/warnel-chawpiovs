@@ -92,8 +92,7 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 		}
 		script = WCUtils.merge_dict(script,horizontal_comes_to_play, true)
 	
-	if type_code == "ally":
-		var base_threat = card.get("base_threat", 0)
+	if type_code == "ally" or type_code == "hero": 
 		var ally_actions: Dictionary = { 
 			"manual": {
 				"board": {
@@ -109,7 +108,7 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 							"subject": "target",
 							"needs_subject": true,
 							"filter_state_subject": [{
-								"filter_group": "schemes"
+								"filter_group": "group_schemes"
 							},],						
 						},					
 					],
@@ -125,7 +124,7 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 							"subject": "target",
 							"needs_subject": true,
 							"filter_state_subject": [{
-								"filter_group" : "enemies"
+								"filter_group" : "group_enemies"
 							},],						
 						},					
 					],
@@ -148,7 +147,7 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 						SP.KEY_SELECTION_TYPE: "max",
 						SP.KEY_SELECTION_OPTIONAL: true,
 						"filter_state_seek": [{
-							"filter_group": "defenders"
+							"filter_group": "group_defenders"
 						},],
 					},
 					{

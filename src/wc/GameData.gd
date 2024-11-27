@@ -248,9 +248,9 @@ func compute_potential_defenders():
 	var board:Board = cfc.NMAP.board
 	for c in board.get_all_cards():
 		if c.can_defend():
-			c.add_to_group("defenders")
+			c.add_to_group("group_defenders")
 		else:
-			c.remove_from_group("defenders")	
+			c.remove_from_group("group_defenders")	
 
 func hero_died(card:Card):
 	#TODO check if other heroes are alive

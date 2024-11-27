@@ -1,6 +1,13 @@
 class_name WCCard
 extends Card
 
+var owner_hero_id  := 0 setget set_owner_hero_id, get_owner_hero_id
+
+func set_owner_hero_id(hero_id:int):
+	owner_hero_id = hero_id
+	
+func get_owner_hero_id() -> int:
+	return owner_hero_id	
 
 
 func setup() -> void:
@@ -243,3 +250,8 @@ func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:
 			}		
 
 	return result	
+
+func get_grid_name():
+	if (_placement_slot):
+		return _placement_slot.get_grid_name()
+	return null	

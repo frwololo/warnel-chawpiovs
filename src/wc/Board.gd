@@ -165,7 +165,7 @@ func _ready() -> void:
 	offer_to_mulligan()
 	
 	#Tests
-	draw_cheat("Mockingbird")
+	draw_cheat("Combat Training")
 	draw_cheat("Swinging Web Kick")
 	
 	#Signals
@@ -271,16 +271,19 @@ func _on_Debug_toggled(button_pressed: bool) -> void:
 # Loads card decks
 func load_cards() -> void:
 	for i in range(gameData.get_team_size()):
+		var hero_id = i+1
 		var card_array = []
-		var hero_deck_data: HeroDeckData = gameData.get_team_member(i+1)["hero_data"] #TODO actually load my player's stuff
+		var hero_deck_data: HeroDeckData = gameData.get_team_member(hero_id)["hero_data"] #TODO actually load my player's stuff
 		var card_ids = hero_deck_data.get_deck_cards()
 		for card_id in card_ids:
 			#cards.append(ckey)
 			var ckey = cfc.idx_card_id_to_name[card_id]
-			card_array.append(cfc.instance_card(ckey))
+			var new_card:WCCard = cfc.instance_card(ckey)
+			new_card.set_owner_hero_id(hero_id)
+			card_array.append(new_card)
 
 		for card in card_array:
-			cfc.NMAP["deck" + str(i+1)].add_child(card)
+			cfc.NMAP["deck" + str(hero_id)].add_child(card)
 			#card.set_is_faceup(false,true)
 			card._determine_idle_state()
 			

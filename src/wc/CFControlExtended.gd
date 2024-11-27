@@ -74,6 +74,13 @@ func load_card_definitions() -> Dictionary:
 		var json_card_data : Array
 		json_card_data = WCUtils.read_json_file("user://Sets/" + set_file)
 		for card_data in json_card_data:
+			
+			#converting "real" numbers to "int"
+			for key in card_data.keys():
+				var value = card_data[key]
+				if typeof(value) == TYPE_REAL:
+					var new_value:int = value
+					card_data[key] = new_value
 			#Fixing missing Data
 			if not card_data.has("Tags"):
 				card_data["Tags"] = []			

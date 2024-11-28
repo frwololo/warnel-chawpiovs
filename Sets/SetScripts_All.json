@@ -1,0 +1,84 @@
+{
+	"Combat Training": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name" : "move_to_player_zone",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",					
+					"needs_selection": true,
+					"filter_state_seek": [{
+							"filter_group" : "group_identities"
+					}]
+				}
+			]
+		},		
+		"alterants": {
+			"board": [
+				{					
+					"filter_task" : "get_property",
+					"filter_property_name" : "attack",
+					"filter_same_controller": true,
+					"filter_state_trigger" : [{
+						"filter_group" : "group_identities",
+					}],
+					"alteration": 1
+				}
+			]
+		}		
+	},
+	"Swinging Web Kick": {
+		"manual": {
+			"hand": [
+				{
+					"name" : "attack",
+					"subject": "target",
+					"amount" : 8,
+					"needs_subject": true,
+					"filter_state_subject": [{
+						"filter_group" : "group_enemies"
+					}],
+					"tags" : ["hero_action", "attack"]
+				}
+			]
+		}
+	},
+	"Web-Shooter": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 3,
+					"token_name":  "web",
+				},
+			]
+		},	
+		"manual": {
+			"board": [
+				{
+					"name": "rotate_card",
+					"subject": "self",
+					"is_cost": true,
+					"degrees": 90,
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"token_name":  "web",
+					"is_cost": true,
+				},				
+				{
+					"name": "add_mana",
+					"modification": 1,
+					"counter_name": "wild"
+				},
+			]
+		}
+	}
+}

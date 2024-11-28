@@ -266,3 +266,9 @@ func select_current_playing_hero(hero_index):
 	var previous_hero_id = current_hero_id
 	current_hero_id = hero_index
 	scripting_bus.emit_signal("current_playing_hero_changed",  {"before": previous_hero_id,"after": current_hero_id })
+
+#TODO error handling?
+func get_grid_owner_hero_id(grid_name:String) -> int:
+	var potential_hero_id = grid_name.right(1).to_int()
+	return potential_hero_id
+	

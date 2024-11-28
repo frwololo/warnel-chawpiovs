@@ -2,12 +2,19 @@ class_name WCCard
 extends Card
 
 var owner_hero_id  := 0 setget set_owner_hero_id, get_owner_hero_id
+var controller_hero_id  := 0 setget set_controller_hero_id, get_controller_hero_id
 
 func set_owner_hero_id(hero_id:int):
 	owner_hero_id = hero_id
 	
 func get_owner_hero_id() -> int:
 	return owner_hero_id	
+
+func set_controller_hero_id(hero_id:int):
+	controller_hero_id = hero_id
+	
+func get_controller_hero_id() -> int:
+	return controller_hero_id	
 
 
 func setup() -> void:
@@ -29,7 +36,16 @@ func _init_groups() -> void :
 	for group in groups:
 		self.add_to_group(group)
 		
-		
+func common_post_move_scripts(new_host: String, old_host: String, move_tags: Array) -> void:
+	#change controller as needed
+	var new_grid = get_grid_name()
+	var new_hero_id = 0
+	if (new_grid):
+		new_hero_id = gameData.get_grid_owner_hero_id(new_grid)
+	else:
+		#attempt for piles/containers
+		new_hero_id = gameData.get_grid_owner_hero_id(new_host)
+	self.set_controller_hero_id(new_hero_id)		
 		
 		
 # A signal for whenever the player clicks on a card

@@ -130,7 +130,7 @@ func _find_subjects(stored_integer := 0) -> Array:
 			is_valid = SP.check_validity(owner, script_definition, "subject")
 			subjects_array.append(owner)
 		_:
-			subjects_array = cfc.ov_utils.get_subjects(
+			subjects_array = cfc.ov_utils.get_subjects(self, 
 					get_property(SP.KEY_SUBJECT), stored_integer)
 			for c in subjects_array:
 				if not SP.check_validity(c, script_definition, "subject"):

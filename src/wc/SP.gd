@@ -11,10 +11,16 @@ extends ScriptProperties
 # card script definition for a filter, then it will look for the same key
 # in the trigger dictionary. If it does not, or the value does not match
 # then it will consider this trigger invalid for execution.
+#TODO delete
 const FILTER_DEMONSTRATION = "is_demonstration"
+
+const KEY_SUBJECT_V_HOST := "host"
+const FILTER_HOST_OF := "filter_is_host_of"
+const FILTER_SAME_CONTROLLER := "filter_same_controller"
 
 # This call has been setup to call the original, and allow futher extension
 # simply create new filter
+#TODO update/delete
 static func filter_trigger(
 		card_scripts,
 		trigger_card,
@@ -24,10 +30,34 @@ static func filter_trigger(
 		trigger_card,
 		owner_card,
 		trigger_details)
-	# This is a sample setup of how you would setup a new filter. 
-	# See ScriptProperties for more advanced filters
-	if is_valid and card_scripts.get("filter" + FILTER_DEMONSTRATION) \
-			and card_scripts.get("filter" + FILTER_DEMONSTRATION) != \
-			trigger_details.get(FILTER_DEMONSTRATION):
+
+	# Card Host filter checks
+	if is_valid and card_scripts.get(FILTER_HOST_OF) \
+			and !check_host_filter(trigger_card,owner_card,card_scripts.get(FILTER_HOST_OF)):
 		is_valid = false
+
+	# Same Controller filter check
+	if is_valid and card_scripts.get(FILTER_SAME_CONTROLLER) \
+			and !check_same_controller_filter(trigger_card,owner_card,card_scripts.get(FILTER_SAME_CONTROLLER)):
+		is_valid = false
+
 	return(is_valid)
+
+# Returns true if the trigger is the host of the owner, false otherwise
+static func check_host_filter(trigger_card, owner_card, host_description : String) -> bool:
+	var card_matches := false
+	if !is_instance_valid(trigger_card): return false
+	if !is_instance_valid(owner_card): return false
+	
+	match host_description:
+		"self":
+			if owner_card.current_host_card == trigger_card: 
+				card_matches = true
+	return(card_matches)
+	
+# Returns true if the trigger and the owner belong to the same hero, false otherwise
+static func check_same_controller_filter(trigger_card, owner_card, true_false : bool) -> bool:
+	var same_controller: bool = (owner_card.get_controller_hero_id() == trigger_card.get_controller_hero_id())
+	if (same_controller and true_false): return true
+	if ((not same_controller) and (not true_false)): return true
+	return false

@@ -166,7 +166,7 @@ func _ready() -> void:
 	
 	#Tests
 	draw_cheat("Combat Training")
-	draw_cheat("Swinging Web Kick")
+	draw_cheat("Mockingbird")
 	
 	#Signals
 	scripting_bus.connect("current_playing_hero_changed", self, "_current_playing_hero_changed")

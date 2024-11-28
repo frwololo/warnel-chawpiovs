@@ -1,0 +1,29 @@
+[
+	{
+		"code": "01097",
+		"name": "The Break-In!",
+		"modular_default": ["Bomb Scare"],
+		"encounter_sets": [
+			"Rhino",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Rhino_1",
+			"Rhino_2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"Rhino",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"rhino_2",
+				"rhino_3"
+			]
+		},
+		"setup_script": "todo"
+	}
+]

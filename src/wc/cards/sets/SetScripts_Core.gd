@@ -14,13 +14,13 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 	var type_code:String = card["type_code"] if (card && card.has("type_code")) else ""
 	var grid = CFConst.TYPECODE_TO_GRID.get(type_code, "")
 	var move_after_play : Dictionary = {
-		"name": "move_card_to_board",
+		"name": "play_card",
 		"subject": "self",
 		"grid_name" : grid
 	}	
 	if CFConst.TYPECODE_TO_PILE.has(type_code):
 		move_after_play  = {
-		"name": "move_card_to_container",
+		"name": "play_card",
 		"subject": "self",
 		"dest_container" : CFConst.TYPECODE_TO_PILE[type_code]
 	}
@@ -43,7 +43,7 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 					{
 						"name": "pay_regular_cost",
 						"is_cost": true,
-						"cost" : cost,
+						"cost" : "card_cost", #keyword here to retrieve cost realtime
 					},
 					move_after_play
 				]

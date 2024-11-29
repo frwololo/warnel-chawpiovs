@@ -30,6 +30,47 @@
 			]
 		}		
 	},
+	"Helicarrier": {	
+		"manual": {
+			"board": [
+				{
+					"name": "rotate_card",
+					"subject": "self",
+					"is_cost": true,
+					"degrees": 90,
+				},
+				{
+					"name": "mod_counter",
+					"modification": 1,
+					"counter_name":  "helicarrier",
+				},				
+			]
+		},
+		"alterants": {
+			"board": [
+				{					
+					"filter_task" : "get_property",
+					"filter_property_name" : "cost",
+					"alteration": "per_counter",
+					"per_counter": {
+							"counter_name": "helicarrier",
+							"is_inverted" : true,
+						}
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "another",
+			"board": [
+				{
+					"name": "mod_counter",
+					"modification": 0,
+					"set_to_mod": true,
+					"counter_name":  "helicarrier",
+				},
+			]
+		},		
+	},	
 	"Swinging Web Kick": {
 		"manual": {
 			"hand": [

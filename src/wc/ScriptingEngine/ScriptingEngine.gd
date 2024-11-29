@@ -71,6 +71,28 @@ func move_card_to_container(script: ScriptTask) -> int:
 	script.script_definition = backup
 	return result
 
+#play card and move it either to a pile or a container
+# more importantly, sends the signal "card played" to the scripting engine
+func play_card(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode	
+	
+	var definition:Dictionary =  script.script_definition
+	if (definition.has("grid_name")):
+		definition.name="move_card_to_board"
+		retcode =  move_card_to_board(script)
+	else:
+		definition.name="move_card_to_container"
+		retcode = move_card_to_container(script)		
+	
+	#if (retcode == CFConst.ReturnCode.FAILED):
+	#	return retcode
+		
+	scripting_bus.emit_signal("card_played", script.owner, script.script_definition)		
+	return retcode	
+
 #Compatible with IS_COST (obviously?)
 func pay_from_manapool(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED

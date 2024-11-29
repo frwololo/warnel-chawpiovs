@@ -33,3 +33,16 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 	for v in ManaCost.Resource.values() :
 		mod_counter(ManaCost.RESOURCE_TEXT[v],manapool.pool[v], true) 
 
+# We add counters dynamically at runtime as requested, even if they didn't exist in the game definition
+# We do this before calling the parent which actually needs the counter to exist
+func mod_counter(counter_name: String,
+		value: int,
+		set_to_mod := false,
+		check := false,
+		requesting_object = null,
+		tags := ["Manual"]) -> int:
+	if (not needed_counters.has(counter_name)):
+		add_new_counter(counter_name, {"CounterTitle": counter_name, "Value" : 0} )
+		
+	var result = .mod_counter(counter_name, value, set_to_mod, check, requesting_object, tags)
+	return result

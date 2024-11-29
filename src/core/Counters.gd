@@ -60,25 +60,32 @@ func _ready() -> void:
 func spawn_needed_counters() -> Array:
 	var all_counters := []
 	for counter_name in needed_counters:
-		var counter = counter_scene.instance()
-		counters_container.add_child(counter)
-		all_counters.append(counter)
-		counter.name = counter_name
-		var counter_labels = needed_counters[counter_name]
-		for label in counter_labels:
-			if not counter.has_node(label):
-				continue
-			counter.get_node(label).text = str(counter_labels[label])
-			# The value_node is also used determine the initial values
-			# of the counters dictionary
-			if label == value_node:
-				counters[counter_name] = counter_labels[label]
-				# _labels stores the label node which displays the value
-				# of the counter
-				_labels[counter_name] = counter.get_node(label)
+		var counter = add_new_counter(counter_name, needed_counters[counter_name])
+		if (counter):
+			all_counters.append(counter)
 	return(all_counters)
 
-
+func add_new_counter(counter_name, labels = {}):
+	if (not needed_counters.has(counter_name)):
+		needed_counters[counter_name] = labels
+		
+	var counter = counter_scene.instance()
+	counters_container.add_child(counter)
+	counter.name = counter_name
+	var counter_labels = needed_counters[counter_name]
+	for label in counter_labels:
+		if not counter.has_node(label):
+			continue
+		counter.get_node(label).text = str(counter_labels[label])
+		# The value_node is also used determine the initial values
+		# of the counters dictionary
+		if label == value_node:
+			counters[counter_name] = counter_labels[label]
+			# _labels stores the label node which displays the value
+			# of the counter
+			_labels[counter_name] = counter.get_node(label)
+	return counter
+	
 # Modifies the value of a counter. The counter has to have been specified
 # in the `needed_counters`
 #

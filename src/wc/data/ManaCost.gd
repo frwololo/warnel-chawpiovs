@@ -82,7 +82,7 @@ func is_zero() :
 			return false
 	return true	
 
-#Converts a text into a manacost.
+#Converts a text (or int) into a manacost.
 #TODO Simple int for now, will need to expand	
 func init_from_expression(expression):
 	var i = int(expression)

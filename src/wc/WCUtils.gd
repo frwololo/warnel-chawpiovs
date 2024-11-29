@@ -95,24 +95,30 @@ static func to_grayscale(texture : Texture) -> Texture:
 
 # TODO move to a utility file
 # we operate directly on the dictionary without suplicate for speed reasons. Make a copy prior if needed
-static func search_and_replace (script_definition : Dictionary, from: String, to:String, exact_match: bool = false) -> Dictionary:
-	for key in script_definition.keys():
-		var value = script_definition[key]
-		if typeof(value) == TYPE_STRING:
-			if ((!exact_match) or (value == from)):
-				script_definition[key] = value.replace(from, to)
-		elif typeof(value) == TYPE_ARRAY:
-			for x in value:
-				search_and_replace(x,from, to, exact_match)
-		elif typeof(value) == TYPE_DICTIONARY:
-			search_and_replace(value,from, to, exact_match)	
-			
-		#do the key too	
-		if typeof(key) == TYPE_STRING:
-			if ((!exact_match) or (key == from)):
-				var new_string = key.replace(from, to)	
-				script_definition[new_string] = script_definition[key]
-				#TODO erase???		
+static func search_and_replace (script_definition, from: String, to:String, exact_match: bool = false) -> Dictionary:
+	match typeof(script_definition):
+		TYPE_DICTIONARY:	
+			for key in script_definition.keys():
+				var value = script_definition[key]
+				match typeof(value):
+					TYPE_STRING:
+						if ((!exact_match) or (value == from)):
+							script_definition[key] = value.replace(from, to)
+					TYPE_ARRAY:
+						for x in value:
+							search_and_replace(x,from, to, exact_match)
+					TYPE_DICTIONARY:
+						search_and_replace(value,from, to, exact_match)	
+					
+				#do the key too	
+				if typeof(key) == TYPE_STRING:
+					if ((!exact_match) or (key == from)):
+						var new_string = key.replace(from, to)	
+						script_definition[new_string] = script_definition[key]
+						#TODO erase???	
+		TYPE_STRING:
+			if ((!exact_match) or (script_definition == from)):
+				script_definition = script_definition.replace(from, to)	
 	return script_definition;
 				
 static func disable_and_hide_node(node:Node) -> void:

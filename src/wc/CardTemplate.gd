@@ -242,7 +242,10 @@ func common_pre_run(_sceng) -> void:
 func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:		
 	var manapool:ManaPool = gameData.get_current_team_member()["manapool"]
 	var manacost:ManaCost = ManaCost.new()
-	manacost.init_from_expression(script_definition["cost"]) #TODO better name?
+	var cost = script_definition["cost"]
+	if cost == "card_cost":
+		cost = self.get_property("cost")
+	manacost.init_from_expression(cost) #TODO better name?
 	var missing_mana:ManaCost = manapool.compute_missing(manacost)
 	
 	var result = {}

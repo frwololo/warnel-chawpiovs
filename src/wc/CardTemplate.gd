@@ -16,6 +16,12 @@ func set_controller_hero_id(hero_id:int):
 func get_controller_hero_id() -> int:
 	return controller_hero_id	
 
+func _init():
+	._init()
+	#TODO We set it here in the hope that all clients create their cards in the exact 
+	#same order. This might be a very flawed assertion could need a significant overhaul
+	var tmp = guidMaster.set_get_guid(self)
+	pass
 
 func setup() -> void:
 	.setup()

@@ -205,6 +205,11 @@ _global_script_classes=[ {
 "path": "res://src/core/DetailPanels.gd"
 }, {
 "base": "Node",
+"class": "GUID",
+"language": "GDScript",
+"path": "res://src/multiplayer/GUID.gd"
+}, {
+"base": "Node",
 "class": "GameData",
 "language": "GDScript",
 "path": "res://src/wc/GameData.gd"
@@ -278,6 +283,11 @@ _global_script_classes=[ {
 "class": "Pile",
 "language": "GDScript",
 "path": "res://src/core/Pile.gd"
+}, {
+"base": "Pile",
+"class": "PileMulti",
+"language": "GDScript",
+"path": "res://src/multiplayer/PileMulti.gd"
 }, {
 "base": "Reference",
 "class": "PlayerData",
@@ -434,6 +444,7 @@ _global_script_class_icons={
 "DeckLoader": "",
 "DeckNameRandomizer": "",
 "DetailPanels": "",
+"GUID": "",
 "GameData": "",
 "GameStats": "",
 "GutHookScript": "",
@@ -449,6 +460,7 @@ _global_script_class_icons={
 "MousePointer": "",
 "OVUtils": "",
 "Pile": "",
+"PileMulti": "",
 "PlayerData": "",
 "QuantityNumberButton": "",
 "SP": "",
@@ -485,6 +497,7 @@ config/icon="res://icon.png"
 cfc="*res://src/wc/CFControlExtended.gd"
 gameData="*res://src/wc/GameData.gd"
 scripting_bus="*res://src/wc/ScriptingEngine/ScriptingBus.gd"
+guidMaster="*res://src/multiplayer/GUID.gd"
 
 [display]
 

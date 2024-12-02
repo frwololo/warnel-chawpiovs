@@ -3,7 +3,7 @@ extends Board
 
 var heroZone = preload("res://src/wc/board/WCHeroZone.tscn")
 var basicGrid = preload("res://src/wc/grids/BasicGrid.tscn")
-var basicPile = preload("res://src/core/Pile.tscn")
+var basicPile = preload("res://src/multiplayer/PileMulti.tscn")
 
 onready var villain := $VillainZone
 
@@ -156,7 +156,8 @@ func _ready() -> void:
 	#Need to wait after shuffling decks
 	for i in range(gameData.get_team_size()):
 		var pile = cfc.NMAP["deck" + str(i+1)]	
-		yield(pile, "shuffle_completed")	
+		while pile.is_shuffling:
+			yield(get_tree().create_timer(0.05), "timeout")		
 	
 	villain.load_scenario()
 
@@ -288,6 +289,8 @@ func load_cards() -> void:
 			cfc.NMAP["deck" + str(hero_id)].add_child(card)
 			#card.set_is_faceup(false,true)
 			card._determine_idle_state()
+			
+	cfc.LOG_DICT(guidMaster.guid_to_object)		
 			
 func shuffle_decks() -> void:
 	for i in range(gameData.get_team_size()):

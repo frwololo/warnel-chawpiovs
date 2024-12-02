@@ -279,4 +279,15 @@ func get_hero_portrait(card_id) -> Image:
 # Network related functions
 func is_game_master() -> bool:
 	return get_tree().is_network_server() #Todo: return something more specific to handle case where game master isn't server, for headless mode
-	 
+	
+func LOG(to_print:String):
+	var file = File.new()
+	var network_id = get_tree().get_network_unique_id()
+	network_id = str(network_id)
+	file.open("user://log_" + network_id +".txt", File.WRITE)
+	file.store_string(to_print + "\n")
+	file.close() 
+	
+func LOG_DICT(to_print:Dictionary):
+	var my_json_string = to_json(to_print)
+	LOG(my_json_string)

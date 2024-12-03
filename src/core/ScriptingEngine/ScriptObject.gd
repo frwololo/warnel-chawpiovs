@@ -73,11 +73,29 @@ func get_property(property: String, default = null):
 #		return(value)
 #	return(found_value)
 
-
+#TODO MULTIPLAYER_MODIFICATION
+#TODO move this outside of core classes
+func _network_prepaid():
+	var prepayment = get_property("network_prepaid", null)
+	if not prepayment:
+		return null
+	#prepayment should be an array of GUID
+	var result = []
+	for uid in prepayment:
+		result.append(guidMaster.get_object_by_guid(uid))
+		
+	return result
+	
 # Figures out what the subjects of this script is supposed to be.
 #
 # Returns a Card object if subjects is defined, else returns null.
 func _find_subjects(stored_integer := 0) -> Array:
+	#TODO MULTIPLAYER_MODIFICATION
+	var prepaid = _network_prepaid()
+	if (prepaid):
+		subjects = prepaid
+		return prepaid
+		
 	var subjects_array := []
 	# See SP.KEY_SUBJECT doc
 	match get_property(SP.KEY_SUBJECT):

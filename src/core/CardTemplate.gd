@@ -953,7 +953,7 @@ func set_card_name(value : String, set_label := true) -> void:
 			card_front.set_rich_label_text(name_label,value)
 		elif set_label:
 			card_front.set_label_text(name_label,value)
-		name = value
+		name = value + str(guidMaster.set_get_guid(self)) #a unique identifier that will also work for network calls
 		canonical_name = value
 		properties["Name"] = value
 
@@ -1432,6 +1432,7 @@ func execute_scripts(
 	var sceng = null
 	if len(state_scripts):
 		is_executing_scripts = true
+
 		# This evocation of the ScriptingEngine, checks the card for
 		# cost-defined tasks, and performs a dry-run on them
 		# to ascertain whether they can all be paid,
@@ -1472,9 +1473,31 @@ func execute_scripts(
 				yield(sceng,"tasks_completed")
 		is_executing_scripts = false
 		emit_signal("scripts_executed", self, sceng, trigger)
+		network_execute_scripts(trigger_card, trigger, trigger_details, only_cost_check, sceng)
 	return(sceng)
 
+func network_execute_scripts(
+		trigger_card: Card,
+		trigger: String ,
+		trigger_details: Dictionary ,
+		only_cost_check: bool,
+		sceng):
+	var prepaid: Array = sceng.network_prepaid
+	var prepaid_uids: Array = []
+	if (prepaid.empty()):
+		return
+	for array in prepaid:
+		var prepaid_uids_task = guidMaster.array_of_objects_to_guid(array)
+		prepaid_uids.append(prepaid_uids_task)
+	var remote_trigger_details: Dictionary = trigger_details.duplicate()
+	remote_trigger_details["network_prepaid"] =  prepaid_uids
+	
+	var trigger_card_uid = guidMaster.set_get_guid(trigger_card)
+	var my_uid = guidMaster.set_get_guid(self)
 
+	gameData.execute_script_to_remote(my_uid, trigger_card_uid, trigger, remote_trigger_details, only_cost_check)
+
+	
 # Retrieves the card scripts either from those defined on the card
 # itself, or from those defined in the script definition files
 #

@@ -29,3 +29,6 @@ signal step_ended(details)
 #GUI and game Interface signals
 # warning-ignore:unused_signal
 signal current_playing_hero_changed(details) #before, after
+
+# warning-ignore:unused_signal
+signal manapool_modified(details)

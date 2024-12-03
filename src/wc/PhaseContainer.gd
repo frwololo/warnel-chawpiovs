@@ -68,6 +68,7 @@ func _init():
 		var hero_index = i+1
 		var heroButton = heroPhaseScene.instance()
 		heroButton.init_hero(hero_index)
+		heroButton.name = "HeroButton" + str(hero_index)
 		add_child(heroButton)
 		heroesStatus.append(heroButton)
 			

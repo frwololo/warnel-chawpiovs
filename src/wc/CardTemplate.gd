@@ -51,7 +51,11 @@ func common_post_move_scripts(new_host: String, old_host: String, move_tags: Arr
 	else:
 		#attempt for piles/containers
 		new_hero_id = gameData.get_grid_owner_hero_id(new_host)
-	self.set_controller_hero_id(new_hero_id)		
+	self.set_controller_hero_id(new_hero_id)
+	
+	#init owner once and only once, if not already done
+	if (not self.get_owner_hero_id()):
+		self.set_owner_hero_id(new_hero_id)		
 		
 		
 # A signal for whenever the player clicks on a card
@@ -219,7 +223,7 @@ func common_pre_run(_sceng) -> void:
 		var current_hero_id = gameData.get_current_hero_id()
 		for v in ["hand", "encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
 			#TODO move to const
-			WCUtils.search_and_replace(script_definition, v, v+str(current_hero_id), true)
+			WCUtils.search_and_replace(script_definition, v, v+str(self.owner_hero_id), true)
 	
 		
 		match script_definition["name"]:
@@ -245,8 +249,9 @@ func common_pre_run(_sceng) -> void:
 				new_queue.append(task)
 	_sceng.scripts_queue = new_queue	
 
-func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:		
-	var manapool:ManaPool = gameData.get_current_team_member()["manapool"]
+func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:	
+	var owner_hero_id = self.get_owner_hero_id()	
+	var manapool:ManaPool = gameData.get_team_member(owner_hero_id)["manapool"]
 	var manacost:ManaCost = ManaCost.new()
 	var cost = script_definition["cost"]
 	if cost == "card_cost":
@@ -257,7 +262,7 @@ func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:
 	var result = {}
 	#Manapool not enough, need to discard cards
 	if missing_mana.is_negative() :
-		var current_hero_id = gameData.get_current_hero_id()
+		# var current_hero_id = gameData.get_current_hero_id()
 		#Replace the script with a move condition
 		result ={
 				"name": "move_card_to_container",
@@ -270,8 +275,8 @@ func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:
 				SP.KEY_SELECTION_TYPE: "equal",
 				SP.KEY_SELECTION_OPTIONAL: false,
 				SP.KEY_SELECTION_IGNORE_SELF: true,
-				"src_container": "hand" + str(current_hero_id),
-				"dest_container": "discard" + str(current_hero_id),
+				"src_container": "hand" + str(owner_hero_id),
+				"dest_container": "discard" + str(owner_hero_id),
 			}		
 
 	return result	

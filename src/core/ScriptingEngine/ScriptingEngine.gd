@@ -38,12 +38,16 @@ var scripts_queue: Array
 # state of the board would be mid-execution, even during dry-runs
 var snapshot_id : float = 0
 
+var trigger_details : Dictionary #only used to keep track for network calls
+var is_network_master: bool = true #true if I am the client triggering this script, false if I am a peer
+var network_prepaid:Array = []
 
 # Simply initiates the [run_next_script()](#run_next_script) loop
 func _init(state_scripts: Array,
 		owner,
 		trigger_object: Node,
-		trigger_details: Dictionary) -> void:
+		_trigger_details: Dictionary) -> void:
+	trigger_details = _trigger_details		
 	for t in state_scripts:
 		# We do a duplicate to allow repeat to modify tasks without danger.
 		var task: Dictionary = t.duplicate(true)
@@ -80,6 +84,7 @@ func _init(state_scripts: Array,
 					trigger_object,
 					trigger_details)
 			scripts_queue.append(script_task)
+				
 
 # This flag will be true if we're attempting to find if the card
 # has costs that need to be paid, before the effects take place.
@@ -98,6 +103,14 @@ func execute(_run_type := CFInt.RunType.NORMAL) -> void:
 	snapshot_id = rand_range(1,10000000)
 	all_tasks_completed = false
 	run_type = _run_type
+	
+	network_prepaid = []
+	if trigger_details.has("network_prepaid"):
+		is_network_master = false
+		var prepaid = trigger_details["network_prepaid"]
+		for i in range(prepaid.size()):
+			scripts_queue[i].script_definition["network_prepaid"] =  prepaid[i]		
+		
 	var prev_subjects := []
 	for task in scripts_queue:
 		# Failsafe for GUT tearing down while Sceng is running
@@ -146,6 +159,9 @@ func execute(_run_type := CFInt.RunType.NORMAL) -> void:
 			if not script.is_primed:
 				yield(script,"primed")
 		if script.is_primed:
+			#Add to list of prepaid stuff only if I'm the one paying the costs and actually paying them
+			if is_network_master and not costs_dry_run():
+				network_prepaid.append(script.subjects)
 			_pre_task_exec(script)
 			#print("Scripting Subjects: " + str(script.subjects)) # Debug
 			if script.script_name == "custom_script"\

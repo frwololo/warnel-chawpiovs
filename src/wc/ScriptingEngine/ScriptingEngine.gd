@@ -38,13 +38,13 @@ func move_card_to_board(script: ScriptTask) -> int:
 	#Replace all occurrences of "current_hero" with the actual id
 	#This ensures we use e.g. the correct discard pile, etc...
 	var current_hero_id = gameData.get_current_hero_id()
-	
+	var owner_hero_id = script.owner.get_owner_hero_id()
 	#Not needed anymore ?
 	WCUtils.search_and_replace(script.script_definition, "{current_hero}", str(current_hero_id))
 	
 	for v in ["encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
 		#TODO move to const
-		WCUtils.search_and_replace(script.script_definition, v, v+str(current_hero_id), true)
+		WCUtils.search_and_replace(script.script_definition, v, v+str(owner_hero_id), true)
 	
 	var result = .move_card_to_board(script)
 	script.script_definition = backup
@@ -59,13 +59,13 @@ func move_card_to_container(script: ScriptTask) -> int:
 	#Replace all occurrences of "current_hero" with the actual id
 	#This ensures we use e.g. the correct discard pile, etc...
 	var current_hero_id = gameData.get_current_hero_id()
-	
+	var owner_hero_id = script.owner.get_owner_hero_id()
 	#Not needed anymore ?
 	WCUtils.search_and_replace(script.script_definition, "{current_hero}", str(current_hero_id))
 	
 	for v in ["encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
 		#TODO move to const
-		WCUtils.search_and_replace(script.script_definition, v, v+str(current_hero_id), true)
+		WCUtils.search_and_replace(script.script_definition, v, v+str(owner_hero_id), true)
 	
 	var result = .move_card_to_container(script)
 	script.script_definition = backup
@@ -99,7 +99,9 @@ func pay_from_manapool(script: ScriptTask) -> int:
 	if (costs_dry_run()):
 		return retcode
 	
-	var manapool:ManaPool = gameData.get_current_team_member()["manapool"]
+	var owner = script.owner
+	var owner_hero_id = owner.get_owner_hero_id()
+	var manapool:ManaPool = gameData.get_team_member(owner_hero_id)["manapool"]
 
 	#Manapool gets emptied after paying for a cost
 	#TODO something more subtle than that?

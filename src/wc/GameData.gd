@@ -299,4 +299,11 @@ func assign_starting_hero():
 func get_grid_owner_hero_id(grid_name:String) -> int:
 	var potential_hero_id = grid_name.right(1).to_int()
 	return potential_hero_id
-	
+
+func execute_script_to_remote(caller_card_uid, trigger_card_uid, trigger, remote_trigger_details, only_cost_check):
+	rpc("execute_script_from_remote", caller_card_uid, trigger_card_uid, trigger, remote_trigger_details, only_cost_check)
+
+remote func execute_script_from_remote(caller_card_uid, trigger_card_uid, trigger, remote_trigger_details, only_cost_check): 
+	var trigger_card = guidMaster.get_object_by_guid(trigger_card_uid)
+	var caller_card = guidMaster.get_object_by_guid(caller_card_uid)
+	caller_card.execute_scripts(trigger_card, trigger, remote_trigger_details, only_cost_check)	

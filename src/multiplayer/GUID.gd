@@ -29,3 +29,10 @@ remote func force_set_get_guid(stuff, uid) -> int:
 	if (current_guid < uid):
 		current_guid = uid
 	return uid	
+
+func array_of_objects_to_guid(objects:Array)-> Array:
+	var results:Array = []
+	for o in objects:
+		var uid = set_get_guid(o)
+		results.append(uid)
+	return results

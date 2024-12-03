@@ -2,12 +2,11 @@
 class_name ManaPool
 extends ManaCost
 
-signal manapool_modified(card,trigger,details)
+
 
 # Called when the node enters the scene tree for the first time.
 func _init():
 	pool[Resource.UNCOLOR] = 1 #TODO Temp for tests
-	self.connect("manapool_modified", self, "_on_manapool_modified")
 
 
 
@@ -20,25 +19,13 @@ func reset() :
 	.reset()
 	var diff:ManaCost = compute_diff(temp_pool)
 	if not diff.is_zero():
-		emit_signal(
-			"manapool_modified",
-			null, #TODO Requesting object - better to have a card here?
-			"manapool_modified",
-			{
-				#TODO
-			}
-		)
+		scripting_bus.emit_signal("manapool_modified",  {}) #TODO Requesting object - better to have a card here?
+
 
 func add_resource(type, amount) :
 	.add_resource(type, amount)
-	emit_signal(
-		"manapool_modified",
-		null, #TODO Requesting object - better to have a card here?
-		"manapool_modified",
-		{
-			#TODO
-		}
-	)	
+	scripting_bus.emit_signal("manapool_modified",  {}) #TODO Requesting object - better to have a card here?
+
 
 #computes raw diff between two mana costs without any clever logic	
 func compute_diff(cost:ManaCost) -> ManaCost:

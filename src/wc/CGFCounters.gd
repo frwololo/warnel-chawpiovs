@@ -26,9 +26,10 @@ func _ready() -> void:
 	spawn_needed_counters()
 	
 	#Signals
-	scripting_bus.connect("current_playing_hero_changed", self, "_current_playing_hero_changed")
+	scripting_bus.connect("current_playing_hero_changed", self, "_refresh")
+	scripting_bus.connect("manapool_modified", self, "_refresh")
 	
-func _current_playing_hero_changed (trigger_details: Dictionary = {}):
+func _refresh (trigger_details: Dictionary = {}):
 	var manapool:ManaPool = gameData.get_current_team_member()["manapool"]
 	for v in ManaCost.Resource.values() :
 		mod_counter(ManaCost.RESOURCE_TEXT[v],manapool.pool[v], true) 

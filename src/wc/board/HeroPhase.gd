@@ -56,13 +56,13 @@ func _on_HeroPhase_gui_input(event):
 	if event is InputEventMouseButton: #TODO better way to handle Tablets and consoles
 		if event.button_index == BUTTON_LEFT and event.pressed:
 			if (hero_index == gameData.get_current_hero_id()):
-				switch_status()
+				rpc("switch_status")
 			else:	
 				gameData.select_current_playing_hero(hero_index)
 
 
 	
-func switch_status():
+remotesync func switch_status():
 	current_state+=1
 	if (current_state > State.FINISHED):
 		current_state = State.ACTIVE
@@ -77,19 +77,22 @@ func switch_status():
 func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 	var new_hero_index = gameData.get_current_hero_id()
 	if (new_hero_index == hero_index) and (current_state == State.FINISHED):
-		switch_status() #This also calls update_labels
+		rpc("switch_status") #This also calls update_labels
 	else:		
 		_update_labels()
 			
 
 func _update_labels():
 	var new_hero_index = gameData.get_current_hero_id()
-	if (new_hero_index == hero_index):
-		label.text = "Finished?"
-		if current_state == State.FINISHED:
-			label.text = "Ready for Villain"
+	if (gameData.can_i_play_this_hero(hero_index)):
+		if (new_hero_index == hero_index):
+			label.text = "Finished?"
+		else:
+			label.text = "Select"
+			if current_state == State.FINISHED:
+				label.text = "Ready for Villain"
 	else:
-		label.text = "Select"
-		if current_state == State.FINISHED:
-			label.text = "Ready for Villain"		
-	pass	
+		label.text = "Your Friend"
+	if current_state == State.FINISHED:
+		label.text = "Ready for Villain"					
+

@@ -11,6 +11,7 @@ onready var players_container := $MainMenu/VBox/Players
 onready var launch_button := $MainMenu/VBox/Center/VButtons/Launch
 
 var peer = null
+# dictionary indexed by network_id for each player.
 var players = {}
 var my_info = {name = "Name Unset"}
 

@@ -43,6 +43,15 @@ func _ready():
 	ready_button.hide() #todo do something with this guy
 	launch_button.hide()
 	launch_button.connect('pressed', self, 'on_button_pressed', [launch_button.name])
+
+#Quickstart for tests
+	if (gameData.is_multiplayer_game and cfc.is_game_master()):
+		yield(get_tree().create_timer(1), "timeout")	
+		owner_changed(1, 1)
+		rpc("assign_hero", "01001a", 0)
+		rpc("assign_hero", "01010a", 1)
+		yield(get_tree().create_timer(1), "timeout")	
+		_launch_server_game()	
 	
 	
 func _load_scenarios():

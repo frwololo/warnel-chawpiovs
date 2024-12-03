@@ -151,6 +151,12 @@ func _ready() -> void:
 
 	#Game setup - Todo move somewhere else ?
 	load_cards()
+
+	#Signals
+	scripting_bus.connect("current_playing_hero_changed", self, "_current_playing_hero_changed")
+
+	
+	gameData.assign_starting_hero()
 	load_heroes()
 	shuffle_decks()
 	#Need to wait after shuffling decks
@@ -161,7 +167,7 @@ func _ready() -> void:
 	
 	villain.load_scenario()
 
-
+	
 	draw_starting_hand()
 	offer_to_mulligan()
 	
@@ -171,8 +177,6 @@ func _ready() -> void:
 	draw_cheat("Helicarrier")	
 	draw_cheat("Swinging Web Kick")
 	
-	#Signals
-	scripting_bus.connect("current_playing_hero_changed", self, "_current_playing_hero_changed")
 
 func load_heroes():
 	var hero_count: int = gameData.get_team_size()

@@ -8,9 +8,8 @@ extends Node
 
 #Singleton for game data shared across menus and views
 var network_players := {}
-
 var id_to_network_id:= {}
-
+var is_multiplayer_game:bool = true
 #1 indexed {id: HeroDeckData}
 var team := {}
 
@@ -60,6 +59,7 @@ func get_player_by_index(id):
 
 #setup default for 1player mode	
 func init_1player():
+	is_multiplayer_game = false
 	init_as_server()
 	var dic = {1 : {"name" : "Player1", "id" : 0}}
 	init_network_players(dic)
@@ -263,9 +263,37 @@ func villain_died(card:Card):
 	board.end_game("victory")
 
 func select_current_playing_hero(hero_index):
+	if (not can_i_play_this_hero(hero_index)):
+		return
 	var previous_hero_id = current_hero_id
 	current_hero_id = hero_index
 	scripting_bus.emit_signal("current_playing_hero_changed",  {"before": previous_hero_id,"after": current_hero_id })
+
+func can_i_play_this_hero(hero_index)-> bool:
+	#Errors. If hero index is out of range I can't use it
+	if hero_index < 1 or hero_index> get_team_size():
+		return false
+		
+	#if this isn't a network game, I can play all valid heroes	
+	if (!get_tree().get_network_peer()):
+		return true
+		
+	var network_id = get_tree().get_network_unique_id()	
+	var hero_deck_data:HeroDeckData = get_team_member(hero_index)["hero_data"]
+	var owner_player:PlayerData = hero_deck_data.owner
+	if (owner_player.network_id == network_id):
+		return true
+	return false
+
+#picks a first hero for a network player
+func assign_starting_hero():
+	for i in range(get_team_size()):
+		var hero_id = i+1
+		if (can_i_play_this_hero(hero_id)):
+			select_current_playing_hero(hero_id)
+			return hero_id
+	# error
+	return 0
 
 #TODO error handling?
 func get_grid_owner_hero_id(grid_name:String) -> int:

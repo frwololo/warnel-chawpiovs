@@ -1,3 +1,4 @@
+class_name PhaseContainer
 extends VBoxContainer
 
 var phaseLabel
@@ -47,6 +48,7 @@ const StepStrings = [
 
 var current_step = PHASE_STEP.PLAYER_TURN
 var current_step_complete:bool = false
+var clients_ready_for_next_phase:Dictionary = {}
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -57,6 +59,7 @@ func update_text():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	gameData.registerPhaseContainer(self)
 	scripting_bus.connect("step_started", self, "_step_started")
 	scripting_bus.connect("step_ended", self, "_step_ended")
 	update_text()
@@ -173,11 +176,44 @@ func _step_started(
 		PHASE_STEP.ROUND_END:
 			_round_end()
 	return 0
-	
-func request_next_phase():
+
+#returns true if nothing prevents me (player) from *asking* for next phase	
+func is_ready_for_next_phase() -> bool :
 	if (!current_step_complete) :
-		return	
+		return	false
+		
+	return true	
+
+mastersync func client_ready_for_next_phase():
+	if (not get_tree().is_network_server()):
+		return -1
+	var client_id = get_tree().get_rpc_sender_id() 
+
+	clients_ready_for_next_phase[client_id] = 1
+	if (clients_ready_for_next_phase.size() == gameData.network_players.size()):
+		clients_ready_for_next_phase = {}
+		rpc("proceed_to_next_phase")
+		
+mastersync func client_unready_for_next_phase():
+	if (not get_tree().is_network_server()):
+		return -1
+	var client_id = get_tree().get_rpc_sender_id() 
+
+	if clients_ready_for_next_phase.has(client_id):
+		clients_ready_for_next_phase.erase(client_id)
+
+		
+func request_next_phase():
+	if (!is_ready_for_next_phase()):
+		return
 	
+	rpc_id(1, "client_ready_for_next_phase")
+	
+func unrequest_next_phase():
+	rpc_id(1, "client_unready_for_next_phase")	
+
+	
+remotesync func proceed_to_next_phase():	
 	scripting_bus.emit_signal("step_about_to_end",  {"step" : current_step})
 	scripting_bus.emit_signal("step_ended",  {"step" : current_step})
 	if (current_step == PHASE_STEP.ROUND_END):

@@ -36,3 +36,11 @@ func array_of_objects_to_guid(objects:Array)-> Array:
 		var uid = set_get_guid(o)
 		results.append(uid)
 	return results
+	
+func array_of_guid_to_objects(uids:Array)-> Array:
+	var results:Array = []
+	for uid in uids:
+		var o = get_object_by_guid(uid)
+		results.append(o)
+	return results
+	

@@ -323,6 +323,10 @@ func _init_card_name() -> void:
 		regex.compile("@{0,1}([\\w ]+)@{0,1}")
 		var result = regex.search(name)
 		var node_human_name = result.get_string(1)
+		if (not node_human_name):
+			regex.compile("([\\w ]+)-")
+			result = regex.search(name)
+			node_human_name = result.get_string(1)		
 		set_card_name(node_human_name, false)
 	else:
 		# If the variable has been set, we ensure label and node name
@@ -953,7 +957,7 @@ func set_card_name(value : String, set_label := true) -> void:
 			card_front.set_rich_label_text(name_label,value)
 		elif set_label:
 			card_front.set_label_text(name_label,value)
-		name = value + str(guidMaster.set_get_guid(self)) #a unique identifier that will also work for network calls
+		name = value + "-" + str(guidMaster.set_get_guid(self)) #a unique identifier that will also work for network calls
 		canonical_name = value
 		properties["Name"] = value
 

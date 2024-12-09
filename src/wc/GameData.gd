@@ -14,6 +14,7 @@ var is_multiplayer_game:bool = true
 var team := {}
 
 var scenario:ScenarioDeckData
+var phaseContainer: PhaseContainer
 
 # Hero currently playing. We might need another one for interruptions
 var current_hero_id := 1
@@ -21,8 +22,13 @@ var current_hero_id := 1
 var _villain_current_hero_target :=1
 var attackers:Array = []
 
+
+
 func _init():
 	scenario = ScenarioDeckData.new()
+
+func registerPhaseContainer(phasecont:PhaseContainer):
+	phaseContainer = phasecont
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -130,6 +136,12 @@ func villain_next_target() -> int:
 
 func enemy_activates() -> int :
 	var target_id = _villain_current_hero_target
+	
+	#If we're not the targeted player, we'll fail this one,
+	#and go into "wait for next phase" instantly. This should 
+	#force us to wait for the targeted player to trigger the script via network
+	if not (can_i_play_this_hero(target_id)):
+		return CFConst.ReturnCode.FAILED
 	var enemy:Card = attackers.pop_front()
 	if (enemy):
 		var sceng = enemy.execute_scripts(enemy, "automated_enemy_attack")
@@ -299,6 +311,18 @@ func assign_starting_hero():
 func get_grid_owner_hero_id(grid_name:String) -> int:
 	var potential_hero_id = grid_name.right(1).to_int()
 	return potential_hero_id
+
+#Returns true if another network player is supposed to play,
+# in which case I have to wait for their input
+#probably needs an rpc call at some point?
+# TODO maybe each player that wants "exclusivity" requests exclusivity to Master
+# and master adds it to a pile, so that there can be exclusivity on top of exclusivity? e.g. for interrupts	
+func is_waiting_for_other_player_input():
+	var current_step = phaseContainer.current_step
+	if (current_step == PhaseContainer.PHASE_STEP.VILLAIN_ACTIVATES or current_step == PhaseContainer.PHASE_STEP.VILLAIN_MINIONS_ACTIVATE):
+		if not (can_i_play_this_hero(_villain_current_hero_target)):
+			return true
+	return false
 
 func execute_script_to_remote(caller_card_uid, trigger_card_uid, trigger, remote_trigger_details, only_cost_check):
 	rpc("execute_script_from_remote", caller_card_uid, trigger_card_uid, trigger, remote_trigger_details, only_cost_check)

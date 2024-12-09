@@ -274,7 +274,12 @@ func get_hero_portrait(card_id) -> Image:
 	var sub_img = img_data.get_rect(area) #Todo more flexible?
 	return sub_img	
 
-
+func instance_card(card_name: String) -> Card:
+	var card = .instance_card(card_name)
+	#TODO We set GUID here in the hope that all clients create their cards in the exact 
+	#same order. This might be a very flawed assertion could need a significant overhaul	
+	var tmp = guidMaster.set_guid(card)	
+	return card
 #
 # Network related functions
 func is_game_master() -> bool:

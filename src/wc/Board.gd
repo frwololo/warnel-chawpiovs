@@ -176,6 +176,7 @@ func _ready() -> void:
 	draw_cheat("Mockingbird")
 	draw_cheat("Helicarrier")	
 	draw_cheat("Swinging Web Kick")
+	cfc.LOG_DICT(guidMaster.guid_to_object)	
 	
 
 func load_heroes():
@@ -292,9 +293,7 @@ func load_cards() -> void:
 		for card in card_array:
 			cfc.NMAP["deck" + str(hero_id)].add_child(card)
 			#card.set_is_faceup(false,true)
-			card._determine_idle_state()
-			
-	cfc.LOG_DICT(guidMaster.guid_to_object)		
+			card._determine_idle_state()	
 			
 func shuffle_decks() -> void:
 	for i in range(gameData.get_team_size()):

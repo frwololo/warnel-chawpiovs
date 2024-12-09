@@ -36,7 +36,7 @@ func get_all_cards_by_guid():
 	var uidArray:Array = []
 	
 	for card in cardsArray:
-		uidArray.append(guidMaster.set_get_guid(card))
+		uidArray.append(guidMaster.get_guid(card))
 		
 	return uidArray
 			

@@ -957,7 +957,7 @@ func set_card_name(value : String, set_label := true) -> void:
 			card_front.set_rich_label_text(name_label,value)
 		elif set_label:
 			card_front.set_label_text(name_label,value)
-		name = value + "-" + str(guidMaster.set_get_guid(self)) #a unique identifier that will also work for network calls
+		name = value + "-" + str(guidMaster.get_guid(self)) #a unique identifier that will also work for network calls
 		canonical_name = value
 		properties["Name"] = value
 
@@ -1496,8 +1496,8 @@ func network_execute_scripts(
 	var remote_trigger_details: Dictionary = trigger_details.duplicate()
 	remote_trigger_details["network_prepaid"] =  prepaid_uids
 	
-	var trigger_card_uid = guidMaster.set_get_guid(trigger_card)
-	var my_uid = guidMaster.set_get_guid(self)
+	var trigger_card_uid = guidMaster.get_guid(trigger_card)
+	var my_uid = guidMaster.get_guid(self)
 
 	gameData.execute_script_to_remote(my_uid, trigger_card_uid, trigger, remote_trigger_details, only_cost_check)
 

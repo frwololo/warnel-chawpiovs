@@ -1,4 +1,11 @@
-{
+{	"Backflip": {
+		"interrupt": {
+			"trigger_event": {
+				"signal": "damage_incoming"
+			},
+			"name": "prevent_damage"
+		}
+	},
 	"Combat Training": {
 		"card_moved_to_board": {
 			"trigger": "self",

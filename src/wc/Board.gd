@@ -174,7 +174,8 @@ func _ready() -> void:
 	#Tests
 	draw_cheat("Combat Training")
 	draw_cheat("Mockingbird")
-	draw_cheat("Helicarrier")	
+	draw_cheat("Backflip")
+	#draw_cheat("Helicarrier")	
 	draw_cheat("Swinging Web Kick")
 	cfc.LOG_DICT(guidMaster.guid_to_object)	
 	

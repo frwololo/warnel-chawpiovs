@@ -25,13 +25,29 @@ func prep(card_name: String, task_name: String) -> void:
 		$VecticalHighlights.rect_size = rect_size
 		$VecticalHighlights.rect_position = Vector2(0,0)
 
+		scripting_bus.emit_signal(
+			"optional_window_opened",
+			self,
+			{"card_name": card_name}
+		)		
+
 
 func _on_OptionalConfirmation_confirmed() -> void:
 	is_accepted = true
 	emit_signal("selected")
+	scripting_bus.emit_signal(
+		"optional_window_closed",
+		self,
+		{"is_accepted": is_accepted}
+	)	
 
 
 func _on_OptionalConfirmation_cancelled() -> void:
 	is_accepted = false
 	emit_signal("selected")
+	scripting_bus.emit_signal(
+		"optional_window_closed",
+		self,
+		{"is_accepted": is_accepted}
+	)		
 

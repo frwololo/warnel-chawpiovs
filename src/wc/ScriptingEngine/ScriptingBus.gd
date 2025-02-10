@@ -9,12 +9,15 @@ signal card_played(card,details)
 # warning-ignore:unused_signal
 signal card_removed(card,details)
 # warning-ignore:unused_signal
-signal selection_window_opened(selection_window, details)
-# warning-ignore:unused_signal
 signal card_selected(selection_window, details)
 
 # warning-ignore:unused_signal
 signal setup_complete()
+
+# warning-ignore:unused_signal
+signal damage_incoming(card,details)
+# warning-ignore:unused_signal
+signal card_damaged(card,details)
 
 #Game Phases
 # warning-ignore:unused_signal

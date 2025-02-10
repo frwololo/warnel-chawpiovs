@@ -38,8 +38,12 @@ var scripts_queue: Array
 # state of the board would be mid-execution, even during dry-runs
 var snapshot_id : float = 0
 
-var trigger_details : Dictionary #only used to keep track for network calls
-var is_network_master: bool = true #true if I am the client triggering this script, false if I am a peer
+ #only used to keep track for network calls
+var trigger_details : Dictionary
+#true if I am the client triggering this script, false if I am a peer
+var is_network_master: bool = true 
+#this contains the list of subjects selected remotelyby another peer to pay for the script costs
+#this will allow to automatically pay for them on this client and mimic the results without having to select
 var network_prepaid:Array = []
 
 # Simply initiates the [run_next_script()](#run_next_script) loop
@@ -48,43 +52,58 @@ func _init(state_scripts: Array,
 		trigger_object: Node,
 		_trigger_details: Dictionary) -> void:
 	trigger_details = _trigger_details		
-	for t in state_scripts:
+	add_scripts(state_scripts, owner, trigger_object, trigger_details)
+
+func add_scripts(state_scripts,
+		owner,
+		trigger_object: Node,
+		_trigger_details: Dictionary,
+		fifo:bool = true) -> void:
+			
+		var tmp_array: Array = []
+		for t in state_scripts:		
 		# We do a duplicate to allow repeat to modify tasks without danger.
-		var task: Dictionary = t.duplicate(true)
-		# This is the only script property which we use outside of the
-		# ScriptTask object. The repeat property duplicates the whole task
-		# definition in multiple tasks
-		var repeat = task.get(SP.KEY_REPEAT, 1)
-		if SP.VALUE_PER in str(repeat):
-			var per_msg = perMessage.new(
-					repeat,
-					owner,
-					task.get(repeat),
-					trigger_object,
-					[],
-					[])
-			repeat = per_msg.found_things
-		# If there are no targets to repeat,  and the task was targetting
-		# It means it might have fired off of a dragging action, and we want to avoid
-		# it triggering when the player tries to drag it from hand and doing nothing.
-		if repeat == 0 \
-				and cfc.card_drag_ongoing == owner\
-				and task.get(SP.KEY_SUBJECT) == SP.KEY_SUBJECT_V_TARGET\
-				and (task.get(SP.KEY_IS_COST) or task.get(SP.KEY_NEEDS_SUBJECT)):
-			can_all_costs_be_paid = false
-		for iter in range(repeat):
-			# In case it's a targeting task, we assume we don't want to
-			# spawn X targeting arrows at the same time, so we convert
-			# all subsequent repeats into "previous" targets
-			if iter > 0 and task.has("subject") and task["subject"] == "target":
-				task["subject"] = "previous"
-			var script_task := ScriptTask.new(
-					owner,
-					task,
-					trigger_object,
-					trigger_details)
-			scripts_queue.append(script_task)
-				
+			var task: Dictionary = t.duplicate(true)
+			# This is the only script property which we use outside of the
+			# ScriptTask object. The repeat property duplicates the whole task
+			# definition in multiple tasks
+			var repeat = task.get(SP.KEY_REPEAT, 1)
+			if SP.VALUE_PER in str(repeat):
+				var per_msg = perMessage.new(
+						repeat,
+						owner,
+						task.get(repeat),
+						trigger_object,
+						[],
+						[])
+				repeat = per_msg.found_things
+			# If there are no targets to repeat,  and the task was targetting
+			# It means it might have fired off of a dragging action, and we want to avoid
+			# it triggering when the player tries to drag it from hand and doing nothing.
+			if repeat == 0 \
+					and cfc.card_drag_ongoing == owner\
+					and task.get(SP.KEY_SUBJECT) == SP.KEY_SUBJECT_V_TARGET\
+					and (task.get(SP.KEY_IS_COST) or task.get(SP.KEY_NEEDS_SUBJECT)):
+				can_all_costs_be_paid = false
+			for iter in range(repeat):
+				# In case it's a targeting task, we assume we don't want to
+				# spawn X targeting arrows at the same time, so we convert
+				# all subsequent repeats into "previous" targets
+				if iter > 0 and task.has("subject") and task["subject"] == "target":
+					task["subject"] = "previous"
+				var script_task := ScriptTask.new(
+						owner,
+						task,
+						trigger_object,
+						_trigger_details)
+				if (fifo):
+					scripts_queue.append(script_task)
+				else:
+					tmp_array.append(script_task)
+		if (!fifo):
+			tmp_array.append_array(scripts_queue)
+			scripts_queue = tmp_array
+									
 
 # This flag will be true if we're attempting to find if the card
 # has costs that need to be paid, before the effects take place.
@@ -104,6 +123,9 @@ func execute(_run_type := CFInt.RunType.NORMAL) -> void:
 	all_tasks_completed = false
 	run_type = _run_type
 	
+	# We execute the scripts locally, but in multiplayer only one player has to select
+	# payments. Once they do, we send the payment information to other players,
+	# and instead of selecting manually, the cost is paid automatically with the network_prepaid data
 	network_prepaid = []
 	if trigger_details.has("network_prepaid"):
 		is_network_master = false

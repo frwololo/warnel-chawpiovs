@@ -184,6 +184,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/core/CardViewer/DeckBuilder/DBListCardObject.gd"
 }, {
+"base": "Node",
+"class": "DamageScript",
+"language": "GDScript",
+"path": "res://src/wc/ScriptingEngine/Scripts/DamageScript.gd"
+}, {
 "base": "CardViewer",
 "class": "DeckBuilder",
 "language": "GDScript",
@@ -218,6 +223,11 @@ _global_script_classes=[ {
 "class": "GameStats",
 "language": "GDScript",
 "path": "res://src/core/GameStats.gd"
+}, {
+"base": "Node2D",
+"class": "GlobalScriptStack",
+"language": "GDScript",
+"path": "res://src/wc/ScriptingEngine/GlobalScriptStack.gd"
 }, {
 "base": "Reference",
 "class": "GutHookScript",
@@ -278,6 +288,11 @@ _global_script_classes=[ {
 "class": "OVUtils",
 "language": "GDScript",
 "path": "res://src/core/OverridableUtils.gd"
+}, {
+"base": "VBoxContainer",
+"class": "PhaseContainer",
+"language": "GDScript",
+"path": "res://src/wc/PhaseContainer.gd"
 }, {
 "base": "CardContainer",
 "class": "Pile",
@@ -389,6 +404,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/wc/ScriptingEngine/ScriptingBus.gd"
 }, {
+"base": "ScriptingEngine",
+"class": "WCScriptingEngine",
+"language": "GDScript",
+"path": "res://src/wc/ScriptingEngine/ScriptingEngine.gd"
+}, {
 "base": "Reference",
 "class": "WCUtils",
 "language": "GDScript",
@@ -440,6 +460,7 @@ _global_script_class_icons={
 "DBDeckSummaries": "",
 "DBGridCardObject": "",
 "DBListCardObject": "",
+"DamageScript": "",
 "DeckBuilder": "",
 "DeckLoader": "",
 "DeckNameRandomizer": "",
@@ -447,6 +468,7 @@ _global_script_class_icons={
 "GUID": "",
 "GameData": "",
 "GameStats": "",
+"GlobalScriptStack": "",
 "GutHookScript": "",
 "GutTest": "",
 "Hand": "",
@@ -459,6 +481,7 @@ _global_script_class_icons={
 "ManipulationButtons": "",
 "MousePointer": "",
 "OVUtils": "",
+"PhaseContainer": "",
 "Pile": "",
 "PileMulti": "",
 "PlayerData": "",
@@ -481,6 +504,7 @@ _global_script_class_icons={
 "WCCard": "",
 "WCHeroZone": "",
 "WCScriptingBus": "",
+"WCScriptingEngine": "",
 "WCUtils": "",
 "WCZone": "",
 "perMessage": ""

@@ -181,6 +181,10 @@ func _step_started(
 func is_ready_for_next_phase() -> bool :
 	if (!current_step_complete) :
 		return	false
+	
+	# if modal user input is being requested, can't move on
+	if (gameData.user_input_ongoing):
+		return false
 		
 	return true	
 

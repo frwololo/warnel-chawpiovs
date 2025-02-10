@@ -14,7 +14,8 @@ var is_multiplayer_game:bool = true
 var team := {}
 
 var scenario:ScenarioDeckData
-var phaseContainer: PhaseContainer
+var phaseContainer: PhaseContainer #reference link to the phaseContainer
+var theStack: GlobalScriptStack
 
 # Hero currently playing. We might need another one for interruptions
 var current_hero_id := 1
@@ -22,17 +23,34 @@ var current_hero_id := 1
 var _villain_current_hero_target :=1
 var attackers:Array = []
 
+var user_input_ongoing:bool = false
 
+func _process(_delta: float):
+	theStack.process(_delta)
+	return
+
+func acquire_user_input_lock(requester = null, details = {}):
+	user_input_ongoing = true
+	
+func release_user_input_lock(requester = null, details = {}):
+	user_input_ongoing = false
 
 func _init():
 	scenario = ScenarioDeckData.new()
+	theStack = GlobalScriptStack.new()
 
 func registerPhaseContainer(phasecont:PhaseContainer):
 	phaseContainer = phasecont
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	#Signals
+	scripting_bus.connect("selection_window_opened", self, "acquire_user_input_lock")
+	scripting_bus.connect("card_selected", self, "release_user_input_lock")
+
+	scripting_bus.connect("optional_window_opened", self, "acquire_user_input_lock")
+	scripting_bus.connect("optional_window_closed", self, "release_user_input_lock")	
+
 
 func init_network_players(players:Dictionary):
 	for player_network_id in players:

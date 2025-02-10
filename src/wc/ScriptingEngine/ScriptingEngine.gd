@@ -1,3 +1,4 @@
+class_name WCScriptingEngine
 extends ScriptingEngine
 
 
@@ -108,21 +109,6 @@ func pay_from_manapool(script: ScriptTask) -> int:
 	manapool.reset()	
 	return retcode	
 
-func deal_damage(script: ScriptTask) -> int:
-	var retcode: int = CFConst.ReturnCode.CHANGED
-	if (costs_dry_run()): #Shouldn't be allowed as a cost?
-		return retcode
-
-	
-	return retcode	
-	
-func deal_thwart(script: ScriptTask) -> int:
-	var retcode: int = CFConst.ReturnCode.CHANGED
-	if (costs_dry_run()): #Shouldn't be allowed as a cost?
-		return retcode
-
-	
-	return retcode		
 
 func attack(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -153,18 +139,34 @@ func receive_damage(script: ScriptTask) -> int:
 	
 	#TODO BUG sometimes subjects contains a null card?
 	for card in script.subjects:
-		retcode = card.tokens.mod_token("damage",
-				amount,false,costs_dry_run(), tags)	
-				
-		var total_damage:int =  card.tokens.get_token_count("damage")
-		var health = card.get_property("health", 0)
+		var damageScript:DamageScript = DamageScript.new(card, amount, script.script_definition, tags)
+		gameData.theStack.add_script(damageScript)
 		
-		if total_damage >= health:
-			card.die()		
+#		scripting_bus.emit_signal("damage_incoming", card, script.script_definition)	
+#
+#		retcode = card.tokens.mod_token("damage",
+#				amount,false,costs_dry_run(), tags)	
+#
+#		scripting_bus.emit_signal("card_damaged", card, script.script_definition)
+#
+#		var total_damage:int =  card.tokens.get_token_count("damage")
+#		var health = card.get_property("health", 0)
+#
+#		if total_damage >= health:
+#			card.die()		
 	
 
 	return retcode
-				
+
+func prevent_damage(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode	
+	
+	#Find the damage on the stack and remove it
+	var result = gameData.theStack.delete_next_by_class("DamageScript")
+	
+	return retcode				
 
 func defend(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED

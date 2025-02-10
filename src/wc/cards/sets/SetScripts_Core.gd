@@ -28,54 +28,89 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 	
 	var script:Dictionary = scripts.get(card_name,{})
 	if script :
-		pass
+		pass #debug location for breakpoints
 	script = script.duplicate()
 	
 	#Add game specific rules valid for all cards
 	
-	#Play From hand: discard a specific number of cards to play
-	#TODO limit to player cards ?
-	var playFromHand: Dictionary = { }
-	if (cost):
-		playFromHand = {
-			"manual": {
-				"hand": [
-					{
-						"name": "pay_regular_cost",
-						"is_cost": true,
-						"cost" : "card_cost", #keyword here to retrieve cost realtime
-					},
-					move_after_play
-				]
-			}
-		}
-	elif (card.has("Cost"))	: #Card has a cost but it's zero
-		playFromHand = {
-			"manual": {
-				"hand": [
-					move_after_play
-				]
-			}
-		}		
-	script = WCUtils.merge_dict(script, playFromHand, true)
-	
-	if "scheme" in type_code:
-		var base_threat = card.get("base_threat", 0)
-		var scheme_comes_to_play: Dictionary = { 
-			"card_moved_to_board": {
-				"trigger": "self",
-				"board": [
-					{
-						"name": "mod_tokens",
-						"subject": "self",
-						"modification": base_threat,
-						"token_name":  "threat",
-					},					
-				]
-			}
-		}
+	#interrupt or response replacements
+	if (type_code == "event" && script.has("interrupt")):
+		var playFromHand: Array = []
+		if (cost):
+			playFromHand =  [
+				{
+					"name": "pay_regular_cost",
+					"is_cost": true,
+					"cost" : "card_cost", #keyword here to retrieve cost realtime
+				},
+				move_after_play
+			]	
+		elif (card.has("Cost"))	: #Card has a cost but it's zero
+			playFromHand = [
+				move_after_play
+			]
+			
+		var interrupt_data = script["interrupt"]
+		script.erase("interrupt")
+		var interrupt_event = interrupt_data["trigger_event"]
+		var trigger_signal = interrupt_event["signal"]
 		
-		script = WCUtils.merge_dict(script,scheme_comes_to_play, true)
+		var playInterrupt: Dictionary = {
+			#TODO add trigger filters + interrupt data
+			trigger_signal: {
+				"is_optional_hand": true,
+				"hand" : playFromHand + [
+					{
+						"name": interrupt_data["name"]
+					}
+				]
+			} 
+		}
+		script = WCUtils.merge_dict(script, playInterrupt, true)
+	else: #Regular cards
+		#Play From hand: discard a specific number of cards to play
+		#TODO limit to player cards ?
+		var playFromHand: Dictionary = { }
+		if (cost):
+			playFromHand = {
+				"manual": {
+					"hand": [
+						{
+							"name": "pay_regular_cost",
+							"is_cost": true,
+							"cost" : "card_cost", #keyword here to retrieve cost realtime
+						},
+						move_after_play
+					]
+				}
+			}
+		elif (card.has("Cost"))	: #Card has a cost but it's zero
+			playFromHand = {
+				"manual": {
+					"hand": [
+						move_after_play
+					]
+				}
+			}		
+		script = WCUtils.merge_dict(script, playFromHand, true)
+		
+		if "scheme" in type_code:
+			var base_threat = card.get("base_threat", 0)
+			var scheme_comes_to_play: Dictionary = { 
+				"card_moved_to_board": {
+					"trigger": "self",
+					"board": [
+						{
+							"name": "mod_tokens",
+							"subject": "self",
+							"modification": base_threat,
+							"token_name":  "threat",
+						},					
+					]
+				}
+			}
+			
+			script = WCUtils.merge_dict(script,scheme_comes_to_play, true)
 
 	if card.get("_horizontal", false):
 		var horizontal_comes_to_play: Dictionary = { 

@@ -36,13 +36,20 @@ signal card_properties_modified(card,details)
 signal card_spawned(card,details)
 # Emited whenever a card is targeted by another card.
 # This signal is not fired by this card directly like all the others, 
-# but instead by  the card doing the targeting.
+# but instead by the card doing the targeting.
 # warning-ignore:unused_signal
 signal card_targeted(card,details)
 # warning-ignore:unused_signal
 signal counter_modified(card,details)
 # warning-ignore:unused_signal
 signal shuffle_completed(card_container,details)
+
+# warning-ignore:unused_signal
+signal selection_window_opened(selection_window, details)
+# warning-ignore:unused_signal
+signal optional_window_opened(optional_window, details)
+# warning-ignore:unused_signal
+signal optional_window_closed(optional_window, details)
 
 
 # This signal is not triggerring init_scripting_event() 

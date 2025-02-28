@@ -1401,21 +1401,29 @@ func execute_scripts(
 	var state_exec := get_state_exec()
 	var any_state_scripts = card_scripts.get('all', [])
 	state_scripts = card_scripts.get(state_exec, any_state_scripts)
+	
+	var is_network_call = trigger_details.has("network_prepaid") #TODO MOVE OUTSIDE OF Core
+	
 	# Here we check for confirmation of optional trigger effects
 	# There should be an SP.KEY_IS_OPTIONAL definition per state
 	# E.g. if board scripts are optional, but hand scripts are not
 	# Then you'd include an "is_optional_board" key at the same level as "board"
-	var confirm_return = CFUtils.confirm(
-		card_scripts,
-		canonical_name,
-		trigger,
-		state_exec)
-	if confirm_return is GDScriptFunctionState: # Still working.
-		confirm_return = yield(confirm_return, "completed")
-		# If the player chooses not to play an optional cost
-		# We consider the whole cost dry run unsuccesful
-		if not confirm_return:
-			state_scripts = []
+	
+	#We don't check if this is a network call. If network call, it is assumed the 
+	#owner has already accepted to pay, and this is why we are being called
+	if (!is_network_call):
+		var confirm_return = gameData.confirm(
+			self,
+			card_scripts,
+			canonical_name,
+			trigger,
+			state_exec)
+		if confirm_return is GDScriptFunctionState: # Still working.
+			confirm_return = yield(confirm_return, "completed")
+			# If the player chooses not to play an optional cost
+			# We consider the whole cost dry run unsuccesful
+			if not confirm_return:
+				state_scripts = []
 	# If the state_scripts return a dictionary entry
 	# it means it's a multiple choice between two scripts
 	if typeof(state_scripts) == TYPE_DICTIONARY:
@@ -1436,7 +1444,8 @@ func execute_scripts(
 	var sceng = null
 	if len(state_scripts):
 		is_executing_scripts = true
-
+		cfc.LOG("running script for " + self.canonical_name)
+		cfc.LOG_DICT(trigger_details)
 		# This evocation of the ScriptingEngine, checks the card for
 		# cost-defined tasks, and performs a dry-run on them
 		# to ascertain whether they can all be paid,

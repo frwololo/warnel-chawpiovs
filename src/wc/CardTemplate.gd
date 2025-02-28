@@ -15,6 +15,9 @@ func set_controller_hero_id(hero_id:int):
 	
 func get_controller_hero_id() -> int:
 	return controller_hero_id	
+	
+func get_controller_player_id() -> int:
+	return gameData.get_hero_owner(controller_hero_id)	
 
 func setup() -> void:
 	.setup()

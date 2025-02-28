@@ -5,17 +5,25 @@ extends ConfirmationDialog
 signal selected
 
 var is_accepted := false
+var is_master := true
 
 func _ready() -> void:
 	get_cancel().text = "No"
 	get_ok().text = "Yes"
+	
 	# warning-ignore:return_value_discarded
 	get_cancel().connect("pressed", self, "_on_OptionalConfirmation_cancelled")
 
 
-func prep(card_name: String, task_name: String) -> void:
+func prep(card_name: String, task_name: String, _is_master:bool = true) -> void:
 		dialog_text =  card_name + ": Do you want to activate " + task_name + "?"
-		cfc.NMAP.board.add_child(self)
+		cfc.NMAP.board.add_child(self) #TODO shouldn't that be removed from the board eventually ?
+		
+		is_master = _is_master
+		if (!is_master):
+			get_ok().disabled = true
+			get_cancel().disabled = true
+		
 		# We spawn the dialogue at the middle of the screen.
 		popup_centered()
 		# One again we need two different Panels due to 
@@ -28,26 +36,31 @@ func prep(card_name: String, task_name: String) -> void:
 		scripting_bus.emit_signal(
 			"optional_window_opened",
 			self,
-			{"card_name": card_name}
+			{"card_name": card_name, "is_master": is_master}
 		)		
 
 
 func _on_OptionalConfirmation_confirmed() -> void:
+	rpc("confirmed")
+
+
+func _on_OptionalConfirmation_cancelled() -> void:
+	rpc("cancelled")		
+
+remotesync func confirmed() -> void:
 	is_accepted = true
 	emit_signal("selected")
 	scripting_bus.emit_signal(
 		"optional_window_closed",
 		self,
 		{"is_accepted": is_accepted}
-	)	
-
-
-func _on_OptionalConfirmation_cancelled() -> void:
+	)
+	
+remotesync func cancelled() -> void:
 	is_accepted = false
 	emit_signal("selected")
 	scripting_bus.emit_signal(
 		"optional_window_closed",
 		self,
 		{"is_accepted": is_accepted}
-	)		
-
+	)					

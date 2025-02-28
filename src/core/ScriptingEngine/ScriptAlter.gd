@@ -34,7 +34,8 @@ func _init(
 			trigger_details):
 		is_valid = false
 	if is_valid:
-		var confirm_return = CFUtils.confirm(
+		var confirm_return = gameData.confirm(
+				owner,
 				script_definition,
 				owner.canonical_name,
 				script_name)

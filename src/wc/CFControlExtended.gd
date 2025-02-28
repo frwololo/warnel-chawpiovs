@@ -284,12 +284,24 @@ func instance_card(card_name: String) -> Card:
 # Network related functions
 func is_game_master() -> bool:
 	return get_tree().is_network_server() #Todo: return something more specific to handle case where game master isn't server, for headless mode
-	
-func LOG(to_print:String):
+
+func INIT_LOG():
 	var file = File.new()
 	var network_id = get_tree().get_network_unique_id()
 	network_id = str(network_id)
-	file.open("user://log_" + network_id +".txt", File.WRITE)
+	var filename = "user://log_" + network_id +".txt"
+	if (file.file_exists(filename)):
+		return
+	file.open(filename, File.WRITE)
+	file.close() 	
+	
+func LOG(to_print:String):
+	INIT_LOG()
+	var file = File.new()
+	var network_id = get_tree().get_network_unique_id()
+	network_id = str(network_id)
+	file.open("user://log_" + network_id +".txt", File.READ_WRITE)
+	file.seek_end()
 	file.store_string(to_print + "\n")
 	file.close() 
 	

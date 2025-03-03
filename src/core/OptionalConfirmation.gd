@@ -23,6 +23,7 @@ func prep(card_name: String, task_name: String, _is_master:bool = true) -> void:
 		if (!is_master):
 			get_ok().disabled = true
 			get_cancel().disabled = true
+			get_close_button().visible = false
 		
 		# We spawn the dialogue at the middle of the screen.
 		popup_centered()

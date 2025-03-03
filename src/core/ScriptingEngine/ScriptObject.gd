@@ -77,7 +77,7 @@ func get_property(property: String, default = null):
 #TODO move this outside of core classes
 func _network_prepaid():
 	var prepayment = get_property("network_prepaid", null)
-	if not prepayment:
+	if null == prepayment:
 		return null
 	#prepayment should be an array of GUID
 	var result = []
@@ -92,7 +92,7 @@ func _network_prepaid():
 func _find_subjects(stored_integer := 0) -> Array:
 	#TODO MULTIPLAYER_MODIFICATION
 	var prepaid = _network_prepaid()
-	if (prepaid):
+	if (null != prepaid):
 		subjects = prepaid
 		return prepaid
 		
@@ -182,6 +182,7 @@ func _find_subjects(stored_integer := 0) -> Array:
 				subjects_array = select_return
 			else:
 				is_valid = false
+				subjects_array = []
 	subjects = subjects_array
 	return(subjects_array)
 

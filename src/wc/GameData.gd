@@ -55,24 +55,17 @@ mastersync func request_user_input_unlock():
 	rpc("release_user_input_lock", requester)
 
 puppetsync func acquire_user_input_lock(requester:int, details = {}):
-	user_input_ongoing = requester
+	_acquire_user_input_lock(requester, details)
 	
 puppetsync func release_user_input_lock(requester:int,details = {}):
+	_release_user_input_lock(requester, details)
+
+func _acquire_user_input_lock(requester:int, details = {}):
+	user_input_ongoing = requester
+	
+func _release_user_input_lock(requester:int,details = {}):
 	user_input_ongoing = 0
 	#TODO error check: if requester not equal to current user_input_ongoing, we have a desync 
-
-	
-#Returns true if I am allowed to play cards/abilities
-#This is a more complex question than might seem
-#even if I am allowed to play by this function, I might not be able to play all cards/abilities at a given time)
-func can_i_play() -> bool:
-	
-	#If there is blocking user input ongoing and it isn't me, I can't play
-	if (user_input_ongoing):
-		if (user_input_ongoing != get_tree().get_network_unique_id()):
-			return false
-	
-	return true 
 	
 func attempt_user_input_lock(request_object = null,details = {}):
 	#if "is_master" key is set, we use this to check whether we are authorized to request the lock
@@ -84,6 +77,19 @@ func attempt_user_input_lock(request_object = null,details = {}):
 	
 func attempt_user_input_unlock(request_object = null,details = {}):	
 	rpc_id(1, "request_user_input_unlock")	
+	
+	
+#Returns true if I am allowed to play cards/abilities
+#This is a more complex question than might seem
+#even if I am allowed to play by this function, I might not be able to play all cards/abilities at a given time)
+func can_i_play() -> bool:
+	
+	#If there is blocking user input ongoing and it isn't me, I can't play
+	if (user_input_ongoing):
+		if (user_input_ongoing != get_tree().get_network_unique_id()):
+			return false
+	
+	return true 	
 
 func _init():
 	scenario = ScenarioDeckData.new()
@@ -99,8 +105,8 @@ func _ready():
 	scripting_bus.connect("selection_window_opened", self, "attempt_user_input_lock")
 	scripting_bus.connect("card_selected", self, "attempt_user_input_unlock")
 
-	scripting_bus.connect("optional_window_opened", self, "attempt_user_input_lock")
-	scripting_bus.connect("optional_window_closed", self, "attempt_user_input_unlock")	
+	#scripting_bus.connect("optional_window_opened", self, "attempt_user_input_lock")
+	#scripting_bus.connect("optional_window_closed", self, "attempt_user_input_unlock")	
 
 
 func init_network_players(players:Dictionary):
@@ -332,7 +338,7 @@ func compute_potential_defenders():
 		if c.can_defend():
 			c.add_to_group("group_defenders")
 		else:
-			c.remove_from_group("group_defenders")	
+			if (c.is_in_group ("group_defenders")): c.remove_from_group("group_defenders")	
 
 func hero_died(card:Card):
 	#TODO check if other heroes are alive
@@ -424,6 +430,7 @@ func confirm(
 	# We do not use SP.KEY_IS_OPTIONAL here to avoid causing cyclical
 	# references when calling CFUtils from SP
 	if script.get("is_optional_" + type):
+		_acquire_user_input_lock(owner.get_controller_player_id())
 		var my_network_id = get_tree().get_network_unique_id()
 		var is_master:bool =  (owner.get_controller_player_id() == my_network_id)
 		var confirm = _OPTIONAL_CONFIRM_SCENE.instance()
@@ -435,5 +442,6 @@ func confirm(
 			is_accepted = false
 		# Garbage cleanup
 		confirm.hide()
-		confirm.queue_free()	
+		confirm.queue_free()
+		_release_user_input_lock(owner.get_controller_player_id())	
 	return(is_accepted)

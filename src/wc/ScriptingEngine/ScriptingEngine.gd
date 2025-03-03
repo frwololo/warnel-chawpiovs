@@ -192,7 +192,13 @@ func defend(script: ScriptTask) -> int:
 		#TODO add variable stating attack was undefended
 
 	script.script_definition["amount"] = amount
-	return receive_damage(script)
+	var result = receive_damage(script)
+	
+	if (!defender):
+		#reset subjects to avoid side effect...
+		script.subjects = []
+		
+	return result
 
 func undefend(script: ScriptTask) -> int:
 	return defend(script)

@@ -161,10 +161,9 @@ func mod_token(
 			elif is_drawer_open:
 				token.expand()
 			retcode = CFConst.ReturnCode.CHANGED
-			owner_card.emit_signal(
+			scripting_bus.emit_signal(
 					"card_token_modified",
 					owner_card,
-					"card_token_modified",
 					{SP.TRIGGER_TOKEN_NAME: token.get_token_name(),
 					SP.TRIGGER_PREV_COUNT: prev_value,
 					SP.TRIGGER_NEW_COUNT: new_value,

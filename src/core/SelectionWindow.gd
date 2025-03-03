@@ -235,8 +235,10 @@ func _on_cancel_pressed() -> void:
 	emit_signal("confirmed")
 
 func _on_card_selection_confirmed() -> void:
-	if is_cancelled:
-		return
+	#TODO 2025-03-01 Bug here, when hitting cancel, this doesn't send the card_selected signal, blocking execution
+	# Arguably, it is ok to still send the signal, with an array of 0. 
+	#if is_cancelled:
+	#	return
 	scripting_bus.emit_signal(
 			"card_selected",
 			self,

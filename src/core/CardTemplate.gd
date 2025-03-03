@@ -1486,7 +1486,8 @@ func execute_scripts(
 				yield(sceng,"tasks_completed")
 		is_executing_scripts = false
 		emit_signal("scripts_executed", self, sceng, trigger)
-		network_execute_scripts(trigger_card, trigger, trigger_details, only_cost_check, sceng)
+		if (!is_network_call):
+			network_execute_scripts(trigger_card, trigger, trigger_details, only_cost_check, sceng)
 	return(sceng)
 
 func network_execute_scripts(
@@ -1497,8 +1498,9 @@ func network_execute_scripts(
 		sceng):
 	var prepaid: Array = sceng.network_prepaid
 	var prepaid_uids: Array = []
-	if (prepaid.empty()):
-		return
+	#BUGFIX in some cases it is ok for prepaid to be empty. E.g. when refusing to defend
+	#if (prepaid.empty()):
+	#	return
 	for array in prepaid:
 		var prepaid_uids_task = guidMaster.array_of_objects_to_guid(array)
 		prepaid_uids.append(prepaid_uids_task)

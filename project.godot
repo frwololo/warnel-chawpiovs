@@ -289,6 +289,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/core/OverridableUtils.gd"
 }, {
+"base": "Control",
+"class": "OptionsMenu",
+"language": "GDScript",
+"path": "res://src/wc/menus/OptionsMenu.gd"
+}, {
 "base": "VBoxContainer",
 "class": "PhaseContainer",
 "language": "GDScript",
@@ -481,6 +486,7 @@ _global_script_class_icons={
 "ManipulationButtons": "",
 "MousePointer": "",
 "OVUtils": "",
+"OptionsMenu": "",
 "PhaseContainer": "",
 "Pile": "",
 "PileMulti": "",

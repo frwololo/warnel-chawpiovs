@@ -288,4 +288,14 @@ func _round_end():
 	current_step_complete = true	
 	pass
 
-
+func savestate_to_json() -> Dictionary:
+	var json_data:Dictionary = {
+		"phase": current_step
+	}
+	return json_data
+	
+func loadstate_from_json(json:Dictionary):
+	var json_data = json.get("phase", null)
+	if (null == json_data):
+		return #TODO Error msg
+	current_step = json_data #TODO better handling	

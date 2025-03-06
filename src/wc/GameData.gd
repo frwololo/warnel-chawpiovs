@@ -445,3 +445,65 @@ func confirm(
 		confirm.queue_free()
 		_release_user_input_lock(owner.get_controller_player_id())	
 	return(is_accepted)
+	
+#saves current game data into a json structure	
+func save_gamedata():
+	var json_data:Dictionary = {}
+	#save current phase
+	var phase_data:Dictionary = phaseContainer.savestate_to_json()
+	json_data.merge(phase_data)
+	
+	
+	#Save Hero data (the bulk: Hero Deck Data (hero id, owner), Manapool, Board state)
+	json_data["heroes"] = []
+	for i in range(get_team_size()):
+		var saved_item:Dictionary = {}
+		var hero_deck_data: HeroDeckData = get_team_member(i+1)["hero_data"]
+		var hero_deck_data_json = hero_deck_data.savestate_to_json()
+		saved_item.merge(hero_deck_data_json)
+		
+		#Manapool
+		var hero_manapool: ManaPool = get_team_member(i+1)["manapool"]
+		var hero_manapool_json = hero_manapool.savestate_to_json()
+		saved_item.merge(hero_manapool_json)
+				
+		
+		
+		#Merge result with the saved data
+		json_data["heroes"].append(saved_item)
+	
+	#Board state
+	var boardstate_json = cfc.NMAP.board.savestate_to_json()
+	json_data.merge(boardstate_json)
+	
+	#Save scenario data
+	json_data["scenario"] = {}
+	return json_data
+
+#loads current game data from a json structure
+func load_gamedata(json_data:Dictionary):
+	#phase
+	phaseContainer.loadstate_from_json(json_data)
+	
+	var hero_data:Array = json_data["heroes"]
+
+	#hero Deck data	
+	var _team:Dictionary = {}
+	for i in range(hero_data.size()):
+		var saved_item:Dictionary = hero_data[i]
+		var hero_deck_data: HeroDeckData = HeroDeckData.new()
+		hero_deck_data.loadstate_from_json(saved_item)
+		_team[i] = hero_deck_data
+	set_team_data(_team)
+	
+	#Manapools
+	for i in range(hero_data.size()):
+		var saved_item:Dictionary = hero_data[i]
+		var hero_manapool: ManaPool = get_team_member(i+1)["manapool"]
+		hero_manapool.loadstate_from_json(saved_item)
+
+	#Board State ()
+	cfc.NMAP.board.loadstate_from_json(json_data)
+	
+	#scenario		
+	return

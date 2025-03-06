@@ -6,6 +6,7 @@ var basicGrid = preload("res://src/wc/grids/BasicGrid.tscn")
 var basicPile = preload("res://src/multiplayer/PileMulti.tscn")
 
 onready var villain := $VillainZone
+onready var options_menu = $OptionsMenu
 
 const GRID_SETUP := {
 	"villain" : {
@@ -204,6 +205,11 @@ func get_all_cards() -> Array:
 
 	return(cardsArray)
 
+func delete_all_cards():
+	var cards:Array = get_all_cards()
+	for obj in cards:
+		obj.queue_free()
+
 func _close_game():
 	cfc.quit_game()
 	get_tree().change_scene("res://src/wc/MainMenu.tscn")
@@ -281,21 +287,56 @@ func _on_Debug_toggled(button_pressed: bool) -> void:
 func load_cards() -> void:
 	for i in range(gameData.get_team_size()):
 		var hero_id = i+1
-		var card_array = []
 		var hero_deck_data: HeroDeckData = gameData.get_team_member(hero_id)["hero_data"] #TODO actually load my player's stuff
 		var card_ids = hero_deck_data.get_deck_cards()
+		
+		var card_data:Array = []
 		for card_id in card_ids:
 			#cards.append(ckey)
-			var ckey = cfc.idx_card_id_to_name[card_id]
-			var new_card:WCCard = cfc.instance_card(ckey)
-			new_card.set_owner_hero_id(hero_id)
-			card_array.append(new_card)
+			card_data.append({
+				"card_id" : card_id,
+				"owner_hero_id": hero_id
+			})
+		load_cards_to_pile(card_data, "deck" + str(hero_id))
+	
+func load_cards_to_pile(card_data:Array, pile_name):
+	var card_array = []
+	for card in card_data:
+		var card_id = card["card_id"]
+		var hero_id = card["owner_hero_id"]
+		#cards.append(ckey)
+		var ckey = cfc.idx_card_id_to_name[card_id]
+		var new_card:WCCard = cfc.instance_card(ckey)
+		new_card.set_owner_hero_id(hero_id)
+		card_array.append(new_card)
 
-		for card in card_array:
-			cfc.NMAP["deck" + str(hero_id)].add_child(card)
-			#card.set_is_faceup(false,true)
-			card._determine_idle_state()	
+	for card in card_array:
+		cfc.NMAP[pile_name].add_child(card)
+		#card.set_is_faceup(false,true)
+		card._determine_idle_state()
+	return
 			
+func load_cards_to_grid(card_data:Array, grid_name):
+	load_cards_to_pile(card_data, grid_name) #TODO probably doesn't work, need to check	
+	return
+
+func export_pile_to_json(pile_name) -> Dictionary:
+	var pile: Pile = cfc.NMAP[pile_name]
+	var cards:Array = pile.get_all_cards()
+	var export_arr:Array = []
+	for card in cards:
+		var owner_hero_id = card.get_owner_hero_id()
+		var card_id = card.properties.get("_code")
+		export_arr.append({
+			"card_id" : card_id,
+			"owner_hero_id": owner_hero_id
+		})
+	var result:Dictionary = {pile_name : export_arr}	
+	return result
+	
+func export_grid_to_json(grid_name) -> Dictionary:
+	return export_pile_to_json(grid_name)	
+		
 func shuffle_decks() -> void:
 	for i in range(gameData.get_team_size()):
 		var pile = cfc.NMAP["deck" + str(i+1)]
@@ -375,5 +416,63 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 	WCUtils.enable_and_show_node(new_hand)
 	new_hand.re_place()
 
-	
 
+func savestate_to_json() -> Dictionary:	
+	var json_data:Dictionary = {}
+	for grid_name in GRID_SETUP.keys():
+		var grid_info = GRID_SETUP[grid_name]
+		if "pile" == grid_info.get("type", ""):
+			json_data.merge(export_pile_to_json(grid_name))
+		else:
+			json_data.merge(export_grid_to_json(grid_name))
+
+	for i in range(gameData.get_team_size()):
+		var hero_id = i+1
+
+		for grid_name in HERO_GRID_SETUP.keys():
+			var grid_info = HERO_GRID_SETUP[grid_name]
+			var real_grid_name = grid_name + str(hero_id)		
+			if "pile" == grid_info.get("type", ""):
+				json_data.merge(export_pile_to_json(real_grid_name))
+			else:
+				json_data.merge(export_grid_to_json(real_grid_name))
+	var result: Dictionary = {"board" : json_data}
+	return result
+	
+func loadstate_from_json(json:Dictionary):
+	var json_data = json.get("board", null)
+	if (null == json_data):
+		return #TODO Error msg
+
+	delete_all_cards()
+	
+	#Load all grids with matching data
+	for grid_name in GRID_SETUP.keys():
+		var grid_info = GRID_SETUP[grid_name]
+		var card_data = json_data[grid_name]
+		if "pile" == grid_info.get("type", ""):
+			load_cards_to_pile(card_data, grid_name)
+		else:
+			load_cards_to_grid(card_data, grid_name)
+
+	for i in range(gameData.get_team_size()):
+		var hero_id = i+1
+
+		for grid_name in HERO_GRID_SETUP.keys():
+			var grid_info = HERO_GRID_SETUP[grid_name]
+			var real_grid_name = grid_name + str(hero_id)
+			var card_data = json_data[real_grid_name]		
+			if "pile" == grid_info.get("type", ""):
+				load_cards_to_pile(card_data, real_grid_name)
+			else:
+				load_cards_to_grid(card_data, real_grid_name)
+	
+	return
+
+
+
+func _on_OptionsButton_pressed():
+	cfc.set_game_paused(true)
+	options_menu.set_as_toplevel(true)
+	options_menu.visible = true
+	pass # Replace with function body.

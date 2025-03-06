@@ -33,3 +33,22 @@ func get_deck_cards(): #todo cache?
 			result.append(card_id)
 	return result
 
+
+func savestate_to_json() -> Dictionary:
+	var json_data:Dictionary = {
+		"herodeckdata": {
+			"owner" : self.owner.get_id(),
+			"deck_id" : self.deck_id,
+			"hero_id" : self.hero_id
+		}
+	}
+	return json_data
+	
+func loadstate_from_json(json:Dictionary):
+	var json_data = json.get("herodeckdata", null)
+	if (null == json_data):
+		return #TODO Error msg
+	owner = gameData.network_players[json_data["owner"]] #Default to being owned by master
+	deck_id = json_data["deck_id"]
+	hero_id = json_data["hero_id"]
+

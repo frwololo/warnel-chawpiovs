@@ -93,3 +93,19 @@ func _on_manapool_modified(trigger_card: Card, trigger: String, details: Diction
 			ManaCost.RESOURCE_TEXT[v],
 			pool[v],
 			true)
+
+func savestate_to_json() -> Dictionary:
+	var export_dict:Dictionary = {}
+	for v in ManaCost.Resource.values() :
+		export_dict[v] = pool[v]	
+	
+	var json_data:Dictionary = {
+		"manapool": export_dict
+	}
+	return json_data
+	
+func loadstate_from_json(json:Dictionary):
+	var json_data = json.get("manapool", null)
+	if (null == json_data):
+		return #TODO Error msg
+	set_cost(json_data)

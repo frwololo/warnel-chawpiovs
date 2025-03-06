@@ -1,7 +1,9 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
+[ext_resource path="res://src/wc/menus/OptionsMenu.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/wc/PhaseContainer.gd" type="Script" id=2]
 [ext_resource path="res://src/wc/board/WCHand.tscn" type="PackedScene" id=3]
+[ext_resource path="res://assets/icons/08.png" type="Texture" id=4]
 [ext_resource path="res://src/wc/Board.gd" type="Script" id=5]
 [ext_resource path="res://src/wc/CGFCounters.tscn" type="PackedScene" id=6]
 [ext_resource path="res://src/wc/board/WCVillainZone.tscn" type="PackedScene" id=7]
@@ -198,6 +200,20 @@ grow_vertical = 0
 alignment = 2
 script = ExtResource( 2 )
 
+[node name="OptionsMenu" parent="." instance=ExtResource( 1 )]
+visible = false
+
+[node name="OptionsButton" type="TextureButton" parent="."]
+anchor_left = 0.943
+anchor_top = 0.022
+anchor_right = 0.965
+anchor_bottom = 0.056
+margin_right = 40.0
+margin_bottom = 40.0
+texture_normal = ExtResource( 4 )
+expand = true
+stretch_mode = 4
+
 [connection signal="toggled" from="FancyMovementToggle" to="." method="_on_FancyMovementToggle_toggled"]
 [connection signal="toggled" from="EnableAttach" to="." method="_on_EnableAttach_toggled"]
 [connection signal="item_selected" from="ScalingFocusOptions" to="." method="_on_ScalingFocusOptions_item_selected"]
@@ -207,3 +223,4 @@ script = ExtResource( 2 )
 [connection signal="pressed" from="DeckBuilder" to="." method="_on_DeckBuilder_pressed"]
 [connection signal="pressed" from="BackToMain" to="." method="_on_BackToMain_pressed"]
 [connection signal="toggled" from="Debug" to="." method="_on_Debug_toggled"]
+[connection signal="pressed" from="OptionsButton" to="." method="_on_OptionsButton_pressed"]

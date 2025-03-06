@@ -45,6 +45,7 @@ func _ready():
 	launch_button.connect('pressed', self, 'on_button_pressed', [launch_button.name])
 
 #Quickstart for tests
+#TODO remove
 	if (gameData.is_multiplayer_game and cfc.is_game_master()):
 		yield(get_tree().create_timer(1), "timeout")	
 		owner_changed(1, 1)

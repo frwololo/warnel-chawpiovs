@@ -1,9 +1,8 @@
 class_name OptionsMenu
 extends Control
 
-onready var back_button = $MarginContainer/VBoxContainer/BackButton
 onready var v_box_container = $MarginContainer/VBoxContainer
-
+onready var file_dialog = $FileDialog
 
 signal exit_options_menu
 
@@ -11,14 +10,35 @@ func _ready():
 	for option_button in v_box_container.get_children():
 		if option_button.has_signal('pressed'):
 			option_button.connect('pressed', self, 'on_button_pressed', [option_button.name])
-			
+	
+	file_dialog.connect("file_selected", self, "_on_file_selected")		
 	set_process(false)
 			
 func on_button_pressed(_button_name : String) -> void:
 	match _button_name:
 		"BackButton":
 			# warning-ignore:return_value_discarded
-			set_process(false)
-			cfc.set_game_paused(false)
-			visible = false
+			close_me()
+		"TestsButton":
+			# warning-ignore:return_value_discarded
+			gameData.start_tests()
+			close_me()
+		"SaveButton":
+			save_game()		
 			
+func close_me():
+	set_process(false)
+	cfc.set_game_paused(false)
+	visible = false
+
+func save_game():
+	file_dialog.popup()
+
+func _on_file_selected(path):
+	print("Selected file: ", path)
+	var savedata = gameData.save_gamedata()
+	var json = JSON.print(savedata, "\t")
+	var file = File.new()
+	file.open(path, File.WRITE)
+	file.store_string(json)
+	file.close()

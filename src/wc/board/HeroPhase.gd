@@ -51,16 +51,18 @@ func update_picture():
 		grayscale_tex.set_size_override(face_size)
 		heroNode.texture = imgtex
 		heroNode.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-		
+
+#We keep a lot of logic outside of this GUI function to allow for automated tests		
 func _on_HeroPhase_gui_input(event):		
 	if event is InputEventMouseButton: #TODO better way to handle Tablets and consoles
 		if event.button_index == BUTTON_LEFT and event.pressed:
-			if (hero_index == gameData.get_current_hero_id()):
-				rpc("switch_status")
-			else:	
-				gameData.select_current_playing_hero(hero_index)
+			heroPhase_action()
 
-
+func heroPhase_action():
+	if (hero_index == gameData.get_current_hero_id()):
+		rpc("switch_status")
+	else:	
+		gameData.select_current_playing_hero(hero_index)
 	
 remotesync func switch_status():
 	current_state+=1

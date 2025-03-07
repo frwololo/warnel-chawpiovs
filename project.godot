@@ -379,6 +379,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/core/Card/TargetingArrow.gd"
 }, {
+"base": "Reference",
+"class": "TestSuite",
+"language": "GDScript",
+"path": "res://src/wc/data/TestSuite.gd"
+}, {
 "base": "HBoxContainer",
 "class": "Token",
 "language": "GDScript",
@@ -504,6 +509,7 @@ _global_script_class_icons={
 "SelectionWindow": "",
 "SetPreload": "",
 "TargetingArrow": "",
+"TestSuite": "",
 "Token": "",
 "TokenDrawer": "",
 "ViewportCardFocus": "",

@@ -50,9 +50,11 @@ var current_step = PHASE_STEP.PLAYER_TURN
 var current_step_complete:bool = false
 var clients_ready_for_next_phase:Dictionary = {}
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+func step_string_to_step_id(stepString:String) -> int:
+	for i in PHASE_STEP:
+		if stepString.to_upper() == StepStrings[i]:
+			return i
+	return PHASE_STEP.PLAYER_TURN #Default
 
 func update_text():
 	phaseLabel.text = StepStrings[current_step]
@@ -290,7 +292,7 @@ func _round_end():
 
 func savestate_to_json() -> Dictionary:
 	var json_data:Dictionary = {
-		"phase": current_step
+		"phase": StepStrings[current_step]
 	}
 	return json_data
 	
@@ -298,4 +300,4 @@ func loadstate_from_json(json:Dictionary):
 	var json_data = json.get("phase", null)
 	if (null == json_data):
 		return #TODO Error msg
-	current_step = json_data #TODO better handling	
+	current_step = step_string_to_step_id(json_data) #TODO better handling	

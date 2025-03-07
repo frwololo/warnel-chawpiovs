@@ -23,6 +23,7 @@ var team := {}
 var scenario:ScenarioDeckData
 var phaseContainer: PhaseContainer #reference link to the phaseContainer
 var theStack: GlobalScriptStack
+var testSuite: TestSuite = null
 
 # Hero currently playing. We might need another one for interruptions
 var current_hero_id := 1
@@ -34,6 +35,8 @@ var user_input_ongoing:int = 0 #ID of the current player (or remote player) doin
 
 func _process(_delta: float):
 	theStack.process(_delta)
+	if (testSuite):
+		testSuite.process(_delta)
 	return
 
 puppetsync func user_input_lock_denied():
@@ -94,6 +97,9 @@ func can_i_play() -> bool:
 func _init():
 	scenario = ScenarioDeckData.new()
 	theStack = GlobalScriptStack.new()
+
+func start_tests():
+	testSuite = TestSuite.new()
 
 func registerPhaseContainer(phasecont:PhaseContainer):
 	phaseContainer = phasecont

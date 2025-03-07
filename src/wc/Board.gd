@@ -298,6 +298,7 @@ func load_cards() -> void:
 				"owner_hero_id": hero_id
 			})
 		load_cards_to_pile(card_data, "deck" + str(hero_id))
+
 	
 func load_cards_to_pile(card_data:Array, pile_name):
 	var card_array = []
@@ -320,9 +321,7 @@ func load_cards_to_grid(card_data:Array, grid_name):
 	load_cards_to_pile(card_data, grid_name) #TODO probably doesn't work, need to check	
 	return
 
-func export_pile_to_json(pile_name) -> Dictionary:
-	var pile: Pile = cfc.NMAP[pile_name]
-	var cards:Array = pile.get_all_cards()
+func export_cards_to_json(pile_name, cards) -> Dictionary:
 	var export_arr:Array = []
 	for card in cards:
 		var owner_hero_id = card.get_owner_hero_id()
@@ -332,10 +331,17 @@ func export_pile_to_json(pile_name) -> Dictionary:
 			"owner_hero_id": owner_hero_id
 		})
 	var result:Dictionary = {pile_name : export_arr}	
-	return result
+	return result	
+
+func export_pile_to_json(pile_name) -> Dictionary:
+	var pile: Pile = cfc.NMAP[pile_name]
+	var cards:Array = pile.get_all_cards()
+	return export_cards_to_json(pile_name, cards)
 	
 func export_grid_to_json(grid_name) -> Dictionary:
-	return export_pile_to_json(grid_name)	
+	var grid:BoardPlacementGrid = cfc.NMAP.board.get_grid(grid_name)
+	var cards:Array = grid.get_all_cards()	
+	return export_cards_to_json(grid_name, cards)	
 		
 func shuffle_decks() -> void:
 	for i in range(gameData.get_team_size()):

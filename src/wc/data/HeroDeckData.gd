@@ -48,7 +48,7 @@ func loadstate_from_json(json:Dictionary):
 	var json_data = json.get("herodeckdata", null)
 	if (null == json_data):
 		return #TODO Error msg
-	owner = gameData.network_players[json_data["owner"]] #Default to being owned by master
+	owner = gameData.network_players.get(int(json_data["owner"]) + 1) #Default to being owned by master
 	deck_id = json_data["deck_id"]
 	hero_id = json_data["hero_id"]
 

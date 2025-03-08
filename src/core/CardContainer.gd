@@ -207,6 +207,11 @@ func get_all_cards() -> Array:
 		cardsArray.append(obj)
 	return cardsArray
 
+func delete_all_cards():
+	var cardsArray:Array = get_all_cards()
+	for card in cardsArray:
+		remove_child(card)
+		card.queue_free()
 
 # Returns an int with the amount of children nodes which are of Card class
 func get_card_count() -> int:

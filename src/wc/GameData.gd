@@ -172,7 +172,6 @@ func get_current_hero_id():
 func get_current_team_member():
 	return team[current_hero_id]	
 
-#TODO this draws to the wrong hands	
 func draw_all_players() :
 	for i in range(get_team_size()):
 		var hero_deck_data: HeroDeckData = get_team_member(i+1)["hero_data"]
@@ -488,6 +487,11 @@ func save_gamedata():
 
 #loads current game data from a json structure
 func load_gamedata(json_data:Dictionary):
+	rpc("remote_load_gamedata",json_data)
+
+remotesync func remote_load_gamedata(json_data:Dictionary):
+	#TODO verify file integrity
+	
 	#phase
 	phaseContainer.loadstate_from_json(json_data)
 	
@@ -510,6 +514,8 @@ func load_gamedata(json_data:Dictionary):
 
 	#Board State ()
 	cfc.NMAP.board.loadstate_from_json(json_data)
+	
+	phaseContainer.reset() #This reloads hero faces, etc...
 	
 	#scenario		
 	return

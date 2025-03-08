@@ -25,6 +25,10 @@ func on_button_pressed(_button_name : String) -> void:
 			close_me()
 		"SaveButton":
 			save_game()		
+
+		"LoadButton":
+			load_game()		
+			
 			
 func close_me():
 	set_process(false)
@@ -32,13 +36,23 @@ func close_me():
 	visible = false
 
 func save_game():
+	file_dialog.mode = FileDialog.MODE_SAVE_FILE
 	file_dialog.popup()
+	
+func load_game():
+	file_dialog.mode = FileDialog.MODE_OPEN_FILE
+	file_dialog.popup()	
 
 func _on_file_selected(path):
 	print("Selected file: ", path)
-	var savedata = gameData.save_gamedata()
-	var json = JSON.print(savedata, "\t")
-	var file = File.new()
-	file.open(path, File.WRITE)
-	file.store_string(json)
-	file.close()
+	if (FileDialog.MODE_OPEN_FILE == file_dialog.mode):
+		var json = WCUtils.read_json_file(path)
+		gameData.load_gamedata(json)
+		close_me()	
+	else:
+		var savedata = gameData.save_gamedata()
+		var json = JSON.print(savedata, "\t")
+		var file = File.new()
+		file.open(path, File.WRITE)
+		file.store_string(json)
+		file.close()

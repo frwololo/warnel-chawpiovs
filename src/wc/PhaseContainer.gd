@@ -51,7 +51,7 @@ var current_step_complete:bool = false
 var clients_ready_for_next_phase:Dictionary = {}
 
 func step_string_to_step_id(stepString:String) -> int:
-	for i in PHASE_STEP:
+	for i in PHASE_STEP.values():
 		if stepString.to_upper() == StepStrings[i]:
 			return i
 	return PHASE_STEP.PLAYER_TURN #Default
@@ -68,6 +68,14 @@ func _ready():
 	
 	
 func _init():
+	reset()
+
+func reset():
+	for child in get_children():
+		remove_child(child)
+		child.queue_free()
+	heroesStatus = []
+	
 	#create the hero face buttons
 	for i in range(gameData.get_team_size()):
 		var hero_index = i+1
@@ -77,11 +85,10 @@ func _init():
 		add_child(heroButton)
 		heroesStatus.append(heroButton)
 			
-
+	#Create label
 	phaseLabel = Label.new()
 	add_child(phaseLabel)
-
-	
+	update_text()		
 
 #Moving to next step needs to happen outside of the signal processing to avoid infinite loops or recursive signals
 func _process(_delta: float) -> void:

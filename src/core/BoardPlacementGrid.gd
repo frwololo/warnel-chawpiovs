@@ -102,6 +102,12 @@ func get_available_slots() -> Array:
 			available_slots.append(slot)
 	return(available_slots)
 
+func delete_all_slots():
+	var slots:Array = get_all_slots()
+	for slot in slots:
+		$GridContainer.remove_child(slot)
+		slot.queue_free()
+	return
 
 # Returns the count of all available slots
 func count_available_slots() -> int:

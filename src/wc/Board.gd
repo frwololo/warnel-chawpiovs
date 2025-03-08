@@ -206,9 +206,40 @@ func get_all_cards() -> Array:
 	return(cardsArray)
 
 func delete_all_cards():
+	
+	#delete everything on board and grids
 	var cards:Array = get_all_cards()
 	for obj in cards:
+		remove_child(obj)
 		obj.queue_free()
+		
+	#delete everything in hands	
+	for i in range(gameData.get_team_size()):
+		var hand:Hand = cfc.NMAP["hand" + str(i+1)]
+		hand.delete_all_cards()
+		
+	#delete everything in other piles
+	for grid_name in GRID_SETUP.keys():
+		var grid_info = GRID_SETUP[grid_name]
+		if "pile" == grid_info.get("type", ""):
+			var pile:Pile = cfc.NMAP[grid_name]
+			pile.delete_all_cards()
+		else: #it's a grid
+			var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(grid_name)
+			grid.delete_all_slots()
+			
+
+	for i in range(gameData.get_team_size()):
+		var hero_id = i+1
+		for grid_name in HERO_GRID_SETUP.keys():
+			var grid_info = HERO_GRID_SETUP[grid_name]
+			var real_grid_name = grid_name + str(hero_id)		
+			if "pile" == grid_info.get("type", ""):
+				var pile:Pile = cfc.NMAP[real_grid_name]
+				pile.delete_all_cards()
+			else: #it's a grid
+				var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(real_grid_name)
+				grid.delete_all_slots()								
 
 func _close_game():
 	cfc.quit_game()
@@ -312,9 +343,24 @@ func load_cards_to_pile(card_data:Array, pile_name):
 		card_array.append(new_card)
 
 	for card in card_array:
-		cfc.NMAP[pile_name].add_child(card)
-		#card.set_is_faceup(false,true)
-		card._determine_idle_state()
+		if (cfc.NMAP.has(pile_name)): #it's a pile
+			cfc.NMAP[pile_name].add_child(card)
+			card._determine_idle_state()
+		else: #it's a grid
+			#TODO cleaner way to add the card there?
+			#card.set_is_faceup(true)	
+			add_child(card)
+			card._determine_idle_state()
+			var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(pile_name)
+			var slot: BoardPlacementSlot
+			if grid:
+				slot = grid.find_available_slot()
+				if slot:
+					card.move_to(cfc.NMAP.board, -1, slot)	
+
+	for card in card_array:				
+		#card.interruptTweening()
+		card.reorganize_self()		
 	return
 			
 func load_cards_to_grid(card_data:Array, grid_name):
@@ -334,7 +380,7 @@ func export_cards_to_json(pile_name, cards) -> Dictionary:
 	return result	
 
 func export_pile_to_json(pile_name) -> Dictionary:
-	var pile: Pile = cfc.NMAP[pile_name]
+	var pile: CardContainer = cfc.NMAP[pile_name]
 	var cards:Array = pile.get_all_cards()
 	return export_cards_to_json(pile_name, cards)
 	
@@ -442,6 +488,11 @@ func savestate_to_json() -> Dictionary:
 				json_data.merge(export_pile_to_json(real_grid_name))
 			else:
 				json_data.merge(export_grid_to_json(real_grid_name))
+				
+		#save hand	
+		var hand_name = "hand" + str(hero_id)
+		json_data.merge(export_pile_to_json(hand_name))	
+		
 	var result: Dictionary = {"board" : json_data}
 	return result
 	
@@ -455,7 +506,7 @@ func loadstate_from_json(json:Dictionary):
 	#Load all grids with matching data
 	for grid_name in GRID_SETUP.keys():
 		var grid_info = GRID_SETUP[grid_name]
-		var card_data = json_data[grid_name]
+		var card_data = json_data.get(grid_name, [])
 		if "pile" == grid_info.get("type", ""):
 			load_cards_to_pile(card_data, grid_name)
 		else:
@@ -467,11 +518,17 @@ func loadstate_from_json(json:Dictionary):
 		for grid_name in HERO_GRID_SETUP.keys():
 			var grid_info = HERO_GRID_SETUP[grid_name]
 			var real_grid_name = grid_name + str(hero_id)
-			var card_data = json_data[real_grid_name]		
+			var card_data = json_data.get(real_grid_name, [])		
 			if "pile" == grid_info.get("type", ""):
 				load_cards_to_pile(card_data, real_grid_name)
 			else:
 				load_cards_to_grid(card_data, real_grid_name)
+
+		#load everything in hands	
+		var hand_name = "hand" + str(hero_id)
+		var card_data = json_data.get(hand_name, [])
+		load_cards_to_pile(card_data, hand_name)
+
 	
 	return
 

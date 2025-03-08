@@ -25,15 +25,28 @@ func on_button_pressed(_button_name : String) -> void:
 			close_me()
 		"SaveButton":
 			save_game()		
-
 		"LoadButton":
-			load_game()		
+			load_game()	
+		"MainMenuButton":
+			back_to_main_menu()
+		"RestartButton":
+			restart_game()	
 			
 			
 func close_me():
 	set_process(false)
 	cfc.set_game_paused(false)
 	visible = false
+
+func restart_game():
+	var path = "user://Saves/_restart.json"
+	var json = WCUtils.read_json_file(path)
+	if (json):
+		gameData.load_gamedata(json)
+	close_me()		
+
+func back_to_main_menu():
+	get_tree().change_scene(CFConst.PATH_CUSTOM + 'MainMenu.tscn')
 
 func save_game():
 	file_dialog.mode = FileDialog.MODE_SAVE_FILE
@@ -50,9 +63,4 @@ func _on_file_selected(path):
 		gameData.load_gamedata(json)
 		close_me()	
 	else:
-		var savedata = gameData.save_gamedata()
-		var json = JSON.print(savedata, "\t")
-		var file = File.new()
-		file.open(path, File.WRITE)
-		file.store_string(json)
-		file.close()
+		gameData.save_gamedata_to_file(path)

@@ -9,7 +9,9 @@ extends "res://src/core/CFUtils.gd"
 #Read json file into dictionary (or array!)
 static func read_json_file(file_path):
 	var file = File.new()
-	file.open(file_path, File.READ)
+	var err = file.open(file_path, File.READ)
+	if err != OK:
+		return null
 	var content_as_text = file.get_as_text()
 	var content_as_dictionary = parse_json(content_as_text)
 	return content_as_dictionary

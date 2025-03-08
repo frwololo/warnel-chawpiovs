@@ -178,7 +178,10 @@ func _ready() -> void:
 	#draw_cheat("Backflip")
 	#draw_cheat("Helicarrier")	
 	draw_cheat("Swinging Web Kick")
-	cfc.LOG_DICT(guidMaster.guid_to_object)	
+	cfc.LOG_DICT(guidMaster.guid_to_object)
+	
+	#Save gamedata for restart
+	gameData.save_gamedata_to_file("user://Saves/_restart.json")	
 	
 
 func load_heroes():

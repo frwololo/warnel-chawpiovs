@@ -485,6 +485,14 @@ func save_gamedata():
 	json_data["scenario"] = {}
 	return json_data
 
+func save_gamedata_to_file(path):
+	var savedata = save_gamedata()
+	var json = JSON.print(savedata, "\t")
+	var file = File.new()
+	file.open(path, File.WRITE)
+	file.store_string(json)
+	file.close()
+
 #loads current game data from a json structure
 func load_gamedata(json_data:Dictionary):
 	rpc("remote_load_gamedata",json_data)

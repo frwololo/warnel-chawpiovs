@@ -186,6 +186,13 @@ func _step_started(
 			_round_end()
 	return 0
 
+# a function to check if the phaseContainer is still running automatically
+# through phases
+# notably we don't want to be able to do interactions (from users, from automated test suite)
+# while the phases are automatically proceeding
+func is_in_progress()-> bool:
+	return is_ready_for_next_phase() 
+
 #returns true if nothing prevents me (player) from *asking* for next phase	
 func is_ready_for_next_phase() -> bool :
 	if (!current_step_complete) :

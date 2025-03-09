@@ -9,6 +9,7 @@ var known_types : Dictionary
 var unknown_types : Dictionary
 var next_scene_params : Dictionary
 var idx_card_id_to_name : Dictionary
+var lowercase_card_name_to_name : Dictionary
 var idx_hero_to_deck_ids : Dictionary
 
 var obligations : Dictionary
@@ -107,8 +108,10 @@ func load_card_definitions() -> Dictionary:
 				card_data["Name"] = card_data["Name"] + "_" + String(card_data["stage"])
 			
 			var card_id = card_data["_code"]
+			var card_name:String = card_data["Name"]
 			#caching and indexing
-			idx_card_id_to_name[card_id] = card_data["Name"]
+			idx_card_id_to_name[card_id] = card_name
+			lowercase_card_name_to_name[card_name.to_lower()] = card_name
 			
 			
 			#scenarios cache

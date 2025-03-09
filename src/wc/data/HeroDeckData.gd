@@ -39,16 +39,29 @@ func savestate_to_json() -> Dictionary:
 		"herodeckdata": {
 			"owner" : self.owner.get_id(),
 			"deck_id" : self.deck_id,
-			"hero_id" : self.hero_id
+			"hero" : self.hero_id
 		}
 	}
 	return json_data
 	
-func loadstate_from_json(json:Dictionary):
+func loadstate_from_json(json:Dictionary) -> bool:
 	var json_data = json.get("herodeckdata", null)
 	if (null == json_data):
-		return #TODO Error msg
-	owner = gameData.network_players.get(int(json_data["owner"]) + 1) #Default to being owned by master
-	deck_id = json_data["deck_id"]
-	hero_id = json_data["hero_id"]
+		#herodeckdata should always be set, even if with minimalistic info
+		return false
+	var owner_id:int = 	int(json_data.get("owner", 0) + 1)
+	owner = gameData.network_players.get(owner_id) #Default to being owned by master
+	deck_id = json_data.get("deck_id", 0)
+	
+	#Hero might be a card id or card name. We try to accomodate for both use cases here
+	var hero:String = json_data.get("hero", "")
+	if (!hero):
+		#TODO error
+		return false
+	var hero_card_name = cfc.lowercase_card_name_to_name.get(hero.to_lower(), "")
+	if (hero_card_name):
+		hero_id = cfc.card_definitions[hero_card_name]["_code"]
+	else:
+		hero_id = hero
+	return true
 

@@ -130,3 +130,4 @@ static func disable_and_hide_node(node:Node) -> void:
 static func enable_and_show_node(node:Node) -> void:
 	node.set_process(true)
 	node.visible = true
+

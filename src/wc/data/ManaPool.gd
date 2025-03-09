@@ -105,6 +105,7 @@ func savestate_to_json() -> Dictionary:
 	return json_data
 	
 func loadstate_from_json(json:Dictionary):
+	.reset() #Init data even if we don't get aything from the json
 	var json_data = json.get("manapool", null)
 	if (null == json_data):
 		return #TODO Error msg

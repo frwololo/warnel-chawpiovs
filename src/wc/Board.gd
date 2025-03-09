@@ -328,7 +328,7 @@ func load_cards() -> void:
 		for card_id in card_ids:
 			#cards.append(ckey)
 			card_data.append({
-				"card_id" : card_id,
+				"card" : card_id,
 				"owner_hero_id": hero_id
 			})
 		load_cards_to_pile(card_data, "deck" + str(hero_id))
@@ -337,11 +337,15 @@ func load_cards() -> void:
 func load_cards_to_pile(card_data:Array, pile_name):
 	var card_array = []
 	for card in card_data:
-		var card_id = card["card_id"]
-		var hero_id = card["owner_hero_id"]
-		#cards.append(ckey)
-		var ckey = cfc.idx_card_id_to_name[card_id]
-		var new_card:WCCard = cfc.instance_card(ckey)
+		var card_id:String = card["card"]
+		var hero_id = card.get("owner_hero_id", 1)
+		
+		#card_id here is either a card id or a card name, we try to accomodate for both
+		var card_name = cfc.idx_card_id_to_name.get(
+			card_id, 
+			cfc.lowercase_card_name_to_name.get(card_id.to_lower(), "")
+		)
+		var new_card:WCCard = cfc.instance_card(card_name)
 		new_card.set_owner_hero_id(hero_id)
 		card_array.append(new_card)
 
@@ -376,7 +380,7 @@ func export_cards_to_json(pile_name, cards) -> Dictionary:
 		var owner_hero_id = card.get_owner_hero_id()
 		var card_id = card.properties.get("_code")
 		export_arr.append({
-			"card_id" : card_id,
+			"card" : card_id,
 			"owner_hero_id": owner_hero_id
 		})
 	var result:Dictionary = {pile_name : export_arr}	

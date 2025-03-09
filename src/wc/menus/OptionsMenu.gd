@@ -46,6 +46,7 @@ func restart_game():
 	close_me()		
 
 func back_to_main_menu():
+	cfc.quit_game()
 	get_tree().change_scene(CFConst.PATH_CUSTOM + 'MainMenu.tscn')
 
 func save_game():

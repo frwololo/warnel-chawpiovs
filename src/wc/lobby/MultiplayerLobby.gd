@@ -128,7 +128,7 @@ func _player_connected(id):
 
 func _launch_server_game():
 	# Finalize Network players data
-	var i = 0
+	var i = 1
 	for player in players:
 		rpc("set_network_player_index", player, i)
 		i+=1

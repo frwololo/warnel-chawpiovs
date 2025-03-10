@@ -379,7 +379,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/core/Card/TargetingArrow.gd"
 }, {
-"base": "Reference",
+"base": "Node",
 "class": "TestSuite",
 "language": "GDScript",
 "path": "res://src/wc/data/TestSuite.gd"

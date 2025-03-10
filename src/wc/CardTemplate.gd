@@ -16,8 +16,17 @@ func set_controller_hero_id(hero_id:int):
 func get_controller_hero_id() -> int:
 	return controller_hero_id	
 	
+func get_controller_player_network_id() -> int:
+	var player_data:PlayerData = gameData.get_hero_owner(controller_hero_id)
+	if (!player_data):
+		return 0 #TODO error handling? This shouldn't happen
+	return player_data.get_network_id()	
+	
 func get_controller_player_id() -> int:
-	return gameData.get_hero_owner(controller_hero_id)	
+	var player_data:PlayerData = gameData.get_hero_owner(controller_hero_id)
+	if (!player_data):
+		return 0 #TODO error handling? This shouldn't happen
+	return player_data.get_id()		
 
 func setup() -> void:
 	.setup()

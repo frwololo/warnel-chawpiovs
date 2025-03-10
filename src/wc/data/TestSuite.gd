@@ -1,5 +1,5 @@
 class_name TestSuite
-extends Reference
+extends Node
 
 #GUI components required for interaction
 var phaseContainer:PhaseContainer = null
@@ -12,6 +12,7 @@ var current_test_file:String = ""
 
 var passed: Array = []
 var failed: Array = []
+var failed_reason: Array = []
 var finished: bool = false
 
 #current tests
@@ -19,6 +20,7 @@ var initial_state:Dictionary
 var end_state:Dictionary
 var actions:Array
 var current_action:int = 0
+var current_player_id: int = 0
 
 func _init():
 	load_test_files()
@@ -63,11 +65,36 @@ func process_action(my_action:Dictionary):
 	#If player is 0 we'll try to guess it from the card
 	#Player 1 is the master, runing the test suite
 	#Other players will receive the test request via rpc
+
+	if (!player):
+		#guessing player from action/card
+		player = 1 #default
+		var action_type: String = my_action.get("type", "play")
+		var action_value: String = 	my_action.get("value", "")
+		match action_type:
+			"play":
+				player = get_card_owner(action_value)
+			"choose":
+				player = get_current_player()
+			"target":
+				player = current_player_id
+			"select":
+				player = get_current_player()
+			"next_phase":
+				var hero_id = int(action_value)
+				var player_data:PlayerData = gameData.get_hero_owner(hero_id)
+				if (player_data):
+					player = player_data.get_id()		
+			"other":
+				player = get_current_player()
+			_:
+				player = get_current_player()			
+
+	current_player_id = player
+	var network_player_id = gameData.id_to_network_id[player]
+	rpc_id(network_player_id, "run_action", my_action)
 	
-	#TODO select correct player
-	if (0 == player):
-		player = 1
-	
+remotesync func run_action(my_action:Dictionary):	
 	#valid types: play, choose, target, select, "next_phase", other
 	#For "other", valid values are TBD
 	var action_type: String = my_action.get("type", "play")
@@ -87,7 +114,7 @@ func process_action(my_action:Dictionary):
 		"select":
 			return
 		"next_phase":
-			action_next_phase(player, action_value)
+			action_next_phase(action_value)
 			return			
 		"other":
 			return
@@ -109,22 +136,42 @@ func action_select(player, action_value):
 	return
 
 #clicked on next phase. Value is the hero id	
-func action_next_phase(player, action_value):
-	var hero_id = int(action_value)
+func action_next_phase(action_value):
+	var hero_id = int(action_value) - 1
 	var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id]
 	heroPhase.heroPhase_action()
 	return	
 	
-func action_other(player, action_value):
+func action_other(action_value):
 	match action_value:
 		_:
 			#TODO error
 			return
 	return				
 
-
-#Find a card object 
-func get_card(cardname:String):	
+func get_current_player() -> int:
+	#TODO error handling
+	var player_network_id = gameData.user_input_ongoing() #TODO this is network id, should be regular id?
+	var player:PlayerData = gameData.get_player_by_network_id(player_network_id)
+	return player.get_id()
+	
+func get_card_owner(card_id_or_name:String)-> int:
+	var card:WCCard = get_card(card_id_or_name)
+	if (!card):
+		return 0 #TODO error handling
+	return card.get_controller_player_id()
+	
+#Find a card object (on the board, etc...)
+func get_card(card_id_or_name:String)-> WCCard:
+	var card_name = get_corrected_card_name(card_id_or_name)
+	#TODO Search in modal windows
+	
+	#search on board
+	var board_cards = cfc.NMAP.board.get_all_cards()
+	for card in board_cards:
+		if card.canonical_name == card_name:
+			return card 
+	#TODO search in piles
 	return null
 	
 #Check the end state for the current test
@@ -148,12 +195,14 @@ func get_corrected_card_name (card) -> String:
 func is_element1_in_element2 (element1, element2)-> bool:
 	
 	if (typeof(element1) != typeof(element2)):
+		failed_reason.append (str(typeof(element1)) +" - " + str(typeof(element2)))
 		return false
 	
 	match typeof(element1):	
 		TYPE_DICTIONARY:
 			for key in element1:
 				if not element2.has(key):
+					failed_reason.append ("missing key :" + key)
 					return false
 				var val1 = element1[key]
 				var val2 = element2[key]
@@ -167,6 +216,7 @@ func is_element1_in_element2 (element1, element2)-> bool:
 					return false
 		TYPE_ARRAY:
 			if (element1.size() > element2.size()): #Should we rather check for not equal here?
+				failed_reason.append ("arrays not same size")
 				return false
 			var i:int = 0
 			for value in element1:
@@ -176,9 +226,11 @@ func is_element1_in_element2 (element1, element2)-> bool:
 		TYPE_STRING:
 			#we don't care for the case
 			if (element1.to_lower() != element2.to_lower()):
+				failed_reason.append (element1 + " - " + element2)
 				return false
 		_:	
 			if (element1 != element2):
+				failed_reason.append (str(element1) + " - " + str(element2))
 				return false
 	return true
 	
@@ -223,8 +275,11 @@ func save_results():
 	var to_print:String = "total tests: " + str(test_files.size()) + "\n"
 	to_print = to_print +  "###\nfailed: " + str(failed.size()) + "\n"
 
+	var i = 0;
 	for failed_file in failed:
 		to_print = to_print + "\t" + failed_file + "\n"
+		to_print = to_print + "\t\t" + failed_reason[i]+ "\n"	
+		i += 1
 	
 	to_print = to_print +  "###\npassed: " + str(passed.size()) + "\n"
 

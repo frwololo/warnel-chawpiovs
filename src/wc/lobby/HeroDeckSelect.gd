@@ -29,7 +29,7 @@ func _load_players():
 	var players:Dictionary = gameData.network_players
 	for player in players:
 		playerSelector.add_item(players[player].name, players[player].id)
-	set_owner(0)
+	set_owner(1)
 	if (not cfc.is_game_master()):
 		playerSelector.set_disabled(true)
 	if (players.size() < 2):

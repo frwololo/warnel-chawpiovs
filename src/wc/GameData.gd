@@ -100,6 +100,7 @@ func _init():
 
 func start_tests():
 	testSuite = TestSuite.new()
+	self.add_child(testSuite) #Test suite needs to be in the tree for rpc calls
 
 func registerPhaseContainer(phasecont:PhaseContainer):
 	phaseContainer = phasecont
@@ -141,14 +142,17 @@ func set_scenario_data(_scenario:Dictionary):
 		return
 	scenario.load_from_dict(_scenario)
 
-func get_player_by_index(id):
+func get_player_by_network_id(network_id) -> PlayerData:
+	return network_players[network_id]
+
+func get_player_by_index(id) -> PlayerData:
 	return network_players[id_to_network_id[id]]
 
 #setup default for 1player mode	
 func init_1player():
 	is_multiplayer_game = false
 	init_as_server()
-	var dic = {1 : {"name" : "Player1", "id" : 0}}
+	var dic = {1 : {"name" : "Player1", "id" : 1}}
 	init_network_players(dic)
 	
 func init_as_server():
@@ -204,8 +208,6 @@ func villain_init_attackers():
 	#TODO per player
 	attackers.append(get_villain())
 	attackers += get_minions_engaged_with_player(current_target)
-	var temp = attackers.size()
-	temp = 0
 
 func villain_next_target() -> int:
 	_villain_current_hero_target += 1
@@ -379,14 +381,13 @@ func can_i_play_this_hero(hero_index)-> bool:
 	return false
 
 #Returns player id who owns a specific hero (by hero card id)	
-func get_hero_owner(hero_index)->int:
+func get_hero_owner(hero_index)->PlayerData:
 	#Errors. If hero index is out of range I can't use it
 	if hero_index < 1 or hero_index> get_team_size():
-		return 0
+		return null
 			
 	var hero_deck_data:HeroDeckData = get_team_member(hero_index)["hero_data"]
-	var owner_player:PlayerData = hero_deck_data.owner
-	return owner_player.get_network_id()	
+	return hero_deck_data.owner
 
 #picks a first hero for a network player
 func assign_starting_hero():
@@ -435,9 +436,9 @@ func confirm(
 	# We do not use SP.KEY_IS_OPTIONAL here to avoid causing cyclical
 	# references when calling CFUtils from SP
 	if script.get("is_optional_" + type):
-		_acquire_user_input_lock(owner.get_controller_player_id())
+		_acquire_user_input_lock(owner.get_controller_player_network_id())
 		var my_network_id = get_tree().get_network_unique_id()
-		var is_master:bool =  (owner.get_controller_player_id() == my_network_id)
+		var is_master:bool =  (owner.get_controller_player_network_id() == my_network_id)
 		var confirm = _OPTIONAL_CONFIRM_SCENE.instance()
 		confirm.prep(card_name,task_name, is_master)
 		# We have to wait until the player has finished selecting an option
@@ -448,7 +449,7 @@ func confirm(
 		# Garbage cleanup
 		confirm.hide()
 		confirm.queue_free()
-		_release_user_input_lock(owner.get_controller_player_id())	
+		_release_user_input_lock(owner.get_controller_player_network_id())	
 	return(is_accepted)
 	
 #saves current game data into a json structure	

@@ -1,6 +1,13 @@
 class_name TestSuite
 extends Node
 
+enum TestStatus {
+	NONE,
+	PASSED,
+	SKIPPED,
+	FAILED,
+}
+
 #GUI components required for interaction
 var phaseContainer:PhaseContainer = null
 var initialized:bool = false
@@ -12,8 +19,11 @@ var current_test_file:String = ""
 
 var passed: Array = []
 var failed: Array = []
+var skipped: Array = []
 var failed_reason: Array = []
+var skipped_reason: Array = []
 var finished: bool = false
+var forced_status: int = TestStatus.NONE
 
 #current tests
 var initial_state:Dictionary
@@ -22,9 +32,13 @@ var actions:Array
 var current_action:int = 0
 var current_player_id: int = 0
 
+var game_loaded:bool = false
+
 func _init():
+	scripting_bus.connect("all_clients_game_loaded", self, "all_clients_game_loaded")
 	load_test_files()
 	next_test()
+
 
 #Gathers GUI objects from the game that we will be calling
 func initialize_components():
@@ -34,6 +48,10 @@ func initialize_components():
 func process(_delta: float) -> void:
 	if (!initialized):
 		initialize_components()
+	
+	#Game is still loading on some clients, do not run tests yet
+	if (!game_loaded):
+		return
 		
 	if (finished):
 		return
@@ -44,7 +62,7 @@ func process(_delta: float) -> void:
 #If no actions remaining, check final state and load the next test
 func next_action():
 	#TODO need to ensure the previous action and its effects are completed before moving to the next
-	#If phasecontainer is running amok, we wait
+	#If phasecontainer is running stuff, we wait
 	if phaseContainer.is_in_progress():
 		return
 	if (actions.size() <= current_action):
@@ -176,6 +194,15 @@ func get_card(card_id_or_name:String)-> WCCard:
 	
 #Check the end state for the current test
 func finalize_test():
+	if (forced_status != TestStatus.NONE):
+		match forced_status:
+			TestStatus.PASSED:
+				passed.append(current_test_file)
+			TestStatus.FAILED:
+				failed.append(current_test_file)
+			TestStatus.SKIPPED:
+				skipped.append(current_test_file)
+		return
 	var current_gamestate = gameData.save_gamedata()
 	if (is_element1_in_element2(end_state, current_gamestate)):
 		passed.append(current_test_file)
@@ -256,10 +283,21 @@ func load_test(test_file)-> bool:
 	actions = json_card_data["actions"]
 	end_state = json_card_data["end"]
 	current_action = 0
-	current_test_file = test_file	
+	forced_status = TestStatus.NONE
+	current_test_file = test_file
+	game_loaded = false	
 	gameData.load_gamedata(initial_state)
 	return true
-		
+
+func all_clients_game_loaded(details = {}):
+	game_loaded = true
+	for value in details.values():
+		if value != CFConst.ReturnCode.OK:
+			actions = [] #emptu the actions stack, this will force a finalize test
+			skipped_reason.append ("error loading game (wrong number of players?)")
+			forced_status = TestStatus.SKIPPED
+			return
+	
 #Loads the next test. If no next test, returns false	
 func next_test() -> bool:
 	if (test_files.size() <= current_test):
@@ -270,12 +308,22 @@ func next_test() -> bool:
 	current_test+=1
 	return result
 
+#Save test results to an output file
 func save_results():
 	var file = File.new()
 	var to_print:String = "total tests: " + str(test_files.size()) + "\n"
-	to_print = to_print +  "###\nfailed: " + str(failed.size()) + "\n"
+	to_print = to_print +  "###\nskipped: " + str(skipped.size()) + "\n"
 
 	var i = 0;
+	for skipped_file in skipped:
+		to_print = to_print + "\t" + skipped_file + "\n"
+		to_print = to_print + "\t\t" + skipped_reason[i]+ "\n"	
+		i += 1	
+	
+		
+	to_print = to_print +  "###\nfailed: " + str(failed.size()) + "\n"
+
+	i = 0;
 	for failed_file in failed:
 		to_print = to_print + "\t" + failed_file + "\n"
 		to_print = to_print + "\t\t" + failed_reason[i]+ "\n"	

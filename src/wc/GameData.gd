@@ -20,6 +20,8 @@ var is_multiplayer_game:bool = true
 #1 indexed {id: HeroDeckData}
 var team := {}
 
+var gamesave_load_status:= {}
+
 var scenario:ScenarioDeckData
 var phaseContainer: PhaseContainer #reference link to the phaseContainer
 var theStack: GlobalScriptStack
@@ -496,15 +498,29 @@ func save_gamedata_to_file(path):
 
 #loads current game data from a json structure
 func load_gamedata(json_data:Dictionary):
+	gamesave_load_status = {}
 	rpc("remote_load_gamedata",json_data)
+
+remotesync func remote_load_game_data_finished(result:int):
+	var caller_id = get_tree().get_rpc_sender_id()
+	gamesave_load_status[caller_id] = result
+	if (gamesave_load_status.size() == network_players.size()):
+		scripting_bus.emit_signal("all_clients_game_loaded",  gamesave_load_status)
 
 remotesync func remote_load_gamedata(json_data:Dictionary):
 	#TODO verify file integrity
+	var caller_id = get_tree().get_rpc_sender_id()
+
 	
 	#phase
 	phaseContainer.loadstate_from_json(json_data)
 	
 	var hero_data:Array = json_data["heroes"]
+	
+	#number of players doesn't match loaded data
+	if (hero_data.size() != team.size()):
+		rpc_id(caller_id,"remote_load_game_data_finished",CFConst.ReturnCode.FAILED)
+		return 
 
 	#hero Deck data	
 	var _team:Dictionary = {}
@@ -527,4 +543,4 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 	phaseContainer.reset() #This reloads hero faces, etc...
 	
 	#scenario		
-	return
+	rpc_id(caller_id,"remote_load_game_data_finished",CFConst.ReturnCode.OK)

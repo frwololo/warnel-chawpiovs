@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WC - Documentation</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <nav>
+    <h2>Documentation Menu </h2>
+    <a href="#play">How to Play</a>
+    <a href="#notes">Technical stuff & Notes</a>
+	<ul>
+	<li><a href="#folders">Folder Structure</a></li>
+	</ul>
+    <a href="#todo">TODO</a>
+    <a href="#test">Test Suite</a>
+  </nav>
+  <main>
+    <section id="play">
+      <h2>How To Play</h2>
+      <p></p>
+    </section>
+    <section id="notes">
+      <h2>Technical stuff & Notes</h2>
+	  <h3 id ="folders">Folder Structure</h3>
+	  <h4 id ="codefolder">Code</h4>
+	  <ul>
+	  <li><strong>assets - </strong> Images etc for the game (compile time data)</li>
+	  <li><strong>scripts - </strong> various helper scripts to generate card data, etc...</li>
+	  <li><strong>Sets - </strong> copy of userdata sets, for repository</li>
+	  <li><strong>src - </strong> All the source code</li>
+	  <li><strong>Test - </strong> copy of userdata tests, for respository</li>
+	  </ul>	  
+	  <h4 id ="userdatafolder">UserData</h4>
+	  <ul>
+	  <li><strong>Test - </strong> Tests to be run by the test suite</li>
+	  <li><strong>Logs - </strong> Game logs</li>
+	  <li><strong>Saves - </strong> Game Saves</li>
+	  <li><strong>Sets - </strong> All the Card data, primitives, etc</li>
+	  <li><strong>Decks - </strong> Decks data</li>
+	  <li><strong>Heroes - </strong></li>
+	  </ul>
+      <p></p>
+    </section>
+    <section id="todo">
+      <h2>TODO</h2>
+      <p></p>
+    </section>
+
+    <section id="test">
+      <h2>Test Suite</h2>
+      <p>Tests are located in usersdata/Test. We either load all files named in a _tests.txt file, OR all files starting with test_ in the folder</p>
+    </section>
+  </main>
+</body>
+</html>

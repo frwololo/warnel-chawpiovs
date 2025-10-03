@@ -101,8 +101,13 @@ func _init():
 	theStack = GlobalScriptStack.new()
 
 func start_tests():
+	rpc("init_client_tests")
+
+remotesync func init_client_tests():
 	testSuite = TestSuite.new()
-	self.add_child(testSuite) #Test suite needs to be in the tree for rpc calls
+	testSuite.name = "testSuite"
+	self.add_child(testSuite) #Test suite needs to be in the tree for rpc calls	
+
 
 func registerPhaseContainer(phasecont:PhaseContainer):
 	phaseContainer = phasecont

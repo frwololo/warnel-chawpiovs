@@ -36,6 +36,12 @@ var game_loaded:bool = false
 
 func _init():
 	scripting_bus.connect("all_clients_game_loaded", self, "all_clients_game_loaded")
+	
+func _ready():
+	#only server is allowed to run the main process	
+	if 1 != get_tree().get_network_unique_id():
+		return
+				
 	load_test_files()
 	next_test()
 
@@ -55,6 +61,11 @@ func process(_delta: float) -> void:
 		
 	if (finished):
 		return
+	
+	#only server is allowed to run the main process	
+	if 1 != get_tree().get_network_unique_id():
+		return
+		
 	next_action()		
 	return	
 
@@ -194,8 +205,12 @@ func get_card(card_id_or_name:String)-> WCCard:
 	
 #Check the end state for the current test
 func finalize_test():
-	if (forced_status != TestStatus.NONE):
-		match forced_status:
+	rpc("finalize_test_allclients", forced_status)	
+	return
+
+remotesync func finalize_test_allclients(force_status:int):
+	if (force_status != TestStatus.NONE):
+		match force_status:
 			TestStatus.PASSED:
 				passed.append(current_test_file)
 			TestStatus.FAILED:
@@ -276,6 +291,11 @@ func load_test_files():
 				"user://Test/", "test_", true)
 	file.close()		
 
+#Lightweight initialize remote clients with just enough data for them to run the final state comparison
+remote func initialize_clients_test(details:Dictionary):
+	end_state = details["end_state"]
+	current_test_file = details["current_test_file"]
+
 #Loads a single test file 	
 func load_test(test_file)-> bool:
 	var json_card_data:Dictionary = WCUtils.read_json_file(test_file)
@@ -285,31 +305,46 @@ func load_test(test_file)-> bool:
 	current_action = 0
 	forced_status = TestStatus.NONE
 	current_test_file = test_file
-	game_loaded = false	
+	game_loaded = false
+	
+	#init remote clients
+	var remote_init_data = {
+		"end_state" : end_state,
+		"current_test_file" : current_test_file
+	}
+	rpc("initialize_clients_test", remote_init_data)
+	
 	gameData.load_gamedata(initial_state)
 	return true
 
 func all_clients_game_loaded(details = {}):
+	#only server is allowed to run the main process	
+	if 1 != get_tree().get_network_unique_id():
+		return
+			
 	game_loaded = true
 	for value in details.values():
 		if value != CFConst.ReturnCode.OK:
-			actions = [] #emptu the actions stack, this will force a finalize test
-			skipped_reason.append ("error loading game (wrong number of players?)")
+			actions = [] #empty the actions stack, this will force a finalize test
+			rpc("add_skipped_msg", "error loading game (wrong number of players?)") #weird that I have to send this kind of info to remote clients, ideally they would compute their own issues
 			forced_status = TestStatus.SKIPPED
 			return
+
+remotesync func add_skipped_msg(msg):
+	skipped_reason.append (msg)
 	
 #Loads the next test. If no next test, returns false	
 func next_test() -> bool:
 	if (test_files.size() <= current_test):
 		finished = true
-		save_results()
+		rpc("save_results")
 		return false
 	var result = load_test(test_files[current_test])
 	current_test+=1
 	return result
 
 #Save test results to an output file
-func save_results():
+remotesync func save_results():
 	var file = File.new()
 	var to_print:String = "total tests: " + str(test_files.size()) + "\n"
 	to_print = to_print +  "###\nskipped: " + str(skipped.size()) + "\n"
@@ -333,7 +368,11 @@ func save_results():
 
 	for passed_file in passed:
 		to_print = to_print + "\t" + passed_file + "\n"	
+
+	var network_id = get_tree().get_network_unique_id()
+	network_id = str(network_id)
+	var filename = "user://test_results_" + network_id +".txt"
 	
-	file.open("user://test_results.txt", File.WRITE)
+	file.open(filename, File.WRITE)
 	file.store_string(to_print + "\n")
 	file.close() 	

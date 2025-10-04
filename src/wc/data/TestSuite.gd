@@ -8,6 +8,9 @@ enum TestStatus {
 	FAILED,
 }
 
+const GRID_SETUP = CFConst.GRID_SETUP
+const HERO_GRID_SETUP = CFConst.HERO_GRID_SETUP
+
 #GUI components required for interaction
 var phaseContainer:PhaseContainer = null
 var initialized:bool = false
@@ -34,6 +37,8 @@ var current_player_id: int = 0
 
 var game_loaded:bool = false
 
+var delta:float = 0
+
 func _init():
 	scripting_bus.connect("all_clients_game_loaded", self, "all_clients_game_loaded")
 	
@@ -52,6 +57,8 @@ func initialize_components():
 	initialized = true
 
 func process(_delta: float) -> void:
+	delta += _delta
+	
 	if (!initialized):
 		initialize_components()
 	
@@ -76,11 +83,18 @@ func next_action():
 	#If phasecontainer is running stuff, we wait
 	if phaseContainer.is_in_progress():
 		return
+	
+	if cfc.NMAP.board.are_cards_still_animating():
+		return	
+		
 	if (actions.size() <= current_action):
+		#if (delta < 5): #crappy way to wait for current actions to finish before finalizing test. Enable only if we can't find better ways to wait for animation
+		#	return
 		finalize_test()
 		next_test()
 		return false	
  
+	delta = 0
 	var my_action = actions[current_action]
 	
 	process_action(my_action)
@@ -120,11 +134,13 @@ func process_action(my_action:Dictionary):
 				player = get_current_player()			
 
 	current_player_id = player
+	my_action["player"] = current_player_id #This will pass the determined player id to the rpc call 
 	var network_player_id = gameData.id_to_network_id[player]
 	rpc_id(network_player_id, "run_action", my_action)
 	
 remotesync func run_action(my_action:Dictionary):	
 	#valid types: play, choose, target, select, "next_phase", other
+	# Play: play a card
 	#For "other", valid values are TBD
 	var action_type: String = my_action.get("type", "play")
 	var action_value: String = 	my_action.get("value", "")
@@ -135,6 +151,7 @@ remotesync func run_action(my_action:Dictionary):
 	
 	match action_type:
 		"play":
+			action_play(my_action["player"], action_value)
 			return
 		"choose":
 			return
@@ -152,7 +169,9 @@ remotesync func run_action(my_action:Dictionary):
 			return	
 	return	
 
-func action_play(player, action_value):
+func action_play(player, card_id_or_name):
+	var card:WCCard = get_card(card_id_or_name)
+	card.attempt_to_play()
 	return
 
 func action_choose(player, action_value):
@@ -189,18 +208,52 @@ func get_card_owner(card_id_or_name:String)-> int:
 	if (!card):
 		return 0 #TODO error handling
 	return card.get_controller_player_id()
+
+func get_card_from_pile(card_id_or_name:String, pile:CardContainer)-> WCCard:
+	var card_name = get_corrected_card_name(card_id_or_name)
+	if (!pile):
+		return null
+		
+	var pile_cards = pile.get_all_cards()
+	for card in pile_cards:
+		if card.canonical_name == card_name:
+			return card 
+	return null	
 	
 #Find a card object (on the board, etc...)
 func get_card(card_id_or_name:String)-> WCCard:
 	var card_name = get_corrected_card_name(card_id_or_name)
-	#TODO Search in modal windows
+	#TODO Search in modal windows?
+	
+	#TODO search in villain cards
 	
 	#search on board
 	var board_cards = cfc.NMAP.board.get_all_cards()
 	for card in board_cards:
 		if card.canonical_name == card_name:
 			return card 
-	#TODO search in piles
+		
+	for i in range(gameData.get_team_size()):
+		var hero_id = i+1
+		
+		#search in hero piles
+		for grid_name in HERO_GRID_SETUP.keys():
+			var grid_info = HERO_GRID_SETUP[grid_name]
+			var real_grid_name = grid_name + str(hero_id)	
+			if "pile" == grid_info.get("type", ""):
+				var pile:CardContainer = cfc.NMAP.get(real_grid_name)
+				var card:WCCard = get_card_from_pile(card_id_or_name, pile)	
+				if (card):
+					return card		
+			#no "else" here. Other case is Grid which is handled by board
+
+		#search in hero hands
+		var hand_name = "hand" + str(hero_id)
+		var pile:CardContainer = cfc.NMAP.get(hand_name)
+		var card:WCCard = get_card_from_pile(card_id_or_name, pile)	
+		if (card):
+			return card	
+	
 	return null
 	
 #Check the end state for the current test
@@ -209,6 +262,11 @@ func finalize_test():
 	return
 
 remotesync func finalize_test_allclients(force_status:int):
+	
+	#Remove crap that might still be lurking around
+	cfc.cleanup_modal_menu()
+	gameData.force_reset_stack()
+	
 	if (force_status != TestStatus.NONE):
 		match force_status:
 			TestStatus.PASSED:
@@ -258,7 +316,7 @@ func is_element1_in_element2 (element1, element2)-> bool:
 					return false
 		TYPE_ARRAY:
 			if (element1.size() > element2.size()): #Should we rather check for not equal here?
-				failed_reason.append ("arrays not same size")
+				failed_reason.append ("arrays not same size" + "\n" + String(element1) + "\n" + String(element2))
 				return false
 			var i:int = 0
 			for value in element1:

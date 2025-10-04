@@ -50,4 +50,5 @@ func _delete_object(variant):
 	var index:int = stack.rfind(variant)
 	stack.remove(index)
 	return true
-	
+
+		

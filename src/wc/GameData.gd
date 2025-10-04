@@ -512,21 +512,27 @@ remotesync func remote_load_game_data_finished(result:int):
 	if (gamesave_load_status.size() == network_players.size()):
 		scripting_bus.emit_signal("all_clients_game_loaded",  gamesave_load_status)
 
+func force_reset_stack():
+	theStack.queue_free()
+	theStack = GlobalScriptStack.new()
+
 remotesync func remote_load_gamedata(json_data:Dictionary):
-	#TODO verify file integrity
 	var caller_id = get_tree().get_rpc_sender_id()
 
-	
-	#phase
-	phaseContainer.loadstate_from_json(json_data)
-	
+
 	var hero_data:Array = json_data["heroes"]
 	
+	#TODO more file integrity checks 
 	#number of players doesn't match loaded data
 	if (hero_data.size() != team.size()):
 		rpc_id(caller_id,"remote_load_game_data_finished",CFConst.ReturnCode.FAILED)
 		return 
 
+
+
+	#phase
+	phaseContainer.loadstate_from_json(json_data)
+	
 	#hero Deck data	
 	var _team:Dictionary = {}
 	for i in range(hero_data.size()):
@@ -547,5 +553,9 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 	
 	phaseContainer.reset() #This reloads hero faces, etc...
 	
-	#scenario		
+
+	
+	#scenario
+	#TODO
+			
 	rpc_id(caller_id,"remote_load_game_data_finished",CFConst.ReturnCode.OK)

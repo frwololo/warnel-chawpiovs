@@ -15,6 +15,9 @@ signal new_card_instanced(card)
 
 var load_start_time := OS.get_ticks_msec()
 
+#pointer to modal menu for potential cleanup
+var modal_menu = null 
+
 #-----------------------------------------------------------------------------
 # BEGIN Unit Testing Variables
 #-----------------------------------------------------------------------------
@@ -421,3 +424,9 @@ func _exit_tree():
 func enrich_window_title(script:ScriptObject, title:String) -> String:
 	return title
 
+func cleanup_modal_menu():
+	if (modal_menu):
+		modal_menu.force_cancel()
+		#modal_menu.queue_free()
+		modal_menu = null
+	return

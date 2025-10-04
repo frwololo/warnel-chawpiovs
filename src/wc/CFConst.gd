@@ -272,6 +272,55 @@ const TYPECODE_TO_GRID := {
 	"side_scheme" : "schemes",
 }
 
+const GRID_SETUP := {
+	"villain" : {
+		"x" : 300,
+		"y" : 0,
+	},
+	"schemes" : {
+		"x" : 500,
+		"y" : 0,
+	},
+	"villain_misc" : {
+		"x" : 1500,
+		"y" : 0,
+	}
+}
+const HERO_GRID_SETUP := {
+	"encounters_facedown" :{
+		"x" : 0,
+		"y" : 0,
+		"type" : "pile"
+	},
+	"deck" :{
+		"x" : 150,
+		"y" : 400,
+		"type" : "pile"
+	},
+	"discard" :{
+		"x" : 0,
+		"y" : 400,
+		"type" : "pile",
+		"faceup" : true
+	},	
+	"enemies" : {
+		"x" : 300,
+		"y" : 00,
+	},
+	"identity" : {
+		"x" : 000,
+		"y" : 200,
+	},
+	"allies" : {
+		"x" : 300,
+		"y" : 200,
+	},
+	"upgrade_support" : {
+		"x" : 300,
+		"y" : 400,
+	},									
+}
+
 const STATS_URI := "http://127.0.0.1"
 const STATS_PORT := 8000
 

@@ -62,6 +62,16 @@ func common_post_move_scripts(new_host: String, old_host: String, move_tags: Arr
 	if (not self.get_owner_hero_id()):
 		self.set_owner_hero_id(new_hero_id)		
 		
+
+#Tries to play the card assuming costs aren't impossible to pay
+#Also used for automated tests
+func attempt_to_play():
+	if ((check_play_costs() != CFConst.CostsState.IMPOSSIBLE
+		and get_state_exec() == "hand")
+		or get_state_exec() == "board"):	
+
+		cfc.card_drag_ongoing = null
+		execute_scripts()
 		
 # A signal for whenever the player clicks on a card
 func _on_Card_gui_input(event) -> void:
@@ -81,12 +91,8 @@ func _on_Card_gui_input(event) -> void:
 				and not tokens.are_hovered():
 			# If it's a double-click, then it's not a card drag
 			# But rather it's script execution
-			if event.doubleclick\
-					and ((check_play_costs() != CFConst.CostsState.IMPOSSIBLE
-					and get_state_exec() == "hand")
-					or get_state_exec() == "board"):
-				cfc.card_drag_ongoing = null
-				execute_scripts()
+			if event.doubleclick:
+				attempt_to_play()
 			# If it's a long click it might be because
 			# they want to drag the card
 			else:
@@ -149,9 +155,7 @@ func _on_Card_gui_input(event) -> void:
 					var parentHost = get_parent()
 					if (destination == cfc.NMAP.board) and (parentHost.is_in_group("hands")):
 						move_to(parentHost)
-						if (check_play_costs() != CFConst.CostsState.IMPOSSIBLE):
-							cfc.card_drag_ongoing = null
-							execute_scripts()
+						attempt_to_play()
 					else :	
 						move_to(destination)
 					_focus_completed = false

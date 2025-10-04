@@ -8,57 +8,10 @@ var basicPile = preload("res://src/multiplayer/PileMulti.tscn")
 onready var villain := $VillainZone
 onready var options_menu = $OptionsMenu
 
-const GRID_SETUP := {
-	"villain" : {
-		"x" : 300,
-		"y" : 0,
-	},
-	"schemes" : {
-		"x" : 500,
-		"y" : 0,
-	},
-	"villain_misc" : {
-		"x" : 1500,
-		"y" : 0,
-	}
-}
-const HERO_GRID_SETUP := {
-	"encounters_facedown" :{
-		"x" : 0,
-		"y" : 0,
-		"type" : "pile"
-	},
-	"deck" :{
-		"x" : 150,
-		"y" : 400,
-		"type" : "pile"
-	},
-	"discard" :{
-		"x" : 0,
-		"y" : 400,
-		"type" : "pile",
-		"faceup" : true
-	},	
-	"enemies" : {
-		"x" : 300,
-		"y" : 00,
-	},
-	"identity" : {
-		"x" : 000,
-		"y" : 200,
-	},
-	"allies" : {
-		"x" : 300,
-		"y" : 200,
-	},
-	"upgrade_support" : {
-		"x" : 300,
-		"y" : 400,
-	},									
-}
-
 var heroZones: Dictionary = {}
 
+const GRID_SETUP = CFConst.GRID_SETUP
+const HERO_GRID_SETUP = CFConst.HERO_GRID_SETUP
 
 func _init():
 	init_hero_zones()
@@ -347,6 +300,7 @@ func load_cards_to_pile(card_data:Array, pile_name):
 		)
 		var new_card:WCCard = cfc.instance_card(card_name)
 		new_card.set_owner_hero_id(hero_id)
+		new_card.set_controller_hero_id(hero_id)
 		card_array.append(new_card)
 
 	for card in card_array:
@@ -414,7 +368,44 @@ func draw_cheat(cardName : String) -> void:
 	cfc.NMAP["hand1"].draw_card (pile)
 	
 func offer_to_mulligan() -> void:
-	pass				
+	#TODO
+	pass	
+	
+func are_cards_still_animating(check_everything:bool = true) -> bool:
+	for c in get_all_cards():
+		var tt : Tween = c._tween
+		if tt.is_active():
+			return(true)
+	
+	if (!check_everything):
+		return false
+
+	#check hands	
+	for i in range(gameData.get_team_size()):
+		var hand:Hand = cfc.NMAP["hand" + str(i+1)]
+		if (hand.are_cards_still_animating()):
+			return true
+		
+	#check other piles
+	#Villain piles
+	for grid_name in GRID_SETUP.keys():
+		var grid_info = GRID_SETUP[grid_name]
+		if "pile" == grid_info.get("type", ""):
+			var pile:Pile = cfc.NMAP[grid_name]
+			if (pile.are_cards_still_animating()):
+				return true
+	#hero piles		
+	for i in range(gameData.get_team_size()):
+		var hero_id = i+1
+		for grid_name in HERO_GRID_SETUP.keys():
+			var grid_info = HERO_GRID_SETUP[grid_name]
+			var real_grid_name = grid_name + str(hero_id)		
+			if "pile" == grid_info.get("type", ""):
+				var pile:Pile = cfc.NMAP[real_grid_name]
+				if (pile.are_cards_still_animating()):
+					return true					
+			
+	return(false)				
 
 func _on_DeckBuilder_pressed() -> void:
 	cfc.game_paused = true

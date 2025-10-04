@@ -88,7 +88,10 @@ func reset():
 	#Create label
 	phaseLabel = Label.new()
 	add_child(phaseLabel)
-	update_text()		
+	update_text()	
+	
+	#reinit misc variables	
+	current_step_complete = false 	
 
 #Moving to next step needs to happen outside of the signal processing to avoid infinite loops or recursive signals
 func _process(_delta: float) -> void:
@@ -314,4 +317,4 @@ func loadstate_from_json(json:Dictionary):
 	var json_data = json.get("phase", null)
 	if (null == json_data):
 		return #TODO Error msg
-	current_step = step_string_to_step_id(json_data) #TODO better handling	
+	current_step = step_string_to_step_id(json_data) #TODO better handling

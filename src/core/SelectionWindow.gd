@@ -225,6 +225,9 @@ func select_cards(indexes :Array = []) -> Array:
 func get_all_card_options() -> Array:
 	return(_card_dupe_map.keys())
 
+func force_cancel():
+	_on_cancel_pressed()
+
 # Cancels out of the selection window
 func _on_cancel_pressed() -> void:
 	selected_cards.clear()

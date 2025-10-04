@@ -43,6 +43,7 @@ func select_card(
 	var selected_cards
 	# This way we can override the card select scene with a custom one
 	var selection = card_select_scene.instance()
+	cfc.modal_menu = selection #keep a pointer to the variable for external cleanup if needed
 	parent_node.add_child(selection)
 	selection.call_deferred("initiate_selection", card_list,selection_count,selection_type,selection_optional, script)
 	# We have to wait until the player has finished selecting their cards
@@ -53,6 +54,7 @@ func select_card(
 		selected_cards = selection.selected_cards
 	# Garbage cleanup
 	selection.queue_free()
+	cfc.modal_menu = null
 	if parent_node == cfc.NMAP.get("board"):
 		cfc.game_paused = false
 	return(selected_cards)

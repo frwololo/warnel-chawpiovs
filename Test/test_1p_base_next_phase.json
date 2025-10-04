@@ -22,7 +22,7 @@
 			],
 			"deck1": [
 				{
-					"card": "Backflip"
+					"card": "Swinging Web Kick"
 				}
 			],
 			"identity1": [
@@ -43,7 +43,7 @@
 	"actions": [
 		{
 			"type": "next_phase",
-			"value": "0"
+			"value": "1"
 		}
 	] ,
 	"end": {
@@ -81,7 +81,7 @@
 					"card": "01002"
 				},				
 				{
-					"card": "Backflip"
+					"card": "Swinging Web Kick"
 				}
 			]
 		}

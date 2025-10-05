@@ -178,15 +178,15 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 					c.reorganize_self()
 		if select_return is GDScriptFunctionState: # Still working.
 			select_return = yield(select_return, "completed")
-			# If the return is not an array, it means that the selection
-			# was cancelled (either because there were not enough cards
-			# or because the player pressed cancel
-			# in which case we consider the task invalid
-			if typeof(select_return) == TYPE_ARRAY:
-				subjects_array = select_return
-			else:
-				is_valid = false
-				subjects_array = []
+		# If the return is not an array, it means that the selection
+		# was cancelled (either because there were not enough cards
+		# or because the player pressed cancel
+		# in which case we consider the task invalid
+		if typeof(select_return) == TYPE_ARRAY:
+			subjects_array = select_return
+		else:
+			is_valid = false
+			subjects_array = []
 	subjects = subjects_array
 	return(subjects_array)
 

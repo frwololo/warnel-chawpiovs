@@ -39,8 +39,16 @@ func _init(owner,
 func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int) -> void:
 	# We store the prev_subjects we sent to this task in case we need to
 	# refer to them later
+
+	var only_cost_check = ((run_type == CFInt.RunType.COST_CHECK) or
+		 (run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
+		
+	var cost_check_mode = CFInt.RunType.COST_CHECK
+	if run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
+		cost_check_mode = run_type	
+	
 	prev_subjects = _prev_subjects
-	if ((run_type != CFInt.RunType.COST_CHECK
+	if ((!only_cost_check
 			and not is_cost and not needs_subject)
 			# This is the typical spot we're checking
 			# for non-cost optional confirmations.
@@ -49,7 +57,7 @@ func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int) -> void:
 			# We want to avoid targeting and THEN ask for confirmation.
 			# Non-targeting is_cost tasks are confirmed in the
 			# ScriptingEngine loop
-			or (run_type == CFInt.RunType.COST_CHECK
+			or (only_cost_check
 			and (is_cost or needs_subject)
 			and get_property(SP.KEY_SUBJECT) == "target")):
 		# If this task has been specified as optional
@@ -62,11 +70,11 @@ func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int) -> void:
 	# If any confirmation is accepted, then we only draw a target
 	# if either the card is a cost and we're doing a cost-dry run,
 	# or the card is not a cost and we're in the normal run
-	if not is_skipped and is_accepted and (run_type != CFInt.RunType.COST_CHECK
-			or (run_type == CFInt.RunType.COST_CHECK
+	if not is_skipped and is_accepted and (!only_cost_check
+			or (only_cost_check
 			and (is_cost or needs_subject))):
 		# We discover which other card this task will affect, if any
-		var ret =_find_subjects(sceng_stored_int)
+		var ret =_find_subjects(sceng_stored_int, run_type)
 		if ret is GDScriptFunctionState: # Still working.
 			ret = yield(ret, "completed")
 	#print_debug(str(subjects), str(cost_dry_run))

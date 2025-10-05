@@ -4,6 +4,9 @@ extends Card
 var owner_hero_id  := 0 setget set_owner_hero_id, get_owner_hero_id
 var controller_hero_id  := 0 setget set_controller_hero_id, get_controller_hero_id
 
+var _check_play_costs_cache_status: int = CFConst.CacheStatus.INVALID
+var _check_play_costs_cache: Color = CFConst.CostsState.OK
+
 func set_owner_hero_id(hero_id:int):
 	owner_hero_id = hero_id
 	
@@ -32,6 +35,24 @@ func setup() -> void:
 	.setup()
 	_init_groups()	
 	set_card_art()
+	gameData.connect("game_state_changed", self, "game_state_changed")
+
+func _process(delta) -> void:
+	._process(delta)
+	var can_play = check_play_costs()
+	if (can_play == CFConst.CostsState.OK and not cfc.modal_menu):
+		#if modal menu is displayed we don't want to mess up those cards highlights
+		set_target_highlight(can_play)
+	else:
+		highlight.deactivate_glow()
+
+func set_target_highlight(colour):
+	highlight.set_target_highlight(colour)
+
+
+#flush caches and states when game state changes
+func game_state_changed(details:Dictionary):
+	_check_play_costs_cache_status = CFConst.CacheStatus.INVALID
 
 func set_card_art():
 	var filename = cfc.get_img_filename(get_property("_code"))
@@ -213,6 +234,50 @@ func die():
 			gameData.villain_died(self)
 			
 	return CFConst.ReturnCode.OK		
+
+
+# This function can be overriden by any class extending Card, in order to provide
+# a way of checking if a card can be played before dragging it out of the hand.
+#
+# This method will be called while the card is being focused by the player
+# If it returns true, the card will be highlighted as normal and the player
+# will be able to drag it out of the hand
+#
+# If it returns false, the card will be highlighted with a red tint, and the
+# player will not be able to drag it out of the hand.
+func check_play_costs() -> Color:
+	#return .check_play_costs();
+	
+	if (_check_play_costs_cache_status == CFConst.CacheStatus.VALID):
+		return _check_play_costs_cache
+	
+	_check_play_costs_cache = CFConst.CostsState.IMPOSSIBLE
+	_check_play_costs_cache_status = CFConst.CacheStatus.VALID
+
+	#skip if card is not in hand and not on board. TODO: might have to take into account cards than can be played from other places
+	if ((get_state_exec() != "hand")
+		and get_state_exec() != "board"):
+			return _check_play_costs_cache
+		
+	var sceng = execute_scripts(self,"manual",{},CFInt.RunType.BACKGROUND_COST_CHECK)
+
+	if (!sceng): #TODO is this an error?
+		_check_play_costs_cache = CFConst.CostsState.IMPOSSIBLE	
+		return _check_play_costs_cache
+		
+	if sceng is GDScriptFunctionState: # Still working.
+		sceng = sceng.resume()
+		#sceng = yield(sceng, "completed")
+
+	if (!sceng): #TODO is this an error?
+		_check_play_costs_cache = CFConst.CostsState.IMPOSSIBLE	
+		return _check_play_costs_cache
+	
+	if (sceng.can_all_costs_be_paid):
+		_check_play_costs_cache = CFConst.CostsState.OK
+
+
+	return _check_play_costs_cache
 
 # This function can be overriden by any class extending Card, in order to provide
 # a way of running special functions on an extended scripting engine.

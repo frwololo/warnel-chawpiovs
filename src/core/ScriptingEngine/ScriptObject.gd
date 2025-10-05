@@ -89,7 +89,7 @@ func _network_prepaid():
 # Figures out what the subjects of this script is supposed to be.
 #
 # Returns a Card object if subjects is defined, else returns null.
-func _find_subjects(stored_integer := 0) -> Array:
+func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) -> Array:
 	#TODO MULTIPLAYER_MODIFICATION
 	var prepaid = _network_prepaid()
 	if (null != prepaid):
@@ -120,9 +120,13 @@ func _find_subjects(stored_integer := 0) -> Array:
 					if not SP.check_validity(c, script_definition, "subject"):
 						is_valid = false
 		SP.KEY_SUBJECT_V_TARGET:
-			var c = _initiate_card_targeting()
-			if c is GDScriptFunctionState: # Still working.
-				c = yield(c, "completed")
+			var c = null
+			if (run_type == CFInt.RunType.BACKGROUND_COST_CHECK):
+				c = _dry_run_card_targeting(script_definition)
+			else:
+				c = _initiate_card_targeting()
+				if c is GDScriptFunctionState: # Still working.
+					c = yield(c, "completed")
 			# If the target is null, it means the player pointed at nothing
 			if c:
 				is_valid = SP.check_validity(c, script_definition, "subject")
@@ -160,7 +164,7 @@ func _find_subjects(stored_integer := 0) -> Array:
 		if get_property(SP.KEY_SELECTION_IGNORE_SELF):
 			subjects_array.erase(owner)
 		var select_return = cfc.ov_utils.select_card(
-				subjects_array, selection_count, selection_type, selection_optional, cfc.NMAP.board, self)
+				subjects_array, selection_count, selection_type, selection_optional, cfc.NMAP.board, self, run_type)
 		# In case the owner card is still focused (say because script was triggered
 		# on double-click and card was not moved
 		# Then we need to ensure it's unfocused
@@ -326,6 +330,17 @@ func _index_seek_subjects(stored_integer: int) -> Array:
 			requested_subjects = subjects_array.size()
 	return(subjects_array)
 
+
+#Tries to find an arbitrary valid target for an ability (for cost check purposes)
+#return the first we find on the board if we find one, null otherwise
+func _dry_run_card_targeting(script_definition):
+	var all_cards = cfc.NMAP.board.get_all_cards()
+	#TODO also check cards in piles ?
+	for c in all_cards:
+		var is_valid = SP.check_validity(c, script_definition, "subject")
+		if (is_valid):
+			return c
+	return null
 
 # Handles initiation of target seeking.
 # and yields until it's found.

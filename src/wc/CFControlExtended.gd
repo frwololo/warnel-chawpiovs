@@ -239,6 +239,8 @@ func enrich_window_title(script:ScriptObject, title:String) -> String:
 	var script_name = script_definitions.name
 	var owner = script.owner
 	
+	result = owner.canonical_name + " - " + result
+	
 	match script_name:
 		"defend":
 			result = owner.canonical_name + " attacks. Choose at most 1 defender, cancel for undefended" 

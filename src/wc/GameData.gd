@@ -11,7 +11,8 @@ extends Node
 const _OPTIONAL_CONFIRM_SCENE_FILE = CFConst.PATH_CORE + "OptionalConfirmation.tscn"
 const _OPTIONAL_CONFIRM_SCENE = preload(_OPTIONAL_CONFIRM_SCENE_FILE)
 
-
+#emit whenever something changes in the game state. This will trigger some recomputes
+signal game_state_changed(details)
 
 #Singleton for game data shared across menus and views
 var network_players := {}
@@ -118,10 +119,22 @@ func _ready():
 	#TODO: the attempt to lock should happen BEFORE we actually open the windows
 	scripting_bus.connect("selection_window_opened", self, "attempt_user_input_lock")
 	scripting_bus.connect("card_selected", self, "attempt_user_input_unlock")
+	scripting_bus.connect("scripting_event_triggered", self, "_scripting_event_triggered")
 
 	#scripting_bus.connect("optional_window_opened", self, "attempt_user_input_lock")
 	#scripting_bus.connect("optional_window_closed", self, "attempt_user_input_unlock")	
 
+func _scripting_event_triggered(trigger_object = null,
+		trigger: String = "manual",
+		trigger_details: Dictionary = {}):
+	match trigger:
+		"card_moved_to_board", \
+		"card_played":		
+			_game_state_changed()
+
+	return
+func _game_state_changed():
+	emit_signal("game_state_changed",{})
 
 func init_network_players(players:Dictionary):
 	for player_network_id in players:
@@ -423,13 +436,15 @@ func is_waiting_for_other_player_input():
 			return true
 	return false
 
-func execute_script_to_remote(caller_card_uid, trigger_card_uid, trigger, remote_trigger_details, only_cost_check):
-	rpc("execute_script_from_remote", caller_card_uid, trigger_card_uid, trigger, remote_trigger_details, only_cost_check)
+func execute_script_to_remote(caller_card_uid, trigger_card_uid, trigger, remote_trigger_details, run_type):
+	rpc("execute_script_from_remote", caller_card_uid, trigger_card_uid, trigger, remote_trigger_details, run_type)
 
-remote func execute_script_from_remote(caller_card_uid, trigger_card_uid, trigger, remote_trigger_details, only_cost_check): 
+remote func execute_script_from_remote(caller_card_uid, trigger_card_uid, trigger, remote_trigger_details, run_type): 
 	var trigger_card = guidMaster.get_object_by_guid(trigger_card_uid)
 	var caller_card = guidMaster.get_object_by_guid(caller_card_uid)
-	caller_card.execute_scripts(trigger_card, trigger, remote_trigger_details, only_cost_check)	
+	caller_card.execute_scripts(trigger_card, trigger, remote_trigger_details, run_type)	
+
+
 
 #TODO all calls to this method are in core which isn't good
 #Need to move something, somehow
@@ -458,6 +473,11 @@ func confirm(
 		confirm.queue_free()
 		_release_user_input_lock(owner.get_controller_player_network_id())	
 	return(is_accepted)
+
+func force_reset_stack():
+	theStack.queue_free()
+	theStack = GlobalScriptStack.new()
+
 	
 #saves current game data into a json structure	
 func save_gamedata():
@@ -501,7 +521,7 @@ func save_gamedata_to_file(path):
 	file.store_string(json)
 	file.close()
 
-#loads current game data from a json structure
+#loads current game data from a json structure (rpc call to all clients)
 func load_gamedata(json_data:Dictionary):
 	gamesave_load_status = {}
 	rpc("remote_load_gamedata",json_data)
@@ -512,10 +532,8 @@ remotesync func remote_load_game_data_finished(result:int):
 	if (gamesave_load_status.size() == network_players.size()):
 		scripting_bus.emit_signal("all_clients_game_loaded",  gamesave_load_status)
 
-func force_reset_stack():
-	theStack.queue_free()
-	theStack = GlobalScriptStack.new()
 
+#loads current game data from a json structure
 remotesync func remote_load_gamedata(json_data:Dictionary):
 	var caller_id = get_tree().get_rpc_sender_id()
 

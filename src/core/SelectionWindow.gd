@@ -60,12 +60,15 @@ func initiate_selection(
 		_script: ScriptObject = null) -> void:
 	if OS.has_feature("debug") and not cfc.is_testing:
 		print("DEBUG INFO:SelectionWindow: Initiated Selection")
+		
 	# We don't allow the player to close the popup with the close button
 	# as that will not send the mandatory signal to unpause the game
 	get_close_button().visible = false
 	selection_count = _selection_count
 	selection_type = _selection_type
 	is_selection_optional = _selection_optional
+	
+	
 	# If the selection is optional, we allow the player to cancel out
 	# of the popup
 	if is_selection_optional:
@@ -76,17 +79,13 @@ func initiate_selection(
 	# We return that the selection was canceled
 	elif card_array.size() < selection_count\
 			and selection_type in ["equal", "min"]:
-		selected_cards = []
-		is_cancelled = true
-		emit_signal("confirmed")
+		force_cancel()
 		return
 	# If the selection count is 0 (e.g. reduced with an alterant)
 	# And we're looking for max or equal amount of cards, we return cancelled.
 	elif selection_count == 0\
 			and selection_type in ["equal", "max"]:
-		selected_cards = []
-		is_cancelled = true
-		emit_signal("confirmed")
+		force_cancel()
 		return
 	# If the amount of cards available for the choice are exactly the requirements
 	# And we're looking for equal or minimum amount
@@ -98,8 +97,7 @@ func initiate_selection(
 		return
 	# When we have 0 cards to select from, we consider the selection cancelled
 	elif card_array.size() == 0:
-		is_cancelled = true
-		emit_signal("confirmed")
+		force_cancel()
 		return
 	match selection_type:
 		"min":
@@ -181,6 +179,55 @@ func initiate_selection(
 	if OS.has_feature("debug") and not cfc.is_testing:
 		print("DEBUG INFO:SelectionWindow: Started Card Display with a %s card selection" % [_card_grid.get_child_count()])
 
+#Returns arbitrary (valid) targets for the purpose of cost check
+func dry_run(card_array: Array,
+		_selection_count := 0,
+		_selection_type := 'min',
+		_selection_optional := false,
+		_script: ScriptObject = null) -> void:
+	
+	selection_count = _selection_count
+	selection_type = _selection_type
+	is_selection_optional = _selection_optional		
+			
+	if is_selection_optional or (selection_type in ["display"]):
+		force_cancel()
+		return
+	# If the amount of cards available for the choice are below the requirements
+	# We return that the selection was canceled
+	if card_array.size() < selection_count\
+			and selection_type in ["equal", "min"]:
+		force_cancel()
+		return
+	# If the selection count is 0 (e.g. reduced with an alterant)
+	# And we're looking for max or equal amount of cards, we return cancelled.
+	if selection_count == 0\
+			and selection_type in ["equal", "max"]:
+		force_cancel()
+		return
+	# If the amount of cards available for the choice are exactly the requirements
+	# And we're looking for equal or minimum amount
+	# We immediately return what is there.
+	if card_array.size() == selection_count\
+			and selection_type in ["equal", "min"]:
+		selected_cards = card_array
+		emit_signal("confirmed")
+		return
+	# When we have 0 cards to select from, we consider the selection cancelled
+	if card_array.size() == 0:
+		force_cancel()
+		return
+		
+	#generic case	
+	match selection_type:
+		"min":
+			selected_cards = card_array.slice(0, selection_count)
+		"max":
+			selected_cards = card_array.slice(0, 1)
+		"equal":
+			selected_cards = card_array.slice(0, selection_count)
+	emit_signal("confirmed")
+	return
 
 # Overridable function for games to extend processing of dupe card
 # after adding it to the scene

@@ -16,10 +16,14 @@ extends Reference
 # * ELSE executes only tasks which are marked "is_else". This execution only
 # Takes place when a COST_CHECK run discovers it cannot fulfil
 # a task marked as such.
+# * BACKGROUND_COST_CHECK does the same as COST_CHECK but provides zero user interaction
+# and fills potential costs with arbitrary data.
+# This is used to compute if playing a card or ability is possibe
 enum RunType{
 	NORMAL
 	COST_CHECK
 	ELSE
+	BACKGROUND_COST_CHECK
 }
 # The focus style used by the engine
 # * SCALED means that the cards simply scale up when moused over in the hand

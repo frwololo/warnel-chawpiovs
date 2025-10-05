@@ -108,20 +108,27 @@ func add_scripts(state_scripts,
 # This flag will be true if we're attempting to find if the card
 # has costs that need to be paid, before the effects take place.
 func costs_dry_run() -> bool:
-	if run_type == CFInt.RunType.COST_CHECK:
-		return(true)
-	else:
-		return(false)
+	return ((run_type == CFInt.RunType.COST_CHECK) or 
+		(run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
+
 
 
 # The main engine starts here.
 # It receives array with all the tasks to execute,
 # then turns each array element into a [ScriptTask] object and
 # send it to the appropriate tasks.
-func execute(_run_type := CFInt.RunType.NORMAL) -> void:
+func execute(_run_type) -> void:
 	snapshot_id = rand_range(1,10000000)
 	all_tasks_completed = false
 	run_type = _run_type
+
+	var only_cost_check = ((run_type == CFInt.RunType.COST_CHECK) or
+		 (run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
+		
+	var cost_check_mode = CFInt.RunType.COST_CHECK
+	if run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
+		cost_check_mode = run_type	
+
 	
 	# We execute the scripts locally, but in multiplayer only one player has to select
 	# payments. Once they do, we send the payment information to other players,
@@ -139,7 +146,7 @@ func execute(_run_type := CFInt.RunType.NORMAL) -> void:
 		if not cfc.NMAP.has("board") or not is_instance_valid(cfc.NMAP.board): return
 		# We put it into another variable to allow Static Typing benefits
 		var script: ScriptTask = task
-		if ((run_type == CFInt.RunType.COST_CHECK and not script.is_cost and not script.needs_subject)
+		if ((only_cost_check and not script.is_cost and not script.needs_subject)
 				or (run_type == CFInt.RunType.ELSE and not script.is_else)
 				or (run_type != CFInt.RunType.ELSE and script.is_else)):
 			continue
@@ -913,7 +920,7 @@ func execute_scripts(script: ScriptTask) -> int:
 			var sceng = card.execute_scripts(
 					script.owner,
 					script.get_property(SP.KEY_EXEC_TRIGGER),
-					{}, costs_dry_run())
+					{}, run_type)
 			# We make sure we wait until the execution is finished
 			# before cleaning out the temp properties/counters
 			if sceng is GDScriptFunctionState:

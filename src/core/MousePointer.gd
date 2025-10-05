@@ -99,7 +99,8 @@ func _on_MousePointer_area_exited(area: Area2D) -> void:
 	if not is_disabled:
 		# We stop the highlight on any areas we exit with the mouse.
 		if area as Card or area as CardContainer:
-			area.highlight.set_highlight(false)
+			var temp = 1
+			#area.highlight.set_highlight(false)
 		elif area.get_parent() as BoardPlacementSlot:
 			area.get_parent().set_highlight(false)
 		overlaps.erase(area)

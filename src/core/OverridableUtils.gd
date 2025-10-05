@@ -37,17 +37,21 @@ func select_card(
 		selection_optional: bool,
 		parent_node,
 		script : ScriptObject = null,
+		run_type:int = CFInt.RunType.NORMAL,
 		card_select_scene = _CARD_SELECT_SCENE):
-	if parent_node == cfc.NMAP.get("board"):
+	if parent_node == cfc.NMAP.get("board")  and (run_type != CFInt.RunType.BACKGROUND_COST_CHECK):
 		cfc.game_paused = true
 	var selected_cards
 	# This way we can override the card select scene with a custom one
 	var selection = card_select_scene.instance()
 	cfc.modal_menu = selection #keep a pointer to the variable for external cleanup if needed
 	parent_node.add_child(selection)
-	selection.call_deferred("initiate_selection", card_list,selection_count,selection_type,selection_optional, script)
-	# We have to wait until the player has finished selecting their cards
-	yield(selection,"confirmed")
+	if (run_type == CFInt.RunType.BACKGROUND_COST_CHECK):
+		selection.dry_run(card_list,selection_count,selection_type,selection_optional, script)
+	else:
+		selection.call_deferred("initiate_selection", card_list,selection_count,selection_type,selection_optional, script)
+		# We have to wait until the player has finished selecting their cards
+		yield(selection,"confirmed")
 	if selection.is_cancelled:
 		selected_cards = false
 	else:

@@ -1375,13 +1375,21 @@ func execute_scripts(
 		trigger_card: Card = self,
 		trigger: String = "manual",
 		trigger_details: Dictionary = {},
-		only_cost_check := false):
+		run_type := CFInt.RunType.NORMAL):
 	if cfc.game_paused:
 		return
 	# Just in case the card is displayed outside the main game
 	# and somehow its script is triggered.
 	if not cfc.NMAP.has('board'):
 		return
+		
+	var only_cost_check = ((run_type == CFInt.RunType.COST_CHECK) or
+		 (run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
+		
+	var cost_check_mode = CFInt.RunType.COST_CHECK
+	if run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
+		cost_check_mode = run_type
+			
 	common_pre_execution_scripts(trigger, trigger_details)
 	var card_scripts = retrieve_scripts(trigger)
 	# I use this spot to add a breakpoint when testing script behaviour
@@ -1402,6 +1410,7 @@ func execute_scripts(
 	var any_state_scripts = card_scripts.get('all', [])
 	state_scripts = card_scripts.get(state_exec, any_state_scripts)
 	
+	#Check if this script is exected from remote (another online player has been paying for the cost)
 	var is_network_call = trigger_details.has("network_prepaid") #TODO MOVE OUTSIDE OF Core
 	
 	# Here we check for confirmation of optional trigger effects
@@ -1458,7 +1467,7 @@ func execute_scripts(
 		common_pre_run(sceng)
 		# In case the script involves targetting, we need to wait on further
 		# execution until targetting has completed
-		sceng.execute(CFInt.RunType.COST_CHECK)
+		sceng.execute(cost_check_mode)
 		if not sceng.all_tasks_completed:
 			yield(sceng,"tasks_completed")
 		# If the dry-run of the ScriptingEngine returns that all
@@ -1468,7 +1477,7 @@ func execute_scripts(
 			# The ScriptingEngine is where we execute the scripts
 			# We cannot use its class reference,
 			# as it causes a cyclic reference error when parsing
-			sceng.execute()
+			sceng.execute(run_type)
 			if not sceng.all_tasks_completed:
 				yield(sceng,"tasks_completed")
 			# warning-ignore:void_assignment
@@ -1486,15 +1495,17 @@ func execute_scripts(
 				yield(sceng,"tasks_completed")
 		is_executing_scripts = false
 		emit_signal("scripts_executed", self, sceng, trigger)
-		if (!is_network_call):
-			network_execute_scripts(trigger_card, trigger, trigger_details, only_cost_check, sceng)
+		if (!is_network_call and not only_cost_check):
+			#Call other clients to run the script
+			network_execute_scripts(trigger_card, trigger, trigger_details, run_type, sceng)
 	return(sceng)
 
+#Called by other online player to execute the same script as them, after they're done paying the cost
 func network_execute_scripts(
 		trigger_card: Card,
 		trigger: String ,
 		trigger_details: Dictionary ,
-		only_cost_check: bool,
+		run_type: int, 
 		sceng):
 	var prepaid: Array = sceng.network_prepaid
 	var prepaid_uids: Array = []
@@ -1510,7 +1521,7 @@ func network_execute_scripts(
 	var trigger_card_uid = guidMaster.get_guid(trigger_card)
 	var my_uid = guidMaster.get_guid(self)
 
-	gameData.execute_script_to_remote(my_uid, trigger_card_uid, trigger, remote_trigger_details, only_cost_check)
+	gameData.execute_script_to_remote(my_uid, trigger_card_uid, trigger, remote_trigger_details, run_type)
 
 	
 # Retrieves the card scripts either from those defined on the card
@@ -1677,7 +1688,8 @@ func set_focus(requestedFocus: bool, colour := CFConst.FOCUS_HOVER_COLOUR) -> vo
 	# highlighted by another effect (such as a targetting arrow etc)
 	if highlight.visible != requestedFocus and \
 			highlight.modulate in CFConst.CostsState.values():
-		highlight.set_highlight(requestedFocus,colour)
+		#highlight.set_highlight(requestedFocus,colour)
+		var tmp = 1
 	# focus_style value 0 means only scaling focus
 	# We also recheck that main exists, as sometimes GUT messes it up
 	if not state in [CardState.PREVIEW, CardState.DECKBUILDER_GRID]\

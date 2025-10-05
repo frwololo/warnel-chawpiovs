@@ -16,6 +16,12 @@ enum ReturnCode {
 	CHANGED,
 	FAILED,
 }
+
+enum CacheStatus {
+	INVALID,
+	VALID,
+}
+
 # Options for pile shuffle styles.
 # * auto: Will choose a shuffle animation depending on the amount of
 #	cards in the pile.
@@ -210,7 +216,7 @@ const CostsState := {
 	"IMPOSSIBLE": Color(1, 0, 0) * 1.3,
 	"INCREASED": Color(1, 0.5, 0) * 1.3,
 	"DECREASED": Color(0.5, 1, 0) * 1.3,
-	"OK": FOCUS_HOVER_COLOUR,
+	"OK": Color(0, 0.5, 1) * 1.3
 }
 # This is used when filling in card property labels in [Card].setup()
 # when the property is an array, the label will still display it as a string

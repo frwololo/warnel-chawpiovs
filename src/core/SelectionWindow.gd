@@ -123,7 +123,7 @@ func initiate_selection(
 	for card in card_array:
 		var dupe_selection: Card
 		if typeof(card) == TYPE_STRING:
-			dupe_selection = cfc.instance_card(card)
+			dupe_selection = cfc.instance_card(card, -20)
 		else:
 			dupe_selection = card.duplicate(DUPLICATE_USE_INSTANCING)
 			# This prevents the card from being scripted with the

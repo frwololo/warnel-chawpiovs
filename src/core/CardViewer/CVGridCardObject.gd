@@ -15,7 +15,7 @@ func _ready() -> void:
 
 func setup(card) -> Card:
 	if typeof(card) == TYPE_STRING:
-		display_card = cfc.instance_card(card)
+		display_card = cfc.instance_card(card, -18)
 	else:
 		display_card = card
 		display_card.position = Vector2(0,0)

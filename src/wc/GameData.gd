@@ -36,6 +36,8 @@ var attackers:Array = []
 
 var user_input_ongoing:int = 0 #ID of the current player (or remote player) doing a blocking game interraction
 
+var cards_that_can_currently_interrupt: Dictionary = {}
+
 func _process(_delta: float):
 	theStack.process(_delta)
 	if (testSuite):
@@ -358,6 +360,15 @@ func get_current_target_hero() -> Card:
 	var heroZone:WCHeroZone = board.heroZones[_villain_current_hero_target]
 	return heroZone.get_hero_card()
 
+func get_hero_card(owner_id) -> Card:
+	if (owner_id) <= 0:
+		cfc.LOG ("error owner id is " + String(owner_id))
+		return null
+	
+	var board:Board = cfc.NMAP.board
+	var heroZone:WCHeroZone = board.heroZones[owner_id]
+	return heroZone.get_hero_card()	
+
 #Adds a "group_defenders" tag to all cards that can block an attack
 func compute_potential_defenders():
 	var board:Board = cfc.NMAP.board
@@ -444,7 +455,63 @@ remote func execute_script_from_remote(caller_card_uid, trigger_card_uid, trigge
 	var caller_card = guidMaster.get_object_by_guid(caller_card_uid)
 	caller_card.execute_scripts(trigger_card, trigger, remote_trigger_details, run_type)	
 
+func split_trigger(trigger:String):
+	var name = trigger
+	var timing = ""
+	if (trigger.find("before_") == 0):
+		timing = "before"
+		name = trigger.substr(7)
+	if (trigger.find("after_") == 0):
+		timing = "after"
+		name = trigger.substr(6)
+	
+			
+	return {"name" : name,
+			"timing": timing}
 
+# Additional filter for triggers,
+# also see core/ScriptProperties.gd
+func filter_trigger(
+		trigger:String,
+		card_scripts,
+		trigger_card,
+		owner_card,
+		_trigger_details) -> bool:
+
+	
+	var trigger_event = split_trigger(trigger)
+	
+	#for now we only consider this filter for interrupts and responses. Might expand later
+	if (!trigger_event["timing"]):
+		return true
+	
+	if (card_scripts):
+		var tmp = 0
+	
+	var trigger_filters = card_scripts.get("trigger_filters", {})	
+	var event = (theStack.find_event(trigger_event["name"], trigger_filters, owner_card))
+
+	return event #note: force conversion from stack event to bool
+
+func is_interrupt_mode() -> bool:
+	return ! self.cards_that_can_currently_interrupt.empty()
+
+func is_card_in_interrupt_mode(card) -> bool:
+	return self.cards_that_can_currently_interrupt.has(card)
+
+func end_interrupt_mode():
+	cards_that_can_currently_interrupt = {}
+	var my_network_id = get_tree().get_network_unique_id()
+	_release_user_input_lock(my_network_id) #owner.get_controller_player_network_id())	
+	
+func interrupt_player_pressed_pass():
+	theStack.gets_one_pass()
+	end_interrupt_mode()
+
+func _add_potential_interrupter(card):
+	cards_that_can_currently_interrupt[card] = card
+	_game_state_changed()
+	
 
 #TODO all calls to this method are in core which isn't good
 #Need to move something, somehow
@@ -473,6 +540,35 @@ func confirm(
 		confirm.queue_free()
 		_release_user_input_lock(owner.get_controller_player_network_id())	
 	return(is_accepted)
+	
+#TODO all calls to this method are in core which isn't good
+#Need to move something, somehow
+#checks if a given card can be played in interrupt mode
+#if so, adds it to the interrupt stack
+func check_interrupt(
+		owner,
+		script: Dictionary,
+		card_name: String,
+		task_name: String,
+		type := "task") -> bool:
+			
+#When this is called, it is assumed that a filter check has already been made
+#to confirm that the trigger is legit: there is something in the stack that this card can interact with
+#now we just want to check if the interaction requires user input (optional interaction)
+#TODO check again ?
+			
+	# We do not use SP.KEY_IS_OPTIONAL here to avoid causing cyclical
+	# references when calling CFUtils from SP
+	if script.get("is_optional_" + type):
+		_acquire_user_input_lock(owner.get_controller_player_network_id())
+		var my_network_id = get_tree().get_network_unique_id()
+		var is_master:bool =  (owner.get_controller_player_network_id() == my_network_id)
+		_add_potential_interrupter(owner)
+		#Release user input either when cards that can interrupt is empty, or when
+		#user clicks on "pass"
+		#_release_user_input_lock(owner.get_controller_player_network_id())	
+		return(true)
+	return false	
 
 func force_reset_stack():
 	theStack.queue_free()

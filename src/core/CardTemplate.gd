@@ -1367,6 +1367,17 @@ func move_to(targetHost: Node,
 	common_post_move_scripts(targetHost.name, parentHost.name, tags)
 
 
+
+#Return interrupt string to hijack manual run
+#TODO right now this returns the first one, need to be more specific
+func find_interrupt_script() -> String:
+	var my_scripts = retrieve_all_scripts()	
+	for _k in my_scripts.keys():
+		var k:String = _k 
+		if (k.begins_with("before_") or k.begins_with("after_")):
+			return k
+	return ""
+	
 # Executes the tasks defined in the card's scripts in order.
 #
 # Returns a [ScriptingEngine] object but that it not statically typed
@@ -1382,6 +1393,16 @@ func execute_scripts(
 	# and somehow its script is triggered.
 	if not cfc.NMAP.has('board'):
 		return
+
+	if (trigger_card and trigger_card.get_card_name() == "Backflip"):
+		var tmp = 1
+
+	#we're playing a card manually but in interrupt mode.
+	#What we want to do here is play the optional triggered effect instead
+	var playing_interrupt = false
+	if (trigger == "manual" and gameData.is_interrupt_mode()):
+		trigger = find_interrupt_script()
+		playing_interrupt = true
 		
 	var only_cost_check = ((run_type == CFInt.RunType.COST_CHECK) or
 		 (run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
@@ -1404,6 +1425,16 @@ func execute_scripts(
 			self,
 			trigger_details):
 		card_scripts.clear()
+	
+	#additional filter check for interrupts/responses
+	if not gameData.filter_trigger(
+			trigger,
+			card_scripts,
+			trigger_card,
+			self,
+			trigger_details):
+		card_scripts.clear()	
+		
 	var state_scripts = []
 	# We select which scripts to run from the card, based on it state
 	var state_exec := get_state_exec()
@@ -1421,18 +1452,28 @@ func execute_scripts(
 	#We don't check if this is a network call. If network call, it is assumed the 
 	#owner has already accepted to pay, and this is why we are being called
 	if (!is_network_call):
-		var confirm_return = gameData.confirm(
-			self,
-			card_scripts,
-			canonical_name,
-			trigger,
-			state_exec)
-		if confirm_return is GDScriptFunctionState: # Still working.
-			confirm_return = yield(confirm_return, "completed")
-			# If the player chooses not to play an optional cost
-			# We consider the whole cost dry run unsuccesful
-			if not confirm_return:
+		if (!playing_interrupt):
+			var is_interrupt = gameData.check_interrupt(
+				self,
+				card_scripts,
+				canonical_name,
+				trigger,
+				state_exec)
+			#if interrupt mode, we cancel everything here and will enter interrupt mode	
+			if (is_interrupt):
 				state_scripts = []
+	#		var confirm_return = gameData.confirm(
+	#			self,
+	#			card_scripts,
+	#			canonical_name,
+	#			trigger,
+	#			state_exec)
+	#		if confirm_return is GDScriptFunctionState: # Still working.
+	#			confirm_return = yield(confirm_return, "completed")
+	#			# If the player chooses not to play an optional cost
+	#			# We consider the whole cost dry run unsuccesful
+	#			if not confirm_return:
+	#				state_scripts = []
 	# If the state_scripts return a dictionary entry
 	# it means it's a multiple choice between two scripts
 	if typeof(state_scripts) == TYPE_DICTIONARY:
@@ -1494,6 +1535,10 @@ func execute_scripts(
 			if not sceng.all_tasks_completed:
 				yield(sceng,"tasks_completed")
 		is_executing_scripts = false
+
+		if (playing_interrupt and !only_cost_check):
+			gameData.end_interrupt_mode()
+			
 		emit_signal("scripts_executed", self, sceng, trigger)
 		if (!is_network_call and not only_cost_check):
 			#Call other clients to run the script
@@ -1545,6 +1590,26 @@ func retrieve_scripts(trigger: String) -> Dictionary:
 		found_scripts = cfc.set_scripts.get(canonical_name,{}).get(trigger,{}).duplicate(true)
 	return(found_scripts)
 
+# Retrieves the card scripts either from those defined on the card
+# itself, or from those defined in the script definition files
+#
+# Returns a dictionary of card scripts for this specific card
+# (based on the current trigger.all triggers)
+func retrieve_all_scripts() -> Dictionary:
+	var found_scripts: Dictionary
+	# If scripts have been defined directly in this Card object
+	# They take precedence over CardScriptDefinitions.gd
+	#
+	# This allows us to modify a card's scripts during runtime
+	# in isolation from other cards of the same name
+	if not scripts.empty():
+		found_scripts = scripts.duplicate(true)
+	else:
+		# This retrieves all the script from the card, stored in cfc
+		# The seeks in them the specific trigger we're using in this
+		# execution
+		found_scripts = cfc.set_scripts.get(canonical_name,{}).duplicate(true)
+	return(found_scripts)
 
 # Determines which play position (board, pile or hand)
 # a script should look for to find card scripts

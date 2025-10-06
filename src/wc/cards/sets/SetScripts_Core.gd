@@ -1,6 +1,12 @@
 extends Reference
 
 
+func has_interrupt(script:Dictionary) -> String:
+	for _k in script.keys():
+		var k:String = _k
+		if (k.begins_with("before_") or k.begins_with("after_")):
+			return k
+	return ""
 
 # This fuction merges text files scripts for a given card 
 # with default rules for the game (rules that apply to all cards)
@@ -34,7 +40,8 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 	#Add game specific rules valid for all cards
 	
 	#interrupt or response replacements
-	if (type_code == "event" && script.has("interrupt")):
+	var interrupt_script = has_interrupt(script)
+	if (type_code == "event" && interrupt_script):
 		var playFromHand: Array = []
 		if (cost):
 			playFromHand =  [
@@ -49,24 +56,15 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 			playFromHand = [
 				move_after_play
 			]
-			
-		var interrupt_data = script["interrupt"]
-		script.erase("interrupt")
-		var interrupt_event = interrupt_data["trigger_event"]
-		var trigger_signal = interrupt_event["signal"]
-		
+					
 		var playInterrupt: Dictionary = {
 			#TODO add trigger filters + interrupt data
-			trigger_signal: {
-				"is_optional_hand": true,
-				"hand" : playFromHand + [
-					{
-						"name": interrupt_data["name"]
-					}
-				]
+			interrupt_script: {
+				"hand" : playFromHand
 			} 
 		}
 		script = WCUtils.merge_dict(script, playInterrupt, true)
+		script = script
 	else: #Regular cards
 		#Play From hand: discard a specific number of cards to play
 		#TODO limit to player cards ?

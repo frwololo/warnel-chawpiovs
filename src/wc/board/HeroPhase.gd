@@ -25,6 +25,7 @@ func _ready():
 	selected.visible = false
 	update_picture()
 	scripting_bus.connect("current_playing_hero_changed", self, "_current_playing_hero_changed")
+	gameData.connect("game_state_changed", self, "_game_state_changed")
 	_update_labels()
 	pass # Replace with function body.
 
@@ -64,12 +65,18 @@ func heroPhase_action():
 	else:	
 		gameData.select_current_playing_hero(hero_index)
 	
-remotesync func switch_status():
-	current_state+=1
+remotesync func switch_status(forced_state:int = -1):
+	if (forced_state == -1):
+		current_state+=1
+	else:
+		current_state = forced_state
+		
 	if (current_state > State.FINISHED):
 		current_state = State.ACTIVE
 	match current_state:
 		State.ACTIVE:
+			if (gameData.is_interrupt_mode()):
+				gameData.interrupt_player_pressed_pass()
 			heroNode.texture = color_tex
 		State.FINISHED:
 			heroNode.texture = grayscale_tex	
@@ -88,7 +95,10 @@ func _update_labels():
 	var new_hero_index = gameData.get_current_hero_id()
 	if (gameData.can_i_play_this_hero(hero_index)):
 		if (new_hero_index == hero_index):
-			label.text = "Finished?"
+			if (gameData.is_interrupt_mode()):
+				label.text = "PASS"
+			else:
+				label.text = "Finished?"
 		else:
 			label.text = "Select"
 			if current_state == State.FINISHED:
@@ -98,3 +108,5 @@ func _update_labels():
 	if current_state == State.FINISHED:
 		label.text = "Ready for Villain"					
 
+func _game_state_changed(details:Dictionary):
+	_update_labels()

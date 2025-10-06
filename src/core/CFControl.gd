@@ -233,7 +233,7 @@ func restore_rng_state() -> void:
 	game_rng.state = rng_saved_state
 
 # Instances and returns a Card object, based on its name.
-func instance_card(card_name: String) -> Card:
+func _instance_card(card_name: String) -> Card:
 	# We discover the template from the "Type"  property defined
 	# in each card. Any property can be used
 	var template = load(CFConst.PATH_CARDS

@@ -79,6 +79,40 @@ static func merge_dict(dict_1: Dictionary, dict_2: Dictionary, deep_merge: bool 
 			new_dict[key] = dict_2[key]
 	return new_dict
 
+#check if all elements of dict1 can be found in dict2
+#This doesn't mean the dictionaries are necessarily equal
+static func is_element1_in_element2 (element1, element2)-> bool:
+	
+	if (typeof(element1) != typeof(element2)):
+		return false
+	
+	match typeof(element1):	
+		TYPE_DICTIONARY:
+			for key in element1:
+				if not element2.has(key):
+					return false
+				var val1 = element1[key]
+				var val2 = element2[key]
+																
+				if !is_element1_in_element2(val1, val2):
+					return false
+		TYPE_ARRAY:
+			if (element1.size() > element2.size()): #Should we rather check for not equal here?
+				return false
+			var i:int = 0
+			for value in element1:
+				if !is_element1_in_element2(element1[i], element2[i]):
+					return false
+				i+=1
+		TYPE_STRING:
+			#we don't care for the case
+			if (element1.to_lower() != element2.to_lower()):
+				return false
+		_:	
+			if (element1 != element2):
+				return false
+	return true
+
 
 static func sort_stage(a, b):
 	if a["stage"] < b["stage"]:
@@ -97,15 +131,17 @@ static func to_grayscale(texture : Texture) -> Texture:
 
 # TODO move to a utility file
 # we operate directly on the dictionary without suplicate for speed reasons. Make a copy prior if needed
-static func search_and_replace (script_definition, from: String, to:String, exact_match: bool = false) -> Dictionary:
+static func search_and_replace (script_definition, from: String, to, exact_match: bool = false) -> Dictionary:
 	match typeof(script_definition):
 		TYPE_DICTIONARY:	
 			for key in script_definition.keys():
 				var value = script_definition[key]
 				match typeof(value):
 					TYPE_STRING:
-						if ((!exact_match) or (value == from)):
+						if (!exact_match):
 							script_definition[key] = value.replace(from, to)
+						elif (value == from):
+							script_definition[key] = to
 					TYPE_ARRAY:
 						for x in value:
 							search_and_replace(x,from, to, exact_match)

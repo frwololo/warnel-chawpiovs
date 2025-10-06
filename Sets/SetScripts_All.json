@@ -1,9 +1,16 @@
 {	"Backflip": {
-		"interrupt": {
-			"trigger_event": {
-				"signal": "damage_incoming"
+		"before_damage": {
+			"trigger_filters": {
+				"target": "my_hero",
+				"tags": ["attack"]
 			},
-			"name": "prevent_damage"
+			"is_optional_hand": true,
+			"hand": [
+				{
+				"name": "prevent",
+				"subject": "trigger"
+				}
+			]
 		}
 	},
 	"Combat Training": {

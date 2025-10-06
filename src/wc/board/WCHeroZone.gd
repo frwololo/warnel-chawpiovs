@@ -20,8 +20,7 @@ func set_player(id:int):
 func load_hero():
 	hero_deck_data = gameData.get_team_member(my_id)["hero_data"]
 	var ckey = cfc.idx_card_id_to_name[hero_deck_data.hero_id]
-	var card:WCCard = cfc.instance_card(ckey)
-	card.set_owner_hero_id(my_id)
+	var card:WCCard = cfc.instance_card(ckey, my_id)
 	
 	#TODO better
 	cfc.NMAP["deck" + str(my_id)].add_child(card)

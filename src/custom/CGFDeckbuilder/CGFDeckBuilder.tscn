@@ -19,16 +19,44 @@ deck_maximum = 60
 deck_card_object_scene = ExtResource( 5 )
 deck_summary_scene = ExtResource( 3 )
 
-[node name="VBC" parent="." index="0"]
-margin_right = 1280.0
-margin_bottom = 720.0
+[node name="DeckMC" parent="VBC/HBC" index="0"]
+margin_right = 958.0
+margin_bottom = 1062.0
 
-[node name="Title" parent="VBC" index="0"]
-margin_right = 1280.0
+[node name="CurrentDeck" parent="VBC/HBC/DeckMC" index="0"]
+margin_right = 958.0
+margin_bottom = 1057.0
 
-[node name="HBC" parent="VBC" index="1"]
-margin_right = 1280.0
-margin_bottom = 720.0
+[node name="DeckDetails" parent="VBC/HBC/DeckMC/CurrentDeck" index="0"]
+margin_right = 953.0
+
+[node name="LineSeparator2" parent="VBC/HBC/DeckMC/CurrentDeck" index="1"]
+margin_right = 953.0
+
+[node name="ScrollContainer" parent="VBC/HBC/DeckMC/CurrentDeck" index="2"]
+margin_right = 953.0
+margin_bottom = 981.0
+
+[node name="CardsInDeck" parent="VBC/HBC/DeckMC/CurrentDeck/ScrollContainer" index="0"]
+margin_bottom = 973.0
+
+[node name="HBoxContainer" parent="VBC/HBC/DeckMC/CurrentDeck" index="3"]
+margin_top = 985.0
+margin_right = 953.0
+margin_bottom = 1005.0
+
+[node name="NoticeLabel" parent="VBC/HBC/DeckMC/CurrentDeck/HBoxContainer" index="2"]
+margin_right = 953.0
+
+[node name="DeckNameEdit" parent="VBC/HBC/DeckMC/CurrentDeck" index="4"]
+margin_top = 1009.0
+margin_right = 953.0
+margin_bottom = 1033.0
+
+[node name="Buttons" parent="VBC/HBC/DeckMC/CurrentDeck" index="5"]
+margin_top = 1037.0
+margin_right = 953.0
+margin_bottom = 1057.0
 
 [node name="Back" type="Button" parent="VBC/HBC/DeckMC/CurrentDeck/Buttons" index="4"]
 margin_left = 202.0
@@ -37,17 +65,55 @@ margin_bottom = 20.0
 text = "Back"
 
 [node name="MC" parent="VBC/HBC" index="1"]
-margin_right = 1280.0
-margin_bottom = 702.0
+margin_left = 962.0
 
 [node name="AvailableCards" parent="VBC/HBC/MC" index="0"]
-margin_bottom = 697.0
+margin_right = 948.0
+
+[node name="HBC" parent="VBC/HBC/MC/AvailableCards" index="0"]
+margin_right = 948.0
+
+[node name="FilterLine" parent="VBC/HBC/MC/AvailableCards/HBC" index="1"]
+margin_right = 844.0
+
+[node name="CardCount" parent="VBC/HBC/MC/AvailableCards/HBC" index="2"]
+margin_left = 848.0
+margin_right = 948.0
+
+[node name="CC" parent="VBC/HBC/MC/AvailableCards" index="1"]
+margin_right = 948.0
+
+[node name="ButtonFilters" parent="VBC/HBC/MC/AvailableCards/CC" index="0"]
+margin_left = 459.0
+margin_right = 489.0
+
+[node name="CardListHeaders" parent="VBC/HBC/MC/AvailableCards" index="2"]
+margin_right = 948.0
+
+[node name="Name" parent="VBC/HBC/MC/AvailableCards/CardListHeaders" index="0"]
+margin_right = 844.0
+
+[node name="Type" parent="VBC/HBC/MC/AvailableCards/CardListHeaders" index="1"]
+margin_left = 848.0
+margin_right = 948.0
+
+[node name="LineSeparator" parent="VBC/HBC/MC/AvailableCards" index="3"]
+margin_right = 948.0
 
 [node name="ScrollContainer" parent="VBC/HBC/MC/AvailableCards" index="4"]
-margin_bottom = 653.0
+margin_right = 948.0
+
+[node name="CardList" parent="VBC/HBC/MC/AvailableCards/ScrollContainer" index="0"]
+margin_right = 948.0
 
 [node name="Settings" parent="VBC/HBC/MC/AvailableCards" index="5"]
-margin_top = 657.0
-margin_bottom = 697.0
+margin_right = 948.0
+
+[node name="Control" parent="VBC/HBC/MC/AvailableCards/Settings" index="0"]
+margin_right = 803.0
+
+[node name="GridViewStyle" parent="VBC/HBC/MC/AvailableCards/Settings" index="1"]
+margin_left = 807.0
+margin_right = 948.0
 
 [editable path="VBC/HBC/DeckMC"]

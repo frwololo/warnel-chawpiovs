@@ -44,7 +44,7 @@ func load_scenario():
 	for card_data in encounter_deck_data:
 			#cards.append(ckey)
 			var ckey = card_data["name"]
-			card_array.append(cfc.instance_card(ckey))
+			card_array.append(cfc.instance_card(ckey, 0))
 
 	for card in card_array:
 		cfc.NMAP["deck_villain"].add_child(card)
@@ -58,7 +58,7 @@ func load_scenario():
 func load_villain():	
 	var villain_data = scenario_data.villains[0]
 	var ckey = villain_data["Name"] #TODO we have name and "Name" which is a problem here...
-	var card = cfc.instance_card(ckey)
+	var card = cfc.instance_card(ckey, 0)
 	card.set_is_faceup(true)	
 	#TODO cleaner way to add the villain there?
 	cfc.NMAP["deck_villain"].add_child(card)
@@ -75,7 +75,7 @@ func load_scheme():
 	# TODO how to "flip" a card...
 	var scheme_data = scenario_data.schemes[0]
 	var ckey = scheme_data["Name"] #TODO we have name and "Name" which is a problem here...
-	var card = cfc.instance_card(ckey)
+	var card = cfc.instance_card(ckey, 0)
 	#card.set_is_faceup(true)	
 	#TODO cleaner way to add the villain there?
 	cfc.NMAP["deck_villain"].add_child(card)

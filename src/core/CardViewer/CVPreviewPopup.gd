@@ -98,7 +98,7 @@ func get_preview_placement() -> Vector2:
 func show_preview_card(card) -> void:
 	if not has_preview_card():
 		if typeof(card) == TYPE_STRING:
-			preview_card = cfc.instance_card(card)
+			preview_card = cfc.instance_card(card,-2)
 		else:
 			preview_card = card
 			preview_card.position = Vector2(0,0)

@@ -1,32 +1,35 @@
 class_name WCCard
 extends Card
 
-var owner_hero_id  := 0 setget set_owner_hero_id, get_owner_hero_id
-var controller_hero_id  := 0 setget set_controller_hero_id, get_controller_hero_id
+# -1 uninitialized, 0 Villain, any positive value: hero
+var _owner_hero_id  := -1 setget set_owner_hero_id, get_owner_hero_id
+var _controller_hero_id  := -1 setget set_controller_hero_id, get_controller_hero_id
 
 var _check_play_costs_cache_status: int = CFConst.CacheStatus.INVALID
 var _check_play_costs_cache: Color = CFConst.CostsState.OK
 
 func set_owner_hero_id(hero_id:int):
-	owner_hero_id = hero_id
+	if (hero_id == -1):
+		var error = 1
+	_owner_hero_id = hero_id
 	
 func get_owner_hero_id() -> int:
-	return owner_hero_id	
+	return _owner_hero_id	
 
 func set_controller_hero_id(hero_id:int):
-	controller_hero_id = hero_id
+	_controller_hero_id = hero_id
 	
 func get_controller_hero_id() -> int:
-	return controller_hero_id	
+	return _controller_hero_id	
 	
 func get_controller_player_network_id() -> int:
-	var player_data:PlayerData = gameData.get_hero_owner(controller_hero_id)
+	var player_data:PlayerData = gameData.get_hero_owner(get_controller_hero_id())
 	if (!player_data):
 		return 0 #TODO error handling? This shouldn't happen
 	return player_data.get_network_id()	
 	
 func get_controller_player_id() -> int:
-	var player_data:PlayerData = gameData.get_hero_owner(controller_hero_id)
+	var player_data:PlayerData = gameData.get_hero_owner(get_controller_hero_id())
 	if (!player_data):
 		return 0 #TODO error handling? This shouldn't happen
 	return player_data.get_id()		
@@ -93,7 +96,30 @@ func attempt_to_play():
 
 		cfc.card_drag_ongoing = null
 		execute_scripts()
+
+# Executes the tasks defined in the card's scripts in order.
+#
+# Returns a [ScriptingEngine] object but that it not statically typed
+# As it causes the parser think there's a cyclic dependency.
+
+	# there is a bug in the original engine that will create duplicate card
+	# in selectionWindow.gd. These cards should get triggered but they do
+	# There has to be a better way to fix this (see their attempted fix in ScriptingBus)
+	# but I'm not sure for now
+func execute_scripts(
+		trigger_card: Card = self,
+		trigger: String = "manual",
+		trigger_details: Dictionary = {},
+		run_type := CFInt.RunType.NORMAL):
+			
+	#temporary bug fix: prevent uninitalized cards from running scripts
+	#these cards are duplicates that shouldn't exist?
+	if (get_owner_hero_id() == -1):
+		return null
 		
+	return .execute_scripts(trigger_card, trigger, trigger_details, run_type)	
+
+
 # A signal for whenever the player clicks on a card
 func _on_Card_gui_input(event) -> void:
 	if event is InputEventMouseButton and cfc.NMAP.has("board"):
@@ -254,7 +280,7 @@ func check_play_costs() -> Color:
 	_check_play_costs_cache = CFConst.CostsState.IMPOSSIBLE
 	_check_play_costs_cache_status = CFConst.CacheStatus.VALID
 
-	#skip if card is not in hand and not on board. TODO: might have to take into account cards than can be played from other places
+	#skip if card is not in hand and not on board. TODO: will have to take into account cards than can be played from other places
 	if ((get_state_exec() != "hand")
 		and get_state_exec() != "board"):
 			return _check_play_costs_cache
@@ -288,17 +314,21 @@ func check_play_costs() -> Color:
 # Used to hijack the scripts at runtime if needed
 # Current use case: check manapool before asking to pay for cards
 func common_pre_run(_sceng) -> void:
+	var owner_hero_id = self.get_owner_hero_id()
+		
 	var scripts_queue: Array = _sceng.scripts_queue
 	var new_queue: Array = []
 	for task in scripts_queue:
 		var script: ScriptTask = task
 		var script_definition = script.script_definition
 		
-		var current_hero_id = gameData.get_current_hero_id()
-		for v in ["hand", "encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
-			#TODO move to const
-			WCUtils.search_and_replace(script_definition, v, v+str(self.owner_hero_id), true)
-	
+		if (owner_hero_id <=0 ):
+			cfc.LOG("error owner hero id is not set" )
+		else:
+			#var current_hero_id = gameData.get_current_hero_id()
+			for v in ["hand", "encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
+				#TODO move to const
+				WCUtils.search_and_replace(script_definition, v, v+str(owner_hero_id), true)	
 		
 		match script_definition["name"]:
 			# To pay for cards: We check if the manapool has some mana

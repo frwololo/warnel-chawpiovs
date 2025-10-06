@@ -36,7 +36,7 @@ func _ready() -> void:
 		$SeedLabel.text = "Game Seed is: " + cfc.game_rng_seed
 
 	# warning-ignore:return_value_discarded
-	$DeckBuilderPopup.connect('popup_hide', self, '_on_DeckBuilder_hide')	
+	#$DeckBuilderPopup.connect('popup_hide', self, '_on_DeckBuilder_hide')	
 	
 	
 	for grid_name in GRID_SETUP.keys():
@@ -128,7 +128,7 @@ func _ready() -> void:
 	#Tests
 	draw_cheat("Combat Training")
 	draw_cheat("Mockingbird")
-	#draw_cheat("Backflip")
+	draw_cheat("Backflip")
 	#draw_cheat("Helicarrier")	
 	draw_cheat("Swinging Web Kick")
 	cfc.LOG_DICT(guidMaster.guid_to_object)
@@ -298,9 +298,7 @@ func load_cards_to_pile(card_data:Array, pile_name):
 			card_id, 
 			cfc.lowercase_card_name_to_name.get(card_id.to_lower(), "")
 		)
-		var new_card:WCCard = cfc.instance_card(card_name)
-		new_card.set_owner_hero_id(hero_id)
-		new_card.set_controller_hero_id(hero_id)
+		var new_card:WCCard = cfc.instance_card(card_name, hero_id)
 		card_array.append(new_card)
 
 	for card in card_array:
@@ -362,7 +360,7 @@ func draw_starting_hand() -> void:
 
 
 func draw_cheat(cardName : String) -> void:
-	var card = cfc.instance_card(cardName)
+	var card = cfc.instance_card(cardName, 1)
 	var pile = cfc.NMAP["deck1"]
 	pile.add_child(card)
 	cfc.NMAP["hand1"].draw_card (pile)

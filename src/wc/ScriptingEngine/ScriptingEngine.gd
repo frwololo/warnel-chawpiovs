@@ -115,7 +115,7 @@ func attack(script: ScriptTask) -> int:
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
 
-	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
+	var tags: Array = ["attack", "Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
 	var token_name = "damage" #TODO move to const
 	
 	var damage = script.script_definition.get("amount", 0)
@@ -123,6 +123,7 @@ func attack(script: ScriptTask) -> int:
 		var owner = script.owner
 		damage = owner.get_property("attack", 0)
 	
+	script.script_definition["tags"] = tags
 	script.script_definition["amount"] = damage 
 	receive_damage(script)
 	consequential_damage(script)
@@ -134,7 +135,7 @@ func receive_damage(script: ScriptTask) -> int:
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
 	
-	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
+	var tags: Array = script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
 	var amount = script.script_definition["amount"]
 	
 	#TODO BUG sometimes subjects contains a null card?
@@ -158,13 +159,14 @@ func receive_damage(script: ScriptTask) -> int:
 
 	return retcode
 
-func prevent_damage(script: ScriptTask) -> int:
+func prevent(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode	
 	
-	#Find the damage on the stack and remove it
-	var result = gameData.theStack.delete_next_by_class("DamageScript")
+	#Find the event on the stack and remove it
+	#TOdo take into action subject, etc...
+	var result = gameData.theStack.delete_last_event()
 	
 	return retcode				
 
@@ -192,6 +194,8 @@ func defend(script: ScriptTask) -> int:
 		#TODO add variable stating attack was undefended
 
 	script.script_definition["amount"] = amount
+	var tags: Array = ["attack", "Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
+	script.script_definition["tags"] = tags
 	var result = receive_damage(script)
 	
 	if (!defender):

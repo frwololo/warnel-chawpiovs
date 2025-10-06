@@ -15,7 +15,7 @@ signal card_selected(selection_window, details)
 signal setup_complete()
 
 # warning-ignore:unused_signal
-signal damage_incoming(card,details)
+signal before_damage(details)
 # warning-ignore:unused_signal
 signal card_damaged(card,details)
 

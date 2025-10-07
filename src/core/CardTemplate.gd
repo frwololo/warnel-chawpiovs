@@ -276,13 +276,18 @@ func _ready() -> void:
 	targeting_arrow = targeting_arrow_scene.instance()
 	add_child(targeting_arrow)
 	set_card_size(card_size)
+
 	_init_card_layout()
+
 	# The below call ensures out canonical_name variable is set.
 	# Normally the setup() function should be used to set it,
 	# but setting the name here as well ensures that a card can be also put on
 	# The board without calling setup() and then use its hardcoded labels
 	_init_card_name()
-	setup()
+	setup()	
+
+
+
 	# warning-ignore:return_value_discarded
 	$Control.connect("gui_input", self, "_on_Card_gui_input")
 	$Control.connect("tree_exiting", self, "_on_tree_exiting")
@@ -310,6 +315,7 @@ func _init_card_layout() -> void:
 	else:
 		card_back = _card_back_container.get_child(0)
 		card_front = _card_front_container.get_child(0)
+		var tmp = 1
 
 
 # Ensures that the canonical card name is set in all fields which use it.
@@ -526,7 +532,6 @@ func _on_Card_mouse_exited() -> void:
 		CardState.FOCUSED_IN_POPUP:
 			set_state(CardState.IN_POPUP)
 
-
 # This function handles filling up the card's labels according to its
 # card definition dictionary entry.
 func setup() -> void:
@@ -608,8 +613,9 @@ func modify_property(
 				properties[property] = value
 			if not card_front.card_labels.has(property):
 				if not property.begins_with("_"):
-					print_debug("Warning: ", property,
-							" does not have a matching label!")
+					#print_debug("Warning: ", property,
+					#		" does not have a matching label!")
+					var tmp = 1
 				retcode = CFConst.ReturnCode.FAILED
 			else:
 				if not is_init:
@@ -845,7 +851,7 @@ func set_is_faceup(
 		retcode = CFConst.ReturnCode.OK
 	# We check if the parent is a valid instance
 	# If it is not, this is a viewport dupe card that has not finished
-	# it's ready() process
+	# its ready() process
 	elif not check and is_instance_valid(get_parent()):
 		tokens.is_drawer_open = false
 		# We make sure to remove other tweens of the same type to avoid a deadlock
@@ -896,9 +902,9 @@ func get_is_faceup() -> bool:
 	return is_faceup
 
 
-# Setter for is_faceup
+# Setter for is_viewed
 #
-# Flips the card face-up/face-down
+# (What does that do ?)
 #
 # * Returns CFConst.ReturnCode.CHANGED if the card actually changed view status
 # * Returns CFConst.ReturnCode.OK if the card was already in the correct view status

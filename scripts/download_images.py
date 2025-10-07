@@ -35,22 +35,11 @@ def createFolders(setName):
 
 def isHorizontal(card):
     return ("scheme" in card["type_code"])
-    
-with open(source_file) as user_file:
-  parsed_json = json.load(user_file);
 
-for card in parsed_json:
-    setName = card["pack_code"]
-    createFolders(setName)
-
+def download_img(img_url, img_basename, img_filename, setName):
     w = 300
     h = 419
     rotate_suffix = "0"
-
-
-    img_url = card["imagesrc"]
-    img_basename = os.path.basename(img_url)
-    img_filename = origFolder(setName) + img_basename
 
     #Download
     if not os.path.isfile(img_filename):
@@ -78,3 +67,31 @@ for card in parsed_json:
               + home_folder + 'wc_card_mask.png '
               + masked_filename)
 
+
+
+with open(source_file) as user_file:
+  parsed_json = json.load(user_file);
+
+for card in parsed_json:
+    setName = card["pack_code"]
+    createFolders(setName)
+
+    img_url = card["imagesrc"]
+    img_basename = os.path.basename(img_url)
+    img_filename = origFolder(setName) + img_basename
+
+    download_img(img_url, img_basename, img_filename, setName)
+
+    if "backimagesrc" in card:
+        back_img = card["backimagesrc"] 
+        img_basename = os.path.basename(back_img)
+        img_filename = origFolder(setName) + img_basename
+        download_img(back_img, img_basename, img_filename, setName)
+    
+    if "linked_card" in card:
+        linked_card = card["linked_card"]
+        back_img = linked_card["imagesrc"] 
+        img_basename = os.path.basename(back_img)
+        img_filename = origFolder(setName) + img_basename
+        download_img(back_img, img_basename, img_filename, setName)       
+        

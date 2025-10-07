@@ -527,8 +527,29 @@ func loadstate_from_json(json:Dictionary):
 
 	
 	return
-
-
+#The game engine doesn't really have a concept of double sided cards, so instead,
+#when flipping such a card, we destroy it and create a new card
+func flip_doublesided_card(card:WCCard):
+	var back_code = card.get_card_back_code()
+	if (back_code):
+		var new_card = cfc.instance_card(back_code,card.get_owner_hero_id())
+		#TODO copy tokens, state, etc...
+		var slot = card._placement_slot
+		add_child(new_card)
+		card.copy_modifiers_to(new_card)
+		card.queue_free() #is more required to remove it?		
+		#new_card._determine_idle_state()
+		#new_card.move_to(cfc.NMAP.board, -1, slot)	
+		new_card.position = slot.rect_global_position
+		new_card._placement_slot = slot
+		slot.occupying_card = new_card
+		new_card.state = Card.CardState.ON_PLAY_BOARD
+		#new_card.reorganize_self()
+		
+		
+	else:
+		return
+		#TODO mabe flip anyway?
 
 func _on_OptionsButton_pressed():
 	cfc.set_game_paused(true)

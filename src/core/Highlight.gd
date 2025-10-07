@@ -23,7 +23,7 @@ func deactivate_glow():
 
 # Changes card highlight colour.
 func set_target_highlight(hoverColour) -> void:
-	modulate_speed = 0.04
+	modulate_speed = 0.9
 	if (!direction):
 		direction = -1
 	if (target_highlight == hoverColour):
@@ -48,7 +48,7 @@ func set_highlight(requestedFocus: bool,
 func _process(delta):
 	if (!direction):
 		return
-	modulate.a = modulate.a + (modulate_speed * direction)
+	modulate.a = modulate.a + (modulate_speed * direction * delta)
 	if (modulate.a <= 0):
 		direction = 1
 	if (modulate.a >= target_highlight.a):

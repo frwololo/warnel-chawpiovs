@@ -2,7 +2,7 @@
 
 [ext_resource path="res://assets/icons/view.svg" type="Texture" id=1]
 [ext_resource path="res://fonts/Xolonium-Regular.ttf" type="DynamicFontData" id=2]
-[ext_resource path="res://src/custom/CGFCardBack.gd" type="Script" id=3]
+[ext_resource path="res://src/wc/CardBack.gd" type="Script" id=3]
 [ext_resource path="res://assets/card_backs/CGFBackLines.png" type="Texture" id=4]
 [ext_resource path="res://assets/card_backs/CGFBackDots.png" type="Texture" id=5]
 
@@ -17,7 +17,7 @@ corner_radius_bottom_left = 10
 size = 12
 font_data = ExtResource( 2 )
 
-[node name="CGFCardBack" type="Panel"]
+[node name="CardBack" type="Panel"]
 margin_right = 150.0
 margin_bottom = 240.0
 rect_min_size = Vector2( 150, 210 )
@@ -85,7 +85,7 @@ rect_min_size = Vector2( 150, 3 )
 mouse_filter = 2
 custom_constants/margin_top = 3
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="Art" type="TextureRect" parent="."]
 modulate = Color( 1.7, 1, 1, 1 )
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -102,6 +102,3 @@ margin_bottom = 1.52588e-05
 rect_min_size = Vector2( 150, 210 )
 texture = ExtResource( 5 )
 expand = true
-__meta__ = {
-"_edit_use_anchors_": false
-}

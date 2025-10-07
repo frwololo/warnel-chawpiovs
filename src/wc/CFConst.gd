@@ -257,6 +257,7 @@ const TYPES_TO_GROUPS := {
 	"minion" : ["group_enemies"],
 	"villain" : ["group_enemies"],
 	"hero" : ["group_allies", "group_identities"],
+	"alter_ego" : ["group_allies", "group_identities"],
 	"ally" : ["group_allies"],
 }
 

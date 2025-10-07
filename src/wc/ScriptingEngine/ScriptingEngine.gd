@@ -254,6 +254,27 @@ func thwart(script: ScriptTask) -> int:
 	consequential_damage(script)
 	return retcode	
 
+func change_form(script: ScriptTask) -> int:
+
+	var tags: Array = script.get_property(SP.KEY_TAGS)
+	var is_manual = "player_initiated" in tags
+	
+	var this_card:WCCard = script.owner
+	
+	for subject in script.subjects: #should be really one subject only, generally
+		var hero:WCCard = subject
+		
+		if is_manual and !hero.can_change_form():
+			return CFConst.ReturnCode.FAILED
+		
+		if (!costs_dry_run()):
+		#Get my current zone
+			if (is_manual):
+				hero._can_change_form = false
+			cfc.NMAP.board.flip_doublesided_card(hero)
+
+	return CFConst.ReturnCode.CHANGED
+	
 func move_to_player_zone(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?

@@ -22,11 +22,14 @@ var scenarios : Array
 #Hero deck data identified by integer id (marvelcdb id)
 var deck_definitions : Dictionary
 
-func get_card_by_id(id):
+func get_card_name_by_id(id):
 	if (not id):
 		WCUtils.debug_message("no id passed to get_card_by_id")
 		return null	
-	var card_name = idx_card_id_to_name[id]
+	return idx_card_id_to_name.get(id,"")
+
+func get_card_by_id(id):
+	var card_name = get_card_name_by_id(id)
 	if (not card_name):
 		WCUtils.debug_message("no matching data for " + str(id))
 		return null
@@ -60,6 +63,99 @@ func load_card_primitives():
 		primitives[card_data["code"]] = card_data;
 		primitives[card_data["name"]] = card_data;
 
+
+func _load_one_card_definition(card_data):
+	#converting "real" numbers to "int"
+	for key in card_data.keys():
+		var value = card_data[key]
+		if typeof(value) == TYPE_REAL:
+			var new_value:int = value
+			card_data[key] = new_value
+
+	#Fixing missing Data
+	if not card_data.has("Tags"):
+		card_data["Tags"] = []			
+
+	if not card_data.has("Requirements"):
+		card_data["Requirements"] = ""
+		
+	if not card_data.has("Abilities"):
+		card_data["Abilities "] = ""		
+
+	#linked cards might be missing preprocessing data
+	if not card_data.has("_code"):
+		card_data["_code"] = card_data.get("code", "")
+
+	if not card_data.has("Name"):
+		card_data["Name"] = card_data.get("name", "")
+
+	if not card_data.has(CardConfig.SCENE_PROPERTY):
+		var type_code = card_data["type_code"]
+		type_code = type_code[0].to_upper() + type_code.substr(1)
+		card_data[CardConfig.SCENE_PROPERTY] = type_code
+
+	if not card_data.has("back_card_code"):
+		card_data["back_card_code"] = ""
+	
+	if not card_data.has("_set"):
+		card_data["_set"] = card_data.get("pack_code", "")	
+
+	###END Fixing missing data
+
+	var card_type:String = card_data[CardConfig.SCENE_PROPERTY]
+	
+	#enriching data
+	var lc_card_type = card_type.to_lower()
+	var force_horizontal = CFConst.FORCE_HORIZONTAL_CARDS.get(lc_card_type, false)
+	card_data["_horizontal"] = force_horizontal
+
+	#TODO 2024/10/30 is this error new?
+	if not card_data.has("card_set_name"):
+		card_data["card_set_name"] = "ERROR"	
+		
+
+	var set_name = card_data["card_set_name"]
+	var lc_set_name = set_name.to_lower()
+	
+	#Villains: multiple cards have the same name.
+	#Hack to "fix" this by adding stage number
+	#e.g. "Rhino_2"
+	if (card_type == "Villain"):
+		card_data["Name"] = card_data["Name"] + "_" + String(card_data["stage"])
+	
+
+	
+	var card_id = card_data["_code"]
+	var card_name:String = card_data["Name"]
+	
+	#caching and indexing
+	idx_card_id_to_name[card_id] = card_name
+	lowercase_card_name_to_name[card_name.to_lower()] = card_name
+	
+	
+	#scenarios cache
+	if (card_type == "Main_scheme"):
+		if (not schemes.has(lc_set_name)):
+			schemes[lc_set_name] = []
+		schemes[lc_set_name].push_back(card_data)	
+		if(card_data["stage"] == 1):
+			scenarios.push_back(card_id)
+	
+	#obligations cache
+	if (card_type == "Obligation"):
+		obligations[lc_set_name] = card_data
+		
+	#encounter/set cache
+	if (not cards_by_set.has(lc_set_name)):
+		cards_by_set[lc_set_name] = []
+	cards_by_set[lc_set_name].push_back(card_data)				
+		
+	#Unknown types get assigned a generic template.
+	#They most likely won't work in game
+	if not _is_type_known(card_type):
+		card_data[CardConfig.SCENE_PROPERTY] = "Unknown"	
+		
+		
 # Returns a Dictionary with the combined Card definitions of all set files
 # loaded in card_definitions variable by core engine
 func load_card_definitions() -> Dictionary:
@@ -74,69 +170,31 @@ func load_card_definitions() -> Dictionary:
 	for set_file in set_files:
 		var json_card_data : Array
 		json_card_data = WCUtils.read_json_file("user://Sets/" + set_file)
-		for card_data in json_card_data:
-			
-			#converting "real" numbers to "int"
-			for key in card_data.keys():
-				var value = card_data[key]
-				if typeof(value) == TYPE_REAL:
-					var new_value:int = value
-					card_data[key] = new_value
-			#Fixing missing Data
-			if not card_data.has("Tags"):
-				card_data["Tags"] = []			
-
-			var card_type:String = card_data[CardConfig.SCENE_PROPERTY]
-			
-			#enriching data
-			var lc_card_type = card_type.to_lower()
-			var force_horizontal = CFConst.FORCE_HORIZONTAL_CARDS.get(lc_card_type, false)
-			card_data["_horizontal"] = force_horizontal
-
-			#TODO 2024/10/30 is this error new?
-			if not card_data.has("card_set_name"):
-				card_data["card_set_name"] = "ERROR"	
-				
-
-			var set_name = card_data["card_set_name"]
-			var lc_set_name = set_name.to_lower()
-			
-			#Villains: multiple cards have the same name.
-			#Hack to "fix" this by adding stage number
-			#e.g. "Rhino_2"
-			if (card_type == "Villain"):
-				card_data["Name"] = card_data["Name"] + "_" + String(card_data["stage"])
-			
-			var card_id = card_data["_code"]
-			var card_name:String = card_data["Name"]
-			#caching and indexing
-			idx_card_id_to_name[card_id] = card_name
-			lowercase_card_name_to_name[card_name.to_lower()] = card_name
-			
-			
-			#scenarios cache
-			if (card_type == "Main_scheme"):
-				if (not schemes.has(lc_set_name)):
-					schemes[lc_set_name] = []
-				schemes[lc_set_name].push_back(card_data)	
-				if(card_data["stage"] == 1):
-					scenarios.push_back(card_id)
-			
-			#obligations cache
-			if (card_type == "Obligation"):
-				obligations[lc_set_name] = card_data
-				
-			#encounter/set cache
-			if (not cards_by_set.has(lc_set_name)):
-				cards_by_set[lc_set_name] = []
-			cards_by_set[lc_set_name].push_back(card_data)				
-				
-			#Unknown types get assigned a generic template.
-			#They most likely won't work in game
-			if not _is_type_known(card_type):
-				card_data[CardConfig.SCENE_PROPERTY] = "Unknown"	
+		for card_data in json_card_data:			
+			_load_one_card_definition(card_data)	
 			combined_sets[card_data["Name"]] = card_data
 			
+			var linked_card_data = card_data.get("linked_card", {})
+			if (linked_card_data):
+				_load_one_card_definition(linked_card_data)
+				linked_card_data["back_card_code"] = card_data["_code"]
+				card_data["back_card_code"] = linked_card_data["_code"]
+				combined_sets[linked_card_data["Name"]] = linked_card_data
+				cfc.LOG_DICT(linked_card_data)
+				cfc.LOG_DICT(card_data)			
+
+			var double_sided = card_data.get("double_sided", false)
+			if (double_sided):
+				var back_side_data = card_data.duplicate()
+				back_side_data["_code"] = card_data["_code"] + "b"
+				back_side_data["code"] = back_side_data["_code"]
+				back_side_data["text"] = back_side_data["back_text"]
+				
+				back_side_data["back_card_code"] = card_data["_code"]
+				card_data["back_card_code"] = back_side_data["_code"]				
+				#TODO more changes needed ?
+				_load_one_card_definition(back_side_data)
+				#combined_sets[linked_card_data["Name"]] = linked_card_data
 			
 	return(combined_sets)
 
@@ -256,7 +314,7 @@ func get_next_scene_params() -> Dictionary:
 
 #
 # These functions live here for lack of a better place. Todo create classes?
-func get_img_filename(card_id) -> String:
+func get_img_filename(card_id, alternate_code = "") -> String:
 	if (not card_id):
 		print_debug("CFCExtended: no id passed to get_img_filename")
 		return ""
@@ -264,7 +322,7 @@ func get_img_filename(card_id) -> String:
 	if (not card):
 		print_debug("CFCExtended: couldn't find card matching id" + card_id)
 		return ""	
-	var card_code = card["_code"]
+	var card_code = alternate_code if alternate_code else card["_code"]
 	var card_set = card["_set"]
 	if card_code and card_set:
 		return "user://Sets/" + card_set + "/" + card_code + ".png"
@@ -279,7 +337,11 @@ func get_hero_portrait(card_id) -> Image:
 	var sub_img = img_data.get_rect(area) #Todo more flexible?
 	return sub_img	
 
-func instance_card(card_name: String, owner_id:int) -> Card:
+func instance_card(card_name_or_id: String, owner_id:int) -> Card:
+	var card_name = card_name_or_id
+	if (!card_definitions.has(card_name)):
+		card_name = self.get_card_name_by_id(card_name_or_id)
+		
 	var card = ._instance_card(card_name)
 	#TODO We set GUID here in the hope that all clients create their cards in the exact 
 	#same order. This might be a very flawed assertion could need a significant overhaul	

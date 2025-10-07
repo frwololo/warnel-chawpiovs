@@ -8,6 +8,9 @@ var _controller_hero_id  := -1 setget set_controller_hero_id, get_controller_her
 var _check_play_costs_cache_status: int = CFConst.CacheStatus.INVALID
 var _check_play_costs_cache: Color = CFConst.CostsState.OK
 
+#marvel champions specific variables
+var _can_change_form := true
+
 func set_owner_hero_id(hero_id:int):
 	if (hero_id == -1):
 		var error = 1
@@ -34,11 +37,14 @@ func get_controller_player_id() -> int:
 		return 0 #TODO error handling? This shouldn't happen
 	return player_data.get_id()		
 
+
 func setup() -> void:
 	.setup()
 	_init_groups()	
 	set_card_art()
-	gameData.connect("game_state_changed", self, "game_state_changed")
+	gameData.connect("game_state_changed", self, "_game_state_changed")
+	scripting_bus.connect("step_started", self, "_game_step_started")
+
 
 func _process(delta) -> void:
 	._process(delta)
@@ -54,13 +60,39 @@ func set_target_highlight(colour):
 
 
 #flush caches and states when game state changes
-func game_state_changed(details:Dictionary):
+func _game_state_changed(details:Dictionary):
 	_check_play_costs_cache_status = CFConst.CacheStatus.INVALID
 
+#reset some variables at new turn
+func _game_step_started(details:Dictionary):
+	var current_step = details["step"]
+	match current_step:
+		PhaseContainer.PHASE_STEP.PLAYER_TURN:
+			_can_change_form = true
+	return	
+	
+
+func get_card_back_code() -> String:
+	return get_property("back_card_code")
+	
+
 func set_card_art():
-	var filename = cfc.get_img_filename(get_property("_code"))
+	var card_code = get_property("_code")
+	var filename = cfc.get_img_filename(card_code)
 	if (filename):
 		card_front.set_card_art(filename)
+
+#Commented out after changing the way to flip double sided cards	
+#	if !card_back:
+#		return
+#
+#	var code_back = get_card_back_code()
+#	if (!code_back):
+#		return
+#
+#	var filename_back = cfc.get_img_filename(card_code,code_back)
+#	if (filename_back):
+#		card_back.set_card_art(filename_back)		
 
 
 func _init_groups() -> void :
@@ -90,9 +122,11 @@ func common_post_move_scripts(new_host: String, old_host: String, move_tags: Arr
 #Tries to play the card assuming costs aren't impossible to pay
 #Also used for automated tests
 func attempt_to_play():
+	var state_exec = get_state_exec()
+	
 	if ((check_play_costs() != CFConst.CostsState.IMPOSSIBLE
-		and get_state_exec() == "hand")
-		or get_state_exec() == "board"):	
+		and state_exec == "hand")
+		or state_exec == "board"):	
 
 		cfc.card_drag_ongoing = null
 		execute_scripts()
@@ -250,7 +284,7 @@ func can_defend():
 func die():
 	var type_code = properties.get("type_code", "")
 	match type_code:
-		"hero":
+		"hero", "alter_ego":
 			gameData.hero_died(self)
 		"ally":
 			move_to(cfc.NMAP["discard1"]) #TODO per hero
@@ -389,3 +423,23 @@ func get_grid_name():
 	if (_placement_slot):
 		return _placement_slot.get_grid_name()
 	return null	
+
+#Marvel Champions Specific functionality
+func can_change_form() -> bool:
+	return _can_change_form
+
+#a way to copy all modifications of this card to another card
+#used e.g. when flipping card 	
+func copy_modifiers_to(to_card:WCCard):
+	#TODO status cards
+	#TODO attachments
+	#tokens (including damage)
+	var my_tokens = tokens.get_all_tokens()
+	for token_name in my_tokens.keys():
+		var count = tokens.get_token_count(token_name)
+		to_card.tokens.mod_token(token_name, count, true)
+	#state (exhausted)
+	to_card.set_card_rotation(self.card_rotation)
+	#change form
+	to_card._can_change_form = self._can_change_form
+

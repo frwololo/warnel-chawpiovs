@@ -165,6 +165,25 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 			}
 		}		
 		script = WCUtils.merge_dict(script,ally_actions, true)
+
+	if type_code == "hero"  or type_code == "alter_ego": 
+		var hero_actions: Dictionary = { 
+			"manual": {
+				"board": {
+					"change form": [
+						{
+							"name": "change_form",
+							"subject": "self",
+							"is_cost" : true,
+							"tags": ["player_initiated"]
+						}				
+					]
+				}
+			}
+		}		
+		script = WCUtils.merge_dict(script,hero_actions, true)
+
+
 	
 	if type_code == "villain" or type_code == "minion":
 		var villain_attack: Dictionary = { 

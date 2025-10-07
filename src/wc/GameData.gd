@@ -214,7 +214,7 @@ func ready_all_player_cards():
 			if not card.properties.get("_horizontal", false):
 				card.readyme()	
 
-func _find_main_scheme() : 
+func find_main_scheme() : 
 	var cards:Array = cfc.NMAP["board"].get_all_cards()
 	for card in cards:
 		if "main_scheme" == card.properties.get("type_code", "false"):
@@ -246,16 +246,24 @@ func enemy_activates() -> int :
 	#force us to wait for the targeted player to trigger the script via network
 	if not (can_i_play_this_hero(target_id)):
 		return CFConst.ReturnCode.FAILED
-	var enemy:Card = attackers.pop_front()
+	var enemy:WCCard = attackers.pop_front()
 	if (enemy):
-		var sceng = enemy.execute_scripts(enemy, "automated_enemy_attack")
-		if sceng is GDScriptFunctionState:
-			sceng = yield(sceng, "completed")
-		return CFConst.ReturnCode.OK
+		
+		var heroZone:WCHeroZone = cfc.NMAP.board.heroZones[target_id]
+		if (heroZone.is_hero_form()):
+			#attack
+			var sceng = enemy.execute_scripts(enemy, "automated_enemy_attack")
+			if sceng is GDScriptFunctionState:
+				sceng = yield(sceng, "completed")
+			return CFConst.ReturnCode.OK
+		else:
+			#scheme
+			enemy.commit_scheme()
+			return CFConst.ReturnCode.OK			
 	return CFConst.ReturnCode.FAILED
 	
 func villain_threat():
-	var scheme:Card = _find_main_scheme()
+	var scheme:Card = find_main_scheme()
 	if not scheme:
 		return CFConst.ReturnCode.FAILED
 	var escalation_threat = scheme.properties["escalation_threat"]	
@@ -354,12 +362,6 @@ func get_minions_engaged_with_player(player_id:int):
 		results = minionsGrid.get_all_cards()
 	return results
 	
-#Returns Hero currently being targeted by the villain and his minions	
-func get_current_target_hero() -> Card:
-	var board:Board = cfc.NMAP.board
-	var heroZone:WCHeroZone = board.heroZones[_villain_current_hero_target]
-	return heroZone.get_hero_card()
-
 func get_hero_card(owner_id) -> Card:
 	if (owner_id) <= 0:
 		cfc.LOG ("error owner id is " + String(owner_id))
@@ -368,6 +370,10 @@ func get_hero_card(owner_id) -> Card:
 	var board:Board = cfc.NMAP.board
 	var heroZone:WCHeroZone = board.heroZones[owner_id]
 	return heroZone.get_hero_card()	
+
+#Returns Hero currently being targeted by the villain and his minions	
+func get_current_target_hero() -> Card:
+	return get_hero_card(_villain_current_hero_target)
 
 #Adds a "group_defenders" tag to all cards that can block an attack
 func compute_potential_defenders():

@@ -295,6 +295,17 @@ func die():
 			
 	return CFConst.ReturnCode.OK		
 
+func commit_scheme():
+	#TODO special case villain needs to receive a boost card
+	var scheme_amount = self.get_property("scheme")
+	if (!scheme_amount):
+		return
+	
+	var main_scheme:WCCard = gameData.find_main_scheme()
+	if (!main_scheme):
+		return
+	
+	main_scheme.add_threat(scheme_amount)
 
 # This function can be overriden by any class extending Card, in order to provide
 # a way of checking if a card can be played before dragging it out of the hand.

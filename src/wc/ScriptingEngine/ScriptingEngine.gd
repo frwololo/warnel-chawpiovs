@@ -170,6 +170,7 @@ func prevent(script: ScriptTask) -> int:
 	
 	return retcode				
 
+#the ability that is triggered by automated_enemy_attack
 func defend(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?

@@ -210,5 +210,30 @@ func get_scripts(scripts: Dictionary, card_name: String, get_modified = true) ->
 			}
 		}
 		script = WCUtils.merge_dict(script,villain_attack, true)	
+
+		var villain_thwart: Dictionary = { 
+			"automated_enemy_thwart": {
+				"board": [
+					{
+						"name": "defend",
+						"subject": "boardseek",	
+						"is_cost": true,
+						"subject_count": "all",
+						SP.KEY_NEEDS_SELECTION: true,
+						SP.KEY_SELECTION_COUNT: 1,
+						SP.KEY_SELECTION_TYPE: "max",
+						SP.KEY_SELECTION_OPTIONAL: true,
+						"filter_state_seek": [{
+							"filter_group": "group_defenders"
+						},],
+					},
+					{
+						"name": "undefend",	
+						"is_else": true,
+					}					
+				]
+			}
+		}
+		script = WCUtils.merge_dict(script,villain_attack, true)	
 	
 	return script

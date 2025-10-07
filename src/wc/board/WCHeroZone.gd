@@ -36,9 +36,17 @@ func load_hero():
 func get_player():
 	return my_id
 
-func get_hero_card() -> Card:
+func get_hero_card() -> WCCard:
 	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid("identity"  + str(my_id))
 	var slot: BoardPlacementSlot = grid.get_slot(0)	
-	var result:Card = slot.occupying_card
+	var result:WCCard = slot.occupying_card
 	return result
 	
+func is_hero_form() -> bool:
+	var hero_card:WCCard = get_hero_card()
+	if "hero" == hero_card.properties.get("type_code", ""):
+		return true
+	return false
+	
+func is_alter_ego_form() -> bool:
+	return !is_hero_form()		

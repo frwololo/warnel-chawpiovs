@@ -484,18 +484,41 @@ func filter_trigger(
 		owner_card,
 		_trigger_details) -> bool:
 
-	
-	var trigger_event = split_trigger(trigger)
-	
-	#for now we only consider this filter for interrupts and responses. Might expand later
-	if (!trigger_event["timing"]):
+	#if this is not an interrupt, I let it through
+	if (trigger != "interrupt"):
 		return true
 	
-	if (card_scripts):
-		var tmp = 0
+	#If this *is* an interrupt but I don't have an answer, I'll fail it
 	
-	var trigger_filters = card_scripts.get("trigger_filters", {})	
-	var event = (theStack.find_event(trigger_event["name"], trigger_filters, owner_card))
+	#if this card has no scripts to handle interrupts, we ignore this call and
+	#let the rest go through	
+	if !card_scripts:
+		return false
+	
+#	var trigger_event = split_trigger(trigger)
+#
+#	#for now we only consider this filter for interrupts and responses. Might expand later
+#	if (!trigger_event["timing"]):
+#		return true
+#
+#	if (card_scripts):
+#		var tmp = 0
+#
+#	var trigger_filters = card_scripts.get("trigger_filters", {})	
+
+	var event_name = _trigger_details["event_name"]
+	
+	if event_name == "receive_damage":
+		var tmp = 1
+	
+	var expected_trigger_name = card_scripts.get("event_name", "")
+	
+	#skip if we're expecting an interrupt but not this one
+	if expected_trigger_name != event_name:
+		return false;
+		
+	var trigger_filters = card_scripts.get("event_filters", {})
+	var event = (theStack.find_event(event_name, trigger_filters, owner_card))
 
 	return event #note: force conversion from stack event to bool
 

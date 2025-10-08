@@ -140,21 +140,21 @@ func receive_damage(script: ScriptTask) -> int:
 	
 	#TODO BUG sometimes subjects contains a null card?
 	for card in script.subjects:
-		var damageScript:DamageScript = DamageScript.new(card, amount, script.script_definition, tags)
-		gameData.theStack.add_script(damageScript)
+#		var damageScript:DamageScript = DamageScript.new(card, amount, script.script_definition, tags)
+#		gameData.theStack.add_script(damageScript)
 		
-#		scripting_bus.emit_signal("damage_incoming", card, script.script_definition)	
-#
-#		retcode = card.tokens.mod_token("damage",
-#				amount,false,costs_dry_run(), tags)	
-#
-#		scripting_bus.emit_signal("card_damaged", card, script.script_definition)
-#
-#		var total_damage:int =  card.tokens.get_token_count("damage")
-#		var health = card.get_property("health", 0)
-#
-#		if total_damage >= health:
-#			card.die()		
+		#scripting_bus.emit_signal("damage_incoming", card, script.script_definition)	
+
+		retcode = card.tokens.mod_token("damage",
+				amount,false,costs_dry_run(), tags)	
+
+		scripting_bus.emit_signal("card_damaged", card, script.script_definition)
+
+		var total_damage:int =  card.tokens.get_token_count("damage")
+		var health = card.get_property("health", 0)
+
+		if total_damage >= health:
+			card.die()		
 	
 
 	return retcode
@@ -181,7 +181,7 @@ func defend(script: ScriptTask) -> int:
 		
 	var attacker = script.owner
 	var amount = attacker.get_property("attack", 0)
-	var defender:WCCard = null
+	var defender = null
 	if (not script.subjects.empty()):
 		defender = script.subjects[0]
 	
@@ -197,13 +197,15 @@ func defend(script: ScriptTask) -> int:
 	script.script_definition["amount"] = amount
 	var tags: Array = ["attack", "Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
 	script.script_definition["tags"] = tags
-	var result = receive_damage(script)
 	
-	if (!defender):
+	var task_event = SimplifiedStackScript.new("receive_damage", script)
+	gameData.theStack.add_script(task_event)
+	
+#	if (!defender):
 		#reset subjects to avoid side effect...
-		script.subjects = []
+#		script.subjects = []
 		
-	return result
+	return retcode
 
 func undefend(script: ScriptTask) -> int:
 	return defend(script)
@@ -215,7 +217,7 @@ func consequential_damage(script: ScriptTask) -> int:
 
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
 
-	var owner:WCCard = script.owner
+	var owner = script.owner
 	var damage = owner.get_property("attack_cost", 0)
 	
 	match script.script_name:
@@ -240,7 +242,7 @@ func thwart(script: ScriptTask) -> int:
 
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
 	var token_name = "threat" #TODO move to const
-	var owner:WCCard = script.owner
+	var owner = script.owner
 	var modification = owner.get_property("thwart")
 	var token_diff = modification
 	
@@ -260,10 +262,10 @@ func change_form(script: ScriptTask) -> int:
 	var tags: Array = script.get_property(SP.KEY_TAGS)
 	var is_manual = "player_initiated" in tags
 	
-	var this_card:WCCard = script.owner
+	var this_card= script.owner
 	
 	for subject in script.subjects: #should be really one subject only, generally
-		var hero:WCCard = subject
+		var hero = subject
 		
 		if is_manual and !hero.can_change_form():
 			return CFConst.ReturnCode.FAILED
@@ -283,11 +285,11 @@ func move_to_player_zone(script: ScriptTask) -> int:
 
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
 
-	var this_card:WCCard = script.owner
+	var this_card= script.owner
 	
 	for subject in script.subjects:
 		retcode = CFConst.ReturnCode.FAILED
-		var hero:WCCard = subject
+		var hero = subject
 		
 		#Get my current zone
 		var current_grid_name = this_card.get_grid_name()

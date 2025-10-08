@@ -6,7 +6,12 @@ extends Node2D
 
 var stack:Array = []
 var waitOneMoreTick = 0
-var check_interrupts:= true
+
+# bool to tell whether we need to check for player interrupts or if we got a pass
+var _check_interrupts:= true
+
+#stores data relevant to the ongoing interrupt signal
+var _current_interrupted_event: Dictionary = {}
 
 func add_script(object):
 	stack.append(object)
@@ -34,20 +39,29 @@ func process(_delta: float):
 		return
 	
 	#give opportunity for cards to interrupt event by sending a "before" signal
-	var can_proceed = !check_interrupts or \
+	var can_proceed = !_check_interrupts or \
 		send_before_trigger(next_script)
 	
 	if (can_proceed):
-		check_interrupts = true
+		_check_interrupts = true
+		_current_interrupted_event = {}
 		next_script = stack.pop_back()
-		next_script.execute()		
+		var func_return = next_script.execute()	
+		while func_return is GDScriptFunctionState && func_return.is_valid():
+			func_return = func_return.resume()	
 	return	
 
 func gets_one_pass():
-	check_interrupts = false;
+	_check_interrupts = false
 
-func send_before_trigger(script:StackScript):
-	scripting_bus.emit_signal("before_" + script.get_event_name(), script.script_details)
+func get_current_interrupted_event():
+	return self._current_interrupted_event
+
+func send_before_trigger(script):
+	var tasks = script.get_tasks()
+	for task in tasks:
+		_current_interrupted_event = {"event_name": task.script_name, "details": task.script_definition}
+		scripting_bus.emit_signal("interrupt", task.owner, _current_interrupted_event)
 	if (gameData.is_interrupt_mode()):
 		return false
 	else:
@@ -77,10 +91,10 @@ func delete_last_event():
 
 func find_event(_name, details, owner_card):
 	for x in stack.size():
-		var event:StackScript = stack[-x-1]
-		var event_name = event.get_event_name()
-		if (event_name != _name):
+		var event = stack[-x-1]
+		var task = event.get_script_by_event_name(_name)
+		if (!task):
 			continue			
-		if event.matches_filters(details, owner_card):
+		if event.matches_filters(task, details, owner_card):
 			return event
 	return null			

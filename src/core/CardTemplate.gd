@@ -1380,7 +1380,7 @@ func find_interrupt_script() -> String:
 	var my_scripts = retrieve_all_scripts()	
 	for _k in my_scripts.keys():
 		var k:String = _k 
-		if (k.begins_with("before_") or k.begins_with("after_")):
+		if (k == "interrupt"):
 			return k
 	return ""
 	
@@ -1400,14 +1400,16 @@ func execute_scripts(
 	if not cfc.NMAP.has('board'):
 		return
 
-	if (trigger_card and trigger_card.get_card_name() == "Backflip"):
+	if (trigger == "interrupt"):
 		var tmp = 1
 
 	#we're playing a card manually but in interrupt mode.
 	#What we want to do here is play the optional triggered effect instead
 	var playing_interrupt = false
 	if (trigger == "manual" and gameData.is_interrupt_mode()):
+		#TODO very flaky code, how to fix?
 		trigger = find_interrupt_script()
+		trigger_details = gameData.theStack.get_current_interrupted_event()
 		playing_interrupt = true
 		
 	var only_cost_check = ((run_type == CFInt.RunType.COST_CHECK) or
@@ -1519,27 +1521,10 @@ func execute_scripts(
 			yield(sceng,"tasks_completed")
 		# If the dry-run of the ScriptingEngine returns that all
 		# costs can be paid, then we proceed with the actual run
-		if sceng.can_all_costs_be_paid and not only_cost_check:
-			#print("DEBUG:" + str(state_scripts))
-			# The ScriptingEngine is where we execute the scripts
-			# We cannot use its class reference,
-			# as it causes a cyclic reference error when parsing
-			sceng.execute(run_type)
-			if not sceng.all_tasks_completed:
-				yield(sceng,"tasks_completed")
-			# warning-ignore:void_assignment
-			var func_return = common_post_execution_scripts(trigger)
-			# We make sure this function does to return until all
-			# custom post execution scripts have also finished
-			if func_return is GDScriptFunctionState: # Still working.
-				func_return = yield(func_return, "completed")
-		# This will only trigger when costs could not be paid, and will
-		# execute the "is_else" tasks
-		elif not sceng.can_all_costs_be_paid and not only_cost_check:
-			#print("DEBUG:" + str(state_scripts))
-			sceng.execute(CFInt.RunType.ELSE)
-			if not sceng.all_tasks_completed:
-				yield(sceng,"tasks_completed")
+		if not only_cost_check:
+			var func_return = add_script_to_stack(sceng, run_type, trigger)
+			while func_return is GDScriptFunctionState && func_return.is_valid():
+				func_return = func_return.resume()
 		is_executing_scripts = false
 
 		if (playing_interrupt and !only_cost_check):
@@ -1550,6 +1535,35 @@ func execute_scripts(
 			#Call other clients to run the script
 			network_execute_scripts(trigger_card, trigger, trigger_details, run_type, sceng)
 	return(sceng)
+
+func add_script_to_stack(sceng, run_type, trigger):
+	var stackEvent:StackScript = StackScript.new(sceng, run_type, trigger)
+	gameData.theStack.add_script(stackEvent) 
+	
+	return
+	
+	if sceng.can_all_costs_be_paid:
+		#print("DEBUG:" + str(state_scripts))
+		# The ScriptingEngine is where we execute the scripts
+		# We cannot use its class reference,
+		# as it causes a cyclic reference error when parsing
+		
+		sceng.execute(run_type)
+		if not sceng.all_tasks_completed:
+			yield(sceng,"tasks_completed")
+		# warning-ignore:void_assignment
+		var func_return = common_post_execution_scripts(trigger)
+		# We make sure this function does to return until all
+		# custom post execution scripts have also finished
+		if func_return is GDScriptFunctionState: # Still working.
+			func_return = yield(func_return, "completed")
+	# This will only trigger when costs could not be paid, and will
+	# execute the "is_else" tasks
+	else:
+		#print("DEBUG:" + str(state_scripts))
+		sceng.execute(CFInt.RunType.ELSE)
+		if not sceng.all_tasks_completed:
+			yield(sceng,"tasks_completed")	
 
 #Called by other online player to execute the same script as them, after they're done paying the cost
 func network_execute_scripts(

@@ -46,16 +46,19 @@ var is_network_master: bool = true
 #this will allow to automatically pay for them on this client and mimic the results without having to select
 var network_prepaid:Array = []
 
+var owner
+
 # Simply initiates the [run_next_script()](#run_next_script) loop
 func _init(state_scripts: Array,
-		owner,
+		_owner,
 		trigger_object: Node,
 		_trigger_details: Dictionary) -> void:
+	owner = _owner
 	trigger_details = _trigger_details		
 	add_scripts(state_scripts, owner, trigger_object, trigger_details)
 
 func add_scripts(state_scripts,
-		owner,
+		_owner,
 		trigger_object: Node,
 		_trigger_details: Dictionary,
 		fifo:bool = true) -> void:
@@ -71,7 +74,7 @@ func add_scripts(state_scripts,
 			if SP.VALUE_PER in str(repeat):
 				var per_msg = perMessage.new(
 						repeat,
-						owner,
+						_owner,
 						task.get(repeat),
 						trigger_object,
 						[],
@@ -81,7 +84,7 @@ func add_scripts(state_scripts,
 			# It means it might have fired off of a dragging action, and we want to avoid
 			# it triggering when the player tries to drag it from hand and doing nothing.
 			if repeat == 0 \
-					and cfc.card_drag_ongoing == owner\
+					and cfc.card_drag_ongoing == _owner\
 					and task.get(SP.KEY_SUBJECT) == SP.KEY_SUBJECT_V_TARGET\
 					and (task.get(SP.KEY_IS_COST) or task.get(SP.KEY_NEEDS_SUBJECT)):
 				can_all_costs_be_paid = false
@@ -92,7 +95,7 @@ func add_scripts(state_scripts,
 				if iter > 0 and task.has("subject") and task["subject"] == "target":
 					task["subject"] = "previous"
 				var script_task := ScriptTask.new(
-						owner,
+						_owner,
 						task,
 						trigger_object,
 						_trigger_details)

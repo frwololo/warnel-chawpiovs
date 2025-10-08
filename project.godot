@@ -375,6 +375,11 @@ _global_script_classes=[ {
 "path": "res://src/wc/cards/sets/SetPreload.gd"
 }, {
 "base": "Node",
+"class": "SimplifiedStackScript",
+"language": "GDScript",
+"path": "res://src/wc/ScriptingEngine/Scripts/SimplifiedStackScript.gd"
+}, {
+"base": "Node",
 "class": "StackScript",
 "language": "GDScript",
 "path": "res://src/wc/ScriptingEngine/Scripts/StackScript.gd"
@@ -513,6 +518,7 @@ _global_script_class_icons={
 "ScriptingEngine": "",
 "SelectionWindow": "",
 "SetPreload": "",
+"SimplifiedStackScript": "",
 "StackScript": "",
 "TargetingArrow": "",
 "TestSuite": "",

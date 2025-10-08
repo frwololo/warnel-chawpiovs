@@ -1541,9 +1541,7 @@ func execute_scripts(
 			gameData.end_interrupt_mode()
 			
 		emit_signal("scripts_executed", self, sceng, trigger)
-		if (!is_network_call and not only_cost_check):
-			#Call other clients to run the script
-			network_execute_scripts(trigger_card, trigger, trigger_details, run_type, sceng)
+
 	return(sceng)
 
 func add_script_to_stack(sceng, run_type, trigger):

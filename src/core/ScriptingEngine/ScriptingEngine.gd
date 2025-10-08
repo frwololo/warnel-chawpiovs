@@ -47,13 +47,15 @@ var is_network_master: bool = true
 var network_prepaid:Array = []
 
 var owner
+var trigger_object
 
 # Simply initiates the [run_next_script()](#run_next_script) loop
 func _init(state_scripts: Array,
 		_owner,
-		trigger_object: Node,
+		_trigger_object: Node,
 		_trigger_details: Dictionary) -> void:
 	owner = _owner
+	trigger_object = _trigger_object
 	trigger_details = _trigger_details		
 	add_scripts(state_scripts, owner, trigger_object, trigger_details)
 

@@ -2,7 +2,7 @@
 # warning-ignore-all:RETURN_VALUE_DISCARDED
 
 class_name SimplifiedStackScript
-extends Node
+extends StackScript
 
 var task_name
 var task
@@ -18,8 +18,12 @@ func _init(_name, _task):
 	if (task.subjects):
 		task.script_definition["target"] = task.subjects[0]
 
+	#convoluted way to recreate a sceng from a task... is there something cleaner?
+	sceng = cfc.scripting_engine.new([task.script_definition], task.owner,task.trigger_object, task.trigger_details)
+	run_type = CFInt.RunType.NORMAL
+	trigger = "" #TODO something better ?
+	
 func execute():
-	var sceng = cfc.scripting_engine.new([task], task.owner,task.trigger_object, task.trigger_details)
 	var _retcode = sceng.call(task_name, task)
 
 func get_tasks() -> Array:

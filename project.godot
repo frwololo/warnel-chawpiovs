@@ -184,11 +184,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/core/CardViewer/DeckBuilder/DBListCardObject.gd"
 }, {
-"base": "StackScript",
-"class": "DamageScript",
-"language": "GDScript",
-"path": "res://src/wc/ScriptingEngine/Scripts/DamageScript.gd"
-}, {
 "base": "CardViewer",
 "class": "DeckBuilder",
 "language": "GDScript",
@@ -374,7 +369,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/wc/cards/sets/SetPreload.gd"
 }, {
-"base": "Node",
+"base": "StackScript",
 "class": "SimplifiedStackScript",
 "language": "GDScript",
 "path": "res://src/wc/ScriptingEngine/Scripts/SimplifiedStackScript.gd"
@@ -480,7 +475,6 @@ _global_script_class_icons={
 "DBDeckSummaries": "",
 "DBGridCardObject": "",
 "DBListCardObject": "",
-"DamageScript": "",
 "DeckBuilder": "",
 "DeckLoader": "",
 "DeckNameRandomizer": "",

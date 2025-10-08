@@ -8,7 +8,7 @@ var sceng
 var run_type
 var trigger
 
-func _init(_sceng, _run_type, _trigger):
+func _init(_sceng = null, _run_type = 0, _trigger = ""):
 	sceng = _sceng
 	run_type = _run_type
 	trigger = _trigger

@@ -51,7 +51,7 @@ func _ready():
 #TODO remove
 	if (gameData.is_multiplayer_game and cfc.is_game_master()):
 		yield(get_tree().create_timer(1), "timeout")	
-		owner_changed(1, 1)
+		owner_changed(2, 1)
 		rpc("assign_hero", "01001a", 0)
 		rpc("assign_hero", "01010a", 1)
 		yield(get_tree().create_timer(1), "timeout")	

@@ -1,3 +1,6 @@
+# warning-ignore-all:UNUSED_ARGUMENT
+# warning-ignore-all:RETURN_VALUE_DISCARDED
+
 # Card Gaming Framework Control Singleton
 #
 # Add it to your autoloads with the name 'cfc'

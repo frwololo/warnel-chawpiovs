@@ -1,3 +1,6 @@
+# warning-ignore-all:UNUSED_ARGUMENT
+# warning-ignore-all:RETURN_VALUE_DISCARDED
+
 class_name WCHeroZone
 extends VBoxContainer
 

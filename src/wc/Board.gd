@@ -1,3 +1,6 @@
+# warning-ignore-all:UNUSED_ARGUMENT
+# warning-ignore-all:RETURN_VALUE_DISCARDED
+
 # Code for a sample playspace, you're expected to provide your own ;)
 extends Board
 

@@ -1,3 +1,6 @@
+# warning-ignore-all:UNUSED_ARGUMENT
+# warning-ignore-all:RETURN_VALUE_DISCARDED
+
 extends Counters
 
 # * The `counters_container` has to point to the scene path, relative to your

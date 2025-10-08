@@ -1,3 +1,6 @@
+# warning-ignore-all:UNUSED_ARGUMENT
+# warning-ignore-all:RETURN_VALUE_DISCARDED
+
 # The popup with an instance of a card instide. 
 # Typically in larger version for easy viewing.
 class_name CVPreviewPopup

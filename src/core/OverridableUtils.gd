@@ -27,7 +27,7 @@ func populate_info_panels(card: Card, focus_info: DetailPanels) -> void:
 			if CardConfig.EXPLANATIONS.has(keyword):
 				focus_info.add_info(keyword, CardConfig.EXPLANATIONS[keyword])
 
-func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int = 0) -> Array:
+func get_subjects(_script: ScriptObject, _subject_request, _stored_integer : int = 0) -> Array:
 	return([])
 
 func select_card(

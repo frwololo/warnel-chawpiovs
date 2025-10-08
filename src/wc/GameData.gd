@@ -1,3 +1,6 @@
+# warning-ignore-all:UNUSED_ARGUMENT
+# warning-ignore-all:RETURN_VALUE_DISCARDED
+
 #Stores all global game data, multiplayer info, etc...
 
 # Hero vs Player:
@@ -68,14 +71,14 @@ puppetsync func acquire_user_input_lock(requester:int, details = {}):
 puppetsync func release_user_input_lock(requester:int,details = {}):
 	_release_user_input_lock(requester, details)
 
-func _acquire_user_input_lock(requester:int, details = {}):
+func _acquire_user_input_lock(requester:int, _details = {}):
 	user_input_ongoing = requester
 	
-func _release_user_input_lock(requester:int,details = {}):
+func _release_user_input_lock(_requester:int,_details = {}):
 	user_input_ongoing = 0
 	#TODO error check: if requester not equal to current user_input_ongoing, we have a desync 
 	
-func attempt_user_input_lock(request_object = null,details = {}):
+func attempt_user_input_lock(_request_object = null,details = {}):
 	#if "is_master" key is set, we use this to check whether we are authorized to request the lock
 	var is_master = details.get("is_master", true)
 	if (!is_master):
@@ -83,7 +86,7 @@ func attempt_user_input_lock(request_object = null,details = {}):
 			
 	rpc_id(1, "request_user_input_lock" )		
 	
-func attempt_user_input_unlock(request_object = null,details = {}):	
+func attempt_user_input_unlock(_request_object = null,_details = {}):	
 	rpc_id(1, "request_user_input_unlock")	
 	
 	
@@ -126,9 +129,9 @@ func _ready():
 	#scripting_bus.connect("optional_window_opened", self, "attempt_user_input_lock")
 	#scripting_bus.connect("optional_window_closed", self, "attempt_user_input_unlock")	
 
-func _scripting_event_triggered(trigger_object = null,
+func _scripting_event_triggered(_trigger_object = null,
 		trigger: String = "manual",
-		trigger_details: Dictionary = {}):
+		_trigger_details: Dictionary = {}):
 	match trigger:
 		"card_moved_to_board", \
 		"card_played":		
@@ -205,7 +208,7 @@ func draw_all_players() :
 		var hand_size = alter_ego_data["hand_size"]
 		var hand:Hand = cfc.NMAP["hand" + str(i+1)]
 		hand_size = hand_size - hand.get_card_count()
-		for j in range(hand_size):
+		for _j in range(hand_size):
 			hand.draw_card (cfc.NMAP["deck" + str(i+1)])	
 
 func ready_all_player_cards():
@@ -509,7 +512,7 @@ func filter_trigger(
 	var event_name = _trigger_details["event_name"]
 	
 	if event_name == "receive_damage":
-		var tmp = 1
+		var _tmp = 1
 	
 	var expected_trigger_name = card_scripts.get("event_name", "")
 	
@@ -590,10 +593,10 @@ func check_interrupt(
 	# references when calling CFUtils from SP
 	if script.get("is_optional_" + type):
 		_acquire_user_input_lock(owner.get_controller_player_network_id())
-		var my_network_id = get_tree().get_network_unique_id()
-		var is_master:bool =  (owner.get_controller_player_network_id() == my_network_id)
+		#var my_network_id = get_tree().get_network_unique_id()
+		#var is_master:bool =  (owner.get_controller_player_network_id() == my_network_id)
 		_add_potential_interrupter(owner)
-		#Release user input either when cards that can interrupt is empty, or when
+		#We Release user input later, either when cards that can interrupt is empty, or when
 		#user clicks on "pass"
 		#_release_user_input_lock(owner.get_controller_player_network_id())	
 		return(true)

@@ -87,7 +87,8 @@ func add_info(
 			child_count += 1
 	if existing_details.has("illustration"):
 		existing_details["illustration"].raise()
-	columns = 1 + floor(child_count / panel_column_threshold)
+	#warning-ignore:integer_division
+	columns = 1 + int(child_count / panel_column_threshold)
 
 
 # Getter for visible_details

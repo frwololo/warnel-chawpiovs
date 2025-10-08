@@ -29,7 +29,7 @@ func get_deck_cards(): #todo cache?
 	var slots = deck_data.slots
 	for card_id in slots:
 		var quantity = slots[card_id]
-		for i in range (quantity):
+		for _i in range (quantity):
 			result.append(card_id)
 	return result
 

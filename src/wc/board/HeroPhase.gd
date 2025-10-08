@@ -29,7 +29,7 @@ func _ready():
 	_update_labels()
 	pass # Replace with function body.
 
-func _process(delta):
+func _process(_delta):
 	if (gameData.get_current_hero_id() == hero_index):
 		selected.visible = true
 	else:
@@ -83,7 +83,7 @@ remotesync func switch_status(forced_state:int = -1):
 	_update_labels()
 	get_parent().check_end_of_player_phase()
 				
-func _current_playing_hero_changed (trigger_details: Dictionary = {}):
+func _current_playing_hero_changed (_trigger_details: Dictionary = {}):
 	var new_hero_index = gameData.get_current_hero_id()
 	if (new_hero_index == hero_index) and (current_state == State.FINISHED):
 		rpc("switch_status") #This also calls update_labels
@@ -108,5 +108,5 @@ func _update_labels():
 	if current_state == State.FINISHED:
 		label.text = "Ready for Villain"					
 
-func _game_state_changed(details:Dictionary):
+func _game_state_changed(_details:Dictionary):
 	_update_labels()

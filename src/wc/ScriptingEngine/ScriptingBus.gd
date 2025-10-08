@@ -32,6 +32,8 @@ signal step_ended(details)
 #GUI and game Interface signals
 # warning-ignore:unused_signal
 signal current_playing_hero_changed(details) #before, after
+
+# warning-ignore:unused_signal
 signal all_clients_game_loaded(details) #status Dict for all players
 
 # warning-ignore:unused_signal

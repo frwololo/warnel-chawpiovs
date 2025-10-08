@@ -87,9 +87,9 @@ func pay_total_cost(cost:ManaCost) :
 	return CFConst.ReturnCode.CHANGED		
 
 
-func _on_manapool_modified(trigger_card: Card, trigger: String, details: Dictionary):
+func _on_manapool_modified(_trigger_card: Card, _trigger: String, _details: Dictionary):
 	for v in ManaCost.Resource.values() :
-			var retcode: int = cfc.NMAP.board.counters.mod_counter(
+			var _retcode: int = cfc.NMAP.board.counters.mod_counter(
 			ManaCost.RESOURCE_TEXT[v],
 			pool[v],
 			true)

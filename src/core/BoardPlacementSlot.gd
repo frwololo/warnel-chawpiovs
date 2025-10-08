@@ -1,3 +1,7 @@
+# warning-ignore-all:UNUSED_ARGUMENT
+# warning-ignore-all:UNUSED_VARIABLE
+# warning-ignore-all:RETURN_VALUE_DISCARDED
+
 # Represents a spot on the placement grid that is used to organize
 # cards on the board.
 class_name BoardPlacementSlot

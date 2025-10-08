@@ -333,12 +333,12 @@ func _index_seek_subjects(stored_integer: int) -> Array:
 
 #Tries to find an arbitrary valid target for an ability (for cost check purposes)
 #return the first we find on the board if we find one, null otherwise
-func _dry_run_card_targeting(script_definition):
+func _dry_run_card_targeting(_script_definition):
 	var all_cards = cfc.NMAP.board.get_all_cards()
 	#TODO also check cards in piles ?
 	for c in all_cards:
-		var is_valid = SP.check_validity(c, script_definition, "subject")
-		if (is_valid):
+		var _is_valid = SP.check_validity(c, _script_definition, "subject")
+		if (_is_valid):
 			return c
 	return null
 

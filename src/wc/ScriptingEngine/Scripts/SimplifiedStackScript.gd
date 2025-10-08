@@ -1,3 +1,6 @@
+# warning-ignore-all:UNUSED_ARGUMENT
+# warning-ignore-all:RETURN_VALUE_DISCARDED
+
 class_name SimplifiedStackScript
 extends Node
 
@@ -17,7 +20,7 @@ func _init(_name, _task):
 
 func execute():
 	var sceng = cfc.scripting_engine.new([task], task.owner,task.trigger_object, task.trigger_details)
-	var retcode = sceng.call(task_name, task)
+	var _retcode = sceng.call(task_name, task)
 
 func get_tasks() -> Array:
 	return [task]
@@ -39,7 +42,7 @@ func matches_filters(script, filters:Dictionary, owner_card):
 			WCUtils.search_and_replace(filters, v, gameData.get_hero_card(owner_hero_id), true)
 
 	if (filters):
-		var tmp = 0	
+		var _tmp = 0	
 	var script_details = script.script_definition
 	var result = WCUtils.is_element1_in_element2(filters, script_details)
 

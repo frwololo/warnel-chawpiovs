@@ -163,7 +163,6 @@ func load_card_definitions() -> Dictionary:
 		load_card_primitives()
 	var combined_sets := .load_card_definitions(); #TODO Remove the call to parent eventually ?
 	# Load from external user files as well	
-	var loaded_definitions : Array
 	var set_files = CFUtils.list_files_in_directory(
 			"user://Sets/", CFConst.CARD_SET_NAME_PREPEND)
 	WCUtils.debug_message(set_files.size())		
@@ -202,7 +201,6 @@ func load_card_definitions() -> Dictionary:
 func load_deck_definitions() -> Dictionary:
 	var combined_decks := {}
 	# Load from external user files as well	
-	var loaded_definitions : Array
 	var deck_files = CFUtils.list_files_in_directory("user://Decks/")
 	WCUtils.debug_message(deck_files.size())		
 	for deck_file in deck_files:
@@ -345,7 +343,7 @@ func instance_card(card_name_or_id: String, owner_id:int) -> Card:
 	var card = ._instance_card(card_name)
 	#TODO We set GUID here in the hope that all clients create their cards in the exact 
 	#same order. This might be a very flawed assertion could need a significant overhaul	
-	var tmp = guidMaster.set_guid(card)
+	var _tmp = guidMaster.set_guid(card)
 	card.set_owner_hero_id(owner_id)
 	card.set_controller_hero_id(owner_id)
 	return card
@@ -356,7 +354,7 @@ func is_game_master() -> bool:
 
 func INIT_LOG():
 	var file = File.new()
-	var network_id = get_tree().get_network_unique_id()
+	var network_id = get_tree().get_network_unique_id() if get_tree().has_network_peer() else 0
 	network_id = str(network_id)
 	var filename = "user://log_" + network_id +".txt"
 	if (file.file_exists(filename)):
@@ -367,7 +365,7 @@ func INIT_LOG():
 func LOG(to_print:String):
 	INIT_LOG()
 	var file = File.new()
-	var network_id = get_tree().get_network_unique_id()
+	var network_id = get_tree().get_network_unique_id() if get_tree().has_network_peer() else 0
 	network_id = str(network_id)
 	file.open("user://log_" + network_id +".txt", File.READ_WRITE)
 	file.seek_end()

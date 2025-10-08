@@ -1,3 +1,6 @@
+# warning-ignore-all:UNUSED_ARGUMENT
+# warning-ignore-all:UNUSED_VARIABLE
+
 class_name TestSuite
 extends Node
 
@@ -48,7 +51,7 @@ func _ready():
 		return
 				
 	load_test_files()
-	next_test()
+	var _next = next_test()
 
 
 #Gathers GUI objects from the game that we will be calling
@@ -91,7 +94,7 @@ func next_action():
 		#if (delta < 5): #crappy way to wait for current actions to finish before finalizing test. Enable only if we can't find better ways to wait for animation
 		#	return
 		finalize_test()
-		next_test()
+		var _next = next_test()
 		return false	
  
 	delta = 0
@@ -167,7 +170,6 @@ remotesync func run_action(my_action:Dictionary):
 		_:
 			#TODO error
 			return	
-	return	
 
 func action_play(player, card_id_or_name):
 	var card:WCCard = get_card(card_id_or_name)
@@ -194,8 +196,7 @@ func action_other(action_value):
 	match action_value:
 		_:
 			#TODO error
-			return
-	return				
+			return			
 
 func get_current_player() -> int:
 	#TODO error handling
@@ -339,7 +340,7 @@ func is_element1_in_element2 (element1, element2)-> bool:
 func load_test_files():
 	var file:File = File.new()
 	if file.file_exists("user://Test/_tests.txt"):
-		file.open("user://Test/_tests.txt", File.READ)
+		var _file_ok = file.open("user://Test/_tests.txt", File.READ)
 		while file.get_position() < file.get_len():
 			var line:String = file.get_line()
 			if !("#" in line): #We skip comments

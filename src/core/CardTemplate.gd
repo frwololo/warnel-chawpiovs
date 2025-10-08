@@ -1,3 +1,6 @@
+# warning-ignore-all:UNUSED_ARGUMENT
+# warning-ignore-all:RETURN_VALUE_DISCARDED
+
 # A basic card object which includes functionality for handling its own
 # placement and focus.
 #
@@ -315,7 +318,7 @@ func _init_card_layout() -> void:
 	else:
 		card_back = _card_back_container.get_child(0)
 		card_front = _card_front_container.get_child(0)
-		var tmp = 1
+		var _tmp = 1
 
 
 # Ensures that the canonical card name is set in all fields which use it.
@@ -615,7 +618,7 @@ func modify_property(
 				if not property.begins_with("_"):
 					#print_debug("Warning: ", property,
 					#		" does not have a matching label!")
-					var tmp = 1
+					var _tmp = 1
 				retcode = CFConst.ReturnCode.FAILED
 			else:
 				if not is_init:
@@ -1401,7 +1404,7 @@ func execute_scripts(
 		return
 
 	if (trigger == "interrupt"):
-		var tmp = 1
+		var _tmp = 1
 
 	#we're playing a card manually but in interrupt mode.
 	#What we want to do here is play the optional triggered effect instead
@@ -1485,17 +1488,24 @@ func execute_scripts(
 	# If the state_scripts return a dictionary entry
 	# it means it's a multiple choice between two scripts
 	if typeof(state_scripts) == TYPE_DICTIONARY:
-		var choices_menu = _CARD_CHOICES_SCENE.instance()
-		choices_menu.prep(canonical_name,state_scripts)
-		# We have to wait until the player has finished selecting an option
-		yield(choices_menu,"id_pressed")
-		# If the player just closed the pop-up without choosing
-		# an option, we don't execute anything
-		if choices_menu.id_selected:
-			state_scripts = state_scripts[choices_menu.selected_key]
+		var selected_key = ""
+		if run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
+			selected_key = ""
+			#TODO need to help check costs here as well?
+		else:
+			var choices_menu = _CARD_CHOICES_SCENE.instance()
+			choices_menu.prep(canonical_name,state_scripts)
+			# We have to wait until the player has finished selecting an option
+			yield(choices_menu,"id_pressed")
+			# If the player just closed the pop-up without choosing
+			# an option, we don't execute anything
+			selected_key = choices_menu.selected_key if choices_menu.id_selected else ""
+			# Garbage cleanup
+			choices_menu.queue_free()
+		if selected_key:
+			state_scripts = state_scripts[selected_key]
 		else: state_scripts = []
-		# Garbage cleanup
-		choices_menu.queue_free()
+
 	# To avoid unnecessary operations
 	# we evoke the ScriptingEngine only if we have something to execute
 	# We do not statically type it as this causes a circular reference
@@ -1542,28 +1552,28 @@ func add_script_to_stack(sceng, run_type, trigger):
 	
 	return
 	
-	if sceng.can_all_costs_be_paid:
-		#print("DEBUG:" + str(state_scripts))
-		# The ScriptingEngine is where we execute the scripts
-		# We cannot use its class reference,
-		# as it causes a cyclic reference error when parsing
-		
-		sceng.execute(run_type)
-		if not sceng.all_tasks_completed:
-			yield(sceng,"tasks_completed")
-		# warning-ignore:void_assignment
-		var func_return = common_post_execution_scripts(trigger)
-		# We make sure this function does to return until all
-		# custom post execution scripts have also finished
-		if func_return is GDScriptFunctionState: # Still working.
-			func_return = yield(func_return, "completed")
-	# This will only trigger when costs could not be paid, and will
-	# execute the "is_else" tasks
-	else:
-		#print("DEBUG:" + str(state_scripts))
-		sceng.execute(CFInt.RunType.ELSE)
-		if not sceng.all_tasks_completed:
-			yield(sceng,"tasks_completed")	
+#	if sceng.can_all_costs_be_paid:
+#		#print("DEBUG:" + str(state_scripts))
+#		# The ScriptingEngine is where we execute the scripts
+#		# We cannot use its class reference,
+#		# as it causes a cyclic reference error when parsing
+#
+#		sceng.execute(run_type)
+#		if not sceng.all_tasks_completed:
+#			yield(sceng,"tasks_completed")
+#		# warning-ignore:void_assignment
+#		var func_return = common_post_execution_scripts(trigger)
+#		# We make sure this function does to return until all
+#		# custom post execution scripts have also finished
+#		if func_return is GDScriptFunctionState: # Still working.
+#			func_return = yield(func_return, "completed")
+#	# This will only trigger when costs could not be paid, and will
+#	# execute the "is_else" tasks
+#	else:
+#		#print("DEBUG:" + str(state_scripts))
+#		sceng.execute(CFInt.RunType.ELSE)
+#		if not sceng.all_tasks_completed:
+#			yield(sceng,"tasks_completed")	
 
 #Called by other online player to execute the same script as them, after they're done paying the cost
 func network_execute_scripts(
@@ -1774,7 +1784,7 @@ func set_focus(requestedFocus: bool, colour := CFConst.FOCUS_HOVER_COLOUR) -> vo
 	if highlight.visible != requestedFocus and \
 			highlight.modulate in CFConst.CostsState.values():
 		#highlight.set_highlight(requestedFocus,colour)
-		var tmp = 1
+		var _tmp = 1
 	# focus_style value 0 means only scaling focus
 	# We also recheck that main exists, as sometimes GUT messes it up
 	if not state in [CardState.PREVIEW, CardState.DECKBUILDER_GRID]\

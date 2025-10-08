@@ -1,3 +1,6 @@
+# warning-ignore-all:UNUSED_ARGUMENT
+# warning-ignore-all:RETURN_VALUE_DISCARDED
+
 extends Node
 
 #
@@ -139,8 +142,8 @@ remote func remote_owner_changed (id, index):
 	var player : PlayerData = gameData.get_player_by_index(id)
 	team[index].owner = player
 	#update GUI
-	var heroDeckSelect = heroes_container.get_child(index)
-	heroDeckSelect.set_owner(id)
+	var _heroDeckSelect = heroes_container.get_child(index)
+	_heroDeckSelect.set_owner(id)
 
 func deck_changed(_deck_id, hero_index):
 	team[hero_index].deck_id = _deck_id
@@ -150,8 +153,8 @@ remote func remote_deck_changed (_deck_id, hero_index):
 	#update data
 	team[hero_index].deck_id = _deck_id
 	#update GUI
-	var heroDeckSelect = heroes_container.get_child(hero_index)
-	heroDeckSelect.set_deck(_deck_id)
+	var _heroDeckSelect = heroes_container.get_child(hero_index)
+	_heroDeckSelect.set_deck(_deck_id)
 
 func _launch_server_game():
 	# Finalize Network players data

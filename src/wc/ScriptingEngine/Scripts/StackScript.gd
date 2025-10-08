@@ -1,3 +1,6 @@
+# warning-ignore-all:UNUSED_ARGUMENT
+# warning-ignore-all:RETURN_VALUE_DISCARDED
+
 class_name StackScript
 extends Node
 
@@ -57,7 +60,7 @@ func matches_filters(script, filters:Dictionary, owner_card):
 			WCUtils.search_and_replace(filters, v, gameData.get_hero_card(owner_hero_id), true)
 
 	if (filters):
-		var tmp = 0	
+		var _tmp = 0	
 	var script_details = script.script_definition
 	var result = WCUtils.is_element1_in_element2(filters, script_details)
 

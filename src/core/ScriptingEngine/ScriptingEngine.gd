@@ -128,10 +128,6 @@ func execute(_run_type) -> void:
 	var only_cost_check = ((run_type == CFInt.RunType.COST_CHECK) or
 		 (run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
 		
-	var cost_check_mode = CFInt.RunType.COST_CHECK
-	if run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
-		cost_check_mode = run_type	
-
 	
 	# We execute the scripts locally, but in multiplayer only one player has to select
 	# payments. Once they do, we send the payment information to other players,

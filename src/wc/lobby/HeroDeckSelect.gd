@@ -1,3 +1,6 @@
+# warning-ignore-all:UNUSED_ARGUMENT
+# warning-ignore-all:RETURN_VALUE_DISCARDED
+
 extends VBoxContainer
 
 #onready var lobby = find_parent("Lobby")
@@ -83,8 +86,8 @@ func load_hero(_hero_id):
 		imgtex.create_from_image(img)	
 		hero_picture.texture = imgtex
 		hero_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-		for deck_id in decks:
-			var deck_data = cfc.deck_definitions[deck_id]
+		for _deck_id in decks:
+			var deck_data = cfc.deck_definitions[_deck_id]
 			var hero_name = cfc.idx_card_id_to_name[hero_id]
 			var deck_name: String = deck_data.name
 			deck_name = deck_name.replacen(hero_name, "").trim_prefix(" ")

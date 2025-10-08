@@ -4,6 +4,7 @@ extends Control
 onready var v_box_container = $MarginContainer/VBoxContainer
 onready var file_dialog = $FileDialog
 
+# warning-ignore:unused_signal
 signal exit_options_menu
 
 func _ready():

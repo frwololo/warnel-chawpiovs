@@ -1,3 +1,6 @@
+# warning-ignore-all:UNUSED_ARGUMENT
+# warning-ignore-all:RETURN_VALUE_DISCARDED
+
 # Pile with specific Multiplayer functionality
 class_name PileMulti
 extends Pile
@@ -41,7 +44,6 @@ func get_all_cards_by_guid():
 	return uidArray
 			
 puppet func feed_me_cards(guidArray:Array):
-	var childred = self.get_all_cards()
 	for carduid in guidArray:
 		var card = guidMaster.get_object_by_guid(carduid)
 		move_child(card, guidArray.find(carduid))

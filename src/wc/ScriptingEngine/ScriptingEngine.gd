@@ -1,3 +1,6 @@
+# warning-ignore-all:UNUSED_ARGUMENT
+# warning-ignore-all:RETURN_VALUE_DISCARDED
+
 class_name WCScriptingEngine
 extends ScriptingEngine
 
@@ -116,7 +119,6 @@ func attack(script: ScriptTask) -> int:
 		return retcode
 
 	var tags: Array = ["attack", "Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
-	var token_name = "damage" #TODO move to const
 	
 	var damage = script.script_definition.get("amount", 0)
 	if not damage:
@@ -166,7 +168,7 @@ func prevent(script: ScriptTask) -> int:
 	
 	#Find the event on the stack and remove it
 	#TOdo take into action subject, etc...
-	var result = gameData.theStack.delete_last_event()
+	var _result = gameData.theStack.delete_last_event()
 	
 	return retcode				
 
@@ -215,8 +217,6 @@ func consequential_damage(script: ScriptTask) -> int:
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
 
-	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
-
 	var owner = script.owner
 	var damage = owner.get_property("attack_cost", 0)
 	
@@ -262,8 +262,6 @@ func change_form(script: ScriptTask) -> int:
 	var tags: Array = script.get_property(SP.KEY_TAGS)
 	var is_manual = "player_initiated" in tags
 	
-	var this_card= script.owner
-	
 	for subject in script.subjects: #should be really one subject only, generally
 		var hero = subject
 		
@@ -282,8 +280,6 @@ func move_to_player_zone(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
-
-	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
 
 	var this_card= script.owner
 	
@@ -306,9 +302,3 @@ func move_to_player_zone(script: ScriptTask) -> int:
 			pass
 
 	return retcode
-			
-
-
-
-	consequential_damage(script)
-	return retcode	

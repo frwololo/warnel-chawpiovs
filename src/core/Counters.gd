@@ -1,3 +1,6 @@
+# warning-ignore-all:UNUSED_ARGUMENT
+# warning-ignore-all:RETURN_VALUE_DISCARDED
+
 # This class contains the methods needed to manipulate counters in a game
 #
 # It is meant to be extended and attached to a customized scene.

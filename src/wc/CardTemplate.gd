@@ -1,3 +1,6 @@
+# warning-ignore-all:UNUSED_ARGUMENT
+# warning-ignore-all:RETURN_VALUE_DISCARDED
+
 class_name WCCard
 extends Card
 
@@ -13,7 +16,7 @@ var _can_change_form := true
 
 func set_owner_hero_id(hero_id:int):
 	if (hero_id == -1):
-		var error = 1
+		var _error = 1
 	_owner_hero_id = hero_id
 	
 func get_owner_hero_id() -> int:
@@ -60,7 +63,7 @@ func set_target_highlight(colour):
 
 
 #flush caches and states when game state changes
-func _game_state_changed(details:Dictionary):
+func _game_state_changed(_details:Dictionary):
 	_check_play_costs_cache_status = CFConst.CacheStatus.INVALID
 
 #reset some variables at new turn
@@ -103,7 +106,7 @@ func _init_groups() -> void :
 	for group in groups:
 		self.add_to_group(group)
 		
-func common_post_move_scripts(new_host: String, old_host: String, move_tags: Array) -> void:
+func common_post_move_scripts(new_host: String, _old_host: String, _move_tags: Array) -> void:
 	#change controller as needed
 	var new_grid = get_grid_name()
 	var new_hero_id = 0
@@ -336,7 +339,7 @@ func check_play_costs() -> Color:
 		_check_play_costs_cache = CFConst.CostsState.IMPOSSIBLE	
 		return _check_play_costs_cache
 		
-	if sceng is GDScriptFunctionState: # Still working.
+	while sceng is GDScriptFunctionState && sceng.is_valid(): # Still working.
 		sceng = sceng.resume()
 		#sceng = yield(sceng, "completed")
 

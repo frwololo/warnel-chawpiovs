@@ -53,12 +53,12 @@ func process(_delta: float):
 		var sceng = next_script.sceng
 		var trigger_details = sceng.trigger_details
 		var is_network_call = trigger_details.has("network_prepaid")
-		if (!is_network_call):
-			#Call other clients to run the script
-			var trigger_card = sceng.trigger_object
-			var trigger = next_script.trigger
-			var run_type = next_script.run_type
-			sceng.owner.network_execute_scripts(trigger_card, trigger, trigger_details, run_type, sceng)		
+#		if (!is_network_call):
+#			#Call other clients to run the script
+#			var trigger_card = sceng.trigger_object
+#			var trigger = next_script.trigger
+#			var run_type = next_script.run_type
+#			sceng.owner.network_execute_scripts(trigger_card, trigger, trigger_details, run_type, sceng)		
 
 			
 	return	

@@ -147,6 +147,9 @@ func execute(_run_type) -> void:
 		if not cfc.NMAP.has("board") or not is_instance_valid(cfc.NMAP.board): return
 		# We put it into another variable to allow Static Typing benefits
 		var script: ScriptTask = task
+		if is_network_master:# and not costs_dry_run():
+				network_prepaid.append([])
+				
 		if ((only_cost_check and not script.is_cost and not script.needs_subject)
 				or (run_type == CFInt.RunType.ELSE and not script.is_else)
 				or (run_type != CFInt.RunType.ELSE and script.is_else)):
@@ -190,7 +193,8 @@ func execute(_run_type) -> void:
 				yield(script,"primed")
 		if script.is_primed:
 			#Add to list of prepaid stuff only if I'm the one paying the costs and actually paying them
-			if is_network_master and not costs_dry_run():
+			if is_network_master:# and not costs_dry_run():
+				network_prepaid.pop_back()
 				network_prepaid.append(script.subjects.duplicate()) #2025-03-01 added a duplicate here attempt at bug fix
 			_pre_task_exec(script)
 			#print("Scripting Subjects: " + str(script.subjects)) # Debug

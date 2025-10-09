@@ -464,19 +464,6 @@ remote func execute_script_from_remote(caller_card_uid, trigger_card_uid, trigge
 	var caller_card = guidMaster.get_object_by_guid(caller_card_uid)
 	caller_card.execute_scripts(trigger_card, trigger, remote_trigger_details, run_type)	
 
-func split_trigger(trigger:String):
-	var name = trigger
-	var timing = ""
-	if (trigger.find("before_") == 0):
-		timing = "before"
-		name = trigger.substr(7)
-	if (trigger.find("after_") == 0):
-		timing = "after"
-		name = trigger.substr(6)
-	
-			
-	return {"name" : name,
-			"timing": timing}
 
 # Additional filter for triggers,
 # also see core/ScriptProperties.gd

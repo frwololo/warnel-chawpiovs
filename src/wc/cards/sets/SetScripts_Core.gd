@@ -22,12 +22,14 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 	var move_after_play : Dictionary = {
 		"name": "play_card",
 		"subject": "self",
+		"needs_subject" : true,
 		"grid_name" : grid
 	}	
 	if CFConst.TYPECODE_TO_PILE.has(type_code):
 		move_after_play  = {
 		"name": "play_card",
 		"subject": "self",
+		"needs_subject" : true,
 		"dest_container" : CFConst.TYPECODE_TO_PILE[type_code]
 	}
 

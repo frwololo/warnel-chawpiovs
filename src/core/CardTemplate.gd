@@ -1387,6 +1387,45 @@ func find_interrupt_script() -> String:
 			return k
 	return ""
 	
+
+func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
+	var card_scripts = retrieve_scripts(trigger)
+	# I use this spot to add a breakpoint when testing script behaviour
+	# especially on filters
+	if _debugger_hook:
+		pass
+	# We check the trigger against the filter defined
+	# If it does not match, then we don't pass any scripts for this trigger.
+	if not SP.filter_trigger(
+			card_scripts,
+			trigger_card,
+			self,
+			trigger_details):
+		card_scripts.clear()
+	
+	#additional filter check for interrupts/responses
+	if not gameData.filter_trigger(
+			trigger,
+			card_scripts,
+			trigger_card,
+			self,
+			trigger_details):
+		card_scripts.clear()
+	return card_scripts
+
+func get_state_scripts(card_scripts):
+	var state_scripts = []
+	# We select which scripts to run from the card, based on it state
+	var state_exec := get_state_exec()
+	var any_state_scripts = card_scripts.get('all', [])
+	state_scripts = card_scripts.get(state_exec, any_state_scripts)
+	return state_scripts
+
+func is_dry_run(run_type):
+	return ((run_type == CFInt.RunType.COST_CHECK) or
+		 (run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
+
+		
 # Executes the tasks defined in the card's scripts in order.
 #
 # Returns a [ScriptingEngine] object but that it not statically typed
@@ -1415,42 +1454,21 @@ func execute_scripts(
 		trigger_details = gameData.theStack.get_current_interrupted_event()
 		playing_interrupt = true
 		
-	var only_cost_check = ((run_type == CFInt.RunType.COST_CHECK) or
-		 (run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
+	var only_cost_check = is_dry_run(run_type)
 		
-	var cost_check_mode = CFInt.RunType.COST_CHECK
-	if run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
-		cost_check_mode = run_type
+	var cost_check_mode = \
+		CFInt.RunType.BACKGROUND_COST_CHECK if run_type == CFInt.RunType.BACKGROUND_COST_CHECK \
+		else CFInt.RunType.COST_CHECK
+
 			
 	common_pre_execution_scripts(trigger, trigger_details)
-	var card_scripts = retrieve_scripts(trigger)
-	# I use this spot to add a breakpoint when testing script behaviour
-	# especially on filters
-	if _debugger_hook:
-		pass
-	# We check the trigger against the filter defined
-	# If it does not match, then we don't pass any scripts for this trigger.
-	if not SP.filter_trigger(
-			card_scripts,
-			trigger_card,
-			self,
-			trigger_details):
-		card_scripts.clear()
 	
-	#additional filter check for interrupts/responses
-	if not gameData.filter_trigger(
-			trigger,
-			card_scripts,
-			trigger_card,
-			self,
-			trigger_details):
-		card_scripts.clear()	
-		
-	var state_scripts = []
-	# We select which scripts to run from the card, based on it state
-	var state_exec := get_state_exec()
-	var any_state_scripts = card_scripts.get('all', [])
-	state_scripts = card_scripts.get(state_exec, any_state_scripts)
+	#select valid scripts that match the current trigger
+	var card_scripts = retrieve_filtered_scripts(trigger_card, trigger, trigger_details)
+	
+	# We select which scripts to run from the card, based on it state	
+	var state_scripts = get_state_scripts(card_scripts)
+
 	
 	#Check if this script is exected from remote (another online player has been paying for the cost)
 	var is_network_call = trigger_details.has("network_prepaid") #TODO MOVE OUTSIDE OF Core
@@ -1462,17 +1480,17 @@ func execute_scripts(
 	
 	#We don't check if this is a network call. If network call, it is assumed the 
 	#owner has already accepted to pay, and this is why we are being called
-	if (!is_network_call):
-		if (!playing_interrupt):
-			var is_interrupt = gameData.check_interrupt(
-				self,
-				card_scripts,
-				canonical_name,
-				trigger,
-				state_exec)
-			#if interrupt mode, we cancel everything here and will enter interrupt mode	
-			if (is_interrupt):
-				state_scripts = []
+#	if (!is_network_call):
+#		if (!playing_interrupt):
+#			var is_interrupt = gameData.check_interrupt(
+#				self,
+#				card_scripts,
+#				canonical_name,
+#				trigger,
+#				get_state_exec())
+#			#if interrupt mode, we cancel everything here and will enter interrupt mode	
+#			if (is_interrupt):
+#				state_scripts = []
 	#		var confirm_return = gameData.confirm(
 	#			self,
 	#			card_scripts,
@@ -1537,8 +1555,6 @@ func execute_scripts(
 				func_return = func_return.resume()
 		is_executing_scripts = false
 
-		if (playing_interrupt and !only_cost_check):
-			gameData.end_interrupt_mode()
 			
 		emit_signal("scripts_executed", self, sceng, trigger)
 		if (!is_network_call and not only_cost_check):

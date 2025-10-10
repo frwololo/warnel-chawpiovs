@@ -7,6 +7,7 @@ extends Node
 var sceng
 var run_type
 var trigger
+var stack_uid:int = 0
 
 func _init(_sceng = null, _run_type = 0, _trigger = ""):
 	sceng = _sceng

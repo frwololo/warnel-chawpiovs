@@ -76,7 +76,7 @@ remotesync func switch_status(forced_state:int = -1):
 	match current_state:
 		State.ACTIVE:
 			if (gameData.is_interrupt_mode()):
-				gameData.interrupt_player_pressed_pass()
+				gameData.interrupt_player_pressed_pass(self.hero_index)
 			heroNode.texture = color_tex
 		State.FINISHED:
 			heroNode.texture = grayscale_tex	

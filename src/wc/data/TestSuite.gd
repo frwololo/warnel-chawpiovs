@@ -59,7 +59,7 @@ func initialize_components():
 	phaseContainer = gameData.phaseContainer
 	initialized = true
 
-func process(_delta: float) -> void:
+func _process(_delta: float) -> void:
 	delta += _delta
 	
 	if (!initialized):
@@ -70,6 +70,11 @@ func process(_delta: float) -> void:
 		return
 		
 	if (finished):
+		return
+	
+	#don't proceed if stack is doing stuff
+	#TODO: we'll want to proceed in some cases though (HERO_IS_INTERRUPTING) ?
+	if (gameData.theStack.is_processing()):
 		return
 	
 	#only server is allowed to run the main process	

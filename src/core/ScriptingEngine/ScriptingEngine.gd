@@ -61,7 +61,7 @@ func _init(state_scripts: Array,
 
 func add_scripts(state_scripts,
 		_owner,
-		trigger_object: Node,
+		_trigger_object: Node,
 		_trigger_details: Dictionary,
 		fifo:bool = true) -> void:
 			
@@ -78,7 +78,7 @@ func add_scripts(state_scripts,
 						repeat,
 						_owner,
 						task.get(repeat),
-						trigger_object,
+						_trigger_object,
 						[],
 						[])
 				repeat = per_msg.found_things
@@ -99,7 +99,7 @@ func add_scripts(state_scripts,
 				var script_task := ScriptTask.new(
 						_owner,
 						task,
-						trigger_object,
+						_trigger_object,
 						_trigger_details)
 				if (fifo):
 					scripts_queue.append(script_task)

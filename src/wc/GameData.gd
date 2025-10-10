@@ -39,12 +39,27 @@ var attackers:Array = []
 
 var user_input_ongoing:int = 0 #ID of the current player (or remote player) doing a blocking game interraction
 
-var cards_that_can_currently_interrupt: Dictionary = {}
+func _init():
+	scenario = ScenarioDeckData.new()
+	theStack = GlobalScriptStack.new()
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	#Signals
+	#TODO: the attempt to lock should happen BEFORE we actually open the windows
+	scripting_bus.connect("selection_window_opened", self, "attempt_user_input_lock")
+	scripting_bus.connect("card_selected", self, "attempt_user_input_unlock")
+	scripting_bus.connect("scripting_event_triggered", self, "_scripting_event_triggered")
+
+	self.add_child(theStack) #Stack needs to be in the tree for rpc calls	
+
+	#scripting_bus.connect("optional_window_opened", self, "attempt_user_input_lock")
+	#scripting_bus.connect("optional_window_closed", self, "attempt_user_input_unlock")	
 
 func _process(_delta: float):
-	theStack.process(_delta)
-	if (testSuite):
-		testSuite.process(_delta)
+	#theStack.process(_delta)
+	#if (testSuite):
+	#	testSuite.process(_delta)
 	return
 
 puppetsync func user_input_lock_denied():
@@ -102,10 +117,6 @@ func can_i_play() -> bool:
 	
 	return true 	
 
-func _init():
-	scenario = ScenarioDeckData.new()
-	theStack = GlobalScriptStack.new()
-
 func start_tests():
 	rpc("init_client_tests")
 
@@ -114,20 +125,9 @@ remotesync func init_client_tests():
 	testSuite.name = "testSuite"
 	self.add_child(testSuite) #Test suite needs to be in the tree for rpc calls	
 
-
 func registerPhaseContainer(phasecont:PhaseContainer):
 	phaseContainer = phasecont
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	#Signals
-	#TODO: the attempt to lock should happen BEFORE we actually open the windows
-	scripting_bus.connect("selection_window_opened", self, "attempt_user_input_lock")
-	scripting_bus.connect("card_selected", self, "attempt_user_input_unlock")
-	scripting_bus.connect("scripting_event_triggered", self, "_scripting_event_triggered")
-
-	#scripting_bus.connect("optional_window_opened", self, "attempt_user_input_lock")
-	#scripting_bus.connect("optional_window_closed", self, "attempt_user_input_unlock")	
 
 func _scripting_event_triggered(_trigger_object = null,
 		trigger: String = "manual",
@@ -135,10 +135,10 @@ func _scripting_event_triggered(_trigger_object = null,
 	match trigger:
 		"card_moved_to_board", \
 		"card_played":		
-			_game_state_changed()
+			game_state_changed()
 
 	return
-func _game_state_changed():
+func game_state_changed():
 	emit_signal("game_state_changed",{})
 
 func init_network_players(players:Dictionary):
@@ -404,6 +404,19 @@ func select_current_playing_hero(hero_index):
 	current_hero_id = hero_index
 	scripting_bus.emit_signal("current_playing_hero_changed",  {"before": previous_hero_id,"after": current_hero_id })
 
+func can_i_play_this_ability(card, script) -> bool:
+	var my_heroes = get_my_heroes()
+	for hero_id in my_heroes:
+		if can_hero_play_this_ability(hero_id, card, script):
+			return true
+	return false
+	
+func can_hero_play_this_ability(hero_index, card:WCCard, _script) -> bool:
+	#TODO some abilities can be played by heroes who don't control the card
+	if (card.get_controller_hero_id() == hero_index):
+		return true
+	return false
+
 func can_i_play_this_hero(hero_index)-> bool:
 	#Errors. If hero index is out of range I can't use it
 	if hero_index < 1 or hero_index> get_team_size():
@@ -419,6 +432,18 @@ func can_i_play_this_hero(hero_index)-> bool:
 	if (owner_player.network_id == network_id):
 		return true
 	return false
+
+func get_my_heroes() -> Array:
+	var result = []
+	var network_id = get_tree().get_network_unique_id()	
+	
+	for hero_index in team.keys():
+		var hero_data = team[hero_index]
+		var hero_deck_data:HeroDeckData = hero_data["hero_data"]
+		var owner_player:PlayerData = hero_deck_data.owner
+		if (owner_player.network_id == network_id):
+			result.append(hero_index)
+	return result
 
 #Returns player id who owns a specific hero (by hero card id)	
 func get_hero_owner(hero_index)->PlayerData:
@@ -480,8 +505,7 @@ func filter_trigger(
 	
 	#If this *is* an interrupt but I don't have an answer, I'll fail it
 	
-	#if this card has no scripts to handle interrupts, we ignore this call and
-	#let the rest go through	
+	#if this card has no scripts to handle interrupts, we fail
 	if !card_scripts:
 		return false
 	
@@ -513,24 +537,10 @@ func filter_trigger(
 	return event #note: force conversion from stack event to bool
 
 func is_interrupt_mode() -> bool:
-	return ! self.cards_that_can_currently_interrupt.empty()
-
-func is_card_in_interrupt_mode(card) -> bool:
-	return self.cards_that_can_currently_interrupt.has(card)
-
-func end_interrupt_mode():
-	cards_that_can_currently_interrupt = {}
-	var my_network_id = get_tree().get_network_unique_id()
-	_release_user_input_lock(my_network_id) #owner.get_controller_player_network_id())	
+	return theStack.get_interrupt_mode() == GlobalScriptStack.InterruptMode.HERO_IS_INTERRUPTING
 	
-func interrupt_player_pressed_pass():
-	theStack.gets_one_pass()
-	end_interrupt_mode()
-
-func _add_potential_interrupter(card):
-	cards_that_can_currently_interrupt[card] = card
-	_game_state_changed()
-	
+func interrupt_player_pressed_pass(hero_id):
+	theStack.pass_interrupt(hero_id)
 
 #TODO all calls to this method are in core which isn't good
 #Need to move something, somehow
@@ -560,38 +570,11 @@ func confirm(
 		_release_user_input_lock(owner.get_controller_player_network_id())	
 	return(is_accepted)
 	
-#TODO all calls to this method are in core which isn't good
-#Need to move something, somehow
-#checks if a given card can be played in interrupt mode
-#if so, adds it to the interrupt stack
-func check_interrupt(
-		owner,
-		script: Dictionary,
-		card_name: String,
-		task_name: String,
-		type := "task") -> bool:
-			
-#When this is called, it is assumed that a filter check has already been made
-#to confirm that the trigger is legit: there is something in the stack that this card can interact with
-#now we just want to check if the interaction requires user input (optional interaction)
-#TODO check again ?
-			
-	# We do not use SP.KEY_IS_OPTIONAL here to avoid causing cyclical
-	# references when calling CFUtils from SP
-	if script.get("is_optional_" + type):
-		_acquire_user_input_lock(owner.get_controller_player_network_id())
-		#var my_network_id = get_tree().get_network_unique_id()
-		#var is_master:bool =  (owner.get_controller_player_network_id() == my_network_id)
-		_add_potential_interrupter(owner)
-		#We Release user input later, either when cards that can interrupt is empty, or when
-		#user clicks on "pass"
-		#_release_user_input_lock(owner.get_controller_player_network_id())	
-		return(true)
-	return false	
 
 func force_reset_stack():
 	theStack.queue_free()
 	theStack = GlobalScriptStack.new()
+	self.add_child(theStack)
 
 	
 #saves current game data into a json structure	

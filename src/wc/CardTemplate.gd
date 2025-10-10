@@ -134,6 +134,37 @@ func attempt_to_play():
 		cfc.card_drag_ongoing = null
 		execute_scripts()
 
+
+#returns true if this card has some ability that can interrupt
+#the current action (and if hero_id is the one who can play it)
+func can_interrupt(
+		hero_id,
+		trigger_card: WCCard = self,
+		trigger_details: Dictionary = {}) -> int:
+	if cfc.game_paused:
+		return CFConst.CanInterrupt.NO
+	# Just in case the card is displayed outside the main game
+	# and somehow its script is triggered.
+	if not cfc.NMAP.has('board'):
+		return CFConst.CanInterrupt.NO
+	
+	#select valid scripts that match the current trigger
+	var card_scripts = retrieve_filtered_scripts(trigger_card, "interrupt", trigger_details)
+	
+	if (!card_scripts):
+		return CFConst.CanInterrupt.NO
+	
+	#card has potential interrupts. Last we check if I'm the player who can play them
+	var may_interrupt =  CFConst.CanInterrupt.NO
+
+	if gameData.can_hero_play_this_ability(hero_id,trigger_card, card_scripts):
+		if card_scripts.get("is_optional_" + get_state_exec()):
+			may_interrupt =  CFConst.CanInterrupt.MAY
+		else:
+			return  CFConst.CanInterrupt.MUST
+	
+	return may_interrupt
+
 # Executes the tasks defined in the card's scripts in order.
 #
 # Returns a [ScriptingEngine] object but that it not statically typed

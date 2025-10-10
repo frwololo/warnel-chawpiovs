@@ -98,6 +98,10 @@ func reset():
 
 #Moving to next step needs to happen outside of the signal processing to avoid infinite loops or recursive signals
 func _process(_delta: float) -> void:
+	#don't move if the stack has something going on
+	if gameData.theStack.is_processing():
+		return
+	
 	if (!current_step_complete) :
 		return
 		

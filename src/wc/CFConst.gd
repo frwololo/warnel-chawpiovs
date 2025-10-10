@@ -22,6 +22,13 @@ enum CacheStatus {
 	VALID,
 }
 
+enum CanInterrupt {
+	NO,
+	MAY,
+	MUST
+	
+}
+
 # Options for pile shuffle styles.
 # * auto: Will choose a shuffle animation depending on the amount of
 #	cards in the pile.

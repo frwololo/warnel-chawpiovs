@@ -13,6 +13,7 @@ var _check_play_costs_cache: Color = CFConst.CostsState.OK
 
 #marvel champions specific variables
 var _can_change_form := true
+var is_boost:=false
 
 func set_owner_hero_id(hero_id:int):
 	if (hero_id == -1):
@@ -84,18 +85,6 @@ func set_card_art():
 	var filename = cfc.get_img_filename(card_code)
 	if (filename):
 		card_front.set_card_art(filename)
-
-#Commented out after changing the way to flip double sided cards	
-#	if !card_back:
-#		return
-#
-#	var code_back = get_card_back_code()
-#	if (!code_back):
-#		return
-#
-#	var filename_back = cfc.get_img_filename(card_code,code_back)
-#	if (filename_back):
-#		card_back.set_card_art(filename_back)		
 
 
 func _init_groups() -> void :
@@ -331,13 +320,25 @@ func die():
 
 func commit_scheme():
 	#TODO special case villain needs to receive a boost card
-	var scheme_amount = self.get_property("scheme")
+	var scheme_amount = self.get_property("scheme", 0)
 	if (!scheme_amount):
 		return
 	
 	var main_scheme:WCCard = gameData.find_main_scheme()
 	if (!main_scheme):
 		return
+
+	#reveal boost cards
+	for boost_card in attachments:
+		if (!boost_card.is_boost):
+			continue
+		boost_card.set_is_faceup(true)
+		scheme_amount = scheme_amount + boost_card.get_property("boost",0)
+		#add an event on the stack to discard this card.
+		#Note that the discard will happen *after* receive_damage below 
+		#because we add it to the stack first
+		var discard_event = cfc.scripting_engine.simple_discard_task(boost_card)
+		gameData.theStack.add_script(discard_event)
 	
 	main_scheme.add_threat(scheme_amount)
 
@@ -488,3 +489,11 @@ func copy_modifiers_to(to_card:WCCard):
 	#change form
 	to_card._can_change_form = self._can_change_form
 
+func draw_boost_card():
+	var villain_deck:Pile = cfc.NMAP["deck_villain"]
+	var boost_card:Card = villain_deck.get_top_card()
+	if boost_card:
+		boost_card.is_boost = true
+		boost_card.attachment_mode = AttachmentMode.ATTACH_BEHIND
+		boost_card.attach_to_host(self)
+	#TODO if pile empty...need to reshuffle ?

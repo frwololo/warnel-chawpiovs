@@ -251,7 +251,8 @@ func enemy_activates() -> int :
 		return CFConst.ReturnCode.FAILED
 	var enemy:WCCard = attackers.pop_front()
 	if (enemy):
-		
+		if (enemy.get_property("type_code")== "villain"): #Or villainous?
+			enemy.draw_boost_card()
 		var heroZone:WCHeroZone = cfc.NMAP.board.heroZones[target_id]
 		if (heroZone.is_hero_form()):
 			#attack

@@ -95,7 +95,7 @@ export var scripts : Dictionary
 # when dragged away
 export(AttachmentMode) var attachment_mode = AttachmentMode.DO_NOT_ATTACH
 # If true, staggers the attachment so the side is also visible
-export(AttachmentOffset) var attachment_offset = AttachmentOffset.TOP
+export(AttachmentOffset) var attachment_offset = AttachmentOffset.BOTTOM_RIGHT
 # If true, the card front will be displayed when mouse hovers over the card
 # while it's face-down
 export var is_viewed  := false setget set_is_viewed, get_is_viewed
@@ -1202,7 +1202,7 @@ func move_to(targetHost: Node,
 			previous_pos = targetHost.to_local(global_pos)
 			# The end position is always the final position the card would be
 			# inside the hand
-			_target_position = recalculate_position()
+			_set_target_position(recalculate_position())
 			card_rotation = 0
 			_target_rotation = _recalculate_rotation()
 			set_state(CardState.MOVING_TO_CONTAINER)
@@ -1242,7 +1242,7 @@ func move_to(targetHost: Node,
 				# The target position is always the local coordinates
 				# of the stack position the card would have
 				# (this means how far up in the pile the card would appear)
-				_target_position = targetHost.get_stack_position(self)
+				_set_target_position(targetHost.get_stack_position(self))
 				_target_rotation = 0.0
 				set_state(CardState.MOVING_TO_CONTAINER)
 				scripting_bus.emit_signal("card_moved_to_pile",
@@ -1279,9 +1279,9 @@ func move_to(targetHost: Node,
 				# card placement which also bypasses manual drop placement
 				# restrictions
 				if typeof(board_position) == TYPE_VECTOR2:
-					_target_position = board_position
+					_set_target_position(board_position)
 				elif board_position as BoardPlacementSlot:
-					_target_position = board_position.rect_global_position
+					_set_target_position(board_position.rect_global_position)
 					board_position.occupying_card = self
 					_placement_slot = board_position
 				else:
@@ -1335,12 +1335,12 @@ func move_to(targetHost: Node,
 				set_state(CardState.ON_PLAY_BOARD)
 			elif current_host_card:
 				var attach_index = current_host_card.attachments.find(self)
-				_target_position = (current_host_card.global_position
+				_set_target_position((current_host_card.global_position
 						+ Vector2(
 						(attach_index + 1) * card_size.x
 						* CFConst.ATTACHMENT_OFFSET[attachment_offset].x,
 						(attach_index + 1)* card_size.y
-						* CFConst.ATTACHMENT_OFFSET[attachment_offset].y))
+						* CFConst.ATTACHMENT_OFFSET[attachment_offset].y)))
 				set_state(CardState.ON_PLAY_BOARD)
 			else:
 				# When we drop from board to board
@@ -1354,13 +1354,13 @@ func move_to(targetHost: Node,
 					# Manually to a different grid
 					if _placement_slot != null:
 						_placement_slot.occupying_card = null
-					_target_position = board_position.rect_global_position
+					_set_target_position(board_position.rect_global_position)
 					board_position.occupying_card = self
 					_placement_slot = board_position
 					set_state(CardState.DROPPING_TO_BOARD)
 				else:
 					if typeof(board_position) == TYPE_VECTOR2:
-						_target_position = board_position
+						_set_target_position(board_position)
 					else:
 						_determine_target_position_from_mouse()
 					set_state(CardState.ON_PLAY_BOARD)
@@ -1425,6 +1425,8 @@ func is_dry_run(run_type):
 	return ((run_type == CFInt.RunType.COST_CHECK) or
 		 (run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
 
+func _set_target_position(new_target_position):
+	_target_position = new_target_position
 		
 # Executes the tasks defined in the card's scripts in order.
 #
@@ -1697,12 +1699,12 @@ func attach_to_host(
 		# We offset our position below the host based on a percentage of
 		# the card size, times the index among other attachments
 		var attach_index = current_host_card.attachments.find(self)
-		_target_position = (current_host_card.global_position
+		_set_target_position((current_host_card.global_position
 				+ Vector2(
 				(attach_index + 1) * card_size.x
-				* CFConst.ATTACHMENT_OFFSET[attachment_offset].x,
+				* CFConst.ATTACHMENT_OFFSET[current_host_card.attachment_offset].x,
 				(attach_index + 1)* card_size.y
-				* CFConst.ATTACHMENT_OFFSET[attachment_offset].y))
+				* CFConst.ATTACHMENT_OFFSET[current_host_card.attachment_offset].y)))
 		scripting_bus.emit_signal("card_attached",
 				self,
 				{"host": host, "tags": tags})
@@ -1723,7 +1725,7 @@ func reorganize_self() ->void:
 	_focus_completed = false
 	match state:
 		CardState.IN_HAND, CardState.FOCUSED_IN_HAND, CardState.PUSHED_ASIDE:
-			_target_position = recalculate_position()
+			_set_target_position(recalculate_position())
 			_target_rotation = _recalculate_rotation()
 			set_state(CardState.REORGANIZING)
 	# This second match is  to prevent from changing the state
@@ -1734,7 +1736,7 @@ func reorganize_self() ->void:
 	# it will automatically pick up the right location.
 	match state:
 		CardState.MOVING_TO_CONTAINER:
-			_target_position = recalculate_position()
+			_set_target_position(recalculate_position())
 			_target_rotation = _recalculate_rotation()
 
 
@@ -2068,7 +2070,7 @@ func _determine_board_position_from_mouse() -> Vector2:
 # based on the mouse position
 # It takes extra care not to drop the card outside viewport margins
 func _determine_target_position_from_mouse() -> void:
-	_target_position = _determine_board_position_from_mouse()
+	_set_target_position(_determine_board_position_from_mouse())
 
 	# The below ensures the card doesn't leave the viewport dimentions
 	if _target_position.x + card_size.x * play_area_scale \
@@ -2086,7 +2088,7 @@ func _determine_target_position_from_mouse() -> void:
 # Instructs the card to move aside for another card enterring focus
 func _pushAside(targetpos: Vector2, target_rotation: float) -> void:
 	interruptTweening()
-	_target_position = targetpos
+	_set_target_position(targetpos)
 	_target_rotation = target_rotation
 	set_state(CardState.PUSHED_ASIDE)
 
@@ -2367,9 +2369,9 @@ func _process_card_state() -> void:
 					if not c in neighbours and c != self:
 						c.interruptTweening()
 						c.reorganize_self()
-				_target_position = expected_position \
+				_set_target_position(expected_position \
 						- Vector2(card_size.x \
-						* 0.25,0)
+						* 0.25,0))
 				# Enough with the fancy calculations. I'm just brute-forcing
 				# The card to stay at the fully within the viewport.
 				if get_parent().placement == get_parent().Anchors.CONTROL:

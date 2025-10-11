@@ -1,6 +1,9 @@
 # warning-ignore-all:UNUSED_ARGUMENT
 # warning-ignore-all:RETURN_VALUE_DISCARDED
 
+#a quick and dirty script container for simple tasks to go on the stack
+#this cannot handle cost payment and the like, so targets/subjects need to be extremely simple (self, etc...)
+
 class_name SimplifiedStackScript
 extends StackScript
 
@@ -24,6 +27,9 @@ func _init(_name, _task):
 	trigger = "" #TODO something better ?
 	
 func execute():
+	if (!task.is_primed):
+		task.prime([],run_type,0)
+	
 	var _retcode = sceng.call(task_name, task)
 
 func get_tasks() -> Array:

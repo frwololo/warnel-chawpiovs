@@ -172,6 +172,22 @@ func prevent(script: ScriptTask) -> int:
 	
 	return retcode				
 
+static func simple_discard_task(target_card):
+	var dest_container = "discard_villain"
+	var hero_id = target_card.get_owner_hero_id()
+	if (hero_id > 0):
+		dest_container = "discard" + String(hero_id)
+		
+	var discard_script  = {
+				"name": "move_card_to_container",
+				"subject": "self",
+				"needs_subject" : true,
+				"dest_container" : dest_container
+			}
+	var discard_task = ScriptTask.new(target_card, discard_script, target_card, {})	
+	var task_event = SimplifiedStackScript.new("move_card_to_container", discard_task)
+	return task_event
+
 #the ability that is triggered by automated_enemy_attack
 func defend(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -196,6 +212,19 @@ func defend(script: ScriptTask) -> int:
 		script.subjects.append(my_hero)
 		#TODO add variable stating attack was undefended
 
+	#reveal boost cards
+	#todo should go on stack?
+	for boost_card in attacker.attachments:
+		if (!boost_card.is_boost):
+			continue
+		boost_card.set_is_faceup(true)
+		amount = amount + boost_card.get_property("boost",0)
+		#add an event on the stack to discard this card.
+		#Note that the discard will happen *after* receive_damage below 
+		#because we add it to the stack first
+		var discard_event = simple_discard_task(boost_card)
+		gameData.theStack.add_script(discard_event)
+		
 	script.script_definition["amount"] = amount
 	var tags: Array = ["attack", "Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
 	script.script_definition["tags"] = tags

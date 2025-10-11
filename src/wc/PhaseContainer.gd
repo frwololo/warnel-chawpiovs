@@ -99,7 +99,9 @@ func reset():
 #Moving to next step needs to happen outside of the signal processing to avoid infinite loops or recursive signals
 func _process(_delta: float) -> void:
 	#don't move if the stack has something going on
-	if gameData.theStack.is_processing():
+	#NOTE: calling theStack.is_processing() here doesn't work: if the stack is idle
+	#but not empty, it means it is waiting for some playing interruption
+	if !gameData.theStack.is_empty():
 		return
 	
 	if (!current_step_complete) :
@@ -205,6 +207,14 @@ func is_in_progress()-> bool:
 
 #returns true if nothing prevents me (player) from *asking* for next phase	
 func is_ready_for_next_phase() -> bool :
+
+	#don't move if the stack has something going on
+	#NOTE: calling theStack.is_processing() here doesn't work: if the stack is idle
+	#but not empty, it means it is waiting for some playing interruption
+	#(which can never be a "next phase" request???)
+	if !gameData.theStack.is_empty():
+		return false
+	
 	if (!current_step_complete) :
 		return	false
 	
@@ -305,7 +315,9 @@ func _deal_encounters():
 	pass
 	
 func _reveal_encounters():
-	gameData.reveal_encounters()
+	var func_return = gameData.reveal_encounters()
+	if func_return is GDScriptFunctionState && func_return.is_valid():
+		func_return = yield(func_return, "completed")
 	current_step_complete = true
 	pass	
 

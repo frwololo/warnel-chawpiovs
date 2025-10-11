@@ -42,10 +42,16 @@ var game_loaded:bool = false
 
 var delta:float = 0
 
+#temporary variables to keep track of objects to interact with
+var _current_selection_window = null
+
 func _init():
 	scripting_bus.connect("all_clients_game_loaded", self, "all_clients_game_loaded")
-	
+	scripting_bus.connect("selection_window_opened", self, "_selection_window_opened")	
+		
 func _ready():
+
+
 	#only server is allowed to run the main process	
 	if 1 != get_tree().get_network_unique_id():
 		return
@@ -64,6 +70,9 @@ func _process(_delta: float) -> void:
 	
 	if (!initialized):
 		initialize_components()
+
+	if phaseContainer.is_in_progress():
+		return
 	
 	#Game is still loading on some clients, do not run tests yet
 	if (!game_loaded):
@@ -96,9 +105,21 @@ func next_action():
 		return	
 		
 	if (actions.size() <= current_action):
-		#if (delta < 5): #crappy way to wait for current actions to finish before finalizing test. Enable only if we can't find better ways to wait for animation
+		#if (delta < 5): 
+			#crappy way to wait for current actions to finish before finalizing test.
+			# Enable only if we can't find better ways to wait for animation
 		#	return
-		finalize_test()
+		#TODO bug fix
+		#currently the phaseContainer runs its stuff independently
+		#of the test suite, this can lead to desyncs at the test time
+		#crappy way of dealing with it is to let the phase container run a bit
+		#before finalizing the test
+		var expected_phase = phaseContainer.step_string_to_step_id(end_state["phase"])
+		var current_phase = phaseContainer.current_step
+		if ((expected_phase != current_phase) && delta < 5):
+			return
+
+		var func_return = finalize_test()
 		var _next = next_test()
 		return false	
  
@@ -162,6 +183,7 @@ remotesync func run_action(my_action:Dictionary):
 			action_play(my_action["player"], action_value)
 			return
 		"choose":
+			action_choose(my_action["player"], action_value)
 			return
 		"target":
 			return
@@ -182,7 +204,17 @@ func action_play(player, card_id_or_name):
 	return
 
 func action_choose(player, action_value):
+	match action_value:
+		"cancel":
+			return cancel_current_selection_window()
 	return
+
+func cancel_current_selection_window():
+	if (_current_selection_window):
+		_current_selection_window.force_cancel()
+	else:
+		#TODO error handling
+		var _error =1
 	
 func action_target(player, action_value):
 	return
@@ -205,7 +237,7 @@ func action_other(action_value):
 
 func get_current_player() -> int:
 	#TODO error handling
-	var player_network_id = gameData.user_input_ongoing() #TODO this is network id, should be regular id?
+	var player_network_id = gameData.user_input_ongoing #TODO this is network id, should be regular id?
 	var player:PlayerData = gameData.get_player_by_network_id(player_network_id)
 	return player.get_id()
 	
@@ -440,3 +472,6 @@ remotesync func save_results():
 	file.open(filename, File.WRITE)
 	file.store_string(to_print + "\n")
 	file.close() 	
+
+func _selection_window_opened(_request_object = null,details = {}):
+	_current_selection_window = _request_object

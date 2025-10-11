@@ -48,25 +48,27 @@ var network_prepaid:Array = []
 
 var owner
 var trigger_object
+var state_scripts
 
 # Simply initiates the [run_next_script()](#run_next_script) loop
-func _init(state_scripts: Array,
+func _init(_state_scripts: Array,
 		_owner,
 		_trigger_object: Node,
 		_trigger_details: Dictionary) -> void:
 	owner = _owner
 	trigger_object = _trigger_object
-	trigger_details = _trigger_details		
+	trigger_details = _trigger_details.duplicate()
+	state_scripts = _state_scripts.duplicate() 	
 	add_scripts(state_scripts, owner, trigger_object, trigger_details)
 
-func add_scripts(state_scripts,
+func add_scripts(_state_scripts,
 		_owner,
 		_trigger_object: Node,
 		_trigger_details: Dictionary,
 		fifo:bool = true) -> void:
 			
 		var tmp_array: Array = []
-		for t in state_scripts:		
+		for t in _state_scripts:		
 		# We do a duplicate to allow repeat to modify tasks without danger.
 			var task: Dictionary = t.duplicate(true)
 			# This is the only script property which we use outside of the

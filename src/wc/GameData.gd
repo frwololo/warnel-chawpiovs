@@ -481,14 +481,6 @@ func is_waiting_for_other_player_input():
 			return true
 	return false
 
-func execute_script_to_remote(caller_card_uid, trigger_card_uid, trigger, remote_trigger_details, run_type):
-	rpc("execute_script_from_remote", caller_card_uid, trigger_card_uid, trigger, remote_trigger_details, run_type)
-
-remote func execute_script_from_remote(caller_card_uid, trigger_card_uid, trigger, remote_trigger_details, run_type): 
-	var trigger_card = guidMaster.get_object_by_guid(trigger_card_uid)
-	var caller_card = guidMaster.get_object_by_guid(caller_card_uid)
-	caller_card.execute_scripts(trigger_card, trigger, remote_trigger_details, run_type)	
-
 
 # Additional filter for triggers,
 # also see core/ScriptProperties.gd

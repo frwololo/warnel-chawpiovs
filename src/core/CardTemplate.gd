@@ -1430,6 +1430,14 @@ func is_dry_run(run_type):
 #
 # Returns a [ScriptingEngine] object but that it not statically typed
 # As it causes the parser think there's a cyclic dependency.
+
+# There is a first "execute" step where cost payments (targets, etc..) are being chosen locally
+# This adds the payment selections into a "network_prepaid" array
+# That array is being passed around to all other clients in the network
+# 1) Client A selects payments for ability locally
+# 2) Once done, Client A sends ability + payment information to all clients (including itself)
+# 3) That data is added to all clients stacks
+# 4) All Stacks execute the ability later with the prepayment information
 func execute_scripts(
 		trigger_card: Card = self,
 		trigger: String = "manual",
@@ -1447,12 +1455,10 @@ func execute_scripts(
 
 	#we're playing a card manually but in interrupt mode.
 	#What we want to do here is play the optional triggered effect instead
-	var playing_interrupt = false
 	if (trigger == "manual" and gameData.is_interrupt_mode()):
 		#TODO very flaky code, how to fix?
 		trigger = find_interrupt_script()
 		trigger_details = gameData.theStack.get_current_interrupted_event()
-		playing_interrupt = true
 		
 	var only_cost_check = is_dry_run(run_type)
 		
@@ -1542,76 +1548,33 @@ func execute_scripts(
 				trigger_card,
 				trigger_details)
 		common_pre_run(sceng)
+		
+		# 1) Client A selects payments for ability locally
 		# In case the script involves targetting, we need to wait on further
 		# execution until targetting has completed
 		sceng.execute(cost_check_mode)
 		if not sceng.all_tasks_completed:
 			yield(sceng,"tasks_completed")
+		
+		# 2) Once done with payment, Client A sends ability + payment information to all clients (including itself)
+		# 3) That data is added to all clients stacks
 		# If the dry-run of the ScriptingEngine returns that all
 		# costs can be paid, then we proceed with the actual run
-		if not only_cost_check:
-			var func_return = add_script_to_stack(sceng, run_type, trigger)
+		# we add the script to the server stack for execution
+		if (!is_network_call and not only_cost_check):
+			var func_return = add_script_to_stack(sceng, run_type, trigger, trigger_details)
 			while func_return is GDScriptFunctionState && func_return.is_valid():
 				func_return = func_return.resume()
 		is_executing_scripts = false
 
 			
 		emit_signal("scripts_executed", self, sceng, trigger)
-		if (!is_network_call and not only_cost_check):
-			network_execute_scripts(trigger_card, trigger, trigger_details, only_cost_check, sceng)
 	return(sceng)
 
-func add_script_to_stack(sceng, run_type, trigger):
-	var stackEvent:StackScript = StackScript.new(sceng, run_type, trigger)
-	gameData.theStack.add_script(stackEvent) 
+func add_script_to_stack(sceng, run_type, trigger, trigger_details):
+	gameData.theStack.create_and_add_script(sceng, run_type, trigger, trigger_details) 
 	
 	return
-	
-#	if sceng.can_all_costs_be_paid:
-#		#print("DEBUG:" + str(state_scripts))
-#		# The ScriptingEngine is where we execute the scripts
-#		# We cannot use its class reference,
-#		# as it causes a cyclic reference error when parsing
-#
-#		sceng.execute(run_type)
-#		if not sceng.all_tasks_completed:
-#			yield(sceng,"tasks_completed")
-#		# warning-ignore:void_assignment
-#		var func_return = common_post_execution_scripts(trigger)
-#		# We make sure this function does to return until all
-#		# custom post execution scripts have also finished
-#		if func_return is GDScriptFunctionState: # Still working.
-#			func_return = yield(func_return, "completed")
-#	# This will only trigger when costs could not be paid, and will
-#	# execute the "is_else" tasks
-#	else:
-#		#print("DEBUG:" + str(state_scripts))
-#		sceng.execute(CFInt.RunType.ELSE)
-#		if not sceng.all_tasks_completed:
-#			yield(sceng,"tasks_completed")	
-
-#Called by other online player to execute the same script as them, after they're done paying the cost
-func network_execute_scripts(
-		trigger_card: Card,
-		trigger: String ,
-		trigger_details: Dictionary ,
-		run_type: int, 
-		sceng):
-	var prepaid: Array = sceng.network_prepaid
-	var prepaid_uids: Array = []
-	#BUGFIX in some cases it is ok for prepaid to be empty. E.g. when refusing to defend
-	#if (prepaid.empty()):
-	#	return
-	for array in prepaid:
-		var prepaid_uids_task = guidMaster.array_of_objects_to_guid(array)
-		prepaid_uids.append(prepaid_uids_task)
-	var remote_trigger_details: Dictionary = trigger_details.duplicate()
-	remote_trigger_details["network_prepaid"] =  prepaid_uids
-	
-	var trigger_card_uid = guidMaster.get_guid(trigger_card)
-	var my_uid = guidMaster.get_guid(self)
-
-	gameData.execute_script_to_remote(my_uid, trigger_card_uid, trigger, remote_trigger_details, run_type)
 
 	
 # Retrieves the card scripts either from those defined on the card

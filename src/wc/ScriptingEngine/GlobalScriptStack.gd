@@ -36,6 +36,41 @@ var stack_uid_to_object:Dictionary = {}
 var object_to_stack_uid:Dictionary = {}
 var card_already_played_for_stack_uid:Dictionary = {}
 
+
+func create_and_add_script(sceng, run_type, trigger, trigger_details):
+	#we deconstruct locally here to reconstruct it on all clients then add it to all stacks
+	#also send GUIDs to find the right cards/targets
+	
+	var prepaid: Array = sceng.network_prepaid
+	var prepaid_uids: Array = []
+
+	#NOTE in some cases it is ok for prepaid to be empty. E.g. when refusing to defend
+
+	for array in prepaid:
+		var prepaid_uids_task = guidMaster.array_of_objects_to_guid(array)
+		prepaid_uids.append(prepaid_uids_task)
+	var remote_trigger_details: Dictionary = trigger_details.duplicate()
+	remote_trigger_details["network_prepaid"] =  prepaid_uids
+	
+	var trigger_card_uid = guidMaster.get_guid(sceng.trigger_object)
+	var owner_uid = guidMaster.get_guid(sceng.owner)
+	var state_scripts = sceng.state_scripts
+	
+	rpc("client_create_and_add_script", state_scripts, owner_uid, trigger_card_uid, run_type, trigger, remote_trigger_details)
+	#TODO should wait for ack from all clients before anybody can do anything further in the game
+
+remotesync func client_create_and_add_script(state_scripts, _owner_uid, trigger_card_uid,  run_type, trigger, remote_trigger_details):
+	var trigger_card = guidMaster.get_object_by_guid(trigger_card_uid)
+	var owner_card = guidMaster.get_object_by_guid(_owner_uid)
+	var sceng = cfc.scripting_engine.new(
+				state_scripts,
+				owner_card,
+				trigger_card,
+				remote_trigger_details)
+				
+	var stackEvent:StackScript = StackScript.new(sceng, run_type, trigger)
+	add_script(stackEvent)
+	
 func add_script(object):
 	#if somebody is adding a script while in interrupt mode,
 	# we add the script (its owner card for now - TODO need to change?)
@@ -102,8 +137,21 @@ func _process(_delta: float):
 			
 	return	
 
+func is_empty():
+	return stack.empty()
+
+#returns true if the stack is waiting for automated "acks" to move to the next steps
 func is_processing():
-	return !stack.empty()
+	match interrupt_mode:
+		InterruptMode.FORCED_INTERRUPT_CHECK:
+			return true
+		InterruptMode.OPTIONAL_INTERRUPT_CHECK:
+			return true
+		InterruptMode.HERO_IS_INTERRUPTING:
+			return false
+		_:
+			return !stack.empty()
+
 
 func set_interrupt_mode(value:int):
 	interrupt_mode = value
@@ -259,3 +307,60 @@ func can_my_heroes_play() -> Array:
 	
 func get_interrupt_mode() -> int:
 	return interrupt_mode
+
+#Docs & Notes
+
+#Scenario:
+#Player A plays a card "Blub" that says "add 2 threat to the main scheme"
+#Player B has "Great responsibility" (when any amount of threat would be placed on a scheme, you take it as damage instead)
+#Need to be given an opportunity to interrupt!
+#
+#Proposed solution:
+#Player A plays Blub
+#Pays costs (locally)
+#"Put in play" script goes into ALL stacks
+#before unstacking, master send "interrupt" signal
+
+#If I'm the master, 
+#if "interrupters" is all "skip": go to "interrupters has nobody" step
+#Else:
+#send interrupt signal to all clients. I Wait for ack 
+#Wait for ack == set array interrupters [nb_players] to empty and fill it with each players when ack has matching interrupt details.
+#Example of ack: "interrupt put in play blurb -> me (player 1) has a potential interrupt
+#
+#Client side:
+#1) receive "interrupt" signal. set "interrupt mode" to INTERRUPT_CHECK
+#2) run through check interrupt for all my cards
+#3) if I have at least a card to interrupt with, send "ack" + list of cards, otherwise ack + "skip" (empty list of cards)
+#(interrupt mode is still INTERRUPT_CHECK)
+#As long as interrupt mode is INTERRUPT CHECK, I cannot play anything
+#
+#Server side: once interrupters[] has all players:
+#
+#If interrupters has nobody or interrupters is all "skip":
+#master 0) resets "interrupters", 1) pops and executes locally  "put in play" then 1.5) tells remote that "interrupt mode" is off and 2) tells them to run the stack event
+#
+#Else if interrupters has 1 or more person without "skip":
+#master doesn't pop the next script.
+#Instead
+#0) interrupting player is next player in the interrupters list that doesn't say "skip"
+#1) master tells all clients that interrupt_mode becomes "PLAYER_IS_INTERRUPTING" and tells them interrupt_player is (interrupt hero)
+#
+#Client side:
+#if I am the interrupting player, and mode is "PLAYER_IS_INTERRUPTING", let me play my cards for interrupt:
+#	1) I pay my card (locally
+#	2) script goes into all stacks
+#	3) when a script is added to all stacks, "interrupt_mode" is set to NONE (0)
+#	Alternatively:
+#	1) I click "pass"
+#	2) this sends a message to master. Master sets "skip_interrupt" to true for my player in his "interrupters" dictionary
+#	3) master moves to the next interrupter player. If there is none: go back to "interrupters has nobody"
+#
+#If I am *not" the interrupting player and  mode is "PLAYER_IS_INTERRUPTING", I cannot play anything, but I display the face of interrupting player on my screen for visibility
+#
+#
+#Forced interrupts:
+#Issues: I was thinking of doing the same as optional interrupts, however: they may trigger infinite times (the same might be true for optional interrupts btw...)
+#--> need to implement a system where we trigger (or can activate) only once for a singular event ? Each stack object gets a unique ID (controlled by network master?)
+#Sending an interrupt signal also includes the event unique ID.
+#when a card/ability is *played* in *response* to this specific event, add a value in globalscript dictionary to mark this card/event combination as "used" --> cannot trigger again

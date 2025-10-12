@@ -35,6 +35,7 @@ func select_card(
 		selection_count: int, 
 		selection_type: String,
 		selection_optional: bool,
+		selection_what_to_count: String,
 		parent_node,
 		script : ScriptObject = null,
 		run_type:int = CFInt.RunType.NORMAL,
@@ -44,12 +45,13 @@ func select_card(
 	var selected_cards
 	# This way we can override the card select scene with a custom one
 	var selection = card_select_scene.instance()
+	selection.init(selection_count,selection_type,selection_optional, selection_what_to_count, script)
 	cfc.modal_menu = selection #keep a pointer to the variable for external cleanup if needed
 	parent_node.add_child(selection)
 	if (run_type == CFInt.RunType.BACKGROUND_COST_CHECK):
-		selection.dry_run(card_list,selection_count,selection_type,selection_optional, script)
+		selection.dry_run(card_list)
 	else:
-		selection.call_deferred("initiate_selection", card_list,selection_count,selection_type,selection_optional, script)
+		selection.call_deferred("initiate_selection", card_list)
 		# We have to wait until the player has finished selecting their cards
 		yield(selection,"confirmed")
 	if selection.is_cancelled:

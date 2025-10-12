@@ -6,8 +6,8 @@ extends ManaCost
 
 # Called when the node enters the scene tree for the first time.
 func _init():
-	pool[Resource.UNCOLOR] = 1 #TODO Temp for tests
-
+	#pool[Resource.UNCOLOR] = 1 #TODO Temp for tests
+	return
 
 
 ### 

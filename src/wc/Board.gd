@@ -132,6 +132,7 @@ func _ready() -> void:
 	#draw_cheat("Combat Training")
 	draw_cheat("Mockingbird")
 	draw_cheat("Black Cat")
+	draw_cheat("Energy")
 	#draw_cheat("Backflip")
 	#draw_cheat("Helicarrier")	
 	#draw_cheat("Swinging Web Kick")

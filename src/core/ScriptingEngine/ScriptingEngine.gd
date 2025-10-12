@@ -601,7 +601,7 @@ func spawn_card_to_container(script: ScriptTask) -> void:
 		else:
 			filtered_cards = filtered_cards.slice(0,selection_amount - 1)
 			var select_return = cfc.ov_utils.select_card(
-					filtered_cards, 1, 'min', false, cfc.NMAP.board, script)
+					filtered_cards, 1, 'min', false, "", cfc.NMAP.board, script)
 			if select_return is GDScriptFunctionState: # Still working.
 				select_return = yield(select_return, "completed")
 			if typeof(select_return) == TYPE_ARRAY:

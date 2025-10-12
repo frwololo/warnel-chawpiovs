@@ -459,6 +459,7 @@ func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:
 				SP.KEY_SELECTION_TYPE: "equal",
 				SP.KEY_SELECTION_OPTIONAL: false,
 				SP.KEY_SELECTION_IGNORE_SELF: true,
+				"selection_what_to_count": "resource_value",
 				"src_container": "hand" + str(owner_hero_id),
 				"dest_container": "discard" + str(owner_hero_id),
 			}		
@@ -497,3 +498,10 @@ func draw_boost_card():
 		boost_card.attachment_mode = AttachmentMode.ATTACH_BEHIND
 		boost_card.attach_to_host(self)
 	#TODO if pile empty...need to reshuffle ?
+
+func get_resource_value(script):
+	var total = 0
+	for resource_name in ManaCost.RESOURCE_TEXT:
+		var lc_name = resource_name.to_lower()
+		total += get_property("resource_" + lc_name, 0)
+	return total

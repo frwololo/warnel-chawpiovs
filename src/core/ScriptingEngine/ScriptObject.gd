@@ -161,10 +161,11 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 		var selection_count = get_property(SP.KEY_SELECTION_COUNT)
 		var selection_type = get_property(SP.KEY_SELECTION_TYPE)
 		var selection_optional = get_property(SP.KEY_SELECTION_OPTIONAL)
+		var selection_what_to_count = get_property(SP.KEY_SELECTION_WHAT_TO_COUNT)
 		if get_property(SP.KEY_SELECTION_IGNORE_SELF):
 			subjects_array.erase(owner)
 		var select_return = cfc.ov_utils.select_card(
-				subjects_array, selection_count, selection_type, selection_optional, cfc.NMAP.board, self, run_type)
+				subjects_array, selection_count, selection_type, selection_optional, selection_what_to_count, cfc.NMAP.board, self, run_type)
 		# In case the owner card is still focused (say because script was triggered
 		# on double-click and card was not moved
 		# Then we need to ensure it's unfocused

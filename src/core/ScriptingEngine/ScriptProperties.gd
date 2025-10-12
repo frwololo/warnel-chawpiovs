@@ -816,6 +816,15 @@ const KEY_SELECTION_OPTIONAL := "selection_optional"
 # is supposed to already be in a different pile but this will only
 # technically happen as the last task.
 const KEY_SELECTION_IGNORE_SELF := "selection_ignore_self"
+
+# Value Type: String (default: "")
+#
+# override to call a function on Card to get a count, 
+# instead of simply counting number of cards
+# for example, "selection_what_to_count" : "resource_value"
+# will call card.get_resource_value() to retrieve the number
+const KEY_SELECTION_WHAT_TO_COUNT := "selection_what_to_count"
+
 # Value Type: Array
 #
 # Initiates a new instance of the scripting engine
@@ -1268,7 +1277,8 @@ static func get_default(property: String):
 				KEY_SELECTION_CHOICES_AMOUNT,\
 				KEY_DIVIDER:
 			default = 1
-		KEY_GRID_NAME, KEY_SUBJECT:
+		KEY_GRID_NAME, KEY_SUBJECT, \
+				KEY_SELECTION_WHAT_TO_COUNT:
 			default = ""
 		KEY_COMPARISON:
 			default = "eq"

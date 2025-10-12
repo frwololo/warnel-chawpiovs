@@ -293,9 +293,14 @@ func enrich_window_title(script:ScriptObject, title:String) -> String:
 	var result:String = title
 	var script_definitions = script.script_definition
 	var script_name = script_definitions.name
+	var forced_title = script_definitions.get("display_title", "")
 	var owner = script.owner
 	
-	result = owner.canonical_name + " - " + result
+	if (forced_title):
+		result = forced_title + " - " + result
+	else:
+	
+		result = owner.canonical_name + " - " + result
 	
 	match script_name:
 		"defend":

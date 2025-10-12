@@ -6,6 +6,7 @@ extends Reference
 var owner:PlayerData
 var deck_id
 var hero_id
+var ally_limit:= 3 #TODO move to some configuration file?
 
 
 func _init():
@@ -65,3 +66,9 @@ func loadstate_from_json(json:Dictionary) -> bool:
 		hero_id = hero
 	return true
 
+func get_ally_limit():
+	return ally_limit
+	
+func set_ally_limit(limit:int):
+	ally_limit = limit
+	

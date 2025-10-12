@@ -1263,9 +1263,9 @@ func move_to(targetHost: Node,
 				# One for the fancy move, and then the move to the final position.
 				# If we don't then the card will appear to teleport
 				# to the pile before starting animation
-				yield($Tween, "tween_all_completed")
-				if cfc.game_settings.fancy_movement:
-					yield($Tween, "tween_all_completed")
+#				yield($Tween, "tween_all_completed")
+#				if cfc.game_settings.fancy_movement:
+#					yield($Tween, "tween_all_completed")
 				targetHost.reorganize_stack()
 		else:
 			interruptTweening()

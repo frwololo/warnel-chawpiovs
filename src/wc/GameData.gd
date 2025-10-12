@@ -21,7 +21,8 @@ signal game_state_changed(details)
 var network_players := {}
 var id_to_network_id:= {}
 var is_multiplayer_game:bool = true
-#1 indexed {id: HeroDeckData}
+
+#1 indexed {hero_id: {"hero_data": HeroDeckData, "manapool" : ManaPool}}
 var team := {}
 
 var gamesave_load_status:= {}

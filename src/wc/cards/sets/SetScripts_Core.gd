@@ -181,7 +181,27 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 						}				
 					]
 				}
-			}
+			},
+			"ally_limit": {
+				"board": [
+					{
+						"is_cost": true,
+						"subject_index": "top",
+						SP.KEY_SELECTION_OPTIONAL: false,
+						"name": "move_card_to_container",
+						"dest_container": "discard",
+						"subject":"boardseek",
+						"subject_count": "all",
+						"selection_count": 1,
+						"selection_type": "equal",					
+						"needs_selection": true,
+						"filter_state_seek": [{
+							"filter_group" : "group_allies"
+						}],
+						"display_title": "Ally limit"
+					}				
+				]
+			}			
 		}		
 		script = WCUtils.merge_dict(script,hero_actions, true)
 

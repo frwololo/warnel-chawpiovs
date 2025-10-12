@@ -129,11 +129,12 @@ func _ready() -> void:
 	offer_to_mulligan()
 	
 	#Tests
-	draw_cheat("Combat Training")
+	#draw_cheat("Combat Training")
 	draw_cheat("Mockingbird")
-	draw_cheat("Backflip")
+	draw_cheat("Black Cat")
+	#draw_cheat("Backflip")
 	#draw_cheat("Helicarrier")	
-	draw_cheat("Swinging Web Kick")
+	#draw_cheat("Swinging Web Kick")
 	cfc.LOG_DICT(guidMaster.guid_to_object)
 	
 	#Save gamedata for restart

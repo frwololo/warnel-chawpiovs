@@ -21,6 +21,10 @@ var target_object : Node = null
 # Stores a reference to the Card that is hosting this node
 onready var owner_object = get_parent()
 
+var valid_targets: Array = []
+
+func set_valid_targets (objects):
+	valid_targets = objects
 
 func _ready() -> void:
 	# We set the targetting arrow modulation to match our config specification
@@ -40,7 +44,8 @@ func _process(_delta: float) -> void:
 # Will generate a targeting arrow on the card which will follow the mouse cursor.
 # The top card hovered over by the mouse cursor will be highlighted
 # and will become the target when complete_targeting() is called
-func initiate_targeting() -> void:
+func initiate_targeting(_valid_targets) -> void:
+	set_valid_targets(_valid_targets)
 	is_targeting = true
 	$ArrowHead.visible = true
 	$ArrowHead/Area2D.monitoring = true
@@ -54,6 +59,8 @@ func initiate_targeting() -> void:
 func complete_targeting() -> void:
 	if len(_potential_targets) and is_targeting:
 		var tc = _potential_targets.back()
+		if !(tc in valid_targets):
+			return
 		# We don't want to emit a signal, if the card is a dummy viewport card
 		# or we already selected a target during dry-run
 		if owner_object.get_parent() != null \
@@ -74,6 +81,7 @@ func complete_targeting() -> void:
 # It takes care to highlight potential cards which can serve as targets.
 func _on_ArrowHead_area_entered(area: Area2D) -> void:
 	if area.get_class() == 'Card' and not area in _potential_targets:
+
 		_potential_targets.append(area)
 		if 'highlight' in owner_object:
 			owner_object.highlight.highlight_potential_card(

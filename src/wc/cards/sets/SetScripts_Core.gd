@@ -168,6 +168,28 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 		}		
 		script = WCUtils.merge_dict(script,ally_actions, true)
 
+	if type_code == "alter_ego": 
+		var alter_ego_actions: Dictionary = { 
+			"manual": {
+				"board": {
+					"recovery": [
+						{
+							"name": "rotate_card",
+							"subject": "self",
+							"degrees": 90,
+							"is_cost" : true,
+						},							
+						{
+							"name": "recovery",
+							"subject": "self",
+							"needs_subject": true,
+						}				
+					]
+				}
+			}			
+		}		
+		script = WCUtils.merge_dict(script,alter_ego_actions, true)
+
 	if type_code == "hero"  or type_code == "alter_ego": 
 		var hero_actions: Dictionary = { 
 			"manual": {
@@ -201,7 +223,25 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 						"display_title": "Ally limit"
 					}				
 				]
-			}			
+			},
+			"end_phase_discard": {
+				"board": [
+					{
+						"name": "end_phase_discard",
+						"is_cost": true,
+						"subject": "index",
+						"subject_count": "all",
+						"subject_index": "top",
+						SP.KEY_NEEDS_SELECTION: true,
+						SP.KEY_SELECTION_COUNT:0, 
+						SP.KEY_SELECTION_TYPE: "min",
+						SP.KEY_SELECTION_OPTIONAL: true,
+						"src_container": "hand",
+						"dest_container": "discard",						
+						"display_title": "End phase discard"
+					}				
+				]
+			}						
 		}		
 		script = WCUtils.merge_dict(script,hero_actions, true)
 

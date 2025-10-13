@@ -335,6 +335,12 @@ const HERO_GRID_SETUP := {
 	},									
 }
 
+const DEFAULT_TOKEN_MAX_VALUE := {
+	"tough" : 1,
+	"stunned" : 1,
+	"confused" : 1
+}
+
 const STATS_URI := "http://127.0.0.1"
 const STATS_PORT := 8000
 

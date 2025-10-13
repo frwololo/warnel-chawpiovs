@@ -1,6 +1,7 @@
 {	"Backflip": {
-		"before_damage": {
-			"trigger_filters": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
 				"target": "my_hero",
 				"tags": ["attack"]
 			},
@@ -84,6 +85,23 @@
 				},
 			]
 		},		
+	},
+	"Mockingbird": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name" : "mod_tokens",
+					"modification": 1,
+					"token_name":  "stunned",	
+					"needs_subject": true,
+					"subject": "target",
+					"filter_state_subject": [{
+						"filter_group" : "group_enemies"
+					}],
+				}
+			]
+		}
 	},	
 	"Swinging Web Kick": {
 		"manual": {

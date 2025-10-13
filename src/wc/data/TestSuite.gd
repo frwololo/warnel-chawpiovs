@@ -47,7 +47,8 @@ var _current_selection_window = null
 
 func _init():
 	scripting_bus.connect("all_clients_game_loaded", self, "all_clients_game_loaded")
-	scripting_bus.connect("selection_window_opened", self, "_selection_window_opened")	
+	scripting_bus.connect("selection_window_opened", self, "_selection_window_opened")
+	scripting_bus.connect("card_selected", self, "_selection_window_closed")	
 		
 func _ready():
 
@@ -122,9 +123,17 @@ func next_action():
 		var func_return = finalize_test()
 		var _next = next_test()
 		return false	
+
+	var my_action = actions[current_action]
+	var action_type = my_action.get("type", "")
+	
+	#wait a bit if we need to choose from a selection window but that window isn't there
+	if (action_type == "choose"):
+		if (!_current_selection_window) and delta <5:
+			return
  
 	delta = 0
-	var my_action = actions[current_action]
+
 	
 	process_action(my_action)
 	
@@ -237,7 +246,7 @@ func action_other(action_value):
 
 func get_current_player() -> int:
 	#TODO error handling
-	var player_network_id = gameData.user_input_ongoing #TODO this is network id, should be regular id?
+	var player_network_id = gameData.user_input_ongoing if gameData.user_input_ongoing else 1 #TODO this is network id, should be regular id?
 	var player:PlayerData = gameData.get_player_by_network_id(player_network_id)
 	return player.get_id()
 	
@@ -481,3 +490,6 @@ remotesync func save_results():
 
 func _selection_window_opened(_request_object = null,details = {}):
 	_current_selection_window = _request_object
+
+func _selection_window_closed(_request_object = null,details = {}):
+	_current_selection_window = null

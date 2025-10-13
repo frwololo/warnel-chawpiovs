@@ -352,7 +352,18 @@ func _initiate_card_targeting() -> Card:
 	# The double-click which started the script and immediately triggerring
 	# the target completion
 	yield(owner.get_tree().create_timer(0.1), "timeout")
-	owner.targeting_arrow.initiate_targeting()
+	var all_cards = cfc.NMAP.board.get_all_cards()
+	var valid_targets = []
+	#TODO also check cards in piles ?
+	for c in all_cards:
+		var _is_valid = SP.check_validity(c, script_definition, "subject")
+		if (_is_valid):
+			valid_targets.append(c)
+			
+	if (!valid_targets):
+		return null	
+			
+	owner.targeting_arrow.initiate_targeting(valid_targets)
 	# We wait until the targetting has been completed to continue
 	yield(owner.targeting_arrow,"target_selected")
 	var target = owner.targeting_arrow.target_object

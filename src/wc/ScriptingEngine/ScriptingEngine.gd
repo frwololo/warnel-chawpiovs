@@ -119,16 +119,21 @@ func attack(script: ScriptTask) -> int:
 		return retcode
 
 	var tags: Array = ["attack", "Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
-	
+
+	var owner = script.owner	
 	var damage = script.script_definition.get("amount", 0)
 	if not damage:
-		var owner = script.owner
 		damage = owner.get_property("attack", 0)
-	
-	script.script_definition["tags"] = tags
-	script.script_definition["amount"] = damage 
-	receive_damage(script)
-	consequential_damage(script)
+
+	var stunned = owner.tokens.get_token_count("stunned")
+	if (stunned):
+		owner.tokens.mod_token("stunned", -1)
+		
+	else:		
+		script.script_definition["tags"] = tags
+		script.script_definition["amount"] = damage 
+		receive_damage(script)
+		consequential_damage(script)
 
 	return retcode	
 
@@ -146,6 +151,11 @@ func receive_damage(script: ScriptTask) -> int:
 #		gameData.theStack.add_script(damageScript)
 		
 		#scripting_bus.emit_signal("damage_incoming", card, script.script_definition)	
+
+		var tough = card.tokens.get_token_count("tough")
+		if (tough):
+			card.tokens.mod_token("tough", -1)
+			amount = 1
 
 		retcode = card.tokens.mod_token("damage",
 				amount,false,costs_dry_run(), tags)	
@@ -274,17 +284,33 @@ func thwart(script: ScriptTask) -> int:
 	var owner = script.owner
 	var modification = owner.get_property("thwart")
 	var token_diff = modification
-	
-	for card in script.subjects:
-		var current_tokens = card.tokens.get_token_count(token_name)
-		if current_tokens - modification < 0:
-			token_diff = current_tokens
-		retcode = card.tokens.mod_token(token_name,
-				-token_diff,false,costs_dry_run(), tags)
+
+	var confused = owner.tokens.get_token_count("confused")
+	if (confused):
+		owner.tokens.mod_token("confused", -1)
+	else:
+		for card in script.subjects:
+			var current_tokens = card.tokens.get_token_count(token_name)
+			if current_tokens - modification < 0:
+				token_diff = current_tokens
+			retcode = card.tokens.mod_token(token_name,
+					-token_diff,false,costs_dry_run(), tags)
 
 
-	consequential_damage(script)
+		consequential_damage(script)
 	return retcode	
+
+func recovery(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+	
+	for subject in script.subjects: #should be really one subject only, generally
+		var hero = subject
+		
+		hero.heal(hero.get_property("recover", 0))
+
+	return CFConst.ReturnCode.CHANGED
 
 func change_form(script: ScriptTask) -> int:
 

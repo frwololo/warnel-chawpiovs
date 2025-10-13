@@ -14,6 +14,9 @@ onready var _tween : Tween = $Tween
 # Stores a reference to the Card that is hosting this node
 onready var owner_card = get_parent().get_parent()
 
+#sets a max limit for some tokens
+var max_tokens: Dictionary = {}
+
 
 func _ready() -> void:
 	$Drawer/Area2D/CollisionShape2D.shape = \
@@ -108,33 +111,34 @@ func mod_token(
 			check := false,
 			tags := ["Manual"]) -> int:
 	var retcode : int
-	# If the player requested a token name that has not been defined by the game
-	# we return a failure
-	if 0 : #not CFConst.TOKENS_MAP.get(token_name, null):
+	var token : Token = get_all_tokens().get(token_name, null)
+	# If the token does not exist in the card, we add its node
+	# and set it to 1
+	if not token and mod > 0:
+		token = _TOKEN_SCENE.instance()
+		token.setup(token_name, self)
+		$Drawer/VBoxContainer.add_child(token)
+	# If the token node of this name has already been added to the card
+	# We just increment it by 1
+	if not token and mod == 0:
+		retcode = CFConst.ReturnCode.OK
+	elif not token and mod < 0:
 		retcode = CFConst.ReturnCode.FAILED
-	else:
-		var token : Token = get_all_tokens().get(token_name, null)
-		# If the token does not exist in the card, we add its node
-		# and set it to 1
-		if not token and mod > 0:
-			token = _TOKEN_SCENE.instance()
-			token.setup(token_name, self)
-			$Drawer/VBoxContainer.add_child(token)
-		# If the token node of this name has already been added to the card
-		# We just increment it by 1
-		if not token and mod == 0:
-			retcode = CFConst.ReturnCode.OK
-		elif not token and mod < 0:
-			retcode = CFConst.ReturnCode.FAILED
-		# For cost dry-runs, we don't want to modify the tokens at all.
-		# Just check if we could.
-		elif check:
-			# For a  cost dry run, we can only return FAILED
-			# when removing tokens as it's always possible to add new ones
+	# For cost dry-runs, we don't want to modify the tokens at all.
+	# Just check if we could.
+	elif check:
+		# For a  cost dry run, we can only return FAILED
+		# when removing tokens as it's always possible to add new ones
+		if (set_to_mod):
+			if (mod <0):
+				retcode = CFConst.ReturnCode.FAILED
+			else:
+				retcode = CFConst.ReturnCode.CHANGED
+		else:		
 			if mod < 0:
 				# If the current tokens are equal or higher, then we can
 				# remove the requested amount and therefore return CHANGED.
-				if token.count + mod >= 0:
+				if (token.count + mod >= 0):
 					retcode = CFConst.ReturnCode.CHANGED
 				# If we cannot remove the full amount requested
 				# we return FAILED
@@ -142,32 +146,37 @@ func mod_token(
 					retcode = CFConst.ReturnCode.FAILED
 			else:
 				retcode = CFConst.ReturnCode.CHANGED
+	else:
+		cfc.flush_cache()
+		var prev_value = token.count
+		# The set_to_mod value means that we want to set the tokens to the
+		# exact value specified
+		if set_to_mod:
+			var value = mod
+			if max_tokens.has(token_name):
+				value = min(value, max_tokens["token_name"])
+			token.count = value
 		else:
-			cfc.flush_cache()
-			var prev_value = token.count
-			# The set_to_mod value means that we want to set the tokens to the
-			# exact value specified
-			if set_to_mod:
-				token.count = mod
-			else:
-				token.count += mod
-			# We store the count in a new variable, to be able to use it
-			# in the signal even after the token is deinstanced.
-			var new_value = token.count
-			if token.count == 0:
-				token.queue_free()
-		# if the drawer has already been opened, we need to make sure
-		# the new token name will also appear
-			elif is_drawer_open:
-				token.expand()
-			retcode = CFConst.ReturnCode.CHANGED
-			scripting_bus.emit_signal(
-					"card_token_modified",
-					owner_card,
-					{SP.TRIGGER_TOKEN_NAME: token.get_token_name(),
-					SP.TRIGGER_PREV_COUNT: prev_value,
-					SP.TRIGGER_NEW_COUNT: new_value,
-					"tags": tags})
+			token.count += mod
+			if max_tokens.has(token_name) and token.count > max_tokens[token_name]:
+				token.count = max_tokens[token_name]
+		# We store the count in a new variable, to be able to use it
+		# in the signal even after the token is deinstanced.
+		var new_value = token.count
+		if token.count == 0:
+			token.queue_free()
+	# if the drawer has already been opened, we need to make sure
+	# the new token name will also appear
+		elif is_drawer_open:
+			token.expand()
+		retcode = CFConst.ReturnCode.CHANGED
+		scripting_bus.emit_signal(
+				"card_token_modified",
+				owner_card,
+				{SP.TRIGGER_TOKEN_NAME: token.get_token_name(),
+				SP.TRIGGER_PREV_COUNT: prev_value,
+				SP.TRIGGER_NEW_COUNT: new_value,
+				"tags": tags})
 	return(retcode)
 
 
@@ -217,3 +226,5 @@ func _on_VBoxContainer_sort_children() -> void:
 	$Drawer.rect_size = \
 			$Drawer.rect_min_size
 
+func set_max(token_name, max_value):
+	max_tokens[token_name] = max_value

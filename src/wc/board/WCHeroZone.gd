@@ -22,8 +22,14 @@ func set_player(id:int):
 
 func load_hero():
 	hero_deck_data = gameData.get_team_member(my_id)["hero_data"]
-	var ckey = cfc.idx_card_id_to_name[hero_deck_data.hero_id]
-	var card:WCCard = cfc.instance_card(ckey, my_id)
+	var hero_card_data = cfc.get_card_by_id(hero_deck_data.hero_id)
+	var alter_ego_id = hero_card_data.get("back_card_code", "")
+	if !alter_ego_id:
+		#TODO error
+		return
+	
+	var ckey = cfc.idx_card_id_to_name[alter_ego_id]
+	var card = cfc.instance_card(ckey, my_id)
 	
 	#TODO better
 	cfc.NMAP["deck" + str(my_id)].add_child(card)
@@ -39,14 +45,14 @@ func load_hero():
 func get_player():
 	return my_id
 
-func get_hero_card() -> WCCard:
+func get_identity_card():
 	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid("identity"  + str(my_id))
 	var slot: BoardPlacementSlot = grid.get_slot(0)	
-	var result:WCCard = slot.occupying_card
+	var result = slot.occupying_card
 	return result
 	
 func is_hero_form() -> bool:
-	var hero_card:WCCard = get_hero_card()
+	var hero_card = get_identity_card()
 	if "hero" == hero_card.properties.get("type_code", ""):
 		return true
 	return false

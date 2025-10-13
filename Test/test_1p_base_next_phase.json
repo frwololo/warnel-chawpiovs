@@ -44,7 +44,12 @@
 		{
 			"type": "next_phase",
 			"value": "1"
-		}
+		},
+		{
+			"type": "choose",
+			"value": "cancel",
+			"_comments": "click cancel to skip optional discard"
+		},
 	] ,
 	"end": {
 		"phase": "VILLAIN_ACTIVATES",

@@ -49,7 +49,7 @@ func matches_filters(script, filters:Dictionary, owner_card):
 	if (owner_hero_id > 0):
 		for v in ["my_hero"]:
 			#TODO move to const
-			WCUtils.search_and_replace(filters, v, gameData.get_hero_card(owner_hero_id), true)
+			WCUtils.search_and_replace(filters, v, gameData.get_identity_card(owner_hero_id), true)
 
 	if (filters):
 		var _tmp = 0	

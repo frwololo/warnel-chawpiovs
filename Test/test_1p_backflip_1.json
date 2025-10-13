@@ -49,6 +49,11 @@
 		{
 			"type": "choose",
 			"value": "cancel",
+			"_comments": "click cancel to skip optional discard"
+		},			
+		{
+			"type": "choose",
+			"value": "cancel",
 			"_comments": "click cancel on defenders to take an undefended attack"
 		},		
 		{

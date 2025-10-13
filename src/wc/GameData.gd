@@ -219,14 +219,13 @@ func get_current_team_member():
 	return team[current_hero_id]	
 
 func draw_all_players() :
-	for i in range(get_team_size()):
-		var hero_deck_data: HeroDeckData = get_team_member(i+1)["hero_data"]
-		var alter_ego_data = hero_deck_data.get_alter_ego_card_data()
-		var hand_size = alter_ego_data["hand_size"]
-		var hand:Hand = cfc.NMAP["hand" + str(i+1)]
-		hand_size = hand_size - hand.get_card_count()
-		for _j in range(hand_size):
-			hand.draw_card (cfc.NMAP["deck" + str(i+1)])	
+	for hero_id in team.keys():
+		var identity = get_identity_card(hero_id)
+		var max_hand_size = identity.get_max_hand_size()
+		var hand:Hand = cfc.NMAP["hand" + str(hero_id)]
+		var to_draw = max_hand_size - hand.get_card_count()
+		for _j in range(to_draw):
+			hand.draw_card (cfc.NMAP["deck" + str(hero_id)])	
 
 func ready_all_player_cards():
 		var cards:Array = cfc.NMAP["board"].get_all_cards() #TODO hero cards only
@@ -273,13 +272,21 @@ func enemy_activates() -> int :
 		var heroZone:WCHeroZone = cfc.NMAP.board.heroZones[target_id]
 		if (heroZone.is_hero_form()):
 			#attack
-			var sceng = enemy.execute_scripts(enemy, "automated_enemy_attack")
-			if sceng is GDScriptFunctionState:
-				sceng = yield(sceng, "completed")
+			var stunned = enemy.tokens.get_token_count("stunned")
+			if (stunned):
+				enemy.tokens.mod_token("stunned", -1)
+			else:			
+				var sceng = enemy.execute_scripts(enemy, "automated_enemy_attack")
+				if sceng is GDScriptFunctionState:
+					sceng = yield(sceng, "completed")
 			return CFConst.ReturnCode.OK
 		else:
 			#scheme
-			enemy.commit_scheme()
+			var confused = enemy.tokens.get_token_count("confused")
+			if (confused):
+				enemy.tokens.mod_token("confused", -1)
+			else:
+				enemy.commit_scheme()
 			return CFConst.ReturnCode.OK			
 	return CFConst.ReturnCode.FAILED
 	
@@ -383,18 +390,18 @@ func get_minions_engaged_with_player(player_id:int):
 		results = minionsGrid.get_all_cards()
 	return results
 	
-func get_hero_card(owner_id) -> Card:
+func get_identity_card(owner_id) -> Card:
 	if (owner_id) <= 0:
 		cfc.LOG ("error owner id is " + String(owner_id))
 		return null
 	
 	var board:Board = cfc.NMAP.board
 	var heroZone:WCHeroZone = board.heroZones[owner_id]
-	return heroZone.get_hero_card()	
+	return heroZone.get_identity_card()	
 
 #Returns Hero currently being targeted by the villain and his minions	
 func get_current_target_hero() -> Card:
-	return get_hero_card(_villain_current_hero_target)
+	return get_identity_card(_villain_current_hero_target)
 
 #Adds a "group_defenders" tag to all cards that can block an attack
 func compute_potential_defenders():

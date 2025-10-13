@@ -266,9 +266,6 @@ remotesync func proceed_to_next_phase():
 	scripting_bus.emit_signal("step_started",  {"step" : current_step})	
 	update_text()
 	
-func _player_discard():
-	current_step_complete = true	
-	pass
 
 func _player_draw():
 	gameData.draw_all_players()
@@ -279,6 +276,19 @@ func _player_ready():
 	gameData.ready_all_player_cards()
 	current_step_complete = true	
 	pass	
+
+func _player_discard():
+	var my_heroes = gameData.get_my_heroes()
+	for hero_id in my_heroes:
+		var hero_card = gameData.get_identity_card(hero_id)
+		var func_return = hero_card.execute_scripts(hero_card, "end_phase_discard")
+		#while func_return is GDScriptFunctionState && func_return.is_valid():
+		#	func_return = func_return.resume()
+		while cfc.modal_menu:
+			yield(get_tree().create_timer(0.05), "timeout")
+
+
+	current_step_complete = true
 	
 func _villain_threat():
 	gameData.villain_threat()

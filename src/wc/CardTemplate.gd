@@ -44,7 +44,8 @@ func get_controller_player_id() -> int:
 
 func setup() -> void:
 	.setup()
-	_init_groups()	
+	_init_groups()
+	init_default_max_tokens()	
 	set_card_art()
 	gameData.connect("game_state_changed", self, "_game_state_changed")
 	scripting_bus.connect("step_started", self, "_game_step_started")
@@ -294,6 +295,12 @@ func add_threat(threat : int):
 func get_current_threat():
 	return tokens.get_token_count("threat")
 
+
+func heal(value):
+	var current_damage = tokens.get_token_count("damage")
+	var heal_value = min(value, current_damage)
+	tokens.mod_token("damage",-heal_value)
+
 func common_pre_execution_scripts(_trigger: String, _trigger_details: Dictionary) -> void:
 	match _trigger:
 		"automated_enemy_attack":
@@ -306,6 +313,7 @@ func can_defend():
 	if type_code != "hero" and type_code != "ally": return false
 	
 	return true
+
 
 func die():
 	var type_code = properties.get("type_code", "")
@@ -432,6 +440,23 @@ func common_pre_run(_sceng) -> void:
 					script.script_definition = new_script
 					script.script_name = script.get_property("name") #TODO something cleaner? Maybe part of the script itself?
 					new_queue.append(script)
+			"end_phase_discard":
+				#end phase discard is either optional, or forced if we're above max_hand_size
+				var hero = script.owner
+				var max_hand_size = hero.get_max_hand_size()
+				var hero_id = hero.get_controller_hero_id()
+				var hand:Hand = cfc.NMAP["hand" + str(hero_id)]
+				var current_hand_size = hand.get_card_count()
+				var min_to_discard = 0
+				if (current_hand_size > max_hand_size):
+					min_to_discard = current_hand_size - max_hand_size
+				script.script_name = "move_card_to_container"
+				script.script_definition["name"] = script.script_name
+				if (min_to_discard > 0):
+					script.script_definition["selection_optional"] = false
+					script.script_definition["selection_count"] = min_to_discard
+
+				new_queue.append(script)
 			_:
 				new_queue.append(task)
 	_sceng.scripts_queue = new_queue	
@@ -508,3 +533,11 @@ func get_resource_value(script):
 		var lc_name = resource_name.to_lower()
 		total += get_property("resource_" + lc_name, 0)
 	return total
+	
+func get_max_hand_size():
+	return get_property("hand_size", 0)
+
+func init_default_max_tokens():
+	for token_name in CFConst.DEFAULT_TOKEN_MAX_VALUE.keys():
+		var value = CFConst.DEFAULT_TOKEN_MAX_VALUE[token_name]
+		tokens.set_max(token_name, value)

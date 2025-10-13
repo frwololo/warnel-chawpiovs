@@ -149,7 +149,7 @@ func check_ally_limit():
 		var ally_limit = hero_data.get_ally_limit()
 		var my_cards = cfc.NMAP.board.get_grid("allies" + String(hero_id)).get_all_cards()
 		if (my_cards.size()) > ally_limit:
-			var hero_card = gameData.get_hero_card(hero_id)
+			var hero_card = gameData.get_identity_card(hero_id)
 			hero_card.execute_scripts(hero_card, "ally_limit")
 			
 	

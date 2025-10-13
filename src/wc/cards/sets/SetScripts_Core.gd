@@ -120,6 +120,7 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 					{
 						"name": "rotate_card",
 						"subject": "self",
+						"needs_subject": true,
 						"degrees": 90,
 					},					
 				]

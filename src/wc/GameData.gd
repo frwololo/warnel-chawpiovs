@@ -137,21 +137,60 @@ func _scripting_event_triggered(_trigger_object = null,
 	match trigger:
 		"card_token_modified":
 			check_main_scheme_defeat()
+		"card_moved_to_board", \
+				"card_moved_to_pile", \
+				"card_moved_to_hand" :
+			check_empty_decks(_trigger_details["source"])			
 
 	match trigger:
 		"card_moved_to_board", \
-		"card_played", \
-		"card_token_modified" :		
+				"card_played", \
+				"card_token_modified" :		
 			game_state_changed()
 	return
+
+#a function that checks if any deck becomes empty after a card is moved,
+#and triggers the appropriate measures as needed
+func check_empty_decks(pile_to_check):
+	if (pile_to_check == "deck_villain"):
+		var villain_deck:Pile = cfc.NMAP[pile_to_check]
+		if (villain_deck.get_card_count() == 0):
+			#shuffle discard into deck
+			var villain_discard:Pile = cfc.NMAP["discard_villain"]
+			var all_discarded = villain_discard.get_all_cards()
+			for card in all_discarded:
+				card.move_to(villain_deck)
+			villain_deck.shuffle_cards()
+			#add acceleration to main scheme
+			var scheme = find_main_scheme()
+			if (scheme):
+				scheme.tokens.mod_token("acceleration", 1)
+			else:
+				var _error = 1 #TODO error handling 
+		return
 	
+	elif (pile_to_check.begins_with("deck")): #player decks
+		var hero_id_str = pile_to_check.substr(4,1)
+		var hero_deck:Pile = cfc.NMAP[pile_to_check]
+		if (hero_deck.get_card_count() == 0):
+			#shuffle discard into deck
+			var hero_discard:Pile = cfc.NMAP["discard" + hero_id_str]
+			var all_discarded = hero_discard.get_all_cards()
+			for card in all_discarded:
+				card.move_to(hero_deck)
+			hero_deck.shuffle_cards()
+			#deal a new encounter
+			deal_one_encounter_to(int(hero_id_str))
+		return		
+	
+#a function that checks regularly (sepcifically, whenever threat changes) if the main scheme has too much threat	
 func check_main_scheme_defeat():
 	var scheme = find_main_scheme()
 	if (!scheme):
 		var _error = 1 #TODO error handling
 		return
 	
-	if scheme.get_current_threat() > scheme.get_property("threat", 0):	
+	if scheme.get_current_threat() >= scheme.get_property("threat", 0):	
 		var board:Board = cfc.NMAP.board
 		board.end_game("defeat")	
 	
@@ -234,7 +273,7 @@ func ready_all_player_cards():
 				card.readyme()	
 
 func find_main_scheme() : 
-	var cards:Array = cfc.NMAP["board"].get_all_cards()
+	var cards:Array = cfc.NMAP.board.get_grid("schemes").get_all_cards()
 	for card in cards:
 		if "main_scheme" == card.properties.get("type_code", "false"):
 			return card
@@ -291,14 +330,25 @@ func enemy_activates() -> int :
 	return CFConst.ReturnCode.FAILED
 	
 func villain_threat():
-	var scheme:Card = find_main_scheme()
-	if not scheme:
+	var main_scheme:Card = find_main_scheme()
+	if not main_scheme:
 		return CFConst.ReturnCode.FAILED
-	var escalation_threat = scheme.properties["escalation_threat"]	
-	var escalation_threat_fixed = scheme.properties["escalation_threat_fixed"]
+		
+	#basic threat computation, check if it's a constant or multiplied by numbers of players	
+	var escalation_threat = main_scheme.properties["escalation_threat"]	
+	var escalation_threat_fixed = main_scheme.properties["escalation_threat_fixed"]
 	if (not escalation_threat_fixed):
 		escalation_threat *= get_team_size()
-	scheme.add_threat(escalation_threat)
+	
+	var all_schemes:Array = cfc.NMAP.board.get_grid("schemes").get_all_cards()
+	for scheme in all_schemes:
+		#we add all acceleration tokens	
+		escalation_threat += scheme.tokens.get_token_count("acceleration")
+		
+		#we also add acceleration icons from other schemes
+		escalation_threat += scheme.get_property("scheme_acceleration", 0)
+		
+	main_scheme.add_threat(escalation_threat)
 
 func get_facedown_encounters_pile() -> Pile :
 	var pile  = cfc.NMAP["encounters_facedown" + str(_villain_current_hero_target)]
@@ -306,24 +356,27 @@ func get_facedown_encounters_pile() -> Pile :
 	
 func get_enemies_grid() -> BoardPlacementGrid :
 	var grid  = cfc.NMAP.board.get_grid("enemies" + str(_villain_current_hero_target))
-	#var grid  = cfc.NMAP.board.get_grid("enemies1")
 
 	return grid	
 
-#TODO need something much more advanced here, per player, etc...
+
 func deal_encounters():
 	var villain_deck:Pile = cfc.NMAP["deck_villain"]
 	while true: #loop through all heroes. see villain_next_target call below
-		var encounter:Card = villain_deck.get_top_card()
-		if encounter:
-			var destination  = get_facedown_encounters_pile() 
-			encounter.move_to(destination)
-		else:
-			#TODO shuffle deck + acceleration
-			pass
+		deal_one_encounter_to(_villain_current_hero_target)
 		if (!villain_next_target()): # This forces to change the next facedown destination
 			return
-	
+
+func deal_one_encounter_to(hero_id):
+	var villain_deck:Pile = cfc.NMAP["deck_villain"]
+	var encounter:Card = villain_deck.get_top_card()
+	if encounter:
+		var destination  = get_facedown_encounters_pile() 
+		encounter.move_to(destination)
+	else:
+		#this shouldn't happen as we constantly reshuffle the encounter deck as soon as it empties
+		var _error = 1
+		pass		
 
 #TODO need something much more advanced here, per player, etc...
 func reveal_encounters():

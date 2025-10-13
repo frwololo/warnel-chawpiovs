@@ -279,24 +279,15 @@ func thwart(script: ScriptTask) -> int:
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
 
-	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
-	var token_name = "threat" #TODO move to const
 	var owner = script.owner
 	var modification = owner.get_property("thwart")
-	var token_diff = modification
 
 	var confused = owner.tokens.get_token_count("confused")
 	if (confused):
 		owner.tokens.mod_token("confused", -1)
 	else:
 		for card in script.subjects:
-			var current_tokens = card.tokens.get_token_count(token_name)
-			if current_tokens - modification < 0:
-				token_diff = current_tokens
-			retcode = card.tokens.mod_token(token_name,
-					-token_diff,false,costs_dry_run(), tags)
-
-
+			retcode = card.remove_threat(modification)
 		consequential_damage(script)
 	return retcode	
 

@@ -112,10 +112,16 @@ func _load_one_card_definition(card_data):
 	#TODO 2024/10/30 is this error new?
 	if not card_data.has("card_set_name"):
 		card_data["card_set_name"] = "ERROR"	
+	if not card_data.has("card_set_code"):
+		card_data["card_set_code"] = "ERROR"	
+
 		
 
+	var set_code = card_data["card_set_code"]
+	var lc_set_code = set_code.to_lower()
+	
 	var set_name = card_data["card_set_name"]
-	var lc_set_name = set_name.to_lower()
+	var lc_set_name = set_name.to_lower()	
 	
 	#Villains: multiple cards have the same name.
 	#Hack to "fix" this by adding stage number
@@ -135,20 +141,21 @@ func _load_one_card_definition(card_data):
 	
 	#scenarios cache
 	if (card_type == "Main_scheme"):
-		if (not schemes.has(lc_set_name)):
-			schemes[lc_set_name] = []
-		schemes[lc_set_name].push_back(card_data)	
+		if (not schemes.has(lc_set_code)):
+			schemes[lc_set_code] = []
+		schemes[lc_set_code].push_back(card_data)	
 		if(card_data["stage"] == 1):
 			scenarios.push_back(card_id)
 	
 	#obligations cache
 	if (card_type == "Obligation"):
+		obligations[lc_set_code] = card_data
 		obligations[lc_set_name] = card_data
 		
 	#encounter/set cache
-	if (not cards_by_set.has(lc_set_name)):
-		cards_by_set[lc_set_name] = []
-	cards_by_set[lc_set_name].push_back(card_data)				
+	if (not cards_by_set.has(lc_set_code)):
+		cards_by_set[lc_set_code] = []
+	cards_by_set[lc_set_code].push_back(card_data)				
 		
 	#Unknown types get assigned a generic template.
 	#They most likely won't work in game

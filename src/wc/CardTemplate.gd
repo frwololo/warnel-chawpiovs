@@ -295,6 +295,34 @@ func add_threat(threat : int):
 func get_current_threat():
 	return tokens.get_token_count("threat")
 
+func remove_threat(modification: int):
+	
+	#Crisis special case: can't remove threat from main scheme
+	if "main_scheme" == properties.get("type_code", "false"):
+		var all_schemes:Array = cfc.NMAP.board.get_grid("schemes").get_all_cards()
+		for scheme in all_schemes:
+			#we add all acceleration tokens	
+			var crisis = scheme.get_property("scheme_crisis", 0)
+			if crisis:
+				return CFConst.ReturnCode.FAILED
+	
+	var token_name = "threat"
+	var current_tokens = tokens.get_token_count(token_name)
+	if current_tokens - modification < 0:
+		modification = current_tokens
+	var result = tokens.mod_token(token_name,-modification)
+	
+	if "side_scheme" == properties.get("type_code", "false"):
+		if get_current_threat() == 0:
+			self.discard()
+
+func discard():
+	var hero_owner_id = get_owner_hero_id()
+	if (!hero_owner_id):
+		self.move_to(cfc.NMAP["discard_villain"])
+	else:
+		var destination = "discard" + str(hero_owner_id)
+		self.move_to(cfc.NMAP[destination])
 
 func heal(value):
 	var current_damage = tokens.get_token_count("damage")

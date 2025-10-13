@@ -2,7 +2,10 @@
 class_name ScenarioDeckData
 extends Reference
 
+#card definitions
 var villains:Array
+
+
 var schemes:Array
 var encounter_deck:Array
 
@@ -11,8 +14,8 @@ func _init():
 
 
 func load_from_dict(_scenario:Dictionary):
-	var set_name = _scenario["card_set_name"]
-	schemes = cfc.get_schemes(set_name)
+	var set_code = _scenario["card_set_code"]
+	schemes = cfc.get_schemes(set_code)
 	
 	#Preload
 	get_villains()
@@ -58,11 +61,11 @@ func get_encounter_deck():
 	
 	# Add sets (from scenario, standard + modular sets)
 	var modular_set_count = 0
-	for encounter_set_name in encounter_sets:
-		if (encounter_set_name.to_lower() == "modular"): #special case for modular sets
-			encounter_set_name = default_modular_sets[modular_set_count]
+	for encounter_set_code in encounter_sets:
+		if (encounter_set_code.to_lower() == "modular"): #special case for modular sets
+			encounter_set_code = default_modular_sets[modular_set_count]
 			modular_set_count += 1
-		var encounter_set : Array = cfc.get_encounter_cards(encounter_set_name)
+		var encounter_set : Array = cfc.get_encounter_cards(encounter_set_code)
 		for card_data in encounter_set:
 			var card_type = card_data[CardConfig.SCENE_PROPERTY]
 			if (card_type != "Main_scheme" and card_type != "Villain"): #skip villain and schemes from the deck

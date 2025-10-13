@@ -25,6 +25,8 @@ var is_multiplayer_game:bool = true
 #1 indexed {hero_id: {"hero_data": HeroDeckData, "manapool" : ManaPool}}
 var team := {}
 
+var dead_heroes := []
+
 var gamesave_load_status:= {}
 
 var scenario:ScenarioDeckData
@@ -183,6 +185,29 @@ func check_empty_decks(pile_to_check):
 			deal_one_encounter_to(int(hero_id_str))
 		return		
 	
+func move_to_next_scheme(current_scheme):
+	var set_code = current_scheme.get_property("card_set_code", "").to_lower
+	var stage = current_scheme.get_property("stage")
+	
+	var next_stage = stage + 1
+	var set_schemes = cfc.schemes[set_code]
+	for scheme in set_schemes:
+		if (scheme.get_property("stage", 0) == next_stage):
+			var board = cfc.NMAP.board
+			var code = scheme.get_property("_code")
+			var new_card = cfc.instance_card(code,current_scheme.get_owner_hero_id())
+
+			var slot = current_scheme._placement_slot
+			board.add_child(new_card)
+			current_scheme.queue_free() #is more required to remove it?		
+			new_card.position = slot.rect_global_position
+			new_card._placement_slot = slot
+			slot.occupying_card = new_card
+			new_card.state = Card.CardState.ON_PLAY_BOARD
+			return new_card
+	
+	return null
+		
 #a function that checks regularly (sepcifically, whenever threat changes) if the main scheme has too much threat	
 func check_main_scheme_defeat():
 	var scheme = find_main_scheme()
@@ -190,7 +215,12 @@ func check_main_scheme_defeat():
 		var _error = 1 #TODO error handling
 		return
 	
-	if scheme.get_current_threat() >= scheme.get_property("threat", 0):	
+	if scheme.get_current_threat() < scheme.get_property("threat", 0):
+		return
+	
+	var next_scheme = move_to_next_scheme(scheme)
+	
+	if (!next_scheme):		
 		var board:Board = cfc.NMAP.board
 		board.end_game("defeat")	
 	
@@ -361,17 +391,36 @@ func get_enemies_grid() -> BoardPlacementGrid :
 
 
 func deal_encounters():
-	var villain_deck:Pile = cfc.NMAP["deck_villain"]
-	while true: #loop through all heroes. see villain_next_target call below
+	var finished = false
+	while !finished: #loop through all heroes. see villain_next_target call below
 		deal_one_encounter_to(_villain_current_hero_target)
 		if (!villain_next_target()): # This forces to change the next facedown destination
-			return
+			finished = true
+
+	#reset _villain_current_hero_target for cleanup	
+	#it should already be at 1 here but...
+	_villain_current_hero_target = 1
+	
+	#Hazard cards
+	var hazard = 0		
+	var all_schemes:Array = cfc.NMAP.board.get_grid("schemes").get_all_cards()
+	for scheme in all_schemes:
+		#we add all hazard icons	
+		hazard  += scheme.get_property("scheme_hazard", 0)
+	
+	while hazard:
+		deal_one_encounter_to(_villain_current_hero_target)
+		villain_next_target()
+		hazard -=1
+		
+	#reset _villain_current_hero_target for cleanup	
+	_villain_current_hero_target = 1
 
 func deal_one_encounter_to(hero_id):
 	var villain_deck:Pile = cfc.NMAP["deck_villain"]
 	var encounter:Card = villain_deck.get_top_card()
 	if encounter:
-		var destination  = get_facedown_encounters_pile() 
+		var destination  =  cfc.NMAP["encounters_facedown" + str(hero_id)] 
 		encounter.move_to(destination)
 	else:
 		#this shouldn't happen as we constantly reshuffle the encounter deck as soon as it empties
@@ -466,14 +515,37 @@ func compute_potential_defenders():
 			if (c.is_in_group ("group_defenders")): c.remove_from_group("group_defenders")	
 
 func hero_died(card:Card):
-	#TODO check if other heroes are alive
-	var board:Board = cfc.NMAP.board
-	board.end_game("defeat")
+	#TODO dead heroes can't play
+	dead_heroes.append(card.get_owner_hero_id)
+	if (dead_heroes.size() == team.size()):
+		var board:Board = cfc.NMAP.board
+		board.end_game("defeat")
+
+func move_to_next_villain(current_villain):
+	var villains = scenario.villains
+	var new_villain_data = null
+	for i in range (villains.size() - 1): #-1 here because we want to get the +1 if we find it
+		if (villains[i]["Name"] == current_villain.get_property("Name", "")):
+			new_villain_data = villains[i+1]
+	
+	if !new_villain_data :
+		return null
+	
+	var ckey = new_villain_data["Name"] #TODO we have name and "Name" which is a problem here...
+	var new_card = cfc.instance_card(ckey, 0)	
+	var slot = current_villain._placement_slot
+	cfc.NMAP.board.add_child(new_card)
+	current_villain.queue_free() #is more required to remove it?		
+	new_card.position = slot.rect_global_position
+	new_card._placement_slot = slot
+	slot.occupying_card = new_card
+	new_card.state = Card.CardState.ON_PLAY_BOARD
+	return new_card			
 
 func villain_died(card:Card):
-	#TODO get next villain stage
-	var board:Board = cfc.NMAP.board
-	board.end_game("victory")
+	if (!move_to_next_villain(card)):
+		var board:Board = cfc.NMAP.board
+		board.end_game("victory")
 
 func select_current_playing_hero(hero_index):
 	if (not can_i_play_this_hero(hero_index)):

@@ -62,8 +62,7 @@ func _load_scenarios():
 	for scenario_id in cfc.scenarios:
 		#TODO more advanced?
 		var scenario = cfc.get_card_by_id(scenario_id)
-		#var scenario_display_name = scenario["Name"] + " (" + scenario["card_set_name"] + ")"	
-		var scenario_display_name = scenario["card_set_name"]	
+		var scenario_display_name = scenario["card_set_code"]	
 		scenarios_container.add_item(scenario_display_name)	
 
 func _create_hero_container():
@@ -175,7 +174,7 @@ func _launch_game():
 	#TODO this is gross based on display text. NEed to do something ID based
 	var scenario_dropdown_id = scenarios_container.get_selected_id()
 	var scenario_name = scenarios_container.get_item_text(scenario_dropdown_id)
-	gameData.set_scenario_data({"card_set_name" : scenario_name})
+	gameData.set_scenario_data({"card_set_code" : scenario_name})
 	get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/GetReady.tscn')
 
 func on_button_pressed(_button_name : String) -> void:

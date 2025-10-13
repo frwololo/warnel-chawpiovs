@@ -1558,12 +1558,20 @@ func execute_scripts(
 		if not sceng.all_tasks_completed:
 			yield(sceng,"tasks_completed")
 		
-		# 2) Once done with payment, Client A sends ability + payment information to all clients (including itself)
-		# 3) That data is added to all clients stacks
 		# If the dry-run of the ScriptingEngine returns that all
 		# costs can be paid, then we proceed with the actual run
 		# we add the script to the server stack for execution
 		if (!is_network_call and not only_cost_check):
+			
+			#1.5) We run the script in "prime" mode again to choose targets
+			# for all tasks that aren't costs but still need targets
+			# (is_cost = false and needs_subject = false)
+			sceng.execute(CFInt.RunType.PRIME_ONLY)
+			if not sceng.all_tasks_completed:
+				yield(sceng,"tasks_completed")
+			
+			# 2) Once done with payment, Client A sends ability + payment information to all clients (including itself)
+			# 3) That data is added to all clients stacks
 			var func_return = add_script_to_stack(sceng, run_type, trigger, trigger_details)
 			while func_return is GDScriptFunctionState && func_return.is_valid():
 				func_return = func_return.resume()

@@ -193,11 +193,17 @@ func execute(_run_type) -> void:
 			# execution until targetting has completed
 			if not script.is_primed:
 				yield(script,"primed")
+
 		if script.is_primed:
 			#Add to list of prepaid stuff only if I'm the one paying the costs and actually paying them
 			if is_network_master:# and not costs_dry_run():
 				network_prepaid.pop_back()
 				network_prepaid.append(script.subjects.duplicate()) #2025-03-01 added a duplicate here attempt at bug fix
+
+		if (run_type == CFInt.RunType.PRIME_ONLY):
+			continue
+		
+		if script.is_primed:	
 			_pre_task_exec(script)
 			#print("Scripting Subjects: " + str(script.subjects)) # Debug
 			if script.script_name == "custom_script"\

@@ -442,8 +442,14 @@ func next_test() -> bool:
 #Save test results to an output file
 remotesync func save_results():
 	var file = File.new()
-	var to_print:String = "total tests: " + str(test_files.size()) + "\n"
-	to_print = to_print +  "###\nskipped: " + str(skipped.size()) + "\n"
+	var to_print := ""
+	if (failed.size()):
+		to_print+= "FAILED!\n\n"
+	else:
+		to_print+= "SUCCESS! (passed " +String(passed.size()) + "/" + str(test_files.size()) \
+		 + ", skipped " +  String(skipped.size()) + "/" + str(test_files.size())  + ")\n\n" 
+	to_print += "total tests: " + str(test_files.size()) + "\n"
+	to_print +=  "###\nskipped: " + str(skipped.size()) + "\n"
 
 	var i = 0;
 	for skipped_file in skipped:

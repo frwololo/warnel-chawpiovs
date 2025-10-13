@@ -133,12 +133,28 @@ func registerPhaseContainer(phasecont:PhaseContainer):
 func _scripting_event_triggered(_trigger_object = null,
 		trigger: String = "manual",
 		_trigger_details: Dictionary = {}):
+	
+	match trigger:
+		"card_token_modified":
+			check_main_scheme_defeat()
+
 	match trigger:
 		"card_moved_to_board", \
-		"card_played":		
+		"card_played", \
+		"card_token_modified" :		
 			game_state_changed()
-
 	return
+	
+func check_main_scheme_defeat():
+	var scheme = find_main_scheme()
+	if (!scheme):
+		var _error = 1 #TODO error handling
+		return
+	
+	if scheme.get_current_threat() > scheme.get_property("threat", 0):	
+		var board:Board = cfc.NMAP.board
+		board.end_game("defeat")	
+	
 func game_state_changed():
 	emit_signal("game_state_changed",{})
 

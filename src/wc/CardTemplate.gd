@@ -291,6 +291,9 @@ func is_exhausted():
 func add_threat(threat : int):
 	tokens.mod_token("threat",threat)	
 
+func get_current_threat():
+	return tokens.get_token_count("threat")
+
 func common_pre_execution_scripts(_trigger: String, _trigger_details: Dictionary) -> void:
 	match _trigger:
 		"automated_enemy_attack":

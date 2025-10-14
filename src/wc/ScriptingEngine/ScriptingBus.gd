@@ -39,4 +39,7 @@ signal all_clients_game_loaded(details) #status Dict for all players
 # warning-ignore:unused_signal
 signal manapool_modified(details)
 
+# warning-ignore:unused_signal
+signal enemy_initiates_attack(card,details)
+
 

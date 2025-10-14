@@ -262,7 +262,7 @@ const TYPES_TO_GROUPS := {
 	"player_scheme" : ["group_schemes"],
 	"side_scheme" : ["group_schemes"],
 	"minion" : ["group_enemies"],
-	"villain" : ["group_enemies"],
+	"villain" : ["group_enemies", "group_villains"],
 	"hero" : ["group_identities"],
 	"alter_ego" : ["group_identities"],
 	"ally" : ["group_allies"],

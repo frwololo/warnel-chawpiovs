@@ -18,6 +18,8 @@ const KEY_SUBJECT_V_HOST := "host"
 const FILTER_HOST_OF := "filter_is_host_of"
 const FILTER_SAME_CONTROLLER := "filter_same_controller"
 
+const TRIGGER_TARGET_HERO = "target_hero"
+
 # This call has been setup to call the original, and allow futher extension
 # simply create new filter
 #TODO update/delete
@@ -40,6 +42,11 @@ static func filter_trigger(
 	if is_valid and card_scripts.get(FILTER_SAME_CONTROLLER) \
 			and !check_same_controller_filter(trigger_card,owner_card,card_scripts.get(FILTER_SAME_CONTROLLER)):
 		is_valid = false
+		
+	if is_valid and card_scripts.get("filter_" + TRIGGER_TARGET_HERO) \
+			and card_scripts.get("filter_" + TRIGGER_TARGET_HERO) != \
+			trigger_details.get(TRIGGER_TARGET_HERO):
+		is_valid = false		
 
 	return(is_valid)
 

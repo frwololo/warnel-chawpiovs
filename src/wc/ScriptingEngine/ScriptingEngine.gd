@@ -75,6 +75,22 @@ func move_card_to_container(script: ScriptTask) -> int:
 	script.script_definition = backup
 	return result
 
+func draw_cards (script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode	
+	
+	var amount = script.script_definition.get("amount", 1)
+	var owner = script.owner
+	
+	var controller_id = owner.get_controller_hero_id()
+	var hand:Hand = cfc.NMAP["hand" + str(controller_id)]
+	var deck = cfc.NMAP["deck" + str(controller_id)]
+	for i in range (amount):
+		hand.draw_card(deck)
+	return retcode
+
 #play card and move it either to a pile or a container
 # more importantly, sends the signal "card played" to the scripting engine
 func play_card(script: ScriptTask) -> int:
@@ -198,8 +214,8 @@ static func simple_discard_task(target_card):
 	var task_event = SimplifiedStackScript.new("move_card_to_container", discard_task)
 	return task_event
 
-#the ability that is triggered by automated_enemy_attack
-func defend(script: ScriptTask) -> int:
+#the ability that is triggered by enemy_attack
+func enemy_attack(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		for card in script.subjects:
@@ -249,7 +265,7 @@ func defend(script: ScriptTask) -> int:
 	return retcode
 
 func undefend(script: ScriptTask) -> int:
-	return defend(script)
+	return enemy_attack(script)
 	
 func consequential_damage(script: ScriptTask) -> int:	
 	var retcode: int = CFConst.ReturnCode.OK

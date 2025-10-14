@@ -364,17 +364,18 @@ func enemy_activates() -> int :
 		if (is_status):
 			enemy.tokens.mod_token(status, -1)
 		else:
+			scripting_bus.emit_signal("enemy_initiates_attack", enemy, {SP.TRIGGER_TARGET_HERO : get_current_target_hero().canonical_name})
 			if (enemy.get_property("type_code") == "villain"): #Or villainous?
-				enemy.draw_boost_card()
+				enemy.draw_boost_card()		
 		
 			if (heroZone.is_hero_form()):
 				#attack		
-				var sceng = enemy.execute_scripts(enemy, "automated_enemy_attack")
+				var sceng = enemy.execute_scripts(enemy, "enemy_attack")
 				if sceng is GDScriptFunctionState:
 					sceng = yield(sceng, "completed")
 				return CFConst.ReturnCode.OK
 			else:
-				#scheme
+				#scheme		
 				enemy.commit_scheme()
 				return CFConst.ReturnCode.OK
 	else:

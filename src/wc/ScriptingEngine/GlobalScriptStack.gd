@@ -193,8 +193,8 @@ remotesync func client_send_before_trigger(_interrupt_mode):
 				#Forced interrupts happen before optional ones
 				if (card in card_already_played_for_stack_uid.get(script_uid, [])):
 					continue
-				if (task.script_name == "receive_damage"):
-					if (card.canonical_name == "Backflip"):
+				if (task.script_name == "enemy_attack"):
+					if (card.canonical_name == "Spider-Man"):
 						var _tmp = 1
 				var can_interrupt = card.can_interrupt(hero_id,card, _current_interrupted_event)
 				if can_interrupt == INTERRUPT_FILTER[_interrupt_mode]:

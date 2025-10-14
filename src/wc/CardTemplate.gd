@@ -142,6 +142,11 @@ func can_interrupt(
 	var card_scripts = retrieve_filtered_scripts(trigger_card, "interrupt", trigger_details)
 	
 	if (!card_scripts):
+		return CFConst.CanInterrupt.NO	
+	
+	var state_scripts = get_state_scripts(card_scripts)
+	
+	if (!state_scripts):
 		return CFConst.CanInterrupt.NO
 	
 	#card has potential interrupts. Last we check if I'm the player who can play them
@@ -333,7 +338,7 @@ func heal(value):
 
 func common_pre_execution_scripts(_trigger: String, _trigger_details: Dictionary) -> void:
 	match _trigger:
-		"automated_enemy_attack":
+		"enemy_attack":
 			gameData.compute_potential_defenders()
 
 func can_defend():

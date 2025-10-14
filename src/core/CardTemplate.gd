@@ -1455,7 +1455,7 @@ func execute_scripts(
 	if not cfc.NMAP.has('board'):
 		return
 
-	if (trigger =="card_moved_to_board" and canonical_name == "Mockingbird" and trigger_card == self):
+	if (trigger =="enemy_initiates_attack" and canonical_name == "Spider-Man"):
 		var _tmp = 1
 
 	#we're playing a card manually but in interrupt mode.

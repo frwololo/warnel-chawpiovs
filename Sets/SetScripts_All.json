@@ -102,6 +102,18 @@
 				}
 			]
 		}
+	},
+	"Spider-Man": {
+		"enemy_initiates_attack": {
+			"board": [
+				{
+					"name" : "draw_cards",
+					"amount": 1,
+				}
+			],
+			"filter_group": "group_villains",
+			"filter_target_hero": "Spider-Man"
+		}
 	},	
 	"Swinging Web Kick": {
 		"manual": {

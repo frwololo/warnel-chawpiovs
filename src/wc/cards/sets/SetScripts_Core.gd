@@ -323,10 +323,10 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 	
 	if type_code == "villain" or type_code == "minion":
 		var villain_attack: Dictionary = { 
-			"automated_enemy_attack": {
+			"enemy_attack": {
 				"board": [
 					{
-						"name": "defend",
+						"name": "enemy_attack",
 						"subject": "boardseek",	
 						"is_cost": true,
 						"subject_count": "all",

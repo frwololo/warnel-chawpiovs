@@ -128,7 +128,7 @@ func next_action():
 	var action_type = my_action.get("type", "")
 	
 	#wait a bit if we need to choose from a selection window but that window isn't there
-	if (action_type == "choose"):
+	if (action_type == "select"):
 		if (!_current_selection_window) and delta <5:
 			return
  
@@ -181,7 +181,7 @@ remotesync func run_action(my_action:Dictionary):
 	# Play: play a card
 	#For "other", valid values are TBD
 	var action_type: String = my_action.get("type", "play")
-	var action_value: String = 	my_action.get("value", "")
+	var action_value = 	my_action.get("value", "")
 	
 	if (!action_value):
 		#TODO error
@@ -191,12 +191,12 @@ remotesync func run_action(my_action:Dictionary):
 		"play":
 			action_play(my_action["player"], action_value)
 			return
-		"choose":
-			action_choose(my_action["player"], action_value)
+		"select":
+			action_select(my_action["player"], action_value)
 			return
 		"target":
 			return
-		"select":
+		"choose":
 			return
 		"next_phase":
 			action_next_phase(action_value)
@@ -212,10 +212,20 @@ func action_play(player, card_id_or_name):
 	card.attempt_to_play()
 	return
 
-func action_choose(player, action_value):
-	match action_value:
-		"cancel":
-			return cancel_current_selection_window()
+func action_select(player, action_value):
+	var chosen_cards: Array = []
+	if typeof(action_value) == TYPE_ARRAY:
+		chosen_cards = action_value
+	else:
+		match action_value:
+			"cancel":
+				return cancel_current_selection_window()
+			_:
+				chosen_cards = [action_value]
+	
+	if (chosen_cards):
+		if (_current_selection_window):
+			_current_selection_window.select_cards_by_name(chosen_cards)
 	return
 
 func cancel_current_selection_window():
@@ -228,7 +238,7 @@ func cancel_current_selection_window():
 func action_target(player, action_value):
 	return
 	
-func action_select(player, action_value):
+func action_choose(player, action_value):
 	return
 
 #clicked on next phase. Value is the hero id	

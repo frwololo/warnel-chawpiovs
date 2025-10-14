@@ -159,7 +159,7 @@ func get_counter(counter_name: String, requesting_object = null) -> int:
 func get_counter_and_alterants(
 		counter_name: String,
 		requesting_object = null) -> Dictionary:
-	var count = counters[counter_name]
+	var count = counters.get(counter_name, 0)
 	# We iterate through the values, where each value is a dictionary
 	# with key being the counter name, and value being the temp modifier
 	var alteration = {

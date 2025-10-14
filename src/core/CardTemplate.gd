@@ -1142,7 +1142,7 @@ func move_to(targetHost: Node,
 					var grid = cfc.NMAP.board.get_grid(mandatory_grid_name)
 					if grid:
 						slot = grid.find_available_slot()
-						yield(get_tree().create_timer(0.1), "timeout")
+						#yield(get_tree().create_timer(0.1), "timeout")
 						if slot:
 							board_position = slot
 						else:
@@ -1281,6 +1281,9 @@ func move_to(targetHost: Node,
 				if typeof(board_position) == TYPE_VECTOR2:
 					_set_target_position(board_position)
 				elif board_position as BoardPlacementSlot:
+					# We need a small delay, to allow a potential new slot to instance
+					#TODO this might cause issues with the stack
+					yield(get_tree().create_timer(0.05), "timeout")
 					_set_target_position(board_position.rect_global_position)
 					board_position.occupying_card = self
 					_placement_slot = board_position
@@ -1657,7 +1660,7 @@ func get_state_exec() -> String:
 				CardState.VIEWED_IN_PILE:
 			state_exec = "pile"
 		CardState.MOVING_TO_CONTAINER:
-			if get_parent().is_in_group("hands"):
+			if get_parent() and get_parent().is_in_group("hands"):
 				state_exec = "hand"
 			else:
 				state_exec = "pile"

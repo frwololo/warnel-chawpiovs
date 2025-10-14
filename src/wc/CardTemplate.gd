@@ -295,7 +295,7 @@ func add_threat(threat : int):
 func get_current_threat():
 	return tokens.get_token_count("threat")
 
-func remove_threat(modification: int):
+func remove_threat(modification: int) -> int:
 	
 	#Crisis special case: can't remove threat from main scheme
 	if "main_scheme" == properties.get("type_code", "false"):
@@ -315,6 +315,8 @@ func remove_threat(modification: int):
 	if "side_scheme" == properties.get("type_code", "false"):
 		if get_current_threat() == 0:
 			self.discard()
+			
+	return result
 
 func discard():
 	var hero_owner_id = get_owner_hero_id()

@@ -57,12 +57,15 @@ signal optional_window_closed(optional_window, details)
 
 # This signal is not triggerring init_scripting_event() 
 # It is used to trigger the execute_scripts functions on the various scriptable objects
+signal scripting_event_about_to_trigger(trigger_card, trigger, details)
 signal scripting_event_triggered(trigger_card, trigger, details)
 
 func _ready():
 	for s in get_signal_list():
 		if s.name == "scripting_event_triggered":
 			continue
+		if s.name == "scripting_event_about_to_trigger":
+			continue			
 		if s.args.size() == 2:
 			# warning-ignore:return_value_discarded
 			connect(s.name, self, "init_scripting_event", [s.name])
@@ -95,4 +98,9 @@ func init_scripting_event(trigger_object: Card = null, details: Dictionary = {},
 #		card.execute_scripts(trigger_object,trigger,details)
 #		cfc.get_tree().call_group_flags(SceneTree.GROUP_CALL_UNIQUE  ,"cards",
 #				"execute_scripts",trigger_card,trigger,details)
+
+	#fire a first "pre" event for engine abilities that need to trigger before cards
+	emit_signal("scripting_event_about_to_trigger", trigger_object, trigger, details)
+	
+	#then fire the actual event
 	emit_signal("scripting_event_triggered", trigger_object, trigger, details)	

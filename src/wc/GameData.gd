@@ -53,6 +53,7 @@ func _ready():
 	scripting_bus.connect("selection_window_opened", self, "attempt_user_input_lock")
 	scripting_bus.connect("card_selected", self, "attempt_user_input_unlock")
 	scripting_bus.connect("scripting_event_triggered", self, "_scripting_event_triggered")
+	scripting_bus.connect("scripting_event_about_to_trigger", self, "_scripting_event_about_to_trigger")
 
 	self.add_child(theStack) #Stack needs to be in the tree for rpc calls	
 
@@ -131,6 +132,14 @@ remotesync func init_client_tests():
 func registerPhaseContainer(phasecont:PhaseContainer):
 	phaseContainer = phasecont
 
+func _scripting_event_about_to_trigger(_trigger_object = null,
+		trigger: String = "manual",
+		_trigger_details: Dictionary = {}):
+	
+	match trigger:
+		"card_moved_to_board":
+			check_ally_limit()
+	return
 
 func _scripting_event_triggered(_trigger_object = null,
 		trigger: String = "manual",
@@ -139,7 +148,7 @@ func _scripting_event_triggered(_trigger_object = null,
 	match trigger:
 		"card_token_modified":
 			check_main_scheme_defeat()
-		"card_moved_to_board", \
+		"card_moved_to_board",\
 				"card_moved_to_pile", \
 				"card_moved_to_hand" :
 			check_empty_decks(_trigger_details["source"])			
@@ -186,7 +195,7 @@ func check_empty_decks(pile_to_check):
 		return		
 	
 func move_to_next_scheme(current_scheme):
-	var set_code = current_scheme.get_property("card_set_code", "").to_lower
+	var set_code = current_scheme.get_property("card_set_code", "").to_lower()
 	var stage = current_scheme.get_property("stage")
 	
 	var next_stage = stage + 1
@@ -207,6 +216,16 @@ func move_to_next_scheme(current_scheme):
 			return new_card
 	
 	return null
+
+func check_ally_limit():
+	var my_heroes = gameData.get_my_heroes()
+	for hero_id in my_heroes:
+		var hero_data = gameData.team[hero_id]["hero_data"]
+		var ally_limit = hero_data.get_ally_limit()
+		var my_cards = cfc.NMAP.board.get_grid("allies" + String(hero_id)).get_all_cards()
+		if (my_cards.size()) > ally_limit:
+			var hero_card = gameData.get_identity_card(hero_id)
+			hero_card.execute_scripts(hero_card, "ally_limit")
 		
 #a function that checks regularly (sepcifically, whenever threat changes) if the main scheme has too much threat	
 func check_main_scheme_defeat():
@@ -334,29 +353,30 @@ func enemy_activates() -> int :
 	#force us to wait for the targeted player to trigger the script via network
 	if not (can_i_play_this_hero(target_id)):
 		return CFConst.ReturnCode.FAILED
-	var enemy:WCCard = attackers.pop_front()
+	
+	var enemy:WCCard = attackers.pop_front()	
+	
+	var heroZone:WCHeroZone = cfc.NMAP.board.heroZones[target_id]
+	var status = "stunned" if (heroZone.is_hero_form()) else "confused"
+	
 	if (enemy):
-		if (enemy.get_property("type_code")== "villain"): #Or villainous?
-			enemy.draw_boost_card()
-		var heroZone:WCHeroZone = cfc.NMAP.board.heroZones[target_id]
-		if (heroZone.is_hero_form()):
-			#attack
-			var stunned = enemy.tokens.get_token_count("stunned")
-			if (stunned):
-				enemy.tokens.mod_token("stunned", -1)
-			else:			
+		var is_status = enemy.tokens.get_token_count(status)
+		if (is_status):
+			enemy.tokens.mod_token(status, -1)
+		else:
+			if (enemy.get_property("type_code") == "villain"): #Or villainous?
+				enemy.draw_boost_card()
+		
+			if (heroZone.is_hero_form()):
+				#attack		
 				var sceng = enemy.execute_scripts(enemy, "automated_enemy_attack")
 				if sceng is GDScriptFunctionState:
 					sceng = yield(sceng, "completed")
-			return CFConst.ReturnCode.OK
-		else:
-			#scheme
-			var confused = enemy.tokens.get_token_count("confused")
-			if (confused):
-				enemy.tokens.mod_token("confused", -1)
+				return CFConst.ReturnCode.OK
 			else:
+				#scheme
 				enemy.commit_scheme()
-			return CFConst.ReturnCode.OK			
+				return CFConst.ReturnCode.OK			
 	return CFConst.ReturnCode.FAILED
 	
 func villain_threat():
@@ -516,7 +536,7 @@ func compute_potential_defenders():
 
 func hero_died(card:Card):
 	#TODO dead heroes can't play
-	dead_heroes.append(card.get_owner_hero_id)
+	dead_heroes.append(card.get_owner_hero_id())
 	if (dead_heroes.size() == team.size()):
 		var board:Board = cfc.NMAP.board
 		board.end_game("defeat")

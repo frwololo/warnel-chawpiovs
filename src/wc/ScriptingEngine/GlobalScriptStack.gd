@@ -123,7 +123,6 @@ func _process(_delta: float):
 			while func_return is GDScriptFunctionState && func_return.is_valid():
 				func_return = func_return.resume()
 			
-			run_static_abilities()
 			set_interrupt_mode(InterruptMode.NONE)
 #		var sceng = next_script.sceng
 #		var trigger_details = sceng.trigger_details
@@ -138,19 +137,6 @@ func _process(_delta: float):
 			
 	return	
 
-#run abilities that need to be checked before anything else triggers
-func run_static_abilities():
-	check_ally_limit()
-
-func check_ally_limit():
-	var my_heroes = gameData.get_my_heroes()
-	for hero_id in my_heroes:
-		var hero_data = gameData.team[hero_id]["hero_data"]
-		var ally_limit = hero_data.get_ally_limit()
-		var my_cards = cfc.NMAP.board.get_grid("allies" + String(hero_id)).get_all_cards()
-		if (my_cards.size()) > ally_limit:
-			var hero_card = gameData.get_identity_card(hero_id)
-			hero_card.execute_scripts(hero_card, "ally_limit")
 			
 	
 func is_empty():

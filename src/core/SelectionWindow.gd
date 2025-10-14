@@ -292,6 +292,16 @@ func select_cards(indexes :Array = []) -> Array:
 	emit_signal("confirmed")
 	return(selected_cards)
 
+func select_cards_by_name(names :Array = []) -> Array:
+	var all_choices = _card_dupe_map.keys()
+	for name_or_id in names:
+		for card in all_choices:
+			if (card.canonical_name.to_lower() == name_or_id.to_lower()) \
+					or (card.get_property("_code", "").to_lower() == name_or_id.to_lower()):
+				selected_cards.append(card)
+	emit_signal("confirmed")
+	return(selected_cards)
+
 
 func get_all_card_options() -> Array:
 	return(_card_dupe_map.keys())

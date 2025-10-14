@@ -64,6 +64,37 @@ func load_card_primitives():
 		primitives[card_data["name"]] = card_data;
 
 
+func parse_keywords(text:String) -> Dictionary:
+	var result:= {}
+	
+	var lc_text:String = text.to_lower()
+	for _keyword in CFConst.AUTO_KEYWORDS.keys():
+		var keyword:String = _keyword.to_lower()
+		var type = CFConst.AUTO_KEYWORDS[keyword]
+		
+
+		
+		match type:
+			"bool":		
+				var position = lc_text.find(keyword + ".")
+				if  position >=0:
+					result[keyword] = true
+			"int":
+				var position = lc_text.find(keyword + " ")
+				if  position >=0:
+					var value = lc_text.substr(position + keyword.length() + 1, 1)
+					result[keyword] = int(value)
+			"string":
+				#TODO
+				var position = lc_text.find(keyword + ".")
+				if  position >=0:
+					result[keyword] = true
+				pass
+			_:
+				#error
+				pass
+	return result
+
 func _load_one_card_definition(card_data):
 	#converting "real" numbers to "int"
 	for key in card_data.keys():
@@ -108,6 +139,13 @@ func _load_one_card_definition(card_data):
 	var lc_card_type = card_type.to_lower()
 	var force_horizontal = CFConst.FORCE_HORIZONTAL_CARDS.get(lc_card_type, false)
 	card_data["_horizontal"] = force_horizontal
+
+	if (!card_data.has("keywords")) and card_data.get("text", ""):
+		card_data["keywords"] = parse_keywords(card_data["text"])
+
+	if card_data.get("keywords", {}):
+		var _tmp = {"name": card_data["Name"], "keywords":card_data["keywords"] }
+		_tmp = 1
 
 	#TODO 2024/10/30 is this error new?
 	if not card_data.has("card_set_name"):

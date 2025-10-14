@@ -341,6 +341,36 @@ const DEFAULT_TOKEN_MAX_VALUE := {
 	"confused" : 1
 }
 
+const AUTO_KEYWORDS := {
+	"alliance" : "bool",
+	"assault" : "bool",
+	"form" : "bool",
+	"guard" : "bool",
+	"hinder" : "int",
+	"incite" : "int",
+	"linked" : "string",
+	"overkill" : "bool",
+	"patrol" : "bool",
+	"peril" : "bool",
+	"permanent" : "bool",
+	"piercing" : "bool",
+	"quickstrike" : "bool",
+	"ranged" : "bool",
+	"requirement" : "string",
+	"restricted" : "bool",
+	"retaliate" : "int",
+	"setup" : "bool",
+	"stalwart" : "bool",
+	"steady" : "bool",
+	"surge" : "bool",
+	"team-up" : "bool",
+	"teamwork" : "string",
+	"temporary" : "bool",
+	"toughness" : "bool",
+	"uses" : "string",
+	"victory" : "int",
+	"villainous" : "bool",						
+}
 const STATS_URI := "http://127.0.0.1"
 const STATS_PORT := 8000
 

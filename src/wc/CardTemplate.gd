@@ -571,3 +571,10 @@ func init_default_max_tokens():
 	for token_name in CFConst.DEFAULT_TOKEN_MAX_VALUE.keys():
 		var value = CFConst.DEFAULT_TOKEN_MAX_VALUE[token_name]
 		tokens.set_max(token_name, value)
+
+func get_keywords () -> Dictionary:
+	return get_property("keywords", {})
+
+func get_keyword(name):
+	var keywords:Dictionary = get_keywords ()
+	return keywords.get(name.to_lower(), false)

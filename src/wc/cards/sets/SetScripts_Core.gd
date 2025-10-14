@@ -8,6 +8,80 @@ func has_interrupt(script:Dictionary) -> String:
 			return k
 	return ""
 
+func keyword_to_script(keyword, _value):
+	match keyword:
+		"alliance" :
+			pass
+		"assault" :
+			pass
+		"form" :
+			pass 
+		"guard" :
+			pass 
+		"hinder" :
+			pass
+		"incite" :
+			pass
+		"linked" :
+			pass 
+		"overkill" :
+			pass 
+		"patrol" :
+			pass
+		"peril" :
+			pass 
+		"permanent" :
+			pass 
+		"piercing" :
+			pass 
+		"quickstrike" :
+			pass 
+		"ranged" :
+			pass 
+		"requirement" :
+			pass 
+		"restricted" :
+			pass 
+		"retaliate" :
+			pass
+		"setup" :
+			pass 
+		"stalwart" :
+			pass 
+		"steady" :
+			pass 
+		"surge" :
+			pass 
+		"team-up" :
+			pass 
+		"teamwork" :
+			pass 
+		"temporary" :
+			pass 
+		"toughness" :
+			return { 
+				"card_moved_to_board": {
+					"trigger": "self",
+					"board": [
+						{
+							"name": "mod_tokens",
+							"subject": "self",
+							"modification": 1,
+							"token_name":  "tough",
+						},					
+					]
+				}
+			}
+		"uses" :
+			pass 
+		"victory" :
+			pass
+		"villainous" :
+			pass
+		_:
+			pass
+	return null		
+
 # This fuction merges text files scripts for a given card 
 # with default rules for the game (rules that apply to all cards)
 # Specifically, it converts card keywords (cost, threat,...) into actual scripts for the engine
@@ -272,5 +346,11 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 			}
 		}
 		script = WCUtils.merge_dict(script,villain_attack, true)		
+	
+	var keywords:Dictionary = card.get("keywords", {})
+	for keyword in keywords.keys():
+		var k_script = keyword_to_script(keyword, keywords[keyword])
+		if (k_script):
+			script = WCUtils.merge_dict(script,k_script, true)
 	
 	return script

@@ -376,7 +376,9 @@ func enemy_activates() -> int :
 			else:
 				#scheme
 				enemy.commit_scheme()
-				return CFConst.ReturnCode.OK			
+				return CFConst.ReturnCode.OK
+	else:
+		var _error = 1						
 	return CFConst.ReturnCode.FAILED
 	
 func villain_threat():

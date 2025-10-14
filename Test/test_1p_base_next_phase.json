@@ -46,7 +46,7 @@
 			"value": "1"
 		},
 		{
-			"type": "choose",
+			"type": "select",
 			"value": "cancel",
 			"_comments": "click cancel to skip optional discard"
 		},

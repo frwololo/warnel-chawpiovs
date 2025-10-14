@@ -1,5 +1,5 @@
 {
-	"_comments": "(0) Backflip: interrupt (defense) when you would take any amount of damage from an attack, prevent all of that damage",
+	"_comments": "Interrupts: tests that I am *not* being asked to interrupt an attack if I can't",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -32,9 +32,6 @@
 			],
 			"hand1": [
 				{
-					"card": "Backflip"
-				},
-				{
 					"card": "01002"
 				}
 			]
@@ -56,10 +53,6 @@
 			"value": "cancel",
 			"_comments": "click cancel on defenders to take an undefended attack"
 		},		
-		{
-			"type": "play",
-			"value": "Backflip"
-		}
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -94,11 +87,6 @@
 				},			
 				{
 					"card": "Mockingbird"
-				}
-			],
-			"discard1": [	
-				{
-					"card": "Backflip"
 				}
 			]
 		}

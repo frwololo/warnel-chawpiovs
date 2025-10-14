@@ -1,5 +1,5 @@
 {
-	"_comments": "(0) Backflip: interrupt (defense) when you would take any amount of damage from an attack, prevent all of that damage",
+	"_comments": "Check Ally limit rule: play an ally while 3 allies are in play, check that I have to discard one of them",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -22,7 +22,7 @@
 			],
 			"deck1": [
 				{
-					"card": "Mockingbird"
+					"card": "Backflip"
 				}
 			],
 			"identity1": [
@@ -30,36 +30,39 @@
 					"card": "Spider-Man"
 				}
 			],
-			"hand1": [
+			"allies1": [
 				{
-					"card": "Backflip"
+					"card": "Black Cat"
 				},
 				{
-					"card": "01002"
-				}
+					"card": "MockingBird"
+				},
+				{
+					"card": "Nick Fury"
+				},					
+			],
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Strength"
+				},				
+				{
+					"card": "Great Responsibility"
+				}	
 			]
 		}
 	},
 	"actions": [
 		{
-			"type": "next_phase",
-			"value": "1",
-			"_comments": "going to the next phase (ending player turn) will trigger the villain attack"
+			"type": "play",
+			"value": "Jessica Jones"
 		},
 		{
 			"type": "select",
-			"value": "cancel",
-			"_comments": "click cancel to skip optional discard"
-		},			
-		{
-			"type": "select",
-			"value": "cancel",
-			"_comments": "click cancel on defenders to take an undefended attack"
-		},		
-		{
-			"type": "play",
-			"value": "Backflip"
-		}
+			"value": "MockingBird"
+		}	
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -82,24 +85,36 @@
 				}
 			],
 			"deck1": [
+				{
+					"card": "Backflip"
+				}
 			],
 			"identity1": [
 				{
 					"card": "Spider-Man"
 				}
 			],
-			"hand1": [
+			"allies1": [
 				{
-					"card": "01002"
+					"card": "Black Cat"
+				},
+				{
+					"card": "Nick Fury"
+				},
+				{
+					"card": "Jessica Jones"
+				},
+			],
+			"discard1": [
+				{
+					"card": "Great Responsibility"
+				},	
+				{
+					"card": "Strength"
 				},			
 				{
-					"card": "Mockingbird"
-				}
-			],
-			"discard1": [	
-				{
-					"card": "Backflip"
-				}
+					"card": "MockingBird"
+				}				
 			]
 		}
 	}

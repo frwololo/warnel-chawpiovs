@@ -11,10 +11,12 @@ extends Reference
 # * OK is returned when the function did not end up doing any changes
 # * CHANGE is returned when the function modified the card properties in some way
 # * FAILED is returned when the function failed to modify the card for some reason
+# * WAITING the function is waiting for something else to happen (in a different thread/coroutine, generally)
 enum ReturnCode {
 	OK,
 	CHANGED,
 	FAILED,
+	WAITING
 }
 
 enum CacheStatus {
@@ -371,6 +373,28 @@ const AUTO_KEYWORDS := {
 	"victory" : "int",
 	"villainous" : "bool",						
 }
+
+enum PHASE {
+	PLAYER,
+	VILLAIN
+}
+
+enum PHASE_STEP {
+	PLAYER_TURN,
+	PLAYER_DISCARD,
+	PLAYER_DRAW,
+	PLAYER_READY,
+	PLAYER_END,
+	VILLAIN_THREAT,
+	VILLAIN_ACTIVATES,
+	VILLAIN_MINIONS_ACTIVATE,
+	VILLAIN_DEAL_ENCOUNTER,
+	VILLAIN_REVEAL_ENCOUNTER,
+	VILLAIN_PASS_PLAYER_TOKEN,
+	VILLAIN_END,
+	ROUND_END
+}
+
 const STATS_URI := "http://127.0.0.1"
 const STATS_PORT := 8000
 

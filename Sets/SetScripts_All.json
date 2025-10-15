@@ -104,7 +104,9 @@
 		}
 	},
 	"Spider-Man": {
-		"enemy_initiates_attack": {
+		"interrupt": {
+			"event_name": "enemy_initiates_attack",
+			"is_optional_board": true,
 			"board": [
 				{
 					"name" : "draw_cards",
@@ -112,7 +114,7 @@
 				}
 			],
 			"filter_group": "group_villains",
-			"filter_target_hero": "Spider-Man"
+			"filter_target_hero": "Spider-Man"	
 		}
 	},	
 	"Swinging Web Kick": {

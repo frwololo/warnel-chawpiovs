@@ -171,18 +171,17 @@ func receive_damage(script: ScriptTask) -> int:
 		var tough = card.tokens.get_token_count("tough")
 		if (tough):
 			card.tokens.mod_token("tough", -1)
-			amount = 1
+		else:	
+			retcode = card.tokens.mod_token("damage",
+					amount,false,costs_dry_run(), tags)	
 
-		retcode = card.tokens.mod_token("damage",
-				amount,false,costs_dry_run(), tags)	
+			scripting_bus.emit_signal("card_damaged", card, script.script_definition)
 
-		scripting_bus.emit_signal("card_damaged", card, script.script_definition)
+			var total_damage:int =  card.tokens.get_token_count("damage")
+			var health = card.get_property("health", 0)
 
-		var total_damage:int =  card.tokens.get_token_count("damage")
-		var health = card.get_property("health", 0)
-
-		if total_damage >= health:
-			card.die()		
+			if total_damage >= health:
+				card.die()		
 	
 
 	return retcode
@@ -250,12 +249,17 @@ func enemy_attack(script: ScriptTask) -> int:
 		#because we add it to the stack first
 		var discard_event = simple_discard_task(boost_card)
 		gameData.theStack.add_script(discard_event)
-		
-	script.script_definition["amount"] = amount
-	var tags: Array = ["attack", "Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
-	script.script_definition["tags"] = tags
+
+	var receive_damage_definition = {
+		"name": "receive_damage",
+		"amount": amount,
+		"tags": ["attack", "Scripted"] + script.get_property(SP.KEY_TAGS)
+	}
+	var receive_damage_script:ScriptTask = ScriptTask.new(script.owner, receive_damage_definition, script.trigger_object, script.trigger_details)
+	receive_damage_script.subjects = script.subjects.duplicate()
+	receive_damage_script.is_primed = true #fake prime it since we already gave it subjects	
 	
-	var task_event = SimplifiedStackScript.new("receive_damage", script)
+	var task_event = SimplifiedStackScript.new("receive_damage", receive_damage_script)
 	gameData.theStack.add_script(task_event)
 	
 #	if (!defender):

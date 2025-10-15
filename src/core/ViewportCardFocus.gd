@@ -91,7 +91,7 @@ func _process(_delta) -> void:
 func focus_card(card: Card, show_preview := true) -> void:
 	# We check if we're already focused on this card, to avoid making duplicates
 	# the whole time
-	if not _current_focus_source:
+	if not _current_focus_source == card:
 		# We make a duplicate of the card to display and add it on its own in
 		# our viewport world
 		# This way we can standardize its scale and look and not worry about
@@ -175,7 +175,6 @@ func focus_card(card: Card, show_preview := true) -> void:
 			$VBC.rect_rotation = 90
 		else:
 			$VBC.rect_rotation = 0
-
 
 
 # Hides the focus viewport when we're done looking at it

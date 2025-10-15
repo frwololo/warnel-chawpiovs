@@ -72,7 +72,7 @@ func _game_state_changed(_details:Dictionary):
 func _game_step_started(details:Dictionary):
 	var current_step = details["step"]
 	match current_step:
-		PhaseContainer.PHASE_STEP.PLAYER_TURN:
+		CFConst.PHASE_STEP.PLAYER_TURN:
 			_can_change_form = true
 	return	
 	
@@ -152,7 +152,7 @@ func can_interrupt(
 	#card has potential interrupts. Last we check if I'm the player who can play them
 	var may_interrupt =  CFConst.CanInterrupt.NO
 
-	if gameData.can_hero_play_this_ability(hero_id,trigger_card, card_scripts):
+	if gameData.can_hero_play_this_ability(hero_id,self, card_scripts):
 		if card_scripts.get("is_optional_" + get_state_exec()):
 			may_interrupt =  CFConst.CanInterrupt.MAY
 		else:

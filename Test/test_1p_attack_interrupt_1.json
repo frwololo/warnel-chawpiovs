@@ -39,7 +39,7 @@
 	},
 	"actions": [
 		{
-			"type": "next_phase",
+			"type": "pass",
 			"value": "1",
 			"_comments": "going to the next phase (ending player turn) will trigger the villain attack"
 		},
@@ -47,7 +47,12 @@
 			"type": "select",
 			"value": "cancel",
 			"_comments": "click cancel to skip optional discard"
-		},			
+		},	
+		{
+			"type": "pass",
+			"value": "1",
+			"_comments": "click on pass to skip Spider-Man draw interrupt"
+		},		
 		{
 			"type": "select",
 			"value": "cancel",

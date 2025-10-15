@@ -37,9 +37,10 @@ var testSuite: TestSuite = null
 # Hero currently playing. We might need another one for interruptions
 var current_hero_id := 1
 
+#temp vars for bean counting
 var _villain_current_hero_target :=1
+var _current_enemy = null
 var attackers:Array = []
-
 var user_input_ongoing:int = 0 #ID of the current player (or remote player) doing a blocking game interraction
 
 func _init():
@@ -354,8 +355,20 @@ func enemy_activates() -> int :
 	if not (can_i_play_this_hero(target_id)):
 		return CFConst.ReturnCode.FAILED
 	
-	var enemy:WCCard = attackers.pop_front()	
+	var enemy:WCCard = _current_enemy
+	if (enemy): #enemy has been waiting
+		if (!theStack.is_empty()):
+			return CFConst.ReturnCode.WAITING
+	else: #first time we attempt for this enemy. Select it
+		enemy = attackers.pop_front()
+		_current_enemy = enemy
+		if (enemy):
+			#this is added to the stack after the "enemy_attack" event, but we expect it to trigger before 
+			theStack.create_and_add_signal("enemy_initiates_attack", enemy, {SP.TRIGGER_TARGET_HERO : get_current_target_hero().canonical_name})
+			return CFConst.ReturnCode.WAITING
 	
+	#we're not waiting for the stack, proceed
+	_current_enemy = null
 	var heroZone:WCHeroZone = cfc.NMAP.board.heroZones[target_id]
 	var status = "stunned" if (heroZone.is_hero_form()) else "confused"
 	
@@ -364,7 +377,6 @@ func enemy_activates() -> int :
 		if (is_status):
 			enemy.tokens.mod_token(status, -1)
 		else:
-			scripting_bus.emit_signal("enemy_initiates_attack", enemy, {SP.TRIGGER_TARGET_HERO : get_current_target_hero().canonical_name})
 			if (enemy.get_property("type_code") == "villain"): #Or villainous?
 				enemy.draw_boost_card()		
 		
@@ -649,7 +661,7 @@ func get_grid_owner_hero_id(grid_name:String) -> int:
 # and master adds it to a pile, so that there can be exclusivity on top of exclusivity? e.g. for interrupts	
 func is_waiting_for_other_player_input():
 	var current_step = phaseContainer.current_step
-	if (current_step == PhaseContainer.PHASE_STEP.VILLAIN_ACTIVATES or current_step == PhaseContainer.PHASE_STEP.VILLAIN_MINIONS_ACTIVATE):
+	if (current_step == CFConst.PHASE_STEP.VILLAIN_ACTIVATES or current_step == CFConst.PHASE_STEP.VILLAIN_MINIONS_ACTIVATE):
 		if not (can_i_play_this_hero(_villain_current_hero_target)):
 			return true
 	return false
@@ -657,6 +669,7 @@ func is_waiting_for_other_player_input():
 
 # Additional filter for triggers,
 # also see core/ScriptProperties.gd
+#todo move this logic to SP.gd
 func filter_trigger(
 		trigger:String,
 		card_scripts,
@@ -673,17 +686,6 @@ func filter_trigger(
 	#if this card has no scripts to handle interrupts, we fail
 	if !card_scripts:
 		return false
-	
-#	var trigger_event = split_trigger(trigger)
-#
-#	#for now we only consider this filter for interrupts and responses. Might expand later
-#	if (!trigger_event["timing"]):
-#		return true
-#
-#	if (card_scripts):
-#		var tmp = 0
-#
-#	var trigger_filters = card_scripts.get("trigger_filters", {})	
 
 	var event_name = _trigger_details["event_name"]
 	

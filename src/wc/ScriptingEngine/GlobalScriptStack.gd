@@ -36,6 +36,38 @@ var stack_uid_to_object:Dictionary = {}
 var object_to_stack_uid:Dictionary = {}
 var card_already_played_for_stack_uid:Dictionary = {}
 
+#display
+#TODO something fancier
+var text_edit:TextEdit = null
+
+func create_text_edit():
+	if not cfc.NMAP.has("board") or not is_instance_valid(cfc.NMAP.board):
+		return
+	text_edit = TextEdit.new()  # Create a new TextEdit node
+	text_edit.text = ""  # Set default text
+	text_edit.rect_min_size = Vector2(300, 200)  # Set minimum size
+	text_edit.wrap_enabled = true  # Enable text wrapping
+	cfc.NMAP.board.add_child(text_edit)  # Add it to the current scene
+	text_edit.anchor_left = 0.75
+	text_edit.anchor_right = 1
+	text_edit.anchor_top = 0.25
+	text_edit.visible = false
+	#text_edit.anchor_bottom = 0.5	
+
+func create_and_add_signal(_name, _owner, _details):
+	#we deconstruct locally here to reconstruct it on all clients then add it to all stacks
+	#also send GUIDs to find the right cards/targets
+	
+	var owner_uid = guidMaster.get_guid(_owner)
+	
+	rpc("client_create_and_add_signal", _name, owner_uid, _details)
+	#TODO should wait for ack from all clients before anybody can do anything further in the game
+
+remotesync func client_create_and_add_signal( _name, _owner_uid, _details):
+	var owner_card = guidMaster.get_object_by_guid(_owner_uid)
+				
+	var stackEvent:SignalStackScript = SignalStackScript.new(_name, owner_card, _details)
+	add_script(stackEvent)
 
 func create_and_add_script(sceng, run_type, trigger, trigger_details):
 	#we deconstruct locally here to reconstruct it on all clients then add it to all stacks
@@ -88,19 +120,38 @@ func add_script(object):
 	object_to_stack_uid[object] = current_stack_uid
 	
 	stack.append(object)
-	object.added_to_global_stack()
 	reset_interrupt_states()
 	return
 
 func reset_interrupt_states():
+	reset_phase_buttons()
 	interrupting_hero_id = 0
 	potential_interrupters = {}
 	set_interrupt_mode(InterruptMode.NONE)
 
 	
 func _process(_delta: float):
+	
+	if (!text_edit):
+		 create_text_edit()
+	
+	if (!text_edit):
+		return
+
+	text_edit.text = ""
+	for stack_obj in stack:
+		var tasks = stack_obj.get_tasks()
+		for task in tasks:
+			text_edit.text += task.script_name + "\n"
+
+	if text_edit.text:
+		text_edit.visible = true
+	else:
+		text_edit.visible = false
+	
 	if stack.empty(): 
 		return
+
 			
 	if (gameData.user_input_ongoing):
 		waitOneMoreTick = 2; #TODO MAGIC NUMBER. Why do we have to wait 2 passes before damage gets prevented?
@@ -109,6 +160,8 @@ func _process(_delta: float):
 	if waitOneMoreTick:
 		waitOneMoreTick -= 1
 		return		
+
+
 
 	match interrupt_mode:
 		InterruptMode.NONE:
@@ -187,16 +240,17 @@ remotesync func client_send_before_trigger(_interrupt_mode):
 		var tasks = script.get_tasks()
 		var my_interrupters:= []
 		for task in tasks:
-			_current_interrupted_event = {"event_name": task.script_name, "details": task.script_definition}
+			_current_interrupted_event = task.script_definition.duplicate()
+			_current_interrupted_event["event_name"] = task.script_name
 			for card in get_tree().get_nodes_in_group("cards"):
 				#TODO makes a distinction between MAY and MUST here
 				#Forced interrupts happen before optional ones
 				if (card in card_already_played_for_stack_uid.get(script_uid, [])):
 					continue
-				if (task.script_name == "enemy_attack"):
-					if (card.canonical_name == "Spider-Man"):
+				if (task.script_name == "receive_damage"):
+					if (card.canonical_name == "Backflip"):
 						var _tmp = 1
-				var can_interrupt = card.can_interrupt(hero_id,card, _current_interrupted_event)
+				var can_interrupt = card.can_interrupt(hero_id,task.owner, _current_interrupted_event)
 				if can_interrupt == INTERRUPT_FILTER[_interrupt_mode]:
 					my_interrupters.append(card)
 	
@@ -231,6 +285,7 @@ func pass_interrupt (hero_id):
 #call to master when I've chosen to pass my opportunity to interrupt 
 mastersync func master_pass_interrupt (hero_id):
 	#TODO ensure that caller network id actually controls that hero
+	reset_phase_buttons()
 	potential_interrupters[hero_id] = []
 	select_interrupting_player()
 
@@ -253,13 +308,27 @@ func select_interrupting_player():
 		set_interrupt_mode(InterruptMode.NOBODY_IS_INTERRUPTING)
 		rpc("client_move_to_next_step", interrupt_mode)
 	return
+
+func reset_phase_buttons():
+	for i in range (gameData.team.size()):
+		gameData.phaseContainer.reset_hero_activation_for_step(i+1)
+
+func activate_exclusive_hero(hero_id):
+	for i in range (gameData.team.size()):
+		var hero_index = i+1
+		if (hero_index == hero_id):
+			gameData.phaseContainer.activate_hero(hero_index)
+		else:
+			gameData.phaseContainer.deactivate_hero(hero_index)	
 	
 remotesync func client_set_interrupting_hero(hero_id):
 	set_interrupt_mode(InterruptMode.HERO_IS_INTERRUPTING)	
 	interrupting_hero_id = hero_id
+	activate_exclusive_hero(hero_id)
 	
 remotesync func client_move_to_next_step(_interrupt_mode):
 	set_interrupt_mode(_interrupt_mode)
+	reset_phase_buttons()
 	potential_interrupters = {}
 	if (interrupt_mode == InterruptMode.NOBODY_IS_INTERRUPTING):
 		interrupting_hero_id = 0

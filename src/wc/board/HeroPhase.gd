@@ -54,18 +54,22 @@ func update_picture():
 		heroNode.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 
 #We keep a lot of logic outside of this GUI function to allow for automated tests		
-func _on_HeroPhase_gui_input(event):		
+func _on_HeroPhase_gui_input(event):	
 	if event is InputEventMouseButton: #TODO better way to handle Tablets and consoles
 		if event.button_index == BUTTON_LEFT and event.pressed:
 			heroPhase_action()
 
-func heroPhase_action():
+func heroPhase_action():	
 	if (hero_index == gameData.get_current_hero_id()):
+		#special case: cannot switch my status from inactive to active outside of main player phase
+		if (current_state == State.FINISHED) and (get_parent().current_step != CFConst.PHASE_STEP.PLAYER_TURN):
+			return false
 		rpc("switch_status")
 	else:	
 		gameData.select_current_playing_hero(hero_index)
 	
 remotesync func switch_status(forced_state:int = -1):
+	var old_state = current_state
 	if (forced_state == -1):
 		current_state+=1
 	else:
@@ -73,12 +77,17 @@ remotesync func switch_status(forced_state:int = -1):
 		
 	if (current_state > State.FINISHED):
 		current_state = State.ACTIVE
+		
+	if current_state == old_state:
+		#don't do anything if no change
+		return
+		
 	match current_state:
 		State.ACTIVE:
-			if (gameData.is_interrupt_mode()):
-				gameData.interrupt_player_pressed_pass(self.hero_index)
 			heroNode.texture = color_tex
 		State.FINISHED:
+			if (gameData.is_interrupt_mode()):
+				gameData.interrupt_player_pressed_pass(self.hero_index)			
 			heroNode.texture = grayscale_tex	
 	_update_labels()
 	get_parent().check_end_of_player_phase()

@@ -50,6 +50,11 @@
 			"value": "cancel",
 			"_comments": "click cancel to skip optional discard"
 		},
+		{
+			"type": "pass",
+			"value": "1",
+			"_comments": "click on pass to skip Spider-Man draw interrupt"
+		},			
 	] ,
 	"end": {
 		"phase": "VILLAIN_ACTIVATES",

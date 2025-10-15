@@ -17,6 +17,7 @@ const HERO_GRID_SETUP = CFConst.HERO_GRID_SETUP
 #GUI components required for interaction
 var phaseContainer:PhaseContainer = null
 var initialized:bool = false
+var text_edit:TextEdit = null
 
 #All tests
 var test_files:Array
@@ -49,10 +50,9 @@ func _init():
 	scripting_bus.connect("all_clients_game_loaded", self, "all_clients_game_loaded")
 	scripting_bus.connect("selection_window_opened", self, "_selection_window_opened")
 	scripting_bus.connect("card_selected", self, "_selection_window_closed")	
+	create_text_edit()
 		
 func _ready():
-
-
 	#only server is allowed to run the main process	
 	if 1 != get_tree().get_network_unique_id():
 		return
@@ -60,6 +60,31 @@ func _ready():
 	load_test_files()
 	var _next = next_test()
 
+
+func create_text_edit():
+	text_edit = TextEdit.new()  # Create a new TextEdit node
+	text_edit.text = ""  # Set default text
+	text_edit.rect_min_size = Vector2(300, 200)  # Set minimum size
+	text_edit.wrap_enabled = true  # Enable text wrapping
+	cfc.NMAP.board.add_child(text_edit)  # Add it to the current scene
+	text_edit.anchor_left = 0.75
+	text_edit.anchor_right = 1
+	text_edit.anchor_top = 0.5
+	text_edit.set_syntax_coloring(true)
+	text_edit.add_color_override("number_color", Color(0.88, 0.88, 0.88))
+	text_edit.add_color_override("function_color", Color(0.88, 0.88, 0.88))
+	text_edit.add_color_override("member_variable_color", Color(0.88, 0.88, 0.88))
+	text_edit.add_color_region("<", ">", Color(1,1,0))
+	#text_edit.anchor_bottom = 0.5	
+
+func announce(text:String):
+	text_edit.text += text
+	text_edit.text = text_edit.text	
+	var last_line = text_edit.get_line_count() - 1
+	text_edit.cursor_set_line(last_line)
+	text_edit.center_viewport_to_cursor()
+
+	
 
 #Gathers GUI objects from the game that we will be calling
 func initialize_components():
@@ -104,6 +129,12 @@ func next_action():
 	
 	if cfc.NMAP.board.are_cards_still_animating():
 		return	
+	
+	#bug fix. Introduced to temorize tests
+	#to lest actions happen
+	#TODO shouldn't be needed!
+	if delta < 1:
+		return
 		
 	if (actions.size() <= current_action):
 		#if (delta < 5): 
@@ -132,6 +163,11 @@ func next_action():
 		if (!_current_selection_window) and delta <5:
 			return
  
+	#there's an issue where the offer to "pass" sometimes takes a few cycles
+	if (action_type == "pass"):
+		if delta <1:
+			return
+
 	delta = 0
 
 	
@@ -161,7 +197,8 @@ func process_action(my_action:Dictionary):
 				player = current_player_id
 			"select":
 				player = get_current_player()
-			"next_phase":
+			"next_phase",\
+			"pass":
 				var hero_id = int(action_value)
 				var player_data:PlayerData = gameData.get_hero_owner(hero_id)
 				if (player_data):
@@ -177,29 +214,36 @@ func process_action(my_action:Dictionary):
 	rpc_id(network_player_id, "run_action", my_action)
 	
 remotesync func run_action(my_action:Dictionary):	
-	#valid types: play, choose, target, select, "next_phase", other
+	#valid types: play, choose, target, select, pass ("next_phase" is a synonym), other
 	# Play: play a card
 	#For "other", valid values are TBD
 	var action_type: String = my_action.get("type", "play")
 	var action_value = 	my_action.get("value", "")
+	var action_player = my_action["player"]
 	
 	if (!action_value):
 		#TODO error
 		return
 	
+	announce("action: " + action_type + " - " + action_value + " (player " + str(action_player) +")\n")
+	var action_comment = my_action.get("_comments", "")
+	if (action_comment):
+		announce("<" + action_comment + ">\n")
+		
 	match action_type:
 		"play":
-			action_play(my_action["player"], action_value)
+			action_play(action_player, action_value)
 			return
 		"select":
-			action_select(my_action["player"], action_value)
+			action_select(action_player, action_value)
 			return
 		"target":
 			return
 		"choose":
 			return
-		"next_phase":
-			action_next_phase(action_value)
+		"next_phase",\
+		"pass":
+			action_pass(action_value)
 			return			
 		"other":
 			return
@@ -242,10 +286,10 @@ func action_choose(player, action_value):
 	return
 
 #clicked on next phase. Value is the hero id	
-func action_next_phase(action_value):
+func action_pass(action_value):
 	var hero_id = int(action_value) - 1
 	var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id]
-	heroPhase.heroPhase_action()
+	var result = heroPhase.heroPhase_action()
 	return	
 	
 func action_other(action_value):
@@ -413,14 +457,25 @@ remote func initialize_clients_test(details:Dictionary):
 
 #Loads a single test file 	
 func load_test(test_file)-> bool:
-	var json_card_data:Dictionary = WCUtils.read_json_file(test_file)
-	initial_state = json_card_data["init"]
-	actions = json_card_data["actions"]
-	end_state = json_card_data["end"]
+	announce("running test: " + test_file +"\n")
 	current_action = 0
 	forced_status = TestStatus.NONE
 	current_test_file = test_file
 	game_loaded = false
+	end_state = {}
+
+	var file:File = File.new()
+	if !file.file_exists(test_file):
+		skipped.append(test_file)
+		skipped_reason.append("file does not exist")
+		announce("skipped (file doesn't exist)\n")
+		return false
+				
+	var json_card_data:Dictionary = WCUtils.read_json_file(test_file)
+	initial_state = json_card_data["init"]
+	actions = json_card_data["actions"]
+	end_state = json_card_data["end"]
+
 	
 	#init remote clients
 	var remote_init_data = {
@@ -430,6 +485,7 @@ func load_test(test_file)-> bool:
 	rpc("initialize_clients_test", remote_init_data)
 	
 	gameData.load_gamedata(initial_state)
+
 	return true
 
 func all_clients_game_loaded(details = {}):
@@ -460,6 +516,7 @@ func next_test() -> bool:
 
 #Save test results to an output file
 remotesync func save_results():
+	announce("all tests complete, saving\n")
 	var file = File.new()
 	var to_print := ""
 	if (failed.size()):
@@ -467,6 +524,8 @@ remotesync func save_results():
 	else:
 		to_print+= "SUCCESS! (passed " +String(passed.size()) + "/" + str(test_files.size()) \
 		 + ", skipped " +  String(skipped.size()) + "/" + str(test_files.size())  + ")\n\n" 
+
+	announce (to_print)
 	to_print += "total tests: " + str(test_files.size()) + "\n"
 	to_print +=  "###\nskipped: " + str(skipped.size()) + "\n"
 

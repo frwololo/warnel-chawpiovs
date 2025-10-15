@@ -11,26 +11,6 @@ var heroPhaseScene = preload("res://src/wc/board/HeroPhase.tscn")
 #Notes on the phases
 #During another player's turn, you can play *actions* (cards or abilities)
 
-enum PHASE {
-	PLAYER,
-	VILLAIN
-}
-
-enum PHASE_STEP {
-	PLAYER_TURN,
-	PLAYER_DISCARD,
-	PLAYER_DRAW,
-	PLAYER_READY,
-	PLAYER_END,
-	VILLAIN_THREAT,
-	VILLAIN_ACTIVATES,
-	VILLAIN_MINIONS_ACTIVATE,
-	VILLAIN_DEAL_ENCOUNTER,
-	VILLAIN_REVEAL_ENCOUNTER,
-	VILLAIN_PASS_PLAYER_TOKEN,
-	VILLAIN_END,
-	ROUND_END
-}
 
 #TODO Actual names needed here
 const StepStrings = [
@@ -49,15 +29,19 @@ const StepStrings = [
 	"ROUND_END"	
 ]
 
-var current_step = PHASE_STEP.PLAYER_TURN
+const DEFAULT_HERO_STATUS: = {
+	CFConst.PHASE_STEP.PLAYER_TURN: HeroPhase.State.ACTIVE
+}
+
+var current_step = CFConst.PHASE_STEP.PLAYER_TURN
 var current_step_complete:bool = false
 var clients_ready_for_next_phase:Dictionary = {}
 
 func step_string_to_step_id(stepString:String) -> int:
-	for i in PHASE_STEP.values():
+	for i in CFConst.PHASE_STEP.values():
 		if stepString.to_upper() == StepStrings[i]:
 			return i
-	return PHASE_STEP.PLAYER_TURN #Default
+	return CFConst.PHASE_STEP.PLAYER_TURN #Default
 
 func update_text():
 	phaseLabel.text = StepStrings[current_step]
@@ -94,7 +78,7 @@ func reset():
 	update_text()	
 	
 	#reinit misc variables	
-	current_step_complete = false 	
+	set_current_step_complete(false) 	
 
 #Moving to next step needs to happen outside of the signal processing to avoid infinite loops or recursive signals
 func _process(_delta: float) -> void:
@@ -107,43 +91,51 @@ func _process(_delta: float) -> void:
 	if (!current_step_complete) :
 		return
 		
+	if gameData.user_input_ongoing:
+		return
+		
+	if cfc.game_paused:
+		return
+		
+	if cfc.modal_menu:
+		return
+		
 	match current_step:
-		PHASE_STEP.PLAYER_TURN:
+		CFConst.PHASE_STEP.PLAYER_TURN:
 			return
-		PHASE_STEP.PLAYER_DISCARD:
+		CFConst.PHASE_STEP.PLAYER_DISCARD:
 			request_next_phase()
-		PHASE_STEP.PLAYER_DRAW:
+		CFConst.PHASE_STEP.PLAYER_DRAW:
 			request_next_phase()		
-		PHASE_STEP.PLAYER_READY:
+		CFConst.PHASE_STEP.PLAYER_READY:
 			request_next_phase()					
-		PHASE_STEP.PLAYER_END:
+		CFConst.PHASE_STEP.PLAYER_END:
 			request_next_phase()
-		PHASE_STEP.VILLAIN_THREAT:
+		CFConst.PHASE_STEP.VILLAIN_THREAT:
 			request_next_phase()
-		PHASE_STEP.VILLAIN_ACTIVATES:
+		CFConst.PHASE_STEP.VILLAIN_ACTIVATES:
 			request_next_phase()			
-		PHASE_STEP.VILLAIN_MINIONS_ACTIVATE:
+		CFConst.PHASE_STEP.VILLAIN_MINIONS_ACTIVATE:
 			request_next_phase()			
-		PHASE_STEP.VILLAIN_DEAL_ENCOUNTER:
+		CFConst.PHASE_STEP.VILLAIN_DEAL_ENCOUNTER:
 			request_next_phase()		
-		PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER:
+		CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER:
 			request_next_phase()			
-		PHASE_STEP.VILLAIN_PASS_PLAYER_TOKEN:
+		CFConst.PHASE_STEP.VILLAIN_PASS_PLAYER_TOKEN:
 			request_next_phase()
-		PHASE_STEP.VILLAIN_END:
+		CFConst.PHASE_STEP.VILLAIN_END:
 			request_next_phase()
-		PHASE_STEP.ROUND_END:
+		CFConst.PHASE_STEP.ROUND_END:
 			request_next_phase()	
 	
 
 func check_end_of_player_phase():
+	if (current_step != CFConst.PHASE_STEP.PLAYER_TURN):
+		return
+		
 	for hero_phase in heroesStatus:
 		if hero_phase.current_state == HeroPhase.State.ACTIVE :
 			return
-	
-	#All heroes are ready to move to the next phase
-	for hero_phase in heroesStatus:
-		hero_phase.switch_status()
 		
 	_force_go_to_next_phase()
 	
@@ -152,49 +144,68 @@ func check_end_of_player_phase():
 #- Server tells us phase has changed
 #- Update information
 func _force_go_to_next_phase():
-	current_step_complete = true
+	set_current_step_complete(true)
 	request_next_phase()
 
 func _step_ended(	
 		trigger_details: Dictionary = {}):
 	var step = trigger_details["step"]
 	match step:
-		PHASE_STEP.VILLAIN_THREAT:
+		CFConst.PHASE_STEP.VILLAIN_THREAT:
 			#_after_villain_threat()
 			pass	
+
+func deactivate_hero(hero_id):
+	var hero_phase = heroesStatus[hero_id -1]
+	hero_phase.switch_status(HeroPhase.State.FINISHED)
+
+func activate_hero(hero_id):
+	var hero_phase = heroesStatus[hero_id -1]
+	hero_phase.switch_status(HeroPhase.State.ACTIVE)	
+
+#Makes the hero badge active to pass an interrupt or request next phase
+func reset_hero_activation_for_step(hero_id):
+	var hero_phase = heroesStatus[hero_id -1]
+	var new_status = DEFAULT_HERO_STATUS.get(current_step, HeroPhase.State.FINISHED)
+	hero_phase.switch_status(new_status)	
 
 func _step_started(	
 		trigger_details: Dictionary = {}):
 	var step = trigger_details["step"]
-	current_step_complete = false
+	set_current_step_complete(false)
+
+	#All heroes can now play
+	for i in range(gameData.get_team_size()):
+		var hero_index = i+1
+		reset_hero_activation_for_step(hero_index)
 	
 	match step:
-		PHASE_STEP.PLAYER_TURN:
-			pass
-		PHASE_STEP.PLAYER_DISCARD:
+		CFConst.PHASE_STEP.PLAYER_TURN:
+			return
+		CFConst.PHASE_STEP.PLAYER_DISCARD:
 			_player_discard()
-		PHASE_STEP.PLAYER_DRAW:
+		CFConst.PHASE_STEP.PLAYER_DRAW:
 			_player_draw()			
-		PHASE_STEP.PLAYER_READY:
+		CFConst.PHASE_STEP.PLAYER_READY:
 			_player_ready()						
-		PHASE_STEP.PLAYER_END:
-			current_step_complete = true # Do nothing
-		PHASE_STEP.VILLAIN_THREAT:
+		CFConst.PHASE_STEP.PLAYER_END:
+			set_current_step_complete(true) # Do nothing
+		CFConst.PHASE_STEP.VILLAIN_THREAT:
 			_villain_threat()
-		PHASE_STEP.VILLAIN_ACTIVATES:
+		CFConst.PHASE_STEP.VILLAIN_ACTIVATES:
 			gameData.villain_init_attackers()
 			_villain_activates()			
-		PHASE_STEP.VILLAIN_MINIONS_ACTIVATE:
+		CFConst.PHASE_STEP.VILLAIN_MINIONS_ACTIVATE:
 			_minions_activate()				
-		PHASE_STEP.VILLAIN_DEAL_ENCOUNTER:
+		CFConst.PHASE_STEP.VILLAIN_DEAL_ENCOUNTER:
 			_deal_encounters()			
-		PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER:
+		CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER:
 			_reveal_encounters()			
-		PHASE_STEP.VILLAIN_PASS_PLAYER_TOKEN:
-			current_step_complete = true # Do nothing
-		PHASE_STEP.VILLAIN_END:
-			current_step_complete = true # Do nothing
-		PHASE_STEP.ROUND_END:
+		CFConst.PHASE_STEP.VILLAIN_PASS_PLAYER_TOKEN:
+			set_current_step_complete(true) # Do nothing
+		CFConst.PHASE_STEP.VILLAIN_END:
+			set_current_step_complete(true) # Do nothing
+		CFConst.PHASE_STEP.ROUND_END:
 			_round_end()
 	return 0
 
@@ -246,20 +257,24 @@ mastersync func client_unready_for_next_phase():
 func request_next_phase():
 	if (!is_ready_for_next_phase()):
 		return
-	
+	set_current_step_complete(false)
 	rpc_id(1, "client_ready_for_next_phase")
 	
 func unrequest_next_phase():
 	rpc_id(1, "client_unready_for_next_phase")	
 
+func set_current_step_complete(value:bool):
+	if value:
+		var _tmp = 1
+	current_step_complete = value
 	
 remotesync func proceed_to_next_phase():	
 	scripting_bus.emit_signal("step_about_to_end",  {"step" : current_step})
 	scripting_bus.emit_signal("step_ended",  {"step" : current_step})
-	if (current_step == PHASE_STEP.ROUND_END):
-		current_step = PHASE_STEP.PLAYER_TURN
-	elif ((current_step == PHASE_STEP.VILLAIN_MINIONS_ACTIVATE) and gameData.villain_next_target()):
-		current_step = PHASE_STEP.VILLAIN_ACTIVATES
+	if (current_step == CFConst.PHASE_STEP.ROUND_END):
+		current_step = CFConst.PHASE_STEP.PLAYER_TURN
+	elif ((current_step == CFConst.PHASE_STEP.VILLAIN_MINIONS_ACTIVATE) and gameData.villain_next_target()):
+		current_step = CFConst.PHASE_STEP.VILLAIN_ACTIVATES
 	else:
 		current_step+=1
 	scripting_bus.emit_signal("step_about_to_start",  {"step" : current_step})
@@ -269,12 +284,12 @@ remotesync func proceed_to_next_phase():
 
 func _player_draw():
 	gameData.draw_all_players()
-	current_step_complete = true
+	set_current_step_complete(true)
 	pass	
 	
 func _player_ready():
 	gameData.ready_all_player_cards()
-	current_step_complete = true	
+	set_current_step_complete(true)	
 	pass	
 
 func _player_discard():
@@ -288,23 +303,29 @@ func _player_discard():
 			yield(get_tree().create_timer(0.05), "timeout")
 
 
-	current_step_complete = true
+	set_current_step_complete(true)
 	
 func _villain_threat():
 	gameData.villain_threat()
-	current_step_complete = true
+	set_current_step_complete(true)
 	pass	
 
 func _after_villain_threat():
 	gameData.villain_init_attackers()
-	current_step_complete = true
+	set_current_step_complete(true)
 	pass
 	
 func _villain_activates():
-	var activated_ok = gameData.enemy_activates()
-	if activated_ok is GDScriptFunctionState:
-		activated_ok = yield(activated_ok, "completed")
-	current_step_complete = true
+	set_current_step_complete(false)
+	var activated_ok = CFConst.ReturnCode.WAITING
+	while activated_ok == CFConst.ReturnCode.WAITING:
+		activated_ok = gameData.enemy_activates()
+		if activated_ok is GDScriptFunctionState:
+			activated_ok = yield(activated_ok, "completed")
+		if activated_ok == CFConst.ReturnCode.WAITING:
+			yield(get_tree().create_timer(0.05), "timeout")	
+	
+	set_current_step_complete(true)
 	pass	
 	
 func _minions_activate():
@@ -315,25 +336,25 @@ func _minions_activate():
 		activated_ok = gameData.enemy_activates()
 		if activated_ok is GDScriptFunctionState:
 			activated_ok = yield(activated_ok, "completed")
-	current_step_complete = true
+	set_current_step_complete(true)
 	pass					
 
 func _deal_encounters():
 	gameData.deal_encounters()
 	yield(get_tree().create_timer(2), "timeout")
-	current_step_complete = true
+	set_current_step_complete(true)
 	pass
 	
 func _reveal_encounters():
 	var func_return = gameData.reveal_encounters()
 	if func_return is GDScriptFunctionState && func_return.is_valid():
 		func_return = yield(func_return, "completed")
-	current_step_complete = true
+	set_current_step_complete(true)
 	pass	
 
 func _round_end():
 	gameData.end_round()
-	current_step_complete = true	
+	set_current_step_complete(true)	
 	pass
 
 func savestate_to_json() -> Dictionary:

@@ -117,12 +117,22 @@ func common_post_move_scripts(new_host: String, _old_host: String, _move_tags: A
 func attempt_to_play():
 	var state_exec = get_state_exec()
 	
-	if ((check_play_costs() != CFConst.CostsState.IMPOSSIBLE
-		and state_exec == "hand")
-		or state_exec == "board"):	
+	if !state_exec in ["hand", "board"]:
+		return false
+	
+	match state_exec:
+		"hand":
+			if check_play_costs() == CFConst.CostsState.IMPOSSIBLE:
+				return false
+			#unique rule
+			if get_property("is_unique", false):
+				var already_in_play = cfc.NMAP.board.unique_card_in_play(self)
+				if already_in_play:
+					return false	
 
-		cfc.card_drag_ongoing = null
-		execute_scripts()
+
+	cfc.card_drag_ongoing = null
+	execute_scripts()
 
 
 #returns true if this card has some ability that can interrupt
@@ -583,3 +593,10 @@ func get_keywords () -> Dictionary:
 func get_keyword(name):
 	var keywords:Dictionary = get_keywords ()
 	return keywords.get(name.to_lower(), false)
+	
+func get_unique_name() -> String:
+	var subname = get_property("subname")
+	if !subname:
+		subname = ""		
+	return canonical_name + " - " + subname
+	

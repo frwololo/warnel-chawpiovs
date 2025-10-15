@@ -1422,6 +1422,13 @@ func get_state_scripts(card_scripts):
 	var state_exec := get_state_exec()
 	var any_state_scripts = card_scripts.get('all', [])
 	state_scripts = card_scripts.get(state_exec, any_state_scripts)
+	
+	#special case of a multiple choice ability with only one choice
+	if typeof(state_scripts) == TYPE_DICTIONARY:
+		if state_scripts.size() == 1:
+			var first_key = state_scripts.keys()[0]
+			state_scripts = state_scripts[first_key]
+	
 	return state_scripts
 
 func is_dry_run(run_type):

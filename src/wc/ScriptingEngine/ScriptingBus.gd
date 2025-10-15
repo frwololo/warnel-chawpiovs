@@ -42,4 +42,6 @@ signal manapool_modified(details)
 # warning-ignore:unused_signal
 signal enemy_initiates_attack(card,details)
 
+signal round_ended()
+
 

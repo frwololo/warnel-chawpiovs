@@ -103,6 +103,49 @@
 			]
 		}
 	},
+	"Peter Parker" :{
+		"round_ended": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"set_to_mod" : true,
+					"token_name":  "peter_resource",
+				},
+			]
+		},	
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"set_to_mod" : true,
+					"token_name":  "peter_resource",
+				},
+			]
+		},	
+		"manual": {
+			"board": {
+				"add resource" :[
+					{
+						"name": "mod_tokens",
+						"subject": "self",
+						"modification": -1,
+						"token_name":  "peter_resource",
+						"is_cost": true,
+					},				
+					{
+						"name": "add_mana",
+						"modification": 1,
+						"counter_name": "mental"
+					},
+				]
+			}
+		},		
+	},
 	"Spider-Man": {
 		"interrupt": {
 			"event_name": "enemy_initiates_attack",

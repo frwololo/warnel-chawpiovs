@@ -202,9 +202,9 @@ func move_to_next_scheme(current_scheme):
 	var next_stage = stage + 1
 	var set_schemes = cfc.schemes[set_code]
 	for scheme in set_schemes:
-		if (scheme.get_property("stage", 0) == next_stage):
+		if (scheme.get("stage", 0) == next_stage):
 			var board = cfc.NMAP.board
-			var code = scheme.get_property("_code")
+			var code = scheme.get("_code")
 			var new_card = cfc.instance_card(code,current_scheme.get_owner_hero_id())
 
 			var slot = current_scheme._placement_slot
@@ -331,6 +331,7 @@ func find_main_scheme() :
 
 func end_round():
 	_villain_current_hero_target = 1
+	scripting_bus.emit_signal("round_ended")
 
 func villain_init_attackers():
 	attackers = []

@@ -131,8 +131,9 @@ func _ready() -> void:
 	#Tests
 	#draw_cheat("Combat Training")
 	draw_cheat("Mockingbird")
+	draw_cheat("Mockingbird")
 	draw_cheat("Black Cat")
-	draw_cheat("Energy")
+	#draw_cheat("Energy")
 	draw_cheat("Backflip")
 	#draw_cheat("Helicarrier")	
 	#draw_cheat("Swinging Web Kick")
@@ -555,6 +556,19 @@ func flip_doublesided_card(card:WCCard):
 	else:
 		return
 		#TODO mabe flip anyway?
+
+func unique_card_in_play(unique_card:WCCard):
+	#note: sometimes subname can be set but still equal to null, so we have to force it to empty string
+	var unique_name = unique_card.get_unique_name().to_lower()
+	
+	var all_cards = self.get_all_cards()
+	for card in all_cards:
+		if !card.is_faceup:
+			continue	
+		var card_unique_name = card.get_unique_name().to_lower()
+		if card_unique_name == unique_name:
+			return true
+	return false
 
 func _on_OptionsButton_pressed():
 	cfc.set_game_paused(true)

@@ -143,6 +143,12 @@ func _ready() -> void:
 	gameData.save_gamedata_to_file("user://Saves/_restart.json")	
 	
 
+func get_villain_card():
+	return villain.get_villain()
+
+func load_villain(card_name):
+	return villain.load_villain(card_name)
+
 func load_heroes():
 	var hero_count: int = gameData.get_team_size()
 	for i in range (hero_count): 
@@ -292,12 +298,19 @@ func load_cards() -> void:
 			})
 		load_cards_to_pile(card_data, "deck" + str(hero_id))
 
+
+func get_hero_from_pile_name(pile_name:String):
+	for i in 4:
+		var hero_id = i+1
+		if (pile_name.ends_with(str(hero_id))):
+			return hero_id
+	return 0 #villain
 	
 func load_cards_to_pile(card_data:Array, pile_name):
 	var card_array = []
 	for card in card_data:
 		var card_id:String = card["card"]
-		var hero_id = card.get("owner_hero_id", 1)
+		var hero_id = card.get("owner_hero_id", get_hero_from_pile_name(pile_name))
 		
 		#card_id here is either a card id or a card name, we try to accomodate for both
 		var card_name = cfc.idx_card_id_to_name.get(
@@ -305,6 +318,7 @@ func load_cards_to_pile(card_data:Array, pile_name):
 			cfc.lowercase_card_name_to_name.get(card_id.to_lower(), "")
 		)
 		var new_card:WCCard = cfc.instance_card(card_name, hero_id)
+		new_card.load_from_json(card)
 		card_array.append(new_card)
 
 	for card in card_array:
@@ -323,24 +337,24 @@ func load_cards_to_pile(card_data:Array, pile_name):
 				if slot:
 					card.move_to(cfc.NMAP.board, -1, slot)	
 
+		#dirty way to set some important variables
+		if (pile_name =="villain"):
+			villain.villain = card
+
 	for card in card_array:				
 		#card.interruptTweening()
 		card.reorganize_self()		
 	return
 			
 func load_cards_to_grid(card_data:Array, grid_name):
-	load_cards_to_pile(card_data, grid_name) #TODO probably doesn't work, need to check	
+	load_cards_to_pile(card_data, grid_name)	
 	return
 
 func export_cards_to_json(pile_name, cards) -> Dictionary:
 	var export_arr:Array = []
 	for card in cards:
-		var owner_hero_id = card.get_owner_hero_id()
-		var card_id = card.properties.get("_code")
-		export_arr.append({
-			"card" : card_id,
-			"owner_hero_id": owner_hero_id
-		})
+		var card_description = card.export_to_json()
+		export_arr.append(card_description)
 	var result:Dictionary = {pile_name : export_arr}	
 	return result	
 

@@ -356,6 +356,8 @@ func enemy_activates() -> int :
 	if not (can_i_play_this_hero(target_id)):
 		return CFConst.ReturnCode.FAILED
 	
+	var heroZone:WCHeroZone = cfc.NMAP.board.heroZones[target_id]
+
 	var enemy:WCCard = _current_enemy
 	if (enemy): #enemy has been waiting
 		if (!theStack.is_empty()):
@@ -364,20 +366,22 @@ func enemy_activates() -> int :
 		enemy = attackers.pop_front()
 		_current_enemy = enemy
 		if (enemy):
-			#this is added to the stack after the "enemy_attack" event, but we expect it to trigger before 
-			theStack.create_and_add_signal("enemy_initiates_attack", enemy, {SP.TRIGGER_TARGET_HERO : get_current_target_hero().canonical_name})
-			return CFConst.ReturnCode.WAITING
+			var status = "stunned" if (heroZone.is_hero_form()) else "confused"
+			var action = "attack" if (heroZone.is_hero_form()) else "scheme"
+			var is_status = enemy.tokens.get_token_count(status)
+			if (is_status):
+				enemy.tokens.mod_token(status, -1)
+				_current_enemy = null
+				return CFConst.ReturnCode.OK #return ok even though an attack didn't happen
+			else:			
+				#this is added to the stack after the "enemy_attack" event, but we expect it to trigger before 
+				theStack.create_and_add_signal("enemy_initiates_" + action, enemy, {SP.TRIGGER_TARGET_HERO : get_current_target_hero().canonical_name})
+				return CFConst.ReturnCode.WAITING
 	
 	#we're not waiting for the stack, proceed
 	_current_enemy = null
-	var heroZone:WCHeroZone = cfc.NMAP.board.heroZones[target_id]
-	var status = "stunned" if (heroZone.is_hero_form()) else "confused"
 	
 	if (enemy):
-		var is_status = enemy.tokens.get_token_count(status)
-		if (is_status):
-			enemy.tokens.mod_token(status, -1)
-		else:
 			if (enemy.get_property("type_code") == "villain"): #Or villainous?
 				enemy.draw_boost_card()		
 		
@@ -515,11 +519,7 @@ func get_encounter_target_grid (encounter) -> BoardPlacementGrid:
 	return grid	
 
 func get_villain() -> Card :
-	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid("villain")
-	if grid:
-		var slot: BoardPlacementSlot = grid.get_slot(0)
-		return slot.occupying_card
-	return null
+	return cfc.NMAP.board.get_villain_card()
 	
 func get_minions_engaged_with_player(player_id:int):
 	var results = []
@@ -566,16 +566,11 @@ func move_to_next_villain(current_villain):
 	
 	if !new_villain_data :
 		return null
+
+	current_villain.queue_free() #is more required to remove it?	
 	
-	var ckey = new_villain_data["Name"] #TODO we have name and "Name" which is a problem here...
-	var new_card = cfc.instance_card(ckey, 0)	
-	var slot = current_villain._placement_slot
-	cfc.NMAP.board.add_child(new_card)
-	current_villain.queue_free() #is more required to remove it?		
-	new_card.position = slot.rect_global_position
-	new_card._placement_slot = slot
-	slot.occupying_card = new_card
-	new_card.state = Card.CardState.ON_PLAY_BOARD
+	var ckey = new_villain_data["Name"] #TODO we have name and "Name" which is a problem here...		
+	var new_card = cfc.NMAP.board.load_villain(ckey)
 	return new_card			
 
 func villain_died(card:Card):

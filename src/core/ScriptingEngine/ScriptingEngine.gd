@@ -201,6 +201,12 @@ func execute(_run_type) -> void:
 				network_prepaid.append(script.subjects.duplicate()) #2025-03-01 added a duplicate here attempt at bug fix
 
 		if (run_type == CFInt.RunType.PRIME_ONLY):
+			#TODO There was a bug e.g. with black cat not getting its previous subjects at prime step
+			#This solves it but might lead to other issues in the future, because
+			#modifications are normally possible before setting prev_subjects
+			if not script.get_property(SP.KEY_PROTECT_PREVIOUS):
+				prev_subjects = script.subjects
+			
 			continue
 		
 		if script.is_primed:	

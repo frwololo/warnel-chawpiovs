@@ -114,10 +114,25 @@ func _process(_delta: float) -> void:
 		CFConst.PHASE_STEP.VILLAIN_THREAT:
 			request_next_phase()
 		CFConst.PHASE_STEP.VILLAIN_ACTIVATES:
+			var villain = gameData.get_villain()
+			if !villain:
+				var _error = 1
+			if villain and villain.tokens.get_token_count("stunned"):
+				var _error = 1
 			request_next_phase()			
 		CFConst.PHASE_STEP.VILLAIN_MINIONS_ACTIVATE:
+			var villain = gameData.get_villain()
+			if !villain:
+				var _error = 1
+			if villain and villain.tokens.get_token_count("stunned"):
+				var _error = 1			
 			request_next_phase()			
 		CFConst.PHASE_STEP.VILLAIN_DEAL_ENCOUNTER:
+			var villain = gameData.get_villain()
+			if !villain:
+				var _error = 1
+			if villain and villain.tokens.get_token_count("stunned"):
+				var _error = 1			
 			request_next_phase()		
 		CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER:
 			request_next_phase()			

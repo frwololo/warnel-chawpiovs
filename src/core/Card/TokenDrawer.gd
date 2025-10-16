@@ -228,3 +228,27 @@ func _on_VBoxContainer_sort_children() -> void:
 
 func set_max(token_name, max_value):
 	max_tokens[token_name] = max_value
+
+func export_to_json():
+	var result = null
+	var token_names = get_all_tokens()
+	for token_name in token_names:
+		if !result:
+			result = {}
+		result[token_name] = get_token_count(token_name)
+	return result
+
+func load_from_json(description:Dictionary):
+	for child in $Drawer/VBoxContainer.get_children():
+		child.queue_free()	
+
+	var token_names = description.keys()
+	for token_name in token_names:
+		var value =  description[token_name]
+		if (value >0):
+			var token = _TOKEN_SCENE.instance()
+			token.setup(token_name, self)
+			token.count = value
+			$Drawer/VBoxContainer.add_child(token)		
+	
+	return self	

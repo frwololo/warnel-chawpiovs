@@ -274,6 +274,7 @@ onready var tokens: TokenDrawer = $Control/Tokens
 onready var highlight = $Control/Highlight
 
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	targeting_arrow = targeting_arrow_scene.instance()
@@ -1462,7 +1463,7 @@ func execute_scripts(
 	if not cfc.NMAP.has('board'):
 		return
 
-	if (trigger =="enemy_initiates_attack" and canonical_name == "Spider-Man"):
+	if (trigger =="card_token_modified" and canonical_name == "Web-Shooter"):
 		var _tmp = 1
 
 	#we're playing a card manually but in interrupt mode.

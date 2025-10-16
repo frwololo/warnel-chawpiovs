@@ -3,6 +3,12 @@ extends Node2D
 
 #Action stack (similar to the MTG stack) where actions get piled, waiting for user input if needed
 
+#Types of Stack Objects:
+#StackScript: regular event using an sceng, typically an ability from a card
+#SimplifiedStackScript: quick and dirty task created in the code that doesn't involve Cost payments etc...
+#SignalStackScript: a scripting bus signal added to the stack
+# Example: "enemy_initiates_attack" is added to the stack before enemy attack starts
+
 enum InterruptMode {
 	NONE,
 	FORCED_INTERRUPT_CHECK,

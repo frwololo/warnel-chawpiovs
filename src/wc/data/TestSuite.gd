@@ -189,6 +189,8 @@ func process_action(my_action:Dictionary):
 		var action_type: String = my_action.get("type", "play")
 		var action_value: String = 	my_action.get("value", "")
 		match action_type:
+			"activate":
+				player = get_card_owner(action_value)
 			"play":
 				player = get_card_owner(action_value)
 			"choose":
@@ -214,8 +216,9 @@ func process_action(my_action:Dictionary):
 	rpc_id(network_player_id, "run_action", my_action)
 	
 remotesync func run_action(my_action:Dictionary):	
-	#valid types: play, choose, target, select, pass ("next_phase" is a synonym), other
+	#valid types: play, activate, choose, target, select, pass ("next_phase" is a synonym), other
 	# Play: play a card
+	# activate: double click on a card to activate its ability 
 	#For "other", valid values are TBD
 	var action_type: String = my_action.get("type", "play")
 	var action_value = 	my_action.get("value", "")
@@ -231,6 +234,8 @@ remotesync func run_action(my_action:Dictionary):
 		announce("<" + action_comment + ">\n")
 		
 	match action_type:
+		 #activate and play are actually the same behavior
+		"activate", \
 		"play":
 			action_play(action_player, action_value)
 			return
@@ -378,6 +383,7 @@ remotesync func finalize_test_allclients(force_status:int):
 				skipped.append(current_test_file)
 		return
 	var current_gamestate = gameData.save_gamedata()
+	
 	if (is_element1_in_element2(end_state, current_gamestate)):
 		passed.append(current_test_file)
 	else:
@@ -393,11 +399,15 @@ func get_corrected_card_name (card) -> String:
 	return card_name
 #check if all elements of dict1 can be found in dict2
 #This doesn't mean the dictionaries are necessarily equal
-func is_element1_in_element2 (element1, element2)-> bool:
+func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
 	
 	if (typeof(element1) != typeof(element2)):
-		failed_reason.append (str(typeof(element1)) +" - " + str(typeof(element2)))
+		failed_reason.append ("different types of data:" + str(typeof(element1)) +" - " + str(typeof(element2)))
 		return false
+	
+	var parent_append = ""
+	if (_parent_name):
+		parent_append = _parent_name + "/"
 	
 	match typeof(element1):	
 		TYPE_DICTIONARY:
@@ -412,26 +422,27 @@ func is_element1_in_element2 (element1, element2)-> bool:
 				if (key in ["hero", "card"]):
 					val1 = get_corrected_card_name(val1)
 					val2 = get_corrected_card_name(val2)	
+				
 									
-				if !is_element1_in_element2(val1, val2):
+				if !is_element1_in_element2(val1, val2, parent_append + key):
 					return false
 		TYPE_ARRAY:
 			if (element1.size() > element2.size()): #Should we rather check for not equal here?
-				failed_reason.append ("arrays not same size" + "\n" + String(element1) + "\n" + String(element2))
+				failed_reason.append ("arrays not same size (" + _parent_name  + ")\n" + String(element1) + "\n" + String(element2))
 				return false
 			var i:int = 0
 			for value in element1:
-				if !is_element1_in_element2(element1[i], element2[i]):
+				if !is_element1_in_element2(element1[i], element2[i], _parent_name):
 					return false
 				i+=1
 		TYPE_STRING:
 			#we don't care for the case
 			if (element1.to_lower() != element2.to_lower()):
-				failed_reason.append (element1 + " - " + element2)
+				failed_reason.append ("(" + _parent_name + ") expected: " + element1 + " - got: " + element2)
 				return false
 		_:	
 			if (element1 != element2):
-				failed_reason.append (str(element1) + " - " + str(element2))
+				failed_reason.append ("(" + _parent_name + ")expected: " + str(element1) + " - got: " + str(element2))
 				return false
 	return true
 	
@@ -472,6 +483,7 @@ func load_test(test_file)-> bool:
 		return false
 				
 	var json_card_data:Dictionary = WCUtils.read_json_file(test_file)
+	json_card_data = WCUtils.replace_real_to_int(json_card_data)
 	initial_state = json_card_data["init"]
 	actions = json_card_data["actions"]
 	end_state = json_card_data["end"]

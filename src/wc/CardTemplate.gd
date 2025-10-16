@@ -8,8 +8,9 @@ extends Card
 var _owner_hero_id  := -1 setget set_owner_hero_id, get_owner_hero_id
 var _controller_hero_id  := -1 setget set_controller_hero_id, get_controller_hero_id
 
-var _check_play_costs_cache_status: int = CFConst.CacheStatus.INVALID
-var _check_play_costs_cache: Color = CFConst.CostsState.OK
+var _check_play_costs_cache: Color = CFConst.CostsState.CACHE_INVALID
+
+var _on_ready_load_from_json:Dictionary = {}
 
 #marvel champions specific variables
 var _can_change_form := true
@@ -47,6 +48,8 @@ func setup() -> void:
 	_init_groups()
 	init_default_max_tokens()	
 	set_card_art()
+	_ready_load_from_json()
+	
 	gameData.connect("game_state_changed", self, "_game_state_changed")
 	scripting_bus.connect("step_started", self, "_game_step_started")
 
@@ -66,7 +69,7 @@ func set_target_highlight(colour):
 
 #flush caches and states when game state changes
 func _game_state_changed(_details:Dictionary):
-	_check_play_costs_cache_status = CFConst.CacheStatus.INVALID
+	_check_play_costs_cache = CFConst.CostsState.CACHE_INVALID
 
 #reset some variables at new turn
 func _game_step_started(details:Dictionary):
@@ -398,6 +401,16 @@ func commit_scheme():
 	
 	main_scheme.add_threat(scheme_amount)
 
+func _process_card_state() -> void:
+	._process_card_state()
+	
+	#TODO bug?
+	#sometimes the card reports being "faceup" while actually showing the back
+	#this is a fix for that
+	if get_node('Control/Back').visible == is_faceup:
+		is_faceup = !is_faceup
+		set_is_faceup(!is_faceup, true)
+
 # This function can be overriden by any class extending Card, in order to provide
 # a way of checking if a card can be played before dragging it out of the hand.
 #
@@ -410,11 +423,10 @@ func commit_scheme():
 func check_play_costs() -> Color:
 	#return .check_play_costs();
 	
-	if (_check_play_costs_cache_status == CFConst.CacheStatus.VALID):
+	if (_check_play_costs_cache != CFConst.CostsState.CACHE_INVALID):
 		return _check_play_costs_cache
 	
 	_check_play_costs_cache = CFConst.CostsState.IMPOSSIBLE
-	_check_play_costs_cache_status = CFConst.CacheStatus.VALID
 
 	#skip if card is not in hand and not on board. TODO: will have to take into account cards than can be played from other places
 	if ((get_state_exec() != "hand")
@@ -599,4 +611,32 @@ func get_unique_name() -> String:
 	if !subname:
 		subname = ""		
 	return canonical_name + " - " + subname
+
+#used for save/load	
+func export_to_json():
+	var owner_hero_id = self.get_owner_hero_id()
+	var card_id = self.properties.get("_code")
+	var tokens_to_json = self.tokens.export_to_json()
+	var card_description = {
+		"card" : card_id,
+		"owner_hero_id": owner_hero_id
+	}
+	if (tokens_to_json):
+		card_description["tokens"] = tokens_to_json
 	
+	return card_description
+
+func load_from_json(card_description):
+	_on_ready_load_from_json = card_description
+	return self
+
+func _ready_load_from_json():
+	if !_on_ready_load_from_json:
+		return self
+	var card_description = 	_on_ready_load_from_json
+	#owner_id and card_id should already be done or this card wouldn't exist
+	var tokens_to_json = card_description.get("tokens", {})
+	if (tokens_to_json):
+		tokens.load_from_json(tokens_to_json)
+	
+	return self

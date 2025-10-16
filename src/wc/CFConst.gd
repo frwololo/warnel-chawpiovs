@@ -19,10 +19,6 @@ enum ReturnCode {
 	WAITING
 }
 
-enum CacheStatus {
-	INVALID,
-	VALID,
-}
 
 enum CanInterrupt {
 	NO,
@@ -221,11 +217,13 @@ const TARGETTING_ARROW_COLOUR := TARGET_HOVER_COLOUR
 # * INCREASED: The cost of the card can be paid but is increased for some reason.
 # * DECREASED: The cost of the card can be paid and is decreased for some reason.
 # * OK: The cost of the card can be paid exactly.
+# * CACHE_INVALID: value is not valid and needs to be recalculated
 const CostsState := {
 	"IMPOSSIBLE": Color(1, 0, 0) * 1.3,
 	"INCREASED": Color(1, 0.5, 0) * 1.3,
 	"DECREASED": Color(0.5, 1, 0) * 1.3,
-	"OK": Color(0, 0.5, 1) * 1.3
+	"OK": Color(0, 0.5, 1) * 1.3,
+	"CACHE_INVALID": Color(1, 1, 1),
 }
 # This is used when filling in card property labels in [Card].setup()
 # when the property is an array, the label will still display it as a string

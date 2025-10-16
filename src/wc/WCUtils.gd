@@ -133,8 +133,7 @@ static func to_grayscale(texture : Texture) -> Texture:
 	return image_texture
 	
 
-# TODO move to a utility file
-# we operate directly on the dictionary without suplicate for speed reasons. Make a copy prior if needed
+# we operate directly on the dictionary without duplicate for speed reasons. Make a copy prior if needed
 static func search_and_replace (script_definition, from: String, to, exact_match: bool = false) -> Dictionary:
 	match typeof(script_definition):
 		TYPE_DICTIONARY:	
@@ -162,6 +161,25 @@ static func search_and_replace (script_definition, from: String, to, exact_match
 			if ((!exact_match) or (script_definition == from)):
 				script_definition = script_definition.replace(from, to)	
 	return script_definition;
+
+#replace "REAL" (float) numbers into "INT".
+#Patch utility for json loading issues
+static func replace_real_to_int (script_definition):
+	var result
+	match typeof(script_definition):
+		TYPE_DICTIONARY:
+			result = {}	
+			for key in script_definition.keys():
+				result[key] = replace_real_to_int(script_definition[key])
+		TYPE_ARRAY:	
+			result = []
+			for value in script_definition:
+				result.append(replace_real_to_int(value))
+		TYPE_REAL:
+			result = int(script_definition)
+		_:
+			result = script_definition
+	return result;
 				
 static func disable_and_hide_node(node:Node) -> void:
 	node.set_process(false) # = Mode: Disabled

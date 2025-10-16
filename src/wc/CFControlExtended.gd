@@ -102,6 +102,10 @@ func _load_one_card_definition(card_data):
 		if typeof(value) == TYPE_REAL:
 			var new_value:int = value
 			card_data[key] = new_value
+		
+		#replaces "null" with "0" for resources	
+		if key.begins_with("resource") and !value:
+			card_data[key] = 0
 
 	#Fixing missing Data
 	if not card_data.has("Tags"):
@@ -318,9 +322,12 @@ func load_script_definitions() -> void:
 	for script_file in script_definition_files:
 		var json_card_data : Dictionary
 		json_card_data = WCUtils.read_json_file("user://Sets/" + script_file)
+		#bugfix: replace "floats" to "ints"
+		json_card_data = WCUtils.replace_real_to_int(json_card_data)
 		for card_name in json_card_data.keys():
 			if not combined_scripts.get(card_name):
-				combined_scripts[card_name]	= json_card_data[card_name]	
+				var card_data= json_card_data[card_name]
+				combined_scripts[card_name]	= card_data	
 					
 
 	for card_name in card_definitions.keys():

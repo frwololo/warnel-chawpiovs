@@ -14,6 +14,37 @@
 			]
 		}
 	},
+	"Black Cat": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name" : "move_card_to_container",
+					"subject": "tutor",
+					"subject_index": "top",
+					"subject_count": 2,
+					"src_container": "deck",
+					"dest_container": "discard",
+				},
+				{
+					"name" : "move_card_to_container",
+					"subject": "previous",
+					"subject_count": "all",
+					"filter_each_previous_subject": "true",
+					"dest_container": "hand",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"resource_mental": 1,
+								"comparison":"ge"
+							}
+						}
+					]
+				},		
+				
+			]
+		},
+	},
 	"Combat Training": {
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -187,7 +218,19 @@
 					"token_name":  "web",
 				},
 			]
-		},	
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_count": 0,
+			"filter_token_name" : "web",
+			"board": [
+				{
+					"name" : "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard"
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{

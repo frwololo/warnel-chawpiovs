@@ -51,6 +51,16 @@ main h2 {
   color: #333;
   margin-bottom: 10px;
 }
+main h3 {
+  color: #333;
+  margin-bottom: 10px;
+   margin-top: 10px; 
+}
+main h4 {
+  color: #333;
+  margin-bottom: 10px;
+    margin-top: 10px;  
+}
 main p {
   line-height: 1.6;
   color: #555;

@@ -43,6 +43,52 @@
 	  <li><strong>Heroes - </strong></li>
 	  </ul>
       <p></p>
+	  <h3>Development Notes</h3>
+	  <p>Pay locally. Once paid: serialize, and add event to stack on all systems</p>
+	  <h4>The Stack</h4>
+Should the "before" and "after" events get added to the stack as well?
+<br />
+
+Marvel Champions doesn't really have a concept of a "stack", but it seems something needs to be implemented anyway, to order events, and give opportunity for players to play
+<br />
+
+***<br />
+
+When event is added to stack, GameData fires a "before_..." signal<br />
+
+- check all cards if some of them can reply (add them to a stack ?). If so, enter interrupt mode
+Interrupt mode:<br />
+<br />
+
+
+For each player:<br />
+<ul>
+<li> if reaction stack isn't empty, display a halo around each triggered card + a "pass" button</li>
+<li> while reaction stack isn't empty for all players, game can't continue</li>
+<li> click on "pass" empties reaction stack for this player</li>
+<li> click on a card triggers card play... then what ? what about other cards that could react ? (Loop through them and see if reaction is still possible + cost can still be paid ?)</li>
+<li> reaction still possible = conditions that made the thing possible are still valid + player can still pay for potential cost</li>
+</ul>
+
+Backflip:<br/>
+When Trigger (attack damage) happens, *if* we have a card/ability (in hand, in play) that can react to that trigger, then stop game processing and ask user for input (optional aka normal interrupt) OR trigger the ability (forced interrupt)
+<br />
+Current issues:<br />
+the "damage_incoming" event and actual damage are done in the same function. This leaves no room to prevent the damage
+<br />
+Solution:<br />
+separate "damage incoming" and actual damage into two dependent functions ?<br />
+"prepare_damage" sends the damage_incoming signal and adds the actual damage script to... to where ? A stack of some sort???<br />
+<br />
+Replace execute_script calls with "add_script_to_stack" everywhere<br />
+add_script_to_stack --> <br />
+1) adds the card? The scripts ? need to check what makes sense<br />
+2) Sends matching signals... how ?<br />
+<br />
+On process:<br />
+1) check if engine is waiting for user input. If yes, return<br />
+2) else, pop first script on the stack and execute it<br />
+3) Do we need to re-send the signal of the next script on the stack at this point ?<br />
     </section>
     <section id="todo">
       <h2>TODO</h2>

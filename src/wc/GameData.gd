@@ -14,6 +14,15 @@ extends Node
 const _OPTIONAL_CONFIRM_SCENE_FILE = CFConst.PATH_CORE + "OptionalConfirmation.tscn"
 const _OPTIONAL_CONFIRM_SCENE = preload(_OPTIONAL_CONFIRM_SCENE_FILE)
 
+enum EnemyAttackStatus {
+	NONE,
+	PENDING_INTERRUPT,
+	OK_TO_START_ATTACK,
+	PENDING_DEFENDERS,
+	ATTACK_COMPLETE
+}
+var _current_enemy_attack_step: int = EnemyAttackStatus.NONE
+
 #emit whenever something changes in the game state. This will trigger some recomputes
 signal game_state_changed(details)
 
@@ -152,7 +161,10 @@ func _scripting_event_triggered(_trigger_object = null,
 		"card_moved_to_board",\
 				"card_moved_to_pile", \
 				"card_moved_to_hand" :
-			check_empty_decks(_trigger_details["source"])			
+			check_empty_decks(_trigger_details["source"])
+		"enemy_initiates_attack",\
+				"enemy_initiates_scheme":
+			pre_attack_interrupts_done()			
 
 	match trigger:
 		"card_moved_to_board", \
@@ -347,7 +359,20 @@ func villain_next_target() -> int:
 		return 0
 	return 	_villain_current_hero_target
 
-func enemy_activates() -> int :
+func all_attackers_finished():
+	phaseContainer.all_enemy_attacks_finished()
+
+func current_enemy_finished():
+	attackers.pop_front()
+	_current_enemy_attack_step = EnemyAttackStatus.NONE
+
+func pre_attack_interrupts_done():
+	if _current_enemy_attack_step != EnemyAttackStatus.PENDING_INTERRUPT:
+		var _error = 1 #maybe this happens in network games ?
+		return
+	_current_enemy_attack_step = EnemyAttackStatus.OK_TO_START_ATTACK
+
+func enemy_activates() :
 	var target_id = _villain_current_hero_target
 	
 	#If we're not the targeted player, we'll fail this one,
@@ -356,48 +381,62 @@ func enemy_activates() -> int :
 	if not (can_i_play_this_hero(target_id)):
 		return CFConst.ReturnCode.FAILED
 	
-	var heroZone:WCHeroZone = cfc.NMAP.board.heroZones[target_id]
+	if !attackers.size():
+		all_attackers_finished()
+		return
 
-	var enemy:WCCard = _current_enemy
-	if (enemy): #enemy has been waiting
-		if (!theStack.is_empty()):
-			return CFConst.ReturnCode.WAITING
-	else: #first time we attempt for this enemy. Select it
-		enemy = attackers.pop_front()
-		_current_enemy = enemy
-		if (enemy):
-			var status = "stunned" if (heroZone.is_hero_form()) else "confused"
-			var action = "attack" if (heroZone.is_hero_form()) else "scheme"
-			var is_status = enemy.tokens.get_token_count(status)
-			if (is_status):
-				enemy.tokens.mod_token(status, -1)
-				_current_enemy = null
-				return CFConst.ReturnCode.OK #return ok even though an attack didn't happen
-			else:			
-				#this is added to the stack after the "enemy_attack" event, but we expect it to trigger before 
+	#there is an enemy, we'll try to attack
+	var enemy:WCCard = attackers.front() 
+
+	
+	var heroZone:WCHeroZone = cfc.NMAP.board.heroZones[target_id]
+	var status = "stunned" if (heroZone.is_hero_form()) else "confused"
+	
+	#check for stun
+	var is_status = enemy.tokens.get_token_count(status)
+	if (is_status):
+		#TODO needs to warn all network clients
+		enemy.tokens.mod_token(status, -1)
+		current_enemy_finished()
+		return
+		
+	#not stunned, proceed
+	match _current_enemy_attack_step:
+		EnemyAttackStatus.NONE:		
+				var action = "attack" if (heroZone.is_hero_form()) else "scheme"	
 				theStack.create_and_add_signal("enemy_initiates_" + action, enemy, {SP.TRIGGER_TARGET_HERO : get_current_target_hero().canonical_name})
-				return CFConst.ReturnCode.WAITING
-	
-	#we're not waiting for the stack, proceed
-	_current_enemy = null
-	
-	if (enemy):
+				_current_enemy_attack_step = EnemyAttackStatus.PENDING_INTERRUPT
+				return
+				
+		EnemyAttackStatus.OK_TO_START_ATTACK:	
 			if (enemy.get_property("type_code") == "villain"): #Or villainous?
-				enemy.draw_boost_card()		
+				enemy.draw_boost_card() #TODO send to all clients	
 		
 			if (heroZone.is_hero_form()):
 				#attack		
 				var sceng = enemy.execute_scripts(enemy, "enemy_attack")
-				if sceng is GDScriptFunctionState:
-					sceng = yield(sceng, "completed")
-				return CFConst.ReturnCode.OK
+				_current_enemy_attack_step = EnemyAttackStatus.PENDING_DEFENDERS
 			else:
 				#scheme		
-				enemy.commit_scheme()
-				return CFConst.ReturnCode.OK
-	else:
-		var _error = 1						
-	return CFConst.ReturnCode.FAILED
+				enemy.commit_scheme() #todo send to network clients
+				current_enemy_finished()
+			return
+			
+		EnemyAttackStatus.PENDING_DEFENDERS:
+			#there has to be a better way.... wait for a signal somehow ?
+			if !theStack.is_empty():
+				return
+			if cfc.modal_menu:
+				return
+			
+			_current_enemy_attack_step = EnemyAttackStatus.ATTACK_COMPLETE
+			return
+			
+		EnemyAttackStatus.ATTACK_COMPLETE:
+			current_enemy_finished()
+			return 
+
+	return
 	
 func villain_threat():
 	var main_scheme:Card = find_main_scheme()

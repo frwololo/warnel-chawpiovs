@@ -627,13 +627,19 @@ func export_to_json():
 	return card_description
 
 func load_from_json(card_description):
-	_on_ready_load_from_json = card_description
+	if (tokens):
+		_ready_load_from_json(card_description)
+	else:
+		_on_ready_load_from_json = card_description
 	return self
 
-func _ready_load_from_json():
-	if !_on_ready_load_from_json:
+func _ready_load_from_json(card_description: Dictionary = {}):
+	if (!card_description):
+		card_description = _on_ready_load_from_json
+	if !card_description:
 		return self
-	var card_description = 	_on_ready_load_from_json
+
+
 	#owner_id and card_id should already be done or this card wouldn't exist
 	var tokens_to_json = card_description.get("tokens", {})
 	if (tokens_to_json):

@@ -152,7 +152,7 @@ func load_villain(card_name):
 func load_heroes():
 	var hero_count: int = gameData.get_team_size()
 	for i in range (hero_count): 
-		heroZones[i+1].load_hero()
+		heroZones[i+1].load_starting_identity()
 		
 
 func init_hero_zones():
@@ -308,9 +308,10 @@ func get_hero_from_pile_name(pile_name:String):
 	
 func load_cards_to_pile(card_data:Array, pile_name):
 	var card_array = []
+	var pile_owner = get_hero_from_pile_name(pile_name)
 	for card in card_data:
 		var card_id:String = card["card"]
-		var hero_id = card.get("owner_hero_id", get_hero_from_pile_name(pile_name))
+		var hero_id = card.get("owner_hero_id", pile_owner)
 		
 		#card_id here is either a card id or a card name, we try to accomodate for both
 		var card_name = cfc.idx_card_id_to_name.get(
@@ -340,6 +341,8 @@ func load_cards_to_pile(card_data:Array, pile_name):
 		#dirty way to set some important variables
 		if (pile_name =="villain"):
 			villain.villain = card
+		if (pile_name.begins_with("identity")):
+			heroZones[pile_owner].identity_card = card
 
 	for card in card_array:				
 		#card.interruptTweening()
@@ -552,19 +555,25 @@ func loadstate_from_json(json:Dictionary):
 func flip_doublesided_card(card:WCCard):
 	var back_code = card.get_card_back_code()
 	if (back_code):
-		var new_card = cfc.instance_card(back_code,card.get_owner_hero_id())
-		#TODO copy tokens, state, etc...
-		var slot = card._placement_slot
-		add_child(new_card)
-		card.copy_modifiers_to(new_card)
-		card.queue_free() #is more required to remove it?		
-		#new_card._determine_idle_state()
-		#new_card.move_to(cfc.NMAP.board, -1, slot)	
-		new_card.position = slot.rect_global_position
-		new_card._placement_slot = slot
-		slot.occupying_card = new_card
-		new_card.state = Card.CardState.ON_PLAY_BOARD
-		#new_card.reorganize_self()
+		
+		if card.get_property("type_code") in ["hero", "alter_ego"]:
+			var new_card = heroZones[card.get_owner_hero_id()].load_identity(back_code)
+			card.copy_modifiers_to(new_card)
+			card.queue_free() #is more required to remove it?				
+		else:
+			var new_card = cfc.instance_card(back_code,card.get_owner_hero_id())
+			#TODO copy tokens, state, etc...
+			var slot = card._placement_slot
+			add_child(new_card)
+			card.copy_modifiers_to(new_card)
+			card.queue_free() #is more required to remove it?		
+			#new_card._determine_idle_state()
+			#new_card.move_to(cfc.NMAP.board, -1, slot)	
+			new_card.position = slot.rect_global_position
+			new_card._placement_slot = slot
+			slot.occupying_card = new_card
+			new_card.state = Card.CardState.ON_PLAY_BOARD
+			#new_card.reorganize_self()
 		
 		
 	else:

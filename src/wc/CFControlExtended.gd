@@ -299,21 +299,60 @@ func _is_deck_valid(deck) -> bool:
 		if (not idx_card_id_to_name.has(slot)):
 			return false		
 	return true
+
+func replace_text_macro (replacements, macro_value):
+	var text = to_json(macro_value)
+	for key in replacements.keys():
+		var value = replacements[key]
+		var to_replace = key
+		if (typeof(value) == TYPE_REAL or typeof(value) == TYPE_INT):
+			to_replace = "\"" + key + "\""
+		text = text.replace(to_replace, replacements[key])
+	
+	return parse_json(text)
+
+func replace_one_macro(script_definition, macro_key, macro_value):
+	var result = null
+	match typeof(script_definition):
+		TYPE_DICTIONARY:
+			result = {}	
+			for key in script_definition.keys():
+				if (key == macro_key):
+					var replacements = script_definition[key]
+					var dict = replace_text_macro(replacements, macro_value)
+					for replaced_key in dict.keys():
+						result[replaced_key] = dict[replaced_key]
+				else:
+					result[key] = replace_one_macro(script_definition[key], macro_key, macro_value)
+		TYPE_ARRAY:	
+			result = []
+			for value in script_definition:
+				result.append(replace_one_macro(value, macro_key, macro_value))
+		_:
+			result = script_definition
+	return result;	
+
+func replace_macros(json_card_data, json_macro_data):
+	var result = json_card_data
+	for macro_key in json_macro_data.keys():
+		result = replace_one_macro(result, macro_key, json_macro_data[macro_key])
+	return result
 	
 # Returns a Dictionary with the combined Script definitions of all set files
 func load_script_definitions() -> void:
-	var set_files = CFUtils.list_files_in_directory(
-			"user://Sets/", CFConst.CARD_SET_NAME_PREPEND)
-			
-	for set_file in set_files:
-		var json_card_data : Array
-		json_card_data = WCUtils.read_json_file("user://Sets/" + set_file)
-		for card_data in json_card_data:
-			#Fixing missing Data
-			if not card_data.has("Tags"):
-				card_data["Tags"] = []			
+#	var set_files = CFUtils.list_files_in_directory(
+#			"user://Sets/", CFConst.CARD_SET_NAME_PREPEND)
+#
+#	for set_file in set_files:
+#		var json_card_data : Array
+#		json_card_data = WCUtils.read_json_file("user://Sets/" + set_file)
+#		for card_data in json_card_data:
+#			#Fixing missing Data
+#			if not card_data.has("Tags"):
+#				card_data["Tags"] = []			
 	
 	var script_overrides = load(CFConst.PATH_SETS + "SetScripts_Core.gd").new()
+	var json_macro_data : Dictionary = WCUtils.read_json_file("user://Sets/_macros.json")
 	
 	var combined_scripts := {}
 	var script_definition_files := CFUtils.list_files_in_directory(
@@ -322,8 +361,10 @@ func load_script_definitions() -> void:
 	for script_file in script_definition_files:
 		var json_card_data : Dictionary
 		json_card_data = WCUtils.read_json_file("user://Sets/" + script_file)
+		json_card_data = replace_macros(json_card_data, json_macro_data)
 		#bugfix: replace "floats" to "ints"
 		json_card_data = WCUtils.replace_real_to_int(json_card_data)
+		var _text = to_json(json_card_data)
 		for card_name in json_card_data.keys():
 			if not combined_scripts.get(card_name):
 				var card_data= json_card_data[card_name]

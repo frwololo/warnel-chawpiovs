@@ -1,0 +1,27 @@
+{
+	"uses": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": "__amount__",
+					"token_name": "__name__"
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_count": 0,
+			"filter_token_name": "__name__",
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard"
+				}
+			]
+		}
+	}
+}

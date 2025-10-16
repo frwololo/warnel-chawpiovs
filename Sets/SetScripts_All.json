@@ -208,28 +208,9 @@
 		}
 	},
 	"Web-Shooter": {
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
-				{
-					"name": "mod_tokens",
-					"subject": "self",
-					"modification": 3,
-					"token_name":  "web",
-				},
-			]
-		},
-		"card_token_modified": {
-			"trigger": "self",
-			"filter_count": 0,
-			"filter_token_name" : "web",
-			"board": [
-				{
-					"name" : "move_card_to_container",
-					"subject": "self",
-					"dest_container": "discard"
-				}
-			]
+		"uses" : {
+			"__name__": "web",
+			"__amount__": 3
 		},
 		"manual": {
 			"board": [

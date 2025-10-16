@@ -1,5 +1,5 @@
 {
-	"_comments": "Basic Test to check if clicking on a card we can play it",
+	"_comments": "Tests that Web Shooter gets discarded once mods are zero",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -30,27 +30,24 @@
 					"card": "Spider-Man"
 				}
 			],
+			"upgrade_support1":[
+				{
+					"card" : "Web-Shooter",
+					"tokens": {"web" : 1}
+				}
+			],
 			"hand1": [
 				{
-					"card": "Jessica Jones"
-				},		
-				{
-					"card": "Black Cat"
-				},
-				{
-					"card": "MockingBird"
-				},
-				{
-					"card": "Swinging Web Kick"
+					"card": "Mockingbird"
 				}
 			]
 		}
 	},
 	"actions": [
 		{
-			"type": "play",
-			"value": "Jessica Jones"
-		}
+			"type": "activate",
+			"value": "Web-Shooter"
+		},
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -82,21 +79,15 @@
 					"card": "Spider-Man"
 				}
 			],
-			"allies1": [
+			"discard1":[
 				{
-					"card": "Jessica Jones"
+					"card" : "Web-Shooter",
 				}
-			],
-			"discard1": [	
+			],			
+			"hand1": [
 				{
-					"card": "Swinging Web Kick"
-				},
-				{
-					"card": "MockingBird"
-				},
-				{
-					"card": "Black Cat"
-				},				
+					"card": "Mockingbird"
+				}
 			]
 		}
 	}

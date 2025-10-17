@@ -2,7 +2,7 @@
 	{
 		"code": "01097",
 		"name": "The Break-In!",
-		"modular_default": ["Bomb Scare"],
+		"modular_default": ["bomb_scare"],
 		"encounter_sets": [
 			"Rhino",
 			"Standard",

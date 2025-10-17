@@ -102,10 +102,12 @@ func _process(_delta: float) -> void:
 			#nothing automated in player turn, they will tell us when they're done
 			return
 		CFConst.PHASE_STEP.VILLAIN_ACTIVATES:
-			#villain phase is doing some automated stuff in its process step
+			#villain activate phase is doing some automated stuff in its process step
 			gameData.enemy_activates()
 			return		
-		
+		CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER:
+			gameData.reveal_encounter()
+			return	
 	#other phases are just constantly requesting to move to the next step if they can	
 	if (!current_step_complete) :
 		return		
@@ -121,15 +123,7 @@ func _process(_delta: float) -> void:
 			request_next_phase()
 		CFConst.PHASE_STEP.VILLAIN_THREAT:
 			request_next_phase()
-		
-		CFConst.PHASE_STEP.VILLAIN_DEAL_ENCOUNTER:
-			var villain = gameData.get_villain()
-			if !villain:
-				var _error = 1
-			if villain and villain.tokens.get_token_count("stunned"):
-				var _error = 1			
-			request_next_phase()		
-		CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER:
+		CFConst.PHASE_STEP.VILLAIN_DEAL_ENCOUNTER:		
 			request_next_phase()			
 		CFConst.PHASE_STEP.VILLAIN_PASS_PLAYER_TOKEN:
 			request_next_phase()
@@ -138,6 +132,13 @@ func _process(_delta: float) -> void:
 		CFConst.PHASE_STEP.ROUND_END:
 			request_next_phase()	
 
+#called by gamedata once all encounters are revealed for the current hero
+func all_encounters_done():
+	if (current_step != CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER):
+		var _error = 1
+		return
+	_force_go_to_next_phase()	
+	
 #called by gamedata once all enemy attacks are finished for the current hero
 func all_enemy_attacks_finished():
 	if (current_step != CFConst.PHASE_STEP.VILLAIN_ACTIVATES):
@@ -212,9 +213,7 @@ func _step_started(
 			gameData.villain_init_attackers()
 			#_villain_activates()						
 		CFConst.PHASE_STEP.VILLAIN_DEAL_ENCOUNTER:
-			_deal_encounters()			
-		CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER:
-			_reveal_encounters()			
+			_deal_encounters()						
 		CFConst.PHASE_STEP.VILLAIN_PASS_PLAYER_TOKEN:
 			set_current_step_complete(true) # Do nothing
 		CFConst.PHASE_STEP.VILLAIN_END:
@@ -289,6 +288,8 @@ remotesync func proceed_to_next_phase():
 		current_step = CFConst.PHASE_STEP.PLAYER_TURN
 	elif ((current_step == CFConst.PHASE_STEP.VILLAIN_ACTIVATES) and gameData.villain_next_target()):
 		current_step = CFConst.PHASE_STEP.VILLAIN_ACTIVATES
+	elif ((current_step == CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER) and gameData.villain_next_target()):
+		current_step = CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER		
 	else:
 		current_step+=1
 	scripting_bus.emit_signal("step_about_to_start",  {"step" : current_step})
@@ -334,13 +335,6 @@ func _deal_encounters():
 	yield(get_tree().create_timer(2), "timeout")
 	set_current_step_complete(true)
 	pass
-	
-func _reveal_encounters():
-	var func_return = gameData.reveal_encounters()
-	if func_return is GDScriptFunctionState && func_return.is_valid():
-		func_return = yield(func_return, "completed")
-	set_current_step_complete(true)
-	pass	
 
 func _round_end():
 	gameData.end_round()

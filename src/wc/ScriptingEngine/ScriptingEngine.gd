@@ -311,6 +311,18 @@ func thwart(script: ScriptTask) -> int:
 		consequential_damage(script)
 	return retcode	
 
+func heal(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+	
+	var amount = script.script_definition["amount"]
+	
+	for subject in script.subjects: #should be really one subject only, generally
+		subject.heal(amount)
+
+	return CFConst.ReturnCode.CHANGED
+
 func recovery(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
@@ -366,5 +378,29 @@ func move_to_player_zone(script: ScriptTask) -> int:
 				this_card.move_to(cfc.NMAP.board, -1, slot)
 				retcode = CFConst.ReturnCode.CHANGED	
 			pass
+
+	return retcode
+
+#used only as a cost, checks a series of constraints to see if a card can be played or not
+func constraints(script: ScriptTask) -> int:
+	var retcode = CFConst.ReturnCode.CHANGED	
+	
+	var this_card = script.owner
+	var my_hero_id = this_card.get_controller_hero_id()
+	var my_hero_card = gameData.get_identity_card(my_hero_id)
+	
+	var tags: Array = script.get_property(SP.KEY_TAGS)
+	
+	for tag in tags:
+		match tag:
+			"hero_action":
+				if !my_hero_card.is_hero_form():
+					return CFConst.ReturnCode.FAILED
+			"alter_ego_action":
+				if !my_hero_card.is_alter_ego_form():
+					return CFConst.ReturnCode.FAILED					
+			"hero_resource":
+				if !my_hero_card.is_hero_form():
+					return CFConst.ReturnCode.FAILED					
 
 	return retcode

@@ -25,6 +25,16 @@ func prep(title_reference: String, script_with_choices: Dictionary) -> void:
 		$VecticalHighlights.rect_size = rect_size
 		# We spawn the dialogue at the middle of the screen.
 
+func force_select_by_title(keyword: String):
+	for i in range (get_item_count()):
+		var id = get_item_id(i)
+		var item_text = get_item_text(id).to_lower()
+		if (item_text == keyword.to_lower()):
+			_on_CardChoices_id_pressed(id)
+			emit_signal("id_pressed", id_selected)
+			return
+	
+
 func _on_CardChoices_id_pressed(id: int) -> void:
 	id_selected = id
 	selected_key = get_item_text(id)
@@ -36,3 +46,6 @@ func _on_CardChoices_popup_hide() -> void:
 	# We also allow Unit Tests to send the signal through this function
 	if not id_selected or cfc.ut:
 		emit_signal("id_pressed", id_selected)
+
+func force_cancel():
+	self.hide()

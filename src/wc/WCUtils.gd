@@ -17,6 +17,12 @@ static func read_json_file(file_path):
 	if err != OK:
 		return null
 	var content_as_text = file.get_as_text()
+	var json_errors = validate_json(content_as_text)
+	if (json_errors):
+		var error_msg = file_path + " - " + json_errors
+		print_debug(error_msg)
+		cfc.LOG(error_msg)
+		return null #TODO intentionally returning null here to force a crash until we have proper error reporting
 	var content_as_dictionary = parse_json(content_as_text)
 	return content_as_dictionary
 

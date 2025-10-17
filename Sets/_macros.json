@@ -1,4 +1,29 @@
 {
+	"once_per_round": {
+		"round_ended": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"set_to_mod" : true,
+					"token_name":  "__name__",
+				},
+			]
+		},	
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"set_to_mod" : true,
+					"token_name":  "__name__",
+				},
+			]
+		},
+	},
 	"uses": {
 		"card_moved_to_board": {
 			"trigger": "self",

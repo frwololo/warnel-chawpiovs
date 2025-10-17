@@ -75,6 +75,10 @@ func complete_targeting() -> void:
 	$ArrowHead.visible = false
 	$ArrowHead/Area2D.monitoring = false
 
+#for internal testing
+func force_select_target(target):
+	_potential_targets.append(target)
+	complete_targeting()
 
 # Triggers when a targetting arrow hovers over another card while being dragged
 #

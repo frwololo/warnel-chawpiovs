@@ -130,13 +130,13 @@ func _ready() -> void:
 	
 	#Tests
 	#draw_cheat("Combat Training")
-	draw_cheat("Mockingbird")
-	draw_cheat("Mockingbird")
+	draw_cheat("Jessica Jones")
+	#draw_cheat("Mockingbird")
 	draw_cheat("Black Cat")
 	#draw_cheat("Energy")
 	draw_cheat("Backflip")
 	#draw_cheat("Helicarrier")	
-	#draw_cheat("Swinging Web Kick")
+	draw_cheat("Swinging Web Kick")
 	cfc.LOG_DICT(guidMaster.guid_to_object)
 	
 	#Save gamedata for restart
@@ -342,7 +342,7 @@ func load_cards_to_pile(card_data:Array, pile_name):
 		if (pile_name =="villain"):
 			villain.villain = card
 		if (pile_name.begins_with("identity")):
-			heroZones[pile_owner].identity_card = card
+			heroZones[pile_owner].set_identity_card(card)
 
 	for card in card_array:				
 		#card.interruptTweening()

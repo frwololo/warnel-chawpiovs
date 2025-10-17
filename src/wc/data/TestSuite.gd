@@ -45,6 +45,7 @@ var delta:float = 0
 
 #temporary variables to keep track of objects to interact with
 var _current_selection_window = null
+var _last_activated_card = null
 
 func _init():
 	scripting_bus.connect("all_clients_game_loaded", self, "all_clients_game_loaded")
@@ -163,6 +164,10 @@ func next_action():
 		if (!_current_selection_window) and delta <5:
 			return
  
+	if (action_type == "choose"):
+		if (!cfc.modal_menu) and delta <5:
+			return
+
 	#there's an issue where the offer to "pass" sometimes takes a few cycles
 	if (action_type == "pass"):
 		if delta <1:
@@ -243,8 +248,10 @@ remotesync func run_action(my_action:Dictionary):
 			action_select(action_player, action_value)
 			return
 		"target":
+			action_target(action_player, action_value)
 			return
 		"choose":
+			action_choose(action_player, action_value)
 			return
 		"next_phase",\
 		"pass":
@@ -258,6 +265,7 @@ remotesync func run_action(my_action:Dictionary):
 
 func action_play(player, card_id_or_name):
 	var card:WCCard = get_card(card_id_or_name)
+	_last_activated_card = card
 	card.attempt_to_play()
 	return
 
@@ -285,10 +293,18 @@ func cancel_current_selection_window():
 		var _error =1
 	
 func action_target(player, action_value):
+	var target_card = get_card(action_value)
+	if (_last_activated_card):
+		_last_activated_card.targeting_arrow.force_select_target(target_card)
 	return
 	
 func action_choose(player, action_value):
-	return
+	if !cfc.modal_menu:
+		#TODO error handling
+		var _error =1	
+		return
+	
+	cfc.modal_menu.force_select_by_title(action_value)
 
 #clicked on next phase. Value is the hero id	
 func action_pass(action_value):
@@ -372,6 +388,7 @@ remotesync func finalize_test_allclients(force_status:int):
 	#Remove crap that might still be lurking around
 	cfc.cleanup_modal_menu()
 	gameData.force_reset_stack()
+	_last_activated_card = null
 	
 	if (force_status != TestStatus.NONE):
 		match force_status:

@@ -646,3 +646,13 @@ func _ready_load_from_json(card_description: Dictionary = {}):
 		tokens.load_from_json(tokens_to_json)
 	
 	return self
+
+func is_hero_form() -> bool:
+	if "hero" == properties.get("type_code", ""):
+		return true
+	return false
+	
+func is_alter_ego_form() -> bool:
+	if "alter_ego" == properties.get("type_code", ""):
+		return true
+	return false

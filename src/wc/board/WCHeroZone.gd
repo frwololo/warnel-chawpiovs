@@ -42,9 +42,15 @@ func load_identity(card_name):
 		if slot:
 			card.move_to(cfc.NMAP.board, -1, slot)		
 	card.set_is_faceup(true)
-	identity_card = card
+	set_identity_card(card)
 	return identity_card
-		
+
+func set_identity_card(card):
+	identity_card = card
+	#TODO I've had issues where moving the card out of the identity zone has caused objects to
+	#disappear. Not sure what is happening
+	identity_card.disable_dragging_from_board = true
+	identity_card.disable_dragging_from_pile = true		
 
 func get_player():
 	return my_id
@@ -54,9 +60,7 @@ func get_identity_card():
 	
 func is_hero_form() -> bool:
 	var hero_card = get_identity_card()
-	if "hero" == hero_card.properties.get("type_code", ""):
-		return true
-	return false
+	return hero_card.is_hero_form()
 	
 func is_alter_ego_form() -> bool:
 	return !is_hero_form()		

@@ -1531,6 +1531,7 @@ func execute_scripts(
 			#TODO need to help check costs here as well?
 		else:
 			var choices_menu = _CARD_CHOICES_SCENE.instance()
+			cfc.modal_menu = choices_menu
 			choices_menu.prep(canonical_name,state_scripts)
 			# We have to wait until the player has finished selecting an option
 			yield(choices_menu,"id_pressed")
@@ -1538,6 +1539,7 @@ func execute_scripts(
 			# an option, we don't execute anything
 			selected_key = choices_menu.selected_key if choices_menu.id_selected else ""
 			# Garbage cleanup
+			cfc.modal_menu = null
 			choices_menu.queue_free()
 		if selected_key:
 			state_scripts = state_scripts[selected_key]

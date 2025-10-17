@@ -23,6 +23,16 @@ enum EnemyAttackStatus {
 }
 var _current_enemy_attack_step: int = EnemyAttackStatus.NONE
 
+enum EncounterStatus {
+	NONE,
+	PENDING_REVEAL_INTERRUPT,
+	OK_TO_EXECUTE,
+	PENDING_COMPLETE,
+	ENCOUNTER_COMPLETE
+}
+var _current_encounter_step: int = EncounterStatus.NONE
+var _current_encounter:Card = null
+
 #emit whenever something changes in the game state. This will trigger some recomputes
 signal game_state_changed(details)
 
@@ -463,6 +473,10 @@ func get_facedown_encounters_pile() -> Pile :
 	var pile  = cfc.NMAP["encounters_facedown" + str(_villain_current_hero_target)]
 	return pile
 	
+func get_revealed_encounters_pile() -> Pile :
+	var pile  = cfc.NMAP["encounters_reveal" + str(_villain_current_hero_target)]
+	return pile	
+	
 func get_enemies_grid() -> BoardPlacementGrid :
 	var grid  = cfc.NMAP.board.get_grid("enemies" + str(_villain_current_hero_target))
 
@@ -506,39 +520,84 @@ func deal_one_encounter_to(hero_id):
 		var _error = 1
 		pass		
 
-#TODO need something much more advanced here, per player, etc...
-func reveal_encounters():
-	while true: #loop through all heroes. see villain_next_target call below
-		var facedown_encounters:Pile = get_facedown_encounters_pile()
-		var encounter:Card = facedown_encounters.get_top_card()
-		while (encounter): #Loop through all encounters in the current facedown pile
-			while Card.CardState.MOVING_TO_CONTAINER == encounter.state:
-				yield(get_tree().create_timer(0.05), "timeout")
-			
-			var grid: BoardPlacementGrid = get_encounter_target_grid(encounter)
-			
-			if grid:
-				var slot: BoardPlacementSlot = grid.find_available_slot()
-				if slot:
-					#Needs a bit of a timer to ensure the slot gets created	
-					
-					yield(get_tree().create_timer(0.05), "timeout")
-					# How to get rid of this mess?
-					# We have to flip the card in order for the script to execute
-					# But in the main scheme setup this works flawlessly...
-					encounter.set_is_faceup(true,true)
-					encounter.move_to(cfc.NMAP.board, -1, slot)
-					#encounter.set_is_faceup(false, true)
-					#encounter.set_is_faceup(true)
-			else:
-				push_error("ERROR: Missing target grid in reval_encounters")		
-		
-			encounter = facedown_encounters.get_top_card()
-		
-		if (!villain_next_target()): # This forces to change the next facedown destination
-			return	
-
+func all_encounters_finished():
+	phaseContainer.all_encounters_done()
 	pass
+
+func current_encounter_finished():
+	_current_encounter = null
+	_current_encounter_step = EncounterStatus.NONE
+	pass
+
+
+#TODO need something much more advanced here, per player, etc...
+func reveal_encounter():
+	var target_id = _villain_current_hero_target
+	
+	#If we're not the targeted player, we'll fail this one,
+	#and go into "wait for next phase" instantly. This should 
+	#force us to wait for the targeted player to trigger the script via network
+	if not (can_i_play_this_hero(target_id)):
+		return CFConst.ReturnCode.FAILED
+		
+	if !_current_encounter:
+		var facedown_encounters:Pile = get_facedown_encounters_pile()
+		_current_encounter = facedown_encounters.get_top_card()
+	
+	if !_current_encounter:
+		all_encounters_finished()
+		return
+
+	if Card.CardState.MOVING_TO_CONTAINER == _current_encounter.state:
+		return
+	
+	#an encounter is available, proceed
+	match _current_encounter_step:
+		EncounterStatus.NONE:
+			#TODO might need to send a signal before that?
+			_current_encounter.move_to(get_revealed_encounters_pile())
+			_current_encounter.set_is_faceup(true,false)	
+			var sceng = _current_encounter.execute_scripts(_current_encounter, "reveal")
+			_current_encounter_step = EncounterStatus.PENDING_REVEAL_INTERRUPT
+			return
+		EncounterStatus.PENDING_REVEAL_INTERRUPT:
+			#todo replace this with a signal
+			if !theStack.is_empty():
+				return
+			if cfc.modal_menu:
+				return
+			
+			_current_encounter_step = EncounterStatus.OK_TO_EXECUTE
+			return					
+		EncounterStatus.OK_TO_EXECUTE:
+			#todo send to network			
+			var grid: BoardPlacementGrid = get_encounter_target_grid(_current_encounter)
+			var slot: BoardPlacementSlot = grid.find_available_slot()
+			if slot:
+				#Needs a bit of a timer to ensure the slot gets created	
+				# How to get rid of this mess?
+				# We have to flip the card in order for the script to execute
+				# But in the main scheme setup this works flawlessly...
+				_current_encounter.move_to(cfc.NMAP.board, -1, slot)
+				#encounter.set_is_faceup(false, true)
+				#encounter.set_is_faceup(true)
+				_current_encounter_step = EncounterStatus.PENDING_COMPLETE
+			else:
+				push_error("ERROR: Missing target grid in reval_encounters")	
+		EncounterStatus.PENDING_COMPLETE:
+			#there has to be a better way.... wait for a signal somehow ?
+			if !theStack.is_empty():
+				return
+			if cfc.modal_menu:
+				return
+			
+			_current_encounter_step = EncounterStatus.ENCOUNTER_COMPLETE
+			return
+			
+		EncounterStatus.ENCOUNTER_COMPLETE:
+			current_encounter_finished()
+			return 
+	return
 
 #TODO need to move thi to some configuration driven logic
 func get_encounter_target_grid (encounter) -> BoardPlacementGrid:

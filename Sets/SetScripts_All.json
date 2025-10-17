@@ -1,4 +1,32 @@
-{	"Backflip": {
+{	
+	"Aunt May": {
+		"manual": {
+			"board": [
+				{	
+					"name": "constraints",
+					"is_cost": true,
+					"tags": ["alter_ego_action"]
+				},
+				{
+					"name": "rotate_card",
+					"subject": "self",
+					"degrees": 90,
+					"is_cost" : true,
+				},							
+				{
+					"name": "heal",
+					"subject": "boardseek",
+					"subject_count": "1",
+					"filter_state_seek": [{
+						"filter_properties": {
+							"Name" : "Peter Parker"
+						}
+					}]
+				}	
+			]
+		},
+	},
+	"Backflip": {
 		"interrupt": {
 			"event_name": "receive_damage",
 			"event_filters": {
@@ -117,6 +145,29 @@
 			]
 		},		
 	},
+	"Jessica Jones": {	
+		"alterants": {
+			"board": [
+				{					
+					"filter_task" : "get_property",
+					"filter_property_name" : "thwart",
+					"subject": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "side_scheme"
+								}
+							}
+						]
+					},
+					"alteration": "per_boardseek"
+				}
+			]
+		}		
+	},	
 	"Mockingbird": {
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -135,29 +186,9 @@
 		}
 	},
 	"Peter Parker" :{
-		"round_ended": {
-			"board": [
-				{
-					"name": "mod_tokens",
-					"subject": "self",
-					"modification": 1,
-					"set_to_mod" : true,
-					"token_name":  "peter_resource",
-				},
-			]
-		},	
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
-				{
-					"name": "mod_tokens",
-					"subject": "self",
-					"modification": 1,
-					"set_to_mod" : true,
-					"token_name":  "peter_resource",
-				},
-			]
-		},	
+		"once_per_round" : {
+			"__name__": "peter_resource"
+		},
 		"manual": {
 			"board": {
 				"add resource" :[
@@ -193,18 +224,24 @@
 	},	
 	"Swinging Web Kick": {
 		"manual": {
-			"hand": [
-				{
-					"name" : "attack",
-					"subject": "target",
-					"amount" : 8,
-					"needs_subject": true,
-					"filter_state_subject": [{
-						"filter_group" : "group_enemies"
-					}],
-					"tags" : ["hero_action", "attack"]
-				}
-			]
+			"hand" :
+				[
+					{	
+						"name": "constraints",
+						"is_cost": true,
+						"tags": ["hero_action"]
+					},
+					{
+						"name" : "attack",
+						"subject": "target",
+						"amount" : 8,
+						"needs_subject": true,
+						"filter_state_subject": [{
+							"filter_group" : "group_enemies"
+						}],
+						"tags" : ["hero_action", "attack"]
+					}
+				]
 		}
 	},
 	"Web-Shooter": {
@@ -214,6 +251,11 @@
 		},
 		"manual": {
 			"board": [
+				{	
+						"name": "constraints",
+						"is_cost": true,
+						"tags": ["hero_resource"]
+				},			
 				{
 					"name": "rotate_card",
 					"subject": "self",

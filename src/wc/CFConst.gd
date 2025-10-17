@@ -275,7 +275,8 @@ const FORCE_HORIZONTAL_CARDS := {
 }
 
 const TYPECODE_TO_PILE := {
-	"event" : "discard{current_hero}"
+	"event" : "discard{current_hero}",
+	"treachery": "discard_villain"
 }
 
 const TYPECODE_TO_GRID := {
@@ -287,6 +288,17 @@ const TYPECODE_TO_GRID := {
 }
 
 const GRID_SETUP := {
+	"deck_villain" :{
+		"x" : 0,
+		"y" : 0,
+		"type" : "pile"
+	},
+	"discard_villain" :{
+		"x" : 150,
+		"y" : 0,
+		"type" : "pile",
+		"faceup" : true
+	},		
 	"villain" : {
 		"x" : 300,
 		"y" : 0,

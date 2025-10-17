@@ -382,6 +382,9 @@ func pre_attack_interrupts_done():
 		return
 	_current_enemy_attack_step = EnemyAttackStatus.OK_TO_START_ATTACK
 
+func add_enemy_activation(enemy, activation_type:String = "attack"):
+	attackers.append({"subject":enemy, "type": activation_type})
+
 func enemy_activates() :
 	var target_id = _villain_current_hero_target
 	
@@ -390,17 +393,25 @@ func enemy_activates() :
 	#force us to wait for the targeted player to trigger the script via network
 	if not (can_i_play_this_hero(target_id)):
 		return CFConst.ReturnCode.FAILED
-	
 	if !attackers.size():
 		all_attackers_finished()
 		return
 
 	#there is an enemy, we'll try to attack
-	var enemy:WCCard = attackers.front() 
+	var heroZone:WCHeroZone = cfc.NMAP.board.heroZones[target_id]
+	var attacker_data = attackers.front()
+	var action = "attack" if (heroZone.is_hero_form()) else "scheme"
+	
+	var enemy:WCCard = null
+	if (typeof (attacker_data) == TYPE_DICTIONARY):
+		enemy = attacker_data["subject"]
+		action = attacker_data["activation_type"]
+	else:
+		enemy = attacker_data
 
 	
-	var heroZone:WCHeroZone = cfc.NMAP.board.heroZones[target_id]
-	var status = "stunned" if (heroZone.is_hero_form()) else "confused"
+
+	var status = "stunned" if (action=="attack") else "confused"
 	
 	#check for stun
 	var is_status = enemy.tokens.get_token_count(status)
@@ -412,8 +423,7 @@ func enemy_activates() :
 		
 	#not stunned, proceed
 	match _current_enemy_attack_step:
-		EnemyAttackStatus.NONE:		
-				var action = "attack" if (heroZone.is_hero_form()) else "scheme"	
+		EnemyAttackStatus.NONE:							
 				theStack.create_and_add_signal("enemy_initiates_" + action, enemy, {SP.TRIGGER_TARGET_HERO : get_current_target_hero().canonical_name})
 				_current_enemy_attack_step = EnemyAttackStatus.PENDING_INTERRUPT
 				return
@@ -422,7 +432,7 @@ func enemy_activates() :
 			if (enemy.get_property("type_code") == "villain"): #Or villainous?
 				enemy.draw_boost_card() #TODO send to all clients	
 		
-			if (heroZone.is_hero_form()):
+			if (action =="attack"):
 				#attack		
 				var sceng = enemy.execute_scripts(enemy, "enemy_attack")
 				_current_enemy_attack_step = EnemyAttackStatus.PENDING_DEFENDERS
@@ -595,11 +605,14 @@ func reveal_encounter():
 			return
 			
 		EncounterStatus.ENCOUNTER_COMPLETE:
+			var target_pile = get_encounter_target_pile(_current_encounter)
+			if (target_pile):
+				_current_encounter.move_to(target_pile)
 			current_encounter_finished()
 			return 
 	return
 
-#TODO need to move thi to some configuration driven logic
+#TODO need to move this to some configuration driven logic
 func get_encounter_target_grid (encounter) -> BoardPlacementGrid:
 	var typecode = encounter.properties.get("type_code", "")
 	var grid_name = CFConst.TYPECODE_TO_GRID.get(typecode, "villain_misc")
@@ -615,6 +628,16 @@ func get_encounter_target_grid (encounter) -> BoardPlacementGrid:
 	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(grid_name)
 	
 	return grid	
+	
+func get_encounter_target_pile (encounter):
+	var typecode = encounter.properties.get("type_code", "")
+	var pile_name = CFConst.TYPECODE_TO_PILE.get(typecode, "")
+	
+	if !pile_name:
+		return null
+
+	return cfc.NMAP.get(pile_name, null)
+	
 
 func get_villain() -> Card :
 	return cfc.NMAP.board.get_villain_card()
@@ -832,7 +855,9 @@ func confirm(
 	return(is_accepted)
 	
 
-func force_reset_stack():
+func cleanup_post_game():
+	attackers = []
+	
 	theStack.queue_free()
 	theStack = GlobalScriptStack.new()
 	self.add_child(theStack)

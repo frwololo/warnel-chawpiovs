@@ -298,6 +298,27 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 					}				
 				]
 			},
+			"mulligan": {
+				"board": [
+					{
+						"name": "move_card_to_container",
+						"is_cost": true,
+						"subject": "index",
+						"subject_count": "all",
+						"subject_index": "top",
+						SP.KEY_NEEDS_SELECTION: true,
+						SP.KEY_SELECTION_COUNT:0, 
+						SP.KEY_SELECTION_TYPE: "min",
+						SP.KEY_SELECTION_OPTIONAL: true,
+						"src_container": "hand",
+						"dest_container": "discard",						
+						"display_title": "Mulligan"
+					},
+					{
+						"name" : "draw_to_hand_size",
+					}				
+				]
+			},			
 			"end_phase_discard": {
 				"board": [
 					{

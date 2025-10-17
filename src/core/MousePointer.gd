@@ -49,7 +49,8 @@ func _process(_delta: float) -> void:
 				and current_focused_card.state == Card.CardState.IN_HAND:
 			current_focused_card.state = Card.CardState.FOCUSED_IN_HAND
 	if cfc.card_drag_ongoing and cfc.card_drag_ongoing != current_focused_card:
-		current_focused_card = cfc.card_drag_ongoing
+		#current_focused_card = cfc.card_drag_ongoing
+		set_current_focused_card(cfc.card_drag_ongoing)
 	if cfc._debug:
 		$DebugShape/current_focused_card.text = "MOUSE: " + str(current_focused_card)
 #	print([position,get_overlapping_areas()])
@@ -151,9 +152,19 @@ func enable() -> void:
 
 
 func forget_focus() -> void:
-	current_focused_card = null
+	#current_focused_card = null
+	set_current_focused_card(null)
 
-
+func set_current_focused_card(value):
+	if current_focused_card == value:
+		return
+	if current_focused_card:
+		current_focused_card._on_Card_mouse_exited()
+	
+	current_focused_card = value
+	if current_focused_card:
+		current_focused_card._on_Card_mouse_entered()
+		
 func set_disabled(value) -> void:
 	forget_focus()
 	overlaps.clear()
@@ -239,8 +250,9 @@ func _discover_focus() -> void:
 				if current_focused_card:
 					current_focused_card._on_Card_mouse_exited()
 				if not cfc.card_drag_ongoing:
-					card._on_Card_mouse_entered()
-					current_focused_card = card
+					set_current_focused_card(card)
+					#card._on_Card_mouse_entered()
+					#current_focused_card = card
 		# If we have potential hosts, then we highlight the highest index one
 		if not potential_hosts.empty():
 			cfc.card_drag_ongoing.potential_host = \

@@ -11,12 +11,7 @@ var villain = null
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	scenario_data = gameData.scenario
-	
-	#TODO Not sure why this is needed since the values are hardcoded in the editor, but somehow it doesn't work
-	$ControlDiscard/discard_villain.set_pile_name("discard_villain")
-	$ControlDiscard/discard_villain.name = "discard_villain"
-	$ControlDeck/deck_villain.set_pile_name("deck_villain")
-	$ControlDeck/deck_villain.name = "deck_villain"
+
 	
 	pass # Replace with function body.
 

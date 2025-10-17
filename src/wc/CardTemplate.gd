@@ -108,10 +108,12 @@ func common_post_move_scripts(new_host: String, _old_host: String, _move_tags: A
 	else:
 		#attempt for piles/containers
 		new_hero_id = gameData.get_grid_owner_hero_id(new_host)
-	self.set_controller_hero_id(new_hero_id)
+	
+	if (new_hero_id or (self.get_controller_hero_id() < 0) ): #only change if we were able to establish an owner, or if uninitialized
+		self.set_controller_hero_id(new_hero_id)
 	
 	#init owner once and only once, if not already done
-	if (not self.get_owner_hero_id()):
+	if (self.get_owner_hero_id() < 0):
 		self.set_owner_hero_id(new_hero_id)		
 		
 
@@ -317,7 +319,7 @@ func remove_threat(modification: int) -> int:
 	
 	#Crisis special case: can't remove threat from main scheme
 	if "main_scheme" == properties.get("type_code", "false"):
-		var all_schemes:Array = cfc.NMAP.board.get_grid("schemes").get_all_cards()
+		var all_schemes:Array = cfc.NMAP.board.get_all_cards_by_property("type_code", "side_scheme")
 		for scheme in all_schemes:
 			#we add all acceleration tokens	
 			var crisis = scheme.get_property("scheme_crisis", 0)

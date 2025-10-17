@@ -11,6 +11,7 @@ var basicPile = preload("res://src/multiplayer/PileMulti.tscn")
 onready var villain := $VillainZone
 onready var options_menu = $OptionsMenu
 
+# heroZones is 1 indexed (index is hero_id)
 var heroZones: Dictionary = {}
 
 const GRID_SETUP = CFConst.GRID_SETUP
@@ -129,14 +130,15 @@ func _ready() -> void:
 	offer_to_mulligan()
 	
 	#Tests
+	draw_cheat("Web-Shooter")
 	#draw_cheat("Combat Training")
-	draw_cheat("Jessica Jones")
+	#draw_cheat("Jessica Jones")
 	#draw_cheat("Mockingbird")
-	draw_cheat("Black Cat")
+	#draw_cheat("Black Cat")
 	#draw_cheat("Energy")
-	draw_cheat("Backflip")
-	#draw_cheat("Helicarrier")	
-	draw_cheat("Swinging Web Kick")
+	#draw_cheat("Backflip")
+	draw_cheat("Helicarrier")	
+	#draw_cheat("Swinging Web Kick")
 	cfc.LOG_DICT(guidMaster.guid_to_object)
 	
 	#Save gamedata for restart
@@ -169,9 +171,17 @@ func get_all_cards() -> Array:
 	var cardsArray := []
 	for obj in get_children():
 		if obj as Card: cardsArray.append(obj)
-	cardsArray += $VillainZone.get_all_cards()
+	cardsArray += $VillainZone.get_all_cards() #technically villain zone has no cards AFAIK
 
 	return(cardsArray)
+
+func get_all_cards_by_property(property:String, value):
+	var cardsArray := []
+	for obj in get_children():
+		if obj as Card: 
+			if (obj.get_property(property) == value):
+				cardsArray.append(obj)
+	return cardsArray	
 
 func delete_all_cards():
 	
@@ -300,7 +310,7 @@ func load_cards() -> void:
 
 
 func get_hero_from_pile_name(pile_name:String):
-	for i in 4:
+	for i in gameData.get_team_size():
 		var hero_id = i+1
 		if (pile_name.ends_with(str(hero_id))):
 			return hero_id
@@ -389,7 +399,12 @@ func draw_cheat(cardName : String) -> void:
 	cfc.NMAP["hand1"].draw_card (pile)
 	
 func offer_to_mulligan() -> void:
-	#TODO
+	#TODO move this to phaseContainer + gameData
+	for i in range(gameData.get_team_size()):
+		var hero_card = heroZones[i+1].get_identity_card()
+		var func_return = hero_card.execute_scripts(hero_card, "mulligan")
+		#while func_return is GDScriptFunctionState && func_return.is_valid():
+		#	func_return = func_return.resume()	
 	pass	
 	
 func are_cards_still_animating(check_everything:bool = true) -> bool:

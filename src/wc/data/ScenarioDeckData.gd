@@ -69,7 +69,7 @@ func get_encounter_deck():
 		for card_data in encounter_set:
 			var card_type = card_data[CardConfig.SCENE_PROPERTY]
 			if (card_type != "Main_scheme" and card_type != "Villain"): #skip villain and schemes from the deck
-				if (card_type == "Minion" or card_type == "Side_scheme"): #TODO debug
+				if (1): #card_type == "Minion" or card_type == "Side_scheme"): #TODO debug
 					encounter_deck.push_back(card_data)
 				
 	#add hero obligations

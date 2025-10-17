@@ -99,6 +99,10 @@ func init_scripting_event(trigger_object: Card = null, details: Dictionary = {},
 #		cfc.get_tree().call_group_flags(SceneTree.GROUP_CALL_UNIQUE  ,"cards",
 #				"execute_scripts",trigger_card,trigger,details)
 
+	#cleanup manually paid stuff before propagating trigger
+	if (details.has("network_prepaid")):
+		details.erase("network_prepaid")
+
 	#fire a first "pre" event for engine abilities that need to trigger before cards
 	emit_signal("scripting_event_about_to_trigger", trigger_object, trigger, details)
 	

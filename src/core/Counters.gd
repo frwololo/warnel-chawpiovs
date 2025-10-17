@@ -171,7 +171,7 @@ func get_counter_and_alterants(
 			requesting_object,
 			"get_counter",
 			{SP.KEY_COUNTER_NAME: counter_name,},
-			counters[counter_name])
+			counters.get(counter_name, 0))
 		if alteration is GDScriptFunctionState:
 			alteration = yield(alteration, "completed")
 	# The first element is always the total modifier from all alterants

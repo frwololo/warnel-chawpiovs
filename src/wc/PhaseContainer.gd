@@ -96,6 +96,12 @@ func _process(_delta: float) -> void:
 	if cfc.modal_menu:
 		return
 
+	#scheme and attack can happen outside of specific phases,
+	#so instead we check if "attacker" has something going on
+	if (gameData.attackers):
+		gameData.enemy_activates()
+		return
+
 	#phases that do something particular  in their process step
 	match current_step:	
 		CFConst.PHASE_STEP.PLAYER_TURN:
@@ -292,6 +298,9 @@ remotesync func proceed_to_next_phase():
 		current_step = CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER		
 	else:
 		current_step+=1
+	start_current_step()
+
+func start_current_step():		
 	scripting_bus.emit_signal("step_about_to_start",  {"step" : current_step})
 	scripting_bus.emit_signal("step_started",  {"step" : current_step})	
 	update_text()
@@ -347,8 +356,10 @@ func savestate_to_json() -> Dictionary:
 	}
 	return json_data
 	
-func loadstate_from_json(json:Dictionary):
+func loadstate_from_json(json:Dictionary, reset_phase:bool = true):
 	var json_data = json.get("phase", null)
 	if (null == json_data):
 		return #TODO Error msg
-	current_step = step_string_to_step_id(json_data) #TODO better handling
+	current_step = step_string_to_step_id(json_data)
+	if (reset_phase):
+		start_current_step()

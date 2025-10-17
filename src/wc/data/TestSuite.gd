@@ -387,7 +387,7 @@ remotesync func finalize_test_allclients(force_status:int):
 	
 	#Remove crap that might still be lurking around
 	cfc.cleanup_modal_menu()
-	gameData.force_reset_stack()
+	gameData.cleanup_post_game()
 	_last_activated_card = null
 	
 	if (force_status != TestStatus.NONE):

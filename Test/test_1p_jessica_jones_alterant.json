@@ -1,0 +1,119 @@
+{
+	"_comments": "Tests that Jessica Jones thwart is modified per side scheme",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",
+				},
+				{
+					"card": "Crowd Control",
+					"tokens": {"threat" : 3}
+				}				
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Jessica Jones"
+				}				
+				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Jessica Jones"
+		},
+		{
+			"type": "activate",
+			"value": "Jessica Jones"
+		},	
+		{
+			"type": "choose",
+			"value": "thwart"
+		},
+		{
+			"type": "target",
+			"value": "Crowd Control"
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				},
+				{
+					"card": "Crowd Control",
+					"tokens": {"threat" : 1}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"discard1":[
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Mockingbird"
+				},
+
+			],			
+			"allies1": [
+				{
+					"card": "Jessica Jones"
+				}
+			]
+		}
+	}
+}

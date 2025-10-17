@@ -57,9 +57,9 @@ func _ready():
 		yield(get_tree().create_timer(1), "timeout")	
 		_launch_server_game()
 	else:
-		yield(get_tree().create_timer(1), "timeout")	
+		yield(get_tree().create_timer(0.05), "timeout")	
 		rpc("assign_hero", "01001a", 0)
-		yield(get_tree().create_timer(1), "timeout")	
+		yield(get_tree().create_timer(0.2), "timeout")	
 		_launch_server_game()		
 	
 	

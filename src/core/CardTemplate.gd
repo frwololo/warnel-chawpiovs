@@ -1284,7 +1284,7 @@ func move_to(targetHost: Node,
 				elif board_position as BoardPlacementSlot:
 					# We need a small delay, to allow a potential new slot to instance
 					#TODO this might cause issues with the stack
-					yield(get_tree().create_timer(0.05), "timeout")
+					#yield(get_tree().create_timer(0.05), "timeout")
 					_set_target_position(board_position.rect_global_position)
 					board_position.occupying_card = self
 					_placement_slot = board_position
@@ -1463,7 +1463,7 @@ func execute_scripts(
 	if not cfc.NMAP.has('board'):
 		return
 
-	if (trigger =="card_token_modified" and canonical_name == "Web-Shooter"):
+	if (trigger =="reveal" and canonical_name == "Advance"):
 		var _tmp = 1
 
 	#we're playing a card manually but in interrupt mode.

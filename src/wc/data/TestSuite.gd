@@ -92,9 +92,7 @@ func initialize_components():
 	phaseContainer = gameData.phaseContainer
 	initialized = true
 
-func _process(_delta: float) -> void:
-	delta += _delta
-	
+func _process(_delta: float) -> void:	
 	if (!initialized):
 		initialize_components()
 
@@ -116,6 +114,8 @@ func _process(_delta: float) -> void:
 	#only server is allowed to run the main process	
 	if 1 != get_tree().get_network_unique_id():
 		return
+
+	delta += _delta
 		
 	next_action()		
 	return	
@@ -131,10 +131,10 @@ func next_action():
 	if cfc.NMAP.board.are_cards_still_animating():
 		return	
 	
-	#bug fix. Introduced to temorize tests
-	#to lest actions happen
+	#bug fix. Introduced to temporize tests
+	#to let actions happen
 	#TODO shouldn't be needed!
-	if delta < 1:
+	if delta < 0.2:
 		return
 		
 	if (actions.size() <= current_action):
@@ -482,6 +482,7 @@ func load_test_files():
 remote func initialize_clients_test(details:Dictionary):
 	end_state = details["end_state"]
 	current_test_file = details["current_test_file"]
+	delta = 0
 
 #Loads a single test file 	
 func load_test(test_file)-> bool:
@@ -514,7 +515,6 @@ func load_test(test_file)-> bool:
 	rpc("initialize_clients_test", remote_init_data)
 	
 	gameData.load_gamedata(initial_state)
-
 	return true
 
 func all_clients_game_loaded(details = {}):

@@ -25,6 +25,7 @@ var _current_enemy_attack_step: int = EnemyAttackStatus.NONE
 
 enum EncounterStatus {
 	NONE,
+	ABOUT_TO_REVEAL,
 	PENDING_REVEAL_INTERRUPT,
 	OK_TO_EXECUTE,
 	PENDING_COMPLETE,
@@ -405,7 +406,7 @@ func enemy_activates() :
 	var enemy:WCCard = null
 	if (typeof (attacker_data) == TYPE_DICTIONARY):
 		enemy = attacker_data["subject"]
-		action = attacker_data["activation_type"]
+		action = attacker_data["type"]
 	else:
 		enemy = attacker_data
 
@@ -483,9 +484,9 @@ func get_facedown_encounters_pile() -> Pile :
 	var pile  = cfc.NMAP["encounters_facedown" + str(_villain_current_hero_target)]
 	return pile
 	
-func get_revealed_encounters_pile() -> Pile :
-	var pile  = cfc.NMAP["encounters_reveal" + str(_villain_current_hero_target)]
-	return pile	
+func get_revealed_encounters_grid() :
+	var grid  = cfc.NMAP.board.get_grid("encounters_reveal" + str(_villain_current_hero_target))
+	return grid	
 	
 func get_enemies_grid() -> BoardPlacementGrid :
 	var grid  = cfc.NMAP.board.get_grid("enemies" + str(_villain_current_hero_target))
@@ -521,7 +522,7 @@ func deal_encounters():
 
 func deal_one_encounter_to(hero_id):
 	var villain_deck:Pile = cfc.NMAP["deck_villain"]
-	var encounter:Card = villain_deck.get_top_card()
+	var encounter = villain_deck.get_top_card()
 	if encounter:
 		var destination  =  cfc.NMAP["encounters_facedown" + str(hero_id)] 
 		encounter.move_to(destination)
@@ -558,15 +559,24 @@ func reveal_encounter():
 		all_encounters_finished()
 		return
 
-	if Card.CardState.MOVING_TO_CONTAINER == _current_encounter.state:
-		return
+	match _current_encounter.state:
+		Card.CardState.DROPPING_TO_BOARD,\
+				Card.CardState.MOVING_TO_CONTAINER:
+			return
+
 	
 	#an encounter is available, proceed
 	match _current_encounter_step:
 		EncounterStatus.NONE:
 			#TODO might need to send a signal before that?
-			_current_encounter.move_to(get_revealed_encounters_pile())
-			_current_encounter.set_is_faceup(true,false)	
+			var grid = get_revealed_encounters_grid()
+			var slot = grid.find_available_slot()
+			_current_encounter.move_to(cfc.NMAP.board, -1, slot)
+			_current_encounter.set_is_faceup(true,false)
+			_current_encounter_step = EncounterStatus.ABOUT_TO_REVEAL
+			return
+		EncounterStatus.ABOUT_TO_REVEAL:
+			var state = _current_encounter.state
 			var sceng = _current_encounter.execute_scripts(_current_encounter, "reveal")
 			_current_encounter_step = EncounterStatus.PENDING_REVEAL_INTERRUPT
 			return
@@ -857,6 +867,9 @@ func confirm(
 
 func cleanup_post_game():
 	attackers = []
+	_current_enemy_attack_step = EnemyAttackStatus.NONE
+	_current_encounter_step = EncounterStatus.NONE
+	_current_encounter = null
 	
 	theStack.queue_free()
 	theStack = GlobalScriptStack.new()

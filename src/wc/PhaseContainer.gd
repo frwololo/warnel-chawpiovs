@@ -56,7 +56,7 @@ func _ready():
 func _init():
 	reset()
 
-func reset():
+func reset(reset_phase:= true):
 	for child in get_children():
 		remove_child(child)
 		child.queue_free()
@@ -78,7 +78,9 @@ func reset():
 	
 	#reinit misc variables	
 	set_current_step_complete(false) 	
-
+	if (reset_phase):
+		start_current_step()
+		
 #Moving to next step needs to happen outside of the signal processing to avoid infinite loops or recursive signals
 func _process(_delta: float) -> void:
 	#don't move if the stack has something going on
@@ -341,7 +343,7 @@ func _after_villain_threat():
 
 func _deal_encounters():
 	gameData.deal_encounters()
-	yield(get_tree().create_timer(2), "timeout")
+	#yield(get_tree().create_timer(2), "timeout")
 	set_current_step_complete(true)
 	pass
 
@@ -356,10 +358,9 @@ func savestate_to_json() -> Dictionary:
 	}
 	return json_data
 	
-func loadstate_from_json(json:Dictionary, reset_phase:bool = true):
+func loadstate_from_json(json:Dictionary):
 	var json_data = json.get("phase", null)
 	if (null == json_data):
 		return #TODO Error msg
 	current_step = step_string_to_step_id(json_data)
-	if (reset_phase):
-		start_current_step()
+

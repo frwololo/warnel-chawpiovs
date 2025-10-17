@@ -321,8 +321,6 @@ const HERO_GRID_SETUP := {
 	"encounters_reveal" :{
 		"x" : 150,
 		"y" : 0,
-		"type" : "pile",
-		"faceup" : true
 	},	
 	"deck" :{
 		"x" : 150,

@@ -1,0 +1,96 @@
+{
+	"_comments": "Test for issue #15: Spiderman draw ability triggers on non villain attack",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {"stunned" : 1}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],			
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],			
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01002"
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "click cancel on defenders to take an undefended attack"
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],			
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [			
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {"damage": 1}
+				}
+			],
+			"hand1": [
+				{
+					"card": "01002"
+				}
+			]
+		}
+	}
+}

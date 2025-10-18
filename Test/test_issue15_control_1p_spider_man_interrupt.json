@@ -1,0 +1,87 @@
+{
+	"_comments": "Test for issue #15: Spiderman draw ability triggers on non villain attack",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],			
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],			
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01002"
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "activate",
+			"value": "Spider-Man",
+			"_comments": "click activate on Spider-Man to draw a card"
+		},	
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "click cancel on defenders to take an undefended attack"
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],		
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01002"
+				},
+				{
+					"card": "Mockingbird"
+				}				
+			]
+		}
+	}
+}

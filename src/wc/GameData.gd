@@ -62,6 +62,7 @@ var _villain_current_hero_target :=1
 var _current_enemy = null
 var attackers:Array = []
 var user_input_ongoing:int = 0 #ID of the current player (or remote player) doing a blocking game interraction
+var _garbage:= []
 
 func _init():
 	scenario = ScenarioDeckData.new()
@@ -149,6 +150,7 @@ remotesync func init_client_tests():
 	testSuite = TestSuite.new()
 	testSuite.name = "testSuite"
 	self.add_child(testSuite) #Test suite needs to be in the tree for rpc calls	
+
 
 func registerPhaseContainer(phasecont:PhaseContainer):
 	phaseContainer = phasecont
@@ -495,9 +497,11 @@ func get_enemies_grid() -> BoardPlacementGrid :
 
 
 func deal_encounters():
+	cfc.add_ongoing_process(self, "deal_encounters")
 	var finished = false
 	while !finished: #loop through all heroes. see villain_next_target call below
 		deal_one_encounter_to(_villain_current_hero_target)
+		yield(get_tree().create_timer(1), "timeout")
 		if (!villain_next_target()): # This forces to change the next facedown destination
 			finished = true
 
@@ -514,11 +518,13 @@ func deal_encounters():
 	
 	while hazard:
 		deal_one_encounter_to(_villain_current_hero_target)
+		yield(get_tree().create_timer(1), "timeout")
 		villain_next_target()
 		hazard -=1
 		
 	#reset _villain_current_hero_target for cleanup	
 	_villain_current_hero_target = 1
+	cfc.remove_ongoing_process(self, "deal_encounters")
 
 func deal_one_encounter_to(hero_id):
 	var villain_deck:Pile = cfc.NMAP["deck_villain"]
@@ -681,6 +687,18 @@ func compute_potential_defenders():
 		else:
 			if (c.is_in_group ("group_defenders")): c.remove_from_group("group_defenders")	
 
+func character_died(card:Card):
+	var character_died_definition = {
+		"name": "character_died",
+	}
+	#TODO be more specific about conditoins of death: what caused it, etc...
+	var character_died_script:ScriptTask = ScriptTask.new(card, character_died_definition, card, {})
+	character_died_script.subjects = [card]
+	character_died_script.is_primed = true #fake prime it since we already gave it subjects	
+	
+	var task_event = SimplifiedStackScript.new("character_died", character_died_script)
+	gameData.theStack.add_script(task_event)
+
 func hero_died(card:Card):
 	#TODO dead heroes can't play
 	dead_heroes.append(card.get_owner_hero_id())
@@ -698,7 +716,9 @@ func move_to_next_villain(current_villain):
 	if !new_villain_data :
 		return null
 
-	current_villain.queue_free() #is more required to remove it?	
+	_garbage.append(current_villain)
+	current_villain.get_parent().remove_child(current_villain)
+	#current_villain.queue_free() #is more required to remove it?	
 	
 	var ckey = new_villain_data["Name"] #TODO we have name and "Name" which is a problem here...		
 	var new_card = cfc.NMAP.board.load_villain(ckey)
@@ -853,6 +873,7 @@ func confirm(
 		card_name: String,
 		task_name: String,
 		type := "task") -> bool:
+	cfc.add_ongoing_process(self)
 	var is_accepted := true
 	# We do not use SP.KEY_IS_OPTIONAL here to avoid causing cyclical
 	# references when calling CFUtils from SP
@@ -870,7 +891,8 @@ func confirm(
 		# Garbage cleanup
 		confirm.hide()
 		confirm.queue_free()
-		_release_user_input_lock(owner.get_controller_player_network_id())	
+		_release_user_input_lock(owner.get_controller_player_network_id())
+	cfc.remove_ongoing_process(self)	
 	return(is_accepted)
 	
 
@@ -883,6 +905,8 @@ func cleanup_post_game():
 	theStack.queue_free()
 	theStack = GlobalScriptStack.new()
 	self.add_child(theStack)
+	
+	cfc.reset_ongoing_process_stack()
 
 	
 #saves current game data into a json structure	

@@ -144,6 +144,26 @@
 			]
 		}		
 	},
+	"Daredevil": {
+		"thwart":{
+			"trigger" : "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name" : "deal_damage",
+					"subject": "target",
+					"amount" : 1,
+					"needs_subject": true,
+					"filter_state_subject": [{
+						"filter_group" : "group_enemies"
+					}],
+				}
+			],
+			"filter_state_trigger" : [{
+				"filter_group" : "group_identities",
+			}],	
+		}
+	},	
 	"Enhanced Spider-Sense": {
 		"interrupt": {
 			"event_type": "reveal",
@@ -157,6 +177,42 @@
 				{
 				"name": "prevent",
 				"subject": "trigger"
+				}
+			]
+		}
+	},
+	"First Aid": {
+		"manual": {
+			"hand": [
+				{
+					"name" : "heal",
+					"subject": "target",
+					"amount" : 2,
+					"needs_subject": true,
+					"filter_state_subject": [{
+						"filter_group" : "group_characters"
+					}]
+				}
+			]
+		}
+	},	
+	"Haymaker": {
+		"manual": {
+			"hand" : [
+				{	
+					"name": "constraints",
+					"is_cost": true,
+					"tags": ["hero_action"]
+				},
+				{
+					"name" : "attack",
+					"subject": "target",
+					"amount" : 3,
+					"needs_subject": true,
+					"filter_state_subject": [{
+						"filter_group" : "group_enemies"
+					}],
+					"tags" : ["hero_action", "attack"]
 				}
 			]
 		}
@@ -242,6 +298,50 @@
 			]
 		}
 	},
+	"Nick Fury": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"remove 2 threat": [
+					{
+						"name": "thwart",
+						"amount": 2,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [{
+							"filter_group": "group_schemes"
+						}]
+					}
+				],
+				"draw 3": [
+					{
+						"name" : "draw_cards",
+						"amount" : 3,
+					}
+				],
+				"deal 4 damage": [			
+					{
+						"name" : "deal_damage",
+						"subject": "target",
+						"amount" : 4,
+						"needs_subject": true,
+						"filter_state_subject": [{
+							"filter_group" : "group_enemies"
+						}],
+					}
+				]
+			}
+		},
+		"round_ended": {
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container" : "discard"
+				},
+			]
+		},			
+	},	
 	"Peter Parker" :{
 		"once_per_round" : {
 			"__name__": "peter_resource"
@@ -280,29 +380,83 @@
 				"filter_target_hero": "Spider-Man"
 			}]
 		}
+	},
+	"Spider-Tracer": {
+		"manual": {
+			"hand" :[
+				{
+					"name" : "attach_to_card",
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [{
+						"filter_properties": {
+							"type_code": "minion"
+						}
+					}]
+				}
+			]
+		},
+		"interrupt" : {
+			"event_name": "character_dies",
+			"board": [
+				{
+					"name": "thwart",
+					"amount": 3,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [{
+						"filter_group": "group_schemes"
+					}]
+				}
+			],
+			"filter_state_trigger": [{
+				"filter_is_host_of": "self",
+			}]		
+		}
 	},	
 	"Swinging Web Kick": {
 		"manual": {
-			"hand" :
-				[
-					{	
-						"name": "constraints",
-						"is_cost": true,
-						"tags": ["hero_action"]
-					},
-					{
-						"name" : "attack",
-						"subject": "target",
-						"amount" : 8,
-						"needs_subject": true,
-						"filter_state_subject": [{
-							"filter_group" : "group_enemies"
-						}],
-						"tags" : ["hero_action", "attack"]
-					}
-				]
+			"hand" : [
+				{	
+					"name": "constraints",
+					"is_cost": true,
+					"tags": ["hero_action"]
+				},
+				{
+					"name" : "attack",
+					"subject": "target",
+					"amount" : 8,
+					"needs_subject": true,
+					"filter_state_subject": [{
+						"filter_group" : "group_enemies"
+					}],
+					"tags" : ["hero_action", "attack"]
+				}
+			]
 		}
 	},
+	"Tenacity": {
+		"manual": {
+			"board": [
+				{
+					"name": "pay_cost",
+					"cost": 1,
+					"is_cost" : true,
+				},							
+				{
+					"name" : "move_card_to_container",
+					"dest_container": "discard",
+					"subject": "self",
+					"is_cost": true,
+				},
+				{
+					"name": "rotate_card",
+					"degrees": 0,			
+					"subject": "my_hero",
+				}
+			]
+		},
+	},	
 	"Web-Shooter": {
 		"uses" : {
 			"__name__": "web",
@@ -335,5 +489,49 @@
 				},
 			]
 		}
-	}
+	},
+	"Webbed Up": {
+		"manual": {
+			"hand" :[
+				{	
+					"name": "constraints",
+					"is_cost": true,
+					"tags": ["hero_form"],
+					"max_per_host" : 1
+				},			
+				{
+					"name" : "attach_to_card",
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [{
+						"filter_group" : "group_enemies"
+					}],
+				}
+			]
+		},
+		"interrupt" : {
+			"event_name": "enemy_attack",
+			"board": [
+				{
+				"name": "prevent",
+				"subject": "trigger"
+				},
+				{
+					"name" : "mod_tokens",
+					"modification": 1,
+					"token_name":  "stunned",	
+					"needs_subject": true,
+					"subject": "host",
+				},
+				{
+					"name" : "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard",
+				},				
+			],
+			"filter_state_trigger": [{
+				"filter_is_host_of": "self",
+			}]		
+		}
+	},	
 }

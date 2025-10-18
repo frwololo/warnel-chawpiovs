@@ -422,6 +422,7 @@ func _input(event) -> void:
 
 # A signal for whenever the player clicks on a card
 func _on_Card_gui_input(event) -> void:
+	cfc.add_ongoing_process(self)
 	if event is InputEventMouseButton and cfc.NMAP.has("board"):
 		# because of https://github.com/godotengine/godot/issues/44138
 		# we need to double check that the card which is receiving the
@@ -503,6 +504,7 @@ func _on_Card_gui_input(event) -> void:
 					_focus_completed = false
 		else:
 			_process_more_card_inputs(event)
+	cfc.remove_ongoing_process(self)
 
 
 # Overridable function to allow games to extend the _on_Card_gui_input() functionality
@@ -1109,6 +1111,7 @@ func move_to(targetHost: Node,
 #		cfc.NMAP.main.unfocus()
 	# We clear all caches every time the board state changes
 	cfc.flush_cache()
+	cfc.add_ongoing_process(self)
 	# We need to store the parent, because we won't be able to know it later
 	var parentHost = get_parent()
 	# We want to keep the token drawer closed during movement
@@ -1143,7 +1146,7 @@ func move_to(targetHost: Node,
 					var grid = cfc.NMAP.board.get_grid(mandatory_grid_name)
 					if grid:
 						slot = grid.find_available_slot()
-						#yield(get_tree().create_timer(0.1), "timeout")
+						yield(get_tree().create_timer(0.1), "timeout")
 						if slot:
 							board_position = slot
 						else:
@@ -1284,7 +1287,7 @@ func move_to(targetHost: Node,
 				elif board_position as BoardPlacementSlot:
 					# We need a small delay, to allow a potential new slot to instance
 					#TODO this might cause issues with the stack
-					#yield(get_tree().create_timer(0.05), "timeout")
+					yield(get_tree().create_timer(0.05), "timeout")
 					_set_target_position(board_position.rect_global_position)
 					board_position.occupying_card = self
 					_placement_slot = board_position
@@ -1378,7 +1381,7 @@ func move_to(targetHost: Node,
 		elif "CardPopUpSlot" in parentHost.name:
 			set_state(CardState.IN_POPUP)
 	common_post_move_scripts(targetHost.name, parentHost.name, tags)
-
+	cfc.remove_ongoing_process(self)
 
 
 #Return interrupt string to hijack manual run
@@ -1501,6 +1504,10 @@ func execute_scripts(
 	#Check if this script is exected from remote (another online player has been paying for the cost)
 	var is_network_call = trigger_details.has("network_prepaid") #TODO MOVE OUTSIDE OF Core
 	
+	#semaphores
+	is_executing_scripts = true
+	cfc.add_ongoing_process(self, "core_execute_scripts")
+	
 	# Here we check for confirmation of optional trigger effects
 	# There should be an SP.KEY_IS_OPTIONAL definition per state
 	# E.g. if board scripts are optional, but hand scripts are not
@@ -1599,9 +1606,8 @@ func execute_scripts(
 			while func_return is GDScriptFunctionState && func_return.is_valid():
 				func_return = func_return.resume()
 		is_executing_scripts = false
-
-			
-		emit_signal("scripts_executed", self, sceng, trigger)
+	cfc.remove_ongoing_process(self, "core_execute_scripts")	
+	emit_signal("scripts_executed", self, sceng, trigger)
 	return(sceng)
 
 func add_script_to_stack(sceng, run_type, trigger, trigger_details):
@@ -2191,6 +2197,7 @@ func _tween_interpolate_visibility(visibility: float, time: float) -> void:
 # Clears all attachment/hosting status.
 # It is typically called when a card is removed from the table
 func _clear_attachment_status(tags := ["Manual"]) -> void:
+	cfc.add_ongoing_process(self)
 	if current_host_card:
 		scripting_bus.emit_signal("card_unattached",
 				self,
@@ -2204,6 +2211,7 @@ func _clear_attachment_status(tags := ["Manual"]) -> void:
 		# We do a small wait to make the attachment drag look nicer
 		yield(get_tree().create_timer(0.1), "timeout")
 	attachments.clear()
+	cfc.remove_ongoing_process(self)
 
 
 # Detects when the mouse is still hovering over the card

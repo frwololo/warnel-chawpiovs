@@ -261,11 +261,11 @@ const TYPES_TO_GROUPS := {
 	"main_scheme" : ["group_schemes"],
 	"player_scheme" : ["group_schemes"],
 	"side_scheme" : ["group_schemes"],
-	"minion" : ["group_enemies"],
-	"villain" : ["group_enemies", "group_villains"],
-	"hero" : ["group_identities"],
-	"alter_ego" : ["group_identities"],
-	"ally" : ["group_allies"],
+	"minion" : ["group_enemies", "group_characters"],
+	"villain" : ["group_enemies", "group_villains", "group_characters"],
+	"hero" : ["group_identities", "group_characters", "group_friendly"],
+	"alter_ego" : ["group_identities", "group_characters", "group_friendly"],
+	"ally" : ["group_allies", "group_characters", "group_friendly"],
 }
 
 const FORCE_HORIZONTAL_CARDS := {
@@ -394,7 +394,9 @@ enum PHASE {
 }
 
 enum PHASE_STEP {
-	PLAYER_TURN,
+	GAME_NOT_STARTED,
+	PLAYER_MULLIGAN, 
+	PLAYER_TURN, #turn loops here
 	PLAYER_DISCARD,
 	PLAYER_DRAW,
 	PLAYER_READY,

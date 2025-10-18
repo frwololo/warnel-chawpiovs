@@ -200,6 +200,7 @@ func execute_scripts(
 
 # A signal for whenever the player clicks on a card
 func _on_Card_gui_input(event) -> void:
+	cfc.add_ongoing_process(self, "_on_Card_gui_input_" + canonical_name)
 	if event is InputEventMouseButton and cfc.NMAP.has("board"):
 		# because of https://github.com/godotengine/godot/issues/44138
 		# we need to double check that the card which is receiving the
@@ -286,7 +287,7 @@ func _on_Card_gui_input(event) -> void:
 					_focus_completed = false
 		else:
 			_process_more_card_inputs(event)
-		
+	cfc.remove_ongoing_process(self, "_on_Card_gui_input_"  + canonical_name)	
 
 # Game specific code and/or shortcuts
 func readyme(toggle := false,
@@ -370,9 +371,9 @@ func die():
 	match type_code:
 		"hero", "alter_ego":
 			gameData.hero_died(self)
-		"ally":
-			move_to(cfc.NMAP["discard1"]) #TODO per hero
-		"minion":
+		"ally", "minion":
+			gameData.character_died(self)
+		"side_scheme":
 			move_to(cfc.NMAP["discard_villain"])	
 		"villain":
 			gameData.villain_died(self)
@@ -486,6 +487,7 @@ func common_pre_run(_sceng) -> void:
 			# We then replace the "pay" trigger with a combination of
 			# 1) discard the appropriate number of cards from hand (minored by what's available in manapool)
 			# 2) empty the manapool
+			"pay_cost",\
 			"pay_regular_cost":
 				var additional_task := ScriptTask.new(
 					script.owner,

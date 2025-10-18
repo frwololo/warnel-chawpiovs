@@ -14,6 +14,8 @@ var heroPhaseScene = preload("res://src/wc/board/HeroPhase.tscn")
 
 #TODO Actual names needed here
 const StepStrings = [
+	"GAME_NOT_STARTED",
+	"PLAYER_MULLIGAN",
 	"PLAYER_TURN",
 	"PLAYER_DISCARD",
 	"PLAYER_DRAW",
@@ -32,7 +34,7 @@ const DEFAULT_HERO_STATUS: = {
 	CFConst.PHASE_STEP.PLAYER_TURN: HeroPhase.State.ACTIVE
 }
 
-var current_step = CFConst.PHASE_STEP.PLAYER_TURN
+var current_step = CFConst.PHASE_STEP.GAME_NOT_STARTED
 var current_step_complete:bool = false
 var clients_ready_for_next_phase:Dictionary = {}
 
@@ -48,13 +50,13 @@ func update_text():
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	gameData.registerPhaseContainer(self)
-	scripting_bus.connect("step_started", self, "_step_started")
-	scripting_bus.connect("step_ended", self, "_step_ended")
 	update_text()
 	
 	
 func _init():
-	reset()
+	scripting_bus.connect("step_started", self, "_step_started")
+	scripting_bus.connect("step_ended", self, "_step_ended")	
+	reset(true)
 
 func reset(reset_phase:= true):
 	for child in get_children():
@@ -98,6 +100,9 @@ func _process(_delta: float) -> void:
 	if cfc.modal_menu:
 		return
 
+	if cfc.is_process_ongoing():
+		return
+
 	#scheme and attack can happen outside of specific phases,
 	#so instead we check if "attacker" has something going on
 	if (gameData.attackers):
@@ -105,7 +110,7 @@ func _process(_delta: float) -> void:
 		return
 
 	#phases that do something particular  in their process step
-	match current_step:	
+	match current_step:			
 		CFConst.PHASE_STEP.PLAYER_TURN:
 			#nothing automated in player turn, they will tell us when they're done
 			return
@@ -121,6 +126,10 @@ func _process(_delta: float) -> void:
 		return		
 		
 	match current_step:
+		CFConst.PHASE_STEP.GAME_NOT_STARTED:
+			request_next_phase()
+		CFConst.PHASE_STEP.PLAYER_MULLIGAN:
+			request_next_phase()		
 		CFConst.PHASE_STEP.PLAYER_DISCARD:
 			request_next_phase()
 		CFConst.PHASE_STEP.PLAYER_DRAW:
@@ -139,6 +148,16 @@ func _process(_delta: float) -> void:
 			request_next_phase()
 		CFConst.PHASE_STEP.ROUND_END:
 			request_next_phase()	
+
+func offer_to_mulligan() -> void:
+	cfc.add_ongoing_process(self, "offer_to_mulligan")
+	for i in range(gameData.get_team_size()):
+		var hero_card = gameData.get_identity_card(i+1)
+		var func_return = hero_card.execute_scripts(hero_card, "mulligan")
+		if func_return is GDScriptFunctionState && func_return.is_valid():
+			yield(func_return, "completed")	
+	set_current_step_complete(true)		
+	cfc.remove_ongoing_process(self, "offer_to_mulligan")
 
 #called by gamedata once all encounters are revealed for the current hero
 func all_encounters_done():
@@ -200,11 +219,16 @@ func _step_started(
 	set_current_step_complete(false)
 
 	#All heroes can now play
-	for i in range(gameData.get_team_size()):
-		var hero_index = i+1
-		reset_hero_activation_for_step(hero_index)
+	if (step >= CFConst.PHASE_STEP.PLAYER_TURN):
+		for i in range(gameData.get_team_size()):
+			var hero_index = i+1
+			reset_hero_activation_for_step(hero_index)
 	
 	match step:
+		CFConst.PHASE_STEP.GAME_NOT_STARTED:
+			set_current_step_complete(true) # Do nothing		
+		CFConst.PHASE_STEP.PLAYER_MULLIGAN:
+			offer_to_mulligan()
 		CFConst.PHASE_STEP.PLAYER_TURN:
 			return
 		CFConst.PHASE_STEP.PLAYER_DISCARD:
@@ -319,6 +343,7 @@ func _player_ready():
 	pass	
 
 func _player_discard():
+	cfc.add_ongoing_process(self)
 	var my_heroes = gameData.get_my_heroes()
 	for hero_id in my_heroes:
 		var hero_card = gameData.get_identity_card(hero_id)
@@ -327,7 +352,7 @@ func _player_discard():
 		#	func_return = func_return.resume()
 		while cfc.modal_menu:
 			yield(get_tree().create_timer(0.05), "timeout")
-
+	cfc.remove_ongoing_process(self)
 
 	set_current_step_complete(true)
 	

@@ -126,6 +126,7 @@ static func confirm(
 		card_name: String,
 		task_name: String,
 		type := "task") -> bool:
+	cfc.add_ongoing_process(script)		
 	var is_accepted := true
 	# We do not use SP.KEY_IS_OPTIONAL here to avoid causing cyclical
 	# references when calling CFUtils from SP
@@ -139,6 +140,7 @@ static func confirm(
 			is_accepted = false
 		# Garbage cleanup
 		confirm.queue_free()
+	cfc.remove_ongoing_process(script)	
 	return(is_accepted)
 
 

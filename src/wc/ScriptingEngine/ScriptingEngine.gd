@@ -173,6 +173,27 @@ func attack(script: ScriptTask) -> int:
 
 	return retcode	
 
+func character_died(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+	
+	for card in script.subjects:
+#		var damageScript:DamageScript = DamageScript.new(card, amount, script.script_definition, tags)
+#		gameData.theStack.add_script(damageScript)
+		
+		#scripting_bus.emit_signal("damage_incoming", card, script.script_definition)	
+		var owner_hero_id = card.get_owner_hero_id()
+		if owner_hero_id > 0:
+			card.move_to(cfc.NMAP["discard" + str(owner_hero_id)])
+		else:
+			card.move_to(cfc.NMAP["discard_villain"])	
+	
+	return retcode
+
+func deal_damage(script:ScriptTask) -> int:
+	return receive_damage(script)
+
 func receive_damage(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
@@ -330,7 +351,12 @@ func thwart(script: ScriptTask) -> int:
 		return retcode
 
 	var owner = script.owner
-	var modification = owner.get_property("thwart")
+
+	#we can provide a thwart amount in the script,
+	#otherwise we use the thwart property if the script owner is a friendly character
+	var modification = script.script_definition.get("amount", 0)
+	if (!modification):
+		modification = owner.get_property("thwart")
 
 	var confused = owner.tokens.get_token_count("confused")
 	if (confused):

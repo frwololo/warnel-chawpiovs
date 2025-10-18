@@ -22,6 +22,8 @@ var scenarios : Array
 #Hero deck data identified by integer id (marvelcdb id)
 var deck_definitions : Dictionary
 
+var _ongoing_processes:= {}
+
 func get_card_name_by_id(id):
 	if (not id):
 		WCUtils.debug_message("no id passed to get_card_by_id")
@@ -473,3 +475,39 @@ func LOG(to_print:String):
 func LOG_DICT(to_print:Dictionary):
 	var my_json_string = to_json(to_print)
 	LOG(my_json_string)
+	
+func add_ongoing_process(object, description:String = ""):
+	if (!description):
+		description = object.get_class()
+		
+	if (!_ongoing_processes.has(object)):
+		_ongoing_processes[object] = {}
+	if (!_ongoing_processes[object].has(description)):
+		_ongoing_processes[object][description] = 0	
+
+	_ongoing_processes[object][description] +=1
+	return _ongoing_processes[object][description]
+	
+func remove_ongoing_process(object, description:String = ""):
+	if (!description):
+		description = object.get_class()
+		
+	if (!_ongoing_processes.has(object)):
+		return 0
+		
+	if (!_ongoing_processes[object].has(description)):
+		return 0
+				
+	_ongoing_processes[object][description] -=1
+	if (!_ongoing_processes[object][description]):
+		_ongoing_processes[object].erase(description)
+		if !_ongoing_processes[object]:
+			_ongoing_processes.erase(object)
+		return 0
+	return _ongoing_processes[object][description]
+	
+func is_process_ongoing() -> int:
+	return _ongoing_processes.size()	
+
+func reset_ongoing_process_stack():
+	_ongoing_processes = {}

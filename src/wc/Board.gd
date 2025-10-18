@@ -22,6 +22,7 @@ func _init():
 	
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	cfc.add_ongoing_process(self, "board_setup")
 	cfc.map_node(self)	
 	counters = $Counters
 	# We use the below while to wait until all the nodes we need have been mapped
@@ -55,7 +56,7 @@ func _ready() -> void:
 			pile.set_position(Vector2(grid_info["x"], grid_info["y"]))
 			pile.set_global_position(Vector2(grid_info["x"], grid_info["y"]))
 			pile.scale = Vector2(0.5, 0.5)
-			pile.faceup_cards = false
+			pile.faceup_cards = grid_info.get("faceup", false)
 			add_child(pile)
 		else:
 			var grid_scene = grid_info.get("scene", basicGrid)
@@ -126,9 +127,7 @@ func _ready() -> void:
 	villain.load_scenario()
 
 	
-	draw_starting_hand()
-	offer_to_mulligan()
-	
+	draw_starting_hand()	
 	#Tests
 	#draw_cheat("Web-Shooter")
 	#draw_cheat("Combat Training")
@@ -143,7 +142,7 @@ func _ready() -> void:
 	
 	#Save gamedata for restart
 	gameData.save_gamedata_to_file("user://Saves/_restart.json")	
-	
+	cfc.remove_ongoing_process(self, "board_setup")
 
 func get_villain_card():
 	return villain.get_villain()
@@ -398,14 +397,6 @@ func draw_cheat(cardName : String) -> void:
 	pile.add_child(card)
 	cfc.NMAP["hand1"].draw_card (pile)
 	
-func offer_to_mulligan() -> void:
-	#TODO move this to phaseContainer + gameData
-	for i in range(gameData.get_team_size()):
-		var hero_card = heroZones[i+1].get_identity_card()
-		var func_return = hero_card.execute_scripts(hero_card, "mulligan")
-		#while func_return is GDScriptFunctionState && func_return.is_valid():
-		#	func_return = func_return.resume()	
-	pass	
 	
 func are_cards_still_animating(check_everything:bool = true) -> bool:
 	for c in get_all_cards():

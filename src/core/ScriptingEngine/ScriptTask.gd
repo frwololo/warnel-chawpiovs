@@ -40,6 +40,8 @@ func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int) -> void:
 	# We store the prev_subjects we sent to this task in case we need to
 	# refer to them later
 
+	cfc.add_ongoing_process(self)
+
 	var only_cost_check = ((run_type == CFInt.RunType.COST_CHECK) or
 		 (run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
 	
@@ -77,6 +79,7 @@ func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int) -> void:
 	# We emit a signal when done so that our ScriptingEngine
 	# knows we're ready to continue
 	is_primed = true
+	cfc.remove_ongoing_process(self)
 	emit_signal("primed")
 #	print_debug("skipped: " + str(is_skipped) +  " valid: " + str(is_valid))
 
@@ -89,6 +92,8 @@ func check_confirm() -> bool:
 			script_definition,
 			owner_name,
 			script_name)
+	cfc.add_ongoing_process(self)		
 	if confirm_return is GDScriptFunctionState: # Still working.
 		is_accepted = yield(confirm_return, "completed")
+	cfc.remove_ongoing_process(self)	
 	return(is_accepted)

@@ -16,6 +16,7 @@ func _init(_sceng = null, _run_type = 0, _trigger = "", _trigger_details = {}):
 	trigger_details = _trigger_details
 
 func execute():
+	cfc.add_ongoing_process(self)
 	var owner = sceng.owner
 
 	#we re-run some pre-execution scripts here to set everything right
@@ -50,6 +51,7 @@ func execute():
 		sceng.execute(CFInt.RunType.ELSE)
 		if not sceng.all_tasks_completed:
 			yield(sceng,"tasks_completed")	
+	cfc.remove_ongoing_process(self)
 
 func get_tasks() -> Array:
 	return sceng.scripts_queue

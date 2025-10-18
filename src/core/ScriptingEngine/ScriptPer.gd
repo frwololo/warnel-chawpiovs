@@ -9,6 +9,7 @@ func _init(per_msg: perMessage).(
 		per_msg.script_owner, 
 		per_msg.per_definitions, 
 		per_msg.trigger_object) -> void:
+	cfc.add_ongoing_process(self)
 	# The name of the type of per we're seeking gets its own var
 	script_name = per_msg.per_seek
 	if get_property(SP.KEY_ORIGINAL_PREVIOUS):
@@ -20,9 +21,9 @@ func _init(per_msg: perMessage).(
 		ret = yield(ret, "completed")
 	# We emit a signal when done so that our ScriptingEngine
 	# knows we're ready to continue
-	emit_signal("primed")
 	is_primed = true
-
+	cfc.remove_ongoing_process(self)
+	emit_signal("primed")
 
 # Goes through the subjects specied for this per calculation
 # and counts the number of "things" requested

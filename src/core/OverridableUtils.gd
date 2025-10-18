@@ -40,6 +40,8 @@ func select_card(
 		script : ScriptObject = null,
 		run_type:int = CFInt.RunType.NORMAL,
 		card_select_scene = _CARD_SELECT_SCENE):
+	
+	cfc.add_ongoing_process(self)
 	if parent_node == cfc.NMAP.get("board")  and (run_type != CFInt.RunType.BACKGROUND_COST_CHECK):
 		cfc.game_paused = true
 	var selected_cards
@@ -63,6 +65,8 @@ func select_card(
 	cfc.modal_menu = null
 	if parent_node == cfc.NMAP.get("board"):
 		cfc.game_paused = false
+		
+	cfc.remove_ongoing_process(self)	
 	return(selected_cards)
 
 # Goes through the card pool of the game and checks each card against the provided list of filters

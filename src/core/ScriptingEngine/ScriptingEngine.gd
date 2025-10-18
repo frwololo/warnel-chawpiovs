@@ -132,7 +132,7 @@ func execute(_run_type) -> void:
 	var only_cost_check = ((run_type == CFInt.RunType.COST_CHECK) or
 		 (run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
 		
-	
+	cfc.add_ongoing_process(self)
 	# We execute the scripts locally, but in multiplayer only one player has to select
 	# payments. Once they do, we send the payment information to other players,
 	# and instead of selecting manually, the cost is paid automatically with the network_prepaid data
@@ -287,6 +287,7 @@ func execute(_run_type) -> void:
 					card.temp_properties_modifiers.erase(self)
 #	print_debug(str(card_owner) + 'Scripting: All done!') # Debug
 	all_tasks_completed = true
+	cfc.remove_ongoing_process(self)
 	emit_signal("tasks_completed")
 	# checking costs on multiple targeted cards in the same script,
 	# is not supported at the moment due to the exponential complexities
@@ -441,6 +442,7 @@ func move_card_to_board(script: ScriptTask) -> int:
 # * Optionally uses the following keys:
 #	* [KEY_SET_TO_MOD](ScriptProperties#KEY_SET_TO_MOD)
 func mod_tokens(script: ScriptTask) -> int:
+	cfc.add_ongoing_process(self)
 	var retcode: int
 	var modification: int
 	var alteration = 0
@@ -491,6 +493,8 @@ func mod_tokens(script: ScriptTask) -> int:
 				modification + alteration,set_to_mod,costs_dry_run(), tags)
 	if script.get_property(SP.KEY_STORE_INTEGER):
 		stored_integer = token_diff
+		
+	cfc.remove_ongoing_process(self)	
 	return(retcode)
 
 
@@ -504,6 +508,7 @@ func mod_tokens(script: ScriptTask) -> int:
 # * Optionally uses the following keys:
 #	* [KEY_OBJECT_COUNT](ScriptProperties#KEY_OBJECT_COUNT)
 func spawn_card(script: ScriptTask) -> void:
+	cfc.add_ongoing_process(self)
 	var card: Card
 	var count: int
 	var alteration = 0
@@ -568,7 +573,7 @@ func spawn_card(script: ScriptTask) -> void:
 	# Adding a small delay to allow the cards to finish instancing and setting their
 	# properties
 	yield(script.owner.get_tree().create_timer(0.1), "timeout")
-
+	cfc.remove_ongoing_process(self)
 
 # Task from creating a new card instance in a CardContainer
 # * Can be affected by [Alterants](ScriptProperties#KEY_ALTERANTS)
@@ -668,6 +673,7 @@ func spawn_card_to_container(script: ScriptTask) -> void:
 # * Requires the following keys:
 #	* [KEY_DEST_CONTAINER](ScriptProperties#KEY_DEST_CONTAINER)
 func shuffle_container(script: ScriptTask) -> void:
+	cfc.add_ongoing_process(self)
 	var container: CardContainer = cfc.NMAP[script.get_property(SP.KEY_DEST_CONTAINER).to_lower()]
 	while container.are_cards_still_animating():
 		yield(container.get_tree().create_timer(0.2), "timeout")
@@ -675,7 +681,7 @@ func shuffle_container(script: ScriptTask) -> void:
 	# If there's no shuffle aniumation, we will get stuck if we yield.
 	if container.is_in_group("piles") and container.shuffle_style != CFConst.ShuffleStyle.NONE:
 		yield(container, "shuffle_completed")
-
+	cfc.remove_ongoing_process(self)
 
 # Task from making the owner card an attachment to the subject card.
 # * Requires the following keys:
@@ -766,8 +772,10 @@ func modify_properties(script: ScriptTask) -> int:
 							new_value,
 							modification,
 							property)
+					cfc.add_ongoing_process(self)		
 					if alteration is GDScriptFunctionState:
 						alteration = yield(alteration, "completed")
+					cfc.remove_ongoing_process(self)
 			# We set the value according to whatever was in the script
 			# which covers string and array values
 			# but integers will need some processing for alterants.
@@ -810,16 +818,19 @@ func modify_properties(script: ScriptTask) -> int:
 #	* [KEY_ASK_INTEGER_MIN](ScriptProperties#KEY_ASK_INTEGER_MIN)
 #	* [KEY_ASK_INTEGER_MAX](ScriptProperties#KEY_ASK_INTEGER_MAX)
 func ask_integer(script: ScriptTask) -> void:
+	cfc.add_ongoing_process(self)
 	var integer_dialog = _ASK_INTEGER_SCENE.instance()
 	# AskInteger tasks have to always provide a min and max value
 	var minimum = script.get_property(SP.KEY_ASK_INTEGER_MIN)
 	var maximum = script.get_property(SP.KEY_ASK_INTEGER_MAX)
 	integer_dialog.prep(script.owner.canonical_name, minimum, maximum)
 	# We have to wait until the player has finished selecting an option
+	
 	yield(integer_dialog,"popup_hide")
 	stored_integer = integer_dialog.number
 	# Garbage cleanup
 	integer_dialog.queue_free()
+	cfc.remove_ongoing_process(self)
 
 
 # Adds a specified BoardPlacementGrid scene to the board at the specified position
@@ -870,6 +881,7 @@ func add_grid(script: ScriptTask) -> void:
 # * Optionally uses the following keys:
 #	* [KEY_SET_TO_MOD](ScriptProperties#KEY_SET_TO_MOD)
 func mod_counter(script: ScriptTask) -> int:
+	cfc.add_ongoing_process(self)
 	var counter_name: String = script.get_property(SP.KEY_COUNTER_NAME)
 	var modification: int
 	var alteration = 0
@@ -914,6 +926,7 @@ func mod_counter(script: ScriptTask) -> int:
 			costs_dry_run(),
 			script.owner,
 			tags)
+	cfc.remove_ongoing_process(self)		
 	return(retcode)
 
 
@@ -928,6 +941,7 @@ func mod_counter(script: ScriptTask) -> int:
 #	* [KEY_EXEC_TEMP_MOD_COUNTERS](ScriptProperties#KEY_EXEC_TEMP_MOD_COUNTERS)
 #	* [KEY_EXEC_TRIGGER](ScriptProperties#KEY_EXEC_TRIGGER)
 func execute_scripts(script: ScriptTask) -> int:
+	cfc.add_ongoing_process(self)
 	var retcode : int = CFConst.ReturnCode.CHANGED
 	# If your subject is "self" make sure you know what you're doing
 	# or you might end up in an inifinite loop
@@ -955,6 +969,7 @@ func execute_scripts(script: ScriptTask) -> int:
 					and not script.get_property(SP.KEY_SUBJECT)\
 					in [SP.KEY_SUBJECT_V_BOARDSEEK, SP.KEY_SUBJECT_V_TUTOR]:
 				retcode = CFConst.ReturnCode.FAILED
+	cfc.remove_ongoing_process(self)
 	return(retcode)
 
 
@@ -967,6 +982,7 @@ func execute_scripts(script: ScriptTask) -> int:
 # You can use [SP.KEY_ABORT_ON_COST_FAILURE](SP#KEY_ABORT_ON_COST_FAILURE)
 # to control this behaviour better
 func nested_script(script: ScriptTask) -> int:
+	cfc.add_ongoing_process(self)
 	var retcode : int = CFConst.ReturnCode.CHANGED
 	var nested_task_list: Array = script.get_property(SP.KEY_NESTED_TASKS)
 	var sceng = cfc.scripting_engine.new(
@@ -995,6 +1011,7 @@ func nested_script(script: ScriptTask) -> int:
 	# further non-cost tasks.
 	if not sceng.can_all_costs_be_paid:
 		retcode = CFConst.ReturnCode.FAILED
+	cfc.remove_ongoing_process(self)	
 	return(retcode)
 
 

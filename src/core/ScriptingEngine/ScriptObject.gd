@@ -95,7 +95,9 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 	if (null != prepaid):
 		subjects = prepaid
 		return prepaid
-		
+
+
+	cfc.add_ongoing_process(self)		
 	var subjects_array := []
 	# See SP.KEY_SUBJECT doc
 	match get_property(SP.KEY_SUBJECT):
@@ -189,6 +191,7 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 			is_valid = false
 			subjects_array = []
 	subjects = subjects_array
+	cfc.remove_ongoing_process(self)
 	return(subjects_array)
 
 
@@ -348,6 +351,7 @@ func _dry_run_card_targeting(_script_definition):
 #
 # Returns a Card object.
 func _initiate_card_targeting() -> Card:
+	cfc.add_ongoing_process(self)
 	# We wait a centisecond, to prevent the card's _input function from seeing
 	# The double-click which started the script and immediately triggerring
 	# the target completion
@@ -359,16 +363,17 @@ func _initiate_card_targeting() -> Card:
 		var _is_valid = SP.check_validity(c, script_definition, "subject")
 		if (_is_valid):
 			valid_targets.append(c)
-			
-	if (!valid_targets):
-		return null	
-			
-	owner.targeting_arrow.initiate_targeting(valid_targets)
-	# We wait until the targetting has been completed to continue
-	yield(owner.targeting_arrow,"target_selected")
-	var target = owner.targeting_arrow.target_object
-	owner.targeting_arrow.target_object = null
-	#owner_card.target_object = null
+	
+	var target = null		
+	if (valid_targets):			
+		owner.targeting_arrow.initiate_targeting(valid_targets)
+		# We wait until the targetting has been completed to continue
+		yield(owner.targeting_arrow,"target_selected")
+		target = owner.targeting_arrow.target_object
+		owner.targeting_arrow.target_object = null
+		#owner_card.target_object = null
+		
+	cfc.remove_ongoing_process(self)	
 	return(target)
 
 

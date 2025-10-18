@@ -15,6 +15,7 @@ extends ScriptProperties
 const FILTER_DEMONSTRATION = "is_demonstration"
 
 const KEY_SUBJECT_V_HOST := "host"
+const KEY_SUBJECT_V_MY_HERO := "my_hero"
 const FILTER_HOST_OF := "filter_is_host_of"
 const FILTER_SAME_CONTROLLER := "filter_same_controller"
 

@@ -822,11 +822,20 @@ func filter_trigger(
 	var expected_trigger_name = card_scripts.get("event_name", "")
 	
 	#skip if we're expecting an interrupt but not this one
-	if expected_trigger_name != event_name:
+	if expected_trigger_name and (expected_trigger_name != event_name):
 		return false;
+	
+	var expected_trigger_type = card_scripts.get("event_type", "")
+	if expected_trigger_type and (expected_trigger_type != _trigger_details.get("trigger_type", "")):
+		return false;
+	
+	var event_details = {
+		"event_name":  expected_trigger_name,
+		"event_type": expected_trigger_type
+	}	
 		
 	var trigger_filters = card_scripts.get("event_filters", {})
-	var event = (theStack.find_event(event_name, trigger_filters, owner_card))
+	var event = (theStack.find_event(event_details, trigger_filters, owner_card))
 
 	return event #note: force conversion from stack event to bool
 

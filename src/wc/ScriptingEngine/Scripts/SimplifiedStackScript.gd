@@ -37,9 +37,19 @@ func execute():
 	
 	var _retcode = sceng.call(task_name, task)
 
-func get_script_by_event_name(_name):
-	if task_name == _name:
-		return task
-	return null
+func get_script_by_event_details(event_details):
+	
+	#TODO should this be on a per task basis ?
+	var _type = event_details["event_type"]
+	if (_type):
+		if !(("trigger_" + _type) in (task.trigger_details["tags"])):
+			return null
+
+	var _name = event_details["event_name"]		
+	if _name and (task_name != _name):
+		return null
+	
+	return task		
+
 	
 

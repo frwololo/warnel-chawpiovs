@@ -54,11 +54,20 @@ func execute():
 func get_tasks() -> Array:
 	return sceng.scripts_queue
 
-func get_script_by_event_name(_name):
+func get_script_by_event_details(event_details):
+	
+	#TODO should this be on a per task basis ?
+	var _type = event_details["event_type"]
+	if (_type):
+		if !(("trigger_" + _type) in (trigger_details["tags"])):
+			return null
+
+	var _name = event_details["event_name"]		
 	for task in sceng.scripts_queue:
 		var my_name = task.script_name
-		if my_name == _name:
-			return task
+		if _name and (my_name != _name):
+			continue
+		return task		
 	return null
 	
 

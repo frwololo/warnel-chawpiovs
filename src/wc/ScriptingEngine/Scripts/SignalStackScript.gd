@@ -27,7 +27,16 @@ func get_tasks():
 func get_class() -> String:
 	return("SignalStackScript")
 
-func get_script_by_event_name(_name):
-	if script_name == _name:
-		return self
-	return null
+func get_script_by_event_details(event_details):
+	
+	#Doesn't support type for now
+	var _type = event_details["event_type"]
+	if (_type):
+		return null
+
+	var _name = event_details["event_name"]		
+	if _name and (script_name != _name):
+		return null
+	
+	return self	
+

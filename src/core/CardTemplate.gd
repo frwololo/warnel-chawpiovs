@@ -1398,6 +1398,8 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 	# especially on filters
 	if _debugger_hook:
 		pass
+	if canonical_name =="Spider-Man" and trigger == "interrupt":
+		pass	
 	# We check the trigger against the filter defined
 	# If it does not match, then we don't pass any scripts for this trigger.
 	if not SP.filter_trigger(
@@ -1471,7 +1473,14 @@ func execute_scripts(
 	if (trigger == "manual" and gameData.is_interrupt_mode()):
 		#TODO very flaky code, how to fix?
 		trigger = find_interrupt_script()
+		if (!trigger):
+			return
 		trigger_details = gameData.theStack.get_current_interrupted_event()
+		if (!trigger_details):
+			return
+		trigger_card = trigger_details["event_object"].owner #this is geting gross, how to clear that?
+		if (!trigger_card):
+			return
 		
 	var only_cost_check = is_dry_run(run_type)
 		
@@ -1553,6 +1562,7 @@ func execute_scripts(
 		is_executing_scripts = true
 		cfc.LOG("running script for " + self.canonical_name)
 		cfc.LOG_DICT(trigger_details)
+		trigger_details["trigger_type"] = trigger
 		# This evocation of the ScriptingEngine, checks the card for
 		# cost-defined tasks, and performs a dry-run on them
 		# to ascertain whether they can all be paid,

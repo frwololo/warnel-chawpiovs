@@ -423,14 +423,12 @@ func constraints(script: ScriptTask) -> int:
 	
 	for tag in tags:
 		match tag:
-			"hero_action":
+			"hero_action","hero_interrupt", "hero_resource" :
 				if !my_hero_card.is_hero_form():
 					return CFConst.ReturnCode.FAILED
-			"alter_ego_action":
+			"alter_ego_action", "alter_ego_interrupt", "alter_ego_resource":
 				if !my_hero_card.is_alter_ego_form():
 					return CFConst.ReturnCode.FAILED					
-			"hero_resource":
-				if !my_hero_card.is_hero_form():
-					return CFConst.ReturnCode.FAILED					
+				
 
 	return retcode

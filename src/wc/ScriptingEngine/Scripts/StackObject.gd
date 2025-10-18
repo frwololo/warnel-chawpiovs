@@ -15,7 +15,7 @@ func get_tasks():
 	return tasks
 
 #can be overriden by children classes
-func get_script_by_event_name(_name):
+func get_script_by_event_details(_details):
 	return null
 
 #can be overriden by children classes

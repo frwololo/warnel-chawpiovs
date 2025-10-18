@@ -248,6 +248,7 @@ remotesync func client_send_before_trigger(_interrupt_mode):
 		for task in tasks:
 			_current_interrupted_event = task.script_definition.duplicate()
 			_current_interrupted_event["event_name"] = task.script_name
+			_current_interrupted_event["event_object"] = task
 			for card in get_tree().get_nodes_in_group("cards"):
 				#TODO makes a distinction between MAY and MUST here
 				#Forced interrupts happen before optional ones
@@ -349,10 +350,10 @@ func _delete_object(variant):
 func delete_last_event():
 	stack.pop_back()
 
-func find_event(_name, details, owner_card):
+func find_event(_event_details, details, owner_card):
 	for x in stack.size():
 		var event = stack[-x-1]
-		var task = event.get_script_by_event_name(_name)
+		var task = event.get_script_by_event_details(_event_details)			
 		if (!task):
 			continue			
 		if event.matches_filters(task, details, owner_card):

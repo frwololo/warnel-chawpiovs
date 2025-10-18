@@ -76,8 +76,8 @@
 			"is_optional_hand": true,
 			"hand": [
 				{
-				"name": "prevent",
-				"subject": "trigger"
+					"name": "prevent",
+					"subject": "trigger"
 				}
 			]
 		}
@@ -144,6 +144,23 @@
 			]
 		}		
 	},
+	"Enhanced Spider-Sense": {
+		"interrupt": {
+			"event_type": "reveal",
+			"is_optional_hand": true,
+			"hand": [
+				{	
+					"name": "constraints",
+					"is_cost": true,
+					"tags": ["hero_interrupt"]
+				},
+				{
+				"name": "prevent",
+				"subject": "trigger"
+				}
+			]
+		}
+	},	
 	"Helicarrier": {	
 		"manual": {
 			"board": [
@@ -258,8 +275,10 @@
 					"amount": 1,
 				}
 			],
-			"filter_group": "group_villains",
-			"filter_target_hero": "Spider-Man"	
+			"filter_state_trigger": [{
+				"filter_group": "group_villains",
+				"filter_target_hero": "Spider-Man"
+			}]
 		}
 	},	
 	"Swinging Web Kick": {

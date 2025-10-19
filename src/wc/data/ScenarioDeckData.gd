@@ -29,7 +29,7 @@ func get_villains():
 		return villains
 		
 	var first_scheme = schemes[0]
-	var first_scheme_name = first_scheme["name"]
+	var first_scheme_name = first_scheme["Name"]
 	var scheme_primitive = cfc.primitives[first_scheme_name]
 	var villain_strings : Array = scheme_primitive["villains"]
 	if (not villain_strings or villain_strings.empty()):
@@ -54,7 +54,7 @@ func get_encounter_deck():
 	encounter_deck = []
 		
 	var first_scheme = schemes[0]
-	var first_scheme_name = first_scheme["name"]
+	var first_scheme_name = first_scheme["Name"]
 	var scheme_primitive = cfc.primitives[first_scheme_name]
 	var encounter_sets : Array = scheme_primitive["encounter_sets"]		
 	var default_modular_sets : Array = scheme_primitive["modular_default"]

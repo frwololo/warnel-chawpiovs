@@ -326,7 +326,7 @@ func _init_card_layout() -> void:
 #  var canonical_name, "Name" label and self.name should use the same string.
 func _init_card_name() -> void:
 	if not canonical_name:
-		# The node name changes depeding on how many other cards
+		# The node name changes depending on how many other cards
 		# with the same node name are siblings
 		# We use this regex to discover the actual name
 		var regex = RegEx.new()

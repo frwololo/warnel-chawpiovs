@@ -9,8 +9,8 @@
 			"Modular"
 		],
 		"villains": [
-			"Rhino_1",
-			"Rhino_2"
+			"Rhino - 1",
+			"Rhino - 2"
 		],
 		"expert": {
 			"encounter_sets": [
@@ -20,8 +20,8 @@
 				"expert"
 			],
 			"villains": [
-				"rhino_2",
-				"rhino_3"
+				"Rhino - 2",
+				"Rhino - 3"
 			]
 		},
 		"setup_script": "todo"

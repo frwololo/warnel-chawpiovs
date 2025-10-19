@@ -42,7 +42,8 @@ signal manapool_modified(details)
 # warning-ignore:unused_signal
 signal enemy_initiates_attack(card,details)
 signal enemy_initiates_scheme(card,details)
-
+signal enemy_attack_happened (card,details)
+ 
 signal round_ended()
 
 

@@ -415,6 +415,27 @@ func heal(script: ScriptTask) -> int:
 
 	return retcode
 
+func deal_encounter(script: ScriptTask) -> int:
+
+	var retcode: int = CFConst.ReturnCode.FAILED
+
+	if (costs_dry_run()): #not allowed ?
+		return CFConst.ReturnCode.CHANGED
+
+	var owner = script.owner
+	var owner_hero_id = owner.get_controller_hero_id() or 1
+	
+	for subject in script.subjects:
+		match subject.get_property("type_code", ""):
+			"hero": #subject is a hero, we deal them an encounter from the deck
+				gameData.deal_one_encounter_to(subject.get_controller_hero_id)
+			_: #other uses cases, we assume that's the card we want to reveal
+				gameData.deal_one_encounter_to(owner_hero_id, false, subject)
+		
+		retcode = CFConst.ReturnCode.CHANGED
+
+	return retcode
+	
 func surge(script: ScriptTask) -> int:
 
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -423,8 +444,7 @@ func surge(script: ScriptTask) -> int:
 		return retcode
 	var owner = script.owner
 	var hero_id = owner.get_controller_hero_id()
-	gameData.deal_one_encounter_to(hero_id)
-	gameData.reveal_encounter(hero_id) #Flaky. This should go to the stack.
+	gameData.deal_one_encounter_to(hero_id, true)
 
 	return CFConst.ReturnCode.CHANGED
 
@@ -507,3 +527,14 @@ func constraints(script: ScriptTask) -> int:
 				
 
 	return retcode
+
+func message(script: ScriptTask) -> int:
+	var message = script.script_definition["message"]
+	var msg_dialog:AcceptDialog = AcceptDialog.new()
+	msg_dialog.window_title = message
+	cfc.NMAP.board.add_child(msg_dialog)
+	msg_dialog.popup_centered()	
+	
+	return CFConst.ReturnCode.OK
+
+

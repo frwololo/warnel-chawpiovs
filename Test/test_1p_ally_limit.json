@@ -32,7 +32,7 @@
 			],
 			"allies1": [
 				{
-					"card": "Black Cat"
+					"card": "Black Cat - Felicia Hardy"
 				},
 				{
 					"card": "MockingBird"
@@ -61,7 +61,7 @@
 		},
 		{
 			"type": "select",
-			"value": "MockingBird"
+			"value": "MockingBird - Bobbi Morse"
 		}	
 	] ,
 	"end": {
@@ -96,7 +96,7 @@
 			],
 			"allies1": [
 				{
-					"card": "Black Cat"
+					"card": "Black Cat - Felicia Hardy"
 				},
 				{
 					"card": "Nick Fury"

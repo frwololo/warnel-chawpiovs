@@ -10,6 +10,7 @@ var unknown_types : Dictionary
 var next_scene_params : Dictionary
 var idx_card_id_to_name : Dictionary
 var lowercase_card_name_to_name : Dictionary
+var shortname_to_name : Dictionary
 var idx_hero_to_deck_ids : Dictionary
 
 var obligations : Dictionary
@@ -123,8 +124,6 @@ func _load_one_card_definition(card_data):
 	if not card_data.has("_code"):
 		card_data["_code"] = card_data.get("code", "")
 
-	if not card_data.has("Name"):
-		card_data["Name"] = card_data.get("name", "")
 
 	if not card_data.has(CardConfig.SCENE_PROPERTY):
 		var type_code = card_data["type_code"]
@@ -149,9 +148,6 @@ func _load_one_card_definition(card_data):
 	if (!card_data.has("keywords")) and card_data.get("text", ""):
 		card_data["keywords"] = parse_keywords(card_data["text"])
 
-	if card_data.get("keywords", {}):
-		var _tmp = {"name": card_data["Name"], "keywords":card_data["keywords"] }
-		_tmp = 1
 
 	#TODO 2024/10/30 is this error new?
 	if not card_data.has("card_set_name"):
@@ -166,19 +162,30 @@ func _load_one_card_definition(card_data):
 	
 	var set_name = card_data["card_set_name"]
 	var lc_set_name = set_name.to_lower()	
+
+	if not card_data.has("Name"):
+		card_data["Name"] = card_data.get("name", "")
 	
+	#name alone isn't enough as a unique identifier, so we're adding
+	#subname
+	card_data["shortname"] = card_data["Name"]
+	if (card_data.get("subname", "")):
+		card_data["Name"] += " - " + card_data["subname"]	
+		var _tmp = card_data["Name"]
+		var _error = 0
 	#Villains: multiple cards have the same name.
 	#Hack to "fix" this by adding stage number
 	#e.g. "Rhino_2"
 	if (card_type == "Villain"):
-		card_data["Name"] = card_data["Name"] + "_" + String(card_data["stage"])
+		card_data["Name"] = card_data["Name"] + " - " + String(card_data["stage"])
 	
-
+	card_data.erase("name")
 	
 	var card_id = card_data["_code"]
 	var card_name:String = card_data["Name"]
 	
 	#caching and indexing
+	shortname_to_name[card_data["shortname"].to_lower()] = card_name
 	idx_card_id_to_name[card_id] = card_name
 	lowercase_card_name_to_name[card_name.to_lower()] = card_name
 	
@@ -244,7 +251,6 @@ func load_card_definitions() -> Dictionary:
 				card_data["back_card_code"] = back_side_data["_code"]				
 				#TODO more changes needed ?
 				_load_one_card_definition(back_side_data)
-				#combined_sets[linked_card_data["Name"]] = linked_card_data
 			
 	return(combined_sets)
 
@@ -342,17 +348,7 @@ func replace_macros(json_card_data, json_macro_data):
 	
 # Returns a Dictionary with the combined Script definitions of all set files
 func load_script_definitions() -> void:
-#	var set_files = CFUtils.list_files_in_directory(
-#			"user://Sets/", CFConst.CARD_SET_NAME_PREPEND)
-#
-#	for set_file in set_files:
-#		var json_card_data : Array
-#		json_card_data = WCUtils.read_json_file("user://Sets/" + set_file)
-#		for card_data in json_card_data:
-#			#Fixing missing Data
-#			if not card_data.has("Tags"):
-#				card_data["Tags"] = []			
-	
+			
 	var script_overrides = load(CFConst.PATH_SETS + "SetScripts_Core.gd").new()
 	var json_macro_data : Dictionary = WCUtils.read_json_file("user://Sets/_macros.json")
 	
@@ -369,7 +365,7 @@ func load_script_definitions() -> void:
 		var _text = to_json(json_card_data)
 		for card_name in json_card_data.keys():
 			if not combined_scripts.get(card_name):
-				var card_data= json_card_data[card_name]
+				var card_data = json_card_data[card_name]
 				combined_scripts[card_name]	= card_data	
 					
 

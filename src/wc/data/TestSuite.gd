@@ -413,6 +413,8 @@ func get_corrected_card_name (card) -> String:
 		card, 
 		cfc.lowercase_card_name_to_name.get(card.to_lower(), "")
 	)
+	if !card_name:
+		card_name = cfc.shortname_to_name.get(card.to_lower(), "")
 	return card_name
 #check if all elements of dict1 can be found in dict2
 #This doesn't mean the dictionaries are necessarily equal

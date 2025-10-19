@@ -327,6 +327,11 @@ func load_cards_to_pile(card_data:Array, pile_name):
 			card_id, 
 			cfc.lowercase_card_name_to_name.get(card_id.to_lower(), "")
 		)
+		if !card_name: #try to find the long name from the short name (for manual tests where I'm too lazy to write the full name)
+			card_name = cfc.shortname_to_name.get(card_id.to_lower(), "")
+		if !card_name:
+			var _error = 1
+			#error
 		var new_card:WCCard = cfc.instance_card(card_name, hero_id)
 		new_card.load_from_json(card)
 		card_array.append(new_card)

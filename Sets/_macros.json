@@ -24,6 +24,31 @@
 			]
 		},
 	},
+	"todo" : {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "message",
+					"message": "Sorry, this card isn't implemented yet",
+				}
+			]
+		},
+		"manual": {
+			"hand": [
+				{
+					"name": "message",
+					"message": "Sorry, this card isn't implemented yet",
+				},
+			],
+			"board": [
+				{
+					"name": "message",
+					"message": "Sorry, this card isn't implemented yet",
+				},
+			]
+		}	
+	},
 	"uses": {
 		"card_moved_to_board": {
 			"trigger": "self",

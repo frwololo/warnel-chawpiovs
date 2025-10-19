@@ -531,7 +531,15 @@ func common_pre_run(_sceng) -> void:
 	_sceng.scripts_queue = new_queue	
 
 func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:	
-	var owner_hero_id = self.get_owner_hero_id()	
+	var owner_hero_id = self.get_owner_hero_id()
+
+	# For cards owned by the Villain, owner_hero_id is zero.
+	# we set it to the current playing hero, meaning the currently active user
+	# can pay the cost
+	#TODO how does it work in Multiplayer?
+	if (!owner_hero_id):
+		owner_hero_id = gameData.current_hero_id
+			
 	var manapool:ManaPool = gameData.get_team_member(owner_hero_id)["manapool"]
 	var manacost:ManaCost = ManaCost.new()
 	var cost = script_definition["cost"]
@@ -554,7 +562,7 @@ func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:
 				"subject_index": "top",
 				SP.KEY_NEEDS_SELECTION: true,
 				SP.KEY_SELECTION_COUNT: -missing_mana.pool[ManaCost.Resource.UNCOLOR], #TODO put real missing cost here
-				SP.KEY_SELECTION_TYPE: "equal",
+				SP.KEY_SELECTION_TYPE: "min",
 				SP.KEY_SELECTION_OPTIONAL: false,
 				SP.KEY_SELECTION_IGNORE_SELF: true,
 				"selection_what_to_count": "resource_value",
@@ -573,16 +581,21 @@ func get_grid_name():
 func can_change_form() -> bool:
 	return _can_change_form
 
+func copy_tokens_to(to_card:WCCard, details:= {}):
+	var exclude = details.get("exclude",[])
+	var my_tokens = tokens.get_all_tokens()
+	for token_name in my_tokens.keys():
+		if (token_name in exclude):
+			continue
+		var count = tokens.get_token_count(token_name)
+		to_card.tokens.mod_token(token_name, count, true)	
 #a way to copy all modifications of this card to another card
 #used e.g. when flipping card 	
 func copy_modifiers_to(to_card:WCCard):
 	#TODO status cards
 	#TODO attachments
 	#tokens (including damage)
-	var my_tokens = tokens.get_all_tokens()
-	for token_name in my_tokens.keys():
-		var count = tokens.get_token_count(token_name)
-		to_card.tokens.mod_token(token_name, count, true)
+	copy_tokens_to(to_card)
 	#state (exhausted)
 	to_card.set_card_rotation(self.card_rotation)
 	#change form

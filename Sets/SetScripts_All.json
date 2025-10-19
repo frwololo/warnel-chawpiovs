@@ -42,6 +42,24 @@
 			]
 		}
 	},
+	"Assault": {
+		"reveal": {
+			"board" : [
+				{	
+					"name": "constraints",
+					"is_cost": true,
+					"tags": ["hero_form"]
+				},
+				{
+					"name" : "villain_attacks_you",
+				},
+				{
+					"name" : "surge",
+					"is_else": true
+				},
+			]
+		}
+	},	
 	"Aunt May": {
 		"manual": {
 			"board": [
@@ -110,7 +128,7 @@
 			]
 		}
 	},
-	"Black Cat": {
+	"Black Cat - Felicia Hardy": {
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
@@ -141,6 +159,80 @@
 			]
 		},
 	},
+	"Bomb Scare"	: {
+		"revealed": {
+			"board": [
+				{
+					"name" : "mod_tokens",
+					"token_name": "threat",
+					"modification" :1,				
+					"subject": "self",
+				}
+			]
+		},				
+	},	
+	"Breakin' & Takin'"	: {
+		"revealed": {
+			"board": [
+				{
+					"name" : "mod_tokens",
+					"token_name": "threat",
+					"modification" :1,				
+					"subject": "self",
+				}
+			]
+		},				
+	},
+	"Charge": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name" : "attach_to_card",
+					"subject": "villain",	
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{					
+					"filter_task" : "get_property",
+					"filter_property_name" : "attack",
+					"filter_same_controller": true,
+					"filter_state_trigger" : [{
+						"filter_properties" : {"type_code" : "villain"}
+					}],
+					"alteration": 3
+				}
+			]
+		},		
+		"interrupt": {
+			"event_name": "enemy_initiates_attack",
+			"board": [
+				{
+					"name" : "mod_tokens",
+					"modification": 1,
+					"token_name": "overkill_todo",
+					"subject": "host",
+				}
+			],
+			"filter_state_trigger": [{
+				"filter_properties" : {"type_code" : "villain"}
+			}]
+		},
+		"enemy_attack_happened" : {
+			"board": [
+				{
+					"name" : "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			],
+			"filter_state_trigger": [{
+				"filter_properties" : {"type_code" : "villain"}
+			}]
+		},
+	},	
 	"Combat Training": {
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -172,7 +264,7 @@
 			]
 		}		
 	},
-	"Daredevil": {
+	"Daredevil - Matt Murdock": {
 		"thwart":{
 			"trigger" : "self",
 			"is_optional_board": true,
@@ -188,6 +280,44 @@
 				}
 			]
 		}
+	},
+	"Enhanced Ivory Horn": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name" : "attach_to_card",
+					"subject": "villain",	
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{					
+					"filter_task" : "get_property",
+					"filter_property_name" : "attack",
+					"filter_same_controller": true,
+					"filter_state_trigger" : [{
+						"filter_properties" : {"type_code" : "villain"}
+					}],
+					"alteration": 1
+				},
+			],
+		},		
+		"manual": {
+			"board": [
+				{
+					"name": "pay_cost",
+					"cost": 3,
+					"is_cost" : true,
+				},
+				{
+					"name" : "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				},
+			],
+		},
 	},	
 	"Enhanced Spider-Sense": {
 		"interrupt": {
@@ -206,6 +336,23 @@
 			]
 		}
 	},
+	"False Alarm": {
+		"reveal": {
+			"board": [
+				{
+					"name" : "mod_tokens",
+					"token_name": "confused",
+					"modification" : 1,
+					"subject": "my_identity",
+					"is_cost": true,							
+				},
+				{
+					"name" : "surge",
+					"is_else": true,							
+				},				
+			],
+		},			
+	},	
 	"First Aid": {
 		"manual": {
 			"hand": [
@@ -220,6 +367,12 @@
 				}
 			]
 		}
+	},
+	"For Justice": {
+		"todo" : {}
+	},		
+	"Great Responsibility": {
+		"todo" : {}
 	},	
 	"Hard To Keep Down": {
 		"reveal": {
@@ -305,6 +458,61 @@
 			]
 		},		
 	},
+	"Heroic Intervention": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name" : "move_to_player_zone",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",					
+					"needs_selection": true,
+					"filter_state_seek": [{
+							"filter_group" : "group_identities"
+					}]
+				}
+			]
+		},		
+		"alterants": {
+			"board": [
+				{					
+					"filter_task" : "get_property",
+					"filter_property_name" : "thwart",
+					"filter_same_controller": true,
+					"filter_state_trigger" : [{
+						"filter_group" : "group_identities",
+					}],
+					"alteration": 1
+				}
+			]
+		}		
+	},	
+	"Hydra Bomber": {
+		"reveal": {
+			"board": {
+				"Take 2 damage": [
+					{
+						"name": "receive_damage",
+						"subject": "my_identity",
+						"amount": 2
+					}
+				],
+				"1 Threat on Main Scheme": [
+					{
+						"name" : "mod_tokens",
+						"token_name": "threat",
+						"amount" : 1,
+						"subject": "boardseek",
+						"filter_state_subject": [{
+							"type_code": "main_scheme",
+						}],							
+					},
+				],
+			},
+		},			
+	},	
 	"\"I'm Tough\"": {
 		"reveal": {
 			"board": [
@@ -326,7 +534,10 @@
 				},				
 			]
 		},
-	},	
+	},
+	"Interrogation Room": {
+		"todo" : {}
+	},		
 	"Jessica Jones": {	
 		"alterants": {
 			"board": [
@@ -350,7 +561,7 @@
 			]
 		}		
 	},	
-	"Mockingbird": {
+	"Mockingbird - Bobbi Morse": {
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
@@ -434,6 +645,50 @@
 			}
 		},		
 	},
+	"Rhino - 2": {
+		"reveal": {
+			"board": [
+				{	
+					"name": "deal_encounter",
+					"subject": "tutor",
+					"src_container": "deck_villain",
+					"filter_state_tutor": [{
+						"filter_properties": {
+							"Name" : "Breakin' & Takin'"
+						}
+					}]
+				},
+				{	
+					"name": "deal_encounter",
+					"subject": "tutor",
+					"src_container": "discard_villain",
+					"filter_state_tutor": [{
+						"filter_properties": {
+							"Name" : "Breakin' & Takin'"
+						}
+					}]
+				},				
+			]
+		},
+	},
+	"Rhino - 3": {
+		"reveal": {
+			"board": [
+				{	
+					"name": "mod_tokens",
+					"token_name":  "stunned",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [{
+						"filter_properties": {
+							"type_code" : "hero",
+						},
+					}],
+				},				
+			],
+		},
+	},	
 	"Shocker": {
 		"reveal": {
 			"board": [
@@ -514,6 +769,38 @@
 				{
 					"name" : "surge",
 					"is_else": true
+				},
+			]
+		}
+	},
+	"Surveillance Team": {
+		"uses" : {
+			"__name__": "snoop",
+			"__amount__": 3
+		},
+		"manual": {
+			"board": [		
+				{
+					"name": "rotate_card",
+					"subject": "self",
+					"is_cost": true,
+					"degrees": 90,
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"token_name":  "snoop",
+					"is_cost": true,
+				},				
+				{
+					"name": "thwart",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [{
+						"filter_group": "group_schemes"
+					}]
 				},
 			]
 		}

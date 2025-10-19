@@ -459,6 +459,7 @@ func enemy_activates() :
 			return
 			
 		EnemyAttackStatus.ATTACK_COMPLETE:
+			scripting_bus.emit_signal("enemy_attack_happened", enemy, {})
 			current_enemy_finished()
 			return 
 
@@ -535,9 +536,10 @@ func deal_encounters():
 	_villain_current_hero_target = 1
 	cfc.remove_ongoing_process(self, "deal_encounters")
 
-func deal_one_encounter_to(hero_id, immediate = false):
+func deal_one_encounter_to(hero_id, immediate = false, encounter = null):
 	var villain_deck:Pile = cfc.NMAP["deck_villain"]
-	var encounter = villain_deck.get_top_card()
+	if !encounter:
+		encounter = villain_deck.get_top_card()
 	if encounter:
 		var destination  =  get_facedown_encounters_pile(hero_id) 
 		
@@ -736,8 +738,11 @@ func move_to_next_villain(current_villain):
 	current_villain.get_parent().remove_child(current_villain)
 	#current_villain.queue_free() #is more required to remove it?	
 	
-	var ckey = new_villain_data["Name"] #TODO we have name and "Name" which is a problem here...		
+	var ckey = new_villain_data["Name"] 		
 	var new_card = cfc.NMAP.board.load_villain(ckey)
+	current_villain.copy_tokens_to(new_card, {"exclude":["damage"]})
+	#TODO better way to do a reveal ?
+	current_villain.execute_scripts(current_villain, "reveal")
 	return new_card			
 
 func villain_died(card:Card):

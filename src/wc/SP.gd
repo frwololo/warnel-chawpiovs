@@ -16,6 +16,8 @@ const FILTER_DEMONSTRATION = "is_demonstration"
 
 const KEY_SUBJECT_V_HOST := "host"
 const KEY_SUBJECT_V_MY_HERO := "my_hero"
+const KEY_SUBJECT_V_MY_ALTER_EGO := "my_identity"
+const KEY_SUBJECT_V_MY_IDENTITY := "my_alter_ego"
 const KEY_SUBJECT_V_VILLAIN := "villain"
 const FILTER_HOST_OF := "filter_is_host_of"
 const FILTER_SAME_CONTROLLER := "filter_same_controller"

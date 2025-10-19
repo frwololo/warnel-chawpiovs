@@ -37,6 +37,17 @@ func execute():
 	
 	var _retcode = sceng.call(task_name, task)
 
+#replacement task
+func replace_subjects(new_subjects:Array):
+	task.subjects = new_subjects
+
+	if (task.subjects):
+		task.script_definition["target"] = task.subjects[0]
+
+	#recreate sceng	
+	sceng = cfc.scripting_engine.new([task.script_definition], task.owner,task.trigger_object, task.trigger_details)
+
+
 func get_script_by_event_details(event_details):
 	
 	#TODO should this be on a per task basis ?

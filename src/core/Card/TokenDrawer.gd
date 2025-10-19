@@ -146,6 +146,10 @@ func mod_token(
 					retcode = CFConst.ReturnCode.FAILED
 			else:
 				retcode = CFConst.ReturnCode.CHANGED
+				#fail if we can't add the full amount requested
+				if max_tokens.has(token_name) and ((token.count + mod > max_tokens[token_name])):
+					retcode = CFConst.ReturnCode.FAILED
+					
 	else:
 		cfc.flush_cache()
 		var prev_value = token.count
@@ -154,7 +158,7 @@ func mod_token(
 		if set_to_mod:
 			var value = mod
 			if max_tokens.has(token_name):
-				value = min(value, max_tokens["token_name"])
+				value = min(value, max_tokens[token_name])
 			token.count = value
 		else:
 			token.count += mod

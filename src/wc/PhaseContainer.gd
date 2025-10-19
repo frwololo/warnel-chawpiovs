@@ -103,6 +103,13 @@ func _process(_delta: float) -> void:
 	if cfc.is_process_ongoing():
 		return
 
+	#some encounters need to be revealed outside of their regular schedule
+	# e.g. with surge. We place them in this specific dictionary
+	#and gamedata checks for them
+	if (gameData.immediate_encounters):
+		gameData.reveal_encounter()
+		return
+
 	#scheme and attack can happen outside of specific phases,
 	#so instead we check if "attacker" has something going on
 	if (gameData.attackers):

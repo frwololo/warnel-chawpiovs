@@ -22,6 +22,11 @@ func get_script_by_event_details(_details):
 func execute():
 	pass
 
+#replacement task
+func replace_subjects(new_subjects:Array):
+	pass
+		
+
 #TODO this function shouldn't be here? doesn't use any of its data
 func matches_filters(task, filters:Dictionary, owner_card):
 	var owner_hero_id = owner_card.get_owner_hero_id()

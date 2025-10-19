@@ -347,10 +347,16 @@ func discard():
 		var destination = "discard" + str(hero_owner_id)
 		self.move_to(cfc.NMAP[destination])
 
+#returns the amount of healing that could happen for a given heal value
+func can_heal(value):
+	var current_damage = tokens.get_token_count("damage")
+	return min(value, current_damage)	
+
 func heal(value):
 	var current_damage = tokens.get_token_count("damage")
 	var heal_value = min(value, current_damage)
-	tokens.mod_token("damage",-heal_value)
+	return tokens.mod_token("damage",-heal_value)
+
 
 func common_pre_execution_scripts(_trigger: String, _trigger_details: Dictionary) -> void:
 	match _trigger:
@@ -377,6 +383,8 @@ func die():
 			move_to(cfc.NMAP["discard_villain"])	
 		"villain":
 			gameData.villain_died(self)
+		"_":
+			self.discard()
 			
 	return CFConst.ReturnCode.OK		
 
@@ -527,8 +535,9 @@ func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:
 	var manapool:ManaPool = gameData.get_team_member(owner_hero_id)["manapool"]
 	var manacost:ManaCost = ManaCost.new()
 	var cost = script_definition["cost"]
-	if cost == "card_cost":
-		cost = self.get_property("cost")
+	if (typeof(cost) == TYPE_STRING):
+		if cost == "card_cost":
+			cost = self.get_property("cost")
 	manacost.init_from_expression(cost) #TODO better name?
 	var missing_mana:ManaCost = manapool.compute_missing(manacost)
 	

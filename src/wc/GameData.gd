@@ -60,7 +60,10 @@ var current_hero_id := 1
 #temp vars for bean counting
 var _villain_current_hero_target :=1
 var _current_enemy = null
-var attackers:Array = []
+#list of enemies with a current attack intent
+var attackers: = []
+#list of encounters that need to be revealed asap
+var immediate_encounters: = {}
 var user_input_ongoing:int = 0 #ID of the current player (or remote player) doing a blocking game interraction
 var _garbage:= []
 
@@ -482,16 +485,22 @@ func villain_threat():
 		
 	main_scheme.add_threat(escalation_threat)
 
-func get_facedown_encounters_pile() -> Pile :
-	var pile  = cfc.NMAP["encounters_facedown" + str(_villain_current_hero_target)]
+func get_facedown_encounters_pile(target_id = 0) -> Pile :
+	if (!target_id):
+		target_id = _villain_current_hero_target
+	var pile  = cfc.NMAP["encounters_facedown" + str(target_id)]
 	return pile
 	
-func get_revealed_encounters_grid() :
-	var grid  = cfc.NMAP.board.get_grid("encounters_reveal" + str(_villain_current_hero_target))
+func get_revealed_encounters_grid(target_id = 0) :
+	if (!target_id):
+		target_id = _villain_current_hero_target	
+	var grid  = cfc.NMAP.board.get_grid("encounters_reveal" + str(target_id))
 	return grid	
 	
-func get_enemies_grid() -> BoardPlacementGrid :
-	var grid  = cfc.NMAP.board.get_grid("enemies" + str(_villain_current_hero_target))
+func get_enemies_grid(target_id = 0) -> BoardPlacementGrid :
+	if (!target_id):
+		target_id = _villain_current_hero_target	
+	var grid  = cfc.NMAP.board.get_grid("enemies" + str(target_id))
 
 	return grid	
 
@@ -526,12 +535,17 @@ func deal_encounters():
 	_villain_current_hero_target = 1
 	cfc.remove_ongoing_process(self, "deal_encounters")
 
-func deal_one_encounter_to(hero_id):
+func deal_one_encounter_to(hero_id, immediate = false):
 	var villain_deck:Pile = cfc.NMAP["deck_villain"]
 	var encounter = villain_deck.get_top_card()
 	if encounter:
-		var destination  =  cfc.NMAP["encounters_facedown" + str(hero_id)] 
-		encounter.move_to(destination)
+		var destination  =  get_facedown_encounters_pile(hero_id) 
+		
+		if (immediate):
+			immediate_encounters[encounter] = 1;
+			encounter.move_to(destination, 0) #add it to the bottom to ensure it gets chosen first
+		else:
+			encounter.move_to(destination)
 	else:
 		#this shouldn't happen as we constantly reshuffle the encounter deck as soon as it empties
 		var _error = 1
@@ -544,12 +558,14 @@ func all_encounters_finished():
 func current_encounter_finished():
 	_current_encounter = null
 	_current_encounter_step = EncounterStatus.NONE
+	immediate_encounters.erase(_current_encounter)
 	pass
 
 
 #TODO need something much more advanced here, per player, etc...
-func reveal_encounter():
-	var target_id = _villain_current_hero_target
+func reveal_encounter(target_id = 0):
+	if (!target_id):
+		target_id = _villain_current_hero_target
 	
 	#If we're not the targeted player, we'll fail this one,
 	#and go into "wait for next phase" instantly. This should 
@@ -558,8 +574,8 @@ func reveal_encounter():
 		return CFConst.ReturnCode.FAILED
 		
 	if !_current_encounter:
-		var facedown_encounters:Pile = get_facedown_encounters_pile()
-		_current_encounter = facedown_encounters.get_top_card()
+		var facedown_encounters:Pile = get_facedown_encounters_pile(target_id)
+		_current_encounter = facedown_encounters.get_bottom_card()
 	
 	if !_current_encounter:
 		all_encounters_finished()

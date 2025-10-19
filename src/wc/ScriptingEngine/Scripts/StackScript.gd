@@ -15,6 +15,13 @@ func _init(_sceng = null, _run_type = 0, _trigger = "", _trigger_details = {}):
 	trigger = _trigger
 	trigger_details = _trigger_details
 
+#replacement task
+func replace_subjects(new_subjects:Array):
+	for task in get_tasks():
+		task.subjects = new_subjects
+
+
+
 func execute():
 	cfc.add_ongoing_process(self)
 	var owner = sceng.owner
@@ -65,7 +72,7 @@ func get_script_by_event_details(event_details):
 			return null
 
 	var _name = event_details["event_name"]		
-	for task in sceng.scripts_queue:
+	for task in get_tasks():
 		var my_name = task.script_name
 		if _name and (my_name != _name):
 			continue

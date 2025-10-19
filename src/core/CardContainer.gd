@@ -270,7 +270,7 @@ func get_last_card() -> Card:
 	return card # Returning the card object for unit testing
 
 
-# Teturn the card with the highest index
+# Return the card with the highest index
 func get_first_card() -> Card:
 	var card: Card = null
 	# prevents from trying to retrieve more cards

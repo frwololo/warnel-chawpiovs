@@ -16,14 +16,15 @@ const FILTER_DEMONSTRATION = "is_demonstration"
 
 const KEY_SUBJECT_V_HOST := "host"
 const KEY_SUBJECT_V_MY_HERO := "my_hero"
+const KEY_SUBJECT_V_VILLAIN := "villain"
 const FILTER_HOST_OF := "filter_is_host_of"
 const FILTER_SAME_CONTROLLER := "filter_same_controller"
 
 const TRIGGER_TARGET_HERO = "target_hero"
+const TRIGGER_SUBJECT = "trigger_subject"
 
 # This call has been setup to call the original, and allow futher extension
 # simply create new filter
-#TODO update/delete
 static func filter_trigger(
 		card_scripts,
 		trigger_card,
@@ -49,6 +50,15 @@ static func filter_trigger(
 			trigger_details.get(TRIGGER_TARGET_HERO):
 		is_valid = false		
 
+	if is_valid and card_scripts.get(TRIGGER_SUBJECT):
+		match card_scripts.get(TRIGGER_SUBJECT):
+			"self":
+				var subjects = trigger_details.get("subjects", [])
+				if !(owner_card in (subjects)):
+					is_valid = false
+			_: 
+				is_valid = false
+
 	return(is_valid)
 
 # Returns true if the trigger is the host of the owner, false otherwise
@@ -69,3 +79,21 @@ static func check_same_controller_filter(trigger_card, owner_card, true_false : 
 	if (same_controller and true_false): return true
 	if ((not same_controller) and (not true_false)): return true
 	return false
+
+
+# Check if the card is a valid subject or trigger, according to its state.
+static func check_validity(card, card_scripts, type := "trigger") -> bool:
+	var is_valid = .check_validity(card, card_scripts, type)
+	if (!is_valid):
+		return is_valid
+		
+	var tags = card_scripts.get("tags", [])
+	
+	#check for special guard conditions if card is an attack
+	if ("attack" in tags) and card == gameData.get_villain():
+		var all_cards = cfc.NMAP.board.get_all_cards()
+		for card in all_cards:
+			if card.get_keyword("guard") and card.is_faceup: #TODO better way to ignore face down cards?
+				return false
+	
+	return is_valid	

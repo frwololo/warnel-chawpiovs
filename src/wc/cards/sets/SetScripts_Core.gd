@@ -234,7 +234,8 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 							"needs_subject": true,
 							"filter_state_subject": [{
 								"filter_group" : "group_enemies"
-							},],						
+							},],
+							"tags":["attack"]						
 						},					
 					],
 				}

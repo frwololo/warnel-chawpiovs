@@ -3,17 +3,45 @@
 			"board": [
 				{	
 					"name": "scheme",
-					"subject": "boardseek",
-					"subject_count": 1,
-					"filter_state_seek": [{
-						"filter_properties": {
-							"type_code" : "villain"
-						}
-					}]
+					"subject": "villain",
 				},
 			]
 		},
-	},	
+	},
+	"Armored Rhino Suit": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "modify_properties",
+					"subject": "self",
+					"set_properties" :{
+						"health" : 5
+					}
+				},
+			
+				{
+					"name" : "attach_to_card",
+					"subject": "villain",	
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "villain",
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"subject": "self"
+					}
+				}
+			]
+		}
+	},
 	"Aunt May": {
 		"manual": {
 			"board": [
@@ -52,7 +80,7 @@
 					"is_cost" : true,
 				},							
 				{
-					"name" : "draw",
+					"name" : "draw_cards",
 					"amount": 1,
 					"subject": "boardseek",
 					"subject_count": "all",
@@ -77,7 +105,7 @@
 			"hand": [
 				{
 					"name": "prevent",
-					"subject": "trigger"
+					"subject": "interrupted_event"
 				}
 			]
 		}
@@ -158,10 +186,7 @@
 						"filter_group" : "group_enemies"
 					}],
 				}
-			],
-			"filter_state_trigger" : [{
-				"filter_group" : "group_identities",
-			}],	
+			]
 		}
 	},	
 	"Enhanced Spider-Sense": {
@@ -176,7 +201,7 @@
 				},
 				{
 				"name": "prevent",
-				"subject": "trigger"
+				"subject": "interrupted_event"
 				}
 			]
 		}
@@ -195,6 +220,28 @@
 				}
 			]
 		}
+	},	
+	"Hard To Keep Down": {
+		"reveal": {
+			"board": [
+				{	
+					"name": "heal",
+					"amount": 4,
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [{
+						"filter_properties": {
+							"type_code" : "villain"
+						}
+					}]
+				},
+				{	
+					"name": "surge",
+					"is_else": true,
+				},				
+			]
+		},
 	},	
 	"Haymaker": {
 		"manual": {
@@ -258,6 +305,28 @@
 			]
 		},		
 	},
+	"\"I'm Tough\"": {
+		"reveal": {
+			"board": [
+				{	
+					"name": "mod_tokens",			
+					"token_name": "tough",
+					"modification": 1,
+					"is_cost": true,
+					"subject": "boardseek",
+					"filter_state_seek": [{
+						"filter_properties": {
+							"type_code" : "villain"
+						}
+					}]			
+				},
+				{	
+					"name": "surge",
+					"is_else": true,
+				},				
+			]
+		},
+	},	
 	"Jessica Jones": {	
 		"alterants": {
 			"board": [
@@ -365,6 +434,23 @@
 			}
 		},		
 	},
+	"Shocker": {
+		"reveal": {
+			"board": [
+				{	
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [{
+						"filter_properties": {
+							"type_code" : "hero"
+						}
+					}]
+				},
+			]
+		},
+	},		
 	"Spider-Man": {
 		"interrupt": {
 			"event_name": "enemy_initiates_attack",
@@ -412,6 +498,24 @@
 			"filter_state_trigger": [{
 				"filter_is_host_of": "self",
 			}]		
+		}
+	},	
+	"Stampede": {
+		"reveal": {
+			"board" : [
+				{	
+					"name": "constraints",
+					"is_cost": true,
+					"tags": ["hero_form"]
+				},
+				{
+					"name" : "villain_attacks_you",
+				},
+				{
+					"name" : "surge",
+					"is_else": true
+				},
+			]
 		}
 	},	
 	"Swinging Web Kick": {
@@ -513,8 +617,8 @@
 			"event_name": "enemy_attack",
 			"board": [
 				{
-				"name": "prevent",
-				"subject": "trigger"
+					"name": "prevent",
+					"subject": "interrupted_event"
 				},
 				{
 					"name" : "mod_tokens",

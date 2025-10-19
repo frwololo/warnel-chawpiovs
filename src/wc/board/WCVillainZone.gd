@@ -38,9 +38,11 @@ func load_scenario():
 	var card_array = []
 	var encounter_deck_data = scenario_data.encounter_deck
 	for card_data in encounter_deck_data:
+			var quantity = card_data.get("quantity", 1)
 			#cards.append(ckey)
-			var ckey = card_data["name"]
-			card_array.append(cfc.instance_card(ckey, 0))
+			for i in range (quantity):
+				var ckey = card_data["name"]
+				card_array.append(cfc.instance_card(ckey, 0))
 
 	for card in card_array:
 		cfc.NMAP["deck_villain"].add_child(card)

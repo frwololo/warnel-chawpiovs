@@ -236,7 +236,24 @@ func prevent(script: ScriptTask) -> int:
 	#TOdo take into action subject, etc...
 	var _result = gameData.theStack.delete_last_event()
 	
-	return retcode				
+	return retcode		
+	
+
+func replacement_effect(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode	
+	
+	#Find the event on the stack and modifiy it
+	#TOdo take into action subject, etc...
+	var stack_object = gameData.theStack.find_last_event()
+	if (!stack_object):	
+		return CFConst.ReturnCode.FAILED
+	
+	gameData.theStack.modify_object(stack_object, script)
+		
+	
+	return retcode					
 
 static func simple_discard_task(target_card):
 	var dest_container = "discard_villain"
@@ -253,6 +270,21 @@ static func simple_discard_task(target_card):
 	var discard_task = ScriptTask.new(target_card, discard_script, target_card, {})	
 	var task_event = SimplifiedStackScript.new("move_card_to_container", discard_task)
 	return task_event
+
+#adds an attacker
+func enemy_attacks_you(script: ScriptTask) -> int:
+	var retcode = CFConst.ReturnCode.FAILED
+	var owner = script.owner
+	var hero_id = owner.get_controller_hero_id()	
+	
+	for card in script.subjects:
+		gameData.add_enemy_activation(card, "attack")
+		retcode = CFConst.ReturnCode.CHANGED
+	return retcode
+
+func villain_attacks_you(script:ScriptTask) ->int:
+	script.subjects = [ gameData.get_villain()]
+	return enemy_attacks_you(script)
 
 #the ability that is triggered by enemy_attack
 func enemy_attack(script: ScriptTask) -> int:
@@ -368,14 +400,31 @@ func thwart(script: ScriptTask) -> int:
 	return retcode	
 
 func heal(script: ScriptTask) -> int:
-	var retcode: int = CFConst.ReturnCode.CHANGED
-	if (costs_dry_run()): #Shouldn't be allowed as a cost?
-		return retcode
+	var retcode: int = CFConst.ReturnCode.FAILED
+
 	
 	var amount = script.script_definition["amount"]
 	
-	for subject in script.subjects: #should be really one subject only, generally
-		subject.heal(amount)
+	for subject in script.subjects:
+		if (costs_dry_run()): #healing as a cost can be used for "is_else" conditions, when saying "if no healing happened,..."
+			if (!subject.can_heal(amount)):
+				return CFConst.ReturnCode.FAILED		
+		var result = subject.heal(amount)
+		if (result == CFConst.ReturnCode.CHANGED): #if at least one healing happened, the result is a change
+			retcode = CFConst.ReturnCode.CHANGED
+
+	return retcode
+
+func surge(script: ScriptTask) -> int:
+
+	var retcode: int = CFConst.ReturnCode.CHANGED
+
+	if (costs_dry_run()): #not allowed ?
+		return retcode
+	var owner = script.owner
+	var hero_id = owner.get_controller_hero_id()
+	gameData.deal_one_encounter_to(hero_id)
+	gameData.reveal_encounter(hero_id) #Flaky. This should go to the stack.
 
 	return CFConst.ReturnCode.CHANGED
 
@@ -449,10 +498,10 @@ func constraints(script: ScriptTask) -> int:
 	
 	for tag in tags:
 		match tag:
-			"hero_action","hero_interrupt", "hero_resource" :
+			"hero_action","hero_interrupt", "hero_resource", "hero_form" :
 				if !my_hero_card.is_hero_form():
 					return CFConst.ReturnCode.FAILED
-			"alter_ego_action", "alter_ego_interrupt", "alter_ego_resource":
+			"alter_ego_action", "alter_ego_interrupt", "alter_ego_resource", "alter_ego_form":
 				if !my_hero_card.is_alter_ego_form():
 					return CFConst.ReturnCode.FAILED					
 				

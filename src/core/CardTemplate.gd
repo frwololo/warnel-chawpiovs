@@ -1871,7 +1871,7 @@ func set_control_mouse_filters(value = true) -> void:
 	# We do a comparison first, to make sure we avoid unnecessary operations
 	if $Control.mouse_filter != control_filter:
 		$Control.mouse_filter = control_filter
-	if monitorable != value:
+	if monitorable != bool(value):
 #		print_debug('monitorable')
 		monitorable = value
 
@@ -2829,7 +2829,8 @@ func _get_oval_angle_by_index(
 func _recalculate_position_use_oval(index_diff = null)-> Vector2:
 	var card_position_x: float = 0.0
 	var card_position_y: float = 0.0
-	var parent_control = get_parent().get_node('Control')
+	var parent = get_parent()
+	var parent_control = parent.get_node('Control')
 	# Oval hor rad, rect_size.x*0.5*1.5 it’s an empirical formula,
 	# that's been tested to feel good.
 	var hor_rad: float = parent_control.rect_size.x * 0.5 * 1.5

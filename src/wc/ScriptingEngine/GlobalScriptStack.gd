@@ -349,6 +349,9 @@ func _delete_object(variant):
 	
 func delete_last_event():
 	stack.pop_back()
+	
+func find_last_event():
+	return stack.back()	
 
 func find_event(_event_details, details, owner_card):
 	for x in stack.size():
@@ -359,6 +362,27 @@ func find_event(_event_details, details, owner_card):
 		if event.matches_filters(task, details, owner_card):
 			return event
 	return null			
+
+#todo in the future this needs to redo targeting, etc...
+func replace_subjects(stack_object, value, script):
+	match value:
+		"self":
+			stack_object.replace_subjects([script.owner])
+		_:
+			#not implemented
+			pass
+
+#scripted replacement effects
+func modify_object(stack_object, script):
+	var replacements = script.get_property("replacements", {})
+	for property in replacements.keys():
+		var value = replacements[property]
+		match property:
+			"subject":
+				replace_subjects(stack_object, value, script)
+			_:
+				#not implemented
+				pass
 	
 #is the current player allowed to play according to the stack?
 #returns an array of hero ids if so, empty array otherwise

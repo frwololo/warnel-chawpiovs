@@ -1,0 +1,138 @@
+{
+	"_comments": "Tests SpiderMan obligation",
+	"test_conditions": {
+		"ignore_order" : [
+			"deck_villain"
+		],
+	},
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "shadow of the past"
+				},				
+			],
+			"set_aside": [
+				{
+					"card": "Vulture"
+				},	
+				{
+					"card": "Sweeping Swoop"
+				},	
+				{
+					"card": "The Vulture's Plans"
+				},	
+				{
+					"card": "Highway Robbery"
+				},	
+				{
+					"card": "Sweeping Swoop"
+				},					
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			]
+		}
+	},
+	"actions": [
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"discard_villain":[
+				{
+					"card": "shadow of the past"
+				},						
+			],
+			"deck_villain": [	
+				{
+					"card": "Sweeping Swoop"
+				},	
+				{
+					"card": "The Vulture's plans"
+				},	
+				{
+					"card": "Sweeping Swoop"
+				},					
+			],
+			"set_aside" :[
+			],
+			"schemes": [
+				{
+					"card": "01097",
+				},
+				{
+					"card": "Highway Robbery",
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Vulture"
+				},
+			]
+		}
+	}
+}

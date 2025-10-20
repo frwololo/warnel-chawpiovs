@@ -310,7 +310,14 @@ const GRID_SETUP := {
 	"villain_misc" : {
 		"x" : 1500,
 		"y" : 0,
-	}
+	},
+	"set_aside" :{
+		"x" : 1700,
+		"y" : 300,
+		"type" : "pile",
+		"faceup" : true,
+		"scale" : 0.5
+	},		
 }
 const HERO_GRID_SETUP := {
 	"encounters_facedown" :{

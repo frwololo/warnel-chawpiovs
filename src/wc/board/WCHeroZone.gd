@@ -29,6 +29,22 @@ func load_starting_identity():
 		return
 	var ckey = cfc.idx_card_id_to_name[alter_ego_id]
 	load_identity (ckey)
+	load_nemesis_aside(hero_card_data)
+	
+func load_nemesis_aside(hero_card_data):
+	#return	
+	var hero_set = hero_card_data["card_set_code"]
+	var nemesis_set = hero_set + "_nemesis"
+	
+	var nemesis_cards_data = cfc.cards_by_set[nemesis_set]
+	for card_data in nemesis_cards_data:
+		var quantity = card_data.get("quantity", 1)
+		for i in range (quantity):
+			var card_name = card_data["Name"]
+			var card = cfc.instance_card(card_name, my_id)
+			#moving the card forces a rescale
+			cfc.NMAP["deck" + str(my_id)].add_child(card)
+			card.move_to(cfc.NMAP["set_aside"])
 	
 func load_identity(card_name):
 	var card = cfc.instance_card(card_name, my_id)

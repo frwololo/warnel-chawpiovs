@@ -93,7 +93,8 @@ func _ready() -> void:
 				pile.set_pile_name(real_grid_name)
 				pile.set_position(Vector2(x,y))
 				pile.set_global_position(Vector2(x,y))
-				pile.scale = Vector2(0.5*scale, 0.5*scale)
+				var pile_scale = grid_info.get("scale", 1)
+				pile.scale = Vector2(0.5*scale*pile_scale, 0.5*scale*pile_scale)
 				pile.faceup_cards = grid_info.get("faceup", false)
 				add_child(pile)
 			else:
@@ -101,7 +102,8 @@ func _ready() -> void:
 				var grid: BoardPlacementGrid = grid_scene.instance()
 				grid.add_to_group("placement_grid")
 				# Need to rescale before adding ???
-				grid.rescale(CFConst.PLAY_AREA_SCALE * scale)
+				var grid_scale = grid_info.get("scale", 1)				
+				grid.rescale(CFConst.PLAY_AREA_SCALE * scale * grid_scale)
 				add_child(grid)
 				grid.name = real_grid_name
 				grid.name_label.text = real_grid_name
@@ -262,6 +264,7 @@ func _on_ReshuffleAllDiscard_pressed() -> void:
 	reshuffle_all_in_pile(cfc.NMAP.discard)
 
 func reshuffle_all_in_pile(pile = cfc.NMAP.deck):
+	cfc.add_ongoing_process(self, "reshuffle_all_in_pile")
 	for c in get_tree().get_nodes_in_group("cards"):
 		if c.get_parent() != pile and c.state != Card.CardState.DECKBUILDER_GRID:
 			c.move_to(pile)
@@ -272,6 +275,7 @@ func reshuffle_all_in_pile(pile = cfc.NMAP.deck):
 		yield(last_card._tween, "tween_all_completed")
 	yield(get_tree().create_timer(0.2), "timeout")
 	pile.shuffle_cards()
+	cfc.remove_ongoing_process(self, "reshuffle_all_in_pile")
 
 
 # Button to change focus mode

@@ -35,6 +35,7 @@ var forced_status: int = TestStatus.NONE
 #current tests
 var initial_state:Dictionary
 var end_state:Dictionary
+var test_conditions: Dictionary
 var actions:Array
 var current_action:int = 0
 var current_player_id: int = 0
@@ -407,6 +408,12 @@ remotesync func finalize_test_allclients(force_status:int):
 		failed.append(current_test_file)	
 	return
 
+func sort_card_array(array):
+	var result = []
+	for card in array:
+		card["card"] = get_corrected_card_name(card["card"])
+	array.sort_custom(WCUtils, "sort_cards")		
+
 #card here is either a card id or a card name, we try to accomodate for both
 func get_corrected_card_name (card) -> String:
 	var card_name = cfc.idx_card_id_to_name.get(
@@ -416,6 +423,8 @@ func get_corrected_card_name (card) -> String:
 	if !card_name:
 		card_name = cfc.shortname_to_name.get(card.to_lower(), "")
 	return card_name
+
+
 #check if all elements of dict1 can be found in dict2
 #This doesn't mean the dictionaries are necessarily equal
 func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
@@ -430,6 +439,7 @@ func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
 	
 	match typeof(element1):	
 		TYPE_DICTIONARY:
+			var ignore_order = test_conditions.get("ignore_order", [])
 			for key in element1:
 				if not element2.has(key):
 					failed_reason.append ("missing key :" + key)
@@ -442,7 +452,11 @@ func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
 					val1 = get_corrected_card_name(val1)
 					val2 = get_corrected_card_name(val2)	
 				
-									
+				if key in (ignore_order):
+					if (typeof(val1) == TYPE_ARRAY and typeof(val2) == TYPE_ARRAY):
+							sort_card_array(val1)
+							sort_card_array(val2)
+							var _tmp = 1			
 				if !is_element1_in_element2(val1, val2, parent_append + key):
 					return false
 		TYPE_ARRAY:
@@ -484,6 +498,7 @@ func load_test_files():
 remote func initialize_clients_test(details:Dictionary):
 	end_state = details["end_state"]
 	current_test_file = details["current_test_file"]
+	test_conditions = details["test_conditions"]
 	delta = 0
 
 #Loads a single test file 	
@@ -507,12 +522,13 @@ func load_test(test_file)-> bool:
 	initial_state = json_card_data["init"]
 	actions = json_card_data["actions"]
 	end_state = json_card_data["end"]
-
+	test_conditions = json_card_data.get("test_conditions", {})
 	
 	#init remote clients
 	var remote_init_data = {
 		"end_state" : end_state,
-		"current_test_file" : current_test_file
+		"current_test_file" : current_test_file,
+		"test_conditions" : test_conditions,
 	}
 	rpc("initialize_clients_test", remote_init_data)
 	

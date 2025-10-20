@@ -189,7 +189,6 @@ func _load_one_card_definition(card_data):
 	idx_card_id_to_name[card_id] = card_name
 	lowercase_card_name_to_name[card_name.to_lower()] = card_name
 	
-	
 	#scenarios cache
 	if (card_type == "Main_scheme"):
 		if (not schemes.has(lc_set_code)):

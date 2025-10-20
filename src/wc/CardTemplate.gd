@@ -159,7 +159,7 @@ func can_interrupt(
 	if (!card_scripts):
 		return CFConst.CanInterrupt.NO	
 	
-	var state_scripts = get_state_scripts(card_scripts)
+	var state_scripts = get_state_scripts(card_scripts, trigger_card, trigger_details)
 	
 	if (!state_scripts):
 		return CFConst.CanInterrupt.NO

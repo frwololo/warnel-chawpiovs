@@ -1291,6 +1291,15 @@ func move_to(targetHost: Node,
 					_set_target_position(board_position.rect_global_position)
 					board_position.occupying_card = self
 					_placement_slot = board_position
+				elif board_position as String:
+					var grid = cfc.NMAP.board.get_grid(board_position)
+					var slot = grid.find_available_slot()
+					# We need a small delay, to allow a potential new slot to instance
+					#TODO this might cause issues with the stack
+					yield(get_tree().create_timer(0.05), "timeout")
+					_set_target_position(slot.rect_global_position)
+					slot.occupying_card = self
+					_placement_slot = slot					
 				else:
 					_determine_target_position_from_mouse()
 				raise()
@@ -1422,18 +1431,40 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 		card_scripts.clear()
 	return card_scripts
 
-func get_state_scripts(card_scripts):
+func get_state_scripts(card_scripts, trigger_card, trigger_details):
 	var state_scripts = []
 	# We select which scripts to run from the card, based on it state
 	var state_exec := get_state_exec()
 	var any_state_scripts = card_scripts.get('all', [])
 	state_scripts = card_scripts.get(state_exec, any_state_scripts)
-	
-	#special case of a multiple choice ability with only one choice
+
+	#If it's a multiple choice, filter down only to only the ones we can afford to pay
 	if typeof(state_scripts) == TYPE_DICTIONARY:
+		#special case if only one entry in a dictionary, this is a choice by the script writer,
+		# we let it through and remove the
+		#dictionary wrapper
 		if state_scripts.size() == 1:
 			var first_key = state_scripts.keys()[0]
 			state_scripts = state_scripts[first_key]
+		else:	
+			for entry_name in state_scripts.keys():
+				var state_script = state_scripts[entry_name]
+				var sceng = cfc.scripting_engine.new(
+					state_script,
+					self,
+					trigger_card,
+					trigger_details)
+				var func_return = sceng.execute(CFInt.RunType.BACKGROUND_COST_CHECK)
+				while func_return is GDScriptFunctionState && func_return.is_valid():
+					func_return = func_return.resume()
+				if !sceng.can_all_costs_be_paid:
+					state_scripts.erase(entry_name)
+			#notably we keep the dictionary here even if there's only one entry remaining,
+			#so the user doesn't auto activate the only option by mistake
+			if !state_scripts:
+				state_scripts = []
+				
+
 	
 	return state_scripts
 
@@ -1498,7 +1529,7 @@ func execute_scripts(
 	var card_scripts = retrieve_filtered_scripts(trigger_card, trigger, trigger_details)
 	
 	# We select which scripts to run from the card, based on it state	
-	var state_scripts = get_state_scripts(card_scripts)
+	var state_scripts = get_state_scripts(card_scripts, trigger_card, trigger_details)
 
 	
 	#Check if this script is exected from remote (another online player has been paying for the cost)

@@ -465,6 +465,9 @@ func change_form(script: ScriptTask) -> int:
 	var tags: Array = script.get_property(SP.KEY_TAGS)
 	var is_manual = "player_initiated" in tags
 	
+	if (!script.subjects):
+		script.subjects =  [_get_identity_from_script(script)]
+	
 	for subject in script.subjects: #should be really one subject only, generally
 		var hero = subject
 		
@@ -506,6 +509,48 @@ func move_to_player_zone(script: ScriptTask) -> int:
 
 	return retcode
 
+func reveal_nemesis (script:ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+
+	var my_hero_card = _get_identity_from_script(script)
+	var my_hero_id = my_hero_card.get_controller_hero_id()	
+	var my_nemesis_set = my_hero_card.get_property("card_set_code","") + "_nemesis"
+
+	var my_nemesis = null
+	var my_nemesis_scheme = null
+	var other_nemesis_cards = []	
+	var do_surge = false
+	
+	for card in cfc.NMAP["set_aside"].get_all_cards():
+		if card.get_property("card_set_code", "") == my_nemesis_set:
+			match card.get_property("type_code"):
+				"minion":
+					my_nemesis = card
+				"side_scheme":
+					my_nemesis_scheme = card
+				_:
+					other_nemesis_cards.append(card)			
+	
+	if (my_nemesis):
+		gameData.deal_one_encounter_to(my_hero_id, true, my_nemesis)	
+	else:
+		do_surge = true
+	
+	if (my_nemesis_scheme):
+		gameData.deal_one_encounter_to(my_hero_id, true, my_nemesis_scheme)	
+		
+	for card in other_nemesis_cards:
+		card.move_to(cfc.NMAP["deck_villain"])
+	
+	cfc.NMAP["deck_villain"].shuffle_cards()	
+	
+	if (do_surge):
+		return surge(script)
+
+	return retcode	
+
 #used only as a cost, checks a series of constraints to see if a card can be played or not
 func constraints(script: ScriptTask) -> int:
 	var retcode = CFConst.ReturnCode.CHANGED	
@@ -537,4 +582,11 @@ func message(script: ScriptTask) -> int:
 	
 	return CFConst.ReturnCode.OK
 
-
+#returns thecurrent hero id based on a script.
+#typically that's the hero associated to the script owner
+func _get_identity_from_script(script):
+	var this_card = script.owner
+	var my_hero_id = this_card.get_controller_hero_id()
+	var my_hero_card = gameData.get_identity_card(my_hero_id)	
+	
+	return my_hero_card

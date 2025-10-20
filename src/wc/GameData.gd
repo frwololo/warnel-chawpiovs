@@ -558,9 +558,9 @@ func all_encounters_finished():
 	pass
 
 func current_encounter_finished():
+	immediate_encounters.erase(_current_encounter)
 	_current_encounter = null
 	_current_encounter_step = EncounterStatus.NONE
-	immediate_encounters.erase(_current_encounter)
 	pass
 
 
@@ -574,6 +574,14 @@ func reveal_encounter(target_id = 0):
 	#force us to wait for the targeted player to trigger the script via network
 	if not (can_i_play_this_hero(target_id)):
 		return CFConst.ReturnCode.FAILED
+
+	if immediate_encounters:
+		for immediate_encounter in immediate_encounters.keys():
+			match immediate_encounter.state:
+				Card.CardState.DROPPING_TO_BOARD,\
+						Card.CardState.MOVING_TO_CONTAINER:
+					return
+
 		
 	if !_current_encounter:
 		var facedown_encounters:Pile = get_facedown_encounters_pile(target_id)

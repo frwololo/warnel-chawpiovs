@@ -22,20 +22,22 @@ func _ready() -> void:
 	}
 	
 	#TODO Manapool is currently connected to this display, need something more advanced
-	var manapool:ManaPool = gameData.get_current_team_member()["manapool"]
-	for v in ManaCost.Resource.values() :
-		needed_counters[ManaCost.RESOURCE_TEXT[v]] = {"CounterTitle": ManaCost.RESOURCE_TEXT[v], "Value": manapool.pool[v]}
+	#var manapool:ManaPool = gameData.get_current_team_member()["manapool"]
+	#for v in ManaCost.Resource.values() :
+	#	needed_counters[ManaCost.RESOURCE_TEXT[v]] = {"CounterTitle": ManaCost.RESOURCE_TEXT[v], "Value": manapool.pool[v]}
 	# warning-ignore:return_value_discarded
 	spawn_needed_counters()
 	
 	#Signals
 	scripting_bus.connect("current_playing_hero_changed", self, "_refresh")
-	scripting_bus.connect("manapool_modified", self, "_refresh")
+	#scripting_bus.connect("manapool_modified", self, "_refresh")
 	
 func _refresh (trigger_details: Dictionary = {}):
-	var manapool:ManaPool = gameData.get_current_team_member()["manapool"]
-	for v in ManaCost.Resource.values() :
-		mod_counter(ManaCost.RESOURCE_TEXT[v],manapool.pool[v], true) 
+#	var manapool:ManaPool = gameData.get_current_team_member()["manapool"]
+#	for v in ManaCost.Resource.values() :
+#		mod_counter(ManaCost.RESOURCE_TEXT[v],manapool.pool[v], true)
+	#TODO ?
+	pass 
 
 # We add counters dynamically at runtime as requested, even if they didn't exist in the game definition
 # We do this before calling the parent which actually needs the counter to exist

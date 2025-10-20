@@ -719,7 +719,7 @@
 		"once_per_round" : {
 			"__name__": "peter_resource"
 		},
-		"manual": {
+		"resource": {
 			"board": {
 				"add resource" :[
 					{
@@ -730,7 +730,7 @@
 						"is_cost": true,
 					},				
 					{
-						"name": "add_mana",
+						"name": "add_resource",
 						"modification": 1,
 						"counter_name": "mental"
 					},
@@ -955,12 +955,12 @@
 			"__name__": "web",
 			"__amount__": 3
 		},
-		"manual": {
+		"resource": {
 			"board": [
 				{	
-						"name": "constraints",
-						"is_cost": true,
-						"tags": ["hero_resource"]
+					"name": "constraints",
+					"is_cost": true,
+					"tags": ["hero_resource"]
 				},			
 				{
 					"name": "rotate_card",
@@ -976,7 +976,7 @@
 					"is_cost": true,
 				},				
 				{
-					"name": "add_mana",
+					"name": "add_resource",
 					"modification": 1,
 					"counter_name": "wild"
 				},

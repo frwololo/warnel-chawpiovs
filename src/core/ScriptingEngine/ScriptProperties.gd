@@ -219,6 +219,7 @@ const KEY_MODIFY_PROPERTIES := "set_properties"
 # * [KEY_SUBJECT_V_INDEX](#KEY_SUBJECT_V_INDEX)
 #
 # Specifies the source container to pick the card from
+#if passing an array, will look into multiple containers
 const KEY_SRC_CONTAINER := "src_container"
 # Value Type: String.
 #

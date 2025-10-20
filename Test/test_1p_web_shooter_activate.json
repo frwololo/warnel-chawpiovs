@@ -39,15 +39,22 @@
 			"hand1": [
 				{
 					"card": "Mockingbird"
-				}
+				},
+				{
+					"card": "Strength"
+				},
 			]
 		}
 	},
 	"actions": [
 		{
-			"type": "activate",
-			"value": "Web-Shooter"
+			"type": "play",
+			"value": "Mockingbird"
 		},	
+		{
+			"type": "target",
+			"value": "01094"
+		},			
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -85,11 +92,16 @@
 					"tokens": {"web" : 1}
 				}
 			],			
-			"hand1": [
+			"allies1": [
 				{
 					"card": "Mockingbird"
 				}
-			]
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				}
+			]			
 		}
 	}
 }

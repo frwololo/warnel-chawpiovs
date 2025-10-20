@@ -3,7 +3,7 @@
 class_name CVGridCardObject
 extends CenterContainer
 
-var display_card: Card
+var display_card: Card = null
 var card_list_object
 
 onready var preview_popup := $PreviewPopup
@@ -34,10 +34,14 @@ func setup(card) -> Card:
 
 
 func _on_GridCardObject_mouse_entered() -> void:
+	if (!display_card):
+		return
 	preview_popup.show_preview_card(display_card.canonical_name)
 
 
 func _on_GridCardObject_mouse_exited() -> void:
+	if (!display_card):
+		return	
 	preview_popup.hide_preview_card()
 
 
@@ -47,5 +51,7 @@ func get_class() -> String:
 
 # Resizes the grid container so that the preview cards fix snuggly.
 func _on_viewport_resized() -> void:
+	if (!display_card):
+		return	
 	rect_min_size = display_card.canonical_size * display_card.thumbnail_scale * cfc.curr_scale
 	rect_size = rect_min_size

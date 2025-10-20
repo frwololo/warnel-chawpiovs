@@ -39,15 +39,23 @@
 			"hand1": [
 				{
 					"card": "Mockingbird"
-				}
+				},
+				{
+					"card": "Strength"
+				},				
 			]
 		}
 	},
 	"actions": [
 		{
-			"type": "activate",
-			"value": "Web-Shooter"
+			"type": "play",
+			"value": "Mockingbird"
 		},
+		{
+			"type": "target",
+			"value": "01094",
+			"_comments": "target Rhino with Mockingbird stun"
+		},		
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -81,10 +89,13 @@
 			],
 			"discard1":[
 				{
+					"card": "Strength"
+				},				
+				{
 					"card" : "Web-Shooter",
-				}
+				},			
 			],			
-			"hand1": [
+			"allies1": [
 				{
 					"card": "Mockingbird"
 				}

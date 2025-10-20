@@ -28,6 +28,7 @@ enum RunType{
 	PRIME_ONLY
 	ELSE
 	BACKGROUND_COST_CHECK
+	PRECOMPUTE
 }
 # The focus style used by the engine
 # * SCALED means that the cards simply scale up when moused over in the hand

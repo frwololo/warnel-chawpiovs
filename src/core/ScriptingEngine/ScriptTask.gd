@@ -16,6 +16,10 @@ var is_cost := false
 var is_else := false
 var needs_subject := false
 
+#if this script generates some object outcome, it will be stored here
+var process_result = null
+
+
 # prepares the script_definition needed by the task to function.
 func _init(owner,
 		script: Dictionary,
@@ -33,8 +37,6 @@ func _init(owner,
 			owner,
 			trigger_details):
 		is_skipped = true
-
-
 
 func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int) -> void:
 	# We store the prev_subjects we sent to this task in case we need to

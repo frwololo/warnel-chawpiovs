@@ -18,8 +18,18 @@ func _init(state_scripts: Array,
 
 #Scripting functions 
 
+func pay_as_resource(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+
+	for subject in script.subjects:
+		subject.pay_as_resource(script)
+		
+	return retcode		
+
 #Abilities that add energy	
-func add_mana(script: ScriptTask) -> int:
+func add_resource(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
@@ -29,8 +39,16 @@ func add_mana(script: ScriptTask) -> int:
 	var modification: int  = script.get_property(SP.KEY_MODIFICATION)
 	# var set_to_mod: bool = script.get_property(SP.KEY_SET_TO_MOD)
 
-	var manapool:ManaPool = gameData.get_current_team_member()["manapool"]
-	manapool.add_resource(counter_name, modification)
+	#var manapool:ManaPool = gameData.get_current_team_member()["manapool"]
+	
+	if run_type == CFInt.RunType.PRECOMPUTE:
+		var pre_result:ManaCost = ManaCost.new()
+		pre_result.add_resource(counter_name, modification)
+		script.process_result = pre_result	
+		return retcode
+	
+	#there is no manapool anymore
+	#manapool.add_resource(counter_name, modification)
 	return retcode	
 
 #override for parent
@@ -132,22 +150,6 @@ func play_card(script: ScriptTask) -> int:
 		
 	scripting_bus.emit_signal("card_played", script.owner, script.script_definition)		
 	return retcode	
-
-#Compatible with IS_COST (obviously?)
-func pay_from_manapool(script: ScriptTask) -> int:
-	var retcode: int = CFConst.ReturnCode.CHANGED
-	if (costs_dry_run()):
-		return retcode
-	
-	var owner = script.owner
-	var owner_hero_id = owner.get_owner_hero_id()
-	var manapool:ManaPool = gameData.get_team_member(owner_hero_id)["manapool"]
-
-	#Manapool gets emptied after paying for a cost
-	#TODO something more subtle than that?
-	manapool.reset()	
-	return retcode	
-
 
 func attack(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED

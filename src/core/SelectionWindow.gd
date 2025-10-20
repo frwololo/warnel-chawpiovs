@@ -21,6 +21,7 @@ var is_cancelled := false
 var _card_dupe_map := {}
 var what_to_count: String
 var my_script
+var card_array
 
 onready var _card_grid = $GridContainer
 onready var _tween = $Tween
@@ -67,11 +68,31 @@ func _process(_delta):
 				get_ok().disabled = false
 
 
+func _compute_columns():
+	_card_grid.columns = 8
+	var counts:= {}
+	for card in card_array:
+		var parent = card.get_parent()
+		var parent_count = counts.get(parent, 0)
+		parent_count += 1
+		counts[parent] = parent_count
+	
+	if counts:
+		_card_grid.columns =  min (8, counts.values().max())
+
 # Populates the selection window with duplicates of the possible cards
 # Then displays them in a popup for the player to select them.
-func initiate_selection(card_array: Array) -> void:
+func initiate_selection(_card_array: Array) -> void:
 	if OS.has_feature("debug") and not cfc.is_testing:
 		print("DEBUG INFO:SelectionWindow: Initiated Selection")
+	
+	#only include cards that can actually be used 
+	card_array = []
+	for card in _card_array:
+		if (get_count([card]) >= 1):
+			card_array.append(card)
+	
+	_compute_columns()
 		
 	# We don't allow the player to close the popup with the close button
 	# as that will not send the mandatory signal to unpause the game
@@ -130,11 +151,23 @@ func initiate_selection(card_array: Array) -> void:
 	var card_sample: Card
 	# for each card that the player needs to select amonst
 	# we create a duplicate card inside a Card Grid object
+	var current_parent = null
+	var current_column = -1
 	for card in card_array:
+		current_column += 1
+		if current_column == _card_grid.columns:
+			current_column = 0
 		var dupe_selection: Card
 		if typeof(card) == TYPE_STRING:
 			dupe_selection = cfc.instance_card(card, -20)
 		else:
+			#add separator for cards from different zones
+			if (current_parent and (card.get_parent() != current_parent)):
+				for i in range (current_column, _card_grid.columns):
+					_card_grid.add_child(grid_card_object_scene.instance())
+				current_column = 0
+			current_parent = card.get_parent()
+			
 			dupe_selection = card.duplicate(DUPLICATE_USE_INSTANCING)
 			# This prevents the card from being scripted with the
 			# signal propagator and other things going via groups
@@ -195,7 +228,7 @@ func get_count(card_array: Array) -> int:
 			return card_array.size()
 		_:
 			var total = 0
-			var func_name = "get_" + what_to_count
+			var func_name = what_to_count
 			for card in card_array:
 				total = total + card.call(func_name, my_script)
 			return total

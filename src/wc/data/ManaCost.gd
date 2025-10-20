@@ -37,6 +37,12 @@ static func get_resource_from_keyword (keyword:String):
 
 var pool := {}
 
+func converted_mana_cost() -> int:
+	var total = 0
+	for k in Resource.values():
+		total += pool[k]
+	return total	
+
 func get_normalized_type(type):
 	if typeof(type) == TYPE_STRING:
 		return get_resource_from_keyword(type)

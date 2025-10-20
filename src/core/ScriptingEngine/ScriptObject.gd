@@ -15,6 +15,7 @@ var owner
 # The subjects is typically a `Card` object
 # in the future might be other things
 var subjects := []
+
 # The name of the method to call in the ScriptingEngine
 # to implement this task
 var script_name: String
@@ -228,6 +229,29 @@ func _boardseek_subjects(stored_integer: int) -> Array:
 		is_valid = false
 	return(subjects_array)
 
+func get_all_cards_from_containers(container_names):
+	var all_cards = []
+	if (typeof(container_names) != TYPE_ARRAY):
+		container_names = [container_names]
+	
+	for container_name in container_names:
+		all_cards += cfc.NMAP[container_name].get_all_cards()
+	
+	return all_cards
+
+func get_all_containers(container_names) -> Array:
+	var result = []
+	if (typeof(container_names) != TYPE_ARRAY):
+		container_names = [container_names]
+		
+	for container_name in container_names:
+		var container = cfc.NMAP.get(container_name, null)
+		if container:
+			result.append(container)
+			
+	return result
+
+
 func _tutor_subjects(stored_integer: int) -> Array:
 	var subjects_array := []
 	# When we're tutoring for a subjects, we expect a
@@ -246,7 +270,7 @@ func _tutor_subjects(stored_integer: int) -> Array:
 			subject_count *= -1
 	requested_subjects = subject_count
 	var subject_list := sort_subjects(
-			cfc.NMAP[get_property(SP.KEY_SRC_CONTAINER)].get_all_cards())
+			get_all_cards_from_containers(get_property(SP.KEY_SRC_CONTAINER)))
 	for c in subject_list:
 		if SP.check_validity(c, script_definition, "tutor"):
 			subjects_array.append(c)
@@ -267,16 +291,24 @@ func _index_seek_subjects(stored_integer: int) -> Array:
 	var subjects_array := []
 	# When we're seeking for index, we expect a
 	# source CardContainer to have been provided.
-	var src_container: CardContainer = cfc.NMAP[get_property(SP.KEY_SRC_CONTAINER)]
+	var src_container_names = get_property(SP.KEY_SRC_CONTAINER)
+	var src_containers:Array = get_all_containers(src_container_names)
+	#var first_container: CardContainer = src_containers[0]
+	var all_cards = get_all_cards_from_containers(src_container_names)
 	var index = get_property(SP.KEY_SUBJECT_INDEX)
 	if str(index) == SP.KEY_SUBJECT_INDEX_V_TOP:
 		# We use the CardContainer functions, inctead of the Piles ones
 		# to allow this value to be used on Hand classes as well
-		index = src_container.get_card_index(src_container.get_last_card())
+		#index = first_container.get_card_index(first_container.get_last_card())
+		index = all_cards.size() - 1
 	elif str(index) == SP.KEY_SUBJECT_INDEX_V_BOTTOM:
-		index = src_container.get_card_index(src_container.get_first_card())
+		#index = first_container.get_card_index(first_container.get_first_card())
+		index = 0
 	elif str(index) == SP.KEY_SUBJECT_INDEX_V_RANDOM:
-		index = src_container.get_card_index(src_container.get_random_card())
+		if (all_cards):
+			index = CFUtils.randi() % (all_cards.size())
+		else:
+			index = -1
 	elif str(index) == SP.VALUE_RETRIEVE_INTEGER:
 		index = stored_integer
 		if get_property(SP.KEY_IS_INVERTED):
@@ -303,7 +335,7 @@ func _index_seek_subjects(stored_integer: int) -> Array:
 		# can contain either integers of strings
 		if str(get_property(SP.KEY_SUBJECT_INDEX)) == SP.KEY_SUBJECT_INDEX_V_TOP:
 			adjust_count = 0
-		subject_count = src_container.get_card_count() - adjust_count
+		subject_count = all_cards.size() - adjust_count
 	elif str(subject_count) == SP.VALUE_RETRIEVE_INTEGER:
 		subject_count = stored_integer
 		if get_property(SP.KEY_IS_INVERTED):
@@ -317,15 +349,15 @@ func _index_seek_subjects(stored_integer: int) -> Array:
 		# This is useful for effects which mention something like:
 		# "...the last X cards from the deck"
 		if str(get_property(SP.KEY_SUBJECT_INDEX)) == SP.KEY_SUBJECT_INDEX_V_BOTTOM:
-			if index + iter > src_container.get_card_count():
+			if index + iter >  all_cards.size():
 				break
-			subjects_array.append(src_container.get_card(index + iter))
+			subjects_array.append(all_cards[index + iter])
 		# When retrieving cards from any other index,
 		# we always move down the pile from the starting index point.
 		else:
 			if index - iter < 0:
 				break
-			subjects_array.append(src_container.get_card(index - iter))
+			subjects_array.append(all_cards[index - iter])
 	if requested_subjects > 0\
 			and subjects_array.size() < requested_subjects:
 		if get_property(SP.KEY_IS_COST):

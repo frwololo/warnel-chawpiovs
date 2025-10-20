@@ -497,13 +497,6 @@ func common_pre_run(_sceng) -> void:
 			# 2) empty the manapool
 			"pay_cost",\
 			"pay_regular_cost":
-				var additional_task := ScriptTask.new(
-					script.owner,
-					{"name": "pay_from_manapool"}, #TODO more advanced
-					script.trigger_object,
-					script.trigger_details)
-				new_queue.append(additional_task)
-					
 				var new_script = pay_regular_cost_replacement(script_definition)
 				if (new_script) :
 					script.script_definition = new_script
@@ -530,6 +523,7 @@ func common_pre_run(_sceng) -> void:
 				new_queue.append(task)
 	_sceng.scripts_queue = new_queue	
 
+#TODO cleanup, probably doesn't need to be a replacement
 func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:	
 	var owner_hero_id = self.get_owner_hero_id()
 
@@ -540,34 +534,26 @@ func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:
 	if (!owner_hero_id):
 		owner_hero_id = gameData.current_hero_id
 			
-	var manapool:ManaPool = gameData.get_team_member(owner_hero_id)["manapool"]
 	var manacost:ManaCost = ManaCost.new()
 	var cost = script_definition["cost"]
 	if (typeof(cost) == TYPE_STRING):
 		if cost == "card_cost":
 			cost = self.get_property("cost")
 	manacost.init_from_expression(cost) #TODO better name?
-	var missing_mana:ManaCost = manapool.compute_missing(manacost)
 	
-	var result = {}
-	#Manapool not enough, need to discard cards
-	if missing_mana.is_negative() :
-		# var current_hero_id = gameData.get_current_hero_id()
-		#Replace the script with a move condition
-		result ={
-				"name": "move_card_to_container",
+	var result  ={
+				"name": "pay_as_resource",
 				"is_cost": true,
 				"subject": "index",
 				"subject_count": "all",
 				"subject_index": "top",
 				SP.KEY_NEEDS_SELECTION: true,
-				SP.KEY_SELECTION_COUNT: -missing_mana.pool[ManaCost.Resource.UNCOLOR], #TODO put real missing cost here
+				SP.KEY_SELECTION_COUNT: manacost.converted_mana_cost(), #TODO put real missing cost here
 				SP.KEY_SELECTION_TYPE: "min",
 				SP.KEY_SELECTION_OPTIONAL: false,
 				SP.KEY_SELECTION_IGNORE_SELF: true,
-				"selection_what_to_count": "resource_value",
-				"src_container": "hand" + str(owner_hero_id),
-				"dest_container": "discard" + str(owner_hero_id),
+				"selection_what_to_count": "get_resource_value_as_int",
+				"src_container": ["hand" + str(owner_hero_id), "board"]
 			}		
 
 	return result	
@@ -610,7 +596,49 @@ func draw_boost_card():
 		boost_card.attach_to_host(self)
 	#TODO if pile empty...need to reshuffle ?
 
-func get_resource_value(script):
+func pay_as_resource(script):
+	var sceng = self.execute_scripts(self, "resource", {})			
+	if (!sceng):	
+		if (get_state_exec()) == "hand":
+			self.discard()
+	return 0
+
+func get_resource_value_as_int(script):
+	var my_state = get_state_exec()
+	var trigger_card = self
+	var trigger_details = {}
+	var card_scripts = retrieve_filtered_scripts(trigger_card, "resource", trigger_details)	
+	var state_scripts = get_state_scripts(card_scripts, trigger_card, trigger_details)
+	
+	if state_scripts:
+		var sceng = cfc.scripting_engine.new(
+			state_scripts,
+				self,
+				trigger_card,
+				trigger_details)
+		common_pre_run(sceng)
+		
+		var func_return = sceng.execute(CFInt.RunType.BACKGROUND_COST_CHECK)
+		while func_return is GDScriptFunctionState && func_return.is_valid():
+			func_return = func_return.resume()
+		
+		if (sceng.can_all_costs_be_paid):
+			# run in precompute mode to try and calculate how much resources this would give us
+			func_return = sceng.execute(CFInt.RunType.PRECOMPUTE)
+			while func_return is GDScriptFunctionState && func_return.is_valid():
+				func_return = func_return.resume()
+				
+			var results = sceng.get_precompute_objects()
+			if (results):
+				var mana = results[0]
+				return mana.converted_mana_cost()			
+	else:	
+		if (my_state) == "hand":
+			return get_printed_resource_value_as_int(script)
+			
+	return 0
+
+func get_printed_resource_value_as_int(script):
 	var total = 0
 	for resource_name in ManaCost.RESOURCE_TEXT:
 		var lc_name = resource_name.to_lower()

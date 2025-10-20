@@ -32,6 +32,7 @@ var all_tasks_completed := false
 # Stores the inputed integer from the ask_integer task
 var stored_integer: int
 var scripts_queue: Array
+
 # Each ScriptingEngine execution gets an ID.
 # This can be used by games to be able to take a "snapshot" of the changes
 # in the board state as the script would execute and therefore know what the 
@@ -118,7 +119,21 @@ func costs_dry_run() -> bool:
 	return ((run_type == CFInt.RunType.COST_CHECK) or 
 		(run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
 
+func get_precompute_objects(keep_null:= false):
+	var result: = []
+	for task in scripts_queue:
+		if keep_null or task.process_result:
+			result.append(task.process_result)
+	return result
 
+func precompute(script):
+	if (!script.script_name in (CFConst.CAN_PRECOMPUTE)):
+		return null
+	var _tmp_run_type = run_type
+	run_type = CFInt.RunType.PRECOMPUTE
+	call(script.script_name, script)
+	run_type = _tmp_run_type
+	return script.process_result
 
 # The main engine starts here.
 # It receives array with all the tasks to execute,
@@ -211,6 +226,12 @@ func execute(_run_type) -> void:
 		
 		if script.is_primed:	
 			_pre_task_exec(script)
+			
+			#for some scripts we have a possibility to precompute their result
+			precompute(script)
+			if (run_type == CFInt.RunType.PRECOMPUTE):
+				continue
+				
 			#print("Scripting Subjects: " + str(script.subjects)) # Debug
 			if script.script_name == "custom_script"\
 					and not script.is_skipped and script.is_valid:

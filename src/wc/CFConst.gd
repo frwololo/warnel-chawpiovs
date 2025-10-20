@@ -417,6 +417,10 @@ enum PHASE_STEP {
 	ROUND_END
 }
 
+const CAN_PRECOMPUTE : = [
+	"add_resource"
+]
+
 const STATS_URI := "http://127.0.0.1"
 const STATS_PORT := 8000
 

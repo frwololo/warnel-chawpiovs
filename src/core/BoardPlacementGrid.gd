@@ -11,6 +11,9 @@
 class_name BoardPlacementGrid
 extends Control
 
+signal card_removed_from_slot (slot)
+signal card_added_to_slot (slot)
+
 # Used to add new BoardPlacementSlot instances to grids. We have to add the consts
 # together before passing to the preload, or the parser complains
 const _SLOT_SCENE_FILE = CFConst.PATH_CORE + "BoardPlacementSlot.tscn"
@@ -41,6 +44,22 @@ func _ready() -> void:
 			MousePointer.MOUSE_RADIUS * 2 + 1)
 	if not name_label.text:
 		name_label.text = name
+		
+	connect("card_added_to_slot", self, "_card_added")
+	connect("card_removed_from_slot", self, "_card_removed")
+
+
+func _card_added(card):
+	#add new slots ahead of time as needed, to avoid "yield" related issues
+	if (!auto_extend):
+		return
+	find_available_slot()	
+
+func _card_removed(card):
+	#add new slots ahead of time as needed, to avoid "yield" related issues
+	#TODO shrink ?
+	pass
+
 
 
 # If a BoardPlacementSlot object child in this container is highlighted
@@ -104,6 +123,14 @@ func get_available_slots() -> Array:
 
 func delete_all_slots():
 	var slots:Array = get_all_slots()
+	for slot in slots:
+		$GridContainer.remove_child(slot)
+		slot.queue_free()
+	return
+
+func delete_all_slots_but_one():
+	var slots:Array = get_all_slots()
+	slots.pop_front()
 	for slot in slots:
 		$GridContainer.remove_child(slot)
 		slot.queue_free()

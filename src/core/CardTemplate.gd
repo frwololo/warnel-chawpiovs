@@ -1289,7 +1289,7 @@ func move_to(targetHost: Node,
 					#TODO this might cause issues with the stack
 					yield(get_tree().create_timer(0.05), "timeout")
 					_set_target_position(board_position.rect_global_position)
-					board_position.occupying_card = self
+					board_position.set_occupying_card(self)
 					_placement_slot = board_position
 				elif board_position as String:
 					var grid = cfc.NMAP.board.get_grid(board_position)
@@ -1298,7 +1298,7 @@ func move_to(targetHost: Node,
 					#TODO this might cause issues with the stack
 					yield(get_tree().create_timer(0.05), "timeout")
 					_set_target_position(slot.rect_global_position)
-					slot.occupying_card = self
+					slot.set_occupying_card(self)
 					_placement_slot = slot					
 				else:
 					_determine_target_position_from_mouse()
@@ -1334,7 +1334,7 @@ func move_to(targetHost: Node,
 			# If the card was hosted in a board placement grid
 			# we clean the references.
 			if _placement_slot:
-					_placement_slot.occupying_card = null
+					_placement_slot.set_occupying_card(null)
 					_placement_slot = null
 	else:
 		# Here we check what to do if the player just moved the card back
@@ -1369,9 +1369,9 @@ func move_to(targetHost: Node,
 					# in specific grids, and the player tried to drag it
 					# Manually to a different grid
 					if _placement_slot != null:
-						_placement_slot.occupying_card = null
+						_placement_slot.set_occupying_card(null)
 					_set_target_position(board_position.rect_global_position)
-					board_position.occupying_card = self
+					board_position.set_occupying_card(self)
 					_placement_slot = board_position
 					set_state(CardState.DROPPING_TO_BOARD)
 				else:
@@ -1381,7 +1381,7 @@ func move_to(targetHost: Node,
 						_determine_target_position_from_mouse()
 					set_state(CardState.ON_PLAY_BOARD)
 					if _placement_slot:
-							_placement_slot.occupying_card = null
+							_placement_slot.set_occupying_card(null)
 							_placement_slot = null
 				raise()
 		elif parentHost == targetHost and index != get_my_card_index():
@@ -1748,7 +1748,7 @@ func attach_to_host(
 					{"host": current_host_card, "tags": tags})
 		# If card was on a grid slot, we clear that occupation
 		if _placement_slot:
-			_placement_slot.occupying_card = null
+			_placement_slot.set_occupying_card(null)
 			_placement_slot = null
 		current_host_card = host
 		# Once we selected the host, we don't need anything in the array anymore
@@ -2975,3 +2975,6 @@ func _on_Back_resized() -> void:
 func _on_tree_exiting():
 	if cfc.NMAP.has("main"):
 		cfc.NMAP.main.unfocus(self)
+	if _placement_slot:
+		_placement_slot.set_occupying_card(null)
+		_placement_slot = null

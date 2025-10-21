@@ -249,9 +249,9 @@ const TOKENS_MAP := {
 	'default': 'blue.svg',
 	'threat' : 'black.svg',
 	'damage': 'red.svg',
-#	'bio': 'green.svg',
+	'stunned': 'green.svg',
 #	'industry': 'grey.svg',
-#	'magic': 'purple.svg',
+	'confused': 'purple.svg',
 #	'blood': 'red.svg',
 #	'gold coin': 'yellow.svg',
 #	'void': 'black.svg',
@@ -302,6 +302,7 @@ const GRID_SETUP := {
 	"villain" : {
 		"x" : 300,
 		"y" : 0,
+		"auto_extend": false,
 	},
 	"schemes" : {
 		"x" : 500,
@@ -328,33 +329,35 @@ const HERO_GRID_SETUP := {
 	"encounters_reveal" :{
 		"x" : 150,
 		"y" : 0,
+		"auto_extend": false,
 	},	
 	"deck" :{
 		"x" : 150,
-		"y" : 400,
+		"y" : 440,
 		"type" : "pile"
 	},
 	"discard" :{
 		"x" : 0,
-		"y" : 400,
+		"y" : 440,
 		"type" : "pile",
 		"faceup" : true
 	},	
 	"enemies" : {
-		"x" : 300,
+		"x" : 350,
 		"y" : 00,
 	},
 	"identity" : {
 		"x" : 000,
-		"y" : 200,
+		"y" : 220,
+		"auto_extend": false,
 	},
 	"allies" : {
-		"x" : 300,
-		"y" : 200,
+		"x" : 350,
+		"y" : 220,
 	},
 	"upgrade_support" : {
-		"x" : 300,
-		"y" : 400,
+		"x" : 350,
+		"y" : 440,
 	},									
 }
 

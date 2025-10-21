@@ -55,30 +55,33 @@ func _ready() -> void:
 			pile.set_pile_name(grid_name)
 			pile.set_position(Vector2(grid_info["x"], grid_info["y"]))
 			pile.set_global_position(Vector2(grid_info["x"], grid_info["y"]))
-			pile.scale = Vector2(0.5, 0.5)
+			var pile_scale = grid_info.get("scale", 1)
+			pile.scale = Vector2(0.5 * pile_scale, 0.5 * pile_scale)
 			pile.faceup_cards = grid_info.get("faceup", false)
 			add_child(pile)
 		else:
 			var grid_scene = grid_info.get("scene", basicGrid)
 			var grid: BoardPlacementGrid = grid_scene.instance()
 			grid.add_to_group("placement_grid")
+			var grid_scale = grid_info.get("scale", 1)				
+			grid.rescale(CFConst.PLAY_AREA_SCALE  * grid_scale)
 			# A small delay to allow the instance to be added
 			add_child(grid)
 			grid.name = grid_name
 			grid.name_label.text = grid_name
-			grid.rect_position = Vector2(grid_info["x"], grid_info["y"])
-			grid.auto_extend = true
+			grid.rect_position = Vector2(grid_info["x"], grid_info["y"])			
+			grid.auto_extend = grid_info.get("auto_extend", true)
 
 	for i in range(gameData.get_team_size()):
 		var hero_id = i+1
 		var scale = 1
 		var start_x = 500
-		var start_y = 200
+		var start_y = 220
 		
 		if (hero_id > 1):
 			scale = 0.3
 			start_x = 0
-			start_y = 200 + (hero_id * 200)
+			start_y = 220 + (hero_id * 200)
 			
 		for grid_name in HERO_GRID_SETUP.keys():
 			var grid_info = HERO_GRID_SETUP[grid_name]
@@ -108,7 +111,7 @@ func _ready() -> void:
 				grid.name = real_grid_name
 				grid.name_label.text = real_grid_name
 				grid.rect_position = Vector2(x,y)
-				grid.auto_extend = true
+				grid.auto_extend = grid_info.get("auto_extend", true)
 
 	#Game setup - Todo move somewhere else ?
 	load_cards()
@@ -132,7 +135,7 @@ func _ready() -> void:
 	draw_starting_hand()	
 	#Tests
 	#draw_cheat("Web-Shooter")
-	#draw_cheat("Combat Training")
+	draw_cheat("Combat Training")
 	#draw_cheat("Jessica Jones")
 	#draw_cheat("Mockingbird")
 	#draw_cheat("Black Cat")
@@ -205,7 +208,7 @@ func delete_all_cards():
 			pile.delete_all_cards()
 		else: #it's a grid
 			var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(grid_name)
-			grid.delete_all_slots()
+			grid.delete_all_slots_but_one()
 			
 
 	for i in range(gameData.get_team_size()):
@@ -218,7 +221,7 @@ func delete_all_cards():
 				pile.delete_all_cards()
 			else: #it's a grid
 				var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(real_grid_name)
-				grid.delete_all_slots()								
+				grid.delete_all_slots_but_one()								
 
 func _close_game():
 	cfc.quit_game()
@@ -586,7 +589,7 @@ func flip_doublesided_card(card:WCCard):
 			#new_card.move_to(cfc.NMAP.board, -1, slot)	
 			new_card.position = slot.rect_global_position
 			new_card._placement_slot = slot
-			slot.occupying_card = new_card
+			slot.set_occupying_card(new_card)
 			new_card.state = Card.CardState.ON_PLAY_BOARD
 			#new_card.reorganize_self()
 		

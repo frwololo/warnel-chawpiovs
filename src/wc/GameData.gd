@@ -240,7 +240,7 @@ func move_to_next_scheme(current_scheme):
 			current_scheme.queue_free() #is more required to remove it?		
 			new_card.position = slot.rect_global_position
 			new_card._placement_slot = slot
-			slot.occupying_card = new_card
+			slot.set_occupying_card(new_card)
 			new_card.state = Card.CardState.ON_PLAY_BOARD
 			return new_card
 	
@@ -733,6 +733,7 @@ func hero_died(card:Card):
 		board.end_game("defeat")
 
 func move_to_next_villain(current_villain):
+	cfc.add_ongoing_process(self, "move_to_next_villain")
 	var villains = scenario.villains
 	var new_villain_data = null
 	for i in range (villains.size() - 1): #-1 here because we want to get the +1 if we find it
@@ -750,7 +751,10 @@ func move_to_next_villain(current_villain):
 	var new_card = cfc.NMAP.board.load_villain(ckey)
 	current_villain.copy_tokens_to(new_card, {"exclude":["damage"]})
 	#TODO better way to do a reveal ?
-	current_villain.execute_scripts(current_villain, "reveal")
+	var func_return = current_villain.execute_scripts(current_villain, "reveal")
+	while func_return is GDScriptFunctionState && func_return.is_valid():
+		func_return = func_return.resume()
+	cfc.remove_ongoing_process(self, "move_to_next_villain")
 	return new_card			
 
 func villain_died(card:Card):

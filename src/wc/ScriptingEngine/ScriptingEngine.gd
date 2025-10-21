@@ -28,15 +28,22 @@ func pay_as_resource(script: ScriptTask) -> int:
 		
 	return retcode		
 
+#empty ability, used for filtering and script failure
+# see KEY_FAIL_COST_ON_SKIP
+func nop(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	return retcode
+
+
 #Abilities that add energy	
 func add_resource(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
 
-	var counter_name: String = script.get_property(SP.KEY_COUNTER_NAME)
+	var counter_name: String = script.get_property("resource_name")
 	#TODO the scripting engine has better ways to handle alterations, etc... need to mimic that? See mod_counter
-	var modification: int  = script.get_property(SP.KEY_MODIFICATION)
+	var modification: int  = script.get_property("amount")
 	# var set_to_mod: bool = script.get_property(SP.KEY_SET_TO_MOD)
 
 	#var manapool:ManaPool = gameData.get_current_team_member()["manapool"]
@@ -501,13 +508,14 @@ func move_to_player_zone(script: ScriptTask) -> int:
 			#hack to new zone
 			var new_grid_name = current_grid_name.left(current_grid_name.length() -1)
 			new_grid_name = new_grid_name + str(hero.get_owner_hero_id())
+			if (new_grid_name == current_grid_name):
+				continue
 			var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(new_grid_name)
 			var slot: BoardPlacementSlot
 			if grid:
 				slot = grid.find_available_slot()			
 				this_card.move_to(cfc.NMAP.board, -1, slot)
 				retcode = CFConst.ReturnCode.CHANGED	
-			pass
 
 	return retcode
 

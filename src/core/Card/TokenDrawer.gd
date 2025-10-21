@@ -16,6 +16,7 @@ onready var owner_card = get_parent().get_parent()
 
 #sets a max limit for some tokens
 var max_tokens: Dictionary = {}
+var _is_horizontal:= false
 
 
 func _ready() -> void:
@@ -50,7 +51,18 @@ func set_is_drawer_open(value: bool) -> void:
 func token_drawer(requested_state := true) -> void:
 	# I use these vars to avoid writing it all the time and to improve readability
 
+
 	var td := $Drawer
+	
+	#temp variables to accomodate for horizontal mode
+	var x = owner_card.card_size.x
+	var y = td.rect_position.y
+	if (_is_horizontal):
+		x = 0
+		y = td.rect_position.x
+
+
+		
 	# We want to keep the drawer closed during the flip and movement
 	if not _tween.is_active() and \
 			not owner_card._flip_tween.is_active() and \
@@ -63,7 +75,7 @@ func token_drawer(requested_state := true) -> void:
 			# warning-ignore:return_value_discarded
 			_tween.interpolate_property(
 					td,'rect_position', td.rect_position,
-					Vector2(owner_card.card_size.x,td.rect_position.y),
+					Vector2(x,y),
 					0.3, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
 			# We make all tokens display names
 			for token in $Drawer/VBoxContainer.get_children():
@@ -76,13 +88,20 @@ func token_drawer(requested_state := true) -> void:
 			# We need to make our tokens appear on top of other cards on the table
 			z_index = 99
 		else:
+			var x_modifier = 0
+			var y_modifier = 0
+			
+			if (_is_horizontal):
+				y_modifier = 35
+			else:
+				x_modifier = -35
 			# warning-ignore:return_value_discarded
 			_tween.remove_all()
 			# warning-ignore:return_value_discarded
 			_tween.interpolate_property(
 					td,'rect_position', td.rect_position,
-					Vector2(owner_card.card_size.x - 35,
-					td.rect_position.y),
+					Vector2(x + x_modifier,
+					y + y_modifier ),
 					0.2, Tween.TRANS_ELASTIC, Tween.EASE_IN)
 			# warning-ignore:return_value_discarded
 			_tween.start()
@@ -256,3 +275,12 @@ func load_from_json(description:Dictionary):
 			$Drawer/VBoxContainer.add_child(token)		
 	
 	return self	
+
+func set_is_horizontal(value:bool = true):
+	_is_horizontal = value
+	if (_is_horizontal):
+		$Drawer.rect_position = Vector2(0, 20)
+		$Drawer.rect_rotation = -90
+	else:
+		$Drawer.rect_position = Vector2(115, 20)
+		$Drawer.rect_rotation = 0

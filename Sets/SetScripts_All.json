@@ -550,8 +550,8 @@
 				},
 			]
 		},		
-	},
-	"Heroic Intervention": {
+	},	
+	"Heroic Intuition": {
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
@@ -598,8 +598,10 @@
 						"token_name": "threat",
 						"amount" : 1,
 						"subject": "boardseek",
-						"filter_state_subject": [{
-							"type_code": "main_scheme",
+						"filter_state_seek": [{
+							"filter_properties": {
+								"type_code": "main_scheme",
+							}
 						}],							
 					},
 				],
@@ -731,8 +733,8 @@
 					},				
 					{
 						"name": "add_resource",
-						"modification": 1,
-						"counter_name": "mental"
+						"amount": 1,
+						"resource_name": "mental"
 					},
 				]
 			}
@@ -949,6 +951,33 @@
 				}
 			]
 		},
+	},
+	"The Power of Justice": {
+		"resource": {
+			"hand": [				
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				},
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [{
+						"filter_properties": {
+							"faction_code" : "justice"
+						}
+					}]					
+				},
+				{
+					"name": "add_resource",
+					"abort_on_cost_failure" : true,
+					"amount": 1,
+					"resource_name": "wild"
+				},			
+			]
+		}
 	},	
 	"Web-Shooter": {
 		"uses" : {
@@ -977,8 +1006,8 @@
 				},				
 				{
 					"name": "add_resource",
-					"modification": 1,
-					"counter_name": "wild"
+					"amount": 1,
+					"resource_name": "wild"
 				},
 			]
 		}

@@ -48,11 +48,16 @@ func setup() -> void:
 	_init_groups()
 	init_default_max_tokens()	
 	set_card_art()
+	position_ui_elements()
 	_ready_load_from_json()
 	
 	gameData.connect("game_state_changed", self, "_game_state_changed")
 	scripting_bus.connect("step_started", self, "_game_step_started")
 
+func position_ui_elements():
+	if properties.get("_horizontal", 0):
+		#reposition the token drawer for horizontal cards
+		tokens.set_is_horizontal()
 
 func _process(delta) -> void:
 	._process(delta)
@@ -597,15 +602,18 @@ func draw_boost_card():
 	#TODO if pile empty...need to reshuffle ?
 
 func pay_as_resource(script):
-	var sceng = self.execute_scripts(self, "resource", {})			
-	if (!sceng):	
-		if (get_state_exec()) == "hand":
-			self.discard()
+	cfc.add_ongoing_process(self, "pay_as_resource")
+	var sceng = self.execute_scripts(self, "resource", {})				
+	while sceng is GDScriptFunctionState && sceng.is_valid():
+		sceng  = sceng.resume()	
+	if (get_state_exec()) == "hand":
+		self.discard()
+	cfc.remove_ongoing_process(self, "pay_as_resource")
 	return 0
 
 func get_resource_value_as_int(script):
 	var my_state = get_state_exec()
-	var trigger_card = self
+	var trigger_card = script.owner
 	var trigger_details = {}
 	var card_scripts = retrieve_filtered_scripts(trigger_card, "resource", trigger_details)	
 	var state_scripts = get_state_scripts(card_scripts, trigger_card, trigger_details)
@@ -630,8 +638,11 @@ func get_resource_value_as_int(script):
 				
 			var results = sceng.get_precompute_objects()
 			if (results):
-				var mana = results[0]
-				return mana.converted_mana_cost()			
+				var total = 0
+				for result in results:
+					if result as ManaCost:
+						total+= result.converted_mana_cost()
+				return total			
 	else:	
 		if (my_state) == "hand":
 			return get_printed_resource_value_as_int(script)

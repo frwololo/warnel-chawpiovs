@@ -7,6 +7,7 @@
 class_name BoardPlacementSlot
 extends Control
 
+
 # If a card is placed on this spot, this variable will hold a reference
 # to the Card object
 # and no other card can be placed in this slot
@@ -40,6 +41,21 @@ func is_highlighted() -> bool:
 	return($Highlight.visible)
 
 
+func set_occupying_card(card):
+	var slot_was_occupied = (occupying_card !=null)
+	occupying_card = card
+
+	if card:
+		var tmp = rect_global_position
+		var tmp2 = self.rect_size
+		card._set_target_position(rect_global_position + Vector2(self.rect_size.x/2 - card.card_size.x/2*get_scale_modifier(), 0))
+	
+	if (slot_was_occupied and !occupying_card):
+		owner_grid.emit_signal("card_removed_from_slot", self)
+	if (occupying_card and !slot_was_occupied):
+		owner_grid.emit_signal("card_added_to_slot", self)
+	
+
 # Changes card highlight colour.
 func set_highlight(requested: bool,
 		hoverColour = owner_grid.highlight) -> void:
@@ -62,14 +78,16 @@ func rescale():
 	if (!owner_grid):
 		return
 	var tmp = owner_grid.card_size *  owner_grid.card_play_scale
-	rect_min_size = tmp
+	var max_axis = max(tmp.x, tmp.y)
+	var tmp2:Vector2 = Vector2(max_axis, max_axis)
+	rect_min_size = tmp2
 	self.rect_size = rect_min_size		
 	
 	$Area2D/CollisionShape2D.shape.extents = rect_min_size / 2
 	$Area2D/CollisionShape2D.position = rect_min_size / 2
 	
-	$Highlight.rect_min_size = tmp
-	$Highlight.rect_size = tmp	
+	$Highlight.rect_min_size = tmp2
+	$Highlight.rect_size = tmp2
 	
 func get_scale_modifier() -> float:
 	if (!owner_grid):

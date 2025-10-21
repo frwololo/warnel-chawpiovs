@@ -50,6 +50,20 @@ func _process(_delta) -> void:
 #		focus_info.rect_size.x = _current_focus_source.canonical_size.x * _current_focus_source.focused_scale * cfc.curr_scale
 	# The below makes sure to display the closeup of the card, only on the side
 	# the player's mouse is not in.
+	var canonical_size:Vector2
+	var vbc_rect_offset: Vector2
+	if _current_focus_source and is_instance_valid(_current_focus_source):
+		
+		#horizontal case
+		if (_current_focus_source.get_property("_horizontal", false)) and _current_focus_source.get_state_exec() != "pile":
+			canonical_size = Vector2(_current_focus_source.canonical_size.y, _current_focus_source.canonical_size.x )	
+			vbc_rect_offset = Vector2 (50, $VBC.rect_size.x)
+		#normal case
+		else:
+			vbc_rect_offset = $VBC.rect_size
+			canonical_size = _current_focus_source.canonical_size
+
+	
 	if _current_focus_source and is_instance_valid(_current_focus_source)\
 			and _current_focus_source.get_state_exec() != "pile"\
 			and cfc.game_settings.focus_style == CFInt.FocusStyle.BOTH_INFO_PANELS_ONLY:
@@ -64,12 +78,12 @@ func _process(_delta) -> void:
 			$VBC.rect_position.x = get_global_mouse_position().x + 60
 
 	elif _current_focus_source and is_instance_valid(_current_focus_source)\
-			and get_global_mouse_position().x > get_viewport().size.x - _current_focus_source.canonical_size.x*2.5\
-			and get_global_mouse_position().y < _current_focus_source.canonical_size.y*2:
+			and get_global_mouse_position().x > get_viewport().size.x - canonical_size.x*2.5\
+			and get_global_mouse_position().y < canonical_size.y*2:
 		$VBC.rect_position.x = 0
 		$VBC.rect_position.y = 0
 	elif _current_focus_source:
-		$VBC.rect_position.x = get_viewport().size.x - $VBC.rect_size.x
+		$VBC.rect_position.x = get_viewport().size.x - vbc_rect_offset.x
 		$VBC.rect_position.y = 0
 	# The below performs some garbage collection on previously focused cards.
 	for c in _previously_focused_cards:
@@ -91,7 +105,7 @@ func _process(_delta) -> void:
 func focus_card(card: Card, show_preview := true) -> void:
 	# We check if we're already focused on this card, to avoid making duplicates
 	# the whole time
-	if not _current_focus_source: # == card:
+	if not _current_focus_source == card:
 		# We make a duplicate of the card to display and add it on its own in
 		# our viewport world
 		# This way we can standardize its scale and look and not worry about

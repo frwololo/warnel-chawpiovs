@@ -1,6 +1,6 @@
 {	"Advance": {
 		"reveal": {
-			"board": [
+			"all": [
 				{	
 					"name": "scheme",
 					"subject": "villain",
@@ -44,7 +44,7 @@
 	},
 	"Assault": {
 		"reveal": {
-			"board" : [
+			"all" : [
 				{	
 					"name": "constraints",
 					"is_cost": true,
@@ -161,7 +161,7 @@
 	},
 	"Bomb Scare"	: {
 		"reveal": {
-			"board": [
+			"all": [
 				{
 					"name" : "mod_tokens",
 					"token_name": "threat",
@@ -173,7 +173,7 @@
 	},	
 	"Breakin' & Takin'"	: {
 		"reveal": {
-			"board": [
+			"all": [
 				{
 					"name" : "mod_tokens",
 					"token_name": "threat",
@@ -431,7 +431,7 @@
 	},	
 	"False Alarm": {
 		"reveal": {
-			"board": [
+			"all": [
 				{
 					"name" : "mod_tokens",
 					"token_name": "confused",
@@ -469,7 +469,7 @@
 	},	
 	"Hard To Keep Down": {
 		"reveal": {
-			"board": [
+			"all": [
 				{	
 					"name": "heal",
 					"amount": 4,
@@ -584,7 +584,7 @@
 	},	
 	"Hydra Bomber": {
 		"reveal": {
-			"board": {
+			"all": {
 				"Take 2 damage": [
 					{
 						"name": "receive_damage",
@@ -610,7 +610,7 @@
 	},	
 	"\"I'm Tough\"": {
 		"reveal": {
-			"board": [
+			"all": [
 				{	
 					"name": "mod_tokens",			
 					"token_name": "tough",
@@ -742,9 +742,10 @@
 	},
 	"Rhino - 2": {
 		"reveal": {
-			"board": [
+			"all": [
 				{	
 					"name": "deal_encounter",
+					"immediate_reveal": true,
 					"subject": "tutor",
 					"src_container": "deck_villain",
 					"filter_state_tutor": [{
@@ -755,6 +756,7 @@
 				},
 				{	
 					"name": "deal_encounter",
+					"immediate_reveal": true,
 					"subject": "tutor",
 					"src_container": "discard_villain",
 					"filter_state_tutor": [{
@@ -768,7 +770,7 @@
 	},
 	"Rhino - 3": {
 		"reveal": {
-			"board": [
+			"all": [
 				{	
 					"name": "mod_tokens",
 					"token_name":  "stunned",
@@ -786,7 +788,7 @@
 	},	
 	"Shadow of the Past": {
 		"reveal": {
-			"board": [
+			"all": [
 				{	
 					"name": "reveal_nemesis",
 				},
@@ -795,7 +797,7 @@
 	},	
 	"Shocker": {
 		"reveal": {
-			"board": [
+			"all": [
 				{	
 					"name": "deal_damage",
 					"amount": 1,
@@ -861,7 +863,7 @@
 	},	
 	"Stampede": {
 		"reveal": {
-			"board" : [
+			"all" : [
 				{	
 					"name": "constraints",
 					"is_cost": true,

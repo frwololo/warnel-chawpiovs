@@ -53,6 +53,8 @@ func setup() -> void:
 	
 	gameData.connect("game_state_changed", self, "_game_state_changed")
 	scripting_bus.connect("step_started", self, "_game_step_started")
+	
+	attachment_mode = AttachmentMode.ATTACH_BEHIND
 
 func position_ui_elements():
 	if properties.get("_horizontal", 0):
@@ -426,6 +428,14 @@ func _process_card_state() -> void:
 	if get_node('Control/Back').visible == is_faceup:
 		is_faceup = !is_faceup
 		set_is_faceup(!is_faceup, true)
+	match get_state_exec():
+		"board":
+			#horizontal cards are always forced to horizontal
+			#does that need to change eventually ?	
+			#note: setting tweening to false otherwise it causes issues with
+			#tweening never ending
+			if get_property("_horizontal", false):
+				set_card_rotation(90, false, false)
 
 # This function can be overriden by any class extending Card, in order to provide
 # a way of checking if a card can be played before dragging it out of the hand.
@@ -597,8 +607,8 @@ func draw_boost_card():
 	var boost_card:Card = villain_deck.get_top_card()
 	if boost_card:
 		boost_card.is_boost = true
-		boost_card.attachment_mode = AttachmentMode.ATTACH_BEHIND
 		boost_card.attach_to_host(self)
+		boost_card.set_is_faceup(false)
 	#TODO if pile empty...need to reshuffle ?
 
 func pay_as_resource(script):

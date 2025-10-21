@@ -185,21 +185,6 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 			}
 			
 			script = WCUtils.merge_dict(script,scheme_comes_to_play, true)
-
-	if card.get("_horizontal", false):
-		var horizontal_comes_to_play: Dictionary = { 
-			"card_moved_to_board": {
-				"trigger": "self",
-				"board": [
-					{
-						"name": "rotate_card",
-						"subject": "self",
-						"degrees": 90,
-					},					
-				]
-			}
-		}
-		script = WCUtils.merge_dict(script,horizontal_comes_to_play, true)
 	
 	if type_code == "ally" or type_code == "hero": 
 		var ally_actions: Dictionary = { 

@@ -427,9 +427,12 @@ func _exit_tree():
 func enrich_window_title(script:ScriptObject, title:String) -> String:
 	return title
 
+func set_modal_menu(object):
+	modal_menu = object
+
 func cleanup_modal_menu():
 	if (modal_menu):
 		modal_menu.force_cancel()
 		#modal_menu.queue_free()
-		modal_menu = null
+		set_modal_menu(null)
 	return

@@ -432,14 +432,21 @@ func deal_encounter(script: ScriptTask) -> int:
 		return CFConst.ReturnCode.CHANGED
 
 	var owner = script.owner
-	var owner_hero_id = owner.get_controller_hero_id() or 1
+	var owner_hero_id = owner.get_controller_hero_id()
+
+	#TODO
+	#If not specified, Probably need to deal to the first player instead of hero #1
+	if !owner_hero_id:
+		owner_hero_id = 1
+	
+	var immediate_reveal = script.script_definition.get("immediate_reveal", false)
 	
 	for subject in script.subjects:
 		match subject.get_property("type_code", ""):
 			"hero": #subject is a hero, we deal them an encounter from the deck
-				gameData.deal_one_encounter_to(subject.get_controller_hero_id)
+				gameData.deal_one_encounter_to(subject.get_controller_hero_id, immediate_reveal)
 			_: #other uses cases, we assume that's the card we want to reveal
-				gameData.deal_one_encounter_to(owner_hero_id, false, subject)
+				gameData.deal_one_encounter_to(owner_hero_id, immediate_reveal, subject)
 		
 		retcode = CFConst.ReturnCode.CHANGED
 

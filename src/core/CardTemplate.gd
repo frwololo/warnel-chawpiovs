@@ -1208,7 +1208,7 @@ func move_to(targetHost: Node,
 			# inside the hand
 			_set_target_position(recalculate_position())
 			card_rotation = 0
-			_target_rotation = _recalculate_rotation()
+			_set_target_rotation(_recalculate_rotation())
 			set_state(CardState.MOVING_TO_CONTAINER)
 			scripting_bus.emit_signal("card_moved_to_hand",
 					self,
@@ -1247,7 +1247,7 @@ func move_to(targetHost: Node,
 				# of the stack position the card would have
 				# (this means how far up in the pile the card would appear)
 				_set_target_position(targetHost.get_stack_position(self))
-				_target_rotation = 0.0
+				_set_target_rotation(0.0)
 				set_state(CardState.MOVING_TO_CONTAINER)
 				scripting_bus.emit_signal("card_moved_to_pile",
 						self,
@@ -1273,7 +1273,7 @@ func move_to(targetHost: Node,
 				targetHost.reorganize_stack()
 		else:
 			interruptTweening()
-			_target_rotation = _recalculate_rotation()
+			_set_target_rotation( _recalculate_rotation())
 			if potential_host:
 				# The _potential_cards are always organized so that the card higher
 				# in index that we were hovering over, is the last in the array.
@@ -1285,9 +1285,6 @@ func move_to(targetHost: Node,
 				if typeof(board_position) == TYPE_VECTOR2:
 					_set_target_position(board_position)
 				elif board_position as BoardPlacementSlot:
-					# We need a small delay, to allow a potential new slot to instance
-					#TODO this might cause issues with the stack
-					yield(get_tree().create_timer(0.05), "timeout")
 					_set_target_position(board_position.rect_global_position)
 					board_position.set_occupying_card(self)
 					_placement_slot = board_position
@@ -1296,7 +1293,7 @@ func move_to(targetHost: Node,
 					var slot = grid.find_available_slot()
 					# We need a small delay, to allow a potential new slot to instance
 					#TODO this might cause issues with the stack
-					yield(get_tree().create_timer(0.05), "timeout")
+					#yield(get_tree().create_timer(0.05), "timeout")
 					_set_target_position(slot.rect_global_position)
 					slot.set_occupying_card(self)
 					_placement_slot = slot					
@@ -1304,6 +1301,8 @@ func move_to(targetHost: Node,
 					_determine_target_position_from_mouse()
 				raise()
 			set_state(CardState.DROPPING_TO_BOARD)
+			#force set is faceup to true when moving to board
+			set_is_faceup(true)
 			scripting_bus.emit_signal("card_moved_to_board",
 					self,
 					 {
@@ -1474,6 +1473,9 @@ func is_dry_run(run_type):
 
 func _set_target_position(new_target_position):
 	_target_position = new_target_position
+
+func _set_target_rotation(new_target_rotation):
+	_target_rotation = new_target_rotation
 		
 # Executes the tasks defined in the card's scripts in order.
 #
@@ -1499,7 +1501,7 @@ func execute_scripts(
 	if not cfc.NMAP.has('board'):
 		return
 
-	if (trigger =="reveal" and canonical_name == "Advance"):
+	if (trigger =="card_moved_to_board" and canonical_name == "Breakin' & Takin'"):
 		var _tmp = 1
 
 	#we're playing a card manually but in interrupt mode.
@@ -1578,7 +1580,7 @@ func execute_scripts(
 			#TODO need to help check costs here as well?
 		else:
 			var choices_menu = _CARD_CHOICES_SCENE.instance()
-			cfc.modal_menu = choices_menu
+			cfc.set_modal_menu(choices_menu)
 			choices_menu.prep(canonical_name,state_scripts)
 			# We have to wait until the player has finished selecting an option
 			yield(choices_menu,"id_pressed")
@@ -1586,7 +1588,7 @@ func execute_scripts(
 			# an option, we don't execute anything
 			selected_key = choices_menu.selected_key if choices_menu.id_selected else ""
 			# Garbage cleanup
-			cfc.modal_menu = null
+			cfc.set_modal_menu(null)
 			choices_menu.queue_free()
 		if selected_key:
 			state_scripts = state_scripts[selected_key]
@@ -1794,7 +1796,7 @@ func reorganize_self() ->void:
 	match state:
 		CardState.IN_HAND, CardState.FOCUSED_IN_HAND, CardState.PUSHED_ASIDE:
 			_set_target_position(recalculate_position())
-			_target_rotation = _recalculate_rotation()
+			_set_target_rotation( _recalculate_rotation())
 			set_state(CardState.REORGANIZING)
 	# This second match is  to prevent from changing the state
 	# when we're doing fancy movement
@@ -1805,7 +1807,7 @@ func reorganize_self() ->void:
 	match state:
 		CardState.MOVING_TO_CONTAINER:
 			_set_target_position(recalculate_position())
-			_target_rotation = _recalculate_rotation()
+			_set_target_rotation(_recalculate_rotation())
 
 
 # Stops existing card animations then makes sure they're
@@ -2157,7 +2159,7 @@ func _determine_target_position_from_mouse() -> void:
 func _pushAside(targetpos: Vector2, target_rotation: float) -> void:
 	interruptTweening()
 	_set_target_position(targetpos)
-	_target_rotation = target_rotation
+	_set_target_rotation(target_rotation)
 	set_state(CardState.PUSHED_ASIDE)
 
 
@@ -2392,7 +2394,7 @@ func _process_card_state() -> void:
 			# When we have an oval shape, we ensure the cards stay
 			# in the rotation expected of their position
 			if cfc.game_settings.hand_use_oval_shape:
-				_target_rotation  = _recalculate_rotation()
+				_set_target_rotation( _recalculate_rotation())
 				if not $Tween.is_active() \
 						and not CFUtils.compare_floats($Control.rect_rotation, _target_rotation):
 					_add_tween_rotation($Control.rect_rotation,_target_rotation,
@@ -2458,7 +2460,7 @@ func _process_card_state() -> void:
 						_target_position.y -= 1
 				# We need to bump up the y postion a bit based on the rotation
 				# We subtract 13 if there is no rotation
-				_target_rotation = expected_rotation
+				_set_target_rotation(expected_rotation)
 				# We make sure to remove other tweens of the same type
 				# to avoid a deadlock
 				_add_tween_position(expected_position, _target_position, focus_tween_duration)

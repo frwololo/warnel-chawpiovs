@@ -492,11 +492,11 @@ func get_facedown_encounters_pile(target_id = 0) -> Pile :
 	var pile  = cfc.NMAP["encounters_facedown" + str(target_id)]
 	return pile
 	
-func get_revealed_encounters_grid(target_id = 0) :
+func get_revealed_encounters_pile(target_id = 0) :
 	if (!target_id):
-		target_id = _villain_current_hero_target	
-	var grid  = cfc.NMAP.board.get_grid("encounters_reveal" + str(target_id))
-	return grid	
+		target_id = _villain_current_hero_target
+	var pile  = cfc.NMAP["encounters_reveal" + str(target_id)]
+	return pile
 	
 func get_enemies_grid(target_id = 0) -> BoardPlacementGrid :
 	if (!target_id):
@@ -601,10 +601,9 @@ func reveal_encounter(target_id = 0):
 	match _current_encounter_step:
 		EncounterStatus.NONE:
 			#TODO might need to send a signal before that?
-			var grid = get_revealed_encounters_grid()
-			var slot = grid.find_available_slot()
-			_current_encounter.move_to(cfc.NMAP.board, -1, slot)
+			var pile = get_revealed_encounters_pile()
 			_current_encounter.set_is_faceup(true,false)
+			_current_encounter.move_to(pile)
 			_current_encounter_step = EncounterStatus.ABOUT_TO_REVEAL
 			return
 		EncounterStatus.ABOUT_TO_REVEAL:
@@ -751,7 +750,7 @@ func move_to_next_villain(current_villain):
 	var new_card = cfc.NMAP.board.load_villain(ckey)
 	current_villain.copy_tokens_to(new_card, {"exclude":["damage"]})
 	#TODO better way to do a reveal ?
-	var func_return = current_villain.execute_scripts(current_villain, "reveal")
+	var func_return = new_card.execute_scripts(new_card, "reveal")
 	while func_return is GDScriptFunctionState && func_return.is_valid():
 		func_return = func_return.resume()
 	cfc.remove_ongoing_process(self, "move_to_next_villain")

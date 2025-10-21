@@ -4,6 +4,10 @@
 class_name TestSuite
 extends Node
 
+#smaller numbers means the tests will run faster, but might lead to issues
+#to visually see what a test is doing, set this value to e.g. 1.0 or 1.5
+const MIN_TIME_BETWEEN_STEPS: = 0.2
+
 enum TestStatus {
 	NONE,
 	PASSED,
@@ -99,6 +103,10 @@ func _process(_delta: float) -> void:
 
 	if phaseContainer.is_in_progress():
 		return
+
+	if cfc.NMAP.board.are_cards_still_animating():
+		return	
+	
 	
 	#Game is still loading on some clients, do not run tests yet
 	if (!game_loaded):
@@ -128,14 +136,15 @@ func next_action():
 	#If phasecontainer is running stuff, we wait
 	if phaseContainer.is_in_progress():
 		return
-	
+
 	if cfc.NMAP.board.are_cards_still_animating():
 		return	
-	
+		
+
 	#bug fix. Introduced to temporize tests
 	#to let actions happen
 	#TODO shouldn't be needed!
-	if delta < 0.2:
+	if delta < MIN_TIME_BETWEEN_STEPS:
 		return
 		
 	if (actions.size() <= current_action):

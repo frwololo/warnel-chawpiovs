@@ -1,0 +1,124 @@
+{
+	"_comments": "Basic Test For Spider_Tracer attachment",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens" : {"threat" : 4},
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Bomber"
+				}
+			],			
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},		
+				{
+					"card": "Spider-Tracer"
+				},
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Spider-Tracer"
+		},
+		{
+			"type": "target",
+			"value": "Hydra Bomber"	
+		},
+		{
+			"type": "activate",
+			"value": "Spider-Man"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},		
+		{
+			"type": "target",
+			"value": "Hydra Bomber"	
+		},	
+		{
+			"type": "target",
+			"value": "01097"	
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"discard_villain" :[
+				{
+					"card": "Hydra Bomber"
+				}			
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens" : {"threat" : 1},
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"allies1": [
+
+			],
+			"discard1": [	
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Spider-Tracer"
+				},				
+			]
+		}
+	}
+}

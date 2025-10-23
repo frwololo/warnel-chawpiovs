@@ -103,8 +103,13 @@ func _process(_delta) -> void:
 
 # Displays the card closeup in the Focus viewport
 func focus_card(card: Card, show_preview := true) -> void:
+
+	#having issues with focus on shuffling cards, this is a hack fix for that
+	if card._tween.is_active():
+		return
+
 	# We check if we're already focused on this card, to avoid making duplicates
-	# the whole time
+	# the whole time		
 	if not _current_focus_source == card:
 		# We make a duplicate of the card to display and add it on its own in
 		# our viewport world

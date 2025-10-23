@@ -447,6 +447,7 @@
 					"name" : "deal_damage",
 					"amount": 1,
 					"subject": "boardseek",
+					"abort_on_cost_failure" : true,
 					"subject_count": "all",
 					"selection_count": "retrieve_integer",
 					"selection_type": "as_much_as_possible",
@@ -990,11 +991,6 @@
 		"resource": {
 			"hand": [				
 				{
-					"name": "add_resource",
-					"amount": 1,
-					"resource_name": "wild"
-				},
-				{
 					"name": "nop",
 					"fail_cost_on_skip": true,
 					"is_cost": true,
@@ -1006,8 +1002,7 @@
 				},
 				{
 					"name": "add_resource",
-					"abort_on_cost_failure" : true,
-					"amount": 1,
+					"amount": 2,
 					"resource_name": "wild"
 				},			
 			]

@@ -665,9 +665,10 @@ func get_resource_value_as_int(script):
 					if result as ManaCost:
 						total+= result.converted_mana_cost()
 				return total			
-	else:	
-		if (my_state) == "hand":
-			return get_printed_resource_value_as_int(script)
+	
+	#if the compute didn't get through, we return the regular printed value
+	if (my_state) == "hand":
+		return get_printed_resource_value_as_int(script)
 			
 	return 0
 

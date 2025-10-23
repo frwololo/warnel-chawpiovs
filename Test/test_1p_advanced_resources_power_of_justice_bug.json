@@ -1,0 +1,112 @@
+{
+	"_comments": "Test if the power of justice bugs sometimes",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [		
+				{
+					"card": "Swinging Web Kick"
+				},
+				{
+					"card": "The Power of Justice"
+				},
+				{
+					"card": "Emergency"
+				},
+				{
+					"card": "Strength"
+				},				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Swinging Web Kick"
+		},
+		{
+			"type": "target",
+			"value": "01094"
+		},		
+		{
+			"type": "select",
+			"value": ["The Power of Justice", "Strength"],
+			"_comments": "select cards to pay for Web Kick"
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [		
+				{
+					"card": "Emergency"
+				},
+			],
+			"discard1": [
+				{
+					"card": "The Power of Justice"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Swinging Web Kick"
+				},				
+			]
+		}
+	}
+}

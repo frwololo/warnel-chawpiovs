@@ -1,0 +1,115 @@
+{
+	"_comments": "Tests False Alaem encounter does confuse the hero",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[	
+				{
+					"card": "explosion"
+				},	
+			
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				},
+				{
+					"card": "Bomb scare",
+					"tokens" : {"threat": 3},
+				},				
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01002"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": ["Spider-Man", "Spider-Man", "MockingBird"]
+		},
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board":  {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"discard_villain":[	
+				{
+					"card": "explosion"
+				},	
+			
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				},
+				{
+					"card": "Bomb scare",
+					"tokens" : {"threat": 3},
+				},				
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {"damage" : 2},
+				}
+			],
+			"allies1": [
+				{
+					"card": "Mockingbird",
+					"tokens": {"damage" : 1},					
+				}
+			],
+			"hand1": [
+				{
+					"card": "01002"
+				}
+			]
+		}
+	}
+}

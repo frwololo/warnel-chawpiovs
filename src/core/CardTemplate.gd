@@ -2227,6 +2227,11 @@ func _tween_interpolate_visibility(visibility: float, time: float) -> void:
 				Tween.TRANS_QUAD, Tween.EASE_OUT)
 
 
+#what to do when I'm an attachement and my host is removed from the table
+func host_is_gone():
+	# Attachments typically follow their parents to the same container
+	move_to(get_parent())
+
 # Clears all attachment/hosting status.
 # It is typically called when a card is removed from the table
 func _clear_attachment_status(tags := ["Manual"]) -> void:
@@ -2239,8 +2244,7 @@ func _clear_attachment_status(tags := ["Manual"]) -> void:
 		current_host_card = null
 	for card in attachments:
 		card.current_host_card = null
-		# Attachments typically follow their parents to the same container
-		card.move_to(get_parent())
+		card.host_is_gone()
 		# We do a small wait to make the attachment drag look nicer
 		yield(get_tree().create_timer(0.1), "timeout")
 	attachments.clear()

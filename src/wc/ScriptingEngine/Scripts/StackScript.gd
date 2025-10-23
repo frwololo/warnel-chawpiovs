@@ -37,11 +37,14 @@ func execute():
 		yield(sceng,"tasks_completed")	
 	
 	if sceng.can_all_costs_be_paid:
-		#print("DEBUG:" + str(state_scripts))
-		# The ScriptingEngine is where we execute the scripts
-		# We cannot use its class reference,
-		# as it causes a cyclic reference error when parsing
-		
+
+		#1.5) We run the script in "prime" mode again to choose targets
+		# for all tasks that aren't costs but still need targets
+		# (is_cost = false and needs_subject = false)
+		sceng.execute(CFInt.RunType.PRIME_ONLY)
+		if not sceng.all_tasks_completed:
+			yield(sceng,"tasks_completed")
+	
 		sceng.execute(run_type)
 		if not sceng.all_tasks_completed:
 			yield(sceng,"tasks_completed")

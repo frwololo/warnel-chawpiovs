@@ -32,13 +32,11 @@ func get_subjects(_script: ScriptObject, _subject_request, _stored_integer : int
 
 func select_card(
 		card_list: Array, 
-		selection_count: int, 
-		selection_type: String,
-		selection_optional: bool,
-		selection_what_to_count: String,
+		selection_params: Dictionary,
 		parent_node,
 		script : ScriptObject = null,
 		run_type:int = CFInt.RunType.NORMAL,
+		stored_integer: int = 0,
 		card_select_scene = _CARD_SELECT_SCENE):
 	
 	cfc.add_ongoing_process(self)
@@ -47,7 +45,7 @@ func select_card(
 	var selected_cards
 	# This way we can override the card select scene with a custom one
 	var selection = card_select_scene.instance()
-	selection.init(selection_count,selection_type,selection_optional, selection_what_to_count, script)
+	selection.init(selection_params, script, stored_integer)
 	if (run_type == CFInt.RunType.BACKGROUND_COST_CHECK):
 		selection.dry_run(card_list)
 	else:

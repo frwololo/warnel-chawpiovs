@@ -33,6 +33,14 @@ var all_tasks_completed := false
 var stored_integer: int
 var scripts_queue: Array
 
+#needs to exactly match the scripts_queue order.
+#We can't do a dictionary mapping because this needs to 
+#survive network transfer
+#array of arrays [bool, int] 
+#  where bool means initialized or not, 
+#   and int is the actual value to return
+var stored_integers: Array = [] 
+
 # Each ScriptingEngine execution gets an ID.
 # This can be used by games to be able to take a "snapshot" of the changes
 # in the board state as the script would execute and therefore know what the 
@@ -111,13 +119,38 @@ func add_scripts(_state_scripts,
 		if (!fifo):
 			tmp_array.append_array(scripts_queue)
 			scripts_queue = tmp_array
-									
+		
+		for i in range (scripts_queue.size()):
+			stored_integers.append([false, 0])								
 
 # This flag will be true if we're attempting to find if the card
 # has costs that need to be paid, before the effects take place.
 func costs_dry_run() -> bool:
 	return ((run_type == CFInt.RunType.COST_CHECK) or 
 		(run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
+
+#sets the stored_integer for future use. 
+#Also sets it in the current ongoing script so we can refer to it
+func set_stored_integer(value, script: ScriptTask):
+	stored_integer = value
+	var index = scripts_queue.find(script)
+	stored_integers[index] = [true, value]
+
+#get the stored integer. If it's been initialized during this run,
+#we retrieve that (to stay compatible with legacy)
+#otherwise, try to get the most recent script before ours that had a stored value 
+func get_stored_integer(starting_element: ScriptTask = null):		
+	#else go through all scripts and find the latest with a stored integer 
+	var start_index = scripts_queue.size()
+	if starting_element:
+		start_index = scripts_queue.find(starting_element)
+	for i in range(start_index - 1, -1, -1):
+		var stored_data = stored_integers[i]
+		if (stored_data[0]):
+			return stored_data[1]
+
+	return 0
+
 
 func get_precompute_objects(keep_null:= false):
 	var result: = []
@@ -146,7 +179,10 @@ func execute(_run_type) -> void:
 
 	var only_cost_check = ((run_type == CFInt.RunType.COST_CHECK) or
 		 (run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
-		
+	
+	if (owner.canonical_name == "Explosion"):
+		var _tmp = 1
+			
 	cfc.add_ongoing_process(self)
 	# We execute the scripts locally, but in multiplayer only one player has to select
 	# payments. Once they do, we send the payment information to other players,
@@ -203,7 +239,7 @@ func execute(_run_type) -> void:
 				var next_task: ScriptTask =  scripts_queue[current_index + 1]
 				if next_task.subjects.size() > 0:
 					prev_subjects = next_task.subjects
-			script.prime(prev_subjects,run_type,stored_integer)
+			script.prime(prev_subjects,run_type,get_stored_integer(script))
 			# In case the task involves targetting, we need to wait on further
 			# execution until targetting has completed
 			if not script.is_primed:
@@ -298,8 +334,9 @@ func execute(_run_type) -> void:
 					and script.needs_subject \
 					and not script.get_property(SP.KEY_PROTECT_PREVIOUS):
 				prev_subjects = script.subjects
+			
 			# At the end of the task run, we loop back to the start, but of course
-			# with one less item in our scripts_queue.
+			# with one less item in our scripts_queue.			
 			emit_signal("single_task_completed", task)
 			cfc.card_temp_property_modifiers.erase(self)
 			for card in script.subjects:
@@ -471,7 +508,7 @@ func mod_tokens(script: ScriptTask) -> int:
 	# We inject the tags from the script into the tags sent by the signal
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
 	if str(script.get_property(SP.KEY_MODIFICATION)) == SP.VALUE_RETRIEVE_INTEGER:
-		modification = stored_integer
+		modification = get_stored_integer(script)
 		if script.get_property(SP.KEY_IS_INVERTED):
 			modification *= -1
 		modification += script.get_property(SP.KEY_ADJUST_RETRIEVED_INTEGER)
@@ -513,7 +550,7 @@ func mod_tokens(script: ScriptTask) -> int:
 		retcode = card.tokens.mod_token(token_name,
 				modification + alteration,set_to_mod,costs_dry_run(), tags)
 	if script.get_property(SP.KEY_STORE_INTEGER):
-		stored_integer = token_diff
+		set_stored_integer(token_diff, script)
 		
 	cfc.remove_ongoing_process(self)	
 	return(retcode)
@@ -537,7 +574,7 @@ func spawn_card(script: ScriptTask) -> void:
 	var grid_name: String = script.get_property(SP.KEY_GRID_NAME)
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
 	if str(script.get_property(SP.KEY_OBJECT_COUNT)) == SP.VALUE_RETRIEVE_INTEGER:
-		count = stored_integer
+		count = get_stored_integer(script)
 		if script.get_property(SP.KEY_IS_INVERTED):
 			count *= -1
 		count += script.get_property(SP.KEY_ADJUST_RETRIEVED_INTEGER)
@@ -638,8 +675,12 @@ func spawn_card_to_container(script: ScriptTask) -> void:
 			canonical_name = filtered_cards[0]
 		else:
 			filtered_cards = filtered_cards.slice(0,selection_amount - 1)
+			var select_params = {
+				SP.KEY_SELECTION_COUNT: 1,
+				SP.KEY_SELECTION_TYPE: "min",
+			}
 			var select_return = cfc.ov_utils.select_card(
-					filtered_cards, 1, 'min', false, "", cfc.NMAP.board, script)
+					filtered_cards, select_params, cfc.NMAP.board, script)
 			if select_return is GDScriptFunctionState: # Still working.
 				select_return = yield(select_return, "completed")
 			if typeof(select_return) == TYPE_ARRAY:
@@ -648,7 +689,7 @@ func spawn_card_to_container(script: ScriptTask) -> void:
 				return
 	var dest_container: CardContainer = cfc.NMAP[script.get_property(SP.KEY_DEST_CONTAINER).to_lower()]
 	if str(script.get_property(SP.KEY_OBJECT_COUNT)) == SP.VALUE_RETRIEVE_INTEGER:
-		count = stored_integer
+		count = get_stored_integer(script)
 		if script.get_property(SP.KEY_IS_INVERTED):
 			count *= -1
 		count += script.get_property(SP.KEY_ADJUST_RETRIEVED_INTEGER)
@@ -848,11 +889,29 @@ func ask_integer(script: ScriptTask) -> void:
 	# We have to wait until the player has finished selecting an option
 	
 	yield(integer_dialog,"popup_hide")
-	stored_integer = integer_dialog.number
+	set_stored_integer(integer_dialog.number, script)
 	# Garbage cleanup
 	integer_dialog.queue_free()
 	cfc.remove_ongoing_process(self)
 
+# counts the number of subjects of a task, then stores that number in stored_integer
+func count_subjects(script: ScriptTask) -> int:
+	var retcode = CFConst.ReturnCode.CHANGED #always succeeds
+	
+	set_stored_integer(script.subjects.size(), script)
+	
+	return retcode
+
+# counts the number of a specific token on a subject, then stores that number in stored_integer
+#the returned in isn't the count, only returns OK if >0 
+func count_tokens(script: ScriptTask) -> int:
+	var token_name = script.get_property(SP.KEY_TOKEN_NAME)
+	if !script.subjects.size():
+		return CFConst.ReturnCode.FAILED
+	
+	var card = script.subjects[0]
+	set_stored_integer(card.tokens.get_token_count(token_name), script)
+	return CFConst.ReturnCode.CHANGED
 
 # Adds a specified BoardPlacementGrid scene to the board at the specified position
 # * Requires the following keys:
@@ -869,7 +928,7 @@ func add_grid(script: ScriptTask) -> void:
 	var board_position: Vector2 = script.get_property(SP.KEY_BOARD_POSITION)
 	var grid_scene: String = script.get_property(SP.KEY_SCENE_PATH)
 	if str(script.get_property(SP.KEY_OBJECT_COUNT)) == SP.VALUE_RETRIEVE_INTEGER:
-		count = stored_integer
+		count = get_stored_integer(script)
 		if script.get_property(SP.KEY_IS_INVERTED):
 			count *= -1
 		count += script.get_property(SP.KEY_ADJUST_RETRIEVED_INTEGER)
@@ -911,7 +970,7 @@ func mod_counter(script: ScriptTask) -> int:
 	if str(script.get_property(SP.KEY_MODIFICATION)) == SP.VALUE_RETRIEVE_INTEGER:
 		# If the modification is requested, is only applies to stored integers
 		# so we flip the stored_integer's value.
-		modification = stored_integer
+		modification = get_stored_integer(script)
 		if script.get_property(SP.KEY_IS_INVERTED):
 			modification *= -1
 		modification += script.get_property(SP.KEY_ADJUST_RETRIEVED_INTEGER)
@@ -935,11 +994,11 @@ func mod_counter(script: ScriptTask) -> int:
 		var current_count = cfc.NMAP.board.counters.get_counter(
 				counter_name, script.owner)
 		if set_to_mod:
-			stored_integer = modification + alteration - current_count
+			set_stored_integer(modification + alteration - current_count, script)
 		elif current_count + modification + alteration < 0:
-			stored_integer = -current_count
+			set_stored_integer(-current_count, script)
 		else:
-			stored_integer = modification + alteration
+			set_stored_integer(modification + alteration, script)
 	var retcode: int = cfc.NMAP.board.counters.mod_counter(
 			counter_name,
 			modification + alteration,
@@ -1094,7 +1153,7 @@ func _retrieve_temp_modifiers(script: ScriptTask, type: String) -> Dictionary:
 				SP.KEY_TEMP_MOD_COUNTERS).duplicate()
 	for value in temp_modifiers:
 		if str(temp_modifiers[value]) == SP.VALUE_RETRIEVE_INTEGER:
-			temp_modifiers[value] = stored_integer
+			temp_modifiers[value] = get_stored_integer(script)
 			if script.get_property(SP.KEY_IS_INVERTED):
 				temp_modifiers[value] *= -1
 			temp_modifiers[value] += script.get_property(SP.KEY_ADJUST_RETRIEVED_INTEGER)
@@ -1105,3 +1164,9 @@ func _retrieve_temp_modifiers(script: ScriptTask, type: String) -> Dictionary:
 func _pre_task_exec(_script: ScriptTask) -> void:
 	pass
 	
+static func get_int_value (value, retrieved_integer):
+	if typeof(value) == TYPE_STRING and value == SP.VALUE_RETRIEVE_INTEGER:
+		return retrieved_integer
+	if typeof(value) == TYPE_INT:
+		return value
+	return int(value)

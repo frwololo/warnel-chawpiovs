@@ -315,7 +315,11 @@ func load_cards() -> void:
 		load_cards_to_pile(card_data, "deck" + str(hero_id))
 
 
-func get_hero_from_pile_name(pile_name:String):
+func get_owner_from_pile_name(pile_name:String):
+	#exception for piles controlled by the player but where cards belong to villain
+	if pile_name.begins_with("encounters") or pile_name.begins_with("enemies"):
+		return 0 #villain
+		
 	for i in gameData.get_team_size():
 		var hero_id = i+1
 		if (pile_name.ends_with(str(hero_id))):
@@ -324,10 +328,10 @@ func get_hero_from_pile_name(pile_name:String):
 	
 func load_cards_to_pile(card_data:Array, pile_name):
 	var card_array = []
-	var pile_owner = get_hero_from_pile_name(pile_name)
+	var pile_owner = get_owner_from_pile_name(pile_name)
 	for card in card_data:
 		var card_id:String = card["card"]
-		var hero_id = card.get("owner_hero_id", pile_owner)
+		var card_owner = card.get("owner_hero_id", pile_owner)
 		
 		#card_id here is either a card id or a card name, we try to accomodate for both
 		var card_name = cfc.idx_card_id_to_name.get(
@@ -339,7 +343,7 @@ func load_cards_to_pile(card_data:Array, pile_name):
 		if !card_name:
 			var _error = 1
 			#error
-		var new_card:WCCard = cfc.instance_card(card_name, hero_id)
+		var new_card:WCCard = cfc.instance_card(card_name, card_owner)
 		new_card.load_from_json(card)
 		card_array.append(new_card)
 

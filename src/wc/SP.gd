@@ -38,9 +38,9 @@ static func filter_trigger(
 		trigger_details)
 
 	# Card Host filter checks
-	if is_valid and card_scripts.get(FILTER_HOST_OF) \
-			and !check_host_filter(trigger_card,owner_card,card_scripts.get(FILTER_HOST_OF)):
-		is_valid = false
+	if is_valid and card_scripts.get(FILTER_HOST_OF):
+		if !check_host_filter(trigger_card,owner_card,card_scripts.get(FILTER_HOST_OF)):
+			is_valid = false
 
 	# Same Controller filter check
 	if is_valid and card_scripts.get(FILTER_SAME_CONTROLLER) \
@@ -69,6 +69,7 @@ static func check_host_filter(trigger_card, owner_card, host_description : Strin
 	if !is_instance_valid(trigger_card): return false
 	if !is_instance_valid(owner_card): return false
 	
+	#TODO more advanced targeting
 	match host_description:
 		"self":
 			if owner_card.current_host_card == trigger_card: 
@@ -97,5 +98,5 @@ static func check_validity(card, card_scripts, type := "trigger") -> bool:
 		for card in all_cards:
 			if card.get_keyword("guard") and card.is_faceup: #TODO better way to ignore face down cards?
 				return false
-	
+
 	return is_valid	

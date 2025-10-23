@@ -50,7 +50,7 @@ func initiate_targeting(_valid_targets) -> void:
 	$ArrowHead.visible = true
 	$ArrowHead/Area2D.monitoring = true
 	emit_signal("initiated_targeting")
-
+	scripting_bus.emit_signal("initiated_targeting", owner_object)
 
 # Will end the targeting process.
 #

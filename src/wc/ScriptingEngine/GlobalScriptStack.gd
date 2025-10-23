@@ -94,10 +94,10 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details):
 	var owner_uid = guidMaster.get_guid(sceng.owner)
 	var state_scripts = sceng.state_scripts
 	
-	rpc("client_create_and_add_script", state_scripts, owner_uid, trigger_card_uid, run_type, trigger, remote_trigger_details)
+	rpc("client_create_and_add_script", state_scripts, owner_uid, trigger_card_uid, run_type, trigger, remote_trigger_details, sceng.stored_integers)
 	#TODO should wait for ack from all clients before anybody can do anything further in the game
 
-remotesync func client_create_and_add_script(state_scripts, _owner_uid, trigger_card_uid,  run_type, trigger, remote_trigger_details):
+remotesync func client_create_and_add_script(state_scripts, _owner_uid, trigger_card_uid,  run_type, trigger, remote_trigger_details, stored_integers):
 	var trigger_card = guidMaster.get_object_by_guid(trigger_card_uid)
 	var owner_card = guidMaster.get_object_by_guid(_owner_uid)
 	var sceng = cfc.scripting_engine.new(
@@ -105,7 +105,7 @@ remotesync func client_create_and_add_script(state_scripts, _owner_uid, trigger_
 				owner_card,
 				trigger_card,
 				remote_trigger_details)
-				
+	sceng.stored_integers = stored_integers			
 	var stackEvent:StackScript = StackScript.new(sceng, run_type, trigger)
 	add_script(stackEvent)
 	
@@ -135,6 +135,12 @@ func reset_interrupt_states():
 	potential_interrupters = {}
 	set_interrupt_mode(InterruptMode.NONE)
 
+func _exit_tree():
+	if (text_edit):
+		cfc.NMAP.board.remove_child(text_edit)
+		text_edit = null
+		
+		
 	
 func _process(_delta: float):
 	
@@ -275,11 +281,11 @@ mastersync func master_set_potential_interrupters (hero_id, guids:Array):
 	if !( interrupt_mode in [InterruptMode.FORCED_INTERRUPT_CHECK, InterruptMode.OPTIONAL_INTERRUPT_CHECK]):
 		var _error = true
 		#TODO error check
-	var interrupters:Array = []
-	for uid in guids:
-		var card = guidMaster.get_object_by_guid(uid)	
-		interrupters.append(card)
-	potential_interrupters[hero_id] = interrupters
+#	var interrupters:Array = []
+#	for uid in guids:
+#		var card = guidMaster.get_object_by_guid(uid)	
+#		interrupters.append(card)
+	potential_interrupters[hero_id] = guids
 
 	if (potential_interrupters.size() == gameData.team.size()):
 		select_interrupting_player()
@@ -296,6 +302,11 @@ mastersync func master_pass_interrupt (hero_id):
 	potential_interrupters[hero_id] = []
 	select_interrupting_player()
 
+#forced activation of card for forced interrupt
+remotesync func force_play_card(card_guid):
+	var card = guidMaster.get_object_by_guid(card_guid)
+	card.attempt_to_play()
+
 func select_interrupting_player():
 	if !cfc.is_game_master():
 		return #TODO error check, this shouldn't even be possible
@@ -303,8 +314,14 @@ func select_interrupting_player():
 	for hero_id in potential_interrupters.keys():
 		var interrupters = potential_interrupters[hero_id]
 		if (interrupters):
+			var forced_interrupt = false
+			if (interrupt_mode == InterruptMode.FORCED_INTERRUPT_CHECK):
+				forced_interrupt = true
 			set_interrupt_mode(InterruptMode.HERO_IS_INTERRUPTING)
 			rpc("client_set_interrupting_hero", hero_id)
+			if (forced_interrupt):
+				var network_hero_owner = gameData.get_network_id_by_hero_id(hero_id)
+				rpc_id(network_hero_owner, "force_play_card", interrupters[0])
 			return
 	
 	#nobody is interrupting for this step, move to the next one

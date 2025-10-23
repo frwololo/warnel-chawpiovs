@@ -54,6 +54,7 @@ signal optional_window_opened(optional_window, details)
 # warning-ignore:unused_signal
 signal optional_window_closed(optional_window, details)
 
+signal initiated_targeting(card)
 
 # This signal is not triggerring init_scripting_event() 
 # It is used to trigger the execute_scripts functions on the various scriptable objects

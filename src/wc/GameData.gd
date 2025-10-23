@@ -301,6 +301,11 @@ func set_scenario_data(_scenario:Dictionary):
 		return
 	scenario.load_from_dict(_scenario)
 
+func get_network_id_by_hero_id(hero_id):
+	var hero_deck_data:HeroDeckData = team[hero_id]["hero_data"]
+	var owner:PlayerData = hero_deck_data.owner
+	return owner.network_id
+
 func get_player_by_network_id(network_id) -> PlayerData:
 	return network_players[network_id]
 
@@ -929,6 +934,7 @@ func confirm(
 	
 
 func cleanup_post_game():
+	cfc.game_paused = true
 	attackers = []
 	_current_enemy_attack_step = EnemyAttackStatus.NONE
 	_current_encounter_step = EncounterStatus.NONE
@@ -939,6 +945,7 @@ func cleanup_post_game():
 	self.add_child(theStack)
 	
 	cfc.reset_ongoing_process_stack()
+	cfc.game_paused = false
 
 	
 #saves current game data into a json structure	

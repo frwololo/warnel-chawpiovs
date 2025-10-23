@@ -1314,6 +1314,8 @@ static func filter_trigger(
 	# when itself causes the effect.
 	# For example, a card which rotates itself whenever another card
 	# is rotated, should not automatically rotate when itself rotates.
+	#"host" triggers when the trigger is the host of the current card
+	#(which is, therefore, one of the trigger's attachements)
 	if is_valid\
 			and card_scripts.get("trigger") == "self"\
 			and trigger_card != owner_card:
@@ -1322,6 +1324,11 @@ static func filter_trigger(
 			and card_scripts.get("trigger") == "another"\
 			and trigger_card == owner_card:
 		is_valid = false
+	if is_valid\
+			and card_scripts.get("trigger") == "host"\
+			and owner_card.current_host_card != trigger_card:
+		is_valid = false
+
 
 	var comparison : String = card_scripts.get(
 			KEY_COMPARISON, get_default(KEY_COMPARISON))

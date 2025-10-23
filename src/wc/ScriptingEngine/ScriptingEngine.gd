@@ -203,6 +203,17 @@ func character_died(script: ScriptTask) -> int:
 func deal_damage(script:ScriptTask) -> int:
 	return receive_damage(script)
 
+func card_dies(script:ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.FAILED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+		
+	for card in script.subjects:		
+		card.die()
+		retcode = CFConst.ReturnCode.CHANGED
+
+	return retcode
+
 func receive_damage(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
@@ -211,19 +222,25 @@ func receive_damage(script: ScriptTask) -> int:
 	var tags: Array = script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
 	var amount = script.script_definition["amount"]
 	
+	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
+	# e.g. Spider man gets 3*1 damage = 3 damage
+	var consolidated_subjects:= {}
 	#TODO BUG sometimes subjects contains a null card?
 	for card in script.subjects:
-#		var damageScript:DamageScript = DamageScript.new(card, amount, script.script_definition, tags)
-#		gameData.theStack.add_script(damageScript)
+		if !consolidated_subjects.has(card):
+			consolidated_subjects[card] = 0
+		consolidated_subjects[card] += 1
+	
+	#TODO BUG sometimes subjects contains a null card?
+	for card in consolidated_subjects.keys():
+		var multiplier = consolidated_subjects[card]
 		
-		#scripting_bus.emit_signal("damage_incoming", card, script.script_definition)	
-
 		var tough = card.tokens.get_token_count("tough")
 		if (tough):
 			card.tokens.mod_token("tough", -1)
 		else:	
 			retcode = card.tokens.mod_token("damage",
-					amount,false,costs_dry_run(), tags)	
+					amount * multiplier,false,costs_dry_run(), tags)	
 
 			scripting_bus.emit_signal("card_damaged", card, script.script_definition)
 
@@ -231,9 +248,17 @@ func receive_damage(script: ScriptTask) -> int:
 			var health = card.get_property("health", 0)
 
 			if total_damage >= health:
-				card.die()		
+				var card_dies_definition = {
+					"name": "card_dies",
+					"tags": ["receive_damage", "Scripted"] + script.get_property(SP.KEY_TAGS)
+				}
+				var card_dies_script:ScriptTask = ScriptTask.new(card, card_dies_definition, script.trigger_object, script.trigger_details)
+				card_dies_script.subjects = [card]
+				card_dies_script.is_primed = true #fake prime it since we already gave it subjects	
 	
-
+				var task_event = SimplifiedStackScript.new("card_dies", card_dies_script)
+				gameData.theStack.add_script(task_event)
+						
 	return retcode
 
 func prevent(script: ScriptTask) -> int:

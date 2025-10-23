@@ -439,7 +439,7 @@ func instance_card(card_name_or_id: String, owner_id:int) -> Card:
 	#TODO We set GUID here in the hope that all clients create their cards in the exact 
 	#same order. This might be a very flawed assertion could need a significant overhaul	
 	var _tmp = guidMaster.set_guid(card)
-	card.set_owner_hero_id(owner_id)
+	card.init_owner_hero_id(owner_id)
 	card.set_controller_hero_id(owner_id)
 	return card
 #

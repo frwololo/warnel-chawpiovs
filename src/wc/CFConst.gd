@@ -263,9 +263,9 @@ const TYPES_TO_GROUPS := {
 	"side_scheme" : ["group_schemes"],
 	"minion" : ["group_enemies", "group_characters"],
 	"villain" : ["group_enemies", "group_villains", "group_characters"],
-	"hero" : ["group_identities", "group_characters", "group_friendly"],
+	"hero" : ["group_identities", "group_characters", "group_friendly", "group_allies_and_heroes"],
 	"alter_ego" : ["group_identities", "group_characters", "group_friendly"],
-	"ally" : ["group_allies", "group_characters", "group_friendly"],
+	"ally" : ["group_allies", "group_characters", "group_friendly", "group_allies_and_heroes"],
 }
 
 const FORCE_HORIZONTAL_CARDS := {
@@ -429,3 +429,7 @@ const STATS_URI := "http://127.0.0.1"
 const STATS_PORT := 8000
 
 const MULTIPLAYER_PORT:= 7777
+
+const OPTIONS := {
+	"replace_targetting_with_selection": false
+}

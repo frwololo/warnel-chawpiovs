@@ -50,12 +50,13 @@ var delta:float = 0
 
 #temporary variables to keep track of objects to interact with
 var _current_selection_window = null
-var _last_activated_card = null
+var _current_targeting_card = null
 
 func _init():
 	scripting_bus.connect("all_clients_game_loaded", self, "all_clients_game_loaded")
 	scripting_bus.connect("selection_window_opened", self, "_selection_window_opened")
-	scripting_bus.connect("card_selected", self, "_selection_window_closed")	
+	scripting_bus.connect("card_selected", self, "_selection_window_closed")
+	scripting_bus.connect("initiated_targeting", self, "_initiated_targeting")	
 	create_text_edit()
 		
 func _ready():
@@ -174,6 +175,10 @@ func next_action():
 		if (!_current_selection_window) and delta <5:
 			return
  
+	if (action_type == "target"):
+		if (!_current_targeting_card) and delta <5:
+			return
+
 	if (action_type == "choose"):
 		if (!cfc.modal_menu) and delta <5:
 			return
@@ -202,7 +207,7 @@ func process_action(my_action:Dictionary):
 		#guessing player from action/card
 		player = 1 #default
 		var action_type: String = my_action.get("type", "play")
-		var action_value: String = 	my_action.get("value", "")
+		var action_value = 	my_action.get("value", "")
 		match action_type:
 			"activate":
 				player = get_card_owner(action_value)
@@ -243,7 +248,7 @@ remotesync func run_action(my_action:Dictionary):
 		#TODO error
 		return
 	
-	announce("action: " + action_type + " - " + action_value + " (player " + str(action_player) +")\n")
+	announce("action: " + action_type + " - " + str(action_value) + " (player " + str(action_player) +")\n")
 	var action_comment = my_action.get("_comments", "")
 	if (action_comment):
 		announce("<" + action_comment + ">\n")
@@ -275,7 +280,6 @@ remotesync func run_action(my_action:Dictionary):
 
 func action_play(player, card_id_or_name):
 	var card:WCCard = get_card(card_id_or_name)
-	_last_activated_card = card
 	card.attempt_to_play()
 	return
 
@@ -290,6 +294,9 @@ func action_select(player, action_value):
 			_:
 				chosen_cards = [action_value]
 	
+	for i in range (chosen_cards.size()):
+		chosen_cards[i] = get_corrected_card_name(chosen_cards[i])
+		
 	if (chosen_cards):
 		if (_current_selection_window):
 			_current_selection_window.select_cards_by_name(chosen_cards)
@@ -304,8 +311,8 @@ func cancel_current_selection_window():
 	
 func action_target(player, action_value):
 	var target_card = get_card(action_value)
-	if (_last_activated_card):
-		_last_activated_card.targeting_arrow.force_select_target(target_card)
+	if (_current_targeting_card):
+		_current_targeting_card.targeting_arrow.force_select_target(target_card)
 	return
 	
 func action_choose(player, action_value):
@@ -398,7 +405,7 @@ remotesync func finalize_test_allclients(force_status:int):
 	#Remove crap that might still be lurking around
 	cfc.cleanup_modal_menu()
 	gameData.cleanup_post_game()
-	_last_activated_card = null
+	_current_targeting_card = null
 	
 	if (force_status != TestStatus.NONE):
 		match force_status:
@@ -612,6 +619,9 @@ remotesync func save_results():
 	file.open(filename, File.WRITE)
 	file.store_string(to_print + "\n")
 	file.close() 	
+
+func _initiated_targeting(_request_object = null):
+	_current_targeting_card = _request_object
 
 func _selection_window_opened(_request_object = null,details = {}):
 	_current_selection_window = _request_object

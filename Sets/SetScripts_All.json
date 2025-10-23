@@ -429,6 +429,40 @@
 			}
 		},
 	},	
+	"Explosion": {
+		"reveal": {
+			"all": [
+				{
+					"name" : "count_tokens",
+					"token_name": "threat",
+					"subject": "boardseek",
+					"is_cost": true,
+					"filter_state_seek": [{
+						"filter_properties": {
+							"Name" : "Bomb Scare"
+						}
+					}]					
+				},
+				{
+					"name" : "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": "retrieve_integer",
+					"selection_type": "as_much_as_possible",
+					"selection_what_to_count": "assign_indirect_damage",
+					"needs_selection": true,
+					"filter_state_seek": [{
+							"filter_group" : "group_allies_and_heroes"
+					}],											
+				},
+				{
+					"name" : "surge",
+					"is_else": true,							
+				},				
+			],
+		},			
+	},	
 	"False Alarm": {
 		"reveal": {
 			"all": [
@@ -844,7 +878,7 @@
 			]
 		},
 		"interrupt" : {
-			"event_name": "character_dies",
+			"event_name": "card_dies",
 			"board": [
 				{
 					"name": "thwart",
@@ -856,9 +890,7 @@
 					}]
 				}
 			],
-			"filter_state_trigger": [{
-				"filter_is_host_of": "self",
-			}]		
+			"trigger": "host",	
 		}
 	},	
 	"Stampede": {

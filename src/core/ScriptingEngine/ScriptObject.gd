@@ -47,7 +47,6 @@ func _init(_owner, script: Dictionary, _trigger_object = null) -> void:
 	trigger_object = _trigger_object
 	parse_replacements()
 
-
 # Returns the specified property of the string.
 # Also sets appropriate defaults when then property has not beend defined.
 # A default value can also be passed directly, which is useful when
@@ -100,6 +99,16 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 
 	cfc.add_ongoing_process(self)		
 	var subjects_array := []
+	
+	#replace targeting with selection (optional)
+	if CFConst.OPTIONS.get("replace_targetting_with_selection", false):
+		if get_property(SP.KEY_SUBJECT) == SP.KEY_SUBJECT_V_TARGET:
+			script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_BOARDSEEK
+			script_definition[SP.KEY_SELECTION_TYPE] = "equal" 
+			script_definition[SP.KEY_SELECTION_COUNT] = 1
+			script_definition[SP.KEY_NEEDS_SELECTION] = true
+			script_definition[SP.KEY_SUBJECT_COUNT] = "all"
+			script_definition["filter_state_seek"] = script_definition["filter_state_subject"]	
 	# See SP.KEY_SUBJECT doc
 	match get_property(SP.KEY_SUBJECT):
 		# Ever task retrieves the subjects used in the previous task.
@@ -161,14 +170,10 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 				if not SP.check_validity(c, script_definition, "subject"):
 					is_valid = false
 	if get_property(SP.KEY_NEEDS_SELECTION):
-		var selection_count = get_property(SP.KEY_SELECTION_COUNT)
-		var selection_type = get_property(SP.KEY_SELECTION_TYPE)
-		var selection_optional = get_property(SP.KEY_SELECTION_OPTIONAL)
-		var selection_what_to_count = get_property(SP.KEY_SELECTION_WHAT_TO_COUNT)
 		if get_property(SP.KEY_SELECTION_IGNORE_SELF):
 			subjects_array.erase(owner)
 		var select_return = cfc.ov_utils.select_card(
-				subjects_array, selection_count, selection_type, selection_optional, selection_what_to_count, cfc.NMAP.board, self, run_type)
+				subjects_array,  script_definition, cfc.NMAP.board, self, run_type, stored_integer)
 		# In case the owner card is still focused (say because script was triggered
 		# on double-click and card was not moved
 		# Then we need to ensure it's unfocused

@@ -43,7 +43,7 @@ signal manapool_modified(details)
 signal enemy_initiates_attack(card,details)
 signal enemy_initiates_scheme(card,details)
 signal enemy_attack_happened (card,details)
- 
+signal character_dies(card, details) 
 signal round_ended()
 
 

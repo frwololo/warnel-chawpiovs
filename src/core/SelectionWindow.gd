@@ -22,50 +22,43 @@ var _card_dupe_map := {}
 var what_to_count: String
 var my_script
 var card_array
+var stored_integer
 
 onready var _card_grid = $GridContainer
 onready var _tween = $Tween
 
+var _assign_mode := false
+var _assign_max_function := ""
 
 #Not an actual _init!
 #this is because caller calls "instance()" and right now 
 # I'm too lazy to figure out why I can't give it params
 func init(
-		_selection_count := 0,
-		_selection_type := 'min',
-		_selection_optional := false,
-		_selection_what_to_count := "",
-		_script: ScriptObject = null):
-	selection_count = _selection_count
-	selection_type = _selection_type
-	is_selection_optional = _selection_optional
-	what_to_count = _selection_what_to_count
-	my_script = _script			
+		params: Dictionary,
+		_script: ScriptObject = null,
+		_stored_integer: int = 0):
 
+	stored_integer = _stored_integer #a value that may be passed from previous script executions
+	my_script = _script
+
+	selection_count = ScriptingEngine.get_int_value(params.get(SP.KEY_SELECTION_COUNT), stored_integer)
+	selection_type = params.get(SP.KEY_SELECTION_TYPE, "min")
+	is_selection_optional = params.get(SP.KEY_SELECTION_OPTIONAL, false)
+	what_to_count = params.get(SP.KEY_SELECTION_WHAT_TO_COUNT, "")
+		
+
+	if what_to_count.begins_with("assign_"):
+		_assign_mode = true
+		var function_suffix = what_to_count.substr(7)
+		_assign_max_function = "get_remaining_" + function_suffix		
+		what_to_count = "assign"
+		
 func _ready() -> void:
 	# warning-ignore:return_value_discarded
 	connect("confirmed", self, "_on_card_selection_confirmed")
 
 func _process(_delta):
-	var current_count = get_count(selected_cards)
-	# We disable the OK button, if the amount of cards to be
-	# chosen do not match our expectations
-	match selection_type:
-		"min":
-			if current_count < selection_count:
-				get_ok().disabled = true
-			else:
-				get_ok().disabled = false
-		"equal":
-			if current_count != selection_count:
-				get_ok().disabled = true
-			else:
-				get_ok().disabled = false
-		"max":
-			if current_count > selection_count:
-				get_ok().disabled = true
-			else:
-				get_ok().disabled = false
+	check_ok_button()
 
 
 func _compute_columns():
@@ -89,7 +82,7 @@ func initiate_selection(_card_array: Array) -> void:
 	#only include cards that can actually be used 
 	card_array = []
 	for card in _card_array:
-		if (get_count([card]) >= 1):
+		if ( _assign_mode or get_count([card]) >= 1): #TODO better way for assign mode ?
 			card_array.append(card)
 	
 	_compute_columns()
@@ -98,51 +91,6 @@ func initiate_selection(_card_array: Array) -> void:
 	# as that will not send the mandatory signal to unpause the game
 	get_close_button().visible = false
 
-	
-	
-	# If the selection is optional, we allow the player to cancel out
-	# of the popup
-	if is_selection_optional:
-		var cancel_button := add_cancel("Cancel")
-		# warning-ignore:return_value_discarded
-		cancel_button.connect("pressed",self, "_on_cancel_pressed")
-	# If the amount of cards available for the choice are below the requirements
-	# We return that the selection was canceled
-	elif get_count(card_array) < selection_count\
-			and selection_type in ["equal", "min"]:
-		force_cancel()
-		return
-	# If the selection count is 0 (e.g. reduced with an alterant)
-	# And we're looking for max or equal amount of cards, we return cancelled.
-	elif selection_count == 0\
-			and selection_type in ["equal", "max"]:
-		force_cancel()
-		return
-	# If the amount of cards available for the choice are exactly the requirements
-	# And we're looking for equal or minimum amount
-	# We immediately return what is there.
-	elif get_count(card_array) == selection_count\
-			and selection_type in ["equal", "min"]:
-		selected_cards = card_array
-		emit_signal("confirmed")
-		return
-	# When we have 0 cards to select from, we consider the selection cancelled
-	elif get_count(card_array) == 0:
-		force_cancel()
-		return
-	match selection_type:
-		"min":
-			window_title = "Select at least " + str(selection_count) + " cards."
-		"max":
-			window_title = "Select at most " + str(selection_count) + " cards."
-		"equal":
-			window_title = "Select exactly " + str(selection_count) + " cards."
-		"display":
-			window_title = "Press OK to continue"
-	
-	if (my_script):
-		window_title = cfc.enrich_window_title(my_script, window_title)
-			
 	
 	for c in _card_grid.get_children():
 		c.queue_free()
@@ -188,9 +136,16 @@ func initiate_selection(_card_array: Array) -> void:
 		dupe_selection.ensure_proper()
 		# We connect each card grid's gui input into a call which will handle
 		# The selections
+		if _assign_mode:
+			var max_assign_value = card.call(_assign_max_function)
+			dupe_selection.spinbox.init_plus_minus_mode(0, 0, max_assign_value)
+			dupe_selection.spinbox.connect("value_changed", self, "spinbox_value_changed", [dupe_selection, card])
 		card_grid_obj.connect("gui_input", self, "on_selection_gui_input", [dupe_selection, card])
 	# We don't want to show a popup longer than the cards. So the width is based on the lowest
 	# between the grid columns or the amount of cards
+
+	post_initiate_checks()
+
 	var shown_columns = min(_card_grid.columns, card_array.size())
 	var card_size = CFConst.CARD_SIZE
 	var thumbnail_scale = CFConst.THUMBNAIL_SCALE
@@ -222,26 +177,128 @@ func initiate_selection(_card_array: Array) -> void:
 	if OS.has_feature("debug") and not cfc.is_testing:
 		print("DEBUG INFO:SelectionWindow: Started Card Display with a %s card selection" % [_card_grid.get_child_count()])
 
-func get_count(card_array: Array) -> int:
+
+func post_initiate_checks():
+		
+	# If the selection is optional, we allow the player to cancel out
+	# of the popup
+	if is_selection_optional:
+		var cancel_button := add_cancel("Cancel")
+		# warning-ignore:return_value_discarded
+		cancel_button.connect("pressed",self, "_on_cancel_pressed")
+	# If the amount of cards available for the choice are below the requirements
+	# We return that the selection was canceled
+	elif get_count(card_array) < selection_count\
+			and selection_type in ["equal", "min"]:
+		force_cancel()
+		return
+	# If the selection count is 0 (e.g. reduced with an alterant)
+	# And we're looking for max or equal amount of cards, we return cancelled.
+	elif selection_count == 0\
+			and selection_type in ["equal", "max"]:
+		force_cancel()
+		return
+	# If the amount of cards available for the choice are exactly the requirements
+	# And we're looking for equal or minimum amount
+	# We immediately return what is there.
+	elif get_count(card_array) == selection_count\
+			and selection_type in ["equal", "min"]:
+		selected_cards = card_array
+		emit_signal("confirmed")
+		return
+	# When we have 0 cards to select from, we consider the selection cancelled
+	elif get_count(card_array) == 0\
+			and (!_assign_mode): #TODO better check here?
+		force_cancel()
+		return
+	match selection_type:
+		"min":
+			window_title = "Select at least " + str(selection_count) + " cards."
+		"max":
+			window_title = "Select at most " + str(selection_count) + " cards."
+		"equal":
+			window_title = "Select exactly " + str(selection_count) + " cards."
+		"as_much_as_possible":
+			window_title = "Assign " + str(selection_count) + " points."
+		"display":
+			window_title = "Press OK to continue"
+	
+	if (my_script):
+		window_title = cfc.enrich_window_title(my_script, window_title)
+	
+
+func check_ok_button() -> bool:
+	var current_count = get_count(selected_cards)
+	# We disable the OK button, if the amount of cards to be
+	# chosen do not match our expectations
+	match selection_type:
+		"min":
+			if current_count < selection_count:
+				get_ok().disabled = true
+			else:
+				get_ok().disabled = false
+		"equal":
+			if current_count != selection_count:
+				get_ok().disabled = true
+			else:
+				get_ok().disabled = false
+		"max":
+			if current_count > selection_count:
+				get_ok().disabled = true
+			else:
+				get_ok().disabled = false
+		"as_much_as_possible":
+			if (current_count < selection_count and can_still_select_more()):
+				get_ok().disabled = true
+			else:
+				get_ok().disabled = false
+	
+	return !(get_ok().disabled)
+
+#function when asked to select "as much as possible"
+#to check if we can still select more cards/points based on the constraints
+func can_still_select_more() -> bool :
+	if (selection_type != "as_much_as_possible"):
+		#basically not implemented in other cases
+		return true
+
+	var current_count = get_count(card_array)
+	if current_count >= selection_count:
+		return false
+		
+	for card in card_array:
+		var remaining = card.spinbox.max_value
+		var currently_assigned = card.spinbox.value
+		if remaining > currently_assigned:
+			return true
+			
+	return false			
+
+func get_count(_card_array: Array) -> int:
 	match what_to_count:
+		"assign":
+			var total = 0
+			for card in card_array: #for "assign" we actually ignore the passed array and use our currently displayed one
+				total = total + _card_dupe_map[card].spinbox.value
+			return total			
 		"":
-			return card_array.size()
+			return _card_array.size()
 		_:
 			var total = 0
 			var func_name = what_to_count
-			for card in card_array:
+			for card in _card_array:
 				total = total + card.call(func_name, my_script)
 			return total
 
 #Returns arbitrary (valid) targets for the purpose of cost check
-func dry_run(card_array: Array) -> void:	
+func dry_run(_card_array: Array) -> void:	
 			
 	if is_selection_optional or (selection_type in ["display"]):
 		force_cancel()
 		return
 	# If the amount of cards available for the choice are below the requirements
 	# We return that the selection was canceled
-	if get_count(card_array) < selection_count\
+	if get_count(_card_array) < selection_count\
 			and selection_type in ["equal", "min"]:
 		force_cancel()
 		return
@@ -254,13 +311,14 @@ func dry_run(card_array: Array) -> void:
 	# If the amount of cards available for the choice are exactly the requirements
 	# And we're looking for equal or minimum amount
 	# We immediately return what is there.
-	if get_count(card_array) == selection_count\
+	if get_count(_card_array) == selection_count\
 			and selection_type in ["equal", "min"]:
-		selected_cards = card_array
+		selected_cards = _card_array
 		emit_signal("confirmed")
 		return
 	# When we have 0 cards to select from, we consider the selection cancelled
-	if get_count(card_array) == 0:
+	if get_count(_card_array) == 0\
+			and !_assign_mode:
 		force_cancel()
 		return
 		
@@ -269,20 +327,31 @@ func dry_run(card_array: Array) -> void:
 		"min":
 			var total = 0
 			var i = 0
-			while total < selection_count and i < card_array.size():
-				selected_cards.append(card_array[i])
+			while total < selection_count and i < _card_array.size():
+				selected_cards.append(_card_array[i])
 				total = get_count(selected_cards)
 				i += 1
 		"max":
-			selected_cards = card_array.slice(0, 1)
+			selected_cards = _card_array.slice(0, 1)
 		"equal":
 			var total = 0
 			var i = 0
-			while total < selection_count and i < card_array.size():
-				selected_cards.append(card_array[i])
+			while total < selection_count and i < _card_array.size():
+				selected_cards.append(_card_array[i])
 				total = get_count(selected_cards)
 				i += 1			
 				#TODO we might have an error here where we don't get the exact number if we add 2 or more in one step
+		"as_much_as_possible":
+			var remaining = selection_count
+			for card in _card_array:
+				var can_assign = card.call(_assign_max_function)
+				if can_assign > remaining:
+					can_assign = remaining
+				remaining -= can_assign
+				for i in range (can_assign):
+					selected_cards.append(card)
+				if remaining <= 0:
+					break	
 	emit_signal("confirmed")
 	return
 
@@ -291,6 +360,42 @@ func dry_run(card_array: Array) -> void:
 func _extra_dupe_ready(dupe_selection: Card, _card: Card) -> void:
 	dupe_selection.targeting_arrow.visible = false
 
+# integer up_down manipulation buttons
+func spinbox_value_changed( new_value,  dupe_selection: Card, origin_card) -> void:
+	var current_total = get_count(card_array)
+	#we added too much, this is a problem in general. set the value again and let it call us back
+	if current_total > selection_count and selection_type in ["max", "equal", "as_much_as_possible"]:
+		var diff = current_total - selection_count
+		dupe_selection.spinbox.value -= diff
+		return
+	
+	var count = selected_cards.count(origin_card)
+	var to_add = new_value - count
+	
+	if to_add > 0:
+		for i in range(to_add):
+			selected_cards.append(origin_card)
+	else:
+		for i in range (-to_add):
+			selected_cards.erase(origin_card)
+		
+	
+	pass
+	
+func card_clicked(dupe_selection: Card, origin_card) -> void:
+	# Each time a card is clicked, it's selected/unselected
+	if origin_card in selected_cards:
+		selected_cards.erase(origin_card)
+		dupe_selection.highlight.set_highlight(false)
+	else:
+		selected_cards.append(origin_card)
+		dupe_selection.highlight.set_highlight(true)
+	# We want to avoid the player being able to select more cards than
+	# the max, even if the OK button is disabled
+	# So whenever they exceed the max, we unselect the first card in the array.
+	if selection_type in ["equal", "max"]  and selected_cards.size() > selection_count:
+		_card_dupe_map[selected_cards[0]].highlight.set_highlight(false)
+		selected_cards.remove(0)	
 
 # The player can select the cards using a simple left-click.
 func on_selection_gui_input(event: InputEvent, dupe_selection: Card, origin_card) -> void:
@@ -298,41 +403,25 @@ func on_selection_gui_input(event: InputEvent, dupe_selection: Card, origin_card
 			and event.is_pressed()\
 			and event.get_button_index() == 1\
 			and selection_type != 'display':
-		# Each time a card is clicked, it's selected/unselected
-		if origin_card in selected_cards:
-			selected_cards.erase(origin_card)
-			dupe_selection.highlight.set_highlight(false)
-		else:
-			selected_cards.append(origin_card)
-			dupe_selection.highlight.set_highlight(true)
-		# We want to avoid the player being able to select more cards than
-		# the max, even if the OK button is disabled
-		# So whenever they exceed the max, we unselect the first card in the array.
-		if selection_type in ["equal", "max"]  and selected_cards.size() > selection_count:
-			_card_dupe_map[selected_cards[0]].highlight.set_highlight(false)
-			selected_cards.remove(0)
+				
+		card_clicked(dupe_selection, origin_card)
 
 
-# Manually selects cards based on their index.
-# Typically used for testing
-# Returns an array with the Card object selected
-func select_cards(indexes :Array = []) -> Array:
-	var all_choices = _card_dupe_map.keys()
-	for index in indexes:
-		if index + 1 > all_choices.size():
-			continue
-		selected_cards.append(all_choices[index])
-	emit_signal("confirmed")
-	return(selected_cards)
-
+#used mostly for testing
 func select_cards_by_name(names :Array = []) -> Array:
 	var all_choices = _card_dupe_map.keys()
 	for name_or_id in names:
 		for card in all_choices:
 			if (card.canonical_name.to_lower() == name_or_id.to_lower()) \
 					or (card.get_property("_code", "").to_lower() == name_or_id.to_lower()):
-				selected_cards.append(card)
-	emit_signal("confirmed")
+				var dupe_card = _card_dupe_map[card]
+				if _assign_mode:
+					dupe_card.spinbox.value +=1
+				else:
+					card_clicked(dupe_card, card)
+					
+	if check_ok_button():	
+		emit_signal("confirmed")			
 	return(selected_cards)
 
 

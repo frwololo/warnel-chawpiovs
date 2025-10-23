@@ -5,7 +5,7 @@ class_name WCCard
 extends Card
 
 # -1 uninitialized, 0 Villain, any positive value: hero
-var _owner_hero_id  := -1 setget set_owner_hero_id, get_owner_hero_id
+var _owner_hero_id  := -1
 var _controller_hero_id  := -1 setget set_controller_hero_id, get_controller_hero_id
 
 var _check_play_costs_cache: Color = CFConst.CostsState.CACHE_INVALID
@@ -16,9 +16,19 @@ var _on_ready_load_from_json:Dictionary = {}
 var _can_change_form := true
 var is_boost:=false
 
-func set_owner_hero_id(hero_id:int):
+# The node with number manipulation box on this card
+onready var spinbox = $Control/SpinPanel/SpinBox
+
+#what to do when I'm an attachement and my host is removed from the table
+func host_is_gone():
+	# Attachments typically go to their discard
+	discard()
+
+func init_owner_hero_id(hero_id:int):
+	if _owner_hero_id >=0: #already initialized
+		return
 	if (hero_id == -1):
-		var _error = 1
+		var _error = 1		
 	_owner_hero_id = hero_id
 	
 func get_owner_hero_id() -> int:
@@ -120,8 +130,7 @@ func common_post_move_scripts(new_host: String, _old_host: String, _move_tags: A
 		self.set_controller_hero_id(new_hero_id)
 	
 	#init owner once and only once, if not already done
-	if (self.get_owner_hero_id() < 0):
-		self.set_owner_hero_id(new_hero_id)		
+	init_owner_hero_id(new_hero_id)	
 		
 
 #Tries to play the card assuming costs aren't impossible to pay
@@ -136,7 +145,7 @@ func attempt_to_play():
 		"hand":
 			if check_play_costs() == CFConst.CostsState.IMPOSSIBLE:
 				return false
-			#unique rule
+			#unique rule - Move to check costs ?
 			if get_property("is_unique", false):
 				var already_in_play = cfc.NMAP.board.unique_card_in_play(self)
 				if already_in_play:
@@ -160,6 +169,7 @@ func can_interrupt(
 	if not cfc.NMAP.has('board'):
 		return CFConst.CanInterrupt.NO
 	
+
 	#select valid scripts that match the current trigger
 	var card_scripts = retrieve_filtered_scripts(trigger_card, "interrupt", trigger_details)
 	
@@ -203,7 +213,6 @@ func execute_scripts(
 		return null
 		
 	return .execute_scripts(trigger_card, trigger, trigger_details, run_type)	
-
 
 # A signal for whenever the player clicks on a card
 func _on_Card_gui_input(event) -> void:
@@ -437,6 +446,9 @@ func _process_card_state() -> void:
 			if get_property("_horizontal", false):
 				set_card_rotation(90, false, false)
 
+
+
+
 # This function can be overriden by any class extending Card, in order to provide
 # a way of checking if a card can be played before dragging it out of the hand.
 #
@@ -665,6 +677,14 @@ func get_printed_resource_value_as_int(script):
 		var lc_name = resource_name.to_lower()
 		total += get_property("resource_" + lc_name, 0)
 	return total
+
+func get_remaining_indirect_damage():
+	var current_damage = self.tokens.get_token_count("damage")
+	var health = self.get_property("health", 0)
+	var diff = health - current_damage
+	if diff <= 0:
+		return 0
+	return diff
 	
 func get_max_hand_size():
 	return get_property("hand_size", 0)

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://src/custom/DetailsFont.tres" type="DynamicFont" id=1]
+[ext_resource path="res://src/wc/DetailsFont.tres" type="DynamicFont" id=1]
 
 [node name="InfoPanel" type="PanelContainer"]
 margin_right = 264.0

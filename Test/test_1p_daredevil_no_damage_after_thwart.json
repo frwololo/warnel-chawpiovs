@@ -1,0 +1,113 @@
+{
+	"_comments": "Tests that Daredevil damages after thwart",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens": {"threat": 3}
+				}				
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Shocker"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Daredevil"
+				}				
+				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Daredevil"
+		},
+		{
+			"type": "choose",
+			"value": "Thwart"
+		},	
+		{
+			"type": "target",
+			"value": "01097"
+		},
+		{
+			"type": "activate",
+			"value": "daredevil"
+		},		
+		{
+			"type": "target",
+			"value": "Shocker"
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens": {"threat": 1}					
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Shocker",
+					"tokens": {"damage": 1}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Daredevil"
+				}
+			]
+		}
+	}
+}

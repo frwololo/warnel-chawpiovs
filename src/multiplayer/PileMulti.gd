@@ -5,17 +5,16 @@
 class_name PileMulti
 extends Pile
 
-var is_shuffling:bool = false
-
-
 func _ready():
 	scripting_bus.connect('shuffle_completed', self, '_on_shuffle_completed')	
 	
 func _on_shuffle_completed(card_container,details):
+	is_shuffling = false	
+	
 	if (card_container != self):
 		return
 	
-	is_shuffling = false	
+
 	#if we're the game master, feed the new deck to all peers	
 	if (get_tree().get_network_peer() and cfc.is_game_master()):
 		sort_from_master()

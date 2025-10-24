@@ -265,7 +265,7 @@
 		}		
 	},
 	"Daredevil - Matt Murdock": {
-		"thwart":{
+		"thwarted":{
 			"trigger" : "self",
 			"is_optional_board": true,
 			"board": [
@@ -714,7 +714,7 @@
 			"board": {
 				"remove 2 threat": [
 					{
-						"name": "thwart",
+						"name": "remove_threat",
 						"amount": 2,
 						"subject": "target",
 						"needs_subject": true,
@@ -882,7 +882,7 @@
 			"event_name": "card_dies",
 			"board": [
 				{
-					"name": "thwart",
+					"name": "remove_threat",
 					"amount": 3,
 					"subject": "target",
 					"needs_subject": true,
@@ -933,7 +933,7 @@
 					"is_cost": true,
 				},				
 				{
-					"name": "thwart",
+					"name": "remove_threat",
 					"amount": 1,
 					"subject": "target",
 					"needs_subject": true,

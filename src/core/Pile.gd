@@ -41,6 +41,8 @@ onready var _tween := $Tween
 
 var pre_sorted_order: Array
 
+var is_shuffling:= false
+
 func _ready():
 	add_to_group("piles")
 	# warning-ignore:return_value_discarded
@@ -324,6 +326,8 @@ func _slot_card_into_popup(card: Card) -> void:
 # Randomly rearranges the order of the [Card] nodes.
 # Pile shuffling includes a fancy animation
 func shuffle_cards(animate = true) -> void:
+	is_shuffling = true
+	
 	# Optimally the CFConst.ShuffleStyle enum should be defined in this class
 	# but if we did so, we would not be able to refer to it from the Card
 	# class, as that would cause a cyclic dependency on the parser
@@ -452,6 +456,8 @@ func shuffle_cards(animate = true) -> void:
 		# if we're already running another animation, just shuffle
 		.shuffle_cards()
 	reorganize_stack()
+	
+	is_shuffling = false
 	emit_signal("shuffle_completed", self)
 	scripting_bus.emit_signal("shuffle_completed", self, {"source": name})
 

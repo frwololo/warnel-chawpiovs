@@ -65,6 +65,9 @@ func setup() -> void:
 	scripting_bus.connect("step_started", self, "_game_step_started")
 	
 	attachment_mode = AttachmentMode.ATTACH_BEHIND
+	
+	#this prevents moving cards around. A bit annoying but avoids weird double click envents leading to a drag and drop
+	disable_dragging_from_board = true	
 
 func position_ui_elements():
 	if properties.get("_horizontal", 0):
@@ -211,13 +214,21 @@ func execute_scripts(
 	#these cards are duplicates that shouldn't exist?
 	if (get_owner_hero_id() == -1):
 		return null
+	
+	var can_i_run = can_execute_scripts()
+	if typeof(can_i_run) == TYPE_BOOL:
+		if !can_i_run:
+			return null
+	else:
+		if !(trigger in (can_i_run)):
+			return null	
 		
 	return .execute_scripts(trigger_card, trigger, trigger_details, run_type)	
 
 # A signal for whenever the player clicks on a card
 func _on_Card_gui_input(event) -> void:
 	cfc.add_ongoing_process(self, "_on_Card_gui_input_" + canonical_name)
-	if event is InputEventMouseButton and cfc.NMAP.has("board"):
+	if event is InputEventMouseButton and cfc.NMAP.has("board"):	
 		# because of https://github.com/godotengine/godot/issues/44138
 		# we need to double check that the card which is receiving the
 		# gui input, is actually the one with the highest index.
@@ -290,7 +301,7 @@ func _on_Card_gui_input(event) -> void:
 					if potential_container:
 						destination = potential_container
 						potential_container.highlight.set_highlight(false)
-					
+
 					#TODO
 					#NOTE ERWAN
 					#Modified here so that drag to board mimics the effect of a double click	
@@ -356,6 +367,10 @@ func remove_threat(modification: int) -> int:
 	return result
 
 func discard():
+	#cleanup some variables
+	is_boost = false
+	
+	#move to correct pile
 	var hero_owner_id = get_owner_hero_id()
 	if (!hero_owner_id):
 		self.move_to(cfc.NMAP["discard_villain"])
@@ -622,6 +637,14 @@ func draw_boost_card():
 		boost_card.attach_to_host(self)
 		boost_card.set_is_faceup(false)
 	#TODO if pile empty...need to reshuffle ?
+
+#returns an array of allowed triggers,
+# or "true" if all scripts allowed
+func can_execute_scripts():
+	#checks for cases where we don't want to execute scripts on this card	
+	if is_boost:
+		return ['boost']
+	return true
 
 func pay_as_resource(script):
 	cfc.add_ongoing_process(self, "pay_as_resource")

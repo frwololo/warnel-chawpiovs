@@ -86,15 +86,24 @@ func _process(_delta) -> void:
 		$VBC.rect_position.x = get_viewport().size.x - vbc_rect_offset.x
 		$VBC.rect_position.y = 0
 	# The below performs some garbage collection on previously focused cards.
+	var to_delete = []
 	for c in _previously_focused_cards:
 		if not is_instance_valid(_previously_focused_cards[c]):
+			to_delete.append(c)
 			continue
 		var current_dupe_focus: Card = _previously_focused_cards[c]
+		
+		#TODO I've had cards stuck in limbo that show up and are impossible
+		#to remove from the preview mode. This is an attempt to fix this 
+		if current_dupe_focus.state == Card.CardState.IN_PILE:
+			to_delete.append(c)
 		# We don't delete old dupes, to avoid overhead to the engine
 		# insteas, we just hide them.
 		if _current_focus_source != c\
 				and not $VBC/Focus/Tween.is_active():
 			current_dupe_focus.visible = false
+	for c in to_delete:
+		_previously_focused_cards.erase(c)
 	if not is_instance_valid(_current_focus_source)\
 			and $VBC/Focus.modulate.a != 0\
 			and not $VBC/Focus/Tween.is_active():
@@ -105,8 +114,14 @@ func _process(_delta) -> void:
 func focus_card(card: Card, show_preview := true) -> void:
 
 	#having issues with focus on shuffling cards, this is a hack fix for that
-	if card._tween.is_active():
-		return
+#	if card._tween.is_active():
+#		return
+#
+#	match card.state:
+#		Card.CardState.VIEWED_IN_PILE:
+#			var parent = card.get_parent()
+#			if parent.is_shuffling:
+#				return
 
 	# We check if we're already focused on this card, to avoid making duplicates
 	# the whole time		

@@ -274,7 +274,6 @@ onready var tokens: TokenDrawer = $Control/Tokens
 onready var highlight = $Control/Highlight
 
 
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	targeting_arrow = targeting_arrow_scene.instance()
@@ -859,7 +858,7 @@ func set_is_faceup(
 	# If it is not, this is a viewport dupe card that has not finished
 	# its ready() process
 	elif not check and is_instance_valid(get_parent()):
-		tokens.is_drawer_open = false
+		tokens.set_is_drawer_open(false)
 		# We make sure to remove other tweens of the same type to avoid a deadlock
 		is_faceup = value
 		# When we change faceup state, we reset the is_viewed to false
@@ -1115,7 +1114,7 @@ func move_to(targetHost: Node,
 	# We need to store the parent, because we won't be able to know it later
 	var parentHost = get_parent()
 	# We want to keep the token drawer closed during movement
-	tokens.is_drawer_open = false
+	tokens.set_is_drawer_open(false)
 	# This checks ensure we don't change parent to the board,
 	# if the placement to the board requested is invalid
 	# depending on the board_placement variable
@@ -1288,7 +1287,7 @@ func move_to(targetHost: Node,
 					_set_target_position(board_position.rect_global_position)
 					board_position.set_occupying_card(self)
 					_placement_slot = board_position
-				elif board_position as String:
+				elif board_position and board_position as String:
 					var grid = cfc.NMAP.board.get_grid(board_position)
 					var slot = grid.find_available_slot()
 					# We need a small delay, to allow a potential new slot to instance
@@ -1852,7 +1851,7 @@ func set_focus(requestedFocus: bool, colour := CFConst.FOCUS_HOVER_COLOUR) -> vo
 	# We also generally only have tokens on the table
 	if state in [CardState.ON_PLAY_BOARD, CardState.FOCUSED_ON_BOARD]:
 		if $Control.has_node("Tokens"):
-			tokens.is_drawer_open = requestedFocus
+			tokens.set_is_drawer_open(requestedFocus)
 #		if name == "Card" and get_parent() == cfc.NMAP.board:
 #			print(requestedFocus)
 
@@ -2617,7 +2616,7 @@ func _process_card_state() -> void:
 			global_position = _determine_board_position_from_mouse() - Vector2(5,5)
 			_organize_attachments()
 			# We want to keep the token drawer closed during movement
-			tokens.is_drawer_open = false
+			tokens.set_is_drawer_open(false)
 
 		CardState.ON_PLAY_BOARD:
 			# Used when the card is idle on the board
@@ -2706,6 +2705,11 @@ func _process_card_state() -> void:
 				scale = Vector2(1,1)
 			if get_parent() in get_tree().get_nodes_in_group("piles"):
 				set_is_faceup(get_parent().faceup_cards, true)
+				
+				#TODO bugfix I've had cards staying in "VIEWED_IN_PILE" limbo...
+				if get_parent().get_top_card() != self:
+					self.state = CardState.IN_PILE
+
 
 		CardState.IN_POPUP:
 			z_index = 0
@@ -2776,6 +2780,7 @@ func _process_card_state() -> void:
 		CardState.DECKBUILDER_GRID:
 			$Control.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			set_focus(false)
+			self.tokens.set_is_drawer_open(false)
 			set_control_mouse_filters(false)
 			buttons.set_active(false)
 			# warning-ignore:return_value_discarded

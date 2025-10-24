@@ -188,7 +188,7 @@ func post_initiate_checks():
 		cancel_button.connect("pressed",self, "_on_cancel_pressed")
 	# If the amount of cards available for the choice are below the requirements
 	# We return that the selection was canceled
-	elif get_count(card_array) < selection_count\
+	if get_count(card_array) < selection_count\
 			and selection_type in ["equal", "min"]:
 		force_cancel()
 		return

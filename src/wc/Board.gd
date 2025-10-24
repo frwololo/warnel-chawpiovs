@@ -135,7 +135,7 @@ func _ready() -> void:
 	draw_starting_hand()	
 	#Tests
 	#draw_cheat("Web-Shooter")
-	draw_cheat("Combat Training")
+	#draw_cheat("Combat Training")
 	#draw_cheat("Jessica Jones")
 	#draw_cheat("Mockingbird")
 	#draw_cheat("Black Cat")
@@ -466,6 +466,8 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 	var previous_hero_id = trigger_details["before"]
 	var new_hero_id = trigger_details["after"]
 
+
+
 	#TODO move to config
 	#TODO convert to nice animation
 	var scale_new = 1
@@ -498,6 +500,9 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 				
 			new_grid.rescale(CFConst.PLAY_AREA_SCALE * scale_new)
 			new_grid.reposition(backup_position)			
+
+	for container in get_tree().get_nodes_in_group("hands"):
+		container.disable()
 	
 	#exchange hands
 	var old_hand: Hand = get_node("%Hand" + str(previous_hero_id))	
@@ -506,7 +511,9 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 	old_hand.re_place()
 	old_hand.position = Vector2(20000, 20000)
 	var new_hand: Hand = get_node("%Hand" + str(new_hero_id))
+	new_hand.add_to_group("bottom")
 	WCUtils.enable_and_show_node(new_hand)
+	new_hand.enable()
 	new_hand.re_place()
 
 

@@ -65,7 +65,7 @@ func _on_MousePointer_area_entered(area: Area2D) -> void:
 		# (sometimes it happens. Haven't figured out what causes it)
 		_check_for_stale_overlaps()
 		overlaps.append(area)
-		#print("enter:",area.name)
+		print("enter:",area.name)
 		_discover_focus()
 
 func _check_for_stale_overlaps() -> void:

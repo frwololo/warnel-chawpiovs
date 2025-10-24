@@ -70,6 +70,7 @@ func complete_targeting() -> void:
 					{"targeting_source": owner_object})
 		target_object = tc
 	emit_signal("target_selected",target_object)
+	scripting_bus.emit_signal("target_selected", owner_object, {"target": target_object})	
 	is_targeting = false
 	clear_points()
 	$ArrowHead.visible = false

@@ -289,20 +289,20 @@ func replacement_effect(script: ScriptTask) -> int:
 	
 	return retcode					
 
-static func simple_discard_task(target_card):
-	var dest_container = "discard_villain"
-	var hero_id = target_card.get_owner_hero_id()
-	if (hero_id > 0):
-		dest_container = "discard" + String(hero_id)
-		
+func discard(script: ScriptTask):
+	var retcode = CFConst.ReturnCode.FAILED
+	for card in script.subjects:
+		card.discard()
+		retcode = CFConst.ReturnCode.CHANGED
+	return retcode	
+
+static func simple_discard_task(target_card):	
 	var discard_script  = {
-				"name": "move_card_to_container",
+				"name": "discard",
 				"subject": "self",
-				"needs_subject" : true,
-				"dest_container" : dest_container
 			}
 	var discard_task = ScriptTask.new(target_card, discard_script, target_card, {})	
-	var task_event = SimplifiedStackScript.new("move_card_to_container", discard_task)
+	var task_event = SimplifiedStackScript.new("discard", discard_task)
 	return task_event
 
 #adds an attacker
@@ -410,6 +410,18 @@ func scheme(script: ScriptTask) -> int:
 		retcode = CFConst.ReturnCode.CHANGED
 		gameData.add_enemy_activation(card, "scheme")
 	return retcode	
+
+func remove_threat(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+
+	var modification = script.script_definition.get("amount", 0)
+
+	for card in script.subjects:
+		retcode = card.remove_threat(modification)
+
+	return retcode	
 	
 func thwart(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -417,12 +429,9 @@ func thwart(script: ScriptTask) -> int:
 		return retcode
 
 	var owner = script.owner
-
 	#we can provide a thwart amount in the script,
 	#otherwise we use the thwart property if the script owner is a friendly character
-	var modification = script.script_definition.get("amount", 0)
-	if (!modification):
-		modification = owner.get_property("thwart")
+	var modification = owner.get_property("thwart", 0)
 
 	var confused = owner.tokens.get_token_count("confused")
 	if (confused):
@@ -431,6 +440,8 @@ func thwart(script: ScriptTask) -> int:
 		for card in script.subjects:
 			retcode = card.remove_threat(modification)
 		consequential_damage(script)
+		scripting_bus.emit_signal("thwarted", owner, {"amount" : modification, "target" : script.subjects[0]})
+	
 	return retcode	
 
 func heal(script: ScriptTask) -> int:

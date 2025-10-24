@@ -69,9 +69,8 @@
 					"tags": ["alter_ego_action"]
 				},
 				{
-					"name": "rotate_card",
+					"name": "exhaust_card",
 					"subject": "self",
-					"degrees": 90,
 					"is_cost" : true,
 				},							
 				{
@@ -92,9 +91,8 @@
 		"manual": {
 			"board": [
 				{
-					"name": "rotate_card",
+					"name": "exhaust_card",
 					"subject": "self",
-					"degrees": 90,
 					"is_cost" : true,
 				},							
 				{
@@ -198,28 +196,18 @@
 				{					
 					"filter_task" : "get_property",
 					"filter_property_name" : "attack",
-					"filter_same_controller": true,
-					"filter_state_trigger" : [{
-						"filter_properties" : {"type_code" : "villain"}
-					}],
+					"subject": "host",
 					"alteration": 3
-				}
+				},
+				{					
+					"filter_task" : "get_property",
+					"filter_property_name" : "overkill",
+					"subject": "host",
+					"alteration": 1
+				},				
+				
 			]
 		},		
-		"interrupt": {
-			"event_name": "enemy_initiates_attack",
-			"board": [
-				{
-					"name" : "mod_tokens",
-					"modification": 1,
-					"token_name": "overkill_todo",
-					"subject": "host",
-				}
-			],
-			"filter_state_trigger": [{
-				"filter_properties" : {"type_code" : "villain"}
-			}]
-		},
 		"enemy_attack_happened" : {
 			"board": [
 				{
@@ -351,9 +339,8 @@
 						"subject": "my_hero"
 					},
 					{	
-						"name": "rotate_card",
+						"name": "exhaust_card",
 						"is_cost": true,
-						"degrees": 90,
 						"subject": "my_hero"
 					},
 					{
@@ -369,9 +356,8 @@
 						"tags": ["alter_ego_form"]
 					},
 					{	
-						"name": "rotate_card",
+						"name": "exhaust_card",
 						"is_cost": true,
-						"degrees": 90,
 						"subject": "my_hero"
 					},
 					{
@@ -549,10 +535,9 @@
 		"manual": {
 			"board": [
 				{
-					"name": "rotate_card",
+					"name": "exhaust_card",
 					"subject": "self",
 					"is_cost": true,
-					"degrees": 90,
 				},
 				{
 					"name": "mod_counter",
@@ -920,10 +905,9 @@
 		"manual": {
 			"board": [		
 				{
-					"name": "rotate_card",
+					"name": "exhaust_card",
 					"subject": "self",
 					"is_cost": true,
-					"degrees": 90,
 				},
 				{
 					"name": "mod_tokens",
@@ -1021,10 +1005,9 @@
 					"tags": ["hero_resource"]
 				},			
 				{
-					"name": "rotate_card",
+					"name": "exhaust_card",
 					"subject": "self",
 					"is_cost": true,
-					"degrees": 90,
 				},
 				{
 					"name": "mod_tokens",

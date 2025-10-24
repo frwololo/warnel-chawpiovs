@@ -407,7 +407,10 @@ func _on_Card_mouse_entered() -> void:
 func _input(event) -> void:
 	if event is InputEventMouseButton and not event.is_pressed():
 		if targeting_arrow.is_targeting:
-			targeting_arrow.complete_targeting()
+			if event.get_button_index() == 2: #todo have a cancel button on screen instead
+				targeting_arrow.cancel_targeting()
+			else:
+				targeting_arrow.complete_targeting()
 		if  event.get_button_index() == 1:
 			# On depressed left mouse click anywhere on the board
 			# We stop all attempts at dragging this card
@@ -1014,9 +1017,10 @@ func set_card_rotation(
 			check := false,
 			tags := ["Manual"]) -> int:
 	var retcode
+	
 	# For cards we only allow orthogonal degrees of rotation
 	# If it's not, we consider the request failed
-	if not value in [0,90,180,270]:
+	if not ("force" in tags) and not (value in [0,90,180,270]):
 		retcode = CFConst.ReturnCode.FAILED
 	# We only allow rotating card while they're on the board
 	elif value != 0 and get_parent() != cfc.NMAP.board:
@@ -1474,6 +1478,8 @@ func _set_target_position(new_target_position):
 	_target_position = new_target_position
 
 func _set_target_rotation(new_target_rotation):
+	if self.canonical_name == "Charge":
+			var _tmp =1
 	_target_rotation = new_target_rotation
 		
 # Executes the tasks defined in the card's scripts in order.
@@ -1540,36 +1546,6 @@ func execute_scripts(
 	is_executing_scripts = true
 	cfc.add_ongoing_process(self, "core_execute_scripts")
 	
-	# Here we check for confirmation of optional trigger effects
-	# There should be an SP.KEY_IS_OPTIONAL definition per state
-	# E.g. if board scripts are optional, but hand scripts are not
-	# Then you'd include an "is_optional_board" key at the same level as "board"
-	
-	#We don't check if this is a network call. If network call, it is assumed the 
-	#owner has already accepted to pay, and this is why we are being called
-#	if (!is_network_call):
-#		if (!playing_interrupt):
-#			var is_interrupt = gameData.check_interrupt(
-#				self,
-#				card_scripts,
-#				canonical_name,
-#				trigger,
-#				get_state_exec())
-#			#if interrupt mode, we cancel everything here and will enter interrupt mode	
-#			if (is_interrupt):
-#				state_scripts = []
-	#		var confirm_return = gameData.confirm(
-	#			self,
-	#			card_scripts,
-	#			canonical_name,
-	#			trigger,
-	#			state_exec)
-	#		if confirm_return is GDScriptFunctionState: # Still working.
-	#			confirm_return = yield(confirm_return, "completed")
-	#			# If the player chooses not to play an optional cost
-	#			# We consider the whole cost dry run unsuccesful
-	#			if not confirm_return:
-	#				state_scripts = []
 	# If the state_scripts return a dictionary entry
 	# it means it's a multiple choice between two scripts
 	if typeof(state_scripts) == TYPE_DICTIONARY:
@@ -1624,19 +1600,19 @@ func execute_scripts(
 		# costs can be paid, then we proceed with the actual run
 		# we add the script to the server stack for execution
 		if (!is_network_call and not only_cost_check):
-			
-			#1.5) We run the script in "prime" mode again to choose targets
-			# for all tasks that aren't costs but still need targets
-			# (is_cost = false and needs_subject = false)
-			sceng.execute(CFInt.RunType.PRIME_ONLY)
-			if not sceng.all_tasks_completed:
-				yield(sceng,"tasks_completed")
-			
-			# 2) Once done with payment, Client A sends ability + payment information to all clients (including itself)
-			# 3) That data is added to all clients stacks
-			var func_return = add_script_to_stack(sceng, run_type, trigger, trigger_details)
-			while func_return is GDScriptFunctionState && func_return.is_valid():
-				func_return = func_return.resume()
+			if (sceng.can_all_costs_be_paid or sceng.has_else_condition()):
+				#1.5) We run the script in "prime" mode again to choose targets
+				# for all tasks that aren't costs but still need targets
+				# (is_cost = false and needs_subject = false)
+				sceng.execute(CFInt.RunType.PRIME_ONLY)
+				if not sceng.all_tasks_completed:
+					yield(sceng,"tasks_completed")
+				
+				# 2) Once done with payment, Client A sends ability + payment information to all clients (including itself)
+				# 3) That data is added to all clients stacks
+				var func_return = add_script_to_stack(sceng, run_type, trigger, trigger_details)
+				while func_return is GDScriptFunctionState && func_return.is_valid():
+					func_return = func_return.resume()
 		is_executing_scripts = false
 	cfc.remove_ongoing_process(self, "core_execute_scripts")	
 	emit_signal("scripts_executed", self, sceng, trigger)
@@ -1774,6 +1750,7 @@ func attach_to_host(
 				* CFConst.ATTACHMENT_OFFSET[current_host_card.attachment_offset].x,
 				(attach_index + 1)* card_size.y
 				* CFConst.ATTACHMENT_OFFSET[current_host_card.attachment_offset].y)))
+		set_card_rotation(12, false, true, false, ["force"])		
 		scripting_bus.emit_signal("card_attached",
 				self,
 				{"host": host, "tags": tags})
@@ -2742,7 +2719,7 @@ func _process_card_state() -> void:
 			# warning-ignore:return_value_discarded
 			set_card_rotation(0)
 			$Control.rect_rotation = 0
-			targeting_arrow.complete_targeting()
+			targeting_arrow.cancel_targeting()
 			$Control/Tokens.visible = false
 			# We scale the card dupe to allow the player a better viewing experience
 			if CFConst.VIEWPORT_FOCUS_ZOOM_TYPE == "scale":

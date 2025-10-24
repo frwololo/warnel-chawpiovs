@@ -293,7 +293,7 @@ func get_count(_card_array: Array) -> int:
 #Returns arbitrary (valid) targets for the purpose of cost check
 func dry_run(_card_array: Array) -> void:	
 			
-	if is_selection_optional or (selection_type in ["display"]):
+	if (selection_type in ["display"]): #or is_selection_optional
 		force_cancel()
 		return
 	# If the amount of cards available for the choice are below the requirements

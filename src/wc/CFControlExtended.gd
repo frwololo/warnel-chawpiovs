@@ -78,17 +78,20 @@ func parse_keywords(text:String) -> Dictionary:
 
 		
 		match type:
-			"bool":		
+			"bool":
+				result[keyword] = false		
 				var position = lc_text.find(keyword + ".")
 				if  position >=0:
 					result[keyword] = true
 			"int":
+				result[keyword] = 0
 				var position = lc_text.find(keyword + " ")
 				if  position >=0:
 					var value = lc_text.substr(position + keyword.length() + 1, 1)
 					result[keyword] = int(value)
 			"string":
 				#TODO
+				result[keyword] = ""
 				var position = lc_text.find(keyword + ".")
 				if  position >=0:
 					result[keyword] = true
@@ -145,9 +148,13 @@ func _load_one_card_definition(card_data):
 	var force_horizontal = CFConst.FORCE_HORIZONTAL_CARDS.get(lc_card_type, false)
 	card_data["_horizontal"] = force_horizontal
 
-	if (!card_data.has("keywords")) and card_data.get("text", ""):
-		card_data["keywords"] = parse_keywords(card_data["text"])
-
+	#Keywords parsing
+	if (!card_data.has("keywords")):
+		card_data["keywords"] = parse_keywords(card_data.get("text", ""))
+	#flatten it out to allow access through alterants and get_property
+	for k in card_data["keywords"].keys():
+		card_data[k] = card_data["keywords"][k]
+	
 
 	#TODO 2024/10/30 is this error new?
 	if not card_data.has("card_set_name"):

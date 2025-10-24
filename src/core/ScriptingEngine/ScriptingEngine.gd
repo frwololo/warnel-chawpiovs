@@ -59,6 +59,12 @@ var owner
 var trigger_object
 var state_scripts
 
+func has_else_condition():
+	for task in scripts_queue:
+		if task.is_else:
+			return true
+	return false
+
 # Simply initiates the [run_next_script()](#run_next_script) loop
 func _init(_state_scripts: Array,
 		_owner,

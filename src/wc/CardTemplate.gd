@@ -75,7 +75,6 @@ func position_ui_elements():
 		tokens.set_is_horizontal()
 
 func _process(delta) -> void:
-	._process(delta)
 	var can_play = check_play_costs()
 	if (can_play == CFConst.CostsState.OK and not cfc.modal_menu):
 		#if modal menu is displayed we don't want to mess up those cards highlights
@@ -321,18 +320,35 @@ func readyme(toggle := false,
 			start_tween := true,
 			check := false,
 			tags := ["Manual"]) :
-	var retcode = set_card_rotation(0, toggle, start_tween, check, tags)
+	
+	var rot = 0
+	if CFConst.OPTIONS.get("enable_fuzzy_rotations", false):
+		if (is_exhausted()):			
+			rot = CFUtils.randi_range(-10, 10)
+			tags = tags + ["force"]
+			
+	var retcode = set_card_rotation(rot, toggle, start_tween, check, tags)
 	return retcode
 	
 func exhaustme(toggle := false,
 			start_tween := true,
 			check := false,
 			tags := ["Manual"]) :
-	var retcode = set_card_rotation(90, toggle, start_tween, check, tags)
+				
+	var rot = 90	
+	if CFConst.OPTIONS.get("enable_fuzzy_rotations",false):
+		if (!is_exhausted()):			
+			rot = CFUtils.randi_range(80, 100)
+			tags = tags + ["force"]
+			
+	if 	is_exhausted()	and not toggle:
+		return CFConst.ReturnCode.OK		
+					
+	var retcode = set_card_rotation(rot, toggle, start_tween, check, tags)
 	return retcode	
 
 func is_ready() :
-	return get_card_rotation() == 0
+	return card_rotation < 40 and card_rotation > -40  
 
 func is_exhausted():
 	return (not is_ready())	
@@ -445,7 +461,7 @@ func commit_scheme():
 
 func _process_card_state() -> void:
 	._process_card_state()
-	
+
 	#TODO bug?
 	#sometimes the card reports being "faceup" while actually showing the back
 	#this is a fix for that
@@ -592,7 +608,7 @@ func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:
 				SP.KEY_NEEDS_SELECTION: true,
 				SP.KEY_SELECTION_COUNT: manacost.converted_mana_cost(), #TODO put real missing cost here
 				SP.KEY_SELECTION_TYPE: "min",
-				SP.KEY_SELECTION_OPTIONAL: false,
+				SP.KEY_SELECTION_OPTIONAL: true,
 				SP.KEY_SELECTION_IGNORE_SELF: true,
 				"selection_what_to_count": "get_resource_value_as_int",
 				"src_container": ["hand" + str(owner_hero_id), "board"]
@@ -645,6 +661,12 @@ func can_execute_scripts():
 	if is_boost:
 		return ['boost']
 	return true
+	
+	#For now discard piles are prevented from running scripts
+	#this could be an issue down the line, but this is a performance optimization at the moment
+	#if needed, need to refine this and prevent execution only from cards that do not have discard specific scripts, etc...
+	if get_parent().is_in_group("discard"):
+		return false
 
 func pay_as_resource(script):
 	cfc.add_ongoing_process(self, "pay_as_resource")
@@ -702,13 +724,17 @@ func get_printed_resource_value_as_int(script):
 		total += get_property("resource_" + lc_name, 0)
 	return total
 
-func get_remaining_indirect_damage():
+func get_remaining_damage():
 	var current_damage = self.tokens.get_token_count("damage")
 	var health = self.get_property("health", 0)
 	var diff = health - current_damage
 	if diff <= 0:
 		return 0
-	return diff
+	return diff	
+
+#used for some scripts
+func get_remaining_indirect_damage():
+	return get_remaining_damage()
 	
 func get_max_hand_size():
 	return get_property("hand_size", 0)

@@ -40,35 +40,69 @@ func _process(_delta: float) -> void:
 	if is_targeting:
 		_draw_targeting_arrow()
 
+func set_arrow_color(_color):
+	default_color = _color
+	$ArrowHead.color = default_color
+
+func set_color_from_script(script_definition):
+	set_arrow_color(CFConst.TARGETTING_ARROW_COLOUR)
+	
+	var s_name = script_definition.get("name", "")
+	if CFConst.TARGET_ARROW_COLOR_BY_NAME.has(s_name):
+		set_arrow_color(CFConst.TARGET_ARROW_COLOR_BY_NAME[s_name])
+		return
+		
+	var tags = script_definition.get("tags", [])
+	for tag in tags:
+		if CFConst.TARGET_ARROW_COLOR_BY_TAG.has(tag):
+			set_arrow_color(CFConst.TARGET_ARROW_COLOR_BY_TAG[tag])
+			return
+
 
 # Will generate a targeting arrow on the card which will follow the mouse cursor.
 # The top card hovered over by the mouse cursor will be highlighted
 # and will become the target when complete_targeting() is called
-func initiate_targeting(_valid_targets) -> void:
+func initiate_targeting(_valid_targets, _script_definition:Dictionary = {}) -> void:
 	set_valid_targets(_valid_targets)
+	set_color_from_script(_script_definition)
 	is_targeting = true
 	$ArrowHead.visible = true
 	$ArrowHead/Area2D.monitoring = true
 	emit_signal("initiated_targeting")
 	scripting_bus.emit_signal("initiated_targeting", owner_object)
 
+
+func cancel_targeting() -> void:
+	#TODO send another signal
+	emit_signal("target_selected",target_object)
+	scripting_bus.emit_signal("target_selected", owner_object, {"target": target_object})		
+	is_targeting = false
+	clear_points()
+	$ArrowHead.visible = false
+	$ArrowHead/Area2D.monitoring = false	
 # Will end the targeting process.
 #
 # The top targetable object which is hovered (if any) will become the target and inserted
 # into the target_object property for future use.
 func complete_targeting() -> void:
-	if len(_potential_targets) and is_targeting:
-		var tc = _potential_targets.back()
-		if !(tc in valid_targets):
-			return
-		# We don't want to emit a signal, if the card is a dummy viewport card
-		# or we already selected a target during dry-run
-		if owner_object.get_parent() != null \
-				and owner_object.get_parent().name != "Viewport":
-			# We make the targeted card also emit a targeting signal for automation
-			scripting_bus.emit_signal("card_targeted", tc,
-					{"targeting_source": owner_object})
-		target_object = tc
+	if !is_targeting:
+		return
+		
+	if !len(_potential_targets):
+		return
+		
+	var tc = _potential_targets.back()
+	if !(tc in valid_targets):
+		return
+		
+	# We don't want to emit a signal, if the card is a dummy viewport card
+	# or we already selected a target during dry-run
+	if owner_object.get_parent() != null \
+			and owner_object.get_parent().name != "Viewport":
+		# We make the targeted card also emit a targeting signal for automation
+		scripting_bus.emit_signal("card_targeted", tc,
+				{"targeting_source": owner_object})
+	target_object = tc
 	emit_signal("target_selected",target_object)
 	scripting_bus.emit_signal("target_selected", owner_object, {"target": target_object})	
 	is_targeting = false

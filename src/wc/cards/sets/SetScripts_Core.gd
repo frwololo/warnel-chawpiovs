@@ -192,15 +192,14 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 				"board": {
 					"thwart": [
 						{
-							"name": "rotate_card",
+							"name": "exhaust_card",
 							"subject": "self",
-							"degrees": 90,
 							"is_cost" : true,
 						},						
 						{
 							"name": "thwart",
 							"subject": "target",
-							"needs_subject": true,
+							"is_cost": true,
 							"filter_state_subject": [{
 								"filter_group": "group_schemes"
 							},],						
@@ -208,15 +207,14 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 					],
 					"attack" :[
 						{
-							"name": "rotate_card",
+							"name": "exhaust_card",
 							"subject": "self",
-							"degrees": 90,
 							"is_cost" : true,
 						},						
 						{
 							"name": "attack",
 							"subject": "target",
-							"needs_subject": true,
+							"is_cost": true,
 							"filter_state_subject": [{
 								"filter_group" : "group_enemies"
 							},],
@@ -234,9 +232,8 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 				"board": {
 					"recovery": [
 						{
-							"name": "rotate_card",
+							"name": "exhaust_card",
 							"subject": "self",
-							"degrees": 90,
 							"is_cost" : true,
 						},							
 						{
@@ -356,6 +353,8 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 	
 	var keywords:Dictionary = card.get("keywords", {})
 	for keyword in keywords.keys():
+		if !keywords[keyword]:
+			continue
 		var k_script = keyword_to_script(keyword, keywords[keyword])
 		if (k_script):
 			script = WCUtils.merge_dict(script,k_script, true)

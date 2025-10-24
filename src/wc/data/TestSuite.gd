@@ -169,6 +169,7 @@ func next_action():
 
 	var my_action = actions[current_action]
 	var action_type = my_action.get("type", "")
+	var action_value = my_action.get("value", "")
 	
 	#wait a bit if we need to choose from a selection window but that window isn't there
 	if (action_type == "select"):
@@ -186,6 +187,12 @@ func next_action():
 	#there's an issue where the offer to "pass" sometimes takes a few cycles
 	if (action_type == "pass"):
 		if delta <1:
+			return
+	
+	if (action_type == "next_phase"):
+		var hero_id = int(action_value)
+		var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id-1]
+		if (!heroPhase.can_hero_phase_action() and delta <5):
 			return
 
 	delta = 0

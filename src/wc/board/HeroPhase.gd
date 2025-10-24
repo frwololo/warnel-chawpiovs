@@ -59,14 +59,21 @@ func _on_HeroPhase_gui_input(event):
 		if event.button_index == BUTTON_LEFT and event.pressed:
 			heroPhase_action()
 
-func heroPhase_action():	
+func can_hero_phase_action() -> bool:
 	if (hero_index == gameData.get_current_hero_id()):
 		#special case: cannot switch my status from inactive to active outside of main player phase
 		if (current_state == State.FINISHED) and (get_parent().current_step != CFConst.PHASE_STEP.PLAYER_TURN):
 			return false
+	return true	
+
+func heroPhase_action() -> bool:
+	if !can_hero_phase_action():
+		return false	
+	if (hero_index == gameData.get_current_hero_id()):
 		rpc("switch_status")
 	else:	
 		gameData.select_current_playing_hero(hero_index)
+	return true
 	
 remotesync func switch_status(forced_state:int = -1):
 	var old_state = current_state

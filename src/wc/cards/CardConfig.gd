@@ -15,6 +15,7 @@ extends Reference
 const PROPERTIES_STRINGS := ["Type", "Requirements", "Abilities"]
 # Properties which are converted into string using a format defined in setup()
 const PROPERTIES_NUMBERS := ["cost", "attack", "thwart", 
+	"overkill",
 	"resource_mental", "resource_wild", "resource_energy", "resource_physical"]
 # The name of these properties will be prepended before their value to their label.
 const NUMBER_WITH_LABEL := []

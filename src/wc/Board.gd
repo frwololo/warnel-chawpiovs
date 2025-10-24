@@ -19,6 +19,11 @@ const HERO_GRID_SETUP = CFConst.HERO_GRID_SETUP
 
 func _init():
 	init_hero_zones()
+
+func set_groups(grid_or_pile):
+	var grid_name = grid_or_pile.name
+	if grid_name.begins_with("discard"):
+		grid_or_pile.add_to_group("discard")
 	
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -59,6 +64,7 @@ func _ready() -> void:
 			pile.scale = Vector2(0.5 * pile_scale, 0.5 * pile_scale)
 			pile.faceup_cards = grid_info.get("faceup", false)
 			add_child(pile)
+			set_groups(pile)
 		else:
 			var grid_scene = grid_info.get("scene", basicGrid)
 			var grid: BoardPlacementGrid = grid_scene.instance()
@@ -71,6 +77,7 @@ func _ready() -> void:
 			grid.name_label.text = grid_name
 			grid.rect_position = Vector2(grid_info["x"], grid_info["y"])			
 			grid.auto_extend = grid_info.get("auto_extend", true)
+			set_groups(grid)
 
 	for i in range(gameData.get_team_size()):
 		var hero_id = i+1
@@ -100,6 +107,7 @@ func _ready() -> void:
 				pile.scale = Vector2(0.5*scale*pile_scale, 0.5*scale*pile_scale)
 				pile.faceup_cards = grid_info.get("faceup", false)
 				add_child(pile)
+				set_groups(pile)
 			else:
 				var grid_scene = grid_info.get("scene", basicGrid)
 				var grid: BoardPlacementGrid = grid_scene.instance()
@@ -112,6 +120,7 @@ func _ready() -> void:
 				grid.name_label.text = real_grid_name
 				grid.rect_position = Vector2(x,y)
 				grid.auto_extend = grid_info.get("auto_extend", true)
+				set_groups(grid)
 
 	#Game setup - Todo move somewhere else ?
 	load_cards()

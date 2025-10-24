@@ -115,9 +115,12 @@ func add_script(object):
 	# to the list of scripts that already responded to the last event
 	#this prevents them from triggering infinitely to the same event 
 	if interrupt_mode == InterruptMode.HERO_IS_INTERRUPTING:
-		if (!card_already_played_for_stack_uid.has(current_stack_uid)):
-			card_already_played_for_stack_uid[current_stack_uid] = []
-		card_already_played_for_stack_uid[current_stack_uid].append(object.sceng.owner)
+		var script_being_interrupted = stack.back()
+		if (script_being_interrupted):
+			var script_uid = script_being_interrupted.stack_uid
+			if (!card_already_played_for_stack_uid.has(script_uid)):
+				card_already_played_for_stack_uid[script_uid] = []
+			card_already_played_for_stack_uid[script_uid].append(object.sceng.owner)
 
 	#setup UID for the stack event
 	current_stack_uid = current_stack_uid + 1
@@ -260,8 +263,8 @@ remotesync func client_send_before_trigger(_interrupt_mode):
 				#Forced interrupts happen before optional ones
 				if (card in card_already_played_for_stack_uid.get(script_uid, [])):
 					continue
-				if (task.script_name == "receive_damage"):
-					if (card.canonical_name == "Backflip"):
+				if (task.script_name == "enemy_initiates_attack"):
+					if (card.canonical_name == "Spider-Man"):
 						var _tmp = 1
 				var can_interrupt = card.can_interrupt(hero_id,task.owner, _current_interrupted_event)
 				if can_interrupt == INTERRUPT_FILTER[_interrupt_mode]:

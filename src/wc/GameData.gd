@@ -352,8 +352,9 @@ func draw_all_players() :
 func ready_all_player_cards():
 		var cards:Array = cfc.NMAP["board"].get_all_cards() #TODO hero cards only
 		for card in cards:
-			if not card.properties.get("_horizontal", false):
-				card.readyme()	
+			if card.get_controller_hero_id() > 0:
+				if not card.properties.get("_horizontal", false):
+					card.readyme()	
 
 func find_main_scheme() : 
 	var cards:Array = cfc.NMAP.board.get_grid("schemes").get_all_cards()

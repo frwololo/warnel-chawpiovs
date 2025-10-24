@@ -376,7 +376,7 @@ const AUTO_KEYWORDS := {
 	"hinder" : "int",
 	"incite" : "int",
 	"linked" : "string",
-	"overkill" : "bool",
+	"overkill" : "int",
 	"patrol" : "bool",
 	"peril" : "bool",
 	"permanent" : "bool",
@@ -431,5 +431,14 @@ const STATS_PORT := 8000
 const MULTIPLAYER_PORT:= 7777
 
 const OPTIONS := {
-	"replace_targetting_with_selection": false
+	"replace_targetting_with_selection": false,
+	"enable_fuzzy_rotations": true,
+}
+
+const TARGET_ARROW_COLOR_BY_TAG: = {
+	"attack" : Color(0.7, 0.1, 0.1) * 1.3
+}
+
+const TARGET_ARROW_COLOR_BY_NAME: = {
+	"deal_damage" : Color(0.5, 0.1, 0.1) * 1.3
 }

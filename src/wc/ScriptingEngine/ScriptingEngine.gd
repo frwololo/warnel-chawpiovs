@@ -289,6 +289,14 @@ func replacement_effect(script: ScriptTask) -> int:
 	
 	return retcode					
 
+func exhaust_card(script: ScriptTask) -> int:
+	var retcode: int
+	# We inject the tags from the script into the tags sent by the signal
+	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
+	for card in script.subjects:
+		retcode = card.exhaustme(false, true, costs_dry_run(), tags)
+	return(retcode)
+
 func discard(script: ScriptTask):
 	var retcode = CFConst.ReturnCode.FAILED
 	for card in script.subjects:
@@ -335,12 +343,15 @@ func enemy_attack(script: ScriptTask) -> int:
 	if (not script.subjects.empty()):
 		defender = script.subjects[0]
 	
+	var overkill_amount = 0
+	var my_hero:Card = gameData.get_current_target_hero()
+	
 	if defender:
 		defender.exhaustme()
 		var damage_reduction = defender.get_property("defense", 0)
 		amount = max(amount-damage_reduction, 0)
+		
 	else:
-		var my_hero:Card = gameData.get_current_target_hero()
 		script.subjects.append(my_hero)
 		#TODO add variable stating attack was undefended
 
@@ -357,21 +368,34 @@ func enemy_attack(script: ScriptTask) -> int:
 		var discard_event = simple_discard_task(boost_card)
 		gameData.theStack.add_script(discard_event)
 
-	var receive_damage_definition = {
-		"name": "receive_damage",
-		"amount": amount,
-		"tags": ["attack", "Scripted"] + script.get_property(SP.KEY_TAGS)
-	}
-	var receive_damage_script:ScriptTask = ScriptTask.new(script.owner, receive_damage_definition, script.trigger_object, script.trigger_details)
-	receive_damage_script.subjects = script.subjects.duplicate()
-	receive_damage_script.is_primed = true #fake prime it since we already gave it subjects	
+	if amount:
+		var receive_damage_definition = {
+			"name": "receive_damage",
+			"amount": amount,
+			"tags": ["attack", "Scripted"] + script.get_property(SP.KEY_TAGS)
+		}
+		var receive_damage_script:ScriptTask = ScriptTask.new(script.owner, receive_damage_definition, script.trigger_object, script.trigger_details)
+		receive_damage_script.subjects = script.subjects.duplicate()
+		receive_damage_script.is_primed = true #fake prime it since we already gave it subjects	
+		
+		var task_event = SimplifiedStackScript.new("receive_damage", receive_damage_script)
+		gameData.theStack.add_script(task_event)
 	
-	var task_event = SimplifiedStackScript.new("receive_damage", receive_damage_script)
-	gameData.theStack.add_script(task_event)
-	
-#	if (!defender):
-		#reset subjects to avoid side effect...
-#		script.subjects = []
+	if attacker.get_property("overkill", 0):
+		overkill_amount = amount - defender.get_remaining_damage()
+		overkill_amount = max(0, overkill_amount)
+
+		var overkill_damage_definition = {
+			"name": "receive_damage",
+			"amount": overkill_amount,
+			"tags": ["attack", "Scripted", "overkill"] + script.get_property(SP.KEY_TAGS)
+		}
+		var overkill_damage_script:ScriptTask = ScriptTask.new(script.owner, overkill_damage_definition, script.trigger_object, script.trigger_details)
+		overkill_damage_script.subjects = [my_hero]
+		overkill_damage_script.is_primed = true #fake prime it since we already gave it subjects	
+		
+		var overkill_task_event = SimplifiedStackScript.new("receive_damage", overkill_damage_script)
+		gameData.theStack.add_script(overkill_task_event)	
 		
 	return retcode
 

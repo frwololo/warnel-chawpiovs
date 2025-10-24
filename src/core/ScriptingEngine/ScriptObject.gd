@@ -403,7 +403,7 @@ func _initiate_card_targeting() -> Card:
 	
 	var target = null		
 	if (valid_targets):			
-		owner.targeting_arrow.initiate_targeting(valid_targets)
+		owner.targeting_arrow.initiate_targeting(valid_targets, self.script_definition)
 		# We wait until the targetting has been completed to continue
 		yield(owner.targeting_arrow,"target_selected")
 		target = owner.targeting_arrow.target_object

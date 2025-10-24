@@ -1,0 +1,139 @@
+{
+	"_comments": "Tests Advance encounter starts a scheming event",
+	"test_conditions": {
+		"ignore_order" : [
+			"hand1"
+		],
+	},	
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[			
+				{
+					"card": "charge"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "The power of Justice"
+				},
+				{
+					"card": "Aunt May"
+				},
+				{
+					"card": "Spider-Tracer"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Mockingbird",
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "next_phase",
+			"value" : 1,
+			"_comments": "finish player phase, do nothing"
+		},
+		{
+			"type": "activate",
+			"value" : "Spider-Man"
+		},		
+		{
+			"type": "select",
+			"value" : "Mockingbird"
+		},
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"discard_villain":[
+				{
+					"card": "charge"
+				},						
+			],			
+			"schemes": [
+				{
+					"card": "01097",
+				}
+			],
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "The power of Justice"
+				},
+				{
+					"card": "Aunt May"
+				},
+				{
+					"card": "Spider-Tracer"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {"damage" : 2}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Mockingbird"
+				}
+			]
+		}
+	}
+}

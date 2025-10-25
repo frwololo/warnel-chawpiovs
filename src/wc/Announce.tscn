@@ -1,0 +1,80 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://src/wc/Announce.gd" type="Script" id=1]
+[ext_resource path="res://themes/darktheme/fonts/Bangers/Bangers-Regular.ttf" type="DynamicFontData" id=2]
+
+[sub_resource type="DynamicFont" id=2]
+size = 200
+font_data = ExtResource( 2 )
+
+[node name="Announce" type="Node"]
+script = ExtResource( 1 )
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_left = -3.0
+margin_top = 55.0
+margin_right = 1922.0
+margin_bottom = 898.0
+color = Color( 1, 1, 1, 0.309804 )
+
+[node name="Top" type="PanelContainer" parent="."]
+margin_left = -623.0
+margin_top = 76.0
+margin_right = 893.0
+margin_bottom = 469.0
+
+[node name="ColorRect" type="ColorRect" parent="Top"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 1509.0
+margin_bottom = 386.0
+color = Color( 0.196078, 0.196078, 0.196078, 1 )
+
+[node name="Margin" type="MarginContainer" parent="Top"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 1509.0
+margin_bottom = 386.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/margin_top = 90
+
+[node name="Label" type="Label" parent="Top/Margin"]
+margin_top = 127.0
+margin_right = 1502.0
+margin_bottom = 341.0
+custom_fonts/font = SubResource( 2 )
+text = "Warnel Chawpiovs"
+align = 1
+
+[node name="Bottom" type="PanelContainer" parent="."]
+margin_left = 1087.0
+margin_top = 489.0
+margin_right = 2605.0
+margin_bottom = 883.0
+
+[node name="ColorRect" type="ColorRect" parent="Bottom"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 1511.0
+margin_bottom = 387.0
+color = Color( 0.0705882, 0.0705882, 0.0705882, 1 )
+
+[node name="Margin" type="MarginContainer" parent="Bottom"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 1511.0
+margin_bottom = 387.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/margin_top = 90
+
+[node name="Label" type="Label" parent="Bottom/Margin"]
+margin_top = 128.0
+margin_right = 1504.0
+margin_bottom = 342.0
+custom_fonts/font = SubResource( 2 )
+text = "Warnel Chawpiovs"
+align = 1
+
+[node name="AnnounceTween" type="Tween" parent="."]

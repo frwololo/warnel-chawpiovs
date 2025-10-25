@@ -99,9 +99,10 @@ func _check_for_stale_overlaps() -> void:
 func _on_MousePointer_area_exited(area: Area2D) -> void:
 	if not is_disabled:
 		# We stop the highlight on any areas we exit with the mouse.
-		if area as Card or area as CardContainer:
+		if area as Card :
 			var _temp = 1
-			#area.highlight.set_highlight(false)
+		elif area as CardContainer:
+			area.highlight.set_highlight(false)
 		elif area.get_parent() as BoardPlacementSlot:
 			area.get_parent().set_highlight(false)
 		overlaps.erase(area)
@@ -263,7 +264,10 @@ func _discover_focus() -> void:
 		# We also clear potential hosts since there potential_hosts was emty
 		elif not potential_slots.empty():
 			cfc.card_drag_ongoing.potential_host = null
-			potential_slots.back().set_highlight(true)
+			if CFConst.DEACTIVATE_SLOTS_HIGHLIGHT:
+				pass
+			else:
+				potential_slots.back().set_highlight(true)
 		# If card is being dragged, but has no potential target
 		# We ensure we clear potential hosts
 		elif cfc.card_drag_ongoing:

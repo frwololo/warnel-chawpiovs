@@ -63,7 +63,8 @@ func _ready():
 	#only server is allowed to run the main process	
 	if 1 != get_tree().get_network_unique_id():
 		return
-				
+	
+	gameData.theAnnouncer.skip_announcer()			
 	load_test_files()
 	var _next = next_test()
 

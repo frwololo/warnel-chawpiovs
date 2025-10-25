@@ -102,6 +102,9 @@ func _process(_delta: float) -> void:
 
 	if cfc.is_process_ongoing():
 		return
+		
+	if gameData.is_announce_ongoing():
+		return	
 
 	#some encounters need to be revealed outside of their regular schedule
 	# e.g. with surge. We place them in this specific dictionary

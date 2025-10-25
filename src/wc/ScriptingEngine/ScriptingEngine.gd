@@ -381,7 +381,7 @@ func enemy_attack(script: ScriptTask) -> int:
 		var task_event = SimplifiedStackScript.new("receive_damage", receive_damage_script)
 		gameData.theStack.add_script(task_event)
 	
-	if attacker.get_property("overkill", 0):
+	if defender and attacker.get_property("overkill", 0):
 		overkill_amount = amount - defender.get_remaining_damage()
 		overkill_amount = max(0, overkill_amount)
 

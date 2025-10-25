@@ -297,6 +297,10 @@ func _ready() -> void:
 #	cfc.signal_propagator.connect_new_card(self)
 	scripting_bus.connect("scripting_event_triggered", self, "execute_scripts")
 
+	#cleanup for when this cards is instantiated as a copy of another
+	clear_highlight()
+	tokens.set_is_drawer_open(false)
+
 func _init_card_layout() -> void:
 	# Because we duplicate the card when adding to the viewport focus
 	# It already has a CardBack node, so we don't want to replicate it
@@ -1802,6 +1806,11 @@ func interruptTweening() ->void:
 		set_state(CardState.IN_HAND)
 
 
+func clear_highlight():
+	if !highlight:
+		return
+	highlight.set_highlight(false)
+
 # Changes card focus (highlighted and put on the focus viewport)
 func set_focus(requestedFocus: bool, colour := CFConst.FOCUS_HOVER_COLOUR) -> void:
 	# We use an if to avoid performing constant operations in _process
@@ -2463,6 +2472,7 @@ func _process_card_state() -> void:
 			# (i.e. deck to hand, hand to discard etc)
 			z_index = 0
 			set_focus(false)
+			clear_highlight()
 			set_control_mouse_filters(false)
 			buttons.set_active(false)
 			# warning-ignore:return_value_discarded
@@ -2659,6 +2669,7 @@ func _process_card_state() -> void:
 		CardState.IN_PILE:
 			z_index = 0
 			set_focus(false)
+			clear_highlight()
 			set_control_mouse_filters(false)
 			buttons.set_active(false)
 			# warning-ignore:return_value_discarded
@@ -2693,6 +2704,7 @@ func _process_card_state() -> void:
 			# We make sure that a card in a popup stays in its position
 			# Unless moved
 			set_focus(false)
+			clear_highlight()
 			set_control_mouse_filters(true)
 			buttons.set_active(false)
 			# warning-ignore:return_value_discarded

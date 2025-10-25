@@ -53,6 +53,7 @@ var scenario:ScenarioDeckData
 var phaseContainer: PhaseContainer #reference link to the phaseContainer
 var theStack: GlobalScriptStack
 var testSuite: TestSuite = null
+var theAnnouncer: Announcer = null
 
 # Hero currently playing. We might need another one for interruptions
 var current_hero_id := 1
@@ -66,10 +67,15 @@ var attackers: = []
 var immediate_encounters: = {}
 var user_input_ongoing:int = 0 #ID of the current player (or remote player) doing a blocking game interraction
 var _garbage:= []
+var _targeting_ongoing:= false
+
+func is_announce_ongoing():
+	return theAnnouncer and theAnnouncer.is_announce_ongoing()
 
 func _init():
 	scenario = ScenarioDeckData.new()
 	theStack = GlobalScriptStack.new()
+	theAnnouncer = Announcer.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -80,10 +86,23 @@ func _ready():
 	scripting_bus.connect("scripting_event_triggered", self, "_scripting_event_triggered")
 	scripting_bus.connect("scripting_event_about_to_trigger", self, "_scripting_event_about_to_trigger")
 
-	self.add_child(theStack) #Stack needs to be in the tree for rpc calls	
+	scripting_bus.connect("initiated_targeting", self, "_initiated_targeting")
+	scripting_bus.connect("target_selected", self, "_target_selected")
 
+	self.add_child(theStack) #Stack needs to be in the tree for rpc calls	
+	self.add_child(theAnnouncer)
 	#scripting_bus.connect("optional_window_opened", self, "attempt_user_input_lock")
 	#scripting_bus.connect("optional_window_closed", self, "attempt_user_input_unlock")	
+
+func _initiated_targeting(owner_card) -> void:
+	_targeting_ongoing = true
+
+func _target_selected(owner_card, details) -> void:	
+	_targeting_ongoing = false
+	
+func is_targeting_ongoing():
+	return _targeting_ongoing	
+
 
 func _process(_delta: float):
 	#theStack.process(_delta)

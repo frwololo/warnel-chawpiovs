@@ -59,6 +59,8 @@ func set_occupying_card(card):
 # Changes card highlight colour.
 func set_highlight(requested: bool,
 		hoverColour = owner_grid.highlight) -> void:
+	if CFConst.DEACTIVATE_SLOTS_HIGHLIGHT:
+		return
 	$Highlight.visible = requested
 	if requested:
 		$Highlight.modulate = hoverColour

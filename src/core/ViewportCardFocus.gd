@@ -20,7 +20,12 @@ onready var world_environemt : WorldEnvironment = $WorldEnvironment
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	cfc.map_node(self)
-	world_environemt.environment.glow_enabled = cfc.game_settings.get('glow_enabled', true)
+	var glow_enabled = cfc.game_settings.get('glow_enabled', true)
+	world_environemt.environment.glow_enabled = glow_enabled
+	
+	var glow_intensity = cfc.game_settings.get('glow_intensity', world_environemt.environment.glow_intensity)
+	world_environemt.environment.glow_intensity = glow_intensity
+	
 	# We use the below while to wait until all the nodes we need have been mapped
 	# "hand" should be one of them.
 	$ViewportContainer/Viewport.add_child(board_scene.instance())

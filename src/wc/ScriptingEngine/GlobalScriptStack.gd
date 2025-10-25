@@ -175,8 +175,7 @@ func _process(_delta: float):
 	if waitOneMoreTick:
 		waitOneMoreTick -= 1
 		return		
-
-
+	
 
 	match interrupt_mode:
 		InterruptMode.NONE:
@@ -186,6 +185,9 @@ func _process(_delta: float):
 
 				
 		InterruptMode.NOBODY_IS_INTERRUPTING:
+			if (gameData.theAnnouncer.wait_for_timer()):
+				return
+			
 			var next_script = stack.pop_back()
 			var func_return = next_script.execute()	
 			while func_return is GDScriptFunctionState && func_return.is_valid():
@@ -371,6 +373,8 @@ func delete_last_event():
 	stack.pop_back()
 	
 func find_last_event():
+	if is_empty():
+		return null
 	return stack.back()	
 
 func find_event(_event_details, details, owner_card):

@@ -26,6 +26,7 @@ margin_right = 104.0
 margin_bottom = 104.0
 rect_min_size = Vector2( 104, 104 )
 mouse_filter = 2
+color = Color( 1, 1, 1, 0 )
 
 [node name="hero" type="TextureRect" parent="."]
 unique_name_in_owner = true

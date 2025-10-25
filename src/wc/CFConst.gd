@@ -219,11 +219,11 @@ const TARGETTING_ARROW_COLOUR := TARGET_HOVER_COLOUR
 # * OK: The cost of the card can be paid exactly.
 # * CACHE_INVALID: value is not valid and needs to be recalculated
 const CostsState := {
-	"IMPOSSIBLE": Color(1, 0, 0) * 1.3,
-	"INCREASED": Color(1, 0.5, 0) * 1.3,
-	"DECREASED": Color(0.5, 1, 0) * 1.3,
+	"IMPOSSIBLE": Color(1, 0, 0, 0) * 1.3, #alpha zero
+	"INCREASED": Color(1, 0.5, 0, 0) * 1.3, #alpha zero
+	"DECREASED": Color(0.5, 1, 0,0 ) * 1.3, #alpha zero
 	"OK": Color(0, 0.5, 1) * 1.3,
-	"CACHE_INVALID": Color(1, 1, 1),
+	"CACHE_INVALID": Color(1, 1, 1, 0), #alpha zero
 }
 # This is used when filling in card property labels in [Card].setup()
 # when the property is an array, the label will still display it as a string
@@ -436,9 +436,11 @@ const OPTIONS := {
 }
 
 const TARGET_ARROW_COLOR_BY_TAG: = {
-	"attack" : Color(0.7, 0.1, 0.1) * 1.3
+	"attack" : Color(0.7, 0.1, 0.1) 
 }
 
 const TARGET_ARROW_COLOR_BY_NAME: = {
-	"deal_damage" : Color(0.5, 0.1, 0.1) * 1.3
+	"deal_damage" : Color(0.5, 0.1, 0.1)
 }
+
+const DEACTIVATE_SLOTS_HIGHLIGHT := true

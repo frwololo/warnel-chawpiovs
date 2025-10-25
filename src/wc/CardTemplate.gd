@@ -75,12 +75,17 @@ func position_ui_elements():
 		tokens.set_is_horizontal()
 
 func _process(delta) -> void:
+	if (cfc.modal_menu):
+		return
+	if (gameData.is_targeting_ongoing()):
+		return
 	var can_play = check_play_costs()
-	if (can_play == CFConst.CostsState.OK and not cfc.modal_menu):
+	if (can_play == CFConst.CostsState.OK):
 		#if modal menu is displayed we don't want to mess up those cards highlights
 		set_target_highlight(can_play)
 	else:
-		highlight.deactivate_glow()
+		#pass
+		clear_highlight()
 
 func set_target_highlight(colour):
 	highlight.set_target_highlight(colour)
@@ -324,7 +329,7 @@ func readyme(toggle := false,
 	var rot = 0
 	if CFConst.OPTIONS.get("enable_fuzzy_rotations", false):
 		if (is_exhausted()):			
-			rot = CFUtils.randi_range(-10, 10)
+			rot = CFUtils.randi_range(-5, 5)
 			tags = tags + ["force"]
 			
 	var retcode = set_card_rotation(rot, toggle, start_tween, check, tags)
@@ -338,7 +343,7 @@ func exhaustme(toggle := false,
 	var rot = 90	
 	if CFConst.OPTIONS.get("enable_fuzzy_rotations",false):
 		if (!is_exhausted()):			
-			rot = CFUtils.randi_range(80, 100)
+			rot = CFUtils.randi_range(80, 95)
 			tags = tags + ["force"]
 			
 	if 	is_exhausted()	and not toggle:

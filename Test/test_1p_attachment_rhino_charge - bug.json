@@ -1,0 +1,90 @@
+{
+	"_comments": "Tests Rhino charge bug: gives attack bonus to my players",
+
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[			
+				{
+					"card": "charge"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones"
+				}			
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value" : "Spider-Man",
+			"_comments": "activate spider-man for attack..."
+		},
+		{
+			"type": "choose",
+			"value" : "attack"
+		},		
+		{
+			"type": "target",
+			"value" : "01094"
+		},
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {"damage":2}
+				}				
+			],			
+			"schemes": [
+				{
+					"card": "01097",
+				}
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones"
+				}				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			]
+		}
+	}
+}

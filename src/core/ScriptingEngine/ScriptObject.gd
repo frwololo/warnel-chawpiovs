@@ -51,11 +51,32 @@ func _init(_owner, script: Dictionary, _trigger_object = null) -> void:
 # Also sets appropriate defaults when then property has not beend defined.
 # A default value can also be passed directly, which is useful when
 # ScriptingEngine has been extended by custom tasks.
-func get_property(property: String, default = null):
+#
+# property can also compute an if/then/else dictionary
+func get_property(property: String, default = null, subscript_definition = null):
 	if default == null:
 		default = SP.get_default(property)
 #	var found_value = lookup_script_property(script_definition.get(property,default))
-	return(script_definition.get(property,default))
+	
+	var result = ""
+	if (subscript_definition):
+			#used for recursive calls of if/then/else
+		result = subscript_definition
+	else:
+		result = script_definition.get(property,default)
+	
+	#if then else special case. Todo could this maybe go into a more generic location to work on all script variables ?
+	if (typeof (result) == TYPE_DICTIONARY) and result.has("if"):
+		var _if = result["if"]
+		var func_name = _if["func_name"]
+		var params = _if["func_params"]
+		var if_check_result = owner.call(func_name, params)
+		if (if_check_result):
+			return get_property(property, default, result["then"])
+		else:
+			return get_property(property, default, result["else"])
+
+	return result
 #
 #
 #func lookup_script_property(found_value):

@@ -93,3 +93,11 @@ func is_zero() :
 func init_from_expression(expression):
 	var i = int(expression)
 	set_cost({Resource.UNCOLOR : i})
+
+func init_from_dictionary(dict:Dictionary):
+	for k in dict.keys():
+		add_resource(k, dict[k])
+
+func add_manacost(other_manacost):
+	for k in Resource.values():
+		pool[k] += other_manacost.pool[k]	

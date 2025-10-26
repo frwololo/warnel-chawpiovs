@@ -281,10 +281,16 @@ remotesync func run_action(my_action:Dictionary):
 			action_pass(action_value)
 			return			
 		"other":
+			action_other(action_value)
 			return
 		_:
 			#TODO error
 			return	
+
+func action_other(action_value):
+	match action_value:
+		"gain_control":
+			finished = true #forces pause the test suite to give user control
 
 func action_play(player, card_id_or_name):
 	var card:WCCard = get_card(card_id_or_name)
@@ -336,13 +342,7 @@ func action_pass(action_value):
 	var hero_id = int(action_value) - 1
 	var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id]
 	var result = heroPhase.heroPhase_action()
-	return	
-	
-func action_other(action_value):
-	match action_value:
-		_:
-			#TODO error
-			return			
+	return		
 
 func get_current_player() -> int:
 	#TODO error handling

@@ -23,9 +23,12 @@ func pay_as_resource(script: ScriptTask) -> int:
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
 
+	var resources_paid := []
 	for subject in script.subjects:
-		subject.pay_as_resource(script)
-		
+		var resource = subject.pay_as_resource(script)
+		resources_paid.append(resource)
+	
+	script.owner.set_last_paid_with(resources_paid)
 	return retcode		
 
 #empty ability, used for filtering and script failure
@@ -328,6 +331,11 @@ func villain_attacks_you(script:ScriptTask) ->int:
 	script.subjects = [ gameData.get_villain()]
 	return enemy_attacks_you(script)
 
+func villain_and_enemies_attack_you(script:ScriptTask) ->int:
+	var hero = _get_identity_from_script(script)
+	script.subjects = [ gameData.get_villain()] + gameData.get_minions_engaged_with_hero(hero.get_controller_hero_id())
+	return enemy_attacks_you(script)
+
 #the ability that is triggered by enemy_attack
 func enemy_attack(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -455,7 +463,9 @@ func thwart(script: ScriptTask) -> int:
 	var owner = script.owner
 	#we can provide a thwart amount in the script,
 	#otherwise we use the thwart property if the script owner is a friendly character
-	var modification = owner.get_property("thwart", 0)
+	var modification = script.get_property("amount", 0)
+	if !modification:
+		modification = owner.get_property("thwart", 0)
 
 	var confused = owner.tokens.get_token_count("confused")
 	if (confused):
@@ -647,6 +657,14 @@ func constraints(script: ScriptTask) -> int:
 				if !my_hero_card.is_alter_ego_form():
 					return CFConst.ReturnCode.FAILED					
 				
+
+	var constraints: Array = script.get_property("constraints", [])
+	for constraint in constraints:
+		var func_name = constraint["name"]
+		var func_params = constraint["params"]
+		var result = this_card.call(func_name, func_params)
+		if !result:
+			return CFConst.ReturnCode.FAILED
 
 	return retcode
 

@@ -165,8 +165,10 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 						move_after_play
 					]
 				}
-			}		
-		script = WCUtils.merge_dict(script, playFromHand, true)
+			}
+		#note: order matters here in some cases. generally speaking
+		# we want cost to be paid first, therefore be at the top of the array			
+		script = WCUtils.merge_dict( playFromHand, script, true)
 		
 		if "scheme" in type_code:
 			var base_threat = card.get("base_threat", 0)

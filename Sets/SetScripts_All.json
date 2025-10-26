@@ -181,6 +181,40 @@
 			]
 		},				
 	},
+	"Caught Off Guard": {
+		"reveal": {
+			"all" : [
+				{	
+					"name": "constraints",
+					"is_cost": true,
+					"tags": ["hero_form"]
+				},
+				{
+					"name" : "discard",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",					
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_same_controller" : true,
+							"filter_properties" : {"type_code" : "support"},
+						},
+						{
+							"filter_same_controller" : true,
+							"filter_properties" : {"type_code" : "upgrade"},
+						},
+					]
+				},
+				{
+					"name" : "surge",
+					"is_else": true
+				},
+			]
+		}
+	},	
 	"Charge": {
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -196,13 +230,13 @@
 				{					
 					"filter_task" : "get_property",
 					"filter_property_name" : "attack",
-					"subject": "host",
+					"trigger": "host",
 					"alteration": 3
 				},
 				{					
 					"filter_task" : "get_property",
 					"filter_property_name" : "overkill",
-					"subject": "host",
+					"trigger": "host",
 					"alteration": 1
 				},				
 				
@@ -284,10 +318,7 @@
 				{					
 					"filter_task" : "get_property",
 					"filter_property_name" : "attack",
-					"filter_same_controller": true,
-					"filter_state_trigger" : [{
-						"filter_properties" : {"type_code" : "villain"}
-					}],
+					"trigger": "host",
 					"alteration": 1
 				},
 			],
@@ -482,9 +513,51 @@
 			]
 		}
 	},
-	"For Justice": {
-		"todo" : {}
-	},		
+	"For Justice!": {
+		"manual": {
+			"hand": [
+				{	
+					"name": "constraints",
+					"is_cost": true,
+					"tags": ["hero_form"]
+				},
+				{
+					"name": "thwart",
+					"amount": {
+						"if" : {	
+							"func_name": "paid_with_includes", 
+							"func_params": {"mental" : 1}
+						},
+						"then": 4,
+						"else": 3
+					},
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [{
+							"filter_group": "group_schemes"
+					}]
+				}			
+			]
+		}
+	},	
+	"Gang-Up": {
+		"reveal": {
+			"all" : [
+				{	
+					"name": "constraints",
+					"is_cost": true,
+					"tags": ["hero_form"]
+				},
+				{
+					"name" : "villain_and_enemies_attack_you",
+				},
+				{
+					"name" : "surge",
+					"is_else": true
+				},
+			]
+		}
+	},	
 	"Great Responsibility": {
 		"todo" : {}
 	},	
@@ -659,7 +732,7 @@
 				{					
 					"filter_task" : "get_property",
 					"filter_property_name" : "thwart",
-					"subject": "self",
+					"trigger": "self",
 					"per_boardseek": {
 						"subject": "boardseek",
 						"subject_count": "all",

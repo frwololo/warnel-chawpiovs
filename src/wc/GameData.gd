@@ -391,7 +391,7 @@ func villain_init_attackers():
 	var current_target = _villain_current_hero_target
 	#TODO per player
 	attackers.append(get_villain())
-	attackers += get_minions_engaged_with_player(current_target)
+	attackers += get_minions_engaged_with_hero(current_target)
 
 func villain_next_target() -> int:
 	_villain_current_hero_target += 1
@@ -708,9 +708,9 @@ func get_encounter_target_pile (encounter):
 func get_villain() -> Card :
 	return cfc.NMAP.board.get_villain_card()
 	
-func get_minions_engaged_with_player(player_id:int):
+func get_minions_engaged_with_hero(hero_id:int):
 	var results = []
-	var minionsGrid:BoardPlacementGrid = get_enemies_grid()
+	var minionsGrid:BoardPlacementGrid = get_enemies_grid(hero_id)
 	if minionsGrid:
 		results = minionsGrid.get_all_cards()
 	return results

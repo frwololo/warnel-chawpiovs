@@ -16,6 +16,9 @@ var _on_ready_load_from_json:Dictionary = {}
 var _can_change_form := true
 var is_boost:=false
 
+#an array of ManaCost variables representing everything that's been used to pay for this card
+var _last_paid_with := []
+
 # The node with number manipulation box on this card
 onready var spinbox = $Control/SpinPanel/SpinBox
 
@@ -673,29 +676,70 @@ func can_execute_scripts():
 	if get_parent().is_in_group("discard"):
 		return false
 
+#returns true if this card was paid for with (at least) resources described by params
+#e.g if you paid 3 physical plus 1 mental for a card, 
+#it would say true to {"mental": 1}, to {"physical" : 2}, or to {"mental" :1, "physical": 1}
+#but false to {"mental": 2}, or {"mental": 1, "wild": 1} 
+func paid_with_includes(params:Dictionary) -> bool:
+	var paid_with = ManaPool.new()
+	for resource in _last_paid_with:
+		paid_with.add_manacost(resource)
+
+	var compared_to = ManaCost.new()
+	compared_to.init_from_dictionary(params)
+	
+	return paid_with.can_pay_total_cost(compared_to)
+
+func set_last_paid_with(manacost_array:Array):
+	_last_paid_with = manacost_array
+
+
+
+
 func pay_as_resource(script):
 	cfc.add_ongoing_process(self, "pay_as_resource")
-	var sceng = self.execute_scripts(self, "resource", {})				
-	while sceng is GDScriptFunctionState && sceng.is_valid():
-		sceng  = sceng.resume()	
+
+	#generate a summary of resources generated
+	var result_mana = get_resource_value_as_mana(script)
+
+
+	#reload and re_run the script from scratch, up to execution
+	var exe_sceng = self.execute_scripts(self, "resource", {})				
+	while exe_sceng is GDScriptFunctionState && exe_sceng.is_valid():
+		exe_sceng  = exe_sceng.resume()	
+
 	if (get_state_exec()) == "hand":
 		self.discard()
 	cfc.remove_ongoing_process(self, "pay_as_resource")
-	return 0
+	return result_mana
 
-func get_resource_value_as_int(script):
-	var my_state = get_state_exec()
+func _get_resource_sceng(script, _state = ""):
+	var my_state = _state if _state else get_state_exec()
 	var trigger_card = script.owner
 	var trigger_details = {}
 	var card_scripts = retrieve_filtered_scripts(trigger_card, "resource", trigger_details)	
 	var state_scripts = get_state_scripts(card_scripts, trigger_card, trigger_details)
 	
-	if state_scripts:
-		var sceng = cfc.scripting_engine.new(
-			state_scripts,
-				self,
-				trigger_card,
-				trigger_details)
+	if !state_scripts:
+		return null
+	
+	var sceng = cfc.scripting_engine.new(
+		state_scripts,
+			self,
+			trigger_card,
+			trigger_details)	
+	
+	return sceng
+
+#computes how much resources this card would generate as part of a payment
+#this uses its "resource" script in priority (for card that have either special resource abilities,
+#or cards that modify their resource based on some scripted conditions - e.g. The Power of Justice
+func get_resource_value_as_mana(script):
+	var my_state = get_state_exec()
+	var sceng = _get_resource_sceng(script, my_state)
+	var result_mana:ManaCost = ManaCost.new()
+	
+	if sceng:
 		common_pre_run(sceng)
 		
 		var func_return = sceng.execute(CFInt.RunType.BACKGROUND_COST_CHECK)
@@ -710,17 +754,40 @@ func get_resource_value_as_int(script):
 				
 			var results = sceng.get_precompute_objects()
 			if (results):
-				var total = 0
 				for result in results:
 					if result as ManaCost:
-						total+= result.converted_mana_cost()
-				return total			
+						result_mana.add_manacost(result)
+				return result_mana			
 	
 	#if the compute didn't get through, we return the regular printed value
 	if (my_state) == "hand":
-		return get_printed_resource_value_as_int(script)
-			
-	return 0
+		if (canonical_name == "The Power of Justice" and get_state_exec() == "hand"):
+			var _tmp = 1		
+		return get_printed_resource_value_as_mana(script)
+		
+	return null
+
+func get_resource_value_as_int(script):
+	if (canonical_name == "The Power of Justice" and get_state_exec() == "hand"):
+		var _tmp = 1
+	var result_mana:ManaCost = get_resource_value_as_mana(script)
+	
+	if !result_mana:		
+		return 0
+	
+	return result_mana.converted_mana_cost()
+		
+
+func get_printed_resource_value_as_mana(_script= null):
+	var resource_dict = {}
+	for resource_name in ManaCost.RESOURCE_TEXT:
+		var lc_name = resource_name.to_lower()
+		var value = get_property("resource_" + lc_name, 0)
+		if value:
+			resource_dict[lc_name] = value
+	var resource_mana = ManaCost.new()
+	resource_mana.init_from_dictionary(resource_dict)
+	return resource_mana
 
 func get_printed_resource_value_as_int(script):
 	var total = 0

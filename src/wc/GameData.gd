@@ -190,6 +190,7 @@ func _scripting_event_triggered(_trigger_object = null,
 		trigger: String = "manual",
 		_trigger_details: Dictionary = {}):
 	
+
 	match trigger:
 		"card_token_modified":
 			check_main_scheme_defeat()
@@ -204,7 +205,8 @@ func _scripting_event_triggered(_trigger_object = null,
 	match trigger:
 		"card_moved_to_board", \
 				"card_played", \
-				"card_token_modified" :		
+				"card_token_modified",\
+				"step_started" :		
 			game_state_changed()
 	return
 

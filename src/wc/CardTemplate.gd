@@ -602,10 +602,22 @@ func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:
 			
 	var manacost:ManaCost = ManaCost.new()
 	var cost = script_definition["cost"]
+
+	#precompute cost replacement macros
 	if (typeof(cost) == TYPE_STRING):
 		if cost == "card_cost":
 			cost = self.get_property("cost")
-	manacost.init_from_expression(cost) #TODO better name?
+
+	var selection_additional_constraints = null
+	if (typeof(cost) == TYPE_DICTIONARY):
+		manacost.init_from_dictionary(cost)
+		selection_additional_constraints = {
+			"func_name": "can_pay_as_resource",
+			"using": "all_selection",
+			"func_params": cost 
+		}
+	else:
+		manacost.init_from_expression(cost) #TODO better name?
 	
 	var result  ={
 				"name": "pay_as_resource",
@@ -619,6 +631,7 @@ func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:
 				SP.KEY_SELECTION_OPTIONAL: true,
 				SP.KEY_SELECTION_IGNORE_SELF: true,
 				"selection_what_to_count": "get_resource_value_as_int",
+				"selection_additional_constraints": selection_additional_constraints,
 				"src_container": ["hand" + str(owner_hero_id), "board"]
 			}		
 
@@ -692,9 +705,6 @@ func paid_with_includes(params:Dictionary) -> bool:
 
 func set_last_paid_with(manacost_array:Array):
 	_last_paid_with = manacost_array
-
-
-
 
 func pay_as_resource(script):
 	cfc.add_ongoing_process(self, "pay_as_resource")

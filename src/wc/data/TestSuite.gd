@@ -196,6 +196,12 @@ func next_action():
 		if (!heroPhase.can_hero_phase_action() and delta <5):
 			return
 
+	if (action_type == "other"):
+		match action_value:
+			"wait_for_player_turn":
+				if (phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN and delta <5):
+					return
+
 	delta = 0
 
 	

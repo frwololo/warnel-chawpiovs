@@ -20,6 +20,7 @@ var is_selection_optional: bool
 var is_cancelled := false
 var _card_dupe_map := {}
 var what_to_count: String
+var selection_additional_constraints = null
 var my_script
 var card_array
 var stored_integer
@@ -45,6 +46,7 @@ func init(
 	selection_type = params.get(SP.KEY_SELECTION_TYPE, "min")
 	is_selection_optional = params.get(SP.KEY_SELECTION_OPTIONAL, false)
 	what_to_count = params.get(SP.KEY_SELECTION_WHAT_TO_COUNT, "")
+	selection_additional_constraints = params.get("selection_additional_constraints", {})
 		
 
 	if what_to_count.begins_with("assign_"):
@@ -211,6 +213,11 @@ func post_initiate_checks():
 			and (!_assign_mode): #TODO better check here?
 		force_cancel()
 		return
+		
+	if !(check_additional_constraints(card_array)):
+		force_cancel()
+		return
+	
 	match selection_type:
 		"min":
 			window_title = "Select at least " + str(selection_count) + " cards."
@@ -225,8 +232,29 @@ func post_initiate_checks():
 	
 	if (my_script):
 		window_title = cfc.enrich_window_title(my_script, window_title)
-	
 
+
+#example of constraints
+#{
+#	"func_name": "can_pay_as_resource",
+#	"using": "all_selection",
+#	"param": cost 
+#}
+func check_additional_constraints(_cards:Array = selected_cards) -> bool:
+	if (!selection_additional_constraints):
+		return true	
+	
+	var send_for_comparison:= []
+	match selection_additional_constraints.get("using", "all_selection"):
+		"all_selection":
+			send_for_comparison = _cards
+		_:
+			#error, we skip
+			return true
+	
+	var result = cfc.ov_utils.call(selection_additional_constraints["func_name"],selection_additional_constraints["func_params"], send_for_comparison, my_script )
+	return result
+	
 func check_ok_button() -> bool:
 	var current_count = get_count(selected_cards)
 	# We disable the OK button, if the amount of cards to be
@@ -252,6 +280,10 @@ func check_ok_button() -> bool:
 				get_ok().disabled = true
 			else:
 				get_ok().disabled = false
+	
+	if (!get_ok().disabled):
+		if !check_additional_constraints():
+			 get_ok().disabled = true
 	
 	return !(get_ok().disabled)
 
@@ -352,6 +384,19 @@ func dry_run(_card_array: Array) -> void:
 					selected_cards.append(card)
 				if remaining <= 0:
 					break	
+	if (!check_ok_button()):
+		#we're not meeting some constraint, try to change the selection
+		#todo need to do something much more clever here
+		match selection_type:
+			"min":
+				selected_cards = _card_array
+			_:
+				#todo
+				pass
+
+		if (!check_ok_button()):
+			force_cancel()
+			return
 	emit_signal("confirmed")
 	return
 

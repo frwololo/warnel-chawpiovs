@@ -638,6 +638,15 @@ func reveal_nemesis (script:ScriptTask) -> int:
 
 	return retcode	
 
+const _tags_to_tags: = {
+	"hero_action" : ["hero_form", "action_ability"],
+	"hero_interrupt": ["hero_form", "interrupt_ability"],
+	"hero_resource": ["hero_form", "resource_ability"],
+	"alter_ego_action": ["alter_ego_form", "action_ability"], 
+	"alter_ego_interrupt": ["alter_ego_form", "interrupt_ability"], 
+	"alter_ego_resource": ["alter_ego_form", "resource_ability"], 	
+}
+
 #used only as a cost, checks a series of constraints to see if a card can be played or not
 func constraints(script: ScriptTask) -> int:
 	var retcode = CFConst.ReturnCode.CHANGED	
@@ -646,16 +655,26 @@ func constraints(script: ScriptTask) -> int:
 	var my_hero_id = this_card.get_controller_hero_id()
 	var my_hero_card = gameData.get_identity_card(my_hero_id)
 	
-	var tags: Array = script.get_property(SP.KEY_TAGS)
+	var _tags: Array = script.get_property(SP.KEY_TAGS)
+	
+	var tags = []
+	for i in range (_tags.size()):
+		if _tags_to_tags.has(_tags[i]):
+			tags += _tags_to_tags[_tags[i]]
+		else:
+			tags.append(_tags[i])
 	
 	for tag in tags:
 		match tag:
-			"hero_action","hero_interrupt", "hero_resource", "hero_form" :
+			"hero_form" :
 				if !my_hero_card.is_hero_form():
 					return CFConst.ReturnCode.FAILED
-			"alter_ego_action", "alter_ego_interrupt", "alter_ego_resource", "alter_ego_form":
+			"alter_ego_form":
 				if !my_hero_card.is_alter_ego_form():
-					return CFConst.ReturnCode.FAILED					
+					return CFConst.ReturnCode.FAILED
+			"action_ability":
+				if gameData.phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN:
+					return 	CFConst.ReturnCode.FAILED			
 				
 
 	var constraints: Array = script.get_property("constraints", [])

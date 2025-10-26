@@ -99,5 +99,7 @@ func init_from_dictionary(dict:Dictionary):
 		add_resource(k, dict[k])
 
 func add_manacost(other_manacost):
+	if !other_manacost:
+		return
 	for k in Resource.values():
 		pool[k] += other_manacost.pool[k]	

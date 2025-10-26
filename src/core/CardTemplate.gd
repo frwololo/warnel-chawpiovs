@@ -1454,6 +1454,8 @@ func get_state_scripts(card_scripts, trigger_card, trigger_details):
 			state_scripts = state_scripts[first_key]
 		else:	
 			for entry_name in state_scripts.keys():
+				if entry_name == "_rules":
+					continue
 				var state_script = state_scripts[entry_name]
 				var sceng = cfc.scripting_engine.new(
 					state_script,
@@ -1558,9 +1560,13 @@ func execute_scripts(
 			selected_key = ""
 			#TODO need to help check costs here as well?
 		else:
+			var rules = {}
+			if (state_scripts.has("_rules")): #special rules
+				rules = state_scripts["_rules"].duplicate()
+				state_scripts.erase("_rules")
 			var choices_menu = _CARD_CHOICES_SCENE.instance()
 			cfc.set_modal_menu(choices_menu)
-			choices_menu.prep(canonical_name,state_scripts)
+			choices_menu.prep(canonical_name,state_scripts, rules)
 			# We have to wait until the player has finished selecting an option
 			yield(choices_menu,"id_pressed")
 			# If the player just closed the pop-up without choosing

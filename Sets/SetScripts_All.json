@@ -325,9 +325,14 @@
 		},		
 		"manual": {
 			"board": [
+				{	
+					"name": "constraints",
+					"is_cost": true,
+					"tags": ["hero_action"]
+				},			
 				{
 					"name": "pay_cost",
-					"cost": 3,
+					"cost": {"physical" :3},
 					"is_cost" : true,
 				},
 				{
@@ -678,6 +683,7 @@
 	"Hydra Bomber": {
 		"reveal": {
 			"all": {
+				"_rules": {"forced" : true},
 				"Take 2 damage": [
 					{
 						"name": "receive_damage",

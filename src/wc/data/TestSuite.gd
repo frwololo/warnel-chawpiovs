@@ -6,7 +6,14 @@ extends Node
 
 #smaller numbers means the tests will run faster, but might lead to issues
 #to visually see what a test is doing, set this value to e.g. 1.0 or 1.5
+# note: 0.1 has failures
 const MIN_TIME_BETWEEN_STEPS: = 0.2
+
+#maximum amount of time to wait if the game state is not the one we expect
+const max_wait_time: = 1
+#same as above but for events that require a shorter patience time
+
+const short_wait_time: = 0.5
 
 enum TestStatus {
 	NONE,
@@ -14,6 +21,9 @@ enum TestStatus {
 	SKIPPED,
 	FAILED,
 }
+
+var count_delays = {}
+
 
 const GRID_SETUP = CFConst.GRID_SETUP
 const HERO_GRID_SETUP = CFConst.HERO_GRID_SETUP
@@ -51,6 +61,14 @@ var delta:float = 0
 #temporary variables to keep track of objects to interact with
 var _current_selection_window = null
 var _current_targeting_card = null
+
+#for internal statistics to find slow stuff
+func count_delay(_name):
+	if !count_delays.has(_name):
+		count_delays[_name] = 0
+
+	count_delays[_name] += 1	
+		
 
 func _init():
 	scripting_bus.connect("all_clients_game_loaded", self, "all_clients_game_loaded")
@@ -104,9 +122,11 @@ func _process(_delta: float) -> void:
 		initialize_components()
 
 	if phaseContainer.is_in_progress():
+		count_delay("phaseContainer")
 		return
 
 	if cfc.NMAP.board.are_cards_still_animating():
+		count_delay("cards_animating")	
 		return	
 	
 	
@@ -120,6 +140,7 @@ func _process(_delta: float) -> void:
 	#don't proceed if stack is doing stuff
 	#TODO: we'll want to proceed in some cases though (HERO_IS_INTERRUPTING) ?
 	if (gameData.theStack.is_processing()):
+		count_delay("stack")			
 		return
 	
 	#only server is allowed to run the main process	
@@ -161,7 +182,8 @@ func next_action():
 		#before finalizing the test
 		var expected_phase = phaseContainer.step_string_to_step_id(end_state["phase"])
 		var current_phase = phaseContainer.current_step
-		if ((expected_phase != current_phase) && delta < 5):
+		if ((expected_phase != current_phase) && delta < max_wait_time):
+			count_delay("expected_phase")
 			return
 
 		var func_return = finalize_test()
@@ -174,32 +196,46 @@ func next_action():
 	
 	#wait a bit if we need to choose from a selection window but that window isn't there
 	if (action_type == "select"):
-		if (!_current_selection_window) and delta <5:
+		if (!_current_selection_window) and delta <max_wait_time:
+			count_delay("action_select")
 			return
  
 	if (action_type == "target"):
-		if (!_current_targeting_card) and delta <5:
+		if (!_current_targeting_card) and delta <max_wait_time:
+			count_delay("action_target")
 			return
 
 	if (action_type == "choose"):
-		if (!cfc.modal_menu) and delta <5:
+		if (!cfc.modal_menu) and delta <max_wait_time:
+			count_delay("action_choose")
 			return
 
 	#there's an issue where the offer to "pass" sometimes takes a few cycles
 	if (action_type == "pass"):
-		if delta <1:
+		var hero_id = int(action_value)
+		var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id-1]
+		if (heroPhase.get_label_text()!="PASS" and delta <short_wait_time):
+			count_delay("action_pass")
 			return
 	
 	if (action_type == "next_phase"):
 		var hero_id = int(action_value)
 		var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id-1]
-		if (!heroPhase.can_hero_phase_action() and delta <5):
+		if (!heroPhase.can_hero_phase_action() and delta <max_wait_time):
+			count_delay("action_nextphase")
 			return
+			
+	if (action_type == "play"):
+		var card = get_card(action_value) 
+		if card.check_play_costs() != CFConst.CostsState.OK and delta <max_wait_time:
+			count_delay("action_play")
+			return			
 
 	if (action_type == "other"):
 		match action_value:
 			"wait_for_player_turn":
-				if (phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN and delta <5):
+				if (phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN and delta <max_wait_time):
+					count_delay("action_wait_for_player_turn")
 					return
 
 	delta = 0
@@ -565,7 +601,21 @@ func load_test(test_file)-> bool:
 	gameData.load_gamedata(initial_state)
 	return true
 
+func set_card_speeds():
+	var cards = get_tree().get_nodes_in_group("cards")
+	for card in cards:
+		card.in_hand_tween_duration = 0.01
+		card.reorganization_tween_duration = 0.01
+		card.focus_tween_duration = 0.01
+		card.to_container_tween_duration = 0.01
+		card.pushed_aside_tween_duration = 0.01
+		card.to_board_tween_duration = 0.01
+		card.on_board_tween_duration = 0.01
+		card.dragged_tween_duration = 0.01
+
 func all_clients_game_loaded(details = {}):
+	#increase speed
+	set_card_speeds()
 	#only server is allowed to run the main process	
 	if 1 != get_tree().get_network_unique_id():
 		return
@@ -585,6 +635,7 @@ remotesync func add_skipped_msg(msg):
 func next_test() -> bool:
 	if (test_files.size() <= current_test):
 		finished = true
+		var _tmp = count_delays
 		rpc("save_results")
 		return false
 	var result = load_test(test_files[current_test])

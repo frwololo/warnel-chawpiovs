@@ -22,11 +22,16 @@ func _init(_name, _task):
 	if (task.subjects):
 		task.script_definition["target"] = task.subjects[0]
 
+	if !task.trigger_details.has("tags"):
+		task.trigger_details["tags"] = []
+
 	#convoluted way to recreate a sceng from a task... is there something cleaner?
 	sceng = cfc.scripting_engine.new([task.script_definition], task.owner,task.trigger_object, task.trigger_details)
 	run_type = CFInt.RunType.NORMAL
 	trigger = "" #TODO something better ?
 	tasks = [task]
+	
+
 
 func get_tasks() -> Array:
 	return tasks

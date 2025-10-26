@@ -1,4 +1,15 @@
 {
+	"quickstrike": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "enemy_attacks_you",
+					"subject": "self",
+				},
+			]
+		},		
+	},
 	"once_per_round": {
 		"round_ended": {
 			"board": [

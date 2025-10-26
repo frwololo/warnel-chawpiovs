@@ -39,8 +39,8 @@ func _process(_delta: float) -> void:
 
 # Setter for is_drawer_open
 # Simply calls token_drawer()
-func set_is_drawer_open(value: bool) -> void:
-	if is_drawer_open != value:
+func set_is_drawer_open(value: bool, force:bool = false) -> void:
+	if force or (is_drawer_open != value):
 		token_drawer(value)
 
 

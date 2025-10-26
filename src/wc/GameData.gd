@@ -415,8 +415,8 @@ func pre_attack_interrupts_done():
 		return
 	_current_enemy_attack_step = EnemyAttackStatus.OK_TO_START_ATTACK
 
-func add_enemy_activation(enemy, activation_type:String = "attack"):
-	attackers.append({"subject":enemy, "type": activation_type})
+func add_enemy_activation(enemy, activation_type:String = "attack", script = null):
+	attackers.append({"subject":enemy, "type": activation_type, "script" : script})
 
 func enemy_activates() :
 	var target_id = _villain_current_hero_target
@@ -434,11 +434,13 @@ func enemy_activates() :
 	var heroZone:WCHeroZone = cfc.NMAP.board.heroZones[target_id]
 	var attacker_data = attackers.front()
 	var action = "attack" if (heroZone.is_hero_form()) else "scheme"
+	var script = null
 	
 	var enemy:WCCard = null
 	if (typeof (attacker_data) == TYPE_DICTIONARY):
 		enemy = attacker_data["subject"]
 		action = attacker_data["type"]
+		script = attacker_data["script"]
 	else:
 		enemy = attacker_data
 
@@ -466,8 +468,13 @@ func enemy_activates() :
 				enemy.draw_boost_card() #TODO send to all clients	
 		
 			if (action =="attack"):
-				#attack		
-				var sceng = enemy.execute_scripts(enemy, "enemy_attack")
+				#attack	
+				var trigger_details = {
+					"additional_tags": []
+				}
+				if script:
+					trigger_details["additional_tags"] += script.get_property(SP.KEY_TAGS, [])	
+				var sceng = enemy.execute_scripts(enemy, "enemy_attack",trigger_details)
 				_current_enemy_attack_step = EnemyAttackStatus.PENDING_DEFENDERS
 			else:
 				#scheme		
@@ -590,7 +597,17 @@ func current_encounter_finished():
 	_current_encounter_step = EncounterStatus.NONE
 	pass
 
-
+#actual reveal of the current encounter
+func reveal_current_encounter(target_id = 0):
+	if (!target_id):
+		target_id = _villain_current_hero_target
+	
+	if !_current_encounter:
+		#this is a bug. This function should only be called when there's an encounter about to be revealed
+		return
+		
+	_current_encounter.execute_scripts(_current_encounter, "reveal") 
+		
 #TODO need something much more advanced here, per player, etc...
 func reveal_encounter(target_id = 0):
 	if (!target_id):
@@ -634,12 +651,18 @@ func reveal_encounter(target_id = 0):
 			_current_encounter_step = EncounterStatus.ABOUT_TO_REVEAL
 			return
 		EncounterStatus.ABOUT_TO_REVEAL:
-			var state = _current_encounter.state
-			var sceng = _current_encounter.execute_scripts(_current_encounter, "reveal")
+			var reveal_script  = {
+				"name": "reveal_encounter",
+			}
+			var reveal_task = ScriptTask.new(_current_encounter, reveal_script, _current_encounter, {})	
+			var task_event = SimplifiedStackScript.new("reveal_encounter", reveal_task)
+			theStack.add_script(task_event)
+			#theStack.create_and_add_simplescript(_current_encounter, _current_encounter, reveal_script, {})
 			_current_encounter_step = EncounterStatus.PENDING_REVEAL_INTERRUPT
 			return
 		EncounterStatus.PENDING_REVEAL_INTERRUPT:
-			#todo replace this with a signal
+			#todo replace this with a signal?
+			#right now this technique allows to move on even if the reveal event disappears (fizzled)
 			if !theStack.is_empty():
 				return
 			if cfc.modal_menu:
@@ -648,7 +671,7 @@ func reveal_encounter(target_id = 0):
 			_current_encounter_step = EncounterStatus.OK_TO_EXECUTE
 			return					
 		EncounterStatus.OK_TO_EXECUTE:
-			#todo send to network			
+			#todo send to network?			
 			var grid: BoardPlacementGrid = get_encounter_target_grid(_current_encounter)
 			var slot: BoardPlacementSlot = grid.find_available_slot()
 			if slot:

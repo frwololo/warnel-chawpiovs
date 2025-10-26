@@ -245,6 +245,10 @@ func receive_damage(script: ScriptTask) -> int:
 			retcode = card.tokens.mod_token("damage",
 					amount * multiplier,false,costs_dry_run(), tags)	
 
+			if ("stun_if_damage" in tags) and amount:
+				card.tokens.mod_token("stunned",
+					1,false,costs_dry_run(), tags)
+
 			scripting_bus.emit_signal("card_damaged", card, script.script_definition)
 
 			var total_damage:int =  card.tokens.get_token_count("damage")
@@ -292,6 +296,14 @@ func replacement_effect(script: ScriptTask) -> int:
 	
 	return retcode					
 
+func ready_card(script: ScriptTask) -> int:
+	var retcode: int
+	# We inject the tags from the script into the tags sent by the signal
+	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
+	for card in script.subjects:
+		retcode = card.readyme(false, true, costs_dry_run(), tags)
+	return(retcode)
+
 func exhaust_card(script: ScriptTask) -> int:
 	var retcode: int
 	# We inject the tags from the script into the tags sent by the signal
@@ -323,7 +335,7 @@ func enemy_attacks_you(script: ScriptTask) -> int:
 	var hero_id = owner.get_controller_hero_id()	
 	
 	for card in script.subjects:
-		gameData.add_enemy_activation(card, "attack")
+		gameData.add_enemy_activation(card, "attack", script)
 		retcode = CFConst.ReturnCode.CHANGED
 	return retcode
 
@@ -521,6 +533,18 @@ func deal_encounter(script: ScriptTask) -> int:
 		retcode = CFConst.ReturnCode.CHANGED
 
 	return retcode
+
+func reveal_encounter(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+
+	if (costs_dry_run()): #not allowed ?
+		return retcode
+	var owner = script.owner
+	var hero_id = owner.get_controller_hero_id()
+
+	gameData.reveal_current_encounter(hero_id)
+
+	return CFConst.ReturnCode.CHANGED
 	
 func surge(script: ScriptTask) -> int:
 

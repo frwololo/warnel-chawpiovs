@@ -299,7 +299,8 @@ func _ready() -> void:
 
 	#cleanup for when this cards is instantiated as a copy of another
 	clear_highlight()
-	tokens.set_is_drawer_open(false)
+	#TODO forcing here in the hope that it will fix the issue in selectionwindow
+	tokens.set_is_drawer_open(false, true)
 
 func _init_card_layout() -> void:
 	# Because we duplicate the card when adding to the viewport focus
@@ -1588,6 +1589,13 @@ func execute_scripts(
 		cfc.LOG("running script for " + self.canonical_name)
 		cfc.LOG_DICT(trigger_details)
 		trigger_details["trigger_type"] = trigger
+
+		#if optional tags are passed, merge them with this invocation
+		if trigger_details.has("additional_tags"):
+			var tags = trigger_details["additional_tags"]
+			for t in state_scripts:
+				t["tags"] = t.get("tags", []) + tags
+				
 		# This evocation of the ScriptingEngine, checks the card for
 		# cost-defined tasks, and performs a dry-run on them
 		# to ascertain whether they can all be paid,

@@ -41,7 +41,8 @@ func load_nemesis_aside(hero_card_data):
 		var quantity = card_data.get("quantity", 1)
 		for i in range (quantity):
 			var card_name = card_data["Name"]
-			var card = cfc.instance_card(card_name, my_id)
+			 #0 sets owner to villain so that nemesis cards get discarded into villain pile
+			var card = cfc.instance_card(card_name, 0)
 			#moving the card forces a rescale
 			cfc.NMAP["deck" + str(my_id)].add_child(card)
 			card.move_to(cfc.NMAP["set_aside"])

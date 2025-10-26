@@ -60,6 +60,26 @@ func create_text_edit():
 	text_edit.visible = false
 	#text_edit.anchor_bottom = 0.5	
 
+func create_and_add_simplescript( _owner, trigger_card, definition,  trigger_details):
+	#we deconstruct locally here to reconstruct it on all clients then add it to all stacks
+	#also send GUIDs to find the right cards/targets
+
+	var owner_uid = guidMaster.get_guid(_owner)
+	var trigger_card_uid = guidMaster.get_guid(trigger_card)
+		
+	rpc("client_create_and_add_simplescript",  owner_uid, trigger_card_uid, definition, trigger_details)
+	#TODO should wait for ack from all clients before anybody can do anything further in the game
+
+remotesync func client_create_and_add_simplescript(  _owner_uid, trigger_card_uid, definition, trigger_details):
+	var owner_card = guidMaster.get_object_by_guid(_owner_uid)
+	var trigger_card = guidMaster.get_object_by_guid(trigger_card_uid)
+	var script = definition
+	var script_name = script["name"]
+	var task = ScriptTask.new(owner_card, script, trigger_card, trigger_details)	
+	var stackEvent = SimplifiedStackScript.new(script_name, task)
+
+	add_script(stackEvent)
+
 func create_and_add_signal(_name, _owner, _details):
 	#we deconstruct locally here to reconstruct it on all clients then add it to all stacks
 	#also send GUIDs to find the right cards/targets
@@ -150,7 +170,7 @@ func _process(_delta: float):
 	if (!text_edit):
 		 create_text_edit()
 	
-	if (!text_edit):
+	if (!text_edit or !is_instance_valid(text_edit)):
 		return
 
 	text_edit.text = ""

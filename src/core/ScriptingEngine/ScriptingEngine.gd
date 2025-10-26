@@ -59,12 +59,6 @@ var owner
 var trigger_object
 var state_scripts
 
-func has_else_condition():
-	for task in scripts_queue:
-		if task.is_else:
-			return true
-	return false
-
 # Simply initiates the [run_next_script()](#run_next_script) loop
 func _init(_state_scripts: Array,
 		_owner,
@@ -83,7 +77,7 @@ func add_scripts(_state_scripts,
 		fifo:bool = true) -> void:
 			
 		var tmp_array: Array = []
-		for t in _state_scripts:		
+		for t in _state_scripts: 		
 		# We do a duplicate to allow repeat to modify tasks without danger.
 			var task: Dictionary = t.duplicate(true)
 			# This is the only script property which we use outside of the
@@ -134,6 +128,14 @@ func add_scripts(_state_scripts,
 func costs_dry_run() -> bool:
 	return ((run_type == CFInt.RunType.COST_CHECK) or 
 		(run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
+
+
+func has_else_condition():
+	for task in scripts_queue:
+		if task.is_else:
+			return true
+	return false
+
 
 #sets the stored_integer for future use. 
 #Also sets it in the current ongoing script so we can refer to it

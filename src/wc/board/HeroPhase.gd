@@ -107,6 +107,9 @@ func _current_playing_hero_changed (_trigger_details: Dictionary = {}):
 		_update_labels()
 			
 
+func get_label_text():
+	return label.text
+
 func _update_labels():
 	var new_hero_index = gameData.get_current_hero_id()
 	if (gameData.can_i_play_this_hero(hero_index)):

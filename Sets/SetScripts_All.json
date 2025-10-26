@@ -345,7 +345,7 @@
 	},	
 	"Enhanced Spider-Sense": {
 		"interrupt": {
-			"event_type": "reveal",
+			"event_name": "reveal_encounter",
 			"is_optional_hand": true,
 			"hand": [
 				{	
@@ -776,6 +776,7 @@
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": {
+				"_rules": {"forced": true},
 				"remove 2 threat": [
 					{
 						"name": "remove_threat",
@@ -968,6 +969,7 @@
 				},
 				{
 					"name" : "villain_attacks_you",
+					"tags" : ["stun_if_damage"],
 				},
 				{
 					"name" : "surge",
@@ -1031,9 +1033,14 @@
 	"Tenacity": {
 		"manual": {
 			"board": [
+				{	
+					"name": "constraints",
+					"is_cost": true,
+					"tags": ["hero_action"]
+				},			
 				{
 					"name": "pay_cost",
-					"cost": 1,
+					"cost": {"physical" : 1},
 					"is_cost" : true,
 				},							
 				{
@@ -1043,8 +1050,7 @@
 					"is_cost": true,
 				},
 				{
-					"name": "rotate_card",
-					"degrees": 0,			
+					"name": "ready_card",			
 					"subject": "my_hero",
 				}
 			]
@@ -1070,6 +1076,9 @@
 				},			
 			]
 		}
+	},	
+	"Vulture": {
+		"quickstrike" : {}
 	},	
 	"Web-Shooter": {
 		"uses" : {
@@ -1147,4 +1156,5 @@
 			}]		
 		}
 	},	
+			
 }

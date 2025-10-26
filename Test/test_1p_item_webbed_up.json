@@ -1,0 +1,116 @@
+{
+	"_comments": "Basic Test For Webbed up",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},				
+				
+			],
+			"schemes": [
+				{
+					"card": "01097",
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {"damage":1}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},		
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Webbed Up"
+				}				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Webbed Up"
+		},
+		{
+			"type": "target",
+			"value": "01094"	
+		},
+		{
+			"type": "next_phase",
+			"value": 1,
+			"_comments": "go to enemy attack"
+		}		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {"stunned": 1}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {"damage":1}					
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],			
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Energy"
+				},			
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Webbed Up"
+				},				
+			]
+		}
+	}
+}

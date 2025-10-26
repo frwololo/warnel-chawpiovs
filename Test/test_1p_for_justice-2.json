@@ -1,5 +1,5 @@
 {
-	"_comments": "Test if the power of justice bugs sometimes",
+	"_comments": "Test if for Justice removes 3 threat",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -17,7 +17,8 @@
 			],
 			"schemes": [
 				{
-					"card": "01097"
+					"card": "01097",
+					"tokens": {"threat" : 5},
 				}
 			],
 			"deck1": [
@@ -32,34 +33,23 @@
 			],
 			"hand1": [		
 				{
-					"card": "Swinging Web Kick"
+					"card": "For Justice!"
 				},
 				{
 					"card": "The Power of Justice"
-				},
-				{
-					"card": "Emergency"
-				},
-				{
-					"card": "Strength"
-				},				
+				},			
 			]
 		}
 	},
 	"actions": [
 		{
 			"type": "play",
-			"value": "Swinging Web Kick"
+			"value": "For Justice!"
 		},
 		{
-			"type": "select",
-			"value": ["The Power of Justice", "Strength"],
-			"_comments": "select cards to pay for Web Kick"
-		},			
-		{
 			"type": "target",
-			"value": "01094"
-		},			
+			"value": "01097"
+		},		
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -78,7 +68,8 @@
 			],
 			"schemes": [
 				{
-					"card": "01097"
+					"card": "01097",
+					"tokens" : {"threat" : 2}
 				}
 			],
 			"deck1": [
@@ -91,21 +82,13 @@
 					"card": "Spider-Man"
 				}
 			],
-			"hand1": [		
-				{
-					"card": "Emergency"
-				},
-			],
 			"discard1": [
 				{
 					"card": "The Power of Justice"
-				},
+				},		
 				{
-					"card": "Strength"
-				},
-				{
-					"card": "Swinging Web Kick"
-				},				
+					"card": "For Justice!"
+				},					
 			]
 		}
 	}

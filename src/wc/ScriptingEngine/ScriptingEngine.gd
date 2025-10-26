@@ -492,17 +492,19 @@ func thwart(script: ScriptTask) -> int:
 
 func heal(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.FAILED
-
+	if (costs_dry_run()):
+		retcode = CFConst.ReturnCode.CHANGED
 	
 	var amount = script.script_definition["amount"]
 	
 	for subject in script.subjects:
 		if (costs_dry_run()): #healing as a cost can be used for "is_else" conditions, when saying "if no healing happened,..."
 			if (!subject.can_heal(amount)):
-				return CFConst.ReturnCode.FAILED		
-		var result = subject.heal(amount)
-		if (result == CFConst.ReturnCode.CHANGED): #if at least one healing happened, the result is a change
-			retcode = CFConst.ReturnCode.CHANGED
+				return CFConst.ReturnCode.FAILED #if at least one subject can't pay, we fail it
+		else:		
+			var result = subject.heal(amount)
+			if (result == CFConst.ReturnCode.CHANGED): #if at least one healing happened, the result is a change
+				retcode = CFConst.ReturnCode.CHANGED
 
 	return retcode
 

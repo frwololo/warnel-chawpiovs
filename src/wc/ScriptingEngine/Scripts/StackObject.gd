@@ -41,3 +41,8 @@ func matches_filters(task, filters:Dictionary, owner_card):
 	var result = WCUtils.is_element1_in_element2(filters, script_details)
 
 	return result
+
+func get_first_task_name():
+	for task in get_tasks():
+		return task.script_name
+	return ""

@@ -566,7 +566,7 @@
 	"Great Responsibility": {
 		"todo" : {}
 	},	
-	"Hard To Keep Down": {
+	"Hard to Keep Down": {
 		"reveal": {
 			"all": [
 				{	
@@ -1119,7 +1119,6 @@
 					"name": "constraints",
 					"is_cost": true,
 					"tags": ["hero_form"],
-					"max_per_host" : 1
 				},			
 				{
 					"name" : "attach_to_card",
@@ -1132,12 +1131,8 @@
 			]
 		},
 		"interrupt" : {
-			"event_name": "enemy_attack",
+			"event_name": "enemy_initiates_attack",
 			"board": [
-				{
-					"name": "prevent",
-					"subject": "interrupted_event"
-				},
 				{
 					"name" : "mod_tokens",
 					"modification": 1,
@@ -1145,6 +1140,10 @@
 					"needs_subject": true,
 					"subject": "host",
 				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},				
 				{
 					"name" : "move_card_to_container",
 					"subject": "self",

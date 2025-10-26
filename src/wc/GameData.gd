@@ -88,6 +88,8 @@ func _ready():
 
 	scripting_bus.connect("initiated_targeting", self, "_initiated_targeting")
 	scripting_bus.connect("target_selected", self, "_target_selected")
+	
+	scripting_bus.connect("stack_event_deleted", self, "_stack_event_deleted")
 
 	self.add_child(theStack) #Stack needs to be in the tree for rpc calls	
 	self.add_child(theAnnouncer)
@@ -404,6 +406,9 @@ func villain_next_target() -> int:
 
 func all_attackers_finished():
 	phaseContainer.all_enemy_attacks_finished()
+
+func attack_prevented():
+	current_enemy_finished()
 
 func current_enemy_finished():
 	attackers.pop_front()
@@ -728,7 +733,12 @@ func get_encounter_target_pile (encounter):
 		return null
 
 	return cfc.NMAP.get(pile_name, null)
-	
+
+#what happens when events get prevented
+func _stack_event_deleted(event):
+	match event.get_first_task_name():
+		"enemy_initiates_attack":
+			attack_prevented()	
 
 func get_villain() -> Card :
 	return cfc.NMAP.board.get_villain_card()

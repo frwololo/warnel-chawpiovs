@@ -8,12 +8,11 @@ extends Node
 #to visually see what a test is doing, set this value to e.g. 1.0 or 1.5
 # note: 0.1 has failures
 const MIN_TIME_BETWEEN_STEPS: = 0.2
-
 #maximum amount of time to wait if the game state is not the one we expect
 const max_wait_time: = 1
 #same as above but for events that require a shorter patience time
-
 const short_wait_time: = 0.5
+const shorten_animations = true
 
 enum TestStatus {
 	NONE,
@@ -602,6 +601,8 @@ func load_test(test_file)-> bool:
 	return true
 
 func set_card_speeds():
+	if (!shorten_animations):
+		return
 	var cards = get_tree().get_nodes_in_group("cards")
 	for card in cards:
 		card.in_hand_tween_duration = 0.01

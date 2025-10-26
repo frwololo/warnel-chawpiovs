@@ -159,9 +159,9 @@ func reset_interrupt_states():
 	set_interrupt_mode(InterruptMode.NONE)
 
 func _exit_tree():
-	if (text_edit):
+	if (text_edit and is_instance_valid(text_edit)):
 		cfc.NMAP.board.remove_child(text_edit)
-		text_edit = null
+	text_edit = null
 		
 		
 	
@@ -286,7 +286,7 @@ remotesync func client_send_before_trigger(_interrupt_mode):
 				if (card in card_already_played_for_stack_uid.get(script_uid, [])):
 					continue
 				if (task.script_name == "enemy_initiates_attack"):
-					if (card.canonical_name == "Spider-Man"):
+					if (card.canonical_name == "Webbed Up"):
 						var _tmp = 1
 				var can_interrupt = card.can_interrupt(hero_id,task.owner, _current_interrupted_event)
 				if can_interrupt == INTERRUPT_FILTER[_interrupt_mode]:
@@ -390,7 +390,8 @@ func _delete_object(variant):
 	return true
 	
 func delete_last_event():
-	stack.pop_back()
+	var event = stack.pop_back()
+	scripting_bus.emit_signal("stack_event_deleted", event)
 	
 func find_last_event():
 	if is_empty():

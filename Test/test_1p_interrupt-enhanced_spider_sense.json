@@ -1,0 +1,104 @@
+{
+	"_comments": "(1) Enhanced Spider-sense: hero interrupt cancel revealed effects",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "advance"
+				},		
+				{
+					"card": "stampede"
+				},		
+			],			
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "enhanced spider-sense"
+				},
+				{
+					"card": "01002"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "enhanced spider-sense",
+			"_comments": "prevent stampede reveal"
+		},
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "advance"
+				}			
+			],
+			"discard_villain": [
+				{
+					"card": "stampede"
+				}			
+			],			
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"discard1": [
+				{
+					"card": "01002"
+				},			
+				{
+					"card": "enhanced spider-sense"
+				},
+
+			]
+		}
+	}
+}

@@ -1,10 +1,5 @@
 {
-	"_comments": "Tests SpiderMan obligation",
-	"test_conditions": {
-		"ignore_order" : [
-			"deck_villain"
-		],
-	},
+	"_comments": "Tests Stampede encounter gives a stun",
 	"init": {
 		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [
@@ -22,25 +17,12 @@
 			],
 			"deck_villain":[
 				{
-					"card": "shadow of the past"
-				},				
-			],
-			"set_aside": [
+					"card": "advance"
+				},		
 				{
-					"card": "Vulture"
-				},	
-				{
-					"card": "Sweeping Swoop"
-				},	
-				{
-					"card": "The Vulture's Plans"
-				},	
-				{
-					"card": "Highway Robbery"
-				},	
-				{
-					"card": "Sweeping Swoop"
-				},					
+					"card": "stampede"
+				},
+			
 			],
 			"schemes": [
 				{
@@ -69,10 +51,15 @@
 	},
 	"actions": [
 		{
+			"type": "pass",
+			"value": "1",
+			"_comments": "pass SpiderMan ability to draw"
+		},
+		{
 			"type": "select",
 			"value": "cancel",
-			"_comments": "take undefended attack from Vulture Quickstrike"
-		}
+			"_comments": "take undefended attack"
+		},		
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -89,30 +76,17 @@
 					"card": "01094"
 				}
 			],
-			"discard_villain":[
+			"discard_villain":[	
 				{
-					"card": "shadow of the past"
-				},						
-			],
-			"deck_villain": [	
+					"card": "advance"
+				},
 				{
-					"card": "Sweeping Swoop"
-				},	
-				{
-					"card": "The Vulture's plans"
-				},	
-				{
-					"card": "Sweeping Swoop"
-				},					
-			],
-			"set_aside" :[
-			],
+					"card": "stampede"
+				},				
+			],			
 			"schemes": [
 				{
 					"card": "01097",
-				},
-				{
-					"card": "Highway Robbery",
 				}
 			],
 			"deck1": [
@@ -123,7 +97,7 @@
 			"identity1": [
 				{
 					"card": "Spider-Man",
-					"tokens": {"damage" : 3}
+					"tokens": {"damage" : 2, "stunned": 1}
 				}
 			],
 			"hand1": [
@@ -133,11 +107,6 @@
 				{
 					"card": "01002"
 				}
-			],
-			"enemies1": [
-				{
-					"card": "Vulture"
-				},
 			]
 		}
 	}

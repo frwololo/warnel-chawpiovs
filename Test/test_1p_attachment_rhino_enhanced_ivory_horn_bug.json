@@ -1,0 +1,150 @@
+{
+	"_comments": "Ran into a weird bug with Ivory horn where it became payable for some reason",	
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[			
+				{
+					"card": "Enhanced Ivory Horn"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Swinging Web Kick"
+				},
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Web-Shooter"
+				},
+				{
+					"card": "Avengers Mansion"
+				},
+				{
+					"card": "First Aid"
+				}				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Mockingbird",
+					"tokens": {"damage": 2},
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training",
+				}
+			]			
+			
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value" : "wait_for_player_turn"
+		},		
+		{
+			"type": "play",
+			"value" : "First Aid"
+		},		
+		{
+			"type": "select",
+			"value" : "Avengers Mansion"
+		},
+		{
+			"type": "target",
+			"value" : "Mockingbird"
+		},	
+		{
+			"type": "activate",
+			"value" : "Enhanced Ivory Horn"
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"others":[			
+				{
+					"card": "Enhanced Ivory Horn"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Swinging Web Kick"
+				},
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Web-Shooter"
+				},
+			],
+			"discard1" :[
+				{
+					"card": "Avengers Mansion"
+				},
+				{
+					"card": "First Aid"
+				}				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Mockingbird",
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training",
+				}
+			]			
+			
+		}
+	}
+}

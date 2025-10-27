@@ -41,6 +41,10 @@
 	},
 	"actions": [
 		{
+			"type": "other",
+			"value" : "wait_for_player_turn"
+		},		
+		{
 			"type": "activate",
 			"value" : "Spider-Man",
 			"_comments": "activate spider-man for attack..."

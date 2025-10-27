@@ -1,0 +1,163 @@
+{
+	"_comments": "Tests Armored Rhino suit destruction",
+	"test_conditions": {
+		"ignore_order" : [
+			"hand1"
+		],
+	},	
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[			
+				{
+					"card": "Armored Rhino Suit"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},	
+				{
+					"card": "Strength"
+				},					
+				{
+					"card": "Swinging Web Kick"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Daredevil"
+				},				
+			]			
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value" : "wait_for_player_turn"
+		},
+		{
+			"type": "activate",
+			"value" : "Spider-Man"
+		},
+		{
+			"type": "choose",
+			"value" : "attack"
+		},			
+		{
+			"type": "target",
+			"value" : "01094"
+		},
+		{
+			"type": "activate",
+			"value" : "Daredevil"
+		},
+		{
+			"type": "choose",
+			"value" : "attack"
+		},			
+		{
+			"type": "target",
+			"value" : "01094"
+		},
+		{
+			"type": "activate",
+			"value" : "Mockingbird"
+		},
+		{
+			"type": "choose",
+			"value" : "attack"
+		},			
+		{
+			"type": "target",
+			"value" : "01094"
+		},		
+		{
+			"type": "play",
+			"value" : "Swinging Web Kick"
+		},		
+		{
+			"type": "target",
+			"value" : "01094"
+		},
+			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Armored Rhino Suit"
+				}
+			],
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {"damage" : 8}
+				}
+			],			
+			"schemes": [
+				{
+					"card": "01097",
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				},			
+				{
+					"card": "Jessica Jones"
+				},						
+				{
+					"card": "Swinging Web Kick"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+				}
+			],
+			"allies1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Daredevil"
+				},				
+			]			
+		}
+	}
+}

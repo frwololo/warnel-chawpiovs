@@ -1,5 +1,5 @@
 {
-	"_comments": "Tests Stampede encounter gives a stun",
+	"_comments": "Tests Spider Man Obligation: Eviction Notice",
 	"init": {
 		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [
@@ -20,7 +20,7 @@
 					"card": "advance"
 				},		
 				{
-					"card": "stampede"
+					"card": "Eviction Notice"
 				},
 			
 			],
@@ -51,14 +51,9 @@
 	},
 	"actions": [
 		{
-			"type": "pass",
-			"value": "1",
-			"_comments": "pass SpiderMan ability to draw"
-		},
-		{
-			"type": "select",
-			"value": "cancel",
-			"_comments": "take undefended attack"
+			"type": "choose",
+			"value": "Flip then Remove from the game",
+			"_comments": "choose to remove from game"
 		},
 		{
 			"type": "other",
@@ -80,12 +75,14 @@
 					"card": "01094"
 				}
 			],
-			"discard_villain":[	
+			"set_aside":[	
+				{
+					"card": "eviction notice"
+				},
+			],
+			"deck_villain": [
 				{
 					"card": "advance"
-				},
-				{
-					"card": "stampede"
 				},				
 			],			
 			"schemes": [
@@ -100,8 +97,7 @@
 			],
 			"identity1": [
 				{
-					"card": "Spider-Man",
-					"tokens": {"damage" : 2, "stunned": 1}
+					"card": "Peter Parker",
 				}
 			],
 			"hand1": [

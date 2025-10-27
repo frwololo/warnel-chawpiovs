@@ -1,5 +1,5 @@
 {
-	"_comments": "Tests SpiderMan obligation",
+	"_comments": "Tests SpiderMan nemesis",
 	"test_conditions": {
 		"ignore_order" : [
 			"deck_villain"
@@ -72,7 +72,11 @@
 			"type": "select",
 			"value": "cancel",
 			"_comments": "take undefended attack from Vulture Quickstrike"
-		}
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		}		
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",

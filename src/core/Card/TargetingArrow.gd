@@ -52,7 +52,8 @@ func set_text(_text):
 
 func _process(_delta: float) -> void:
 	if is_targeting:
-		_draw_targeting_arrow(cfc.NMAP.board.mouse_pointer.determine_global_mouse_pos())
+		var pointing_to = _stored_destination if _stored_destination else cfc.NMAP.board.mouse_pointer.determine_global_mouse_pos()
+		_draw_targeting_arrow(pointing_to)
 
 func set_arrow_color(_color):
 	default_color = _color

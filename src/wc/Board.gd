@@ -343,6 +343,7 @@ func load_cards_to_pile(card_data:Array, pile_name):
 		card_array.append(new_card)
 		card_to_card_data[new_card] = card
 
+
 	for card in card_array:
 		if (pile_name and cfc.NMAP.has(pile_name)): #it's a pile
 			cfc.NMAP[pile_name].add_child(card)
@@ -560,6 +561,8 @@ func savestate_to_json() -> Dictionary:
 	return result
 	
 func loadstate_from_json(json:Dictionary):
+	cfc.set_game_paused(true)
+	
 	var json_data = json.get("board", null)
 	if (null == json_data):
 		return #TODO Error msg
@@ -596,6 +599,7 @@ func loadstate_from_json(json:Dictionary):
 	var other_data = json_data.get("others", [])
 	load_cards_to_pile(other_data, "")
 	
+	cfc.set_game_paused(false)	
 	return
 #The game engine doesn't really have a concept of double sided cards, so instead,
 #when flipping such a card, we destroy it and create a new card

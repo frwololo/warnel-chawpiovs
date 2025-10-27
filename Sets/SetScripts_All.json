@@ -14,6 +14,7 @@
 			"board": [
 				{
 					"name": "modify_properties",
+					"tags": ["Init"],
 					"subject": "self",
 					"set_properties" :{
 						"health" : 5
@@ -90,6 +91,11 @@
 	"Avengers Mansion": {
 		"manual": {
 			"board": [
+				{	
+					"name": "constraints",
+					"is_cost": true,
+					"tags": ["action_ability"]
+				},			
 				{
 					"name": "exhaust_card",
 					"subject": "self",

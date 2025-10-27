@@ -448,6 +448,10 @@ func consequential_damage(script: ScriptTask) -> int:
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
 
+	var tags = script.get_property(SP.KEY_TAGS, [])
+	if !("basic power" in tags):
+		return CFConst.ReturnCode.OK
+
 	var owner = script.owner
 	var damage = owner.get_property("attack_cost", 0)
 	
@@ -463,7 +467,7 @@ func consequential_damage(script: ScriptTask) -> int:
 	additional_task.prime([], CFInt.RunType.NORMAL,0) #TODO gross
 	retcode = receive_damage(additional_task)
 	
-	return retcode
+	return CFConst.ReturnCode.CHANGED
 
 
 func scheme(script: ScriptTask) -> int:
@@ -712,13 +716,17 @@ func reveal_nemesis (script:ScriptTask) -> int:
 
 	return retcode	
 
+#action can only be played during player turn, while nothing is on the stack
+#interrupt can be played pretty much anytime
+#resource can only be used to pay for something
 const _tags_to_tags: = {
 	"hero_action" : ["hero_form", "action_ability"],
 	"hero_interrupt": ["hero_form", "interrupt_ability"],
 	"hero_resource": ["hero_form", "resource_ability"],
 	"alter_ego_action": ["alter_ego_form", "action_ability"], 
 	"alter_ego_interrupt": ["alter_ego_form", "interrupt_ability"], 
-	"alter_ego_resource": ["alter_ego_form", "resource_ability"], 	
+	"alter_ego_resource": ["alter_ego_form", "resource_ability"],
+	"as_action": ["action_ability"] 	
 }
 
 #used only as a cost, checks a series of constraints to see if a card can be played or not
@@ -748,6 +756,10 @@ func constraints(script: ScriptTask) -> int:
 					return CFConst.ReturnCode.FAILED
 			"action_ability":
 				if gameData.phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN:
+					return 	CFConst.ReturnCode.FAILED
+				if !gameData.theStack.is_empty():
+					return CFConst.ReturnCode.FAILED
+				if cfc.is_modal_event_ongoing():
 					return 	CFConst.ReturnCode.FAILED			
 				
 

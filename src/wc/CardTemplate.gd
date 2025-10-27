@@ -438,7 +438,7 @@ func die():
 			move_to(cfc.NMAP["discard_villain"])	
 		"villain":
 			gameData.villain_died(self)
-		"_":
+		_:
 			self.discard()
 			
 	return CFConst.ReturnCode.OK		
@@ -509,6 +509,9 @@ func check_play_costs() -> Color:
 	if ((get_state_exec() != "hand")
 		and get_state_exec() != "board"):
 			return _check_play_costs_cache
+	
+	if (canonical_name == "Enhanced Ivory Horn"):
+		var _tmp = 1
 		
 	var sceng = execute_scripts(self,"manual",{},CFInt.RunType.BACKGROUND_COST_CHECK)
 

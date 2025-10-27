@@ -629,7 +629,7 @@ func modify_property(
 					#print_debug("Warning: ", property,
 					#		" does not have a matching label!")
 					var _tmp = 1
-				retcode = CFConst.ReturnCode.FAILED
+				#retcode = CFConst.ReturnCode.FAILED
 			else:
 				if not is_init:
 					scripting_bus.emit_signal(

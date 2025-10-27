@@ -149,6 +149,11 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 			playFromHand = {
 				"manual": {
 					"hand": [
+						{	
+							"name": "constraints",
+							"is_cost": true,
+							"tags": ["as_action"]
+						},	
 						{
 							"name": "pay_regular_cost",
 							"is_cost": true,
@@ -162,6 +167,11 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 			playFromHand = {
 				"manual": {
 					"hand": [
+						{	
+							"name": "constraints",
+							"is_cost": true,
+							"tags": ["as_action"]
+						},						
 						move_after_play
 					]
 				}
@@ -193,6 +203,11 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 			"manual": {
 				"board": {
 					"thwart": [
+						{	
+							"name": "constraints",
+							"is_cost": true,
+							"tags": ["as_action"]
+						},						
 						{
 							"name": "exhaust_card",
 							"subject": "self",
@@ -202,12 +217,18 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 							"name": "thwart",
 							"subject": "target",
 							"is_cost": true,
+							"tags": ["basic power"],
 							"filter_state_subject": [{
 								"filter_group": "group_schemes"
 							},],						
 						},					
 					],
 					"attack" :[
+						{	
+							"name": "constraints",
+							"is_cost": true,
+							"tags": ["as_action"]
+						},						
 						{
 							"name": "exhaust_card",
 							"subject": "self",
@@ -220,7 +241,7 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 							"filter_state_subject": [{
 								"filter_group" : "group_enemies"
 							},],
-							"tags":["attack"]						
+							"tags":["attack", "basic power"]						
 						},					
 					],
 				}
@@ -233,6 +254,11 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 			"manual": {
 				"board": {
 					"recovery": [
+						{	
+							"name": "constraints",
+							"is_cost": true,
+							"tags": ["as_action"]
+						},						
 						{
 							"name": "exhaust_card",
 							"subject": "self",
@@ -242,6 +268,7 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 							"name": "recovery",
 							"subject": "self",
 							"needs_subject": true,
+							"tags": ["basic power"]
 						}				
 					]
 				}
@@ -254,6 +281,11 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 			"manual": {
 				"board": {
 					"change form": [
+						{	
+							"name": "constraints",
+							"is_cost": true,
+							"tags": ["as_action"]
+						},						
 						{
 							"name": "change_form",
 							"subject": "self",

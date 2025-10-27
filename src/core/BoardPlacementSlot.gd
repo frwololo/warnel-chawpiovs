@@ -12,30 +12,25 @@ extends Control
 # to the Card object
 # and no other card can be placed in this slot
 var occupying_card = null
+var card_position_confirmed:= false
 
 # Stores a reference to the owning BoardPlacementGrid object
 onready var owner_grid = get_parent().get_parent()
 
 func _ready() -> void:
-	# We set the initial size of our highlight and area, to 
-	# fit the size of the cards on the board.
-
-#	rect_min_size = Vector2(0,0)
-#	self.rect_size = Vector2(0,0)
-#
-#	#$Area2D/CollisionShape2D.scale = Vector2(0.1, 0.1)
-#
-#	$Area2D/CollisionShape2D.shape.extents = Vector2(0,0)
-#	$Area2D/CollisionShape2D.position = Vector2(0,0)
-#
-#	$Highlight.rect_min_size = Vector2(0,0)
-#	$Highlight.rect_size = Vector2(0,0)
-	
-
-	
 	rescale()
 
-
+func _process(delta):
+	#due to timing issues sometimes the occupying card gets positioned before this has finished loading
+	#So we reposition the card just in case
+	if (!card_position_confirmed):
+		if occupying_card:
+			var tmp = rect_global_position
+			var tmp2 = self.rect_size
+			occupying_card._set_target_position(rect_global_position + Vector2(self.rect_size.x/2 - occupying_card.card_size.x/2*get_scale_modifier(), 0))
+		card_position_confirmed = true
+	
+	
 # Returns true if this slot is highlighted, else false
 func is_highlighted() -> bool:
 	return($Highlight.visible)
@@ -49,6 +44,8 @@ func set_occupying_card(card):
 		var tmp = rect_global_position
 		var tmp2 = self.rect_size
 		card._set_target_position(rect_global_position + Vector2(self.rect_size.x/2 - card.card_size.x/2*get_scale_modifier(), 0))
+
+	card_position_confirmed = false
 	
 	if (slot_was_occupied and !occupying_card):
 		owner_grid.emit_signal("card_removed_from_slot", self)

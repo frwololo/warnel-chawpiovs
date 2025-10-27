@@ -699,6 +699,15 @@ remotesync func save_results():
 
 func _initiated_targeting(_request_object = null):
 	_current_targeting_card = _request_object
+	
+	#fake target
+	if actions.size() > current_action:
+		var my_action = actions[current_action]
+		var action_type = my_action.get("type", "")
+		var action_value = my_action.get("value", "")
+		var card = get_card(action_value)
+		if (card):
+			_current_targeting_card.targeting_arrow.set_destination(card.global_position + Vector2(20, 20))
 
 func _selection_window_opened(_request_object = null,details = {}):
 	_current_selection_window = _request_object

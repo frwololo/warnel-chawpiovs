@@ -200,14 +200,7 @@ func post_initiate_checks():
 			and selection_type in ["equal", "max"]:
 		force_cancel()
 		return
-	# If the amount of cards available for the choice are exactly the requirements
-	# And we're looking for equal or minimum amount
-	# We immediately return what is there.
-	elif get_count(card_array) == selection_count\
-			and selection_type in ["equal", "min"]:
-		selected_cards = card_array
-		emit_signal("confirmed")
-		return
+
 	# When we have 0 cards to select from, we consider the selection cancelled
 	elif get_count(card_array) == 0\
 			and (!_assign_mode): #TODO better check here?
@@ -216,6 +209,15 @@ func post_initiate_checks():
 		
 	if !(check_additional_constraints(card_array)):
 		force_cancel()
+		return
+
+	# If the amount of cards available for the choice are exactly the requirements
+	# And we're looking for equal or minimum amount
+	# We immediately return what is there.
+	if get_count(card_array) == selection_count\
+			and selection_type in ["equal", "min"]:
+		selected_cards = card_array
+		emit_signal("confirmed")
 		return
 	
 	match selection_type:
@@ -342,48 +344,50 @@ func dry_run(_card_array: Array) -> void:
 		return
 	# If the amount of cards available for the choice are exactly the requirements
 	# And we're looking for equal or minimum amount
-	# We immediately return what is there.
+	# We immediately select
 	if get_count(_card_array) == selection_count\
 			and selection_type in ["equal", "min"]:
 		selected_cards = _card_array
-		emit_signal("confirmed")
-		return
+
 	# When we have 0 cards to select from, we consider the selection cancelled
 	if get_count(_card_array) == 0\
 			and !_assign_mode:
 		force_cancel()
 		return
-		
-	#generic case	
-	match selection_type:
-		"min":
-			var total = 0
-			var i = 0
-			while total < selection_count and i < _card_array.size():
-				selected_cards.append(_card_array[i])
-				total = get_count(selected_cards)
-				i += 1
-		"max":
-			selected_cards = _card_array.slice(0, 1)
-		"equal":
-			var total = 0
-			var i = 0
-			while total < selection_count and i < _card_array.size():
-				selected_cards.append(_card_array[i])
-				total = get_count(selected_cards)
-				i += 1			
-				#TODO we might have an error here where we don't get the exact number if we add 2 or more in one step
-		"as_much_as_possible":
-			var remaining = selection_count
-			for card in _card_array:
-				var can_assign = card.call(_assign_max_function)
-				if can_assign > remaining:
-					can_assign = remaining
-				remaining -= can_assign
-				for i in range (can_assign):
-					selected_cards.append(card)
-				if remaining <= 0:
-					break	
+	
+	if (!selected_cards):	
+		#generic case	
+		match selection_type:
+			"min":
+				var total = 0
+				var i = 0
+				while total < selection_count and i < _card_array.size():
+					selected_cards.append(_card_array[i])
+					total = get_count(selected_cards)
+					i += 1
+			"max":
+				selected_cards = _card_array.slice(0, 1)
+			"equal":
+				var total = 0
+				var i = 0
+				while total < selection_count and i < _card_array.size():
+					selected_cards.append(_card_array[i])
+					total = get_count(selected_cards)
+					i += 1			
+					#TODO we might have an error here where we don't get the exact number if we add 2 or more in one step
+			"as_much_as_possible":
+				var remaining = selection_count
+				for card in _card_array:
+					var can_assign = card.call(_assign_max_function)
+					if can_assign > remaining:
+						can_assign = remaining
+					remaining -= can_assign
+					for i in range (can_assign):
+						selected_cards.append(card)
+					if remaining <= 0:
+						break	
+	
+	#we tried our best, we might still be failing
 	if (!check_ok_button()):
 		#we're not meeting some constraint, try to change the selection
 		#todo need to do something much more clever here

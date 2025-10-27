@@ -2,9 +2,13 @@ extends Node
 
 onready var top_text = $Top/Margin/Label
 onready var bottom_text = $Bottom/Margin/Label
+onready var top_color = $Top/ColorRect
+onready var bottom_color = $Bottom/ColorRect
 
 var _top_text := ""
 var _bottom_text:= ""
+var _top_color:= Color8(50, 50, 50, 255)
+var _bottom_color := Color8(18, 18, 18, 255)
 const delta_max = 3.0
 var bottom_target = 900
 var delta_total: float = 0
@@ -34,7 +38,17 @@ func _process(delta):
 func _ready():
 	top_text.text = _top_text
 	bottom_text.text = _bottom_text
+	top_color.color = _top_color
+	bottom_color.color = _bottom_color
 	self.fade(self, 0)
+
+func set_bg_colors(top, bottom):
+	_top_color = top
+	_bottom_color = bottom
+	if top_color:
+		top_color.color = _top_color
+	if bottom_color:
+		bottom_color.color = _bottom_color			
 	
 func set_text_top(text):
 	_top_text = text

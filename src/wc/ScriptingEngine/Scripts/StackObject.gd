@@ -35,6 +35,10 @@ func matches_filters(task, filters:Dictionary, owner_card):
 			#TODO move to const
 			WCUtils.search_and_replace(filters, v, gameData.get_identity_card(owner_hero_id), true)
 
+	#TODO move to const
+	WCUtils.search_and_replace(filters, "villain", gameData.get_villain(), true)
+
+
 	if (filters):
 		var _tmp = 0	
 	var script_details = task.script_definition

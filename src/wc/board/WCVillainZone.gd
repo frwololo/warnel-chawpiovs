@@ -68,6 +68,8 @@ func load_villain(card_name):
 		slot = grid.find_available_slot()
 		if slot:
 			card.move_to(cfc.NMAP.board, -1, slot)
+		else:
+			var _error = 1
 	villain = card
 	return villain
 	

@@ -8,10 +8,12 @@ extends Node
 #to visually see what a test is doing, set this value to e.g. 1.0 or 1.5
 # note: 0.1 has failures
 const MIN_TIME_BETWEEN_STEPS: = 0.2
-#maximum amount of time to wait if the game state is not the one we expect
-const max_wait_time: = 1
+#long amount of time to wait if the game state is not the one we expect
+const long_wait_time: = 2
 #same as above but for events that require a shorter patience time
 const short_wait_time: = 0.5
+#amount of time to wait if the test explicitely requests it
+const max_wait_time: = 5
 const shorten_animations = true
 
 enum TestStatus {
@@ -41,6 +43,8 @@ var passed: Array = []
 var failed: Array = []
 var skipped: Array = []
 var failed_reason: Array = []
+var fail_details: Array = []
+
 var skipped_reason: Array = []
 var finished: bool = false
 var forced_status: int = TestStatus.NONE
@@ -181,7 +185,7 @@ func next_action():
 		#before finalizing the test
 		var expected_phase = phaseContainer.step_string_to_step_id(end_state["phase"])
 		var current_phase = phaseContainer.current_step
-		if ((expected_phase != current_phase) && delta < max_wait_time):
+		if ((expected_phase != current_phase) && delta < long_wait_time):
 			count_delay("expected_phase")
 			return
 
@@ -195,17 +199,17 @@ func next_action():
 	
 	#wait a bit if we need to choose from a selection window but that window isn't there
 	if (action_type == "select"):
-		if (!_current_selection_window) and delta <max_wait_time:
+		if (!_current_selection_window) and delta <long_wait_time:
 			count_delay("action_select")
 			return
  
 	if (action_type == "target"):
-		if (!_current_targeting_card) and delta <max_wait_time:
+		if (!_current_targeting_card) and delta <long_wait_time:
 			count_delay("action_target")
 			return
 
 	if (action_type == "choose"):
-		if (!cfc.modal_menu) and delta <max_wait_time:
+		if (!cfc.modal_menu) and delta <long_wait_time:
 			count_delay("action_choose")
 			return
 
@@ -220,13 +224,13 @@ func next_action():
 	if (action_type == "next_phase"):
 		var hero_id = int(action_value)
 		var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id-1]
-		if (!heroPhase.can_hero_phase_action() and delta <max_wait_time):
+		if (!heroPhase.can_hero_phase_action() and delta <long_wait_time):
 			count_delay("action_nextphase")
 			return
 			
 	if (action_type == "play"):
 		var card = get_card(action_value) 
-		if card.check_play_costs() != CFConst.CostsState.OK and delta <max_wait_time:
+		if card.check_play_costs() != CFConst.CostsState.OK and delta <long_wait_time:
 			count_delay("action_play")
 			return			
 
@@ -236,6 +240,10 @@ func next_action():
 				if (phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN and delta <max_wait_time):
 					count_delay("action_wait_for_player_turn")
 					return
+			"wait_a_bit":
+				if (delta < max_wait_time):
+					count_delay("action_wait_a_bit")
+					return					
 
 	delta = 0
 
@@ -304,7 +312,9 @@ remotesync func run_action(my_action:Dictionary):
 		
 	match action_type:
 		 #activate and play are actually the same behavior
-		"activate", \
+		"activate":
+			action_activate(action_player, action_value)
+			return
 		"play":
 			action_play(action_player, action_value)
 			return
@@ -337,6 +347,9 @@ func action_play(player, card_id_or_name):
 	var card:WCCard = get_card(card_id_or_name)
 	card.attempt_to_play()
 	return
+	
+func action_activate(player, card_id_or_name):
+	return action_play(player, card_id_or_name)
 
 func action_select(player, action_value):
 	var chosen_cards: Array = []
@@ -470,7 +483,8 @@ remotesync func finalize_test_allclients(force_status:int):
 	if (is_element1_in_element2(end_state, current_gamestate)):
 		passed.append(current_test_file)
 	else:
-		failed.append(current_test_file)	
+		failed.append(current_test_file)
+		self.fail_details.append("***expected:\n" + to_json(end_state) + "\n***Actual:\n" + to_json(current_gamestate))	
 	return
 
 func sort_card_array(array):
@@ -481,13 +495,7 @@ func sort_card_array(array):
 
 #card here is either a card id or a card name, we try to accomodate for both
 func get_corrected_card_name (card) -> String:
-	var card_name = cfc.idx_card_id_to_name.get(
-		card, 
-		cfc.lowercase_card_name_to_name.get(card.to_lower(), "")
-	)
-	if !card_name:
-		card_name = cfc.shortname_to_name.get(card.to_lower(), "")
-	return card_name
+	return cfc.get_corrected_card_name(card)
 
 
 #check if all elements of dict1 can be found in dict2
@@ -513,7 +521,7 @@ func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
 				var val2 = element2[key]
 						
 				#handle special cases of card names vs id	
-				if (key in ["hero", "card"]):
+				if (key in ["hero", "card", "host"]):
 					val1 = get_corrected_card_name(val1)
 					val2 = get_corrected_card_name(val2)	
 				
@@ -677,6 +685,9 @@ remotesync func save_results():
 
 	for passed_file in passed:
 		to_print = to_print + "\t" + passed_file + "\n"	
+
+	for fail_detail in fail_details:
+		to_print +=  fail_detail + "\n"	
 
 	var network_id = get_tree().get_network_unique_id()
 	network_id = str(network_id)

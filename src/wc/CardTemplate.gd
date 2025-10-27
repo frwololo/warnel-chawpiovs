@@ -78,7 +78,7 @@ func position_ui_elements():
 		tokens.set_is_horizontal()
 
 func _process(delta) -> void:
-	if (cfc.modal_menu):
+	if (cfc.is_modal_event_ongoing()):
 		return
 	if (gameData.is_targeting_ongoing()):
 		return
@@ -539,7 +539,7 @@ func check_play_costs() -> Color:
 # Used to hijack the scripts at runtime if needed
 # Current use case: check manapool before asking to pay for cards
 func common_pre_run(_sceng) -> void:
-	var owner_hero_id = self.get_owner_hero_id()
+	var controller_hero_id = self.get_controller_hero_id()
 		
 	var scripts_queue: Array = _sceng.scripts_queue
 	var new_queue: Array = []
@@ -547,13 +547,13 @@ func common_pre_run(_sceng) -> void:
 		var script: ScriptTask = task
 		var script_definition = script.script_definition
 		
-		if (owner_hero_id <=0 ):
-			cfc.LOG("error owner hero id is not set" )
+		if (controller_hero_id <=0 ):
+			cfc.LOG("error controller hero id is not set" )
 		else:
 			#var current_hero_id = gameData.get_current_hero_id()
 			for v in ["hand", "encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
 				#TODO move to const
-				WCUtils.search_and_replace(script_definition, v, v+str(owner_hero_id), true)	
+				WCUtils.search_and_replace(script_definition, v, v+str(controller_hero_id), true)	
 		
 		match script_definition["name"]:
 			# To pay for cards: We check if the manapool has some mana
@@ -851,6 +851,9 @@ func export_to_json():
 	if (tokens_to_json):
 		card_description["tokens"] = tokens_to_json
 	
+	if (self.current_host_card):
+		card_description["host"] = current_host_card.properties.get("_code")
+	
 	return card_description
 
 func load_from_json(card_description):
@@ -866,11 +869,12 @@ func _ready_load_from_json(card_description: Dictionary = {}):
 	if !card_description:
 		return self
 
-
 	#owner_id and card_id should already be done or this card wouldn't exist
 	var tokens_to_json = card_description.get("tokens", {})
 	if (tokens_to_json):
 		tokens.load_from_json(tokens_to_json)
+
+	#we don't handle the attachment/host content here, it is don by the board loading, after all cards are loaded
 	
 	return self
 

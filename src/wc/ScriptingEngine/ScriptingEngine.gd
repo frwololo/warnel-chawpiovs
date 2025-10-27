@@ -177,10 +177,12 @@ func attack(script: ScriptTask) -> int:
 	if (stunned):
 		owner.tokens.mod_token("stunned", -1)
 		
-	else:		
-		script.script_definition["tags"] = tags
-		script.script_definition["amount"] = damage 
-		receive_damage(script)
+	else:
+		if (damage):	
+			var script_modifications = {
+				"additional_tags" : ["attack", "Scripted"],
+			}
+			_add_receive_damage_on_stack (damage, script, script_modifications)		
 		consequential_damage(script)
 
 	return retcode	
@@ -348,6 +350,38 @@ func villain_and_enemies_attack_you(script:ScriptTask) ->int:
 	script.subjects = [ gameData.get_villain()] + gameData.get_minions_engaged_with_hero(hero.get_controller_hero_id())
 	return enemy_attacks_you(script)
 
+func _modify_script(script, modifications:Dictionary = {}, script_definition_replacement_mode = "add"):
+		var output = duplicate_script(script)
+		var modified_script_definition = modifications.get("script_definition", {})
+
+		if (script_definition_replacement_mode == "add"):
+			for k in modified_script_definition.keys():
+				output.script_definition[k] = modified_script_definition[k]			
+		else: #replace entirely
+			output.script_definition = modified_script_definition
+
+		var add_tags = modifications.get("additional_tags", [])
+		if add_tags:
+			output.script_definition["tags"] = script.script_definition.get("tags", []) + add_tags
+			
+		output.subjects = modifications.get("subjects", output.subjects)
+		output.owner =  modifications.get("owner", output.owner)	
+		
+		return output
+
+func _add_receive_damage_on_stack(amount, original_script, modifications:Dictionary = {}):		
+		var receive_damage_script_definition = {
+			"name": "receive_damage",
+			"amount": amount,
+		}
+		modifications["script_definition"] =  receive_damage_script_definition	
+		var receive_damage_script = _modify_script(original_script, modifications, "replace")
+		
+		receive_damage_script.is_primed = true #fake prime it since we already gave it subjects	
+		
+		var task_event = SimplifiedStackScript.new("receive_damage", receive_damage_script)
+		gameData.theStack.add_script(task_event)	
+	
 #the ability that is triggered by enemy_attack
 func enemy_attack(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -389,33 +423,20 @@ func enemy_attack(script: ScriptTask) -> int:
 		gameData.theStack.add_script(discard_event)
 
 	if amount:
-		var receive_damage_definition = {
-			"name": "receive_damage",
-			"amount": amount,
-			"tags": ["attack", "Scripted"] + script.get_property(SP.KEY_TAGS)
+		var script_modifications = {
+			"additional_tags" : ["attack", "Scripted"],
 		}
-		var receive_damage_script:ScriptTask = ScriptTask.new(script.owner, receive_damage_definition, script.trigger_object, script.trigger_details)
-		receive_damage_script.subjects = script.subjects.duplicate()
-		receive_damage_script.is_primed = true #fake prime it since we already gave it subjects	
-		
-		var task_event = SimplifiedStackScript.new("receive_damage", receive_damage_script)
-		gameData.theStack.add_script(task_event)
+		_add_receive_damage_on_stack (amount, script, script_modifications)
 	
 	if defender and attacker.get_property("overkill", 0):
 		overkill_amount = amount - defender.get_remaining_damage()
 		overkill_amount = max(0, overkill_amount)
 
-		var overkill_damage_definition = {
-			"name": "receive_damage",
-			"amount": overkill_amount,
-			"tags": ["attack", "Scripted", "overkill"] + script.get_property(SP.KEY_TAGS)
+		var script_modifications = {
+			"additional_tags" : ["attack", "Scripted", "overkill"],
+			"subjects": [my_hero]
 		}
-		var overkill_damage_script:ScriptTask = ScriptTask.new(script.owner, overkill_damage_definition, script.trigger_object, script.trigger_details)
-		overkill_damage_script.subjects = [my_hero]
-		overkill_damage_script.is_primed = true #fake prime it since we already gave it subjects	
-		
-		var overkill_task_event = SimplifiedStackScript.new("receive_damage", overkill_damage_script)
-		gameData.theStack.add_script(overkill_task_event)	
+		_add_receive_damage_on_stack (overkill_amount, script, script_modifications)
 		
 	return retcode
 
@@ -622,6 +643,33 @@ func move_to_player_zone(script: ScriptTask) -> int:
 
 	return retcode
 
+#temporarily change controller id of a card
+#useful for obligations
+func change_controller_hero(script:ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+	
+	var new_controller_id = 0;
+		
+	var target_identity = script.get_property("target_identity", "")
+	if (typeof(target_identity) == TYPE_STRING):
+		var new_hero = cfc.NMAP.board.find_card_by_name(target_identity, true)
+		if new_hero:
+			new_controller_id = new_hero.get_controller_hero_id()
+	else:
+		#not supported yet
+		retcode = CFConst.ReturnCode.FAILED
+	
+	if new_controller_id <= 0:
+		retcode = CFConst.ReturnCode.FAILED
+	else:
+		for card in script.subjects:
+			card.set_controller_hero_id(new_controller_id)
+		retcode = CFConst.ReturnCode.CHANGED
+		
+	return retcode	
+
 func reveal_nemesis (script:ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
@@ -730,3 +778,24 @@ func _get_identity_from_script(script):
 	var my_hero_card = gameData.get_identity_card(my_hero_id)	
 	
 	return my_hero_card
+
+static func duplicate_script(script):
+	var result = ScriptTask.new(script.owner, script.script_definition, script.trigger_object, script.trigger_details)
+
+	if (script.subjects):
+		result.subjects = script.subjects.duplicate()
+
+	result.is_primed = script.is_primed
+	result.is_valid = script.is_valid
+
+	result.requested_subjects = script.requested_subjects
+
+	if (script.prev_subjects):
+		result.prev_subjects = script.prev_subjects.duplicate()
+
+	result.is_accepted = script.is_accepted
+	result.is_skipped = script.is_skipped
+	if (script.process_result):
+		result.process_result = script.process_result.duplicate
+	
+	return result

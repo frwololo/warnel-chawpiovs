@@ -241,16 +241,6 @@ func _retry_game(message:String):
 	cfc.quit_game()
 	get_tree().change_scene("res://src/wc/MainMenu.tscn")	
 
-func end_game(result:String):
-	cfc.set_game_paused(true)
-	var end_dialog:AcceptDialog = AcceptDialog.new()
-	end_dialog.window_title = result
-	end_dialog.add_button ( "retry", true, "retry")
-	end_dialog.connect("custom_action", self, "_retry_game")
-	end_dialog.connect("confirmed", self, "_close_game")
-	add_child(end_dialog)
-	end_dialog.popup_centered()
-	
 	
 # This function is to avoid relating the logic in the card objects
 # to a node which might not be there in another game
@@ -338,39 +328,42 @@ func get_owner_from_pile_name(pile_name:String):
 func load_cards_to_pile(card_data:Array, pile_name):
 	var card_array = []
 	var pile_owner = get_owner_from_pile_name(pile_name)
+	var card_to_card_data = {}
 	for card in card_data:
 		var card_id:String = card["card"]
 		var card_owner = card.get("owner_hero_id", pile_owner)
 		
 		#card_id here is either a card id or a card name, we try to accomodate for both
-		var card_name = cfc.idx_card_id_to_name.get(
-			card_id, 
-			cfc.lowercase_card_name_to_name.get(card_id.to_lower(), "")
-		)
-		if !card_name: #try to find the long name from the short name (for manual tests where I'm too lazy to write the full name)
-			card_name = cfc.shortname_to_name.get(card_id.to_lower(), "")
+		var card_name = cfc.get_corrected_card_name(card_id)
 		if !card_name:
 			var _error = 1
 			#error
 		var new_card:WCCard = cfc.instance_card(card_name, card_owner)
 		new_card.load_from_json(card)
 		card_array.append(new_card)
+		card_to_card_data[new_card] = card
 
 	for card in card_array:
-		if (cfc.NMAP.has(pile_name)): #it's a pile
+		if (pile_name and cfc.NMAP.has(pile_name)): #it's a pile
 			cfc.NMAP[pile_name].add_child(card)
 			card._determine_idle_state()
-		else: #it's a grid
+		else: #it's a grid or the board
 			#TODO cleaner way to add the card there?
 			#card.set_is_faceup(true)	
 			add_child(card)
 			card._determine_idle_state()
-			var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(pile_name)
-			var slot: BoardPlacementSlot
-			if grid:
-				slot = grid.find_available_slot()
-				if slot:
-					card.move_to(cfc.NMAP.board, -1, slot)	
+			if (pile_name):
+				var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(pile_name)
+				var slot: BoardPlacementSlot
+				if grid:
+					slot = grid.find_available_slot()
+					if slot:
+						card.move_to(cfc.NMAP.board, -1, slot)	
+			var host_id = card_to_card_data[card].get("host", {})
+			if host_id:
+				var host_card = find_card_by_name(host_id)
+				if host_card:
+					card.attach_to_host(host_card)
 
 		#dirty way to set some important variables
 		if (pile_name =="villain"):
@@ -395,14 +388,18 @@ func export_cards_to_json(pile_name, cards) -> Dictionary:
 	var result:Dictionary = {pile_name : export_arr}	
 	return result	
 
-func export_pile_to_json(pile_name) -> Dictionary:
+func export_pile_to_json(pile_name, seen_cards:= {}) -> Dictionary:
 	var pile: CardContainer = cfc.NMAP[pile_name]
 	var cards:Array = pile.get_all_cards()
+	for card in cards:
+		seen_cards[card] = true
 	return export_cards_to_json(pile_name, cards)
 	
-func export_grid_to_json(grid_name) -> Dictionary:
+func export_grid_to_json(grid_name, seen_cards:= {}) -> Dictionary:
 	var grid:BoardPlacementGrid = cfc.NMAP.board.get_grid(grid_name)
 	var cards:Array = grid.get_all_cards()	
+	for card in cards:
+		seen_cards[card] = true
 	return export_cards_to_json(grid_name, cards)	
 		
 func shuffle_decks() -> void:
@@ -528,12 +525,13 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 
 func savestate_to_json() -> Dictionary:	
 	var json_data:Dictionary = {}
+	var seen_cards:= {}
 	for grid_name in GRID_SETUP.keys():
 		var grid_info = GRID_SETUP[grid_name]
 		if "pile" == grid_info.get("type", ""):
-			json_data.merge(export_pile_to_json(grid_name))
+			json_data.merge(export_pile_to_json(grid_name, seen_cards))
 		else:
-			json_data.merge(export_grid_to_json(grid_name))
+			json_data.merge(export_grid_to_json(grid_name, seen_cards))
 
 	for i in range(gameData.get_team_size()):
 		var hero_id = i+1
@@ -542,13 +540,21 @@ func savestate_to_json() -> Dictionary:
 			var grid_info = HERO_GRID_SETUP[grid_name]
 			var real_grid_name = grid_name + str(hero_id)		
 			if "pile" == grid_info.get("type", ""):
-				json_data.merge(export_pile_to_json(real_grid_name))
+				json_data.merge(export_pile_to_json(real_grid_name, seen_cards))
 			else:
-				json_data.merge(export_grid_to_json(real_grid_name))
+				json_data.merge(export_grid_to_json(real_grid_name, seen_cards))
 				
 		#save hand	
 		var hand_name = "hand" + str(hero_id)
-		json_data.merge(export_pile_to_json(hand_name))	
+		json_data.merge(export_pile_to_json(hand_name, seen_cards))	
+	
+	#orphan cards (not in pile or grid)
+	var other_cards = []
+	for card in get_all_cards():
+		if ! seen_cards.get(card, false):
+			other_cards.append(card)
+	if other_cards:
+		json_data.merge(export_cards_to_json("others", other_cards))
 		
 	var result: Dictionary = {"board" : json_data}
 	return result
@@ -586,6 +592,9 @@ func loadstate_from_json(json:Dictionary):
 		var card_data = json_data.get(hand_name, [])
 		load_cards_to_pile(card_data, hand_name)
 
+	#load cards that aren't on any grid or piles
+	var other_data = json_data.get("others", [])
+	load_cards_to_pile(other_data, "")
 	
 	return
 #The game engine doesn't really have a concept of double sided cards, so instead,
@@ -595,6 +604,7 @@ func flip_doublesided_card(card:WCCard):
 	if (back_code):
 		
 		if card.get_property("type_code") in ["hero", "alter_ego"]:
+			remove_child(card)
 			var new_card = heroZones[card.get_owner_hero_id()].load_identity(back_code)
 			card.copy_modifiers_to(new_card)
 			card.queue_free() #is more required to remove it?				
@@ -636,3 +646,18 @@ func _on_OptionsButton_pressed():
 	options_menu.set_as_toplevel(true)
 	options_menu.visible = true
 	pass # Replace with function body.
+
+func find_card_by_name(card_id_or_name, include_back:= false):
+	var card_name = cfc.get_corrected_card_name(card_id_or_name).to_lower()
+	for card in get_all_cards():
+		if (card.canonical_name.to_lower() == card_name):
+			return card
+		if (include_back):
+			var back_code = card.get_card_back_code()
+			if (back_code):
+				var back_name = cfc.get_corrected_card_name(back_code)
+				if back_name.to_lower() == card_name:
+					return card
+	return null
+
+

@@ -187,6 +187,9 @@ func _process(_delta: float):
 	if stack.empty(): 
 		return
 
+	
+	if gameData.is_ongoing_blocking_announce():
+		return
 			
 	if (gameData.user_input_ongoing):
 		waitOneMoreTick = 2; #TODO MAGIC NUMBER. Why do we have to wait 2 passes before damage gets prevented?
@@ -204,10 +207,7 @@ func _process(_delta: float):
 				rpc("client_send_before_trigger", interrupt_mode)
 
 				
-		InterruptMode.NOBODY_IS_INTERRUPTING:
-			if (gameData.theAnnouncer.wait_for_timer()):
-				return
-			
+		InterruptMode.NOBODY_IS_INTERRUPTING:			
 			var next_script = stack.pop_back()
 			var func_return = next_script.execute()	
 			while func_return is GDScriptFunctionState && func_return.is_valid():
@@ -285,8 +285,8 @@ remotesync func client_send_before_trigger(_interrupt_mode):
 				#Forced interrupts happen before optional ones
 				if (card in card_already_played_for_stack_uid.get(script_uid, [])):
 					continue
-				if (task.script_name == "enemy_initiates_attack"):
-					if (card.canonical_name == "Webbed Up"):
+				if (task.script_name == "receive_damage"):
+					if (card.canonical_name == "Armored Rhino Suit"):
 						var _tmp = 1
 				var can_interrupt = card.can_interrupt(hero_id,task.owner, _current_interrupted_event)
 				if can_interrupt == INTERRUPT_FILTER[_interrupt_mode]:

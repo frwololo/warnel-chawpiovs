@@ -292,8 +292,7 @@ func check_main_scheme_defeat():
 	var next_scheme = move_to_next_scheme(scheme)
 	
 	if (!next_scheme):		
-		var board:Board = cfc.NMAP.board
-		board.end_game("defeat")	
+		defeat()	
 	
 func game_state_changed():
 	emit_signal("game_state_changed",{})
@@ -606,6 +605,8 @@ func current_encounter_finished():
 func reveal_current_encounter(target_id = 0):
 	if (!target_id):
 		target_id = _villain_current_hero_target
+		
+	#todo should we be doing something about target_id ?	
 	
 	if !_current_encounter:
 		#this is a bug. This function should only be called when there's an encounter about to be revealed
@@ -653,6 +654,7 @@ func reveal_encounter(target_id = 0):
 			var pile = get_revealed_encounters_pile()
 			_current_encounter.set_is_faceup(true,false)
 			_current_encounter.move_to(pile)
+			_current_encounter.execute_scripts(_current_encounter, "about_to_reveal")
 			_current_encounter_step = EncounterStatus.ABOUT_TO_REVEAL
 			return
 		EncounterStatus.ABOUT_TO_REVEAL:
@@ -719,7 +721,7 @@ func get_encounter_target_grid (encounter) -> BoardPlacementGrid:
 		"schemes":
 			pass
 		_:
-			grid_name = grid_name + str(_villain_current_hero_target)
+			grid_name = grid_name + str(encounter.get_controller_hero_id())
 	
 	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(grid_name)
 	
@@ -784,12 +786,15 @@ func character_died(card:Card):
 	var task_event = SimplifiedStackScript.new("character_died", character_died_script)
 	gameData.theStack.add_script(task_event)
 
+func defeat():
+	theAnnouncer.simple_announce("Defeat Defeat", Color8(25,20,20,255), Color8(18,18,18,255))	
+	
+
 func hero_died(card:Card):
 	#TODO dead heroes can't play
 	dead_heroes.append(card.get_owner_hero_id())
 	if (dead_heroes.size() == team.size()):
-		var board:Board = cfc.NMAP.board
-		board.end_game("defeat")
+		defeat()
 
 func move_to_next_villain(current_villain):
 	cfc.add_ongoing_process(self, "move_to_next_villain")
@@ -818,8 +823,8 @@ func move_to_next_villain(current_villain):
 
 func villain_died(card:Card):
 	if (!move_to_next_villain(card)):
-		var board:Board = cfc.NMAP.board
-		board.end_game("victory")
+		theAnnouncer.simple_announce("Victory Victory", Color8(50,50,200, 255), Color8(200,50,50,255))	
+	
 
 func select_current_playing_hero(hero_index):
 	if (not can_i_play_this_hero(hero_index)):
@@ -986,7 +991,9 @@ func confirm(
 		_release_user_input_lock(owner.get_controller_player_network_id())
 	cfc.remove_ongoing_process(self)	
 	return(is_accepted)
-	
+
+func is_ongoing_blocking_announce():
+	return theAnnouncer.get_blocking_announce()	
 
 func cleanup_post_game():
 	cfc.game_paused = true

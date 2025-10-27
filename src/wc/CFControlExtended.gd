@@ -449,6 +449,17 @@ func instance_card(card_name_or_id: String, owner_id:int) -> Card:
 	card.init_owner_hero_id(owner_id)
 	card.set_controller_hero_id(owner_id)
 	return card
+	
+#card here is either a card id or a card name, we try to accomodate for both
+func get_corrected_card_name (card) -> String:
+	var card_name = self.idx_card_id_to_name.get(
+		card, 
+		 self.lowercase_card_name_to_name.get(card.to_lower(), "")
+	)
+	if !card_name:
+		card_name = self.shortname_to_name.get(card.to_lower(), "")
+	return card_name	
+	
 #
 # Network related functions
 func is_game_master() -> bool:
@@ -513,3 +524,10 @@ func is_process_ongoing() -> int:
 
 func reset_ongoing_process_stack():
 	_ongoing_processes = {}
+
+func is_modal_event_ongoing():
+	if modal_menu:
+		return true
+	if gameData.is_ongoing_blocking_announce():
+		return true
+	return false

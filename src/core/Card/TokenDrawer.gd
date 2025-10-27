@@ -28,6 +28,7 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	
 	# Every process tick, it will ensure the collsion shape for the
 	# drawer is adjusted to its current size
 	if cfc.NMAP.has('board') and owner_card.get_parent() == cfc.NMAP.board:
@@ -36,20 +37,27 @@ func _process(_delta: float) -> void:
 		# We're extending the area of the drawer a bit, to try and avoid it
 		# glitching when moving from card to drawer and back
 		shape.extents = $Drawer.rect_size/2 + Vector2(10,0)
+			
 
 # Setter for is_drawer_open
 # Simply calls token_drawer()
-func set_is_drawer_open(value: bool, force:bool = false) -> void:
-	if force or (is_drawer_open != value):
-		token_drawer(value)
+func set_is_drawer_open(value: bool, forced:bool = false) -> void:
+	if forced or (is_drawer_open != value):
+		token_drawer(value, forced)
 
 
 # Reveals or Hides the token drawer
 #
 # The drawer will not appear while another animation is ongoing
 # and it will appear only while the card is on the board.
-func token_drawer(requested_state := true) -> void:
+func token_drawer(requested_state := true, forced: bool = false) -> void:
 	# I use these vars to avoid writing it all the time and to improve readability
+
+	#TODO this is to prevent
+	#the drawer from opening while an animation is ongoing
+	#but I feel like this is a hack
+	if cfc.is_modal_event_ongoing() and requested_state and not forced:
+		return
 
 
 	var td := $Drawer
@@ -64,9 +72,9 @@ func token_drawer(requested_state := true) -> void:
 
 		
 	# We want to keep the drawer closed during the flip and movement
-	if not _tween.is_active() and \
+	if forced or (not _tween.is_active() and \
 			not owner_card._flip_tween.is_active() and \
-			not owner_card._tween.is_active():
+			not owner_card._tween.is_active()):
 		# We don't open the drawer if we don't have any tokens at all
 		if requested_state == true and $Drawer/VBoxContainer.get_child_count():
 			# To avoid tween deadlocks

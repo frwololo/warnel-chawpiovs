@@ -357,10 +357,23 @@
 				"name": "prevent",
 				"subject": "interrupted_event"
 				}
-			]
+			],
+			"filter_state_trigger": [{
+				"filter_properties": {
+					"type_code": "treachery"
+				}
+			}]
 		}
 	},
 	"Eviction Notice": {
+		"about_to_reveal": {
+			"trigger": "self",
+			"all": [{
+				"name": "change_controller_hero",
+				"target_identity": "Peter Parker", 
+				"subject": "self",
+			}]
+		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": {

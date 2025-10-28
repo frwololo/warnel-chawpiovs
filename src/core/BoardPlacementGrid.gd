@@ -53,7 +53,7 @@ func _card_added(card):
 	#add new slots ahead of time as needed, to avoid "yield" related issues
 	if (!auto_extend):
 		return
-	find_available_slot()	
+	#find_available_slot()	
 
 func _card_removed(card):
 	#add new slots ahead of time as needed, to avoid "yield" related issues

@@ -69,6 +69,8 @@ var user_input_ongoing:int = 0 #ID of the current player (or remote player) doin
 var _garbage:= []
 var _targeting_ongoing:= false
 
+var _game_over := false
+
 func is_announce_ongoing():
 	return theAnnouncer and theAnnouncer.is_announce_ongoing()
 
@@ -106,10 +108,20 @@ func is_targeting_ongoing():
 	return _targeting_ongoing	
 
 
+func end_game(result:String):
+	cfc.set_game_paused(true)
+	var end_dialog:AcceptDialog = AcceptDialog.new()
+	end_dialog.window_title = result
+	end_dialog.add_button ( "retry", true, "retry")
+	end_dialog.connect("custom_action", self, "_retry_game")
+	end_dialog.connect("confirmed", self, "_close_game")
+	cfc.NMAP.board.add_child(end_dialog)
+	end_dialog.popup_centered()
+
 func _process(_delta: float):
-	#theStack.process(_delta)
-	#if (testSuite):
-	#	testSuite.process(_delta)
+	if _game_over and !theAnnouncer.get_blocking_announce():
+		end_game("game over")
+		_game_over = false
 	return
 
 puppetsync func user_input_lock_denied():
@@ -462,7 +474,25 @@ func enemy_activates() :
 		
 	#not stunned, proceed
 	match _current_enemy_attack_step:
-		EnemyAttackStatus.NONE:							
+		EnemyAttackStatus.NONE:	
+				#GUI announce
+				var top_color = Color8(40,20,20,255)
+				if action == "scheme":
+					top_color = Color8(40,20,40,255)
+				var announce_settings = {
+					"top_text": enemy.get_property("shortname"),
+					"bottom_text" : action,
+					"top_color": top_color,
+					"bottom_color": Color8(18,18,18,255),
+					"bg_color" : Color8(0,0,0,0),
+					"scale": 0.6,
+					"duration": 2,
+					"animation_style": Announce.ANIMATION_STYLE.SPEED_OUT,
+					"top_texture_filename": get_villain().get_art_filename(),
+					"bottom_texture_filename": get_identity_card(target_id).get_art_filename(),
+				}
+				theAnnouncer.simple_announce(announce_settings )
+										
 				theStack.create_and_add_signal("enemy_initiates_" + action, enemy, {SP.TRIGGER_TARGET_HERO : get_current_target_hero().canonical_name})
 				_current_enemy_attack_step = EnemyAttackStatus.PENDING_INTERRUPT
 				return
@@ -787,7 +817,23 @@ func character_died(card:Card):
 	gameData.theStack.add_script(task_event)
 
 func defeat():
-	theAnnouncer.simple_announce("Defeat Defeat", Color8(25,20,20,255), Color8(18,18,18,255))	
+	_game_over = true
+	var announce_settings = {
+		"text": "Defeat Defeat",
+		"top_color": Color8(25,20,20,255),
+		"bottom_color": Color8(18,18,18,255)
+	}
+	theAnnouncer.simple_announce(announce_settings, true)	
+
+func victory():
+	_game_over = true
+	var announce_settings = {
+		"text": "Victory Victory",
+		"top_color": Color8(50,50,200, 255),
+		"bottom_color": Color8(200,50,50,255)
+	}
+	theAnnouncer.simple_announce(announce_settings, true )
+	
 	
 
 func hero_died(card:Card):
@@ -823,7 +869,15 @@ func move_to_next_villain(current_villain):
 
 func villain_died(card:Card):
 	if (!move_to_next_villain(card)):
-		theAnnouncer.simple_announce("Victory Victory", Color8(50,50,200, 255), Color8(200,50,50,255))	
+		victory()
+	else:
+		var announce_settings = {
+			"text": "Next Stage",
+			"top_texture_filename": get_villain().get_art_filename()
+		}
+		theAnnouncer.simple_announce(announce_settings )			
+
+
 	
 
 func select_current_playing_hero(hero_index):

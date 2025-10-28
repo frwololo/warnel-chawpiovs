@@ -19,6 +19,7 @@ const _SIMPLE_ANNOUNCE_SCENE = preload(_SIMPLE_ANNOUNCE_SCENE_FILE)
 
 const DEFAULT_TOP_COLOR:= Color8(50, 50, 50, 255)
 const DEFAULT_BOTTOM_COLOR:= Color8(18, 18, 18, 255)
+const DEFAULT_BG_COLOR = Color8(255,255,255,75)
 
 const _script_name_to_function:={
 	"receive_damage": "receive_damage",
@@ -38,22 +39,29 @@ func _step_started(details:Dictionary):
 		return
 		
 	var current_step = details["step"]
-	var text = ""
+	var settings = {}
 	match current_step:
 		CFConst.PHASE_STEP.PLAYER_TURN:
-			text = "Player Phase"
+			settings["text"] = "Player Phase"
+			var hero_card = gameData.get_identity_card(1)
+			var filename = hero_card.get_art_filename()
+			settings["top_texture_filename"] = filename
 		CFConst.PHASE_STEP.VILLAIN_THREAT:
-			text = "Villain Phase"
-	if text:
+			settings["text"] = "Villain Phase"
+			var villain_card = gameData.get_villain()
+			var filename = villain_card.get_art_filename()
+			settings["top_texture_filename"] = filename			
+	if settings.get("text", ""):
 		ongoing_announce = "phase_starts"
 		ongoing_announce_object = current_step
-		var func_return = call("init_simple_announce", text)
+		var func_return = call("init_simple_announce", settings)
 		while func_return is GDScriptFunctionState && func_return.is_valid():
 			func_return = func_return.resume()
 	return #found one so we exit early
 
 func _process(delta: float):
 	if (_skip_announcer):
+		cleanup()
 		return
 	
 	current_delta += delta
@@ -186,11 +194,39 @@ func cleanup_receive_damage():
 		arrow.queue_free()
 
 
-func init_simple_announce(text, top_color:Color = DEFAULT_TOP_COLOR, bottom_color:Color = DEFAULT_BOTTOM_COLOR):
+func init_simple_announce(settings:Dictionary):
+	var top_color:Color = settings.get("top_color", DEFAULT_TOP_COLOR)
+	var bottom_color:Color = settings.get("bottom_color", DEFAULT_BOTTOM_COLOR)
+	var bg_color:Color = settings.get("bg_color", DEFAULT_BG_COLOR)
+	
+	
 	is_blocking = true
 	var announce = _SIMPLE_ANNOUNCE_SCENE.instance()
-	announce.set_text(text)
+	if (settings.has("text")):
+		announce.set_text(settings["text"])
+
+	if (settings.has("bottom_text")):
+		announce.set_text_bottom(settings["bottom_text"])	
+
+	if (settings.has("top_text")):
+		announce.set_text_top(settings["top_text"])	
+	
+	if (settings.has("animation_style")):
+		announce.set_animation_style(settings["animation_style"])
+		
 	announce.set_bg_colors(top_color, bottom_color)
+	announce.set_bg_color(bg_color)	
+	if settings.has("top_texture_filename"):
+		announce.set_top_texture(settings["top_texture_filename"])
+	if settings.has("bottom_texture_filename"):
+		announce.set_bottom_texture(settings["bottom_texture_filename"])		
+
+	if settings.has("duration"):
+		announce.set_duration(settings["duration"])
+
+	if settings.has("scale"):
+		announce.set_scale(settings["scale"])
+
 	cfc.NMAP.board.add_child(announce)
 	storage["announce"] = announce
 	
@@ -205,13 +241,16 @@ func cleanup_simple_announce():
 	announce.queue_free()
 	pass
 
-func simple_announce (text, top_color:Color = DEFAULT_TOP_COLOR, bottom_color:Color = DEFAULT_BOTTOM_COLOR):
+func simple_announce (settings:Dictionary, force:bool = false):
 	if ongoing_announce:
-		return false
-	if text:
-		ongoing_announce = "simple_announce"
-		ongoing_announce_object = text
-		var func_return = call("init_simple_announce", text, top_color, bottom_color)
-		while func_return is GDScriptFunctionState && func_return.is_valid():
-			func_return = func_return.resume()
+		if (force):
+			cleanup()
+		else:
+			return false
+
+	ongoing_announce = "simple_announce"
+	ongoing_announce_object = settings
+	var func_return = call("init_simple_announce", settings)
+	while func_return is GDScriptFunctionState && func_return.is_valid():
+		func_return = func_return.resume()
 	return true

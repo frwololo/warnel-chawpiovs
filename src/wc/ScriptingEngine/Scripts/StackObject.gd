@@ -42,7 +42,7 @@ func matches_filters(task, filters:Dictionary, owner_card):
 	if (filters):
 		var _tmp = 0	
 	var script_details = task.script_definition
-	var result = WCUtils.is_element1_in_element2(filters, script_details)
+	var result = WCUtils.is_element1_in_element2(filters, script_details, ["tags"])
 
 	return result
 

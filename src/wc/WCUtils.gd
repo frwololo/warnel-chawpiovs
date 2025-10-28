@@ -91,7 +91,7 @@ static func merge_dict(dict_1: Dictionary, dict_2: Dictionary, deep_merge: bool 
 
 #check if all elements of dict1 can be found in dict2
 #This doesn't mean the dictionaries are necessarily equal
-static func is_element1_in_element2 (element1, element2)-> bool:
+static func is_element1_in_element2 (element1, element2, order_doesnt_matter: Array = [])-> bool:
 	
 	if (typeof(element1) != typeof(element2)):
 		return false
@@ -103,15 +103,25 @@ static func is_element1_in_element2 (element1, element2)-> bool:
 					return false
 				var val1 = element1[key]
 				var val2 = element2[key]
+				
+				if (key in order_doesnt_matter and typeof(val1) == TYPE_ARRAY and typeof(val2) == TYPE_ARRAY ):
+					val1.sort()
+					val2.sort()
 																
-				if !is_element1_in_element2(val1, val2):
+				if !is_element1_in_element2(val1, val2, order_doesnt_matter):
 					return false
 		TYPE_ARRAY:
+			#array order generally matters but we can skip elements from element2
 			if (element1.size() > element2.size()): #Should we rather check for not equal here?
 				return false
 			var i:int = 0
+			var j:int = 0
 			for value in element1:
-				if !is_element1_in_element2(element1[i], element2[i]):
+				var found = false
+				while (j < element2.size() and !found ):
+					found = is_element1_in_element2(element1[i], element2[j], order_doesnt_matter)
+					j+= 1
+				if (!found):
 					return false
 				i+=1
 		TYPE_STRING:

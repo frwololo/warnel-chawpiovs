@@ -208,12 +208,13 @@ func _process(_delta: float):
 
 				
 		InterruptMode.NOBODY_IS_INTERRUPTING:			
+			set_interrupt_mode(InterruptMode.NONE)
 			var next_script = stack.pop_back()
 			var func_return = next_script.execute()	
 			while func_return is GDScriptFunctionState && func_return.is_valid():
 				func_return = func_return.resume()
 			
-			set_interrupt_mode(InterruptMode.NONE)
+
 #		var sceng = next_script.sceng
 #		var trigger_details = sceng.trigger_details
 #		var is_network_call = trigger_details.has("network_prepaid")
@@ -286,7 +287,7 @@ remotesync func client_send_before_trigger(_interrupt_mode):
 				if (card in card_already_played_for_stack_uid.get(script_uid, [])):
 					continue
 				if (task.script_name == "receive_damage"):
-					if (card.canonical_name == "Armored Rhino Suit"):
+					if (card.canonical_name == "Backflip"):
 						var _tmp = 1
 				var can_interrupt = card.can_interrupt(hero_id,task.owner, _current_interrupted_event)
 				if can_interrupt == INTERRUPT_FILTER[_interrupt_mode]:

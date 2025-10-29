@@ -85,9 +85,9 @@ func keyword_to_script(keyword, _value):
 # This fuction merges text files scripts for a given card 
 # with default rules for the game (rules that apply to all cards)
 # Specifically, it converts card keywords (cost, threat,...) into actual scripts for the engine
-func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -> Dictionary:
+func get_scripts(scripts: Dictionary, card_id: String, _get_modified = true) -> Dictionary:
 
-	var card = cfc.card_definitions[card_name]
+	var card = cfc.card_definitions[card_id]
 	var	cost = card["Cost"] if (card && card.has("Cost")) else 0
 	
 	#Grid position depending on card type
@@ -108,7 +108,7 @@ func get_scripts(scripts: Dictionary, card_name: String, _get_modified = true) -
 	}
 
 	
-	var script:Dictionary = scripts.get(card_name,{})
+	var script:Dictionary = scripts.get(card_id,{})
 	if script :
 		pass #debug location for breakpoints
 	script = script.duplicate()

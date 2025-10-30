@@ -5,17 +5,22 @@ extends Reference
 
 var owner:PlayerData
 var deck_id
-var hero_id
+var _hero_id setget set_hero_id,get_hero_id
 var ally_limit:= 3 #TODO move to some configuration file?
 
+func set_hero_id(id):
+	_hero_id = id
+
+func get_hero_id():
+	return _hero_id
 
 func _init():
 	owner = gameData.network_players[1] #Default to being owned by master
 	deck_id = 0
-	hero_id = ""
+	_hero_id = ""
 
 func get_hero_card_data() -> Dictionary:
-	return cfc.get_card_by_id(hero_id)
+	return cfc.get_card_by_id(_hero_id)
 	
 func get_alter_ego_card_data() -> Dictionary:
 	var card_data = get_hero_card_data()
@@ -40,7 +45,7 @@ func savestate_to_json() -> Dictionary:
 		"herodeckdata": {
 			"owner" : self.owner.get_id(),
 			"deck_id" : self.deck_id,
-			"hero" : self.hero_id
+			"hero" : self._hero_id
 		}
 	}
 	return json_data
@@ -52,18 +57,14 @@ func loadstate_from_json(json:Dictionary) -> bool:
 		return false
 	var owner_id:int = 	int(json_data.get("owner", 0) + 1)
 	owner = gameData.network_players.get(owner_id) #Default to being owned by master
-	deck_id = json_data.get("deck_id", 0)
+	deck_id = json_data.get("deck_id", -1) #-1 here to force initialization if needed
 	
 	#Hero might be a card id or card name. We try to accomodate for both use cases here
 	var hero:String = json_data.get("hero", "")
 	if (!hero):
 		#TODO error
 		return false
-	var hero_card_name = cfc.lowercase_card_name_to_name.get(hero.to_lower(), "")
-	if (hero_card_name):
-		hero_id = cfc.card_definitions[hero_card_name]["_code"]
-	else:
-		hero_id = hero
+	_hero_id = cfc.get_corrected_card_id(hero)
 	return true
 
 func get_ally_limit():

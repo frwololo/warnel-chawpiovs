@@ -578,7 +578,9 @@ func spawn_card(script: ScriptTask) -> void:
 	var card: Card
 	var count: int
 	var alteration = 0
-	var canonical_name: String = script.get_property(SP.KEY_CARD_NAME)
+	var canonical_name: String = script.get_property(SP.KEY_CARD_NAME)	
+	#TODO this will not always work
+	var canonical_id = cfc.get_corrected_card_id(canonical_name)
 	var grid_name: String = script.get_property(SP.KEY_GRID_NAME)
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
 	if str(script.get_property(SP.KEY_OBJECT_COUNT)) == SP.VALUE_RETRIEVE_INTEGER:
@@ -611,7 +613,7 @@ func spawn_card(script: ScriptTask) -> void:
 				# We need a small delay, to allow a potential new slot to instance
 				yield(script.owner.get_tree().create_timer(0.05), "timeout")
 				if slot:
-					card = cfc.instance_card(canonical_name, -2)
+					card = cfc.instance_card(canonical_id, -2)
 					cfc.NMAP.board.add_child(card)
 					card.position = slot.rect_global_position
 					card._placement_slot = slot
@@ -621,7 +623,7 @@ func spawn_card(script: ScriptTask) -> void:
 					scripting_bus.emit_signal("card_spawned", card, {"tags": tags})
 	else:
 		for iter in range(count + alteration):
-			card = cfc.instance_card(canonical_name, -2)
+			card = cfc.instance_card(canonical_id, -2)
 			var board_position: Vector2 = script.get_property(SP.KEY_BOARD_POSITION)
 			cfc.NMAP.board.add_child(card)
 			card.position = board_position
@@ -657,6 +659,7 @@ func spawn_card_to_container(script: ScriptTask) -> void:
 	var count: int
 	var alteration = 0
 	var canonical_name = script.get_property(SP.KEY_CARD_NAME)
+	
 	var card_filters = script.get_property(SP.KEY_CARD_FILTERS)
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
 	if card_filters:
@@ -717,7 +720,10 @@ func spawn_card_to_container(script: ScriptTask) -> void:
 		alteration = yield(alteration, "completed")
 	var spawned_cards := []
 	for iter in range(count + alteration):
-		card = cfc.instance_card(canonical_name, -2)
+		#TODO this will not always work
+		var canonical_id = cfc.get_corrected_card_id(canonical_name)
+			
+		card = cfc.instance_card(canonical_id, -2)
 		if not script.get_property(SP.KEY_IMMEDIATE_PLACEMENT):
 			cfc.NMAP.board.add_child(card)
 			card.scale = Vector2(0.1,0.1)

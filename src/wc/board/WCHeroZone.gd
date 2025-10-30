@@ -22,12 +22,12 @@ func set_player(id:int):
 
 func load_starting_identity():
 	hero_deck_data = gameData.get_team_member(my_id)["hero_data"]
-	var hero_card_data = cfc.get_card_by_id(hero_deck_data.hero_id)
+	var hero_card_data = cfc.get_card_by_id(hero_deck_data.get_hero_id())
 	var alter_ego_id = hero_card_data.get("back_card_code", "")
 	if !alter_ego_id:
 		#TODO error
 		return
-	var ckey = cfc.idx_card_id_to_name[alter_ego_id]
+	var ckey = alter_ego_id
 	load_identity (ckey)
 	load_nemesis_aside(hero_card_data)
 	
@@ -40,9 +40,9 @@ func load_nemesis_aside(hero_card_data):
 	for card_data in nemesis_cards_data:
 		var quantity = card_data.get("quantity", 1)
 		for i in range (quantity):
-			var card_name = card_data["Name"]
+			var card_key = card_data["_code"]
 			 #0 sets owner to villain so that nemesis cards get discarded into villain pile
-			var card = cfc.instance_card(card_name, 0)
+			var card = cfc.instance_card(card_key, 0)
 			#moving the card forces a rescale
 			cfc.NMAP["deck" + str(my_id)].add_child(card)
 			card.move_to(cfc.NMAP["set_aside"])

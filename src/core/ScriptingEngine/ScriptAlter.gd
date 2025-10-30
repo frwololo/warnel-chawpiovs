@@ -52,4 +52,5 @@ func _init(
 	# We emit a signal when done so that our ScriptingEngine
 	# knows we're ready to continue
 	is_primed = true
+	script_definition = cfc.ov_utils.parse_post_prime_replacements(self)
 	emit_signal("primed")

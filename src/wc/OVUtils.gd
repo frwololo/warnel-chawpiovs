@@ -37,3 +37,20 @@ func can_pay_as_resource(to_pay:Dictionary, resource_cards:Array, script = null)
 	if total_resources.can_pay_total_cost(to_pay_as_cost):
 		return true
 	return false
+
+func parse_post_prime_replacements(script_task:ScriptObject) -> Dictionary:
+	if !script_task.is_primed:
+		var _error = 1
+		#TODO error handling
+		return script_task.script_definition
+
+	var wip_definitions := script_task.script_definition.duplicate(true)
+	var subjects = script_task.subjects
+	if !subjects and script_task.owner.has_method("get_parent_script"):
+		subjects = script_task.owner.parent_script.subjects
+	var subject_controller_hero = 0
+	if subjects:
+		subject_controller_hero = subjects[0].get_controller_hero_id()
+		WCUtils.search_and_replace(wip_definitions, "{__subject_hero_id__}", str(subject_controller_hero), false)	
+			
+	return wip_definitions

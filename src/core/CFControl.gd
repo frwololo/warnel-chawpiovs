@@ -11,6 +11,8 @@ extends Node
 signal all_nodes_mapped
 # Sent any time the scripting engine cache is cleared
 signal cache_cleared
+# Sent when all Card definitions have finished loading the memory from file
+signal card_definitions_loaded
 # Sent when all Card scripts have finished loading the memory from file
 signal scripts_loaded
 # Sent when a new Card node is instanced
@@ -109,6 +111,9 @@ var curr_scale: float
 var script_load_thread : Thread
 var scripts_loading := true
 
+var cards_load_thread : Thread
+var cards_loading := true
+
 func _ready() -> void:
 	var load_end_time = OS.get_ticks_msec()
 	if OS.has_feature("debug") and not cfc.is_testing:
@@ -146,22 +151,41 @@ func _setup() -> void:
 	else:
 		# Initialize the game random seed
 		set_seed(game_rng_seed)
-	card_definitions = load_card_definitions()
-	var defs_load_end_time = OS.get_ticks_msec()
-	if OS.has_feature("debug") and not cfc.is_testing:
-		print_debug("DEBUG INFO:CFControl: card definitions load time = %sms" % [str(defs_load_end_time - load_start_time)])	
+	if !CFConst.LOAD_CARDS_ONLINE:	
+		load_cards_database()
+
+func load_scripts():
 	# Removed threading since I optimized this loading function
 #	load_script_definitions()
 	# We're loading the script definitions in a thread to avoid delaying game load too much
-	if OS.get_name() == "HTML5":
+	
+	if CFConst.DISABLE_THREADS or OS.get_name() == "HTML5":
 		load_script_definitions()
 	else:
 		load_script_definitions()
-		#script_load_thread = Thread.new()
-		#script_load_thread.start(self, "load_script_definitions")
+#		script_load_thread = Thread.new()
+#		var result = script_load_thread.start(self, "load_script_definitions")
+#		if result != OK:
+#			var _error = 1
 	var scripts_load_end_time = OS.get_ticks_msec()
 	if OS.has_feature("debug") and not cfc.is_testing:
 		print_debug("DEBUG INFO:CFControl: card scripts load time = %sms" % [str(scripts_load_end_time - load_start_time)])	
+	
+
+func load_cards_database():
+	if CFConst.DISABLE_THREADS or OS.get_name() == "HTML5":
+		load_card_definitions()
+	else:	
+		cards_load_thread = Thread.new()
+		cards_load_thread.start(self, "load_card_definitions")
+		while cards_load_thread.is_alive():
+			yield(get_tree().create_timer(0.1), "timeout")
+		cards_load_thread.wait_to_finish()		
+	var defs_load_end_time = OS.get_ticks_msec()
+	if OS.has_feature("debug") and not cfc.is_testing:
+		print_debug("DEBUG INFO:CFControl: card definitions load time = %sms" % [str(defs_load_end_time - load_start_time)])	
+
+	load_scripts()
 
 func _setup_testing() -> void:
 	flush_cache()
@@ -236,46 +260,48 @@ func restore_rng_state() -> void:
 	game_rng.state = rng_saved_state
 
 # Instances and returns a Card object, based on its name.
-func _instance_card(card_name: String) -> Card:
+func _instance_card(card_id: String) -> Card:
 	# We discover the template from the "Type"  property defined
 	# in each card. Any property can be used
 	var template = load(CFConst.PATH_CARDS
-			+ card_definitions[card_name][CardConfig.SCENE_PROPERTY] + ".tscn")
+			+ card_definitions[card_id][CardConfig.SCENE_PROPERTY] + ".tscn")
 	var card = template.instance()
 	# We set the card_name variable so that it's able to be used later
-	card.canonical_name = card_name
+	card.canonical_name = card_definitions[card_id]["Name"]
+	card.canonical_id = card_id
 	emit_signal("new_card_instanced", card)
 	return(card)
 
 
 # Returns a Dictionary with the combined Card definitions of all set files
 func load_card_definitions() -> Dictionary:
+	cards_loading = true
 	var loaded_definitions : Array
-	if "CARD_SETS" in SetPreload and SetPreload.CARD_SETS.size() > 0:
-		loaded_definitions = SetPreload.CARD_SETS
-	else:
-		var set_files = CFUtils.list_files_in_directory(
-				CFConst.PATH_SETS, CFConst.CARD_SET_NAME_PREPEND)
-		for set_file in set_files:
-			loaded_definitions.append(load(CFConst.PATH_SETS + set_file))
+
+	var set_files = CFUtils.list_files_in_directory(
+			CFConst.PATH_SETS, CFConst.CARD_SET_NAME_PREPEND)
+	for set_file in set_files:
+		loaded_definitions.append(load(CFConst.PATH_SETS + set_file))
 	var combined_sets := {}
 	for set_def in loaded_definitions:
 		for card_name in set_def.CARDS:
 			combined_sets[card_name] = set_def.CARDS[card_name]
+
+	card_definitions = combined_sets
+	cards_loading = false
+	emit_signal("card_definitions_loaded")	
 	return(combined_sets)
 
 
 # Returns a Dictionary with the combined Script definitions of all set files
 func load_script_definitions() -> void:
 	var loaded_script_definitions := []
-	if "CARD_SCRIPTS" in SetPreload and SetPreload.CARD_SCRIPTS.size() > 0:
-		for preload_set_scripts in SetPreload.CARD_SCRIPTS:
-			loaded_script_definitions.append(preload_set_scripts.new())
-	else:
-		var script_definition_files := CFUtils.list_files_in_directory(
-					CFConst.PATH_SETS, CFConst.SCRIPT_SET_NAME_PREPEND)
-		for script_file in script_definition_files:
-			loaded_script_definitions.append(load(CFConst.PATH_SETS + script_file).new())
+
+	var script_definition_files := CFUtils.list_files_in_directory(
+				CFConst.PATH_SETS, CFConst.SCRIPT_SET_NAME_PREPEND)
+	for script_file in script_definition_files:
+		loaded_script_definitions.append(load(CFConst.PATH_SETS + script_file).new())
+		
 	var combined_scripts := {}
 	for card_name in card_definitions.keys():
 		for scripts_obj in loaded_script_definitions:
@@ -299,14 +325,16 @@ func set_game_paused(value: bool) -> void:
 	game_paused = value
 
 
+func save_settings():
+	var file = File.new()
+	file.open(CFConst.SETTINGS_FILENAME, File.WRITE)
+	file.store_string(JSON.print(game_settings, '\t'))
+	file.close()	
 # Whenever a setting is changed via this function, it also stores it
 # permanently on-disk.
 func set_setting(setting_name: String, value) -> void:
 	game_settings[setting_name] = value
-	var file = File.new()
-	file.open(CFConst.SETTINGS_FILENAME, File.WRITE)
-	file.store_string(JSON.print(game_settings, '\t'))
-	file.close()
+	save_settings()
 
 
 # Initiates game_settings from the contents of CFConst.SETTINGS_FILENAME
@@ -423,8 +451,11 @@ func _exit_tree():
 	if script_load_thread:
 		script_load_thread.wait_to_finish()
 
+	if cards_load_thread:
+		cards_load_thread.wait_to_finish()	
+
 #A function to override as needed
-func enrich_window_title(script:ScriptObject, title:String) -> String:
+func enrich_window_title(selectionWindow, script:ScriptObject, title:String) -> String:
 	return title
 
 func set_modal_menu(object):

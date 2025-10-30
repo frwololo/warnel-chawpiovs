@@ -38,10 +38,12 @@ func get_owner_hero_id() -> int:
 	return _owner_hero_id	
 
 func set_controller_hero_id(hero_id:int):
+	update_hero_groups()
 	_controller_hero_id = hero_id
 	
 func get_controller_hero_id() -> int:
 	return _controller_hero_id	
+
 	
 func get_controller_player_network_id() -> int:
 	var player_data:PlayerData = gameData.get_hero_owner(get_controller_hero_id())
@@ -119,6 +121,22 @@ func set_card_art():
 	if (filename):
 		card_front.set_card_art(filename)
 
+#adds our card to group names matching its type and hero owner
+# e.g. "allies2" means allies belonging to hero 2
+func update_hero_groups():
+	var type_code = properties.get("type_code", "")
+	
+	var groups:Array = CFConst.TYPES_TO_GROUPS.get(type_code, [])
+	
+	for group in groups:
+		for i in range (gameData.team.size() + 1):
+			var hero_group = group + str(i)
+			if self.get_controller_hero_id() == i:
+				if !self.is_in_group(hero_group):
+					self.add_to_group(hero_group)
+			else:
+				if self.is_in_group(hero_group):
+					self.remove_from_group(hero_group)	
 
 func _init_groups() -> void :
 	var type_code = properties.get("type_code", "")
@@ -140,6 +158,7 @@ func common_post_move_scripts(new_host: String, _old_host: String, _move_tags: A
 	
 	if (new_hero_id or (self.get_controller_hero_id() < 0) ): #only change if we were able to establish an owner, or if uninitialized
 		self.set_controller_hero_id(new_hero_id)
+	
 	
 	#init owner once and only once, if not already done
 	init_owner_hero_id(new_hero_id)	

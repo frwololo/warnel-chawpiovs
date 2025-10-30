@@ -42,7 +42,7 @@ func init_hero(_hero_index):
 func update_picture():	
 	var hero_deck_data = gameData.get_team_member(hero_index)["hero_data"]
  
-	var img = cfc.get_hero_portrait(hero_deck_data.hero_id)
+	var img = cfc.get_hero_portrait(hero_deck_data.get_hero_id())
 	if (img):
 		var imgtex = ImageTexture.new()
 		imgtex.create_from_image(img)

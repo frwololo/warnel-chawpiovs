@@ -38,6 +38,7 @@ func _init(owner,
 			trigger_details):
 		is_skipped = true
 
+#Prime is the act of choosing subjects and valid targets in preparation for the script
 func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int) -> void:
 	# We store the prev_subjects we sent to this task in case we need to
 	# refer to them later
@@ -81,6 +82,7 @@ func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int) -> void:
 	# We emit a signal when done so that our ScriptingEngine
 	# knows we're ready to continue
 	is_primed = true
+	script_definition = cfc.ov_utils.parse_post_prime_replacements(self)	
 	cfc.remove_ongoing_process(self)
 	emit_signal("primed")
 #	print_debug("skipped: " + str(is_skipped) +  " valid: " + str(is_valid))

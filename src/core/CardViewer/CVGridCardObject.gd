@@ -36,7 +36,7 @@ func setup(card) -> Card:
 func _on_GridCardObject_mouse_entered() -> void:
 	if (!display_card):
 		return
-	preview_popup.show_preview_card(display_card.canonical_name)
+	preview_popup.show_preview_card(display_card.canonical_id)
 
 
 func _on_GridCardObject_mouse_exited() -> void:

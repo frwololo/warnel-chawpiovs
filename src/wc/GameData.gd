@@ -54,6 +54,7 @@ var phaseContainer: PhaseContainer #reference link to the phaseContainer
 var theStack: GlobalScriptStack
 var testSuite: TestSuite = null
 var theAnnouncer: Announcer = null
+var theGameObserver = null
 
 # Hero currently playing. We might need another one for interruptions
 var current_hero_id := 1
@@ -78,6 +79,7 @@ func _init():
 	scenario = ScenarioDeckData.new()
 	theStack = GlobalScriptStack.new()
 	theAnnouncer = Announcer.new()
+	theGameObserver = GameObserver.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -95,6 +97,7 @@ func _ready():
 
 	self.add_child(theStack) #Stack needs to be in the tree for rpc calls	
 	self.add_child(theAnnouncer)
+	self.add_child(theGameObserver)
 	#scripting_bus.connect("optional_window_opened", self, "attempt_user_input_lock")
 	#scripting_bus.connect("optional_window_closed", self, "attempt_user_input_unlock")	
 
@@ -321,7 +324,7 @@ func set_team_data(_team:Dictionary):
 	var hero_count = 0;
 	for hero_idx in _team:
 		var hero_data:HeroDeckData = _team[hero_idx]
-		if (hero_data.deck_id and hero_data.hero_id):
+		if (hero_data.deck_id and hero_data.get_hero_id()):
 			hero_count += 1
 			team[hero_count] = { 
 				"hero_data" : hero_data,
@@ -814,7 +817,7 @@ func character_died(card:Card):
 	character_died_script.is_primed = true #fake prime it since we already gave it subjects	
 	
 	var task_event = SimplifiedStackScript.new("character_died", character_died_script)
-	gameData.theStack.add_script(task_event)
+	theStack.add_script(task_event)
 
 func defeat():
 	_game_over = true
@@ -857,7 +860,7 @@ func move_to_next_villain(current_villain):
 	current_villain.get_parent().remove_child(current_villain)
 	#current_villain.queue_free() #is more required to remove it?	
 	
-	var ckey = new_villain_data["Name"] 		
+	var ckey = new_villain_data["_code"] 		
 	var new_card = cfc.NMAP.board.load_villain(ckey)
 	current_villain.copy_tokens_to(new_card, {"exclude":["damage"]})
 	#TODO better way to do a reveal ?
@@ -870,9 +873,15 @@ func move_to_next_villain(current_villain):
 func villain_died(card:Card):
 	if (!move_to_next_villain(card)):
 		victory()
-	else:
+	else:	
 		var announce_settings = {
-			"text": "Next Stage",
+			"top_color": Color8(18,18,30,255),
+			"bottom_color": Color8(18,18,30,255),
+			"bg_color" : Color8(0,0,0,0),
+			"scale": 0.6,
+			"duration": 2,
+			"animation_style": Announce.ANIMATION_STYLE.SPEED_OUT,			
+			"top_text": "Next Stage",
 			"top_texture_filename": get_villain().get_art_filename()
 		}
 		theAnnouncer.simple_announce(announce_settings )			
@@ -1056,9 +1065,15 @@ func cleanup_post_game():
 	_current_encounter_step = EncounterStatus.NONE
 	_current_encounter = null
 	
-	theStack.queue_free()
+	remove_child(theStack)
+	theStack.free()
 	theStack = GlobalScriptStack.new()
 	self.add_child(theStack)
+
+	remove_child(theGameObserver)	
+	theGameObserver.free()
+	theGameObserver = GameObserver.new()
+	self.add_child(theGameObserver)	
 	
 	cfc.reset_ongoing_process_stack()
 	cfc.game_paused = false

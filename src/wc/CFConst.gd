@@ -88,7 +88,7 @@ const HAND_USE_OVAL_SHAPE := true
 # if you don't want this behaviour, change it to Vector2(1,1)
 const CARD_SCALE_WHILE_DRAGGING := Vector2(0.4, 0.4)
 # The location and name of the file into which to store game settings
-const SETTINGS_FILENAME := "user://CGFSettings.json"
+const SETTINGS_FILENAME := "user://settings.json"
 # The location and name of the file into which to store the font size cache
 const FONT_SIZE_CACHE := "user://CGFFontCache.json"
 # The location where this game will store deck files
@@ -444,3 +444,17 @@ const TARGET_ARROW_COLOR_BY_NAME: = {
 }
 
 const DEACTIVATE_SLOTS_HIGHLIGHT := true
+
+#set to true to fetch cards online and download images
+const LOAD_CARDS_ONLINE := true
+#set to true to help with breakpoints and debug
+const DISABLE_THREADS:= false 
+
+const DEFAULT_SETTINGS:= {
+	'glow_intensity' : 0.01,
+	'images_base_url': "https://marvelcdb.com",
+	'database': {
+		"core": "https://marvelcdb.com/api/public/cards/core.json"
+	},
+}
+

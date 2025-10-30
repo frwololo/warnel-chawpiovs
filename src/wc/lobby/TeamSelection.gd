@@ -58,7 +58,7 @@ func _ready():
 		_launch_server_game()
 	else:
 		yield(get_tree().create_timer(0.05), "timeout")	
-		rpc("assign_hero", "01001a", 0)
+		rpc("assign_hero", "01010a", 0)
 		yield(get_tree().create_timer(0.2), "timeout")	
 		_launch_server_game()		
 	
@@ -102,7 +102,7 @@ remotesync func get_next_hero_slot(hero_id) -> int:
 remotesync func assign_hero(hero_id, slot):
 	#data update
 	var hero_deck_data: HeroDeckData = team[slot]
-	hero_deck_data.hero_id = hero_id #todo could use a signal here and the GUI would be listening
+	hero_deck_data.set_hero_id(hero_id) #todo could use a signal here and the GUI would be listening
 	
 	#gui update
 	var hero_deck_select = heroes_container.get_child(slot)

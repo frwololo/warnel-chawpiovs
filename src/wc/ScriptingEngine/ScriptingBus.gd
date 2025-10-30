@@ -46,5 +46,6 @@ signal enemy_attack_happened (card,details)
 signal thwarted (card,details)
 signal character_dies(card, details) 
 signal round_ended()
+signal phase_ended(details)
 signal stack_event_deleted(event)
 

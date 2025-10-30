@@ -175,6 +175,7 @@ export var focused_scale := CFConst.FOCUSED_SCALE
 # if that is also not set, will be set.
 # to the human-readable value of the "name" node property.
 var canonical_name : String setget set_card_name, get_card_name
+var canonical_id: String
 # Ensures all nodes fit inside this rect.
 var card_size := canonical_size setget set_card_size
 # Starting state for each card
@@ -254,28 +255,45 @@ var is_executing_scripts := false
 var spawn_destination
 
 # This variable will point to the scene which controls the targeting arrow
-onready var targeting_arrow
+var targeting_arrow
 
-onready var _tween := $Tween
-onready var _flip_tween := $Control/FlipTween
-onready var _control := $Control
+var _tween
+var _flip_tween 
+var _control 
 # This is the control node we've setup to host the card_front design
-onready var _card_front_container := $Control/Front
+var _card_front_container
 # This is the control node we've setup to host the card_back design
-onready var _card_back_container := $Control/Back
+var _card_back_container 
 
 # The node which hosts all manipulation buttons belonging to this card
 # as well as methods to hide/show them, and connect them to this card.
-onready var buttons = $Control/ManipulationButtons
+var buttons 
 # The node which hosts all tokens belonging to this card
 # as well as the methods retrieve them and to to hide/show their drawer.
-onready var tokens: TokenDrawer = $Control/Tokens
+var tokens: TokenDrawer
 # The node which manipulates the highlight borders.
-onready var highlight = $Control/Highlight
+var highlight 
 
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
+#overridable function if needed
+func _class_specific_ready():
+	_tween = $Tween
+	_flip_tween = $Control/FlipTween
+	_control = $Control
+	# This is the control node we've setup to host the card_front design
+	_card_front_container = $Control/Front
+	# This is the control node we've setup to host the card_back design
+	_card_back_container = $Control/Back
+
+	# The node which hosts all manipulation buttons belonging to this card
+	# as well as methods to hide/show them, and connect them to this card.
+	buttons = $Control/ManipulationButtons
+	# The node which hosts all tokens belonging to this card
+	# as well as the methods retrieve them and to to hide/show their drawer.
+	tokens = $Control/Tokens
+	# The node which manipulates the highlight borders.
+	highlight = $Control/Highlight	
+	
 	targeting_arrow = targeting_arrow_scene.instance()
 	add_child(targeting_arrow)
 	set_card_size(card_size)
@@ -301,6 +319,12 @@ func _ready() -> void:
 	clear_highlight()
 	#TODO forcing here in the hope that it will fix the issue in selectionwindow
 	tokens.set_is_drawer_open(false, true)
+	
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	#this gives an options for subclasses to skip this parent's ready calls if needed
+	_class_specific_ready()
 
 func _init_card_layout() -> void:
 	# Because we duplicate the card when adding to the viewport focus
@@ -348,8 +372,7 @@ func _init_card_name() -> void:
 		set_card_name(canonical_name, false)
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta) -> void:
+func _class_specific_process(delta):
 	if $Tween.is_active() and not cfc.ut: # Debug code for catch potential Tween deadlocks
 		_tween_stuck_time += delta
 		if _tween_stuck_time > 5 and int(fmod(_tween_stuck_time,3)) == 2 :
@@ -387,7 +410,11 @@ func _process(delta) -> void:
 		$Debug/index.text = "INDEX: " + str(get_index())
 		$Debug/parent.text = "PARENT: " + str(get_parent().name)
 	else:
-		$Debug.visible = false
+		$Debug.visible = false	
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta) -> void:
+	_class_specific_process(delta)
 
 
 # Triggers the focus-in effect on the card
@@ -408,8 +435,7 @@ func _on_Card_mouse_entered() -> void:
 		CardState.IN_POPUP:
 			set_state(CardState.FOCUSED_IN_POPUP)
 
-
-func _input(event) -> void:
+func _class_specific_input(event) -> void:
 	if event is InputEventMouseButton and not event.is_pressed():
 		if targeting_arrow.is_targeting:
 			if event.get_button_index() == 2: #todo have a cancel button on screen instead
@@ -425,6 +451,9 @@ func _input(event) -> void:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 			$Control.set_default_cursor_shape(Input.CURSOR_ARROW)
 			cfc.card_drag_ongoing = null
+
+func _input(event) -> void:
+	_class_specific_input(event)
 
 
 # A signal for whenever the player clicks on a card
@@ -560,7 +589,7 @@ func setup() -> void:
 	set_card_name(canonical_name)
 	if state != CardState.VIEWPORT_FOCUS:
 		if read_properties.empty():
-			read_properties = cfc.card_definitions.get(canonical_name, {})
+			read_properties = cfc.card_definitions.get(canonical_id, {})
 	else:
 		# We set them again here for the viewport focus, in order to ensure
 		# we capture the card_name in them
@@ -1660,7 +1689,7 @@ func retrieve_scripts(trigger: String) -> Dictionary:
 		# This retrieves all the script from the card, stored in cfc
 		# The seeks in them the specific trigger we're using in this
 		# execution
-		found_scripts = cfc.set_scripts.get(canonical_name,{}).get(trigger,{}).duplicate(true)
+		found_scripts = cfc.set_scripts.get(canonical_id,{}).get(trigger,{}).duplicate(true)
 	return(found_scripts)
 
 # Retrieves the card scripts either from those defined on the card
@@ -1681,7 +1710,7 @@ func retrieve_all_scripts() -> Dictionary:
 		# This retrieves all the script from the card, stored in cfc
 		# The seeks in them the specific trigger we're using in this
 		# execution
-		found_scripts = cfc.set_scripts.get(canonical_name,{}).duplicate(true)
+		found_scripts = cfc.set_scripts.get(canonical_id,{}).duplicate(true)
 	return(found_scripts)
 
 # Determines which play position (board, pile or hand)

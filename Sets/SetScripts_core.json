@@ -773,6 +773,52 @@
 				}
 			]
 		}		
+	},
+	"Lead from the Front": {
+		"manual": {
+			"hand" : [
+				{	
+					"name": "constraints",
+					"is_cost": true,
+					"tags": ["hero_action"]
+				},
+				{
+					"name" : "temporary_effect",
+					"end_condition": "phase_ended",
+					"subject": "boardseek",
+					"needs_subject": true,
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",					
+					"needs_selection": true,					
+					"filter_state_seek": [{
+						"filter_group" : "group_identities",
+					}],					
+					"effect": {
+						"alterants": {
+							"all": [
+								{					
+									"filter_task" : "get_property",
+									"filter_property_name" : "attack",
+									"filter_state_trigger": [{
+										"filter_group" : "group_characters{__subject_hero_id__}",
+									}],
+									"alteration": 1,
+								},
+								{					
+									"filter_task" : "get_property",
+									"filter_property_name" : "thwart",
+									"filter_state_trigger": [{
+										"filter_group" : "group_characters{__subject_hero_id__}",
+									}],
+									"alteration": 1,
+								},
+							],
+						}
+					}
+				}
+			]
+		},
 	},	
 	"Mockingbird - Bobbi Morse": {
 		"card_moved_to_board": {

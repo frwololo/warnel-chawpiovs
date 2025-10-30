@@ -11,7 +11,7 @@ func _ready():
 
 func load_hero(_hero_id):
 	hero_id = _hero_id
-	var hero_name = cfc.idx_card_id_to_name[hero_id]
+	var hero_name = cfc.get_card_name_by_id(hero_id)
 	get_node("%HeroName").set_text(hero_name)
 	var hero_picture: TextureRect = get_node("%HeroPicture")
 	var img = cfc.get_hero_portrait(hero_id)

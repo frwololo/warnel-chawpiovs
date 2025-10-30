@@ -41,7 +41,7 @@ func load_scenario():
 			var quantity = card_data.get("quantity", 1)
 			#cards.append(ckey)
 			for i in range (quantity):
-				var ckey = card_data["Name"]
+				var ckey = card_data["_code"]
 				card_array.append(cfc.instance_card(ckey, 0))
 
 	for card in card_array:
@@ -51,14 +51,14 @@ func load_scenario():
 	
 	
 	var villain_data = scenario_data.villains[0]
-	var ckey = villain_data["Name"] 
+	var ckey = villain_data["_code"] 
 		
 	load_villain(ckey)
 	load_scheme()
 	shuffle_deck()
 	
-func load_villain(card_name):	
-	var card = cfc.instance_card(card_name, 0)
+func load_villain(card_id):	
+	var card = cfc.instance_card(card_id, 0)
 	card.set_is_faceup(true)	
 	#TODO cleaner way to add the villain there?
 	cfc.NMAP["deck_villain"].add_child(card)
@@ -78,7 +78,7 @@ func load_scheme():
 	# Put first main scheme in play --> this should trigger its "put in play" abilitiies
 	# TODO how to "flip" a card...
 	var scheme_data = scenario_data.schemes[0]
-	var ckey = scheme_data["Name"] 
+	var ckey = scheme_data["_code"] 
 	var card = cfc.instance_card(ckey, 0)
 	#card.set_is_faceup(true)	
 	#TODO cleaner way to add the villain there?

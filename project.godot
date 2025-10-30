@@ -224,6 +224,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/wc/GameData.gd"
 }, {
+"base": "Node2D",
+"class": "GameObserver",
+"language": "GDScript",
+"path": "res://src/wc/ScriptingEngine/GameObserver.gd"
+}, {
+"base": "WCCard",
+"class": "GameObserverItem",
+"language": "GDScript",
+"path": "res://src/wc/ScriptingEngine/GameObserverItem.gd"
+}, {
 "base": "Reference",
 "class": "GameStats",
 "language": "GDScript",
@@ -374,11 +384,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/core/SelectionWindow.gd"
 }, {
-"base": "Node",
-"class": "SetPreload",
-"language": "GDScript",
-"path": "res://src/wc/cards/sets/SetPreload.gd"
-}, {
 "base": "StackObject",
 "class": "SignalStackScript",
 "language": "GDScript",
@@ -503,6 +508,8 @@ _global_script_class_icons={
 "DetailPanels": "",
 "GUID": "",
 "GameData": "",
+"GameObserver": "",
+"GameObserverItem": "",
 "GameStats": "",
 "GlobalScriptStack": "",
 "GutHookScript": "",
@@ -533,7 +540,6 @@ _global_script_class_icons={
 "ScriptingBus": "",
 "ScriptingEngine": "",
 "SelectionWindow": "",
-"SetPreload": "",
 "SignalStackScript": "",
 "SimplifiedStackScript": "",
 "StackObject": "",

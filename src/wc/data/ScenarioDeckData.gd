@@ -37,7 +37,8 @@ func get_villains():
 		return []			
 	#get villains in order, split strings to get name and stage.
 	for villain_string in villain_strings:
-		villains.push_back(cfc.card_definitions[villain_string])
+		var card_id = cfc.get_corrected_card_id(villain_string)
+		villains.push_back(cfc.card_definitions[card_id])
 		#var villain_data = villain_string.split("_")
 		#var villain_name = villain_data[0]
 		#var villain_stage = int(villain_data[1])
@@ -76,6 +77,6 @@ func get_encounter_deck():
 	#for all heroes in game data, add hero's obligation
 	for hero in gameData.team.values():
 		var hero_data = hero["hero_data"]
-		var obligation_card = cfc.get_hero_obligation(hero_data.hero_id)
+		var obligation_card = cfc.get_hero_obligation(hero_data.get_hero_id())
 		encounter_deck.push_back(obligation_card)
 	return encounter_deck

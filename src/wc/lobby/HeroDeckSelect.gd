@@ -88,7 +88,7 @@ func load_hero(_hero_id):
 		hero_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 		for _deck_id in decks:
 			var deck_data = cfc.deck_definitions[_deck_id]
-			var hero_name = cfc.idx_card_id_to_name[hero_id]
+			var hero_name = cfc.get_card_name_by_id(hero_id)
 			var deck_name: String = deck_data.name
 			deck_name = deck_name.replacen(hero_name, "").trim_prefix(" ")
 			deck_name = deck_name.trim_prefix("- ")

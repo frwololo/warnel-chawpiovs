@@ -88,3 +88,6 @@ func filter_card_pool(filters_list: Array, card_pool := _get_card_pool()) -> Arr
 # Games might decide to change how this is used for their own purposes.
 func _get_card_pool() -> Dictionary:
 	return(cfc.card_definitions)
+
+func parse_post_prime_replacements(script_task: ScriptObject) -> Dictionary:
+	return script_task.script_definition

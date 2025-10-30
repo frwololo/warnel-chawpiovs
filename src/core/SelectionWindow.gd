@@ -123,6 +123,7 @@ func initiate_selection(_card_array: Array) -> void:
 			# signal propagator and other things going via groups
 			dupe_selection.remove_from_group("cards")
 			dupe_selection.canonical_name = card.canonical_name
+			dupe_selection.canonical_id = card.canonical_id
 			dupe_selection.properties = card.properties.duplicate()
 		card_sample = dupe_selection
 		var card_grid_obj = grid_card_object_scene.instance()
@@ -233,7 +234,7 @@ func post_initiate_checks():
 			window_title = "Press OK to continue"
 	
 	if (my_script):
-		window_title = cfc.enrich_window_title(my_script, window_title)
+		window_title = cfc.enrich_window_title(self, my_script, window_title)
 
 
 #example of constraints

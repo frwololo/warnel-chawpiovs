@@ -363,7 +363,7 @@ func action_select(player, action_value):
 				chosen_cards = [action_value]
 	
 	for i in range (chosen_cards.size()):
-		chosen_cards[i] = get_corrected_card_name(chosen_cards[i])
+		chosen_cards[i] = get_corrected_card_id(chosen_cards[i])
 		
 	if (chosen_cards):
 		if (_current_selection_window):
@@ -411,19 +411,19 @@ func get_card_owner(card_id_or_name:String)-> int:
 	return card.get_controller_player_id()
 
 func get_card_from_pile(card_id_or_name:String, pile:CardContainer)-> WCCard:
-	var card_name = get_corrected_card_name(card_id_or_name)
+	var card_id = get_corrected_card_id(card_id_or_name)
 	if (!pile):
 		return null
 		
 	var pile_cards = pile.get_all_cards()
 	for card in pile_cards:
-		if card.canonical_name == card_name:
+		if card.canonical_id == card_id:
 			return card 
 	return null	
 	
 #Find a card object (on the board, etc...)
 func get_card(card_id_or_name:String)-> WCCard:
-	var card_name = get_corrected_card_name(card_id_or_name)
+	var card_id = get_corrected_card_id(card_id_or_name)
 	#TODO Search in modal windows?
 	
 	#TODO search in villain cards
@@ -431,7 +431,7 @@ func get_card(card_id_or_name:String)-> WCCard:
 	#search on board
 	var board_cards = cfc.NMAP.board.get_all_cards()
 	for card in board_cards:
-		if card.canonical_name == card_name:
+		if card.canonical_id == card_id:
 			return card 
 		
 	for i in range(gameData.get_team_size()):
@@ -490,12 +490,13 @@ remotesync func finalize_test_allclients(force_status:int):
 func sort_card_array(array):
 	var result = []
 	for card in array:
-		card["card"] = get_corrected_card_name(card["card"])
+		card["card"] = get_corrected_card_id(card["card"])
 	array.sort_custom(WCUtils, "sort_cards")		
 
 #card here is either a card id or a card name, we try to accomodate for both
-func get_corrected_card_name (card) -> String:
-	return cfc.get_corrected_card_name(card)
+func get_corrected_card_id (card) -> String:
+	return cfc.get_corrected_card_id(card)
+
 
 
 #check if all elements of dict1 can be found in dict2
@@ -522,8 +523,8 @@ func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
 						
 				#handle special cases of card names vs id	
 				if (key in ["hero", "card", "host"]):
-					val1 = get_corrected_card_name(val1)
-					val2 = get_corrected_card_name(val2)	
+					val1 = get_corrected_card_id(val1)
+					val2 = get_corrected_card_id(val2)	
 				
 				if key in (ignore_order):
 					if (typeof(val1) == TYPE_ARRAY and typeof(val2) == TYPE_ARRAY):
@@ -707,7 +708,7 @@ func _initiated_targeting(_request_object = null):
 		var action_value = my_action.get("value", "")
 		var card = get_card(action_value)
 		if (card):
-			_current_targeting_card.targeting_arrow.set_destination(card.global_position + Vector2(20, 20))
+			_current_targeting_card.targeting_arrow.set_destination(card.global_position + Vector2(70, 70))
 
 func _selection_window_opened(_request_object = null,details = {}):
 	_current_selection_window = _request_object

@@ -248,6 +248,7 @@ func _step_started(
 		CFConst.PHASE_STEP.PLAYER_READY:
 			_player_ready()						
 		CFConst.PHASE_STEP.PLAYER_END:
+			scripting_bus.emit_signal("phase_ended", {"phase": "player"})
 			set_current_step_complete(true) # Do nothing
 		CFConst.PHASE_STEP.VILLAIN_THREAT:
 			_villain_threat()
@@ -387,6 +388,7 @@ func _deal_encounters():
 	pass
 
 func _round_end():
+	scripting_bus.emit_signal("phase_ended", {"phase": "villain"})
 	gameData.end_round()
 	set_current_step_complete(true)	
 	pass
@@ -401,5 +403,8 @@ func loadstate_from_json(json:Dictionary):
 	var json_data = json.get("phase", null)
 	if (null == json_data):
 		return #TODO Error msg
+
 	current_step = step_string_to_step_id(json_data)
+
+		
 

@@ -773,6 +773,21 @@ func constraints(script: ScriptTask) -> int:
 
 	return retcode
 
+func temporary_effect(script:ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+
+	var temporary_script = script.get_property("effect", {})
+	var end_condition = script.get_property("end_condition", "")
+	var parent_subjects = script.subjects
+
+	gameData.theGameObserver.add_script(script, temporary_script, end_condition)
+	
+	return retcode
+
+	
+
 func message(script: ScriptTask) -> int:
 	var message = script.script_definition["message"]
 	var msg_dialog:AcceptDialog = AcceptDialog.new()

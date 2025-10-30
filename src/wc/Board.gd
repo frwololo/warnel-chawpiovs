@@ -161,8 +161,8 @@ func _ready() -> void:
 func get_villain_card():
 	return villain.get_villain()
 
-func load_villain(card_name):
-	return villain.load_villain(card_name)
+func load_villain(card_id):
+	return villain.load_villain(card_id)
 
 func load_heroes():
 	var hero_count: int = gameData.get_team_size()
@@ -330,15 +330,15 @@ func load_cards_to_pile(card_data:Array, pile_name):
 	var pile_owner = get_owner_from_pile_name(pile_name)
 	var card_to_card_data = {}
 	for card in card_data:
-		var card_id:String = card["card"]
+		var card_id_or_name:String = card["card"]
 		var card_owner = card.get("owner_hero_id", pile_owner)
 		
 		#card_id here is either a card id or a card name, we try to accomodate for both
-		var card_name = cfc.get_corrected_card_name(card_id)
-		if !card_name:
+		var card_id = cfc.get_corrected_card_id(card_id_or_name)
+		if !card_id:
 			var _error = 1
 			#error
-		var new_card:WCCard = cfc.instance_card(card_name, card_owner)
+		var new_card:WCCard = cfc.instance_card(card_id, card_owner)
 		new_card.load_from_json(card)
 		card_array.append(new_card)
 		card_to_card_data[new_card] = card
@@ -651,15 +651,23 @@ func _on_OptionsButton_pressed():
 	options_menu.visible = true
 	pass # Replace with function body.
 
+#card_id_or_name can be an id, a shortname, or a name
 func find_card_by_name(card_id_or_name, include_back:= false):
-	var card_name = cfc.get_corrected_card_name(card_id_or_name).to_lower()
+	var card_name = cfc.get_card_name_by_id(card_id_or_name)
+	if !card_name:
+		card_name = card_id_or_name.to_lower()
+		card_name = cfc.shortname_to_name.get(card_name, "")
+	if !card_name:
+		card_name = card_id_or_name
+	card_name = card_name.to_lower()
+		
 	for card in get_all_cards():
 		if (card.canonical_name.to_lower() == card_name):
 			return card
 		if (include_back):
 			var back_code = card.get_card_back_code()
 			if (back_code):
-				var back_name = cfc.get_corrected_card_name(back_code)
+				var back_name = cfc.get_card_name_by_id(back_code)
 				if back_name.to_lower() == card_name:
 					return card
 	return null

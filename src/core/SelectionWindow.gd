@@ -42,7 +42,7 @@ func init(
 	stored_integer = _stored_integer #a value that may be passed from previous script executions
 	my_script = _script
 
-	selection_count = ScriptingEngine.get_int_value(params.get(SP.KEY_SELECTION_COUNT), stored_integer)
+	selection_count = ScriptObject.get_int_value(params.get(SP.KEY_SELECTION_COUNT), stored_integer)
 	selection_type = params.get(SP.KEY_SELECTION_TYPE, "min")
 	is_selection_optional = params.get(SP.KEY_SELECTION_OPTIONAL, false)
 	what_to_count = params.get(SP.KEY_SELECTION_WHAT_TO_COUNT, "")

@@ -30,8 +30,10 @@ func _init(per_msg: perMessage).(
 func return_per_count() -> int:
 	var ret: int
 	match script_name:
+		SP.KEY_PER_TOKEN_SELF:
+			ret = _count_tokens([owner])
 		SP.KEY_PER_TOKEN:
-			ret = _count_tokens()
+			ret = _count_tokens(subjects)
 		SP.KEY_PER_PROPERTY:
 			ret = _count_property()
 		# These two keys simply count the number
@@ -51,9 +53,9 @@ func return_per_count() -> int:
 
 
 # Do something per token count
-func _count_tokens() -> int:
+func _count_tokens(targets:Array) -> int:
 	var ret := 0
-	for card in subjects:
+	for card in targets:
 		ret = card.tokens.get_token_count(get_property(SP.KEY_TOKEN_NAME))
 	return(ret)
 

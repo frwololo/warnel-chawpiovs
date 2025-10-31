@@ -19,8 +19,21 @@ var is_boost:=false
 #an array of ManaCost variables representing everything that's been used to pay for this card
 var _last_paid_with := []
 
+var extra_scripts := {}
+var extra_script_uid := 0
+
 # The node with number manipulation box on this card
 onready var spinbox = $Control/SpinPanel/SpinBox
+
+func add_extra_script(script_definition):
+	extra_script_uid+= 1
+	extra_scripts[extra_script_uid] = script_definition
+	return extra_script_uid
+
+func remove_extra_script(script_uid):
+	extra_scripts.erase(script_uid)
+	return extra_script_uid
+
 
 #what to do when I'm an attachement and my host is removed from the table
 func host_is_gone():
@@ -507,6 +520,12 @@ func _process_card_state() -> void:
 
 
 
+#checks executable scripts for cards in discard pile,
+#and attempts to create a "ghost" card in hand if needed
+func check_ghost_card(state_exec):
+	for i in range(gameData.get_team_size()):
+		cfc.NMAP["ghosthand" + str(i+1)].check_ghost_card(self)
+	
 # This function can be overriden by any class extending Card, in order to provide
 # a way of checking if a card can be played before dragging it out of the hand.
 #
@@ -518,6 +537,8 @@ func _process_card_state() -> void:
 # player will not be able to drag it out of the hand.
 func check_play_costs() -> Color:
 	#return .check_play_costs();
+
+
 	
 	if (_check_play_costs_cache != CFConst.CostsState.CACHE_INVALID):
 		return _check_play_costs_cache
@@ -525,11 +546,15 @@ func check_play_costs() -> Color:
 	_check_play_costs_cache = CFConst.CostsState.IMPOSSIBLE
 
 	#skip if card is not in hand and not on board. TODO: will have to take into account cards than can be played from other places
-	if ((get_state_exec() != "hand")
-		and get_state_exec() != "board"):
-			return _check_play_costs_cache
+	var state_exec = get_state_exec()
+	check_ghost_card(state_exec)
 	
-	if (canonical_name == "Enhanced Ivory Horn"):
+	var parent = get_parent()
+	if !(state_exec in ["hand", "board"]):
+		return _check_play_costs_cache
+	
+
+	if (canonical_name == "Jessica Jones"):
 		var _tmp = 1
 		
 	var sceng = execute_scripts(self,"manual",{},CFInt.RunType.BACKGROUND_COST_CHECK)
@@ -710,6 +735,32 @@ func can_execute_scripts():
 	#if needed, need to refine this and prevent execution only from cards that do not have discard specific scripts, etc...
 	if get_parent().is_in_group("discard"):
 		return false
+
+#returns scripts specific to this instance
+func get_instance_runtime_scripts(trigger:String = "") -> Dictionary:
+	#if we have no extra scripts we stick with parent behavior
+	if !extra_scripts:
+		return .get_instance_runtime_scripts(trigger)
+		
+	#if we have extra scripts, we'll do a merge of extra scripts
+	#with the cards script, then retrieve from the merged dictionary
+	var merged_scripts:Dictionary = .get_instance_runtime_scripts()
+	if !merged_scripts:
+		merged_scripts = cfc.set_scripts.get(canonical_id,{}).duplicate(true)
+	
+	#additional scripts to merge with what we found
+	for key in extra_scripts:
+		var extra_script = extra_scripts[key]
+		merged_scripts = WCUtils.merge_dict(merged_scripts, extra_script, true)
+
+	var found_scripts = {}
+	match trigger:
+		"":
+			found_scripts = merged_scripts.duplicate(true)
+		_:
+			found_scripts = merged_scripts.get(trigger,{}).duplicate(true)
+	
+	return found_scripts
 
 #returns true if this card was paid for with (at least) resources described by params
 #e.g if you paid 3 physical plus 1 mental for a card, 

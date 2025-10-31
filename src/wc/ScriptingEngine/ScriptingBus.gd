@@ -49,3 +49,15 @@ signal round_ended()
 signal phase_ended(details)
 signal stack_event_deleted(event)
 
+#todo should be dynamic?
+signal minion_moved_to_board(card,details)
+signal main_scheme_moved_to_board(card,details)
+signal player_scheme_moved_to_board(card,details)
+signal side_scheme_moved_to_board(card,details)
+signal villain_moved_to_board(card,details)
+signal hero_moved_to_board(card,details)
+signal alter_ego_moved_to_board(card,details)
+signal ally_moved_to_board(card,details)
+signal upgrade_moved_to_board(card,details)
+signal support_moved_to_board(card,details)
+

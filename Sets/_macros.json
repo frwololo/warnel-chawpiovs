@@ -1,15 +1,4 @@
 {
-	"quickstrike": {
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
-				{
-					"name": "enemy_attacks_you",
-					"subject": "self",
-				},
-			]
-		},		
-	},
 	"once_per_round": {
 		"round_ended": {
 			"board": [
@@ -35,16 +24,18 @@
 			]
 		},
 	},
-	"todo" : {
+	"quickstrike": {
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
-					"name": "message",
-					"message": "Sorry, this card isn't implemented yet",
-				}
+					"name": "enemy_attacks_you",
+					"subject": "self",
+				},
 			]
-		},
+		},		
+	},	
+	"todo" : {
 		"manual": {
 			"hand": [
 				{

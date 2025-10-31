@@ -42,7 +42,10 @@ func count_found_things() -> int:
 			"divider", 1)
 	# This key is added/removed from the total count
 	var modifier = per_definitions.get(
-			"modifier", 0)
+			"modifier", 0)			
+	var total_max =  per_definitions.get(
+			"max", 0)
+					
 	var per_discovery = cfc.script_per.new(self)
 #	if not per_discovery.has_init_completed:
 #		yield(per_discovery,"primed")
@@ -54,4 +57,7 @@ func count_found_things() -> int:
 	# the script can float in the multiplier directly (e.g. put 2.0/3.0 as "multiplier")
 	found_count = int(float(found_count) / float(divider))
 	# The mutliplier might be a float
+	found_count = int(found_count * multiplier)
+	if (total_max):
+		found_count = min(total_max, found_count)
 	return(int(found_count * multiplier))

@@ -1177,10 +1177,4 @@ func _retrieve_temp_modifiers(script: ScriptTask, type: String) -> Dictionary:
 # according to game logic
 func _pre_task_exec(_script: ScriptTask) -> void:
 	pass
-	
-static func get_int_value (value, retrieved_integer):
-	if typeof(value) == TYPE_STRING and value == SP.VALUE_RETRIEVE_INTEGER:
-		return retrieved_integer
-	if typeof(value) == TYPE_INT:
-		return value
-	return int(value)
+

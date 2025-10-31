@@ -436,24 +436,33 @@ func get_card(card_id_or_name:String)-> WCCard:
 		
 	for i in range(gameData.get_team_size()):
 		var hero_id = i+1
+
+		#search in hero ghosthands in priority
+		var hand_name = "ghosthand" + str(hero_id)
+		var pile:CardContainer = cfc.NMAP.get(hand_name)
+		var card:WCCard = get_card_from_pile(card_id_or_name,  pile)	
+		if (card):
+			return card	
+
+		#search in hero hands
+		hand_name = "hand" + str(hero_id)
+		pile = cfc.NMAP.get(hand_name)
+		card = get_card_from_pile(card_id_or_name, pile)	
+		if (card):
+			return card	
 		
 		#search in hero piles
 		for grid_name in HERO_GRID_SETUP.keys():
 			var grid_info = HERO_GRID_SETUP[grid_name]
 			var real_grid_name = grid_name + str(hero_id)	
 			if "pile" == grid_info.get("type", ""):
-				var pile:CardContainer = cfc.NMAP.get(real_grid_name)
-				var card:WCCard = get_card_from_pile(card_id_or_name, pile)	
+				pile = cfc.NMAP.get(real_grid_name)
+				card = get_card_from_pile(card_id_or_name, pile)	
 				if (card):
 					return card		
 			#no "else" here. Other case is Grid which is handled by board
 
-		#search in hero hands
-		var hand_name = "hand" + str(hero_id)
-		var pile:CardContainer = cfc.NMAP.get(hand_name)
-		var card:WCCard = get_card_from_pile(card_id_or_name, pile)	
-		if (card):
-			return card	
+
 	
 	return null
 	

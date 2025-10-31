@@ -71,6 +71,10 @@ const _CARD_CHOICES_SCENE = preload(_CARD_CHOICES_SCENE_FILE)
 const _TARGETING_SCENE_FILE = CFConst.PATH_CORE + "Card/TargetingArrow.tscn"
 const _TARGETING_SCENE = preload(_TARGETING_SCENE_FILE)
 
+const _CARDBACK_SCENE_FILE = CFConst.PATH_CUSTOM + "CardBack.tscn"
+const _CARDBACK_SCENE = preload(_CARDBACK_SCENE_FILE)
+const _CARDFRONT_SCENE_FILE = CFConst.PATH_CUSTOM + "CardFront.tscn"
+const _CARDFRONT_SCENE = preload(_CARDFRONT_SCENE_FILE)
 
 # Sent when the player start dragging the card
 signal dragging_started(card)
@@ -108,8 +112,8 @@ export(BoardPlacement) var board_placement \
 export var mandatory_grid_name : String
 # Contains the scene which has the Card Back design to use for this card type
 # It needs to be scene which uses a CardBack class script.
-export(PackedScene) var card_back_design : PackedScene
-export(PackedScene) var card_front_design : PackedScene
+export(PackedScene) var card_back_design : PackedScene = _CARDBACK_SCENE
+export(PackedScene) var card_front_design : PackedScene = _CARDFRONT_SCENE
 # We use this variable, so that the scene can be overriden with a custom one
 export var targeting_arrow_scene = _TARGETING_SCENE
 # If true, the player will not be able to drop dragged cards back into
@@ -1492,6 +1496,7 @@ func get_state_scripts(card_scripts, trigger_card, trigger_details):
 					self,
 					trigger_card,
 					trigger_details)
+				common_pre_run(sceng)	
 				var func_return = sceng.execute(CFInt.RunType.BACKGROUND_COST_CHECK)
 				while func_return is GDScriptFunctionState && func_return.is_valid():
 					func_return = func_return.resume()
@@ -1542,7 +1547,7 @@ func execute_scripts(
 	if not cfc.NMAP.has('board'):
 		return
 
-	if (trigger =="card_moved_to_board" and canonical_name == "Breakin' & Takin'"):
+	if (trigger =="manual" and canonical_name == "Make the Call"):
 		var _tmp = 1
 
 	#we're playing a card manually but in interrupt mode.
@@ -1670,6 +1675,16 @@ func add_script_to_stack(sceng, run_type, trigger, trigger_details):
 	
 	return
 
+func get_instance_runtime_scripts(trigger:String = "") -> Dictionary:
+	if scripts.empty():
+		return {}
+	match trigger:
+		"":
+			return scripts.duplicate(true)
+		_:
+			if not scripts.get(trigger,{}).empty():
+				return scripts.get(trigger,{}).duplicate(true)
+	return {}
 	
 # Retrieves the card scripts either from those defined on the card
 # itself, or from those defined in the script definition files
@@ -1683,9 +1698,8 @@ func retrieve_scripts(trigger: String) -> Dictionary:
 	#
 	# This allows us to modify a card's scripts during runtime
 	# in isolation from other cards of the same name
-	if not scripts.empty() and not scripts.get(trigger,{}).empty():
-		found_scripts = scripts.get(trigger,{}).duplicate(true)
-	else:
+	found_scripts = get_instance_runtime_scripts(trigger)
+	if !found_scripts:
 		# This retrieves all the script from the card, stored in cfc
 		# The seeks in them the specific trigger we're using in this
 		# execution
@@ -1704,9 +1718,8 @@ func retrieve_all_scripts() -> Dictionary:
 	#
 	# This allows us to modify a card's scripts during runtime
 	# in isolation from other cards of the same name
-	if not scripts.empty():
-		found_scripts = scripts.duplicate(true)
-	else:
+	found_scripts = get_instance_runtime_scripts()
+	if !found_scripts:
 		# This retrieves all the script from the card, stored in cfc
 		# The seeks in them the specific trigger we're using in this
 		# execution

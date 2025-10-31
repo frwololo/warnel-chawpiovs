@@ -203,11 +203,26 @@ func _scripting_event_about_to_trigger(_trigger_object = null,
 			check_ally_limit()
 	return
 
+#emit sub _signals for convenience
+func _emit_additional_signals(_trigger_object = null,
+		trigger: String = "manual",
+		_trigger_details: Dictionary = {}):
+	match trigger:
+		"card_moved_to_board":
+			var card_type = _trigger_object.get_property("type_code", "")
+			if card_type:
+				var signal = card_type + "_moved_to_board"
+				scripting_bus.emit_signal(signal, _trigger_object, trigger, _trigger_details)
+				
+
 func _scripting_event_triggered(_trigger_object = null,
 		trigger: String = "manual",
 		_trigger_details: Dictionary = {}):
 	
-
+	match trigger:
+		"card_moved_to_board":
+			_emit_additional_signals(_trigger_object, trigger, _trigger_details)
+			
 	match trigger:
 		"card_token_modified":
 			check_main_scheme_defeat()

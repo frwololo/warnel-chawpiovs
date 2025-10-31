@@ -32,10 +32,23 @@ position = Vector2( 506, 826 )
 placement = 7
 show_manipulation_buttons = false
 
+[node name="GhostHand1" parent="." instance=ExtResource( 3 )]
+unique_name_in_owner = true
+position = Vector2( 300, 826 )
+placement = 7
+show_manipulation_buttons = false
+
 [node name="Hand2" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
 visible = false
 position = Vector2( 506, 826 )
+placement = 7
+show_manipulation_buttons = false
+
+[node name="GhostHand2" parent="." instance=ExtResource( 3 )]
+unique_name_in_owner = true
+visible = false
+position = Vector2( 300, 826 )
 placement = 7
 show_manipulation_buttons = false
 
@@ -46,10 +59,24 @@ position = Vector2( 506, 826 )
 placement = 7
 show_manipulation_buttons = false
 
+[node name="GhostHand3" parent="." instance=ExtResource( 3 )]
+unique_name_in_owner = true
+visible = false
+position = Vector2( 300, 826 )
+placement = 7
+show_manipulation_buttons = false
+
 [node name="Hand4" parent="." instance=ExtResource( 3 )]
 unique_name_in_owner = true
 visible = false
 position = Vector2( 506, 826 )
+placement = 7
+show_manipulation_buttons = false
+
+[node name="GhostHand4" parent="." instance=ExtResource( 3 )]
+unique_name_in_owner = true
+visible = false
+position = Vector2( 300, 826 )
 placement = 7
 show_manipulation_buttons = false
 

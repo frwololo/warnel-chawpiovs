@@ -8,6 +8,11 @@ export var count := 0 setget set_count, get_count
 
 var token_drawer
 
+#some tokens should be counted as such in the game
+var not_a_real_token:= false
+var canonical_name := ""
+var display_name:= ""
+
 onready var count_label = $CenterContainer/Count
 
 # Called when the node enters the scene tree for the first time.
@@ -31,6 +36,17 @@ func _on_Remove_pressed() -> void:
 # based on the values in the configuration
 func setup(token_name: String, _token_drawer = null) -> void:
 	name = token_name
+	canonical_name = token_name
+	display_name = token_name
+
+	if token_name.begins_with("__"):
+		visible = false
+		not_a_real_token = true
+		display_name = token_name.substr(2)
+	elif token_name.begins_with("_"):
+		not_a_real_token = true
+		display_name = token_name.substr(1)
+	
 	token_drawer = _token_drawer
 	var textrect : TextureRect = $CenterContainer/TokenIcon
 	var new_texture = ImageTexture.new();
@@ -39,7 +55,8 @@ func setup(token_name: String, _token_drawer = null) -> void:
 	var image = tex.get_data()
 	new_texture.create_from_image(image)
 	textrect.texture = new_texture
-	$Name.text = token_name.capitalize()
+	$Name.text = display_name.capitalize()
+
 
 
 # Sets the token counter to the specified value
@@ -108,4 +125,4 @@ func retract() -> void:
 
 # Returns the lowercase name of the token
 func get_token_name() -> String:
-	return($Name.text.to_lower())
+	return(canonical_name.to_lower())

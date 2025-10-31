@@ -12,6 +12,7 @@ var lowercase_card_name_to_name : Dictionary
 var shortname_to_name : Dictionary
 var idx_hero_to_deck_ids : Dictionary
 var box_contents_by_name: Dictionary
+var all_traits: Dictionary = {}
 
 var obligations : Dictionary
 var schemes: Dictionary 
@@ -132,6 +133,18 @@ func parse_keywords(text:String) -> Dictionary:
 				pass
 	return result
 
+func _split_traits(traits:String) -> Array:
+	var result = []
+	var a_traits = traits.split(" ")
+	for trait in a_traits:		
+		result.append(trait.trim_suffix("."))
+	
+	return result
+
+func setup_traits_as_alterants():
+	for trait in self.all_traits:
+		CardConfig.PROPERTIES_NUMBERS.append("trait_" + trait)
+
 var _seen_images:= {}
 func _load_one_card_definition(card_data, box_name:= "core"):
 	#converting "real" numbers to "int"
@@ -205,6 +218,12 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	#flatten it out to allow access through alterants and get_property
 	for k in card_data["keywords"].keys():
 		card_data[k] = card_data["keywords"][k]
+	
+	if (card_data.has("traits")):
+		var traits = _split_traits(card_data["traits"])
+		for trait in traits:
+			card_data["trait_" + trait] = 1
+			all_traits[trait] = true
 	
 
 	#TODO 2024/10/30 is this error new?
@@ -339,7 +358,12 @@ func load_card_definitions() -> Dictionary:
 				#yield(get_tree().create_timer(0.01), "timeout")
 			_cards_loaded = i
 	card_definitions = combined_sets
+	
+	#post load cleanup and config
 	_fix_missing_images()
+	setup_traits_as_alterants()
+	
+	#done!
 	cards_loading = false			
 	emit_signal("card_definitions_loaded")
 	return(combined_sets)
@@ -527,6 +551,21 @@ func get_hero_portrait(card_id) -> Image:
 	var area = 	Rect2 ( 60, 40, 170, 180 )
 	var sub_img = img_data.get_rect(area) #Todo more flexible?
 	return sub_img	
+
+func instance_ghost_card(original_card) -> Card:
+	var card_id = original_card.canonical_id
+	var owner_id = original_card.get_owner_hero_id()
+	var card = ._instance_card(card_id)
+	card.set_script(load("res://src/wc/GhostCard.gd"))
+	card.canonical_name = card_definitions[card_id]["Name"]
+	card.canonical_id = card_id	
+	card.set_real_card(original_card)
+	#TODO We set GUID here in the hope that all clients create their cards in the exact 
+	#same order. This might be a very flawed assertion could need a significant overhaul	
+	var _tmp = guidMaster.set_guid(card)
+	card.init_owner_hero_id(owner_id)
+	card.set_controller_hero_id(owner_id)	
+	return card
 
 func instance_card(card_id: String, owner_id:int) -> Card:
 	if (!card_definitions.has(card_id)):

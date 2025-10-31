@@ -374,7 +374,7 @@ func _index_seek_subjects(stored_integer: int) -> Array:
 		# we move up the pile, instead of down.
 		# This is useful for effects which mention something like:
 		# "...the last X cards from the deck"
-		if str(get_property(SP.KEY_SUBJECT_INDEX)) == SP.KEY_SUBJECT_INDEX_V_BOTTOM:
+		if str(get_property(SP.KEY_SUBJECT_INDEX)) != SP.KEY_SUBJECT_INDEX_V_TOP:
 			if index + iter >  all_cards.size():
 				break
 			subjects_array.append(all_cards[index + iter])
@@ -450,6 +450,26 @@ static func count_per(
 			_trigger_object)
 	return(per_msg.found_things)
 
+func retrieve_integer_property(property, stored_integer:int = 0):
+	var value = get_property(property, null)
+	if !value:
+		return value
+		
+	if SP.VALUE_PER in str(value):
+		value = count_per(
+				value,
+				owner,
+				get_property(value))
+	else:
+		value = get_int_value (value, stored_integer)
+	return value	
+
+static func get_int_value (value, retrieved_integer):
+	if typeof(value) == TYPE_STRING and value == SP.VALUE_RETRIEVE_INTEGER:
+		return retrieved_integer
+	if typeof(value) == TYPE_INT:
+		return value
+	return int(value)
 
 # Sorts the subjects list
 # according to the directives in the following three keys

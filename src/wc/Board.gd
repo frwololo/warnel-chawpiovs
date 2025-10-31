@@ -20,10 +20,13 @@ const HERO_GRID_SETUP = CFConst.HERO_GRID_SETUP
 func _init():
 	init_hero_zones()
 
-func set_groups(grid_or_pile):
+func set_groups(grid_or_pile, additional_groups:= []):
 	var grid_name = grid_or_pile.name
 	if grid_name.begins_with("discard"):
 		grid_or_pile.add_to_group("discard")
+	
+	for group in additional_groups:
+		grid_or_pile.add_to_group(group)
 	
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -64,7 +67,7 @@ func _ready() -> void:
 			pile.scale = Vector2(0.5 * pile_scale, 0.5 * pile_scale)
 			pile.faceup_cards = grid_info.get("faceup", false)
 			add_child(pile)
-			set_groups(pile)
+			set_groups(pile, grid_info.get("groups", []))
 		else:
 			var grid_scene = grid_info.get("scene", basicGrid)
 			var grid: BoardPlacementGrid = grid_scene.instance()
@@ -77,7 +80,7 @@ func _ready() -> void:
 			grid.name_label.text = grid_name
 			grid.rect_position = Vector2(grid_info["x"], grid_info["y"])			
 			grid.auto_extend = grid_info.get("auto_extend", true)
-			set_groups(grid)
+			set_groups(grid, grid_info.get("groups", []))
 
 	for i in range(gameData.get_team_size()):
 		var hero_id = i+1
@@ -107,7 +110,7 @@ func _ready() -> void:
 				pile.scale = Vector2(0.5*scale*pile_scale, 0.5*scale*pile_scale)
 				pile.faceup_cards = grid_info.get("faceup", false)
 				add_child(pile)
-				set_groups(pile)
+				set_groups(pile, grid_info.get("groups", []))
 			else:
 				var grid_scene = grid_info.get("scene", basicGrid)
 				var grid: BoardPlacementGrid = grid_scene.instance()
@@ -120,7 +123,7 @@ func _ready() -> void:
 				grid.name_label.text = real_grid_name
 				grid.rect_position = Vector2(x,y)
 				grid.auto_extend = grid_info.get("auto_extend", true)
-				set_groups(grid)
+				set_groups(grid, grid_info.get("groups", []))
 
 	#Game setup - Todo move somewhere else ?
 	load_cards()
@@ -143,10 +146,10 @@ func _ready() -> void:
 	
 	draw_starting_hand()	
 	#Tests
-	#draw_cheat("Web-Shooter")
-	#draw_cheat("Combat Training")
-	#draw_cheat("Jessica Jones")
-	#draw_cheat("Mockingbird")
+	#draw_cheat_ghost("Web-Shooter")
+	#draw_cheat_ghost("Combat Training")
+	#draw_cheat_ghost("Jessica Jones")
+	#draw_cheat_ghost("Mockingbird")
 	#draw_cheat("Black Cat")
 	#draw_cheat("Energy")
 	#draw_cheat("Backflip")
@@ -414,11 +417,15 @@ func draw_starting_hand() -> void:
 	gameData.draw_all_players()
 
 
-func draw_cheat(cardName : String) -> void:
-	var card = cfc.instance_card(cardName, 1)
+func draw_cheat(cardName : String, hand = "hand1") -> void:
+	var card_key = cfc.get_corrected_card_id(cardName)
+	var card = cfc.instance_card(card_key, 1)
 	var pile = cfc.NMAP["deck1"]
 	pile.add_child(card)
-	cfc.NMAP["hand1"].draw_card (pile)
+	cfc.NMAP[hand].draw_card (pile)
+
+func draw_cheat_ghost(cardName : String) -> void:
+	draw_cheat(cardName, "ghosthand1")
 	
 	
 func are_cards_still_animating(check_everything:bool = true) -> bool:
@@ -473,7 +480,16 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 	var previous_hero_id = trigger_details["before"]
 	var new_hero_id = trigger_details["after"]
 
+	for container in get_tree().get_nodes_in_group("hands"):
+		container.disable()
+	for v in ["GhostHand", "Hand"]:
+		var new_hand: Hand = get_node("%" + v + str(new_hero_id))	
+		new_hand.add_to_group("bottom")		
+		WCUtils.enable_and_show_node(new_hand)
+		new_hand.enable()	
 
+	if (previous_hero_id == new_hero_id):
+		return
 
 	#TODO move to config
 	#TODO convert to nice animation
@@ -508,20 +524,25 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 			new_grid.rescale(CFConst.PLAY_AREA_SCALE * scale_new)
 			new_grid.reposition(backup_position)			
 
-	for container in get_tree().get_nodes_in_group("hands"):
-		container.disable()
+
 	
 	#exchange hands
-	var old_hand: Hand = get_node("%Hand" + str(previous_hero_id))	
-	old_hand.remove_from_group("bottom") #todo fix hack
-	WCUtils.disable_and_hide_node(old_hand)
-	old_hand.re_place()
-	old_hand.position = Vector2(20000, 20000)
-	var new_hand: Hand = get_node("%Hand" + str(new_hero_id))
-	new_hand.add_to_group("bottom")
-	WCUtils.enable_and_show_node(new_hand)
-	new_hand.enable()
-	new_hand.re_place()
+	for v in ["GhostHand", "Hand"]:
+		var old_hand: Hand = get_node("%" + v + str(previous_hero_id))	
+		old_hand.remove_from_group("bottom") #todo fix hack
+		WCUtils.disable_and_hide_node(old_hand)
+		old_hand.re_place()	
+		old_hand.position = Vector2(20000, 20000)	
+		var new_hand: Hand = get_node("%" + v + str(new_hero_id))
+		new_hand.add_to_group("bottom")		
+		WCUtils.enable_and_show_node(new_hand)
+		new_hand.enable()					
+	var new_ghosthand: Hand = get_node("%GhostHand" + str(new_hero_id))
+	new_ghosthand.set_control_size(300,300)
+	new_ghosthand.position = Vector2(300,826)
+	for v in ["Hand"]:
+		var new_hand: Hand = get_node("%" + v + str(new_hero_id))
+		new_hand.re_place()
 
 
 func savestate_to_json() -> Dictionary:	

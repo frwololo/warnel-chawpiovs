@@ -20,6 +20,14 @@ func replace_subjects(new_subjects:Array):
 	for task in get_tasks():
 		task.subjects = new_subjects
 
+func prevent_value(property, amount_prevented):
+	for task in get_tasks():
+		var script_definition = task.script_definition
+		if script_definition.has(property):
+			var value = task.get_property(property)
+			value = max(0, value-amount_prevented)
+			script_definition[property] = value
+			#todo what if zero
 
 
 func execute():

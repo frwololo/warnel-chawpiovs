@@ -596,6 +596,13 @@ const KEY_IS_INVERTED := "is_inverted"
 const KEY_PER_TOKEN := "per_token"
 # Value Type: Dictionary
 #
+# A [VALUE_PER](#VALUE_PER) key for perfoming an effect equal to a number of tokens on the script owner
+#
+# Other than the subject defintions the [KEY_TOKEN_NAME](#KEY_TOKEN_NAME)
+# has to also be provided
+const KEY_PER_TOKEN_SELF := "per_token_self"
+# Value Type: Dictionary
+#
 # A [VALUE_PER](#VALUE_PER) key for perfoming an effect equal to a accumulated property on the subject(s)
 #
 # Other than the subject defintions the [KEY_PROPERTY_NAME](#KEY_PROPERTY_NAME)

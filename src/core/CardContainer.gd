@@ -322,14 +322,32 @@ func translate_card_index_to_node_index(index: int) -> int:
 		node_index = card_at_index.get_index()
 	return node_index
 
+func set_placement_groups():
+			match placement:
+				Anchors.NONE:
+					pass
+				Anchors.TOP_LEFT, Anchors.LEFT_MIDDLE, Anchors.BOTTOM_LEFT:
+					add_to_group("left")
+				Anchors.TOP_RIGHT, Anchors.RIGHT_MIDDLE, Anchors.BOTTOM_RIGHT:
+					add_to_group("right")
+			match placement:
+				Anchors.TOP_LEFT, Anchors.TOP_MIDDLE, Anchors.TOP_RIGHT:
+					add_to_group("top")
+				Anchors.BOTTOM_LEFT, Anchors.BOTTOM_MIDDLE, Anchors.BOTTOM_RIGHT:
+					add_to_group("bottom")
+				
 
 # Adjusts the placement of the node, according to the placement var
 # So that it always stays in the same approximate location
 func re_place():
+	reset_location()
+	
+func reset_location():
 		var place := Vector2(0,0)	
 		if (self.visible):
 			# Here we match the adjust the default position based on the anchor
 			# First we adjust the x position
+			set_placement_groups()
 			match placement:
 				Anchors.NONE:
 					place = position
@@ -337,12 +355,10 @@ func re_place():
 				# which means left side of the viewport
 				Anchors.TOP_LEFT, Anchors.LEFT_MIDDLE, Anchors.BOTTOM_LEFT:
 					place.x = 0
-					add_to_group("left")
 				# Right position always start from the right-side of the viewport
 				# minus the width of the container
 				Anchors.TOP_RIGHT, Anchors.RIGHT_MIDDLE, Anchors.BOTTOM_RIGHT:
 					place.x = get_viewport().size.x - (card_size.x * scale.x)
-					add_to_group("right")
 				# Middle placement is the middle of the viewport width,
 				# minues half the height of the container
 				Anchors.TOP_MIDDLE, Anchors.BOTTOM_MIDDLE:
@@ -353,12 +369,10 @@ func re_place():
 				# which means top of the viewport
 				Anchors.TOP_LEFT, Anchors.TOP_MIDDLE, Anchors.TOP_RIGHT:
 					place.y = 0
-					add_to_group("top")
 				# Bottom position always start from the bottom of the viewport
 				# minus the height of the container
 				Anchors.BOTTOM_LEFT, Anchors.BOTTOM_MIDDLE, Anchors.BOTTOM_RIGHT:
 					place.y = get_viewport().size.y - (card_size.y * scale.y)
-					add_to_group("bottom")
 				# Middle placement is the middle of the viewport height
 				# minus half the height of the container
 				Anchors.RIGHT_MIDDLE, Anchors.LEFT_MIDDLE:

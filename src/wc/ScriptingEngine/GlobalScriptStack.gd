@@ -419,16 +419,26 @@ func replace_subjects(stack_object, value, script):
 			pass
 
 #scripted replacement effects
-func modify_object(stack_object, script):
-	var replacements = script.get_property("replacements", {})
-	for property in replacements.keys():
-		var value = replacements[property]
-		match property:
-			"subject":
-				replace_subjects(stack_object, value, script)
-			_:
-				#not implemented
-				pass
+func modify_object(stack_object, script:ScriptTask):
+	match script.script_name:
+		"prevent":
+			var amount = script.get_property("amount", 0)
+			if !amount:
+				var _error = 1
+			else:
+				stack_object.prevent_value("amount", amount)
+		_:
+			var replacements = script.get_property("replacements", {})
+			for property in replacements.keys():
+				var value = replacements[property]
+				match property:
+					"subject":
+						replace_subjects(stack_object, value, script)
+					_:
+						#not implemented
+						pass
+	
+	
 	
 #is the current player allowed to play according to the stack?
 #returns an array of hero ids if so, empty array otherwise

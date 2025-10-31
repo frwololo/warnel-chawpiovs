@@ -6,6 +6,7 @@ extends ScriptingEngine
 
 
 
+
 # Just calls the parent class.
 func _init(state_scripts: Array,
 		owner,
@@ -66,6 +67,14 @@ func move_card_to_board(script: ScriptTask) -> int:
 	#TODO might be better to be able to duplicate scriptTasks ?
 	#var modified_script:ScriptTask = script.duplicate
 	var backup:Dictionary = script.script_definition.duplicate()
+
+	#we force a grid container in all cases
+	if script.subjects and !script.get_property("grid_name"):
+		var subject = script.subjects[0]
+		var type_code = subject.get_property("type_code")
+		if CFConst.TYPECODE_TO_GRID.has(type_code):
+			script.script_definition["grid_name"] = CFConst.TYPECODE_TO_GRID[type_code]
+
 	
 	#Replace all occurrences of "current_hero" with the actual id
 	#This ensures we use e.g. the correct discard pile, etc...
@@ -78,6 +87,7 @@ func move_card_to_board(script: ScriptTask) -> int:
 		#TODO move to const
 		WCUtils.search_and_replace(script.script_definition, v, v+str(owner_hero_id), true)
 	
+
 	var result = .move_card_to_board(script)
 	script.script_definition = backup
 	return result
@@ -163,13 +173,17 @@ func play_card(script: ScriptTask) -> int:
 
 func attack(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
-	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+	
+	if (costs_dry_run()):
 		return retcode
 
 	var tags: Array = ["attack", "Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
 
 	var owner = script.owner	
-	var damage = script.script_definition.get("amount", 0)
+	var damage = script.retrieve_integer_property("amount")
 	if not damage:
 		damage = owner.get_property("attack", 0)
 
@@ -274,11 +288,18 @@ func prevent(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode	
-	
-	#Find the event on the stack and remove it
-	#TOdo take into action subject, etc...
-	var _result = gameData.theStack.delete_last_event()
-	
+
+	if script.script_definition.has("amount"): #this is a partial prevention effect
+		var stack_object = gameData.theStack.find_last_event()
+		if (!stack_object):	
+			return CFConst.ReturnCode.FAILED
+		
+		gameData.theStack.modify_object(stack_object, script)		
+	else:	
+		#Find the event on the stack and remove it
+		#TOdo take into action subject, etc...
+		var _result = gameData.theStack.delete_last_event()
+		
 	return retcode		
 	
 
@@ -520,8 +541,11 @@ func heal(script: ScriptTask) -> int:
 	if (costs_dry_run()):
 		retcode = CFConst.ReturnCode.CHANGED
 	
-	var amount = script.script_definition["amount"]
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
 	
+	var amount = script.script_definition["amount"]	
+		
 	for subject in script.subjects:
 		if (costs_dry_run()): #healing as a cost can be used for "is_else" conditions, when saying "if no healing happened,..."
 			if (!subject.can_heal(amount)):
@@ -786,7 +810,22 @@ func temporary_effect(script:ScriptTask) -> int:
 	
 	return retcode
 
+
+func add_script(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+
+	var subscript = script.get_property("script", {})
+	var end_condition = script.get_property("end_condition", "")
+	var subjects = script.subjects
 	
+	for subject in script.subjects:
+		var subscript_id = subject.add_extra_script(subscript)
+		if (end_condition):
+				gameData.theGameObserver.add_script_removal_effect(script, subject, subscript_id, end_condition)
+	
+	return retcode		
 
 func message(script: ScriptTask) -> int:
 	var message = script.script_definition["message"]

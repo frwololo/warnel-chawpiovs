@@ -74,7 +74,8 @@ static func merge_array(array_1: Array, array_2: Array, deep_merge: bool = false
 		if not item_exists in compare_array:
 			new_array.append(item)
 	return new_array
-		
+
+#merges data from dict_2 into dict1 (overwriting if needed)		
 static func merge_dict(dict_1: Dictionary, dict_2: Dictionary, deep_merge: bool = false) -> Dictionary:
 	var new_dict = dict_1.duplicate(true)
 	for key in dict_2:

@@ -239,6 +239,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/core/GameStats.gd"
 }, {
+"base": "WCCard",
+"class": "GhostCard",
+"language": "GDScript",
+"path": "res://src/wc/GhostCard.gd"
+}, {
 "base": "Node2D",
 "class": "GlobalScriptStack",
 "language": "GDScript",
@@ -511,6 +516,7 @@ _global_script_class_icons={
 "GameObserver": "",
 "GameObserverItem": "",
 "GameStats": "",
+"GhostCard": "",
 "GlobalScriptStack": "",
 "GutHookScript": "",
 "GutTest": "",

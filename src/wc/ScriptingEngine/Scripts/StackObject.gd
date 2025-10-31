@@ -25,7 +25,9 @@ func execute():
 #replacement task
 func replace_subjects(new_subjects:Array):
 	pass
-		
+
+func prevent_value(property, amount_prevented):
+	pass		
 
 #TODO this function shouldn't be here? doesn't use any of its data
 func matches_filters(task, filters:Dictionary, owner_card):

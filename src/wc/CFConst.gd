@@ -341,7 +341,8 @@ const HERO_GRID_SETUP := {
 		"x" : 0,
 		"y" : 440,
 		"type" : "pile",
-		"faceup" : true
+		"faceup" : true,
+		"groups" : ["player_discard"],
 	},	
 	"enemies" : {
 		"x" : 350,

@@ -1,0 +1,127 @@
+{
+	"_comments": "Test if Lead from the front gives Thwart/attack",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens" : {"threat" : 5}					
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [		
+				{
+					"card": "Lead from the Front"
+				},
+				{
+					"card": "Strength"
+				},
+			],
+			"allies1": [		
+				{
+					"card": "Mockingbird"
+				}				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Lead from the Front"
+		},
+		{
+			"type": "activate",
+			"value": "Spider-Man"
+		},
+		{
+			"type": "choose",
+			"value": "thwart"
+		},
+		{
+			"type": "target",
+			"value": "01097"
+		},	
+		{
+			"type": "activate",
+			"value": "Mockingbird"
+		},
+		{
+			"type": "choose",
+			"value": "thwart"
+		},
+		{
+			"type": "target",
+			"value": "01097"
+		},			
+		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens" : {"threat" : 1}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"allies1": [		
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"discard1": [	
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Lead from the Front"
+				}				
+			
+			]
+		}
+	}
+}

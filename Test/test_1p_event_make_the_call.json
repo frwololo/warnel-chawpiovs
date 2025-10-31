@@ -1,0 +1,117 @@
+{
+	"_comments": "Basic Test to check Make the call (play ally from discard)",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Make the Call"
+				},		
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Swinging Web Kick"
+				}
+			],
+			"discard1" :[
+				{
+					"card": "MockingBird"
+				},
+				{
+					"card": "Jessica Jones"
+				},
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Make the Call"
+		},
+		{
+			"type": "play",
+			"value": "Jessica Jones"
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"discard1": [	
+
+				{
+					"card": "MockingBird"
+				},
+				{
+					"card": "Make the Call"
+				},				
+				{
+					"card": "Swinging Web Kick"
+				},				
+				{
+					"card": "Strength"
+				},
+								
+			]
+		}
+	}
+}

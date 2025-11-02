@@ -21,7 +21,7 @@ signal new_card_instanced(card)
 var load_start_time := OS.get_ticks_msec()
 
 #pointer to modal menu for potential cleanup
-var modal_menu = null 
+var modal_menus := [] 
 
 #-----------------------------------------------------------------------------
 # BEGIN Unit Testing Variables
@@ -276,7 +276,7 @@ func _instance_card(card_id: String) -> Card:
 # Returns a Dictionary with the combined Card definitions of all set files
 func load_card_definitions() -> Dictionary:
 	cards_loading = true
-	var loaded_definitions : Array
+	var loaded_definitions : Array = []
 
 	var set_files = CFUtils.list_files_in_directory(
 			CFConst.PATH_SETS, CFConst.CARD_SET_NAME_PREPEND)
@@ -451,19 +451,28 @@ func _exit_tree():
 	if script_load_thread:
 		script_load_thread.wait_to_finish()
 
-	if cards_load_thread:
+	if cards_load_thread and cards_load_thread.is_active():
 		cards_load_thread.wait_to_finish()	
 
 #A function to override as needed
 func enrich_window_title(selectionWindow, script:ScriptObject, title:String) -> String:
 	return title
 
-func set_modal_menu(object):
-	modal_menu = object
+func add_modal_menu(object):
+	if not object in modal_menus:
+		modal_menus.append(object)
 
+func remove_modal_menu(object):
+	modal_menus.erase(object)
+
+func get_modal_menu():
+	if modal_menus:
+		return modal_menus[0]
+	return null	
+	
 func cleanup_modal_menu():
-	if (modal_menu):
-		modal_menu.force_cancel()
-		#modal_menu.queue_free()
-		set_modal_menu(null)
+	if (modal_menus):
+		for modal_menu in modal_menus:
+			modal_menu.force_cancel()
+		modal_menus = []
 	return

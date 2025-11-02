@@ -29,6 +29,8 @@ const _script_name_to_function:={
 
 func _ready():
 	scripting_bus.connect("step_started", self, "_step_started")
+	if CFConst.DISABLE_ANNOUNCER:
+		skip_announcer()
 
 
 func skip_announcer(value:bool=true):
@@ -140,7 +142,7 @@ func init_receive_damage(script:ScriptTask) -> bool:
 	storage["arrows"] = []
 		
 	var tags: Array = script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
-	var amount = script.script_definition["amount"]
+	var amount = script.retrieve_integer_property("amount")
 	var owner = script.owner
 	var hero_id = owner.get_controller_hero_id()
 

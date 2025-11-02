@@ -1,5 +1,6 @@
 # warning-ignore-all:UNUSED_ARGUMENT
 # warning-ignore-all:UNUSED_VARIABLE
+# warning-ignore-all:RETURN_VALUE_DISCARDED
 
 class_name TestSuite
 extends Node
@@ -55,7 +56,7 @@ var end_state:Dictionary
 var test_conditions: Dictionary
 var actions:Array
 var current_action:int = 0
-var current_player_id: int = 0
+var current_playing_hero_id: int = 0
 
 var game_loaded:bool = false
 
@@ -64,6 +65,8 @@ var delta:float = 0
 #temporary variables to keep track of objects to interact with
 var _current_selection_window = null
 var _current_targeting_card = null
+var _current_targeted_card = null
+var _action_ongoing = false
 
 #for internal statistics to find slow stuff
 func count_delay(_name):
@@ -79,16 +82,69 @@ func _init():
 	scripting_bus.connect("card_selected", self, "_selection_window_closed")
 	scripting_bus.connect("initiated_targeting", self, "_initiated_targeting")	
 	create_text_edit()
-		
-func _ready():
+
+func reset():
+	gameData.cleanup_post_game()
 	#only server is allowed to run the main process	
+	if text_edit:
+		text_edit.text = ""
+
+	count_delays = {}
+
+
+
+#GUI components required for interaction
+#var phaseContainer:PhaseContainer = null
+#var initialized:bool = false
+#var text_edit:TextEdit = null
+
+	test_files = []
+	current_test = 0
+	current_test_file= ""
+
+	passed = []
+	failed = []
+	skipped = []
+	failed_reason = []
+	fail_details = []
+
+	skipped_reason = []
+	finished = false
+	forced_status = TestStatus.NONE
+
+	#current tests
+	initial_state = {}
+	end_state = {}
+	test_conditions = {}
+	actions = []
+	current_action= 0
+	current_playing_hero_id = 0
+
+	game_loaded = false
+
+	delta = 0
+
+	#temporary variables to keep track of objects to interact with
+	_current_selection_window = null
+	_current_targeting_card = null
+	_current_targeted_card = null
+	_action_ongoing = false
+
+		
 	if 1 != get_tree().get_network_unique_id():
 		return
-	
+		
 	gameData.theAnnouncer.skip_announcer()			
 	load_test_files()
 	var _next = next_test()
+		
+func _ready():
+	cfc.connect("json_parse_error", self, "_loading_error")	
+	reset()
 
+func _loading_error(msg):
+	text_edit.text = "ERROR: " + msg + "\n"
+	
 
 func create_text_edit():
 	text_edit = TextEdit.new()  # Create a new TextEdit node
@@ -104,9 +160,19 @@ func create_text_edit():
 	text_edit.add_color_override("function_color", Color(0.88, 0.88, 0.88))
 	text_edit.add_color_override("member_variable_color", Color(0.88, 0.88, 0.88))
 	text_edit.add_color_region("<", ">", Color(1,1,0))
+	_reposition_text_edit()
 	#text_edit.anchor_bottom = 0.5	
 
+func _reposition_text_edit():
+	var other_text = gameData.phaseContainer.text_edit
+	if other_text and other_text.visible:
+		text_edit.anchor_left = 0.5
+		text_edit.anchor_right = 0.9
+		text_edit.anchor_top = 0
+		text_edit.anchor_bottom = 0.2
+
 func announce(text:String):
+	_reposition_text_edit()
 	text_edit.text += text
 	text_edit.text = text_edit.text	
 	var last_line = text_edit.get_line_count() - 1
@@ -140,6 +206,9 @@ func _process(_delta: float) -> void:
 	if (finished):
 		return
 	
+	if (_action_ongoing):
+		return	
+		
 	#don't proceed if stack is doing stuff
 	#TODO: we'll want to proceed in some cases though (HERO_IS_INTERRUPTING) ?
 	if (gameData.theStack.is_processing()):
@@ -209,7 +278,7 @@ func next_action():
 			return
 
 	if (action_type == "choose"):
-		if (!cfc.modal_menu) and delta <long_wait_time:
+		if (!cfc.get_modal_menu()) and delta <long_wait_time:
 			count_delay("action_choose")
 			return
 
@@ -246,51 +315,70 @@ func next_action():
 					return					
 
 	delta = 0
-
 	
 	process_action(my_action)
 	
 	current_action += 1
+
+	#look ahead
+	if actions.size() > current_action:
+		var next_action = actions[current_action]
+		var next_action_type = next_action.get("type", "")
+		var next_action_value = next_action.get("value", "")
+		match next_action_type:
+			"target":
+				rpc("set_upcoming_target", next_action_value)			
+		announce("upcoming: " + next_action_type + " - " + str(next_action_value) + ")\n")
 	return
 
 #The bulk of the GUI control to process one event	
 func process_action(my_action:Dictionary):
-	var player: int = my_action.get("player", 0)
-	#If player is 0 we'll try to guess it from the card
-	#Player 1 is the master, runing the test suite
-	#Other players will receive the test request via rpc
+	var hero: int = int(my_action.get("hero", 0))
+	#If hero is 0 we'll try to guess it from the card
+	#hero 1 belongs to the master player, runing the test suite
+	#Other heroes will receive the test request via rpc
 
-	if (!player):
-		#guessing player from action/card
-		player = 1 #default
+	if (!hero):
+		#guessing hero from action/card
+		hero = 1 #default
 		var action_type: String = my_action.get("type", "play")
 		var action_value = 	my_action.get("value", "")
 		match action_type:
 			"activate":
-				player = get_card_owner(action_value)
+				hero = get_card_owner_hero_id(action_value)
 			"play":
-				player = get_card_owner(action_value)
+				hero = get_card_owner_hero_id(action_value)
 			"choose":
-				player = get_current_player()
+				hero = get_default_hero()
 			"target":
-				player = current_player_id
+				hero = current_playing_hero_id
 			"select":
-				player = get_current_player()
+				hero = get_default_hero()
 			"next_phase",\
 			"pass":
-				var hero_id = int(action_value)
-				var player_data:PlayerData = gameData.get_hero_owner(hero_id)
-				if (player_data):
-					player = player_data.get_id()		
+				hero = int(action_value)
+				
+	
 			"other":
-				player = get_current_player()
+				hero = get_default_hero()
 			_:
-				player = get_current_player()			
+				hero = get_default_hero()			
 
-	current_player_id = player
-	my_action["player"] = current_player_id #This will pass the determined player id to the rpc call 
-	var network_player_id = gameData.id_to_network_id[player]
+	current_playing_hero_id = hero
+	my_action["hero"] = current_playing_hero_id #This will pass the determined hero id to the rpc call 
+	var network_player_id = get_hero_player_network_owner(current_playing_hero_id)
+	_action_ongoing = true
 	rpc_id(network_player_id, "run_action", my_action)
+
+func get_hero_player_network_owner(hero_id):
+	var player = 1
+	var player_data:PlayerData = gameData.get_hero_owner(hero_id)
+	if (player_data):
+		player = player_data.get_id()		
+	return gameData.id_to_network_id[player]
+	
+mastersync func action_complete():
+	_action_ongoing = false
 	
 remotesync func run_action(my_action:Dictionary):	
 	#valid types: play, activate, choose, target, select, pass ("next_phase" is a synonym), other
@@ -299,59 +387,57 @@ remotesync func run_action(my_action:Dictionary):
 	#For "other", valid values are TBD
 	var action_type: String = my_action.get("type", "play")
 	var action_value = 	my_action.get("value", "")
-	var action_player = my_action["player"]
+	var action_hero = my_action["hero"]
 	
 	if (!action_value):
 		#TODO error
 		return
 	
-	announce("action: " + action_type + " - " + str(action_value) + " (player " + str(action_player) +")\n")
+	announce("action: " + action_type + " - " + str(action_value) + " (hero " + str(action_hero) +")\n")
 	var action_comment = my_action.get("_comments", "")
 	if (action_comment):
 		announce("<" + action_comment + ">\n")
+	
+	if gameData.get_current_local_hero_id() != action_hero:
+		gameData.select_current_playing_hero(action_hero)
 		
 	match action_type:
 		 #activate and play are actually the same behavior
 		"activate":
-			action_activate(action_player, action_value)
-			return
+			action_activate(action_hero, action_value)
 		"play":
-			action_play(action_player, action_value)
-			return
+			action_play(action_hero, action_value)
 		"select":
-			action_select(action_player, action_value)
-			return
+			action_select(action_hero, action_value)
 		"target":
-			action_target(action_player, action_value)
-			return
+			action_target(action_hero, action_value)
 		"choose":
-			action_choose(action_player, action_value)
-			return
+			action_choose(action_hero, action_value)
 		"next_phase",\
 		"pass":
-			action_pass(action_value)
-			return			
+			action_pass(action_hero)			
 		"other":
-			action_other(action_value)
-			return
+			action_other(action_hero)
 		_:
 			#TODO error
-			return	
+			var _error = 1
+	rpc_id(1, "action_complete")
+	return
 
 func action_other(action_value):
 	match action_value:
 		"gain_control":
 			finished = true #forces pause the test suite to give user control
 
-func action_play(player, card_id_or_name):
+func action_play(hero_id, card_id_or_name):
 	var card:WCCard = get_card(card_id_or_name)
 	card.attempt_to_play()
 	return
 	
-func action_activate(player, card_id_or_name):
-	return action_play(player, card_id_or_name)
+func action_activate(hero_id, card_id_or_name):
+	return action_play(hero_id, card_id_or_name)
 
-func action_select(player, action_value):
+func action_select(hero_id, action_value):
 	var chosen_cards: Array = []
 	if typeof(action_value) == TYPE_ARRAY:
 		chosen_cards = action_value
@@ -377,40 +463,38 @@ func cancel_current_selection_window():
 		#TODO error handling
 		var _error =1
 	
-func action_target(player, action_value):
+func action_target(hero_id, action_value):
 	var target_card = get_card(action_value)
+	
 	if (_current_targeting_card):
 		_current_targeting_card.targeting_arrow.force_select_target(target_card)
 	return
 	
-func action_choose(player, action_value):
-	if !cfc.modal_menu:
+func action_choose(hero_id, action_value):
+	if !cfc.get_modal_menu():
 		#TODO error handling
 		var _error =1	
 		return
 	
-	cfc.modal_menu.force_select_by_title(action_value)
+	cfc.get_modal_menu().force_select_by_title(action_value)
 
 #clicked on next phase. Value is the hero id	
-func action_pass(action_value):
-	var hero_id = int(action_value) - 1
-	var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id]
+func action_pass(hero_id):
+	var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id -1]
 	var result = heroPhase.heroPhase_action()
 	return		
 
-func get_current_player() -> int:
+func get_default_hero() -> int:
 	#TODO error handling
-	var player_network_id = gameData.user_input_ongoing if gameData.user_input_ongoing else 1 #TODO this is network id, should be regular id?
-	var player:PlayerData = gameData.get_player_by_network_id(player_network_id)
-	return player.get_id()
+	return 1
 	
-func get_card_owner(card_id_or_name:String)-> int:
+func get_card_owner_hero_id(card_id_or_name:String)-> int:
 	var card:WCCard = get_card(card_id_or_name)
 	if (!card):
 		return 0 #TODO error handling
-	return card.get_controller_player_id()
+	return card.get_controller_hero_id()
 
-func get_card_from_pile(card_id_or_name:String, pile:CardContainer)-> WCCard:
+func get_card_from_pile(card_id_or_name:String, pile:CardContainer):
 	var card_id = get_corrected_card_id(card_id_or_name)
 	if (!pile):
 		return null
@@ -422,7 +506,7 @@ func get_card_from_pile(card_id_or_name:String, pile:CardContainer)-> WCCard:
 	return null	
 	
 #Find a card object (on the board, etc...)
-func get_card(card_id_or_name:String)-> WCCard:
+func get_card(card_id_or_name:String):
 	var card_id = get_corrected_card_id(card_id_or_name)
 	#TODO Search in modal windows?
 	
@@ -507,6 +591,11 @@ func get_corrected_card_id (card) -> String:
 	return cfc.get_corrected_card_id(card)
 
 
+func _get_display_name(element):
+	var display1 = cfc.get_card_name_by_id(element)
+	if display1:
+		return display1
+	return element
 
 #check if all elements of dict1 can be found in dict2
 #This doesn't mean the dictionaries are necessarily equal
@@ -554,7 +643,8 @@ func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
 		TYPE_STRING:
 			#we don't care for the case
 			if (element1.to_lower() != element2.to_lower()):
-				failed_reason.append ("(" + _parent_name + ") expected: " + element1 + " - got: " + element2)
+				failed_reason.append ("(" + _parent_name + ") expected: "\
+				 	+ _get_display_name(element1) + " - got: " + _get_display_name(element2))
 				return false
 		_:	
 			if (element1 != element2):
@@ -583,6 +673,32 @@ remote func initialize_clients_test(details:Dictionary):
 	current_test_file = details["current_test_file"]
 	test_conditions = details["test_conditions"]
 	delta = 0
+	if !cfc.is_game_master():
+		announce("running test: " + current_test_file+"\n")
+
+
+func test_integrity(json_card_data) -> Array:
+	var errors = []
+	if !json_card_data.has("init"):
+		errors.append("missing init section")
+	if !json_card_data.has("actions"):
+		errors.append("missing actions section")	
+	if !json_card_data.has("end"):
+		errors.append("missing end section")
+
+	if errors:
+		return errors
+	
+	for section_name in ["init", "end"]:
+		var section = json_card_data[section_name]
+		var board = section["board"]
+		for pile in board:
+			var lc_name = pile.to_lower()
+			if lc_name.begins_with("identity"):
+				var identity_data = board[pile]
+				if identity_data.size() != 1:
+					errors.append("identity data incorrect")
+	return errors
 
 #Loads a single test file 	
 func load_test(test_file)-> bool:
@@ -601,7 +717,23 @@ func load_test(test_file)-> bool:
 		return false
 				
 	var json_card_data:Dictionary = WCUtils.read_json_file(test_file)
+	if !json_card_data:
+		skipped.append(test_file)
+		skipped_reason.append("script error")
+		announce("skipped (script error)\n")		
+		return false
 	json_card_data = WCUtils.replace_real_to_int(json_card_data)
+	
+	var integrity_errors = test_integrity(json_card_data)
+	if integrity_errors:
+		var integrity_errors_str = ""
+		for error in integrity_errors:
+			integrity_errors_str+= error + " - "
+		skipped.append(test_file)
+		skipped_reason.append("script error - data integrity" + integrity_errors_str)
+		announce("skipped (data integrity)\n")		
+		return false		
+	
 	initial_state = json_card_data["init"]
 	actions = json_card_data["actions"]
 	end_state = json_card_data["end"]
@@ -699,25 +831,22 @@ remotesync func save_results():
 	for fail_detail in fail_details:
 		to_print +=  fail_detail + "\n"	
 
-	var network_id = get_tree().get_network_unique_id()
-	network_id = str(network_id)
-	var filename = "user://test_results_" + network_id +".txt"
+	var player = gameData.get_player_by_network_id(get_tree().get_network_unique_id())
+	var player_id = player.get_id()
+	var filename = "user://test_results_" + str(player_id) +".txt"
 	
 	file.open(filename, File.WRITE)
 	file.store_string(to_print + "\n")
 	file.close() 	
 
+remotesync func set_upcoming_target(value:String):
+	_current_targeted_card = get_card(value)
+
 func _initiated_targeting(_request_object = null):
 	_current_targeting_card = _request_object
 	
-	#fake target
-	if actions.size() > current_action:
-		var my_action = actions[current_action]
-		var action_type = my_action.get("type", "")
-		var action_value = my_action.get("value", "")
-		var card = get_card(action_value)
-		if (card):
-			_current_targeting_card.targeting_arrow.set_destination(card.global_position + Vector2(70, 70))
+	if (_current_targeted_card):
+		_current_targeting_card.targeting_arrow.set_destination(_current_targeted_card.global_position + Vector2(70, 70))
 
 func _selection_window_opened(_request_object = null,details = {}):
 	_current_selection_window = _request_object

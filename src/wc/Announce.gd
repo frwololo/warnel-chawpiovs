@@ -124,9 +124,9 @@ func set_bg_color(color):
 	if bg_color:
 		bg_color.color = _bg_color
 
-func set_bg_colors(top, bottom):
-	_top_color = top
-	_bottom_color = bottom
+func set_bg_colors(_top, _bottom):
+	_top_color = _top
+	_bottom_color = _bottom
 	if top_color:
 		top_color.color = _top_color
 	if bottom_color:
@@ -145,7 +145,7 @@ func set_text_bottom(text):
 func set_text(text:String):
 	var half_size = int(text.length()/2)
 	var left_string = text.substr(0, half_size)
-	var right_string = text.substr(half_size)
+
 	var right = text.find(" ", half_size)
 	var left = left_string.rfind(" ")
 	

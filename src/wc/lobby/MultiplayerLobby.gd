@@ -29,6 +29,8 @@ func _ready() -> void:
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')
 	v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
 	
+	launch_button.disabled = true
+	
 # Network setup
 	get_tree().connect("network_peer_connected", self, "_player_connected")
 	get_tree().connect("network_peer_disconnected", self, "_player_disconnected")
@@ -100,6 +102,9 @@ remote func register_player(info):
 	
 	if get_tree().is_network_server():
 		new_person.kick.show()
+		launch_button.disabled = false
+		#TODO debug for 2 players, remove afterwards
+		on_button_pressed(launch_button.name)
 	else:
 		new_person.kick.hide()
 

@@ -35,7 +35,7 @@
 						"src_container": "hand"
 					},
 					{
-						"name" : "draw_card",
+						"name" : "draw_cards",
 						"amount": 1,
 					},
 				],
@@ -62,7 +62,7 @@
 						"src_container": "hand"
 					},
 					{
-						"name" : "draw_card",
+						"name" : "draw_cards",
 						"amount": 2,
 					},
 				],				
@@ -294,7 +294,9 @@
 					"filter_task" : "get_property",
 					"filter_property_name" : "defense",
 					"filter_state_trigger" : [{
-						"filter_card_name" : "Captain Marvel",
+						"filter_properties":{
+							"Name" : "Captain Marvel"
+						}, 
 					}],
 					"alteration": 1
 				},
@@ -573,7 +575,7 @@
 						"tags": ["hero_action"]
 					},
 					{	
-						"name": "move_to_container",
+						"name": "move_card_to_container",
 						"dest_container" : "discard",
 						"subject": "self",
 						"is_cost": true,
@@ -725,7 +727,7 @@
 					},				
 					{
 						"name": "move_card_to_container",
-						"dest_container": "villain_discard",
+						"dest_container": "discard_villain",
 						"subject": "self"
 					},
 					{
@@ -743,7 +745,7 @@
 					},				
 					{
 						"name": "move_card_to_container",
-						"dest_container": "villain_discard",
+						"dest_container": "discard_villain",
 						"subject": "self"
 					},
 					{
@@ -805,6 +807,101 @@
 				},				
 			],
 		},			
+	},
+	"Family Emergency": {
+		"about_to_reveal": {
+			"trigger": "self",
+			"all": [{
+				"name": "change_controller_hero",
+				"target_identity": "Carol Danvers", 
+				"subject": "self",
+			}]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"Flip then Remove from the game": [
+					{	
+						"name": "constraints",
+						"is_cost": true,
+						"tags": ["hero_form"]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{	
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					},
+				],
+				"Remove from the game": [
+					{	
+						"name": "constraints",
+						"is_cost": true,
+						"tags": ["alter_ego_form"]
+					},
+					{	
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					},					
+				],
+				"Flip then get stunned": [
+					{	
+						"name": "constraints",
+						"is_cost": true,
+						"tags": ["hero_form"]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name" : "mod_tokens",
+						"modification": 1,
+						"token_name":  "stunned",	
+						"subject": "my_hero",
+					},			
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					},
+					{
+						"name": "surge",
+					},					
+				],
+				"Get Stunned": [
+					{
+						"name" : "mod_tokens",
+						"modification": 1,
+						"token_name":  "stunned",	
+						"subject": "my_hero",
+					},			
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					},
+					{
+						"name": "surge",
+					},				
+				],				
+				
+			}
+		},
 	},	
 	"First Aid": {
 		"manual": {
@@ -1191,12 +1288,12 @@
 			"hand": [	
 				{
 					"name" : "add_script",
-					"end_condition": "card_moved_to_board",	
+					"end_condition": "before_card_moved_to_board",	
 					"is_cost": true,
-					"subject": "index",
+					"subject": "tutor",
 					"subject_count": "all",
 					"src_container": "discard",
-					"filter_state_seek": [{
+					"filter_state_tutor": [{
 							"filter_group" : "group_allies"
 					}],
 					"script": {
@@ -1434,9 +1531,9 @@
 					"amount": 1,
 				}
 			],
+			"filter_target_hero": "Spider-Man",	
 			"filter_state_trigger": [{
 				"filter_group": "group_villains",
-				"filter_target_hero": "Spider-Man"
 			}]
 		}
 	},
@@ -1631,6 +1728,21 @@
 			]
 		}
 	},
+	"The Triskelion": {		
+		"alterants": {
+			"board": [
+				{					
+					"filter_task" : "get_property",
+					"filter_property_name" : "ally_limit",
+					"filter_same_controller": true,
+					"filter_state_trigger" : [{
+						"filter_group" : "group_identities",
+					}],
+					"alteration": 1
+				}
+			]
+		}		
+	},	
 	"Vision": {
 		"manual": {
 			"board": {
@@ -1641,12 +1753,12 @@
 						"is_cost" : true,
 					},
 					{
-						"name" : "temporary_effect",
+						"name" : "add_script",
 						"end_condition": "phase_ended",
 						"subject": "self",				
-						"effect": {
+						"script": {
 							"alterants": {
-								"all": [
+								"board": [
 									{					
 										"filter_task" : "get_property",
 										"filter_property_name" : "attack",
@@ -1665,12 +1777,12 @@
 						"is_cost" : true,
 					},
 					{
-						"name" : "temporary_effect",
+						"name" : "add_script",
 						"end_condition": "phase_ended",
 						"subject": "self",				
-						"effect": {
+						"script": {
 							"alterants": {
-								"all": [
+								"board": [
 									{					
 										"filter_task" : "get_property",
 										"filter_property_name" : "thwart",

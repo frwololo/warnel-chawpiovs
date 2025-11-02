@@ -8,10 +8,17 @@
 #
 # The BoardPlacementSlots will adjust to card_size on runtime, but
 # If you want to visually see on the editor your result
+
+# warning-ignore-all:UNUSED_ARGUMENT
+# warning-ignore-all:RETURN_VALUE_DISCARDED
+
 class_name BoardPlacementGrid
 extends Control
 
+#emitted by children
+# warning-ignore:unused_signal
 signal card_removed_from_slot (slot)
+# warning-ignore:unused_signal
 signal card_added_to_slot (slot)
 
 # Used to add new BoardPlacementSlot instances to grids. We have to add the consts

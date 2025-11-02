@@ -228,8 +228,8 @@ func _adjust_collision_area() -> void:
 		return
 		
 	var control_size = $Control.rect_size
-	var position = self.position
-	var extents = $CollisionShape2D.shape.extents
+	var _position = self.position
+	var _extents = $CollisionShape2D.shape.extents
 	var new_extents = Vector2(round(control_size.x/2), round(control_size.y/2))
 
 	$CollisionShape2D.shape.extents =  new_extents #control_size / 2

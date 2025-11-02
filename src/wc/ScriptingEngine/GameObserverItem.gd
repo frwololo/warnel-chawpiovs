@@ -8,7 +8,7 @@ var script_definition:= {}
 # var a = 2
 # var b = "text"
 
-func set_values(_parent_script, _script: Dictionary, overrides: Dictionary = {}):
+func set_values(_parent_script, _script: Dictionary):
 	parent_script = _parent_script
 	script_definition = _script
 		
@@ -28,10 +28,10 @@ func retrieve_all_scripts():
 	return script_definition
 
 #Functions from Card/WCCard we want to override with empty stuff (related to display, etc...)
-func _class_specific_input(event) -> void:
+func _class_specific_input(_event) -> void:
 	pass
 	
-func _class_specific_process(delta):
+func _class_specific_process(_delta):
 	pass
 
 
@@ -43,5 +43,5 @@ func _init_card_layout() -> void:
 func init_default_max_tokens():
 	pass
 	
-func set_card_size(value: Vector2, ignore_area = false) -> void:
+func set_card_size(_value: Vector2, _ignore_area = false) -> void:
 	pass

@@ -274,8 +274,17 @@ const FORCE_HORIZONTAL_CARDS := {
 	"side_scheme" : true,
 }
 
+const DEFAULT_PROPERTIES_BY_TYPE:= {
+	"hero": {
+		"ally_limit" : 3
+	},
+	"alter_ego": {
+		"ally_limit" : 3
+	},	
+} 
+
 const TYPECODE_TO_PILE := {
-	"event" : "discard{current_hero}",
+	"event" : "discard",
 	"treachery": "discard_villain"
 }
 
@@ -449,7 +458,9 @@ const DEACTIVATE_SLOTS_HIGHLIGHT := true
 #set to true to fetch cards online and download images
 const LOAD_CARDS_ONLINE := true
 #set to true to help with breakpoints and debug
-const DISABLE_THREADS:= false 
+const DISABLE_THREADS:= true 
+const DISABLE_ANNOUNCER:= true
+const SKIP_MULLIGAN:= true
 
 const DEFAULT_SETTINGS:= {
 	'glow_intensity' : 0.01,

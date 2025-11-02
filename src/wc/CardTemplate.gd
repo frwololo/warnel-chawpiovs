@@ -28,10 +28,12 @@ onready var spinbox = $Control/SpinPanel/SpinBox
 func add_extra_script(script_definition):
 	extra_script_uid+= 1
 	extra_scripts[extra_script_uid] = script_definition
+	check_ghost_card()
 	return extra_script_uid
 
 func remove_extra_script(script_uid):
 	extra_scripts.erase(script_uid)
+	check_ghost_card()
 	return extra_script_uid
 
 
@@ -91,6 +93,17 @@ func position_ui_elements():
 	if properties.get("_horizontal", 0):
 		#reposition the token drawer for horizontal cards
 		tokens.set_is_horizontal()
+
+func execute_before_scripts(
+		trigger_card: Card = self,
+		trigger: String = "manual",
+		trigger_details: Dictionary = {},
+		run_type := CFInt.RunType.NORMAL):
+	return execute_scripts(trigger_card, "before_" + trigger, trigger_details, run_type) 
+
+func _ready():
+	scripting_bus.connect("scripting_event_about_to_trigger", self, "execute_before_scripts")
+
 
 func _process(delta) -> void:
 	if (cfc.is_modal_event_ongoing()):
@@ -232,8 +245,9 @@ func can_interrupt(
 		if card_scripts.get("is_optional_" + get_state_exec()):
 			may_interrupt =  CFConst.CanInterrupt.MAY
 		else:
-			return  CFConst.CanInterrupt.MUST
-	
+			may_interrupt =  CFConst.CanInterrupt.MUST
+	if (may_interrupt != CFConst.CanInterrupt.NO and canonical_name == "Spider-Man"):
+		display_debug("can interrupt " + trigger_card.canonical_name + ". Details: " + to_json(trigger_details))
 	return may_interrupt
 
 # Executes the tasks defined in the card's scripts in order.
@@ -263,6 +277,16 @@ func execute_scripts(
 	else:
 		if !(trigger in (can_i_run)):
 			return null	
+
+
+	#can only trigger if I'm the controller of the ability (will send online to other clients)
+	if !gameData.can_i_play_this_ability(self):
+		return
+		
+	#special case for enemy cards, need to think about it
+	if self.get_controller_hero_id() <= 0:
+		if !cfc.is_game_master():
+			return 
 		
 	return .execute_scripts(trigger_card, trigger, trigger_details, run_type)	
 
@@ -448,13 +472,17 @@ func heal(value):
 func common_pre_execution_scripts(_trigger: String, _trigger_details: Dictionary) -> void:
 	match _trigger:
 		"enemy_attack":
-			gameData.compute_potential_defenders()
+			gameData.compute_potential_defenders(gameData.get_villain_current_hero_target())
 
-func can_defend():
+func can_defend(hero_id = 0):
 	if is_exhausted() : return false
 
 	var type_code = properties.type_code
 	if type_code != "hero" and type_code != "ally": return false
+	
+	if hero_id:
+		if get_controller_hero_id() != hero_id:
+			return false
 	
 	return true
 
@@ -522,7 +550,7 @@ func _process_card_state() -> void:
 
 #checks executable scripts for cards in discard pile,
 #and attempts to create a "ghost" card in hand if needed
-func check_ghost_card(state_exec):
+func check_ghost_card():
 	for i in range(gameData.get_team_size()):
 		cfc.NMAP["ghosthand" + str(i+1)].check_ghost_card(self)
 	
@@ -547,9 +575,7 @@ func check_play_costs() -> Color:
 
 	#skip if card is not in hand and not on board. TODO: will have to take into account cards than can be played from other places
 	var state_exec = get_state_exec()
-	check_ghost_card(state_exec)
 	
-	var parent = get_parent()
 	if !(state_exec in ["hand", "board"]):
 		return _check_play_costs_cache
 	
@@ -645,7 +671,7 @@ func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:
 	# can pay the cost
 	#TODO how does it work in Multiplayer?
 	if (!owner_hero_id):
-		owner_hero_id = gameData.current_hero_id
+		owner_hero_id = gameData.get_current_local_hero_id()
 			
 	var manacost:ManaCost = ManaCost.new()
 	var cost = script_definition["cost"]
@@ -730,11 +756,6 @@ func can_execute_scripts():
 		return ['boost']
 	return true
 	
-	#For now discard piles are prevented from running scripts
-	#this could be an issue down the line, but this is a performance optimization at the moment
-	#if needed, need to refine this and prevent execution only from cards that do not have discard specific scripts, etc...
-	if get_parent().is_in_group("discard"):
-		return false
 
 #returns scripts specific to this instance
 func get_instance_runtime_scripts(trigger:String = "") -> Dictionary:
@@ -796,8 +817,8 @@ func pay_as_resource(script):
 	cfc.remove_ongoing_process(self, "pay_as_resource")
 	return result_mana
 
-func _get_resource_sceng(script, _state = ""):
-	var my_state = _state if _state else get_state_exec()
+func _get_resource_sceng(script):
+	#var my_state = _state if _state else get_state_exec()
 	var trigger_card = script.owner
 	var trigger_details = {}
 	var card_scripts = retrieve_filtered_scripts(trigger_card, "resource", trigger_details)	
@@ -814,12 +835,15 @@ func _get_resource_sceng(script, _state = ""):
 	
 	return sceng
 
+func display_debug(msg):
+	gameData.display_debug("(WCCard - " + canonical_name +") " + msg)
+
 #computes how much resources this card would generate as part of a payment
 #this uses its "resource" script in priority (for card that have either special resource abilities,
 #or cards that modify their resource based on some scripted conditions - e.g. The Power of Justice
 func get_resource_value_as_mana(script):
 	var my_state = get_state_exec()
-	var sceng = _get_resource_sceng(script, my_state)
+	var sceng = _get_resource_sceng(script)
 	var result_mana:ManaCost = ManaCost.new()
 	
 	if sceng:

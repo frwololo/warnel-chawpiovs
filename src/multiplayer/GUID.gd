@@ -23,6 +23,7 @@ func get_guid(stuff) -> int:
 func get_object_by_guid(uid:int):
 	if (guid_to_object.has(uid)):
 		return guid_to_object[uid]
+	gameData.display_debug("error: couldn't find object for guid:" +str(uid))
 	return null	
 
 #Forces a specific guid to align all network clients	

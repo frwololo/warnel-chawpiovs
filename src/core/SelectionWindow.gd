@@ -60,7 +60,7 @@ func _ready() -> void:
 	connect("confirmed", self, "_on_card_selection_confirmed")
 
 func _process(_delta):
-	check_ok_button()
+	var _result = check_ok_button()
 
 
 func _compute_columns():
@@ -113,7 +113,7 @@ func initiate_selection(_card_array: Array) -> void:
 		else:
 			#add separator for cards from different zones
 			if (current_parent and (card.get_parent() != current_parent)):
-				for i in range (current_column, _card_grid.columns):
+				for _i in range (current_column, _card_grid.columns):
 					_card_grid.add_child(grid_card_object_scene.instance())
 				current_column = 0
 			current_parent = card.get_parent()
@@ -383,7 +383,7 @@ func dry_run(_card_array: Array) -> void:
 					if can_assign > remaining:
 						can_assign = remaining
 					remaining -= can_assign
-					for i in range (can_assign):
+					for _i in range (can_assign):
 						selected_cards.append(card)
 					if remaining <= 0:
 						break	
@@ -423,10 +423,10 @@ func spinbox_value_changed( new_value,  dupe_selection: Card, origin_card) -> vo
 	var to_add = new_value - count
 	
 	if to_add > 0:
-		for i in range(to_add):
+		for _i in range(to_add):
 			selected_cards.append(origin_card)
 	else:
-		for i in range (-to_add):
+		for _i in range (-to_add):
 			selected_cards.erase(origin_card)
 		
 	

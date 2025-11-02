@@ -41,23 +41,40 @@ signal manapool_modified(details)
 
 # warning-ignore:unused_signal
 signal enemy_initiates_attack(card,details)
+# warning-ignore:unused_signal
 signal enemy_initiates_scheme(card,details)
+# warning-ignore:unused_signal
 signal enemy_attack_happened (card,details)
+# warning-ignore:unused_signal
 signal thwarted (card,details)
-signal character_dies(card, details) 
+# warning-ignore:unused_signal
+signal character_dies(card, details)
+# warning-ignore:unused_signal 
 signal round_ended()
+# warning-ignore:unused_signal
 signal phase_ended(details)
+# warning-ignore:unused_signal
 signal stack_event_deleted(event)
 
 #todo should be dynamic?
+# warning-ignore:unused_signal
 signal minion_moved_to_board(card,details)
+# warning-ignore:unused_signal
 signal main_scheme_moved_to_board(card,details)
+# warning-ignore:unused_signal
 signal player_scheme_moved_to_board(card,details)
+# warning-ignore:unused_signal
 signal side_scheme_moved_to_board(card,details)
+# warning-ignore:unused_signal
 signal villain_moved_to_board(card,details)
+# warning-ignore:unused_signal
 signal hero_moved_to_board(card,details)
+# warning-ignore:unused_signal
 signal alter_ego_moved_to_board(card,details)
+# warning-ignore:unused_signal
 signal ally_moved_to_board(card,details)
+# warning-ignore:unused_signal
 signal upgrade_moved_to_board(card,details)
+# warning-ignore:unused_signal
 signal support_moved_to_board(card,details)
 

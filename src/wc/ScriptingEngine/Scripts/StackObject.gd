@@ -5,6 +5,7 @@ class_name StackObject
 extends Reference
 
 var stack_uid:int = 0
+var display_name: = ""
 
 #task elements, generally speaking, should be ScriptTask objects
 #at the very least, they need a script_definition and a script_name value
@@ -52,3 +53,18 @@ func get_first_task_name():
 	for task in get_tasks():
 		return task.script_name
 	return ""
+
+func get_display_name():
+	if display_name:
+		return display_name
+	return get_first_task_name()
+
+func set_display_name(_name):
+	display_name = _name
+
+
+
+static func sort_stack(a, b):
+	if a.stack_uid < b.stack_uid:
+		return true
+	return false

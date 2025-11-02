@@ -120,7 +120,7 @@ func add_scripts(_state_scripts,
 			tmp_array.append_array(scripts_queue)
 			scripts_queue = tmp_array
 		
-		for i in range (scripts_queue.size()):
+		for _i in range (scripts_queue.size()):
 			stored_integers.append([false, 0])								
 
 # This flag will be true if we're attempting to find if the card

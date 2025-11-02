@@ -49,19 +49,20 @@ func _ready():
 
 #Quickstart for tests
 #TODO remove
-	if (gameData.is_multiplayer_game and cfc.is_game_master()):
-		yield(get_tree().create_timer(1), "timeout")	
-		owner_changed(2, 1)
-		rpc("assign_hero", "01001a", 0)
-		rpc("assign_hero", "01010a", 1)
-		yield(get_tree().create_timer(1), "timeout")	
-		_launch_server_game()
-	else:
-		yield(get_tree().create_timer(0.05), "timeout")	
-		#rpc("assign_hero", "01001a", 0) #peter
-		rpc("assign_hero", "01010a", 0)#carol		
-		yield(get_tree().create_timer(0.2), "timeout")	
-		_launch_server_game()		
+	if (cfc.is_game_master()):
+		if (gameData.is_multiplayer_game):
+			yield(get_tree().create_timer(1), "timeout")	
+			owner_changed(2, 1)
+			rpc("assign_hero", "01001a", 0)
+			rpc("assign_hero", "01010a", 1)
+			yield(get_tree().create_timer(1), "timeout")	
+			_launch_server_game()
+#		else:
+#			yield(get_tree().create_timer(0.05), "timeout")	
+#			#rpc("assign_hero", "01001a", 0) #peter
+#			rpc("assign_hero", "01010a", 0)#carol		
+#			yield(get_tree().create_timer(0.2), "timeout")	
+#			_launch_server_game()		
 	
 	
 func _load_scenarios():
@@ -95,7 +96,7 @@ remotesync func get_next_hero_slot(hero_id) -> int:
 	var client_id = get_tree().get_rpc_sender_id() 
 	for i in HERO_COUNT:
 		var data: HeroDeckData = team[i]
-		if (data.owner.network_id == client_id and data.hero_id == ""):
+		if (data.owner.network_id == client_id and data.get_hero_id() == ""):
 			rpc("assign_hero", hero_id, i)
 			return i
 	return -1			

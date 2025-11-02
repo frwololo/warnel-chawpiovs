@@ -10,6 +10,42 @@ var identity_card = null
 
 var my_id = 0 setget set_player, get_player
 
+# a temporary variable to move cards after all clients have loaded them,
+# to avoid scripts triggering incorrectly
+var _post_load_move:= {}
+var _cards_loaded:= {}
+
+#things to do after everything is properly loaded.
+#This will trigger execute_scripts
+#so all clients need to be loaded before calling this
+func post_load_move():
+	for card in _post_load_move:
+		var data = _post_load_move[card]
+		var pile_name = data.get("pile", "")
+		var slot = data.get("slot", null)
+		
+		if (pile_name):
+			card.move_to(cfc.NMAP[pile_name])
+		if slot:
+			card.move_to(cfc.NMAP.board, -1, slot)		
+			card.set_is_faceup(true)
+				
+#	for card in _post_load_move:				
+#		card.interruptTweening()
+#		card.reorganize_self()	
+		
+	_post_load_move = {} #reset		
+	return			
+
+
+remotesync func cards_preloaded():
+	var client_id = get_tree().get_rpc_sender_id() 	
+	_cards_loaded[client_id] = true
+	if _cards_loaded.size() == gameData.network_players.size():
+		_cards_loaded = {} #reset just in case
+		post_load_move()
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	if (not my_id):
@@ -28,8 +64,8 @@ func load_starting_identity():
 		#TODO error
 		return
 	var ckey = alter_ego_id
+	load_nemesis_aside(hero_card_data)	
 	load_identity (ckey)
-	load_nemesis_aside(hero_card_data)
 	
 func load_nemesis_aside(hero_card_data):
 	#return	
@@ -39,27 +75,33 @@ func load_nemesis_aside(hero_card_data):
 	var nemesis_cards_data = cfc.cards_by_set[nemesis_set]
 	for card_data in nemesis_cards_data:
 		var quantity = card_data.get("quantity", 1)
-		for i in range (quantity):
+		for _i in range (quantity):
 			var card_key = card_data["_code"]
 			 #0 sets owner to villain so that nemesis cards get discarded into villain pile
 			var card = cfc.instance_card(card_key, 0)
 			#moving the card forces a rescale
 			cfc.NMAP["deck" + str(my_id)].add_child(card)
-			card.move_to(cfc.NMAP["set_aside"])
+			card._determine_idle_state()
+			_post_load_move[card] = {
+				"pile": "set_aside"
+			}
+
 	
-func load_identity(card_name):
-	var card = cfc.instance_card(card_name, my_id)
+func load_identity(card_id):
+	var card = gameData.retrieve_from_side_or_instance(card_id, my_id)
 	
-	#TODO better
-	cfc.NMAP["deck" + str(my_id)].add_child(card)
+	#cfc.NMAP["deck" + str(my_id)].add_child(card)
+	card._determine_idle_state()
 	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid("identity" + str(my_id))
 	var slot: BoardPlacementSlot
 	if grid:
 		slot = grid.get_slot(0)   # .find_available_slot()
 		if slot:
-			card.move_to(cfc.NMAP.board, -1, slot)		
-	card.set_is_faceup(true)
+			_post_load_move[card] = {
+				"slot": slot
+			}
 	set_identity_card(card)
+	rpc("cards_preloaded")
 	return identity_card
 
 func set_identity_card(card):
@@ -68,6 +110,17 @@ func set_identity_card(card):
 	#disappear. Not sure what is happening
 	identity_card.disable_dragging_from_board = true
 	identity_card.disable_dragging_from_pile = true		
+
+func reorganize():
+	#identity_card.move_to(cfc.NMAP["hand" + str(my_id)])
+	#identity_card.set_is_faceup(true)
+#	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid("allies" + str(my_id))
+#	var slot: BoardPlacementSlot
+#	if grid:
+#		slot = grid.get_slot(0)   # .find_available_slot()
+#		if slot:
+#			identity_card.move_to(cfc.NMAP.board, -1, slot)	
+	pass
 
 func get_player():
 	return my_id

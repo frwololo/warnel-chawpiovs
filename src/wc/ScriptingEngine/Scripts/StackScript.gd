@@ -9,6 +9,7 @@ var run_type
 var trigger
 var trigger_details
 
+
 func _init(_sceng = null, _run_type = 0, _trigger = "", _trigger_details = {}):
 	sceng = _sceng
 	run_type = _run_type
@@ -28,6 +29,7 @@ func prevent_value(property, amount_prevented):
 			value = max(0, value-amount_prevented)
 			script_definition[property] = value
 			#todo what if zero
+
 
 
 func execute():

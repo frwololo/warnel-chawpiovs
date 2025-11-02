@@ -19,6 +19,7 @@ var _current_card_key = ""
 var _current_percent = 0.0
 var _loading_text_prefix =""
 var _loading_in_progress = false
+var _loading_error = false
 
 signal all_downloads_completed()
 signal one_download_completed()
@@ -46,7 +47,13 @@ func _ready() -> void:
 	self.connect("one_download_completed", self, "_one_download_completed")
 	self.connect("images_download_completed", self, "_images_download_completed")
 	self.connect("sets_download_completed", self, "_sets_download_completed")	
+	cfc.connect("json_parse_error", self, "loading_error")	
 			
+
+func loading_error(msg):
+	v_folder_label.text = "ERROR: " + msg
+	main_title.text = "SCRIPT ERROR :("
+	_loading_error  = true
 
 func display_folder_info():
 	v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
@@ -196,6 +203,9 @@ func _show_buttons():
 			option_button.visible = true
 	
 func _all_downloads_completed():
+	if (_loading_error):
+		return
+			
 	_show_buttons()
 	display_folder_info()
 
@@ -251,9 +261,15 @@ func _sets_download_completed():
 	cfc.load_cards_database()
 	if cfc.scripts_loading:
 		yield(cfc,"scripts_loaded")
+
+	if (_loading_error):
+		return		
 	start_images_dl()
 
 func _process(delta):
+	if (_loading_error):
+		return
+		
 	if !_loading_in_progress:
 		_loading_in_progress = true
 		if CFConst.LOAD_CARDS_ONLINE:
@@ -267,6 +283,9 @@ func _process(delta):
 		
 	
 func _one_download_completed():
+	if (_loading_error):
+		return
+			
 	v_folder_label.text = _loading_text_prefix +  str(_current_percent) + "% - " + _current_url
 
 func on_button_pressed(_button_name : String) -> void:
@@ -290,26 +309,3 @@ func _on_Menu_resized() -> void:
 					tab.rect_position.x = get_viewport().size.x
 
 
-
-
-	# Perform a GET request. The URL below returns JSON as of writing.
-	var error = http_request.request("https://httpbin.org/get")
-	if error != OK:
-		push_error("An error occurred in the HTTP request.")
-
-	# Perform a POST request. The URL below returns JSON as of writing.
-	# Note: Don't make simultaneous requests using a single HTTPRequest node.
-	# The snippet below is provided for reference only.
-	var body = JSON.new().stringify({"name": "Godette"})
-	error = http_request.request("https://httpbin.org/post", [], HTTPClient.METHOD_POST, body)
-	if error != OK:
-		push_error("An error occurred in the HTTP request.")
-
-# Called when the HTTP request is completed.
-func _http_request_completed(result, response_code, headers, body):
-	var json = JSON.new()
-	json.parse(body.get_string_from_utf8())
-	var response = json.get_data()
-
-	# Will print the user agent string used by the HTTPRequest node (as recognized by httpbin.org).
-	print(response.headers["User-Agent"])

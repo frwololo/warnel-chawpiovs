@@ -47,11 +47,10 @@ func add_resource(script: ScriptTask) -> int:
 
 	var counter_name: String = script.get_property("resource_name")
 	#TODO the scripting engine has better ways to handle alterations, etc... need to mimic that? See mod_counter
-	var modification: int  = script.get_property("amount")
+	var modification: int  = script.retrieve_integer_property("amount")
 	# var set_to_mod: bool = script.get_property(SP.KEY_SET_TO_MOD)
 
-	#var manapool:ManaPool = gameData.get_current_team_member()["manapool"]
-	
+
 	if run_type == CFInt.RunType.PRECOMPUTE:
 		var pre_result:ManaCost = ManaCost.new()
 		pre_result.add_resource(counter_name, modification)
@@ -76,16 +75,13 @@ func move_card_to_board(script: ScriptTask) -> int:
 			script.script_definition["grid_name"] = CFConst.TYPECODE_TO_GRID[type_code]
 
 	
-	#Replace all occurrences of "current_hero" with the actual id
+	#Replace all occurrences of un_numberd "discard", etc... with the actual id
 	#This ensures we use e.g. the correct discard pile, etc...
-	var current_hero_id = gameData.get_current_hero_id()
 	var owner_hero_id = script.owner.get_owner_hero_id()
-	#Not needed anymore ?
-	WCUtils.search_and_replace(script.script_definition, "{current_hero}", str(current_hero_id))
 	
-	for v in ["encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
+	for zone in CFConst.HERO_GRID_SETUP:
 		#TODO move to const
-		WCUtils.search_and_replace(script.script_definition, v, v+str(owner_hero_id), true)
+		WCUtils.search_and_replace(script.script_definition, zone, zone+str(owner_hero_id), true)
 	
 
 	var result = .move_card_to_board(script)
@@ -98,16 +94,11 @@ func move_card_to_container(script: ScriptTask) -> int:
 	#var modified_script:ScriptTask = script.duplicate
 	var backup:Dictionary = script.script_definition.duplicate()
 	
-	#Replace all occurrences of "current_hero" with the actual id
-	#This ensures we use e.g. the correct discard pile, etc...
-	var current_hero_id = gameData.get_current_hero_id()
 	var owner_hero_id = script.owner.get_owner_hero_id()
-	#Not needed anymore ?
-	WCUtils.search_and_replace(script.script_definition, "{current_hero}", str(current_hero_id))
-	
-	for v in ["encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
+
+	for zone in CFConst.HERO_GRID_SETUP:
 		#TODO move to const
-		WCUtils.search_and_replace(script.script_definition, v, v+str(owner_hero_id), true)
+		WCUtils.search_and_replace(script.script_definition, zone, zone+str(owner_hero_id), true)
 	
 	var result = .move_card_to_container(script)
 	script.script_definition = backup
@@ -116,16 +107,21 @@ func move_card_to_container(script: ScriptTask) -> int:
 func draw_cards (script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
+	var amount = script.retrieve_integer_property("amount")
+	if !amount:
+		return CFConst.ReturnCode.FAILED
+	
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
-		return retcode	
+		return retcode			
 	
-	var amount = script.script_definition.get("amount", 1)
-	var owner = script.owner
-	
-	var controller_id = owner.get_controller_hero_id()
+	var subject = script.owner	
+	if script.subjects:
+		subject = script.subjects[0]
+
+	var controller_id = subject.get_controller_hero_id()
 	var hand:Hand = cfc.NMAP["hand" + str(controller_id)]
 	var deck = cfc.NMAP["deck" + str(controller_id)]
-	for i in range (amount):
+	for _i in range (amount):
 		hand.draw_card(deck)
 	return retcode
 	
@@ -179,8 +175,6 @@ func attack(script: ScriptTask) -> int:
 	
 	if (costs_dry_run()):
 		return retcode
-
-	var tags: Array = ["attack", "Scripted"] + script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
 
 	var owner = script.owner	
 	var damage = script.retrieve_integer_property("amount")
@@ -239,7 +233,7 @@ func receive_damage(script: ScriptTask) -> int:
 		return retcode
 	
 	var tags: Array = script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
-	var amount = script.script_definition["amount"]
+	var amount = script.retrieve_integer_property("amount")
 	
 	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
 	# e.g. Spider man gets 3*1 damage = 3 damage
@@ -354,9 +348,7 @@ static func simple_discard_task(target_card):
 #adds an attacker
 func enemy_attacks_you(script: ScriptTask) -> int:
 	var retcode = CFConst.ReturnCode.FAILED
-	var owner = script.owner
-	var hero_id = owner.get_controller_hero_id()	
-	
+
 	for card in script.subjects:
 		gameData.add_enemy_activation(card, "attack", script)
 		retcode = CFConst.ReturnCode.CHANGED
@@ -506,7 +498,7 @@ func remove_threat(script: ScriptTask) -> int:
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
 
-	var modification = script.script_definition.get("amount", 0)
+	var modification = script.retrieve_integer_property("amount")
 
 	for card in script.subjects:
 		retcode = card.remove_threat(modification)
@@ -521,9 +513,9 @@ func thwart(script: ScriptTask) -> int:
 	var owner = script.owner
 	#we can provide a thwart amount in the script,
 	#otherwise we use the thwart property if the script owner is a friendly character
-	var modification = script.get_property("amount", 0)
+	var modification = script.retrieve_integer_property("amount")
 	if !modification:
-		modification = owner.get_property("thwart", 0)
+		modification = owner.get_property("thwart")
 
 	var confused = owner.tokens.get_token_count("confused")
 	if (confused):
@@ -804,7 +796,6 @@ func temporary_effect(script:ScriptTask) -> int:
 
 	var temporary_script = script.get_property("effect", {})
 	var end_condition = script.get_property("end_condition", "")
-	var parent_subjects = script.subjects
 
 	gameData.theGameObserver.add_script(script, temporary_script, end_condition)
 	
@@ -820,7 +811,7 @@ func add_script(script: ScriptTask) -> int:
 	var end_condition = script.get_property("end_condition", "")
 	var subjects = script.subjects
 	
-	for subject in script.subjects:
+	for subject in subjects:
 		var subscript_id = subject.add_extra_script(subscript)
 		if (end_condition):
 				gameData.theGameObserver.add_script_removal_effect(script, subject, subscript_id, end_condition)

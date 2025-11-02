@@ -30,7 +30,7 @@ func _ready():
 	pass # Replace with function body.
 
 func _process(_delta):
-	if (gameData.get_current_hero_id() == hero_index):
+	if (gameData.get_current_local_hero_id() == hero_index):
 		selected.visible = true
 	else:
 		selected.visible = false
@@ -57,10 +57,10 @@ func update_picture():
 func _on_HeroPhase_gui_input(event):	
 	if event is InputEventMouseButton: #TODO better way to handle Tablets and consoles
 		if event.button_index == BUTTON_LEFT and event.pressed:
-			heroPhase_action()
+			var _result = heroPhase_action()
 
 func can_hero_phase_action() -> bool:
-	if (hero_index == gameData.get_current_hero_id()):
+	if (hero_index == gameData.get_current_local_hero_id()):
 		#special case: cannot switch my status from inactive to active outside of main player phase
 		if (current_state == State.FINISHED) and (get_parent().current_step != CFConst.PHASE_STEP.PLAYER_TURN):
 			return false
@@ -69,7 +69,7 @@ func can_hero_phase_action() -> bool:
 func heroPhase_action() -> bool:
 	if !can_hero_phase_action():
 		return false	
-	if (hero_index == gameData.get_current_hero_id()):
+	if (hero_index == gameData.get_current_local_hero_id()):
 		rpc("switch_status")
 	else:	
 		gameData.select_current_playing_hero(hero_index)
@@ -93,14 +93,14 @@ remotesync func switch_status(forced_state:int = -1):
 		State.ACTIVE:
 			heroNode.texture = color_tex
 		State.FINISHED:
-			if (gameData.is_interrupt_mode()):
+			if (gameData.is_interrupt_mode() and hero_index in (gameData.get_currently_playing_hero_ids())):
 				gameData.interrupt_player_pressed_pass(self.hero_index)			
 			heroNode.texture = grayscale_tex	
 	_update_labels()
 	get_parent().check_end_of_player_phase()
 				
-func _current_playing_hero_changed (_trigger_details: Dictionary = {}):
-	var new_hero_index = gameData.get_current_hero_id()
+func _current_playing_hero_changed (trigger_details: Dictionary = {}):
+	var new_hero_index = trigger_details["after"]
 	if (new_hero_index == hero_index) and (current_state == State.FINISHED):
 		rpc("switch_status") #This also calls update_labels
 	else:		
@@ -111,7 +111,7 @@ func get_label_text():
 	return label.text
 
 func _update_labels():
-	var new_hero_index = gameData.get_current_hero_id()
+	var new_hero_index = gameData.get_current_local_hero_id()
 	if (gameData.can_i_play_this_hero(hero_index)):
 		if (new_hero_index == hero_index):
 			if (gameData.is_interrupt_mode()):

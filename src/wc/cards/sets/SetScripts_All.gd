@@ -295,7 +295,7 @@ func get_scripts(scripts: Dictionary, card_id: String, _get_modified = true) -> 
 					]
 				}
 			},
-			"ally_limit": {
+			"ally_limit_rule": {
 				"board": [
 					{
 						"is_cost": true,

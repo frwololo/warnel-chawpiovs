@@ -831,6 +831,9 @@ func get_property_and_alterants(property: String,
 # This allows the card layout to scale without using the .scale property
 # Which prevents the font from getting blurry
 func resize_recursively(control_node: Node, requested_scale: float) -> void:
+	if (canonical_id == "01001b" or canonical_id =="01094"):
+		display_debug(canonical_name + "resize recursively to scale:" + str(requested_scale))
+	
 	if card_size != canonical_size * requested_scale:
 		card_size = canonical_size * requested_scale
 	if _original_layouts.has(control_node)\
@@ -858,9 +861,13 @@ func resize_recursively(control_node: Node, requested_scale: float) -> void:
 				control_node.set("custom_constants/margin_" + margin,current_margin * requested_scale)
 		_original_layouts[control_node]["scale"] = requested_scale
 
+func display_debug(msg):
+	pass
 
 # Sets the card size and adjusts all nodes depending on it.
 func set_card_size(value: Vector2, ignore_area = false) -> void:
+	if (canonical_id == "01001b" or canonical_id =="01094"):
+		display_debug(canonical_name + "set size to " + str(value.x) + "x" + str(value.y))
 	card_size = value
 	_control.rect_min_size = value
 	# We set the card to always pivot from its center.
@@ -1225,9 +1232,9 @@ func move_to(targetHost: Node,
 		else:
 			target_scale = targetHost.scale
 		if parent_scale > target_scale:
-			scale = parent_scale / target_scale
+			set_scale(parent_scale / target_scale)
 		elif parent_scale < target_scale:
-			scale *= parent_scale * target_scale
+			set_scale(scale * parent_scale * target_scale)
 		# We need to remove the current parent node before adding a different one
 		parentHost.remove_child(self)
 		targetHost.add_child(self)
@@ -1432,6 +1439,11 @@ func move_to(targetHost: Node,
 	common_post_move_scripts(targetHost.name, parentHost.name, tags)
 	cfc.remove_ongoing_process(self)
 
+func set_scale(value):
+	if (canonical_id == "01001b" or canonical_id =="01094"):
+		display_debug(canonical_name + "setting scale:" + str(value.x) + "x" + str(value.y))
+		
+	scale = value
 
 #Return interrupt string to hijack manual run
 #TODO right now this returns the first one, need to be more specific
@@ -1472,7 +1484,12 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 	return card_scripts
 
 func get_state_scripts(card_scripts, trigger_card, trigger_details):
+	var state_scripts_dict = get_state_scripts_dict(card_scripts, trigger_card, trigger_details)
+	return state_scripts_dict["state_scripts"]
+
+func get_state_scripts_dict(card_scripts, trigger_card, trigger_details):
 	var state_scripts = []
+	var action_name = ""
 	# We select which scripts to run from the card, based on it state
 	var state_exec := get_state_exec()
 	var any_state_scripts = card_scripts.get('all', [])
@@ -1486,6 +1503,7 @@ func get_state_scripts(card_scripts, trigger_card, trigger_details):
 		if state_scripts.size() == 1:
 			var first_key = state_scripts.keys()[0]
 			state_scripts = state_scripts[first_key]
+			action_name = first_key
 		else:	
 			for entry_name in state_scripts.keys():
 				if entry_name == "_rules":
@@ -1509,7 +1527,7 @@ func get_state_scripts(card_scripts, trigger_card, trigger_details):
 				
 
 	
-	return state_scripts
+	return { "action_name" : action_name, "state_scripts" : state_scripts}
 
 func is_dry_run(run_type):
 	return ((run_type == CFInt.RunType.COST_CHECK) or
@@ -1547,7 +1565,7 @@ func execute_scripts(
 	if not cfc.NMAP.has('board'):
 		return
 
-	if (trigger =="manual" and canonical_name == "Make the Call"):
+	if (trigger =="card_moved_to_board" and canonical_name == "Nick Fury"):
 		var _tmp = 1
 
 	#we're playing a card manually but in interrupt mode.
@@ -1577,8 +1595,8 @@ func execute_scripts(
 	var card_scripts = retrieve_filtered_scripts(trigger_card, trigger, trigger_details)
 	
 	# We select which scripts to run from the card, based on it state	
-	var state_scripts = get_state_scripts(card_scripts, trigger_card, trigger_details)
-
+	var state_scripts_dict = get_state_scripts_dict(card_scripts, trigger_card, trigger_details)
+	var state_scripts = state_scripts_dict["state_scripts"]
 	
 	#Check if this script is exected from remote (another online player has been paying for the cost)
 	var is_network_call = trigger_details.has("network_prepaid") #TODO MOVE OUTSIDE OF Core
@@ -1587,6 +1605,7 @@ func execute_scripts(
 	is_executing_scripts = true
 	cfc.add_ongoing_process(self, "core_execute_scripts")
 	
+	var action_name = state_scripts_dict["action_name"]
 	# If the state_scripts return a dictionary entry
 	# it means it's a multiple choice between two scripts
 	if typeof(state_scripts) == TYPE_DICTIONARY:
@@ -1600,7 +1619,7 @@ func execute_scripts(
 				rules = state_scripts["_rules"].duplicate()
 				state_scripts.erase("_rules")
 			var choices_menu = _CARD_CHOICES_SCENE.instance()
-			cfc.set_modal_menu(choices_menu)
+			cfc.add_modal_menu(choices_menu)
 			choices_menu.prep(canonical_name,state_scripts, rules)
 			# We have to wait until the player has finished selecting an option
 			yield(choices_menu,"id_pressed")
@@ -1608,10 +1627,11 @@ func execute_scripts(
 			# an option, we don't execute anything
 			selected_key = choices_menu.selected_key if choices_menu.id_selected else ""
 			# Garbage cleanup
-			cfc.set_modal_menu(null)
+			cfc.remove_modal_menu(choices_menu)
 			choices_menu.queue_free()
 		if selected_key:
 			state_scripts = state_scripts[selected_key]
+			action_name = selected_key
 		else: state_scripts = []
 
 	# To avoid unnecessary operations
@@ -1662,7 +1682,13 @@ func execute_scripts(
 				
 				# 2) Once done with payment, Client A sends ability + payment information to all clients (including itself)
 				# 3) That data is added to all clients stacks
-				var func_return = add_script_to_stack(sceng, run_type, trigger, trigger_details)
+				if action_name:
+					action_name = canonical_name + "(" + action_name + ")"
+				else:
+					action_name = canonical_name
+				action_name = action_name + " - " + trigger
+				action_name =  trigger_details.get("_display_name", action_name) #override
+				var func_return = add_script_to_stack(sceng, run_type, trigger, trigger_details, action_name)
 				while func_return is GDScriptFunctionState && func_return.is_valid():
 					func_return = func_return.resume()
 		is_executing_scripts = false
@@ -1670,8 +1696,8 @@ func execute_scripts(
 	emit_signal("scripts_executed", self, sceng, trigger)
 	return(sceng)
 
-func add_script_to_stack(sceng, run_type, trigger, trigger_details):
-	gameData.theStack.create_and_add_script(sceng, run_type, trigger, trigger_details) 
+func add_script_to_stack(sceng, run_type, trigger, trigger_details, action_name):
+	gameData.theStack.create_and_add_script(sceng, run_type, trigger, trigger_details, action_name) 
 	
 	return
 
@@ -2731,7 +2757,7 @@ func _process_card_state() -> void:
 			# warning-ignore:return_value_discarded
 			set_card_rotation(0)
 			if scale != Vector2(1,1):
-				scale = Vector2(1,1)
+				set_scale(Vector2(1,1))
 			if get_parent() in get_tree().get_nodes_in_group("piles"):
 				if card_front.resizing_labels.size() and not get_parent().faceup_cards:
 					return
@@ -2746,7 +2772,7 @@ func _process_card_state() -> void:
 			# warning-ignore:return_value_discarded
 			set_card_rotation(0)
 			if scale != Vector2(1,1):
-				scale = Vector2(1,1)
+				set_scale(Vector2(1,1))
 			if get_parent() in get_tree().get_nodes_in_group("piles"):
 				set_is_faceup(get_parent().faceup_cards, true)
 				
@@ -2768,7 +2794,7 @@ func _process_card_state() -> void:
 			if modulate[3] != 1:
 				modulate[3] = 1
 			if scale != Vector2(0.75,0.75):
-				scale = Vector2(0.75,0.75)
+				set_scale(Vector2(0.75,0.75))
 			if position != Vector2(0,0):
 				position = Vector2(0,0)
 
@@ -2791,11 +2817,11 @@ func _process_card_state() -> void:
 			$Control/Tokens.visible = false
 			# We scale the card dupe to allow the player a better viewing experience
 			if CFConst.VIEWPORT_FOCUS_ZOOM_TYPE == "scale":
-				scale = Vector2(1,1) * focused_scale * cfc.curr_scale
+				set_scale(Vector2(1,1) * focused_scale * cfc.curr_scale)
 			else:
 				# We need to reset its scale,
 				# in case it was already scaled due to being on the table etc.
-				scale = Vector2(1,1)
+				set_scale(Vector2(1,1))
 				resize_recursively(_control, focused_scale * cfc.curr_scale)
 #				set_card_size(CFConst.CARD_SIZE * CFConst.FOCUSED_SCALE, true)
 				card_front.scale_to(focused_scale * cfc.curr_scale)
@@ -2816,7 +2842,7 @@ func _process_card_state() -> void:
 			$Control.rect_rotation = 0
 			# We scale the card to allow the player a better viewing experience
 			if CFConst.VIEWPORT_FOCUS_ZOOM_TYPE == "scale":
-				scale = Vector2(1,1) * preview_scale * cfc.curr_scale
+				set_scale(Vector2(1,1) * preview_scale * cfc.curr_scale)
 			else:
 #				set_card_size(CFConst.CARD_SIZE * CFConst.PREVIEW_SCALE)
 				resize_recursively(_control, preview_scale * cfc.curr_scale)
@@ -2833,7 +2859,7 @@ func _process_card_state() -> void:
 			$Control.rect_rotation = 0
 			# We scale the card to allow the player a better viewing experience
 			if CFConst.VIEWPORT_FOCUS_ZOOM_TYPE == "scale":
-				scale = Vector2(1,1) * thumbnail_scale * cfc.curr_scale
+				set_scale(Vector2(1,1) * thumbnail_scale * cfc.curr_scale)
 			# Commenting this out because it is messing with RichTextLabel
 			# Font resizing
 			else:
@@ -3034,3 +3060,13 @@ func _on_tree_exiting():
 	if _placement_slot:
 		_placement_slot.set_occupying_card(null)
 		_placement_slot = null
+
+#We remove all signals from the card
+#once it's been scheduled for deletion
+#this avoids trigerring its effects after we've decided to delete it 
+func queue_free():
+	var connections = self.get_incoming_connections()
+	for conn in connections:
+		var source = conn["source"]
+		source.disconnect(conn["signal_name"],self , conn["method_name"])
+	.queue_free()

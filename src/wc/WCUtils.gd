@@ -10,6 +10,17 @@ extends "res://src/core/CFUtils.gd"
 # var a = 2
 # var b = "text"
 
+static func read_json_file_with_user_override(file_path) -> Dictionary:
+	var result:Dictionary = read_json_file("res://" + file_path)
+	if !result:
+		result = {}
+	var user_data = read_json_file("user://" + file_path)
+	if !user_data:
+		return result
+	for key in user_data:
+		result[key] = user_data[key]
+	return result
+
 #Read json file into dictionary (or array!)
 static func read_json_file(file_path):
 	var file = File.new()
@@ -21,8 +32,9 @@ static func read_json_file(file_path):
 	if (json_errors):
 		var error_msg = file_path + " - " + json_errors
 		print_debug(error_msg)
+		cfc.emit_signal("json_parse_error", error_msg)
 		cfc.LOG(error_msg)
-		return null #TODO intentionally returning null here to force a crash until we have proper error reporting
+		return {}
 	var content_as_dictionary = parse_json(content_as_text)
 	return content_as_dictionary
 

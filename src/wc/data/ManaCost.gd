@@ -91,6 +91,8 @@ func is_zero() :
 #Converts a text (or int) into a manacost.
 #TODO Simple int for now, will need to expand	
 func init_from_expression(expression):
+	if expression == null: #this can happen for resource cards that do not have a cost
+		return
 	var i = int(expression)
 	set_cost({Resource.UNCOLOR : i})
 

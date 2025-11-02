@@ -6,7 +6,6 @@ extends Reference
 var owner:PlayerData
 var deck_id
 var _hero_id setget set_hero_id,get_hero_id
-var ally_limit:= 3 #TODO move to some configuration file?
 
 func set_hero_id(id):
 	_hero_id = id
@@ -56,7 +55,7 @@ func loadstate_from_json(json:Dictionary) -> bool:
 		#herodeckdata should always be set, even if with minimalistic info
 		return false
 	var owner_id:int = 	int(json_data.get("owner", 0) + 1)
-	owner = gameData.network_players.get(owner_id) #Default to being owned by master
+	owner = gameData.network_players.get(gameData.id_to_network_id.get(owner_id)) #Default to being owned by master
 	deck_id = json_data.get("deck_id", -1) #-1 here to force initialization if needed
 	
 	#Hero might be a card id or card name. We try to accomodate for both use cases here
@@ -67,9 +66,5 @@ func loadstate_from_json(json:Dictionary) -> bool:
 	_hero_id = cfc.get_corrected_card_id(hero)
 	return true
 
-func get_ally_limit():
-	return ally_limit
 	
-func set_ally_limit(limit:int):
-	ally_limit = limit
 	

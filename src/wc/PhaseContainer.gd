@@ -8,9 +8,75 @@ var phaseLabel
 var heroesStatus = []
 var heroPhaseScene = preload("res://src/wc/board/HeroPhase.tscn")
 
-#Notes on the phases
-#During another player's turn, you can play *actions* (cards or abilities)
+#debug display for 
+#TODO something fancier
+var text_edit:TextEdit = null
 
+func create_text_edit():
+	if not cfc.NMAP.has("board") or not is_instance_valid(cfc.NMAP.board):
+		return
+	text_edit = TextEdit.new()  # Create a new TextEdit node
+	text_edit.text = ""  # Set default text
+	text_edit.rect_min_size = Vector2(400, 200)  # Set minimum size
+	text_edit.wrap_enabled = true  # Enable text wrapping
+	cfc.NMAP.board.add_child(text_edit)  # Add it to the current scene
+	text_edit.anchor_left = 0.6
+	text_edit.anchor_right = 1
+	text_edit.anchor_top = 0.5
+	text_edit.visible = false
+	#text_edit.anchor_bottom = 0.5	
+
+var _previous_debug_msg = ""
+var _previous_equal_count := 0	
+func display_debug(msg:String, prefix = "phase"):
+	#quick and dirty way to filter out some messages.
+	#whitelist has priority, if it's set, only messages containing
+	#specific words will go through
+	#if blackslit is set,, messages containing specific words will be explicitly banned 
+	var whitelist = [] #"script", "all clients", "error"]
+	var blacklist = []
+	
+	var good_to_display = true
+	var lc_msg = msg.to_lower()
+	if whitelist:
+		good_to_display = false
+		for word in whitelist:
+			if word in lc_msg:
+				good_to_display = true
+	elif blacklist:
+		for word in blacklist:
+			if word in lc_msg:
+				good_to_display = false
+		
+	if !good_to_display:
+		return
+		
+	if !text_edit:
+		create_text_edit()
+	text_edit.visible = true
+	
+	if (prefix):
+		msg = "(" + prefix  +") " + msg
+	
+	if _previous_debug_msg == msg:
+		_previous_equal_count +=1
+		if _previous_equal_count < 10:
+			msg = " ."
+		else:
+			msg = ""
+	else:
+		_previous_debug_msg = msg
+		_previous_equal_count = 0
+		if (text_edit.text):
+			text_edit.text += "\n"	
+			
+	if (!msg):
+		return
+	text_edit.text += msg
+	
+	var last_line = text_edit.get_line_count() - 1
+	text_edit.cursor_set_line(last_line)
+	text_edit.center_viewport_to_cursor()	
 
 #TODO Actual names needed here
 const StepStrings = [
@@ -55,7 +121,9 @@ func _ready():
 	
 func _init():
 	scripting_bus.connect("step_started", self, "_step_started")
-	scripting_bus.connect("step_ended", self, "_step_ended")	
+	scripting_bus.connect("step_ended", self, "_step_ended")
+	if CFConst.SKIP_MULLIGAN:
+		current_step = CFConst.PHASE_STEP.PLAYER_TURN
 	reset(true)
 
 func reset(reset_phase:= true):
@@ -78,6 +146,9 @@ func reset(reset_phase:= true):
 	add_child(phaseLabel)
 	update_text()	
 	
+	if text_edit:
+		text_edit.text = ""
+	
 	#reinit misc variables	
 	set_current_step_complete(false) 	
 	if (reset_phase):
@@ -97,7 +168,7 @@ func _process(_delta: float) -> void:
 	if cfc.game_paused:
 		return
 		
-	if cfc.modal_menu:
+	if cfc.get_modal_menu():
 		return
 
 	if cfc.is_process_ongoing():
@@ -161,8 +232,9 @@ func _process(_delta: float) -> void:
 
 func offer_to_mulligan() -> void:
 	cfc.add_ongoing_process(self, "offer_to_mulligan")
-	for i in range(gameData.get_team_size()):
-		var hero_card = gameData.get_identity_card(i+1)
+	var my_heroes = gameData.get_my_heroes()
+	for hero_id in my_heroes:	
+		var hero_card = gameData.get_identity_card(hero_id)
 		var func_return = hero_card.execute_scripts(hero_card, "mulligan")
 		if func_return is GDScriptFunctionState && func_return.is_valid():
 			yield(func_return, "completed")	
@@ -299,10 +371,11 @@ mastersync func client_ready_for_next_phase():
 	if (not get_tree().is_network_server()):
 		return -1
 	var client_id = get_tree().get_rpc_sender_id() 
-
+	display_debug(str(client_id) + " is ready for next phase")
 	clients_ready_for_next_phase[client_id] = 1
 	if (clients_ready_for_next_phase.size() == gameData.network_players.size()):
 		clients_ready_for_next_phase = {}
+		display_debug("everyone is ready for next phase, go")
 		rpc("proceed_to_next_phase")
 		
 mastersync func client_unready_for_next_phase():
@@ -328,7 +401,8 @@ func set_current_step_complete(value:bool):
 		var _tmp = 1
 	current_step_complete = value
 	
-remotesync func proceed_to_next_phase():	
+remotesync func proceed_to_next_phase():
+	display_debug("master tells me to move to next phase, I'm currently at " + str(current_step) )	
 	scripting_bus.emit_signal("step_about_to_end",  {"step" : current_step})
 	scripting_bus.emit_signal("step_ended",  {"step" : current_step})
 	if (current_step == CFConst.PHASE_STEP.ROUND_END):
@@ -362,10 +436,10 @@ func _player_discard():
 	var my_heroes = gameData.get_my_heroes()
 	for hero_id in my_heroes:
 		var hero_card = gameData.get_identity_card(hero_id)
-		var func_return = hero_card.execute_scripts(hero_card, "end_phase_discard")
-		#while func_return is GDScriptFunctionState && func_return.is_valid():
-		#	func_return = func_return.resume()
-		while cfc.modal_menu:
+		var _func_return = hero_card.execute_scripts(hero_card, "end_phase_discard")
+		#while _func_return is GDScriptFunctionState && _func_return.is_valid():
+		#	_func_return = _func_return.resume()
+		while cfc.get_modal_menu():
 			yield(get_tree().create_timer(0.05), "timeout")
 	cfc.remove_ongoing_process(self)
 

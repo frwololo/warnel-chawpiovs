@@ -28,6 +28,9 @@ var _ongoing_processes:= {}
 var _total_cards:int = 0
 var _cards_loaded: int = 0
 
+# warning-ignore:unused_signal
+signal json_parse_error(msg)
+
 func init_settings_from_file() -> void:
 	.init_settings_from_file()
 	#Settings default values
@@ -74,9 +77,10 @@ func _is_type_known(type) -> bool:
 	
 
 func load_card_primitives():
-	var json_card_data : Array
-	json_card_data = WCUtils.read_json_file("user://Sets/_primitives.json")	
-	for card_data in json_card_data:
+	var json_card_data : Dictionary
+	json_card_data = WCUtils.read_json_file_with_user_override("Sets/_primitives.json")	
+	for key in json_card_data:
+		var card_data = json_card_data[key]
 		#creating entries for both id and name so I never have to remember which one to use...
 		primitives[card_data["code"]] = card_data;
 		primitives[card_data["name"]] = card_data;
@@ -137,7 +141,7 @@ func _split_traits(traits:String) -> Array:
 	var result = []
 	var a_traits = traits.split(" ")
 	for trait in a_traits:		
-		result.append(trait.trim_suffix("."))
+		result.append(trait.to_lower().trim_suffix("."))
 	
 	return result
 
@@ -212,6 +216,11 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	var force_horizontal = CFConst.FORCE_HORIZONTAL_CARDS.get(lc_card_type, false)
 	card_data["_horizontal"] = force_horizontal
 
+	var default_properties = CFConst.DEFAULT_PROPERTIES_BY_TYPE.get(lc_card_type, {})
+	for k in default_properties:
+		card_data[k] = default_properties[k] 
+	
+
 	#Keywords parsing
 	if (!card_data.has("keywords")):
 		card_data["keywords"] = parse_keywords(card_data.get("text", ""))
@@ -219,7 +228,7 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	for k in card_data["keywords"].keys():
 		card_data[k] = card_data["keywords"][k]
 	
-	if (card_data.has("traits")):
+	if (card_data.has("traits") and typeof(card_data["traits"]) == TYPE_STRING):
 		var traits = _split_traits(card_data["traits"])
 		for trait in traits:
 			card_data["trait_" + trait] = 1
@@ -456,23 +465,32 @@ func replace_macros(json_card_data, json_macro_data):
 	for macro_key in json_macro_data.keys():
 		result = replace_one_macro(result, macro_key, json_macro_data[macro_key])
 	return result
+
+
 	
 # Returns a Dictionary with the combined Script definitions of all set files
 func load_script_definitions() -> void:
 	scripts_loading = true	
 	var script_overrides = load(CFConst.PATH_SETS + "SetScripts_All.gd").new()
-	var json_macro_data : Dictionary = WCUtils.read_json_file("user://Sets/_macros.json")
+	var json_macro_data : Dictionary = WCUtils.read_json_file_with_user_override("Sets/_macros.json")
+	
 	
 	var combined_scripts := {}
+	
+	#load from user first
 	var script_definition_files := CFUtils.list_files_in_directory(
-				"user://Sets/", CFConst.SCRIPT_SET_NAME_PREPEND)
+				"user://Sets/", CFConst.SCRIPT_SET_NAME_PREPEND, true)
+	
+	#then we load from resources (their entries will overwrite user ones only if they don't exist)
+	script_definition_files += CFUtils.list_files_in_directory(
+				"res://Sets/", CFConst.SCRIPT_SET_NAME_PREPEND, true)
 	WCUtils.debug_message("Found " + str(script_definition_files.size()) + " script files")			
 	for script_file in script_definition_files:
-		var prefix_length = CFConst.SCRIPT_SET_NAME_PREPEND.length()
+		var prefix_end = script_file.find(CFConst.SCRIPT_SET_NAME_PREPEND) + CFConst.SCRIPT_SET_NAME_PREPEND.length()
 		var extension_idx = script_file.find(".")
-		var box_name = script_file.substr(prefix_length, extension_idx-prefix_length)		
+		var box_name = script_file.substr(prefix_end, extension_idx-prefix_end)		
 		var json_card_data : Dictionary
-		json_card_data = WCUtils.read_json_file("user://Sets/" + script_file)
+		json_card_data = WCUtils.read_json_file(script_file)
 		json_card_data = replace_macros(json_card_data, json_macro_data)
 		#bugfix: replace "floats" to "ints"
 		json_card_data = WCUtils.replace_real_to_int(json_card_data)
@@ -606,13 +624,13 @@ func get_corrected_card_id (card) -> String:
 #mark a download as failed to avoid constantly attempting it
 var failed_files:= {}
 
-func get_failed_files() -> Dictionary:
+func get_failed_files():
 	if failed_files:
 		return failed_files
 	var filename = "user://failed_image_downloads.json"
 	var _failed_files = WCUtils.read_json_file(filename)
 	failed_files =  _failed_files if _failed_files else {}
-	return failed_files
+	#return failed_files
 
 func fail_img_download(card_id):
 	var file = File.new()
@@ -642,7 +660,15 @@ func get_image_dl_url(card_id):
 
 #
 # Network related functions
+
+func get_network_unique_id():
+	if gameData.is_multiplayer_game:
+		return get_tree().get_network_unique_id()
+	return 1
+	
 func is_game_master() -> bool:
+	if !gameData.is_multiplayer_game:
+		return true
 	return get_tree().is_network_server() #Todo: return something more specific to handle case where game master isn't server, for headless mode
 
 func INIT_LOG():
@@ -699,7 +725,7 @@ func remove_ongoing_process(object, description:String = ""):
 	if (!_ongoing_processes[object][description]):
 		_ongoing_processes[object].erase(description)
 		if !_ongoing_processes[object]:
-			_ongoing_processes.erase(object)
+			var _found = _ongoing_processes.erase(object)
 		return 0
 	return _ongoing_processes[object][description]
 	
@@ -710,7 +736,7 @@ func reset_ongoing_process_stack():
 	_ongoing_processes = {}
 
 func is_modal_event_ongoing():
-	if modal_menu:
+	if get_modal_menu():
 		return true
 	if gameData.is_ongoing_blocking_announce():
 		return true

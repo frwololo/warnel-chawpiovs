@@ -32,7 +32,7 @@ enum EncounterStatus {
 	ENCOUNTER_COMPLETE
 }
 var _current_encounter_step: int = EncounterStatus.NONE
-var _current_encounter:Card = null
+var _current_encounter = null #WCCard
 
 #emit whenever something changes in the game state. This will trigger some recomputes
 signal game_state_changed(details)
@@ -56,8 +56,9 @@ var testSuite: TestSuite = null
 var theAnnouncer: Announcer = null
 var theGameObserver = null
 
-# Hero currently playing. We might need another one for interruptions
-var current_hero_id := 1
+# Hero that I am currently controlling
+var current_local_hero_id := 1
+
 
 #temp vars for bean counting
 var _villain_current_hero_target :=1
@@ -94,6 +95,9 @@ func _ready():
 	scripting_bus.connect("target_selected", self, "_target_selected")
 	
 	scripting_bus.connect("stack_event_deleted", self, "_stack_event_deleted")
+	
+	get_tree().connect("server_disconnected", self, "_server_disconnected")
+	
 
 	self.add_child(theStack) #Stack needs to be in the tree for rpc calls	
 	self.add_child(theAnnouncer)
@@ -186,10 +190,12 @@ func start_tests():
 	rpc("init_client_tests")
 
 remotesync func init_client_tests():
-	testSuite = TestSuite.new()
-	testSuite.name = "testSuite"
-	self.add_child(testSuite) #Test suite needs to be in the tree for rpc calls	
-
+	if !testSuite:
+		testSuite = TestSuite.new()
+		testSuite.name = "testSuite"
+		self.add_child(testSuite) #Test suite needs to be in the tree for rpc calls	
+	else:
+		testSuite.reset()
 
 func registerPhaseContainer(phasecont:PhaseContainer):
 	phaseContainer = phasecont
@@ -212,7 +218,7 @@ func _emit_additional_signals(_trigger_object = null,
 			var card_type = _trigger_object.get_property("type_code", "")
 			if card_type:
 				var signal = card_type + "_moved_to_board"
-				scripting_bus.emit_signal(signal, _trigger_object, trigger, _trigger_details)
+				scripting_bus.emit_signal(signal, _trigger_object, _trigger_details)
 				
 
 func _scripting_event_triggered(_trigger_object = null,
@@ -302,12 +308,13 @@ func move_to_next_scheme(current_scheme):
 func check_ally_limit():
 	var my_heroes = gameData.get_my_heroes()
 	for hero_id in my_heroes:
-		var hero_data = gameData.team[hero_id]["hero_data"]
-		var ally_limit = hero_data.get_ally_limit()
+		var identity_card = get_identity_card(hero_id)
+		if !identity_card:
+			continue #this can happen at setup time
+		var ally_limit = identity_card.get_property("ally_limit", 0)
 		var my_cards = cfc.NMAP.board.get_grid("allies" + String(hero_id)).get_all_cards()
 		if (my_cards.size()) > ally_limit:
-			var hero_card = gameData.get_identity_card(hero_id)
-			hero_card.execute_scripts(hero_card, "ally_limit")
+			identity_card.execute_scripts(identity_card, "ally_limit_rule")
 		
 #a function that checks regularly (sepcifically, whenever threat changes) if the main scheme has too much threat	
 func check_main_scheme_defeat():
@@ -385,12 +392,43 @@ func get_team_size():
 
 func get_team_member(id:int):
 	return team[id]
+		
+func get_current_local_hero_id():
+	return self.current_local_hero_id
+
+#returns a list of hero ids that are currently allowed to play
+#(outsde of asking them for possible interruptions)
+func get_currently_playing_hero_ids():
+	#TODO how do obligations fit into this ?
 	
-func get_current_hero_id():
-	return current_hero_id
+	#interruption takes precedence, if a player is interrupting,only them can interract with the game
+	if is_interrupt_mode():
+		return [theStack.interrupting_hero_id]
 	
-func get_current_team_member():
-	return team[current_hero_id]	
+	#if some attacks are ongoing or enouncters are being revealed, the
+	#target player is the one being returned
+	if !attackers.empty():
+		return [_villain_current_hero_target]
+	
+	if !immediate_encounters.empty():
+		return [_villain_current_hero_target]
+		
+	if phaseContainer.current_step in [
+		CFConst.PHASE_STEP.VILLAIN_ACTIVATES,
+		CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER
+	]:
+		return [_villain_current_hero_target]
+	
+	#during player turn and outside of all other considerations, all heroes can play simultaneously
+	if phaseContainer.current_step == CFConst.PHASE_STEP.PLAYER_TURN:
+		var all = []
+		for i in range (team.size()):
+			all.append(i+1)
+		return all
+		
+	#outside of these events, players can't play ?	
+	return []
+	
 
 func draw_all_players() :
 	for hero_id in team.keys():
@@ -416,8 +454,18 @@ func find_main_scheme() :
 	return null
 
 func end_round():
-	_villain_current_hero_target = 1
+	set_villain_current_hero_target(1)
 	scripting_bus.emit_signal("round_ended")
+
+func set_villain_current_hero_target(value, force_switch_ui:= true):
+	var previous = _villain_current_hero_target
+	_villain_current_hero_target = value
+	if force_switch_ui and previous!= value:
+		#in practice this will only switch for players that control the hero
+		self.select_current_playing_hero(value) 
+
+func get_villain_current_hero_target():
+	return _villain_current_hero_target
 
 func villain_init_attackers():
 	attackers = []
@@ -426,12 +474,15 @@ func villain_init_attackers():
 	attackers.append(get_villain())
 	attackers += get_minions_engaged_with_hero(current_target)
 
-func villain_next_target() -> int:
-	_villain_current_hero_target += 1
-	if _villain_current_hero_target > get_team_size():
-		_villain_current_hero_target = 1 #Is this the right place? Causes lots of errors otherwise...
-		return 0
-	return 	_villain_current_hero_target
+func villain_next_target(force_switch_ui:= true) -> int:
+	var previous_value = _villain_current_hero_target
+	var new_value = previous_value + 1
+	var to_return = new_value
+	if new_value > get_team_size():
+		new_value = 1 #Is this the right place? Causes lots of errors otherwise...
+		to_return = 0
+	set_villain_current_hero_target(new_value, force_switch_ui)
+	return 	to_return
 
 func all_attackers_finished():
 	phaseContainer.all_enemy_attacks_finished()
@@ -458,8 +509,8 @@ func enemy_activates() :
 	#If we're not the targeted player, we'll fail this one,
 	#and go into "wait for next phase" instantly. This should 
 	#force us to wait for the targeted player to trigger the script via network
-	if not (can_i_play_this_hero(target_id)):
-		return CFConst.ReturnCode.FAILED
+#	if not (can_i_play_this_hero(target_id)):
+#		return CFConst.ReturnCode.FAILED
 	if !attackers.size():
 		all_attackers_finished()
 		return
@@ -470,7 +521,7 @@ func enemy_activates() :
 	var action = "attack" if (heroZone.is_hero_form()) else "scheme"
 	var script = null
 	
-	var enemy:WCCard = null
+	var enemy = null
 	if (typeof (attacker_data) == TYPE_DICTIONARY):
 		enemy = attacker_data["subject"]
 		action = attacker_data["type"]
@@ -510,8 +561,10 @@ func enemy_activates() :
 					"bottom_texture_filename": get_identity_card(target_id).get_art_filename(),
 				}
 				theAnnouncer.simple_announce(announce_settings )
-										
-				theStack.create_and_add_signal("enemy_initiates_" + action, enemy, {SP.TRIGGER_TARGET_HERO : get_current_target_hero().canonical_name})
+				
+				#target player is the one adding the event to the stack
+				if can_i_play_this_hero(target_id):				
+					theStack.create_and_add_signal("enemy_initiates_" + action, enemy, {SP.TRIGGER_TARGET_HERO : get_current_target_hero().canonical_name})
 				_current_enemy_attack_step = EnemyAttackStatus.PENDING_INTERRUPT
 				return
 				
@@ -525,8 +578,9 @@ func enemy_activates() :
 					"additional_tags": []
 				}
 				if script:
-					trigger_details["additional_tags"] += script.get_property(SP.KEY_TAGS, [])	
-				var sceng = enemy.execute_scripts(enemy, "enemy_attack",trigger_details)
+					trigger_details["additional_tags"] += script.get_property(SP.KEY_TAGS, [])
+					trigger_details["_display_name"] = "enemy attack (" + enemy.canonical_name + " -> " + get_current_target_hero().canonical_name +")" 	
+				var _sceng = enemy.execute_scripts(enemy, "enemy_attack",trigger_details)
 				_current_enemy_attack_step = EnemyAttackStatus.PENDING_DEFENDERS
 			else:
 				#scheme		
@@ -538,7 +592,7 @@ func enemy_activates() :
 			#there has to be a better way.... wait for a signal somehow ?
 			if !theStack.is_empty():
 				return
-			if cfc.modal_menu:
+			if cfc.get_modal_menu():
 				return
 			
 			_current_enemy_attack_step = EnemyAttackStatus.ATTACK_COMPLETE
@@ -550,6 +604,18 @@ func enemy_activates() :
 			return 
 
 	return
+
+func set_aside(card):
+	card.move_to(cfc.NMAP["set_aside"])
+
+func retrieve_from_side_or_instance(card_id, owner_id):
+	var card = cfc.NMAP["set_aside"].has_card_id(card_id)
+	if card:
+		return card
+	card = cfc.instance_card(card_id, owner_id)
+	cfc.NMAP["set_aside"].add_child(card)
+	card._determine_idle_state()
+	return card
 	
 func villain_threat():
 	var main_scheme:Card = find_main_scheme()
@@ -598,12 +664,14 @@ func deal_encounters():
 	while !finished: #loop through all heroes. see villain_next_target call below
 		deal_one_encounter_to(_villain_current_hero_target)
 		yield(get_tree().create_timer(1), "timeout")
-		if (!villain_next_target()): # This forces to change the next facedown destination
+		 # This forces to change the next facedown destination
+		#the "false" flags prevents from tirggering UI changes
+		if (!villain_next_target(false)):
 			finished = true
 
 	#reset _villain_current_hero_target for cleanup	
 	#it should already be at 1 here but...
-	_villain_current_hero_target = 1
+	set_villain_current_hero_target(1, false)
 	
 	#Hazard cards
 	var hazard = 0		
@@ -615,11 +683,11 @@ func deal_encounters():
 	while hazard:
 		deal_one_encounter_to(_villain_current_hero_target)
 		yield(get_tree().create_timer(1), "timeout")
-		villain_next_target()
+		villain_next_target(false)
 		hazard -=1
 		
 	#reset _villain_current_hero_target for cleanup	
-	_villain_current_hero_target = 1
+	set_villain_current_hero_target(1, false)
 	cfc.remove_ongoing_process(self, "deal_encounters")
 
 func deal_one_encounter_to(hero_id, immediate = false, encounter = null):
@@ -720,7 +788,7 @@ func reveal_encounter(target_id = 0):
 			#right now this technique allows to move on even if the reveal event disappears (fizzled)
 			if !theStack.is_empty():
 				return
-			if cfc.modal_menu:
+			if cfc.get_modal_menu():
 				return
 			
 			_current_encounter_step = EncounterStatus.OK_TO_EXECUTE
@@ -744,7 +812,7 @@ func reveal_encounter(target_id = 0):
 			#there has to be a better way.... wait for a signal somehow ?
 			if !theStack.is_empty():
 				return
-			if cfc.modal_menu:
+			if cfc.get_modal_menu():
 				return
 			
 			_current_encounter_step = EncounterStatus.ENCOUNTER_COMPLETE
@@ -814,10 +882,10 @@ func get_current_target_hero() -> Card:
 	return get_identity_card(_villain_current_hero_target)
 
 #Adds a "group_defenders" tag to all cards that can block an attack
-func compute_potential_defenders():
+func compute_potential_defenders(hero_id):
 	var board:Board = cfc.NMAP.board
 	for c in board.get_all_cards():
-		if c.can_defend():
+		if c.can_defend(hero_id):
 			c.add_to_group("group_defenders")
 		else:
 			if (c.is_in_group ("group_defenders")): c.remove_from_group("group_defenders")	
@@ -871,9 +939,8 @@ func move_to_next_villain(current_villain):
 	if !new_villain_data :
 		return null
 
-	_garbage.append(current_villain)
-	current_villain.get_parent().remove_child(current_villain)
-	#current_villain.queue_free() #is more required to remove it?	
+
+	set_aside(current_villain)
 	
 	var ckey = new_villain_data["_code"] 		
 	var new_card = cfc.NMAP.board.load_villain(ckey)
@@ -903,24 +970,24 @@ func villain_died(card:Card):
 
 
 	
-
+#selects a hero for my interface (useful for multiplayer)
 func select_current_playing_hero(hero_index):
 	if (not can_i_play_this_hero(hero_index)):
 		return
-	var previous_hero_id = current_hero_id
-	current_hero_id = hero_index
-	scripting_bus.emit_signal("current_playing_hero_changed",  {"before": previous_hero_id,"after": current_hero_id })
+	var previous_hero_id = current_local_hero_id
+	current_local_hero_id = hero_index
+	scripting_bus.emit_signal("current_playing_hero_changed",  {"before": previous_hero_id,"after": current_local_hero_id })
 
-func can_i_play_this_ability(card, script) -> bool:
+func can_i_play_this_ability(card, script:Dictionary = {}) -> bool:
 	var my_heroes = get_my_heroes()
 	for hero_id in my_heroes:
 		if can_hero_play_this_ability(hero_id, card, script):
 			return true
 	return false
 	
-func can_hero_play_this_ability(hero_index, card:WCCard, _script) -> bool:
-	#TODO some abilities can be played by heroes who don't control the card
-	if (card.get_controller_hero_id() == hero_index):
+func can_hero_play_this_ability(hero_index, card, _script:Dictionary = {}) -> bool:
+	var card_controller_id = card.get_controller_hero_id()
+	if (card_controller_id <= 0 or card_controller_id == hero_index):
 		return true
 	return false
 
@@ -942,7 +1009,7 @@ func can_i_play_this_hero(hero_index)-> bool:
 
 func get_my_heroes() -> Array:
 	var result = []
-	var network_id = get_tree().get_network_unique_id()	
+	var network_id = cfc.get_network_unique_id()	
 	
 	for hero_index in team.keys():
 		var hero_data = team[hero_index]
@@ -975,18 +1042,6 @@ func assign_starting_hero():
 func get_grid_owner_hero_id(grid_name:String) -> int:
 	var potential_hero_id = grid_name.right(1).to_int()
 	return potential_hero_id
-
-#Returns true if another network player is supposed to play,
-# in which case I have to wait for their input
-#probably needs an rpc call at some point?
-# TODO maybe each player that wants "exclusivity" requests exclusivity to Master
-# and master adds it to a pile, so that there can be exclusivity on top of exclusivity? e.g. for interrupts	
-func is_waiting_for_other_player_input():
-	var current_step = phaseContainer.current_step
-	if (current_step == CFConst.PHASE_STEP.VILLAIN_ACTIVATES or current_step == CFConst.PHASE_STEP.VILLAIN_MINIONS_ACTIVATE):
-		if not (can_i_play_this_hero(_villain_current_hero_target)):
-			return true
-	return false
 
 
 # Additional filter for triggers,
@@ -1080,15 +1135,9 @@ func cleanup_post_game():
 	_current_encounter_step = EncounterStatus.NONE
 	_current_encounter = null
 	
-	remove_child(theStack)
-	theStack.free()
-	theStack = GlobalScriptStack.new()
-	self.add_child(theStack)
+	theStack.reset()
 
-	remove_child(theGameObserver)	
-	theGameObserver.free()
-	theGameObserver = GameObserver.new()
-	self.add_child(theGameObserver)	
+	theGameObserver.reset()
 	
 	cfc.reset_ongoing_process_stack()
 	cfc.game_paused = false
@@ -1171,6 +1220,9 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 	for i in range(hero_data.size()):
 		var saved_item:Dictionary = hero_data[i]
 		var hero_deck_data: HeroDeckData = HeroDeckData.new()
+		#if owner isn't set in the save game, we force it to 1 hero per player
+		var default_owner_id = i % gameData.network_players.size()
+		saved_item["herodeckdata"]["owner"] = 	int(saved_item.get("owner", default_owner_id ))
 		hero_deck_data.loadstate_from_json(saved_item)
 		_team[i] = hero_deck_data
 	set_team_data(_team)
@@ -1192,3 +1244,9 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 	#TODO
 			
 	rpc_id(caller_id,"remote_load_game_data_finished",CFConst.ReturnCode.OK)
+
+func display_debug(msg, prefix = ""):
+	phaseContainer.display_debug(msg, prefix)
+
+func _server_disconnected():
+	display_debug("SERVER DISCONNECTED")

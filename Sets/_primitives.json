@@ -1,29 +1,30 @@
-[
-	{
-		"code": "01097",
-		"name": "The Break-In!",
-		"modular_default": ["bomb_scare"],
-		"encounter_sets": [
-			"Rhino",
-			"Standard",
-			"Modular"
-		],
-		"villains": [
-			"Rhino - 1",
-			"Rhino - 2"
-		],
-		"expert": {
+{
+	"01097":
+		{
+			"code": "01097",
+			"name": "The Break-In!",
+			"modular_default": ["bomb_scare"],
 			"encounter_sets": [
 				"Rhino",
 				"Standard",
-				"modular",
-				"expert"
+				"Modular"
 			],
 			"villains": [
-				"Rhino - 2",
-				"Rhino - 3"
-			]
-		},
-		"setup_script": "todo"
-	}
-]
+				"Rhino - 1",
+				"Rhino - 2"
+			],
+			"expert": {
+				"encounter_sets": [
+					"Rhino",
+					"Standard",
+					"modular",
+					"expert"
+				],
+				"villains": [
+					"Rhino - 2",
+					"Rhino - 3"
+				]
+			},
+			"setup_script": "todo"
+		}
+}

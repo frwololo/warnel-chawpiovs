@@ -241,12 +241,17 @@ func has_card(card: Card) -> bool:
 
 # Returns true is any card in this card container has a canonical_name 
 # that matches the provided argument.
-func has_card_name(card_name: String) -> bool:
+func has_card_name(card_name: String) -> Card:
 	for card in get_all_cards():
 		if card.canonical_name == card_name:
-			return(true)
-	return(false)
+			return(card)
+	return(null)
 
+func has_card_id(card_id: String) -> Card:
+	for card in get_all_cards():
+		if card.canonical_id == card_id:
+			return(card)
+	return(null)
 
 # Returns a random card object among the children nodes
 func get_random_card() -> Card:

@@ -318,7 +318,7 @@ func _index_seek_subjects(stored_integer: int) -> Array:
 	# When we're seeking for index, we expect a
 	# source CardContainer to have been provided.
 	var src_container_names = get_property(SP.KEY_SRC_CONTAINER)
-	var src_containers:Array = get_all_containers(src_container_names)
+	#var src_containers:Array = get_all_containers(src_container_names)
 	#var first_container: CardContainer = src_containers[0]
 	var all_cards = get_all_cards_from_containers(src_container_names)
 	var index = get_property(SP.KEY_SUBJECT_INDEX)

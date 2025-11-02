@@ -50,7 +50,7 @@ func select_card(
 		selection.dry_run(card_list)
 	else:
 		parent_node.add_child(selection)		
-		cfc.set_modal_menu(selection) #keep a pointer to the variable for external cleanup if needed
+		cfc.add_modal_menu(selection) #keep a pointer to the variable for external cleanup if needed
 		selection.call_deferred("initiate_selection", card_list)
 		# We have to wait until the player has finished selecting their cards
 		yield(selection,"confirmed")
@@ -59,9 +59,10 @@ func select_card(
 	else:
 		selected_cards = selection.selected_cards
 	# Garbage cleanup
-	selection.queue_free()
 	if (run_type != CFInt.RunType.BACKGROUND_COST_CHECK):
-		cfc.set_modal_menu(null)
+		cfc.remove_modal_menu(selection)
+	selection.queue_free()
+		
 	if parent_node == cfc.NMAP.get("board"):
 		cfc.game_paused = false
 		

@@ -108,7 +108,7 @@ func _process(_delta) -> void:
 				and not $VBC/Focus/Tween.is_active():
 			current_dupe_focus.visible = false
 	for c in to_delete:
-		_previously_focused_cards.erase(c)
+		var _found = _previously_focused_cards.erase(c)
 	if not is_instance_valid(_current_focus_source)\
 			and $VBC/Focus.modulate.a != 0\
 			and not $VBC/Focus/Tween.is_active():

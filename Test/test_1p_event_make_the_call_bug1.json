@@ -1,0 +1,125 @@
+{
+	"_comments": "Bug: Make the Call lets you play more than allies (play ally from discard)",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Make the Call"
+				},		
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Swinging Web Kick"
+				}
+			],
+			"discard1" :[
+				{
+					"card": "The Triskelion"
+				},
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				},				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Make the Call"
+		},	
+		{
+			"type": "play",
+			"value": "The Triskelion"
+		},
+		{
+			"type": "select",
+			"value": "Strength"
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [	
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Swinging Web Kick"
+				}
+			],
+			"discard1" :[
+				{
+					"card": "The Triskelion"
+				},
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				},					
+				{
+					"card": "Make the Call"
+				},					
+			]
+		}
+	}
+}

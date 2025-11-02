@@ -1,0 +1,115 @@
+{
+	"_comments": "Test for captain Marvel's helmet. Takes 3 damage (2+1 Boost) minus 2 (1+1 alterant) def",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},			
+				{
+					"card": "Hydra Mercenary",
+				},
+				{
+					"card": "Stampede",
+				}				
+			],
+			"villain": [
+				{
+					"card": "01094",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],			
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],			
+			"identity1": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Captain Marvel's Helmet"
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "select",
+			"value": "Captain Marvel",
+			"_comments": "Defend with Captain Marvel"
+		},	
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},
+			],
+			"discard_villain": [
+				{
+					"card": "Stampede",
+				}
+			],
+			"villain": [
+				{
+					"card": "01094",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],	
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary",
+				}				
+			],			
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],			
+			"identity1": [
+				{
+					"card": "Captain Marvel",
+					"tokens": {"damage": 1}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Captain Marvel's Helmet"
+				}
+			]
+		}
+	}
+}

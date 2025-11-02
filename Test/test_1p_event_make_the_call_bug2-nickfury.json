@@ -1,0 +1,175 @@
+{
+	"_comments": "Bug: Make the Call on Nick Fury triggers his ability twice",
+	"test_conditions": {
+		"ignore_order" : [
+			"hand1",
+			"discard1"
+		],
+	},	
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "The Power of Justice"
+				},
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Vision"
+				},
+				{
+					"card": "Maria Hill"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Hawkeye"
+				},
+				{
+					"card": "Get Ready"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Make the Call"
+				},		
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"discard1" :[
+				{
+					"card": "The Triskelion"
+				},
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				},				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Make the Call"
+		},	
+		{
+			"type": "play",
+			"value": "Nick Fury"
+		},
+		{
+			"type": "choose",
+			"value": "Draw 3"
+		},	
+		{
+			"type": "choose",
+			"value": "Draw 3"
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "The Power of Justice"
+				},
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Vision"
+				},
+				{
+					"card": "Maria Hill"
+				},
+			
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"allies1": [
+							{
+					"card": "Nick Fury"
+				},	
+			],
+			"hand1": [
+				{
+					"card": "Get Ready"
+				},			
+				{
+					"card": "Hawkeye"
+				},
+				{
+					"card": "Mockingbird"
+				},				
+			],
+			"discard1" :[
+				{
+					"card": "The Triskelion"
+				},
+				{
+					"card": "Jessica Jones"
+				},			
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},
+				
+				{
+					"card": "Make the Call"
+				},					
+			]
+		}
+	}
+}

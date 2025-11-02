@@ -1,7 +1,7 @@
 {
-	"_comments": "Tests Spider Man Obligation: Eviction Notice",
+	"_comments": "Tests that Vision thwart is modified per ability",
 	"init": {
-		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -15,19 +15,14 @@
 					"card": "01094"
 				}
 			],
-			"deck_villain":[
-				{
-					"card": "advance"
-				},		
-				{
-					"card": "Eviction Notice"
-				},
-			
-			],
 			"schemes": [
 				{
-					"card": "01097"
-				}
+					"card": "01097",
+				},
+				{
+					"card": "Crowd Control",
+					"tokens": {"threat" : 4}
+				}				
 			],
 			"deck1": [
 				{
@@ -39,26 +34,40 @@
 					"card": "Spider-Man"
 				}
 			],
+			"allies1": [
+				{
+					"card": "Vision"
+				},
+			],
 			"hand1": [
 				{
-					"card": "Mockingbird"
-				},
-				{
-					"card": "01002"
-				}
+					"card": "Jessica Jones"
+				}					
+				
 			]
 		}
 	},
 	"actions": [
 		{
-			"type": "choose",
-			"value": "Flip then Remove from the game",
-			"_comments": "choose to remove from game"
+			"type": "activate",
+			"value": "Vision"
 		},
 		{
-			"type": "other",
-			"value": "wait_for_player_turn",
-		}		
+			"type": "choose",
+			"value": "+2 Thwart"
+		},	
+		{
+			"type": "activate",
+			"value": "Vision"
+		},
+		{
+			"type": "choose",
+			"value": "Thwart"
+		},		
+		{
+			"type": "target",
+			"value": "Crowd Control"
+		},			
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -75,24 +84,14 @@
 					"card": "01094"
 				}
 			],
-			"set_aside":[	
-				{
-					"card": "Spider-Man"
-				},				
-				{
-					"card": "eviction notice"
-				},
-			
-			],
-			"deck_villain": [
-				{
-					"card": "advance"
-				},				
-			],			
 			"schemes": [
 				{
 					"card": "01097",
-				}
+				},
+				{
+					"card": "Crowd Control",
+					"tokens": {"threat" : 1}
+				}				
 			],
 			"deck1": [
 				{
@@ -101,16 +100,19 @@
 			],
 			"identity1": [
 				{
-					"card": "Peter Parker",
+					"card": "Spider-Man"
 				}
 			],
-			"hand1": [
+			"allies1": [
 				{
-					"card": "Mockingbird"
+					"card": "Vision"
 				},
+			],
+			"discard1": [
 				{
-					"card": "01002"
-				}
+					"card": "Jessica Jones"
+				}					
+				
 			]
 		}
 	}

@@ -29,6 +29,9 @@ var _stored_destination: Vector2 = Vector2(0,0)
 func set_destination(_dest: Vector2):
 	_stored_destination = _dest
 
+func reset_destination():
+	set_destination(Vector2(0,0))
+	
 func set_valid_targets (objects):
 	valid_targets = objects
 
@@ -114,12 +117,13 @@ func cancel_targeting() -> void:
 	#TODO send another signal
 	if !is_targeting:
 		return
-			
-	emit_signal("target_selected",target_object)
-	scripting_bus.emit_signal("target_selected", owner_object, {"target": target_object})		
+	
+	reset_destination()		
 	is_targeting = false
 	clear_points()
-	hide_me()
+	hide_me()	
+	emit_signal("target_selected",target_object)
+	scripting_bus.emit_signal("target_selected", owner_object, {"target": target_object})		
 # Will end the targeting process.
 #
 # The top targetable object which is hovered (if any) will become the target and inserted
@@ -143,11 +147,12 @@ func complete_targeting() -> void:
 		scripting_bus.emit_signal("card_targeted", tc,
 				{"targeting_source": owner_object})
 	target_object = tc
-	emit_signal("target_selected",target_object)
-	scripting_bus.emit_signal("target_selected", owner_object, {"target": target_object})	
+	reset_destination()	
 	is_targeting = false
 	clear_points()
 	hide_me()
+	emit_signal("target_selected",target_object)
+	scripting_bus.emit_signal("target_selected", owner_object, {"target": target_object})	
 
 #for internal testing
 func force_select_target(target):

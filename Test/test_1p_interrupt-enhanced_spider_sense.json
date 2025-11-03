@@ -54,6 +54,11 @@
 			"value": "enhanced spider-sense",
 			"_comments": "prevent stampede reveal"
 		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "Wait for player turn"
+		},		
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",

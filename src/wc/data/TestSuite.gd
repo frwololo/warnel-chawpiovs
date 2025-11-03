@@ -8,14 +8,25 @@ extends Node
 #smaller numbers means the tests will run faster, but might lead to issues
 #to visually see what a test is doing, set this value to e.g. 1.0 or 1.5
 # note: 0.1 has failures
-const MIN_TIME_BETWEEN_STEPS: = 0.2
+#Note this gets modified to 0.2 for speedy tests 
+# if adapt_speed_to_number_of_tests is set to true
+var min_time_between_steps: float = 2
+const adapt_speed_to_number_of_tests := true
+const sped_up_time_between_steps: float = 0.2
+
+var time_between_tests = 0.3 #waiting between tests to clean stuff up
 #long amount of time to wait if the game state is not the one we expect
-const long_wait_time: = 2
+const long_wait_time: = 2 #below 2 sec fails for multiplayer
 #same as above but for events that require a shorter patience time
-const short_wait_time: = 0.5
+const short_wait_time: = 0.3
 #amount of time to wait if the test explicitely requests it
-const max_wait_time: = 5
+const max_wait_time: = 2
 const shorten_animations = true
+const STOP_AFTER_FIRST_FAILURE = true
+const ANNOUNCE_VERBOSE = false
+
+var start_time = 0
+var end_time = 0
 
 enum TestStatus {
 	NONE,
@@ -68,6 +79,8 @@ var _current_targeting_card = null
 var _current_targeted_card = null
 var _action_ongoing = false
 
+var _allclients_finalized: = {}
+
 #for internal statistics to find slow stuff
 func count_delay(_name):
 	if !count_delays.has(_name):
@@ -80,38 +93,18 @@ func _init():
 	scripting_bus.connect("all_clients_game_loaded", self, "all_clients_game_loaded")
 	scripting_bus.connect("selection_window_opened", self, "_selection_window_opened")
 	scripting_bus.connect("card_selected", self, "_selection_window_closed")
+	scripting_bus.connect("selection_window_canceled", self, "_selection_window_closed")
 	scripting_bus.connect("initiated_targeting", self, "_initiated_targeting")	
 	create_text_edit()
 
-func reset():
+func reset_between_tests():
+	#force close any open window:
+	cancel_current_selection_window()
+	
 	gameData.cleanup_post_game()
-	#only server is allowed to run the main process	
-	if text_edit:
-		text_edit.text = ""
-
-	count_delays = {}
-
-
-
-#GUI components required for interaction
-#var phaseContainer:PhaseContainer = null
-#var initialized:bool = false
-#var text_edit:TextEdit = null
-
-	test_files = []
-	current_test = 0
 	current_test_file= ""
-
-	passed = []
-	failed = []
-	skipped = []
-	failed_reason = []
-	fail_details = []
-
-	skipped_reason = []
-	finished = false
 	forced_status = TestStatus.NONE
-
+	
 	#current tests
 	initial_state = {}
 	end_state = {}
@@ -128,7 +121,29 @@ func reset():
 	_current_selection_window = null
 	_current_targeting_card = null
 	_current_targeted_card = null
-	_action_ongoing = false
+	_action_ongoing = false	
+	
+func reset():
+	start_time = Time.get_ticks_msec()
+	end_time = 0
+	if text_edit:
+		text_edit.text = ""
+
+	count_delays = {}
+	reset_between_tests()
+
+	test_files = []
+	current_test = 0
+
+
+	passed = []
+	failed = []
+	skipped = []
+	failed_reason = []
+	fail_details = []
+
+	skipped_reason = []
+	finished = false
 
 		
 	if 1 != get_tree().get_network_unique_id():
@@ -171,8 +186,12 @@ func _reposition_text_edit():
 		text_edit.anchor_top = 0
 		text_edit.anchor_bottom = 0.2
 
-func announce(text:String):
+func announce(text:String, include_test_number:= true):
 	_reposition_text_edit()
+	if include_test_number:
+		if !ANNOUNCE_VERBOSE and not "running" in text:
+			return
+		text = str(current_test) + "/"+ str(test_files.size()) +"-" + text
 	text_edit.text += text
 	text_edit.text = text_edit.text	
 	var last_line = text_edit.get_line_count() - 1
@@ -239,14 +258,14 @@ func next_action():
 	#bug fix. Introduced to temporize tests
 	#to let actions happen
 	#TODO shouldn't be needed!
-	if delta < MIN_TIME_BETWEEN_STEPS:
+	if delta < min_time_between_steps:
 		return
 		
 	if (actions.size() <= current_action):
-		#if (delta < 5): 
-			#crappy way to wait for current actions to finish before finalizing test.
-			# Enable only if we can't find better ways to wait for animation
-		#	return
+#		if (delta < time_between_tests): 
+#			#crappy way to wait for current actions to finish before finalizing test.
+#			# Enable only if we can't find better ways to wait for animation
+#			return
 		#TODO bug fix
 		#currently the phaseContainer runs its stuff independently
 		#of the test suite, this can lead to desyncs at the test time
@@ -257,9 +276,9 @@ func next_action():
 		if ((expected_phase != current_phase) && delta < long_wait_time):
 			count_delay("expected_phase")
 			return
-
+			
+		game_loaded = false
 		var func_return = finalize_test()
-		var _next = next_test()
 		return false	
 
 	var my_action = actions[current_action]
@@ -315,19 +334,25 @@ func next_action():
 					return					
 
 	delta = 0
-	
-	process_action(my_action)
-	
-	current_action += 1
 
-	#look ahead
-	if actions.size() > current_action:
-		var next_action = actions[current_action]
+	#look ahead (targeting, etc...)
+	if actions.size() > current_action + 1:
+		var next_action = actions[current_action + 1]
 		var next_action_type = next_action.get("type", "")
 		var next_action_value = next_action.get("value", "")
 		match next_action_type:
 			"target":
 				rpc("set_upcoming_target", next_action_value)			
+	
+	process_action(my_action)
+	
+	current_action += 1
+
+	#look ahead (messaging)
+	if actions.size() > current_action:
+		var next_action = actions[current_action]
+		var next_action_type = next_action.get("type", "")
+		var next_action_value = next_action.get("value", "")	
 		announce("upcoming: " + next_action_type + " - " + str(next_action_value) + ")\n")
 	return
 
@@ -448,24 +473,35 @@ func action_select(hero_id, action_value):
 			_:
 				chosen_cards = [action_value]
 	
+	if !is_instance_valid(_current_selection_window):
+		var _error = 1
+		_current_selection_window = null
+	
 	for i in range (chosen_cards.size()):
 		chosen_cards[i] = get_corrected_card_id(chosen_cards[i])
 		
 	if (chosen_cards):
 		if (_current_selection_window):
 			_current_selection_window.select_cards_by_name(chosen_cards)
+
+	_current_selection_window = null
 	return
 
 func cancel_current_selection_window():
+	if !is_instance_valid(_current_selection_window):
+		var _error = 1
+		_current_selection_window = null
+			
 	if (_current_selection_window):
 		_current_selection_window.force_cancel()
+		_current_selection_window = null
 	else:
 		#TODO error handling
 		var _error =1
 	
 func action_target(hero_id, action_value):
 	var target_card = get_card(action_value)
-	
+
 	if (_current_targeting_card):
 		_current_targeting_card.targeting_arrow.force_select_target(target_card)
 	return
@@ -501,6 +537,8 @@ func get_card_from_pile(card_id_or_name:String, pile:CardContainer):
 		
 	var pile_cards = pile.get_all_cards()
 	for card in pile_cards:
+		if !is_instance_valid(card):
+			continue
 		if card.canonical_id == card_id:
 			return card 
 	return null	
@@ -515,6 +553,8 @@ func get_card(card_id_or_name:String):
 	#search on board
 	var board_cards = cfc.NMAP.board.get_all_cards()
 	for card in board_cards:
+		if !is_instance_valid(card):
+			continue
 		if card.canonical_id == card_id:
 			return card 
 		
@@ -525,14 +565,14 @@ func get_card(card_id_or_name:String):
 		var hand_name = "ghosthand" + str(hero_id)
 		var pile:CardContainer = cfc.NMAP.get(hand_name)
 		var card:WCCard = get_card_from_pile(card_id_or_name,  pile)	
-		if (card):
+		if (card and is_instance_valid(card)):
 			return card	
 
 		#search in hero hands
 		hand_name = "hand" + str(hero_id)
 		pile = cfc.NMAP.get(hand_name)
 		card = get_card_from_pile(card_id_or_name, pile)	
-		if (card):
+		if (card and is_instance_valid(card)):
 			return card	
 		
 		#search in hero piles
@@ -542,7 +582,7 @@ func get_card(card_id_or_name:String):
 			if "pile" == grid_info.get("type", ""):
 				pile = cfc.NMAP.get(real_grid_name)
 				card = get_card_from_pile(card_id_or_name, pile)	
-				if (card):
+				if (card and is_instance_valid(card)):
 					return card		
 			#no "else" here. Other case is Grid which is handled by board
 
@@ -555,12 +595,20 @@ func finalize_test():
 	rpc("finalize_test_allclients", forced_status)	
 	return
 
+mastersync func test_finalized(result):
+	var client_id = get_tree().get_rpc_sender_id() 
+	_allclients_finalized[client_id] = result
+	if _allclients_finalized.size() == gameData.network_players.size():
+		for id in _allclients_finalized:
+			var success = _allclients_finalized[id]
+			if success == TestStatus.FAILED and STOP_AFTER_FIRST_FAILURE:
+				current_test = test_files.size()
+				announce("failed one test, aborting early")
+		_allclients_finalized = {}
+		var _next = next_test()
+
 remotesync func finalize_test_allclients(force_status:int):
-	
-	#Remove crap that might still be lurking around
-	cfc.cleanup_modal_menu()
-	gameData.cleanup_post_game()
-	_current_targeting_card = null
+	var result = force_status
 	
 	if (force_status != TestStatus.NONE):
 		match force_status:
@@ -575,9 +623,16 @@ remotesync func finalize_test_allclients(force_status:int):
 	
 	if (is_element1_in_element2(end_state, current_gamestate)):
 		passed.append(current_test_file)
+		result = TestStatus.PASSED
 	else:
 		failed.append(current_test_file)
 		self.fail_details.append("***expected:\n" + to_json(end_state) + "\n***Actual:\n" + to_json(current_gamestate))	
+		result = TestStatus.FAILED
+		
+	#Remove crap that might still be lurking around
+	reset_between_tests()
+	rpc_id(1, "test_finalized", result)
+
 	return
 
 func sort_card_array(array):
@@ -656,15 +711,26 @@ func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
 #we either load all files named in a _tests.txt file, OR all files starting with test_ in the folder
 func load_test_files():
 	var file:File = File.new()
+	if file.file_exists("res://Test/_tests.txt"):
+		var _file_ok = file.open("res://Test/_tests.txt", File.READ)
+		while file.get_position() < file.get_len():
+			var line:String = file.get_line()
+			if !("#" in line): #We skip comments
+				test_files.append("res://Test/" + line)	
 	if file.file_exists("user://Test/_tests.txt"):
 		var _file_ok = file.open("user://Test/_tests.txt", File.READ)
 		while file.get_position() < file.get_len():
 			var line:String = file.get_line()
 			if !("#" in line): #We skip comments
 				test_files.append("user://Test/" + line)
-	else:
+	if !test_files:
 		test_files = CFUtils.list_files_in_directory(
-				"user://Test/", "test_", true)
+				"res://Test/", "test_", true)
+		test_files += (CFUtils.list_files_in_directory(
+				"user://Test/", "test_", true))
+
+	if (adapt_speed_to_number_of_tests) and (test_files.size() >= 5) :
+		min_time_between_steps = sped_up_time_between_steps
 	file.close()		
 
 #Lightweight initialize remote clients with just enough data for them to run the final state comparison
@@ -702,13 +768,7 @@ func test_integrity(json_card_data) -> Array:
 
 #Loads a single test file 	
 func load_test(test_file)-> bool:
-	announce("running test: " + test_file +"\n")
-	current_action = 0
-	forced_status = TestStatus.NONE
 	current_test_file = test_file
-	game_loaded = false
-	end_state = {}
-
 	var file:File = File.new()
 	if !file.file_exists(test_file):
 		skipped.append(test_file)
@@ -734,6 +794,14 @@ func load_test(test_file)-> bool:
 		announce("skipped (data integrity)\n")		
 		return false		
 	
+	if gameData.is_multiplayer_game:
+		var heroes = json_card_data["init"]["heroes"]
+		if heroes.size() < 2:
+			skipped.append(test_file)
+			skipped_reason.append("multiplayer game - skip 1P test")
+			return false
+	
+	announce("running test: " + test_file +"\n")	
 	initial_state = json_card_data["init"]
 	actions = json_card_data["actions"]
 	end_state = json_card_data["end"]
@@ -745,9 +813,9 @@ func load_test(test_file)-> bool:
 		"current_test_file" : current_test_file,
 		"test_conditions" : test_conditions,
 	}
+	gameData.load_gamedata(initial_state)
 	rpc("initialize_clients_test", remote_init_data)
 	
-	gameData.load_gamedata(initial_state)
 	return true
 
 func set_card_speeds():
@@ -784,18 +852,33 @@ remotesync func add_skipped_msg(msg):
 	
 #Loads the next test. If no next test, returns false	
 func next_test() -> bool:
+	yield(get_tree().create_timer(time_between_tests), "timeout")
+	reset_between_tests()
 	if (test_files.size() <= current_test):
 		finished = true
-		var _tmp = count_delays
 		rpc("save_results")
 		return false
-	var result = load_test(test_files[current_test])
-	current_test+=1
-	return result
+	var found = false
+	while !found and current_test < test_files.size():
+		current_test+=1		
+		found = load_test(test_files[current_test-1])
+	if (!found):
+		finished = true
+		rpc("save_results")
+		return false
+
+	return found
 
 #Save test results to an output file
 remotesync func save_results():
-	announce("all tests complete, saving\n")
+	end_time = Time.get_ticks_msec()
+	
+	var delta_time_sec:float = (end_time - start_time) /1000
+	var delta_time_min = stepify(delta_time_sec/60.0, 0.01)
+	var time_per_test:float = stepify(delta_time_sec / test_files.size(), 0)
+	
+	announce("all tests complete, saving\n", false)
+	announce("total time:" + str(delta_time_min) + " mins (" + str(time_per_test) + " secs per test)\n", false)
 	var file = File.new()
 	var to_print := ""
 	if (failed.size()):
@@ -804,7 +887,7 @@ remotesync func save_results():
 		to_print+= "SUCCESS! (passed " +String(passed.size()) + "/" + str(test_files.size()) \
 		 + ", skipped " +  String(skipped.size()) + "/" + str(test_files.size())  + ")\n\n" 
 
-	announce (to_print)
+	announce (to_print, false)
 	to_print += "total tests: " + str(test_files.size()) + "\n"
 	to_print +=  "###\nskipped: " + str(skipped.size()) + "\n"
 
@@ -845,6 +928,11 @@ remotesync func set_upcoming_target(value:String):
 func _initiated_targeting(_request_object = null):
 	_current_targeting_card = _request_object
 	
+	#is_instance_valid_check below:
+	#I've had cases where the wrong target was selected (race condition somewhere 
+	#when tests run fast),leading to issues
+	#Since this is only needed for cosmetics (graphically showing the arrow pointing at the right target),
+	#skipping if the target is invalid doesn't matter too much
 	if (_current_targeted_card):
 		_current_targeting_card.targeting_arrow.set_destination(_current_targeted_card.global_position + Vector2(70, 70))
 

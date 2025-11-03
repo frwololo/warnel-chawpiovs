@@ -143,6 +143,7 @@ func set_text_bottom(text):
 		bottom_text.text = _bottom_text
 	
 func set_text(text:String):
+	#warning-ignore:INTEGER_DIVISION
 	var half_size = int(text.length()/2)
 	var left_string = text.substr(0, half_size)
 

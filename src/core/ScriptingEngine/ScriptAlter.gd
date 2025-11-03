@@ -47,7 +47,7 @@ func _init(
 		# So we just run it through the _find_subjects() to see if it will
 		# set is_valid to false.
 		var ret =_find_subjects(0)
-		if ret is GDScriptFunctionState: # Still working.
+		if ret is GDScriptFunctionState  && ret.is_valid(): # Still working.
 			ret = yield(ret, "completed")
 	# We emit a signal when done so that our ScriptingEngine
 	# knows we're ready to continue

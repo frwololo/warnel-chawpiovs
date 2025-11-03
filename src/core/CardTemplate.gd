@@ -1602,7 +1602,6 @@ func execute_scripts(
 	var is_network_call = trigger_details.has("network_prepaid") #TODO MOVE OUTSIDE OF Core
 	
 	#semaphores
-	is_executing_scripts = true
 	cfc.add_ongoing_process(self, "core_execute_scripts")
 	
 	var action_name = state_scripts_dict["action_name"]
@@ -1664,9 +1663,10 @@ func execute_scripts(
 		# 1) Client A selects payments for ability locally
 		# In case the script involves targetting, we need to wait on further
 		# execution until targetting has completed
-		sceng.execute(cost_check_mode)
-		if not sceng.all_tasks_completed:
-			yield(sceng,"tasks_completed")
+		var sceng_return = sceng.execute(cost_check_mode)
+		#if not sceng.all_tasks_completed:
+		if sceng_return is GDScriptFunctionState && sceng_return.is_valid():		
+			yield(sceng_return,"completed")
 		
 		# If the dry-run of the ScriptingEngine returns that all
 		# costs can be paid, then we proceed with the actual run
@@ -1676,9 +1676,10 @@ func execute_scripts(
 				#1.5) We run the script in "prime" mode again to choose targets
 				# for all tasks that aren't costs but still need targets
 				# (is_cost = false and needs_subject = false)
-				sceng.execute(CFInt.RunType.PRIME_ONLY)
-				if not sceng.all_tasks_completed:
-					yield(sceng,"tasks_completed")
+				sceng_return = sceng.execute(CFInt.RunType.PRIME_ONLY)
+				#if not sceng.all_tasks_completed:
+				if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
+					yield(sceng_return,"completed")
 				
 				# 2) Once done with payment, Client A sends ability + payment information to all clients (including itself)
 				# 3) That data is added to all clients stacks
@@ -3054,7 +3055,7 @@ func _on_Back_resized() -> void:
 
 
 # Ensures proper cleanup when a card is queue_free() for any reason
-func _on_tree_exiting():
+func _on_tree_exiting():	
 	if cfc.NMAP.has("main"):
 		cfc.NMAP.main.unfocus(self)
 	if _placement_slot:

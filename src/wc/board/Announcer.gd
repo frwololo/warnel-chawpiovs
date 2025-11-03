@@ -1,5 +1,6 @@
 # warning-ignore-all:UNUSED_ARGUMENT
 # warning-ignore-all:UNUSED_VARIABLE
+# warning-ignore-all:RETURN_VALUE_DISCARDED
 
 class_name Announcer
 extends Node

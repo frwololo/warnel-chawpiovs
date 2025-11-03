@@ -47,20 +47,20 @@ func select_card(
 	var selection = card_select_scene.instance()
 	selection.init(selection_params, script, stored_integer)
 	if (run_type == CFInt.RunType.BACKGROUND_COST_CHECK):
-		selection.dry_run(card_list)
+		selection.dry_run(card_list)	
 	else:
+		gameData.attempt_user_input_lock()
 		parent_node.add_child(selection)		
 		cfc.add_modal_menu(selection) #keep a pointer to the variable for external cleanup if needed
 		selection.call_deferred("initiate_selection", card_list)
 		# We have to wait until the player has finished selecting their cards
 		yield(selection,"confirmed")
+		cfc.remove_modal_menu(selection)
+		gameData.attempt_user_input_unlock()	
 	if selection.is_cancelled:
 		selected_cards = false
 	else:
-		selected_cards = selection.selected_cards
-	# Garbage cleanup
-	if (run_type != CFInt.RunType.BACKGROUND_COST_CHECK):
-		cfc.remove_modal_menu(selection)
+		selected_cards = selection.selected_cards			
 	selection.queue_free()
 		
 	if parent_node == cfc.NMAP.get("board"):

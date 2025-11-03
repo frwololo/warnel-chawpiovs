@@ -10,7 +10,8 @@ signal card_played(card,details)
 signal card_removed(card,details)
 # warning-ignore:unused_signal
 signal card_selected(selection_window, details)
-
+# warning-ignore:unused_signal
+signal selection_window_canceled(selection_window, details)
 # warning-ignore:unused_signal
 signal setup_complete()
 
@@ -77,4 +78,9 @@ signal ally_moved_to_board(card,details)
 signal upgrade_moved_to_board(card,details)
 # warning-ignore:unused_signal
 signal support_moved_to_board(card,details)
-
+# warning-ignore:unused_signal
+signal attachment_moved_to_board(card,details)
+# warning-ignore:unused_signal
+signal treachery_moved_to_board(card,details)
+# warning-ignore:unused_signal
+signal obligation_moved_to_board(card,details)

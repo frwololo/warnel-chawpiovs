@@ -165,7 +165,7 @@ func initiate_selection(_card_array: Array) -> void:
 	popup_centered_minsize()
 	# Spawning all the duplicates is a bit heavy
 	# So we delay showing the tween to avoid having it look choppy
-	yield(get_tree().create_timer(0.2), "timeout")
+	#yield(get_tree().create_timer(0.2), "timeout")
 	_tween.remove_all()
 	# We do a nice alpha-modulate tween
 	_tween.interpolate_property(self,'modulate:a',
@@ -488,6 +488,12 @@ func _on_cancel_pressed() -> void:
 	# The signal is the same, but the calling method, should be checking the
 	# is_cancelled bool.
 	# This is to be able to yield to only one specific signal.
+	#_on_card_selection_confirmed()
+	scripting_bus.emit_signal(
+			"selection_window_canceled",
+			self,
+			{"selected_cards": selected_cards}
+	)	
 	emit_signal("confirmed")
 
 func _on_card_selection_confirmed() -> void:

@@ -278,6 +278,7 @@ func _process(delta):
 			_all_downloads_completed()
 
 	if cfc._cards_loaded <  cfc._total_cards :
+		#warning-ignore:INTEGER_DIVISION
 		var percent_loaded:int = (100*cfc._cards_loaded) / cfc._total_cards
 		v_folder_label.text = _loading_text_prefix +  str(percent_loaded) + "%"
 		

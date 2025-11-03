@@ -43,7 +43,7 @@ func count_found_things() -> int:
 	# This key is added/removed from the total count
 	var modifier = per_definitions.get(
 			"modifier", 0)			
-	var total_max =  per_definitions.get(
+	var total_max :int =  per_definitions.get(
 			"max", 0)
 					
 	var per_discovery = cfc.script_per.new(self)
@@ -59,5 +59,6 @@ func count_found_things() -> int:
 	# The mutliplier might be a float
 	found_count = int(found_count * multiplier)
 	if (total_max):
+		#warning-ignore:NARROWING_CONVERSION
 		found_count = min(total_max, found_count)
 	return(int(found_count * multiplier))

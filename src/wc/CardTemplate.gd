@@ -23,7 +23,7 @@ var extra_scripts := {}
 var extra_script_uid := 0
 
 # The node with number manipulation box on this card
-onready var spinbox = $Control/SpinPanel/SpinBox
+var spinbox
 
 func add_extra_script(script_definition):
 	extra_script_uid+= 1
@@ -100,6 +100,10 @@ func execute_before_scripts(
 		trigger_details: Dictionary = {},
 		run_type := CFInt.RunType.NORMAL):
 	return execute_scripts(trigger_card, "before_" + trigger, trigger_details, run_type) 
+
+func _class_specific_ready():
+	._class_specific_ready()
+	spinbox = $Control/SpinPanel/SpinBox	
 
 func _ready():
 	scripting_bus.connect("scripting_event_about_to_trigger", self, "execute_before_scripts")
@@ -279,15 +283,19 @@ func execute_scripts(
 			return null	
 
 
-	#can only trigger if I'm the controller of the ability (will send online to other clients)
+	#can only trigger if I'm the controller of the abilityor if enemy card (will send online to other clients)
 	if !gameData.can_i_play_this_ability(self):
 		return
 		
-	#special case for enemy cards, need to think about it
+	#enemy cards, multiple players can react except when they're the specific target
 	if self.get_controller_hero_id() <= 0:
-		if !cfc.is_game_master():
-			return 
-		
+		var can_i_play_enemy_card = false
+		for my_hero in (gameData.get_my_heroes()):
+			if my_hero in (gameData.get_currently_playing_hero_ids()):
+				can_i_play_enemy_card = true
+		if !can_i_play_enemy_card:
+			return
+			
 	return .execute_scripts(trigger_card, trigger, trigger_details, run_type)	
 
 # A signal for whenever the player clicks on a card

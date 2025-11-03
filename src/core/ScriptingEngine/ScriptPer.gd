@@ -17,7 +17,7 @@ func _init(per_msg: perMessage).(
 	else:
 		prev_subjects = per_msg.subjects
 	var ret = _find_subjects() #TODO run_type support for cost check
-	if ret is GDScriptFunctionState: # Still working.
+	if ret is GDScriptFunctionState  && ret.is_valid(): # Still working.
 		ret = yield(ret, "completed")
 	# We emit a signal when done so that our ScriptingEngine
 	# knows we're ready to continue

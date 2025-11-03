@@ -158,7 +158,7 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 				c = _dry_run_card_targeting(script_definition)
 			else:
 				c = _initiate_card_targeting()
-				if c is GDScriptFunctionState: # Still working.
+				if c is GDScriptFunctionState && c.is_valid(): # Still working.
 					c = yield(c, "completed")
 			# If the target is null, it means the player pointed at nothing
 			if c:
@@ -409,7 +409,7 @@ func _dry_run_card_targeting(_script_definition):
 #
 # Returns a Card object.
 func _initiate_card_targeting() -> Card:
-	cfc.add_ongoing_process(self)
+	cfc.add_ongoing_process(self, owner.canonical_name)
 	# We wait a centisecond, to prevent the card's _input function from seeing
 	# The double-click which started the script and immediately triggerring
 	# the target completion
@@ -430,8 +430,9 @@ func _initiate_card_targeting() -> Card:
 		target = owner.targeting_arrow.target_object
 		owner.targeting_arrow.target_object = null
 		#owner_card.target_object = null
-		
-	cfc.remove_ongoing_process(self)	
+	
+
+	cfc.remove_ongoing_process(self, owner.canonical_name)	
 	return(target)
 
 

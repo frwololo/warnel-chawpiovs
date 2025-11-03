@@ -86,8 +86,8 @@ func _init():
 func _ready():
 	#Signals
 	#TODO: the attempt to lock should happen BEFORE we actually open the windows
-	scripting_bus.connect("selection_window_opened", self, "attempt_user_input_lock")
-	scripting_bus.connect("card_selected", self, "attempt_user_input_unlock")
+	#scripting_bus.connect("selection_window_opened", self, "attempt_user_input_lock")
+	#scripting_bus.connect("card_selected", self, "_selection_window_closed")	
 	scripting_bus.connect("scripting_event_triggered", self, "_scripting_event_triggered")
 	scripting_bus.connect("scripting_event_about_to_trigger", self, "_scripting_event_about_to_trigger")
 
@@ -98,12 +98,20 @@ func _ready():
 	
 	get_tree().connect("server_disconnected", self, "_server_disconnected")
 	
+	theStack.connect("script_executed_from_stack", self, "_script_executed_from_stack")
 
 	self.add_child(theStack) #Stack needs to be in the tree for rpc calls	
 	self.add_child(theAnnouncer)
 	self.add_child(theGameObserver)
 	#scripting_bus.connect("optional_window_opened", self, "attempt_user_input_lock")
 	#scripting_bus.connect("optional_window_closed", self, "attempt_user_input_unlock")	
+
+func _script_executed_from_stack (script):
+	if script.get_first_task_name() == "enemy_attack":
+		defenders_chosen()
+		return
+	if script.get_first_task_name() == "reveal_encounter":	
+		encounter_revealed() #this forces passing to the next step
 
 func _initiated_targeting(owner_card) -> void:
 	_targeting_ongoing = true
@@ -172,7 +180,9 @@ func attempt_user_input_lock(_request_object = null,details = {}):
 	
 func attempt_user_input_unlock(_request_object = null,_details = {}):	
 	rpc_id(1, "request_user_input_unlock")	
-	
+
+func _selection_window_closed(request_object = null,details = {}):	
+	attempt_user_input_unlock(request_object, details)
 	
 #Returns true if I am allowed to play cards/abilities
 #This is a more complex question than might seem
@@ -341,6 +351,7 @@ func init_network_players(players:Dictionary):
 		network_players[player_network_id] = new_player_data 
 		id_to_network_id[info.id] = player_network_id
 
+
 func set_team_data(_team:Dictionary):
 	#filter out empty slots
 	var hero_count = 0;
@@ -454,12 +465,18 @@ func find_main_scheme() :
 	return null
 
 func end_round():
-	set_villain_current_hero_target(1)
+	set_villain_current_hero_target(1, true, "end_round")
 	scripting_bus.emit_signal("round_ended")
 
-func set_villain_current_hero_target(value, force_switch_ui:= true):
+func get_hero_name(hero_id):
+	var hero_card = self.get_identity_card(hero_id)
+	return hero_card.canonical_name
+
+func set_villain_current_hero_target(value, force_switch_ui:= true, caller:= ""):
 	var previous = _villain_current_hero_target
 	_villain_current_hero_target = value
+	if previous!=value:
+		display_debug("(gamedata) new villain target:" + get_hero_name(value) + "(called by " + caller +")")
 	if force_switch_ui and previous!= value:
 		#in practice this will only switch for players that control the hero
 		self.select_current_playing_hero(value) 
@@ -474,14 +491,15 @@ func villain_init_attackers():
 	attackers.append(get_villain())
 	attackers += get_minions_engaged_with_hero(current_target)
 
-func villain_next_target(force_switch_ui:= true) -> int:
+func villain_next_target(force_switch_ui:= true, caller:= "") -> int:
 	var previous_value = _villain_current_hero_target
 	var new_value = previous_value + 1
 	var to_return = new_value
+	caller += " through villain_next_target"
 	if new_value > get_team_size():
 		new_value = 1 #Is this the right place? Causes lots of errors otherwise...
 		to_return = 0
-	set_villain_current_hero_target(new_value, force_switch_ui)
+	set_villain_current_hero_target(new_value, force_switch_ui, caller)
 	return 	to_return
 
 func all_attackers_finished():
@@ -493,6 +511,9 @@ func attack_prevented():
 func current_enemy_finished():
 	attackers.pop_front()
 	_current_enemy_attack_step = EnemyAttackStatus.NONE
+
+func attack_is_ongoing():
+	return _current_enemy_attack_step != EnemyAttackStatus.NONE
 
 func pre_attack_interrupts_done():
 	if _current_enemy_attack_step != EnemyAttackStatus.PENDING_INTERRUPT:
@@ -563,14 +584,15 @@ func enemy_activates() :
 				theAnnouncer.simple_announce(announce_settings )
 				
 				#target player is the one adding the event to the stack
-				if can_i_play_this_hero(target_id):				
+				if can_i_play_this_hero(target_id):	
+					display_debug("I am the owner of hero " + str(target_id) +", I will handle the attack")			
 					theStack.create_and_add_signal("enemy_initiates_" + action, enemy, {SP.TRIGGER_TARGET_HERO : get_current_target_hero().canonical_name})
 				_current_enemy_attack_step = EnemyAttackStatus.PENDING_INTERRUPT
 				return
 				
 		EnemyAttackStatus.OK_TO_START_ATTACK:	
 			if (enemy.get_property("type_code") == "villain"): #Or villainous?
-				enemy.draw_boost_card() #TODO send to all clients	
+				enemy.draw_boost_card() 
 		
 			if (action =="attack"):
 				#attack	
@@ -588,15 +610,6 @@ func enemy_activates() :
 				current_enemy_finished()
 			return
 			
-		EnemyAttackStatus.PENDING_DEFENDERS:
-			#there has to be a better way.... wait for a signal somehow ?
-			if !theStack.is_empty():
-				return
-			if cfc.get_modal_menu():
-				return
-			
-			_current_enemy_attack_step = EnemyAttackStatus.ATTACK_COMPLETE
-			return
 			
 		EnemyAttackStatus.ATTACK_COMPLETE:
 			scripting_bus.emit_signal("enemy_attack_happened", enemy, {})
@@ -604,6 +617,18 @@ func enemy_activates() :
 			return 
 
 	return
+
+func defenders_chosen():
+	if !EnemyAttackStatus.PENDING_DEFENDERS:
+		return	
+
+#	if !theStack.is_empty():
+#		return
+#	if cfc.get_modal_menu():
+#		return
+	
+	_current_enemy_attack_step = EnemyAttackStatus.ATTACK_COMPLETE
+	return	
 
 func set_aside(card):
 	card.move_to(cfc.NMAP["set_aside"])
@@ -666,12 +691,12 @@ func deal_encounters():
 		yield(get_tree().create_timer(1), "timeout")
 		 # This forces to change the next facedown destination
 		#the "false" flags prevents from tirggering UI changes
-		if (!villain_next_target(false)):
+		if (!villain_next_target(false, "deal encounters")):
 			finished = true
 
 	#reset _villain_current_hero_target for cleanup	
 	#it should already be at 1 here but...
-	set_villain_current_hero_target(1, false)
+	set_villain_current_hero_target(1, false, "deal encounters")
 	
 	#Hazard cards
 	var hazard = 0		
@@ -683,11 +708,11 @@ func deal_encounters():
 	while hazard:
 		deal_one_encounter_to(_villain_current_hero_target)
 		yield(get_tree().create_timer(1), "timeout")
-		villain_next_target(false)
+		villain_next_target(false, "deal encounters")
 		hazard -=1
 		
 	#reset _villain_current_hero_target for cleanup	
-	set_villain_current_hero_target(1, false)
+	set_villain_current_hero_target(1, false,"deal encounters")
 	cfc.remove_ongoing_process(self, "deal_encounters")
 
 func deal_one_encounter_to(hero_id, immediate = false, encounter = null):
@@ -727,7 +752,8 @@ func reveal_current_encounter(target_id = 0):
 	if !_current_encounter:
 		#this is a bug. This function should only be called when there's an encounter about to be revealed
 		return
-		
+
+
 	_current_encounter.execute_scripts(_current_encounter, "reveal") 
 		
 #TODO need something much more advanced here, per player, etc...
@@ -738,8 +764,8 @@ func reveal_encounter(target_id = 0):
 	#If we're not the targeted player, we'll fail this one,
 	#and go into "wait for next phase" instantly. This should 
 	#force us to wait for the targeted player to trigger the script via network
-	if not (can_i_play_this_hero(target_id)):
-		return CFConst.ReturnCode.FAILED
+#	if not (can_i_play_this_hero(target_id)):
+#		return CFConst.ReturnCode.FAILED
 
 	if immediate_encounters:
 		for immediate_encounter in immediate_encounters.keys():
@@ -783,16 +809,7 @@ func reveal_encounter(target_id = 0):
 			#theStack.create_and_add_simplescript(_current_encounter, _current_encounter, reveal_script, {})
 			_current_encounter_step = EncounterStatus.PENDING_REVEAL_INTERRUPT
 			return
-		EncounterStatus.PENDING_REVEAL_INTERRUPT:
-			#todo replace this with a signal?
-			#right now this technique allows to move on even if the reveal event disappears (fizzled)
-			if !theStack.is_empty():
-				return
-			if cfc.get_modal_menu():
-				return
-			
-			_current_encounter_step = EncounterStatus.OK_TO_EXECUTE
-			return					
+					
 		EncounterStatus.OK_TO_EXECUTE:
 			#todo send to network?			
 			var grid: BoardPlacementGrid = get_encounter_target_grid(_current_encounter)
@@ -826,6 +843,19 @@ func reveal_encounter(target_id = 0):
 			return 
 	return
 
+func encounter_revealed():
+	if _current_encounter_step !=EncounterStatus.PENDING_REVEAL_INTERRUPT:
+		return
+#	#todo replace this with a signal?
+#	#right now this technique allows to move on even if the reveal event disappears (fizzled)
+#	if !theStack.is_empty():
+#		return
+#	if cfc.get_modal_menu():
+#		return
+#
+	_current_encounter_step = EncounterStatus.OK_TO_EXECUTE
+	return
+
 #TODO need to move this to some configuration driven logic
 func get_encounter_target_grid (encounter) -> BoardPlacementGrid:
 	var typecode = encounter.properties.get("type_code", "")
@@ -856,7 +886,11 @@ func get_encounter_target_pile (encounter):
 func _stack_event_deleted(event):
 	match event.get_first_task_name():
 		"enemy_initiates_attack":
-			attack_prevented()	
+			attack_prevented()
+#		"enemy_attack":
+#			defenders_chosen()
+		"reveal_encounter":	
+			encounter_revealed()				
 
 func get_villain() -> Card :
 	return cfc.NMAP.board.get_villain_card()
@@ -894,7 +928,7 @@ func character_died(card:Card):
 	var character_died_definition = {
 		"name": "character_died",
 	}
-	#TODO be more specific about conditoins of death: what caused it, etc...
+	#TODO be more specific about conditions of death: what caused it, etc...
 	var character_died_script:ScriptTask = ScriptTask.new(card, character_died_definition, card, {})
 	character_died_script.subjects = [card]
 	character_died_script.is_primed = true #fake prime it since we already gave it subjects	
@@ -1140,6 +1174,7 @@ func cleanup_post_game():
 	theGameObserver.reset()
 	
 	cfc.reset_ongoing_process_stack()
+	cfc.flush_cache()
 	cfc.game_paused = false
 
 	
@@ -1204,12 +1239,8 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 
 	var hero_data:Array = json_data["heroes"]
 	
-	#TODO more file integrity checks 
-	#number of players doesn't match loaded data
-	if (hero_data.size() != team.size()):
-		rpc_id(caller_id,"remote_load_game_data_finished",CFConst.ReturnCode.FAILED)
-		return 
-
+	
+	team = {}
 
 
 	#phase

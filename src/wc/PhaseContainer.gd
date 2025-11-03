@@ -11,6 +11,13 @@ var heroPhaseScene = preload("res://src/wc/board/HeroPhase.tscn")
 #debug display for 
 #TODO something fancier
 var text_edit:TextEdit = null
+#quick and dirty way to filter out some messages.
+#whitelist has priority, if it's set, only messages containing
+#specific words will go through
+#if blackslit is set,, messages containing specific words will be explicitly banned 
+const _debug_msg_whitelist = [] #["executing", "owner", "villain target"] #"script", "all clients", "error"]
+const _debug_msg_blacklist = []
+const enable_debug_msg = true
 
 func create_text_edit():
 	if not cfc.NMAP.has("board") or not is_instance_valid(cfc.NMAP.board):
@@ -29,22 +36,18 @@ func create_text_edit():
 var _previous_debug_msg = ""
 var _previous_equal_count := 0	
 func display_debug(msg:String, prefix = "phase"):
-	#quick and dirty way to filter out some messages.
-	#whitelist has priority, if it's set, only messages containing
-	#specific words will go through
-	#if blackslit is set,, messages containing specific words will be explicitly banned 
-	var whitelist = [] #"script", "all clients", "error"]
-	var blacklist = []
+	if !enable_debug_msg:
+		return
 	
 	var good_to_display = true
 	var lc_msg = msg.to_lower()
-	if whitelist:
+	if _debug_msg_whitelist:
 		good_to_display = false
-		for word in whitelist:
+		for word in _debug_msg_whitelist:
 			if word in lc_msg:
 				good_to_display = true
-	elif blacklist:
-		for word in blacklist:
+	elif _debug_msg_blacklist:
+		for word in _debug_msg_blacklist:
 			if word in lc_msg:
 				good_to_display = false
 		
@@ -407,9 +410,9 @@ remotesync func proceed_to_next_phase():
 	scripting_bus.emit_signal("step_ended",  {"step" : current_step})
 	if (current_step == CFConst.PHASE_STEP.ROUND_END):
 		current_step = CFConst.PHASE_STEP.PLAYER_TURN
-	elif ((current_step == CFConst.PHASE_STEP.VILLAIN_ACTIVATES) and gameData.villain_next_target()):
+	elif ((current_step == CFConst.PHASE_STEP.VILLAIN_ACTIVATES) and gameData.villain_next_target(true, "proceed_to_next_phase")):
 		current_step = CFConst.PHASE_STEP.VILLAIN_ACTIVATES
-	elif ((current_step == CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER) and gameData.villain_next_target()):
+	elif ((current_step == CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER) and gameData.villain_next_target(true, "proceed_to_next_phase")):
 		current_step = CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER		
 	else:
 		current_step+=1

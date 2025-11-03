@@ -1,3 +1,5 @@
+# warning-ignore-all:RETURN_VALUE_DISCARDED
+
 class_name GlobalScriptStack
 extends Node2D
 
@@ -19,6 +21,8 @@ extends Node2D
 #At the end of the day, the main difference between global and local scripts is that sometimes 
 #I don't want to bother guessing who's responsible for sending the script globally. This might be worth correcting
 #
+
+signal script_executed_from_stack(script)
 
 enum InterruptMode {
 	NONE,
@@ -211,20 +215,23 @@ mastersync func master_i_need_id_for_local_script (local_uid, checksum):
 	master_local_scripts_queue[local_uid]["requested"][client_id] = true
 	if master_local_scripts_queue[local_uid]["requested"].size() == gameData.network_players.size():
 		var uid = get_next_stack_uid()
+		#warning-ignore:RETURN_VALUE_DISCARDED
 		master_local_scripts_queue.erase(local_uid)		
 		rpc("global_uid_assigned", local_uid, uid)
 
 
 remotesync func global_uid_assigned(local_uid,stack_uid):
+	if !cfc.is_game_master():
 		var verification_uid = get_next_stack_uid()
 		if verification_uid != stack_uid:
 			var _error = 1
 			#TODO this is baad
-					
-		var object = pending_local_scripts[local_uid]
-		object.set_display_name(object.get_display_name() + "(local)")		
-		add_to_stack(object, stack_uid)	
-		pending_local_scripts.erase(local_uid)
+				
+	var object = pending_local_scripts[local_uid]
+	object.set_display_name(object.get_display_name() + "(local)")		
+	add_to_stack(object, stack_uid)
+	#warning-ignore:RETURN_VALUE_DISCARDED	
+	pending_local_scripts.erase(local_uid)
 
 func add_script(object, stack_uid:int = 0):
 	#if somebody is adding a script while in interrupt mode,
@@ -259,9 +266,18 @@ func add_script(object, stack_uid:int = 0):
 
 
 func add_to_stack(object, stack_uid):
+	flush_top_script()
+	
 	object.stack_uid = stack_uid
+
 	stack.append(object)
 	stack.sort_custom(StackObject, "sort_stack")
+	var msg = "["
+	for item in stack:
+		msg+= str(item.stack_uid) +"-" + item.get_display_name() + ","
+	msg += "]"
+	display_debug("my stack: " + msg)
+
 	reset_interrupt_states()
 	rpc_id(1, "master_stack_object_added", object.stack_uid)	
 
@@ -279,7 +295,9 @@ func _exit_tree():
 		
 func clients_status_aligned():
 	for client in clients_current_mode:
+
 		if clients_current_mode[client] != interrupt_mode:
+			display_debug("need to wait: interrupt mode not the same (" +str(interrupt_mode) + " vs " + str(clients_current_mode[client]) + ")")			
 			return false
 			
 	for client in stack_integrity_check:
@@ -291,6 +309,9 @@ func clients_status_aligned():
 #			if their_stack[i] != stack[i].stack_uid:
 #				display_debug("error: stack integrity")
 #				return false
+	if master_local_scripts_queue:
+		display_debug("need to wait: local scripts still pending (" +to_json(master_local_scripts_queue)  + ")")			
+		return false
 			
 	return true
 	
@@ -338,12 +359,7 @@ func _process(_delta: float):
 
 				
 		InterruptMode.NOBODY_IS_INTERRUPTING:			
-			set_interrupt_mode(InterruptMode.NONE)
-			var next_script = stack_pop_back()
-			display_debug("executing: " + next_script.get_display_name())
-			var func_return = next_script.execute()	
-			while func_return is GDScriptFunctionState && func_return.is_valid():
-				func_return = func_return.resume()
+			flush_top_script()
 			
 
 #		var sceng = next_script.sceng
@@ -359,6 +375,20 @@ func _process(_delta: float):
 			
 	return	
 
+func flush_top_script():
+	if !interrupt_mode == InterruptMode.NOBODY_IS_INTERRUPTING:
+		return
+	set_interrupt_mode(InterruptMode.NONE)
+	var next_script = stack_pop_back()
+	if !next_script:
+		display_debug("asked for executing script but I have nothing on my stack")
+		var _error = 1
+		return
+	display_debug("executing: " + str(next_script.stack_uid) + "-" + next_script.get_display_name())
+	var func_return = next_script.execute()	
+	while func_return is GDScriptFunctionState && func_return.is_valid():
+		func_return = func_return.resume()
+	emit_signal("script_executed_from_stack", next_script )		
 			
 func stack_pop_back():
 	var variant = stack.pop_back()

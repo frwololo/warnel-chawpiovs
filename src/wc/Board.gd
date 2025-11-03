@@ -24,6 +24,13 @@ var _cards_loaded:= {}
 var _hero_zones_initialized:= {}
 var _ready_to_load:= {}
 
+var _team_size = 0
+
+func get_team_size():
+	if !_team_size:
+		_team_size = gameData.get_team_size()
+	return _team_size
+
 func _init():
 	init_hero_zones()
 
@@ -57,11 +64,16 @@ func _ready() -> void:
 	# warning-ignore:return_value_discarded
 	#$DeckBuilderPopup.connect('popup_hide', self, '_on_DeckBuilder_hide')	
 	
+	grid_setup()
+	rpc("ready_to_load")	
 	
+func grid_setup():
+	_team_size = 0 #reset team size to fetch it from gameData	
 	for grid_name in GRID_SETUP.keys():
-
 		var grid_info = GRID_SETUP[grid_name]
 		if "pile" == grid_info.get("type", ""):
+			if cfc.NMAP.has(grid_name): #skip if already exists
+				continue
 			var scene = grid_info.get("scene", basicPile)
 			var pile: Pile = scene.instance()
 			pile.add_to_group("piles")
@@ -75,6 +87,8 @@ func _ready() -> void:
 			add_child(pile)
 			set_groups(pile, grid_info.get("groups", []))
 		else:
+			if has_node(grid_name): #skip if already exists
+				continue
 			var grid_scene = grid_info.get("scene", basicGrid)
 			var grid: BoardPlacementGrid = grid_scene.instance()
 			grid.add_to_group("placement_grid")
@@ -88,7 +102,7 @@ func _ready() -> void:
 			grid.auto_extend = grid_info.get("auto_extend", true)
 			set_groups(grid, grid_info.get("groups", []))
 
-	for i in range(gameData.get_team_size()):
+	for i in range(get_team_size()):
 		var hero_id = i+1
 		var scale = 1
 		var start_x = 500
@@ -105,6 +119,8 @@ func _ready() -> void:
 			var y = start_y + grid_info["y"]*scale	
 			var real_grid_name = grid_name + str(hero_id)		
 			if "pile" == grid_info.get("type", ""):
+				if cfc.NMAP.has(real_grid_name): #skip if already exists
+					continue
 				var scene = grid_info.get("scene", basicPile)
 				var pile: Pile = scene.instance()
 				pile.add_to_group("piles")
@@ -118,6 +134,8 @@ func _ready() -> void:
 				add_child(pile)
 				set_groups(pile, grid_info.get("groups", []))
 			else:
+				if has_node(real_grid_name): #skip if already exists
+					continue
 				var grid_scene = grid_info.get("scene", basicGrid)
 				var grid: BoardPlacementGrid = grid_scene.instance()
 				grid.add_to_group("placement_grid")
@@ -130,8 +148,6 @@ func _ready() -> void:
 				grid.rect_position = Vector2(x,y)
 				grid.auto_extend = grid_info.get("auto_extend", true)
 				set_groups(grid, grid_info.get("groups", []))
-
-	rpc("ready_to_load")
 
 
 remotesync func ready_to_load():
@@ -180,7 +196,7 @@ func post_ready_load():
 	#Save gamedata for restart
 	gameData.save_gamedata_to_file("user://Saves/_restart.json")	
 	
-	for i in range (gameData.get_team_size()): 
+	for i in range (get_team_size()): 
 		heroZones[i+1].reorganize()
 		
 	cfc.remove_ongoing_process(self, "board_setup")	
@@ -192,20 +208,26 @@ func load_villain(card_id):
 	return villain.load_villain(card_id)
 
 func load_heroes():
-	var hero_count: int = gameData.get_team_size()
+	var hero_count: int = get_team_size()
 	for i in range (hero_count): 
 		heroZones[i+1].load_starting_identity()
 
 
 func init_hero_zones():
-	var hero_count: int = gameData.get_team_size()
-	for i in range (hero_count): 
+	var hero_count: int = get_team_size()
+	if hero_count == heroZones.size():
+		return
+	while hero_count < heroZones.size():
+		heroZones.erase(heroZones.size())
+	
+	while hero_count > heroZones.size():
+		var index = heroZones.size()+1
 		var new_hero_zone = heroZone.instance()
-		new_hero_zone.name = "HeroZone" + str(i+1)
+		new_hero_zone.name = "HeroZone" + str(index)
 		add_child(new_hero_zone)
-		new_hero_zone.set_player(i+1)
+		new_hero_zone.set_player(index)
 		new_hero_zone.rect_position = Vector2(500, 600) #TODO better than this
-		heroZones[i+1] = new_hero_zone			
+		heroZones[index] = new_hero_zone		
 
 # Returns an array with all children nodes which are of Card class
 func get_all_cards() -> Array:
@@ -224,6 +246,12 @@ func get_all_cards_by_property(property:String, value):
 				cardsArray.append(obj)
 	return cardsArray	
 
+func reset_board():
+	delete_all_cards()
+	_team_size = 0
+	init_hero_zones()
+	grid_setup()
+
 func delete_all_cards():
 	
 	#delete everything on board and grids
@@ -233,7 +261,7 @@ func delete_all_cards():
 		obj.queue_free()
 		
 	#delete everything in hands	
-	for i in range(gameData.get_team_size()):
+	for i in range(get_team_size()):
 		var hand:Hand = cfc.NMAP["hand" + str(i+1)]
 		hand.delete_all_cards()
 		
@@ -248,7 +276,7 @@ func delete_all_cards():
 			grid.delete_all_slots_but_one()
 			
 
-	for i in range(gameData.get_team_size()):
+	for i in range(get_team_size()):
 		var hero_id = i+1
 		for grid_name in HERO_GRID_SETUP.keys():
 			var grid_info = HERO_GRID_SETUP[grid_name]
@@ -642,7 +670,7 @@ func loadstate_from_json(json:Dictionary):
 	if (null == json_data):
 		return #TODO Error msg
 
-	delete_all_cards()
+	reset_board()
 	
 	#Load all grids with matching data
 	for grid_name in GRID_SETUP.keys():

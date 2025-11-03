@@ -65,7 +65,7 @@ func set_label_text(node: Label, value, scale: float = 1):
 	else:
 		# We add a yield here to allow the calling function to continue
 		# and thus avoid the game waiting for the label to resize
-		yield(get_tree(), "idle_frame")
+		#yield(get_tree(), "idle_frame")
 		var working_value: String
 		# If the label node has been set to uppercase the text
 		# Then we need to work off-of uppercased text value

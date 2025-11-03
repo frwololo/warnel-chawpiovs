@@ -76,7 +76,7 @@ func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int) -> void:
 			and (is_cost or needs_subject))):
 		# We discover which other card this task will affect, if any
 		var ret =_find_subjects(sceng_stored_int, run_type)
-		if ret is GDScriptFunctionState: # Still working.
+		if ret is GDScriptFunctionState && ret.is_valid(): # Still working.
 			ret = yield(ret, "completed")
 	#print_debug(str(subjects), str(cost_dry_run))
 	# We emit a signal when done so that our ScriptingEngine

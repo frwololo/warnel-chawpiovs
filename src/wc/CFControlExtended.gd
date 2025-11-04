@@ -16,6 +16,7 @@ var all_traits: Dictionary = {}
 
 var obligations : Dictionary
 var schemes: Dictionary 
+var modular_encounters: Dictionary = {}
 var cards_by_set: Dictionary
 
 var primitives: Dictionary
@@ -80,9 +81,9 @@ func _is_type_known(type) -> bool:
 	
 	
 
-func load_card_primitives():
+func load_card_scenarios():
 	var json_card_data : Dictionary
-	json_card_data = WCUtils.read_json_file_with_user_override("Sets/_primitives.json")	
+	json_card_data = WCUtils.read_json_file_with_user_override("Sets/_scenarios.json")	
 	for key in json_card_data:
 		var card_data = json_card_data[key]
 		#creating entries for both id and name so I never have to remember which one to use...
@@ -199,6 +200,7 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 		card_data["Name"] = card_data.get("name", "")
 
 	if card_data.get("stage", ""):
+		card_data["original_stage"] = str(card_data["stage"])
 		card_data["stage"] = stage_variant_to_int(card_data["stage"])
 		
 	#Are those still needed?
@@ -282,11 +284,21 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	
 	#scenarios cache
 	if (card_type == "Main_scheme"):
-		if (not schemes.has(lc_set_code)):
-			schemes[lc_set_code] = []
-		schemes[lc_set_code].push_back(card_data)	
-		if(card_data["stage"] == 1):
-			scenarios.push_back(card_id)
+		var full_stage_id = card_data["original_stage"]	
+		#skip the weird "1A", "1B" cards for now...
+		if (!full_stage_id.ends_with("A") and !full_stage_id.ends_with("B")):
+			if (not schemes.has(lc_set_code)):
+				schemes[lc_set_code] = []
+			schemes[lc_set_code].push_back(card_data)
+
+			if(card_data.get("stage", 0) == 1 ):
+				scenarios.push_back(card_id)
+	
+	var card_set_type_name_code = card_data.get("card_set_type_name_code", "")
+	if card_set_type_name_code == "modular":
+		if not modular_encounters.has(lc_set_code):
+			modular_encounters[lc_set_code] = []
+		modular_encounters[lc_set_code].append(card_data)
 	
 	#obligations cache
 	if (card_type == "Obligation"):
@@ -325,7 +337,7 @@ func _fix_missing_images():
 func load_card_definitions() -> Dictionary:
 	cards_loading = true	
 	if (primitives.empty()):
-		load_card_primitives()
+		load_card_scenarios()
 	var combined_sets := {} #.load_card_definitions(); #TODO Remove the call to parent eventually ?
 	# Load from external user files as well	
 	var set_files = CFUtils.list_files_in_directory(
@@ -355,18 +367,18 @@ func load_card_definitions() -> Dictionary:
 				card_data["back_card_code"] = linked_card_data["_code"]
 				combined_sets[linked_card_data["_code"]] = linked_card_data
 
-			var double_sided = card_data.get("double_sided", false)
-			if (double_sided):
-				var back_side_data = card_data.duplicate()
-				back_side_data["_code"] = card_data["_code"] + "b"
-				back_side_data["code"] = back_side_data["_code"]
-				back_side_data["text"] = back_side_data.get("back_text", "")
-				
-				back_side_data["back_card_code"] = card_data["_code"]
-				card_data["back_card_code"] = back_side_data["_code"]				
-				#TODO more changes needed ?
-				_load_one_card_definition(back_side_data)
-				#yield(get_tree().create_timer(0.01), "timeout")
+#			var double_sided = card_data.get("double_sided", false)
+#			if (double_sided):
+#				var back_side_data = card_data.duplicate()
+#				back_side_data["_code"] = card_data["_code"] + "b"
+#				back_side_data["code"] = back_side_data["_code"]
+#				back_side_data["text"] = back_side_data.get("back_text", "")
+#
+#				back_side_data["back_card_code"] = card_data["_code"]
+#				card_data["back_card_code"] = back_side_data["_code"]				
+#				#TODO more changes needed ?
+#				_load_one_card_definition(back_side_data)
+#				#yield(get_tree().create_timer(0.01), "timeout")
 			_cards_loaded = i
 	card_definitions = combined_sets
 	
@@ -407,8 +419,10 @@ func get_hero_obligation(hero_id:String):
 	var obligation = obligations[hero_name.to_lower()]
 	return obligation
 		
-func get_schemes(set_name:String):	
+func get_schemes(scheme_id):	
 	#todo error handling
+	var scheme = get_card_by_id(scheme_id)
+	var set_name = scheme["card_set_code"]
 	var my_schemes = schemes[set_name.to_lower()]
 	my_schemes.sort_custom(WCUtils, "sort_stage")
 	return my_schemes
@@ -581,15 +595,35 @@ func get_img_filename(card_id) -> String:
 	#which will direct the system to download it there
 	_img_filename_cache[key] = "user://" + filename
 	return _img_filename_cache[key] #todo return graceful fallback
+
+
+
+func get_villain_portrait(card_id) -> Image:
+	var area = 	Rect2 ( 65, 60, 155, 155 )
+	return get_sub_image(card_id, area)
+
+func get_scheme_portrait(card_id) -> Image:
+	var real_id = card_id
+#	var card_data = get_card_by_id(card_id)
+#	if card_data.get("original_stage","") == "1A":
+#		var back_code = card_data.get("back_card_code","")
+#		if back_code:
+#			real_id = back_code
+			
+	var area = 	Rect2 ( 55, 15, 200, 155 )
+	return get_sub_image(real_id, area)
 	
 func get_hero_portrait(card_id) -> Image:
+	var area = 	Rect2 ( 60, 40, 170, 180 )
+	return get_sub_image(card_id, area)
+	
+func get_sub_image(card_id, area):
 	var filename = get_img_filename(card_id)
 	var img_data: Image = WCUtils.load_img(filename)
 	if (not img_data):
 		return null
-	var area = 	Rect2 ( 60, 40, 170, 180 )
 	var sub_img = img_data.get_rect(area) #Todo more flexible?
-	return sub_img	
+	return sub_img		
 
 func instance_ghost_card(original_card) -> Card:
 	var card_id = original_card.canonical_id
@@ -599,9 +633,9 @@ func instance_ghost_card(original_card) -> Card:
 	card.canonical_name = card_definitions[card_id]["Name"]
 	card.canonical_id = card_id	
 	card.set_real_card(original_card)
-	
-	#Ghost cards are a local thing and should not get a GUID.	
-	#var _tmp = guidMaster.set_guid(card)
+	#TODO We set GUID here in the hope that all clients create their cards in the exact 
+	#same order. This might be a very flawed assertion could need a significant overhaul	
+	var _tmp = guidMaster.set_guid(card)
 	card.init_owner_hero_id(owner_id)
 	card.set_controller_hero_id(owner_id)	
 	return card
@@ -732,8 +766,8 @@ func INIT_LOG():
 	file.close() 	
 	
 func LOG(to_print:String):
-	if !cfc._debug and !CFConst.FORCE_LOGS:
-		return	
+#	if !cfc._debug:
+#		return	
 	INIT_LOG()
 	var file = File.new()
 	var network_id = get_tree().get_network_unique_id() if get_tree().has_network_peer() else 0
@@ -745,8 +779,8 @@ func LOG(to_print:String):
 	file.close() 
 	
 func LOG_DICT(to_print:Dictionary):
-	if !cfc._debug and !CFConst.FORCE_LOGS:
-		return
+#	if !cfc._debug:
+#		return
 	var my_json_string = to_json(to_print)
 	LOG(my_json_string)
 	

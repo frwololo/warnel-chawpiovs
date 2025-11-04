@@ -28,15 +28,14 @@ func set_idx(idx):
 	my_index = idx
 	
 func _load_players():
-	var playerSelector:OptionButton = get_node("%PlayerName")
 	var players:Dictionary = gameData.network_players
 	for player in players:
-		playerSelector.add_item(players[player].name, players[player].id)
+		playerName.add_item(players[player].name, players[player].id)
 	set_owner(1)
 	if (not cfc.is_game_master()):
-		playerSelector.set_disabled(true)
+		playerName.set_disabled(true)
 	if (players.size() < 2):
-		playerSelector.hide()
+		playerName.hide()
 
 func _toggle_gui():
 	var my_owner_network_id = gameData.get_player_by_index(my_owner).network_id
@@ -65,7 +64,8 @@ func set_deck (_deck_id):
 	
 func _on_owner_changed(id):
 	if get_tree().is_network_server():
-		my_owner = id
+		#item_selected passes the id which is 0 indexed, but players are 1 indexed
+		my_owner = id+1 
 		_toggle_gui()
 		lobby.owner_changed(id, my_index)
 

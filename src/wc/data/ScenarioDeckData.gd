@@ -13,9 +13,37 @@ func _init():
 	pass
 
 
+static func get_recommended_modular_encounter(scheme_id):
+	var scheme_primitive = cfc.primitives.get(scheme_id, {})
+	if !scheme_primitive:
+		return ""
+	
+	var modular_defaults: Array = scheme_primitive.get("modular_default", [])
+	if modular_defaults:
+		return modular_defaults[0]
+	return ""
+	
+static func get_villains_from_scheme(scheme_id):
+	var scheme_primitive = cfc.primitives.get(scheme_id, {})
+	if !scheme_primitive:
+		return []
+		
+	var villain_strings : Array = scheme_primitive["villains"]
+	if (not villain_strings or villain_strings.empty()):
+		print_debug("villains missing in ScenarioDeckData")
+		return []			
+	
+	var results = []
+	#get villains in order, split strings to get name and stage.
+	for villain_string in villain_strings:
+		var card_id = cfc.get_corrected_card_id(villain_string)
+		results.append(cfc.card_definitions[card_id])
+
+	return results	
+
 func load_from_dict(_scenario:Dictionary):
-	var set_code = _scenario["card_set_code"]
-	schemes = cfc.get_schemes(set_code)
+	var scheme_card_id = _scenario["scheme_id"]
+	schemes = cfc.get_schemes(scheme_card_id)
 	
 	#Preload
 	get_villains()
@@ -29,20 +57,7 @@ func get_villains():
 		return villains
 		
 	var first_scheme = schemes[0]
-	var first_scheme_name = first_scheme["Name"]
-	var scheme_primitive = cfc.primitives[first_scheme_name]
-	var villain_strings : Array = scheme_primitive["villains"]
-	if (not villain_strings or villain_strings.empty()):
-		print_debug("villains missing in ScenarioDeckData")
-		return []			
-	#get villains in order, split strings to get name and stage.
-	for villain_string in villain_strings:
-		var card_id = cfc.get_corrected_card_id(villain_string)
-		villains.push_back(cfc.card_definitions[card_id])
-		#var villain_data = villain_string.split("_")
-		#var villain_name = villain_data[0]
-		#var villain_stage = int(villain_data[1])
-	return villains
+	villains = get_villains_from_scheme(first_scheme["_code"])
 		
 func get_encounter_deck():
 	if (not encounter_deck.empty()):

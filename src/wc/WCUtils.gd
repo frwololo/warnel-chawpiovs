@@ -23,11 +23,16 @@ static func read_json_file_with_user_override(file_path) -> Dictionary:
 
 #Read json file into dictionary (or array!)
 static func read_json_file(file_path):
+	var content_as_text
 	var file = File.new()
 	var err = file.open(file_path, File.READ)
 	if err != OK:
-		return null
-	var content_as_text = file.get_as_text()
+		if ResourceLoader.exists(file_path):
+			content_as_text = ResourceLoader.load(file_path)
+		else:
+			return null
+	else:
+		content_as_text = file.get_as_text()
 	var json_errors = validate_json(content_as_text)
 	if (json_errors):
 		var error_msg = file_path + " - " + json_errors
@@ -44,23 +49,39 @@ static func debug_message(msg):
 		print_debug(msg)
 		
 
-#load Image Data from jpeg/png file		
+#checks if a file exists either as a resource or
+#on disk
+static func file_exists(file):
+	if ResourceLoader.exists(file):
+		return true
+	var _file = File.new()
+	return _file.file_exists(file)	
+
+#load Image Data from jpeg/png file	
+#either from resources or from filesystem (filesystem prioritized)	
 static func load_img(file) -> Image :
+	var img = Image.new()
+	#attempt from local file first, resource after
 	var img_file = File.new()
 	if img_file.open(file, File.READ):
-		return null
-	var bytes = img_file.get_buffer(img_file.get_len())
-	img_file.close()
-	
-	var img = Image.new()	
-	var extension = file.get_extension().to_lower()
-	var error_code = 0
-	if extension == "png":
-		error_code = img.load_png_from_buffer(bytes)
+		if ResourceLoader.exists(file):
+			var tex = ResourceLoader.load(file)
+			img = tex.get_data()
+		else:
+			return null
 	else:
-		error_code = img.load_jpg_from_buffer(bytes)
-	if error_code:
-		return null	
+		var bytes = img_file.get_buffer(img_file.get_len())
+		img_file.close()
+		
+		
+		var extension = file.get_extension().to_lower()
+		var error_code = 0
+		if extension == "png":
+			error_code = img.load_png_from_buffer(bytes)
+		else:
+			error_code = img.load_jpg_from_buffer(bytes)
+		if error_code:
+			return null	
 	return img	
 
 static func merge_array(array_1: Array, array_2: Array, deep_merge: bool = false) -> Array:
@@ -86,6 +107,51 @@ static func merge_array(array_1: Array, array_2: Array, deep_merge: bool = false
 		if not item_exists in compare_array:
 			new_array.append(item)
 	return new_array
+
+static func ordered_hash(dict:Dictionary):
+	var sorted_dictionary = deep_dict_sort(dict)
+	return sorted_dictionary.hash()
+
+static func deep_dict_sort(value) -> Dictionary:
+	var result
+	match typeof(value):
+		TYPE_DICTIONARY:
+			result = {}
+			var keys = value.keys()
+			keys.sort()
+			for key in keys:
+				result[key] = deep_dict_sort(value[key])
+		TYPE_ARRAY:
+			result= []
+			for element in value:
+				result.append(deep_dict_sort(element))
+		_:
+			result = value
+	return result
+
+static func json_equal (lh, rh)-> bool:
+	if (typeof(lh) != typeof(rh)):
+		return false
+	match typeof(lh):
+		TYPE_DICTIONARY:
+			for key in lh:
+				if not rh.has(key):
+					return false
+				if ! (json_equal(lh[key], rh[key])):
+					return false
+			return true	
+		TYPE_ARRAY:
+			if lh.size() != rh.size():
+				return false
+			for i in range(lh.size()):
+				var left = lh[i]
+				var right = rh[i]
+				if (!json_equal(left,right)):
+					return false
+			return true	
+		_:
+			return(lh==rh)
+
 
 #merges data from dict_2 into dict1 (overwriting if needed)		
 static func merge_dict(dict_1: Dictionary, dict_2: Dictionary, deep_merge: bool = false) -> Dictionary:

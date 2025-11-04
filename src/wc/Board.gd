@@ -182,15 +182,17 @@ func post_ready_load():
 	
 	draw_starting_hand()	
 	#Tests
-	#draw_cheat_ghost("Web-Shooter")
-	#draw_cheat_ghost("Combat Training")
-	#draw_cheat_ghost("Jessica Jones")
-	#draw_cheat_ghost("Mockingbird")
-	#draw_cheat("Black Cat")
-	#draw_cheat("Energy")
-	#draw_cheat("Backflip")
-	#draw_cheat("Helicarrier")	
-	#draw_cheat("Swinging Web Kick")
+	if gameData.get_team_size() < 2:
+		#draw_cheat_ghost("Web-Shooter")
+		#draw_cheat_ghost("Combat Training")
+		#draw_cheat_ghost("Jessica Jones")
+		#draw_cheat_ghost("Mockingbird")
+		#draw_cheat("Black Cat")
+		#draw_cheat("Energy")
+		#draw_cheat("Backflip")
+		#draw_cheat("Helicarrier")	
+		#draw_cheat("Swinging Web Kick")
+		pass
 	cfc.LOG_DICT(guidMaster.guid_to_object)
 	
 	#Save gamedata for restart

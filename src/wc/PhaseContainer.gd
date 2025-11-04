@@ -82,6 +82,7 @@ func display_debug(msg:String, prefix = "phase"):
 	text_edit.center_viewport_to_cursor()	
 
 #TODO Actual names needed here
+#WARNING: These are just strings, the actual enum is in CFConst
 const StepStrings = [
 	"GAME_NOT_STARTED",
 	"PLAYER_MULLIGAN",
@@ -96,7 +97,8 @@ const StepStrings = [
 	"VILLAIN_REVEAL_ENCOUNTER",
 	"VILLAIN_PASS_PLAYER_TOKEN",
 	"VILLAIN_END",
-	"ROUND_END"	
+	"ROUND_END",
+	"SYSTEMS_CHECK"	
 ]
 
 const DEFAULT_HERO_STATUS: = {
@@ -231,7 +233,10 @@ func _process(_delta: float) -> void:
 		CFConst.PHASE_STEP.VILLAIN_END:
 			request_next_phase()
 		CFConst.PHASE_STEP.ROUND_END:
-			request_next_phase()	
+			request_next_phase()
+		CFConst.PHASE_STEP.SYSTEMS_CHECK:
+			if !gameData._systems_check_ongoing:
+				request_next_phase()					
 
 func offer_to_mulligan() -> void:
 	cfc.add_ongoing_process(self, "offer_to_mulligan")
@@ -338,6 +343,8 @@ func _step_started(
 			set_current_step_complete(true) # Do nothing
 		CFConst.PHASE_STEP.ROUND_END:
 			_round_end()
+		CFConst.PHASE_STEP.SYSTEMS_CHECK:
+			_systems_check()
 	return 0
 
 # a function to check if the phaseContainer is still running automatically
@@ -408,7 +415,7 @@ remotesync func proceed_to_next_phase():
 	display_debug("master tells me to move to next phase, I'm currently at " + str(current_step) )	
 	scripting_bus.emit_signal("step_about_to_end",  {"step" : current_step})
 	scripting_bus.emit_signal("step_ended",  {"step" : current_step})
-	if (current_step == CFConst.PHASE_STEP.ROUND_END):
+	if (current_step == CFConst.PHASE_STEP.SYSTEMS_CHECK):
 		current_step = CFConst.PHASE_STEP.PLAYER_TURN
 	elif ((current_step == CFConst.PHASE_STEP.VILLAIN_ACTIVATES) and gameData.villain_next_target(true, "proceed_to_next_phase")):
 		current_step = CFConst.PHASE_STEP.VILLAIN_ACTIVATES
@@ -483,5 +490,11 @@ func loadstate_from_json(json:Dictionary):
 
 	current_step = step_string_to_step_id(json_data)
 
+
+func _systems_check():
+	gameData.systems_check()
+	#setting the step complete here. gameData has its own variable (_systms_check_ongoing)
+	set_current_step_complete(true) 
+	pass
 		
 

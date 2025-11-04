@@ -245,8 +245,12 @@ func can_interrupt(
 	#card has potential interrupts. Last we check if I'm the player who can play them
 	var may_interrupt =  CFConst.CanInterrupt.NO
 
+
 	if gameData.can_hero_play_this_ability(hero_id,self, card_scripts):
 		if card_scripts.get("is_optional_" + get_state_exec()):
+			#optional interrupts need to check costs
+			if check_play_costs_no_cache() == CFConst.CostsState.IMPOSSIBLE:
+				return CFConst.CanInterrupt.NO			
 			may_interrupt =  CFConst.CanInterrupt.MAY
 		else:
 			may_interrupt =  CFConst.CanInterrupt.MUST
@@ -571,6 +575,10 @@ func check_ghost_card():
 #
 # If it returns false, the card will be highlighted with a red tint, and the
 # player will not be able to drag it out of the hand.
+func check_play_costs_no_cache()-> Color:
+	_check_play_costs_cache = CFConst.CostsState.CACHE_INVALID
+	return check_play_costs()
+	
 func check_play_costs() -> Color:
 	#return .check_play_costs();
 
@@ -610,6 +618,7 @@ func check_play_costs() -> Color:
 
 
 	return _check_play_costs_cache
+
 
 # This function can be overriden by any class extending Card, in order to provide
 # a way of running special functions on an extended scripting engine.
@@ -700,6 +709,11 @@ func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:
 	else:
 		manacost.init_from_expression(cost) #TODO better name?
 	
+	var resource_container_names = ["hand", "identity","allies","upgrade_support"]
+	var resource_containers = []
+	for v in resource_container_names:
+		resource_containers.append(v + str(owner_hero_id) )
+		
 	var result  ={
 				"name": "pay_as_resource",
 				"is_cost": true,
@@ -713,7 +727,7 @@ func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:
 				SP.KEY_SELECTION_IGNORE_SELF: true,
 				"selection_what_to_count": "get_resource_value_as_int",
 				"selection_additional_constraints": selection_additional_constraints,
-				"src_container": ["hand" + str(owner_hero_id), "board"]
+				"src_container": resource_containers
 			}		
 
 	return result	

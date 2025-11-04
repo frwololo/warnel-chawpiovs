@@ -603,7 +603,7 @@ mastersync func test_finalized(result):
 			var success = _allclients_finalized[id]
 			if success == TestStatus.FAILED and STOP_AFTER_FIRST_FAILURE:
 				current_test = test_files.size()
-				announce("failed one test, aborting early")
+				announce("failed one test, ABORTING EARLY\n", false)
 		_allclients_finalized = {}
 		var _next = next_test()
 
@@ -875,7 +875,8 @@ remotesync func save_results():
 	
 	var delta_time_sec:float = (end_time - start_time) /1000
 	var delta_time_min = stepify(delta_time_sec/60.0, 0.01)
-	var time_per_test:float = stepify(delta_time_sec / test_files.size(), 0)
+	var divider = test_files.size() if test_files.size() else 1
+	var time_per_test:float = stepify(delta_time_sec / divider , 0.1)
 	
 	announce("all tests complete, saving\n", false)
 	announce("total time:" + str(delta_time_min) + " mins (" + str(time_per_test) + " secs per test)\n", false)

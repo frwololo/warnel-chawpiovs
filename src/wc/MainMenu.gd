@@ -170,7 +170,7 @@ func download_database():
 		yield(get_tree(), "idle_frame")	
 		var url = database[set]
 		var filename = "user://Sets/" + CFConst.CARD_SET_NAME_PREPEND  + set + ".json"		
-		if file.file_exists(filename):
+		if WCUtils.file_exists(filename):
 			continue
 		if !url:
 			continue
@@ -233,7 +233,7 @@ func start_images_dl():
 		_current_percent = i*100/total_images
 		var card_id = card["_code"]
 		var img_filename = cfc.get_img_filename(card_id)
-		if file.file_exists(img_filename):
+		if WCUtils.file_exists(img_filename):
 			continue
 		if cfc.is_image_download_failed(card_id):
 			continue

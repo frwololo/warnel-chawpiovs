@@ -94,6 +94,25 @@ static func list_files_in_directory(path: String, prepend_needed := "", full_pat
 			else:
 				files.append(file)
 	dir.list_dir_end()
+
+	#merge with precached result
+	#this is due to a bug 
+	#see https://github.com/godotengine/godot/issues/87274		
+	if cfc._cached_filesystem.has(path):
+		var to_merge = cfc._cached_filesystem[path]
+		for file in to_merge:
+			if !(file in files):
+				if file == "":
+					break
+				elif not file.begins_with('.')\
+						and file.begins_with(prepend_needed)\
+						and not file.ends_with(".remap")\
+						and not file.ends_with(".import")\
+						and not file.ends_with(".md"):				
+						if full_path:
+							files.append(path + file)
+						else:
+							files.append(file)
 	return(files)
 
 

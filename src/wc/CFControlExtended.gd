@@ -31,6 +31,10 @@ var _cards_loaded: int = 0
 # warning-ignore:unused_signal
 signal json_parse_error(msg)
 
+func _setup() -> void:
+	._setup()
+	preload_pck()
+
 func init_settings_from_file() -> void:
 	.init_settings_from_file()
 	#Settings default values
@@ -350,8 +354,6 @@ func load_card_definitions() -> Dictionary:
 				linked_card_data["back_card_code"] = card_data["_code"]
 				card_data["back_card_code"] = linked_card_data["_code"]
 				combined_sets[linked_card_data["_code"]] = linked_card_data
-				cfc.LOG_DICT(linked_card_data)
-				cfc.LOG_DICT(card_data)			
 
 			var double_sided = card_data.get("double_sided", false)
 			if (double_sided):
@@ -546,8 +548,11 @@ func set_next_scene_params(params : Dictionary):
 func get_next_scene_params() -> Dictionary:
 	return next_scene_params
 
+var _img_filename_cache:= {}
 # These functions live here for lack of a better place. Todo create classes?
-func get_img_filename(card_id, alternate_code = "") -> String:
+func get_img_filename(card_id) -> String:
+
+
 	if (not card_id):
 		print_debug("CFCExtended: no id passed to get_img_filename")
 		return ""
@@ -555,11 +560,27 @@ func get_img_filename(card_id, alternate_code = "") -> String:
 	if (not card):
 		print_debug("CFCExtended: couldn't find card matching id" + card_id)
 		return ""	
-	var card_code = alternate_code if alternate_code else card["_code"]
+
+	var card_code = card["_code"]
 	var card_set = card["_set"]
-	if card_code and card_set:
-		return "user://Sets/images/" + card_set + "/" + card_code + ".png"
-	return "" #todo return graceful fallback
+	if !(card_code and card_set):
+		return ""
+		
+	var key = card_set + "_" + card_code
+	if _img_filename_cache.has(key):
+		return _img_filename_cache[key]
+	
+	var filename = "Sets/images/" + card_set + "/" + card_code + ".png"
+	#var file = File.new()
+	for prefix in["user://", "res://"]: #user has priority
+		if ResourceLoader.exists(prefix + filename):	
+			_img_filename_cache[key] = prefix + filename
+			return _img_filename_cache[key]
+	
+	#if we didn't find it, we still set it to its final destination of user folder, 
+	#which will direct the system to download it there
+	_img_filename_cache[key] = "user://" + filename
+	return _img_filename_cache[key] #todo return graceful fallback
 	
 func get_hero_portrait(card_id) -> Image:
 	var filename = get_img_filename(card_id)
@@ -578,9 +599,9 @@ func instance_ghost_card(original_card) -> Card:
 	card.canonical_name = card_definitions[card_id]["Name"]
 	card.canonical_id = card_id	
 	card.set_real_card(original_card)
-	#TODO We set GUID here in the hope that all clients create their cards in the exact 
-	#same order. This might be a very flawed assertion could need a significant overhaul	
-	var _tmp = guidMaster.set_guid(card)
+	
+	#Ghost cards are a local thing and should not get a GUID.	
+	#var _tmp = guidMaster.set_guid(card)
 	card.init_owner_hero_id(owner_id)
 	card.set_controller_hero_id(owner_id)	
 	return card
@@ -593,8 +614,11 @@ func instance_card(card_id: String, owner_id:int) -> Card:
 		
 	var card = ._instance_card(card_id)
 	#TODO We set GUID here in the hope that all clients create their cards in the exact 
-	#same order. This might be a very flawed assertion could need a significant overhaul	
-	var _tmp = guidMaster.set_guid(card)
+	#same order. This might be a very flawed assertion could need a significant overhaul
+	#we also don't assign a GUID to cards created without an owner, those are usually
+	#used for local targeting, etc...
+	if (owner_id >=0):	
+		var _tmp = guidMaster.set_guid(card)
 	card.init_owner_hero_id(owner_id)
 	card.set_controller_hero_id(owner_id)
 	return card
@@ -658,6 +682,31 @@ func get_image_dl_url(card_id):
 	var url = base_url + card_data["imagesrc"]
 	return url
 
+#this precaches files on the system due to a bug in Godot
+#see https://github.com/godotengine/godot/issues/87274	
+var _cached_filesystem: Dictionary = {}
+
+func _cache_filesystem():
+	for folder in ["res://Test", "res://Sets"]:
+		var list = CFUtils.list_files_in_directory(folder)
+		_cached_filesystem[folder] = list
+		_cached_filesystem[folder+ "/"] = list
+
+#Loads PCK files for additional resources
+func preload_pck():
+	_cache_filesystem()
+	
+	var database = cfc.game_settings.get("database", {})
+	if typeof(database) != TYPE_DICTIONARY:
+		var _error = 1
+		#TODO error
+		return
+	
+	for set in database.keys():
+		var success_res = ProjectSettings.load_resource_pack("res://" + set + ".pck")
+		var success_user = ProjectSettings.load_resource_pack("user://" + set + ".pck")
+		var _tmp = 1
+	return
 #
 # Network related functions
 
@@ -674,27 +723,29 @@ func is_game_master() -> bool:
 func INIT_LOG():
 	var file = File.new()
 	var network_id = get_tree().get_network_unique_id() if get_tree().has_network_peer() else 0
-	network_id = str(network_id)
-	var filename = "user://log_" + network_id +".txt"
+	var player = gameData.get_player_by_network_id(network_id) if network_id else null
+	var player_id = player.get_id()	if player else 0
+	var filename = "user://log_" + str(player_id) +".txt"
 	if (file.file_exists(filename)):
 		return
 	file.open(filename, File.WRITE)
 	file.close() 	
 	
 func LOG(to_print:String):
-	if !cfc._debug:
+	if !cfc._debug and !CFConst.FORCE_LOGS:
 		return	
 	INIT_LOG()
 	var file = File.new()
 	var network_id = get_tree().get_network_unique_id() if get_tree().has_network_peer() else 0
-	network_id = str(network_id)
-	file.open("user://log_" + network_id +".txt", File.READ_WRITE)
+	var player = gameData.get_player_by_network_id(network_id)  if network_id else null
+	var player_id = player.get_id()	if player else 0
+	file.open("user://log_" + str(player_id) +".txt", File.READ_WRITE)
 	file.seek_end()
 	file.store_string(to_print + "\n")
 	file.close() 
 	
 func LOG_DICT(to_print:Dictionary):
-	if !cfc._debug:
+	if !cfc._debug and !CFConst.FORCE_LOGS:
 		return
 	var my_json_string = to_json(to_print)
 	LOG(my_json_string)

@@ -70,6 +70,8 @@ var immediate_encounters: = {}
 var user_input_ongoing:int = 0 #ID of the current player (or remote player) doing a blocking game interraction
 var _garbage:= []
 var _targeting_ongoing:= false
+var _systems_check_ongoing := false
+var _clients_system_status: Dictionary = {}
 
 var _game_over := false
 
@@ -1124,7 +1126,11 @@ func filter_trigger(
 	return event #note: force conversion from stack event to bool
 
 func is_interrupt_mode() -> bool:
-	return theStack.get_interrupt_mode() == GlobalScriptStack.InterruptMode.HERO_IS_INTERRUPTING
+	return theStack.get_interrupt_mode() in [
+		GlobalScriptStack.InterruptMode.HERO_IS_INTERRUPTING,
+		GlobalScriptStack.InterruptMode.OPTIONAL_INTERRUPT_CHECK,
+		GlobalScriptStack.InterruptMode.FORCED_INTERRUPT_CHECK
+	]
 	
 func interrupt_player_pressed_pass(hero_id):
 	theStack.pass_interrupt(hero_id)
@@ -1179,7 +1185,7 @@ func cleanup_post_game():
 
 	
 #saves current game data into a json structure	
-func save_gamedata():
+func save_gamedata() -> Dictionary:
 	var json_data:Dictionary = {}
 	#save current phase
 	var phase_data:Dictionary = phaseContainer.savestate_to_json()
@@ -1281,3 +1287,56 @@ func display_debug(msg, prefix = ""):
 
 func _server_disconnected():
 	display_debug("SERVER DISCONNECTED")
+	
+#TODO check for game integrity, save game for undo/save, etc...
+func systems_check():
+	_systems_check_ongoing = true
+	rpc("clients_send_system_status")	
+	pass
+
+func compare_system_status(all_status):
+	var my_status = get_my_system_status()
+	for k in all_status:
+		var other_status = all_status[k]
+		if !(WCUtils.json_equal(my_status, other_status)):
+			return false
+	return true
+
+func get_my_system_status() -> Dictionary:
+	var board_status = save_gamedata()
+	var guid_status = guidMaster.get_guids_check_data()
+
+	#reduces bandwidth by only sending hash values for comparison
+	if (CFConst.SYSTEMS_CHECK_HASH_ONLY):
+		var board_hash = WCUtils.ordered_hash(board_status)
+		var guid_hash = WCUtils.ordered_hash(guid_status)
+		board_status = board_hash
+		guid_status = guid_hash
+			
+	var status = {
+		"board": board_status,
+		"guids": guid_status
+	}
+	
+	if (CFConst.SYSTEMS_CHECK_HASH_ONLY):
+		display_debug("SYSTEMS CHECK: " + to_json(status))
+	else:
+		cfc.LOG_DICT(status)
+	
+	return status
+
+remotesync func receive_system_status(status:Dictionary):
+	var client_id = get_tree().get_rpc_sender_id() 	
+	_clients_system_status[client_id] = status
+	if _clients_system_status.size() == gameData.network_players.size():
+		var status_ok = compare_system_status(_clients_system_status)
+		if status_ok:
+			_clients_system_status = {} #reset just in case
+			_systems_check_ongoing = false
+		else:
+			pass
+			#TODO handle desync
+
+remotesync func clients_send_system_status():
+	var my_status = get_my_system_status()
+	rpc("receive_system_status", my_status)

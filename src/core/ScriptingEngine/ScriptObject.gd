@@ -261,7 +261,11 @@ func get_all_cards_from_containers(container_names):
 		container_names = [container_names]
 	
 	for container_name in container_names:
-		all_cards += cfc.NMAP[container_name].get_all_cards()
+		var container = cfc.NMAP.get(container_name, null)
+		if !container:
+			container = cfc.NMAP.board.get_grid(container_name)
+		if container:
+			all_cards += container.get_all_cards()
 	
 	return all_cards
 
@@ -274,7 +278,10 @@ func get_all_containers(container_names) -> Array:
 		var container = cfc.NMAP.get(container_name, null)
 		if container:
 			result.append(container)
-			
+		else: #if it's not a pile, it might be a grid
+			var grid = cfc.NMAP.board.get_grid(container_name)
+			if grid:
+				result.append(grid)
 	return result
 
 

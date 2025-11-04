@@ -4,6 +4,7 @@ extends Node
 
 var current_guid:int = 0
 var guid_to_object:Dictionary = {}
+var guid_to_name: Dictionary = {}
 var object_to_guid:Dictionary = {}
 
 #sets/gets a guid for a new object and returns the result
@@ -12,12 +13,16 @@ func set_guid(stuff) -> int:
 		return object_to_guid[stuff]
 	current_guid += 1
 	guid_to_object[current_guid] = stuff
+	if "canonical_name" in stuff:
+		guid_to_name[current_guid] = stuff.canonical_name
+	else:
+		guid_to_name[current_guid] = stuff.name
 	object_to_guid[stuff] = current_guid
 	return current_guid
 	
 func get_guid(stuff) -> int:
 	if (object_to_guid.has(stuff)):
-		return object_to_guid[stuff]
+		return object_to_guid[stuff]	
 	return 0 #TODO error case
 
 func get_object_by_guid(uid:int):
@@ -50,3 +55,8 @@ func array_of_guid_to_objects(uids:Array)-> Array:
 		results.append(o)
 	return results
 	
+func get_guids_check_data():
+	var result = {}
+	for guid in guid_to_object:
+		result[guid] = guid_to_name[guid]
+	return result

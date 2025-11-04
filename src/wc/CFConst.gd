@@ -428,7 +428,8 @@ enum PHASE_STEP {
 	VILLAIN_REVEAL_ENCOUNTER,
 	VILLAIN_PASS_PLAYER_TOKEN,
 	VILLAIN_END,
-	ROUND_END
+	ROUND_END,
+	SYSTEMS_CHECK		
 }
 
 const CAN_PRECOMPUTE : = [
@@ -455,12 +456,9 @@ const TARGET_ARROW_COLOR_BY_NAME: = {
 
 const DEACTIVATE_SLOTS_HIGHLIGHT := true
 
-#set to true to fetch cards online and download images
+#set to true to fetch card datasets online and download images
 const LOAD_CARDS_ONLINE := true
-#set to true to help with breakpoints and debug
-const DISABLE_THREADS:= true 
-const DISABLE_ANNOUNCER:= true
-const SKIP_MULLIGAN:= true
+
 
 const DEFAULT_SETTINGS:= {
 	'glow_intensity' : 0.01,
@@ -469,4 +467,20 @@ const DEFAULT_SETTINGS:= {
 		"core": "https://marvelcdb.com/api/public/cards/core.json"
 	},
 }
+
+#
+# Debugging options
+#
+#set to true to help with breakpoints and debug
+const DISABLE_THREADS:= true 
+#this disables the announcer messages. Usually not recommended, but might help with speeding up tests
+const DISABLE_ANNOUNCER:= true
+#useful only for tests to accelerate the loading of the game and get to gameplay faster
+const SKIP_MULLIGAN:= true
+#if set to true, the system checks will only send hashed instead of 
+#full dictionaries. Probably better for bandwidth
+#set to false when debugging a network/desync issue
+const SYSTEMS_CHECK_HASH_ONLY:= false
+#set to true to force writing to log files even if cfc.debug is false
+const FORCE_LOGS:= false
 

@@ -1,5 +1,5 @@
 {
-	"_comments": "Tests that Carol Danvers can make other players draw",
+	"_comments": "Tests that targeting a hero after they change form doesn't crash the game",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -28,20 +28,21 @@
 			"deck1": [
 				{
 					"card": "Backflip"
-				}
+				},
+				{
+					"card": "Jessica Jones"
+				},				
 			],
 			"identity1": [
 				{
-					"card": "Spider-Man"
+					"card": "Peter Parker",
+					"tokens": {"_peter_resource" :1}
 				}
 			],
 			"hand1": [
 				{
-					"card": "Mockingbird"
-				},
-				{
 					"card": "Web-Shooter"
-				}
+				}				
 			],
 			"deck2": [
 				{
@@ -65,6 +66,18 @@
 		}
 	},
 	"actions": [
+		{
+			"type": "play",
+			"value": "Web-Shooter",
+		},	
+		{
+			"type": "activate",
+			"value": "Peter Parker",
+		},
+		{
+			"type": "choose",
+			"value": "Change Form",
+		},	
 		{
 			"type": "activate",
 			"value": "Carol Danvers",
@@ -106,15 +119,19 @@
 					"card": "01097"
 				}
 			],
-			"hand1": [
-				{
-					"card": "Mockingbird"
-				},
-				{
-					"card": "Web-Shooter"
-				},			
+			"deck1": [			
 				{
 					"card": "Backflip"
+				}
+			],
+			"upgrade_support1":[
+				{
+					"card": "Web-Shooter"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Jessica Jones"
 				}
 			],
 			"identity1": [

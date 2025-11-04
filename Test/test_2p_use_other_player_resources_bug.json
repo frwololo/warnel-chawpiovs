@@ -1,5 +1,5 @@
 {
-	"_comments": "Tests that Carol Danvers can make other players draw",
+	"_comments": "Tests that Other player resources cannot be used",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -32,7 +32,8 @@
 			],
 			"identity1": [
 				{
-					"card": "Spider-Man"
+					"card": "Peter Parker",
+					"tokens": {"_peter_resource": 1}
 				}
 			],
 			"hand1": [
@@ -40,7 +41,7 @@
 					"card": "Mockingbird"
 				},
 				{
-					"card": "Web-Shooter"
+					"card": "Energy Absorption"
 				}
 			],
 			"deck2": [
@@ -50,36 +51,25 @@
 			],
 			"identity2": [
 				{
-					"card": "Carol Danvers",
-					"tokens": {"_carol_draw": 1}
+					"card": "Captain Marvel"
 				}
 			],
 			"hand2": [
 				{
-					"card": "Mockingbird"
+					"card": "Jessica Jones"
 				},
 				{
-					"card": "Nick Fury"
+					"card": "Strength"
 				}
 			]
 		}
 	},
 	"actions": [
 		{
-			"type": "activate",
-			"value": "Carol Danvers",
+			"type": "play",
+			"value": "Jessica Jones",
 			"hero": 2
-		},
-		{
-			"type": "choose",
-			"value": "Draw 1",
-			"hero": 2
-		},			
-		{
-			"type": "select",
-			"value": "Spider-Man",
-			"hero": 2
-		},		
+		}
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -106,20 +96,23 @@
 					"card": "01097"
 				}
 			],
-			"hand1": [
-				{
-					"card": "Mockingbird"
-				},
-				{
-					"card": "Web-Shooter"
-				},			
+			"deck1": [
 				{
 					"card": "Backflip"
 				}
 			],
 			"identity1": [
 				{
-					"card": "Spider-Man"
+					"card": "Peter Parker",
+					"tokens": {"_peter_resource": 1}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy Absorption"
 				}
 			],
 			"deck2": [
@@ -129,15 +122,15 @@
 			],
 			"identity2": [
 				{
-					"card": "Carol Danvers"
+					"card": "Captain Marvel"
 				}
 			],
 			"hand2": [
 				{
-					"card": "Mockingbird"
+					"card": "Jessica Jones"
 				},
 				{
-					"card": "Nick Fury"
+					"card": "Strength"
 				}
 			]
 		}

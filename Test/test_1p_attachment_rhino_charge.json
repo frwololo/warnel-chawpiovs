@@ -1,5 +1,5 @@
 {
-	"_comments": "Tests Advance encounter starts a scheming event",
+	"_comments": "Tests Rhino charge does overkill damage",
 	"test_conditions": {
 		"ignore_order" : [
 			"hand1"

@@ -1,0 +1,106 @@
+{
+	"_comments": "Enhanced Spider Sense bug: triggers even when I'm not in hero form",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {"damage": 5}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "advance"
+				},		
+				{
+					"card": "Hard to Keep Down"
+				},		
+			],			
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Peter Parker"
+				}
+			],
+			"hand1": [
+				{
+					"card": "enhanced spider-sense"
+				},
+				{
+					"card": "01002"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "Wait for player turn"
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {"damage" :1}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "advance"
+				}			
+			],
+			"discard_villain": [
+				{
+					"card": "Hard to Keep Down"
+				}			
+			],			
+			"identity1": [
+				{
+					"card": "Peter Parker"
+				}
+			],
+			"hand1": [		
+				{
+					"card": "enhanced spider-sense"
+				},
+				{
+					"card": "01002"
+				},	
+
+			]
+		}
+	}
+}

@@ -26,17 +26,20 @@ func get_alter_ego_card_data() -> Dictionary:
 	var alter_ego_data = card_data["linked_card"]
 	return alter_ego_data	
 
-func get_deck_cards(): #todo cache?
+static func _get_deck_cards(_deck_id):
 	var result : Array = []
-	if (not deck_id):
+	if (not _deck_id):
 		return result
-	var deck_data = cfc.deck_definitions[deck_id]
+	var deck_data = cfc.deck_definitions[_deck_id]
 	var slots = deck_data.slots
 	for card_id in slots:
 		var quantity = slots[card_id]
 		for _i in range (quantity):
 			result.append(card_id)
-	return result
+	return result	
+	
+func get_deck_cards(): #todo cache?
+	return _get_deck_cards(deck_id)
 
 
 func savestate_to_json() -> Dictionary:

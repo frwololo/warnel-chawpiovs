@@ -9,7 +9,7 @@ const menu_switch_time = 0.35
 onready var v_buttons := $MainMenu/VBox/Center/VButtons
 onready var exit_button := $MainMenu/VBox/Center/VButtons/Exit
 onready var main_menu := $MainMenu
-onready var v_folder_label := $MainMenu/VBox/Margin2/Label
+onready var v_folder_label := get_node("%FolderLabel")
 onready var main_title := $MainMenu/VBox/Margin/Label
 
 var http_request: HTTPRequest = null

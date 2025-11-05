@@ -24,23 +24,36 @@ var scenarioSelect = preload("res://src/wc/lobby/ScenarioSelect.tscn")
 var team := {} #container for the team information, indexed by slot id (0,1,2,3)
 var _scenario:= ""
 var _rotation = 0
+
+var ERROR_COLOR := 	Color(1,0.11,0.1)
+var OK_COLOR := 	Color(0.1,11,0.1)
+#
+# download info
+#
+var http_request: HTTPRequest = null
+
+#integers per client
+var _pending_ack:= {}
 #
 # shortcuts
 #
 onready var main_menu := $MainMenu
 onready var modular_container: OptionButton = get_node("%EncounterSelect")
+onready var expert_mode: CheckBox = get_node("%ExpertMode")
 onready var all_heroes_container = get_node("%Heroes")
 onready var heroes_container = get_node("%TeamContainer")
 onready var ready_button = get_node("%ReadyButton")
 onready var launch_button = get_node("%LaunchButton")
 onready var all_scenarios_container = get_node("%Scenarios")
-
+onready var v_folder_label = get_node("%FolderLabel")
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# If nothing's setup, start server for Single player mode
 	if (not get_tree().get_network_peer()):
 		gameData.init_1player()
 	
+	v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
+
 	
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')
 	_create_team_container()
@@ -56,16 +69,23 @@ func _ready():
 		get_node("%EncounterSelect").disabled = true
 		get_node("%ExpertMode").disabled = true
 
+	http_request = HTTPRequest.new()
+	add_child(http_request)	
+	http_request.connect("request_completed", self, "_deck_download_completed")
+	
+
 #Quickstart for tests
 #TODO remove
 	if (cfc.is_game_master()):
-#		if (gameData.is_multiplayer_game):
-#			yield(get_tree().create_timer(1), "timeout")	
-#			owner_changed(2, 1)
-#			rpc("assign_hero", "01001a", 0)
-#			rpc("assign_hero", "01010a", 1)
-#			yield(get_tree().create_timer(1), "timeout")	
-#			_launch_server_game()
+		if (gameData.is_multiplayer_game):
+			yield(get_tree().create_timer(0.5), "timeout")	
+			owner_changed(1, 1)
+			rpc("assign_hero", "01001a", 0)
+			rpc("assign_hero", "01010a", 1)
+			yield(get_tree().create_timer(0.5), "timeout")
+			scenario_select("01097")
+			yield(get_tree().create_timer(0.5), "timeout")				
+			_launch_server_game()
 #		else:
 #			yield(get_tree().create_timer(0.05), "timeout")	
 #			#rpc("assign_hero", "01001a", 0) #peter
@@ -135,33 +155,36 @@ remotesync func client_scenario_select(scenario_id):
 		var scenario_title = get_node("%ScenarioTitle")
 		scenario_title.text = scenario_scene.get_text()
 		
-		
-	verify_launch_button()
+	ack()	
 	
 func scenario_select(scenario_id):
 	if (not cfc.is_game_master()):
-		return	
+		return
+	add_pending_acks()			
 	rpc("client_scenario_select", scenario_id)
 
 puppet func modular_encounter_select(index):
+	ack()
 	get_node("%EncounterSelect").select(index)
 
 func _on_EncounterSelect_item_selected(index):
 	if (not cfc.is_game_master()):
 		return
+	add_pending_acks()	
 	rpc("modular_encounter_select", index)			
 	pass # Replace with function body.
 
 puppet func expert_mode_toggle (button_pressed):
+	ack()
 	get_node("%ExpertMode").set_pressed_no_signal(button_pressed)
 
 func _on_ExpertMode_toggled(button_pressed):
 	if (not cfc.is_game_master()):
 		return
+	add_pending_acks()	
 	rpc("expert_mode_toggle", button_pressed)			
 	pass # Replace with function body.	
 	pass # Replace with function body.
-
 
 
 func request_hero_slot(hero_id):
@@ -169,13 +192,14 @@ func request_hero_slot(hero_id):
 
 #Attempt to get a slot for a given hero for a given player
 #If succesful, tell everyone to update their info
-remotesync func get_next_hero_slot(hero_id) -> int:
+mastersync func get_next_hero_slot(hero_id) -> int:
 	if (not get_tree().is_network_server()):
 		return -1
 	var client_id = get_tree().get_rpc_sender_id() 
 	for i in HERO_COUNT:
 		var data: HeroDeckData = team[i]
 		if (data.owner.network_id == client_id and data.get_hero_id() == ""):
+			add_pending_acks()
 			rpc("assign_hero", hero_id, i)
 			return i
 	return -1			
@@ -188,8 +212,7 @@ remotesync func assign_hero(hero_id, slot):
 	#gui update
 	var hero_deck_select = heroes_container.get_child(slot)
 	hero_deck_select.load_hero(hero_id)
-	
-	verify_launch_button()
+	ack()
 
 func verify_launch_button():
 	if check_ready_to_launch():
@@ -205,13 +228,20 @@ func check_ready_to_launch() -> bool:
 	if (!_scenario):
 		return false
 	
+	#some clients are still processing stuff
+	if are_acks_pending():
+		return false
+	
 	#can't launch if all players don't have at least one hero
 	var players_with_heroes:= {}
 
 	for i in HERO_COUNT:
 		var data: HeroDeckData = team[i]
-		if (data.get_hero_id() and data.owner.network_id):
-			players_with_heroes[data.owner.network_id] = true
+		if (data.get_hero_id()): 
+			if (data.owner.network_id):
+				players_with_heroes[data.owner.network_id] = true
+			if (!data.deck_id) or heroes_container.get_child(i).deckSelect.get_selected() == -1:
+				return false
 	if players_with_heroes.size() != gameData.network_players.size():
 		return false
 	
@@ -265,12 +295,56 @@ func deck_changed(_deck_id, hero_index):
 	rpc("remote_deck_changed",_deck_id, hero_index)	
 
 remote func remote_deck_changed (_deck_id, hero_index):
+	var client_id =  get_tree().get_rpc_sender_id() 	
 	#update data
 	team[hero_index].deck_id = _deck_id
 	#update GUI
 	var _heroDeckSelect = heroes_container.get_child(hero_index)
-	_heroDeckSelect.set_deck(_deck_id)
+	_heroDeckSelect.set_deck(_deck_id, client_id)
 
+func request_deck_data(caller_id, _deck_id):
+	rpc_id(caller_id, "upload_deck_data", _deck_id)
+
+remotesync func upload_deck_data(_deck_id):
+	var client_id =  get_tree().get_rpc_sender_id() 
+	var deck_data = cfc.deck_definitions[_deck_id]
+	rpc_id(client_id, "receive_deck_data", _deck_id, deck_data)
+
+remotesync func receive_deck_data(_deck_id, deck_data):
+	var client_id =  get_tree().get_rpc_sender_id() 
+	var existing_data = cfc.deck_definitions.get(_deck_id, {})
+	if existing_data:
+		var checksum1= WCUtils.ordered_hash(existing_data)
+		var checksum2 = WCUtils.ordered_hash(deck_data)
+		if checksum1 != checksum2:
+			#TODO error handling
+			var _error = 1
+		#return
+	process_deck_download(deck_data)
+
+func deck_download_error(msg):
+	var label = get_node("%DeckDownloadError")
+	label.add_color_override("font_color", ERROR_COLOR)	
+	label.text = msg
+	push_error(msg)
+	
+func process_deck_download(deck_data):
+	cfc.load_one_deck(deck_data)
+	cfc.save_one_deck_to_file(deck_data)
+	refresh_deck_containers()
+
+	if cfc._last_deck_error_msg:
+		deck_download_error(cfc._last_deck_error_msg)
+	else:
+		var label = get_node("%DeckDownloadError")
+		label.add_color_override("font_color", OK_COLOR)
+		label.text = "Deck Downloaded:" + str(deck_data["id"]) 
+	
+
+func refresh_deck_containers():
+	for child in heroes_container.get_children():
+		child.refresh_decks()
+	
 func _launch_server_game():
 	# Finalize Network players data
 	#var i = 0
@@ -278,17 +352,26 @@ func _launch_server_game():
 	#	rpc("set_network_player_index", player, i)
 	#	i+=1
 	rpc("launch_client_game")	
-	_launch_game()
+	#_launch_game()
 	
-remote func launch_client_game():
+remotesync func launch_client_game():
 	_launch_game() 	
+
+func get_selected_modular():
+	return modular_container.get_item_text(modular_container.selected)
+
+func is_expert_mode():
+	return expert_mode.pressed
 	
 func _launch_game():	
 	# server pressed on launch, start the game!
 	gameData.set_team_data(team)
 	
-	#TODO this is gross based on display text. NEed to do something ID based
-	gameData.set_scenario_data({"scheme_id" : _scenario})
+	gameData.set_scenario_data({
+		"scheme_id" : _scenario, 
+		"modular_encounters":[get_selected_modular()], #TODO maybe more than one eventually
+		"expert_mode": is_expert_mode()
+	})
 	get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/GetReady.tscn')
 
 func on_button_pressed(_button_name : String) -> void:
@@ -309,5 +392,88 @@ func _on_Menu_resized() -> void:
 					tab.rect_position.x = get_viewport().size.x
 
 
+#
+# Network Sanity functions
+#
+
+func add_pending_acks(except_me:=true):
+	var my_id = cfc.get_network_unique_id()
+	for client_id in gameData.network_players:
+		if client_id == my_id and except_me:
+			continue 
+		add_pending_ack(client_id)	
+
+func add_pending_ack(client_id):
+	if (!_pending_ack.has(client_id)):
+		_pending_ack[client_id] = 0	
+	_pending_ack[client_id] +=1
+
+func remove_pending_ack(client_id):
+	if (!_pending_ack.has(client_id)):
+		_pending_ack[client_id] = 0	
+			
+	if (_pending_ack[client_id]) > 0:
+		_pending_ack[client_id] -=1
+		return true
+	else:
+		var _error = 1
+		return false
+
+func ack():
+	rpc_id(1, "master_ack")
+
+mastersync func master_ack():
+	var client_id = get_tree().get_rpc_sender_id()
+	remove_pending_ack(client_id)
+	verify_launch_button()
+
+func are_acks_pending():
+	for client_id in gameData.network_players:
+		if (!_pending_ack.has(client_id)):
+			_pending_ack[client_id] = 0			
+		if _pending_ack[client_id]:
+			return true
+	return false
+
+func _deck_download_completed(result, response_code, headers, body):
+	if result != HTTPRequest.RESULT_SUCCESS:
+		push_error("Set couldn't be downloaded.")
+	else:
+		var content = body.get_string_from_utf8()
+
+		var json_result:JSONParseResult = JSON.parse(content)
+		if (json_result.error != OK):
+			push_error("Set couldn't be downloaded.")
+		else:
+			process_deck_download(json_result.result)	 		
+	
+	var button = get_node("%DownloadDeckButton")
+	button.disabled = false
+
+func start_deck_download(deck_id_str):
+	var button = get_node("%DownloadDeckButton")
+	button.disabled = true
+	var base_url = cfc.game_settings.get("decks_base_url","")
+	if !base_url:
+		deck_download_error("missing download url in settings file")
+		button.disabled = false
+		return
+	var url = base_url + deck_id_str + ".json"
+	var error = http_request.request(url)
+	if error != OK:
+		deck_download_error("An error occurred in the HTTP request.")
+		button.disabled = false
+		return
+	
+
+func _on_DownloadDeck_pressed():
+	var to_download:LineEdit = get_node("%DownloadDeckNumber")
+	if !to_download.text.is_valid_integer():
+		return
+	start_deck_download(to_download.text)
+	pass # Replace with function body.
 
 
+func _on_OpenFolderButton_pressed():
+	OS.shell_open(ProjectSettings.globalize_path("user://"))
+	pass # Replace with function body.

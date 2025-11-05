@@ -43,6 +43,7 @@ text = "Lobby"
 align = 1
 
 [node name="WaitingMsg" type="Label" parent="MainMenu/VBox"]
+unique_name_in_owner = true
 margin_top = 319.0
 margin_right = 1920.0
 margin_bottom = 342.0

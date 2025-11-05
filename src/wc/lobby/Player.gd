@@ -8,7 +8,14 @@ signal option_changed()
 onready var lobby = find_parent("Lobby")
 onready var playerName := $PlayerName
 onready var kick := $Kick
+onready var desync := $Desync
 
+var my_network_id:= 0
+
+func set_network_master(id:int, recursive:=true):
+	.set_network_master(id, recursive)
+	my_network_id = id
+	
 func get_options():
 	var opt = {}
 	opt.PlayerName = playerName.text
@@ -18,6 +25,9 @@ func get_options():
 # of this person and can only be called by its network_master
 func set_options_on(peer_id):
 	playerName.rset_id(peer_id, "text", playerName.text)
+
+func set_desync_msg(msg):
+	desync.text = "sync issue :" + msg
 
 func set_playerName(val):
 	playerName.set_text(str(val))

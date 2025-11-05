@@ -299,27 +299,27 @@ const TYPECODE_TO_GRID := {
 const GRID_SETUP := {
 	"deck_villain" :{
 		"x" : 0,
-		"y" : 0,
+		"y" : 20,
 		"type" : "pile"
 	},
 	"discard_villain" :{
 		"x" : 150,
-		"y" : 0,
+		"y" : 20,
 		"type" : "pile",
 		"faceup" : true
 	},		
 	"villain" : {
 		"x" : 300,
-		"y" : 0,
+		"y" : 20,
 		"auto_extend": false,
 	},
 	"schemes" : {
 		"x" : 500,
-		"y" : 0,
+		"y" : 20,
 	},
 	"villain_misc" : {
 		"x" : 1500,
-		"y" : 0,
+		"y" : 20,
 	},
 	"set_aside" :{
 		"x" : 1700,
@@ -463,6 +463,7 @@ const LOAD_CARDS_ONLINE := true
 const DEFAULT_SETTINGS:= {
 	'glow_intensity' : 0.01,
 	'images_base_url': "https://marvelcdb.com",
+	"decks_base_url": "https://marvelcdb.com/api/public/decklist/",
 	'database': {
 		"core": "https://marvelcdb.com/api/public/cards/core.json"
 	},
@@ -480,7 +481,7 @@ const SKIP_MULLIGAN:= true
 #if set to true, the system checks will only send hashed instead of 
 #full dictionaries. Probably better for bandwidth
 #set to false when debugging a network/desync issue
-const SYSTEMS_CHECK_HASH_ONLY:= false
+const SYSTEMS_CHECK_HASH_ONLY:= true
 #set to true to force writing to log files even if cfc.debug is false
 const FORCE_LOGS:= false
 

@@ -18,3 +18,10 @@ margin_left = 65.0
 margin_right = 103.0
 margin_bottom = 24.0
 text = "Kick"
+
+[node name="Desync" type="Label" parent="."]
+margin_left = 107.0
+margin_top = 5.0
+margin_right = 107.0
+margin_bottom = 19.0
+custom_colors/font_color = Color( 0.815686, 0.0588235, 0.0588235, 1 )

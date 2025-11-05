@@ -1,17 +1,14 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://src/wc/CardTemplate.gd" type="Script" id=1]
 [ext_resource path="res://src/core/CardTemplate.tscn" type="PackedScene" id=2]
-[ext_resource path="res://src/wc/CardFront.tscn" type="PackedScene" id=3]
-[ext_resource path="res://src/wc/CardBack.tscn" type="PackedScene" id=4]
+[ext_resource path="res://src/wc/healthbar.gd" type="Script" id=3]
 [ext_resource path="res://src/wc/CardManipulationButton.tscn" type="PackedScene" id=5]
 [ext_resource path="res://src/wc/ManipulationButtons.gd" type="Script" id=6]
 [ext_resource path="res://src/wc/SpinBox.gd" type="Script" id=7]
 
 [node name="Card" instance=ExtResource( 2 )]
 script = ExtResource( 1 )
-card_back_design = ExtResource( 4 )
-card_front_design = ExtResource( 3 )
 
 [node name="CollisionShape2D" parent="." index="0"]
 position = Vector2( 75, 105 )
@@ -53,7 +50,17 @@ script = ExtResource( 7 )
 
 [node name="Tween" type="Tween" parent="Control/SpinPanel/SpinBox" index="2"]
 
-[node name="ManipulationButtons" parent="Control" index="5"]
+[node name="HealthPanel" type="MarginContainer" parent="Control" index="5"]
+margin_top = -10.0
+margin_bottom = -10.0
+
+[node name="healthbar" type="HBoxContainer" parent="Control/HealthPanel" index="0"]
+custom_constants/separation = 2
+script = ExtResource( 3 )
+
+[node name="ColorRect" type="ColorRect" parent="Control/HealthPanel/healthbar" index="0"]
+
+[node name="ManipulationButtons" parent="Control" index="6"]
 script = ExtResource( 6 )
 manipulation_button = ExtResource( 5 )
 

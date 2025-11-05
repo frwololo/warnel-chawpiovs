@@ -38,6 +38,7 @@ var _current_encounter = null #WCCard
 signal game_state_changed(details)
 
 #Singleton for game data shared across menus and views
+#network_players, indexed by network_id
 var network_players := {}
 var id_to_network_id:= {}
 var is_multiplayer_game:bool = true
@@ -48,6 +49,7 @@ var team := {}
 var dead_heroes := []
 
 var gamesave_load_status:= {}
+var current_round :int = 1
 
 var scenario:ScenarioDeckData
 var phaseContainer: PhaseContainer #reference link to the phaseContainer
@@ -70,9 +72,10 @@ var immediate_encounters: = {}
 var user_input_ongoing:int = 0 #ID of the current player (or remote player) doing a blocking game interraction
 var _garbage:= []
 var _targeting_ongoing:= false
-var _systems_check_ongoing := false
-var _clients_system_status: Dictionary = {}
-
+#var _systems_check_ongoing := false
+#var _clients_system_status: Dictionary = {}
+var _network_ack: Dictionary = {}
+var _multiplayer_desync = null
 var _game_over := false
 
 func is_announce_ongoing():
@@ -130,16 +133,32 @@ func end_game(result:String):
 	var end_dialog:AcceptDialog = AcceptDialog.new()
 	end_dialog.window_title = result
 	end_dialog.add_button ( "retry", true, "retry")
-	end_dialog.connect("custom_action", self, "_retry_game")
-	end_dialog.connect("confirmed", self, "_close_game")
+	end_dialog.connect("custom_action", cfc.NMAP.board, "_retry_game")
+	end_dialog.connect("confirmed", cfc.NMAP.board, "_close_game")
 	cfc.NMAP.board.add_child(end_dialog)
 	end_dialog.popup_centered()
+
+func attempt_resync(result:String):
+	reload_round_savegame(current_round)
+	
+#	cfc.set_game_paused(true)
+#	var end_dialog:AcceptDialog = AcceptDialog.new()
+#	end_dialog.window_title = result
+#	end_dialog.add_button ( "reload", true, "reload")
+#	end_dialog.connect("custom_action", cfc.NMAP.board, "_reload_last_save")
+#	end_dialog.connect("confirmed", cfc.NMAP.board, "_close_game")
+#	cfc.NMAP.board.add_child(end_dialog)
+#	end_dialog.popup_centered()
+
 
 func _process(_delta: float):
 	if _game_over and !theAnnouncer.get_blocking_announce():
 		end_game("game over")
 		_game_over = false
 	return
+	if _multiplayer_desync and !theAnnouncer.get_blocking_announce():
+		if current_round >1:
+			attempt_resync("desync")
 
 puppetsync func user_input_lock_denied():
 	return #TODO ?
@@ -348,10 +367,13 @@ func game_state_changed():
 
 func init_network_players(players:Dictionary):
 	for player_network_id in players:
+		if is_multiplayer_game and (player_network_id != cfc.get_network_unique_id()):
+				get_tree().network_peer.set_peer_timeout(player_network_id, 10000, 5000, 15000)
 		var info = players[player_network_id]
 		var new_player_data := PlayerData.new(info.name, info.id, player_network_id)
 		network_players[player_network_id] = new_player_data 
 		id_to_network_id[info.id] = player_network_id
+	
 
 
 func set_team_data(_team:Dictionary):
@@ -394,12 +416,42 @@ func init_1player():
 func init_as_server():
 	var peer = NetworkedMultiplayerENet.new()
 	peer.set_compression_mode(NetworkedMultiplayerENet.COMPRESS_RANGE_CODER)
-	var err = peer.create_server(CFConst.MULTIPLAYER_PORT, 3) # Maximum of 3 peers. TODO make this a config
+	var err = peer.create_server(CFConst.MULTIPLAYER_PORT, 4) # Maximum of 4 peers. TODO make this a config
 	if err != OK:
 		return err #does this ever run?
 	get_tree().set_network_peer(peer)
 	return err	
 
+#we delete all existing saves of a previous game
+func init_save_folder():
+	var dir:Directory = Directory.new()
+	var save_dir = "user://Saves/current_game/"
+	dir.make_dir_recursive(save_dir)
+	if !dir.dir_exists(save_dir):
+		#todo error handling
+		var _error = 1
+		return
+	var files_in_save = CFUtils.list_files_in_directory(save_dir)
+	for file in files_in_save:
+		if file.ends_with(".json"):
+			dir.remove(save_dir + file)
+
+func save_round(round_id):
+	var dir:Directory = Directory.new()
+	var save_dir = "user://Saves/current_game/"
+	var save_file = "round_" + str(round_id) + ".json"
+	save_gamedata_to_file(save_file)
+
+func reload_round_savegame(round_id):
+	if !cfc.is_game_master():
+		return
+	var save_dir = "user://Saves/current_game/"
+	var file_name = "round_" + str(round_id) + ".json"
+	var json = WCUtils.read_json_file(save_dir + file_name)
+	if round_id >1 and !json:
+		reload_round_savegame(round_id-1)
+	gameData.load_gamedata(json)
+			
 func get_team_size():
 	return team.size()
 
@@ -467,6 +519,7 @@ func find_main_scheme() :
 	return null
 
 func end_round():
+	current_round+=1
 	set_villain_current_hero_target(1, true, "end_round")
 	scripting_bus.emit_signal("round_ended")
 
@@ -1174,6 +1227,8 @@ func cleanup_post_game():
 	_current_enemy_attack_step = EnemyAttackStatus.NONE
 	_current_encounter_step = EncounterStatus.NONE
 	_current_encounter = null
+	current_round = 1
+	_multiplayer_desync = null
 	
 	theStack.reset()
 
@@ -1216,6 +1271,10 @@ func save_gamedata() -> Dictionary:
 	
 	#Save scenario data
 	json_data["scenario"] = {}
+	
+	#other stuff
+	json_data["round"] = current_round
+
 	return json_data
 
 func save_gamedata_to_file(path):
@@ -1242,6 +1301,10 @@ remotesync func remote_load_game_data_finished(result:int):
 remotesync func remote_load_gamedata(json_data:Dictionary):
 	var caller_id = get_tree().get_rpc_sender_id()
 
+	#TODO sanity check of the save file
+	cleanup_post_game()
+	
+	current_round = json_data.get("round", 1)
 
 	var hero_data:Array = json_data["heroes"]
 	
@@ -1283,23 +1346,40 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 	rpc_id(caller_id,"remote_load_game_data_finished",CFConst.ReturnCode.OK)
 
 func display_debug(msg, prefix = ""):
-	phaseContainer.display_debug(msg, prefix)
+	if(phaseContainer):
+		phaseContainer.display_debug(msg, prefix)
+
+	print_debug(prefix + msg)
 
 func _server_disconnected():
 	display_debug("SERVER DISCONNECTED")
 	
 #TODO check for game integrity, save game for undo/save, etc...
 func systems_check():
-	_systems_check_ongoing = true
-	rpc("clients_send_system_status")	
-	pass
+#	_systems_check_ongoing = true
+#	rpc("clients_send_system_status")	
+#	pass
+	initiate_network_ack("get_my_system_status")
 
-func compare_system_status(all_status):
+func finalize_get_my_system_status(all_status):
 	var my_status = get_my_system_status()
 	for k in all_status:
 		var other_status = all_status[k]
 		if !(WCUtils.json_equal(my_status, other_status)):
+			_multiplayer_desync = true
+			var announce_settings = {
+				"top_text": "DESYNC :(",
+				"bottom_text" : "DESYNC :(",
+				"top_color": Color8(0,0,0,0),
+				"bottom_color": Color8(0,0,0,0),
+				"bg_color" : Color8(0,0,0,0),
+				"duration": 5,
+				"animation_style": Announce.ANIMATION_STYLE.SLOW_BLINK
+			}
+			theAnnouncer.simple_announce(announce_settings )			
 			return false
+	if cfc.is_game_master():
+		save_round(current_round -1 ) #save the current round for a potential rollback
 	return true
 
 func get_my_system_status() -> Dictionary:
@@ -1325,18 +1405,103 @@ func get_my_system_status() -> Dictionary:
 	
 	return status
 
-remotesync func receive_system_status(status:Dictionary):
-	var client_id = get_tree().get_rpc_sender_id() 	
-	_clients_system_status[client_id] = status
-	if _clients_system_status.size() == gameData.network_players.size():
-		var status_ok = compare_system_status(_clients_system_status)
-		if status_ok:
-			_clients_system_status = {} #reset just in case
-			_systems_check_ongoing = false
-		else:
-			pass
-			#TODO handle desync
 
-remotesync func clients_send_system_status():
-	var my_status = get_my_system_status()
-	rpc("receive_system_status", my_status)
+
+
+#remotesync func receive_system_status(status:Dictionary):
+#	var client_id = get_tree().get_rpc_sender_id() 	
+#	_clients_system_status[client_id] = status
+#	if _clients_system_status.size() == gameData.network_players.size():
+#		var status_ok = finalize_get_my_system_status(_clients_system_status)
+#		if status_ok:
+#			_clients_system_status = {} #reset just in case
+#			_systems_check_ongoing = false
+#		else:
+#			pass
+#			#TODO handle desync
+
+#remotesync func clients_send_system_status():
+#	var my_status = get_my_system_status()
+#	rpc("receive_system_status", my_status)
+
+#
+# Network ACK functions
+#
+
+func initiate_network_ack(function, params:={}):
+	var my_network_id = cfc.get_network_unique_id()
+	if !_network_ack.has(function):
+		_network_ack[function] = {}
+	
+	var _ack_store = _network_ack[function] 	
+	if _ack_store.has(my_network_id):
+		#TODO error
+		var _error = 1
+
+	_ack_store[my_network_id] = {
+		"in_progress": true,
+		"data": {}
+	}
+	rpc("clients_please_ack", function, params)	
+	pass
+	
+remotesync func clients_please_ack(function, params:={}):
+	var caller_network_id = get_tree().get_rpc_sender_id() 
+	if !_network_ack.has(function):
+		_network_ack[function] = {}
+	
+	var _ack_store = _network_ack[function] 	
+	if _ack_store.has(caller_network_id):
+		#TODO error
+		var _error = 1
+
+	_ack_store[caller_network_id] = {
+		"in_progress": true,
+		"data": {}
+	}
+	var result
+	if params:
+		result =  call(function, params)
+	else:
+		result =  call(function)
+	
+	rpc_id(caller_network_id, "receive_ack" , function, result)
+
+		
+remotesync func receive_ack(function, result):
+	var client_id = get_tree().get_rpc_sender_id() 
+	var my_network_id = cfc.get_network_unique_id()
+	if !_network_ack.has(function):
+		var _error = 1
+		return
+	
+	var _ack_store = _network_ack[function] 	
+	if !_ack_store.has(my_network_id):
+		#TODO error
+		var _error = 1
+		return	
+	_ack_store[my_network_id]["data"][client_id] = result	
+	if _ack_store[my_network_id]["data"].size() == gameData.network_players.size():
+		var finalize_result = call("finalize_" + function, _ack_store[my_network_id]["data"])
+		rpc("release_network_lock", function)	
+
+remotesync func release_network_lock(function):
+	var client_id = get_tree().get_rpc_sender_id() 
+	if !_network_ack.has(function):
+		var _error = 1
+		return
+	
+	var _ack_store = _network_ack[function] 	
+	if !_ack_store.has(client_id):
+		#TODO error
+		var _error = 1
+		return	
+
+	_ack_store.erase(client_id)	
+	if !_network_ack[function]:
+		_network_ack.erase(function)
+
+func pending_network_ack():
+	if _network_ack:
+		return true
+	return false

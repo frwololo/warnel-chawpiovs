@@ -64,8 +64,13 @@ func _ready() -> void:
 	# warning-ignore:return_value_discarded
 	#$DeckBuilderPopup.connect('popup_hide', self, '_on_DeckBuilder_hide')	
 	
+	gameData.init_save_folder()
+	
 	grid_setup()
 	rpc("ready_to_load")	
+	
+
+		
 	
 func grid_setup():
 	_team_size = 0 #reset team size to fetch it from gameData	
@@ -298,6 +303,9 @@ func _retry_game(message:String):
 	#TODO
 	cfc.quit_game()
 	get_tree().change_scene("res://src/wc/MainMenu.tscn")	
+
+func _reload_last_save():
+	gameData.reload_round_savegame(gameData.current_round)
 
 	
 # This function is to avoid relating the logic in the card objects

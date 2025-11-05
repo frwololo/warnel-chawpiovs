@@ -12,6 +12,8 @@ var my_index = 0
 var hero_id = 0
 var deck_id = 0
 
+var _needs_refresh = 0
+
 #
 #shortcuts
 # 
@@ -56,11 +58,33 @@ func _on_deck_changed(index):
 		var _deck_id = deckSelect.get_item_id(index)
 		lobby.deck_changed(_deck_id, my_index)
 
-func set_deck (_deck_id):
-	var deckSelector:OptionButton = get_node("%DeckSelect")
-	var index = deckSelector.get_item_index(_deck_id)
-	deckSelector.select(index)
-	deck_id = _deck_id
+#deck change notification from a remote caller
+func set_deck (_deck_id, caller_id):
+	var index = deckSelect.get_item_index(_deck_id)
+	if index <0: #deck doesn't exist on my side, I need to download it
+		_needs_refresh = _deck_id
+		print_debug("requesting deck download for " + str(_deck_id))		
+		lobby.request_deck_data(caller_id, _deck_id)
+
+	else:
+		deckSelect.select(index)
+		deck_id = _deck_id
+
+func refresh_decks():
+	#keep the currently selected index in tmp variable,
+	#unless it was previsouly set during a download request
+	if !_needs_refresh:
+		_needs_refresh = deckSelect.get_item_id(deckSelect.get_selected())
+
+	#reload our hero to refresh the deck list
+	load_hero(hero_id)
+
+	#set the correct selected item again
+	var index = deckSelect.get_item_index(_needs_refresh)
+	deckSelect.select(index)
+	print_debug("received download for " + str(_needs_refresh))	
+	_needs_refresh = 0
+	#_on_deck_changed(deckSelect.selected)	
 	
 func _on_owner_changed(id):
 	if get_tree().is_network_server():

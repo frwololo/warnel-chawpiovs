@@ -391,25 +391,54 @@ func load_card_definitions() -> Dictionary:
 	emit_signal("card_definitions_loaded")
 	return(combined_sets)
 
+func save_one_deck_to_file(json_deck_data):
+	if !(_is_deck_valid(json_deck_data)):
+		return
+	var deck_id: int = json_deck_data["id"]
+	var filename = "user://Decks/" + str(deck_id) + ".json"
+	var file = File.new()
+	file.open(filename, File.WRITE)
+	file.store_string(JSON.print(json_deck_data, '\t'))
+	file.close()
+
+
+func load_one_deck(json_deck_data):
+	if !(_is_deck_valid(json_deck_data)):
+		return
+	var deck_id: int = json_deck_data["id"]
+	var hero_id = json_deck_data.get("hero_code",json_deck_data.get("investigator_code", ""))
+	deck_definitions[deck_id] = json_deck_data
+	if (not idx_hero_to_deck_ids.has(hero_id)):
+		idx_hero_to_deck_ids[hero_id] = []
+	if not deck_id in (idx_hero_to_deck_ids[hero_id]):
+		idx_hero_to_deck_ids[hero_id].push_back(deck_id)	
 
 # Returns a Dictionary with the Decks
-func load_deck_definitions() -> Dictionary:
-	var combined_decks := {}
-	# Load from external user files as well	
+func load_deck_definitions():
+	#copy default decks from Res: just in case they are missing
+	var res_deck_files = CFUtils.list_files_in_directory("res://Decks/")
+	# Load from external user files as well	for comparison
 	var deck_files = CFUtils.list_files_in_directory("user://Decks/")
+
+	var need_reload = false
+	for deck_file in res_deck_files:
+		if !deck_file.ends_with(".json"):
+			continue
+		if !deck_file in deck_files:
+			var json_deck_data : Dictionary = WCUtils.read_json_file("res://Decks/" + deck_file)
+			save_one_deck_to_file(json_deck_data)
+			need_reload = true
+
+	if need_reload:
+		deck_files = CFUtils.list_files_in_directory("user://Decks/")
+	
 	WCUtils.debug_message(deck_files.size())		
 	for deck_file in deck_files:
 		var json_deck_data : Dictionary = WCUtils.read_json_file("user://Decks/" + deck_file)
 		#Fixing missing Data
 		#nothing for now
-		if (_is_deck_valid(json_deck_data)):
-			var deck_id: int = json_deck_data["id"]
-			var hero_id = json_deck_data["investigator_code"]
-			combined_decks[deck_id] = json_deck_data
-			if (not idx_hero_to_deck_ids.has(hero_id)):
-				idx_hero_to_deck_ids[hero_id] = []
-			idx_hero_to_deck_ids[hero_id].push_back(deck_id)	
-	return(combined_decks)
+		load_one_deck(json_deck_data)
+	return
 
 #card database related functions
 func get_hero_obligation(hero_id:String):
@@ -432,15 +461,23 @@ func get_encounter_cards(set_name:String):
 	return encounters
 
 #check if a given deck is valid (we must own all cards)
+var _last_deck_error_msg := ""
 func _is_deck_valid(deck) -> bool:
-	var hero_code = deck["investigator_code"]
+	_last_deck_error_msg = ""
+	var hero_code = deck.get("hero_code", "")
+	if !hero_code:
+		hero_code = deck.get("investigator_code", "")
 	if (not card_definitions.has(hero_code)):
+		var hero_name = deck.get("hero_name", hero_code )
+		_last_deck_error_msg= "This hero is not in our Database:" + hero_name
 		return false
 	var slots: Dictionary = deck["slots"]
 	if (not slots or slots.empty()):
+		_last_deck_error_msg = "invalid deck, can't find cards"	
 		return false
 	for slot in slots:
 		if (not card_definitions.has(slot)):
+			_last_deck_error_msg = "We don't support at least one card in this deck (card id:" + str(slot) + ")" 
 			return false		
 	return true
 
@@ -529,7 +566,7 @@ func load_script_definitions() -> void:
 			unmodified_set_scripts[card_id] = unmodified_card_script
 	
 	#load additional stuff
-	deck_definitions = load_deck_definitions()
+	load_deck_definitions()
 	
 	scripts_loading = false	
 	emit_signal("scripts_loaded")
@@ -721,7 +758,7 @@ func get_image_dl_url(card_id):
 var _cached_filesystem: Dictionary = {}
 
 func _cache_filesystem():
-	for folder in ["res://Test", "res://Sets"]:
+	for folder in ["res://Test", "res://Sets", "res://Decks"]:
 		var list = CFUtils.list_files_in_directory(folder)
 		_cached_filesystem[folder] = list
 		_cached_filesystem[folder+ "/"] = list

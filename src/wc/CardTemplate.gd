@@ -24,6 +24,8 @@ var extra_script_uid := 0
 
 # The node with number manipulation box on this card
 var spinbox
+#healthbar on top of characters, allies, villains, etc...
+var healthbar
 
 func add_extra_script(script_definition):
 	extra_script_uid+= 1
@@ -72,9 +74,22 @@ func get_controller_player_id() -> int:
 		return 0 #TODO error handling? This shouldn't happen
 	return player_data.get_id()		
 
+func _runtime_properties_setup():
+	var base_threat = get_property("base_threat",0)
+	var base_threat_fixed = get_property("base_threat_fixed", true)
+	if base_threat and !base_threat_fixed:
+		base_threat *= gameData.team.size()
+		properties["base_threat"] = base_threat
+
+	var health = get_property("health",0)
+	var health_per_hero = get_property("health_per_hero", false)
+	if health and health_per_hero:
+		health *= gameData.team.size()
+		properties["health"] = health		
 
 func setup() -> void:
 	.setup()
+	_runtime_properties_setup()
 	_init_groups()
 	init_default_max_tokens()	
 	set_card_art()
@@ -83,11 +98,47 @@ func setup() -> void:
 	
 	gameData.connect("game_state_changed", self, "_game_state_changed")
 	scripting_bus.connect("step_started", self, "_game_step_started")
+	scripting_bus.connect("card_token_modified", self, "_card_token_modified")
 	
 	attachment_mode = AttachmentMode.ATTACH_BEHIND
 	
 	#this prevents moving cards around. A bit annoying but avoids weird double click envents leading to a drag and drop
 	disable_dragging_from_board = true	
+
+#		scripting_bus.emit_signal(
+#				"card_token_modified",
+#				owner_card,
+#				{SP.TRIGGER_TOKEN_NAME: token.get_token_name(),
+#				SP.TRIGGER_PREV_COUNT: prev_value,
+#				SP.TRIGGER_NEW_COUNT: new_value,
+#				"tags": tags})
+func _card_token_modified(owner_card, details):
+	if owner_card != self:
+		return
+	if details[SP.TRIGGER_TOKEN_NAME] != "damage":
+		return
+	display_health()
+
+func display_health():
+	if !healthbar:
+		return
+	if get_state_exec() != "board":
+		healthbar.set_visible(false)
+		return
+
+	var type_code = get_property("type_code", 0)
+	if !(type_code in ["hero", "alter_ego", "villain"]):
+		return
+
+	var total_health = get_property("health", 0)
+	if !total_health:
+		return
+	var total_damage = self.tokens.get_token_count("damage")
+	var remaining_health = total_health-total_damage
+	if remaining_health<0:
+		remaining_health= 0
+	healthbar.set_health(total_health, remaining_health)
+	pass
 
 func position_ui_elements():
 	if properties.get("_horizontal", 0):
@@ -103,13 +154,16 @@ func execute_before_scripts(
 
 func _class_specific_ready():
 	._class_specific_ready()
-	spinbox = $Control/SpinPanel/SpinBox	
+	spinbox = $Control/SpinPanel/SpinBox
+	healthbar = $Control/HealthPanel/healthbar	
 
 func _ready():
 	scripting_bus.connect("scripting_event_about_to_trigger", self, "execute_before_scripts")
 
 
 func _process(delta) -> void:
+	display_health()
+	
 	if (cfc.is_modal_event_ongoing()):
 		return
 	if (gameData.is_targeting_ongoing()):

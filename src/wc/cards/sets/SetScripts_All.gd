@@ -182,6 +182,7 @@ func get_scripts(scripts: Dictionary, card_id: String, _get_modified = true) -> 
 		
 		if "scheme" in type_code:
 			var base_threat = card.get("base_threat", 0)
+
 			var scheme_comes_to_play: Dictionary = { 
 				"card_moved_to_board": {
 					"trigger": "self",

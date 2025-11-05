@@ -13,7 +13,8 @@ onready var bottom = $Bottom
 
 enum ANIMATION_STYLE {
 	DEFAULT,
-	SPEED_OUT
+	SPEED_OUT,
+	SLOW_BLINK
 }
 
 var _top_text := ""
@@ -38,6 +39,9 @@ func fade(object, modulation):
 
 func set_animation_style(style):
 	_animation_style = style
+
+func continuous_fade():
+	self.fade(self, sin(delta_total))
 
 func fade_in_out():
 	if fade_duration <=0:
@@ -104,7 +108,16 @@ func _process(delta):
 			
 			top.rect_position = Vector2(pos_top_x , top.rect_position.y)
 			bottom.rect_position = Vector2(pos_bottom_x, bottom.rect_position.y)			
+		
+		ANIMATION_STYLE.SLOW_BLINK:
+			continuous_fade()
+			var pos_top_x_end = rect_size.x * 0.5
+			var pos_top_x = pos_top_x_end - top.rect_size.x
+			var pos_bottom_x = rect_size.x  - pos_top_x_end  + bottom_target_x_offset	
 			
+			top.rect_position = Vector2(pos_top_x , top.rect_position.y)
+			bottom.rect_position = Vector2(pos_bottom_x, bottom.rect_position.y)			
+					
 
 func _ready():
 	top_text.text = _top_text

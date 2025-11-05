@@ -18,7 +18,7 @@ var time_between_tests = 0.3 #waiting between tests to clean stuff up
 #long amount of time to wait if the game state is not the one we expect
 const long_wait_time: = 2 #below 2 sec fails for multiplayer
 #same as above but for events that require a shorter patience time
-const short_wait_time: = 0.3
+const short_wait_time: = 0.4 #below 0.4 has had failures formultiplayer
 #amount of time to wait if the test explicitely requests it
 const max_wait_time: = 2
 const shorten_animations = true
@@ -324,6 +324,10 @@ func next_action():
 
 	if (action_type == "other"):
 		match action_value:
+			"wait_for_interrupt":
+				if (!gameData.is_interrupt_mode() and delta <max_wait_time):
+					count_delay("action_wait_for_interrupt")
+					return			
 			"wait_for_player_turn":
 				if (phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN and delta <max_wait_time):
 					count_delay("action_wait_for_player_turn")

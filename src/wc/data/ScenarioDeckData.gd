@@ -7,6 +7,8 @@ var villains:Array
 
 
 var schemes:Array
+var modular_sets:=[]
+var is_expert_mode:= false
 var encounter_deck:Array
 
 func _init():
@@ -23,12 +25,15 @@ static func get_recommended_modular_encounter(scheme_id):
 		return modular_defaults[0]
 	return ""
 	
-static func get_villains_from_scheme(scheme_id):
+static func get_villains_from_scheme(scheme_id, expert_mode:= false):
 	var scheme_primitive = cfc.primitives.get(scheme_id, {})
 	if !scheme_primitive:
 		return []
 		
 	var villain_strings : Array = scheme_primitive["villains"]
+	if expert_mode and scheme_primitive.has("expert"):		
+		villain_strings = scheme_primitive["expert"].get("villains", villain_strings)
+		
 	if (not villain_strings or villain_strings.empty()):
 		print_debug("villains missing in ScenarioDeckData")
 		return []			
@@ -41,9 +46,20 @@ static func get_villains_from_scheme(scheme_id):
 
 	return results	
 
+#		"scheme_id" : "01097", 
+#		"modular_encounter": "bomb_scare",
+#		"expert_mode": true,false	
 func load_from_dict(_scenario:Dictionary):
-	var scheme_card_id = _scenario["scheme_id"]
+	var scheme_card_id = _scenario.get("scheme_id")
+	if !scheme_card_id:
+		var _error =1
+		print_debug("Scheme ID not set in load_from_dict")
+		return
+	
 	schemes = cfc.get_schemes(scheme_card_id)
+	
+	is_expert_mode =  _scenario.get("expert_mode", false)
+	modular_sets = _scenario.get("modular_encounters", [])
 	
 	#Preload
 	get_villains()
@@ -73,13 +89,16 @@ func get_encounter_deck():
 	var first_scheme_name = first_scheme["Name"]
 	var scheme_primitive = cfc.primitives[first_scheme_name]
 	var encounter_sets : Array = scheme_primitive["encounter_sets"]		
-	var default_modular_sets : Array = scheme_primitive["modular_default"]
+
+	if is_expert_mode and scheme_primitive.has("expert"):		
+		encounter_sets = scheme_primitive["expert"].get("encounter_sets", encounter_sets)
+
 	
 	# Add sets (from scenario, standard + modular sets)
 	var modular_set_count = 0
 	for encounter_set_code in encounter_sets:
 		if (encounter_set_code.to_lower() == "modular"): #special case for modular sets
-			encounter_set_code = default_modular_sets[modular_set_count]
+			encounter_set_code = modular_sets[modular_set_count]
 			modular_set_count += 1
 		var encounter_set : Array = cfc.get_encounter_cards(encounter_set_code)
 		for card_data in encounter_set:

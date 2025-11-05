@@ -17,6 +17,7 @@ var peer = null
 # dictionary indexed by network_id for each player.
 var players = {}
 var my_info = {name = "Name Unset"}
+var _multiplayer_desync = null
 
 var person = preload("res://src/wc/lobby/Player.tscn")
 
@@ -82,6 +83,21 @@ func register_self(info):
 	
 	new_person.kick.hide()
 
+func _process(delta:float):
+	launch_button.disabled = false
+	
+	if (_multiplayer_desync):
+		launch_button.disabled = true
+	if players_container.get_children().size()<2:
+		launch_button.disabled = true
+	
+
+
+func find_player_by_network_id(network_id):
+	for child in players_container.get_children():
+		if child.my_network_id == network_id:
+			return child
+	return null
 
 remote func register_player(info):
 	# Get the id of the RPC sender.
@@ -101,12 +117,40 @@ remote func register_player(info):
 
 	
 	if get_tree().is_network_server():
+		launch_button.disabled = true
 		new_person.kick.show()
-		launch_button.disabled = false
+		rpc_id(id, "multiplayer_database_comparison")
 		#TODO debug for 2 players, remove afterwards
+		launch_button.disabled = false		
 		on_button_pressed(launch_button.name)
 	else:
 		new_person.kick.hide()
+
+mastersync func master_multiplayer_database_comparison(other_status):
+	var client_id = get_tree().get_rpc_sender_id()
+	var my_status = compute_database_hash()
+	if !(WCUtils.json_equal(my_status, other_status)):
+			_multiplayer_desync = other_status
+			var bad_player = find_player_by_network_id(client_id)
+			bad_player.set_desync_msg(to_json(_multiplayer_desync))
+			return false
+	return true
+
+func compute_database_hash() -> Dictionary:
+	var card_definitions_hash = WCUtils.ordered_hash(cfc.card_definitions)
+	var card_scripts_hash = WCUtils.ordered_hash(cfc.set_scripts)
+
+	var status = {
+		"card_definitions": card_definitions_hash,
+		"card_scripts": card_scripts_hash
+	}
+	return status
+	
+remotesync func multiplayer_database_comparison():
+	var status = compute_database_hash()
+	rpc_id(1, "master_multiplayer_database_comparison", status)
+
+
 
 func set_my_info(info):
 	my_info = info

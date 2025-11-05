@@ -181,6 +181,9 @@ func _process(_delta: float) -> void:
 		
 	if gameData.is_announce_ongoing():
 		return	
+		
+	if gameData.pending_network_ack():
+		return	
 
 	#some encounters need to be revealed outside of their regular schedule
 	# e.g. with surge. We place them in this specific dictionary
@@ -235,7 +238,7 @@ func _process(_delta: float) -> void:
 		CFConst.PHASE_STEP.ROUND_END:
 			request_next_phase()
 		CFConst.PHASE_STEP.SYSTEMS_CHECK:
-			if !gameData._systems_check_ongoing:
+			if !gameData._multiplayer_desync:
 				request_next_phase()					
 
 func offer_to_mulligan() -> void:

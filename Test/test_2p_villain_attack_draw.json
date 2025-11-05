@@ -1,0 +1,231 @@
+{
+	"_comments": "Tests basic villain attack",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "advance"
+				},			
+				{
+					"card": "hydra mercenary"
+				},
+				{
+					"card": "hydra soldier"
+				},				
+				{
+					"card": "Caught off guard"
+				},					
+				{
+					"card": "Gang-Up"
+				}				
+			],			
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Avengers Mansion"
+				},			
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy Absorption"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Hawkeye",
+				},
+				{
+					"card": "Make the call"
+				},
+				{
+					"card": "Lead from the front"
+				},
+				{
+					"card": "The Triskelion"
+				},
+				{
+					"card": "Maria Hill"
+				},					
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}				
+			],
+			"hand2": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "next_phase",
+			"value": "1",
+			"_comments": "Spider Man ok to move to next phase"
+		},
+		{
+			"type": "next_phase",
+			"value": "2",
+			"_comments": "Captain Marvel ok to move to next phase"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "Spider Man skip end phase discard"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"hero": 2,
+			"_comments": "Captain Marvel skip end phase discard"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_interrupt",
+			"_comments": "wait until being offered to interrupt"
+		},			
+		{
+			"type": "activate",
+			"value": "Spider-Man",
+			"_comments": "draw from Spider-Man"
+		},	
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "click on pass to skip Spider-Man defense"
+		},	
+		{
+			"type": "select",
+			"value": "cancel",
+			"hero": 2,
+			"_comments": "click on pass to skip Captain Marvel defense"
+		},
+		{
+			"type": "other",
+			"value": "wait_until_player_turn",
+			"_comments": "wait until player turn"
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+				}
+			],
+			"enemies1": [
+				{
+					"card": "hydra soldier"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Gang-Up"
+				},
+				{
+					"card": "Caught off guard"
+				},					
+			],				
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {"damage": 3}
+				}
+			],
+			"deck2": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"enemies2": [
+				{
+					"card": "Hydra Mercenary"
+				}		
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel",
+					"tokens": {"damage": 3}					
+				}
+			],
+			"hand2": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]			
+		}
+	}
+}

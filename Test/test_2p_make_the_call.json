@@ -1,0 +1,163 @@
+{
+	"_comments": "Tests that Make the Call can play from friend's discard",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Combat Training"
+				}
+			],			
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"discard2": [
+				{
+					"card": "Nick Fury"
+				}
+			],			
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Energy Absorption"
+				},			
+				{
+					"card": "Make the call"
+				}
+				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Make the call",
+			"hero": 2
+		},
+		{
+			"type": "play",
+			"value": "Jessica Jones",
+			"hero": 2
+		},	
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+	"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Combat Training"
+				}
+			],			
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Hawkeye"
+				}
+			],			
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"allies2": [
+				{
+					"card": "Jessica Jones"
+				},
+			],
+			"discard2": [
+				{
+					"card": "Nick Fury"
+				},			
+				{
+					"card": "Make the call"
+				},			
+				{
+					"card": "Energy Absorption"
+				},
+				
+			]
+		}
+	}
+}

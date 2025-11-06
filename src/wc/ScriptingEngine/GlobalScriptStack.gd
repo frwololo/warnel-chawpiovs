@@ -60,6 +60,7 @@ var stack_integrity_check: Dictionary = {}
 
 var stack:Array = []
 var waitOneMoreTick = 0
+var time_since_started_waiting:float = 0
 
 
 #stores data relevant to the ongoing interrupt signal
@@ -281,6 +282,22 @@ func add_to_stack(object, stack_uid):
 	reset_interrupt_states()
 	rpc_id(1, "master_stack_object_added", object.stack_uid)	
 
+func flush_top_script():
+	if !interrupt_mode == InterruptMode.NOBODY_IS_INTERRUPTING:
+		return
+	set_interrupt_mode(InterruptMode.NONE)
+	var next_script = stack_pop_back()
+	if !next_script:
+		display_debug("asked for executing script but I have nothing on my stack")
+		var _error = 1
+		return
+	display_debug("executing: " + str(next_script.stack_uid) + "-" + next_script.get_display_name())
+	var func_return = next_script.execute()	
+	while func_return is GDScriptFunctionState && func_return.is_valid():
+		func_return = func_return.resume()
+	emit_signal("script_executed_from_stack", next_script )		
+	
+
 func reset_interrupt_states():
 	reset_phase_buttons()
 	interrupting_hero_id = 0
@@ -353,7 +370,13 @@ func _process(_delta: float):
 			if cfc.is_game_master():
 				#if not everyone is ready here, I need to wait
 				if !clients_status_aligned():
+					time_since_started_waiting += _delta
+					if CFConst.DESYNC_TIMEOUT and time_since_started_waiting > CFConst.DESYNC_TIMEOUT:
+						gameData.init_desync_recover()
+						time_since_started_waiting = 0.0
 					return	
+				else:
+					time_since_started_waiting = 0.0
 				set_interrupt_mode(InterruptMode.FORCED_INTERRUPT_CHECK)
 				rpc("client_send_before_trigger", interrupt_mode)
 
@@ -375,21 +398,7 @@ func _process(_delta: float):
 			
 	return	
 
-func flush_top_script():
-	if !interrupt_mode == InterruptMode.NOBODY_IS_INTERRUPTING:
-		return
-	set_interrupt_mode(InterruptMode.NONE)
-	var next_script = stack_pop_back()
-	if !next_script:
-		display_debug("asked for executing script but I have nothing on my stack")
-		var _error = 1
-		return
-	display_debug("executing: " + str(next_script.stack_uid) + "-" + next_script.get_display_name())
-	var func_return = next_script.execute()	
-	while func_return is GDScriptFunctionState && func_return.is_valid():
-		func_return = func_return.resume()
-	emit_signal("script_executed_from_stack", next_script )		
-			
+		
 func stack_pop_back():
 	var variant = stack.pop_back()
 	if !variant:
@@ -516,7 +525,9 @@ mastersync func master_set_potential_interrupters (hero_id, guids:Array):
 
 #pass my opportunity to interrupt 
 func pass_interrupt (hero_id):
-	#TODO ensure that caller network id actually controls that hero
+	if not hero_id in gameData.get_my_heroes():
+		cfc.LOG("{error}: pass_interrupt called for hero_id by non controlling player")
+		return
 	rpc_id(1,"master_pass_interrupt", hero_id)
 	
 #call to master when I've chosen to pass my opportunity to interrupt 

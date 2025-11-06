@@ -34,7 +34,16 @@ signal json_parse_error(msg)
 
 func _setup() -> void:
 	._setup()
+	delete_log_files()
 	preload_pck()
+
+func delete_log_files():
+	var dir:Directory = Directory.new()
+	var log_dir = "user://"
+	var log_files = CFUtils.list_files_in_directory(log_dir, "log_" )
+	for file in log_files:
+		if file.ends_with(".txt"):
+			dir.remove(log_dir + file)
 
 func init_settings_from_file() -> void:
 	.init_settings_from_file()
@@ -781,6 +790,8 @@ func preload_pck():
 #
 # Network related functions
 
+
+
 func get_network_unique_id():
 	if gameData.is_multiplayer_game:
 		return get_tree().get_network_unique_id()
@@ -818,7 +829,7 @@ func LOG(to_print:String):
 func LOG_DICT(to_print:Dictionary):
 #	if !cfc._debug:
 #		return
-	var my_json_string = to_json(to_print)
+	var my_json_string = JSON.print(to_print, '\t')
 	LOG(my_json_string)
 	
 func add_ongoing_process(object, description:String = ""):

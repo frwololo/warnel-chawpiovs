@@ -59,7 +59,7 @@ func get_property(property: String, default = null, subscript_definition = null)
 #	var found_value = lookup_script_property(script_definition.get(property,default))
 	
 	var result = ""
-	if (subscript_definition):
+	if (subscript_definition != null):
 			#used for recursive calls of if/then/else
 		result = subscript_definition
 	else:
@@ -612,3 +612,35 @@ func parse_replacements() -> void:
 							var card: Card = trigger_object
 							state_filters[filter] = card.get_parent()
 	script_definition = wip_definitions
+
+func serialize_to_json() -> Dictionary:
+	var result = {}
+	
+	result["owner"] = cfc.serialize_object(owner)
+
+	
+	result["subjects"] = []
+	for subject in subjects:
+		result["subjects"].append(cfc.serialize_object(subject))
+	
+	result["script_name"] = script_name
+# Storage for all details of the task definition
+	result ["script_definition"] = script_definition
+# Used by the ScriptingEngine to know if the task
+# has finished processing targetting and optional confirmations
+	result["is_primed"] = is_primed
+# If true if this task is valid to run.
+# A task is invalid to run if some filter does not match.
+	result["is_valid"] = is_valid
+
+	result["requested_subjects"] = requested_subjects
+
+
+	result["trigger_object"] = cfc.serialize_object(trigger_object)
+
+	result["prev_subjects"] = []
+	for subject in prev_subjects:
+		result["prev_subjects"].append(cfc.serialize_object(subject))
+	
+	
+	return result

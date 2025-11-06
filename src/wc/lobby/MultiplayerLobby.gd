@@ -21,8 +21,16 @@ var _multiplayer_desync = null
 
 var person = preload("res://src/wc/lobby/Player.tscn")
 
+var http_request: HTTPRequest = null
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	http_request = HTTPRequest.new()
+	add_child(http_request)	
+	http_request.connect("request_completed", self, "_check_signal_server")
+	http_request.request(CFConst.SIGNAL_SERVER_SET_HOST_URL)
+		
 	for option_button in v_buttons.get_children():
 		if option_button.has_signal('pressed'):
 			option_button.connect('pressed', self, 'on_button_pressed', [option_button.name])
@@ -47,6 +55,13 @@ func _ready() -> void:
 		_join_as_server()	
 	
 	register_self(my_info)		
+
+func check_signal_server(result, response_code, headers, body):
+	if result != HTTPRequest.RESULT_SUCCESS:
+		#TODO error handling
+		return ""
+
+
 
 
 func on_button_pressed(_button_name : String) -> void:
@@ -180,6 +195,7 @@ func _player_connected(id):
 
 func _launch_server_game():
 	# Finalize Network players data
+	http_request.request(CFConst.SIGNAL_SERVER_REMOVE_HOST_URL)
 	var i = 1
 	for player in players:
 		rpc("set_network_player_index", player, i)

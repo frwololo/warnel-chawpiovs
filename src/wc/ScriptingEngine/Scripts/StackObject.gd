@@ -36,10 +36,10 @@ func matches_filters(task, filters:Dictionary, owner_card):
 	if (owner_hero_id > 0):
 		for v in ["my_hero"]:
 			#TODO move to const
-			WCUtils.search_and_replace(filters, v, gameData.get_identity_card(owner_hero_id), true)
+			filters = WCUtils.search_and_replace(filters, v, gameData.get_identity_card(owner_hero_id), true)
 
 	#TODO move to const
-	WCUtils.search_and_replace(filters, "villain", gameData.get_villain(), true)
+	filters = WCUtils.search_and_replace(filters, "villain", gameData.get_villain(), true)
 
 
 	if (filters):

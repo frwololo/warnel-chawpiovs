@@ -72,6 +72,11 @@ var immediate_encounters: = {}
 var user_input_ongoing:int = 0 #ID of the current player (or remote player) doing a blocking game interraction
 var _garbage:= []
 var _targeting_ongoing:= false
+
+#a timer to avoid double registering a click on a target
+# as a click for its abilities
+var _targeting_timer:= 0.2
+ 
 #var _systems_check_ongoing := false
 #var _clients_system_status: Dictionary = {}
 var _network_ack: Dictionary = {}
@@ -100,6 +105,7 @@ func _ready():
 	scripting_bus.connect("target_selected", self, "_target_selected")
 	
 	scripting_bus.connect("stack_event_deleted", self, "_stack_event_deleted")
+	scripting_bus.connect("all_clients_game_loaded", self, "_all_clients_game_loaded")
 	
 	get_tree().connect("server_disconnected", self, "_server_disconnected")
 	
@@ -110,6 +116,10 @@ func _ready():
 	self.add_child(theGameObserver)
 	#scripting_bus.connect("optional_window_opened", self, "attempt_user_input_lock")
 	#scripting_bus.connect("optional_window_closed", self, "attempt_user_input_unlock")	
+
+func _all_clients_game_loaded(status):
+	rpc("start_phaseContainer")
+	pass
 
 func _script_executed_from_stack (script):
 	if script.get_first_task_name() == "enemy_attack":
@@ -150,13 +160,28 @@ func attempt_resync(result:String):
 #	cfc.NMAP.board.add_child(end_dialog)
 #	end_dialog.popup_centered()
 
+func targeting_happened_too_recently():
+	return (_targeting_timer > 0)
 
 func _process(_delta: float):
-	if _game_over and !theAnnouncer.get_blocking_announce():
+	
+	#mechanism to avoid processing
+	#a target click as an action click
+	if _targeting_ongoing:
+		_targeting_timer = 0.2
+	else:
+		_targeting_timer -= _delta
+		_targeting_timer = max(0, _targeting_timer)
+		
+	if theAnnouncer.get_blocking_announce():
+		return
+		
+	if _game_over: 
 		end_game("game over")
 		_game_over = false
-	return
-	if _multiplayer_desync and !theAnnouncer.get_blocking_announce():
+		return
+		
+	if _multiplayer_desync:
 		if current_round >1:
 			attempt_resync("desync")
 
@@ -368,7 +393,7 @@ func game_state_changed():
 func init_network_players(players:Dictionary):
 	for player_network_id in players:
 		if is_multiplayer_game and (player_network_id != cfc.get_network_unique_id()):
-				get_tree().network_peer.set_peer_timeout(player_network_id, 10000, 5000, 15000)
+				get_tree().network_peer.set_peer_timeout(player_network_id, 1000, 5000, 15000)
 		var info = players[player_network_id]
 		var new_player_data := PlayerData.new(info.name, info.id, player_network_id)
 		network_players[player_network_id] = new_player_data 
@@ -440,7 +465,7 @@ func save_round(round_id):
 	var dir:Directory = Directory.new()
 	var save_dir = "user://Saves/current_game/"
 	var save_file = "round_" + str(round_id) + ".json"
-	save_gamedata_to_file(save_file)
+	save_gamedata_to_file(save_dir + save_file)
 
 func reload_round_savegame(round_id):
 	if !cfc.is_game_master():
@@ -450,6 +475,7 @@ func reload_round_savegame(round_id):
 	var json = WCUtils.read_json_file(save_dir + file_name)
 	if round_id >1 and !json:
 		reload_round_savegame(round_id-1)
+		return
 	gameData.load_gamedata(json)
 			
 func get_team_size():
@@ -1236,6 +1262,8 @@ func cleanup_post_game():
 	
 	cfc.reset_ongoing_process_stack()
 	cfc.flush_cache()
+	guidMaster.reset()
+	
 	cfc.game_paused = false
 
 	
@@ -1299,6 +1327,8 @@ remotesync func remote_load_game_data_finished(result:int):
 
 #loads current game data from a json structure
 remotesync func remote_load_gamedata(json_data:Dictionary):
+	var previous_pause_state = cfc.game_paused
+	cfc.set_game_paused(true)
 	var caller_id = get_tree().get_rpc_sender_id()
 
 	#TODO sanity check of the save file
@@ -1336,14 +1366,19 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 	#Board State ()
 	cfc.NMAP.board.loadstate_from_json(json_data)
 	
-	phaseContainer.reset() #This reloads hero faces, etc...
-	
+	#This reloads hero faces, etc...
+	#we don't start the phaseContainer just yet, we'll wait for other players to be ready
+	phaseContainer.reset(false) 
+
 
 	
 	#scenario
 	#TODO
-			
+	cfc.set_game_paused(previous_pause_state)		
 	rpc_id(caller_id,"remote_load_game_data_finished",CFConst.ReturnCode.OK)
+
+remotesync func start_phaseContainer():
+	phaseContainer.start_current_step()
 
 func display_debug(msg, prefix = ""):
 	if(phaseContainer):
@@ -1361,25 +1396,35 @@ func systems_check():
 #	pass
 	initiate_network_ack("get_my_system_status")
 
+func init_desync_recover():
+	_multiplayer_desync = true
+	var announce_settings = {
+		"top_text": "DESYNC :(",
+		"bottom_text" : "DESYNC :(",
+		"top_color": Color8(0,0,0,0),
+		"bottom_color": Color8(0,0,0,0),
+		"bg_color" : Color8(0,0,0,0),
+		"duration": 5,
+		"animation_style": Announce.ANIMATION_STYLE.SLOW_BLINK,
+		"_forced" : true
+	}
+	theAnnouncer.simple_announce(announce_settings )
+
 func finalize_get_my_system_status(all_status):
 	var my_status = get_my_system_status()
+	if cfc.is_game_master():
+		save_round(current_round -1 ) #save the current round for a potential rollback
+	
 	for k in all_status:
 		var other_status = all_status[k]
 		if !(WCUtils.json_equal(my_status, other_status)):
-			_multiplayer_desync = true
-			var announce_settings = {
-				"top_text": "DESYNC :(",
-				"bottom_text" : "DESYNC :(",
-				"top_color": Color8(0,0,0,0),
-				"bottom_color": Color8(0,0,0,0),
-				"bg_color" : Color8(0,0,0,0),
-				"duration": 5,
-				"animation_style": Announce.ANIMATION_STYLE.SLOW_BLINK
-			}
-			theAnnouncer.simple_announce(announce_settings )			
+			cfc.LOG("{error} Desync at Systems Check Step")
+			cfc.LOG("My Status:")
+			cfc.LOG_DICT(my_status)
+			cfc.LOG("Their Status:")
+			cfc.LOG_DICT(other_status)			
+			init_desync_recover()			
 			return false
-	if cfc.is_game_master():
-		save_round(current_round -1 ) #save the current round for a potential rollback
 	return true
 
 func get_my_system_status() -> Dictionary:
@@ -1400,8 +1445,6 @@ func get_my_system_status() -> Dictionary:
 	
 	if (CFConst.SYSTEMS_CHECK_HASH_ONLY):
 		display_debug("SYSTEMS CHECK: " + to_json(status))
-	else:
-		cfc.LOG_DICT(status)
 	
 	return status
 

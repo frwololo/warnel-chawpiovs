@@ -81,7 +81,7 @@ func move_card_to_board(script: ScriptTask) -> int:
 	
 	for zone in CFConst.HERO_GRID_SETUP:
 		#TODO move to const
-		WCUtils.search_and_replace(script.script_definition, zone, zone+str(owner_hero_id), true)
+		script.script_definition = WCUtils.search_and_replace(script.script_definition, zone, zone+str(owner_hero_id), true)
 	
 
 	var result = .move_card_to_board(script)
@@ -98,7 +98,7 @@ func move_card_to_container(script: ScriptTask) -> int:
 
 	for zone in CFConst.HERO_GRID_SETUP:
 		#TODO move to const
-		WCUtils.search_and_replace(script.script_definition, zone, zone+str(owner_hero_id), true)
+		script.script_definition = WCUtils.search_and_replace(script.script_definition, zone, zone+str(owner_hero_id), true)
 	
 	var result = .move_card_to_container(script)
 	script.script_definition = backup
@@ -114,15 +114,20 @@ func draw_cards (script: ScriptTask) -> int:
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode			
 	
-	var subject = script.owner	
+	var subjects = [script.owner]	
 	if script.subjects:
-		subject = script.subjects[0]
+		subjects = script.subjects
 
-	var controller_id = subject.get_controller_hero_id()
-	var hand:Hand = cfc.NMAP["hand" + str(controller_id)]
-	var deck = cfc.NMAP["deck" + str(controller_id)]
-	for _i in range (amount):
-		hand.draw_card(deck)
+	for subject in subjects:
+		var controller_id = subject.get_controller_hero_id()
+		if controller_id <= 0:
+			cfc.LOG("{ScriptingEngine}{error}, attempt to draw cards for villain")
+			cfc.LOG_DICT(script.serialize_to_json())
+
+		var hand:Hand = cfc.NMAP["hand" + str(controller_id)]
+		var deck = cfc.NMAP["deck" + str(controller_id)]
+		for _i in range (amount):
+			hand.draw_card(deck)
 	return retcode
 	
 func draw_to_hand_size (script: ScriptTask) -> int:
@@ -753,6 +758,10 @@ func constraints(script: ScriptTask) -> int:
 	var my_hero_id = this_card.get_controller_hero_id()
 	var my_hero_card = gameData.get_identity_card(my_hero_id)
 	
+	if !my_hero_card:
+		cfc.LOG("{scriptEngine}{error}: missing hero card in constraints check")
+		cfc.LOG_DICT(script.serialize_to_json())
+	
 	var _tags: Array = script.get_property(SP.KEY_TAGS)
 	
 	var tags = []
@@ -765,10 +774,10 @@ func constraints(script: ScriptTask) -> int:
 	for tag in tags:
 		match tag:
 			"hero_form" :
-				if !my_hero_card.is_hero_form():
+				if !my_hero_card or !my_hero_card.is_hero_form():
 					return CFConst.ReturnCode.FAILED
 			"alter_ego_form":
-				if !my_hero_card.is_alter_ego_form():
+				if !my_hero_card or !my_hero_card.is_alter_ego_form():
 					return CFConst.ReturnCode.FAILED
 			"action_ability":
 				if gameData.phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN:

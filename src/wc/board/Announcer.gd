@@ -64,8 +64,11 @@ func _step_started(details:Dictionary):
 
 func _process(delta: float):
 	if (_skip_announcer):
-		cleanup()
-		return
+		if typeof(ongoing_announce_object) == TYPE_DICTIONARY and ongoing_announce_object.get("_forced", false):
+			pass
+		else:			
+			cleanup()
+			return
 	
 	current_delta += delta
 				

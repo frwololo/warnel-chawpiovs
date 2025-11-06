@@ -1292,7 +1292,7 @@
 					"is_cost": true,
 					"subject": "tutor",
 					"subject_count": "all",
-					"src_container": "discard",
+					"src_container": "any_discard",
 					"filter_state_tutor": [{
 							"filter_group" : "group_allies"
 					}],
@@ -1323,8 +1323,9 @@
 					{
 						"name" : "draw_cards",
 						"subject": "boardseek",
+						"subject_count": "all",
 						"amount" : 1,
-						"filter_state_subject": [{
+						"filter_state_seek": [{
 							"filter_group" : "group_identities"
 						}],						
 					}

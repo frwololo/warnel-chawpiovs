@@ -476,3 +476,11 @@ func cleanup_modal_menu():
 			modal_menu.force_cancel()
 		modal_menus = []
 	return
+
+
+#safer way than asking objects to serialize themselves in case of error
+func serialize_object(object):
+	if !(object and is_instance_valid(object)):
+		return null
+		
+	return object.serialize_to_json()

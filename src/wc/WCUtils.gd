@@ -235,34 +235,45 @@ static func to_grayscale(texture : Texture) -> Texture:
 	return image_texture
 	
 
-# we operate directly on the dictionary without duplicate for speed reasons. Make a copy prior if needed
 static func search_and_replace (script_definition, from: String, to, exact_match: bool = false) -> Dictionary:
+	var result = null
 	match typeof(script_definition):
-		TYPE_DICTIONARY:	
+		TYPE_DICTIONARY:
+			result = {}	
 			for key in script_definition.keys():
 				var value = script_definition[key]
-				match typeof(value):
-					TYPE_STRING:
-						if (!exact_match):
-							script_definition[key] = value.replace(from, to)
-						elif (value == from):
-							script_definition[key] = to
-					TYPE_ARRAY:
-						for x in value:
-							search_and_replace(x,from, to, exact_match)
-					TYPE_DICTIONARY:
-						search_and_replace(value,from, to, exact_match)	
-					
+				result[key] = search_and_replace(value,from, to, exact_match)
+
 				#do the key too	
 				if typeof(key) == TYPE_STRING:
 					if ((!exact_match) or (key == from)):
 						var new_string = key.replace(from, to)	
-						script_definition[new_string] = script_definition[key]
+						result[new_string] = result[key]
 						#TODO erase???	
+
+		TYPE_ARRAY:
+			result = []
+			for x in script_definition:
+				var computed = search_and_replace(x,from, to, exact_match)
+				#special case, if replacing with an array, we flatten it
+				if typeof(computed) == TYPE_ARRAY and typeof(x) == TYPE_STRING:
+					for element in computed:
+						result.append(element)
+				else:
+					result.append(computed)
+
 		TYPE_STRING:
-			if ((!exact_match) or (script_definition == from)):
-				script_definition = script_definition.replace(from, to)	
-	return script_definition;
+			if (!exact_match):
+				result = script_definition.replace(from, to)	
+			elif (script_definition == from):
+				if from == "any_discard":
+					var _tmp = 1
+				result = to
+			else:
+				result = script_definition
+		_:
+			result = script_definition
+	return result;
 
 #replace "REAL" (float) numbers into "INT".
 #Patch utility for json loading issues

@@ -60,3 +60,9 @@ func get_guids_check_data():
 	for guid in guid_to_object:
 		result[guid] = guid_to_name[guid]
 	return result
+
+func reset():
+	current_guid = 0
+	guid_to_object = {}
+	guid_to_name = {}
+	object_to_guid = {}

@@ -17,7 +17,7 @@ var text_edit:TextEdit = null
 #if blackslit is set,, messages containing specific words will be explicitly banned 
 const _debug_msg_whitelist = [] #["executing", "owner", "villain target"] #"script", "all clients", "error"]
 const _debug_msg_blacklist = []
-const enable_debug_msg = true
+const enable_debug_msg = false
 
 func create_text_edit():
 	if not cfc.NMAP.has("board") or not is_instance_valid(cfc.NMAP.board):

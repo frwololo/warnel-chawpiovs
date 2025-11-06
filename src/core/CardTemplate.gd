@@ -3071,3 +3071,6 @@ func queue_free():
 		var source = conn["source"]
 		source.disconnect(conn["signal_name"],self , conn["method_name"])
 	.queue_free()
+
+func serialize_to_json():
+	return {"TODO": "TODO"}

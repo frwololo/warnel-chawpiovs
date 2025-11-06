@@ -85,7 +85,13 @@ func _runtime_properties_setup():
 	var health_per_hero = get_property("health_per_hero", false)
 	if health and health_per_hero:
 		health *= gameData.team.size()
-		properties["health"] = health		
+		properties["health"] = health
+		
+	var threat = get_property("threat",0)
+	var threat_fixed = get_property("threat_fixed", true)
+	if threat and !threat_fixed:
+		threat *= gameData.team.size()
+		properties["threat"] = threat		
 
 func setup() -> void:
 	.setup()
@@ -99,6 +105,10 @@ func setup() -> void:
 	gameData.connect("game_state_changed", self, "_game_state_changed")
 	scripting_bus.connect("step_started", self, "_game_step_started")
 	scripting_bus.connect("card_token_modified", self, "_card_token_modified")
+
+	scripting_bus.connect("card_moved_to_hand", self, "__card_moved")
+	scripting_bus.connect("card_moved_to_pile", self, "__card_moved")
+	scripting_bus.connect("card_moved_to_board", self, "__card_moved")		
 	
 	attachment_mode = AttachmentMode.ATTACH_BEHIND
 	
@@ -115,10 +125,43 @@ func setup() -> void:
 func _card_token_modified(owner_card, details):
 	if owner_card != self:
 		return
-	if details[SP.TRIGGER_TOKEN_NAME] != "damage":
-		return
-	display_health()
+	if details[SP.TRIGGER_TOKEN_NAME] == "damage":
+		display_health()
+	if details[SP.TRIGGER_TOKEN_NAME] == "threat":
+		display_threat()
 
+#("card_moved_to_hand",
+#					self,
+#					 {
+#						"destination": targetHost.name,
+#						"source": parentHost.name,
+#						"tags": tags
+#					}
+#			)
+
+func _card_moved(owner_card, details):
+	if owner_card != self:
+		return
+	display_debug(canonical_name + " moved from " + details["source"] + " to " + details["destination"])
+
+func display_threat():
+	if !healthbar:
+		return
+	if get_state_exec() != "board":
+		healthbar.set_visible(false)
+		return
+
+	var type_code = get_property("type_code", 0)
+	if !(type_code in ["main_scheme"]):
+		return
+
+	var total_threat = get_property("threat", 0)
+	if !total_threat:
+		return
+	var current_threat = self.tokens.get_token_count("threat")
+	healthbar.set_threat(total_threat, current_threat)
+	pass
+	
 func display_health():
 	if !healthbar:
 		return
@@ -160,10 +203,13 @@ func _class_specific_ready():
 func _ready():
 	scripting_bus.connect("scripting_event_about_to_trigger", self, "execute_before_scripts")
 
+func _class_specific_process(delta):
+	._class_specific_process(delta)
+	display_health()
+	display_threat()
+		
 
 func _process(delta) -> void:
-	display_health()
-	
 	if (cfc.is_modal_event_ongoing()):
 		return
 	if (gameData.is_targeting_ongoing()):
@@ -250,7 +296,12 @@ func common_post_move_scripts(new_host: String, _old_host: String, _move_tags: A
 
 #Tries to play the card assuming costs aren't impossible to pay
 #Also used for automated tests
-func attempt_to_play():
+func attempt_to_play(user_click:bool = false):
+	#don't try to activate the card if the click was the result of targeting
+	if user_click:
+		if gameData.is_targeting_ongoing() or gameData.targeting_happened_too_recently():
+			return
+		
 	var state_exec = get_state_exec()
 	
 	if !state_exec in ["hand", "board"]:
@@ -434,13 +485,13 @@ func _on_Card_gui_input(event) -> void:
 					var parentHost = get_parent()
 					if (destination == cfc.NMAP.board) and (parentHost.is_in_group("hands")):
 						move_to(parentHost)
-						attempt_to_play()
+						attempt_to_play(true)
 					else :	
 						move_to(destination)
 					_focus_completed = false
 				_:
 					if state != CardState.FOCUSED_IN_HAND:
-						attempt_to_play()
+						attempt_to_play(true)
 		else:
 			_process_more_card_inputs(event)
 	cfc.remove_ongoing_process(self, "_on_Card_gui_input_"  + canonical_name)	
@@ -697,8 +748,20 @@ func common_pre_run(_sceng) -> void:
 			#var current_hero_id = gameData.get_current_hero_id()
 			for v in ["hand", "encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
 				#TODO move to const
-				WCUtils.search_and_replace(script_definition, v, v+str(controller_hero_id), true)	
+				script_definition = WCUtils.search_and_replace(script_definition, v, v+str(controller_hero_id), true)	
+
+				#any_discard, etc gets replaced with ["discard1","discard2"] 
+				var team_size = gameData.get_team_size()
+				var any_container_def = []
+				for i in range (team_size):
+					any_container_def.append(v + str(i+1))
+				if any_container_def.size() == 1:
+					any_container_def = any_container_def[0]
+				script_definition = WCUtils.search_and_replace(script_definition, "any_" + v, any_container_def, true)	
 		
+		#put back the modified script			
+		script.script_definition = script_definition
+				
 		match script_definition["name"]:
 			# To pay for cards: We check if the manapool has some mana
 			# If so, use that in "priority" and reduce the actual cost of the card
@@ -1060,3 +1123,7 @@ func is_alter_ego_form() -> bool:
 	if "alter_ego" == properties.get("type_code", ""):
 		return true
 	return false
+
+func serialize_to_json():
+	return export_to_json()
+

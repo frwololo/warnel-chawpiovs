@@ -111,7 +111,7 @@ func _process(delta):
 		
 		ANIMATION_STYLE.SLOW_BLINK:
 			continuous_fade()
-			var pos_top_x_end = rect_size.x * 0.5
+			var pos_top_x_end = rect_size.x *0.7
 			var pos_top_x = pos_top_x_end - top.rect_size.x
 			var pos_bottom_x = rect_size.x  - pos_top_x_end  + bottom_target_x_offset	
 			

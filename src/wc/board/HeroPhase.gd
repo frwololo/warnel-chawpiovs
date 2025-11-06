@@ -70,6 +70,12 @@ func heroPhase_action() -> bool:
 	if !can_hero_phase_action():
 		return false	
 	if (hero_index == gameData.get_current_local_hero_id()):
+		if (gameData.is_interrupt_mode() and\
+		 hero_index in (gameData.get_currently_playing_hero_ids()) and\
+		hero_index in gameData.get_my_heroes()):
+			#TODO this entire class needs to be cleaned up, lots of checks here
+			#to prevent a player from activating another's heroes
+			gameData.interrupt_player_pressed_pass(self.hero_index)			
 		rpc("switch_status")
 	else:	
 		gameData.select_current_playing_hero(hero_index)
@@ -92,9 +98,7 @@ remotesync func switch_status(forced_state:int = -1):
 	match current_state:
 		State.ACTIVE:
 			heroNode.texture = color_tex
-		State.FINISHED:
-			if (gameData.is_interrupt_mode() and hero_index in (gameData.get_currently_playing_hero_ids())):
-				gameData.interrupt_player_pressed_pass(self.hero_index)			
+		State.FINISHED:		
 			heroNode.texture = grayscale_tex	
 	_update_labels()
 	get_parent().check_end_of_player_phase()

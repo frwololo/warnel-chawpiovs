@@ -101,3 +101,21 @@ func check_confirm() -> bool:
 		is_accepted = yield(confirm_return, "completed")
 	cfc.remove_ongoing_process(self)	
 	return(is_accepted)
+
+func serialize_to_json():
+	var result = .serialize_to_json()
+
+# Stores the details arg passed the signal to use for filtering
+	result["trigger_details"] = trigger_details
+# If true if this task has been confirmed to run by the player
+# Only relevant for optional tasks (see [SP].KEY_IS_OPTIONAL)
+	result["is_accepted"] = is_accepted
+	result["is_skipped"] = is_skipped
+	result["is_cost"] = is_cost
+	result["is_else"] = is_else
+	result["needs_subject"] = needs_subject
+
+#if this script generates some object outcome, it will be stored here
+	result["process_result"] = "TODO"
+	
+	return result

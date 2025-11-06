@@ -216,8 +216,7 @@ func _process(_delta: float) -> void:
 	if cfc.NMAP.board.are_cards_still_animating():
 		count_delay("cards_animating")	
 		return	
-	
-	
+		
 	#Game is still loading on some clients, do not run tests yet
 	if (!game_loaded):
 		return
@@ -284,6 +283,9 @@ func next_action():
 	var my_action = actions[current_action]
 	var action_type = my_action.get("type", "")
 	var action_value = my_action.get("value", "")
+
+#	if (action_type != "target" and gameData.targeting_happened_too_recently()):
+#		return
 	
 	#wait a bit if we need to choose from a selection window but that window isn't there
 	if (action_type == "select"):

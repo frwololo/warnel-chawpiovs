@@ -469,6 +469,10 @@ const DEFAULT_SETTINGS:= {
 	},
 }
 
+const SIGNAL_SERVER_SET_HOST_URL = "https://wololo.net/wc/register.php?mode=server"
+const SIGNAL_SERVER_GET_HOST_URL = "https://wololo.net/wc/register.php"
+const SIGNAL_SERVER_REMOVE_HOST_URL = "https://wololo.net/wc/register.php?mode=delete"
+
 #
 # Debugging options
 #
@@ -481,7 +485,10 @@ const SKIP_MULLIGAN:= true
 #if set to true, the system checks will only send hashed instead of 
 #full dictionaries. Probably better for bandwidth
 #set to false when debugging a network/desync issue
-const SYSTEMS_CHECK_HASH_ONLY:= true
+const SYSTEMS_CHECK_HASH_ONLY:= false
 #set to true to force writing to log files even if cfc.debug is false
 const FORCE_LOGS:= false
+#seconds until we trigger a desync warning when the stack is blocked
+#set to 0 for infinite waiting time (debug)
+const DESYNC_TIMEOUT:= 5.0
 

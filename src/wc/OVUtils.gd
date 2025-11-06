@@ -51,6 +51,6 @@ func parse_post_prime_replacements(script_task:ScriptObject) -> Dictionary:
 	var subject_controller_hero = 0
 	if subjects:
 		subject_controller_hero = subjects[0].get_controller_hero_id()
-		var _result = WCUtils.search_and_replace(wip_definitions, "{__subject_hero_id__}", str(subject_controller_hero), false)	
+		wip_definitions = WCUtils.search_and_replace(wip_definitions, "{__subject_hero_id__}", str(subject_controller_hero), false)	
 			
 	return wip_definitions

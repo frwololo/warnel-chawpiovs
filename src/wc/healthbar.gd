@@ -12,6 +12,37 @@ const COLOR_CRITICAL = Color(1.2, 0.2, 0.2, 0.5)
 var current_value
 var max_value
 
+func set_threat(_max_value, _value ):
+	if _max_value== max_value and _value == current_value:
+		return
+	
+	if _max_value < _value:
+		_max_value = _value
+	
+	max_value = _max_value
+	current_value = _value
+	
+	var health_color = COLOR_HEALTH if _value < _max_value*0.75 else COLOR_CRITICAL
+	
+	var total_length = 280.0
+	var height = 6.0
+	self.rect_min_size = Vector2(total_length, height) 
+	get_parent().rect_position = Vector2(-10, total_length)
+	get_parent().rect_rotation = -90
+
+	self.rect_size = self.rect_min_size	
+	for child in get_children():
+		remove_child(child)
+	for i in range (_max_value):
+		var tex:ColorRect = ColorRect.new()
+		tex.modulate = health_color if i <  _value else COLOR_MISSING
+		#tex.modulate += Color(0, i*0.1,0,1)
+		add_child(tex)
+		tex.rect_min_size = Vector2(total_length/(float(_max_value)) - 2.0, height)
+		tex.rect_size = tex.rect_min_size
+	get_parent().visible = true
+	pass
+
 func set_health(_max_value, _value ):
 	if _max_value== max_value and _value == current_value:
 		return
@@ -30,7 +61,8 @@ func set_health(_max_value, _value ):
 		remove_child(child)
 	for i in range (_max_value):
 		var tex:ColorRect = ColorRect.new()
-		tex.modulate = health_color if i < _value else COLOR_MISSING
+		tex.modulate = health_color + Color(0, i*0.1,0,0.3)  if i < _value else COLOR_MISSING
+		#tex.modulate = health_color if i < _value else COLOR_MISSING
 		add_child(tex)
 		tex.rect_min_size = Vector2(total_length/(float(_max_value)) - 2.0, height)
 		tex.rect_size = tex.rect_min_size

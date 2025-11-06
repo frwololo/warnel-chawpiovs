@@ -106,9 +106,9 @@ func setup() -> void:
 	scripting_bus.connect("step_started", self, "_game_step_started")
 	scripting_bus.connect("card_token_modified", self, "_card_token_modified")
 
-	scripting_bus.connect("card_moved_to_hand", self, "__card_moved")
-	scripting_bus.connect("card_moved_to_pile", self, "__card_moved")
-	scripting_bus.connect("card_moved_to_board", self, "__card_moved")		
+	scripting_bus.connect("card_moved_to_hand", self, "_card_moved")
+	scripting_bus.connect("card_moved_to_pile", self, "_card_moved")
+	scripting_bus.connect("card_moved_to_board", self, "_card_moved")		
 	
 	attachment_mode = AttachmentMode.ATTACH_BEHIND
 	

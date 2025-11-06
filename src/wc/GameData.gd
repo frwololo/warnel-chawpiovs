@@ -29,7 +29,8 @@ enum EncounterStatus {
 	PENDING_REVEAL_INTERRUPT,
 	OK_TO_EXECUTE,
 	PENDING_COMPLETE,
-	ENCOUNTER_COMPLETE
+	ENCOUNTER_COMPLETE,
+	ENCOUNTER_POST_COMPLETE
 }
 var _current_encounter_step: int = EncounterStatus.NONE
 var _current_encounter = null #WCCard
@@ -920,7 +921,13 @@ func reveal_encounter(target_id = 0):
 			var target_pile = get_encounter_target_pile(_current_encounter)
 			if (target_pile):
 				_current_encounter.move_to(target_pile)
-			current_encounter_finished()
+				_current_encounter_step = EncounterStatus.ENCOUNTER_POST_COMPLETE
+			else:
+				current_encounter_finished()
+		EncounterStatus.ENCOUNTER_POST_COMPLETE:
+			var target_pile = get_encounter_target_pile(_current_encounter)
+			if target_pile and target_pile.has_card(_current_encounter):			
+				current_encounter_finished()
 			return 
 	return
 

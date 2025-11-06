@@ -1702,7 +1702,7 @@ func add_script_to_stack(sceng, run_type, trigger, trigger_details, action_name)
 	
 	return
 
-func get_instance_runtime_scripts(trigger:String = "") -> Dictionary:
+func get_instance_runtime_scripts(trigger:String = "", filters:={}) -> Dictionary:
 	if scripts.empty():
 		return {}
 	match trigger:
@@ -1718,14 +1718,14 @@ func get_instance_runtime_scripts(trigger:String = "") -> Dictionary:
 #
 # Returns a dictionary of card scripts for this specific card
 # based on the current trigger.
-func retrieve_scripts(trigger: String) -> Dictionary:
+func retrieve_scripts(trigger: String, filters := {}) -> Dictionary:
 	var found_scripts: Dictionary
 	# If scripts have been defined directly in this Card object
 	# They take precedence over CardScriptDefinitions.gd
 	#
 	# This allows us to modify a card's scripts during runtime
 	# in isolation from other cards of the same name
-	found_scripts = get_instance_runtime_scripts(trigger)
+	found_scripts = get_instance_runtime_scripts(trigger, filters)
 	if !found_scripts:
 		# This retrieves all the script from the card, stored in cfc
 		# The seeks in them the specific trigger we're using in this

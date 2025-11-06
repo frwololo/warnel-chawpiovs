@@ -23,6 +23,7 @@ extends Node2D
 #
 
 signal script_executed_from_stack(script)
+signal script_added_to_stack(script)
 
 enum InterruptMode {
 	NONE,
@@ -278,7 +279,7 @@ func add_to_stack(object, stack_uid):
 		msg+= str(item.stack_uid) +"-" + item.get_display_name() + ","
 	msg += "]"
 	display_debug("my stack: " + msg)
-
+	emit_signal("script_added_to_stack", object)
 	reset_interrupt_states()
 	rpc_id(1, "master_stack_object_added", object.stack_uid)	
 
@@ -398,6 +399,12 @@ func _process(_delta: float):
 			
 	return	
 
+
+func has_script(script):
+	for _script in stack:
+		if script == _script:
+			return true
+	return false
 		
 func stack_pop_back():
 	var variant = stack.pop_back()

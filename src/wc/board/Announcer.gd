@@ -5,8 +5,8 @@
 class_name Announcer
 extends Node
 
-const default_announcer_minimum_time:= 2
-var announcer_minimum_time:= 2
+var default_announcer_minimum_time: float= 2
+var announcer_minimum_time: float= 2
 
 var ongoing_announce_object = null
 var ongoing_announce:= ""
@@ -46,7 +46,9 @@ func _step_started(details:Dictionary):
 	match current_step:
 		CFConst.PHASE_STEP.PLAYER_TURN:
 			settings["text"] = "Player Phase"
-			var hero_card = gameData.get_identity_card(1)
+			var my_heroes = gameData.get_my_heroes()
+			var hero_to_display = my_heroes[0] if my_heroes else 1
+			var hero_card = gameData.get_identity_card(hero_to_display)
 			var filename = hero_card.get_art_filename()
 			settings["top_texture_filename"] = filename
 		CFConst.PHASE_STEP.VILLAIN_THREAT:
@@ -78,7 +80,7 @@ func _process(delta: float):
 			cleanup()
 	else:
 		current_delta = 0
-		find_event_to_announce()
+#		find_event_to_announce()
 	
 			
 
@@ -110,37 +112,53 @@ func cleanup():
 	current_delta = 0
 	is_blocking = false
 	
-func find_event_to_announce():
-	var theStack:GlobalScriptStack = gameData.theStack
-	if !theStack:
-		cleanup()
-		return
-	
-	var current_script = theStack.find_last_event()
-	if !current_script:
-		cleanup()
-		return
-	
-	#only start an event from stack if it isn't in motion
-	if !theStack.interrupt_mode in [GlobalScriptStack.InterruptMode.NOBODY_IS_INTERRUPTING, GlobalScriptStack.InterruptMode.HERO_IS_INTERRUPTING] :
-		cleanup()
-		return
-	
-	if current_script == ongoing_announce_object:
-		return
-	else:
-		cleanup()
-		var tasks = current_script.get_tasks()
-		for task in tasks:		
-			if _script_name_to_function.has(task.script_name):
-				var func_return = call("init_" + _script_name_to_function[task.script_name], task)
-				while func_return is GDScriptFunctionState && func_return.is_valid():
-					func_return = func_return.resume()
-				if (func_return):
-					ongoing_announce = task.script_name
-					ongoing_announce_object = current_script
-				return #found one so we exit early
+#func find_event_to_announce():
+#	var theStack:GlobalScriptStack = gameData.theStack
+#	if !theStack:
+#		cleanup()
+#		return
+#
+#	var current_script = theStack.find_last_event()
+#	if !current_script:
+#		cleanup()
+#		return
+#
+#	#only start an event from stack if it isn't in motion
+#	if !theStack.interrupt_mode in [GlobalScriptStack.InterruptMode.NOBODY_IS_INTERRUPTING, GlobalScriptStack.InterruptMode.HERO_IS_INTERRUPTING] :
+#		cleanup()
+#		return
+#
+#	if current_script == ongoing_announce_object:
+#		return
+#	else:
+#		cleanup()
+#		var tasks = current_script.get_tasks()
+#		for task in tasks:		
+#			if _script_name_to_function.has(task.script_name):
+#				var func_return = call("init_" + _script_name_to_function[task.script_name], task)
+#				while func_return is GDScriptFunctionState && func_return.is_valid():
+#					func_return = func_return.resume()
+#				if (func_return):
+#					ongoing_announce = task.script_name
+#					ongoing_announce_object = current_script
+#				return #found one so we exit early
 
+func announce_from_stack(script):
+	if (_skip_announcer):
+		return
+			
+	var tasks = script.get_tasks()
+	for task in tasks:		
+		if _script_name_to_function.has(task.script_name):
+			var func_return = call("init_" + _script_name_to_function[task.script_name], task)
+			while func_return is GDScriptFunctionState && func_return.is_valid():
+				func_return = func_return.resume()
+			if (func_return):
+				current_delta = 0
+				ongoing_announce = task.script_name
+				ongoing_announce_object = script
+				set_announcer_minimum_time(3.0)
+			return #found one so we exit early	
 
 func init_receive_damage(script:ScriptTask) -> bool:
 	storage["arrows"] = []
@@ -182,16 +200,32 @@ func process_receive_damage() -> bool:
 	for arrow in arrows:
 		arrow._draw_targeting_arrow()
 	
-	if gameData.theStack.interrupt_mode ==\
-			GlobalScriptStack.InterruptMode.NOBODY_IS_INTERRUPTING:		
-		is_blocking = true
-		if current_delta > 	announcer_minimum_time:
-			return false
-
-	if gameData.theStack.interrupt_mode ==\
-			GlobalScriptStack.InterruptMode.HERO_IS_INTERRUPTING:
-		is_blocking = false
-	return true
+#	is_blocking = true
+#	if current_delta > 	announcer_minimum_time:
+#		return false
+#	return true
+	var interrupt_mode = gameData.theStack.interrupt_mode
+	match interrupt_mode:
+		GlobalScriptStack.InterruptMode.NOBODY_IS_INTERRUPTING :		
+			is_blocking = true
+			if current_delta > 	announcer_minimum_time:
+				return false
+			return true
+#		GlobalScriptStack.InterruptMode.HERO_IS_INTERRUPTING,\
+#		GlobalScriptStack.InterruptMode.FORCED_INTERRUPT_CHECK,\
+#		GlobalScriptStack.InterruptMode.OPTIONAL_INTERRUPT_CHECK:
+		_:
+			is_blocking = false
+			if !gameData.theStack.has_script(ongoing_announce_object) and\
+				 (current_delta > 	announcer_minimum_time):
+				return false
+			return true
+#		_:
+#			is_blocking = true
+#			if current_delta > 	announcer_minimum_time:
+#				return false
+#
+#			return true		
 	
 func cleanup_receive_damage():	
 	var arrows = storage["arrows"]

@@ -86,6 +86,7 @@ func display_debug(msg:String, prefix = "phase"):
 const StepStrings = [
 	"GAME_NOT_STARTED",
 	"PLAYER_MULLIGAN",
+	"GAME_READY",
 	"PLAYER_TURN",
 	"PLAYER_DISCARD",
 	"PLAYER_DRAW",
@@ -119,7 +120,7 @@ func update_text():
 	phaseLabel.text = StepStrings[current_step]
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready():	
 	gameData.registerPhaseContainer(self)
 	update_text()
 	
@@ -128,10 +129,10 @@ func _init():
 	scripting_bus.connect("step_started", self, "_step_started")
 	scripting_bus.connect("step_ended", self, "_step_ended")
 	if CFConst.SKIP_MULLIGAN:
-		current_step = CFConst.PHASE_STEP.PLAYER_TURN
+		current_step = CFConst.PHASE_STEP.GAME_READY
 	reset(true)
 
-func reset(reset_phase:= true):
+func reset(reset_phase:= true):	
 	for child in get_children():
 		remove_child(child)
 		child.queue_free()
@@ -215,31 +216,11 @@ func _process(_delta: float) -> void:
 		return		
 		
 	match current_step:
-		CFConst.PHASE_STEP.GAME_NOT_STARTED:
-			request_next_phase()
-		CFConst.PHASE_STEP.PLAYER_MULLIGAN:
-			request_next_phase()		
-		CFConst.PHASE_STEP.PLAYER_DISCARD:
-			request_next_phase()
-		CFConst.PHASE_STEP.PLAYER_DRAW:
-			request_next_phase()		
-		CFConst.PHASE_STEP.PLAYER_READY:
-			request_next_phase()					
-		CFConst.PHASE_STEP.PLAYER_END:
-			request_next_phase()
-		CFConst.PHASE_STEP.VILLAIN_THREAT:
-			request_next_phase()
-		CFConst.PHASE_STEP.VILLAIN_DEAL_ENCOUNTER:		
-			request_next_phase()			
-		CFConst.PHASE_STEP.VILLAIN_PASS_PLAYER_TOKEN:
-			request_next_phase()
-		CFConst.PHASE_STEP.VILLAIN_END:
-			request_next_phase()
-		CFConst.PHASE_STEP.ROUND_END:
-			request_next_phase()
 		CFConst.PHASE_STEP.SYSTEMS_CHECK:
 			if !gameData._multiplayer_desync:
-				request_next_phase()					
+				request_next_phase()	
+		_:
+			request_next_phase()				
 
 func offer_to_mulligan() -> void:
 	cfc.add_ongoing_process(self, "offer_to_mulligan")
@@ -317,9 +298,7 @@ func _step_started(
 			var hero_index = i+1
 			reset_hero_activation_for_step(hero_index)
 	
-	match step:
-		CFConst.PHASE_STEP.GAME_NOT_STARTED:
-			set_current_step_complete(true) # Do nothing		
+	match step:	
 		CFConst.PHASE_STEP.PLAYER_MULLIGAN:
 			offer_to_mulligan()
 		CFConst.PHASE_STEP.PLAYER_TURN:
@@ -340,14 +319,12 @@ func _step_started(
 			#_villain_activates()						
 		CFConst.PHASE_STEP.VILLAIN_DEAL_ENCOUNTER:
 			_deal_encounters()						
-		CFConst.PHASE_STEP.VILLAIN_PASS_PLAYER_TOKEN:
-			set_current_step_complete(true) # Do nothing
-		CFConst.PHASE_STEP.VILLAIN_END:
-			set_current_step_complete(true) # Do nothing
 		CFConst.PHASE_STEP.ROUND_END:
 			_round_end()
 		CFConst.PHASE_STEP.SYSTEMS_CHECK:
 			_systems_check()
+		_:
+			set_current_step_complete(true) # Do nothing				
 	return 0
 
 # a function to check if the phaseContainer is still running automatically
@@ -359,7 +336,7 @@ func is_in_progress()-> bool:
 
 #returns true if nothing prevents me (player) from *asking* for next phase	
 func is_ready_for_next_phase() -> bool :
-
+	
 	#don't move if the stack has something going on
 	#NOTE: calling theStack.is_processing() here doesn't work: if the stack is idle
 	#but not empty, it means it is waiting for some playing interruption
@@ -376,6 +353,9 @@ func is_ready_for_next_phase() -> bool :
 	
 	# if modal user input is being requested, can't move on
 	if (gameData.user_input_ongoing):
+		return false
+	
+	if cfc.get_modal_menu():
 		return false
 		
 	return true	

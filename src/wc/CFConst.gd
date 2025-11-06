@@ -409,6 +409,8 @@ const AUTO_KEYWORDS := {
 	"villainous" : "bool",						
 }
 
+const MAX_TEAM_SIZE:int = 4
+
 enum PHASE {
 	PLAYER,
 	VILLAIN
@@ -416,7 +418,8 @@ enum PHASE {
 
 enum PHASE_STEP {
 	GAME_NOT_STARTED,
-	PLAYER_MULLIGAN, 
+	PLAYER_MULLIGAN,
+	GAME_READY, #an additional step to make sure nothing runs before game is loaded	 
 	PLAYER_TURN, #turn loops here
 	PLAYER_DISCARD,
 	PLAYER_DRAW,
@@ -479,7 +482,7 @@ const SIGNAL_SERVER_REMOVE_HOST_URL = "https://wololo.net/wc/register.php?mode=d
 #set to true to help with breakpoints and debug
 const DISABLE_THREADS:= true 
 #this disables the announcer messages. Usually not recommended, but might help with speeding up tests
-const DISABLE_ANNOUNCER:= true
+const DISABLE_ANNOUNCER:= false
 #useful only for tests to accelerate the loading of the game and get to gameplay faster
 const SKIP_MULLIGAN:= true
 #if set to true, the system checks will only send hashed instead of 

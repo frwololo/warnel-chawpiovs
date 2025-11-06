@@ -170,7 +170,7 @@ func post_ready_load():
 	#Signals
 	scripting_bus.connect("current_playing_hero_changed", self, "_current_playing_hero_changed")
 
-	
+	hide_all_hands()
 	gameData.assign_starting_hero()
 
 	
@@ -219,6 +219,18 @@ func load_heroes():
 	for i in range (hero_count): 
 		heroZones[i+1].load_starting_identity()
 
+
+func hide_all_hands():
+	#exchange hands
+	for i in range (CFConst.MAX_TEAM_SIZE):
+		for v in ["GhostHand", "Hand"]:
+			var old_hand: Hand = get_node("%" + v + str(i+1))	
+			old_hand.remove_from_group("bottom") #todo fix hack
+			WCUtils.disable_and_hide_node(old_hand)
+			old_hand.re_place()	
+			old_hand.position = Vector2(20000, 20000)	
+
+	
 
 func init_hero_zones():
 	var hero_count: int = get_team_size()
@@ -387,7 +399,7 @@ func get_owner_from_pile_name(pile_name:String):
 	if pile_name.begins_with("encounters") or pile_name.begins_with("enemies"):
 		return 0 #villain
 		
-	for i in gameData.get_team_size():
+	for i in CFConst.MAX_TEAM_SIZE:
 		var hero_id = i+1
 		if (pile_name.ends_with(str(hero_id))):
 			return hero_id
@@ -581,6 +593,7 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 		new_hand.add_to_group("bottom")		
 		WCUtils.enable_and_show_node(new_hand)
 		new_hand.enable()	
+		new_hand.re_place()	
 
 	if (previous_hero_id == new_hero_id):
 		return

@@ -21,7 +21,7 @@ func _class_specific_ready():
 	scripting_bus.connect("scripting_event_triggered", self, "execute_scripts")
 
 
-func retrieve_scripts(trigger) -> Dictionary:
+func retrieve_scripts(trigger, filters:={}) -> Dictionary:
 	return script_definition.get(trigger, {})
 	
 func retrieve_all_scripts():

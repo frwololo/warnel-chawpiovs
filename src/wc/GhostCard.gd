@@ -21,7 +21,8 @@ func execute_scripts(
 	var passthrough_trigger = trigger_card
 	if passthrough_trigger == self:
 		passthrough_trigger = _real_card
-		
+	
+	trigger_details["override_controller_id"] = self.get_controller_hero_id()	
 	return _real_card.execute_scripts(passthrough_trigger, trigger, trigger_details, run_type)
 
 
@@ -39,8 +40,8 @@ func get_state_scripts(card_scripts, trigger_card, trigger_details):
 #
 # Returns a dictionary of card scripts for this specific card
 # based on the current trigger.
-func retrieve_scripts(trigger: String) -> Dictionary:
-	return _real_card.retrieve_scripts(trigger)
+func retrieve_scripts(trigger: String, filters:={}) -> Dictionary:
+	return _real_card.retrieve_scripts(trigger, filters)
 
 # Retrieves the card scripts either from those defined on the card
 # itself, or from those defined in the script definition files
@@ -69,8 +70,8 @@ func get_state_exec() -> String:
 # If it returns false, the card will be highlighted with a red tint, and the
 # player will not be able to drag it out of the hand.
 func check_play_costs() -> Color:
-	return .check_play_costs()
-
+	var result = .check_play_costs()
+	return result
 
 # Returns true is the card has hand_drag_starts_targeting set to true
 # is currently in hand, and has a targetting task.

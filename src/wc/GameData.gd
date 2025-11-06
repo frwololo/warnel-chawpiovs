@@ -111,6 +111,8 @@ func _ready():
 	get_tree().connect("server_disconnected", self, "_server_disconnected")
 	
 	theStack.connect("script_executed_from_stack", self, "_script_executed_from_stack")
+	theStack.connect("script_added_to_stack", self, "_script_added_to_stack")
+
 
 	self.add_child(theStack) #Stack needs to be in the tree for rpc calls	
 	self.add_child(theAnnouncer)
@@ -121,6 +123,9 @@ func _ready():
 func _all_clients_game_loaded(status):
 	rpc("start_phaseContainer")
 	pass
+
+func _script_added_to_stack (script):
+	theAnnouncer.announce_from_stack(script)
 
 func _script_executed_from_stack (script):
 	if script.get_first_task_name() == "enemy_attack":
@@ -1049,6 +1054,9 @@ func hero_died(card:Card):
 	dead_heroes.append(card.get_owner_hero_id())
 	if (dead_heroes.size() == team.size()):
 		defeat()
+	else:
+		#for now if one hero dies, we lose. Will see what I do about this later
+		defeat()
 
 func move_to_next_villain(current_villain):
 	cfc.add_ongoing_process(self, "move_to_next_villain")
@@ -1388,7 +1396,7 @@ remotesync func start_phaseContainer():
 	phaseContainer.start_current_step()
 
 func display_debug(msg, prefix = ""):
-	if(phaseContainer):
+	if(phaseContainer and is_instance_valid(PhaseContainer)):
 		phaseContainer.display_debug(msg, prefix)
 
 	print_debug(prefix + msg)

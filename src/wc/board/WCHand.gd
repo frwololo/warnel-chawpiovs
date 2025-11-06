@@ -107,11 +107,14 @@ func _adjust_collision_area() -> void:
 	else:
 		pass
 
+func get_my_hero_id():
+	var hero_id = self.name.substr(self.name.length()-1)
+	return int(hero_id)
+
 func reorganize_hands():
 	if self.name.to_lower().begins_with("ghost"):
-		self.re_place()
-		var hero_id = self.name.substr(self.name.length()-1)
-		cfc.NMAP["hand" + hero_id].re_place()	
+		self.re_place()	
+		cfc.NMAP["hand" + str(get_my_hero_id())].re_place()	
 		
 func add_child(node:Node, legible_unique_name:bool=false):
 	.add_child(node, legible_unique_name)
@@ -135,7 +138,7 @@ func retrieve_ghostable_scripts(card):
 	if !parent.is_in_group("player_discard"):
 		return	null
 		
-	var card_scripts = card.retrieve_scripts("manual")
+	var card_scripts = card.retrieve_scripts("manual", {"requesting_hero_id" :  get_my_hero_id()})
 	if !card_scripts:
 		return null
 		
@@ -155,7 +158,7 @@ func check_ghost_card(card):
 	var scripts = retrieve_ghostable_scripts(card)
 	if (scripts):
 		if (!has_card):
-			has_card = cfc.instance_ghost_card(card)
+			has_card = cfc.instance_ghost_card(card, get_my_hero_id())
 			add_child(has_card)
 	else:
 		if (has_card):

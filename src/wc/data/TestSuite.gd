@@ -145,11 +145,11 @@ func reset():
 	skipped_reason = []
 	finished = false
 
-		
+	gameData.theAnnouncer.skip_announcer()	
+			
 	if 1 != get_tree().get_network_unique_id():
 		return
 		
-	gameData.theAnnouncer.skip_announcer()			
 	load_test_files()
 	var _next = next_test()
 		
@@ -167,27 +167,22 @@ func create_text_edit():
 	text_edit.rect_min_size = Vector2(300, 200)  # Set minimum size
 	text_edit.wrap_enabled = true  # Enable text wrapping
 	cfc.NMAP.board.add_child(text_edit)  # Add it to the current scene
-	text_edit.anchor_left = 0.75
-	text_edit.anchor_right = 1
-	text_edit.anchor_top = 0.5
+
+	text_edit.anchor_left = 0.5
+	text_edit.anchor_right = 0.9
+	text_edit.anchor_top = 0
+	text_edit.anchor_bottom = 0.2
+	
 	text_edit.set_syntax_coloring(true)
 	text_edit.add_color_override("number_color", Color(0.88, 0.88, 0.88))
 	text_edit.add_color_override("function_color", Color(0.88, 0.88, 0.88))
 	text_edit.add_color_override("member_variable_color", Color(0.88, 0.88, 0.88))
 	text_edit.add_color_region("<", ">", Color(1,1,0))
-	_reposition_text_edit()
+
 	#text_edit.anchor_bottom = 0.5	
 
-func _reposition_text_edit():
-	var other_text = gameData.phaseContainer.text_edit
-	if other_text and other_text.visible:
-		text_edit.anchor_left = 0.5
-		text_edit.anchor_right = 0.9
-		text_edit.anchor_top = 0
-		text_edit.anchor_bottom = 0.2
 
 func announce(text:String, include_test_number:= true):
-	_reposition_text_edit()
 	if include_test_number:
 		if !ANNOUNCE_VERBOSE and not "running" in text:
 			return
@@ -448,7 +443,7 @@ remotesync func run_action(my_action:Dictionary):
 		"pass":
 			action_pass(action_hero)			
 		"other":
-			action_other(action_hero)
+			action_other(action_value)
 		_:
 			#TODO error
 			var _error = 1
@@ -563,21 +558,24 @@ func get_card(card_id_or_name:String):
 			continue
 		if card.canonical_id == card_id:
 			return card 
-		
+
+	#search in hero ghosthands in priority
 	for i in range(gameData.get_team_size()):
 		var hero_id = i+1
 
-		#search in hero ghosthands in priority
 		var hand_name = "ghosthand" + str(hero_id)
 		var pile:CardContainer = cfc.NMAP.get(hand_name)
 		var card:WCCard = get_card_from_pile(card_id_or_name,  pile)	
 		if (card and is_instance_valid(card)):
 			return card	
+		
+	for i in range(gameData.get_team_size()):
+		var hero_id = i+1
 
 		#search in hero hands
-		hand_name = "hand" + str(hero_id)
-		pile = cfc.NMAP.get(hand_name)
-		card = get_card_from_pile(card_id_or_name, pile)	
+		var hand_name = "hand" + str(hero_id)
+		var pile = cfc.NMAP.get(hand_name)
+		var card = get_card_from_pile(card_id_or_name, pile)	
 		if (card and is_instance_valid(card)):
 			return card	
 		

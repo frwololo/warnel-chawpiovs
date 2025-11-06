@@ -77,7 +77,7 @@ func move_card_to_board(script: ScriptTask) -> int:
 	
 	#Replace all occurrences of un_numberd "discard", etc... with the actual id
 	#This ensures we use e.g. the correct discard pile, etc...
-	var owner_hero_id = script.owner.get_owner_hero_id()
+	var owner_hero_id = script.trigger_details.get("override_controller_id", script.owner.get_owner_hero_id())
 	
 	for zone in CFConst.HERO_GRID_SETUP:
 		#TODO move to const
@@ -820,8 +820,11 @@ func add_script(script: ScriptTask) -> int:
 	var end_condition = script.get_property("end_condition", "")
 	var subjects = script.subjects
 	
+	var this_card = script.owner
+	var my_hero_id = this_card.get_controller_hero_id()
+	
 	for subject in subjects:
-		var subscript_id = subject.add_extra_script(subscript)
+		var subscript_id = subject.add_extra_script( subscript, my_hero_id)
 		if (end_condition):
 				gameData.theGameObserver.add_script_removal_effect(script, subject, subscript_id, end_condition)
 	
@@ -835,6 +838,7 @@ func message(script: ScriptTask) -> int:
 	msg_dialog.popup_centered()	
 	
 	return CFConst.ReturnCode.OK
+
 
 #returns thecurrent hero id based on a script.
 #typically that's the hero associated to the script owner

@@ -27,9 +27,14 @@ var spinbox
 #healthbar on top of characters, allies, villains, etc...
 var healthbar
 
-func add_extra_script(script_definition):
+func add_extra_script(script_definition, allowed_hero_id = 0):
 	extra_script_uid+= 1
-	extra_scripts[extra_script_uid] = script_definition
+	extra_scripts[extra_script_uid] = {
+		"script_definition" : script_definition
+	}
+	if allowed_hero_id:
+		extra_scripts[extra_script_uid]["controller_id"] = allowed_hero_id
+		
 	check_ghost_card()
 	return extra_script_uid
 
@@ -391,10 +396,12 @@ func execute_scripts(
 		if !(trigger in (can_i_run)):
 			return null	
 
-
+	if trigger_details.get("override_controller_id", 0):
+		pass
+	else:
 	#can only trigger if I'm the controller of the abilityor if enemy card (will send online to other clients)
-	if !gameData.can_i_play_this_ability(self):
-		return
+		if !gameData.can_i_play_this_ability(self):
+			return
 		
 	#enemy cards, multiple players can react except when they're the specific target
 	if self.get_controller_hero_id() <= 0:
@@ -734,8 +741,10 @@ func check_play_costs() -> Color:
 # Used to hijack the scripts at runtime if needed
 # Current use case: check manapool before asking to pay for cards
 func common_pre_run(_sceng) -> void:
-	var controller_hero_id = self.get_controller_hero_id()
-		
+	var trigger_details = _sceng.trigger_details
+	
+	var controller_hero_id = trigger_details.get("override_controller_id", self.get_controller_hero_id())
+	
 	var scripts_queue: Array = _sceng.scripts_queue
 	var new_queue: Array = []
 	for task in scripts_queue:
@@ -770,7 +779,7 @@ func common_pre_run(_sceng) -> void:
 			# 2) empty the manapool
 			"pay_cost",\
 			"pay_regular_cost":
-				var new_script = pay_regular_cost_replacement(script_definition)
+				var new_script = pay_regular_cost_replacement(script_definition, trigger_details)
 				if (new_script) :
 					script.script_definition = new_script
 					script.script_name = script.get_property("name") #TODO something cleaner? Maybe part of the script itself?
@@ -797,8 +806,8 @@ func common_pre_run(_sceng) -> void:
 	_sceng.scripts_queue = new_queue	
 
 #TODO cleanup, probably doesn't need to be a replacement
-func pay_regular_cost_replacement(script_definition: Dictionary) -> Dictionary:	
-	var owner_hero_id = self.get_owner_hero_id()
+func pay_regular_cost_replacement(script_definition: Dictionary, trigger_details) -> Dictionary:	
+	var owner_hero_id = trigger_details.get("override_controller_id", self.get_owner_hero_id())
 
 	# For cards owned by the Villain, owner_hero_id is zero.
 	# we set it to the current playing hero, meaning the currently active user
@@ -897,7 +906,7 @@ func can_execute_scripts():
 	
 
 #returns scripts specific to this instance
-func get_instance_runtime_scripts(trigger:String = "") -> Dictionary:
+func get_instance_runtime_scripts(trigger:String = "", filters:={}) -> Dictionary:
 	#if we have no extra scripts we stick with parent behavior
 	if !extra_scripts:
 		return .get_instance_runtime_scripts(trigger)
@@ -909,8 +918,12 @@ func get_instance_runtime_scripts(trigger:String = "") -> Dictionary:
 		merged_scripts = cfc.set_scripts.get(canonical_id,{}).duplicate(true)
 	
 	#additional scripts to merge with what we found
+	var requesting_hero_id = filters.get("requesting_hero_id", 0) 
 	for key in extra_scripts:
-		var extra_script = extra_scripts[key]
+		var extra_script = extra_scripts[key]["script_definition"]
+		var controller_id = extra_scripts[key].get("controller_id", 0)
+		if requesting_hero_id and controller_id and (requesting_hero_id != controller_id):
+			continue
 		merged_scripts = WCUtils.merge_dict(merged_scripts, extra_script, true)
 
 	var found_scripts = {}

@@ -61,4 +61,4 @@ func count_found_things() -> int:
 	if (total_max):
 		#warning-ignore:NARROWING_CONVERSION
 		found_count = min(total_max, found_count)
-	return(int(found_count * multiplier))
+	return(found_count)

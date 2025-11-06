@@ -671,9 +671,9 @@ func get_sub_image(card_id, area):
 	var sub_img = img_data.get_rect(area) #Todo more flexible?
 	return sub_img		
 
-func instance_ghost_card(original_card) -> Card:
+func instance_ghost_card(original_card, controller_id) -> Card:
 	var card_id = original_card.canonical_id
-	var owner_id = original_card.get_owner_hero_id()
+	#var owner_id = original_card.get_owner_hero_id()
 	var card = ._instance_card(card_id)
 	card.set_script(load("res://src/wc/GhostCard.gd"))
 	card.canonical_name = card_definitions[card_id]["Name"]
@@ -682,8 +682,8 @@ func instance_ghost_card(original_card) -> Card:
 	#TODO We set GUID here in the hope that all clients create their cards in the exact 
 	#same order. This might be a very flawed assertion could need a significant overhaul	
 	var _tmp = guidMaster.set_guid(card)
-	card.init_owner_hero_id(owner_id)
-	card.set_controller_hero_id(owner_id)	
+	card.init_owner_hero_id(controller_id)
+	card.set_controller_hero_id(controller_id)	
 	return card
 
 func instance_card(card_id: String, owner_id:int) -> Card:

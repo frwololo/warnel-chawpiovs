@@ -395,9 +395,12 @@ func execute_scripts(
 	else:
 		if !(trigger in (can_i_run)):
 			return null	
+	
 
-	if trigger_details.get("override_controller_id", 0):
-		pass
+	var override_controller_id = trigger_details.get("override_controller_id", 0)
+	if override_controller_id:
+		if gameData.get_current_local_hero_id() != override_controller_id:
+			return 
 	else:
 	#can only trigger if I'm the controller of the abilityor if enemy card (will send online to other clients)
 		if !gameData.can_i_play_this_ability(self):
@@ -867,6 +870,7 @@ func get_grid_name():
 func can_change_form() -> bool:
 	return _can_change_form
 
+
 func copy_tokens_to(to_card:WCCard, details:= {}):
 	var exclude = details.get("exclude",[])
 	var my_tokens = tokens.get_all_tokens()
@@ -876,16 +880,32 @@ func copy_tokens_to(to_card:WCCard, details:= {}):
 		var count = tokens.get_token_count(token_name)
 		to_card.tokens.mod_token(token_name, count, true)	
 #a way to copy all modifications of this card to another card
-#used e.g. when flipping card 	
+#used e.g. when flipping card
+func export_modifiers():
+	var result = {
+		"tokens" : tokens.export_to_json(),
+		"exhausted" : self.is_exhausted(),
+		"can_change_form": self._can_change_form
+	}
+	return result
+
+func import_modifiers(modifiers:Dictionary):
+	var token_data = modifiers.get("tokens", {})
+	if token_data:
+		tokens.load_from_json(token_data)
+	
+	if modifiers.has("exhausted"):
+		if modifiers["exhausted"]:
+			exhaustme()
+		else:
+			readyme()
+			
+	self._can_change_form = modifiers.get("can_change_form", self._can_change_form)	
+		
+	
 func copy_modifiers_to(to_card:WCCard):
-	#TODO status cards
-	#TODO attachments
-	#tokens (including damage)
-	copy_tokens_to(to_card)
-	#state (exhausted)
-	to_card.set_card_rotation(self.card_rotation)
-	#change form
-	to_card._can_change_form = self._can_change_form
+	var modifiers = export_modifiers()
+	to_card.import_modifiers(modifiers)
 
 func draw_boost_card():
 	var villain_deck:Pile = cfc.NMAP["deck_villain"]

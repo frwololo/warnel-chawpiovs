@@ -7,12 +7,14 @@ extends Node
 
 #smaller numbers means the tests will run faster, but might lead to issues
 #to visually see what a test is doing, set this value to e.g. 1.0 or 1.5
-# note: 0.1 has failures
-#Note this gets modified to 0.2 for speedy tests 
-# if adapt_speed_to_number_of_tests is set to true
 var min_time_between_steps: float = 2
+#if set to true, the min_time_between_steps value above will be replaced
+#with either sped_up_time_between_steps or multiplayer_sped_up_time_between_steps
+# (depending on 1 instance running or more), to run tests
+#faster if there are lots of them
 const adapt_speed_to_number_of_tests := true
 const sped_up_time_between_steps: float = 0.2
+const multiplayer_sped_up_time_between_steps: float = 0.5
 
 var time_between_tests = 0.3 #waiting between tests to clean stuff up
 #long amount of time to wait if the game state is not the one we expect
@@ -23,7 +25,7 @@ const short_wait_time: = 0.4 #below 0.4 has had failures formultiplayer
 const max_wait_time: = 2
 const shorten_animations = true
 const STOP_AFTER_FIRST_FAILURE = true
-const ANNOUNCE_VERBOSE = false
+var announce_verbose = false
 
 var start_time = 0
 var end_time = 0
@@ -184,7 +186,7 @@ func create_text_edit():
 
 func announce(text:String, include_test_number:= true):
 	if include_test_number:
-		if !ANNOUNCE_VERBOSE and not "running" in text:
+		if !announce_verbose and not "running" in text:
 			return
 		text = str(current_test) + "/"+ str(test_files.size()) +"-" + text
 	text_edit.text += text
@@ -733,8 +735,13 @@ func load_test_files():
 		test_files += (CFUtils.list_files_in_directory(
 				"user://Test/", "test_", true))
 
-	if (adapt_speed_to_number_of_tests) and (test_files.size() >= 5) :
-		min_time_between_steps = sped_up_time_between_steps
+	if (adapt_speed_to_number_of_tests):
+		if (test_files.size() >= 5) :
+			min_time_between_steps = sped_up_time_between_steps
+			if gameData.is_multiplayer_game:
+				min_time_between_steps = multiplayer_sped_up_time_between_steps
+		if (test_files.size() < 2):
+			announce_verbose = true
 	file.close()		
 
 #Lightweight initialize remote clients with just enough data for them to run the final state comparison

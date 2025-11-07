@@ -425,7 +425,7 @@ func _initiate_card_targeting() -> Card:
 	var valid_targets = []
 	#TODO also check cards in piles ?
 	for c in all_cards:
-		var _is_valid = SP.check_validity(c, script_definition, "subject")
+		var _is_valid = SP.check_validity(c, script_definition, "subject", self)
 		if (_is_valid):
 			valid_targets.append(c)
 	

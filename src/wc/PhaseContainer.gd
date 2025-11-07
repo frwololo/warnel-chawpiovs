@@ -310,8 +310,7 @@ func _step_started(
 		CFConst.PHASE_STEP.PLAYER_READY:
 			_player_ready()						
 		CFConst.PHASE_STEP.PLAYER_END:
-			scripting_bus.emit_signal("phase_ended", {"phase": "player"})
-			set_current_step_complete(true) # Do nothing
+			_player_end()
 		CFConst.PHASE_STEP.VILLAIN_THREAT:
 			_villain_threat()
 		CFConst.PHASE_STEP.VILLAIN_ACTIVATES:
@@ -356,6 +355,9 @@ func is_ready_for_next_phase() -> bool :
 		return false
 	
 	if cfc.get_modal_menu():
+		return false
+	
+	if cfc.NMAP.board.are_cards_still_animating():
 		return false
 		
 	return true	
@@ -453,6 +455,11 @@ func _deal_encounters():
 	#yield(get_tree().create_timer(2), "timeout")
 	set_current_step_complete(true)
 	pass
+
+func _player_end():
+	scripting_bus.emit_signal("phase_ended", {"phase": "player"})
+	#give time to create the discard option
+	set_current_step_complete(true) # Do nothing	
 
 func _round_end():
 	scripting_bus.emit_signal("phase_ended", {"phase": "villain"})

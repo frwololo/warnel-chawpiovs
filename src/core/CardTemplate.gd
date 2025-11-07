@@ -1381,7 +1381,7 @@ func move_to(targetHost: Node,
 			# If the card was hosted in a board placement grid
 			# we clean the references.
 			if _placement_slot:
-					_placement_slot.set_occupying_card(null)
+					_placement_slot.remove_occupying_card(self)
 					_placement_slot = null
 	else:
 		# Here we check what to do if the player just moved the card back
@@ -1416,7 +1416,7 @@ func move_to(targetHost: Node,
 					# in specific grids, and the player tried to drag it
 					# Manually to a different grid
 					if _placement_slot != null:
-						_placement_slot.set_occupying_card(null)
+						_placement_slot.remove_occupying_card(self)
 					_set_target_position(board_position.rect_global_position)
 					board_position.set_occupying_card(self)
 					_placement_slot = board_position
@@ -1428,7 +1428,7 @@ func move_to(targetHost: Node,
 						_determine_target_position_from_mouse()
 					set_state(CardState.ON_PLAY_BOARD)
 					if _placement_slot:
-							_placement_slot.set_occupying_card(null)
+							_placement_slot.remove_occupying_card(self)
 							_placement_slot = null
 				raise()
 		elif parentHost == targetHost and index != get_my_card_index():
@@ -1812,7 +1812,7 @@ func attach_to_host(
 					{"host": current_host_card, "tags": tags})
 		# If card was on a grid slot, we clear that occupation
 		if _placement_slot:
-			_placement_slot.set_occupying_card(null)
+			_placement_slot.remove_occupying_card(self)
 			_placement_slot = null
 		current_host_card = host
 		# Once we selected the host, we don't need anything in the array anymore
@@ -2884,6 +2884,12 @@ func _process_card_state() -> void:
 				scripting_bus.emit_signal("card_spawned", self, {"tags": ["Scripted", "Spawned"]})
 				spawn_destination = null
 
+func is_animating():
+	if _tween and _tween.is_active():
+		return true
+	if _flip_tween and _flip_tween.is_active():
+		return true
+	return false
 
 # Get the angle on the ellipse
 func _get_angle_by_index(index_diff = null) -> float:
@@ -3059,7 +3065,7 @@ func _on_tree_exiting():
 	if cfc.NMAP.has("main"):
 		cfc.NMAP.main.unfocus(self)
 	if _placement_slot:
-		_placement_slot.set_occupying_card(null)
+		_placement_slot.remove_occupying_card(self)
 		_placement_slot = null
 
 #We remove all signals from the card

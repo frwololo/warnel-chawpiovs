@@ -1,74 +1,77 @@
-{	"Advance": {
+{
+	"Advance": {
 		"reveal": {
 			"all": [
-				{	
+				{
 					"name": "scheme",
-					"subject": "villain",
-				},
+					"subject": "villain"
+				}
 			]
-		},
+		}
 	},
-	
 	"Alpha Flight Station": {
 		"manual": {
 			"board": {
-				"Discard 1, Draw 1":[
-					{	
+				"Discard 1, Draw 1": [
+					{
 						"name": "constraints",
 						"is_cost": true,
-						"tags": ["hero_action"]
-					},			
+						"tags": [
+							"hero_action"
+						]
+					},
 					{
 						"name": "exhaust_card",
 						"subject": "self",
-						"is_cost": true,
+						"is_cost": true
 					},
 					{
-						"name" : "move_card_to_container",
+						"name": "move_card_to_container",
 						"dest_container": "discard",
 						"is_cost": true,
 						"subject": "index",
 						"subject_count": "all",
 						"selection_count": 1,
-						"selection_type": "equal",					
+						"selection_type": "equal",
 						"needs_selection": true,
 						"src_container": "hand"
 					},
 					{
-						"name" : "draw_cards",
-						"amount": 1,
-					},
+						"name": "draw_cards",
+						"amount": 1
+					}
 				],
-				"Discard 1, Draw 2":[
-					{	
+				"Discard 1, Draw 2": [
+					{
 						"name": "constraints",
 						"is_cost": true,
-						"tags": ["alter_ego_action"]
-					},			
+						"tags": [
+							"alter_ego_action"
+						]
+					},
 					{
 						"name": "exhaust_card",
 						"subject": "self",
-						"is_cost": true,
+						"is_cost": true
 					},
 					{
-						"name" : "move_card_to_container",
+						"name": "move_card_to_container",
 						"dest_container": "discard",
 						"is_cost": true,
 						"subject": "index",
 						"subject_count": "all",
 						"selection_count": 1,
-						"selection_type": "equal",					
+						"selection_type": "equal",
 						"needs_selection": true,
 						"src_container": "hand"
 					},
 					{
-						"name" : "draw_cards",
-						"amount": 2,
-					},
-				],				
-				
-			},
-		},
+						"name": "draw_cards",
+						"amount": 2
+					}
+				]
+			}
+		}
 	},
 	"Armored Rhino Suit": {
 		"card_moved_to_board": {
@@ -76,23 +79,24 @@
 			"board": [
 				{
 					"name": "modify_properties",
-					"tags": ["Init"],
+					"tags": [
+						"Init"
+					],
 					"subject": "self",
-					"set_properties" :{
-						"health" : 5
+					"set_properties": {
+						"health": 5
 					}
 				},
-			
 				{
-					"name" : "attach_to_card",
-					"subject": "villain",	
+					"name": "attach_to_card",
+					"subject": "villain"
 				}
 			]
 		},
 		"interrupt": {
 			"event_name": "receive_damage",
 			"event_filters": {
-				"target": "villain",
+				"target": "villain"
 			},
 			"board": [
 				{
@@ -107,83 +111,95 @@
 	},
 	"Assault": {
 		"reveal": {
-			"all" : [
-				{	
+			"all": [
+				{
 					"name": "constraints",
 					"is_cost": true,
-					"tags": ["hero_form"]
+					"tags": [
+						"hero_form"
+					]
 				},
 				{
-					"name" : "villain_attacks_you",
+					"name": "villain_attacks_you"
 				},
 				{
-					"name" : "surge",
+					"name": "surge",
 					"is_else": true
-				},
+				}
 			]
 		}
-	},	
+	},
 	"Aunt May": {
 		"manual": {
 			"board": [
-				{	
+				{
 					"name": "constraints",
 					"is_cost": true,
-					"tags": ["alter_ego_action"]
+					"tags": [
+						"alter_ego_action"
+					]
 				},
 				{
 					"name": "exhaust_card",
 					"subject": "self",
-					"is_cost" : true,
-				},							
+					"is_cost": true
+				},
 				{
 					"name": "heal",
 					"amount": 4,
 					"subject": "boardseek",
 					"subject_count": 1,
-					"filter_state_seek": [{
-						"filter_properties": {
-							"Name" : "Peter Parker"
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Peter Parker"
+							}
 						}
-					}]
-				}	
+					]
+				}
 			]
-		},
+		}
 	},
 	"Avengers Mansion": {
 		"manual": {
 			"board": [
-				{	
+				{
 					"name": "constraints",
 					"is_cost": true,
-					"tags": ["action_ability"]
-				},			
+					"tags": [
+						"action_ability"
+					]
+				},
 				{
 					"name": "exhaust_card",
 					"subject": "self",
-					"is_cost" : true,
-				},							
+					"is_cost": true
+				},
 				{
-					"name" : "draw_cards",
+					"name": "draw_cards",
 					"amount": 1,
 					"subject": "boardseek",
 					"subject_count": "all",
 					"selection_count": 1,
-					"selection_type": "equal",					
+					"selection_type": "equal",
 					"needs_selection": true,
-					"filter_state_seek": [{
-							"filter_group" : "group_identities"
-					}]
-				}	
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
 			]
-		},
-	},	
+		}
+	},
 	"Backflip": {
 		"interrupt": {
 			"event_name": "receive_damage",
 			"event_filters": {
 				"target": "my_hero",
-				"tags": ["attack"]
+				"tags": [
+					"attack"
+				]
 			},
 			"is_optional_hand": true,
 			"hand": [
@@ -199,15 +215,15 @@
 			"trigger": "self",
 			"board": [
 				{
-					"name" : "move_card_to_container",
+					"name": "move_card_to_container",
 					"subject": "tutor",
 					"subject_index": "top",
 					"subject_count": 2,
 					"src_container": "deck",
-					"dest_container": "discard",
+					"dest_container": "discard"
 				},
 				{
-					"name" : "move_card_to_container",
+					"name": "move_card_to_container",
 					"subject": "previous",
 					"subject_count": "all",
 					"filter_each_previous_subject": "true",
@@ -216,275 +232,302 @@
 						{
 							"filter_properties": {
 								"resource_mental": 1,
-								"comparison":"ge"
+								"comparison": "ge"
 							}
 						}
 					]
-				},		
-				
+				}
 			]
-		},
+		}
 	},
-	"Bomb Scare"	: {
+	"Bomb Scare": {
 		"reveal": {
 			"all": [
 				{
-					"name" : "mod_tokens",
+					"name": "mod_tokens",
 					"token_name": "threat",
-					"modification" :1,				
-					"subject": "self",
+					"modification": 1,
+					"subject": "self"
 				}
 			]
-		},				
-	},	
-	"Breakin' & Takin'"	: {
+		}
+	},
+	"Breakin' & Takin'": {
 		"reveal": {
 			"all": [
 				{
-					"name" : "mod_tokens",
+					"name": "mod_tokens",
 					"token_name": "threat",
-					"modification" :1,				
-					"subject": "self",
+					"modification": 1,
+					"subject": "self"
 				}
 			]
-		},				
+		}
 	},
 	"Captain Marvel": {
-		"once_per_round" : {
+		"once_per_round": {
 			"__name__": "_marvel_draw"
 		},
 		"manual": {
 			"board": {
 				"Draw 1": [
-					{	
+					{
 						"name": "constraints",
 						"is_cost": true,
-						"tags": ["action_ability"]
-					},				
+						"tags": [
+							"action_ability"
+						]
+					},
 					{
 						"name": "mod_tokens",
 						"subject": "self",
 						"modification": -1,
-						"token_name":  "_marvel_draw",
-						"is_cost": true,
-					},			
+						"token_name": "_marvel_draw",
+						"is_cost": true
+					},
 					{
 						"name": "pay_cost",
-						"cost": {"energy" :1},
-						"is_cost" : true,
+						"cost": {
+							"energy": 1
+						},
+						"is_cost": true
 					},
 					{
 						"name": "heal",
 						"subject": "self",
 						"amount": 1,
-						"is_cost" : true,
+						"is_cost": true
 					},
 					{
 						"name": "draw_cards",
 						"amount": 1
-					},
+					}
 				]
-			},
+			}
 		}
 	},
-	"Captain Marvel's Helmet": {	
+	"Captain Marvel's Helmet": {
 		"alterants": {
 			"board": [
-				{					
-					"filter_task" : "get_property",
-					"filter_property_name" : "defense",
-					"filter_state_trigger" : [{
-						"filter_properties":{
-							"Name" : "Captain Marvel"
-						}, 
-					}],
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"Name": "Captain Marvel"
+							}
+						}
+					],
 					"alteration": 1
 				},
-				{					
-					"filter_task" : "get_property",
-					"filter_property_name" : "defense",
-					"filter_state_trigger" : [{
-						"filter_properties" : {
-							"comparison": "gt",
-							"trait_aerial" : 0
-						},
-						"filter_properties2":{
-							"Name" : "Captain Marvel"
-						}, 
-					}],
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"comparison": "gt",
+								"trait_aerial": 0
+							},
+							"filter_properties2": {
+								"Name": "Captain Marvel"
+							}
+						}
+					],
 					"alteration": 1
-				},					
+				}
 			]
-		}		
-	},	
+		}
+	},
 	"Carol Danvers": {
-		"once_per_round" : {
+		"once_per_round": {
 			"__name__": "_carol_draw"
 		},
 		"manual": {
 			"board": {
-				"Draw 1": [	
-					{	
+				"Draw 1": [
+					{
 						"name": "constraints",
 						"is_cost": true,
-						"tags": ["action_ability"]
-					},			
+						"tags": [
+							"action_ability"
+						]
+					},
 					{
 						"name": "mod_tokens",
 						"subject": "self",
 						"modification": -1,
-						"token_name":  "_carol_draw",
-						"is_cost": true,
-					},			
+						"token_name": "_carol_draw",
+						"is_cost": true
+					},
 					{
-						"name" : "draw_cards",
+						"name": "draw_cards",
 						"amount": 1,
 						"subject": "boardseek",
 						"subject_count": "all",
 						"selection_count": 1,
-						"selection_type": "equal",					
+						"selection_type": "equal",
 						"needs_selection": true,
-						"filter_state_seek": [{
-								"filter_group" : "group_identities"
-						}]
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						]
 					}
 				]
-			},
+			}
 		}
-	},		
+	},
 	"Caught Off Guard": {
 		"reveal": {
-			"all" : [
-				{	
+			"all": [
+				{
 					"name": "constraints",
 					"is_cost": true,
-					"tags": ["hero_form"]
+					"tags": [
+						"hero_form"
+					]
 				},
 				{
-					"name" : "move_card_to_container",
+					"name": "move_card_to_container",
 					"dest_container": "discard",
 					"is_cost": true,
 					"subject": "boardseek",
 					"subject_count": "all",
 					"selection_count": 1,
-					"selection_type": "equal",					
+					"selection_type": "equal",
 					"needs_selection": true,
 					"filter_state_seek": [
 						{
-							"filter_same_controller" : true,
-							"filter_properties" : {"type_code" : "support"},
+							"filter_same_controller": true,
+							"filter_properties": {
+								"type_code": "support"
+							}
 						},
 						{
-							"filter_same_controller" : true,
-							"filter_properties" : {"type_code" : "upgrade"},
-						},
+							"filter_same_controller": true,
+							"filter_properties": {
+								"type_code": "upgrade"
+							}
+						}
 					]
 				},
 				{
-					"name" : "surge",
+					"name": "surge",
 					"is_else": true
-				},
+				}
 			]
 		}
-	},	
+	},
 	"Charge": {
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
-					"name" : "attach_to_card",
-					"subject": "villain",	
+					"name": "attach_to_card",
+					"subject": "villain"
 				}
 			]
 		},
 		"alterants": {
 			"board": [
-				{					
-					"filter_task" : "get_property",
-					"filter_property_name" : "attack",
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
 					"trigger": "host",
 					"alteration": 3
 				},
-				{					
-					"filter_task" : "get_property",
-					"filter_property_name" : "overkill",
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "overkill",
 					"trigger": "host",
 					"alteration": 1
-				},				
-				
+				}
 			]
-		},		
-		"enemy_attack_happened" : {
+		},
+		"enemy_attack_happened": {
 			"board": [
 				{
-					"name" : "move_card_to_container",
+					"name": "move_card_to_container",
 					"dest_container": "discard_villain",
 					"subject": "self"
 				}
 			],
-			"filter_state_trigger": [{
-				"filter_properties" : {"type_code" : "villain"}
-			}]
-		},
-	},	
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "villain"
+					}
+				}
+			]
+		}
+	},
 	"Combat Training": {
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
-					"name" : "move_to_player_zone",
+					"name": "move_to_player_zone",
 					"subject": "boardseek",
 					"subject_count": "all",
 					"selection_count": 1,
-					"selection_type": "equal",					
+					"selection_type": "equal",
 					"needs_selection": true,
-					"filter_state_seek": [{
-							"filter_group" : "group_identities"
-					}]
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
 				}
 			]
-		},		
+		},
 		"alterants": {
 			"board": [
-				{					
-					"filter_task" : "get_property",
-					"filter_property_name" : "attack",
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
 					"filter_same_controller": true,
-					"filter_state_trigger" : [{
-						"filter_group" : "group_identities",
-					}],
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
 					"alteration": 1
 				}
 			]
-		}		
+		}
 	},
-	"Cosmic Flight": {	
+	"Cosmic Flight": {
 		"alterants": {
 			"board": [
-				{					
-					"filter_task" : "get_property",
-					"filter_property_name" : "trait_aerial",
-					"filter_state_trigger" : [{
-						"filter_card_name" : "Captain Marvel",
-					}],
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_aerial",
+					"filter_state_trigger": [
+						{
+							"filter_card_name": "Captain Marvel"
+						}
+					],
 					"alteration": 1
-				},
-			
+				}
 			]
 		},
 		"interrupt": {
 			"event_name": "receive_damage",
 			"event_filters": {
 				"target": "my_hero",
-				"tags": ["attack"]
+				"tags": [
+					"attack"
+				]
 			},
 			"is_optional_board": true,
 			"board": [
 				{
-					"name" : "move_card_to_container",
+					"name": "move_card_to_container",
 					"dest_container": "discard",
 					"subject": "self",
-					"is_cost": true,
+					"is_cost": true
 				},
 				{
 					"name": "prevent",
@@ -493,193 +536,229 @@
 				}
 			]
 		}
-	},	
+	},
 	"Daredevil - Matt Murdock": {
-		"thwarted":{
-			"trigger" : "self",
+		"thwarted": {
+			"trigger": "self",
 			"is_optional_board": true,
 			"board": [
 				{
-					"name" : "deal_damage",
+					"name": "deal_damage",
 					"subject": "target",
-					"amount" : 1,
+					"amount": 1,
 					"needs_subject": true,
-					"filter_state_subject": [{
-						"filter_group" : "group_enemies"
-					}],
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
 				}
 			]
 		}
 	},
 	"Energy Channel": {
-		"manual":{
+		"manual": {
 			"board": {
 				"add 1 energy": [
-					{	
+					{
 						"name": "constraints",
 						"is_cost": true,
-						"tags": ["action_ability"]
+						"tags": [
+							"action_ability"
+						]
 					},
 					{
 						"name": "pay_cost",
-						"cost": {"energy" :1},
-						"is_cost" : true,
+						"cost": {
+							"energy": 1
+						},
+						"is_cost": true
 					},
 					{
-					"name" : "mod_tokens",
-					"token_name": "energy",
-					"modification" : 1,
-					"subject": "self",							
-					},
+						"name": "mod_tokens",
+						"token_name": "energy",
+						"modification": 1,
+						"subject": "self"
+					}
 				],
 				"add 2 energy": [
-					{	
+					{
 						"name": "constraints",
 						"is_cost": true,
-						"tags": ["action_ability"]
+						"tags": [
+							"action_ability"
+						]
 					},
 					{
 						"name": "pay_cost",
-						"cost": {"energy" :2},
-						"is_cost" : true,
+						"cost": {
+							"energy": 2
+						},
+						"is_cost": true
 					},
 					{
-					"name" : "mod_tokens",
-					"token_name": "energy",
-					"modification" : 2,
-					"subject": "self",							
-					},
+						"name": "mod_tokens",
+						"token_name": "energy",
+						"modification": 2,
+						"subject": "self"
+					}
 				],
 				"add 3 energy": [
-					{	
+					{
 						"name": "constraints",
 						"is_cost": true,
-						"tags": ["action_ability"]
+						"tags": [
+							"action_ability"
+						]
 					},
 					{
 						"name": "pay_cost",
-						"cost": {"energy" :3},
-						"is_cost" : true,
+						"cost": {
+							"energy": 3
+						},
+						"is_cost": true
 					},
 					{
-					"name" : "mod_tokens",
-					"token_name": "energy",
-					"modification" : 3,
-					"subject": "self",							
-					},
+						"name": "mod_tokens",
+						"token_name": "energy",
+						"modification": 3,
+						"subject": "self"
+					}
 				],
 				"Unleash energy": [
-					{	
+					{
 						"name": "constraints",
 						"is_cost": true,
-						"tags": ["hero_action"]
+						"tags": [
+							"hero_action"
+						]
 					},
-					{	
-						"name": "move_card_to_container",
-						"dest_container" : "discard",
-						"subject": "self",
-						"is_cost": true,
-					},					
 					{
-						"name" : "deal_damage",
+						"name": "move_card_to_container",
+						"dest_container": "discard",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "deal_damage",
 						"subject": "target",
-						"amount" : "per_token_self",
+						"amount": "per_token_self",
 						"needs_subject": true,
-						"per_token_self": {"token_name": "energy", "multiplier": 2, "max": 10},
-						"filter_state_subject": [{
-							"filter_group" : "group_enemies"
-						}],
-						"tags":["attack"]
+						"per_token_self": {
+							"token_name": "energy",
+							"multiplier": 2,
+							"max": 10
+						},
+						"filter_state_subject": [
+							{
+								"filter_group": "group_enemies"
+							}
+						],
+						"tags": [
+							"attack"
+						]
 					}
 				]
 			}
 		}
-	},	
+	},
 	"Enhanced Ivory Horn": {
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
-					"name" : "attach_to_card",
-					"subject": "villain",	
+					"name": "attach_to_card",
+					"subject": "villain"
 				}
 			]
 		},
 		"alterants": {
 			"board": [
-				{					
-					"filter_task" : "get_property",
-					"filter_property_name" : "attack",
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
 					"trigger": "host",
 					"alteration": 1
-				},
-			],
-		},		
+				}
+			]
+		},
 		"manual": {
 			"board": [
-				{	
+				{
 					"name": "constraints",
 					"is_cost": true,
-					"tags": ["hero_action"]
-				},			
+					"tags": [
+						"hero_action"
+					]
+				},
 				{
 					"name": "pay_cost",
-					"cost": {"physical" :3},
-					"is_cost" : true,
+					"cost": {
+						"physical": 3
+					},
+					"is_cost": true
 				},
 				{
-					"name" : "move_card_to_container",
+					"name": "move_card_to_container",
 					"dest_container": "discard_villain",
 					"subject": "self"
-				},
-			],
-		},
-	},	
+				}
+			]
+		}
+	},
 	"Enhanced Spider-Sense": {
 		"interrupt": {
 			"event_name": "reveal_encounter",
 			"is_optional_hand": true,
 			"hand": [
-				{	
+				{
 					"name": "constraints",
 					"is_cost": true,
-					"tags": ["hero_interrupt"]
+					"tags": [
+						"hero_interrupt"
+					]
 				},
 				{
-				"name": "prevent",
-				"subject": "interrupted_event"
+					"name": "prevent",
+					"subject": "interrupted_event"
 				}
 			],
-			"filter_state_trigger": [{
-				"filter_properties": {
-					"type_code": "treachery"
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "treachery"
+					}
 				}
-			}]
+			]
 		}
 	},
 	"Eviction Notice": {
 		"about_to_reveal": {
 			"trigger": "self",
-			"all": [{
-				"name": "change_controller_hero",
-				"target_identity": "Peter Parker", 
-				"subject": "self",
-			}]
+			"all": [
+				{
+					"name": "change_controller_hero",
+					"target_identity": "Peter Parker",
+					"subject": "self"
+				}
+			]
 		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": {
 				"Flip then Remove from the game": [
-					{	
+					{
 						"name": "constraints",
 						"is_cost": true,
-						"tags": ["hero_form"]
+						"tags": [
+							"hero_form"
+						]
 					},
 					{
 						"name": "change_form",
 						"subject": "my_hero"
 					},
-					{	
+					{
 						"name": "exhaust_card",
 						"is_cost": true,
 						"subject": "my_hero"
@@ -688,15 +767,17 @@
 						"name": "move_card_to_container",
 						"dest_container": "set_aside",
 						"subject": "self"
-					},
+					}
 				],
 				"Remove from the game": [
-					{	
+					{
 						"name": "constraints",
 						"is_cost": true,
-						"tags": ["alter_ego_form"]
+						"tags": [
+							"alter_ego_form"
+						]
 					},
-					{	
+					{
 						"name": "exhaust_card",
 						"is_cost": true,
 						"subject": "my_hero"
@@ -705,13 +786,15 @@
 						"name": "move_card_to_container",
 						"dest_container": "set_aside",
 						"subject": "self"
-					},					
+					}
 				],
 				"Flip then Discard 1": [
-					{	
+					{
 						"name": "constraints",
 						"is_cost": true,
-						"tags": ["hero_form"]
+						"tags": [
+							"hero_form"
+						]
 					},
 					{
 						"name": "change_form",
@@ -723,16 +806,16 @@
 						"src_container": "hand",
 						"subject": "tutor",
 						"subject_count": 1,
-						"subject_index": "random",
-					},				
+						"subject_index": "random"
+					},
 					{
 						"name": "move_card_to_container",
 						"dest_container": "discard_villain",
 						"subject": "self"
 					},
 					{
-						"name": "surge",
-					},					
+						"name": "surge"
+					}
 				],
 				"Discard 1": [
 					{
@@ -741,96 +824,103 @@
 						"src_container": "hand",
 						"subject": "tutor",
 						"subject_count": 1,
-						"subject_index": "random",
-					},				
+						"subject_index": "random"
+					},
 					{
 						"name": "move_card_to_container",
 						"dest_container": "discard_villain",
 						"subject": "self"
 					},
 					{
-						"name": "surge",
-					},					
-				],				
-				
+						"name": "surge"
+					}
+				]
 			}
-		},
-	},	
+		}
+	},
 	"Explosion": {
 		"reveal": {
 			"all": [
 				{
-					"name" : "count_tokens",
+					"name": "count_tokens",
 					"token_name": "threat",
 					"subject": "boardseek",
 					"is_cost": true,
-					"filter_state_seek": [{
-						"filter_properties": {
-							"Name" : "Bomb Scare"
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Bomb Scare"
+							}
 						}
-					}]					
+					]
 				},
 				{
-					"name" : "deal_damage",
+					"name": "deal_damage",
 					"amount": 1,
 					"subject": "boardseek",
-					"abort_on_cost_failure" : true,
+					"abort_on_cost_failure": true,
 					"subject_count": "all",
 					"selection_count": "retrieve_integer",
 					"selection_type": "as_much_as_possible",
 					"selection_what_to_count": "assign_indirect_damage",
 					"needs_selection": true,
-					"filter_state_seek": [{
-							"filter_group" : "group_allies_and_heroes"
-					}],											
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_and_heroes"
+						}
+					]
 				},
 				{
-					"name" : "surge",
-					"is_else": true,							
-				},				
-			],
-		},			
-	},	
+					"name": "surge",
+					"is_else": true
+				}
+			]
+		}
+	},
 	"False Alarm": {
 		"reveal": {
 			"all": [
 				{
-					"name" : "mod_tokens",
+					"name": "mod_tokens",
 					"token_name": "confused",
-					"modification" : 1,
+					"modification": 1,
 					"subject": "my_identity",
-					"is_cost": true,							
+					"is_cost": true
 				},
 				{
-					"name" : "surge",
-					"is_else": true,							
-				},				
-			],
-		},			
+					"name": "surge",
+					"is_else": true
+				}
+			]
+		}
 	},
 	"Family Emergency": {
 		"about_to_reveal": {
 			"trigger": "self",
-			"all": [{
-				"name": "change_controller_hero",
-				"target_identity": "Carol Danvers", 
-				"subject": "self",
-			}]
+			"all": [
+				{
+					"name": "change_controller_hero",
+					"target_identity": "Carol Danvers",
+					"subject": "self"
+				}
+			]
 		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": {
 				"Flip then Remove from the game": [
-					{	
+					{
 						"name": "constraints",
 						"is_cost": true,
-						"tags": ["hero_form"]
+						"tags": [
+							"hero_form"
+						]
 					},
 					{
 						"name": "change_form",
 						"subject": "my_hero"
 					},
-					{	
+					{
 						"name": "exhaust_card",
 						"is_cost": true,
 						"subject": "my_hero"
@@ -839,15 +929,17 @@
 						"name": "move_card_to_container",
 						"dest_container": "set_aside",
 						"subject": "self"
-					},
+					}
 				],
 				"Remove from the game": [
-					{	
+					{
 						"name": "constraints",
 						"is_cost": true,
-						"tags": ["alter_ego_form"]
+						"tags": [
+							"alter_ego_form"
+						]
 					},
-					{	
+					{
 						"name": "exhaust_card",
 						"is_cost": true,
 						"subject": "my_hero"
@@ -856,64 +948,67 @@
 						"name": "move_card_to_container",
 						"dest_container": "set_aside",
 						"subject": "self"
-					},					
+					}
 				],
 				"Flip then get stunned": [
-					{	
+					{
 						"name": "constraints",
 						"is_cost": true,
-						"tags": ["hero_form"]
+						"tags": [
+							"hero_form"
+						]
 					},
 					{
 						"name": "change_form",
 						"subject": "my_hero"
 					},
 					{
-						"name" : "mod_tokens",
+						"name": "mod_tokens",
 						"modification": 1,
-						"token_name":  "stunned",	
-						"subject": "my_hero",
-					},			
+						"token_name": "stunned",
+						"subject": "my_hero"
+					},
 					{
 						"name": "move_card_to_container",
 						"dest_container": "discard_villain",
 						"subject": "self"
 					},
 					{
-						"name": "surge",
-					},					
+						"name": "surge"
+					}
 				],
 				"Get Stunned": [
 					{
-						"name" : "mod_tokens",
+						"name": "mod_tokens",
 						"modification": 1,
-						"token_name":  "stunned",	
-						"subject": "my_hero",
-					},			
+						"token_name": "stunned",
+						"subject": "my_hero"
+					},
 					{
 						"name": "move_card_to_container",
 						"dest_container": "discard_villain",
 						"subject": "self"
 					},
 					{
-						"name": "surge",
-					},				
-				],				
-				
+						"name": "surge"
+					}
+				]
 			}
-		},
-	},	
+		}
+	},
 	"First Aid": {
 		"manual": {
 			"hand": [
 				{
-					"name" : "heal",
+					"name": "heal",
 					"subject": "target",
-					"amount" : 2,
+					"amount": 2,
 					"needs_subject": true,
-					"filter_state_subject": [{
-						"filter_group" : "group_characters"
-					}]
+					"filter_state_subject": [
+						{
+							"filter_group": "group_characters"
+						}
+					]
 				}
 			]
 		}
@@ -921,90 +1016,104 @@
 	"For Justice!": {
 		"manual": {
 			"hand": [
-				{	
+				{
 					"name": "constraints",
 					"is_cost": true,
-					"tags": ["hero_form"]
+					"tags": [
+						"hero_form"
+					]
 				},
 				{
 					"name": "thwart",
 					"amount": {
-						"if" : {	
-							"func_name": "paid_with_includes", 
-							"func_params": {"mental" : 1}
+						"if": {
+							"func_name": "paid_with_includes",
+							"func_params": {
+								"mental": 1
+							}
 						},
 						"then": 4,
 						"else": 3
 					},
 					"subject": "target",
 					"needs_subject": true,
-					"filter_state_subject": [{
+					"filter_state_subject": [
+						{
 							"filter_group": "group_schemes"
-					}]
-				}			
+						}
+					]
+				}
 			]
 		}
-	},	
+	},
 	"Gang-Up": {
 		"reveal": {
-			"all" : [
-				{	
+			"all": [
+				{
 					"name": "constraints",
 					"is_cost": true,
-					"tags": ["hero_form"]
+					"tags": [
+						"hero_form"
+					]
 				},
 				{
-					"name" : "villain_and_enemies_attack_you",
+					"name": "villain_and_enemies_attack_you"
 				},
 				{
-					"name" : "surge",
+					"name": "surge",
 					"is_else": true
-				},
+				}
 			]
 		}
 	},
 	"Get Ready": {
 		"manual": {
 			"hand": [
-				{	
+				{
 					"name": "constraints",
 					"is_cost": true,
-					"tags": ["action"]
-				},										
+					"tags": [
+						"action"
+					]
+				},
 				{
-					"name" : "ready_card",
+					"name": "ready_card",
 					"subject": "target",
-					"filter_state_subject": [{
-						"filter_group" : "group_allies"
-					}],					
+					"filter_state_subject": [
+						{
+							"filter_group": "group_allies"
+						}
+					]
 				}
 			]
-		},
-	},	
+		}
+	},
 	"Great Responsibility": {
-		"todo" : {}
-	},	
+		"todo": {}
+	},
 	"Hard to Keep Down": {
 		"reveal": {
 			"all": [
-				{	
+				{
 					"name": "heal",
 					"amount": 4,
 					"is_cost": true,
 					"subject": "boardseek",
 					"subject_count": 1,
-					"filter_state_seek": [{
-						"filter_properties": {
-							"type_code" : "villain"
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain"
+							}
 						}
-					}]
+					]
 				},
-				{	
+				{
 					"name": "surge",
-					"is_else": true,
-				},				
+					"is_else": true
+				}
 			]
-		},
+		}
 	},
 	"Hawkeye - Clint Barton": {
 		"card_moved_to_board": {
@@ -1026,62 +1135,69 @@
 					"subject": "self",
 					"modification": -1,
 					"token_name": "arrow",
-					"is_cost": true,
-				},		
-				{
-					"name" : "deal_damage",
-					"subject": "trigger",
-					"amount" : 2,
-					"needs_subject": true,
-				}
-			]
-		}		
-	},	
-	"Haymaker": {
-		"manual": {
-			"hand" : [
-				{	
-					"name": "constraints",
-					"is_cost": true,
-					"tags": ["hero_action"]
+					"is_cost": true
 				},
 				{
-					"name" : "attack",
-					"subject": "target",
-					"amount" : 3,
-					"needs_subject": true,
-					"filter_state_subject": [{
-						"filter_group" : "group_enemies"
-					}],
-					"tags" : ["hero_action", "attack"]
+					"name": "deal_damage",
+					"subject": "trigger",
+					"amount": 2,
+					"needs_subject": true
 				}
 			]
 		}
-	},	
-	"Helicarrier": {	
+	},
+	"Haymaker": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"subject": "target",
+					"amount": 3,
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"tags": [
+						"hero_action",
+						"attack"
+					]
+				}
+			]
+		}
+	},
+	"Helicarrier": {
 		"manual": {
 			"board": [
 				{
 					"name": "exhaust_card",
 					"subject": "self",
-					"is_cost": true,
+					"is_cost": true
 				},
 				{
 					"name": "mod_counter",
 					"modification": 1,
-					"counter_name":  "helicarrier",
-				},				
+					"counter_name": "helicarrier"
+				}
 			]
 		},
 		"alterants": {
 			"board": [
-				{					
-					"filter_task" : "get_property",
-					"filter_property_name" : "cost",
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
 					"alteration": "per_counter",
 					"per_counter": {
 						"counter_name": "helicarrier",
-						"is_inverted" : true,
+						"is_inverted": true
 					}
 				}
 			]
@@ -1093,46 +1209,52 @@
 					"name": "mod_counter",
 					"modification": 0,
 					"set_to_mod": true,
-					"counter_name":  "helicarrier",
-				},
+					"counter_name": "helicarrier"
+				}
 			]
-		},		
-	},	
+		}
+	},
 	"Heroic Intuition": {
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
-					"name" : "move_to_player_zone",
+					"name": "move_to_player_zone",
 					"subject": "boardseek",
 					"subject_count": "all",
 					"selection_count": 1,
-					"selection_type": "equal",					
+					"selection_type": "equal",
 					"needs_selection": true,
-					"filter_state_seek": [{
-							"filter_group" : "group_identities"
-					}]
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
 				}
 			]
-		},		
+		},
 		"alterants": {
 			"board": [
-				{					
-					"filter_task" : "get_property",
-					"filter_property_name" : "thwart",
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
 					"filter_same_controller": true,
-					"filter_state_trigger" : [{
-						"filter_group" : "group_identities",
-					}],
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
 					"alteration": 1
 				}
 			]
-		}		
-	},	
+		}
+	},
 	"Hydra Bomber": {
 		"reveal": {
 			"all": {
-				"_rules": {"forced" : true},
+				"_rules": {
+					"forced": true
+				},
 				"Take 2 damage": [
 					{
 						"name": "receive_damage",
@@ -1142,84 +1264,89 @@
 				],
 				"1 Threat on Main Scheme": [
 					{
-						"name" : "mod_tokens",
+						"name": "mod_tokens",
 						"token_name": "threat",
-						"amount" : 1,
+						"amount": 1,
 						"subject": "boardseek",
-						"filter_state_seek": [{
-							"filter_properties": {
-								"type_code": "main_scheme",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "main_scheme"
+								}
 							}
-						}],							
-					},
-				],
-			},
-		},			
-	},	
+						]
+					}
+				]
+			}
+		}
+	},
 	"\"I'm Tough\"": {
 		"reveal": {
 			"all": [
-				{	
-					"name": "mod_tokens",			
+				{
+					"name": "mod_tokens",
 					"token_name": "tough",
 					"modification": 1,
 					"is_cost": true,
 					"subject": "boardseek",
-					"filter_state_seek": [{
-						"filter_properties": {
-							"type_code" : "villain"
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain"
+							}
 						}
-					}]			
+					]
 				},
-				{	
+				{
 					"name": "surge",
-					"is_else": true,
-				},				
+					"is_else": true
+				}
 			]
-		},
+		}
 	},
 	"Inspired": {
 		"manual": {
-			"hand" :[
+			"hand": [
 				{
-					"name" : "attach_to_card",
+					"name": "attach_to_card",
 					"subject": "target",
 					"needs_subject": true,
-					"filter_state_subject": [{
-						"filter_properties": {
-							"type_code": "ally"
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							}
 						}
-					}]
+					]
 				}
 			]
 		},
 		"alterants": {
 			"board": [
-				{					
-					"filter_task" : "get_property",
-					"filter_property_name" : "attack",
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
 					"trigger": "host",
 					"alteration": 1
 				},
-				{					
-					"filter_task" : "get_property",
-					"filter_property_name" : "thwart",
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
 					"trigger": "host",
 					"alteration": 1
-				},				
-				
+				}
 			]
-		},
-	},		
+		}
+	},
 	"Interrogation Room": {
-		"todo" : {}
-	},		
-	"Jessica Jones": {	
+		"todo": {}
+	},
+	"Jessica Jones": {
 		"alterants": {
 			"board": [
-				{					
-					"filter_task" : "get_property",
-					"filter_property_name" : "thwart",
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
 					"trigger": "self",
 					"per_boardseek": {
 						"subject": "boardseek",
@@ -1235,117 +1362,131 @@
 					"alteration": "per_boardseek"
 				}
 			]
-		}		
+		}
 	},
 	"Lead from the Front": {
 		"manual": {
-			"hand" : [
-				{	
+			"hand": [
+				{
 					"name": "constraints",
 					"is_cost": true,
-					"tags": ["hero_action"]
+					"tags": [
+						"hero_action"
+					]
 				},
 				{
-					"name" : "temporary_effect",
+					"name": "temporary_effect",
 					"end_condition": "phase_ended",
 					"subject": "boardseek",
 					"needs_subject": true,
 					"subject_count": "all",
 					"selection_count": 1,
-					"selection_type": "equal",					
-					"needs_selection": true,					
-					"filter_state_seek": [{
-						"filter_group" : "group_identities",
-					}],					
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
 					"effect": {
 						"alterants": {
 							"all": [
-								{					
-									"filter_task" : "get_property",
-									"filter_property_name" : "attack",
-									"filter_state_trigger": [{
-										"filter_group" : "group_characters{__subject_hero_id__}",
-									}],
-									"alteration": 1,
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"filter_state_trigger": [
+										{
+											"filter_group": "group_characters{__subject_hero_id__}"
+										}
+									],
+									"alteration": 1
 								},
-								{					
-									"filter_task" : "get_property",
-									"filter_property_name" : "thwart",
-									"filter_state_trigger": [{
-										"filter_group" : "group_characters{__subject_hero_id__}",
-									}],
-									"alteration": 1,
-								},
-							],
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"filter_state_trigger": [
+										{
+											"filter_group": "group_characters{__subject_hero_id__}"
+										}
+									],
+									"alteration": 1
+								}
+							]
 						}
 					}
 				}
 			]
-		},
+		}
 	},
 	"Make the Call": {
 		"manual": {
-			"hand": [	
+			"hand": [
 				{
-					"name" : "add_script",
-					"end_condition": "before_card_moved_to_board",	
+					"name": "add_script",
+					"end_condition": "before_card_moved_to_board",
 					"is_cost": true,
 					"subject": "tutor",
 					"subject_count": "all",
 					"src_container": "any_discard",
-					"filter_state_tutor": [{
-							"filter_group" : "group_allies"
-					}],
+					"filter_state_tutor": [
+						{
+							"filter_group": "group_allies"
+						}
+					],
 					"script": {
 						"manual": {
 							"pile": [
 								{
 									"name": "pay_regular_cost",
 									"is_cost": true,
-									"cost" : "card_cost",
+									"cost": "card_cost"
 								},
 								{
 									"name": "move_card_to_board",
-									"subject": "self",
-								},								
+									"subject": "self"
+								}
 							]
 						}
 					}
-				},			
+				}
 			]
-		},
-	},	
+		}
+	},
 	"Maria Hill": {
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": {
 				"Draw": [
 					{
-						"name" : "draw_cards",
+						"name": "draw_cards",
 						"subject": "boardseek",
 						"subject_count": "all",
-						"amount" : 1,
-						"filter_state_seek": [{
-							"filter_group" : "group_identities"
-						}],						
+						"amount": 1,
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						]
 					}
 				]
-			},
-		},			
-	},		
+			}
+		}
+	},
 	"Mockingbird - Bobbi Morse": {
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
-					"name" : "mod_tokens",
+					"name": "mod_tokens",
 					"modification": 1,
-					"token_name":  "stunned",	
+					"token_name": "stunned",
 					"needs_subject": true,
 					"subject": "target",
-					"filter_state_subject": [{
-						"filter_group" : "group_enemies"
-					}],
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
 				}
 			]
 		}
@@ -1354,33 +1495,39 @@
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": {
-				"_rules": {"forced": true},
+				"_rules": {
+					"forced": true
+				},
 				"remove 2 threat": [
 					{
 						"name": "remove_threat",
 						"amount": 2,
 						"subject": "target",
 						"needs_subject": true,
-						"filter_state_subject": [{
-							"filter_group": "group_schemes"
-						}]
+						"filter_state_subject": [
+							{
+								"filter_group": "group_schemes"
+							}
+						]
 					}
 				],
 				"draw 3": [
 					{
-						"name" : "draw_cards",
-						"amount" : 3,
+						"name": "draw_cards",
+						"amount": 3
 					}
 				],
-				"deal 4 damage": [			
+				"deal 4 damage": [
 					{
-						"name" : "deal_damage",
+						"name": "deal_damage",
 						"subject": "target",
-						"amount" : 4,
+						"amount": 4,
 						"needs_subject": true,
-						"filter_state_subject": [{
-							"filter_group" : "group_enemies"
-						}],
+						"filter_state_subject": [
+							{
+								"filter_group": "group_enemies"
+							}
+						]
 					}
 				]
 			}
@@ -1390,170 +1537,190 @@
 				{
 					"name": "move_card_to_container",
 					"subject": "self",
-					"dest_container" : "discard"
-				},
+					"dest_container": "discard"
+				}
 			]
-		},			
-	},	
-	"Peter Parker" :{
-		"once_per_round" : {
+		}
+	},
+	"Peter Parker": {
+		"once_per_round": {
 			"__name__": "_peter_resource"
 		},
 		"resource": {
 			"board": {
-				"add resource" :[
+				"add resource": [
 					{
 						"name": "mod_tokens",
 						"subject": "self",
 						"modification": -1,
-						"token_name":  "_peter_resource",
-						"is_cost": true,
-					},				
+						"token_name": "_peter_resource",
+						"is_cost": true
+					},
 					{
 						"name": "add_resource",
 						"amount": 1,
 						"resource_name": "mental"
-					},
+					}
 				]
 			}
-		},		
+		}
 	},
 	"Photonic Blast": {
 		"manual": {
-			"hand" : [
-				{	
+			"hand": [
+				{
 					"name": "constraints",
 					"is_cost": true,
-					"tags": ["hero_action"]
+					"tags": [
+						"hero_action"
+					]
 				},
 				{
-					"name" : "attack",
+					"name": "attack",
 					"is_cost": true,
 					"subject": "target",
-					"amount" : 5,
-					"filter_state_subject": [{
-						"filter_group" : "group_enemies"
-					}],
-					"tags" : ["attack"]
+					"amount": 5,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"tags": [
+						"attack"
+					]
 				},
 				{
 					"name": "draw_cards",
 					"amount": {
-						"if" : {	
-							"func_name": "paid_with_includes", 
-							"func_params": {"energy" : 1}
+						"if": {
+							"func_name": "paid_with_includes",
+							"func_params": {
+								"energy": 1
+							}
 						},
 						"then": 1,
 						"else": 0
 					}
-				}				
+				}
 			]
 		}
-	},	
+	},
 	"Rhino - 2": {
 		"reveal": {
 			"all": [
-				{	
+				{
 					"name": "deal_encounter",
 					"immediate_reveal": true,
 					"subject": "tutor",
 					"src_container": "deck_villain",
-					"filter_state_tutor": [{
-						"filter_properties": {
-							"Name" : "Breakin' & Takin'"
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Breakin' & Takin'"
+							}
 						}
-					}]
+					]
 				},
-				{	
+				{
 					"name": "deal_encounter",
 					"immediate_reveal": true,
 					"subject": "tutor",
 					"src_container": "discard_villain",
-					"filter_state_tutor": [{
-						"filter_properties": {
-							"Name" : "Breakin' & Takin'"
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Breakin' & Takin'"
+							}
 						}
-					}]
-				},				
+					]
+				}
 			]
-		},
+		}
 	},
 	"Rhino - 3": {
 		"reveal": {
 			"all": [
-				{	
+				{
 					"name": "mod_tokens",
-					"token_name":  "stunned",
+					"token_name": "stunned",
 					"modification": 1,
 					"subject": "boardseek",
 					"subject_count": "all",
-					"filter_state_seek": [{
-						"filter_properties": {
-							"type_code" : "hero",
-						},
-					}],
-				},				
-			],
-		},
-	},	
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "hero"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
 	"Shadow of the Past": {
 		"reveal": {
 			"all": [
-				{	
-					"name": "reveal_nemesis",
-				},
+				{
+					"name": "reveal_nemesis"
+				}
 			]
-		},
-	},	
+		}
+	},
 	"Shocker": {
 		"reveal": {
 			"all": [
-				{	
+				{
 					"name": "deal_damage",
 					"amount": 1,
 					"subject": "boardseek",
 					"subject_count": "all",
-					"filter_state_seek": [{
-						"filter_properties": {
-							"type_code" : "hero"
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "hero"
+							}
 						}
-					}]
-				},
+					]
+				}
 			]
-		},
-	},		
+		}
+	},
 	"Spider-Man": {
 		"interrupt": {
 			"event_name": "enemy_initiates_attack",
 			"is_optional_board": true,
 			"board": [
 				{
-					"name" : "draw_cards",
-					"amount": 1,
+					"name": "draw_cards",
+					"amount": 1
 				}
 			],
-			"filter_target_hero": "Spider-Man",	
-			"filter_state_trigger": [{
-				"filter_group": "group_villains",
-			}]
+			"filter_target_hero": "Spider-Man",
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_villains"
+				}
+			]
 		}
 	},
 	"Spider-Tracer": {
 		"manual": {
-			"hand" :[
+			"hand": [
 				{
-					"name" : "attach_to_card",
+					"name": "attach_to_card",
 					"subject": "target",
 					"needs_subject": true,
-					"filter_state_subject": [{
-						"filter_properties": {
-							"type_code": "minion"
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
 						}
-					}]
+					]
 				}
 			]
 		},
-		"interrupt" : {
+		"interrupt": {
 			"event_name": "card_dies",
 			"board": [
 				{
@@ -1561,14 +1728,16 @@
 					"amount": 3,
 					"subject": "target",
 					"needs_subject": true,
-					"filter_state_subject": [{
-						"filter_group": "group_schemes"
-					}]
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
 				}
 			],
-			"trigger": "host",	
+			"trigger": "host"
 		}
-	},	
+	},
 	"Spider-Woman - Jessica Drew": {
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -1576,87 +1745,102 @@
 			"board": {
 				"Confuse Villain": [
 					{
-						"name" : "mod_tokens",
+						"name": "mod_tokens",
 						"modification": 1,
-						"token_name":  "confused",	
+						"token_name": "confused",
 						"subject": "villain"
 					}
 				]
 			}
 		}
-	},	
+	},
 	"Stampede": {
 		"reveal": {
-			"all" : [
-				{	
+			"all": [
+				{
 					"name": "constraints",
 					"is_cost": true,
-					"tags": ["hero_form"]
+					"tags": [
+						"hero_form"
+					]
 				},
 				{
-					"name" : "villain_attacks_you",
-					"tags" : ["stun_if_damage"],
+					"name": "villain_attacks_you",
+					"tags": [
+						"stun_if_damage"
+					]
 				},
 				{
-					"name" : "surge",
+					"name": "surge",
 					"is_else": true
-				},
+				}
 			]
 		}
 	},
 	"Surveillance Team": {
-		"uses" : {
+		"uses": {
 			"__name__": "snoop",
 			"__amount__": 3
 		},
 		"manual": {
 			"board": [
-				{	
+				{
 					"name": "constraints",
 					"is_cost": true,
-					"tags": ["action_ability"]
-				},			
+					"tags": [
+						"action_ability"
+					]
+				},
 				{
 					"name": "exhaust_card",
 					"subject": "self",
-					"is_cost": true,
+					"is_cost": true
 				},
 				{
 					"name": "mod_tokens",
 					"subject": "self",
 					"modification": -1,
-					"token_name":  "snoop",
-					"is_cost": true,
-				},				
+					"token_name": "snoop",
+					"is_cost": true
+				},
 				{
 					"name": "remove_threat",
 					"amount": 1,
 					"subject": "target",
 					"needs_subject": true,
-					"filter_state_subject": [{
-						"filter_group": "group_schemes"
-					}]
-				},
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
 			]
 		}
-	},	
+	},
 	"Swinging Web Kick": {
 		"manual": {
-			"hand" : [
-				{	
+			"hand": [
+				{
 					"name": "constraints",
 					"is_cost": true,
-					"tags": ["hero_action"]
+					"tags": [
+						"hero_action"
+					]
 				},
 				{
-					"name" : "attack",
+					"name": "attack",
 					"subject": "target",
-					"amount" : 8,
+					"amount": 8,
 					"needs_subject": true,
-					"filter_state_subject": [{
-						"filter_group" : "group_enemies"
-					}],
-					"tags" : ["hero_action", "attack"]
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"tags": [
+						"hero_action",
+						"attack"
+					]
 				}
 			]
 		}
@@ -1664,217 +1848,238 @@
 	"Tenacity": {
 		"manual": {
 			"board": [
-				{	
+				{
 					"name": "constraints",
 					"is_cost": true,
-					"tags": ["hero_action"]
-				},			
-				{
-					"name": "pay_cost",
-					"cost": {"physical" : 1},
-					"is_cost" : true,
-				},							
-				{
-					"name" : "move_card_to_container",
-					"dest_container": "discard",
-					"subject": "self",
-					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
 				},
 				{
-					"name": "ready_card",			
-					"subject": "my_hero",
+					"name": "pay_cost",
+					"cost": {
+						"physical": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
 				}
 			]
-		},
+		}
 	},
 	"The Power of Justice": {
 		"resource": {
-			"hand": [				
+			"hand": [
 				{
 					"name": "nop",
 					"fail_cost_on_skip": true,
 					"is_cost": true,
-					"filter_state_trigger": [{
-						"filter_properties": {
-							"faction_code" : "justice"
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "justice"
+							}
 						}
-					}]					
+					]
 				},
 				{
 					"name": "add_resource",
 					"amount": 2,
 					"resource_name": "wild"
-				},			
+				}
 			]
 		}
 	},
 	"The Power of Leadership": {
 		"resource": {
-			"hand": [				
+			"hand": [
 				{
 					"name": "nop",
 					"fail_cost_on_skip": true,
 					"is_cost": true,
-					"filter_state_trigger": [{
-						"filter_properties": {
-							"faction_code" : "leadership"
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "leadership"
+							}
 						}
-					}]					
+					]
 				},
 				{
 					"name": "add_resource",
 					"amount": 2,
 					"resource_name": "wild"
-				},			
+				}
 			]
 		}
 	},
-	"The Triskelion": {		
+	"The Triskelion": {
 		"alterants": {
 			"board": [
-				{					
-					"filter_task" : "get_property",
-					"filter_property_name" : "ally_limit",
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "ally_limit",
 					"filter_same_controller": true,
-					"filter_state_trigger" : [{
-						"filter_group" : "group_identities",
-					}],
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
 					"alteration": 1
 				}
 			]
-		}		
-	},	
+		}
+	},
 	"Vision": {
 		"manual": {
 			"board": {
-				"+2 Attack" :[			
+				"+2 Attack": [
 					{
 						"name": "pay_cost",
-						"cost": {"energy" : 1},
-						"is_cost" : true,
+						"cost": {
+							"energy": 1
+						},
+						"is_cost": true
 					},
 					{
-						"name" : "add_script",
+						"name": "add_script",
 						"end_condition": "phase_ended",
-						"subject": "self",				
+						"subject": "self",
 						"script": {
 							"alterants": {
 								"board": [
-									{					
-										"filter_task" : "get_property",
-										"filter_property_name" : "attack",
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
 										"trigger": "self",
-										"alteration": 2,
-									},
-								],
+										"alteration": 2
+									}
+								]
 							}
 						}
-					}					
-				],			
-				"+2 Thwart" :[			
+					}
+				],
+				"+2 Thwart": [
 					{
 						"name": "pay_cost",
-						"cost": {"energy" : 1},
-						"is_cost" : true,
+						"cost": {
+							"energy": 1
+						},
+						"is_cost": true
 					},
 					{
-						"name" : "add_script",
+						"name": "add_script",
 						"end_condition": "phase_ended",
-						"subject": "self",				
+						"subject": "self",
 						"script": {
 							"alterants": {
 								"board": [
-									{					
-										"filter_task" : "get_property",
-										"filter_property_name" : "thwart",
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "thwart",
 										"trigger": "self",
-										"alteration": 2,
-									},
-								],
+										"alteration": 2
+									}
+								]
 							}
 						}
-					}					
+					}
 				]
 			}
-		},
-	},	
+		}
+	},
 	"Vulture": {
-		"quickstrike" : {}
-	},	
+		"quickstrike": {}
+	},
 	"Web-Shooter": {
-		"uses" : {
+		"uses": {
 			"__name__": "web",
 			"__amount__": 3
 		},
 		"resource": {
 			"board": [
-				{	
+				{
 					"name": "constraints",
 					"is_cost": true,
-					"tags": ["hero_resource"]
-				},			
+					"tags": [
+						"hero_resource"
+					]
+				},
 				{
 					"name": "exhaust_card",
 					"subject": "self",
-					"is_cost": true,
+					"is_cost": true
 				},
 				{
 					"name": "mod_tokens",
 					"subject": "self",
 					"modification": -1,
-					"token_name":  "web",
-					"is_cost": true,
-				},				
+					"token_name": "web",
+					"is_cost": true
+				},
 				{
 					"name": "add_resource",
 					"amount": 1,
 					"resource_name": "wild"
-				},
+				}
 			]
 		}
 	},
 	"Webbed Up": {
 		"manual": {
-			"hand" :[
-				{	
+			"hand": [
+				{
 					"name": "constraints",
 					"is_cost": true,
-					"tags": ["hero_form"],
-				},			
+					"tags": [
+						"hero_form"
+					]
+				},
 				{
-					"name" : "attach_to_card",
+					"name": "attach_to_card",
 					"subject": "target",
 					"needs_subject": true,
-					"filter_state_subject": [{
-						"filter_group" : "group_enemies"
-					}],
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
 				}
 			]
 		},
-		"interrupt" : {
+		"interrupt": {
 			"event_name": "enemy_initiates_attack",
 			"board": [
 				{
-					"name" : "mod_tokens",
+					"name": "mod_tokens",
 					"modification": 1,
-					"token_name":  "stunned",	
+					"token_name": "stunned",
 					"needs_subject": true,
-					"subject": "host",
+					"subject": "host"
 				},
 				{
 					"name": "prevent",
 					"subject": "interrupted_event"
-				},				
+				},
 				{
-					"name" : "move_card_to_container",
+					"name": "move_card_to_container",
 					"subject": "self",
-					"dest_container": "discard",
-				},				
+					"dest_container": "discard"
+				}
 			],
-			"filter_state_trigger": [{
-				"filter_is_host_of": "self",
-			}]		
+			"filter_state_trigger": [
+				{
+					"filter_is_host_of": "self"
+				}
+			]
 		}
-	},	
-			
+	}
 }

@@ -15,6 +15,17 @@ var my_id = 0 setget set_player, get_player
 var _post_load_move:= {}
 var _cards_loaded:= {}
 
+var post_move_modifiers:= {}
+
+func _process (delta:float):
+	for card in post_move_modifiers.keys():
+		if card.is_animating():
+			continue
+			
+		var modifiers = post_move_modifiers[card]
+		card.import_modifiers(modifiers)
+		post_move_modifiers.erase(card)
+
 #things to do after everything is properly loaded.
 #This will trigger execute_scripts
 #so all clients need to be loaded before calling this
@@ -29,6 +40,9 @@ func post_load_move():
 		if slot:
 			card.move_to(cfc.NMAP.board, -1, slot)		
 			card.set_is_faceup(true)
+			var modifiers = data.get("modifiers", {})
+			if modifiers:
+				post_move_modifiers[card] = modifiers
 				
 #	for card in _post_load_move:				
 #		card.interruptTweening()
@@ -87,7 +101,7 @@ func load_nemesis_aside(hero_card_data):
 			}
 
 	
-func load_identity(card_id):
+func load_identity(card_id, modifiers ={}):
 	var card = gameData.retrieve_from_side_or_instance(card_id, my_id)
 	
 	#cfc.NMAP["deck" + str(my_id)].add_child(card)
@@ -98,7 +112,8 @@ func load_identity(card_id):
 		slot = grid.get_slot(0)   # .find_available_slot()
 		if slot:
 			_post_load_move[card] = {
-				"slot": slot
+				"slot": slot,
+				"modifiers": modifiers
 			}
 	set_identity_card(card)
 	rpc("cards_preloaded")

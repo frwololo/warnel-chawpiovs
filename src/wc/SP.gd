@@ -85,7 +85,7 @@ static func check_same_controller_filter(trigger_card, owner_card, true_false : 
 
 
 # Check if the card is a valid subject or trigger, according to its state.
-static func check_validity(card, card_scripts, type := "trigger") -> bool:
+static func check_validity(card, card_scripts, type := "trigger", script = null) -> bool:
 	var is_valid = .check_validity(card, card_scripts, type)
 	if (!is_valid):
 		return is_valid
@@ -95,6 +95,11 @@ static func check_validity(card, card_scripts, type := "trigger") -> bool:
 	#check for special guard conditions if card is an attack
 	if ("attack" in tags) and card == gameData.get_villain():
 		var all_cards = cfc.NMAP.board.get_all_cards()
+		if script:		
+			var owner_card = script.owner
+			var hero_id = owner_card.get_controller_hero_id()
+			if hero_id:
+				all_cards =  cfc.NMAP.board.get_enemies_engaged_with(hero_id)
 		for card in all_cards:
 			if card.get_keyword("guard") and card.is_faceup: #TODO better way to ignore face down cards?
 				return false

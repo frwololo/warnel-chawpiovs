@@ -340,6 +340,11 @@ func _on_ReshuffleAllDeck_pressed() -> void:
 	reshuffle_all_in_pile(cfc.NMAP.deck)
 
 
+func get_enemies_engaged_with(hero_id):
+	var result = []
+	var grid = get_grid("enemies" + str(hero_id))
+	return grid.get_all_cards()
+	
 func _on_ReshuffleAllDiscard_pressed() -> void:
 	reshuffle_all_in_pile(cfc.NMAP.discard)
 
@@ -506,7 +511,7 @@ func export_pile_to_json(pile_name, seen_cards:= {}) -> Dictionary:
 	return export_cards_to_json(pile_name, cards)
 	
 func export_grid_to_json(grid_name, seen_cards:= {}) -> Dictionary:
-	var grid:BoardPlacementGrid = cfc.NMAP.board.get_grid(grid_name)
+	var grid:BoardPlacementGrid = get_grid(grid_name)
 	var cards:Array = grid.get_all_cards()	
 	for card in cards:
 		seen_cards[card] = true
@@ -736,9 +741,10 @@ func flip_doublesided_card(card:WCCard):
 	if (back_code):
 		
 		if card.get_property("type_code") in ["hero", "alter_ego"]:
-			gameData.set_aside(card)
-			var new_card = heroZones[card.get_owner_hero_id()].load_identity(back_code)
-			card.copy_modifiers_to(new_card)		
+			var modifiers = card.export_modifiers()
+			gameData.set_aside(card) 
+			var new_card = heroZones[card.get_owner_hero_id()].load_identity(back_code, modifiers)
+				
 		else:
 			var new_card = cfc.instance_card(back_code,card.get_owner_hero_id())
 			#TODO copy tokens, state, etc...

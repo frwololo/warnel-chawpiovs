@@ -842,13 +842,20 @@ func message(script: ScriptTask) -> int:
 
 #returns thecurrent hero id based on a script.
 #typically that's the hero associated to the script owner
-func _get_identity_from_script(script):
+static func get_hero_id_from_script(script):
 	var this_card = script.owner
 	var my_hero_id = this_card.get_controller_hero_id()
-	var my_hero_card = gameData.get_identity_card(my_hero_id)	
+	return my_hero_id	
 	
-	return my_hero_card
-
+#returns thecurrent hero card based on a script.
+#typically that's the hero associated to the script owner
+func _get_identity_from_script(script):
+	var my_hero_id = get_hero_id_from_script(script)
+	if my_hero_id:
+		var my_hero_card = gameData.get_identity_card(my_hero_id)	
+		return my_hero_card
+	return null
+	
 static func duplicate_script(script):
 	var result = ScriptTask.new(script.owner, script.script_definition, script.trigger_object, script.trigger_details)
 

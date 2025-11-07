@@ -35,6 +35,11 @@ func _process(delta):
 func is_highlighted() -> bool:
 	return($Highlight.visible)
 
+#a safer way for a card to remove itself from this slot
+#(rather than drectly calling set_occupying_card null)
+func remove_occupying_card(card):
+	if occupying_card == card:
+		set_occupying_card(null)
 
 func set_occupying_card(card):
 	var slot_was_occupied = (occupying_card !=null)

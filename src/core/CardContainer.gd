@@ -150,9 +150,8 @@ func _on_viewport_resized() -> void:
 
 func are_cards_still_animating() -> bool:
 	for c in get_all_cards():
-		var tt : Tween = c._tween
-		if tt.is_active():
-			return(true)
+		if c.is_animating():
+			return true
 	return(false)
 
 # Hides manipulation buttons

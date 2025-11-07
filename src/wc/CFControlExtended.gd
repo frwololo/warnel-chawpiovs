@@ -553,6 +553,8 @@ func load_script_definitions() -> void:
 		var box_name = script_file.substr(prefix_end, extension_idx-prefix_end)		
 		var json_card_data : Dictionary
 		json_card_data = WCUtils.read_json_file(script_file)
+		#delete comments from dictionary
+		WCUtils.erase_key_recursive(json_card_data, "_comments")
 		json_card_data = replace_macros(json_card_data, json_macro_data)
 		#bugfix: replace "floats" to "ints"
 		json_card_data = WCUtils.replace_real_to_int(json_card_data)

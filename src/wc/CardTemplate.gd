@@ -102,7 +102,7 @@ func setup() -> void:
 	.setup()
 	_runtime_properties_setup()
 	_init_groups()
-	init_default_max_tokens()	
+	init_token_drawer()	
 	set_card_art()
 	position_ui_elements()
 	_ready_load_from_json()
@@ -889,6 +889,10 @@ func export_modifiers():
 	}
 	return result
 
+#changes data of the card based on a dictionary
+#this is different from loading from json because
+# 1) it only impacts some variables, not all,
+# 2) it doesn't reset to a default value if the modifier isn't set
 func import_modifiers(modifiers:Dictionary):
 	var token_data = modifiers.get("tokens", {})
 	if token_data:
@@ -1090,7 +1094,10 @@ func get_remaining_indirect_damage():
 func get_max_hand_size():
 	return get_property("hand_size", 0)
 
-func init_default_max_tokens():
+func init_token_drawer():
+	#set token drawer to disable manipulation buttons
+	tokens.show_manipulation_buttons = false
+	#tokens with a max value
 	for token_name in CFConst.DEFAULT_TOKEN_MAX_VALUE.keys():
 		var value = CFConst.DEFAULT_TOKEN_MAX_VALUE[token_name]
 		tokens.set_max(token_name, value)
@@ -1115,7 +1122,9 @@ func export_to_json():
 	var tokens_to_json = self.tokens.export_to_json()
 	var card_description = {
 		"card" : card_id,
-		"owner_hero_id": owner_hero_id
+		"owner_hero_id": owner_hero_id,
+		"exhausted": is_exhausted(),
+		"can_change_form": _can_change_form,
 	}
 	if (tokens_to_json):
 		card_description["tokens"] = tokens_to_json
@@ -1143,6 +1152,16 @@ func _ready_load_from_json(card_description: Dictionary = {}):
 	if (tokens_to_json):
 		tokens.load_from_json(tokens_to_json)
 
+
+	var exhausted = card_description.get("exhausted", false)
+	if exhausted:
+		exhaustme()
+	else:
+		readyme()
+			
+	self._can_change_form = card_description.get("can_change_form", true)	
+
+	
 	#we don't handle the attachment/host content here, it is don by the board loading, after all cards are loaded
 	
 	return self

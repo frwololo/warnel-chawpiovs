@@ -302,3 +302,17 @@ static func enable_and_show_node(node:Node) -> void:
 	node.set_process(true)
 	node.visible = true
 
+#recursively erases a key from a json object
+static func erase_key_recursive(data, key_to_erase: String) -> void:
+	match typeof(data):
+		TYPE_DICTIONARY:
+			for key in data.keys():
+				if key == key_to_erase:
+					data.erase(key)
+				else:
+					erase_key_recursive(data[key], key_to_erase)
+		TYPE_ARRAY:
+			for element in data:
+				erase_key_recursive(element, key_to_erase)
+		_:
+			pass

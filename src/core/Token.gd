@@ -12,6 +12,7 @@ var token_drawer
 var not_a_real_token:= false
 var canonical_name := ""
 var display_name:= ""
+var show_manipulation_buttons:= true
 
 onready var count_label = $CenterContainer/Count
 
@@ -48,6 +49,8 @@ func setup(token_name: String, _token_drawer = null) -> void:
 		display_name = token_name.substr(1)
 	
 	token_drawer = _token_drawer
+	if token_drawer:
+		show_manipulation_buttons = token_drawer.show_manipulation_buttons
 	var textrect : TextureRect = $CenterContainer/TokenIcon
 	var new_texture = ImageTexture.new();
 	var img_name = CFConst.TOKENS_MAP[token_name] if CFConst.TOKENS_MAP.has(token_name) else CFConst.TOKENS_MAP["default"]
@@ -111,7 +114,7 @@ func get_count_and_alterants() -> Dictionary:
 func expand() -> void:
 	$Name.visible = true
 	$MarginContainer.visible = true
-	$Buttons.visible = true
+	$Buttons.visible = show_manipulation_buttons
 
 
 # Hides the Name label.

@@ -258,8 +258,17 @@
 				{
 					"name": "mod_tokens",
 					"token_name": "threat",
-					"modification": 1,
-					"subject": "self"
+					"modification": "per_boardseek",
+					"subject": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						]
+					},					
 				}
 			]
 		}
@@ -1178,14 +1187,22 @@
 		"manual": {
 			"board": [
 				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},			
+				{
 					"name": "exhaust_card",
 					"subject": "self",
 					"is_cost": true
 				},
 				{
-					"name": "mod_counter",
+					"name": "mod_tokens",
+					"subject": "self",
 					"modification": 1,
-					"counter_name": "helicarrier"
+					"token_name": "_helicarrier"
 				}
 			]
 		},
@@ -1194,11 +1211,11 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "cost",
-					"alteration": "per_counter",
-					"per_counter": {
-						"counter_name": "helicarrier",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "_helicarrier",
 						"is_inverted": true
-					}
+					},
 				}
 			]
 		},
@@ -1206,13 +1223,25 @@
 			"trigger": "another",
 			"board": [
 				{
-					"name": "mod_counter",
+					"name": "mod_tokens",
 					"modification": 0,
+					"subject": "self",
 					"set_to_mod": true,
-					"counter_name": "helicarrier"
+					"token_name": "_helicarrier"
 				}
 			]
-		}
+		},
+		"phase_ended": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "_helicarrier"
+				}
+			]
+		}		
 	},
 	"Heroic Intuition": {
 		"card_moved_to_board": {

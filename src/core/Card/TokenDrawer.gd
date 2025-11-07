@@ -17,6 +17,7 @@ onready var owner_card = get_parent().get_parent()
 #sets a max limit for some tokens
 var max_tokens: Dictionary = {}
 var _is_horizontal:= false
+var show_manipulation_buttons:= true
 
 
 func _ready() -> void:

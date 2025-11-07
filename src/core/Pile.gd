@@ -55,7 +55,21 @@ func _ready():
 	$ViewPopup.connect("about_to_show",self,'_on_ViewPopup_about_to_show')
 	set_pile_name(pile_name)
 	# warning-ignore:return_value_discarded
+	if CFConst.FACEUP_PILE_VIEW_ON_CLICK:
+		show_manipulation_buttons = false
+		manipulation_buttons.visible = false
+		$Control.connect("gui_input", self, "_on_Pile_gui_input")
 
+
+func _on_Pile_gui_input(event) -> void:
+	if !faceup_cards:
+		return
+	if show_manipulation_buttons: #show manipulation buttons override this
+		return
+			
+	if event is InputEventMouseButton and cfc.NMAP.has("board"):	
+		if event.is_pressed() and event.get_button_index() == 1:
+			_on_View_Button_pressed()
 
 
 func _process(_delta) -> void:

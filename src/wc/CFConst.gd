@@ -459,6 +459,8 @@ const TARGET_ARROW_COLOR_BY_NAME: = {
 
 const DEACTIVATE_SLOTS_HIGHLIGHT := true
 
+#this overrides the manipulation buttons in Piles
+const FACEUP_PILE_VIEW_ON_CLICK := true
 #set to true to fetch card datasets online and download images
 const LOAD_CARDS_ONLINE := true
 

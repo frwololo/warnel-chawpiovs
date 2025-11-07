@@ -322,7 +322,8 @@ func get_count(_card_array: Array) -> int:
 			var total = 0
 			var func_name = what_to_count
 			for card in _card_array:
-				total = total + card.call(func_name, my_script)
+				if card and is_instance_valid(card):
+					total = total + card.call(func_name, my_script)
 			return total
 
 #Returns arbitrary (valid) targets for the purpose of cost check

@@ -75,7 +75,8 @@ func get_grid_name() -> String:
 
 func reposition(new_position:Vector2):
 	if (occupying_card):
-		occupying_card.move_to(cfc.NMAP.board, -1, self)
+		occupying_card._maintain_rotation_when_moving = true
+		occupying_card.move_to(cfc.NMAP.board, -1, self)	
 	pass
 
 func rescale():

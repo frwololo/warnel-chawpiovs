@@ -49,7 +49,13 @@ func compute_missing(cost:ManaCost) -> ManaCost:
 		#skip specific cases
 		if (Resource.WILD == k) or (Resource.UNCOLOR == k):
 			continue
-		temp_pool.pool[k] -= cost.pool[k]
+		if temp_pool.pool[k] >= cost.pool[k]:
+			temp_pool.pool[k] -= cost.pool[k]
+		else:
+			#if not enough to pay the exact color, we can use the WILD resource
+			var diff = cost.pool[k] - temp_pool.pool[k]
+			temp_pool.pool[k] = 0
+			temp_pool.pool[Resource.WILD] -= diff
 
 	#UNCOLORED Cost last
 	var remaining = cost.pool[Resource.UNCOLOR]

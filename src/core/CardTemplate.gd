@@ -278,6 +278,8 @@ var tokens: TokenDrawer
 # The node which manipulates the highlight borders.
 var highlight 
 
+#can temporarily set this to true to avoid creating a tween that would rotate the card
+var _maintain_rotation_when_moving := false 
 
 #overridable function if needed
 func _class_specific_ready():
@@ -1415,12 +1417,16 @@ func move_to(targetHost: Node,
 					# This will trigger is the card can only be placed
 					# in specific grids, and the player tried to drag it
 					# Manually to a different grid
-					if _placement_slot != null:
-						_placement_slot.remove_occupying_card(self)
-					_set_target_position(board_position.rect_global_position)
-					board_position.set_occupying_card(self)
-					_placement_slot = board_position
-					set_state(CardState.DROPPING_TO_BOARD)
+					if _placement_slot != board_position:
+						if _placement_slot!= null:
+							_placement_slot.remove_occupying_card(self)
+						_set_target_position(board_position.rect_global_position)
+						board_position.set_occupying_card(self)
+						_placement_slot = board_position
+						set_state(CardState.DROPPING_TO_BOARD)
+					else:
+						_set_target_position(board_position.rect_global_position)
+						set_state(CardState.DROPPING_TO_BOARD)
 				else:
 					if typeof(board_position) == TYPE_VECTOR2:
 						_set_target_position(board_position)
@@ -2731,8 +2737,11 @@ func _process_card_state() -> void:
 				# retain a slight rotation.
 				# We check if the card already has been rotated to a different
 				# card_cotation
-				if not int($Control.rect_rotation) in [0,90,180,270]:
-					_add_tween_rotation($Control.rect_rotation, _target_rotation, to_board_tween_duration)
+				if _maintain_rotation_when_moving:
+					_maintain_rotation_when_moving = false
+				else:
+					if not int($Control.rect_rotation) in [0,90,180,270]:
+						_add_tween_rotation($Control.rect_rotation, _target_rotation, to_board_tween_duration)
 				# We want cards on the board to be slightly smaller than in hand.
 				if not scale.is_equal_approx(Vector2(1,1) * play_area_scale):
 					_add_tween_scale(scale, Vector2(1,1) * play_area_scale, to_board_tween_duration,

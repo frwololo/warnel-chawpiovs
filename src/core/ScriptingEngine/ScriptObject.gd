@@ -140,7 +140,7 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 				# We still check all previous subjects to check that they match the filters
 				# If not, we remove them from the subject list
 				for c in prev_subjects:
-					if SP.check_validity(c, script_definition, "subject"):
+					if SP.check_validity(c, script_definition, "subject", owner):
 						subjects_array.append(c)
 				if subjects_array.size() == 0:
 					is_valid = false
@@ -150,7 +150,7 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 			else:
 				subjects_array = prev_subjects
 				for c in subjects_array:
-					if not SP.check_validity(c, script_definition, "subject"):
+					if not SP.check_validity(c, script_definition, "subject", owner):
 						is_valid = false
 		SP.KEY_SUBJECT_V_TARGET:
 			var c = null
@@ -162,7 +162,7 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 					c = yield(c, "completed")
 			# If the target is null, it means the player pointed at nothing
 			if c:
-				is_valid = SP.check_validity(c, script_definition, "subject")
+				is_valid = SP.check_validity(c, script_definition, "subject", owner)
 				subjects_array.append(c)
 			else:
 				# If the script required a target and it didn't find any
@@ -177,18 +177,18 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 		SP.KEY_SUBJECT_V_TRIGGER:
 			# We check, just to make sure we didn't mess up
 			if trigger_object:
-				is_valid = SP.check_validity(trigger_object, script_definition, "subject")
+				is_valid = SP.check_validity(trigger_object, script_definition, "subject", owner)
 				subjects_array.append(trigger_object)
 			else:
 				print_debug("WARNING: Subject: trigger requested, but no trigger card passed")
 		SP.KEY_SUBJECT_V_SELF:
-			is_valid = SP.check_validity(owner, script_definition, "subject")
+			is_valid = SP.check_validity(owner, script_definition, "subject", owner)
 			subjects_array.append(owner)
 		_:
 			subjects_array = cfc.ov_utils.get_subjects(self, 
 					get_property(SP.KEY_SUBJECT), stored_integer)
 			for c in subjects_array:
-				if not SP.check_validity(c, script_definition, "subject"):
+				if not SP.check_validity(c, script_definition, "subject", owner):
 					is_valid = false
 	if get_property(SP.KEY_NEEDS_SELECTION):
 		if get_property(SP.KEY_SELECTION_IGNORE_SELF):
@@ -245,7 +245,7 @@ func _boardseek_subjects(stored_integer: int) -> Array:
 	requested_subjects = int(subject_count)
 	var subject_list := sort_subjects(cfc.NMAP.board.get_all_scriptables())
 	for c in subject_list:
-		if SP.check_validity(c, script_definition, "seek"):
+		if SP.check_validity(c, script_definition, "seek", owner):
 			subjects_array.append(c)
 			subject_count -= 1
 			if subject_count == 0:
@@ -305,7 +305,7 @@ func _tutor_subjects(stored_integer: int) -> Array:
 	var subject_list := sort_subjects(
 			get_all_cards_from_containers(get_property(SP.KEY_SRC_CONTAINER)))
 	for c in subject_list:
-		if SP.check_validity(c, script_definition, "tutor"):
+		if SP.check_validity(c, script_definition, "tutor", owner):
 			subjects_array.append(c)
 			subject_count -= 1
 			if subject_count == 0:
@@ -406,7 +406,7 @@ func _dry_run_card_targeting(_script_definition):
 	var all_cards = cfc.NMAP.board.get_all_cards()
 	#TODO also check cards in piles ?
 	for c in all_cards:
-		var _is_valid = SP.check_validity(c, _script_definition, "subject")
+		var _is_valid = SP.check_validity(c, _script_definition, "subject", owner)
 		if (_is_valid):
 			return c
 	return null
@@ -425,7 +425,7 @@ func _initiate_card_targeting() -> Card:
 	var valid_targets = []
 	#TODO also check cards in piles ?
 	for c in all_cards:
-		var _is_valid = SP.check_validity(c, script_definition, "subject", self)
+		var _is_valid = SP.check_validity(c, script_definition, "subject", owner)
 		if (_is_valid):
 			valid_targets.append(c)
 	

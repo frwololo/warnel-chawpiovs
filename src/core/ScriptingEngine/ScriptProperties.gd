@@ -1312,8 +1312,8 @@ static func filter_trigger(
 		trigger_details) -> bool:
 	# Checking card properties is its own function as it might be
 	# called from other places as well
-	var is_valid := check_validity(trigger_card, card_scripts, "trigger")
-	if is_valid and not check_validity(owner_card, card_scripts, "self"):
+	var is_valid := check_validity(trigger_card, card_scripts, "trigger", owner_card)
+	if is_valid and not check_validity(owner_card, card_scripts, "self", owner_card):
 		is_valid = false
 
 	# Here we check that the trigger matches the _request_ for trigger
@@ -1664,7 +1664,7 @@ static func check_parent_filter(card, parent: String) -> bool:
 
 
 # Check if the card is a valid subject or trigger, according to its state.
-static func check_validity(card, card_scripts, type := "trigger") -> bool:
+static func check_validity(card, card_scripts, type := "trigger", owner_card = null) -> bool:
 	var card_matches := true
 	# We use the type of seek we're doing
 	# To know which dictionary property to pass for the required dict

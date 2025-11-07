@@ -95,14 +95,12 @@ __meta__ = {
 }
 
 [node name="ManipulationButtons" type="VBoxContainer" parent="Control"]
+unique_name_in_owner = true
 margin_left = 2.0
 margin_top = 20.0
 margin_right = 20.0
 margin_bottom = 44.0
 mouse_filter = 0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="View" type="Button" parent="Control/ManipulationButtons" groups=["manipulation_button"]]
 margin_right = 27.0

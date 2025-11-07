@@ -316,7 +316,7 @@ func next_action():
 			return
 			
 	if (action_type == "play"):
-		var card = get_card(action_value) 
+		var card = get_card(action_value, 1) 
 		if card.check_play_costs() != CFConst.CostsState.OK and delta <long_wait_time:
 			count_delay("action_play")
 			return			
@@ -458,7 +458,7 @@ func action_other(action_value):
 			finished = true #forces pause the test suite to give user control
 
 func action_play(hero_id, card_id_or_name):
-	var card:WCCard = get_card(card_id_or_name)
+	var card:WCCard = get_card(card_id_or_name, hero_id)
 	card.attempt_to_play()
 	return
 	
@@ -503,7 +503,7 @@ func cancel_current_selection_window():
 		var _error =1
 	
 func action_target(hero_id, action_value):
-	var target_card = get_card(action_value)
+	var target_card = get_card(action_value, hero_id)
 
 	if (_current_targeting_card):
 		_current_targeting_card.targeting_arrow.force_select_target(target_card)
@@ -528,7 +528,7 @@ func get_default_hero() -> int:
 	return 1
 	
 func get_card_owner_hero_id(card_id_or_name:String)-> int:
-	var card:WCCard = get_card(card_id_or_name)
+	var card:WCCard = get_card(card_id_or_name, 1)
 	if (!card):
 		return 0 #TODO error handling
 	return card.get_controller_hero_id()
@@ -547,55 +547,71 @@ func get_card_from_pile(card_id_or_name:String, pile:CardContainer):
 	return null	
 	
 #Find a card object (on the board, etc...)
-func get_card(card_id_or_name:String):
+#requesting_hero_id is an indicator to help choosing the right card in case there are multiple cards of the same name on the board
+func get_card(card_id_or_name:String, requesting_hero_id):
 	var card_id = get_corrected_card_id(card_id_or_name)
 	#TODO Search in modal windows?
 	
-	#TODO search in villain cards
+	#look for playing hero board first
+	var card = get_card_in_hero_board(card_id, requesting_hero_id)
+	if card:
+		return card
 	
-	#search on board
-	var board_cards = cfc.NMAP.board.get_all_cards()
-	for card in board_cards:
-		if !is_instance_valid(card):
+	#didn't find it, we look in other hero piles	
+	for i in range(gameData.get_team_size()):
+		var hero_id = i+1
+		if hero_id == requesting_hero_id:
 			continue
-		if card.canonical_id == card_id:
-			return card 
 
-	#search in hero ghosthands in priority
-	for i in range(gameData.get_team_size()):
-		var hero_id = i+1
+		card = get_card_in_hero_board(card_id, hero_id)
+		if card:
+			return card
 
-		var hand_name = "ghosthand" + str(hero_id)
-		var pile:CardContainer = cfc.NMAP.get(hand_name)
-		var card:WCCard = get_card_from_pile(card_id_or_name,  pile)	
-		if (card and is_instance_valid(card)):
-			return card	
-		
-	for i in range(gameData.get_team_size()):
-		var hero_id = i+1
+	#todo search villain piles
 
-		#search in hero hands
-		var hand_name = "hand" + str(hero_id)
-		var pile = cfc.NMAP.get(hand_name)
-		var card = get_card_from_pile(card_id_or_name, pile)	
-		if (card and is_instance_valid(card)):
-			return card	
-		
-		#search in hero piles
-		for grid_name in HERO_GRID_SETUP.keys():
-			var grid_info = HERO_GRID_SETUP[grid_name]
-			var real_grid_name = grid_name + str(hero_id)	
-			if "pile" == grid_info.get("type", ""):
-				pile = cfc.NMAP.get(real_grid_name)
-				card = get_card_from_pile(card_id_or_name, pile)	
-				if (card and is_instance_valid(card)):
-					return card		
-			#no "else" here. Other case is Grid which is handled by board
-
+	#Finally, search on board
+	var board_cards = cfc.NMAP.board.get_all_cards()
+	for c in board_cards:
+		if !is_instance_valid(c):
+			continue
+		if c.canonical_id == card_id:
+			return c
 
 	
 	return null
+
+func get_card_in_hero_board(card_id, hero_id):
+	#search in hero ghosthands in priority
+
+	var hand_name = "ghosthand" + str(hero_id)
+	var pile:CardContainer = cfc.NMAP.get(hand_name)
+	var card:WCCard = get_card_from_pile(card_id,  pile)	
+	if (card and is_instance_valid(card)):
+		return card	
 	
+	#prioritize requesting hero id board
+	#search in my hero hand
+	hand_name = "hand" + str(hero_id)
+	pile = cfc.NMAP.get(hand_name)
+	card = get_card_from_pile(card_id, pile)	
+	if (card and is_instance_valid(card)):
+		return card	
+	
+	#search in hero piles and grids
+	for grid_name in HERO_GRID_SETUP.keys():
+		var grid_info = HERO_GRID_SETUP[grid_name]
+		var real_grid_name = grid_name + str(hero_id)	
+		if "pile" == grid_info.get("type", ""):
+			pile = cfc.NMAP.get(real_grid_name)
+			card = get_card_from_pile(card_id, pile)	
+			if (card and is_instance_valid(card)):
+				return card
+		else:	
+			var grid = cfc.NMAP.board.get_grid(real_grid_name)
+			for c in grid.get_all_cards():
+				if c.canonical_id == card_id:
+					return c
+					
 #Check the end state for the current test
 func finalize_test():
 	rpc("finalize_test_allclients", forced_status)	
@@ -935,7 +951,7 @@ remotesync func save_results():
 	file.close() 	
 
 remotesync func set_upcoming_target(value:String):
-	_current_targeted_card = get_card(value)
+	_current_targeted_card = get_card(value, 1)
 
 func _initiated_targeting(_request_object = null):
 	_current_targeting_card = _request_object

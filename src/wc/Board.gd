@@ -541,8 +541,7 @@ func draw_cheat_ghost(cardName : String) -> void:
 	
 func are_cards_still_animating(check_everything:bool = true) -> bool:
 	for c in get_all_cards():
-		var tt : Tween = c._tween
-		if tt.is_active():
+		if c.is_animating():
 			return(true)
 	
 	if (!check_everything):

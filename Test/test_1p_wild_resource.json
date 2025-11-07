@@ -1,5 +1,5 @@
 {
-	"_comments": "Test if for Justice removes 3 threat",
+	"_comments": "Tests that Wild Resource actualy works",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -17,8 +17,7 @@
 			],
 			"schemes": [
 				{
-					"card": "01097",
-					"tokens": {"threat" : 5},
+					"card": "01097"
 				}
 			],
 			"deck1": [
@@ -31,28 +30,27 @@
 					"card": "Spider-Man"
 				}
 			],
-			"hand1": [		
+			"upgrade_support1":[
 				{
-					"card": "For Justice!"
-				},
+					"card" : "Energy Channel",
+				}
+			],
+			"hand1": [
 				{
-					"card": "Interrogation Room"
-				},	
-				{
-					"card": "Jessica Jones"
-				},	
+					"card": "Spider-Woman"
+				}
 			]
 		}
 	},
 	"actions": [
 		{
-			"type": "play",
-			"value": "For Justice!"
-		},
+			"type": "activate",
+			"value": "Energy Channel"
+		},	
 		{
-			"type": "target",
-			"value": "01097"
-		},		
+			"type": "choose",
+			"value": "Add 1 Energy"
+		},			
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -71,8 +69,7 @@
 			],
 			"schemes": [
 				{
-					"card": "01097",
-					"tokens" : {"threat" : 2}
+					"card": "01097"
 				}
 			],
 			"deck1": [
@@ -85,16 +82,16 @@
 					"card": "Spider-Man"
 				}
 			],
+			"upgrade_support1":[
+				{
+					"card" : "Energy Channel",
+					"tokens": {"energy" : 1}
+				}
+			],
 			"discard1": [
 				{
-					"card": "Jessica Jones"
-				},				
-				{
-					"card": "Interrogation Room"
-				},		
-				{
-					"card": "For Justice!"
-				},					
+					"card": "Spider-Woman"
+				}
 			]
 		}
 	}

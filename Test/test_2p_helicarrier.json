@@ -1,0 +1,159 @@
+{
+	"_comments": "Tests that 2 Helicarriers in play reduce the cost correctly",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Daredevil"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Helicarrier"
+				}
+			],			
+			"deck2": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Carol Danvers",
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Helicarrier"
+				}
+			],				
+			"hand2": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Helicarrier",
+		},
+		{
+			"type": "play",
+			"value": "Daredevil",
+		},				
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Daredevil"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Helicarrier"
+				}
+			],			
+			"deck2": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Carol Danvers",
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Helicarrier"
+				}
+			],				
+			"hand2": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	}
+}

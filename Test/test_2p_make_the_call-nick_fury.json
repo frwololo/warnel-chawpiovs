@@ -1,0 +1,196 @@
+{
+	"_comments": "Tests that Make the Call can play from friend's discard, and that Nick Fury's ability doesn't trigger twice",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Nick Fury"
+				},
+				{
+					"card": "Combat Training"
+				}
+			],			
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Hawkeye"
+				},
+				{
+					"card": "Heroic Intuition"
+				},
+				{
+					"card": "Photonic Blast"
+				},
+				{
+					"card": "Crisis Interdiction"
+				},				
+				
+			],
+			"discard2": [
+				{
+					"card": "Jessica Jones"
+				}
+			],			
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Energy Absorption"
+				},
+				{
+					"card": "Helicarrier"
+				},				
+				{
+					"card": "Make the call"
+				}
+				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Make the call",
+			"hero": 2
+		},
+		{
+			"type": "play",
+			"value": "Nick Fury",
+			"hero": 2
+		},
+		{
+			"type": "choose",
+			"value": "Draw 3",
+			"hero": 2
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+	"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Combat Training"
+				}
+			],			
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Hawkeye"
+				}
+			],			
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"allies2": [
+				{
+					"card": "Nick Fury"
+				},
+			],
+			"hand2": [
+				{
+					"card": "Crisis Interdiction"
+				},				
+				{
+					"card": "Photonic Blast"
+				},
+				{
+					"card": "Heroic Intuition"
+				},				
+			
+			],
+			"discard2": [
+				{
+					"card": "Jessica Jones"
+				},			
+				{
+					"card": "Make the call"
+				},
+				{
+					"card": "HeliCarrier"
+				},					
+				{
+					"card": "Energy Absorption"
+				},			
+				
+			]
+		}
+	}
+}

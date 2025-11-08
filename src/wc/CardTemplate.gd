@@ -210,8 +210,6 @@ func _ready():
 
 func _class_specific_process(delta):
 	._class_specific_process(delta)
-	display_health()
-	display_threat()
 		
 
 func _process(delta) -> void:
@@ -297,6 +295,9 @@ func common_post_move_scripts(new_host: String, _old_host: String, _move_tags: A
 	
 	#init owner once and only once, if not already done
 	init_owner_hero_id(new_hero_id)	
+	
+	display_health()
+	display_threat()
 		
 
 #Tries to play the card assuming costs aren't impossible to pay

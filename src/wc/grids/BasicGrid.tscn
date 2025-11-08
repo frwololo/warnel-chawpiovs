@@ -4,8 +4,5 @@
 
 [node name="BasicGrid" instance=ExtResource( 2 )]
 
-[node name="GridContainer" parent="." index="0"]
-columns = 4
-
 [node name="Label" parent="Control" index="0"]
 text = "upgrade_support"

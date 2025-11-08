@@ -300,13 +300,15 @@ const GRID_SETUP := {
 	"deck_villain" :{
 		"x" : 0,
 		"y" : 20,
-		"type" : "pile"
+		"type" : "pile",
+		"scale" : 0.5			
 	},
 	"discard_villain" :{
 		"x" : 150,
 		"y" : 20,
 		"type" : "pile",
-		"faceup" : true
+		"faceup" : true,
+		"scale" : 0.5			
 	},		
 	"villain" : {
 		"x" : 300,
@@ -333,18 +335,21 @@ const HERO_GRID_SETUP := {
 	"encounters_facedown" :{
 		"x" : 0,
 		"y" : 0,
-		"type" : "pile"
+		"type" : "pile",
+		"scale" : 0.5		
 	},
 	"encounters_reveal" :{
 		"x" : 150,
 		"y" : 0,
 		"type" : "pile",
 		"faceup": true,
+		"scale" : 0.5			
 	},	
 	"deck" :{
 		"x" : 150,
 		"y" : 440,
-		"type" : "pile"
+		"type" : "pile",
+		"scale" : 0.5			
 	},
 	"discard" :{
 		"x" : 0,
@@ -352,6 +357,7 @@ const HERO_GRID_SETUP := {
 		"type" : "pile",
 		"faceup" : true,
 		"groups" : ["player_discard"],
+		"scale" : 0.5			
 	},	
 	"enemies" : {
 		"x" : 350,
@@ -370,6 +376,82 @@ const HERO_GRID_SETUP := {
 		"x" : 350,
 		"y" : 440,
 	},									
+}
+
+const HERO_GRID_LAYOUT := {
+	"type": "horizontal",
+	"x" : 500,
+	"y": 220,
+	"children" : [
+		{
+		"name": "left",
+		"type": "vertical",
+		"children": [
+			{
+				"name": "encounters",
+				"type": "horizontal",
+				"children": [
+					{
+						"name": "encounters_facedown",
+						"type": "pile",
+						"scale": 0.5,				
+					},
+# Example of spacer usage					
+#					{
+#						"name": "test",
+#						"type": "spacer",
+#						"scale": 0.5,				
+#					},					
+					{
+						"name": "encounters_reveal",
+						"type": "pile",
+						"scale": 0.5,									
+					}					
+				]
+			},
+			{
+				"name": "identity",
+				"type": "grid"				
+			},
+			{
+				"name": "hero_piles",
+				"type": "horizontal",
+				"children": [
+					{
+						"name": "discard",
+						"type": "pile",
+						"scale": 0.5,											
+					},
+					{
+						"name": "deck",
+						"type": "pile",
+						"scale": 0.5,											
+					}					
+				]				
+			}
+		]
+		},
+		{
+		"name": "right",
+		"type": "vertical",
+		"max_width" : 1000,
+		"max_height": 600,
+		"children": [
+			{
+				"name": "enemies",
+				"type": "grid"				
+			},
+			{
+				"name": "allies",
+				"type": "grid"				
+			},
+			{
+				"name": "upgrade_support",
+				"type": "grid"				
+			}
+		]
+		}		
+	]
 }
 
 const DEFAULT_TOKEN_MAX_VALUE := {
@@ -458,6 +540,7 @@ const TARGET_ARROW_COLOR_BY_NAME: = {
 }
 
 const DEACTIVATE_SLOTS_HIGHLIGHT := true
+const DISABLE_MANUAL_ATTACHMENTS : = true
 
 #this overrides the manipulation buttons in Piles
 const FACEUP_PILE_VIEW_ON_CLICK := true

@@ -10,6 +10,7 @@ var basicPile = preload("res://src/multiplayer/PileMulti.tscn")
 
 onready var villain := $VillainZone
 onready var options_menu = $OptionsMenu
+var board_organizers: Array = []
 
 # heroZones is 1 indexed (index is hero_id)
 var heroZones: Dictionary = {}
@@ -69,8 +70,12 @@ func _ready() -> void:
 	grid_setup()
 	rpc("ready_to_load")	
 	
-
-		
+func _process(delta:float):
+	#todo this is a heavy call, maybe do it only when cards move
+	if board_organizers:
+		for board_organizer in board_organizers:
+			board_organizer.organize()
+	pass
 	
 func grid_setup():
 	_team_size = 0 #reset team size to fetch it from gameData	
@@ -87,7 +92,7 @@ func grid_setup():
 			pile.set_position(Vector2(grid_info["x"], grid_info["y"]))
 			pile.set_global_position(Vector2(grid_info["x"], grid_info["y"]))
 			var pile_scale = grid_info.get("scale", 1)
-			pile.scale = Vector2(0.5 * pile_scale, 0.5 * pile_scale)
+			pile.scale = Vector2(pile_scale, pile_scale)
 			pile.faceup_cards = grid_info.get("faceup", false)
 			add_child(pile)
 			set_groups(pile, grid_info.get("groups", []))
@@ -134,7 +139,7 @@ func grid_setup():
 				pile.set_position(Vector2(x,y))
 				pile.set_global_position(Vector2(x,y))
 				var pile_scale = grid_info.get("scale", 1)
-				pile.scale = Vector2(0.5*scale*pile_scale, 0.5*scale*pile_scale)
+				pile.scale = Vector2(scale*pile_scale,scale*pile_scale)
 				pile.faceup_cards = grid_info.get("faceup", false)
 				add_child(pile)
 				set_groups(pile, grid_info.get("groups", []))
@@ -154,6 +159,33 @@ func grid_setup():
 				grid.auto_extend = grid_info.get("auto_extend", true)
 				set_groups(grid, grid_info.get("groups", []))
 
+	init_board_organizers(1)
+#	board_organizer.organize()
+
+func init_board_organizers(current_hero_id):
+	board_organizers = []
+	for i in range(get_team_size()):
+		var other_counter = 0
+		var hero_id = i+1
+		var scale = 1
+		var start_x = 500
+		var start_y = 220
+		var grid_layout = CFConst.HERO_GRID_LAYOUT.duplicate(true)
+		
+		if (hero_id != current_hero_id):
+			scale = 0.3
+			start_x = 0
+			start_y = 220 + (other_counter * 200)
+			other_counter+=1
+			#hacky way to force resize
+			var right_container_def = grid_layout["children"][1]
+			right_container_def["max_width"] = 400	
+			right_container_def["max_height"] = 200
+		var board_organizer = BoardOrganizer.new()
+		board_organizer.setup(grid_layout,hero_id, scale)
+		board_organizer.set_absolute_position(Vector2(start_x, start_y))
+		board_organizers.append(board_organizer)
+		board_organizer.organize()
 
 remotesync func ready_to_load():
 	var client_id = get_tree().get_rpc_sender_id() 	
@@ -602,40 +634,6 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 	if (previous_hero_id == new_hero_id):
 		return
 
-	#TODO move to config
-	#TODO convert to nice animation
-	var scale_new = 1
-	var scale_previous = 0.3	
-			
-	for grid_name in HERO_GRID_SETUP.keys():
-		var previous_grid_name = grid_name + str(previous_hero_id)
-		var new_grid_name = grid_name + str(new_hero_id)	
-		var grid_info = HERO_GRID_SETUP[grid_name]
-
-
-		if "pile" == grid_info.get("type", ""):
-			var previous_pile: Pile = cfc.NMAP[previous_grid_name]
-			var new_pile: Pile = cfc.NMAP[new_grid_name]
-			var backup_position:Vector2 = previous_pile.global_position
-			previous_pile.set_position(new_pile.global_position)
-			previous_pile.set_global_position(new_pile.global_position)			
-			previous_pile.scale = Vector2(0.5*scale_previous, 0.5*scale_previous)
-			
-			new_pile.set_position(backup_position)
-			new_pile.set_global_position(backup_position)			
-			new_pile.scale = Vector2(0.5*scale_new, 0.5*scale_new)			
-		else:			
-			var previous_grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(previous_grid_name)
-			var new_grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(new_grid_name)
-			var backup_position:Vector2 = previous_grid.rect_position
-			
-			previous_grid.rescale(CFConst.PLAY_AREA_SCALE * scale_previous)
-			previous_grid.reposition(new_grid.rect_position)
-				
-			new_grid.rescale(CFConst.PLAY_AREA_SCALE * scale_new)
-			new_grid.reposition(backup_position)			
-
-
 	
 	#exchange hands
 	for v in ["GhostHand", "Hand"]:
@@ -652,6 +650,10 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 	for v in ["GhostHand", "Hand"]:
 		var new_hand: Hand = get_node("%" + v + str(new_hero_id))
 		new_hand.re_place()
+
+	init_board_organizers(new_hero_id)
+
+
 
 
 func savestate_to_json() -> Dictionary:	

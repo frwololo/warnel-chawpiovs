@@ -147,14 +147,18 @@ func delete_all_slots_but_one():
 func count_available_slots() -> int:
 	return(get_available_slots().size())
 	
-func reposition(new_position:Vector2):
+func reposition(new_position:Vector2, forced = false):
+	if rect_position == new_position and !forced:
+		return
 	rect_position = new_position
 	
 	var slots:Array = get_all_slots()
 	for slot in slots:
 		slot.reposition(new_position)			
 	
-func rescale(scale):
+func rescale(scale, forced:bool= false):
+	if scale == card_play_scale and !forced:
+		return
 	card_play_scale = scale
 
 	var slots:Array = get_all_slots()
@@ -163,3 +167,4 @@ func rescale(scale):
 		
 	rect_size = (card_size * card_play_scale) + Vector2(4,4)
 	
+

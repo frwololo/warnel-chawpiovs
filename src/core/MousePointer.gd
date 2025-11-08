@@ -255,7 +255,7 @@ func _discover_focus() -> void:
 					#card._on_Card_mouse_entered()
 					#current_focused_card = card
 		# If we have potential hosts, then we highlight the highest index one
-		if not potential_hosts.empty():
+		if not potential_hosts.empty() and !CFConst.DISABLE_MANUAL_ATTACHMENTS:
 			cfc.card_drag_ongoing.potential_host = \
 					current_focused_card.highlight.highlight_potential_card(
 					CFConst.HOST_HOVER_COLOUR,potential_hosts,potential_slots)

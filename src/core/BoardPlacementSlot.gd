@@ -23,11 +23,13 @@ func _ready() -> void:
 func _process(delta):
 	#due to timing issues sometimes the occupying card gets positioned before this has finished loading
 	#So we reposition the card just in case
-	if (!card_position_confirmed):
+#	if (!card_position_confirmed):
 		if occupying_card:
 			var tmp = rect_global_position
 			var tmp2 = self.rect_size
-			occupying_card._set_target_position(rect_global_position + Vector2(self.rect_size.x/2 - occupying_card.card_size.x/2*get_scale_modifier(), 0))
+			var card_x = occupying_card.card_size.x
+			var scale_modifier = get_scale_modifier()
+			occupying_card._set_target_position(rect_global_position + Vector2(self.rect_size.x/2 - occupying_card.card_size.x*get_scale_modifier()/2, 0))
 		card_position_confirmed = true
 	
 	
@@ -48,7 +50,7 @@ func set_occupying_card(card):
 	if card:
 		var tmp = rect_global_position
 		var tmp2 = self.rect_size
-		card._set_target_position(rect_global_position + Vector2(self.rect_size.x/2 - card.card_size.x/2*get_scale_modifier(), 0))
+		card._set_target_position(rect_global_position + Vector2(self.rect_size.x/2 - card.card_size.x*get_scale_modifier()/2, 0))
 
 	card_position_confirmed = false
 	
@@ -93,6 +95,8 @@ func rescale():
 	
 	$Highlight.rect_min_size = tmp2
 	$Highlight.rect_size = tmp2
+	
+	card_position_confirmed = false
 	
 func get_scale_modifier() -> float:
 	if (!owner_grid):

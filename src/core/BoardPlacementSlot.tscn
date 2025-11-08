@@ -31,6 +31,7 @@ corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
 
 [sub_resource type="RectangleShape2D" id=3]
+resource_local_to_scene = true
 extents = Vector2( 60, 96 )
 
 [node name="BoardPlacementSlot" type="Control" groups=["placement_slot"]]

@@ -1327,7 +1327,7 @@ func move_to(targetHost: Node,
 			if potential_host:
 				# The _potential_cards are always organized so that the card higher
 				# in index that we were hovering over, is the last in the array.
-				attach_to_host(potential_host)
+					attach_to_host(potential_host)
 			else:
 				# The developer is allowed to pass a position override to the
 				# card placement which also bypasses manual drop placement
@@ -2710,11 +2710,17 @@ func _process_card_state() -> void:
 			var target_scale = play_area_scale
 			if (_placement_slot):
 				target_scale = _placement_slot.get_scale_modifier()
-			if not $Tween.is_active() and \
-					not scale.is_equal_approx(Vector2(1,1) * target_scale):
-				_add_tween_scale(scale, Vector2(1,1) * target_scale,
-					on_board_tween_duration, Tween.TRANS_SINE, Tween.EASE_OUT)
-				$Tween.start()
+			if not $Tween.is_active():
+				var need_tweening = false
+				if not scale.is_equal_approx(Vector2(1,1) * target_scale):
+					_add_tween_scale(scale, Vector2(1,1) * target_scale,
+						on_board_tween_duration, Tween.TRANS_SINE, Tween.EASE_OUT)
+					need_tweening = true
+				if position != _target_position:	
+					_add_tween_position(position, _target_position, to_board_tween_duration)
+					need_tweening = true
+				if need_tweening:
+					$Tween.start()
 			_organize_attachments()
 
 		CardState.DROPPING_TO_BOARD:

@@ -1,0 +1,129 @@
+{
+	"_comments": "Tests Armored Rhino suit damage redirection",
+	"test_conditions": {
+		"ignore_order" : [
+			"hand1"
+		],
+	},	
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[			
+				{
+					"card": "Armored Rhino Suit"
+				},
+				{
+					"card": "Shocker"
+				},				
+			
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]			
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value" : "wait_for_player_turn"
+		},	
+		{
+			"type": "activate",
+			"value" : "Spider-Man"
+		},		
+		{
+			"type": "choose",
+			"value" : "attack"
+		},
+		{
+			"type": "target",
+			"value" : "01094"
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"others": [
+				{
+					"card": "Armored Rhino Suit",
+					"host": "01094",
+					"tokens": {"damage": 2}
+				}
+			],
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],			
+			"schemes": [
+				{
+					"card": "01097",
+				}
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+				}
+			]
+		}
+	}
+}

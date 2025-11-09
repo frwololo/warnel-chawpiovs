@@ -1,0 +1,120 @@
+{
+	"_comments": "Tests Armored Rhino suit damage redirection",
+	"test_conditions": {
+		"ignore_order" : [
+			"hand1"
+		],
+	},	
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[			
+				{
+					"card": "Charge"
+				},
+			
+			],
+			"encounters_facedown1":[			
+				{
+					"card": "Armored Rhino Suit"
+				},
+			
+			],			
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones"
+				},				
+			],
+			"hand1": [
+				{
+					"card": "Swinging Web Kick"
+				},				
+				{
+					"card": "Energy Absorption"
+				},					
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value" : "wait_for_player_turn"
+		},	
+		{
+			"type": "play",
+			"value" : "Swinging Web Kick"
+		},
+		{
+			"type": "target",
+			"value" : "01094"
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"others": [
+				{
+					"card": "Charge",
+					"host": "01094",
+				}
+			],
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],	
+			"discard_villain": [
+				{
+					"card":  "Armored Rhino Suit"
+				}
+			],				
+			"schemes": [
+				{
+					"card": "01097",
+				}
+			],
+			"discard1": [
+				{
+					"card": "Energy Absorption"
+				},			
+				{
+					"card": "Swinging Web Kick"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+				}
+			]
+		}
+	}
+}

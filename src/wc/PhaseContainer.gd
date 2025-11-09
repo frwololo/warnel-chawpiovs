@@ -15,9 +15,9 @@ var text_edit:TextEdit = null
 #whitelist has priority, if it's set, only messages containing
 #specific words will go through
 #if blackslit is set,, messages containing specific words will be explicitly banned 
-const _debug_msg_whitelist = [] #["executing", "owner", "villain target"] #"script", "all clients", "error"]
+const _debug_msg_whitelist = ["stack"] #["executing", "owner", "villain target"] #"script", "all clients", "error"]
 const _debug_msg_blacklist = []
-const enable_debug_msg = false
+
 
 func create_text_edit():
 	if not cfc.NMAP.has("board") or not is_instance_valid(cfc.NMAP.board):
@@ -34,9 +34,16 @@ func create_text_edit():
 	#text_edit.anchor_bottom = 0.5	
 
 var _previous_debug_msg = ""
-var _previous_equal_count := 0	
+var _previous_equal_count := 0
+
+func flush_debug_display():
+	if !text_edit:
+		return
+	cfc.LOG(text_edit.text)
+	text_edit.text = ""	
+	
 func display_debug(msg:String, prefix = "phase"):
-	if !enable_debug_msg:
+	if !CFConst.DISPLAY_DEBUG_MSG:
 		return
 	
 	var good_to_display = true
@@ -76,6 +83,9 @@ func display_debug(msg:String, prefix = "phase"):
 	if (!msg):
 		return
 	text_edit.text += msg
+	
+	if text_edit.text.length() > 1000:
+		flush_debug_display()
 	
 	var last_line = text_edit.get_line_count() - 1
 	text_edit.cursor_set_line(last_line)
@@ -165,7 +175,8 @@ func _process(_delta: float) -> void:
 	#don't move if the stack has something going on
 	#NOTE: calling theStack.is_processing() here doesn't work: if the stack is idle
 	#but not empty, it means it is waiting for some playing interruption
-	if !gameData.theStack.is_empty():
+	if !gameData.theStack.is_phasecontainer_allowed_to_proceed():
+#	if !gameData.theStack.is_empty():
 		return
 			
 	if gameData.user_input_ongoing:
@@ -334,18 +345,15 @@ func is_in_progress()-> bool:
 	return is_ready_for_next_phase() 
 
 #returns true if nothing prevents me (player) from *asking* for next phase	
-func is_ready_for_next_phase() -> bool :
-	
+func would_be_ready_for_next_phase() -> bool:
 	#don't move if the stack has something going on
 	#NOTE: calling theStack.is_processing() here doesn't work: if the stack is idle
 	#but not empty, it means it is waiting for some playing interruption
 	#(which can never be a "next phase" request???)
-	if !gameData.theStack.is_empty():
+	if !gameData.theStack.is_phasecontainer_allowed_to_proceed():
+#	if !gameData.theStack.is_empty():
 		return false
-	
-	if (!current_step_complete) :
-		return	false
-	
+
 	#encounters waiting to be revealed
 	if (gameData.immediate_encounters):
 		return false
@@ -361,6 +369,13 @@ func is_ready_for_next_phase() -> bool :
 		return false
 		
 	return true	
+
+#returns true if nothing prevents me (player) from *asking* for next phase			
+func is_ready_for_next_phase() -> bool :
+	if (!current_step_complete) :
+		return	false
+	return would_be_ready_for_next_phase()	
+
 
 mastersync func client_ready_for_next_phase():
 	if (not get_tree().is_network_server()):

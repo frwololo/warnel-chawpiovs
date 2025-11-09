@@ -25,6 +25,11 @@ func _process (delta:float):
 		var modifiers = post_move_modifiers[card]
 		card.import_modifiers(modifiers)
 		post_move_modifiers.erase(card)
+		
+	#exhausted status sometimes doesn't catch up	
+	if identity_card: 
+		if identity_card._is_exhausted and ( abs(identity_card.card_rotation) < 40): 	
+			identity_card.set_card_rotation(90, false, false)		
 
 #things to do after everything is properly loaded.
 #This will trigger execute_scripts

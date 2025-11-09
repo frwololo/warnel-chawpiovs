@@ -286,16 +286,16 @@ func organize():
 
 	if cfc.NMAP.board.are_cards_still_animating():
 		return
-	var previous_data = to_json(retrieve_all_children_data())	
+#	var previous_data = to_json(retrieve_all_children_data())	
 	
 	compute_min_size()
 	rescale()
 	reposition_children()
 	display_new_positions()
 
-	var new_data = to_json(retrieve_all_children_data())	
-	if new_data != previous_data:
-		cfc.LOG_DICT({"positions" : retrieve_all_children_data()})
+#	var new_data = to_json(retrieve_all_children_data())	
+#	if new_data != previous_data:
+#		cfc.LOG_DICT({"positions" : retrieve_all_children_data()})
 
 func retrieve_all_children_data():
 	var children = []

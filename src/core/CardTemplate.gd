@@ -833,9 +833,6 @@ func get_property_and_alterants(property: String,
 # This allows the card layout to scale without using the .scale property
 # Which prevents the font from getting blurry
 func resize_recursively(control_node: Node, requested_scale: float) -> void:
-	if (canonical_id == "01001b" or canonical_id =="01094"):
-		display_debug(canonical_name + "resize recursively to scale:" + str(requested_scale))
-	
 	if card_size != canonical_size * requested_scale:
 		card_size = canonical_size * requested_scale
 	if _original_layouts.has(control_node)\
@@ -1337,7 +1334,6 @@ func move_to(targetHost: Node,
 				elif board_position as BoardPlacementSlot:
 					_set_target_position(board_position.rect_global_position)
 					board_position.set_occupying_card(self)
-					_placement_slot = board_position
 				elif board_position and board_position as String:
 					var grid = cfc.NMAP.board.get_grid(board_position)
 					var slot = grid.find_available_slot()
@@ -1345,8 +1341,7 @@ func move_to(targetHost: Node,
 					#TODO this might cause issues with the stack
 					#yield(get_tree().create_timer(0.05), "timeout")
 					_set_target_position(slot.rect_global_position)
-					slot.set_occupying_card(self)
-					_placement_slot = slot					
+					slot.set_occupying_card(self)				
 				else:
 					_determine_target_position_from_mouse()
 				raise()
@@ -1384,7 +1379,6 @@ func move_to(targetHost: Node,
 			# we clean the references.
 			if _placement_slot:
 					_placement_slot.remove_occupying_card(self)
-					_placement_slot = null
 	else:
 		# Here we check what to do if the player just moved the card back
 		# to the same container
@@ -1422,7 +1416,6 @@ func move_to(targetHost: Node,
 							_placement_slot.remove_occupying_card(self)
 						_set_target_position(board_position.rect_global_position)
 						board_position.set_occupying_card(self)
-						_placement_slot = board_position
 						set_state(CardState.DROPPING_TO_BOARD)
 					else:
 						_set_target_position(board_position.rect_global_position)
@@ -1435,7 +1428,6 @@ func move_to(targetHost: Node,
 					set_state(CardState.ON_PLAY_BOARD)
 					if _placement_slot:
 							_placement_slot.remove_occupying_card(self)
-							_placement_slot = null
 				raise()
 		elif parentHost == targetHost and index != get_my_card_index():
 			parentHost.move_child(self,
@@ -1645,8 +1637,6 @@ func execute_scripts(
 	var sceng = null
 	if len(state_scripts):
 		is_executing_scripts = true
-		cfc.LOG("running script for " + self.canonical_name)
-		cfc.LOG_DICT(trigger_details)
 		trigger_details["trigger_type"] = trigger
 
 		#if optional tags are passed, merge them with this invocation
@@ -1819,7 +1809,6 @@ func attach_to_host(
 		# If card was on a grid slot, we clear that occupation
 		if _placement_slot:
 			_placement_slot.remove_occupying_card(self)
-			_placement_slot = null
 		current_host_card = host
 		# Once we selected the host, we don't need anything in the array anymore
 		potential_host = null
@@ -1843,7 +1832,11 @@ func attach_to_host(
 				* CFConst.ATTACHMENT_OFFSET[current_host_card.attachment_offset].x,
 				(attach_index + 1)* card_size.y
 				* CFConst.ATTACHMENT_OFFSET[current_host_card.attachment_offset].y)))
-		set_card_rotation(12, false, true, false, ["force"])		
+		var target_rotation = 0
+		if CFConst.OPTIONS.get("enable_fuzzy_rotations", false):
+			target_rotation = CFUtils.randi_range(0, 12)
+		set_card_rotation(target_rotation, false, true, false, ["force"])
+		_set_target_rotation(target_rotation)		
 		scripting_bus.emit_signal("card_attached",
 				self,
 				{"host": host, "tags": tags})
@@ -2186,12 +2179,12 @@ func _organize_attachments() -> void:
 			if not card.get_node('Tween').is_active() and \
 					card.state in \
 					[CardState.ON_PLAY_BOARD,CardState.FOCUSED_ON_BOARD]:
-				card.global_position = global_position + \
+				card._set_target_position(global_position + \
 						Vector2(
 						(attach_index + 1) * card_size.x
 						* CFConst.ATTACHMENT_OFFSET[attachment_offset].x,
 						(attach_index + 1) * card_size.y \
-						* CFConst.ATTACHMENT_OFFSET[attachment_offset].y)
+						* CFConst.ATTACHMENT_OFFSET[attachment_offset].y))
 
 # Returns the global mouse position but ensures it does not exit the
 # viewport limits when including the card rect
@@ -2716,7 +2709,7 @@ func _process_card_state() -> void:
 					_add_tween_scale(scale, Vector2(1,1) * target_scale,
 						on_board_tween_duration, Tween.TRANS_SINE, Tween.EASE_OUT)
 					need_tweening = true
-				if position != _target_position:	
+				if not position.is_equal_approx(_target_position):	
 					_add_tween_position(position, _target_position, to_board_tween_duration)
 					need_tweening = true
 				if need_tweening:

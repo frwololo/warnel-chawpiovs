@@ -60,6 +60,9 @@ func _ready():
 		manipulation_buttons.visible = false
 		$Control.connect("gui_input", self, "_on_Pile_gui_input")
 
+	if CFConst.HIDE_PILE_DETAILS:
+		$Control/CenterContainer.visible = false
+		$Control.modulate = Color(0,0,0,0.2)
 
 func _on_Pile_gui_input(event) -> void:
 	if !faceup_cards:

@@ -631,10 +631,11 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 		new_hand.enable()	
 		new_hand.re_place()	
 
+	init_board_organizers(new_hero_id)
+
 	if (previous_hero_id == new_hero_id):
 		return
 
-	
 	#exchange hands
 	for v in ["GhostHand", "Hand"]:
 		var old_hand: Hand = get_node("%" + v + str(previous_hero_id))	
@@ -651,7 +652,7 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 		var new_hand: Hand = get_node("%" + v + str(new_hero_id))
 		new_hand.re_place()
 
-	init_board_organizers(new_hero_id)
+
 
 
 
@@ -752,11 +753,10 @@ func flip_doublesided_card(card:WCCard):
 			var slot = card._placement_slot
 			add_child(new_card)
 			card.copy_modifiers_to(new_card)
-			card.queue_free() #is more required to remove it?		
+			gameData.set_aside(card) #is more required to remove it?		
 			#new_card._determine_idle_state()
 			#new_card.move_to(cfc.NMAP.board, -1, slot)	
 			new_card.position = slot.rect_global_position
-			new_card._placement_slot = slot
 			slot.set_occupying_card(new_card)
 			new_card.state = Card.CardState.ON_PLAY_BOARD
 			#new_card.reorganize_self()

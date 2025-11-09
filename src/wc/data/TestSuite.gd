@@ -148,7 +148,8 @@ func reset():
 	finished = false
 
 	gameData.theAnnouncer.skip_announcer()	
-			
+	gameData.disable_desync_recovery()
+		
 	if 1 != get_tree().get_network_unique_id():
 		return
 		

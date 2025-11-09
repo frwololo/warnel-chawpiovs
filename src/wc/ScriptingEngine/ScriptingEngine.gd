@@ -782,8 +782,10 @@ func constraints(script: ScriptTask) -> int:
 			"action_ability":
 				if gameData.phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN:
 					return 	CFConst.ReturnCode.FAILED
-				if !gameData.theStack.is_empty():
-					return CFConst.ReturnCode.FAILED
+# there are unfortunately cases where the scrip itself is causing the stakc to not be empty
+#removing this check until I can figure out a safer way 					
+#				if !gameData.theStack.is_empty():
+#					return CFConst.ReturnCode.FAILED
 				if cfc.is_modal_event_ongoing():
 					return 	CFConst.ReturnCode.FAILED			
 				

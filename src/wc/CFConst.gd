@@ -541,6 +541,8 @@ const TARGET_ARROW_COLOR_BY_NAME: = {
 
 const DEACTIVATE_SLOTS_HIGHLIGHT := true
 const DISABLE_MANUAL_ATTACHMENTS : = true
+const HIDE_GRID_BACKGROUND:= true
+const HIDE_PILE_DETAILS:= true
 
 #this overrides the manipulation buttons in Piles
 const FACEUP_PILE_VIEW_ON_CLICK := true
@@ -579,4 +581,5 @@ const FORCE_LOGS:= false
 #seconds until we trigger a desync warning when the stack is blocked
 #set to 0 for infinite waiting time (debug)
 const DESYNC_TIMEOUT:= 5.0
+const DISPLAY_DEBUG_MSG = true
 

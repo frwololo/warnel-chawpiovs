@@ -14,6 +14,8 @@ var _on_ready_load_from_json:Dictionary = {}
 
 #marvel champions specific variables
 var _can_change_form := true
+var _is_exhausted:= false
+
 var is_boost:=false
 
 #an array of ManaCost variables representing everything that's been used to pay for this card
@@ -119,6 +121,7 @@ func setup() -> void:
 	
 	#this prevents moving cards around. A bit annoying but avoids weird double click envents leading to a drag and drop
 	disable_dragging_from_board = true	
+	disable_dropping_to_cardcontainers = true
 
 #		scripting_bus.emit_signal(
 #				"card_token_modified",
@@ -298,6 +301,10 @@ func common_post_move_scripts(new_host: String, _old_host: String, _move_tags: A
 	
 	display_health()
 	display_threat()
+	
+	#rest exhausted status
+	if new_host.to_lower() != "board":
+		_is_exhausted = false
 		
 
 #Tries to play the card assuming costs aren't impossible to pay
@@ -520,6 +527,8 @@ func readyme(toggle := false,
 			tags = tags + ["force"]
 			
 	var retcode = set_card_rotation(rot, toggle, start_tween, check, tags)
+	if !check and retcode != CFConst.ReturnCode.FAILED:
+		_is_exhausted = false
 	return retcode
 	
 func exhaustme(toggle := false,
@@ -537,13 +546,15 @@ func exhaustme(toggle := false,
 		return CFConst.ReturnCode.OK		
 					
 	var retcode = set_card_rotation(rot, toggle, start_tween, check, tags)
+	if !check and retcode != CFConst.ReturnCode.FAILED:
+		_is_exhausted = true
 	return retcode	
 
 func is_ready() :
-	return card_rotation < 40 and card_rotation > -40  
+	return !_is_exhausted
 
 func is_exhausted():
-	return (not is_ready())	
+	return _is_exhausted
 	
 func add_threat(threat : int):
 	tokens.mod_token("threat",threat)	
@@ -664,8 +675,8 @@ func _process_card_state() -> void:
 	if get_node('Control/Back').visible == is_faceup:
 		is_faceup = !is_faceup
 		set_is_faceup(!is_faceup, true)
-	match get_state_exec():
-		"board":
+	match state:
+		CardState.ON_PLAY_BOARD:
 			#horizontal cards are always forced to horizontal
 			#does that need to change eventually ?	
 			#note: setting tweening to false otherwise it causes issues with

@@ -616,7 +616,6 @@ func spawn_card(script: ScriptTask) -> void:
 					card = cfc.instance_card(canonical_id, -2)
 					cfc.NMAP.board.add_child(card)
 					card.position = slot.rect_global_position
-					card._placement_slot = slot
 					slot.set_occupying_card(card)
 					card.state = Card.CardState.ON_PLAY_BOARD
 					spawned_cards.append(card)

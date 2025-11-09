@@ -51,6 +51,9 @@ func _ready() -> void:
 			MousePointer.MOUSE_RADIUS * 2 + 1)
 	if not name_label.text:
 		name_label.text = name
+	
+	if CFConst.HIDE_GRID_BACKGROUND:
+		modulate = Color(0,0,0,0)
 		
 	connect("card_added_to_slot", self, "_card_added")
 	connect("card_removed_from_slot", self, "_card_removed")
@@ -63,8 +66,10 @@ func _card_added(card):
 	#find_available_slot()	
 
 func _card_removed(card):
-	#add new slots ahead of time as needed, to avoid "yield" related issues
-	#TODO shrink ?
+	if (auto_extend):
+		var empty_slots = get_available_slots()
+		for empty_slot in empty_slots:
+			$GridContainer.remove_child(empty_slot)
 	pass
 
 

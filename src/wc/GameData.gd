@@ -73,6 +73,7 @@ var immediate_encounters: = {}
 var user_input_ongoing:int = 0 #ID of the current player (or remote player) doing a blocking game interraction
 var _garbage:= []
 var _targeting_ongoing:= false
+var _desync_recovery_enabled = true
 
 #a timer to avoid double registering a click on a target
 # as a click for its abilities
@@ -154,7 +155,13 @@ func end_game(result:String):
 	cfc.NMAP.board.add_child(end_dialog)
 	end_dialog.popup_centered()
 
+#for testing
+func disable_desync_recovery():
+	_desync_recovery_enabled = false
+
 func attempt_resync(result:String):
+	if ! _desync_recovery_enabled:
+		return
 	reload_round_savegame(current_round)
 	
 #	cfc.set_game_paused(true)
@@ -358,9 +365,8 @@ func move_to_next_scheme(current_scheme):
 
 			var slot = current_scheme._placement_slot
 			board.add_child(new_card)
-			current_scheme.queue_free() #is more required to remove it?		
+			gameData.set_aside(current_scheme) #is more required to remove it?		
 			new_card.position = slot.rect_global_position
-			new_card._placement_slot = slot
 			slot.set_occupying_card(new_card)
 			new_card.state = Card.CardState.ON_PLAY_BOARD
 			return new_card
@@ -914,7 +920,8 @@ func reveal_encounter(target_id = 0):
 				push_error("ERROR: Missing target grid in reval_encounters")	
 		EncounterStatus.PENDING_COMPLETE:
 			#there has to be a better way.... wait for a signal somehow ?
-			if !theStack.is_empty():
+			if !gameData.theStack.is_phasecontainer_allowed_to_proceed():
+#			if !theStack.is_empty():
 				return
 			if cfc.get_modal_menu():
 				return
@@ -1389,7 +1396,8 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 	
 	#scenario
 	#TODO
-	cfc.set_game_paused(previous_pause_state)		
+	cfc.set_game_paused(previous_pause_state)
+	assign_starting_hero()		
 	rpc_id(caller_id,"remote_load_game_data_finished",CFConst.ReturnCode.OK)
 
 remotesync func start_phaseContainer():
@@ -1406,10 +1414,10 @@ func _server_disconnected():
 	
 #TODO check for game integrity, save game for undo/save, etc...
 func systems_check():
-#	_systems_check_ongoing = true
-#	rpc("clients_send_system_status")	
+	_systems_check_ongoing = true
+	clients_send_system_status()	
 #	pass
-	initiate_network_ack("get_my_system_status")
+#	initiate_network_ack("get_my_system_status")
 
 func init_desync_recover():
 	_multiplayer_desync = true
@@ -1464,102 +1472,106 @@ func get_my_system_status() -> Dictionary:
 	return status
 
 
+var _clients_system_status:= {}
+var _systems_check_ongoing = false
 
+remotesync func set_systems_check_ongoing(value):
+	_systems_check_ongoing = value
 
-#remotesync func receive_system_status(status:Dictionary):
-#	var client_id = get_tree().get_rpc_sender_id() 	
-#	_clients_system_status[client_id] = status
-#	if _clients_system_status.size() == gameData.network_players.size():
-#		var status_ok = finalize_get_my_system_status(_clients_system_status)
-#		if status_ok:
-#			_clients_system_status = {} #reset just in case
-#			_systems_check_ongoing = false
-#		else:
-#			pass
-#			#TODO handle desync
+remotesync func receive_system_status(status:Dictionary):
+	var client_id = get_tree().get_rpc_sender_id() 	
+	_clients_system_status[client_id] = status
+	if _clients_system_status.size() == gameData.network_players.size():
+		var status_ok = finalize_get_my_system_status(_clients_system_status)
+		if status_ok:
+			_clients_system_status = {} #reset just in case
+			rpc("set_systems_check_ongoing", false)
+		else:
+			pass
+			#TODO handle desync
 
-#remotesync func clients_send_system_status():
-#	var my_status = get_my_system_status()
-#	rpc("receive_system_status", my_status)
+remotesync func clients_send_system_status():
+	var my_status = get_my_system_status()
+	rpc_id(1, "receive_system_status", my_status)
 
 #
 # Network ACK functions
 #
 
-func initiate_network_ack(function, params:={}):
-	var my_network_id = cfc.get_network_unique_id()
-	if !_network_ack.has(function):
-		_network_ack[function] = {}
-	
-	var _ack_store = _network_ack[function] 	
-	if _ack_store.has(my_network_id):
-		#TODO error
-		var _error = 1
-
-	_ack_store[my_network_id] = {
-		"in_progress": true,
-		"data": {}
-	}
-	rpc("clients_please_ack", function, params)	
-	pass
-	
-remotesync func clients_please_ack(function, params:={}):
-	var caller_network_id = get_tree().get_rpc_sender_id() 
-	if !_network_ack.has(function):
-		_network_ack[function] = {}
-	
-	var _ack_store = _network_ack[function] 	
-	if _ack_store.has(caller_network_id):
-		#TODO error
-		var _error = 1
-
-	_ack_store[caller_network_id] = {
-		"in_progress": true,
-		"data": {}
-	}
-	var result
-	if params:
-		result =  call(function, params)
-	else:
-		result =  call(function)
-	
-	rpc_id(caller_network_id, "receive_ack" , function, result)
-
-		
-remotesync func receive_ack(function, result):
-	var client_id = get_tree().get_rpc_sender_id() 
-	var my_network_id = cfc.get_network_unique_id()
-	if !_network_ack.has(function):
-		var _error = 1
-		return
-	
-	var _ack_store = _network_ack[function] 	
-	if !_ack_store.has(my_network_id):
-		#TODO error
-		var _error = 1
-		return	
-	_ack_store[my_network_id]["data"][client_id] = result	
-	if _ack_store[my_network_id]["data"].size() == gameData.network_players.size():
-		var finalize_result = call("finalize_" + function, _ack_store[my_network_id]["data"])
-		rpc("release_network_lock", function)	
-
-remotesync func release_network_lock(function):
-	var client_id = get_tree().get_rpc_sender_id() 
-	if !_network_ack.has(function):
-		var _error = 1
-		return
-	
-	var _ack_store = _network_ack[function] 	
-	if !_ack_store.has(client_id):
-		#TODO error
-		var _error = 1
-		return	
-
-	_ack_store.erase(client_id)	
-	if !_network_ack[function]:
-		_network_ack.erase(function)
-
+#func initiate_network_ack(function, params:={}):
+#	var my_network_id = cfc.get_network_unique_id()
+#	if !_network_ack.has(function):
+#		_network_ack[function] = {}
+#
+#	var _ack_store = _network_ack[function] 	
+#	if _ack_store.has(my_network_id):
+#		#TODO error
+#		var _error = 1
+#
+#	_ack_store[my_network_id] = {
+#		"in_progress": true,
+#		"data": {}
+#	}
+#	rpc("clients_please_ack", function, params)	
+#	pass
+#
+#remotesync func clients_please_ack(function, params:={}):
+#	var caller_network_id = get_tree().get_rpc_sender_id() 
+#	if !_network_ack.has(function):
+#		_network_ack[function] = {}
+#
+#	var _ack_store = _network_ack[function] 	
+#	if _ack_store.has(caller_network_id):
+#		#TODO error
+#		var _error = 1
+#
+#	_ack_store[caller_network_id] = {
+#		"in_progress": true,
+#		"data": {}
+#	}
+#	var result
+#	if params:
+#		result =  call(function, params)
+#	else:
+#		result =  call(function)
+#
+#	rpc_id(caller_network_id, "receive_ack" , function, result)
+#
+#
+#remotesync func receive_ack(function, result):
+#	var client_id = get_tree().get_rpc_sender_id() 
+#	var my_network_id = cfc.get_network_unique_id()
+#	if !_network_ack.has(function):
+#		var _error = 1
+#		return
+#
+#	var _ack_store = _network_ack[function] 	
+#	if !_ack_store.has(my_network_id):
+#		#TODO error
+#		var _error = 1
+#		return	
+#	_ack_store[my_network_id]["data"][client_id] = result	
+#	if _ack_store[my_network_id]["data"].size() == gameData.network_players.size():
+#		var finalize_result = call("finalize_" + function, _ack_store[my_network_id]["data"])
+#		rpc("release_network_lock", function)	
+#
+#remotesync func release_network_lock(function):
+#	var client_id = get_tree().get_rpc_sender_id() 
+#	if !_network_ack.has(function):
+#		var _error = 1
+#		return
+#
+#	var _ack_store = _network_ack[function] 	
+#	if !_ack_store.has(client_id):
+#		#TODO error
+#		var _error = 1
+#		return	
+#
+#	_ack_store.erase(client_id)	
+#	if !_network_ack[function]:
+#		_network_ack.erase(function)
+#
 func pending_network_ack():
-	if _network_ack:
+	if _systems_check_ongoing:
 		return true
 	return false

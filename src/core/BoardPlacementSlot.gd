@@ -18,6 +18,8 @@ var card_position_confirmed:= false
 onready var owner_grid = get_parent().get_parent()
 
 func _ready() -> void:
+	if CFConst.HIDE_GRID_BACKGROUND:
+		modulate = Color(0,0,0,0)
 	rescale()
 
 func _process(delta):
@@ -42,12 +44,17 @@ func is_highlighted() -> bool:
 func remove_occupying_card(card):
 	if occupying_card == card:
 		set_occupying_card(null)
+		card._placement_slot = null
 
 func set_occupying_card(card):
 	var slot_was_occupied = (occupying_card !=null)
+	if (slot_was_occupied and occupying_card != card):
+		if (is_instance_valid(occupying_card)):
+			occupying_card._placement_slot = null
+		
 	occupying_card = card
-
 	if card:
+		card._placement_slot = self		
 		var tmp = rect_global_position
 		var tmp2 = self.rect_size
 		card._set_target_position(rect_global_position + Vector2(self.rect_size.x/2 - card.card_size.x*get_scale_modifier()/2, 0))

@@ -21,6 +21,13 @@ func replace_subjects(new_subjects:Array):
 	for task in get_tasks():
 		task.subjects = new_subjects
 
+#replacement task
+func replace_ability(new_ability:String):
+	for task in get_tasks():
+		task.script_name = new_ability
+		task.script_definition["name"] = new_ability
+	var _tmp = sceng	
+
 func prevent_value(property, amount_prevented):
 	for task in get_tasks():
 		var script_definition = task.script_definition

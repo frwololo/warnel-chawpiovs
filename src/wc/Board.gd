@@ -289,6 +289,14 @@ func get_all_cards() -> Array:
 
 	return(cardsArray)
 
+func get_all_cards_controlled_by(hero_id):
+	var cardsArray := []
+	for obj in get_children():
+		if obj as Card: 
+			if (obj.get_controller_hero_id() == hero_id):
+				cardsArray.append(obj)
+	return cardsArray	
+
 func get_all_cards_by_property(property:String, value):
 	var cardsArray := []
 	for obj in get_children():
@@ -766,6 +774,18 @@ func flip_doublesided_card(card:WCCard):
 		return
 		#TODO mabe flip anyway?
 
+func count_card_per_player_in_play(unique_card:WCCard, hero_id):
+	var unique_name = unique_card.get_unique_name().to_lower()
+	var all_cards = self.get_all_cards_controlled_by(hero_id)
+	var result = 0
+	for card in all_cards:
+		if !card.is_faceup:
+			continue	
+		var card_unique_name = card.get_unique_name().to_lower()
+		if card_unique_name == unique_name:
+			result +=1
+	return result
+	
 func unique_card_in_play(unique_card:WCCard):
 	#note: sometimes subname can be set but still equal to null, so we have to force it to empty string
 	var unique_name = unique_card.get_unique_name().to_lower()

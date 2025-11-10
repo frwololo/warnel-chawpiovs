@@ -186,6 +186,10 @@ func attack(script: ScriptTask) -> int:
 	if not damage:
 		damage = owner.get_property("attack", 0)
 
+	var type = owner.get_property("type_code", "")
+	if !type in ["hero", "ally"]:
+		owner = _get_identity_from_script(script)
+
 	var stunned = owner.tokens.get_token_count("stunned")
 	if (stunned):
 		owner.tokens.mod_token("stunned", -1)
@@ -280,6 +284,32 @@ func receive_damage(script: ScriptTask) -> int:
 	
 				var task_event = SimplifiedStackScript.new("card_dies", card_dies_script)
 				gameData.theStack.add_script(task_event)
+						
+	return retcode
+
+func receive_threat(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+	
+	var tags: Array = script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
+	var amount = script.retrieve_integer_property("amount")
+	
+	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
+	# e.g. Spider man gets 3*1 damage = 3 damage
+	var consolidated_subjects:= {}
+	#TODO BUG sometimes subjects contains a null card?
+	for card in script.subjects:
+		if !consolidated_subjects.has(card):
+			consolidated_subjects[card] = 0
+		consolidated_subjects[card] += 1
+	
+	#TODO BUG sometimes subjects contains a null card?
+	for card in consolidated_subjects.keys():
+		var multiplier = consolidated_subjects[card]
+		
+		retcode = card.tokens.mod_token("threat",
+				amount * multiplier,false,costs_dry_run(), tags)	
 						
 	return retcode
 
@@ -399,6 +429,19 @@ func _add_receive_damage_on_stack(amount, original_script, modifications:Diction
 		
 		var task_event = SimplifiedStackScript.new("receive_damage", receive_damage_script)
 		gameData.theStack.add_script(task_event)	
+
+func _add_receive_threat_on_stack(amount, original_script, modifications:Dictionary = {}):		
+		var receive_threat_script_definition = {
+			"name": "receive_threat",
+			"amount": amount,
+		}
+		modifications["script_definition"] =  receive_threat_script_definition	
+		var receive_threat_script = _modify_script(original_script, modifications, "replace")
+		
+		receive_threat_script.is_primed = true #fake prime it since we already gave it subjects	
+		
+		var task_event = SimplifiedStackScript.new("receive_threat", receive_threat_script)
+		gameData.theStack.add_script(task_event)
 	
 #the ability that is triggered by enemy_attack
 func enemy_attack(script: ScriptTask) -> int:
@@ -487,8 +530,45 @@ func consequential_damage(script: ScriptTask) -> int:
 	
 	return CFConst.ReturnCode.CHANGED
 
+func commit_scheme(script: ScriptTask):
+	var retcode: int = CFConst.ReturnCode.CHANGED
+			
+	#TODO special case villain needs to receive a boost card
+	var owner = script.owner
+	var scheme_amount = owner.get_property("scheme", 0)
+	if (!scheme_amount):
+		return  CFConst.ReturnCode.FAILED
+	
+	var main_scheme = gameData.find_main_scheme()
+	if (!main_scheme):
+		return CFConst.ReturnCode.FAILED
 
-func scheme(script: ScriptTask) -> int:
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+
+	script.subjects = [main_scheme]
+
+	#reveal boost cards
+	for boost_card in owner.attachments:
+		if (!boost_card.is_boost):
+			continue
+		boost_card.set_is_faceup(true)
+		scheme_amount = scheme_amount + boost_card.get_property("boost",0)
+		#add an event on the stack to discard this card.
+		#Note that the discard will happen *after* receive_damage below 
+		#because we add it to the stack first
+		var discard_event = cfc.scripting_engine.simple_discard_task(boost_card)
+		gameData.theStack.add_script(discard_event)
+	
+	if scheme_amount:
+		var script_modifications = {
+			"additional_tags" : ["scheme", "Scripted"],
+		}
+		_add_receive_threat_on_stack (scheme_amount, script, script_modifications)
+	
+	return retcode
+
+func enemy_schemes(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
@@ -520,7 +600,15 @@ func thwart(script: ScriptTask) -> int:
 	#otherwise we use the thwart property if the script owner is a friendly character
 	var modification = script.retrieve_integer_property("amount")
 	if !modification:
-		modification = owner.get_property("thwart")
+		modification = owner.get_property("thwart", 0)
+
+	if !modification:
+		modification = 0
+
+	var type = owner.get_property("type_code", "")
+	if !type in ["hero", "ally"]:
+		owner = _get_identity_from_script(script)
+
 
 	var confused = owner.tokens.get_token_count("confused")
 	if (confused):
@@ -788,7 +876,13 @@ func constraints(script: ScriptTask) -> int:
 #					return CFConst.ReturnCode.FAILED
 				if cfc.is_modal_event_ongoing():
 					return 	CFConst.ReturnCode.FAILED			
-				
+	
+	#Max per player rule to play
+	var max_per_hero = script.get_property("max_per_hero", 0)
+	if max_per_hero:
+		var already_in_play = cfc.NMAP.board.count_card_per_player_in_play(this_card, my_hero_id)
+		if already_in_play >= max_per_hero:
+			return 	CFConst.ReturnCode.FAILED			
 
 	var constraints: Array = script.get_property("constraints", [])
 	for constraint in constraints:

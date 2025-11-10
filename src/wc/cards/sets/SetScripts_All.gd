@@ -382,7 +382,14 @@ func get_scripts(scripts: Dictionary, card_id: String, _get_modified = true) -> 
 						"is_else": true,
 					}					
 				]
-			}
+			},
+			"commit_scheme": {
+				"board": [
+					{
+						"name": "commit_scheme",
+					}					
+				]
+			}			
 		}
 		script = WCUtils.merge_dict(script,villain_attack, true)		
 	

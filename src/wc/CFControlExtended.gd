@@ -836,7 +836,10 @@ func LOG_DICT(to_print:Dictionary):
 	
 func add_ongoing_process(object, description:String = ""):
 	if (!description):
-		description = object.get_class()
+		if typeof(object) == TYPE_DICTIONARY:
+			description = "dictionary"
+		else:
+			description = object.get_class()
 		
 	if (!_ongoing_processes.has(object)):
 		_ongoing_processes[object] = {}
@@ -848,7 +851,10 @@ func add_ongoing_process(object, description:String = ""):
 	
 func remove_ongoing_process(object, description:String = ""):
 	if (!description):
-		description = object.get_class()
+		if typeof(object) == TYPE_DICTIONARY:
+			description = "dictionary"
+		else:
+			description = object.get_class()
 		
 	if (!_ongoing_processes.has(object)):
 		return 0

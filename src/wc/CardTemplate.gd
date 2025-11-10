@@ -68,6 +68,8 @@ func set_controller_hero_id(hero_id:int):
 func get_controller_hero_id() -> int:
 	return _controller_hero_id	
 
+func get_controller_hero_card() -> int:
+	return gameData.get_identity_card(_controller_hero_id)	
 	
 func get_controller_player_network_id() -> int:
 	var player_data:PlayerData = gameData.get_hero_owner(get_controller_hero_id())
@@ -642,29 +644,29 @@ func die():
 			
 	return CFConst.ReturnCode.OK		
 
-func commit_scheme():
-	#TODO special case villain needs to receive a boost card
-	var scheme_amount = self.get_property("scheme", 0)
-	if (!scheme_amount):
-		return
-	
-	var main_scheme:WCCard = gameData.find_main_scheme()
-	if (!main_scheme):
-		return
-
-	#reveal boost cards
-	for boost_card in attachments:
-		if (!boost_card.is_boost):
-			continue
-		boost_card.set_is_faceup(true)
-		scheme_amount = scheme_amount + boost_card.get_property("boost",0)
-		#add an event on the stack to discard this card.
-		#Note that the discard will happen *after* receive_damage below 
-		#because we add it to the stack first
-		var discard_event = cfc.scripting_engine.simple_discard_task(boost_card)
-		gameData.theStack.add_script(discard_event)
-	
-	main_scheme.add_threat(scheme_amount)
+#func commit_scheme():
+#	#TODO special case villain needs to receive a boost card
+#	var scheme_amount = self.get_property("scheme", 0)
+#	if (!scheme_amount):
+#		return
+#
+#	var main_scheme:WCCard = gameData.find_main_scheme()
+#	if (!main_scheme):
+#		return
+#
+#	#reveal boost cards
+#	for boost_card in attachments:
+#		if (!boost_card.is_boost):
+#			continue
+#		boost_card.set_is_faceup(true)
+#		scheme_amount = scheme_amount + boost_card.get_property("boost",0)
+#		#add an event on the stack to discard this card.
+#		#Note that the discard will happen *after* receive_damage below 
+#		#because we add it to the stack first
+#		var discard_event = cfc.scripting_engine.simple_discard_task(boost_card)
+#		gameData.theStack.add_script(discard_event)
+#
+#	main_scheme.add_threat(scheme_amount)
 
 func _process_card_state() -> void:
 	._process_card_state()
@@ -970,6 +972,29 @@ func get_instance_runtime_scripts(trigger:String = "", filters:={}) -> Dictionar
 			found_scripts = merged_scripts.get(trigger,{}).duplicate(true)
 	
 	return found_scripts
+
+#returns true if this card has a given trait
+func has_trait(params) -> bool:
+	var trait = ""
+	match typeof(params):
+		TYPE_DICTIONARY:
+			trait = params.get("trait", "")
+		TYPE_STRING:
+			trait = params
+		_:
+			return false
+
+	if !trait:
+		return false
+	
+	trait = "trait_" + trait
+	if get_property(trait, 0, true):
+		return true
+	return false
+
+func identity_has_trait(params) -> bool:
+	var hero = get_controller_hero_card()
+	return hero.has_trait(params)	
 
 #returns true if this card was paid for with (at least) resources described by params
 #e.g if you paid 3 physical plus 1 mental for a card, 

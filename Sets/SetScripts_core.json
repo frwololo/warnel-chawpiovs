@@ -3,7 +3,7 @@
 		"reveal": {
 			"all": [
 				{
-					"name": "scheme",
+					"name": "enemy_schemes",
 					"subject": "villain"
 				}
 			]
@@ -244,9 +244,8 @@
 		"reveal": {
 			"all": [
 				{
-					"name": "mod_tokens",
-					"token_name": "threat",
-					"modification": 1,
+					"name": "receive_threat",
+					"amount": 1,
 					"subject": "self"
 				}
 			]
@@ -256,9 +255,8 @@
 		"reveal": {
 			"all": [
 				{
-					"name": "mod_tokens",
-					"token_name": "threat",
-					"modification": "per_boardseek",
+					"name": "receive_threat",
+					"amount": "per_boardseek",
 					"subject": "self",
 					"per_boardseek": {
 						"subject": "boardseek",
@@ -472,6 +470,56 @@
 			]
 		}
 	},
+	"Crisis Interdiction": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"subject": "target",
+					"amount": 2,
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					],
+					"tags": [
+						"thwart",
+					]
+				},
+				{
+					"name": "thwart",
+					"subject": "target",
+					"amount": {
+						"if": {
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "aerial"
+							}
+						},
+						"then": 2,
+						"else": 0
+					},
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					],
+					"tags": [
+						"thwart"
+					]
+				}				
+			]
+		}
+	},
 	"Combat Training": {
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -567,6 +615,13 @@
 	},
 	"Energy Channel": {
 		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero": 1,
+				},
+			],
 			"board": {
 				"add 1 energy": [
 					{
@@ -1098,7 +1153,27 @@
 		}
 	},
 	"Great Responsibility": {
-		"todo": {}
+		"interrupt": {
+			"event_name": "receive_threat",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},			
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"subject": "my_hero",
+						"name" : "receive_damage"
+					}
+				}
+			]
+		}
 	},
 	"Hard to Keep Down": {
 		"reveal": {
@@ -1256,7 +1331,8 @@
 					"needs_selection": true,
 					"filter_state_seek": [
 						{
-							"filter_group": "group_identities"
+							"filter_group": "group_identities",
+							"filter_max_per_hero": 1,
 						}
 					]
 				}
@@ -1293,8 +1369,7 @@
 				],
 				"1 Threat on Main Scheme": [
 					{
-						"name": "mod_tokens",
-						"token_name": "threat",
+						"name": "receive_threat",
 						"amount": 1,
 						"subject": "boardseek",
 						"filter_state_seek": [
@@ -1968,9 +2043,19 @@
 		}
 	},
 	"Vision": {
+		"once_per_round": {
+			"__name__": "_vision_ability"
+		},	
 		"manual": {
 			"board": {
 				"+2 Attack": [
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"subject": "self",
+						"token_name": "_vision_ability",
+						"is_cost": true
+					},				
 					{
 						"name": "pay_cost",
 						"cost": {
@@ -1997,6 +2082,13 @@
 					}
 				],
 				"+2 Thwart": [
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"subject": "self",
+						"token_name": "_vision_ability",
+						"is_cost": true
+					},					
 					{
 						"name": "pay_cost",
 						"cost": {
@@ -2070,7 +2162,7 @@
 					"is_cost": true,
 					"tags": [
 						"hero_form"
-					]
+					],
 				},
 				{
 					"name": "attach_to_card",
@@ -2078,7 +2170,8 @@
 					"needs_subject": true,
 					"filter_state_subject": [
 						{
-							"filter_group": "group_enemies"
+							"filter_group": "group_enemies",
+							"filter_max_per_host" : 1,
 						}
 					]
 				}

@@ -32,6 +32,10 @@ func _init(_name, _task):
 	tasks = [task]
 	
 
+#replacement task
+func replace_ability(new_ability:String):
+	.replace_ability(new_ability)
+	task_name = new_ability
 
 func get_tasks() -> Array:
 	return tasks
@@ -44,13 +48,14 @@ func execute():
 
 #replacement task
 func replace_subjects(new_subjects:Array):
+	.replace_subjects(new_subjects)
 	task.subjects = new_subjects
 
 	if (task.subjects):
 		task.script_definition["target"] = task.subjects[0]
 
-	#recreate sceng	
-	sceng = cfc.scripting_engine.new([task.script_definition], task.owner,task.trigger_object, task.trigger_details)
+#	#recreate sceng	
+#	sceng = cfc.scripting_engine.new([task.script_definition], task.owner,task.trigger_object, task.trigger_details)
 
 
 func get_script_by_event_details(event_details):

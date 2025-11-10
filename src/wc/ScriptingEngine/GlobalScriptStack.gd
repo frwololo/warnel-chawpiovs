@@ -734,6 +734,8 @@ func compute_interrupts(_interrupt_mode):
 		return
 	var script_uid = script.stack_uid
 
+	var interrupters_found = false
+	
 	for i in range(gameData.get_team_size()):
 		var hero_id = i+1
 		var tasks = script.get_tasks()
@@ -752,11 +754,16 @@ func compute_interrupts(_interrupt_mode):
 				if can_interrupt == INTERRUPT_FILTER[_interrupt_mode]:
 					var guid = guidMaster.get_guid(card)
 					my_interrupters.append(guid)
+					interrupters_found = true
 	
 		potential_interrupters[hero_id] = my_interrupters	
 	
-	#this fills similar data into clients and will then call the "select_interrupters" step
-	rpc("blank_compute_interrupts", script_uid)
+	if interrupters_found:
+		#this fills similar data into clients and will then call the "select_interrupters" step
+		rpc("blank_compute_interrupts", script_uid)
+	else:
+		#otherwise we skip the rpc call and directly go to the next step
+		select_interrupting_player()
 					 
 
 var _blank_interrupts_computed:= {}
@@ -948,9 +955,12 @@ func replace_subjects(stack_object, value, script):
 	match value:
 		"self":
 			stack_object.replace_subjects([script.owner])
+		"my_hero":
+			stack_object.replace_subjects([script.owner.get_controller_hero_card()])			
 		_:
 			#not implemented
 			pass
+					
 
 #scripted replacement effects
 func modify_object(stack_object, script:ScriptTask):
@@ -968,6 +978,8 @@ func modify_object(stack_object, script:ScriptTask):
 				match property:
 					"subject":
 						replace_subjects(stack_object, value, script)
+					"name":
+						stack_object.replace_ability(value)
 					_:
 						#not implemented
 						pass

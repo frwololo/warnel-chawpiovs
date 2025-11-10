@@ -26,6 +26,9 @@ func execute():
 #replacement task
 func replace_subjects(new_subjects:Array):
 	pass
+	
+func replace_ability(new_ability_name:String):
+	pass	
 
 func prevent_value(property, amount_prevented):
 	pass		

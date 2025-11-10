@@ -21,6 +21,8 @@ const KEY_SUBJECT_V_MY_IDENTITY := "my_identity"
 const KEY_SUBJECT_V_VILLAIN := "villain"
 const FILTER_HOST_OF := "filter_is_host_of"
 const FILTER_SAME_CONTROLLER := "filter_same_controller"
+const FILTER_MAX_PER_HERO := "filter_max_per_hero"
+const FILTER_MAX_PER_HOST := "filter_max_per_host"
 
 const TRIGGER_TARGET_HERO = "target_hero"
 const TRIGGER_SUBJECT = "trigger_subject"
@@ -83,6 +85,27 @@ static func check_same_controller_filter(trigger_card, owner_card, true_false : 
 	if ((not same_controller) and (not true_false)): return true
 	return false
 
+#checks if owner_card already exists equal_or_more than max_value times
+# under the control 
+# of target_card's hero id
+static func check_max_per_hero(target_card, max_value, owner_card) -> bool:
+	var hero_id = target_card.get_controller_hero_id()
+	var count = cfc.NMAP.board.count_card_per_player_in_play(owner_card, hero_id)
+	if count >= max_value:
+		return false
+	return true
+
+#checks if target_card already hosts equal_or_more than max_value a card named like owner_card
+static func check_max_per_host(target_card, max_value, owner_card) -> bool:
+	var attachments = target_card.attachments
+	var count = 0
+	for card in attachments:
+		if card.get_unique_name() == owner_card.get_unique_name():
+			count+=1
+	if count >= max_value:
+		return false
+	return true
+
 
 # Check if the card is a valid subject or trigger, according to its state.
 static func check_validity(card, card_scripts, type := "trigger", owner_card = null) -> bool:
@@ -102,5 +125,32 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 		for card in all_cards:
 			if card.get_keyword("guard") and card.is_faceup: #TODO better way to ignore face down cards?
 				return false
+
+	var card_matches = true
+	if is_instance_valid(card) and card_scripts.get(ScriptProperties.FILTER_STATE + type):
+		# each "filter_state_" FILTER is an array.
+		# Each element in this array is dictionary of "AND" conditions
+		# The filter will fail, only if ALL the or elements in this array
+		# fail to match.
+		var state_filters_array : Array = card_scripts.get(ScriptProperties.FILTER_STATE + type)
+		# state_limits is the variable which will hold the dictionary
+		# detailing which card state which the subjects must match
+		# to satisfy this filter
+		for state_filters in state_filters_array:
+			card_matches = true
+			for filter in state_filters:
+				# We check with like this, as it allows us to provide an "AND"
+				# check, by simply apprending something into the state string
+				# I.e. if we have filter_properties and filter_properties2
+				# It will treat these two states as an "AND"				
+				if filter == FILTER_MAX_PER_HERO\
+						and not check_max_per_hero(card, state_filters[filter], owner_card):
+					card_matches = false
+				elif filter == FILTER_MAX_PER_HOST\
+						and not check_max_per_host(card, state_filters[filter], owner_card):
+					card_matches = false					
+			if card_matches:
+				break
+	return(card_matches)
 
 	return is_valid	

@@ -698,14 +698,20 @@ func enemy_activates() :
 				var _sceng = enemy.execute_scripts(enemy, "enemy_attack",trigger_details)
 				_current_enemy_attack_step = EnemyAttackStatus.PENDING_DEFENDERS
 			else:
-				#scheme		
-				enemy.commit_scheme() #todo send to network clients
-				current_enemy_finished()
+				#scheme	
+				var trigger_details = {
+					"additional_tags": []
+				}
+				if script:
+					trigger_details["additional_tags"] += script.get_property(SP.KEY_TAGS, [])
+					trigger_details["_display_name"] = "enemy scheme (" + enemy.canonical_name + " -> " + get_current_target_hero().canonical_name +")" 	
+				var _sceng = enemy.execute_scripts(enemy, "commit_scheme",trigger_details)
+				_current_enemy_attack_step = EnemyAttackStatus.ATTACK_COMPLETE
 			return
 			
 			
 		EnemyAttackStatus.ATTACK_COMPLETE:
-			scripting_bus.emit_signal("enemy_attack_happened", enemy, {})
+			scripting_bus.emit_signal("enemy_" + action + "_happened", enemy, {})
 			current_enemy_finished()
 			return 
 
@@ -1253,6 +1259,7 @@ func confirm(
 		var my_network_id = get_tree().get_network_unique_id()
 		var is_master:bool =  (owner.get_controller_player_network_id() == my_network_id)
 		var confirm = _OPTIONAL_CONFIRM_SCENE.instance()
+		cfc.add_modal_menu(confirm)
 		confirm.prep(card_name,task_name, is_master)
 		# We have to wait until the player has finished selecting an option
 		yield(confirm,"selected")
@@ -1261,10 +1268,12 @@ func confirm(
 			is_accepted = false
 		# Garbage cleanup
 		confirm.hide()
+		cfc.remove_modal_menu(confirm)
 		confirm.queue_free()
 		_release_user_input_lock(owner.get_controller_player_network_id())
 	cfc.remove_ongoing_process(self)	
 	return(is_accepted)
+
 
 func is_ongoing_blocking_announce():
 	return theAnnouncer.get_blocking_announce()	

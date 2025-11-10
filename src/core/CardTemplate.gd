@@ -757,10 +757,10 @@ func refresh_card_front() -> void:
 # Retrieves the value of a property. This should always be used instead of
 # properties.get() as it takes into account the temp_properties_modifiers var
 # and also checks for alterant scripts
-func get_property(property: String, default = null):
-	if not (properties.has(property)):
+func get_property(property: String, default = null, force_alterant_check = false):
+	if not (properties.has(property)) and not force_alterant_check:
 		return default
-	return(get_property_and_alterants(property).value)
+	return(get_property_and_alterants(property, false, default).value)
 
 
 # Discovers the modified value of the specified property based
@@ -772,8 +772,8 @@ func get_property(property: String, default = null):
 #	CFScriptUtils.get_altered_value() but including details about
 #	temp_properties_modifiers
 func get_property_and_alterants(property: String,
-		use_global_temp_mods := false) -> Dictionary:
-	var property_value = properties.get(property)
+		use_global_temp_mods := false, default = null) -> Dictionary:
+	var property_value = properties.get(property, default)
 	var alteration = {
 		"value_alteration": 0,
 		"alterants_details": {}
@@ -812,7 +812,7 @@ func get_property_and_alterants(property: String,
 				self,
 				"get_property",
 				{SP.KEY_PROPERTY_NAME: property,},
-				properties.get(property))
+				properties.get(property, default))
 			if alteration is GDScriptFunctionState:
 				alteration = yield(alteration, "completed")
 			_is_property_being_altered = false
@@ -1565,7 +1565,11 @@ func execute_scripts(
 
 	if (trigger =="card_moved_to_board" and canonical_name == "Nick Fury"):
 		var _tmp = 1
-
+	
+	#if set to false we'll skip the (potential) optional confirmation
+	#this is useful e.g. in interrupt mode where we have a better UI
+	var show_optional_confirmation_menu = true
+	
 	#we're playing a card manually but in interrupt mode.
 	#What we want to do here is play the optional triggered effect instead
 	if (trigger == "manual" and gameData.is_interrupt_mode()):
@@ -1579,6 +1583,9 @@ func execute_scripts(
 		trigger_card = trigger_details["event_object"].owner #this is geting gross, how to clear that?
 		if (!trigger_card):
 			return
+		#skip otopinal confirmation menu for interrupts,
+		#we have a different gui signal	
+		show_optional_confirmation_menu = false	
 		
 	var only_cost_check = is_dry_run(run_type)
 		
@@ -1603,6 +1610,35 @@ func execute_scripts(
 	cfc.add_ongoing_process(self, "core_execute_scripts")
 	
 	var action_name = state_scripts_dict["action_name"]
+	
+	# Here we check for confirmation of optional trigger effects
+	# There should be an SP.KEY_IS_OPTIONAL definition per state
+	# E.g. if board scripts are optional, but hand scripts are not
+	# Then you'd include an "is_optional_board" key at the same level as "board"
+	# Here we check for confirmation of optional trigger effects
+	# There should be an SP.KEY_IS_OPTIONAL definition per state
+	# E.g. if board scripts are optional, but hand scripts are not
+	# Then you'd include an "is_optional_board" key at the same level as "board"
+	if show_optional_confirmation_menu:
+		if typeof(state_scripts) == TYPE_ARRAY:
+			for script in state_scripts:
+				#if the script is targeted, we have an option to cancel there
+				if script.get("subject") in ["target", "boardseek"]:
+					show_optional_confirmation_menu = false
+	if show_optional_confirmation_menu and !is_network_call:
+		var confirm_return = gameData.confirm(
+			self,
+			card_scripts,
+			canonical_name,
+			trigger,
+			get_state_exec())
+		if confirm_return is GDScriptFunctionState: # Still working.
+			confirm_return = yield(confirm_return, "completed")
+			# If the player chooses not to play an optional cost
+			# We consider the whole cost dry run unsuccesful
+			if not confirm_return:
+				state_scripts = []
+	
 	# If the state_scripts return a dictionary entry
 	# it means it's a multiple choice between two scripts
 	if typeof(state_scripts) == TYPE_DICTIONARY:

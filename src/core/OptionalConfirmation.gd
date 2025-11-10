@@ -65,3 +65,9 @@ remotesync func cancelled() -> void:
 		self,
 		{"is_accepted": is_accepted}
 	)					
+
+
+func force_select_by_title(keyword: String):
+	if keyword in ["yes", "ok", "confirm"]:
+		_on_OptionalConfirmation_confirmed()
+	_on_OptionalConfirmation_cancelled()

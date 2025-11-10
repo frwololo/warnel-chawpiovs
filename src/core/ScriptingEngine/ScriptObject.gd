@@ -461,7 +461,7 @@ static func count_per(
 func retrieve_integer_property(property, stored_integer:int = 0):
 	var value = get_property(property, null)
 	if !value:
-		return value
+		return 0
 		
 	if SP.VALUE_PER in str(value):
 		value = count_per(

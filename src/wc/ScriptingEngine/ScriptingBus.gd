@@ -47,6 +47,8 @@ signal enemy_initiates_scheme(card,details)
 # warning-ignore:unused_signal
 signal enemy_attack_happened (card,details)
 # warning-ignore:unused_signal
+signal enemy_scheme_happened (card,details)
+# warning-ignore:unused_signal
 signal thwarted (card,details)
 # warning-ignore:unused_signal
 signal character_dies(card, details)

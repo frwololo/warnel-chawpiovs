@@ -1,10 +1,5 @@
 {
-	"_comments": "Tests SpiderMan nemesis",
-	"test_conditions": {
-		"ignore_order" : [
-			"deck_villain"
-		],
-	},
+	"_comments": "Tests higway robbery",
 	"init": {
 		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [
@@ -12,7 +7,12 @@
 				"herodeckdata": {
 					"hero": "Spider-Man"
 				}
-			}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}			
 		],
 		"board": {
 			"villain": [
@@ -22,25 +22,12 @@
 			],
 			"deck_villain":[
 				{
-					"card": "shadow of the past"
-				},				
-			],
-			"set_aside": [
+					"card": "Hydra Mercenary"
+				},		
 				{
-					"card": "Vulture"
-				},	
-				{
-					"card": "Sweeping Swoop"
-				},	
-				{
-					"card": "The Vulture's Plans"
-				},	
-				{
-					"card": "Highway Robbery"
-				},	
-				{
-					"card": "Sweeping Swoop"
-				},					
+					"card": "highway robbery"
+				},
+			
 			],
 			"schemes": [
 				{
@@ -60,19 +47,27 @@
 			"hand1": [
 				{
 					"card": "Mockingbird"
-				},			
+				},
 				{
 					"card": "01002"
 				}
-			]
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Energy Absorption"
+				},
+				{
+					"card": "Hawkeye"
+				}
+			]			
 		}
 	},
 	"actions": [
-		{
-			"type": "select",
-			"value": "cancel",
-			"_comments": "take undefended attack from Vulture Quickstrike"
-		},
 		{
 			"type": "other",
 			"value": "wait_for_player_turn",
@@ -85,7 +80,12 @@
 				"herodeckdata": {
 					"hero": "Spider-Man"
 				}
-			}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}			
 		],
 		"board": {
 			"villain": [
@@ -93,36 +93,25 @@
 					"card": "01094"
 				}
 			],
-			"discard_villain":[
-				{
-					"card": "shadow of the past"
-				},						
+			"deck_villain":[	
+				
 			],
-			"others": [
+			"others": [	
 				{
 					"card": "01002"
-				}			
-			],
-			"deck_villain": [	
+				},		
 				{
-					"card": "Sweeping Swoop"
-				},	
-				{
-					"card": "The Vulture's plans"
-				},	
-				{
-					"card": "Sweeping Swoop"
-				},					
-			],
-			"set_aside" :[
+					"card": "Hawkeye"
+				}				
+			
 			],
 			"schemes": [
 				{
-					"card": "01097",
+					"card": "01097"
 				},
 				{
-					"card": "Highway Robbery",
-				}
+					"card": "highway robbery"
+				},				
 			],
 			"deck1": [
 				{
@@ -131,20 +120,29 @@
 			],
 			"identity1": [
 				{
-					"card": "Spider-Man",
-					"tokens": {"damage" : 3}
+					"card": "Spider-Man"
 				}
 			],
 			"hand1": [
 				{
 					"card": "Mockingbird"
-				},
+				},				
 			],
-			"enemies1": [
+			"identity2": [
 				{
-					"card": "Vulture"
-				},
-			]
+					"card": "Captain Marvel"
+				}
+			],
+			"enemies2": [
+				{
+					"card": "Hydra Mercenary"
+				}			
+			],
+			"hand2": [
+				{
+					"card": "Energy Absorption"
+				}
+			]			
 		}
 	}
 }

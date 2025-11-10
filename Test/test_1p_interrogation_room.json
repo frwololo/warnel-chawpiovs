@@ -1,0 +1,123 @@
+{
+	"_comments": "Basic Test For Interrogation Room",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens" : {"threat" : 4},
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Bomber"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Interrogation Room"
+				}
+			],				
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},		
+				{
+					"card": "Spider-Tracer"
+				},
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Spider-Man"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},		
+		{
+			"type": "target",
+			"value": "Hydra Bomber"	
+		},
+		{
+			"type": "target",
+			"value": "01097"	
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens" : {"threat" : 3},
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Hydra Bomber"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Interrogation Room"
+				}
+			],				
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},		
+				{
+					"card": "Spider-Tracer"
+				},
+			]
+		}
+	}
+}

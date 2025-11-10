@@ -1,0 +1,103 @@
+{
+	"_comments": "Tests Advance encounter starts a scheming event, vs Great Responsibility",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "hydra mercenary"
+				},				
+				{
+					"card": "advance"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens" : {"threat" : 1}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Great Responsibility"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type":"play",
+			"value": "Great Responsibility"
+		}
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"discard_villain":[
+				{
+					"card": "hydra mercenary"
+				},			
+				{
+					"card": "advance"
+				},				
+			],			
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens": {"threat" : 1}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {"damage" : 2}					
+				}
+			],
+			"discard1": [
+				{
+					"card": "Great Responsibility"
+				}
+			]
+		}
+	}
+}

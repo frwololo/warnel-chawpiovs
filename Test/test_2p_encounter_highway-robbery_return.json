@@ -1,0 +1,201 @@
+{
+	"_comments": "Tests higway robbery",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "Hydra Mercenary"
+				},		
+				{
+					"card": "highway robbery"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Maria Hill"
+				},
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Energy Absorption"
+				},
+				{
+					"card": "Hawkeye"
+				}
+			]			
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		},
+		{
+			"type": "activate",
+			"value": "Jessica Jones",
+		},
+		{
+			"type": "choose",
+			"value": "thwart",
+		},	
+		{
+			"type": "target",
+			"value": "highway robbery",
+		},	
+		{
+			"type": "activate",
+			"value": "Maria Hill",
+		},
+		{
+			"type": "choose",
+			"value": "thwart",
+		},	
+		{
+			"type": "target",
+			"value": "highway robbery",
+		},
+		{
+			"type": "activate",
+			"value": "Captain Marvel",
+			"hero" : 2
+		},
+		{
+			"type": "choose",
+			"value": "thwart",
+			"hero" : 2			
+		},	
+		{
+			"type": "target",
+			"value": "highway robbery",
+			"hero" : 2			
+		},		
+		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"discard_villain":[	
+				{
+					"card": "highway robbery"
+				},
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				},				
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Maria Hill"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},			
+				{
+					"card": "01002"
+				},				
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"enemies2": [
+				{
+					"card": "Hydra Mercenary"
+				}			
+			],
+			"hand2": [
+				{
+					"card": "Energy Absorption"
+				},				
+				{
+					"card": "Hawkeye"
+				},
+				
+			]			
+		}
+	}
+}

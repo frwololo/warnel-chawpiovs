@@ -1,5 +1,5 @@
 {
-	"_comments": "Tests Advance encounter starts a scheming event, vs Great Responsibility",
+	"_comments": "Tests Advance encounter starts a scheming event, vs Emergency reduction",
 	"init": {
 		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [
@@ -42,7 +42,7 @@
 			],
 			"hand1": [
 				{
-					"card": "Great Responsibility"
+					"card": "Emergency"
 				}
 			]
 		}
@@ -50,7 +50,7 @@
 	"actions": [
 		{
 			"type":"play",
-			"value": "Great Responsibility"
+			"value": "Emergency"
 		}
 	] ,
 	"end": {
@@ -79,7 +79,7 @@
 			"schemes": [
 				{
 					"card": "01097",
-					"tokens": {"threat" : 1}
+					"tokens": {"threat" : 2}
 				}
 			],
 			"deck1": [
@@ -94,7 +94,7 @@
 			],
 			"discard1": [
 				{
-					"card": "Great Responsibility"
+					"card": "Emergency"
 				}
 			]
 		}

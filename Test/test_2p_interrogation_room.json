@@ -1,0 +1,174 @@
+{
+	"_comments": "Tests that Interrogation Room does not trigger from other player kill",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens": {"threat" : 4}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Bomber"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Interrogation Room"
+				}
+			],				
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Web-Shooter"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel",
+				}
+			],
+			"hand2": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Captain Marvel",
+			"hero": 2
+		},
+		{
+			"type": "choose",
+			"value": "attack",
+			"hero": 2
+		},
+		{
+			"type": "target",
+			"value": "Hydra Bomber",
+			"hero": 2
+		},			
+		{
+			"type": "target",
+			"value": "01097",
+			"hero": 1,
+			"_comments": "attempt to target with Interrogation room. This should fail since the kill is not mine"
+		}
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens": {"threat" : 4}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Web-Shooter"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],			
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Hydra Bomber"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Interrogation Room"
+				}
+			],				
+			"deck2": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	}
+}

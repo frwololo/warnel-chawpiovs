@@ -1,7 +1,7 @@
 {
-	"_comments": "Tests that Vision thwart is modified per ability",
+	"_comments": "Tests Advance encounter starts a scheming event, vs Great Responsibility",
 	"init": {
-		"phase": "PLAYER_TURN",
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -15,14 +15,20 @@
 					"card": "01094"
 				}
 			],
+			"deck_villain":[
+				{
+					"card": "hydra mercenary"
+				},				
+				{
+					"card": "advance"
+				},
+			
+			],
 			"schemes": [
 				{
 					"card": "01097",
-				},
-				{
-					"card": "Crowd Control",
-					"tokens": {"threat" : 4}
-				}				
+					"tokens" : {"threat" : 1}
+				}
 			],
 			"deck1": [
 				{
@@ -34,41 +40,18 @@
 					"card": "Spider-Man"
 				}
 			],
-			"allies1": [
-				{
-					"card": "Vision",
-					"tokens": {"_vision_ability" : 1}
-				},
-			],
 			"hand1": [
 				{
-					"card": "Jessica Jones"
-				}					
-				
+					"card": "Great Responsibility"
+				}
 			]
 		}
 	},
 	"actions": [
 		{
-			"type": "activate",
-			"value": "Vision"
-		},
-		{
-			"type": "choose",
-			"value": "+2 Thwart"
-		},	
-		{
-			"type": "activate",
-			"value": "Vision"
-		},
-		{
-			"type": "choose",
-			"value": "Thwart"
-		},		
-		{
-			"type": "target",
-			"value": "Crowd Control"
-		},			
+			"type":"play",
+			"value": "Great Responsibility"
+		}
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -85,14 +68,19 @@
 					"card": "01094"
 				}
 			],
+			"discard_villain":[
+				{
+					"card": "hydra mercenary"
+				},			
+				{
+					"card": "advance"
+				},				
+			],			
 			"schemes": [
 				{
 					"card": "01097",
-				},
-				{
-					"card": "Crowd Control",
 					"tokens": {"threat" : 1}
-				}				
+				}
 			],
 			"deck1": [
 				{
@@ -104,16 +92,10 @@
 					"card": "Spider-Man"
 				}
 			],
-			"allies1": [
-				{
-					"card": "Vision"
-				},
-			],
 			"discard1": [
 				{
-					"card": "Jessica Jones"
-				}					
-				
+					"card": "Great Responsibility"
+				}
 			]
 		}
 	}

@@ -1,5 +1,5 @@
 {
-	"_comments": "Tests that Vision thwart is modified per ability",
+	"_comments": "Basic Test to check if stun prevents attack events",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -12,17 +12,14 @@
 		"board": {
 			"villain": [
 				{
-					"card": "01094"
+					"card": "01094",
+					"tokens": {"damage" : 1},
 				}
 			],
 			"schemes": [
 				{
-					"card": "01097",
-				},
-				{
-					"card": "Crowd Control",
-					"tokens": {"threat" : 4}
-				}				
+					"card": "01097"
+				}
 			],
 			"deck1": [
 				{
@@ -31,44 +28,35 @@
 			],
 			"identity1": [
 				{
-					"card": "Spider-Man"
+					"card": "Spider-Man",
+					"tokens":{"stunned" : 1}
 				}
-			],
-			"allies1": [
-				{
-					"card": "Vision",
-					"tokens": {"_vision_ability" : 1}
-				},
 			],
 			"hand1": [
 				{
 					"card": "Jessica Jones"
-				}					
-				
+				},		
+				{
+					"card": "Black Cat - Felicia Hardy"
+				},
+				{
+					"card": "MockingBird"
+				},
+				{
+					"card": "Swinging Web Kick"
+				}
 			]
 		}
 	},
 	"actions": [
 		{
-			"type": "activate",
-			"value": "Vision"
+			"type": "play",
+			"value": "Swinging Web Kick"
 		},
-		{
-			"type": "choose",
-			"value": "+2 Thwart"
-		},	
-		{
-			"type": "activate",
-			"value": "Vision"
-		},
-		{
-			"type": "choose",
-			"value": "Thwart"
-		},		
 		{
 			"type": "target",
-			"value": "Crowd Control"
-		},			
+			"value": "01094"
+		},		
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -82,17 +70,14 @@
 		"board": {
 			"villain": [
 				{
-					"card": "01094"
+					"card": "01094",
+					"tokens": {"damage": 1}
 				}
 			],
 			"schemes": [
 				{
-					"card": "01097",
-				},
-				{
-					"card": "Crowd Control",
-					"tokens": {"threat" : 1}
-				}				
+					"card": "01097"
+				}
 			],
 			"deck1": [
 				{
@@ -104,16 +89,19 @@
 					"card": "Spider-Man"
 				}
 			],
-			"allies1": [
+			"discard1": [	
 				{
-					"card": "Vision"
+					"card": "MockingBird"
 				},
-			],
-			"discard1": [
+				{
+					"card": "Black Cat - Felicia Hardy"
+				},
 				{
 					"card": "Jessica Jones"
-				}					
-				
+				},
+				{
+					"card": "Swinging Web Kick"
+				},				
 			]
 		}
 	}

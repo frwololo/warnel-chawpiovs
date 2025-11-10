@@ -1,0 +1,121 @@
+{
+	"_comments": "Tests Advance encounter starts a scheming event",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "advance"
+				},			
+				{
+					"card": "hydra mercenary"
+				},				
+		
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Hawkeye",
+					"tokens": {"arrow" : 4}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "choose",
+			"value": "ok"
+		}
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[		
+				{
+					"card": "advance"
+				},				
+			],			
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary",
+					"tokens": {"damage": 2}
+				}
+			],			
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Hawkeye",
+					"tokens": {"arrow" : 3}
+				}
+			],			
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			]
+		}
+	}
+}

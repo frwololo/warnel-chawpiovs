@@ -1,0 +1,107 @@
+{
+	"_comments": "Basic Test to check crisis interdiction",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens": {"threat" : 3},					
+				},
+				{
+					"card": "Bomb Scare",
+					"tokens": {"threat" : 3},					
+				},				
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Captain Marvel",
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},		
+				{
+					"card": "Crisis Interdiction"
+				},
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Crisis Interdiction"
+		},
+		{
+			"type": "target",
+			"value": "01097"
+		},
+		{
+			"type": "target",
+			"value":  "Bomb Scare"
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens": {"threat" : 1},					
+				},
+				{
+					"card":  "Bomb Scare",
+					"tokens": {"threat" : 3},					
+				},	
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"discard1": [	
+				{
+					"card": "Strength"
+				},		
+				{
+					"card": "Crisis Interdiction"
+				},			
+			]
+		}
+	}
+}

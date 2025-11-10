@@ -26,7 +26,8 @@ const max_wait_time: = 2
 const shorten_animations = true
 const STOP_AFTER_FIRST_FAILURE = true
 var announce_verbose = false
-
+var announce_verbose_whitelist:= ["running", "rng"]
+var last_rng_state = 0
 var start_time = 0
 var end_time = 0
 
@@ -124,6 +125,14 @@ func reset_between_tests():
 	_current_targeting_card = null
 	_current_targeted_card = null
 	_action_ongoing = false	
+	if cfc.is_game_master():
+		cfc.game_rng_seed = "test suite"
+		var test_random = CFUtils.randi_range(0, 100000)
+		var random_str = "Random generator fixed"
+		if test_random != 40645:
+			random_str = "{error Fixing Random Generator, expected 40645, got " + str(test_random) + "}"
+		announce(random_str + "\n")
+		last_rng_state = cfc.game_rng.state 
 	
 func reset():
 	start_time = Time.get_ticks_msec()
@@ -181,14 +190,20 @@ func create_text_edit():
 	text_edit.add_color_override("function_color", Color(0.88, 0.88, 0.88))
 	text_edit.add_color_override("member_variable_color", Color(0.88, 0.88, 0.88))
 	text_edit.add_color_region("<", ">", Color(1,1,0))
-
+	text_edit.add_color_region("{", "}", Color(1,0.1,0.1))
 	#text_edit.anchor_bottom = 0.5	
 
 
 func announce(text:String, include_test_number:= true):
 	if include_test_number:
-		if !announce_verbose and not "running" in text:
-			return
+		if !announce_verbose:
+			var found = false
+			for pattern in announce_verbose_whitelist:
+				if pattern in text:
+					found = true
+					break
+			if !found:
+				return
 		text = str(current_test) + "/"+ str(test_files.size()) +"-" + text
 	text_edit.text += text
 	text_edit.text = text_edit.text	
@@ -408,6 +423,7 @@ func get_hero_player_network_owner(hero_id):
 	
 mastersync func action_complete():
 	_action_ongoing = false
+
 	
 remotesync func run_action(my_action:Dictionary):	
 	#valid types: play, activate, choose, target, select, pass ("next_phase" is a synonym), other
@@ -451,6 +467,11 @@ remotesync func run_action(my_action:Dictionary):
 			#TODO error
 			var _error = 1
 	rpc_id(1, "action_complete")
+
+	var new_rng_state = cfc.game_rng.state
+	if new_rng_state != last_rng_state:
+		announce("new rng state:" + str(cfc.game_rng.state) + "(previously: " + str(last_rng_state) +")\n")
+		last_rng_state = new_rng_state
 	return
 
 func action_other(action_value):

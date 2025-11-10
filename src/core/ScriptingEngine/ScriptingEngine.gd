@@ -773,10 +773,12 @@ func attach_to_card(script: ScriptTask) -> void:
 #	* [KEY_SUBJECT](ScriptProperties#KEY_SUBJECT)
 func host_card(script: ScriptTask) -> void:
 	# host_card can only ever use one subject
-	var card: Card = script.subjects[0]
+	#var card: Card = script.subjects[0]
 	# We inject the tags from the script into the tags sent by the signal
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
-	card.attach_to_host(script.owner, false, tags)
+	for card in script.subjects:
+		gameData.display_debug("{host}{script} attaching " + card.canonical_name + " to " + script.owner.canonical_name)
+		card.attach_to_host(script.owner, false, tags)
 
 
 # Task for modifying a card's properties

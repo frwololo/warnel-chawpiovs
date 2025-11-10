@@ -696,7 +696,12 @@ func savestate_to_json() -> Dictionary:
 		if ! seen_cards.get(card, false):
 			other_cards.append(card)
 	if other_cards:
-		json_data.merge(export_cards_to_json("others", other_cards))
+		#other cards don't come back in the right order, due to how cards
+		#are added to the game in the first place
+		#doing this sort for now until I figure out something better
+		var json_dict = export_cards_to_json("others", other_cards)
+		json_dict["others"].sort_custom(WCUtils, "sort_cards")
+		json_data.merge(json_dict)
 		
 	var result: Dictionary = {"board" : json_data}
 	return result

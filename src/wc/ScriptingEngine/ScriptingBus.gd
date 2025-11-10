@@ -86,3 +86,17 @@ signal attachment_moved_to_board(card,details)
 signal treachery_moved_to_board(card,details)
 # warning-ignore:unused_signal
 signal obligation_moved_to_board(card,details)
+
+signal card_defeated(card,details)
+# warning-ignore:unused_signal
+
+#todo should be dynamic?
+# warning-ignore:unused_signal
+# looking for this signal in the code ? Triggered typically by type + "_died"
+signal minion_died(card,details)
+# warning-ignore:unused_signal
+signal ally_died(card,details)
+# warning-ignore:unused_signal
+signal hero_died(card,details)
+# warning-ignore:unused_signal
+signal alter_ego_died(card,details)

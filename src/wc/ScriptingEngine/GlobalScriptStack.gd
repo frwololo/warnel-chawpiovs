@@ -254,6 +254,8 @@ mastersync func from_client_script_received_ack(stack_uid):
 	var client_id = get_tree().get_rpc_sender_id() 	
 	var found = change_queue_item_state(stack_uid, client_id, STACK_STATUS.READY_TO_EXECUTE,"from_client_script_received_ack")
 	if found:
+		if client_id == 1:
+			found["human_readable"] = human_readable(stack_uid)
 		display_debug(str(client_id) + " is ready to execute " +  str(stack_uid))
 	else:
 		display_debug(str(client_id) + " did an ack but I couldn't find " +  str(stack_uid))		
@@ -308,6 +310,21 @@ func find_in_queue(stack_uid):
 			break
 	return found
 
+func human_readable(stack_uid):
+	var found = find_in_queue(stack_uid)
+	if !found:
+		return "error-not-found"
+	if found.has("human_readable"):
+		return found["human_readable"]
+		
+	var _human_readable = str(stack_uid) + "-"
+	var stack_object = stack.get(stack_uid, null)
+	if stack_object: 
+		_human_readable += stack_object.get_display_name()
+	else:
+		_human_readable += "MISSING (deleted after DONE?)"
+	return _human_readable
+
 func change_queue_item_state(stack_uid, client_id, new_state, caller = ""):
 	var _error = ""
 	caller =  caller if caller else "change_queue_item_state"
@@ -342,7 +359,7 @@ func change_queue_item_state(stack_uid, client_id, new_state, caller = ""):
 		#it's never ok to go back from a deleted state
 	else:	
 		found["status"][client_id] = new_state
-	display_debug(str(client_id) + " Went from " + StackStatusStr[current_state] + " to " + StackStatusStr[new_state] + " for script " +  str(stack_uid))
+		display_debug(str(client_id) + " Went from " + StackStatusStr[current_state] + " to " + StackStatusStr[new_state] + " for script " +  human_readable(stack_uid))
 	
 	#post change actions
 	match new_state:

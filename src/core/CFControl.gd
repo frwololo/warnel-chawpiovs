@@ -317,6 +317,20 @@ func load_script_definitions() -> void:
 	emit_signal("scripts_loaded")
 	scripts_loading = false
 
+func pile_or_grid(object_name):
+	if CFConst.HERO_GRID_SETUP.has(object_name):
+		var type = CFConst.HERO_GRID_SETUP[object_name].get("type", "grid")
+		return type 
+	if CFConst.GRID_SETUP.has(object_name):
+		var type = CFConst.GRID_SETUP[object_name].get("type", "grid")
+		return type 		
+	if object_name.begins_with("hand"):
+		return "pile"
+	for zone in CFConst.HERO_GRID_SETUP.keys:
+		if object_name.begins_with(zone):
+			var type = CFConst.HERO_GRID_SETUP[zone].get("type", "grid")
+			return type 		
+	return "grid"
 
 # Setter for game_paused
 func set_game_paused(value: bool) -> void:

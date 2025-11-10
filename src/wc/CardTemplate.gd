@@ -84,7 +84,9 @@ func get_controller_player_id() -> int:
 	return player_data.get_id()		
 
 func _runtime_properties_setup():
-	var base_threat = get_property("base_threat",0)
+	if canonical_name == "Highway Robbery":
+		var _tmp = 1
+	var base_threat = self.get_property("base_threat",0)
 	var base_threat_fixed = get_property("base_threat_fixed", true)
 	if base_threat and !base_threat_fixed:
 		base_threat *= gameData.team.size()
@@ -525,7 +527,7 @@ func readyme(toggle := false,
 	var rot = 0
 	if CFConst.OPTIONS.get("enable_fuzzy_rotations", false):
 		if (is_exhausted()):			
-			rot = CFUtils.randi_range(-5, 5)
+			rot = randi() % 11 - 5
 			tags = tags + ["force"]
 			
 	var retcode = set_card_rotation(rot, toggle, start_tween, check, tags)
@@ -541,7 +543,7 @@ func exhaustme(toggle := false,
 	var rot = 90	
 	if CFConst.OPTIONS.get("enable_fuzzy_rotations",false):
 		if (!is_exhausted()):			
-			rot = CFUtils.randi_range(80, 95)
+			rot = randi() % 16 + 80
 			tags = tags + ["force"]
 			
 	if 	is_exhausted()	and not toggle:
@@ -564,7 +566,7 @@ func add_threat(threat : int):
 func get_current_threat():
 	return tokens.get_token_count("threat")
 
-func remove_threat(modification: int) -> int:
+func remove_threat(modification: int, script = null) -> int:
 	
 	#Crisis special case: can't remove threat from main scheme
 	if "main_scheme" == properties.get("type_code", "false"):
@@ -581,9 +583,9 @@ func remove_threat(modification: int) -> int:
 		modification = current_tokens
 	var result = tokens.mod_token(token_name,-modification)
 	
-	if "side_scheme" == properties.get("type_code", "false"):
-		if get_current_threat() == 0:
-			self.discard()
+#	if "side_scheme" == properties.get("type_code", "false"):
+#		if get_current_threat() == 0:
+#			self.die(script)
 			
 	return result
 
@@ -628,17 +630,21 @@ func can_defend(hero_id = 0):
 	return true
 
 
-func die():
+func die(script):
 	var type_code = properties.get("type_code", "")
+	var trigger_details = {}
+	if script:
+		trigger_details = script.trigger_details
+	scripting_bus.emit_signal("card_defeated", self, trigger_details)
 	match type_code:
 		"hero", "alter_ego":
-			gameData.hero_died(self)
+			gameData.hero_died(self, script)
 		"ally", "minion":
-			gameData.character_died(self)
+			gameData.character_died(self, script)
 		"side_scheme":
 			move_to(cfc.NMAP["discard_villain"])	
 		"villain":
-			gameData.villain_died(self)
+			gameData.villain_died(self, script)
 		_:
 			self.discard()
 			
@@ -764,9 +770,31 @@ func common_pre_run(_sceng) -> void:
 	
 	var scripts_queue: Array = _sceng.scripts_queue
 	var new_queue: Array = []
+
+	var temp_queue: Array = []
 	for task in scripts_queue:
 		var script: ScriptTask = task
 		var script_definition = script.script_definition
+		var scripts = [script]
+		if script_definition.get("for_each_player", false):	
+			scripts = []
+			for i in gameData.get_team_size():
+				var hero_id = i+1
+				var new_script_definition = script_definition.duplicate(true)
+				new_script_definition.erase("for_each_player")
+				for v in ["hand", "encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
+					new_script_definition = WCUtils.search_and_replace(new_script_definition, v, v+str(hero_id), true)	
+
+				var new_script = ScriptTask.new(script.owner, new_script_definition, script.trigger_object, script.trigger_details)
+				scripts.append(new_script)
+		for _script in scripts:
+			temp_queue.append(_script)
+	
+	scripts_queue = temp_queue	
+	
+	for task in scripts_queue:
+		var script: ScriptTask = task
+		var script_definition = script.script_definition			
 		
 		if (controller_hero_id <=0 ):
 			cfc.LOG("error controller hero id is not set" )

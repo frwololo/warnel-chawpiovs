@@ -391,6 +391,7 @@ func shuffle_cards(animate = true) -> void:
 		# if the style is random, we select a random shuffle animation among
 		# the predefined ones.
 		elif shuffle_style == CFConst.ShuffleStyle.RANDOM:
+			cfc.LOG("{rng} shuffle")
 			style = CFUtils.randi_range(3, len(CFConst.ShuffleStyle) - 1)
 		else:
 			style = shuffle_style

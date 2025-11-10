@@ -218,12 +218,74 @@ func character_died(script: ScriptTask) -> int:
 		if owner_hero_id > 0:
 			card.move_to(cfc.NMAP["discard" + str(owner_hero_id)])
 		else:
-			card.move_to(cfc.NMAP["discard_villain"])	
+			card.move_to(cfc.NMAP["discard_villain"])
+		var type = card.get_property("type_code", "")
+		if type:
+			scripting_bus.emit_signal(type + "_died", card, script.trigger_details)
 	
 	return retcode
 
 func deal_damage(script:ScriptTask) -> int:
 	return receive_damage(script)
+
+func scheme_base_threat(script:ScriptTask) -> int:
+	var scheme = script.owner
+	var tags = script.get_property("tags", [])
+	var base_threat = scheme.get_property("base_threat", 0)
+	var retcode = scheme.tokens.mod_token("threat", base_threat, false,costs_dry_run(), tags)
+	return retcode
+	
+func return_attachements_to_owner(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+
+	var host = script.owner
+	if !host.attachments:
+		return 	CFConst.ReturnCode.FAILED
+	
+
+	var tags = script.get_property("tags", [])
+	var destination_prefix = script.get_property("dest_container")
+	if !destination_prefix:
+		destination_prefix = "discard"	
+	
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+	
+
+	var to_move = []
+	for card in host.attachments:
+		if "facedown" in tags:
+			if card.is_faceup:
+				continue
+		to_move.append(card)
+		
+	for card in to_move:
+		host.attachments.erase(card)
+		card.current_host_card = null
+		var card_owner = card.get_owner_hero_id()
+		var destination = destination_prefix
+		#TODO bit of a hack here
+		#unfortunately my code already added a suffix number priori to this, so I have to be sneaky :(
+		var zones = ["hand"] + CFConst.HERO_GRID_SETUP.keys()
+		for zone in zones:
+			if zone in destination:
+				destination = zone
+				break
+		if !card_owner:
+			destination += "_villain"
+		else:
+			destination += str(card_owner)
+
+		var pile_or_grid = cfc.pile_or_grid(destination)
+		match pile_or_grid:
+			"pile":
+				card.move_to(cfc.NMAP[destination])
+			_:
+				card.move_to(cfc.NMAP.board, -1, destination)		
+
+
+	return retcode	
+
 
 func card_dies(script:ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.FAILED
@@ -231,7 +293,7 @@ func card_dies(script:ScriptTask) -> int:
 		return retcode
 		
 	for card in script.subjects:		
-		card.die()
+		card.die(script)
 		retcode = CFConst.ReturnCode.CHANGED
 
 	return retcode
@@ -278,7 +340,10 @@ func receive_damage(script: ScriptTask) -> int:
 					"name": "card_dies",
 					"tags": ["receive_damage", "Scripted"] + script.get_property(SP.KEY_TAGS)
 				}
-				var card_dies_script:ScriptTask = ScriptTask.new(card, card_dies_definition, script.trigger_object, script.trigger_details)
+				var trigger_details = script.trigger_details.duplicate(true)
+				trigger_details["source"] = guidMaster.get_guid(script.owner)
+
+				var card_dies_script:ScriptTask = ScriptTask.new(card, card_dies_definition, script.trigger_object, trigger_details)
 				card_dies_script.subjects = [card]
 				card_dies_script.is_primed = true #fake prime it since we already gave it subjects	
 	
@@ -559,7 +624,12 @@ func commit_scheme(script: ScriptTask):
 		#because we add it to the stack first
 		var discard_event = cfc.scripting_engine.simple_discard_task(boost_card)
 		gameData.theStack.add_script(discard_event)
+
+	var prevent = script.retrieve_integer_property("prevent_amount", 0)	
+	if prevent:
+		scheme_amount-= prevent
 	
+	scheme_amount = 0 if scheme_amount <0 else scheme_amount
 	if scheme_amount:
 		var script_modifications = {
 			"additional_tags" : ["scheme", "Scripted"],
@@ -586,7 +656,25 @@ func remove_threat(script: ScriptTask) -> int:
 	var modification = script.retrieve_integer_property("amount")
 
 	for card in script.subjects:
-		retcode = card.remove_threat(modification)
+		retcode = card.remove_threat(modification, script)
+	
+		if "side_scheme" == card.properties.get("type_code", "false"):
+			if card.get_current_threat() == 0:
+				#card.die(script)
+	
+				var card_dies_definition = {
+					"name": "card_dies",
+					"tags": ["remove_threat", "Scripted"] + script.get_property(SP.KEY_TAGS)
+				}
+				var trigger_details = script.trigger_details.duplicate(true)
+				trigger_details["source"] = guidMaster.get_guid(script.owner)
+
+				var card_dies_script:ScriptTask = ScriptTask.new(card, card_dies_definition, script.trigger_object, trigger_details)
+				card_dies_script.subjects = [card]
+				card_dies_script.is_primed = true #fake prime it since we already gave it subjects	
+
+				var task_event = SimplifiedStackScript.new("card_dies", card_dies_script)
+				gameData.theStack.add_script(task_event)		
 
 	return retcode	
 	
@@ -616,6 +704,23 @@ func thwart(script: ScriptTask) -> int:
 	else:
 		for card in script.subjects:
 			retcode = card.remove_threat(modification)
+			if "side_scheme" == card.properties.get("type_code", "false"):
+				if card.get_current_threat() == 0:
+					#card.die(script)
+		
+					var card_dies_definition = {
+						"name": "card_dies",
+						"tags": ["remove_threat", "Scripted"] + script.get_property(SP.KEY_TAGS)
+					}
+					var trigger_details = script.trigger_details.duplicate(true)
+					trigger_details["source"] = guidMaster.get_guid(script.owner)
+
+					var card_dies_script:ScriptTask = ScriptTask.new(card, card_dies_definition, script.trigger_object, trigger_details)
+					card_dies_script.subjects = [card]
+					card_dies_script.is_primed = true #fake prime it since we already gave it subjects	
+
+					var task_event = SimplifiedStackScript.new("card_dies", card_dies_script)
+					gameData.theStack.add_script(task_event)
 		consequential_damage(script)
 		scripting_bus.emit_signal("thwarted", owner, {"amount" : modification, "target" : script.subjects[0]})
 	

@@ -27,9 +27,11 @@ func _process (delta:float):
 		post_move_modifiers.erase(card)
 		
 	#exhausted status sometimes doesn't catch up	
-	if identity_card: 
+	if identity_card and is_instance_valid(identity_card): 
 		if identity_card._is_exhausted and ( abs(identity_card.card_rotation) < 40): 	
-			identity_card.set_card_rotation(90, false, false)		
+			identity_card.set_card_rotation(90, false, false)
+	else:
+		identity_card = null		
 
 #things to do after everything is properly loaded.
 #This will trigger execute_scripts

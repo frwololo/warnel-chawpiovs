@@ -1347,7 +1347,10 @@ func move_to(targetHost: Node,
 				raise()
 			set_state(CardState.DROPPING_TO_BOARD)
 			#force set is faceup to true when moving to board
-			set_is_faceup(true)
+			if "facedown" in tags:
+				set_is_faceup(false)
+			else:
+				set_is_faceup(true)
 			scripting_bus.emit_signal("card_moved_to_board",
 					self,
 					 {
@@ -1563,7 +1566,7 @@ func execute_scripts(
 	if not cfc.NMAP.has('board'):
 		return
 
-	if (trigger =="card_moved_to_board" and canonical_name == "Nick Fury"):
+	if (trigger =="manual" and canonical_name == "Highway Robbery"):
 		var _tmp = 1
 	
 	#if set to false we'll skip the (potential) optional confirmation
@@ -1574,6 +1577,9 @@ func execute_scripts(
 	#What we want to do here is play the optional triggered effect instead
 	if (trigger == "manual" and gameData.is_interrupt_mode()):
 		#TODO very flaky code, how to fix?
+		if (canonical_name == "Highway Robbery"):
+			var _tmp =1
+			
 		trigger = find_interrupt_script()
 		if (!trigger):
 			return
@@ -1830,7 +1836,7 @@ func attach_to_host(
 	if host != current_host_card:
 		# If the card is not yet on the board, we move it there
 		if get_parent() != cfc.NMAP.board:
-			move_to(cfc.NMAP.board, -1, host.position)
+			move_to(cfc.NMAP.board, -1, host.position, tags)
 		# If we already had a host, we clear our state with it
 		# I don't know why, but logic breaks if I don't use the is_following_previous_host flag
 		# It should work without it, but it doesn't
@@ -1870,7 +1876,7 @@ func attach_to_host(
 				* CFConst.ATTACHMENT_OFFSET[current_host_card.attachment_offset].y)))
 		var target_rotation = 0
 		if CFConst.OPTIONS.get("enable_fuzzy_rotations", false):
-			target_rotation = CFUtils.randi_range(0, 12)
+			target_rotation = randi() % 13
 		set_card_rotation(target_rotation, false, true, false, ["force"])
 		_set_target_rotation(target_rotation)		
 		scripting_bus.emit_signal("card_attached",

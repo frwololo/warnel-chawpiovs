@@ -613,6 +613,24 @@
 			]
 		}
 	},
+	"Emergency": {
+		"interrupt": {
+			"event_name": "commit_scheme",
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_villains"
+				}
+			],			
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "prevent",
+					"amount": 1,
+					"subject": "interrupted_event"
+				}
+			]
+		}
+	},	
 	"Energy Channel": {
 		"manual": {
 			"hand": [
@@ -868,7 +886,7 @@
 						"name": "move_card_to_container",
 						"dest_container": "discard",
 						"src_container": "hand",
-						"subject": "tutor",
+						"subject": "index",
 						"subject_count": 1,
 						"subject_index": "random"
 					},
@@ -886,7 +904,7 @@
 						"name": "move_card_to_container",
 						"dest_container": "discard",
 						"src_container": "hand",
-						"subject": "tutor",
+						"subject": "index",
 						"subject_count": 1,
 						"subject_index": "random"
 					},
@@ -1354,6 +1372,35 @@
 			]
 		}
 	},
+	"Highway Robbery": {
+		"reveal": {
+			"all": [
+				{
+					"name": "host_card",
+					"tags": ["facedown"],
+					"src_container": "hand",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "random",
+					"needs_subject" : true,
+					"for_each_player": true,
+				},
+			]
+		},
+		"interrupt": {
+			"event_name": "card_dies",
+			"board": [
+				{
+					"name": "return_attachements_to_owner",
+					"dest_container": "hand",
+					"tags": ["facedown"],
+				}
+			],
+			"trigger": "self"
+		}		
+	},	
+	
+	
 	"Hydra Bomber": {
 		"reveal": {
 			"all": {
@@ -1443,7 +1490,38 @@
 		}
 	},
 	"Interrogation Room": {
-		"todo": {}
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero": 1,
+				},
+			],
+		},
+		"minion_died": {
+			"filter_source_controlled_by" : "my_hero",	
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject" : "self",
+					"is_cost": true,
+				},
+				{
+					"name": "remove_threat",
+					"amount": 1,
+					"subject" : "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}				
+				
+			]
+		}		
 	},
 	"Jessica Jones": {
 		"alterants": {

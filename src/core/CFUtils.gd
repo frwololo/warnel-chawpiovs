@@ -14,6 +14,7 @@ const _OPTIONAL_CONFIRM_SCENE = preload(_OPTIONAL_CONFIRM_SCENE_FILE)
 # If avoid_cfc_rng, it will randomize using godot's internal randomizer
 # use this for randomizations you do not care to repeat
 static func shuffle_array(array: Array, avoid_cfc_rng:= false) -> void:
+	cfc.LOG("{rng} asked for shuffle")
 	var n = array.size()
 	if n<2:
 		return
@@ -33,22 +34,27 @@ static func shuffle_array(array: Array, avoid_cfc_rng:= false) -> void:
 
 # Mapping randi function
 static func randi() -> int:
+	cfc.LOG("{rng} asked for randi")
 	return(cfc.game_rng.randi())
 
 # Mapping randf function
 static func randf() -> float:
+	cfc.LOG("{rng} asked for randf")	
 	return(cfc.game_rng.randf())
 
 # Mapping randi_range function
 static func randi_range(from: int, to: int) -> int:
+	cfc.LOG("{rng} asked for randi_range")	
 	return(cfc.game_rng.randi_range(from, to))
 
 # Mapping randf_range function
 static func randf_range(from: float, to: float) -> float:
+	cfc.LOG("{rng} asked for randf_range")	
 	return(cfc.game_rng.randf_range(from, to))
 
 # Returns a random boolean
 static func rand_bool() -> bool:
+	cfc.LOG("{rng} asked for rand_bool")	
 	var rnd_bool = {0:true, 1: false}
 	return(rnd_bool[randi_range(0,1)])
 

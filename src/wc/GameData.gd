@@ -1030,12 +1030,15 @@ func compute_potential_defenders(hero_id):
 		else:
 			if (c.is_in_group ("group_defenders")): c.remove_from_group("group_defenders")	
 
-func character_died(card:Card):
+func character_died(card:Card, script = null):
 	var character_died_definition = {
 		"name": "character_died",
 	}
-	#TODO be more specific about conditions of death: what caused it, etc...
-	var character_died_script:ScriptTask = ScriptTask.new(card, character_died_definition, card, {})
+	var trigger_details = {
+		"source" : script.trigger_details.get("source", "")
+	}
+	
+	var character_died_script:ScriptTask = ScriptTask.new(card, character_died_definition, card, trigger_details)
 	character_died_script.subjects = [card]
 	character_died_script.is_primed = true #fake prime it since we already gave it subjects	
 	
@@ -1062,7 +1065,7 @@ func victory():
 	
 	
 
-func hero_died(card:Card):
+func hero_died(card:Card, script = null):
 	#TODO dead heroes can't play
 	dead_heroes.append(card.get_owner_hero_id())
 	if (dead_heroes.size() == team.size()):
@@ -1095,7 +1098,7 @@ func move_to_next_villain(current_villain):
 	cfc.remove_ongoing_process(self, "move_to_next_villain")
 	return new_card			
 
-func villain_died(card:Card):
+func villain_died(card:Card, script = null):
 	if (!move_to_next_villain(card)):
 		victory()
 	else:	

@@ -220,10 +220,8 @@ static func sort_stage(a, b):
 
 
 static func sort_cards(a, b):
-	if !(typeof(a) == TYPE_DICTIONARY and typeof(b) == TYPE_DICTIONARY):
-		return a < b
-		
 	return (a.get("card") < b.get("card"))
+
 	
 static func to_grayscale(texture : Texture) -> Texture:
 	var image = texture.get_data()

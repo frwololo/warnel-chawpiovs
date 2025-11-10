@@ -21,6 +21,8 @@ const KEY_SUBJECT_V_MY_IDENTITY := "my_identity"
 const KEY_SUBJECT_V_VILLAIN := "villain"
 const FILTER_HOST_OF := "filter_is_host_of"
 const FILTER_SAME_CONTROLLER := "filter_same_controller"
+const FILTER_SOURCE_CONTROLLED_BY := "filter_source_controlled_by"
+
 const FILTER_MAX_PER_HERO := "filter_max_per_hero"
 const FILTER_MAX_PER_HOST := "filter_max_per_host"
 
@@ -63,6 +65,11 @@ static func filter_trigger(
 			_: 
 				is_valid = false
 
+	if is_valid and card_scripts.get(FILTER_SOURCE_CONTROLLED_BY) \
+			and !check_source_controlled_by_filter(trigger_card,owner_card,trigger_details, card_scripts.get(FILTER_SOURCE_CONTROLLED_BY)):
+
+		is_valid = false	
+
 	return(is_valid)
 
 # Returns true if the trigger is the host of the owner, false otherwise
@@ -77,6 +84,22 @@ static func check_host_filter(trigger_card, owner_card, host_description : Strin
 			if owner_card.current_host_card == trigger_card: 
 				card_matches = true
 	return(card_matches)
+
+# Returns true if the trigger and the owner belong to the same hero, false otherwise
+static func check_source_controlled_by_filter(trigger_card, owner_card, trigger_details, expected_controller) -> bool:
+	var source = trigger_details.get("source", null)
+	if typeof(source) == TYPE_INT:
+		source = guidMaster.get_object_by_guid(source)
+		
+	match expected_controller:
+		"my_hero":
+			var controller_hero_id = source.get_controller_hero_id()
+			if controller_hero_id == owner_card.get_controller_hero_id():
+				return true
+			return false
+		_: #not implemented
+			return false
+	return false
 	
 # Returns true if the trigger and the owner belong to the same hero, false otherwise
 static func check_same_controller_filter(trigger_card, owner_card, true_false : bool) -> bool:

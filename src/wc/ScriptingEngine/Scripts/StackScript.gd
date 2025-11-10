@@ -35,6 +35,11 @@ func prevent_value(property, amount_prevented):
 			var value = task.get_property(property)
 			value = max(0, value-amount_prevented)
 			script_definition[property] = value
+		else:
+			#if the script doesn't have the expected property, we try to pass it along
+			var prevent = "prevent_" + property
+			var value = task.get_property(prevent, 0)
+			script_definition[prevent] = value + amount_prevented			
 			#todo what if zero
 
 

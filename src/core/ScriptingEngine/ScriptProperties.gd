@@ -71,6 +71,9 @@ const KEY_SUBJECT_V_INDEX := "index"
 # If this is the value of the [KEY_SUBJECT](#KEY_SUBJECT) key,
 # then we use the subject specified in the previous task
 const KEY_SUBJECT_V_PREVIOUS := "previous"
+# If this is the value of the [KEY_SUBJECT](#KEY_SUBJECT) key,
+# then we use the subjects specified all previous tasks
+const KEY_SUBJECT_V_ALL_PREVIOUS := "all_previous"
 # Value Type: Bool (Default = False)
 #
 # If set to true, in a task using the [KEY_SUBJECT_V_PREVIOUS](#KEY_SUBJECT_V_PREVIOUS) key

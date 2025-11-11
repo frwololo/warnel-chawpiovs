@@ -39,7 +39,7 @@ func _init(owner,
 		is_skipped = true
 
 #Prime is the act of choosing subjects and valid targets in preparation for the script
-func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int) -> void:
+func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int, _all_prev_subjects: Array) -> void:
 	# We store the prev_subjects we sent to this task in case we need to
 	# refer to them later
 
@@ -49,6 +49,7 @@ func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int) -> void:
 		 (run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
 	
 	prev_subjects = _prev_subjects
+	all_prev_subjects = _all_prev_subjects
 	if ((!only_cost_check
 			and not is_cost and not needs_subject)
 			# This is the typical spot we're checking

@@ -23,7 +23,13 @@ func get_script_by_event_details(_details):
 func execute():
 	pass
 
-#replacement task
+#replacement tasks
+func add_tags(new_tags:Array):
+	for task in get_tasks():
+		var tags = task.get_property("tags", [])
+		tags+= new_tags
+		task.script_definition["tags"] = tags
+
 func replace_subjects(new_subjects:Array):
 	pass
 	
@@ -32,6 +38,43 @@ func replace_ability(new_ability_name:String):
 
 func prevent_value(property, amount_prevented):
 	pass		
+
+#todo in the future this needs to redo targeting, etc...
+func get_modify_subjects(value, script):
+	match value:
+		"self":
+			return [script.owner]
+		"my_hero":
+			return [script.owner.get_controller_hero_card()]			
+		_:
+			#not implemented
+			return []
+					
+
+#modification scripts such as partial prevent and replacement effects
+func modify(script):
+	match script.script_name:
+		"prevent":
+			var amount = script.retrieve_integer_property("amount")
+			if !amount:
+				var _error = 1
+			else:
+				self.prevent_value("amount", amount)
+		_:
+			var replacements = script.get_property("replacements", {})
+			for property in replacements.keys():
+				var value = replacements[property]
+				match property:
+					"subject":
+						var new_subjects = get_modify_subjects(value, script)
+						replace_subjects(new_subjects)
+					"name":
+						replace_ability(value)
+					"additional_tags":
+						add_tags(value)
+					_:
+						#not implemented
+						pass
 
 #TODO this function shouldn't be here? doesn't use any of its data
 func matches_filters(task, filters:Dictionary, owner_card):

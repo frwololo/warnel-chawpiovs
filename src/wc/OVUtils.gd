@@ -1,8 +1,8 @@
 extends OVUtils
 
 
-func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int = 0) -> Array:
-	var results: Array = []
+func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int = 0, run_type = CFInt.RunType.NORMAL) -> Array:
+	var results = []
 	match _subject_request:
 		SP.KEY_SUBJECT_V_HOST:
 			var owner:WCCard = script.owner
@@ -23,8 +23,39 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 			if (hero_card.is_alter_ego_form()):
 				results.append(hero_card)							
 		SP.KEY_SUBJECT_V_VILLAIN:
-			results.append(gameData.get_villain())					
+			results.append(gameData.get_villain())
+		SP.KEY_SUBJECT_V_GRAB_UNTIL:
+			results = _grab_until_find(script, run_type)						
 	return results
+
+func _grab_until_find(script: ScriptObject, run_type) -> Dictionary:
+	var subjects_array := []
+	var src_container = script.get_property(SP.KEY_SRC_CONTAINER)
+	src_container = cfc.NMAP.get(src_container, null)
+	if !src_container:
+		return{"subjects" : [], "stored_integer" : 0}
+		
+	var dest_container = script.get_property(SP.KEY_DEST_CONTAINER)
+	dest_container = cfc.NMAP.get(dest_container, null)	
+	if !dest_container:
+		return{"subjects" : [], "stored_integer" : 0}
+	
+	var filter_data = script.get_property("filter_state_move_to_container_until")
+	
+	var src_cards:Array = src_container.get_all_cards()
+	var found_index = 0
+	var found = false
+	while found_index < src_cards.size() and !found:
+		var card = src_cards[src_cards.size() - 1 - found_index]
+		var is_valid = SP.check_validity(card, script.script_definition, "move_to_container_until", script.owner)
+		if !is_valid:
+			subjects_array.append(card)
+			found_index +=1
+		else:
+			found = true
+			
+
+	return{"subjects" : subjects_array, "stored_integer" :  src_cards.size() - 1 - found_index}
 
 
 func can_pay_as_resource(to_pay:Dictionary, resource_cards:Array, script = null):

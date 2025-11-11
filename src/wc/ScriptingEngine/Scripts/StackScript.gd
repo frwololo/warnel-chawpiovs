@@ -20,6 +20,10 @@ func _init(_sceng = null, _run_type = 0, _trigger = "", _trigger_details = {}):
 func replace_subjects(new_subjects:Array):
 	for task in get_tasks():
 		task.subjects = new_subjects
+		#TODO hack force select...
+		#not sure why I have to do this but
+		#this is being called beofre prime in some cases
+		task.is_primed = true
 
 #replacement task
 func replace_ability(new_ability:String):

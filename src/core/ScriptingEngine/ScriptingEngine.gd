@@ -55,6 +55,8 @@ var is_network_master: bool = true
 #this will allow to automatically pay for them on this client and mimic the results without having to select
 var network_prepaid:Array = []
 
+var all_subjects_so_far:= []
+
 var owner
 var trigger_object
 var state_scripts
@@ -209,12 +211,18 @@ func execute(_run_type) -> void:
 		# We put it into another variable to allow Static Typing benefits
 		var script: ScriptTask = task
 		if is_network_master:# and not costs_dry_run():
+			if script.is_else:
+				network_prepaid.append(null)
+			else:
 				network_prepaid.append([])
 				
 		if ((only_cost_check and not script.is_cost and not script.needs_subject)
 				or (run_type == CFInt.RunType.ELSE and not script.is_else)
-				or (run_type != CFInt.RunType.ELSE and script.is_else)):
+				or (not run_type in[CFInt.RunType.ELSE,CFInt.RunType.PRIME_ONLY]  and script.is_else)):
 			continue
+			
+		if script.is_else:
+			var _tmp = 1	
 		# We store the temp modifiers to counters, so that things like
 		# info during targetting can take them into account
 		cfc.NMAP.board.counters.set_temp_counter_modifiers(
@@ -247,25 +255,32 @@ func execute(_run_type) -> void:
 				var next_task: ScriptTask =  scripts_queue[current_index + 1]
 				if next_task.subjects.size() > 0:
 					prev_subjects = next_task.subjects
-			script.prime(prev_subjects,run_type,get_stored_integer(script))
+			var retrieved_integer = get_stored_integer(script)
+			var all_prev_subjects = all_subjects_so_far.duplicate()		
+			script.prime(prev_subjects,run_type,retrieved_integer, all_prev_subjects)
 			# In case the task involves targetting, we need to wait on further
 			# execution until targetting has completed
 			if not script.is_primed:
 				yield(script,"primed")
+			
+			all_subjects_so_far += 	script.subjects
 
 		if script.is_primed:
 			#Add to list of prepaid stuff only if I'm the one paying the costs and actually paying them
 			if is_network_master:# and not costs_dry_run():
 				network_prepaid.pop_back()
 				network_prepaid.append(script.subjects.duplicate()) #2025-03-01 added a duplicate here attempt at bug fix
-
+			
+			if script.my_stored_integer != null:
+				set_stored_integer(script.my_stored_integer,script)
+			
 		if (run_type == CFInt.RunType.PRIME_ONLY):
 			#TODO There was a bug e.g. with black cat not getting its previous subjects at prime step
 			#This solves it but might lead to other issues in the future, because
 			#modifications are normally possible before setting prev_subjects
 			if not script.get_property(SP.KEY_PROTECT_PREVIOUS):
 				prev_subjects = script.subjects
-			
+				
 			continue
 		
 		if script.is_primed:	

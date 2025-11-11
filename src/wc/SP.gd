@@ -19,6 +19,7 @@ const KEY_SUBJECT_V_MY_HERO := "my_hero"
 const KEY_SUBJECT_V_MY_ALTER_EGO := "my_alter_ego"
 const KEY_SUBJECT_V_MY_IDENTITY := "my_identity"
 const KEY_SUBJECT_V_VILLAIN := "villain"
+const KEY_SUBJECT_V_GRAB_UNTIL := "grab_until"
 const FILTER_HOST_OF := "filter_is_host_of"
 const FILTER_SAME_CONTROLLER := "filter_same_controller"
 const FILTER_SOURCE_CONTROLLED_BY := "filter_source_controlled_by"
@@ -28,6 +29,10 @@ const FILTER_MAX_PER_HOST := "filter_max_per_host"
 
 const TRIGGER_TARGET_HERO = "target_hero"
 const TRIGGER_SUBJECT = "trigger_subject"
+
+#stack subjects
+const KEY_SUBJECT_V_CURRENT_ACTIVATION := "current_activation"
+const KEY_SUBJECT_V_INTERUPTED_EVENT := "interrupted_event"
 
 # This call has been setup to call the original, and allow futher extension
 # simply create new filter

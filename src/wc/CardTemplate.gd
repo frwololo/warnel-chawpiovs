@@ -1020,9 +1020,66 @@ func has_trait(params) -> bool:
 		return true
 	return false
 
+# For boost cards to know who's calling them
+var _current_activation_details = null
+func set_current_activation(script):
+	if _current_activation_details:
+		var _error = 1
+	_current_activation_details = script
+
+func get_current_activation_details():
+	return _current_activation_details
+	
+func remove_current_activation(script):	
+	if _current_activation_details != script:
+		var _error = 1
+	_current_activation_details = null
+
+#
+#FUNCTIONS USED DIRECTLY BY JSON SCRIPTS
+#
+
 func identity_has_trait(params) -> bool:
 	var hero = get_controller_hero_card()
 	return hero.has_trait(params)	
+
+func card_is_in_play(params) -> bool:
+	var card_name = params.get("name", "")
+	if !card_name:
+		return false
+	var card = cfc.NMAP.board.find_card_by_name(card_name)
+	if !card:
+		return false
+	return true
+
+func current_activation_status(params:Dictionary) -> bool:
+	var script = get_current_activation_details()
+	if !script:
+		return false
+	var expected_activation_type = params.get("type", "")	
+	var undefended = params.get("undefended", null)
+	if null != undefended:
+		expected_activation_type = "attack"
+	
+	match expected_activation_type:
+		"attack":
+			if not script.script_name in ["enemy_attack", "undefend"]:
+				return false
+		"scheme":
+			if not script.script_name in ["commit_scheme"]:
+				return false
+		"":
+			pass			
+		_:
+			return false	
+	
+	if null != undefended:
+		if undefended and script.subjects:
+			return false
+		if !undefended and !scripts.subjects:
+			return false
+			
+	return true				 	
 
 #returns true if this card was paid for with (at least) resources described by params
 #e.g if you paid 3 physical plus 1 mental for a card, 
@@ -1037,6 +1094,18 @@ func paid_with_includes(params:Dictionary) -> bool:
 	compared_to.init_from_dictionary(params)
 	
 	return paid_with.can_pay_total_cost(compared_to)
+
+func count_resource_types(params:Dictionary, script) -> int:
+	var mana = ManaCost.new()
+	var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)	
+	for subject in subjects:
+		var printed_resource = subject.get_printed_resource_value_as_mana()
+		mana.add_manacost(printed_resource)
+	var count = mana.count_resource_types()
+	return count
+#
+# RESOURCE FUNCTIONS
+#
 
 func set_last_paid_with(manacost_array:Array):
 	_last_paid_with = manacost_array
@@ -1076,8 +1145,6 @@ func _get_resource_sceng(script):
 	
 	return sceng
 
-func display_debug(msg):
-	gameData.display_debug("(WCCard - " + canonical_name +") " + msg)
 
 #computes how much resources this card would generate as part of a payment
 #this uses its "resource" script in priority (for card that have either special resource abilities,
@@ -1143,6 +1210,14 @@ func get_printed_resource_value_as_int(script):
 		var lc_name = resource_name.to_lower()
 		total += get_property("resource_" + lc_name, 0)
 	return total
+
+#
+# OTHER FUNCTIONS
+#
+
+func display_debug(msg):
+	gameData.display_debug("(WCCard - " + canonical_name +") " + msg)
+
 
 func get_remaining_damage():
 	var current_damage = self.tokens.get_token_count("damage")

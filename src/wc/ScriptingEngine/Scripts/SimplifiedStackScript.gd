@@ -32,19 +32,20 @@ func _init(_name, _task):
 	tasks = [task]
 	
 
-#replacement task
-func replace_ability(new_ability:String):
-	.replace_ability(new_ability)
-	task_name = new_ability
 
 func get_tasks() -> Array:
 	return tasks
 	
 func execute():
 	if (!task.is_primed):
-		task.prime([],run_type,0)
+		task.prime([],run_type,0, [])
 	
 	var _retcode = sceng.call(task_name, task)
+
+#replacement task
+func replace_ability(new_ability:String):
+	.replace_ability(new_ability)
+	task_name = new_ability
 
 #replacement task
 func replace_subjects(new_subjects:Array):

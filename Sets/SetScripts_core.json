@@ -244,7 +244,7 @@
 		"reveal": {
 			"all": [
 				{
-					"name": "receive_threat",
+					"name": "add_threat",
 					"amount": 1,
 					"subject": "self"
 				}
@@ -255,7 +255,7 @@
 		"reveal": {
 			"all": [
 				{
-					"name": "receive_threat",
+					"name": "add_threat",
 					"amount": "per_boardseek",
 					"subject": "self",
 					"per_boardseek": {
@@ -266,7 +266,7 @@
 								"filter_group": "group_identities"
 							}
 						]
-					},					
+					}
 				}
 			]
 		}
@@ -491,7 +491,7 @@
 						}
 					],
 					"tags": [
-						"thwart",
+						"thwart"
 					]
 				},
 				{
@@ -516,7 +516,7 @@
 					"tags": [
 						"thwart"
 					]
-				}				
+				}
 			]
 		}
 	},
@@ -620,7 +620,7 @@
 				{
 					"filter_group": "group_villains"
 				}
-			],			
+			],
 			"is_optional_hand": true,
 			"hand": [
 				{
@@ -630,15 +630,15 @@
 				}
 			]
 		}
-	},	
+	},
 	"Energy Channel": {
 		"manual": {
 			"hand": [
 				{
 					"name": "constraints",
 					"is_cost": true,
-					"max_per_hero": 1,
-				},
+					"max_per_hero": 1
+				}
 			],
 			"board": {
 				"add 1 energy": [
@@ -920,6 +920,25 @@
 			}
 		}
 	},
+	"Exhaustion": {
+		"card_moved_to_pile": {
+			"trigger": "self",
+			"filter_destination": "encounters_reveal",
+			"pile": [
+				{
+					"name": "surge"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "exhaust_card",
+					"subject": "my_identity"
+				}
+			]
+		}
+	},
 	"Explosion": {
 		"reveal": {
 			"all": [
@@ -1172,7 +1191,7 @@
 	},
 	"Great Responsibility": {
 		"interrupt": {
-			"event_name": "receive_threat",
+			"event_name": "add_threat",
 			"is_optional_hand": true,
 			"hand": [
 				{
@@ -1181,13 +1200,13 @@
 					"tags": [
 						"hero_interrupt"
 					]
-				},			
+				},
 				{
 					"name": "replacement_effect",
 					"subject": "interrupted_event",
 					"replacements": {
 						"subject": "my_hero",
-						"name" : "receive_damage"
+						"name": "receive_damage"
 					}
 				}
 			]
@@ -1285,7 +1304,7 @@
 					"tags": [
 						"action_ability"
 					]
-				},			
+				},
 				{
 					"name": "exhaust_card",
 					"subject": "self",
@@ -1308,7 +1327,7 @@
 					"per_token_self": {
 						"token_name": "_helicarrier",
 						"is_inverted": true
-					},
+					}
 				}
 			]
 		},
@@ -1334,7 +1353,7 @@
 					"token_name": "_helicarrier"
 				}
 			]
-		}		
+		}
 	},
 	"Heroic Intuition": {
 		"card_moved_to_board": {
@@ -1350,7 +1369,7 @@
 					"filter_state_seek": [
 						{
 							"filter_group": "group_identities",
-							"filter_max_per_hero": 1,
+							"filter_max_per_hero": 1
 						}
 					]
 				}
@@ -1377,14 +1396,16 @@
 			"all": [
 				{
 					"name": "host_card",
-					"tags": ["facedown"],
+					"tags": [
+						"facedown"
+					],
 					"src_container": "hand",
 					"subject": "index",
 					"subject_count": 1,
 					"subject_index": "random",
-					"needs_subject" : true,
-					"for_each_player": true,
-				},
+					"needs_subject": true,
+					"for_each_player": true
+				}
 			]
 		},
 		"interrupt": {
@@ -1393,14 +1414,14 @@
 				{
 					"name": "return_attachements_to_owner",
 					"dest_container": "hand",
-					"tags": ["facedown"],
+					"tags": [
+						"facedown"
+					]
 				}
 			],
 			"trigger": "self"
-		}		
-	},	
-	
-	
+		}
+	},
 	"Hydra Bomber": {
 		"reveal": {
 			"all": {
@@ -1416,7 +1437,7 @@
 				],
 				"1 Threat on Main Scheme": [
 					{
-						"name": "receive_threat",
+						"name": "add_threat",
 						"amount": 1,
 						"subject": "boardseek",
 						"filter_state_seek": [
@@ -1495,33 +1516,32 @@
 				{
 					"name": "constraints",
 					"is_cost": true,
-					"max_per_hero": 1,
-				},
-			],
+					"max_per_hero": 1
+				}
+			]
 		},
 		"minion_died": {
-			"filter_source_controlled_by" : "my_hero",	
+			"filter_source_controlled_by": "my_hero",
 			"is_optional_board": true,
 			"board": [
 				{
 					"name": "exhaust_card",
-					"subject" : "self",
-					"is_cost": true,
+					"subject": "self",
+					"is_cost": true
 				},
 				{
 					"name": "remove_threat",
 					"amount": 1,
-					"subject" : "target",
+					"subject": "target",
 					"needs_subject": true,
 					"filter_state_subject": [
 						{
 							"filter_group": "group_schemes"
 						}
 					]
-				}				
-				
+				}
 			]
-		}		
+		}
 	},
 	"Jessica Jones": {
 		"alterants": {
@@ -1542,6 +1562,58 @@
 						]
 					},
 					"alteration": "per_boardseek"
+				}
+			]
+		}
+	},
+	"Kree Manipulator": {
+		"card_moved_to_pile": {
+			"trigger": "self",
+			"filter_destination": "encounters_reveal",
+			"pile": [
+				{
+					"name": "surge"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "main_scheme"
+							}
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": {
+						"if": {
+							"func_name": "current_activation_status",
+							"func_params": {
+								"undefended": true
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "main_scheme"
+							}
+						}
+					]
 				}
 			]
 		}
@@ -1652,6 +1724,48 @@
 					}
 				]
 			}
+		}
+	},
+	"Masterplan": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": 4,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_move_to_container_until": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "reveal_encounters",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				}
+			]
 		}
 	},
 	"Mockingbird - Bobbi Morse": {
@@ -1999,6 +2113,44 @@
 			]
 		}
 	},
+	"Sweeping Swoop": {
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "my_hero"
+				},
+				{
+					"name": "surge",
+					"amount": {
+						"if": {
+							"func_name": "card_is_in_play",
+							"func_params": {
+								"name": "Vulture"
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"stun_if_damage"
+						]
+					}
+				}
+			]
+		}
+	},
 	"Swinging Web Kick": {
 		"manual": {
 			"hand": [
@@ -2103,6 +2255,26 @@
 			]
 		}
 	},
+	"The Psyche-Magnitron": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": "per_boardseek",
+					"subject": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						]
+					}
+				}
+			]
+		}
+	},
 	"The Triskelion": {
 		"alterants": {
 			"board": [
@@ -2120,10 +2292,63 @@
 			]
 		}
 	},
+	"The Vulture's Plans": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"src_container": "hand",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "random",
+					"for_each_player": true
+				},
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "count_resource_types",
+						"func_params": {
+							"subject": "all_previous"
+						}
+					},
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "main_scheme"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Under Fire": {
+		"card_moved_to_pile": {
+			"trigger": "self",
+			"filter_destination": "encounters_reveal",
+			"pile": [
+				{
+					"name": "surge"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "index",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				}
+			]
+		}
+	},
 	"Vision": {
 		"once_per_round": {
 			"__name__": "_vision_ability"
-		},	
+		},
 		"manual": {
 			"board": {
 				"+2 Attack": [
@@ -2133,7 +2358,7 @@
 						"subject": "self",
 						"token_name": "_vision_ability",
 						"is_cost": true
-					},				
+					},
 					{
 						"name": "pay_cost",
 						"cost": {
@@ -2166,7 +2391,7 @@
 						"subject": "self",
 						"token_name": "_vision_ability",
 						"is_cost": true
-					},					
+					},
 					{
 						"name": "pay_cost",
 						"cost": {
@@ -2240,7 +2465,7 @@
 					"is_cost": true,
 					"tags": [
 						"hero_form"
-					],
+					]
 				},
 				{
 					"name": "attach_to_card",
@@ -2249,7 +2474,7 @@
 					"filter_state_subject": [
 						{
 							"filter_group": "group_enemies",
-							"filter_max_per_host" : 1,
+							"filter_max_per_host": 1
 						}
 					]
 				}
@@ -2278,6 +2503,51 @@
 			"filter_state_trigger": [
 				{
 					"filter_is_host_of": "self"
+				}
+			]
+		}
+	},
+	"Yon-Rogg": {
+		"enemy_attack_happened": {
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "The Psyche-Magnitron"
+							}
+						}
+					]
+				}
+			],
+			"trigger": "self"
+		}
+	},
+	"Yon-Rogg's Treason": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"is_cost": true,
+					"subject": "tutor",
+					"src_container": "hand",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"resource_energy": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "surge",
+					"is_else": true
 				}
 			]
 		}

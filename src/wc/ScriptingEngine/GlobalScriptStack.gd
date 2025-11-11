@@ -967,39 +967,14 @@ func find_event(_event_details, details, owner_card):
 			return event
 	return null			
 
-#todo in the future this needs to redo targeting, etc...
-func replace_subjects(stack_object, value, script):
-	match value:
-		"self":
-			stack_object.replace_subjects([script.owner])
-		"my_hero":
-			stack_object.replace_subjects([script.owner.get_controller_hero_card()])			
-		_:
-			#not implemented
-			pass
-					
+
 
 #scripted replacement effects
+#most of this should move into the object class itself
 func modify_object(stack_object, script:ScriptTask):
-	match script.script_name:
-		"prevent":
-			var amount = script.retrieve_integer_property("amount")
-			if !amount:
-				var _error = 1
-			else:
-				stack_object.prevent_value("amount", amount)
-		_:
-			var replacements = script.get_property("replacements", {})
-			for property in replacements.keys():
-				var value = replacements[property]
-				match property:
-					"subject":
-						replace_subjects(stack_object, value, script)
-					"name":
-						stack_object.replace_ability(value)
-					_:
-						#not implemented
-						pass
+	if !stack_object:
+		return false
+	return stack_object.modify(script)
 	
 	
 	

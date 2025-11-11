@@ -721,7 +721,16 @@ func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
 				#handle special cases of card names vs id	
 				if (key in ["hero", "card", "host"]):
 					val1 = get_corrected_card_id(val1)
-					val2 = get_corrected_card_id(val2)	
+					val2 = get_corrected_card_id(val2)
+				
+				#special case to test for tokens 0
+				if key =="tokens":
+					for child_key in element1[key]:
+						var value = element1[key][child_key]
+						if value == 0:
+							var el2_tokens = element2[key]
+							if !el2_tokens.has(child_key):
+								el2_tokens[child_key] = 0
 				
 				if key in (ignore_order):
 					if (typeof(val1) == TYPE_ARRAY and typeof(val2) == TYPE_ARRAY):

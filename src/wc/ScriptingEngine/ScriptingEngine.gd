@@ -352,9 +352,11 @@ func receive_damage(script: ScriptTask) -> int:
 						
 	return retcode
 
-func receive_threat(script: ScriptTask) -> int:
+func _receive_threat(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
-	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+	if (costs_dry_run()): 
+		if !script.subjects:
+			return CFConst.ReturnCode.FAILED
 		return retcode
 	
 	var tags: Array = script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
@@ -377,6 +379,9 @@ func receive_threat(script: ScriptTask) -> int:
 				amount * multiplier,false,costs_dry_run(), tags)	
 						
 	return retcode
+
+func add_threat(script: ScriptTask) -> int:
+	return _receive_threat(script)
 
 func prevent(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -402,13 +407,28 @@ func replacement_effect(script: ScriptTask) -> int:
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode	
 	
+	var subject = script.get_property("subject", SP.KEY_SUBJECT_V_INTERUPTED_EVENT)
 	#Find the event on the stack and modifiy it
 	#TOdo take into action subject, etc...
-	var stack_object = gameData.theStack.find_last_event()
-	if (!stack_object):	
-		return CFConst.ReturnCode.FAILED
-	
-	gameData.theStack.modify_object(stack_object, script)
+	match subject:
+		SP.KEY_SUBJECT_V_INTERUPTED_EVENT:
+			var stack_object = gameData.theStack.find_last_event()
+			if (!stack_object):	
+				return CFConst.ReturnCode.FAILED
+			
+			gameData.theStack.modify_object(stack_object, script)
+		SP.KEY_SUBJECT_V_CURRENT_ACTIVATION:
+			var activation_script = script.owner.get_current_activation_details()
+			if !activation_script:
+				return CFConst.ReturnCode.FAILED
+			var stack_object = SimplifiedStackScript.new(activation_script.script_name, activation_script)	
+			if (!stack_object):	
+				return CFConst.ReturnCode.FAILED
+			#this works because SimplifiedStackScript does not create a copy of the script
+			#so it lets us manipulate it directly
+			gameData.theStack.modify_object(stack_object, script)		
+		_: #unsupported
+			pass
 		
 	
 	return retcode					
@@ -431,6 +451,12 @@ func exhaust_card(script: ScriptTask) -> int:
 
 func discard(script: ScriptTask):
 	var retcode = CFConst.ReturnCode.FAILED
+
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?	
+		if script.subjects:
+			return CFConst.Returncode.CHANGED
+		return CFConst.ReturnCode.FAILED
+	
 	for card in script.subjects:
 		card.discard()
 		retcode = CFConst.ReturnCode.CHANGED
@@ -497,7 +523,7 @@ func _add_receive_damage_on_stack(amount, original_script, modifications:Diction
 
 func _add_receive_threat_on_stack(amount, original_script, modifications:Dictionary = {}):		
 		var receive_threat_script_definition = {
-			"name": "receive_threat",
+			"name": "add_threat",
 			"amount": amount,
 		}
 		modifications["script_definition"] =  receive_threat_script_definition	
@@ -505,7 +531,7 @@ func _add_receive_threat_on_stack(amount, original_script, modifications:Diction
 		
 		receive_threat_script.is_primed = true #fake prime it since we already gave it subjects	
 		
-		var task_event = SimplifiedStackScript.new("receive_threat", receive_threat_script)
+		var task_event = SimplifiedStackScript.new("add_threat", receive_threat_script)
 		gameData.theStack.add_script(task_event)
 	
 #the ability that is triggered by enemy_attack
@@ -531,22 +557,28 @@ func enemy_attack(script: ScriptTask) -> int:
 		var damage_reduction = defender.get_property("defense", 0)
 		amount = max(amount-damage_reduction, 0)
 		
-	else:
-		script.subjects.append(my_hero)
-		#TODO add variable stating attack was undefended
 
 	#reveal boost cards
 	#todo should go on stack?
 	for boost_card in attacker.attachments:
 		if (!boost_card.is_boost):
 			continue
+		boost_card.set_current_activation(script)	
 		boost_card.set_is_faceup(true)
 		amount = amount + boost_card.get_property("boost",0)
+		var func_return = boost_card.execute_scripts_no_stack(boost_card, "boost")
+		while func_return is GDScriptFunctionState && func_return.is_valid():
+			func_return = func_return.resume()	
 		#add an event on the stack to discard this card.
 		#Note that the discard will happen *after* receive_damage below 
 		#because we add it to the stack first
+		boost_card.remove_current_activation(script)	
 		var discard_event = simple_discard_task(boost_card)
 		gameData.theStack.add_script(discard_event)
+
+	if !defender:
+		script.subjects.append(my_hero)
+		#TODO add variable stating attack was undefended
 
 	if amount:
 		var script_modifications = {
@@ -590,7 +622,7 @@ func consequential_damage(script: ScriptTask) -> int:
 		{"name": "receive_damage", "amount" : damage, "subject" : "self"}, #TODO more advanced
 		script.trigger_object,
 		script.trigger_details)
-	additional_task.prime([], CFInt.RunType.NORMAL,0) #TODO gross
+	additional_task.prime([], CFInt.RunType.NORMAL,0, []) #TODO gross
 	retcode = receive_damage(additional_task)
 	
 	return CFConst.ReturnCode.CHANGED
@@ -617,12 +649,17 @@ func commit_scheme(script: ScriptTask):
 	for boost_card in owner.attachments:
 		if (!boost_card.is_boost):
 			continue
+		boost_card.set_current_activation(script)	
 		boost_card.set_is_faceup(true)
 		scheme_amount = scheme_amount + boost_card.get_property("boost",0)
+		var func_return = boost_card.execute_scripts_no_stack(boost_card, "boost")
+		while func_return is GDScriptFunctionState && func_return.is_valid():
+			func_return = func_return.resume()	
 		#add an event on the stack to discard this card.
 		#Note that the discard will happen *after* receive_damage below 
 		#because we add it to the stack first
-		var discard_event = cfc.scripting_engine.simple_discard_task(boost_card)
+		boost_card.remove_current_activation(script)	
+		var discard_event = simple_discard_task(boost_card)
 		gameData.theStack.add_script(discard_event)
 
 	var prevent = script.retrieve_integer_property("prevent_amount", 0)	
@@ -782,8 +819,42 @@ func reveal_encounter(script: ScriptTask) -> int:
 		return retcode
 	var owner = script.owner
 	var hero_id = owner.get_controller_hero_id()
-
+	
+	#If we passed a subject card, that's what we try to reveal
+	if script.subjects:
+		gameData.deal_one_encounter_to(hero_id, true, script.subjects[0])
+		return  CFConst.ReturnCode.CHANGED
+	
+	#else if there is a source container, we get the top card from that	
+	var src_container = script.get_property(SP.KEY_SRC_CONTAINER)
+	src_container = cfc.NMAP.get(src_container, null)
+	if src_container:
+		var card = src_container.get_top_card()
+		if card:
+			gameData.deal_one_encounter_to(hero_id, true, card)
+			return  CFConst.ReturnCode.CHANGED
+		return  CFConst.ReturnCode.FAILED
+		
+	#finally, if nothing is specified, we get a regular encounter from the
+	#villain deck
 	gameData.reveal_current_encounter(hero_id)
+
+	return CFConst.ReturnCode.CHANGED
+
+func reveal_encounters(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+
+	if (costs_dry_run()): #not allowed ?
+		return retcode
+	var owner = script.owner
+	var hero_id = owner.get_controller_hero_id()
+	
+	for subject in script.subjects:
+		gameData.deal_one_encounter_to(hero_id, true, subject)
+	return  CFConst.ReturnCode.CHANGED
 
 	return CFConst.ReturnCode.CHANGED
 	

@@ -73,7 +73,7 @@ func get_villains():
 		return villains
 		
 	var first_scheme = schemes[0]
-	villains = get_villains_from_scheme(first_scheme["_code"])
+	villains = get_villains_from_scheme(first_scheme["_code"], is_expert_mode)
 		
 func get_encounter_deck():
 	if (not encounter_deck.empty()):

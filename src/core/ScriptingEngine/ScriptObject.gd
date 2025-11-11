@@ -36,7 +36,10 @@ var requested_subjects: int
 var trigger_object: Node
 # Stores the subjects discovered by the task previous to this one
 var prev_subjects := []
+var all_prev_subjects := []
 
+
+var my_stored_integer = null
 
 # prepares the properties needed by the script to function.
 func _init(_owner, script: Dictionary, _trigger_object = null) -> void:
@@ -66,17 +69,23 @@ func get_property(property: String, default = null, subscript_definition = null)
 		result = script_definition.get(property,default)
 	
 	#if then else special case. Todo could this maybe go into a more generic location to work on all script variables ?
-	if (typeof (result) == TYPE_DICTIONARY) and result.has("if"):
-		var _if = result["if"]
-		var func_name = _if["func_name"]
-		var params = _if["func_params"]
-		var if_check_result = owner.call(func_name, params)
-		if (if_check_result):
-			return get_property(property, default, result["then"])
-		else:
-			return get_property(property, default, result["else"])
-
+	if (typeof (result) == TYPE_DICTIONARY):
+		if result.has("if"):
+			var _if = result["if"]
+			var func_name = _if["func_name"]
+			var params = _if["func_params"]
+			var if_check_result = owner.call(func_name, params)
+			if (if_check_result):
+				return get_property(property, default, result["then"])
+			else:
+				return get_property(property, default, result["else"])
+		elif result.has("func_name"):
+			var params = result.get("func_params", {})
+			result = self.owner.call(result["func_name"], params, self)
+			
 	return result
+	
+	
 #
 #
 #func lookup_script_property(found_value):
@@ -117,13 +126,27 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 		subjects = prepaid
 		return prepaid
 
+	var result = _local_find_subjects(stored_integer, run_type)
 
+	if result is GDScriptFunctionState: # Still working.
+		result = yield(result, "completed")	
+	
+	subjects = result
+	return subjects
+
+#runs "find_subjects" locally, does not store the result
+#this allows to run a "find subjects" activity within
+#the context of this scrpt, without impacting it
+#useful for sub scripts	
+func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL, overrides:Dictionary = {}):
 	cfc.add_ongoing_process(self)		
 	var subjects_array := []
 	
+	var subject = overrides.get("subject", get_property(SP.KEY_SUBJECT))
+	
 	#replace targeting with selection (optional)
 	if CFConst.OPTIONS.get("replace_targetting_with_selection", false):
-		if get_property(SP.KEY_SUBJECT) == SP.KEY_SUBJECT_V_TARGET:
+		if subject == SP.KEY_SUBJECT_V_TARGET:
 			script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_BOARDSEEK
 			script_definition[SP.KEY_SELECTION_TYPE] = "equal" 
 			script_definition[SP.KEY_SELECTION_COUNT] = 1
@@ -131,7 +154,7 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 			script_definition[SP.KEY_SUBJECT_COUNT] = "all"
 			script_definition["filter_state_seek"] = script_definition["filter_state_subject"]	
 	# See SP.KEY_SUBJECT doc
-	match get_property(SP.KEY_SUBJECT):
+	match subject:
 		# Ever task retrieves the subjects used in the previous task.
 		# if the value "previous" is given to the "subjects" key,
 		# it simple reuses the same ones.
@@ -152,6 +175,23 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 				for c in subjects_array:
 					if not SP.check_validity(c, script_definition, "subject", owner):
 						is_valid = false
+		SP.KEY_SUBJECT_V_ALL_PREVIOUS:
+			if get_property(SP.KEY_FILTER_EACH_REVIOUS_SUBJECT):
+				# We still check all previous subjects to check that they match the filters
+				# If not, we remove them from the subject list
+				for c in all_prev_subjects:
+					if SP.check_validity(c, script_definition, "subject", owner):
+						subjects_array.append(c)
+				if subjects_array.size() == 0:
+					is_valid = false
+			# With this approach, if any of the previous subjects doesn't
+			# match the filter, the whole task is considered invalid.
+			# But the subjects lists remains intact
+			else:
+				subjects_array = all_prev_subjects
+				for c in subjects_array:
+					if not SP.check_validity(c, script_definition, "subject", owner):
+						is_valid = false						
 		SP.KEY_SUBJECT_V_TARGET:
 			var c = null
 			if (run_type == CFInt.RunType.BACKGROUND_COST_CHECK):
@@ -185,8 +225,15 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 			is_valid = SP.check_validity(owner, script_definition, "subject", owner)
 			subjects_array.append(owner)
 		_:
-			subjects_array = cfc.ov_utils.get_subjects(self, 
-					get_property(SP.KEY_SUBJECT), stored_integer)
+			var subjects_result = cfc.ov_utils.get_subjects(self, 
+					get_property(SP.KEY_SUBJECT), stored_integer, run_type)
+			if typeof(subjects_result) == TYPE_DICTIONARY:
+				subjects_array = subjects_result["subjects"]
+				var to_store = subjects_result.get("stored_integer", null)
+				if to_store != null:
+					 self.my_stored_integer = to_store
+			else:
+				subjects_array = subjects_result
 			for c in subjects_array:
 				if not SP.check_validity(c, script_definition, "subject", owner):
 					is_valid = false
@@ -217,7 +264,6 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 		else:
 			is_valid = false
 			subjects_array = []
-	subjects = subjects_array
 	cfc.remove_ongoing_process(self)
 	return(subjects_array)
 
@@ -349,6 +395,7 @@ func _index_seek_subjects(stored_integer: int) -> Array:
 	# Just to prevent typos since we don't enforce integers on index
 	elif not str(index).is_valid_integer():
 		index = 0
+	
 	var subject_count = get_property(SP.KEY_SUBJECT_COUNT)
 	# If the subject count is ALL, we retrieve as many cards as
 	# possible after the specified index
@@ -374,6 +421,14 @@ func _index_seek_subjects(stored_integer: int) -> Array:
 		if get_property(SP.KEY_IS_INVERTED):
 			subject_count *= -1
 	requested_subjects = subject_count
+	
+	#bail if the index is invalid
+	if index ==-1:
+		if requested_subjects > 0:
+			if get_property(SP.KEY_IS_COST):
+				is_valid = false
+		return []
+	
 	# If KEY_SUBJECT_COUNT is more than 1, we seek a number
 	# of cards from this index equal to the amount
 	for iter in range(subject_count):
@@ -641,6 +696,10 @@ func serialize_to_json() -> Dictionary:
 	result["prev_subjects"] = []
 	for subject in prev_subjects:
 		result["prev_subjects"].append(cfc.serialize_object(subject))
-	
+
+	result["all_prev_subjects"] = []
+	for subject in all_prev_subjects:
+		result["all_prev_subjects"].append(cfc.serialize_object(subject))
+		
 	
 	return result

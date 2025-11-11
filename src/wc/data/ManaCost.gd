@@ -68,10 +68,12 @@ func add_resource(_type, amount) :
 	pool[type] += amount
 	
 
-#TODO not used ? Delete	
-#func duplicate(to:ManaCost):
-#	to.set_cost(self.pool)
-
+func count_resource_types() :
+	var count = 0		
+	for v in pool.values():
+		if v > 0 :
+			count +=1
+	return count
 	
 			
 #Return true if this mana cost represents a cost deficit (at least one of its members is negative)	

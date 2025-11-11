@@ -528,6 +528,10 @@ func get_currently_playing_hero_ids():
 		for i in range (team.size()):
 			all.append(i+1)
 		return all
+	
+	#early game, we let player 1 activate stuff for setup
+	if phaseContainer.current_step < CFConst.PHASE_STEP.PLAYER_TURN:
+		return[1]
 		
 	#outside of these events, players can't play ?	
 	return []
@@ -1091,10 +1095,12 @@ func move_to_next_villain(current_villain):
 	var ckey = new_villain_data["_code"] 		
 	var new_card = cfc.NMAP.board.load_villain(ckey)
 	current_villain.copy_tokens_to(new_card, {"exclude":["damage"]})
+
 	#TODO better way to do a reveal ?
 	var func_return = new_card.execute_scripts(new_card, "reveal")
 	while func_return is GDScriptFunctionState && func_return.is_valid():
-		func_return = func_return.resume()
+		func_return = func_return.resume()			
+	
 	cfc.remove_ongoing_process(self, "move_to_next_villain")
 	return new_card			
 

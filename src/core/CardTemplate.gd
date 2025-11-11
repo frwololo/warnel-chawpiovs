@@ -1541,7 +1541,15 @@ func _set_target_rotation(new_target_rotation):
 	if self.canonical_name == "Charge":
 			var _tmp =1
 	_target_rotation = new_target_rotation
-		
+
+func execute_scripts_no_stack(
+		trigger_card: Card = self,
+		trigger: String = "manual",
+		trigger_details: Dictionary = {},
+		run_type := CFInt.RunType.NORMAL):
+	var new_trigger_details = trigger_details
+	new_trigger_details["use_stack"] = false
+	return execute_scripts(trigger_card, trigger, new_trigger_details, run_type)	
 # Executes the tasks defined in the card's scripts in order.
 #
 # Returns a [ScriptingEngine] object but that it not statically typed
@@ -1566,7 +1574,7 @@ func execute_scripts(
 	if not cfc.NMAP.has('board'):
 		return
 
-	if (trigger =="manual" and canonical_name == "Highway Robbery"):
+	if (trigger =="boost" and canonical_name == "Kree Manipulator"):
 		var _tmp = 1
 	
 	#if set to false we'll skip the (potential) optional confirmation
@@ -1714,6 +1722,8 @@ func execute_scripts(
 				#1.5) We run the script in "prime" mode again to choose targets
 				# for all tasks that aren't costs but still need targets
 				# (is_cost = false and needs_subject = false)
+				if canonical_name == "Masterplan":
+					var _tmp = 1
 				sceng_return = sceng.execute(CFInt.RunType.PRIME_ONLY)
 				#if not sceng.all_tasks_completed:
 				if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
@@ -1727,9 +1737,15 @@ func execute_scripts(
 					action_name = canonical_name
 				action_name = action_name + " - " + trigger
 				action_name =  trigger_details.get("_display_name", action_name) #override
-				var func_return = add_script_to_stack(sceng, run_type, trigger, trigger_details, action_name)
-				while func_return is GDScriptFunctionState && func_return.is_valid():
-					func_return = func_return.resume()
+				if trigger_details.get("use_stack", true):
+					var func_return = add_script_to_stack(sceng, run_type, trigger, trigger_details, action_name)
+					while func_return is GDScriptFunctionState && func_return.is_valid():
+						func_return = func_return.resume()
+				else:
+					sceng_return = sceng.execute(run_type)
+					while sceng_return is GDScriptFunctionState && sceng_return.is_valid():
+						sceng_return = sceng_return.resume()	
+	
 		is_executing_scripts = false
 	cfc.remove_ongoing_process(self, "core_execute_scripts")	
 	emit_signal("scripts_executed", self, sceng, trigger)

@@ -1,0 +1,123 @@
+{
+	"_comments": "Tests Masterplan",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "advance"
+				},			
+				{
+					"card": "hydra mercenary"
+				},				
+				{
+					"card": "masterplan"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens": {"threat": 1}
+				},
+					{
+					"card": "Crowd Control"
+				},
+				{
+					"card": "Bomb Scare"
+				},				
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			]
+		}
+	},
+	"actions": [
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "advance"
+				},	
+			],
+			"discard_villain":[
+				{
+					"card": "masterplan"
+				},						
+			],			
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens": {"threat": 1}
+				},
+				{
+					"card": "Crowd Control",
+					"tokens": {"threat" : 4},
+				},
+				{
+					"card": "Bomb Scare",
+					"tokens": {"threat" : 4},
+				},	
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			]
+		}
+	}
+}

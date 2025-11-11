@@ -1,0 +1,104 @@
+{
+	"_comments": "Tests Bomb Scare bug vs Great Responsibility",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "hydra mercenary"
+				},				
+				{
+					"card": "Bomb Scare"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens" : {"threat" : 1}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Great Responsibility"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type":"play",
+			"value": "Great Responsibility"
+		}
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "hydra mercenary"
+				},						
+			],			
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens": {"threat" : 1}
+				},
+			{
+					"card": "Bomb Scare",
+					"tokens": {"threat" : 2, "damage": 0}
+				}				
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {"damage" : 1}					
+				}
+			],
+			"discard1": [
+				{
+					"card": "Great Responsibility"
+				}
+			]
+		}
+	}
+}

@@ -1,0 +1,149 @@
+{
+	"_comments": "Tests higway robbery",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "Hydra Mercenary"
+				},		
+				{
+					"card": "The vulture's plans"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01002"
+				},
+				{
+					"card": "Mockingbird"
+				},				
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Energy Absorption"
+				},
+				{
+					"card": "Hawkeye"
+				}
+			]			
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		}		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[	
+				
+			],
+			"discard1": [	
+				{
+					"card": "Mockingbird"
+				},		
+			],
+			"discard2": [
+				{
+					"card": "Hawkeye"
+				}				
+			
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens": {"threat": 2}
+				}			
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01002"
+				},
+			
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"enemies2": [
+				{
+					"card": "Hydra Mercenary"
+				}			
+			],
+			"hand2": [
+				{
+					"card": "Energy Absorption"
+				}
+			]			
+		}
+	}
+}

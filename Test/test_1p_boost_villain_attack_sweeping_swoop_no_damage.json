@@ -1,0 +1,119 @@
+{
+	"_comments": "Test of Boost card: Sweeping Swoop",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},			
+				{
+					"card": "Hydra Mercenary"
+				},			
+				{
+					"card": "Sweeping Swoop"
+				}
+			],			
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {"damage": 1}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy Absorption"
+				}
+			],
+		}
+	},
+	"actions": [
+		{
+			"type": "pass",
+			"value": "1",
+			"_comments": "click on pass to skip Spider-Man draw interrupt"
+		},		
+		{
+			"type": "select",
+			"value": "Spider-Man",
+			"_comments": "defend with spider man, should take no damage and no stun"
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+			],
+			"discard_villain": [
+				{
+					"card": "Sweeping Swoop"
+				}
+			],		
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {"damage": 1, "stunned" : 0}
+				}
+			],
+		}
+	}
+}

@@ -118,7 +118,7 @@ static func check_same_controller_filter(trigger_card, owner_card, true_false : 
 # of target_card's hero id
 static func check_max_per_hero(target_card, max_value, owner_card) -> bool:
 	var hero_id = target_card.get_controller_hero_id()
-	var count = cfc.NMAP.board.count_card_per_player_in_play(owner_card, hero_id)
+	var count = cfc.NMAP.board.count_card_per_player_in_play(owner_card, hero_id, true)
 	if count >= max_value:
 		return false
 	return true

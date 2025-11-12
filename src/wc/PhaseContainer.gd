@@ -15,7 +15,7 @@ var text_edit:TextEdit = null
 #whitelist has priority, if it's set, only messages containing
 #specific words will go through
 #if blackslit is set,, messages containing specific words will be explicitly banned 
-const _debug_msg_whitelist = ["stack", "host"] #["executing", "owner", "villain target"] #"script", "all clients", "error"]
+const _debug_msg_whitelist = ["stack", "host", "wccard"] #["executing", "owner", "villain target"] #"script", "all clients", "error"]
 const _debug_msg_blacklist = []
 
 
@@ -163,6 +163,7 @@ func reset(reset_phase:= true):
 	update_text()	
 	
 	if text_edit:
+		flush_debug_display()
 		text_edit.text = ""
 	
 	#reinit misc variables	

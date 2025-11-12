@@ -59,6 +59,9 @@ signal initiated_targeting(card)
 # warning-ignore:unused_signal
 signal target_selected(owner, details)
 
+# warning-ignore:unused_signal
+signal about_to_reveal(encounter, details)
+
 # This signal is not triggerring init_scripting_event() 
 # It is used to trigger the execute_scripts functions on the various scriptable objects
 signal scripting_event_about_to_trigger(trigger_card, trigger, details)

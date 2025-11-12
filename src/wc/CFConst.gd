@@ -19,6 +19,11 @@ enum ReturnCode {
 	WAITING
 }
 
+enum FLIP_STATUS {
+	FACEUP,
+	FACEDOWN,
+	BOTH
+}
 
 enum CanInterrupt {
 	NO,

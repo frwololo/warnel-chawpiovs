@@ -149,14 +149,14 @@ mastersync func master_create_and_add_simplescript(  _owner_uid, trigger_card_ui
 
 remotesync func client_create_and_add_simplescript( stack_uid, _owner_uid, trigger_card_uid, definition, trigger_details):
 	var client_id = get_tree().get_rpc_sender_id()
-	display_debug(str(client_id) + " wants me to add a script:" + str(definition["name"]) )
+	display_debug(str(client_id) + " wants me to add a simplescript:" + str(definition["name"]) )
 
 	var owner_card = guidMaster.get_object_by_guid(_owner_uid)
 	var trigger_card = guidMaster.get_object_by_guid(trigger_card_uid)
 	var script = definition
 	var script_name = script["name"]
 	var task = ScriptTask.new(owner_card, script, trigger_card, trigger_details)	
-	var stackEvent = SimplifiedStackScript.new(script_name, task)
+	var stackEvent = SimplifiedStackScript.new(task)
 
 	add_script(stackEvent, stack_uid)
 	rpc_id(1, "from_client_script_received_ack", stack_uid)
@@ -178,7 +178,7 @@ mastersync func master_create_and_add_signal( _name, _owner_uid, _details):
 
 remotesync func client_create_and_add_signal(stack_uid, _name, _owner_uid, _details):
 	var client_id = get_tree().get_rpc_sender_id()
-	display_debug(str(client_id) + " wants me to add a signal:" + _name)
+	display_debug(str(client_id) + " wants me to add a stacksignal:" + _name)
 
 	var owner_card = guidMaster.get_object_by_guid(_owner_uid)
 				
@@ -221,7 +221,7 @@ remotesync func client_create_and_add_script(stack_uid, state_scripts, _owner_ui
 
 	#debug stuff
 	var client_id = get_tree().get_rpc_sender_id() 
-	display_debug(str(client_id) + " wants me to add a script for:" + action_name)
+	display_debug(str(client_id) + " wants me to add a stackscript for:" + action_name)
 	#/debug
 	
 	var sceng = cfc.scripting_engine.new(
@@ -640,12 +640,13 @@ func _process(_delta: float):
 		InterruptMode.NONE:
 			if cfc.is_game_master():
 				#if not everyone is ready here, I need to wait
-				if !clients_status_aligned():
+				if !clients_status_aligned() and CFConst.DESYNC_TIMEOUT and  time_since_started_waiting < CFConst.DESYNC_TIMEOUT:
 					time_since_started_waiting += _delta
-					if CFConst.DESYNC_TIMEOUT and time_since_started_waiting > CFConst.DESYNC_TIMEOUT:
-						gameData.phaseContainer.flush_debug_display()
-						gameData.init_desync_recover()
-						time_since_started_waiting = 0.0
+#					gameData.phaseContainer.flush_debug_display()
+#					gameData.init_desync_recover()
+#					time_since_started_waiting = 0.0
+					#attempts to resync here have consistently failed.
+					#we'l let it run through and hope end of turn resync will fix the mess
 					return	
 				else:
 					time_since_started_waiting = 0.0
@@ -729,7 +730,7 @@ func display_debug(msg):
 
 func set_interrupt_mode(value:int):
 	interrupt_mode = value
-	display_debug("I'm now in mode:" +  InterruptModeStr[interrupt_mode] )
+	#display_debug("I'm now in mode:" +  InterruptModeStr[interrupt_mode] )
 	rpc_id(1, "master_interrupt_mode_changed", interrupt_mode)
 	gameData.game_state_changed()
 

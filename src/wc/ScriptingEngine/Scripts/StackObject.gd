@@ -103,7 +103,9 @@ func get_first_task_name():
 func get_display_name():
 	if display_name:
 		return display_name
-	return get_first_task_name()
+		
+	for task in get_tasks():
+		return task.owner.canonical_name + "-" + task.script_name
 
 func set_display_name(_name):
 	display_name = _name

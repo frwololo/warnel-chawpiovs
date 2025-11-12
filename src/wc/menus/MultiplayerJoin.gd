@@ -16,6 +16,7 @@ func _ready() -> void:
 	v_host_ip_box.text = ""
 	v_join_button.disabled = true
 	http_request = HTTPRequest.new()
+	http_request.set_timeout(10.0)
 	add_child(http_request)	
 	http_request.connect("request_completed", self, "_check_server_ip")
 	http_request.request(CFConst.SIGNAL_SERVER_GET_HOST_URL)

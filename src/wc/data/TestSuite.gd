@@ -218,7 +218,10 @@ func initialize_components():
 	phaseContainer = gameData.phaseContainer
 	initialized = true
 
-func _process(_delta: float) -> void:	
+func _process(_delta: float) -> void:		
+	if (finished):
+		return
+	
 	if (!initialized):
 		initialize_components()
 
@@ -233,9 +236,7 @@ func _process(_delta: float) -> void:
 	#Game is still loading on some clients, do not run tests yet
 	if (!game_loaded):
 		return
-		
-	if (finished):
-		return
+
 	
 	if (_action_ongoing):
 		return	
@@ -332,8 +333,9 @@ func next_action():
 			return
 			
 	if (action_type == "play"):
-		var card = get_card(action_value, 1) 
-		if card.check_play_costs() != CFConst.CostsState.OK and delta <long_wait_time:
+		var card = get_card(action_value, 1)
+		var hero_id = self.get_hero_for_action(my_action)
+		if card.check_play_costs({"hero_id" : hero_id}) != CFConst.CostsState.OK and delta <long_wait_time:
 			count_delay("action_play")
 			return			
 
@@ -375,8 +377,7 @@ func next_action():
 		announce("upcoming: " + next_action_type + " - " + str(next_action_value) + ")\n")
 	return
 
-#The bulk of the GUI control to process one event	
-func process_action(my_action:Dictionary):
+func get_hero_for_action(my_action:Dictionary):
 	var hero: int = int(my_action.get("hero", 0))
 	#If hero is 0 we'll try to guess it from the card
 	#hero 1 belongs to the master player, runing the test suite
@@ -406,9 +407,14 @@ func process_action(my_action:Dictionary):
 			"other":
 				hero = get_default_hero()
 			_:
-				hero = get_default_hero()			
+				hero = get_default_hero()
+	return hero	
 
-	current_playing_hero_id = hero
+#The bulk of the GUI control to process one event	
+func process_action(my_action:Dictionary):
+			
+	
+	current_playing_hero_id = get_hero_for_action(my_action)
 	my_action["hero"] = current_playing_hero_id #This will pass the determined hero id to the rpc call 
 	var network_player_id = get_hero_player_network_owner(current_playing_hero_id)
 	_action_ongoing = true

@@ -8,7 +8,7 @@ extends Card
 var _owner_hero_id  := -1
 var _controller_hero_id  := -1 setget set_controller_hero_id, get_controller_hero_id
 
-var _check_play_costs_cache: Color = CFConst.CostsState.CACHE_INVALID
+var _check_play_costs_cache: Dictionary = {}
 
 var _on_ready_load_from_json:Dictionary = {}
 
@@ -28,6 +28,8 @@ var extra_script_uid := 0
 var spinbox
 #healthbar on top of characters, allies, villains, etc...
 var healthbar
+
+var activity_script
 
 func add_extra_script(script_definition, allowed_hero_id = 0):
 	extra_script_uid+= 1
@@ -238,7 +240,9 @@ func set_target_highlight(colour):
 
 #flush caches and states when game state changes
 func _game_state_changed(_details:Dictionary):
-	_check_play_costs_cache = CFConst.CostsState.CACHE_INVALID
+	for i in gameData.get_team_size():
+		var hero_id = i+1
+		_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID
 
 #reset some variables at new turn
 func _game_step_started(details:Dictionary):
@@ -352,16 +356,29 @@ func can_interrupt(
 	if not cfc.NMAP.has('board'):
 		return CFConst.CanInterrupt.NO
 	
+	var _debug = false
+	if canonical_name == "Cosmic Flight" and trigger_card.canonical_name == "Rhino - 1":
+		if trigger_details["event_name"] == "receive_damage":
+			_debug = true
+
+	if (_debug):
+		display_debug("{interrupt} Hero:" + str(hero_id) + " Checks for " + canonical_name + " vs " + trigger_details.get("event_name") + " - " + trigger_card.canonical_name)		
 
 	#select valid scripts that match the current trigger
 	var card_scripts = retrieve_filtered_scripts(trigger_card, "interrupt", trigger_details)
-	
+	if (_debug):
+		display_debug("card_scripts: " + to_json(card_scripts))
 	if (!card_scripts):
+		if (_debug):
+			display_debug("no filtered scripts found")
 		return CFConst.CanInterrupt.NO	
 	
 	var state_scripts = get_state_scripts(card_scripts, trigger_card, trigger_details)
-	
+	if (_debug):
+		display_debug("state_scripts: " + to_json(state_scripts))	
 	if (!state_scripts):
+		if (_debug):
+			display_debug("no state scripts found")
 		return CFConst.CanInterrupt.NO
 	
 	#card has potential interrupts. Last we check if I'm the player who can play them
@@ -371,13 +388,24 @@ func can_interrupt(
 	if gameData.can_hero_play_this_ability(hero_id,self, card_scripts):
 		if card_scripts.get("is_optional_" + get_state_exec()):
 			#optional interrupts need to check costs
-			if check_play_costs_no_cache() == CFConst.CostsState.IMPOSSIBLE:
+			if check_play_costs_no_cache(hero_id) == CFConst.CostsState.IMPOSSIBLE:
+				if (_debug):
+					display_debug("allowed to interrupt but can't pay cost")
 				return CFConst.CanInterrupt.NO			
 			may_interrupt =  CFConst.CanInterrupt.MAY
 		else:
 			may_interrupt =  CFConst.CanInterrupt.MUST
+	else:
+		if (_debug):
+			display_debug("not allowed to inbterrupt according to can_hero_play_this_ability")
+		pass
 	if (may_interrupt != CFConst.CanInterrupt.NO and canonical_name == "Spider-Man"):
 		display_debug("can interrupt " + trigger_card.canonical_name + ". Details: " + to_json(trigger_details))
+
+	if (_debug):
+		display_debug("{interrupt} END OF CHECKS for " + canonical_name + " vs " + trigger_details.get("event_name") + " - " + trigger_card.canonical_name)		
+
+
 	return may_interrupt
 
 # Executes the tasks defined in the card's scripts in order.
@@ -410,22 +438,33 @@ func execute_scripts(
 	
 
 	var override_controller_id = trigger_details.get("override_controller_id", 0)
+	var for_hero_id = trigger_details.get("for_hero_id", 0)
+
 	if override_controller_id:
 		if gameData.get_current_local_hero_id() != override_controller_id:
-			return 
+			return null
 	else:
 	#can only trigger if I'm the controller of the abilityor if enemy card (will send online to other clients)
-		if !gameData.can_i_play_this_ability(self):
-			return
+
+		if for_hero_id:
+			if !gameData.can_hero_play_this_ability(for_hero_id, self):
+				return null
+		else:
+			if !gameData.can_i_play_this_ability(self):
+				return null
 		
 	#enemy cards, multiple players can react except when they're the specific target
 	if self.get_controller_hero_id() <= 0:
 		var can_i_play_enemy_card = false
-		for my_hero in (gameData.get_my_heroes()):
-			if my_hero in (gameData.get_currently_playing_hero_ids()):
+		if for_hero_id:
+			if for_hero_id in gameData.get_currently_playing_hero_ids():
 				can_i_play_enemy_card = true
+		else:	
+			for my_hero in (gameData.get_my_heroes()):
+				if my_hero in (gameData.get_currently_playing_hero_ids()):
+					can_i_play_enemy_card = true
 		if !can_i_play_enemy_card:
-			return
+			return null
 			
 	return .execute_scripts(trigger_card, trigger, trigger_details, run_type)	
 
@@ -710,49 +749,50 @@ func check_ghost_card():
 #
 # If it returns false, the card will be highlighted with a red tint, and the
 # player will not be able to drag it out of the hand.
-func check_play_costs_no_cache()-> Color:
-	_check_play_costs_cache = CFConst.CostsState.CACHE_INVALID
-	return check_play_costs()
+func check_play_costs_no_cache(hero_id)-> Color:
+	_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID
+	return check_play_costs({"hero_id" : hero_id})
+
 	
-func check_play_costs() -> Color:
+func check_play_costs(params:Dictionary = {}) -> Color:
 	#return .check_play_costs();
-
+	var hero_id = params.get("hero_id", gameData.get_current_local_hero_id())
 
 	
-	if (_check_play_costs_cache != CFConst.CostsState.CACHE_INVALID):
-		return _check_play_costs_cache
+	if (_check_play_costs_cache.get(hero_id,CFConst.CostsState.CACHE_INVALID) != CFConst.CostsState.CACHE_INVALID):
+		return _check_play_costs_cache[hero_id]
 	
-	_check_play_costs_cache = CFConst.CostsState.IMPOSSIBLE
+	_check_play_costs_cache[hero_id] = CFConst.CostsState.IMPOSSIBLE
 
 	#skip if card is not in hand and not on board. TODO: will have to take into account cards than can be played from other places
 	var state_exec = get_state_exec()
 	
 	if !(state_exec in ["hand", "board"]):
-		return _check_play_costs_cache
+		return _check_play_costs_cache[hero_id]
 	
 
 	if (canonical_name == "Jessica Jones"):
 		var _tmp = 1
 		
-	var sceng = execute_scripts(self,"manual",{},CFInt.RunType.BACKGROUND_COST_CHECK)
+	var sceng = execute_scripts(self,"manual",{"for_hero_id": hero_id},CFInt.RunType.BACKGROUND_COST_CHECK)
 
 	if (!sceng): #TODO is this an error?
-		_check_play_costs_cache = CFConst.CostsState.IMPOSSIBLE	
-		return _check_play_costs_cache
+		_check_play_costs_cache[hero_id] = CFConst.CostsState.IMPOSSIBLE	
+		return _check_play_costs_cache[hero_id]
 		
 	while sceng is GDScriptFunctionState && sceng.is_valid(): # Still working.
 		sceng = sceng.resume()
 		#sceng = yield(sceng, "completed")
 
 	if (!sceng): #TODO is this an error?
-		_check_play_costs_cache = CFConst.CostsState.IMPOSSIBLE	
-		return _check_play_costs_cache
+		_check_play_costs_cache[hero_id] = CFConst.CostsState.IMPOSSIBLE	
+		return _check_play_costs_cache[hero_id]
 	
 	if (sceng.can_all_costs_be_paid):
-		_check_play_costs_cache = CFConst.CostsState.OK
+		_check_play_costs_cache[hero_id] = CFConst.CostsState.OK
 
 
-	return _check_play_costs_cache
+	return _check_play_costs_cache[hero_id]
 
 
 # This function can be overriden by any class extending Card, in order to provide
@@ -969,7 +1009,30 @@ func can_execute_scripts():
 	if is_boost:
 		return ['boost']
 	return true
-	
+
+func get_boost_cards(flip_status:int = CFConst.FLIP_STATUS.BOTH):
+	var results = []
+	for card in self.attachments:
+		if (!card.is_boost):
+			continue
+		if (card.is_faceup and flip_status == CFConst.FLIP_STATUS.FACEDOWN):
+			continue
+		if (!card.is_faceup and flip_status == CFConst.FLIP_STATUS.FACEUP):
+			continue			
+		results.append(card)
+
+	return results	 
+
+func next_boost_card_to_reveal():
+	var boost_card = null
+	for card in self.attachments:
+		if (!card.is_boost):
+			continue
+		if (card.is_faceup):
+			continue
+		boost_card = card
+		break
+	return boost_card
 
 #returns scripts specific to this instance
 func get_instance_runtime_scripts(trigger:String = "", filters:={}) -> Dictionary:

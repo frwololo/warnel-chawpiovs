@@ -3,6 +3,8 @@
 
 extends Panel
 
+var ERROR_COLOR := 	Color(1,0.11,0.1)
+var OK_COLOR := 	Color(0.1,11,0.1)
 # The time it takes to switch from one menu tab to another
 const menu_switch_time = 0.35
 
@@ -26,10 +28,6 @@ var http_request: HTTPRequest = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	http_request = HTTPRequest.new()
-	add_child(http_request)	
-	http_request.connect("request_completed", self, "_check_signal_server")
-	http_request.request(CFConst.SIGNAL_SERVER_SET_HOST_URL)
 		
 	for option_button in v_buttons.get_children():
 		if option_button.has_signal('pressed'):
@@ -56,11 +54,41 @@ func _ready() -> void:
 	
 	register_self(my_info)		
 
-func check_signal_server(result, response_code, headers, body):
+	if cfc.is_game_master():
+		http_request = HTTPRequest.new()
+		http_request.set_timeout(10.0)
+		add_child(http_request)	
+		http_request.connect("request_completed", self, "check_signal_server")
+		http_request.request(CFConst.SIGNAL_SERVER_SET_HOST_URL)
+
+func _get_data_from_signal_server(result, response_code, headers, body):
 	if result != HTTPRequest.RESULT_SUCCESS:
 		#TODO error handling
 		return ""
 
+	var content = body.get_string_from_utf8()
+
+	var json_result:JSONParseResult = JSON.parse(content)
+	if (json_result.error != OK):
+		return ""
+		
+
+	var results = json_result.result
+	if ! typeof(results) == TYPE_DICTIONARY:
+		return ""
+				
+	var ip  = results.get("server_ip", "")
+	return ip 
+	
+func check_signal_server(result, response_code, headers, body):
+	var ip =  _get_data_from_signal_server(result, response_code, headers, body)
+	if ip:
+		v_folder_label.text	= "registered to signal server with ip:" + str(ip)
+		v_folder_label.add_color_override("font_color", OK_COLOR)
+	else:
+		v_folder_label.text	=  "error registering with signal server"
+		v_folder_label.add_color_override("font_color", ERROR_COLOR)		
+		
 
 
 

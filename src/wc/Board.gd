@@ -785,13 +785,15 @@ func flip_doublesided_card(card:WCCard):
 		return
 		#TODO mabe flip anyway?
 
-func count_card_per_player_in_play(unique_card:WCCard, hero_id):
+func count_card_per_player_in_play(unique_card:WCCard, hero_id, exclude_self = false):
 	var unique_name = unique_card.get_unique_name().to_lower()
 	var all_cards = self.get_all_cards_controlled_by(hero_id)
 	var result = 0
 	for card in all_cards:
 		if !card.is_faceup:
-			continue	
+			continue
+		if card == unique_card and exclude_self:
+			continue		
 		var card_unique_name = card.get_unique_name().to_lower()
 		if card_unique_name == unique_name:
 			result +=1

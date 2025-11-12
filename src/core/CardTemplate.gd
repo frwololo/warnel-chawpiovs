@@ -2124,7 +2124,7 @@ func animate_shuffle(anim_speed : float, style : int) -> void:
 #
 # If it returns false, the card will be highlighted with a red tint, and the
 # player will not be able to drag it out of the hand.
-func check_play_costs() -> Color:
+func check_play_costs(params:Dictionary = {}) -> Color:
 	return(CFConst.CostsState.OK)
 
 

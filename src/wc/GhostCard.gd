@@ -69,8 +69,8 @@ func get_state_exec() -> String:
 #
 # If it returns false, the card will be highlighted with a red tint, and the
 # player will not be able to drag it out of the hand.
-func check_play_costs() -> Color:
-	var result = .check_play_costs()
+func check_play_costs(params:Dictionary = {}) -> Color:
+	var result = .check_play_costs(params)
 	return result
 
 # Returns true is the card has hand_drag_starts_targeting set to true

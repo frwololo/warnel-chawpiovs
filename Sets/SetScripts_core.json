@@ -533,7 +533,8 @@
 					"needs_selection": true,
 					"filter_state_seek": [
 						{
-							"filter_group": "group_identities"
+							"filter_group": "group_identities",
+							"filter_max_per_hero": 1
 						}
 					]
 				}

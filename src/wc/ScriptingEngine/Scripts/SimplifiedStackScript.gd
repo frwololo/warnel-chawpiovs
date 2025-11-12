@@ -10,12 +10,22 @@ extends StackScript
 var task_name
 var task
 
-func _init(_name, _task):
-	task_name = _name
-	task = _task
-	#hard modify the name here because at least for damaged received I'm passing "undefedn" as the name
-	# maybe that needs to be modifed there instead of here
-	task.script_name = task_name
+func _init(_task, _owner = null, _trigger_object = null):
+	if typeof(_task) == TYPE_DICTIONARY:
+		init_task_from_script_definition(_task, _owner, _trigger_object)
+	else:
+		task = _task
+	
+	if _owner:
+		task.owner = _owner	
+		if _trigger_object:
+			_trigger_object = _owner
+	
+	if _trigger_object:
+		task.trigger_object = _trigger_object
+	
+	task_name = task.script_name
+		
 	task.script_definition["name"] = task_name
 	
 	#enforce some values for filter matching
@@ -30,8 +40,11 @@ func _init(_name, _task):
 	run_type = CFInt.RunType.NORMAL
 	trigger = "" #TODO something better ?
 	tasks = [task]
+	# Seems to be required to avoid re-targeting... ?
+	task.is_primed = true
 	
-
+func init_task_from_script_definition(definition:Dictionary, _owner, _trigger_object):
+	task = ScriptTask.new(_owner, definition, _trigger_object, {})
 
 func get_tasks() -> Array:
 	return tasks

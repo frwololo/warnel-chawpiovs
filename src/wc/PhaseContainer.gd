@@ -11,6 +11,7 @@ var heroPhaseScene = preload("res://src/wc/board/HeroPhase.tscn")
 #debug display for 
 #TODO something fancier
 var text_edit:TextEdit = null
+var show_text_edit = false
 #quick and dirty way to filter out some messages.
 #whitelist has priority, if it's set, only messages containing
 #specific words will go through
@@ -18,6 +19,10 @@ var text_edit:TextEdit = null
 const _debug_msg_whitelist = ["stack", "host", "wccard"] #["executing", "owner", "villain target"] #"script", "all clients", "error"]
 const _debug_msg_blacklist = []
 
+func toggle_display_debug(on_off):
+	show_text_edit =  on_off
+	if text_edit:
+		text_edit.visible = on_off
 
 func create_text_edit():
 	if not cfc.NMAP.has("board") or not is_instance_valid(cfc.NMAP.board):
@@ -63,7 +68,7 @@ func display_debug(msg:String, prefix = "phase"):
 		
 	if !text_edit:
 		create_text_edit()
-	text_edit.visible = true
+	text_edit.visible = show_text_edit
 	
 	if (prefix):
 		msg = "(" + prefix  +") " + msg
@@ -211,6 +216,7 @@ func _process(_delta: float) -> void:
 		gameData.enemy_activates()
 		return
 
+
 	#phases that do something particular  in their process step
 	match current_step:			
 		CFConst.PHASE_STEP.PLAYER_TURN:
@@ -226,6 +232,8 @@ func _process(_delta: float) -> void:
 	#other phases are just constantly requesting to move to the next step if they can	
 	if (!current_step_complete) :
 		return		
+
+
 		
 	match current_step:
 		CFConst.PHASE_STEP.SYSTEMS_CHECK:
@@ -281,8 +289,8 @@ func _step_ended(
 		trigger_details: Dictionary = {}):
 	var step = trigger_details["step"]
 	match step:
-		CFConst.PHASE_STEP.VILLAIN_THREAT:
-			#_after_villain_threat()
+		CFConst.PHASE_STEP.GAME_READY:
+				
 			pass	
 
 func deactivate_hero(hero_id):

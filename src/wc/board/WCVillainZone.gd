@@ -123,6 +123,7 @@ func load_scheme():
 	#card.set_is_faceup(true)	
 	#TODO cleaner way to add the villain there?
 	cfc.NMAP["deck_villain"].add_child(card)
+	card._determine_idle_state()
 	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid("schemes")
 	var slot: BoardPlacementSlot
 	if grid:

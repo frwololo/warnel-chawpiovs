@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://themes/darktheme/darktheme.theme" type="Theme" id=1]
 [ext_resource path="res://themes/darktheme/fonts/Bangers/Bangers-Regular.ttf" type="DynamicFontData" id=2]
@@ -29,7 +29,7 @@ margin_bottom = 1080.0
 
 [node name="Margin" type="MarginContainer" parent="MainMenu/VBox"]
 margin_right = 1920.0
-margin_bottom = 358.0
+margin_bottom = 357.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/margin_top = 90
@@ -45,33 +45,33 @@ align = 1
 [node name="Center" type="CenterContainer" parent="MainMenu/VBox"]
 margin_top = 361.0
 margin_right = 1920.0
-margin_bottom = 719.0
+margin_bottom = 718.0
 size_flags_vertical = 3
 
 [node name="VButtons" type="VBoxContainer" parent="MainMenu/VBox/Center"]
-margin_left = 800.0
-margin_top = 147.0
-margin_right = 1119.0
-margin_bottom = 211.0
+margin_left = 810.0
+margin_top = 144.0
+margin_right = 1110.0
+margin_bottom = 212.0
 rect_min_size = Vector2( 192, 0 )
 custom_constants/separation = 10
 alignment = 1
 
 [node name="JoinBox" type="HBoxContainer" parent="MainMenu/VBox/Center/VButtons"]
-margin_right = 319.0
-margin_bottom = 27.0
+margin_right = 300.0
+margin_bottom = 33.0
 grow_horizontal = 2
 
 [node name="Label" type="Label" parent="MainMenu/VBox/Center/VButtons/JoinBox"]
-margin_top = 2.0
-margin_right = 76.0
-margin_bottom = 25.0
+margin_top = 5.0
+margin_right = 62.0
+margin_bottom = 28.0
 text = "Host IP: "
 
 [node name="HostIp" type="LineEdit" parent="MainMenu/VBox/Center/VButtons/JoinBox"]
-margin_left = 79.0
-margin_right = 279.0
-margin_bottom = 27.0
+margin_left = 66.0
+margin_right = 266.0
+margin_bottom = 33.0
 rect_min_size = Vector2( 200, 27 )
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
@@ -80,15 +80,15 @@ expand_to_text_length = true
 placeholder_text = "192.168.100.100"
 
 [node name="Join" type="Button" parent="MainMenu/VBox/Center/VButtons/JoinBox"]
-margin_left = 282.0
-margin_right = 319.0
-margin_bottom = 27.0
+margin_left = 270.0
+margin_right = 300.0
+margin_bottom = 33.0
 text = "Join"
 
 [node name="Cancel" type="Button" parent="MainMenu/VBox/Center/VButtons"]
-margin_top = 37.0
-margin_right = 319.0
-margin_bottom = 64.0
+margin_top = 43.0
+margin_right = 300.0
+margin_bottom = 68.0
 text = "Cancel"
 
 [node name="Margin2" type="MarginContainer" parent="MainMenu/VBox"]

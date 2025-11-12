@@ -17,9 +17,6 @@ position = Vector2( 75, 105 )
 margin_right = 200.0
 margin_bottom = 280.0
 rect_min_size = Vector2( 200, 280 )
-__meta__ = {
-"_edit_group_": true
-}
 
 [node name="Highlight" parent="Control" index="0"]
 margin_right = -3.0

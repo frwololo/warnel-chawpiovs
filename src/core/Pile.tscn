@@ -65,6 +65,7 @@ __meta__ = {
 }
 
 [node name="PanelContainer" type="PanelContainer" parent="Control/CenterContainer/VBoxContainer"]
+unique_name_in_owner = true
 margin_top = 33.0
 margin_right = 62.0
 margin_bottom = 62.0

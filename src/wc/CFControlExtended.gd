@@ -5,6 +5,7 @@ class_name CFControlExtended
 extends CFControl
 
 #cache variables
+var all_loaded := false
 var known_types : Dictionary
 var unknown_types : Dictionary
 var next_scene_params : Dictionary

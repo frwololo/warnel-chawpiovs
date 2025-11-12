@@ -562,6 +562,7 @@ func find_main_scheme() :
 			return card
 	return null
 
+
 func end_round():
 	current_round+=1
 	set_villain_current_hero_target(1, true, "end_round")

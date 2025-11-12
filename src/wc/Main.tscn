@@ -17,7 +17,7 @@ size = Vector2( 1919, 1079 )
 
 [node name="VBC" parent="." index="1"]
 margin_right = 450.0
-margin_bottom = 630.0
+margin_bottom = 634.0
 
 [node name="Focus" parent="VBC" index="0"]
 margin_right = 450.0

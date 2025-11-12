@@ -865,7 +865,7 @@ func display_debug(msg):
 
 # Sets the card size and adjusts all nodes depending on it.
 func set_card_size(value: Vector2, ignore_area = false) -> void:
-	if (canonical_id == "01001b" or canonical_id =="01094"):
+	if (canonical_id == "01001b" or canonical_id =="01097"):
 		display_debug(canonical_name + "set size to " + str(value.x) + "x" + str(value.y))
 	card_size = value
 	_control.rect_min_size = value
@@ -2761,6 +2761,8 @@ func _process_card_state() -> void:
 			var target_scale = play_area_scale
 			if (_placement_slot):
 				target_scale = _placement_slot.get_scale_modifier()
+			if canonical_name =="The Break-In!":
+				var _tmp = 1	
 			if not $Tween.is_active():
 				var need_tweening = false
 				if not scale.is_equal_approx(Vector2(1,1) * target_scale):
@@ -2881,7 +2883,7 @@ func _process_card_state() -> void:
 			set_card_rotation(0)
 			$Control.rect_rotation = 0
 			targeting_arrow.cancel_targeting()
-			$Control/Tokens.visible = false
+			$Control/Tokens.visible = true
 			# We scale the card dupe to allow the player a better viewing experience
 			if CFConst.VIEWPORT_FOCUS_ZOOM_TYPE == "scale":
 				set_scale(Vector2(1,1) * focused_scale * cfc.curr_scale)
@@ -3146,3 +3148,12 @@ func queue_free():
 
 func serialize_to_json():
 	return {"TODO": "TODO"}
+	
+func copy_tokens_to(to_card, details:= {}):
+	var exclude = details.get("exclude",[])
+	var my_tokens = tokens.get_all_tokens()
+	for token_name in my_tokens.keys():
+		if (token_name in exclude):
+			continue
+		var count = tokens.get_token_count(token_name)
+		to_card.tokens.mod_token(token_name, count, true)		

@@ -61,8 +61,8 @@ func _ready():
 		$Control.connect("gui_input", self, "_on_Pile_gui_input")
 
 	if CFConst.HIDE_PILE_DETAILS:
-		$Control/CenterContainer.visible = false
-		$Control.modulate = Color(0,0,0,0.2)
+		pile_name_label.modulate = Color(0,0,0,0)
+		$Control.self_modulate = Color(0,0,0,0.2)
 
 func _on_Pile_gui_input(event) -> void:
 	if !faceup_cards:
@@ -76,6 +76,12 @@ func _on_Pile_gui_input(event) -> void:
 
 
 func _process(_delta) -> void:
+	if CFConst.HIDE_PILE_DETAILS:
+		if !get_card_count():
+			get_node("%PanelContainer").visible = false
+		else:
+			get_node("%PanelContainer").visible = true
+			
 	pass
 	# This performs a bit of garbage collection to make sure no Control temp objects
 	# are leftover empty in the popup
@@ -181,7 +187,10 @@ func set_pile_name(value: String) -> void:
 	# this function will run before the onready calls
 	# so the pile_name_will be empty
 	if is_inside_tree():
-		pile_name_label.text = value
+		if CFConst.HIDE_PILE_DETAILS:
+			pile_name_label.text = "____"
+		else:
+			pile_name_label.text = value
 
 
 # Overrides the built-in add_child() method,

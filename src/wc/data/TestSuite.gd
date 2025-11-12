@@ -332,10 +332,11 @@ func next_action():
 			count_delay("action_nextphase")
 			return
 			
-	if (action_type == "play"):
+	if (action_type in["play", "activate"]):
 		var card = get_card(action_value, 1)
 		var hero_id = self.get_hero_for_action(my_action)
-		if card.check_play_costs({"hero_id" : hero_id}) != CFConst.CostsState.OK and delta <long_wait_time:
+		if card.check_play_costs_no_cache( hero_id) != CFConst.CostsState.OK and delta <long_wait_time:
+		#if  delta <long_wait_time:	
 			count_delay("action_play")
 			return			
 

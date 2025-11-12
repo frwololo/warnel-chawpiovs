@@ -14,6 +14,7 @@ var _current_focus_source : Card = null
 onready var card_focus := $VBC/Focus
 onready var focus_info := $VBC/FocusInfo
 onready var _focus_viewport := $VBC/Focus/Viewport
+onready var _focus_camera := $VBC/Focus/Viewport/Camera2D
 onready var world_environemt : WorldEnvironment = $WorldEnvironment
 
 
@@ -62,12 +63,13 @@ func _process(_delta) -> void:
 		#horizontal case
 		if (_current_focus_source.get_property("_horizontal", false)) and _current_focus_source.get_state_exec() != "pile":
 			canonical_size = Vector2(_current_focus_source.canonical_size.y, _current_focus_source.canonical_size.x )	
-			vbc_rect_offset = Vector2 (50, $VBC.rect_size.x)
+			vbc_rect_offset = Vector2 (30, $VBC.rect_size.x)
+			_focus_camera.set_offset(Vector2(0, -20))
 		#normal case
 		else:
 			vbc_rect_offset = $VBC.rect_size
 			canonical_size = _current_focus_source.canonical_size
-
+			_focus_camera.set_offset(Vector2(0, 0))
 	
 	if _current_focus_source and is_instance_valid(_current_focus_source)\
 			and _current_focus_source.get_state_exec() != "pile"\
@@ -146,6 +148,8 @@ func focus_card(card: Card, show_preview := true) -> void:
 			# warning-ignore:return_value_discarded
 			dupe_focus.set_is_faceup(card.is_faceup, true)
 			dupe_focus.is_viewed = card.is_viewed
+			var tokens_dict = card.tokens.export_to_json()
+			dupe_focus.tokens.load_from_json(tokens_dict)
 		else:
 			dupe_focus = card.duplicate(DUPLICATE_USE_INSTANCING)
 			dupe_focus.remove_from_group("cards")
@@ -255,7 +259,7 @@ func _extra_dupe_ready(dupe_focus: Card, card: Card) -> void:
 	else:
 		dupe_focus.resize_recursively(dupe_focus._control, dupe_focus.focused_scale * cfc.curr_scale)
 		dupe_focus.card_front.scale_to(dupe_focus.focused_scale * cfc.curr_scale)
-
+		dupe_focus.tokens.token_drawer(false, true)
 
 func _input(event):
 	# We use this to allow the developer to take card screenshots

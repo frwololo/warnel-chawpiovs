@@ -684,6 +684,18 @@ func reset():
 	
 	master_queue = []
 
+func is_player_allowed_to_click() -> bool:
+	match interrupt_mode:
+		#todo need to have a bit better?
+		InterruptMode.FORCED_INTERRUPT_CHECK, InterruptMode.OPTIONAL_INTERRUPT_CHECK, InterruptMode.HERO_IS_INTERRUPTING:
+			return true
+		_:	
+			if my_script_requests_pending_execution:
+				return false
+			if pending_local_scripts:
+				return false	
+	return true
+
 func is_phasecontainer_allowed_to_proceed():
 	if !stack.empty():
 		return false

@@ -21,6 +21,7 @@ const HERO_GRID_SETUP = CFConst.HERO_GRID_SETUP
 # a temporary variable to move cards after all clients have loaded them,
 # to avoid scripts triggering incorrectly
 var _post_load_move:= {}
+
 var _cards_loaded:= {}
 var _hero_zones_initialized:= {}
 var _ready_to_load:= {}
@@ -164,8 +165,8 @@ func grid_setup():
 
 func init_board_organizers(current_hero_id):
 	board_organizers = []
+	var other_counter = 0
 	for i in range(get_team_size()):
-		var other_counter = 0
 		var hero_id = i+1
 		var scale = 1
 		var start_x = 500

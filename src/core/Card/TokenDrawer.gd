@@ -38,7 +38,6 @@ func _process(_delta: float) -> void:
 		# We're extending the area of the drawer a bit, to try and avoid it
 		# glitching when moving from card to drawer and back
 		shape.extents = $Drawer.rect_size/2 + Vector2(10,0)
-			
 
 # Setter for is_drawer_open
 # Simply calls token_drawer()
@@ -106,19 +105,22 @@ func token_drawer(requested_state := true, forced: bool = false) -> void:
 				x_modifier = -35
 			# warning-ignore:return_value_discarded
 			_tween.remove_all()
-			# warning-ignore:return_value_discarded
-			_tween.interpolate_property(
-					td,'rect_position', td.rect_position,
-					Vector2(x + x_modifier,
-					y + y_modifier ),
-					0.2, Tween.TRANS_ELASTIC, Tween.EASE_IN)
-			# warning-ignore:return_value_discarded
-			_tween.start()
-			# We want to consider the drawer closed
-			# only when the animation finished
-			# Otherwise it might start to open immediately again
-			yield(_tween, "tween_all_completed")
-			# When it's closed, we hide token names
+			if forced:
+				td.rect_position = Vector2(x + x_modifier, y + y_modifier )
+			else:
+				# warning-ignore:return_value_discarded
+				_tween.interpolate_property(
+						td,'rect_position', td.rect_position,
+						Vector2(x + x_modifier,
+						y + y_modifier ),
+						0.2, Tween.TRANS_ELASTIC, Tween.EASE_IN)
+				# warning-ignore:return_value_discarded
+				_tween.start()
+				# We want to consider the drawer closed
+				# only when the animation finished
+				# Otherwise it might start to open immediately again
+				yield(_tween, "tween_all_completed")
+				# When it's closed, we hide token names
 			for token in $Drawer/VBoxContainer.get_children():
 				token.retract()
 			$Drawer.self_modulate.a = 0
@@ -212,6 +214,7 @@ func mod_token(
 	return(retcode)
 
 
+
 # Returns a dictionary of card tokens name on this card.
 #
 # * Key is the name of the token.
@@ -262,7 +265,7 @@ func set_max(token_name, max_value):
 	max_tokens[token_name] = max_value
 
 func export_to_json():
-	var result = null
+	var result = {}
 	var token_names = get_all_tokens()
 	for token_name in token_names:
 		if !result:
@@ -281,8 +284,9 @@ func load_from_json(description:Dictionary):
 			var token = _TOKEN_SCENE.instance()
 			token.setup(token_name, self)
 			token.count = value
-			$Drawer/VBoxContainer.add_child(token)		
+			$Drawer/VBoxContainer.add_child(token)	
 	
+	token_drawer(false, true)
 	return self	
 
 func set_is_horizontal(value:bool = true):
@@ -293,3 +297,4 @@ func set_is_horizontal(value:bool = true):
 	else:
 		$Drawer.rect_position = Vector2(115, 20)
 		$Drawer.rect_rotation = 0
+	pass

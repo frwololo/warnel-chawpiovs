@@ -81,6 +81,7 @@ placement = 7
 show_manipulation_buttons = false
 
 [node name="Counters" parent="." instance=ExtResource( 6 )]
+visible = false
 margin_top = 205.0
 margin_bottom = 219.0
 
@@ -162,6 +163,7 @@ __meta__ = {
 }
 
 [node name="Debug" type="CheckButton" parent="."]
+visible = false
 margin_left = 789.192
 margin_top = 3.36737
 margin_right = 978.192
@@ -173,6 +175,7 @@ __meta__ = {
 }
 
 [node name="SeedLabel" type="Label" parent="."]
+visible = false
 margin_left = 10.0
 margin_top = 175.0
 margin_right = 265.0
@@ -197,7 +200,6 @@ alignment = 2
 script = ExtResource( 2 )
 
 [node name="OptionsMenu" parent="." instance=ExtResource( 1 )]
-visible = false
 
 [node name="OptionsButton" type="TextureButton" parent="."]
 anchor_left = 0.943

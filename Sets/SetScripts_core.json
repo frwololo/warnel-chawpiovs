@@ -399,26 +399,13 @@
 				{
 					"name": "move_card_to_container",
 					"dest_container": "discard",
+					"src_container": "upgrade_support",
 					"is_cost": true,
-					"subject": "boardseek",
+					"subject": "index",
 					"subject_count": "all",
 					"selection_count": 1,
 					"selection_type": "equal",
-					"needs_selection": true,
-					"filter_state_seek": [
-						{
-							"filter_same_controller": true,
-							"filter_properties": {
-								"type_code": "support"
-							}
-						},
-						{
-							"filter_same_controller": true,
-							"filter_properties": {
-								"type_code": "upgrade"
-							}
-						}
-					]
+					"needs_selection": true
 				},
 				{
 					"name": "surge",

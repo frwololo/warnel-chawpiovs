@@ -18,7 +18,14 @@ var _current_url = ""
 var _current_card_key = ""
 var _current_percent = 0.0
 var _loading_text_prefix =""
-var _loading_in_progress = false
+
+enum LOAD_STATUS {
+	NOT_STARTED,
+	IN_PROGRESS,
+	COMPLETE
+}
+
+var _load_status = LOAD_STATUS.NOT_STARTED
 var _loading_error = false
 
 signal all_downloads_completed()
@@ -27,8 +34,8 @@ signal images_download_completed()
 signal sets_download_completed()
 
 # Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	
+func _ready() -> void:		
+	create_default_folders()
 	#hide all buttons while we load, but keep the exit button
 	_hide_buttons()	
 	exit_button.visible = true
@@ -48,7 +55,11 @@ func _ready() -> void:
 	self.connect("images_download_completed", self, "_images_download_completed")
 	self.connect("sets_download_completed", self, "_sets_download_completed")	
 	cfc.connect("json_parse_error", self, "loading_error")	
-			
+
+	_load_status = LOAD_STATUS.NOT_STARTED
+	if cfc.all_loaded:
+		_load_status = LOAD_STATUS.COMPLETE
+		_all_downloads_completed()			
 
 func loading_error(msg):
 	v_folder_label.text = "ERROR: " + msg
@@ -209,8 +220,15 @@ func _all_downloads_completed():
 	_show_buttons()
 	display_folder_info()
 
-	main_title.text = "WARNEL CHAWPIOVS"	
+	main_title.text = "WARNEL CHAWPIOVS"
+	cfc.all_loaded = true
 
+func create_default_folders():
+	var dir = Directory.new()
+	dir.make_dir_recursive("user://Sets/")
+	dir.make_dir_recursive("user://Decks/")
+	dir.make_dir_recursive("user://Saves/")
+	
 func create_img_folders(card_data):
 	var set = card_data["_set"]
 	var dir = Directory.new()
@@ -269,12 +287,13 @@ func _sets_download_completed():
 func _process(delta):
 	if (_loading_error):
 		return
-		
-	if !_loading_in_progress:
-		_loading_in_progress = true
+	
+	if _load_status == LOAD_STATUS.NOT_STARTED:	
+		_load_status = LOAD_STATUS.IN_PROGRESS
 		if CFConst.LOAD_CARDS_ONLINE:
 			download_database()
 		else:
+			_load_status = LOAD_STATUS.COMPLETE
 			_all_downloads_completed()
 
 	if cfc._cards_loaded <  cfc._total_cards :

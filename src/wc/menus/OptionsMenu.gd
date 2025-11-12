@@ -3,6 +3,7 @@ extends Control
 
 onready var v_box_container = $MarginContainer/VBoxContainer
 onready var file_dialog = $FileDialog
+onready var h_box_container = $MarginContainer/VBoxContainer/HBoxContainer
 
 # warning-ignore:unused_signal
 signal exit_options_menu
@@ -11,6 +12,11 @@ func _ready():
 	for option_button in v_box_container.get_children():
 		if option_button.has_signal('pressed'):
 			option_button.connect('pressed', self, 'on_button_pressed', [option_button.name])
+
+	for option_button in h_box_container.get_children():
+		if option_button.has_signal('pressed'):
+			option_button.connect('pressed', self, 'on_button_pressed', [option_button.name])
+
 	
 	file_dialog.connect("file_selected", self, "_on_file_selected")		
 	set_process(false)
@@ -24,6 +30,11 @@ func on_button_pressed(_button_name : String) -> void:
 			# warning-ignore:return_value_discarded
 			gameData.start_tests()
 			close_me()
+		"DebugButton":
+			var debug_button:CheckButton = get_node("%DebugButton")
+			var value = debug_button.pressed
+			gameData.phaseContainer.toggle_display_debug(value)
+			close_me()			
 		"SaveButton":
 			save_game()		
 		"LoadButton":

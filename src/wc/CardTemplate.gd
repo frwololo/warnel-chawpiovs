@@ -322,6 +322,9 @@ func attempt_to_play(user_click:bool = false):
 	if user_click:
 		if gameData.is_targeting_ongoing() or gameData.targeting_happened_too_recently():
 			return
+		#we already sent a request and should be waiting for full resolution	
+		if !gameData.theStack.is_player_allowed_to_click():
+			return
 		
 	var state_exec = get_state_exec()
 	
@@ -486,6 +489,8 @@ func _on_Card_gui_input(event) -> void:
 				and not buttons.are_hovered() \
 				and not tokens.are_hovered():
 
+			if event.doubleclick and (get_state_exec() == "hand"):
+				attempt_to_play(true)
 			# If it's a long click it might be because
 			# they want to drag the card
 
@@ -953,14 +958,7 @@ func can_change_form() -> bool:
 	return _can_change_form
 
 
-func copy_tokens_to(to_card:WCCard, details:= {}):
-	var exclude = details.get("exclude",[])
-	var my_tokens = tokens.get_all_tokens()
-	for token_name in my_tokens.keys():
-		if (token_name in exclude):
-			continue
-		var count = tokens.get_token_count(token_name)
-		to_card.tokens.mod_token(token_name, count, true)	
+
 #a way to copy all modifications of this card to another card
 #used e.g. when flipping card
 func export_modifiers():

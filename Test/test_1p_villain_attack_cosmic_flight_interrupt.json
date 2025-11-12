@@ -1,0 +1,143 @@
+{
+	"_comments": "Tests villain attack with cosmic flight in play",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "advance"
+				},			
+				{
+					"card": "hydra mercenary"
+				},
+				{
+					"card": "hydra soldier"
+				},				
+				{
+					"card": "Caught off guard"
+				}				
+			],			
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Hawkeye",
+				},
+				{
+					"card": "Make the call"
+				},
+				{
+					"card": "Lead from the front"
+				},
+				{
+					"card": "The Triskelion"
+				},
+				{
+					"card": "Maria Hill"
+				},					
+			],
+			"upgrade_support1": [
+				{
+					"card": "Cosmic Flight"
+				}				
+			],			
+			"identity1": [
+				{
+					"card": "Captain Marvel",
+					"tokens" : {"damage" : 1},
+				}				
+			],
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	},
+	"actions": [				
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "click on pass to skip Captain Marvel defense"
+		},
+		{
+			"type": "activate",
+			"value": "cosmic flight",
+			"_comments": "activate cosmic flight to prevent damage"
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+				}
+			],
+			"enemies1": [
+				{
+					"card": "hydra soldier"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Caught off guard"
+				},					
+			],				
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Cosmic Flight"
+				}				
+			],				
+			"identity1": [
+				{
+					"card": "Captain Marvel",
+					"tokens": {"damage": 1}					
+				}
+			],
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]			
+		}
+	}
+}

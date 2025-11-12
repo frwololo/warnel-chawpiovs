@@ -1,0 +1,136 @@
+{
+	"_comments": "Tests that Heroic Intuition lets me choose a hero",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Peter Parker"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Heroic Intuition"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Heroic Intuition"
+		},
+		{
+			"type": "select",
+			"value": "Peter Parker"
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Peter Parker"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				},
+			],
+			"upgrade_support1": [
+				{
+					"card": "Heroic Intuition"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	}
+}

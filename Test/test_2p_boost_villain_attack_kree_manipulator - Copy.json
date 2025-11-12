@@ -1,0 +1,160 @@
+{
+	"_comments": "Test of Boost card: Kree Manipulator (if attack is undefended place 1 threat on the main scheme)",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}				
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}				
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},				
+				{
+					"card": "Hydra Mercenary"
+				},				
+				{
+					"card": "Hydra Mercenary"
+				},			
+				{
+					"card": "kree manipulator"
+				},				
+				{
+					"card": "Advance"
+				},	
+			],			
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy Absorption"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Nick Fury"
+				}
+			],			
+		}
+	},
+	"actions": [
+		{
+			"type": "pass",
+			"value": "1",
+			"_comments": "click on pass to skip Spider-Man draw interrupt"
+		},		
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "click cancel on defenders Spider-Man to take an undefended attack"
+		},	
+		{
+			"type": "select",
+			"value": "cancel",
+			"hero" : 2,
+			"_comments": "click cancel on defenders Captain Marvel to take an undefended attack"
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},
+			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				},				
+				{
+					"card": "kree manipulator"
+				},			
+			],		
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens": {"threat": 1}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				},
+			],
+			"enemies2": [
+				{
+					"card": "Hydra Mercenary"
+				},
+			],		
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {"damage": 2}
+				}
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel",
+					"tokens": {"damage": 2}
+				}
+			],				
+		}
+	}
+}

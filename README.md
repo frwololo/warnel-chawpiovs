@@ -1,5 +1,5 @@
 
-# Warnel Chawpiovs(CHANGELOG.md)
+# Warnel Chawpiovs
 
 
 
@@ -9,7 +9,7 @@ A card game using a (heavily modified) version of [Card Game Framework](https://
 
 ## Provided features
 
-* **Complete card text and rules enforcement** capacity, via provided Scripting Engine! (see doc)
+* **Complete card rules enforcement** capacity, via provided Scripting Engine. (see [doc](doc/script_doc.html))
 * Multiplayer Support
 
 ### Scripting Engine Features

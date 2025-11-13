@@ -2116,7 +2116,7 @@
 						"if": {
 							"func_name": "card_is_in_play",
 							"func_params": {
-								"name": "Vulture"
+								"card_name": "Vulture"
 							}
 						},
 						"then": 1,

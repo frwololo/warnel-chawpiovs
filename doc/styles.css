@@ -3,6 +3,66 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+table, th, td {
+  border: 1px solid;
+}
+
+td {
+	padding-top:5px;
+	padding-bottom: 5px;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+  cursor: pointer;
+}
+
+.tooltiptext {
+  visibility: hidden;
+  bottom: 100%;
+  left: 65%;
+  margin-left: -65px; /* Use half of the width (130/2 = 65), to center the tooltip */
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.slight_right {
+    margin-left:20px;
+
+}
+
+.resize {
+    height:140px;
+    width:100px;
+}
+
+.resize:hover {
+    height:419px;
+    width:300px;
+}
+
+.resize_horizontal {
+    height:100px;
+    width:140px;
+}
+
+.resize_horizontal:hover {
+    height:300px;
+    width:419px;
+}
+
 body {
   font-family: Arial, sans-serif;
   display: flex;

@@ -1,0 +1,3546 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WC - Documentation</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<nav>
+    <a href="#abilities">abilities</a>
+    <a href="#functions">functions</a>
+    <a href="#events">events</a>
+    <a href="#cards">cards</a>
+</nav><main>
+<h2 id="abilities">ABILITIES</h2>
+<table><tr><td><a href="#add_resource">add_resource</a></td><td>adds resources based on specific computations</td></tr>
+<tr><td><a href="#add_script">add_script</a></td><td>adds a script to a target card</td></tr>
+<tr><td><a href="#add_threat">add_threat</a></td><td></td></tr>
+<tr><td><a href="#attach_to_card">attach_to_card</a></td><td>attach script owner to subject</td></tr>
+<tr><td><a href="#attack">attack</a></td><td></td></tr>
+<tr><td><a href="#change_controller_hero">change_controller_hero</a></td><td>change controller hero</td></tr>
+<tr><td><a href="#change_form">change_form</a></td><td>change hero form</td></tr>
+<tr><td><a href="#constraints">constraints</a></td><td>an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</td></tr>
+<tr><td><a href="#count_tokens">count_tokens</a></td><td>count number of tokens of a specific type</td></tr>
+<tr><td><a href="#deal_damage">deal_damage</a></td><td>deal damage to [subject]. also see receive_damage</td></tr>
+<tr><td><a href="#deal_encounter">deal_encounter</a></td><td>deal an encounter to current hero</td></tr>
+<tr><td><a href="#discard">discard</a></td><td></td></tr>
+<tr><td><a href="#draw_cards">draw_cards</a></td><td>the owner of [subject]cards draws cards</td></tr>
+<tr><td><a href="#enemy_schemes">enemy_schemes</a></td><td></td></tr>
+<tr><td><a href="#exhaust_card">exhaust_card</a></td><td>exhausts [subject] cards. See ready_card</td></tr>
+<tr><td><a href="#heal">heal</a></td><td>heal [subjects]. Can be used as a cost, in which case the heal must happen at least partially for the cost to be considered paid</td></tr>
+<tr><td><a href="#host_card">host_card</a></td><td></td></tr>
+<tr><td><a href="#mod_tokens">mod_tokens</a></td><td>modify tokens on the card. See Damage, threat, stunned, confused, etc...</td></tr>
+<tr><td><a href="#modify_properties">modify_properties</a></td><td>modify specific properties of the card (also see alterants)</td></tr>
+<tr><td><a href="#move_card_to_board">move_card_to_board</a></td><td>move [subjects] cards to the boards, sometimes specifying a grid location</td></tr>
+<tr><td><a href="#move_card_to_container">move_card_to_container</a></td><td>move [subject] cards to a specific container (aka pile)</td></tr>
+<tr><td><a href="#move_to_player_zone">move_to_player_zone</a></td><td>move [subject]cards to a specific hero board</td></tr>
+<tr><td><a href="#nop">nop</a></td><td>does nothing, but used for example to ensure some conditioi is met, as a cost</td></tr>
+<tr><td><a href="#pay_cost">pay_cost</a></td><td>pay a specific cost (not necessarily the card's cost</td></tr>
+<tr><td><a href="#pay_regular_cost">pay_regular_cost</a></td><td>trigger to initiate the card's cost payment</td></tr>
+<tr><td><a href="#prevent">prevent</a></td><td>prevents damage (also see replacement_effect)</td></tr>
+<tr><td><a href="#ready_card">ready_card</a></td><td>ready a specific card (also see exhaust)</td></tr>
+<tr><td><a href="#receive_damage">receive_damage</a></td><td>also see deal_damage</td></tr>
+<tr><td><a href="#remove_threat">remove_threat</a></td><td>removes threat from [subject] schemes. Also see thwart.</td></tr>
+<tr><td><a href="#replacement_effect">replacement_effect</a></td><td>replaces some task on the stack with something else (e.g. damage replaced, targets, replaced, etc...)</td></tr>
+<tr><td><a href="#return_attachements_to_owner">return_attachements_to_owner</a></td><td></td></tr>
+<tr><td><a href="#reveal_encounter">reveal_encounter</a></td><td></td></tr>
+<tr><td><a href="#reveal_encounters">reveal_encounters</a></td><td></td></tr>
+<tr><td><a href="#reveal_nemesis">reveal_nemesis</a></td><td>Reveals the current hero's nemesis</td></tr>
+<tr><td><a href="#surge">surge</a></td><td>triggers an encounter surge</td></tr>
+<tr><td><a href="#temporary_effect">temporary_effect</a></td><td>adds a temporary effect on a card, which stays until a specific event is triggered (typically for event cards that grant a benefit -alterant- until end of round or phase)</td></tr>
+<tr><td><a href="#thwart">thwart</a></td><td>either removes a given amount of threat, or starts a thwart action from a character. Also see remove_threat</td></tr>
+<tr><td><a href="#villain_and_enemies_attack_you">villain_and_enemies_attack_you</a></td><td>Triggers an attack of the Villain and enemies engaged with current hero</td></tr>
+<tr><td><a href="#villain_attacks_you">villain_attacks_you</a></td><td>Triggers an attack of the villain against current hero</td></tr>
+</table>
+<section id="add_resource"><h3>add_resource</h3>
+<p>adds resources based on specific computations</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>amount</li>
+<li>resource_name</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Peter Parker">Peter Parker</a>,
+<a href="#The Power of Justice">The Power of Justice</a>,
+<a href="#The Power of Leadership">The Power of Leadership</a>,
+<a href="#Web-Shooter">Web-Shooter</a>,
+</div></p></section>
+<section id="add_script"><h3>add_script</h3>
+<p>adds a script to a target card</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>end_condition</li>
+<li>is_cost</li>
+<li>subject</li>
+<li>subject_count</li>
+<li>src_container</li>
+<li>filter_state_tutor</li>
+<li>script</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Make the Call">Make the Call</a>,
+<a href="#Vision">Vision</a>,
+</div></p></section>
+<section id="add_threat"><h3>add_threat</h3>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>amount</li>
+<li>subject</li>
+<li>per_boardseek</li>
+<li>filter_state_seek</li>
+<li>subject_count</li>
+<li>is_cost</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Bomb Scare">Bomb Scare</a>,
+<a href="#Breakin' & Takin'">Breakin' & Takin'</a>,
+<a href="#Hydra Bomber">Hydra Bomber</a>,
+<a href="#Kree Manipulator">Kree Manipulator</a>,
+<a href="#Masterplan">Masterplan</a>,
+<a href="#The Psyche-Magnitron">The Psyche-Magnitron</a>,
+<a href="#The Vulture's Plans">The Vulture's Plans</a>,
+<a href="#Yon-Rogg">Yon-Rogg</a>,
+</div></p></section>
+<section id="attach_to_card"><h3>attach_to_card</h3>
+<p>attach script owner to subject</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>subject</li>
+<li>needs_subject</li>
+<li>filter_state_subject</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Armored Rhino Suit">Armored Rhino Suit</a>,
+<a href="#Charge">Charge</a>,
+<a href="#Enhanced Ivory Horn">Enhanced Ivory Horn</a>,
+<a href="#Inspired">Inspired</a>,
+<a href="#Spider-Tracer">Spider-Tracer</a>,
+<a href="#Webbed Up">Webbed Up</a>,
+</div></p></section>
+<section id="attack"><h3>attack</h3>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>subject</li>
+<li>amount</li>
+<li>needs_subject</li>
+<li>filter_state_subject</li>
+<li>tags</li>
+<li>is_cost</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Haymaker">Haymaker</a>,
+<a href="#Photonic Blast">Photonic Blast</a>,
+<a href="#Swinging Web Kick">Swinging Web Kick</a>,
+</div></p></section>
+<section id="change_controller_hero"><h3>change_controller_hero</h3>
+<p>change controller hero</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>target_identity</li>
+<li>subject</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Eviction Notice">Eviction Notice</a>,
+<a href="#Family Emergency">Family Emergency</a>,
+</div></p></section>
+<section id="change_form"><h3>change_form</h3>
+<p>change hero form</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>subject</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Eviction Notice">Eviction Notice</a>,
+<a href="#Family Emergency">Family Emergency</a>,
+</div></p></section>
+<section id="constraints"><h3>constraints</h3>
+<p>an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>is_cost</li>
+<li>tags</li>
+<li>max_per_hero</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Alpha Flight Station">Alpha Flight Station</a>,
+<a href="#Assault">Assault</a>,
+<a href="#Aunt May">Aunt May</a>,
+<a href="#Avengers Mansion">Avengers Mansion</a>,
+<a href="#Captain Marvel">Captain Marvel</a>,
+<a href="#Carol Danvers">Carol Danvers</a>,
+<a href="#Caught Off Guard">Caught Off Guard</a>,
+<a href="#Crisis Interdiction">Crisis Interdiction</a>,
+<a href="#Energy Channel">Energy Channel</a>,
+<a href="#Enhanced Ivory Horn">Enhanced Ivory Horn</a>,
+<a href="#Enhanced Spider-Sense">Enhanced Spider-Sense</a>,
+<a href="#Eviction Notice">Eviction Notice</a>,
+<a href="#Family Emergency">Family Emergency</a>,
+<a href="#For Justice!">For Justice!</a>,
+<a href="#Gang-Up">Gang-Up</a>,
+<a href="#Get Ready">Get Ready</a>,
+<a href="#Great Responsibility">Great Responsibility</a>,
+<a href="#Haymaker">Haymaker</a>,
+<a href="#Helicarrier">Helicarrier</a>,
+<a href="#Interrogation Room">Interrogation Room</a>,
+<a href="#Lead from the Front">Lead from the Front</a>,
+<a href="#Photonic Blast">Photonic Blast</a>,
+<a href="#Stampede">Stampede</a>,
+<a href="#Surveillance Team">Surveillance Team</a>,
+<a href="#Swinging Web Kick">Swinging Web Kick</a>,
+<a href="#Tenacity">Tenacity</a>,
+<a href="#Web-Shooter">Web-Shooter</a>,
+<a href="#Webbed Up">Webbed Up</a>,
+</div></p></section>
+<section id="count_tokens"><h3>count_tokens</h3>
+<p>count number of tokens of a specific type</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>token_name</li>
+<li>subject</li>
+<li>is_cost</li>
+<li>filter_state_seek</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Explosion">Explosion</a>,
+</div></p></section>
+<section id="deal_damage"><h3>deal_damage</h3>
+<p>deal damage to [subject]. also see receive_damage</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>subject</li>
+<li>amount</li>
+<li>needs_subject</li>
+<li>filter_state_subject</li>
+<li>per_token_self</li>
+<li>tags</li>
+<li>abort_on_cost_failure</li>
+<li>subject_count</li>
+<li>selection_count</li>
+<li>selection_type</li>
+<li>selection_what_to_count</li>
+<li>needs_selection</li>
+<li>filter_state_seek</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Daredevil - Matt Murdock">Daredevil - Matt Murdock</a>,
+<a href="#Energy Channel">Energy Channel</a>,
+<a href="#Explosion">Explosion</a>,
+<a href="#Hawkeye - Clint Barton">Hawkeye - Clint Barton</a>,
+<a href="#Nick Fury">Nick Fury</a>,
+<a href="#Shocker">Shocker</a>,
+</div></p></section>
+<section id="deal_encounter"><h3>deal_encounter</h3>
+<p>deal an encounter to current hero</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>immediate_reveal</li>
+<li>subject</li>
+<li>src_container</li>
+<li>filter_state_tutor</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Rhino - 2">Rhino - 2</a>,
+</div></p></section>
+<section id="discard"><h3>discard</h3>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>is_cost</li>
+<li>subject</li>
+<li>src_container</li>
+<li>subject_count</li>
+<li>filter_state_tutor</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Yon-Rogg's Treason">Yon-Rogg's Treason</a>,
+</div></p></section>
+<section id="draw_cards"><h3>draw_cards</h3>
+<p>the owner of [subject]cards draws cards</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>amount</li>
+<li>subject</li>
+<li>subject_count</li>
+<li>selection_count</li>
+<li>selection_type</li>
+<li>needs_selection</li>
+<li>filter_state_seek</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Alpha Flight Station">Alpha Flight Station</a>,
+<a href="#Avengers Mansion">Avengers Mansion</a>,
+<a href="#Captain Marvel">Captain Marvel</a>,
+<a href="#Carol Danvers">Carol Danvers</a>,
+<a href="#Maria Hill">Maria Hill</a>,
+<a href="#Nick Fury">Nick Fury</a>,
+<a href="#Photonic Blast">Photonic Blast</a>,
+<a href="#Spider-Man">Spider-Man</a>,
+</div></p></section>
+<section id="enemy_schemes"><h3>enemy_schemes</h3>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>subject</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Advance">Advance</a>,
+</div></p></section>
+<section id="exhaust_card"><h3>exhaust_card</h3>
+<p>exhausts [subject] cards. See ready_card</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>subject</li>
+<li>is_cost</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Alpha Flight Station">Alpha Flight Station</a>,
+<a href="#Aunt May">Aunt May</a>,
+<a href="#Avengers Mansion">Avengers Mansion</a>,
+<a href="#Eviction Notice">Eviction Notice</a>,
+<a href="#Exhaustion">Exhaustion</a>,
+<a href="#Family Emergency">Family Emergency</a>,
+<a href="#Helicarrier">Helicarrier</a>,
+<a href="#Interrogation Room">Interrogation Room</a>,
+<a href="#Surveillance Team">Surveillance Team</a>,
+<a href="#Web-Shooter">Web-Shooter</a>,
+</div></p></section>
+<section id="heal"><h3>heal</h3>
+<p>heal [subjects]. Can be used as a cost, in which case the heal must happen at least partially for the cost to be considered paid</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>amount</li>
+<li>subject</li>
+<li>subject_count</li>
+<li>filter_state_seek</li>
+<li>is_cost</li>
+<li>needs_subject</li>
+<li>filter_state_subject</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Aunt May">Aunt May</a>,
+<a href="#Captain Marvel">Captain Marvel</a>,
+<a href="#First Aid">First Aid</a>,
+<a href="#Hard to Keep Down">Hard to Keep Down</a>,
+</div></p></section>
+<section id="host_card"><h3>host_card</h3>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>tags</li>
+<li>src_container</li>
+<li>subject</li>
+<li>subject_count</li>
+<li>subject_index</li>
+<li>needs_subject</li>
+<li>for_each_player</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Highway Robbery">Highway Robbery</a>,
+</div></p></section>
+<section id="mod_tokens"><h3>mod_tokens</h3>
+<p>modify tokens on the card. See Damage, threat, stunned, confused, etc...</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>subject</li>
+<li>modification</li>
+<li>token_name</li>
+<li>is_cost</li>
+<li>set_to_mod</li>
+<li>filter_state_seek</li>
+<li>needs_subject</li>
+<li>filter_state_subject</li>
+<li>subject_count</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Captain Marvel">Captain Marvel</a>,
+<a href="#Carol Danvers">Carol Danvers</a>,
+<a href="#Energy Channel">Energy Channel</a>,
+<a href="#False Alarm">False Alarm</a>,
+<a href="#Family Emergency">Family Emergency</a>,
+<a href="#Hawkeye - Clint Barton">Hawkeye - Clint Barton</a>,
+<a href="#Helicarrier">Helicarrier</a>,
+<a href="#"I'm Tough"">"I'm Tough"</a>,
+<a href="#Mockingbird - Bobbi Morse">Mockingbird - Bobbi Morse</a>,
+<a href="#Peter Parker">Peter Parker</a>,
+<a href="#Rhino - 3">Rhino - 3</a>,
+<a href="#Spider-Woman - Jessica Drew">Spider-Woman - Jessica Drew</a>,
+<a href="#Surveillance Team">Surveillance Team</a>,
+<a href="#Sweeping Swoop">Sweeping Swoop</a>,
+<a href="#Vision">Vision</a>,
+<a href="#Web-Shooter">Web-Shooter</a>,
+<a href="#Webbed Up">Webbed Up</a>,
+</div></p></section>
+<section id="modify_properties"><h3>modify_properties</h3>
+<p>modify specific properties of the card (also see alterants)</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>tags</li>
+<li>subject</li>
+<li>set_properties</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Armored Rhino Suit">Armored Rhino Suit</a>,
+</div></p></section>
+<section id="move_card_to_board"><h3>move_card_to_board</h3>
+<p>move [subjects] cards to the boards, sometimes specifying a grid location</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>subject</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Make the Call">Make the Call</a>,
+</div></p></section>
+<section id="move_card_to_container"><h3>move_card_to_container</h3>
+<p>move [subject] cards to a specific container (aka pile)</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>dest_container</li>
+<li>is_cost</li>
+<li>subject</li>
+<li>subject_count</li>
+<li>selection_count</li>
+<li>selection_type</li>
+<li>needs_selection</li>
+<li>src_container</li>
+<li>subject_index</li>
+<li>filter_each_previous_subject</li>
+<li>filter_state_subject</li>
+<li>is_else</li>
+<li>filter_state_move_to_container_until</li>
+<li>for_each_player</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Alpha Flight Station">Alpha Flight Station</a>,
+<a href="#Black Cat - Felicia Hardy">Black Cat - Felicia Hardy</a>,
+<a href="#Caught Off Guard">Caught Off Guard</a>,
+<a href="#Charge">Charge</a>,
+<a href="#Cosmic Flight">Cosmic Flight</a>,
+<a href="#Energy Channel">Energy Channel</a>,
+<a href="#Enhanced Ivory Horn">Enhanced Ivory Horn</a>,
+<a href="#Eviction Notice">Eviction Notice</a>,
+<a href="#Family Emergency">Family Emergency</a>,
+<a href="#Masterplan">Masterplan</a>,
+<a href="#Nick Fury">Nick Fury</a>,
+<a href="#Tenacity">Tenacity</a>,
+<a href="#The Vulture's Plans">The Vulture's Plans</a>,
+<a href="#Webbed Up">Webbed Up</a>,
+</div></p></section>
+<section id="move_to_player_zone"><h3>move_to_player_zone</h3>
+<p>move [subject]cards to a specific hero board</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>subject</li>
+<li>subject_count</li>
+<li>selection_count</li>
+<li>selection_type</li>
+<li>needs_selection</li>
+<li>filter_state_seek</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Combat Training">Combat Training</a>,
+<a href="#Heroic Intuition">Heroic Intuition</a>,
+</div></p></section>
+<section id="nop"><h3>nop</h3>
+<p>does nothing, but used for example to ensure some conditioi is met, as a cost</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>fail_cost_on_skip</li>
+<li>is_cost</li>
+<li>filter_state_trigger</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#The Power of Justice">The Power of Justice</a>,
+<a href="#The Power of Leadership">The Power of Leadership</a>,
+</div></p></section>
+<section id="pay_cost"><h3>pay_cost</h3>
+<p>pay a specific cost (not necessarily the card's cost</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>cost</li>
+<li>is_cost</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Captain Marvel">Captain Marvel</a>,
+<a href="#Energy Channel">Energy Channel</a>,
+<a href="#Enhanced Ivory Horn">Enhanced Ivory Horn</a>,
+<a href="#Tenacity">Tenacity</a>,
+<a href="#Vision">Vision</a>,
+</div></p></section>
+<section id="pay_regular_cost"><h3>pay_regular_cost</h3>
+<p>trigger to initiate the card's cost payment</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>is_cost</li>
+<li>cost</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Make the Call">Make the Call</a>,
+</div></p></section>
+<section id="prevent"><h3>prevent</h3>
+<p>prevents damage (also see replacement_effect)</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>subject</li>
+<li>amount</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Backflip">Backflip</a>,
+<a href="#Cosmic Flight">Cosmic Flight</a>,
+<a href="#Emergency">Emergency</a>,
+<a href="#Enhanced Spider-Sense">Enhanced Spider-Sense</a>,
+<a href="#Webbed Up">Webbed Up</a>,
+</div></p></section>
+<section id="ready_card"><h3>ready_card</h3>
+<p>ready a specific card (also see exhaust)</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>subject</li>
+<li>filter_state_subject</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Get Ready">Get Ready</a>,
+<a href="#Tenacity">Tenacity</a>,
+</div></p></section>
+<section id="receive_damage"><h3>receive_damage</h3>
+<p>also see deal_damage</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>subject</li>
+<li>amount</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Great Responsibility">Great Responsibility</a>,
+<a href="#Hydra Bomber">Hydra Bomber</a>,
+</div></p></section>
+<section id="remove_threat"><h3>remove_threat</h3>
+<p>removes threat from [subject] schemes. Also see thwart.</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>amount</li>
+<li>subject</li>
+<li>needs_subject</li>
+<li>filter_state_subject</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Interrogation Room">Interrogation Room</a>,
+<a href="#Nick Fury">Nick Fury</a>,
+<a href="#Spider-Tracer">Spider-Tracer</a>,
+<a href="#Surveillance Team">Surveillance Team</a>,
+</div></p></section>
+<section id="replacement_effect"><h3>replacement_effect</h3>
+<p>replaces some task on the stack with something else (e.g. damage replaced, targets, replaced, etc...)</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>subject</li>
+<li>replacements</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Armored Rhino Suit">Armored Rhino Suit</a>,
+<a href="#Great Responsibility">Great Responsibility</a>,
+<a href="#Sweeping Swoop">Sweeping Swoop</a>,
+</div></p></section>
+<section id="return_attachements_to_owner"><h3>return_attachements_to_owner</h3>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>dest_container</li>
+<li>tags</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Highway Robbery">Highway Robbery</a>,
+</div></p></section>
+<section id="reveal_encounter"><h3>reveal_encounter</h3>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>subject</li>
+<li>subject_count</li>
+<li>src_container</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Under Fire">Under Fire</a>,
+</div></p></section>
+<section id="reveal_encounters"><h3>reveal_encounters</h3>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>is_else</li>
+<li>subject</li>
+<li>subject_count</li>
+<li>subject_index</li>
+<li>src_container</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Masterplan">Masterplan</a>,
+</div></p></section>
+<section id="reveal_nemesis"><h3>reveal_nemesis</h3>
+<p>Reveals the current hero's nemesis</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Shadow of the Past">Shadow of the Past</a>,
+</div></p></section>
+<section id="surge"><h3>surge</h3>
+<p>triggers an encounter surge</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>is_else</li>
+<li>amount</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Assault">Assault</a>,
+<a href="#Caught Off Guard">Caught Off Guard</a>,
+<a href="#Eviction Notice">Eviction Notice</a>,
+<a href="#Exhaustion">Exhaustion</a>,
+<a href="#Explosion">Explosion</a>,
+<a href="#False Alarm">False Alarm</a>,
+<a href="#Family Emergency">Family Emergency</a>,
+<a href="#Gang-Up">Gang-Up</a>,
+<a href="#Hard to Keep Down">Hard to Keep Down</a>,
+<a href="#"I'm Tough"">"I'm Tough"</a>,
+<a href="#Kree Manipulator">Kree Manipulator</a>,
+<a href="#Stampede">Stampede</a>,
+<a href="#Sweeping Swoop">Sweeping Swoop</a>,
+<a href="#Under Fire">Under Fire</a>,
+<a href="#Yon-Rogg's Treason">Yon-Rogg's Treason</a>,
+</div></p></section>
+<section id="temporary_effect"><h3>temporary_effect</h3>
+<p>adds a temporary effect on a card, which stays until a specific event is triggered (typically for event cards that grant a benefit -alterant- until end of round or phase)</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>end_condition</li>
+<li>subject</li>
+<li>needs_subject</li>
+<li>subject_count</li>
+<li>selection_count</li>
+<li>selection_type</li>
+<li>needs_selection</li>
+<li>filter_state_seek</li>
+<li>effect</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Lead from the Front">Lead from the Front</a>,
+</div></p></section>
+<section id="thwart"><h3>thwart</h3>
+<p>either removes a given amount of threat, or starts a thwart action from a character. Also see remove_threat</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>subject</li>
+<li>amount</li>
+<li>needs_subject</li>
+<li>filter_state_subject</li>
+<li>tags</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Crisis Interdiction">Crisis Interdiction</a>,
+<a href="#For Justice!">For Justice!</a>,
+</div></p></section>
+<section id="villain_and_enemies_attack_you"><h3>villain_and_enemies_attack_you</h3>
+<p>Triggers an attack of the Villain and enemies engaged with current hero</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Gang-Up">Gang-Up</a>,
+</div></p></section>
+<section id="villain_attacks_you"><h3>villain_attacks_you</h3>
+<p>Triggers an attack of the villain against current hero</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>tags</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Assault">Assault</a>,
+<a href="#Stampede">Stampede</a>,
+</div></p></section>
+<h2 id="functions">FUNCTIONS</h2>
+<table><tr><td><a href="#card_is_in_play">card_is_in_play</a></td><td>Returns true if card_name is in play</td></tr>
+<tr><td><a href="#count_resource_types">count_resource_types</a></td><td>counts the number of resource *types* in a list of subjects</td></tr>
+<tr><td><a href="#current_activation_status">current_activation_status</a></td><td>returns true if the current activation (attack, scheme, encounter...) matches the passed params. e.g. to check if attack is undefended</td></tr>
+<tr><td><a href="#identity_has_trait">identity_has_trait</a></td><td>returns true if your identity has the trait</td></tr>
+<tr><td><a href="#paid_with_includes">paid_with_includes</a></td><td>returns true if this ability was paid for with a specific type of resource</td></tr>
+</table>
+<section id="card_is_in_play"><h3>card_is_in_play</h3>
+<p>Returns true if card_name is in play</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>card_name</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Sweeping Swoop">Sweeping Swoop</a>,
+</div></p></section>
+<section id="count_resource_types"><h3>count_resource_types</h3>
+<p>counts the number of resource *types* in a list of subjects</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>subject</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#The Vulture's Plans">The Vulture's Plans</a>,
+</div></p></section>
+<section id="current_activation_status"><h3>current_activation_status</h3>
+<p>returns true if the current activation (attack, scheme, encounter...) matches the passed params. e.g. to check if attack is undefended</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>undefended</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Kree Manipulator">Kree Manipulator</a>,
+</div></p></section>
+<section id="identity_has_trait"><h3>identity_has_trait</h3>
+<p>returns true if your identity has the trait</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>trait</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Crisis Interdiction">Crisis Interdiction</a>,
+</div></p></section>
+<section id="paid_with_includes"><h3>paid_with_includes</h3>
+<p>returns true if this ability was paid for with a specific type of resource</p>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>mental</li>
+<li>energy</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#For Justice!">For Justice!</a>,
+<a href="#Photonic Blast">Photonic Blast</a>,
+</div></p></section>
+<h2 id="events">EVENTS</h2>
+<table><tr><td><a href="#about_to_reveal">about_to_reveal</a></td><td></td></tr>
+<tr><td><a href="#alterants">alterants</a></td><td></td></tr>
+<tr><td><a href="#boost">boost</a></td><td></td></tr>
+<tr><td><a href="#card_moved_to_board">card_moved_to_board</a></td><td></td></tr>
+<tr><td><a href="#card_moved_to_pile">card_moved_to_pile</a></td><td></td></tr>
+<tr><td><a href="#card_played">card_played</a></td><td></td></tr>
+<tr><td><a href="#enemy_attack_happened">enemy_attack_happened</a></td><td></td></tr>
+<tr><td><a href="#interrupt">interrupt</a></td><td></td></tr>
+<tr><td><a href="#minion_died">minion_died</a></td><td></td></tr>
+<tr><td><a href="#minion_moved_to_board">minion_moved_to_board</a></td><td></td></tr>
+<tr><td><a href="#once_per_round">once_per_round</a></td><td></td></tr>
+<tr><td><a href="#phase_ended">phase_ended</a></td><td></td></tr>
+<tr><td><a href="#quickstrike">quickstrike</a></td><td></td></tr>
+<tr><td><a href="#resource">resource</a></td><td></td></tr>
+<tr><td><a href="#round_ended">round_ended</a></td><td></td></tr>
+<tr><td><a href="#thwarted">thwarted</a></td><td></td></tr>
+<tr><td><a href="#uses">uses</a></td><td></td></tr>
+</table>
+<section id="about_to_reveal"><h3>about_to_reveal</h3>
+    <li><a href="#Eviction Notice">Eviction Notice</a></li>
+    <li><a href="#Family Emergency">Family Emergency</a></li>
+</section>
+<section id="alterants"><h3>alterants</h3>
+    <li><a href="#Captain Marvel's Helmet">Captain Marvel's Helmet</a></li>
+    <li><a href="#Charge">Charge</a></li>
+    <li><a href="#Combat Training">Combat Training</a></li>
+    <li><a href="#Cosmic Flight">Cosmic Flight</a></li>
+    <li><a href="#Enhanced Ivory Horn">Enhanced Ivory Horn</a></li>
+    <li><a href="#Helicarrier">Helicarrier</a></li>
+    <li><a href="#Heroic Intuition">Heroic Intuition</a></li>
+    <li><a href="#Inspired">Inspired</a></li>
+    <li><a href="#Jessica Jones">Jessica Jones</a></li>
+    <li><a href="#The Triskelion">The Triskelion</a></li>
+</section>
+<section id="boost"><h3>boost</h3>
+    <li><a href="#Kree Manipulator">Kree Manipulator</a></li>
+    <li><a href="#Sweeping Swoop">Sweeping Swoop</a></li>
+</section>
+<section id="card_moved_to_board"><h3>card_moved_to_board</h3>
+    <li><a href="#Armored Rhino Suit">Armored Rhino Suit</a></li>
+    <li><a href="#Black Cat - Felicia Hardy">Black Cat - Felicia Hardy</a></li>
+    <li><a href="#Charge">Charge</a></li>
+    <li><a href="#Combat Training">Combat Training</a></li>
+    <li><a href="#Enhanced Ivory Horn">Enhanced Ivory Horn</a></li>
+    <li><a href="#Eviction Notice">Eviction Notice</a></li>
+    <li><a href="#Family Emergency">Family Emergency</a></li>
+    <li><a href="#Hawkeye - Clint Barton">Hawkeye - Clint Barton</a></li>
+    <li><a href="#Heroic Intuition">Heroic Intuition</a></li>
+    <li><a href="#Maria Hill">Maria Hill</a></li>
+    <li><a href="#Mockingbird - Bobbi Morse">Mockingbird - Bobbi Morse</a></li>
+    <li><a href="#Nick Fury">Nick Fury</a></li>
+    <li><a href="#Spider-Woman - Jessica Drew">Spider-Woman - Jessica Drew</a></li>
+</section>
+<section id="card_moved_to_pile"><h3>card_moved_to_pile</h3>
+    <li><a href="#Exhaustion">Exhaustion</a></li>
+    <li><a href="#Kree Manipulator">Kree Manipulator</a></li>
+    <li><a href="#Under Fire">Under Fire</a></li>
+</section>
+<section id="card_played"><h3>card_played</h3>
+    <li><a href="#Helicarrier">Helicarrier</a></li>
+</section>
+<section id="enemy_attack_happened"><h3>enemy_attack_happened</h3>
+    <li><a href="#Charge">Charge</a></li>
+    <li><a href="#Yon-Rogg">Yon-Rogg</a></li>
+</section>
+<section id="interrupt"><h3>interrupt</h3>
+    <li><a href="#Armored Rhino Suit">Armored Rhino Suit</a></li>
+    <li><a href="#Backflip">Backflip</a></li>
+    <li><a href="#Cosmic Flight">Cosmic Flight</a></li>
+    <li><a href="#Emergency">Emergency</a></li>
+    <li><a href="#Enhanced Spider-Sense">Enhanced Spider-Sense</a></li>
+    <li><a href="#Great Responsibility">Great Responsibility</a></li>
+    <li><a href="#Highway Robbery">Highway Robbery</a></li>
+    <li><a href="#Spider-Man">Spider-Man</a></li>
+    <li><a href="#Spider-Tracer">Spider-Tracer</a></li>
+    <li><a href="#Webbed Up">Webbed Up</a></li>
+</section>
+<section id="minion_died"><h3>minion_died</h3>
+    <li><a href="#Interrogation Room">Interrogation Room</a></li>
+</section>
+<section id="minion_moved_to_board"><h3>minion_moved_to_board</h3>
+    <li><a href="#Hawkeye - Clint Barton">Hawkeye - Clint Barton</a></li>
+</section>
+<section id="once_per_round"><h3>once_per_round</h3>
+    <li><a href="#Captain Marvel">Captain Marvel</a></li>
+    <li><a href="#Carol Danvers">Carol Danvers</a></li>
+    <li><a href="#Peter Parker">Peter Parker</a></li>
+    <li><a href="#Vision">Vision</a></li>
+</section>
+<section id="phase_ended"><h3>phase_ended</h3>
+    <li><a href="#Helicarrier">Helicarrier</a></li>
+</section>
+<section id="quickstrike"><h3>quickstrike</h3>
+    <li><a href="#Vulture">Vulture</a></li>
+</section>
+<section id="resource"><h3>resource</h3>
+    <li><a href="#Peter Parker">Peter Parker</a></li>
+    <li><a href="#The Power of Justice">The Power of Justice</a></li>
+    <li><a href="#The Power of Leadership">The Power of Leadership</a></li>
+    <li><a href="#Web-Shooter">Web-Shooter</a></li>
+</section>
+<section id="round_ended"><h3>round_ended</h3>
+    <li><a href="#Nick Fury">Nick Fury</a></li>
+</section>
+<section id="thwarted"><h3>thwarted</h3>
+    <li><a href="#Daredevil - Matt Murdock">Daredevil - Matt Murdock</a></li>
+</section>
+<section id="uses"><h3>uses</h3>
+    <li><a href="#Surveillance Team">Surveillance Team</a></li>
+    <li><a href="#Web-Shooter">Web-Shooter</a></li>
+</section>
+<h2 id="cards">CARDS</h2>
+<h3>core</h3>
+    <a href="#"I'm Tough"">"I'm Tough"</a>-    <a href="#Advance">Advance</a>-    <a href="#Alpha Flight Station">Alpha Flight Station</a>-    <a href="#Armored Rhino Suit">Armored Rhino Suit</a>-    <a href="#Assault">Assault</a>-    <a href="#Aunt May">Aunt May</a>-    <a href="#Avengers Mansion">Avengers Mansion</a>-    <a href="#Backflip">Backflip</a>-    <a href="#Black Cat - Felicia Hardy">Black Cat - Felicia Hardy</a>-    <a href="#Bomb Scare">Bomb Scare</a>-    <a href="#Breakin' & Takin'">Breakin' & Takin'</a>-    <a href="#Captain Marvel">Captain Marvel</a>-    <a href="#Captain Marvel's Helmet">Captain Marvel's Helmet</a>-    <a href="#Carol Danvers">Carol Danvers</a>-    <a href="#Caught Off Guard">Caught Off Guard</a>-    <a href="#Charge">Charge</a>-    <a href="#Combat Training">Combat Training</a>-    <a href="#Cosmic Flight">Cosmic Flight</a>-    <a href="#Crisis Interdiction">Crisis Interdiction</a>-    <a href="#Daredevil - Matt Murdock">Daredevil - Matt Murdock</a>-    <a href="#Emergency">Emergency</a>-    <a href="#Energy Channel">Energy Channel</a>-    <a href="#Enhanced Ivory Horn">Enhanced Ivory Horn</a>-    <a href="#Enhanced Spider-Sense">Enhanced Spider-Sense</a>-    <a href="#Eviction Notice">Eviction Notice</a>-    <a href="#Exhaustion">Exhaustion</a>-    <a href="#Explosion">Explosion</a>-    <a href="#False Alarm">False Alarm</a>-    <a href="#Family Emergency">Family Emergency</a>-    <a href="#First Aid">First Aid</a>-    <a href="#For Justice!">For Justice!</a>-    <a href="#Gang-Up">Gang-Up</a>-    <a href="#Get Ready">Get Ready</a>-    <a href="#Great Responsibility">Great Responsibility</a>-    <a href="#Hard to Keep Down">Hard to Keep Down</a>-    <a href="#Hawkeye - Clint Barton">Hawkeye - Clint Barton</a>-    <a href="#Haymaker">Haymaker</a>-    <a href="#Helicarrier">Helicarrier</a>-    <a href="#Heroic Intuition">Heroic Intuition</a>-    <a href="#Highway Robbery">Highway Robbery</a>-    <a href="#Hydra Bomber">Hydra Bomber</a>-    <a href="#Inspired">Inspired</a>-    <a href="#Interrogation Room">Interrogation Room</a>-    <a href="#Jessica Jones">Jessica Jones</a>-    <a href="#Kree Manipulator">Kree Manipulator</a>-    <a href="#Lead from the Front">Lead from the Front</a>-    <a href="#Make the Call">Make the Call</a>-    <a href="#Maria Hill">Maria Hill</a>-    <a href="#Masterplan">Masterplan</a>-    <a href="#Mockingbird - Bobbi Morse">Mockingbird - Bobbi Morse</a>-    <a href="#Nick Fury">Nick Fury</a>-    <a href="#Peter Parker">Peter Parker</a>-    <a href="#Photonic Blast">Photonic Blast</a>-    <a href="#Rhino - 2">Rhino - 2</a>-    <a href="#Rhino - 3">Rhino - 3</a>-    <a href="#Shadow of the Past">Shadow of the Past</a>-    <a href="#Shocker">Shocker</a>-    <a href="#Spider-Man">Spider-Man</a>-    <a href="#Spider-Tracer">Spider-Tracer</a>-    <a href="#Spider-Woman - Jessica Drew">Spider-Woman - Jessica Drew</a>-    <a href="#Stampede">Stampede</a>-    <a href="#Surveillance Team">Surveillance Team</a>-    <a href="#Sweeping Swoop">Sweeping Swoop</a>-    <a href="#Swinging Web Kick">Swinging Web Kick</a>-    <a href="#Tenacity">Tenacity</a>-    <a href="#The Power of Justice">The Power of Justice</a>-    <a href="#The Power of Leadership">The Power of Leadership</a>-    <a href="#The Psyche-Magnitron">The Psyche-Magnitron</a>-    <a href="#The Triskelion">The Triskelion</a>-    <a href="#The Vulture's Plans">The Vulture's Plans</a>-    <a href="#Under Fire">Under Fire</a>-    <a href="#Vision">Vision</a>-    <a href="#Vulture">Vulture</a>-    <a href="#Web-Shooter">Web-Shooter</a>-    <a href="#Webbed Up">Webbed Up</a>-    <a href="#Yon-Rogg">Yon-Rogg</a>-    <a href="#Yon-Rogg's Treason">Yon-Rogg's Treason</a>-<h3>core</h3>
+<section id=""I'm Tough""><h2>"I'm Tough"</h2>
+<img src="https://marvelcdb.com/bundles/cards/01105.png" class="resize"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+        "token_name": "tough",
+        "modification": 1,
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "subject": "boardseek",
+        "filter_state_seek": [
+          {
+            "filter_properties": {
+              "type_code": "villain"
+            }
+          }
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#surge"><span class="tooltiptext">triggers an encounter surge</span>surge</span></a>",
+        "<a class="tooltip" href="#is_else"><span class="tooltiptext">a part of the script that will explicitly be executed <em>if</em> the cost cannot be paid</span>is_else</span></a>": true
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Advance"><h2>Advance</h2>
+<img src="https://marvelcdb.com/bundles/cards/01186.png" class="resize"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "enemy_schemes",
+        "subject": "villain"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Alpha Flight Station"><h2>Alpha Flight Station</h2>
+<img src="https://marvelcdb.com/bundles/cards/01015.png" class="resize"/>
+    <pre>{
+  "manual": {
+    "board": {
+      "Discard 1, Draw 1": [
+        {
+          "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "tags": [
+            "hero_action"
+          ]
+        },
+        {
+          "name": "<a class="tooltip" href="#exhaust_card"><span class="tooltiptext">exhausts [subject] cards. See ready_card</span>exhaust_card</span></a>",
+          "subject": "self",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+        },
+        {
+          "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+          "dest_container": "discard",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "subject": "index",
+          "subject_count": "all",
+          "selection_count": 1,
+          "selection_type": "equal",
+          "needs_selection": true,
+          "src_container": "hand"
+        },
+        {
+          "name": "<a class="tooltip" href="#draw_cards"><span class="tooltiptext">the owner of [subject]cards draws cards</span>draw_cards</span></a>",
+          "amount": 1
+        }
+      ],
+      "Discard 1, Draw 2": [
+        {
+          "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "tags": [
+            "alter_ego_action"
+          ]
+        },
+        {
+          "name": "<a class="tooltip" href="#exhaust_card"><span class="tooltiptext">exhausts [subject] cards. See ready_card</span>exhaust_card</span></a>",
+          "subject": "self",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+        },
+        {
+          "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+          "dest_container": "discard",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "subject": "index",
+          "subject_count": "all",
+          "selection_count": 1,
+          "selection_type": "equal",
+          "needs_selection": true,
+          "src_container": "hand"
+        },
+        {
+          "name": "<a class="tooltip" href="#draw_cards"><span class="tooltiptext">the owner of [subject]cards draws cards</span>draw_cards</span></a>",
+          "amount": 2
+        }
+      ]
+    }
+  }
+}</pre>
+</section>
+<section id="Armored Rhino Suit"><h2>Armored Rhino Suit</h2>
+<img src="https://marvelcdb.com/bundles/cards/01098.png" class="resize"/>
+    <pre>{
+  "card_moved_to_board": {
+    "trigger": "self",
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#modify_properties"><span class="tooltiptext">modify specific properties of the card (also see alterants)</span>modify_properties</span></a>",
+        "tags": [
+          "Init"
+        ],
+        "subject": "self",
+        "set_properties": {
+          "health": 5
+        }
+      },
+      {
+        "name": "<a class="tooltip" href="#attach_to_card"><span class="tooltiptext">attach script owner to subject</span>attach_to_card</span></a>",
+        "subject": "villain"
+      }
+    ]
+  },
+  "interrupt": {
+    "event_name": "<a class="tooltip" href="#receive_damage"><span class="tooltiptext">also see deal_damage</span>receive_damage</span></a>",
+    "event_filters": {
+      "target": "villain"
+    },
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#replacement_effect"><span class="tooltiptext">replaces some task on the stack with something else (e.g. damage replaced, targets, replaced, etc...)</span>replacement_effect</span></a>",
+        "subject": "interrupted_event",
+        "replacements": {
+          "subject": "self"
+        }
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Assault"><h2>Assault</h2>
+<img src="https://marvelcdb.com/bundles/cards/01187.png" class="resize"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "hero_form"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#villain_attacks_you"><span class="tooltiptext">Triggers an attack of the villain against current hero</span>villain_attacks_you</span></a>"
+      },
+      {
+        "name": "<a class="tooltip" href="#surge"><span class="tooltiptext">triggers an encounter surge</span>surge</span></a>",
+        "<a class="tooltip" href="#is_else"><span class="tooltiptext">a part of the script that will explicitly be executed <em>if</em> the cost cannot be paid</span>is_else</span></a>": true
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Aunt May"><h2>Aunt May</h2>
+<img src="https://marvelcdb.com/bundles/cards/01006.png" class="resize"/>
+    <pre>{
+  "manual": {
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "alter_ego_action"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#exhaust_card"><span class="tooltiptext">exhausts [subject] cards. See ready_card</span>exhaust_card</span></a>",
+        "subject": "self",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+      },
+      {
+        "name": "<a class="tooltip" href="#heal"><span class="tooltiptext">heal [subjects]. Can be used as a cost, in which case the heal must happen at least partially for the cost to be considered paid</span>heal</span></a>",
+        "amount": 4,
+        "subject": "boardseek",
+        "subject_count": 1,
+        "filter_state_seek": [
+          {
+            "filter_properties": {
+              "Name": "Peter Parker"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Avengers Mansion"><h2>Avengers Mansion</h2>
+<img src="https://marvelcdb.com/bundles/cards/01091.png" class="resize"/>
+    <pre>{
+  "manual": {
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "action_ability"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#exhaust_card"><span class="tooltiptext">exhausts [subject] cards. See ready_card</span>exhaust_card</span></a>",
+        "subject": "self",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+      },
+      {
+        "name": "<a class="tooltip" href="#draw_cards"><span class="tooltiptext">the owner of [subject]cards draws cards</span>draw_cards</span></a>",
+        "amount": 1,
+        "subject": "boardseek",
+        "subject_count": "all",
+        "selection_count": 1,
+        "selection_type": "equal",
+        "needs_selection": true,
+        "filter_state_seek": [
+          {
+            "filter_group": "group_identities"
+          }
+        ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Backflip"><h2>Backflip</h2>
+<img src="https://marvelcdb.com/bundles/cards/01003.png" class="resize"/>
+    <pre>{
+  "interrupt": {
+    "event_name": "<a class="tooltip" href="#receive_damage"><span class="tooltiptext">also see deal_damage</span>receive_damage</span></a>",
+    "event_filters": {
+      "target": "my_hero",
+      "tags": [
+        "attack"
+      ]
+    },
+    "is_optional_hand": true,
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#prevent"><span class="tooltiptext">prevents damage (also see replacement_effect)</span>prevent</span></a>",
+        "subject": "interrupted_event"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Black Cat - Felicia Hardy"><h2>Black Cat - Felicia Hardy</h2>
+<img src="https://marvelcdb.com/bundles/cards/01002.png" class="resize"/>
+    <pre>{
+  "card_moved_to_board": {
+    "trigger": "self",
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+        "subject": "tutor",
+        "subject_index": "top",
+        "subject_count": 2,
+        "src_container": "deck",
+        "dest_container": "discard"
+      },
+      {
+        "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+        "subject": "previous",
+        "subject_count": "all",
+        "filter_each_previous_subject": "true",
+        "dest_container": "hand",
+        "filter_state_subject": [
+          {
+            "filter_properties": {
+              "resource_mental": 1,
+              "comparison": "ge"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Bomb Scare"><h2>Bomb Scare</h2>
+<img src="https://marvelcdb.com/bundles/cards/01109.png" class="resize_horizontal"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "add_threat",
+        "amount": 1,
+        "subject": "self"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Breakin' & Takin'"><h2>Breakin' & Takin'</h2>
+<img src="https://marvelcdb.com/bundles/cards/01107.png" class="resize_horizontal"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "add_threat",
+        "amount": "per_boardseek",
+        "subject": "self",
+        "per_boardseek": {
+          "subject": "boardseek",
+          "subject_count": "all",
+          "filter_state_seek": [
+            {
+              "filter_group": "group_identities"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Captain Marvel"><h2>Captain Marvel</h2>
+<img src="https://marvelcdb.com/bundles/cards/01010a.png" class="resize"/>
+    <pre>{
+  "once_per_round": {
+    "__name__": "_marvel_draw"
+  },
+  "manual": {
+    "board": {
+      "Draw 1": [
+        {
+          "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "tags": [
+            "action_ability"
+          ]
+        },
+        {
+          "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+          "subject": "self",
+          "modification": -1,
+          "token_name": "_marvel_draw",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+        },
+        {
+          "name": "<a class="tooltip" href="#pay_cost"><span class="tooltiptext">pay a specific cost (not necessarily the card's cost</span>pay_cost</span></a>",
+          "cost": {
+            "energy": 1
+          },
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+        },
+        {
+          "name": "<a class="tooltip" href="#heal"><span class="tooltiptext">heal [subjects]. Can be used as a cost, in which case the heal must happen at least partially for the cost to be considered paid</span>heal</span></a>",
+          "subject": "self",
+          "amount": 1,
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+        },
+        {
+          "name": "<a class="tooltip" href="#draw_cards"><span class="tooltiptext">the owner of [subject]cards draws cards</span>draw_cards</span></a>",
+          "amount": 1
+        }
+      ]
+    }
+  }
+}</pre>
+</section>
+<section id="Captain Marvel's Helmet"><h2>Captain Marvel's Helmet</h2>
+<img src="https://marvelcdb.com/bundles/cards/01016.png" class="resize"/>
+    <pre>{
+  "alterants": {
+    "board": [
+      {
+        "filter_task": "get_property",
+        "filter_property_name": "defense",
+        "filter_state_trigger": [
+          {
+            "filter_properties": {
+              "Name": "Captain Marvel"
+            }
+          }
+        ],
+        "alteration": 1
+      },
+      {
+        "filter_task": "get_property",
+        "filter_property_name": "defense",
+        "filter_state_trigger": [
+          {
+            "filter_properties": {
+              "comparison": "gt",
+              "trait_aerial": 0
+            },
+            "filter_properties2": {
+              "Name": "Captain Marvel"
+            }
+          }
+        ],
+        "alteration": 1
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Carol Danvers"><h2>Carol Danvers</h2>
+    <pre>{
+  "once_per_round": {
+    "__name__": "_carol_draw"
+  },
+  "manual": {
+    "board": {
+      "Draw 1": [
+        {
+          "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "tags": [
+            "action_ability"
+          ]
+        },
+        {
+          "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+          "subject": "self",
+          "modification": -1,
+          "token_name": "_carol_draw",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+        },
+        {
+          "name": "<a class="tooltip" href="#draw_cards"><span class="tooltiptext">the owner of [subject]cards draws cards</span>draw_cards</span></a>",
+          "amount": 1,
+          "subject": "boardseek",
+          "subject_count": "all",
+          "selection_count": 1,
+          "selection_type": "equal",
+          "needs_selection": true,
+          "filter_state_seek": [
+            {
+              "filter_group": "group_identities"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}</pre>
+</section>
+<section id="Caught Off Guard"><h2>Caught Off Guard</h2>
+<img src="https://marvelcdb.com/bundles/cards/01188.png" class="resize"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "hero_form"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+        "dest_container": "discard",
+        "src_container": "upgrade_support",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "subject": "index",
+        "subject_count": "all",
+        "selection_count": 1,
+        "selection_type": "equal",
+        "needs_selection": true
+      },
+      {
+        "name": "<a class="tooltip" href="#surge"><span class="tooltiptext">triggers an encounter surge</span>surge</span></a>",
+        "<a class="tooltip" href="#is_else"><span class="tooltiptext">a part of the script that will explicitly be executed <em>if</em> the cost cannot be paid</span>is_else</span></a>": true
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Charge"><h2>Charge</h2>
+<img src="https://marvelcdb.com/bundles/cards/01099.png" class="resize"/>
+    <pre>{
+  "card_moved_to_board": {
+    "trigger": "self",
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#attach_to_card"><span class="tooltiptext">attach script owner to subject</span>attach_to_card</span></a>",
+        "subject": "villain"
+      }
+    ]
+  },
+  "alterants": {
+    "board": [
+      {
+        "filter_task": "get_property",
+        "filter_property_name": "attack",
+        "trigger": "host",
+        "alteration": 3
+      },
+      {
+        "filter_task": "get_property",
+        "filter_property_name": "overkill",
+        "trigger": "host",
+        "alteration": 1
+      }
+    ]
+  },
+  "enemy_attack_happened": {
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+        "dest_container": "discard_villain",
+        "subject": "self"
+      }
+    ],
+    "filter_state_trigger": [
+      {
+        "filter_properties": {
+          "type_code": "villain"
+        }
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Combat Training"><h2>Combat Training</h2>
+<img src="https://marvelcdb.com/bundles/cards/01057.png" class="resize"/>
+    <pre>{
+  "card_moved_to_board": {
+    "trigger": "self",
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#move_to_player_zone"><span class="tooltiptext">move [subject]cards to a specific hero board</span>move_to_player_zone</span></a>",
+        "subject": "boardseek",
+        "subject_count": "all",
+        "selection_count": 1,
+        "selection_type": "equal",
+        "needs_selection": true,
+        "filter_state_seek": [
+          {
+            "filter_group": "group_identities",
+            "filter_max_per_hero": 1
+          }
+        ]
+      }
+    ]
+  },
+  "alterants": {
+    "board": [
+      {
+        "filter_task": "get_property",
+        "filter_property_name": "attack",
+        "filter_same_controller": true,
+        "filter_state_trigger": [
+          {
+            "filter_group": "group_identities"
+          }
+        ],
+        "alteration": 1
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Cosmic Flight"><h2>Cosmic Flight</h2>
+<img src="https://marvelcdb.com/bundles/cards/01017.png" class="resize"/>
+    <pre>{
+  "alterants": {
+    "board": [
+      {
+        "filter_task": "get_property",
+        "filter_property_name": "trait_aerial",
+        "filter_state_trigger": [
+          {
+            "filter_card_name": "Captain Marvel"
+          }
+        ],
+        "alteration": 1
+      }
+    ]
+  },
+  "interrupt": {
+    "event_name": "<a class="tooltip" href="#receive_damage"><span class="tooltiptext">also see deal_damage</span>receive_damage</span></a>",
+    "event_filters": {
+      "target": "my_hero",
+      "tags": [
+        "attack"
+      ]
+    },
+    "is_optional_board": true,
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+        "dest_container": "discard",
+        "subject": "self",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+      },
+      {
+        "name": "<a class="tooltip" href="#prevent"><span class="tooltiptext">prevents damage (also see replacement_effect)</span>prevent</span></a>",
+        "amount": 3,
+        "subject": "interrupted_event"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Crisis Interdiction"><h2>Crisis Interdiction</h2>
+<img src="https://marvelcdb.com/bundles/cards/01012.png" class="resize"/>
+    <pre>{
+  "manual": {
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "hero_action"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#thwart"><span class="tooltiptext">either removes a given amount of threat, or starts a thwart action from a character. Also see remove_threat</span>thwart</span></a>",
+        "subject": "target",
+        "amount": 2,
+        "needs_subject": true,
+        "filter_state_subject": [
+          {
+            "filter_group": "group_schemes"
+          }
+        ],
+        "tags": [
+          "<a class="tooltip" href="#thwart"><span class="tooltiptext">either removes a given amount of threat, or starts a thwart action from a character. Also see remove_threat</span>thwart</span></a>"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#thwart"><span class="tooltiptext">either removes a given amount of threat, or starts a thwart action from a character. Also see remove_threat</span>thwart</span></a>",
+        "subject": "target",
+        "amount": {
+          "if": {
+            "func_name": "<a class="tooltip" href="#identity_has_trait"><span class="tooltiptext">returns true if your identity has the trait</span>identity_has_trait</span></a>",
+            "func_params": {
+              "trait": "aerial"
+            }
+          },
+          "then": 2,
+          "else": 0
+        },
+        "needs_subject": true,
+        "filter_state_subject": [
+          {
+            "filter_group": "group_schemes"
+          }
+        ],
+        "tags": [
+          "<a class="tooltip" href="#thwart"><span class="tooltiptext">either removes a given amount of threat, or starts a thwart action from a character. Also see remove_threat</span>thwart</span></a>"
+        ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Daredevil - Matt Murdock"><h2>Daredevil - Matt Murdock</h2>
+<img src="https://marvelcdb.com/bundles/cards/01058.png" class="resize"/>
+    <pre>{
+  "thwarted": {
+    "trigger": "self",
+    "is_optional_board": true,
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#deal_damage"><span class="tooltiptext">deal damage to [subject]. also see receive_damage</span>deal_damage</span></a>",
+        "subject": "target",
+        "amount": 1,
+        "needs_subject": true,
+        "filter_state_subject": [
+          {
+            "filter_group": "group_enemies"
+          }
+        ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Emergency"><h2>Emergency</h2>
+<img src="https://marvelcdb.com/bundles/cards/01085.png" class="resize"/>
+    <pre>{
+  "interrupt": {
+    "event_name": "commit_scheme",
+    "filter_state_trigger": [
+      {
+        "filter_group": "group_villains"
+      }
+    ],
+    "is_optional_hand": true,
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#prevent"><span class="tooltiptext">prevents damage (also see replacement_effect)</span>prevent</span></a>",
+        "amount": 1,
+        "subject": "interrupted_event"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Energy Channel"><h2>Energy Channel</h2>
+<img src="https://marvelcdb.com/bundles/cards/01018.png" class="resize"/>
+    <pre>{
+  "manual": {
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "max_per_hero": 1
+      }
+    ],
+    "board": {
+      "add 1 energy": [
+        {
+          "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "tags": [
+            "action_ability"
+          ]
+        },
+        {
+          "name": "<a class="tooltip" href="#pay_cost"><span class="tooltiptext">pay a specific cost (not necessarily the card's cost</span>pay_cost</span></a>",
+          "cost": {
+            "energy": 1
+          },
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+        },
+        {
+          "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+          "token_name": "energy",
+          "modification": 1,
+          "subject": "self"
+        }
+      ],
+      "add 2 energy": [
+        {
+          "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "tags": [
+            "action_ability"
+          ]
+        },
+        {
+          "name": "<a class="tooltip" href="#pay_cost"><span class="tooltiptext">pay a specific cost (not necessarily the card's cost</span>pay_cost</span></a>",
+          "cost": {
+            "energy": 2
+          },
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+        },
+        {
+          "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+          "token_name": "energy",
+          "modification": 2,
+          "subject": "self"
+        }
+      ],
+      "add 3 energy": [
+        {
+          "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "tags": [
+            "action_ability"
+          ]
+        },
+        {
+          "name": "<a class="tooltip" href="#pay_cost"><span class="tooltiptext">pay a specific cost (not necessarily the card's cost</span>pay_cost</span></a>",
+          "cost": {
+            "energy": 3
+          },
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+        },
+        {
+          "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+          "token_name": "energy",
+          "modification": 3,
+          "subject": "self"
+        }
+      ],
+      "Unleash energy": [
+        {
+          "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "tags": [
+            "hero_action"
+          ]
+        },
+        {
+          "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+          "dest_container": "discard",
+          "subject": "self",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+        },
+        {
+          "name": "<a class="tooltip" href="#deal_damage"><span class="tooltiptext">deal damage to [subject]. also see receive_damage</span>deal_damage</span></a>",
+          "subject": "target",
+          "amount": "per_token_self",
+          "needs_subject": true,
+          "per_token_self": {
+            "token_name": "energy",
+            "multiplier": 2,
+            "max": 10
+          },
+          "filter_state_subject": [
+            {
+              "filter_group": "group_enemies"
+            }
+          ],
+          "tags": [
+            "attack"
+          ]
+        }
+      ]
+    }
+  }
+}</pre>
+</section>
+<section id="Enhanced Ivory Horn"><h2>Enhanced Ivory Horn</h2>
+<img src="https://marvelcdb.com/bundles/cards/01100.png" class="resize"/>
+    <pre>{
+  "card_moved_to_board": {
+    "trigger": "self",
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#attach_to_card"><span class="tooltiptext">attach script owner to subject</span>attach_to_card</span></a>",
+        "subject": "villain"
+      }
+    ]
+  },
+  "alterants": {
+    "board": [
+      {
+        "filter_task": "get_property",
+        "filter_property_name": "attack",
+        "trigger": "host",
+        "alteration": 1
+      }
+    ]
+  },
+  "manual": {
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "hero_action"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#pay_cost"><span class="tooltiptext">pay a specific cost (not necessarily the card's cost</span>pay_cost</span></a>",
+        "cost": {
+          "physical": 3
+        },
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+      },
+      {
+        "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+        "dest_container": "discard_villain",
+        "subject": "self"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Enhanced Spider-Sense"><h2>Enhanced Spider-Sense</h2>
+<img src="https://marvelcdb.com/bundles/cards/01004.png" class="resize"/>
+    <pre>{
+  "interrupt": {
+    "event_name": "reveal_encounter",
+    "is_optional_hand": true,
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "hero_interrupt"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#prevent"><span class="tooltiptext">prevents damage (also see replacement_effect)</span>prevent</span></a>",
+        "subject": "interrupted_event"
+      }
+    ],
+    "filter_state_trigger": [
+      {
+        "filter_properties": {
+          "type_code": "treachery"
+        }
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Eviction Notice"><h2>Eviction Notice</h2>
+<img src="https://marvelcdb.com/bundles/cards/01165.png" class="resize"/>
+    <pre>{
+  "about_to_reveal": {
+    "trigger": "self",
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#change_controller_hero"><span class="tooltiptext">change controller hero</span>change_controller_hero</span></a>",
+        "target_identity": "Peter Parker",
+        "subject": "self"
+      }
+    ]
+  },
+  "card_moved_to_board": {
+    "trigger": "self",
+    "board": {
+      "Flip then Remove from the game": [
+        {
+          "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "tags": [
+            "hero_form"
+          ]
+        },
+        {
+          "name": "<a class="tooltip" href="#change_form"><span class="tooltiptext">change hero form</span>change_form</span></a>",
+          "subject": "my_hero"
+        },
+        {
+          "name": "<a class="tooltip" href="#exhaust_card"><span class="tooltiptext">exhausts [subject] cards. See ready_card</span>exhaust_card</span></a>",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "subject": "my_hero"
+        },
+        {
+          "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+          "dest_container": "set_aside",
+          "subject": "self"
+        }
+      ],
+      "Remove from the game": [
+        {
+          "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "tags": [
+            "alter_ego_form"
+          ]
+        },
+        {
+          "name": "<a class="tooltip" href="#exhaust_card"><span class="tooltiptext">exhausts [subject] cards. See ready_card</span>exhaust_card</span></a>",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "subject": "my_hero"
+        },
+        {
+          "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+          "dest_container": "set_aside",
+          "subject": "self"
+        }
+      ],
+      "Flip then Discard 1": [
+        {
+          "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "tags": [
+            "hero_form"
+          ]
+        },
+        {
+          "name": "<a class="tooltip" href="#change_form"><span class="tooltiptext">change hero form</span>change_form</span></a>",
+          "subject": "my_hero"
+        },
+        {
+          "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+          "dest_container": "discard",
+          "src_container": "hand",
+          "subject": "index",
+          "subject_count": 1,
+          "subject_index": "random"
+        },
+        {
+          "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+          "dest_container": "discard_villain",
+          "subject": "self"
+        },
+        {
+          "name": "<a class="tooltip" href="#surge"><span class="tooltiptext">triggers an encounter surge</span>surge</span></a>"
+        }
+      ],
+      "Discard 1": [
+        {
+          "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+          "dest_container": "discard",
+          "src_container": "hand",
+          "subject": "index",
+          "subject_count": 1,
+          "subject_index": "random"
+        },
+        {
+          "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+          "dest_container": "discard_villain",
+          "subject": "self"
+        },
+        {
+          "name": "<a class="tooltip" href="#surge"><span class="tooltiptext">triggers an encounter surge</span>surge</span></a>"
+        }
+      ]
+    }
+  }
+}</pre>
+</section>
+<section id="Exhaustion"><h2>Exhaustion</h2>
+<img src="https://marvelcdb.com/bundles/cards/01191.png" class="resize"/>
+    <pre>{
+  "card_moved_to_pile": {
+    "trigger": "self",
+    "filter_destination": "encounters_reveal",
+    "pile": [
+      {
+        "name": "<a class="tooltip" href="#surge"><span class="tooltiptext">triggers an encounter surge</span>surge</span></a>"
+      }
+    ]
+  },
+  "reveal": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#exhaust_card"><span class="tooltiptext">exhausts [subject] cards. See ready_card</span>exhaust_card</span></a>",
+        "subject": "my_identity"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Explosion"><h2>Explosion</h2>
+<img src="https://marvelcdb.com/bundles/cards/01111.png" class="resize"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#count_tokens"><span class="tooltiptext">count number of tokens of a specific type</span>count_tokens</span></a>",
+        "token_name": "threat",
+        "subject": "boardseek",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "filter_state_seek": [
+          {
+            "filter_properties": {
+              "Name": "Bomb Scare"
+            }
+          }
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#deal_damage"><span class="tooltiptext">deal damage to [subject]. also see receive_damage</span>deal_damage</span></a>",
+        "amount": 1,
+        "subject": "boardseek",
+        "abort_on_cost_failure": true,
+        "subject_count": "all",
+        "selection_count": "retrieve_integer",
+        "selection_type": "as_much_as_possible",
+        "selection_what_to_count": "assign_indirect_damage",
+        "needs_selection": true,
+        "filter_state_seek": [
+          {
+            "filter_group": "group_allies_and_heroes"
+          }
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#surge"><span class="tooltiptext">triggers an encounter surge</span>surge</span></a>",
+        "<a class="tooltip" href="#is_else"><span class="tooltiptext">a part of the script that will explicitly be executed <em>if</em> the cost cannot be paid</span>is_else</span></a>": true
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="False Alarm"><h2>False Alarm</h2>
+<img src="https://marvelcdb.com/bundles/cards/01112.png" class="resize"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+        "token_name": "confused",
+        "modification": 1,
+        "subject": "my_identity",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+      },
+      {
+        "name": "<a class="tooltip" href="#surge"><span class="tooltiptext">triggers an encounter surge</span>surge</span></a>",
+        "<a class="tooltip" href="#is_else"><span class="tooltiptext">a part of the script that will explicitly be executed <em>if</em> the cost cannot be paid</span>is_else</span></a>": true
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Family Emergency"><h2>Family Emergency</h2>
+<img src="https://marvelcdb.com/bundles/cards/01175.png" class="resize"/>
+    <pre>{
+  "about_to_reveal": {
+    "trigger": "self",
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#change_controller_hero"><span class="tooltiptext">change controller hero</span>change_controller_hero</span></a>",
+        "target_identity": "Carol Danvers",
+        "subject": "self"
+      }
+    ]
+  },
+  "card_moved_to_board": {
+    "trigger": "self",
+    "board": {
+      "Flip then Remove from the game": [
+        {
+          "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "tags": [
+            "hero_form"
+          ]
+        },
+        {
+          "name": "<a class="tooltip" href="#change_form"><span class="tooltiptext">change hero form</span>change_form</span></a>",
+          "subject": "my_hero"
+        },
+        {
+          "name": "<a class="tooltip" href="#exhaust_card"><span class="tooltiptext">exhausts [subject] cards. See ready_card</span>exhaust_card</span></a>",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "subject": "my_hero"
+        },
+        {
+          "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+          "dest_container": "set_aside",
+          "subject": "self"
+        }
+      ],
+      "Remove from the game": [
+        {
+          "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "tags": [
+            "alter_ego_form"
+          ]
+        },
+        {
+          "name": "<a class="tooltip" href="#exhaust_card"><span class="tooltiptext">exhausts [subject] cards. See ready_card</span>exhaust_card</span></a>",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "subject": "my_hero"
+        },
+        {
+          "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+          "dest_container": "set_aside",
+          "subject": "self"
+        }
+      ],
+      "Flip then get stunned": [
+        {
+          "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "tags": [
+            "hero_form"
+          ]
+        },
+        {
+          "name": "<a class="tooltip" href="#change_form"><span class="tooltiptext">change hero form</span>change_form</span></a>",
+          "subject": "my_hero"
+        },
+        {
+          "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+          "modification": 1,
+          "token_name": "stunned",
+          "subject": "my_hero"
+        },
+        {
+          "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+          "dest_container": "discard_villain",
+          "subject": "self"
+        },
+        {
+          "name": "<a class="tooltip" href="#surge"><span class="tooltiptext">triggers an encounter surge</span>surge</span></a>"
+        }
+      ],
+      "Get Stunned": [
+        {
+          "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+          "modification": 1,
+          "token_name": "stunned",
+          "subject": "my_hero"
+        },
+        {
+          "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+          "dest_container": "discard_villain",
+          "subject": "self"
+        },
+        {
+          "name": "<a class="tooltip" href="#surge"><span class="tooltiptext">triggers an encounter surge</span>surge</span></a>"
+        }
+      ]
+    }
+  }
+}</pre>
+</section>
+<section id="First Aid"><h2>First Aid</h2>
+<img src="https://marvelcdb.com/bundles/cards/01086.png" class="resize"/>
+    <pre>{
+  "manual": {
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#heal"><span class="tooltiptext">heal [subjects]. Can be used as a cost, in which case the heal must happen at least partially for the cost to be considered paid</span>heal</span></a>",
+        "subject": "target",
+        "amount": 2,
+        "needs_subject": true,
+        "filter_state_subject": [
+          {
+            "filter_group": "group_characters"
+          }
+        ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="For Justice!"><h2>For Justice!</h2>
+<img src="https://marvelcdb.com/bundles/cards/01060.png" class="resize"/>
+    <pre>{
+  "manual": {
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "hero_form"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#thwart"><span class="tooltiptext">either removes a given amount of threat, or starts a thwart action from a character. Also see remove_threat</span>thwart</span></a>",
+        "amount": {
+          "if": {
+            "func_name": "<a class="tooltip" href="#paid_with_includes"><span class="tooltiptext">returns true if this ability was paid for with a specific type of resource</span>paid_with_includes</span></a>",
+            "func_params": {
+              "mental": 1
+            }
+          },
+          "then": 4,
+          "else": 3
+        },
+        "subject": "target",
+        "needs_subject": true,
+        "filter_state_subject": [
+          {
+            "filter_group": "group_schemes"
+          }
+        ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Gang-Up"><h2>Gang-Up</h2>
+<img src="https://marvelcdb.com/bundles/cards/01189.png" class="resize"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "hero_form"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#villain_and_enemies_attack_you"><span class="tooltiptext">Triggers an attack of the Villain and enemies engaged with current hero</span>villain_and_enemies_attack_you</span></a>"
+      },
+      {
+        "name": "<a class="tooltip" href="#surge"><span class="tooltiptext">triggers an encounter surge</span>surge</span></a>",
+        "<a class="tooltip" href="#is_else"><span class="tooltiptext">a part of the script that will explicitly be executed <em>if</em> the cost cannot be paid</span>is_else</span></a>": true
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Get Ready"><h2>Get Ready</h2>
+<img src="https://marvelcdb.com/bundles/cards/01069.png" class="resize"/>
+    <pre>{
+  "manual": {
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "action"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#ready_card"><span class="tooltiptext">ready a specific card (also see exhaust)</span>ready_card</span></a>",
+        "subject": "target",
+        "filter_state_subject": [
+          {
+            "filter_group": "group_allies"
+          }
+        ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Great Responsibility"><h2>Great Responsibility</h2>
+<img src="https://marvelcdb.com/bundles/cards/01061.png" class="resize"/>
+    <pre>{
+  "interrupt": {
+    "event_name": "add_threat",
+    "is_optional_hand": true,
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "hero_interrupt"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#replacement_effect"><span class="tooltiptext">replaces some task on the stack with something else (e.g. damage replaced, targets, replaced, etc...)</span>replacement_effect</span></a>",
+        "subject": "interrupted_event",
+        "replacements": {
+          "subject": "my_hero",
+          "name": "<a class="tooltip" href="#receive_damage"><span class="tooltiptext">also see deal_damage</span>receive_damage</span></a>"
+        }
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Hard to Keep Down"><h2>Hard to Keep Down</h2>
+<img src="https://marvelcdb.com/bundles/cards/01104.png" class="resize"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#heal"><span class="tooltiptext">heal [subjects]. Can be used as a cost, in which case the heal must happen at least partially for the cost to be considered paid</span>heal</span></a>",
+        "amount": 4,
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "subject": "boardseek",
+        "subject_count": 1,
+        "filter_state_seek": [
+          {
+            "filter_properties": {
+              "type_code": "villain"
+            }
+          }
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#surge"><span class="tooltiptext">triggers an encounter surge</span>surge</span></a>",
+        "<a class="tooltip" href="#is_else"><span class="tooltiptext">a part of the script that will explicitly be executed <em>if</em> the cost cannot be paid</span>is_else</span></a>": true
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Hawkeye - Clint Barton"><h2>Hawkeye - Clint Barton</h2>
+<img src="https://marvelcdb.com/bundles/cards/01066.png" class="resize"/>
+    <pre>{
+  "card_moved_to_board": {
+    "trigger": "self",
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+        "subject": "self",
+        "modification": 4,
+        "token_name": "arrow"
+      }
+    ]
+  },
+  "minion_moved_to_board": {
+    "is_optional_board": true,
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+        "subject": "self",
+        "modification": -1,
+        "token_name": "arrow",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+      },
+      {
+        "name": "<a class="tooltip" href="#deal_damage"><span class="tooltiptext">deal damage to [subject]. also see receive_damage</span>deal_damage</span></a>",
+        "subject": "trigger",
+        "amount": 2,
+        "needs_subject": true
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Haymaker"><h2>Haymaker</h2>
+<img src="https://marvelcdb.com/bundles/cards/01087.png" class="resize"/>
+    <pre>{
+  "manual": {
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "hero_action"
+        ]
+      },
+      {
+        "name": "attack",
+        "subject": "target",
+        "amount": 3,
+        "needs_subject": true,
+        "filter_state_subject": [
+          {
+            "filter_group": "group_enemies"
+          }
+        ],
+        "tags": [
+          "hero_action",
+          "attack"
+        ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Helicarrier"><h2>Helicarrier</h2>
+<img src="https://marvelcdb.com/bundles/cards/01092.png" class="resize"/>
+    <pre>{
+  "manual": {
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "action_ability"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#exhaust_card"><span class="tooltiptext">exhausts [subject] cards. See ready_card</span>exhaust_card</span></a>",
+        "subject": "self",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+      },
+      {
+        "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+        "subject": "self",
+        "modification": 1,
+        "token_name": "_helicarrier"
+      }
+    ]
+  },
+  "alterants": {
+    "board": [
+      {
+        "filter_task": "get_property",
+        "filter_property_name": "cost",
+        "alteration": "per_token_self",
+        "per_token_self": {
+          "token_name": "_helicarrier",
+          "is_inverted": true
+        }
+      }
+    ]
+  },
+  "card_played": {
+    "trigger": "another",
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+        "modification": 0,
+        "subject": "self",
+        "set_to_mod": true,
+        "token_name": "_helicarrier"
+      }
+    ]
+  },
+  "phase_ended": {
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+        "modification": 0,
+        "subject": "self",
+        "set_to_mod": true,
+        "token_name": "_helicarrier"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Heroic Intuition"><h2>Heroic Intuition</h2>
+<img src="https://marvelcdb.com/bundles/cards/01065.png" class="resize"/>
+    <pre>{
+  "card_moved_to_board": {
+    "trigger": "self",
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#move_to_player_zone"><span class="tooltiptext">move [subject]cards to a specific hero board</span>move_to_player_zone</span></a>",
+        "subject": "boardseek",
+        "subject_count": "all",
+        "selection_count": 1,
+        "selection_type": "equal",
+        "needs_selection": true,
+        "filter_state_seek": [
+          {
+            "filter_group": "group_identities",
+            "filter_max_per_hero": 1
+          }
+        ]
+      }
+    ]
+  },
+  "alterants": {
+    "board": [
+      {
+        "filter_task": "get_property",
+        "filter_property_name": "<a class="tooltip" href="#thwart"><span class="tooltiptext">either removes a given amount of threat, or starts a thwart action from a character. Also see remove_threat</span>thwart</span></a>",
+        "filter_same_controller": true,
+        "filter_state_trigger": [
+          {
+            "filter_group": "group_identities"
+          }
+        ],
+        "alteration": 1
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Highway Robbery"><h2>Highway Robbery</h2>
+<img src="https://marvelcdb.com/bundles/cards/01166.png" class="resize_horizontal"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "host_card",
+        "tags": [
+          "facedown"
+        ],
+        "src_container": "hand",
+        "subject": "index",
+        "subject_count": 1,
+        "subject_index": "random",
+        "needs_subject": true,
+        "<a class="tooltip" href="#for_each_player"><span class="tooltiptext">this will internally duplicate this part of the script for each hero in game (and assign containers accordingly for each player, e.g hand becomes hand1, hand2, hand3,)</span>for_each_player</span></a>": true
+      }
+    ]
+  },
+  "interrupt": {
+    "event_name": "card_dies",
+    "board": [
+      {
+        "name": "return_attachements_to_owner",
+        "dest_container": "hand",
+        "tags": [
+          "facedown"
+        ]
+      }
+    ],
+    "trigger": "self"
+  }
+}</pre>
+</section>
+<section id="Hydra Bomber"><h2>Hydra Bomber</h2>
+<img src="https://marvelcdb.com/bundles/cards/01110.png" class="resize"/>
+    <pre>{
+  "reveal": {
+    "all": {
+      "_rules": {
+        "forced": true
+      },
+      "Take 2 damage": [
+        {
+          "name": "<a class="tooltip" href="#receive_damage"><span class="tooltiptext">also see deal_damage</span>receive_damage</span></a>",
+          "subject": "my_identity",
+          "amount": 2
+        }
+      ],
+      "1 Threat on Main Scheme": [
+        {
+          "name": "add_threat",
+          "amount": 1,
+          "subject": "boardseek",
+          "filter_state_seek": [
+            {
+              "filter_properties": {
+                "type_code": "main_scheme"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}</pre>
+</section>
+<section id="Inspired"><h2>Inspired</h2>
+<img src="https://marvelcdb.com/bundles/cards/01074.png" class="resize"/>
+    <pre>{
+  "manual": {
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#attach_to_card"><span class="tooltiptext">attach script owner to subject</span>attach_to_card</span></a>",
+        "subject": "target",
+        "needs_subject": true,
+        "filter_state_subject": [
+          {
+            "filter_properties": {
+              "type_code": "ally"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "alterants": {
+    "board": [
+      {
+        "filter_task": "get_property",
+        "filter_property_name": "attack",
+        "trigger": "host",
+        "alteration": 1
+      },
+      {
+        "filter_task": "get_property",
+        "filter_property_name": "<a class="tooltip" href="#thwart"><span class="tooltiptext">either removes a given amount of threat, or starts a thwart action from a character. Also see remove_threat</span>thwart</span></a>",
+        "trigger": "host",
+        "alteration": 1
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Interrogation Room"><h2>Interrogation Room</h2>
+<img src="https://marvelcdb.com/bundles/cards/01063.png" class="resize"/>
+    <pre>{
+  "manual": {
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "max_per_hero": 1
+      }
+    ]
+  },
+  "minion_died": {
+    "filter_source_controlled_by": "my_hero",
+    "is_optional_board": true,
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#exhaust_card"><span class="tooltiptext">exhausts [subject] cards. See ready_card</span>exhaust_card</span></a>",
+        "subject": "self",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+      },
+      {
+        "name": "<a class="tooltip" href="#remove_threat"><span class="tooltiptext">removes threat from [subject] schemes. Also see thwart.</span>remove_threat</span></a>",
+        "amount": 1,
+        "subject": "target",
+        "needs_subject": true,
+        "filter_state_subject": [
+          {
+            "filter_group": "group_schemes"
+          }
+        ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Jessica Jones"><h2>Jessica Jones</h2>
+<img src="https://marvelcdb.com/bundles/cards/01059.png" class="resize"/>
+    <pre>{
+  "alterants": {
+    "board": [
+      {
+        "filter_task": "get_property",
+        "filter_property_name": "<a class="tooltip" href="#thwart"><span class="tooltiptext">either removes a given amount of threat, or starts a thwart action from a character. Also see remove_threat</span>thwart</span></a>",
+        "trigger": "self",
+        "per_boardseek": {
+          "subject": "boardseek",
+          "subject_count": "all",
+          "filter_state_seek": [
+            {
+              "filter_properties": {
+                "type_code": "side_scheme"
+              }
+            }
+          ]
+        },
+        "alteration": "per_boardseek"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Kree Manipulator"><h2>Kree Manipulator</h2>
+<img src="https://marvelcdb.com/bundles/cards/01178.png" class="resize"/>
+    <pre>{
+  "card_moved_to_pile": {
+    "trigger": "self",
+    "filter_destination": "encounters_reveal",
+    "pile": [
+      {
+        "name": "<a class="tooltip" href="#surge"><span class="tooltiptext">triggers an encounter surge</span>surge</span></a>"
+      }
+    ]
+  },
+  "reveal": {
+    "all": [
+      {
+        "name": "add_threat",
+        "amount": 1,
+        "subject": "boardseek",
+        "filter_state_seek": [
+          {
+            "filter_properties": {
+              "type_code": "main_scheme"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "boost": {
+    "all": [
+      {
+        "name": "add_threat",
+        "amount": {
+          "if": {
+            "func_name": "<a class="tooltip" href="#current_activation_status"><span class="tooltiptext">returns true if the current activation (attack, scheme, encounter...) matches the passed params. e.g. to check if attack is undefended</span>current_activation_status</span></a>",
+            "func_params": {
+              "undefended": true
+            }
+          },
+          "then": 1,
+          "else": 0
+        },
+        "subject": "boardseek",
+        "filter_state_seek": [
+          {
+            "filter_properties": {
+              "type_code": "main_scheme"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Lead from the Front"><h2>Lead from the Front</h2>
+<img src="https://marvelcdb.com/bundles/cards/01070.png" class="resize"/>
+    <pre>{
+  "manual": {
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "hero_action"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#temporary_effect"><span class="tooltiptext">adds a temporary effect on a card, which stays until a specific event is triggered (typically for event cards that grant a benefit -alterant- until end of round or phase)</span>temporary_effect</span></a>",
+        "end_condition": "phase_ended",
+        "subject": "boardseek",
+        "needs_subject": true,
+        "subject_count": "all",
+        "selection_count": 1,
+        "selection_type": "equal",
+        "needs_selection": true,
+        "filter_state_seek": [
+          {
+            "filter_group": "group_identities"
+          }
+        ],
+        "effect": {
+          "alterants": {
+            "all": [
+              {
+                "filter_task": "get_property",
+                "filter_property_name": "attack",
+                "filter_state_trigger": [
+                  {
+                    "filter_group": "group_characters{__subject_hero_id__}"
+                  }
+                ],
+                "alteration": 1
+              },
+              {
+                "filter_task": "get_property",
+                "filter_property_name": "<a class="tooltip" href="#thwart"><span class="tooltiptext">either removes a given amount of threat, or starts a thwart action from a character. Also see remove_threat</span>thwart</span></a>",
+                "filter_state_trigger": [
+                  {
+                    "filter_group": "group_characters{__subject_hero_id__}"
+                  }
+                ],
+                "alteration": 1
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Make the Call"><h2>Make the Call</h2>
+<img src="https://marvelcdb.com/bundles/cards/01071.png" class="resize"/>
+    <pre>{
+  "manual": {
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#add_script"><span class="tooltiptext">adds a script to a target card</span>add_script</span></a>",
+        "end_condition": "before_card_moved_to_board",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "subject": "tutor",
+        "subject_count": "all",
+        "src_container": "any_discard",
+        "filter_state_tutor": [
+          {
+            "filter_group": "group_allies"
+          }
+        ],
+        "script": {
+          "manual": {
+            "pile": [
+              {
+                "name": "<a class="tooltip" href="#pay_regular_cost"><span class="tooltiptext">trigger to initiate the card's cost payment</span>pay_regular_cost</span></a>",
+                "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+                "cost": "card_cost"
+              },
+              {
+                "name": "<a class="tooltip" href="#move_card_to_board"><span class="tooltiptext">move [subjects] cards to the boards, sometimes specifying a grid location</span>move_card_to_board</span></a>",
+                "subject": "self"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Maria Hill"><h2>Maria Hill</h2>
+<img src="https://marvelcdb.com/bundles/cards/01067.png" class="resize"/>
+    <pre>{
+  "card_moved_to_board": {
+    "trigger": "self",
+    "board": {
+      "Draw": [
+        {
+          "name": "<a class="tooltip" href="#draw_cards"><span class="tooltiptext">the owner of [subject]cards draws cards</span>draw_cards</span></a>",
+          "subject": "boardseek",
+          "subject_count": "all",
+          "amount": 1,
+          "filter_state_seek": [
+            {
+              "filter_group": "group_identities"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}</pre>
+</section>
+<section id="Masterplan"><h2>Masterplan</h2>
+<img src="https://marvelcdb.com/bundles/cards/01192.png" class="resize"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "add_threat",
+        "amount": 4,
+        "subject": "boardseek",
+        "subject_count": "all",
+        "filter_state_seek": [
+          {
+            "filter_properties": {
+              "type_code": "side_scheme"
+            }
+          }
+        ],
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+      },
+      {
+        "<a class="tooltip" href="#is_else"><span class="tooltiptext">a part of the script that will explicitly be executed <em>if</em> the cost cannot be paid</span>is_else</span></a>": true,
+        "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+        "subject": "grab_until",
+        "src_container": "deck_villain",
+        "dest_container": "discard_villain",
+        "filter_state_move_to_container_until": [
+          {
+            "filter_properties": {
+              "type_code": "side_scheme"
+            }
+          }
+        ]
+      },
+      {
+        "<a class="tooltip" href="#is_else"><span class="tooltiptext">a part of the script that will explicitly be executed <em>if</em> the cost cannot be paid</span>is_else</span></a>": true,
+        "name": "reveal_encounters",
+        "subject": "index",
+        "subject_count": 1,
+        "subject_index": "retrieve_integer",
+        "src_container": "deck_villain"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Mockingbird - Bobbi Morse"><h2>Mockingbird - Bobbi Morse</h2>
+<img src="https://marvelcdb.com/bundles/cards/01083.png" class="resize"/>
+    <pre>{
+  "card_moved_to_board": {
+    "trigger": "self",
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+        "modification": 1,
+        "token_name": "stunned",
+        "needs_subject": true,
+        "subject": "target",
+        "filter_state_subject": [
+          {
+            "filter_group": "group_enemies"
+          }
+        ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Nick Fury"><h2>Nick Fury</h2>
+<img src="https://marvelcdb.com/bundles/cards/01084.png" class="resize"/>
+    <pre>{
+  "card_moved_to_board": {
+    "trigger": "self",
+    "board": {
+      "_rules": {
+        "forced": true
+      },
+      "remove 2 threat": [
+        {
+          "name": "<a class="tooltip" href="#remove_threat"><span class="tooltiptext">removes threat from [subject] schemes. Also see thwart.</span>remove_threat</span></a>",
+          "amount": 2,
+          "subject": "target",
+          "needs_subject": true,
+          "filter_state_subject": [
+            {
+              "filter_group": "group_schemes"
+            }
+          ]
+        }
+      ],
+      "draw 3": [
+        {
+          "name": "<a class="tooltip" href="#draw_cards"><span class="tooltiptext">the owner of [subject]cards draws cards</span>draw_cards</span></a>",
+          "amount": 3
+        }
+      ],
+      "deal 4 damage": [
+        {
+          "name": "<a class="tooltip" href="#deal_damage"><span class="tooltiptext">deal damage to [subject]. also see receive_damage</span>deal_damage</span></a>",
+          "subject": "target",
+          "amount": 4,
+          "needs_subject": true,
+          "filter_state_subject": [
+            {
+              "filter_group": "group_enemies"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "round_ended": {
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+        "subject": "self",
+        "dest_container": "discard"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Peter Parker"><h2>Peter Parker</h2>
+    <pre>{
+  "once_per_round": {
+    "__name__": "_peter_resource"
+  },
+  "resource": {
+    "board": {
+      "add resource": [
+        {
+          "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+          "subject": "self",
+          "modification": -1,
+          "token_name": "_peter_resource",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+        },
+        {
+          "name": "<a class="tooltip" href="#add_resource"><span class="tooltiptext">adds resources based on specific computations</span>add_resource</span></a>",
+          "amount": 1,
+          "resource_name": "mental"
+        }
+      ]
+    }
+  }
+}</pre>
+</section>
+<section id="Photonic Blast"><h2>Photonic Blast</h2>
+<img src="https://marvelcdb.com/bundles/cards/01013.png" class="resize"/>
+    <pre>{
+  "manual": {
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "hero_action"
+        ]
+      },
+      {
+        "name": "attack",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "subject": "target",
+        "amount": 5,
+        "filter_state_subject": [
+          {
+            "filter_group": "group_enemies"
+          }
+        ],
+        "tags": [
+          "attack"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#draw_cards"><span class="tooltiptext">the owner of [subject]cards draws cards</span>draw_cards</span></a>",
+        "amount": {
+          "if": {
+            "func_name": "<a class="tooltip" href="#paid_with_includes"><span class="tooltiptext">returns true if this ability was paid for with a specific type of resource</span>paid_with_includes</span></a>",
+            "func_params": {
+              "energy": 1
+            }
+          },
+          "then": 1,
+          "else": 0
+        }
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Rhino - 2"><h2>Rhino - 2</h2>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#deal_encounter"><span class="tooltiptext">deal an encounter to current hero</span>deal_encounter</span></a>",
+        "immediate_reveal": true,
+        "subject": "tutor",
+        "src_container": "deck_villain",
+        "filter_state_tutor": [
+          {
+            "filter_properties": {
+              "Name": "Breakin' & Takin'"
+            }
+          }
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#deal_encounter"><span class="tooltiptext">deal an encounter to current hero</span>deal_encounter</span></a>",
+        "immediate_reveal": true,
+        "subject": "tutor",
+        "src_container": "discard_villain",
+        "filter_state_tutor": [
+          {
+            "filter_properties": {
+              "Name": "Breakin' & Takin'"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Rhino - 3"><h2>Rhino - 3</h2>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+        "token_name": "stunned",
+        "modification": 1,
+        "subject": "boardseek",
+        "subject_count": "all",
+        "filter_state_seek": [
+          {
+            "filter_properties": {
+              "type_code": "hero"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Shadow of the Past"><h2>Shadow of the Past</h2>
+<img src="https://marvelcdb.com/bundles/cards/01190.png" class="resize"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#reveal_nemesis"><span class="tooltiptext">Reveals the current hero's nemesis</span>reveal_nemesis</span></a>"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Shocker"><h2>Shocker</h2>
+<img src="https://marvelcdb.com/bundles/cards/01103.png" class="resize"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#deal_damage"><span class="tooltiptext">deal damage to [subject]. also see receive_damage</span>deal_damage</span></a>",
+        "amount": 1,
+        "subject": "boardseek",
+        "subject_count": "all",
+        "filter_state_seek": [
+          {
+            "filter_properties": {
+              "type_code": "hero"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Spider-Man"><h2>Spider-Man</h2>
+<img src="https://marvelcdb.com/bundles/cards/01001a.png" class="resize"/>
+    <pre>{
+  "interrupt": {
+    "event_name": "enemy_initiates_attack",
+    "is_optional_board": true,
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#draw_cards"><span class="tooltiptext">the owner of [subject]cards draws cards</span>draw_cards</span></a>",
+        "amount": 1
+      }
+    ],
+    "filter_target_hero": "Spider-Man",
+    "filter_state_trigger": [
+      {
+        "filter_group": "group_villains"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Spider-Tracer"><h2>Spider-Tracer</h2>
+<img src="https://marvelcdb.com/bundles/cards/01007.png" class="resize"/>
+    <pre>{
+  "manual": {
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#attach_to_card"><span class="tooltiptext">attach script owner to subject</span>attach_to_card</span></a>",
+        "subject": "target",
+        "needs_subject": true,
+        "filter_state_subject": [
+          {
+            "filter_properties": {
+              "type_code": "minion"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "interrupt": {
+    "event_name": "card_dies",
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#remove_threat"><span class="tooltiptext">removes threat from [subject] schemes. Also see thwart.</span>remove_threat</span></a>",
+        "amount": 3,
+        "subject": "target",
+        "needs_subject": true,
+        "filter_state_subject": [
+          {
+            "filter_group": "group_schemes"
+          }
+        ]
+      }
+    ],
+    "trigger": "host"
+  }
+}</pre>
+</section>
+<section id="Spider-Woman - Jessica Drew"><h2>Spider-Woman - Jessica Drew</h2>
+<img src="https://marvelcdb.com/bundles/cards/01011.png" class="resize"/>
+    <pre>{
+  "card_moved_to_board": {
+    "trigger": "self",
+    "is_optional_board": true,
+    "board": {
+      "Confuse Villain": [
+        {
+          "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+          "modification": 1,
+          "token_name": "confused",
+          "subject": "villain"
+        }
+      ]
+    }
+  }
+}</pre>
+</section>
+<section id="Stampede"><h2>Stampede</h2>
+<img src="https://marvelcdb.com/bundles/cards/01106.png" class="resize"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "hero_form"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#villain_attacks_you"><span class="tooltiptext">Triggers an attack of the villain against current hero</span>villain_attacks_you</span></a>",
+        "tags": [
+          "stun_if_damage"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#surge"><span class="tooltiptext">triggers an encounter surge</span>surge</span></a>",
+        "<a class="tooltip" href="#is_else"><span class="tooltiptext">a part of the script that will explicitly be executed <em>if</em> the cost cannot be paid</span>is_else</span></a>": true
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Surveillance Team"><h2>Surveillance Team</h2>
+<img src="https://marvelcdb.com/bundles/cards/01064.png" class="resize"/>
+    <pre>{
+  "uses": {
+    "__name__": "snoop",
+    "__amount__": 3
+  },
+  "manual": {
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "action_ability"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#exhaust_card"><span class="tooltiptext">exhausts [subject] cards. See ready_card</span>exhaust_card</span></a>",
+        "subject": "self",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+      },
+      {
+        "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+        "subject": "self",
+        "modification": -1,
+        "token_name": "snoop",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+      },
+      {
+        "name": "<a class="tooltip" href="#remove_threat"><span class="tooltiptext">removes threat from [subject] schemes. Also see thwart.</span>remove_threat</span></a>",
+        "amount": 1,
+        "subject": "target",
+        "needs_subject": true,
+        "filter_state_subject": [
+          {
+            "filter_group": "group_schemes"
+          }
+        ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Sweeping Swoop"><h2>Sweeping Swoop</h2>
+<img src="https://marvelcdb.com/bundles/cards/01168.png" class="resize"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+        "token_name": "stunned",
+        "modification": 1,
+        "subject": "my_hero"
+      },
+      {
+        "name": "<a class="tooltip" href="#surge"><span class="tooltiptext">triggers an encounter surge</span>surge</span></a>",
+        "amount": {
+          "if": {
+            "func_name": "<a class="tooltip" href="#card_is_in_play"><span class="tooltiptext">Returns true if card_name is in play</span>card_is_in_play</span></a>",
+            "func_params": {
+              "card_name": "Vulture"
+            }
+          },
+          "then": 1,
+          "else": 0
+        }
+      }
+    ]
+  },
+  "boost": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#replacement_effect"><span class="tooltiptext">replaces some task on the stack with something else (e.g. damage replaced, targets, replaced, etc...)</span>replacement_effect</span></a>",
+        "subject": "current_activation",
+        "replacements": {
+          "additional_tags": [
+            "stun_if_damage"
+          ]
+        }
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Swinging Web Kick"><h2>Swinging Web Kick</h2>
+<img src="https://marvelcdb.com/bundles/cards/01005.png" class="resize"/>
+    <pre>{
+  "manual": {
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "hero_action"
+        ]
+      },
+      {
+        "name": "attack",
+        "subject": "target",
+        "amount": 8,
+        "needs_subject": true,
+        "filter_state_subject": [
+          {
+            "filter_group": "group_enemies"
+          }
+        ],
+        "tags": [
+          "hero_action",
+          "attack"
+        ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Tenacity"><h2>Tenacity</h2>
+<img src="https://marvelcdb.com/bundles/cards/01093.png" class="resize"/>
+    <pre>{
+  "manual": {
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "hero_action"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#pay_cost"><span class="tooltiptext">pay a specific cost (not necessarily the card's cost</span>pay_cost</span></a>",
+        "cost": {
+          "physical": 1
+        },
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+      },
+      {
+        "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+        "dest_container": "discard",
+        "subject": "self",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+      },
+      {
+        "name": "<a class="tooltip" href="#ready_card"><span class="tooltiptext">ready a specific card (also see exhaust)</span>ready_card</span></a>",
+        "subject": "my_hero"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="The Power of Justice"><h2>The Power of Justice</h2>
+<img src="https://marvelcdb.com/bundles/cards/01062.png" class="resize"/>
+    <pre>{
+  "resource": {
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#nop"><span class="tooltiptext">does nothing, but used for example to ensure some conditioi is met, as a cost</span>nop</span></a>",
+        "fail_cost_on_skip": true,
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "filter_state_trigger": [
+          {
+            "filter_properties": {
+              "faction_code": "justice"
+            }
+          }
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#add_resource"><span class="tooltiptext">adds resources based on specific computations</span>add_resource</span></a>",
+        "amount": 2,
+        "resource_name": "wild"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="The Power of Leadership"><h2>The Power of Leadership</h2>
+<img src="https://marvelcdb.com/bundles/cards/01072.png" class="resize"/>
+    <pre>{
+  "resource": {
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#nop"><span class="tooltiptext">does nothing, but used for example to ensure some conditioi is met, as a cost</span>nop</span></a>",
+        "fail_cost_on_skip": true,
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "filter_state_trigger": [
+          {
+            "filter_properties": {
+              "faction_code": "leadership"
+            }
+          }
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#add_resource"><span class="tooltiptext">adds resources based on specific computations</span>add_resource</span></a>",
+        "amount": 2,
+        "resource_name": "wild"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="The Psyche-Magnitron"><h2>The Psyche-Magnitron</h2>
+<img src="https://marvelcdb.com/bundles/cards/01176.png" class="resize_horizontal"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "add_threat",
+        "amount": "per_boardseek",
+        "subject": "self",
+        "per_boardseek": {
+          "subject": "boardseek",
+          "subject_count": "all",
+          "filter_state_seek": [
+            {
+              "filter_group": "group_identities"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="The Triskelion"><h2>The Triskelion</h2>
+<img src="https://marvelcdb.com/bundles/cards/01073.png" class="resize"/>
+    <pre>{
+  "alterants": {
+    "board": [
+      {
+        "filter_task": "get_property",
+        "filter_property_name": "ally_limit",
+        "filter_same_controller": true,
+        "filter_state_trigger": [
+          {
+            "filter_group": "group_identities"
+          }
+        ],
+        "alteration": 1
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="The Vulture's Plans"><h2>The Vulture's Plans</h2>
+<img src="https://marvelcdb.com/bundles/cards/01169.png" class="resize"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+        "dest_container": "discard",
+        "src_container": "hand",
+        "subject": "index",
+        "subject_count": 1,
+        "subject_index": "random",
+        "<a class="tooltip" href="#for_each_player"><span class="tooltiptext">this will internally duplicate this part of the script for each hero in game (and assign containers accordingly for each player, e.g hand becomes hand1, hand2, hand3,)</span>for_each_player</span></a>": true
+      },
+      {
+        "name": "add_threat",
+        "amount": {
+          "func_name": "<a class="tooltip" href="#count_resource_types"><span class="tooltiptext">counts the number of resource *types* in a list of subjects</span>count_resource_types</span></a>",
+          "func_params": {
+            "subject": "all_previous"
+          }
+        },
+        "subject": "boardseek",
+        "filter_state_seek": [
+          {
+            "filter_properties": {
+              "type_code": "main_scheme"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Under Fire"><h2>Under Fire</h2>
+<img src="https://marvelcdb.com/bundles/cards/01193.png" class="resize"/>
+    <pre>{
+  "card_moved_to_pile": {
+    "trigger": "self",
+    "filter_destination": "encounters_reveal",
+    "pile": [
+      {
+        "name": "<a class="tooltip" href="#surge"><span class="tooltiptext">triggers an encounter surge</span>surge</span></a>"
+      }
+    ]
+  },
+  "reveal": {
+    "all": [
+      {
+        "name": "reveal_encounter",
+        "subject": "index",
+        "subject_count": 1,
+        "src_container": "deck_villain"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Vision"><h2>Vision</h2>
+<img src="https://marvelcdb.com/bundles/cards/01068.png" class="resize"/>
+    <pre>{
+  "once_per_round": {
+    "__name__": "_vision_ability"
+  },
+  "manual": {
+    "board": {
+      "+2 Attack": [
+        {
+          "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+          "modification": -1,
+          "subject": "self",
+          "token_name": "_vision_ability",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+        },
+        {
+          "name": "<a class="tooltip" href="#pay_cost"><span class="tooltiptext">pay a specific cost (not necessarily the card's cost</span>pay_cost</span></a>",
+          "cost": {
+            "energy": 1
+          },
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+        },
+        {
+          "name": "<a class="tooltip" href="#add_script"><span class="tooltiptext">adds a script to a target card</span>add_script</span></a>",
+          "end_condition": "phase_ended",
+          "subject": "self",
+          "script": {
+            "alterants": {
+              "board": [
+                {
+                  "filter_task": "get_property",
+                  "filter_property_name": "attack",
+                  "trigger": "self",
+                  "alteration": 2
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "+2 Thwart": [
+        {
+          "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+          "modification": -1,
+          "subject": "self",
+          "token_name": "_vision_ability",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+        },
+        {
+          "name": "<a class="tooltip" href="#pay_cost"><span class="tooltiptext">pay a specific cost (not necessarily the card's cost</span>pay_cost</span></a>",
+          "cost": {
+            "energy": 1
+          },
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+        },
+        {
+          "name": "<a class="tooltip" href="#add_script"><span class="tooltiptext">adds a script to a target card</span>add_script</span></a>",
+          "end_condition": "phase_ended",
+          "subject": "self",
+          "script": {
+            "alterants": {
+              "board": [
+                {
+                  "filter_task": "get_property",
+                  "filter_property_name": "<a class="tooltip" href="#thwart"><span class="tooltiptext">either removes a given amount of threat, or starts a thwart action from a character. Also see remove_threat</span>thwart</span></a>",
+                  "trigger": "self",
+                  "alteration": 2
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}</pre>
+</section>
+<section id="Vulture"><h2>Vulture</h2>
+<img src="https://marvelcdb.com/bundles/cards/01167.png" class="resize"/>
+    <pre>{
+  "quickstrike": {}
+}</pre>
+</section>
+<section id="Web-Shooter"><h2>Web-Shooter</h2>
+<img src="https://marvelcdb.com/bundles/cards/01008.png" class="resize"/>
+    <pre>{
+  "uses": {
+    "__name__": "web",
+    "__amount__": 3
+  },
+  "resource": {
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "hero_resource"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#exhaust_card"><span class="tooltiptext">exhausts [subject] cards. See ready_card</span>exhaust_card</span></a>",
+        "subject": "self",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+      },
+      {
+        "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+        "subject": "self",
+        "modification": -1,
+        "token_name": "web",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+      },
+      {
+        "name": "<a class="tooltip" href="#add_resource"><span class="tooltiptext">adds resources based on specific computations</span>add_resource</span></a>",
+        "amount": 1,
+        "resource_name": "wild"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Webbed Up"><h2>Webbed Up</h2>
+<img src="https://marvelcdb.com/bundles/cards/01009.png" class="resize"/>
+    <pre>{
+  "manual": {
+    "hand": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "hero_form"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#attach_to_card"><span class="tooltiptext">attach script owner to subject</span>attach_to_card</span></a>",
+        "subject": "target",
+        "needs_subject": true,
+        "filter_state_subject": [
+          {
+            "filter_group": "group_enemies",
+            "filter_max_per_host": 1
+          }
+        ]
+      }
+    ]
+  },
+  "interrupt": {
+    "event_name": "enemy_initiates_attack",
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
+        "modification": 1,
+        "token_name": "stunned",
+        "needs_subject": true,
+        "subject": "host"
+      },
+      {
+        "name": "<a class="tooltip" href="#prevent"><span class="tooltiptext">prevents damage (also see replacement_effect)</span>prevent</span></a>",
+        "subject": "interrupted_event"
+      },
+      {
+        "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+        "subject": "self",
+        "dest_container": "discard"
+      }
+    ],
+    "filter_state_trigger": [
+      {
+        "filter_is_host_of": "self"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Yon-Rogg"><h2>Yon-Rogg</h2>
+<img src="https://marvelcdb.com/bundles/cards/01177.png" class="resize"/>
+    <pre>{
+  "enemy_attack_happened": {
+    "board": [
+      {
+        "name": "add_threat",
+        "amount": 1,
+        "subject": "boardseek",
+        "subject_count": 1,
+        "filter_state_seek": [
+          {
+            "filter_properties": {
+              "Name": "The Psyche-Magnitron"
+            }
+          }
+        ]
+      }
+    ],
+    "trigger": "self"
+  }
+}</pre>
+</section>
+<section id="Yon-Rogg's Treason"><h2>Yon-Rogg's Treason</h2>
+<img src="https://marvelcdb.com/bundles/cards/01179.png" class="resize"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "discard",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "subject": "tutor",
+        "src_container": "hand",
+        "subject_count": "all",
+        "filter_state_tutor": [
+          {
+            "filter_properties": {
+              "resource_energy": 1,
+              "comparison": "ge"
+            }
+          }
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#surge"><span class="tooltiptext">triggers an encounter surge</span>surge</span></a>",
+        "<a class="tooltip" href="#is_else"><span class="tooltiptext">a part of the script that will explicitly be executed <em>if</em> the cost cannot be paid</span>is_else</span></a>": true
+      }
+    ]
+  }
+}</pre>
+</section>
+</main>
+
+</body>
+</html>

@@ -1105,7 +1105,7 @@ func identity_has_trait(params) -> bool:
 	return hero.has_trait(params)	
 
 func card_is_in_play(params) -> bool:
-	var card_name = params.get("name", "")
+	var card_name = params.get("card_name", "")
 	if !card_name:
 		return false
 	var card = cfc.NMAP.board.find_card_by_name(card_name)

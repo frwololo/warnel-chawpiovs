@@ -387,7 +387,7 @@ func prevent(script: ScriptTask) -> int:
 		return retcode	
 
 	if script.script_definition.has("amount"): #this is a partial prevention effect
-		var stack_object = gameData.theStack.find_last_event()
+		var stack_object = gameData.theStack.find_last_event_before_me(script)
 		if (!stack_object):	
 			return CFConst.ReturnCode.FAILED
 		
@@ -395,7 +395,7 @@ func prevent(script: ScriptTask) -> int:
 	else:	
 		#Find the event on the stack and remove it
 		#TOdo take into action subject, etc...
-		var _result = gameData.theStack.delete_last_event()
+		var _result = gameData.theStack.delete_last_event(script)
 		
 	return retcode		
 	
@@ -410,7 +410,7 @@ func replacement_effect(script: ScriptTask) -> int:
 	#TOdo take into action subject, etc...
 	match subject:
 		SP.KEY_SUBJECT_V_INTERUPTED_EVENT:
-			var stack_object = gameData.theStack.find_last_event()
+			var stack_object = gameData.theStack.find_last_event_before_me(script)
 			if (!stack_object):	
 				return CFConst.ReturnCode.FAILED
 			

@@ -34,6 +34,7 @@ func get_team_size():
 	return _team_size
 
 func _init():
+	gameData.stop_game()
 	init_hero_zones()
 
 func set_groups(grid_or_pile, additional_groups:= []):
@@ -244,7 +245,8 @@ func post_ready_load():
 	var func_return = current_villain.execute_scripts(current_villain, "reveal")
 	while func_return is GDScriptFunctionState && func_return.is_valid():
 		func_return = func_return.resume()		
-		
+	
+	gameData.start_game()	
 	cfc.remove_ongoing_process(self, "board_setup")	
 
 func get_villain_card():
@@ -313,6 +315,7 @@ func get_all_cards_by_property(property:String, value):
 	return cardsArray	
 
 func reset_board():
+	gameData.stop_game()
 	delete_all_cards()
 	_team_size = 0
 	init_hero_zones()
@@ -714,6 +717,7 @@ func savestate_to_json() -> Dictionary:
 	return result
 	
 func loadstate_from_json(json:Dictionary):
+	gameData.stop_game()
 	cfc.set_game_paused(true)
 	
 	var json_data = json.get("board", null)
@@ -754,7 +758,8 @@ func loadstate_from_json(json:Dictionary):
 	
 	rpc("cards_preloaded") #tell everyone we're done preloading
 
-	cfc.set_game_paused(false)	
+	cfc.set_game_paused(false)
+	gameData.start_game()	
 	return
 #The game engine doesn't really have a concept of double sided cards, so instead,
 #when flipping such a card, we destroy it and create a new card

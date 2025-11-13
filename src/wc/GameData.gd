@@ -86,6 +86,16 @@ var _targeting_timer:= 0.2
 var _network_ack: Dictionary = {}
 var _multiplayer_desync = null
 var _game_over := false
+var _game_started := false 
+
+func stop_game():
+	_game_started = false
+
+func start_game():
+	_game_started = true
+
+func is_game_started():
+	return _game_started
 
 func is_announce_ongoing():
 	return theAnnouncer and theAnnouncer.is_announce_ongoing()
@@ -717,6 +727,10 @@ func enemy_activates() :
 			return
 		
 		EnemyAttackStatus.BOOST_CARDS:
+			#The "commit_scheme" or "enemy_attack" steps have set this variable,
+			#this is a good way to check that activity happened
+			if !enemy.activity_script:
+				return
 			if enemy.next_boost_card_to_reveal():
 				var stackEvent = SimplifiedStackScript.new({"name": "enemy_boost"}, enemy)
 				theStack.add_script(stackEvent)
@@ -890,9 +904,16 @@ func can_proceed_encounter()-> bool:
 	return can_proceed_activation()
 
 func can_proceed_activation()-> bool:
+	
+	#boost cards first go into the
+	#pending_local_scripts stack
+	#once they are picked up by the server, they go intp the actual stack
+	#they need to execute before we can proceed with the next steps
 	if theStack.pending_local_scripts:
+		display_debug("can't proceed because of pending local scripts" + to_json(theStack.pending_local_scripts))
 		return false
 	if theStack.stack:
+		display_debug("can't proceed because of stack data" + to_json(theStack.stack))
 		return false
 	return true	
 
@@ -973,8 +994,8 @@ func reveal_encounter(target_id = 0):
 		EncounterStatus.PENDING_COMPLETE:
 			#there has to be a better way.... wait for a signal somehow ?
 #			if !gameData.theStack.is_phasecontainer_allowed_to_proceed():
-			if !theStack.is_empty():
-				return	
+#			if !theStack.is_empty():
+#				return	
 			if cfc.get_modal_menu():
 				return
 			
@@ -1249,8 +1270,15 @@ func filter_trigger(
 
 	#Generally speaking I don't want to trigger
 	#on facedown cards such as boost cards
-	if trigger_card and !trigger_card.is_faceup:
-		return false
+	#(e.g. bug with Hawkeye, Charge, and a bunch of others)
+	if trigger_card:
+		if !trigger_card.is_faceup:
+			return false
+		if trigger_card.is_boost: 
+			if trigger!= "boost":
+				return false
+			if trigger_card!= owner_card:
+				return false
 
 	#from this point this is only checks for interrupts
 
@@ -1344,7 +1372,7 @@ func cleanup_post_game():
 	current_round = 1
 	_multiplayer_desync = null
 	_clients_system_status = {}
-	phaseContainer.flush_debug_display()
+	flush_debug_display()
 	theStack.reset()
 
 	theGameObserver.reset()
@@ -1571,3 +1599,7 @@ func pending_network_ack():
 	if _clients_system_status:
 		return true
 	return false
+
+func flush_debug_display():
+	if (phaseContainer and is_instance_valid(phaseContainer)):
+		phaseContainer.flush_debug_display()

@@ -8,11 +8,15 @@ extends Node
 var default_announcer_minimum_time: float= 2
 var announcer_minimum_time: float= 2
 
-var ongoing_announce_object = null
-var ongoing_announce:= ""
-var is_blocking:= false
-var storage: Dictionary = {}
-var current_delta := 0.0
+#
+#{
+#	"announce",
+#	"object"
+#	"is_blocking",
+#	"storage",
+#	"current_delta"
+#}
+var ongoing_announces = []
 var _skip_announcer := false
 
 const _SIMPLE_ANNOUNCE_SCENE_FILE = CFConst.PATH_CUSTOM + "Announce.tscn"
@@ -57,31 +61,41 @@ func _step_started(details:Dictionary):
 			var filename = villain_card.get_art_filename()
 			settings["top_texture_filename"] = filename			
 	if settings.get("text", ""):
-		ongoing_announce = "phase_starts"
-		ongoing_announce_object = current_step
-		var func_return = call("init_simple_announce", settings)
+		var announce = {
+			"announce" :"phase_starts",
+			"object" : current_step,
+			"is_blocking" : false,
+			"storage": {},
+			"current_delta" : 0.0
+		}
+		ongoing_announces.append(announce)		
+		var func_return = call("init_simple_announce", settings, announce)
 		while func_return is GDScriptFunctionState && func_return.is_valid():
 			func_return = func_return.resume()
 	return #found one so we exit early
 
 func _process(delta: float):
+	var to_cleanup = []	
 	if (_skip_announcer):
-		if typeof(ongoing_announce_object) == TYPE_DICTIONARY and ongoing_announce_object.get("_forced", false):
-			pass
-		else:			
-			cleanup()
-			return
+		for announce in ongoing_announces:
+			var ongoing_announce_object = announce["object"]
+			if typeof(ongoing_announce_object) == TYPE_DICTIONARY and ongoing_announce_object.get("_forced", false):
+				break
+			else:			
+				to_cleanup.append(announce)
+		for announce in to_cleanup:		
+			cleanup(announce)
+		to_cleanup = []		
 	
-	current_delta += delta
+	for announce in ongoing_announces:
+		announce["current_delta"] += delta
 				
-	if ongoing_announce:
-		var still_processing = call("process_" + _script_name_to_function[ongoing_announce])
+		var still_processing = call("process_" + _script_name_to_function[announce["announce"]], announce)
 		if !still_processing:
-			cleanup()
-	else:
-		current_delta = 0
-#		find_event_to_announce()
-	
+			to_cleanup.append(announce)
+
+	for announce in to_cleanup:		
+		cleanup(announce)
 			
 
 
@@ -90,58 +104,31 @@ func set_announcer_minimum_time(_time):
 	announcer_minimum_time = _time
 
 func get_blocking_announce():
-	if ongoing_announce and is_blocking:
-		return ongoing_announce
+	for announce in ongoing_announces:	
+		var is_blocking = announce["is_blocking"]
+		if is_blocking:
+			return announce["announce"]
 	return null
 
 func is_announce_ongoing():
-	if ongoing_announce:
+	if ongoing_announces:
 		return true
 	return false
 
-func cleanup():
-	if !ongoing_announce:
+func cleanup(announce = null):
+	#not passing anything means cleanup everything
+	if !announce:
+		for a in ongoing_announces:
+			cleanup(a)
 		return
-	var func_return = call("cleanup_" + _script_name_to_function[ongoing_announce])
+	var ongoing_announce = announce["announce"]		
+	var func_return = call("cleanup_" + _script_name_to_function[ongoing_announce], announce)
 	while func_return is GDScriptFunctionState && func_return.is_valid():
 		func_return = func_return.resume()
-	storage = {}
-	ongoing_announce = ""
-	ongoing_announce_object = null
+
 	announcer_minimum_time = default_announcer_minimum_time
-	current_delta = 0
-	is_blocking = false
+	ongoing_announces.erase(announce)
 	
-#func find_event_to_announce():
-#	var theStack:GlobalScriptStack = gameData.theStack
-#	if !theStack:
-#		cleanup()
-#		return
-#
-#	var current_script = theStack.find_last_event()
-#	if !current_script:
-#		cleanup()
-#		return
-#
-#	#only start an event from stack if it isn't in motion
-#	if !theStack.interrupt_mode in [GlobalScriptStack.InterruptMode.NOBODY_IS_INTERRUPTING, GlobalScriptStack.InterruptMode.HERO_IS_INTERRUPTING] :
-#		cleanup()
-#		return
-#
-#	if current_script == ongoing_announce_object:
-#		return
-#	else:
-#		cleanup()
-#		var tasks = current_script.get_tasks()
-#		for task in tasks:		
-#			if _script_name_to_function.has(task.script_name):
-#				var func_return = call("init_" + _script_name_to_function[task.script_name], task)
-#				while func_return is GDScriptFunctionState && func_return.is_valid():
-#					func_return = func_return.resume()
-#				if (func_return):
-#					ongoing_announce = task.script_name
-#					ongoing_announce_object = current_script
-#				return #found one so we exit early
 
 func announce_from_stack(script):
 	if (_skip_announcer):
@@ -150,17 +137,23 @@ func announce_from_stack(script):
 	var tasks = script.get_tasks()
 	for task in tasks:		
 		if _script_name_to_function.has(task.script_name):
-			var func_return = call("init_" + _script_name_to_function[task.script_name], task)
+			var announce = {
+				"announce" :task.script_name,
+				"object" : script,
+				"is_blocking" : false,
+				"storage": {},
+				"current_delta" : 0.0,
+			}			
+			var func_return = call("init_" + _script_name_to_function[task.script_name], task, announce)
 			while func_return is GDScriptFunctionState && func_return.is_valid():
 				func_return = func_return.resume()
 			if (func_return):
-				current_delta = 0
-				ongoing_announce = task.script_name
-				ongoing_announce_object = script
+				ongoing_announces.append(announce)					
 				set_announcer_minimum_time(3.0)
 			return #found one so we exit early	
 
-func init_receive_damage(script:ScriptTask) -> bool:
+func init_receive_damage(script:ScriptTask, announce:Dictionary) -> bool:
+	var storage = announce["storage"]
 	storage["arrows"] = []
 		
 	var tags: Array = script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
@@ -192,10 +185,11 @@ func init_receive_damage(script:ScriptTask) -> bool:
 		targeting_arrow.set_destination(card.global_position)
 		targeting_arrow._draw_targeting_arrow()
 
-	is_blocking = true
+	announce["is_blocking"] = true
 	return true
 	
-func process_receive_damage() -> bool:
+func process_receive_damage(announce) -> bool:
+	var storage = announce["storage"]
 	var arrows = storage["arrows"]
 	for arrow in arrows:
 		arrow._draw_targeting_arrow()
@@ -207,17 +201,17 @@ func process_receive_damage() -> bool:
 	var interrupt_mode = gameData.theStack.interrupt_mode
 	match interrupt_mode:
 		GlobalScriptStack.InterruptMode.NOBODY_IS_INTERRUPTING :		
-			is_blocking = true
-			if current_delta > 	announcer_minimum_time:
+			announce["is_blocking"] = true
+			if announce["current_delta"] > 	announcer_minimum_time:
 				return false
 			return true
 #		GlobalScriptStack.InterruptMode.HERO_IS_INTERRUPTING,\
 #		GlobalScriptStack.InterruptMode.FORCED_INTERRUPT_CHECK,\
 #		GlobalScriptStack.InterruptMode.OPTIONAL_INTERRUPT_CHECK:
 		_:
-			is_blocking = false
-			if !gameData.theStack.has_script(ongoing_announce_object) and\
-				 (current_delta > 	announcer_minimum_time):
+			announce["is_blocking"] = false
+			if !gameData.theStack.has_script(announce["object"]) and\
+				 (announce["current_delta"]  > 	announcer_minimum_time):
 				return false
 			return true
 #		_:
@@ -227,70 +221,81 @@ func process_receive_damage() -> bool:
 #
 #			return true		
 	
-func cleanup_receive_damage():	
+func cleanup_receive_damage(announce):
+	var storage = announce["storage"]	
 	var arrows = storage["arrows"]
 	for arrow in arrows:
 		arrow.get_parent().remove_child(arrow)
 		arrow.queue_free()
 
 
-func init_simple_announce(settings:Dictionary):
+func init_simple_announce(settings:Dictionary, announce):
 	var top_color:Color = settings.get("top_color", DEFAULT_TOP_COLOR)
 	var bottom_color:Color = settings.get("bottom_color", DEFAULT_BOTTOM_COLOR)
 	var bg_color:Color = settings.get("bg_color", DEFAULT_BG_COLOR)
 	
 	
-	is_blocking = true
-	var announce = _SIMPLE_ANNOUNCE_SCENE.instance()
+	announce["is_blocking"] = true
+	var storage = announce["storage"]
+	var announce_scene = _SIMPLE_ANNOUNCE_SCENE.instance()
 	if (settings.has("text")):
-		announce.set_text(settings["text"])
+		 announce_scene .set_text(settings["text"])
 
 	if (settings.has("bottom_text")):
-		announce.set_text_bottom(settings["bottom_text"])	
+		 announce_scene .set_text_bottom(settings["bottom_text"])	
 
 	if (settings.has("top_text")):
-		announce.set_text_top(settings["top_text"])	
+		 announce_scene .set_text_top(settings["top_text"])	
 	
 	if (settings.has("animation_style")):
-		announce.set_animation_style(settings["animation_style"])
+		announce_scene .set_animation_style(settings["animation_style"])
 		
-	announce.set_bg_colors(top_color, bottom_color)
-	announce.set_bg_color(bg_color)	
+	announce_scene.set_bg_colors(top_color, bottom_color)
+	announce_scene.set_bg_color(bg_color)	
+	
 	if settings.has("top_texture_filename"):
-		announce.set_top_texture(settings["top_texture_filename"])
+		announce_scene.set_top_texture(settings["top_texture_filename"])
 	if settings.has("bottom_texture_filename"):
-		announce.set_bottom_texture(settings["bottom_texture_filename"])		
+		announce_scene.set_bottom_texture(settings["bottom_texture_filename"])		
 
 	if settings.has("duration"):
-		announce.set_duration(settings["duration"])
+		 announce_scene.set_duration(settings["duration"])
 
 	if settings.has("scale"):
-		announce.set_scale(settings["scale"])
+		announce_scene.set_scale(settings["scale"])
 
-	cfc.NMAP.board.add_child(announce)
-	storage["announce"] = announce
+	cfc.NMAP.board.add_child(announce_scene)
+	storage["announce"] = announce_scene
 	
-func process_simple_announce() -> bool:
+func process_simple_announce(announce) -> bool:
+	var storage=announce["storage"]
+#	var tmp = 1
 	if !storage["announce"].ongoing:
 		return false
 	return true
 	
-func cleanup_simple_announce():
-	var announce = storage["announce"]
-	cfc.NMAP.board.remove_child(announce)
-	announce.queue_free()
+func cleanup_simple_announce(announce):
+	var storage=announce["storage"]	
+	var announce_scene = storage["announce"]
+	cfc.NMAP.board.remove_child(announce_scene)
+	announce_scene.queue_free()
 	pass
 
 func simple_announce (settings:Dictionary, force:bool = false):
-	if ongoing_announce:
+	if is_announce_ongoing():
 		if (force):
 			cleanup()
 		else:
 			return false
-
-	ongoing_announce = "simple_announce"
-	ongoing_announce_object = settings
-	var func_return = call("init_simple_announce", settings)
+	var announce = {
+		"announce" :"simple_announce",
+		"object" : settings,
+		"is_blocking" : false,
+		"storage": {},
+		"current_delta" : 0.0,
+	}	
+	var func_return = call("init_simple_announce", settings, announce)
 	while func_return is GDScriptFunctionState && func_return.is_valid():
 		func_return = func_return.resume()
+	ongoing_announces.append(announce)	
 	return true

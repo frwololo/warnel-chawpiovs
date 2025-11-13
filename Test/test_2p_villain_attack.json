@@ -122,7 +122,12 @@
 			"value": "cancel",
 			"hero": 2,
 			"_comments": "Captain Marvel skip end phase discard"
-		},			
+		},	
+		{
+			"type": "other",
+			"value": "wait_until_interrupt",
+			"_comments": "wait for interrupt"
+		},		
 		{
 			"type": "pass",
 			"value": "1",

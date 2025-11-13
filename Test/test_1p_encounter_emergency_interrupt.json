@@ -49,6 +49,10 @@
 	},
 	"actions": [
 		{
+			"type":"other",
+			"value": "wait_for_interrupt"
+		},	
+		{
 			"type":"play",
 			"value": "Emergency"
 		}

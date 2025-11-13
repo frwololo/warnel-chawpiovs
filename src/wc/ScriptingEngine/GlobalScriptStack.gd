@@ -33,8 +33,12 @@ enum STACK_STATUS {
 	EXECUTING,
 	DONE,	
 	PENDING_REMOVAL,
-
 }
+enum NETWORK_ERROR {
+	NONE,
+	LOCAL_UID_NOT_FOUND,
+}
+
 
 const StackStatusStr := [
 	"NONE",
@@ -84,6 +88,7 @@ var stack_integrity_check: Dictionary = {}
 #The real ordering is performed by the master_queue below
 var stack:Dictionary = {}
 var master_queue: Array = []
+var reference_queue: Dictionary = {}
 var waitOneMoreTick = 0
 var time_since_started_waiting:float = 0
 
@@ -235,8 +240,65 @@ remotesync func client_create_and_add_script(stack_uid, state_scripts, _owner_ui
 	add_script(stackEvent, stack_uid)
 	rpc_id(1, "from_client_script_received_ack", stack_uid)
 
+#all clients, for reference and error correction
+#this is called when master tells me to add an object to the queue
+#I'll keep track of that script's status here
+func add_to_reference_queue(stack_uid, starting_status = STACK_STATUS.PENDING_CLIENT_ACK, local_uid = 0, checksum = ""):
+	display_debug("adding to reference queue: " + str(stack_uid))
+	var queue_item = {
+		"stack_uid" : stack_uid, 
+		"status" : starting_status,
+		"local_uid": local_uid,
+		"checksum": checksum,
+	}
+	if reference_queue.has(stack_uid):
+		var _error = 1
+		#TODO error handling here
+		
+	reference_queue[stack_uid] = queue_item
+
+func is_reference_status(stack_uid,expected_status):
+	var reference_object = reference_queue.get(stack_uid, {})
+	if !reference_object:
+		return false
+	return reference_object.get("status", STACK_STATUS.NONE) == expected_status
+
+#all clients, for reference and error correction
+func set_reference_status(stack_uid, new_state, caller = ""):
+	if !caller:
+		caller = "set_reference_status"
+	var reference_object = reference_queue.get(stack_uid, {})
+	if !reference_object:
+		#the object should have been added no matter what before this
+		var _error = 1
+		display_debug("reference queue didn't find " +str(stack_uid))	
+		
+		
+	var current_state = reference_object["status"]
+	var expected_states = [STACK_STATUS.NONE]
+	var _error = ""
+	#error check
+	match new_state:
+		STACK_STATUS.DONE:
+			expected_states = [STACK_STATUS.EXECUTING, STACK_STATUS.PENDING_REMOVAL]
+			#pending_removal is an ok use case here because we sometimes remove the scrpt before receiving this signal
+			if ! current_state in expected_states:
+				_error = "state"
+		STACK_STATUS.READY_TO_EXECUTE:
+			expected_states = [STACK_STATUS.PENDING_CLIENT_ACK, STACK_STATUS.PENDING_UID]
+			if !current_state in expected_states:
+				_error = "state"					
+	
+	if _error:
+		match _error:
+			"state":
+				display_status_error( 1,stack_uid, expected_states[0], current_state , caller)	
+	
+	reference_object["status"] = new_state	
+
+# master only
 func add_to_ordering_queue(stack_uid, requester_client_id = 0, starting_status = STACK_STATUS.PENDING_CLIENT_ACK, local_uid = 0, checksum = ""):
-	display_debug("adding to queue: " + str(stack_uid))
+	display_debug("{master} adding new item to master_queue: " + str(stack_uid))
 	var status = {}
 	for network_id in gameData.network_players:
 		status[network_id] = starting_status
@@ -250,6 +312,7 @@ func add_to_ordering_queue(stack_uid, requester_client_id = 0, starting_status =
 	master_queue.append(queue_item) 
 	#process_next_queue_script()
 
+#client correctly received my request to add a script to the stack
 mastersync func from_client_script_received_ack(stack_uid):
 	var client_id = get_tree().get_rpc_sender_id() 	
 	var found = change_queue_item_state(stack_uid, client_id, STACK_STATUS.READY_TO_EXECUTE,"from_client_script_received_ack")
@@ -260,28 +323,33 @@ mastersync func from_client_script_received_ack(stack_uid):
 	else:
 		display_debug(str(client_id) + " did an ack but I couldn't find " +  str(stack_uid))		
 				
-#	attempt_to_execute_from_queue(found)
-
-#func attempt_to_execute_from_queue(found):
-#	if !found:
-#		var _error = 1
-#		display_debug("trying to execute empty item from queue")	
-#	if all_players_are_state(found, STACK_STATUS.READY_TO_EXECUTE):	
-#		display_debug("ready to execute :" + to_json(found))	
-#		master_execute_script(found["stack_uid"])
-
+#look for the next script in stack
+#that we want all clients to execute
+#typically this should be the last one in the master_queue
+# assuming all clients are ready to execute it
 func get_next_script_uid_to_execute():
+	if !master_queue:
+		return 0
+	#if some clients are still running some script, we wait
 	for item in master_queue:
 		if some_players_are_state(item, STACK_STATUS.EXECUTING):
 			return 0
+
+	#this should be the last on the pile
+	
+	var item = master_queue.back()		
+	if all_players_are_state(item, STACK_STATUS.READY_TO_EXECUTE):
+		return item["stack_uid"]
 				
-	for i in master_queue.size():
-		var index = master_queue.size() -1 -i
-		var item = master_queue[index]
-		if all_players_are_state(item, STACK_STATUS.READY_TO_EXECUTE):
-			return item["stack_uid"]
+#	for i in master_queue.size():
+#		var index = master_queue.size() -1 -i
+#		var item = master_queue[index]
+#		if all_players_are_state(item, STACK_STATUS.READY_TO_EXECUTE):
+#			return item["stack_uid"]
 	return 0
 
+#client was pending a global UID for their local script,
+#and acknowledge that they now have received it
 mastersync func from_client_global_uid_received(stack_uid):
 	var client_id = get_tree().get_rpc_sender_id() 	
 	var found = change_queue_item_state(stack_uid, client_id, STACK_STATUS.READY_TO_EXECUTE,"from_client_global_uid_received")
@@ -372,11 +440,13 @@ func change_queue_item_state(stack_uid, client_id, new_state, caller = ""):
 				return null
 	return found
 
+#Master lets me know that one of my (network) scripts was executed by all clients
 remotesync func one_of_your_scripts_was_finalized(stack_uid):
+	set_reference_status(stack_uid, STACK_STATUS.DONE)
 	my_script_requests_pending_execution -=1
 	if (my_script_requests_pending_execution <0):
 		var _error = 1
-		#TODO
+		display_debug("{as client} I was told one of my scripts got executed, but I didn't know I had one")
 		my_script_requests_pending_execution = 0
 
 func some_players_are_state(item_or_stack_uid, state):
@@ -418,51 +488,36 @@ func count_item_state(item_or_stack_uid, state):
 		if found["status"][network_id] == state:
 			count+=1
 	return count
-	
+
+#Client tells me the yahve executed a script	
 mastersync func from_client_script_executed(stack_uid):
 	var client_id = get_tree().get_rpc_sender_id() 
 	
-	# at this point it is likely the client has already 
-	# sent a signal for removal of the script
-	# but just in case we try here as well 
 	if !find_in_queue(stack_uid):
+		display_debug("error couldn't find script " +str(stack_uid) + " to mark it as done")
 		return
 	
 	var found = change_queue_item_state(stack_uid, client_id, STACK_STATUS.DONE, "from_client_script_executed")
 	if !found:
 		return
 		
-	if found:
-		display_debug("(from_client_script_executed) " + str(client_id) + " has executed " +  str(stack_uid) + ", will now remove")
-		change_queue_item_state(stack_uid, client_id, STACK_STATUS.PENDING_REMOVAL, "from_client_script_executed")
-
+	if all_players_are_state(stack_uid, STACK_STATUS.DONE):
+		display_debug("(from_client_script_executed) " + str(client_id) + " has executed " +  str(stack_uid) + " and they were last, will now ask to remove")
+		rpc("client_remove_script_from_stack_after_exec", stack_uid)
+		
+mastersync func from_client_script_removed_after_exec(stack_uid):
+	var client_id = get_tree().get_rpc_sender_id() 
 	
-#func process_next_queue_script():
-#	var script = master_queue.back()
-#
-#	#nothing to do
-#	if !script:
-#		return
-#	if all_players_are_state(script, STACK_STATUS.READY_TO_EXECUTE):	
-#		master_execute_script(script["stack_uid"])
+	if !find_in_queue(stack_uid):
+		display_debug("{as server} error couldn't find script " +str(stack_uid) + " for removal")
+		return
 	
+	var _found = change_queue_item_state(stack_uid, client_id, STACK_STATUS.PENDING_REMOVAL, "from_client_script_removed_after_exec")
 
-#func master_execute_script(stack_uid):
-#	#todo check it in the queue
-#	var found = find_in_queue(stack_uid)
-#
-#	if !found:
-#		var _error = 1
-#		display_debug("I'm supposed to initiate execution of " +str(stack_uid) + " but I didn't find it")	
-#		return
-#		#TODO error handling
-#
-#	for network_id in gameData.network_players:
-#		change_queue_item_state(stack_uid,network_id,STACK_STATUS.EXECUTING,"master_execute_script")
-#
+	#Note	
+	#removal is done in change_queue_item_state
 
-mastersync func master_i_need_id_for_local_script (local_uid, checksum):
-	var client_id = get_tree().get_rpc_sender_id()
+func master_assign_local_script_uid(local_uid, client_id, checksum):
 	var found = {}
 	var uid = 0
 	for data in master_queue:
@@ -475,20 +530,37 @@ mastersync func master_i_need_id_for_local_script (local_uid, checksum):
 				#TODO desync here
 	if !found:  #master queue never heard of this request, we create it
 		uid = get_next_stack_uid()
-		add_to_ordering_queue(uid, 0,  STACK_STATUS.NONE, local_uid, checksum)
+		#we explicitly state the requesting client here to 0 because they're all supposed
+		#to request it
+		found = add_to_ordering_queue(uid, 0,  STACK_STATUS.NONE, local_uid, checksum)
 
 	change_queue_item_state(uid,client_id, STACK_STATUS.PENDING_UID,"master_i_need_id_for_local_script")
-	rpc_id(client_id, "global_uid_assigned", local_uid, uid)
+	
+	#tells clients it's ok to move to their global stack once everyone has it
+	if all_players_are_state(uid, STACK_STATUS.PENDING_UID ):
+		rpc("global_uid_assigned", local_uid, uid)
+
+mastersync func master_i_need_id_for_local_script (local_uid, checksum):
+	var client_id = get_tree().get_rpc_sender_id()
+	master_assign_local_script_uid(local_uid, client_id, checksum)
 
 
+remotesync func network_error(details:Dictionary):
+	pass
+
+#Message from the Server that a Global UID was assigned for my local uid
 remotesync func global_uid_assigned(local_uid,stack_uid):
 	if !cfc.is_game_master():
 		var verification_uid = get_next_stack_uid()
 		if verification_uid != stack_uid:
 			var _error = 1
-			#TODO this is baad
+			#TODO this is baad?
 				
-	var object = pending_local_scripts[local_uid]
+	var object = pending_local_scripts.get(local_uid, null)
+	if !object:
+		display_debug("{as client} asked to mark local script" + str(local_uid) + " as pending, but I don't have that")
+		rpc_id(1, "network_error", {"error":NETWORK_ERROR.LOCAL_UID_NOT_FOUND, "local_uid":local_uid, "stack_uid": stack_uid})
+		return
 	
 	add_to_stack(object, stack_uid)
 	object.set_display_name(object.get_display_name() + "(local)")	
@@ -512,6 +584,7 @@ func add_script(object, stack_uid:int = 0):
 	#local use case, we're waiting for the master to give us an ID		
 	if (!stack_uid):
 		var local_uid = get_next_local_uid()
+		display_debug("{as client} adding local script local_uid:" + str(local_uid) + " - " +  object.get_display_name())
 		pending_local_scripts[local_uid] = object		
 		rpc_id (1, "master_i_need_id_for_local_script", local_uid, object.get_display_name())	
 
@@ -542,6 +615,7 @@ func add_to_stack(object, stack_uid):
 	display_debug("my stack: " + msg)
 	emit_signal("script_added_to_stack", object)
 	reset_interrupt_states()
+	add_to_reference_queue(stack_uid, STACK_STATUS.READY_TO_EXECUTE)
 	rpc_id(1, "master_stack_object_added", object.stack_uid)	
 
 func flush_script(stack_uid):
@@ -553,15 +627,25 @@ func flush_script(stack_uid):
 		display_debug("asked for executing script but I have nothing on my stack")
 		var _error = 1
 		return
+	set_reference_status(stack_uid, STACK_STATUS.EXECUTING)
 	display_debug("executing: " + str(next_script.stack_uid) + "-" + next_script.get_display_name())
-	stack_remove(stack_uid)
+
 	var func_return = next_script.execute()	
 	while func_return is GDScriptFunctionState && func_return.is_valid():
 		func_return = func_return.resume()
+	set_reference_status(stack_uid, STACK_STATUS.DONE)
+	rpc_id(1, "from_client_script_executed", stack_uid)		
 	
-	rpc_id(1, "from_client_script_executed", stack_uid)	
-	emit_signal("script_executed_from_stack", next_script )		
-	
+#this is called after *all* clients have correctly executed the script	
+remotesync func client_remove_script_from_stack_after_exec(stack_uid):
+	#todo safety checks
+	set_reference_status(stack_uid, STACK_STATUS.PENDING_REMOVAL)
+	var the_script = stack.get(stack_uid)	
+	#we send this signal internally just now (instead of after excuting it)
+	#to ensure we only send it after everybody has run it
+	emit_signal("script_executed_from_stack", the_script )		
+	stack_remove(stack_uid)	
+	rpc_id(1, "from_client_script_removed_after_exec", stack_uid)				
 
 func reset_interrupt_states():
 	reset_phase_buttons()
@@ -574,7 +658,40 @@ func _exit_tree():
 		cfc.NMAP.board.remove_child(text_edit)
 	text_edit = null
 		
-		
+#attempt to fix multiplayer stack issue
+func attempt_recovery() -> bool:
+	gameData.flush_debug_display()
+	if text_edit:
+		cfc.LOG(text_edit.text)
+	var found_issue = null
+	var i = master_queue.size()-1
+	while i>0 and !found_issue:
+		var item = master_queue[i]
+		if !all_players_same_state(item):
+			found_issue = item
+			display_debug("attempting to fix: " + debug_queue_status_msg(item) )
+			var clients_status = item["status"]
+			var local_uid = item["local_uid"]
+			var checksum = item["checksum"]
+			for client_id in clients_status:
+				var status = clients_status[client_id]
+				match status:
+					STACK_STATUS.NONE: 
+						if local_uid: 
+							#This is a local script and it seems the client
+							#never told me to add it to the master queue (bad) or I never received the ask (recoverable)
+							#attempting to tell them again
+							master_assign_local_script_uid(local_uid, client_id, checksum)
+							return true
+					STACK_STATUS.PENDING_UID: 
+						if local_uid: 
+							#This is a local script and it seems the client
+							#never received their UID. Sending it again
+							master_assign_local_script_uid(local_uid, client_id, checksum)
+							return true							
+		i -= 1
+	return false		
+					
 func clients_status_aligned():
 	for client in clients_current_mode:
 
@@ -582,11 +699,16 @@ func clients_status_aligned():
 			display_debug("need to wait: interrupt mode not the same (" +str(interrupt_mode) + " vs " + str(clients_current_mode[client]) + ")")			
 			return false
 			
-	for client in stack_integrity_check:
-		var their_stack = stack_integrity_check[client]
-		if their_stack.size() != stack.size():
-			display_debug("need to wait: stacks not the same (" +str(stack.size()) + " vs " + str(their_stack.size()) + ")")
-			return false
+#	for client in stack_integrity_check:
+#		var their_stack = stack_integrity_check[client]
+#		if their_stack.size() != stack.size():
+#			display_debug("need to wait: stacks not the same (" +str(stack.size()) + " vs " + str(their_stack.size()) + ")")
+#			return false
+
+	#as long as there's something to execute, I think we're good
+	
+	if get_next_script_uid_to_execute():
+		return true
 
 	for item in master_queue:
 		if !all_players_same_state(item):
@@ -620,10 +742,7 @@ func _process(_delta: float):
 	else:
 		text_edit.visible = false
 	
-	if stack.empty(): 
-		return
 
-	
 	if gameData.is_ongoing_blocking_announce():
 		return
 			
@@ -636,22 +755,25 @@ func _process(_delta: float):
 		return		
 	
 
+	if cfc.is_game_master():
+		#if not everyone is ready here, I need to wait
+		if !clients_status_aligned():
+			time_since_started_waiting += _delta
+			if CFConst.DESYNC_TIMEOUT and  time_since_started_waiting > CFConst.DESYNC_TIMEOUT * gameData.network_players.size():
+				time_since_started_waiting = 0
+				attempt_recovery()
+			return	
+		else:
+			time_since_started_waiting = 0.0
+
+	if stack.empty(): 
+		return
+
+
 	match interrupt_mode:
 		InterruptMode.NONE:
 			if cfc.is_game_master():
-				#if not everyone is ready here, I need to wait
-				if !clients_status_aligned() and CFConst.DESYNC_TIMEOUT and  time_since_started_waiting < CFConst.DESYNC_TIMEOUT:
-					time_since_started_waiting += _delta
-#					gameData.phaseContainer.flush_debug_display()
-#					gameData.init_desync_recover()
-#					time_since_started_waiting = 0.0
-					#attempts to resync here have consistently failed.
-					#we'l let it run through and hope end of turn resync will fix the mess
-					return	
-				else:
-					time_since_started_waiting = 0.0
 					compute_interrupts(InterruptMode.FORCED_INTERRUPT_CHECK)
-				#rpc("client_send_before_trigger", interrupt_mode)
 
 					
 	return	
@@ -685,6 +807,8 @@ func reset():
 	master_queue = []
 
 func is_player_allowed_to_click() -> bool:
+	#Generally speaking : can't play while there's something
+	#on the stack, except in interrupt mode
 	match interrupt_mode:
 		#todo need to have a bit better?
 		InterruptMode.FORCED_INTERRUPT_CHECK, InterruptMode.OPTIONAL_INTERRUPT_CHECK, InterruptMode.HERO_IS_INTERRUPTING:
@@ -693,6 +817,8 @@ func is_player_allowed_to_click() -> bool:
 			if my_script_requests_pending_execution:
 				return false
 			if pending_local_scripts:
+				return false
+			if stack:
 				return false	
 	return true
 
@@ -709,7 +835,7 @@ func is_phasecontainer_allowed_to_proceed():
 				#one weird blocker case is if one of the players is pending
 				# a local uid. I let it through for now 
 				for network_id in gameData.network_players:
-					if item["status"][network_id] == STACK_STATUS.NONE:
+					if item["status"][network_id] in [STACK_STATUS.NONE, STACK_STATUS.PENDING_UID]:
 						return true
 			return false
 
@@ -914,27 +1040,6 @@ remotesync func client_move_to_next_step(_interrupt_mode):
 	if (interrupt_mode == InterruptMode.NOBODY_IS_INTERRUPTING):
 		interrupting_hero_id = 0
 	
-#func _delete_object(variant):
-#	if (!variant):
-#		return false				
-#	var id_to_delete = 0
-#	for stack_uid in stack:
-#		if stack[stack_uid] == variant:
-#			id_to_delete = stack_uid
-#	if (id_to_delete):		 
-#		stack.erase(id_to_delete)
-#		rpc_id(1, "master_stack_object_removed", variant.stack_uid )
-#		#Remove item from master queue as well
-#		#TODO this shoud live elsewhere
-#		var to_erase_idx = -1
-#		for i in master_queue.size():
-#			var item = master_queue[i]
-#			if item["stack_uid"] == id_to_delete:
-#				to_erase_idx = i
-#		if to_erase_idx >=0:
-#			master_queue.remove(to_erase_idx)
-#	return true
-
 
 func stack_back_id():
 	var max_uid = 0
@@ -962,13 +1067,48 @@ func stack_pop_back():
 		stack_remove(max_uid)
 	return event
 	
+func delete_last_event(requester:ScriptTask):
+	#the requester usually doesn't want to delete themselves
+	var max_uid = find_last_event_uid_before_me(requester)
+	if max_uid:
+		var event = stack[max_uid]
+		stack_remove(max_uid)
+		scripting_bus.emit_signal("stack_event_deleted", event)
+	else:
+		display_debug("Error: script " + requester.script_name + " asked me to delete event but I couldn't find it")
+
+func is_script_in_stack_object(script:ScriptTask, stack_item):
+	if script == stack_item: 
+		return true
+	for task in stack_item.get_tasks():
+		if task == script:
+			return true
+	return false
+
+func find_last_event_uid_before_me(requester:ScriptTask):
+	#the requester usually doesn't want to delete themselves
+	var max_uid = 0
+	var requester_uid = 0
+	for stack_uid in stack:
+		if is_script_in_stack_object(requester, stack[stack_uid]):
+			requester_uid = stack_uid
+		else:
+			if stack_uid > max_uid:
+				max_uid = stack_uid
+	if !max_uid:
+		return null
 	
-func delete_last_event():
-	var event = stack_pop_back()
-	scripting_bus.emit_signal("stack_event_deleted", event)
+	if requester_uid and requester_uid <= max_uid:
+		display_debug("weird, I was expecting to delete an event before me (uid:" + str(requester_uid) + ") but found " + str(max_uid))
 	
-func find_last_event():
-	return stack_back()
+	return max_uid
+		
+func find_last_event_before_me(requester:ScriptTask):
+	var max_uid = find_last_event_uid_before_me(requester)
+	if !max_uid:
+		return null
+		
+	return stack[max_uid]	
 
 func find_event(_event_details, details, owner_card):
 	for stack_uid in stack:

@@ -810,7 +810,7 @@ func get_network_unique_id():
 		return get_tree().get_network_unique_id()
 	return 1
 	
-func is_game_master() -> bool:
+func is_game_master() -> bool:	
 	if !gameData.is_multiplayer_game:
 		return true
 	return get_tree().is_network_server() #Todo: return something more specific to handle case where game master isn't server, for headless mode
@@ -838,6 +838,12 @@ func LOG(to_print:String):
 	file.seek_end()
 	file.store_string(to_print + "\n")
 	file.close() 
+
+func LOG_VARIANT(to_print):
+#	if !cfc._debug:
+#		return
+	var my_json_string = JSON.print(to_print, '\t')
+	LOG(my_json_string)
 	
 func LOG_DICT(to_print:Dictionary):
 #	if !cfc._debug:

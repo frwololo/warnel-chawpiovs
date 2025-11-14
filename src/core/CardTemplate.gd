@@ -3128,6 +3128,20 @@ func _on_Back_resized() -> void:
 #		print_debug($Control/Back.rect_size) # Replace with function body.
 
 
+
+func serialize_to_json():
+	return {"TODO": "TODO"}
+	
+func copy_tokens_to(to_card, details:= {}):
+	var exclude = details.get("exclude",[])
+	var my_tokens = tokens.get_all_tokens()
+	for token_name in my_tokens.keys():
+		if (token_name in exclude):
+			continue
+		var count = tokens.get_token_count(token_name)
+		to_card.tokens.mod_token(token_name, count, true)		
+
+
 # Ensures proper cleanup when a card is queue_free() for any reason
 func _on_tree_exiting():	
 	if cfc.NMAP.has("main"):
@@ -3145,15 +3159,3 @@ func queue_free():
 		var source = conn["source"]
 		source.disconnect(conn["signal_name"],self , conn["method_name"])
 	.queue_free()
-
-func serialize_to_json():
-	return {"TODO": "TODO"}
-	
-func copy_tokens_to(to_card, details:= {}):
-	var exclude = details.get("exclude",[])
-	var my_tokens = tokens.get_all_tokens()
-	for token_name in my_tokens.keys():
-		if (token_name in exclude):
-			continue
-		var count = tokens.get_token_count(token_name)
-		to_card.tokens.mod_token(token_name, count, true)		

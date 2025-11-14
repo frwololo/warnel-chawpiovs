@@ -278,8 +278,9 @@ func hide_all_hands():
 	#exchange hands
 	for i in range (CFConst.MAX_TEAM_SIZE):
 		for v in ["GhostHand", "Hand"]:
-			var old_hand: Hand = get_node("%" + v + str(i+1))	
-			old_hand.remove_from_group("bottom") #todo fix hack
+			var old_hand: Hand = get_node("%" + v + str(i+1))
+			if old_hand.is_in_group("bottom"):	
+				old_hand.remove_from_group("bottom") #todo fix hack
 			WCUtils.disable_and_hide_node(old_hand)
 			old_hand.re_place()	
 			old_hand.position = Vector2(20000, 20000)	

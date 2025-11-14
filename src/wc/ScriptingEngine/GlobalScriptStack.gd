@@ -243,13 +243,15 @@ remotesync func client_create_and_add_script(stack_uid, state_scripts, _owner_ui
 #all clients, for reference and error correction
 #this is called when master tells me to add an object to the queue
 #I'll keep track of that script's status here
-func add_to_reference_queue(stack_uid, starting_status = STACK_STATUS.PENDING_CLIENT_ACK, local_uid = 0, checksum = ""):
+func add_to_reference_queue(object, stack_uid, starting_status = STACK_STATUS.PENDING_CLIENT_ACK, local_uid = 0, checksum = ""):
 	display_debug("adding to reference queue: " + str(stack_uid))
 	var queue_item = {
 		"stack_uid" : stack_uid, 
 		"status" : starting_status,
+		"status_string": StackStatusStr[starting_status],
 		"local_uid": local_uid,
 		"checksum": checksum,
+		"desc": object.get_display_name()
 	}
 	if reference_queue.has(stack_uid):
 		var _error = 1
@@ -294,18 +296,23 @@ func set_reference_status(stack_uid, new_state, caller = ""):
 			"state":
 				display_status_error( 1,stack_uid, expected_states[0], current_state , caller)	
 	
-	reference_object["status"] = new_state	
+	reference_object["status"] = new_state
+	reference_object["status_string"] = StackStatusStr[new_state]	
 
 # master only
 func add_to_ordering_queue(stack_uid, requester_client_id = 0, starting_status = STACK_STATUS.PENDING_CLIENT_ACK, local_uid = 0, checksum = ""):
 	display_debug("{master} adding new item to master_queue: " + str(stack_uid))
 	var status = {}
+	var status_str= {}
 	for network_id in gameData.network_players:
 		status[network_id] = starting_status
+		status_str[network_id] = StackStatusStr[starting_status]
+		
 	var queue_item = {
 		"requester_id": requester_client_id,
 		"stack_uid" : stack_uid, 
 		"status" : status,
+		"status_string": status_str,
 		"local_uid": local_uid,
 		"checksum": checksum,
 	}
@@ -427,6 +434,7 @@ func change_queue_item_state(stack_uid, client_id, new_state, caller = ""):
 		#it's never ok to go back from a deleted state
 	else:	
 		found["status"][client_id] = new_state
+		found["status_string"][client_id] = StackStatusStr[new_state]
 		display_debug(str(client_id) + " Went from " + StackStatusStr[current_state] + " to " + StackStatusStr[new_state] + " for script " +  human_readable(stack_uid))
 	
 	#post change actions
@@ -615,7 +623,7 @@ func add_to_stack(object, stack_uid):
 	display_debug("my stack: " + msg)
 	emit_signal("script_added_to_stack", object)
 	reset_interrupt_states()
-	add_to_reference_queue(stack_uid, STACK_STATUS.READY_TO_EXECUTE)
+	add_to_reference_queue(object, stack_uid, STACK_STATUS.READY_TO_EXECUTE)
 	rpc_id(1, "master_stack_object_added", object.stack_uid)	
 
 func flush_script(stack_uid):
@@ -660,6 +668,7 @@ func _exit_tree():
 		
 #attempt to fix multiplayer stack issue
 func attempt_recovery() -> bool:
+	display_debug("recovery attempt begins")
 	gameData.flush_debug_display()
 	if text_edit:
 		cfc.LOG(text_edit.text)
@@ -1017,8 +1026,9 @@ remotesync func force_play_card(card_guid):
 
 
 func reset_phase_buttons():
-	for i in range (gameData.team.size()):
-		gameData.phaseContainer.reset_hero_activation_for_step(i+1)
+	if gameData.phaseContainer and is_instance_valid(gameData.phaseContainer):
+		for i in range (gameData.team.size()):
+			gameData.phaseContainer.reset_hero_activation_for_step(i+1)
 
 func activate_exclusive_hero(hero_id):
 	for i in range (gameData.team.size()):
@@ -1184,6 +1194,34 @@ mastersync func master_stack_object_removed (object_uid):
 mastersync func master_interrupt_mode_changed( _interrupt_mode):
 	var client_id = get_tree().get_rpc_sender_id()
 	clients_current_mode[client_id] = _interrupt_mode
+
+func flush_logs():
+	cfc.LOG("###SCRIPTSTACK LOGS###\nreference")
+	cfc.LOG_DICT(self.reference_queue)
+
+	var display_text = "\n###interrupt mode: " + InterruptModeStr[interrupt_mode] + "\n"
+	display_text+= 	"my_script_requests_pending_execution: " + str(my_script_requests_pending_execution) + "\n"
+
+	display_text += "\n--master_queue--\n"
+	for item in master_queue:
+		display_text+= debug_queue_status_msg(item) + "\n"
+	display_text += "\n--stack--\n"		
+	for stack_uid in stack:
+		display_text += "{" + str(stack_uid) + "}" + stack[stack_uid].get_display_name() + "\n"
+
+	
+	cfc.LOG(display_text)
+	cfc.LOG("pending_local_scripts:")
+	cfc.LOG_DICT(pending_local_scripts)
+
+# Ensures proper cleanup when a card is queue_free() for any reason
+func _on_tree_exiting():	
+	flush_logs()
+
+func _notification(what):
+	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
+		flush_logs()
+	
 
 #Docs & Notes
 

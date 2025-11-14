@@ -16,7 +16,7 @@ var show_text_edit = false
 #whitelist has priority, if it's set, only messages containing
 #specific words will go through
 #if blackslit is set,, messages containing specific words will be explicitly banned 
-const _debug_msg_whitelist = ["stack", "host", "wccard"] #["executing", "owner", "villain target"] #"script", "all clients", "error"]
+const _debug_msg_whitelist = [] #["executing", "owner", "villain target"] #"script", "all clients", "error"]
 const _debug_msg_blacklist = []
 
 func toggle_display_debug(on_off):
@@ -513,4 +513,10 @@ func _systems_check():
 	set_current_step_complete(true) 
 	pass
 		
+# Ensures proper cleanup when a card is queue_free() for any reason
+func _on_tree_exiting():	
+	flush_debug_display()
 
+func _notification(what):
+	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
+		flush_debug_display()

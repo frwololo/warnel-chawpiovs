@@ -632,6 +632,7 @@ func attack_is_ongoing():
 
 func pre_attack_interrupts_done():
 	if _current_enemy_attack_step != EnemyAttackStatus.PENDING_INTERRUPT:
+		display_debug("I'm being told to move to EnemyAttackStatus.OK_TO_START_ATTACK but I'm not at EnemyAttackStatus.PENDING_INTERRUPT")
 		var _error = 1 #maybe this happens in network games ?
 		return
 	_current_enemy_attack_step = EnemyAttackStatus.OK_TO_START_ATTACK
@@ -702,14 +703,21 @@ func enemy_activates() :
 				theAnnouncer.simple_announce(announce_settings )
 				
 				#target player is the one adding the event to the stack
-				if can_i_play_this_hero(target_id):	
-					display_debug("I am the owner of hero " + str(target_id) +", I will handle the attack")			
-					theStack.create_and_add_signal("enemy_initiates_" + action, enemy, {SP.TRIGGER_TARGET_HERO : get_current_target_hero().canonical_name})
+#				if can_i_play_this_hero(target_id):	
+#					display_debug("I am the owner of hero " + str(target_id) +", I will handle the attack")			
+#					theStack.create_and_add_signal("enemy_initiates_" + action, enemy, {SP.TRIGGER_TARGET_HERO : get_current_target_hero().canonical_name})
+				
+				#I had a race condition where if only the executing player would add a global script,
+				#it could arrive before network players where at this status.
+				#Making it a local script (everyone adds it) is an attempt at fixing this
+				var stackEvent:SignalStackScript = SignalStackScript.new("enemy_initiates_" + action, enemy,  {SP.TRIGGER_TARGET_HERO : get_current_target_hero().canonical_name})
+				theStack.add_script(stackEvent)
 				_current_enemy_attack_step = EnemyAttackStatus.PENDING_INTERRUPT
 				return
 				
 		EnemyAttackStatus.OK_TO_START_ATTACK:	
 			if (enemy.get_property("type_code") == "villain"): #Or villainous?
+				display_debug("drawing boost cards")
 				enemy.draw_boost_cards(action) 
 			var script_name
 			var next_step
@@ -735,11 +743,14 @@ func enemy_activates() :
 			#The "commit_scheme" or "enemy_attack" steps have set this variable,
 			#this is a good way to check that activity happened
 			if !enemy.activity_script:
+				display_debug("can't draw boost cards yet, enemy doesn't have an activity script")
 				return
 			if enemy.next_boost_card_to_reveal():
+				display_debug("go for one card boost reveal")
 				var stackEvent = SimplifiedStackScript.new({"name": "enemy_boost"}, enemy)
 				theStack.add_script(stackEvent)
 			else:
+				display_debug("no more card boosts, going to the next step")
 				_current_enemy_attack_step = EnemyAttackStatus.DAMAGE_OR_THREAT
 		
 		EnemyAttackStatus.DAMAGE_OR_THREAT:
@@ -768,6 +779,7 @@ func enemy_activates() :
 
 func defenders_chosen():
 	if !EnemyAttackStatus.PENDING_DEFENDERS:
+		display_debug("I'm being told that defenders have been chosen but I'm not in the PENDING_DEFENDERS state")
 		return	
 
 #	if !theStack.is_empty():
@@ -1389,6 +1401,7 @@ func cleanup_post_game():
 	current_round = 1
 	_multiplayer_desync = null
 	_clients_system_status = {}
+	theStack.flush_logs()
 	flush_debug_display()
 	theStack.reset()
 
@@ -1620,3 +1633,8 @@ func pending_network_ack():
 func flush_debug_display():
 	if (phaseContainer and is_instance_valid(phaseContainer)):
 		phaseContainer.flush_debug_display()
+
+
+func _notification(what):
+	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
+		cfc.set_game_paused(true)

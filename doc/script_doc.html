@@ -20,6 +20,7 @@
 <tr><td><a href="#change_form">change_form</a></td><td>change hero form</td></tr>
 <tr><td><a href="#constraints">constraints</a></td><td>an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</td></tr>
 <tr><td><a href="#count_tokens">count_tokens</a></td><td>count number of tokens of a specific type</td></tr>
+<tr><td><a href="#damage">damage</a></td><td></td></tr>
 <tr><td><a href="#deal_damage">deal_damage</a></td><td>deal damage to [subject]. also see receive_damage</td></tr>
 <tr><td><a href="#deal_encounter">deal_encounter</a></td><td>deal an encounter to current hero</td></tr>
 <tr><td><a href="#discard">discard</a></td><td></td></tr>
@@ -90,7 +91,9 @@
 <p><strong>cards</strong><br /><div class="slight_right">
 <a href="#Bomb Scare">Bomb Scare</a>,
 <a href="#Breakin' & Takin'">Breakin' & Takin'</a>,
+<a href="#Defense Network">Defense Network</a>,
 <a href="#Hydra Bomber">Hydra Bomber</a>,
+<a href="#Illegal Arms Factory">Illegal Arms Factory</a>,
 <a href="#Kree Manipulator">Kree Manipulator</a>,
 <a href="#Masterplan">Masterplan</a>,
 <a href="#The Psyche-Magnitron">The Psyche-Magnitron</a>,
@@ -109,6 +112,8 @@
 <a href="#Charge">Charge</a>,
 <a href="#Enhanced Ivory Horn">Enhanced Ivory Horn</a>,
 <a href="#Inspired">Inspired</a>,
+<a href="#Solid-Sound Body">Solid-Sound Body</a>,
+<a href="#Sonic Converter">Sonic Converter</a>,
 <a href="#Spider-Tracer">Spider-Tracer</a>,
 <a href="#Webbed Up">Webbed Up</a>,
 </div></p></section>
@@ -173,8 +178,11 @@
 <a href="#Haymaker">Haymaker</a>,
 <a href="#Helicarrier">Helicarrier</a>,
 <a href="#Interrogation Room">Interrogation Room</a>,
+<a href="#Klaw's Vengeance">Klaw's Vengeance</a>,
 <a href="#Lead from the Front">Lead from the Front</a>,
 <a href="#Photonic Blast">Photonic Blast</a>,
+<a href="#Solid-Sound Body">Solid-Sound Body</a>,
+<a href="#Sonic Converter">Sonic Converter</a>,
 <a href="#Stampede">Stampede</a>,
 <a href="#Surveillance Team">Surveillance Team</a>,
 <a href="#Swinging Web Kick">Swinging Web Kick</a>,
@@ -192,6 +200,14 @@
 </ul></p>
 <p><strong>cards</strong><br /><div class="slight_right">
 <a href="#Explosion">Explosion</a>,
+</div></p></section>
+<section id="damage"><h3>damage</h3>
+<p><strong>params:</strong><br /><ul class="slight_right">
+<li>amount</li>
+<li>subject</li>
+</ul></p>
+<p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Sound Manipulation">Sound Manipulation</a>,
 </div></p></section>
 <section id="deal_damage"><h3>deal_damage</h3>
 <p>deal damage to [subject]. also see receive_damage</p>
@@ -227,7 +243,9 @@
 <li>filter_state_tutor</li>
 </ul></p>
 <p><strong>cards</strong><br /><div class="slight_right">
+<a href="#Klaw - 2">Klaw - 2</a>,
 <a href="#Rhino - 2">Rhino - 2</a>,
+<a href="#Underground Distribution">Underground Distribution</a>,
 </div></p></section>
 <section id="discard"><h3>discard</h3>
 <p><strong>params:</strong><br /><ul class="slight_right">
@@ -273,6 +291,7 @@
 <p><strong>params:</strong><br /><ul class="slight_right">
 <li>subject</li>
 <li>is_cost</li>
+<li>filter_state_seek</li>
 </ul></p>
 <p><strong>cards</strong><br /><div class="slight_right">
 <a href="#Alpha Flight Station">Alpha Flight Station</a>,
@@ -283,6 +302,7 @@
 <a href="#Family Emergency">Family Emergency</a>,
 <a href="#Helicarrier">Helicarrier</a>,
 <a href="#Interrogation Room">Interrogation Room</a>,
+<a href="#Sonic Boom">Sonic Boom</a>,
 <a href="#Surveillance Team">Surveillance Team</a>,
 <a href="#Web-Shooter">Web-Shooter</a>,
 </div></p></section>
@@ -302,6 +322,7 @@
 <a href="#Captain Marvel">Captain Marvel</a>,
 <a href="#First Aid">First Aid</a>,
 <a href="#Hard to Keep Down">Hard to Keep Down</a>,
+<a href="#Sound Manipulation">Sound Manipulation</a>,
 </div></p></section>
 <section id="host_card"><h3>host_card</h3>
 <p><strong>params:</strong><br /><ul class="slight_right">
@@ -362,9 +383,16 @@
 <p>move [subjects] cards to the boards, sometimes specifying a grid location</p>
 <p><strong>params:</strong><br /><ul class="slight_right">
 <li>subject</li>
+<li>subject_count</li>
+<li>grid_name</li>
+<li>subject_index</li>
+<li>src_container</li>
 </ul></p>
 <p><strong>cards</strong><br /><div class="slight_right">
 <a href="#Make the Call">Make the Call</a>,
+<a href="#Secret Rendezvous">Secret Rendezvous</a>,
+<a href="#Underground Distribution">Underground Distribution</a>,
+<a href="#Weapons Runner">Weapons Runner</a>,
 </div></p></section>
 <section id="move_card_to_container"><h3>move_card_to_container</h3>
 <p>move [subject] cards to a specific container (aka pile)</p>
@@ -381,7 +409,7 @@
 <li>filter_each_previous_subject</li>
 <li>filter_state_subject</li>
 <li>is_else</li>
-<li>filter_state_move_to_container_until</li>
+<li>filter_state_grab_until</li>
 <li>for_each_player</li>
 </ul></p>
 <p><strong>cards</strong><br /><div class="slight_right">
@@ -394,10 +422,15 @@
 <a href="#Enhanced Ivory Horn">Enhanced Ivory Horn</a>,
 <a href="#Eviction Notice">Eviction Notice</a>,
 <a href="#Family Emergency">Family Emergency</a>,
+<a href="#Klaw's Vengeance">Klaw's Vengeance</a>,
 <a href="#Masterplan">Masterplan</a>,
 <a href="#Nick Fury">Nick Fury</a>,
+<a href="#Secret Rendezvous">Secret Rendezvous</a>,
+<a href="#Solid-Sound Body">Solid-Sound Body</a>,
+<a href="#Sonic Converter">Sonic Converter</a>,
 <a href="#Tenacity">Tenacity</a>,
 <a href="#The Vulture's Plans">The Vulture's Plans</a>,
+<a href="#Underground Distribution">Underground Distribution</a>,
 <a href="#Webbed Up">Webbed Up</a>,
 </div></p></section>
 <section id="move_to_player_zone"><h3>move_to_player_zone</h3>
@@ -435,6 +468,9 @@
 <a href="#Captain Marvel">Captain Marvel</a>,
 <a href="#Energy Channel">Energy Channel</a>,
 <a href="#Enhanced Ivory Horn">Enhanced Ivory Horn</a>,
+<a href="#Solid-Sound Body">Solid-Sound Body</a>,
+<a href="#Sonic Boom">Sonic Boom</a>,
+<a href="#Sonic Converter">Sonic Converter</a>,
 <a href="#Tenacity">Tenacity</a>,
 <a href="#Vision">Vision</a>,
 </div></p></section>
@@ -503,6 +539,7 @@
 <p><strong>cards</strong><br /><div class="slight_right">
 <a href="#Armored Rhino Suit">Armored Rhino Suit</a>,
 <a href="#Great Responsibility">Great Responsibility</a>,
+<a href="#Sonic Boom">Sonic Boom</a>,
 <a href="#Sweeping Swoop">Sweeping Swoop</a>,
 </div></p></section>
 <section id="return_attachements_to_owner"><h3>return_attachements_to_owner</h3>
@@ -558,9 +595,11 @@
 <a href="#Hard to Keep Down">Hard to Keep Down</a>,
 <a href="#"I'm Tough"">"I'm Tough"</a>,
 <a href="#Kree Manipulator">Kree Manipulator</a>,
+<a href="#Sound Manipulation">Sound Manipulation</a>,
 <a href="#Stampede">Stampede</a>,
 <a href="#Sweeping Swoop">Sweeping Swoop</a>,
 <a href="#Under Fire">Under Fire</a>,
+<a href="#Weapons Runner">Weapons Runner</a>,
 <a href="#Yon-Rogg's Treason">Yon-Rogg's Treason</a>,
 </div></p></section>
 <section id="temporary_effect"><h3>temporary_effect</h3>
@@ -606,6 +645,7 @@
 </ul></p>
 <p><strong>cards</strong><br /><div class="slight_right">
 <a href="#Assault">Assault</a>,
+<a href="#Klaw's Vengeance">Klaw's Vengeance</a>,
 <a href="#Stampede">Stampede</a>,
 </div></p></section>
 <h2 id="functions">FUNCTIONS</h2>
@@ -672,7 +712,11 @@
 <tr><td><a href="#phase_ended">phase_ended</a></td><td></td></tr>
 <tr><td><a href="#quickstrike">quickstrike</a></td><td></td></tr>
 <tr><td><a href="#resource">resource</a></td><td></td></tr>
+<tr><td><a href="#reveal_alter_ego">reveal_alter_ego</a></td><td></td></tr>
+<tr><td><a href="#reveal_hero">reveal_hero</a></td><td></td></tr>
+<tr><td><a href="#reveal_side_a">reveal_side_a</a></td><td></td></tr>
 <tr><td><a href="#round_ended">round_ended</a></td><td></td></tr>
+<tr><td><a href="#setup">setup</a></td><td></td></tr>
 <tr><td><a href="#thwarted">thwarted</a></td><td></td></tr>
 <tr><td><a href="#uses">uses</a></td><td></td></tr>
 </table>
@@ -690,11 +734,19 @@
     <li><a href="#Heroic Intuition">Heroic Intuition</a></li>
     <li><a href="#Inspired">Inspired</a></li>
     <li><a href="#Jessica Jones">Jessica Jones</a></li>
+    <li><a href="#Klaw - 1">Klaw - 1</a></li>
+    <li><a href="#Klaw - 2">Klaw - 2</a></li>
+    <li><a href="#Klaw - 3">Klaw - 3</a></li>
+    <li><a href="#Solid-Sound Body">Solid-Sound Body</a></li>
+    <li><a href="#Sonic Converter">Sonic Converter</a></li>
+    <li><a href="#The "Immortal" Klaw">The "Immortal" Klaw</a></li>
     <li><a href="#The Triskelion">The Triskelion</a></li>
 </section>
 <section id="boost"><h3>boost</h3>
     <li><a href="#Kree Manipulator">Kree Manipulator</a></li>
+    <li><a href="#Sonic Boom">Sonic Boom</a></li>
     <li><a href="#Sweeping Swoop">Sweeping Swoop</a></li>
+    <li><a href="#Weapons Runner">Weapons Runner</a></li>
 </section>
 <section id="card_moved_to_board"><h3>card_moved_to_board</h3>
     <li><a href="#Armored Rhino Suit">Armored Rhino Suit</a></li>
@@ -709,12 +761,15 @@
     <li><a href="#Maria Hill">Maria Hill</a></li>
     <li><a href="#Mockingbird - Bobbi Morse">Mockingbird - Bobbi Morse</a></li>
     <li><a href="#Nick Fury">Nick Fury</a></li>
+    <li><a href="#Solid-Sound Body">Solid-Sound Body</a></li>
+    <li><a href="#Sonic Converter">Sonic Converter</a></li>
     <li><a href="#Spider-Woman - Jessica Drew">Spider-Woman - Jessica Drew</a></li>
 </section>
 <section id="card_moved_to_pile"><h3>card_moved_to_pile</h3>
     <li><a href="#Exhaustion">Exhaustion</a></li>
     <li><a href="#Kree Manipulator">Kree Manipulator</a></li>
     <li><a href="#Under Fire">Under Fire</a></li>
+    <li><a href="#Weapons Runner">Weapons Runner</a></li>
 </section>
 <section id="card_played"><h3>card_played</h3>
     <li><a href="#Helicarrier">Helicarrier</a></li>
@@ -759,8 +814,20 @@
     <li><a href="#The Power of Leadership">The Power of Leadership</a></li>
     <li><a href="#Web-Shooter">Web-Shooter</a></li>
 </section>
+<section id="reveal_alter_ego"><h3>reveal_alter_ego</h3>
+    <li><a href="#Sound Manipulation">Sound Manipulation</a></li>
+</section>
+<section id="reveal_hero"><h3>reveal_hero</h3>
+    <li><a href="#Sound Manipulation">Sound Manipulation</a></li>
+</section>
+<section id="reveal_side_a"><h3>reveal_side_a</h3>
+    <li><a href="#Secret Rendezvous">Secret Rendezvous</a></li>
+</section>
 <section id="round_ended"><h3>round_ended</h3>
     <li><a href="#Nick Fury">Nick Fury</a></li>
+</section>
+<section id="setup"><h3>setup</h3>
+    <li><a href="#Underground Distribution">Underground Distribution</a></li>
 </section>
 <section id="thwarted"><h3>thwarted</h3>
     <li><a href="#Daredevil - Matt Murdock">Daredevil - Matt Murdock</a></li>
@@ -771,7 +838,7 @@
 </section>
 <h2 id="cards">CARDS</h2>
 <h3>core</h3>
-    <a href="#"I'm Tough"">"I'm Tough"</a>-    <a href="#Advance">Advance</a>-    <a href="#Alpha Flight Station">Alpha Flight Station</a>-    <a href="#Armored Rhino Suit">Armored Rhino Suit</a>-    <a href="#Assault">Assault</a>-    <a href="#Aunt May">Aunt May</a>-    <a href="#Avengers Mansion">Avengers Mansion</a>-    <a href="#Backflip">Backflip</a>-    <a href="#Black Cat - Felicia Hardy">Black Cat - Felicia Hardy</a>-    <a href="#Bomb Scare">Bomb Scare</a>-    <a href="#Breakin' & Takin'">Breakin' & Takin'</a>-    <a href="#Captain Marvel">Captain Marvel</a>-    <a href="#Captain Marvel's Helmet">Captain Marvel's Helmet</a>-    <a href="#Carol Danvers">Carol Danvers</a>-    <a href="#Caught Off Guard">Caught Off Guard</a>-    <a href="#Charge">Charge</a>-    <a href="#Combat Training">Combat Training</a>-    <a href="#Cosmic Flight">Cosmic Flight</a>-    <a href="#Crisis Interdiction">Crisis Interdiction</a>-    <a href="#Daredevil - Matt Murdock">Daredevil - Matt Murdock</a>-    <a href="#Emergency">Emergency</a>-    <a href="#Energy Channel">Energy Channel</a>-    <a href="#Enhanced Ivory Horn">Enhanced Ivory Horn</a>-    <a href="#Enhanced Spider-Sense">Enhanced Spider-Sense</a>-    <a href="#Eviction Notice">Eviction Notice</a>-    <a href="#Exhaustion">Exhaustion</a>-    <a href="#Explosion">Explosion</a>-    <a href="#False Alarm">False Alarm</a>-    <a href="#Family Emergency">Family Emergency</a>-    <a href="#First Aid">First Aid</a>-    <a href="#For Justice!">For Justice!</a>-    <a href="#Gang-Up">Gang-Up</a>-    <a href="#Get Ready">Get Ready</a>-    <a href="#Great Responsibility">Great Responsibility</a>-    <a href="#Hard to Keep Down">Hard to Keep Down</a>-    <a href="#Hawkeye - Clint Barton">Hawkeye - Clint Barton</a>-    <a href="#Haymaker">Haymaker</a>-    <a href="#Helicarrier">Helicarrier</a>-    <a href="#Heroic Intuition">Heroic Intuition</a>-    <a href="#Highway Robbery">Highway Robbery</a>-    <a href="#Hydra Bomber">Hydra Bomber</a>-    <a href="#Inspired">Inspired</a>-    <a href="#Interrogation Room">Interrogation Room</a>-    <a href="#Jessica Jones">Jessica Jones</a>-    <a href="#Kree Manipulator">Kree Manipulator</a>-    <a href="#Lead from the Front">Lead from the Front</a>-    <a href="#Make the Call">Make the Call</a>-    <a href="#Maria Hill">Maria Hill</a>-    <a href="#Masterplan">Masterplan</a>-    <a href="#Mockingbird - Bobbi Morse">Mockingbird - Bobbi Morse</a>-    <a href="#Nick Fury">Nick Fury</a>-    <a href="#Peter Parker">Peter Parker</a>-    <a href="#Photonic Blast">Photonic Blast</a>-    <a href="#Rhino - 2">Rhino - 2</a>-    <a href="#Rhino - 3">Rhino - 3</a>-    <a href="#Shadow of the Past">Shadow of the Past</a>-    <a href="#Shocker">Shocker</a>-    <a href="#Spider-Man">Spider-Man</a>-    <a href="#Spider-Tracer">Spider-Tracer</a>-    <a href="#Spider-Woman - Jessica Drew">Spider-Woman - Jessica Drew</a>-    <a href="#Stampede">Stampede</a>-    <a href="#Surveillance Team">Surveillance Team</a>-    <a href="#Sweeping Swoop">Sweeping Swoop</a>-    <a href="#Swinging Web Kick">Swinging Web Kick</a>-    <a href="#Tenacity">Tenacity</a>-    <a href="#The Power of Justice">The Power of Justice</a>-    <a href="#The Power of Leadership">The Power of Leadership</a>-    <a href="#The Psyche-Magnitron">The Psyche-Magnitron</a>-    <a href="#The Triskelion">The Triskelion</a>-    <a href="#The Vulture's Plans">The Vulture's Plans</a>-    <a href="#Under Fire">Under Fire</a>-    <a href="#Vision">Vision</a>-    <a href="#Vulture">Vulture</a>-    <a href="#Web-Shooter">Web-Shooter</a>-    <a href="#Webbed Up">Webbed Up</a>-    <a href="#Yon-Rogg">Yon-Rogg</a>-    <a href="#Yon-Rogg's Treason">Yon-Rogg's Treason</a>-<h3>core</h3>
+    <a href="#"I'm Tough"">"I'm Tough"</a>-    <a href="#Advance">Advance</a>-    <a href="#Alpha Flight Station">Alpha Flight Station</a>-    <a href="#Armored Rhino Suit">Armored Rhino Suit</a>-    <a href="#Assault">Assault</a>-    <a href="#Aunt May">Aunt May</a>-    <a href="#Avengers Mansion">Avengers Mansion</a>-    <a href="#Backflip">Backflip</a>-    <a href="#Black Cat - Felicia Hardy">Black Cat - Felicia Hardy</a>-    <a href="#Bomb Scare">Bomb Scare</a>-    <a href="#Breakin' & Takin'">Breakin' & Takin'</a>-    <a href="#Captain Marvel">Captain Marvel</a>-    <a href="#Captain Marvel's Helmet">Captain Marvel's Helmet</a>-    <a href="#Carol Danvers">Carol Danvers</a>-    <a href="#Caught Off Guard">Caught Off Guard</a>-    <a href="#Charge">Charge</a>-    <a href="#Combat Training">Combat Training</a>-    <a href="#Cosmic Flight">Cosmic Flight</a>-    <a href="#Crisis Interdiction">Crisis Interdiction</a>-    <a href="#Daredevil - Matt Murdock">Daredevil - Matt Murdock</a>-    <a href="#Defense Network">Defense Network</a>-    <a href="#Emergency">Emergency</a>-    <a href="#Energy Channel">Energy Channel</a>-    <a href="#Enhanced Ivory Horn">Enhanced Ivory Horn</a>-    <a href="#Enhanced Spider-Sense">Enhanced Spider-Sense</a>-    <a href="#Eviction Notice">Eviction Notice</a>-    <a href="#Exhaustion">Exhaustion</a>-    <a href="#Explosion">Explosion</a>-    <a href="#False Alarm">False Alarm</a>-    <a href="#Family Emergency">Family Emergency</a>-    <a href="#First Aid">First Aid</a>-    <a href="#For Justice!">For Justice!</a>-    <a href="#Gang-Up">Gang-Up</a>-    <a href="#Get Ready">Get Ready</a>-    <a href="#Great Responsibility">Great Responsibility</a>-    <a href="#Hard to Keep Down">Hard to Keep Down</a>-    <a href="#Hawkeye - Clint Barton">Hawkeye - Clint Barton</a>-    <a href="#Haymaker">Haymaker</a>-    <a href="#Helicarrier">Helicarrier</a>-    <a href="#Heroic Intuition">Heroic Intuition</a>-    <a href="#Highway Robbery">Highway Robbery</a>-    <a href="#Hydra Bomber">Hydra Bomber</a>-    <a href="#Illegal Arms Factory">Illegal Arms Factory</a>-    <a href="#Inspired">Inspired</a>-    <a href="#Interrogation Room">Interrogation Room</a>-    <a href="#Jessica Jones">Jessica Jones</a>-    <a href="#Klaw - 1">Klaw - 1</a>-    <a href="#Klaw - 2">Klaw - 2</a>-    <a href="#Klaw - 3">Klaw - 3</a>-    <a href="#Klaw's Vengeance">Klaw's Vengeance</a>-    <a href="#Kree Manipulator">Kree Manipulator</a>-    <a href="#Lead from the Front">Lead from the Front</a>-    <a href="#Make the Call">Make the Call</a>-    <a href="#Maria Hill">Maria Hill</a>-    <a href="#Masterplan">Masterplan</a>-    <a href="#Mockingbird - Bobbi Morse">Mockingbird - Bobbi Morse</a>-    <a href="#Nick Fury">Nick Fury</a>-    <a href="#Peter Parker">Peter Parker</a>-    <a href="#Photonic Blast">Photonic Blast</a>-    <a href="#Rhino - 2">Rhino - 2</a>-    <a href="#Rhino - 3">Rhino - 3</a>-    <a href="#Secret Rendezvous">Secret Rendezvous</a>-    <a href="#Shadow of the Past">Shadow of the Past</a>-    <a href="#Shocker">Shocker</a>-    <a href="#Solid-Sound Body">Solid-Sound Body</a>-    <a href="#Sonic Boom">Sonic Boom</a>-    <a href="#Sonic Converter">Sonic Converter</a>-    <a href="#Sound Manipulation">Sound Manipulation</a>-    <a href="#Spider-Man">Spider-Man</a>-    <a href="#Spider-Tracer">Spider-Tracer</a>-    <a href="#Spider-Woman - Jessica Drew">Spider-Woman - Jessica Drew</a>-    <a href="#Stampede">Stampede</a>-    <a href="#Surveillance Team">Surveillance Team</a>-    <a href="#Sweeping Swoop">Sweeping Swoop</a>-    <a href="#Swinging Web Kick">Swinging Web Kick</a>-    <a href="#Tenacity">Tenacity</a>-    <a href="#The "Immortal" Klaw">The "Immortal" Klaw</a>-    <a href="#The Power of Justice">The Power of Justice</a>-    <a href="#The Power of Leadership">The Power of Leadership</a>-    <a href="#The Psyche-Magnitron">The Psyche-Magnitron</a>-    <a href="#The Triskelion">The Triskelion</a>-    <a href="#The Vulture's Plans">The Vulture's Plans</a>-    <a href="#Under Fire">Under Fire</a>-    <a href="#Underground Distribution">Underground Distribution</a>-    <a href="#Vision">Vision</a>-    <a href="#Vulture">Vulture</a>-    <a href="#Weapons Runner">Weapons Runner</a>-    <a href="#Web-Shooter">Web-Shooter</a>-    <a href="#Webbed Up">Webbed Up</a>-    <a href="#Yon-Rogg">Yon-Rogg</a>-    <a href="#Yon-Rogg's Treason">Yon-Rogg's Treason</a>-<h3>core</h3>
 <section id=""I'm Tough""><h2>"I'm Tough"</h2>
 <img src="https://marvelcdb.com/bundles/cards/01105.png" class="resize"/>
     <pre>{
@@ -1452,6 +1519,29 @@
             "filter_group": "group_enemies"
           }
         ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Defense Network"><h2>Defense Network</h2>
+<img src="https://marvelcdb.com/bundles/cards/01125.png" class="resize_horizontal"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "add_threat",
+        "amount": "per_boardseek",
+        "subject": "self",
+        "per_boardseek": {
+          "subject": "boardseek",
+          "subject_count": "all",
+          "filter_state_seek": [
+            {
+              "filter_group": "group_identities"
+            }
+          ]
+        }
       }
     ]
   }
@@ -2359,6 +2449,29 @@
   }
 }</pre>
 </section>
+<section id="Illegal Arms Factory"><h2>Illegal Arms Factory</h2>
+<img src="https://marvelcdb.com/bundles/cards/01126.png" class="resize_horizontal"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "add_threat",
+        "amount": "per_boardseek",
+        "subject": "self",
+        "per_boardseek": {
+          "subject": "boardseek",
+          "subject_count": "all",
+          "filter_state_seek": [
+            {
+              "filter_group": "group_identities"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}</pre>
+</section>
 <section id="Inspired"><h2>Inspired</h2>
 <img src="https://marvelcdb.com/bundles/cards/01074.png" class="resize"/>
     <pre>{
@@ -2453,6 +2566,109 @@
           ]
         },
         "alteration": "per_boardseek"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Klaw - 1"><h2>Klaw - 1</h2>
+    <pre>{
+  "alterants": {
+    "board": [
+      {
+        "filter_task": "get_property",
+        "filter_property_name": "boost_cards_per_attack",
+        "trigger": "self",
+        "alteration": 1
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Klaw - 2"><h2>Klaw - 2</h2>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#deal_encounter"><span class="tooltiptext">deal an encounter to current hero</span>deal_encounter</span></a>",
+        "immediate_reveal": true,
+        "subject": "tutor",
+        "src_container": "deck_villain",
+        "filter_state_tutor": [
+          {
+            "filter_properties": {
+              "Name": "The \"Immortal\" Klaw"
+            }
+          }
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#deal_encounter"><span class="tooltiptext">deal an encounter to current hero</span>deal_encounter</span></a>",
+        "immediate_reveal": true,
+        "subject": "tutor",
+        "src_container": "discard_villain",
+        "filter_state_tutor": [
+          {
+            "filter_properties": {
+              "Name": "The \"Immortal\" Klaw"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "alterants": {
+    "board": [
+      {
+        "filter_task": "get_property",
+        "filter_property_name": "boost_cards_per_attack",
+        "trigger": "self",
+        "alteration": 1
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Klaw - 3"><h2>Klaw - 3</h2>
+    <pre>{
+  "alterants": {
+    "board": [
+      {
+        "filter_task": "get_property",
+        "filter_property_name": "boost_cards_per_attack",
+        "trigger": "self",
+        "alteration": 1
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Klaw's Vengeance"><h2>Klaw's Vengeance</h2>
+<img src="https://marvelcdb.com/bundles/cards/01122.png" class="resize"/>
+    <pre>{
+  "reveal": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "hero_form"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#villain_attacks_you"><span class="tooltiptext">Triggers an attack of the villain against current hero</span>villain_attacks_you</span></a>",
+        "tags": [
+          "1_threat_on_main_scheme_if_damage"
+        ]
+      },
+      {
+        "<a class="tooltip" href="#is_else"><span class="tooltiptext">a part of the script that will explicitly be executed <em>if</em> the cost cannot be paid</span>is_else</span></a>": true,
+        "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+        "dest_container": "discard",
+        "src_container": "hand",
+        "subject": "index",
+        "subject_count": 1,
+        "subject_index": "random"
       }
     ]
   }
@@ -2655,7 +2871,7 @@
         "subject": "grab_until",
         "src_container": "deck_villain",
         "dest_container": "discard_villain",
-        "filter_state_move_to_container_until": [
+        "filter_state_grab_until": [
           {
             "filter_properties": {
               "type_code": "side_scheme"
@@ -2875,6 +3091,36 @@
   }
 }</pre>
 </section>
+<section id="Secret Rendezvous"><h2>Secret Rendezvous</h2>
+<img src="https://marvelcdb.com/bundles/cards/01117a.png" class="resize_horizontal"/>
+    <pre>{
+  "reveal_side_a": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+        "subject": "grab_until",
+        "src_container": "deck_villain",
+        "dest_container": "discard_villain",
+        "filter_state_grab_until": [
+          {
+            "filter_properties": {
+              "type_code": "minion"
+            }
+          }
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#move_card_to_board"><span class="tooltiptext">move [subjects] cards to the boards, sometimes specifying a grid location</span>move_card_to_board</span></a>",
+        "subject": "index",
+        "subject_count": 1,
+        "grid_name": "enemies_first_player",
+        "subject_index": "retrieve_integer",
+        "src_container": "deck_villain"
+      }
+    ]
+  }
+}</pre>
+</section>
 <section id="Shadow of the Past"><h2>Shadow of the Past</h2>
 <img src="https://marvelcdb.com/bundles/cards/01190.png" class="resize"/>
     <pre>{
@@ -2904,6 +3150,200 @@
             }
           }
         ]
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Solid-Sound Body"><h2>Solid-Sound Body</h2>
+<img src="https://marvelcdb.com/bundles/cards/01119.png" class="resize"/>
+    <pre>{
+  "card_moved_to_board": {
+    "trigger": "self",
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#attach_to_card"><span class="tooltiptext">attach script owner to subject</span>attach_to_card</span></a>",
+        "subject": "villain"
+      }
+    ]
+  },
+  "alterants": {
+    "board": [
+      {
+        "filter_task": "get_property",
+        "filter_property_name": "retaliate",
+        "trigger": "host",
+        "alteration": 1
+      }
+    ]
+  },
+  "manual": {
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "hero_action"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#pay_cost"><span class="tooltiptext">pay a specific cost (not necessarily the card's cost</span>pay_cost</span></a>",
+        "cost": {
+          "physical": 1,
+          "mental": 1,
+          "energy": 1
+        },
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+      },
+      {
+        "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+        "dest_container": "discard_villain",
+        "subject": "self"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Sonic Boom"><h2>Sonic Boom</h2>
+<img src="https://marvelcdb.com/bundles/cards/01123.png" class="resize"/>
+    <pre>{
+  "reveal": {
+    "all": {
+      "_rules": {
+        "forced": true
+      },
+      "pay resources": [
+        {
+          "name": "<a class="tooltip" href="#pay_cost"><span class="tooltiptext">pay a specific cost (not necessarily the card's cost</span>pay_cost</span></a>",
+          "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+          "cost": {
+            "physical": 1,
+            "mental": 1,
+            "energy": 1
+          }
+        }
+      ],
+      "exhaust all characters": [
+        {
+          "name": "<a class="tooltip" href="#exhaust_card"><span class="tooltiptext">exhausts [subject] cards. See ready_card</span>exhaust_card</span></a>",
+          "subject": "boardseek",
+          "filter_state_seek": [
+            {
+              "filter_group": "friendly_characters"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "boost": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#replacement_effect"><span class="tooltiptext">replaces some task on the stack with something else (e.g. damage replaced, targets, replaced, etc...)</span>replacement_effect</span></a>",
+        "subject": "current_activation",
+        "replacements": {
+          "additional_tags": [
+            "exhaust_if_damage"
+          ]
+        }
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Sonic Converter"><h2>Sonic Converter</h2>
+<img src="https://marvelcdb.com/bundles/cards/01118.png" class="resize"/>
+    <pre>{
+  "card_moved_to_board": {
+    "trigger": "self",
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#attach_to_card"><span class="tooltiptext">attach script owner to subject</span>attach_to_card</span></a>",
+        "subject": "villain"
+      }
+    ]
+  },
+  "alterants": {
+    "board": [
+      {
+        "filter_task": "get_property",
+        "filter_property_name": "attack",
+        "trigger": "host",
+        "alteration": 1
+      }
+    ]
+  },
+  "manual": {
+    "board": [
+      {
+        "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "tags": [
+          "hero_action"
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#pay_cost"><span class="tooltiptext">pay a specific cost (not necessarily the card's cost</span>pay_cost</span></a>",
+        "cost": {
+          "physical": 1,
+          "mental": 1,
+          "energy": 1
+        },
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true
+      },
+      {
+        "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+        "dest_container": "discard_villain",
+        "subject": "self"
+      }
+    ]
+  }
+}</pre>
+</section>
+<section id="Sound Manipulation"><h2>Sound Manipulation</h2>
+<img src="https://marvelcdb.com/bundles/cards/01124.png" class="resize"/>
+    <pre>{
+  "reveal_alter_ego": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#heal"><span class="tooltiptext">heal [subjects]. Can be used as a cost, in which case the heal must happen at least partially for the cost to be considered paid</span>heal</span></a>",
+        "amount": 4,
+        "<a class="tooltip" href="#is_cost"><span class="tooltiptext">this part of the script is a cost. Typically the script won't get executed unless all costs can be paid</span>is_cost</span></a>": true,
+        "subject": "boardseek",
+        "subject_count": 1,
+        "filter_state_seek": [
+          {
+            "filter_properties": {
+              "shortname": "Klaw"
+            }
+          }
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#surge"><span class="tooltiptext">triggers an encounter surge</span>surge</span></a>",
+        "<a class="tooltip" href="#is_else"><span class="tooltiptext">a part of the script that will explicitly be executed <em>if</em> the cost cannot be paid</span>is_else</span></a>": true
+      }
+    ]
+  },
+  "reveal_hero": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#heal"><span class="tooltiptext">heal [subjects]. Can be used as a cost, in which case the heal must happen at least partially for the cost to be considered paid</span>heal</span></a>",
+        "amount": 2,
+        "subject": "boardseek",
+        "subject_count": 1,
+        "filter_state_seek": [
+          {
+            "filter_properties": {
+              "shortname": "Klaw"
+            }
+          }
+        ]
+      },
+      {
+        "name": "damage",
+        "amount": 2,
+        "subject": "my_hero"
       }
     ]
   }
@@ -3161,6 +3601,28 @@
   }
 }</pre>
 </section>
+<section id="The "Immortal" Klaw"><h2>The "Immortal" Klaw</h2>
+<img src="https://marvelcdb.com/bundles/cards/01127.png" class="resize_horizontal"/>
+    <pre>{
+  "alterants": {
+    "board": [
+      {
+        "filter_task": "get_property",
+        "filter_property_name": "health",
+        "trigger": "boardseek",
+        "alteration": 10,
+        "filter_state_trigger": [
+          {
+            "filter_properties": {
+              "shortname": "Klaw"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}</pre>
+</section>
 <section id="The Power of Justice"><h2>The Power of Justice</h2>
 <img src="https://marvelcdb.com/bundles/cards/01062.png" class="resize"/>
     <pre>{
@@ -3315,6 +3777,53 @@
   }
 }</pre>
 </section>
+<section id="Underground Distribution"><h2>Underground Distribution</h2>
+<img src="https://marvelcdb.com/bundles/cards/01116a.png" class="resize_horizontal"/>
+    <pre>{
+  "setup": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#deal_encounter"><span class="tooltiptext">deal an encounter to current hero</span>deal_encounter</span></a>",
+        "immediate_reveal": true,
+        "subject": "tutor",
+        "src_container": "deck_villain",
+        "filter_state_tutor": [
+          {
+            "filter_properties": {
+              "Name": "Defense Network"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "reveal": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
+        "subject": "grab_until",
+        "src_container": "deck_villain",
+        "dest_container": "discard_villain",
+        "filter_state_grab_until": [
+          {
+            "filter_properties": {
+              "type_code": "minion"
+            }
+          }
+        ]
+      },
+      {
+        "name": "<a class="tooltip" href="#move_card_to_board"><span class="tooltiptext">move [subjects] cards to the boards, sometimes specifying a grid location</span>move_card_to_board</span></a>",
+        "subject": "index",
+        "subject_count": 1,
+        "grid_name": "enemies_first_player",
+        "subject_index": "retrieve_integer",
+        "src_container": "deck_villain"
+      }
+    ]
+  }
+}</pre>
+</section>
 <section id="Vision"><h2>Vision</h2>
 <img src="https://marvelcdb.com/bundles/cards/01068.png" class="resize"/>
     <pre>{
@@ -3397,6 +3906,28 @@
 <img src="https://marvelcdb.com/bundles/cards/01167.png" class="resize"/>
     <pre>{
   "quickstrike": {}
+}</pre>
+</section>
+<section id="Weapons Runner"><h2>Weapons Runner</h2>
+<img src="https://marvelcdb.com/bundles/cards/01121.png" class="resize"/>
+    <pre>{
+  "card_moved_to_pile": {
+    "trigger": "self",
+    "filter_destination": "encounters_reveal",
+    "pile": [
+      {
+        "name": "<a class="tooltip" href="#surge"><span class="tooltiptext">triggers an encounter surge</span>surge</span></a>"
+      }
+    ]
+  },
+  "boost": {
+    "all": [
+      {
+        "name": "<a class="tooltip" href="#move_card_to_board"><span class="tooltiptext">move [subjects] cards to the boards, sometimes specifying a grid location</span>move_card_to_board</span></a>",
+        "subject": "self"
+      }
+    ]
+  }
 }</pre>
 </section>
 <section id="Web-Shooter"><h2>Web-Shooter</h2>

@@ -285,7 +285,11 @@ const DEFAULT_PROPERTIES_BY_TYPE:= {
 	},
 	"alter_ego": {
 		"ally_limit" : 3
-	},	
+	},
+	"villain" : {
+		"boost_cards_per_attack":1,
+		"boost_cards_per_scheme": 1,
+	}
 } 
 
 const TYPECODE_TO_PILE := {

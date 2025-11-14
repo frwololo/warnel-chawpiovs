@@ -164,6 +164,14 @@ func setup_traits_as_alterants():
 	for trait in self.all_traits:
 		CardConfig.PROPERTIES_NUMBERS.append("trait_" + trait)
 
+#we skip some cards from the marvelcdb database,
+#when they are redundant or not useful for this game
+func dont_load_this_card(card_data:Dictionary):
+	var stage = card_data.get("stage", "").to_upper()
+	if (stage.ends_with("A") or stage.ends_with("B")):
+		return true
+	return false
+
 var _seen_images:= {}
 func _load_one_card_definition(card_data, box_name:= "core"):
 	#converting "real" numbers to "int"
@@ -366,7 +374,9 @@ func load_card_definitions() -> Dictionary:
 	var i = 0
 	for box_name in json_card_data.keys():	
 		for card_data in (json_card_data[box_name]):
-			i+=1			
+			i+=1
+			if dont_load_this_card(card_data):
+				continue			
 			_load_one_card_definition(card_data, box_name)	
 			combined_sets[card_data["_code"]] = card_data
 			

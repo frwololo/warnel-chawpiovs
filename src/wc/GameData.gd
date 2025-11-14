@@ -381,6 +381,16 @@ func move_to_next_scheme(current_scheme):
 			new_card.position = slot.rect_global_position
 			slot.set_occupying_card(new_card)
 			new_card.state = Card.CardState.ON_PLAY_BOARD
+
+			var func_return = new_card.execute_scripts(new_card, "reveal_side_a")
+			while func_return is GDScriptFunctionState && func_return.is_valid():
+				func_return = func_return.resume()			
+			
+			func_return = new_card.execute_scripts(new_card, "reveal")
+			while func_return is GDScriptFunctionState && func_return.is_valid():
+				func_return = func_return.resume()			
+		
+			
 			return new_card
 	
 	return null
@@ -565,12 +575,7 @@ func ready_all_player_cards():
 				if not card.properties.get("_horizontal", false):
 					card.readyme()	
 
-func find_main_scheme() : 
-	var cards:Array = cfc.NMAP.board.get_grid("schemes").get_all_cards()
-	for card in cards:
-		if "main_scheme" == card.properties.get("type_code", "false"):
-			return card
-	return null
+
 
 
 func end_round():
@@ -705,7 +710,7 @@ func enemy_activates() :
 				
 		EnemyAttackStatus.OK_TO_START_ATTACK:	
 			if (enemy.get_property("type_code") == "villain"): #Or villainous?
-				enemy.draw_boost_card() 
+				enemy.draw_boost_cards(action) 
 			var script_name
 			var next_step
 			match action:
@@ -1067,6 +1072,16 @@ func _stack_event_deleted(event):
 
 func get_villain() -> Card :
 	return cfc.NMAP.board.get_villain_card()
+
+func get_main_scheme() -> Card :
+	return find_main_scheme()
+	
+func find_main_scheme() : 
+	var cards:Array = cfc.NMAP.board.get_grid("schemes").get_all_cards()
+	for card in cards:
+		if "main_scheme" == card.properties.get("type_code", "false"):
+			return card
+	return null	
 	
 func get_minions_engaged_with_hero(hero_id:int):
 	var results = []
@@ -1129,7 +1144,10 @@ func victory():
 	}
 	theAnnouncer.simple_announce(announce_settings, true )
 	
-	
+func first_player_hero_id():
+	#TODO
+	return 1
+		
 
 func hero_died(card:Card, script = null):
 	#TODO dead heroes can't play
@@ -1157,8 +1175,7 @@ func move_to_next_villain(current_villain):
 	var ckey = new_villain_data["_code"] 		
 	var new_card = cfc.NMAP.board.load_villain(ckey)
 	current_villain.copy_tokens_to(new_card, {"exclude":["damage"]})
-
-	#TODO better way to do a reveal ?
+	
 	var func_return = new_card.execute_scripts(new_card, "reveal")
 	while func_return is GDScriptFunctionState && func_return.is_valid():
 		func_return = func_return.resume()			

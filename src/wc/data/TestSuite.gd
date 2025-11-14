@@ -20,7 +20,7 @@ var time_between_tests = 0.3 #waiting between tests to clean stuff up
 #long amount of time to wait if the game state is not the one we expect
 const long_wait_time: = 2 #below 2 sec fails for multiplayer
 #same as above but for events that require a shorter patience time
-const short_wait_time: = 0.4 #below 0.4 has had failures formultiplayer
+var short_wait_time: = 0.8 #below 0.4 has had failures formultiplayer
 #amount of time to wait if the test explicitely requests it
 const max_wait_time: = 2
 const shorten_animations = true
@@ -294,10 +294,15 @@ func should_wait(my_action, _delta):
 	if (action_type in["play", "activate"]):
 		var card = get_card(action_value, 1)
 		var hero_id = self.get_hero_for_action(my_action)
-		if card.check_play_costs_no_cache( hero_id) != CFConst.CostsState.OK and _delta <long_wait_time:
+#		if card.check_play_costs_no_cache( hero_id) != CFConst.CostsState.OK and _delta <long_wait_time:
+#		#if  delta <long_wait_time:	
+#			count_delay("action_play")
+#			return	true
+		if !gameData.theStack.is_player_allowed_to_click() and _delta <long_wait_time:
 		#if  delta <long_wait_time:	
 			count_delay("action_play")
 			return	true		
+
 
 	if (action_type == "other"):
 		match action_value:
@@ -903,7 +908,7 @@ func load_test(test_file)-> bool:
 	
 	return true
 
-func set_card_speeds():
+remotesync func set_card_speeds():
 	if (!shorten_animations):
 		return
 	var cards = get_tree().get_nodes_in_group("cards")
@@ -919,7 +924,7 @@ func set_card_speeds():
 
 func all_clients_game_loaded(details = {}):
 	#increase speed
-	set_card_speeds()
+	rpc("set_card_speeds")
 	#only server is allowed to run the main process	
 	if 1 != get_tree().get_network_unique_id():
 		return
@@ -999,6 +1004,10 @@ remotesync func save_results():
 
 	for fail_detail in fail_details:
 		to_print +=  fail_detail + "\n"	
+
+	to_print+= "###\ntime details\n"
+	for key in count_delays:
+		to_print+= key + " - " + str(count_delays[key]) + "\n"
 
 	var player = gameData.get_player_by_network_id(get_tree().get_network_unique_id())
 	var player_id = player.get_id()

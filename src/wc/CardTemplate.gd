@@ -480,6 +480,16 @@ func execute_scripts(
 					can_i_play_enemy_card = true
 		if !can_i_play_enemy_card:
 			return null
+	
+	#last minute swap for hero vs alter ego reveals
+	if trigger == "reveal":
+		var hero_id_to_check = gameData.get_villain_current_hero_target()
+		var identity_card = gameData.get_identity_card(hero_id_to_check)
+		var specific_trigger = "reveal_alter_ego" if identity_card.is_alter_ego_form() else "reveal_hero"
+		var specific_reveal = cfc.set_scripts.get(canonical_id,{}).get(specific_trigger,{})
+		if specific_reveal:
+			trigger = specific_trigger		
+				
 			
 	return .execute_scripts(trigger_card, trigger, trigger_details, run_type)	
 
@@ -825,18 +835,25 @@ func common_pre_run(_sceng) -> void:
 			temp_queue.append(_script)
 	
 	scripts_queue = temp_queue	
+	var zones = ["hand"] + CFConst.HERO_GRID_SETUP.keys()
 	
 	for task in scripts_queue:
 		var script: ScriptTask = task
 		var script_definition = script.script_definition			
 		
+		for v in zones:
+		#first player explcitely mentioned
+			script_definition = WCUtils.search_and_replace(script_definition, v + "_first_player", v+str(gameData.first_player_hero_id()), true)	
+
+		
 		if (controller_hero_id <=0 ):
 			cfc.LOG("error controller hero id is not set" )
 		else:
 			#var current_hero_id = gameData.get_current_hero_id()
-			for v in ["hand", "encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
+			for v in zones:
 				#TODO move to const
 				script_definition = WCUtils.search_and_replace(script_definition, v, v+str(controller_hero_id), true)	
+
 
 				#any_discard, etc gets replaced with ["discard1","discard2"] 
 				var team_size = gameData.get_team_size()
@@ -980,13 +997,15 @@ func copy_modifiers_to(to_card:WCCard):
 	var modifiers = export_modifiers()
 	to_card.import_modifiers(modifiers)
 
-func draw_boost_card():
+func draw_boost_cards(action_type):
 	var villain_deck:Pile = cfc.NMAP["deck_villain"]
-	var boost_card:Card = villain_deck.get_top_card()
-	if boost_card:
-		boost_card.set_is_boost(true)
-		boost_card.attach_to_host(self) #,false, ["facedown"])
-		boost_card.set_is_faceup(false)
+	var amount = self.get_property("boost_cards_per_" + action_type, 0)
+	for i in amount:
+		var boost_card:Card = villain_deck.get_top_card()
+		if boost_card:
+			boost_card.set_is_boost(true)
+			boost_card.attach_to_host(self) #,false, ["facedown"])
+			boost_card.set_is_faceup(false)
 	#TODO if pile empty...need to reshuffle ?
 
 #returns an array of allowed triggers,

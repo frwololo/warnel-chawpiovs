@@ -40,14 +40,14 @@ func _grab_until_find(script: ScriptObject, run_type) -> Dictionary:
 	if !dest_container:
 		return{"subjects" : [], "stored_integer" : 0}
 	
-	var filter_data = script.get_property("filter_state_move_to_container_until")
+	var filter_data = script.get_property("filter_state_grab_until")
 	
 	var src_cards:Array = src_container.get_all_cards()
 	var found_index = 0
 	var found = false
 	while found_index < src_cards.size() and !found:
 		var card = src_cards[src_cards.size() - 1 - found_index]
-		var is_valid = SP.check_validity(card, script.script_definition, "move_to_container_until", script.owner)
+		var is_valid = SP.check_validity(card, script.script_definition, "grab_until", script.owner)
 		if !is_valid:
 			subjects_array.append(card)
 			found_index +=1

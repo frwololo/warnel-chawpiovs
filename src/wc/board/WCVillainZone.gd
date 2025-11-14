@@ -27,13 +27,15 @@ func post_load_move():
 		if slot:
 			card.move_to(cfc.NMAP.board, -1, slot)		
 			card.set_is_faceup(true)
+		
+	
 				
 #	for card in _post_load_move:				
 #		#card.interruptTweening()
 #		card.reorganize_self()	
-		
-	_post_load_move = {} #reset	
+	_post_load_move = {} #reset		
 	shuffle_deck()	
+	
 	return			
 
 
@@ -124,13 +126,15 @@ func load_scheme():
 	#TODO cleaner way to add the villain there?
 	cfc.NMAP["deck_villain"].add_child(card)
 	card._determine_idle_state()
+	
+	
 	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid("schemes")
 	var slot: BoardPlacementSlot
 	if grid:
 		slot = grid.find_available_slot()
 		if slot:
 			_post_load_move[card] = {
-				"slot": slot
+				"slot": slot,
 			}	
 	pass
 
@@ -143,4 +147,4 @@ func shuffle_deck() -> void:
 
 func get_villain():
 	return villain
-	
+		

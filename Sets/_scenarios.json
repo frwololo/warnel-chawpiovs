@@ -1,30 +1,80 @@
 {
-	"01097":
-		{
-			"code": "01097",
-			"name": "The Break-In!",
-			"modular_default": ["bomb_scare"],
+	"01097":{
+		"code": "01097",
+		"name": "The Break-In!",
+		"modular_default": ["bomb_scare"],
+		"encounter_sets": [
+			"Rhino",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Rhino - 1",
+			"Rhino - 2"
+		],
+		"expert": {
 			"encounter_sets": [
 				"Rhino",
 				"Standard",
-				"Modular"
+				"modular",
+				"expert"
 			],
 			"villains": [
-				"Rhino - 1",
-				"Rhino - 2"
-			],
-			"expert": {
-				"encounter_sets": [
-					"Rhino",
-					"Standard",
-					"modular",
-					"expert"
-				],
-				"villains": [
-					"Rhino - 2",
-					"Rhino - 3"
-				]
-			},
-			"setup_script": "todo"
+				"Rhino - 2",
+				"Rhino - 3"
+			]
 		}
+	},
+	"01116":{
+		"code": "01116",
+		"name": "Underground Distribution",
+		"modular_default": ["masters_of_evil"],
+		"encounter_sets": [
+			"Klaw",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Klaw - 1",
+			"Klaw - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"Klaw",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Klaw - 2",
+				"Klaw - 3"
+			]
+		}
+	},
+	"01137":{
+		"code": "01137",
+		"name": "The Crimson Cowl",
+		"modular_default": ["under_attack"],
+		"encounter_sets": [
+			"Ultron",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Ultron - 1",
+			"Ultron - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"Ultron",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Ultron - 2",
+				"Ultron - 3"
+			]
+		}
+	},	
 }

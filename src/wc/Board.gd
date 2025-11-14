@@ -240,9 +240,21 @@ func post_ready_load():
 	for i in range (get_team_size()): 
 		heroZones[i+1].reorganize()
 
+	while are_cards_still_animating():
+		yield(get_tree().create_timer(0.1), "timeout")
+
 	#TODO better way to do a reveal ?
 	var current_villain = get_villain_card()
 	var func_return = current_villain.execute_scripts(current_villain, "reveal")
+	while func_return is GDScriptFunctionState && func_return.is_valid():
+		func_return = func_return.resume()		
+
+	var scheme = gameData.get_main_scheme()
+	func_return = scheme.execute_scripts_no_stack(scheme, "setup")
+	while func_return is GDScriptFunctionState && func_return.is_valid():
+		func_return = func_return.resume()	
+		
+	func_return = scheme.execute_scripts_no_stack(scheme, "reveal")
 	while func_return is GDScriptFunctionState && func_return.is_valid():
 		func_return = func_return.resume()		
 	
@@ -251,6 +263,7 @@ func post_ready_load():
 
 func get_villain_card():
 	return villain.get_villain()
+
 
 func load_villain(card_id):
 	return villain.load_villain(card_id)

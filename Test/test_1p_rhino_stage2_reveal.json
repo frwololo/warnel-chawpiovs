@@ -1,5 +1,5 @@
 {
-	"_comments": "Tests that nothing changes if no actions are taken",
+	"_comments": "Tests that Rhino 1 comes to his next stage when defeated",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [

@@ -601,6 +601,26 @@
 			]
 		}
 	},
+	"Defense Network": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": "per_boardseek",
+					"subject": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						]
+					}
+				}
+			]
+		}
+	},
 	"Emergency": {
 		"interrupt": {
 			"event_name": "commit_scheme",
@@ -1440,6 +1460,26 @@
 			}
 		}
 	},
+	"Illegal Arms Factory": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": "per_boardseek",
+					"subject": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						]
+					}
+				}
+			]
+		}
+	},
 	"\"I'm Tough\"": {
 		"reveal": {
 			"all": [
@@ -1550,6 +1590,100 @@
 						]
 					},
 					"alteration": "per_boardseek"
+				}
+			]
+		}
+	},
+	"Klaw - 1": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "boost_cards_per_attack",
+					"trigger": "self",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Klaw - 2": {
+		"reveal": {
+			"all": [
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": "deck_villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "The \"Immortal\" Klaw"
+							}
+						}
+					]
+				},
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": "discard_villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "The \"Immortal\" Klaw"
+							}
+						}
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "boost_cards_per_attack",
+					"trigger": "self",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Klaw - 3": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "boost_cards_per_attack",
+					"trigger": "self",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Klaw's Vengeance": {
+		"reveal": {
+			"all": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "villain_attacks_you",
+					"tags": [
+						"1_threat_on_main_scheme_if_damage"
+					]
+				},
+				{
+					"is_else": true,
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"src_container": "hand",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "random"
 				}
 			]
 		}
@@ -1737,7 +1871,7 @@
 					"subject": "grab_until",
 					"src_container": "deck_villain",
 					"dest_container": "discard_villain",
-					"filter_state_move_to_container_until": [
+					"filter_state_grab_until": [
 						{
 							"filter_properties": {
 								"type_code": "side_scheme"
@@ -1941,6 +2075,33 @@
 			]
 		}
 	},
+	"Secret Rendezvous": {
+		"reveal_side_a": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "index",
+					"subject_count": 1,
+					"grid_name": "enemies_first_player",
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				}
+			]
+		}
+	},
 	"Shadow of the Past": {
 		"reveal": {
 			"all": [
@@ -1965,6 +2126,188 @@
 							}
 						}
 					]
+				}
+			]
+		}
+	},
+	"Solid-Sound Body": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 1,
+						"mental": 1,
+						"energy": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Sonic Boom": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"pay resources": [
+					{
+						"name": "pay_cost",
+						"is_cost": true,
+						"cost": {
+							"physical": 1,
+							"mental": 1,
+							"energy": 1
+						}
+					}
+				],
+				"exhaust all characters": [
+					{
+						"name": "exhaust_card",
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_group": "friendly_characters"
+							}
+						]
+					}
+				]
+			}
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"exhaust_if_damage"
+						]
+					}
+				}
+			]
+		}
+	},
+	"Sonic Converter": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 1,
+						"mental": 1,
+						"energy": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Sound Manipulation": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "heal",
+					"amount": 4,
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Klaw"
+							}
+						}
+					]
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "heal",
+					"amount": 2,
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Klaw"
+							}
+						}
+					]
+				},
+				{
+					"name": "damage",
+					"amount": 2,
+					"subject": "my_hero"
 				}
 			]
 		}
@@ -2243,6 +2586,25 @@
 			]
 		}
 	},
+	"The \"Immortal\" Klaw": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "boardseek",
+					"alteration": 10,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"shortname": "Klaw"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
 	"The Psyche-Magnitron": {
 		"reveal": {
 			"all": [
@@ -2333,6 +2695,50 @@
 			]
 		}
 	},
+	"Underground Distribution": {
+		"setup": {
+			"all": [
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": "deck_villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Defense Network"
+							}
+						}
+					]
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "index",
+					"subject_count": 1,
+					"grid_name": "enemies_first_player",					
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				}
+			]
+		}
+	},
 	"Vision": {
 		"once_per_round": {
 			"__name__": "_vision_ability"
@@ -2410,6 +2816,25 @@
 	},
 	"Vulture": {
 		"quickstrike": {}
+	},
+	"Weapons Runner": {
+		"card_moved_to_pile": {
+			"trigger": "self",
+			"filter_destination": "encounters_reveal",
+			"pile": [
+				{
+					"name": "surge"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Web-Shooter": {
 		"uses": {

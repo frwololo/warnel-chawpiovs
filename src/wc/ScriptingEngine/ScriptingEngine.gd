@@ -325,10 +325,19 @@ func receive_damage(script: ScriptTask) -> int:
 		else:	
 			retcode = card.tokens.mod_token("damage",
 					amount * multiplier,false,costs_dry_run(), tags)	
-
-			if ("stun_if_damage" in tags) and amount:
-				card.tokens.mod_token("stunned",
-					1,false,costs_dry_run(), tags)
+			
+			if amount:
+				if ("stun_if_damage" in tags):
+					card.tokens.mod_token("stunned",
+						1,false,costs_dry_run(), tags)
+				if ("exhaust_if_damage" in tags):
+					card.exhaust_me()
+				if ("1_threat_on_main_scheme_if_damage" in tags):
+					var main_scheme = gameData.get_main_scheme()
+					var task = ScriptTask.new(script.owner, {"name": "add_threat", "amount": 1}, card, {})
+					task.subjects= [main_scheme]
+					var stackEvent = SimplifiedStackScript.new(task)
+					gameData.theStack.add_script(stackEvent)									
 
 			scripting_bus.emit_signal("card_damaged", card, script.script_definition)
 

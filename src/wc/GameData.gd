@@ -1274,7 +1274,7 @@ func filter_trigger(
 	if trigger_card:
 		if !trigger_card.is_faceup:
 			return false
-		if trigger_card.is_boost: 
+		if trigger_card.is_boost(): 
 			if trigger!= "boost":
 				return false
 			if trigger_card!= owner_card:

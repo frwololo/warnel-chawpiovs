@@ -1,0 +1,181 @@
+{
+	"_comments": "Tests Minion as boost does't trigger hawkeye",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "shocker"
+				},		
+				{
+					"card": "false alarm"
+				},
+				{
+					"card": "false alarm"
+				},		
+				{
+					"card": "hydra mercenary"
+				},	
+				{
+					"card": "hydra mercenary"
+				},							
+		
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"allies2": [
+				{
+					"card": "Hawkeye",
+					"tokens": {"arrow" : 4}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Energy Absorption"
+				}
+			]			
+		}
+	},
+	"actions": [
+		{
+			"type": "pass",
+			"value": "1",
+			"_comments": "skip Spider-Man draw ability"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack from spider-man"
+		},	
+		{
+			"type": "select",
+			"value": "cancel",
+			"hero": 2,
+			"_comments": "undefended attack from Captain Marvel"
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "shocker"
+				},				
+			],
+			"discard_villain":[	
+				{
+					"card": "hydra mercenary"
+				},	
+				{
+					"card": "hydra mercenary"
+				},				
+				{
+					"card": "false alarm"
+				},
+				{
+					"card": "false alarm"
+				},							
+		
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"allies2": [
+				{
+					"card": "Hawkeye",
+					"tokens": {"arrow" : 4}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Energy Absorption"
+				}
+			]			
+		}
+	}
+}

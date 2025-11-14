@@ -256,6 +256,66 @@ func _process(_delta: float) -> void:
 	next_action()		
 	return	
 
+func should_wait(my_action, _delta):
+	var action_type = my_action.get("type", "")
+	var action_value = my_action.get("value", "")	
+	
+		#wait a bit if we need to choose from a selection window but that window isn't there
+	if (action_type == "select"):
+		if (!_current_selection_window) and _delta <long_wait_time:
+			count_delay("action_select")
+			return true
+ 
+	if (action_type == "target"):
+		if (!_current_targeting_card) and _delta <long_wait_time:
+			count_delay("action_target")
+			return true
+
+	if (action_type == "choose"):
+		if (!cfc.get_modal_menu()) and _delta <long_wait_time:
+			count_delay("action_choose")
+			return true
+
+	#there's an issue where the offer to "pass" sometimes takes a few cycles
+	if (action_type == "pass"):
+		var hero_id = int(action_value)
+		var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id-1]
+		if (heroPhase.get_label_text()!="PASS" and _delta <short_wait_time):
+			count_delay("action_pass")
+			return true
+	
+	if (action_type == "next_phase"):
+		var hero_id = int(action_value)
+		var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id-1]
+		if (!heroPhase.can_hero_phase_action() and _delta <long_wait_time):
+			count_delay("action_nextphase")
+			return true
+			
+	if (action_type in["play", "activate"]):
+		var card = get_card(action_value, 1)
+		var hero_id = self.get_hero_for_action(my_action)
+		if card.check_play_costs_no_cache( hero_id) != CFConst.CostsState.OK and _delta <long_wait_time:
+		#if  delta <long_wait_time:	
+			count_delay("action_play")
+			return	true		
+
+	if (action_type == "other"):
+		match action_value:
+			"wait_for_interrupt":
+				if (!gameData.is_interrupt_mode() and _delta <max_wait_time):
+					count_delay("action_wait_for_interrupt")
+					return true			
+			"wait_for_player_turn":
+				if (phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN and _delta <max_wait_time):
+					count_delay("action_wait_for_player_turn")
+					return true
+			"wait_a_bit":
+				if (_delta < max_wait_time):
+					count_delay("action_wait_a_bit")
+					return true
+					
+	return false		
+
 #processes the next action for the current test
 #If no actions remaining, check final state and load the next test
 func next_action():
@@ -301,59 +361,9 @@ func next_action():
 #	if (action_type != "target" and gameData.targeting_happened_too_recently()):
 #		return
 	
-	#wait a bit if we need to choose from a selection window but that window isn't there
-	if (action_type == "select"):
-		if (!_current_selection_window) and delta <long_wait_time:
-			count_delay("action_select")
-			return
- 
-	if (action_type == "target"):
-		if (!_current_targeting_card) and delta <long_wait_time:
-			count_delay("action_target")
-			return
-
-	if (action_type == "choose"):
-		if (!cfc.get_modal_menu()) and delta <long_wait_time:
-			count_delay("action_choose")
-			return
-
-	#there's an issue where the offer to "pass" sometimes takes a few cycles
-	if (action_type == "pass"):
-		var hero_id = int(action_value)
-		var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id-1]
-		if (heroPhase.get_label_text()!="PASS" and delta <short_wait_time):
-			count_delay("action_pass")
-			return
-	
-	if (action_type == "next_phase"):
-		var hero_id = int(action_value)
-		var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id-1]
-		if (!heroPhase.can_hero_phase_action() and delta <long_wait_time):
-			count_delay("action_nextphase")
-			return
+	if should_wait(my_action, delta):
+		return
 			
-	if (action_type in["play", "activate"]):
-		var card = get_card(action_value, 1)
-		var hero_id = self.get_hero_for_action(my_action)
-		if card.check_play_costs_no_cache( hero_id) != CFConst.CostsState.OK and delta <long_wait_time:
-		#if  delta <long_wait_time:	
-			count_delay("action_play")
-			return			
-
-	if (action_type == "other"):
-		match action_value:
-			"wait_for_interrupt":
-				if (!gameData.is_interrupt_mode() and delta <max_wait_time):
-					count_delay("action_wait_for_interrupt")
-					return			
-			"wait_for_player_turn":
-				if (phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN and delta <max_wait_time):
-					count_delay("action_wait_for_player_turn")
-					return
-			"wait_a_bit":
-				if (delta < max_wait_time):
-					count_delay("action_wait_a_bit")
-					return					
 
 	delta = 0
 
@@ -437,6 +447,16 @@ remotesync func run_action(my_action:Dictionary):
 	# Play: play a card
 	# activate: double click on a card to activate its ability 
 	#For "other", valid values are TBD
+	
+	#master already waited somewhere else
+	#todo unify this?
+	#probably doing the waiting here is the best
+	if !cfc.is_game_master():
+		var _delta = 0
+		while should_wait(my_action, _delta):
+			yield(get_tree().create_timer(0.1), "timeout")
+			_delta += 0.1
+	
 	var action_type: String = my_action.get("type", "play")
 	var action_value = 	my_action.get("value", "")
 	var action_hero = my_action["hero"]

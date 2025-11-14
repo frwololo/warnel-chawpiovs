@@ -452,7 +452,7 @@ func discard(script: ScriptTask):
 
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?	
 		if script.subjects:
-			return CFConst.Returncode.CHANGED
+			return CFConst.ReturnCode.CHANGED
 		return CFConst.ReturnCode.FAILED
 	
 	for card in script.subjects:

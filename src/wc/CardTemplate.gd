@@ -16,7 +16,7 @@ var _on_ready_load_from_json:Dictionary = {}
 var _can_change_form := true
 var _is_exhausted:= false
 
-var is_boost:=false
+var _is_boost:=false
 
 #an array of ManaCost variables representing everything that's been used to pay for this card
 var _last_paid_with := []
@@ -47,6 +47,18 @@ func remove_extra_script(script_uid):
 	check_ghost_card()
 	return extra_script_uid
 
+func set_is_boost(value:=true):
+	self._is_boost = value
+	
+	#removing the card from this group will prevent
+	#triggering alterants
+	if value and self.is_in_group("cards"):
+		self.remove_from_group("cards") 
+	if !value and !self.is_in_group("cards"):
+		self.add_to_group("cards")
+	
+func is_boost():
+	return self._is_boost
 
 #what to do when I'm an attachement and my host is removed from the table
 func host_is_gone():
@@ -635,7 +647,7 @@ func remove_threat(modification: int, script = null) -> int:
 
 func discard():
 	#cleanup some variables
-	is_boost = false
+	set_is_boost(false)
 	
 	#move to correct pile
 	var hero_owner_id = get_owner_hero_id()
@@ -694,29 +706,6 @@ func die(script):
 			
 	return CFConst.ReturnCode.OK		
 
-#func commit_scheme():
-#	#TODO special case villain needs to receive a boost card
-#	var scheme_amount = self.get_property("scheme", 0)
-#	if (!scheme_amount):
-#		return
-#
-#	var main_scheme:WCCard = gameData.find_main_scheme()
-#	if (!main_scheme):
-#		return
-#
-#	#reveal boost cards
-#	for boost_card in attachments:
-#		if (!boost_card.is_boost):
-#			continue
-#		boost_card.set_is_faceup(true)
-#		scheme_amount = scheme_amount + boost_card.get_property("boost",0)
-#		#add an event on the stack to discard this card.
-#		#Note that the discard will happen *after* receive_damage below 
-#		#because we add it to the stack first
-#		var discard_event = cfc.scripting_engine.simple_discard_task(boost_card)
-#		gameData.theStack.add_script(discard_event)
-#
-#	main_scheme.add_threat(scheme_amount)
 
 func _process_card_state() -> void:
 	._process_card_state()
@@ -995,8 +984,8 @@ func draw_boost_card():
 	var villain_deck:Pile = cfc.NMAP["deck_villain"]
 	var boost_card:Card = villain_deck.get_top_card()
 	if boost_card:
-		boost_card.is_boost = true
-		boost_card.attach_to_host(self)
+		boost_card.set_is_boost(true)
+		boost_card.attach_to_host(self) #,false, ["facedown"])
 		boost_card.set_is_faceup(false)
 	#TODO if pile empty...need to reshuffle ?
 
@@ -1004,14 +993,14 @@ func draw_boost_card():
 # or "true" if all scripts allowed
 func can_execute_scripts():
 	#checks for cases where we don't want to execute scripts on this card	
-	if is_boost:
+	if self.is_boost():
 		return ['boost']
 	return true
 
 func get_boost_cards(flip_status:int = CFConst.FLIP_STATUS.BOTH):
 	var results = []
 	for card in self.attachments:
-		if (!card.is_boost):
+		if (!card.is_boost()):
 			continue
 		if (card.is_faceup and flip_status == CFConst.FLIP_STATUS.FACEDOWN):
 			continue
@@ -1024,7 +1013,7 @@ func get_boost_cards(flip_status:int = CFConst.FLIP_STATUS.BOTH):
 func next_boost_card_to_reveal():
 	var boost_card = null
 	for card in self.attachments:
-		if (!card.is_boost):
+		if (!card.is_boost()):
 			continue
 		if (card.is_faceup):
 			continue

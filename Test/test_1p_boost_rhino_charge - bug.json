@@ -1,0 +1,104 @@
+{
+	"_comments": "Tests Rhino charge bug: gives attack bonus even as boost",
+
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "hydra mercenary"
+				},				
+				{
+					"card": "hydra mercenary"
+				},			
+				{
+					"card": "charge"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones"
+				}			
+			],
+			"identity1": [
+				{
+					"card": "Captain Marvel"
+				}
+			]
+		}
+	},
+	"actions": [		
+		{
+			"type": "select",
+			"value" : "cancel",
+			"_comments": "take undefended attack"
+		}
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+				}				
+			],		
+			"discard_villain":[		
+				{
+					"card": "charge"
+				},
+			
+			],
+			"deck_villain":[
+				{
+					"card": "hydra mercenary"
+				},
+			],			
+			"schemes": [
+				{
+					"card": "01097",
+				}
+			],
+			"enemies1":[
+				{
+					"card": "hydra mercenary"
+				},
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones"
+				}				
+			],
+			"identity1": [
+				{
+					"card": "Captain Marvel",
+					"tokens": {"damage" : 4}
+				}
+			]
+		}
+	}
+}

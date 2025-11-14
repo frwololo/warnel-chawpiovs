@@ -788,14 +788,20 @@ func has_script(script):
 
 #Instead of deleting a stack we refresh the existing one
 #by cleaning up all bean counters
-func reset():
-	display_debug("STACK RESET (NEW GAME?)")
+func reset():	
+	display_debug("STACK RESET (NEW GAME?)")	
+
+	if (text_edit and is_instance_valid(text_edit)):
+		text_edit.text = ""	
+
 	current_stack_uid = 0
 	reset_interrupt_states()
 	stack = {}
+	reference_queue = {}
 	clients_current_mode = {}
 	stack_integrity_check = {}
 	waitOneMoreTick = 0
+	time_since_started_waiting = 0.0
 	_current_interrupted_event= {}
 	stack_uid_to_object = {}
 	object_to_stack_uid = {}

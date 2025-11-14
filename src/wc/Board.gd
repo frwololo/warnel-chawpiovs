@@ -657,7 +657,8 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 	#exchange hands
 	for v in ["GhostHand", "Hand"]:
 		var old_hand: Hand = get_node("%" + v + str(previous_hero_id))	
-		old_hand.remove_from_group("bottom") #todo fix hack
+		if old_hand.is_in_group("bottom"):
+			old_hand.remove_from_group("bottom") #todo fix hack
 		WCUtils.disable_and_hide_node(old_hand)
 		old_hand.re_place()	
 		old_hand.position = Vector2(20000, 20000)	

@@ -235,7 +235,7 @@ func scheme_base_threat(script:ScriptTask) -> int:
 	var retcode = scheme.tokens.mod_token("threat", base_threat, false,costs_dry_run(), tags)
 	return retcode
 	
-func return_attachements_to_owner(script: ScriptTask) -> int:
+func return_attachments_to_owner(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
 	var host = script.owner

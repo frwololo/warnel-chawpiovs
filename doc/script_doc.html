@@ -13,22 +13,21 @@
 <h2 id="abilities">ABILITIES</h2>
 <table><tr><td><a href="#add_resource">add_resource</a></td><td>adds resources based on specific computations</td></tr>
 <tr><td><a href="#add_script">add_script</a></td><td>adds a script to a target card</td></tr>
-<tr><td><a href="#add_threat">add_threat</a></td><td></td></tr>
+<tr><td><a href="#add_threat">add_threat</a></td><td>adds threat to subjects</td></tr>
 <tr><td><a href="#attach_to_card">attach_to_card</a></td><td>attach script owner to subject</td></tr>
 <tr><td><a href="#attack">attack</a></td><td></td></tr>
 <tr><td><a href="#change_controller_hero">change_controller_hero</a></td><td>change controller hero</td></tr>
 <tr><td><a href="#change_form">change_form</a></td><td>change hero form</td></tr>
 <tr><td><a href="#constraints">constraints</a></td><td>an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</td></tr>
 <tr><td><a href="#count_tokens">count_tokens</a></td><td>count number of tokens of a specific type</td></tr>
-<tr><td><a href="#damage">damage</a></td><td></td></tr>
 <tr><td><a href="#deal_damage">deal_damage</a></td><td>deal damage to [subject]. also see receive_damage</td></tr>
 <tr><td><a href="#deal_encounter">deal_encounter</a></td><td>deal an encounter to current hero</td></tr>
 <tr><td><a href="#discard">discard</a></td><td></td></tr>
 <tr><td><a href="#draw_cards">draw_cards</a></td><td>the owner of [subject]cards draws cards</td></tr>
-<tr><td><a href="#enemy_schemes">enemy_schemes</a></td><td></td></tr>
+<tr><td><a href="#enemy_schemes">enemy_schemes</a></td><td>subject enemy (typically the villain) starts a scheme action</td></tr>
 <tr><td><a href="#exhaust_card">exhaust_card</a></td><td>exhausts [subject] cards. See ready_card</td></tr>
 <tr><td><a href="#heal">heal</a></td><td>heal [subjects]. Can be used as a cost, in which case the heal must happen at least partially for the cost to be considered paid</td></tr>
-<tr><td><a href="#host_card">host_card</a></td><td></td></tr>
+<tr><td><a href="#host_card">host_card</a></td><td>owner of the script will become the host of the subjects. Can be used to steal cards for example</td></tr>
 <tr><td><a href="#mod_tokens">mod_tokens</a></td><td>modify tokens on the card. See Damage, threat, stunned, confused, etc...</td></tr>
 <tr><td><a href="#modify_properties">modify_properties</a></td><td>modify specific properties of the card (also see alterants)</td></tr>
 <tr><td><a href="#move_card_to_board">move_card_to_board</a></td><td>move [subjects] cards to the boards, sometimes specifying a grid location</td></tr>
@@ -42,9 +41,9 @@
 <tr><td><a href="#receive_damage">receive_damage</a></td><td>also see deal_damage</td></tr>
 <tr><td><a href="#remove_threat">remove_threat</a></td><td>removes threat from [subject] schemes. Also see thwart.</td></tr>
 <tr><td><a href="#replacement_effect">replacement_effect</a></td><td>replaces some task on the stack with something else (e.g. damage replaced, targets, replaced, etc...)</td></tr>
-<tr><td><a href="#return_attachements_to_owner">return_attachements_to_owner</a></td><td></td></tr>
-<tr><td><a href="#reveal_encounter">reveal_encounter</a></td><td></td></tr>
-<tr><td><a href="#reveal_encounters">reveal_encounters</a></td><td></td></tr>
+<tr><td><a href="#return_attachments_to_owner">return_attachments_to_owner</a></td><td>returns attachments of the script's owner to their respective owners</td></tr>
+<tr><td><a href="#reveal_encounter">reveal_encounter</a></td><td>reveal encounter by trying multiple sources, first looking into subjects, then falling back to src_container, and finally into the villain's deck</td></tr>
+<tr><td><a href="#reveal_encounters">reveal_encounters</a></td><td>reveals encounters as described by subjects, otherwise fails</td></tr>
 <tr><td><a href="#reveal_nemesis">reveal_nemesis</a></td><td>Reveals the current hero's nemesis</td></tr>
 <tr><td><a href="#surge">surge</a></td><td>triggers an encounter surge</td></tr>
 <tr><td><a href="#temporary_effect">temporary_effect</a></td><td>adds a temporary effect on a card, which stays until a specific event is triggered (typically for event cards that grant a benefit -alterant- until end of round or phase)</td></tr>
@@ -80,6 +79,7 @@
 <a href="#Vision">Vision</a>,
 </div></p></section>
 <section id="add_threat"><h3>add_threat</h3>
+<p>adds threat to subjects</p>
 <p><strong>params:</strong><br /><ul class="slight_right">
 <li>amount</li>
 <li>subject</li>
@@ -201,14 +201,6 @@
 <p><strong>cards</strong><br /><div class="slight_right">
 <a href="#Explosion">Explosion</a>,
 </div></p></section>
-<section id="damage"><h3>damage</h3>
-<p><strong>params:</strong><br /><ul class="slight_right">
-<li>amount</li>
-<li>subject</li>
-</ul></p>
-<p><strong>cards</strong><br /><div class="slight_right">
-<a href="#Sound Manipulation">Sound Manipulation</a>,
-</div></p></section>
 <section id="deal_damage"><h3>deal_damage</h3>
 <p>deal damage to [subject]. also see receive_damage</p>
 <p><strong>params:</strong><br /><ul class="slight_right">
@@ -280,6 +272,7 @@
 <a href="#Spider-Man">Spider-Man</a>,
 </div></p></section>
 <section id="enemy_schemes"><h3>enemy_schemes</h3>
+<p>subject enemy (typically the villain) starts a scheme action</p>
 <p><strong>params:</strong><br /><ul class="slight_right">
 <li>subject</li>
 </ul></p>
@@ -325,6 +318,7 @@
 <a href="#Sound Manipulation">Sound Manipulation</a>,
 </div></p></section>
 <section id="host_card"><h3>host_card</h3>
+<p>owner of the script will become the host of the subjects. Can be used to steal cards for example</p>
 <p><strong>params:</strong><br /><ul class="slight_right">
 <li>tags</li>
 <li>src_container</li>
@@ -515,6 +509,7 @@
 <p><strong>cards</strong><br /><div class="slight_right">
 <a href="#Great Responsibility">Great Responsibility</a>,
 <a href="#Hydra Bomber">Hydra Bomber</a>,
+<a href="#Sound Manipulation">Sound Manipulation</a>,
 </div></p></section>
 <section id="remove_threat"><h3>remove_threat</h3>
 <p>removes threat from [subject] schemes. Also see thwart.</p>
@@ -542,7 +537,8 @@
 <a href="#Sonic Boom">Sonic Boom</a>,
 <a href="#Sweeping Swoop">Sweeping Swoop</a>,
 </div></p></section>
-<section id="return_attachements_to_owner"><h3>return_attachements_to_owner</h3>
+<section id="return_attachments_to_owner"><h3>return_attachments_to_owner</h3>
+<p>returns attachments of the script's owner to their respective owners</p>
 <p><strong>params:</strong><br /><ul class="slight_right">
 <li>dest_container</li>
 <li>tags</li>
@@ -551,6 +547,7 @@
 <a href="#Highway Robbery">Highway Robbery</a>,
 </div></p></section>
 <section id="reveal_encounter"><h3>reveal_encounter</h3>
+<p>reveal encounter by trying multiple sources, first looking into subjects, then falling back to src_container, and finally into the villain's deck</p>
 <p><strong>params:</strong><br /><ul class="slight_right">
 <li>subject</li>
 <li>subject_count</li>
@@ -560,6 +557,7 @@
 <a href="#Under Fire">Under Fire</a>,
 </div></p></section>
 <section id="reveal_encounters"><h3>reveal_encounters</h3>
+<p>reveals encounters as described by subjects, otherwise fails</p>
 <p><strong>params:</strong><br /><ul class="slight_right">
 <li>is_else</li>
 <li>subject</li>
@@ -698,27 +696,27 @@
 <a href="#Photonic Blast">Photonic Blast</a>,
 </div></p></section>
 <h2 id="events">EVENTS</h2>
-<table><tr><td><a href="#about_to_reveal">about_to_reveal</a></td><td></td></tr>
+<table><tr><td><a href="#about_to_reveal">about_to_reveal</a></td><td>called before an encounter reveal event. Used for interrupts that prevent revealing</td></tr>
 <tr><td><a href="#alterants">alterants</a></td><td></td></tr>
-<tr><td><a href="#boost">boost</a></td><td></td></tr>
-<tr><td><a href="#card_moved_to_board">card_moved_to_board</a></td><td></td></tr>
-<tr><td><a href="#card_moved_to_pile">card_moved_to_pile</a></td><td></td></tr>
+<tr><td><a href="#boost">boost</a></td><td>special trigger called for card's boost star abilities</td></tr>
+<tr><td><a href="#card_moved_to_board">card_moved_to_board</a></td><td>when a card moves to the board (excluding any pile e.g. discard, deck, etc...)</td></tr>
+<tr><td><a href="#card_moved_to_pile">card_moved_to_pile</a></td><td>triggers when a card moves to any pile on the board. Additional filters required to understand which pile</td></tr>
 <tr><td><a href="#card_played">card_played</a></td><td></td></tr>
 <tr><td><a href="#enemy_attack_happened">enemy_attack_happened</a></td><td></td></tr>
-<tr><td><a href="#interrupt">interrupt</a></td><td></td></tr>
-<tr><td><a href="#minion_died">minion_died</a></td><td></td></tr>
-<tr><td><a href="#minion_moved_to_board">minion_moved_to_board</a></td><td></td></tr>
-<tr><td><a href="#once_per_round">once_per_round</a></td><td></td></tr>
-<tr><td><a href="#phase_ended">phase_ended</a></td><td></td></tr>
-<tr><td><a href="#quickstrike">quickstrike</a></td><td></td></tr>
-<tr><td><a href="#resource">resource</a></td><td></td></tr>
-<tr><td><a href="#reveal_alter_ego">reveal_alter_ego</a></td><td></td></tr>
-<tr><td><a href="#reveal_hero">reveal_hero</a></td><td></td></tr>
-<tr><td><a href="#reveal_side_a">reveal_side_a</a></td><td></td></tr>
-<tr><td><a href="#round_ended">round_ended</a></td><td></td></tr>
-<tr><td><a href="#setup">setup</a></td><td></td></tr>
-<tr><td><a href="#thwarted">thwarted</a></td><td></td></tr>
-<tr><td><a href="#uses">uses</a></td><td></td></tr>
+<tr><td><a href="#interrupt">interrupt</a></td><td>special trigger used for interrupt checks</td></tr>
+<tr><td><a href="#minion_died">minion_died</a></td><td>triggered when a minion dies</td></tr>
+<tr><td><a href="#minion_moved_to_board">minion_moved_to_board</a></td><td>triggered when a minion moves to the board.Might be easier to use than card_moved_to_board</td></tr>
+<tr><td><a href="#once_per_round">once_per_round</a></td><td>special macro that creates a token which can limit some specific actions to once per round</td></tr>
+<tr><td><a href="#phase_ended">phase_ended</a></td><td>triggered when a phase of the game ended (player or villain phase)</td></tr>
+<tr><td><a href="#quickstrike">quickstrike</a></td><td>macro for the quickstrike keyword, starts an automated attack</td></tr>
+<tr><td><a href="#resource">resource</a></td><td>special trigger for resource abilities</td></tr>
+<tr><td><a href="#reveal_alter_ego">reveal_alter_ego</a></td><td>special trigger that will be prioritized over 'reveal' if it's available and if the current identity is in alter ego form</td></tr>
+<tr><td><a href="#reveal_hero">reveal_hero</a></td><td>special trigger that will be prioritized over 'reveal' if it's available and if the current identity is in hero form</td></tr>
+<tr><td><a href="#reveal_side_a">reveal_side_a</a></td><td>special trigger to reveal the side A of main schemes</td></tr>
+<tr><td><a href="#round_ended">round_ended</a></td><td>triggered when a round ends. Also see phase_ended</td></tr>
+<tr><td><a href="#setup">setup</a></td><td>special trigger for setup on some cards</td></tr>
+<tr><td><a href="#thwarted">thwarted</a></td><td>triggered when a succesful thwart action has completed</td></tr>
+<tr><td><a href="#uses">uses</a></td><td>special macro to implement the 'uses' keyword</td></tr>
 </table>
 <section id="about_to_reveal"><h3>about_to_reveal</h3>
     <li><a href="#Eviction Notice">Eviction Notice</a></li>
@@ -872,7 +870,7 @@
   "reveal": {
     "all": [
       {
-        "name": "enemy_schemes",
+        "name": "<a class="tooltip" href="#enemy_schemes"><span class="tooltiptext">subject enemy (typically the villain) starts a scheme action</span>enemy_schemes</span></a>",
         "subject": "villain"
       }
     ]
@@ -949,7 +947,7 @@
 <section id="Armored Rhino Suit"><h2>Armored Rhino Suit</h2>
 <img src="https://marvelcdb.com/bundles/cards/01098.png" class="resize"/>
     <pre>{
-  "card_moved_to_board": {
+  "<a class="tooltip" href="#card_moved_to_board"><span class="tooltiptext">when a card moves to the board (excluding any pile e.g. discard, deck, etc...)</span>card_moved_to_board</span></a>": {
     "trigger": "self",
     "board": [
       {
@@ -968,7 +966,7 @@
       }
     ]
   },
-  "interrupt": {
+  "<a class="tooltip" href="#interrupt"><span class="tooltiptext">special trigger used for interrupt checks</span>interrupt</span></a>": {
     "event_name": "<a class="tooltip" href="#receive_damage"><span class="tooltiptext">also see deal_damage</span>receive_damage</span></a>",
     "event_filters": {
       "target": "villain"
@@ -1080,7 +1078,7 @@
 <section id="Backflip"><h2>Backflip</h2>
 <img src="https://marvelcdb.com/bundles/cards/01003.png" class="resize"/>
     <pre>{
-  "interrupt": {
+  "<a class="tooltip" href="#interrupt"><span class="tooltiptext">special trigger used for interrupt checks</span>interrupt</span></a>": {
     "event_name": "<a class="tooltip" href="#receive_damage"><span class="tooltiptext">also see deal_damage</span>receive_damage</span></a>",
     "event_filters": {
       "target": "my_hero",
@@ -1101,7 +1099,7 @@
 <section id="Black Cat - Felicia Hardy"><h2>Black Cat - Felicia Hardy</h2>
 <img src="https://marvelcdb.com/bundles/cards/01002.png" class="resize"/>
     <pre>{
-  "card_moved_to_board": {
+  "<a class="tooltip" href="#card_moved_to_board"><span class="tooltiptext">when a card moves to the board (excluding any pile e.g. discard, deck, etc...)</span>card_moved_to_board</span></a>": {
     "trigger": "self",
     "board": [
       {
@@ -1137,7 +1135,7 @@
   "reveal": {
     "all": [
       {
-        "name": "add_threat",
+        "name": "<a class="tooltip" href="#add_threat"><span class="tooltiptext">adds threat to subjects</span>add_threat</span></a>",
         "amount": 1,
         "subject": "self"
       }
@@ -1151,7 +1149,7 @@
   "reveal": {
     "all": [
       {
-        "name": "add_threat",
+        "name": "<a class="tooltip" href="#add_threat"><span class="tooltiptext">adds threat to subjects</span>add_threat</span></a>",
         "amount": "per_boardseek",
         "subject": "self",
         "per_boardseek": {
@@ -1171,7 +1169,7 @@
 <section id="Captain Marvel"><h2>Captain Marvel</h2>
 <img src="https://marvelcdb.com/bundles/cards/01010a.png" class="resize"/>
     <pre>{
-  "once_per_round": {
+  "<a class="tooltip" href="#once_per_round"><span class="tooltiptext">special macro that creates a token which can limit some specific actions to once per round</span>once_per_round</span></a>": {
     "__name__": "_marvel_draw"
   },
   "manual": {
@@ -1252,7 +1250,7 @@
 </section>
 <section id="Carol Danvers"><h2>Carol Danvers</h2>
     <pre>{
-  "once_per_round": {
+  "<a class="tooltip" href="#once_per_round"><span class="tooltiptext">special macro that creates a token which can limit some specific actions to once per round</span>once_per_round</span></a>": {
     "__name__": "_carol_draw"
   },
   "manual": {
@@ -1325,7 +1323,7 @@
 <section id="Charge"><h2>Charge</h2>
 <img src="https://marvelcdb.com/bundles/cards/01099.png" class="resize"/>
     <pre>{
-  "card_moved_to_board": {
+  "<a class="tooltip" href="#card_moved_to_board"><span class="tooltiptext">when a card moves to the board (excluding any pile e.g. discard, deck, etc...)</span>card_moved_to_board</span></a>": {
     "trigger": "self",
     "board": [
       {
@@ -1371,7 +1369,7 @@
 <section id="Combat Training"><h2>Combat Training</h2>
 <img src="https://marvelcdb.com/bundles/cards/01057.png" class="resize"/>
     <pre>{
-  "card_moved_to_board": {
+  "<a class="tooltip" href="#card_moved_to_board"><span class="tooltiptext">when a card moves to the board (excluding any pile e.g. discard, deck, etc...)</span>card_moved_to_board</span></a>": {
     "trigger": "self",
     "board": [
       {
@@ -1424,7 +1422,7 @@
       }
     ]
   },
-  "interrupt": {
+  "<a class="tooltip" href="#interrupt"><span class="tooltiptext">special trigger used for interrupt checks</span>interrupt</span></a>": {
     "event_name": "<a class="tooltip" href="#receive_damage"><span class="tooltiptext">also see deal_damage</span>receive_damage</span></a>",
     "event_filters": {
       "target": "my_hero",
@@ -1505,7 +1503,7 @@
 <section id="Daredevil - Matt Murdock"><h2>Daredevil - Matt Murdock</h2>
 <img src="https://marvelcdb.com/bundles/cards/01058.png" class="resize"/>
     <pre>{
-  "thwarted": {
+  "<a class="tooltip" href="#thwarted"><span class="tooltiptext">triggered when a succesful thwart action has completed</span>thwarted</span></a>": {
     "trigger": "self",
     "is_optional_board": true,
     "board": [
@@ -1530,7 +1528,7 @@
   "reveal": {
     "all": [
       {
-        "name": "add_threat",
+        "name": "<a class="tooltip" href="#add_threat"><span class="tooltiptext">adds threat to subjects</span>add_threat</span></a>",
         "amount": "per_boardseek",
         "subject": "self",
         "per_boardseek": {
@@ -1550,7 +1548,7 @@
 <section id="Emergency"><h2>Emergency</h2>
 <img src="https://marvelcdb.com/bundles/cards/01085.png" class="resize"/>
     <pre>{
-  "interrupt": {
+  "<a class="tooltip" href="#interrupt"><span class="tooltiptext">special trigger used for interrupt checks</span>interrupt</span></a>": {
     "event_name": "commit_scheme",
     "filter_state_trigger": [
       {
@@ -1687,7 +1685,7 @@
 <section id="Enhanced Ivory Horn"><h2>Enhanced Ivory Horn</h2>
 <img src="https://marvelcdb.com/bundles/cards/01100.png" class="resize"/>
     <pre>{
-  "card_moved_to_board": {
+  "<a class="tooltip" href="#card_moved_to_board"><span class="tooltiptext">when a card moves to the board (excluding any pile e.g. discard, deck, etc...)</span>card_moved_to_board</span></a>": {
     "trigger": "self",
     "board": [
       {
@@ -1734,8 +1732,8 @@
 <section id="Enhanced Spider-Sense"><h2>Enhanced Spider-Sense</h2>
 <img src="https://marvelcdb.com/bundles/cards/01004.png" class="resize"/>
     <pre>{
-  "interrupt": {
-    "event_name": "reveal_encounter",
+  "<a class="tooltip" href="#interrupt"><span class="tooltiptext">special trigger used for interrupt checks</span>interrupt</span></a>": {
+    "event_name": "<a class="tooltip" href="#reveal_encounter"><span class="tooltiptext">reveal encounter by trying multiple sources, first looking into subjects, then falling back to src_container, and finally into the villain's deck</span>reveal_encounter</span></a>",
     "is_optional_hand": true,
     "hand": [
       {
@@ -1763,7 +1761,7 @@
 <section id="Eviction Notice"><h2>Eviction Notice</h2>
 <img src="https://marvelcdb.com/bundles/cards/01165.png" class="resize"/>
     <pre>{
-  "about_to_reveal": {
+  "<a class="tooltip" href="#about_to_reveal"><span class="tooltiptext">called before an encounter reveal event. Used for interrupts that prevent revealing</span>about_to_reveal</span></a>": {
     "trigger": "self",
     "all": [
       {
@@ -1773,7 +1771,7 @@
       }
     ]
   },
-  "card_moved_to_board": {
+  "<a class="tooltip" href="#card_moved_to_board"><span class="tooltiptext">when a card moves to the board (excluding any pile e.g. discard, deck, etc...)</span>card_moved_to_board</span></a>": {
     "trigger": "self",
     "board": {
       "Flip then Remove from the game": [
@@ -1872,7 +1870,7 @@
 <section id="Exhaustion"><h2>Exhaustion</h2>
 <img src="https://marvelcdb.com/bundles/cards/01191.png" class="resize"/>
     <pre>{
-  "card_moved_to_pile": {
+  "<a class="tooltip" href="#card_moved_to_pile"><span class="tooltiptext">triggers when a card moves to any pile on the board. Additional filters required to understand which pile</span>card_moved_to_pile</span></a>": {
     "trigger": "self",
     "filter_destination": "encounters_reveal",
     "pile": [
@@ -1956,7 +1954,7 @@
 <section id="Family Emergency"><h2>Family Emergency</h2>
 <img src="https://marvelcdb.com/bundles/cards/01175.png" class="resize"/>
     <pre>{
-  "about_to_reveal": {
+  "<a class="tooltip" href="#about_to_reveal"><span class="tooltiptext">called before an encounter reveal event. Used for interrupts that prevent revealing</span>about_to_reveal</span></a>": {
     "trigger": "self",
     "all": [
       {
@@ -1966,7 +1964,7 @@
       }
     ]
   },
-  "card_moved_to_board": {
+  "<a class="tooltip" href="#card_moved_to_board"><span class="tooltiptext">when a card moves to the board (excluding any pile e.g. discard, deck, etc...)</span>card_moved_to_board</span></a>": {
     "trigger": "self",
     "board": {
       "Flip then Remove from the game": [
@@ -2165,8 +2163,8 @@
 <section id="Great Responsibility"><h2>Great Responsibility</h2>
 <img src="https://marvelcdb.com/bundles/cards/01061.png" class="resize"/>
     <pre>{
-  "interrupt": {
-    "event_name": "add_threat",
+  "<a class="tooltip" href="#interrupt"><span class="tooltiptext">special trigger used for interrupt checks</span>interrupt</span></a>": {
+    "event_name": "<a class="tooltip" href="#add_threat"><span class="tooltiptext">adds threat to subjects</span>add_threat</span></a>",
     "is_optional_hand": true,
     "hand": [
       {
@@ -2218,7 +2216,7 @@
 <section id="Hawkeye - Clint Barton"><h2>Hawkeye - Clint Barton</h2>
 <img src="https://marvelcdb.com/bundles/cards/01066.png" class="resize"/>
     <pre>{
-  "card_moved_to_board": {
+  "<a class="tooltip" href="#card_moved_to_board"><span class="tooltiptext">when a card moves to the board (excluding any pile e.g. discard, deck, etc...)</span>card_moved_to_board</span></a>": {
     "trigger": "self",
     "board": [
       {
@@ -2229,7 +2227,7 @@
       }
     ]
   },
-  "minion_moved_to_board": {
+  "<a class="tooltip" href="#minion_moved_to_board"><span class="tooltiptext">triggered when a minion moves to the board.Might be easier to use than card_moved_to_board</span>minion_moved_to_board</span></a>": {
     "is_optional_board": true,
     "board": [
       {
@@ -2330,7 +2328,7 @@
       }
     ]
   },
-  "phase_ended": {
+  "<a class="tooltip" href="#phase_ended"><span class="tooltiptext">triggered when a phase of the game ended (player or villain phase)</span>phase_ended</span></a>": {
     "board": [
       {
         "name": "<a class="tooltip" href="#mod_tokens"><span class="tooltiptext">modify tokens on the card. See Damage, threat, stunned, confused, etc...</span>mod_tokens</span></a>",
@@ -2346,7 +2344,7 @@
 <section id="Heroic Intuition"><h2>Heroic Intuition</h2>
 <img src="https://marvelcdb.com/bundles/cards/01065.png" class="resize"/>
     <pre>{
-  "card_moved_to_board": {
+  "<a class="tooltip" href="#card_moved_to_board"><span class="tooltiptext">when a card moves to the board (excluding any pile e.g. discard, deck, etc...)</span>card_moved_to_board</span></a>": {
     "trigger": "self",
     "board": [
       {
@@ -2388,7 +2386,7 @@
   "reveal": {
     "all": [
       {
-        "name": "host_card",
+        "name": "<a class="tooltip" href="#host_card"><span class="tooltiptext">owner of the script will become the host of the subjects. Can be used to steal cards for example</span>host_card</span></a>",
         "tags": [
           "facedown"
         ],
@@ -2401,11 +2399,11 @@
       }
     ]
   },
-  "interrupt": {
+  "<a class="tooltip" href="#interrupt"><span class="tooltiptext">special trigger used for interrupt checks</span>interrupt</span></a>": {
     "event_name": "card_dies",
     "board": [
       {
-        "name": "return_attachements_to_owner",
+        "name": "<a class="tooltip" href="#return_attachments_to_owner"><span class="tooltiptext">returns attachments of the script's owner to their respective owners</span>return_attachments_to_owner</span></a>",
         "dest_container": "hand",
         "tags": [
           "facedown"
@@ -2433,7 +2431,7 @@
       ],
       "1 Threat on Main Scheme": [
         {
-          "name": "add_threat",
+          "name": "<a class="tooltip" href="#add_threat"><span class="tooltiptext">adds threat to subjects</span>add_threat</span></a>",
           "amount": 1,
           "subject": "boardseek",
           "filter_state_seek": [
@@ -2455,7 +2453,7 @@
   "reveal": {
     "all": [
       {
-        "name": "add_threat",
+        "name": "<a class="tooltip" href="#add_threat"><span class="tooltiptext">adds threat to subjects</span>add_threat</span></a>",
         "amount": "per_boardseek",
         "subject": "self",
         "per_boardseek": {
@@ -2521,7 +2519,7 @@
       }
     ]
   },
-  "minion_died": {
+  "<a class="tooltip" href="#minion_died"><span class="tooltiptext">triggered when a minion dies</span>minion_died</span></a>": {
     "filter_source_controlled_by": "my_hero",
     "is_optional_board": true,
     "board": [
@@ -2677,7 +2675,7 @@
 <section id="Kree Manipulator"><h2>Kree Manipulator</h2>
 <img src="https://marvelcdb.com/bundles/cards/01178.png" class="resize"/>
     <pre>{
-  "card_moved_to_pile": {
+  "<a class="tooltip" href="#card_moved_to_pile"><span class="tooltiptext">triggers when a card moves to any pile on the board. Additional filters required to understand which pile</span>card_moved_to_pile</span></a>": {
     "trigger": "self",
     "filter_destination": "encounters_reveal",
     "pile": [
@@ -2689,7 +2687,7 @@
   "reveal": {
     "all": [
       {
-        "name": "add_threat",
+        "name": "<a class="tooltip" href="#add_threat"><span class="tooltiptext">adds threat to subjects</span>add_threat</span></a>",
         "amount": 1,
         "subject": "boardseek",
         "filter_state_seek": [
@@ -2702,10 +2700,10 @@
       }
     ]
   },
-  "boost": {
+  "<a class="tooltip" href="#boost"><span class="tooltiptext">special trigger called for card's boost star abilities</span>boost</span></a>": {
     "all": [
       {
-        "name": "add_threat",
+        "name": "<a class="tooltip" href="#add_threat"><span class="tooltiptext">adds threat to subjects</span>add_threat</span></a>",
         "amount": {
           "if": {
             "func_name": "<a class="tooltip" href="#current_activation_status"><span class="tooltiptext">returns true if the current activation (attack, scheme, encounter...) matches the passed params. e.g. to check if attack is undefended</span>current_activation_status</span></a>",
@@ -2743,7 +2741,7 @@
       },
       {
         "name": "<a class="tooltip" href="#temporary_effect"><span class="tooltiptext">adds a temporary effect on a card, which stays until a specific event is triggered (typically for event cards that grant a benefit -alterant- until end of round or phase)</span>temporary_effect</span></a>",
-        "end_condition": "phase_ended",
+        "end_condition": "<a class="tooltip" href="#phase_ended"><span class="tooltiptext">triggered when a phase of the game ended (player or villain phase)</span>phase_ended</span></a>",
         "subject": "boardseek",
         "needs_subject": true,
         "subject_count": "all",
@@ -2826,7 +2824,7 @@
 <section id="Maria Hill"><h2>Maria Hill</h2>
 <img src="https://marvelcdb.com/bundles/cards/01067.png" class="resize"/>
     <pre>{
-  "card_moved_to_board": {
+  "<a class="tooltip" href="#card_moved_to_board"><span class="tooltiptext">when a card moves to the board (excluding any pile e.g. discard, deck, etc...)</span>card_moved_to_board</span></a>": {
     "trigger": "self",
     "board": {
       "Draw": [
@@ -2852,7 +2850,7 @@
   "reveal": {
     "all": [
       {
-        "name": "add_threat",
+        "name": "<a class="tooltip" href="#add_threat"><span class="tooltiptext">adds threat to subjects</span>add_threat</span></a>",
         "amount": 4,
         "subject": "boardseek",
         "subject_count": "all",
@@ -2881,7 +2879,7 @@
       },
       {
         "<a class="tooltip" href="#is_else"><span class="tooltiptext">a part of the script that will explicitly be executed <em>if</em> the cost cannot be paid</span>is_else</span></a>": true,
-        "name": "reveal_encounters",
+        "name": "<a class="tooltip" href="#reveal_encounters"><span class="tooltiptext">reveals encounters as described by subjects, otherwise fails</span>reveal_encounters</span></a>",
         "subject": "index",
         "subject_count": 1,
         "subject_index": "retrieve_integer",
@@ -2894,7 +2892,7 @@
 <section id="Mockingbird - Bobbi Morse"><h2>Mockingbird - Bobbi Morse</h2>
 <img src="https://marvelcdb.com/bundles/cards/01083.png" class="resize"/>
     <pre>{
-  "card_moved_to_board": {
+  "<a class="tooltip" href="#card_moved_to_board"><span class="tooltiptext">when a card moves to the board (excluding any pile e.g. discard, deck, etc...)</span>card_moved_to_board</span></a>": {
     "trigger": "self",
     "board": [
       {
@@ -2916,7 +2914,7 @@
 <section id="Nick Fury"><h2>Nick Fury</h2>
 <img src="https://marvelcdb.com/bundles/cards/01084.png" class="resize"/>
     <pre>{
-  "card_moved_to_board": {
+  "<a class="tooltip" href="#card_moved_to_board"><span class="tooltiptext">when a card moves to the board (excluding any pile e.g. discard, deck, etc...)</span>card_moved_to_board</span></a>": {
     "trigger": "self",
     "board": {
       "_rules": {
@@ -2956,7 +2954,7 @@
       ]
     }
   },
-  "round_ended": {
+  "<a class="tooltip" href="#round_ended"><span class="tooltiptext">triggered when a round ends. Also see phase_ended</span>round_ended</span></a>": {
     "board": [
       {
         "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
@@ -2969,10 +2967,10 @@
 </section>
 <section id="Peter Parker"><h2>Peter Parker</h2>
     <pre>{
-  "once_per_round": {
+  "<a class="tooltip" href="#once_per_round"><span class="tooltiptext">special macro that creates a token which can limit some specific actions to once per round</span>once_per_round</span></a>": {
     "__name__": "_peter_resource"
   },
-  "resource": {
+  "<a class="tooltip" href="#resource"><span class="tooltiptext">special trigger for resource abilities</span>resource</span></a>": {
     "board": {
       "add resource": [
         {
@@ -3094,7 +3092,7 @@
 <section id="Secret Rendezvous"><h2>Secret Rendezvous</h2>
 <img src="https://marvelcdb.com/bundles/cards/01117a.png" class="resize_horizontal"/>
     <pre>{
-  "reveal_side_a": {
+  "<a class="tooltip" href="#reveal_side_a"><span class="tooltiptext">special trigger to reveal the side A of main schemes</span>reveal_side_a</span></a>": {
     "all": [
       {
         "name": "<a class="tooltip" href="#move_card_to_container"><span class="tooltiptext">move [subject] cards to a specific container (aka pile)</span>move_card_to_container</span></a>",
@@ -3158,7 +3156,7 @@
 <section id="Solid-Sound Body"><h2>Solid-Sound Body</h2>
 <img src="https://marvelcdb.com/bundles/cards/01119.png" class="resize"/>
     <pre>{
-  "card_moved_to_board": {
+  "<a class="tooltip" href="#card_moved_to_board"><span class="tooltiptext">when a card moves to the board (excluding any pile e.g. discard, deck, etc...)</span>card_moved_to_board</span></a>": {
     "trigger": "self",
     "board": [
       {
@@ -3236,7 +3234,7 @@
       ]
     }
   },
-  "boost": {
+  "<a class="tooltip" href="#boost"><span class="tooltiptext">special trigger called for card's boost star abilities</span>boost</span></a>": {
     "all": [
       {
         "name": "<a class="tooltip" href="#replacement_effect"><span class="tooltiptext">replaces some task on the stack with something else (e.g. damage replaced, targets, replaced, etc...)</span>replacement_effect</span></a>",
@@ -3254,7 +3252,7 @@
 <section id="Sonic Converter"><h2>Sonic Converter</h2>
 <img src="https://marvelcdb.com/bundles/cards/01118.png" class="resize"/>
     <pre>{
-  "card_moved_to_board": {
+  "<a class="tooltip" href="#card_moved_to_board"><span class="tooltiptext">when a card moves to the board (excluding any pile e.g. discard, deck, etc...)</span>card_moved_to_board</span></a>": {
     "trigger": "self",
     "board": [
       {
@@ -3303,7 +3301,7 @@
 <section id="Sound Manipulation"><h2>Sound Manipulation</h2>
 <img src="https://marvelcdb.com/bundles/cards/01124.png" class="resize"/>
     <pre>{
-  "reveal_alter_ego": {
+  "<a class="tooltip" href="#reveal_alter_ego"><span class="tooltiptext">special trigger that will be prioritized over 'reveal' if it's available and if the current identity is in alter ego form</span>reveal_alter_ego</span></a>": {
     "all": [
       {
         "name": "<a class="tooltip" href="#heal"><span class="tooltiptext">heal [subjects]. Can be used as a cost, in which case the heal must happen at least partially for the cost to be considered paid</span>heal</span></a>",
@@ -3325,7 +3323,7 @@
       }
     ]
   },
-  "reveal_hero": {
+  "<a class="tooltip" href="#reveal_hero"><span class="tooltiptext">special trigger that will be prioritized over 'reveal' if it's available and if the current identity is in hero form</span>reveal_hero</span></a>": {
     "all": [
       {
         "name": "<a class="tooltip" href="#heal"><span class="tooltiptext">heal [subjects]. Can be used as a cost, in which case the heal must happen at least partially for the cost to be considered paid</span>heal</span></a>",
@@ -3341,7 +3339,7 @@
         ]
       },
       {
-        "name": "damage",
+        "name": "<a class="tooltip" href="#receive_damage"><span class="tooltiptext">also see deal_damage</span>receive_damage</span></a>",
         "amount": 2,
         "subject": "my_hero"
       }
@@ -3352,7 +3350,7 @@
 <section id="Spider-Man"><h2>Spider-Man</h2>
 <img src="https://marvelcdb.com/bundles/cards/01001a.png" class="resize"/>
     <pre>{
-  "interrupt": {
+  "<a class="tooltip" href="#interrupt"><span class="tooltiptext">special trigger used for interrupt checks</span>interrupt</span></a>": {
     "event_name": "enemy_initiates_attack",
     "is_optional_board": true,
     "board": [
@@ -3389,7 +3387,7 @@
       }
     ]
   },
-  "interrupt": {
+  "<a class="tooltip" href="#interrupt"><span class="tooltiptext">special trigger used for interrupt checks</span>interrupt</span></a>": {
     "event_name": "card_dies",
     "board": [
       {
@@ -3411,7 +3409,7 @@
 <section id="Spider-Woman - Jessica Drew"><h2>Spider-Woman - Jessica Drew</h2>
 <img src="https://marvelcdb.com/bundles/cards/01011.png" class="resize"/>
     <pre>{
-  "card_moved_to_board": {
+  "<a class="tooltip" href="#card_moved_to_board"><span class="tooltiptext">when a card moves to the board (excluding any pile e.g. discard, deck, etc...)</span>card_moved_to_board</span></a>": {
     "trigger": "self",
     "is_optional_board": true,
     "board": {
@@ -3456,7 +3454,7 @@
 <section id="Surveillance Team"><h2>Surveillance Team</h2>
 <img src="https://marvelcdb.com/bundles/cards/01064.png" class="resize"/>
     <pre>{
-  "uses": {
+  "<a class="tooltip" href="#uses"><span class="tooltiptext">special macro to implement the 'uses' keyword</span>uses</span></a>": {
     "__name__": "snoop",
     "__amount__": 3
   },
@@ -3522,7 +3520,7 @@
       }
     ]
   },
-  "boost": {
+  "<a class="tooltip" href="#boost"><span class="tooltiptext">special trigger called for card's boost star abilities</span>boost</span></a>": {
     "all": [
       {
         "name": "<a class="tooltip" href="#replacement_effect"><span class="tooltiptext">replaces some task on the stack with something else (e.g. damage replaced, targets, replaced, etc...)</span>replacement_effect</span></a>",
@@ -3626,7 +3624,7 @@
 <section id="The Power of Justice"><h2>The Power of Justice</h2>
 <img src="https://marvelcdb.com/bundles/cards/01062.png" class="resize"/>
     <pre>{
-  "resource": {
+  "<a class="tooltip" href="#resource"><span class="tooltiptext">special trigger for resource abilities</span>resource</span></a>": {
     "hand": [
       {
         "name": "<a class="tooltip" href="#nop"><span class="tooltiptext">does nothing, but used for example to ensure some conditioi is met, as a cost</span>nop</span></a>",
@@ -3652,7 +3650,7 @@
 <section id="The Power of Leadership"><h2>The Power of Leadership</h2>
 <img src="https://marvelcdb.com/bundles/cards/01072.png" class="resize"/>
     <pre>{
-  "resource": {
+  "<a class="tooltip" href="#resource"><span class="tooltiptext">special trigger for resource abilities</span>resource</span></a>": {
     "hand": [
       {
         "name": "<a class="tooltip" href="#nop"><span class="tooltiptext">does nothing, but used for example to ensure some conditioi is met, as a cost</span>nop</span></a>",
@@ -3681,7 +3679,7 @@
   "reveal": {
     "all": [
       {
-        "name": "add_threat",
+        "name": "<a class="tooltip" href="#add_threat"><span class="tooltiptext">adds threat to subjects</span>add_threat</span></a>",
         "amount": "per_boardseek",
         "subject": "self",
         "per_boardseek": {
@@ -3733,7 +3731,7 @@
         "<a class="tooltip" href="#for_each_player"><span class="tooltiptext">this will internally duplicate this part of the script for each hero in game (and assign containers accordingly for each player, e.g hand becomes hand1, hand2, hand3,)</span>for_each_player</span></a>": true
       },
       {
-        "name": "add_threat",
+        "name": "<a class="tooltip" href="#add_threat"><span class="tooltiptext">adds threat to subjects</span>add_threat</span></a>",
         "amount": {
           "func_name": "<a class="tooltip" href="#count_resource_types"><span class="tooltiptext">counts the number of resource *types* in a list of subjects</span>count_resource_types</span></a>",
           "func_params": {
@@ -3756,7 +3754,7 @@
 <section id="Under Fire"><h2>Under Fire</h2>
 <img src="https://marvelcdb.com/bundles/cards/01193.png" class="resize"/>
     <pre>{
-  "card_moved_to_pile": {
+  "<a class="tooltip" href="#card_moved_to_pile"><span class="tooltiptext">triggers when a card moves to any pile on the board. Additional filters required to understand which pile</span>card_moved_to_pile</span></a>": {
     "trigger": "self",
     "filter_destination": "encounters_reveal",
     "pile": [
@@ -3768,7 +3766,7 @@
   "reveal": {
     "all": [
       {
-        "name": "reveal_encounter",
+        "name": "<a class="tooltip" href="#reveal_encounter"><span class="tooltiptext">reveal encounter by trying multiple sources, first looking into subjects, then falling back to src_container, and finally into the villain's deck</span>reveal_encounter</span></a>",
         "subject": "index",
         "subject_count": 1,
         "src_container": "deck_villain"
@@ -3780,7 +3778,7 @@
 <section id="Underground Distribution"><h2>Underground Distribution</h2>
 <img src="https://marvelcdb.com/bundles/cards/01116a.png" class="resize_horizontal"/>
     <pre>{
-  "setup": {
+  "<a class="tooltip" href="#setup"><span class="tooltiptext">special trigger for setup on some cards</span>setup</span></a>": {
     "all": [
       {
         "name": "<a class="tooltip" href="#deal_encounter"><span class="tooltiptext">deal an encounter to current hero</span>deal_encounter</span></a>",
@@ -3827,7 +3825,7 @@
 <section id="Vision"><h2>Vision</h2>
 <img src="https://marvelcdb.com/bundles/cards/01068.png" class="resize"/>
     <pre>{
-  "once_per_round": {
+  "<a class="tooltip" href="#once_per_round"><span class="tooltiptext">special macro that creates a token which can limit some specific actions to once per round</span>once_per_round</span></a>": {
     "__name__": "_vision_ability"
   },
   "manual": {
@@ -3849,7 +3847,7 @@
         },
         {
           "name": "<a class="tooltip" href="#add_script"><span class="tooltiptext">adds a script to a target card</span>add_script</span></a>",
-          "end_condition": "phase_ended",
+          "end_condition": "<a class="tooltip" href="#phase_ended"><span class="tooltiptext">triggered when a phase of the game ended (player or villain phase)</span>phase_ended</span></a>",
           "subject": "self",
           "script": {
             "alterants": {
@@ -3882,7 +3880,7 @@
         },
         {
           "name": "<a class="tooltip" href="#add_script"><span class="tooltiptext">adds a script to a target card</span>add_script</span></a>",
-          "end_condition": "phase_ended",
+          "end_condition": "<a class="tooltip" href="#phase_ended"><span class="tooltiptext">triggered when a phase of the game ended (player or villain phase)</span>phase_ended</span></a>",
           "subject": "self",
           "script": {
             "alterants": {
@@ -3905,13 +3903,13 @@
 <section id="Vulture"><h2>Vulture</h2>
 <img src="https://marvelcdb.com/bundles/cards/01167.png" class="resize"/>
     <pre>{
-  "quickstrike": {}
+  "<a class="tooltip" href="#quickstrike"><span class="tooltiptext">macro for the quickstrike keyword, starts an automated attack</span>quickstrike</span></a>": {}
 }</pre>
 </section>
 <section id="Weapons Runner"><h2>Weapons Runner</h2>
 <img src="https://marvelcdb.com/bundles/cards/01121.png" class="resize"/>
     <pre>{
-  "card_moved_to_pile": {
+  "<a class="tooltip" href="#card_moved_to_pile"><span class="tooltiptext">triggers when a card moves to any pile on the board. Additional filters required to understand which pile</span>card_moved_to_pile</span></a>": {
     "trigger": "self",
     "filter_destination": "encounters_reveal",
     "pile": [
@@ -3920,7 +3918,7 @@
       }
     ]
   },
-  "boost": {
+  "<a class="tooltip" href="#boost"><span class="tooltiptext">special trigger called for card's boost star abilities</span>boost</span></a>": {
     "all": [
       {
         "name": "<a class="tooltip" href="#move_card_to_board"><span class="tooltiptext">move [subjects] cards to the boards, sometimes specifying a grid location</span>move_card_to_board</span></a>",
@@ -3933,11 +3931,11 @@
 <section id="Web-Shooter"><h2>Web-Shooter</h2>
 <img src="https://marvelcdb.com/bundles/cards/01008.png" class="resize"/>
     <pre>{
-  "uses": {
+  "<a class="tooltip" href="#uses"><span class="tooltiptext">special macro to implement the 'uses' keyword</span>uses</span></a>": {
     "__name__": "web",
     "__amount__": 3
   },
-  "resource": {
+  "<a class="tooltip" href="#resource"><span class="tooltiptext">special trigger for resource abilities</span>resource</span></a>": {
     "board": [
       {
         "name": "<a class="tooltip" href="#constraints"><span class="tooltiptext">an ability that does nothing but is used as a cost to constraint when a card/ability can be used. Typically, Hero vs Alter Ego form, etc...</span>constraints</span></a>",
@@ -3992,7 +3990,7 @@
       }
     ]
   },
-  "interrupt": {
+  "<a class="tooltip" href="#interrupt"><span class="tooltiptext">special trigger used for interrupt checks</span>interrupt</span></a>": {
     "event_name": "enemy_initiates_attack",
     "board": [
       {
@@ -4026,7 +4024,7 @@
   "enemy_attack_happened": {
     "board": [
       {
-        "name": "add_threat",
+        "name": "<a class="tooltip" href="#add_threat"><span class="tooltiptext">adds threat to subjects</span>add_threat</span></a>",
         "amount": 1,
         "subject": "boardseek",
         "subject_count": 1,

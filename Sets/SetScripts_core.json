@@ -1420,7 +1420,7 @@
 			"event_name": "card_dies",
 			"board": [
 				{
-					"name": "return_attachements_to_owner",
+					"name": "return_attachments_to_owner",
 					"dest_container": "hand",
 					"tags": [
 						"facedown"
@@ -2305,7 +2305,7 @@
 					]
 				},
 				{
-					"name": "damage",
+					"name": "receive_damage",
 					"amount": 2,
 					"subject": "my_hero"
 				}

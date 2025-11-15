@@ -2353,7 +2353,7 @@ func _tween_interpolate_visibility(visibility: float, time: float) -> void:
 
 
 #what to do when I'm an attachement and my host is removed from the table
-func host_is_gone():
+func host_is_gone(former_host):
 	# Attachments typically follow their parents to the same container
 	move_to(get_parent())
 
@@ -2369,7 +2369,7 @@ func _clear_attachment_status(tags := ["Manual"]) -> void:
 		current_host_card = null
 	for card in attachments:
 		card.current_host_card = null
-		card.host_is_gone()
+		card.host_is_gone(self)
 		# We do a small wait to make the attachment drag look nicer
 		yield(get_tree().create_timer(0.1), "timeout")
 	attachments.clear()

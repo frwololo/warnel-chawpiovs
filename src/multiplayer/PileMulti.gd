@@ -22,7 +22,7 @@ func _on_shuffle_completed(card_container,details):
 func shuffle_cards(animate = true) -> void:
 	is_shuffling = true
 	#if we're a client in a network game, don't shuffle
-	if (get_tree().get_network_peer() and not cfc.is_game_master()):
+	if (not cfc.is_game_master()):
 		return	
 	else:
 		#do the actual shuffle to get the animation, etc

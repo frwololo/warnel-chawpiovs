@@ -22,6 +22,7 @@ const KEY_SUBJECT_V_VILLAIN := "villain"
 const KEY_SUBJECT_V_GRAB_UNTIL := "grab_until"
 const FILTER_HOST_OF := "filter_is_host_of"
 const FILTER_SAME_CONTROLLER := "filter_same_controller"
+const FILTER_EVENT_SOURCE:= "filter_event_source"
 const FILTER_SOURCE_CONTROLLED_BY := "filter_source_controlled_by"
 
 const FILTER_MAX_PER_HERO := "filter_max_per_hero"
@@ -72,7 +73,10 @@ static func filter_trigger(
 
 	if is_valid and card_scripts.get(FILTER_SOURCE_CONTROLLED_BY) \
 			and !check_source_controlled_by_filter(trigger_card,owner_card,trigger_details, card_scripts.get(FILTER_SOURCE_CONTROLLED_BY)):
-
+		is_valid = false	
+		
+	if is_valid and card_scripts.get(FILTER_EVENT_SOURCE) \
+			and !check_filter_event_source(trigger_card,owner_card,trigger_details, card_scripts.get(FILTER_EVENT_SOURCE)):
 		is_valid = false	
 
 	return(is_valid)
@@ -105,6 +109,21 @@ static func check_source_controlled_by_filter(trigger_card, owner_card, trigger_
 		_: #not implemented
 			return false
 	return false
+	
+# Returns true if the trigger and the owner belong to the same hero, false otherwise
+static func check_filter_event_source(trigger_card, owner_card, trigger_details, expected_event_source) -> bool:
+	var source = trigger_details.get("source", null)
+	if typeof(source) == TYPE_INT:
+		source = guidMaster.get_object_by_guid(source)
+		
+	match source:
+		"self":
+			if source == owner_card:
+				return true
+			return false
+		_: #not implemented
+			return false
+	return false	
 	
 # Returns true if the trigger and the owner belong to the same hero, false otherwise
 static func check_same_controller_filter(trigger_card, owner_card, true_false : bool) -> bool:
@@ -182,3 +201,16 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 	return(card_matches)
 
 	return is_valid	
+
+
+#todo in the future this needs to redo targeting, etc...
+static func retrieve_subjects(value, script):
+	match value:
+		"self":
+			return [script.owner]
+		"my_hero":
+			return [script.owner.get_controller_hero_card()]			
+		_:
+			#not implemented
+			return []
+					

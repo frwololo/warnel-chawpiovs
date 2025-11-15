@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://themes/darktheme/darktheme.theme" type="Theme" id=1]
 [ext_resource path="res://themes/darktheme/fonts/Bangers/Bangers-Regular.ttf" type="DynamicFontData" id=2]
@@ -29,49 +29,85 @@ margin_bottom = 1080.0
 
 [node name="Margin" type="MarginContainer" parent="MainMenu/VBox"]
 margin_right = 1920.0
-margin_bottom = 357.0
+margin_bottom = 342.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/margin_top = 90
 
 [node name="Label" type="Label" parent="MainMenu/VBox/Margin"]
-margin_top = 166.0
+margin_top = 158.0
 margin_right = 1920.0
-margin_bottom = 281.0
+margin_bottom = 273.0
 custom_fonts/font = SubResource( 2 )
 text = "JOIN GAME"
 align = 1
 
 [node name="Center" type="CenterContainer" parent="MainMenu/VBox"]
-margin_top = 361.0
+margin_top = 345.0
 margin_right = 1920.0
-margin_bottom = 718.0
+margin_bottom = 735.0
 size_flags_vertical = 3
 
 [node name="VButtons" type="VBoxContainer" parent="MainMenu/VBox/Center"]
-margin_left = 810.0
-margin_top = 144.0
-margin_right = 1110.0
-margin_bottom = 212.0
+margin_left = 800.0
+margin_right = 1119.0
+margin_bottom = 390.0
 rect_min_size = Vector2( 192, 0 )
 custom_constants/separation = 10
 alignment = 1
 
+[node name="RoomsBox" type="VBoxContainer" parent="MainMenu/VBox/Center/VButtons"]
+margin_right = 319.0
+margin_bottom = 26.0
+
+[node name="RoomsListHeader" type="Label" parent="MainMenu/VBox/Center/VButtons/RoomsBox"]
+unique_name_in_owner = true
+margin_right = 319.0
+margin_bottom = 23.0
+text = "Fetching Rooms - Please wait..."
+
+[node name="Rooms" type="VBoxContainer" parent="MainMenu/VBox/Center/VButtons/RoomsBox"]
+unique_name_in_owner = true
+margin_top = 26.0
+margin_right = 319.0
+margin_bottom = 26.0
+
+[node name="RefreshButton" type="Button" parent="MainMenu/VBox/Center/VButtons/RoomsBox"]
+unique_name_in_owner = true
+visible = false
+margin_top = 29.0
+margin_right = 319.0
+margin_bottom = 56.0
+text = "Refresh"
+
+[node name="HSeparator2" type="HSeparator" parent="MainMenu/VBox/Center/VButtons"]
+margin_top = 36.0
+margin_right = 319.0
+margin_bottom = 158.0
+custom_constants/separation = 122
+
+[node name="Label" type="Label" parent="MainMenu/VBox/Center/VButtons"]
+margin_top = 168.0
+margin_right = 319.0
+margin_bottom = 191.0
+text = "Direct IP Join:"
+
 [node name="JoinBox" type="HBoxContainer" parent="MainMenu/VBox/Center/VButtons"]
-margin_right = 300.0
-margin_bottom = 33.0
+margin_top = 201.0
+margin_right = 319.0
+margin_bottom = 228.0
 grow_horizontal = 2
 
 [node name="Label" type="Label" parent="MainMenu/VBox/Center/VButtons/JoinBox"]
-margin_top = 5.0
-margin_right = 62.0
-margin_bottom = 28.0
+margin_top = 2.0
+margin_right = 76.0
+margin_bottom = 25.0
 text = "Host IP: "
 
 [node name="HostIp" type="LineEdit" parent="MainMenu/VBox/Center/VButtons/JoinBox"]
-margin_left = 66.0
-margin_right = 266.0
-margin_bottom = 33.0
+margin_left = 79.0
+margin_right = 279.0
+margin_bottom = 27.0
 rect_min_size = Vector2( 200, 27 )
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
@@ -80,19 +116,25 @@ expand_to_text_length = true
 placeholder_text = "192.168.100.100"
 
 [node name="Join" type="Button" parent="MainMenu/VBox/Center/VButtons/JoinBox"]
-margin_left = 270.0
-margin_right = 300.0
-margin_bottom = 33.0
+margin_left = 282.0
+margin_right = 319.0
+margin_bottom = 27.0
 text = "Join"
 
+[node name="HSeparator" type="HSeparator" parent="MainMenu/VBox/Center/VButtons"]
+margin_top = 238.0
+margin_right = 319.0
+margin_bottom = 353.0
+custom_constants/separation = 115
+
 [node name="Cancel" type="Button" parent="MainMenu/VBox/Center/VButtons"]
-margin_top = 43.0
-margin_right = 300.0
-margin_bottom = 68.0
+margin_top = 363.0
+margin_right = 319.0
+margin_bottom = 390.0
 text = "Cancel"
 
 [node name="Margin2" type="MarginContainer" parent="MainMenu/VBox"]
-margin_top = 722.0
+margin_top = 738.0
 margin_right = 1920.0
 margin_bottom = 1080.0
 size_flags_horizontal = 3
@@ -100,10 +142,12 @@ size_flags_vertical = 3
 custom_constants/margin_top = 90
 
 [node name="Label" type="Label" parent="MainMenu/VBox/Margin2"]
-margin_top = 212.0
+margin_top = 204.0
 margin_right = 1920.0
-margin_bottom = 235.0
+margin_bottom = 227.0
 text = "user folder:"
 valign = 2
 
 [node name="MenuTween" type="Tween" parent="."]
+
+[connection signal="pressed" from="MainMenu/VBox/Center/VButtons/RoomsBox/RefreshButton" to="." method="_on_RefreshButton_pressed"]

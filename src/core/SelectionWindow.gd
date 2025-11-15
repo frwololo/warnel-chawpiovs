@@ -15,6 +15,14 @@ export(PackedScene) var info_panel_scene := _INFO_PANEL_SCENE
 
 var selected_cards := []
 var selection_count : int
+
+#accepted values:
+#min: at least x cards
+#max: at most x cards
+#equal: exactly x cards
+#as_much_as_possible: as much as possible (used e.g. for bomb threat)
+#display: only for information
+#all: need to select all cards, typically order matters
 var selection_type: String
 var is_selection_optional: bool
 var is_cancelled := false
@@ -232,6 +240,8 @@ func post_initiate_checks():
 			window_title = "Assign " + str(selection_count) + " points."
 		"display":
 			window_title = "Press OK to continue"
+		"all":
+			window_title = "Select all cards - order matters"			
 	
 	if (my_script):
 		window_title = cfc.enrich_window_title(self, my_script, window_title)
@@ -283,6 +293,11 @@ func check_ok_button() -> bool:
 				get_ok().disabled = true
 			else:
 				get_ok().disabled = false
+		"all":
+			if current_count < card_array.size():
+				get_ok().disabled = true
+			else:
+				get_ok().disabled = false				
 	
 	if (!get_ok().disabled):
 		if !check_additional_constraints():
@@ -349,6 +364,9 @@ func dry_run(_card_array: Array) -> void:
 	# We immediately select
 	if get_count(_card_array) == selection_count\
 			and selection_type in ["equal", "min"]:
+		selected_cards = _card_array
+		
+	if selection_type == "all":
 		selected_cards = _card_array
 
 	# When we have 0 cards to select from, we consider the selection cancelled

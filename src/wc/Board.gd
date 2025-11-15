@@ -246,17 +246,17 @@ func post_ready_load():
 	#TODO better way to do a reveal ?
 	var current_villain = get_villain_card()
 	var func_return = current_villain.execute_scripts(current_villain, "reveal")
-	while func_return is GDScriptFunctionState && func_return.is_valid():
-		func_return = func_return.resume()		
+	if func_return is GDScriptFunctionState && func_return.is_valid():
+		yield(func_return, "completed")		
 
 	var scheme = gameData.get_main_scheme()
 	func_return = scheme.execute_scripts_no_stack(scheme, "setup")
-	while func_return is GDScriptFunctionState && func_return.is_valid():
-		func_return = func_return.resume()	
+	if func_return is GDScriptFunctionState && func_return.is_valid():
+		yield(func_return, "completed")		
 		
 	func_return = scheme.execute_scripts_no_stack(scheme, "reveal")
-	while func_return is GDScriptFunctionState && func_return.is_valid():
-		func_return = func_return.resume()		
+	if func_return is GDScriptFunctionState && func_return.is_valid():
+		yield(func_return, "completed")			
 	
 	gameData.start_game()	
 	cfc.remove_ongoing_process(self, "board_setup")	

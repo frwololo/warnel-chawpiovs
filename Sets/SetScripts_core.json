@@ -73,6 +73,29 @@
 			}
 		}
 	},
+	"Ancestral Knowledge": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"src_container": "discard",
+					"dest_container": "deck",
+					"subject": "tutor",
+					"subject_count": "all",
+					"selection_count": 3,
+					"selection_type": "max",
+					"needs_selection": true
+				}
+			]
+		}
+	},
 	"Armored Rhino Suit": {
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -105,6 +128,42 @@
 					"replacements": {
 						"subject": "self"
 					}
+				}
+			]
+		}
+	},
+	"Armored Vest": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_to_player_zone",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities",
+							"filter_max_per_hero": 1
+						}
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"alteration": 1
 				}
 			]
 		}
@@ -750,6 +809,56 @@
 					}
 				]
 			}
+		}
+	},
+	"Energy Daggers": {
+		"special": {
+			"board": [
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": {
+						"if": {
+							"func_name": "get_script_bool_property",
+							"func_params": {
+								"property": "sequence_is_last"
+							}
+						},
+						"then": 2,
+						"else": 1
+					},
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies_previous_subject"
+						}
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": {
+						"if": {
+							"func_name": "last_in_sequence"
+						},
+						"then": 2,
+						"else": 1
+					},
+					"subject": "villain"
+				}
+			]
 		}
 	},
 	"Enhanced Ivory Horn": {
@@ -1890,6 +1999,46 @@
 			]
 		}
 	},
+	"Med Team": {
+		"uses": {
+			"__name__": "medical",
+			"__amount__": 3
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"token_name": "medical",
+					"is_cost": true
+				},
+				{
+					"name": "heal",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_friendly"
+						}
+					]
+				}
+			]
+		}
+	},
 	"Mockingbird - Bobbi Morse": {
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -1956,6 +2105,31 @@
 					"name": "move_card_to_container",
 					"subject": "self",
 					"dest_container": "discard"
+				}
+			]
+		}
+	},
+	"Panther Claws": {
+		"special": {
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": {
+						"if": {
+							"func_name": "get_script_bool_property",
+							"func_params": {
+								"property": "sequence_is_last"
+							}
+						},
+						"then": 4,
+						"else": 2
+					},
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
 				}
 			]
 		}
@@ -2123,6 +2297,31 @@
 						{
 							"filter_properties": {
 								"type_code": "hero"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Shuri": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"src_container": "deck",
+					"dest_container": "hand",
+					"subject": "tutor",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"is_cost": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "upgrade"
 							}
 						}
 					]
@@ -2510,6 +2709,95 @@
 			]
 		}
 	},
+	"Tac Team": {
+		"uses": {
+			"__name__": "attack",
+			"__amount__": 3
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"token_name": "attack",
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Tactical Genius": {
+		"special": {
+			"board": [
+				{
+					"name": "thwart",
+					"amount": {
+						"if": {
+							"func_name": "get_script_bool_property",
+							"func_params": {
+								"property": "sequence_is_last"
+							}
+						},
+						"then": 2,
+						"else": 1
+					},
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"T'Challa": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"src_container": "deck",
+					"dest_container": "hand",
+					"subject": "tutor",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"is_cost": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_black_panther": 1
+							}
+						}
+					]
+				}
+			]
+		}
+	},
 	"Tenacity": {
 		"manual": {
 			"board": [
@@ -2536,6 +2824,51 @@
 				{
 					"name": "ready_card",
 					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"The Golden City": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 2
+				}
+			]
+		}
+	},
+	"The Power of Aggression": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "aggression"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
 				}
 			]
 		}
@@ -2574,6 +2907,29 @@
 						{
 							"filter_properties": {
 								"faction_code": "leadership"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"The Power of Protection": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "protection"
 							}
 						}
 					]
@@ -2674,6 +3030,19 @@
 			]
 		}
 	},
+	"Tigra - Greer Grant Nelson": {
+		"minion_died": {
+			"filter_event_source": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "self"
+				}
+			]
+		}
+	},
 	"Under Fire": {
 		"card_moved_to_pile": {
 			"trigger": "self",
@@ -2732,9 +3101,66 @@
 					"name": "move_card_to_board",
 					"subject": "index",
 					"subject_count": 1,
-					"grid_name": "enemies_first_player",					
+					"grid_name": "enemies_first_player",
 					"subject_index": "retrieve_integer",
 					"src_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"Uppercut": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"is_cost": true,
+					"subject": "target",
+					"amount": 5,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"tags": [
+						"attack"
+					]
+				}
+			]
+		}
+	},
+	"Vibranium Suit": {
+		"special": {
+			"board": [
+				{
+					"name": "move_token_to",
+					"token_name": "damage",
+					"source": "my_hero",
+					"amount": {
+						"if": {
+							"func_name": "get_script_bool_property",
+							"func_params": {
+								"property": "sequence_is_last"
+							}
+						},
+						"then": 2,
+						"else": 1
+					},
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"tags": [
+						"attack"
+					]
 				}
 			]
 		}
@@ -2816,6 +3242,34 @@
 	},
 	"Vulture": {
 		"quickstrike": {}
+	},
+	"Wakanda Forever!": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "special",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_type": "all",
+					"needs_selection": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_black_panther": 1
+							}
+						}
+					]
+				}
+			]
+		}
 	},
 	"Weapons Runner": {
 		"card_moved_to_pile": {

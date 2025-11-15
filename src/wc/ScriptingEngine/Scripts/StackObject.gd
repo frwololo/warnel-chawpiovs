@@ -39,17 +39,7 @@ func replace_ability(new_ability_name:String):
 func prevent_value(property, amount_prevented):
 	pass		
 
-#todo in the future this needs to redo targeting, etc...
-func get_modify_subjects(value, script):
-	match value:
-		"self":
-			return [script.owner]
-		"my_hero":
-			return [script.owner.get_controller_hero_card()]			
-		_:
-			#not implemented
-			return []
-					
+
 
 #modification scripts such as partial prevent and replacement effects
 func modify(script):
@@ -66,7 +56,7 @@ func modify(script):
 				var value = replacements[property]
 				match property:
 					"subject":
-						var new_subjects = get_modify_subjects(value, script)
+						var new_subjects = SP.retrieve_subjects(value, script)
 						replace_subjects(new_subjects)
 					"name":
 						replace_ability(value)

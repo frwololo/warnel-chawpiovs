@@ -154,14 +154,18 @@ func parse_keywords(text:String) -> Dictionary:
 
 func _split_traits(traits:String) -> Array:
 	var result = []
-	var a_traits = traits.split(" ")
-	for trait in a_traits:		
-		result.append(trait.to_lower().trim_suffix("."))
+	var a_traits = traits.split(". ")
+	for trait in a_traits:
+		trait = trait.to_lower().trim_suffix(".")
+		trait = trait.replace(" ", "_")		
+		result.append(trait)
 	
 	return result
 
 func setup_traits_as_alterants():
 	for trait in self.all_traits:
+		if trait.begins_with("black"):
+			var _tmp=1
 		CardConfig.PROPERTIES_NUMBERS.append("trait_" + trait)
 
 #we skip some cards from the marvelcdb database,

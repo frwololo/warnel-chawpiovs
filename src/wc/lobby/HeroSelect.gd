@@ -27,3 +27,15 @@ func _on_HeroSelect_gui_input(event):
 		if event.button_index == BUTTON_LEFT and event.pressed:
 			#Tell the server I want this hero
 			lobby.request_hero_slot(hero_id)
+
+
+
+func _on_HeroPicture_mouse_entered():
+	lobby.show_preview(hero_id)
+
+
+
+func _on_HeroPicture_mouse_exited():
+	lobby.hide_preview(hero_id)
+
+

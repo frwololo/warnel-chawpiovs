@@ -101,6 +101,8 @@ func display_debug(msg:String, prefix = "phase"):
 const StepStrings = [
 	"GAME_NOT_STARTED",
 	"PLAYER_MULLIGAN",
+	"MULLIGAN_DONE",
+	"IDENTITY_SETUP",
 	"GAME_READY",
 	"PLAYER_TURN",
 	"PLAYER_DISCARD",
@@ -144,7 +146,7 @@ func _init():
 	scripting_bus.connect("step_started", self, "_step_started")
 	scripting_bus.connect("step_ended", self, "_step_ended")
 	if CFConst.SKIP_MULLIGAN:
-		current_step = CFConst.PHASE_STEP.GAME_READY
+		current_step = CFConst.PHASE_STEP.MULLIGAN_DONE
 	reset(true)
 
 func reset(reset_phase:= true):	
@@ -255,6 +257,18 @@ func offer_to_mulligan() -> void:
 	set_current_step_complete(true)		
 	cfc.remove_ongoing_process(self, "offer_to_mulligan")
 
+func identity_setup() -> void:
+	cfc.add_ongoing_process(self, "identity_setup")	
+	for i in range (gameData.get_team_size()): 
+		var hero_id = i+1
+		if hero_id in gameData.get_my_heroes():
+			var identity_card = gameData.get_identity_card(hero_id)
+			var func_return = identity_card.execute_scripts(identity_card, "setup")
+			if func_return is GDScriptFunctionState && func_return.is_valid():
+				yield(func_return, "completed")
+	set_current_step_complete(true)		
+	cfc.remove_ongoing_process(self, "identity_setup")				
+
 #called by gamedata once all encounters are revealed for the current hero
 func all_encounters_done():
 	if (current_step != CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER):
@@ -323,6 +337,8 @@ func _step_started(
 	match step:	
 		CFConst.PHASE_STEP.PLAYER_MULLIGAN:
 			offer_to_mulligan()
+		CFConst.PHASE_STEP.IDENTITY_SETUP:
+			identity_setup()			
 		CFConst.PHASE_STEP.PLAYER_TURN:
 			return
 		CFConst.PHASE_STEP.PLAYER_DISCARD:

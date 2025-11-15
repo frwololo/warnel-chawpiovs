@@ -61,7 +61,7 @@ func is_boost():
 	return self._is_boost
 
 #what to do when I'm an attachement and my host is removed from the table
-func host_is_gone():
+func host_is_gone(former_host):
 	# Attachments typically go to their discard
 	discard()
 
@@ -82,7 +82,7 @@ func set_controller_hero_id(hero_id:int):
 func get_controller_hero_id() -> int:
 	return _controller_hero_id	
 
-func get_controller_hero_card() -> int:
+func get_controller_hero_card():
 	return gameData.get_identity_card(_controller_hero_id)	
 	
 func get_controller_player_network_id() -> int:
@@ -847,7 +847,7 @@ func common_pre_run(_sceng) -> void:
 
 		
 		if (controller_hero_id <=0 ):
-			cfc.LOG("error controller hero id is not set" )
+			cfc.LOG("error controller hero id is not set for script:" + task.script_name )
 		else:
 			#var current_hero_id = gameData.get_current_hero_id()
 			for v in zones:
@@ -1108,11 +1108,17 @@ func remove_current_activation(script):
 #FUNCTIONS USED DIRECTLY BY JSON SCRIPTS
 #
 
-func identity_has_trait(params) -> bool:
+func get_script_bool_property(params, script:ScriptTask = null) -> bool:
+	var property = params.get("property", "")
+	if !property:
+		return false
+	return script.get_property(property, false)
+
+func identity_has_trait(params, script:ScriptTask = null) -> bool:
 	var hero = get_controller_hero_card()
 	return hero.has_trait(params)	
 
-func card_is_in_play(params) -> bool:
+func card_is_in_play(params, script:ScriptTask = null) -> bool:
 	var card_name = params.get("card_name", "")
 	if !card_name:
 		return false
@@ -1121,7 +1127,7 @@ func card_is_in_play(params) -> bool:
 		return false
 	return true
 
-func current_activation_status(params:Dictionary) -> bool:
+func current_activation_status(params:Dictionary, _script:ScriptTask = null) -> bool:
 	var script = get_current_activation_details()
 	if !script:
 		return false
@@ -1154,7 +1160,7 @@ func current_activation_status(params:Dictionary) -> bool:
 #e.g if you paid 3 physical plus 1 mental for a card, 
 #it would say true to {"mental": 1}, to {"physical" : 2}, or to {"mental" :1, "physical": 1}
 #but false to {"mental": 2}, or {"mental": 1, "wild": 1} 
-func paid_with_includes(params:Dictionary) -> bool:
+func paid_with_includes(params:Dictionary, script:ScriptTask = null) -> bool:
 	var paid_with = ManaPool.new()
 	for resource in _last_paid_with:
 		paid_with.add_manacost(resource)

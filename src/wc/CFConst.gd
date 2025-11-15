@@ -273,6 +273,17 @@ const TYPES_TO_GROUPS := {
 	"ally" : ["group_allies", "group_characters", "group_friendly", "group_allies_and_heroes"],
 }
 
+const ALL_GROUPS: = [
+	"group_schemes",
+	"group_enemies",
+	"group_characters",
+	"group_villains",
+	"group_identities",
+	"group_friendly",
+	"group_allies_and_heroes",
+]
+	
+
 const FORCE_HORIZONTAL_CARDS := {
 	"main_scheme" : true,
 	"player_scheme" : true,
@@ -510,6 +521,8 @@ enum PHASE {
 enum PHASE_STEP {
 	GAME_NOT_STARTED,
 	PLAYER_MULLIGAN,
+	MULLIGAN_DONE,
+	IDENTITY_SETUP,
 	GAME_READY, #an additional step to make sure nothing runs before game is loaded	 
 	PLAYER_TURN, #turn loops here
 	PLAYER_DISCARD,
@@ -566,11 +579,14 @@ const DEFAULT_SETTINGS:= {
 	'database': {
 		"core": "https://marvelcdb.com/api/public/cards/core.json"
 	},
+	'lobby_server': {
+		'create_room_url': 'https://wololo.net/wc/lobby.php?mode=create_room',
+		'list_rooms_url': 'https://wololo.net/wc/lobby.php?mode=list_rooms',
+		'join_room_url': 'https://wololo.net/wc/lobby.php?mode=join_room&room_name=__ROOM_NAME__',
+	}
+	
 }
 
-const SIGNAL_SERVER_SET_HOST_URL = "https://wololo.net/wc/register.php?mode=server"
-const SIGNAL_SERVER_GET_HOST_URL = "https://wololo.net/wc/register.php"
-const SIGNAL_SERVER_REMOVE_HOST_URL = "https://wololo.net/wc/register.php?mode=delete"
 
 #
 # Debugging options

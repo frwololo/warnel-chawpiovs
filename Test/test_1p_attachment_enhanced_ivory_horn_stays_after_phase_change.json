@@ -1,0 +1,106 @@
+{
+	"_comments": "Tests that Attachments stays after a villain phase change",
+	"test_conditions": {
+		"ignore_order" : [
+			"hand1"
+		],
+	},	
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {"damage": 13}
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "Hydra Mercenary"
+				},			
+				{
+					"card": "Enhanced Ivory Horn"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value" : "wait_for_player_turn"
+		},	
+		{
+			"type": "activate",
+			"value" : "Spider-Man"
+		},		
+		{
+			"type": "choose",
+			"value" : "attack"
+		},
+		{
+			"type": "target",
+			"value" : "01094"
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"others": [
+				{
+					"card": "Enhanced Ivory Horn",
+					"host": "Rhino - 2",
+				}
+			],
+			"villain": [
+				{
+					"card": "Rhino - 2"
+				}
+			],			
+			"schemes": [
+				{
+					"card": "01097",
+				}
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+				}
+			]
+		}
+	}
+}

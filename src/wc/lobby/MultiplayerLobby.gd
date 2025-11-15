@@ -59,7 +59,9 @@ func _ready() -> void:
 		http_request.set_timeout(10.0)
 		add_child(http_request)	
 		http_request.connect("request_completed", self, "check_signal_server")
-		http_request.request(CFConst.SIGNAL_SERVER_SET_HOST_URL)
+		var create_room_url = cfc.game_settings.get('lobby_server', {}).get('create_room_url', '')
+		if create_room_url:
+			http_request.request(create_room_url)
 
 func _get_data_from_signal_server(result, response_code, headers, body):
 	if result != HTTPRequest.RESULT_SUCCESS:
@@ -77,13 +79,14 @@ func _get_data_from_signal_server(result, response_code, headers, body):
 	if ! typeof(results) == TYPE_DICTIONARY:
 		return ""
 				
-	var ip  = results.get("server_ip", "")
-	return ip 
+	return results
 	
 func check_signal_server(result, response_code, headers, body):
-	var ip =  _get_data_from_signal_server(result, response_code, headers, body)
-	if ip:
-		v_folder_label.text	= "registered to signal server with ip:" + str(ip)
+	var results =  _get_data_from_signal_server(result, response_code, headers, body)
+	if results and typeof(results) == TYPE_DICTIONARY:
+		var ip  = results.get("ip", "")
+		var room_name =  results.get("room_name", "")
+		v_folder_label.text	= "registered to signal server with ip:" + str(ip) + " and room name: " + str(room_name)
 		v_folder_label.add_color_override("font_color", OK_COLOR)
 	else:
 		v_folder_label.text	=  "error registering with signal server"
@@ -223,7 +226,6 @@ func _player_connected(id):
 
 func _launch_server_game():
 	# Finalize Network players data
-	http_request.request(CFConst.SIGNAL_SERVER_REMOVE_HOST_URL)
 	var i = 1
 	for player in players:
 		rpc("set_network_player_index", player, i)

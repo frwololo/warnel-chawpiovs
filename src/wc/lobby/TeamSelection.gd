@@ -24,6 +24,7 @@ var scenarioSelect = preload("res://src/wc/lobby/ScenarioSelect.tscn")
 var team := {} #container for the team information, indexed by slot id (0,1,2,3)
 var _scenario:= ""
 var _rotation = 0
+var _preview_rotation = 0
 
 var ERROR_COLOR := 	Color(1,0.11,0.1)
 var OK_COLOR := 	Color(0.1,11,0.1)
@@ -100,6 +101,11 @@ func _process(delta:float):
 	scenario_picture.rect_rotation = _rotation
 	scenario_picture.rect_size = Vector2(150, 150)
 	
+	var large_picture = get_node("%LargePicture")		
+	large_picture.rect_position = get_tree().current_scene.get_global_mouse_position()
+	large_picture.rect_size = Vector2(300, 420)
+	large_picture.rect_rotation = _preview_rotation
+	
 func _load_scenarios():
 	for scenario_id in cfc.scenarios:
 
@@ -110,6 +116,12 @@ func _load_scenarios():
 
 func _create_hero_container():
 	for hero_id in cfc.idx_hero_to_deck_ids:
+		#skip heroes that are not implemented
+		var hero_card_data = cfc.get_card_by_id(hero_id)
+		var alter_ego_id =  hero_card_data.get("back_card_code", "undef")
+		if !cfc.unmodified_set_scripts.get(hero_id,{}) and\
+			 !cfc.unmodified_set_scripts.get(alter_ego_id,{}):
+			continue
 		var new_hero = heroSelect.instance()
 		new_hero.load_hero(hero_id)
 		all_heroes_container.add_child(new_hero)	
@@ -477,3 +489,29 @@ func _on_DownloadDeck_pressed():
 func _on_OpenFolderButton_pressed():
 	OS.shell_open(ProjectSettings.globalize_path("user://"))
 	pass # Replace with function body.
+
+func show_preview(card_id):
+	var large_picture = get_node("%LargePicture")
+
+	var card_data = cfc.get_card_by_id(card_id)
+	var horizontal = card_data["_horizontal"]
+	var filename = cfc.get_img_filename(card_id)	
+	var new_img = WCUtils.load_img(filename)
+	if not new_img:
+		return	
+	var imgtex = ImageTexture.new()
+	imgtex.create_from_image(new_img)	
+	large_picture.texture = imgtex
+	large_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	# In case the generic art has been modulated, we switch it back to normal colour
+	large_picture.self_modulate = Color(1,1,1)
+	large_picture.visible = true
+	if horizontal:
+		_preview_rotation = 90
+	else:
+		_preview_rotation = 0
+	large_picture.rect_size = Vector2(300, 420)
+	
+func hide_preview(card_id):
+	var large_picture = get_node("%LargePicture")		
+	large_picture.visible = false

@@ -1,5 +1,1 @@
-test_2p_carol_danvers_draw.json
-test_2p_carol_danvers_draw_after_flip.json
-test_2p_encounter_highway-robbery.json
-test_2p_encounter_highway-robbery_return.json
-test_2p_encounter_minion_vs_hawkeye.json
+test_1p_attachment_enhanced_ivory_horn_stays_after_phase_change.json

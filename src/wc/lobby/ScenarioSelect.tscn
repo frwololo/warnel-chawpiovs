@@ -19,3 +19,5 @@ margin_right = 200.0
 margin_bottom = 218.0
 
 [connection signal="gui_input" from="." to="." method="_on_ScenarioSelect_gui_input"]
+[connection signal="mouse_entered" from="ScenarioPicture" to="." method="_on_ScenarioPicture_mouse_entered"]
+[connection signal="mouse_exited" from="ScenarioPicture" to="." method="_on_ScenarioPicture_mouse_exited"]

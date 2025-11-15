@@ -73,8 +73,8 @@ func get_property(property: String, default = null, subscript_definition = null)
 		if result.has("if"):
 			var _if = result["if"]
 			var func_name = _if["func_name"]
-			var params = _if["func_params"]
-			var if_check_result = owner.call(func_name, params)
+			var params = _if.get("func_params", {})
+			var if_check_result = owner.call(func_name, params, self)
 			if (if_check_result):
 				return get_property(property, default, result["then"])
 			else:

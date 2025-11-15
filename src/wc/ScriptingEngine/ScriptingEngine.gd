@@ -87,6 +87,14 @@ func move_card_to_board(script: ScriptTask) -> int:
 	var result = .move_card_to_board(script)
 	script.script_definition = backup
 	return result
+
+func shuffle_card_into_container(script:ScriptTask) -> int:
+	var result = move_card_to_container(script)
+	var dest_container_str = script.get_property(SP.KEY_DEST_CONTAINER).to_lower
+	var dest_container: CardContainer = cfc.NMAP[dest_container_str]
+	dest_container.shuffle_cards()
+	
+	return result
 	
 #override for parent
 func move_card_to_container(script: ScriptTask) -> int:
@@ -96,7 +104,7 @@ func move_card_to_container(script: ScriptTask) -> int:
 	
 	var owner_hero_id = script.owner.get_owner_hero_id()
 
-	for zone in CFConst.HERO_GRID_SETUP:
+	for zone in ["hand"] + CFConst.HERO_GRID_SETUP.keys():
 		#TODO move to const
 		script.script_definition = WCUtils.search_and_replace(script.script_definition, zone, zone+str(owner_hero_id), true)
 	
@@ -384,6 +392,36 @@ func _receive_threat(script: ScriptTask) -> int:
 		
 		retcode = card.tokens.mod_token("threat",
 				amount * multiplier,false,costs_dry_run(), tags)	
+						
+	return retcode
+
+func move_token_to(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+	
+	if (costs_dry_run()): 
+		return retcode
+	
+	var tags: Array = script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
+	var amount = script.retrieve_integer_property("amount")
+	var token_name = script.get_property("token_name")
+	
+	var target = script.subjects[0]
+	
+	var source_str = script.get_property("source", "")
+	var source = SP.retrieve_subjects(source_str, script)	
+	
+	var tokens_amount = source.tokens.get_token_count(token_name)
+	amount = min(tokens_amount, amount)
+	
+	source.tokens.mod_token(token_name, -amount)
+	
+	if token_name == "damage" and ("attack" in tags):
+		return attack(script)
+	else:
+		target.tokens.mod_token(token_name, amount)
 						
 	return retcode
 
@@ -846,6 +884,37 @@ func deal_encounter(script: ScriptTask) -> int:
 
 	return retcode
 
+func sequence(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+
+	var ability = script.get_property("sequence_ability", "")
+	if !ability:
+		return CFConst.ReturnCode.FAILED
+				
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+
+	if (costs_dry_run()): #not allowed ?
+		return retcode
+	var owner = script.owner
+	var hero_id = owner.get_controller_hero_id()
+
+	for x in script.subjects.size():
+		#cards are added in reverse order because the stack will play them in reverse
+		var subject = script.subjects[-x-1]
+		var script_definition = {
+			"name": ability,
+			"is_sequence": true,
+			"sequence_total": script.subjects.size(),
+			"sequence_is_last": (x==0) 
+		}
+		var task = ScriptTask.new(subject, script_definition , subject, {})
+		task.subjects = [subject]
+		var stackEvent = SimplifiedStackScript.new(task)
+		gameData.theStack.add_script(stackEvent)	
+	
+	return retcode	
+
 func reveal_encounter(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
@@ -1182,3 +1251,20 @@ static func duplicate_script(script):
 		result.process_result = script.process_result.duplicate
 	
 	return result
+
+
+
+# Extendable function to perform extra checks on the script
+# according to game logic
+func _pre_task_prime(script: ScriptTask) -> void:
+	var previous_hero = script.prev_subjects[0] if script.prev_subjects else null
+	var script_definition = script.script_definition	
+	var previous_hero_id = 0
+	if previous_hero:
+		previous_hero_id = previous_hero.get_controller_hero_id()
+		
+	for group in CFConst.ALL_GROUPS:
+		script_definition = WCUtils.search_and_replace(script_definition, group + "_first_player", group+str(gameData.first_player_hero_id()), true)	
+		script_definition = WCUtils.search_and_replace(script_definition, group + "_previous_subject", group+str(previous_hero_id), true)	
+
+

@@ -17,4 +17,13 @@ margin_top = 24.0
 margin_right = 14.0
 margin_bottom = 38.0
 
+[node name="LargePicture" type="TextureRect" parent="."]
+unique_name_in_owner = true
+visible = false
+margin_top = 42.0
+margin_right = 14.0
+margin_bottom = 42.0
+
 [connection signal="gui_input" from="." to="." method="_on_HeroSelect_gui_input"]
+[connection signal="mouse_entered" from="HeroPicture" to="." method="_on_HeroPicture_mouse_entered"]
+[connection signal="mouse_exited" from="HeroPicture" to="." method="_on_HeroPicture_mouse_exited"]

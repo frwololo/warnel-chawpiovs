@@ -289,6 +289,12 @@ margin_right = 147.0
 margin_bottom = 27.0
 text = "Open"
 
+[node name="LargePicture" type="TextureRect" parent="MainMenu"]
+unique_name_in_owner = true
+visible = false
+margin_right = 1920.0
+margin_bottom = 1060.0
+
 [node name="MenuTween" type="Tween" parent="."]
 
 [connection signal="pressed" from="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer3/TeamPanel/HBoxContainer/DownloadDeckContainer/VBoxContainer/HBoxContainer/DownloadDeckButton" to="." method="_on_DownloadDeck_pressed"]

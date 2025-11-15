@@ -6,6 +6,7 @@ onready var scenario_name: Label = get_node("%ScenarioName")
 #onready var playerName := $PlayerName
 #onready var kick := $Kick
 var scenario_id
+var villain_id
 var _rotation = 0
 
 func get_texture():
@@ -51,7 +52,10 @@ func _ready():
 
 func load_scenario(_scenario_id):
 	scenario_id = _scenario_id
-
+	var villains = ScenarioDeckData.get_villains_from_scheme(scenario_id)
+	if (villains):
+		var villain = villains[0]
+		villain_id = villain["_code"]
 
 func _on_ScenarioSelect_gui_input(event):
 	if (not cfc.is_game_master()):
@@ -61,3 +65,13 @@ func _on_ScenarioSelect_gui_input(event):
 		if event.button_index == BUTTON_LEFT and event.pressed:
 			#Tell the server I want this hero
 			lobby.scenario_select(scenario_id)
+
+
+func _on_ScenarioPicture_mouse_entered():
+	lobby.show_preview(villain_id)
+	pass # Replace with function body.
+
+
+func _on_ScenarioPicture_mouse_exited():
+	lobby.hide_preview(villain_id)
+	pass # Replace with function body.

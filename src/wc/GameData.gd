@@ -1181,13 +1181,18 @@ func move_to_next_villain(current_villain):
 	if !new_villain_data :
 		return null
 
-
-	set_aside(current_villain)
+	#hacky way to move the current card out of the way
+	#while still leaving it on the board
+	if current_villain._placement_slot:
+		current_villain._placement_slot.remove_occupying_card(current_villain)
 	
 	var ckey = new_villain_data["_code"] 		
 	var new_card = cfc.NMAP.board.load_villain(ckey)
 	current_villain.copy_tokens_to(new_card, {"exclude":["damage"]})
-	
+	for attachment in current_villain.attachments:
+		attachment.attach_to_host(new_card)
+		
+	set_aside(current_villain)	
 	var func_return = new_card.execute_scripts(new_card, "reveal")
 	while func_return is GDScriptFunctionState && func_return.is_valid():
 		func_return = func_return.resume()			

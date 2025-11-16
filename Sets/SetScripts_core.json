@@ -96,6 +96,28 @@
 			]
 		}
 	},
+	"Arc Reactor": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
 	"Armored Rhino Suit": {
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -851,7 +873,10 @@
 					"name": "deal_damage",
 					"amount": {
 						"if": {
-							"func_name": "last_in_sequence"
+							"func_name": "get_script_bool_property",
+							"func_params": {
+								"property": "sequence_is_last"
+							}
 						},
 						"then": 2,
 						"else": 1
@@ -1231,6 +1256,34 @@
 			]
 		}
 	},
+	"Focused Rage": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "receive_damage",
+					"amount": 1,
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
 	"For Justice!": {
 		"manual": {
 			"hand": [
@@ -1259,6 +1312,40 @@
 						{
 							"filter_group": "group_schemes"
 						}
+					]
+				}
+			]
+		}
+	},
+	"Gamma Slam": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"subject": "target",
+					"amount": {
+						"func_name": "get_sustained_damage",
+						"func_params": {
+							"subject": "my_hero"
+						}
+					},
+					"max_amount": 15,
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"tags": [
+						"hero_action",
+						"attack"
 					]
 				}
 			]
@@ -1325,6 +1412,30 @@
 						"subject": "my_hero",
 						"name": "receive_damage"
 					}
+				}
+			]
+		}
+	},
+	"Ground Stomp": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "deal_damage",
+					"subject": "boardseek",
+					"amount": 1,
+					"subject_count": "all",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
 				}
 			]
 		}
@@ -1470,6 +1581,15 @@
 					"token_name": "_helicarrier"
 				}
 			]
+		}
+	},
+	"Hellcat - Patsy Walker": {
+		"manual": {
+			"board": {
+				"name": "move_card_to_container",
+				"dest_container": "hand",
+				"subject": "self"
+			}
 		}
 	},
 	"Heroic Intuition": {
@@ -1676,6 +1796,70 @@
 							"filter_group": "group_schemes"
 						}
 					]
+				}
+			]
+		}
+	},
+	"Iron Man": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "modify_properties",
+					"subject": "self",
+					"set_properties": [
+						{
+							"max_hand_size": 7
+						}
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "hand_size",
+					"trigger": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"comparison": "gt",
+									"trait_tech": 0
+								},
+								"filter_properties2": {
+									"type_code": "upgrade"
+								}
+							}
+						]
+					},
+					"alteration": "per_boardseek"
+				}
+			]
+		}
+	},
+	"Jennifer Walters": {
+		"once_per_round": {
+			"__name__": "__jennifer_resource"
+		},
+		"interrupt": {
+			"event_name": "add_threat",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"token_name": "__jennifer_resource",
+					"is_cost": true
+				},
+				{
+					"name": "prevent",
+					"amount": 1,
+					"subject": "interrupted_event"
 				}
 			]
 		}
@@ -1903,6 +2087,44 @@
 			]
 		}
 	},
+	"Legal Practice": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"src_container": "hand",
+					"dest_container": "discard",
+					"subject": "index",
+					"is_cost": true,
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 5,
+					"selection_type": "max",
+					"selection_optional": true,
+					"selection_ignore_self": true
+				},
+				{
+					"name": "thwart",
+					"amount": "count_previous_subjects",
+					"subject": "target",
+					"subject_count": "1",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
 	"Make the Call": {
 		"manual": {
 			"hand": [
@@ -1950,6 +2172,86 @@
 						"filter_state_seek": [
 							{
 								"filter_group": "group_identities"
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Mark V Armor": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "boardseek",
+					"alteration": 6,
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Mark V Helmet": {
+		"manual": {
+			"board": {
+				"Remove From 1": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						],
+						"constraints": [
+							{
+								"func_name": "!identity_has_trait",
+								"func_params": {
+									"trait": "aerial"
+								}
+							}
+						]
+					},
+					{
+						"name": "thwart",
+						"subject": "target",
+						"amount": 1,
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_schemes"
+							}
+						]
+					}
+				],
+				"Remove From All": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						],
+						"constraints": [
+							{
+								"func_name": "identity_has_trait",
+								"func_params": {
+									"trait": "aerial"
+								}
+							}
+						]
+					},
+					{
+						"name": "thwart",
+						"subject": "boardseek",
+						"amount": 1,
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_schemes"
 							}
 						]
 					}
@@ -2109,6 +2411,18 @@
 			]
 		}
 	},
+	"One-Two Punch": {
+		"basic_attack_happened": {
+			"trigger": "my_hero",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
 	"Panther Claws": {
 		"special": {
 			"board": [
@@ -2130,6 +2444,73 @@
 							"filter_group": "group_enemies"
 						}
 					]
+				}
+			]
+		}
+	},
+	"Pepper Potts": {
+		"resource": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": {
+						"func_name": "count_printed_resources",
+						"params": {
+							"subject": "tutor",
+							"subject_index": "top",
+							"subject_count": 1,
+							"src_container": "discard",
+							"resource_type": "energy"
+						}
+					},
+					"resource_name": "energy"
+				},
+				{
+					"name": "add_resource",
+					"amount": {
+						"func_name": "count_printed_resources",
+						"params": {
+							"subject": "tutor",
+							"subject_index": "top",
+							"subject_count": 1,
+							"src_container": "discard",
+							"resource_type": "mental"
+						}
+					},
+					"resource_name": "mental"
+				},
+				{
+					"name": "add_resource",
+					"amount": {
+						"func_name": "count_printed_resources",
+						"params": {
+							"subject": "tutor",
+							"subject_index": "top",
+							"subject_count": 1,
+							"src_container": "discard",
+							"resource_type": "physical"
+						}
+					},
+					"resource_name": "physical"
+				},
+				{
+					"name": "add_resource",
+					"amount": {
+						"func_name": "count_printed_resources",
+						"params": {
+							"subject": "tutor",
+							"subject_index": "top",
+							"subject_count": 1,
+							"src_container": "discard",
+							"resource_type": "mental"
+						}
+					},
+					"resource_name": "mental"
 				}
 			]
 		}
@@ -2197,6 +2578,86 @@
 			]
 		}
 	},
+	"Powered Gauntlets": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "attack",
+					"subject": "target",
+					"amount": {
+						"if": {
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "aerial"
+							}
+						},
+						"then": 2,
+						"else": 1
+					},
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Repulsor Blast": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_index": "top",
+					"subject_count": 5,
+					"src_container": "deck",
+					"dest_container": "discard"
+				},
+				{
+					"name": "attack",
+					"subject": "target",
+					"amount": {
+						"func_name": "count_printed_resources",
+						"params": {
+							"subject": "previous",
+							"resource_type": "energy"
+						}
+					},
+					"plus_amount": 1,
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"tags": [
+						"attack"
+					]
+				}
+			]
+		}
+	},
 	"Rhino - 2": {
 		"reveal": {
 			"all": [
@@ -2249,6 +2710,68 @@
 			]
 		}
 	},
+	"Rocket Boots": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "boardseek",
+					"alteration": 1,
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "phase_ended",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "trait_aerial",
+									"filter_state_trigger": [
+										{
+											"filter_card_name": "Iron Man"
+										}
+									],
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
 	"Secret Rendezvous": {
 		"reveal_side_a": {
 			"all": [
@@ -2281,6 +2804,25 @@
 			"all": [
 				{
 					"name": "reveal_nemesis"
+				}
+			]
+		}
+	},
+	"She-Hulk": {
+		"identity_changed_form": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
 				}
 			]
 		}
@@ -2580,6 +3122,25 @@
 			}
 		}
 	},
+	"Split Personality": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "change_form"
+				},
+				{
+					"name": "draw_to_hand_size"
+				}
+			]
+		}
+	},
 	"Stampede": {
 		"reveal": {
 			"all": [
@@ -2599,6 +3160,153 @@
 				{
 					"name": "surge",
 					"is_else": true
+				}
+			]
+		}
+	},
+	"Stark Tower": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"src_container": "discard_previous_subject",
+					"dest_container": "hand_previous_subject",
+					"subject": "tutor",
+					"subject_count": "1",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"comparison": "gt",
+								"trait_tech": 0
+							},
+							"filter_properties2": {
+								"type_code": "upgrade"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Superhuman Law Division": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "thwart",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Superhuman Strength": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"alteration": 2
+				}
+			]
+		},
+		"attack_happened": {
+			"trigger": "my_hero",
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "trigger_details_target"
+				}
+			]
+		}
+	},
+	"Supersonic Punch": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"subject": "target",
+					"amount": {
+						"if": {
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "aerial"
+							}
+						},
+						"then": 8,
+						"else": 4
+					},
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
 				}
 			]
 		}
@@ -2835,7 +3543,7 @@
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
-						"hero_action"
+						"halter_ego_action"
 					]
 				},
 				{
@@ -3260,11 +3968,39 @@
 					"subject_count": "all",
 					"selection_type": "all",
 					"needs_selection": true,
-					"filter_state_tutor": [
+					"filter_state_seek": [
 						{
 							"filter_properties": {
 								"trait_black_panther": 1
 							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"War Machine - James Rhodes": {
+		"manual": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "receive_damage",
+					"amount": 2,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"subject": "boardseek",
+					"amount": 1,
+					"subject_count": "all",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
 						}
 					]
 				}

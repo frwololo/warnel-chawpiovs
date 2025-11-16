@@ -63,6 +63,7 @@ var theGameObserver = null
 
 # Hero that I am currently controlling
 var current_local_hero_id := 1
+var scripted_play_sequence:= []
 
 
 #temp vars for bean counting

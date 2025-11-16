@@ -1,8 +1,20 @@
 extends OVUtils
 
 
-func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int = 0, run_type = CFInt.RunType.NORMAL) -> Array:
+func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int = 0, run_type = CFInt.RunType.NORMAL, trigger_details :={}) -> Array:
 	var results = []
+	if _subject_request.begins_with("trigger_details_"):
+		if !trigger_details:
+			return results
+		var property = _subject_request.substr(16)
+		var value = trigger_details.get(property, null)
+		if value:
+			if typeof(value == TYPE_ARRAY):
+				return value
+			results.append(value)
+		return results
+		
+			
 	match _subject_request:
 		SP.KEY_SUBJECT_V_HOST:
 			var owner:WCCard = script.owner
@@ -28,7 +40,7 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 			results = _grab_until_find(script, run_type)						
 	return results
 
-func _grab_until_find(script: ScriptObject, run_type) -> Dictionary:
+func _grab_until_find(script: ScriptObject, _run_type) -> Dictionary:
 	var subjects_array := []
 	var src_container = script.get_property(SP.KEY_SRC_CONTAINER)
 	src_container = cfc.NMAP.get(src_container, null)
@@ -39,8 +51,6 @@ func _grab_until_find(script: ScriptObject, run_type) -> Dictionary:
 	dest_container = cfc.NMAP.get(dest_container, null)	
 	if !dest_container:
 		return{"subjects" : [], "stored_integer" : 0}
-	
-	var filter_data = script.get_property("filter_state_grab_until")
 	
 	var src_cards:Array = src_container.get_all_cards()
 	var found_index = 0
@@ -85,3 +95,14 @@ func parse_post_prime_replacements(script_task:ScriptObject) -> Dictionary:
 		wip_definitions = WCUtils.search_and_replace(wip_definitions, "{__subject_hero_id__}", str(subject_controller_hero), false)	
 			
 	return wip_definitions
+
+static func func_name_run(object, func_name, func_params):
+	var reverse_result = false
+	if func_name.begins_with("!"):
+		func_name = func_name.substr(1)
+		reverse_result = true
+	var result = object.call(func_name, func_params)
+	
+	if typeof(result) ==TYPE_INT and reverse_result:
+		result = !result
+	return result

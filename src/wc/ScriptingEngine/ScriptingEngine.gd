@@ -90,7 +90,7 @@ func move_card_to_board(script: ScriptTask) -> int:
 
 func shuffle_card_into_container(script:ScriptTask) -> int:
 	var result = move_card_to_container(script)
-	var dest_container_str = script.get_property(SP.KEY_DEST_CONTAINER).to_lower
+	var dest_container_str = script.get_property(SP.KEY_DEST_CONTAINER).to_lower()
 	var dest_container: CardContainer = cfc.NMAP[dest_container_str]
 	dest_container.shuffle_cards()
 	
@@ -326,6 +326,7 @@ func receive_damage(script: ScriptTask) -> int:
 	#TODO BUG sometimes subjects contains a null card?
 	for card in consolidated_subjects.keys():
 		var multiplier = consolidated_subjects[card]
+		var damage_happened = 0
 		
 		var tough = card.tokens.get_token_count("tough")
 		if (tough):
@@ -335,6 +336,8 @@ func receive_damage(script: ScriptTask) -> int:
 					amount * multiplier,false,costs_dry_run(), tags)	
 			
 			if amount:
+				damage_happened = amount	
+				
 				if ("stun_if_damage" in tags):
 					card.tokens.mod_token("stunned",
 						1,false,costs_dry_run(), tags)
@@ -345,8 +348,34 @@ func receive_damage(script: ScriptTask) -> int:
 					var task = ScriptTask.new(script.owner, {"name": "add_threat", "amount": 1}, card, {})
 					task.subjects= [main_scheme]
 					var stackEvent = SimplifiedStackScript.new(task)
-					gameData.theStack.add_script(stackEvent)									
+					gameData.theStack.add_script(stackEvent)
+		
+		if ("attack" in tags):
+			var retaliate = card.get_property("retaliate", 0)
+			if retaliate:
+				var owner = script.owner
+				var type = owner.get_property("type_code", "")
+				if !type in ["hero", "ally"]:
+					owner = _get_identity_from_script(script)
+				var script_modifications = {
+					"tags" : ["retaliate", "Scripted"],
+					"subjects": [owner],
+					"owner": card,
+				}
+				_add_receive_damage_on_stack(retaliate, script, script_modifications)
+			var signal_details = {
+				"attacker": script.owner,
+				"target": card,
+				"damage": damage_happened,
+			}
+			scripting_bus.emit_signal("attack_happened", script.owner, signal_details)
+						
+			if ("basic power" in tags):
+				scripting_bus.emit_signal("basic_attack_happened", script.owner, signal_details)
+		
 
+		#check for death
+		if damage_happened:
 			scripting_bus.emit_signal("card_damaged", card, script.script_definition)
 
 			var total_damage:int =  card.tokens.get_token_count("damage")
@@ -411,8 +440,11 @@ func move_token_to(script: ScriptTask) -> int:
 	var target = script.subjects[0]
 	
 	var source_str = script.get_property("source", "")
-	var source = SP.retrieve_subjects(source_str, script)	
-	
+	var sources = SP.retrieve_subjects(source_str, script)	
+	var source = sources[0] if sources else null
+	if !source:
+		return CFConst.ReturnCode.FAILED
+		
 	var tokens_amount = source.tokens.get_token_count(token_name)
 	amount = min(tokens_amount, amount)
 	
@@ -896,22 +928,10 @@ func sequence(script: ScriptTask) -> int:
 
 	if (costs_dry_run()): #not allowed ?
 		return retcode
-	var owner = script.owner
-	var hero_id = owner.get_controller_hero_id()
 
-	for x in script.subjects.size():
-		#cards are added in reverse order because the stack will play them in reverse
-		var subject = script.subjects[-x-1]
-		var script_definition = {
-			"name": ability,
-			"is_sequence": true,
-			"sequence_total": script.subjects.size(),
-			"sequence_is_last": (x==0) 
-		}
-		var task = ScriptTask.new(subject, script_definition , subject, {})
-		task.subjects = [subject]
-		var stackEvent = SimplifiedStackScript.new(task)
-		gameData.theStack.add_script(stackEvent)	
+	gameData.start_play_sequence(script.subjects, ability, self)
+
+
 	
 	return retcode	
 
@@ -958,8 +978,6 @@ func reveal_encounters(script: ScriptTask) -> int:
 	for subject in script.subjects:
 		gameData.deal_one_encounter_to(hero_id, true, subject)
 	return  CFConst.ReturnCode.CHANGED
-
-	return CFConst.ReturnCode.CHANGED
 	
 func surge(script: ScriptTask) -> int:
 
@@ -995,15 +1013,13 @@ func change_form(script: ScriptTask) -> int:
 	
 	for subject in script.subjects: #should be really one subject only, generally
 		var hero = subject
-		
+		#todo check that subject is indeed a hero
 		if is_manual and !hero.can_change_form():
 			return CFConst.ReturnCode.FAILED
 		
 		if (!costs_dry_run()):
 		#Get my current zone
-			if (is_manual):
-				hero._can_change_form = false
-			cfc.NMAP.board.flip_doublesided_card(hero)
+			hero.change_form(is_manual)
 
 	return CFConst.ReturnCode.CHANGED
 	
@@ -1165,9 +1181,7 @@ func constraints(script: ScriptTask) -> int:
 
 	var constraints: Array = script.get_property("constraints", [])
 	for constraint in constraints:
-		var func_name = constraint["name"]
-		var func_params = constraint["params"]
-		var result = this_card.call(func_name, func_params)
+		var result = cfc.ov_utils.func_name_run(this_card, constraint["func_name"], constraint["func_params"])
 		if !result:
 			return CFConst.ReturnCode.FAILED
 

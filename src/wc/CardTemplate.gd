@@ -338,6 +338,10 @@ func attempt_to_play(user_click:bool = false):
 		if !gameData.theStack.is_player_allowed_to_click():
 			return
 		
+		#gamedata is running some automated clicks from a previous request	
+		if gameData.scripted_play_sequence:
+			return	
+		
 	var state_exec = get_state_exec()
 	
 	if !state_exec in ["hand", "board"]:
@@ -963,7 +967,24 @@ func get_grid_name():
 func can_change_form() -> bool:
 	return _can_change_form
 
+func change_form(voluntary = true) -> bool:
+	#players have one voluntary change form per turn
+	#we check for that
+	if (voluntary):
+		if !can_change_form():
+			return false
+		self._can_change_form = false
 
+	var before = "alter_ego" if self.is_alter_ego_form() else "hero"
+	var new_card = cfc.NMAP.board.flip_doublesided_card(self)
+	if !new_card:
+		var _error = 1
+		return false
+		
+	#hopefully after and before are actually different...
+	var after = "alter_ego" if new_card.is_alter_ego_form() else "hero"		
+	scripting_bus.emit_signal("identity_changed_form", new_card, {"before": before , "after" : after } )
+	return true
 
 #a way to copy all modifications of this card to another card
 #used e.g. when flipping card
@@ -991,6 +1012,28 @@ func import_modifiers(modifiers:Dictionary):
 			readyme()
 			
 	self._can_change_form = modifiers.get("can_change_form", self._can_change_form)	
+
+var _hidden_properties = {}
+func set_is_faceup(
+			value: bool,
+			instant := false,
+			check := false,
+			tags := ["Manual"]) -> int:
+	var retcode = .set_is_faceup(value, instant, check, tags)
+	
+	#we remove all of the card's properties as long as it's facedown,
+	#to avoid triggering any weird things
+#	if !check:
+#		if is_faceup:
+#			if _hidden_properties and !properties:
+#				properties = _hidden_properties
+#				_hidden_properties = {}
+#		else:
+#			if properties and !_hidden_properties:
+#				_hidden_properties = properties
+#				properties = {}
+	
+	return retcode	
 		
 	
 func copy_modifiers_to(to_card:WCCard):
@@ -1170,6 +1213,19 @@ func paid_with_includes(params:Dictionary, script:ScriptTask = null) -> bool:
 	
 	return paid_with.can_pay_total_cost(compared_to)
 
+func count_printed_resources(params:Dictionary, script) -> int:
+	var mana = ManaCost.new()
+	var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)	
+	for subject in subjects:
+		var printed_resource = subject.get_printed_resource_value_as_mana()
+		mana.add_manacost(printed_resource)
+	var count = 0
+	if params.has("resource_type"):
+		count = mana.get_resource(params["resource_type"])
+	else:
+		count = mana.converted_mana_cost()
+	return count
+
 func count_resource_types(params:Dictionary, script) -> int:
 	var mana = ManaCost.new()
 	var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)	
@@ -1178,6 +1234,15 @@ func count_resource_types(params:Dictionary, script) -> int:
 		mana.add_manacost(printed_resource)
 	var count = mana.count_resource_types()
 	return count
+	
+func get_sustained_damage(params:Dictionary = {}, script = null) -> int:
+	var subject = self
+	if params and script and params.has("subject"):
+		var subjects = SP.retrieve_subject(params.get("subject"), script)
+		if !subjects:
+			return 0
+		subject = subjects[0]
+	return subject.tokens.get_token_count("damage")
 #
 # RESOURCE FUNCTIONS
 #
@@ -1307,7 +1372,13 @@ func get_remaining_indirect_damage():
 	return get_remaining_damage()
 	
 func get_max_hand_size():
-	return get_property("hand_size", 0)
+	var max_hand_size = get_property("max_hand_size", 0)
+	var hand_size =  get_property("hand_size", 0)
+
+	if max_hand_size:
+		hand_size = min(max_hand_size, hand_size)
+		
+	return hand_size
 
 func init_token_drawer():
 	#set token drawer to disable manipulation buttons

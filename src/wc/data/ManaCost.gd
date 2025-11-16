@@ -66,7 +66,11 @@ func set_cost(values:Dictionary):
 func add_resource(_type, amount) :
 	var type = get_normalized_type(_type)
 	pool[type] += amount
-	
+
+func get_resource(_type) :
+	var type = get_normalized_type(_type)
+	return pool[type]
+
 
 func count_resource_types() :
 	var count = 0		

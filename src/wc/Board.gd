@@ -405,7 +405,6 @@ func _on_ReshuffleAllDeck_pressed() -> void:
 
 
 func get_enemies_engaged_with(hero_id):
-	var result = []
 	var grid = get_grid("enemies" + str(hero_id))
 	return grid.get_all_cards()
 	
@@ -786,7 +785,7 @@ func flip_doublesided_card(card:WCCard):
 			var modifiers = card.export_modifiers()
 			gameData.set_aside(card) 
 			var new_card = heroZones[card.get_owner_hero_id()].load_identity(back_code, modifiers)
-				
+			return new_card	
 		else:
 			var new_card = cfc.instance_card(back_code,card.get_owner_hero_id())
 			#TODO copy tokens, state, etc...
@@ -800,10 +799,11 @@ func flip_doublesided_card(card:WCCard):
 			slot.set_occupying_card(new_card)
 			new_card.state = Card.CardState.ON_PLAY_BOARD
 			#new_card.reorganize_self()
+			return new_card
 		
 		
 	else:
-		return
+		return null
 		#TODO mabe flip anyway?
 
 func count_card_per_player_in_play(unique_card:WCCard, hero_id, exclude_self = false):

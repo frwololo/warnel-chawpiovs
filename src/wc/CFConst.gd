@@ -292,10 +292,12 @@ const FORCE_HORIZONTAL_CARDS := {
 
 const DEFAULT_PROPERTIES_BY_TYPE:= {
 	"hero": {
-		"ally_limit" : 3
+		"ally_limit" : 3,
+		"max_hand_size": 0,
 	},
 	"alter_ego": {
-		"ally_limit" : 3
+		"ally_limit" : 3,
+		"max_hand_size": 0,
 	},
 	"villain" : {
 		"boost_cards_per_attack":1,
@@ -608,3 +610,5 @@ const FORCE_LOGS:= false
 const DESYNC_TIMEOUT:= 5.0
 const DISPLAY_DEBUG_MSG = true
 
+const SCRIPT_BREAKPOINT_CARD_NAME := "T'Challa"
+const SCRIPT_BREAKPOINT_TRIGGER_NAME := "setup"

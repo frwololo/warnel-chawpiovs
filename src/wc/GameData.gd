@@ -210,6 +210,8 @@ func _process(_delta: float):
 		
 	if _multiplayer_desync:
 			attempt_resync("desync")
+			
+	play_scripted_sequence()		
 
 puppetsync func user_input_lock_denied():
 	return #TODO ?
@@ -497,7 +499,6 @@ func init_save_folder():
 			dir.remove(save_dir + file)
 
 func save_round(round_id):
-	var dir:Directory = Directory.new()
 	var save_dir = "user://Saves/current_game/"
 	var save_file = "round_" + str(round_id) + ".json"
 	save_gamedata_to_file(save_dir + save_file)
@@ -1160,7 +1161,54 @@ func victory():
 func first_player_hero_id():
 	#TODO
 	return 1
+
+var _ready_for_next_sequence = true
+func play_scripted_sequence():
+	if !scripted_play_sequence:
+		return
+
+	if !_ready_for_next_sequence:
+		return
 		
+	if gameData.is_targeting_ongoing() or gameData.targeting_happened_too_recently():
+		return
+	#we already sent a request and should be waiting for full resolution	
+	if !gameData.theStack.is_player_allowed_to_click():
+		return		
+	
+
+	
+	_ready_for_next_sequence = false
+	var next_play_event = scripted_play_sequence.pop_front()
+	var subject = next_play_event["card"]
+	var trigger = next_play_event["trigger"]	
+		
+	var trigger_details = {
+		"additional_script_definition": {
+			"sequence_trigger": trigger,
+			"is_sequence": true,
+			"sequence_is_last": (scripted_play_sequence.empty())
+		} 
+	}
+	var func_return = subject.execute_scripts(subject, trigger, trigger_details)
+	if func_return is GDScriptFunctionState: # Still working.
+		func_return = yield(func_return, "completed")
+			
+	_ready_for_next_sequence = true
+
+#script requests some manual triggers of cards
+func start_play_sequence(cards, trigger, script):
+	var owner_hero_id = WCScriptingEngine.get_hero_id_from_script(script)
+	if !owner_hero_id in (self.get_my_heroes()):
+		return
+	for subject in cards:
+		scripted_play_sequence.append({
+			"card" : subject,
+			"trigger" : trigger
+		})
+
+	
+			
 
 func hero_died(card:Card, script = null):
 	#TODO dead heroes can't play

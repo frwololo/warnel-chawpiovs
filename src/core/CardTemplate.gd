@@ -1574,7 +1574,7 @@ func execute_scripts(
 	if not cfc.NMAP.has('board'):
 		return
 
-	if (trigger =="boost" and canonical_name == "Kree Manipulator"):
+	if (trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME and canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME ):
 		var _tmp = 1
 	
 	#if set to false we'll skip the (potential) optional confirmation
@@ -1585,7 +1585,7 @@ func execute_scripts(
 	#What we want to do here is play the optional triggered effect instead
 	if (trigger == "manual" and gameData.is_interrupt_mode()):
 		#TODO very flaky code, how to fix?
-		if (canonical_name == "Highway Robbery"):
+		if (canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME):
 			var _tmp =1
 			
 		trigger = find_interrupt_script()
@@ -1694,6 +1694,12 @@ func execute_scripts(
 			var tags = trigger_details["additional_tags"]
 			for t in state_scripts:
 				t["tags"] = t.get("tags", []) + tags
+
+		if trigger_details.has("additional_script_definition"):
+			var additional_def = trigger_details["additional_script_definition"]
+			for t in state_scripts:
+				for def in additional_def:
+					t[def] = additional_def[def]
 				
 		# This evocation of the ScriptingEngine, checks the card for
 		# cost-defined tasks, and performs a dry-run on them

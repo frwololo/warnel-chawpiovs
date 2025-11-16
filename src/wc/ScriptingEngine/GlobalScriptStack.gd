@@ -159,7 +159,7 @@ remotesync func client_create_and_add_simplescript( stack_uid, _owner_uid, trigg
 	var owner_card = guidMaster.get_object_by_guid(_owner_uid)
 	var trigger_card = guidMaster.get_object_by_guid(trigger_card_uid)
 	var script = definition
-	var script_name = script["name"]
+#	var script_name = script["name"]
 	var task = ScriptTask.new(owner_card, script, trigger_card, trigger_details)	
 	var stackEvent = SimplifiedStackScript.new(task)
 
@@ -553,7 +553,7 @@ mastersync func master_i_need_id_for_local_script (local_uid, checksum):
 	master_assign_local_script_uid(local_uid, client_id, checksum)
 
 
-remotesync func network_error(details:Dictionary):
+remotesync func network_error(_details:Dictionary):
 	pass
 
 #Message from the Server that a Global UID was assigned for my local uid

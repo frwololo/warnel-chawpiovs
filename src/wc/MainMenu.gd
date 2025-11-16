@@ -176,7 +176,6 @@ func download_database():
 		#TODO error
 		return
 		
-	var file = File.new()	
 	for set in database.keys():
 		yield(get_tree(), "idle_frame")	
 		var url = database[set]
@@ -244,7 +243,6 @@ func start_images_dl():
 	var total_images = cfc.card_definitions.size()
 	var i = 0
 	
-	var file = File.new()
 	for card_key in cfc.card_definitions.keys():
 		i+=1
 		var card = cfc.card_definitions[card_key]

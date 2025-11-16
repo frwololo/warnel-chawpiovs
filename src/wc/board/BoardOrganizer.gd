@@ -83,7 +83,6 @@ func setup(def:Dictionary, hero_id, _scale = 0):
 
 
 func compute_spacer_size(child_data):
-	var child = child_data["item"]	
 	var new_scale = my_scale * child_data["scale"] 
 	#add a bit of spacing
 	var spacing = Vector2(50, 50) 
@@ -119,11 +118,11 @@ func compute_grid_size(child_data):
 	#grids have this square shape
 	var tmp = child.card_size
 	var max_axis = max(tmp.x, tmp.y)
-	var card_size:Vector2 = Vector2(max_axis, max_axis)
+	var _card_size:Vector2 = Vector2(max_axis, max_axis)
 	
 	var new_scale = my_scale * child_data["scale"] * CFConst.PLAY_AREA_SCALE
-	var x = new_scale * (card_size.x * cards.size() + spacing.x)
-	var y = new_scale * (card_size.y + spacing.y) 
+	var x = new_scale * (_card_size.x * cards.size() + spacing.x)
+	var y = new_scale * (_card_size.y + spacing.y) 
 		
 	return Vector2(x, y)
 
@@ -151,10 +150,10 @@ func compute_hbox_min_size() -> Vector2:
 			size.y = child_size.y if size.y < child_size.y else size.y
 			size.x += child_size.x		
 		else: #this is a hbox/vbox entiry		
-			var min_size = child.compute_min_size()
-			child_data["size"] = min_size
-			size.y = min_size.y if min_size.y > size.y else size.y
-			size.x += min_size.x
+			var _min_size = child.compute_min_size()
+			child_data["size"] = _min_size
+			size.y = _min_size.y if _min_size.y > size.y else size.y
+			size.x += _min_size.x
 	return size
 	
 func compute_vbox_min_size() -> Vector2:
@@ -179,10 +178,10 @@ func compute_vbox_min_size() -> Vector2:
 			size.y +=child_size.y
 			size.x = child_size.x if size.x < child_size.x else size.x						
 		else: #this is a hbox/vbox entiry
-			var min_size = child.compute_min_size()
-			child_data["size"] = min_size
-			size.x = min_size.x if min_size.x > size.x else size.x
-			size.y += min_size.y
+			var _min_size = child.compute_min_size()
+			child_data["size"] = _min_size
+			size.x = _min_size.x if _min_size.x > size.x else size.x
+			size.y += _min_size.y
 	return size
 	
 func compute_min_size() -> Vector2:

@@ -323,7 +323,7 @@ remotesync func upload_deck_data(_deck_id):
 	rpc_id(client_id, "receive_deck_data", _deck_id, deck_data)
 
 remotesync func receive_deck_data(_deck_id, deck_data):
-	var client_id =  get_tree().get_rpc_sender_id() 
+	var _client_id =  get_tree().get_rpc_sender_id() 
 	var existing_data = cfc.deck_definitions.get(_deck_id, {})
 	if existing_data:
 		var checksum1= WCUtils.ordered_hash(existing_data)

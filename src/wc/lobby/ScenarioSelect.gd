@@ -19,7 +19,7 @@ func get_text():
 		return scenario_name.text
 	return ""
 	
-func _process(delta:float):
+func _process(_delta:float):
 	if scenario_picture and !scenario_picture.texture:
 		var display_name = cfc.get_card_name_by_id(scenario_id)
 		var villains = ScenarioDeckData.get_villains_from_scheme(scenario_id)

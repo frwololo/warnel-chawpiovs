@@ -59,7 +59,19 @@ func _step_started(details:Dictionary):
 			settings["text"] = "Villain Phase"
 			var villain_card = gameData.get_villain()
 			var filename = villain_card.get_art_filename()
-			settings["top_texture_filename"] = filename			
+			settings["top_texture_filename"] = filename	
+		CFConst.PHASE_STEP.VILLAIN_DEAL_ENCOUNTER:
+			settings = {
+					"top_text": "Reveal",
+					"bottom_text" : "Encounters",
+					"top_color": Color8(50,18,18,255),
+					"bottom_color": Color8(50,18,18,255),
+					"bg_color" : Color8(0,0,0,0),
+					"scale": 0.6,
+					"duration": 2,
+					"animation_style": Announce.ANIMATION_STYLE.SPEED_OUT,
+					"top_texture_filename": gameData.get_villain().get_art_filename(),
+			}		
 	if settings.get("text", ""):
 		var announce = {
 			"announce" :"phase_starts",
@@ -72,7 +84,7 @@ func _step_started(details:Dictionary):
 		var func_return = call("init_simple_announce", settings, announce)
 		while func_return is GDScriptFunctionState && func_return.is_valid():
 			func_return = func_return.resume()
-	return #found one so we exit early
+	return
 
 func _process(delta: float):
 	var to_cleanup = []	
@@ -182,7 +194,7 @@ func init_receive_damage(script:ScriptTask, announce:Dictionary) -> bool:
 		storage["arrows"].append(targeting_arrow)
 		targeting_arrow.set_text(str(damage) + " DAMAGE")
 		targeting_arrow.show_me()
-		targeting_arrow.set_destination(card.global_position)
+		targeting_arrow.set_destination(card)
 		targeting_arrow._draw_targeting_arrow()
 
 	announce["is_blocking"] = true

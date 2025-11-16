@@ -24,13 +24,21 @@ onready var owner_object = get_parent()
 onready var label = $PanelContainer/Label
 
 var valid_targets: Array = []
-var _stored_destination: Vector2 = Vector2(0,0)
+var _stored_destination = null
 
-func set_destination(_dest: Vector2):
+func set_destination(_dest):
 	_stored_destination = _dest
 
+func get_stored_destination_position():
+	if !_stored_destination:
+		return Vector2(0,0)
+	if (_stored_destination is Vector2):
+		return _stored_destination
+	#else it's a card. 
+	return _stored_destination.global_position + Vector2(20,20)
+
 func reset_destination():
-	set_destination(Vector2(0,0))
+	set_destination(null)
 	
 func set_valid_targets (objects):
 	valid_targets = objects
@@ -55,7 +63,8 @@ func set_text(_text):
 
 func _process(_delta: float) -> void:
 	if is_targeting:
-		var pointing_to = _stored_destination if _stored_destination else cfc.NMAP.board.mouse_pointer.determine_global_mouse_pos()
+		var destination = get_stored_destination_position()
+		var pointing_to = destination if destination else cfc.NMAP.board.mouse_pointer.determine_global_mouse_pos()	
 		_draw_targeting_arrow(pointing_to)
 
 func set_arrow_color(_color):
@@ -195,7 +204,7 @@ func _on_ArrowHead_area_exited(area: Area2D) -> void:
 # Draws a curved arrow, from the center of a card, to the mouse pointer
 func _draw_targeting_arrow(destination = null) -> void:
 	if (!destination):
-		destination = _stored_destination
+		destination = get_stored_destination_position()
 	# This variable calculates the card center's position on the whole board
 	var card_half_size
 	if "rect_size" in owner_object:

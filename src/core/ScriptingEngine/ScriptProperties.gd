@@ -678,6 +678,10 @@ const KEY_PER_COUNTER := "per_counter"
 # I.e. it allows to write the script for something like:
 # *"Destroy all Monsters with cost equal or higher than 3"*
 const KEY_COMPARISON := "comparison"
+
+# counts the number of previous subjects
+const KEY_COUNT_PREVIOUS_SUBJECTS := "count_previous_subjects"
+
 # This is a versatile value that can be inserted into any various keys
 # when a task needs to use a previously inputed integer provided
 # with a [ask_integer](ScriptingEngine#ask_integer) task
@@ -1667,7 +1671,7 @@ static func check_parent_filter(card, parent: String) -> bool:
 
 
 # Check if the card is a valid subject or trigger, according to its state.
-static func check_validity(card, card_scripts, type := "trigger", owner_card = null) -> bool:
+static func check_validity(card, card_scripts, type := "trigger", _owner_card = null) -> bool:
 	var card_matches := true
 	# We use the type of seek we're doing
 	# To know which dictionary property to pass for the required dict

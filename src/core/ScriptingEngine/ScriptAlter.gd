@@ -3,8 +3,6 @@
 class_name ScriptAlter
 extends ScriptObject
 
-# Stores the details arg passed the signal to use for filtering
-var trigger_details : Dictionary
 # If true if this task has been confirmed to run by the player
 # Only relevant for optional tasks (see [SP].KEY_IS_OPTIONAL)
 var is_accepted := true
@@ -20,10 +18,10 @@ func _init(
 		prev_subject = null).(
 			alterant_object,
 			alteration_script,
-			trigger_object) -> void:
+			trigger_object,
+			task_details) -> void:
 	# The alteration name gets its own var
 	script_name = get_property("filter_task")
-	trigger_details = task_details
 	# For Alterants, we might need to calculate them per subject in a subject list
 	if prev_subject != null:
 		prev_subjects = [prev_subject]

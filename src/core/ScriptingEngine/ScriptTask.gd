@@ -6,8 +6,7 @@
 class_name ScriptTask
 extends ScriptObject
 
-# Stores the details arg passed the signal to use for filtering
-var trigger_details : Dictionary
+
 # If true if this task has been confirmed to run by the player
 # Only relevant for optional tasks (see [SP].KEY_IS_OPTIONAL)
 var is_accepted := true
@@ -24,10 +23,10 @@ var process_result = null
 func _init(owner,
 		script: Dictionary,
 		_trigger_object,
-		_trigger_details).(owner, script, _trigger_object) -> void:
+		_trigger_details).(owner, script, _trigger_object, _trigger_details) -> void:
 	# The function name to be called gets its own var
 	script_name = get_property("name")
-	trigger_details = _trigger_details
+
 	is_cost = get_property(SP.KEY_IS_COST)
 	needs_subject = get_property(SP.KEY_NEEDS_SUBJECT)
 	is_else = get_property(SP.KEY_IS_ELSE)

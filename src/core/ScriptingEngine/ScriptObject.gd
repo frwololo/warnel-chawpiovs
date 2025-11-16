@@ -9,6 +9,8 @@ extends Reference
 # warning-ignore:unused_signal
 signal primed
 
+# Stores the details arg passed the signal to use for filtering
+var trigger_details : Dictionary
 
 # The object which owns this Task
 var owner
@@ -42,9 +44,10 @@ var all_prev_subjects := []
 var my_stored_integer = null
 
 # prepares the properties needed by the script to function.
-func _init(_owner, script: Dictionary, _trigger_object = null) -> void:
+func _init(_owner, script: Dictionary, _trigger_object = null, 	_trigger_details := {}) -> void:
 	# We store the card which executes this task
 	owner = _owner
+	trigger_details = _trigger_details
 	# We store all the task properties in our own dictionary
 	script_definition = script
 	trigger_object = _trigger_object
@@ -226,7 +229,7 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 			subjects_array.append(owner)
 		_:
 			var subjects_result = cfc.ov_utils.get_subjects(self, 
-					get_property(SP.KEY_SUBJECT), stored_integer, run_type)
+					get_property(SP.KEY_SUBJECT), stored_integer, run_type, trigger_details)
 			if typeof(subjects_result) == TYPE_DICTIONARY:
 				subjects_array = subjects_result["subjects"]
 				var to_store = subjects_result.get("stored_integer", null)
@@ -301,7 +304,7 @@ func _boardseek_subjects(stored_integer: int) -> Array:
 		is_valid = false
 	return(subjects_array)
 
-func get_all_cards_from_containers(container_names):
+func get_all_cards_from_containers(container_names) -> Array:
 	var all_cards = []
 	if (typeof(container_names) != TYPE_ARRAY):
 		container_names = [container_names]
@@ -336,6 +339,8 @@ func _tutor_subjects(stored_integer: int) -> Array:
 	# When we're tutoring for a subjects, we expect a
 	# source CardContainer to have been provided.
 	var subject_count = get_property(SP.KEY_SUBJECT_COUNT)
+	if (owner.canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME ):
+		var _tmp = 1
 	if SP.VALUE_PER in str(subject_count):
 		subject_count = count_per(
 				get_property(SP.KEY_SUBJECT_COUNT),
@@ -348,8 +353,9 @@ func _tutor_subjects(stored_integer: int) -> Array:
 		if get_property(SP.KEY_IS_INVERTED):
 			subject_count *= -1
 	requested_subjects = subject_count
-	var subject_list := sort_subjects(
-			get_all_cards_from_containers(get_property(SP.KEY_SRC_CONTAINER)))
+	var src_container = get_property(SP.KEY_SRC_CONTAINER)
+	var subject_list := get_all_cards_from_containers(src_container)
+	subject_list = sort_subjects(subject_list)
 	for c in subject_list:
 		if SP.check_validity(c, script_definition, "tutor", owner):
 			subjects_array.append(c)
@@ -523,8 +529,23 @@ func retrieve_integer_property(property, stored_integer:int = 0):
 				value,
 				owner,
 				get_property(value))
+	elif str(value) ==  SP.KEY_COUNT_PREVIOUS_SUBJECTS:
+		value = self.prev_subjects.size()
 	else:
 		value = get_int_value (value, stored_integer)
+
+	var plus_value = retrieve_integer_property("plus_" + property)
+	if plus_value:
+		value += plus_value		
+	
+	var max_value = retrieve_integer_property("max_" + property)
+	if max_value:
+		value = min(value, max_value)
+
+	var min_value = retrieve_integer_property("min_" + property)
+	if min_value:
+		value = max(value, min_value)			
+		
 	return value	
 
 static func get_int_value (value, retrieved_integer):

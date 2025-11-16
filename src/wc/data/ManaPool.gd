@@ -6,7 +6,7 @@ extends ManaCost
 
 # Called when the node enters the scene tree for the first time.
 func _init():
-	#pool[Resource.UNCOLOR] = 1 #TODO Temp for tests
+	#pool[ResourceMana.UNCOLOR] = 1 #TODO Temp for tests
 	return
 
 
@@ -42,12 +42,12 @@ func compute_missing(cost:ManaCost) -> ManaCost:
 	temp_pool.set_cost(self.pool)
 	
 	#WILD Cost first 
-	temp_pool.pool[Resource.WILD] -= cost.pool[Resource.WILD]	
+	temp_pool.pool[ResourceMana.WILD] -= cost.pool[ResourceMana.WILD]	
 	
 	#All Colored Mana/Energy
 	for k in cost.pool.keys():
 		#skip specific cases
-		if (Resource.WILD == k) or (Resource.UNCOLOR == k):
+		if (ResourceMana.WILD == k) or (ResourceMana.UNCOLOR == k):
 			continue
 		if temp_pool.pool[k] >= cost.pool[k]:
 			temp_pool.pool[k] -= cost.pool[k]
@@ -55,12 +55,12 @@ func compute_missing(cost:ManaCost) -> ManaCost:
 			#if not enough to pay the exact color, we can use the WILD resource
 			var diff = cost.pool[k] - temp_pool.pool[k]
 			temp_pool.pool[k] = 0
-			temp_pool.pool[Resource.WILD] -= diff
+			temp_pool.pool[ResourceMana.WILD] -= diff
 
 	#UNCOLORED Cost last
-	var remaining = cost.pool[Resource.UNCOLOR]
-	var i = Resource.WILD
-	while (remaining and i > Resource.UNCOLOR) :
+	var remaining = cost.pool[ResourceMana.UNCOLOR]
+	var i = ResourceMana.WILD
+	while (remaining and i > ResourceMana.UNCOLOR) :
 		if (temp_pool.pool[i] >= remaining):
 			temp_pool.pool[i] -= remaining
 			remaining = 0
@@ -69,7 +69,7 @@ func compute_missing(cost:ManaCost) -> ManaCost:
 			temp_pool.pool[i] = 0
 		i-=1
 	
-	temp_pool.pool[Resource.UNCOLOR] -= remaining
+	temp_pool.pool[ResourceMana.UNCOLOR] -= remaining
 		
 	return temp_pool	
 	
@@ -94,7 +94,7 @@ func pay_total_cost(cost:ManaCost) :
 
 
 func _on_manapool_modified(_trigger_card: Card, _trigger: String, _details: Dictionary):
-	for v in ManaCost.Resource.values() :
+	for v in ManaCost.ResourceMana.values() :
 			var _retcode: int = cfc.NMAP.board.counters.mod_counter(
 			ManaCost.RESOURCE_TEXT[v],
 			pool[v],
@@ -102,7 +102,7 @@ func _on_manapool_modified(_trigger_card: Card, _trigger: String, _details: Dict
 
 func savestate_to_json() -> Dictionary:
 	var export_dict:Dictionary = {}
-	for v in ManaCost.Resource.values() :
+	for v in ManaCost.ResourceMana.values() :
 		export_dict[v] = pool[v]	
 	
 	var json_data:Dictionary = {

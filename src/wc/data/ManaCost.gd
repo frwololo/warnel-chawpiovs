@@ -2,7 +2,7 @@
 class_name ManaCost
 extends Reference
 
-enum Resource {
+enum ResourceMana {
 	UNCOLOR,
 	MENTAL,
 	PHYSICAL,
@@ -19,11 +19,11 @@ const RESOURCE_TEXT := [
 ]
 
 const RESOURCE_TEXT_TO_ENUM := {
-	"UNC" : Resource.UNCOLOR,
-	"MENTAL" : Resource.MENTAL,
-	"PHYSICAL" : Resource.PHYSICAL,
-	"ENERGY" : Resource.ENERGY,
-	"WILD" : Resource.WILD,
+	"UNC" : ResourceMana.UNCOLOR,
+	"MENTAL" : ResourceMana.MENTAL,
+	"PHYSICAL" : ResourceMana.PHYSICAL,
+	"ENERGY" : ResourceMana.ENERGY,
+	"WILD" : ResourceMana.WILD,
 }
 
 static func get_resource_from_keyword (keyword:String): 
@@ -32,14 +32,14 @@ static func get_resource_from_keyword (keyword:String):
 		return RESOURCE_TEXT_TO_ENUM[key]
 	
 	#Failsafe but not great
-	return Resource.UNCOLOR 
+	return ResourceMana.UNCOLOR 
 	
 
 var pool := {}
 
 func converted_mana_cost() -> int:
 	var total = 0
-	for k in Resource.values():
+	for k in ResourceMana.values():
 		total += pool[k]
 	return total	
 
@@ -50,7 +50,7 @@ func get_normalized_type(type):
 
 # Called when the node enters the scene tree for the first time.
 func _init():
-	for k in Resource.values():
+	for k in ResourceMana.values():
 		pool[k] = 0
 
 func reset() :
@@ -96,7 +96,7 @@ func init_from_expression(expression):
 	if expression == null: #this can happen for resource cards that do not have a cost
 		return
 	var i = int(expression)
-	set_cost({Resource.UNCOLOR : i})
+	set_cost({ResourceMana.UNCOLOR : i})
 
 func init_from_dictionary(dict:Dictionary):
 	for k in dict.keys():
@@ -105,5 +105,5 @@ func init_from_dictionary(dict:Dictionary):
 func add_manacost(other_manacost):
 	if !other_manacost:
 		return
-	for k in Resource.values():
+	for k in ResourceMana.values():
 		pool[k] += other_manacost.pool[k]	

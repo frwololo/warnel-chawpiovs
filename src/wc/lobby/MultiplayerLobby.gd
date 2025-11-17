@@ -166,9 +166,10 @@ remote func register_player(info):
 		launch_button.disabled = true
 		new_person.kick.show()
 		rpc_id(id, "multiplayer_database_comparison")
-		#TODO debug for 2 players, remove afterwards
-		launch_button.disabled = false		
-		#on_button_pressed(launch_button.name)
+
+		launch_button.disabled = false	
+		if CFConst.DEBUG_AUTO_START_MULTIPLAYER:	
+			on_button_pressed(launch_button.name)
 	else:
 		new_person.kick.hide()
 

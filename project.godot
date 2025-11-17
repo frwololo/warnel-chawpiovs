@@ -399,6 +399,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/wc/ScriptingEngine/Scripts/StackObject.gd"
 }, {
+"base": "Reference",
+"class": "StackQueueItem",
+"language": "GDScript",
+"path": "res://src/wc/ScriptingEngine/Scripts/StackQueueItem.gd"
+}, {
+"base": "Reference",
+"class": "StackReferenceItem",
+"language": "GDScript",
+"path": "res://src/wc/ScriptingEngine/Scripts/StackReferenceItem.gd"
+}, {
 "base": "StackObject",
 "class": "StackScript",
 "language": "GDScript",
@@ -543,6 +553,8 @@ _global_script_class_icons={
 "SignalStackScript": "",
 "SimplifiedStackScript": "",
 "StackObject": "",
+"StackQueueItem": "",
+"StackReferenceItem": "",
 "StackScript": "",
 "TargetingArrow": "",
 "TestSuite": "",

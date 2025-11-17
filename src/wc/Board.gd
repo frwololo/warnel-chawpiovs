@@ -10,6 +10,7 @@ var basicPile = preload("res://src/multiplayer/PileMulti.tscn")
 
 onready var villain := $VillainZone
 onready var options_menu = $OptionsMenu
+onready var _server_activity = get_node("%ServerActivity")
 var board_organizers: Array = []
 
 # heroZones is 1 indexed (index is hero_id)
@@ -27,6 +28,7 @@ var _hero_zones_initialized:= {}
 var _ready_to_load:= {}
 
 var _team_size = 0
+var _total_delta:float = 0.0
 
 func get_team_size():
 	if !_team_size:
@@ -73,10 +75,14 @@ func _ready() -> void:
 	rpc("ready_to_load")	
 	
 func _process(delta:float):
+	_total_delta += delta
 	#todo this is a heavy call, maybe do it only when cards move
 	if board_organizers:
 		for board_organizer in board_organizers:
 			board_organizer.organize()
+			
+	if _server_activity.visible:
+		_server_activity.modulate = Color(1, 1, 1, sin(_total_delta*2)*0.4 + 0.5)
 	pass
 	
 func grid_setup():
@@ -334,6 +340,10 @@ func reset_board():
 	_team_size = 0
 	init_hero_zones()
 	grid_setup()
+
+func server_activity(on = true):
+	_server_activity.visible = on
+	pass
 
 func delete_all_cards():
 	

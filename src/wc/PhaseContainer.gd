@@ -185,8 +185,7 @@ func _process(_delta: float) -> void:
 	#don't move if the stack has something going on
 	#NOTE: calling theStack.is_processing() here doesn't work: if the stack is idle
 	#but not empty, it means it is waiting for some playing interruption
-	if !gameData.theStack.is_phasecontainer_allowed_to_proceed():
-#	if !gameData.theStack.is_empty():
+	if !gameData.theStack.is_phasecontainer_allowed_to_process():
 		return
 			
 	if gameData.user_input_ongoing:
@@ -376,9 +375,7 @@ func would_be_ready_for_next_phase() -> bool:
 	#don't move if the stack has something going on
 	#NOTE: calling theStack.is_processing() here doesn't work: if the stack is idle
 	#but not empty, it means it is waiting for some playing interruption
-	#(which can never be a "next phase" request???)
-	if !gameData.theStack.is_phasecontainer_allowed_to_proceed():
-#	if !gameData.theStack.is_empty():
+	if !gameData.theStack.is_phasecontainer_allowed_to_next_step():
 		return false
 
 	#encounters waiting to be revealed

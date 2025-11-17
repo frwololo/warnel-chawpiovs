@@ -60,8 +60,8 @@ func _on_HeroPhase_gui_input(event):
 			var _result = heroPhase_action()
 
 func can_hero_phase_action() -> bool:
-#	if !gameData.phaseContainer.would_be_ready_for_next_phase():
-#		return false
+	if !gameData.theStack.is_player_allowed_to_click():
+		return false
 	if (hero_index == gameData.get_current_local_hero_id()):
 		#special case: cannot switch my status from inactive to active outside of main player phase
 		if (current_state == State.FINISHED) and (get_parent().current_step != CFConst.PHASE_STEP.PLAYER_TURN):

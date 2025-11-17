@@ -75,6 +75,10 @@ func _check_rooms_list(result, response_code, headers, body):
 			new_room.setup(result["room_name"], self)
 			rooms_list.add_child(new_room)
 		show_buttons()
+		if CFConst.DEBUG_AUTO_START_MULTIPLAYER:
+			var room_name = rooms_list.get_child(0).room_name
+			request_join_room(room_name)
+
 	else:
 		signal_server_error()
 

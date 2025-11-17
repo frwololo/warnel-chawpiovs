@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://src/wc/menus/OptionsMenu.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/wc/PhaseContainer.gd" type="Script" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://src/wc/Board.gd" type="Script" id=5]
 [ext_resource path="res://src/wc/CGFCounters.tscn" type="PackedScene" id=6]
 [ext_resource path="res://src/wc/board/WCVillainZone.tscn" type="PackedScene" id=7]
+[ext_resource path="res://assets/icons/server_activity.png" type="Texture" id=8]
 [ext_resource path="res://fonts/Comfortaa-Bold.ttf" type="DynamicFontData" id=9]
 [ext_resource path="res://themes/darktheme/darktheme.theme" type="Theme" id=12]
 
@@ -211,6 +212,16 @@ margin_bottom = 40.0
 texture_normal = ExtResource( 4 )
 expand = true
 stretch_mode = 4
+
+[node name="ServerActivity" type="TextureRect" parent="."]
+unique_name_in_owner = true
+margin_left = 928.0
+margin_top = 17.0
+margin_right = 1088.0
+margin_bottom = 170.0
+rect_scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 8 )
+stretch_mode = 5
 
 [connection signal="toggled" from="FancyMovementToggle" to="." method="_on_FancyMovementToggle_toggled"]
 [connection signal="toggled" from="EnableAttach" to="." method="_on_EnableAttach_toggled"]

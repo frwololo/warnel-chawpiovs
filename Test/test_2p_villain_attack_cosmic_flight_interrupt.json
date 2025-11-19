@@ -143,7 +143,13 @@
 			"value": "cosmic flight",
 			"hero": 2,			
 			"_comments": "activate cosmic flight to prevent damage"
-		},			
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"wait_longer": true,
+			"_comments": "wait as much as needed for player turn"
+		},		
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",

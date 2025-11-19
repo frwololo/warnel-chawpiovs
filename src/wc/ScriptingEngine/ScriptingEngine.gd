@@ -778,7 +778,8 @@ func enemy_scheme_threat(_script: ScriptTask) -> int:
 		"additional_tags" : ["scheme", "Scripted"],
 	}
 	_add_receive_threat_on_stack (scheme_amount, script, script_modifications)
-
+	attacker.activity_script = null
+	
 	return retcode
 
 func enemy_schemes(script: ScriptTask) -> int:

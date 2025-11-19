@@ -808,10 +808,15 @@ func preload_pck():
 # Network related functions
 
 
-
+var _network_id = 0
 func get_network_unique_id():
+	if _network_id:
+		 return _network_id
 	if gameData.is_multiplayer_game:
-		return get_tree().get_network_unique_id()
+		if !get_tree():
+			return 1
+		_network_id = get_tree().get_network_unique_id()
+		return _network_id
 	return 1
 	
 func is_game_master() -> bool:	

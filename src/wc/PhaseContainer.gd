@@ -68,6 +68,9 @@ func display_debug(msg:String, prefix = "phase"):
 		
 	if !text_edit:
 		create_text_edit()
+	if !text_edit:
+		return
+			
 	text_edit.visible = show_text_edit
 	
 	if (prefix):
@@ -75,10 +78,10 @@ func display_debug(msg:String, prefix = "phase"):
 	
 	if _previous_debug_msg == msg:
 		_previous_equal_count +=1
-		if _previous_equal_count < 10:
-			msg = " ."
-		else:
-			msg = ""
+#		if _previous_equal_count < 10:
+		msg = " ."
+#		else:
+#			msg = ""
 	else:
 		_previous_debug_msg = msg
 		_previous_equal_count = 0
@@ -174,7 +177,7 @@ func reset(reset_phase:= true):
 		text_edit.text = ""
 	
 	#reinit misc variables	
-	set_current_step_complete(false) 	
+	set_current_step_complete(false, "reset") 	
 	if (reset_phase):
 		start_current_step()
 		
@@ -230,7 +233,8 @@ func _process(_delta: float) -> void:
 			gameData.enemy_activates()
 			return		
 		CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER:
-			gameData.reveal_encounter()
+			if (!current_step_complete):
+				gameData.reveal_encounter()
 			return	
 	#other phases are just constantly requesting to move to the next step if they can	
 	if (!current_step_complete) :
@@ -241,9 +245,9 @@ func _process(_delta: float) -> void:
 	match current_step:
 		CFConst.PHASE_STEP.SYSTEMS_CHECK:
 			if !gameData._multiplayer_desync:
-				request_next_phase()	
+				request_next_phase("from _process systems_check")	
 		_:
-			request_next_phase()				
+			request_next_phase("from _process _:")				
 
 func offer_to_mulligan() -> void:
 	cfc.add_ongoing_process(self, "offer_to_mulligan")
@@ -253,7 +257,7 @@ func offer_to_mulligan() -> void:
 		var func_return = hero_card.execute_scripts(hero_card, "mulligan")
 		if func_return is GDScriptFunctionState && func_return.is_valid():
 			yield(func_return, "completed")	
-	set_current_step_complete(true)		
+	set_current_step_complete(true, "offer_to_mulligan")		
 	cfc.remove_ongoing_process(self, "offer_to_mulligan")
 
 func identity_setup() -> void:
@@ -265,7 +269,7 @@ func identity_setup() -> void:
 			var func_return = identity_card.execute_scripts(identity_card, "setup")
 			if func_return is GDScriptFunctionState && func_return.is_valid():
 				yield(func_return, "completed")
-	set_current_step_complete(true)		
+	set_current_step_complete(true, "identity_setup")		
 	cfc.remove_ongoing_process(self, "identity_setup")				
 
 #called by gamedata once all encounters are revealed for the current hero
@@ -273,14 +277,24 @@ func all_encounters_done():
 	if (current_step != CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER):
 		var _error = 1
 		return
-	_force_go_to_next_phase()	
+	if current_step_complete:
+		display_debug("calling all_encounters_done but it should already be the case")
+		return
+	display_debug("all_encounters_done for the current target hero")
+	var result = _force_go_to_next_phase("all_encounters_done")	
+	if !result:
+		display_debug("all_encounters_done: tried to move to the next phase but got rejected")
+		set_current_step_complete(false, "all_encounters_done (failure to go to next phase)")
+	#request next phase forces the current step to be marked as incomplete
+	#this doesn't work well for this case so I'm moving it	
+	#set_current_step_complete(result, "all_encounters_done")
 	
 #called by gamedata once all enemy attacks are finished for the current hero
 func all_enemy_attacks_finished():
 	if (current_step != CFConst.PHASE_STEP.VILLAIN_ACTIVATES):
 		var _error = 1
 		return
-	_force_go_to_next_phase()	
+	_force_go_to_next_phase("all_enemy_attacks_finished")	
 
 func check_end_of_player_phase():
 	if (current_step != CFConst.PHASE_STEP.PLAYER_TURN):
@@ -296,9 +310,12 @@ func check_end_of_player_phase():
 #- Ask server to update phase
 #- Server tells us phase has changed
 #- Update information
-func _force_go_to_next_phase():
-	set_current_step_complete(true)
-	request_next_phase()
+func _force_go_to_next_phase(caller = "") -> bool:
+	if !caller:
+		caller = "_force_go_to_next_phase"
+	set_current_step_complete(true, caller + ", _force_go_to_next_phase")
+	var result = request_next_phase(caller)
+	return result
 
 func _step_ended(	
 		trigger_details: Dictionary = {}):
@@ -325,7 +342,7 @@ func reset_hero_activation_for_step(hero_id):
 func _step_started(	
 		trigger_details: Dictionary = {}):
 	var step = trigger_details["step"]
-	set_current_step_complete(false)
+	set_current_step_complete(false, "_step_started")
 
 	#All heroes can now play
 	if (step >= CFConst.PHASE_STEP.PLAYER_TURN):
@@ -354,13 +371,15 @@ func _step_started(
 			gameData.villain_init_attackers()
 			#_villain_activates()						
 		CFConst.PHASE_STEP.VILLAIN_DEAL_ENCOUNTER:
-			_deal_encounters()						
+			_deal_encounters()	
+		CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER:
+			pass #do nothing but we don't want to mark it as complete									
 		CFConst.PHASE_STEP.ROUND_END:
 			_round_end()
 		CFConst.PHASE_STEP.SYSTEMS_CHECK:
 			_systems_check()
 		_:
-			set_current_step_complete(true) # Do nothing				
+			set_current_step_complete(true, "_step_started") # Do nothing				
 	return 0
 
 # a function to check if the phaseContainer is still running automatically
@@ -381,6 +400,7 @@ func would_be_ready_for_next_phase() -> bool:
 	#encounters waiting to be revealed
 	if (gameData.immediate_encounters):
 		return false
+			
 	
 	# if modal user input is being requested, can't move on
 	if (gameData.user_input_ongoing):
@@ -401,16 +421,35 @@ func is_ready_for_next_phase() -> bool :
 	return would_be_ready_for_next_phase()	
 
 
-mastersync func client_ready_for_next_phase():
+mastersync func client_ready_for_next_phase(current_phase):
 	if (not get_tree().is_network_server()):
 		return -1
 	var client_id = get_tree().get_rpc_sender_id() 
-	display_debug(str(client_id) + " is ready for next phase")
-	clients_ready_for_next_phase[client_id] = 1
+	display_debug(str(client_id) + " is ready for next phase Their current phase is" + StepStrings[current_phase])
+	
+	#potential desync and tentative to fix, we only go up
+	if clients_ready_for_next_phase.has(client_id):
+		if current_phase > clients_ready_for_next_phase[client_id]:
+			clients_ready_for_next_phase[client_id] = current_phase
+	
+	clients_ready_for_next_phase[client_id] = current_phase
 	if (clients_ready_for_next_phase.size() == gameData.network_players.size()):
-		clients_ready_for_next_phase = {}
-		display_debug("everyone is ready for next phase, go")
-		rpc("proceed_to_next_phase")
+		#desync check. All clients should be at the same phase
+		var _expected_current_phase = -1
+		var desync = false
+		for network_id in gameData.network_players:
+			if _expected_current_phase == -1:
+				_expected_current_phase = clients_ready_for_next_phase[network_id]
+			if clients_ready_for_next_phase[network_id] != _expected_current_phase:
+				desync = true
+		if desync:
+			display_debug("we have a discrepency in next_phase attempts")
+			display_debug(to_json(clients_ready_for_next_phase))
+		else:
+			clients_ready_for_next_phase = {}
+			display_debug("everyone is ready for next phase, go")
+			rpc("proceed_to_next_phase")
+		
 		
 mastersync func client_unready_for_next_phase():
 	if (not get_tree().is_network_server()):
@@ -421,22 +460,28 @@ mastersync func client_unready_for_next_phase():
 		clients_ready_for_next_phase.erase(client_id)
 
 		
-func request_next_phase():
+func request_next_phase(caller = ""):
 	if (!is_ready_for_next_phase()):
-		return
-	set_current_step_complete(false)
-	rpc_id(1, "client_ready_for_next_phase")
+		return false
+	display_debug("I'm asking the master to move to next phase (" + caller +  "). I'm currently at " + StepStrings[current_step])	
+	#set_current_step_complete(false, caller + ", request_next_phase")
+	rpc_id(1, "client_ready_for_next_phase", current_step)
+	return true
 	
 func unrequest_next_phase():
 	rpc_id(1, "client_unready_for_next_phase")	
 
-func set_current_step_complete(value:bool):
+func set_current_step_complete(value:bool, caller = ""):
 	if value:
 		var _tmp = 1
+		if !caller:
+			caller = "unknown"
+	display_debug("marking current_step_complete as " + str(value) + " per request of " + caller )
 	current_step_complete = value
 	
 remotesync func proceed_to_next_phase():
-	display_debug("master tells me to move to next phase, I'm currently at " + str(current_step) )	
+	set_current_step_complete(false, "proceed_to_next_phase")
+	display_debug("master tells me to move to next phase, I'm currently at " + StepStrings[current_step] )	
 	scripting_bus.emit_signal("step_about_to_end",  {"step" : current_step})
 	scripting_bus.emit_signal("step_ended",  {"step" : current_step})
 	if (current_step == CFConst.PHASE_STEP.SYSTEMS_CHECK):
@@ -457,12 +502,12 @@ func start_current_step():
 
 func _player_draw():
 	gameData.draw_all_players()
-	set_current_step_complete(true)
+	set_current_step_complete(true, "_player_draw")
 	pass	
 	
 func _player_ready():
 	gameData.ready_all_player_cards()
-	set_current_step_complete(true)	
+	set_current_step_complete(true, "_player_ready")	
 	pass	
 
 func _player_discard():
@@ -477,33 +522,33 @@ func _player_discard():
 			yield(get_tree().create_timer(0.05), "timeout")
 	cfc.remove_ongoing_process(self)
 
-	set_current_step_complete(true)
+	set_current_step_complete(true, "_player_discard")
 	
 func _villain_threat():
 	gameData.villain_threat()
-	set_current_step_complete(true)
+	set_current_step_complete(true, "_villain_threat")
 	pass	
 
 func _after_villain_threat():
 	gameData.villain_init_attackers()
-	set_current_step_complete(true)
+	set_current_step_complete(true, "_after_villain_threat")
 	pass				
 
 func _deal_encounters():
 	gameData.deal_encounters()
 	#yield(get_tree().create_timer(2), "timeout")
-	set_current_step_complete(true)
+	set_current_step_complete(true, "_deal_encounters")
 	pass
 
 func _player_end():
 	scripting_bus.emit_signal("phase_ended", {"phase": "player"})
 	#give time to create the discard option
-	set_current_step_complete(true) # Do nothing	
+	set_current_step_complete(true, "_player_end") # Do nothing	
 
 func _round_end():
 	scripting_bus.emit_signal("phase_ended", {"phase": "villain"})
 	gameData.end_round()
-	set_current_step_complete(true)	
+	set_current_step_complete(true, "_round_end")	
 	pass
 
 func savestate_to_json() -> Dictionary:
@@ -523,7 +568,7 @@ func loadstate_from_json(json:Dictionary):
 func _systems_check():
 	gameData.systems_check()
 	#setting the step complete here. gameData has its own variable (_systms_check_ongoing)
-	set_current_step_complete(true) 
+	set_current_step_complete(true, "_systems_check") 
 	pass
 		
 # Ensures proper cleanup when a card is queue_free() for any reason

@@ -376,7 +376,7 @@ func can_interrupt(
 		return CFConst.CanInterrupt.NO
 	
 	var _debug = false
-	if canonical_name == "Cosmic Flight" and trigger_card.canonical_name == "Rhino - 1":
+	if canonical_name == "Cosmic Flight" and trigger_card and trigger_card.canonical_name == "Rhino - 1":
 		if trigger_details["event_name"] == "receive_damage":
 			_debug = true
 

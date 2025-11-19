@@ -97,6 +97,12 @@
 			"value": "cancel",
 			"hero" : 2,
 			"_comments": "click cancel on defenders Captain Marvel to take an undefended attack"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"wait_longer": true,
+			"_comments": "wait as much as needed for player turn"
 		},			
 	] ,
 	"end": {

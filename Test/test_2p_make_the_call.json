@@ -85,6 +85,10 @@
 			"value": "Jessica Jones",
 			"hero": 2
 		},	
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+		},			
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",

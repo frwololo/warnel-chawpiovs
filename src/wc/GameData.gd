@@ -34,6 +34,18 @@ enum EncounterStatus {
 	ENCOUNTER_COMPLETE,
 	ENCOUNTER_POST_COMPLETE
 }
+
+
+const EncounterStatusStr = [
+	"NONE",
+	"ABOUT_TO_REVEAL",
+	"PENDING_REVEAL_INTERRUPT",
+	"OK_TO_EXECUTE",
+	"PENDING_COMPLETE",
+	"ENCOUNTER_COMPLETE",
+	"ENCOUNTER_POST_COMPLETE"
+]
+
 var _current_encounter_step: int = EncounterStatus.NONE
 var _current_encounter = null #WCCard
 
@@ -343,6 +355,7 @@ func check_empty_decks(pile_to_check):
 			var all_discarded = villain_discard.get_all_cards()
 			for card in all_discarded:
 				card.move_to(villain_deck)
+			display_debug("shuffle villain deck after empty")
 			villain_deck.shuffle_cards()
 			#add acceleration to main scheme
 			var scheme = find_main_scheme()
@@ -361,6 +374,7 @@ func check_empty_decks(pile_to_check):
 			var all_discarded = hero_discard.get_all_cards()
 			for card in all_discarded:
 				card.move_to(hero_deck)
+			display_debug("shuffle hero deck after empty:" + hero_id_str)
 			hero_deck.shuffle_cards()
 			#deal a new encounter
 			deal_one_encounter_to(int(hero_id_str))
@@ -637,10 +651,38 @@ func pre_attack_interrupts_done():
 		display_debug("I'm being told to move to EnemyAttackStatus.OK_TO_START_ATTACK but I'm not at EnemyAttackStatus.PENDING_INTERRUPT")
 		var _error = 1 #maybe this happens in network games ?
 		return
+	display_debug("pre attack interrupts are done, OK to start attack")	
 	_current_enemy_attack_step = EnemyAttackStatus.OK_TO_START_ATTACK
 
 func add_enemy_activation(enemy, activation_type:String = "attack", script = null):
 	attackers.append({"subject":enemy, "type": activation_type, "script" : script})
+
+func start_activity(enemy, action, script):
+	display_debug("drawing boost cards")	
+	if (enemy.get_property("type_code") == "villain"): #Or villainous?
+		display_debug("villain confirmed, drawing boost cards")
+		enemy.draw_boost_cards(action)
+	else:
+		 display_debug("not a villain, won't draw boost cards")
+	var script_name
+	var next_step
+	match action:
+		"scheme":
+			script_name = "commit_scheme"
+			next_step = EnemyAttackStatus.BOOST_CARDS
+		"attack":
+			script_name = "enemy_attack"
+			next_step = EnemyAttackStatus.PENDING_DEFENDERS
+
+	var trigger_details = {
+		"additional_tags": []
+	}
+	if script:
+		trigger_details["additional_tags"] += script.get_property(SP.KEY_TAGS, [])
+		trigger_details["_display_name"] = "enemy " + action + " (" + enemy.canonical_name + " -> " + get_current_target_hero().canonical_name +")" 	
+	var _sceng = enemy.execute_scripts(enemy, script_name,trigger_details)
+	_current_enemy_attack_step = next_step
+
 
 func enemy_activates() :
 	var target_id = _villain_current_hero_target
@@ -659,10 +701,10 @@ func enemy_activates() :
 
 	#there is an enemy, we'll try to attack
 	var heroZone:WCHeroZone = cfc.NMAP.board.heroZones[target_id]
-	var attacker_data = attackers.front()
 	var action = "attack" if (heroZone.is_hero_form()) else "scheme"
 	var script = null
 	
+	var attacker_data = attackers.front()
 	var enemy = null
 	if (typeof (attacker_data) == TYPE_DICTIONARY):
 		enemy = attacker_data["subject"]
@@ -671,7 +713,6 @@ func enemy_activates() :
 	else:
 		enemy = attacker_data
 
-	
 
 	var status = "stunned" if (action=="attack") else "confused"
 	
@@ -717,28 +758,8 @@ func enemy_activates() :
 				_current_enemy_attack_step = EnemyAttackStatus.PENDING_INTERRUPT
 				return
 				
-		EnemyAttackStatus.OK_TO_START_ATTACK:	
-			if (enemy.get_property("type_code") == "villain"): #Or villainous?
-				display_debug("drawing boost cards")
-				enemy.draw_boost_cards(action) 
-			var script_name
-			var next_step
-			match action:
-				"scheme":
-					script_name = "commit_scheme"
-					next_step = EnemyAttackStatus.BOOST_CARDS
-				"attack":
-					script_name = "enemy_attack"
-					next_step = EnemyAttackStatus.PENDING_DEFENDERS
-
-			var trigger_details = {
-				"additional_tags": []
-			}
-			if script:
-				trigger_details["additional_tags"] += script.get_property(SP.KEY_TAGS, [])
-				trigger_details["_display_name"] = "enemy " + action + " (" + enemy.canonical_name + " -> " + get_current_target_hero().canonical_name +")" 	
-			var _sceng = enemy.execute_scripts(enemy, script_name,trigger_details)
-			_current_enemy_attack_step = next_step
+		EnemyAttackStatus.OK_TO_START_ATTACK:
+			start_activity(enemy, action, script)
 			return
 		
 		EnemyAttackStatus.BOOST_CARDS:
@@ -780,15 +801,33 @@ func enemy_activates() :
 	return
 
 func defenders_chosen():
-	if !EnemyAttackStatus.PENDING_DEFENDERS:
-		display_debug("I'm being told that defenders have been chosen but I'm not in the PENDING_DEFENDERS state")
-		return	
+	if _current_enemy_attack_step != EnemyAttackStatus.PENDING_DEFENDERS:
+		display_debug("defenders_chosen: I'm being told that defenders have been chosen but I'm not in the PENDING_DEFENDERS state")
+
+		if _current_enemy_attack_step == EnemyAttackStatus.OK_TO_START_ATTACK:
+			display_debug("defenders_chosen: I might be off by 1? Attempting to catch up")
+			var attacker_data = attackers.front()
+			var enemy = null
+			var script = null
+			var action = "attack"
+			if (typeof (attacker_data) == TYPE_DICTIONARY):
+				enemy = attacker_data["subject"]
+				action = attacker_data["type"]
+				script = attacker_data["script"]
+			else:
+				enemy = attacker_data
+					
+			start_activity(enemy, "attack", script)
+		
+		if _current_enemy_attack_step != EnemyAttackStatus.PENDING_DEFENDERS:
+			display_debug("defenders_chosen: I wasn't able to fix my PENDING_DEFENDERS issue :(")
+			return
 
 #	if !theStack.is_empty():
 #		return
 #	if cfc.get_modal_menu():
 #		return
-	
+	display_debug("defenders_chosen: Defenders have been chosen, moving to boost cards")
 	_current_enemy_attack_step = EnemyAttackStatus.BOOST_CARDS
 	return	
 
@@ -934,6 +973,9 @@ func can_proceed_activation()-> bool:
 	if theStack.stack:
 		display_debug("can't proceed because of stack data" + to_json(theStack.stack))
 		return false
+	if theStack.my_script_requests_pending_execution:
+		display_debug("can't proceed because of pending network execution requests" + str(theStack.my_script_requests_pending_execution))
+		return false		
 	return true	
 
 var _local_encounter_uid = 0		
@@ -960,7 +1002,13 @@ func reveal_encounter(target_id = 0):
 		var facedown_encounters:Pile = get_facedown_encounters_pile(target_id)
 		_current_encounter = facedown_encounters.get_bottom_card()
 	
+	var current_encounter_str = "[empty]"
+	if _current_encounter:
+		current_encounter_str = _current_encounter.canonical_name
+	display_debug("current_encounter: " + current_encounter_str + ". Status:" + EncounterStatusStr[_current_encounter_step] )
+	
 	if !_current_encounter:
+		display_debug("didn't get any encounter from the facedown pile of " + str(target_id) +", we're done here")
 		all_encounters_finished()
 		return
 
@@ -1007,9 +1055,10 @@ func reveal_encounter(target_id = 0):
 				_current_encounter.move_to(cfc.NMAP.board, -1, slot)
 				#encounter.set_is_faceup(false, true)
 				#encounter.set_is_faceup(true)
+				display_debug("encounter: " + _current_encounter.canonical_name + " moving to PENDING_COMPLETE")
 				_current_encounter_step = EncounterStatus.PENDING_COMPLETE
 			else:
-				push_error("ERROR: Missing target grid in reval_encounters")	
+				push_error("encounter ERROR: Missing target grid in reval_encounters")	
 		EncounterStatus.PENDING_COMPLETE:
 			#there has to be a better way.... wait for a signal somehow ?
 #			if !gameData.theStack.is_phasecontainer_allowed_to_proceed():
@@ -1017,26 +1066,30 @@ func reveal_encounter(target_id = 0):
 #				return	
 			if cfc.get_modal_menu():
 				return
-			
+			display_debug("encounter: " + _current_encounter.canonical_name + " moving to ENCOUNTER_COMPLETE")
 			_current_encounter_step = EncounterStatus.ENCOUNTER_COMPLETE
 			return
 			
 		EncounterStatus.ENCOUNTER_COMPLETE:
 			var target_pile = get_encounter_target_pile(_current_encounter)
 			if (target_pile):
+				display_debug("encounter: " + _current_encounter.canonical_name + " moving to pile")
 				_current_encounter.move_to(target_pile)
 				_current_encounter_step = EncounterStatus.ENCOUNTER_POST_COMPLETE
 			else:
+				display_debug("encounter: not moving : " + _current_encounter.canonical_name + ". Finishing it already")
 				current_encounter_finished()
 		EncounterStatus.ENCOUNTER_POST_COMPLETE:
 			var target_pile = get_encounter_target_pile(_current_encounter)
-			if target_pile and target_pile.has_card(_current_encounter):			
+			if target_pile and target_pile.has_card(_current_encounter):
+				display_debug("encounter:" + _current_encounter.canonical_name + "is in its target pile. Calling for end of encounter")
 				current_encounter_finished()
 			return 
 	return
 
 func encounter_revealed():
 	if _current_encounter_step !=EncounterStatus.PENDING_REVEAL_INTERRUPT:
+		display_debug("encounter_revealed: I'm being told to move to OK_TO_EXECUTE but I'm not at PENDING_REVEAL_INTERRUPT")
 		return
 #	#todo replace this with a signal?
 #	#right now this technique allows to move on even if the reveal event disappears (fizzled)
@@ -1044,7 +1097,9 @@ func encounter_revealed():
 #		return
 #	if cfc.get_modal_menu():
 #		return
-#
+#			
+	display_debug("encounter_revealed: going from PENDING_REVEAL_INTERRUPT to OK_TO_EXECUTE")
+
 	_current_encounter_step = EncounterStatus.OK_TO_EXECUTE
 	return
 

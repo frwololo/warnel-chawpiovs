@@ -60,11 +60,15 @@
 	"actions": [
 		{
 			"type": "other",
-			"value" : "wait_for_player_turn"
+			"value" : "wait_for_player_turn",
+			"wait_longer" : true,
+			"_comments": "this is a test with lots of interactions so we force wait"
+				
 		},
 		{
 			"type": "activate",
-			"value" : "Spider-Man"
+			"value" : "Spider-Man",
+			"wait_longer" : true,
 		},
 		{
 			"type": "choose",
@@ -76,7 +80,8 @@
 		},
 		{
 			"type": "activate",
-			"value" : "Daredevil"
+			"value" : "Daredevil",
+			"wait_longer" : true,			
 		},
 		{
 			"type": "choose",
@@ -88,7 +93,8 @@
 		},
 		{
 			"type": "activate",
-			"value" : "Mockingbird"
+			"value" : "Mockingbird",
+			"wait_longer" : true,			
 		},
 		{
 			"type": "choose",
@@ -100,7 +106,8 @@
 		},		
 		{
 			"type": "play",
-			"value" : "Swinging Web Kick"
+			"value" : "Swinging Web Kick",
+			"wait_longer" : true,			
 		},		
 		{
 			"type": "target",

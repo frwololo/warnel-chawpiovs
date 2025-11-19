@@ -406,7 +406,7 @@ func change_queue_item_state(stack_uid, client_id, new_state, caller):
 func add_to_reference_queue(object, stack_uid, starting_status = StackQueueItem.STACK_STATUS.PENDING_CLIENT_ACK, local_uid = 0, checksum = ""):
 	display_debug("adding to reference queue: " + str(stack_uid))
 	var reference_item:StackReferenceItem = StackReferenceItem.new(object, stack_uid, starting_status, local_uid, checksum)
-
+	reference_item.set_human_readable(str(stack_uid) + "-" + object.get_display_name())
 	if reference_queue.has(stack_uid):
 		var _error = 1
 		#TODO error handling here
@@ -428,14 +428,15 @@ func set_reference_status(stack_uid, new_state, caller = ""):
 		#the object should have been added no matter what before this
 		var _error = 1
 		display_debug("reference queue didn't find " +str(stack_uid))
-		return	
+		return null
 	
-	reference_object.change_reference_item_state(new_state, caller)	
+	reference_object.change_reference_item_state(new_state, caller)
+	return reference_object	
 	
 
 # master only
 func add_to_ordering_queue(stack_uid, script_details, requester_client_id = 0, starting_status = StackQueueItem.STACK_STATUS.PENDING_CLIENT_ACK, local_uid = 0, checksum = ""):
-	display_debug("{master} adding new item to master_queue: " + str(stack_uid))
+	display_debug("{master} adding new item to master_queue (per request of" + str(requester_client_id) + " ): " + str(stack_uid) + " " + to_json(script_details))
 	var queue_item:StackQueueItem = StackQueueItem.new(stack_uid, script_details, requester_client_id, starting_status, local_uid, checksum)
 	master_queue.append(queue_item) 
 	#process_next_queue_script()
@@ -504,12 +505,6 @@ func find_in_queue(stack_uid):
 	return found
 
 func human_readable(stack_uid):
-	var found:StackQueueItem = find_in_queue(stack_uid)
-	if !found:
-		return str(stack_uid)
-	if found.get_human_readable():
-		return found.get_human_readable()
-		
 	var _human_readable = str(stack_uid) + "-"
 	var stack_object = stack.get(stack_uid, null)
 	if stack_object: 
@@ -656,6 +651,7 @@ func add_to_stack(object, stack_uid, local_uid = 0):
 	emit_signal("script_added_to_stack", object)
 	reset_interrupt_states()
 	add_to_reference_queue(object, stack_uid, StackQueueItem.STACK_STATUS.READY_TO_EXECUTE,local_uid)
+	
 	_rpc_id(1, "master_stack_object_added", object.stack_uid)	
 
 func flush_script(stack_uid):
@@ -694,7 +690,7 @@ remotesync func client_remove_script_from_stack_after_exec(stack_uid):
 	#we send this signal internally just now (instead of after excuting it)
 	#to ensure we only send it after everybody has run it
 	if the_script:
-		emit_signal("script_executed_from_stack", the_script )		
+		emit_signal("script_executed_from_stack", the_script )	
 		stack_remove(stack_uid)
 	else:
 		_rpc_id(1, "master_stack_object_removed", stack_uid)	

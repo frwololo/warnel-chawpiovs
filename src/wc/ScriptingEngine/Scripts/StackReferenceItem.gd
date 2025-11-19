@@ -24,7 +24,10 @@ func get_status():
 	return status
 	
 func get_stack_uid():
-	return stack_uid		
+	return stack_uid	
+	
+func get_local_uid():
+	return local_uid			
 
 func set_human_readable(string):
 	human_readable = string

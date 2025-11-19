@@ -7,7 +7,7 @@ extends Node
 
 #smaller numbers means the tests will run faster, but might lead to issues
 #to visually see what a test is doing, set this value to e.g. 1.0 or 1.5
-var min_time_between_steps: float = 0.2 #2
+var min_time_between_steps: float = 2 #2
 #if set to true, the min_time_between_steps value above will be replaced
 #with either sped_up_time_between_steps or multiplayer_sped_up_time_between_steps
 # (depending on 1 instance running or more), to run tests
@@ -225,9 +225,9 @@ func _process(_delta: float) -> void:
 	if (!initialized):
 		initialize_components()
 
-	if phaseContainer.is_in_progress():
-		count_delay("phaseContainer")
-		return
+#	if phaseContainer.is_in_progress():
+#		count_delay("phaseContainer")
+#		return
 
 	if cfc.NMAP.board.are_cards_still_animating():
 		count_delay("cards_animating")	
@@ -274,7 +274,9 @@ func _process(_delta: float) -> void:
 	return	
 
 func get_delay_multiplier(my_action = {}):
+	var wait_multiplier = 1
 	if CFConst.DEBUG_ENABLE_NETWORK_TEST and CFConst.DEBUG_SIMULATE_NETWORK_DELAY:
+		wait_multiplier = 40 *gameData.network_players.size() *gameData.network_players.size()
 		var expected_to_fail = false
 		if my_action:
 			#if the test tells us the action is expcted to fail
@@ -282,17 +284,19 @@ func get_delay_multiplier(my_action = {}):
 			#then we reduce the waiting time
 			expected_to_fail = my_action.get("expected_to_fail", false)
 			if expected_to_fail:
-				return 5
-		return 40
-	return 1	
+				wait_multiplier = 5
+	if my_action:
+		var wait_longer = my_action.get("wait_longer", false)	
+		if wait_longer:
+			wait_multiplier = wait_multiplier * 10
+	return wait_multiplier	
 
 func should_wait(my_action, _delta):
 	var delay_multiplier = get_delay_multiplier(my_action)
 		
 	var action_type = my_action.get("type", "")
 	var action_value = my_action.get("value", "")	
-	var expected_to_fail = my_action.get("expected_to_fail", false)
-		
+	var expected_to_fail = my_action.get("expected_to_fail", false)		
 	
 		#wait a bit if we need to choose from a selection window but that window isn't there
 	if (action_type == "select"):
@@ -352,7 +356,7 @@ func should_wait(my_action, _delta):
 						count_delay("action_wait_for_player_turn")
 						return true
 			"wait_a_bit":
-				if (_delta < max_wait_time  * delay_multiplier):
+				if (_delta < max_wait_time   *gameData.network_players.size() *gameData.network_players.size()):
 					count_delay("action_wait_a_bit")
 					return true
 			"wait_for_select_menu":
@@ -365,13 +369,20 @@ func should_wait(my_action, _delta):
 					
 	return false		
 
+func should_wait_after_action(my_action, _delta):
+	var wait_time = long_wait_time *gameData.network_players.size() *gameData.network_players.size()
+	if !gameData.theStack.is_player_allowed_to_click() and _delta < wait_time:
+		return true
+	return false
+
+
 #processes the next action for the current test
 #If no actions remaining, check final state and load the next test
 func next_action():
 	#TODO need to ensure the previous action and its effects are completed before moving to the next
 	#If phasecontainer is running stuff, we wait
-	if phaseContainer.is_in_progress():
-		return
+#	if phaseContainer.is_in_progress():
+#		return
 
 	if cfc.NMAP.board.are_cards_still_animating():
 		return	
@@ -411,8 +422,8 @@ func next_action():
 #	if (action_type != "target" and gameData.targeting_happened_too_recently()):
 #		return
 	
-	if should_wait(my_action, delta):
-		return
+#	if should_wait(my_action, delta):
+#		return
 			
 
 	delta = 0
@@ -542,6 +553,11 @@ remotesync func run_action(my_action:Dictionary):
 		_:
 			#TODO error
 			var _error = 1
+			
+	_delta = 0
+	while should_wait_after_action(my_action, _delta):
+		yield(get_tree().create_timer(0.1), "timeout")
+		_delta += 0.1			
 	rpc_id(1, "action_complete")
 
 	var new_rng_state = cfc.game_rng.state

@@ -94,6 +94,7 @@
 			"type": "target",
 			"value": "01097",
 			"hero": 1,
+			"expected_to_fail": true,
 			"_comments": "attempt to target with Interrogation room. This should fail since the kill is not mine"
 		}
 	] ,

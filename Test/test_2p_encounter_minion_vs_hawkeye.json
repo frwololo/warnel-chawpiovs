@@ -95,6 +95,11 @@
 			"value": "cancel",
 			"hero": 2,
 			"_comments": "undefended attack from Captain Marvel"
+		},	
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "waiting for player turn"
 		},			
 	] ,
 	"end": {

@@ -50,6 +50,10 @@
 	},
 	"actions": [
 		{
+			"type": "other",
+			"value": "wait_for_interrupt",
+		},	
+		{
 			"type": "play",
 			"value": "enhanced spider-sense",
 			"_comments": "prevent stampede reveal"

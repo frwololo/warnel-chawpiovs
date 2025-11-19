@@ -52,6 +52,10 @@ func execute():
 	cfc.add_ongoing_process(self)
 	var owner = sceng.owner
 
+	if !is_instance_valid(owner):
+		var _error = 1
+		cfc.remove_ongoing_process(self)
+		return
 	#we re-run some pre-execution scripts here to set everything right
 	owner.common_pre_run(sceng)
 	# In case the script involves targetting, we need to wait on further

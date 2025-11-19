@@ -68,15 +68,29 @@ func can_hero_phase_action() -> bool:
 			return false
 	return true	
 
+func can_hero_pass() -> bool:
+	if (hero_index != gameData.get_current_local_hero_id()):
+		return false
+		
+	if (!gameData.is_interrupt_mode()):
+		return false
+	
+	if !hero_index in (gameData.get_currently_playing_hero_ids()):
+		return false
+		
+	if !hero_index in (gameData.get_my_heroes()):
+		return false
+		
+	if !gameData.theStack.is_player_allowed_to_pass():
+		return false
+	
+	return true
+
 func heroPhase_action() -> bool:
 	if !can_hero_phase_action():
 		return false	
 	if (hero_index == gameData.get_current_local_hero_id()):
-		if (gameData.is_interrupt_mode() and\
-		 hero_index in (gameData.get_currently_playing_hero_ids()) and\
-		hero_index in gameData.get_my_heroes()):
-			#TODO this entire class needs to be cleaned up, lots of checks here
-			#to prevent a player from activating another's heroes
+		if can_hero_pass():
 			gameData.interrupt_player_pressed_pass(self.hero_index)			
 		rpc("switch_status")
 	else:	
@@ -120,7 +134,7 @@ func _update_labels():
 	var new_hero_index = gameData.get_current_local_hero_id()
 	if (gameData.can_i_play_this_hero(hero_index)):
 		if (new_hero_index == hero_index):
-			if (gameData.is_interrupt_mode()):
+			if (can_hero_pass()):
 				label.text = "PASS"
 			else:
 				label.text = "Finished?"

@@ -335,7 +335,7 @@ func attempt_to_play(user_click:bool = false):
 		if gameData.is_targeting_ongoing() or gameData.targeting_happened_too_recently():
 			return
 		#we already sent a request and should be waiting for full resolution	
-		if !gameData.theStack.is_player_allowed_to_click():
+		if !gameData.theStack.is_player_allowed_to_click(self):
 			return
 		
 		#gamedata is running some automated clicks from a previous request	
@@ -851,7 +851,11 @@ func common_pre_run(_sceng) -> void:
 
 		
 		if (controller_hero_id <=0 ):
-			cfc.LOG("error controller hero id is not set for script:" + task.script_name )
+			var card_type = task.owner.get_property("type_code")
+			if card_type in ["scheme", "main_scheme", "minion", "side_scheme", "treachery"]:
+				pass
+			else:
+				cfc.LOG("error controller hero id is not set for script:" + task.script_name )
 		else:
 			#var current_hero_id = gameData.get_current_hero_id()
 			for v in zones:

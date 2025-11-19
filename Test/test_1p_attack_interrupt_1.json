@@ -39,7 +39,7 @@
 	},
 	"actions": [
 		{
-			"type": "pass",
+			"type": "next_phase",
 			"value": "1",
 			"_comments": "going to the next phase (ending player turn) will trigger the villain attack"
 		},

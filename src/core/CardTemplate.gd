@@ -1440,10 +1440,7 @@ func move_to(targetHost: Node,
 	common_post_move_scripts(targetHost.name, parentHost.name, tags)
 	cfc.remove_ongoing_process(self)
 
-func set_scale(value):
-	if (canonical_id == "01001b" or canonical_id =="01094"):
-		display_debug(canonical_name + "setting scale:" + str(value.x) + "x" + str(value.y))
-		
+func set_scale(value):		
 	scale = value
 
 #Return interrupt string to hijack manual run

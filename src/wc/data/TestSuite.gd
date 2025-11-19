@@ -7,7 +7,7 @@ extends Node
 
 #smaller numbers means the tests will run faster, but might lead to issues
 #to visually see what a test is doing, set this value to e.g. 1.0 or 1.5
-var min_time_between_steps: float = 2
+var min_time_between_steps: float = 0.2 #2
 #if set to true, the min_time_between_steps value above will be replaced
 #with either sped_up_time_between_steps or multiplayer_sped_up_time_between_steps
 # (depending on 1 instance running or more), to run tests
@@ -22,11 +22,11 @@ const long_wait_time: = 2 #below 2 sec fails for multiplayer
 #same as above but for events that require a shorter patience time
 var short_wait_time: = 0.8 #below 0.4 has had failures formultiplayer
 #amount of time to wait if the test explicitely requests it
-const max_wait_time: = 2
+const max_wait_time: = 2.0
 const shorten_animations = true
 const STOP_AFTER_FIRST_FAILURE = true
 var announce_verbose = false
-var announce_verbose_whitelist:= ["running", "rng"]
+var announce_verbose_whitelist:= ["running", "rng", "error"]
 var last_rng_state = 0
 var start_time = 0
 var end_time = 0
@@ -240,7 +240,24 @@ func _process(_delta: float) -> void:
 	
 	if (_action_ongoing):
 		return	
-		
+	
+	
+	var next_clicked_card = null
+	if actions.size() > current_action:
+		var my_action = actions[current_action]
+		var action_type = my_action.get("type", "")
+		var action_value = my_action.get("value", "")
+		if action_type in ["play", "activate"]: 
+			var hero_id = get_card_owner_hero_id(action_value)		
+			next_clicked_card = get_card(action_value, hero_id)		
+	if (!gameData.theStack.is_player_allowed_to_click(next_clicked_card)):
+		count_delay("stack")
+		return	
+
+	if (actions.size() <= current_action):
+		if gameData.is_interrupt_mode() or  !gameData.theStack.is_player_allowed_to_click():
+			count_delay("stack_finalize")			
+			return
 	#don't proceed if stack is doing stuff
 	#TODO: we'll want to proceed in some cases though (HERO_IS_INTERRUPTING) ?
 	if (gameData.theStack.is_processing()):
@@ -256,23 +273,40 @@ func _process(_delta: float) -> void:
 	next_action()		
 	return	
 
+func get_delay_multiplier(my_action = {}):
+	if CFConst.DEBUG_ENABLE_NETWORK_TEST and CFConst.DEBUG_SIMULATE_NETWORK_DELAY:
+		var expected_to_fail = false
+		if my_action:
+			#if the test tells us the action is expcted to fail
+			# (to test an evenement that shouldn't happen)
+			#then we reduce the waiting time
+			expected_to_fail = my_action.get("expected_to_fail", false)
+			if expected_to_fail:
+				return 5
+		return 40
+	return 1	
+
 func should_wait(my_action, _delta):
+	var delay_multiplier = get_delay_multiplier(my_action)
+		
 	var action_type = my_action.get("type", "")
 	var action_value = my_action.get("value", "")	
+	var expected_to_fail = my_action.get("expected_to_fail", false)
+		
 	
 		#wait a bit if we need to choose from a selection window but that window isn't there
 	if (action_type == "select"):
-		if (!_current_selection_window) and _delta <long_wait_time:
-			count_delay("action_select")
-			return true
+		if !(is_instance_valid(_current_selection_window)) and (_delta <long_wait_time  * delay_multiplier):
+				count_delay("action_select")
+				return true
  
 	if (action_type == "target"):
-		if (!_current_targeting_card) and _delta <long_wait_time:
+		if (!_current_targeting_card) and _delta <long_wait_time  * delay_multiplier:
 			count_delay("action_target")
 			return true
 
 	if (action_type == "choose"):
-		if (!cfc.get_modal_menu()) and _delta <long_wait_time:
+		if (!cfc.get_modal_menu()) and _delta <long_wait_time  * delay_multiplier:
 			count_delay("action_choose")
 			return true
 
@@ -280,25 +314,25 @@ func should_wait(my_action, _delta):
 	if (action_type == "pass"):
 		var hero_id = int(action_value)
 		var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id-1]
-		if (heroPhase.get_label_text()!="PASS" and _delta <short_wait_time):
+		if (heroPhase.get_label_text()!="PASS" and _delta <short_wait_time * delay_multiplier):
 			count_delay("action_pass")
 			return true
 	
 	if (action_type == "next_phase"):
 		var hero_id = int(action_value)
 		var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id-1]
-		if (!heroPhase.can_hero_phase_action() and _delta <long_wait_time):
+		if (!heroPhase.can_hero_phase_action() and _delta <long_wait_time * delay_multiplier):
 			count_delay("action_nextphase")
 			return true
 			
 	if (action_type in["play", "activate"]):
-		var card = get_card(action_value, 1)
 		var hero_id = self.get_hero_for_action(my_action)
+		var card = get_card(action_value, hero_id)
 #		if card.check_play_costs_no_cache( hero_id) != CFConst.CostsState.OK and _delta <long_wait_time:
 #		#if  delta <long_wait_time:	
 #			count_delay("action_play")
 #			return	true
-		if !gameData.theStack.is_player_allowed_to_click() and _delta <long_wait_time:
+		if !gameData.theStack.is_player_allowed_to_click(card) and _delta <long_wait_time * delay_multiplier:
 		#if  delta <long_wait_time:	
 			count_delay("action_play")
 			return	true		
@@ -307,17 +341,27 @@ func should_wait(my_action, _delta):
 	if (action_type == "other"):
 		match action_value:
 			"wait_for_interrupt":
-				if (!gameData.is_interrupt_mode() and _delta <max_wait_time):
+				if gameData.theStack.is_player_allowed_to_pass():
+					return false
+				if (!expected_to_fail) or (_delta <max_wait_time * delay_multiplier):
 					count_delay("action_wait_for_interrupt")
 					return true			
 			"wait_for_player_turn":
-				if (phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN and _delta <max_wait_time):
-					count_delay("action_wait_for_player_turn")
-					return true
+				if (phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN):
+					if (!expected_to_fail) or (_delta <max_wait_time * delay_multiplier):
+						count_delay("action_wait_for_player_turn")
+						return true
 			"wait_a_bit":
-				if (_delta < max_wait_time):
+				if (_delta < max_wait_time  * delay_multiplier):
 					count_delay("action_wait_a_bit")
 					return true
+			"wait_for_select_menu":
+				if !is_instance_valid(_current_selection_window):
+					if (!expected_to_fail) or (_delta <max_wait_time * delay_multiplier):
+						count_delay("action_wait_for_select_menu")
+						return true	
+			_:
+				announce("{error}: unsupported request :" + action_value + "\n")				
 					
 	return false		
 
@@ -351,7 +395,8 @@ func next_action():
 		#before finalizing the test
 		var expected_phase = phaseContainer.step_string_to_step_id(end_state["phase"])
 		var current_phase = phaseContainer.current_step
-		if ((expected_phase != current_phase) && delta < long_wait_time):
+		var delay_multiplier = get_delay_multiplier()
+		if ((expected_phase != current_phase) && delta < long_wait_time * delay_multiplier):
 			count_delay("expected_phase")
 			return
 			
@@ -456,11 +501,10 @@ remotesync func run_action(my_action:Dictionary):
 	#master already waited somewhere else
 	#todo unify this?
 	#probably doing the waiting here is the best
-	if !cfc.is_game_master():
-		var _delta = 0
-		while should_wait(my_action, _delta):
-			yield(get_tree().create_timer(0.1), "timeout")
-			_delta += 0.1
+	var _delta = 0
+	while should_wait(my_action, _delta):
+		yield(get_tree().create_timer(0.1), "timeout")
+		_delta += 0.1
 	
 	var action_type: String = my_action.get("type", "play")
 	var action_value = 	my_action.get("value", "")
@@ -561,6 +605,7 @@ func action_target(hero_id, action_value):
 
 	if (_current_targeting_card):
 		_current_targeting_card.targeting_arrow.force_select_target(target_card)
+		_current_targeting_card = null
 	return
 	
 func action_choose(hero_id, action_value):
@@ -719,6 +764,8 @@ func sort_card_array(array):
 
 #card here is either a card id or a card name, we try to accomodate for both
 func get_corrected_card_id (card) -> String:
+	if card.to_lower() == "any_card":
+		return "any_card"
 	return cfc.get_corrected_card_id(card)
 
 
@@ -781,7 +828,10 @@ func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
 					return false
 				i+=1
 		TYPE_STRING:
-			#we don't care for the case
+			#special case
+			if (element1.to_lower() == "any_card" or element2.to_lower() =="any_card"):
+				return true
+			#we don't care for the case	
 			if (element1.to_lower() != element2.to_lower()):
 				failed_reason.append ("(" + _parent_name + ") expected: "\
 				 	+ _get_display_name(element1) + " - got: " + _get_display_name(element2))
@@ -942,7 +992,11 @@ remotesync func add_skipped_msg(msg):
 	
 #Loads the next test. If no next test, returns false	
 func next_test() -> bool:
-	yield(get_tree().create_timer(time_between_tests), "timeout")
+	var multiplier = 1
+	if CFConst.DEBUG_ENABLE_NETWORK_TEST:
+		multiplier = 5
+	
+	yield(get_tree().create_timer(time_between_tests * multiplier), "timeout")
 	reset_between_tests()
 	if (test_files.size() <= current_test):
 		finished = true

@@ -51,15 +51,18 @@
 	"actions": [	
 		{
 			"type": "play",
-			"value": "Wakanda Forever!"
+			"value": "Wakanda Forever!",
+			"expected_to_fail": true,			
 		},
 		{
 			"type": "select",
-			"value": ["Energy Daggers", "Panther Claws"]
+			"value": ["Energy Daggers", "Panther Claws"],
+			"expected_to_fail": true,			
 		},
 		{
 			"type": "target",
-			"value":  "01094"
+			"value":  "01094",
+			"expected_to_fail": true,			
 		},			
 	] ,
 	"end": {

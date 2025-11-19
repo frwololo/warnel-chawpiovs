@@ -43,7 +43,8 @@
 	"actions": [
 		{
 			"type": "play",
-			"value": "Combat Training"
+			"value": "Combat Training",
+			"expected_to_fail": true,
 		}
 	] ,
 	"end": {

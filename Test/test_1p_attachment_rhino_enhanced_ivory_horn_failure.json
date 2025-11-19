@@ -65,11 +65,13 @@
 		},		
 		{
 			"type": "activate",
-			"value" : "Enhanced Ivory Horn"
+			"value" : "Enhanced Ivory Horn",
+			"expected_to_fail": true,
 		},		
 		{
 			"type": "select",
-			"value" : ["Strength", "Energy"]
+			"value" : ["Strength", "Energy"],
+			"expected_to_fail": true,			
 		},
 	] ,
 	"end": {

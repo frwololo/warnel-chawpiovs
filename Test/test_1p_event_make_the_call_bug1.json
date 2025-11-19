@@ -61,11 +61,13 @@
 		},	
 		{
 			"type": "play",
-			"value": "The Triskelion"
+			"value": "The Triskelion",
+			"expected_to_fail": true,
 		},
 		{
 			"type": "select",
-			"value": "Strength"
+			"value": "Strength",
+			"expected_to_fail": true,			
 		},		
 	] ,
 	"end": {

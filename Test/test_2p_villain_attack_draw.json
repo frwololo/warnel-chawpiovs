@@ -149,7 +149,7 @@
 		},
 		{
 			"type": "other",
-			"value": "wait_until_player_turn",
+			"value": "wait_for_player_turn",
 			"_comments": "wait until player turn"
 		},			
 	] ,

@@ -93,7 +93,8 @@
 		},	
 		{
 			"type": "choose",
-			"value": "Draw 3"
+			"value": "Draw 3",
+			"expected_to_fail": true,			
 		},			
 	] ,
 	"end": {

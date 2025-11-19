@@ -58,7 +58,12 @@
 		{
 			"type": "target",
 			"value": "Rhino - 1"
-		},	
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+			"_comments": "need to wait for the stack to empty"
+		}	
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",

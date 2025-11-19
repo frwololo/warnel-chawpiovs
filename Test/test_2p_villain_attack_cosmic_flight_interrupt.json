@@ -110,7 +110,12 @@
 			]
 		}
 	},
-	"actions": [			
+	"actions": [	
+		{
+			"type": "other",
+			"value": "wait_for_interrupt",
+			"_comments": "wait for draw from Spider-Man"
+		},		
 		{
 			"type": "activate",
 			"value": "Spider-Man",
@@ -128,8 +133,15 @@
 			"_comments": "click on pass to skip Captain Marvel defense"
 		},
 		{
+			"type": "other",
+			"value": "wait_for_interrupt",
+			"hero": 2,
+			"_comments": "wait for interrupt opportunity"
+		},		
+		{
 			"type": "activate",
 			"value": "cosmic flight",
+			"hero": 2,			
 			"_comments": "activate cosmic flight to prevent damage"
 		},			
 	] ,

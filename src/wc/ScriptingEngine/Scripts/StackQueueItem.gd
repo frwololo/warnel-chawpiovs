@@ -64,9 +64,14 @@ func get_time_since_last_change(client_id):
 	return time_since_last_change[client_id]
 
 #resets timer, useful when doing resync attempts	
-func reset_time_since_last_change(client_id):	
-	time_since_last_change[client_id] = 0.0
-	
+func reset_time_since_last_change(client_id:int = 0):
+	#if client_id is not set we reset everyone
+	if client_id:	
+		time_since_last_change[client_id] = 0.0
+	else:
+		for network_id in gameData.network_players:
+			time_since_last_change[network_id] = 0.0
+				
 func get_requester_id():
 	return requester_client_id
 	
@@ -150,7 +155,6 @@ func debug_queue_status_msg():
 	var dict = {
 		"stack_uid": stack_uid,
 		"status_str":status_str,
-		"time_since_last_change": time_since_last_change,
 		"requester_client_id": requester_client_id,
 		"local_uid" : local_uid,	
 		"checksum" : checksum,

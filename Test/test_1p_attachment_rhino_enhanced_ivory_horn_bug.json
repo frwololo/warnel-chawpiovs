@@ -81,7 +81,8 @@
 		},	
 		{
 			"type": "activate",
-			"value" : "Enhanced Ivory Horn"
+			"value" : "Enhanced Ivory Horn",
+			"expected_to_fail": true,
 		},			
 	] ,
 	"end": {

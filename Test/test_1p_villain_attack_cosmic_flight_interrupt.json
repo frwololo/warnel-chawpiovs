@@ -72,12 +72,16 @@
 			]
 		}
 	},
-	"actions": [				
+	"actions": [
 		{
 			"type": "select",
 			"value": "cancel",
 			"_comments": "click on pass to skip Captain Marvel defense"
 		},
+		{
+			"type": "other",
+			"value": "wait_for_interrupt",
+		},		
 		{
 			"type": "activate",
 			"value": "cosmic flight",

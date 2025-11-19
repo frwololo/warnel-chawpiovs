@@ -58,10 +58,18 @@
 	},
 	"actions": [
 		{
+			"type": "other",
+			"value": "wait_for_interrupt",
+		},	
+		{
 			"type": "pass",
 			"value": "1",
 			"_comments": "pass option to play spider-sense"
 		},
+		{
+			"type": "other",
+			"value": "wait_for_interrupt",
+		},		
 		{
 			"type": "activate",
 			"value": "Spider-Man",
@@ -72,6 +80,10 @@
 			"value": "cancel",
 			"_comments": "take undefended attack"
 		},
+		{
+			"type": "other",
+			"value": "wait_for_interrupt",
+		},		
 		{
 			"type": "play",
 			"value": "backflip",

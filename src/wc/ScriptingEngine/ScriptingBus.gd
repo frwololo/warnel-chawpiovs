@@ -94,7 +94,11 @@ signal card_defeated(card,details)
 signal identity_changed_form(card, details)
 
 # warning-ignore:unused_signal
+signal attack_happened(card, details)
+# warning-ignore:unused_signal
 signal basic_attack_happened(card, details)
+# warning-ignore:unused_signal
+signal defense_happened(card, details)
 
 #todo should be dynamic?
 

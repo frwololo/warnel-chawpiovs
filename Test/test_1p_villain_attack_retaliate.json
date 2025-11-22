@@ -1,0 +1,132 @@
+{
+	"_comments": "Tests villain attack Black Panther's retaliate",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Black Panther"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "advance"
+				},			
+				{
+					"card": "hydra mercenary"
+				},
+				{
+					"card": "hydra soldier"
+				},				
+				{
+					"card": "Caught off guard"
+				}				
+			],			
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Hawkeye",
+				},
+				{
+					"card": "Make the call"
+				},
+				{
+					"card": "Lead from the front"
+				},
+				{
+					"card": "The Triskelion"
+				},
+				{
+					"card": "Maria Hill"
+				},					
+			],		
+			"identity1": [
+				{
+					"card": "Black Panther",
+				}				
+			],
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "click on pass to skip Black Panther defense"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		},				
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Black Panther"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {"damage": 1}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "hydra soldier"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Caught off guard"
+				},					
+			],				
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Hawkeye"
+				}
+			],				
+			"identity1": [
+				{
+					"card": "Black Panther",
+					"tokens": {"damage": 3}					
+				}
+			],
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]			
+		}
+	}
+}

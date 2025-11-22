@@ -46,7 +46,6 @@ const EncounterStatusStr = [
 	"ENCOUNTER_POST_COMPLETE"
 ]
 
-var _current_encounter_step: int = EncounterStatus.NONE
 var _current_encounter = null #WCCard
 
 #emit whenever something changes in the game state. This will trigger some recomputes
@@ -84,7 +83,7 @@ var _current_enemy = null
 #list of enemies with a current attack intent
 var attackers: = []
 #list of encounters that need to be revealed asap
-var immediate_encounters: = {}
+var immediate_encounters: = []
 var user_input_ongoing:int = 0 #ID of the current player (or remote player) doing a blocking game interraction
 var _garbage:= []
 var _targeting_ongoing:= false
@@ -323,7 +322,7 @@ func _scripting_event_triggered(_trigger_object = null,
 	
 	match trigger:
 		"card_moved_to_board":
-			_emit_additional_signals(_trigger_object, trigger, _trigger_details)
+			_emit_additional_signals(_trigger_object, trigger, _trigger_details)	
 			
 	match trigger:
 		"card_token_modified":
@@ -336,6 +335,7 @@ func _scripting_event_triggered(_trigger_object = null,
 				"enemy_initiates_scheme":
 			pre_attack_interrupts_done()			
 
+	#Game state changed signal (to compute card costs, etc...)
 	match trigger:
 		"card_moved_to_board", \
 				"card_played", \
@@ -687,11 +687,6 @@ func start_activity(enemy, action, script):
 func enemy_activates() :
 	var target_id = _villain_current_hero_target
 	
-	#If we're not the targeted player, we'll fail this one,
-	#and go into "wait for next phase" instantly. This should 
-	#force us to wait for the targeted player to trigger the script via network
-#	if not (can_i_play_this_hero(target_id)):
-#		return CFConst.ReturnCode.FAILED
 	if !attackers.size():
 		all_attackers_finished()
 		return
@@ -924,7 +919,10 @@ func deal_one_encounter_to(hero_id, immediate = false, encounter = null):
 		var destination  =  get_facedown_encounters_pile(hero_id) 
 		
 		if (immediate):
-			immediate_encounters[encounter] = 1;
+			immediate_encounters.append({
+				"encounter": encounter,
+				"target_id" : hero_id
+			})
 			encounter.move_to(destination, 0) #add it to the bottom to ensure it gets chosen first
 		else:
 			encounter.move_to(destination)
@@ -938,9 +936,13 @@ func all_encounters_finished():
 	pass
 
 func current_encounter_finished():
-	immediate_encounters.erase(_current_encounter)
+	for i in immediate_encounters.size():
+		if immediate_encounters[i]["encounter"] == _current_encounter:
+			immediate_encounters.remove(i)
+			break
+	if _current_encounter and is_instance_valid(_current_encounter):
+		_current_encounter.encounter_status = EncounterStatus.NONE			
 	_current_encounter = null
-	_current_encounter_step = EncounterStatus.NONE
 	pass
 
 #actual reveal of the current encounter
@@ -978,34 +980,44 @@ func can_proceed_activation()-> bool:
 		return false		
 	return true	
 
+func cancel_current_encounter():
+	if !_current_encounter:
+		return false
+	_current_encounter.move_to("discard_villain")
+	current_encounter_finished()	
+
 var _local_encounter_uid = 0		
 #TODO need something much more advanced here, per player, etc...
 func reveal_encounter(target_id = 0):
 	if (!target_id):
 		target_id = _villain_current_hero_target
 	
-	#If we're not the targeted player, we'll fail this one,
-	#and go into "wait for next phase" instantly. This should 
-	#force us to wait for the targeted player to trigger the script via network
-#	if not (can_i_play_this_hero(target_id)):
-#		return CFConst.ReturnCode.FAILED
 
 	if immediate_encounters:
-		for immediate_encounter in immediate_encounters.keys():
+		for immediate_encounter_data in immediate_encounters:
+			var immediate_encounter = immediate_encounter_data["encounter"]
 			match immediate_encounter.state:
 				Card.CardState.DROPPING_TO_BOARD,\
 						Card.CardState.MOVING_TO_CONTAINER:
 					return
-
+	
+	if immediate_encounters:
+		var next = immediate_encounters.back()
+		if !_current_encounter:
+			_current_encounter = next["encounter"]
+		if _current_encounter == next["encounter"]:
+			#retrieve the correct target_id if _current_encounter is an immediate encounter
+			target_id = next["target_id"]
 		
 	if !_current_encounter:
 		var facedown_encounters:Pile = get_facedown_encounters_pile(target_id)
 		_current_encounter = facedown_encounters.get_bottom_card()
+
 	
 	var current_encounter_str = "[empty]"
 	if _current_encounter:
 		current_encounter_str = _current_encounter.canonical_name
-	display_debug("current_encounter: " + current_encounter_str + ". Status:" + EncounterStatusStr[_current_encounter_step] )
+		display_debug("current_encounter: " + current_encounter_str + ". Status:" + EncounterStatusStr[_current_encounter.encounter_status] )
 	
 	if !_current_encounter:
 		display_debug("didn't get any encounter from the facedown pile of " + str(target_id) +", we're done here")
@@ -1021,16 +1033,16 @@ func reveal_encounter(target_id = 0):
 		return
 	
 	#an encounter is available, proceed
-	match _current_encounter_step:
+	match _current_encounter.encounter_status:
 		EncounterStatus.NONE:
 			#TODO might need to send a signal before that?
-			var pile = get_revealed_encounters_pile()
+			var pile = get_revealed_encounters_pile(target_id)
 			_current_encounter.set_is_faceup(true,false)
 			_current_encounter.move_to(pile)
 			#_current_encounter.execute_scripts(_current_encounter, "about_to_reveal")
 			var task_event = SignalStackScript.new("about_to_reveal", _current_encounter)
 			theStack.add_script(task_event)			
-			_current_encounter_step = EncounterStatus.ABOUT_TO_REVEAL
+			_current_encounter.encounter_status = EncounterStatus.ABOUT_TO_REVEAL
 			return
 		EncounterStatus.ABOUT_TO_REVEAL:
 			var reveal_script  = {
@@ -1040,23 +1052,26 @@ func reveal_encounter(target_id = 0):
 			var task_event = SimplifiedStackScript.new(reveal_task)
 			theStack.add_script(task_event)
 			#theStack.create_and_add_simplescript(_current_encounter, _current_encounter, reveal_script, {})
-			_current_encounter_step = EncounterStatus.PENDING_REVEAL_INTERRUPT
+			_current_encounter.encounter_status = EncounterStatus.PENDING_REVEAL_INTERRUPT
 			return
 					
 		EncounterStatus.OK_TO_EXECUTE:
-			#todo send to network?			
+			var pile = get_revealed_encounters_pile(target_id)
+			if !pile.has_card(_current_encounter):
+				#there is a somewhat valid use case here with some encounters that are moved (as part of their script) as soon as they come into play
+				# (e.g. obligations). Depending on Network conditions, the "move" script might have been sent through
+				#the wire already, and in that case we skip this step
+				#this prevents bugs such as an obligation resolving then coming back from the discard to the encounters reveal pile
+				display_debug("encounter: " + _current_encounter.canonical_name + "is not in " + pile.name + ". Assuming it has moved already")
+				_current_encounter.encounter_status = EncounterStatus.PENDING_COMPLETE
+				return
+					
 			var grid: BoardPlacementGrid = get_encounter_target_grid(_current_encounter)
 			var slot: BoardPlacementSlot = grid.find_available_slot()
 			if slot:
-				#Needs a bit of a timer to ensure the slot gets created	
-				# How to get rid of this mess?
-				# We have to flip the card in order for the script to execute
-				# But in the main scheme setup this works flawlessly...
 				_current_encounter.move_to(cfc.NMAP.board, -1, slot)
-				#encounter.set_is_faceup(false, true)
-				#encounter.set_is_faceup(true)
 				display_debug("encounter: " + _current_encounter.canonical_name + " moving to PENDING_COMPLETE")
-				_current_encounter_step = EncounterStatus.PENDING_COMPLETE
+				_current_encounter.encounter_status = EncounterStatus.PENDING_COMPLETE
 			else:
 				push_error("encounter ERROR: Missing target grid in reval_encounters")	
 		EncounterStatus.PENDING_COMPLETE:
@@ -1067,7 +1082,7 @@ func reveal_encounter(target_id = 0):
 			if cfc.get_modal_menu():
 				return
 			display_debug("encounter: " + _current_encounter.canonical_name + " moving to ENCOUNTER_COMPLETE")
-			_current_encounter_step = EncounterStatus.ENCOUNTER_COMPLETE
+			_current_encounter.encounter_status = EncounterStatus.ENCOUNTER_COMPLETE
 			return
 			
 		EncounterStatus.ENCOUNTER_COMPLETE:
@@ -1075,7 +1090,7 @@ func reveal_encounter(target_id = 0):
 			if (target_pile):
 				display_debug("encounter: " + _current_encounter.canonical_name + " moving to pile")
 				_current_encounter.move_to(target_pile)
-				_current_encounter_step = EncounterStatus.ENCOUNTER_POST_COMPLETE
+				_current_encounter.encounter_status = EncounterStatus.ENCOUNTER_POST_COMPLETE
 			else:
 				display_debug("encounter: not moving : " + _current_encounter.canonical_name + ". Finishing it already")
 				current_encounter_finished()
@@ -1088,7 +1103,7 @@ func reveal_encounter(target_id = 0):
 	return
 
 func encounter_revealed():
-	if _current_encounter_step !=EncounterStatus.PENDING_REVEAL_INTERRUPT:
+	if _current_encounter.encounter_status !=EncounterStatus.PENDING_REVEAL_INTERRUPT:
 		display_debug("encounter_revealed: I'm being told to move to OK_TO_EXECUTE but I'm not at PENDING_REVEAL_INTERRUPT")
 		return
 #	#todo replace this with a signal?
@@ -1100,7 +1115,7 @@ func encounter_revealed():
 #			
 	display_debug("encounter_revealed: going from PENDING_REVEAL_INTERRUPT to OK_TO_EXECUTE")
 
-	_current_encounter_step = EncounterStatus.OK_TO_EXECUTE
+	_current_encounter.encounter_status = EncounterStatus.OK_TO_EXECUTE
 	return
 
 #TODO need to move this to some configuration driven logic
@@ -1176,7 +1191,7 @@ func get_current_target_hero() -> Card:
 func compute_potential_defenders(hero_id):
 	var board:Board = cfc.NMAP.board
 	for c in board.get_all_cards():
-		if c.can_defend(hero_id):
+		if c.can_defend(): #hero_id):
 			c.add_to_group("group_defenders")
 		else:
 			if (c.is_in_group ("group_defenders")): c.remove_from_group("group_defenders")	
@@ -1451,7 +1466,7 @@ func filter_trigger(
 	}	
 		
 	var trigger_filters = card_scripts.get("event_filters", {})
-	var event = (theStack.find_event(event_details, trigger_filters, owner_card))
+	var event = (theStack.find_event(event_details, trigger_filters, owner_card, _trigger_details))
 
 	return event #note: force conversion from stack event to bool
 
@@ -1505,7 +1520,8 @@ func cleanup_post_game():
 	cfc.game_paused = true
 	attackers = []
 	_current_enemy_attack_step = EnemyAttackStatus.NONE
-	_current_encounter_step = EncounterStatus.NONE
+	if _current_encounter and is_instance_valid(_current_encounter):
+		_current_encounter.encounter_status = EncounterStatus.NONE
 	_current_encounter = null
 	current_round = 1
 	_multiplayer_desync = null

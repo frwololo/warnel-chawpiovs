@@ -9,6 +9,131 @@
 			]
 		}
 	},
+	"Affairs of State": {
+		"about_to_reveal": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "change_controller_hero",
+					"target_identity": "T'Challa",
+					"subject": "self"
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"Flip then Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Flip then Discard 1": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"selection_count": 1,
+						"selection_type": "equal",
+						"needs_selection": true,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"trait_black_panther": 1
+								},
+								"filter_properties2": {
+									"type_code": "upgrade"
+								}
+							}
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				],
+				"Discard 1": [
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"selection_count": 1,
+						"selection_type": "equal",
+						"needs_selection": true,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"trait_black_panther": 1
+								},
+								"filter_properties2": {
+									"type_code": "upgrade"
+								}
+							}
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					},
+					{
+						"name": "surge"
+					}
+				]
+			}
+		}
+	},
 	"Alpha Flight Station": {
 		"manual": {
 			"board": {
@@ -321,6 +446,33 @@
 			]
 		}
 	},
+	"Black Widow - Natasha Romanoff": {
+		"interrupt": {
+			"event_name": "about_to_reveal",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "cancel_current_encounter"
+				},
+				{
+					"name": "reveal_encounter",
+					"src_container": "deck_villain"
+				}
+			]
+		}
+	},
 	"Bomb Scare": {
 		"reveal": {
 			"all": [
@@ -350,6 +502,128 @@
 					}
 				}
 			]
+		}
+	},
+	"Business Problems": {
+		"about_to_reveal": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "change_controller_hero",
+					"target_identity": "Tony Stark",
+					"subject": "self"
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"Flip then Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Flip then Exhaust upgrades": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_upgrade_support_my_hero"
+							},
+							{
+								"filter_properties": {
+									"type_code": "upgrade"
+								}
+							}
+						]
+					}
+				],
+				"Exhaust upgrades": [
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard",
+						"src_container": "hand",
+						"subject": "index",
+						"subject_count": 1,
+						"subject_index": "random"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_upgrade_support_my_hero"
+							},
+							{
+								"filter_properties": {
+									"type_code": "upgrade"
+								}
+							}
+						]
+					}
+				]
+			}
 		}
 	},
 	"Captain Marvel": {
@@ -534,6 +808,21 @@
 					"filter_properties": {
 						"type_code": "villain"
 					}
+				}
+			]
+		}
+	},
+	"Counter-Punch": {
+		"response": {
+			"event_name": "defense_happened",
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "attack",
+					"subject": "trigger_details_attacker"
 				}
 			]
 		}
@@ -843,6 +1132,7 @@
 					"selection_count": 1,
 					"selection_type": "equal",
 					"needs_selection": true,
+					"needs_subject": true,
 					"filter_state_seek": [
 						{
 							"filter_group": "group_identities"
@@ -1371,6 +1661,35 @@
 			]
 		}
 	},
+	"Get Behind Me!": {
+		"interrupt": {
+			"event_name": "reveal_encounter",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "villain_attacks_you"
+				}
+			],
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "treachery"
+					}
+				}
+			]
+		}
+	},
 	"Get Ready": {
 		"manual": {
 			"hand": [
@@ -1709,6 +2028,26 @@
 			]
 		}
 	},
+	"Imminent Overload": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": "per_boardseek",
+					"subject": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						]
+					}
+				}
+			]
+		}
+	},
 	"\"I'm Tough\"": {
 		"reveal": {
 			"all": [
@@ -1729,6 +2068,27 @@
 				{
 					"name": "surge",
 					"is_else": true
+				}
+			]
+		}
+	},
+	"Indomitable": {
+		"response": {
+			"event_name": "defense_happened",
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
 				}
 			]
 		}
@@ -1887,6 +2247,31 @@
 			]
 		}
 	},
+	"Killmonger": {
+		"interrupt": {
+			"event_name": "receive_damage",	
+			"event_filters": {
+				"target": "villain"
+			},			
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				}
+			],
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"comparison": "ge",
+							"trait_black_panther": 0
+					},
+					"filter_properties2": {
+						"type_code": "upgrade"
+					},					
+				}
+			]			
+		}
+	},	
 	"Klaw - 1": {
 		"alterants": {
 			"board": [
@@ -2123,6 +2508,116 @@
 					]
 				}
 			]
+		}
+	},
+	"Legal Work": {
+		"about_to_reveal": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "change_controller_hero",
+					"target_identity": "Jennifer Walters",
+					"subject": "self"
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"Flip then Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Flip then Accelerate": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "acceleration",
+						"modification": 1,
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "main_scheme"
+								}
+							}
+						]
+					}
+				],
+				"Accelerate": [
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "acceleration",
+						"modification": 1,
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "main_scheme"
+								}
+							}
+						]
+					}
+				]
+			}
 		}
 	},
 	"Make the Call": {
@@ -2511,6 +3006,26 @@
 						}
 					},
 					"resource_name": "mental"
+				}
+			]
+		}
+	},
+	"Personal Challenge": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": "per_boardseek",
+					"subject": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						]
+					}
 				}
 			]
 		}

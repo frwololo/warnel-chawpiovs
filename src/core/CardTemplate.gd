@@ -1015,7 +1015,7 @@ func set_card_name(value : String, set_label := true) -> void:
 			card_front.set_rich_label_text(name_label,value)
 		elif set_label:
 			card_front.set_label_text(name_label,value)
-		name = value + "-" + str(guidMaster.get_guid(self)) #a unique identifier that will also work for network calls
+		name = value + "-" + guidMaster.get_guid(self) #a unique identifier that will also work for network calls
 		canonical_name = value
 		properties["Name"] = value
 
@@ -1788,6 +1788,8 @@ func retrieve_scripts(trigger: String, filters := {}) -> Dictionary:
 		# The seeks in them the specific trigger we're using in this
 		# execution
 		found_scripts = cfc.set_scripts.get(canonical_id,{}).get(trigger,{}).duplicate(true)
+	if (canonical_name == "Wakanda Forever!" and trigger == "manual"):
+		var _tmp = 1
 	return(found_scripts)
 
 # Retrieves the card scripts either from those defined on the card

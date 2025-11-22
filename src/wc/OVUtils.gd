@@ -9,7 +9,7 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 		var property = _subject_request.substr(16)
 		var value = trigger_details.get(property, null)
 		if value:
-			if typeof(value == TYPE_ARRAY):
+			if typeof(value) == TYPE_ARRAY:
 				return value
 			results.append(value)
 		return results
@@ -37,7 +37,8 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 		SP.KEY_SUBJECT_V_VILLAIN:
 			results.append(gameData.get_villain())
 		SP.KEY_SUBJECT_V_GRAB_UNTIL:
-			results = _grab_until_find(script, run_type)						
+			results = _grab_until_find(script, run_type)
+									
 	return results
 
 func _grab_until_find(script: ScriptObject, _run_type) -> Dictionary:

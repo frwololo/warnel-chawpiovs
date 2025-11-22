@@ -97,7 +97,7 @@ static func check_host_filter(trigger_card, owner_card, host_description : Strin
 # Returns true if the trigger and the owner belong to the same hero, false otherwise
 static func check_source_controlled_by_filter(_trigger_card, owner_card, trigger_details, expected_controller) -> bool:
 	var source = trigger_details.get("source", null)
-	if typeof(source) == TYPE_INT:
+	if guidMaster.is_guid(source):
 		source = guidMaster.get_object_by_guid(source)
 		
 	match expected_controller:
@@ -113,7 +113,7 @@ static func check_source_controlled_by_filter(_trigger_card, owner_card, trigger
 # Returns true if the trigger and the owner belong to the same hero, false otherwise
 static func check_filter_event_source(_trigger_card, owner_card, trigger_details, _expected_event_source) -> bool:
 	var source = trigger_details.get("source", null)
-	if typeof(source) == TYPE_INT:
+	if guidMaster.is_guid(source):
 		source = guidMaster.get_object_by_guid(source)
 		
 	match source:

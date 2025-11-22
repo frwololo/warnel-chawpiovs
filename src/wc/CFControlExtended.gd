@@ -296,7 +296,12 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 		
 	if !box_contents_by_name.has(box_name):
 		box_contents_by_name[box_name] = {}
-	box_contents_by_name[box_name][card_data["Name"]] = card_data	
+	#the same card name can happen multiple times in a single box with a different ID, 
+	#(maybe with different art but not necessarily), for example "Wakanda Forever"
+	#not sure why but this is why the card data here is an array and not a single element
+	if !box_contents_by_name[box_name].has(card_data["Name"]):
+		box_contents_by_name[box_name][card_data["Name"]] = []
+	box_contents_by_name[box_name][card_data["Name"]].append(card_data)	
 
 	var card_name:String = card_data["Name"]
 	
@@ -571,15 +576,19 @@ func load_script_definitions() -> void:
 		#delete comments from dictionary
 		WCUtils.erase_key_recursive(json_card_data, "_comments")
 		json_card_data = replace_macros(json_card_data, json_macro_data)
+		
+		#we don't support "response" yet but want to in the future. For now they're just interrupts
+		json_card_data = WCUtils.search_and_replace (json_card_data, "response", "interrupt", true)
 		#bugfix: replace "floats" to "ints"
 		json_card_data = WCUtils.replace_real_to_int(json_card_data)
 		var _text = to_json(json_card_data)
 		for card_name in json_card_data.keys():
-			var card_data = box_contents_by_name[box_name][card_name]
-			var card_id = card_data["_code"]
-			if not combined_scripts.get(card_id):
-				var script_data = json_card_data[card_name]
-				combined_scripts[card_id]	= script_data	
+			var card_datas = box_contents_by_name[box_name][card_name]
+			for card_data in card_datas:
+				var card_id = card_data["_code"]
+				if not combined_scripts.get(card_id):
+					var script_data = json_card_data[card_name]
+					combined_scripts[card_id]	= script_data	
 					
 
 	for card_id in card_definitions.keys():
@@ -738,8 +747,8 @@ func get_corrected_card_id (card) -> String:
 	for box_name in boxes:
 		var box = boxes[box_name]
 		if box.has(actual_card_name):
-			var card_data = box[actual_card_name]
-			return card_data["_code"]
+			var card_datas = box[actual_card_name]
+			return card_datas[0]["_code"]
 	return ""
 
 #mark a download as failed to avoid constantly attempting it

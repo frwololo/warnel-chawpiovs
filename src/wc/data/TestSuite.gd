@@ -80,7 +80,7 @@ var delta:float = 0
 var _current_selection_window = null
 var _current_targeting_card = null
 var _current_targeted_card = null
-var _action_ongoing = false
+var _action_ongoing: int = 0
 
 var _allclients_finalized: = {}
 
@@ -124,7 +124,7 @@ func reset_between_tests():
 	_current_selection_window = null
 	_current_targeting_card = null
 	_current_targeted_card = null
-	_action_ongoing = false	
+	_action_ongoing = 0	
 	if cfc.is_game_master():
 		cfc.game_rng_seed = "test suite"
 		var test_random = CFUtils.randi_range(0, 100000)
@@ -300,46 +300,61 @@ func should_wait(my_action, _delta):
 	
 		#wait a bit if we need to choose from a selection window but that window isn't there
 	if (action_type == "select"):
-		if !(is_instance_valid(_current_selection_window)) and (_delta <long_wait_time  * delay_multiplier):
+		if !(is_instance_valid(_current_selection_window)):
+			if (_delta <long_wait_time  * delay_multiplier):
 				count_delay("action_select")
 				return true
+			elif !expected_to_fail:
+				announce("{warning} Timeout for "  + action_type + " " + str(action_value))
  
 	if (action_type == "target"):
-		if (!_current_targeting_card) and _delta <long_wait_time  * delay_multiplier:
-			count_delay("action_target")
-			return true
+		if (!_current_targeting_card) :
+			if _delta <long_wait_time  * delay_multiplier:
+				count_delay("action_target")
+				return true
+			elif !expected_to_fail:
+				announce("{warning} Timeout for "  + action_type + " " + str(action_value))	
 
 	if (action_type == "choose"):
-		if (!cfc.get_modal_menu()) and _delta <long_wait_time  * delay_multiplier:
-			count_delay("action_choose")
-			return true
+		if (!cfc.get_modal_menu()):
+			if  _delta <long_wait_time  * delay_multiplier:
+				count_delay("action_choose")
+				return true
+			elif !expected_to_fail:
+				announce("{warning} Timeout for "  + action_type + " " + str(action_value))					
 
 	#there's an issue where the offer to "pass" sometimes takes a few cycles
 	if (action_type == "pass"):
 		var hero_id = int(action_value)
 		var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id-1]
-		if (heroPhase.get_label_text()!="PASS" and _delta <short_wait_time * delay_multiplier):
-			count_delay("action_pass")
-			return true
+		if (heroPhase.get_label_text()!="PASS"):
+			if ( _delta <short_wait_time * delay_multiplier):
+				count_delay("action_pass")
+				return true
+			elif !expected_to_fail:
+				announce("{warning} Timeout for "  + action_type + " " + str(action_value))					
 	
 	if (action_type == "next_phase"):
 		var hero_id = int(action_value)
 		var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id-1]
-		if (!heroPhase.can_hero_phase_action() and _delta <long_wait_time * delay_multiplier):
-			count_delay("action_nextphase")
-			return true
+		if (!heroPhase.can_hero_phase_action()):
+			if ( _delta <long_wait_time * delay_multiplier):
+				count_delay("action_nextphase")
+				return true
+			elif !expected_to_fail:
+				announce("{warning} Timeout for "  + action_type + " " + str(action_value))					
 			
 	if (action_type in["play", "activate"]):
 		var hero_id = self.get_hero_for_action(my_action)
 		var card = get_card(action_value, hero_id)
-#		if card.check_play_costs_no_cache( hero_id) != CFConst.CostsState.OK and _delta <long_wait_time:
-#		#if  delta <long_wait_time:	
-#			count_delay("action_play")
-#			return	true
-		if !gameData.theStack.is_player_allowed_to_click(card) and _delta <long_wait_time * delay_multiplier:
-		#if  delta <long_wait_time:	
-			count_delay("action_play")
-			return	true		
+
+		if !gameData.theStack.is_player_allowed_to_click(card):
+			if  _delta <long_wait_time * delay_multiplier:
+				count_delay("action_play")
+				return	true		
+			elif !expected_to_fail:
+				announce("{warning} Timeout for "  + action_type + " " + str(action_value))					
+				
 
 
 	if (action_type == "other"):
@@ -355,15 +370,24 @@ func should_wait(my_action, _delta):
 					if (!expected_to_fail) or (_delta <max_wait_time * delay_multiplier):
 						count_delay("action_wait_for_player_turn")
 						return true
+					elif !expected_to_fail:
+						announce("{warning} Timeout for "  + action_type + " " + str(action_value))					
+						
 			"wait_a_bit":
 				if (_delta < max_wait_time   *gameData.network_players.size() *gameData.network_players.size()):
 					count_delay("action_wait_a_bit")
 					return true
+			"wait_a_lot":
+				if (_delta < max_wait_time * 5 *gameData.network_players.size() *gameData.network_players.size()):
+					count_delay("action_wait_a_bit")
+					return true					
 			"wait_for_select_menu":
 				if !is_instance_valid(_current_selection_window):
 					if (!expected_to_fail) or (_delta <max_wait_time * delay_multiplier):
 						count_delay("action_wait_for_select_menu")
 						return true	
+			"gain_control":
+				return false
 			_:
 				announce("{error}: unsupported request :" + action_value + "\n")				
 					
@@ -438,6 +462,9 @@ func next_action():
 				rpc("set_upcoming_target", next_action_value)			
 	
 	process_action(my_action)
+	if my_action.get("simultaneous_action", {}):
+		var simultaneous_action = my_action["simultaneous_action"]
+		process_action(simultaneous_action, true)
 	
 	current_action += 1
 
@@ -468,7 +495,7 @@ func get_hero_for_action(my_action:Dictionary):
 			"choose":
 				hero = get_default_hero()
 			"target":
-				hero = current_playing_hero_id
+				hero = get_default_hero()
 			"select":
 				hero = get_default_hero()
 			"next_phase",\
@@ -483,14 +510,14 @@ func get_hero_for_action(my_action:Dictionary):
 	return hero	
 
 #The bulk of the GUI control to process one event	
-func process_action(my_action:Dictionary):
+func process_action(my_action:Dictionary, skip_play_tests:= false):
 			
 	
 	current_playing_hero_id = get_hero_for_action(my_action)
 	my_action["hero"] = current_playing_hero_id #This will pass the determined hero id to the rpc call 
 	var network_player_id = get_hero_player_network_owner(current_playing_hero_id)
-	_action_ongoing = true
-	rpc_id(network_player_id, "run_action", my_action)
+	_action_ongoing +=1
+	rpc_id(network_player_id, "run_action", my_action, skip_play_tests)
 
 func get_hero_player_network_owner(hero_id):
 	var player = 1
@@ -500,22 +527,20 @@ func get_hero_player_network_owner(hero_id):
 	return gameData.id_to_network_id[player]
 	
 mastersync func action_complete():
-	_action_ongoing = false
+	_action_ongoing -=1
 
 	
-remotesync func run_action(my_action:Dictionary):	
+remotesync func run_action(my_action:Dictionary,  skip_play_tests:= false):	
 	#valid types: play, activate, choose, target, select, pass ("next_phase" is a synonym), other
 	# Play: play a card
 	# activate: double click on a card to activate its ability 
 	#For "other", valid values are TBD
 	
-	#master already waited somewhere else
-	#todo unify this?
-	#probably doing the waiting here is the best
 	var _delta = 0
-	while should_wait(my_action, _delta):
-		yield(get_tree().create_timer(0.1), "timeout")
-		_delta += 0.1
+	if !skip_play_tests:
+		while should_wait(my_action, _delta):
+			yield(get_tree().create_timer(0.1), "timeout")
+			_delta += 0.1
 	
 	var action_type: String = my_action.get("type", "play")
 	var action_value = 	my_action.get("value", "")

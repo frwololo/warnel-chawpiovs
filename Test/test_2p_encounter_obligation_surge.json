@@ -1,7 +1,7 @@
 {
-	"_comments": "Tests Minion as boost does't trigger hawkeye",
+	"_comments": "Tests obligation when drawn as Captain Marvel",
 	"init": {
-		"phase": "VILLAIN_ACTIVATES",
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -22,21 +22,18 @@
 			],
 			"deck_villain":[
 				{
-					"card": "shocker"
-				},		
+					"card": "Hydra Mercenary"
+				},				
 				{
-					"card": "false alarm"
+					"card": "Hydra Mercenary"
+				},				
+				{
+					"card": "Family Emergency"
 				},
 				{
-					"card": "false alarm"
-				},		
-				{
-					"card": "hydra mercenary"
-				},	
-				{
-					"card": "hydra mercenary"
-				},							
-		
+					"card": "Hydra Mercenary"
+				},					
+			
 			],
 			"schemes": [
 				{
@@ -46,12 +43,6 @@
 			"deck1": [
 				{
 					"card": "Backflip"
-				}
-			],
-			"allies2": [
-				{
-					"card": "Hawkeye",
-					"tokens": {"arrow" : 4}
 				}
 			],
 			"identity1": [
@@ -75,34 +66,19 @@
 			"hand2": [
 				{
 					"card": "Energy Absorption"
+				},
+				{
+					"card": "Hawkeye"
 				}
 			]			
 		}
 	},
 	"actions": [
 		{
-			"type": "pass",
-			"value": "1",
-			"_comments": "skip Spider-Man draw ability"
-		},
-		{
-			"type": "select",
-			"value": "cancel",
-			"_comments": "undefended attack from spider-man",
-			"wait_longer": true
-		},	
-		{
-			"type": "select",
-			"value": "cancel",
+			"type": "choose",
 			"hero": 2,
-			"_comments": "undefended attack from Captain Marvel",
-			"wait_longer": true
-		},	
-		{
-			"type": "other",
-			"value": "wait_for_player_turn",
-			"_comments": "waiting for player turn"
-		},			
+			"value": "Get Stunned",
+		}		
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -124,40 +100,24 @@
 					"card": "01094"
 				}
 			],
-			"deck_villain": [
+			"deck_villain":[
 				{
-					"card": "shocker"
-				},				
+					"card": "Hydra Mercenary"
+				}							
 			],
-			"discard_villain":[	
+			"discard_villain":[
 				{
-					"card": "hydra mercenary"
-				},	
-				{
-					"card": "hydra mercenary"
-				},				
-				{
-					"card": "false alarm"
-				},
-				{
-					"card": "false alarm"
-				},							
-		
+					"card": "Family Emergency"
+				}							
 			],
 			"schemes": [
 				{
 					"card": "01097"
-				}
+				}			
 			],
 			"deck1": [
 				{
 					"card": "Backflip"
-				}
-			],
-			"allies2": [
-				{
-					"card": "Hawkeye",
-					"tokens": {"arrow" : 4}
 				}
 			],
 			"identity1": [
@@ -168,16 +128,24 @@
 			"hand1": [
 				{
 					"card": "Mockingbird"
-				},
-				{
-					"card": "01002"
-				}
+				},				
 			],
 			"identity2": [
 				{
-					"card": "Captain Marvel"
+					"card": "Captain Marvel",
+					"tokens": {"stunned": 1},
 				}
 			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}			
+			],
+			"enemies2": [
+				{
+					"card": "Hydra Mercenary"
+				}			
+			],			
 			"hand2": [
 				{
 					"card": "Energy Absorption"

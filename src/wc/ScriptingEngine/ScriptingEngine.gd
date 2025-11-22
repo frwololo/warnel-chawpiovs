@@ -190,13 +190,14 @@ func attack(script: ScriptTask) -> int:
 		return retcode
 
 	var owner = script.owner	
-	var damage = script.retrieve_integer_property("amount")
-	if not damage:
-		damage = owner.get_property("attack", 0)
 
 	var type = owner.get_property("type_code", "")
 	if !type in ["hero", "ally"]:
-		owner = _get_identity_from_script(script)
+		owner = _get_identity_from_script(script)	
+	
+	var damage = script.retrieve_integer_property("amount")
+	if not damage:
+		damage = owner.get_property("attack", 0)
 
 	var stunned = owner.tokens.get_token_count("stunned")
 	if (stunned):
@@ -234,6 +235,11 @@ func character_died(script: ScriptTask) -> int:
 	return retcode
 
 func deal_damage(script:ScriptTask) -> int:
+#	if script.owner.canonical_name == "Energy Daggers":
+#		var _tmp = 1
+#
+#	_add_receive_damage_on_stack(script.script_definition["amount"], script)
+#	return CFConst.ReturnCode.CHANGED
 	return receive_damage(script)
 
 func scheme_base_threat(script:ScriptTask) -> int:
@@ -312,7 +318,7 @@ func receive_damage(script: ScriptTask) -> int:
 		return retcode
 	
 	var tags: Array = script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
-	var amount = script.retrieve_integer_property("amount")
+	var base_amount = script.retrieve_integer_property("amount")
 	
 	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
 	# e.g. Spider man gets 3*1 damage = 3 damage
@@ -327,13 +333,13 @@ func receive_damage(script: ScriptTask) -> int:
 	for card in consolidated_subjects.keys():
 		var multiplier = consolidated_subjects[card]
 		var damage_happened = 0
-		
+		var amount = base_amount * multiplier
 		var tough = card.tokens.get_token_count("tough")
-		if (tough):
+		if (amount and tough):
 			card.tokens.mod_token("tough", -1)
 		else:	
 			retcode = card.tokens.mod_token("damage",
-					amount * multiplier,false,costs_dry_run(), tags)	
+					amount,false,costs_dry_run(), tags)	
 			
 			if amount:
 				damage_happened = amount	
@@ -355,7 +361,7 @@ func receive_damage(script: ScriptTask) -> int:
 			if retaliate:
 				var owner = script.owner
 				var type = owner.get_property("type_code", "")
-				if !type in ["hero", "ally"]:
+				if !type in ["hero", "ally", "minion", "villain"]:
 					owner = _get_identity_from_script(script)
 				var script_modifications = {
 					"tags" : ["retaliate", "Scripted"],
@@ -373,7 +379,10 @@ func receive_damage(script: ScriptTask) -> int:
 			if ("basic power" in tags):
 				scripting_bus.emit_signal("basic_attack_happened", script.owner, signal_details)
 		
-
+			var stackEvent:SignalStackScript = SignalStackScript.new("defense_happened", card,  signal_details)
+			gameData.theStack.add_script(stackEvent)
+			#scripting_bus.emit_signal("defense_happened", card, signal_details)
+			
 		#check for death
 		if damage_happened:
 			scripting_bus.emit_signal("card_damaged", card, script.script_definition)
@@ -552,6 +561,7 @@ static func simple_discard_task(target_card):
 func enemy_attacks_you(script: ScriptTask) -> int:
 	var retcode = CFConst.ReturnCode.FAILED
 
+
 	for card in script.subjects:
 		gameData.add_enemy_activation(card, "attack", script)
 		retcode = CFConst.ReturnCode.CHANGED
@@ -689,14 +699,16 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 		_add_receive_damage_on_stack (amount, script, script_modifications)
 	
 	if defender and attacker.get_property("overkill", 0):
-		overkill_amount = amount - defender.get_remaining_damage()
-		overkill_amount = max(0, overkill_amount)
+		var defender_type = defender.get_property("type_code")
+		if defender_type in ["minion", "ally"]:
+			overkill_amount = amount - defender.get_remaining_damage()
+			overkill_amount = max(0, overkill_amount)
 
-		var script_modifications = {
-			"additional_tags" : ["attack", "Scripted", "overkill"],
-			"subjects": [my_hero]
-		}
-		_add_receive_damage_on_stack (overkill_amount, script, script_modifications)
+			var script_modifications = {
+				"tags" : ["Scripted", "overkill"], #notably, overkill isn't an attack
+				"subjects": [my_hero]
+			}
+			_add_receive_damage_on_stack (overkill_amount, script, script_modifications)
 	
 	#We're done, cleanup attacker script
 	attacker.activity_script = null		
@@ -888,6 +900,13 @@ func heal(script: ScriptTask) -> int:
 				retcode = CFConst.ReturnCode.CHANGED
 
 	return retcode
+
+func cancel_current_encounter(script: ScriptTask) -> int:
+	if (costs_dry_run()): #not allowed ?
+		return CFConst.ReturnCode.CHANGED
+			
+	gameData.cancel_current_encounter()
+	return CFConst.ReturnCode.CHANGED
 
 func deal_encounter(script: ScriptTask) -> int:
 
@@ -1277,8 +1296,13 @@ func _pre_task_prime(script: ScriptTask) -> void:
 	var previous_hero_id = 0
 	if previous_hero:
 		previous_hero_id = previous_hero.get_controller_hero_id()
+	
+	var owner = script.owner
+	var controller_hero_id = owner.get_controller_hero_id()
+	
 		
 	for group in CFConst.ALL_GROUPS:
+		script_definition = WCUtils.search_and_replace(script_definition, group + "_my_hero", group+str(controller_hero_id), true)		
 		script_definition = WCUtils.search_and_replace(script_definition, group + "_first_player", group+str(gameData.first_player_hero_id()), true)	
 		script_definition = WCUtils.search_and_replace(script_definition, group + "_previous_subject", group+str(previous_hero_id), true)	
 

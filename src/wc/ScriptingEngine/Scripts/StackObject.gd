@@ -67,7 +67,7 @@ func modify(script):
 						pass
 
 #TODO this function shouldn't be here? doesn't use any of its data
-func matches_filters(task, filters:Dictionary, owner_card):
+func matches_filters(task, filters:Dictionary, owner_card, trigger_details):
 	var owner_hero_id = owner_card.get_owner_hero_id()
 	if (owner_hero_id > 0):
 		for v in ["my_hero"]:
@@ -76,12 +76,13 @@ func matches_filters(task, filters:Dictionary, owner_card):
 
 	#TODO move to const
 	filters = WCUtils.search_and_replace(filters, "villain", gameData.get_villain(), true)
+	filters = WCUtils.search_and_replace(filters, "self", owner_card, true)
 
 
 	if (filters):
 		var _tmp = 0	
-	var script_details = task.script_definition
-	var result = WCUtils.is_element1_in_element2(filters, script_details, ["tags"])
+	#var script_details = task.script_definition
+	var result = WCUtils.is_element1_in_element2(filters, trigger_details, ["tags"])
 
 	return result
 

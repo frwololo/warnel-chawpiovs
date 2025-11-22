@@ -334,7 +334,7 @@ func pile_or_grid(object_name):
 
 # Setter for game_paused
 func set_game_paused(value: bool) -> void:
-	if NMAP.has("board") and NMAP.board.mouse_pointer:
+	if NMAP.has("board") and is_instance_valid(NMAP.board) and NMAP.board.mouse_pointer:
 		NMAP.board.mouse_pointer.is_disabled = value
 	game_paused = value
 

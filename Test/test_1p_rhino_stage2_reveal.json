@@ -61,7 +61,7 @@
 		},
 		{
 			"type": "other",
-			"value": "wait_a_bit",
+			"value": "wait_a_lot",
 			"_comments": "need to wait for the stack to empty"
 		}	
 	] ,

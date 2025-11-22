@@ -6,7 +6,6 @@ enum STACK_STATUS {
 	PENDING_UID,
 	PENDING_CLIENT_ACK,
 	READY_TO_EXECUTE,
-	EXECUTING,
 	DONE,	
 	PENDING_REMOVAL,
 }
@@ -16,7 +15,6 @@ const StackStatusStr := [
 	"PENDING_UID",
 	"PENDING_CLIENT_ACK",
 	"READY_TO_EXECUTE",
-	"EXECUTING",
 	"DONE",	
 	"PENDING_REMOVAL",	
 ]
@@ -88,9 +86,9 @@ func change_queue_item_state(client_id, new_state, caller):
 	var _error = ""
 	match new_state:
 		STACK_STATUS.DONE:
-			expected_state = STACK_STATUS.EXECUTING
+			expected_state = STACK_STATUS.READY_TO_EXECUTE
 			#pending_removal is an ok use case here because we sometimes remove the scrpt before receiving this signal
-			if ! current_state in [STACK_STATUS.EXECUTING, STACK_STATUS.PENDING_REMOVAL]:
+			if ! current_state in [STACK_STATUS.READY_TO_EXECUTE, STACK_STATUS.PENDING_REMOVAL]:
 				_error = "state"
 		STACK_STATUS.READY_TO_EXECUTE:
 			expected_state = STACK_STATUS.PENDING_CLIENT_ACK

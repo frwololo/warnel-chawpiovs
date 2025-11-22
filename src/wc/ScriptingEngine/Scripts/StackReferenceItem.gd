@@ -42,7 +42,7 @@ func change_reference_item_state(new_state, caller):
 	#error check
 	match new_state:
 		StackQueueItem.STACK_STATUS.DONE:
-			expected_states = [StackQueueItem.STACK_STATUS.EXECUTING, StackQueueItem.STACK_STATUS.PENDING_REMOVAL]
+			expected_states = [StackQueueItem.STACK_STATUS.READY_TO_EXECUTE, StackQueueItem.STACK_STATUS.PENDING_REMOVAL]
 			#pending_removal is an ok use case here because we sometimes remove the scrpt before receiving this signal
 			if ! current_state in expected_states:
 				_error = "state"

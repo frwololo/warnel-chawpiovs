@@ -1,0 +1,105 @@
+{
+	"_comments": "(0) Counter-Punch: response: after defending deal attack",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Black Panther"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},	
+				{
+					"card": "Hydra Mercenary"
+				},					
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Black Panther"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Counter-Punch"
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "click cancel on defenders to take an undefended attack"
+		},		
+		{
+			"type": "play",
+			"value": "Counter-Punch",
+			"wait_longer": true,
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Black Panther"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {"damage": 3}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Black Panther"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Counter-Punch"
+				}
+			]
+		}
+	}
+}

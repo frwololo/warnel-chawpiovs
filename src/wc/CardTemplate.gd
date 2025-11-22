@@ -29,7 +29,11 @@ var spinbox
 #healthbar on top of characters, allies, villains, etc...
 var healthbar
 
+#activity script tied to a villain/minion attacking or scheming
+#might be used for other stuff eventually
 var activity_script
+#status of this card as an encounter (see GameData)
+var encounter_status = gameData.EncounterStatus.NONE
 
 func add_extra_script(script_definition, allowed_hero_id = 0):
 	extra_script_uid+= 1
@@ -376,7 +380,7 @@ func can_interrupt(
 		return CFConst.CanInterrupt.NO
 	
 	var _debug = false
-	if canonical_name == "Cosmic Flight" and trigger_card and trigger_card.canonical_name == "Rhino - 1":
+	if canonical_name == "Killmonger" and trigger_card:
 		if trigger_details["event_name"] == "receive_damage":
 			_debug = true
 
@@ -1262,7 +1266,21 @@ func pay_as_resource(script):
 
 
 	#reload and re_run the script from scratch, up to execution
-	var exe_sceng = self.execute_scripts(self, "resource", {})				
+	#var exe_sceng = self.execute_scripts(self, "resource", {})	
+	#below is a convoluted way to force execute the sript locally without going through the network stack,
+	#specifically for payments
+	#two reasons for that:
+	#1) spare a network trip
+	#2) because of the Network delay, I suspect I've seen bugs where the payment is processed
+	# after the card is played, leading to desync between the players
+	var delegate = {}
+	var hero_id = 0
+	var owner_card = script.owner
+	if owner_card:
+		hero_id = owner_card.get_controller_hero_id()
+	if hero_id:
+		delegate = {"for_hero_id" : hero_id}
+	var exe_sceng = self.execute_scripts_no_stack(self, "resource", delegate)				
 	while exe_sceng is GDScriptFunctionState && exe_sceng.is_valid():
 		exe_sceng  = exe_sceng.resume()	
 

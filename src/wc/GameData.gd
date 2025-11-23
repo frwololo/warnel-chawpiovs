@@ -818,10 +818,6 @@ func defenders_chosen():
 			display_debug("defenders_chosen: I wasn't able to fix my PENDING_DEFENDERS issue :(")
 			return
 
-#	if !theStack.is_empty():
-#		return
-#	if cfc.get_modal_menu():
-#		return
 	display_debug("defenders_chosen: Defenders have been chosen, moving to boost cards")
 	_current_enemy_attack_step = EnemyAttackStatus.BOOST_CARDS
 	return	
@@ -1076,9 +1072,6 @@ func reveal_encounter(target_id = 0):
 				push_error("encounter ERROR: Missing target grid in reval_encounters")	
 		EncounterStatus.PENDING_COMPLETE:
 			#there has to be a better way.... wait for a signal somehow ?
-#			if !gameData.theStack.is_phasecontainer_allowed_to_proceed():
-#			if !theStack.is_empty():
-#				return	
 			if cfc.get_modal_menu():
 				return
 			display_debug("encounter: " + _current_encounter.canonical_name + " moving to ENCOUNTER_COMPLETE")
@@ -1087,7 +1080,7 @@ func reveal_encounter(target_id = 0):
 			
 		EncounterStatus.ENCOUNTER_COMPLETE:
 			var target_pile = get_encounter_target_pile(_current_encounter)
-			if (target_pile):
+			if (target_pile and !target_pile.has_card(_current_encounter)):
 				display_debug("encounter: " + _current_encounter.canonical_name + " moving to pile")
 				_current_encounter.move_to(target_pile)
 				_current_encounter.encounter_status = EncounterStatus.ENCOUNTER_POST_COMPLETE
@@ -1106,13 +1099,6 @@ func encounter_revealed():
 	if _current_encounter.encounter_status !=EncounterStatus.PENDING_REVEAL_INTERRUPT:
 		display_debug("encounter_revealed: I'm being told to move to OK_TO_EXECUTE but I'm not at PENDING_REVEAL_INTERRUPT")
 		return
-#	#todo replace this with a signal?
-#	#right now this technique allows to move on even if the reveal event disappears (fizzled)
-#	if !theStack.is_empty():
-#		return
-#	if cfc.get_modal_menu():
-#		return
-#			
 	display_debug("encounter_revealed: going from PENDING_REVEAL_INTERRUPT to OK_TO_EXECUTE")
 
 	_current_encounter.encounter_status = EncounterStatus.OK_TO_EXECUTE

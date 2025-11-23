@@ -607,14 +607,17 @@ const SYSTEMS_CHECK_HASH_ONLY:= false
 const FORCE_LOGS:= false
 #seconds until we trigger a desync warning when the stack is blocked
 #set to 0 for infinite waiting time (debug)
-const DESYNC_TIMEOUT:= 1.5
+const DESYNC_TIMEOUT:= 10
 const DISPLAY_DEBUG_MSG = true
+
+const ENABLE_NETWORK_ERROR_CORRECTION = false
 
 const DEBUG_AUTO_START_MULTIPLAYER = true
 const DEBUG_ENABLE_NETWORK_TEST = false
 #set to 0 to deactivate fake delay. Otherwise, random delay between 0 and this value will be added
 #to rpc calls on the stack (only activated if DEBUG_ENABLE_NETWORK_TEST is true)
-const DEBUG_SIMULATE_NETWORK_DELAY = 0.5
+const DEBUG_SIMULATE_NETWORK_DELAY = 1.5
+const DEBUG_NETWORK_DELAY_RANDOM = false
 const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 
 const SCRIPT_BREAKPOINT_CARD_NAME := "T'Challa"

@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://src/wc/CardTemplate.gd" type="Script" id=1]
 [ext_resource path="res://src/core/CardTemplate.tscn" type="PackedScene" id=2]
 [ext_resource path="res://src/wc/healthbar.gd" type="Script" id=3]
+[ext_resource path="res://assets/icons/network_error.png" type="Texture" id=4]
 [ext_resource path="res://src/wc/CardManipulationButton.tscn" type="PackedScene" id=5]
 [ext_resource path="res://src/wc/ManipulationButtons.gd" type="Script" id=6]
 [ext_resource path="res://src/wc/SpinBox.gd" type="Script" id=7]
@@ -28,7 +29,18 @@ visible = true
 [node name="Front" parent="Control" index="2"]
 rect_min_size = Vector2( 200, 280 )
 
-[node name="SpinPanel" type="PanelContainer" parent="Control" index="4"]
+[node name="info_icon" type="TextureRect" parent="Control" index="3"]
+unique_name_in_owner = true
+visible = false
+margin_left = 48.0
+margin_top = 73.0
+margin_right = 152.0
+margin_bottom = 176.0
+rect_scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 4 )
+stretch_mode = 5
+
+[node name="SpinPanel" type="PanelContainer" parent="Control" index="5"]
 visible = false
 margin_left = 39.0
 margin_top = 42.0
@@ -47,7 +59,7 @@ script = ExtResource( 7 )
 
 [node name="Tween" type="Tween" parent="Control/SpinPanel/SpinBox" index="2"]
 
-[node name="HealthPanel" type="MarginContainer" parent="Control" index="5"]
+[node name="HealthPanel" type="MarginContainer" parent="Control" index="6"]
 margin_top = -10.0
 margin_bottom = -10.0
 
@@ -57,7 +69,7 @@ script = ExtResource( 3 )
 
 [node name="ColorRect" type="ColorRect" parent="Control/HealthPanel/healthbar" index="0"]
 
-[node name="ManipulationButtons" parent="Control" index="6"]
+[node name="ManipulationButtons" parent="Control" index="7"]
 script = ExtResource( 6 )
 manipulation_button = ExtResource( 5 )
 

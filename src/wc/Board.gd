@@ -251,7 +251,7 @@ func post_ready_load():
 
 	#TODO better way to do a reveal ?
 	var current_villain = get_villain_card()
-	var func_return = current_villain.execute_scripts(current_villain, "reveal")
+	var func_return = current_villain.execute_scripts_no_stack(current_villain, "reveal")
 	if func_return is GDScriptFunctionState && func_return.is_valid():
 		yield(func_return, "completed")		
 

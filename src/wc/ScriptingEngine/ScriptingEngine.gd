@@ -340,8 +340,8 @@ func receive_damage(script: ScriptTask) -> int:
 		else:	
 			retcode = card.tokens.mod_token("damage",
 					amount,false,costs_dry_run(), tags)	
-			
 			if amount:
+				card.hint(str(amount), Color8(255,50,50))
 				damage_happened = amount	
 				
 				if ("stun_if_damage" in tags):
@@ -660,7 +660,10 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 		
 	boost_card.set_current_activation(script)	
 	boost_card.set_is_faceup(true)
-	script_definition["boost"].append(boost_card.get_property("boost",0))
+	var boost_amount = boost_card.get_property("boost",0)
+	if boost_amount:
+		boost_card.hint("+" + str(boost_amount), Color8(100,255,150), {"position": "bottom_right"})
+	script_definition["boost"].append(boost_amount)
 	
 	var func_return = boost_card.execute_scripts(boost_card, "boost")
 	while func_return is GDScriptFunctionState && func_return.is_valid():
@@ -1185,10 +1188,6 @@ func constraints(script: ScriptTask) -> int:
 			"action_ability":
 				if gameData.phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN:
 					return 	CFConst.ReturnCode.FAILED
-# there are unfortunately cases where the scrip itself is causing the stakc to not be empty
-#removing this check until I can figure out a safer way 					
-#				if !gameData.theStack.is_empty():
-#					return CFConst.ReturnCode.FAILED
 				if cfc.is_modal_event_ongoing():
 					return 	CFConst.ReturnCode.FAILED			
 	

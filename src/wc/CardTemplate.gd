@@ -29,11 +29,39 @@ var spinbox
 #healthbar on top of characters, allies, villains, etc...
 var healthbar
 
+var hints:= []
+
 #activity script tied to a villain/minion attacking or scheming
 #might be used for other stuff eventually
 var activity_script
 #status of this card as an encounter (see GameData)
 var encounter_status = gameData.EncounterStatus.NONE
+
+func hint (text, color, details = {}):
+	var position = details.get("position", "")
+	var pos_x = 50
+	var pos_y = 50
+	match position:
+		"bottom_right":
+			pos_x = 100
+			pos_y = 200
+		
+	var _hint_label = Label.new()
+	var _hint= PanelContainer.new()
+	_hint_label.text = text
+	_hint_label.add_color_override("font_color", color)
+	var dir_x = randf() * 10 
+	var dir_y = randf() * 10
+	
+	var settings = {
+		"hint_object": _hint,
+		"lifetime": details.get("lifetime", 1.0),
+		"direction": Vector2(dir_x, dir_y)
+	}
+	hints.append(settings)
+	_hint.add_child(_hint_label)
+	$Control.add_child(_hint)
+	_hint.rect_position = Vector2(pos_x, pos_y)
 
 func add_extra_script(script_definition, allowed_hero_id = 0):
 	extra_script_uid+= 1
@@ -238,6 +266,32 @@ func _class_specific_process(delta):
 		
 
 func _process(delta) -> void:
+	var info_icon = get_node("%info_icon")
+	if info_icon and info_icon.visible:
+		info_icon.modulate.a -= delta
+		if info_icon.modulate.a < 0.01:
+			info_icon.visible = false
+
+	#hints
+	var hints_to_erase = []
+	for _hint_data in hints:
+
+		var hint_object = _hint_data.get("hint_object", null)
+		if hint_object:
+			hint_object.modulate.a -= delta / 3
+			hint_object.rect_scale += Vector2(delta *3, delta *3)
+			hint_object.rect_position+= _hint_data.get("direction") * delta
+		var lifetime = _hint_data.get("lifetime", 0)
+		lifetime -= delta
+		if lifetime < 0:
+			hints_to_erase.append(_hint_data)
+		_hint_data["lifetime"] = lifetime
+	for data in hints_to_erase:
+		$Control.remove_child(data["hint_object"])
+		hints.erase(data)
+	hints_to_erase = []
+	
+	
 	if (cfc.is_modal_event_ongoing()):
 		return
 	if (gameData.is_targeting_ongoing()):
@@ -340,6 +394,7 @@ func attempt_to_play(user_click:bool = false):
 			return
 		#we already sent a request and should be waiting for full resolution	
 		if !gameData.theStack.is_player_allowed_to_click(self):
+			network_request_rejected()
 			return
 		
 		#gamedata is running some automated clicks from a previous request	
@@ -365,6 +420,12 @@ func attempt_to_play(user_click:bool = false):
 	cfc.card_drag_ongoing = null
 	execute_scripts()
 
+
+func network_request_rejected():
+	var info_icon = get_node("%info_icon")
+	if info_icon:
+		info_icon.visible = true
+		info_icon.modulate = Color(1,1,1,1)
 
 #returns true if this card has some ability that can interrupt
 #the current action (and if hero_id is the one who can play it)
@@ -479,12 +540,20 @@ func execute_scripts(
 	#enemy cards, multiple players can react except when they're the specific target
 	if self.get_controller_hero_id() <= 0:
 		var can_i_play_enemy_card = false
+		var allowed_heroes = gameData.get_currently_playing_hero_ids()
+		#ran into a bug were an encounter ability triggered twice,
+		#executed once by each player. We want to avoid that
+		if trigger != "manual" and allowed_heroes.size() > 1:
+			if trigger_details.get("use_stack", true):
+				#might need to find a better approach
+				allowed_heroes = [allowed_heroes[0]]
+			
 		if for_hero_id:
-			if for_hero_id in gameData.get_currently_playing_hero_ids():
+			if for_hero_id in allowed_heroes:
 				can_i_play_enemy_card = true
 		else:	
 			for my_hero in (gameData.get_my_heroes()):
-				if my_hero in (gameData.get_currently_playing_hero_ids()):
+				if my_hero in (allowed_heroes):
 					can_i_play_enemy_card = true
 		if !can_i_play_enemy_card:
 			return null
@@ -740,7 +809,7 @@ func _process_card_state() -> void:
 			#does that need to change eventually ?	
 			#note: setting tweening to false otherwise it causes issues with
 			#tweening never ending
-			if get_property("_horizontal", false):
+			if get_property("_horizontal", false) and not _is_boost:
 				set_card_rotation(90, false, false)
 
 

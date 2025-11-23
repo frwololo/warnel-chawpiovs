@@ -120,6 +120,10 @@ func get_all_cards() -> Array:
 		if card : results.append(card)
 	return results
 
+func has_card(card) -> bool:
+	var all_cards = get_all_cards()
+	return (card in all_cards)
+
 # Returns the amount of BoardPlacementSlot contained.
 func get_slot_count() -> int:
 	return(get_all_slots().size())

@@ -26,12 +26,6 @@ signal script_executed_from_stack(script)
 signal script_added_to_stack(script)
 
 
-enum NETWORK_ERROR {
-	NONE,
-	LOCAL_UID_NOT_FOUND,
-}
-
-
 enum InterruptMode {
 	UNKNOWN,
 	NONE,
@@ -60,14 +54,11 @@ var interrupting_hero_id = 0
 var _current_interrupting_cards = []
 var _current_interrupting_mode = InterruptMode.NONE
 
-#potential_interrupters:
-#	{hero_id => [list of cards that can interrupt] or "skip"}
-var potential_interrupters: Dictionary = {}
 
 #client_current_mode:
 #	{network_id => current interrupt mode for the player}
 var clients_current_mode: Dictionary = {}
-var stack_integrity_check: Dictionary = {}
+
 
 
 #the Stack is actually a dictionary, indexed by stack_uids.
@@ -87,8 +78,6 @@ var current_stack_uid:int = 0
 var current_local_uid: int = 0
 var pending_local_scripts: Dictionary = {}
 
-var stack_uid_to_object:Dictionary = {}
-var object_to_stack_uid:Dictionary = {}
 var card_already_played_for_stack_uid:Dictionary = {}
 
 var _master_interrupt_state:= {}
@@ -133,7 +122,10 @@ func _rpc(func_name, arg0=null,
 			send = randi()%(100)
 		if send > 9: #sometimes we just don't send the packet
 			if CFConst.DEBUG_SIMULATE_NETWORK_DELAY:
-				yield(get_tree().create_timer(randf()*CFConst.DEBUG_SIMULATE_NETWORK_DELAY), "timeout")
+				var delay = 0.001 if p_id == 1 else CFConst.DEBUG_SIMULATE_NETWORK_DELAY
+				if CFConst.DEBUG_NETWORK_DELAY_RANDOM:
+					delay = randf()*CFConst.DEBUG_SIMULATE_NETWORK_DELAY
+				yield(get_tree().create_timer(delay), "timeout")
 			self.callv("rpc_id", pparams)	
 		else:
 			display_debug("decided to drop a packet for function call " + func_name)
@@ -164,7 +156,10 @@ func _rpc_id(id, func_name, arg0=null,
 		send = randi()%(100)
 	if send > 9: #sometimes we just don't send the packet
 		if CFConst.DEBUG_SIMULATE_NETWORK_DELAY:
-			yield(get_tree().create_timer(randf()*CFConst.DEBUG_SIMULATE_NETWORK_DELAY), "timeout")
+			var delay = 0.001 if id == 1 else CFConst.DEBUG_SIMULATE_NETWORK_DELAY
+			if CFConst.DEBUG_NETWORK_DELAY_RANDOM:
+				delay = randf()*CFConst.DEBUG_SIMULATE_NETWORK_DELAY	
+			yield(get_tree().create_timer(delay), "timeout")
 		return self.callv("rpc_id", params)	
 	else:
 		display_debug("decided to drop a packet for function call " + func_name)			
@@ -311,7 +306,44 @@ mastersync func master_create_and_add_script(state_scripts, owner_uid, trigger_c
 		"action_name": action_name	
 	}		
 	
-	master_request_add_stack_object(client_id, stack_uid, original_details)	
+	#we will reject "manual" requests if the stack isn't empty 
+	#and the card isn't one of the currently allowed ones
+	var accept_request = true
+	if trigger == "manual":
+		var allowed_interrupters = get_allowed_interrupting_cards()
+		if allowed_interrupters:
+			if !owner_uid in allowed_interrupters:
+				accept_request = false
+		else:
+			#reject everything if the queue isn't empty
+			if stack or master_queue:
+				accept_request = false
+	if accept_request:
+		master_request_add_stack_object(client_id, stack_uid, original_details)	
+	else:
+		_rpc_id(client_id, "rejected_add_script_request", original_details)
+
+remote func rejected_add_script_request(details:={}):
+	var owner_uid = details.get("owner_uid", "")
+	var owner = null
+	if owner_uid:
+		owner = guidMaster.get_object_by_guid(owner_uid)
+	if owner:
+		owner.network_request_rejected()
+		display_debug("Add script request rejected for " + owner.canonical_name)
+	else:
+		display_debug("Add script request rejected for unknown request : " + to_json(details))		
+	my_script_requests_pending_execution -= 1
+
+func get_allowed_interrupting_cards():
+	if _master_interrupt_state:
+		var potential_interrupters = _master_interrupt_state.get("potential_interrupters", {})
+		for i in range(gameData.get_team_size()):
+			var hero_id = i+1
+			var interrupters = potential_interrupters.get(hero_id, [])
+			if interrupters:
+				return interrupters
+	return [] 
 
 func client_create_script(details):
 
@@ -366,13 +398,6 @@ remotesync func client_create_and_add_stackobject(stack_uid, details):
 	_rpc_id(client_id, "from_client_script_received_ack", stack_uid)
 			
 
-func some_players_are_state(item_or_stack_uid, state):
-	var item = item_or_stack_uid
-	if (typeof(item) == TYPE_INT):
-		item = find_in_queue(item)
-	if !item:
-		return false
-	return item.some_players_are_state(state)
 
 func all_players_are_state(item_or_stack_uid, state):
 	var item = item_or_stack_uid
@@ -421,11 +446,6 @@ func add_to_reference_queue(object, stack_uid, starting_status = StackQueueItem.
 		
 	reference_queue[stack_uid] = reference_item
 
-func is_reference_status(stack_uid,expected_status):
-	var reference_object = reference_queue.get(stack_uid, null)
-	if !reference_object:
-		return false
-	return (reference_object.get_status()  == expected_status)
 
 #all clients, for reference and error correction
 func set_reference_status(stack_uid, new_state, caller = ""):
@@ -474,11 +494,6 @@ func get_next_script_uid_to_execute():
 	if all_players_are_state(item, StackQueueItem.STACK_STATUS.READY_TO_EXECUTE):
 		return item.get_stack_uid()
 				
-#	for i in master_queue.size():
-#		var index = master_queue.size() -1 -i
-#		var item = master_queue[index]
-#		if all_players_are_state(item, StackQueueItem.STACK_STATUS.READY_TO_EXECUTE):
-#			return item["stack_uid"]
 	return 0
 
 #client was pending a global UID for their local script,
@@ -492,7 +507,6 @@ mastersync func from_client_global_uid_received(stack_uid):
 	else:
 		display_debug(str(client_id) + " has received uid for their local script but I couldn't find " +  str(stack_uid))				
 			
-#	attempt_to_execute_from_queue(found)
 
 func display_status_error(client_id, stack_uid, expected, actual, calling_function = ""):
 	display_debug("{error}()" + calling_function +")" + str(client_id) + " (uid: " + str(stack_uid) +") was expecting " +  StackQueueItem.StackStatusStr[expected] + ", but got " + StackQueueItem.StackStatusStr[actual])
@@ -584,21 +598,11 @@ mastersync func master_i_need_id_for_local_script (local_uid, checksum):
 	master_assign_local_script_uid(local_uid, client_id, checksum)
 
 
-remotesync func network_error(_details:Dictionary):
-	pass
-
 #Message from the Server that a Global UID was assigned for my local uid
-remotesync func global_uid_assigned(local_uid,stack_uid):
-	if !cfc.is_game_master():
-		var verification_uid = get_next_stack_uid()
-		if verification_uid != stack_uid:
-			var _error = 1
-			#TODO this is baad?
-				
+remotesync func global_uid_assigned(local_uid,stack_uid):				
 	var object = pending_local_scripts.get(local_uid, null)
 	if !object:
 		display_debug("{as client} asked to mark local script" + str(local_uid) + " as pending, but I don't have that")
-		_rpc_id(1, "network_error", {"error":NETWORK_ERROR.LOCAL_UID_NOT_FOUND, "local_uid":local_uid, "stack_uid": stack_uid})
 		return
 	
 	add_to_stack(object, stack_uid, local_uid)
@@ -614,13 +618,20 @@ func add_script(object, stack_uid:int = 0):
 	#this prevents them from triggering infinitely to the same event 
 	if interrupt_mode == InterruptMode.HERO_IS_INTERRUPTING:
 		var script_being_interrupted = self.stack_back()
-		if (script_being_interrupted):
+		var authorized_card = true
+		var allowed_cards = get_allowed_interrupting_cards()
+		if allowed_cards:
+			var guid = guidMaster.get_guid(object.sceng.owner)
+			if !guid or !(guid in allowed_cards):
+				authorized_card = false
+	
+		if (script_being_interrupted and authorized_card):
 			var script_uid = script_being_interrupted.stack_uid
 			if (!card_already_played_for_stack_uid.has(script_uid)):
 				card_already_played_for_stack_uid[script_uid] = []
 			card_already_played_for_stack_uid[script_uid].append(object.sceng.owner)
-		_rpc_id(1, "client_finished_interrupts", {})
-		reset_interrupt_states()
+			_rpc_id(1, "client_finished_interrupts", {})
+			reset_interrupt_states()
 	
 
 	#local use case, we're waiting for the master to give us an ID		
@@ -644,12 +655,11 @@ func add_script(object, stack_uid:int = 0):
 
 
 func add_to_stack(object, stack_uid, local_uid = 0):
-	#flush_top_script()
 	
 	object.stack_uid = stack_uid
 
 	stack[stack_uid] = object
-	#stack.sort_custom(StackObject, "sort_stack")
+
 	var msg = "["
 	for stack_uid in stack:
 		msg+= str(stack_uid) +"-" + stack[stack_uid].get_display_name() + ","
@@ -706,7 +716,6 @@ remotesync func client_remove_script_from_stack_after_exec(stack_uid):
 func reset_interrupt_states():
 	reset_phase_buttons()
 	interrupting_hero_id = 0
-	potential_interrupters = {}
 	set_interrupt_mode(InterruptMode.NONE)
 	_current_interrupting_cards = []
 	_current_interrupting_mode = InterruptMode.NONE	
@@ -719,6 +728,9 @@ func _exit_tree():
 		
 #attempt to fix multiplayer stack issue
 func attempt_recovery() -> bool:
+	if !CFConst.ENABLE_NETWORK_ERROR_CORRECTION:
+		return true
+		
 	display_debug("recovery attempt begins")
 	gameData.flush_debug_display()
 	if text_edit:
@@ -746,12 +758,6 @@ func clients_status_aligned():
 				display_debug(_last_status_aligned_msg)			
 			return false
 			
-#	for client in stack_integrity_check:
-#		var their_stack = stack_integrity_check[client]
-#		if their_stack.size() != stack.size():
-#			display_debug("need to wait: stacks not the same (" +str(stack.size()) + " vs " + str(their_stack.size()) + ")")
-#			return false
-
 	#as long as there's something to execute, I think we're good
 	
 	if get_next_script_uid_to_execute():
@@ -799,9 +805,7 @@ func ping_client_item(item:StackQueueItem, client_id):
 			var script_details = item.get_script_details()
 			_rpc_id(client_id, "client_create_and_add_stackobject", stack_uid, script_details)
 			pass
-		StackQueueItem.STACK_STATUS.READY_TO_EXECUTE:
-#			display_debug("{as server} client " + str(client_id) + "apparently haven't executed " + str(stack_uid) + ". Sending execute request again"  )
-#			_rpc_id(client_id, "client_execute_script", stack_uid)			
+		StackQueueItem.STACK_STATUS.READY_TO_EXECUTE:		
 			pass
 		StackQueueItem.STACK_STATUS.DONE:
 			display_debug("{as server} client " + str(client_id) + "apparently haven't removed " + str(stack_uid) + ". Sending complete request again"  )			
@@ -850,14 +854,13 @@ func _process(_delta: float):
 	display_debug_info()
 
 	
-	if cfc.is_game_master():
+	if CFConst.ENABLE_NETWORK_ERROR_CORRECTION and cfc.is_game_master():
 		for item in master_queue:
 			for client_id in gameData.network_players:
 				var time_since_last_change = item.get_time_since_last_change(client_id)
 				if time_since_last_change > CFConst.DESYNC_TIMEOUT * gameData.network_players.size():
 					ping_client_item(item, client_id)
 			
-	#todo clients also need to confirm packets
 	
 	show_server_activity()
 
@@ -879,8 +882,9 @@ func _process(_delta: float):
 			time_since_started_waiting += _delta
 			if CFConst.DESYNC_TIMEOUT and  time_since_started_waiting > CFConst.DESYNC_TIMEOUT * gameData.network_players.size():
 				display_debug("clients status isn't aligned and server has been waiting for more than" + str(time_since_started_waiting) + "seconds" )
-				time_since_started_waiting = 0				
-				attempt_recovery()
+				time_since_started_waiting = 0
+				if CFConst.ENABLE_NETWORK_ERROR_CORRECTION:		
+					attempt_recovery()
 			return	
 		else:
 			time_since_started_waiting = 0.0
@@ -900,7 +904,6 @@ func _process(_delta: float):
 				if uid:
 					_master_interrupt_state = compute_interrupts(uid)
 					_rpc("start_interrupts", _master_interrupt_state)
-					#TODO
 					
 
 					
@@ -966,20 +969,17 @@ remotesync func finish_interrupts():
 	set_interrupt_mode(InterruptMode.NONE)
 	_rpc_id(1, "ready_for_next_step")
 
-remotesync func start_interrupts(interrupt_request):
-	var result = local_start_interrupts(interrupt_request)
-
 #sets the current interrupting mode depending on computed interrupts
 #either all clients execute the current script, or a forced interrupt gets executed,
 #or a player gets priority
-func local_start_interrupts(interrupt_request):
+remotesync func start_interrupts(interrupt_request):
 	_rpc_id(1, "client_started_interrupts", interrupt_request)
 	var stack_uid = interrupt_request.get("stack_uid", 0)
 	set_interrupt_mode(interrupt_request["interrupt_mode"])
-	potential_interrupters = interrupt_request.get("potential_interrupters", {})
+	var potential_interrupters = interrupt_request.get("potential_interrupters", {})
 	match interrupt_request["interrupt_mode"]:
 		InterruptMode.NOBODY_IS_INTERRUPTING:
-			execute_script(stack_uid)
+			flush_script(stack_uid)
 			_rpc_id(1, "client_finished_interrupts", interrupt_request)
 			return true
 		InterruptMode.FORCED_INTERRUPT_CHECK:
@@ -1002,6 +1002,7 @@ func local_start_interrupts(interrupt_request):
 					set_interrupting_hero(hero_id, interrupters, InterruptMode.OPTIONAL_INTERRUPT_CHECK)
 					blank_compute_interrupts(stack_uid)
 					if !hero_id in (gameData.get_my_heroes()):
+						#maybe don't call this here and wait for actual card played (or pass) instead ?
 						_rpc_id(1, "client_finished_interrupts", interrupt_request)
 					return true
 
@@ -1031,12 +1032,11 @@ func reset():
 	stack = {}
 	reference_queue = {}
 	clients_current_mode = {}
-	stack_integrity_check = {}
+
 	waitOneMoreTick = 0
 	time_since_started_waiting = 0.0
 	_current_interrupted_event= {}
-	stack_uid_to_object = {}
-	object_to_stack_uid = {}
+
 	card_already_played_for_stack_uid = {}	
 	current_local_uid= 0
 	pending_local_scripts = {}
@@ -1075,7 +1075,7 @@ func is_player_allowed_to_click(card = null) -> bool:
 	
 	match interrupt_mode:
 		#todo need to have a bit better?
-		InterruptMode.HERO_IS_INTERRUPTING: #InterruptMode.FORCED_INTERRUPT_CHECK, InterruptMode.OPTIONAL_INTERRUPT_CHECK,
+		InterruptMode.HERO_IS_INTERRUPTING: 
 			if _current_interrupting_mode == InterruptMode.NONE:
 				var _error = 1
 				return false
@@ -1128,15 +1128,15 @@ func is_phasecontainer_allowed_to_process():
 
 	return true
 	
-func is_empty():
-	if !stack.empty():
-		return false
-	if cfc.is_game_master():
-		if !master_queue.empty():
-			return false
-	if my_script_requests_pending_execution:
-		return false
-	return true
+#func is_empty():
+#	if !stack.empty():
+#		return false
+#	if cfc.is_game_master():
+#		if !master_queue.empty():
+#			return false
+#	if my_script_requests_pending_execution:
+#		return false
+#	return true
 
 #returns true if the stack is waiting for automated "acks" to move to the next steps
 func is_processing():
@@ -1191,8 +1191,6 @@ func get_current_interrupted_event():
 	return self._current_interrupted_event
 
 
-
-
 func compute_interrupts(stack_uid):
 	var script = stack.get(stack_uid, null)
 	if (! script):
@@ -1201,6 +1199,7 @@ func compute_interrupts(stack_uid):
 
 	var script_uid = script.stack_uid	
 	var current_mode = interrupt_mode
+	var potential_interrupters = {}
 	for mode in [InterruptMode.FORCED_INTERRUPT_CHECK, InterruptMode.OPTIONAL_INTERRUPT_CHECK]:
 		var interrupters_found = false
 		
@@ -1265,12 +1264,6 @@ func blank_compute_interrupts(stack_uid):
 		_current_interrupted_event["event_object"] = task
 
 
-func execute_script(script_uid):
-	set_interrupt_mode(InterruptMode.NOBODY_IS_INTERRUPTING)
-	flush_script(script_uid)
-
-
-
 #pass my opportunity to interrupt 
 func pass_interrupt (hero_id):
 	if not hero_id in gameData.get_my_heroes():
@@ -1288,15 +1281,9 @@ mastersync func master_pass_interrupt (hero_id):
 
 	#TODO ensure that caller network id actually controls that hero
 	reset_phase_buttons()
-	_heroes_passed_optional_interrupt[client_id] = true
+	_heroes_passed_optional_interrupt[hero_id] = true
 	_master_interrupt_state = compute_interrupts(_master_interrupt_state["stack_uid"])
 	_rpc("start_interrupts", _master_interrupt_state)
-
-
-mastersync func master_force_play_card(interrupters, hero_id) :
-	var network_owner = gameData.get_network_id_by_hero_id(hero_id)
-	_rpc_id(network_owner, "force_play_card", interrupters)
-	
 
 
 #forced activation of card for forced interrupt
@@ -1310,10 +1297,8 @@ remotesync func force_play_card(interrupters):
 	
 	var card = _current_interrupting_cards[0]
 	
-#	var client_id = get_tree().get_rpc_sender_id()
-#	display_debug(str(client_id) + " forces interrupt for card_guid:" + card.canonical_name )
 	card.attempt_to_play()
-	#_rpc_id(1, "client_finished_interrupts", {})
+
 
 
 
@@ -1337,24 +1322,10 @@ func set_interrupting_hero(hero_id, interrupters, real_interrupt_mode):
 		var card = guidMaster.get_object_by_guid(card_guid)
 		_current_interrupting_cards.append(card)
 		
-#	var client_id = get_tree().get_rpc_sender_id()
-#	display_debug(str(client_id) + " sets interrupting hero to:" + str(hero_id) )
-	
+
 	set_interrupt_mode(InterruptMode.HERO_IS_INTERRUPTING)	
 	interrupting_hero_id = hero_id
 	activate_exclusive_hero(hero_id)
-	
-	
-remotesync func client_move_to_next_step(_interrupt_mode):
-	var client_id = get_tree().get_rpc_sender_id()
-	display_debug(str(client_id) + " wants me to move to next step:" + InterruptModeStr[_interrupt_mode] )
-	
-	set_interrupt_mode(_interrupt_mode)
-	reset_phase_buttons()
-	potential_interrupters = {}
-	if (interrupt_mode == InterruptMode.NOBODY_IS_INTERRUPTING):
-		interrupting_hero_id = 0
-		_current_interrupting_cards = []
 	
 
 func stack_back_id():
@@ -1363,8 +1334,7 @@ func stack_back_id():
 		if stack_uid > max_uid:
 			max_uid = stack_uid
 	return max_uid
-
-#LEGACY! THIS SHOULDN'T WORK THIS WAY ANYMORE	
+	
 func stack_back():
 	var max_uid = stack_back_id()
 	var event = stack.get(max_uid, null)		
@@ -1439,56 +1409,25 @@ func find_event(_event_details, details, owner_card, _trigger_details):
 
 
 #scripted replacement effects
-#most of this should move into the object class itself
 func modify_object(stack_object, script:ScriptTask):
 	if !stack_object:
 		return false
 	return stack_object.modify(script)
 	
 	
-	
-#is the current player allowed to play according to the stack?
-#returns an array of hero ids if so, empty array otherwise
-func can_my_heroes_play() -> Array:
-	match interrupt_mode:
-		InterruptMode.NONE:
-			#nothing going on, but if there's something on the stack I can't play until it resolves
-			if (!stack.empty()):
-				return []
-			return gameData.get_my_heroes()
-		InterruptMode.HERO_IS_INTERRUPTING:
-			if gameData.can_i_play_this_hero(self.interrupting_hero_id):
-				return[self.interrupting_hero_id]
-			return[]
-		InterruptMode.NOBODY_IS_INTERRUPTING:
-			#nothing going on, but if there's something on the stack I can't play until it resolves
-			if (!stack.empty()):
-				return []
-			return gameData.get_my_heroes()
-		_:
-			#we're in the process of checking who can interrupt.
-			#Nobody can play
-			return []						
+					
 	
 func get_interrupt_mode() -> int:
 	return interrupt_mode
 
 mastersync func master_stack_object_added (object_uid):
-	var client_id = get_tree().get_rpc_sender_id()
-	if !stack_integrity_check.has(client_id):
-		stack_integrity_check[client_id] = []
-	stack_integrity_check[client_id].append(object_uid)
-	stack_integrity_check[client_id].sort()
+	var _client_id = get_tree().get_rpc_sender_id()
+	pass
 
 mastersync func master_stack_object_removed (object_uid):
 	var client_id = get_tree().get_rpc_sender_id()
-	if !stack_integrity_check.has(client_id):
-		stack_integrity_check[client_id] = []
-	#todo better checks	
-	stack_integrity_check[client_id].erase(object_uid)
-	stack_integrity_check[client_id].sort()
-	
-	change_queue_item_state(object_uid, client_id, StackQueueItem.STACK_STATUS.PENDING_REMOVAL, "master_stack_object_removed" )
+	change_queue_item_state(object_uid, client_id, StackQueueItem.STACK_STATUS.PENDING_REMOVAL, "master_stack_object_removed" )	
+	pass
 	
 
 mastersync func master_interrupt_mode_info( _interrupt_mode):
@@ -1527,59 +1466,3 @@ func _notification(what):
 		flush_logs()
 	
 
-#Docs & Notes
-
-#Scenario:
-#Player A plays a card "Blub" that says "add 2 threat to the main scheme"
-#Player B has "Great responsibility" (when any amount of threat would be placed on a scheme, you take it as damage instead)
-#Need to be given an opportunity to interrupt!
-#
-#Proposed solution:
-#Player A plays Blub
-#Pays costs (locally)
-#"Put in play" script goes into ALL stacks
-#before unstacking, master send "interrupt" signal
-
-#If I'm the master, 
-#if "interrupters" is all "skip": go to "interrupters has nobody" step
-#Else:
-#send interrupt signal to all clients. I Wait for ack 
-#Wait for ack == set array interrupters [nb_players] to empty and fill it with each players when ack has matching interrupt details.
-#Example of ack: "interrupt put in play blurb -> me (player 1) has a potential interrupt
-#
-#Client side:
-#1) receive "interrupt" signal. set "interrupt mode" to INTERRUPT_CHECK
-#2) run through check interrupt for all my cards
-#3) if I have at least a card to interrupt with, send "ack" + list of cards, otherwise ack + "skip" (empty list of cards)
-#(interrupt mode is still INTERRUPT_CHECK)
-#As long as interrupt mode is INTERRUPT CHECK, I cannot play anything
-#
-#Server side: once interrupters[] has all players:
-#
-#If interrupters has nobody or interrupters is all "skip":
-#master 0) resets "interrupters", 1) pops and executes locally  "put in play" then 1.5) tells remote that "interrupt mode" is off and 2) tells them to run the stack event
-#
-#Else if interrupters has 1 or more person without "skip":
-#master doesn't pop the next script.
-#Instead
-#0) interrupting player is next player in the interrupters list that doesn't say "skip"
-#1) master tells all clients that interrupt_mode becomes "PLAYER_IS_INTERRUPTING" and tells them interrupt_player is (interrupt hero)
-#
-#Client side:
-#if I am the interrupting player, and mode is "PLAYER_IS_INTERRUPTING", let me play my cards for interrupt:
-#	1) I pay my card (locally
-#	2) script goes into all stacks
-#	3) when a script is added to all stacks, "interrupt_mode" is set to NONE (0)
-#	Alternatively:
-#	1) I click "pass"
-#	2) this sends a message to master. Master sets "skip_interrupt" to true for my player in his "interrupters" dictionary
-#	3) master moves to the next interrupter player. If there is none: go back to "interrupters has nobody"
-#
-#If I am *not" the interrupting player and  mode is "PLAYER_IS_INTERRUPTING", I cannot play anything, but I display the face of interrupting player on my screen for visibility
-#
-#
-#Forced interrupts:
-#Issues: I was thinking of doing the same as optional interrupts, however: they may trigger infinite times (the same might be true for optional interrupts btw...)
-#--> need to implement a system where we trigger (or can activate) only once for a singular event ? Each stack object gets a unique ID (controlled by network master?)
-#Sending an interrupt signal also includes the event unique ID.
-#when a card/ability is *played* in *response* to this specific event, add a value in globalscript dictionary to mark this card/event combination as "used" --> cannot trigger again

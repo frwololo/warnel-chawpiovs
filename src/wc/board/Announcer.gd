@@ -72,7 +72,7 @@ func _step_started(details:Dictionary):
 					"animation_style": Announce.ANIMATION_STYLE.SPEED_OUT,
 					"top_texture_filename": gameData.get_villain().get_art_filename(),
 			}		
-	if settings.get("text", ""):
+	if settings:
 		var announce = {
 			"announce" :"phase_starts",
 			"object" : current_step,

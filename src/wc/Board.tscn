@@ -232,3 +232,4 @@ stretch_mode = 5
 [connection signal="pressed" from="BackToMain" to="." method="_on_BackToMain_pressed"]
 [connection signal="toggled" from="Debug" to="." method="_on_Debug_toggled"]
 [connection signal="pressed" from="OptionsButton" to="." method="_on_OptionsButton_pressed"]
+[connection signal="gui_input" from="ServerActivity" to="." method="_on_ServerActivity_gui_input"]

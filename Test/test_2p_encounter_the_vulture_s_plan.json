@@ -1,5 +1,5 @@
 {
-	"_comments": "Tests higway robbery",
+	"_comments": "Tests vulture's plan random discard",
 	"init": {
 		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [
@@ -46,11 +46,11 @@
 			],
 			"hand1": [
 				{
-					"card": "01002"
-				},
-				{
 					"card": "Mockingbird"
 				},				
+				{
+					"card": "01002"
+				},			
 			],
 			"identity2": [
 				{

@@ -57,7 +57,7 @@ func loadstate_from_json(json:Dictionary) -> bool:
 	if (null == json_data):
 		#herodeckdata should always be set, even if with minimalistic info
 		return false
-	var owner_id:int = 	int(json_data.get("owner", 0) + 1)
+	var owner_id:int = 	int(json_data.get("owner", 1))
 	owner = gameData.network_players.get(gameData.id_to_network_id.get(owner_id)) #Default to being owned by master
 	deck_id = json_data.get("deck_id", -1) #-1 here to force initialization if needed
 	

@@ -96,13 +96,13 @@
 			"deck_villain":[	
 				
 			],
-			"others": [	
-				{
-					"card": "01002"
-				},		
+			"others": [		
 				{
 					"card": "Hawkeye"
-				}				
+				},			
+				{
+					"card": "Mockingbird"
+				},			
 			
 			],
 			"schemes": [
@@ -125,8 +125,9 @@
 			],
 			"hand1": [
 				{
-					"card": "Mockingbird"
-				},				
+					"card": "01002"
+				}				
+			
 			],
 			"identity2": [
 				{

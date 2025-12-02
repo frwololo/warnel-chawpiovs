@@ -28,6 +28,7 @@ var extra_script_uid := 0
 var spinbox
 #healthbar on top of characters, allies, villains, etc...
 var healthbar
+var info_icon
 
 var hints:= []
 
@@ -256,7 +257,8 @@ func execute_before_scripts(
 func _class_specific_ready():
 	._class_specific_ready()
 	spinbox = $Control/SpinPanel/SpinBox
-	healthbar = $Control/HealthPanel/healthbar	
+	healthbar = $Control/HealthPanel/healthbar
+	info_icon = get_node("%info_icon")	
 
 func _ready():
 	scripting_bus.connect("scripting_event_about_to_trigger", self, "execute_before_scripts")
@@ -266,7 +268,9 @@ func _class_specific_process(delta):
 		
 
 func _process(delta) -> void:
-	var info_icon = get_node("%info_icon")
+	if cfc.game_paused:
+		return
+
 	if info_icon and info_icon.visible:
 		info_icon.modulate.a -= delta
 		if info_icon.modulate.a < 0.01:
@@ -393,7 +397,11 @@ func attempt_to_play(user_click:bool = false):
 		if gameData.is_targeting_ongoing() or gameData.targeting_happened_too_recently():
 			return
 		#we already sent a request and should be waiting for full resolution	
-		if !gameData.theStack.is_player_allowed_to_click(self):
+
+		var interaction_authority:UserInteractionAuthority = UserInteractionAuthority.new(self)
+		var interaction_authorized = interaction_authority.interaction_authorized()			
+		
+		if !interaction_authorized or !gameData.theStack.is_player_allowed_to_click(self):
 			network_request_rejected()
 			return
 		
@@ -422,7 +430,6 @@ func attempt_to_play(user_click:bool = false):
 
 
 func network_request_rejected():
-	var info_icon = get_node("%info_icon")
 	if info_icon:
 		info_icon.visible = true
 		info_icon.modulate = Color(1,1,1,1)
@@ -441,8 +448,8 @@ func can_interrupt(
 		return CFConst.CanInterrupt.NO
 	
 	var _debug = false
-	if canonical_name == "Killmonger" and trigger_card:
-		if trigger_details["event_name"] == "receive_damage":
+	if canonical_name == "Enhanced Spider-Sense" and trigger_card:
+		if trigger_details["event_name"] == "reveal_encounter":
 			_debug = true
 
 	if (_debug):
@@ -472,7 +479,7 @@ func can_interrupt(
 	if gameData.can_hero_play_this_ability(hero_id,self, card_scripts):
 		if card_scripts.get("is_optional_" + get_state_exec()):
 			#optional interrupts need to check costs
-			if check_play_costs_no_cache(hero_id) == CFConst.CostsState.IMPOSSIBLE:
+			if check_play_costs_no_cache(hero_id, _debug) == CFConst.CostsState.IMPOSSIBLE:
 				if (_debug):
 					display_debug("allowed to interrupt but can't pay cost")
 				return CFConst.CanInterrupt.NO			
@@ -492,6 +499,8 @@ func can_interrupt(
 
 	return may_interrupt
 
+	
+			
 # Executes the tasks defined in the card's scripts in order.
 #
 # Returns a [ScriptingEngine] object but that it not statically typed
@@ -520,43 +529,10 @@ func execute_scripts(
 		if !(trigger in (can_i_run)):
 			return null	
 	
-
-	var override_controller_id = trigger_details.get("override_controller_id", 0)
-	var for_hero_id = trigger_details.get("for_hero_id", 0)
-
-	if override_controller_id:
-		if gameData.get_current_local_hero_id() != override_controller_id:
-			return null
-	else:
-	#can only trigger if I'm the controller of the abilityor if enemy card (will send online to other clients)
-
-		if for_hero_id:
-			if !gameData.can_hero_play_this_ability(for_hero_id, self):
-				return null
-		else:
-			if !gameData.can_i_play_this_ability(self):
-				return null
-		
-	#enemy cards, multiple players can react except when they're the specific target
-	if self.get_controller_hero_id() <= 0:
-		var can_i_play_enemy_card = false
-		var allowed_heroes = gameData.get_currently_playing_hero_ids()
-		#ran into a bug were an encounter ability triggered twice,
-		#executed once by each player. We want to avoid that
-		if trigger != "manual" and allowed_heroes.size() > 1:
-			if trigger_details.get("use_stack", true):
-				#might need to find a better approach
-				allowed_heroes = [allowed_heroes[0]]
-			
-		if for_hero_id:
-			if for_hero_id in allowed_heroes:
-				can_i_play_enemy_card = true
-		else:	
-			for my_hero in (gameData.get_my_heroes()):
-				if my_hero in (allowed_heroes):
-					can_i_play_enemy_card = true
-		if !can_i_play_enemy_card:
-			return null
+#	var interaction_authority:UserInteractionAuthority = UserInteractionAuthority.new(self, trigger_card, trigger, trigger_details, run_type)
+#	if !interaction_authority.interaction_authorized():
+#		return null
+	
 	
 	#last minute swap for hero vs alter ego reveals
 	if trigger == "reveal":
@@ -567,7 +543,8 @@ func execute_scripts(
 		if specific_reveal:
 			trigger = specific_trigger		
 				
-			
+	if trigger_details.get("_debug", false):
+		display_debug("executing scripts :" +trigger_card.canonical_name + "-'"+ to_json(trigger_details))	
 	return .execute_scripts(trigger_card, trigger, trigger_details, run_type)	
 
 # A signal for whenever the player clicks on a card
@@ -830,12 +807,12 @@ func check_ghost_card():
 #
 # If it returns false, the card will be highlighted with a red tint, and the
 # player will not be able to drag it out of the hand.
-func check_play_costs_no_cache(hero_id)-> Color:
+func check_play_costs_no_cache(hero_id, _debug = false)-> Color:
 	_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID
-	return check_play_costs({"hero_id" : hero_id})
+	return check_play_costs({"hero_id" : hero_id}, _debug)
 
 	
-func check_play_costs(params:Dictionary = {}) -> Color:
+func check_play_costs(params:Dictionary = {}, _debug = false) -> Color:
 	#return .check_play_costs();
 	var hero_id = params.get("hero_id", gameData.get_current_local_hero_id())
 
@@ -854,8 +831,13 @@ func check_play_costs(params:Dictionary = {}) -> Color:
 
 	if (canonical_name == "Jessica Jones"):
 		var _tmp = 1
+	
+	var trigger_details = {
+		"for_hero_id": hero_id,
+		"_debug": _debug
+	}
 		
-	var sceng = execute_scripts(self,"manual",{"for_hero_id": hero_id},CFInt.RunType.BACKGROUND_COST_CHECK)
+	var sceng = execute_scripts(self,"manual",trigger_details,CFInt.RunType.BACKGROUND_COST_CHECK)
 
 	if (!sceng): #TODO is this an error?
 		_check_play_costs_cache[hero_id] = CFConst.CostsState.IMPOSSIBLE	

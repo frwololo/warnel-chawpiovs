@@ -25,6 +25,9 @@ var run_type : int = CFInt.RunType.NORMAL
 # game state as required, either because the board is already at the
 # requested state, or because something prevents it.
 var can_all_costs_be_paid := true
+
+var user_interaction_status =  CFConst.USER_INTERACTION_STATUS.NOT_CHECKED_YET
+
 # This is checked by the yield in [Card] execute_scripts()
 # to know when the cost dry-run has completed, so that it can
 # check the state of `can_all_costs_be_paid`.
@@ -58,6 +61,7 @@ var network_prepaid:Array = []
 var all_subjects_so_far:= []
 
 var owner
+var trigger
 var trigger_object
 var state_scripts
 
@@ -67,10 +71,16 @@ func _init(_state_scripts: Array,
 		_trigger_object: Node,
 		_trigger_details: Dictionary) -> void:
 	owner = _owner
+	
+	if trigger_details.has("trigger_type"):
+		trigger = trigger_details["trigger_type"]
+	else:
+		trigger = ""
+	
 	trigger_object = _trigger_object
 	trigger_details = _trigger_details.duplicate()
 	state_scripts = _state_scripts.duplicate() 	
-	add_scripts(state_scripts, owner, trigger_object, trigger_details)
+	add_scripts(state_scripts, owner,  trigger_object, trigger_details)
 
 func add_scripts(_state_scripts,
 		_owner,
@@ -193,13 +203,14 @@ func execute(_run_type) -> void:
 	if (owner.canonical_name == "Explosion"):
 		var _tmp = 1
 			
-	cfc.add_ongoing_process(self)
+	cfc.add_ongoing_process(self, "scriptingengine execute")
 	# We execute the scripts locally, but in multiplayer only one player has to select
 	# payments. Once they do, we send the payment information to other players,
 	# and instead of selecting manually, the cost is paid automatically with the network_prepaid data
 	network_prepaid = []
 	if trigger_details.has("network_prepaid"):
 		is_network_master = false
+		self.user_interaction_status = CFConst.USER_INTERACTION_STATUS.DONE_NETWORK_PREPAID
 		var prepaid = trigger_details["network_prepaid"]
 		for i in range(prepaid.size()):
 			scripts_queue[i].script_definition["network_prepaid"] =  prepaid[i]		
@@ -268,6 +279,17 @@ func execute(_run_type) -> void:
 			all_subjects_so_far += 	script.subjects
 
 		if script.is_primed:
+			#if authentication issue, exit early
+			match script.user_interaction_status:
+				CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER:
+					self.user_interaction_status = CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER
+					can_all_costs_be_paid = false
+					break
+				CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER:
+					#we set this one to surface the fact that interaction was indeed required
+					self.user_interaction_status = CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER
+					
+				
 			#Add to list of prepaid stuff only if I'm the one paying the costs and actually paying them
 			if is_network_master:# and not costs_dry_run():
 				network_prepaid.pop_back()
@@ -370,7 +392,11 @@ func execute(_run_type) -> void:
 					card.temp_properties_modifiers.erase(self)
 #	print_debug(str(card_owner) + 'Scripting: All done!') # Debug
 	all_tasks_completed = true
-	cfc.remove_ongoing_process(self)
+	#all other use cases are handled above. If our user_interaction_status is still unset,
+	#it means no interaction was required
+	if self.user_interaction_status ==  CFConst.USER_INTERACTION_STATUS.NOT_CHECKED_YET:
+		self.user_interaction_status =  CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED
+	cfc.remove_ongoing_process(self, "scriptingengine execute")
 	emit_signal("tasks_completed")
 	# checking costs on multiple targeted cards in the same script,
 	# is not supported at the moment due to the exponential complexities

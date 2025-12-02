@@ -738,7 +738,7 @@ func consequential_damage(script: ScriptTask) -> int:
 
 	var additional_task := ScriptTask.new(
 		script.owner,
-		{"name": "receive_damage", "amount" : damage, "subject" : "self"}, #TODO more advanced
+		{"name": "receive_damage", "amount" : damage, "subject" : "self"}, 
 		script.trigger_object,
 		script.trigger_details)
 	additional_task.prime([], CFInt.RunType.NORMAL,0, []) #TODO gross

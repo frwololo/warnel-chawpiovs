@@ -118,7 +118,7 @@
 			"type": "target",
 			"value": "highway robbery",
 			"hero" : 2			
-		},		
+		},			
 		
 	] ,
 	"end": {
@@ -169,12 +169,12 @@
 					"card": "Spider-Man"
 				}
 			],
-			"hand1": [
-				{
-					"card": "Mockingbird"
-				},			
+			"hand1": [			
 				{
 					"card": "01002"
+				},		
+				{
+					"card": "Mockingbird"
 				},				
 			],
 			"identity2": [

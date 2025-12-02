@@ -1,0 +1,273 @@
+{
+	"_comments": "Tests villain attack with 2P cosmic flight in play",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "advance"
+				},			
+				{
+					"card": "hydra mercenary"
+				},
+				{
+					"card": "hydra soldier"
+				},				
+				{
+					"card": "Caught off guard"
+				},					
+				{
+					"card": "hydra mercenary"
+				}				
+			],			
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Avengers Mansion"
+				},			
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Backflip"
+				},			
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy Absorption"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Hawkeye",
+				},
+				{
+					"card": "Make the call"
+				},
+				{
+					"card": "Lead from the front"
+				},
+				{
+					"card": "The Triskelion"
+				},
+				{
+					"card": "Maria Hill"
+				},					
+			],
+			"upgrade_support2": [
+				{
+					"card": "Cosmic Flight"
+				},
+				{
+					"card": "Captain Marvel's Helmet"
+				}				
+			],			
+			"identity2": [
+				{
+					"card": "Captain Marvel",
+					"tokens" : {"damage" : 4, "stunned": 1},
+				}				
+			],
+			"hand2": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "other",
+			"value": "wait_for_interrupt",
+			"_comments": "wait for draw from Spider-Man"
+		},		
+		{
+			"type": "activate",
+			"value": "Spider-Man",
+			"_comments": "draw from Spider-Man"
+		},	
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "click on pass to skip Spider-Man defense"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_interrupt",
+			"_comments": "wait for backflip interrupt"
+		},			
+		{
+			"type": "play",
+			"value": "backflip",
+			"_comments": "backflip for Spider-Man"
+		},			
+		{
+			"type": "select",
+			"value": "Captain Marvel",
+			"hero": 2,
+			"_comments": "Block with Captain Marvel"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_interrupt",
+			"hero": 2,
+			"_comments": "wait for interrupt opportunity"
+		},		
+		{
+			"type": "activate",
+			"value": "cosmic flight",
+			"hero": 2,			
+			"_comments": "activate cosmic flight to prevent damage"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"wait_longer": true,
+			"_comments": "wait as much as needed for player turn"
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "advance"
+				}			
+			],			
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Avengers Mansion"
+				},			
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				},
+				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Backflip"
+				},	
+			],
+			"hand1": [		
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy Absorption"
+				},
+				{
+					"card": "Energy"
+				},
+			],
+			"deck2": [
+				{
+					"card": "Hawkeye",
+				},
+				{
+					"card": "Make the call"
+				},
+				{
+					"card": "Lead from the front"
+				},
+				{
+					"card": "The Triskelion"
+				},
+				{
+					"card": "Maria Hill"
+				},					
+			],
+			"discard2": [
+				{
+					"card": "Cosmic Flight"
+				},
+			],
+			"upgrade_support2": [
+				{
+					"card": "Captain Marvel's Helmet"
+				}				
+			],			
+			"identity2": [
+				{
+					"card": "Captain Marvel",
+					"tokens" : {"damage" : 4, "stunned": 1},
+				}				
+			],
+			"hand2": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	}
+}

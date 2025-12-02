@@ -34,8 +34,9 @@ static func shuffle_array(array: Array, avoid_cfc_rng:= false) -> void:
 
 # Mapping randi function
 static func randi() -> int:
-	cfc.LOG("{rng} asked for randi")
-	return(cfc.game_rng.randi())
+	var result = cfc.game_rng.randi()
+	cfc.LOG("{rng} asked for randi, returning " + str(result))
+	return result
 
 # Mapping randf function
 static func randf() -> float:

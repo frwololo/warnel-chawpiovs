@@ -30,6 +30,10 @@ var _ongoing_processes:= {}
 var _total_cards:int = 0
 var _cards_loaded: int = 0
 
+
+var ping_data: = {}
+var last_ping_time:= 0
+
 # warning-ignore:unused_signal
 signal json_parse_error(msg)
 
@@ -37,6 +41,26 @@ func _setup() -> void:
 	._setup()
 	delete_log_files()
 	preload_pck()
+
+func get_ping(client_id):
+	return ping_data.get(client_id, 0)
+
+remote func ping_ack(start_time):	
+	var client_id = get_tree().get_rpc_sender_id() 
+	var end_time = Time.get_ticks_msec()
+	ping_data[client_id] = end_time - start_time
+
+func ping():
+	var new_ping_time = Time.get_ticks_msec()
+	#ping every 2 seconds at most
+	if new_ping_time - last_ping_time < 2000:
+		return
+	last_ping_time = new_ping_time
+	rpc_unreliable("receive_ping_request", last_ping_time)
+
+remote func receive_ping_request(start_time):
+	var client_id = get_tree().get_rpc_sender_id() 
+	rpc_unreliable_id(client_id, "ping_ack", start_time)
 
 func delete_log_files():
 	var dir:Directory = Directory.new()

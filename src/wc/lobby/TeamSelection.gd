@@ -25,6 +25,7 @@ var team := {} #container for the team information, indexed by slot id (0,1,2,3)
 var _scenario:= ""
 var _rotation = 0
 var _preview_rotation = 0
+var launch_data
 
 var ERROR_COLOR := 	Color(1,0.11,0.1)
 var OK_COLOR := 	Color(0.1,11,0.1)
@@ -357,15 +358,33 @@ func process_deck_download(deck_data):
 func refresh_deck_containers():
 	for child in heroes_container.get_children():
 		child.refresh_decks()
+
+var _ready_to_launch:= {}
+mastersync func ready_to_launch():
+	var client_id =  get_tree().get_rpc_sender_id()
+	_ready_to_launch[client_id] = true
+	if _ready_to_launch.size() == gameData.network_players.size():
+		_ready_to_launch = {}
+		rpc("launch_client_game")
 	
 func _launch_server_game():
-	# Finalize Network players data
-	#var i = 0
-	#for player in players:
-	#	rpc("set_network_player_index", player, i)
-	#	i+=1
-	rpc("launch_client_game")	
+	launch_button.hide()
+	var serialized_team = {}
+	for key in team.keys():
+		serialized_team[key] = team[key].savestate_to_json()
+		
+	launch_data = {
+		"team": serialized_team,
+		"scheme_id" : _scenario, 
+		"modular_encounters":[get_selected_modular()], #TODO maybe more than one eventually
+		"expert_mode": is_expert_mode()
+	}
+	rpc("get_launch_data_from_server", launch_data)	
 	#_launch_game()
+	
+remotesync func get_launch_data_from_server(_scenario_data):
+	launch_data = _scenario_data
+	rpc_id(1, "ready_to_launch")
 	
 remotesync func launch_client_game():
 	_launch_game() 	
@@ -378,13 +397,17 @@ func is_expert_mode():
 	
 func _launch_game():	
 	# server pressed on launch, start the game!
+	if !launch_data:
+		var _error = 1
+		return
+		#panic!
+	var serialized_team = launch_data["team"]
+	#team = {} 
+	for key in serialized_team.keys():
+		team[key].loadstate_from_json(serialized_team[key])
 	gameData.set_team_data(team)
 	
-	gameData.set_scenario_data({
-		"scheme_id" : _scenario, 
-		"modular_encounters":[get_selected_modular()], #TODO maybe more than one eventually
-		"expert_mode": is_expert_mode()
-	})
+	gameData.set_scenario_data(launch_data)
 	get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/GetReady.tscn')
 
 func on_button_pressed(_button_name : String) -> void:

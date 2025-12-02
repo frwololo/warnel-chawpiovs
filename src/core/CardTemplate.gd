@@ -1574,9 +1574,22 @@ func execute_scripts(
 	if (trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME and canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME ):
 		var _tmp = 1
 	
+	var _debug = trigger_details.get("_debug", false)
+	
 	#if set to false we'll skip the (potential) optional confirmation
 	#this is useful e.g. in interrupt mode where we have a better UI
 	var show_optional_confirmation_menu = true
+
+	var force_user_interaction_required = false
+	if trigger == "manual":
+		force_user_interaction_required = true
+		if gameData.is_forced_interrupt_mode():
+			force_user_interaction_required = false
+
+	trigger_details["trigger_type"] = trigger
+
+	var interaction_authority:UserInteractionAuthority = UserInteractionAuthority.new(self, trigger_card, trigger, trigger_details, run_type)
+	var interaction_authorized = interaction_authority.interaction_authorized()	
 	
 	#we're playing a card manually but in interrupt mode.
 	#What we want to do here is play the optional triggered effect instead
@@ -1588,7 +1601,7 @@ func execute_scripts(
 		trigger = find_interrupt_script()
 		if (!trigger):
 			return
-		trigger_details = gameData.theStack.get_current_interrupted_event()
+		trigger_details.merge(gameData.theStack.get_current_interrupted_event(), true)
 		if (!trigger_details):
 			return
 		trigger_card = trigger_details["event_object"].owner #this is geting gross, how to clear that?
@@ -1597,14 +1610,20 @@ func execute_scripts(
 		#skip otopinal confirmation menu for interrupts,
 		#we have a different gui signal	
 		show_optional_confirmation_menu = false	
-		
+
+
+
+	var checksum = trigger
+	if trigger_card:
+		checksum += " - " + trigger_card.canonical_name
+	if _debug:
+		cfc.LOG("reached step 1 for: " + checksum  )	
 	var only_cost_check = is_dry_run(run_type)
 		
 	var cost_check_mode = \
 		CFInt.RunType.BACKGROUND_COST_CHECK if run_type == CFInt.RunType.BACKGROUND_COST_CHECK \
 		else CFInt.RunType.COST_CHECK
-
-			
+	
 	common_pre_execution_scripts(trigger, trigger_details)
 	
 	#select valid scripts that match the current trigger
@@ -1621,6 +1640,11 @@ func execute_scripts(
 	cfc.add_ongoing_process(self, "core_execute_scripts")
 	
 	var action_name = state_scripts_dict["action_name"]
+
+
+
+	if _debug:
+		cfc.LOG("reached step 2 for: " + checksum + ". InteractionAuthority says " + to_json(interaction_authority.compute_authority())  )
 	
 	# Here we check for confirmation of optional trigger effects
 	# There should be an SP.KEY_IS_OPTIONAL definition per state
@@ -1630,6 +1654,7 @@ func execute_scripts(
 	# There should be an SP.KEY_IS_OPTIONAL definition per state
 	# E.g. if board scripts are optional, but hand scripts are not
 	# Then you'd include an "is_optional_board" key at the same level as "board"
+	show_optional_confirmation_menu = show_optional_confirmation_menu and card_scripts.get("is_optional_" + get_state_exec(), false)
 	if show_optional_confirmation_menu:
 		if typeof(state_scripts) == TYPE_ARRAY:
 			for script in state_scripts:
@@ -1637,6 +1662,11 @@ func execute_scripts(
 				if script.get("subject") in ["target", "boardseek"]:
 					show_optional_confirmation_menu = false
 	if show_optional_confirmation_menu and !is_network_call:
+		if !interaction_authorized:
+			cfc.remove_ongoing_process(self, "core_execute_scripts")
+			gameData.theStack.set_pending_network_interaction(checksum, "pending interaction because of optional dialog")		
+			return null
+		force_user_interaction_required = true	
 		var confirm_return = gameData.confirm(
 			self,
 			card_scripts,
@@ -1648,16 +1678,22 @@ func execute_scripts(
 			# If the player chooses not to play an optional cost
 			# We consider the whole cost dry run unsuccesful
 			if not confirm_return:
+				gameData.theStack.resume_operations_to_all(checksum)
 				state_scripts = []
 	
 	# If the state_scripts return a dictionary entry
 	# it means it's a multiple choice between two scripts
-	if typeof(state_scripts) == TYPE_DICTIONARY:
+	if typeof(state_scripts) == TYPE_DICTIONARY:	
 		var selected_key = ""
 		if run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
 			selected_key = ""
 			#TODO need to help check costs here as well?
 		else:
+			if !interaction_authorized:
+				gameData.theStack.set_pending_network_interaction(checksum, "not authorized to multiple choice " + to_json(state_scripts))
+				cfc.remove_ongoing_process(self, "core_execute_scripts")
+				return null	
+			force_user_interaction_required = true				
 			var rules = {}
 			if (state_scripts.has("_rules")): #special rules
 				rules = state_scripts["_rules"].duplicate()
@@ -1673,10 +1709,13 @@ func execute_scripts(
 			# Garbage cleanup
 			cfc.remove_modal_menu(choices_menu)
 			choices_menu.queue_free()
+			if !selected_key:
+				gameData.theStack.resume_operations_to_all(checksum)
 		if selected_key:
 			state_scripts = state_scripts[selected_key]
 			action_name = selected_key
-		else: state_scripts = []
+		else: 
+			state_scripts = []
 
 	# To avoid unnecessary operations
 	# we evoke the ScriptingEngine only if we have something to execute
@@ -1684,7 +1723,6 @@ func execute_scripts(
 	var sceng = null
 	if len(state_scripts):
 		is_executing_scripts = true
-		trigger_details["trigger_type"] = trigger
 
 		#if optional tags are passed, merge them with this invocation
 		if trigger_details.has("additional_tags"):
@@ -1721,6 +1759,10 @@ func execute_scripts(
 		# costs can be paid, then we proceed with the actual run
 		# we add the script to the server stack for execution
 		if (!is_network_call and not only_cost_check):
+			if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER:
+				gameData.theStack.set_pending_network_interaction(checksum, "not authorized to pay cost")
+				cfc.remove_ongoing_process(self, "core_execute_scripts")
+				return sceng			
 			if (sceng.can_all_costs_be_paid or sceng.has_else_condition()):
 				#1.5) We run the script in "prime" mode again to choose targets
 				# for all tasks that aren't costs but still need targets
@@ -1732,6 +1774,18 @@ func execute_scripts(
 				if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
 					yield(sceng_return,"completed")
 				
+				if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER:
+					gameData.theStack.set_pending_network_interaction(checksum, "not authorized to prime")
+					cfc.remove_ongoing_process(self, "core_execute_scripts")
+					return sceng
+				if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED:
+					if force_user_interaction_required:
+						sceng.user_interaction_status = CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER
+				
+				if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER:
+					if trigger != "manual":		
+						gameData.theStack.set_pending_network_interaction(checksum, "authorized user ready to interact")
+				
 				# 2) Once done with payment, Client A sends ability + payment information to all clients (including itself)
 				# 3) That data is added to all clients stacks
 				if action_name:
@@ -1741,21 +1795,23 @@ func execute_scripts(
 				action_name = action_name + " - " + trigger
 				action_name =  trigger_details.get("_display_name", action_name) #override
 				if trigger_details.get("use_stack", true):
-					var func_return = add_script_to_stack(sceng, run_type, trigger, trigger_details, action_name)
+					var func_return = add_script_to_stack(sceng, run_type, trigger, trigger_details, action_name, checksum)
 					while func_return is GDScriptFunctionState && func_return.is_valid():
 						func_return = func_return.resume()
 				else:
 					sceng_return = sceng.execute(run_type)
 					while sceng_return is GDScriptFunctionState && sceng_return.is_valid():
 						sceng_return = sceng_return.resume()	
-	
+			else:#costs can't be paid
+				var _tmp = 1
+				
 		is_executing_scripts = false
 	cfc.remove_ongoing_process(self, "core_execute_scripts")	
 	emit_signal("scripts_executed", self, sceng, trigger)
 	return(sceng)
 
-func add_script_to_stack(sceng, run_type, trigger, trigger_details, action_name):
-	gameData.theStack.create_and_add_script(sceng, run_type, trigger, trigger_details, action_name) 
+func add_script_to_stack(sceng, run_type, trigger, trigger_details, action_name, checksum):
+	gameData.theStack.create_and_add_script(sceng, run_type, trigger, trigger_details, action_name, checksum) 
 	
 	return
 

@@ -5,13 +5,18 @@
 class_name ScriptObject
 extends Reference
 
+
+var interaction_authorized_user_id
+var user_interaction_status =  CFConst.USER_INTERACTION_STATUS.NOT_CHECKED_YET
+
+var user
 # Sent when the _init() method has completed
 # warning-ignore:unused_signal
 signal primed
 
 # Stores the details arg passed the signal to use for filtering
 var trigger_details : Dictionary
-
+var trigger: String
 # The object which owns this Task
 var owner
 # The subjects is typically a `Card` object
@@ -43,14 +48,21 @@ var all_prev_subjects := []
 
 var my_stored_integer = null
 
+
 # prepares the properties needed by the script to function.
-func _init(_owner, script: Dictionary, _trigger_object = null, 	_trigger_details := {}) -> void:
+func _init(_owner, script: Dictionary,  _trigger_object = null, 	_trigger_details := {}) -> void:
 	# We store the card which executes this task
 	owner = _owner
+	if trigger_details.has("trigger_type"):
+		trigger = trigger_details["trigger_type"]
+	else:
+		trigger = ""
+		
 	trigger_details = _trigger_details
 	# We store all the task properties in our own dictionary
 	script_definition = script
 	trigger_object = _trigger_object
+	user_interaction_status =  CFConst.USER_INTERACTION_STATUS.NOT_CHECKED_YET
 	parse_replacements()
 
 # Returns the specified property of the string.
@@ -126,6 +138,7 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 	#TODO MULTIPLAYER_MODIFICATION
 	var prepaid = _network_prepaid()
 	if (null != prepaid):
+		user_interaction_status =  CFConst.USER_INTERACTION_STATUS.DONE_NETWORK_PREPAID
 		subjects = prepaid
 		return prepaid
 
@@ -142,9 +155,11 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 #the context of this scrpt, without impacting it
 #useful for sub scripts	
 func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL, overrides:Dictionary = {}):
-	cfc.add_ongoing_process(self)		
+	cfc.add_ongoing_process(self, "_local_find_subjects")		
 	var subjects_array := []
-	
+
+	var interaction_authority:UserInteractionAuthority = UserInteractionAuthority.new(owner, trigger_object, trigger, trigger_details, run_type)
+	var interaction_authorized = interaction_authority.interaction_authorized()
 	var subject = overrides.get("subject", get_property(SP.KEY_SUBJECT))
 	
 	#replace targeting with selection (optional)
@@ -196,10 +211,16 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 					if not SP.check_validity(c, script_definition, "subject", owner):
 						is_valid = false						
 		SP.KEY_SUBJECT_V_TARGET:
+			if !interaction_authorized:
+				user_interaction_status = CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER
+				cfc.remove_ongoing_process(self, "_local_find_subjects")
+				return []
 			var c = null
 			if (run_type == CFInt.RunType.BACKGROUND_COST_CHECK):
 				c = _dry_run_card_targeting(script_definition)
 			else:
+				
+
 				c = _initiate_card_targeting()
 				if c is GDScriptFunctionState && c.is_valid(): # Still working.
 					c = yield(c, "completed")
@@ -211,6 +232,7 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 				# If the script required a target and it didn't find any
 				# we consider it invalid
 				is_valid = false
+			user_interaction_status = CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER	
 		SP.KEY_SUBJECT_V_BOARDSEEK:
 			subjects_array = _boardseek_subjects(stored_integer)
 		SP.KEY_SUBJECT_V_TUTOR:
@@ -241,6 +263,10 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 				if not SP.check_validity(c, script_definition, "subject", owner):
 					is_valid = false
 	if get_property(SP.KEY_NEEDS_SELECTION):
+		if !interaction_authorized:
+			user_interaction_status = CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER
+			cfc.remove_ongoing_process(self, "_local_find_subjects")
+			return []	
 		if get_property(SP.KEY_SELECTION_IGNORE_SELF):
 			subjects_array.erase(owner)
 		var select_return = cfc.ov_utils.select_card(
@@ -267,7 +293,13 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 		else:
 			is_valid = false
 			subjects_array = []
-	cfc.remove_ongoing_process(self)
+		user_interaction_status = CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER	
+	
+	#all other use cases are handled above. If our user_interaction_status is still unset,
+	#it means no interaction was required
+	if user_interaction_status ==  CFConst.USER_INTERACTION_STATUS.NOT_CHECKED_YET:
+		user_interaction_status =  CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED
+	cfc.remove_ongoing_process(self, "_local_find_subjects")
 	return(subjects_array)
 
 

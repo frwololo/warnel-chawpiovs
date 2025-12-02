@@ -86,6 +86,7 @@ var _allclients_finalized: = {}
 
 #for internal statistics to find slow stuff
 func count_delay(_name):
+	display_debug("test suite delayed by " + _name)
 	if !count_delays.has(_name):
 		count_delays[_name] = 0
 
@@ -101,8 +102,12 @@ func _init():
 	create_text_edit()
 
 func reset_between_tests():
+	cfc.set_game_paused(true)
+	display_debug("reset_between_tests")
 	#force close any open window:
 	cancel_current_selection_window()
+	game_loaded = false
+
 	
 	gameData.cleanup_post_game()
 	current_test_file= ""
@@ -116,7 +121,7 @@ func reset_between_tests():
 	current_action= 0
 	current_playing_hero_id = 0
 
-	game_loaded = false
+
 
 	delta = 0
 
@@ -126,14 +131,16 @@ func reset_between_tests():
 	_current_targeted_card = null
 	_action_ongoing = 0	
 	if cfc.is_game_master():
-		cfc.game_rng_seed = "test suite"
-		var test_random = CFUtils.randi_range(0, 100000)
-		var random_str = "Random generator fixed"
-		if test_random != 40645:
-			random_str = "{error Fixing Random Generator, expected 40645, got " + str(test_random) + "}"
-		announce(random_str + "\n")
-		last_rng_state = cfc.game_rng.state 
-	
+		var my_seed = "test suite"
+		rpc("set_random_seed", my_seed)
+		
+		
+	cfc.set_game_paused(false)
+
+remotesync func set_random_seed(my_seed):
+	cfc.LOG("setting random seed to " + str(my_seed))
+	cfc.game_rng_seed = my_seed
+		
 func reset():
 	start_time = Time.get_ticks_msec()
 	end_time = 0
@@ -242,27 +249,27 @@ func _process(_delta: float) -> void:
 		return	
 	
 	
-	var next_clicked_card = null
-	if actions.size() > current_action:
-		var my_action = actions[current_action]
-		var action_type = my_action.get("type", "")
-		var action_value = my_action.get("value", "")
-		if action_type in ["play", "activate"]: 
-			var hero_id = get_card_owner_hero_id(action_value)		
-			next_clicked_card = get_card(action_value, hero_id)		
-	if (!gameData.theStack.is_player_allowed_to_click(next_clicked_card)):
-		count_delay("stack")
-		return	
+#	var next_clicked_card = null
+#	if actions.size() > current_action:
+#		var my_action = actions[current_action]
+#		var action_type = my_action.get("type", "")
+#		var action_value = my_action.get("value", "")
+#		if action_type in ["play", "activate"]: 
+#			var hero_id = get_card_owner_hero_id(action_value)		
+#			next_clicked_card = get_card(action_value, hero_id)		
+#	if (!gameData.theStack.is_player_allowed_to_click(next_clicked_card)):
+#		count_delay("stack")
+#		return	
 
-	if (actions.size() <= current_action):
-		if gameData.is_interrupt_mode() or  !gameData.theStack.is_player_allowed_to_click():
-			count_delay("stack_finalize")			
-			return
+#	if (actions.size() <= current_action):
+#		if gameData.is_interrupt_mode() or  !gameData.theStack.is_player_allowed_to_click():
+#			count_delay("stack_finalize")			
+#			return
 	#don't proceed if stack is doing stuff
 	#TODO: we'll want to proceed in some cases though (HERO_IS_INTERRUPTING) ?
-	if (gameData.theStack.is_processing()):
-		count_delay("stack")			
-		return
+#	if (!gameData.theStack.is_accepting_user_interaction()):
+#		count_delay("stack")			
+#		return
 	
 	#only server is allowed to run the main process	
 	if 1 != get_tree().get_network_unique_id():
@@ -292,6 +299,11 @@ func get_delay_multiplier(my_action = {}):
 	return wait_multiplier	
 
 func should_wait(my_action, _delta):
+
+	if (!gameData.theStack.is_accepting_user_interaction()):
+		count_delay("stack")			
+		return true	
+	
 	var delay_multiplier = get_delay_multiplier(my_action)
 		
 	var action_type = my_action.get("type", "")
@@ -330,6 +342,8 @@ func should_wait(my_action, _delta):
 		if (heroPhase.get_label_text()!="PASS"):
 			if ( _delta <short_wait_time * delay_multiplier):
 				count_delay("action_pass")
+				if ( _delta >0.2):
+					var _tmp = 1
 				return true
 			elif !expected_to_fail:
 				announce("{warning} Timeout for "  + action_type + " " + str(action_value))					
@@ -535,13 +549,15 @@ remotesync func run_action(my_action:Dictionary,  skip_play_tests:= false):
 	# Play: play a card
 	# activate: double click on a card to activate its ability 
 	#For "other", valid values are TBD
-	
+	display_debug("running " + to_json(my_action))
 	var _delta = 0
 	if !skip_play_tests:
 		while should_wait(my_action, _delta):
+			display_debug("waiting for " + to_json(my_action))
 			yield(get_tree().create_timer(0.1), "timeout")
 			_delta += 0.1
 	
+	display_debug("executing test step: " + to_json(my_action))
 	var action_type: String = my_action.get("type", "play")
 	var action_value = 	my_action.get("value", "")
 	var action_hero = my_action["hero"]
@@ -590,6 +606,9 @@ remotesync func run_action(my_action:Dictionary,  skip_play_tests:= false):
 		announce("new rng state:" + str(cfc.game_rng.state) + "(previously: " + str(last_rng_state) +")\n")
 		last_rng_state = new_rng_state
 	return
+
+func display_debug(text):
+	gameData.display_debug("{testsuite} " + text)
 
 func action_other(action_value):
 	match action_value:
@@ -763,9 +782,15 @@ mastersync func test_finalized(result):
 	if _allclients_finalized.size() == gameData.network_players.size():
 		for id in _allclients_finalized:
 			var success = _allclients_finalized[id]
-			if success == TestStatus.FAILED and STOP_AFTER_FIRST_FAILURE:
-				current_test = test_files.size()
-				announce("failed one test, ABORTING EARLY\n", false)
+			if success == TestStatus.FAILED:
+				if _allclients_finalized[1] == TestStatus.PASSED:
+					announce("fail on remote client")
+					passed.erase(current_test_file)
+					failed.append(current_test_file)
+					self.fail_details.append("failure on remote client " + str(id))
+				if STOP_AFTER_FIRST_FAILURE:
+					current_test = test_files.size()
+					announce("failed one test, ABORTING EARLY\n", false)
 		_allclients_finalized = {}
 		var _next = next_test()
 
@@ -788,7 +813,7 @@ remotesync func finalize_test_allclients(force_status:int):
 		result = TestStatus.PASSED
 	else:
 		failed.append(current_test_file)
-		self.fail_details.append("***expected:\n" + to_json(end_state) + "\n***Actual:\n" + to_json(current_gamestate))	
+		self.fail_details.append("***expected:\n" + JSON.print(end_state, '\t') + "\n***Actual:\n" + JSON.print(current_gamestate, '\t'))	
 		result = TestStatus.FAILED
 		
 	#Remove crap that might still be lurking around

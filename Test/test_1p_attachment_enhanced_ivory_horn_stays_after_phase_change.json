@@ -24,10 +24,13 @@
 			"deck_villain":[
 				{
 					"card": "Hydra Mercenary"
-				},			
+				},
+				{
+					"card": "Breakin' & Takin'"
+				},					
 				{
 					"card": "Enhanced Ivory Horn"
-				},
+				}			
 			
 			],
 			"schemes": [
@@ -89,6 +92,10 @@
 			"schemes": [
 				{
 					"card": "01097",
+				},
+				{
+					"card": "Breakin' & Takin'",
+					"tokens": {"threat": 3}
 				}
 			],
 			"deck1": [

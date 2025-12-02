@@ -434,6 +434,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/core/Card/TokenDrawer.gd"
 }, {
+"base": "Reference",
+"class": "UserInteractionAuthority",
+"language": "GDScript",
+"path": "res://src/multiplayer/UserInteractionAuthority.gd"
+}, {
 "base": "Node2D",
 "class": "ViewportCardFocus",
 "language": "GDScript",
@@ -560,6 +565,7 @@ _global_script_class_icons={
 "TestSuite": "",
 "Token": "",
 "TokenDrawer": "",
+"UserInteractionAuthority": "",
 "ViewportCardFocus": "",
 "WCCard": "",
 "WCHeroZone": "",

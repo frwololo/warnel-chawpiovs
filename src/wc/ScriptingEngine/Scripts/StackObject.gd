@@ -19,6 +19,25 @@ func get_tasks():
 func get_script_by_event_details(_details):
 	return null
 
+func get_user_interaction_status():
+	var status = CFConst.USER_INTERACTION_STATUS.NOT_CHECKED_YET
+	for t in get_tasks():
+		var t_status = t.user_interaction_status
+		match t_status:
+			CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER:
+				#unauthorized, return immediately
+				return CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER
+			CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER:
+				status = CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER
+			CFConst.USER_INTERACTION_STATUS.NOT_CHECKED_YET:
+				var _error = 1
+				#this shouldn't happen
+	if status == CFConst.USER_INTERACTION_STATUS.NOT_CHECKED_YET:
+		status = CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER
+	
+	return status
+		
+
 #can be overriden by children classes
 func execute():
 	pass

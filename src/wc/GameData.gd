@@ -23,6 +23,16 @@ enum EnemyAttackStatus {
 	DAMAGE_OR_THREAT,
 	ATTACK_COMPLETE
 }
+const EnemyAttackStatusStr =  [
+	"NONE",
+	"PENDING_INTERRUPT",
+	"OK_TO_START_ATTACK",
+	"PENDING_DEFENDERS",
+	"BOOST_CARDS",
+	"DAMAGE_OR_THREAT",
+	"ATTACK_COMPLETE"
+]
+
 var _current_enemy_attack_step: int = EnemyAttackStatus.NONE
 
 enum EncounterStatus {
@@ -202,7 +212,7 @@ func targeting_happened_too_recently():
 	return (_targeting_timer > 0)
 
 func _process(_delta: float):
-	
+	cfc.ping()
 	#mechanism to avoid processing
 	#a target click as an action click
 	if _targeting_ongoing:
@@ -642,6 +652,7 @@ func attack_prevented():
 func current_enemy_finished():
 	attackers.pop_front()
 	_current_enemy_attack_step = EnemyAttackStatus.NONE
+	#rpc("remove_client_status")
 
 func attack_is_ongoing():
 	return _current_enemy_attack_step != EnemyAttackStatus.NONE
@@ -718,7 +729,9 @@ func enemy_activates() :
 		enemy.tokens.mod_token(status, -1)
 		current_enemy_finished()
 		return
-		
+	
+	var guid = guidMaster.get_guid(enemy)
+	rpc("set_client_status",  "activation", guid,  _current_enemy_attack_step)	
 	#not stunned, proceed
 	match _current_enemy_attack_step:
 		EnemyAttackStatus.NONE:	
@@ -797,7 +810,7 @@ func enemy_activates() :
 
 func defenders_chosen():
 	if _current_enemy_attack_step != EnemyAttackStatus.PENDING_DEFENDERS:
-		display_debug("defenders_chosen: I'm being told that defenders have been chosen but I'm not in the PENDING_DEFENDERS state")
+		display_debug("defenders_chosen: I'm being told that defenders have been chosen but I'm not in the PENDING_DEFENDERS state, I'm at" + EnemyAttackStatusStr[_current_enemy_attack_step])
 
 		if _current_enemy_attack_step == EnemyAttackStatus.OK_TO_START_ATTACK:
 			display_debug("defenders_chosen: I might be off by 1? Attempting to catch up")
@@ -939,6 +952,7 @@ func current_encounter_finished():
 	if _current_encounter and is_instance_valid(_current_encounter):
 		_current_encounter.encounter_status = EncounterStatus.NONE			
 	_current_encounter = null
+	#rpc("remove_client_status")
 	pass
 
 #actual reveal of the current encounter
@@ -955,26 +969,129 @@ func reveal_current_encounter(target_id = 0):
 
 	_current_encounter.execute_scripts(_current_encounter, "reveal") 
 
+var _clients_current_activation = {}
+var _clients_activation_counter = {}
+func is_client_aligned(a, b):
+	if !a or !b:
+		return false
+	if a["counter"] != b["counter"]:
+		return false
+	if a["status"] != b["status"]:
+		return false
+	return true
+	
+func is_catching_up(a, b):
+	if !a:
+		return true
+	if !b:
+		return false
+	if a["counter"] < b["counter"]:
+		return true
+	if a["counter"] > b["counter"]:
+		return false
+	
+	#counter is equal
+	if a["status"] < b["status"]:
+		return true
+	return false
+	
+func client_aligned_or_catching_up():
+	var my_id = cfc.get_network_unique_id()
+
+	var result =  {
+		"result": true,
+		"catching_up": false
+	}
+	
+	if !_clients_current_activation:
+		return result
+#	if _clients_current_activation.size() != network_players.size():
+#		return false
+	var expected_status ={
+		"counter": 0,
+		"status": -1
+	}	
+	for client_id in _clients_current_activation:
+		var data = _clients_current_activation[client_id]
+		if is_catching_up(expected_status, data):
+			expected_status = data
+
+	var all_aligned = true
+	if _clients_current_activation.size() != network_players.size():
+		all_aligned = false		
+	else:
+		for client_id in _clients_current_activation:
+			var data = _clients_current_activation[client_id]
+			if !is_client_aligned(expected_status, data):
+				all_aligned = false
+
+	if all_aligned:
+		return result
+	
+	result["catching_up"] = true
+	var my_data = _clients_current_activation.get(my_id, {})
+	#if I'm catching up, allow to run
+
+	if is_catching_up(my_data, expected_status):
+		return result
+
+	display_debug("clients are not aligned, can't proceed in activation/encounter: " + to_json(_clients_current_activation)) 
+	return false
+	
+remotesync func set_client_status(type, guid, value):
+	var client_id = get_tree().get_rpc_sender_id()
+	var status_str = ""
+
+	
+	match type:
+		"activation":
+			status_str = EnemyAttackStatusStr[value]
+		"encounter":
+			 status_str = EncounterStatusStr[value]
+
+	var renew = false
+	var existing_data = _clients_current_activation.get(client_id, {})
+	if !existing_data:
+		renew = true
+	else:
+		if existing_data["type"]!= type or existing_data["guid"]!= guid or existing_data["status"] > value:
+			renew = true
+	
+	if renew:
+		if !_clients_activation_counter.has(client_id):
+			 _clients_activation_counter[client_id] = 0
+		_clients_activation_counter[client_id]+= 1
+						
+		_clients_current_activation[client_id] = {
+			"type" : type,
+			"guid" : guid,
+			"status" : value,
+			"status_str": status_str,
+			"counter" : _clients_activation_counter[client_id]
+		}
+	else:
+		_clients_current_activation[client_id]["status"] = value
+		_clients_current_activation[client_id]["status_str"] = status_str	
+	
+#remotesync func remove_client_status():
+#	var client_id = get_tree().get_rpc_sender_id() 
+#	_clients_current_activation.erase(client_id)	
+
 #attempt to pace encounters in order to avoid race conditions
 func can_proceed_encounter()-> bool:
 	return can_proceed_activation()
-
-func can_proceed_activation()-> bool:
 	
-	#boost cards first go into the
-	#pending_local_scripts stack
-	#once they are picked up by the server, they go intp the actual stack
-	#they need to execute before we can proceed with the next steps
-	if theStack.pending_local_scripts:
-		display_debug("can't proceed because of pending local scripts" + to_json(theStack.pending_local_scripts))
+func can_proceed_activation()-> bool:
+	var aligned =  client_aligned_or_catching_up()
+	if !aligned:
 		return false
-	if theStack.stack:
-		display_debug("can't proceed because of stack data" + to_json(theStack.stack))
-		return false
-	if theStack.my_script_requests_pending_execution:
-		display_debug("can't proceed because of pending network execution requests" + str(theStack.my_script_requests_pending_execution))
-		return false		
-	return true	
+
+	if typeof(aligned) == TYPE_DICTIONARY:
+		var catching_up = aligned.get("catching_up", false)
+		if catching_up:
+			return true
+
+	return theStack.is_idle()
 
 func cancel_current_encounter():
 	if !_current_encounter:
@@ -1028,6 +1145,8 @@ func reveal_encounter(target_id = 0):
 	if !can_proceed_encounter():
 		return
 	
+	var guid = guidMaster.get_guid(_current_encounter)
+	rpc("set_client_status", "encounter", guid, _current_encounter.encounter_status)
 	#an encounter is available, proceed
 	match _current_encounter.encounter_status:
 		EncounterStatus.NONE:
@@ -1066,7 +1185,7 @@ func reveal_encounter(target_id = 0):
 			var slot: BoardPlacementSlot = grid.find_available_slot()
 			if slot:
 				_current_encounter.move_to(cfc.NMAP.board, -1, slot)
-				display_debug("encounter: " + _current_encounter.canonical_name + " moving to PENDING_COMPLETE")
+				display_debug("encounter: " + _current_encounter.canonical_name + " moving to PENDING_COMPLETE. Target_id " + str(target_id))
 				_current_encounter.encounter_status = EncounterStatus.PENDING_COMPLETE
 			else:
 				push_error("encounter ERROR: Missing target grid in reval_encounters")	
@@ -1074,23 +1193,23 @@ func reveal_encounter(target_id = 0):
 			#there has to be a better way.... wait for a signal somehow ?
 			if cfc.get_modal_menu():
 				return
-			display_debug("encounter: " + _current_encounter.canonical_name + " moving to ENCOUNTER_COMPLETE")
+			display_debug("encounter: " + _current_encounter.canonical_name + " moving to ENCOUNTER_COMPLETE. Target_id " + str(target_id))
 			_current_encounter.encounter_status = EncounterStatus.ENCOUNTER_COMPLETE
 			return
 			
 		EncounterStatus.ENCOUNTER_COMPLETE:
 			var target_pile = get_encounter_target_pile(_current_encounter)
 			if (target_pile and !target_pile.has_card(_current_encounter)):
-				display_debug("encounter: " + _current_encounter.canonical_name + " moving to pile")
+				display_debug("encounter: " + _current_encounter.canonical_name + " moving to pile. Target_id " + str(target_id))
 				_current_encounter.move_to(target_pile)
 				_current_encounter.encounter_status = EncounterStatus.ENCOUNTER_POST_COMPLETE
 			else:
-				display_debug("encounter: not moving : " + _current_encounter.canonical_name + ". Finishing it already")
+				display_debug("encounter: not moving : " + _current_encounter.canonical_name + ". Finishing it already. Target_id " + str(target_id))
 				current_encounter_finished()
 		EncounterStatus.ENCOUNTER_POST_COMPLETE:
 			var target_pile = get_encounter_target_pile(_current_encounter)
 			if target_pile and target_pile.has_card(_current_encounter):
-				display_debug("encounter:" + _current_encounter.canonical_name + "is in its target pile. Calling for end of encounter")
+				display_debug("encounter:" + _current_encounter.canonical_name + "is in its target pile. Calling for end of encounter. Target_id " + str(target_id))
 				current_encounter_finished()
 			return 
 	return
@@ -1410,7 +1529,7 @@ func filter_trigger(
 	#Generally speaking I don't want to trigger
 	#on facedown cards such as boost cards
 	#(e.g. bug with Hawkeye, Charge, and a bunch of others)
-	if trigger_card:
+	if trigger_card and is_instance_valid(trigger_card):
 		if !trigger_card.is_faceup:
 			return false
 		if trigger_card.is_boost(): 
@@ -1457,11 +1576,13 @@ func filter_trigger(
 	return event #note: force conversion from stack event to bool
 
 func is_interrupt_mode() -> bool:
-	return theStack.get_interrupt_mode() in [
-		GlobalScriptStack.InterruptMode.HERO_IS_INTERRUPTING,
-		GlobalScriptStack.InterruptMode.OPTIONAL_INTERRUPT_CHECK,
-		GlobalScriptStack.InterruptMode.FORCED_INTERRUPT_CHECK
-	]
+	return theStack.is_interrupt_mode() 
+
+func is_optional_interrupt_mode() -> bool:
+	return theStack.is_optional_interrupt_mode() 
+	
+func is_forced_interrupt_mode() -> bool:
+	return theStack.is_forced_interrupt_mode() 	
 	
 func interrupt_player_pressed_pass(hero_id):
 	theStack.pass_interrupt(hero_id)
@@ -1503,8 +1624,13 @@ func is_ongoing_blocking_announce():
 	return theAnnouncer.get_blocking_announce()	
 
 func cleanup_post_game():
-	cfc.game_paused = true
+	cfc.LOG("\n###\ngameData cleanup_post_game")
+	cfc.set_game_paused(true)
 	attackers = []
+
+	_clients_current_activation = {}
+	_clients_activation_counter = {}	
+	
 	_current_enemy_attack_step = EnemyAttackStatus.NONE
 	if _current_encounter and is_instance_valid(_current_encounter):
 		_current_encounter.encounter_status = EncounterStatus.NONE
@@ -1512,6 +1638,7 @@ func cleanup_post_game():
 	current_round = 1
 	_multiplayer_desync = null
 	_clients_system_status = {}
+	_villain_current_hero_target = 1
 	theStack.flush_logs()
 	flush_debug_display()
 	theStack.reset()
@@ -1522,7 +1649,7 @@ func cleanup_post_game():
 	cfc.flush_cache()
 	guidMaster.reset()
 	
-	cfc.game_paused = false
+	cfc.set_game_paused(false)
 
 	
 #saves current game data into a json structure	
@@ -1609,8 +1736,8 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 		var saved_item:Dictionary = hero_data[i]
 		var hero_deck_data: HeroDeckData = HeroDeckData.new()
 		#if owner isn't set in the save game, we force it to 1 hero per player
-		var default_owner_id = i % gameData.network_players.size()
-		saved_item["herodeckdata"]["owner"] = 	int(saved_item.get("owner", default_owner_id ))
+		var default_owner_id = (i % gameData.network_players.size() ) + 1
+		saved_item["herodeckdata"]["owner"] = 	int(saved_item["herodeckdata"].get("owner", default_owner_id ))
 		hero_deck_data.loadstate_from_json(saved_item)
 		_team[i] = hero_deck_data
 	set_team_data(_team)

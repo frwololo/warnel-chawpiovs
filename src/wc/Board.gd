@@ -63,8 +63,9 @@ func _ready() -> void:
 	$Debug.pressed = cfc._debug
 	# Fill up the deck for demo purposes
 	if not cfc.ut:
-		cfc.game_rng_seed = CFUtils.generate_random_seed()
-		$SeedLabel.text = "Game Seed is: " + cfc.game_rng_seed
+		if cfc.is_game_master():
+			var my_seed = CFUtils.generate_random_seed()
+			rpc("set_random_seed", my_seed)
 
 	# warning-ignore:return_value_discarded
 	#$DeckBuilderPopup.connect('popup_hide', self, '_on_DeckBuilder_hide')	
@@ -73,6 +74,12 @@ func _ready() -> void:
 	
 	grid_setup()
 	rpc("ready_to_load")	
+
+remotesync func set_random_seed(my_seed):
+	cfc.LOG("setting random seed to " + str(my_seed))
+	cfc.game_rng_seed = my_seed
+	$SeedLabel.text = "Game Seed is: " + cfc.game_rng_seed
+
 	
 func _process(delta:float):
 	_total_delta += delta
@@ -206,7 +213,9 @@ func post_ready_load():
 	cfc.add_ongoing_process(self, "board_setup")
 	#Game setup - Todo move somewhere else ?
 	load_cards()
+	post_cards_moved_load()
 
+func post_cards_moved_load():
 	#Signals
 	scripting_bus.connect("current_playing_hero_changed", self, "_current_playing_hero_changed")
 
@@ -255,7 +264,11 @@ func post_ready_load():
 	if func_return is GDScriptFunctionState && func_return.is_valid():
 		yield(func_return, "completed")		
 
-	var scheme = gameData.get_main_scheme()
+	var scheme = null
+	while !scheme: #in network settings, this varialbe sometimes takes some time to get to us
+		scheme = gameData.get_main_scheme()
+		yield(get_tree().create_timer(0.1), "timeout")
+		
 	func_return = scheme.execute_scripts_no_stack(scheme, "setup")
 	if func_return is GDScriptFunctionState && func_return.is_valid():
 		yield(func_return, "completed")		
@@ -508,7 +521,9 @@ func post_load_move():
 		#card.interruptTweening()
 		card.reorganize_self()	
 		
-	_post_load_move = {} #reset		
+	_post_load_move = {} #reset	
+
+		
 	return			
 
 
@@ -871,3 +886,11 @@ func find_card_by_name(card_id_or_name, include_back:= false):
 	return null
 
 
+
+
+func _on_ServerActivity_gui_input(event):
+	if event is InputEventMouseButton:
+		if event.doubleclick and cfc.is_game_master():
+			gameData.theStack.attempt_unlock()
+		
+	pass # Replace with function body.

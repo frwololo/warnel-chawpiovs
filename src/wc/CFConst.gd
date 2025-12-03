@@ -614,7 +614,7 @@ const SYSTEMS_CHECK_HASH_ONLY:= false
 const FORCE_LOGS:= false
 #seconds until we trigger a desync warning when the stack is blocked
 #set to 0 for infinite waiting time (debug)
-const DESYNC_TIMEOUT:= 10
+const DESYNC_TIMEOUT:= 5
 const DISPLAY_DEBUG_MSG = true
 
 const ENABLE_NETWORK_ERROR_CORRECTION = false

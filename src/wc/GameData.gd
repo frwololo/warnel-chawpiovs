@@ -99,6 +99,11 @@ var _garbage:= []
 var _targeting_ongoing:= false
 var _desync_recovery_enabled = true
 
+var _clients_current_activation = {}
+var _clients_activation_counter = {}
+var _clients_desync_start_time: int = 0
+
+
 #a timer to avoid double registering a click on a target
 # as a click for its abilities
 var _targeting_timer:= 0.2
@@ -536,6 +541,9 @@ func reload_round_savegame(round_id):
 	if round_id >1 and !json:
 		reload_round_savegame(round_id-1)
 		return
+	if !json:
+		display_debug("no game to load, sorry")
+		return
 	gameData.load_gamedata(json)
 			
 func get_team_size():
@@ -969,8 +977,7 @@ func reveal_current_encounter(target_id = 0):
 
 	_current_encounter.execute_scripts(_current_encounter, "reveal") 
 
-var _clients_current_activation = {}
-var _clients_activation_counter = {}
+
 func is_client_aligned(a, b):
 	if !a or !b:
 		return false
@@ -1084,7 +1091,17 @@ func can_proceed_encounter()-> bool:
 func can_proceed_activation()-> bool:
 	var aligned =  client_aligned_or_catching_up()
 	if !aligned:
+		if not self._clients_desync_start_time:
+			_clients_desync_start_time = Time.get_ticks_msec()
+		if Time.get_ticks_msec() - self._clients_desync_start_time > (CFConst.DESYNC_TIMEOUT * network_players.size() * 1000):
+			self._clients_desync_start_time = 0
+			if cfc.is_game_master():
+				display_debug("clients alignment issue, attempting resync")
+				save_round(current_round)
+				init_desync_recover()
 		return false
+
+	self._clients_desync_start_time = 0
 
 	if typeof(aligned) == TYPE_DICTIONARY:
 		var catching_up = aligned.get("catching_up", false)

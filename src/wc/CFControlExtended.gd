@@ -43,12 +43,30 @@ func _setup() -> void:
 	preload_pck()
 
 func get_ping(client_id):
-	return ping_data.get(client_id, 0)
+	var ping_info =  ping_data.get(client_id, {})
+	if !ping_info:
+		return 0
+	return ping_info["last_ping"]
 
+func get_avg_ping(client_id):
+	var ping_info =  ping_data.get(client_id, {})
+	if !ping_info:
+		return 0
+	return ping_info["avg"]
+	
 remote func ping_ack(start_time):	
 	var client_id = get_tree().get_rpc_sender_id() 
 	var end_time = Time.get_ticks_msec()
-	ping_data[client_id] = end_time - start_time
+	var last_ping = end_time - start_time
+		
+	var ping_avg = last_ping
+	if ping_data.has(client_id):
+		ping_avg = ping_data[client_id]["avg"]
+
+	ping_data[client_id] = {
+		"last_ping": last_ping,
+		"avg" : ((3 * ping_avg) + last_ping) / 4
+	} 
 
 func ping():
 	var new_ping_time = Time.get_ticks_msec()
@@ -857,6 +875,7 @@ func is_game_master() -> bool:
 		return true
 	return get_tree().is_network_server() #Todo: return something more specific to handle case where game master isn't server, for headless mode
 
+var _log_buffer := ""
 func INIT_LOG():
 	var file = File.new()
 	var network_id = get_tree().get_network_unique_id() if get_tree().has_network_peer() else 0
@@ -870,7 +889,13 @@ func INIT_LOG():
 	
 func LOG(to_print:String):
 #	if !cfc._debug:
-#		return	
+#		return
+	_log_buffer+= Time.get_datetime_string_from_system() + " - " + to_print + "\n"	
+	if _log_buffer.length() < 2000:
+		return
+	FLUSH_LOG()
+	
+func FLUSH_LOG():
 	INIT_LOG()
 	var file = File.new()
 	var network_id = get_tree().get_network_unique_id() if get_tree().has_network_peer() else 0
@@ -878,8 +903,9 @@ func LOG(to_print:String):
 	var player_id = player.get_id()	if player else 0
 	file.open("user://log_" + str(player_id) +".txt", File.READ_WRITE)
 	file.seek_end()
-	file.store_string(to_print + "\n")
+	file.store_string(_log_buffer + "\n")
 	file.close() 
+	_log_buffer = ""
 
 func LOG_VARIANT(to_print):
 #	if !cfc._debug:
@@ -941,3 +967,13 @@ func is_modal_event_ongoing():
 	if gameData.is_ongoing_blocking_announce():
 		return true
 	return false
+	
+
+# Ensures proper cleanup when a card is queue_free() for any reason
+func _on_tree_exiting():	
+	FLUSH_LOG()
+
+func _notification(what):
+	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
+		FLUSH_LOG()
+		

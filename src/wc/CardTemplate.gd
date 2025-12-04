@@ -1491,6 +1491,10 @@ func export_to_json():
 	if (self.current_host_card):
 		card_description["host"] = current_host_card.properties.get("_code")
 	
+	
+	if self.encounter_status != gameData.EncounterStatus.NONE:
+		card_description["encounter_status"] = self.encounter_status
+	
 	return card_description
 
 func load_from_json(card_description):
@@ -1520,7 +1524,7 @@ func _ready_load_from_json(card_description: Dictionary = {}):
 			
 	self._can_change_form = card_description.get("can_change_form", true)	
 
-	
+	self.encounter_status = int(card_description.get("encounter_status", gameData.EncounterStatus.NONE))
 	#we don't handle the attachment/host content here, it is don by the board loading, after all cards are loaded
 	
 	return self

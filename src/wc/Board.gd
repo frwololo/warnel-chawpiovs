@@ -19,6 +19,16 @@ var heroZones: Dictionary = {}
 const GRID_SETUP = CFConst.GRID_SETUP
 const HERO_GRID_SETUP = CFConst.HERO_GRID_SETUP
 
+enum LOADING_STEPS {
+	NONE,
+	RNG_INIT,
+	READY_TO_LOAD,
+	CARDS_PRELOADED,
+	CARDS_PRELOADED_SKIP_LOAD,	
+	CARDS_MOVED,
+	READY_TO_START
+}
+
 # a temporary variable to move cards after all clients have loaded them,
 # to avoid scripts triggering incorrectly
 var _post_load_move:= {}
@@ -62,10 +72,7 @@ func _ready() -> void:
 	$ScalingFocusOptions.selected = cfc.game_settings.focus_style
 	$Debug.pressed = cfc._debug
 	# Fill up the deck for demo purposes
-	if not cfc.ut:
-		if cfc.is_game_master():
-			var my_seed = CFUtils.generate_random_seed()
-			rpc("set_random_seed", my_seed)
+
 
 	# warning-ignore:return_value_discarded
 	#$DeckBuilderPopup.connect('popup_hide', self, '_on_DeckBuilder_hide')	
@@ -73,12 +80,47 @@ func _ready() -> void:
 	gameData.init_save_folder()
 	
 	grid_setup()
-	rpc("ready_to_load")	
+	rpc("ready_for_step", LOADING_STEPS.RNG_INIT)	
+
+var _clients_ready_for_step = {}
+remotesync func ready_for_step(next_step):
+	var client_id = get_tree().get_rpc_sender_id() 	
+	_clients_ready_for_step[client_id] = next_step
+	if _clients_ready_for_step.size() != gameData.network_players.size():
+		return
+	for network_id in _clients_ready_for_step:
+		if _clients_ready_for_step[network_id] != next_step:
+			return
+	
+	_clients_ready_for_step = {}		
+	load_next_step(next_step)	
+
+func load_next_step(next_step):
+	match next_step:
+		LOADING_STEPS.RNG_INIT:
+			if cfc.is_game_master():
+				var my_seed = CFUtils.generate_random_seed()
+				rpc("set_random_seed", my_seed)
+		LOADING_STEPS.READY_TO_LOAD:
+			load_cards()
+			rpc("ready_for_step", LOADING_STEPS.CARDS_PRELOADED)
+		LOADING_STEPS.CARDS_PRELOADED:
+			post_load_move()
+			rpc("ready_for_step", LOADING_STEPS.CARDS_MOVED)
+		LOADING_STEPS.CARDS_PRELOADED_SKIP_LOAD:
+			post_load_move()
+			rpc("ready_for_step", LOADING_STEPS.READY_TO_START)			
+		LOADING_STEPS.CARDS_MOVED:
+			post_cards_moved_load()
+			#next step called from within function
+		LOADING_STEPS.READY_TO_START:
+			gameData.start_game()				
 
 remotesync func set_random_seed(my_seed):
 	cfc.LOG("setting random seed to " + str(my_seed))
 	cfc.game_rng_seed = my_seed
 	$SeedLabel.text = "Game Seed is: " + cfc.game_rng_seed
+	rpc("ready_for_step", LOADING_STEPS.READY_TO_LOAD)
 
 	
 func _process(delta:float):
@@ -202,18 +244,7 @@ func init_board_organizers(current_hero_id):
 		board_organizers.append(board_organizer)
 		board_organizer.organize()
 
-remotesync func ready_to_load():
-	var client_id = get_tree().get_rpc_sender_id() 	
-	_ready_to_load[client_id] = true
-	if _ready_to_load.size() == gameData.network_players.size():
-		_ready_to_load = {} #reset just in case
-		post_ready_load()	
-
-func post_ready_load():
-	cfc.add_ongoing_process(self, "board_setup")
-	#Game setup - Todo move somewhere else ?
-	load_cards()
-	post_cards_moved_load()
+	
 
 func post_cards_moved_load():
 	#Signals
@@ -224,16 +255,25 @@ func post_cards_moved_load():
 
 	
 	load_heroes()
+	#loading heroes requires moving cards around, this can interfere with
+	#the shuffling afterwards
+	var hero_count: int = get_team_size()
+	for i in range (hero_count): 
+		while (heroZones[i+1].post_move_modifiers or heroZones[i+1]._post_load_move):
+			yield(get_tree().create_timer(0.5), "timeout")
+		
 	shuffle_decks()
 	#Need to wait after shuffling decks
+	yield(get_tree().create_timer(0.5), "timeout")		
 	for i in range(gameData.get_team_size()):
 		var pile = cfc.NMAP["deck" + str(i+1)]	
 		while pile.is_shuffling:
 			yield(get_tree().create_timer(0.05), "timeout")		
 	
 	villain.load_scenario()
+	while villain._post_load_move or cfc.NMAP["deck_villain"].is_shuffling:
+		yield(get_tree().create_timer(0.05), "timeout")	
 
-	
 	draw_starting_hand()	
 	#Tests
 	if gameData.get_team_size() < 2:
@@ -248,10 +288,7 @@ func post_cards_moved_load():
 		#draw_cheat("Swinging Web Kick")
 		pass
 	cfc.LOG_DICT(guidMaster.guid_to_object)
-	
-	#Save gamedata for restart
-	gameData.save_gamedata_to_file("user://Saves/_restart.json")	
-	
+		
 	for i in range (get_team_size()): 
 		heroZones[i+1].reorganize()
 
@@ -276,9 +313,11 @@ func post_cards_moved_load():
 	func_return = scheme.execute_scripts_no_stack(scheme, "reveal")
 	if func_return is GDScriptFunctionState && func_return.is_valid():
 		yield(func_return, "completed")			
-	
-	gameData.start_game()	
-	cfc.remove_ongoing_process(self, "board_setup")	
+
+	#Save gamedata for restart
+	gameData.save_gamedata_to_file("user://Saves/_restart.json")	
+
+	rpc("ready_for_step", LOADING_STEPS.READY_TO_START)
 
 func get_villain_card():
 	return villain.get_villain()
@@ -481,7 +520,6 @@ func load_cards() -> void:
 				"owner_hero_id": hero_id
 			})
 		load_cards_to_pile(card_data, "deck" + str(hero_id))
-	rpc("cards_preloaded") #tell everyone we're done preloading
 
 
 
@@ -526,13 +564,6 @@ func post_load_move():
 		
 	return			
 
-
-remotesync func cards_preloaded():
-	var client_id = get_tree().get_rpc_sender_id() 	
-	_cards_loaded[client_id] = true
-	if _cards_loaded.size() == gameData.network_players.size():
-		_cards_loaded = {} #reset just in case
-		post_load_move()
 
 func load_cards_to_pile(card_data:Array, pile_name):
 	var card_array = []
@@ -607,9 +638,11 @@ func export_grid_to_json(grid_name, seen_cards:= {}) -> Dictionary:
 		
 func shuffle_decks() -> void:
 	for i in range(gameData.get_team_size()):
-		var pile = cfc.NMAP["deck" + str(i+1)]
+		var pile_name = "deck" + str(i+1)
+		var pile = cfc.NMAP[pile_name]
 		while pile.are_cards_still_animating():
 			yield(pile.get_tree().create_timer(0.2), "timeout")
+		cfc.LOG("shuffling deck " + str(pile_name))	
 		pile.shuffle_cards()
 	
 func draw_starting_hand() -> void:
@@ -795,10 +828,9 @@ func loadstate_from_json(json:Dictionary):
 	var other_data = json_data.get("others", [])
 	load_cards_to_pile(other_data, "")
 	
-	rpc("cards_preloaded") #tell everyone we're done preloading
+	rpc("ready_for_step", LOADING_STEPS.CARDS_PRELOADED_SKIP_LOAD) #tell everyone we're done preloading
 
-	cfc.set_game_paused(false)
-	gameData.start_game()	
+	#gameData.start_game()	
 	return
 #The game engine doesn't really have a concept of double sided cards, so instead,
 #when flipping such a card, we destroy it and create a new card

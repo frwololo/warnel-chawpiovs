@@ -48,7 +48,7 @@ const RunModeStr := [
 	"PENDING_USER_INTERACTION", #I detected that another user interaction is required
 ]
 
-var all_clients_run_mode:= {}
+var all_clients_status:= {}
 var run_mode = RUN_MODE.NOTHING_TO_RUN
 var interrupt_mode = InterruptMode.NONE
 var interrupting_hero_id = 0
@@ -151,9 +151,54 @@ func create_and_add_simplescript( _owner, trigger_card, definition,  trigger_det
 	var stackEvent = SimplifiedStackScript.new(task)
 	add_script_and_run(stackEvent)
 
+func set_client_status(client_id, key, value):
+	if !all_clients_status.has(client_id):
+		all_clients_status[client_id] = {}
+	all_clients_status[client_id][key] = value
+
+func get_client_status(client_id, key):
+	if !all_clients_status.has(client_id):
+		all_clients_status[client_id] = {}
+	var result = all_clients_status[client_id].get(key, "")
+	if !result:
+		match key:
+			"run_mode":
+				result = RUN_MODE.NOTHING_TO_RUN
+	return result
+
+func client_status_is_ahead(client_id, key):
+	if !all_clients_status.has(client_id):
+		all_clients_status[client_id] = {}
+			
+	var min_value = -1
+	for network_id in all_clients_status:
+		var value = all_clients_status[network_id].get(key, -1)
+		if min_value == -1 or min_value > value:
+			min_value = value
+	
+	var my_value = all_clients_status[client_id].get(key, -1)
+	if my_value > min_value:
+		return true
+	return false
+	
+func client_status_is_behind(client_id, key):	
+	if !all_clients_status.has(client_id):
+		all_clients_status[client_id] = {}
+			
+	var max_value = -1
+	for network_id in all_clients_status:
+		var value = all_clients_status[network_id].get(key, -1)
+		if max_value < value:
+			max_value = value
+	
+	var my_value = all_clients_status[client_id].get(key, max_value)
+	if my_value < max_value:
+		return true
+	return false
+	
 mastersync func master_create_and_add_script(expected_run_mode, state_scripts, owner_uid, trigger_card_uid,  run_type, trigger, remote_trigger_details, stored_integers, action_name, checksum):
 	var client_id = get_tree().get_rpc_sender_id() 
-	all_clients_run_mode[client_id] = RUN_MODE.PENDING_REQUEST_ACK	
+	set_client_status(client_id, "run_mode", RUN_MODE.PENDING_REQUEST_ACK)	
 	var original_details = {
 		"type": "script",
 		"state_scripts": state_scripts,
@@ -177,10 +222,10 @@ mastersync func master_create_and_add_script(expected_run_mode, state_scripts, o
 				accept_request = false
 		else:
 			#reject everything if other clients have something going on
-			for network_id in all_clients_run_mode.keys():
+			for network_id in all_clients_status.keys():
 				if network_id == client_id:
 					continue #TODO other checks? 
-				if ! all_clients_run_mode[network_id] in [RUN_MODE.NOTHING_TO_RUN, RUN_MODE.PENDING_USER_INTERACTION]:
+				if ! get_client_status(network_id, "run_mode") in [RUN_MODE.NOTHING_TO_RUN, RUN_MODE.PENDING_USER_INTERACTION]:
 					accept_request = false
 
 	
@@ -231,7 +276,7 @@ remotesync func client_create_and_add_stackobject( original_requester_id, expect
 	var client_id = get_tree().get_rpc_sender_id()
 					
 	var type = details["type"]
-	display_debug(str(client_id) + " wants me to add a " + type )
+	display_debug(str(client_id) + " wants me to add a " + type + "- " + checksum )
 	var stackEvent = null
 	match type:
 		"simplescript":
@@ -259,7 +304,7 @@ remotesync func client_create_and_add_stackobject( original_requester_id, expect
 			yield_wait_time+= 0.1
 	remove_yield_counter("client_create_and_add_stackobject")
 		
-	add_event_to_stack(stackEvent)
+	add_event_to_stack(stackEvent, checksum)
 	rpc_id(1, "from_client_script_received_ack", expected_run_mode, checksum)
 
 func set_pending_network_interaction(checksum, reason:=""):
@@ -331,7 +376,7 @@ func client_create_script(details):
 	return stackEvent
 
 
-func add_event_to_stack(stackEvent):
+func add_event_to_stack(stackEvent, checksum = ""):
 	#if somebody is adding a script while in interrupt mode,
 	# we add the script (its owner card for now - TODO need to change?)
 	# to the list of scripts that already responded to the last event
@@ -372,6 +417,7 @@ func add_event_to_stack(stackEvent):
 		"class": stackEvent.get_class(),	
 	}
 	emit_signal("script_added_to_stack",stackEvent)
+	display_debug("added script to stack - " + checksum + ". my current_stack_uid is " + str(current_stack_uid) )
 	return result
 
 #wrapper around add_event_to_stack that also tries to restart the execution of scripts
@@ -449,8 +495,8 @@ func reset_phase_buttons():
 
 func activate_exclusive_hero(hero_id):
 	add_yield_counter("activate_exclusive_hero")
-	for network_id in all_clients_run_mode:
-		while (yield_wait_time < yield_max_wait_time) and all_clients_run_mode.get(network_id, 0) != RUN_MODE.PENDING_USER_INTERACTION:
+	for network_id in all_clients_status:
+		while (yield_wait_time < yield_max_wait_time) and get_client_status(network_id, "run_mode") != RUN_MODE.PENDING_USER_INTERACTION:
 			display_debug("yield for other clients in activate_exclusive_hero")
 			yield(get_tree().create_timer(0.1), "timeout")
 			yield_wait_time+= 0.1
@@ -635,7 +681,12 @@ func compute_interrupts(script):
 	}
 
 
-
+func update_local_client_status():
+	var my_network_id = cfc.get_network_unique_id()
+	all_clients_status[my_network_id] ={
+		"run_mode": run_mode,
+		"current_stack_uid": self.current_stack_uid
+	}
 
 func set_run_mode(new_value, caller = ""):
 	if run_mode == new_value:
@@ -644,16 +695,18 @@ func set_run_mode(new_value, caller = ""):
 		caller = "set_run_mode"
 	display_debug("changing run mode from " + RunModeStr[run_mode] + " to " + RunModeStr[new_value] + "(requested by " + caller + ")"  )		
 	run_mode = new_value
-	all_clients_run_mode[cfc.get_network_unique_id()] = run_mode
+	update_local_client_status()
+	
 	if !run_mode in [RUN_MODE.PENDING_USER_INTERACTION, RUN_MODE.PENDING_REQUEST_ACK]:
 		reset_interrupt_states()
 	
 	gameData.game_state_changed()
-	rpc("client_run_mode_changed", run_mode)
+	rpc("client_run_mode_changed", all_clients_status[cfc.get_network_unique_id()])
 
-remote func client_run_mode_changed (new_run_mode):
+remote func client_run_mode_changed (new_status):
 	var client_id = get_tree().get_rpc_sender_id()
-	all_clients_run_mode[client_id] = new_run_mode 
+	for key in new_status:
+		set_client_status(client_id, key, new_status[key])
 
 
 func get_next_stack_uid():
@@ -697,14 +750,14 @@ func is_player_allowed_to_pass() -> bool:
 	if !is_player_allowed_to_click():
 		return false
 	
-	for network_id in all_clients_run_mode:
-		if all_clients_run_mode[network_id] != RUN_MODE.PENDING_USER_INTERACTION:
+	for network_id in all_clients_status:
+		if get_client_status(network_id, "run_mode") != RUN_MODE.PENDING_USER_INTERACTION:
 			return false
 
 	return true
 
 
-		
+var _debug_messaged_recently = false		
 func is_player_allowed_to_click(card = null) -> bool:
 	#Generally speaking : can't play while there's something
 	#on the stack, with exceptions in interrupt mode
@@ -712,12 +765,15 @@ func is_player_allowed_to_click(card = null) -> bool:
 #	if pending_local_scripts:
 #		return false		
 	
-	for client_id in all_clients_run_mode:
-		var _run_mode = all_clients_run_mode[client_id]
+	for client_id in all_clients_status:
+		var _run_mode = get_client_status(client_id, "run_mode")
 		if _run_mode == RUN_MODE.NO_BRAKES:
-			display_debug ("not allowed to click because some players are still running")
+			if !_debug_messaged_recently:
+				_debug_messaged_recently = true
+				display_debug ("not allowed to click because some players are still running")
 			return false
-				
+			
+	_debug_messaged_recently = false			
 	#TODO
 	match run_mode:
 		RUN_MODE.NO_BRAKES:
@@ -753,8 +809,8 @@ func is_phasecontainer_allowed_to_next_step():
 	if !is_idle():
 		return false
 		
-	for client_id in all_clients_run_mode:
-		var _run_mode = all_clients_run_mode[client_id]
+	for client_id in all_clients_status:
+		var _run_mode = get_client_status(client_id, "run_mode")
 		if _run_mode != RUN_MODE.NOTHING_TO_RUN:
 			return false
 				
@@ -795,11 +851,6 @@ func is_idle():
 		return false
 		#TODO
 
-#	for client_id in all_clients_run_mode:
-#		var _run_mode = all_clients_run_mode[client_id]
-#		if _run_mode != RUN_MODE.NOTHING_TO_RUN:
-#			return false
-				
 	match run_mode:
 		RUN_MODE.NOTHING_TO_RUN:
 			return true	
@@ -899,7 +950,7 @@ func reset():
 		cfc.LOG("error in stack reset: pending_stack_yield :" + to_json(pending_stack_yield))	
 	pending_stack_yield = {}
 	
-	all_clients_run_mode= {}
+	all_clients_status = {}
 	run_mode = RUN_MODE.NOTHING_TO_RUN
 	interrupt_mode = InterruptMode.NONE
 	interrupting_hero_id = 0
@@ -948,7 +999,7 @@ func display_debug_info():
 		text_edit.visible = false
 
 func display_debug(msg):
-	gameData.display_debug("{stack} " + msg, "")
+	gameData.display_debug("{stack}{uid:" + str(current_stack_uid) +"}" + msg, "")
 
 
 func create_text_edit():

@@ -44,7 +44,6 @@ var _previous_equal_count := 0
 func flush_debug_display():
 	if !text_edit:
 		return
-	cfc.LOG(text_edit.text)
 	text_edit.text = ""	
 	
 func display_debug(msg:String, prefix = "phase"):
@@ -73,6 +72,9 @@ func display_debug(msg:String, prefix = "phase"):
 			
 	text_edit.visible = show_text_edit
 	
+	if (!msg):
+		return	
+	
 	if (prefix):
 		msg = "(" + prefix  +") " + msg
 	
@@ -84,14 +86,14 @@ func display_debug(msg:String, prefix = "phase"):
 #			msg = ""
 	else:
 		_previous_debug_msg = msg
-		_previous_equal_count = 0
+		_previous_equal_count = 0	
 		if (text_edit.text):
 			text_edit.text += "\n"	
 			
-	if (!msg):
-		return
+
 	text_edit.text += msg
-	
+	cfc.LOG(msg)
+		
 	if text_edit.text.length() > 1000:
 		flush_debug_display()
 	
@@ -443,7 +445,7 @@ mastersync func client_ready_for_next_phase(current_phase):
 			if clients_ready_for_next_phase[network_id] != _expected_current_phase:
 				desync = true
 		if desync:
-			display_debug("we have a discrepency in next_phase attempts")
+			display_debug("we have a discrepancy in next_phase attempts")
 			display_debug(to_json(clients_ready_for_next_phase))
 		else:
 			clients_ready_for_next_phase = {}
@@ -459,16 +461,22 @@ mastersync func client_unready_for_next_phase():
 	if clients_ready_for_next_phase.has(client_id):
 		clients_ready_for_next_phase.erase(client_id)
 
-		
+
+var _pending_next_phase_reply = false		
 func request_next_phase(caller = ""):
 	if (!is_ready_for_next_phase()):
 		return false
+	if _pending_next_phase_reply:
+		return true
+	
+	_pending_next_phase_reply = true	
 	display_debug("I'm asking the master to move to next phase (" + caller +  "). I'm currently at " + StepStrings[current_step])	
 	#set_current_step_complete(false, caller + ", request_next_phase")
 	rpc_id(1, "client_ready_for_next_phase", current_step)
 	return true
 	
 func unrequest_next_phase():
+	_pending_next_phase_reply = false
 	rpc_id(1, "client_unready_for_next_phase")	
 
 func set_current_step_complete(value:bool, caller = ""):
@@ -480,6 +488,7 @@ func set_current_step_complete(value:bool, caller = ""):
 	current_step_complete = value
 	
 remotesync func proceed_to_next_phase():
+	_pending_next_phase_reply = false
 	set_current_step_complete(false, "proceed_to_next_phase")
 	display_debug("master tells me to move to next phase, I'm currently at " + StepStrings[current_step] )	
 	scripting_bus.emit_signal("step_about_to_end",  {"step" : current_step})

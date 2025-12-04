@@ -119,6 +119,7 @@ func stop_game():
 	_game_started = false
 
 func start_game():
+	cfc.LOG("game starting")
 	_game_started = true
 
 func is_game_started():
@@ -1001,7 +1002,8 @@ func is_catching_up(a, b):
 	if a["status"] < b["status"]:
 		return true
 	return false
-	
+
+var _last_clients_aligned_dbg_msg = ""	
 func client_aligned_or_catching_up():
 	var my_id = cfc.get_network_unique_id()
 
@@ -1042,7 +1044,11 @@ func client_aligned_or_catching_up():
 	if is_catching_up(my_data, expected_status):
 		return result
 
-	display_debug("clients are not aligned, can't proceed in activation/encounter: " + to_json(_clients_current_activation)) 
+	var msg = "clients are not aligned, can't proceed in activation/encounter: " + to_json(_clients_current_activation)
+	if msg != _last_clients_aligned_dbg_msg:
+		_last_clients_aligned_dbg_msg = msg
+		display_debug(msg) 
+
 	return false
 	
 remotesync func set_client_status(type, guid, value):
@@ -1116,7 +1122,8 @@ func cancel_current_encounter():
 	_current_encounter.move_to("discard_villain")
 	current_encounter_finished()	
 
-var _local_encounter_uid = 0		
+var _local_encounter_uid = 0
+var _last_encounter_dbg_msg = ""		
 #TODO need something much more advanced here, per player, etc...
 func reveal_encounter(target_id = 0):
 	if (!target_id):
@@ -1147,7 +1154,10 @@ func reveal_encounter(target_id = 0):
 	var current_encounter_str = "[empty]"
 	if _current_encounter:
 		current_encounter_str = _current_encounter.canonical_name
-		display_debug("current_encounter: " + current_encounter_str + ". Status:" + EncounterStatusStr[_current_encounter.encounter_status] )
+		var msg = "current_encounter: " + current_encounter_str + ". Status:" + EncounterStatusStr[_current_encounter.encounter_status]
+		if msg != _last_encounter_dbg_msg:
+			_last_encounter_dbg_msg = msg
+			display_debug(msg)
 	
 	if !_current_encounter:
 		display_debug("didn't get any encounter from the facedown pile of " + str(target_id) +", we're done here")
@@ -1704,6 +1714,14 @@ func save_gamedata() -> Dictionary:
 	
 	#other stuff
 	json_data["round"] = current_round
+	
+	#encounters state
+	json_data["encounters"] = {
+		"immediate_encounters": replace_cards_to_cardids(immediate_encounters)
+	}
+	if _current_encounter:
+		json_data["encounters"]["current_encounter"] = replace_cards_to_cardids(_current_encounter)
+	
 
 	return json_data
 
@@ -1767,6 +1785,17 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 
 	#Board State ()
 	cfc.NMAP.board.loadstate_from_json(json_data)
+
+	#encounters
+	var encounter_data = json_data.get("encounters", {})
+	if encounter_data:
+		var immediate = encounter_data.get("immediate_encounters", null)
+		if immediate:
+			immediate_encounters = replace_cardids_to_cards(immediate)
+		var current = encounter_data.get("current_encounter", "")
+		if current:
+			_current_encounter = replace_cardids_to_cards(current)
+	
 	
 	#This reloads hero faces, etc...
 	#we don't start the phaseContainer just yet, we'll wait for other players to be ready
@@ -1893,3 +1922,44 @@ func flush_debug_display():
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		cfc.set_game_paused(true)
+
+
+func replace_cards_to_cardids (script_definition):
+	var result
+	match typeof(script_definition):
+		TYPE_DICTIONARY:
+			result = {}	
+			for key in script_definition.keys():
+				result[key] = replace_cards_to_cardids(script_definition[key])
+		TYPE_ARRAY:	
+			result = []
+			for value in script_definition:
+				result.append(replace_cards_to_cardids(value))
+		TYPE_OBJECT:
+			if (script_definition is Card):
+				result = script_definition.canonical_id
+			else:
+				result = script_definition	
+		_:
+			result = script_definition
+	return result;	
+	
+func replace_cardids_to_cards (script_definition):
+	var result
+	match typeof(script_definition):
+		TYPE_DICTIONARY:
+			result = {}	
+			for key in script_definition.keys():
+				result[key] = replace_cardids_to_cards(script_definition[key])
+		TYPE_ARRAY:	
+			result = []
+			for value in script_definition:
+				result.append(replace_cardids_to_cards(value))
+		TYPE_STRING:
+			if cfc.get_card_by_id(script_definition):
+				result = cfc.NMAP.board.find_card_by_name(script_definition)
+			else:
+				result = script_definition
+		_:
+			result = script_definition
+	return result;

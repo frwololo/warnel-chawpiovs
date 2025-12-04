@@ -37,7 +37,7 @@ func _process(_delta):
 		selected.visible = false
 	
 	var network_owner = gameData.get_network_id_by_hero_id(hero_index)
-	var ping_int = cfc.get_ping(network_owner)
+	var ping_int = cfc.get_avg_ping(network_owner)
 	if ping_int:
 		ping.text = str(ping_int) + " ms"
 		if ping_int < 100:

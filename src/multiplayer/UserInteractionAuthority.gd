@@ -56,7 +56,7 @@ func compute_authority() -> Dictionary:
 			authority_cache["error"] = "Current Local hero id (" +  str(gameData.get_current_local_hero_id()) + ") not matching override " + str(override_controller_id)
 			return authority_cache
 	else:
-	#can only trigger if I'm the controller of the abilityor if enemy card (will send online to other clients)
+	#can only trigger if I'm the controller of the ability or if enemy card (will send online to other clients)
 
 		if for_hero_id:
 			if !gameData.can_hero_play_this_ability(for_hero_id, owner_card):

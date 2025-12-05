@@ -55,6 +55,12 @@ func _process(_delta):
 		else:
 			ping.add_color_override("font_color", Color8(255, 50, 50))
 
+	if gameData.phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN:			
+		if hero_index in gameData.get_currently_playing_hero_ids():
+			heroNode.texture = color_tex
+		else:
+			heroNode.texture = grayscale_tex
+
 func init_hero(_hero_index):
 	hero_index = _hero_index
 
@@ -88,24 +94,31 @@ func can_hero_phase_action() -> bool:
 			return false
 	return true	
 
+var _last_can_hero_pass_msg = ""
+func can_hero_pass_warning_msg(string):
+	if string == _last_can_hero_pass_msg:
+		return
+	_last_can_hero_pass_msg = string
+	gameData.display_debug(_last_can_hero_pass_msg )
+	
 func can_hero_pass() -> bool:
 	if (hero_index != gameData.get_current_local_hero_id()):
-		gameData.display_debug("can_hero_pass refused because not local_hero_id")
+		can_hero_pass_warning_msg("can_hero_pass refused because not local_hero_id")
 		return false
 		
 	if (!gameData.is_interrupt_mode()):
 		return false
 	
 	if !hero_index in (gameData.get_currently_playing_hero_ids()):
-		gameData.display_debug("can_hero_pass refused because get_currently_playing_hero_ids")
+		can_hero_pass_warning_msg("can_hero_pass refused because get_currently_playing_hero_ids")
 		return false
 		
 	if !hero_index in (gameData.get_my_heroes()):
-		gameData.display_debug("can_hero_pass refused because not my hero")		
+		can_hero_pass_warning_msg("can_hero_pass refused because not my hero")		
 		return false
 		
 	if !gameData.theStack.is_player_allowed_to_pass():
-		gameData.display_debug("can_hero_pass refused because theStack.is_player_allowed_to_pass")		
+		can_hero_pass_warning_msg("can_hero_pass refused because theStack.is_player_allowed_to_pass")		
 		return false
 	
 	return true
@@ -169,7 +182,10 @@ func _update_labels():
 	else:
 		label.text = "Your Friend"
 	if current_state == State.FINISHED:
-		label.text = "Ready for Villain"					
+		label.text = "Ready for Villain"
+	
+	if label.text == "Ready for Villain" and gameData.phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN:
+		label.text = "--"					
 
 func _game_state_changed(_details:Dictionary):
 	_update_labels()

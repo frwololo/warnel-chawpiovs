@@ -478,8 +478,17 @@
 			"all": [
 				{
 					"name": "add_threat",
-					"amount": 1,
-					"subject": "self"
+					"amount": "per_boardseek",
+					"subject": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						]
+					}
 				}
 			]
 		}

@@ -215,11 +215,8 @@ stretch_mode = 4
 
 [node name="ServerActivity" type="TextureRect" parent="."]
 unique_name_in_owner = true
-margin_left = 928.0
-margin_top = 17.0
-margin_right = 1088.0
-margin_bottom = 170.0
-rect_scale = Vector2( 0.5, 0.5 )
+rect_scale = Vector2( 0.2, 0.2 )
+rect_pivot_offset = Vector2( 65, 67 )
 texture = ExtResource( 8 )
 stretch_mode = 5
 

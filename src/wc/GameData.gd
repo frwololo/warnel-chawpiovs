@@ -582,7 +582,7 @@ func get_currently_playing_hero_ids():
 		return [_villain_current_hero_target]
 	
 	#during player turn and outside of all other considerations, all heroes can play simultaneously
-	if phaseContainer.current_step == CFConst.PHASE_STEP.PLAYER_TURN:
+	if phaseContainer.current_step in [CFConst.PHASE_STEP.PLAYER_TURN, CFConst.PHASE_STEP.PLAYER_MULLIGAN, CFConst.PHASE_STEP.PLAYER_DISCARD]:
 		var all = []
 		for i in range (team.size()):
 			all.append(i+1)

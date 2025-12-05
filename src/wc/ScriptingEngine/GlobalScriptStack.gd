@@ -787,12 +787,19 @@ func is_player_allowed_to_click(card = null) -> bool:
 					return true
 				display_debug ("not allowed to click because card not in allowed cards for interruption")	
 				return false
-			var result = interrupting_hero_id in gameData.get_my_heroes()
+			var result = interrupting_hero_id in gameData.get_my_heroes() #todo needs to be tested when controling multipler heroes, this might be wrong
 			return result				
 		RUN_MODE.NOTHING_TO_RUN:
 			if card:
 				if gameData.phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN:
 					return false
+			else:
+				if gameData.phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN:
+					if !cfc.get_modal_menu():
+						#occasionally some steps ask to select cards. 
+						#E.g. mulligan, discard, defenders
+						#checking for modal menu is a fair enough way to discriminate here
+						return false				
 				
 			return true	
 		RUN_MODE.PENDING_REQUEST_ACK:
@@ -987,8 +994,11 @@ func display_debug_info():
 	if (!text_edit or !is_instance_valid(text_edit)):
 		return
 
-	var display_text = "run mode: " + RunModeStr[run_mode] + "\n"
-	display_text += "interrupt_mode" + InterruptModeStr[interrupt_mode] + "\n" 
+	var display_text = ""
+	if run_mode != RUN_MODE.NOTHING_TO_RUN:
+		 display_text += "run mode: " + RunModeStr[run_mode] + "\n"
+	if interrupt_mode != InterruptMode.NONE:
+		display_text += "interrupt_mode" + InterruptModeStr[interrupt_mode] + "\n" 
 
 	for event in stack:
 		display_text += str(event.stack_uid) + " - " + event.get_display_name() + "\n"

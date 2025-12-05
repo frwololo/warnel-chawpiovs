@@ -10,6 +10,7 @@ var basicPile = preload("res://src/core/Pile.tscn")
 
 onready var villain := $VillainZone
 onready var options_menu = $OptionsMenu
+
 onready var _server_activity = get_node("%ServerActivity")
 var board_organizers: Array = []
 
@@ -122,6 +123,14 @@ remotesync func set_random_seed(my_seed):
 	$SeedLabel.text = "Game Seed is: " + cfc.game_rng_seed
 	rpc("ready_for_step", LOADING_STEPS.READY_TO_LOAD)
 
+
+func blocking_activity_ongoing():
+	if !gameData.theStack.is_player_allowed_to_click():
+		return true
+	if _server_activity.visible:
+		return true
+	if gameData.is_ongoing_blocking_announce():
+		return true
 	
 func _process(delta:float):
 	_total_delta += delta
@@ -130,8 +139,13 @@ func _process(delta:float):
 		for board_organizer in board_organizers:
 			board_organizer.organize()
 			
-	if _server_activity.visible:
+	if blocking_activity_ongoing():
+		var last_index = get_child_count() - 1
+		move_child(_server_activity, last_index)
+		_server_activity.visible = true
+		_server_activity.rect_position = self.mouse_pointer.determine_global_mouse_pos() - _server_activity.rect_size * _server_activity.rect_scale
 		_server_activity.modulate = Color(1, 1, 1, sin(_total_delta*2)*0.4 + 0.5)
+		_server_activity.rect_rotation = _total_delta * 100
 	pass
 	
 func grid_setup():

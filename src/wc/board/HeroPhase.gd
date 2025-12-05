@@ -17,6 +17,7 @@ onready var heroNode : TextureRect = get_node("%hero")
 onready var label := get_node("%Label")
 onready var selected :=  get_node("%ColorRect")
 onready var ping :=  get_node("%Ping")
+onready var first_player :=  get_node("%FirstPlayer")
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -27,7 +28,14 @@ func _ready():
 	update_picture()
 	scripting_bus.connect("current_playing_hero_changed", self, "_current_playing_hero_changed")
 	gameData.connect("game_state_changed", self, "_game_state_changed")
+	gameData.connect("first_player_changed", self, "_first_player_changed")
 	_update_labels()
+
+	if hero_index == gameData.first_player_hero_id():
+		first_player.visible = true
+	else:
+		first_player.visible = false	
+	
 	pass # Replace with function body.
 
 func _process(_delta):
@@ -165,3 +173,10 @@ func _update_labels():
 
 func _game_state_changed(_details:Dictionary):
 	_update_labels()
+
+func _first_player_changed(details:Dictionary):
+	var new_first_player = details["after"]
+	if new_first_player == hero_index:
+		first_player.visible = true
+	else:
+		first_player.visible = false

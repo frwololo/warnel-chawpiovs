@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://src/wc/board/HeroPhase.gd" type="Script" id=1]
 [ext_resource path="res://src/wc/shaders/highlight.tres" type="Shader" id=2]
+[ext_resource path="res://assets/icons/first_player.png" type="Texture" id=3]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 2 )
@@ -76,5 +77,14 @@ text = "I'm Done"
 align = 1
 valign = 1
 autowrap = true
+
+[node name="FirstPlayer" type="TextureRect" parent="HBoxContainer/Control"]
+unique_name_in_owner = true
+margin_left = 69.0
+margin_top = 70.0
+margin_right = 212.0
+margin_bottom = 206.0
+rect_scale = Vector2( 0.2, 0.2 )
+texture = ExtResource( 3 )
 
 [connection signal="gui_input" from="HBoxContainer/Control" to="." method="_on_HeroPhase_gui_input"]

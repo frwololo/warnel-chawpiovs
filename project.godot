@@ -319,11 +319,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/core/Pile.gd"
 }, {
-"base": "Pile",
-"class": "PileMulti",
-"language": "GDScript",
-"path": "res://src/multiplayer/PileMulti.gd"
-}, {
 "base": "Reference",
 "class": "PlayerData",
 "language": "GDScript",
@@ -398,16 +393,6 @@ _global_script_classes=[ {
 "class": "StackObject",
 "language": "GDScript",
 "path": "res://src/wc/ScriptingEngine/Scripts/StackObject.gd"
-}, {
-"base": "Reference",
-"class": "StackQueueItem",
-"language": "GDScript",
-"path": "res://src/wc/ScriptingEngine/Scripts/StackQueueItem.gd"
-}, {
-"base": "Reference",
-"class": "StackReferenceItem",
-"language": "GDScript",
-"path": "res://src/wc/ScriptingEngine/Scripts/StackReferenceItem.gd"
 }, {
 "base": "StackObject",
 "class": "StackScript",
@@ -542,7 +527,6 @@ _global_script_class_icons={
 "OptionsMenu": "",
 "PhaseContainer": "",
 "Pile": "",
-"PileMulti": "",
 "PlayerData": "",
 "QuantityNumberButton": "",
 "SP": "",
@@ -558,8 +542,6 @@ _global_script_class_icons={
 "SignalStackScript": "",
 "SimplifiedStackScript": "",
 "StackObject": "",
-"StackQueueItem": "",
-"StackReferenceItem": "",
 "StackScript": "",
 "TargetingArrow": "",
 "TestSuite": "",

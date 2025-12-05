@@ -375,7 +375,10 @@ func _step_started(
 		CFConst.PHASE_STEP.VILLAIN_DEAL_ENCOUNTER:
 			_deal_encounters()	
 		CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER:
-			pass #do nothing but we don't want to mark it as complete									
+			pass #do nothing but we don't want to mark it as complete	
+		CFConst.PHASE_STEP.VILLAIN_PASS_PLAYER_TOKEN:
+			gameData.next_first_player()
+			set_current_step_complete(true, "_step_started")							
 		CFConst.PHASE_STEP.ROUND_END:
 			_round_end()
 		CFConst.PHASE_STEP.SYSTEMS_CHECK:

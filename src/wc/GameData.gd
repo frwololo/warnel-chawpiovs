@@ -60,6 +60,7 @@ var _current_encounter = null #WCCard
 
 #emit whenever something changes in the game state. This will trigger some recomputes
 signal game_state_changed(details)
+signal first_player_changed(details)
 
 #Singleton for game data shared across menus and views
 #network_players, indexed by network_id
@@ -89,6 +90,7 @@ var scripted_play_sequence:= []
 
 #temp vars for bean counting
 var _villain_current_hero_target :=1
+var _first_player_hero_id := 1
 var _current_enemy = null
 #list of enemies with a current attack intent
 var attackers: = []
@@ -615,12 +617,16 @@ func ready_all_player_cards():
 
 func end_round():
 	current_round+=1
-	set_villain_current_hero_target(1, true, "end_round")
+	reset_villain_current_hero_target(true, "end_round")
 	scripting_bus.emit_signal("round_ended")
 
 func get_hero_name(hero_id):
 	var hero_card = self.get_identity_card(hero_id)
 	return hero_card.canonical_name
+
+func reset_villain_current_hero_target( force_switch_ui:= true, caller = ""):
+	set_villain_current_hero_target(first_player_hero_id(), force_switch_ui, caller)
+
 
 func set_villain_current_hero_target(value, force_switch_ui:= true, caller:= ""):
 	var previous = _villain_current_hero_target
@@ -648,9 +654,11 @@ func villain_next_target(force_switch_ui:= true, caller:= "") -> int:
 	caller += " through villain_next_target"
 	if new_value > get_team_size():
 		new_value = 1 #Is this the right place? Causes lots of errors otherwise...
+	if new_value == first_player_hero_id():
 		to_return = 0
 	set_villain_current_hero_target(new_value, force_switch_ui, caller)
 	return 	to_return
+
 
 func all_attackers_finished():
 	phaseContainer.all_enemy_attacks_finished()
@@ -910,7 +918,7 @@ func deal_encounters():
 
 	#reset _villain_current_hero_target for cleanup	
 	#it should already be at 1 here but...
-	set_villain_current_hero_target(1, false, "deal encounters")
+	reset_villain_current_hero_target(false, "deal_encounters")
 	
 	#Hazard cards
 	var hazard = 0		
@@ -926,7 +934,7 @@ func deal_encounters():
 		hazard -=1
 		
 	#reset _villain_current_hero_target for cleanup	
-	set_villain_current_hero_target(1, false,"deal encounters")
+	reset_villain_current_hero_target(false, "deal_encounters")
 	cfc.remove_ongoing_process(self, "deal_encounters")
 
 func deal_one_encounter_to(hero_id, immediate = false, encounter = null):
@@ -1362,7 +1370,21 @@ func victory():
 	
 func first_player_hero_id():
 	#TODO
-	return 1
+	return _first_player_hero_id
+
+func next_first_player():
+	var previous = _first_player_hero_id
+	_first_player_hero_id += 1
+	if _first_player_hero_id > get_team_size():
+		_first_player_hero_id = 1
+	if _first_player_hero_id!= previous:
+		emit_signal("first_player_changed", {"before": previous, "after": _first_player_hero_id})
+
+func get_ordered_hero_id(i):
+	var hero_id = first_player_hero_id() + i
+	if hero_id > get_team_size():
+		hero_id = hero_id - get_team_size()
+	return hero_id
 
 var _ready_for_next_sequence = true
 func play_scripted_sequence():
@@ -1666,6 +1688,7 @@ func cleanup_post_game():
 	_multiplayer_desync = null
 	_clients_system_status = {}
 	_villain_current_hero_target = 1
+	_first_player_hero_id = 1
 	theStack.flush_logs()
 	flush_debug_display()
 	theStack.reset()

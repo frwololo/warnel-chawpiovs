@@ -6,7 +6,7 @@ extends Board
 
 var heroZone = preload("res://src/wc/board/WCHeroZone.tscn")
 var basicGrid = preload("res://src/wc/grids/BasicGrid.tscn")
-var basicPile = preload("res://src/multiplayer/PileMulti.tscn")
+var basicPile = preload("res://src/core/Pile.tscn")
 
 onready var villain := $VillainZone
 onready var options_menu = $OptionsMenu

@@ -465,7 +465,8 @@ func _process(_delta: float):
 	match interrupt_mode:
 		InterruptMode.FORCED_INTERRUPT_CHECK:
 			for i in range(gameData.get_team_size()):
-				var hero_id = i+1
+#				var hero_id = i+1
+				var hero_id = gameData.get_ordered_hero_id(i)
 				var interrupters = potential_interrupters.get(hero_id, [])
 				if interrupters:
 						set_run_mode(RUN_MODE.PENDING_USER_INTERACTION, "_process FORCED_INTERRUPT_CHECK")
@@ -476,7 +477,8 @@ func _process(_delta: float):
 			set_run_mode(RUN_MODE.PENDING_USER_INTERACTION,  "_process OPTIONAL_INTERRUPT_CHECK")			
 			potential_interrupters =  _interrupt_state["potential_interrupters"]
 			for i in gameData.get_team_size():
-				var hero_id = i+1
+#				var hero_id = i+1
+				var hero_id = gameData.get_ordered_hero_id(i)
 				if potential_interrupters.get(hero_id, []):
 					set_interrupting_hero(hero_id, potential_interrupters[hero_id])
 					break

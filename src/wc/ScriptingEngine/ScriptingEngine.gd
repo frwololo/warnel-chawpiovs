@@ -102,11 +102,23 @@ func move_card_to_container(script: ScriptTask) -> int:
 	#var modified_script:ScriptTask = script.duplicate
 	var backup:Dictionary = script.script_definition.duplicate()
 	
-	var owner_hero_id = script.owner.get_owner_hero_id()
+	var owner = script.owner
+	var owner_hero_id = owner.get_owner_hero_id()
+	var controller_hero_id = owner.get_controller_hero_id()
+	
+	var previous_hero = script.prev_subjects[0] if script.prev_subjects else null
+	var previous_hero_id = 0
+	if previous_hero:
+		previous_hero_id = previous_hero.get_controller_hero_id()
+	
+
 
 	for zone in ["hand"] + CFConst.HERO_GRID_SETUP.keys():
 		#TODO move to const
 		script.script_definition = WCUtils.search_and_replace(script.script_definition, zone, zone+str(owner_hero_id), true)
+		script.script_definition = WCUtils.search_and_replace(script.script_definition, zone + "_my_hero", zone+str(controller_hero_id), true)		
+		script.script_definition = WCUtils.search_and_replace(script.script_definition, zone + "_first_player", zone+str(gameData.first_player_hero_id()), true)	
+		script.script_definition = WCUtils.search_and_replace(script.script_definition, zone + "_previous_subject", zone+str(previous_hero_id), true)	
 	
 	var result = .move_card_to_container(script)
 	script.script_definition = backup
@@ -208,7 +220,24 @@ func attack(script: ScriptTask) -> int:
 			var script_modifications = {
 				"additional_tags" : ["attack", "Scripted"],
 			}
-			_add_receive_damage_on_stack (damage, script, script_modifications)		
+			_add_receive_damage_on_stack (damage, script, script_modifications)	
+		
+		var overkill = owner.get_property("overkill", 0) or (script.retrieve_integer_property("overkill"))	
+		if overkill:
+			var defender = script.subjects[0]
+			var defender_type = defender.get_property("type_code")
+			if defender_type in ["minion"]:
+				var overkill_amount = damage - defender.get_remaining_damage()
+				overkill_amount = max(0, overkill_amount)
+				if overkill_amount:
+
+					var script_modifications = {
+						"tags" : ["Scripted", "overkill"], #notably, overkill isn't an attack
+						"subjects": [gameData.get_villain()]
+					}
+					_add_receive_damage_on_stack (overkill_amount, script, script_modifications)
+	
+				
 		consequential_damage(script)
 
 	return retcode	
@@ -1204,7 +1233,7 @@ func constraints(script: ScriptTask) -> int:
 
 	var constraints: Array = script.get_property("constraints", [])
 	for constraint in constraints:
-		var result = cfc.ov_utils.func_name_run(this_card, constraint["func_name"], constraint["func_params"])
+		var result = cfc.ov_utils.func_name_run(this_card, constraint["func_name"], constraint["func_params"], script)
 		if !result:
 			return CFConst.ReturnCode.FAILED
 
@@ -1293,8 +1322,10 @@ static func duplicate_script(script):
 
 # Extendable function to perform extra checks on the script
 # according to game logic
-func _pre_task_prime(script: ScriptTask) -> void:
-	var previous_hero = script.prev_subjects[0] if script.prev_subjects else null
+func _pre_task_prime(script: ScriptTask, prev_subjects:= []) -> void:
+	if script.prev_subjects:
+		prev_subjects = script.prev_subjects
+	var previous_hero = prev_subjects[0] if prev_subjects else null
 	var script_definition = script.script_definition	
 	var previous_hero_id = 0
 	if previous_hero:
@@ -1309,4 +1340,11 @@ func _pre_task_prime(script: ScriptTask) -> void:
 		script_definition = WCUtils.search_and_replace(script_definition, group + "_first_player", group+str(gameData.first_player_hero_id()), true)	
 		script_definition = WCUtils.search_and_replace(script_definition, group + "_previous_subject", group+str(previous_hero_id), true)	
 
+	for zone in ["hand"] + CFConst.HERO_GRID_SETUP.keys():
+		#TODO move to const
+		script_definition = WCUtils.search_and_replace(script_definition, zone + "_my_hero", zone+str(controller_hero_id), true)		
+		script_definition = WCUtils.search_and_replace(script_definition, zone + "_first_player", zone+str(gameData.first_player_hero_id()), true)	
+		script_definition = WCUtils.search_and_replace(script_definition, zone + "_previous_subject", zone+str(previous_hero_id), true)	
 
+	script.script_definition = script_definition
+	

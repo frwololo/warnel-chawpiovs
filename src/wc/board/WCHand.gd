@@ -9,7 +9,8 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	var hero_id = get_my_hero_id()
 	var hero = gameData.get_identity_card(hero_id)
-	self.hand_size = hero.get_max_hand_size()
+	if hero:
+		self.hand_size = hero.get_max_hand_size()
 	
 func set_control_size(x, y):
 	$Control.rect_min_size = Vector2(x,y)

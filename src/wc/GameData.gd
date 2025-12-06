@@ -1354,11 +1354,11 @@ func get_minions_engaged_with_hero(hero_id:int):
 	return results
 	
 func get_identity_card(owner_id) -> Card:
-	if (owner_id) <= 0:
-		cfc.LOG ("error owner id is " + String(owner_id))
+	var board:Board = cfc.NMAP.board
+
+	if !board.heroZones.has(owner_id):
 		return null
 	
-	var board:Board = cfc.NMAP.board
 	var heroZone:WCHeroZone = board.heroZones[owner_id]
 	return heroZone.get_identity_card()	
 

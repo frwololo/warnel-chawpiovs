@@ -25,7 +25,7 @@
 			"board": {
 				"_rules": {
 					"forced": true
-				},			
+				},
 				"Flip then Remove from the game": [
 					{
 						"name": "constraints",
@@ -532,7 +532,7 @@
 			"board": {
 				"_rules": {
 					"forced": true
-				},			
+				},
 				"Flip then Remove from the game": [
 					{
 						"name": "constraints",
@@ -1461,7 +1461,7 @@
 			"board": {
 				"_rules": {
 					"forced": true
-				},			
+				},
 				"Flip then Remove from the game": [
 					{
 						"name": "constraints",
@@ -2269,10 +2269,10 @@
 	},
 	"Killmonger": {
 		"interrupt": {
-			"event_name": "receive_damage",	
+			"event_name": "receive_damage",
 			"event_filters": {
 				"target": "villain"
-			},			
+			},
 			"board": [
 				{
 					"name": "prevent",
@@ -2283,15 +2283,15 @@
 				{
 					"filter_properties": {
 						"comparison": "ge",
-							"trait_black_panther": 0
+						"trait_black_panther": 0
 					},
 					"filter_properties2": {
 						"type_code": "upgrade"
-					},					
+					}
 				}
-			]			
+			]
 		}
-	},	
+	},
 	"Klaw - 1": {
 		"alterants": {
 			"board": [
@@ -2546,7 +2546,7 @@
 			"board": {
 				"_rules": {
 					"forced": true
-				},			
+				},
 				"Flip then Remove from the game": [
 					{
 						"name": "constraints",
@@ -2978,7 +2978,7 @@
 					"name": "add_resource",
 					"amount": {
 						"func_name": "count_printed_resources",
-						"params": {
+						"func_params": {
 							"subject": "tutor",
 							"subject_index": "top",
 							"subject_count": 1,
@@ -2992,7 +2992,7 @@
 					"name": "add_resource",
 					"amount": {
 						"func_name": "count_printed_resources",
-						"params": {
+						"func_params": {
 							"subject": "tutor",
 							"subject_index": "top",
 							"subject_count": 1,
@@ -3006,7 +3006,7 @@
 					"name": "add_resource",
 					"amount": {
 						"func_name": "count_printed_resources",
-						"params": {
+						"func_params": {
 							"subject": "tutor",
 							"subject_index": "top",
 							"subject_count": 1,
@@ -3020,7 +3020,7 @@
 					"name": "add_resource",
 					"amount": {
 						"func_name": "count_printed_resources",
-						"params": {
+						"func_params": {
 							"subject": "tutor",
 							"subject_index": "top",
 							"subject_count": 1,
@@ -3154,6 +3154,46 @@
 			]
 		}
 	},
+	"Relentless Assault": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"subject": "target",
+					"amount": 5,
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					],
+					"tags": [
+						"hero_action",
+						"attack"
+					],
+					"overkill": {
+						"if": {
+							"func_name": "paid_with_includes",
+							"func_params": {
+								"physical": 1
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+				}
+			]
+		}
+	},
 	"Repulsor Blast": {
 		"manual": {
 			"hand": [
@@ -3170,16 +3210,18 @@
 					"subject_index": "top",
 					"subject_count": 5,
 					"src_container": "deck",
-					"dest_container": "discard"
+					"dest_container": "discard",
+					"is_cost": true
 				},
 				{
 					"name": "attack",
 					"subject": "target",
 					"amount": {
 						"func_name": "count_printed_resources",
-						"params": {
+						"func_params": {
 							"subject": "previous",
-							"resource_type": "energy"
+							"resource_type": "energy",
+							"multiplier": 2
 						}
 					},
 					"plus_amount": 1,
@@ -3704,7 +3746,7 @@
 	},
 	"Stark Tower": {
 		"manual": {
-			"hand": [
+			"board": [
 				{
 					"name": "constraints",
 					"is_cost": true,
@@ -3713,12 +3755,18 @@
 					]
 				},
 				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},				
+				{
 					"name": "nop",
 					"subject": "boardseek",
 					"subject_count": "all",
 					"selection_count": 1,
 					"selection_type": "equal",
 					"needs_selection": true,
+					"is_cost": true,
 					"filter_state_seek": [
 						{
 							"filter_group": "group_identities"
@@ -3730,7 +3778,7 @@
 					"src_container": "discard_previous_subject",
 					"dest_container": "hand_previous_subject",
 					"subject": "tutor",
-					"subject_count": "1",
+					"subject_count": 1,
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -4309,7 +4357,7 @@
 						"subject": "self",
 						"token_name": "_futurist",
 						"is_cost": true
-					},					
+					},
 					{
 						"name": "move_card_to_container",
 						"subject": "tutor",
@@ -4324,12 +4372,12 @@
 						"subject_count": "all",
 						"dest_container": "hand",
 						"selection_count": 1,
-						"needs_selection": true,
-					},
+						"needs_selection": true
+					}
 				]
 			}
 		}
-	},	
+	},
 	"Under Fire": {
 		"card_moved_to_pile": {
 			"trigger": "self",

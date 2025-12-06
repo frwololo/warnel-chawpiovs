@@ -96,7 +96,7 @@ func get_property(property: String, default = null, subscript_definition = null)
 				return get_property(property, default, result["else"])
 		elif result.has("func_name"):
 			var params = result.get("func_params", {})
-			result = self.owner.call(result["func_name"], params, self)
+			result = cfc.ov_utils.func_name_run(self.owner, result["func_name"], params, self)
 			
 	return result
 	

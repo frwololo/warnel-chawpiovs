@@ -264,7 +264,7 @@ func execute(_run_type) -> void:
 			if script.get_property(SP.KEY_ABORT_ON_COST_FAILURE) and not can_all_costs_be_paid:
 				continue
 			
-			_pre_task_prime(script)	
+			_pre_task_prime(script, prev_subjects)	
 			# If we have requested to use the previous target,
 			# but the subject_array is empty, we check if
 			# subject available in the next task and try to use that instead.
@@ -1231,7 +1231,7 @@ func _retrieve_temp_modifiers(script: ScriptTask, type: String) -> Dictionary:
 
 # Extendable function to perform extra checks on the script
 # according to game logic
-func _pre_task_prime(_script: ScriptTask) -> void:
+func _pre_task_prime(_script: ScriptTask, prev_subjects:=[]) -> void:
 	pass
 
 # Extendable function to perform extra checks on the script

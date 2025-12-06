@@ -97,13 +97,19 @@ func parse_post_prime_replacements(script_task:ScriptObject) -> Dictionary:
 			
 	return wip_definitions
 
-static func func_name_run(object, func_name, func_params):
+static func func_name_run(object, func_name, func_params, script = null):
 	var reverse_result = false
 	if func_name.begins_with("!"):
 		func_name = func_name.substr(1)
 		reverse_result = true
-	var result = object.call(func_name, func_params)
+	var result = object.call(func_name, func_params, script)
+
+	var multiplier = func_params.get("multiplier", 1)
+	if typeof(result) in [TYPE_INT]:
+		result = result * multiplier
 	
 	if typeof(result) in [TYPE_INT, TYPE_BOOL] and reverse_result:
 		result = !result
+	
+		
 	return result

@@ -1,0 +1,159 @@
+{
+	"_comments": "Test for Repulsor Blast damage",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},			
+				{
+					"card": "Hydra Mercenary",
+				},
+				{
+					"card": "Stampede",
+				}				
+			],
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				},
+				{
+					"card": "01126",
+					"tokens" :{"threat" : 3},
+				}				
+			],			
+			"hand1": [
+				{
+					"card": "The Power of Aggression"
+				},
+				{
+					"card": "Repulsor Blast"
+				}				
+			],			
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Supersonic Punch"
+				},				
+				{
+					"card": "Relentless Assault"
+				},
+				{
+					"card": "Tac Team"
+				},
+				{
+					"card": "Combat Training"
+				},
+				{
+					"card": "Uppercut"
+				},
+				{
+					"card": "Chase Them down"
+				},				
+			
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Repulsor Blast",
+			"_comments": "play repulsor blast"
+		},	
+		{
+			"type": "target",
+			"value": "01113",
+		},	
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},			
+				{
+					"card": "Hydra Mercenary",
+				},
+				{
+					"card": "Stampede",
+				}				
+			],
+			"villain": [
+				{
+					"card": "01113",
+					"tokens": {"damage": 7}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				},
+				{
+					"card": "01126",
+					"tokens" :{"threat" : 3},
+				}				
+			],			
+			"discard1": [
+				{
+					"card": "The Power of Aggression"
+				},
+				{
+					"card": "Repulsor Blast"
+				},
+				{
+					"card": "Supersonic Punch"
+				},					
+				{
+					"card": "Relentless Assault"
+				},
+				{
+					"card": "Tac Team"
+				},
+				{
+					"card": "Combat Training"
+				},
+				{
+					"card": "Uppercut"
+				},
+				
+			],			
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Chase Them down"
+				}			
+			]
+		}
+	}
+}

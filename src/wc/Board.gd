@@ -141,6 +141,13 @@ func offer_to_load_last_game():
 	if !json_data:
 		rpc("ready_for_step", LOADING_STEPS.START_GAME)
 		return
+
+	#only offer to load if the previous save game had the same number of heroes
+	var hero_data:Array = json_data.get("heroes", [])	
+	if hero_data.size() != gameData.get_team_size():
+		rpc("ready_for_step", LOADING_STEPS.START_GAME)
+		return
+
 		
 	var load_dialog:ConfirmationDialog = ConfirmationDialog.new()
 	load_dialog.window_title = "Load last game?"

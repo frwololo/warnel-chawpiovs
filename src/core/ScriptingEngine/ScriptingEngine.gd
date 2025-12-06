@@ -71,9 +71,21 @@ func _init(_state_scripts: Array,
 		_trigger_object: Node,
 		_trigger_details: Dictionary) -> void:
 	owner = _owner
+
+	#if optional tags are passed, merge them with this invocation
+	if _trigger_details.has("additional_tags"):
+		var tags = _trigger_details["additional_tags"]
+		for t in _state_scripts:
+			t["tags"] = t.get("tags", []) + tags
+
+	if _trigger_details.has("additional_script_definition"):
+		var additional_def = _trigger_details["additional_script_definition"]
+		for t in _state_scripts:
+			for def in additional_def:
+				t[def] = additional_def[def]
 	
-	if trigger_details.has("trigger_type"):
-		trigger = trigger_details["trigger_type"]
+	if _trigger_details.has("trigger_type"):
+		trigger = _trigger_details["trigger_type"]
 	else:
 		trigger = ""
 	

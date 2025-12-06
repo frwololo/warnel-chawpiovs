@@ -603,9 +603,9 @@ const DEFAULT_SETTINGS:= {
 #set to true to help with breakpoints and debug
 const DISABLE_THREADS:= true 
 #this disables the announcer messages. Usually not recommended, but might help with speeding up tests
-const DISABLE_ANNOUNCER:= false
+const DISABLE_ANNOUNCER:= true
 #useful only for tests to accelerate the loading of the game and get to gameplay faster
-const SKIP_MULLIGAN:= false
+const SKIP_MULLIGAN:= true
 #if set to true, the system checks will only send hashed instead of 
 #full dictionaries. Probably better for bandwidth
 #set to false when debugging a network/desync issue
@@ -617,7 +617,7 @@ const FORCE_LOGS:= false
 const DESYNC_TIMEOUT:= 5
 const DISPLAY_DEBUG_MSG = true
 
-const DEBUG_AUTO_START_MULTIPLAYER = false
+const DEBUG_AUTO_START_MULTIPLAYER = true
 const DEBUG_ENABLE_NETWORK_TEST = false
 #set to 0 to deactivate fake delay. Otherwise, random delay between 0 and this value will be added
 #to rpc calls on the stack (only activated if DEBUG_ENABLE_NETWORK_TEST is true)

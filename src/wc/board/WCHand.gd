@@ -31,7 +31,7 @@ func calculate_others_offset()-> Vector2:
 func re_place() -> void:
 	if self.name.to_lower().begins_with("ghost"):
 		var my_cards = get_all_cards()
-		if !my_cards:
+		if !my_cards or get_my_hero_id() != gameData.get_current_local_hero_id():
 			self.visible = false
 			self.disable()
 		else:

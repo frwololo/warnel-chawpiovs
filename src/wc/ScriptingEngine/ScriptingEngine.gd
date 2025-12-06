@@ -238,9 +238,9 @@ func deal_damage(script:ScriptTask) -> int:
 #	if script.owner.canonical_name == "Energy Daggers":
 #		var _tmp = 1
 #
-#	_add_receive_damage_on_stack(script.script_definition["amount"], script)
-#	return CFConst.ReturnCode.CHANGED
-	return receive_damage(script)
+	_add_receive_damage_on_stack(script.script_definition["amount"], script)
+	return CFConst.ReturnCode.CHANGED
+#	return receive_damage(script)
 
 func scheme_base_threat(script:ScriptTask) -> int:
 	var scheme = script.owner

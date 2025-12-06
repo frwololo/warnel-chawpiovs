@@ -454,11 +454,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/wc/WCUtils.gd"
 }, {
-"base": "Node2D",
-"class": "WCZone",
-"language": "GDScript",
-"path": "res://src/wc/board/_WCZone.gd"
-}, {
 "base": "Reference",
 "class": "perMessage",
 "language": "GDScript",
@@ -554,7 +549,6 @@ _global_script_class_icons={
 "WCScriptingBus": "",
 "WCScriptingEngine": "",
 "WCUtils": "",
-"WCZone": "",
 "perMessage": ""
 }
 

@@ -284,7 +284,7 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 
 	###END Fixing missing data
 
-	var card_type:String = card_data[CardConfig.SCENE_PROPERTY]
+	var card_type:String = card_data["type_code"]
 	
 	#enriching data
 	var lc_card_type = card_type.to_lower()
@@ -335,7 +335,7 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	#Villains: multiple cards have the same name.
 	#Hack to "fix" this by adding stage number
 	#e.g. "Rhino_2"
-	if (card_type == "Villain"):
+	if (lc_card_type == "villain"):
 		card_data["Name"] = card_data["Name"] + " - " + String(card_data["stage"])
 	
 	card_data.erase("name")
@@ -357,7 +357,7 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	lowercase_card_name_to_name[card_name.to_lower()] = card_name
 	
 	#scenarios cache
-	if (card_type == "Main_scheme"):
+	if (lc_card_type == "main_scheme"):
 		var full_stage_id = card_data["original_stage"]	
 		#skip the weird "1A", "1B" cards for now...
 		if (!full_stage_id.ends_with("A") and !full_stage_id.ends_with("B")):
@@ -375,7 +375,7 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 		modular_encounters[lc_set_code].append(card_data)
 	
 	#obligations cache
-	if (card_type == "Obligation"):
+	if (lc_card_type == "obligation"):
 		obligations[lc_set_code] = card_data
 		obligations[lc_set_name] = card_data
 		

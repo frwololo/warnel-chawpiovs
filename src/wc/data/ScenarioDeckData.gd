@@ -102,8 +102,8 @@ func get_encounter_deck():
 			modular_set_count += 1
 		var encounter_set : Array = cfc.get_encounter_cards(encounter_set_code)
 		for card_data in encounter_set:
-			var card_type = card_data[CardConfig.SCENE_PROPERTY]
-			if (card_type != "Main_scheme" and card_type != "Villain"): #skip villain and schemes from the deck
+			var card_type = card_data["type_code"]
+			if (card_type != "main_scheme" and card_type != "villain"): #skip villain and schemes from the deck
 				if (1): #card_type == "Minion" or card_type == "Side_scheme"): #TODO debug
 					encounter_deck.push_back(card_data)
 				

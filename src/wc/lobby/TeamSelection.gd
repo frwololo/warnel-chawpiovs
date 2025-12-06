@@ -78,7 +78,7 @@ func _ready():
 
 #Quickstart for tests
 #TODO remove
-	if (cfc.is_game_master()):
+	if (cfc.is_game_master() and CFConst.DEBUG_AUTO_START_MULTIPLAYER):
 		if (gameData.is_multiplayer_game):
 			yield(get_tree().create_timer(0.5), "timeout")	
 			owner_changed(1, 1)
@@ -212,6 +212,11 @@ mastersync func get_next_hero_slot(hero_id) -> int:
 	var client_id = get_tree().get_rpc_sender_id() 
 	for i in HERO_COUNT:
 		var data: HeroDeckData = team[i]
+		if (data.get_hero_id() == hero_id):
+			return -1
+
+	for i in HERO_COUNT:
+		var data: HeroDeckData = team[i]
 		if (data.owner.network_id == client_id and data.get_hero_id() == ""):
 			add_pending_acks()
 			rpc("assign_hero", hero_id, i)
@@ -221,11 +226,20 @@ mastersync func get_next_hero_slot(hero_id) -> int:
 remotesync func assign_hero(hero_id, slot):
 	#data update
 	var hero_deck_data: HeroDeckData = team[slot]
+	var previous_hero_id = hero_deck_data.get_hero_id()
 	hero_deck_data.set_hero_id(hero_id) #todo could use a signal here and the GUI would be listening
 	
 	#gui update
 	var hero_deck_select = heroes_container.get_child(slot)
 	hero_deck_select.load_hero(hero_id)
+	if hero_id:
+		for child in all_heroes_container.get_children():
+			if child.hero_id == hero_id:
+				child.disable()
+	if previous_hero_id and previous_hero_id!= hero_id:
+		for child in all_heroes_container.get_children():
+			if child.hero_id == previous_hero_id:
+				child.enable()	
 	ack()
 
 func verify_launch_button():
@@ -539,3 +553,9 @@ func show_preview(card_id):
 func hide_preview(card_id):
 	var large_picture = get_node("%LargePicture")		
 	large_picture.visible = false
+
+
+func _on_CancelButton_pressed():
+	self.queue_free()
+	gameData.disconnect_from_network()
+	get_tree().change_scene(CFConst.PATH_CUSTOM + 'MainMenu.tscn')

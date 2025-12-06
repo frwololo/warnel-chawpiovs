@@ -34,12 +34,20 @@ const _script_name_to_function:={
 
 func _ready():
 	scripting_bus.connect("step_started", self, "_step_started")
+	scripting_bus.connect("stack_event_deleted", self, "_stack_event_deleted")
 	if CFConst.DISABLE_ANNOUNCER:
 		skip_announcer()
 
 
 func skip_announcer(value:bool=true):
 	_skip_announcer = value
+
+func _stack_event_deleted(event):
+	for announce in ongoing_announces:
+		var ongoing_announce_object = announce.get("object", null)
+		if ongoing_announce_object == event:
+			announce["object_deleted"] = true
+				
 
 func _step_started(details:Dictionary):
 	if (_skip_announcer):
@@ -205,6 +213,11 @@ func process_receive_damage(announce) -> bool:
 	var arrows = storage["arrows"]
 	for arrow in arrows:
 		arrow._draw_targeting_arrow()
+	
+	var object_deleted = announce.get("object_deleted", false)
+	if object_deleted:
+		announce["is_blocking"] = false
+		return false
 	
 #	is_blocking = true
 #	if current_delta > 	announcer_minimum_time:

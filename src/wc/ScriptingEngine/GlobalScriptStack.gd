@@ -607,7 +607,8 @@ func flush_script(stack_object):
 		func_return = func_return.resume()
 #	var user_interaction_status = stack_object.get_user_interaction_status()
 	#something todo here ???
-
+	interrupt_mode = InterruptMode.NONE
+	
 	if run_mode != RUN_MODE.NO_BRAKES:
 		var _error = 1
 		display_debug("called to flush script but not allowed because run_mode is" + RunModeStr[run_mode])
@@ -890,6 +891,9 @@ func stack_pop_back():
 	if !stack.size():
 		return null
 	return stack.pop_back()
+
+func has_script(script):
+	return script in stack
 	
 func delete_last_event(requester:ScriptTask):
 	#the requester usually doesn't want to delete themselves

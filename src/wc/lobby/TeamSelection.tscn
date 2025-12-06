@@ -265,17 +265,29 @@ text = "Launch"
 [node name="Margin2" type="MarginContainer" parent="MainMenu/Outercontainer"]
 margin_top = 700.0
 margin_right = 490.0
-margin_bottom = 817.0
+margin_bottom = 847.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 custom_constants/margin_top = 90
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/Margin2"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Outercontainer/Margin2"]
 margin_top = 90.0
 margin_right = 490.0
-margin_bottom = 117.0
+margin_bottom = 147.0
 
-[node name="FolderLabel" type="Label" parent="MainMenu/Outercontainer/Margin2/HBoxContainer"]
+[node name="CancelButton" type="Button" parent="MainMenu/Outercontainer/Margin2/VBoxContainer"]
+unique_name_in_owner = true
+margin_right = 154.0
+margin_bottom = 27.0
+size_flags_horizontal = 2
+text = "Back to main menu"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/Margin2/VBoxContainer"]
+margin_top = 30.0
+margin_right = 490.0
+margin_bottom = 57.0
+
+[node name="FolderLabel" type="Label" parent="MainMenu/Outercontainer/Margin2/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 margin_top = 2.0
 margin_right = 99.0
@@ -283,7 +295,7 @@ margin_bottom = 25.0
 text = "user folder:"
 valign = 2
 
-[node name="OpenFolderButton" type="Button" parent="MainMenu/Outercontainer/Margin2/HBoxContainer"]
+[node name="OpenFolderButton" type="Button" parent="MainMenu/Outercontainer/Margin2/VBoxContainer/HBoxContainer"]
 margin_left = 102.0
 margin_right = 147.0
 margin_bottom = 27.0
@@ -300,4 +312,5 @@ margin_bottom = 1060.0
 [connection signal="pressed" from="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer3/TeamPanel/HBoxContainer/DownloadDeckContainer/VBoxContainer/HBoxContainer/DownloadDeckButton" to="." method="_on_DownloadDeck_pressed"]
 [connection signal="item_selected" from="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer/ScenarioContainer/MarginContainer2/ScenarioContainer/PanelContainer2/VBoxContainer/HBoxContainer/EncounterSelect" to="." method="_on_EncounterSelect_item_selected"]
 [connection signal="toggled" from="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer/ScenarioContainer/MarginContainer2/ScenarioContainer/PanelContainer2/VBoxContainer/HBoxContainer2/ExpertMode" to="." method="_on_ExpertMode_toggled"]
-[connection signal="pressed" from="MainMenu/Outercontainer/Margin2/HBoxContainer/OpenFolderButton" to="." method="_on_OpenFolderButton_pressed"]
+[connection signal="pressed" from="MainMenu/Outercontainer/Margin2/VBoxContainer/CancelButton" to="." method="_on_CancelButton_pressed"]
+[connection signal="pressed" from="MainMenu/Outercontainer/Margin2/VBoxContainer/HBoxContainer/OpenFolderButton" to="." method="_on_OpenFolderButton_pressed"]

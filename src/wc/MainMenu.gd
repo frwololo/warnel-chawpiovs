@@ -34,7 +34,8 @@ signal images_download_completed()
 signal sets_download_completed()
 
 # Called when the node enters the scene tree for the first time.
-func _ready() -> void:		
+func _ready() -> void:
+	gameData.disconnect_from_network()	
 	create_default_folders()
 	#hide all buttons while we load, but keep the exit button
 	_hide_buttons()	

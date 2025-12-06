@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://themes/darktheme/darktheme.theme" type="Theme" id=1]
 [ext_resource path="res://themes/darktheme/fonts/Bangers/Bangers-Regular.ttf" type="DynamicFontData" id=2]
 [ext_resource path="res://src/wc/MainMenu.gd" type="Script" id=3]
+[ext_resource path="res://assets/icons/title.png" type="Texture" id=4]
 
 [sub_resource type="DynamicFont" id=2]
 size = 107
@@ -29,30 +30,38 @@ margin_bottom = 1080.0
 
 [node name="Margin" type="MarginContainer" parent="MainMenu/VBox"]
 margin_right = 1920.0
-margin_bottom = 358.0
+margin_bottom = 694.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/margin_top = 90
 
 [node name="Label" type="Label" parent="MainMenu/VBox/Margin"]
-margin_top = 166.0
+visible = false
+margin_top = 334.0
 margin_right = 1920.0
-margin_bottom = 281.0
+margin_bottom = 449.0
 custom_fonts/font = SubResource( 2 )
 text = "Warnel Chawpiovs"
 align = 1
 
-[node name="Center" type="CenterContainer" parent="MainMenu/VBox"]
-margin_top = 361.0
+[node name="TextureRect" type="TextureRect" parent="MainMenu/VBox/Margin"]
+margin_top = 90.0
 margin_right = 1920.0
-margin_bottom = 719.0
+margin_bottom = 694.0
+texture = ExtResource( 4 )
+stretch_mode = 4
+
+[node name="Center" type="CenterContainer" parent="MainMenu/VBox"]
+margin_top = 697.0
+margin_right = 1920.0
+margin_bottom = 887.0
 size_flags_vertical = 3
 
 [node name="VButtons" type="VBoxContainer" parent="MainMenu/VBox/Center"]
 margin_left = 864.0
-margin_top = 128.0
+margin_top = 44.0
 margin_right = 1056.0
-margin_bottom = 229.0
+margin_bottom = 145.0
 rect_min_size = Vector2( 192, 0 )
 custom_constants/separation = 10
 
@@ -77,7 +86,7 @@ margin_bottom = 101.0
 text = "Exit"
 
 [node name="Margin2" type="MarginContainer" parent="MainMenu/VBox"]
-margin_top = 722.0
+margin_top = 890.0
 margin_right = 1920.0
 margin_bottom = 1080.0
 size_flags_horizontal = 3
@@ -85,9 +94,9 @@ size_flags_vertical = 3
 custom_constants/margin_top = 90
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainMenu/VBox/Margin2"]
-margin_top = 212.0
+margin_top = 128.0
 margin_right = 99.0
-margin_bottom = 235.0
+margin_bottom = 151.0
 size_flags_horizontal = 0
 size_flags_vertical = 4
 

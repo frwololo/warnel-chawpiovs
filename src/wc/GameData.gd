@@ -137,8 +137,16 @@ func _init():
 	theGameObserver = GameObserver.new()
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready():	
 	#Signals
+
+# Network setup
+	get_tree().connect("network_peer_connected", self, "_player_connected")
+	get_tree().connect("network_peer_disconnected", self, "_player_disconnected")
+	get_tree().connect("connected_to_server", self, "_connected_ok")
+	get_tree().connect("connection_failed", self, "_connected_fail")
+	get_tree().connect("server_disconnected", self, "_server_disconnected")		
+	
 	#TODO: the attempt to lock should happen BEFORE we actually open the windows
 	#scripting_bus.connect("selection_window_opened", self, "attempt_user_input_lock")
 	#scripting_bus.connect("card_selected", self, "_selection_window_closed")	
@@ -151,7 +159,6 @@ func _ready():
 	scripting_bus.connect("stack_event_deleted", self, "_stack_event_deleted")
 	scripting_bus.connect("all_clients_game_loaded", self, "_all_clients_game_loaded")
 	
-	get_tree().connect("server_disconnected", self, "_server_disconnected")
 	
 	theStack.connect("script_executed_from_stack", self, "_script_executed_from_stack")
 	theStack.connect("script_added_to_stack", self, "_script_added_to_stack")
@@ -188,6 +195,7 @@ func is_targeting_ongoing():
 
 
 func end_game(result:String):
+	init_save_folder()
 	cfc.set_game_paused(true)
 	var end_dialog:AcceptDialog = AcceptDialog.new()
 	end_dialog.window_title = result
@@ -516,10 +524,27 @@ func init_as_server():
 	get_tree().set_network_peer(peer)
 	return err	
 
+func archive_save_folder(save_dir):
+	var dir:Directory = Directory.new()
+	var past_dir = "user://Saves/past_games/"
+	dir.make_dir_recursive(past_dir)
+	if !dir.dir_exists(save_dir):
+		return
+	if !dir.dir_exists(past_dir):
+		return
+	
+	var files_in_save = CFUtils.list_files_in_directory(save_dir)
+	if !files_in_save:
+		return	
+	var cur_time = Time.get_datetime_dict_from_system()
+	var cur_time_str = str(cur_time["month"]) + "_" + str(cur_time["day"]) + "_" + str(cur_time["hour"]) + "_" + str(cur_time["minute"])
+	dir.rename(save_dir, past_dir + cur_time_str + "/")
+
 #we delete all existing saves of a previous game
 func init_save_folder():
 	var dir:Directory = Directory.new()
 	var save_dir = "user://Saves/current_game/"
+	archive_save_folder(save_dir)
 	dir.make_dir_recursive(save_dir)
 	if !dir.dir_exists(save_dir):
 		#todo error handling
@@ -529,6 +554,20 @@ func init_save_folder():
 	for file in files_in_save:
 		if file.ends_with(".json"):
 			dir.remove(save_dir + file)
+
+func get_ongoing_game():
+	var dir:Directory = Directory.new()
+	var save_dir = "user://Saves/current_game/"
+	if !dir.dir_exists(save_dir):
+		return {}
+	var files_in_save:Array = CFUtils.list_files_in_directory(save_dir, "", true)
+	if !files_in_save:
+		return {}
+	files_in_save.sort()
+	var latest = files_in_save.back()
+	var json = WCUtils.read_json_file(latest)
+	return json
+	
 
 func save_round(round_id):
 	var save_dir = "user://Saves/current_game/"
@@ -1698,7 +1737,7 @@ func cleanup_post_game():
 	cfc.reset_ongoing_process_stack()
 	cfc.flush_cache()
 	guidMaster.reset()
-	
+
 	cfc.set_game_paused(false)
 
 	
@@ -1841,8 +1880,27 @@ func display_debug(msg, prefix = ""):
 
 	print_debug(prefix + msg)
 
+func _player_connected():
+	pass
+	
+func _player_disconnected():
+	pass
+	
+func _connected_ok():
+	pass
+	
+func _connected_fail():
+	pass
+
+func disconnect_from_network():
+	#var network_id = cfc.get_network_unique_id()
+	get_tree().network_peer = null
+	network_players = {}
+	id_to_network_id = {}
+
 func _server_disconnected():
 	display_debug("SERVER DISCONNECTED")
+	disconnect_from_network()
 	cleanup_post_game()
 	if testSuite and is_instance_valid(testSuite):
 		testSuite.finished = true
@@ -1945,6 +2003,7 @@ func flush_debug_display():
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		cfc.set_game_paused(true)
+		#init_save_folder()
 
 
 func replace_cards_to_cardids (script_definition):

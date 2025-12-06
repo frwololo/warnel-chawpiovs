@@ -122,6 +122,9 @@ func load_identity(card_id, modifiers ={}):
 				"slot": slot,
 				"modifiers": modifiers
 			}
+	if !grid or !slot:
+		cfc.LOG("{error} grid/slot not found for " + card.canonical_name)
+		
 	set_identity_card(card)
 	rpc("cards_preloaded")
 	return identity_card

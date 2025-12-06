@@ -27,7 +27,8 @@ enum LOADING_STEPS {
 	CARDS_PRELOADED,
 	CARDS_PRELOADED_SKIP_LOAD,	
 	CARDS_MOVED,
-	READY_TO_START
+	READY_TO_START,
+	START_GAME
 }
 
 # a temporary variable to move cards after all clients have loaded them,
@@ -78,7 +79,7 @@ func _ready() -> void:
 	# warning-ignore:return_value_discarded
 	#$DeckBuilderPopup.connect('popup_hide', self, '_on_DeckBuilder_hide')	
 	
-	gameData.init_save_folder()
+	#gameData.init_save_folder()
 	
 	grid_setup()
 	rpc("ready_for_step", LOADING_STEPS.RNG_INIT)	
@@ -110,12 +111,43 @@ func load_next_step(next_step):
 			rpc("ready_for_step", LOADING_STEPS.CARDS_MOVED)
 		LOADING_STEPS.CARDS_PRELOADED_SKIP_LOAD:
 			post_load_move()
-			rpc("ready_for_step", LOADING_STEPS.READY_TO_START)			
+			rpc("ready_for_step", LOADING_STEPS.START_GAME)			
 		LOADING_STEPS.CARDS_MOVED:
 			post_cards_moved_load()
 			#next step called from within function
 		LOADING_STEPS.READY_TO_START:
+			offer_to_load_last_game()
+		LOADING_STEPS.START_GAME:
 			gameData.start_game()				
+
+func _decline_offer_to_load_last_game():
+	gameData.init_save_folder()
+	rpc("ready_for_step", LOADING_STEPS.START_GAME)
+	return	
+
+func _load_last_game():
+	var json_data = gameData.get_ongoing_game()
+	if !json_data:
+		rpc("ready_for_step", LOADING_STEPS.START_GAME)
+		return
+	gameData.load_gamedata(json_data)
+
+func offer_to_load_last_game():
+	if !cfc.is_game_master():
+		rpc("ready_for_step", LOADING_STEPS.START_GAME)
+		return
+		
+	var json_data = gameData.get_ongoing_game()
+	if !json_data:
+		rpc("ready_for_step", LOADING_STEPS.START_GAME)
+		return
+		
+	var load_dialog:ConfirmationDialog = ConfirmationDialog.new()
+	load_dialog.window_title = "Load last game?"
+	load_dialog.get_cancel().connect("pressed", self, "_decline_offer_to_load_last_game")
+	load_dialog.connect("confirmed", self, "_load_last_game")
+	add_child(load_dialog)
+	load_dialog.popup_centered()
 
 remotesync func set_random_seed(my_seed):
 	cfc.LOG("setting random seed to " + str(my_seed))

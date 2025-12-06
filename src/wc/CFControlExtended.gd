@@ -69,6 +69,11 @@ remote func ping_ack(start_time):
 	} 
 
 func ping():
+	if !get_tree():
+		return
+	if !get_tree().network_peer:
+		return
+		
 	var new_ping_time = Time.get_ticks_msec()
 	#ping every 2 seconds at most
 	if new_ping_time - last_ping_time < 2000:

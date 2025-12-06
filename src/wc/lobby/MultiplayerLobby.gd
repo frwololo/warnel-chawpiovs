@@ -100,7 +100,7 @@ func on_button_pressed(_button_name : String) -> void:
 		"Launch":
 			_launch_server_game()
 		"Cancel":
-			#TODO disconnect?
+			gameData.disconnect_from_network()
 			get_tree().change_scene(CFConst.PATH_CUSTOM + 'MainMenu.tscn')
 
 	

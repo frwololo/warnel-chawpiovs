@@ -23,6 +23,9 @@
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": {
+				"_rules": {
+					"forced": true
+				},			
 				"Flip then Remove from the game": [
 					{
 						"name": "constraints",
@@ -527,6 +530,9 @@
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": {
+				"_rules": {
+					"forced": true
+				},			
 				"Flip then Remove from the game": [
 					{
 						"name": "constraints",
@@ -1269,6 +1275,9 @@
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": {
+				"_rules": {
+					"forced": true
+				},
 				"Flip then Remove from the game": [
 					{
 						"name": "constraints",
@@ -1450,6 +1459,9 @@
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": {
+				"_rules": {
+					"forced": true
+				},			
 				"Flip then Remove from the game": [
 					{
 						"name": "constraints",
@@ -2113,7 +2125,8 @@
 						{
 							"filter_properties": {
 								"type_code": "ally"
-							}
+							},
+							"filter_max_per_host": 1
 						}
 					]
 				}
@@ -2533,6 +2546,9 @@
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": {
+				"_rules": {
+					"forced": true
+				},			
 				"Flip then Remove from the game": [
 					{
 						"name": "constraints",

@@ -67,16 +67,25 @@ margin_bottom = 512.0
 custom_constants/separation = 326
 
 [node name="TestsButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-margin_right = 778.0
+margin_right = 410.0
 margin_bottom = 77.0
 size_flags_horizontal = 3
 size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "Tests"
 
+[node name="ForceResyncButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+margin_left = 736.0
+margin_right = 1146.0
+margin_bottom = 77.0
+size_flags_horizontal = 3
+size_flags_vertical = 10
+custom_fonts/font = SubResource( 2 )
+text = "FORCE RESYNC"
+
 [node name="DebugButton" type="CheckButton" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 1104.0
+margin_left = 1472.0
 margin_right = 1882.0
 margin_bottom = 77.0
 size_flags_horizontal = 3

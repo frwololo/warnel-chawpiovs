@@ -16,6 +16,9 @@ func _ready():
 	for option_button in h_box_container.get_children():
 		if option_button.has_signal('pressed'):
 			option_button.connect('pressed', self, 'on_button_pressed', [option_button.name])
+		if option_button.name in ["ForceResyncButton"]:
+			if !cfc.is_game_master():
+				option_button.hide()	
 
 	
 	file_dialog.connect("file_selected", self, "_on_file_selected")		
@@ -36,7 +39,11 @@ func on_button_pressed(_button_name : String) -> void:
 			gameData.phaseContainer.toggle_display_debug(value)
 			close_me()			
 		"SaveButton":
-			save_game()		
+			save_game()	
+		"ForceResyncButton":
+			var json = gameData.save_gamedata()
+			gameData.load_gamedata(json)
+			close_me()				
 		"LoadButton":
 			load_game()	
 		"MainMenuButton":

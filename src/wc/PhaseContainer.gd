@@ -89,10 +89,9 @@ func display_debug(msg:String, prefix = "phase"):
 		_previous_equal_count = 0	
 		if (text_edit.text):
 			text_edit.text += "\n"	
-			
+		cfc.LOG(msg)	
 
 	text_edit.text += msg
-	cfc.LOG(msg)
 		
 	if text_edit.text.length() > 1000:
 		flush_debug_display()

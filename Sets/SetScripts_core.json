@@ -2189,11 +2189,9 @@
 				{
 					"name": "modify_properties",
 					"subject": "self",
-					"set_properties": [
-						{
-							"max_hand_size": 7
-						}
-					]
+					"set_properties": {
+						"max_hand_size": 7
+					}
 				}
 			]
 		},
@@ -4291,6 +4289,47 @@
 			]
 		}
 	},
+	"Tony Stark": {
+		"once_per_round": {
+			"__name__": "_futurist"
+		},
+		"manual": {
+			"board": {
+				"Futurist": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"subject": "self",
+						"token_name": "_futurist",
+						"is_cost": true
+					},					
+					{
+						"name": "move_card_to_container",
+						"subject": "tutor",
+						"subject_index": "top",
+						"subject_count": 3,
+						"src_container": "deck",
+						"dest_container": "discard"
+					},
+					{
+						"name": "move_card_to_container",
+						"subject": "previous",
+						"subject_count": "all",
+						"dest_container": "hand",
+						"selection_count": 1,
+						"needs_selection": true,
+					},
+				]
+			}
+		}
+	},	
 	"Under Fire": {
 		"card_moved_to_pile": {
 			"trigger": "self",

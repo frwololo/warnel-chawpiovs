@@ -104,6 +104,6 @@ static func func_name_run(object, func_name, func_params):
 		reverse_result = true
 	var result = object.call(func_name, func_params)
 	
-	if typeof(result) ==TYPE_INT and reverse_result:
+	if typeof(result) in [TYPE_INT, TYPE_BOOL] and reverse_result:
 		result = !result
 	return result

@@ -177,7 +177,7 @@ func init_receive_damage(script:ScriptTask, announce:Dictionary) -> bool:
 	storage["arrows"] = []
 		
 	var tags: Array = script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
-	var amount = script.retrieve_integer_property("amount")
+
 	var owner = script.owner
 	var hero_id = owner.get_controller_hero_id()
 
@@ -185,7 +185,10 @@ func init_receive_damage(script:ScriptTask, announce:Dictionary) -> bool:
 	#we want to skip this thing to avoid
 	#making a long announce of an event the players initiated themselves
 	if hero_id:
-		return false
+		return false	
+	
+	var amount = script.retrieve_integer_property("amount")
+
 	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
 	# e.g. Spider man gets 3*1 damage = 3 damage
 	var consolidated_subjects:= {}

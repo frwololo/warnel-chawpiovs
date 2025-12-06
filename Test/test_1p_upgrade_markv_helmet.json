@@ -1,0 +1,124 @@
+{
+	"_comments": "Test for Mark V helmet when not aerial",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},			
+				{
+					"card": "Hydra Mercenary",
+				},
+				{
+					"card": "Stampede",
+				}				
+			],
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				},
+				{
+					"card": "01126",
+					"tokens" :{"threat" : 3},
+				}				
+			],			
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],			
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Mark V Helmet"
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "activate",
+			"value": "Mark V Helmet",
+			"_comments": "activate Mark V Helmet"
+		},	
+		{
+			"type": "choose",
+			"value": "Remove From 1",
+		},			
+		{
+			"type": "target",
+			"value": "01116",
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},			
+				{
+					"card": "Hydra Mercenary",
+				},
+				{
+					"card": "Stampede",
+				}				
+			],
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 2},
+				},
+				{
+					"card": "01126",
+					"tokens" :{"threat" : 3},
+				}					
+			],			
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],			
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Mark V Helmet"
+				}
+			]
+		}
+	}
+}

@@ -238,7 +238,11 @@ func deal_damage(script:ScriptTask) -> int:
 #	if script.owner.canonical_name == "Energy Daggers":
 #		var _tmp = 1
 #
-	_add_receive_damage_on_stack(script.script_definition["amount"], script)
+	#I've had issues where computing the damage afterwards leads to inconsistency
+	#calculating it now
+	var amount = script.retrieve_integer_property("amount")
+	
+	_add_receive_damage_on_stack(amount, script)
 	return CFConst.ReturnCode.CHANGED
 #	return receive_damage(script)
 

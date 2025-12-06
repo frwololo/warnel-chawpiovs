@@ -439,6 +439,9 @@ func _process(_delta: float):
 	
 	show_server_activity()
 
+	if cfc.game_paused:
+		return
+
 	if gameData.is_ongoing_blocking_announce():
 		return
 			

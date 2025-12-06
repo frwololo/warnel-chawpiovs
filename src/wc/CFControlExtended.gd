@@ -384,10 +384,8 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 		cards_by_set[lc_set_code] = []
 	cards_by_set[lc_set_code].push_back(card_data)				
 		
-	#Unknown types get assigned a generic template.
-	#They most likely won't work in game
-	if not _is_type_known(card_type):
-		card_data[CardConfig.SCENE_PROPERTY] = "Unknown"	
+
+	card_data[CardConfig.SCENE_PROPERTY] = "Generic"	
 
 	if card_data.get("imagesrc", ""):
 		_seen_images[card_id] = card_data["imagesrc"]

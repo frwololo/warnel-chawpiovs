@@ -53,10 +53,13 @@ var my_stored_integer = null
 func _init(_owner, script: Dictionary,  _trigger_object = null, 	_trigger_details := {}) -> void:
 	# We store the card which executes this task
 	owner = _owner
-	if trigger_details.has("trigger_type"):
-		trigger = trigger_details["trigger_type"]
+	if _trigger_details.has("trigger_type"):
+		trigger = _trigger_details["trigger_type"]
 	else:
 		trigger = ""
+		
+	if _trigger_details.has("prev_subjects"):
+		prev_subjects = _trigger_details["prev_subjects"]
 		
 	trigger_details = _trigger_details
 	# We store all the task properties in our own dictionary
@@ -71,7 +74,7 @@ func _init(_owner, script: Dictionary,  _trigger_object = null, 	_trigger_detail
 # ScriptingEngine has been extended by custom tasks.
 #
 # property can also compute an if/then/else dictionary
-func get_property(property: String, default = null, subscript_definition = null):
+func get_property(property: String, default = null, subscript_definition = null, root = null):
 	if default == null:
 		default = SP.get_default(property)
 #	var found_value = lookup_script_property(script_definition.get(property,default))
@@ -80,6 +83,8 @@ func get_property(property: String, default = null, subscript_definition = null)
 	if (subscript_definition != null):
 			#used for recursive calls of if/then/else
 		result = subscript_definition
+	elif root!= null:
+		result = root.get(property,default)
 	else:
 		result = script_definition.get(property,default)
 	
@@ -91,16 +96,17 @@ func get_property(property: String, default = null, subscript_definition = null)
 			var params = _if.get("func_params", {})
 			var if_check_result = owner.call(func_name, params, self)
 			if (if_check_result):
-				return get_property(property, default, result["then"])
+				return get_property(property, default, result["then"], root)
 			else:
-				return get_property(property, default, result["else"])
+				return get_property(property, default, result["else"], root)
 		elif result.has("func_name"):
 			var params = result.get("func_params", {})
 			result = cfc.ov_utils.func_name_run(self.owner, result["func_name"], params, self)
 			
 	return result
 	
-	
+func get_sub_property(property: String, root, default = null):
+	return get_property(property, default, null, root)	
 #
 #
 #func lookup_script_property(found_value):
@@ -551,8 +557,12 @@ static func count_per(
 			_trigger_object)
 	return(per_msg.found_things)
 
-func retrieve_integer_property(property, stored_integer:int = 0):
-	var value = get_property(property, null)
+
+func retrieve_integer_subproperty(property, root, stored_integer:int = 0):
+	return retrieve_integer_property(property, stored_integer,root)
+	
+func retrieve_integer_property(property, stored_integer:int = 0,root = null):
+	var value = get_property(property, null, null, root)
 	if !value:
 		return 0
 		
@@ -566,15 +576,15 @@ func retrieve_integer_property(property, stored_integer:int = 0):
 	else:
 		value = get_int_value (value, stored_integer)
 
-	var plus_value = retrieve_integer_property("plus_" + property)
+	var plus_value = retrieve_integer_property("plus_" + property, stored_integer, root )
 	if plus_value:
 		value += plus_value		
 	
-	var max_value = retrieve_integer_property("max_" + property)
+	var max_value = retrieve_integer_property("max_" + property, stored_integer, root)
 	if max_value:
 		value = min(value, max_value)
 
-	var min_value = retrieve_integer_property("min_" + property)
+	var min_value = retrieve_integer_property("min_" + property, stored_integer, root)
 	if min_value:
 		value = max(value, min_value)			
 		

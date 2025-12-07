@@ -59,6 +59,7 @@ var is_network_master: bool = true
 var network_prepaid:Array = []
 
 var all_subjects_so_far:= []
+var additional_rules:= {}
 
 var owner
 var trigger
@@ -153,6 +154,8 @@ func costs_dry_run() -> bool:
 	return ((run_type == CFInt.RunType.COST_CHECK) or 
 		(run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
 
+func add_rules(dict:Dictionary):
+	additional_rules = dict
 
 func has_else_condition():
 	for task in scripts_queue:
@@ -1095,6 +1098,9 @@ func execute_scripts(script: ScriptTask) -> int:
 	var retcode : int = CFConst.ReturnCode.CHANGED
 	# If your subject is "self" make sure you know what you're doing
 	# or you might end up in an inifinite loop
+	var trigger_details = {
+		"prev_subjects" : script.prev_subjects 
+	}
 	for card in script.subjects:
 		var requested_exec_state = script.get_property(SP.KEY_REQUIRE_EXEC_STATE)
 		# If not specific exec_state has been requested
@@ -1103,7 +1109,7 @@ func execute_scripts(script: ScriptTask) -> int:
 			var sceng = card.execute_scripts(
 					script.owner,
 					script.get_property(SP.KEY_EXEC_TRIGGER),
-					{}, run_type)
+					trigger_details, run_type)
 			# We make sure we wait until the execution is finished
 			# before cleaning out the temp properties/counters
 			if sceng is GDScriptFunctionState:
@@ -1148,7 +1154,7 @@ func nested_script(script: ScriptTask) -> int:
 	# If the dry-run of the ScriptingEngine returns that all
 	# costs can be paid, then we proceed with the actual run
 	if sceng.can_all_costs_be_paid:
-		sceng.execute()
+		sceng.execute(CFInt.RunType.NORMAL)
 		if not sceng.all_tasks_completed:
 			yield(sceng,"tasks_completed")
 	# This will only trigger when costs could not be paid, and will

@@ -1460,7 +1460,7 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 	# especially on filters
 	if _debugger_hook:
 		pass
-	if canonical_name =="Spider-Man" and trigger == "interrupt":
+	if trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME and canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME:
 		pass	
 	# We check the trigger against the filter defined
 	# If it does not match, then we don't pass any scripts for this trigger.
@@ -1479,6 +1479,28 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 			self,
 			trigger_details):
 		card_scripts.clear()
+	
+	var to_erase = []
+#					"condition":{
+#						"func_name": "current_activation_status",
+#						"func_params": {
+#							"undefended": true
+#						}
+#					},	
+	for key in card_scripts:
+		if card_scripts.has("condition_" + key):
+			var condition = card_scripts["condition_" + key]
+			var func_name = condition.get("func_name", "")
+			if !func_name:
+				continue
+			var func_params = condition.get("func_params", {})
+			var check = cfc.ov_utils.func_name_run(self, func_name, func_params, null)
+			if !check:
+				to_erase.append(key)
+				to_erase.append("condition_" + key)		
+	for key in to_erase:
+		card_scripts.erase(key)
+		
 	return card_scripts
 
 func get_state_scripts(card_scripts, trigger_card, trigger_details):

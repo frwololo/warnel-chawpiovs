@@ -827,6 +827,109 @@
 			]
 		}
 	},
+	"Chase Them Down": {
+		"response": {
+			"event_name": "enemy_died",
+			"event_filters": {
+				"source": "my_hero"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "remove_threat",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Concussion Blasters": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Concussive Blast": {
+		"reveal": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"subject": "boardseek",
+					"amount": 1,
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"subject": "boardseek",
+					"amount": 1,
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero"
+						}
+					]
+				}
+			]
+		}
+	},
 	"Counter-Punch": {
 		"response": {
 			"event_name": "defense_happened",
@@ -1004,6 +1107,115 @@
 					}
 				}
 			]
+		}
+	},
+	"Electric Whip Attack": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Damage": [
+					{
+						"name": "deal_damage",
+						"subject": "my_hero",
+						"amount": "per_boardseek",
+						"per_boardseek": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_group": "group_upgrade_support_my_hero"
+								},
+								{
+									"filter_properties": {
+										"type_code": "upgrade"
+									}
+								}
+							]
+						}
+					}
+				],
+				"Discard an upgrade": [
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard",
+						"src_container": "upgrade_support",
+						"is_cost": true,
+						"subject": "tutor",
+						"subject_count": "all",
+						"selection_count": 1,
+						"selection_type": "equal",
+						"needs_selection": true,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "upgrade"
+								}
+							}
+						]
+					}
+				]
+			}
+		},
+		"boost": {
+			"condition_all": {
+				"func_name": "current_activation_status",
+				"func_params": {
+					"undefended": true
+				}
+			},
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"src_container": "upgrade_support",
+					"is_cost": true,
+					"subject": "tutor",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "upgrade"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Electromagnetic Backlash": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Damage": [
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard",
+						"src_container": "deck",
+						"subject": "index",
+						"subject_count": 5,
+						"subject_index": "top"
+					},
+					{
+						"name": "receive_damage",
+						"subject": "their_identity",
+						"amount": {
+							"func_name": "count_printed_resources",
+							"func_params": {
+								"subject": "previous",
+								"resource_type": "energy"
+							}
+						}
+					}
+				]
+			}
 		}
 	},
 	"Emergency": {
@@ -1682,6 +1894,36 @@
 			]
 		}
 	},
+	"Genetically Enhanced": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "property",
+					"sort_name": "printed_health",
+					"sort_descending": true,
+					"filter_state_seek": [
+						{
+							"type_code": "minion"
+						}
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "host",
+					"alteration": 3
+				}
+			]
+		}
+	},
 	"Get Behind Me!": {
 		"interrupt": {
 			"event_name": "reveal_encounter",
@@ -1863,6 +2105,51 @@
 			]
 		}
 	},
+	"Heart-Shaped Herb": {
+		"card_moved_to_pile": {
+			"trigger": "self",
+			"filter_destination": "encounters_reveal",
+			"pile": [
+				{
+					"name": "surge"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies_my_hero"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
 	"Helicarrier": {
 		"manual": {
 			"board": [
@@ -1997,6 +2284,124 @@
 				}
 			],
 			"trigger": "self"
+		}
+	},
+	"Hulk - Bruce Banner": {
+		"attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck",
+					"dest_container": "discard"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "physical"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "deal_damage",
+									"subject": "target",
+									"amount": 2,
+									"needs_subject": true,
+									"filter_state_subject": [
+										{
+											"filter_group": "group_enemies"
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "energy"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "deal_damage",
+									"subject": "boardseek",
+									"subject_count": "all",
+									"amount": 1,
+									"filter_state_seek": [
+										{
+											"filter_group": "group_characters"
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "mental"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_card_to_container",
+									"subject": "self",
+									"dest_container": "discard"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "wild"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "deal_damage",
+									"subject": "target",
+									"amount": 2,
+									"needs_subject": true,
+									"filter_state_subject": [
+										{
+											"filter_group": "group_enemies"
+										}
+									]
+								},
+								{
+									"name": "deal_damage",
+									"subject": "boardseek",
+									"subject_count": "all",
+									"amount": 1,
+									"filter_state_seek": [
+										{
+											"filter_group": "group_characters"
+										}
+									]
+								},
+								{
+									"name": "move_card_to_container",
+									"subject": "self",
+									"dest_container": "discard"
+								}
+							]
+						}
+					]
+				}
+			]
 		}
 	},
 	"Hydra Bomber": {
@@ -2271,23 +2676,15 @@
 		"interrupt": {
 			"event_name": "receive_damage",
 			"event_filters": {
-				"target": "villain"
+				"target": "self",
+				"tags": [
+					"trait_black_panther"
+				]
 			},
 			"board": [
 				{
 					"name": "prevent",
 					"subject": "interrupted_event"
-				}
-			],
-			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"comparison": "ge",
-						"trait_black_panther": 0
-					},
-					"filter_properties2": {
-						"type_code": "upgrade"
-					}
 				}
 			]
 		}
@@ -2641,6 +3038,67 @@
 					}
 				]
 			}
+		}
+	},
+	"Legions of Hydra": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Madame Hydra"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_threat",
+					"amount": "per_boardseek",
+					"subject": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"comparison": "gt",
+									"trait_hydra": 0
+								}
+							},
+							{
+								"filter_group": "group_enemies"
+							}
+						]
+					}
+				}
+			]
+		}
+	},
+	"Madame Hydra": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 2,
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Legions of Hydra"
+							}
+						}
+					]
+				}
+			]
 		}
 	},
 	"Make the Call": {
@@ -3154,6 +3612,33 @@
 			]
 		}
 	},
+	"Radioactive Man": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"src_container": "hand",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "random"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"src_container": "hand",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "random"
+				}
+			]
+		}
+	},
 	"Relentless Assault": {
 		"manual": {
 			"hand": [
@@ -3189,7 +3674,7 @@
 						},
 						"then": 1,
 						"else": 0
-					},
+					}
 				}
 			]
 		}
@@ -3288,6 +3773,64 @@
 					]
 				}
 			]
+		}
+	},
+	"Ritual Combat": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain",
+					"dest_container": "discard",
+					"is_cost": true
+				},
+				{
+					"name": "execute_scripts",
+					"exec_trigger": "reveal_choice",
+					"subject": "self"
+				}
+			]
+		},
+		"reveal_choice": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Damage": [
+					{
+						"name": "deal_damage",
+						"subject": "my_hero",
+						"amount": {
+							"func_name": "count_boost_icons",
+							"func_params": {
+								"subject": "previous"
+							}
+						}
+					}
+				],
+				"Threat": [
+					{
+						"name": "add_threat",
+						"amount": {
+							"func_name": "count_boost_icons",
+							"func_params": {
+								"subject": "previous"
+							}
+						},
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "main_scheme"
+								}
+							}
+						]
+					}
+				]
+			}
 		}
 	},
 	"Rocket Boots": {
@@ -3758,7 +4301,7 @@
 					"name": "exhaust_card",
 					"subject": "self",
 					"is_cost": true
-				},				
+				},
 				{
 					"name": "nop",
 					"subject": "boardseek",
@@ -4324,6 +4867,29 @@
 			]
 		}
 	},
+	"Tiger Shark": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "self"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "villain"
+				}
+			]
+		}
+	},
 	"Tigra - Greer Grant Nelson": {
 		"minion_died": {
 			"filter_event_source": "self",
@@ -4333,6 +4899,74 @@
 					"name": "heal",
 					"amount": 1,
 					"subject": "self"
+				}
+			]
+		}
+	},
+	"Titania": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "get_remaining_damage",
+						"func_params": {
+							"subject": "self"
+						}
+					}
+				}
+			]
+		}
+	},
+	"Titania's Fury": {
+		"reveal": {
+			"all": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "enemy_attacks_you",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Titania"
+							}
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "heal",
+					"amount": 100,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Titania"
+							}
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "surge"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "draw_boost_card",
+					"subject": "current_activation_enemy"
 				}
 			]
 		}
@@ -4373,6 +5007,37 @@
 						"dest_container": "hand",
 						"selection_count": 1,
 						"needs_selection": true
+					}
+				]
+			}
+		}
+	},
+	"Under Attack": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"2 Threat": [
+					{
+						"name": "add_threat",
+						"subject": "self",
+						"amount": 2
+					}
+				],
+				"3 Damage": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "deal_damage",
+						"amount": 3,
+						"subject": "their_identity"
 					}
 				]
 			}
@@ -4466,6 +5131,56 @@
 					"tags": [
 						"attack"
 					]
+				}
+			]
+		}
+	},
+	"Vibranium Armor": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"receive_damage": {
+			"trigger": "villain",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "villain"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
 				}
 			]
 		}

@@ -279,8 +279,17 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	if not card_data.has("Health"):
 		card_data["Health"] = card_data.get("health", 0)	
 
+	#TODO more generically have a backup for printed_values?
+	card_data["printed_health"] = card_data.get("health", 0)
+
 	if not card_data.has("Cost") and card_data.has("cost"):
 		card_data["Cost"] = card_data.get("cost")
+	
+	for action in ["attack","thwart"]:	
+		if card_data.has(action):
+			card_data["can_" + action] = true
+		else:
+			card_data["can_" + action] = false	
 
 	###END Fixing missing data
 
@@ -628,7 +637,10 @@ func load_script_definitions() -> void:
 		json_card_data = WCUtils.replace_real_to_int(json_card_data)
 		var _text = to_json(json_card_data)
 		for card_name in json_card_data.keys():
-			var card_datas = box_contents_by_name[box_name][card_name]
+			var card_datas = box_contents_by_name[box_name].get(card_name, [])
+			if !card_datas:
+				var error_msg = "scripting for non existing card: " + card_name + ". Check case, character subname, etc..."
+				cfc.emit_signal("json_parse_error", error_msg)
 			for card_data in card_datas:
 				var card_id = card_data["_code"]
 				if not combined_scripts.get(card_id):

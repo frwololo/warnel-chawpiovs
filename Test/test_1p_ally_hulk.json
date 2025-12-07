@@ -1,0 +1,145 @@
+{
+	"_comments": "Test for Hulk",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},			
+				{
+					"card": "Hydra Mercenary",
+				},
+				{
+					"card": "Stampede",
+				}				
+			],
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				},
+				{
+					"card": "01126",
+					"tokens" :{"threat" : 3},
+				}				
+			],			
+			"deck1": [
+				{
+					"card": "The Power of Aggression"
+				},			
+				{
+					"card": "Relentless Assault"
+				},			
+				{
+					"card": "Chase Them Down"
+				},			
+				{
+					"card": "Mockingbird"
+				},				
+
+				
+			],			
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Hulk"
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "activate",
+			"value": "Hulk",
+		},	
+		{
+			"type": "target",
+			"value": "01113",
+		},			
+		{
+			"type": "target",
+			"value": "01113",
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},			
+				{
+					"card": "Hydra Mercenary",
+				},
+				{
+					"card": "Stampede",
+				}				
+			],
+			"villain": [
+				{
+					"card": "01113",
+					"tokens": {"damage": 6}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				},
+				{
+					"card": "01126",
+					"tokens" :{"threat" : 3},
+				}				
+			],			
+			"deck1": [			
+				{
+					"card": "Relentless Assault"
+				},			
+				{
+					"card": "Chase Them Down"
+				},			
+				{
+					"card": "Mockingbird"
+				},							
+			],			
+			"identity1": [
+				{
+					"card": "Iron Man",
+					"tokens": {"damage": 1}
+				}
+			],
+			"discard1": [
+				{
+					"card": "The Power of Aggression"
+				},			
+				{
+					"card": "Hulk"
+				}
+			]
+		}
+	}
+}

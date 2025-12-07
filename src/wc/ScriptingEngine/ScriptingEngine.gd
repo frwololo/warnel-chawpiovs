@@ -211,9 +211,8 @@ func attack(script: ScriptTask) -> int:
 	if not damage:
 		damage = owner.get_property("attack", 0)
 
-	var stunned = owner.tokens.get_token_count("stunned")
-	if (stunned):
-		owner.tokens.mod_token("stunned", -1)
+	if (owner.is_stunned()):
+		owner.disable_stun()
 		
 	else:
 		if (damage):	
@@ -259,7 +258,13 @@ func character_died(script: ScriptTask) -> int:
 			card.move_to(cfc.NMAP["discard_villain"])
 		var type = card.get_property("type_code", "")
 		if type:
-			scripting_bus.emit_signal(type + "_died", card, script.trigger_details)
+			var stackEvent:SignalStackScript = SignalStackScript.new(type + "_died", card, script.trigger_details)
+			gameData.theStack.add_script(stackEvent)			
+			#scripting_bus.emit_signal(type + "_died", card, script.trigger_details)
+		if type in ["minion", "villain"]: #TODO more generic way to handle this?
+			var stackEvent:SignalStackScript = SignalStackScript.new("enemy_died", card, script.trigger_details)
+			gameData.theStack.add_script(stackEvent)			
+			#scripting_bus.emit_signal("enemy_died", card, script.trigger_details)
 	
 	return retcode
 
@@ -466,6 +471,21 @@ func _receive_threat(script: ScriptTask) -> int:
 						
 	return retcode
 
+func conditional_script(script:ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	
+	if (costs_dry_run()): 
+		return retcode	
+
+	var options = script.get_property("options")
+	for option in options:
+		var subscript = script.get_sub_property("nested_tasks", option, {})
+		var condition = script.retrieve_integer_subproperty("condition", option, 0)
+		if condition:
+			script.script_definition["nested_tasks"] = subscript
+			nested_script(script)
+	return retcode
+
 func move_token_to(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	
@@ -594,12 +614,42 @@ static func simple_discard_task(target_card):
 func enemy_attacks_you(script: ScriptTask) -> int:
 	var retcode = CFConst.ReturnCode.FAILED
 
+	#here we try to predict if the attack will actually happen, but we'll need something better,
+	#signal based... (e.g. for Titania's Fury
+	if (costs_dry_run()):
+		if !script.subjects:
+			return CFConst.ReturnCode.FAILED
+		for card in script.subjects:
+			if (card.is_stunned()):
+				return CFConst.ReturnCode.FAILED
+		return CFConst.ReturnCode.CHANGED	
 
 	for card in script.subjects:
 		gameData.add_enemy_activation(card, "attack", script)
 		retcode = CFConst.ReturnCode.CHANGED
 	return retcode
 
+func draw_boost_card(script:ScriptTask) ->int:
+	var retcode = CFConst.ReturnCode.CHANGED
+	
+	if !script.subjects:
+		retcode = CFConst.ReturnCode.FAILED
+
+	#TODO
+	if (costs_dry_run()):
+		return retcode	
+	
+	var amount = 1
+	var script_amount = script.retrieve_integer_property("amount")
+	if script_amount:
+		amount = script_amount
+	
+	for card in script.subjects:
+		for i in amount:
+			card.draw_boost_card()
+			retcode = CFConst.ReturnCode.CHANGED
+	return retcode
+	
 func villain_attacks_you(script:ScriptTask) ->int:
 	script.subjects = [ gameData.get_villain()]
 	return enemy_attacks_you(script)

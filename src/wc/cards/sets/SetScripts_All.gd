@@ -16,8 +16,6 @@ func keyword_to_script(keyword, _value):
 			pass
 		"form" :
 			pass 
-		"guard" :
-			pass 
 		"hinder" :
 			pass
 		"incite" :
@@ -42,8 +40,6 @@ func keyword_to_script(keyword, _value):
 			pass 
 		"restricted" :
 			pass 
-		"retaliate" :
-			pass
 		"setup" :
 			pass 
 		"stalwart" :
@@ -72,8 +68,6 @@ func keyword_to_script(keyword, _value):
 					]
 				}
 			}
-		"uses" :
-			pass 
 		"victory" :
 			pass
 		"villainous" :
@@ -196,56 +190,41 @@ func get_scripts(scripts: Dictionary, card_id: String, _get_modified = true) -> 
 			
 			script = WCUtils.merge_dict(script,scheme_comes_to_play, true)
 	
-	if type_code == "ally" or type_code == "hero": 
-		var ally_actions: Dictionary = { 
-			"manual": {
-				"board": {
-					"thwart": [
-						{	
-							"name": "constraints",
-							"is_cost": true,
-							"tags": ["as_action"]
-						},						
-						{
-							"name": "exhaust_card",
-							"subject": "self",
-							"is_cost" : true,
-						},						
-						{
-							"name": "thwart",
-							"subject": "target",
-							"is_cost": true,
-							"tags": ["basic power"],
-							"filter_state_subject": [{
-								"filter_group": "group_schemes"
-							},],						
-						},					
-					],
-					"attack" :[
-						{	
-							"name": "constraints",
-							"is_cost": true,
-							"tags": ["as_action"]
-						},						
-						{
-							"name": "exhaust_card",
-							"subject": "self",
-							"is_cost" : true,
-						},						
-						{
-							"name": "attack",
-							"subject": "target",
-							"is_cost": true,
-							"filter_state_subject": [{
-								"filter_group" : "group_enemies"
-							},],
-							"tags":["attack", "basic power"]						
-						},					
-					],
+	if type_code == "ally" or type_code == "hero":
+		var actions = {}
+		for action in ["thwart", "attack"]:
+			if !card["can_" + action]:
+				continue
+			var target = "schemes" if action == "thwart" else "enemies"
+			var action_script = [
+				{	
+					"name": "constraints",
+					"is_cost": true,
+					"tags": ["as_action"]
+				},						
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost" : true,
+				},						
+				{
+					"name": action,
+					"subject": "target",
+					"is_cost": true,
+					"tags": [action, "basic power"],
+					"filter_state_subject": [{
+						"filter_group": "group_" + target
+					},],						
+				},					
+			]
+			actions[action] = action_script
+		if actions:
+			var ally_actions: Dictionary = { 
+				"manual": {
+					"board": actions
 				}
-			}
-		}		
-		script = WCUtils.merge_dict(script,ally_actions, true)
+			}		
+			script = WCUtils.merge_dict(script,ally_actions, true)
 
 	if type_code == "alter_ego": 
 		var alter_ego_actions: Dictionary = { 

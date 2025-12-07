@@ -20,6 +20,8 @@ const KEY_SUBJECT_V_MY_ALTER_EGO := "my_alter_ego"
 const KEY_SUBJECT_V_MY_IDENTITY := "my_identity"
 const KEY_SUBJECT_V_VILLAIN := "villain"
 const KEY_SUBJECT_V_GRAB_UNTIL := "grab_until"
+const KEY_SUBJECT_CURRENT_ACTIVATION_ENEMY:= "current_activation_enemy"
+
 const FILTER_HOST_OF := "filter_is_host_of"
 const FILTER_SAME_CONTROLLER := "filter_same_controller"
 const FILTER_EVENT_SOURCE:= "filter_event_source"
@@ -121,6 +123,10 @@ static func check_filter_event_source(_trigger_card, owner_card, trigger_details
 			if source == owner_card:
 				return true
 			return false
+		"my_hero":
+			if source == owner_card.get_controller_hero_card():
+				return true
+			return false			
 		_: #not implemented
 			pass
 	return false	
@@ -202,7 +208,7 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 
 
 #todo in the future this needs to redo targeting, etc...
-static func retrieve_subjects(value, script):
+static func retrieve_subjects(value:String, script):
 	match value:
 		"self":
 			return [script.owner]
@@ -210,5 +216,11 @@ static func retrieve_subjects(value, script):
 			return [script.owner.get_controller_hero_card()]			
 		_:
 			#not implemented
-			return []
+			pass
+	
+	if value.begins_with("identity_"):
+		var hero_id = int(value.substr(9))
+		return [gameData.get_identity_card(hero_id)]
+	
+	return null
 					

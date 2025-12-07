@@ -185,7 +185,8 @@ func _card_token_modified(owner_card, details):
 	if owner_card != self:
 		return
 	if details[SP.TRIGGER_TOKEN_NAME] == "damage":
-		display_health()
+		#display_health()
+		pass
 	if details[SP.TRIGGER_TOKEN_NAME] == "threat":
 		display_threat()
 
@@ -317,6 +318,8 @@ func _game_state_changed(_details:Dictionary):
 	for i in gameData.get_team_size():
 		var hero_id = i+1
 		_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID
+	
+	display_health()
 
 #reset some variables at new turn
 func _game_step_started(details:Dictionary):
@@ -381,7 +384,7 @@ func common_post_move_scripts(new_host: String, _old_host: String, _move_tags: A
 	#init owner once and only once, if not already done
 	init_owner_hero_id(new_hero_id)	
 	
-	display_health()
+	#display_health()
 	display_threat()
 	
 	#rest exhausted status
@@ -621,6 +624,11 @@ func execute_scripts(
 	# We select which scripts to run from the card, based on it state	
 	var state_scripts_dict = get_state_scripts_dict(card_scripts, trigger_card, trigger_details)
 	var state_scripts = state_scripts_dict["state_scripts"]
+
+	var rules = {}
+	if (state_scripts.has("_rules")): #special rules
+		rules = state_scripts["_rules"].duplicate()
+		state_scripts.erase("_rules")
 	
 	#Check if this script is exected from remote (another online player has been paying for the cost)
 	var is_network_call = trigger_details.has("network_prepaid") #TODO MOVE OUTSIDE OF Core
@@ -683,10 +691,10 @@ func execute_scripts(
 				cfc.remove_ongoing_process(self, "core_execute_scripts")
 				return null	
 			force_user_interaction_required = true				
-			var rules = {}
-			if (state_scripts.has("_rules")): #special rules
-				rules = state_scripts["_rules"].duplicate()
-				state_scripts.erase("_rules")
+#			var rules = {}
+#			if (state_scripts.has("_rules")): #special rules
+#				rules = state_scripts["_rules"].duplicate()
+#				state_scripts.erase("_rules")
 			var choices_menu = _CARD_CHOICES_SCENE.instance()
 			cfc.add_modal_menu(choices_menu)
 			choices_menu.prep(canonical_name,state_scripts, rules)
@@ -734,6 +742,9 @@ func execute_scripts(
 				self,
 				trigger_card,
 				trigger_details)
+
+		sceng.add_rules(rules)				
+				
 		common_pre_run(sceng)
 		
 		# 1) Client A selects payments for ability locally
@@ -1123,15 +1134,35 @@ func check_play_costs(params:Dictionary = {}, _debug = false) -> Color:
 #
 # Used to hijack the scripts at runtime if needed
 # Current use case: check manapool before asking to pay for cards
-func common_pre_run(_sceng) -> void:
-	var trigger_details = _sceng.trigger_details
+func common_pre_run(sceng) -> void:
+	var trigger_details = sceng.trigger_details
 	
 	var controller_hero_id = trigger_details.get("override_controller_id", self.get_controller_hero_id())
 	
-	var scripts_queue: Array = _sceng.scripts_queue
+	var scripts_queue: Array = sceng.scripts_queue
 	var new_queue: Array = []
-
 	var temp_queue: Array = []
+	
+	var zones = ["hand"] + CFConst.HERO_GRID_SETUP.keys()
+		
+	if sceng.additional_rules.has("for_each_player"):
+		for i in gameData.get_team_size():
+			var hero_queue = scripts_queue.duplicate()
+			var hero_id = i+1
+			for task in scripts_queue:
+				var script: ScriptTask = task
+				var script_definition = script.script_definition
+				var new_script_definition = script_definition.duplicate(true)
+				new_script_definition.erase("for_each_player")
+				for v in zones: # ["hand", "encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
+					new_script_definition = WCUtils.search_and_replace(new_script_definition, v, v+str(hero_id), true)	
+
+				new_script_definition = WCUtils.search_and_replace(new_script_definition, "their_identity", "identity_" + str(hero_id), true)	
+
+				var new_script = ScriptTask.new(script.owner, new_script_definition, script.trigger_object, script.trigger_details)
+				new_queue.append(new_script)
+		scripts_queue = new_queue
+				
 	for task in scripts_queue:
 		var script: ScriptTask = task
 		var script_definition = script.script_definition
@@ -1142,7 +1173,7 @@ func common_pre_run(_sceng) -> void:
 				var hero_id = i+1
 				var new_script_definition = script_definition.duplicate(true)
 				new_script_definition.erase("for_each_player")
-				for v in ["hand", "encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
+				for v in zones: #["hand", "encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
 					new_script_definition = WCUtils.search_and_replace(new_script_definition, v, v+str(hero_id), true)	
 
 				var new_script = ScriptTask.new(script.owner, new_script_definition, script.trigger_object, script.trigger_details)
@@ -1151,7 +1182,7 @@ func common_pre_run(_sceng) -> void:
 			temp_queue.append(_script)
 	
 	scripts_queue = temp_queue	
-	var zones = ["hand"] + CFConst.HERO_GRID_SETUP.keys()
+
 	
 	for task in scripts_queue:
 		var script: ScriptTask = task
@@ -1219,7 +1250,7 @@ func common_pre_run(_sceng) -> void:
 				new_queue.append(script)
 			_:
 				new_queue.append(task)
-	_sceng.scripts_queue = new_queue	
+	sceng.scripts_queue = new_queue	
 
 #TODO cleanup, probably doesn't need to be a replacement
 func pay_regular_cost_replacement(script_definition: Dictionary, trigger_details) -> Dictionary:	
@@ -1279,7 +1310,38 @@ func get_grid_name():
 		return _placement_slot.get_grid_name()
 	return null	
 
+#
 #Marvel Champions Specific functionality
+#
+
+#easy access functions for tokens that are either 1 or 0
+func is_token_set(token_name):
+	return tokens.get_token_count(token_name) > 0
+
+func enable_token(token_name, value:bool):
+	if value:
+		tokens.mod_token(token_name, 1, true)
+	else:
+		tokens.mod_token(token_name, 0, true)	
+
+func is_stunned() -> bool:
+	return is_token_set("stunned")
+
+func set_stunned(value:bool = true):
+	enable_token("stunned", value)
+
+func disable_stun():
+	set_stunned(false)
+
+func is_confused() -> bool:
+	return is_token_set("confused")
+
+func set_confused(value:bool = true):
+	enable_token("confused", value)
+
+func disable_confused():
+	set_confused(false)
+
 func can_change_form() -> bool:
 	return _can_change_form
 
@@ -1356,15 +1418,18 @@ func copy_modifiers_to(to_card:WCCard):
 	var modifiers = export_modifiers()
 	to_card.import_modifiers(modifiers)
 
+func draw_boost_card():
+	var villain_deck:Pile = cfc.NMAP["deck_villain"]	
+	var boost_card:Card = villain_deck.get_top_card()
+	if boost_card:
+		boost_card.set_is_boost(true)
+		boost_card.attach_to_host(self) #,false, ["facedown"])
+		boost_card.set_is_faceup(false)
+
 func draw_boost_cards(action_type):
-	var villain_deck:Pile = cfc.NMAP["deck_villain"]
 	var amount = self.get_property("boost_cards_per_" + action_type, 0)
 	for i in amount:
-		var boost_card:Card = villain_deck.get_top_card()
-		if boost_card:
-			boost_card.set_is_boost(true)
-			boost_card.attach_to_host(self) #,false, ["facedown"])
-			boost_card.set_is_faceup(false)
+		draw_boost_card()
 	#TODO if pile empty...need to reshuffle ?
 
 #returns an array of allowed triggers,
@@ -1548,6 +1613,22 @@ func count_printed_resources(params:Dictionary, script) -> int:
 	else:
 		count = mana.converted_mana_cost()
 	return count
+	
+func count_boost_icons(params:Dictionary, script) -> int:
+	var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)	
+	var count = 0
+	
+	while subjects is GDScriptFunctionState && subjects.is_valid():
+		subjects = subjects.resume()	
+	if !subjects:
+		cfc.LOG("error retrieving subjects for " + to_json(params))
+		return 0
+		
+	for subject in subjects:
+		var boost_icons = subject.get_property("boost", 0)
+		count+= boost_icons
+
+	return count	
 
 func count_resource_types(params:Dictionary, script) -> int:
 	var mana = ManaCost.new()
@@ -1566,6 +1647,22 @@ func get_sustained_damage(params:Dictionary = {}, script = null) -> int:
 			return 0
 		subject = subjects[0]
 	return subject.tokens.get_token_count("damage")
+
+func get_remaining_damage(params:Dictionary = {}, script = null) -> int:
+	var subject = self
+	if params and script and params.has("subject"):
+		var subjects = SP.retrieve_subject(params.get("subject"), script)
+		if !subjects:
+			return 0
+		subject = subjects[0]
+	
+	var current_damage = subject.tokens.get_token_count("damage")
+	var health = subject.get_property("health", 0)
+	var diff = health - current_damage
+	if diff <= 0:
+		return 0
+	return diff	
+
 #
 # RESOURCE FUNCTIONS
 #
@@ -1696,13 +1793,7 @@ func display_debug(msg):
 	gameData.display_debug("(WCCard - " + canonical_name +") " + msg)
 
 
-func get_remaining_damage():
-	var current_damage = self.tokens.get_token_count("damage")
-	var health = self.get_property("health", 0)
-	var diff = health - current_damage
-	if diff <= 0:
-		return 0
-	return diff	
+
 
 #used for some scripts
 func get_remaining_indirect_damage():

@@ -1389,12 +1389,10 @@ static func filter_trigger(
 
 	# Card move filter checks
 	if is_valid and card_scripts.get(FILTER_SOURCE) \
-			and card_scripts.get(FILTER_SOURCE).to_lower() != \
-			trigger_details.get(TRIGGER_SOURCE).to_lower():
+			and ! trigger_details.get(TRIGGER_SOURCE).to_lower().begins_with(card_scripts.get(FILTER_SOURCE).to_lower()):
 		is_valid = false
 	if is_valid and card_scripts.get(FILTER_DESTINATION) \
-			and card_scripts.get(FILTER_DESTINATION).to_lower() != \
-			trigger_details.get(TRIGGER_DESTINATION).to_lower():
+			and ! trigger_details.get(TRIGGER_DESTINATION).to_lower().begins_with(card_scripts.get(FILTER_DESTINATION).to_lower()):
 		is_valid = false
 
 	# Card Tokens filter checks

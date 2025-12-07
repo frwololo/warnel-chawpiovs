@@ -781,7 +781,6 @@ func enemy_activates() :
 	#check for stun
 	var is_status = enemy.tokens.get_token_count(status)
 	if (is_status):
-		#TODO needs to warn all network clients
 		enemy.tokens.mod_token(status, -1)
 		current_enemy_finished()
 		return
@@ -1625,6 +1624,7 @@ func filter_trigger(
 				return false
 			if trigger_card!= owner_card:
 				return false
+
 
 	#from this point this is only checks for interrupts
 

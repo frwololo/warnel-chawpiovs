@@ -106,6 +106,8 @@ signal defense_happened(card, details)
 # warning-ignore:unused_signal
 signal minion_died(card,details)
 # warning-ignore:unused_signal
+signal enemy_died(card,details)
+# warning-ignore:unused_signal
 signal ally_died(card,details)
 # warning-ignore:unused_signal
 signal hero_died(card,details)

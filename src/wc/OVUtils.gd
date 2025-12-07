@@ -38,6 +38,10 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 			results.append(gameData.get_villain())
 		SP.KEY_SUBJECT_V_GRAB_UNTIL:
 			results = _grab_until_find(script, run_type)
+		SP.KEY_SUBJECT_CURRENT_ACTIVATION_ENEMY:
+			var activation_script = script.owner.get_current_activation_details()
+			if activation_script:
+				results.append(activation_script.owner)
 									
 	return results
 

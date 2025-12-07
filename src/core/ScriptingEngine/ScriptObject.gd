@@ -305,6 +305,14 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 	#it means no interaction was required
 	if user_interaction_status ==  CFConst.USER_INTERACTION_STATUS.NOT_CHECKED_YET:
 		user_interaction_status =  CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED
+
+	var to_exclude = get_property("subject_exclude", null)
+	if to_exclude:
+		var exclude_result = cfc.ov_utils.get_subjects(self, to_exclude, stored_integer, run_type, trigger_details)
+		if typeof(exclude_result) == TYPE_ARRAY:
+			for exclude in exclude_result:
+				subjects_array.erase(exclude)
+				
 	cfc.remove_ongoing_process(self, "_local_find_subjects")
 	return(subjects_array)
 

@@ -1576,7 +1576,7 @@ func execute_scripts(
 	# and somehow its script is triggered.
 	if not cfc.NMAP.has('board'):
 		return
-	common_pre_execution_scripts(trigger, trigger_details)
+	common_pre_execution_scripts(trigger_card, trigger, trigger_details)
 	var card_scripts = retrieve_scripts(trigger)
 	# I use this spot to add a breakpoint when testing script behaviour
 	# especially on filters
@@ -2078,7 +2078,7 @@ func common_post_move_scripts(new_host: String, old_host: String, move_tags: Arr
 # before all normal scripts have been executed
 #
 # This is useful for example, for paying the costs of one-use cards before executing them
-func common_pre_execution_scripts(_trigger: String, _trigger_details: Dictionary) -> void:
+func common_pre_execution_scripts(_trigger_card, _trigger: String, _trigger_details: Dictionary) -> void:
 	pass
 
 

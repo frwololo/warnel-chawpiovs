@@ -616,7 +616,7 @@ func execute_scripts(
 		CFInt.RunType.BACKGROUND_COST_CHECK if run_type == CFInt.RunType.BACKGROUND_COST_CHECK \
 		else CFInt.RunType.COST_CHECK
 	
-	common_pre_execution_scripts(trigger, trigger_details)
+	common_pre_execution_scripts(trigger_card, trigger, trigger_details)
 	
 	#select valid scripts that match the current trigger
 	var card_scripts = retrieve_filtered_scripts(trigger_card, trigger, trigger_details)
@@ -1000,10 +1000,10 @@ func heal(value):
 	return tokens.mod_token("damage",-heal_value)
 
 
-func common_pre_execution_scripts(_trigger: String, _trigger_details: Dictionary) -> void:
+func common_pre_execution_scripts(_trigger_card, _trigger: String, _trigger_details: Dictionary) -> void:
 	match _trigger:
 		"enemy_attack":
-			gameData.compute_potential_defenders(gameData.get_villain_current_hero_target())
+			gameData.compute_potential_defenders(gameData.get_villain_current_hero_target(), _trigger_card)
 
 func can_defend(hero_id = 0):
 	if is_exhausted() : return false

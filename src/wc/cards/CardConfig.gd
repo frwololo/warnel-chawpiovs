@@ -16,7 +16,7 @@ const PROPERTIES_STRINGS := ["Type", "Requirements", "Abilities"]
 # Properties which are converted into string using a format defined in setup()
 const PROPERTIES_NUMBERS := ["cost", "attack", "defense", "thwart", "health",
 	"printed_health",
-	"overkill",
+	"overkill", "invincible",
 	"resource_mental", "resource_wild", "resource_energy", "resource_physical",
 	"ally_limit", "hand_size", "boost_cards_per_attack", "boost_cards_per_scheme", "max_hand_size"]
 # The name of these properties will be prepended before their value to their label.

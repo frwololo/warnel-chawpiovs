@@ -419,6 +419,55 @@
 			]
 		}
 	},
+	"Biomechanical Upgrades": {
+		"card_moved_to_pile": {
+			"trigger": "self",
+			"filter_destination": "encounters_reveal",
+			"pile": [
+				{
+					"name": "surge"
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "property",
+					"sort_name": "printed_health",
+					"sort_descending": true,
+					"filter_state_seek": [
+						{
+							"type_code": "minion"
+						}
+					]
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "card_dies",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "heal",
+					"subject": "host",
+					"amount": 100
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			],
+			"trigger": "host"
+		}
+	},
 	"Black Cat - Felicia Hardy": {
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -2434,6 +2483,18 @@
 			}
 		}
 	},
+	"Hydra Soldier": {
+		"interrupt": {
+			"event_name": "card_dies",
+			"board": [
+				{
+					"name": "deal_encounter",
+					"subject": "my_hero"
+				}
+			],
+			"trigger": "self"
+		}
+	},
 	"Illegal Arms Factory": {
 		"reveal": {
 			"all": [
@@ -3082,7 +3143,46 @@
 		}
 	},
 	"Madame Hydra": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "invincible",
+					"trigger": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Legions of Hydra"
+								}
+							}
+						]
+					},
+					"alteration": "per_boardseek"
+				}
+			]
+		},
 		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 2,
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Legions of Hydra"
+							}
+						}
+					]
+				}
+			]
+		},
+		"enemy_scheme_happened": {
 			"trigger": "self",
 			"board": [
 				{
@@ -3277,6 +3377,45 @@
 			]
 		}
 	},
+	"Masters of Mayhem": {
+		"reveal": {
+			"all": [
+				{
+					"name": "enemy_attacks_engaged_hero",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_masters_of_evil": 1
+							}
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_masters_of_evil": 1
+							}
+						}
+					]
+				}
+			]
+		}
+	},
 	"Med Team": {
 		"uses": {
 			"__name__": "medical",
@@ -3311,6 +3450,25 @@
 					"filter_state_subject": [
 						{
 							"filter_group": "group_friendly"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Melter": {
+		"modifiers": {
+			"defense_selection": "my_allies_if_able"
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero"
 						}
 					]
 				}
@@ -4665,6 +4823,27 @@
 			]
 		}
 	},
+	"The Doomsday Chair": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "MODOK"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
 	"The Golden City": {
 		"manual": {
 			"board": [
@@ -4683,6 +4862,36 @@
 				{
 					"name": "draw_cards",
 					"amount": 2
+				}
+			]
+		}
+	},
+	"The Masters of Evil": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_masters_of_evil": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "index",
+					"subject_count": 1,
+					"grid_name": "enemies_first_player",
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
 				}
 			]
 		}
@@ -5448,6 +5657,46 @@
 			"filter_state_trigger": [
 				{
 					"filter_is_host_of": "self"
+				}
+			]
+		}
+	},
+	"Whirlwind": {
+		"interrupt": {
+			"event_name": "enemy_initiates_attack",
+			"trigger": "self",
+			"event_filters": {
+				"target": "my_hero",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "i_attack",
+					"subject": "boardseek",
+					"subject_exclude": "my_hero",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"type_code": "hero"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"type_code": "hero"
+						}
+					]
 				}
 			]
 		}

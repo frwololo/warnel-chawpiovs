@@ -721,10 +721,13 @@ func pre_attack_interrupts_done():
 	display_debug("pre attack interrupts are done, OK to start attack")	
 	_current_enemy_attack_step = EnemyAttackStatus.OK_TO_START_ATTACK
 
-func add_enemy_activation(enemy, activation_type:String = "attack", script = null):
-	attackers.append({"subject":enemy, "type": activation_type, "script" : script})
+func add_enemy_activation(enemy, activation_type:String = "attack", script = null, target_id = 0):
+	attackers.append({"subject":enemy, "type": activation_type, "script" : script, "target_id" : target_id})
 
-func start_activity(enemy, action, script):
+func start_activity(enemy, action, script, target_id = 0):
+	if !target_id:
+		target_id = _villain_current_hero_target
+		
 	display_debug("drawing boost cards")	
 	if (enemy.get_property("type_code") == "villain"): #Or villainous?
 		display_debug("villain confirmed, drawing boost cards")
@@ -746,7 +749,7 @@ func start_activity(enemy, action, script):
 	}
 	if script:
 		trigger_details["additional_tags"] += script.get_property(SP.KEY_TAGS, [])
-		trigger_details["_display_name"] = "enemy " + action + " (" + enemy.canonical_name + " -> " + get_current_target_hero().canonical_name +")" 	
+		trigger_details["_display_name"] = "enemy " + action + " (" + enemy.canonical_name + " -> " + get_identity_card(target_id).canonical_name +")" 	
 	var _sceng = enemy.execute_scripts(enemy, script_name,trigger_details)
 	_current_enemy_attack_step = next_step
 
@@ -772,6 +775,9 @@ func enemy_activates() :
 		enemy = attacker_data["subject"]
 		action = attacker_data["type"]
 		script = attacker_data["script"]
+		var override_target_id = attacker_data.get("target_id")
+		if override_target_id:
+			target_id = override_target_id
 	else:
 		enemy = attacker_data
 
@@ -803,7 +809,7 @@ func enemy_activates() :
 					"scale": 0.6,
 					"duration": 2,
 					"animation_style": Announce.ANIMATION_STYLE.SPEED_OUT,
-					"top_texture_filename": get_villain().get_art_filename(),
+					"top_texture_filename": enemy.get_art_filename(),
 					"bottom_texture_filename": get_identity_card(target_id).get_art_filename(),
 				}
 				theAnnouncer.simple_announce(announce_settings )
@@ -816,13 +822,13 @@ func enemy_activates() :
 				#I had a race condition where if only the executing player would add a global script,
 				#it could arrive before network players where at this status.
 				#Making it a local script (everyone adds it) is an attempt at fixing this
-				var stackEvent:SignalStackScript = SignalStackScript.new("enemy_initiates_" + action, enemy,  {SP.TRIGGER_TARGET_HERO : get_current_target_hero().canonical_name})
+				var stackEvent:SignalStackScript = SignalStackScript.new("enemy_initiates_" + action, enemy,  {SP.TRIGGER_TARGET_HERO : get_identity_card(target_id).canonical_name})
 				theStack.add_script(stackEvent)
 				_current_enemy_attack_step = EnemyAttackStatus.PENDING_INTERRUPT
 				return
 				
 		EnemyAttackStatus.OK_TO_START_ATTACK:
-			start_activity(enemy, action, script)
+			start_activity(enemy, action, script, target_id)
 			return
 		
 		EnemyAttackStatus.BOOST_CARDS:
@@ -1366,13 +1372,39 @@ func get_current_target_hero() -> Card:
 	return get_identity_card(_villain_current_hero_target)
 
 #Adds a "group_defenders" tag to all cards that can block an attack
-func compute_potential_defenders(hero_id):
+func compute_potential_defenders(hero_id, attacker):		
 	var board:Board = cfc.NMAP.board
+	var defenders = []
+	
 	for c in board.get_all_cards():
 		if c.can_defend(): #hero_id):
+			defenders.append(c)
+
+	var modifiers = attacker.retrieve_scripts("modifiers")
+	var defense_selection_modifier = modifiers.get("defense_selection", "")
+	match defense_selection_modifier:
+		"my_allies_if_able":
+			var found_ally = false
+			var to_erase = []
+			for c in defenders:
+				if c.get_property("type_code") == "ally" and c.get_controller_hero_id() == hero_id:
+					found_ally = true
+				else:
+					to_erase.append(c)
+			if found_ally:
+				for c in to_erase:
+					defenders.erase(c)
+		_:
+			pass
+
+	for c in board.get_all_cards():	
+		if c in defenders:
 			c.add_to_group("group_defenders")
 		else:
 			if (c.is_in_group ("group_defenders")): c.remove_from_group("group_defenders")	
+
+
+		
 
 func character_died(card:Card, script = null):
 	var character_died_definition = {

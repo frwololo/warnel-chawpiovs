@@ -367,11 +367,13 @@ func receive_damage(script: ScriptTask) -> int:
 			consolidated_subjects[card] = 0
 		consolidated_subjects[card] += 1
 	
-	#TODO BUG sometimes subjects contains a null card?
 	for card in consolidated_subjects.keys():
 		var multiplier = consolidated_subjects[card]
 		var damage_happened = 0
 		var amount = base_amount * multiplier
+		if card.get_property("invincible", 0):
+			continue
+
 		var tough = card.tokens.get_token_count("tough")
 		if (amount and tough):
 			card.tokens.mod_token("tough", -1)
@@ -610,7 +612,7 @@ static func simple_discard_task(target_card):
 	var task_event = SimplifiedStackScript.new(discard_task)
 	return task_event
 
-#adds an attacker
+#adds attackers against you
 func enemy_attacks_you(script: ScriptTask) -> int:
 	var retcode = CFConst.ReturnCode.FAILED
 
@@ -620,12 +622,61 @@ func enemy_attacks_you(script: ScriptTask) -> int:
 		if !script.subjects:
 			return CFConst.ReturnCode.FAILED
 		for card in script.subjects:
-			if (card.is_stunned()):
-				return CFConst.ReturnCode.FAILED
-		return CFConst.ReturnCode.CHANGED	
+			if (!card.is_stunned()):
+				retcode = CFConst.ReturnCode.CHANGED
+		return retcode	
 
 	for card in script.subjects:
 		gameData.add_enemy_activation(card, "attack", script)
+		retcode = CFConst.ReturnCode.CHANGED
+	return retcode
+	
+func enemy_attacks_engaged_hero(script: ScriptTask) -> int:
+	var retcode = CFConst.ReturnCode.FAILED
+
+	#here we try to predict if the attack will actually happen, but we'll need something better,
+	#signal based... (e.g. for Titania's Fury
+	
+	var subjects = script.subjects
+	var to_remove = []
+	for card in subjects:
+		var target = card.get_controller_hero_card()
+		if !target.is_hero_form():
+			to_remove.append(card)
+
+	for c in to_remove:
+		subjects.erase(c)
+
+	if !subjects:
+		return CFConst.ReturnCode.FAILED
+	
+	if (costs_dry_run()):
+		for card in script.subjects:
+			if (!card.is_stunned()):
+				return CFConst.ReturnCode.CHANGED
+		return retcode	
+
+	for card in subjects:
+		var target_id = card.get_controller_hero_id()
+		gameData.add_enemy_activation(card, "attack", script, target_id)
+		retcode = CFConst.ReturnCode.CHANGED
+	return retcode	
+	
+#adds one attacker against multiple heroes
+func i_attack(script: ScriptTask) -> int:
+	var retcode = CFConst.ReturnCode.FAILED
+
+	var attacker = script.owner
+
+	#here we try to predict if the attack will actually happen, but we'll need something better,
+	#signal based... (e.g. for Titania's Fury
+	if (costs_dry_run()):
+		if !script.subjects:
+			return CFConst.ReturnCode.FAILED
+		return CFConst.ReturnCode.CHANGED	
+
+	for card in script.subjects:
+		gameData.add_enemy_activation(attacker, "attack", script, card.get_controller_hero_id())
 		retcode = CFConst.ReturnCode.CHANGED
 	return retcode
 

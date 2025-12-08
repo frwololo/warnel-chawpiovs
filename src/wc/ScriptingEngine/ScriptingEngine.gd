@@ -63,14 +63,22 @@ func add_resource(script: ScriptTask) -> int:
 
 #override for parent
 func move_card_to_board(script: ScriptTask) -> int:
+
+	if (costs_dry_run()): 
+		return .move_card_to_board(script)
+
 	#TODO might be better to be able to duplicate scriptTasks ?
 	#var modified_script:ScriptTask = script.duplicate
+	
 	var backup:Dictionary = script.script_definition.duplicate()
+
+	var override_properties = script.get_property("set_properties", {})
+
 
 	#we force a grid container in all cases
 	if script.subjects and !script.get_property("grid_name"):
 		var subject = script.subjects[0]
-		var type_code = subject.get_property("type_code")
+		var type_code = override_properties.get("type_code", subject.get_property("type_code"))
 		if CFConst.TYPECODE_TO_GRID.has(type_code):
 			script.script_definition["grid_name"] = CFConst.TYPECODE_TO_GRID[type_code]
 
@@ -78,15 +86,25 @@ func move_card_to_board(script: ScriptTask) -> int:
 	#Replace all occurrences of un_numberd "discard", etc... with the actual id
 	#This ensures we use e.g. the correct discard pile, etc...
 	var owner_hero_id = script.trigger_details.get("override_controller_id", script.owner.get_owner_hero_id())
-	
+	if !owner_hero_id:
+		owner_hero_id = gameData.get_villain_current_hero_target()
+		
 	for zone in CFConst.HERO_GRID_SETUP:
 		#TODO move to const
 		script.script_definition = WCUtils.search_and_replace(script.script_definition, zone, zone+str(owner_hero_id), true)
 	
+	for card in script.subjects:
+		if card.is_boost():
+			card.set_is_boost(false)
+			card._clear_attachment_status()
 
 	var result = .move_card_to_board(script)
+	if override_properties:
+		modify_properties(script)
+	
 	script.script_definition = backup
 	return result
+
 
 func shuffle_card_into_container(script:ScriptTask) -> int:
 	var result = move_card_to_container(script)
@@ -111,14 +129,23 @@ func move_card_to_container(script: ScriptTask) -> int:
 	if previous_hero:
 		previous_hero_id = previous_hero.get_controller_hero_id()
 	
+	var enemy_target_hero_id = gameData.get_villain_current_hero_target()
+	var replacements = [
+		{"from":"" , "to": owner_hero_id },
+		{"from":"_my_hero" , "to": controller_hero_id },
+		{"from":"_first_player" , "to": gameData.first_player_hero_id() },
+		{"from":"_previous_subject" , "to": previous_hero_id},
+		{"from":"_current_hero_target" , "to": enemy_target_hero_id},		
+	]
 
 
 	for zone in ["hand"] + CFConst.HERO_GRID_SETUP.keys():
-		#TODO move to const
-		script.script_definition = WCUtils.search_and_replace(script.script_definition, zone, zone+str(owner_hero_id), true)
-		script.script_definition = WCUtils.search_and_replace(script.script_definition, zone + "_my_hero", zone+str(controller_hero_id), true)		
-		script.script_definition = WCUtils.search_and_replace(script.script_definition, zone + "_first_player", zone+str(gameData.first_player_hero_id()), true)	
-		script.script_definition = WCUtils.search_and_replace(script.script_definition, zone + "_previous_subject", zone+str(previous_hero_id), true)	
+		for replacement in replacements:
+			var from_str = replacement["from"]
+			var to = replacement["to"]
+			if !to:
+				to = enemy_target_hero_id
+			script.script_definition = WCUtils.search_and_replace(script.script_definition, zone + from_str, zone+str(to), true)	
 	
 	var result = .move_card_to_container(script)
 	script.script_definition = backup
@@ -388,13 +415,23 @@ func receive_damage(script: ScriptTask) -> int:
 					card.tokens.mod_token("stunned",
 						1,false,costs_dry_run(), tags)
 				if ("exhaust_if_damage" in tags):
-					card.exhaust_me()
+					card.exhaustme()
 				if ("1_threat_on_main_scheme_if_damage" in tags):
 					var main_scheme = gameData.get_main_scheme()
 					var task = ScriptTask.new(script.owner, {"name": "add_threat", "amount": 1}, card, {})
 					task.subjects= [main_scheme]
 					var stackEvent = SimplifiedStackScript.new(task)
 					gameData.theStack.add_script(stackEvent)
+				
+				var if_damage: Dictionary = script.get_property("if_damage", {})
+				if if_damage:
+					var post_damage_trigger = if_damage["trigger"]
+					var params = if_damage.get("func_params", {})
+					params = WCUtils.search_and_replace(params, "damage", amount, true)
+					var trigger_details = {}
+					if params:
+						trigger_details["additional_script_definition"] = params
+					script.owner.execute_scripts(script.owner, post_damage_trigger, trigger_details)
 		
 		if ("attack" in tags):
 			var retaliate = card.get_property("retaliate", 0)
@@ -467,11 +504,30 @@ func _receive_threat(script: ScriptTask) -> int:
 	#TODO BUG sometimes subjects contains a null card?
 	for card in consolidated_subjects.keys():
 		var multiplier = consolidated_subjects[card]
-		
+		var threat_amount = amount * multiplier
 		retcode = card.tokens.mod_token("threat",
-				amount * multiplier,false,costs_dry_run(), tags)	
+				threat_amount,false,costs_dry_run(), tags)	
+		if threat_amount:
+			if gameData.phaseContainer.current_step == CFConst.PHASE_STEP.VILLAIN_THREAT:
+				var stackEvent:SignalStackScript = SignalStackScript.new("villain_step_one_threat_added", script.owner, {"amount" : threat_amount})
+				gameData.theStack.add_script(stackEvent)
+					
+			var if_threat: Dictionary = script.get_property("if_threat", {})
+			if if_threat:
+				var post_threat_trigger = if_threat["trigger"]
+				var params = if_threat.get("func_params", {})
+				params = WCUtils.search_and_replace(params, "threat", threat_amount, true)
+				var trigger_details = {}
+				if params:
+					trigger_details["additional_script_definition"] = params
+				script.owner.execute_scripts(script.owner, post_threat_trigger, trigger_details)
+					
 						
 	return retcode
+
+func add_threat(script: ScriptTask) -> int:
+	return _receive_threat(script)
+
 
 func conditional_script(script:ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -521,8 +577,6 @@ func move_token_to(script: ScriptTask) -> int:
 						
 	return retcode
 
-func add_threat(script: ScriptTask) -> int:
-	return _receive_threat(script)
 
 func prevent(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -1435,17 +1489,21 @@ func _pre_task_prime(script: ScriptTask, prev_subjects:= []) -> void:
 	var owner = script.owner
 	var controller_hero_id = owner.get_controller_hero_id()
 	
+	var current_hero_target = gameData.get_current_target_hero()
 		
 	for group in CFConst.ALL_GROUPS:
 		script_definition = WCUtils.search_and_replace(script_definition, group + "_my_hero", group+str(controller_hero_id), true)		
 		script_definition = WCUtils.search_and_replace(script_definition, group + "_first_player", group+str(gameData.first_player_hero_id()), true)	
 		script_definition = WCUtils.search_and_replace(script_definition, group + "_previous_subject", group+str(previous_hero_id), true)	
+		script_definition = WCUtils.search_and_replace(script_definition, group + "_current_hero_target", group+str(current_hero_target), true)	
 
 	for zone in ["hand"] + CFConst.HERO_GRID_SETUP.keys():
 		#TODO move to const
 		script_definition = WCUtils.search_and_replace(script_definition, zone + "_my_hero", zone+str(controller_hero_id), true)		
 		script_definition = WCUtils.search_and_replace(script_definition, zone + "_first_player", zone+str(gameData.first_player_hero_id()), true)	
 		script_definition = WCUtils.search_and_replace(script_definition, zone + "_previous_subject", zone+str(previous_hero_id), true)	
+		script_definition = WCUtils.search_and_replace(script_definition, zone + "_current_hero_target", zone+str(current_hero_target), true)	
+
 
 	script.script_definition = script_definition
 	

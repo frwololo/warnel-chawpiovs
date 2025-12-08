@@ -1,0 +1,154 @@
+{
+	"_comments": "Test of Boost card: Weapons Runner",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				}				
+			],
+			"deck_villain": [	
+				{
+					"card": "Hydra Soldier"
+				},			
+				{
+					"card": "Hydra Mercenary"
+				},			
+				{
+					"card": "Weapons Runner"
+				},
+				{
+					"card": "Advance"
+				},					
+			],			
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy Absorption"
+				}
+			],
+		}
+	},
+	"actions": [	
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "click cancel on defenders to take an undefended attack"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "click cancel on defenders to take an undefended attack"
+		},		
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"wait_longer": true,
+			"_comments": "wait as much as needed for player turn"
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "IRon Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				}				
+			],
+			"discard_villain": [	
+				{
+					"card": "Advance"
+				},					
+			],			
+			"deck_villain": [	
+				{
+					"card": "Hydra Soldier"
+				},							
+			],			
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},				
+			],
+			"enemies1" : [
+				{
+					"card": "Weapons Runner"
+				},				
+				{
+					"card": "Hydra Mercenary"
+				},						
+			],
+			"identity1": [
+				{
+					"card": "Iron Man",
+					"tokens": {"damage": 1}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy Absorption"
+				}
+			],
+		}
+	}
+}

@@ -1,4 +1,16 @@
 {
+	"give_obligation": {
+		"about_to_reveal": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "change_controller_hero",
+					"target_identity": "__to__",
+					"subject": "self"
+				}
+			]
+		}
+	},
 	"once_per_round": {
 		"round_ended": {
 			"board": [
@@ -6,11 +18,11 @@
 					"name": "mod_tokens",
 					"subject": "self",
 					"modification": 1,
-					"set_to_mod" : true,
-					"token_name":  "__name__",
-				},
+					"set_to_mod": true,
+					"token_name": "__name__"
+				}
 			]
-		},	
+		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
@@ -18,11 +30,11 @@
 					"name": "mod_tokens",
 					"subject": "self",
 					"modification": 1,
-					"set_to_mod" : true,
-					"token_name":  "__name__",
-				},
+					"set_to_mod": true,
+					"token_name": "__name__"
+				}
 			]
-		},
+		}
 	},
 	"quickstrike": {
 		"card_moved_to_board": {
@@ -30,26 +42,42 @@
 			"board": [
 				{
 					"name": "enemy_attacks_you",
-					"subject": "self",
-				},
+					"subject": "self"
+				}
 			]
-		},		
-	},	
-	"todo" : {
+		}
+	},
+	"todo": {
 		"manual": {
 			"hand": [
 				{
 					"name": "message",
-					"message": "Sorry, this card isn't implemented yet",
-				},
+					"message": "Sorry, this card isn't implemented yet"
+				}
 			],
 			"board": [
 				{
 					"name": "message",
-					"message": "Sorry, this card isn't implemented yet",
-				},
+					"message": "Sorry, this card isn't implemented yet"
+				}
 			]
-		}	
+		}
+	},
+	"ultron_drone": {
+		"name": "move_card_to_board",
+		"tags": [
+			"facedown",
+			"Init"
+		],
+		"set_properties": {
+			"type_code": "minion",
+			"trait_drone": 1
+		},
+		"src_container": "deck",
+		"subject": "index",
+		"subject_count": "__count__",
+		"subject_index": "top",
+		"for_each_player": "__each_player__"
 	},
 	"uses": {
 		"card_moved_to_board": {

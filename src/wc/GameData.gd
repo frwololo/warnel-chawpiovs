@@ -416,14 +416,28 @@ func move_to_next_scheme(current_scheme):
 		if (scheme.get("stage", 0) == next_stage):
 			var board = cfc.NMAP.board
 			var code = scheme.get("_code")
-			var new_card = cfc.instance_card(code,current_scheme.get_owner_hero_id())
+			
 
-			var slot = current_scheme._placement_slot
-			board.add_child(new_card)
-			gameData.set_aside(current_scheme) #is more required to remove it?		
-			new_card.position = slot.rect_global_position
-			slot.set_occupying_card(new_card)
-			new_card.state = Card.CardState.ON_PLAY_BOARD
+			#hacky way to move the current card out of the way
+			#while still leaving it on the board
+			if current_scheme._placement_slot:
+				current_scheme._placement_slot.remove_occupying_card(current_scheme)
+	
+		
+			var new_card = cfc.NMAP.board.load_scheme(code)
+		
+			set_aside(current_scheme)	
+				
+#			var new_card = retrieve_from_side_or_instance(code,current_scheme.get_owner_hero_id())
+#
+#			var slot = current_scheme._placement_slot
+#			board.add_child(new_card)
+#			new_card.state = Card.CardState.ON_PLAY_BOARD	
+#			new_card._determine_idle_state()					
+#			gameData.set_aside(current_scheme) #is more required to remove it?		
+#			new_card.position = slot.rect_global_position
+#			slot.set_occupying_card(new_card)
+
 
 			var func_return = new_card.execute_scripts(new_card, "reveal_side_a")
 			while func_return is GDScriptFunctionState && func_return.is_valid():
@@ -682,9 +696,8 @@ func get_villain_current_hero_target():
 func villain_init_attackers():
 	attackers = []
 	var current_target = _villain_current_hero_target
-	#TODO per player
 	attackers.append(get_villain())
-	attackers += get_minions_engaged_with_hero(current_target)
+	attackers.append("load_minions")
 
 func villain_next_target(force_switch_ui:= true, caller:= "") -> int:
 	var previous_value = _villain_current_hero_target
@@ -757,6 +770,14 @@ func start_activity(enemy, action, script, target_id = 0):
 func enemy_activates() :
 	var target_id = _villain_current_hero_target
 	
+
+	var attacker_data = attackers.front() if attackers else null
+	if (typeof (attacker_data) == TYPE_STRING):
+		match attacker_data:
+			"load_minions":
+				attackers += get_minions_engaged_with_hero(target_id)
+				attackers.pop_front()
+
 	if !attackers.size():
 		all_attackers_finished()
 		return
@@ -769,7 +790,7 @@ func enemy_activates() :
 	var action = "attack" if (heroZone.is_hero_form()) else "scheme"
 	var script = null
 	
-	var attacker_data = attackers.front()
+	attacker_data = attackers.front()
 	var enemy = null
 	if (typeof (attacker_data) == TYPE_DICTIONARY):
 		enemy = attacker_data["subject"]
@@ -784,7 +805,7 @@ func enemy_activates() :
 
 	var status = "stunned" if (action=="attack") else "confused"
 	
-	#check for stun
+	#check for stun/confused
 	var is_status = enemy.tokens.get_token_count(status)
 	if (is_status):
 		enemy.tokens.mod_token(status, -1)
@@ -926,8 +947,13 @@ func villain_threat():
 		
 		#we also add acceleration icons from other schemes
 		escalation_threat += scheme.get_property("scheme_acceleration", 0)
-		
-	main_scheme.add_threat(escalation_threat)
+	if escalation_threat:
+		var villain = gameData.get_villain()
+		var task = ScriptTask.new(villain, {"name": "add_threat", "amount": escalation_threat}, villain, {})
+		task.subjects= [main_scheme]
+		var stackEvent = SimplifiedStackScript.new(task)
+		gameData.theStack.add_script(stackEvent)			
+		#main_scheme.add_threat(escalation_threat)
 
 func get_facedown_encounters_pile(target_id = 0) -> Pile :
 	if (!target_id):

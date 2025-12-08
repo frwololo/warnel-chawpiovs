@@ -376,8 +376,11 @@ func get_villain_card():
 	return villain.get_villain()
 
 
-func load_villain(card_id):
-	return villain.load_villain(card_id)
+func load_villain(card_id, call_preloaded = {"shuffle" : false}):
+	return villain.load_villain(card_id, call_preloaded)
+
+func load_scheme(card_id, call_preloaded = {"shuffle" : false}):
+	return villain.load_scheme(card_id, call_preloaded)
 
 func load_heroes():
 	var hero_count: int = get_team_size()

@@ -9,16 +9,59 @@
 			]
 		}
 	},
-	"Affairs of State": {
-		"about_to_reveal": {
-			"trigger": "self",
+	"Advanced Ultron Drone": {
+		"interrupt": {
+			"event_name": "card_dies",
+			"board": [
+				{
+					"ultron_drone": {
+						"__count__": 1,
+						"__each_player__": false
+					}
+				}
+			],
+			"trigger": "self"
+		}
+	},
+	"Android Efficiency": {
+		"reveal": {
 			"all": [
 				{
-					"name": "change_controller_hero",
-					"target_identity": "T'Challa",
-					"subject": "self"
+					"ultron_drone": {
+						"__count__": 1,
+						"__each_player__": false
+					}
 				}
 			]
+		},
+		"boost": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Pay resource": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"mental": 1
+						},
+						"is_cost": true
+					}
+				],
+				"Drone": [
+					{
+						"ultron_drone": {
+							"__count__": 1,
+							"__each_player__": true
+						}
+					}
+				]
+			}
+		}
+	},
+	"Affairs of State": {
+		"give_obligation": {
+			"__to__": "T'Challa"
 		},
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -338,6 +381,40 @@
 			]
 		}
 	},
+	"Assault on NORAD": {
+		"reveal_side_a": {
+			"all": [
+				{
+					"ultron_drone": {
+						"__count__": 1,
+						"__each_player__": true
+					}
+				}
+			]
+		},
+		"villain_step_one_threat_added": {
+			"board": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"2 Threat": [
+					{
+						"name": "add_threat",
+						"amount": 2
+					}
+				],
+				"Drone": [
+					{
+						"ultron_drone": {
+							"__count__": 1,
+							"__each_player__": false
+						}
+					}
+				]
+			}
+		}
+	},
 	"Aunt May": {
 		"manual": {
 			"board": [
@@ -566,15 +643,8 @@
 		}
 	},
 	"Business Problems": {
-		"about_to_reveal": {
-			"trigger": "self",
-			"all": [
-				{
-					"name": "change_controller_hero",
-					"target_identity": "Tony Stark",
-					"subject": "self"
-				}
-			]
+		"give_obligation": {
+			"__to__": "Tony Stark"
 		},
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -979,6 +1049,30 @@
 			]
 		}
 	},
+	"Countdown to Oblivion": {
+		"reveal_side_a": {
+			"all": [
+				{
+					"ultron_drone": {
+						"__count__": 1,
+						"__each_player__": true
+					}
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "modify_properties",
+					"subject": "self",
+					"set_properties": {
+						"scheme_crisis": 1
+					}
+				}
+			]
+		}
+	},
 	"Counter-Punch": {
 		"response": {
 			"event_name": "defense_happened",
@@ -1151,6 +1245,34 @@
 						"filter_state_seek": [
 							{
 								"filter_group": "group_identities"
+							}
+						]
+					}
+				}
+			]
+		}
+	},
+	"Drone Factory": {
+		"reveal": {
+			"all": [
+				{
+					"ultron_drone": {
+						"__count__": 1,
+						"__each_player__": true
+					}
+				},
+				{
+					"name": "add_threat",
+					"amount": "per_boardseek",
+					"subject": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"trait_drone": 1
+								}
 							}
 						]
 					}
@@ -1523,15 +1645,8 @@
 		}
 	},
 	"Eviction Notice": {
-		"about_to_reveal": {
-			"trigger": "self",
-			"all": [
-				{
-					"name": "change_controller_hero",
-					"target_identity": "Peter Parker",
-					"subject": "self"
-				}
-			]
+		"give_obligation": {
+			"__to__": "Peter Parker"
 		},
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -1707,15 +1822,8 @@
 		}
 	},
 	"Family Emergency": {
-		"about_to_reveal": {
-			"trigger": "self",
-			"all": [
-				{
-					"name": "change_controller_hero",
-					"target_identity": "Carol Danvers",
-					"subject": "self"
-				}
-			]
+		"give_obligation": {
+			"__to__": "Carol Davners"
 		},
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -2648,6 +2756,21 @@
 			]
 		}
 	},
+	"Invasive AI": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_index": "top",
+					"subject_count": 2,
+					"src_container": "deck",
+					"dest_container": "discard",
+					"for_each_player": true
+				}
+			]
+		}
+	},
 	"Iron Man": {
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -2989,15 +3112,8 @@
 		}
 	},
 	"Legal Work": {
-		"about_to_reveal": {
-			"trigger": "self",
-			"all": [
-				{
-					"name": "change_controller_hero",
-					"target_identity": "Jennifer Walters",
-					"subject": "self"
-				}
-			]
+		"give_obligation": {
+			"__to__": "Jennifer Walters"
 		},
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -3770,6 +3886,69 @@
 			]
 		}
 	},
+	"Program Transmitter": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"enemy_scheme_happened": {
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					]
+				}
+			],
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "villain"
+					}
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
+	},
 	"Radioactive Man": {
 		"enemy_attack_happened": {
 			"trigger": "self",
@@ -3788,11 +3967,55 @@
 			"all": [
 				{
 					"name": "move_card_to_container",
-					"dest_container": "discard",
-					"src_container": "hand",
+					"dest_container": "discard_current_hero_target",
+					"src_container": "hand_current_hero_target",
 					"subject": "index",
 					"subject_count": 1,
 					"subject_index": "random"
+				}
+			]
+		}
+	},
+	"Rage of Ultron": {
+		"reveal": {
+			"all": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "villain_attacks_you",
+					"if_damage": {
+						"trigger": "post_activity_trigger",
+						"func_params": {
+							"subject_count": "damage"
+						}
+					}
+				},
+				{
+					"name": "enemy_schemes",
+					"if_threat": {
+						"trigger": "post_activity_trigger",
+						"func_params": {
+							"subject_count": "threat"
+						}
+					},
+					"subject": "villain",
+					"is_else": true
+				}
+			]
+		},
+		"post_activity_trigger": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_index": "top",
+					"src_container": "deck",
+					"dest_container": "discard"
 				}
 			]
 		}
@@ -3833,6 +4056,47 @@
 						"then": 1,
 						"else": 0
 					}
+				}
+			]
+		}
+	},
+	"Repair Sequence": {
+		"reveal": {
+			"all": [
+				{
+					"name": "heal",
+					"is_cost": true,
+					"subject": "villain",
+					"amount": "per_boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_drone": 1
+							},
+							"filter_group": "group_enemies_my_hero"
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "surge"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "heal",
+					"subject": "villain",
+					"amount": "per_boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_drone": 1
+							},
+							"filter_group": "group_enemies_my_hero"
+						}
+					]
 				}
 			]
 		}
@@ -4638,6 +4902,40 @@
 			]
 		}
 	},
+	"Swarm Attack": {
+		"reveal": {
+			"all": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "enemy_attacks_you",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_drone": 1
+							},
+							"filter_group": "group_enemies_my_hero"
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"ultron_drone": {
+						"__count__": 1,
+						"__each_player__": false
+					}
+				}
+			]
+		}
+	},
 	"Sweeping Swoop": {
 		"reveal": {
 			"all": [
@@ -4823,6 +5121,37 @@
 			]
 		}
 	},
+	"The Crimson Cowl": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Ultron Drones"
+							}
+						}
+					]
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"ultron_drone": {
+						"__count__": 1,
+						"__each_player__": true
+					}
+				}
+			]
+		}
+	},
 	"The Doomsday Chair": {
 		"reveal": {
 			"all": [
@@ -4851,7 +5180,7 @@
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
-						"halter_ego_action"
+						"alter_ego_action"
 					]
 				},
 				{
@@ -5221,6 +5550,206 @@
 			}
 		}
 	},
+	"Ultron - 1": {
+		"enemy_attack_happened": {
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"1 Threat on Main Scheme": [
+					{
+						"name": "add_threat",
+						"amount": 1,
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "main_scheme"
+								}
+							}
+						]
+					}
+				],
+				"Drone": [
+					{
+						"ultron_drone": {
+							"__count__": 1,
+							"__each_player__": false
+						}
+					}
+				]
+			},
+			"trigger": "self"
+		}
+	},
+	"Ultron - 2": {
+		"enemy_initiates_attack": {
+			"board": [
+				{
+					"ultron_drone": {
+						"__count__": 1,
+						"__each_player__": false
+					}
+				}
+			],
+			"trigger": "self"
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"trait_drone": 1
+								},
+								"filter_group": "group_enemies_current_hero_target"
+							}
+						]
+					},
+					"alteration": "per_boardseek"
+				}
+			]
+		}
+	},
+	"Ultron - 3": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_drone": 1
+							}
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_drone": 1
+							}
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "invincible",
+					"trigger": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"trait_drone": 1
+								}
+							}
+						]
+					},
+					"alteration": "per_boardseek"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Ultron's Imperative"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Ultron Drones": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_drone": 1
+							},
+							"filter_faceup": false
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_drone": 1
+							},
+							"filter_faceup": false
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_drone": 1
+							},
+							"filter_faceup": false
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Ultron's Imperative": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"tags": [
+						"facedown",
+						"Init"
+					],
+					"set_properties": {
+						"type_code": "minion",
+						"trait_drone": 1
+					},
+					"src_container": "deck_first_player",
+					"subject": "index",
+					"subject_count": 2,
+					"subject_index": "top"
+				}
+			]
+		}
+	},
 	"Under Attack": {
 		"reveal": {
 			"all": {
@@ -5313,6 +5842,80 @@
 					"grid_name": "enemies_first_player",
 					"subject_index": "retrieve_integer",
 					"src_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"Upgraded Drones": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Ultron Drones"
+							}
+						}
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_drone": 1
+							},
+							"filter_faceup": false
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_drone": 1
+							},
+							"filter_faceup": false
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 1,
+						"mental": 1,
+						"energy": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
 				}
 			]
 		}

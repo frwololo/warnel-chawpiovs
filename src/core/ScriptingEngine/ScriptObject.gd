@@ -166,7 +166,12 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 
 	var interaction_authority:UserInteractionAuthority = UserInteractionAuthority.new(owner, trigger_object, trigger, trigger_details, run_type)
 	var interaction_authorized = interaction_authority.interaction_authorized()
-	var subject = overrides.get("subject", get_property(SP.KEY_SUBJECT))
+	
+	for key in overrides:
+		self.script_definition[key] = overrides[key]
+	
+#	var subject = overrides.get("subject", get_property(SP.KEY_SUBJECT))
+	var subject = get_property(SP.KEY_SUBJECT)
 	
 	#replace targeting with selection (optional)
 	if CFConst.OPTIONS.get("replace_targetting_with_selection", false):

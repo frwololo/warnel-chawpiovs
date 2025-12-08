@@ -16,7 +16,7 @@ var _cards_loaded:= {}
 #things to do after everything is properly loaded.
 #This will trigger execute_scripts
 #so all clients need to be loaded before calling this
-func post_load_move():
+func post_load_move(details):
 	for card in _post_load_move:
 		var data = _post_load_move[card]
 		var pile_name = data.get("pile", "")
@@ -33,18 +33,19 @@ func post_load_move():
 #	for card in _post_load_move:				
 #		#card.interruptTweening()
 #		card.reorganize_self()	
-	_post_load_move = {} #reset		
-	shuffle_deck()	
+	_post_load_move = {} #reset
+	if details.get("shuffle", false):		
+		shuffle_deck()	
 	
 	return			
 
 
-remotesync func cards_preloaded():
+remotesync func cards_preloaded(details):
 	var client_id = get_tree().get_rpc_sender_id() 	
 	_cards_loaded[client_id] = true
 	if _cards_loaded.size() == gameData.network_players.size():
 		_cards_loaded = {} #reset just in case
-		post_load_move()
+		post_load_move(details)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -91,12 +92,14 @@ func load_scenario():
 	var villain_data = scenario_data.villains[0]
 	var ckey = villain_data["_code"] 
 
-	load_scheme()		
+	var scheme_data = scenario_data.schemes[0]
+	var scheme_ckey = scheme_data["_code"] 
+	load_scheme(scheme_ckey)		
 	load_villain(ckey)
 
 
 	
-func load_villain(card_id):	
+func load_villain(card_id, call_preloaded = {"shuffle" : true}):	
 	var card = gameData.retrieve_from_side_or_instance(card_id, 0)
 	card.set_is_faceup(true)	
 	#TODO cleaner way to add the villain there?
@@ -112,16 +115,16 @@ func load_villain(card_id):
 		else:
 			var _error = 1
 	villain = card
-	rpc("cards_preloaded")
+	if call_preloaded:
+		rpc("cards_preloaded", call_preloaded)
 	return villain
 	
 
-func load_scheme():	
+func load_scheme(card_id, call_preloaded = {}):	
 	# Put first main scheme in play --> this should trigger its "put in play" abilitiies
 	# TODO how to "flip" a card...
-	var scheme_data = scenario_data.schemes[0]
-	var ckey = scheme_data["_code"] 
-	var card = cfc.instance_card(ckey, 0)
+	var card = gameData.retrieve_from_side_or_instance(card_id, 0)
+	card.set_is_faceup(true)
 	#card.set_is_faceup(true)	
 	#TODO cleaner way to add the villain there?
 	cfc.NMAP["deck_villain"].add_child(card)
@@ -135,7 +138,10 @@ func load_scheme():
 		if slot:
 			_post_load_move[card] = {
 				"slot": slot,
-			}	
+			}
+	if call_preloaded:
+		rpc("cards_preloaded", call_preloaded)		
+	return card	
 	pass
 
 

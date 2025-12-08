@@ -48,6 +48,10 @@ signal enemy_initiates_scheme(card,details)
 signal enemy_attack_happened (card,details)
 # warning-ignore:unused_signal
 signal enemy_scheme_happened (card,details)
+
+# warning-ignore:unused_signal
+signal villain_step_one_threat_added(card, details)
+
 # warning-ignore:unused_signal
 signal thwarted (card,details)
 # warning-ignore:unused_signal

@@ -603,9 +603,9 @@ const DEFAULT_SETTINGS:= {
 #set to true to help with breakpoints and debug
 const DISABLE_THREADS:= true 
 #this disables the announcer messages. Usually not recommended, but might help with speeding up tests
-const DISABLE_ANNOUNCER:= false
+const DISABLE_ANNOUNCER:= true
 #useful only for tests to accelerate the loading of the game and get to gameplay faster
-const SKIP_MULLIGAN:= false
+const SKIP_MULLIGAN:= true
 #if set to true, the system checks will only send hashed instead of 
 #full dictionaries. Probably better for bandwidth
 #set to false when debugging a network/desync issue
@@ -625,5 +625,5 @@ const DEBUG_SIMULATE_NETWORK_DELAY = 1.5
 const DEBUG_NETWORK_DELAY_RANDOM = false
 const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 
-const SCRIPT_BREAKPOINT_CARD_NAME := "Exhaustion"
-const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_moved_to_pile"
+const SCRIPT_BREAKPOINT_CARD_NAME := "Weapons Runner"
+const SCRIPT_BREAKPOINT_TRIGGER_NAME := "boost"

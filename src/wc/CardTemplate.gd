@@ -959,6 +959,7 @@ func remove_threat(modification: int, script = null) -> int:
 	#Crisis special case: can't remove threat from main scheme
 	if "main_scheme" == properties.get("type_code", "false"):
 		var all_schemes:Array = cfc.NMAP.board.get_all_cards_by_property("type_code", "side_scheme")
+		all_schemes.append(self) #some main schemes such as countdown to oblivion give themselves crisis
 		for scheme in all_schemes:
 			#we add all acceleration tokens	
 			var crisis = scheme.get_property("scheme_crisis", 0)
@@ -970,10 +971,6 @@ func remove_threat(modification: int, script = null) -> int:
 	if current_tokens - modification < 0:
 		modification = current_tokens
 	var result = tokens.mod_token(token_name,-modification)
-	
-#	if "side_scheme" == properties.get("type_code", "false"):
-#		if get_current_threat() == 0:
-#			self.die(script)
 			
 	return result
 
@@ -1008,7 +1005,7 @@ func common_pre_execution_scripts(_trigger_card, _trigger: String, _trigger_deta
 func can_defend(hero_id = 0):
 	if is_exhausted() : return false
 
-	var type_code = properties.type_code
+	var type_code = get_property("type_code", "")
 	if type_code != "hero" and type_code != "ally": return false
 	
 	if hero_id:
@@ -1397,19 +1394,26 @@ func set_is_faceup(
 			instant := false,
 			check := false,
 			tags := ["Manual"]) -> int:
+	var before = is_faceup			
 	var retcode = .set_is_faceup(value, instant, check, tags)
+	var after = is_faceup
 	
-	#we remove all of the card's properties as long as it's facedown,
+	if check:
+		return retcode
+			
+	#we remove all of the card's properties as long as it's facedown on the board,
 	#to avoid triggering any weird things
-#	if !check:
-#		if is_faceup:
-#			if _hidden_properties and !properties:
-#				properties = _hidden_properties
-#				_hidden_properties = {}
-#		else:
-#			if properties and !_hidden_properties:
-#				_hidden_properties = properties
-#				properties = {}
+	if !is_faceup and state in [CardState.ON_PLAY_BOARD,CardState.FOCUSED_ON_BOARD, CardState.DROPPING_TO_BOARD]:
+		if !_hidden_properties:
+			_hidden_properties = properties
+			properties = {}
+			#a few variables we still need to avoid a crash:
+			for property in ["_code", "code"]:
+				properties[property] = _hidden_properties.get(property, "")
+	else:
+		if _hidden_properties:
+			properties = _hidden_properties
+			_hidden_properties = {}
 	
 	return retcode	
 		

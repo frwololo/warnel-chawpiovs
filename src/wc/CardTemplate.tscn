@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://src/wc/CardTemplate.gd" type="Script" id=1]
 [ext_resource path="res://src/core/CardTemplate.tscn" type="PackedScene" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://src/wc/CardManipulationButton.tscn" type="PackedScene" id=5]
 [ext_resource path="res://src/wc/ManipulationButtons.gd" type="Script" id=6]
 [ext_resource path="res://src/wc/SpinBox.gd" type="Script" id=7]
+[ext_resource path="res://src/wc/SideIcons.gd" type="Script" id=8]
 
 [node name="Card" instance=ExtResource( 2 )]
 script = ExtResource( 1 )
@@ -72,6 +73,18 @@ script = ExtResource( 3 )
 [node name="ManipulationButtons" parent="Control" index="7"]
 script = ExtResource( 6 )
 manipulation_button = ExtResource( 5 )
+
+[node name="SideIcons" type="MarginContainer" parent="Control" index="9"]
+margin_right = 40.0
+margin_bottom = 200.0
+mouse_filter = 2
+script = ExtResource( 8 )
+
+[node name="Label" type="Label" parent="Control/SideIcons" index="0"]
+margin_top = 93.0
+margin_right = 40.0
+margin_bottom = 107.0
+text = "aaa"
 
 [node name="state" parent="Debug" index="1"]
 margin_top = 18.0

@@ -167,6 +167,9 @@ func setup() -> void:
 	scripting_bus.connect("card_moved_to_hand", self, "_card_moved")
 	scripting_bus.connect("card_moved_to_pile", self, "_card_moved")
 	scripting_bus.connect("card_moved_to_board", self, "_card_moved")		
+	scripting_bus.connect("card_properties_modified", self, "_card_properties_modified")		
+
+
 	
 	attachment_mode = AttachmentMode.ATTACH_BEHIND
 	
@@ -174,6 +177,20 @@ func setup() -> void:
 	disable_dragging_from_board = true	
 	disable_dropping_to_cardcontainers = true
 
+#		scripting_bus.emit_signal(
+#				"card_properties_modified",
+#				self,
+#				{
+#					"property_name": property,
+#					"new_property_value": value,
+#					"previous_property_value": previous_value,
+#					"tags": tags
+#				}
+#		)	
+func _card_properties_modified(owner_card, details):
+	if owner_card == self and details.get("property_name", "") == "type_code":
+		_init_groups(details)
+	
 #		scripting_bus.emit_signal(
 #				"card_token_modified",
 #				owner_card,
@@ -359,13 +376,25 @@ func update_hero_groups():
 				if self.is_in_group(hero_group):
 					self.remove_from_group(hero_group)	
 
-func _init_groups() -> void :
+func _init_groups(update = {}) -> void :
 	var type_code = properties.get("type_code", "")
+
+	var groups:Array = []
+
+	var previous_value = update.get("previous_property_value", "")
+	if previous_value and previous_value != type_code:
+		groups = CFConst.TYPES_TO_GROUPS.get(previous_value, [])
 	
-	var groups:Array = CFConst.TYPES_TO_GROUPS.get(type_code, [])
-	
+		for group in groups:	
+			self.remove_from_group(group)	
+			
+	groups = CFConst.TYPES_TO_GROUPS.get(type_code, [])
 	for group in groups:
 		self.add_to_group(group)
+
+
+
+		
 		
 func common_post_move_scripts(new_host: String, _old_host: String, _move_tags: Array) -> void:
 	#change controller as needed
@@ -625,10 +654,8 @@ func execute_scripts(
 	var state_scripts_dict = get_state_scripts_dict(card_scripts, trigger_card, trigger_details)
 	var state_scripts = state_scripts_dict["state_scripts"]
 
-	var rules = {}
-	if (state_scripts.has("_rules")): #special rules
-		rules = state_scripts["_rules"].duplicate()
-		state_scripts.erase("_rules")
+	var rules = state_scripts_dict.get("rules", {})
+
 	
 	#Check if this script is exected from remote (another online player has been paying for the cost)
 	var is_network_call = trigger_details.has("network_prepaid") #TODO MOVE OUTSIDE OF Core
@@ -1159,6 +1186,7 @@ func common_pre_run(sceng) -> void:
 				var new_script = ScriptTask.new(script.owner, new_script_definition, script.trigger_object, script.trigger_details)
 				new_queue.append(new_script)
 		scripts_queue = new_queue
+		new_queue = []
 				
 	for task in scripts_queue:
 		var script: ScriptTask = task

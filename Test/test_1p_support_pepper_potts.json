@@ -1,0 +1,123 @@
+{
+	"_comments": "Test for Pepper Potts resource",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},							
+			],
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				},			
+			],			
+			"hand1": [
+				{
+					"card": "The Power of Aggression"
+				},	
+				{
+					"card": "Supersonic Punch"
+				},					
+			],
+			"discard1": [
+				{
+					"card": "Stark Tower"
+				},					
+			],				
+			"enemies1": [
+				{
+					"card": "Hydra Bomber",
+				},
+			],
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Pepper Potts",
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "play",
+			"value": "Supersonic punch",
+		},				
+		{
+			"type": "target",
+			"value": "Hydra Bomber",
+		},	
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},							
+			],
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				},			
+			],			
+			"discard1": [
+				{
+					"card": "Stark Tower"
+				},
+				{
+					"card": "The Power of Aggression"
+				},	
+				{
+					"card": "Supersonic Punch"
+				},					
+			],				
+			"discard_villain": [
+				{
+					"card": "Hydra Bomber",
+				},
+			],
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Pepper Potts",
+				}
+			]
+		}
+	}
+}

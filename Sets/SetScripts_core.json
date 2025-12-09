@@ -667,7 +667,7 @@
 					{
 						"name": "exhaust_card",
 						"is_cost": true,
-						"subject": "my_hero"
+						"subject": "my_identity"
 					},
 					{
 						"name": "move_card_to_container",
@@ -686,7 +686,7 @@
 					{
 						"name": "exhaust_card",
 						"is_cost": true,
-						"subject": "my_hero"
+						"subject": "my_identity"
 					},
 					{
 						"name": "move_card_to_container",
@@ -1372,7 +1372,8 @@
 						"src_container": "deck",
 						"subject": "index",
 						"subject_count": 5,
-						"subject_index": "top"
+						"subject_index": "top",
+						"needs_subject": true
 					},
 					{
 						"name": "receive_damage",
@@ -3409,6 +3410,11 @@
 						]
 					},
 					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},						
+					{
 						"name": "thwart",
 						"subject": "target",
 						"amount": 1,
@@ -3436,6 +3442,11 @@
 							}
 						]
 					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},					
 					{
 						"name": "thwart",
 						"subject": "boardseek",
@@ -3505,7 +3516,11 @@
 						{
 							"filter_properties": {
 								"trait_masters_of_evil": 1
-							}
+							},
+							"filter_properties2": {
+								"type_code": "minion"
+							},							
+							
 						}
 					]
 				},
@@ -3525,7 +3540,10 @@
 						{
 							"filter_properties": {
 								"trait_masters_of_evil": 1
-							}
+							},
+							"filter_properties2": {
+								"type_code": "minion"
+							},							
 						}
 					]
 				}
@@ -3757,10 +3775,10 @@
 							"subject_index": "top",
 							"subject_count": 1,
 							"src_container": "discard",
-							"resource_type": "mental"
+							"resource_type": "wild"
 						}
 					},
-					"resource_name": "mental"
+					"resource_name": "wild"
 				}
 			]
 		}
@@ -4118,7 +4136,7 @@
 					"subject_count": 5,
 					"src_container": "deck",
 					"dest_container": "discard",
-					"is_cost": true
+					"needs_subject": true
 				},
 				{
 					"name": "attack",
@@ -4483,9 +4501,10 @@
 					{
 						"name": "exhaust_card",
 						"subject": "boardseek",
+						"subject_count": "all",
 						"filter_state_seek": [
 							{
-								"filter_group": "friendly_characters"
+								"filter_group": "group_friendly"
 							}
 						]
 					}
@@ -4742,7 +4761,8 @@
 					"name": "move_card_to_container",
 					"src_container": "discard_previous_subject",
 					"dest_container": "hand_previous_subject",
-					"subject": "tutor",
+					"subject": "index",
+					"subject_index": "top",
 					"subject_count": 1,
 					"filter_state_tutor": [
 						{
@@ -5715,7 +5735,7 @@
 				},
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "thwart",
+					"filter_property_name": "scheme",
 					"filter_state_trigger": [
 						{
 							"filter_properties": {
@@ -6135,30 +6155,32 @@
 	},
 	"War Machine - James Rhodes": {
 		"manual": {
-			"board": [
-				{
-					"name": "exhaust_card",
-					"subject": "self",
-					"is_cost": true
-				},
-				{
-					"name": "receive_damage",
-					"amount": 2,
-					"subject": "self",
-					"is_cost": true
-				},
-				{
-					"name": "deal_damage",
-					"subject": "boardseek",
-					"amount": 1,
-					"subject_count": "all",
-					"filter_state_subject": [
-						{
-							"filter_group": "group_enemies"
-						}
-					]
-				}
-			]
+			"board": {
+				"damage all": [
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "receive_damage",
+						"amount": 2,
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "deal_damage",
+						"subject": "boardseek",
+						"amount": 1,
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_enemies"
+							}
+						]
+					}
+				]
+			}
 		}
 	},
 	"Weapons Runner": {
@@ -6282,7 +6304,9 @@
 					"subject_count": "all",
 					"filter_state_seek": [
 						{
-							"type_code": "hero"
+							"filter_properties": {
+								"type_code": "hero"
+							},
 						}
 					]
 				}
@@ -6297,7 +6321,9 @@
 					"subject_count": "all",
 					"filter_state_seek": [
 						{
-							"type_code": "hero"
+							"filter_properties": {
+								"type_code": "hero"
+							},
 						}
 					]
 				}

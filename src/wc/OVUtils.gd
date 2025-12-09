@@ -13,7 +13,12 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 				return value
 			results.append(value)
 		return results
-		
+	
+	if _subject_request.begins_with(SP.KEY_SUBJECT_V_A_IDENTITY):
+		var hero_id = _subject_request.substr(SP.KEY_SUBJECT_V_A_IDENTITY.length())
+		var hero_card = gameData.get_identity_card(int(hero_id))
+		results.append(hero_card)	
+		return results		
 			
 	match _subject_request:
 		SP.KEY_SUBJECT_V_HOST:

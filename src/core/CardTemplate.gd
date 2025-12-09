@@ -659,6 +659,18 @@ func modify_property(
 			if properties.get(property) == null\
 					or typeof(properties.get(property)) == typeof(value):
 				properties[property] = value
+				
+			if not is_init or ("emit_signal" in tags):
+				scripting_bus.emit_signal(
+						"card_properties_modified",
+						self,
+						{
+							"property_name": property,
+							"new_property_value": value,
+							"previous_property_value": previous_value,
+							"tags": tags
+						}
+				)				
 			if not card_front.card_labels.has(property):
 				if not property.begins_with("_"):
 					#print_debug("Warning: ", property,
@@ -666,17 +678,6 @@ func modify_property(
 					var _tmp = 1
 				#retcode = CFConst.ReturnCode.FAILED
 			else:
-				if not is_init:
-					scripting_bus.emit_signal(
-							"card_properties_modified",
-							self,
-							{
-								"property_name": property,
-								"new_property_value": value,
-								"previous_property_value": previous_value,
-								"tags": tags
-							}
-					)
 				# These are int or float properties which need to be converted
 				# to a string with some formatting.
 				#
@@ -1515,11 +1516,16 @@ func get_state_scripts_dict(card_scripts, trigger_card, trigger_details):
 	var any_state_scripts = card_scripts.get('all', [])
 	state_scripts = card_scripts.get(state_exec, any_state_scripts)
 
+	var rules = {}
 	#If it's a multiple choice, filter down only to only the ones we can afford to pay
 	if typeof(state_scripts) == TYPE_DICTIONARY:
 		#special case if only one entry in a dictionary, this is a choice by the script writer,
 		# we let it through and remove the
 		#dictionary wrapper
+		if state_scripts.has("_rules"):
+			rules = state_scripts.get("_rules")
+			state_scripts.erase("_rules")
+			
 		if state_scripts.size() == 1:
 			var first_key = state_scripts.keys()[0]
 			state_scripts = state_scripts[first_key]
@@ -1547,7 +1553,7 @@ func get_state_scripts_dict(card_scripts, trigger_card, trigger_details):
 				
 
 	
-	return { "action_name" : action_name, "state_scripts" : state_scripts}
+	return { "action_name" : action_name, "state_scripts" : state_scripts, "rules": rules}
 
 func is_dry_run(run_type):
 	return ((run_type == CFInt.RunType.COST_CHECK) or

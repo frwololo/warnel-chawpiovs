@@ -1,0 +1,141 @@
+{
+	"_comments": "Tests Electromagnetic backlash",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "advance"
+				},		
+				{
+					"card": "Electromagnetic backlash"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Stark Tower"
+				},
+				{
+					"card": "Mark V Armor"
+				},
+				{
+					"card": "Relentless Assault"
+				},
+				{
+					"card": "Chase Them down"
+				},
+				{
+					"card": "Mark V Helmet"
+				},
+				{
+					"card": "Energy Absorption"
+				}				
+			],
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		}		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "advance"
+				},		
+			],
+			"discard_villain": [
+				{
+					"card": "Electromagnetic backlash"
+				},
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Stark Tower"
+				}			
+			],
+			"discard1": [
+				{
+					"card": "Energy Absorption"
+				},
+				{
+					"card": "Mark V Helmet"
+				},				
+				{
+					"card": "Chase Them down"
+				},
+				{
+					"card": "Relentless Assault"
+				},				
+				{
+					"card": "Mark V Armor"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Iron Man",
+					"tokens": {"damage" : 4}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			]
+		}
+	}
+}

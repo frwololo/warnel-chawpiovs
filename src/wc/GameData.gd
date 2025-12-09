@@ -204,6 +204,7 @@ func end_game(result:String):
 	end_dialog.connect("confirmed", cfc.NMAP.board, "_close_game")
 	cfc.NMAP.board.add_child(end_dialog)
 	end_dialog.popup_centered()
+	cleanup_post_game()
 
 #for testing
 func disable_desync_recovery():

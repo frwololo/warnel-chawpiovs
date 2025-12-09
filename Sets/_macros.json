@@ -71,7 +71,10 @@
 		],
 		"set_properties": {
 			"type_code": "minion",
-			"trait_drone": 1
+			"trait_drone": 1,
+			"attack": 0,
+			"scheme": 0,
+			"health": 0
 		},
 		"src_container": "deck",
 		"subject": "index",

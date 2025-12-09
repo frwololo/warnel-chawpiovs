@@ -285,8 +285,8 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	if not card_data.has("Cost") and card_data.has("cost"):
 		card_data["Cost"] = card_data.get("cost")
 	
-	for action in ["attack","thwart"]:	
-		if card_data.has(action):
+	for action in ["attack","thwart", "scheme"]:	
+		if card_data.has(action) and (card_data[action] != null):
 			card_data["can_" + action] = true
 		else:
 			card_data["can_" + action] = false	
@@ -991,4 +991,7 @@ func _on_tree_exiting():
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		FLUSH_LOG()
-		
+	
+func quit_game() -> void:
+	.quit_game()
+	gameData.cleanup_post_game()		

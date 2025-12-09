@@ -18,6 +18,7 @@ const KEY_SUBJECT_V_HOST := "host"
 const KEY_SUBJECT_V_MY_HERO := "my_hero"
 const KEY_SUBJECT_V_MY_ALTER_EGO := "my_alter_ego"
 const KEY_SUBJECT_V_MY_IDENTITY := "my_identity"
+const KEY_SUBJECT_V_A_IDENTITY := "identity_"
 const KEY_SUBJECT_V_VILLAIN := "villain"
 const KEY_SUBJECT_V_GRAB_UNTIL := "grab_until"
 const KEY_SUBJECT_CURRENT_ACTIVATION_ENEMY:= "current_activation_enemy"
@@ -118,7 +119,7 @@ static func check_filter_event_source(_trigger_card, owner_card, trigger_details
 	if guidMaster.is_guid(source):
 		source = guidMaster.get_object_by_guid(source)
 		
-	match source:
+	match _expected_event_source:
 		"self":
 			if source == owner_card:
 				return true

@@ -1,0 +1,119 @@
+{
+	"_comments": "Test for Tigra heal",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},							
+			],
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				},			
+			],			
+			"deck1": [
+				{
+					"card": "The Power of Aggression"
+				},						
+			],			
+			"enemies1": [
+				{
+					"card": "Hydra Bomber",
+				},
+			],
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Tigra",
+					"tokens": {"damage": 1}
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "activate",
+			"value": "Tigra",
+		},	
+		{
+			"type": "choose",
+			"value": "attack",
+		},			
+		{
+			"type": "target",
+			"value": "Hydra Bomber",
+		},
+		{
+			"type": "choose",
+			"value": "yes",
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},							
+			],
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				},			
+			],			
+			"deck1": [
+				{
+					"card": "The Power of Aggression"
+				},						
+			],			
+			"discard_villain": [
+				{
+					"card": "Hydra Bomber",
+				},
+			],
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Tigra",
+					"tokens": {"damage": 1}
+				}
+			]
+		}
+	}
+}

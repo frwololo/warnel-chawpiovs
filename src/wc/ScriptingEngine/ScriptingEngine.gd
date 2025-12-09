@@ -100,6 +100,8 @@ func move_card_to_board(script: ScriptTask) -> int:
 
 	var result = .move_card_to_board(script)
 	if override_properties:
+		var tags: Array = ["emit_signal"] + script.get_property(SP.KEY_TAGS)
+		script.script_definition[SP.KEY_TAGS] = tags
 		modify_properties(script)
 	
 	script.script_definition = backup
@@ -474,7 +476,16 @@ func receive_damage(script: ScriptTask) -> int:
 				}
 				var trigger_details = script.trigger_details.duplicate(true)
 				trigger_details["source"] = guidMaster.get_guid(script.owner)
-
+				
+				#if the damage comes from an "attack", ensure the source is properly categorized as
+				#the hero (or villain) owner rather than the event card itself
+				if ("attack" in tags):
+					var owner = script.owner
+					var type = owner.get_property("type_code", "")
+					if !type in ["hero", "ally", "minion", "villain"]:
+						owner = _get_identity_from_script(script)	
+						trigger_details["source"] = guidMaster.get_guid(owner)
+						
 				var card_dies_script:ScriptTask = ScriptTask.new(card, card_dies_definition, script.trigger_object, trigger_details)
 				card_dies_script.subjects = [card]
 				var task_event = SimplifiedStackScript.new(card_dies_script)
@@ -695,6 +706,10 @@ func enemy_attacks_engaged_hero(script: ScriptTask) -> int:
 	var to_remove = []
 	for card in subjects:
 		var target = card.get_controller_hero_card()
+		if !target:
+			cfc.LOG("subject error in enemy_attacks_engaged_hero, no engaged hero for " + card.canonical_name)
+			to_remove.append(card)
+			continue
 		if !target.is_hero_form():
 			to_remove.append(card)
 
@@ -1489,21 +1504,24 @@ func _pre_task_prime(script: ScriptTask, prev_subjects:= []) -> void:
 	var owner = script.owner
 	var controller_hero_id = owner.get_controller_hero_id()
 	
-	var current_hero_target = gameData.get_current_target_hero()
-		
-	for group in CFConst.ALL_GROUPS:
-		script_definition = WCUtils.search_and_replace(script_definition, group + "_my_hero", group+str(controller_hero_id), true)		
-		script_definition = WCUtils.search_and_replace(script_definition, group + "_first_player", group+str(gameData.first_player_hero_id()), true)	
-		script_definition = WCUtils.search_and_replace(script_definition, group + "_previous_subject", group+str(previous_hero_id), true)	
-		script_definition = WCUtils.search_and_replace(script_definition, group + "_current_hero_target", group+str(current_hero_target), true)	
+	var current_hero_target = gameData.get_villain_current_hero_target()
+	
+	var replacements = [
+		{"from":"_my_hero" , "to": controller_hero_id },
+		{"from":"_first_player" , "to": gameData.first_player_hero_id() },
+		{"from":"_previous_subject" , "to": previous_hero_id},
+		{"from":"_current_hero_target" , "to": current_hero_target},		
+	]	
 
-	for zone in ["hand"] + CFConst.HERO_GRID_SETUP.keys():
-		#TODO move to const
-		script_definition = WCUtils.search_and_replace(script_definition, zone + "_my_hero", zone+str(controller_hero_id), true)		
-		script_definition = WCUtils.search_and_replace(script_definition, zone + "_first_player", zone+str(gameData.first_player_hero_id()), true)	
-		script_definition = WCUtils.search_and_replace(script_definition, zone + "_previous_subject", zone+str(previous_hero_id), true)	
-		script_definition = WCUtils.search_and_replace(script_definition, zone + "_current_hero_target", zone+str(current_hero_target), true)	
 
+	for zone in ["hand"] + CFConst.HERO_GRID_SETUP.keys() + CFConst.ALL_GROUPS:
+		for replacement in replacements:
+			var from_str = replacement["from"]
+			var to = replacement["to"]
+			if !to:
+				to = current_hero_target
+			script_definition = WCUtils.search_and_replace(script_definition, zone + from_str, zone+str(to), true)	
+	
 
 	script.script_definition = script_definition
 	

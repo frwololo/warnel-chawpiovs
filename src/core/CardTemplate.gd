@@ -660,7 +660,7 @@ func modify_property(
 					or typeof(properties.get(property)) == typeof(value):
 				properties[property] = value
 				
-			if not is_init or ("emit_signal" in tags):
+			if ("emit_signal" in tags) or not is_init:
 				scripting_bus.emit_signal(
 						"card_properties_modified",
 						self,
@@ -774,6 +774,9 @@ func get_property(property: String, default = null, force_alterant_check = false
 #	temp_properties_modifiers
 func get_property_and_alterants(property: String,
 		use_global_temp_mods := false, default = null) -> Dictionary:
+
+	if canonical_id == "01027" and property == "attack":
+		var _tmp = 1
 	var property_value = properties.get(property, default)
 	var alteration = {
 		"value_alteration": 0,
@@ -1687,7 +1690,11 @@ func get_instance_runtime_scripts(trigger:String = "", filters:={}) -> Dictionar
 		_:
 			if not scripts.get(trigger,{}).empty():
 				return scripts.get(trigger,{}).duplicate(true)
-	return {}
+	#since scripts exist (but not for our trigger)
+	#we return a dummy dictionary to override results
+	return {
+		"scripts_exist_but_not_for_your_use_case" : true
+	}
 	
 # Retrieves the card scripts either from those defined on the card
 # itself, or from those defined in the script definition files

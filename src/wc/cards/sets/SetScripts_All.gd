@@ -1,3 +1,4 @@
+class_name SetScripts_All
 extends Reference
 
 
@@ -337,38 +338,8 @@ func get_scripts(scripts: Dictionary, card_id: String, _get_modified = true) -> 
 
 	
 	if type_code == "villain" or type_code == "minion":
-		var villain_attack: Dictionary = { 
-			"enemy_attack": {
-				"board": [
-					{
-						"name": "enemy_attack",
-						"subject": "boardseek",	
-						"is_cost": true,
-						"subject_count": "all",
-						SP.KEY_NEEDS_SELECTION: true,
-						SP.KEY_SELECTION_COUNT: 1,
-						SP.KEY_SELECTION_TYPE: "max",
-						SP.KEY_SELECTION_OPTIONAL: true,
-						"filter_state_seek": [{
-							"filter_group": "group_defenders"
-						},],
-					},
-					{
-						"name": "undefend",	
-						"is_else": true,
-					}					
-				]
-			},
-			"commit_scheme": {
-				"board": [
-					{
-						"name": "commit_scheme",
-					}					
-				]
-			}			
-		}
-		script = WCUtils.merge_dict(script,villain_attack, true)		
-	
+		var enemy_scripts = get_enemy_scripts()
+		script = WCUtils.merge_dict(script,enemy_scripts, true)
 	var keywords:Dictionary = card.get("keywords", {})
 	for keyword in keywords.keys():
 		if !keywords[keyword]:
@@ -378,3 +349,36 @@ func get_scripts(scripts: Dictionary, card_id: String, _get_modified = true) -> 
 			script = WCUtils.merge_dict(script,k_script, true)
 	
 	return script
+
+static func get_enemy_scripts():
+	var enemy_scripts: Dictionary = { 
+		"enemy_attack": {
+			"board": [
+				{
+					"name": "enemy_attack",
+					"subject": "boardseek",	
+					"is_cost": true,
+					"subject_count": "all",
+					SP.KEY_NEEDS_SELECTION: true,
+					SP.KEY_SELECTION_COUNT: 1,
+					SP.KEY_SELECTION_TYPE: "max",
+					SP.KEY_SELECTION_OPTIONAL: true,
+					"filter_state_seek": [{
+						"filter_group": "group_defenders"
+					},],
+				},
+				{
+					"name": "undefend",	
+					"is_else": true,
+				}					
+			]
+		},
+		"commit_scheme": {
+			"board": [
+				{
+					"name": "commit_scheme",
+				}					
+			]
+		}			
+	}
+	return enemy_scripts		

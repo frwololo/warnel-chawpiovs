@@ -2171,7 +2171,7 @@
 					"subject": "boardseek",
 					"amount": 1,
 					"subject_count": "all",
-					"filter_state_subject": [
+					"filter_state_seek": [
 						{
 							"filter_group": "group_enemies"
 						}
@@ -2371,9 +2371,13 @@
 	"Hellcat - Patsy Walker": {
 		"manual": {
 			"board": {
-				"name": "move_card_to_container",
-				"dest_container": "hand",
-				"subject": "self"
+				"Return to hand": [
+					{
+						"name": "move_card_to_container",
+						"dest_container": "hand",
+						"subject": "self"
+					}
+				]
 			}
 		}
 	},
@@ -4083,17 +4087,22 @@
 			"all": [
 				{
 					"name": "heal",
-					"is_cost": true,
 					"subject": "villain",
 					"amount": "per_boardseek",
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"trait_drone": 1
-							},
-							"filter_group": "group_enemies_my_hero"
-						}
-					]
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"trait_drone": 1
+								},
+								"filter_group": "group_enemies_my_hero"
+							}
+						],
+						"multiplier": 2,
+					}					
+
 				},
 				{
 					"is_else": true,
@@ -4107,14 +4116,19 @@
 					"name": "heal",
 					"subject": "villain",
 					"amount": "per_boardseek",
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"trait_drone": 1
-							},
-							"filter_group": "group_enemies_my_hero"
-						}
-					]
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"trait_drone": 1
+								},
+								"filter_group": "group_enemies_my_hero"
+							}
+						]
+					}					
+
 				}
 			]
 		}
@@ -4761,7 +4775,7 @@
 					"name": "move_card_to_container",
 					"src_container": "discard_previous_subject",
 					"dest_container": "hand_previous_subject",
-					"subject": "index",
+					"subject": "tutor",
 					"subject_index": "top",
 					"subject_count": 1,
 					"filter_state_tutor": [
@@ -5571,7 +5585,9 @@
 		}
 	},
 	"Ultron - 1": {
-		"enemy_attack_happened": {
+		"response": {
+			"event_name": "enemy_attack_happened",
+			"trigger": "self",
 			"board": {
 				"_rules": {
 					"forced": true
@@ -5599,7 +5615,6 @@
 					}
 				]
 			},
-			"trigger": "self"
 		}
 	},
 	"Ultron - 2": {

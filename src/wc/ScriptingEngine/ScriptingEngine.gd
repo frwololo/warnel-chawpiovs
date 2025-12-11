@@ -280,11 +280,11 @@ func character_died(script: ScriptTask) -> int:
 #		gameData.theStack.add_script(damageScript)
 		
 		#scripting_bus.emit_signal("damage_incoming", card, script.script_definition)	
-		var owner_hero_id = card.get_owner_hero_id()
-		if owner_hero_id > 0:
-			card.move_to(cfc.NMAP["discard" + str(owner_hero_id)])
-		else:
-			card.move_to(cfc.NMAP["discard_villain"])
+#		var owner_hero_id = card.get_owner_hero_id()
+#		if owner_hero_id > 0:
+#			card.move_to(cfc.NMAP["discard" + str(owner_hero_id)])
+#		else:
+#			card.move_to(cfc.NMAP["discard_villain"])
 		var type = card.get_property("type_code", "")
 		if type:
 			var stackEvent:SignalStackScript = SignalStackScript.new(type + "_died", card, script.trigger_details)
@@ -294,6 +294,12 @@ func character_died(script: ScriptTask) -> int:
 			var stackEvent:SignalStackScript = SignalStackScript.new("enemy_died", card, script.trigger_details)
 			gameData.theStack.add_script(stackEvent)			
 			#scripting_bus.emit_signal("enemy_died", card, script.trigger_details)
+
+		var owner_hero_id = card.get_owner_hero_id()
+		if owner_hero_id > 0:
+			card.move_to(cfc.NMAP["discard" + str(owner_hero_id)])
+		else:
+			card.move_to(cfc.NMAP["discard_villain"])
 	
 	return retcode
 
@@ -1094,7 +1100,7 @@ func heal(script: ScriptTask) -> int:
 	if !script.subjects:
 		return CFConst.ReturnCode.FAILED
 	
-	var amount = script.script_definition["amount"]	
+	var amount = script.retrieve_integer_property("amount")	
 		
 	for subject in script.subjects:
 		if (costs_dry_run()): #healing as a cost can be used for "is_else" conditions, when saying "if no healing happened,..."

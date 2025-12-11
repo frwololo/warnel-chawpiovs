@@ -196,6 +196,7 @@ func is_targeting_ongoing():
 
 func end_game(result:String):
 	init_save_folder()
+	cleanup_post_game()	
 	cfc.set_game_paused(true)
 	var end_dialog:AcceptDialog = AcceptDialog.new()
 	end_dialog.window_title = result
@@ -204,7 +205,7 @@ func end_game(result:String):
 	end_dialog.connect("confirmed", cfc.NMAP.board, "_close_game")
 	cfc.NMAP.board.add_child(end_dialog)
 	end_dialog.popup_centered()
-	cleanup_post_game()
+
 
 #for testing
 func disable_desync_recovery():
@@ -823,7 +824,7 @@ func enemy_activates() :
 				if action == "scheme":
 					top_color = Color8(40,20,40,255)
 				var announce_settings = {
-					"top_text": enemy.get_property("shortname"),
+					"top_text": enemy.get_property("shortname", ""),
 					"bottom_text" : action,
 					"top_color": top_color,
 					"bottom_color": Color8(18,18,18,255),
@@ -884,8 +885,9 @@ func enemy_activates() :
 			for boost_card in boost_cards:
 				var discard_event = WCScriptingEngine.simple_discard_task(boost_card)
 				gameData.theStack.add_script(discard_event)	
-			
-			scripting_bus.emit_signal("enemy_" + action + "_happened", enemy, {})
+			var stackEvent:SignalStackScript = SignalStackScript.new("enemy_" + action + "_happened", enemy,  {SP.TRIGGER_TARGET_HERO : get_identity_card(target_id).canonical_name})
+			theStack.add_script(stackEvent)
+			#scripting_bus.emit_signal("enemy_" + action + "_happened", enemy, {})
 			current_enemy_finished()
 			return 
 
@@ -1676,7 +1678,8 @@ func filter_trigger(
 	#on facedown cards such as boost cards
 	#(e.g. bug with Hawkeye, Charge, and a bunch of others)
 	if trigger_card and is_instance_valid(trigger_card):
-		if !trigger_card.is_faceup:
+		#facedown cards won't have a type_code unless they are used on the board (e.g. facedown ultron drones)
+		if !trigger_card.get_property("type_code", null):
 			return false
 		if trigger_card.is_boost(): 
 			if trigger!= "boost":
@@ -1856,6 +1859,7 @@ func save_gamedata_to_file(path):
 
 #loads current game data from a json structure (rpc call to all clients)
 func load_gamedata(json_data:Dictionary):
+	json_data = WCUtils.replace_real_to_int(json_data)
 	gamesave_load_status = {}
 	rpc("remote_load_gamedata",json_data)
 

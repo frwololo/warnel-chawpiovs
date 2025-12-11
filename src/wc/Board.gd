@@ -635,7 +635,7 @@ func load_cards_to_pile(card_data:Array, pile_name):
 			var _error = 1
 			#error
 		var new_card:WCCard = cfc.instance_card(card_id, card_owner)
-		new_card.load_from_json(card)
+		#new_card.load_from_json(card)
 		card_array.append(new_card)
 		card_to_card_data[new_card] = card
 
@@ -652,7 +652,7 @@ func load_cards_to_pile(card_data:Array, pile_name):
 				"grid": pile_name, 
 				"host_id":card_to_card_data[card].get("host", {})
 			} 
-
+		card.load_from_json(card_to_card_data[card])
 
 		#dirty way to set some important variables
 		if (pile_name =="villain"):

@@ -69,10 +69,12 @@ func back_to_main_menu():
 	get_tree().change_scene(CFConst.PATH_CUSTOM + 'MainMenu.tscn')
 
 func save_game():
+	file_dialog.set_current_path("user://Saves/")
 	file_dialog.mode = FileDialog.MODE_SAVE_FILE
 	file_dialog.popup()
 	
 func load_game():
+	file_dialog.set_current_path("user://Saves/")
 	file_dialog.mode = FileDialog.MODE_OPEN_FILE
 	file_dialog.popup()	
 

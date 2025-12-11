@@ -323,6 +323,7 @@ const TYPECODE_TO_GRID := {
 	"support" : "upgrade_support",
 	"minion" : "enemies",
 	"side_scheme" : "schemes",
+	"environment" : "villain_misc"
 }
 
 const GRID_SETUP := {

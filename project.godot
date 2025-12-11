@@ -379,6 +379,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/core/SelectionWindow.gd"
 }, {
+"base": "Reference",
+"class": "SetScripts_All",
+"language": "GDScript",
+"path": "res://src/wc/cards/sets/SetScripts_All.gd"
+}, {
 "base": "StackObject",
 "class": "SignalStackScript",
 "language": "GDScript",
@@ -534,6 +539,7 @@ _global_script_class_icons={
 "ScriptingBus": "",
 "ScriptingEngine": "",
 "SelectionWindow": "",
+"SetScripts_All": "",
 "SignalStackScript": "",
 "SimplifiedStackScript": "",
 "StackObject": "",

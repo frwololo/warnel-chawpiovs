@@ -188,7 +188,13 @@ func setup() -> void:
 #				}
 #		)	
 func _card_properties_modified(owner_card, details):
+	if  owner_card == self and canonical_id == "01027":
+		var _tmp = 1	
 	if owner_card == self and details.get("property_name", "") == "type_code":
+		var previous_value = details.get("previous_property_value", "")
+		var new_value = details.get("new_property_value", "")
+		if new_value in ["villain", "minion"] and new_value != previous_value  and "emit_signal" in details["tags"]:
+			scripts = SetScripts_All.get_enemy_scripts()
 		_init_groups(details)
 	
 #		scripting_bus.emit_signal(
@@ -358,6 +364,41 @@ func set_card_art():
 	var filename = get_art_filename()
 	if (filename):
 		card_front.set_card_art(filename)
+
+# Determines which play position (board, pile or hand)
+# a script should look for to find card scripts
+# based on the card's state.
+#
+# Returns either "board", "hand", "pile" or "NONE".
+func get_state_exec() -> String:
+	var state_exec := "NONE"
+	# We don't check according to the parent name
+	# as that can change.
+	# Might consier checking on the parent class if this gets too complicated.
+	match state:
+		CardState.ON_PLAY_BOARD,\
+				CardState.FOCUSED_ON_BOARD,\
+				CardState.DROPPING_TO_BOARD:
+			# cards that have a type_code 'i.e faceup cards and facedown cards with modifiers)
+			#are allowed to run scripts
+			if get_property("type_code", ""):
+				state_exec = "board"
+		CardState.IN_HAND,\
+				CardState.FOCUSED_IN_HAND,\
+				CardState.REORGANIZING,\
+				CardState.PUSHED_ASIDE:
+			state_exec = "hand"
+		CardState.IN_POPUP,\
+				CardState.FOCUSED_IN_POPUP,\
+				CardState.IN_PILE,\
+				CardState.VIEWED_IN_PILE:
+			state_exec = "pile"
+		CardState.MOVING_TO_CONTAINER:
+			if get_parent() and get_parent().is_in_group("hands"):
+				state_exec = "hand"
+			else:
+				state_exec = "pile"
+	return(state_exec)
 
 #adds our card to group names matching its type and hero owner
 # e.g. "allies2" means allies belonging to hero 2
@@ -1416,6 +1457,14 @@ func import_modifiers(modifiers:Dictionary):
 			
 	self._can_change_form = modifiers.get("can_change_form", self._can_change_form)	
 
+func onboard_facedown():
+	return !is_faceup and\
+		state in [
+			CardState.ON_PLAY_BOARD,
+			CardState.FOCUSED_ON_BOARD, 
+			CardState.DROPPING_TO_BOARD
+		]
+
 var _hidden_properties = {}
 func set_is_faceup(
 			value: bool,
@@ -1431,7 +1480,7 @@ func set_is_faceup(
 			
 	#we remove all of the card's properties as long as it's facedown on the board,
 	#to avoid triggering any weird things
-	if !is_faceup and state in [CardState.ON_PLAY_BOARD,CardState.FOCUSED_ON_BOARD, CardState.DROPPING_TO_BOARD]:
+	if onboard_facedown():
 		if !_hidden_properties:
 			_hidden_properties = properties
 			properties = {}
@@ -1440,6 +1489,9 @@ func set_is_faceup(
 				properties[property] = _hidden_properties.get(property, "")
 	else:
 		if _hidden_properties:
+			if scripts:
+				cfc.LOG("removing extra scripts from card " + canonical_name + " as we turn it faceup")
+				scripts = {}
 			properties = _hidden_properties
 			_hidden_properties = {}
 	
@@ -1877,10 +1929,12 @@ func export_to_json():
 	
 	if (self.current_host_card):
 		card_description["host"] = current_host_card.properties.get("_code")
-	
-	
+		
 	if self.encounter_status != gameData.EncounterStatus.NONE:
 		card_description["encounter_status"] = self.encounter_status
+
+	if onboard_facedown():
+		card_description["facedown_properties"] = self.properties
 	
 	return card_description
 
@@ -1912,8 +1966,22 @@ func _ready_load_from_json(card_description: Dictionary = {}):
 	self._can_change_form = card_description.get("can_change_form", true)	
 
 	self.encounter_status = int(card_description.get("encounter_status", gameData.EncounterStatus.NONE))
+
+	var facedown_properties = card_description.get("facedown_properties", {})
+	if facedown_properties:
+		set_is_faceup(false, true)
+		for property in facedown_properties:
+			if property in ["code", "_code"]:
+				continue
+			self.modify_property(
+					property,
+					facedown_properties[property],
+					false,
+					["Init", "emit_signal"])
+		cfc.flush_cache()
+
 	#we don't handle the attachment/host content here, it is don by the board loading, after all cards are loaded
-	
+
 	return self
 
 func is_hero_form() -> bool:

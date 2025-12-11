@@ -71,6 +71,9 @@ func compute_authority() -> Dictionary:
 	if owner_card.get_controller_hero_id() <= 0:
 		var can_i_play_enemy_card = false
 		var allowed_heroes = gameData.get_currently_playing_hero_ids()
+		if !allowed_heroes:
+			cfc.LOG("error in compute_authority : no allowed heroes to play " + trigger + " for " + owner_card.canonical_name)
+			allowed_heroes = [gameData.first_player_hero_id()] 
 		#ran into a bug were an encounter ability triggered twice,
 		#executed once by each player. We want to avoid that
 		if trigger != "manual" and allowed_heroes.size() > 1:

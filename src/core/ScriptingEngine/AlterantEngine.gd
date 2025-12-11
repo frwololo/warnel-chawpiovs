@@ -37,7 +37,8 @@ func _init(
 		task_details: Dictionary,
 		_subject) -> void:
 	subject = _subject
-	for alter_task_def in scripts_queue.duplicate(true):
+	var _scripts_queue = common_pre_run(scripts_queue, trigger_object)
+	for alter_task_def in _scripts_queue:
 		var alter_task := ScriptAlter.new(
 				alter_task_def,
 				trigger_object,
@@ -79,3 +80,6 @@ func calculate_alteration(script: ScriptAlter) -> void:
 		alteration = per_msg.found_things
 	else:
 		alteration += alteration_requested
+
+func common_pre_run(scripts_queue, _trigger_object):
+	return scripts_queue.duplicate(true)

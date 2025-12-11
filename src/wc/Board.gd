@@ -589,7 +589,9 @@ func get_owner_from_pile_name(pile_name:String):
 		if (pile_name.ends_with(str(hero_id))):
 			return hero_id
 	return 0 #villain
-
+	
+func get_controller_from_pile_name(pile_name:String):	
+	return gameData.get_grid_controller_hero_id(pile_name)
 #things to do after everything is properly loaded.
 #This will trigger execute_scripts
 #so all clients need to be loaded before calling this
@@ -624,6 +626,7 @@ func post_load_move():
 func load_cards_to_pile(card_data:Array, pile_name):
 	var card_array = []
 	var pile_owner = get_owner_from_pile_name(pile_name)
+	var pile_controller = get_controller_from_pile_name(pile_name)	
 	var card_to_card_data = {}
 	for card in card_data:
 		var card_id_or_name:String = card["card"]
@@ -635,6 +638,8 @@ func load_cards_to_pile(card_data:Array, pile_name):
 			var _error = 1
 			#error
 		var new_card:WCCard = cfc.instance_card(card_id, card_owner)
+		if card_owner != pile_controller:
+			new_card.set_controller_hero_id(pile_controller)
 		#new_card.load_from_json(card)
 		card_array.append(new_card)
 		card_to_card_data[new_card] = card

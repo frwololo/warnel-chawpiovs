@@ -109,8 +109,9 @@ func get_owner_hero_id() -> int:
 	return _owner_hero_id	
 
 func set_controller_hero_id(hero_id:int):
+	_controller_hero_id = hero_id		
 	update_hero_groups()
-	_controller_hero_id = hero_id
+
 	
 func get_controller_hero_id() -> int:
 	return _controller_hero_id	
@@ -188,14 +189,13 @@ func setup() -> void:
 #				}
 #		)	
 func _card_properties_modified(owner_card, details):
-	if  owner_card == self and canonical_id == "01027":
-		var _tmp = 1	
 	if owner_card == self and details.get("property_name", "") == "type_code":
 		var previous_value = details.get("previous_property_value", "")
 		var new_value = details.get("new_property_value", "")
 		if new_value in ["villain", "minion"] and new_value != previous_value  and "emit_signal" in details["tags"]:
 			scripts = SetScripts_All.get_enemy_scripts()
 		_init_groups(details)
+		update_hero_groups()
 	
 #		scripting_bus.emit_signal(
 #				"card_token_modified",
@@ -341,6 +341,7 @@ func _game_state_changed(_details:Dictionary):
 	for i in gameData.get_team_size():
 		var hero_id = i+1
 		_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID
+	_cache_resource_value = {}
 	
 	display_health()
 
@@ -402,6 +403,7 @@ func get_state_exec() -> String:
 
 #adds our card to group names matching its type and hero owner
 # e.g. "allies2" means allies belonging to hero 2
+# 0 is valid and represents the villain
 func update_hero_groups():
 	var type_code = properties.get("type_code", "")
 	
@@ -442,10 +444,10 @@ func common_post_move_scripts(new_host: String, _old_host: String, _move_tags: A
 	var new_grid = get_grid_name()
 	var new_hero_id = 0
 	if (new_grid):
-		new_hero_id = gameData.get_grid_owner_hero_id(new_grid)
+		new_hero_id = gameData.get_grid_controller_hero_id(new_grid)
 	else:
 		#attempt for piles/containers
-		new_hero_id = gameData.get_grid_owner_hero_id(new_host)
+		new_hero_id = gameData.get_grid_controller_hero_id(new_host)
 	
 	if (new_hero_id or (self.get_controller_hero_id() < 0) ): #only change if we were able to establish an owner, or if uninitialized
 		self.set_controller_hero_id(new_hero_id)
@@ -751,7 +753,7 @@ func execute_scripts(
 	if typeof(state_scripts) == TYPE_DICTIONARY:	
 		var selected_key = ""
 		if run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
-			selected_key = ""
+			selected_key = state_scripts.keys()[0]
 			#TODO need to help check costs here as well?
 		else:
 			if !interaction_authorized:
@@ -835,8 +837,6 @@ func execute_scripts(
 				#1.5) We run the script in "prime" mode again to choose targets
 				# for all tasks that aren't costs but still need targets
 				# (is_cost = false and needs_subject = false)
-				if canonical_name == "Masterplan":
-					var _tmp = 1
 				sceng_return = sceng.execute(CFInt.RunType.PRIME_ONLY)
 				#if not sceng.all_tasks_completed:
 				if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
@@ -1807,7 +1807,16 @@ func _get_resource_sceng(script):
 #computes how much resources this card would generate as part of a payment
 #this uses its "resource" script in priority (for card that have either special resource abilities,
 #or cards that modify their resource based on some scripted conditions - e.g. The Power of Justice
+var _cache_resource_value = {}
 func get_resource_value_as_mana(script):
+	var cache_key = {
+		"owner": script.owner
+	}.hash()
+	
+	if _cache_resource_value.has(cache_key):
+		return _cache_resource_value[cache_key]
+
+		
 	var my_state = get_state_exec()
 	var sceng = _get_resource_sceng(script)
 	var result_mana:ManaCost = ManaCost.new()
@@ -1830,15 +1839,18 @@ func get_resource_value_as_mana(script):
 				for result in results:
 					if result as ManaCost:
 						result_mana.add_manacost(result)
-				return result_mana			
+				_cache_resource_value[cache_key] = result_mana		
+				return _cache_resource_value[cache_key]			
 	
 	#if the compute didn't get through, we return the regular printed value
 	if (my_state) == "hand":
 		if (canonical_name == "The Power of Justice" and get_state_exec() == "hand"):
-			var _tmp = 1		
-		return get_printed_resource_value_as_mana(script)
-		
-	return null
+			var _tmp = 1	
+		_cache_resource_value[cache_key]  = get_printed_resource_value_as_mana(script)	
+		return _cache_resource_value[cache_key]
+	
+	_cache_resource_value[cache_key] = null
+	return _cache_resource_value[cache_key]
 
 func get_resource_value_as_int(script):
 	if (canonical_name == "The Power of Justice" and get_state_exec() == "hand"):

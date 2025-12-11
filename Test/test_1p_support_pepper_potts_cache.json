@@ -1,0 +1,145 @@
+{
+	"_comments": "Test for Pepper Potts resource",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},							
+			],
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				},			
+			],			
+			"hand1": [
+				{
+					"card": "Genius"
+				},	
+				{
+					"card": "Powered Gauntlets"
+				},					
+			],			
+			"enemies1": [
+				{
+					"card": "Hydra Bomber",
+				},
+			],
+			"discard1": [
+				{
+					"card": "Energy absorption"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Pepper Potts",
+				},
+				{
+					"card": "Rocket Boots",
+				},				
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "play",
+			"value": "Powered Gauntlets",
+		},	
+		{
+			"type": "select",
+			"value": "Genius",
+		},			
+		{
+			"type": "activate",
+			"value": "Rocket Boots",
+		},
+		{
+			"type": "select",
+			"value": "Pepper Potts",
+		},		
+		{
+			"type": "activate",
+			"value": "Powered Gauntlets",
+		},	
+		{
+			"type": "target",
+			"value": "Hydra Bomber",
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},							
+			],
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				},			
+			],			
+			"discard1": [
+				{
+					"card": "Energy absorption"
+				},			
+				{
+					"card": "Genius"
+				},						
+			],			
+			"discard_villain": [
+				{
+					"card": "Hydra Bomber",
+				},
+			],
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Pepper Potts",
+				},
+				{
+					"card": "Rocket Boots",
+				},	
+				{
+					"card": "Powered Gauntlets"
+				},				
+			]
+		}
+	}
+}

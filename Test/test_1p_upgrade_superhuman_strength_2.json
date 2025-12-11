@@ -1,0 +1,149 @@
+{
+	"_comments": "Test for Superhuman strength + combat training interaction",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},			
+				{
+					"card": "Hydra Mercenary",
+				},
+				{
+					"card": "Stampede",
+				}				
+			],
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				}			
+			],			
+			"hand1": [
+				{
+					"card": "The Power of Aggression"
+				}			
+			],			
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				},
+				{
+					"card": "Superhuman strength"
+				},
+				{
+					"card": "Tenacity"
+				},				
+				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "She-Hulk",
+			"_comments": "activate She-Hulk"
+		},	
+		{
+			"type": "choose",
+			"value": "attack",
+		},	
+		{
+			"type": "target",
+			"value": "01113",
+		},
+		{
+			"type": "activate",
+			"value": "tenacity",
+			"_comments": "activate Tenacity"
+		},		
+		{
+			"type": "activate",
+			"value": "She-Hulk",
+			"_comments": "activate She-Hulk"
+		},	
+		{
+			"type": "choose",
+			"value": "attack",
+		},	
+		{
+			"type": "target",
+			"value": "01113",
+		}			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},			
+				{
+					"card": "Hydra Mercenary",
+				},
+				{
+					"card": "Stampede",
+				}				
+			],
+			"villain": [
+				{
+					"card": "01113",
+					"tokens": {"damage": 10, "stunned": 1}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				}			
+			],			
+			"discard1": [
+				{
+					"card": "Superhuman strength"
+				},			
+				{
+					"card": "The Power of Aggression"
+				},
+				{
+					"card": "Tenacity"
+				},				
+			],			
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				},				
+				
+			]
+		}
+	}
+}

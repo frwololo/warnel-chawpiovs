@@ -512,20 +512,19 @@ func _receive_threat(script: ScriptTask) -> int:
 	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
 	# e.g. Spider man gets 3*1 damage = 3 damage
 	var consolidated_subjects:= {}
-	#TODO BUG sometimes subjects contains a null card?
 	for card in script.subjects:
 		if !consolidated_subjects.has(card):
 			consolidated_subjects[card] = 0
 		consolidated_subjects[card] += 1
 	
-	#TODO BUG sometimes subjects contains a null card?
 	for card in consolidated_subjects.keys():
 		var multiplier = consolidated_subjects[card]
 		var threat_amount = amount * multiplier
 		retcode = card.tokens.mod_token("threat",
 				threat_amount,false,costs_dry_run(), tags)	
 		if threat_amount:
-			if gameData.phaseContainer.current_step == CFConst.PHASE_STEP.VILLAIN_THREAT:
+			if "villain_step_one_threat" in script.get_property(SP.KEY_TAGS):
+#			if gameData.phaseContainer.current_step == CFConst.PHASE_STEP.VILLAIN_THREAT:
 				var stackEvent:SignalStackScript = SignalStackScript.new("villain_step_one_threat_added", script.owner, {"amount" : threat_amount})
 				gameData.theStack.add_script(stackEvent)
 					
@@ -1501,13 +1500,15 @@ static func duplicate_script(script):
 func _pre_task_prime(script: ScriptTask, prev_subjects:= []) -> void:
 	if script.prev_subjects:
 		prev_subjects = script.prev_subjects
-	var previous_hero = prev_subjects[0] if prev_subjects else null
-	var script_definition = script.script_definition	
+	
+	script.script_definition = static_pre_task_prime(script.script_definition, script.owner, prev_subjects)
+	
+static func static_pre_task_prime(script_definition, owner, prev_subjects:= []):
+	var previous_hero = prev_subjects[0] if prev_subjects else null	
 	var previous_hero_id = 0
 	if previous_hero:
 		previous_hero_id = previous_hero.get_controller_hero_id()
 	
-	var owner = script.owner
 	var controller_hero_id = owner.get_controller_hero_id()
 	
 	var current_hero_target = gameData.get_villain_current_hero_target()
@@ -1529,5 +1530,5 @@ func _pre_task_prime(script: ScriptTask, prev_subjects:= []) -> void:
 			script_definition = WCUtils.search_and_replace(script_definition, zone + from_str, zone+str(to), true)	
 	
 
-	script.script_definition = script_definition
+	return script_definition
 	

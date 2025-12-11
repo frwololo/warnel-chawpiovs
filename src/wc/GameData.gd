@@ -430,16 +430,6 @@ func move_to_next_scheme(current_scheme):
 		
 			set_aside(current_scheme)	
 				
-#			var new_card = retrieve_from_side_or_instance(code,current_scheme.get_owner_hero_id())
-#
-#			var slot = current_scheme._placement_slot
-#			board.add_child(new_card)
-#			new_card.state = Card.CardState.ON_PLAY_BOARD	
-#			new_card._determine_idle_state()					
-#			gameData.set_aside(current_scheme) #is more required to remove it?		
-#			new_card.position = slot.rect_global_position
-#			slot.set_occupying_card(new_card)
-
 
 			var func_return = new_card.execute_scripts(new_card, "reveal_side_a")
 			while func_return is GDScriptFunctionState && func_return.is_valid():
@@ -952,7 +942,7 @@ func villain_threat():
 		escalation_threat += scheme.get_property("scheme_acceleration", 0)
 	if escalation_threat:
 		var villain = gameData.get_villain()
-		var task = ScriptTask.new(villain, {"name": "add_threat", "amount": escalation_threat}, villain, {})
+		var task = ScriptTask.new(villain, {"name": "add_threat", "amount": escalation_threat, "tags": ["villain_step_one_threat"]}, villain, {})
 		task.subjects= [main_scheme]
 		var stackEvent = SimplifiedStackScript.new(task)
 		gameData.theStack.add_script(stackEvent)			
@@ -1659,7 +1649,7 @@ func assign_starting_hero():
 	return 0
 
 #TODO error handling?
-func get_grid_owner_hero_id(grid_name:String) -> int:
+func get_grid_controller_hero_id(grid_name:String) -> int:
 	var potential_hero_id = grid_name.right(1).to_int()
 	return potential_hero_id
 

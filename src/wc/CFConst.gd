@@ -143,7 +143,7 @@ const PATH_SCRIPT_PER := PATH_CORE + "ScriptingEngine/ScriptPer.gd"
 # This specifies the path to the Alterant Engine. If you wish to extend
 # The alterant engine functionality with your own tasks,
 # Point this to your own script file.
-const PATH_ALTERANT_ENGINE := PATH_CORE + "ScriptingEngine/AlterantEngine.gd"
+const PATH_ALTERANT_ENGINE := PATH_CUSTOM + "ScriptingEngine/AlterantEngine.gd"
 # This specifies the path to the MousePointer. If you wish to extend
 # The mouse pointer functionality with your own code,
 # Point this to your own scene file with a scrip extending Mouse Pointer.
@@ -626,5 +626,5 @@ const DEBUG_SIMULATE_NETWORK_DELAY = 1.5
 const DEBUG_NETWORK_DELAY_RANDOM = false
 const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 
-const SCRIPT_BREAKPOINT_CARD_NAME := "Weapons Runner"
-const SCRIPT_BREAKPOINT_TRIGGER_NAME := "boost"
+const SCRIPT_BREAKPOINT_CARD_NAME := "Assault on NORAD"
+const SCRIPT_BREAKPOINT_TRIGGER_NAME := "villain_step_one_threat_added"

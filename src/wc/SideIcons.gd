@@ -68,6 +68,7 @@ func reinit_children():
 	for child in get_children():
 		child.queue_free()
 		remove_child(child)
+	icons = []
 
 func set_icons():
 	reinit_children()
@@ -111,6 +112,8 @@ func _process(delta):
 	if !icons:
 		set_icons()
 	for icon in icons:
+		if owner_card.canonical_name == "Iron Man":
+			var _tmp = 1
 		var offset_data = offsets_by_type_code.get(owner_card.get_property("type_code", ""), {})		
 		var offset_y = offset_data.get("y", 0)
 		var offset_x = offset_data.get("x", 0)		
@@ -141,7 +144,9 @@ func _process(delta):
 			
 			shadow.rect_scale = label.rect_scale
 			shadow.rect_position = label.rect_position + (Vector2(3,3) * label.rect_scale)#child.rect_position
-		
+		else:
+			#bug ?
+			set_icons()
 		pass
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):

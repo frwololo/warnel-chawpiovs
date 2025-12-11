@@ -1,0 +1,143 @@
+{
+	"_comments": "Tests Assault on NORAD",
+	"init": {
+		"phase": "VILLAIN_THREAT",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}				
+			],
+			"villain": [
+				{
+					"card": "01134"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Assault on NORAD"
+				}
+			],
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"hand1": [
+				{
+					"card": "01056",
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Ultron Drones",
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "choose",
+			"value": "2 Threat",
+			"_comments": "choose to get threat"
+		},		
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "take undefended attack against Ultron"
+		},
+		{
+			"type": "choose",
+			"value": "1 Threat on Main Scheme",
+			"_comments": "choose to get threat"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "wait for player turn"
+		},			
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},		
+			],
+			"discard_villain": [
+				{
+					"card": "Armored Guard"
+				}				
+			],
+			"villain": [
+				{
+					"card": "01134"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Assault on NORAD",
+					"tokens": {"threat" : 4}
+				}
+			],
+			"identity1": [
+				{
+					"card": "She-Hulk",
+					"tokens": {"damage": 3}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				},
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"hand1": [
+				{
+					"card": "01056",
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Ultron Drones",
+				}
+			]
+		}
+	}
+}

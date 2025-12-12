@@ -1,0 +1,142 @@
+{
+	"_comments": "Tests Ultron Drones",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}				
+			],
+			"discard_villain": [],
+			"villain": [
+				{
+					"card": "01134",
+					"tokens": {"stunned": 1}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01137"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "titania"
+				}
+			],
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"hand1": [
+				{
+					"card": "01056",
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Ultron Drones",
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "take undefended attack against Titania"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "Wait until player turn"
+		},			
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {		
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},			
+			],
+			"discard_villain": [],
+			"villain": [
+				{
+					"card": "01134",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01137"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "titania"
+				},
+				{
+					"card": "Armored Guard"
+				}					
+				
+			],
+			"identity1": [
+				{
+					"card": "She-Hulk",
+					"tokens": {"damage" : 6}
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"hand1": [
+				{
+					"card": "01056",
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Ultron Drones",
+				}
+			]
+		}
+	}
+}

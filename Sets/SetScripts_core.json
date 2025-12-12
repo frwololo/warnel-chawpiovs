@@ -2375,6 +2375,13 @@
 			"board": {
 				"Return to hand": [
 					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},				
+					{
 						"name": "move_card_to_container",
 						"dest_container": "hand",
 						"subject": "self"

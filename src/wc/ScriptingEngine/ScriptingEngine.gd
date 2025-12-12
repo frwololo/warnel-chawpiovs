@@ -459,10 +459,12 @@ func receive_damage(script: ScriptTask) -> int:
 				"target": card,
 				"damage": damage_happened,
 			}
-			scripting_bus.emit_signal("attack_happened", script.owner, signal_details)
+			gameData.theStack.add_script(SignalStackScript.new("attack_happened",  script.owner,  signal_details))			
+#			scripting_bus.emit_signal("attack_happened", script.owner, signal_details)
 						
 			if ("basic power" in tags):
-				scripting_bus.emit_signal("basic_attack_happened", script.owner, signal_details)
+				gameData.theStack.add_script(SignalStackScript.new("basic_attack_happened",  script.owner,  signal_details))				
+#				scripting_bus.emit_signal("basic_attack_happened", script.owner, signal_details)
 		
 			var stackEvent:SignalStackScript = SignalStackScript.new("defense_happened", card,  signal_details)
 			gameData.theStack.add_script(stackEvent)
@@ -1141,7 +1143,7 @@ func deal_encounter(script: ScriptTask) -> int:
 	for subject in script.subjects:
 		match subject.get_property("type_code", ""):
 			"hero": #subject is a hero, we deal them an encounter from the deck
-				gameData.deal_one_encounter_to(subject.get_controller_hero_id, immediate_reveal)
+				gameData.deal_one_encounter_to(subject.get_controller_hero_id(), immediate_reveal)
 			_: #other uses cases, we assume that's the card we want to reveal
 				gameData.deal_one_encounter_to(owner_hero_id, immediate_reveal, subject)
 		

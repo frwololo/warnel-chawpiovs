@@ -1749,7 +1749,7 @@ func count_resource_types(params:Dictionary, script) -> int:
 func get_sustained_damage(params:Dictionary = {}, script = null) -> int:
 	var subject = self
 	if params and script and params.has("subject"):
-		var subjects = SP.retrieve_subject(params.get("subject"), script)
+		var subjects = SP.retrieve_subjects(params.get("subject"), script)
 		if !subjects:
 			return 0
 		subject = subjects[0]
@@ -1758,7 +1758,7 @@ func get_sustained_damage(params:Dictionary = {}, script = null) -> int:
 func get_remaining_damage(params:Dictionary = {}, script = null) -> int:
 	var subject = self
 	if params and script and params.has("subject"):
-		var subjects = SP.retrieve_subject(params.get("subject"), script)
+		var subjects = SP.retrieve_subjects(params.get("subject"), script)
 		if !subjects:
 			return 0
 		subject = subjects[0]

@@ -291,6 +291,8 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	for action in ["attack","thwart", "scheme"]:	
 		if card_data.has(action) and (card_data[action] != null):
 			card_data["can_" + action] = true
+			if card_data[action] < 0: #e.g. Titania gets "-1" in marvelcdb which is a problem for alterants
+				 card_data[action] = 0
 		else:
 			card_data["can_" + action] = false	
 

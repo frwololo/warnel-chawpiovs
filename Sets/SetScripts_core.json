@@ -2120,7 +2120,7 @@
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
-						"action"
+						"action_ability"
 					]
 				},
 				{
@@ -3528,7 +3528,7 @@
 								"type_code": "minion"
 							}
 						}
-					]
+					]					
 				},
 				{
 					"is_else": true,
@@ -3598,7 +3598,7 @@
 	},
 	"Melter": {
 		"modifiers": {
-			"defense_selection": "my_allies_if_able"
+			"defense_selection": "my_allies_if_able",
 		},
 		"boost": {
 			"all": [
@@ -3686,7 +3686,8 @@
 		}
 	},
 	"One-Two Punch": {
-		"basic_attack_happened": {
+		"response": {
+			"event_name": "basic_attack_happened",
 			"trigger": "my_hero",
 			"is_optional_hand": true,
 			"hand": [
@@ -3695,7 +3696,7 @@
 					"subject": "my_hero"
 				}
 			]
-		}
+		},	
 	},
 	"Panther Claws": {
 		"special": {
@@ -4557,6 +4558,21 @@
 					"filter_property_name": "attack",
 					"trigger": "host",
 					"alteration": 1
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "enemy_attack_damage",
+			"trigger": "host",
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"stun_if_damage"
+						]
+					}
 				}
 			]
 		},
@@ -5993,8 +6009,11 @@
 				}
 			]
 		},
-		"receive_damage": {
-			"trigger": "villain",
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "villain"
+			},
 			"board": [
 				{
 					"name": "mod_tokens",
@@ -6003,7 +6022,7 @@
 					"subject": "villain"
 				}
 			]
-		},
+		},		
 		"manual": {
 			"board": [
 				{
@@ -6173,6 +6192,13 @@
 		"manual": {
 			"board": {
 				"damage all": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
 					{
 						"name": "exhaust_card",
 						"subject": "self",

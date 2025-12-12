@@ -654,8 +654,8 @@ func compute_interrupts(script):
 				for card in get_tree().get_nodes_in_group("cards"):
 					if (card in card_already_played_for_stack_uid.get(script_uid, [])):
 						continue
-					if (task.script_name == "reveal_encounter"):
-						if (card.canonical_name == "Enhanced Spider-Sense"):
+					if (task.script_name == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME):
+						if (card.canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME):
 							var _tmp = 1
 					var can_interrupt = card.can_interrupt(hero_id,task.owner, _current_interrupted_event)
 					if can_interrupt == INTERRUPT_FILTER[mode]:

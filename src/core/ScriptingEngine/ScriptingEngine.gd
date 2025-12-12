@@ -247,8 +247,11 @@ func execute(_run_type) -> void:
 				or (not run_type in[CFInt.RunType.ELSE,CFInt.RunType.PRIME_ONLY]  and script.is_else)):
 			continue
 			
-		if script.is_else:
-			var _tmp = 1	
+		if script.is_else and run_type == CFInt.RunType.PRIME_ONLY and can_all_costs_be_paid:
+			if is_network_master:# and not costs_dry_run():
+				network_prepaid.pop_back()
+				network_prepaid.append([])			
+			continue	
 		# We store the temp modifiers to counters, so that things like
 		# info during targetting can take them into account
 		cfc.NMAP.board.counters.set_temp_counter_modifiers(

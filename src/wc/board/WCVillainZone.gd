@@ -127,7 +127,8 @@ func load_scheme(card_id, call_preloaded = {}):
 	card.set_is_faceup(true)
 	#card.set_is_faceup(true)	
 	#TODO cleaner way to add the villain there?
-	cfc.NMAP["deck_villain"].add_child(card)
+	if !card.get_parent():
+		cfc.NMAP["deck_villain"].add_child(card)
 	card._determine_idle_state()
 	
 	

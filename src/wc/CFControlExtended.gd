@@ -214,6 +214,9 @@ func setup_traits_as_alterants():
 		if trait.begins_with("black"):
 			var _tmp=1
 		CardConfig.PROPERTIES_NUMBERS.append("trait_" + trait)
+	for keyword in CFConst.AUTO_KEYWORDS:
+		if CFConst.AUTO_KEYWORDS[keyword] in ["int", "bool"]:
+			CardConfig.PROPERTIES_NUMBERS.append(keyword)
 
 #we skip some cards from the marvelcdb database,
 #when they are redundant or not useful for this game

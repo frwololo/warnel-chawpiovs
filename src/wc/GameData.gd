@@ -883,6 +883,13 @@ func enemy_activates() :
 
 	return
 
+var _latest_activity_script = null
+func set_latest_activity_script(script):
+	_latest_activity_script = script
+
+func get_latest_activity_script():
+	return _latest_activity_script
+
 func defenders_chosen():
 	if _current_enemy_attack_step != EnemyAttackStatus.PENDING_DEFENDERS:
 		display_debug("defenders_chosen: I'm being told that defenders have been chosen but I'm not in the PENDING_DEFENDERS state, I'm at" + EnemyAttackStatusStr[_current_enemy_attack_step])

@@ -1314,6 +1314,24 @@ func common_pre_run(sceng) -> void:
 					script.script_definition["selection_count"] = min_to_discard
 
 				new_queue.append(script)
+			"enemy_attack":
+				var attacker = script.owner
+				var modifiers = attacker.retrieve_scripts("modifiers")
+				var defense_selection_modifier = modifiers.get("defense_selection", "")
+				match defense_selection_modifier:
+					#TODO this is split with GameData.compute_defenders(), need a cleaner, centralized place
+					"my_allies_if_able":
+						var defenders = cfc.get_tree().get_nodes_in_group("group_defenders")
+						var found_ally = false
+						var to_erase = []
+						for c in defenders:
+							if c.get_property("type_code") == "ally":
+								found_ally = true
+								break
+						if found_ally:
+							script.script_definition[SP.KEY_SELECTION_TYPE] = "equal"
+							script.script_definition[SP.KEY_SELECTION_OPTIONAL] = false
+				new_queue.append(script)							
 			_:
 				new_queue.append(task)
 	sceng.scripts_queue = new_queue	
@@ -1591,11 +1609,16 @@ func has_trait(params) -> bool:
 
 	if !trait:
 		return false
-	
+	if trait == "aerial":
+		var _tmp = 1
 	trait = "trait_" + trait
 	if get_property(trait, 0, true):
 		return true
 	return false
+
+func set_activity_script(script):
+	activity_script = script
+	gameData.set_latest_activity_script(script)
 
 # For boost cards to know who's calling them
 var _current_activation_details = null

@@ -626,5 +626,5 @@ const DEBUG_SIMULATE_NETWORK_DELAY = 1.5
 const DEBUG_NETWORK_DELAY_RANDOM = false
 const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 
-const SCRIPT_BREAKPOINT_CARD_NAME := "Assault on NORAD"
-const SCRIPT_BREAKPOINT_TRIGGER_NAME := "villain_step_one_threat_added"
+const SCRIPT_BREAKPOINT_CARD_NAME := "Sonic Converter"
+const SCRIPT_BREAKPOINT_TRIGGER_NAME := "enemy_attack_damage"

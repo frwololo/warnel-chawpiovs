@@ -27,6 +27,7 @@ func _remove_all_children():
 			var object = removal_condition["object"]
 			_objects.erase(object)
 			remove_child(object)
+	cfc.flush_cache()
 
 	for removal_condition in extra_script_removal_conditions:
 			var card = removal_condition["card"]
@@ -46,6 +47,7 @@ func add_script(parent_script, script_definition, remove_condition:= ""):
 	new_script.set_values(parent_script, script_definition)
 	_objects.append(new_script)
 	add_child(new_script)
+	cfc.flush_cache()
 	if remove_condition:
 		removal_conditions.append({"trigger": remove_condition, "object": new_script})
 
@@ -77,6 +79,8 @@ func removal_checks(
 			_objects.erase(object)
 			remove_child(object)
 			to_remove.append(removal_condition)
+	if to_remove:
+		cfc.flush_cache()
 	for v in to_remove:
 		removal_conditions.erase(v)
 	

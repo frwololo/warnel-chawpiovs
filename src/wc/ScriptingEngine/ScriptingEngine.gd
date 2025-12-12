@@ -631,7 +631,9 @@ func replacement_effect(script: ScriptTask) -> int:
 		SP.KEY_SUBJECT_V_CURRENT_ACTIVATION:
 			var activation_script = script.owner.get_current_activation_details()
 			if !activation_script:
-				return CFConst.ReturnCode.FAILED
+				activation_script = gameData.get_latest_activity_script()
+				if !activation_script:
+					return CFConst.ReturnCode.FAILED
 			var stack_object = SimplifiedStackScript.new(activation_script)	
 			if (!stack_object):	
 				return CFConst.ReturnCode.FAILED
@@ -844,7 +846,7 @@ func enemy_attack(script: ScriptTask) -> int:
 		defender.exhaustme()
 
 	
-	attacker.activity_script = script
+	attacker.set_activity_script(script)
 	return retcode
 
 func enemy_boost(boost_script: ScriptTask) -> int:
@@ -922,7 +924,7 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 			_add_receive_damage_on_stack (overkill_amount, script, script_modifications)
 	
 	#We're done, cleanup attacker script
-	attacker.activity_script = null		
+	attacker.set_activity_script(null)		
 	return retcode
 
 func undefend(script: ScriptTask) -> int:
@@ -969,7 +971,7 @@ func commit_scheme(script: ScriptTask):
 
 	script.subjects = [main_scheme]
 
-	owner.activity_script = script
+	owner.set_activity_script(script)
 	return retcode
 
 func enemy_scheme_threat(_script: ScriptTask) -> int:
@@ -1001,7 +1003,7 @@ func enemy_scheme_threat(_script: ScriptTask) -> int:
 		"additional_tags" : ["scheme", "Scripted"],
 	}
 	_add_receive_threat_on_stack (scheme_amount, script, script_modifications)
-	attacker.activity_script = null
+	attacker.set_activity_script(null)
 	
 	return retcode
 

@@ -14,9 +14,10 @@ extends Reference
 # Properties which are placed as they are in appropriate labels
 const PROPERTIES_STRINGS := ["Type", "Requirements", "Abilities"]
 # Properties which are converted into string using a format defined in setup()
+#WC traits and AUTO_KEYWORDS are added at runtime to this list
 const PROPERTIES_NUMBERS := ["cost", "attack", "defense", "thwart", "scheme", "health",
 	"printed_health",
-	"overkill", "invincible",
+	"invincible",
 	"resource_mental", "resource_wild", "resource_energy", "resource_physical",
 	"ally_limit", "hand_size", "boost_cards_per_attack", "boost_cards_per_scheme", "max_hand_size"]
 # The name of these properties will be prepended before their value to their label.

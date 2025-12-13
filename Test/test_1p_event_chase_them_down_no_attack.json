@@ -1,0 +1,145 @@
+{
+	"_comments": "Test for Chase Them down",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},			
+				{
+					"card": "Hydra Mercenary",
+				},
+				{
+					"card": "Stampede",
+				}				
+			],
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				},
+				{
+					"card": "01126",
+					"tokens" :{"threat" : 3},
+				}				
+			],			
+			"hand1": [
+				{
+					"card": "Chase Them Down"
+				}
+			],	
+			"enemies1": [
+				{
+					"card": "Melter",
+					"tokens": {"damage": 4}
+				}
+			],			
+			"identity1": [
+				{
+					"card": "Jennifer Walters"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Black Cat"
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "activate",
+			"value": "Jennifer Walters",
+			"_comments": "activate JW"
+		},	
+		{
+			"type": "choose",
+			"value": "change form",
+		},			
+		{
+			"type": "target",
+			"value": "Melter",
+		},
+		{
+			"type": "activate",
+			"value": "Chase Them Down",
+			"expected_to_fail": true,
+		},
+		{
+			"type": "target",
+			"value": "01126",
+			"expected_to_fail": true,			
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},			
+				{
+					"card": "Hydra Mercenary",
+				},
+				{
+					"card": "Stampede",
+				}				
+			],
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				},
+				{
+					"card": "01126",
+					"tokens" :{"threat" : 3},
+				}				
+			],			
+			"hand1": [
+				{
+					"card": "Chase Them Down"
+				}
+			],	
+			"discard_villain": [
+				{
+					"card": "Melter",
+				}
+			],			
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Black Cat"
+				}
+			]
+		}
+	}
+}

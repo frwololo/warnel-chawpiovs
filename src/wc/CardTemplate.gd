@@ -9,6 +9,8 @@ var _owner_hero_id  := -1
 var _controller_hero_id  := -1 setget set_controller_hero_id, get_controller_hero_id
 
 var _check_play_costs_cache: Dictionary = {}
+var _cache_resource_value: = {}
+var _cache_refresh_needed:= false
 
 var _on_ready_load_from_json:Dictionary = {}
 
@@ -112,6 +114,19 @@ func set_controller_hero_id(hero_id:int):
 	_controller_hero_id = hero_id		
 	update_hero_groups()
 
+func queue_refresh_cache():
+	_cache_refresh_needed = true
+
+func refresh_cache(forced=false):
+	if !forced and ! _cache_refresh_needed:
+		return
+		
+	for i in gameData.get_team_size():
+		var hero_id = i+1
+		_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID
+	_cache_resource_value = {}
+	
+	_cache_refresh_needed = false
 	
 func get_controller_hero_id() -> int:
 	return _controller_hero_id	
@@ -295,6 +310,8 @@ func _process(delta) -> void:
 	if cfc.game_paused:
 		return
 
+	refresh_cache()
+
 	if info_icon and info_icon.visible:
 		info_icon.modulate.a -= delta
 		if info_icon.modulate.a < 0.01:
@@ -338,10 +355,7 @@ func set_target_highlight(colour):
 
 #flush caches and states when game state changes
 func _game_state_changed(_details:Dictionary):
-	for i in gameData.get_team_size():
-		var hero_id = i+1
-		_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID
-	_cache_resource_value = {}
+	queue_refresh_cache()
 	
 	display_health()
 
@@ -1030,7 +1044,7 @@ func remove_threat(modification: int, script = null) -> int:
 		all_schemes.append(self) #some main schemes such as countdown to oblivion give themselves crisis
 		for scheme in all_schemes:
 			#we add all acceleration tokens	
-			var crisis = scheme.get_property("scheme_crisis", 0)
+			var crisis = scheme.get_property("scheme_crisis", 0, true)
 			if crisis:
 				return CFConst.ReturnCode.FAILED
 	
@@ -1349,7 +1363,7 @@ func pay_regular_cost_replacement(script_definition: Dictionary, trigger_details
 			
 	var manacost:ManaCost = ManaCost.new()
 	var cost = script_definition["cost"]
-
+	var is_optional = script_definition.get(SP.KEY_SELECTION_OPTIONAL, true)
 	#precompute cost replacement macros
 	if (typeof(cost) == TYPE_STRING):
 		if cost == "card_cost":
@@ -1380,7 +1394,7 @@ func pay_regular_cost_replacement(script_definition: Dictionary, trigger_details
 				SP.KEY_NEEDS_SELECTION: true,
 				SP.KEY_SELECTION_COUNT: manacost.converted_mana_cost(), #TODO put real missing cost here
 				SP.KEY_SELECTION_TYPE: "min",
-				SP.KEY_SELECTION_OPTIONAL: true,
+				SP.KEY_SELECTION_OPTIONAL: is_optional,
 				SP.KEY_SELECTION_IGNORE_SELF: true,
 				"selection_what_to_count": "get_resource_value_as_int",
 				"selection_additional_constraints": selection_additional_constraints,
@@ -1830,7 +1844,6 @@ func _get_resource_sceng(script):
 #computes how much resources this card would generate as part of a payment
 #this uses its "resource" script in priority (for card that have either special resource abilities,
 #or cards that modify their resource based on some scripted conditions - e.g. The Power of Justice
-var _cache_resource_value = {}
 func get_resource_value_as_mana(script):
 	var cache_key = {
 		"owner": script.owner

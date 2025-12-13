@@ -90,6 +90,8 @@ signal attachment_moved_to_board(card,details)
 signal treachery_moved_to_board(card,details)
 # warning-ignore:unused_signal
 signal obligation_moved_to_board(card,details)
+# warning-ignore:unused_signal
+signal environment_moved_to_board(card,details)
 
 # warning-ignore:unused_signal
 signal card_defeated(card,details)

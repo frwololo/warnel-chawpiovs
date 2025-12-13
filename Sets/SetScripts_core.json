@@ -29,7 +29,7 @@
 				{
 					"ultron_drone": {
 						"__count__": 1,
-						"__each_player__": false
+						"__each_player__": true
 					}
 				}
 			]
@@ -42,8 +42,9 @@
 				"Pay resource": [
 					{
 						"name": "pay_cost",
+						"selection_optional": false,
 						"cost": {
-							"mental": 1
+							"energy": 1
 						},
 						"is_cost": true
 					}
@@ -52,7 +53,7 @@
 					{
 						"ultron_drone": {
 							"__count__": 1,
-							"__each_player__": true
+							"__each_player__": false
 						}
 					}
 				]
@@ -393,6 +394,7 @@
 			]
 		},
 		"villain_step_one_threat_added": {
+			"trigger": "self",
 			"board": {
 				"_rules": {
 					"forced": true,
@@ -519,7 +521,9 @@
 					"sort_descending": true,
 					"filter_state_seek": [
 						{
-							"type_code": "minion"
+							"filter_properties": {
+								"type_code": "minion"
+							}					
 						}
 					]
 				}
@@ -881,13 +885,6 @@
 		"reveal": {
 			"all": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_form"
-					]
-				},
-				{
 					"name": "move_card_to_container",
 					"dest_container": "discard",
 					"src_container": "upgrade_support",
@@ -952,7 +949,8 @@
 		"response": {
 			"event_name": "enemy_died",
 			"event_filters": {
-				"source": "my_hero"
+				"source": "my_hero",
+				"tags": ["attack"],
 			},
 			"is_optional_hand": true,
 			"hand": [
@@ -1062,18 +1060,16 @@
 				}
 			]
 		},
-		"card_moved_to_board": {
-			"trigger": "self",
+		"alterants": {
 			"board": [
 				{
-					"name": "modify_properties",
-					"subject": "self",
-					"set_properties": {
-						"scheme_crisis": 1
-					}
+					"filter_task": "get_property",
+					"filter_property_name": "scheme_crisis",
+					"trigger": "self",
+					"alteration": 1
 				}
 			]
-		}
+		}		
 	},
 	"Counter-Punch": {
 		"response": {
@@ -1341,8 +1337,8 @@
 			"all": [
 				{
 					"name": "move_card_to_container",
-					"dest_container": "discard",
-					"src_container": "upgrade_support",
+					"dest_container": "discard_current_hero_target",
+					"src_container": "upgrade_support_current_hero_target",
 					"is_cost": true,
 					"subject": "tutor",
 					"subject_count": "all",
@@ -4513,6 +4509,7 @@
 					{
 						"name": "pay_cost",
 						"is_cost": true,
+						"selection_optional": false,
 						"cost": {
 							"physical": 1,
 							"mental": 1,
@@ -5223,7 +5220,7 @@
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
-								"Name": "MODOK"
+								"Name": "M.O.D.O.K."
 							}
 						}
 					]
@@ -5799,7 +5796,10 @@
 					],
 					"set_properties": {
 						"type_code": "minion",
-						"trait_drone": 1
+						"trait_drone": 1,
+						"attack": 0,
+						"scheme": 0,
+						"health": 0						
 					},
 					"src_container": "deck_first_player",
 					"subject": "index",

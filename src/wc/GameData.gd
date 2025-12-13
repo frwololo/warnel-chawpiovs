@@ -1437,7 +1437,8 @@ func character_died(card:Card, script = null):
 		"name": "character_died",
 	}
 	var trigger_details = {
-		"source" : script.trigger_details.get("source", "")
+		"source" : script.trigger_details.get("source", ""),
+		"tags": script.get_property("tags", [])
 	}
 	
 	var character_died_script:ScriptTask = ScriptTask.new(card, character_died_definition, card, trigger_details)

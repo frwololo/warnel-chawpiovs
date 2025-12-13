@@ -527,7 +527,7 @@ func _receive_threat(script: ScriptTask) -> int:
 		if threat_amount:
 			if "villain_step_one_threat" in script.get_property(SP.KEY_TAGS):
 #			if gameData.phaseContainer.current_step == CFConst.PHASE_STEP.VILLAIN_THREAT:
-				var stackEvent:SignalStackScript = SignalStackScript.new("villain_step_one_threat_added", script.owner, {"amount" : threat_amount})
+				var stackEvent:SignalStackScript = SignalStackScript.new("villain_step_one_threat_added", card, {"amount" : threat_amount})
 				gameData.theStack.add_script(stackEvent)
 					
 			var if_threat: Dictionary = script.get_property("if_threat", {})
@@ -878,8 +878,8 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 	script_definition["boost"].append(boost_amount)
 	
 	var func_return = boost_card.execute_scripts(boost_card, "boost")
-	while func_return is GDScriptFunctionState && func_return.is_valid():
-		func_return = func_return.resume()	
+	if func_return is GDScriptFunctionState && func_return.is_valid():
+		yield(func_return, "completed")
 	return retcode
 
 func enemy_attack_damage(_script: ScriptTask) -> int:

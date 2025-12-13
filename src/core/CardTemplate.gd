@@ -759,6 +759,8 @@ func refresh_card_front() -> void:
 # properties.get() as it takes into account the temp_properties_modifiers var
 # and also checks for alterant scripts
 func get_property(property: String, default = null, force_alterant_check = false):
+	if property =="scheme_crisis":
+		var _tmp = 1
 	if not (properties.has(property)) and not force_alterant_check:
 		return default
 	return(get_property_and_alterants(property, false, default).value)
@@ -1549,8 +1551,13 @@ func get_state_scripts_dict(card_scripts, trigger_card, trigger_details):
 					func_return = func_return.resume()
 				if !sceng.can_all_costs_be_paid:
 					state_scripts.erase(entry_name)
-			#notably we keep the dictionary here even if there's only one entry remaining,
+			#notably we keep the dictionary here even if there's only one entry remaining in manual mode,
 			#so the user doesn't auto activate the only option by mistake
+			if CFConst.AUTO_EXECUTE_ONE_ENTRY_MENU and state_scripts.size() == 1:
+				if (CFConst.AUTO_EXECUTE_ONE_ENTRY_MENU == CFConst.AUTO_EXECUTE_MENU.MANUAL_INCLUDED) or trigger_details.get("trigger_type","") != "manual":
+					var first_key = state_scripts.keys()[0]
+					state_scripts = state_scripts[first_key]
+					action_name = first_key
 			if !state_scripts:
 				state_scripts = []
 				

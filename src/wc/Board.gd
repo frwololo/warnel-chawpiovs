@@ -636,7 +636,8 @@ func load_cards_to_pile(card_data:Array, pile_name):
 		var card_id = cfc.get_corrected_card_id(card_id_or_name)
 		if !card_id:
 			var _error = 1
-			#error
+			cfc.LOG("error, couldn't find card named " + str(card_id_or_name))
+			continue
 		var new_card:WCCard = cfc.instance_card(card_id, card_owner)
 		if card_owner != pile_controller:
 			new_card.set_controller_hero_id(pile_controller)

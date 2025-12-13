@@ -518,7 +518,12 @@ const AUTO_KEYWORDS := {
 	"toughness" : "bool",
 	"uses" : "string",
 	"victory" : "int",
-	"villainous" : "bool",						
+	"villainous" : "bool",	
+	
+#additional ones not officially in the game
+
+	"invincible": "int",
+					
 }
 
 const MAX_TEAM_SIZE:int = 4
@@ -597,6 +602,16 @@ const DEFAULT_SETTINGS:= {
 	
 }
 
+#if a menu only has one entry, it will auto execute it whenever possible
+
+enum AUTO_EXECUTE_MENU {
+	OFF,
+	SCRIPTED_ONLY,
+	MANUAL_INCLUDED,
+}
+
+#TODO other values than OFF break some tests and multiplayer interaction
+const AUTO_EXECUTE_ONE_ENTRY_MENU = AUTO_EXECUTE_MENU.OFF # SCRIPTED_ONLY
 
 #
 # Debugging options
@@ -626,5 +641,5 @@ const DEBUG_SIMULATE_NETWORK_DELAY = 1.5
 const DEBUG_NETWORK_DELAY_RANDOM = false
 const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 
-const SCRIPT_BREAKPOINT_CARD_NAME := "Sonic Converter"
-const SCRIPT_BREAKPOINT_TRIGGER_NAME := "enemy_attack_damage"
+const SCRIPT_BREAKPOINT_CARD_NAME := "Electric Whip Attack"
+const SCRIPT_BREAKPOINT_TRIGGER_NAME := "boost"

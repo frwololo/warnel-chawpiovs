@@ -1,0 +1,177 @@
+{
+	"_comments": "Tests Ultron 2 attack With android efficiency boost",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Android efficiency"
+				}				
+			],
+			"discard_villain": [],
+			"villain": [
+				{
+					"card": "Ultron - 2"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01137"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "01027",
+					"facedown_properties": {
+						"_code": "01027",
+						"code": "01027",
+						"attack": 0,
+						"health": 0,
+						"scheme": 0,
+						"trait_drone": 1,
+						"type_code": "minion"
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"deck1": [
+				{
+					"card": "One-Two Punch"
+				},			
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"hand1": [
+				{
+					"card": "Avengers Mansion",
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Ultron Drones",
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "take undefended attack against Ultron"
+		},	
+		{
+			"type": "choose",
+			"value": "Drone",
+			"_comments": "no choice but to take drone"
+		},			
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "take undefended attack against Drone 1"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "take undefended attack against Drone 2"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "take undefended attack against Drone 3"
+		},		
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "Wait until player turn"
+		},			
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				
+			],
+			"discard_villain": [
+				{
+					"card": "Android efficiency"
+				}
+			],
+			"villain": [
+				{
+					"card": "Ultron - 2"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01137"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "01027",
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "the Power of Aggression"
+				},				
+				{
+					"card": "Hydra Mercenary"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "She-Hulk",
+				"tokens": {"damage": 8}
+				}
+			],
+			"deck1": [
+				{
+					"card": "One-Two Punch"
+				},					
+			],
+			"hand1": [
+				{
+					"card": "Avengers Mansion",
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Ultron Drones",
+				}
+			]
+		}
+	}
+}

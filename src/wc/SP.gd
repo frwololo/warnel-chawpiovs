@@ -50,39 +50,50 @@ static func filter_trigger(
 		owner_card,
 		trigger_details)
 
+	if !is_valid:
+		return false
+	# Here we check that the trigger matches the _request_ for trigger
+	# A trigger which requires "another" card, should not trigger
+	# when itself causes the effect.
+	# For example, a card which rotates itself whenever another card
+	# is rotated, should not automatically rotate when itself rotates.
+	if card_scripts.get("trigger") == "my_hero" and\
+		trigger_card != owner_card.get_controller_hero_card():
+			return false
+
 	# Card Host filter checks
 	if is_valid and card_scripts.get(FILTER_HOST_OF):
 		if !check_host_filter(trigger_card,owner_card,card_scripts.get(FILTER_HOST_OF)):
-			is_valid = false
+			return false
 
 	# Same Controller filter check
 	if is_valid and card_scripts.get(FILTER_SAME_CONTROLLER) \
 			and !check_same_controller_filter(trigger_card,owner_card,card_scripts.get(FILTER_SAME_CONTROLLER)):
-		is_valid = false
+		return false
 		
 	if is_valid and card_scripts.get("filter_" + TRIGGER_TARGET_HERO) \
 			and card_scripts.get("filter_" + TRIGGER_TARGET_HERO) != \
 			trigger_details.get(TRIGGER_TARGET_HERO):
-		is_valid = false		
+		return false		
 
 	if is_valid and card_scripts.get(TRIGGER_SUBJECT):
 		match card_scripts.get(TRIGGER_SUBJECT):
 			"self":
 				var subjects = trigger_details.get("subjects", [])
 				if !(owner_card in (subjects)):
-					is_valid = false
+					return false
 			_: 
-				is_valid = false
+				return false
 
 	if is_valid and card_scripts.get(FILTER_SOURCE_CONTROLLED_BY) \
 			and !check_source_controlled_by_filter(trigger_card,owner_card,trigger_details, card_scripts.get(FILTER_SOURCE_CONTROLLED_BY)):
-		is_valid = false	
+		return false	
 		
 	if is_valid and card_scripts.get(FILTER_EVENT_SOURCE) \
 			and !check_filter_event_source(trigger_card,owner_card,trigger_details, card_scripts.get(FILTER_EVENT_SOURCE)):
-		is_valid = false	
+		return false	
 
-	return(is_valid)
+	return true
 
 # Returns true if the trigger is the host of the owner, false otherwise
 static func check_host_filter(trigger_card, owner_card, host_description : String) -> bool:

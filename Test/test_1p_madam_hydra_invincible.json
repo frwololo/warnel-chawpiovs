@@ -1,0 +1,106 @@
+{
+	"_comments": "Test Madam Hydra invincibility",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				}				
+			],
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "Legions of Hydra",
+					"tokens" :{"threat" : 3},
+				}			
+			],			
+			"hand1": [
+				{
+					"card": "Tenacity"
+				},			
+			],			
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				},
+			],
+			"enemies1": [
+				{
+					"card": "Madame Hydra",
+					"tokens": {"damage" : 1}
+				},				
+			],
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "She-Hulk",
+			"_comments": "activate She-Hulk for attack"
+		},	
+		{
+			"type": "choose",
+			"value": "attack",
+		},	
+		{
+			"type": "target",
+			"value": "Madame Hydra",
+		}		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				}				
+			],
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "Legions of Hydra",
+					"tokens" :{"threat" : 3},
+				}			
+			],			
+			"hand1": [
+				{
+					"card": "Tenacity"
+				},			
+			],			
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				},
+			],
+			"enemies1": [
+				{
+					"card": "Madame Hydra",
+					"tokens": {"damage" : 1}
+				},				
+			],
+		}
+	}
+}

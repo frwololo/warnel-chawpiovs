@@ -1,0 +1,164 @@
+{
+	"_comments": "Test of Boost card: Kree Manipulator",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},			
+				{
+					"card": "Hydra Mercenary"
+				},			
+				{
+					"card": "electric whip attack"
+				}
+			],			
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Mark V Helmet"
+				},
+				{
+					"card": "Mark V Armor"
+				}				
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy Absorption"
+				}
+			],
+		}
+	},
+	"actions": [	
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "click cancel on defenders to take an undefended attack"
+		},	
+		{
+			"type": "select",
+			"value": "Mark V Helmet",
+			"_comments": "discard Mark V Helmet from Electric Whip Attack"
+		},		
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"wait_longer": true,
+			"_comments": "wait as much as needed for player turn"
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "electric whip attack"
+				}			
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},					
+			],			
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Mark V Helmet"
+				},			
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				},	
+			],
+			"upgrade_support1": [
+
+				{
+					"card": "Mark V Armor"
+				}				
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy Absorption"
+				}
+			],
+		}
+	}
+}

@@ -1,0 +1,128 @@
+{
+	"_comments": "Test for One-Two punch with another character",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},			
+				{
+					"card": "Hydra Mercenary",
+				},
+				{
+					"card": "Stampede",
+				}				
+			],
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				}			
+			],			
+			"hand1": [
+				{
+					"card": "Tenacity"
+				},
+				{
+					"card": "One-Two Punch"
+				}				
+			],			
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				},
+			],
+			"allies1": [
+				{
+					"card": "Nick Fury"
+				},				
+			],
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Nick fury",
+			"_comments": "activate Nick fury"
+		},	
+		{
+			"type": "choose",
+			"value": "attack",
+		},	
+		{
+			"type": "target",
+			"value": "01113",
+		},
+		{
+			"type": "play",
+			"value": "One-Two Punch",
+			"_comments": "play One-Two Punch"
+		}			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},			
+				{
+					"card": "Hydra Mercenary",
+				},
+				{
+					"card": "Stampede",
+				}				
+			],
+			"villain": [
+				{
+					"card": "01113",
+					"tokens": {"damage": 2}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				}			
+			],			
+			"hand1": [
+				{
+					"card": "Tenacity"
+				},
+				{
+					"card": "One-Two Punch"
+				}				
+			],			
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Nick Fury"
+				},				
+			],		
+		}
+	}
+}

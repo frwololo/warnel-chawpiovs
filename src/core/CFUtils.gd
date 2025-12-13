@@ -207,6 +207,24 @@ static func sort_card_containers(c1, c2) -> bool:
 # * card: The card object
 # * value: The value being compared.
 static func sort_by_card_field(c1, c2) -> bool:
+	if c1.value == null and c2.value == null:
+		return true
+	if c1.value == null:
+		match typeof(c2.value):
+			TYPE_INT:
+				c1.value = 0
+			TYPE_STRING:
+				c1.value = ""
+			_:
+				return true
+	if c2.value == null:
+		match typeof(c1.value):
+			TYPE_INT:
+				c2.value = 0
+			TYPE_STRING:
+				c2.value = ""
+			_:
+				return true	
 	if c1.value < c2.value:
 		return true
 	return(false)

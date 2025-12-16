@@ -23,7 +23,7 @@
 			"trigger": "self"
 		}
 	},
-	"Android Efficiency": {
+	"Android Efficiency #01144a": {
 		"reveal": {
 			"all": [
 				{
@@ -60,6 +60,80 @@
 			}
 		}
 	},
+	"Android Efficiency #01144b": {
+		"reveal": {
+			"all": [
+				{
+					"ultron_drone": {
+						"__count__": 1,
+						"__each_player__": true
+					}
+				}
+			]
+		},
+		"boost": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Pay resource": [
+					{
+						"name": "pay_cost",
+						"selection_optional": false,
+						"cost": {
+							"mental": 1
+						},
+						"is_cost": true
+					}
+				],
+				"Drone": [
+					{
+						"ultron_drone": {
+							"__count__": 1,
+							"__each_player__": false
+						}
+					}
+				]
+			}
+		}
+	},
+	"Android Efficiency #01144c": {
+		"reveal": {
+			"all": [
+				{
+					"ultron_drone": {
+						"__count__": 1,
+						"__each_player__": true
+					}
+				}
+			]
+		},
+		"boost": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Pay resource": [
+					{
+						"name": "pay_cost",
+						"selection_optional": false,
+						"cost": {
+							"physical": 1
+						},
+						"is_cost": true
+					}
+				],
+				"Drone": [
+					{
+						"ultron_drone": {
+							"__count__": 1,
+							"__each_player__": false
+						}
+					}
+				]
+			}
+		}
+	},	
 	"Affairs of State": {
 		"give_obligation": {
 			"__to__": "T'Challa"
@@ -85,7 +159,7 @@
 					{
 						"name": "exhaust_card",
 						"is_cost": true,
-						"subject": "my_hero"
+						"subject": "my_identity"
 					},
 					{
 						"name": "move_card_to_container",
@@ -104,7 +178,7 @@
 					{
 						"name": "exhaust_card",
 						"is_cost": true,
-						"subject": "my_hero"
+						"subject": "my_identity"
 					},
 					{
 						"name": "move_card_to_container",
@@ -132,7 +206,7 @@
 						"selection_count": 1,
 						"selection_type": "equal",
 						"needs_selection": true,
-						"filter_state_tutor": [
+						"filter_state_seek": [
 							{
 								"filter_properties": {
 									"trait_black_panther": 1
@@ -158,7 +232,7 @@
 						"selection_count": 1,
 						"selection_type": "equal",
 						"needs_selection": true,
-						"filter_state_tutor": [
+						"filter_state_seek": [
 							{
 								"filter_properties": {
 									"trait_black_panther": 1
@@ -174,9 +248,6 @@
 						"dest_container": "discard_villain",
 						"subject": "self"
 					},
-					{
-						"name": "surge"
-					}
 				]
 			}
 		}
@@ -327,6 +398,15 @@
 		}
 	},
 	"Armored Vest": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero_any": 1
+				}
+			]
+		},	
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
@@ -519,6 +599,7 @@
 					"sort_by": "property",
 					"sort_name": "printed_health",
 					"sort_descending": true,
+					"is_cost": true,
 					"filter_state_seek": [
 						{
 							"filter_properties": {
@@ -526,6 +607,11 @@
 							}					
 						}
 					]
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"is_else": true
 				}
 			]
 		},
@@ -1137,6 +1223,15 @@
 		}
 	},
 	"Combat Training": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero_any": 1
+				}
+			]
+		},	
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
@@ -2387,6 +2482,15 @@
 		}
 	},
 	"Heroic Intuition": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero_any": 1
+				}
+			]
+		},	
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
@@ -2872,8 +2976,12 @@
 			"event_name": "receive_damage",
 			"event_filters": {
 				"target": "self",
-				"tags": [
-					"trait_black_panther"
+				"filter_state_event_source": [
+					{
+						"filter_properties": {
+							"trait_black_panther": 1
+						}
+					}
 				]
 			},
 			"board": [
@@ -4093,6 +4201,7 @@
 			"all": [
 				{
 					"name": "heal",
+					"is_cost": true,
 					"subject": "villain",
 					"amount": "per_boardseek",
 					"per_boardseek": {
@@ -4239,11 +4348,11 @@
 			"all": [
 				{
 					"name": "move_card_to_container",
-					"subject": "tutor",
+					"subject": "index",
 					"subject_index": "top",
 					"subject_count": 1,
 					"src_container": "deck_villain",
-					"dest_container": "discard",
+					"dest_container": "discard_villain",
 					"is_cost": true
 				},
 				{
@@ -4260,6 +4369,13 @@
 				},
 				"Damage": [
 					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},				
+					{
 						"name": "deal_damage",
 						"subject": "my_hero",
 						"amount": {
@@ -4267,7 +4383,8 @@
 							"func_params": {
 								"subject": "previous"
 							}
-						}
+						},
+						"plus_amount": 1,
 					}
 				],
 				"Threat": [
@@ -4279,6 +4396,7 @@
 								"subject": "previous"
 							}
 						},
+						"plus_amount": 1,
 						"subject": "boardseek",
 						"filter_state_seek": [
 							{
@@ -5797,6 +5915,7 @@
 					"set_properties": {
 						"type_code": "minion",
 						"trait_drone": 1,
+						"shortname": "Drone",
 						"attack": 0,
 						"scheme": 0,
 						"health": 0						
@@ -6016,11 +6135,8 @@
 				}
 			]
 		},
-		"interrupt": {
-			"event_name": "receive_damage",
-			"event_filters": {
-				"target": "villain"
-			},
+		"card_damaged": {
+			"trigger": "host",
 			"board": [
 				{
 					"name": "mod_tokens",

@@ -71,6 +71,7 @@
 		],
 		"set_properties": {
 			"type_code": "minion",
+			"shortname": "Drone",
 			"trait_drone": 1,
 			"attack": 0,
 			"scheme": 0,

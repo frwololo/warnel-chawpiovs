@@ -141,6 +141,18 @@ func mod_token(
 			check := false,
 			tags := ["Manual"]) -> int:
 	var retcode : int
+	if CFConst.TOKENS_ONLY_ON_BOARD:
+		var parent = owner_card.get_parent()
+		if parent != cfc.NMAP.board:
+			var is_exception = false
+			var parent_name:String = parent.name.to_lower()
+			for exception in CFConst.TOKENS_ONLY_ON_BOARD_EXCEPTIONS:
+				if parent_name.begins_with(exception):
+					is_exception = true
+					break
+			if !is_exception:
+				return CFConst.ReturnCode.FAILED
+		
 	var token : Token = get_all_tokens().get(token_name, null)
 	# If the token does not exist in the card, we add its node
 	# and set it to 1

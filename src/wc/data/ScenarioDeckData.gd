@@ -97,6 +97,7 @@ func get_encounter_deck():
 	# Add sets (from scenario, standard + modular sets)
 	var modular_set_count = 0
 	for encounter_set_code in encounter_sets:
+		var positions = {}
 		if (encounter_set_code.to_lower() == "modular"): #special case for modular sets
 			encounter_set_code = modular_sets[modular_set_count]
 			modular_set_count += 1
@@ -104,8 +105,20 @@ func get_encounter_deck():
 		for card_data in encounter_set:
 			var card_type = card_data["type_code"]
 			if (card_type != "main_scheme" and card_type != "villain"): #skip villain and schemes from the deck
-				if (1): #card_type == "Minion" or card_type == "Side_scheme"): #TODO debug
+				var add_to_encounter_deck = true
+				var card_set_position = card_data["set_position"]
+				if positions.has(card_set_position):
+					#conflict e.g. android efficiency
+					var existing_card_data = positions[card_set_position]
+					var code = card_data["code"]
+					var existing_code = existing_card_data["code"]
+					if code.begins_with(existing_code): #we have the more precise
+						encounter_deck.erase(existing_card_data)
+					else:
+						add_to_encounter_deck = false
+				if add_to_encounter_deck:
 					encounter_deck.push_back(card_data)
+					positions[card_set_position] = card_data
 				
 	#add hero obligations
 	#for all heroes in game data, add hero's obligation

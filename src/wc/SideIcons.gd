@@ -2,6 +2,7 @@ extends MarginContainer
 
 onready var control = get_parent()
 onready var owner_card = get_parent().get_parent()
+var title:Label
 
 #TODO this should move to an external config file
 # to accomodate different renderings
@@ -30,6 +31,7 @@ var icons_by_type_code : = {
 
 	}			
 }
+
 
 var default_font_offset = Vector2(4, 4)
 
@@ -74,7 +76,11 @@ func set_icons():
 	reinit_children()
 	
 	icons = icons_by_type_code.get(owner_card.get_property("type_code", ""), {})
-	
+	title = Label.new()
+	var dynamic_font = init_font()	
+	title.add_font_override("font", dynamic_font)
+	title.set_h_size_flags(Control.SIZE_SHRINK_CENTER)
+	add_child(title)
 		
 	for icon in icons:
 		var textrect: TextureRect = TextureRect.new()
@@ -90,7 +96,7 @@ func set_icons():
 			#textrect.rect_size = Vector2(20, 20)
 			add_child(textrect)	
 
-			var dynamic_font = init_font()
+
 			var label_shadow = Label.new()
 			label_shadow.add_font_override("font", dynamic_font)
 			label_shadow.add_color_override("font_color", Color8(0, 0, 0))
@@ -108,9 +114,17 @@ func _process(delta):
 	if !owner_card.state in [Card.CardState.PREVIEW, Card.CardState.DECKBUILDER_GRID, Card.CardState.VIEWPORT_FOCUS, Card.CardState.ON_PLAY_BOARD,Card.CardState.FOCUSED_ON_BOARD, Card.CardState.DROPPING_TO_BOARD]:
 		reinit_children()
 		return
-		
+	if owner_card.state  == Card.CardState.VIEWPORT_FOCUS:
+		var origin = cfc.NMAP.main.get_origin_card(owner_card)
+		if !origin or !is_instance_valid(origin) or !origin.is_onboard():
+			reinit_children()
+			return
 	if !icons:
 		set_icons()
+	if !owner_card.is_faceup:
+		title.text = owner_card.get_display_name()
+		title.rect_position = Vector2(control.rect_size.x/2 - title.rect_size.x/2, 10) # * owner_card.card_size / CFConst.CARD_SIZE
+		title.rect_scale =  owner_card.card_size / CFConst.CARD_SIZE	
 	for icon in icons:
 		if owner_card.canonical_name == "Iron Man":
 			var _tmp = 1

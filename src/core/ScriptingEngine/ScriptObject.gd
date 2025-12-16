@@ -48,6 +48,11 @@ var all_prev_subjects := []
 
 var my_stored_integer = null
 
+func set_prev_subjects(subjects):
+	if prev_subjects and trigger_details["prev_subjects"]:
+		#we've already forced the previous subjects in an earlier step
+		return
+	prev_subjects = subjects
 
 # prepares the properties needed by the script to function.
 func _init(_owner, script: Dictionary,  _trigger_object = null, 	_trigger_details := {}) -> void:
@@ -59,7 +64,7 @@ func _init(_owner, script: Dictionary,  _trigger_object = null, 	_trigger_detail
 		trigger = ""
 		
 	if _trigger_details.has("prev_subjects"):
-		prev_subjects = _trigger_details["prev_subjects"]
+		set_prev_subjects(_trigger_details["prev_subjects"])
 		
 	trigger_details = _trigger_details
 	# We store all the task properties in our own dictionary

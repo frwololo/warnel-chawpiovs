@@ -840,6 +840,14 @@ func _get_display_name(element):
 	if display1:
 		return display1
 	return element
+	
+func _get_shortname(element):
+	var card_id = get_corrected_card_id(element)
+	var card_data = cfc.get_card_by_id(card_id)
+	if !card_data:
+		return element
+	return card_data.get("shortname", card_data.get("Name", element))
+
 
 #check if all elements of dict1 can be found in dict2
 #This doesn't mean the dictionaries are necessarily equal
@@ -865,9 +873,10 @@ func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
 						
 				#handle special cases of card names vs id	
 				if (key in ["hero", "card", "host"]):
-					val1 = get_corrected_card_id(val1)
-					val2 = get_corrected_card_id(val2)
-				
+#					val1 = get_corrected_card_id(val1)
+#					val2 = get_corrected_card_id(val2)
+					val1 = _get_shortname(val1)
+					val2 = _get_shortname(val2)				
 				#special case to test for tokens 0
 				if key =="tokens":
 					for child_key in element1[key]:

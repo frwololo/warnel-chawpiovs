@@ -124,9 +124,65 @@ func refresh_cache(forced=false):
 	for i in gameData.get_team_size():
 		var hero_id = i+1
 		_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID
+	check_death()
 	_cache_resource_value = {}
-	
 	_cache_refresh_needed = false
+
+func is_character() -> bool:
+	var type_code = get_property("type_code", "")
+	return is_character_type(type_code)
+
+static func is_character_type(type_code)-> bool:
+	return type_code in ["villain", "hero", "alter_ego", "ally", "minion"]
+
+var _died_signal_sent = false
+func check_death(script = null) -> bool:
+	if _died_signal_sent:
+		return true
+	#if no script is passed, this is an automated check (during _process), we only perform
+	#it for character cards that are on the board
+	if !script:
+		if !is_character():
+			return false
+		if !is_onboard():
+			return false
+		
+	var total_damage:int =  tokens.get_token_count("damage")
+	var health = get_property("health", 0)
+
+	if total_damage < health:
+		return false
+	
+	var tags = []
+	var trigger_details = {}
+	var trigger_card = self
+		
+	if script:
+		tags = [script.script_name, "Scripted"] + script.get_property(SP.KEY_TAGS)	
+		trigger_card = script.trigger_object
+		trigger_details = script.trigger_details.duplicate(true)
+		trigger_details["source"] = guidMaster.get_guid(script.owner)
+	
+		#if the damage comes from an "attack", ensure the source is properly categorized as
+		#the hero (or villain) owner rather than the event card itself
+		if ("attack" in tags):
+			var owner = script.owner
+			var type = owner.get_property("type_code", "")
+			if !is_character_type(type):
+				owner = WCScriptingEngine._get_identity_from_script(script)	
+				trigger_details["source"] = guidMaster.get_guid(owner)
+
+	var card_dies_definition = {
+		"name": "card_dies",
+		"tags": tags
+	}
+			
+	var card_dies_script:ScriptTask = ScriptTask.new(self, card_dies_definition, trigger_card, trigger_details)
+	card_dies_script.subjects = [self]
+	var task_event = SimplifiedStackScript.new(card_dies_script)
+	gameData.theStack.add_script(task_event)
+	_died_signal_sent = true
+	return true
 	
 func get_controller_hero_id() -> int:
 	return _controller_hero_id	
@@ -167,10 +223,16 @@ func _runtime_properties_setup():
 		threat *= gameData.team.size()
 		properties["threat"] = threat		
 
+func get_display_name(force_canonical = false):
+	if is_faceup:
+		return canonical_name
+	var shortname =  get_property("shortname", "---")
+	return shortname
+
 func setup() -> void:
 	.setup()
 	_runtime_properties_setup()
-	_init_groups()
+	update_groups()
 	init_token_drawer()	
 	set_card_art()
 	position_ui_elements()
@@ -185,6 +247,7 @@ func setup() -> void:
 	scripting_bus.connect("card_moved_to_board", self, "_card_moved")		
 	scripting_bus.connect("card_properties_modified", self, "_card_properties_modified")		
 
+	cfc.connect("cache_cleared", self, "_cfc_cache_cleared")
 
 	
 	attachment_mode = AttachmentMode.ATTACH_BEHIND
@@ -209,7 +272,7 @@ func _card_properties_modified(owner_card, details):
 		var new_value = details.get("new_property_value", "")
 		if new_value in ["villain", "minion"] and new_value != previous_value  and "emit_signal" in details["tags"]:
 			scripts = SetScripts_All.get_enemy_scripts()
-		_init_groups(details)
+		update_groups()
 		update_hero_groups()
 	
 #		scripting_bus.emit_signal(
@@ -355,9 +418,11 @@ func set_target_highlight(colour):
 
 #flush caches and states when game state changes
 func _game_state_changed(_details:Dictionary):
-	queue_refresh_cache()
-	
+	queue_refresh_cache()	
 	display_health()
+
+func _cfc_cache_cleared():
+	queue_refresh_cache()
 
 #reset some variables at new turn
 func _game_step_started(details:Dictionary):
@@ -371,9 +436,12 @@ func _game_step_started(details:Dictionary):
 func get_card_back_code() -> String:
 	return get_property("back_card_code")
 
-func get_art_filename():
-	var card_code = get_property("_code")
-	return cfc.get_img_filename(card_code)		
+func get_art_filename(force_if_facedown: = true):
+	if force_if_facedown or is_faceup:
+		var card_code = get_property("_code")
+		return cfc.get_img_filename(card_code)		
+
+	return ("res://assets/card_backs/generic_back.png")
 
 func set_card_art():
 	var filename = get_art_filename()
@@ -421,31 +489,30 @@ func get_state_exec() -> String:
 func update_hero_groups():
 	var type_code = properties.get("type_code", "")
 	
+	var all_groups:Array = CFConst.ALL_TYPE_GROUPS
+	for group in all_groups:
+		for i in range (gameData.team.size() + 1):
+			var hero_group = group + str(i)
+			if self.is_in_group(hero_group):
+				self.remove_from_group(hero_group)	
+	
 	var groups:Array = CFConst.TYPES_TO_GROUPS.get(type_code, [])
 	
 	for group in groups:
 		for i in range (gameData.team.size() + 1):
 			var hero_group = group + str(i)
 			if self.get_controller_hero_id() == i:
-				if !self.is_in_group(hero_group):
-					self.add_to_group(hero_group)
-			else:
-				if self.is_in_group(hero_group):
-					self.remove_from_group(hero_group)	
+				self.add_to_group(hero_group)
 
-func _init_groups(update = {}) -> void :
+func update_groups() -> void :
 	var type_code = properties.get("type_code", "")
 
-	var groups:Array = []
-
-	var previous_value = update.get("previous_property_value", "")
-	if previous_value and previous_value != type_code:
-		groups = CFConst.TYPES_TO_GROUPS.get(previous_value, [])
-	
-		for group in groups:	
+	var all_groups:Array = CFConst.ALL_TYPE_GROUPS
+	for group in all_groups:
+		if self.is_in_group(group):
 			self.remove_from_group(group)	
 			
-	groups = CFConst.TYPES_TO_GROUPS.get(type_code, [])
+	var groups:Array = CFConst.TYPES_TO_GROUPS.get(type_code, [])
 	for group in groups:
 		self.add_to_group(group)
 
@@ -476,6 +543,9 @@ func common_post_move_scripts(new_host: String, _old_host: String, _move_tags: A
 	#rest exhausted status
 	if new_host.to_lower() != "board":
 		_is_exhausted = false
+	
+	#reset some cache data
+	_died_signal_sent = false	
 		
 
 #Tries to play the card assuming costs aren't impossible to pay
@@ -537,8 +607,8 @@ func can_interrupt(
 		return CFConst.CanInterrupt.NO
 	
 	var _debug = false
-	if canonical_name == "Enhanced Spider-Sense" and trigger_card:
-		if trigger_details["event_name"] == "reveal_encounter":
+	if canonical_name == "Killmonger" and trigger_card:
+		if trigger_details["event_name"] == "receive_damage":
 			_debug = true
 
 	if (_debug):
@@ -1114,7 +1184,7 @@ func die(script):
 			gameData.villain_died(self, script)
 		_:
 			self.discard()
-			
+				
 	return CFConst.ReturnCode.OK		
 
 
@@ -1489,13 +1559,15 @@ func import_modifiers(modifiers:Dictionary):
 			
 	self._can_change_form = modifiers.get("can_change_form", self._can_change_form)	
 
-func onboard_facedown():
-	return !is_faceup and\
-		state in [
-			CardState.ON_PLAY_BOARD,
-			CardState.FOCUSED_ON_BOARD, 
-			CardState.DROPPING_TO_BOARD
-		]
+func is_onboard():
+	return state in [
+		CardState.ON_PLAY_BOARD,
+		CardState.FOCUSED_ON_BOARD, 
+		CardState.DROPPING_TO_BOARD
+	]
+	
+func is_onboard_facedown():
+	return !is_faceup and is_onboard()
 
 var _hidden_properties = {}
 func set_is_faceup(
@@ -1512,7 +1584,7 @@ func set_is_faceup(
 			
 	#we remove all of the card's properties as long as it's facedown on the board,
 	#to avoid triggering any weird things
-	if onboard_facedown():
+	if is_onboard_facedown():
 		if !_hidden_properties:
 			_hidden_properties = properties
 			properties = {}
@@ -1521,10 +1593,26 @@ func set_is_faceup(
 				properties[property] = _hidden_properties.get(property, "")
 	else:
 		if _hidden_properties:
+			var temp_properties = properties
+			properties = _hidden_properties
+			
+			for property in temp_properties:
+				if property in ["_code", "code"]:
+					continue
+				scripting_bus.emit_signal(
+						"card_properties_modified",
+						self,
+						{
+							"property_name": property,
+							"new_property_value": properties.get(property),
+							"previous_property_value": temp_properties[property],
+							"tags": ["Scripted", "set_is_faceup"]
+						}
+				)				
 			if scripts:
 				cfc.LOG("removing extra scripts from card " + canonical_name + " as we turn it faceup")
-				scripts = {}
-			properties = _hidden_properties
+				scripts = {}				
+			
 			_hidden_properties = {}
 	
 	return retcode	
@@ -1981,7 +2069,7 @@ func export_to_json():
 	if self.encounter_status != gameData.EncounterStatus.NONE:
 		card_description["encounter_status"] = self.encounter_status
 
-	if onboard_facedown():
+	if is_onboard_facedown():
 		card_description["facedown_properties"] = self.properties
 	
 	return card_description

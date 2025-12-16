@@ -55,11 +55,21 @@ func _process(_delta):
 		else:
 			ping.add_color_override("font_color", Color8(255, 50, 50))
 
-	if gameData.phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN:			
+	if gameData.phaseContainer.current_step == CFConst.PHASE_STEP.PLAYER_TURN:
+		match current_state:
+			State.ACTIVE:
+				heroNode.texture = color_tex
+			State.FINISHED:		
+				heroNode.texture = grayscale_tex		
+	else:			
 		if hero_index in gameData.get_currently_playing_hero_ids():
 			heroNode.texture = color_tex
 		else:
 			heroNode.texture = grayscale_tex
+
+	#automated gui activity overrides previous decision
+	if gameData.auto_gui_activity_ongoing():
+		heroNode.texture = grayscale_tex
 
 func init_hero(_hero_index):
 	hero_index = _hero_index
@@ -88,6 +98,10 @@ func _on_HeroPhase_gui_input(event):
 func can_hero_phase_action() -> bool:
 	if !gameData.theStack.is_player_allowed_to_click():
 		return false
+	
+	if gameData.gui_activity_ongoing():
+		return false
+	
 	if (hero_index == gameData.get_current_local_hero_id()):
 		#special case: cannot switch my status from inactive to active outside of main player phase
 		if (current_state == State.FINISHED) and (get_parent().current_step != CFConst.PHASE_STEP.PLAYER_TURN):
@@ -147,12 +161,7 @@ remotesync func switch_status(forced_state:int = -1):
 	if current_state == old_state:
 		#don't do anything if no change
 		return
-		
-	match current_state:
-		State.ACTIVE:
-			heroNode.texture = color_tex
-		State.FINISHED:		
-			heroNode.texture = grayscale_tex	
+			
 	_update_labels()
 	get_parent().check_end_of_player_phase()
 				

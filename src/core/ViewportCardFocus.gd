@@ -285,3 +285,9 @@ func _on_Viewport_size_changed() -> void:
 
 func toggle_glow(is_enabled := true) -> void:
 	world_environemt.environment.glow_enabled = is_enabled
+
+func get_origin_card(dupe_card):
+	for card in _previously_focused_cards:
+		if _previously_focused_cards[card] == dupe_card:
+			return card
+	return null

@@ -84,7 +84,7 @@ func _step_started(details:Dictionary):
 		var announce = {
 			"announce" :"phase_starts",
 			"object" : current_step,
-			"is_blocking" : false,
+			"is_blocking" : true, #false,
 			"storage": {},
 			"current_delta" : 0.0
 		}

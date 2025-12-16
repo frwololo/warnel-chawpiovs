@@ -2,9 +2,12 @@ extends CardBackGlow
 
 var font_scaled : float = 1
 onready var art := $Art
+onready var art2 := $TextureRect2
 
 func _ready() -> void:
 	viewed_node = $Viewed
+	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	art2.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	
 # Since we have a label on top of our image, we use this to scale the label
 # as well
@@ -21,6 +24,9 @@ func scale_to(scale_multiplier: float) -> void:
 		label_font.size *= scale_multiplier
 		label.set("custom_fonts/font", label_font)
 		font_scaled = scale_multiplier
+#		art.rect_scale = Vector2(scale_multiplier, scale_multiplier )
+#		art2.rect_scale = Vector2(scale_multiplier, scale_multiplier )
+		
 	
 func set_card_art(filename) -> void:
 	var new_img = WCUtils.load_img(filename)

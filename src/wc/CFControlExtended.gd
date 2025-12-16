@@ -122,20 +122,6 @@ func get_card_by_id(id):
 	
 	return card_data
 
-func _is_type_known(type) -> bool:
-	if known_types.has(type):
-		return true
-	if unknown_types.has(type):
-		return false
-	#attempt to load matching template to see if type is known
-	var template = load(CFConst.PATH_CARDS
-			+ type + ".tscn")
-	if template:
-		known_types[type] = true
-		return true
-	unknown_types[type] = true
-	return false
-	
 	
 
 func load_card_scenarios():
@@ -641,16 +627,23 @@ func load_script_definitions() -> void:
 		#bugfix: replace "floats" to "ints"
 		json_card_data = WCUtils.replace_real_to_int(json_card_data)
 		var _text = to_json(json_card_data)
-		for card_name in json_card_data.keys():
-			var card_datas = box_contents_by_name[box_name].get(card_name, [])
-			if !card_datas:
-				var error_msg = "scripting for non existing card: " + card_name + ". Check case, character subname, etc..."
-				cfc.emit_signal("json_parse_error", error_msg)
-			for card_data in card_datas:
-				var card_id = card_data["_code"]
-				if not combined_scripts.get(card_id):
-					var script_data = json_card_data[card_name]
-					combined_scripts[card_id]	= script_data	
+		for fuzzy_card_name in json_card_data.keys():
+			var card_info = retrieve_card_info_from_fuzzy_name(fuzzy_card_name)
+			var card_name = card_info["name"]
+			var card_code = card_info["code"]
+			if card_code:
+				var script_data = json_card_data[fuzzy_card_name]
+				combined_scripts[card_code]	= script_data
+			else:
+				var card_datas = box_contents_by_name[box_name].get(card_name, [])
+				if !card_datas:
+					var error_msg = "scripting for non existing card: " + card_name + ". Check case, character subname, etc..."
+					cfc.emit_signal("json_parse_error", error_msg)				
+				for card_data in card_datas:
+					var card_id = card_data["_code"]
+					if not combined_scripts.get(card_id):
+						var script_data = json_card_data[card_name]
+						combined_scripts[card_id]	= script_data	
 					
 
 	for card_id in card_definitions.keys():
@@ -668,6 +661,17 @@ func load_script_definitions() -> void:
 	scripts_loading = false	
 	emit_signal("scripts_loaded")
 
+func retrieve_card_info_from_fuzzy_name(fuzzy_card_name):
+	var card_name = fuzzy_card_name.strip_edges()
+	var card_code = ""
+	if "#" in card_name:
+		var values = card_name.split("#")
+		card_name = values[0].strip_edges()
+		card_code = values[1].strip_edges()
+	return {
+		"name" : card_name,
+		"code" : card_code	
+	}
 
 func enrich_window_title(selectionWindow, script:ScriptObject, title:String) -> String:
 	var result:String = title
@@ -684,7 +688,7 @@ func enrich_window_title(selectionWindow, script:ScriptObject, title:String) -> 
 	
 	match script_name:
 		"enemy_attack":
-			result = owner.canonical_name + " attacks. Choose at most 1 defender, cancel for undefended" 
+			result = owner.get_display_name() + " attacks. Choose at most 1 defender, cancel for undefended" 
 		"pay_as_resource":
 			result = owner.canonical_name + " - Select at least " + str(selectionWindow.selection_count) + " resources."
 	return result;
@@ -719,7 +723,12 @@ func get_img_filename(card_id) -> String:
 		return _img_filename_cache[key]
 	
 	var filename = "Sets/images/" + card_set + "/" + card_code + ".png"
-	#var file = File.new()
+	var file = File.new()
+	for prefix in["user://", "res://"]: #user has priority
+		if file.file_exists(prefix + filename):	
+			_img_filename_cache[key] = prefix + filename
+			return _img_filename_cache[key]
+	
 	for prefix in["user://", "res://"]: #user has priority
 		if ResourceLoader.exists(prefix + filename):	
 			_img_filename_cache[key] = prefix + filename

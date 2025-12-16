@@ -1,0 +1,111 @@
+{
+	"_comments": "Armored Vest: max 1 per player",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Black Panther"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens" : {"threat" : 4},
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Black Panther"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Bomber"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Armored Vest"
+				}
+			],				
+			"hand1": [
+				{
+					"card": "Med Team"
+				},		
+				{
+					"card": "Armored Vest"
+				},
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Armored Vest"
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Black Panther"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens" : {"threat" : 4},
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Black Panther"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Bomber"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Armored Vest"
+				}
+			],				
+			"hand1": [
+				{
+					"card": "Med Team"
+				},		
+				{
+					"card": "Armored Vest"
+				},
+			]
+		}
+	}
+}

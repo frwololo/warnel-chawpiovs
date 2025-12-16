@@ -404,19 +404,11 @@ func would_be_ready_for_next_phase() -> bool:
 	#encounters waiting to be revealed
 	if (gameData.immediate_encounters):
 		return false
-			
-	
-	# if modal user input is being requested, can't move on
-	if (gameData.user_input_ongoing):
+
+	if gameData.gui_activity_ongoing():
 		return false
-	
-	if cfc.get_modal_menu():
-		return false
-	
-	if cfc.NMAP.board.are_cards_still_animating():
-		return false
-		
-	return true	
+
+	return true
 
 #returns true if nothing prevents me (player) from *asking* for next phase			
 func is_ready_for_next_phase() -> bool :

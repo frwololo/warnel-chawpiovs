@@ -126,6 +126,8 @@ func _ready() -> void:
 	_on_viewport_resized()
 	_setup()
 
+func _process(_delta:float):
+	flush_cache_as_needed()
 
 func _setup() -> void:
 	init_settings_from_file()
@@ -441,9 +443,16 @@ func quit_game() -> void:
 # This is called after most game-state changes, but there's one notable exception:
 # if you add an alterant to a card's `scripts` variable manually, then you need
 # to flush the cache afterwards using this function.
+var _flush_cache_requested = false
 func flush_cache() -> void:
+	_flush_cache_requested = true
+
+func flush_cache_as_needed() -> void:
+	if !_flush_cache_requested:
+		return
 	alterant_cache.clear()
 	emit_signal("cache_cleared")
+	_flush_cache_requested = false
 
 
 func hide_all_previews() -> void:

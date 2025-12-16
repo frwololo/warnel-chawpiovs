@@ -47,7 +47,7 @@ func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int, _all_pre
 	var only_cost_check = ((run_type == CFInt.RunType.COST_CHECK) or
 		 (run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
 	
-	prev_subjects = _prev_subjects
+	set_prev_subjects(_prev_subjects)
 	all_prev_subjects = _all_prev_subjects
 	if ((!only_cost_check
 			and not is_cost and not needs_subject)

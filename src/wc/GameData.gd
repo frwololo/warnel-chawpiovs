@@ -822,7 +822,7 @@ func enemy_activates() :
 					"scale": 0.6,
 					"duration": 2,
 					"animation_style": Announce.ANIMATION_STYLE.SPEED_OUT,
-					"top_texture_filename": enemy.get_art_filename(),
+					"top_texture_filename": enemy.get_art_filename(false),
 					"bottom_texture_filename": get_identity_card(target_id).get_art_filename(),
 				}
 				theAnnouncer.simple_announce(announce_settings )
@@ -1197,7 +1197,7 @@ func can_proceed_activation()-> bool:
 func cancel_current_encounter():
 	if !_current_encounter:
 		return false
-	_current_encounter.move_to("discard_villain")
+	_current_encounter.move_to(cfc.NMAP["discard_villain"])
 	current_encounter_finished()	
 
 var _local_encounter_uid = 0
@@ -1560,6 +1560,8 @@ func move_to_next_villain(current_villain):
 	var new_card = cfc.NMAP.board.load_villain(ckey)
 	current_villain.copy_tokens_to(new_card, {"exclude":["damage"]})
 	for attachment in current_villain.attachments:
+		if attachment.is_boost():
+			continue
 		attachment.attach_to_host(new_card)
 		
 	set_aside(current_villain)	
@@ -1766,6 +1768,30 @@ func confirm(
 		_release_user_input_lock(owner.get_controller_player_network_id())
 	cfc.remove_ongoing_process(self)	
 	return(is_accepted)
+
+#some gui activity is ongoing, not controlled by any player (animations, etc...)
+func auto_gui_activity_ongoing() -> bool:		
+	if cfc.NMAP.board.are_cards_still_animating():
+		return true
+		
+	if is_ongoing_blocking_announce():
+		return true
+	
+	return false	
+
+#some gui_activity ongoing, aither player controlled or automated
+func gui_activity_ongoing()-> bool:	
+	# if modal user input is being requested, can't move on
+	if (user_input_ongoing):
+		return true
+	
+	if cfc.get_modal_menu():
+		return true
+
+	if auto_gui_activity_ongoing():
+		return true
+		
+	return false
 
 
 func is_ongoing_blocking_announce():

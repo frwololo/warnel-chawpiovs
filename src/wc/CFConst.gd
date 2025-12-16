@@ -280,7 +280,7 @@ const TYPES_TO_GROUPS := {
 	"ally" : ["group_allies", "group_characters", "group_friendly", "group_allies_and_heroes"],
 }
 
-const ALL_GROUPS: = [
+const ALL_TYPE_GROUPS: = [
 	"group_schemes",
 	"group_enemies",
 	"group_characters",
@@ -407,6 +407,11 @@ const HERO_GRID_SETUP := {
 		"y" : 440,
 	},									
 }
+
+const TOKENS_ONLY_ON_BOARD_EXCEPTIONS:= [
+	"encounters_facedown",
+	"encounters_reveal"	
+]
 
 const HERO_GRID_LAYOUT := {
 	"type": "horizontal",

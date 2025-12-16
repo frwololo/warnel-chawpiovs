@@ -86,7 +86,8 @@ func modify(script):
 						pass
 
 #TODO this function shouldn't be here? doesn't use any of its data
-func matches_filters(task, filters:Dictionary, owner_card, _trigger_details):
+func matches_filters(task, _filters:Dictionary, owner_card, _trigger_details):
+	var filters = _filters #.duplicate(true)
 	var owner_hero_id = owner_card.get_owner_hero_id()
 	if (owner_hero_id > 0):
 		for v in ["my_hero"]:
@@ -98,6 +99,20 @@ func matches_filters(task, filters:Dictionary, owner_card, _trigger_details):
 	filters = WCUtils.search_and_replace(filters, "self", owner_card, true)
 
 	var trigger_details = guidMaster.replace_guids_to_objects(_trigger_details)
+
+	
+	if filters.has("filter_state_event_source"):
+		var script = trigger_details.get("event_object")
+		if !script:
+			return false
+		var owner = script.owner
+		if !owner:
+			return false		
+		var is_valid = SP.check_validity(owner, filters, "event_source")
+		if !is_valid:
+			return false
+		filters.erase("filter_state_event_source")
+
 
 	if (filters):
 		var _tmp = 0	

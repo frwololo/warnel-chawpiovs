@@ -12,12 +12,17 @@ var _pulse_values := [Color(1.05,1.05,1.05),Color(0.9,0.9,0.9)]
 # For this class, a Tween node called Pulse must exist at the root of the scene.
 onready var _tween = $Pulse
 
-
 func _ready() -> void:
 	# warning-ignore:return_value_discarded
 	_tween.connect("tween_all_completed", self, "_on_Pulse_completed")
 
-
+func _process(delta:float):
+	if not _tween:
+		return
+		
+	if not card_owner.is_faceup and not _tween.is_active():
+		start_card_back_animation()
+	
 # Reverses the card back pulse and starts it again
 func _on_Pulse_completed() -> void:
 	# We only pulse the card if it's face-down and on the board
@@ -35,6 +40,7 @@ func start_card_back_animation():
 			_pulse_values[0], _pulse_values[1], 2,
 			Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 	_tween.start()
+
 
 
 # Disables the looping card back pulse

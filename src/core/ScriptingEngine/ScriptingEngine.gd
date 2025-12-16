@@ -822,12 +822,18 @@ func shuffle_container(script: ScriptTask) -> void:
 # Task from making the owner card an attachment to the subject card.
 # * Requires the following keys:
 #	* [KEY_SUBJECT](ScriptProperties#KEY_SUBJECT)
-func attach_to_card(script: ScriptTask) -> void:
+func attach_to_card(script: ScriptTask) -> int:	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+		
+	if costs_dry_run():
+		return CFConst.ReturnCode.CHANGED
 	# We inject the tags from the script into the tags sent by the signal
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
 	for card in script.subjects:
 		script.owner.attach_to_host(card, false, tags)
 
+	return CFConst.ReturnCode.CHANGED
 
 # Task from making the subject card an attachment to the owner card.
 # * Requires the following keys:

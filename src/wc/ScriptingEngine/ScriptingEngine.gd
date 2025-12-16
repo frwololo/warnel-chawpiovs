@@ -304,16 +304,39 @@ func character_died(script: ScriptTask) -> int:
 	return retcode
 
 func deal_damage(script:ScriptTask) -> int:
-#	if script.owner.canonical_name == "Energy Daggers":
-#		var _tmp = 1
-#
+	var retcode = CFConst.ReturnCode.FAILED
+
+	if costs_dry_run():
+		if script.subjects:
+			return CFConst.ReturnCode.CHANGED
+		return retcode
+	#we split the damage into multiple "receive_damage" events, one per subject
+
 	#I've had issues where computing the damage afterwards leads to inconsistency
 	#calculating it now
-	var amount = script.retrieve_integer_property("amount")
+	var base_amount = script.retrieve_integer_property("amount")
 	
-	_add_receive_damage_on_stack(amount, script)
-	return CFConst.ReturnCode.CHANGED
+	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
+	# e.g. Spider man gets 3*1 damage = 3 damage
+	var consolidated_subjects:= {}
+	#TODO BUG sometimes subjects contains a null card?
+	for card in script.subjects:
+		if !consolidated_subjects.has(card):
+			consolidated_subjects[card] = 0
+		consolidated_subjects[card] += 1
+	
+	for card in consolidated_subjects.keys():
+		var multiplier = consolidated_subjects[card]
+		var amount = base_amount * multiplier
+		
+		#it's ok to modify directly script here because 
+		# _add_receive_damage_on_stack creates a copy
+		script.subjects = [card]
+	
+		_add_receive_damage_on_stack(amount, script)
+		retcode = CFConst.ReturnCode.CHANGED
 #	return receive_damage(script)
+	return retcode
 
 func scheme_base_threat(script:ScriptTask) -> int:
 	var scheme = script.owner
@@ -442,18 +465,6 @@ func receive_damage(script: ScriptTask) -> int:
 					script.owner.execute_scripts(script.owner, post_damage_trigger, trigger_details)
 		
 		if ("attack" in tags):
-			var retaliate = card.get_property("retaliate", 0)
-			if retaliate:
-				var owner = script.owner
-				var type = owner.get_property("type_code", "")
-				if !type in ["hero", "ally", "minion", "villain"]:
-					owner = _get_identity_from_script(script)
-				var script_modifications = {
-					"tags" : ["retaliate", "Scripted"],
-					"subjects": [owner],
-					"owner": card,
-				}
-				_add_receive_damage_on_stack(retaliate, script, script_modifications)
 			var signal_details = {
 				"attacker": script.owner,
 				"target": card,
@@ -471,34 +482,27 @@ func receive_damage(script: ScriptTask) -> int:
 			#scripting_bus.emit_signal("defense_happened", card, signal_details)
 			
 		#check for death
+		var lethal = false
 		if damage_happened:
 			scripting_bus.emit_signal("card_damaged", card, script.script_definition)
 
-			var total_damage:int =  card.tokens.get_token_count("damage")
-			var health = card.get_property("health", 0)
+			card.check_death(script)
 
-			if total_damage >= health:
-				var card_dies_definition = {
-					"name": "card_dies",
-					"tags": ["receive_damage", "Scripted"] + script.get_property(SP.KEY_TAGS)
+		if ("attack" in tags) and !lethal:
+			#retaliate against an attack only if I didn't die
+			var retaliate = card.get_property("retaliate", 0)
+			if retaliate:
+				var owner = script.owner
+				var type = owner.get_property("type_code", "")
+				if !type in ["hero", "ally", "minion", "villain"]:
+					owner = _get_identity_from_script(script)
+				var script_modifications = {
+					"tags" : ["retaliate", "Scripted"],
+					"subjects": [owner],
+					"owner": card,
 				}
-				var trigger_details = script.trigger_details.duplicate(true)
-				trigger_details["source"] = guidMaster.get_guid(script.owner)
-				
-				#if the damage comes from an "attack", ensure the source is properly categorized as
-				#the hero (or villain) owner rather than the event card itself
-				if ("attack" in tags):
-					var owner = script.owner
-					var type = owner.get_property("type_code", "")
-					if !type in ["hero", "ally", "minion", "villain"]:
-						owner = _get_identity_from_script(script)	
-						trigger_details["source"] = guidMaster.get_guid(owner)
-						
-				var card_dies_script:ScriptTask = ScriptTask.new(card, card_dies_definition, script.trigger_object, trigger_details)
-				card_dies_script.subjects = [card]
-				var task_event = SimplifiedStackScript.new(card_dies_script)
-				gameData.theStack.add_script(task_event)
-						
+				_add_receive_damage_on_stack(retaliate, script, script_modifications)
+							
 	return retcode
 
 func _receive_threat(script: ScriptTask) -> int:
@@ -589,6 +593,7 @@ func move_token_to(script: ScriptTask) -> int:
 	source.tokens.mod_token(token_name, -amount)
 	
 	if token_name == "damage" and ("attack" in tags):
+		script.script_definition["amount"] = amount
 		return attack(script)
 	else:
 		target.tokens.mod_token(token_name, amount)
@@ -907,7 +912,8 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 		
 	var overkill_amount = 0
 	
-	if amount:
+#	if amount: #we want to send the damage even if zero, to trigger retaliate, etc...
+	if true:
 		var script_modifications = {
 			"additional_tags" : ["attack", "Scripted"],
 		}
@@ -1410,6 +1416,13 @@ func constraints(script: ScriptTask) -> int:
 		if already_in_play >= max_per_hero:
 			return 	CFConst.ReturnCode.FAILED			
 
+	#Max per player rule to play with "play under any player's control"
+	var max_per_hero_any = script.get_property("max_per_hero_any", 0)
+	if max_per_hero_any:
+		var already_in_play = cfc.NMAP.board.count_card_per_player_in_play(this_card)
+		if already_in_play >= max_per_hero_any * gameData.get_team_size():
+			return 	CFConst.ReturnCode.FAILED		
+
 	var constraints: Array = script.get_property("constraints", [])
 	for constraint in constraints:
 		var result = cfc.ov_utils.func_name_run(this_card, constraint["func_name"], constraint["func_params"], script)
@@ -1469,7 +1482,7 @@ static func get_hero_id_from_script(script):
 	
 #returns thecurrent hero card based on a script.
 #typically that's the hero associated to the script owner
-func _get_identity_from_script(script):
+static func _get_identity_from_script(script):
 	var my_hero_id = get_hero_id_from_script(script)
 	if my_hero_id:
 		var my_hero_card = gameData.get_identity_card(my_hero_id)	
@@ -1525,7 +1538,7 @@ static func static_pre_task_prime(script_definition, owner, prev_subjects:= []):
 	]	
 
 
-	for zone in ["hand"] + CFConst.HERO_GRID_SETUP.keys() + CFConst.ALL_GROUPS:
+	for zone in ["hand"] + CFConst.HERO_GRID_SETUP.keys() + CFConst.ALL_TYPE_GROUPS:
 		for replacement in replacements:
 			var from_str = replacement["from"]
 			var to = replacement["to"]

@@ -231,7 +231,49 @@ static func to_grayscale(texture : Texture) -> Texture:
 	var image_texture = ImageTexture.new()
 	image_texture.create_from_image(image)
 	return image_texture
+
+static func search_and_replace_str (orig_str:String, replacements:Dictionary, exact_match:bool = false):
+	var new_str = orig_str
+	for to_replace in replacements:
+		if (orig_str == to_replace):
+			return replacements[to_replace]
+		if (!exact_match):		
+			new_str = new_str.replace(to_replace, replacements[to_replace])
+			if new_str != orig_str:
+				return new_str
+	return new_str
 	
+static func search_and_replace_multi (script_definition, replacements:Dictionary, exact_match: bool = false) -> Dictionary:
+	var result = null
+	match typeof(script_definition):
+		TYPE_DICTIONARY:
+			result = {}	
+			for key in script_definition.keys():
+				var value = script_definition[key]
+				result[key] = search_and_replace_multi(value, replacements, exact_match)
+
+				#do the key too	
+				if typeof(key) == TYPE_STRING:
+						var new_string = search_and_replace_str(key, replacements, exact_match)
+						result[new_string] = result[key]
+						#TODO erase???	
+
+		TYPE_ARRAY:
+			result = []
+			for x in script_definition:
+				var computed = search_and_replace_multi(x,replacements, exact_match)
+				#special case, if replacing with an array, we flatten it
+				if typeof(computed) == TYPE_ARRAY and typeof(x) == TYPE_STRING:
+					for element in computed:
+						result.append(element)
+				else:
+					result.append(computed)
+
+		TYPE_STRING:
+			result = search_and_replace_str(script_definition, replacements, exact_match)
+		_:
+			result = script_definition
+	return result;
 
 static func search_and_replace (script_definition, from: String, to, exact_match: bool = false) -> Dictionary:
 	var result = null

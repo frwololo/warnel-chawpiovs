@@ -89,14 +89,16 @@ func modify(script):
 func matches_filters(task, _filters:Dictionary, owner_card, _trigger_details):
 	var filters = _filters #.duplicate(true)
 	var owner_hero_id = owner_card.get_owner_hero_id()
+	
+	
+	var replacements = {
+		"villain": gameData.get_villain(),
+		"self": owner_card
+	}	
 	if (owner_hero_id > 0):
-		for v in ["my_hero"]:
-			#TODO move to const
-			filters = WCUtils.search_and_replace(filters, v, gameData.get_identity_card(owner_hero_id), true)
+		replacements["my_hero"] = gameData.get_identity_card(owner_hero_id)
 
-	#TODO move to const
-	filters = WCUtils.search_and_replace(filters, "villain", gameData.get_villain(), true)
-	filters = WCUtils.search_and_replace(filters, "self", owner_card, true)
+	filters = WCUtils.search_and_replace_multi(filters, replacements, true)
 
 	var trigger_details = guidMaster.replace_guids_to_objects(_trigger_details)
 

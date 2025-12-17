@@ -410,7 +410,12 @@ func add_event_to_stack(stackEvent, checksum = ""):
 
 	
 	stackEvent.stack_uid = get_next_stack_uid()
-	stack.append(stackEvent)
+
+	if is_interrupt_mode():	
+		stack.append(stackEvent)
+	else:
+		stack.push_front(stackEvent)
+	
 	history[stackEvent.stack_uid] = {
 		"stack_uid" : stackEvent.stack_uid,
 		"details": stackEvent.get_display_name(),

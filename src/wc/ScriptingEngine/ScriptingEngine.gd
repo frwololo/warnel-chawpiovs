@@ -92,10 +92,12 @@ func move_card_to_board(script: ScriptTask) -> int:
 		owner_hero_id = script.owner.get_owner_hero_id()
 	if !owner_hero_id:
 		owner_hero_id = gameData.get_villain_current_hero_target()
-		
+	
+	var replacements = {}	
 	for zone in CFConst.HERO_GRID_SETUP:
-		#TODO move to const
-		script.script_definition = WCUtils.search_and_replace(script.script_definition, zone, zone+str(owner_hero_id), true)
+		replacements[zone] = zone+str(owner_hero_id)
+		
+	script.script_definition = WCUtils.search_and_replace_multi(script.script_definition, replacements, true)
 	
 	for card in script.subjects:
 		if card.is_boost():
@@ -136,7 +138,7 @@ func move_card_to_container(script: ScriptTask) -> int:
 		previous_hero_id = previous_hero.get_controller_hero_id()
 	
 	var enemy_target_hero_id = gameData.get_villain_current_hero_target()
-	var replacements = [
+	var _replacements = [
 		{"from":"" , "to": owner_hero_id },
 		{"from":"_my_hero" , "to": controller_hero_id },
 		{"from":"_first_player" , "to": gameData.first_player_hero_id() },
@@ -144,14 +146,17 @@ func move_card_to_container(script: ScriptTask) -> int:
 		{"from":"_current_hero_target" , "to": enemy_target_hero_id},		
 	]
 
+	var replacements = {}
 
 	for zone in ["hand"] + CFConst.HERO_GRID_SETUP.keys():
-		for replacement in replacements:
+		for replacement in _replacements:
 			var from_str = replacement["from"]
 			var to = replacement["to"]
 			if !to:
 				to = enemy_target_hero_id
-			script.script_definition = WCUtils.search_and_replace(script.script_definition, zone + from_str, zone+str(to), true)	
+			replacements[zone + from_str] = zone+str(to)
+			
+	script.script_definition = WCUtils.search_and_replace_multi(script.script_definition, replacements, true)	
 	
 	var result = .move_card_to_container(script)
 	script.script_definition = backup
@@ -1563,22 +1568,27 @@ static func static_pre_task_prime(script_definition, owner, prev_subjects:= []):
 	var controller_hero_id = owner.get_controller_hero_id()
 	
 	var current_hero_target = gameData.get_villain_current_hero_target()
-	
-	var replacements = [
+
+
+
+	var replacements = {}
+			
+	var _replacements = [
 		{"from":"_my_hero" , "to": controller_hero_id },
 		{"from":"_first_player" , "to": gameData.first_player_hero_id() },
 		{"from":"_previous_subject" , "to": previous_hero_id},
 		{"from":"_current_hero_target" , "to": current_hero_target},		
-	]	
+	]
 
 
 	for zone in ["hand"] + CFConst.HERO_GRID_SETUP.keys() + CFConst.ALL_TYPE_GROUPS:
-		for replacement in replacements:
+		for replacement in _replacements:
 			var from_str = replacement["from"]
 			var to = replacement["to"]
 			if !to:
 				to = current_hero_target
-			script_definition = WCUtils.search_and_replace(script_definition, zone + from_str, zone+str(to), true)	
+			replacements[zone + from_str] = zone+str(to)
+	script_definition = WCUtils.search_and_replace_multi(script_definition, replacements, true)	
 	
 
 	return script_definition

@@ -1378,11 +1378,12 @@ func common_pre_run(sceng) -> void:
 	for task in scripts_queue:
 		var script: ScriptTask = task
 		var script_definition = script.script_definition			
-		
+		var replacements = {}
 		for v in zones:
+			replacements[v + "_first_player"] = v+str(gameData.first_player_hero_id())
 		#first player explcitely mentioned
-			script_definition = WCUtils.search_and_replace(script_definition, v + "_first_player", v+str(gameData.first_player_hero_id()), true)	
-
+		script_definition = WCUtils.search_and_replace_multi(script_definition, replacements , true)	
+		replacements = {}
 		
 		if (controller_hero_id <=0 ):
 			var card_type = task.owner.get_property("type_code")
@@ -1394,7 +1395,7 @@ func common_pre_run(sceng) -> void:
 			#var current_hero_id = gameData.get_current_hero_id()
 			for v in zones:
 				#TODO move to const
-				script_definition = WCUtils.search_and_replace(script_definition, v, v+str(controller_hero_id), true)	
+				replacements[v] = v+str(controller_hero_id)
 
 
 				#any_discard, etc gets replaced with ["discard1","discard2"] 
@@ -1404,8 +1405,9 @@ func common_pre_run(sceng) -> void:
 					any_container_def.append(v + str(i+1))
 				if any_container_def.size() == 1:
 					any_container_def = any_container_def[0]
-				script_definition = WCUtils.search_and_replace(script_definition, "any_" + v, any_container_def, true)	
-		
+				replacements["any_" + v] = any_container_def	
+			script_definition = WCUtils.search_and_replace_multi(script_definition, replacements , true)	
+	
 		#put back the modified script			
 		script.script_definition = script_definition
 				

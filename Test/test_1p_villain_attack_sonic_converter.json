@@ -86,11 +86,11 @@
 			],
 			"discard_villain": [
 				{
-					"card": "advance"
-				},					
-				{
 					"card": "Caught off guard"
-				}				
+				},				
+				{
+					"card": "advance"
+				},								
 			],
 			"deck_villain": [
 					{

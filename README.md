@@ -15,7 +15,7 @@ For all intents and purposes, the game works for a single player using a single 
   * 1 Player, 2 heroes: Still work in progress but should generally work, with the occasional glitch or game-breaking bug
   * 1 Player, 3 or 4 heroes: untested
 * Multiplayer Mode:
-  * Multiplayer (2 players, 1 hero per player): Should work in theory, but in practice it's difficult to finish a game without running into a freeze, crash or race condition. To mitigate this, the host can try and click on the "force sync" option button to force other clients to reload the host's current board state
+  * Multiplayer (2 players, 1 hero per player): Should work in theory, but in practice it's difficult to finish a game without running into a freeze, crash or race condition. To mitigate this, the host can try and click on the "force sync" option button to force other clients to reload the host's current board state. ![force_resync_image](doc/pictures/resync.png "force resync")
   * Multiplayer (Other cases): Not tested
 
 ## Features
@@ -45,12 +45,12 @@ Alternatively, it is possible to have all the images packed in a PCK file at the
 The user folder is based on Godot rules. On Windows, it lives in "user_folder"\AppData\Roaming\Godot\app_userdata\WC.
 Relevant files and subfolders of the user folder are:
 * settings.json: Settings file
-* *.pck: all your dlc/mods can live as pck files at the root of the user folder. For example a file named core.pck can include all images for the core Set
+* *.pck: all your dlc/mods can live as pck files at the root of the user folder. For example a file named core.pck can include all images for the core Set ![pck_example](doc/pictures/pck_format.png "pck_example")
 * Saves: where the savegames live. Probably need to regularly empty the "past_games" subfolder
 * Decks: Hero decks (those follow the format of marvelcdb.com)
 * Sets: where the Set definitions and images live
-  ** images: image subfolder for set. Each "box" is a subfolder with its own pictures, e.g. images/core/01001a.png
-  ** SetDefinition_*.json: definition of a given set, typically downloaded "as is" from marvelcdb.com. This describes the cards in a given set, but does not contain the scripting data for these cards (see the Modders section below) 
+  * images: image subfolder for set. Each "box" is a subfolder with its own pictures, e.g. images/core/01001a.png
+  * SetDefinition_*.json: definition of a given set, typically downloaded "as is" from marvelcdb.com. This describes the cards in a given set, but does not contain the scripting data for these cards (see the Modders section below) 
 
 ## Modders: Adding new cards to the Game
 The basics to adding new cards to the game is to choose a specific set from marvelcdb, create a scripts json file for it, and modify the settings file to include this set. Specifically:
@@ -88,9 +88,9 @@ The basics to adding new cards to the game is to choose a specific set from marv
   * shaders:
   * Announce.gd: 
   * Board.gd: The board on which most "currently in play" cards are. Note that it is separate from piles such as deck, discard, etc...
-  * '''CardTemplate.gd''': The class that describes each card an its functionality
+  * **CardTemplate.gd**: The class that describes each card an its functionality
   * CfControlExtended.gd: General game singleton class in charge of loading cards database, running the game, etc
-  * '''GameData.gd''': The overlord of the game, centralized singleton that knows almost everything about the game
+  * **GameData.gd**: The overlord of the game, centralized singleton that knows almost everything about the game
   * GhostCard.gd: A type of card (extends CardTemplate) specific for "Make the call" to play other players' cards
   * OVUtils.gd: Utility functions specific to gameplay and scripting the cards
   * PhaseContainer.gd: The class in charge of moving phases through the game, going from player phase to villain phase, etc...

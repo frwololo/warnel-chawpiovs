@@ -73,11 +73,11 @@ func move_card_to_board(script: ScriptTask) -> int:
 	var backup:Dictionary = script.script_definition.duplicate()
 
 	var override_properties = script.get_property("set_properties", {})
-
+	
+	var subject = script.subjects[0] if script.subjects else null
 
 	#we force a grid container in all cases
 	if script.subjects and !script.get_property("grid_name"):
-		var subject = script.subjects[0]
 		var type_code = override_properties.get("type_code", subject.get_property("type_code"))
 		if CFConst.TYPECODE_TO_GRID.has(type_code):
 			script.script_definition["grid_name"] = CFConst.TYPECODE_TO_GRID[type_code]
@@ -85,7 +85,11 @@ func move_card_to_board(script: ScriptTask) -> int:
 	
 	#Replace all occurrences of un_numberd "discard", etc... with the actual id
 	#This ensures we use e.g. the correct discard pile, etc...
-	var owner_hero_id = script.trigger_details.get("override_controller_id", script.owner.get_owner_hero_id())
+	var owner_hero_id = script.trigger_details.get("override_controller_id")
+	if !owner_hero_id and subject:
+		owner_hero_id = subject.get_controller_hero_id()
+	if !owner_hero_id:
+		owner_hero_id = script.owner.get_owner_hero_id()
 	if !owner_hero_id:
 		owner_hero_id = gameData.get_villain_current_hero_target()
 		
@@ -1100,6 +1104,36 @@ func thwart(script: ScriptTask) -> int:
 		scripting_bus.emit_signal("thwarted", owner, {"amount" : modification, "target" : script.subjects[0]})
 	
 	return retcode	
+
+# Task for executing nested tasks
+# This task will execute internal non-cost cripts accordin to its own
+# nested cost instructions.
+# Therefore if you set this task as a cost,
+# it will modify the board, even if other costs of this script
+# could not be paid.
+# You can use [SP.KEY_ABORT_ON_COST_FAILURE](SP#KEY_ABORT_ON_COST_FAILURE)
+# to control this behaviour better
+func nested_script(script: ScriptTask) -> int:
+	cfc.add_ongoing_process(self, "nested_script")
+	var retcode : int = CFConst.ReturnCode.CHANGED
+	var nested_task_list: Array = script.get_property(SP.KEY_NESTED_TASKS)
+	
+	var exec_config = {
+		"trigger": "",
+		"checksum": "nested_script",
+		"rules": {},
+		"action_name": "nested_script",
+		"force_user_interaction_required": false
+	}
+	var card = script.owner
+	var sceng = card.execute_chosen_script(nested_task_list, script.trigger_object, script.trigger_details, CFInt.RunType.NORMAL, exec_config)
+	if sceng is GDScriptFunctionState && sceng.is_valid():		
+		yield(sceng,"completed")
+		
+	cfc.remove_ongoing_process(self, "nested_script")	
+
+	return(retcode)
+
 
 func heal(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.FAILED

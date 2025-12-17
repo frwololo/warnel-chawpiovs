@@ -42,6 +42,7 @@
 						"health": 0,
 						"scheme": 0,
 						"trait_drone": 1,
+						"shortname": "Drone",
 						"type_code": "minion"
 					}
 				}

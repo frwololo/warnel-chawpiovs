@@ -560,11 +560,15 @@ func replace_text_macro (replacements, macro_value):
 	for key in replacements.keys():
 		var value = replacements[key]
 		var to_replace = key
-		if (typeof(value) == TYPE_REAL or typeof(value) == TYPE_INT):
+		if typeof(value) in [TYPE_REAL,TYPE_INT,TYPE_BOOL]:
 			to_replace = "\"" + key + "\""
-		text = text.replace(to_replace, replacements[key])
+			value = str(value).to_lower()
+		text = text.replace(to_replace, str(value))
 	
-	return parse_json(text)
+	var result = parse_json(text)
+	if !result:
+		var _error = 1
+	return result
 
 func replace_one_macro(script_definition, macro_key, macro_value):
 	var result = null
@@ -880,9 +884,8 @@ func preload_pck():
 		return
 	
 	for set in database.keys():
-		var success_res = ProjectSettings.load_resource_pack("res://" + set + ".pck")
-		var success_user = ProjectSettings.load_resource_pack("user://" + set + ".pck")
-		var _tmp = 1
+		var _success_res = ProjectSettings.load_resource_pack("res://" + set + ".pck")
+		var _success_user = ProjectSettings.load_resource_pack("user://" + set + ".pck")
 	return
 #
 # Network related functions

@@ -1,0 +1,189 @@
+{
+	"_comments": "Tests Advanced Ultron Drone dying",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Black Panther"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Ultron - 1"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Ultron Drones"
+				}
+			],			
+			"schemes": [
+				{
+					"card": "The Crimson Cowl"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Shuri"
+				},			
+				{
+					"card": "Ancestral Knowledge"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Advanced Ultron Drone",
+					"tokens": {"damage" : 3}
+				}
+			],			
+			"identity1": [
+				{
+					"card": "Black Panther"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy Absorption"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Mark V Armor"
+				},
+				{
+					"card": "Chase them down"
+				},				
+				{
+					"card": "Powered Gauntlets"
+				},
+				{
+					"card": "Mark V Helmet"
+				}				
+			],
+			"identity2": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"allies2": [
+				{
+					"card": "Hulk"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Hulk",
+			"hero": 2,
+		},
+		{
+			"type": "target",
+			"value": "Advanced Ultron Drone",
+			"hero": 2,			
+		},
+		{
+			"type": "target",
+			"value": "Ancestral Knowledge",
+			"hero": 2,			
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Black Panther"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Ultron"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Ultron Drones"
+				}
+			],				
+			"schemes": [
+				{
+					"card": "The Crimson Cowl"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Shuri"
+				},
+			],
+			"discard1": [
+				{
+					"card": "Ancestral Knowledge"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Advanced Ultron Drone",
+				}
+			],			
+			"identity1": [
+				{
+					"card": "Black Panther"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy Absorption"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Mark V Armor"
+				},
+				{
+					"card": "Chase them down"
+				},			
+				{
+					"card": "Powered Gauntlets"
+				}
+			],
+			"discard2": [
+				{
+					"card": "Mark V Helmet"
+				}				
+			],
+			"identity2": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"allies2": [
+				{
+					"card": "Hulk"
+				}
+			]
+		}
+	}
+}

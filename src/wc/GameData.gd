@@ -426,7 +426,7 @@ func move_to_next_scheme(current_scheme):
 				current_scheme._placement_slot.remove_occupying_card(current_scheme)
 	
 		
-			var new_card = cfc.NMAP.board.load_scheme(code)
+			var new_card = board.load_scheme(code)
 		
 			set_aside(current_scheme)	
 				
@@ -687,7 +687,6 @@ func get_villain_current_hero_target():
 
 func villain_init_attackers():
 	attackers = []
-	var current_target = _villain_current_hero_target
 	attackers.append(get_villain())
 	attackers.append("load_minions")
 
@@ -907,7 +906,7 @@ func defenders_chosen():
 			else:
 				enemy = attacker_data
 					
-			start_activity(enemy, "attack", script)
+			start_activity(enemy, action, script)
 		
 		if _current_enemy_attack_step != EnemyAttackStatus.PENDING_DEFENDERS:
 			display_debug("defenders_chosen: I wasn't able to fix my PENDING_DEFENDERS issue :(")

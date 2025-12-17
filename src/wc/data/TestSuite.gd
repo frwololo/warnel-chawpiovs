@@ -299,6 +299,16 @@ func get_delay_multiplier(my_action = {}):
 	return wait_multiplier	
 
 func should_wait(my_action, _delta):
+	var action_type = my_action.get("type", "")
+	var action_value = my_action.get("value", "")	
+	var expected_to_fail = my_action.get("expected_to_fail", false)		
+	
+	#I unfortunately have cases where the modal menu shows
+	#up while not marked as "pending user interaction"
+	#ritual combat is such an example, at the time of writing
+	#see execute_scripts in Scriptingengine, for the culprit
+	if cfc.get_modal_menu() and action_type in ["choose", "select"]:
+		return false
 
 	if (!gameData.theStack.is_accepting_user_interaction()):
 		count_delay("stack")			
@@ -306,10 +316,7 @@ func should_wait(my_action, _delta):
 	
 	var delay_multiplier = get_delay_multiplier(my_action)
 		
-	var action_type = my_action.get("type", "")
-	var action_value = my_action.get("value", "")	
-	var expected_to_fail = my_action.get("expected_to_fail", false)		
-	
+
 		#wait a bit if we need to choose from a selection window but that window isn't there
 	if (action_type == "select"):
 		if !(is_instance_valid(_current_selection_window)):
@@ -1123,7 +1130,10 @@ remotesync func save_results():
 	i = 0;
 	for failed_file in failed:
 		to_print = to_print + "\t" + failed_file + "\n"
-		to_print = to_print + "\t\t" + failed_reason[i]+ "\n"	
+		if i < failed_reason.size():
+			to_print = to_print + "\t\t" + failed_reason[i]+ "\n"	
+		else:
+			to_print = to_print + "\t\t" + "error, failed_reason content missing "+ "\n"	
 		i += 1
 	
 	to_print = to_print +  "###\npassed: " + str(passed.size()) + "\n"

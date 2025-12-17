@@ -36,10 +36,7 @@
 					"tokens" :{"threat" : 3},
 				}				
 			],			
-			"deck1": [
-				{
-					"card": "The Power of Aggression"
-				},			
+			"deck1": [		
 				{
 					"card": "Relentless Assault"
 				},			
@@ -48,7 +45,10 @@
 				},			
 				{
 					"card": "Mockingbird"
-				},				
+				},	
+				{
+					"card": "The Power of Aggression"
+				},					
 
 				
 			],			

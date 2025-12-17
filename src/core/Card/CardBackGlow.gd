@@ -16,7 +16,7 @@ func _ready() -> void:
 	# warning-ignore:return_value_discarded
 	_tween.connect("tween_all_completed", self, "_on_Pulse_completed")
 
-func _process(delta:float):
+func _process(_delta:float):
 	if not _tween:
 		return
 		

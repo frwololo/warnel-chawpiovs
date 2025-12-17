@@ -16,7 +16,8 @@
 				{
 					"ultron_drone": {
 						"__count__": 1,
-						"__each_player__": false
+						"__each_player__": false,
+						"__src_container__": "deck"
 					}
 				}
 			],
@@ -29,7 +30,8 @@
 				{
 					"ultron_drone": {
 						"__count__": 1,
-						"__each_player__": true
+						"__each_player__": true,
+						"__src_container__": "deck"
 					}
 				}
 			]
@@ -53,7 +55,8 @@
 					{
 						"ultron_drone": {
 							"__count__": 1,
-							"__each_player__": false
+							"__each_player__": false,
+							"__src_container__": "deck_current_hero_target"
 						}
 					}
 				]
@@ -66,7 +69,8 @@
 				{
 					"ultron_drone": {
 						"__count__": 1,
-						"__each_player__": true
+						"__each_player__": true,
+						"__src_container__": "deck"
 					}
 				}
 			]
@@ -90,7 +94,8 @@
 					{
 						"ultron_drone": {
 							"__count__": 1,
-							"__each_player__": false
+							"__each_player__": false,
+							"__src_container__": "deck_current_hero_target"
 						}
 					}
 				]
@@ -103,7 +108,8 @@
 				{
 					"ultron_drone": {
 						"__count__": 1,
-						"__each_player__": true
+						"__each_player__": true,
+						"__src_container__": "deck"
 					}
 				}
 			]
@@ -127,13 +133,14 @@
 					{
 						"ultron_drone": {
 							"__count__": 1,
-							"__each_player__": false
+							"__each_player__": false,
+							"__src_container__": "deck_current_hero_target"
 						}
 					}
 				]
 			}
 		}
-	},	
+	},
 	"Affairs of State": {
 		"give_obligation": {
 			"__to__": "T'Challa"
@@ -247,7 +254,7 @@
 						"name": "move_card_to_container",
 						"dest_container": "discard_villain",
 						"subject": "self"
-					},
+					}
 				]
 			}
 		}
@@ -406,7 +413,7 @@
 					"max_per_hero_any": 1
 				}
 			]
-		},	
+		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
@@ -468,7 +475,8 @@
 				{
 					"ultron_drone": {
 						"__count__": 1,
-						"__each_player__": true
+						"__each_player__": true,
+						"__src_container__": "deck"
 					}
 				}
 			]
@@ -491,7 +499,8 @@
 					{
 						"ultron_drone": {
 							"__count__": 1,
-							"__each_player__": false
+							"__each_player__": false,
+							"__src_container__": "deck"
 						}
 					}
 				]
@@ -604,7 +613,7 @@
 						{
 							"filter_properties": {
 								"type_code": "minion"
-							}					
+							}
 						}
 					]
 				},
@@ -1036,7 +1045,9 @@
 			"event_name": "enemy_died",
 			"event_filters": {
 				"source": "my_hero",
-				"tags": ["attack"],
+				"tags": [
+					"attack"
+				]
 			},
 			"is_optional_hand": true,
 			"hand": [
@@ -1141,7 +1152,8 @@
 				{
 					"ultron_drone": {
 						"__count__": 1,
-						"__each_player__": true
+						"__each_player__": true,
+						"__src_container__": "deck"
 					}
 				}
 			]
@@ -1155,7 +1167,7 @@
 					"alteration": 1
 				}
 			]
-		}		
+		}
 	},
 	"Counter-Punch": {
 		"response": {
@@ -1231,7 +1243,7 @@
 					"max_per_hero_any": 1
 				}
 			]
-		},	
+		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
@@ -1351,7 +1363,8 @@
 				{
 					"ultron_drone": {
 						"__count__": 1,
-						"__each_player__": true
+						"__each_player__": true,
+						"__src_container__": "deck"
 					}
 				},
 				{
@@ -2471,7 +2484,7 @@
 						"tags": [
 							"action_ability"
 						]
-					},				
+					},
 					{
 						"name": "move_card_to_container",
 						"dest_container": "hand",
@@ -2490,7 +2503,7 @@
 					"max_per_hero_any": 1
 				}
 			]
-		},	
+		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
@@ -2563,7 +2576,7 @@
 			"board": [
 				{
 					"name": "move_card_to_container",
-					"subject": "tutor",
+					"subject": "index",
 					"subject_index": "top",
 					"subject_count": 1,
 					"src_container": "deck",
@@ -3639,7 +3652,7 @@
 								"type_code": "minion"
 							}
 						}
-					]					
+					]
 				},
 				{
 					"is_else": true,
@@ -3709,7 +3722,7 @@
 	},
 	"Melter": {
 		"modifiers": {
-			"defense_selection": "my_allies_if_able",
+			"defense_selection": "my_allies_if_able"
 		},
 		"boost": {
 			"all": [
@@ -3807,13 +3820,16 @@
 					"subject": "my_hero"
 				}
 			]
-		},	
+		}
 	},
 	"Panther Claws": {
 		"special": {
 			"board": [
 				{
 					"name": "deal_damage",
+					"tags": [
+						"attack"
+					],
 					"amount": {
 						"if": {
 							"func_name": "get_script_bool_property",
@@ -4374,7 +4390,7 @@
 						"tags": [
 							"hero_form"
 						]
-					},				
+					},
 					{
 						"name": "deal_damage",
 						"subject": "my_hero",
@@ -4384,7 +4400,7 @@
 								"subject": "previous"
 							}
 						},
-						"plus_amount": 1,
+						"plus_amount": 1
 					}
 				],
 				"Threat": [
@@ -5103,7 +5119,8 @@
 					"is_else": true,
 					"ultron_drone": {
 						"__count__": 1,
-						"__each_player__": false
+						"__each_player__": false,
+						"__src_container__": "deck"
 					}
 				}
 			]
@@ -5319,7 +5336,8 @@
 				{
 					"ultron_drone": {
 						"__count__": 1,
-						"__each_player__": true
+						"__each_player__": true,
+						"__src_container__": "deck"
 					}
 				}
 			]
@@ -5749,7 +5767,8 @@
 					{
 						"ultron_drone": {
 							"__count__": 1,
-							"__each_player__": false
+							"__each_player__": false,
+							"__src_container__": "deck_current_hero_target"
 						}
 					}
 				]
@@ -5762,7 +5781,8 @@
 				{
 					"ultron_drone": {
 						"__count__": 1,
-						"__each_player__": false
+						"__each_player__": false,
+						"__src_container__": "deck_current_hero_target"
 					}
 				}
 			],
@@ -5918,7 +5938,7 @@
 						"shortname": "Drone",
 						"attack": 0,
 						"scheme": 0,
-						"health": 0						
+						"health": 0
 					},
 					"src_container": "deck_first_player",
 					"subject": "index",
@@ -6145,7 +6165,7 @@
 					"subject": "villain"
 				}
 			]
-		},		
+		},
 		"manual": {
 			"board": [
 				{

@@ -48,11 +48,11 @@ var all_prev_subjects := []
 
 var my_stored_integer = null
 
-func set_prev_subjects(subjects):
+func set_prev_subjects(new_subjects):
 	if prev_subjects and trigger_details["prev_subjects"]:
 		#we've already forced the previous subjects in an earlier step
 		return
-	prev_subjects = subjects
+	prev_subjects = new_subjects
 
 # prepares the properties needed by the script to function.
 func _init(_owner, script: Dictionary,  _trigger_object = null, 	_trigger_details := {}) -> void:

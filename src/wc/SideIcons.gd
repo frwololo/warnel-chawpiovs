@@ -110,7 +110,7 @@ func set_icons():
 			add_child(label)	
 
 
-func _process(delta):
+func _process(_delta):
 	if !owner_card.state in [Card.CardState.PREVIEW, Card.CardState.DECKBUILDER_GRID, Card.CardState.VIEWPORT_FOCUS, Card.CardState.ON_PLAY_BOARD,Card.CardState.FOCUSED_ON_BOARD, Card.CardState.DROPPING_TO_BOARD]:
 		reinit_children()
 		return

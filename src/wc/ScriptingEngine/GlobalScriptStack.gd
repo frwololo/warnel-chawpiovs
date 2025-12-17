@@ -74,7 +74,7 @@ func _ready():
 func _step_started(details:Dictionary):
 	var current_step = details["step"]
 	match current_step:
-		CFConst.PHASE_STEP.PLAYER_MULLIGAN, CFConst.PHASE_STEP.PLAYER_DISCARD:
+		CFConst.PHASE_STEP.PLAYER_MULLIGAN, CFConst.PHASE_STEP.PLAYER_DISCARD, CFConst.PHASE_STEP.IDENTITY_SETUP:
 			disable_sync()
 		_:
 			enable_sync()
@@ -438,12 +438,6 @@ func _process(_delta: float):
 	display_debug_info()
 	
 	show_server_activity()
-
-	if cfc.game_paused:
-		return
-
-	if gameData.is_ongoing_blocking_announce():
-		return
 			
 	if run_mode != RUN_MODE.NO_BRAKES:
 		return
@@ -459,7 +453,14 @@ func _process(_delta: float):
 			throttle_after_no_brakes += 1
 		return
 
+	if cfc.game_paused:
+		return
 
+	if gameData.is_ongoing_blocking_announce():
+		return
+
+	if cfc.get_modal_menu():
+		return
 
 	var stack_object = stack.back()
 	var _interrupt_state = compute_interrupts(stack_object)
@@ -593,36 +594,46 @@ func enable_sync():
 func disable_sync():
 	sync_enabled = false
 
-var _pending_flush = 0
+var _pending_flush = {}
 func flush_script(stack_object):
-	_pending_flush +=1
+
 	if stack.empty() or (stack_object != stack.back()):
 		var _error =1
 		return
+
+	var uid = stack_object.stack_uid
+	
+	if _pending_flush.get(uid, false):
+		var _error = 1
+		display_debug("called to flush script but not allowed because I already started running it" + str(uid))
+		return	
+			
+	_pending_flush[uid] = true
 	
 	if run_mode != RUN_MODE.NO_BRAKES:
+		_pending_flush.erase(uid)
 		var _error = 1
 		display_debug("called to flush script but not allowed because run_mode is" + RunModeStr[run_mode])
 		return
 		
 	var func_return = stack_object.execute()	
-	while func_return is GDScriptFunctionState && func_return.is_valid():
-		func_return = func_return.resume()
+	if func_return is GDScriptFunctionState && func_return.is_valid():
+		func_return = yield(func_return, "completed")
 #	var user_interaction_status = stack_object.get_user_interaction_status()
 	#something todo here ???
 	interrupt_mode = InterruptMode.NONE
 	
-	if run_mode != RUN_MODE.NO_BRAKES:
-		var _error = 1
-		display_debug("called to flush script but not allowed because run_mode is" + RunModeStr[run_mode])
-		return	
+#	if run_mode != RUN_MODE.NO_BRAKES:		
+#		var _error = 1
+#		display_debug("called to flush script but not allowed because run_mode is" + RunModeStr[run_mode])
+#		return	
 	
 	history[stack_object.stack_uid]["done"] = true
 	stack.erase(stack_object)
-	if stack.empty():
-		set_run_mode(RUN_MODE.NOTHING_TO_RUN, "flush_script " + stack_object.get_display_name())
+#	if stack.empty():
+#		set_run_mode(RUN_MODE.NOTHING_TO_RUN, "flush_script " + stack_object.get_display_name())
 	emit_signal("script_executed_from_stack", stack_object )		
-	_pending_flush -=1	
+	_pending_flush.erase(uid)	
 
 func compute_interrupts(script):
 	if !script:
@@ -980,7 +991,7 @@ func reset():
 	_current_interrupted_event = {}
 	history = {}
 	pending_interaction_checksums = {}
-	_pending_flush = 0
+	_pending_flush = {}
 
 
 

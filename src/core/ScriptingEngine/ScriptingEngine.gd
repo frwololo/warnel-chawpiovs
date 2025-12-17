@@ -1107,7 +1107,7 @@ func execute_scripts(script: ScriptTask) -> int:
 	var retcode : int = CFConst.ReturnCode.CHANGED
 	# If your subject is "self" make sure you know what you're doing
 	# or you might end up in an inifinite loop
-	var trigger_details = {
+	var _trigger_details = {
 		"prev_subjects" : script.prev_subjects 
 	}
 	for card in script.subjects:
@@ -1118,7 +1118,7 @@ func execute_scripts(script: ScriptTask) -> int:
 			var sceng = card.execute_scripts(
 					script.owner,
 					script.get_property(SP.KEY_EXEC_TRIGGER),
-					trigger_details, run_type)
+					_trigger_details, run_type)
 			# We make sure we wait until the execution is finished
 			# before cleaning out the temp properties/counters
 			if sceng is GDScriptFunctionState:
@@ -1246,7 +1246,7 @@ func _retrieve_temp_modifiers(script: ScriptTask, type: String) -> Dictionary:
 
 # Extendable function to perform extra checks on the script
 # according to game logic
-func _pre_task_prime(_script: ScriptTask, prev_subjects:=[]) -> void:
+func _pre_task_prime(_script: ScriptTask, _prev_subjects:=[]) -> void:
 	pass
 
 # Extendable function to perform extra checks on the script

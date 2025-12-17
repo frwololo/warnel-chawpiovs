@@ -72,7 +72,7 @@ func compute_authority() -> Dictionary:
 		var can_i_play_enemy_card = false
 		var allowed_heroes = gameData.get_currently_playing_hero_ids()
 		if !allowed_heroes:
-			cfc.LOG("error in compute_authority : no allowed heroes to play " + trigger + " for " + owner_card.canonical_name)
+#			cfc.LOG("error in compute_authority : no allowed heroes to play " + trigger + " for " + owner_card.canonical_name)
 			allowed_heroes = [gameData.first_player_hero_id()] 
 		#ran into a bug were an encounter ability triggered twice,
 		#executed once by each player. We want to avoid that

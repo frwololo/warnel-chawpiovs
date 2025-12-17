@@ -135,6 +135,15 @@ func is_character() -> bool:
 static func is_character_type(type_code)-> bool:
 	return type_code in ["villain", "hero", "alter_ego", "ally", "minion"]
 
+func _stack_event_deleted(event):
+	match event.get_first_task_name():
+		"card_dies":
+			var scripts = event.get_tasks()
+			if scripts:
+				var script = scripts[0]
+				if script.subjects and script.subjects[0] == self:
+					_died_signal_sent = false
+
 var _died_signal_sent = false
 func check_death(script = null) -> bool:
 	if _died_signal_sent:
@@ -248,7 +257,7 @@ func setup() -> void:
 	scripting_bus.connect("card_properties_modified", self, "_card_properties_modified")		
 
 	cfc.connect("cache_cleared", self, "_cfc_cache_cleared")
-
+	scripting_bus.connect("stack_event_deleted", self, "_stack_event_deleted")
 	
 	attachment_mode = AttachmentMode.ATTACH_BEHIND
 	
@@ -766,11 +775,11 @@ func execute_scripts(
 		checksum += " - " + trigger_card.canonical_name
 	if _debug:
 		cfc.LOG("reached step 1 for: " + checksum  )	
-	var only_cost_check = is_dry_run(run_type)
+	#var only_cost_check = is_dry_run(run_type)
 		
-	var cost_check_mode = \
-		CFInt.RunType.BACKGROUND_COST_CHECK if run_type == CFInt.RunType.BACKGROUND_COST_CHECK \
-		else CFInt.RunType.COST_CHECK
+#	var cost_check_mode = \
+#		CFInt.RunType.BACKGROUND_COST_CHECK if run_type == CFInt.RunType.BACKGROUND_COST_CHECK \
+#		else CFInt.RunType.COST_CHECK
 	
 	common_pre_execution_scripts(trigger_card, trigger, trigger_details)
 	
@@ -873,93 +882,125 @@ func execute_scripts(
 	# We do not statically type it as this causes a circular reference
 	var sceng = null
 	if len(state_scripts):
-		is_executing_scripts = true
-
-		#if optional tags are passed, merge them with this invocation
-		if trigger_details.has("additional_tags"):
-			var tags = trigger_details["additional_tags"]
-			for t in state_scripts:
-				t["tags"] = t.get("tags", []) + tags
-
-		if trigger_details.has("additional_script_definition"):
-			var additional_def = trigger_details["additional_script_definition"]
-			for t in state_scripts:
-				for def in additional_def:
-					t[def] = additional_def[def]
-				
-		# This evocation of the ScriptingEngine, checks the card for
-		# cost-defined tasks, and performs a dry-run on them
-		# to ascertain whether they can all be paid,
-		# before executing the card script.
-		sceng = cfc.scripting_engine.new(
-				state_scripts,
-				self,
-				trigger_card,
-				trigger_details)
-
-		sceng.add_rules(rules)				
-				
-		common_pre_run(sceng)
+		if action_name:
+			action_name = canonical_name + "(" + action_name + ")"
+		else:
+			action_name = canonical_name
+		action_name = action_name + " - " + trigger
+		action_name =  trigger_details.get("_display_name", action_name) #override		
 		
-		# 1) Client A selects payments for ability locally
-		# In case the script involves targetting, we need to wait on further
-		# execution until targetting has completed
-		var sceng_return = sceng.execute(cost_check_mode)
-		#if not sceng.all_tasks_completed:
-		if sceng_return is GDScriptFunctionState && sceng_return.is_valid():		
-			yield(sceng_return,"completed")
+		var exec_config = {
+			"trigger": trigger,
+			"checksum": checksum,
+			"rules": rules,
+			"action_name": action_name,
+			"force_user_interaction_required": force_user_interaction_required
+		}
+		sceng = execute_chosen_script(state_scripts, trigger_card, trigger_details, run_type, exec_config)
+		if sceng is GDScriptFunctionState && sceng.is_valid():		
+			yield(sceng,"completed")
 		
-		# If the dry-run of the ScriptingEngine returns that all
-		# costs can be paid, then we proceed with the actual run
-		# we add the script to the server stack for execution
-		if (!is_network_call and not only_cost_check):
-			if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER:
-				gameData.theStack.set_pending_network_interaction(checksum, "not authorized to pay cost")
-				cfc.remove_ongoing_process(self, "core_execute_scripts")
-				return sceng			
-			if (sceng.can_all_costs_be_paid or sceng.has_else_condition()):
-				#1.5) We run the script in "prime" mode again to choose targets
-				# for all tasks that aren't costs but still need targets
-				# (is_cost = false and needs_subject = false)
-				sceng_return = sceng.execute(CFInt.RunType.PRIME_ONLY)
-				#if not sceng.all_tasks_completed:
-				if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
-					yield(sceng_return,"completed")
-				
-				if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER:
-					gameData.theStack.set_pending_network_interaction(checksum, "not authorized to prime")
-					cfc.remove_ongoing_process(self, "core_execute_scripts")
-					return sceng
-				if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED:
-					if force_user_interaction_required:
-						sceng.user_interaction_status = CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER
-				
-				if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER:
-					if trigger != "manual":		
-						gameData.theStack.set_pending_network_interaction(checksum, "authorized user ready to interact")
-				
-				# 2) Once done with payment, Client A sends ability + payment information to all clients (including itself)
-				# 3) That data is added to all clients stacks
-				if action_name:
-					action_name = canonical_name + "(" + action_name + ")"
-				else:
-					action_name = canonical_name
-				action_name = action_name + " - " + trigger
-				action_name =  trigger_details.get("_display_name", action_name) #override
-				if trigger_details.get("use_stack", true):
-					var func_return = add_script_to_stack(sceng, run_type, trigger, trigger_details, action_name, checksum)
-					while func_return is GDScriptFunctionState && func_return.is_valid():
-						func_return = func_return.resume()
-				else:
-					sceng_return = sceng.execute(run_type)
-					while sceng_return is GDScriptFunctionState && sceng_return.is_valid():
-						sceng_return = sceng_return.resume()	
-
-				
-		is_executing_scripts = false
 	cfc.remove_ongoing_process(self, "core_execute_scripts")	
 	emit_signal("scripts_executed", self, sceng, trigger)
 	return(sceng)
+
+func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_type, exec_config: = {} ):
+	var sceng = null
+	is_executing_scripts = true
+
+	var rules= exec_config.get("rules",{})
+	var trigger = exec_config.get("trigger", "")
+	var checksum = exec_config.get("checksum", "")
+	var action_name = exec_config.get("action_name", "")
+	var force_user_interaction_required = exec_config.get("force_user_interaction_required", false)
+
+	var cost_check_mode = \
+		CFInt.RunType.BACKGROUND_COST_CHECK if run_type == CFInt.RunType.BACKGROUND_COST_CHECK \
+		else CFInt.RunType.COST_CHECK
+
+	#Check if this script is exected from remote (another online player has been paying for the cost)
+	var is_network_call = trigger_details.has("network_prepaid") #TODO MOVE OUTSIDE OF Core
+
+	var only_cost_check = is_dry_run(run_type)
+
+	#if optional tags are passed, merge them with this invocation
+	if trigger_details.has("additional_tags"):
+		var tags = trigger_details["additional_tags"]
+		for t in state_scripts:
+			t["tags"] = t.get("tags", []) + tags
+
+	if trigger_details.has("additional_script_definition"):
+		var additional_def = trigger_details["additional_script_definition"]
+		for t in state_scripts:
+			for def in additional_def:
+				t[def] = additional_def[def]
+			
+	# This evocation of the ScriptingEngine, checks the card for
+	# cost-defined tasks, and performs a dry-run on them
+	# to ascertain whether they can all be paid,
+	# before executing the card script.
+	sceng = cfc.scripting_engine.new(
+			state_scripts,
+			self,
+			trigger_card,
+			trigger_details)
+
+	sceng.add_rules(rules)				
+			
+	common_pre_run(sceng)
+	
+	# 1) Client A selects payments for ability locally
+	# In case the script involves targetting, we need to wait on further
+	# execution until targetting has completed
+	var sceng_return = sceng.execute(cost_check_mode)
+	#if not sceng.all_tasks_completed:
+	if sceng_return is GDScriptFunctionState && sceng_return.is_valid():		
+		yield(sceng_return,"completed")
+	
+	# If the dry-run of the ScriptingEngine returns that all
+	# costs can be paid, then we proceed with the actual run
+	# we add the script to the server stack for execution
+	if (!is_network_call and not only_cost_check):
+		if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER:
+			gameData.theStack.set_pending_network_interaction(checksum, "not authorized to pay cost")
+			cfc.remove_ongoing_process(self, "core_execute_scripts")
+			return sceng			
+		if (sceng.can_all_costs_be_paid or sceng.has_else_condition()):
+			#1.5) We run the script in "prime" mode again to choose targets
+			# for all tasks that aren't costs but still need targets
+			# (is_cost = false and needs_subject = false)
+			sceng_return = sceng.execute(CFInt.RunType.PRIME_ONLY)
+			#if not sceng.all_tasks_completed:
+			if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
+				yield(sceng_return,"completed")
+			
+			if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER:
+				gameData.theStack.set_pending_network_interaction(checksum, "not authorized to prime")
+				cfc.remove_ongoing_process(self, "core_execute_scripts")
+				return sceng
+			if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED:
+				if force_user_interaction_required:
+					sceng.user_interaction_status = CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER
+			
+			if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER:
+				if trigger != "manual":		
+					gameData.theStack.set_pending_network_interaction(checksum, "authorized user ready to interact")
+			
+			# 2) Once done with payment, Client A sends ability + payment information to all clients (including itself)
+			# 3) That data is added to all clients stacks
+
+			if trigger_details.get("use_stack", true):
+				var func_return = add_script_to_stack(sceng, run_type, trigger, trigger_details, action_name, checksum)
+				while func_return is GDScriptFunctionState && func_return.is_valid():
+					func_return = func_return.resume()
+			else:
+				sceng_return = sceng.execute(run_type)
+				while sceng_return is GDScriptFunctionState && sceng_return.is_valid():
+					sceng_return = sceng_return.resume()	
+
+			
+	is_executing_scripts = false
+	return sceng
 
 func add_script_to_stack(sceng, run_type, trigger, trigger_details, action_name, checksum):
 	gameData.theStack.create_and_add_script(sceng, run_type, trigger, trigger_details, action_name, checksum) 
@@ -1298,7 +1339,7 @@ func common_pre_run(sceng) -> void:
 		for i in gameData.get_team_size():
 			var hero_queue = scripts_queue.duplicate()
 			var hero_id = i+1
-			for task in scripts_queue:
+			for task in hero_queue:
 				var script: ScriptTask = task
 				var script_definition = script.script_definition
 				var new_script_definition = script_definition.duplicate(true)
@@ -1407,7 +1448,6 @@ func common_pre_run(sceng) -> void:
 					"my_allies_if_able":
 						var defenders = cfc.get_tree().get_nodes_in_group("group_defenders")
 						var found_ally = false
-						var to_erase = []
 						for c in defenders:
 							if c.get_property("type_code") == "ally":
 								found_ally = true
@@ -1575,9 +1615,9 @@ func set_is_faceup(
 			instant := false,
 			check := false,
 			tags := ["Manual"]) -> int:
-	var before = is_faceup			
+	var _before = is_faceup			
 	var retcode = .set_is_faceup(value, instant, check, tags)
-	var after = is_faceup
+	var _after = is_faceup
 	
 	if check:
 		return retcode

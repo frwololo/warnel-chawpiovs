@@ -21,7 +21,8 @@ enum EnemyAttackStatus {
 	PENDING_DEFENDERS,
 	BOOST_CARDS,
 	DAMAGE_OR_THREAT,
-	ATTACK_COMPLETE
+	ATTACK_COMPLETE,
+	ATTACK_POST_COMPLETE
 }
 const EnemyAttackStatusStr =  [
 	"NONE",
@@ -30,7 +31,8 @@ const EnemyAttackStatusStr =  [
 	"PENDING_DEFENDERS",
 	"BOOST_CARDS",
 	"DAMAGE_OR_THREAT",
-	"ATTACK_COMPLETE"
+	"ATTACK_COMPLETE",
+	"ATTACK_POST_COMPLETE"
 ]
 
 var _current_enemy_attack_step: int = EnemyAttackStatus.NONE
@@ -178,12 +180,17 @@ func _script_added_to_stack (script):
 	theAnnouncer.announce_from_stack(script)
 
 func _script_executed_from_stack (script):
-	if script.get_first_task_name() == "enemy_attack":
-		defenders_chosen()
-		return
-	if script.get_first_task_name() == "reveal_encounter":	
-		encounter_revealed() #this forces passing to the next step
-
+	match script.get_first_task_name():
+		"enemy_attack":
+			defenders_chosen()
+			return
+		"reveal_encounter":	
+			encounter_revealed() #this forces passing to the next step		
+			return
+		"enemy_attack_happened", "enemy_scheme_happened":	
+			enemy_action_happened() #this forces passing to the next step
+			return
+		
 func _initiated_targeting(owner_card) -> void:
 	_targeting_ongoing = true
 
@@ -603,13 +610,27 @@ func get_team_member(id:int):
 func get_current_local_hero_id():
 	return self.current_local_hero_id
 
+var _forced_currently_playing_hero_id = 0
+func force_current_playing_hero(override_hero):
+	_forced_currently_playing_hero_id = override_hero
+
+func reset_forced_current_playing_hero(override_hero = 0):
+	if override_hero != _forced_currently_playing_hero_id:
+		var _error = 1
+	_forced_currently_playing_hero_id = 0
+
 #returns a list of hero ids that are currently allowed to play
 #(outsde of asking them for possible interruptions)
 func get_currently_playing_hero_ids():
-	#TODO how do obligations fit into this ?
+	
+	if _forced_currently_playing_hero_id:
+		return [_forced_currently_playing_hero_id]
 	
 	#interruption takes precedence, if a player is interrupting,only them can interract with the game
-	if is_interrupt_mode():
+	#we have a hacky wayt to set interrupting_hero_id to 0 when checking for interrupts
+	#in order to bypass this check,
+	#see compute_interrupts
+	if is_interrupt_mode() and theStack.interrupting_hero_id:
 		return [theStack.interrupting_hero_id]
 	
 	#if some attacks are ongoing or enouncters are being revealed, the
@@ -640,7 +661,52 @@ func get_currently_playing_hero_ids():
 	#outside of these events, players can't play ?	
 	return []
 	
+var _priority_scripts = []
+var _current_priority_script = {}
+func add_script_to_execute(owner, trigger_card, trigger, trigger_details, run_type):
+	_priority_scripts.append(
+		{
+			"owner": owner,
+			"trigger_card": trigger_card,
+			"trigger": trigger,
+			"trigger_details": trigger_details,
+			"run_type": run_type
+		}
+	)
 
+func execute_priority_scripts() -> bool:
+	if _current_priority_script:
+		return _current_priority_script.get("sceng", true)
+		
+	if !_priority_scripts:
+		_current_priority_script = {}
+		return false
+	var script_data = _priority_scripts.pop_front()
+	_current_priority_script = script_data
+	var script_owner = script_data.get("owner", null)
+	var trigger_card = script_data.get("trigger_card", null)
+	var trigger = script_data.get("trigger", "")
+	var trigger_details = script_data.get("trigger_details", {})
+	var run_type = script_data.get("run_type", CFInt.RunType.NORMAL)
+	
+	if !script_owner:
+		_current_priority_script = {}
+		return false
+	var override_hero = trigger_details.get("override_hero_id", 0)
+	if override_hero:
+		force_current_playing_hero(override_hero)
+	var sceng = script_owner.execute_scripts(trigger_card, trigger, trigger_details, run_type)
+	_current_priority_script["sceng"] = sceng
+	if sceng is GDScriptFunctionState && sceng.is_valid():		
+		yield(sceng,"completed")
+
+	if override_hero:
+		reset_forced_current_playing_hero(override_hero)
+			
+	_current_priority_script = {}
+	return sceng
+	
+	
 func draw_all_players() :
 	for hero_id in team.keys():
 		var identity = get_identity_card(hero_id)
@@ -877,6 +943,8 @@ func enemy_activates() :
 			var stackEvent:SignalStackScript = SignalStackScript.new("enemy_" + action + "_happened", enemy,  {SP.TRIGGER_TARGET_HERO : get_identity_card(target_id).canonical_name})
 			theStack.add_script(stackEvent)
 			#scripting_bus.emit_signal("enemy_" + action + "_happened", enemy, {})
+			return 
+		EnemyAttackStatus.ATTACK_POST_COMPLETE:	
 			current_enemy_finished()
 			return 
 
@@ -888,6 +956,16 @@ func set_latest_activity_script(script):
 
 func get_latest_activity_script():
 	return _latest_activity_script
+
+func enemy_action_happened():
+	if  _current_enemy_attack_step != EnemyAttackStatus.ATTACK_COMPLETE:
+		display_debug("enemy_action_happened: I'm being told to move to ATTACK_POST_COMPLETE but I'm not at ATTACK_COMPLETE")
+		return
+	display_debug("enemy_action_happened: going from EnemyAttackStatus.ATTACK_COMPLETE to EnemyAttackStatus.ATTACK_POST_COMPLETE")
+
+	_current_enemy_attack_step  = EnemyAttackStatus.ATTACK_POST_COMPLETE
+	return
+
 
 func defenders_chosen():
 	if _current_enemy_attack_step != EnemyAttackStatus.PENDING_DEFENDERS:
@@ -1172,6 +1250,14 @@ func can_proceed_encounter()-> bool:
 	return can_proceed_activation()
 	
 func can_proceed_activation()-> bool:
+
+	#not sure if this section is needed but for now it doesn't hurt
+	if _priority_scripts or _current_priority_script:
+		return false
+		
+	if gui_activity_ongoing():
+		return false
+	
 	var aligned =  client_aligned_or_catching_up()
 	if !aligned:
 		if not self._clients_desync_start_time:
@@ -1189,7 +1275,7 @@ func can_proceed_activation()-> bool:
 	if typeof(aligned) == TYPE_DICTIONARY:
 		var catching_up = aligned.get("catching_up", false)
 		if catching_up:
-			return true
+			return theStack.is_idle(true)
 
 	return theStack.is_idle()
 
@@ -1597,12 +1683,12 @@ func select_current_playing_hero(hero_index):
 	current_local_hero_id = hero_index
 	scripting_bus.emit_signal("current_playing_hero_changed",  {"before": previous_hero_id,"after": current_local_hero_id })
 
-func can_i_play_this_ability(card, script:Dictionary = {}) -> bool:
+func can_i_play_this_ability(card, script:Dictionary = {}) -> int:
 	var my_heroes = get_my_heroes()
 	for hero_id in my_heroes:
 		if can_hero_play_this_ability(hero_id, card, script):
-			return true
-	return false
+			return hero_id
+	return 0
 	
 func can_hero_play_this_ability(hero_index, card, _script:Dictionary = {}) -> bool:
 	var card_controller_id = card.get_controller_hero_id()
@@ -1799,15 +1885,20 @@ func is_ongoing_blocking_announce():
 func cleanup_post_game():
 	cfc.LOG("\n###\ngameData cleanup_post_game")
 	cfc.set_game_paused(true)
+	
 	attackers = []
 
 	_clients_current_activation = {}
 	_clients_activation_counter = {}	
 	
+	_current_priority_script = {}
+	_priority_scripts = []
+	
 	_current_enemy_attack_step = EnemyAttackStatus.NONE
 	if _current_encounter and is_instance_valid(_current_encounter):
 		_current_encounter.encounter_status = EncounterStatus.NONE
 	_current_encounter = null
+	immediate_encounters = []	
 	current_round = 1
 	_multiplayer_desync = null
 	_clients_system_status = {}

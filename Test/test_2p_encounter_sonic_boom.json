@@ -1,0 +1,170 @@
+{
+	"_comments": "Bug: Sonic Boom exhausts all characters, not only mine",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Klaw - 1"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "Armored Guard"
+				},			
+				{
+					"card": "Hydra Mercenary"
+				},		
+				{
+					"card": "Sonic Boom"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "Secret Rendezvous"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Ground Stomp"
+				}
+			],
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Mockingbird"
+				},							
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Energy Absorption"
+				},
+			],
+			"allies2": [
+				{
+					"card": "Jessica Jones"
+				}
+			]			
+		}
+	},
+	"actions": [
+		{
+			"type": "choose",
+			"value": "exhaust all characters",
+		},	
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		},
+		{
+			"type": "activate",
+			"value": "Captain Marvel",
+			"hero": 2
+		},
+		{
+			"type": "choose",
+			"value": "attack",
+			"hero": 2			
+		},	
+		{
+			"type": "target",
+			"value": "Hydra Mercenary",
+			"hero": 2			
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Klaw - 1"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "Armored Guard"
+				},	
+			],
+			"discard_villain": [
+				{
+					"card": "Sonic Boom"
+				},		
+			],
+			"schemes": [
+				{
+					"card": "Secret Rendezvous"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Ground Stomp"
+				}
+			],
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Mockingbird"
+				},							
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"enemies2": [
+				{
+					"card": "Hydra Mercenary",
+					"tokens": {"damage": 2}
+				},
+			],
+			"hand2": [
+				{
+					"card": "Energy Absorption"
+				},
+			],
+			"allies2": [
+				{
+					"card": "Jessica Jones"
+				}
+			]			
+		}
+	}
+}

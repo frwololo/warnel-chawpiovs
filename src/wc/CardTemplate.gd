@@ -717,8 +717,12 @@ func execute_scripts(
 		if !(trigger in (can_i_run)):
 			return null	
 
-	
-	
+	#Force execute some previously selected scripts, bypassing the rest of the process
+	var exec_config = trigger_details.get("exec_config", {})
+	var state_scripts_dict = trigger_details.get("state_scripts_dict", {})
+	if state_scripts_dict:
+		return choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigger_details, run_type, exec_config)
+
 	#last minute swap for hero vs alter ego reveals
 	if trigger == "reveal":
 		var hero_id_to_check = gameData.get_villain_current_hero_target()
@@ -744,9 +748,6 @@ func execute_scripts(
 			force_user_interaction_required = false
 
 	trigger_details["trigger_type"] = trigger
-
-	var interaction_authority:UserInteractionAuthority = UserInteractionAuthority.new(self, trigger_card, trigger, trigger_details, run_type)
-	var interaction_authorized = interaction_authority.interaction_authorized()	
 	
 	#we're playing a card manually but in interrupt mode.
 	#What we want to do here is play the optional triggered effect instead
@@ -764,7 +765,7 @@ func execute_scripts(
 		trigger_card = trigger_details["event_object"].owner #this is geting gross, how to clear that?
 		if (!trigger_card):
 			return
-		#skip otopinal confirmation menu for interrupts,
+		#skip optional confirmation menu for interrupts,
 		#we have a different gui signal	
 		show_optional_confirmation_menu = false	
 
@@ -787,12 +788,42 @@ func execute_scripts(
 	var card_scripts = retrieve_filtered_scripts(trigger_card, trigger, trigger_details)
 	
 	# We select which scripts to run from the card, based on it state	
-	var state_scripts_dict = get_state_scripts_dict(card_scripts, trigger_card, trigger_details)
+	state_scripts_dict = get_state_scripts_dict(card_scripts, trigger_card, trigger_details)
+	show_optional_confirmation_menu = show_optional_confirmation_menu and card_scripts.get("is_optional_" + get_state_exec(), false)
+
+	exec_config = {
+		"show_optional_confirmation_menu" : show_optional_confirmation_menu,
+		"checksum": checksum,
+		"force_user_interaction_required": force_user_interaction_required
+	}
+	
+	var rules = state_scripts_dict.get("rules", {})
+
+	var sceng = null
+	if rules.get("for_each_player", false):
+		rules.erase("for_each_player")
+		for i in gameData.get_team_size():
+			var hero_id = i+1
+			var hero_triggers = trigger_details.duplicate()
+			hero_triggers["override_hero_id"] = hero_id
+			hero_triggers["state_scripts_dict"] = state_scripts_dict
+			hero_triggers["exec_config"] = exec_config
+			gameData.add_script_to_execute(self, trigger_card, trigger, hero_triggers, run_type)
+		#kickstart the process to return a sceng object if possible
+		gameData.execute_priority_scripts()	
+	else:	
+		sceng = choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigger_details, run_type, exec_config)
+
+	return sceng
+	
+func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigger_details, run_type, exec_config = {}):	
 	var state_scripts = state_scripts_dict["state_scripts"]
 
 	var rules = state_scripts_dict.get("rules", {})
 
-	
+	var show_optional_confirmation_menu = exec_config.get("show_optional_confirmation_menu", false)
+	var checksum = exec_config.get("checksum", "")
+	var force_user_interaction_required = exec_config.get("force_user_interaction_required", false)	
 	#Check if this script is exected from remote (another online player has been paying for the cost)
 	var is_network_call = trigger_details.has("network_prepaid") #TODO MOVE OUTSIDE OF Core
 	
@@ -802,10 +833,15 @@ func execute_scripts(
 	var action_name = state_scripts_dict["action_name"]
 
 
+	var _debug = trigger_details.get("_debug", false)
 
+	var interaction_authority:UserInteractionAuthority = UserInteractionAuthority.new(self, trigger_card, trigger, trigger_details, run_type)
+	var interaction_authorized = interaction_authority.interaction_authorized()	
+	var interacting_hero = interaction_authority.authorized_hero_id()
 	if _debug:
 		cfc.LOG("reached step 2 for: " + checksum + ". InteractionAuthority says " + to_json(interaction_authority.compute_authority())  )
 	
+
 	# Here we check for confirmation of optional trigger effects
 	# There should be an SP.KEY_IS_OPTIONAL definition per state
 	# E.g. if board scripts are optional, but hand scripts are not
@@ -814,7 +850,7 @@ func execute_scripts(
 	# There should be an SP.KEY_IS_OPTIONAL definition per state
 	# E.g. if board scripts are optional, but hand scripts are not
 	# Then you'd include an "is_optional_board" key at the same level as "board"
-	show_optional_confirmation_menu = show_optional_confirmation_menu and card_scripts.get("is_optional_" + get_state_exec(), false)
+
 	if show_optional_confirmation_menu:
 		if typeof(state_scripts) == TYPE_ARRAY:
 			for script in state_scripts:
@@ -826,10 +862,12 @@ func execute_scripts(
 			cfc.remove_ongoing_process(self, "core_execute_scripts")
 			gameData.theStack.set_pending_network_interaction(checksum, "pending interaction because of optional dialog")		
 			return null
+
+		gameData.select_current_playing_hero(interacting_hero)
 		force_user_interaction_required = true	
 		var confirm_return = gameData.confirm(
 			self,
-			card_scripts,
+			{"is_optional_" + get_state_exec() : true},
 			canonical_name,
 			trigger,
 			get_state_exec())
@@ -854,10 +892,7 @@ func execute_scripts(
 				cfc.remove_ongoing_process(self, "core_execute_scripts")
 				return null	
 			force_user_interaction_required = true				
-#			var rules = {}
-#			if (state_scripts.has("_rules")): #special rules
-#				rules = state_scripts["_rules"].duplicate()
-#				state_scripts.erase("_rules")
+			gameData.select_current_playing_hero(interacting_hero)
 			var choices_menu = _CARD_CHOICES_SCENE.instance()
 			cfc.add_modal_menu(choices_menu)
 			choices_menu.prep(canonical_name,state_scripts, rules)
@@ -889,14 +924,14 @@ func execute_scripts(
 		action_name = action_name + " - " + trigger
 		action_name =  trigger_details.get("_display_name", action_name) #override		
 		
-		var exec_config = {
+		var next_step_config = {
 			"trigger": trigger,
 			"checksum": checksum,
 			"rules": rules,
 			"action_name": action_name,
 			"force_user_interaction_required": force_user_interaction_required
 		}
-		sceng = execute_chosen_script(state_scripts, trigger_card, trigger_details, run_type, exec_config)
+		sceng = execute_chosen_script(state_scripts, trigger_card, trigger_details, run_type, next_step_config)
 		if sceng is GDScriptFunctionState && sceng.is_valid():		
 			yield(sceng,"completed")
 		
@@ -1335,24 +1370,24 @@ func common_pre_run(sceng) -> void:
 	
 	var zones = ["hand"] + CFConst.HERO_GRID_SETUP.keys()
 		
-	if sceng.additional_rules.has("for_each_player"):
-		for i in gameData.get_team_size():
-			var hero_queue = scripts_queue.duplicate()
-			var hero_id = i+1
-			for task in hero_queue:
-				var script: ScriptTask = task
-				var script_definition = script.script_definition
-				var new_script_definition = script_definition.duplicate(true)
-				new_script_definition.erase("for_each_player")
-				for v in zones: # ["hand", "encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
-					new_script_definition = WCUtils.search_and_replace(new_script_definition, v, v+str(hero_id), true)	
-
-				new_script_definition = WCUtils.search_and_replace(new_script_definition, "their_identity", "identity_" + str(hero_id), true)	
-
-				var new_script = ScriptTask.new(script.owner, new_script_definition, script.trigger_object, script.trigger_details)
-				new_queue.append(new_script)
-		scripts_queue = new_queue
-		new_queue = []
+#	if sceng.additional_rules.has("for_each_player"):
+#		for i in gameData.get_team_size():
+#			var hero_queue = scripts_queue.duplicate()
+#			var hero_id = i+1
+#			for task in hero_queue:
+#				var script: ScriptTask = task
+#				var script_definition = script.script_definition
+#				var new_script_definition = script_definition.duplicate(true)
+#				new_script_definition.erase("for_each_player")
+#				for v in zones: # ["hand", "encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
+#					new_script_definition = WCUtils.search_and_replace(new_script_definition, v, v+str(hero_id), true)	
+#
+#				new_script_definition = WCUtils.search_and_replace(new_script_definition, "their_identity", "identity_" + str(hero_id), true)	
+#
+#				var new_script = ScriptTask.new(script.owner, new_script_definition, script.trigger_object, script.trigger_details)
+#				new_queue.append(new_script)
+#		scripts_queue = new_queue
+#		new_queue = []
 				
 	for task in scripts_queue:
 		var script: ScriptTask = task

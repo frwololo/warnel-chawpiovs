@@ -517,6 +517,7 @@ func activate_exclusive_hero(hero_id):
 		var hero_index = i+1
 		if (hero_index == hero_id):
 			gameData.phaseContainer.activate_hero(hero_index)
+			gameData.select_current_playing_hero(hero_index)
 		else:
 			gameData.phaseContainer.deactivate_hero(hero_index)	
 
@@ -646,8 +647,10 @@ func compute_interrupts(script):
 
 	var script_uid = script.stack_uid	
 	var current_mode = interrupt_mode
+	var current_interrupting_hero = interrupting_hero_id
 	var current_run_mode = run_mode
 	var potential_interrupters = {}
+	interrupting_hero_id = 0
 	for mode in [InterruptMode.FORCED_INTERRUPT_CHECK, InterruptMode.OPTIONAL_INTERRUPT_CHECK]:
 		var interrupters_found = false
 		
@@ -681,9 +684,11 @@ func compute_interrupts(script):
 		
 			potential_interrupters[hero_id] = my_interrupters
 		if interrupters_found:
+			potential_interrupters = _filter_potential_interrupters(potential_interrupters)
 			#reset temp variables
 			interrupt_mode = current_mode
 			run_mode = current_run_mode
+			interrupting_hero_id = current_interrupting_hero
 			return {
 				"potential_interrupters" : potential_interrupters,
 				"interrupt_mode" : mode,
@@ -696,12 +701,46 @@ func compute_interrupts(script):
 	#reset temp variables
 	interrupt_mode = current_mode
 	run_mode = current_run_mode	
+	interrupting_hero_id = current_interrupting_hero
 	return {
 		"interrupt_mode": InterruptMode.NOBODY_IS_INTERRUPTING,
 		"interruptmode_str": InterruptModeStr[InterruptMode.NOBODY_IS_INTERRUPTING],
 		"stack_uid": script_uid
 	}
 
+#sometimes multiple heroes can react to the same card. This can lead to bugs
+#here we try to determine who really has the priority
+func _filter_potential_interrupters(potential_interrupters):
+	var card_to_heroes = {}
+	var new_interrupters = {}
+	var found_duplicate = false
+	
+	for hero_id in potential_interrupters:
+		new_interrupters[hero_id] = []
+		var interrupters = potential_interrupters[hero_id]
+		for interrupter in interrupters:
+			if ! card_to_heroes.has(interrupter):
+				card_to_heroes[interrupter] = []
+			card_to_heroes[interrupter].append(hero_id)
+	for card in card_to_heroes:
+		var heroes = card_to_heroes[card]
+		if heroes.size() > 1:
+			found_duplicate = true
+			var found_match = false
+			for hero_id in heroes:
+				if hero_id in gameData.get_currently_playing_hero_ids():
+					new_interrupters[hero_id].append(card)
+					found_match = true
+					break
+			if !found_match:
+				new_interrupters[heroes[0]].append(card)
+		else:
+			new_interrupters[heroes[0]].append(card)
+	
+	if found_duplicate:
+		return new_interrupters
+	return potential_interrupters
+			
 
 func update_local_client_status():
 	var my_network_id = cfc.get_network_unique_id()
@@ -869,12 +908,17 @@ func is_phasecontainer_allowed_to_process():
 			return false	
 		
 
-func is_idle():
+func is_idle(basic = false):		
+	if my_script_requests_pending_execution:
+		return false
+
+	#in basic mode, we stop here
+	if basic:
+		return true
+
 	if pending_stack_yield:
 		return false
 		
-	if my_script_requests_pending_execution:
-		return false
 		
 	if !stack.empty():
 		return false

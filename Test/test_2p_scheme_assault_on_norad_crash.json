@@ -1,0 +1,194 @@
+{
+	"_comments": "Bug: Assault on NORAD crashes with 2 players",
+	"init": {
+		"phase": "VILLAIN_THREAT",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Ultron - 1"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "Hydra Soldier"
+				},				
+				{
+					"card": "Armored Guard"
+				},			
+				{
+					"card": "Hydra Mercenary"
+				},	
+				{
+					"card": "Advanced Ultron Drone"
+				},
+				{
+					"card": "Hydra Soldier"
+				},					
+			
+			],
+			"schemes": [
+				{
+					"card": "Assault on NORAD"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Ground Stomp"
+				}
+			],
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Mockingbird"
+				},							
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Energy Absorption"
+				},
+			],
+			"allies2": [
+				{
+					"card": "Jessica Jones"
+				}
+			]			
+		}
+	},
+	"actions": [	
+		{
+			"type": "choose",
+			"value": "2 threat",
+		},
+		{
+			"type": "choose",
+			"value": "2 threat",
+			"hero": 2,
+		},	
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "take undefended attack"
+		},
+		{
+			"type": "choose",
+			"value": "1 Threat on Main Scheme",
+		},		
+		{
+			"type": "select",
+			"value": "cancel",
+			"hero": 2,
+			"_comments": "take undefended attack"
+		},
+		{
+			"type": "choose",
+			"value": "1 Threat on Main Scheme",
+			"hero": 2,			
+		},			
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Ultron - 1"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "Hydra Soldier"
+				},						
+			],
+			"discard_villain": [
+				{
+					"card": "Hydra Soldier"
+				},				
+				{
+					"card": "Advanced Ultron Drone"
+				},
+					
+			],
+			"schemes": [
+				{
+					"card": "Assault on NORAD"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Ground Stomp"
+				}
+			],
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Mockingbird"
+				},							
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				},
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"enemies2": [			
+				{
+					"card": "Armored Guard"
+				},
+			],
+			"hand2": [
+				{
+					"card": "Energy Absorption"
+				},
+			],
+			"allies2": [
+				{
+					"card": "Jessica Jones"
+				}
+			]			
+		}
+	}
+}

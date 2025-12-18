@@ -210,6 +210,10 @@ func _process(_delta: float) -> void:
 	if gameData.pending_network_ack():
 		return	
 
+	var forced_scripts = gameData.execute_priority_scripts()
+	if forced_scripts: #it eiter returns a bool (true if executing script) of a function (ongoing compute)
+		return
+
 	#some encounters need to be revealed outside of their regular schedule
 	# e.g. with surge. We place them in this specific dictionary
 	#and gamedata checks for them

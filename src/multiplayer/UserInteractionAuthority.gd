@@ -28,6 +28,10 @@ func interaction_authorized() -> bool:
 	var authority_status = compute_authority()
 	return authority_status["authorized"]
 
+func authorized_hero_id() -> bool:
+	var authority_status = compute_authority()
+	return authority_status["authorized_hero_id"]
+
 func compute_authority() -> Dictionary:
 	if authority_cache:
 		return authority_cache
@@ -51,6 +55,8 @@ func compute_authority() -> Dictionary:
 	var override_controller_id = trigger_details.get("override_controller_id", 0)
 	var for_hero_id = trigger_details.get("for_hero_id", 0)
 
+	var authorized_hero_id = override_controller_id if override_controller_id else for_hero_id
+
 	if override_controller_id:
 		if gameData.get_current_local_hero_id() != override_controller_id:
 			authority_cache["error"] = "Current Local hero id (" +  str(gameData.get_current_local_hero_id()) + ") not matching override " + str(override_controller_id)
@@ -63,7 +69,10 @@ func compute_authority() -> Dictionary:
 				authority_cache["error"] = "Requested for_hero_id (" +  str(for_hero_id) + ") cannot play this ability"
 				return authority_cache
 		else:
-			if !gameData.can_i_play_this_ability(owner_card):
+			var allowed_hero_id = gameData.can_i_play_this_ability(owner_card)
+			if allowed_hero_id:
+				authorized_hero_id = allowed_hero_id
+			else:
 				authority_cache["error"] = "I am not allowed to play " + owner_card.canonical_name
 				return authority_cache
 		
@@ -88,6 +97,7 @@ func compute_authority() -> Dictionary:
 			for my_hero in (gameData.get_my_heroes()):
 				if my_hero in (allowed_heroes):
 					can_i_play_enemy_card = true
+					authorized_hero_id = my_hero
 		if !can_i_play_enemy_card:
 			authority_cache["error"] = "not allowed to play enemy card"
 			return authority_cache
@@ -95,7 +105,7 @@ func compute_authority() -> Dictionary:
 	#looks like I'm good to go!
 	authority_cache = {
 		"authorized": true,
-		"authorized_hero_id": 0, #TODO
+		"authorized_hero_id": authorized_hero_id,
 		"authorized_network_id": cfc.get_network_unique_id(),
 		"error": ""
 	}

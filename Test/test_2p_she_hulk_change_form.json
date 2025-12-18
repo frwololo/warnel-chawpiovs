@@ -1,0 +1,178 @@
+{
+	"_comments": "Bug: She-Hulk doesn't do damage when changing form",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Klaw - 1"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "Armored Guard"
+				},			
+				{
+					"card": "Hydra Mercenary"
+				},		
+				{
+					"card": "Sonic Boom"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "Secret Rendezvous"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},	
+				{
+					"card": "Nick Fury"
+				},	
+				{
+					"card": "Emergency"
+				},					
+			],
+			"identity2": [
+				{
+					"card": "Jennifer Walters"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Chase Them down"
+				},
+				{
+					"card": "Relentless assault"
+				},				
+				{
+					"card": "Uppercut"
+				},				
+			],
+			"allies2": [
+				{
+					"card": "Jessica Jones"
+				}
+			]			
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Jennifer Walters",
+			"hero": 2
+		},
+		{
+			"type": "choose",
+			"value": "change form",
+			"hero": 2
+		},	
+		{
+			"type": "activate",
+			"value": "She-Hulk",
+			"hero": 2
+		},			
+		{
+			"type": "target",
+			"value": "Klaw - 1",
+			"hero": 2
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Klaw - 1",
+					"tokens": {"damage": 2}
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "Armored Guard"
+				},			
+				{
+					"card": "Hydra Mercenary"
+				},		
+				{
+					"card": "Sonic Boom"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "Secret Rendezvous"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},	
+				{
+					"card": "Nick Fury"
+				},	
+				{
+					"card": "Emergency"
+				},					
+			],
+			"identity2": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Chase Them down"
+				},
+				{
+					"card": "Relentless assault"
+				},				
+				{
+					"card": "Uppercut"
+				},				
+			],
+			"allies2": [
+				{
+					"card": "Jessica Jones"
+				}
+			]			
+		}
+	}
+}

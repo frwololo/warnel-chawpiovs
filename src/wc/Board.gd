@@ -899,9 +899,11 @@ func loadstate_from_json(json:Dictionary):
 func flip_doublesided_card(card:WCCard):
 	var back_code = card.get_card_back_code()
 	if (back_code):
-		
-		if card.get_property("type_code") in ["hero", "alter_ego"]:
+		var type_code = card.get_property("type_code")
+		if type_code in ["hero", "alter_ego"]:
 			var modifiers = card.export_modifiers()
+			modifiers["callback"] = "changed_form"
+			modifiers["callback_params"] = {"before": type_code}
 			gameData.set_aside(card) 
 			var new_card = heroZones[card.get_owner_hero_id()].load_identity(back_code, modifiers)
 			return new_card	

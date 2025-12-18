@@ -23,8 +23,14 @@ func _process (delta:float):
 			continue
 			
 		var modifiers = post_move_modifiers[card]
+		var callback_function = modifiers.get("callback", "")
+		var callback_params = modifiers.get("callback_params", {})
+		modifiers.erase("callback")
+		modifiers.erase("callback_params")
 		card.import_modifiers(modifiers)
 		post_move_modifiers.erase(card)
+		if callback_function:
+			card.call(callback_function, callback_params)
 		
 	#exhausted status sometimes doesn't catch up	
 	if identity_card and is_instance_valid(identity_card): 

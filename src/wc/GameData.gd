@@ -1491,6 +1491,10 @@ func compute_potential_defenders(hero_id, attacker):
 		if c.can_defend(): #hero_id):
 			defenders.append(c)
 
+	#clear old stuff
+	for node in cfc.get_tree().get_nodes_in_group("group_defenders"):
+		node.remove_from_group("group_defenders")
+
 	var modifiers = attacker.retrieve_scripts("modifiers")
 	var defense_selection_modifier = modifiers.get("defense_selection", "")
 	match defense_selection_modifier:
@@ -1508,13 +1512,8 @@ func compute_potential_defenders(hero_id, attacker):
 		_:
 			pass
 
-	for c in board.get_all_cards():	
-		if c in defenders:
-			c.add_to_group("group_defenders")
-		else:
-			if (c.is_in_group ("group_defenders")): c.remove_from_group("group_defenders")	
-
-
+	for c in defenders:
+		c.add_to_group("group_defenders")
 		
 
 func character_died(card:Card, script = null):

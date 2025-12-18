@@ -4525,7 +4525,8 @@
 		}
 	},
 	"She-Hulk": {
-		"identity_changed_form": {
+		"response":{
+			"event_name": "identity_changed_form",
 			"trigger": "self",
 			"is_optional_board": true,
 			"board": [

@@ -68,6 +68,10 @@
 		{
 			"type": "choose",
 			"value": "change form",
+		},
+		{
+			"type": "activate",
+			"value": "She-Hulk",
 		},			
 		{
 			"type": "target",

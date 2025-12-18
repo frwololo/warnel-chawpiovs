@@ -1,0 +1,173 @@
+{
+	"_comments": "Bug: Solid Sound Body can't be removed by player 2",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Klaw - 1"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "Armored Guard"
+				},			
+				{
+					"card": "Hydra Mercenary"
+				},		
+				{
+					"card": "Sonic Boom"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "Secret Rendezvous"
+				}
+			],
+			"others": [
+				{
+					"card": "Solid-Sound Body",
+					"host": "Klaw - 1"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},	
+				{
+					"card": "Nick Fury"
+				},	
+				{
+					"card": "Emergency"
+				},					
+			],
+			"identity2": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Chase Them down"
+				},
+				{
+					"card": "Relentless assault"
+				},				
+				{
+					"card": "Uppercut"
+				},				
+			],
+			"allies2": [
+				{
+					"card": "Jessica Jones"
+				}
+			]			
+		}
+	},
+	"actions": [	
+		{
+			"type": "activate",
+			"value": "Solid-Sound Body",
+			"hero": 2
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Klaw - 1"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "Armored Guard"
+				},			
+				{
+					"card": "Hydra Mercenary"
+				},		
+				{
+					"card": "Sonic Boom"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "Secret Rendezvous"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Solid-Sound Body",
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},	
+				{
+					"card": "Nick Fury"
+				},	
+				{
+					"card": "Emergency"
+				},					
+			],
+			"identity2": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"discard2": [
+				{
+					"card": "Uppercut"
+				},				
+				{
+					"card": "Relentless assault"
+				},				
+				{
+					"card": "Chase Them down"
+				},				
+			],
+			"allies2": [
+				{
+					"card": "Jessica Jones"
+				}
+			]			
+		}
+	}
+}

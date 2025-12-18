@@ -1590,6 +1590,15 @@ func disable_confused():
 func can_change_form() -> bool:
 	return _can_change_form
 
+func changed_form(details):
+	var before = details.get("before")
+	#hopefully after and before are actually different...
+	var after = "alter_ego" if self.is_alter_ego_form() else "hero"		
+	var stackEvent:SignalStackScript = SignalStackScript.new("identity_changed_form", self, {"before": before , "after" : after })
+	gameData.theStack.add_script(stackEvent)		
+#	scripting_bus.emit_signal("identity_changed_form", new_card, {"before": before , "after" : after } )
+	
+
 func change_form(voluntary = true) -> bool:
 	#players have one voluntary change form per turn
 	#we check for that
@@ -1598,15 +1607,12 @@ func change_form(voluntary = true) -> bool:
 			return false
 		self._can_change_form = false
 
-	var before = "alter_ego" if self.is_alter_ego_form() else "hero"
+
 	var new_card = cfc.NMAP.board.flip_doublesided_card(self)
 	if !new_card:
 		var _error = 1
 		return false
 		
-	#hopefully after and before are actually different...
-	var after = "alter_ego" if new_card.is_alter_ego_form() else "hero"		
-	scripting_bus.emit_signal("identity_changed_form", new_card, {"before": before , "after" : after } )
 	return true
 
 #a way to copy all modifications of this card to another card

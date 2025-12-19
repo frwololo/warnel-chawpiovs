@@ -619,6 +619,7 @@
 				},
 				{
 					"name": "move_card_to_container",
+					"subject": "self",
 					"dest_container": "discard_villain",
 					"is_else": true
 				}
@@ -5014,7 +5015,8 @@
 					"name": "mod_tokens",
 					"token_name": "stunned",
 					"modification": 1,
-					"subject": "trigger_details_target"
+					"subject": "trigger_details_target",
+					"is_cost": true,
 				}
 			]
 		}

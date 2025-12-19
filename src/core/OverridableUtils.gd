@@ -118,10 +118,10 @@ func confirm(
 
 # Additional filter for triggers
 func filter_trigger(
-		trigger:String,
-		card_scripts,
-		trigger_card,
-		owner_card,
+		_trigger:String,
+		_card_scripts,
+		_trigger_card,
+		_owner_card,
 		_trigger_details) -> bool:
 			return true
 

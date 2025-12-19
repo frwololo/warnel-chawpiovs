@@ -832,7 +832,6 @@ func get_current_attacker_data():
 	if !attackers.size():
 		return {}
 	var attacker_data = attackers.front()
-	var enemy = null
 	if (typeof (attacker_data) == TYPE_DICTIONARY):
 		return attacker_data
 

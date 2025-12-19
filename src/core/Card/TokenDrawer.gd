@@ -170,7 +170,7 @@ func mod_token(
 	# Just check if we could.
 	elif check:
 		# For a  cost dry run, we can only return FAILED
-		# when removing tokens as it's always possible to add new ones
+		# when removing tokens or when trying to add tokens when a max is set and we ago above that max
 		if (set_to_mod):
 			if (mod <0):
 				retcode = CFConst.ReturnCode.FAILED

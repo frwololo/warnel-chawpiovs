@@ -235,7 +235,7 @@ const CostsState := {
 	"INCREASED": Color(1, 0.5, 0, 0) * 1.3, #alpha zero
 	"DECREASED": Color(0.5, 1, 0,0 ) * 1.3, #alpha zero
 	"OK": Color(0, 0.5, 1) * 1.3,
-	"OK_INTERRUPT": Color(0.1, 1, 0) * 1.3,	
+	"OK_INTERRUPT": Color(0, 1, 0) * 1.3,	
 	"CACHE_INVALID": Color(1, 1, 1, 0), #alpha zero
 }
 # This is used when filling in card property labels in [Card].setup()

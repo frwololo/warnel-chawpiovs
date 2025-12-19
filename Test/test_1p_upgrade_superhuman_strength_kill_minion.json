@@ -1,0 +1,111 @@
+{
+	"_comments": "Superhuman strength should not be discarded if it kills its target. See https://hallofheroeslcg.com/latest-ffg-rulings-post-rrg-1-5/",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},			
+				{
+					"card": "Stampede",
+				}				
+			],
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				}			
+			],			
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary",
+				},
+			],
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Superhuman strength"
+				},			
+				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "She-Hulk",
+		},	
+		{
+			"type": "choose",
+			"value": "attack",
+		},			
+		{
+			"type": "target",
+			"value": "Hydra Mercenary",
+		}			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},			
+				{
+					"card": "Stampede",
+				}				
+			],
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				}			
+			],			
+			"discard_villain": [
+				{
+					"card": "Hydra Mercenary",
+				},
+			],
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Superhuman strength"
+				},			
+				
+			]
+		}
+	}
+}

@@ -1,0 +1,127 @@
+{
+	"_comments": "Test for Superhuman strength + uppercut",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},			
+				{
+					"card": "Hydra Mercenary",
+				},
+				{
+					"card": "Stampede",
+				}				
+			],
+			"villain": [
+				{
+					"card": "01113",
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				}			
+			],			
+			"hand1": [
+				{
+					"card": "The Power of Aggression"
+				},
+				{
+					"card": "Uppercut"
+				},
+				{
+					"card": "Combat Training"
+				},				
+			],			
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Superhuman strength"
+				},			
+				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "uppercut",
+		},		
+		{
+			"type": "target",
+			"value": "01113",
+		}			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker",
+				},			
+				{
+					"card": "Hydra Mercenary",
+				},
+				{
+					"card": "Stampede",
+				}				
+			],
+			"villain": [
+				{
+					"card": "01113",
+					"tokens": {"damage" : 5, "stunned": 1}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116",
+					"tokens" :{"threat" : 3},
+				}			
+			],			
+			"discard1": [
+				{
+					"card": "Combat Training"
+				},				
+				{
+					"card": "The Power of Aggression"
+				},
+				{
+					"card": "Uppercut"
+				},
+
+				{
+					"card": "Superhuman strength"
+				},					
+			],			
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"upgrade_support1": [		
+				
+			]
+		}
+	}
+}

@@ -419,9 +419,20 @@ func card_dies(script:ScriptTask) -> int:
 
 func receive_damage(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
+
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+	
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
 	
+
+	#damages don't always come from an attacker, but it's easier to compute it here
+	var attacker = script.owner
+	var type = attacker.get_property("type_code", "")
+	if !type in ["hero", "ally", "minion", "villain"]:
+		attacker = _get_identity_from_script(script)
+		
 	var tags: Array = script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
 	var base_amount = script.retrieve_integer_property("amount")
 	
@@ -475,15 +486,15 @@ func receive_damage(script: ScriptTask) -> int:
 		
 		if ("attack" in tags):
 			var signal_details = {
-				"attacker": script.owner,
+				"attacker": attacker,
 				"target": card,
 				"damage": damage_happened,
 			}
-			gameData.theStack.add_script(SignalStackScript.new("attack_happened",  script.owner,  signal_details))			
+			gameData.theStack.add_script(SignalStackScript.new("attack_happened",  attacker,  signal_details))			
 #			scripting_bus.emit_signal("attack_happened", script.owner, signal_details)
 						
 			if ("basic power" in tags):
-				gameData.theStack.add_script(SignalStackScript.new("basic_attack_happened",  script.owner,  signal_details))				
+				gameData.theStack.add_script(SignalStackScript.new("basic_attack_happened",  attacker,  signal_details))				
 #				scripting_bus.emit_signal("basic_attack_happened", script.owner, signal_details)
 		
 			var stackEvent:SignalStackScript = SignalStackScript.new("defense_happened", card,  signal_details)
@@ -495,19 +506,15 @@ func receive_damage(script: ScriptTask) -> int:
 		if damage_happened:
 			scripting_bus.emit_signal("card_damaged", card, script.script_definition)
 
-			card.check_death(script)
+			lethal = card.check_death(script)
 
 		if ("attack" in tags) and !lethal:
 			#retaliate against an attack only if I didn't die
 			var retaliate = card.get_property("retaliate", 0)
 			if retaliate:
-				var owner = script.owner
-				var type = owner.get_property("type_code", "")
-				if !type in ["hero", "ally", "minion", "villain"]:
-					owner = _get_identity_from_script(script)
 				var script_modifications = {
 					"tags" : ["retaliate", "Scripted"],
-					"subjects": [owner],
+					"subjects": [attacker],
 					"owner": card,
 				}
 				_add_receive_damage_on_stack(retaliate, script, script_modifications)

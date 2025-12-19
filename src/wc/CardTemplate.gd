@@ -418,7 +418,10 @@ func _process(delta) -> void:
 	var can_play = check_play_costs()
 	if (can_play == CFConst.CostsState.OK):
 		#if modal menu is displayed we don't want to mess up those cards highlights
-		set_target_highlight(can_play)
+		var colour = can_play
+		if gameData.is_interrupt_mode():
+			colour = CFConst.CostsState.OK_INTERRUPT
+		set_target_highlight(colour)
 	else:
 		#pass
 		clear_highlight()

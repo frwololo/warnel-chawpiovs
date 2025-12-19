@@ -146,29 +146,6 @@ static func list_imported_in_directory(path: String) -> Array:
 	return(files)
 
 
-# Creates a ConfirmationDialog for the player to approve the
-# Use of an optional script or task.
-static func confirm(
-		script: Dictionary,
-		card_name: String,
-		task_name: String,
-		type := "task") -> bool:
-	cfc.add_ongoing_process(script)		
-	var is_accepted := true
-	# We do not use SP.KEY_IS_OPTIONAL here to avoid causing cyclical
-	# references when calling CFUtils from SP
-	if script.get("is_optional_" + type):
-		var confirm = _OPTIONAL_CONFIRM_SCENE.instance()
-		confirm.prep(card_name,task_name)
-		# We have to wait until the player has finished selecting an option
-		yield(confirm,"selected")
-		# If the player selected "No", we don't execute anything
-		if not confirm.is_accepted:
-			is_accepted = false
-		# Garbage cleanup
-		confirm.queue_free()
-	cfc.remove_ongoing_process(script)	
-	return(is_accepted)
 
 
 # Used with sort_custom to find the highest child index among multiple cards
@@ -357,3 +334,4 @@ static func convert_texture_to_image(texture, is_lossless = false) -> ImageTextu
 	var image = tex.get_data()
 	new_texture.create_from_image(image)
 	return(new_texture)
+

@@ -32,7 +32,7 @@ func _init(
 			trigger_details):
 		is_valid = false
 	if is_valid:
-		var confirm_return = gameData.confirm(
+		var confirm_return = cfc.ov_utils.confirm(
 				owner,
 				script_definition,
 				owner.canonical_name,

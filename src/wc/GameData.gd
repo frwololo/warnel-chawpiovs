@@ -9,10 +9,6 @@
 class_name GameData
 extends Node
 
-# The path to the optional confirm scene. This has to be defined explicitly
-# here, in order to use it in its preload, otherwise the parser gives an error
-const _OPTIONAL_CONFIRM_SCENE_FILE = CFConst.PATH_CORE + "OptionalConfirmation.tscn"
-const _OPTIONAL_CONFIRM_SCENE = preload(_OPTIONAL_CONFIRM_SCENE_FILE)
 
 enum EnemyAttackStatus {
 	NONE,
@@ -1783,66 +1779,7 @@ func get_grid_controller_hero_id(grid_name:String) -> int:
 	return potential_hero_id
 
 
-# Additional filter for triggers,
-# also see core/ScriptProperties.gd
-#todo move this logic to SP.gd
-func filter_trigger(
-		trigger:String,
-		card_scripts,
-		trigger_card,
-		owner_card,
-		_trigger_details) -> bool:
 
-	#Generally speaking I don't want to trigger
-	#on facedown cards such as boost cards
-	#(e.g. bug with Hawkeye, Charge, and a bunch of others)
-	if trigger_card and is_instance_valid(trigger_card):
-		#facedown cards won't have a type_code unless they are used on the board (e.g. facedown ultron drones)
-		if !trigger_card.get_property("type_code", null):
-			return false
-		if trigger_card.is_boost(): 
-			if trigger!= "boost":
-				return false
-			if trigger_card!= owner_card:
-				return false
-
-
-	#from this point this is only checks for interrupts
-
-	#if this is not an interrupt, I let it through
-	if (trigger != "interrupt"):
-		return true
-	
-	#If this *is* an interrupt but I don't have an answer, I'll fail it
-	
-	#if this card has no scripts to handle interrupts, we fail
-	if !card_scripts:
-		return false
-
-	var event_name = _trigger_details["event_name"]
-	
-	if event_name == "receive_damage":
-		var _tmp = 1
-	
-	var expected_trigger_name = card_scripts.get("event_name", "")
-	
-	#skip if we're expecting an interrupt but not this one
-	if expected_trigger_name and (expected_trigger_name != event_name):
-		return false;
-	
-	var expected_trigger_type = card_scripts.get("event_type", "")
-	if expected_trigger_type and (expected_trigger_type != _trigger_details.get("trigger_type", "")):
-		return false;
-	
-	var event_details = {
-		"event_name":  expected_trigger_name,
-		"event_type": expected_trigger_type
-	}	
-		
-	var trigger_filters = card_scripts.get("event_filters", {})
-	var event = (theStack.find_event(event_details, trigger_filters, owner_card, _trigger_details))
-
-	return event #note: force conversion from stack event to bool
 
 func is_interrupt_mode() -> bool:
 	return theStack.is_interrupt_mode() 
@@ -1856,37 +1793,7 @@ func is_forced_interrupt_mode() -> bool:
 func interrupt_player_pressed_pass(hero_id):
 	theStack.pass_interrupt(hero_id)
 
-#TODO all calls to this method are in core which isn't good
-#Need to move something, somehow
-func confirm(
-		owner,
-		script: Dictionary,
-		card_name: String,
-		task_name: String,
-		type := "task") -> bool:
-	cfc.add_ongoing_process(self)
-	var is_accepted := true
-	# We do not use SP.KEY_IS_OPTIONAL here to avoid causing cyclical
-	# references when calling CFUtils from SP
-	if script.get("is_optional_" + type):
-		_acquire_user_input_lock(owner.get_controller_player_network_id())
-		var my_network_id = get_tree().get_network_unique_id()
-		var is_master:bool =  (owner.get_controller_player_network_id() == my_network_id)
-		var confirm = _OPTIONAL_CONFIRM_SCENE.instance()
-		cfc.add_modal_menu(confirm)
-		confirm.prep(card_name,task_name, is_master)
-		# We have to wait until the player has finished selecting an option
-		yield(confirm,"selected")
-		# If the player selected "No", we don't execute anything
-		if not confirm.is_accepted:
-			is_accepted = false
-		# Garbage cleanup
-		confirm.hide()
-		cfc.remove_modal_menu(confirm)
-		confirm.queue_free()
-		_release_user_input_lock(owner.get_controller_player_network_id())
-	cfc.remove_ongoing_process(self)	
-	return(is_accepted)
+
 
 #some gui activity is ongoing, not controlled by any player (animations, etc...)
 func auto_gui_activity_ongoing() -> bool:		

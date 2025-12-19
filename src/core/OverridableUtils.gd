@@ -9,6 +9,11 @@ extends Reference
 const _CARD_SELECT_SCENE_FILE = CFConst.PATH_CORE + "SelectionWindow.tscn"
 const _CARD_SELECT_SCENE = preload(_CARD_SELECT_SCENE_FILE)
 
+# The path to the optional confirm scene. This has to be defined explicitly
+# here, in order to use it in its preload, otherwise the parser gives an error
+const _OPTIONAL_CONFIRM_SCENE_FILE = CFConst.PATH_CORE + "OptionalConfirmation.tscn"
+const _OPTIONAL_CONFIRM_SCENE = preload(_OPTIONAL_CONFIRM_SCENE_FILE)
+
 # Populates the info panels under the card, when it is shown in the
 # viewport focus or deckbuilder
 func populate_info_panels(card: Card, focus_info: DetailPanels) -> void:
@@ -39,24 +44,18 @@ func select_card(
 		stored_integer: int = 0,
 		card_select_scene = _CARD_SELECT_SCENE):
 	
-	cfc.add_ongoing_process(self)
 	if parent_node == cfc.NMAP.get("board")  and (run_type != CFInt.RunType.BACKGROUND_COST_CHECK):
 		cfc.game_paused = true
 	var selected_cards
 	# This way we can override the card select scene with a custom one
 	var selection = card_select_scene.instance()
 	selection.init(selection_params, script, stored_integer)
-	if (run_type == CFInt.RunType.BACKGROUND_COST_CHECK):
-		selection.dry_run(card_list)	
-	else:
-		gameData.attempt_user_input_lock()
-		parent_node.add_child(selection)		
-		cfc.add_modal_menu(selection) #keep a pointer to the variable for external cleanup if needed
-		selection.call_deferred("initiate_selection", card_list)
-		# We have to wait until the player has finished selecting their cards
-		yield(selection,"confirmed")
-		cfc.remove_modal_menu(selection)
-		gameData.attempt_user_input_unlock()	
+
+	parent_node.add_child(selection)		
+	selection.call_deferred("initiate_selection", card_list)
+	# We have to wait until the player has finished selecting their cards
+	yield(selection,"confirmed")
+
 	if selection.is_cancelled:
 		selected_cards = false
 	else:
@@ -66,7 +65,6 @@ func select_card(
 	if parent_node == cfc.NMAP.get("board"):
 		cfc.game_paused = false
 		
-	cfc.remove_ongoing_process(self)	
 	return(selected_cards)
 
 # Goes through the card pool of the game and checks each card against the provided list of filters
@@ -92,3 +90,38 @@ func _get_card_pool() -> Dictionary:
 
 func parse_post_prime_replacements(script_task: ScriptObject) -> Dictionary:
 	return script_task.script_definition
+
+# Creates a ConfirmationDialog for the player to approve the
+# Use of an optional script or task.
+func confirm(
+		_owner,
+		script: Dictionary,
+		card_name: String,
+		task_name: String,
+		type := "task") -> bool:
+	cfc.add_ongoing_process(script)		
+	var is_accepted := true
+	# We do not use SP.KEY_IS_OPTIONAL here to avoid causing cyclical
+	# references when calling CFUtils from SP
+	if script.get("is_optional_" + type):
+		var confirm = _OPTIONAL_CONFIRM_SCENE.instance()
+		confirm.prep(card_name,task_name)
+		# We have to wait until the player has finished selecting an option
+		yield(confirm,"selected")
+		# If the player selected "No", we don't execute anything
+		if not confirm.is_accepted:
+			is_accepted = false
+		# Garbage cleanup
+		confirm.queue_free()
+	cfc.remove_ongoing_process(script)	
+	return(is_accepted)
+
+# Additional filter for triggers
+func filter_trigger(
+		trigger:String,
+		card_scripts,
+		trigger_card,
+		owner_card,
+		_trigger_details) -> bool:
+			return true
+

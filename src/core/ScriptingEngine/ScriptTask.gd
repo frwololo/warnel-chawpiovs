@@ -91,7 +91,7 @@ func check_confirm() -> bool:
 	var owner_name = ''
 	if is_instance_valid(owner):
 		owner_name = owner.canonical_name
-	var confirm_return = gameData.confirm(
+	var confirm_return = cfc.ov_utils.confirm(
 			owner,
 			script_definition,
 			owner_name,

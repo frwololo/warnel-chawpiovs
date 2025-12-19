@@ -844,7 +844,6 @@ func host_card(script: ScriptTask) -> void:
 	# We inject the tags from the script into the tags sent by the signal
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
 	for card in script.subjects:
-		gameData.display_debug("{host}{script} attaching " + card.canonical_name + " to " + script.owner.canonical_name)
 		card.attach_to_host(script.owner, false, tags)
 
 

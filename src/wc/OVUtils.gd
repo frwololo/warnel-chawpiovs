@@ -123,3 +123,136 @@ static func func_name_run(object, func_name, func_params, script = null):
 	
 		
 	return result
+	
+
+#TODO all calls to this method are in core which isn't good
+#Need to move something, somehow
+func confirm(
+		owner,
+		script: Dictionary,
+		card_name: String,
+		task_name: String,
+		type := "task") -> bool:
+	cfc.add_ongoing_process(owner, "confirm")
+	var is_accepted := true
+	# We do not use SP.KEY_IS_OPTIONAL here to avoid causing cyclical
+	# references when calling CFUtils from SP
+	if script.get("is_optional_" + type):
+		gameData._acquire_user_input_lock(owner.get_controller_player_network_id())
+		var my_network_id = cfc.get_network_unique_id()
+		var is_master:bool =  (owner.get_controller_player_network_id() == my_network_id)
+		var confirm = _OPTIONAL_CONFIRM_SCENE.instance()
+		cfc.add_modal_menu(confirm)
+		confirm.prep(card_name,task_name, is_master)
+		# We have to wait until the player has finished selecting an option
+		yield(confirm,"selected")
+		# If the player selected "No", we don't execute anything
+		if not confirm.is_accepted:
+			is_accepted = false
+		# Garbage cleanup
+		confirm.hide()
+		cfc.remove_modal_menu(confirm)
+		confirm.queue_free()
+		gameData._release_user_input_lock(owner.get_controller_player_network_id())
+	cfc.remove_ongoing_process(owner, "confirm")	
+	return(is_accepted)
+	
+func select_card(
+		card_list: Array, 
+		selection_params: Dictionary,
+		parent_node,
+		script : ScriptObject = null,
+		run_type:int = CFInt.RunType.NORMAL,
+		stored_integer: int = 0,
+		card_select_scene = _CARD_SELECT_SCENE):
+	
+	cfc.add_ongoing_process(self)
+	if parent_node == cfc.NMAP.get("board")  and (run_type != CFInt.RunType.BACKGROUND_COST_CHECK):
+		cfc.game_paused = true
+	var selected_cards
+	# This way we can override the card select scene with a custom one
+	var selection = card_select_scene.instance()
+	selection.init(selection_params, script, stored_integer)
+	if (run_type == CFInt.RunType.BACKGROUND_COST_CHECK):
+		selection.dry_run(card_list)	
+	else:
+		gameData.attempt_user_input_lock()
+		parent_node.add_child(selection)		
+		cfc.add_modal_menu(selection) #keep a pointer to the variable for external cleanup if needed
+		selection.call_deferred("initiate_selection", card_list)
+		# We have to wait until the player has finished selecting their cards
+		yield(selection,"confirmed")
+		cfc.remove_modal_menu(selection)
+		gameData.attempt_user_input_unlock()	
+	if selection.is_cancelled:
+		selected_cards = false
+	else:
+		selected_cards = selection.selected_cards			
+	selection.queue_free()
+		
+	if parent_node == cfc.NMAP.get("board"):
+		cfc.game_paused = false
+		
+	cfc.remove_ongoing_process(self)	
+	return(selected_cards)
+
+
+# Additional filter for triggers,
+# also see core/ScriptProperties.gd
+func filter_trigger(
+		trigger:String,
+		card_scripts,
+		trigger_card,
+		owner_card,
+		_trigger_details) -> bool:
+
+	#Generally speaking I don't want to trigger
+	#on facedown cards such as boost cards
+	#(e.g. bug with Hawkeye, Charge, and a bunch of others)
+	if trigger_card and is_instance_valid(trigger_card):
+		#facedown cards won't have a type_code unless they are used on the board (e.g. facedown ultron drones)
+		if !trigger_card.get_property("type_code", null):
+			return false
+		if trigger_card.is_boost(): 
+			if trigger!= "boost":
+				return false
+			if trigger_card!= owner_card:
+				return false
+
+
+	#from this point this is only checks for interrupts
+
+	#if this is not an interrupt, I let it through
+	if (trigger != "interrupt"):
+		return true
+	
+	#If this *is* an interrupt but I don't have an answer, I'll fail it
+	
+	#if this card has no scripts to handle interrupts, we fail
+	if !card_scripts:
+		return false
+
+	var event_name = _trigger_details["event_name"]
+	
+	if event_name == "receive_damage":
+		var _tmp = 1
+	
+	var expected_trigger_name = card_scripts.get("event_name", "")
+	
+	#skip if we're expecting an interrupt but not this one
+	if expected_trigger_name and (expected_trigger_name != event_name):
+		return false;
+	
+	var expected_trigger_type = card_scripts.get("event_type", "")
+	if expected_trigger_type and (expected_trigger_type != _trigger_details.get("trigger_type", "")):
+		return false;
+	
+	var event_details = {
+		"event_name":  expected_trigger_name,
+		"event_type": expected_trigger_type
+	}	
+		
+	var trigger_filters = card_scripts.get("event_filters", {})
+	var event = (gameData.theStack.find_event(event_details, trigger_filters, owner_card, _trigger_details))
+
+	return event #note: force conversion from stack event to bool

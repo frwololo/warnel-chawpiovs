@@ -149,11 +149,13 @@ func check_death(script = null) -> bool:
 	if _died_signal_sent:
 		return true
 	#if no script is passed, this is an automated check (during _process), we only perform
-	#it for character cards that are on the board
+	#it for character cards that are on the board, and with an empty stack to avoid a race condition
 	if !script:
 		if !is_character():
 			return false
 		if !is_onboard():
+			return false
+		if !gameData.theStack.is_idle():
 			return false
 		
 	var total_damage:int =  tokens.get_token_count("damage")
@@ -675,7 +677,67 @@ func execute_scripts_no_stack(
 	new_trigger_details["use_stack"] = false
 	return execute_scripts(trigger_card, trigger, new_trigger_details, run_type)	
 
-			
+
+func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
+	var card_scripts = retrieve_scripts(trigger)
+	# I use this spot to add a breakpoint when testing script behaviour
+	# especially on filters
+	if _debugger_hook:
+		pass
+	if trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME and canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME:
+		pass	
+	# We check the trigger against the filter defined
+	# If it does not match, then we don't pass any scripts for this trigger.
+	if not SP.filter_trigger(
+			card_scripts,
+			trigger_card,
+			self,
+			trigger_details):
+		card_scripts.clear()
+	
+	#additional filter check for interrupts/responses
+	if not cfc.ov_utils.filter_trigger(
+			trigger,
+			card_scripts,
+			trigger_card,
+			self,
+			trigger_details):
+		card_scripts.clear()
+	
+	var to_erase = []
+#					"condition":{
+#						"func_name": "current_activation_status",
+#						"func_params": {
+#							"undefended": true
+#						}
+#					},	
+	for key in card_scripts:
+		if card_scripts.has("condition_" + key):
+			var condition = card_scripts["condition_" + key]
+			var func_name = condition.get("func_name", "")
+			if !func_name:
+				continue
+			var func_params = condition.get("func_params", {})
+			var check = cfc.ov_utils.func_name_run(self, func_name, func_params, null)
+			if !check:
+				to_erase.append(key)
+				to_erase.append("condition_" + key)		
+	for key in to_erase:
+		card_scripts.erase(key)
+		
+	return card_scripts
+
+
+#a quick check fnction for performance to return early in execute_scripts
+func has_potential_scripts(trigger_card, trigger):
+	var card_scripts = retrieve_scripts(trigger)
+	if !card_scripts:
+		return false
+	var state_exec := get_state_exec()
+	var any_state_scripts = card_scripts.get('all', [])
+	var state_scripts = card_scripts.get(state_exec, any_state_scripts)
+	return state_scripts
+	
 # Executes the tasks defined in the card's scripts in order.
 #
 # Returns a [ScriptingEngine] object but that it not statically typed
@@ -768,7 +830,8 @@ func execute_scripts(
 		#we have a different gui signal	
 		show_optional_confirmation_menu = false	
 
-
+	if ! has_potential_scripts(trigger_card, trigger):
+		return null
 
 	var checksum = trigger
 	if trigger_card:
@@ -864,7 +927,7 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 
 		gameData.select_current_playing_hero(interacting_hero)
 		force_user_interaction_required = true	
-		var confirm_return = gameData.confirm(
+		var confirm_return = cfc.ov_utils.confirm(
 			self,
 			{"is_optional_" + get_state_exec() : true},
 			canonical_name,

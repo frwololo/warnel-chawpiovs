@@ -1,0 +1,166 @@
+{
+	"_comments": "Tests Masters of Mayhem give a card to the right hero",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Black Panther"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "hydra soldier"
+				},	
+				{
+					"card": "whirlwind"
+				},	
+				{
+					"card": "hydra mercenary"
+				},	
+				{
+					"card": "masters of mayhem"
+				},				
+				{
+					"card": "armored guard"
+				},					
+			
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Black Panther"
+				}
+			],
+			"hand2": [
+				{
+					"card": "indomitable"
+				},
+				{
+					"card": "Armored Vest"
+				},				
+			]			
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Black Panther"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "masters of mayhem"
+				},			
+			],
+			"deck_villain":[
+				{
+					"card": "hydra soldier"
+				},	
+				{
+					"card": "hydra mercenary"
+				},								
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			],
+			"enemies1" : [
+				{
+					"card": "armored guard"
+				},	
+			],
+			"identity2": [
+				{
+					"card": "Black Panther"
+				}
+			],
+			"enemies2": [
+				{
+					"card": "whirlwind"
+				},
+			],
+			"hand2": [
+				{
+					"card": "indomitable"
+				},
+				{
+					"card": "Armored Vest"
+				},				
+			]			
+		}
+	}
+}

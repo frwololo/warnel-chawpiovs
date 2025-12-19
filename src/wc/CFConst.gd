@@ -630,7 +630,7 @@ const SKIP_MULLIGAN:= false
 #if set to true, the system checks will only send hashed instead of 
 #full dictionaries. Probably better for bandwidth
 #set to false when debugging a network/desync issue
-const SYSTEMS_CHECK_HASH_ONLY:= false
+const SYSTEMS_CHECK_HASH_ONLY:= true
 #set to true to force writing to log files even if cfc.debug is false
 const FORCE_LOGS:= false
 #seconds until we trigger a desync warning when the stack is blocked
@@ -647,5 +647,5 @@ const DEBUG_SIMULATE_NETWORK_DELAY = 1.5
 const DEBUG_NETWORK_DELAY_RANDOM = false
 const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 
-const SCRIPT_BREAKPOINT_CARD_NAME := "Electric Whip Attack"
-const SCRIPT_BREAKPOINT_TRIGGER_NAME := "boost"
+const SCRIPT_BREAKPOINT_CARD_NAME := "Whirlwind"
+const SCRIPT_BREAKPOINT_TRIGGER_NAME := "enemy_attack"

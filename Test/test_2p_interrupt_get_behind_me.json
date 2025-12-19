@@ -1,0 +1,169 @@
+{
+	"_comments": "Tests Advance encounter vs get behind me",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Black Panther"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "hydra soldier"
+				},			
+				{
+					"card": "hydra mercenary"
+				},	
+				{
+					"card": "armored guard"
+				},					
+				{
+					"card": "advance"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Black Panther"
+				}
+			],
+			"hand2": [
+				{
+					"card": "get behind me!"
+				},
+				{
+					"card": "Armored Vest"
+				},				
+			]			
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "get behind me!",
+			"hero": 2,
+			"_comments": "interrupt the treachery with get behind me"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"hero": 2,
+			"_comments": "treachery replaced by an attack against Black Panther, taking an undefended attack"
+		}		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Black Panther"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "hydra soldier"
+				},
+			],
+			"discard_villain": [
+
+				{
+					"card": "hydra mercenary"
+				},					
+				{
+					"card": "advance"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			],
+			"enemies2": [
+				{
+					"card": "armored guard"
+				},	
+			],
+			"identity2": [
+				{
+					"card": "Black Panther",
+					"tokens": {"damage": 3}
+				}
+			],
+			"discard2": [
+				{
+					"card": "Armored Vest"
+				},				
+				{
+					"card": "get behind me!"
+				},
+			]			
+		}
+	}
+}

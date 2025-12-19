@@ -10,9 +10,9 @@ extends StackScript
 var task_name
 var task
 
-func _init(_task, _owner = null, _trigger_object = null):
+func _init(_task, _owner = null, _trigger_object = null, _trigger_details = {}):
 	if typeof(_task) == TYPE_DICTIONARY:
-		init_task_from_script_definition(_task, _owner, _trigger_object)
+		init_task_from_script_definition(_task, _owner, _trigger_object, _trigger_details)
 	else:
 		task = _task
 	
@@ -43,8 +43,8 @@ func _init(_task, _owner = null, _trigger_object = null):
 	# Seems to be required to avoid re-targeting... ?
 	task.is_primed = true
 	
-func init_task_from_script_definition(definition:Dictionary, _owner, _trigger_object):
-	task = ScriptTask.new(_owner, definition, _trigger_object, {})
+func init_task_from_script_definition(definition:Dictionary, _owner, _trigger_object, _trigger_details = {}):
+	task = ScriptTask.new(_owner, definition, _trigger_object, _trigger_details)
 
 func get_tasks() -> Array:
 	return tasks

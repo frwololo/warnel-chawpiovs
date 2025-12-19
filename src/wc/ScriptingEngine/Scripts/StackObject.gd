@@ -88,15 +88,15 @@ func modify(script):
 #TODO this function shouldn't be here? doesn't use any of its data
 func matches_filters(task, _filters:Dictionary, owner_card, _trigger_details):
 	var filters = _filters #.duplicate(true)
-	var owner_hero_id = owner_card.get_owner_hero_id()
+	var controller_hero_id = owner_card.get_controller_hero_id()
 	
 	
 	var replacements = {
 		"villain": gameData.get_villain(),
 		"self": owner_card
 	}	
-	if (owner_hero_id > 0):
-		replacements["my_hero"] = gameData.get_identity_card(owner_hero_id)
+	if (controller_hero_id > 0):
+		replacements["my_hero"] = gameData.get_identity_card(controller_hero_id)
 
 	filters = WCUtils.search_and_replace_multi(filters, replacements, true)
 

@@ -616,8 +616,8 @@ func can_interrupt(
 		return CFConst.CanInterrupt.NO
 	
 	var _debug = false
-	if canonical_name == "Killmonger" and trigger_card:
-		if trigger_details["event_name"] == "receive_damage":
+	if canonical_name == "Whirlwind" and trigger_card:
+		if trigger_details["event_name"] == "enemy_initiates_attack":
 			_debug = true
 
 	if (_debug):
@@ -644,7 +644,7 @@ func can_interrupt(
 	var may_interrupt =  CFConst.CanInterrupt.NO
 
 
-	if gameData.can_hero_play_this_ability(hero_id,self, card_scripts):
+	if gameData.can_hero_play_this_ability(hero_id,self):
 		if card_scripts.get("is_optional_" + get_state_exec()):
 			#optional interrupts need to check costs
 			if check_play_costs_no_cache(hero_id, _debug) == CFConst.CostsState.IMPOSSIBLE:
@@ -1228,7 +1228,7 @@ func heal(value):
 func common_pre_execution_scripts(_trigger_card, _trigger: String, _trigger_details: Dictionary) -> void:
 	match _trigger:
 		"enemy_attack":
-			gameData.compute_potential_defenders(gameData.get_villain_current_hero_target(), _trigger_card)
+			gameData.compute_potential_defenders(gameData.get_current_activity_hero_target(), _trigger_card)
 
 func can_defend(hero_id = 0):
 	if is_exhausted() : return false

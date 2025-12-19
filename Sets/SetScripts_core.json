@@ -6478,9 +6478,6 @@
 			"trigger": "self",
 			"event_filters": {
 				"target": "my_hero",
-				"tags": [
-					"attack"
-				]
 			},
 			"board": [
 				{

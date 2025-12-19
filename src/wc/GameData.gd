@@ -93,7 +93,6 @@ var scripted_play_sequence:= []
 #temp vars for bean counting
 var _villain_current_hero_target :=1
 var _first_player_hero_id := 1
-var _current_enemy = null
 #list of enemies with a current attack intent
 var attackers: = []
 #list of encounters that need to be revealed asap
@@ -636,7 +635,8 @@ func get_currently_playing_hero_ids():
 	#if some attacks are ongoing or enouncters are being revealed, the
 	#target player is the one being returned
 	if !attackers.empty():
-		return [_villain_current_hero_target]
+		return [get_current_activity_hero_target()]
+		#return [_villain_current_hero_target]
 	
 	if !immediate_encounters.empty():
 		return [_villain_current_hero_target]
@@ -645,7 +645,8 @@ func get_currently_playing_hero_ids():
 		CFConst.PHASE_STEP.VILLAIN_ACTIVATES,
 		CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER
 	]:
-		return [_villain_current_hero_target]
+		return [get_current_activity_hero_target()]
+		#return [_villain_current_hero_target]
 	
 	#during player turn and outside of all other considerations, all heroes can play simultaneously
 	if phaseContainer.current_step in [CFConst.PHASE_STEP.PLAYER_TURN, CFConst.PHASE_STEP.PLAYER_MULLIGAN, CFConst.PHASE_STEP.PLAYER_DISCARD]:
@@ -748,6 +749,14 @@ func set_villain_current_hero_target(value, force_switch_ui:= true, caller:= "")
 		#in practice this will only switch for players that control the hero
 		self.select_current_playing_hero(value) 
 
+func get_current_activity_hero_target():
+	if attackers:
+		var attacker_data = attackers.front()
+		if (typeof (attacker_data) == TYPE_DICTIONARY):
+			return attacker_data.get("target_id", _villain_current_hero_target)
+	
+	return _villain_current_hero_target
+
 func get_villain_current_hero_target():
 	return _villain_current_hero_target
 
@@ -823,6 +832,17 @@ func start_activity(enemy, action, script, target_id = 0):
 	var _sceng = enemy.execute_scripts(enemy, script_name,trigger_details)
 	_current_enemy_attack_step = next_step
 
+func get_current_attacker_data():
+	if !attackers.size():
+		return {}
+	var attacker_data = attackers.front()
+	var enemy = null
+	if (typeof (attacker_data) == TYPE_DICTIONARY):
+		return attacker_data
+
+	return {
+		"subject": attacker_data
+	}	
 
 func enemy_activates() :
 	var target_id = _villain_current_hero_target
@@ -847,17 +867,14 @@ func enemy_activates() :
 	var action = "attack" if (heroZone.is_hero_form()) else "scheme"
 	var script = null
 	
-	attacker_data = attackers.front()
-	var enemy = null
-	if (typeof (attacker_data) == TYPE_DICTIONARY):
-		enemy = attacker_data["subject"]
-		action = attacker_data["type"]
-		script = attacker_data["script"]
-		var override_target_id = attacker_data.get("target_id")
-		if override_target_id:
-			target_id = override_target_id
-	else:
-		enemy = attacker_data
+	attacker_data = get_current_attacker_data()
+	var enemy = attacker_data.get("subject", null)
+	action = attacker_data.get("type", action)
+	script = attacker_data.get("script", script)
+	var override_target_id = attacker_data.get("target_id", 0)
+	if override_target_id:
+		target_id = override_target_id
+
 
 
 	var status = "stunned" if (action=="attack") else "confused"
@@ -900,7 +917,12 @@ func enemy_activates() :
 				#I had a race condition where if only the executing player would add a global script,
 				#it could arrive before network players where at this status.
 				#Making it a local script (everyone adds it) is an attempt at fixing this
-				var stackEvent:SignalStackScript = SignalStackScript.new("enemy_initiates_" + action, enemy,  {SP.TRIGGER_TARGET_HERO : get_identity_card(target_id).canonical_name})
+				var target_hero = get_identity_card(target_id)
+				var details = {
+					"target" : target_hero,
+					SP.TRIGGER_TARGET_HERO : target_hero.canonical_name
+				}
+				var stackEvent:SignalStackScript = SignalStackScript.new("enemy_initiates_" + action, enemy,  details)
 				theStack.add_script(stackEvent)
 				_current_enemy_attack_step = EnemyAttackStatus.PENDING_INTERRUPT
 				return
@@ -931,7 +953,7 @@ func enemy_activates() :
 				"attack":
 					script_name = "enemy_attack_damage"
 						
-			var stackEvent = SimplifiedStackScript.new({"name": script_name}, enemy)
+			var stackEvent = SimplifiedStackScript.new({"name": script_name, "target_hero_id" : target_id}, enemy)
 			theStack.add_script(stackEvent)
 			_current_enemy_attack_step = EnemyAttackStatus.ATTACK_COMPLETE
 			
@@ -1682,15 +1704,28 @@ func select_current_playing_hero(hero_index):
 	current_local_hero_id = hero_index
 	scripting_bus.emit_signal("current_playing_hero_changed",  {"before": previous_hero_id,"after": current_local_hero_id })
 
-func can_i_play_this_ability(card, script:Dictionary = {}) -> int:
+func can_i_play_this_ability(card, trigger := "") -> int:
 	var my_heroes = get_my_heroes()
 	for hero_id in my_heroes:
-		if can_hero_play_this_ability(hero_id, card, script):
+		if can_hero_play_this_ability(hero_id, card, trigger):
 			return hero_id
 	return 0
 	
-func can_hero_play_this_ability(hero_index, card, _script:Dictionary = {}) -> bool:
+func can_hero_play_this_ability(hero_index, card, trigger := "") -> bool:
 	var card_controller_id = card.get_controller_hero_id()
+
+	#TODO hack here where for an enemy attack trigger, we force 
+	#the allowed user id based on the attack target id
+	#required at least for Whirlwind
+	match trigger:
+		"enemy_attack":
+			var attacker_data = get_current_attacker_data()
+			var enemy = attacker_data.get("subject", null)
+			if enemy:
+				var target_id = attacker_data.get("target_id", 0)
+				if target_id:
+					return hero_index == target_id
+
 	if (card_controller_id <= 0 or card_controller_id == hero_index):
 		return true
 	return false

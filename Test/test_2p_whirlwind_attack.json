@@ -1,0 +1,178 @@
+{
+	"_comments": "Bug: Whirlwind doesn't attack all heroes",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "Sonic Boom"
+				},
+				{
+					"card": "Armored Guard"
+				},			
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				},			
+				{
+					"card": "Advance"
+				},		
+				{
+					"card": "False Alarm"
+				},					
+			],
+			"schemes": [
+				{
+					"card": "The Break-In!"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Ground Stomp"
+				}
+			],
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Whirlwind"
+				},				
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Energy Absorption"
+				},
+			],		
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack from She-Hulk against Rhino" 
+		},	
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack from She-Hulk against Whirlwind" 
+		},	
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack from Captain Marvel against Whirlwind",
+			"hero": 2
+		},	
+		{
+			"type": "select",
+			"value": "Captain Marvel",
+			"hero": 2,			
+			"_comments": "defend with Captain Marvel against Rhino" 
+		},		
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "False Alarm"
+				},			
+				{
+					"card": "Advance"
+				},						
+			],
+			"deck_villain":[
+				{
+					"card": "Sonic Boom"
+				},
+			],
+			"schemes": [
+				{
+					"card": "The Break-In!"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Ground Stomp"
+				}
+			],
+			"identity1": [
+				{
+					"card": "She-Hulk",
+					"tokens": {"damage":5}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Whirlwind"
+				},				
+				{
+					"card": "Armored Guard"
+				},								
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel",
+					"tokens": {"damage":3}
+				}
+			],
+			"hand2": [
+				{
+					"card": "Energy Absorption"
+				},
+			],
+			"enemies2": [
+				{
+					"card": "Hydra Mercenary"
+				},								
+			],			
+		}
+	}
+}

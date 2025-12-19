@@ -714,8 +714,10 @@ func enemy_attacks_you(script: ScriptTask) -> int:
 				retcode = CFConst.ReturnCode.CHANGED
 		return retcode	
 
+	var target_id = get_hero_id_from_script(script)
+
 	for card in script.subjects:
-		gameData.add_enemy_activation(card, "attack", script)
+		gameData.add_enemy_activation(card, "attack", script, target_id)
 		retcode = CFConst.ReturnCode.CHANGED
 	return retcode
 	
@@ -900,12 +902,18 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
 	var attacker = _script.owner
+	var target_hero_id = _script.get_property("target_hero_id")	
 	#the _script passed here is not super useful,
 	#except to retrieve the attacker's ongoing real attack script
 	var script = attacker.activity_script
 
 	var defender = script.subjects[0] if script.subjects else null
-	var my_hero:Card = gameData.get_current_target_hero()
+	var my_hero:Card
+
+	if target_hero_id:
+		my_hero = gameData.get_identity_card(target_hero_id)
+	else:
+		my_hero = gameData.get_current_target_hero()
 	
 	var amount = attacker.get_property("attack", 0)
 	var boost_data = script.get_property("boost", [])

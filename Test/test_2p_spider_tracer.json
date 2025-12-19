@@ -1,0 +1,152 @@
+{
+	"_comments": "Basic Test For Spider_Tracer attachment - 2 Players dual trigger bug",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens" : {"threat" : 4},
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Bomber"
+				}
+			],			
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},		
+				{
+					"card": "Spider-Tracer"
+				},
+			],
+			"identity2": [
+				{
+					"card": "She-Hulk"
+				}
+			],			
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Spider-Tracer"
+		},
+		{
+			"type": "target",
+			"value": "Hydra Bomber"	
+		},
+		{
+			"type": "activate",
+			"value": "She-Hulk",
+			"hero": 2
+		},
+		{
+			"type": "choose",
+			"value": "attack",
+			"hero": 2			
+		},		
+		{
+			"type": "target",
+			"value": "Hydra Bomber",
+			"hero": 2			
+		},	
+		{
+			"type": "target",
+			"value": "01097"	
+		},	
+		{
+			"type": "target",
+			"value": "01097",
+			"expected_to_fail": true
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"discard_villain" :[
+				{
+					"card": "Hydra Bomber"
+				}			
+			],
+			"schemes": [
+				{
+					"card": "01097",
+					"tokens" : {"threat" : 1},
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"allies1": [
+
+			],
+			"discard1": [	
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Spider-Tracer"
+				},				
+			],
+			"identity2": [
+				{
+					"card": "She-Hulk"
+				}
+			],			
+		}
+	}
+}

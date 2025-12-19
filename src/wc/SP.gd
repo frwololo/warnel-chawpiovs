@@ -113,6 +113,9 @@ static func check_source_controlled_by_filter(_trigger_card, owner_card, trigger
 	var source = trigger_details.get("source", null)
 	if guidMaster.is_guid(source):
 		source = guidMaster.get_object_by_guid(source)
+	
+	if !source:
+		return false
 		
 	match expected_controller:
 		"my_hero":
@@ -129,6 +132,9 @@ static func check_filter_event_source(_trigger_card, owner_card, trigger_details
 	var source = trigger_details.get("source", null)
 	if guidMaster.is_guid(source):
 		source = guidMaster.get_object_by_guid(source)
+		
+	if !source:
+		return false	
 		
 	match _expected_event_source:
 		"self":

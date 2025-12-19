@@ -552,9 +552,8 @@ func common_post_move_scripts(new_host: String, _old_host: String, _move_tags: A
 	#rest exhausted status
 	if new_host.to_lower() != "board":
 		_is_exhausted = false
-	
-	#reset some cache data
-	_died_signal_sent = false	
+		#reset some cache data
+		_died_signal_sent = false	
 		
 
 #Tries to play the card assuming costs aren't impossible to pay

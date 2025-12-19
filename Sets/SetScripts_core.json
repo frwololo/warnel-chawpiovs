@@ -1776,7 +1776,7 @@
 					{
 						"name": "exhaust_card",
 						"is_cost": true,
-						"subject": "my_hero"
+						"subject": "my_identity"
 					},
 					{
 						"name": "move_card_to_container",
@@ -1795,7 +1795,7 @@
 					{
 						"name": "exhaust_card",
 						"is_cost": true,
-						"subject": "my_hero"
+						"subject": "my_identity"
 					},
 					{
 						"name": "move_card_to_container",
@@ -1953,7 +1953,7 @@
 					{
 						"name": "exhaust_card",
 						"is_cost": true,
-						"subject": "my_hero"
+						"subject": "my_identity"
 					},
 					{
 						"name": "move_card_to_container",
@@ -1972,7 +1972,7 @@
 					{
 						"name": "exhaust_card",
 						"is_cost": true,
-						"subject": "my_hero"
+						"subject": "my_identity"
 					},
 					{
 						"name": "move_card_to_container",
@@ -1996,7 +1996,7 @@
 						"name": "mod_tokens",
 						"modification": 1,
 						"token_name": "stunned",
-						"subject": "my_hero"
+						"subject": "my_identity"
 					},
 					{
 						"name": "move_card_to_container",
@@ -3268,7 +3268,7 @@
 					{
 						"name": "exhaust_card",
 						"is_cost": true,
-						"subject": "my_hero"
+						"subject": "my_identity"
 					},
 					{
 						"name": "move_card_to_container",
@@ -3287,7 +3287,7 @@
 					{
 						"name": "exhaust_card",
 						"is_cost": true,
-						"subject": "my_hero"
+						"subject": "my_identity"
 					},
 					{
 						"name": "move_card_to_container",

@@ -500,7 +500,7 @@
 						"ultron_drone": {
 							"__count__": 1,
 							"__each_player__": false,
-							"__src_container__": "deck"
+							"__src_container__": "deck_my_hero"
 						}
 					}
 				]

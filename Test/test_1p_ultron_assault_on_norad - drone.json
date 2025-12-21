@@ -1,0 +1,147 @@
+{
+	"_comments": "Tests Assault on NORAD - Drone choice",
+	"init": {
+		"phase": "VILLAIN_THREAT",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}				
+			],
+			"villain": [
+				{
+					"card": "01134"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Assault on NORAD"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"hand1": [
+				{
+					"card": "01056",
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Ultron Drones",
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "choose",
+			"value": "Drone",
+			"_comments": "choose to get drone"
+		},		
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "take undefended attack against Ultron"
+		},
+		{
+			"type": "choose",
+			"value": "1 Threat on Main Scheme",
+			"_comments": "choose to get threat"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "take undefended attack against drone"
+		},		
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "wait for player turn"
+		},			
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+
+			],
+			"discard_villain": [
+				{
+					"card": "Armored Guard"
+				}			
+			],
+			"villain": [
+				{
+					"card": "01134"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Assault on NORAD"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				}				
+			],
+			"enemies1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},				
+			],
+			"hand1": [
+				{
+					"card": "01056",
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Ultron Drones",
+				}
+			]
+		}
+	},
+}

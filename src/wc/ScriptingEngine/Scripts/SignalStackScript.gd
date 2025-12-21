@@ -24,6 +24,14 @@ func execute():
 func get_tasks():
 	return [self]
 
+func get_subjects():
+	#TODO cleaner way to do this?
+	var target = script_definition.get("target", null)
+	#TODO verify target is a card
+	if target:
+		return [target]
+	return []	
+
 func get_class() -> String:
 	return("SignalStackScript")
 

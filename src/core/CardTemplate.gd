@@ -66,7 +66,7 @@ enum AttachmentOffset{
 }
 # Used to spawn CardChoices. We have to add the consts together
 # before passing to the preload, or the parser complains.
-const _CARD_CHOICES_SCENE_FILE = CFConst.PATH_CORE + "CardChoices.tscn"
+const _CARD_CHOICES_SCENE_FILE = CFConst.PATH_CUSTOM + "CardChoices.tscn"
 const _CARD_CHOICES_SCENE = preload(_CARD_CHOICES_SCENE_FILE)
 const _TARGETING_SCENE_FILE = CFConst.PATH_CORE + "Card/TargetingArrow.tscn"
 const _TARGETING_SCENE = preload(_TARGETING_SCENE_FILE)

@@ -356,3 +356,20 @@ static func erase_key_recursive(data, key_to_erase: String) -> void:
 				erase_key_recursive(element, key_to_erase)
 		_:
 			pass
+
+static func rotate_90(image, clockwise = true):
+	var tmp_image = Image.new()
+	var size = image.get_size()
+	var format = image.get_format()
+	tmp_image.create(size.y, size.x,false, format)
+	image.lock()
+	tmp_image.lock()
+	for x in range(size.x):
+		for y in range(size.y):
+			if clockwise:
+				tmp_image.set_pixel(size.y-(y+1),x, image.get_pixel(x,y))				
+			else:
+				tmp_image.set_pixel(y,size.x-(x+1), image.get_pixel(x,y))
+	image.unlock()
+	tmp_image.unlock()
+	return tmp_image

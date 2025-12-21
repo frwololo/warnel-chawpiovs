@@ -35,6 +35,10 @@ signal step_ended(details)
 signal current_playing_hero_changed(details) #before, after
 
 # warning-ignore:unused_signal
+signal stack_event_display_finished(details) #before, after
+
+
+# warning-ignore:unused_signal
 signal all_clients_game_loaded(details) #status Dict for all players
 
 # warning-ignore:unused_signal

@@ -117,7 +117,8 @@ func _process(delta):
 			
 			top.rect_position = Vector2(pos_top_x , top.rect_position.y)
 			bottom.rect_position = Vector2(pos_bottom_x, bottom.rect_position.y)			
-					
+		
+	top_text.rect_position.x  = top_texture.rect_position.x + top_texture.rect_size.x + 20			
 
 func _ready():
 	top_text.text = _top_text

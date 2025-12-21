@@ -220,6 +220,16 @@ rect_pivot_offset = Vector2( 65, 67 )
 texture = ExtResource( 8 )
 stretch_mode = 5
 
+[node name="TopMenu" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = 1027
+
+[node name="TopMenuControl" type="Control" parent="TopMenu"]
+unique_name_in_owner = true
+margin_right = 40.0
+margin_bottom = 40.0
+theme = ExtResource( 12 )
+
 [connection signal="toggled" from="FancyMovementToggle" to="." method="_on_FancyMovementToggle_toggled"]
 [connection signal="toggled" from="EnableAttach" to="." method="_on_EnableAttach_toggled"]
 [connection signal="item_selected" from="ScalingFocusOptions" to="." method="_on_ScalingFocusOptions_item_selected"]

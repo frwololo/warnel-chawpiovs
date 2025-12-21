@@ -127,6 +127,9 @@ func is_game_started():
 func is_announce_ongoing():
 	return theAnnouncer and theAnnouncer.is_announce_ongoing()
 
+func is_ongoing_blocking_announce():
+	return theAnnouncer and theAnnouncer.get_blocking_announce()	
+
 func _init():
 	scenario = ScenarioDeckData.new()
 	theStack = GlobalScriptStack.new()
@@ -819,12 +822,15 @@ func start_activity(enemy, action, script, target_id = 0):
 			script_name = "enemy_attack"
 			next_step = EnemyAttackStatus.PENDING_DEFENDERS
 
+	var target_hero = get_identity_card(target_id)
 	var trigger_details = {
-		"additional_tags": []
+		"additional_tags": [],
+		"target": target_hero,
+		SP.TRIGGER_TARGET_HERO : target_hero.canonical_name
 	}
 	if script:
 		trigger_details["additional_tags"] += script.get_property(SP.KEY_TAGS, [])
-		trigger_details["_display_name"] = "enemy " + action + " (" + enemy.canonical_name + " -> " + get_identity_card(target_id).canonical_name +")" 	
+		trigger_details["_display_name"] = "enemy " + action + " (" + enemy.canonical_name + " -> " + target_hero.canonical_name +")" 	
 	var _sceng = enemy.execute_scripts(enemy, script_name,trigger_details)
 	_current_enemy_attack_step = next_step
 
@@ -957,7 +963,12 @@ func enemy_activates() :
 			for boost_card in boost_cards:
 				var discard_event = WCScriptingEngine.simple_discard_task(boost_card)
 				gameData.theStack.add_script(discard_event)	
-			var stackEvent:SignalStackScript = SignalStackScript.new("enemy_" + action + "_happened", enemy,  {SP.TRIGGER_TARGET_HERO : get_identity_card(target_id).canonical_name})
+			var target_hero = get_identity_card(target_id)	
+			var details = {
+				"target" : target_hero,
+				SP.TRIGGER_TARGET_HERO : target_hero.canonical_name
+			}				
+			var stackEvent:SignalStackScript = SignalStackScript.new("enemy_" + action + "_happened", enemy,  details)
 			theStack.add_script(stackEvent)
 			#scripting_bus.emit_signal("enemy_" + action + "_happened", enemy, {})
 			return 
@@ -1818,9 +1829,6 @@ func gui_activity_ongoing()-> bool:
 		
 	return false
 
-
-func is_ongoing_blocking_announce():
-	return theAnnouncer.get_blocking_announce()	
 
 func cleanup_post_game():
 	cfc.LOG("\n###\ngameData cleanup_post_game")

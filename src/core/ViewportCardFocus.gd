@@ -291,3 +291,6 @@ func get_origin_card(dupe_card):
 		if _previously_focused_cards[card] == dupe_card:
 			return card
 	return null
+
+func get_viewport_container():
+	return $ViewportContainer/Viewport

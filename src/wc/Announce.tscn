@@ -42,8 +42,9 @@ custom_constants/margin_left = 400
 [node name="Label" type="Label" parent="Top/Margin"]
 margin_left = 400.0
 margin_top = 106.0
-margin_right = 1993.0
+margin_right = 775.0
 margin_bottom = 320.0
+size_flags_horizontal = 2
 custom_fonts/font = SubResource( 2 )
 text = "Hello"
 align = 1

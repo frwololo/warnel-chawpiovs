@@ -6,6 +6,7 @@ extends Node2D
 
 signal script_executed_from_stack(script)
 signal script_added_to_stack(script)
+signal stack_interrupt(script, mode)
 
 #display
 #TODO something fancier
@@ -307,7 +308,7 @@ remotesync func client_create_and_add_stackobject( original_requester_id, expect
 	add_event_to_stack(stackEvent, checksum)
 	rpc_id(1, "from_client_script_received_ack", expected_run_mode, checksum)
 
-func set_pending_network_interaction(checksum, reason:=""):
+func set_pending_network_interaction(interaction_authority, checksum, reason:=""):
 	add_yield_counter("set_pending_network_interaction")
 	while (yield_wait_time < yield_max_wait_time) and _pending_flush:
 		display_debug("flush ongoing in set_pending_network_interaction")
@@ -480,7 +481,8 @@ func _process(_delta: float):
 				if interrupters:
 						set_run_mode(RUN_MODE.PENDING_USER_INTERACTION, "_process FORCED_INTERRUPT_CHECK")
 						set_interrupting_hero(hero_id, interrupters)
-						force_play_card(interrupters)
+						emit_signal("stack_interrupt", stack_object, InterruptMode.FORCED_INTERRUPT_CHECK )
+						force_play_card(interrupters, stack_object)
 						return
 		InterruptMode.OPTIONAL_INTERRUPT_CHECK:
 			set_run_mode(RUN_MODE.PENDING_USER_INTERACTION,  "_process OPTIONAL_INTERRUPT_CHECK")			
@@ -490,6 +492,7 @@ func _process(_delta: float):
 				var hero_id = gameData.get_ordered_hero_id(i)
 				if potential_interrupters.get(hero_id, []):
 					set_interrupting_hero(hero_id, potential_interrupters[hero_id])
+					emit_signal("stack_interrupt", stack_object, InterruptMode.OPTIONAL_INTERRUPT_CHECK )
 					break
 			return
 		_:
@@ -585,14 +588,14 @@ remotesync func clients_pass_interrupt (hero_id):
 
 
 #forced activation of card for forced interrupt
-remotesync func force_play_card(interrupters):
+func force_play_card(interrupters, stack_object):
 	#TODO force interrupt mode here for security
 	set_current_interrupting_cards(interrupters)
 	#_current_interrupting_mode = InterruptMode.FORCED_INTERRUPT_CHECK
 	
 	var card = _current_interrupting_cards[0]
 	
-	card.attempt_to_play()
+	card.attempt_to_play(false, stack_object)
 
 func enable_sync():
 	sync_enabled = true
@@ -1055,6 +1058,14 @@ func flush_logs():
 
 
 func display_debug_info():
+
+	#the expectation at this point is that
+	#the announcer gives enough info to not have to show this debug panel	
+	if gameData.is_announce_ongoing():
+		if text_edit:
+			text_edit.visible = false
+		return
+
 	if (!text_edit):
 	 create_text_edit()
 	

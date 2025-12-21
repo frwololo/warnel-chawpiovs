@@ -52,6 +52,8 @@ func hint (text, color, details = {}):
 	var _hint_label = Label.new()
 	var _hint= PanelContainer.new()
 	_hint_label.text = text
+	var dynamic_font = cfc.get_font("res://fonts/Bangers-Regular.ttf", 32)	
+	_hint_label.add_font_override("font", dynamic_font)	
 	_hint_label.add_color_override("font_color", color)
 	var dir_x = randf() * 10 
 	var dir_y = randf() * 10
@@ -457,6 +459,39 @@ func get_art_filename(force_if_facedown: = true):
 
 	return ("res://assets/card_backs/generic_back.png")
 
+func get_cropped_art_texture():
+	var filename = get_art_filename()
+	var new_img = WCUtils.load_img(filename)
+	if not new_img:
+		return	false
+
+	var is_horizontal = properties.get("_horizontal", 0)
+	var type_code = properties.get("type_code", 0)
+	
+	if is_horizontal:
+		new_img = WCUtils.rotate_90(new_img)	
+		
+	var imgtex = ImageTexture.new()
+	
+	imgtex.create_from_image(new_img)	
+	var width = imgtex.get_width()
+	var height = imgtex.get_height()	
+	var region := Rect2(0, 0, width, width)
+	if is_horizontal:
+		match type_code:
+			"main_scheme":
+				region = Rect2(width/2,0, width/2, height)
+			_:
+				region = Rect2(0, 0, height, height)
+	var texture = _get_cropped_texture(imgtex, region)	
+	return texture
+
+func _get_cropped_texture(texture : Texture, region : Rect2) -> AtlasTexture:
+	var atlas_texture := AtlasTexture.new()
+	atlas_texture.set_atlas(texture)
+	atlas_texture.set_region(region)
+	return atlas_texture
+
 func set_card_art():
 	var filename = get_art_filename()
 	if (filename):
@@ -563,7 +598,7 @@ func common_post_move_scripts(new_host: String, _old_host: String, _move_tags: A
 
 #Tries to play the card assuming costs aren't impossible to pay
 #Also used for automated tests
-func attempt_to_play(user_click:bool = false):
+func attempt_to_play(user_click:bool = false, origin_event = null):
 	#don't try to activate the card if the click was the result of targeting
 	if user_click:
 		if gameData.is_targeting_ongoing() or gameData.targeting_happened_too_recently():
@@ -598,7 +633,10 @@ func attempt_to_play(user_click:bool = false):
 
 
 	cfc.card_drag_ongoing = null
-	execute_scripts()
+	var details = {}
+	if origin_event:
+		details["origin_event"] = origin_event
+	execute_scripts(self,"manual",details)
 
 
 func network_request_rejected():
@@ -878,7 +916,8 @@ func execute_scripts(
 		gameData.execute_priority_scripts()	
 	else:	
 		sceng = choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigger_details, run_type, exec_config)
-
+		if sceng is GDScriptFunctionState: # Still working.
+			sceng = yield(sceng, "completed")
 	return sceng
 	
 func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigger_details, run_type, exec_config = {}):	
@@ -891,6 +930,7 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 	var force_user_interaction_required = exec_config.get("force_user_interaction_required", false)	
 	#Check if this script is exected from remote (another online player has been paying for the cost)
 	var is_network_call = trigger_details.has("network_prepaid") #TODO MOVE OUTSIDE OF Core
+	var origin_event = trigger_details.get("origin_event", null)
 	
 	#semaphores
 	cfc.add_ongoing_process(self, "core_execute_scripts")
@@ -925,7 +965,7 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 	if show_optional_confirmation_menu and !is_network_call:
 		if !interaction_authorized:
 			cfc.remove_ongoing_process(self, "core_execute_scripts")
-			gameData.theStack.set_pending_network_interaction(checksum, "pending interaction because of optional dialog")		
+			gameData.theStack.set_pending_network_interaction(interaction_authority, checksum, "pending interaction because of optional dialog")		
 			return null
 
 		gameData.select_current_playing_hero(interacting_hero)
@@ -953,7 +993,7 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 			#TODO need to help check costs here as well?
 		else:
 			if !interaction_authorized:
-				gameData.theStack.set_pending_network_interaction(checksum, "not authorized to multiple choice " + to_json(state_scripts))
+				gameData.theStack.set_pending_network_interaction(interaction_authority, checksum, "not authorized to multiple choice " + to_json(state_scripts))
 				cfc.remove_ongoing_process(self, "core_execute_scripts")
 				return null	
 			force_user_interaction_required = true				
@@ -961,6 +1001,8 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 			var choices_menu = _CARD_CHOICES_SCENE.instance()
 			cfc.add_modal_menu(choices_menu)
 			choices_menu.prep(canonical_name,state_scripts, rules)
+			if trigger != "manual":
+				gameData.theAnnouncer.choices_menu(self, origin_event, choices_menu, interacting_hero)			
 			# We have to wait until the player has finished selecting an option
 			yield(choices_menu,"id_pressed")
 			# If the player just closed the pop-up without choosing
@@ -994,7 +1036,8 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 			"checksum": checksum,
 			"rules": rules,
 			"action_name": action_name,
-			"force_user_interaction_required": force_user_interaction_required
+			"force_user_interaction_required": force_user_interaction_required,
+			"interaction_authority": interaction_authority,
 		}
 		sceng = execute_chosen_script(state_scripts, trigger_card, trigger_details, run_type, next_step_config)
 		if sceng is GDScriptFunctionState && sceng.is_valid():		
@@ -1013,7 +1056,8 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 	var checksum = exec_config.get("checksum", "")
 	var action_name = exec_config.get("action_name", "")
 	var force_user_interaction_required = exec_config.get("force_user_interaction_required", false)
-
+	var interaction_authority = exec_config.get("interaction_authority", null)
+	
 	var cost_check_mode = \
 		CFInt.RunType.BACKGROUND_COST_CHECK if run_type == CFInt.RunType.BACKGROUND_COST_CHECK \
 		else CFInt.RunType.COST_CHECK
@@ -1062,7 +1106,7 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 	# we add the script to the server stack for execution
 	if (!is_network_call and not only_cost_check):
 		if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER:
-			gameData.theStack.set_pending_network_interaction(checksum, "not authorized to pay cost")
+			gameData.theStack.set_pending_network_interaction(interaction_authority,  checksum, "not authorized to pay cost")
 			cfc.remove_ongoing_process(self, "core_execute_scripts")
 			return sceng			
 		if (sceng.can_all_costs_be_paid or sceng.has_else_condition()):
@@ -1075,7 +1119,7 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 				yield(sceng_return,"completed")
 			
 			if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER:
-				gameData.theStack.set_pending_network_interaction(checksum, "not authorized to prime")
+				gameData.theStack.set_pending_network_interaction(interaction_authority, checksum, "not authorized to prime")
 				cfc.remove_ongoing_process(self, "core_execute_scripts")
 				return sceng
 			if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED:
@@ -1084,7 +1128,7 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 			
 			if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER:
 				if trigger != "manual":		
-					gameData.theStack.set_pending_network_interaction(checksum, "authorized user ready to interact")
+					gameData.theStack.set_pending_network_interaction(interaction_authority, checksum, "authorized user ready to interact")
 			
 			# 2) Once done with payment, Client A sends ability + payment information to all clients (including itself)
 			# 3) That data is added to all clients stacks
@@ -2278,6 +2322,42 @@ func is_alter_ego_form() -> bool:
 		return true
 	return false
 
+func get_global_center():
+	var xy = get_global_position()
+	var card_scale = scale
+	var real_card_size = card_size
+	if state in [CardState.IN_PILE, CardState.VIEWED_IN_PILE]:
+		var parent = get_parent()
+		if parent:
+			card_scale = parent.scale
+			real_card_size = parent.card_size
+	if _placement_slot:
+		card_scale = _placement_slot.get_scale_modifier()
+	var center = (xy + real_card_size/2 * card_scale)
+	return center
+
 func serialize_to_json():
 	return export_to_json()
 
+var _cached_printed_text = {}
+func get_printed_text(section = ""):
+	if !section:
+		return get_property("text","")
+	if _cached_printed_text.has(section):
+		return _cached_printed_text[section]
+	
+	var result = ""
+	var full_text:String = get_property("text", "")
+	var searching:String = "[b]" + section.to_lower() + "[/b]:"
+	var position = full_text.findn(searching)
+	if position == -1:
+		result = ""
+	else:
+		var substring = full_text.substr(position + searching.length())
+		var end = substring.find('\n')
+		if end == -1:
+			result = substring
+		else:
+			result = substring.substr(0, end)
+	_cached_printed_text[section] = result
+	return result	

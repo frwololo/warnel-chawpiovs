@@ -994,3 +994,10 @@ func _on_ServerActivity_gui_input(event):
 			gameData.theStack.attempt_unlock()
 		
 	pass # Replace with function body.
+
+
+func add_child_to_top_layer(child):
+	var control = get_node("%TopMenuControl")
+	control.add_child(child)
+	#ensure the top layer stays on top for user clicks
+	move_child(get_node("%TopMenu"), get_children().size()-1)

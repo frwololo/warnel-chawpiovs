@@ -23,8 +23,19 @@ onready var owner_object = get_parent()
 
 onready var label = $PanelContainer/Label
 
+enum DISPLAY_MODE {
+	NORMAL,
+	SHADOW
+}
+
+var display_mode = DISPLAY_MODE.NORMAL
+
+func set_display_mode(mode):
+	display_mode = mode
+
 var valid_targets: Array = []
 var _stored_destination = null
+var show_arrow_head = true
 
 func set_destination(_dest):
 	_stored_destination = _dest
@@ -34,8 +45,11 @@ func get_stored_destination_position():
 		return Vector2(0,0)
 	if (_stored_destination is Vector2):
 		return _stored_destination
-	#else it's a card. 
-	return _stored_destination.global_position + Vector2(20,20)
+	#else it's an object.
+	if _stored_destination.has_method("get_global_center"):
+		  return _stored_destination.get_global_center()
+	
+	return _stored_destination.get_global_position() + Vector2(40,40)
 
 func reset_destination():
 	set_destination(null)
@@ -52,34 +66,93 @@ func _ready() -> void:
 	# warning-ignore:return_value_discarded
 	$ArrowHead/Area2D.connect("area_exited", self, "_on_ArrowHead_area_exited")
 
-
+func show_arrow_head():
+	show_arrow_head = true
+	
+func hide_arrow_head():
+	show_arrow_head = false
+	
 func set_text(_text):
 	label.text = _text
+	var dynamic_font = cfc.get_font("res://fonts/Bangers-Regular.ttf", 32)	
+	label.add_font_override("font", dynamic_font)	
 	label.visible = true
 	$PanelContainer.visible = true
 	if !_text:
 		$PanelContainer.visible = false
 		label.visible = false
 
+var _modulate_direction = 1
 func _process(_delta: float) -> void:
 	if is_targeting:
 		var destination = get_stored_destination_position()
 		var pointing_to = destination if destination else cfc.NMAP.board.mouse_pointer.determine_global_mouse_pos()	
 		_draw_targeting_arrow(pointing_to)
+		
+	match display_mode:
+		DISPLAY_MODE.SHADOW:
+			$Highlight.width = 5
+			
+			var owner_z_index = 98
+			if owner_object and is_instance_valid(owner_object) and "z_index" in owner_object:
+				owner_z_index = owner_object.z_index
+				
+			self.z_as_relative = false
+			self.z_index = owner_z_index  - 1
+
+			if _stored_destination and is_instance_valid(_stored_destination):
+				if "z_index" in _stored_destination:
+					_stored_destination.z_as_relative = false
+					_stored_destination.z_index = owner_z_index  + 1
+				else:
+					var parent = _stored_destination.get_parent()
+					if parent and  "z_index" in parent:
+						parent.z_index = owner_z_index  + 1
+
+			$Highlight.z_as_relative = false
+			$Highlight.z_index = owner_z_index - 2
+			var modulate_modification = 1 + _delta * _modulate_direction
+			var the_max = $Highlight.modulate.r
+			if $Highlight.modulate.g > the_max:
+				the_max = $Highlight.modulate.g 
+			if $Highlight.modulate.b > the_max:
+				the_max = $Highlight.modulate.b
+			if the_max * modulate_modification < 0.5:
+				_modulate_direction = 1	 
+			elif the_max * modulate_modification > 2:
+				_modulate_direction = -1
+			else:	 					
+				$Highlight.modulate *= modulate_modification
+				$HighlightArrowHead.modulate *= modulate_modification
+
+				if $Highlight.modulate.a > 1:
+					$Highlight.modulate.a = 1
+				if $HighlightArrowHead.modulate.a > 1:
+					$HighlightArrowHead.modulate.a = 1														
 
 func set_arrow_color(_color):
 	default_color = _color
-	$ArrowHead.color = default_color
+	$ArrowHead.color = _color
 	$Line.default_color = _color
+	#$Line.modulate = _color
+
 	$Highlight.default_color = _color * 1.2 #Color(0.1, 0.5, 0.5) * 1.3  -> debug
-	$HighlightArrowHead.color = $Highlight.default_color
+	$Highlight.modulate = _color * 1.2
+	$HighlightArrowHead.color = _color * 1.2
+	$HighlightArrowHead.modulate = _color * 1.2
+	
 	
 func show_me():
-	$ArrowHead.visible = true
 	$ArrowHead/Area2D.monitoring = true
 	$Highlight.visible =  true
-	$Line.visible = true
-	$HighlightArrowHead.visible = true
+	match display_mode:
+		DISPLAY_MODE.SHADOW:
+			$Line.visible = false
+			$ArrowHead.visible = false			
+		_:
+			$Line.visible = true	
+			$ArrowHead.visible = show_arrow_head			
+	$HighlightArrowHead.visible = show_arrow_head
 		
 func hide_me():
 	$ArrowHead.visible = false

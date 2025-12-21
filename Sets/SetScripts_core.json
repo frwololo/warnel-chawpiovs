@@ -2170,14 +2170,28 @@
 					"sort_by": "property",
 					"sort_name": "printed_health",
 					"sort_descending": true,
+					"is_cost": true,
 					"filter_state_seek": [
 						{
-							"type_code": "minion"
+							"filter_properties": {
+								"type_code": "minion"
+							}
 						}
 					]
-				}
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard_villain",
+					"is_else": true
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				}				
 			]
 		},
+		
 		"alterants": {
 			"board": [
 				{

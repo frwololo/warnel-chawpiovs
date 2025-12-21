@@ -22,7 +22,8 @@ func prep(title_reference: String, script_with_choices: Dictionary, _rules:Dicti
 		# and the dictionary keys, are the choices in human-readable text.
 		for key in script_with_choices.keys():
 			add_item(key)
-		cfc.NMAP.board.add_child(self)
+		cfc.NMAP.board.add_child_to_top_layer(self)
+		#cfc.NMAP.board.add_child(self)
 		popup_centered()
 		# One again we need two different Panels due to 
 		# https://github.com/godotengine/godot/issues/32030
@@ -54,3 +55,4 @@ func _on_CardChoices_popup_hide() -> void:
 
 func force_cancel():
 	self.hide()
+

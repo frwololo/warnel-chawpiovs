@@ -123,9 +123,23 @@ func matches_filters(task, _filters:Dictionary, owner_card, _trigger_details):
 
 	return result
 
+func get_owner_card():
+	var first_task = get_first_task()
+	if first_task:
+		return first_task.owner
+	return null
+
+func get_subjects():
+	var first_task = get_first_task()
+	
+	if first_task and ("subjects" in first_task):
+		return first_task.subjects
+	return []		
+
 func get_first_task_name():
-	for task in get_tasks():
-		return task.script_name
+	var first_task = get_first_task()
+	if first_task:
+		return first_task.script_name
 	return ""
 
 func get_display_name():
@@ -135,10 +149,47 @@ func get_display_name():
 	for task in get_tasks():
 		return task.owner.canonical_name + "-" + task.script_name
 
+var _cache_display_text = ""
+func get_display_text():
+	if !_cache_display_text:
+		_cache_display_text = _get_display_text_nocache()		
+	return _cache_display_text
+
+func _get_display_text_nocache():	
+	var task = get_first_task()
+	var result = get_display_name()
+	if task: 	
+		var owner = task.owner
+		var owner_name = owner.canonical_name if owner else ""
+		var subjects = get_subjects()
+		var only_one_subject = (subjects and subjects.size() == 1)
+		match task.script_name:
+			"reveal_encounter":
+				if owner:
+					var text = owner.get_printed_text("when revealed")
+					if text:
+						return text
+					var text1 = owner.get_printed_text("When Revealed (Alter-Ego)")	
+					var text2 = owner.get_printed_text("When Revealed (Hero)")
+					if text1 or text2:
+						return "(Alter-Ego) " + text1 + "\n(Hero) " + text2
+			"add_threat":
+				var amount = task.retrieve_integer_property("amount", 0)
+				result = owner_name + " adds " + str(amount) + " threat"
+				return result
+				
+	result = result.replace("_", " ")
+	return result
+			
+
+
 func set_display_name(_name):
 	display_name = _name
 
-
+func get_first_task():
+	for task in get_tasks():
+		return task
+	return null
 
 static func sort_stack(a, b):
 	if a.stack_uid < b.stack_uid:

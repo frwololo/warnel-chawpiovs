@@ -141,19 +141,7 @@ func mask_image(image:Image, destination, card_key):
 	var card_data = cfc.card_definitions[card_key]
 	if card_data and card_data.get("_horizontal", false):
 		#needs rotation
-
-		var tmp_image = Image.new()
-		var size = image.get_size()
-		var format = image.get_format()
-		tmp_image.create(size.y, size.x,false, format)
-		image.lock()
-		tmp_image.lock()
-		for x in range(size.x):
-			for y in range(size.y):
-				tmp_image.set_pixel(y,size.x-(x+1), image.get_pixel(x,y))
-		image.unlock()
-		tmp_image.unlock()
-		image = tmp_image
+		image = WCUtils.rotate_90(image, false)
 		
 	image.convert(transparent_image.get_format())
 	if image.get_size() != transparent_image.get_size():

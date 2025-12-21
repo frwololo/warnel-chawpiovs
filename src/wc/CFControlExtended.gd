@@ -34,8 +34,22 @@ var _cards_loaded: int = 0
 var ping_data: = {}
 var last_ping_time:= 0
 
+var fonts = {}
+
 # warning-ignore:unused_signal
 signal json_parse_error(msg)
+
+func get_font(path, size) -> DynamicFont:
+	if fonts.has(path):
+		fonts[path].size = size
+		return fonts[path]
+		
+	var cache_dynamic_font = DynamicFont.new()
+	cache_dynamic_font.font_data = load(path)
+	cache_dynamic_font.size = size
+	cache_dynamic_font.set_use_filter(true)
+	fonts[path] = cache_dynamic_font
+	return cache_dynamic_font
 
 func _setup() -> void:
 	._setup()
@@ -212,6 +226,12 @@ func dont_load_this_card(card_data:Dictionary):
 		return true
 	return false
 
+func convert_to_bbcode(text):
+	var result = text.replace("<", "[")
+	result = result.replace (">", "]")
+	result = result.replace("→", "-->")
+	return result
+
 var _seen_images:= {}
 func _load_one_card_definition(card_data, box_name:= "core"):
 	#converting "real" numbers to "int"
@@ -281,6 +301,8 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 				 card_data[action] = 0
 		else:
 			card_data["can_" + action] = false	
+
+	card_data["text"] = convert_to_bbcode(card_data.get("text", ""))
 
 	###END Fixing missing data
 
@@ -692,7 +714,10 @@ func enrich_window_title(selectionWindow, script:ScriptObject, title:String) -> 
 	
 	match script_name:
 		"enemy_attack":
-			result = owner.get_display_name() + " attacks. Choose at most 1 defender, cancel for undefended" 
+			var target_str = ""
+			if script.trigger_details.has(SP.TRIGGER_TARGET_HERO):
+				target_str = " " +  script.trigger_details.get(SP.TRIGGER_TARGET_HERO)
+			result = owner.get_display_name() + " attacks" + target_str +". Choose 1 defender or cancel for undefended" 
 		"pay_as_resource":
 			result = owner.canonical_name + " - Select at least " + str(selectionWindow.selection_count) + " resources."
 	return result;

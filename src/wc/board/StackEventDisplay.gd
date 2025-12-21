@@ -1,0 +1,235 @@
+class_name StackEventDisplay
+extends Node2D
+
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = "text"
+
+#singals defined in scriptingbus
+#signal stack_event_display_finished(details) 
+
+const _TARGETING_SCENE_FILE = CFConst.PATH_CORE + "Card/TargetingArrow.tscn"
+const _TARGETING_SCENE = preload(_TARGETING_SCENE_FILE)
+const SCALE = 1.7
+
+enum ANIMATION_STATUS {
+	NONE,
+	STARTING,
+	RUNNING,
+	STOPPING,
+	STOPPED,
+}
+
+var stack_event: StackObject = null
+var owner_card
+var subjects:= []
+var status = ANIMATION_STATUS.NONE
+var initialized = false
+var arrows_initialized = false
+var arrows := []
+var rect_size = Vector2(200, 200)
+var rect_position = Vector2(0, 0)
+var target_position = Vector2(0,0)
+
+onready var card_texture:TextureRect = get_node("%Card")
+onready var control:Control= get_node("%Control")
+onready var display_text:RichTextLabel = get_node("%DisplayText")
+onready var shadow:ColorRect = get_node("%Shadow")
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	scripting_bus.connect("stack_event_deleted", self, "_stack_event_deleted")	
+	gameData.theStack.connect("script_executed_from_stack", self, "_script_executed_from_stack")
+
+	start_animation()
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	if control:
+		rect_size = control.rect_size
+		rect_position = control.rect_position
+		if shadow:
+			shadow.rect_min_size = control.rect_size
+			shadow.rect_position = control.rect_position + (Vector2(10, 10) * SCALE)
+	init_display()
+	show_arrows()
+
+	for arrow in arrows:
+		arrow.owner_object = control
+		arrow.set_global_position(control.get_global_position())
+		arrow._draw_targeting_arrow()
+	
+	match status:
+		ANIMATION_STATUS.STOPPED:		
+			self.visible = false
+		ANIMATION_STATUS.STARTING:
+			status = ANIMATION_STATUS.RUNNING
+		ANIMATION_STATUS.STOPPING:
+			status = ANIMATION_STATUS.STOPPED
+			force_close()
+	pass
+
+func force_close():
+	for arrow in arrows:
+		var container = cfc.NMAP.board
+		container.remove_child(arrow)
+		arrow.queue_free()
+	arrows = []
+	scripting_bus.emit_signal("stack_event_display_finished", {"object" : self, "event": stack_event})
+
+
+func init_display(forced = false):
+	#abort if not ready
+	if !owner_card or !card_texture or !display_text:
+		return
+
+	#abort if already initialized		
+	if !forced and initialized:
+		return
+	
+	control.rect_position = owner_card.global_position
+
+	var tween = get_node("Tween")
+	tween.interpolate_property(control, "rect_position",
+			control.rect_position, target_position, 0.2,
+			Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
+	tween.interpolate_property(self, "modulate",
+			Color(1,1,1,0), Color(1,1,1,1), 0.2,
+			Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)		
+	tween.start()		
+	
+	initialized = load_card_texture()
+	load_text()
+	init_arrows()
+	$Control.rect_scale = Vector2(SCALE,SCALE)
+	$Shadow.rect_scale = Vector2(SCALE,SCALE)
+
+func show_arrows():
+	if arrows_initialized:
+		return
+	
+
+	if !control or control.rect_size.y < 100:
+		control.visible = false
+		control.call_deferred("set_visible", true)
+		return
+		
+	rect_size = control.rect_size
+	rect_position = control.rect_position		
+	self.visible = true
+	self.z_index = 99
+	
+	arrows_initialized = true	
+
+func is_finished() -> bool:
+	return (status == ANIMATION_STATUS.STOPPED)
+
+func init_arrows():
+	if !owner_card:
+		return
+	
+	
+	if arrows:
+		return
+		
+	init_one_arrow(owner_card, Color(1, 1, 0,1) * 1.3 )
+	
+	for subject in subjects:
+		init_one_arrow(subject, Color(0.7, 0.5, 0,1) * 1.3 )
+	
+func init_one_arrow(object, color):		
+	var owner_arrow = _TARGETING_SCENE.instance()
+	var container = cfc.NMAP.board
+	container.add_child(owner_arrow)
+	owner_arrow.set_display_mode(TargetingArrow.DISPLAY_MODE.SHADOW)	
+	owner_arrow.hide_arrow_head()
+	owner_arrow.set_arrow_color(color)
+	owner_arrow.set_destination(object)
+	owner_arrow.show_me()
+	arrows.append(owner_arrow)
+
+
+func load_card_texture() -> bool:
+	if !owner_card:
+		return false
+
+	if !card_texture:
+		return false
+		
+	card_texture.texture =  owner_card.get_cropped_art_texture()
+
+	card_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	# In case the generic art has been modulated, we switch it back to normal colour
+	card_texture.self_modulate = Color(1,1,1)
+	return true
+
+func load_text():
+	if !display_text:
+		return
+
+			
+	if !stack_event:
+		if owner_card:
+			display_text.bbcode_text = owner_card.get_printed_text()
+		else:
+			display_text.bbcode_text = "---"
+		return
+		
+	display_text.bbcode_text = stack_event.get_display_text()
+
+func load_from_event(event):
+	stack_event = event
+	owner_card = stack_event.get_owner_card()
+	subjects = stack_event.get_subjects()
+
+func load_from_past_event(event, storage):
+	stack_event = event
+	if stack_event:
+		owner_card = stack_event.get_owner_card()
+	else:
+		owner_card = storage.get("owner_card", null)
+	
+	if !owner_card:
+		return
+		
+	var hero_id = storage.get("interacting_hero", 0)
+	if hero_id:
+		subjects.append(gameData.get_identity_card(hero_id))
+
+	var choices_menu = storage.get("choices_menu", null)
+	if choices_menu:
+		subjects.append(choices_menu)
+
+func start_animation():
+	status = ANIMATION_STATUS.STARTING
+
+func terminate():
+	status = ANIMATION_STATUS.STOPPING
+
+
+func _stack_event_deleted(event):
+	if event != stack_event:
+		return	
+	terminate()
+	
+func _script_executed_from_stack(event):
+	if event != stack_event:
+		return		
+	terminate()
+
+
+
+
+func set_rect_position(pos):
+	$Control.set_global_position(pos)
+	$Control.rect_position = pos
+	rect_position = pos
+
+func get_global_position():
+	return rect_position
+
+func set_target_position(pos):
+	target_position = pos

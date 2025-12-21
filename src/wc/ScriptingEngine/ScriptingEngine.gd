@@ -1281,6 +1281,7 @@ func surge(script: ScriptTask) -> int:
 	if (costs_dry_run()): #not allowed ?
 		return retcode
 	var owner = script.owner
+	owner.hint("Surge", Color8(255,50,50))
 	var hero_id = owner.get_controller_hero_id()
 	gameData.deal_one_encounter_to(hero_id, true)
 

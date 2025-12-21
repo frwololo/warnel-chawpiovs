@@ -177,7 +177,7 @@ func select_card(
 		selection.dry_run(card_list)	
 	else:
 		gameData.attempt_user_input_lock()
-		parent_node.add_child(selection)		
+		cfc.NMAP.board.add_child_to_top_layer(selection)		
 		cfc.add_modal_menu(selection) #keep a pointer to the variable for external cleanup if needed
 		selection.call_deferred("initiate_selection", card_list)
 		# We have to wait until the player has finished selecting their cards

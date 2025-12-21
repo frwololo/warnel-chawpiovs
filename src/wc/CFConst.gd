@@ -575,7 +575,8 @@ const OPTIONS := {
 }
 
 const TARGET_ARROW_COLOR_BY_TAG: = {
-	"attack" : Color(0.7, 0.1, 0.1) 
+	"attack" : Color(0.7, 0.1, 0.1) ,
+	"thwart" : Color(0, 0.5, 0.7) 	
 }
 
 const TARGET_ARROW_COLOR_BY_NAME: = {

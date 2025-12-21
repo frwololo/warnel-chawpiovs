@@ -22,17 +22,36 @@ var _skip_announcer := false
 const _SIMPLE_ANNOUNCE_SCENE_FILE = CFConst.PATH_CUSTOM + "Announce.tscn"
 const _SIMPLE_ANNOUNCE_SCENE = preload(_SIMPLE_ANNOUNCE_SCENE_FILE)
 
+const _STACK_GENERIC_SCENE_FILE = CFConst.PATH_CUSTOM + "board/StackEventDisplay.tscn"
+const _STACK_GENERIC_SCENE = preload(_STACK_GENERIC_SCENE_FILE)
+
+
 const DEFAULT_TOP_COLOR:= Color8(50, 50, 50, 255)
 const DEFAULT_BOTTOM_COLOR:= Color8(18, 18, 18, 255)
 const DEFAULT_BG_COLOR = Color8(255,255,255,75)
+
+const GENERIC_STACK_POSITION = Vector2(1500, 150)
 
 const _script_name_to_function:={
 	"receive_damage": "receive_damage",
 	"phase_starts" : "simple_announce",
 	"simple_announce" : "simple_announce",
+	"generic_stack": "generic_stack",
+	"choices_menu": "choices_menu",
 }
 
+func add_child_to_board(child):
+	var container = cfc.NMAP.board
+	container.add_child(child)
+	if "z_index" in child:
+		child.z_index = 1024
+
+func remove_child_from_board(child):
+	var container = cfc.NMAP.board
+	container.remove_child(child)
+
 func _ready():
+	gameData.theStack.connect("stack_interrupt", self, "_stack_interrupt")
 	scripting_bus.connect("step_started", self, "_step_started")
 	scripting_bus.connect("stack_event_deleted", self, "_stack_event_deleted")
 	if CFConst.DISABLE_ANNOUNCER:
@@ -148,7 +167,67 @@ func cleanup(announce = null):
 
 	announcer_minimum_time = default_announcer_minimum_time
 	ongoing_announces.erase(announce)
+
+func choices_menu(owner_card, origin_event, choices_menu, interacting_hero):
+	var announce = {
+		"announce" :"choices_menu",
+		"object" : origin_event,
+		"is_blocking" : false,
+		"storage": {
+			"owner_card": owner_card,
+			"choices_menu": choices_menu,
+			"interacting_hero": interacting_hero
+		},
+		"current_delta" : 0.0,
+	}			
+	var func_return = init_choices_menu(origin_event, announce)
+	if (func_return):
+		ongoing_announces.append(announce)					
+		#set_announcer_minimum_time(3.0)
+	return #exit after the first one	
+
+func init_choices_menu(script, announce):
+	var storage = announce["storage"]
+	var announce_scene = _STACK_GENERIC_SCENE.instance()
+	announce_scene.load_from_past_event(script, storage)
 	
+	#var announce_scene = StackEventDisplay.new(script)
+	storage["scene"] = announce_scene
+	add_child_to_board(announce_scene)
+	announce_scene.set_target_position(GENERIC_STACK_POSITION)	
+	return true
+	
+#the process_* functions in Announcer return false if they are finished,
+#true if they still have stuff to display		
+func process_choices_menu(announce):		
+	var storage = announce["storage"]
+	if !cfc.get_modal_menu():
+		return false
+	return true
+
+func cleanup_choices_menu(announce):
+	var storage = announce["storage"]
+	var announce_scene = storage["scene"]
+	announce_scene.force_close()	
+	remove_child_from_board(announce_scene)	
+	announce_scene.queue_free()
+
+func _stack_interrupt(stack_object, mode):
+	if mode != GlobalScriptStack.InterruptMode.OPTIONAL_INTERRUPT_CHECK:
+		return
+
+	var announce = {
+		"announce" :"generic_stack",
+		"object" : stack_object,
+		"is_blocking" : false,
+		"storage": {},
+		"current_delta" : 0.0,
+	}			
+	var func_return = init_generic_stack(stack_object, announce)
+	if (func_return):
+		ongoing_announces.append(announce)					
+		#set_announcer_minimum_time(3.0)
+	return #exit after the first one			
 
 func announce_from_stack(script):
 	if (_skip_announcer):
@@ -171,7 +250,36 @@ func announce_from_stack(script):
 				ongoing_announces.append(announce)					
 				set_announcer_minimum_time(3.0)
 			return #found one so we exit early	
+			
 
+
+func init_generic_stack(script, announce):
+	var storage = announce["storage"]
+	var announce_scene = _STACK_GENERIC_SCENE.instance()
+	announce_scene.load_from_event(script)
+	
+	#var announce_scene = StackEventDisplay.new(script)
+	storage["scene"] = announce_scene
+	add_child_to_board(announce_scene)
+	announce_scene.set_target_position(GENERIC_STACK_POSITION)	
+	return true
+	
+#the process_* functions in Announcer return false if they are finished,
+#true if they still have stuff to display		
+func process_generic_stack(announce):		
+	var storage = announce["storage"]
+	var announce_scene:StackEventDisplay = storage["scene"]
+	if announce_scene.is_finished():
+		return false
+	
+	return true
+
+func cleanup_generic_stack(announce):
+	var storage = announce["storage"]
+	var announce_scene = storage["scene"]
+	remove_child_from_board(announce_scene)	
+	announce_scene.queue_free()
+	
 func init_receive_damage(script:ScriptTask, announce:Dictionary) -> bool:
 	var storage = announce["storage"]
 	storage["arrows"] = []
@@ -292,7 +400,7 @@ func init_simple_announce(settings:Dictionary, announce):
 	if settings.has("scale"):
 		announce_scene.set_scale(settings["scale"])
 
-	cfc.NMAP.board.add_child(announce_scene)
+	add_child_to_board(announce_scene)
 	storage["announce"] = announce_scene
 	
 func process_simple_announce(announce) -> bool:
@@ -305,7 +413,7 @@ func process_simple_announce(announce) -> bool:
 func cleanup_simple_announce(announce):
 	var storage=announce["storage"]	
 	var announce_scene = storage["announce"]
-	cfc.NMAP.board.remove_child(announce_scene)
+	remove_child_from_board(announce_scene)
 	announce_scene.queue_free()
 	pass
 

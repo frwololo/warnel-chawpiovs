@@ -74,7 +74,7 @@ func reinit_children():
 
 func set_icons():
 	reinit_children()
-	
+	self.visible = false
 	icons = icons_by_type_code.get(owner_card.get_property("type_code", ""), {})
 	title = Label.new()
 	var dynamic_font = init_font()	
@@ -119,7 +119,9 @@ func _process(_delta):
 		if !origin or !is_instance_valid(origin) or !origin.is_onboard():
 			reinit_children()
 			return
+	var set_visible = true		
 	if !icons:
+		set_visible = false
 		set_icons()
 	if !owner_card.is_faceup:
 		title.text = owner_card.get_display_name()
@@ -160,7 +162,13 @@ func _process(_delta):
 			shadow.rect_position = label.rect_position + (Vector2(3,3) * label.rect_scale)#child.rect_position
 		else:
 			#bug ?
+			set_visible = false
 			set_icons()
+		
+		if set_visible:
+			self.visible = true
+		else:
+			self.visible = false	
 		pass
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):

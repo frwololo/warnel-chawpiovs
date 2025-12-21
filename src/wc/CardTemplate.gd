@@ -4,6 +4,21 @@
 class_name WCCard
 extends Card
 
+# Game-specific card scene paths
+const _CARDBACK_SCENE_FILE = "res://src/wc/CardBack.tscn"
+const _CARDBACK_SCENE = preload(_CARDBACK_SCENE_FILE)
+const _CARDFRONT_SCENE_FILE = "res://src/wc/CardFront.tscn"
+const _CARDFRONT_SCENE = preload(_CARDFRONT_SCENE_FILE)
+
+# Initialize game-specific defaults for parent class exported variables
+func _init():
+	# Set default values for exported variables from parent class
+	if not card_back_design:
+		card_back_design = _CARDBACK_SCENE
+	if not card_front_design:
+		card_front_design = _CARDFRONT_SCENE
+	attachment_offset = AttachmentOffset.BOTTOM_RIGHT
+
 # -1 uninitialized, 0 Villain, any positive value: hero
 var _owner_hero_id  := -1
 var _controller_hero_id  := -1 setget set_controller_hero_id, get_controller_hero_id
@@ -40,6 +55,8 @@ var activity_script
 #status of this card as an encounter (see GameData)
 var encounter_status = gameData.EncounterStatus.NONE
 
+var canonical_id:String = ""
+
 func hint (text, color, details = {}):
 	var position = details.get("position", "")
 	var pos_x = 50
@@ -48,14 +65,14 @@ func hint (text, color, details = {}):
 		"bottom_right":
 			pos_x = 100
 			pos_y = 200
-		
+
 	var _hint_label = Label.new()
 	var _hint= PanelContainer.new()
 	_hint_label.text = text
 	_hint_label.add_color_override("font_color", color)
-	var dir_x = randf() * 10 
+	var dir_x = randf() * 10
 	var dir_y = randf() * 10
-	
+
 	var settings = {
 		"hint_object": _hint,
 		"lifetime": details.get("lifetime", 1.0),
@@ -73,7 +90,7 @@ func add_extra_script(script_definition, allowed_hero_id = 0):
 	}
 	if allowed_hero_id:
 		extra_scripts[extra_script_uid]["controller_id"] = allowed_hero_id
-		
+
 	check_ghost_card()
 	return extra_script_uid
 
@@ -84,14 +101,14 @@ func remove_extra_script(script_uid):
 
 func set_is_boost(value:=true):
 	self._is_boost = value
-	
+
 	#removing the card from this group will prevent
 	#triggering alterants
 	if value and self.is_in_group("cards"):
-		self.remove_from_group("cards") 
+		self.remove_from_group("cards")
 	if !value and !self.is_in_group("cards"):
 		self.add_to_group("cards")
-	
+
 func is_boost():
 	return self._is_boost
 
@@ -104,14 +121,14 @@ func init_owner_hero_id(hero_id:int):
 	if _owner_hero_id >=0: #already initialized
 		return
 	if (hero_id == -1):
-		var _error = 1		
+		var _error = 1
 	_owner_hero_id = hero_id
-	
+
 func get_owner_hero_id() -> int:
-	return _owner_hero_id	
+	return _owner_hero_id
 
 func set_controller_hero_id(hero_id:int):
-	_controller_hero_id = hero_id		
+	_controller_hero_id = hero_id
 	update_hero_groups()
 
 func queue_refresh_cache():
@@ -120,7 +137,7 @@ func queue_refresh_cache():
 func refresh_cache(forced=false):
 	if !forced and ! _cache_refresh_needed:
 		return
-		
+
 	for i in gameData.get_team_size():
 		var hero_id = i+1
 		_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID
@@ -129,7 +146,7 @@ func refresh_cache(forced=false):
 	_cache_refresh_needed = false
 
 func is_character() -> bool:
-	var type_code = get_property("type_code", "")
+	var type_code = get_property_with_default("type_code", "")
 	return is_character_type(type_code)
 
 static func is_character_type(type_code)-> bool:
@@ -157,114 +174,114 @@ func check_death(script = null) -> bool:
 			return false
 		if !gameData.theStack.is_idle():
 			return false
-		
+
 	var total_damage:int =  tokens.get_token_count("damage")
-	var health = get_property("health", 0)
+	var health = get_property_with_default("health", 0)
 
 	if total_damage < health:
 		return false
-	
+
 	var tags = []
 	var trigger_details = {}
 	var trigger_card = self
-		
+
 	if script:
-		tags = [script.script_name, "Scripted"] + script.get_property(SP.KEY_TAGS)	
+		tags = [script.script_name, "Scripted"] + script.get_property(SP.KEY_TAGS)
 		trigger_card = script.trigger_object
 		trigger_details = script.trigger_details.duplicate(true)
 		trigger_details["source"] = guidMaster.get_guid(script.owner)
-	
+
 		#if the damage comes from an "attack", ensure the source is properly categorized as
 		#the hero (or villain) owner rather than the event card itself
 		if ("attack" in tags):
 			var owner = script.owner
 			var type = owner.get_property("type_code", "")
 			if !is_character_type(type):
-				owner = WCScriptingEngine._get_identity_from_script(script)	
+				owner = WCScriptingEngine._get_identity_from_script(script)
 				trigger_details["source"] = guidMaster.get_guid(owner)
 
 	var card_dies_definition = {
 		"name": "card_dies",
 		"tags": tags
 	}
-			
+
 	var card_dies_script:ScriptTask = ScriptTask.new(self, card_dies_definition, trigger_card, trigger_details)
 	card_dies_script.subjects = [self]
 	var task_event = SimplifiedStackScript.new(card_dies_script)
 	gameData.theStack.add_script(task_event)
 	_died_signal_sent = true
 	return true
-	
+
 func get_controller_hero_id() -> int:
-	return _controller_hero_id	
+	return _controller_hero_id
 
 func get_controller_hero_card():
-	return gameData.get_identity_card(_controller_hero_id)	
-	
+	return gameData.get_identity_card(_controller_hero_id)
+
 func get_controller_player_network_id() -> int:
 	var player_data:PlayerData = gameData.get_hero_owner(get_controller_hero_id())
 	if (!player_data):
 		return 0 #TODO error handling? This shouldn't happen
-	return player_data.get_network_id()	
-	
+	return player_data.get_network_id()
+
 func get_controller_player_id() -> int:
 	var player_data:PlayerData = gameData.get_hero_owner(get_controller_hero_id())
 	if (!player_data):
 		return 0 #TODO error handling? This shouldn't happen
-	return player_data.get_id()		
+	return player_data.get_id()
 
 func _runtime_properties_setup():
 	if canonical_name == "Highway Robbery":
 		var _tmp = 1
-	var base_threat = self.get_property("base_threat",0)
-	var base_threat_fixed = get_property("base_threat_fixed", true)
+	var base_threat = get_property_with_default("base_threat",0)
+	var base_threat_fixed = get_property_with_default("base_threat_fixed", true)
 	if base_threat and !base_threat_fixed:
 		base_threat *= gameData.team.size()
 		properties["base_threat"] = base_threat
 
-	var health = get_property("health",0)
-	var health_per_hero = get_property("health_per_hero", false)
+	var health = get_property_with_default("health",0)
+	var health_per_hero = get_property_with_default("health_per_hero", false)
 	if health and health_per_hero:
 		health *= gameData.team.size()
 		properties["health"] = health
-		
-	var threat = get_property("threat",0)
-	var threat_fixed = get_property("threat_fixed", true)
+
+	var threat = get_property_with_default("threat",0)
+	var threat_fixed = get_property_with_default("threat_fixed", true)
 	if threat and !threat_fixed:
 		threat *= gameData.team.size()
-		properties["threat"] = threat		
+		properties["threat"] = threat
 
 func get_display_name(force_canonical = false):
 	if is_faceup:
 		return canonical_name
-	var shortname =  get_property("shortname", "---")
+	var shortname =  get_property_with_default("shortname", "---")
 	return shortname
 
 func setup() -> void:
 	.setup()
 	_runtime_properties_setup()
 	update_groups()
-	init_token_drawer()	
+	init_token_drawer()
 	set_card_art()
 	position_ui_elements()
 	_ready_load_from_json()
-	
+
 	gameData.connect("game_state_changed", self, "_game_state_changed")
 	scripting_bus.connect("step_started", self, "_game_step_started")
 	scripting_bus.connect("card_token_modified", self, "_card_token_modified")
 
 	scripting_bus.connect("card_moved_to_hand", self, "_card_moved")
 	scripting_bus.connect("card_moved_to_pile", self, "_card_moved")
-	scripting_bus.connect("card_moved_to_board", self, "_card_moved")		
-	scripting_bus.connect("card_properties_modified", self, "_card_properties_modified")		
+	scripting_bus.connect("card_moved_to_board", self, "_card_moved")
+	scripting_bus.connect("card_properties_modified", self, "_card_properties_modified")
 
 	cfc.connect("cache_cleared", self, "_cfc_cache_cleared")
 	scripting_bus.connect("stack_event_deleted", self, "_stack_event_deleted")
-	
+
 	attachment_mode = AttachmentMode.ATTACH_BEHIND
-	
+
 	#this prevents moving cards around. A bit annoying but avoids weird double click envents leading to a drag and drop
-	disable_dragging_from_board = true	
+	disable_dragging_from_board = true
 	disable_dropping_to_cardcontainers = true
 
 #		scripting_bus.emit_signal(
@@ -276,7 +293,7 @@ func setup() -> void:
 #					"previous_property_value": previous_value,
 #					"tags": tags
 #				}
-#		)	
+#		)
 func _card_properties_modified(owner_card, details):
 	if owner_card == self and details.get("property_name", "") == "type_code":
 		var previous_value = details.get("previous_property_value", "")
@@ -285,7 +302,7 @@ func _card_properties_modified(owner_card, details):
 			scripts = SetScripts_All.get_enemy_scripts()
 		update_groups()
 		update_hero_groups()
-	
+
 #		scripting_bus.emit_signal(
 #				"card_token_modified",
 #				owner_card,
@@ -323,17 +340,17 @@ func display_threat():
 		healthbar.set_visible(false)
 		return
 
-	var type_code = get_property("type_code", 0)
+	var type_code = get_property_with_default("type_code", 0)
 	if !(type_code in ["main_scheme"]):
 		return
 
-	var total_threat = get_property("threat", 0)
+	var total_threat = get_property_with_default("threat", 0)
 	if !total_threat:
 		return
 	var current_threat = self.tokens.get_token_count("threat")
 	healthbar.set_threat(total_threat, current_threat)
 	pass
-	
+
 func display_health():
 	if !healthbar:
 		return
@@ -341,11 +358,11 @@ func display_health():
 		healthbar.set_visible(false)
 		return
 
-	var type_code = get_property("type_code", 0)
+	var type_code = get_property_with_default("type_code", 0)
 	if !(type_code in ["hero", "alter_ego", "villain"]):
 		return
 
-	var total_health = get_property("health", 0)
+	var total_health = get_property_with_default("health", 0)
 	if !total_health:
 		return
 	var total_damage = self.tokens.get_token_count("damage")
@@ -365,20 +382,20 @@ func execute_before_scripts(
 		trigger: String = "manual",
 		trigger_details: Dictionary = {},
 		run_type := CFInt.RunType.NORMAL):
-	return execute_scripts(trigger_card, "before_" + trigger, trigger_details, run_type) 
+	return execute_scripts(trigger_card, "before_" + trigger, trigger_details, run_type)
 
 func _class_specific_ready():
 	._class_specific_ready()
 	spinbox = $Control/SpinPanel/SpinBox
 	healthbar = $Control/HealthPanel/healthbar
-	info_icon = get_node("%info_icon")	
+	info_icon = get_node("%info_icon")
 
 func _ready():
 	scripting_bus.connect("scripting_event_about_to_trigger", self, "execute_before_scripts")
 
 func _class_specific_process(delta):
 	._class_specific_process(delta)
-		
+
 
 func _process(delta) -> void:
 	if cfc.game_paused:
@@ -409,8 +426,8 @@ func _process(delta) -> void:
 		$Control.remove_child(data["hint_object"])
 		hints.erase(data)
 	hints_to_erase = []
-	
-	
+
+
 	if (cfc.is_modal_event_ongoing()):
 		return
 	if (gameData.is_targeting_ongoing()):
@@ -432,7 +449,7 @@ func set_target_highlight(colour):
 
 #flush caches and states when game state changes
 func _game_state_changed(_details:Dictionary):
-	queue_refresh_cache()	
+	queue_refresh_cache()
 	display_health()
 
 func _cfc_cache_cleared():
@@ -444,16 +461,16 @@ func _game_step_started(details:Dictionary):
 	match current_step:
 		CFConst.PHASE_STEP.PLAYER_TURN:
 			_can_change_form = true
-	return	
-	
+	return
+
 
 func get_card_back_code() -> String:
-	return get_property("back_card_code")
+	return get_property_with_default("back_card_code", "")
 
 func get_art_filename(force_if_facedown: = true):
 	if force_if_facedown or is_faceup:
 		var card_code = get_property("_code")
-		return cfc.get_img_filename(card_code)		
+		return cfc.get_img_filename(card_code)
 
 	return ("res://assets/card_backs/generic_back.png")
 
@@ -478,7 +495,7 @@ func get_state_exec() -> String:
 				CardState.DROPPING_TO_BOARD:
 			# cards that have a type_code 'i.e faceup cards and facedown cards with modifiers)
 			#are allowed to run scripts
-			if get_property("type_code", ""):
+			if get_property_with_default("type_code", ""):
 				state_exec = "board"
 		CardState.IN_HAND,\
 				CardState.FOCUSED_IN_HAND,\
@@ -502,16 +519,16 @@ func get_state_exec() -> String:
 # 0 is valid and represents the villain
 func update_hero_groups():
 	var type_code = properties.get("type_code", "")
-	
+
 	var all_groups:Array = CFConst.ALL_TYPE_GROUPS
 	for group in all_groups:
 		for i in range (gameData.team.size() + 1):
 			var hero_group = group + str(i)
 			if self.is_in_group(hero_group):
-				self.remove_from_group(hero_group)	
-	
+				self.remove_from_group(hero_group)
+
 	var groups:Array = CFConst.TYPES_TO_GROUPS.get(type_code, [])
-	
+
 	for group in groups:
 		for i in range (gameData.team.size() + 1):
 			var hero_group = group + str(i)
@@ -524,16 +541,16 @@ func update_groups() -> void :
 	var all_groups:Array = CFConst.ALL_TYPE_GROUPS
 	for group in all_groups:
 		if self.is_in_group(group):
-			self.remove_from_group(group)	
-			
+			self.remove_from_group(group)
+
 	var groups:Array = CFConst.TYPES_TO_GROUPS.get(type_code, [])
 	for group in groups:
 		self.add_to_group(group)
 
 
 
-		
-		
+
+
 func common_post_move_scripts(new_host: String, _old_host: String, _move_tags: Array) -> void:
 	#change controller as needed
 	var new_grid = get_grid_name()
@@ -543,23 +560,23 @@ func common_post_move_scripts(new_host: String, _old_host: String, _move_tags: A
 	else:
 		#attempt for piles/containers
 		new_hero_id = gameData.get_grid_controller_hero_id(new_host)
-	
+
 	if (new_hero_id or (self.get_controller_hero_id() < 0) ): #only change if we were able to establish an owner, or if uninitialized
 		self.set_controller_hero_id(new_hero_id)
-	
-	
+
+
 	#init owner once and only once, if not already done
-	init_owner_hero_id(new_hero_id)	
-	
+	init_owner_hero_id(new_hero_id)
+
 	#display_health()
 	display_threat()
-	
+
 	#rest exhausted status
 	if new_host.to_lower() != "board":
 		_is_exhausted = false
 		#reset some cache data
-		_died_signal_sent = false	
-		
+		_died_signal_sent = false
+
 
 #Tries to play the card assuming costs aren't impossible to pay
 #Also used for automated tests
@@ -568,33 +585,33 @@ func attempt_to_play(user_click:bool = false):
 	if user_click:
 		if gameData.is_targeting_ongoing() or gameData.targeting_happened_too_recently():
 			return
-		#we already sent a request and should be waiting for full resolution	
+		#we already sent a request and should be waiting for full resolution
 
 		var interaction_authority:UserInteractionAuthority = UserInteractionAuthority.new(self)
-		var interaction_authorized = interaction_authority.interaction_authorized()			
-		
+		var interaction_authorized = interaction_authority.interaction_authorized()
+
 		if !interaction_authorized or !gameData.theStack.is_player_allowed_to_click(self):
 			network_request_rejected()
 			return
-		
-		#gamedata is running some automated clicks from a previous request	
+
+		#gamedata is running some automated clicks from a previous request
 		if gameData.scripted_play_sequence:
-			return	
-		
+			return
+
 	var state_exec = get_state_exec()
-	
+
 	if !state_exec in ["hand", "board"]:
 		return false
-	
+
 	match state_exec:
 		"hand":
 			if check_play_costs() == CFConst.CostsState.IMPOSSIBLE:
 				return false
 			#unique rule - Move to check costs ?
-			if get_property("is_unique", false):
+			if get_property_with_default("is_unique", false):
 				var already_in_play = cfc.NMAP.board.unique_card_in_play(self)
 				if already_in_play:
-					return false	
+					return false
 
 
 	cfc.card_drag_ongoing = null
@@ -618,14 +635,14 @@ func can_interrupt(
 	# and somehow its script is triggered.
 	if not cfc.NMAP.has('board'):
 		return CFConst.CanInterrupt.NO
-	
+
 	var _debug = false
 	if canonical_name == "Whirlwind" and trigger_card:
 		if trigger_details["event_name"] == "enemy_initiates_attack":
 			_debug = true
 
 	if (_debug):
-		display_debug("{interrupt} Hero:" + str(hero_id) + " Checks for " + canonical_name + " vs " + trigger_details.get("event_name") + " - " + trigger_card.canonical_name)		
+		display_debug("{interrupt} Hero:" + str(hero_id) + " Checks for " + canonical_name + " vs " + trigger_details.get("event_name") + " - " + trigger_card.canonical_name)
 
 	#select valid scripts that match the current trigger
 	var card_scripts = retrieve_filtered_scripts(trigger_card, "interrupt", trigger_details)
@@ -634,16 +651,16 @@ func can_interrupt(
 	if (!card_scripts):
 		if (_debug):
 			display_debug("no filtered scripts found")
-		return CFConst.CanInterrupt.NO	
-	
+		return CFConst.CanInterrupt.NO
+
 	var state_scripts = get_state_scripts(card_scripts, trigger_card, trigger_details)
 	if (_debug):
-		display_debug("state_scripts: " + to_json(state_scripts))	
+		display_debug("state_scripts: " + to_json(state_scripts))
 	if (!state_scripts):
 		if (_debug):
 			display_debug("no state scripts found")
 		return CFConst.CanInterrupt.NO
-	
+
 	#card has potential interrupts. Last we check if I'm the player who can play them
 	var may_interrupt =  CFConst.CanInterrupt.NO
 
@@ -654,7 +671,7 @@ func can_interrupt(
 			if check_play_costs_no_cache(hero_id, _debug) == CFConst.CostsState.IMPOSSIBLE:
 				if (_debug):
 					display_debug("allowed to interrupt but can't pay cost")
-				return CFConst.CanInterrupt.NO			
+				return CFConst.CanInterrupt.NO
 			may_interrupt =  CFConst.CanInterrupt.MAY
 		else:
 			may_interrupt =  CFConst.CanInterrupt.MUST
@@ -666,7 +683,7 @@ func can_interrupt(
 		display_debug("can interrupt " + trigger_card.canonical_name + ". Details: " + to_json(trigger_details))
 
 	if (_debug):
-		display_debug("{interrupt} END OF CHECKS for " + canonical_name + " vs " + trigger_details.get("event_name") + " - " + trigger_card.canonical_name)		
+		display_debug("{interrupt} END OF CHECKS for " + canonical_name + " vs " + trigger_details.get("event_name") + " - " + trigger_card.canonical_name)
 
 
 	return may_interrupt
@@ -678,7 +695,7 @@ func execute_scripts_no_stack(
 		run_type := CFInt.RunType.NORMAL):
 	var new_trigger_details = trigger_details
 	new_trigger_details["use_stack"] = false
-	return execute_scripts(trigger_card, trigger, new_trigger_details, run_type)	
+	return execute_scripts(trigger_card, trigger, new_trigger_details, run_type)
 
 
 func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
@@ -688,7 +705,7 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 	if _debugger_hook:
 		pass
 	if trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME and canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME:
-		pass	
+		pass
 	# We check the trigger against the filter defined
 	# If it does not match, then we don't pass any scripts for this trigger.
 	if not SP.filter_trigger(
@@ -697,7 +714,7 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 			self,
 			trigger_details):
 		card_scripts.clear()
-	
+
 	#additional filter check for interrupts/responses
 	if not cfc.ov_utils.filter_trigger(
 			trigger,
@@ -706,14 +723,14 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 			self,
 			trigger_details):
 		card_scripts.clear()
-	
+
 	var to_erase = []
 #					"condition":{
 #						"func_name": "current_activation_status",
 #						"func_params": {
 #							"undefended": true
 #						}
-#					},	
+#					},
 	for key in card_scripts:
 		if card_scripts.has("condition_" + key):
 			var condition = card_scripts["condition_" + key]
@@ -724,10 +741,10 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 			var check = cfc.ov_utils.func_name_run(self, func_name, func_params, null)
 			if !check:
 				to_erase.append(key)
-				to_erase.append("condition_" + key)		
+				to_erase.append("condition_" + key)
 	for key in to_erase:
 		card_scripts.erase(key)
-		
+
 	return card_scripts
 
 
@@ -740,7 +757,7 @@ func has_potential_scripts(trigger_card, trigger):
 	var any_state_scripts = card_scripts.get('all', [])
 	var state_scripts = card_scripts.get(state_exec, any_state_scripts)
 	return state_scripts
-	
+
 # Executes the tasks defined in the card's scripts in order.
 #
 # Returns a [ScriptingEngine] object but that it not statically typed
@@ -765,21 +782,21 @@ func execute_scripts(
 
 	if (trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME and canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME ):
 		var _tmp = 1
-	
+
 	var _debug = trigger_details.get("_debug", false)
-			
+
 	#temporary bug fix: prevent uninitalized cards from running scripts
 	#these cards are duplicates that shouldn't exist?
 	if (get_owner_hero_id() == -1):
 		return null
-	
+
 	var can_i_run = can_execute_scripts()
 	if typeof(can_i_run) == TYPE_BOOL:
 		if !can_i_run:
 			return null
 	else:
 		if !(trigger in (can_i_run)):
-			return null	
+			return null
 
 	#Force execute some previously selected scripts, bypassing the rest of the process
 	var exec_config = trigger_details.get("exec_config", {})
@@ -794,13 +811,13 @@ func execute_scripts(
 		var specific_trigger = "reveal_alter_ego" if identity_card.is_alter_ego_form() else "reveal_hero"
 		var specific_reveal = cfc.set_scripts.get(canonical_id,{}).get(specific_trigger,{})
 		if specific_reveal:
-			trigger = specific_trigger		
-				
+			trigger = specific_trigger
+
 	if _debug:
-		display_debug("executing scripts :" +trigger_card.canonical_name + "-'"+ to_json(trigger_details))	
+		display_debug("executing scripts :" +trigger_card.canonical_name + "-'"+ to_json(trigger_details))
 
 
-	
+
 	#if set to false we'll skip the (potential) optional confirmation
 	#this is useful e.g. in interrupt mode where we have a better UI
 	var show_optional_confirmation_menu = true
@@ -812,14 +829,14 @@ func execute_scripts(
 			force_user_interaction_required = false
 
 	trigger_details["trigger_type"] = trigger
-	
+
 	#we're playing a card manually but in interrupt mode.
 	#What we want to do here is play the optional triggered effect instead
 	if (trigger == "manual" and gameData.is_interrupt_mode()):
 		#TODO very flaky code, how to fix?
 		if (canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME):
 			var _tmp =1
-			
+
 		trigger = find_interrupt_script()
 		if (!trigger):
 			return
@@ -830,8 +847,8 @@ func execute_scripts(
 		if (!trigger_card):
 			return
 		#skip optional confirmation menu for interrupts,
-		#we have a different gui signal	
-		show_optional_confirmation_menu = false	
+		#we have a different gui signal
+		show_optional_confirmation_menu = false
 
 	if ! has_potential_scripts(trigger_card, trigger):
 		return null
@@ -840,19 +857,19 @@ func execute_scripts(
 	if trigger_card:
 		checksum += " - " + trigger_card.canonical_name
 	if _debug:
-		cfc.LOG("reached step 1 for: " + checksum  )	
+		cfc.LOG("reached step 1 for: " + checksum  )
 	#var only_cost_check = is_dry_run(run_type)
-		
+
 #	var cost_check_mode = \
 #		CFInt.RunType.BACKGROUND_COST_CHECK if run_type == CFInt.RunType.BACKGROUND_COST_CHECK \
 #		else CFInt.RunType.COST_CHECK
-	
-	common_pre_execution_scripts(trigger_card, trigger, trigger_details)
-	
+
+	common_pre_execution_scripts_with_trigger_card(trigger_card, trigger, trigger_details)
+
 	#select valid scripts that match the current trigger
 	var card_scripts = retrieve_filtered_scripts(trigger_card, trigger, trigger_details)
-	
-	# We select which scripts to run from the card, based on it state	
+
+	# We select which scripts to run from the card, based on it state
 	state_scripts_dict = get_state_scripts_dict(card_scripts, trigger_card, trigger_details)
 	show_optional_confirmation_menu = show_optional_confirmation_menu and card_scripts.get("is_optional_" + get_state_exec(), false)
 
@@ -861,7 +878,7 @@ func execute_scripts(
 		"checksum": checksum,
 		"force_user_interaction_required": force_user_interaction_required
 	}
-	
+
 	var rules = state_scripts_dict.get("rules", {})
 
 	var sceng = null
@@ -875,37 +892,37 @@ func execute_scripts(
 			hero_triggers["exec_config"] = exec_config
 			gameData.add_script_to_execute(self, trigger_card, trigger, hero_triggers, run_type)
 		#kickstart the process to return a sceng object if possible
-		gameData.execute_priority_scripts()	
-	else:	
+		gameData.execute_priority_scripts()
+	else:
 		sceng = choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigger_details, run_type, exec_config)
 
 	return sceng
-	
-func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigger_details, run_type, exec_config = {}):	
+
+func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigger_details, run_type, exec_config = {}):
 	var state_scripts = state_scripts_dict["state_scripts"]
 
 	var rules = state_scripts_dict.get("rules", {})
 
 	var show_optional_confirmation_menu = exec_config.get("show_optional_confirmation_menu", false)
 	var checksum = exec_config.get("checksum", "")
-	var force_user_interaction_required = exec_config.get("force_user_interaction_required", false)	
+	var force_user_interaction_required = exec_config.get("force_user_interaction_required", false)
 	#Check if this script is exected from remote (another online player has been paying for the cost)
 	var is_network_call = trigger_details.has("network_prepaid") #TODO MOVE OUTSIDE OF Core
-	
+
 	#semaphores
 	cfc.add_ongoing_process(self, "core_execute_scripts")
-	
+
 	var action_name = state_scripts_dict["action_name"]
 
 
 	var _debug = trigger_details.get("_debug", false)
 
 	var interaction_authority:UserInteractionAuthority = UserInteractionAuthority.new(self, trigger_card, trigger, trigger_details, run_type)
-	var interaction_authorized = interaction_authority.interaction_authorized()	
+	var interaction_authorized = interaction_authority.interaction_authorized()
 	var interacting_hero = interaction_authority.authorized_hero_id()
 	if _debug:
 		cfc.LOG("reached step 2 for: " + checksum + ". InteractionAuthority says " + to_json(interaction_authority.compute_authority())  )
-	
+
 
 	# Here we check for confirmation of optional trigger effects
 	# There should be an SP.KEY_IS_OPTIONAL definition per state
@@ -925,11 +942,11 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 	if show_optional_confirmation_menu and !is_network_call:
 		if !interaction_authorized:
 			cfc.remove_ongoing_process(self, "core_execute_scripts")
-			gameData.theStack.set_pending_network_interaction(checksum, "pending interaction because of optional dialog")		
+			gameData.theStack.set_pending_network_interaction(checksum, "pending interaction because of optional dialog")
 			return null
 
 		gameData.select_current_playing_hero(interacting_hero)
-		force_user_interaction_required = true	
+		force_user_interaction_required = true
 		var confirm_return = cfc.ov_utils.confirm(
 			self,
 			{"is_optional_" + get_state_exec() : true},
@@ -943,10 +960,10 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 			if not confirm_return:
 				gameData.theStack.resume_operations_to_all(checksum)
 				state_scripts = []
-	
+
 	# If the state_scripts return a dictionary entry
 	# it means it's a multiple choice between two scripts
-	if typeof(state_scripts) == TYPE_DICTIONARY:	
+	if typeof(state_scripts) == TYPE_DICTIONARY:
 		var selected_key = ""
 		if run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
 			selected_key = state_scripts.keys()[0]
@@ -955,8 +972,8 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 			if !interaction_authorized:
 				gameData.theStack.set_pending_network_interaction(checksum, "not authorized to multiple choice " + to_json(state_scripts))
 				cfc.remove_ongoing_process(self, "core_execute_scripts")
-				return null	
-			force_user_interaction_required = true				
+				return null
+			force_user_interaction_required = true
 			gameData.select_current_playing_hero(interacting_hero)
 			var choices_menu = _CARD_CHOICES_SCENE.instance()
 			cfc.add_modal_menu(choices_menu)
@@ -974,7 +991,7 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 		if selected_key:
 			state_scripts = state_scripts[selected_key]
 			action_name = selected_key
-		else: 
+		else:
 			state_scripts = []
 
 	# To avoid unnecessary operations
@@ -987,8 +1004,8 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 		else:
 			action_name = canonical_name
 		action_name = action_name + " - " + trigger
-		action_name =  trigger_details.get("_display_name", action_name) #override		
-		
+		action_name =  trigger_details.get("_display_name", action_name) #override
+
 		var next_step_config = {
 			"trigger": trigger,
 			"checksum": checksum,
@@ -997,10 +1014,10 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 			"force_user_interaction_required": force_user_interaction_required
 		}
 		sceng = execute_chosen_script(state_scripts, trigger_card, trigger_details, run_type, next_step_config)
-		if sceng is GDScriptFunctionState && sceng.is_valid():		
+		if sceng is GDScriptFunctionState && sceng.is_valid():
 			yield(sceng,"completed")
-		
-	cfc.remove_ongoing_process(self, "core_execute_scripts")	
+
+	cfc.remove_ongoing_process(self, "core_execute_scripts")
 	emit_signal("scripts_executed", self, sceng, trigger)
 	return(sceng)
 
@@ -1034,7 +1051,7 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 		for t in state_scripts:
 			for def in additional_def:
 				t[def] = additional_def[def]
-			
+
 	# This evocation of the ScriptingEngine, checks the card for
 	# cost-defined tasks, and performs a dry-run on them
 	# to ascertain whether they can all be paid,
@@ -1045,18 +1062,18 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 			trigger_card,
 			trigger_details)
 
-	sceng.add_rules(rules)				
-			
+	sceng.add_rules(rules)
+
 	common_pre_run(sceng)
-	
+
 	# 1) Client A selects payments for ability locally
 	# In case the script involves targetting, we need to wait on further
 	# execution until targetting has completed
 	var sceng_return = sceng.execute(cost_check_mode)
 	#if not sceng.all_tasks_completed:
-	if sceng_return is GDScriptFunctionState && sceng_return.is_valid():		
+	if sceng_return is GDScriptFunctionState && sceng_return.is_valid():
 		yield(sceng_return,"completed")
-	
+
 	# If the dry-run of the ScriptingEngine returns that all
 	# costs can be paid, then we proceed with the actual run
 	# we add the script to the server stack for execution
@@ -1064,16 +1081,16 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 		if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER:
 			gameData.theStack.set_pending_network_interaction(checksum, "not authorized to pay cost")
 			cfc.remove_ongoing_process(self, "core_execute_scripts")
-			return sceng			
+			return sceng
 		if (sceng.can_all_costs_be_paid or sceng.has_else_condition()):
 			#1.5) We run the script in "prime" mode again to choose targets
 			# for all tasks that aren't costs but still need targets
 			# (is_cost = false and needs_subject = false)
 			sceng_return = sceng.execute(CFInt.RunType.PRIME_ONLY)
 			#if not sceng.all_tasks_completed:
-			if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
+			if sceng_return is GDScriptFunctionState && sceng_return.is_valid():
 				yield(sceng_return,"completed")
-			
+
 			if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER:
 				gameData.theStack.set_pending_network_interaction(checksum, "not authorized to prime")
 				cfc.remove_ongoing_process(self, "core_execute_scripts")
@@ -1081,11 +1098,11 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 			if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED:
 				if force_user_interaction_required:
 					sceng.user_interaction_status = CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER
-			
+
 			if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER:
-				if trigger != "manual":		
+				if trigger != "manual":
 					gameData.theStack.set_pending_network_interaction(checksum, "authorized user ready to interact")
-			
+
 			# 2) Once done with payment, Client A sends ability + payment information to all clients (including itself)
 			# 3) That data is added to all clients stacks
 
@@ -1096,22 +1113,22 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 			else:
 				sceng_return = sceng.execute(run_type)
 				while sceng_return is GDScriptFunctionState && sceng_return.is_valid():
-					sceng_return = sceng_return.resume()	
+					sceng_return = sceng_return.resume()
 
-			
+
 	is_executing_scripts = false
 	return sceng
 
 func add_script_to_stack(sceng, run_type, trigger, trigger_details, action_name, checksum):
-	gameData.theStack.create_and_add_script(sceng, run_type, trigger, trigger_details, action_name, checksum) 
-	
+	gameData.theStack.create_and_add_script(sceng, run_type, trigger, trigger_details, action_name, checksum)
+
 	return
 
 
 # A signal for whenever the player clicks on a card
 func _on_Card_gui_input(event) -> void:
 	cfc.add_ongoing_process(self, "_on_Card_gui_input_" + canonical_name)
-	if event is InputEventMouseButton and cfc.NMAP.has("board"):	
+	if event is InputEventMouseButton and cfc.NMAP.has("board"):
 		# because of https://github.com/godotengine/godot/issues/44138
 		# we need to double check that the card which is receiving the
 		# gui input, is actually the one with the highest index.
@@ -1184,12 +1201,12 @@ func _on_Card_gui_input(event) -> void:
 
 					#TODO
 					#NOTE ERWAN
-					#Modified here so that drag to board mimics the effect of a double click	
+					#Modified here so that drag to board mimics the effect of a double click
 					var parentHost = get_parent()
 					if (destination == cfc.NMAP.board) and (parentHost.is_in_group("hands")):
 						move_to(parentHost)
 						attempt_to_play(true)
-					else :	
+					else :
 						move_to(destination)
 					_focus_completed = false
 				_:
@@ -1197,80 +1214,80 @@ func _on_Card_gui_input(event) -> void:
 						attempt_to_play(true)
 		else:
 			_process_more_card_inputs(event)
-	cfc.remove_ongoing_process(self, "_on_Card_gui_input_"  + canonical_name)	
+	cfc.remove_ongoing_process(self, "_on_Card_gui_input_"  + canonical_name)
 
 # Game specific code and/or shortcuts
 func readyme(toggle := false,
 			start_tween := true,
 			check := false,
 			tags := ["Manual"]) :
-	
+
 	var rot = 0
 	if CFConst.OPTIONS.get("enable_fuzzy_rotations", false):
-		if (is_exhausted()):			
+		if (is_exhausted()):
 			rot = randi() % 11 - 5
 			tags = tags + ["force"]
-			
+
 	var retcode = set_card_rotation(rot, toggle, start_tween, check, tags)
 	if !check and retcode != CFConst.ReturnCode.FAILED:
 		_is_exhausted = false
 	return retcode
-	
+
 func exhaustme(toggle := false,
 			start_tween := true,
 			check := false,
 			tags := ["Manual"]) :
-				
-	var rot = 90	
+
+	var rot = 90
 	if CFConst.OPTIONS.get("enable_fuzzy_rotations",false):
-		if (!is_exhausted()):			
+		if (!is_exhausted()):
 			rot = randi() % 16 + 80
 			tags = tags + ["force"]
-			
+
 	if 	is_exhausted()	and not toggle:
-		return CFConst.ReturnCode.OK		
-					
+		return CFConst.ReturnCode.OK
+
 	var retcode = set_card_rotation(rot, toggle, start_tween, check, tags)
 	if !check and retcode != CFConst.ReturnCode.FAILED:
 		_is_exhausted = true
-	return retcode	
+	return retcode
 
 func is_ready() :
 	return !_is_exhausted
 
 func is_exhausted():
 	return _is_exhausted
-	
+
 func add_threat(threat : int):
-	tokens.mod_token("threat",threat)	
+	tokens.mod_token("threat",threat)
 
 func get_current_threat():
 	return tokens.get_token_count("threat")
 
 func remove_threat(modification: int, script = null) -> int:
-	
+
 	#Crisis special case: can't remove threat from main scheme
 	if "main_scheme" == properties.get("type_code", "false"):
 		var all_schemes:Array = cfc.NMAP.board.get_all_cards_by_property("type_code", "side_scheme")
 		all_schemes.append(self) #some main schemes such as countdown to oblivion give themselves crisis
 		for scheme in all_schemes:
-			#we add all acceleration tokens	
+			#we add all acceleration tokens
 			var crisis = scheme.get_property("scheme_crisis", 0, true)
 			if crisis:
 				return CFConst.ReturnCode.FAILED
-	
+
 	var token_name = "threat"
 	var current_tokens = tokens.get_token_count(token_name)
 	if current_tokens - modification < 0:
 		modification = current_tokens
 	var result = tokens.mod_token(token_name,-modification)
-			
+
 	return result
 
 func discard():
 	#cleanup some variables
 	set_is_boost(false)
-	
+
 	#move to correct pile
 	var hero_owner_id = get_owner_hero_id()
 	if (!hero_owner_id):
@@ -1282,7 +1299,7 @@ func discard():
 #returns the amount of healing that could happen for a given heal value
 func can_heal(value):
 	var current_damage = tokens.get_token_count("damage")
-	return min(value, current_damage)	
+	return min(value, current_damage)
 
 func heal(value):
 	var current_damage = tokens.get_token_count("damage")
@@ -1290,7 +1307,7 @@ func heal(value):
 	return tokens.mod_token("damage",-heal_value)
 
 
-func common_pre_execution_scripts(_trigger_card, _trigger: String, _trigger_details: Dictionary) -> void:
+func common_pre_execution_scripts_with_trigger_card(_trigger_card, _trigger: String, _trigger_details: Dictionary) -> void:
 	match _trigger:
 		"enemy_attack":
 			gameData.compute_potential_defenders(gameData.get_current_activity_hero_target(), _trigger_card)
@@ -1298,13 +1315,13 @@ func common_pre_execution_scripts(_trigger_card, _trigger: String, _trigger_deta
 func can_defend(hero_id = 0):
 	if is_exhausted() : return false
 
-	var type_code = get_property("type_code", "")
+	var type_code = get_property_with_default("type_code", "")
 	if type_code != "hero" and type_code != "ally": return false
-	
+
 	if hero_id:
 		if get_controller_hero_id() != hero_id:
 			return false
-	
+
 	return true
 
 
@@ -1320,13 +1337,13 @@ func die(script):
 		"ally", "minion":
 			gameData.character_died(self, script)
 		"side_scheme":
-			move_to(cfc.NMAP["discard_villain"])	
+			move_to(cfc.NMAP["discard_villain"])
 		"villain":
 			gameData.villain_died(self, script)
 		_:
 			self.discard()
-				
-	return CFConst.ReturnCode.OK		
+
+	return CFConst.ReturnCode.OK
 
 
 func _process_card_state() -> void:
@@ -1341,10 +1358,10 @@ func _process_card_state() -> void:
 	match state:
 		CardState.ON_PLAY_BOARD:
 			#horizontal cards are always forced to horizontal
-			#does that need to change eventually ?	
+			#does that need to change eventually ?
 			#note: setting tweening to false otherwise it causes issues with
 			#tweening never ending
-			if get_property("_horizontal", false) and not _is_boost:
+			if get_property_with_default("_horizontal", false) and not _is_boost:
 				set_card_rotation(90, false, false)
 
 
@@ -1355,7 +1372,7 @@ func _process_card_state() -> void:
 func check_ghost_card():
 	for i in range(gameData.get_team_size()):
 		cfc.NMAP["ghosthand" + str(i+1)].check_ghost_card(self)
-	
+
 # This function can be overriden by any class extending Card, in order to provide
 # a way of checking if a card can be played before dragging it out of the hand.
 #
@@ -1369,46 +1386,46 @@ func check_play_costs_no_cache(hero_id, _debug = false)-> Color:
 	_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID
 	return check_play_costs({"hero_id" : hero_id}, _debug)
 
-	
+
 func check_play_costs(params:Dictionary = {}, _debug = false) -> Color:
 	#return .check_play_costs();
 	var hero_id = params.get("hero_id", gameData.get_current_local_hero_id())
 
-	
+
 	if (_check_play_costs_cache.get(hero_id,CFConst.CostsState.CACHE_INVALID) != CFConst.CostsState.CACHE_INVALID):
 		return _check_play_costs_cache[hero_id]
-	
+
 	_check_play_costs_cache[hero_id] = CFConst.CostsState.IMPOSSIBLE
 
 	#skip if card is not in hand and not on board. TODO: will have to take into account cards than can be played from other places
 	var state_exec = get_state_exec()
-	
+
 	if !(state_exec in ["hand", "board"]):
 		return _check_play_costs_cache[hero_id]
-	
+
 
 	if (canonical_name == "Jessica Jones"):
 		var _tmp = 1
-	
+
 	var trigger_details = {
 		"for_hero_id": hero_id,
 		"_debug": _debug
 	}
-		
+
 	var sceng = execute_scripts(self,"manual",trigger_details,CFInt.RunType.BACKGROUND_COST_CHECK)
 
 	if (!sceng): #TODO is this an error?
-		_check_play_costs_cache[hero_id] = CFConst.CostsState.IMPOSSIBLE	
+		_check_play_costs_cache[hero_id] = CFConst.CostsState.IMPOSSIBLE
 		return _check_play_costs_cache[hero_id]
-		
+
 	while sceng is GDScriptFunctionState && sceng.is_valid(): # Still working.
 		sceng = sceng.resume()
 		#sceng = yield(sceng, "completed")
 
 	if (!sceng): #TODO is this an error?
-		_check_play_costs_cache[hero_id] = CFConst.CostsState.IMPOSSIBLE	
+		_check_play_costs_cache[hero_id] = CFConst.CostsState.IMPOSSIBLE
 		return _check_play_costs_cache[hero_id]
-	
+
 	if (sceng.can_all_costs_be_paid):
 		_check_play_costs_cache[hero_id] = CFConst.CostsState.OK
 
@@ -1426,15 +1443,15 @@ func check_play_costs(params:Dictionary = {}, _debug = false) -> Color:
 # Current use case: check manapool before asking to pay for cards
 func common_pre_run(sceng) -> void:
 	var trigger_details = sceng.trigger_details
-	
+
 	var controller_hero_id = trigger_details.get("override_controller_id", self.get_controller_hero_id())
-	
+
 	var scripts_queue: Array = sceng.scripts_queue
 	var new_queue: Array = []
 	var temp_queue: Array = []
-	
+
 	var zones = ["hand"] + CFConst.HERO_GRID_SETUP.keys()
-		
+
 #	if sceng.additional_rules.has("for_each_player"):
 #		for i in gameData.get_team_size():
 #			var hero_queue = scripts_queue.duplicate()
@@ -1445,46 +1462,46 @@ func common_pre_run(sceng) -> void:
 #				var new_script_definition = script_definition.duplicate(true)
 #				new_script_definition.erase("for_each_player")
 #				for v in zones: # ["hand", "encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
-#					new_script_definition = WCUtils.search_and_replace(new_script_definition, v, v+str(hero_id), true)	
+#					new_script_definition = WCUtils.search_and_replace(new_script_definition, v, v+str(hero_id), true)
 #
-#				new_script_definition = WCUtils.search_and_replace(new_script_definition, "their_identity", "identity_" + str(hero_id), true)	
+#				new_script_definition = WCUtils.search_and_replace(new_script_definition, "their_identity", "identity_" + str(hero_id), true)
 #
 #				var new_script = ScriptTask.new(script.owner, new_script_definition, script.trigger_object, script.trigger_details)
 #				new_queue.append(new_script)
 #		scripts_queue = new_queue
 #		new_queue = []
-				
+
 	for task in scripts_queue:
 		var script: ScriptTask = task
 		var script_definition = script.script_definition
 		var scripts = [script]
-		if script_definition.get("for_each_player", false):	
+		if script_definition.get("for_each_player", false):
 			scripts = []
 			for i in gameData.get_team_size():
 				var hero_id = i+1
 				var new_script_definition = script_definition.duplicate(true)
 				new_script_definition.erase("for_each_player")
 				for v in zones: #["hand", "encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
-					new_script_definition = WCUtils.search_and_replace(new_script_definition, v, v+str(hero_id), true)	
+					new_script_definition = WCUtils.search_and_replace(new_script_definition, v, v+str(hero_id), true)
 
 				var new_script = ScriptTask.new(script.owner, new_script_definition, script.trigger_object, script.trigger_details)
 				scripts.append(new_script)
 		for _script in scripts:
 			temp_queue.append(_script)
-	
-	scripts_queue = temp_queue	
 
-	
+	scripts_queue = temp_queue
+
+
 	for task in scripts_queue:
 		var script: ScriptTask = task
-		var script_definition = script.script_definition			
+		var script_definition = script.script_definition
 		var replacements = {}
 		for v in zones:
 			replacements[v + "_first_player"] = v+str(gameData.first_player_hero_id())
 		#first player explcitely mentioned
-		script_definition = WCUtils.search_and_replace_multi(script_definition, replacements , true)	
+		script_definition = WCUtils.search_and_replace_multi(script_definition, replacements , true)
 		replacements = {}
-		
+
 		if (controller_hero_id <=0 ):
 			var card_type = task.owner.get_property("type_code")
 			if card_type in ["scheme", "main_scheme", "minion", "side_scheme", "treachery"]:
@@ -1498,19 +1515,19 @@ func common_pre_run(sceng) -> void:
 				replacements[v] = v+str(controller_hero_id)
 
 
-				#any_discard, etc gets replaced with ["discard1","discard2"] 
+				#any_discard, etc gets replaced with ["discard1","discard2"]
 				var team_size = gameData.get_team_size()
 				var any_container_def = []
 				for i in range (team_size):
 					any_container_def.append(v + str(i+1))
 				if any_container_def.size() == 1:
 					any_container_def = any_container_def[0]
-				replacements["any_" + v] = any_container_def	
-			script_definition = WCUtils.search_and_replace_multi(script_definition, replacements , true)	
-	
-		#put back the modified script			
+				replacements["any_" + v] = any_container_def
+			script_definition = WCUtils.search_and_replace_multi(script_definition, replacements , true)
+
+		#put back the modified script
 		script.script_definition = script_definition
-				
+
 		match script_definition["name"]:
 			# To pay for cards: We check if the manapool has some mana
 			# If so, use that in "priority" and reduce the actual cost of the card
@@ -1557,13 +1574,13 @@ func common_pre_run(sceng) -> void:
 						if found_ally:
 							script.script_definition[SP.KEY_SELECTION_TYPE] = "equal"
 							script.script_definition[SP.KEY_SELECTION_OPTIONAL] = false
-				new_queue.append(script)							
+				new_queue.append(script)
 			_:
 				new_queue.append(task)
-	sceng.scripts_queue = new_queue	
+	sceng.scripts_queue = new_queue
 
 #TODO cleanup, probably doesn't need to be a replacement
-func pay_regular_cost_replacement(script_definition: Dictionary, trigger_details) -> Dictionary:	
+func pay_regular_cost_replacement(script_definition: Dictionary, trigger_details) -> Dictionary:
 	var owner_hero_id = trigger_details.get("override_controller_id", self.get_owner_hero_id())
 
 	# For cards owned by the Villain, owner_hero_id is zero.
@@ -1572,14 +1589,14 @@ func pay_regular_cost_replacement(script_definition: Dictionary, trigger_details
 	#TODO how does it work in Multiplayer?
 	if (!owner_hero_id):
 		owner_hero_id = gameData.get_current_local_hero_id()
-			
+
 	var manacost:ManaCost = ManaCost.new()
 	var cost = script_definition["cost"]
 	var is_optional = script_definition.get(SP.KEY_SELECTION_OPTIONAL, true)
 	#precompute cost replacement macros
 	if (typeof(cost) == TYPE_STRING):
 		if cost == "card_cost":
-			cost = self.get_property("cost")
+			cost = get_property("cost")
 
 	var selection_additional_constraints = null
 	if (typeof(cost) == TYPE_DICTIONARY):
@@ -1587,16 +1604,16 @@ func pay_regular_cost_replacement(script_definition: Dictionary, trigger_details
 		selection_additional_constraints = {
 			"func_name": "can_pay_as_resource",
 			"using": "all_selection",
-			"func_params": cost 
+			"func_params": cost
 		}
 	else:
 		manacost.init_from_expression(cost) #TODO better name?
-	
+
 	var resource_container_names = ["hand", "identity","allies","upgrade_support"]
 	var resource_containers = []
 	for v in resource_container_names:
 		resource_containers.append(v + str(owner_hero_id) )
-		
+
 	var result  ={
 				"name": "pay_as_resource",
 				"is_cost": true,
@@ -1611,14 +1628,14 @@ func pay_regular_cost_replacement(script_definition: Dictionary, trigger_details
 				"selection_what_to_count": "get_resource_value_as_int",
 				"selection_additional_constraints": selection_additional_constraints,
 				"src_container": resource_containers
-			}		
+			}
 
-	return result	
+	return result
 
 func get_grid_name():
 	if (_placement_slot):
 		return _placement_slot.get_grid_name()
-	return null	
+	return null
 
 #
 #Marvel Champions Specific functionality
@@ -1632,7 +1649,7 @@ func enable_token(token_name, value:bool):
 	if value:
 		tokens.mod_token(token_name, 1, true)
 	else:
-		tokens.mod_token(token_name, 0, true)	
+		tokens.mod_token(token_name, 0, true)
 
 func is_stunned() -> bool:
 	return is_token_set("stunned")
@@ -1658,11 +1675,11 @@ func can_change_form() -> bool:
 func changed_form(details):
 	var before = details.get("before")
 	#hopefully after and before are actually different...
-	var after = "alter_ego" if self.is_alter_ego_form() else "hero"		
+	var after = "alter_ego" if self.is_alter_ego_form() else "hero"
 	var stackEvent:SignalStackScript = SignalStackScript.new("identity_changed_form", self, {"before": before , "after" : after })
-	gameData.theStack.add_script(stackEvent)		
+	gameData.theStack.add_script(stackEvent)
 #	scripting_bus.emit_signal("identity_changed_form", new_card, {"before": before , "after" : after } )
-	
+
 
 func change_form(voluntary = true) -> bool:
 	#players have one voluntary change form per turn
@@ -1677,7 +1694,7 @@ func change_form(voluntary = true) -> bool:
 	if !new_card:
 		var _error = 1
 		return false
-		
+
 	return true
 
 #a way to copy all modifications of this card to another card
@@ -1698,22 +1715,22 @@ func import_modifiers(modifiers:Dictionary):
 	var token_data = modifiers.get("tokens", {})
 	if token_data:
 		tokens.load_from_json(token_data)
-	
+
 	if modifiers.has("exhausted"):
 		if modifiers["exhausted"]:
 			exhaustme()
 		else:
 			readyme()
-			
-	self._can_change_form = modifiers.get("can_change_form", self._can_change_form)	
+
+	self._can_change_form = modifiers.get("can_change_form", self._can_change_form)
 
 func is_onboard():
 	return state in [
 		CardState.ON_PLAY_BOARD,
-		CardState.FOCUSED_ON_BOARD, 
+		CardState.FOCUSED_ON_BOARD,
 		CardState.DROPPING_TO_BOARD
 	]
-	
+
 func is_onboard_facedown():
 	return !is_faceup and is_onboard()
 
@@ -1723,13 +1740,13 @@ func set_is_faceup(
 			instant := false,
 			check := false,
 			tags := ["Manual"]) -> int:
-	var _before = is_faceup			
+	var _before = is_faceup
 	var retcode = .set_is_faceup(value, instant, check, tags)
 	var _after = is_faceup
-	
+
 	if check:
 		return retcode
-			
+
 	#we remove all of the card's properties as long as it's facedown on the board,
 	#to avoid triggering any weird things
 	if is_onboard_facedown():
@@ -1743,7 +1760,7 @@ func set_is_faceup(
 		if _hidden_properties:
 			var temp_properties = properties
 			properties = _hidden_properties
-			
+
 			for property in temp_properties:
 				if property in ["_code", "code"]:
 					continue
@@ -1756,22 +1773,22 @@ func set_is_faceup(
 							"previous_property_value": temp_properties[property],
 							"tags": ["Scripted", "set_is_faceup"]
 						}
-				)				
+				)
 			if scripts:
 				cfc.LOG("removing extra scripts from card " + canonical_name + " as we turn it faceup")
-				scripts = {}				
-			
+				scripts = {}
+
 			_hidden_properties = {}
-	
-	return retcode	
-		
-	
+
+	return retcode
+
+
 func copy_modifiers_to(to_card:WCCard):
 	var modifiers = export_modifiers()
 	to_card.import_modifiers(modifiers)
 
 func draw_boost_card():
-	var villain_deck:Pile = cfc.NMAP["deck_villain"]	
+	var villain_deck:Pile = cfc.NMAP["deck_villain"]
 	var boost_card:Card = villain_deck.get_top_card()
 	if boost_card:
 		boost_card.set_is_boost(true)
@@ -1779,7 +1796,7 @@ func draw_boost_card():
 		boost_card.set_is_faceup(false)
 
 func draw_boost_cards(action_type):
-	var amount = self.get_property("boost_cards_per_" + action_type, 0)
+	var amount = get_property_with_default("boost_cards_per_" + action_type, 0)
 	for i in amount:
 		draw_boost_card()
 	#TODO if pile empty...need to reshuffle ?
@@ -1787,7 +1804,7 @@ func draw_boost_cards(action_type):
 #returns an array of allowed triggers,
 # or "true" if all scripts allowed
 func can_execute_scripts():
-	#checks for cases where we don't want to execute scripts on this card	
+	#checks for cases where we don't want to execute scripts on this card
 	if self.is_boost():
 		return ['boost']
 	return true
@@ -1800,10 +1817,10 @@ func get_boost_cards(flip_status:int = CFConst.FLIP_STATUS.BOTH):
 		if (card.is_faceup and flip_status == CFConst.FLIP_STATUS.FACEDOWN):
 			continue
 		if (!card.is_faceup and flip_status == CFConst.FLIP_STATUS.FACEUP):
-			continue			
+			continue
 		results.append(card)
 
-	return results	 
+	return results
 
 func next_boost_card_to_reveal():
 	var boost_card = null
@@ -1821,15 +1838,15 @@ func get_instance_runtime_scripts(trigger:String = "", filters:={}) -> Dictionar
 	#if we have no extra scripts we stick with parent behavior
 	if !extra_scripts:
 		return .get_instance_runtime_scripts(trigger)
-		
+
 	#if we have extra scripts, we'll do a merge of extra scripts
 	#with the cards script, then retrieve from the merged dictionary
 	var merged_scripts:Dictionary = .get_instance_runtime_scripts()
 	if !merged_scripts:
 		merged_scripts = cfc.set_scripts.get(canonical_id,{}).duplicate(true)
-	
+
 	#additional scripts to merge with what we found
-	var requesting_hero_id = filters.get("requesting_hero_id", 0) 
+	var requesting_hero_id = filters.get("requesting_hero_id", 0)
 	for key in extra_scripts:
 		var extra_script = extra_scripts[key]["script_definition"]
 		var controller_id = extra_scripts[key].get("controller_id", 0)
@@ -1843,7 +1860,7 @@ func get_instance_runtime_scripts(trigger:String = "", filters:={}) -> Dictionar
 			found_scripts = merged_scripts.duplicate(true)
 		_:
 			found_scripts = merged_scripts.get(trigger,{}).duplicate(true)
-	
+
 	return found_scripts
 
 #returns true if this card has a given trait
@@ -1862,7 +1879,7 @@ func has_trait(params) -> bool:
 	if trait == "aerial":
 		var _tmp = 1
 	trait = "trait_" + trait
-	if get_property(trait, 0, true):
+	if get_property_with_default(trait, true):
 		return true
 	return false
 
@@ -1879,8 +1896,8 @@ func set_current_activation(script):
 
 func get_current_activation_details():
 	return _current_activation_details
-	
-func remove_current_activation(script):	
+
+func remove_current_activation(script):
 	if _current_activation_details != script:
 		var _error = 1
 	_current_activation_details = null
@@ -1897,7 +1914,7 @@ func get_script_bool_property(params, script:ScriptTask = null) -> bool:
 
 func identity_has_trait(params, script:ScriptTask = null) -> bool:
 	var hero = get_controller_hero_card()
-	return hero.has_trait(params)	
+	return hero.has_trait(params)
 
 func card_is_in_play(params, script:ScriptTask = null) -> bool:
 	var card_name = params.get("card_name", "")
@@ -1912,11 +1929,11 @@ func current_activation_status(params:Dictionary, _script:ScriptTask = null) -> 
 	var script = get_current_activation_details()
 	if !script:
 		return false
-	var expected_activation_type = params.get("type", "")	
+	var expected_activation_type = params.get("type", "")
 	var undefended = params.get("undefended", null)
 	if null != undefended:
 		expected_activation_type = "attack"
-	
+
 	match expected_activation_type:
 		"attack":
 			if not script.script_name in ["enemy_attack", "undefend"]:
@@ -1925,22 +1942,22 @@ func current_activation_status(params:Dictionary, _script:ScriptTask = null) -> 
 			if not script.script_name in ["commit_scheme"]:
 				return false
 		"":
-			pass			
+			pass
 		_:
-			return false	
-	
+			return false
+
 	if null != undefended:
 		if undefended and script.subjects:
 			return false
 		if !undefended and !scripts.subjects:
 			return false
-			
-	return true				 	
+
+	return true
 
 #returns true if this card was paid for with (at least) resources described by params
-#e.g if you paid 3 physical plus 1 mental for a card, 
+#e.g if you paid 3 physical plus 1 mental for a card,
 #it would say true to {"mental": 1}, to {"physical" : 2}, or to {"mental" :1, "physical": 1}
-#but false to {"mental": 2}, or {"mental": 1, "wild": 1} 
+#but false to {"mental": 2}, or {"mental": 1, "wild": 1}
 func paid_with_includes(params:Dictionary, script:ScriptTask = null) -> bool:
 	var paid_with = ManaPool.new()
 	for resource in _last_paid_with:
@@ -1948,19 +1965,19 @@ func paid_with_includes(params:Dictionary, script:ScriptTask = null) -> bool:
 
 	var compared_to = ManaCost.new()
 	compared_to.init_from_dictionary(params)
-	
+
 	return paid_with.can_pay_total_cost(compared_to)
 
 func count_printed_resources(params:Dictionary, script) -> int:
 	var mana = ManaCost.new()
-	var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)	
+	var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
 
 	while subjects is GDScriptFunctionState && subjects.is_valid():
-		subjects = subjects.resume()	
+		subjects = subjects.resume()
 	if !subjects:
 		cfc.LOG("error retrieving subjects for " + to_json(params))
 		return 0
-		
+
 	for subject in subjects:
 		var printed_resource = subject.get_printed_resource_value_as_mana()
 		mana.add_manacost(printed_resource)
@@ -1970,32 +1987,32 @@ func count_printed_resources(params:Dictionary, script) -> int:
 	else:
 		count = mana.converted_mana_cost()
 	return count
-	
+
 func count_boost_icons(params:Dictionary, script) -> int:
-	var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)	
+	var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
 	var count = 0
-	
+
 	while subjects is GDScriptFunctionState && subjects.is_valid():
-		subjects = subjects.resume()	
+		subjects = subjects.resume()
 	if !subjects:
 		cfc.LOG("error retrieving subjects for " + to_json(params))
 		return 0
-		
+
 	for subject in subjects:
 		var boost_icons = subject.get_property("boost", 0)
 		count+= boost_icons
 
-	return count	
+	return count
 
 func count_resource_types(params:Dictionary, script) -> int:
 	var mana = ManaCost.new()
-	var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)	
+	var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
 	for subject in subjects:
 		var printed_resource = subject.get_printed_resource_value_as_mana()
 		mana.add_manacost(printed_resource)
 	var count = mana.count_resource_types()
 	return count
-	
+
 func get_sustained_damage(params:Dictionary = {}, script = null) -> int:
 	var subject = self
 	if params and script and params.has("subject"):
@@ -2012,13 +2029,13 @@ func get_remaining_damage(params:Dictionary = {}, script = null) -> int:
 		if !subjects:
 			return 0
 		subject = subjects[0]
-	
+
 	var current_damage = subject.tokens.get_token_count("damage")
 	var health = subject.get_property("health", 0)
 	var diff = health - current_damage
 	if diff <= 0:
 		return 0
-	return diff	
+	return diff
 
 #
 # RESOURCE FUNCTIONS
@@ -2035,7 +2052,7 @@ func pay_as_resource(script):
 
 
 	#reload and re_run the script from scratch, up to execution
-	#var exe_sceng = self.execute_scripts(self, "resource", {})	
+	#var exe_sceng = self.execute_scripts(self, "resource", {})
 	#below is a convoluted way to force execute the sript locally without going through the network stack,
 	#specifically for payments
 	#two reasons for that:
@@ -2049,9 +2066,9 @@ func pay_as_resource(script):
 		hero_id = owner_card.get_controller_hero_id()
 	if hero_id:
 		delegate = {"for_hero_id" : hero_id}
-	var exe_sceng = self.execute_scripts_no_stack(self, "resource", delegate)				
+	var exe_sceng = self.execute_scripts_no_stack(self, "resource", delegate)
 	while exe_sceng is GDScriptFunctionState && exe_sceng.is_valid():
-		exe_sceng  = exe_sceng.resume()	
+		exe_sceng  = exe_sceng.resume()
 
 	if (get_state_exec()) == "hand":
 		self.discard()
@@ -2062,18 +2079,18 @@ func _get_resource_sceng(script):
 	#var my_state = _state if _state else get_state_exec()
 	var trigger_card = script.owner
 	var trigger_details = {}
-	var card_scripts = retrieve_filtered_scripts(trigger_card, "resource", trigger_details)	
+	var card_scripts = retrieve_filtered_scripts(trigger_card, "resource", trigger_details)
 	var state_scripts = get_state_scripts(card_scripts, trigger_card, trigger_details)
-	
+
 	if !state_scripts:
 		return null
-	
+
 	var sceng = cfc.scripting_engine.new(
 		state_scripts,
 			self,
 			trigger_card,
-			trigger_details)	
-	
+			trigger_details)
+
 	return sceng
 
 
@@ -2084,43 +2101,43 @@ func get_resource_value_as_mana(script):
 	var cache_key = {
 		"owner": script.owner
 	}.hash()
-	
+
 	if _cache_resource_value.has(cache_key):
 		return _cache_resource_value[cache_key]
 
-		
+
 	var my_state = get_state_exec()
 	var sceng = _get_resource_sceng(script)
 	var result_mana:ManaCost = ManaCost.new()
-	
+
 	if sceng:
 		common_pre_run(sceng)
-		
+
 		var func_return = sceng.execute(CFInt.RunType.BACKGROUND_COST_CHECK)
 		while func_return is GDScriptFunctionState && func_return.is_valid():
 			func_return = func_return.resume()
-		
+
 		if (sceng.can_all_costs_be_paid):
 			# run in precompute mode to try and calculate how much resources this would give us
 			func_return = sceng.execute(CFInt.RunType.PRECOMPUTE)
 			while func_return is GDScriptFunctionState && func_return.is_valid():
 				func_return = func_return.resume()
-				
+
 			var results = sceng.get_precompute_objects()
 			if (results):
 				for result in results:
 					if result as ManaCost:
 						result_mana.add_manacost(result)
-				_cache_resource_value[cache_key] = result_mana		
-				return _cache_resource_value[cache_key]			
-	
+				_cache_resource_value[cache_key] = result_mana
+				return _cache_resource_value[cache_key]
+
 	#if the compute didn't get through, we return the regular printed value
 	if (my_state) == "hand":
 		if (canonical_name == "The Power of Justice" and get_state_exec() == "hand"):
-			var _tmp = 1	
-		_cache_resource_value[cache_key]  = get_printed_resource_value_as_mana(script)	
+			var _tmp = 1
+		_cache_resource_value[cache_key]  = get_printed_resource_value_as_mana(script)
 		return _cache_resource_value[cache_key]
-	
+
 	_cache_resource_value[cache_key] = null
 	return _cache_resource_value[cache_key]
 
@@ -2128,18 +2145,18 @@ func get_resource_value_as_int(script):
 	if (canonical_name == "The Power of Justice" and get_state_exec() == "hand"):
 		var _tmp = 1
 	var result_mana:ManaCost = get_resource_value_as_mana(script)
-	
-	if !result_mana:		
+
+	if !result_mana:
 		return 0
-	
+
 	return result_mana.converted_mana_cost()
-		
+
 
 func get_printed_resource_value_as_mana(_script= null):
 	var resource_dict = {}
 	for resource_name in ManaCost.RESOURCE_TEXT:
 		var lc_name = resource_name.to_lower()
-		var value = get_property("resource_" + lc_name, 0)
+		var value = get_property_with_default("resource_" + lc_name, 0)
 		if value:
 			resource_dict[lc_name] = value
 	var resource_mana = ManaCost.new()
@@ -2150,7 +2167,7 @@ func get_printed_resource_value_as_int(script):
 	var total = 0
 	for resource_name in ManaCost.RESOURCE_TEXT:
 		var lc_name = resource_name.to_lower()
-		total += get_property("resource_" + lc_name, 0)
+		total += get_property_with_default("resource_" + lc_name, 0)
 	return total
 
 #
@@ -2166,14 +2183,14 @@ func display_debug(msg):
 #used for some scripts
 func get_remaining_indirect_damage():
 	return get_remaining_damage()
-	
+
 func get_max_hand_size():
-	var max_hand_size = get_property("max_hand_size", 0)
-	var hand_size =  get_property("hand_size", 0)
+	var max_hand_size = get_property_with_default("max_hand_size", 0)
+	var hand_size =  get_property_with_default("hand_size", 0)
 
 	if max_hand_size:
 		hand_size = min(max_hand_size, hand_size)
-		
+
 	return hand_size
 
 func init_token_drawer():
@@ -2185,19 +2202,19 @@ func init_token_drawer():
 		tokens.set_max(token_name, value)
 
 func get_keywords () -> Dictionary:
-	return get_property("keywords", {})
+	return get_property_with_default("keywords", {})
 
 func get_keyword(name):
 	var keywords:Dictionary = get_keywords ()
 	return keywords.get(name.to_lower(), false)
-	
+
 func get_unique_name() -> String:
 	var subname = get_property("subname")
 	if !subname:
-		subname = ""		
+		subname = ""
 	return canonical_name + " - " + subname
 
-#used for save/load	
+#used for save/load
 func export_to_json():
 	var owner_hero_id = self.get_owner_hero_id()
 	var card_id = self.properties.get("_code")
@@ -2210,16 +2227,16 @@ func export_to_json():
 	}
 	if (tokens_to_json):
 		card_description["tokens"] = tokens_to_json
-	
+
 	if (self.current_host_card):
 		card_description["host"] = current_host_card.properties.get("_code")
-		
+
 	if self.encounter_status != gameData.EncounterStatus.NONE:
 		card_description["encounter_status"] = self.encounter_status
 
 	if is_onboard_facedown():
 		card_description["facedown_properties"] = self.properties
-	
+
 	return card_description
 
 func load_from_json(card_description):
@@ -2246,8 +2263,8 @@ func _ready_load_from_json(card_description: Dictionary = {}):
 		exhaustme()
 	else:
 		readyme()
-			
-	self._can_change_form = card_description.get("can_change_form", true)	
+
+	self._can_change_form = card_description.get("can_change_form", true)
 
 	self.encounter_status = int(card_description.get("encounter_status", gameData.EncounterStatus.NONE))
 
@@ -2272,7 +2289,7 @@ func is_hero_form() -> bool:
 	if "hero" == properties.get("type_code", ""):
 		return true
 	return false
-	
+
 func is_alter_ego_form() -> bool:
 	if "alter_ego" == properties.get("type_code", ""):
 		return true
@@ -2281,3 +2298,103 @@ func is_alter_ego_form() -> bool:
 func serialize_to_json():
 	return export_to_json()
 
+func get_property_with_default(property_name: String, default_value):
+	var value = get_property(property_name)
+	if value == null:
+		return default_value
+	return value
+
+func clear_highlight():
+	if !highlight:
+		return
+	highlight.set_highlight(false)
+
+func get_state_scripts(card_scripts, trigger_card, trigger_details):
+	var state_scripts_dict = get_state_scripts_dict(card_scripts, trigger_card, trigger_details)
+	return state_scripts_dict["state_scripts"]
+
+func get_state_scripts_dict(card_scripts, trigger_card, trigger_details):
+	var state_scripts = []
+	var action_name = ""
+	# We select which scripts to run from the card, based on it state
+	var state_exec := get_state_exec()
+	var any_state_scripts = card_scripts.get('all', [])
+	state_scripts = card_scripts.get(state_exec, any_state_scripts)
+
+	var rules = {}
+	#If it's a multiple choice, filter down only to only the ones we can afford to pay
+	if typeof(state_scripts) == TYPE_DICTIONARY:
+		#special case if only one entry in a dictionary, this is a choice by the script writer,
+		# we let it through and remove the
+		#dictionary wrapper
+		if state_scripts.has("_rules"):
+			rules = state_scripts.get("_rules")
+			state_scripts.erase("_rules")
+
+		if state_scripts.size() == 1:
+			var first_key = state_scripts.keys()[0]
+			state_scripts = state_scripts[first_key]
+			action_name = first_key
+		else:
+			for entry_name in state_scripts.keys():
+				if entry_name == "_rules":
+					continue
+				var state_script = state_scripts[entry_name]
+				var sceng = cfc.scripting_engine.new(
+					state_script,
+					self,
+					trigger_card,
+					trigger_details)
+				common_pre_run(sceng)
+				var func_return = sceng.execute(CFInt.RunType.BACKGROUND_COST_CHECK)
+				while func_return is GDScriptFunctionState && func_return.is_valid():
+					func_return = func_return.resume()
+				if !sceng.can_all_costs_be_paid:
+					state_scripts.erase(entry_name)
+			#notably we keep the dictionary here even if there's only one entry remaining in manual mode,
+			#so the user doesn't auto activate the only option by mistake
+			if CFConst.AUTO_EXECUTE_ONE_ENTRY_MENU and state_scripts.size() == 1:
+				if (CFConst.AUTO_EXECUTE_ONE_ENTRY_MENU == CFConst.AUTO_EXECUTE_MENU.MANUAL_INCLUDED) or trigger_details.get("trigger_type","") != "manual":
+					var first_key = state_scripts.keys()[0]
+					state_scripts = state_scripts[first_key]
+					action_name = first_key
+			if !state_scripts:
+				state_scripts = []
+
+
+
+	return { "action_name" : action_name, "state_scripts" : state_scripts, "rules": rules}
+
+# Retrieves the card scripts either from those defined on the card
+# itself, or from those defined in the script definition files
+#
+# Returns a dictionary of card scripts for this specific card
+# (based on the current trigger.all triggers)
+func retrieve_all_scripts() -> Dictionary:
+	var found_scripts: Dictionary
+	# If scripts have been defined directly in this Card object
+	# They take precedence over CardScriptDefinitions.gd
+	#
+	# This allows us to modify a card's scripts during runtime
+	# in isolation from other cards of the same name
+	found_scripts = get_instance_runtime_scripts()
+	if !found_scripts:
+		# This retrieves all the script from the card, stored in cfc
+		# The seeks in them the specific trigger we're using in this
+		# execution
+		found_scripts = cfc.set_scripts.get(canonical_id,{}).duplicate(true)
+	return(found_scripts)
+
+#Return interrupt string to hijack manual run
+#TODO right now this returns the first one, need to be more specific
+func find_interrupt_script() -> String:
+	var my_scripts = retrieve_all_scripts()
+	for _k in my_scripts.keys():
+		var k:String = _k
+		if (k == "interrupt"):
+			return k
+	return ""
+
+func is_dry_run(run_type):
+	return ((run_type == CFInt.RunType.COST_CHECK) or
+		 (run_type == CFInt.RunType.BACKGROUND_COST_CHECK))

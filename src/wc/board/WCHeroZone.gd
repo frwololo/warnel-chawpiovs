@@ -21,7 +21,7 @@ func _process (delta:float):
 	for card in post_move_modifiers.keys():
 		if card.is_animating():
 			continue
-			
+
 		var modifiers = post_move_modifiers[card]
 		var callback_function = modifiers.get("callback", "")
 		var callback_params = modifiers.get("callback_params", {})
@@ -31,13 +31,13 @@ func _process (delta:float):
 		post_move_modifiers.erase(card)
 		if callback_function:
 			card.call(callback_function, callback_params)
-		
-	#exhausted status sometimes doesn't catch up	
-	if identity_card and is_instance_valid(identity_card): 
-		if identity_card._is_exhausted and ( abs(identity_card.card_rotation) < 40): 	
+
+	#exhausted status sometimes doesn't catch up
+	if identity_card and is_instance_valid(identity_card):
+		if identity_card._is_exhausted and ( abs(identity_card.card_rotation) < 40):
 			identity_card.set_card_rotation(90, false, false)
 	else:
-		identity_card = null		
+		identity_card = null
 
 #things to do after everything is properly loaded.
 #This will trigger execute_scripts
@@ -47,26 +47,26 @@ func post_load_move():
 		var data = _post_load_move[card]
 		var pile_name = data.get("pile", "")
 		var slot = data.get("slot", null)
-		
+
 		if (pile_name):
 			card.move_to(cfc.NMAP[pile_name])
 		if slot:
-			card.move_to(cfc.NMAP.board, -1, slot)		
+			card.move_to(cfc.NMAP.board, -1, slot)
 			card.set_is_faceup(true)
 			var modifiers = data.get("modifiers", {})
 			if modifiers:
 				post_move_modifiers[card] = modifiers
-				
-#	for card in _post_load_move:				
+
+#	for card in _post_load_move:
 #		card.interruptTweening()
-#		card.reorganize_self()	
-		
-	_post_load_move = {} #reset		
-	return			
+#		card.reorganize_self()
+
+	_post_load_move = {} #reset
+	return
 
 
 remotesync func cards_preloaded():
-	var client_id = get_tree().get_rpc_sender_id() 	
+	var client_id = get_tree().get_rpc_sender_id()
 	_cards_loaded[client_id] = true
 	if _cards_loaded.size() == gameData.network_players.size():
 		_cards_loaded = {} #reset just in case
@@ -77,8 +77,8 @@ remotesync func cards_preloaded():
 func _ready():
 	if (not my_id):
 		print_debug("WCHeroZone: error, called ready before id set")
-		return	
-	
+		return
+
 
 func set_player(id:int):
 	my_id = id
@@ -91,21 +91,21 @@ func load_starting_identity():
 		#TODO error
 		return
 	var ckey = alter_ego_id
-	load_nemesis_aside(hero_card_data)	
+	load_nemesis_aside(hero_card_data)
 	load_identity (ckey)
-	
+
 func load_nemesis_aside(hero_card_data):
-	#return	
+	#return
 	var hero_set = hero_card_data["card_set_code"]
 	var nemesis_set = hero_set + "_nemesis"
-	
+
 	var nemesis_cards_data = cfc.cards_by_set[nemesis_set]
 	for card_data in nemesis_cards_data:
 		var quantity = card_data.get("quantity", 1)
 		for _i in range (quantity):
 			var card_key = card_data["_code"]
 			 #0 sets owner to villain so that nemesis cards get discarded into villain pile
-			var card = cfc.instance_card(card_key, 0)
+			var card = cfc.instance_card_with_owner(card_key, 0)
 			#moving the card forces a rescale
 			cfc.NMAP["deck" + str(my_id)].add_child(card)
 			card._determine_idle_state()
@@ -113,10 +113,10 @@ func load_nemesis_aside(hero_card_data):
 				"pile": "set_aside"
 			}
 
-	
+
 func load_identity(card_id, modifiers ={}):
 	var card = gameData.retrieve_from_side_or_instance(card_id, my_id)
-	
+
 	#cfc.NMAP["deck" + str(my_id)].add_child(card)
 	card._determine_idle_state()
 	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid("identity" + str(my_id))
@@ -130,7 +130,7 @@ func load_identity(card_id, modifiers ={}):
 			}
 	if !grid or !slot:
 		cfc.LOG("{error} grid/slot not found for " + card.canonical_name)
-		
+
 	set_identity_card(card)
 	rpc("cards_preloaded")
 	return identity_card
@@ -140,7 +140,7 @@ func set_identity_card(card):
 	#TODO I've had issues where moving the card out of the identity zone has caused objects to
 	#disappear. Not sure what is happening
 	identity_card.disable_dragging_from_board = true
-	identity_card.disable_dragging_from_pile = true		
+	identity_card.disable_dragging_from_pile = true
 
 func reorganize():
 	#identity_card.move_to(cfc.NMAP["hand" + str(my_id)])
@@ -150,7 +150,7 @@ func reorganize():
 #	if grid:
 #		slot = grid.get_slot(0)   # .find_available_slot()
 #		if slot:
-#			identity_card.move_to(cfc.NMAP.board, -1, slot)	
+#			identity_card.move_to(cfc.NMAP.board, -1, slot)
 	pass
 
 func get_player():
@@ -158,10 +158,10 @@ func get_player():
 
 func get_identity_card():
 	return identity_card
-	
+
 func is_hero_form() -> bool:
 	var hero_card = get_identity_card()
 	return hero_card.is_hero_form()
-	
+
 func is_alter_ego_form() -> bool:
-	return !is_hero_form()		
+	return !is_hero_form()

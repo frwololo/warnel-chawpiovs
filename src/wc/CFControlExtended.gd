@@ -16,7 +16,7 @@ var box_contents_by_name: Dictionary
 var all_traits: Dictionary = {}
 
 var obligations : Dictionary
-var schemes: Dictionary 
+var schemes: Dictionary
 var modular_encounters: Dictionary = {}
 var cards_by_set: Dictionary
 
@@ -30,17 +30,78 @@ var _ongoing_processes:= {}
 var _total_cards:int = 0
 var _cards_loaded: int = 0
 
+var cards_load_thread : Thread
+var cards_loading := true
 
 var ping_data: = {}
 var last_ping_time:= 0
 
+#pointer to modal menu for potential cleanup
+var modal_menus := []
+
 # warning-ignore:unused_signal
 signal json_parse_error(msg)
 
+# Sent when all Card definitions have finished loading the memory from file
+signal card_definitions_loaded
+
+func _process(_delta:float):
+	flush_cache_as_needed()
+
 func _setup() -> void:
-	._setup()
+	# Call parent setup methods manually to avoid parent's card loading
+	init_settings_from_file()
+	init_font_cache()
+	if not game_settings.has('fancy_movement'):
+		game_settings['fancy_movement'] = CFConst.FANCY_MOVEMENT
+	if not game_settings.has('focus_style'):
+		game_settings['focus_style'] = CFConst.FOCUS_STYLE
+	if not game_settings.has('hand_use_oval_shape'):
+		game_settings['hand_use_oval_shape'] = CFConst.HAND_USE_OVAL_SHAPE
+	# We reset our node mapping variables every time
+	# as they repopulate during unit testing many times.
+	flush_cache()
+	# We need to reset these values for UNIT testing
+	NMAP = {}
+	are_all_nodes_mapped = false
+	card_drag_ongoing = null
+	# The below takes care that we adjust some settings when testing via Gut
+	if is_testing:
+		ut = true
+		_debug = true
+	else:
+		# Initialize the game random seed
+		set_seed(game_rng_seed)
+
+	# Handle card loading with threading support and LOAD_CARDS_ONLINE check
+	if !CFConst.LOAD_CARDS_ONLINE:
+		load_cards_database()
+
 	delete_log_files()
 	preload_pck()
+
+func load_cards_database():
+	if CFConst.DISABLE_THREADS or OS.get_name() == "HTML5":
+		load_card_definitions()
+	else:
+		cards_load_thread = Thread.new()
+		cards_load_thread.start(self, "load_card_definitions")
+		while cards_load_thread.is_alive():
+			yield(get_tree().create_timer(0.1), "timeout")
+		cards_load_thread.wait_to_finish()
+	var defs_load_end_time = OS.get_ticks_msec()
+	if OS.has_feature("debug") and not cfc.is_testing:
+		print_debug("DEBUG INFO:CFControl: card definitions load time = %sms" % [str(defs_load_end_time - load_start_time)])
+	load_scripts()
+
+func load_scripts():
+	if CFConst.DISABLE_THREADS or OS.get_name() == "HTML5":
+		load_script_definitions()
+	else:
+		load_script_definitions()
+	var scripts_load_end_time = OS.get_ticks_msec()
+	if OS.has_feature("debug") and not cfc.is_testing:
+		print_debug("DEBUG INFO:CFControl: card scripts load time = %sms" % [str(scripts_load_end_time - load_start_time)])
 
 func get_ping(client_id):
 	var ping_info =  ping_data.get(client_id, {})
@@ -53,12 +114,12 @@ func get_avg_ping(client_id):
 	if !ping_info:
 		return 0
 	return ping_info["avg"]
-	
-remote func ping_ack(start_time):	
-	var client_id = get_tree().get_rpc_sender_id() 
+
+remote func ping_ack(start_time):
+	var client_id = get_tree().get_rpc_sender_id()
 	var end_time = Time.get_ticks_msec()
 	var last_ping = end_time - start_time
-		
+
 	var ping_avg = last_ping
 	if ping_data.has(client_id):
 		ping_avg = ping_data[client_id]["avg"]
@@ -66,14 +127,14 @@ remote func ping_ack(start_time):
 	ping_data[client_id] = {
 		"last_ping": last_ping,
 		"avg" : ((3 * ping_avg) + last_ping) / 4
-	} 
+	}
 
 func ping():
 	if !get_tree():
 		return
 	if !get_tree().network_peer:
 		return
-		
+
 	var new_ping_time = Time.get_ticks_msec()
 	#ping every 2 seconds at most
 	if new_ping_time - last_ping_time < 2000:
@@ -82,7 +143,7 @@ func ping():
 	rpc_unreliable("receive_ping_request", last_ping_time)
 
 remote func receive_ping_request(start_time):
-	var client_id = get_tree().get_rpc_sender_id() 
+	var client_id = get_tree().get_rpc_sender_id()
 	rpc_unreliable_id(client_id, "ping_ack", start_time)
 
 func delete_log_files():
@@ -106,27 +167,27 @@ func get_card_name_by_id(id):
 	var card_data = get_card_by_id(id)
 	if !card_data or !card_data.has("Name"):
 		return ""
-					
+
 	return card_data["Name"]
 
 
 func get_card_by_id(id):
 	if (not id):
 		WCUtils.debug_message("no id passed to get_card_by_id")
-		return null		
+		return null
 	var card_data = card_definitions.get(id, {})
-	
+
 	if not card_data:
 		WCUtils.debug_message("no data matching get_card_by_id " + str(id))
-		return null	
-	
+		return null
+
 	return card_data
 
-	
+
 
 func load_card_scenarios():
 	var json_card_data : Dictionary
-	json_card_data = WCUtils.read_json_file_with_user_override("Sets/_scenarios.json")	
+	json_card_data = WCUtils.read_json_file_with_user_override("Sets/_scenarios.json")
 	for key in json_card_data:
 		var card_data = json_card_data[key]
 		#creating entries for both id and name so I never have to remember which one to use...
@@ -146,24 +207,24 @@ func stage_variant_to_int(stage):
 				return 3
 			_:
 				return int (stage.substr(0,1))
-			
+
 	#todo error
 	var _error = 1
 	return 0
 
 func parse_keywords(text:String) -> Dictionary:
 	var result:= {}
-	
+
 	var lc_text:String = text.to_lower()
 	for _keyword in CFConst.AUTO_KEYWORDS.keys():
 		var keyword:String = _keyword.to_lower()
 		var type = CFConst.AUTO_KEYWORDS[keyword]
-		
 
-		
+
+
 		match type:
 			"bool":
-				result[keyword] = false		
+				result[keyword] = false
 				var position = lc_text.find(keyword + ".")
 				if  position >=0:
 					result[keyword] = true
@@ -190,9 +251,9 @@ func _split_traits(traits:String) -> Array:
 	var a_traits = traits.split(". ")
 	for trait in a_traits:
 		trait = trait.to_lower().trim_suffix(".")
-		trait = trait.replace(" ", "_")		
+		trait = trait.replace(" ", "_")
 		result.append(trait)
-	
+
 	return result
 
 func setup_traits_as_alterants():
@@ -220,27 +281,27 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 		if typeof(value) == TYPE_REAL:
 			var new_value:int = value
 			card_data[key] = new_value
-		
-		#replaces "null" with "0" for resources	
+
+		#replaces "null" with "0" for resources
 		if key.begins_with("resource") and !value:
 			card_data[key] = 0
 
 	#Fixing missing Data
 	card_data["box_name"] = box_name
-	
+
 	#linked cards might be missing preprocessing data
 	if not card_data.has("_code"):
 		card_data["_code"] = card_data.get("code", "")
-	var card_id = card_data["_code"]	
-	
+	var card_id = card_data["_code"]
+
 	if not card_data.has("Tags"):
-		card_data["Tags"] = []			
+		card_data["Tags"] = []
 
 	if not card_data.has("Requirements"):
 		card_data["Requirements"] = ""
-		
+
 	if not card_data.has("Abilities"):
-		card_data["Abilities "] = ""		
+		card_data["Abilities "] = ""
 
 
 	if not card_data.has(CardConfig.SCENE_PROPERTY):
@@ -250,9 +311,9 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 
 	if not card_data.has("back_card_code"):
 		card_data["back_card_code"] = ""
-	
+
 	if not card_data.has("_set"):
-		card_data["_set"] = card_data.get("pack_code", "")	
+		card_data["_set"] = card_data.get("pack_code", "")
 
 	if not card_data.has("Name"):
 		card_data["Name"] = card_data.get("name", "")
@@ -260,32 +321,32 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	if card_data.get("stage", ""):
 		card_data["original_stage"] = str(card_data["stage"])
 		card_data["stage"] = stage_variant_to_int(card_data["stage"])
-		
+
 	#Are those still needed?
 	if not card_data.has("Power"):
 		card_data["Power"] = card_data.get("attack")	#can be a string
 
 	if not card_data.has("Health"):
-		card_data["Health"] = card_data.get("health", 0)	
+		card_data["Health"] = card_data.get("health", 0)
 
 	#TODO more generically have a backup for printed_values?
 	card_data["printed_health"] = card_data.get("health", 0)
 
 	if not card_data.has("Cost") and card_data.has("cost"):
 		card_data["Cost"] = card_data.get("cost")
-	
-	for action in ["attack","thwart", "scheme"]:	
+
+	for action in ["attack","thwart", "scheme"]:
 		if card_data.has(action) and (card_data[action] != null):
 			card_data["can_" + action] = true
 			if card_data[action] < 0: #e.g. Titania gets "-1" in marvelcdb which is a problem for alterants
 				 card_data[action] = 0
 		else:
-			card_data["can_" + action] = false	
+			card_data["can_" + action] = false
 
 	###END Fixing missing data
 
 	var card_type:String = card_data["type_code"]
-	
+
 	#enriching data
 	var lc_card_type = card_type.to_lower()
 	var force_horizontal = CFConst.FORCE_HORIZONTAL_CARDS.get(lc_card_type, false)
@@ -293,8 +354,8 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 
 	var default_properties = CFConst.DEFAULT_PROPERTIES_BY_TYPE.get(lc_card_type, {})
 	for k in default_properties:
-		card_data[k] = default_properties[k] 
-	
+		card_data[k] = default_properties[k]
+
 
 	#Keywords parsing
 	if (!card_data.has("keywords")):
@@ -302,34 +363,34 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	#flatten it out to allow access through alterants and get_property
 	for k in card_data["keywords"].keys():
 		card_data[k] = card_data["keywords"][k]
-	
+
 	if (card_data.has("traits") and typeof(card_data["traits"]) == TYPE_STRING):
 		var traits = _split_traits(card_data["traits"])
 		for trait in traits:
 			card_data["trait_" + trait] = 1
 			all_traits[trait] = true
-	
+
 
 	#TODO 2024/10/30 is this error new?
 	if not card_data.has("card_set_name"):
-		card_data["card_set_name"] = "ERROR"	
+		card_data["card_set_name"] = "ERROR"
 	if not card_data.has("card_set_code"):
-		card_data["card_set_code"] = "ERROR"	
+		card_data["card_set_code"] = "ERROR"
 
-		
+
 
 	var set_code = card_data["card_set_code"]
 	var lc_set_code = set_code.to_lower()
-	
-	var set_name = card_data["card_set_name"]
-	var lc_set_name = set_name.to_lower()	
 
-	
+	var set_name = card_data["card_set_name"]
+	var lc_set_name = set_name.to_lower()
+
+
 	#name alone isn't enough as a unique identifier, so we're adding
 	#subname
 	card_data["shortname"] = card_data["Name"]
 	if (card_data.get("subname", "")):
-		card_data["Name"] += " - " + card_data["subname"]	
+		card_data["Name"] += " - " + card_data["subname"]
 		var _tmp = card_data["Name"]
 		var _error = 0
 	#Villains: multiple cards have the same name.
@@ -337,28 +398,28 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	#e.g. "Rhino_2"
 	if (lc_card_type == "villain"):
 		card_data["Name"] = card_data["Name"] + " - " + String(card_data["stage"])
-	
+
 	card_data.erase("name")
-	
-		
+
+
 	if !box_contents_by_name.has(box_name):
 		box_contents_by_name[box_name] = {}
-	#the same card name can happen multiple times in a single box with a different ID, 
+	#the same card name can happen multiple times in a single box with a different ID,
 	#(maybe with different art but not necessarily), for example "Wakanda Forever"
 	#not sure why but this is why the card data here is an array and not a single element
 	if !box_contents_by_name[box_name].has(card_data["Name"]):
 		box_contents_by_name[box_name][card_data["Name"]] = []
-	box_contents_by_name[box_name][card_data["Name"]].append(card_data)	
+	box_contents_by_name[box_name][card_data["Name"]].append(card_data)
 
 	var card_name:String = card_data["Name"]
-	
+
 	#caching and indexing
 	shortname_to_name[card_data["shortname"].to_lower()] = card_name
 	lowercase_card_name_to_name[card_name.to_lower()] = card_name
-	
+
 	#scenarios cache
 	if (lc_card_type == "main_scheme"):
-		var full_stage_id = card_data["original_stage"]	
+		var full_stage_id = card_data["original_stage"]
 		#skip the weird "1A", "1B" cards for now...
 		if (!full_stage_id.ends_with("A") and !full_stage_id.ends_with("B")):
 			if (not schemes.has(lc_set_code)):
@@ -367,73 +428,73 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 
 			if(card_data.get("stage", 0) == 1 ):
 				scenarios.push_back(card_id)
-	
+
 	var card_set_type_name_code = card_data.get("card_set_type_name_code", "")
 	if card_set_type_name_code == "modular":
 		if not modular_encounters.has(lc_set_code):
 			modular_encounters[lc_set_code] = []
 		modular_encounters[lc_set_code].append(card_data)
-	
+
 	#obligations cache
 	if (lc_card_type == "obligation"):
 		obligations[lc_set_code] = card_data
 		obligations[lc_set_name] = card_data
-		
+
 	#encounter/set cache
 	if (not cards_by_set.has(lc_set_code)):
 		cards_by_set[lc_set_code] = []
-	cards_by_set[lc_set_code].push_back(card_data)				
-		
+	cards_by_set[lc_set_code].push_back(card_data)
 
-	card_data[CardConfig.SCENE_PROPERTY] = "Generic"	
+
+	card_data[CardConfig.SCENE_PROPERTY] = "Generic"
 
 	if card_data.get("imagesrc", ""):
 		_seen_images[card_id] = card_data["imagesrc"]
-	
+
 
 func _fix_missing_images():
 	for card_key in card_definitions:
 		var card_data = card_definitions[card_key]
 		#skip if we have an image
 		if card_data.get("imagesrc", ""):
-			continue			
-		
-		#we probably erased our image definition with a reprint	
+			continue
+
+		#we probably erased our image definition with a reprint
 		if _seen_images.has(card_data["_code"]):
 			var repair = _seen_images[card_data["_code"]]
 			card_data["imagesrc"] = repair
 
-			
+
 # Returns a Dictionary with the combined Card definitions of all set files
 # loaded in card_definitions variable by core engine
 func load_card_definitions() -> Dictionary:
-	cards_loading = true	
+	cards_loading = true
 	if (primitives.empty()):
 		load_card_scenarios()
 	var combined_sets := {} #.load_card_definitions(); #TODO Remove the call to parent eventually ?
-	# Load from external user files as well	
+	# Load from external user files as well
 	var set_files = CFUtils.list_files_in_directory(
 			"user://Sets/", CFConst.CARD_SET_NAME_PREPEND)
-	WCUtils.debug_message(set_files.size())	
+	WCUtils.debug_message(set_files.size())
 	var json_card_data : Dictionary = {}
-	_total_cards = 0	
+	_total_cards = 0
 	for set_file in set_files:
 		var prefix_length = CFConst.CARD_SET_NAME_PREPEND.length()
 		var extension_idx = set_file.find(".")
 		var box_name = set_file.substr(prefix_length, extension_idx-prefix_length)
 		var json_array = WCUtils.read_json_file("user://Sets/" + set_file)
-		_total_cards += json_array.size() 
+		_total_cards += json_array.size()
 		json_card_data[box_name] = json_array
-		
+
 	var i = 0
-	for box_name in json_card_data.keys():	
+	for box_name in json_card_data.keys():
 		for card_data in (json_card_data[box_name]):
 			i+=1
 			if dont_load_this_card(card_data):
-				continue			
-			_load_one_card_definition(card_data, box_name)	
+				continue
+			_load_one_card_definition(card_data, box_name)
 			combined_sets[card_data["_code"]] = card_data
-			
+
 			var linked_card_data = card_data.get("linked_card", {})
 			if (linked_card_data):
 				_load_one_card_definition(linked_card_data)
@@ -449,19 +510,19 @@ func load_card_definitions() -> Dictionary:
 #				back_side_data["text"] = back_side_data.get("back_text", "")
 #
 #				back_side_data["back_card_code"] = card_data["_code"]
-#				card_data["back_card_code"] = back_side_data["_code"]				
+#				card_data["back_card_code"] = back_side_data["_code"]
 #				#TODO more changes needed ?
 #				_load_one_card_definition(back_side_data)
 #				#yield(get_tree().create_timer(0.01), "timeout")
 			_cards_loaded = i
 	card_definitions = combined_sets
-	
+
 	#post load cleanup and config
 	_fix_missing_images()
 	setup_traits_as_alterants()
-	
+
 	#done!
-	cards_loading = false			
+	cards_loading = false
 	emit_signal("card_definitions_loaded")
 	return(combined_sets)
 
@@ -485,7 +546,7 @@ func load_one_deck(json_deck_data):
 	if (not idx_hero_to_deck_ids.has(hero_id)):
 		idx_hero_to_deck_ids[hero_id] = []
 	if not deck_id in (idx_hero_to_deck_ids[hero_id]):
-		idx_hero_to_deck_ids[hero_id].push_back(deck_id)	
+		idx_hero_to_deck_ids[hero_id].push_back(deck_id)
 
 # Returns a Dictionary with the Decks
 func load_deck_definitions():
@@ -505,8 +566,8 @@ func load_deck_definitions():
 
 	if need_reload:
 		deck_files = CFUtils.list_files_in_directory("user://Decks/")
-	
-	WCUtils.debug_message(deck_files.size())		
+
+	WCUtils.debug_message(deck_files.size())
 	for deck_file in deck_files:
 		var json_deck_data : Dictionary = WCUtils.read_json_file("user://Decks/" + deck_file)
 		#Fixing missing Data
@@ -521,8 +582,8 @@ func get_hero_obligation(hero_id:String):
 	var hero_name = hero_data["Name"]
 	var obligation = obligations[hero_name.to_lower()]
 	return obligation
-		
-func get_schemes(scheme_id):	
+
+func get_schemes(scheme_id):
 	#todo error handling
 	var scheme = get_card_by_id(scheme_id)
 	var set_name = scheme["card_set_code"]
@@ -547,12 +608,12 @@ func _is_deck_valid(deck) -> bool:
 		return false
 	var slots: Dictionary = deck["slots"]
 	if (not slots or slots.empty()):
-		_last_deck_error_msg = "invalid deck, can't find cards"	
+		_last_deck_error_msg = "invalid deck, can't find cards"
 		return false
 	for slot in slots:
 		if (not card_definitions.has(slot)):
-			_last_deck_error_msg = "We don't support at least one card in this deck (card id:" + str(slot) + ")" 
-			return false		
+			_last_deck_error_msg = "We don't support at least one card in this deck (card id:" + str(slot) + ")"
+			return false
 	return true
 
 func replace_text_macro (replacements, macro_value):
@@ -564,7 +625,7 @@ func replace_text_macro (replacements, macro_value):
 			to_replace = "\"" + key + "\""
 			value = str(value).to_lower()
 		text = text.replace(to_replace, str(value))
-	
+
 	var result = parse_json(text)
 	if !result:
 		var _error = 1
@@ -574,7 +635,7 @@ func replace_one_macro(script_definition, macro_key, macro_value):
 	var result = null
 	match typeof(script_definition):
 		TYPE_DICTIONARY:
-			result = {}	
+			result = {}
 			for key in script_definition.keys():
 				if (key == macro_key):
 					var replacements = script_definition[key]
@@ -583,13 +644,13 @@ func replace_one_macro(script_definition, macro_key, macro_value):
 						result[replaced_key] = dict[replaced_key]
 				else:
 					result[key] = replace_one_macro(script_definition[key], macro_key, macro_value)
-		TYPE_ARRAY:	
+		TYPE_ARRAY:
 			result = []
 			for value in script_definition:
 				result.append(replace_one_macro(value, macro_key, macro_value))
 		_:
 			result = script_definition
-	return result;	
+	return result;
 
 func replace_macros(json_card_data, json_macro_data):
 	var result = json_card_data
@@ -598,34 +659,34 @@ func replace_macros(json_card_data, json_macro_data):
 	return result
 
 
-	
+
 # Returns a Dictionary with the combined Script definitions of all set files
 func load_script_definitions() -> void:
-	scripts_loading = true	
+	scripts_loading = true
 	var script_overrides = load(CFConst.PATH_SETS + "SetScripts_All.gd").new()
 	var json_macro_data : Dictionary = WCUtils.read_json_file_with_user_override("Sets/_macros.json")
-	
-	
+
+
 	var combined_scripts := {}
-	
+
 	#load from user first
 	var script_definition_files := CFUtils.list_files_in_directory(
 				"user://Sets/", CFConst.SCRIPT_SET_NAME_PREPEND, true)
-	
+
 	#then we load from resources (their entries will overwrite user ones only if they don't exist)
 	script_definition_files += CFUtils.list_files_in_directory(
 				"res://Sets/", CFConst.SCRIPT_SET_NAME_PREPEND, true)
-	WCUtils.debug_message("Found " + str(script_definition_files.size()) + " script files")			
+	WCUtils.debug_message("Found " + str(script_definition_files.size()) + " script files")
 	for script_file in script_definition_files:
 		var prefix_end = script_file.find(CFConst.SCRIPT_SET_NAME_PREPEND) + CFConst.SCRIPT_SET_NAME_PREPEND.length()
 		var extension_idx = script_file.find(".")
-		var box_name = script_file.substr(prefix_end, extension_idx-prefix_end)		
+		var box_name = script_file.substr(prefix_end, extension_idx-prefix_end)
 		var json_card_data : Dictionary
 		json_card_data = WCUtils.read_json_file(script_file)
 		#delete comments from dictionary
 		WCUtils.erase_key_recursive(json_card_data, "_comments")
 		json_card_data = replace_macros(json_card_data, json_macro_data)
-		
+
 		#we don't support "response" yet but want to in the future. For now they're just interrupts
 		json_card_data = WCUtils.search_and_replace (json_card_data, "response", "interrupt", true)
 		#bugfix: replace "floats" to "ints"
@@ -642,13 +703,13 @@ func load_script_definitions() -> void:
 				var card_datas = box_contents_by_name[box_name].get(card_name, [])
 				if !card_datas:
 					var error_msg = "scripting for non existing card: " + card_name + ". Check case, character subname, etc..."
-					cfc.emit_signal("json_parse_error", error_msg)				
+					cfc.emit_signal("json_parse_error", error_msg)
 				for card_data in card_datas:
 					var card_id = card_data["_code"]
 					if not combined_scripts.get(card_id):
 						var script_data = json_card_data[card_name]
-						combined_scripts[card_id]	= script_data	
-					
+						combined_scripts[card_id]	= script_data
+
 
 	for card_id in card_definitions.keys():
 		var card_script = script_overrides.get_scripts(combined_scripts, card_id)
@@ -658,11 +719,11 @@ func load_script_definitions() -> void:
 			combined_scripts[card_id] = card_script
 			set_scripts[card_id] = card_script
 			unmodified_set_scripts[card_id] = unmodified_card_script
-	
+
 	#load additional stuff
 	load_deck_definitions()
-	
-	scripts_loading = false	
+
+	scripts_loading = false
 	emit_signal("scripts_loaded")
 
 func retrieve_card_info_from_fuzzy_name(fuzzy_card_name):
@@ -674,7 +735,7 @@ func retrieve_card_info_from_fuzzy_name(fuzzy_card_name):
 		card_code = values[1].strip_edges()
 	return {
 		"name" : card_name,
-		"code" : card_code	
+		"code" : card_code
 	}
 
 func enrich_window_title(selectionWindow, script:ScriptObject, title:String) -> String:
@@ -683,16 +744,16 @@ func enrich_window_title(selectionWindow, script:ScriptObject, title:String) -> 
 	var script_name = script_definitions.name
 	var forced_title = script_definitions.get("display_title", "")
 	var owner = script.owner
-	
+
 	if (forced_title):
 		result = forced_title + " - " + result
 	else:
-	
+
 		result = owner.canonical_name + " - " + result
-	
+
 	match script_name:
 		"enemy_attack":
-			result = owner.get_display_name() + " attacks. Choose at most 1 defender, cancel for undefended" 
+			result = owner.get_display_name() + " attacks. Choose at most 1 defender, cancel for undefended"
 		"pay_as_resource":
 			result = owner.canonical_name + " - Select at least " + str(selectionWindow.selection_count) + " resources."
 	return result;
@@ -700,7 +761,7 @@ func enrich_window_title(selectionWindow, script:ScriptObject, title:String) -> 
 #A poor man's mechanism to pass parameters betwen scenes
 func set_next_scene_params(params : Dictionary):
 	next_scene_params = params.duplicate()
-	
+
 func get_next_scene_params() -> Dictionary:
 	return next_scene_params
 
@@ -715,30 +776,30 @@ func get_img_filename(card_id) -> String:
 	var card = get_card_by_id(card_id)
 	if (not card):
 		print_debug("CFCExtended: couldn't find card matching id" + card_id)
-		return ""	
+		return ""
 
 	var card_code = card["_code"]
 	var card_set = card["_set"]
 	if !(card_code and card_set):
 		return ""
-		
+
 	var key = card_set + "_" + card_code
 	if _img_filename_cache.has(key):
 		return _img_filename_cache[key]
-	
+
 	var filename = "Sets/images/" + card_set + "/" + card_code + ".png"
 	var file = File.new()
 	for prefix in["user://", "res://"]: #user has priority
-		if file.file_exists(prefix + filename):	
+		if file.file_exists(prefix + filename):
 			_img_filename_cache[key] = prefix + filename
 			return _img_filename_cache[key]
-	
+
 	for prefix in["user://", "res://"]: #user has priority
-		if ResourceLoader.exists(prefix + filename):	
+		if ResourceLoader.exists(prefix + filename):
 			_img_filename_cache[key] = prefix + filename
 			return _img_filename_cache[key]
-	
-	#if we didn't find it, we still set it to its final destination of user folder, 
+
+	#if we didn't find it, we still set it to its final destination of user folder,
 	#which will direct the system to download it there
 	_img_filename_cache[key] = "user://" + filename
 	return _img_filename_cache[key] #todo return graceful fallback
@@ -756,21 +817,21 @@ func get_scheme_portrait(card_id) -> Image:
 #		var back_code = card_data.get("back_card_code","")
 #		if back_code:
 #			real_id = back_code
-			
+
 	var area = 	Rect2 ( 55, 15, 200, 155 )
 	return get_sub_image(real_id, area)
-	
+
 func get_hero_portrait(card_id) -> Image:
 	var area = 	Rect2 ( 60, 40, 170, 180 )
 	return get_sub_image(card_id, area)
-	
+
 func get_sub_image(card_id, area):
 	var filename = get_img_filename(card_id)
 	var img_data: Image = WCUtils.load_img(filename)
 	if (not img_data):
 		return null
 	var sub_img = img_data.get_rect(area) #Todo more flexible?
-	return sub_img		
+	return sub_img
 
 func instance_ghost_card(original_card, controller_id) -> Card:
 	var card_id = original_card.canonical_id
@@ -778,44 +839,49 @@ func instance_ghost_card(original_card, controller_id) -> Card:
 	var card = ._instance_card(card_id)
 	card.set_script(load("res://src/wc/GhostCard.gd"))
 	card.canonical_name = card_definitions[card_id]["Name"]
-	card.canonical_id = card_id	
+	card.canonical_id = card_id
 	card.set_real_card(original_card)
-	#TODO We set GUID here in the hope that all clients create their cards in the exact 
-	#same order. This might be a very flawed assertion could need a significant overhaul	
+	#TODO We set GUID here in the hope that all clients create their cards in the exact
+	#same order. This might be a very flawed assertion could need a significant overhaul
 	var _tmp = guidMaster.set_guid(card)
 	card.init_owner_hero_id(controller_id)
-	card.set_controller_hero_id(controller_id)	
+	card.set_controller_hero_id(controller_id)
 	return card
 
-func instance_card(card_id: String, owner_id:int) -> Card:
+func instance_card(card_id: String) -> Card:
 	if (!card_definitions.has(card_id)):
 		#TODO error handling
 		var _error = 1
 		return null
-		
-	var card = ._instance_card(card_id)
-	#TODO We set GUID here in the hope that all clients create their cards in the exact 
+
+	return ._instance_card(card_id)
+
+func instance_card_with_owner(card_id: String, owner_id:int) -> Card:
+	var card = instance_card(card_id)
+	if card == null:
+		return null
+	#TODO We set GUID here in the hope that all clients create their cards in the exact
 	#same order. This might be a very flawed assertion could need a significant overhaul
 	#we also don't assign a GUID to cards created without an owner, those are usually
 	#used for local targeting, etc...
-	if (owner_id >=0):	
+	if (owner_id >=0):
 		var _tmp = guidMaster.set_guid(card)
 	card.init_owner_hero_id(owner_id)
 	card.set_controller_hero_id(owner_id)
 	return card
-	
+
 #card here is either a card id or a card name, we try to accomodate for both
 func get_corrected_card_id (card) -> String:
 	#if it's in the database, it's already an id
 	if self.card_definitions.has(card):
 		var card_data = self.card_definitions[card]
 		return card_data["_code"]
-	
+
 	#otherwise it's a short name or a long name
 	var actual_card_name = lowercase_card_name_to_name.get(card.to_lower(), "")
 	if !actual_card_name:
 		actual_card_name = shortname_to_name.get(card.to_lower(), "")
-		
+
 	#we got the card's full name, now we reach for its actual id by looking in all sets
 	#in some cases this is a non unique situation, beware!
 	var boxes = box_contents_by_name
@@ -842,17 +908,17 @@ func fail_img_download(card_id):
 	var filename = "user://failed_image_downloads.json"
 	get_failed_files()
 	failed_files[card_id] = true
-	var to_print = to_json(failed_files)	
+	var to_print = to_json(failed_files)
 	file.open(filename, File.WRITE)
 	file.store_string(to_print)
-	file.close()  		
+	file.close()
 
 func is_image_download_failed(card_id):
 	get_failed_files()
 	return failed_files.get(card_id, false)
 
 func get_image_dl_url(card_id):
-	var card_data = get_card_by_id(card_id) 
+	var card_data = get_card_by_id(card_id)
 	var base_url = game_settings.get("images_base_url")
 	if !base_url:
 		fail_img_download(card_id)
@@ -864,7 +930,7 @@ func get_image_dl_url(card_id):
 	return url
 
 #this precaches files on the system due to a bug in Godot
-#see https://github.com/godotengine/godot/issues/87274	
+#see https://github.com/godotengine/godot/issues/87274
 var _cached_filesystem: Dictionary = {}
 
 func _cache_filesystem():
@@ -876,13 +942,13 @@ func _cache_filesystem():
 #Loads PCK files for additional resources
 func preload_pck():
 	_cache_filesystem()
-	
+
 	var database = cfc.game_settings.get("database", {})
 	if typeof(database) != TYPE_DICTIONARY:
 		var _error = 1
 		#TODO error
 		return
-	
+
 	for set in database.keys():
 		var _success_res = ProjectSettings.load_resource_pack("res://" + set + ".pck")
 		var _success_user = ProjectSettings.load_resource_pack("user://" + set + ".pck")
@@ -901,8 +967,8 @@ func get_network_unique_id():
 		_network_id = get_tree().get_network_unique_id()
 		return _network_id
 	return 1
-	
-func is_game_master() -> bool:	
+
+func is_game_master() -> bool:
 	if !gameData.is_multiplayer_game:
 		return true
 	return get_tree().is_network_server() #Todo: return something more specific to handle case where game master isn't server, for headless mode
@@ -917,16 +983,16 @@ func INIT_LOG():
 	if (file.file_exists(filename)):
 		return
 	file.open(filename, File.WRITE)
-	file.close() 	
-	
+	file.close()
+
 func LOG(to_print:String):
 #	if !cfc._debug:
 #		return
-	_log_buffer+= Time.get_datetime_string_from_system() + " - " + to_print + "\n"	
+	_log_buffer+= Time.get_datetime_string_from_system() + " - " + to_print + "\n"
 	if _log_buffer.length() < 2000:
 		return
 	FLUSH_LOG()
-	
+
 func FLUSH_LOG():
 	INIT_LOG()
 	var file = File.new()
@@ -936,7 +1002,7 @@ func FLUSH_LOG():
 	file.open("user://log_" + str(player_id) +".txt", File.READ_WRITE)
 	file.seek_end()
 	file.store_string(_log_buffer + "\n")
-	file.close() 
+	file.close()
 	_log_buffer = ""
 
 func LOG_VARIANT(to_print):
@@ -944,41 +1010,41 @@ func LOG_VARIANT(to_print):
 #		return
 	var my_json_string = JSON.print(to_print, '\t')
 	LOG(my_json_string)
-	
+
 func LOG_DICT(to_print:Dictionary):
 #	if !cfc._debug:
 #		return
 	var my_json_string = JSON.print(to_print, '\t')
 	LOG(my_json_string)
-	
+
 func add_ongoing_process(object, description:String = ""):
 	if (!description):
 		if typeof(object) == TYPE_DICTIONARY:
 			description = "dictionary"
 		else:
 			description = object.get_class()
-		
+
 	if (!_ongoing_processes.has(object)):
 		_ongoing_processes[object] = {}
 	if (!_ongoing_processes[object].has(description)):
-		_ongoing_processes[object][description] = 0	
+		_ongoing_processes[object][description] = 0
 
 	_ongoing_processes[object][description] +=1
 	return _ongoing_processes[object][description]
-	
+
 func remove_ongoing_process(object, description:String = ""):
 	if (!description):
 		if typeof(object) == TYPE_DICTIONARY:
 			description = "dictionary"
 		else:
 			description = object.get_class()
-		
+
 	if (!_ongoing_processes.has(object)):
 		return 0
-		
+
 	if (!_ongoing_processes[object].has(description)):
 		return 0
-				
+
 	_ongoing_processes[object][description] -=1
 	if (!_ongoing_processes[object][description]):
 		_ongoing_processes[object].erase(description)
@@ -986,12 +1052,48 @@ func remove_ongoing_process(object, description:String = ""):
 			var _found = _ongoing_processes.erase(object)
 		return 0
 	return _ongoing_processes[object][description]
-	
+
 func is_process_ongoing() -> int:
-	return _ongoing_processes.size()	
+	return _ongoing_processes.size()
 
 func reset_ongoing_process_stack():
 	_ongoing_processes = {}
+
+# Empties the alterants cache (only thing cached for now) which will cause
+# all the alterants engine fire anew for all requests.
+#
+# This is called after most game-state changes, but there's one notable exception:
+# if you add an alterant to a card's `scripts` variable manually, then you need
+# to flush the cache afterwards using this function.
+var _flush_cache_requested = false
+func flush_cache() -> void:
+	_flush_cache_requested = true
+
+func flush_cache_as_needed() -> void:
+	if !_flush_cache_requested:
+		return
+	alterant_cache.clear()
+	emit_signal("cache_cleared")
+	_flush_cache_requested = false
+
+func add_modal_menu(object):
+	if not object in modal_menus:
+		modal_menus.append(object)
+
+func remove_modal_menu(object):
+	modal_menus.erase(object)
+
+func get_modal_menu():
+	if modal_menus:
+		return modal_menus[0]
+	return null
+
+func cleanup_modal_menu():
+	if (modal_menus):
+		for modal_menu in modal_menus:
+			modal_menu.force_cancel()
+		modal_menus = []
+	return
 
 func is_modal_event_ongoing():
 	if get_modal_menu():
@@ -999,16 +1101,28 @@ func is_modal_event_ongoing():
 	if gameData.is_ongoing_blocking_announce():
 		return true
 	return false
-	
+
 
 # Ensures proper cleanup when a card is queue_free() for any reason
-func _on_tree_exiting():	
+func _on_tree_exiting():
 	FLUSH_LOG()
 
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		FLUSH_LOG()
-	
+
 func quit_game() -> void:
 	.quit_game()
-	gameData.cleanup_post_game()		
+	gameData.cleanup_post_game()
+
+
+func save_settings():
+	var file = File.new()
+	file.open(CFConst.SETTINGS_FILENAME, File.WRITE)
+	file.store_string(JSON.print(game_settings, '\t'))
+	file.close()
+# Whenever a setting is changed via this function, it also stores it
+# permanently on-disk.
+func set_setting(setting_name: String, value) -> void:
+	game_settings[setting_name] = value
+	save_settings()

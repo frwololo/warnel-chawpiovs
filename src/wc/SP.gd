@@ -1,8 +1,8 @@
 # SP stands for "ScriptProperties".
 #
-# This dummy class exists to allow games to extend 
+# This dummy class exists to allow games to extend
 # the core [ScriptProperties] class provided by CGF, with their own requirements.
-# 
+#
 # This is particularly useful when needing to adjust filters for the game's needs.
 class_name SP
 extends ScriptProperties
@@ -14,6 +14,8 @@ extends ScriptProperties
 #TODO delete
 const FILTER_DEMONSTRATION = "is_demonstration"
 
+# Additional subject constants
+const KEY_SUBJECT_V_ALL_PREVIOUS := "all_previous"
 const KEY_SUBJECT_V_HOST := "host"
 const KEY_SUBJECT_V_MY_HERO := "my_hero"
 const KEY_SUBJECT_V_MY_ALTER_EGO := "my_alter_ego"
@@ -23,6 +25,11 @@ const KEY_SUBJECT_V_VILLAIN := "villain"
 const KEY_SUBJECT_V_GRAB_UNTIL := "grab_until"
 const KEY_SUBJECT_CURRENT_ACTIVATION_ENEMY:= "current_activation_enemy"
 
+# Additional property constants
+const KEY_PER_TOKEN_SELF := "per_token_self"
+const KEY_COUNT_PREVIOUS_SUBJECTS := "count_previous_subjects"
+const KEY_SELECTION_WHAT_TO_COUNT := "selection_what_to_count"
+
 const FILTER_HOST_OF := "filter_is_host_of"
 const FILTER_SAME_CONTROLLER := "filter_same_controller"
 const FILTER_EVENT_SOURCE:= "filter_event_source"
@@ -30,6 +37,7 @@ const FILTER_SOURCE_CONTROLLED_BY := "filter_source_controlled_by"
 
 const FILTER_MAX_PER_HERO := "filter_max_per_hero"
 const FILTER_MAX_PER_HOST := "filter_max_per_host"
+#const FILTER_EXCLUDE_SELF := "filter_exclude_self"
 
 const TRIGGER_TARGET_HERO = "target_hero"
 const TRIGGER_SUBJECT = "trigger_subject"
@@ -57,6 +65,12 @@ static func filter_trigger(
 	# when itself causes the effect.
 	# For example, a card which rotates itself whenever another card
 	# is rotated, should not automatically rotate when itself rotates.
+	# "host" triggers when the trigger is the host of the current card
+	# (which is, therefore, one of the trigger's attachments)
+	if is_valid\
+			and card_scripts.get("trigger") == "host"\
+			and owner_card.current_host_card != trigger_card:
+		return false
 	if card_scripts.get("trigger") == "my_hero" and\
 		trigger_card != owner_card.get_controller_hero_card():
 			return false
@@ -70,11 +84,11 @@ static func filter_trigger(
 	if is_valid and card_scripts.get(FILTER_SAME_CONTROLLER) \
 			and !check_same_controller_filter(trigger_card,owner_card,card_scripts.get(FILTER_SAME_CONTROLLER)):
 		return false
-		
+
 	if is_valid and card_scripts.get("filter_" + TRIGGER_TARGET_HERO) \
 			and card_scripts.get("filter_" + TRIGGER_TARGET_HERO) != \
 			trigger_details.get(TRIGGER_TARGET_HERO):
-		return false		
+		return false
 
 	if is_valid and card_scripts.get(TRIGGER_SUBJECT):
 		match card_scripts.get(TRIGGER_SUBJECT):
@@ -82,16 +96,16 @@ static func filter_trigger(
 				var subjects = trigger_details.get("subjects", [])
 				if !(owner_card in (subjects)):
 					return false
-			_: 
+			_:
 				return false
 
 	if is_valid and card_scripts.get(FILTER_SOURCE_CONTROLLED_BY) \
 			and !check_source_controlled_by_filter(trigger_card,owner_card,trigger_details, card_scripts.get(FILTER_SOURCE_CONTROLLED_BY)):
-		return false	
-		
+		return false
+
 	if is_valid and card_scripts.get(FILTER_EVENT_SOURCE) \
 			and !check_filter_event_source(trigger_card,owner_card,trigger_details, card_scripts.get(FILTER_EVENT_SOURCE)):
-		return false	
+		return false
 
 	return true
 
@@ -100,11 +114,11 @@ static func check_host_filter(trigger_card, owner_card, host_description : Strin
 	var card_matches := false
 	if !is_instance_valid(trigger_card): return false
 	if !is_instance_valid(owner_card): return false
-	
+
 	#TODO more advanced targeting
 	match host_description:
 		"self":
-			if owner_card.current_host_card == trigger_card: 
+			if owner_card.current_host_card == trigger_card:
 				card_matches = true
 	return(card_matches)
 
@@ -113,10 +127,10 @@ static func check_source_controlled_by_filter(_trigger_card, owner_card, trigger
 	var source = trigger_details.get("source", null)
 	if guidMaster.is_guid(source):
 		source = guidMaster.get_object_by_guid(source)
-	
+
 	if !source:
 		return false
-		
+
 	match expected_controller:
 		"my_hero":
 			var controller_hero_id = source.get_controller_hero_id()
@@ -126,16 +140,16 @@ static func check_source_controlled_by_filter(_trigger_card, owner_card, trigger
 		_: #not implemented
 			pass
 	return false
-	
+
 # Returns true if the trigger and the owner belong to the same hero, false otherwise
 static func check_filter_event_source(_trigger_card, owner_card, trigger_details, _expected_event_source) -> bool:
 	var source = trigger_details.get("source", null)
 	if guidMaster.is_guid(source):
 		source = guidMaster.get_object_by_guid(source)
-		
+
 	if !source:
-		return false	
-		
+		return false
+
 	match _expected_event_source:
 		"self":
 			if source == owner_card:
@@ -144,11 +158,11 @@ static func check_filter_event_source(_trigger_card, owner_card, trigger_details
 		"my_hero":
 			if source == owner_card.get_controller_hero_card():
 				return true
-			return false			
+			return false
 		_: #not implemented
 			pass
-	return false	
-	
+	return false
+
 # Returns true if the trigger and the owner belong to the same hero, false otherwise
 static func check_same_controller_filter(trigger_card, owner_card, true_false : bool) -> bool:
 	var same_controller: bool = (owner_card.get_controller_hero_id() == trigger_card.get_controller_hero_id())
@@ -157,7 +171,7 @@ static func check_same_controller_filter(trigger_card, owner_card, true_false : 
 	return false
 
 #checks if owner_card already exists equal_or_more than max_value times
-# under the control 
+# under the control
 # of target_card's hero id
 static func check_max_per_hero(target_card, max_value, owner_card) -> bool:
 	var hero_id = target_card.get_controller_hero_id()
@@ -180,16 +194,17 @@ static func check_max_per_host(target_card, max_value, owner_card) -> bool:
 
 # Check if the card is a valid subject or trigger, according to its state.
 static func check_validity(card, card_scripts, type := "trigger", owner_card = null) -> bool:
-	var is_valid = .check_validity(card, card_scripts, type, owner_card)
-	if (!is_valid):
-		return is_valid
-		
+	# @refactor: prevent calling itself recursively.
+	# var is_valid = .check_validity(card, card_scripts, type, owner_card)
+	# if (!is_valid):
+	# 	return is_valid
+
 	var tags = card_scripts.get("tags", [])
-	
+
 	#check for special guard conditions if card is an attack
 	if ("attack" in tags) and card == gameData.get_villain():
 		var all_cards = cfc.NMAP.board.get_all_cards()
-		if owner_card:		
+		if owner_card:
 			var hero_id = owner_card.get_controller_hero_id()
 			if hero_id:
 				all_cards =  cfc.NMAP.board.get_enemies_engaged_with(hero_id)
@@ -213,13 +228,13 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 				# We check with like this, as it allows us to provide an "AND"
 				# check, by simply apprending something into the state string
 				# I.e. if we have filter_properties and filter_properties2
-				# It will treat these two states as an "AND"				
+				# It will treat these two states as an "AND"
 				if filter == FILTER_MAX_PER_HERO\
 						and not check_max_per_hero(card, state_filters[filter], owner_card):
 					card_matches = false
 				elif filter == FILTER_MAX_PER_HOST\
 						and not check_max_per_host(card, state_filters[filter], owner_card):
-					card_matches = false					
+					card_matches = false
 			if card_matches:
 				break
 	return(card_matches)
@@ -231,14 +246,13 @@ static func retrieve_subjects(value:String, script):
 		"self":
 			return [script.owner]
 		"my_hero":
-			return [script.owner.get_controller_hero_card()]			
+			return [script.owner.get_controller_hero_card()]
 		_:
 			#not implemented
 			pass
-	
+
 	if value.begins_with("identity_"):
 		var hero_id = int(value.substr(9))
 		return [gameData.get_identity_card(hero_id)]
-	
+
 	return null
-					

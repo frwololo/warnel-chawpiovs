@@ -47,7 +47,7 @@ static func read_json_file(file_path):
 static func debug_message(msg):
 	if OS.has_feature("debug") and not cfc.is_testing:
 		print_debug(msg)
-		
+
 
 #checks if a file exists either as a resource or
 #on disk
@@ -55,10 +55,10 @@ static func file_exists(file):
 	if ResourceLoader.exists(file):
 		return true
 	var _file = File.new()
-	return _file.file_exists(file)	
+	return _file.file_exists(file)
 
-#load Image Data from jpeg/png file	
-#either from resources or from filesystem (filesystem prioritized)	
+#load Image Data from jpeg/png file
+#either from resources or from filesystem (filesystem prioritized)
 static func load_img(file) -> Image :
 	var img = Image.new()
 	#attempt from local file first, resource after
@@ -72,8 +72,8 @@ static func load_img(file) -> Image :
 	else:
 		var bytes = img_file.get_buffer(img_file.get_len())
 		img_file.close()
-		
-		
+
+
 		var extension = file.get_extension().to_lower()
 		var error_code = 0
 		if extension == "png":
@@ -81,8 +81,8 @@ static func load_img(file) -> Image :
 		else:
 			error_code = img.load_jpg_from_buffer(bytes)
 		if error_code:
-			return null	
-	return img	
+			return null
+	return img
 
 static func merge_array(array_1: Array, array_2: Array, deep_merge: bool = false) -> Array:
 	var new_array = array_1.duplicate(true)
@@ -139,7 +139,7 @@ static func json_equal (lh, rh)-> bool:
 					return false
 				if ! (json_equal(lh[key], rh[key])):
 					return false
-			return true	
+			return true
 		TYPE_ARRAY:
 			if lh.size() != rh.size():
 				return false
@@ -148,12 +148,12 @@ static func json_equal (lh, rh)-> bool:
 				var right = rh[i]
 				if (!json_equal(left,right)):
 					return false
-			return true	
+			return true
 		_:
 			return(lh==rh)
 
 
-#merges data from dict_2 into dict1 (overwriting if needed)		
+#merges data from dict_2 into dict1 (overwriting if needed)
 static func merge_dict(dict_1: Dictionary, dict_2: Dictionary, deep_merge: bool = false) -> Dictionary:
 	var new_dict = dict_1.duplicate(true)
 	for key in dict_2:
@@ -171,22 +171,22 @@ static func merge_dict(dict_1: Dictionary, dict_2: Dictionary, deep_merge: bool 
 #check if all elements of dict1 can be found in dict2
 #This doesn't mean the dictionaries are necessarily equal
 static func is_element1_in_element2 (element1, element2, order_doesnt_matter: Array = [])-> bool:
-	
+
 	if (typeof(element1) != typeof(element2)):
 		return false
-	
-	match typeof(element1):	
+
+	match typeof(element1):
 		TYPE_DICTIONARY:
 			for key in element1:
 				if not element2.has(key):
 					return false
 				var val1 = element1[key]
 				var val2 = element2[key]
-				
+
 				if (key in order_doesnt_matter and typeof(val1) == TYPE_ARRAY and typeof(val2) == TYPE_ARRAY ):
 					val1.sort()
 					val2.sort()
-																
+
 				if !is_element1_in_element2(val1, val2, order_doesnt_matter):
 					return false
 		TYPE_ARRAY:
@@ -207,7 +207,7 @@ static func is_element1_in_element2 (element1, element2, order_doesnt_matter: Ar
 			#we don't care for the case
 			if (element1.to_lower() != element2.to_lower()):
 				return false
-		_:	
+		_:
 			if (element1 != element2):
 				return false
 	return true
@@ -222,12 +222,12 @@ static func sort_stage(a, b):
 static func sort_cards(a, b):
 	return (a.get("card") < b.get("card"))
 
-	
+
 static func to_grayscale(texture : Texture) -> Texture:
 	var image = texture.get_data()
 	image.convert(Image.FORMAT_LA8)
 	image.convert(Image.FORMAT_RGBA8) # Not strictly necessary
-	
+
 	var image_texture = ImageTexture.new()
 	image_texture.create_from_image(image)
 	return image_texture
@@ -237,26 +237,26 @@ static func search_and_replace_str (orig_str:String, replacements:Dictionary, ex
 	for to_replace in replacements:
 		if (orig_str == to_replace):
 			return replacements[to_replace]
-		if (!exact_match):		
+		if (!exact_match):
 			new_str = new_str.replace(to_replace, replacements[to_replace])
 			if new_str != orig_str:
 				return new_str
 	return new_str
-	
+
 static func search_and_replace_multi (script_definition, replacements:Dictionary, exact_match: bool = false) -> Dictionary:
 	var result = null
 	match typeof(script_definition):
 		TYPE_DICTIONARY:
-			result = {}	
+			result = {}
 			for key in script_definition.keys():
 				var value = script_definition[key]
 				result[key] = search_and_replace_multi(value, replacements, exact_match)
 
-				#do the key too	
+				#do the key too
 				if typeof(key) == TYPE_STRING:
 						var new_string = search_and_replace_str(key, replacements, exact_match)
 						result[new_string] = result[key]
-						#TODO erase???	
+						#TODO erase???
 
 		TYPE_ARRAY:
 			result = []
@@ -279,17 +279,17 @@ static func search_and_replace (script_definition, from: String, to, exact_match
 	var result = null
 	match typeof(script_definition):
 		TYPE_DICTIONARY:
-			result = {}	
+			result = {}
 			for key in script_definition.keys():
 				var value = script_definition[key]
 				result[key] = search_and_replace(value,from, to, exact_match)
 
-				#do the key too	
+				#do the key too
 				if typeof(key) == TYPE_STRING:
 					if ((!exact_match) or (key == from)):
-						var new_string = key.replace(from, to)	
+						var new_string = key.replace(from, to)
 						result[new_string] = result[key]
-						#TODO erase???	
+						#TODO erase???
 
 		TYPE_ARRAY:
 			result = []
@@ -304,7 +304,7 @@ static func search_and_replace (script_definition, from: String, to, exact_match
 
 		TYPE_STRING:
 			if (!exact_match):
-				result = script_definition.replace(from, to)	
+				result = script_definition.replace(from, to)
 			elif (script_definition == from):
 				if from == "any_discard":
 					var _tmp = 1
@@ -321,10 +321,10 @@ static func replace_real_to_int (script_definition):
 	var result
 	match typeof(script_definition):
 		TYPE_DICTIONARY:
-			result = {}	
+			result = {}
 			for key in script_definition.keys():
 				result[key] = replace_real_to_int(script_definition[key])
-		TYPE_ARRAY:	
+		TYPE_ARRAY:
 			result = []
 			for value in script_definition:
 				result.append(replace_real_to_int(value))
@@ -333,7 +333,7 @@ static func replace_real_to_int (script_definition):
 		_:
 			result = script_definition
 	return result;
-				
+
 static func disable_and_hide_node(node:Node) -> void:
 	node.set_process(false) # = Mode: Disabled
 	node.visible = false
@@ -356,3 +356,56 @@ static func erase_key_recursive(data, key_to_erase: String) -> void:
 				erase_key_recursive(element, key_to_erase)
 		_:
 			pass
+
+# Override RNG functions to add logging
+static func shuffle_array(array: Array, avoid_cfc_rng:= false) -> void:
+	var n = array.size()
+	cfc.LOG("{rng} asked for shuffle, shuffling " + str(n) + " elements")
+	.shuffle_array(array, avoid_cfc_rng)
+	cfc.LOG("{rng}" + JSON.print(array, '\t'))
+
+static func randi() -> int:
+	var result = cfc.game_rng.randi()
+	cfc.LOG("{rng} asked for randi, returning " + str(result))
+	return result
+
+static func randf() -> float:
+	cfc.LOG("{rng} asked for randf")
+	return cfc.game_rng.randf()
+
+static func randi_range(from: int, to: int) -> int:
+	cfc.LOG("{rng} asked for randi_range")
+	return cfc.game_rng.randi_range(from, to)
+
+static func randf_range(from: float, to: float) -> float:
+	cfc.LOG("{rng} asked for randf_range")
+	return cfc.game_rng.randf_range(from, to)
+
+static func rand_bool() -> bool:
+	cfc.LOG("{rng} asked for rand_bool")
+	var rnd_bool = {0:true, 1: false}
+	return rnd_bool[randi_range(0,1)]
+
+# Override list_files_in_directory to use cached filesystem
+static func list_files_in_directory(path: String, prepend_needed := "", full_path := false) -> Array:
+	var files = .list_files_in_directory(path, prepend_needed, full_path)
+
+	#merge with precached result
+	#this is due to a bug
+	#see https://github.com/godotengine/godot/issues/87274
+	if cfc._cached_filesystem.has(path):
+		var to_merge = cfc._cached_filesystem[path]
+		for file in to_merge:
+			if !(file in files):
+				if file == "":
+					break
+				elif not file.begins_with('.')\
+						and file.begins_with(prepend_needed)\
+						and not file.ends_with(".remap")\
+						and not file.ends_with(".import")\
+						and not file.ends_with(".md"):
+						if full_path:
+							files.append(path + file)
+						else:
+							files.append(file)
+	return files

@@ -25,7 +25,7 @@ enum LOADING_STEPS {
 	RNG_INIT,
 	READY_TO_LOAD,
 	CARDS_PRELOADED,
-	CARDS_PRELOADED_SKIP_LOAD,	
+	CARDS_PRELOADED_SKIP_LOAD,
 	CARDS_MOVED,
 	READY_TO_START,
 	START_GAME
@@ -55,13 +55,13 @@ func set_groups(grid_or_pile, additional_groups:= []):
 	var grid_name = grid_or_pile.name
 	if grid_name.begins_with("discard"):
 		grid_or_pile.add_to_group("discard")
-	
+
 	for group in additional_groups:
 		grid_or_pile.add_to_group(group)
-	
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	cfc.map_node(self)	
+	cfc.map_node(self)
 	counters = $Counters
 	# We use the below while to wait until all the nodes we need have been mapped
 	# "hand" should be one of them.
@@ -77,25 +77,25 @@ func _ready() -> void:
 
 
 	# warning-ignore:return_value_discarded
-	#$DeckBuilderPopup.connect('popup_hide', self, '_on_DeckBuilder_hide')	
-	
+	#$DeckBuilderPopup.connect('popup_hide', self, '_on_DeckBuilder_hide')
+
 	#gameData.init_save_folder()
-	
+
 	grid_setup()
-	rpc("ready_for_step", LOADING_STEPS.RNG_INIT)	
+	rpc("ready_for_step", LOADING_STEPS.RNG_INIT)
 
 var _clients_ready_for_step = {}
 remotesync func ready_for_step(next_step):
-	var client_id = get_tree().get_rpc_sender_id() 	
+	var client_id = get_tree().get_rpc_sender_id()
 	_clients_ready_for_step[client_id] = next_step
 	if _clients_ready_for_step.size() != gameData.network_players.size():
 		return
 	for network_id in _clients_ready_for_step:
 		if _clients_ready_for_step[network_id] != next_step:
 			return
-	
-	_clients_ready_for_step = {}		
-	load_next_step(next_step)	
+
+	_clients_ready_for_step = {}
+	load_next_step(next_step)
 
 func load_next_step(next_step):
 	match next_step:
@@ -111,19 +111,19 @@ func load_next_step(next_step):
 			rpc("ready_for_step", LOADING_STEPS.CARDS_MOVED)
 		LOADING_STEPS.CARDS_PRELOADED_SKIP_LOAD:
 			post_load_move()
-			rpc("ready_for_step", LOADING_STEPS.START_GAME)			
+			rpc("ready_for_step", LOADING_STEPS.START_GAME)
 		LOADING_STEPS.CARDS_MOVED:
 			post_cards_moved_load()
 			#next step called from within function
 		LOADING_STEPS.READY_TO_START:
 			offer_to_load_last_game()
 		LOADING_STEPS.START_GAME:
-			gameData.start_game()				
+			gameData.start_game()
 
 func _decline_offer_to_load_last_game():
 	gameData.init_save_folder()
 	rpc("ready_for_step", LOADING_STEPS.START_GAME)
-	return	
+	return
 
 func _load_last_game():
 	var json_data = gameData.get_ongoing_game()
@@ -136,19 +136,19 @@ func offer_to_load_last_game():
 	if !cfc.is_game_master():
 		rpc("ready_for_step", LOADING_STEPS.START_GAME)
 		return
-		
+
 	var json_data = gameData.get_ongoing_game()
 	if !json_data:
 		rpc("ready_for_step", LOADING_STEPS.START_GAME)
 		return
 
 	#only offer to load if the previous save game had the same number of heroes
-	var hero_data:Array = json_data.get("heroes", [])	
+	var hero_data:Array = json_data.get("heroes", [])
 	if hero_data.size() != gameData.get_team_size():
 		rpc("ready_for_step", LOADING_STEPS.START_GAME)
 		return
 
-		
+
 	var load_dialog:ConfirmationDialog = ConfirmationDialog.new()
 	load_dialog.window_title = "Load last game?"
 	load_dialog.get_cancel().connect("pressed", self, "_decline_offer_to_load_last_game")
@@ -170,14 +170,14 @@ func blocking_activity_ongoing():
 		return true
 	if gameData.is_ongoing_blocking_announce():
 		return true
-	
+
 func _process(delta:float):
 	_total_delta += delta
 	#todo this is a heavy call, maybe do it only when cards move
 	if board_organizers:
 		for board_organizer in board_organizers:
 			board_organizer.organize()
-			
+
 	if blocking_activity_ongoing():
 		var last_index = get_child_count() - 1
 		move_child(_server_activity, last_index)
@@ -186,9 +186,9 @@ func _process(delta:float):
 		_server_activity.modulate = Color(1, 1, 1, sin(_total_delta*2)*0.4 + 0.5)
 		_server_activity.rect_rotation = _total_delta * 100
 	pass
-	
+
 func grid_setup():
-	_team_size = 0 #reset team size to fetch it from gameData	
+	_team_size = 0 #reset team size to fetch it from gameData
 	for grid_name in GRID_SETUP.keys():
 		var grid_info = GRID_SETUP[grid_name]
 		if "pile" == grid_info.get("type", ""):
@@ -212,13 +212,13 @@ func grid_setup():
 			var grid_scene = grid_info.get("scene", basicGrid)
 			var grid: BoardPlacementGrid = grid_scene.instance()
 			grid.add_to_group("placement_grid")
-			var grid_scale = grid_info.get("scale", 1)				
+			var grid_scale = grid_info.get("scale", 1)
 			grid.rescale(CFConst.PLAY_AREA_SCALE  * grid_scale)
 			# A small delay to allow the instance to be added
 			add_child(grid)
 			grid.name = grid_name
 			grid.name_label.text = grid_name
-			grid.rect_position = Vector2(grid_info["x"], grid_info["y"])			
+			grid.rect_position = Vector2(grid_info["x"], grid_info["y"])
 			grid.auto_extend = grid_info.get("auto_extend", true)
 			set_groups(grid, grid_info.get("groups", []))
 
@@ -227,17 +227,17 @@ func grid_setup():
 		var scale = 1
 		var start_x = 500
 		var start_y = 220
-		
+
 		if (hero_id > 1):
 			scale = 0.3
 			start_x = 0
 			start_y = 220 + (hero_id * 200)
-			
+
 		for grid_name in HERO_GRID_SETUP.keys():
 			var grid_info = HERO_GRID_SETUP[grid_name]
 			var x = start_x + grid_info["x"]*scale
-			var y = start_y + grid_info["y"]*scale	
-			var real_grid_name = grid_name + str(hero_id)		
+			var y = start_y + grid_info["y"]*scale
+			var real_grid_name = grid_name + str(hero_id)
 			if "pile" == grid_info.get("type", ""):
 				if cfc.NMAP.has(real_grid_name): #skip if already exists
 					continue
@@ -260,7 +260,7 @@ func grid_setup():
 				var grid: BoardPlacementGrid = grid_scene.instance()
 				grid.add_to_group("placement_grid")
 				# Need to rescale before adding ???
-				var grid_scale = grid_info.get("scale", 1)				
+				var grid_scale = grid_info.get("scale", 1)
 				grid.rescale(CFConst.PLAY_AREA_SCALE * scale * grid_scale)
 				add_child(grid)
 				grid.name = real_grid_name
@@ -281,7 +281,7 @@ func init_board_organizers(current_hero_id):
 		var start_x = 500
 		var start_y = 220
 		var grid_layout = CFConst.HERO_GRID_LAYOUT.duplicate(true)
-		
+
 		if (hero_id != current_hero_id):
 			scale = 0.3
 			start_x = 0
@@ -289,7 +289,7 @@ func init_board_organizers(current_hero_id):
 			other_counter+=1
 			#hacky way to force resize
 			var right_container_def = grid_layout["children"][1]
-			right_container_def["max_width"] = 400	
+			right_container_def["max_width"] = 400
 			right_container_def["max_height"] = 200
 		var board_organizer = BoardOrganizer.new()
 		board_organizer.setup(grid_layout,hero_id, scale)
@@ -297,7 +297,7 @@ func init_board_organizers(current_hero_id):
 		board_organizers.append(board_organizer)
 		board_organizer.organize()
 
-	
+
 
 func post_cards_moved_load():
 	#Signals
@@ -306,28 +306,28 @@ func post_cards_moved_load():
 	hide_all_hands()
 	gameData.assign_starting_hero()
 
-	
+
 	load_heroes()
 	#loading heroes requires moving cards around, this can interfere with
 	#the shuffling afterwards
 	var hero_count: int = get_team_size()
-	for i in range (hero_count): 
+	for i in range (hero_count):
 		while (heroZones[i+1].post_move_modifiers or heroZones[i+1]._post_load_move):
 			yield(get_tree().create_timer(0.5), "timeout")
-		
+
 	shuffle_decks()
 	#Need to wait after shuffling decks
-	yield(get_tree().create_timer(0.5), "timeout")		
+	yield(get_tree().create_timer(0.5), "timeout")
 	for i in range(gameData.get_team_size()):
-		var pile = cfc.NMAP["deck" + str(i+1)]	
+		var pile = cfc.NMAP["deck" + str(i+1)]
 		while pile.is_shuffling:
-			yield(get_tree().create_timer(0.05), "timeout")		
-	
+			yield(get_tree().create_timer(0.05), "timeout")
+
 	villain.load_scenario()
 	while villain._post_load_move or cfc.NMAP["deck_villain"].is_shuffling:
-		yield(get_tree().create_timer(0.05), "timeout")	
+		yield(get_tree().create_timer(0.05), "timeout")
 
-	draw_starting_hand()	
+	draw_starting_hand()
 	#Tests
 	if gameData.get_team_size() < 2:
 		#draw_cheat_ghost("Web-Shooter")
@@ -337,12 +337,12 @@ func post_cards_moved_load():
 		#draw_cheat("Black Cat")
 		#draw_cheat("Energy")
 		#draw_cheat("Backflip")
-		#draw_cheat("Helicarrier")	
+		#draw_cheat("Helicarrier")
 		#draw_cheat("Swinging Web Kick")
 		pass
 	cfc.LOG_DICT(guidMaster.guid_to_object)
-		
-	for i in range (get_team_size()): 
+
+	for i in range (get_team_size()):
 		heroZones[i+1].reorganize()
 
 	while are_cards_still_animating():
@@ -352,23 +352,23 @@ func post_cards_moved_load():
 	var current_villain = get_villain_card()
 	var func_return = current_villain.execute_scripts_no_stack(current_villain, "reveal")
 	if func_return is GDScriptFunctionState && func_return.is_valid():
-		yield(func_return, "completed")		
+		yield(func_return, "completed")
 
 	var scheme = null
 	while !scheme: #in network settings, this varialbe sometimes takes some time to get to us
 		scheme = gameData.get_main_scheme()
 		yield(get_tree().create_timer(0.1), "timeout")
-		
+
 	func_return = scheme.execute_scripts_no_stack(scheme, "setup")
 	if func_return is GDScriptFunctionState && func_return.is_valid():
-		yield(func_return, "completed")		
-		
+		yield(func_return, "completed")
+
 	func_return = scheme.execute_scripts_no_stack(scheme, "reveal")
 	if func_return is GDScriptFunctionState && func_return.is_valid():
-		yield(func_return, "completed")			
+		yield(func_return, "completed")
 
 	#Save gamedata for restart
-	gameData.save_gamedata_to_file("user://Saves/_restart.json")	
+	gameData.save_gamedata_to_file("user://Saves/_restart.json")
 
 	rpc("ready_for_step", LOADING_STEPS.READY_TO_START)
 
@@ -384,7 +384,7 @@ func load_scheme(card_id, call_preloaded = {"shuffle" : false}):
 
 func load_heroes():
 	var hero_count: int = get_team_size()
-	for i in range (hero_count): 
+	for i in range (hero_count):
 		heroZones[i+1].load_starting_identity()
 
 
@@ -393,13 +393,13 @@ func hide_all_hands():
 	for i in range (CFConst.MAX_TEAM_SIZE):
 		for v in ["GhostHand", "Hand"]:
 			var old_hand: Hand = get_node("%" + v + str(i+1))
-			if old_hand.is_in_group("bottom"):	
+			if old_hand.is_in_group("bottom"):
 				old_hand.remove_from_group("bottom") #todo fix hack
 			WCUtils.disable_and_hide_node(old_hand)
-			old_hand.re_place()	
-			old_hand.position = Vector2(20000, 20000)	
+			old_hand.re_place()
+			old_hand.position = Vector2(20000, 20000)
 
-	
+
 
 func init_hero_zones():
 	var hero_count: int = get_team_size()
@@ -407,7 +407,7 @@ func init_hero_zones():
 		return
 	while hero_count < heroZones.size():
 		heroZones.erase(heroZones.size())
-	
+
 	while hero_count > heroZones.size():
 		var index = heroZones.size()+1
 		var new_hero_zone = heroZone.instance()
@@ -415,7 +415,7 @@ func init_hero_zones():
 		add_child(new_hero_zone)
 		new_hero_zone.set_player(index)
 		new_hero_zone.rect_position = Vector2(500, 600) #TODO better than this
-		heroZones[index] = new_hero_zone		
+		heroZones[index] = new_hero_zone
 
 # Returns an array with all children nodes which are of Card class
 func get_all_cards() -> Array:
@@ -429,18 +429,18 @@ func get_all_cards() -> Array:
 func get_all_cards_controlled_by(hero_id):
 	var cardsArray := []
 	for obj in get_children():
-		if obj as Card: 
+		if obj as Card:
 			if (obj.get_controller_hero_id() == hero_id):
 				cardsArray.append(obj)
-	return cardsArray	
+	return cardsArray
 
 func get_all_cards_by_property(property:String, value):
 	var cardsArray := []
 	for obj in get_children():
-		if obj as Card: 
+		if obj as Card:
 			if (obj.get_property(property) == value):
 				cardsArray.append(obj)
-	return cardsArray	
+	return cardsArray
 
 func reset_board():
 	gameData.stop_game()
@@ -454,18 +454,18 @@ func server_activity(on = true):
 	pass
 
 func delete_all_cards():
-	
+
 	#delete everything on board and grids
 	var cards:Array = get_all_cards()
 	for obj in cards:
 		remove_child(obj)
 		obj.queue_free()
-		
-	#delete everything in hands	
+
+	#delete everything in hands
 	for i in range(get_team_size()):
 		var hand:Hand = cfc.NMAP["hand" + str(i+1)]
 		hand.delete_all_cards()
-		
+
 	#delete everything in other piles
 	for grid_name in GRID_SETUP.keys():
 		var grid_info = GRID_SETUP[grid_name]
@@ -475,33 +475,33 @@ func delete_all_cards():
 		else: #it's a grid
 			var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(grid_name)
 			grid.delete_all_slots_but_one()
-			
+
 
 	for i in range(get_team_size()):
 		var hero_id = i+1
 		for grid_name in HERO_GRID_SETUP.keys():
 			var grid_info = HERO_GRID_SETUP[grid_name]
-			var real_grid_name = grid_name + str(hero_id)		
+			var real_grid_name = grid_name + str(hero_id)
 			if "pile" == grid_info.get("type", ""):
 				var pile:Pile = cfc.NMAP[real_grid_name]
 				pile.delete_all_cards()
 			else: #it's a grid
 				var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(real_grid_name)
-				grid.delete_all_slots_but_one()								
+				grid.delete_all_slots_but_one()
 
 func _close_game():
 	cfc.quit_game()
 	get_tree().change_scene("res://src/wc/MainMenu.tscn")
-	
+
 func _retry_game(message:String):
 	#TODO
 	cfc.quit_game()
-	get_tree().change_scene("res://src/wc/MainMenu.tscn")	
+	get_tree().change_scene("res://src/wc/MainMenu.tscn")
 
 func _reload_last_save():
 	gameData.reload_round_savegame(gameData.current_round)
 
-	
+
 # This function is to avoid relating the logic in the card objects
 # to a node which might not be there in another game
 # You can remove this function and the FancyMovementToggle button
@@ -525,7 +525,7 @@ func _on_ReshuffleAllDeck_pressed() -> void:
 func get_enemies_engaged_with(hero_id):
 	var grid = get_grid("enemies" + str(hero_id))
 	return grid.get_all_cards()
-	
+
 func _on_ReshuffleAllDiscard_pressed() -> void:
 	reshuffle_all_in_pile(cfc.NMAP.discard)
 
@@ -567,7 +567,7 @@ func load_cards() -> void:
 		var hero_id = i+1
 		var hero_deck_data: HeroDeckData = gameData.get_team_member(hero_id)["hero_data"] #TODO actually load my player's stuff
 		var card_ids = hero_deck_data.get_deck_cards()
-		
+
 		var card_data:Array = []
 		for card_id in card_ids:
 			#cards.append(ckey)
@@ -583,14 +583,14 @@ func get_owner_from_pile_name(pile_name:String):
 	#exception for piles controlled by the player but where cards belong to villain
 	if pile_name.begins_with("encounters") or pile_name.begins_with("enemies"):
 		return 0 #villain
-		
+
 	for i in CFConst.MAX_TEAM_SIZE:
 		var hero_id = i+1
 		if (pile_name.ends_with(str(hero_id))):
 			return hero_id
 	return 0 #villain
-	
-func get_controller_from_pile_name(pile_name:String):	
+
+func get_controller_from_pile_name(pile_name:String):
 	return gameData.get_grid_controller_hero_id(pile_name)
 #things to do after everything is properly loaded.
 #This will trigger execute_scripts
@@ -600,45 +600,45 @@ func post_load_move():
 		var data = _post_load_move[card]
 		var pile_name = data.get("grid", "")
 		var host_id = data.get("host_id", "")
-		
+
 		if (pile_name):
 			var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(pile_name)
 			var slot: BoardPlacementSlot
 			if grid:
 				slot = grid.find_available_slot()
 				if slot:
-					card.move_to(cfc.NMAP.board, -1, slot)	
+					card.move_to(cfc.NMAP.board, -1, slot)
 		if host_id:
 			var host_card = find_card_by_name(host_id)
 			if host_card:
 				card.attach_to_host(host_card)
-				
-	for card in _post_load_move:				
-		#card.interruptTweening()
-		card.reorganize_self()	
-		
-	_post_load_move = {} #reset	
 
-		
-	return			
+	for card in _post_load_move:
+		#card.interruptTweening()
+		card.reorganize_self()
+
+	_post_load_move = {} #reset
+
+
+	return
 
 
 func load_cards_to_pile(card_data:Array, pile_name):
 	var card_array = []
 	var pile_owner = get_owner_from_pile_name(pile_name)
-	var pile_controller = get_controller_from_pile_name(pile_name)	
+	var pile_controller = get_controller_from_pile_name(pile_name)
 	var card_to_card_data = {}
 	for card in card_data:
 		var card_id_or_name:String = card["card"]
 		var card_owner = card.get("owner_hero_id", pile_owner)
-		
+
 		#card_id here is either a card id or a card name, we try to accomodate for both
 		var card_id = cfc.get_corrected_card_id(card_id_or_name)
 		if !card_id:
 			var _error = 1
 			cfc.LOG("error, couldn't find card named " + str(card_id_or_name))
 			continue
-		var new_card:WCCard = cfc.instance_card(card_id, card_owner)
+		var new_card:WCCard = cfc.instance_card_with_owner(card_id, card_owner)
 		if card_owner != pile_controller:
 			new_card.set_controller_hero_id(pile_controller)
 		#new_card.load_from_json(card)
@@ -651,13 +651,13 @@ func load_cards_to_pile(card_data:Array, pile_name):
 			card._determine_idle_state()
 		else: #it's a grid or the board
 			#TODO cleaner way to add the card there?
-			#card.set_is_faceup(true)	
+			#card.set_is_faceup(true)
 			add_child(card)
 			card._determine_idle_state()
 			_post_load_move[card] = {
-				"grid": pile_name, 
+				"grid": pile_name,
 				"host_id":card_to_card_data[card].get("host", {})
-			} 
+			}
 		card.load_from_json(card_to_card_data[card])
 
 		#dirty way to set some important variables
@@ -666,14 +666,14 @@ func load_cards_to_pile(card_data:Array, pile_name):
 		if (pile_name.begins_with("identity")):
 			heroZones[pile_owner].set_identity_card(card)
 
-	for card in card_array:				
+	for card in card_array:
 		#card.interruptTweening()
-		card.reorganize_self()		
-	
+		card.reorganize_self()
+
 	return
-			
+
 func load_cards_to_grid(card_data:Array, grid_name):
-	load_cards_to_pile(card_data, grid_name)	
+	load_cards_to_pile(card_data, grid_name)
 	return
 
 func export_cards_to_json(pile_name, cards) -> Dictionary:
@@ -681,8 +681,8 @@ func export_cards_to_json(pile_name, cards) -> Dictionary:
 	for card in cards:
 		var card_description = card.export_to_json()
 		export_arr.append(card_description)
-	var result:Dictionary = {pile_name : export_arr}	
-	return result	
+	var result:Dictionary = {pile_name : export_arr}
+	return result
 
 func export_pile_to_json(pile_name, seen_cards:= {}) -> Dictionary:
 	var pile: CardContainer = cfc.NMAP[pile_name]
@@ -690,52 +690,52 @@ func export_pile_to_json(pile_name, seen_cards:= {}) -> Dictionary:
 	for card in cards:
 		seen_cards[card] = true
 	return export_cards_to_json(pile_name, cards)
-	
+
 func export_grid_to_json(grid_name, seen_cards:= {}) -> Dictionary:
 	var grid:BoardPlacementGrid = get_grid(grid_name)
-	var cards:Array = grid.get_all_cards()	
+	var cards:Array = grid.get_all_cards()
 	for card in cards:
 		seen_cards[card] = true
-	return export_cards_to_json(grid_name, cards)	
-		
+	return export_cards_to_json(grid_name, cards)
+
 func shuffle_decks() -> void:
 	for i in range(gameData.get_team_size()):
 		var pile_name = "deck" + str(i+1)
 		var pile = cfc.NMAP[pile_name]
 		while pile.are_cards_still_animating():
 			yield(pile.get_tree().create_timer(0.2), "timeout")
-		cfc.LOG("shuffling deck " + str(pile_name))	
+		cfc.LOG("shuffling deck " + str(pile_name))
 		pile.shuffle_cards()
-	
+
 func draw_starting_hand() -> void:
 	gameData.draw_all_players()
 
 
 func draw_cheat(cardName : String, hand = "hand1") -> void:
 	var card_key = cfc.get_corrected_card_id(cardName)
-	var card = cfc.instance_card(card_key, 1)
+	var card = cfc.instance_card_with_owner(card_key, 1)
 	var pile = cfc.NMAP["deck1"]
 	pile.add_child(card)
 	cfc.NMAP[hand].draw_card (pile)
 
 func draw_cheat_ghost(cardName : String) -> void:
 	draw_cheat(cardName, "ghosthand1")
-	
-	
+
+
 func are_cards_still_animating(check_everything:bool = true) -> bool:
 	for c in get_all_cards():
 		if c.is_animating():
 			return(true)
-	
+
 	if (!check_everything):
 		return false
 
-	#check hands	
+	#check hands
 	for i in range(gameData.get_team_size()):
 		var hand:Hand = cfc.NMAP["hand" + str(i+1)]
 		if (hand.are_cards_still_animating()):
 			return true
-		
+
 	#check other piles
 	#Villain piles
 	for grid_name in GRID_SETUP.keys():
@@ -744,18 +744,18 @@ func are_cards_still_animating(check_everything:bool = true) -> bool:
 			var pile:Pile = cfc.NMAP[grid_name]
 			if (pile.are_cards_still_animating()):
 				return true
-	#hero piles		
+	#hero piles
 	for i in range(gameData.get_team_size()):
 		var hero_id = i+1
 		for grid_name in HERO_GRID_SETUP.keys():
 			var grid_info = HERO_GRID_SETUP[grid_name]
-			var real_grid_name = grid_name + str(hero_id)		
+			var real_grid_name = grid_name + str(hero_id)
 			if "pile" == grid_info.get("type", ""):
 				var pile:Pile = cfc.NMAP[real_grid_name]
 				if (pile.are_cards_still_animating()):
-					return true					
-			
-	return(false)				
+					return true
+
+	return(false)
 
 func _on_DeckBuilder_pressed() -> void:
 	cfc.game_paused = true
@@ -776,11 +776,11 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 	for container in get_tree().get_nodes_in_group("hands"):
 		container.disable()
 	for v in ["GhostHand", "Hand"]:
-		var new_hand: Hand = get_node("%" + v + str(new_hero_id))	
-		new_hand.add_to_group("bottom")		
+		var new_hand: Hand = get_node("%" + v + str(new_hero_id))
+		new_hand.add_to_group("bottom")
 		WCUtils.enable_and_show_node(new_hand)
-		new_hand.enable()	
-		new_hand.re_place()	
+		new_hand.enable()
+		new_hand.re_place()
 
 	init_board_organizers(new_hero_id)
 
@@ -789,16 +789,16 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 
 	#exchange hands
 	for v in ["GhostHand", "Hand"]:
-		var old_hand: Hand = get_node("%" + v + str(previous_hero_id))	
+		var old_hand: Hand = get_node("%" + v + str(previous_hero_id))
 		if old_hand.is_in_group("bottom"):
 			old_hand.remove_from_group("bottom") #todo fix hack
 		WCUtils.disable_and_hide_node(old_hand)
-		old_hand.re_place()	
-		old_hand.position = Vector2(20000, 20000)	
+		old_hand.re_place()
+		old_hand.position = Vector2(20000, 20000)
 		var new_hand: Hand = get_node("%" + v + str(new_hero_id))
-		new_hand.add_to_group("bottom")		
+		new_hand.add_to_group("bottom")
 		WCUtils.enable_and_show_node(new_hand)
-		new_hand.enable()					
+		new_hand.enable()
 
 	for v in ["GhostHand", "Hand"]:
 		var new_hand: Hand = get_node("%" + v + str(new_hero_id))
@@ -809,7 +809,7 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 
 
 
-func savestate_to_json() -> Dictionary:	
+func savestate_to_json() -> Dictionary:
 	var json_data:Dictionary = {}
 	var seen_cards:= {}
 	for grid_name in GRID_SETUP.keys():
@@ -824,16 +824,16 @@ func savestate_to_json() -> Dictionary:
 
 		for grid_name in HERO_GRID_SETUP.keys():
 			var grid_info = HERO_GRID_SETUP[grid_name]
-			var real_grid_name = grid_name + str(hero_id)		
+			var real_grid_name = grid_name + str(hero_id)
 			if "pile" == grid_info.get("type", ""):
 				json_data.merge(export_pile_to_json(real_grid_name, seen_cards))
 			else:
 				json_data.merge(export_grid_to_json(real_grid_name, seen_cards))
-				
-		#save hand	
+
+		#save hand
 		var hand_name = "hand" + str(hero_id)
-		json_data.merge(export_pile_to_json(hand_name, seen_cards))	
-	
+		json_data.merge(export_pile_to_json(hand_name, seen_cards))
+
 	#orphan cards (not in pile or grid)
 	var other_cards = []
 	for card in get_all_cards():
@@ -846,20 +846,20 @@ func savestate_to_json() -> Dictionary:
 		var json_dict = export_cards_to_json("others", other_cards)
 		json_dict["others"].sort_custom(WCUtils, "sort_cards")
 		json_data.merge(json_dict)
-		
+
 	var result: Dictionary = {"board" : json_data}
 	return result
-	
+
 func loadstate_from_json(json:Dictionary):
 	gameData.stop_game()
 	cfc.set_game_paused(true)
-	
+
 	var json_data = json.get("board", null)
 	if (null == json_data):
 		return #TODO Error msg
 
 	reset_board()
-	
+
 	#Load all grids with matching data
 	for grid_name in GRID_SETUP.keys():
 		var grid_info = GRID_SETUP[grid_name]
@@ -875,13 +875,13 @@ func loadstate_from_json(json:Dictionary):
 		for grid_name in HERO_GRID_SETUP.keys():
 			var grid_info = HERO_GRID_SETUP[grid_name]
 			var real_grid_name = grid_name + str(hero_id)
-			var card_data = json_data.get(real_grid_name, [])		
+			var card_data = json_data.get(real_grid_name, [])
 			if "pile" == grid_info.get("type", ""):
 				load_cards_to_pile(card_data, real_grid_name)
 			else:
 				load_cards_to_grid(card_data, real_grid_name)
 
-		#load everything in hands	
+		#load everything in hands
 		var hand_name = "hand" + str(hero_id)
 		var card_data = json_data.get(hand_name, [])
 		load_cards_to_pile(card_data, hand_name)
@@ -889,10 +889,10 @@ func loadstate_from_json(json:Dictionary):
 	#load cards that aren't on any grid or piles
 	var other_data = json_data.get("others", [])
 	load_cards_to_pile(other_data, "")
-	
+
 	rpc("ready_for_step", LOADING_STEPS.CARDS_PRELOADED_SKIP_LOAD) #tell everyone we're done preloading
 
-	#gameData.start_game()	
+	#gameData.start_game()
 	return
 #The game engine doesn't really have a concept of double sided cards, so instead,
 #when flipping such a card, we destroy it and create a new card
@@ -904,25 +904,25 @@ func flip_doublesided_card(card:WCCard):
 			var modifiers = card.export_modifiers()
 			modifiers["callback"] = "changed_form"
 			modifiers["callback_params"] = {"before": type_code}
-			gameData.set_aside(card) 
+			gameData.set_aside(card)
 			var new_card = heroZones[card.get_owner_hero_id()].load_identity(back_code, modifiers)
-			return new_card	
+			return new_card
 		else:
-			var new_card = cfc.instance_card(back_code,card.get_owner_hero_id())
+			var new_card = cfc.instance_card_with_owner(back_code, card.get_owner_hero_id())
 			#TODO copy tokens, state, etc...
 			var slot = card._placement_slot
 			add_child(new_card)
 			card.copy_modifiers_to(new_card)
-			gameData.set_aside(card) #is more required to remove it?		
+			gameData.set_aside(card) #is more required to remove it?
 			#new_card._determine_idle_state()
-			#new_card.move_to(cfc.NMAP.board, -1, slot)	
+			#new_card.move_to(cfc.NMAP.board, -1, slot)
 			new_card.position = slot.rect_global_position
 			slot.set_occupying_card(new_card)
 			new_card.state = Card.CardState.ON_PLAY_BOARD
 			#new_card.reorganize_self()
 			return new_card
-		
-		
+
+
 	else:
 		return null
 		#TODO mabe flip anyway?
@@ -939,20 +939,20 @@ func count_card_per_player_in_play(unique_card:WCCard, hero_id = 0, exclude_self
 		if !card.is_faceup:
 			continue
 		if card == unique_card and exclude_self:
-			continue		
+			continue
 		var card_unique_name = card.get_unique_name().to_lower()
 		if card_unique_name == unique_name:
 			result +=1
 	return result
-	
+
 func unique_card_in_play(unique_card:WCCard):
 	#note: sometimes subname can be set but still equal to null, so we have to force it to empty string
 	var unique_name = unique_card.get_unique_name().to_lower()
-	
+
 	var all_cards = self.get_all_cards()
 	for card in all_cards:
 		if !card.is_faceup:
-			continue	
+			continue
 		var card_unique_name = card.get_unique_name().to_lower()
 		if card_unique_name == unique_name:
 			return true
@@ -973,7 +973,7 @@ func find_card_by_name(card_id_or_name, include_back:= false):
 	if !card_name:
 		card_name = card_id_or_name
 	card_name = card_name.to_lower()
-		
+
 	for card in get_all_cards():
 		if (card.canonical_name.to_lower() == card_name):
 			return card
@@ -992,5 +992,5 @@ func _on_ServerActivity_gui_input(event):
 	if event is InputEventMouseButton:
 		if event.doubleclick and cfc.is_game_master():
 			gameData.theStack.attempt_unlock()
-		
+
 	pass # Replace with function body.

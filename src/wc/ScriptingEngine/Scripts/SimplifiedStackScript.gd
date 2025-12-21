@@ -15,19 +15,19 @@ func _init(_task, _owner = null, _trigger_object = null, _trigger_details = {}):
 		init_task_from_script_definition(_task, _owner, _trigger_object, _trigger_details)
 	else:
 		task = _task
-	
+
 	if _owner:
-		task.owner = _owner	
+		task.owner = _owner
 		if _trigger_object:
 			_trigger_object = _owner
-	
+
 	if _trigger_object:
 		task.trigger_object = _trigger_object
-	
+
 	task_name = task.script_name
-		
+
 	task.script_definition["name"] = task_name
-	
+
 	#enforce some values for filter matching
 	if (task.subjects):
 		task.script_definition["target"] = task.subjects[0]
@@ -42,17 +42,18 @@ func _init(_task, _owner = null, _trigger_object = null, _trigger_details = {}):
 	tasks = [task]
 	# Seems to be required to avoid re-targeting... ?
 	task.is_primed = true
-	
+
 func init_task_from_script_definition(definition:Dictionary, _owner, _trigger_object, _trigger_details = {}):
 	task = ScriptTask.new(_owner, definition, _trigger_object, _trigger_details)
 
 func get_tasks() -> Array:
 	return tasks
-	
+
 func execute():
 	if (!task.is_primed):
-		task.prime([],run_type,0, [])
-	
+		task.prime([],run_type,0)
+		task.store_all_prev_subjects([])
+
 	var _retcode = sceng.call(task_name, task)
 
 #replacement task
@@ -68,23 +69,20 @@ func replace_subjects(new_subjects:Array):
 	if (task.subjects):
 		task.script_definition["target"] = task.subjects[0]
 
-#	#recreate sceng	
+#	#recreate sceng
 #	sceng = cfc.scripting_engine.new([task.script_definition], task.owner,task.trigger_object, task.trigger_details)
 
 
 func get_script_by_event_details(event_details):
-	
+
 	#TODO should this be on a per task basis ?
 	var _type = event_details["event_type"]
 	if (_type):
 		if !(("trigger_" + _type) in (task.trigger_details["tags"])):
 			return null
 
-	var _name = event_details["event_name"]		
+	var _name = event_details["event_name"]
 	if _name and (task_name != _name):
 		return null
-	
-	return task		
 
-	
-
+	return task

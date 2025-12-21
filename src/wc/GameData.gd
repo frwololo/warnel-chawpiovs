@@ -106,13 +106,13 @@ var _clients_desync_start_time: int = 0
 #a timer to avoid double registering a click on a target
 # as a click for its abilities
 var _targeting_timer:= 0.2
- 
+
 #var _systems_check_ongoing := false
 #var _clients_system_status: Dictionary = {}
 var _network_ack: Dictionary = {}
 var _multiplayer_desync = null
 var _game_over := false
-var _game_started := false 
+var _game_started := false
 
 func stop_game():
 	_game_started = false
@@ -134,7 +134,7 @@ func _init():
 	theGameObserver = GameObserver.new()
 
 # Called when the node enters the scene tree for the first time.
-func _ready():	
+func _ready():
 	#Signals
 
 # Network setup
@@ -142,30 +142,30 @@ func _ready():
 	get_tree().connect("network_peer_disconnected", self, "_player_disconnected")
 	get_tree().connect("connected_to_server", self, "_connected_ok")
 	get_tree().connect("connection_failed", self, "_connected_fail")
-	get_tree().connect("server_disconnected", self, "_server_disconnected")		
-	
+	get_tree().connect("server_disconnected", self, "_server_disconnected")
+
 	#TODO: the attempt to lock should happen BEFORE we actually open the windows
 	#scripting_bus.connect("selection_window_opened", self, "attempt_user_input_lock")
-	#scripting_bus.connect("card_selected", self, "_selection_window_closed")	
+	#scripting_bus.connect("card_selected", self, "_selection_window_closed")
 	scripting_bus.connect("scripting_event_triggered", self, "_scripting_event_triggered")
 	scripting_bus.connect("scripting_event_about_to_trigger", self, "_scripting_event_about_to_trigger")
 
 	scripting_bus.connect("initiated_targeting", self, "_initiated_targeting")
 	scripting_bus.connect("target_selected", self, "_target_selected")
-	
+
 	scripting_bus.connect("stack_event_deleted", self, "_stack_event_deleted")
 	scripting_bus.connect("all_clients_game_loaded", self, "_all_clients_game_loaded")
-	
-	
+
+
 	theStack.connect("script_executed_from_stack", self, "_script_executed_from_stack")
 	theStack.connect("script_added_to_stack", self, "_script_added_to_stack")
 
 
-	self.add_child(theStack) #Stack needs to be in the tree for rpc calls	
+	self.add_child(theStack) #Stack needs to be in the tree for rpc calls
 	self.add_child(theAnnouncer)
 	self.add_child(theGameObserver)
 	#scripting_bus.connect("optional_window_opened", self, "attempt_user_input_lock")
-	#scripting_bus.connect("optional_window_closed", self, "attempt_user_input_unlock")	
+	#scripting_bus.connect("optional_window_closed", self, "attempt_user_input_unlock")
 
 func _all_clients_game_loaded(status):
 	rpc("start_phaseContainer")
@@ -179,26 +179,26 @@ func _script_executed_from_stack (script):
 		"enemy_attack":
 			defenders_chosen()
 			return
-		"reveal_encounter":	
-			encounter_revealed() #this forces passing to the next step		
+		"reveal_encounter":
+			encounter_revealed() #this forces passing to the next step
 			return
-		"enemy_attack_happened", "enemy_scheme_happened":	
+		"enemy_attack_happened", "enemy_scheme_happened":
 			enemy_action_happened() #this forces passing to the next step
 			return
-		
+
 func _initiated_targeting(owner_card) -> void:
 	_targeting_ongoing = true
 
-func _target_selected(owner_card, details) -> void:	
+func _target_selected(owner_card, details) -> void:
 	_targeting_ongoing = false
-	
+
 func is_targeting_ongoing():
-	return _targeting_ongoing	
+	return _targeting_ongoing
 
 
 func end_game(result:String):
 	init_save_folder()
-	cleanup_post_game()	
+	cleanup_post_game()
 	cfc.set_game_paused(true)
 	var end_dialog:AcceptDialog = AcceptDialog.new()
 	end_dialog.window_title = result
@@ -216,9 +216,9 @@ func disable_desync_recovery():
 func attempt_resync(result:String):
 	if ! _desync_recovery_enabled:
 		return
-	_clients_system_status = {}	
+	_clients_system_status = {}
 	reload_round_savegame(current_round)
-	
+
 #	cfc.set_game_paused(true)
 #	var end_dialog:AcceptDialog = AcceptDialog.new()
 #	end_dialog.window_title = result
@@ -240,31 +240,31 @@ func _process(_delta: float):
 	else:
 		_targeting_timer -= _delta
 		_targeting_timer = max(0, _targeting_timer)
-		
+
 	if theAnnouncer.get_blocking_announce():
 		return
-		
-	if _game_over: 
+
+	if _game_over:
 		end_game("game over")
 		_game_over = false
 		return
-		
+
 	if _multiplayer_desync:
 			attempt_resync("desync")
-			
-	play_scripted_sequence()		
+
+	play_scripted_sequence()
 
 puppetsync func user_input_lock_denied():
 	return #TODO ?
-	
+
 puppetsync func user_input_unlock_denied():
-	return #TODO ?	
+	return #TODO ?
 
 mastersync func request_user_input_lock():
 	var requester = get_tree().get_rpc_sender_id()
 	if (user_input_ongoing && (user_input_ongoing != requester)):
 		rpc_id(requester,"user_input_lock_denied") # tell the sender their request is denied
-	rpc("acquire_user_input_lock", requester)	
+	rpc("acquire_user_input_lock", requester)
 
 mastersync func request_user_input_unlock():
 	var requester = get_tree().get_rpc_sender_id()
@@ -274,42 +274,42 @@ mastersync func request_user_input_unlock():
 
 puppetsync func acquire_user_input_lock(requester:int, details = {}):
 	_acquire_user_input_lock(requester, details)
-	
+
 puppetsync func release_user_input_lock(requester:int,details = {}):
 	_release_user_input_lock(requester, details)
 
 func _acquire_user_input_lock(requester:int, _details = {}):
 	user_input_ongoing = requester
-	
+
 func _release_user_input_lock(_requester:int,_details = {}):
 	user_input_ongoing = 0
-	#TODO error check: if requester not equal to current user_input_ongoing, we have a desync 
-	
+	#TODO error check: if requester not equal to current user_input_ongoing, we have a desync
+
 func attempt_user_input_lock(_request_object = null,details = {}):
 	#if "is_master" key is set, we use this to check whether we are authorized to request the lock
 	var is_master = details.get("is_master", true)
 	if (!is_master):
 		return
-			
-	rpc_id(1, "request_user_input_lock" )		
-	
-func attempt_user_input_unlock(_request_object = null,_details = {}):	
-	rpc_id(1, "request_user_input_unlock")	
 
-func _selection_window_closed(request_object = null,details = {}):	
+	rpc_id(1, "request_user_input_lock" )
+
+func attempt_user_input_unlock(_request_object = null,_details = {}):
+	rpc_id(1, "request_user_input_unlock")
+
+func _selection_window_closed(request_object = null,details = {}):
 	attempt_user_input_unlock(request_object, details)
-	
+
 #Returns true if I am allowed to play cards/abilities
 #This is a more complex question than might seem
 #even if I am allowed to play by this function, I might not be able to play all cards/abilities at a given time)
 func can_i_play() -> bool:
-	
+
 	#If there is blocking user input ongoing and it isn't me, I can't play
 	if (user_input_ongoing):
 		if (user_input_ongoing != get_tree().get_network_unique_id()):
 			return false
-	
-	return true 	
+
+	return true
 
 func start_tests():
 	rpc("init_client_tests")
@@ -318,7 +318,7 @@ remotesync func init_client_tests():
 	if !testSuite:
 		testSuite = TestSuite.new()
 		testSuite.name = "testSuite"
-		self.add_child(testSuite) #Test suite needs to be in the tree for rpc calls	
+		self.add_child(testSuite) #Test suite needs to be in the tree for rpc calls
 	else:
 		testSuite.reset()
 
@@ -328,7 +328,7 @@ func registerPhaseContainer(phasecont:PhaseContainer):
 func _scripting_event_about_to_trigger(_trigger_object = null,
 		trigger: String = "manual",
 		_trigger_details: Dictionary = {}):
-	
+
 	match trigger:
 		"card_moved_to_board":
 			check_ally_limit()
@@ -344,16 +344,16 @@ func _emit_additional_signals(_trigger_object = null,
 			if card_type:
 				var signal = card_type + "_moved_to_board"
 				scripting_bus.emit_signal(signal, _trigger_object, _trigger_details)
-				
+
 
 func _scripting_event_triggered(_trigger_object = null,
 		trigger: String = "manual",
 		_trigger_details: Dictionary = {}):
-	
+
 	match trigger:
 		"card_moved_to_board":
-			_emit_additional_signals(_trigger_object, trigger, _trigger_details)	
-			
+			_emit_additional_signals(_trigger_object, trigger, _trigger_details)
+
 	match trigger:
 		"card_token_modified":
 			check_main_scheme_defeat()
@@ -363,14 +363,14 @@ func _scripting_event_triggered(_trigger_object = null,
 			check_empty_decks(_trigger_details["source"])
 		"enemy_initiates_attack",\
 				"enemy_initiates_scheme":
-			pre_attack_interrupts_done()			
+			pre_attack_interrupts_done()
 
 	#Game state changed signal (to compute card costs, etc...)
 	match trigger:
 		"card_moved_to_board", \
 				"card_played", \
 				"card_token_modified",\
-				"step_started" :		
+				"step_started" :
 			game_state_changed()
 	return
 
@@ -392,9 +392,9 @@ func check_empty_decks(pile_to_check):
 			if (scheme):
 				scheme.tokens.mod_token("acceleration", 1)
 			else:
-				var _error = 1 #TODO error handling 
+				var _error = 1 #TODO error handling
 		return
-	
+
 	elif (pile_to_check.begins_with("deck")): #player decks
 		var hero_id_str = pile_to_check.substr(4,1)
 		var hero_deck:Pile = cfc.NMAP[pile_to_check]
@@ -408,42 +408,42 @@ func check_empty_decks(pile_to_check):
 			hero_deck.shuffle_cards()
 			#deal a new encounter
 			deal_one_encounter_to(int(hero_id_str))
-		return		
-	
+		return
+
 func move_to_next_scheme(current_scheme):
 	var set_code = current_scheme.get_property("card_set_code", "").to_lower()
 	var stage = current_scheme.get_property("stage")
-	
+
 	var next_stage = stage + 1
 	var set_schemes = cfc.schemes[set_code]
 	for scheme in set_schemes:
 		if (scheme.get("stage", 0) == next_stage):
 			var board = cfc.NMAP.board
 			var code = scheme.get("_code")
-			
+
 
 			#hacky way to move the current card out of the way
 			#while still leaving it on the board
 			if current_scheme._placement_slot:
 				current_scheme._placement_slot.remove_occupying_card(current_scheme)
-	
-		
+
+
 			var new_card = board.load_scheme(code)
-		
-			set_aside(current_scheme)	
-				
+
+			set_aside(current_scheme)
+
 
 			var func_return = new_card.execute_scripts(new_card, "reveal_side_a")
 			while func_return is GDScriptFunctionState && func_return.is_valid():
-				func_return = func_return.resume()			
-			
+				func_return = func_return.resume()
+
 			func_return = new_card.execute_scripts(new_card, "reveal")
 			while func_return is GDScriptFunctionState && func_return.is_valid():
-				func_return = func_return.resume()			
-		
-			
+				func_return = func_return.resume()
+
+
 			return new_card
-	
+
 	return null
 
 func check_ally_limit():
@@ -456,22 +456,22 @@ func check_ally_limit():
 		var my_cards = cfc.NMAP.board.get_grid("allies" + String(hero_id)).get_all_cards()
 		if (my_cards.size()) > ally_limit:
 			identity_card.execute_scripts(identity_card, "ally_limit_rule")
-		
-#a function that checks regularly (sepcifically, whenever threat changes) if the main scheme has too much threat	
+
+#a function that checks regularly (sepcifically, whenever threat changes) if the main scheme has too much threat
 func check_main_scheme_defeat():
 	var scheme = find_main_scheme()
 	if (!scheme):
 		var _error = 1 #TODO error handling
 		return
-	
+
 	if scheme.get_current_threat() < scheme.get_property("threat", 0):
 		return
-	
+
 	var next_scheme = move_to_next_scheme(scheme)
-	
-	if (!next_scheme):		
-		defeat()	
-	
+
+	if (!next_scheme):
+		defeat()
+
 func game_state_changed():
 	emit_signal("game_state_changed",{})
 
@@ -481,9 +481,9 @@ func init_network_players(players:Dictionary):
 				get_tree().network_peer.set_peer_timeout(player_network_id, 1000, 5000, 15000)
 		var info = players[player_network_id]
 		var new_player_data := PlayerData.new(info.name, info.id, player_network_id)
-		network_players[player_network_id] = new_player_data 
+		network_players[player_network_id] = new_player_data
 		id_to_network_id[info.id] = player_network_id
-	
+
 
 
 func set_team_data(_team:Dictionary):
@@ -493,11 +493,11 @@ func set_team_data(_team:Dictionary):
 		var hero_data:HeroDeckData = _team[hero_idx]
 		if (hero_data.deck_id and hero_data.get_hero_id()):
 			hero_count += 1
-			team[hero_count] = { 
+			team[hero_count] = {
 				"hero_data" : hero_data,
 				"manapool" : ManaPool.new(),
 				}
-	return 0				
+	return 0
 
 func set_scenario_data(_scenario:Dictionary):
 	if (!scenario):
@@ -516,13 +516,13 @@ func get_player_by_network_id(network_id) -> PlayerData:
 func get_player_by_index(id) -> PlayerData:
 	return network_players[id_to_network_id[id]]
 
-#setup default for 1player mode	
+#setup default for 1player mode
 func init_1player():
 	is_multiplayer_game = false
 	init_as_server()
 	var dic = {1 : {"name" : "Player1", "id" : 1}}
 	init_network_players(dic)
-	
+
 func init_as_server():
 	var peer = NetworkedMultiplayerENet.new()
 	peer.set_compression_mode(NetworkedMultiplayerENet.COMPRESS_RANGE_CODER)
@@ -530,7 +530,7 @@ func init_as_server():
 	if err != OK:
 		return err #does this ever run?
 	get_tree().set_network_peer(peer)
-	return err	
+	return err
 
 func archive_save_folder(save_dir):
 	var dir:Directory = Directory.new()
@@ -540,10 +540,10 @@ func archive_save_folder(save_dir):
 		return
 	if !dir.dir_exists(past_dir):
 		return
-	
+
 	var files_in_save = CFUtils.list_files_in_directory(save_dir)
 	if !files_in_save:
-		return	
+		return
 	var cur_time = Time.get_datetime_dict_from_system()
 	var cur_time_str = str(cur_time["month"]) + "_" + str(cur_time["day"]) + "_" + str(cur_time["hour"]) + "_" + str(cur_time["minute"])
 	dir.rename(save_dir, past_dir + cur_time_str + "/")
@@ -575,7 +575,7 @@ func get_ongoing_game():
 	var latest = files_in_save.back()
 	var json = WCUtils.read_json_file(latest)
 	return json
-	
+
 
 func save_round(round_id):
 	var save_dir = "user://Saves/current_game/"
@@ -595,13 +595,13 @@ func reload_round_savegame(round_id):
 		display_debug("no game to load, sorry")
 		return
 	gameData.load_gamedata(json)
-			
+
 func get_team_size():
 	return team.size()
 
 func get_team_member(id:int):
 	return team[id]
-		
+
 func get_current_local_hero_id():
 	return self.current_local_hero_id
 
@@ -617,47 +617,47 @@ func reset_forced_current_playing_hero(override_hero = 0):
 #returns a list of hero ids that are currently allowed to play
 #(outsde of asking them for possible interruptions)
 func get_currently_playing_hero_ids():
-	
+
 	if _forced_currently_playing_hero_id:
 		return [_forced_currently_playing_hero_id]
-	
+
 	#interruption takes precedence, if a player is interrupting,only them can interract with the game
 	#we have a hacky wayt to set interrupting_hero_id to 0 when checking for interrupts
 	#in order to bypass this check,
 	#see compute_interrupts
 	if is_interrupt_mode() and theStack.interrupting_hero_id:
 		return [theStack.interrupting_hero_id]
-	
+
 	#if some attacks are ongoing or enouncters are being revealed, the
 	#target player is the one being returned
 	if !attackers.empty():
 		return [get_current_activity_hero_target()]
 		#return [_villain_current_hero_target]
-	
+
 	if !immediate_encounters.empty():
 		return [_villain_current_hero_target]
-		
+
 	if phaseContainer.current_step in [
 		CFConst.PHASE_STEP.VILLAIN_ACTIVATES,
 		CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER
 	]:
 		return [get_current_activity_hero_target()]
 		#return [_villain_current_hero_target]
-	
+
 	#during player turn and outside of all other considerations, all heroes can play simultaneously
 	if phaseContainer.current_step in [CFConst.PHASE_STEP.PLAYER_TURN, CFConst.PHASE_STEP.PLAYER_MULLIGAN, CFConst.PHASE_STEP.PLAYER_DISCARD]:
 		var all = []
 		for i in range (team.size()):
 			all.append(i+1)
 		return all
-	
+
 	#early game, we let player 1 activate stuff for setup
 	if phaseContainer.current_step < CFConst.PHASE_STEP.PLAYER_TURN:
 		return[1]
-		
-	#outside of these events, players can't play ?	
+
+	#outside of these events, players can't play ?
 	return []
-	
+
 var _priority_scripts = []
 var _current_priority_script = {}
 func add_script_to_execute(owner, trigger_card, trigger, trigger_details, run_type):
@@ -674,7 +674,7 @@ func add_script_to_execute(owner, trigger_card, trigger, trigger_details, run_ty
 func execute_priority_scripts() -> bool:
 	if _current_priority_script:
 		return _current_priority_script.get("sceng", true)
-		
+
 	if !_priority_scripts:
 		_current_priority_script = {}
 		return false
@@ -685,7 +685,7 @@ func execute_priority_scripts() -> bool:
 	var trigger = script_data.get("trigger", "")
 	var trigger_details = script_data.get("trigger_details", {})
 	var run_type = script_data.get("run_type", CFInt.RunType.NORMAL)
-	
+
 	if !script_owner:
 		_current_priority_script = {}
 		return false
@@ -694,16 +694,16 @@ func execute_priority_scripts() -> bool:
 		force_current_playing_hero(override_hero)
 	var sceng = script_owner.execute_scripts(trigger_card, trigger, trigger_details, run_type)
 	_current_priority_script["sceng"] = sceng
-	if sceng is GDScriptFunctionState && sceng.is_valid():		
+	if sceng is GDScriptFunctionState && sceng.is_valid():
 		yield(sceng,"completed")
 
 	if override_hero:
 		reset_forced_current_playing_hero(override_hero)
-			
+
 	_current_priority_script = {}
 	return sceng
-	
-	
+
+
 func draw_all_players() :
 	for hero_id in team.keys():
 		var identity = get_identity_card(hero_id)
@@ -711,14 +711,14 @@ func draw_all_players() :
 		var hand:Hand = cfc.NMAP["hand" + str(hero_id)]
 		var to_draw = max_hand_size - hand.get_card_count()
 		for _j in range(to_draw):
-			hand.draw_card (cfc.NMAP["deck" + str(hero_id)])	
+			hand.draw_card (cfc.NMAP["deck" + str(hero_id)])
 
 func ready_all_player_cards():
 		var cards:Array = cfc.NMAP["board"].get_all_cards() #TODO hero cards only
 		for card in cards:
 			if card.get_controller_hero_id() > 0:
 				if not card.properties.get("_horizontal", false):
-					card.readyme()	
+					card.readyme()
 
 
 
@@ -743,14 +743,14 @@ func set_villain_current_hero_target(value, force_switch_ui:= true, caller:= "")
 		display_debug("(gamedata) new villain target:" + get_hero_name(value) + "(called by " + caller +")")
 	if force_switch_ui and previous!= value:
 		#in practice this will only switch for players that control the hero
-		self.select_current_playing_hero(value) 
+		self.select_current_playing_hero(value)
 
 func get_current_activity_hero_target():
 	if attackers:
 		var attacker_data = attackers.front()
 		if (typeof (attacker_data) == TYPE_DICTIONARY):
 			return attacker_data.get("target_id", _villain_current_hero_target)
-	
+
 	return _villain_current_hero_target
 
 func get_villain_current_hero_target():
@@ -793,7 +793,7 @@ func pre_attack_interrupts_done():
 		display_debug("I'm being told to move to EnemyAttackStatus.OK_TO_START_ATTACK but I'm not at EnemyAttackStatus.PENDING_INTERRUPT")
 		var _error = 1 #maybe this happens in network games ?
 		return
-	display_debug("pre attack interrupts are done, OK to start attack")	
+	display_debug("pre attack interrupts are done, OK to start attack")
 	_current_enemy_attack_step = EnemyAttackStatus.OK_TO_START_ATTACK
 
 func add_enemy_activation(enemy, activation_type:String = "attack", script = null, target_id = 0):
@@ -802,8 +802,8 @@ func add_enemy_activation(enemy, activation_type:String = "attack", script = nul
 func start_activity(enemy, action, script, target_id = 0):
 	if !target_id:
 		target_id = _villain_current_hero_target
-		
-	display_debug("drawing boost cards")	
+
+	display_debug("drawing boost cards")
 	if (enemy.get_property("type_code") == "villain"): #Or villainous?
 		display_debug("villain confirmed, drawing boost cards")
 		enemy.draw_boost_cards(action)
@@ -824,7 +824,7 @@ func start_activity(enemy, action, script, target_id = 0):
 	}
 	if script:
 		trigger_details["additional_tags"] += script.get_property(SP.KEY_TAGS, [])
-		trigger_details["_display_name"] = "enemy " + action + " (" + enemy.canonical_name + " -> " + get_identity_card(target_id).canonical_name +")" 	
+		trigger_details["_display_name"] = "enemy " + action + " (" + enemy.canonical_name + " -> " + get_identity_card(target_id).canonical_name +")"
 	var _sceng = enemy.execute_scripts(enemy, script_name,trigger_details)
 	_current_enemy_attack_step = next_step
 
@@ -837,11 +837,11 @@ func get_current_attacker_data():
 
 	return {
 		"subject": attacker_data
-	}	
+	}
 
 func enemy_activates() :
 	var target_id = _villain_current_hero_target
-	
+
 
 	var attacker_data = attackers.front() if attackers else null
 	if (typeof (attacker_data) == TYPE_STRING):
@@ -861,7 +861,7 @@ func enemy_activates() :
 	var heroZone:WCHeroZone = cfc.NMAP.board.heroZones[target_id]
 	var action = "attack" if (heroZone.is_hero_form()) else "scheme"
 	var script = null
-	
+
 	attacker_data = get_current_attacker_data()
 	var enemy = attacker_data.get("subject", null)
 	action = attacker_data.get("type", action)
@@ -873,19 +873,19 @@ func enemy_activates() :
 
 
 	var status = "stunned" if (action=="attack") else "confused"
-	
+
 	#check for stun/confused
 	var is_status = enemy.tokens.get_token_count(status)
 	if (is_status):
 		enemy.tokens.mod_token(status, -1)
 		current_enemy_finished()
 		return
-	
+
 	var guid = guidMaster.get_guid(enemy)
-	rpc("set_client_status",  "activation", guid,  _current_enemy_attack_step)	
+	rpc("set_client_status",  "activation", guid,  _current_enemy_attack_step)
 	#not stunned, proceed
 	match _current_enemy_attack_step:
-		EnemyAttackStatus.NONE:	
+		EnemyAttackStatus.NONE:
 				#GUI announce
 				var top_color = Color8(40,20,20,255)
 				if action == "scheme":
@@ -903,12 +903,12 @@ func enemy_activates() :
 					"bottom_texture_filename": get_identity_card(target_id).get_art_filename(),
 				}
 				theAnnouncer.simple_announce(announce_settings )
-				
+
 				#target player is the one adding the event to the stack
-#				if can_i_play_this_hero(target_id):	
-#					display_debug("I am the owner of hero " + str(target_id) +", I will handle the attack")			
+#				if can_i_play_this_hero(target_id):
+#					display_debug("I am the owner of hero " + str(target_id) +", I will handle the attack")
 #					theStack.create_and_add_signal("enemy_initiates_" + action, enemy, {SP.TRIGGER_TARGET_HERO : get_current_target_hero().canonical_name})
-				
+
 				#I had a race condition where if only the executing player would add a global script,
 				#it could arrive before network players where at this status.
 				#Making it a local script (everyone adds it) is an attempt at fixing this
@@ -921,11 +921,11 @@ func enemy_activates() :
 				theStack.add_script(stackEvent)
 				_current_enemy_attack_step = EnemyAttackStatus.PENDING_INTERRUPT
 				return
-				
+
 		EnemyAttackStatus.OK_TO_START_ATTACK:
 			start_activity(enemy, action, script, target_id)
 			return
-		
+
 		EnemyAttackStatus.BOOST_CARDS:
 			#The "commit_scheme" or "enemy_attack" steps have set this variable,
 			#this is a good way to check that activity happened
@@ -939,7 +939,7 @@ func enemy_activates() :
 			else:
 				display_debug("no more card boosts, going to the next step")
 				_current_enemy_attack_step = EnemyAttackStatus.DAMAGE_OR_THREAT
-		
+
 		EnemyAttackStatus.DAMAGE_OR_THREAT:
 			var script_name
 			match action:
@@ -947,23 +947,23 @@ func enemy_activates() :
 					script_name = "enemy_scheme_threat"
 				"attack":
 					script_name = "enemy_attack_damage"
-						
+
 			var stackEvent = SimplifiedStackScript.new({"name": script_name, "target_hero_id" : target_id}, enemy)
 			theStack.add_script(stackEvent)
 			_current_enemy_attack_step = EnemyAttackStatus.ATTACK_COMPLETE
-			
+
 		EnemyAttackStatus.ATTACK_COMPLETE:
 			var boost_cards = enemy.get_boost_cards(CFConst.FLIP_STATUS.FACEUP)
 			for boost_card in boost_cards:
 				var discard_event = WCScriptingEngine.simple_discard_task(boost_card)
-				gameData.theStack.add_script(discard_event)	
+				gameData.theStack.add_script(discard_event)
 			var stackEvent:SignalStackScript = SignalStackScript.new("enemy_" + action + "_happened", enemy,  {SP.TRIGGER_TARGET_HERO : get_identity_card(target_id).canonical_name})
 			theStack.add_script(stackEvent)
 			#scripting_bus.emit_signal("enemy_" + action + "_happened", enemy, {})
-			return 
-		EnemyAttackStatus.ATTACK_POST_COMPLETE:	
+			return
+		EnemyAttackStatus.ATTACK_POST_COMPLETE:
 			current_enemy_finished()
-			return 
+			return
 
 	return
 
@@ -1000,16 +1000,16 @@ func defenders_chosen():
 				script = attacker_data["script"]
 			else:
 				enemy = attacker_data
-					
+
 			start_activity(enemy, action, script)
-		
+
 		if _current_enemy_attack_step != EnemyAttackStatus.PENDING_DEFENDERS:
 			display_debug("defenders_chosen: I wasn't able to fix my PENDING_DEFENDERS issue :(")
 			return
 
 	display_debug("defenders_chosen: Defenders have been chosen, moving to boost cards")
 	_current_enemy_attack_step = EnemyAttackStatus.BOOST_CARDS
-	return	
+	return
 
 func set_aside(card):
 	card.move_to(cfc.NMAP["set_aside"])
@@ -1018,27 +1018,27 @@ func retrieve_from_side_or_instance(card_id, owner_id):
 	var card = cfc.NMAP["set_aside"].has_card_id(card_id)
 	if card:
 		return card
-	card = cfc.instance_card(card_id, owner_id)
+	card = cfc.instance_card_with_owner(card_id, owner_id)
 	cfc.NMAP["set_aside"].add_child(card)
 	card._determine_idle_state()
 	return card
-	
+
 func villain_threat():
 	var main_scheme:Card = find_main_scheme()
 	if not main_scheme:
 		return CFConst.ReturnCode.FAILED
-		
-	#basic threat computation, check if it's a constant or multiplied by numbers of players	
-	var escalation_threat = main_scheme.properties["escalation_threat"]	
+
+	#basic threat computation, check if it's a constant or multiplied by numbers of players
+	var escalation_threat = main_scheme.properties["escalation_threat"]
 	var escalation_threat_fixed = main_scheme.properties["escalation_threat_fixed"]
 	if (not escalation_threat_fixed):
 		escalation_threat *= get_team_size()
-	
+
 	var all_schemes:Array = cfc.NMAP.board.get_grid("schemes").get_all_cards()
 	for scheme in all_schemes:
-		#we add all acceleration tokens	
+		#we add all acceleration tokens
 		escalation_threat += scheme.tokens.get_token_count("acceleration")
-		
+
 		#we also add acceleration icons from other schemes
 		escalation_threat += scheme.get_property("scheme_acceleration", 0)
 	if escalation_threat:
@@ -1046,7 +1046,7 @@ func villain_threat():
 		var task = ScriptTask.new(villain, {"name": "add_threat", "amount": escalation_threat, "tags": ["villain_step_one_threat"]}, villain, {})
 		task.subjects= [main_scheme]
 		var stackEvent = SimplifiedStackScript.new(task)
-		gameData.theStack.add_script(stackEvent)			
+		gameData.theStack.add_script(stackEvent)
 		#main_scheme.add_threat(escalation_threat)
 
 func get_facedown_encounters_pile(target_id = 0) -> Pile :
@@ -1054,19 +1054,19 @@ func get_facedown_encounters_pile(target_id = 0) -> Pile :
 		target_id = _villain_current_hero_target
 	var pile  = cfc.NMAP["encounters_facedown" + str(target_id)]
 	return pile
-	
+
 func get_revealed_encounters_pile(target_id = 0) :
 	if (!target_id):
 		target_id = _villain_current_hero_target
 	var pile  = cfc.NMAP["encounters_reveal" + str(target_id)]
 	return pile
-	
+
 func get_enemies_grid(target_id = 0) -> BoardPlacementGrid :
 	if (!target_id):
-		target_id = _villain_current_hero_target	
+		target_id = _villain_current_hero_target
 	var grid  = cfc.NMAP.board.get_grid("enemies" + str(target_id))
 
-	return grid	
+	return grid
 
 
 func deal_encounters():
@@ -1080,24 +1080,24 @@ func deal_encounters():
 		if (!villain_next_target(false, "deal encounters")):
 			finished = true
 
-	#reset _villain_current_hero_target for cleanup	
+	#reset _villain_current_hero_target for cleanup
 	#it should already be at 1 here but...
 	reset_villain_current_hero_target(false, "deal_encounters")
-	
+
 	#Hazard cards
-	var hazard = 0		
+	var hazard = 0
 	var all_schemes:Array = cfc.NMAP.board.get_grid("schemes").get_all_cards()
 	for scheme in all_schemes:
-		#we add all hazard icons	
+		#we add all hazard icons
 		hazard  += scheme.get_property("scheme_hazard", 0)
-	
+
 	while hazard:
 		deal_one_encounter_to(_villain_current_hero_target)
 		yield(get_tree().create_timer(1), "timeout")
 		villain_next_target(false, "deal encounters")
 		hazard -=1
-		
-	#reset _villain_current_hero_target for cleanup	
+
+	#reset _villain_current_hero_target for cleanup
 	reset_villain_current_hero_target(false, "deal_encounters")
 	cfc.remove_ongoing_process(self, "deal_encounters")
 
@@ -1106,8 +1106,8 @@ func deal_one_encounter_to(hero_id, immediate = false, encounter = null):
 	if !encounter:
 		encounter = villain_deck.get_top_card()
 	if encounter:
-		var destination  =  get_facedown_encounters_pile(hero_id) 
-		
+		var destination  =  get_facedown_encounters_pile(hero_id)
+
 		if (immediate):
 			immediate_encounters.append({
 				"encounter": encounter,
@@ -1119,7 +1119,7 @@ func deal_one_encounter_to(hero_id, immediate = false, encounter = null):
 	else:
 		#this shouldn't happen as we constantly reshuffle the encounter deck as soon as it empties
 		var _error = 1
-		pass		
+		pass
 
 func all_encounters_finished():
 	phaseContainer.all_encounters_done()
@@ -1131,7 +1131,7 @@ func current_encounter_finished():
 			immediate_encounters.remove(i)
 			break
 	if _current_encounter and is_instance_valid(_current_encounter):
-		_current_encounter.encounter_status = EncounterStatus.NONE			
+		_current_encounter.encounter_status = EncounterStatus.NONE
 	_current_encounter = null
 	#rpc("remove_client_status")
 	pass
@@ -1140,15 +1140,15 @@ func current_encounter_finished():
 func reveal_current_encounter(target_id = 0):
 	if (!target_id):
 		target_id = _villain_current_hero_target
-		
-	#todo should we be doing something about target_id ?	
-	
+
+	#todo should we be doing something about target_id ?
+
 	if !_current_encounter:
 		#this is a bug. This function should only be called when there's an encounter about to be revealed
 		return
 
 
-	_current_encounter.execute_scripts(_current_encounter, "reveal") 
+	_current_encounter.execute_scripts(_current_encounter, "reveal")
 
 
 func is_client_aligned(a, b):
@@ -1159,7 +1159,7 @@ func is_client_aligned(a, b):
 	if a["status"] != b["status"]:
 		return false
 	return true
-	
+
 func is_catching_up(a, b):
 	if !a:
 		return true
@@ -1169,13 +1169,13 @@ func is_catching_up(a, b):
 		return true
 	if a["counter"] > b["counter"]:
 		return false
-	
+
 	#counter is equal
 	if a["status"] < b["status"]:
 		return true
 	return false
 
-var _last_clients_aligned_dbg_msg = ""	
+var _last_clients_aligned_dbg_msg = ""
 func client_aligned_or_catching_up():
 	var my_id = cfc.get_network_unique_id()
 
@@ -1183,7 +1183,7 @@ func client_aligned_or_catching_up():
 		"result": true,
 		"catching_up": false
 	}
-	
+
 	if !_clients_current_activation:
 		return result
 #	if _clients_current_activation.size() != network_players.size():
@@ -1191,7 +1191,7 @@ func client_aligned_or_catching_up():
 	var expected_status ={
 		"counter": 0,
 		"status": -1
-	}	
+	}
 	for client_id in _clients_current_activation:
 		var data = _clients_current_activation[client_id]
 		if is_catching_up(expected_status, data):
@@ -1199,7 +1199,7 @@ func client_aligned_or_catching_up():
 
 	var all_aligned = true
 	if _clients_current_activation.size() != network_players.size():
-		all_aligned = false		
+		all_aligned = false
 	else:
 		for client_id in _clients_current_activation:
 			var data = _clients_current_activation[client_id]
@@ -1208,7 +1208,7 @@ func client_aligned_or_catching_up():
 
 	if all_aligned:
 		return result
-	
+
 	result["catching_up"] = true
 	var my_data = _clients_current_activation.get(my_id, {})
 	#if I'm catching up, allow to run
@@ -1219,15 +1219,15 @@ func client_aligned_or_catching_up():
 	var msg = "clients are not aligned, can't proceed in activation/encounter: " + to_json(_clients_current_activation)
 	if msg != _last_clients_aligned_dbg_msg:
 		_last_clients_aligned_dbg_msg = msg
-		display_debug(msg) 
+		display_debug(msg)
 
 	return false
-	
+
 remotesync func set_client_status(type, guid, value):
 	var client_id = get_tree().get_rpc_sender_id()
 	var status_str = ""
 
-	
+
 	match type:
 		"activation":
 			status_str = EnemyAttackStatusStr[value]
@@ -1241,12 +1241,12 @@ remotesync func set_client_status(type, guid, value):
 	else:
 		if existing_data["type"]!= type or existing_data["guid"]!= guid or existing_data["status"] > value:
 			renew = true
-	
+
 	if renew:
 		if !_clients_activation_counter.has(client_id):
 			 _clients_activation_counter[client_id] = 0
 		_clients_activation_counter[client_id]+= 1
-						
+
 		_clients_current_activation[client_id] = {
 			"type" : type,
 			"guid" : guid,
@@ -1256,25 +1256,25 @@ remotesync func set_client_status(type, guid, value):
 		}
 	else:
 		_clients_current_activation[client_id]["status"] = value
-		_clients_current_activation[client_id]["status_str"] = status_str	
-	
+		_clients_current_activation[client_id]["status_str"] = status_str
+
 #remotesync func remove_client_status():
-#	var client_id = get_tree().get_rpc_sender_id() 
-#	_clients_current_activation.erase(client_id)	
+#	var client_id = get_tree().get_rpc_sender_id()
+#	_clients_current_activation.erase(client_id)
 
 #attempt to pace encounters in order to avoid race conditions
 func can_proceed_encounter()-> bool:
 	return can_proceed_activation()
-	
+
 func can_proceed_activation()-> bool:
 
 	#not sure if this section is needed but for now it doesn't hurt
 	if _priority_scripts or _current_priority_script:
 		return false
-		
+
 	if gui_activity_ongoing():
 		return false
-	
+
 	var aligned =  client_aligned_or_catching_up()
 	if !aligned:
 		if not self._clients_desync_start_time:
@@ -1300,15 +1300,15 @@ func cancel_current_encounter():
 	if !_current_encounter:
 		return false
 	_current_encounter.move_to(cfc.NMAP["discard_villain"])
-	current_encounter_finished()	
+	current_encounter_finished()
 
 var _local_encounter_uid = 0
-var _last_encounter_dbg_msg = ""		
+var _last_encounter_dbg_msg = ""
 #TODO need something much more advanced here, per player, etc...
 func reveal_encounter(target_id = 0):
 	if (!target_id):
 		target_id = _villain_current_hero_target
-	
+
 
 	if immediate_encounters:
 		for immediate_encounter_data in immediate_encounters:
@@ -1317,7 +1317,7 @@ func reveal_encounter(target_id = 0):
 				Card.CardState.DROPPING_TO_BOARD,\
 						Card.CardState.MOVING_TO_CONTAINER:
 					return
-	
+
 	if immediate_encounters:
 		var next = immediate_encounters.back()
 		if !_current_encounter:
@@ -1325,12 +1325,12 @@ func reveal_encounter(target_id = 0):
 		if _current_encounter == next["encounter"]:
 			#retrieve the correct target_id if _current_encounter is an immediate encounter
 			target_id = next["target_id"]
-		
+
 	if !_current_encounter:
 		var facedown_encounters:Pile = get_facedown_encounters_pile(target_id)
 		_current_encounter = facedown_encounters.get_bottom_card()
 
-	
+
 	var current_encounter_str = "[empty]"
 	if _current_encounter:
 		current_encounter_str = _current_encounter.canonical_name
@@ -1338,7 +1338,7 @@ func reveal_encounter(target_id = 0):
 		if msg != _last_encounter_dbg_msg:
 			_last_encounter_dbg_msg = msg
 			display_debug(msg)
-	
+
 	if !_current_encounter:
 		display_debug("didn't get any encounter from the facedown pile of " + str(target_id) +", we're done here")
 		all_encounters_finished()
@@ -1351,7 +1351,7 @@ func reveal_encounter(target_id = 0):
 
 	if !can_proceed_encounter():
 		return
-	
+
 	var guid = guidMaster.get_guid(_current_encounter)
 	rpc("set_client_status", "encounter", guid, _current_encounter.encounter_status)
 	#an encounter is available, proceed
@@ -1363,20 +1363,20 @@ func reveal_encounter(target_id = 0):
 			_current_encounter.move_to(pile)
 			#_current_encounter.execute_scripts(_current_encounter, "about_to_reveal")
 			var task_event = SignalStackScript.new("about_to_reveal", _current_encounter)
-			theStack.add_script(task_event)			
+			theStack.add_script(task_event)
 			_current_encounter.encounter_status = EncounterStatus.ABOUT_TO_REVEAL
 			return
 		EncounterStatus.ABOUT_TO_REVEAL:
 			var reveal_script  = {
 				"name": "reveal_encounter",
 			}
-			var reveal_task = ScriptTask.new(_current_encounter, reveal_script, _current_encounter, {})	
+			var reveal_task = ScriptTask.new(_current_encounter, reveal_script, _current_encounter, {})
 			var task_event = SimplifiedStackScript.new(reveal_task)
 			theStack.add_script(task_event)
 			#theStack.create_and_add_simplescript(_current_encounter, _current_encounter, reveal_script, {})
 			_current_encounter.encounter_status = EncounterStatus.PENDING_REVEAL_INTERRUPT
 			return
-					
+
 		EncounterStatus.OK_TO_EXECUTE:
 			var pile = get_revealed_encounters_pile(target_id)
 			if !pile.has_card(_current_encounter):
@@ -1387,7 +1387,7 @@ func reveal_encounter(target_id = 0):
 				display_debug("encounter: " + _current_encounter.canonical_name + "is not in " + pile.name + ". Assuming it has moved already")
 				_current_encounter.encounter_status = EncounterStatus.PENDING_COMPLETE
 				return
-					
+
 			var grid: BoardPlacementGrid = get_encounter_target_grid(_current_encounter)
 			var slot: BoardPlacementSlot = grid.find_available_slot()
 			if slot:
@@ -1395,7 +1395,7 @@ func reveal_encounter(target_id = 0):
 				display_debug("encounter: " + _current_encounter.canonical_name + " moving to PENDING_COMPLETE. Target_id " + str(target_id))
 				_current_encounter.encounter_status = EncounterStatus.PENDING_COMPLETE
 			else:
-				push_error("encounter ERROR: Missing target grid in reval_encounters")	
+				push_error("encounter ERROR: Missing target grid in reval_encounters")
 		EncounterStatus.PENDING_COMPLETE:
 			#there has to be a better way.... wait for a signal somehow ?
 			if cfc.get_modal_menu():
@@ -1403,7 +1403,7 @@ func reveal_encounter(target_id = 0):
 			display_debug("encounter: " + _current_encounter.canonical_name + " moving to ENCOUNTER_COMPLETE. Target_id " + str(target_id))
 			_current_encounter.encounter_status = EncounterStatus.ENCOUNTER_COMPLETE
 			return
-			
+
 		EncounterStatus.ENCOUNTER_COMPLETE:
 			var target_pile = get_encounter_target_pile(_current_encounter)
 			if (target_pile and !target_pile.has_card(_current_encounter)):
@@ -1418,7 +1418,7 @@ func reveal_encounter(target_id = 0):
 			if target_pile and target_pile.has_card(_current_encounter):
 				display_debug("encounter:" + _current_encounter.canonical_name + "is in its target pile. Calling for end of encounter. Target_id " + str(target_id))
 				current_encounter_finished()
-			return 
+			return
 	return
 
 func encounter_revealed():
@@ -1434,7 +1434,7 @@ func encounter_revealed():
 func get_encounter_target_grid (encounter) -> BoardPlacementGrid:
 	var typecode = encounter.properties.get("type_code", "")
 	var grid_name = CFConst.TYPECODE_TO_GRID.get(typecode, "villain_misc")
-	
+
 	match grid_name:
 		"villain_misc":
 			pass
@@ -1442,15 +1442,15 @@ func get_encounter_target_grid (encounter) -> BoardPlacementGrid:
 			pass
 		_:
 			grid_name = grid_name + str(encounter.get_controller_hero_id())
-	
+
 	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(grid_name)
-	
-	return grid	
-	
+
+	return grid
+
 func get_encounter_target_pile (encounter):
 	var typecode = encounter.properties.get("type_code", "")
 	var pile_name = CFConst.TYPECODE_TO_PILE.get(typecode, "")
-	
+
 	if !pile_name:
 		return null
 
@@ -1463,47 +1463,47 @@ func _stack_event_deleted(event):
 			attack_prevented()
 #		"enemy_attack":
 #			defenders_chosen()
-		"reveal_encounter":	
-			encounter_revealed()				
+		"reveal_encounter":
+			encounter_revealed()
 
 func get_villain() -> Card :
 	return cfc.NMAP.board.get_villain_card()
 
 func get_main_scheme() -> Card :
 	return find_main_scheme()
-	
-func find_main_scheme() : 
+
+func find_main_scheme() :
 	var cards:Array = cfc.NMAP.board.get_grid("schemes").get_all_cards()
 	for card in cards:
 		if "main_scheme" == card.properties.get("type_code", "false"):
 			return card
-	return null	
-	
+	return null
+
 func get_minions_engaged_with_hero(hero_id:int):
 	var results = []
 	var minionsGrid:BoardPlacementGrid = get_enemies_grid(hero_id)
 	if minionsGrid:
 		results = minionsGrid.get_all_cards()
 	return results
-	
+
 func get_identity_card(owner_id) -> Card:
 	var board:Board = cfc.NMAP.board
 
 	if !board.heroZones.has(owner_id):
 		return null
-	
-	var heroZone:WCHeroZone = board.heroZones[owner_id]
-	return heroZone.get_identity_card()	
 
-#Returns Hero currently being targeted by the villain and his minions	
+	var heroZone:WCHeroZone = board.heroZones[owner_id]
+	return heroZone.get_identity_card()
+
+#Returns Hero currently being targeted by the villain and his minions
 func get_current_target_hero() -> Card:
 	return get_identity_card(_villain_current_hero_target)
 
 #Adds a "group_defenders" tag to all cards that can block an attack
-func compute_potential_defenders(hero_id, attacker):		
+func compute_potential_defenders(hero_id, attacker):
 	var board:Board = cfc.NMAP.board
 	var defenders = []
-	
+
 	for c in board.get_all_cards():
 		if c.can_defend(): #hero_id):
 			defenders.append(c)
@@ -1531,7 +1531,7 @@ func compute_potential_defenders(hero_id, attacker):
 
 	for c in defenders:
 		c.add_to_group("group_defenders")
-		
+
 
 func character_died(card:Card, script = null):
 	var character_died_definition = {
@@ -1541,10 +1541,10 @@ func character_died(card:Card, script = null):
 		"source" : script.trigger_details.get("source", ""),
 		"tags": script.get_property("tags", [])
 	}
-	
+
 	var character_died_script:ScriptTask = ScriptTask.new(card, character_died_definition, card, trigger_details)
 	character_died_script.subjects = [card]
-	
+
 	var task_event = SimplifiedStackScript.new(character_died_script)
 	theStack.add_script(task_event)
 
@@ -1555,7 +1555,7 @@ func defeat():
 		"top_color": Color8(25,20,20,255),
 		"bottom_color": Color8(18,18,18,255)
 	}
-	theAnnouncer.simple_announce(announce_settings, true)	
+	theAnnouncer.simple_announce(announce_settings, true)
 
 func victory():
 	_game_over = true
@@ -1565,7 +1565,7 @@ func victory():
 		"bottom_color": Color8(200,50,50,255)
 	}
 	theAnnouncer.simple_announce(announce_settings, true )
-	
+
 func first_player_hero_id():
 	#TODO
 	return _first_player_hero_id
@@ -1591,31 +1591,31 @@ func play_scripted_sequence():
 
 	if !_ready_for_next_sequence:
 		return
-		
+
 	if gameData.is_targeting_ongoing() or gameData.targeting_happened_too_recently():
 		return
-	#we already sent a request and should be waiting for full resolution	
+	#we already sent a request and should be waiting for full resolution
 	if !gameData.theStack.is_player_allowed_to_click():
-		return		
-	
+		return
 
-	
+
+
 	_ready_for_next_sequence = false
 	var next_play_event = scripted_play_sequence.pop_front()
 	var subject = next_play_event["card"]
-	var trigger = next_play_event["trigger"]	
-		
+	var trigger = next_play_event["trigger"]
+
 	var trigger_details = {
 		"additional_script_definition": {
 			"sequence_trigger": trigger,
 			"is_sequence": true,
 			"sequence_is_last": (scripted_play_sequence.empty())
-		} 
+		}
 	}
 	var func_return = subject.execute_scripts(subject, trigger, trigger_details)
 	if func_return is GDScriptFunctionState: # Still working.
 		func_return = yield(func_return, "completed")
-			
+
 	_ready_for_next_sequence = true
 
 #script requests some manual triggers of cards
@@ -1629,8 +1629,8 @@ func start_play_sequence(cards, trigger, script):
 			"trigger" : trigger
 		})
 
-	
-			
+
+
 
 func hero_died(card:Card, script = null):
 	#TODO dead heroes can't play
@@ -1648,7 +1648,7 @@ func move_to_next_villain(current_villain):
 	for i in range (villains.size() - 1): #-1 here because we want to get the +1 if we find it
 		if (villains[i]["Name"] == current_villain.get_property("Name", "")):
 			new_villain_data = villains[i+1]
-	
+
 	if !new_villain_data :
 		return null
 
@@ -1656,41 +1656,41 @@ func move_to_next_villain(current_villain):
 	#while still leaving it on the board
 	if current_villain._placement_slot:
 		current_villain._placement_slot.remove_occupying_card(current_villain)
-	
-	var ckey = new_villain_data["_code"] 		
+
+	var ckey = new_villain_data["_code"]
 	var new_card = cfc.NMAP.board.load_villain(ckey)
 	current_villain.copy_tokens_to(new_card, {"exclude":["damage"]})
 	for attachment in current_villain.attachments:
 		if attachment.is_boost():
 			continue
 		attachment.attach_to_host(new_card)
-		
-	set_aside(current_villain)	
+
+	set_aside(current_villain)
 	var func_return = new_card.execute_scripts(new_card, "reveal")
 	while func_return is GDScriptFunctionState && func_return.is_valid():
-		func_return = func_return.resume()			
-	
+		func_return = func_return.resume()
+
 	cfc.remove_ongoing_process(self, "move_to_next_villain")
-	return new_card			
+	return new_card
 
 func villain_died(card:Card, script = null):
 	if (!move_to_next_villain(card)):
 		victory()
-	else:	
+	else:
 		var announce_settings = {
 			"top_color": Color8(18,18,30,255),
 			"bottom_color": Color8(18,18,30,255),
 			"bg_color" : Color8(0,0,0,0),
 			"scale": 0.6,
 			"duration": 2,
-			"animation_style": Announce.ANIMATION_STYLE.SPEED_OUT,			
+			"animation_style": Announce.ANIMATION_STYLE.SPEED_OUT,
 			"top_text": "Next Stage",
 			"top_texture_filename": get_villain().get_art_filename()
 		}
-		theAnnouncer.simple_announce(announce_settings )			
+		theAnnouncer.simple_announce(announce_settings )
 
 
-	
+
 #selects a hero for my interface (useful for multiplayer)
 func select_current_playing_hero(hero_index):
 	if (not can_i_play_this_hero(hero_index)):
@@ -1705,11 +1705,11 @@ func can_i_play_this_ability(card, trigger := "") -> int:
 		if can_hero_play_this_ability(hero_id, card, trigger):
 			return hero_id
 	return 0
-	
+
 func can_hero_play_this_ability(hero_index, card, trigger := "") -> bool:
 	var card_controller_id = card.get_controller_hero_id()
 
-	#TODO hack here where for an enemy attack trigger, we force 
+	#TODO hack here where for an enemy attack trigger, we force
 	#the allowed user id based on the attack target id
 	#required at least for Whirlwind
 	match trigger:
@@ -1729,12 +1729,12 @@ func can_i_play_this_hero(hero_index)-> bool:
 	#Errors. If hero index is out of range I can't use it
 	if hero_index < 1 or hero_index> get_team_size():
 		return false
-		
-	#if this isn't a network game, I can play all valid heroes	
+
+	#if this isn't a network game, I can play all valid heroes
 	if (!get_tree().get_network_peer()):
 		return true
-		
-	var network_id = get_tree().get_network_unique_id()	
+
+	var network_id = get_tree().get_network_unique_id()
 	var hero_deck_data:HeroDeckData = get_team_member(hero_index)["hero_data"]
 	var owner_player:PlayerData = hero_deck_data.owner
 	if (owner_player.network_id == network_id):
@@ -1743,8 +1743,8 @@ func can_i_play_this_hero(hero_index)-> bool:
 
 func get_my_heroes() -> Array:
 	var result = []
-	var network_id = cfc.get_network_unique_id()	
-	
+	var network_id = cfc.get_network_unique_id()
+
 	for hero_index in team.keys():
 		var hero_data = team[hero_index]
 		var hero_deck_data:HeroDeckData = hero_data["hero_data"]
@@ -1753,12 +1753,12 @@ func get_my_heroes() -> Array:
 			result.append(hero_index)
 	return result
 
-#Returns player id who owns a specific hero (by hero card id)	
+#Returns player id who owns a specific hero (by hero card id)
 func get_hero_owner(hero_index)->PlayerData:
 	#Errors. If hero index is out of range I can't use it
 	if hero_index < 1 or hero_index> get_team_size():
 		return null
-			
+
 	var hero_deck_data:HeroDeckData = get_team_member(hero_index)["hero_data"]
 	return hero_deck_data.owner
 
@@ -1781,64 +1781,64 @@ func get_grid_controller_hero_id(grid_name:String) -> int:
 
 
 func is_interrupt_mode() -> bool:
-	return theStack.is_interrupt_mode() 
+	return theStack.is_interrupt_mode()
 
 func is_optional_interrupt_mode() -> bool:
-	return theStack.is_optional_interrupt_mode() 
-	
+	return theStack.is_optional_interrupt_mode()
+
 func is_forced_interrupt_mode() -> bool:
-	return theStack.is_forced_interrupt_mode() 	
-	
+	return theStack.is_forced_interrupt_mode()
+
 func interrupt_player_pressed_pass(hero_id):
 	theStack.pass_interrupt(hero_id)
 
 
 
 #some gui activity is ongoing, not controlled by any player (animations, etc...)
-func auto_gui_activity_ongoing() -> bool:		
+func auto_gui_activity_ongoing() -> bool:
 	if cfc.NMAP.board.are_cards_still_animating():
 		return true
-		
+
 	if is_ongoing_blocking_announce():
 		return true
-	
-	return false	
+
+	return false
 
 #some gui_activity ongoing, aither player controlled or automated
-func gui_activity_ongoing()-> bool:	
+func gui_activity_ongoing()-> bool:
 	# if modal user input is being requested, can't move on
 	if (user_input_ongoing):
 		return true
-	
+
 	if cfc.get_modal_menu():
 		return true
 
 	if auto_gui_activity_ongoing():
 		return true
-		
+
 	return false
 
 
 func is_ongoing_blocking_announce():
-	return theAnnouncer.get_blocking_announce()	
+	return theAnnouncer.get_blocking_announce()
 
 func cleanup_post_game():
 	cfc.LOG("\n###\ngameData cleanup_post_game")
 	cfc.set_game_paused(true)
-	
+
 	attackers = []
 
 	_clients_current_activation = {}
-	_clients_activation_counter = {}	
-	
+	_clients_activation_counter = {}
+
 	_current_priority_script = {}
 	_priority_scripts = []
-	
+
 	_current_enemy_attack_step = EnemyAttackStatus.NONE
 	if _current_encounter and is_instance_valid(_current_encounter):
 		_current_encounter.encounter_status = EncounterStatus.NONE
 	_current_encounter = null
-	immediate_encounters = []	
+	immediate_encounters = []
 	current_round = 1
 	_multiplayer_desync = null
 	_clients_system_status = {}
@@ -1849,22 +1849,22 @@ func cleanup_post_game():
 	theStack.reset()
 
 	theGameObserver.reset()
-	
+
 	cfc.reset_ongoing_process_stack()
 	cfc.flush_cache()
 	guidMaster.reset()
 
 	cfc.set_game_paused(false)
 
-	
-#saves current game data into a json structure	
+
+#saves current game data into a json structure
 func save_gamedata() -> Dictionary:
 	var json_data:Dictionary = {}
 	#save current phase
 	var phase_data:Dictionary = phaseContainer.savestate_to_json()
 	json_data.merge(phase_data)
-	
-	
+
+
 	#Save Hero data (the bulk: Hero Deck Data (hero id, owner), Manapool, Board state)
 	json_data["heroes"] = []
 	for i in range(get_team_size()):
@@ -1872,34 +1872,34 @@ func save_gamedata() -> Dictionary:
 		var hero_deck_data: HeroDeckData = get_team_member(i+1)["hero_data"]
 		var hero_deck_data_json = hero_deck_data.savestate_to_json()
 		saved_item.merge(hero_deck_data_json)
-		
+
 		#Manapool
 		var hero_manapool: ManaPool = get_team_member(i+1)["manapool"]
 		var hero_manapool_json = hero_manapool.savestate_to_json()
 		saved_item.merge(hero_manapool_json)
-				
-		
-		
+
+
+
 		#Merge result with the saved data
 		json_data["heroes"].append(saved_item)
-	
+
 	#Board state
 	var boardstate_json = cfc.NMAP.board.savestate_to_json()
 	json_data.merge(boardstate_json)
-	
+
 	#Save scenario data
 	json_data["scenario"] = {}
-	
+
 	#other stuff
 	json_data["round"] = current_round
-	
+
 	#encounters state
 	json_data["encounters"] = {
 		"immediate_encounters": replace_cards_to_cardids(immediate_encounters)
 	}
 	if _current_encounter:
 		json_data["encounters"]["current_encounter"] = replace_cards_to_cardids(_current_encounter)
-	
+
 
 	return json_data
 
@@ -1932,19 +1932,19 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 
 	#TODO sanity check of the save file
 	cleanup_post_game()
-	
+
 	current_round = json_data.get("round", 1)
 
 	var hero_data:Array = json_data["heroes"]
-	
-	
+
+
 	team = {}
 
 
 	#phase
 	phaseContainer.loadstate_from_json(json_data)
-	
-	#hero Deck data	
+
+	#hero Deck data
 	var _team:Dictionary = {}
 	for i in range(hero_data.size()):
 		var saved_item:Dictionary = hero_data[i]
@@ -1955,7 +1955,7 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 		hero_deck_data.loadstate_from_json(saved_item)
 		_team[i] = hero_deck_data
 	set_team_data(_team)
-	
+
 	#Manapools
 	for i in range(hero_data.size()):
 		var saved_item:Dictionary = hero_data[i]
@@ -1974,18 +1974,18 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 		var current = encounter_data.get("current_encounter", "")
 		if current:
 			_current_encounter = replace_cardids_to_cards(current)
-	
-	
+
+
 	#This reloads hero faces, etc...
 	#we don't start the phaseContainer just yet, we'll wait for other players to be ready
-	phaseContainer.reset(false) 
+	phaseContainer.reset(false)
 
 
-	
+
 	#scenario
 	#TODO
 	cfc.set_game_paused(previous_pause_state)
-	assign_starting_hero()		
+	assign_starting_hero()
 	rpc_id(caller_id,"remote_load_game_data_finished",CFConst.ReturnCode.OK)
 
 remotesync func start_phaseContainer():
@@ -1999,13 +1999,13 @@ func display_debug(msg, prefix = ""):
 
 func _player_connected():
 	pass
-	
+
 func _player_disconnected():
 	pass
-	
+
 func _connected_ok():
 	pass
-	
+
 func _connected_fail():
 	pass
 
@@ -2022,12 +2022,12 @@ func _server_disconnected():
 	if testSuite and is_instance_valid(testSuite):
 		testSuite.finished = true
 	get_tree().change_scene("res://src/wc/MainMenu.tscn")
-	
+
 #TODO check for game integrity, save game for undo/save, etc...
 func systems_check():
 	cfc.LOG ("initiated systems check")
 	_clients_system_status[cfc.get_network_unique_id()] = "pending"
-	rpc("clients_send_system_status")	
+	rpc("clients_send_system_status")
 #	pass
 #	initiate_network_ack("get_my_system_status")
 
@@ -2049,7 +2049,7 @@ func finalize_get_my_system_status(all_status):
 	var my_status = get_my_system_status()
 	if cfc.is_game_master():
 		save_round(current_round -1 ) #save the current round for a potential rollback
-	
+
 	for k in all_status:
 		var other_status = all_status[k]
 		if !(WCUtils.json_equal(my_status, other_status)):
@@ -2057,8 +2057,8 @@ func finalize_get_my_system_status(all_status):
 			cfc.LOG("My Status:")
 			cfc.LOG_DICT(my_status)
 			cfc.LOG("Their Status:{" +str(k) +"}")
-			cfc.LOG_DICT(other_status)			
-			init_desync_recover()			
+			cfc.LOG_DICT(other_status)
+			init_desync_recover()
 			return false
 	return true
 
@@ -2072,22 +2072,22 @@ func get_my_system_status() -> Dictionary:
 		var guid_hash = WCUtils.ordered_hash(guid_status)
 		board_status = board_hash
 		guid_status = guid_hash
-			
+
 	var status = {
 		"board": board_status,
 		"guids": guid_status
 	}
-	
+
 	if (CFConst.SYSTEMS_CHECK_HASH_ONLY):
 		display_debug("SYSTEMS CHECK: " + to_json(status))
-	
+
 	return status
 
 
 var _clients_system_status:= {}
 
 remotesync func receive_system_status(status:Dictionary):
-	var client_id = get_tree().get_rpc_sender_id() 	
+	var client_id = get_tree().get_rpc_sender_id()
 	_clients_system_status[client_id] = status
 	cfc.LOG ("received status from" + str(client_id))
 	if _clients_system_status.size() == gameData.network_players.size():
@@ -2102,7 +2102,7 @@ remotesync func receive_system_status(status:Dictionary):
 			#TODO handle desync
 
 remotesync func clients_send_system_status():
-	var client_id  = get_tree().get_rpc_sender_id() 
+	var client_id  = get_tree().get_rpc_sender_id()
 	var my_status = get_my_system_status()
 	rpc_id(client_id, "receive_system_status", my_status)
 
@@ -2127,10 +2127,10 @@ func replace_cards_to_cardids (script_definition):
 	var result
 	match typeof(script_definition):
 		TYPE_DICTIONARY:
-			result = {}	
+			result = {}
 			for key in script_definition.keys():
 				result[key] = replace_cards_to_cardids(script_definition[key])
-		TYPE_ARRAY:	
+		TYPE_ARRAY:
 			result = []
 			for value in script_definition:
 				result.append(replace_cards_to_cardids(value))
@@ -2138,19 +2138,19 @@ func replace_cards_to_cardids (script_definition):
 			if (script_definition is Card):
 				result = script_definition.canonical_id
 			else:
-				result = script_definition	
+				result = script_definition
 		_:
 			result = script_definition
-	return result;	
-	
+	return result;
+
 func replace_cardids_to_cards (script_definition):
 	var result
 	match typeof(script_definition):
 		TYPE_DICTIONARY:
-			result = {}	
+			result = {}
 			for key in script_definition.keys():
 				result[key] = replace_cardids_to_cards(script_definition[key])
-		TYPE_ARRAY:	
+		TYPE_ARRAY:
 			result = []
 			for value in script_definition:
 				result.append(replace_cardids_to_cards(value))

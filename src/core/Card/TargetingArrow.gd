@@ -41,8 +41,9 @@ func set_destination(_dest):
 	_stored_destination = _dest
 
 func get_stored_destination_position():
-	if !_stored_destination:
+	if !_stored_destination or !is_instance_valid(_stored_destination):
 		return Vector2(0,0)
+		
 	if (_stored_destination is Vector2):
 		return _stored_destination
 	#else it's an object.

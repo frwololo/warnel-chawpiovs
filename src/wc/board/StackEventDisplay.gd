@@ -233,3 +233,24 @@ func get_global_position():
 
 func set_target_position(pos):
 	target_position = pos
+
+func _on_Button_pressed():
+	var button = get_node("%Button")
+	var tween = get_node("Tween")
+	
+	var hidden_position = Vector2(1870, target_position.y)
+	var before = target_position
+	var after = hidden_position
+	match button.text:
+		">":
+			button.text = "<"
+		"<":
+			before = hidden_position
+			after = target_position			
+			button.text= ">"
+			
+	tween.interpolate_property(control, "rect_position",
+			before, after, 0.2,
+			Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
+	tween.start()				
+	pass # Replace with function body.

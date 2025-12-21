@@ -17,13 +17,24 @@ unique_name_in_owner = true
 margin_right = 40.0
 margin_bottom = 40.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Control"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 207.0
-margin_bottom = 251.0
+margin_right = 231.0
+margin_bottom = 226.0
 
-[node name="Card" type="TextureRect" parent="Control/VBoxContainer"]
+[node name="Button" type="Button" parent="Control/HBoxContainer"]
+unique_name_in_owner = true
+margin_right = 20.0
+margin_bottom = 219.0
+text = ">"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/HBoxContainer"]
+margin_left = 24.0
+margin_right = 224.0
+margin_bottom = 219.0
+
+[node name="Card" type="TextureRect" parent="Control/HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 margin_right = 200.0
 margin_bottom = 200.0
@@ -31,26 +42,28 @@ rect_min_size = Vector2( 200, 200 )
 texture = ExtResource( 2 )
 expand = true
 
-[node name="MarginContainer" type="MarginContainer" parent="Control/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Control/HBoxContainer/VBoxContainer"]
 margin_top = 204.0
 margin_right = 200.0
-margin_bottom = 244.0
+margin_bottom = 219.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Panel" type="Panel" parent="Control/VBoxContainer/MarginContainer"]
+[node name="Panel" type="Panel" parent="Control/HBoxContainer/VBoxContainer/MarginContainer"]
 margin_right = 200.0
-margin_bottom = 40.0
-rect_min_size = Vector2( 40, 40 )
+margin_bottom = 15.0
+rect_min_size = Vector2( 40, 10 )
 size_flags_horizontal = 3
 
-[node name="DisplayText" type="RichTextLabel" parent="Control/VBoxContainer/MarginContainer"]
+[node name="DisplayText" type="RichTextLabel" parent="Control/HBoxContainer/VBoxContainer/MarginContainer"]
 unique_name_in_owner = true
 margin_right = 200.0
-margin_bottom = 40.0
-rect_min_size = Vector2( 40, 40 )
+margin_bottom = 15.0
+rect_min_size = Vector2( 40, 10 )
 size_flags_horizontal = 3
 bbcode_enabled = true
 fit_content_height = true
 
 [node name="Tween" type="Tween" parent="."]
+
+[connection signal="pressed" from="Control/HBoxContainer/Button" to="." method="_on_Button_pressed"]

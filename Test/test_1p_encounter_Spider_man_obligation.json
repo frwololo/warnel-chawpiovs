@@ -102,6 +102,7 @@
 			"identity1": [
 				{
 					"card": "Peter Parker",
+					"exhausted": true
 				}
 			],
 			"hand1": [

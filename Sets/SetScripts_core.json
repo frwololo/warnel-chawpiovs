@@ -160,13 +160,14 @@
 						]
 					},
 					{
-						"name": "change_form",
-						"subject": "my_hero"
-					},
-					{
 						"name": "exhaust_card",
 						"is_cost": true,
-						"subject": "my_identity"
+						"subject": "my_identity",
+						"_comments": "we need to exhaust before changing form here due to a bug"
+					},					
+					{
+						"name": "change_form",
+						"subject": "my_hero"
 					},
 					{
 						"name": "move_card_to_container",
@@ -763,13 +764,14 @@
 						]
 					},
 					{
-						"name": "change_form",
-						"subject": "my_hero"
-					},
-					{
 						"name": "exhaust_card",
 						"is_cost": true,
-						"subject": "my_identity"
+						"subject": "my_identity",
+						"_comments": "we need to exhaust before changing form here due to a bug"
+					},					
+					{
+						"name": "change_form",
+						"subject": "my_hero"
 					},
 					{
 						"name": "move_card_to_container",
@@ -1771,13 +1773,14 @@
 						]
 					},
 					{
-						"name": "change_form",
-						"subject": "my_hero"
-					},
-					{
 						"name": "exhaust_card",
 						"is_cost": true,
-						"subject": "my_identity"
+						"subject": "my_identity",
+						"_comments": "we need to exhaust before changing form here due to a bug"
+					},					
+					{
+						"name": "change_form",
+						"subject": "my_hero"
 					},
 					{
 						"name": "move_card_to_container",
@@ -1948,13 +1951,14 @@
 						]
 					},
 					{
-						"name": "change_form",
-						"subject": "my_hero"
-					},
-					{
 						"name": "exhaust_card",
 						"is_cost": true,
-						"subject": "my_identity"
+						"subject": "my_identity",
+						"_comments": "we need to exhaust before changing form here due to a bug"
+					},					
+					{
+						"name": "change_form",
+						"subject": "my_hero"
 					},
 					{
 						"name": "move_card_to_container",
@@ -3277,13 +3281,14 @@
 						]
 					},
 					{
-						"name": "change_form",
-						"subject": "my_hero"
-					},
-					{
 						"name": "exhaust_card",
 						"is_cost": true,
-						"subject": "my_identity"
+						"subject": "my_identity",
+						"_comments": "we need to exhaust before changing form here due to a bug"
+					},					
+					{
+						"name": "change_form",
+						"subject": "my_hero"
 					},
 					{
 						"name": "move_card_to_container",

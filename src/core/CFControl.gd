@@ -1,6 +1,3 @@
-# warning-ignore-all:UNUSED_ARGUMENT
-# warning-ignore-all:RETURN_VALUE_DISCARDED
-
 # Card Gaming Framework Control Singleton
 #
 # Add it to your autoloads with the name 'cfc'
@@ -11,17 +8,12 @@ extends Node
 signal all_nodes_mapped
 # Sent any time the scripting engine cache is cleared
 signal cache_cleared
-# Sent when all Card definitions have finished loading the memory from file
-signal card_definitions_loaded
 # Sent when all Card scripts have finished loading the memory from file
 signal scripts_loaded
 # Sent when a new Card node is instanced
 signal new_card_instanced(card)
 
 var load_start_time := OS.get_ticks_msec()
-
-#pointer to modal menu for potential cleanup
-var modal_menus := [] 
 
 #-----------------------------------------------------------------------------
 # BEGIN Unit Testing Variables
@@ -61,6 +53,8 @@ var card_definitions := {}
 var set_scripts := {}
 # This will store all card scripts, including their format placeholders
 var unmodified_set_scripts := {}
+# A class to propagate script triggers to all cards.
+var signal_propagator = SignalPropagator.new()
 # A dictionary of all our container nodes for easy access
 var NMAP: Dictionary
 # The card actively being dragged
@@ -111,9 +105,6 @@ var curr_scale: float
 var script_load_thread : Thread
 var scripts_loading := true
 
-var cards_load_thread : Thread
-var cards_loading := true
-
 func _ready() -> void:
 	var load_end_time = OS.get_ticks_msec()
 	if OS.has_feature("debug") and not cfc.is_testing:
@@ -126,8 +117,6 @@ func _ready() -> void:
 	_on_viewport_resized()
 	_setup()
 
-func _process(_delta:float):
-	flush_cache_as_needed()
 
 func _setup() -> void:
 	init_settings_from_file()
@@ -153,41 +142,21 @@ func _setup() -> void:
 	else:
 		# Initialize the game random seed
 		set_seed(game_rng_seed)
-	if !CFConst.LOAD_CARDS_ONLINE:	
-		load_cards_database()
-
-func load_scripts():
-	# Removed threading since I optimized this loading function
-#	load_script_definitions()
-	# We're loading the script definitions in a thread to avoid delaying game load too much
-	
-	if CFConst.DISABLE_THREADS or OS.get_name() == "HTML5":
-		load_script_definitions()
-	else:
-		load_script_definitions()
-#		script_load_thread = Thread.new()
-#		var result = script_load_thread.start(self, "load_script_definitions")
-#		if result != OK:
-#			var _error = 1
-	var scripts_load_end_time = OS.get_ticks_msec()
-	if OS.has_feature("debug") and not cfc.is_testing:
-		print_debug("DEBUG INFO:CFControl: card scripts load time = %sms" % [str(scripts_load_end_time - load_start_time)])	
-	
-
-func load_cards_database():
-	if CFConst.DISABLE_THREADS or OS.get_name() == "HTML5":
-		load_card_definitions()
-	else:	
-		cards_load_thread = Thread.new()
-		cards_load_thread.start(self, "load_card_definitions")
-		while cards_load_thread.is_alive():
-			yield(get_tree().create_timer(0.1), "timeout")
-		cards_load_thread.wait_to_finish()		
+	card_definitions = load_card_definitions()
 	var defs_load_end_time = OS.get_ticks_msec()
 	if OS.has_feature("debug") and not cfc.is_testing:
 		print_debug("DEBUG INFO:CFControl: card definitions load time = %sms" % [str(defs_load_end_time - load_start_time)])	
-
-	load_scripts()
+	# Removed threading since I optimized this loading function
+#	load_script_definitions()
+	# We're loading the script definitions in a thread to avoid delaying game load too much
+	if OS.get_name() == "HTML5":
+		load_script_definitions()
+	else:
+		script_load_thread = Thread.new()
+		script_load_thread.start(self, "load_script_definitions")
+	var scripts_load_end_time = OS.get_ticks_msec()
+	if OS.has_feature("debug") and not cfc.is_testing:
+		print_debug("DEBUG INFO:CFControl: card scripts load time = %sms" % [str(scripts_load_end_time - load_start_time)])	
 
 func _setup_testing() -> void:
 	flush_cache()
@@ -262,48 +231,46 @@ func restore_rng_state() -> void:
 	game_rng.state = rng_saved_state
 
 # Instances and returns a Card object, based on its name.
-func _instance_card(card_id: String) -> Card:
+func instance_card(card_name: String) -> Card:
 	# We discover the template from the "Type"  property defined
 	# in each card. Any property can be used
 	var template = load(CFConst.PATH_CARDS
-			+ card_definitions[card_id][CardConfig.SCENE_PROPERTY] + ".tscn")
+			+ card_definitions[card_name][CardConfig.SCENE_PROPERTY] + ".tscn")
 	var card = template.instance()
 	# We set the card_name variable so that it's able to be used later
-	card.canonical_name = card_definitions[card_id]["Name"]
-	card.canonical_id = card_id
+	card.canonical_name = card_name
 	emit_signal("new_card_instanced", card)
 	return(card)
 
 
 # Returns a Dictionary with the combined Card definitions of all set files
 func load_card_definitions() -> Dictionary:
-	cards_loading = true
-	var loaded_definitions : Array = []
-
-	var set_files = CFUtils.list_files_in_directory(
-			CFConst.PATH_SETS, CFConst.CARD_SET_NAME_PREPEND)
-	for set_file in set_files:
-		loaded_definitions.append(load(CFConst.PATH_SETS + set_file))
+	var loaded_definitions : Array
+	if "CARD_SETS" in SetPreload and SetPreload.CARD_SETS.size() > 0:
+		loaded_definitions = SetPreload.CARD_SETS
+	else:
+		var set_files = CFUtils.list_files_in_directory(
+				CFConst.PATH_SETS, CFConst.CARD_SET_NAME_PREPEND)
+		for set_file in set_files:
+			loaded_definitions.append(load(CFConst.PATH_SETS + set_file))
 	var combined_sets := {}
 	for set_def in loaded_definitions:
 		for card_name in set_def.CARDS:
 			combined_sets[card_name] = set_def.CARDS[card_name]
-
-	card_definitions = combined_sets
-	cards_loading = false
-	emit_signal("card_definitions_loaded")	
 	return(combined_sets)
 
 
 # Returns a Dictionary with the combined Script definitions of all set files
 func load_script_definitions() -> void:
 	var loaded_script_definitions := []
-
-	var script_definition_files := CFUtils.list_files_in_directory(
-				CFConst.PATH_SETS, CFConst.SCRIPT_SET_NAME_PREPEND)
-	for script_file in script_definition_files:
-		loaded_script_definitions.append(load(CFConst.PATH_SETS + script_file).new())
-		
+	if "CARD_SCRIPTS" in SetPreload and SetPreload.CARD_SCRIPTS.size() > 0:
+		for preload_set_scripts in SetPreload.CARD_SCRIPTS:
+			loaded_script_definitions.append(preload_set_scripts.new())
+	else:
+		var script_definition_files := CFUtils.list_files_in_directory(
+					CFConst.PATH_SETS, CFConst.SCRIPT_SET_NAME_PREPEND)
+		for script_file in script_definition_files:
+			loaded_script_definitions.append(load(CFConst.PATH_SETS + script_file).new())
 	var combined_scripts := {}
 	for card_name in card_definitions.keys():
 		for scripts_obj in loaded_script_definitions:
@@ -319,38 +286,22 @@ func load_script_definitions() -> void:
 	emit_signal("scripts_loaded")
 	scripts_loading = false
 
-func pile_or_grid(object_name):
-	if CFConst.HERO_GRID_SETUP.has(object_name):
-		var type = CFConst.HERO_GRID_SETUP[object_name].get("type", "grid")
-		return type 
-	if CFConst.GRID_SETUP.has(object_name):
-		var type = CFConst.GRID_SETUP[object_name].get("type", "grid")
-		return type 		
-	if object_name.begins_with("hand"):
-		return "pile"
-	for zone in CFConst.HERO_GRID_SETUP.keys:
-		if object_name.begins_with(zone):
-			var type = CFConst.HERO_GRID_SETUP[zone].get("type", "grid")
-			return type 		
-	return "grid"
 
 # Setter for game_paused
 func set_game_paused(value: bool) -> void:
-	if NMAP.has("board") and is_instance_valid(NMAP.board) and NMAP.board.mouse_pointer:
+	if NMAP.has("board") and NMAP.board.mouse_pointer:
 		NMAP.board.mouse_pointer.is_disabled = value
 	game_paused = value
 
 
-func save_settings():
-	var file = File.new()
-	file.open(CFConst.SETTINGS_FILENAME, File.WRITE)
-	file.store_string(JSON.print(game_settings, '\t'))
-	file.close()	
 # Whenever a setting is changed via this function, it also stores it
 # permanently on-disk.
 func set_setting(setting_name: String, value) -> void:
 	game_settings[setting_name] = value
-	save_settings()
+	var file = File.new()
+	file.open(CFConst.SETTINGS_FILENAME, File.WRITE)
+	file.store_string(JSON.print(game_settings, '\t'))
+	file.close()
 
 
 # Initiates game_settings from the contents of CFConst.SETTINGS_FILENAME
@@ -419,7 +370,7 @@ func clear() -> void:
 	flush_cache()
 	are_all_nodes_mapped = false
 	card_drag_ongoing = null
-	if cfc.NMAP.has("board"):
+	if cfc.NMAP.has("board") and is_instance_valid(cfc.NMAP.get("board")):
 		cfc.NMAP.board.queue_free()
 	# We need to give Godot time to deinstance all nodes.
 	yield(get_tree().create_timer(0.1), "timeout")
@@ -443,16 +394,9 @@ func quit_game() -> void:
 # This is called after most game-state changes, but there's one notable exception:
 # if you add an alterant to a card's `scripts` variable manually, then you need
 # to flush the cache afterwards using this function.
-var _flush_cache_requested = false
 func flush_cache() -> void:
-	_flush_cache_requested = true
-
-func flush_cache_as_needed() -> void:
-	if !_flush_cache_requested:
-		return
 	alterant_cache.clear()
 	emit_signal("cache_cleared")
-	_flush_cache_requested = false
 
 
 func hide_all_previews() -> void:
@@ -474,36 +418,60 @@ func _exit_tree():
 	if script_load_thread:
 		script_load_thread.wait_to_finish()
 
-	if cards_load_thread and cards_load_thread.is_active():
-		cards_load_thread.wait_to_finish()	
 
-#A function to override as needed
-func enrich_window_title(selectionWindow, script:ScriptObject, title:String) -> String:
-	return title
+# The SignalPropagator is responsible for collecting all card signals
+# and asking all cards to check if there's any automation they need to perform
+class SignalPropagator:
 
-func add_modal_menu(object):
-	if not object in modal_menus:
-		modal_menus.append(object)
+	# This propagates a signal generally, so everything else knows to pick it up from here.
+	# This means signals caught by the signal propagator can be used by anything else, not just cards.
+	signal signal_received(trigger_card, trigger, details)
+	# The working signals cards might send depending on their status changes
+	# this array can be extended by signals added by other games
+	var known_card_signals := [
+		"card_rotated",
+		"card_flipped",
+		"card_viewed",
+		"card_moved_to_board",
+		"card_moved_to_pile",
+		"card_moved_to_hand",
+		"card_token_modified",
+		"card_attached",
+		"card_unattached",
+		"card_targeted",
+		"card_properties_modified",
+		]
 
-func remove_modal_menu(object):
-	modal_menus.erase(object)
-
-func get_modal_menu():
-	if modal_menus:
-		return modal_menus[0]
-	return null	
-	
-func cleanup_modal_menu():
-	if (modal_menus):
-		for modal_menu in modal_menus:
-			modal_menu.force_cancel()
-		modal_menus = []
-	return
+	# When a new card is instanced, it connects all its known signals
+	# to the SignalPropagator
+	func connect_new_card(card):
+		for sgn in known_card_signals:
+			card.connect(sgn, self, "_on_signal_received")
 
 
-#safer way than asking objects to serialize themselves in case of error
-func serialize_object(object):
-	if !(object and is_instance_valid(object)):
-		return null
-		
-	return object.serialize_to_json()
+	# When a known signal is received, it asks all existing cards to check
+	# If this triggers an automation for them
+	#
+	# This method requirses that each signal also passes its own name in the
+	# trigger variable, is this is the key sought in the CardScriptDefinitions
+	func _on_signal_received(
+			trigger_card: Card, trigger: String, details: Dictionary):
+		# We use Godot groups to ask every card to check if they
+		# have [ScriptingEngine] triggers for this signal.
+		#
+		# I don't know why, but if I use simply call_group(), this will
+		# not execute on a "self" subject
+		# when the trigger card has a grid_autoplacement set, and the player
+		# drags the card on the grid itself. If the player drags the card
+		# To an empty spot, it works fine
+		# It also fails to execute if I use any other flag than GROUP_CALL_UNIQUE
+		for card in cfc.get_tree().get_nodes_in_group("cards"):
+			card.execute_scripts(trigger_card,trigger,details)
+		# If we need other objects than cards to trigger scripts via signals
+		# add them to the 'scriptables' group ang ensure they have
+		# an "execute_scripts" function
+		for card in cfc.get_tree().get_nodes_in_group("scriptables"):
+			card.execute_scripts(trigger_card,trigger,details)
+#		cfc.get_tree().call_group_flags(SceneTree.GROUP_CALL_UNIQUE  ,"cards",
+#				"execute_scripts",trigger_card,trigger,details)
+		emit_signal("signal_received", trigger_card, trigger, details)

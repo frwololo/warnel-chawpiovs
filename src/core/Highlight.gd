@@ -7,33 +7,8 @@ onready var owner_node = get_parent().get_parent()
 onready var _left_right := $LeftRight
 onready var _top_bottom := $TopBottom
 
-var target_highlight:Color = Color(0,0,0)
-var modulate_speed:= 0.0
-var direction = -1;
-const enable_glow = false;
-
 func _ready() -> void:
 	pass
-
-
-func deactivate_glow():
-	if (!direction):
-		return
-	direction = 0
-	modulate = Color(0,0,0,0)
-	target_highlight = Color(0,0,0,0)
-
-# Changes card highlight colour.
-func set_target_highlight(hoverColour) -> void:
-	modulate_speed = 0.9
-	if (!direction):
-		direction = -1
-	if (target_highlight == hoverColour):
-		return
-	visible = true	
-	target_highlight = hoverColour
-	modulate = hoverColour
-
 
 # Changes card highlight colour.
 func set_highlight(requestedFocus: bool,
@@ -43,21 +18,7 @@ func set_highlight(requestedFocus: bool,
 		modulate = hoverColour
 	else:
 		modulate = CFConst.FOCUS_HOVER_COLOUR
-		
-	target_highlight = modulate	
-	modulate_speed = 0
 
-func _process(delta):
-	if (!enable_glow):
-		return
-	if (!direction):
-		return
-	modulate.a = modulate.a + (modulate_speed * direction * delta)
-	if (modulate.a <= 0):
-		direction = 1
-	if (modulate.a >= target_highlight.a):
-		direction = -1
-	
 
 # Goes through all the potential cards we're currently hovering onto with the mouse
 # or targetting arrow, and highlights the one with the highest index among

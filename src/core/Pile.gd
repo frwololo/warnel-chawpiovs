@@ -41,8 +41,6 @@ onready var _tween := $Tween
 
 var pre_sorted_order: Array
 
-var is_shuffling:= false
-
 func _ready():
 	add_to_group("piles")
 	# warning-ignore:return_value_discarded
@@ -55,33 +53,17 @@ func _ready():
 	$ViewPopup.connect("about_to_show",self,'_on_ViewPopup_about_to_show')
 	set_pile_name(pile_name)
 	# warning-ignore:return_value_discarded
-	if CFConst.FACEUP_PILE_VIEW_ON_CLICK:
-		show_manipulation_buttons = false
-		manipulation_buttons.visible = false
-		$Control.connect("gui_input", self, "_on_Pile_gui_input")
-
-	if CFConst.HIDE_PILE_DETAILS:
-		pile_name_label.modulate = Color(0,0,0,0)
-		$Control.self_modulate = Color(0,0,0,0.2)
-
-func _on_Pile_gui_input(event) -> void:
-	if !faceup_cards:
-		return
-	if show_manipulation_buttons: #show manipulation buttons override this
-		return
-			
-	if event is InputEventMouseButton and cfc.NMAP.has("board"):	
-		if event.is_pressed() and event.get_button_index() == 1:
-			_on_View_Button_pressed()
+	connect(
+		"shuffle_completed",
+		cfc.signal_propagator,
+		"_on_signal_received",
+		[
+			"shuffle_completed",
+			{"source": name}
+		])
 
 
 func _process(_delta) -> void:
-	if CFConst.HIDE_PILE_DETAILS:
-		if !get_card_count():
-			get_node("%PanelContainer").visible = false
-		else:
-			get_node("%PanelContainer").visible = true
-			
 	pass
 	# This performs a bit of garbage collection to make sure no Control temp objects
 	# are leftover empty in the popup
@@ -187,10 +169,7 @@ func set_pile_name(value: String) -> void:
 	# this function will run before the onready calls
 	# so the pile_name_will be empty
 	if is_inside_tree():
-		if CFConst.HIDE_PILE_DETAILS:
-			pile_name_label.text = "____"
-		else:
-			pile_name_label.text = value
+		pile_name_label.text = value
 
 
 # Overrides the built-in add_child() method,
@@ -352,8 +331,6 @@ func _slot_card_into_popup(card: Card) -> void:
 # Randomly rearranges the order of the [Card] nodes.
 # Pile shuffling includes a fancy animation
 func shuffle_cards(animate = true) -> void:
-	is_shuffling = true
-	
 	# Optimally the CFConst.ShuffleStyle enum should be defined in this class
 	# but if we did so, we would not be able to refer to it from the Card
 	# class, as that would cause a cyclic dependency on the parser
@@ -400,7 +377,6 @@ func shuffle_cards(animate = true) -> void:
 		# if the style is random, we select a random shuffle animation among
 		# the predefined ones.
 		elif shuffle_style == CFConst.ShuffleStyle.RANDOM:
-			cfc.LOG("{rng} shuffle")
 			style = CFUtils.randi_range(3, len(CFConst.ShuffleStyle) - 1)
 		else:
 			style = shuffle_style
@@ -483,10 +459,7 @@ func shuffle_cards(animate = true) -> void:
 		# if we're already running another animation, just shuffle
 		.shuffle_cards()
 	reorganize_stack()
-	
-	is_shuffling = false
 	emit_signal("shuffle_completed", self)
-	scripting_bus.emit_signal("shuffle_completed", self, {"source": name})
 
 
 # Overrides the re_place() function of [Pile] in order

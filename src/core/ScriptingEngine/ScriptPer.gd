@@ -9,31 +9,28 @@ func _init(per_msg: perMessage).(
 		per_msg.script_owner, 
 		per_msg.per_definitions, 
 		per_msg.trigger_object) -> void:
-	cfc.add_ongoing_process(self)
 	# The name of the type of per we're seeking gets its own var
 	script_name = per_msg.per_seek
 	if get_property(SP.KEY_ORIGINAL_PREVIOUS):
 		prev_subjects = per_msg.prev_subjects
 	else:
 		prev_subjects = per_msg.subjects
-	var ret = _find_subjects() #TODO run_type support for cost check
-	if ret is GDScriptFunctionState  && ret.is_valid(): # Still working.
+	var ret = _find_subjects()
+	if ret is GDScriptFunctionState: # Still working.
 		ret = yield(ret, "completed")
 	# We emit a signal when done so that our ScriptingEngine
 	# knows we're ready to continue
-	is_primed = true
-	cfc.remove_ongoing_process(self)
 	emit_signal("primed")
+	is_primed = true
+
 
 # Goes through the subjects specied for this per calculation
 # and counts the number of "things" requested
 func return_per_count() -> int:
 	var ret: int
 	match script_name:
-		SP.KEY_PER_TOKEN_SELF:
-			ret = _count_tokens([owner])
 		SP.KEY_PER_TOKEN:
-			ret = _count_tokens(subjects)
+			ret = _count_tokens()
 		SP.KEY_PER_PROPERTY:
 			ret = _count_property()
 		# These two keys simply count the number
@@ -53,9 +50,9 @@ func return_per_count() -> int:
 
 
 # Do something per token count
-func _count_tokens(targets:Array) -> int:
+func _count_tokens() -> int:
 	var ret := 0
-	for card in targets:
+	for card in subjects:
 		ret = card.tokens.get_token_count(get_property(SP.KEY_TOKEN_NAME))
 	return(ret)
 

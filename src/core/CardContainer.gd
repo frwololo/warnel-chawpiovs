@@ -3,7 +3,6 @@
 class_name CardContainer
 extends Area2D
 
-#note: signal is emitted by children
 # warning-ignore:unused_signal
 signal shuffle_completed
 
@@ -150,8 +149,9 @@ func _on_viewport_resized() -> void:
 
 func are_cards_still_animating() -> bool:
 	for c in get_all_cards():
-		if c.is_animating():
-			return true
+		var tt : Tween = c._tween
+		if tt.is_active():
+			return(true)
 	return(false)
 
 # Hides manipulation buttons
@@ -208,11 +208,6 @@ func get_all_cards() -> Array:
 		cardsArray.append(obj)
 	return cardsArray
 
-func delete_all_cards():
-	var cardsArray:Array = get_all_cards()
-	for card in cardsArray:
-		remove_child(card)
-		card.queue_free()
 
 # Returns an int with the amount of children nodes which are of Card class
 func get_card_count() -> int:
@@ -240,17 +235,12 @@ func has_card(card: Card) -> bool:
 
 # Returns true is any card in this card container has a canonical_name 
 # that matches the provided argument.
-func has_card_name(card_name: String) -> Card:
+func has_card_name(card_name: String) -> bool:
 	for card in get_all_cards():
 		if card.canonical_name == card_name:
-			return(card)
-	return(null)
+			return(true)
+	return(false)
 
-func has_card_id(card_id: String) -> Card:
-	for card in get_all_cards():
-		if card.canonical_id == card_id:
-			return(card)
-	return(null)
 
 # Returns a random card object among the children nodes
 func get_random_card() -> Card:
@@ -274,7 +264,7 @@ func get_last_card() -> Card:
 	return card # Returning the card object for unit testing
 
 
-# Return the card with the highest index
+# Teturn the card with the highest index
 func get_first_card() -> Card:
 	var card: Card = null
 	# prevents from trying to retrieve more cards
@@ -326,119 +316,101 @@ func translate_card_index_to_node_index(index: int) -> int:
 		node_index = card_at_index.get_index()
 	return node_index
 
-func set_placement_groups():
-			match placement:
-				Anchors.NONE:
-					pass
-				Anchors.TOP_LEFT, Anchors.LEFT_MIDDLE, Anchors.BOTTOM_LEFT:
-					add_to_group("left")
-				Anchors.TOP_RIGHT, Anchors.RIGHT_MIDDLE, Anchors.BOTTOM_RIGHT:
-					add_to_group("right")
-			match placement:
-				Anchors.TOP_LEFT, Anchors.TOP_MIDDLE, Anchors.TOP_RIGHT:
-					add_to_group("top")
-				Anchors.BOTTOM_LEFT, Anchors.BOTTOM_MIDDLE, Anchors.BOTTOM_RIGHT:
-					add_to_group("bottom")
-				
 
 # Adjusts the placement of the node, according to the placement var
 # So that it always stays in the same approximate location
 func re_place():
-	reset_location()
-	
-func reset_location():
-		var place := Vector2(0,0)	
-		if (self.visible):
-			# Here we match the adjust the default position based on the anchor
-			# First we adjust the x position
-			set_placement_groups()
-			match placement:
-				Anchors.NONE:
-					place = position
-				# Left position always start from x == 0,
-				# which means left side of the viewport
-				Anchors.TOP_LEFT, Anchors.LEFT_MIDDLE, Anchors.BOTTOM_LEFT:
-					place.x = 0
-				# Right position always start from the right-side of the viewport
-				# minus the width of the container
-				Anchors.TOP_RIGHT, Anchors.RIGHT_MIDDLE, Anchors.BOTTOM_RIGHT:
-					place.x = get_viewport().size.x - (card_size.x * scale.x)
-				# Middle placement is the middle of the viewport width,
-				# minues half the height of the container
-				Anchors.TOP_MIDDLE, Anchors.BOTTOM_MIDDLE:
-					place.x = get_viewport().size.x / 2 - (card_size.x / 2 * scale.x)
-			# Now we adjust the y position. Same logic for
-			match placement:
-				# Top position always start from y == 0,
-				# which means top of the viewport
-				Anchors.TOP_LEFT, Anchors.TOP_MIDDLE, Anchors.TOP_RIGHT:
-					place.y = 0
-				# Bottom position always start from the bottom of the viewport
-				# minus the height of the container
-				Anchors.BOTTOM_LEFT, Anchors.BOTTOM_MIDDLE, Anchors.BOTTOM_RIGHT:
-					place.y = get_viewport().size.y - (card_size.y * scale.y)
-				# Middle placement is the middle of the viewport height
-				# minus half the height of the container
-				Anchors.RIGHT_MIDDLE, Anchors.LEFT_MIDDLE:
-					place.y = get_viewport().size.y / 2 - (card_size.y / 2 * scale.y)
-			# Now we try to discover if more than one CardContainer share
-			# the same anchor and the figure out which to displace.
-			var duplicate_anchors := {}
-			# All CardContainer belong to the "card_containers" group
-			# So we gather them in a list
-			for container in get_tree().get_nodes_in_group("card_containers"):
-				# I could have made this code a bit more optimal
-				# but Godot didn't like that sort of logic
-				# So I just ensure each anchor is a key, and contains
-				# an empty list
-				if (container.visible):
-					if not duplicate_anchors.get(container.placement):
-						duplicate_anchors[container.placement] = []
-					# For each anchor, I add to the list all the CardContainers
-					# which are placed in that anchor
-					duplicate_anchors[container.placement].append(container)
-			# Hook for the debugger
-			if _debugger_hook:
-				pass
-			for anchor in duplicate_anchors:
-				# I only iterate on the anchor that this CardContainer is set
-				# And only if there's more than one CardContainer using it.
-				if anchor == placement and duplicate_anchors[anchor].size() > 1:
-					# This variable will hold all the CardContainers which share it
-					var cc_array =  duplicate_anchors[anchor]
-					# This function sorts the CardContainers sharing the same anchor
-					# based on their preferred index to push.
-					# If they're set to push the "lowest" index, then the
-					# containers with thew lower index will be pushed to the
-					# back of the array.
-					# Otherwise the containers with the highest index will be at
-					# The back of the array.
-					# This allows us to control which node will be "pushed".
-					cc_array.sort_custom(CFUtils,"sort_by_shift_priority")
-					# We reset this variable every time
-					accumulated_shift = Vector2(0,0)
-					# Now we start going through the sorted array of CardContainers
-					# Since the array is sorted from not-moved, to move-the-furthest
-					# We will adjust the amount we move by the amount of others
-					# Which we have passed through
-					for cc in cc_array:
-						# if we find self, then we stop. If self is the first
-						# container in the array, this means it won't move at all
-						if cc == self:
-							place += accumulated_shift
-							break
-						# If we didn't find self, then we increase the amount
-						# This container will move, by the combined size of
-						# other containers in the array before it.
-						match overlap_shift_direction:
-							CFInt.OverlapShiftDirection.UP:
-								accumulated_shift.y -= cc.control.rect_size.y
-							CFInt.OverlapShiftDirection.DOWN:
-								accumulated_shift.y += cc.control.rect_size.y
-							CFInt.OverlapShiftDirection.LEFT:
-								accumulated_shift.x -= cc.control.rect_size.x
-							CFInt.OverlapShiftDirection.RIGHT:
-								accumulated_shift.x += cc.control.rect_size.x
+		var place := Vector2(0,0)
+		# Here we match the adjust the default position based on the anchor
+		# First we adjust the x position
+		match placement:
+			# Left position always start from x == 0,
+			# which means left side of the viewport
+			Anchors.TOP_LEFT, Anchors.LEFT_MIDDLE, Anchors.BOTTOM_LEFT:
+				place.x = 0
+				add_to_group("left")
+			# Right position always start from the right-side of the viewport
+			# minus the width of the container
+			Anchors.TOP_RIGHT, Anchors.RIGHT_MIDDLE, Anchors.BOTTOM_RIGHT:
+				place.x = get_viewport().size.x - (card_size.x * scale.x)
+				add_to_group("right")
+			# Middle placement is the middle of the viewport width,
+			# minues half the height of the container
+			Anchors.TOP_MIDDLE, Anchors.BOTTOM_MIDDLE:
+				place.x = get_viewport().size.x / 2 - (card_size.x / 2 * scale.x)
+		# Now we adjust the y position. Same logic for
+		match placement:
+			# Top position always start from y == 0,
+			# which means top of the viewport
+			Anchors.TOP_LEFT, Anchors.TOP_MIDDLE, Anchors.TOP_RIGHT:
+				place.y = 0
+				add_to_group("top")
+			# Bottom position always start from the bottom of the viewport
+			# minus the height of the container
+			Anchors.BOTTOM_LEFT, Anchors.BOTTOM_MIDDLE, Anchors.BOTTOM_RIGHT:
+				place.y = get_viewport().size.y - (card_size.y * scale.y)
+				add_to_group("bottom")
+			# Middle placement is the middle of the viewport height
+			# minus half the height of the container
+			Anchors.RIGHT_MIDDLE, Anchors.LEFT_MIDDLE:
+				place.y = get_viewport().size.y / 2 - (card_size.y / 2 * scale.y)
+		# Now we try to discover if more than one CardContainer share
+		# the same anchor and the figure out which to displace.
+		var duplicate_anchors := {}
+		# All CardContainer belong to the "card_containers" group
+		# So we gather them in a list
+		for container in get_tree().get_nodes_in_group("card_containers"):
+			# I could have made this code a bit more optimal
+			# but Godot didn't like that sort of logic
+			# So I just ensure each anchor is a key, and contains
+			# an empty list
+			if not duplicate_anchors.get(container.placement):
+				duplicate_anchors[container.placement] = []
+			# For each anchor, I add to the list all the CardContainers
+			# which are placed in that anchor
+			duplicate_anchors[container.placement].append(container)
+		# Hook for the debugger
+		if _debugger_hook:
+			pass
+		for anchor in duplicate_anchors:
+			# I only iterate on the anchor that this CardContainer is set
+			# And only if there's more than one CardContainer using it.
+			if anchor == placement and duplicate_anchors[anchor].size() > 1:
+				# This variable will hold all the CardContainers which share it
+				var cc_array =  duplicate_anchors[anchor]
+				# This function sorts the CardContainers sharing the same anchor
+				# based on their preferred index to push.
+				# If they're set to push the "lowest" index, then the
+				# containers with thew lower index will be pushed to the
+				# back of the array.
+				# Otherwise the containers with the highest index will be at
+				# The back of the array.
+				# This allows us to control which node will be "pushed".
+				cc_array.sort_custom(CFUtils,"sort_by_shift_priority")
+				# We reset this variable every time
+				accumulated_shift = Vector2(0,0)
+				# Now we start going through the sorted array of CardContainers
+				# Since the array is sorted from not-moved, to move-the-furthest
+				# We will adjust the amount we move by the amount of others
+				# Which we have passed through
+				for cc in cc_array:
+					# if we find self, then we stop. If self is the first
+					# container in the array, this means it won't move at all
+					if cc == self:
+						place += accumulated_shift
+						break
+					# If we didn't find self, then we increase the amount
+					# This container will move, by the combined size of
+					# other containers in the array before it.
+					match overlap_shift_direction:
+						CFInt.OverlapShiftDirection.UP:
+							accumulated_shift.y -= cc.control.rect_size.y
+						CFInt.OverlapShiftDirection.DOWN:
+							accumulated_shift.y += cc.control.rect_size.y
+						CFInt.OverlapShiftDirection.LEFT:
+							accumulated_shift.x -= cc.control.rect_size.x
+						CFInt.OverlapShiftDirection.RIGHT:
+							accumulated_shift.x += cc.control.rect_size.x
 		# Finally, we move to the right location.
 		position = place
 		call_deferred("_init_control_size")

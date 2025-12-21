@@ -15,7 +15,6 @@ const _OPTIONAL_CONFIRM_SCENE = preload(_OPTIONAL_CONFIRM_SCENE_FILE)
 # use this for randomizations you do not care to repeat
 static func shuffle_array(array: Array, avoid_cfc_rng:= false) -> void:
 	var n = array.size()
-	cfc.LOG("{rng} asked for shuffle, shuffling " + str(n) + " elements")	
 	if n<2:
 		return
 	var j
@@ -31,32 +30,25 @@ static func shuffle_array(array: Array, avoid_cfc_rng:= false) -> void:
 		tmp = array[j]
 		array[j] = array[i]
 		array[i] = tmp
-	cfc.LOG("{rng}" + JSON.print(array, '\t'))	
 
 # Mapping randi function
 static func randi() -> int:
-	var result = cfc.game_rng.randi()
-	cfc.LOG("{rng} asked for randi, returning " + str(result))
-	return result
+	return(cfc.game_rng.randi())
 
 # Mapping randf function
 static func randf() -> float:
-	cfc.LOG("{rng} asked for randf")	
 	return(cfc.game_rng.randf())
 
 # Mapping randi_range function
 static func randi_range(from: int, to: int) -> int:
-	cfc.LOG("{rng} asked for randi_range")	
 	return(cfc.game_rng.randi_range(from, to))
 
 # Mapping randf_range function
 static func randf_range(from: float, to: float) -> float:
-	cfc.LOG("{rng} asked for randf_range")	
 	return(cfc.game_rng.randf_range(from, to))
 
 # Returns a random boolean
 static func rand_bool() -> bool:
-	cfc.LOG("{rng} asked for rand_bool")	
 	var rnd_bool = {0:true, 1: false}
 	return(rnd_bool[randi_range(0,1)])
 
@@ -102,25 +94,6 @@ static func list_files_in_directory(path: String, prepend_needed := "", full_pat
 			else:
 				files.append(file)
 	dir.list_dir_end()
-
-	#merge with precached result
-	#this is due to a bug 
-	#see https://github.com/godotengine/godot/issues/87274		
-	if cfc._cached_filesystem.has(path):
-		var to_merge = cfc._cached_filesystem[path]
-		for file in to_merge:
-			if !(file in files):
-				if file == "":
-					break
-				elif not file.begins_with('.')\
-						and file.begins_with(prepend_needed)\
-						and not file.ends_with(".remap")\
-						and not file.ends_with(".import")\
-						and not file.ends_with(".md"):				
-						if full_path:
-							files.append(path + file)
-						else:
-							files.append(file)
 	return(files)
 
 
@@ -129,7 +102,7 @@ static func list_files_in_directory(path: String, prepend_needed := "", full_pat
 # Due to the way Godot exports work, we cannot look for image
 # Files. Instead we have to explicitly look for their .import
 # filenames, and grab the filename from there.
-static func list_imported_in_directory(path: String) -> Array:
+static func list_imported_in_directory(path: String, full_path := false) -> Array:
 	var files := []
 	var dir := Directory.new()
 	# warning-ignore:return_value_discarded
@@ -141,11 +114,35 @@ static func list_imported_in_directory(path: String) -> Array:
 		if file == "":
 			break
 		elif file.ends_with(".import"):
-			files.append(file.rstrip(".import"))
+			if full_path:
+				files.append(path + file.rstrip(".import"))
+			else:
+				files.append(file.rstrip(".import"))
 	dir.list_dir_end()
 	return(files)
 
 
+# Creates a ConfirmationDialog for the player to approve the
+# Use of an optional script or task.
+static func confirm(
+		script: Dictionary,
+		card_name: String,
+		task_name: String,
+		type := "task") -> bool:
+	var is_accepted := true
+	# We do not use SP.KEY_IS_OPTIONAL here to avoid causing cyclical
+	# references when calling CFUtils from SP
+	if script.get("is_optional_" + type):
+		var confirm = _OPTIONAL_CONFIRM_SCENE.instance()
+		confirm.prep(card_name,task_name)
+		# We have to wait until the player has finished selecting an option
+		yield(confirm,"selected")
+		# If the player selected "No", we don't execute anything
+		if not confirm.is_accepted:
+			is_accepted = false
+		# Garbage cleanup
+		confirm.queue_free()
+	return(is_accepted)
 
 
 # Used with sort_custom to find the highest child index among multiple cards
@@ -184,24 +181,6 @@ static func sort_card_containers(c1, c2) -> bool:
 # * card: The card object
 # * value: The value being compared.
 static func sort_by_card_field(c1, c2) -> bool:
-	if c1.value == null and c2.value == null:
-		return true
-	if c1.value == null:
-		match typeof(c2.value):
-			TYPE_INT:
-				c1.value = 0
-			TYPE_STRING:
-				c1.value = ""
-			_:
-				return true
-	if c2.value == null:
-		match typeof(c1.value):
-			TYPE_INT:
-				c2.value = 0
-			TYPE_STRING:
-				c2.value = ""
-			_:
-				return true	
 	if c1.value < c2.value:
 		return true
 	return(false)
@@ -334,4 +313,3 @@ static func convert_texture_to_image(texture, is_lossless = false) -> ImageTextu
 	var image = tex.get_data()
 	new_texture.create_from_image(image)
 	return(new_texture)
-

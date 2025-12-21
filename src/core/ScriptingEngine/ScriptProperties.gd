@@ -71,9 +71,6 @@ const KEY_SUBJECT_V_INDEX := "index"
 # If this is the value of the [KEY_SUBJECT](#KEY_SUBJECT) key,
 # then we use the subject specified in the previous task
 const KEY_SUBJECT_V_PREVIOUS := "previous"
-# If this is the value of the [KEY_SUBJECT](#KEY_SUBJECT) key,
-# then we use the subjects specified all previous tasks
-const KEY_SUBJECT_V_ALL_PREVIOUS := "all_previous"
 # Value Type: Bool (Default = False)
 #
 # If set to true, in a task using the [KEY_SUBJECT_V_PREVIOUS](#KEY_SUBJECT_V_PREVIOUS) key
@@ -222,7 +219,6 @@ const KEY_MODIFY_PROPERTIES := "set_properties"
 # * [KEY_SUBJECT_V_INDEX](#KEY_SUBJECT_V_INDEX)
 #
 # Specifies the source container to pick the card from
-#if passing an array, will look into multiple containers
 const KEY_SRC_CONTAINER := "src_container"
 # Value Type: String.
 #
@@ -351,6 +347,12 @@ const KEY_STORE_INTEGER := "store_integer"
 #
 # specified how many of the "thing" done by the task, to perform.
 const KEY_OBJECT_COUNT := "object_count"
+# Value Type: Float (Default = 0.2).
+#
+# Specifies how long some scripts should take between iterations
+#
+# used in spawn_card_to_container
+const KEY_YIELD_TIME:= "yield_time"
 # Value Type: String
 #
 # Used in conjunction with the following tasks
@@ -599,13 +601,6 @@ const KEY_IS_INVERTED := "is_inverted"
 const KEY_PER_TOKEN := "per_token"
 # Value Type: Dictionary
 #
-# A [VALUE_PER](#VALUE_PER) key for perfoming an effect equal to a number of tokens on the script owner
-#
-# Other than the subject defintions the [KEY_TOKEN_NAME](#KEY_TOKEN_NAME)
-# has to also be provided
-const KEY_PER_TOKEN_SELF := "per_token_self"
-# Value Type: Dictionary
-#
 # A [VALUE_PER](#VALUE_PER) key for perfoming an effect equal to a accumulated property on the subject(s)
 #
 # Other than the subject defintions the [KEY_PROPERTY_NAME](#KEY_PROPERTY_NAME)
@@ -678,10 +673,6 @@ const KEY_PER_COUNTER := "per_counter"
 # I.e. it allows to write the script for something like:
 # *"Destroy all Monsters with cost equal or higher than 3"*
 const KEY_COMPARISON := "comparison"
-
-# counts the number of previous subjects
-const KEY_COUNT_PREVIOUS_SUBJECTS := "count_previous_subjects"
-
 # This is a versatile value that can be inserted into any various keys
 # when a task needs to use a previously inputed integer provided
 # with a [ask_integer](ScriptingEngine#ask_integer) task
@@ -831,15 +822,6 @@ const KEY_SELECTION_OPTIONAL := "selection_optional"
 # is supposed to already be in a different pile but this will only
 # technically happen as the last task.
 const KEY_SELECTION_IGNORE_SELF := "selection_ignore_self"
-
-# Value Type: String (default: "")
-#
-# override to call a function on Card to get a count, 
-# instead of simply counting number of cards
-# for example, "selection_what_to_count" : "resource_value"
-# will call card.get_resource_value() to retrieve the number
-const KEY_SELECTION_WHAT_TO_COUNT := "selection_what_to_count"
-
 # Value Type: Array
 #
 # Initiates a new instance of the scripting engine
@@ -1117,7 +1099,16 @@ const FILTER_GROUP = "filter_group"
 #
 # Filter used for checking against the value of the get_class() of an object
 const FILTER_CLASS = "filter_class"
-
+#Value Type: Bool.
+#
+# Filter for explicitly excluding the source card.
+# This is useful when we do a boardseek or tutor and we don't want to consider
+# The originator
+# 
+# This is only used in boardseek, and tutor subjects
+#
+# This key should be put in the same level as the main script
+const FILTER_EXCLUDE_SELF := "filter_exclude_self"
 #---------------------------------------------------------------------
 # Trigger Properties
 #
@@ -1292,8 +1283,7 @@ static func get_default(property: String):
 				KEY_SELECTION_CHOICES_AMOUNT,\
 				KEY_DIVIDER:
 			default = 1
-		KEY_GRID_NAME, KEY_SUBJECT, \
-				KEY_SELECTION_WHAT_TO_COUNT:
+		KEY_GRID_NAME, KEY_SUBJECT:
 			default = ""
 		KEY_COMPARISON:
 			default = "eq"
@@ -1303,6 +1293,8 @@ static func get_default(property: String):
 			default = "manual"
 		KEY_SORT_BY:
 			default = "node_index"
+		KEY_YIELD_TIME:
+			default = 0.2
 		_:
 			default = null
 	return(default)
@@ -1319,8 +1311,8 @@ static func filter_trigger(
 		trigger_details) -> bool:
 	# Checking card properties is its own function as it might be
 	# called from other places as well
-	var is_valid := check_validity(trigger_card, card_scripts, "trigger", owner_card)
-	if is_valid and not check_validity(owner_card, card_scripts, "self", owner_card):
+	var is_valid := check_validity(trigger_card, card_scripts, "trigger")
+	if is_valid and not check_validity(owner_card, card_scripts, "self"):
 		is_valid = false
 
 	# Here we check that the trigger matches the _request_ for trigger
@@ -1328,8 +1320,6 @@ static func filter_trigger(
 	# when itself causes the effect.
 	# For example, a card which rotates itself whenever another card
 	# is rotated, should not automatically rotate when itself rotates.
-	#"host" triggers when the trigger is the host of the current card
-	#(which is, therefore, one of the trigger's attachments)
 	if is_valid\
 			and card_scripts.get("trigger") == "self"\
 			and trigger_card != owner_card:
@@ -1338,11 +1328,6 @@ static func filter_trigger(
 			and card_scripts.get("trigger") == "another"\
 			and trigger_card == owner_card:
 		is_valid = false
-	if is_valid\
-			and card_scripts.get("trigger") == "host"\
-			and owner_card.current_host_card != trigger_card:
-		is_valid = false
-
 
 	var comparison : String = card_scripts.get(
 			KEY_COMPARISON, get_default(KEY_COMPARISON))
@@ -1389,10 +1374,12 @@ static func filter_trigger(
 
 	# Card move filter checks
 	if is_valid and card_scripts.get(FILTER_SOURCE) \
-			and ! trigger_details.get(TRIGGER_SOURCE).to_lower().begins_with(card_scripts.get(FILTER_SOURCE).to_lower()):
+			and card_scripts.get(FILTER_SOURCE).to_lower() != \
+			trigger_details.get(TRIGGER_SOURCE).to_lower():
 		is_valid = false
 	if is_valid and card_scripts.get(FILTER_DESTINATION) \
-			and ! trigger_details.get(TRIGGER_DESTINATION).to_lower().begins_with(card_scripts.get(FILTER_DESTINATION).to_lower()):
+			and card_scripts.get(FILTER_DESTINATION).to_lower() != \
+			trigger_details.get(TRIGGER_DESTINATION).to_lower():
 		is_valid = false
 
 	# Card Tokens filter checks
@@ -1559,10 +1546,10 @@ static func check_properties(card, property_filters: Dictionary) -> bool:
 				# If the property value is a string, and that is not a counter name
 				# Then it must be a special value provided by the designer
 				# We obviously cannot compare it as int, so we will compare is as string.
-				comparison_value = property_filters[property]	
-			if typeof(comparison_value) == TYPE_INT and typeof(card.get_property(property, 0)) == TYPE_INT:
+				comparison_value = property_filters[property]
+			if typeof(comparison_value) == TYPE_INT and typeof(card.get_property(property)) == TYPE_INT:
 				if not CFUtils.compare_numbers(
-						card.get_property(property, 0),
+						card.get_property(property),
 						comparison_value,
 						comparison_type):
 					card_matches = false
@@ -1579,8 +1566,8 @@ static func check_properties(card, property_filters: Dictionary) -> bool:
 				card_matches = false
 		else:
 			if not CFUtils.compare_strings(
-					str(property_filters[property]),
-					str(card.get_property(property, "")),
+					property_filters[property],
+					card.get_property(property),
 					comparison_type):
 				card_matches = false
 	return(card_matches)
@@ -1669,7 +1656,7 @@ static func check_parent_filter(card, parent: String) -> bool:
 
 
 # Check if the card is a valid subject or trigger, according to its state.
-static func check_validity(card, card_scripts, type := "trigger", _owner_card = null) -> bool:
+static func check_validity(card, card_scripts, type := "trigger") -> bool:
 	var card_matches := true
 	# We use the type of seek we're doing
 	# To know which dictionary property to pass for the required dict

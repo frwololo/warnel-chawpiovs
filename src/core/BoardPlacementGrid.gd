@@ -8,18 +8,8 @@
 #
 # The BoardPlacementSlots will adjust to card_size on runtime, but
 # If you want to visually see on the editor your result
-
-# warning-ignore-all:UNUSED_ARGUMENT
-# warning-ignore-all:RETURN_VALUE_DISCARDED
-
 class_name BoardPlacementGrid
 extends Control
-
-#emitted by children
-# warning-ignore:unused_signal
-signal card_removed_from_slot (slot)
-# warning-ignore:unused_signal
-signal card_added_to_slot (slot)
 
 # Used to add new BoardPlacementSlot instances to grids. We have to add the consts
 # together before passing to the preload, or the parser complains
@@ -41,7 +31,7 @@ export var card_play_scale := CFConst.PLAY_AREA_SCALE
 onready var name_label = $Control/Label
 
 func _ready() -> void:
-	rescale(card_play_scale)
+	rect_size = (card_size * card_play_scale) + Vector2(4,4)
 	# We ensure the separation of the grid slots is always 1 pixel larger
 	# Than the radius of the mouse pointer collision area.
 	# This ensures that we don't highlight 2 slots at the same time.
@@ -51,27 +41,6 @@ func _ready() -> void:
 			MousePointer.MOUSE_RADIUS * 2 + 1)
 	if not name_label.text:
 		name_label.text = name
-	
-	if CFConst.HIDE_GRID_BACKGROUND:
-		modulate = Color(0,0,0,0)
-		
-	connect("card_added_to_slot", self, "_card_added")
-	connect("card_removed_from_slot", self, "_card_removed")
-
-
-func _card_added(card):
-	#add new slots ahead of time as needed, to avoid "yield" related issues
-	if (!auto_extend):
-		return
-	#find_available_slot()	
-
-func _card_removed(card):
-	if (auto_extend):
-		var empty_slots = get_available_slots()
-		for empty_slot in empty_slots:
-			$GridContainer.remove_child(empty_slot)
-	pass
-
 
 
 # If a BoardPlacementSlot object child in this container is highlighted
@@ -112,17 +81,6 @@ func find_available_slot() -> BoardPlacementSlot:
 func get_all_slots() -> Array:
 	return($GridContainer.get_children())
 
-func get_all_cards() -> Array:
-	var results:Array = []
-	var slots:Array = get_all_slots()
-	for slot in slots:
-		var card = slot.occupying_card
-		if card : results.append(card)
-	return results
-
-func has_card(card) -> bool:
-	var all_cards = get_all_cards()
-	return (card in all_cards)
 
 # Returns the amount of BoardPlacementSlot contained.
 func get_slot_count() -> int:
@@ -137,43 +95,7 @@ func get_available_slots() -> Array:
 			available_slots.append(slot)
 	return(available_slots)
 
-func delete_all_slots():
-	var slots:Array = get_all_slots()
-	for slot in slots:
-		$GridContainer.remove_child(slot)
-		slot.queue_free()
-	return
-
-func delete_all_slots_but_one():
-	var slots:Array = get_all_slots()
-	slots.pop_front()
-	for slot in slots:
-		$GridContainer.remove_child(slot)
-		slot.queue_free()
-	return
 
 # Returns the count of all available slots
 func count_available_slots() -> int:
 	return(get_available_slots().size())
-	
-func reposition(new_position:Vector2, forced = false):
-	if rect_position == new_position and !forced:
-		return
-	rect_position = new_position
-	
-	var slots:Array = get_all_slots()
-	for slot in slots:
-		slot.reposition(new_position)			
-	
-func rescale(scale, forced:bool= false):
-	if scale == card_play_scale and !forced:
-		return
-	card_play_scale = scale
-
-	var slots:Array = get_all_slots()
-	for slot in slots:
-		slot.rescale()		
-		
-	rect_size = (card_size * card_play_scale) + Vector2(4,4)
-	
-

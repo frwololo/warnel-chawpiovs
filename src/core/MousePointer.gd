@@ -45,12 +45,11 @@ func _process(_delta: float) -> void:
 		if current_focused_card.get_parent() == cfc.NMAP.board \
 				and current_focused_card.state == Card.CardState.ON_PLAY_BOARD:
 			current_focused_card.state = Card.CardState.FOCUSED_ON_BOARD
-		if current_focused_card.get_parent().is_in_group("hands") \
+		if current_focused_card.get_parent() == cfc.NMAP.hand \
 				and current_focused_card.state == Card.CardState.IN_HAND:
 			current_focused_card.state = Card.CardState.FOCUSED_IN_HAND
 	if cfc.card_drag_ongoing and cfc.card_drag_ongoing != current_focused_card:
-		#current_focused_card = cfc.card_drag_ongoing
-		set_current_focused_card(cfc.card_drag_ongoing)
+		current_focused_card = cfc.card_drag_ongoing
 	if cfc._debug:
 		$DebugShape/current_focused_card.text = "MOUSE: " + str(current_focused_card)
 #	print([position,get_overlapping_areas()])
@@ -65,7 +64,7 @@ func _on_MousePointer_area_entered(area: Area2D) -> void:
 		# (sometimes it happens. Haven't figured out what causes it)
 		_check_for_stale_overlaps()
 		overlaps.append(area)
-		print("enter:",area.name)
+		#print("enter:",area.name)
 		_discover_focus()
 
 func _check_for_stale_overlaps() -> void:
@@ -99,9 +98,7 @@ func _check_for_stale_overlaps() -> void:
 func _on_MousePointer_area_exited(area: Area2D) -> void:
 	if not is_disabled:
 		# We stop the highlight on any areas we exit with the mouse.
-		if area as Card :
-			var _temp = 1
-		elif area as CardContainer:
+		if area as Card or area as CardContainer:
 			area.highlight.set_highlight(false)
 		elif area.get_parent() as BoardPlacementSlot:
 			area.get_parent().set_highlight(false)
@@ -153,19 +150,9 @@ func enable() -> void:
 
 
 func forget_focus() -> void:
-	#current_focused_card = null
-	set_current_focused_card(null)
+	current_focused_card = null
 
-func set_current_focused_card(value):
-	if current_focused_card == value:
-		return
-	if current_focused_card:
-		current_focused_card._on_Card_mouse_exited()
-	
-	current_focused_card = value
-	if current_focused_card:
-		current_focused_card._on_Card_mouse_entered()
-		
+
 func set_disabled(value) -> void:
 	forget_focus()
 	overlaps.clear()
@@ -251,11 +238,10 @@ func _discover_focus() -> void:
 				if current_focused_card:
 					current_focused_card._on_Card_mouse_exited()
 				if not cfc.card_drag_ongoing:
-					set_current_focused_card(card)
-					#card._on_Card_mouse_entered()
-					#current_focused_card = card
+					card._on_Card_mouse_entered()
+					current_focused_card = card
 		# If we have potential hosts, then we highlight the highest index one
-		if not potential_hosts.empty() and !CFConst.DISABLE_MANUAL_ATTACHMENTS:
+		if not potential_hosts.empty():
 			cfc.card_drag_ongoing.potential_host = \
 					current_focused_card.highlight.highlight_potential_card(
 					CFConst.HOST_HOVER_COLOUR,potential_hosts,potential_slots)
@@ -264,10 +250,7 @@ func _discover_focus() -> void:
 		# We also clear potential hosts since there potential_hosts was emty
 		elif not potential_slots.empty():
 			cfc.card_drag_ongoing.potential_host = null
-			if CFConst.DEACTIVATE_SLOTS_HIGHLIGHT:
-				pass
-			else:
-				potential_slots.back().set_highlight(true)
+			potential_slots.back().set_highlight(true)
 		# If card is being dragged, but has no potential target
 		# We ensure we clear potential hosts
 		elif cfc.card_drag_ongoing:

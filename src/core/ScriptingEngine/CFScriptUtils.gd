@@ -38,16 +38,13 @@ static func get_altered_value(
 	else:
 		var value_alteration := 0
 		var alterants_details := {}
-		var scriptables_array :Array =\
-			cfc.get_tree().get_nodes_in_group("scriptables")
-		
-		scriptables_array +=\
-				cfc.get_tree().get_nodes_in_group("cards")
+		var scriptables_array : Array =\
+				cfc.get_tree().get_nodes_in_group("cards")\
+				+ cfc.get_tree().get_nodes_in_group("scriptables")
 		for obj in scriptables_array:
 			var scripts = obj.retrieve_scripts(SP.KEY_ALTERANTS)
 			# We select which scripts to run from the card, based on it state
-			var any_state_scripts = scripts.get('all', [])
-			var state_scripts = scripts.get(obj.get_state_exec(), any_state_scripts)			
+			var state_scripts = scripts.get(obj.get_state_exec(), [])
 			# To avoid unnecessary operations
 			# we evoke the AlterantEngine only if we have something to execute
 			var task_details = _generate_trigger_details(task_name, task_properties)

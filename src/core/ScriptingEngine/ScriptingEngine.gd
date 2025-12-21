@@ -25,9 +25,6 @@ var run_type : int = CFInt.RunType.NORMAL
 # game state as required, either because the board is already at the
 # requested state, or because something prevents it.
 var can_all_costs_be_paid := true
-
-var user_interaction_status =  CFConst.USER_INTERACTION_STATUS.NOT_CHECKED_YET
-
 # This is checked by the yield in [Card] execute_scripts()
 # to know when the cost dry-run has completed, so that it can
 # check the state of `can_all_costs_be_paid`.
@@ -35,223 +32,82 @@ var all_tasks_completed := false
 # Stores the inputed integer from the ask_integer task
 var stored_integer: int
 var scripts_queue: Array
-
-#needs to exactly match the scripts_queue order.
-#We can't do a dictionary mapping because this needs to 
-#survive network transfer
-#array of arrays [bool, int] 
-#  where bool means initialized or not, 
-#   and int is the actual value to return
-var stored_integers: Array = [] 
-
 # Each ScriptingEngine execution gets an ID.
 # This can be used by games to be able to take a "snapshot" of the changes
-# in the board state as the script would execute and therefore know what the 
+# in the board state as the script would execute and therefore know what the
 # state of the board would be mid-execution, even during dry-runs
 var snapshot_id : float = 0
 
- #only used to keep track for network calls
-var trigger_details : Dictionary
-#true if I am the client triggering this script, false if I am a peer
-var is_network_master: bool = true 
-#this contains the list of subjects selected remotelyby another peer to pay for the script costs
-#this will allow to automatically pay for them on this client and mimic the results without having to select
-var network_prepaid:Array = []
-
-var all_subjects_so_far:= []
-var additional_rules:= {}
-
-var owner
-var trigger
-var trigger_object
-var state_scripts
 
 # Simply initiates the [run_next_script()](#run_next_script) loop
-func _init(_state_scripts: Array,
-		_owner,
-		_trigger_object: Node,
-		_trigger_details: Dictionary) -> void:
-	owner = _owner
-
-	#if optional tags are passed, merge them with this invocation
-	if _trigger_details.has("additional_tags"):
-		var tags = _trigger_details["additional_tags"]
-		for t in _state_scripts:
-			t["tags"] = t.get("tags", []) + tags
-
-	if _trigger_details.has("additional_script_definition"):
-		var additional_def = _trigger_details["additional_script_definition"]
-		for t in _state_scripts:
-			for def in additional_def:
-				t[def] = additional_def[def]
-	
-	if _trigger_details.has("trigger_type"):
-		trigger = _trigger_details["trigger_type"]
-	else:
-		trigger = ""
-	
-	trigger_object = _trigger_object
-	trigger_details = _trigger_details.duplicate()
-	state_scripts = _state_scripts.duplicate() 	
-	add_scripts(state_scripts, owner,  trigger_object, trigger_details)
-
-func add_scripts(_state_scripts,
-		_owner,
-		_trigger_object: Node,
-		_trigger_details: Dictionary,
-		fifo:bool = true) -> void:
-			
-		var tmp_array: Array = []
-		for t in _state_scripts: 		
+func _init(state_scripts: Array,
+		owner,
+		trigger_object: Node,
+		trigger_details: Dictionary) -> void:
+	for t in state_scripts:
 		# We do a duplicate to allow repeat to modify tasks without danger.
-			var task: Dictionary = t.duplicate(true)
-			# This is the only script property which we use outside of the
-			# ScriptTask object. The repeat property duplicates the whole task
-			# definition in multiple tasks
-			var repeat = task.get(SP.KEY_REPEAT, 1)
-			if SP.VALUE_PER in str(repeat):
-				var per_msg = perMessage.new(
-						repeat,
-						_owner,
-						task.get(repeat),
-						_trigger_object,
-						[],
-						[])
-				repeat = per_msg.found_things
-			# If there are no targets to repeat,  and the task was targetting
-			# It means it might have fired off of a dragging action, and we want to avoid
-			# it triggering when the player tries to drag it from hand and doing nothing.
-			if repeat == 0 \
-					and cfc.card_drag_ongoing == _owner\
-					and task.get(SP.KEY_SUBJECT) == SP.KEY_SUBJECT_V_TARGET\
-					and (task.get(SP.KEY_IS_COST) or task.get(SP.KEY_NEEDS_SUBJECT)):
-				can_all_costs_be_paid = false
-			for iter in range(repeat):
-				# In case it's a targeting task, we assume we don't want to
-				# spawn X targeting arrows at the same time, so we convert
-				# all subsequent repeats into "previous" targets
-				if iter > 0 and task.has("subject") and task["subject"] == "target":
-					task["subject"] = "previous"
-				var script_task := ScriptTask.new(
-						_owner,
-						task,
-						_trigger_object,
-						_trigger_details)
-				if (fifo):
-					scripts_queue.append(script_task)
-				else:
-					tmp_array.append(script_task)
-		if (!fifo):
-			tmp_array.append_array(scripts_queue)
-			scripts_queue = tmp_array
-		
-		for _i in range (scripts_queue.size()):
-			stored_integers.append([false, 0])								
+		var task: Dictionary = t.duplicate(true)
+		# This is the only script property which we use outside of the
+		# ScriptTask object. The repeat property duplicates the whole task
+		# definition in multiple tasks
+		var repeat = task.get(SP.KEY_REPEAT, 1)
+		if SP.VALUE_PER in str(repeat):
+			var per_msg = perMessage.new(
+					repeat,
+					owner,
+					task.get(repeat),
+					trigger_object,
+					[],
+					[])
+			repeat = per_msg.found_things
+		# If there are no targets to repeat,  and the task was targetting
+		# It means it might have fired off of a dragging action, and we want to avoid
+		# it triggering when the player tries to drag it from hand and doing nothing.
+		if repeat == 0 \
+				and cfc.card_drag_ongoing == owner\
+				and task.get(SP.KEY_SUBJECT) == SP.KEY_SUBJECT_V_TARGET\
+				and (task.get(SP.KEY_IS_COST) or task.get(SP.KEY_NEEDS_SUBJECT)):
+			can_all_costs_be_paid = false
+		for iter in range(repeat):
+			# In case it's a targeting task, we assume we don't want to
+			# spawn X targeting arrows at the same time, so we convert
+			# all subsequent repeats into "previous" targets
+			if iter > 0 and task.has("subject") and task["subject"] == "target":
+				task["subject"] = "previous"
+			var script_task := ScriptTask.new(
+					owner,
+					task,
+					trigger_object,
+					trigger_details)
+			scripts_queue.append(script_task)
 
 # This flag will be true if we're attempting to find if the card
 # has costs that need to be paid, before the effects take place.
 func costs_dry_run() -> bool:
-	return ((run_type == CFInt.RunType.COST_CHECK) or 
-		(run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
+	if run_type == CFInt.RunType.COST_CHECK:
+		return(true)
+	else:
+		return(false)
 
-func add_rules(dict:Dictionary):
-	additional_rules = dict
-
-func has_else_condition():
-	for task in scripts_queue:
-		if task.is_else:
-			return true
-	return false
-
-
-#sets the stored_integer for future use. 
-#Also sets it in the current ongoing script so we can refer to it
-func set_stored_integer(value, script: ScriptTask):
-	stored_integer = value
-	var index = scripts_queue.find(script)
-	stored_integers[index] = [true, value]
-
-#get the stored integer. If it's been initialized during this run,
-#we retrieve that (to stay compatible with legacy)
-#otherwise, try to get the most recent script before ours that had a stored value 
-func get_stored_integer(starting_element: ScriptTask = null):		
-	#else go through all scripts and find the latest with a stored integer 
-	var start_index = scripts_queue.size()
-	if starting_element:
-		start_index = scripts_queue.find(starting_element)
-	for i in range(start_index - 1, -1, -1):
-		var stored_data = stored_integers[i]
-		if (stored_data[0]):
-			return stored_data[1]
-
-	return 0
-
-
-func get_precompute_objects(keep_null:= false):
-	var result: = []
-	for task in scripts_queue:
-		if keep_null or task.process_result:
-			result.append(task.process_result)
-	return result
-
-func precompute(script):
-	if (!script.script_name in (CFConst.CAN_PRECOMPUTE)):
-		return null
-	var _tmp_run_type = run_type
-	run_type = CFInt.RunType.PRECOMPUTE
-	call(script.script_name, script)
-	run_type = _tmp_run_type
-	return script.process_result
 
 # The main engine starts here.
 # It receives array with all the tasks to execute,
 # then turns each array element into a [ScriptTask] object and
 # send it to the appropriate tasks.
-func execute(_run_type) -> void:
+func execute(_run_type := CFInt.RunType.NORMAL) -> void:
 	snapshot_id = rand_range(1,10000000)
 	all_tasks_completed = false
 	run_type = _run_type
-
-	var only_cost_check = ((run_type == CFInt.RunType.COST_CHECK) or
-		 (run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
-	
-	if (owner.canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME ):
-		var _tmp = 1
-			
-	cfc.add_ongoing_process(self, "scriptingengine execute")
-	# We execute the scripts locally, but in multiplayer only one player has to select
-	# payments. Once they do, we send the payment information to other players,
-	# and instead of selecting manually, the cost is paid automatically with the network_prepaid data
-	network_prepaid = []
-	if trigger_details.has("network_prepaid"):
-		is_network_master = false
-		self.user_interaction_status = CFConst.USER_INTERACTION_STATUS.DONE_NETWORK_PREPAID
-		var prepaid = trigger_details["network_prepaid"]
-		for i in range(prepaid.size()):
-			scripts_queue[i].script_definition["network_prepaid"] =  prepaid[i]		
-		
 	var prev_subjects := []
 	for task in scripts_queue:
 		# Failsafe for GUT tearing down while Sceng is running
 		if not cfc.NMAP.has("board") or not is_instance_valid(cfc.NMAP.board): return
 		# We put it into another variable to allow Static Typing benefits
 		var script: ScriptTask = task
-		if is_network_master:# and not costs_dry_run():
-			if script.is_else:
-				network_prepaid.append(null)
-			else:
-				network_prepaid.append([])
-				
-		if ((only_cost_check and not script.is_cost and not script.needs_subject)
+		if ((run_type == CFInt.RunType.COST_CHECK and not script.is_cost and not script.needs_subject)
 				or (run_type == CFInt.RunType.ELSE and not script.is_else)
-				or (not run_type in[CFInt.RunType.ELSE,CFInt.RunType.PRIME_ONLY]  and script.is_else)):
+				or (run_type != CFInt.RunType.ELSE and script.is_else)):
 			continue
-			
-		if script.is_else and run_type == CFInt.RunType.PRIME_ONLY and can_all_costs_be_paid:
-			if is_network_master:# and not costs_dry_run():
-				network_prepaid.pop_back()
-				network_prepaid.append([])			
-			continue	
 		# We store the temp modifiers to counters, so that things like
 		# info during targetting can take them into account
 		cfc.NMAP.board.counters.set_temp_counter_modifiers(
@@ -269,8 +125,6 @@ func execute(_run_type) -> void:
 			# when previous costs have not been achieved (e.g. targeting)
 			if script.get_property(SP.KEY_ABORT_ON_COST_FAILURE) and not can_all_costs_be_paid:
 				continue
-			
-			_pre_task_prime(script, prev_subjects)	
 			# If we have requested to use the previous target,
 			# but the subject_array is empty, we check if
 			# subject available in the next task and try to use that instead.
@@ -286,53 +140,13 @@ func execute(_run_type) -> void:
 				var next_task: ScriptTask =  scripts_queue[current_index + 1]
 				if next_task.subjects.size() > 0:
 					prev_subjects = next_task.subjects
-			var retrieved_integer = get_stored_integer(script)
-			var all_prev_subjects = all_subjects_so_far.duplicate()		
-			script.prime(prev_subjects,run_type,retrieved_integer, all_prev_subjects)
+			script.prime(prev_subjects,run_type,stored_integer)
 			# In case the task involves targetting, we need to wait on further
 			# execution until targetting has completed
 			if not script.is_primed:
 				yield(script,"primed")
-			
-			all_subjects_so_far += 	script.subjects
-
 		if script.is_primed:
-			#if authentication issue, exit early
-			match script.user_interaction_status:
-				CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER:
-					self.user_interaction_status = CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER
-					can_all_costs_be_paid = false
-					break
-				CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER:
-					#we set this one to surface the fact that interaction was indeed required
-					self.user_interaction_status = CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER
-					
-				
-			#Add to list of prepaid stuff only if I'm the one paying the costs and actually paying them
-			if is_network_master:# and not costs_dry_run():
-				network_prepaid.pop_back()
-				network_prepaid.append(script.subjects.duplicate()) #2025-03-01 added a duplicate here attempt at bug fix
-			
-			if script.my_stored_integer != null:
-				set_stored_integer(script.my_stored_integer,script)
-			
-		if (run_type == CFInt.RunType.PRIME_ONLY):
-			#TODO There was a bug e.g. with black cat not getting its previous subjects at prime step
-			#This solves it but might lead to other issues in the future, because
-			#modifications are normally possible before setting prev_subjects
-			if not script.get_property(SP.KEY_PROTECT_PREVIOUS):
-				prev_subjects = script.subjects
-				
-			continue
-		
-		if script.is_primed:	
 			_pre_task_exec(script)
-			
-			#for some scripts we have a possibility to precompute their result
-			precompute(script)
-			if (run_type == CFInt.RunType.PRECOMPUTE):
-				continue
-				
 			#print("Scripting Subjects: " + str(script.subjects)) # Debug
 			if script.script_name == "custom_script"\
 					and not script.is_skipped and script.is_valid:
@@ -399,9 +213,8 @@ func execute(_run_type) -> void:
 					and script.needs_subject \
 					and not script.get_property(SP.KEY_PROTECT_PREVIOUS):
 				prev_subjects = script.subjects
-			
 			# At the end of the task run, we loop back to the start, but of course
-			# with one less item in our scripts_queue.			
+			# with one less item in our scripts_queue.
 			emit_signal("single_task_completed", task)
 			cfc.card_temp_property_modifiers.erase(self)
 			for card in script.subjects:
@@ -410,11 +223,6 @@ func execute(_run_type) -> void:
 					card.temp_properties_modifiers.erase(self)
 #	print_debug(str(card_owner) + 'Scripting: All done!') # Debug
 	all_tasks_completed = true
-	#all other use cases are handled above. If our user_interaction_status is still unset,
-	#it means no interaction was required
-	if self.user_interaction_status ==  CFConst.USER_INTERACTION_STATUS.NOT_CHECKED_YET:
-		self.user_interaction_status =  CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED
-	cfc.remove_ongoing_process(self, "scriptingengine execute")
 	emit_signal("tasks_completed")
 	# checking costs on multiple targeted cards in the same script,
 	# is not supported at the moment due to the exponential complexities
@@ -497,7 +305,9 @@ func move_card_to_container(script: ScriptTask) -> int:
 			# But we don't consider it a failed cost (as most games allow you
 			# to try and draw more cards when you're full but just won't draw any)
 			card.move_to(dest_container,dest_index, null, tags)
-			#yield(script.owner.get_tree().create_timer(0.05), "timeout")
+			yield(script.owner.get_tree().create_timer(0.05), "timeout")
+	if script.get_property(SP.KEY_STORE_INTEGER):
+		stored_integer = script.subjects.size()
 	return(retcode)
 
 
@@ -532,7 +342,7 @@ func move_card_to_board(script: ScriptTask) -> int:
 				for card in script.subjects:
 					slot = grid.find_available_slot()
 					# We need a small delay, to allow a potential new slot to instance
-					#yield(script.owner.get_tree().create_timer(0.05), "timeout")
+					yield(script.owner.get_tree().create_timer(0.05), "timeout")
 					if slot:
 						# Setting the highlight lets the move_to() method
 						# Know we're moving into that slot
@@ -555,7 +365,7 @@ func move_card_to_board(script: ScriptTask) -> int:
 			# We assume cards moving to board want to be face-up
 			if not costs_dry_run():
 				card.move_to(cfc.NMAP.board, -1, board_position, tags)
-				#yield(script.owner.get_tree().create_timer(0.05), "timeout")
+				yield(script.owner.get_tree().create_timer(0.05), "timeout")
 	return(retcode)
 
 
@@ -569,7 +379,6 @@ func move_card_to_board(script: ScriptTask) -> int:
 # * Optionally uses the following keys:
 #	* [KEY_SET_TO_MOD](ScriptProperties#KEY_SET_TO_MOD)
 func mod_tokens(script: ScriptTask) -> int:
-	cfc.add_ongoing_process(self)
 	var retcode: int
 	var modification: int
 	var alteration = 0
@@ -577,7 +386,7 @@ func mod_tokens(script: ScriptTask) -> int:
 	# We inject the tags from the script into the tags sent by the signal
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
 	if str(script.get_property(SP.KEY_MODIFICATION)) == SP.VALUE_RETRIEVE_INTEGER:
-		modification = get_stored_integer(script)
+		modification = stored_integer
 		if script.get_property(SP.KEY_IS_INVERTED):
 			modification *= -1
 		modification += script.get_property(SP.KEY_ADJUST_RETRIEVED_INTEGER)
@@ -619,9 +428,7 @@ func mod_tokens(script: ScriptTask) -> int:
 		retcode = card.tokens.mod_token(token_name,
 				modification + alteration,set_to_mod,costs_dry_run(), tags)
 	if script.get_property(SP.KEY_STORE_INTEGER):
-		set_stored_integer(token_diff, script)
-		
-	cfc.remove_ongoing_process(self)	
+		stored_integer = token_diff
 	return(retcode)
 
 
@@ -635,17 +442,13 @@ func mod_tokens(script: ScriptTask) -> int:
 # * Optionally uses the following keys:
 #	* [KEY_OBJECT_COUNT](ScriptProperties#KEY_OBJECT_COUNT)
 func spawn_card(script: ScriptTask) -> void:
-	cfc.add_ongoing_process(self)
 	var card: Card
 	var count: int
 	var alteration = 0
-	var canonical_name: String = script.get_property(SP.KEY_CARD_NAME)	
-	#TODO this will not always work
-	var canonical_id = cfc.get_corrected_card_id(canonical_name)
+	var canonical_name: String = script.get_property(SP.KEY_CARD_NAME)
 	var grid_name: String = script.get_property(SP.KEY_GRID_NAME)
-	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
 	if str(script.get_property(SP.KEY_OBJECT_COUNT)) == SP.VALUE_RETRIEVE_INTEGER:
-		count = get_stored_integer(script)
+		count = stored_integer
 		if script.get_property(SP.KEY_IS_INVERTED):
 			count *= -1
 		count += script.get_property(SP.KEY_ADJUST_RETRIEVED_INTEGER)
@@ -674,16 +477,16 @@ func spawn_card(script: ScriptTask) -> void:
 				# We need a small delay, to allow a potential new slot to instance
 				yield(script.owner.get_tree().create_timer(0.05), "timeout")
 				if slot:
-					card = cfc.instance_card(canonical_id, -2)
+					card = cfc.instance_card(canonical_name)
 					cfc.NMAP.board.add_child(card)
 					card.position = slot.rect_global_position
-					slot.set_occupying_card(card)
+					card._placement_slot = slot
+					slot.occupying_card = card
 					card.state = Card.CardState.ON_PLAY_BOARD
 					spawned_cards.append(card)
-					scripting_bus.emit_signal("card_spawned", card, {"tags": tags})
 	else:
 		for iter in range(count + alteration):
-			card = cfc.instance_card(canonical_id, -2)
+			card = cfc.instance_card(canonical_name)
 			var board_position: Vector2 = script.get_property(SP.KEY_BOARD_POSITION)
 			cfc.NMAP.board.add_child(card)
 			card.position = board_position
@@ -694,14 +497,13 @@ func spawn_card(script: ScriptTask) -> void:
 			card.state = Card.CardState.ON_PLAY_BOARD
 			card.set_to_idle()
 			spawned_cards.append(card)
-			scripting_bus.emit_signal("card_spawned", card, {"tags": tags})
 	# We set the spawned cards as the subjects, so that they can be
 	# used by other followup scripts
 	script.subjects = spawned_cards
 	# Adding a small delay to allow the cards to finish instancing and setting their
 	# properties
 	yield(script.owner.get_tree().create_timer(0.1), "timeout")
-	cfc.remove_ongoing_process(self)
+
 
 # Task from creating a new card instance in a CardContainer
 # * Can be affected by [Alterants](ScriptProperties#KEY_ALTERANTS)
@@ -719,9 +521,7 @@ func spawn_card_to_container(script: ScriptTask) -> void:
 	var count: int
 	var alteration = 0
 	var canonical_name = script.get_property(SP.KEY_CARD_NAME)
-	
 	var card_filters = script.get_property(SP.KEY_CARD_FILTERS)
-	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
 	if card_filters:
 		var selection_amount = script.get_property(SP.KEY_SELECTION_CHOICES_AMOUNT)
 		var compiled_filters := []
@@ -746,12 +546,8 @@ func spawn_card_to_container(script: ScriptTask) -> void:
 			canonical_name = filtered_cards[0]
 		else:
 			filtered_cards = filtered_cards.slice(0,selection_amount - 1)
-			var select_params = {
-				SP.KEY_SELECTION_COUNT: 1,
-				SP.KEY_SELECTION_TYPE: "min",
-			}
 			var select_return = cfc.ov_utils.select_card(
-					filtered_cards, select_params, cfc.NMAP.board, script)
+					filtered_cards, 1, 'min', false, cfc.NMAP.board)
 			if select_return is GDScriptFunctionState: # Still working.
 				select_return = yield(select_return, "completed")
 			if typeof(select_return) == TYPE_ARRAY:
@@ -760,7 +556,7 @@ func spawn_card_to_container(script: ScriptTask) -> void:
 				return
 	var dest_container: CardContainer = cfc.NMAP[script.get_property(SP.KEY_DEST_CONTAINER).to_lower()]
 	if str(script.get_property(SP.KEY_OBJECT_COUNT)) == SP.VALUE_RETRIEVE_INTEGER:
-		count = get_stored_integer(script)
+		count = stored_integer
 		if script.get_property(SP.KEY_IS_INVERTED):
 			count *= -1
 		count += script.get_property(SP.KEY_ADJUST_RETRIEVED_INTEGER)
@@ -780,10 +576,7 @@ func spawn_card_to_container(script: ScriptTask) -> void:
 		alteration = yield(alteration, "completed")
 	var spawned_cards := []
 	for iter in range(count + alteration):
-		#TODO this will not always work
-		var canonical_id = cfc.get_corrected_card_id(canonical_name)
-			
-		card = cfc.instance_card(canonical_id, -2)
+		card = cfc.instance_card(canonical_name)
 		if not script.get_property(SP.KEY_IMMEDIATE_PLACEMENT):
 			cfc.NMAP.board.add_child(card)
 			card.scale = Vector2(0.1,0.1)
@@ -798,10 +591,10 @@ func spawn_card_to_container(script: ScriptTask) -> void:
 		else:
 			dest_container.add_child(card)
 			card.set_to_idle()
-			scripting_bus.emit_signal("card_spawned", card, {"tags": tags})
 		# We set the drawn cards as the subjects, so that they can be
 		# used by other followup scripts
-		yield(cfc.get_tree().create_timer(0.2), "timeout")
+		var yield_time = script.get_property(SP.KEY_YIELD_TIME)
+		yield(cfc.get_tree().create_timer(yield_time), "timeout")
 		spawned_cards.append(card)
 	script.subjects = spawned_cards
 
@@ -809,7 +602,6 @@ func spawn_card_to_container(script: ScriptTask) -> void:
 # * Requires the following keys:
 #	* [KEY_DEST_CONTAINER](ScriptProperties#KEY_DEST_CONTAINER)
 func shuffle_container(script: ScriptTask) -> void:
-	cfc.add_ongoing_process(self)
 	var container: CardContainer = cfc.NMAP[script.get_property(SP.KEY_DEST_CONTAINER).to_lower()]
 	while container.are_cards_still_animating():
 		yield(container.get_tree().create_timer(0.2), "timeout")
@@ -817,34 +609,27 @@ func shuffle_container(script: ScriptTask) -> void:
 	# If there's no shuffle aniumation, we will get stuck if we yield.
 	if container.is_in_group("piles") and container.shuffle_style != CFConst.ShuffleStyle.NONE:
 		yield(container, "shuffle_completed")
-	cfc.remove_ongoing_process(self)
+
 
 # Task from making the owner card an attachment to the subject card.
 # * Requires the following keys:
 #	* [KEY_SUBJECT](ScriptProperties#KEY_SUBJECT)
-func attach_to_card(script: ScriptTask) -> int:	
-	if !script.subjects:
-		return CFConst.ReturnCode.FAILED
-		
-	if costs_dry_run():
-		return CFConst.ReturnCode.CHANGED
+func attach_to_card(script: ScriptTask) -> void:
 	# We inject the tags from the script into the tags sent by the signal
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
 	for card in script.subjects:
 		script.owner.attach_to_host(card, false, tags)
 
-	return CFConst.ReturnCode.CHANGED
 
 # Task from making the subject card an attachment to the owner card.
 # * Requires the following keys:
 #	* [KEY_SUBJECT](ScriptProperties#KEY_SUBJECT)
 func host_card(script: ScriptTask) -> void:
 	# host_card can only ever use one subject
-	#var card: Card = script.subjects[0]
+	var card: Card = script.subjects[0]
 	# We inject the tags from the script into the tags sent by the signal
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
-	for card in script.subjects:
-		card.attach_to_host(script.owner, false, tags)
+	card.attach_to_host(script.owner, false, tags)
 
 
 # Task for modifying a card's properties
@@ -915,10 +700,8 @@ func modify_properties(script: ScriptTask) -> int:
 							new_value,
 							modification,
 							property)
-					cfc.add_ongoing_process(self)		
 					if alteration is GDScriptFunctionState:
 						alteration = yield(alteration, "completed")
-					cfc.remove_ongoing_process(self)
 			# We set the value according to whatever was in the script
 			# which covers string and array values
 			# but integers will need some processing for alterants.
@@ -961,38 +744,17 @@ func modify_properties(script: ScriptTask) -> int:
 #	* [KEY_ASK_INTEGER_MIN](ScriptProperties#KEY_ASK_INTEGER_MIN)
 #	* [KEY_ASK_INTEGER_MAX](ScriptProperties#KEY_ASK_INTEGER_MAX)
 func ask_integer(script: ScriptTask) -> void:
-	cfc.add_ongoing_process(self)
 	var integer_dialog = _ASK_INTEGER_SCENE.instance()
 	# AskInteger tasks have to always provide a min and max value
 	var minimum = script.get_property(SP.KEY_ASK_INTEGER_MIN)
 	var maximum = script.get_property(SP.KEY_ASK_INTEGER_MAX)
 	integer_dialog.prep(script.owner.canonical_name, minimum, maximum)
 	# We have to wait until the player has finished selecting an option
-	
 	yield(integer_dialog,"popup_hide")
-	set_stored_integer(integer_dialog.number, script)
+	stored_integer = integer_dialog.number
 	# Garbage cleanup
 	integer_dialog.queue_free()
-	cfc.remove_ongoing_process(self)
 
-# counts the number of subjects of a task, then stores that number in stored_integer
-func count_subjects(script: ScriptTask) -> int:
-	var retcode = CFConst.ReturnCode.CHANGED #always succeeds
-	
-	set_stored_integer(script.subjects.size(), script)
-	
-	return retcode
-
-# counts the number of a specific token on a subject, then stores that number in stored_integer
-#the returned in isn't the count, only returns OK if >0 
-func count_tokens(script: ScriptTask) -> int:
-	var token_name = script.get_property(SP.KEY_TOKEN_NAME)
-	if !script.subjects.size():
-		return CFConst.ReturnCode.FAILED
-	
-	var card = script.subjects[0]
-	set_stored_integer(card.tokens.get_token_count(token_name), script)
-	return CFConst.ReturnCode.CHANGED
 
 # Adds a specified BoardPlacementGrid scene to the board at the specified position
 # * Requires the following keys:
@@ -1009,7 +771,7 @@ func add_grid(script: ScriptTask) -> void:
 	var board_position: Vector2 = script.get_property(SP.KEY_BOARD_POSITION)
 	var grid_scene: String = script.get_property(SP.KEY_SCENE_PATH)
 	if str(script.get_property(SP.KEY_OBJECT_COUNT)) == SP.VALUE_RETRIEVE_INTEGER:
-		count = get_stored_integer(script)
+		count = stored_integer
 		if script.get_property(SP.KEY_IS_INVERTED):
 			count *= -1
 		count += script.get_property(SP.KEY_ADJUST_RETRIEVED_INTEGER)
@@ -1042,7 +804,6 @@ func add_grid(script: ScriptTask) -> void:
 # * Optionally uses the following keys:
 #	* [KEY_SET_TO_MOD](ScriptProperties#KEY_SET_TO_MOD)
 func mod_counter(script: ScriptTask) -> int:
-	cfc.add_ongoing_process(self)
 	var counter_name: String = script.get_property(SP.KEY_COUNTER_NAME)
 	var modification: int
 	var alteration = 0
@@ -1051,7 +812,7 @@ func mod_counter(script: ScriptTask) -> int:
 	if str(script.get_property(SP.KEY_MODIFICATION)) == SP.VALUE_RETRIEVE_INTEGER:
 		# If the modification is requested, is only applies to stored integers
 		# so we flip the stored_integer's value.
-		modification = get_stored_integer(script)
+		modification = stored_integer
 		if script.get_property(SP.KEY_IS_INVERTED):
 			modification *= -1
 		modification += script.get_property(SP.KEY_ADJUST_RETRIEVED_INTEGER)
@@ -1075,11 +836,11 @@ func mod_counter(script: ScriptTask) -> int:
 		var current_count = cfc.NMAP.board.counters.get_counter(
 				counter_name, script.owner)
 		if set_to_mod:
-			set_stored_integer(modification + alteration - current_count, script)
+			stored_integer = modification + alteration - current_count
 		elif current_count + modification + alteration < 0:
-			set_stored_integer(-current_count, script)
+			stored_integer = -current_count
 		else:
-			set_stored_integer(modification + alteration, script)
+			stored_integer = modification + alteration
 	var retcode: int = cfc.NMAP.board.counters.mod_counter(
 			counter_name,
 			modification + alteration,
@@ -1087,7 +848,6 @@ func mod_counter(script: ScriptTask) -> int:
 			costs_dry_run(),
 			script.owner,
 			tags)
-	cfc.remove_ongoing_process(self)		
 	return(retcode)
 
 
@@ -1102,13 +862,9 @@ func mod_counter(script: ScriptTask) -> int:
 #	* [KEY_EXEC_TEMP_MOD_COUNTERS](ScriptProperties#KEY_EXEC_TEMP_MOD_COUNTERS)
 #	* [KEY_EXEC_TRIGGER](ScriptProperties#KEY_EXEC_TRIGGER)
 func execute_scripts(script: ScriptTask) -> int:
-	cfc.add_ongoing_process(self)
 	var retcode : int = CFConst.ReturnCode.CHANGED
 	# If your subject is "self" make sure you know what you're doing
 	# or you might end up in an inifinite loop
-	var _trigger_details = {
-		"prev_subjects" : script.prev_subjects 
-	}
 	for card in script.subjects:
 		var requested_exec_state = script.get_property(SP.KEY_REQUIRE_EXEC_STATE)
 		# If not specific exec_state has been requested
@@ -1117,7 +873,7 @@ func execute_scripts(script: ScriptTask) -> int:
 			var sceng = card.execute_scripts(
 					script.owner,
 					script.get_property(SP.KEY_EXEC_TRIGGER),
-					_trigger_details, run_type)
+					{}, costs_dry_run())
 			# We make sure we wait until the execution is finished
 			# before cleaning out the temp properties/counters
 			if sceng is GDScriptFunctionState:
@@ -1133,7 +889,6 @@ func execute_scripts(script: ScriptTask) -> int:
 					and not script.get_property(SP.KEY_SUBJECT)\
 					in [SP.KEY_SUBJECT_V_BOARDSEEK, SP.KEY_SUBJECT_V_TUTOR]:
 				retcode = CFConst.ReturnCode.FAILED
-	cfc.remove_ongoing_process(self)
 	return(retcode)
 
 
@@ -1146,7 +901,6 @@ func execute_scripts(script: ScriptTask) -> int:
 # You can use [SP.KEY_ABORT_ON_COST_FAILURE](SP#KEY_ABORT_ON_COST_FAILURE)
 # to control this behaviour better
 func nested_script(script: ScriptTask) -> int:
-	cfc.add_ongoing_process(self)
 	var retcode : int = CFConst.ReturnCode.CHANGED
 	var nested_task_list: Array = script.get_property(SP.KEY_NESTED_TASKS)
 	var sceng = cfc.scripting_engine.new(
@@ -1162,7 +916,7 @@ func nested_script(script: ScriptTask) -> int:
 	# If the dry-run of the ScriptingEngine returns that all
 	# costs can be paid, then we proceed with the actual run
 	if sceng.can_all_costs_be_paid:
-		sceng.execute(CFInt.RunType.NORMAL)
+		sceng.execute()
 		if not sceng.all_tasks_completed:
 			yield(sceng,"tasks_completed")
 	# This will only trigger when costs could not be paid, and will
@@ -1175,7 +929,6 @@ func nested_script(script: ScriptTask) -> int:
 	# further non-cost tasks.
 	if not sceng.can_all_costs_be_paid:
 		retcode = CFConst.ReturnCode.FAILED
-	cfc.remove_ongoing_process(self)	
 	return(retcode)
 
 
@@ -1237,7 +990,7 @@ func _retrieve_temp_modifiers(script: ScriptTask, type: String) -> Dictionary:
 				SP.KEY_TEMP_MOD_COUNTERS).duplicate()
 	for value in temp_modifiers:
 		if str(temp_modifiers[value]) == SP.VALUE_RETRIEVE_INTEGER:
-			temp_modifiers[value] = get_stored_integer(script)
+			temp_modifiers[value] = stored_integer
 			if script.get_property(SP.KEY_IS_INVERTED):
 				temp_modifiers[value] *= -1
 			temp_modifiers[value] += script.get_property(SP.KEY_ADJUST_RETRIEVED_INTEGER)
@@ -1245,11 +998,5 @@ func _retrieve_temp_modifiers(script: ScriptTask, type: String) -> Dictionary:
 
 # Extendable function to perform extra checks on the script
 # according to game logic
-func _pre_task_prime(_script: ScriptTask, _prev_subjects:=[]) -> void:
-	pass
-
-# Extendable function to perform extra checks on the script
-# according to game logic
 func _pre_task_exec(_script: ScriptTask) -> void:
 	pass
-

@@ -10,7 +10,6 @@ export(PackedScene) var manipulation_button : PackedScene
 var needed_buttons: Dictionary
 # We use this variable to check if buttons are active for performance reasons
 var _are_active := true
-var _initialized := false
 
 onready var _tween = $Tween
 # Hold the node which owns this node.
@@ -23,15 +22,6 @@ func _ready() -> void:
 
 # Adds an amount of manipulation buttons to the card
 func spawn_manipulation_buttons() -> void:
-	
-	#reset everything
-	for n in get_children():
-		if n as Button:
-			remove_child(n)
-			n.queue_free()
-	_initialized = false	
-	_are_active = true
-	
 	for button_name in needed_buttons:
 		var button = manipulation_button.instance()
 		button.name = button_name
@@ -72,9 +62,8 @@ func are_hovered() -> bool:
 #    (this is useful when a card is in hand or a pile)
 # * When set to true, buttons can receive inputs again
 func set_active(value = true) -> void:
-	if (_are_active == value) and _initialized:
+	if _are_active == value:
 		return
-	_initialized = true
 	_are_active = value
 	var button_filter := 1
 	# We also want the buttons disabled while the card is being targeted

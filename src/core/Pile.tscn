@@ -38,6 +38,9 @@ __meta__ = {
 self_modulate = Color( 1, 1, 1, 0.5 )
 mouse_filter = 1
 custom_styles/panel = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Highlight" parent="Control" instance=ExtResource( 3 )]
 
@@ -45,6 +48,9 @@ custom_styles/panel = SubResource( 1 )
 anchor_right = 1.0
 margin_bottom = 158.0
 mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/CenterContainer"]
 margin_top = 48.0
@@ -65,7 +71,6 @@ __meta__ = {
 }
 
 [node name="PanelContainer" type="PanelContainer" parent="Control/CenterContainer/VBoxContainer"]
-unique_name_in_owner = true
 margin_top = 33.0
 margin_right = 62.0
 margin_bottom = 62.0
@@ -93,12 +98,14 @@ __meta__ = {
 }
 
 [node name="ManipulationButtons" type="VBoxContainer" parent="Control"]
-unique_name_in_owner = true
 margin_left = 2.0
 margin_top = 20.0
 margin_right = 20.0
 margin_bottom = 44.0
 mouse_filter = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="View" type="Button" parent="Control/ManipulationButtons" groups=["manipulation_button"]]
 margin_right = 27.0

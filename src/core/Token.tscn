@@ -9,7 +9,7 @@ size = 14
 font_data = ExtResource( 1 )
 
 [sub_resource type="DynamicFont" id=2]
-size = 32
+size = 19
 outline_size = 2
 outline_color = Color( 0, 0, 0, 1 )
 use_filter = true
@@ -61,9 +61,9 @@ text = "-"
 
 [node name="Name" type="Label" parent="."]
 visible = false
-margin_top = 5.0
-margin_right = 209.0
-margin_bottom = 44.0
+margin_top = 14.0
+margin_right = 125.0
+margin_bottom = 38.0
 mouse_filter = 1
 custom_fonts/font = SubResource( 2 )
 text = "Token Name"
@@ -104,6 +104,5 @@ text = "1"
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
 [connection signal="pressed" from="Buttons/Add" to="." method="_on_Add_pressed"]
 [connection signal="pressed" from="Buttons/Remove" to="." method="_on_Remove_pressed"]

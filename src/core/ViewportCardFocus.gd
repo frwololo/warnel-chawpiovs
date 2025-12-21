@@ -14,19 +14,13 @@ var _current_focus_source : Card = null
 onready var card_focus := $VBC/Focus
 onready var focus_info := $VBC/FocusInfo
 onready var _focus_viewport := $VBC/Focus/Viewport
-onready var _focus_camera := $VBC/Focus/Viewport/Camera2D
 onready var world_environemt : WorldEnvironment = $WorldEnvironment
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	cfc.map_node(self)
-	var glow_enabled = cfc.game_settings.get('glow_enabled', true)
-	world_environemt.environment.glow_enabled = glow_enabled
-	
-	var glow_intensity = cfc.game_settings.get('glow_intensity', world_environemt.environment.glow_intensity)
-	world_environemt.environment.glow_intensity = glow_intensity
-	
+	world_environemt.environment.glow_enabled = cfc.game_settings.get('glow_enabled', true)
 	# We use the below while to wait until all the nodes we need have been mapped
 	# "hand" should be one of them.
 	$ViewportContainer/Viewport.add_child(board_scene.instance())
@@ -56,21 +50,6 @@ func _process(_delta) -> void:
 #		focus_info.rect_size.x = _current_focus_source.canonical_size.x * _current_focus_source.focused_scale * cfc.curr_scale
 	# The below makes sure to display the closeup of the card, only on the side
 	# the player's mouse is not in.
-	var canonical_size:Vector2
-	var vbc_rect_offset: Vector2
-	if _current_focus_source and is_instance_valid(_current_focus_source):
-		
-		#horizontal case
-		if (_current_focus_source.get_property("_horizontal", false)) and _current_focus_source.get_state_exec() != "pile":
-			canonical_size = Vector2(_current_focus_source.canonical_size.y, _current_focus_source.canonical_size.x )	
-			vbc_rect_offset = Vector2 (30, $VBC.rect_size.x)
-			_focus_camera.set_offset(Vector2(0, -20))
-		#normal case
-		else:
-			vbc_rect_offset = $VBC.rect_size
-			canonical_size = _current_focus_source.canonical_size
-			_focus_camera.set_offset(Vector2(0, 0))
-	
 	if _current_focus_source and is_instance_valid(_current_focus_source)\
 			and _current_focus_source.get_state_exec() != "pile"\
 			and cfc.game_settings.focus_style == CFInt.FocusStyle.BOTH_INFO_PANELS_ONLY:
@@ -85,32 +64,23 @@ func _process(_delta) -> void:
 			$VBC.rect_position.x = get_global_mouse_position().x + 60
 
 	elif _current_focus_source and is_instance_valid(_current_focus_source)\
-			and get_global_mouse_position().x > get_viewport().size.x - canonical_size.x*2.5\
-			and get_global_mouse_position().y < canonical_size.y*2:
+			and get_global_mouse_position().x > get_viewport().size.x - _current_focus_source.canonical_size.x*2.5\
+			and get_global_mouse_position().y < _current_focus_source.canonical_size.y*2:
 		$VBC.rect_position.x = 0
 		$VBC.rect_position.y = 0
 	elif _current_focus_source:
-		$VBC.rect_position.x = get_viewport().size.x - vbc_rect_offset.x
+		$VBC.rect_position.x = get_viewport().size.x - $VBC.rect_size.x
 		$VBC.rect_position.y = 0
 	# The below performs some garbage collection on previously focused cards.
-	var to_delete = []
 	for c in _previously_focused_cards:
 		if not is_instance_valid(_previously_focused_cards[c]):
-			to_delete.append(c)
 			continue
 		var current_dupe_focus: Card = _previously_focused_cards[c]
-		
-		#TODO I've had cards stuck in limbo that show up and are impossible
-		#to remove from the preview mode. This is an attempt to fix this 
-		if current_dupe_focus.state == Card.CardState.IN_PILE:
-			to_delete.append(c)
 		# We don't delete old dupes, to avoid overhead to the engine
 		# insteas, we just hide them.
 		if _current_focus_source != c\
 				and not $VBC/Focus/Tween.is_active():
 			current_dupe_focus.visible = false
-	for c in to_delete:
-		var _found = _previously_focused_cards.erase(c)
 	if not is_instance_valid(_current_focus_source)\
 			and $VBC/Focus.modulate.a != 0\
 			and not $VBC/Focus/Tween.is_active():
@@ -119,20 +89,9 @@ func _process(_delta) -> void:
 
 # Displays the card closeup in the Focus viewport
 func focus_card(card: Card, show_preview := true) -> void:
-
-	#having issues with focus on shuffling cards, this is a hack fix for that
-#	if card._tween.is_active():
-#		return
-#
-#	match card.state:
-#		Card.CardState.VIEWED_IN_PILE:
-#			var parent = card.get_parent()
-#			if parent.is_shuffling:
-#				return
-
 	# We check if we're already focused on this card, to avoid making duplicates
-	# the whole time		
-	if not _current_focus_source == card:
+	# the whole time
+	if not _current_focus_source:
 		# We make a duplicate of the card to display and add it on its own in
 		# our viewport world
 		# This way we can standardize its scale and look and not worry about
@@ -148,8 +107,6 @@ func focus_card(card: Card, show_preview := true) -> void:
 			# warning-ignore:return_value_discarded
 			dupe_focus.set_is_faceup(card.is_faceup, true)
 			dupe_focus.is_viewed = card.is_viewed
-			var tokens_dict = card.tokens.export_to_json()
-			dupe_focus.tokens.load_from_json(tokens_dict)
 		else:
 			dupe_focus = card.duplicate(DUPLICATE_USE_INSTANCING)
 			dupe_focus.remove_from_group("cards")
@@ -212,12 +169,7 @@ func focus_card(card: Card, show_preview := true) -> void:
 		# I.e. the card doesn't appear mid-screen for no reason etc
 		card_focus.rect_size = Vector2(0,0)
 		$VBC.rect_size = Vector2(0,0)
-		
-		#handle rendering horizontal cards
-		if (card.properties.get("_horizontal", 0) and card.get_is_faceup()):
-			$VBC.rect_rotation = 90
-		else:
-			$VBC.rect_rotation = 0
+
 
 
 # Hides the focus viewport when we're done looking at it
@@ -259,7 +211,7 @@ func _extra_dupe_ready(dupe_focus: Card, card: Card) -> void:
 	else:
 		dupe_focus.resize_recursively(dupe_focus._control, dupe_focus.focused_scale * cfc.curr_scale)
 		dupe_focus.card_front.scale_to(dupe_focus.focused_scale * cfc.curr_scale)
-		dupe_focus.tokens.token_drawer(false, true)
+
 
 func _input(event):
 	# We use this to allow the developer to take card screenshots
@@ -271,9 +223,6 @@ func _input(event):
 		img.convert(Image.FORMAT_RGBA8)
 		img.flip_y()
 		img.save_png("user://" + _current_focus_source.canonical_name + ".png")
-		
-	if event.is_action_pressed("toggle_fullscreen"):
-		OS.set_window_fullscreen(!OS.window_fullscreen)	
 
 
 # Takes care to resize the child viewport, when the main viewport is resized
@@ -285,9 +234,3 @@ func _on_Viewport_size_changed() -> void:
 
 func toggle_glow(is_enabled := true) -> void:
 	world_environemt.environment.glow_enabled = is_enabled
-
-func get_origin_card(dupe_card):
-	for card in _previously_focused_cards:
-		if _previously_focused_cards[card] == dupe_card:
-			return card
-	return null

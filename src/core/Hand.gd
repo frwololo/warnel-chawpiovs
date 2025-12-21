@@ -49,7 +49,6 @@ func prepare_excess_discard_pile() -> void:
 
 
 func _process(_delta: float) -> void:
-	#._process(_delta)
 	_counter_cards.text = "Hand: " + str(get_card_count()) \
 			+ "/" + str(hand_size)
 
@@ -156,8 +155,6 @@ func re_place() -> void:
 		if group in get_groups():
 			# We check how many other containers are in the same row/column
 			for other in get_tree().get_nodes_in_group(group):
-				if !other.visible:
-					continue
 				# For top/bottom placements, we modify the x-axis of the hand
 				if group in ["top", "bottom"] and other != self:
 					# If the container we're checking is on the left
@@ -197,13 +194,10 @@ func re_place() -> void:
 		# In which case the hand, which is typically set to expand vertically
 		# doesn't expand too much
 		yield(get_tree(), "idle_frame")
-		var new_rect_size = get_parent().rect_size
-		var _tmp = self.name
-		$Control.call_deferred("set_size", new_rect_size)
+		$Control.call_deferred("set_size", get_parent().rect_size)
 #		$Control.rect_size = get_parent().rect_size
 #		print_debug(get_parent().rect_size)
 	# We also need to adjust the hand's collision area to match its new size
-	var _tmp = self.name
 	call_deferred("_adjust_collision_area")
 
 	# If the hand is supposed to be shifted slightly outside the viewport
@@ -224,27 +218,10 @@ func re_place() -> void:
 		c.position = c.recalculate_position()
 
 func _adjust_collision_area() -> void:
-	if ($CollisionShape2D.disabled):
-		return
-		
-	var control_size = $Control.rect_size
-	var _position = self.position
-	var _extents = $CollisionShape2D.shape.extents
-	var new_extents = Vector2(round(control_size.x/2), round(control_size.y/2))
-
-	$CollisionShape2D.shape.extents =  new_extents #control_size / 2
-	$CollisionShape2D.position = control_size / 2
-	highlight.rect_size = control_size
-
+	$CollisionShape2D.shape.extents = $Control.rect_size / 2
+	$CollisionShape2D.position = $Control.rect_size / 2
+	highlight.rect_size = $Control.rect_size
 
 # Overridable function for counting cards
 func _get_modified_card_count() -> int:
 	return(get_card_count())
-
-func disable():
-	visible = false
-	$CollisionShape2D.disabled = true
-	
-func enable():
-	visible = true	
-	$CollisionShape2D.disabled = false	

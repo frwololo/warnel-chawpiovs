@@ -21,27 +21,6 @@ var target_object : Node = null
 # Stores a reference to the Card that is hosting this node
 onready var owner_object = get_parent()
 
-onready var label = $PanelContainer/Label
-
-var valid_targets: Array = []
-var _stored_destination = null
-
-func set_destination(_dest):
-	_stored_destination = _dest
-
-func get_stored_destination_position():
-	if !_stored_destination:
-		return Vector2(0,0)
-	if (_stored_destination is Vector2):
-		return _stored_destination
-	#else it's a card. 
-	return _stored_destination.global_position + Vector2(20,20)
-
-func reset_destination():
-	set_destination(null)
-	
-func set_valid_targets (objects):
-	valid_targets = objects
 
 func _ready() -> void:
 	# We set the targetting arrow modulation to match our config specification
@@ -53,130 +32,48 @@ func _ready() -> void:
 	$ArrowHead/Area2D.connect("area_exited", self, "_on_ArrowHead_area_exited")
 
 
-func set_text(_text):
-	label.text = _text
-	label.visible = true
-	$PanelContainer.visible = true
-	if !_text:
-		$PanelContainer.visible = false
-		label.visible = false
-
 func _process(_delta: float) -> void:
 	if is_targeting:
-		var destination = get_stored_destination_position()
-		var pointing_to = destination if destination else cfc.NMAP.board.mouse_pointer.determine_global_mouse_pos()	
-		_draw_targeting_arrow(pointing_to)
-
-func set_arrow_color(_color):
-	default_color = _color
-	$ArrowHead.color = default_color
-	$Line.default_color = _color
-	$Highlight.default_color = _color * 1.2 #Color(0.1, 0.5, 0.5) * 1.3  -> debug
-	$HighlightArrowHead.color = $Highlight.default_color
-	
-func show_me():
-	$ArrowHead.visible = true
-	$ArrowHead/Area2D.monitoring = true
-	$Highlight.visible =  true
-	$Line.visible = true
-	$HighlightArrowHead.visible = true
-		
-func hide_me():
-	$ArrowHead.visible = false
-	$ArrowHead/Area2D.monitoring = false
-	$Highlight.visible = false
-	$Line.visible = false
-	$HighlightArrowHead.visible = false
-	label.visible = false
-	$PanelContainer.visible = false
-
-func clear_points():
-	.clear_points()
-	$Line.clear_points()
-	$Highlight.clear_points()
-	
-func set_color_from_script(script_definition):
-	set_arrow_color(CFConst.TARGETTING_ARROW_COLOUR)
-	
-	var s_name = script_definition.get("name", "")
-	if CFConst.TARGET_ARROW_COLOR_BY_NAME.has(s_name):
-		set_arrow_color(CFConst.TARGET_ARROW_COLOR_BY_NAME[s_name])
-		return
-		
-	var tags = script_definition.get("tags", [])
-	for tag in tags:
-		if CFConst.TARGET_ARROW_COLOR_BY_TAG.has(tag):
-			set_arrow_color(CFConst.TARGET_ARROW_COLOR_BY_TAG[tag])
-			return
+		_draw_targeting_arrow()
 
 
 # Will generate a targeting arrow on the card which will follow the mouse cursor.
 # The top card hovered over by the mouse cursor will be highlighted
 # and will become the target when complete_targeting() is called
-func initiate_targeting(_valid_targets, _script_definition:Dictionary = {}) -> void:
-	set_valid_targets(_valid_targets)
-	set_color_from_script(_script_definition)
+func initiate_targeting() -> void:
 	is_targeting = true
-	show_me()
+	$ArrowHead.visible = true
+	$ArrowHead/Area2D.monitoring = true
 	emit_signal("initiated_targeting")
-	scripting_bus.emit_signal("initiated_targeting", owner_object)
 
 
-func cancel_targeting() -> void:
-	#TODO send another signal
-	if !is_targeting:
-		return
-	
-	reset_destination()		
-	is_targeting = false
-	clear_points()
-	hide_me()	
-	emit_signal("target_selected",target_object)
-	scripting_bus.emit_signal("target_selected", owner_object, {"target": target_object})		
 # Will end the targeting process.
 #
 # The top targetable object which is hovered (if any) will become the target and inserted
 # into the target_object property for future use.
 func complete_targeting() -> void:
-	if !is_targeting:
-		return
-		
-	if !len(_potential_targets):
-		return
-		
-	var tc = _potential_targets.back()
-	if !(tc in valid_targets):
-		return
-		
-	# We don't want to emit a signal, if the card is a dummy viewport card
-	# or we already selected a target during dry-run
-	if owner_object.get_parent() != null \
-			and owner_object.get_parent().name != "Viewport":
-		# We make the targeted card also emit a targeting signal for automation
-		scripting_bus.emit_signal("card_targeted", tc,
-				{"targeting_source": owner_object})
-	target_object = tc
-	reset_destination()	
+	if len(_potential_targets) and is_targeting:
+		var tc = _potential_targets.back()
+		# We don't want to emit a signal, if the card is a dummy viewport card
+		# or we already selected a target during dry-run
+		if owner_object.get_parent() != null \
+				and owner_object.get_parent().name != "Viewport":
+			# We make the targeted card also emit a targeting signal for automation
+			tc.emit_signal("card_targeted", tc, "card_targeted",
+					{"targeting_source": owner_object})
+		target_object = tc
+	emit_signal("target_selected",target_object)
 	is_targeting = false
 	clear_points()
-	hide_me()
-	emit_signal("target_selected",target_object)
-	scripting_bus.emit_signal("target_selected", owner_object, {"target": target_object})	
+	$ArrowHead.visible = false
+	$ArrowHead/Area2D.monitoring = false
 
-#for internal testing
-func force_select_target(target):
-	_potential_targets.append(target)
-	complete_targeting()
 
 # Triggers when a targetting arrow hovers over another card while being dragged
 #
 # It takes care to highlight potential cards which can serve as targets.
 func _on_ArrowHead_area_entered(area: Area2D) -> void:
-	if !(area in valid_targets):
-		return
-			
 	if area.get_class() == 'Card' and not area in _potential_targets:
-
 		_potential_targets.append(area)
 		if 'highlight' in owner_object:
 			owner_object.highlight.highlight_potential_card(
@@ -202,9 +99,7 @@ func _on_ArrowHead_area_exited(area: Area2D) -> void:
 
 
 # Draws a curved arrow, from the center of a card, to the mouse pointer
-func _draw_targeting_arrow(destination = null) -> void:
-	if (!destination):
-		destination = get_stored_destination_position()
+func _draw_targeting_arrow() -> void:
 	# This variable calculates the card center's position on the whole board
 	var card_half_size
 	if "rect_size" in owner_object:
@@ -216,7 +111,7 @@ func _draw_targeting_arrow(destination = null) -> void:
 	clear_points()
 	# The final position is the mouse position,
 	# but we offset it by the position of the card center on the map
-	var final_point =  destination \
+	var final_point =  cfc.NMAP.board.mouse_pointer.determine_global_mouse_pos() \
 			- (position + card_half_size)
 	var curve = Curve2D.new()
 #		var middle_point = centerpos + (get_global_mouse_position() - centerpos)/2
@@ -237,25 +132,16 @@ func _draw_targeting_arrow(destination = null) -> void:
 			Vector2(0, 0), Vector2(0, 0))
 	# Finally we use the Curve2D object to get the points which will be drawn
 	# by our lined2D
-	var curve_points = curve.get_baked_points()
-	#set_points(curve_points)
-	$Highlight.set_points(curve_points)
-	$Line.set_points(curve_points)
-	
+	set_points(curve.get_baked_points())
 	# We place the arrowhead to start from the last point in the line2D
-	$ArrowHead.position = $Highlight.get_point_position(
-			$Highlight.get_point_count( ) - 1)
+	$ArrowHead.position = get_point_position(
+			get_point_count( ) - 1)
 	# We delete the last 3 Line2D points, because the arrowhead will
 	# be covering those areas
-	for _del in range(1,4):
-		$Line.remove_point($Line.get_point_count( ) - 1)
-		$Highlight.remove_point($Highlight.get_point_count( ) - 1)
+	for _del in range(1,3):
+		remove_point(get_point_count( ) - 1)
 	# We setup the angle the arrowhead is pointing by finding the angle of
 	# the last point on the line towards the mouse position
-	$ArrowHead.rotation = $Highlight.get_point_position(
-				$Highlight.get_point_count( ) - 1).direction_to(
+	$ArrowHead.rotation = get_point_position(
+				get_point_count( ) - 1).direction_to(
 				to_local(position + card_half_size + final_point)).angle()
-
-	$HighlightArrowHead.position = $ArrowHead.position
-	$HighlightArrowHead.rotation =  $ArrowHead.rotation
-	$PanelContainer.rect_position = $ArrowHead.position + Vector2(15, -15)

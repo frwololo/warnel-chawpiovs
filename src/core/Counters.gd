@@ -1,6 +1,3 @@
-# warning-ignore-all:UNUSED_ARGUMENT
-# warning-ignore-all:RETURN_VALUE_DISCARDED
-
 # This class contains the methods needed to manipulate counters in a game
 #
 # It is meant to be extended and attached to a customized scene.
@@ -10,6 +7,7 @@
 class_name Counters
 extends Control
 
+signal counter_modified(card,trigger,details)
 
 # Hold the actual values of the various counters requested
 var counters := {}
@@ -53,7 +51,9 @@ var value_node: String
 
 
 func _ready() -> void:
-	pass
+	# For the counter signal, we "push" connect it instead from this node.
+	# warning-ignore:return_value_discarded
+	self.connect("counter_modified", cfc.signal_propagator, "_on_signal_received")
 
 
 # This function should be called by the _ready() function of the script which
@@ -63,32 +63,25 @@ func _ready() -> void:
 func spawn_needed_counters() -> Array:
 	var all_counters := []
 	for counter_name in needed_counters:
-		var counter = add_new_counter(counter_name, needed_counters[counter_name])
-		if (counter):
-			all_counters.append(counter)
+		var counter = counter_scene.instance()
+		counters_container.add_child(counter)
+		all_counters.append(counter)
+		counter.name = counter_name
+		var counter_labels = needed_counters[counter_name]
+		for label in counter_labels:
+			if not counter.has_node(label):
+				continue
+			counter.get_node(label).text = str(counter_labels[label])
+			# The value_node is also used determine the initial values
+			# of the counters dictionary
+			if label == value_node:
+				counters[counter_name] = counter_labels[label]
+				# _labels stores the label node which displays the value
+				# of the counter
+				_labels[counter_name] = counter.get_node(label)
 	return(all_counters)
 
-func add_new_counter(counter_name, labels = {}):
-	if (not needed_counters.has(counter_name)):
-		needed_counters[counter_name] = labels
-		
-	var counter = counter_scene.instance()
-	counters_container.add_child(counter)
-	counter.name = counter_name
-	var counter_labels = needed_counters[counter_name]
-	for label in counter_labels:
-		if not counter.has_node(label):
-			continue
-		counter.get_node(label).text = str(counter_labels[label])
-		# The value_node is also used determine the initial values
-		# of the counters dictionary
-		if label == value_node:
-			counters[counter_name] = counter_labels[label]
-			# _labels stores the label node which displays the value
-			# of the counter
-			_labels[counter_name] = counter.get_node(label)
-	return counter
-	
+
 # Modifies the value of a counter. The counter has to have been specified
 # in the `needed_counters`
 #
@@ -126,9 +119,10 @@ func mod_counter(counter_name: String,
 					_set_counter(counter_name,value)
 				else:
 					_set_counter(counter_name, counters[counter_name] + value)
-				scripting_bus.emit_signal(
+				emit_signal(
 						"counter_modified",
 						requesting_object,
+						"counter_modified",
 						{
 							SP.TRIGGER_COUNTER_NAME: counter_name,
 							SP.TRIGGER_PREV_COUNT: prev_value,
@@ -159,7 +153,7 @@ func get_counter(counter_name: String, requesting_object = null) -> int:
 func get_counter_and_alterants(
 		counter_name: String,
 		requesting_object = null) -> Dictionary:
-	var count = counters.get(counter_name, 0)
+	var count = counters[counter_name]
 	# We iterate through the values, where each value is a dictionary
 	# with key being the counter name, and value being the temp modifier
 	var alteration = {
@@ -171,7 +165,7 @@ func get_counter_and_alterants(
 			requesting_object,
 			"get_counter",
 			{SP.KEY_COUNTER_NAME: counter_name,},
-			counters.get(counter_name, 0))
+			counters[counter_name])
 		if alteration is GDScriptFunctionState:
 			alteration = yield(alteration, "completed")
 	# The first element is always the total modifier from all alterants

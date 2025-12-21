@@ -13,22 +13,13 @@ extends Reference
 # * NORMAL is executing all tasks, except "is_else" tasks
 # * COST_CHECK is checking if the tasks which are marked as "is_cost" can be
 # fulfilled, but does not actually execute them
-# * PRIME_ONLY runs a "prime" function on all tasks to choose targets for all
-# tasks that haven't been primed yet
-#a typical run does COST_CHECK -> PRIME_ONLY -> NORMAL
 # * ELSE executes only tasks which are marked "is_else". This execution only
 # Takes place when a COST_CHECK run discovers it cannot fulfil
 # a task marked as such.
-# * BACKGROUND_COST_CHECK does the same as COST_CHECK but provides zero user interaction
-# and fills potential costs with arbitrary data.
-# This is used to compute if playing a card or ability is possibe
 enum RunType{
 	NORMAL
 	COST_CHECK
-	PRIME_ONLY
 	ELSE
-	BACKGROUND_COST_CHECK
-	PRECOMPUTE
 }
 # The focus style used by the engine
 # * SCALED means that the cards simply scale up when moused over in the hand

@@ -14,11 +14,6 @@ onready var _tween : Tween = $Tween
 # Stores a reference to the Card that is hosting this node
 onready var owner_card = get_parent().get_parent()
 
-#sets a max limit for some tokens
-var max_tokens: Dictionary = {}
-var _is_horizontal:= false
-var show_manipulation_buttons:= true
-
 
 func _ready() -> void:
 	$Drawer/Area2D/CollisionShape2D.shape = \
@@ -29,7 +24,6 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	
 	# Every process tick, it will ensure the collsion shape for the
 	# drawer is adjusted to its current size
 	if cfc.NMAP.has('board') and owner_card.get_parent() == cfc.NMAP.board:
@@ -41,40 +35,23 @@ func _process(_delta: float) -> void:
 
 # Setter for is_drawer_open
 # Simply calls token_drawer()
-func set_is_drawer_open(value: bool, forced:bool = false) -> void:
-	if forced or (is_drawer_open != value):
-		token_drawer(value, forced)
+func set_is_drawer_open(value: bool) -> void:
+	if is_drawer_open != value:
+		token_drawer(value)
 
 
 # Reveals or Hides the token drawer
 #
 # The drawer will not appear while another animation is ongoing
 # and it will appear only while the card is on the board.
-func token_drawer(requested_state := true, forced: bool = false) -> void:
+func token_drawer(requested_state := true) -> void:
 	# I use these vars to avoid writing it all the time and to improve readability
 
-	#TODO this is to prevent
-	#the drawer from opening while an animation is ongoing
-	#but I feel like this is a hack
-	if cfc.is_modal_event_ongoing() and requested_state and not forced:
-		return
-
-
 	var td := $Drawer
-	
-	#temp variables to accomodate for horizontal mode
-	var x = owner_card.card_size.x
-	var y = td.rect_position.y
-	if (_is_horizontal):
-		x = 0
-		y = td.rect_position.x
-
-
-		
 	# We want to keep the drawer closed during the flip and movement
-	if forced or (not _tween.is_active() and \
+	if not _tween.is_active() and \
 			not owner_card._flip_tween.is_active() and \
-			not owner_card._tween.is_active()):
+			not owner_card._tween.is_active():
 		# We don't open the drawer if we don't have any tokens at all
 		if requested_state == true and $Drawer/VBoxContainer.get_child_count():
 			# To avoid tween deadlocks
@@ -83,7 +60,7 @@ func token_drawer(requested_state := true, forced: bool = false) -> void:
 			# warning-ignore:return_value_discarded
 			_tween.interpolate_property(
 					td,'rect_position', td.rect_position,
-					Vector2(x,y),
+					Vector2(owner_card.card_size.x,td.rect_position.y),
 					0.3, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
 			# We make all tokens display names
 			for token in $Drawer/VBoxContainer.get_children():
@@ -96,31 +73,21 @@ func token_drawer(requested_state := true, forced: bool = false) -> void:
 			# We need to make our tokens appear on top of other cards on the table
 			z_index = 99
 		else:
-			var x_modifier = 0
-			var y_modifier = 0
-			
-			if (_is_horizontal):
-				y_modifier = 35
-			else:
-				x_modifier = -35
 			# warning-ignore:return_value_discarded
 			_tween.remove_all()
-			if forced:
-				td.rect_position = Vector2(x + x_modifier, y + y_modifier )
-			else:
-				# warning-ignore:return_value_discarded
-				_tween.interpolate_property(
-						td,'rect_position', td.rect_position,
-						Vector2(x + x_modifier,
-						y + y_modifier ),
-						0.2, Tween.TRANS_ELASTIC, Tween.EASE_IN)
-				# warning-ignore:return_value_discarded
-				_tween.start()
-				# We want to consider the drawer closed
-				# only when the animation finished
-				# Otherwise it might start to open immediately again
-				yield(_tween, "tween_all_completed")
-				# When it's closed, we hide token names
+			# warning-ignore:return_value_discarded
+			_tween.interpolate_property(
+					td,'rect_position', td.rect_position,
+					Vector2(owner_card.card_size.x - 35,
+					td.rect_position.y),
+					0.2, Tween.TRANS_ELASTIC, Tween.EASE_IN)
+			# warning-ignore:return_value_discarded
+			_tween.start()
+			# We want to consider the drawer closed
+			# only when the animation finished
+			# Otherwise it might start to open immediately again
+			yield(_tween, "tween_all_completed")
+			# When it's closed, we hide token names
 			for token in $Drawer/VBoxContainer.get_children():
 				token.retract()
 			$Drawer.self_modulate.a = 0
@@ -141,46 +108,33 @@ func mod_token(
 			check := false,
 			tags := ["Manual"]) -> int:
 	var retcode : int
-	if CFConst.TOKENS_ONLY_ON_BOARD:
-		var parent = owner_card.get_parent()
-		if parent != cfc.NMAP.board:
-			var is_exception = false
-			var parent_name:String = parent.name.to_lower()
-			for exception in CFConst.TOKENS_ONLY_ON_BOARD_EXCEPTIONS:
-				if parent_name.begins_with(exception):
-					is_exception = true
-					break
-			if !is_exception:
-				return CFConst.ReturnCode.FAILED
-		
-	var token : Token = get_all_tokens().get(token_name, null)
-	# If the token does not exist in the card, we add its node
-	# and set it to 1
-	if not token and mod > 0:
-		token = _TOKEN_SCENE.instance()
-		token.setup(token_name, self)
-		$Drawer/VBoxContainer.add_child(token)
-	# If the token node of this name has already been added to the card
-	# We just increment it by 1
-	if not token and mod == 0:
-		retcode = CFConst.ReturnCode.OK
-	elif not token and mod < 0:
+	# If the player requested a token name that has not been defined by the game
+	# we return a failure
+	if not CFConst.TOKENS_MAP.get(token_name, null):
 		retcode = CFConst.ReturnCode.FAILED
-	# For cost dry-runs, we don't want to modify the tokens at all.
-	# Just check if we could.
-	elif check:
-		# For a  cost dry run, we can only return FAILED
-		# when removing tokens or when trying to add tokens when a max is set and we ago above that max
-		if (set_to_mod):
-			if (mod <0):
-				retcode = CFConst.ReturnCode.FAILED
-			else:
-				retcode = CFConst.ReturnCode.CHANGED
-		else:		
+	else:
+		var token : Token = get_all_tokens().get(token_name, null)
+		# If the token does not exist in the card, we add its node
+		# and set it to 1
+		if not token and mod > 0:
+			token = _TOKEN_SCENE.instance()
+			token.setup(token_name, self)
+			$Drawer/VBoxContainer.add_child(token)
+		# If the token node of this name has already been added to the card
+		# We just increment it by 1
+		if not token and mod == 0:
+			retcode = CFConst.ReturnCode.OK
+		elif not token and mod < 0:
+			retcode = CFConst.ReturnCode.FAILED
+		# For cost dry-runs, we don't want to modify the tokens at all.
+		# Just check if we could.
+		elif check:
+			# For a  cost dry run, we can only return FAILED
+			# when removing tokens as it's always possible to add new ones
 			if mod < 0:
 				# If the current tokens are equal or higher, then we can
 				# remove the requested amount and therefore return CHANGED.
-				if (token.count + mod >= 0):
+				if token.count + mod >= 0:
 					retcode = CFConst.ReturnCode.CHANGED
 				# If we cannot remove the full amount requested
 				# we return FAILED
@@ -188,43 +142,34 @@ func mod_token(
 					retcode = CFConst.ReturnCode.FAILED
 			else:
 				retcode = CFConst.ReturnCode.CHANGED
-				#fail if we can't add the full amount requested
-				if max_tokens.has(token_name) and ((token.count + mod > max_tokens[token_name])):
-					retcode = CFConst.ReturnCode.FAILED
-					
-	else:
-		cfc.flush_cache()
-		var prev_value = token.count
-		# The set_to_mod value means that we want to set the tokens to the
-		# exact value specified
-		if set_to_mod:
-			var value = mod
-			if max_tokens.has(token_name):
-				value = min(value, max_tokens[token_name])
-			token.count = value
 		else:
-			token.count += mod
-			if max_tokens.has(token_name) and token.count > max_tokens[token_name]:
-				token.count = max_tokens[token_name]
-		# We store the count in a new variable, to be able to use it
-		# in the signal even after the token is deinstanced.
-		var new_value = token.count
-		if token.count == 0:
-			token.queue_free()
-	# if the drawer has already been opened, we need to make sure
-	# the new token name will also appear
-		elif is_drawer_open:
-			token.expand()
-		retcode = CFConst.ReturnCode.CHANGED
-		scripting_bus.emit_signal(
-				"card_token_modified",
-				owner_card,
-				{SP.TRIGGER_TOKEN_NAME: token.get_token_name(),
-				SP.TRIGGER_PREV_COUNT: prev_value,
-				SP.TRIGGER_NEW_COUNT: new_value,
-				"tags": tags})
+			cfc.flush_cache()
+			var prev_value = token.count
+			# The set_to_mod value means that we want to set the tokens to the
+			# exact value specified
+			if set_to_mod:
+				token.count = mod
+			else:
+				token.count += mod
+			# We store the count in a new variable, to be able to use it
+			# in the signal even after the token is deinstanced.
+			var new_value = token.count
+			if token.count == 0:
+				token.queue_free()
+		# if the drawer has already been opened, we need to make sure
+		# the new token name will also appear
+			elif is_drawer_open:
+				token.expand()
+			retcode = CFConst.ReturnCode.CHANGED
+			owner_card.emit_signal(
+					"card_token_modified",
+					owner_card,
+					"card_token_modified",
+					{SP.TRIGGER_TOKEN_NAME: token.get_token_name(),
+					SP.TRIGGER_PREV_COUNT: prev_value,
+					SP.TRIGGER_NEW_COUNT: new_value,
+					"tags": tags})
 	return(retcode)
-
 
 
 # Returns a dictionary of card tokens name on this card.
@@ -273,40 +218,3 @@ func _on_VBoxContainer_sort_children() -> void:
 	$Drawer.rect_size = \
 			$Drawer.rect_min_size
 
-func set_max(token_name, max_value):
-	max_tokens[token_name] = max_value
-
-func export_to_json():
-	var result = {}
-	var token_names = get_all_tokens()
-	for token_name in token_names:
-		if !result:
-			result = {}
-		result[token_name] = get_token_count(token_name)
-	return result
-
-func load_from_json(description:Dictionary):
-	for child in $Drawer/VBoxContainer.get_children():
-		child.queue_free()	
-
-	var token_names = description.keys()
-	for token_name in token_names:
-		var value =  description[token_name]
-		if (value >0):
-			var token = _TOKEN_SCENE.instance()
-			token.setup(token_name, self)
-			token.count = value
-			$Drawer/VBoxContainer.add_child(token)	
-	
-	token_drawer(false, true)
-	return self	
-
-func set_is_horizontal(value:bool = true):
-	_is_horizontal = value
-	if (_is_horizontal):
-		$Drawer.rect_position = Vector2(0, 20)
-		$Drawer.rect_rotation = -90
-	else:
-		$Drawer.rect_position = Vector2(115, 20)
-		$Drawer.rect_rotation = 0
-	pass

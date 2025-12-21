@@ -3,6 +3,8 @@
 class_name ScriptAlter
 extends ScriptObject
 
+# Stores the details arg passed the signal to use for filtering
+var trigger_details : Dictionary
 # If true if this task has been confirmed to run by the player
 # Only relevant for optional tasks (see [SP].KEY_IS_OPTIONAL)
 var is_accepted := true
@@ -18,10 +20,10 @@ func _init(
 		prev_subject = null).(
 			alterant_object,
 			alteration_script,
-			trigger_object,
-			task_details) -> void:
+			trigger_object) -> void:
 	# The alteration name gets its own var
 	script_name = get_property("filter_task")
+	trigger_details = task_details
 	# For Alterants, we might need to calculate them per subject in a subject list
 	if prev_subject != null:
 		prev_subjects = [prev_subject]
@@ -32,8 +34,7 @@ func _init(
 			trigger_details):
 		is_valid = false
 	if is_valid:
-		var confirm_return = cfc.ov_utils.confirm(
-				owner,
+		var confirm_return = CFUtils.confirm(
 				script_definition,
 				owner.canonical_name,
 				script_name)
@@ -45,10 +46,9 @@ func _init(
 		# So we just run it through the _find_subjects() to see if it will
 		# set is_valid to false.
 		var ret =_find_subjects(0)
-		if ret is GDScriptFunctionState  && ret.is_valid(): # Still working.
+		if ret is GDScriptFunctionState: # Still working.
 			ret = yield(ret, "completed")
 	# We emit a signal when done so that our ScriptingEngine
 	# knows we're ready to continue
 	is_primed = true
-	script_definition = cfc.ov_utils.parse_post_prime_replacements(self)
 	emit_signal("primed")

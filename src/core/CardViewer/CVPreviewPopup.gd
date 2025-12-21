@@ -1,6 +1,3 @@
-# warning-ignore-all:UNUSED_ARGUMENT
-# warning-ignore-all:RETURN_VALUE_DISCARDED
-
 # The popup with an instance of a card instide. 
 # Typically in larger version for easy viewing.
 class_name CVPreviewPopup
@@ -12,34 +9,19 @@ var preview_card: Card
 var _tween_wait := 0
 var _placement_initialized := false
 var _visible = true
-var text_edit = null
 # The popup panel which contains the card.
 onready var focus_info := $FocusInfo
 onready var _tween := $Tween
 
 func _ready() -> void:
-# warning-ignore:return_value_discarded
+	# warning-ignore:return_value_discarded
 	get_viewport().connect("size_changed", self, '_on_viewport_resized')
+	# warning-ignore:return_value_discarded
 	connect("placement_initialized",self, "_on_placement_initialized")
 
 func _process(_delta: float) -> void:
 	if _placement_initialized and visible and is_instance_valid(preview_card):
 		_set_placement()
-	if cfc._debug and  !text_edit:
-		create_debug_text_edit()
-
-func create_debug_text_edit():
-	text_edit = TextEdit.new()  # Create a new TextEdit node
-	text_edit.text = ""  # Set default text
-	text_edit.rect_min_size = Vector2(300, 200)  # Set minimum size
-	text_edit.wrap_enabled = true  # Enable text wrapping
-	cfc.NMAP.board.add_child(text_edit)  # Add it to the current scene
-	text_edit.anchor_left = 0.75
-	text_edit.anchor_right = 1
-	text_edit.anchor_top = 0.2
-
-func _get_global_mouse_position() -> Vector2:
-	return cfc.NMAP.board.mouse_pointer.determine_global_mouse_pos() 
 
 func _set_placement() -> void:
 	if _tween.is_active():
@@ -69,14 +51,6 @@ func _set_placement() -> void:
 	focus_info.rect_size.x = 0.0
 	focus_info.rect_position.y = 0
 	focus_info.rect_position.x = preview_card.canonical_size.x * preview_card.preview_scale * cfc.curr_scale
-
-	if text_edit:
-		text_edit.text = "mouse: " + str(get_global_mouse_position().x) + ", " + str(get_global_mouse_position().y) + "\n"
-		text_edit.text += "mouse _ corrected: " + str(_get_global_mouse_position().x) + ", " + str(_get_global_mouse_position().y) + "\n"		
-		text_edit.text += "card:" + str(rect_position.x) + ", " + str(rect_position.y) + "\n"
-		text_edit.text += "focus_info:" + str(focus_info.rect_position.x) + ", " + str(focus_info.rect_position.y)\
-			+ "(" + str(focus_info.rect_size.x)  +"," + str(focus_info.rect_size.y) + ")"
-
 	if not _placement_initialized:
 		_placement_initialized = true
 		emit_signal("placement_initialized")
@@ -91,17 +65,17 @@ func get_preview_placement() -> Vector2:
 	# If the card width is to small, we will place the info panels instead to the left of the card preview
 	if focus_info.visible:
 		focus_panel_offset = focus_info.rect_size.x
-	if _get_global_mouse_position().x\
+	if get_global_mouse_position().x\
 			+ card_size.x\
 			+ 20\
 			+ focus_panel_offset\
 			> get_viewport().size.x:
-		ret.x = _get_global_mouse_position().x - card_size.x - 20 - focus_panel_offset
+		ret.x = get_global_mouse_position().x - card_size.x - 20 - focus_panel_offset
 	else:
-		ret.x = _get_global_mouse_position().x + 20
-	var card_offscreen_y = _get_global_mouse_position().y\
+		ret.x = get_global_mouse_position().x + 20
+	var card_offscreen_y = get_global_mouse_position().y\
 			+ card_size.y
-	var focus_offscreen_y = _get_global_mouse_position().y + focus_info.rect_size.y
+	var focus_offscreen_y = get_global_mouse_position().y + focus_info.rect_size.y
 	if card_offscreen_y > focus_offscreen_y\
 			and is_instance_valid(preview_card)\
 			and card_offscreen_y > get_viewport().size.y:
@@ -113,10 +87,8 @@ func get_preview_placement() -> Vector2:
 		ret.y = get_viewport().size.y\
 				- focus_info.rect_size.y + 30
 	else:
-		ret.y = _get_global_mouse_position().y + 30
+		ret.y = get_global_mouse_position().y + 30
 #	print_debug(ret)
-
-
 	return(ret)
 
 
@@ -127,7 +99,7 @@ func get_preview_placement() -> Vector2:
 func show_preview_card(card) -> void:
 	if not has_preview_card():
 		if typeof(card) == TYPE_STRING:
-			preview_card = cfc.instance_card(card,-2)
+			preview_card = cfc.instance_card(card)
 		else:
 			preview_card = card
 			preview_card.position = Vector2(0,0)
@@ -142,11 +114,7 @@ func show_preview_card(card) -> void:
 		call_deferred("_set_placement")
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 	visible = true
-	_visible = true		
-	if text_edit:
-			text_edit.show()
-	
-	#show()
+	_visible = true
 	if _placement_initialized:
 		modulate.a = 1
 
@@ -155,11 +123,9 @@ func show_preview_card(card) -> void:
 # Hides currently shown card.
 # We're modulating to 0 instead of hide() because that messes with the rich text labels formatting
 func hide_preview_card() -> void:
-	modulate.a = 0	
+	modulate.a = 0
+	
 	_visible = false
-	#hide()
-	if text_edit:
-		text_edit.hide()	
 
 func _on_placement_initialized() -> void:
 	if _visible:
@@ -170,7 +136,6 @@ func _on_placement_initialized() -> void:
 func _on_viewport_resized() -> void:
 	if is_instance_valid(preview_card):
 		preview_card.queue_free()
-	return
 
 
 # Returns true if the preview_card variable has a valid Card instance

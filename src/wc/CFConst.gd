@@ -602,9 +602,10 @@ const DEFAULT_SETTINGS:= {
 		"core": "https://marvelcdb.com/api/public/cards/core.json"
 	},
 	'lobby_server': {
-		'create_room_url': 'https://wololo.net/wc/lobby.php?mode=create_room',
-		'list_rooms_url': 'https://wololo.net/wc/lobby.php?mode=list_rooms',
-		'join_room_url': 'https://wololo.net/wc/lobby.php?mode=join_room&room_name=__ROOM_NAME__',
+		'server': 'https://wololo.net/',
+		'create_room_url': 'wc/lobby.php?mode=create_room',
+		'list_rooms_url': 'wc/lobby.php?mode=list_rooms',
+		'join_room_url': 'wc/lobby.php?mode=join_room&room_name=__ROOM_NAME__',
 	}
 	
 }

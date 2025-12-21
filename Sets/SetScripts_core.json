@@ -614,7 +614,8 @@
 						{
 							"filter_properties": {
 								"type_code": "minion"
-							}
+							},
+							"filter_max_per_host": 1
 						}
 					]
 				},

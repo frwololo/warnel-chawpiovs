@@ -60,8 +60,9 @@ func _ready() -> void:
 		add_child(http_request)	
 		http_request.connect("request_completed", self, "check_signal_server")
 		var create_room_url = cfc.game_settings.get('lobby_server', {}).get('create_room_url', '')
-		if create_room_url:
-			http_request.request(create_room_url)
+		var server = cfc.game_settings.get('lobby_server', {}).get('server', '')
+		if server and create_room_url:
+			http_request.request(server + create_room_url)
 
 func _get_data_from_signal_server(result, response_code, headers, body):
 	if result != HTTPRequest.RESULT_SUCCESS:

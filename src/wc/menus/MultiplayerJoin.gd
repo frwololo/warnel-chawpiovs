@@ -37,12 +37,14 @@ func fetch_list_rooms():
 	get_node("%RoomsListHeader").text = "Fetching Rooms - Please wait..."	
 	refresh_button.visible = false
 	var list_rooms_url = cfc.game_settings.get('lobby_server', {}).get('list_rooms_url', '')
-	if list_rooms_url:
+	var server = cfc.game_settings.get('lobby_server', {}).get('server', '')
+
+	if server and list_rooms_url:
 		http_request = HTTPRequest.new()
 		http_request.set_timeout(10.0)
 		add_child(http_request)	
 		http_request.connect("request_completed", self, "_check_rooms_list")
-		http_request.request(list_rooms_url)
+		http_request.request(server + list_rooms_url)
 	else:
 		signal_server_error()
 
@@ -86,14 +88,16 @@ func _check_rooms_list(result, response_code, headers, body):
 func request_join_room(room_name):
 	disable_rooms(true)
 	var join_room_url = cfc.game_settings.get('lobby_server', {}).get('join_room_url', '')
-	if join_room_url:
+	var server = cfc.game_settings.get('lobby_server', {}).get('server', '')
+
+	if server and join_room_url:
 		http_request = HTTPRequest.new()
 		http_request.set_timeout(10.0)
 		add_child(http_request)	
 		http_request.connect("request_completed", self, "_join_room")
 		
 		join_room_url = join_room_url.replace("__ROOM_NAME__", room_name)
-		http_request.request(join_room_url)
+		http_request.request(server + join_room_url)
 	else:
 		signal_server_error()
 

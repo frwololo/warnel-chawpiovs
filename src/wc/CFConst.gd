@@ -113,10 +113,10 @@ const PATH_CORE := "res://src/core/"
 const PATH_CUSTOM := "res://src/wc/"
 # The path where card template scenes exist.
 # These is usually one scene per type of card in the game
-const PATH_CARDS := PATH_CUSTOM + "cards/"
+const PATH_CARDS := PATH_CUSTOM
 # The path where the set definitions exist.
 # This includes Card definition and card script definitions.
-const PATH_SETS := PATH_CARDS + "sets/"
+const PATH_SETS := PATH_CUSTOM + "cards/sets/"
 # The path where assets needed by this game are placed
 # such as token images
 const PATH_ASSETS := "res://assets/"

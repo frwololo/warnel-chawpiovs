@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://src/wc/DetailsFont.tres" type="DynamicFont" id=1]
+[ext_resource path="res://themes/darktheme/fonts/UbuntuFont.res" type="DynamicFont" id=1]
 
 [node name="InfoPanel" type="PanelContainer"]
 margin_right = 264.0
@@ -11,7 +11,7 @@ mouse_filter = 2
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 257.0
-margin_bottom = 21.0
+margin_bottom = 37.0
 rect_min_size = Vector2( 250, 13 )
 custom_fonts/font = ExtResource( 1 )
 text = "Illustration by: "

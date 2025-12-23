@@ -2,7 +2,7 @@
 
 [ext_resource path="res://themes/darktheme/fonts/Bangers/Bangers-Regular.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://src/wc/menus/OptionsMenu.gd" type="Script" id=2]
-[ext_resource path="res://src/wc/DetailsFont.tres" type="DynamicFont" id=3]
+[ext_resource path="res://themes/darktheme/fonts/UbuntuFont.res" type="DynamicFont" id=3]
 
 [sub_resource type="DynamicFont" id=1]
 size = 52

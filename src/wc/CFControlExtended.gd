@@ -319,12 +319,6 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	if not card_data.has("Abilities"):
 		card_data["Abilities "] = ""		
 
-
-	if not card_data.has(CardConfig.SCENE_PROPERTY):
-		var type_code = card_data["type_code"]
-		type_code = type_code[0].to_upper() + type_code.substr(1)
-		card_data[CardConfig.SCENE_PROPERTY] = type_code
-
 	if not card_data.has("back_card_code"):
 		card_data["back_card_code"] = ""
 	
@@ -464,7 +458,7 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	cards_by_set[lc_set_code].push_back(card_data)				
 		
 
-	card_data[CardConfig.SCENE_PROPERTY] = "Generic"	
+	card_data[CardConfig.SCENE_PROPERTY] = "CardTemplate"	
 
 	if card_data.get("imagesrc", ""):
 		_seen_images[card_id] = card_data["imagesrc"]

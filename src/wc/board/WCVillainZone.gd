@@ -41,7 +41,7 @@ func post_load_move(details):
 
 
 remotesync func cards_preloaded(details):
-	var client_id = get_tree().get_rpc_sender_id() 	
+	var client_id = cfc.get_rpc_sender_id() 	
 	_cards_loaded[client_id] = true
 	if _cards_loaded.size() == gameData.network_players.size():
 		_cards_loaded = {} #reset just in case
@@ -116,7 +116,7 @@ func load_villain(card_id, call_preloaded = {"shuffle" : true}):
 			var _error = 1
 	villain = card
 	if call_preloaded:
-		rpc("cards_preloaded", call_preloaded)
+		cfc._rpc(self,"cards_preloaded", call_preloaded)
 	return villain
 	
 
@@ -141,7 +141,7 @@ func load_scheme(card_id, call_preloaded = {}):
 				"slot": slot,
 			}
 	if call_preloaded:
-		rpc("cards_preloaded", call_preloaded)		
+		cfc._rpc(self,"cards_preloaded", call_preloaded)		
 	return card	
 	pass
 

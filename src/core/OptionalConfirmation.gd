@@ -42,11 +42,11 @@ func prep(card_name: String, task_name: String, _is_master:bool = true) -> void:
 
 
 func _on_OptionalConfirmation_confirmed() -> void:
-	rpc("confirmed")
+	cfc._rpc(self,"confirmed")
 
 
 func _on_OptionalConfirmation_cancelled() -> void:
-	rpc("cancelled")		
+	cfc._rpc(self,"cancelled")		
 
 remotesync func confirmed() -> void:
 	is_accepted = true

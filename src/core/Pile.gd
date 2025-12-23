@@ -95,9 +95,9 @@ func _process(_delta) -> void:
 		if cfc.NMAP.board.mouse_pointer in get_overlapping_areas()\
 				and not cfc.card_drag_ongoing:
 			if top_card and top_card.state == Card.CardState.IN_PILE:
-				top_card.state = Card.CardState.VIEWED_IN_PILE
+				top_card.set_state(Card.CardState.VIEWED_IN_PILE)
 		elif top_card and top_card.state == Card.CardState.VIEWED_IN_PILE:
-			top_card.state = Card.CardState.IN_PILE
+			top_card.set_state(Card.CardState.IN_PILE)
 
 
 # Populates the popup view window with all the cards in the deck
@@ -145,7 +145,7 @@ func _on_ViewPopup_popup_hide() -> void:
 				card.set_is_faceup(faceup_cards,true)
 			else:
 				card.ensure_proper()
-			card.state = card.CardState.IN_PILE
+			card.set_state(card.CardState.IN_PILE)
 	reorganize_stack()
 	if show_manipulation_buttons:
 		manipulation_buttons.visible = true
@@ -209,13 +209,13 @@ func add_child(node, _legible_unique_name=false) -> void:
 			$Control.raise()
 			# If this was the first card which enterred this pile
 			# We hide the pile "floor" by making it transparent
-			if get_card_count() >= 1:
-				if not _opacity_tween.is_active():
-					_opacity_tween.remove($Control,'self_modulate:a')
-					_opacity_tween.interpolate_property($Control,'self_modulate:a',
-							$Control.self_modulate.a, 0.0, 1,
-							Tween.TRANS_SINE, Tween.EASE_OUT)
-					_opacity_tween.start()
+#			if get_card_count() >= 1:
+#				if not _opacity_tween.is_active():
+#					_opacity_tween.remove($Control,'self_modulate:a')
+#					_opacity_tween.interpolate_property($Control,'self_modulate:a',
+#							$Control.self_modulate.a, 0.0, 1,
+#							Tween.TRANS_SINE, Tween.EASE_OUT)
+#					_opacity_tween.start()
 			card_count_label.text = str(get_card_count())
 	elif node as Card: # This triggers if the ViewPopup node is active
 		# When the player adds card while the viewpopup is active
@@ -346,7 +346,7 @@ func _slot_card_into_popup(card: Card) -> void:
 	# warning-ignore:return_value_discarded
 	card.set_is_faceup(true,true)
 	card.position = Vector2(0,0)
-	card.state = card.CardState.IN_POPUP
+	card.set_state(card.CardState.IN_POPUP)
 
 
 # Randomly rearranges the order of the [Card] nodes.

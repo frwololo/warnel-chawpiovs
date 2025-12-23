@@ -143,7 +143,7 @@ func heroPhase_action() -> bool:
 	if (hero_index == gameData.get_current_local_hero_id()):
 		if can_hero_pass():
 			gameData.interrupt_player_pressed_pass(self.hero_index)			
-		rpc("switch_status")
+		cfc._rpc(self,"switch_status")
 	else:	
 		gameData.select_current_playing_hero(hero_index)
 	return true
@@ -163,12 +163,14 @@ remotesync func switch_status(forced_state:int = -1):
 		return
 			
 	_update_labels()
-	get_parent().check_end_of_player_phase()
+	var parent = get_parent()
+	if parent and is_instance_valid(parent):
+		parent.check_end_of_player_phase()
 				
 func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 	var new_hero_index = trigger_details["after"]
 	if (new_hero_index == hero_index) and (current_state == State.FINISHED):
-		rpc("switch_status") #This also calls update_labels
+		cfc._rpc(self,"switch_status") #This also calls update_labels
 	else:		
 		_update_labels()
 			

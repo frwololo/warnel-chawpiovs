@@ -49,31 +49,32 @@ margin_bottom = 719.0
 size_flags_vertical = 3
 
 [node name="VButtons" type="VBoxContainer" parent="MainMenu/VBox/Center"]
-margin_left = 864.0
-margin_top = 128.0
-margin_right = 1056.0
-margin_bottom = 229.0
+margin_left = 710.0
+margin_top = 34.0
+margin_right = 1210.0
+margin_bottom = 324.0
 rect_min_size = Vector2( 192, 0 )
 custom_constants/separation = 10
 
 [node name="Host" type="Button" parent="MainMenu/VBox/Center/VButtons"]
-margin_right = 192.0
-margin_bottom = 27.0
+margin_right = 500.0
+margin_bottom = 90.0
+rect_min_size = Vector2( 500, 0 )
 text = "Host"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Join" type="Button" parent="MainMenu/VBox/Center/VButtons"]
-margin_top = 37.0
-margin_right = 192.0
-margin_bottom = 64.0
+margin_top = 100.0
+margin_right = 500.0
+margin_bottom = 190.0
 text = "Join"
 
 [node name="Cancel" type="Button" parent="MainMenu/VBox/Center/VButtons"]
-margin_top = 74.0
-margin_right = 192.0
-margin_bottom = 101.0
+margin_top = 200.0
+margin_right = 500.0
+margin_bottom = 290.0
 text = "Cancel"
 
 [node name="Margin2" type="MarginContainer" parent="MainMenu/VBox"]

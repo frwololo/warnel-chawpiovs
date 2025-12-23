@@ -132,7 +132,7 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			var state_scripts = sceng.state_scripts
 			my_script_requests_pending_execution += 1
 			set_run_mode(RUN_MODE.PENDING_REQUEST_ACK, "create_and_add_script - "  + action_name)
-			rpc_id(1, "master_create_and_add_script", expected_run_mode, state_scripts, owner_uid, trigger_card_uid, run_type, trigger, remote_trigger_details, sceng.stored_integers, action_name, checksum)
+			cfc._rpc_id(self,1, "master_create_and_add_script", expected_run_mode, state_scripts, owner_uid, trigger_card_uid, run_type, trigger, remote_trigger_details, sceng.stored_integers, action_name, checksum)
 			#TODO should wait for ack from all clients before anybody can do anything further in the game
 		CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED:
 			var stackEvent:StackScript = StackScript.new(sceng, run_type, trigger)
@@ -198,7 +198,7 @@ func client_status_is_behind(client_id, key):
 	return false
 	
 mastersync func master_create_and_add_script(expected_run_mode, state_scripts, owner_uid, trigger_card_uid,  run_type, trigger, remote_trigger_details, stored_integers, action_name, checksum):
-	var client_id = get_tree().get_rpc_sender_id() 
+	var client_id = cfc.get_rpc_sender_id() 
 	set_client_status(client_id, "run_mode", RUN_MODE.PENDING_REQUEST_ACK)	
 	var original_details = {
 		"type": "script",
@@ -232,11 +232,11 @@ mastersync func master_create_and_add_script(expected_run_mode, state_scripts, o
 	
 	if accept_request:
 		#master_request_add_stack_object(client_id, original_details)
-		rpc_id(client_id, "accepted_add_script_request", expected_run_mode, original_details)				
+		cfc._rpc_id(self, client_id, "accepted_add_script_request", expected_run_mode, original_details)				
 		display_debug("Asking clients to add script " + action_name) 			
-		rpc("client_create_and_add_stackobject", client_id, expected_run_mode, original_details, checksum)
+		cfc._rpc(self,"client_create_and_add_stackobject", client_id, expected_run_mode, original_details, checksum)
 	else:
-		rpc_id(client_id, "rejected_add_script_request", expected_run_mode, original_details)
+		cfc._rpc_id(self, client_id, "rejected_add_script_request", expected_run_mode, original_details)
 
 func display_stack_error_for_card(card):
 	if guidMaster.is_guid(card):
@@ -266,15 +266,15 @@ func get_allowed_interrupting_cards():
 
 var _ack_received = {}
 master func from_client_script_received_ack(expected_run_mode, checksum):
-	var client_id = get_tree().get_rpc_sender_id()
+	var client_id = cfc.get_rpc_sender_id()
 	_ack_received[client_id] = true
 	if _ack_received.size() == gameData.network_players.size():
 		_ack_received = {}
-		rpc("resume_operations", expected_run_mode, checksum)
+		cfc._rpc(self,"resume_operations", expected_run_mode, checksum)
 	
 
 remotesync func client_create_and_add_stackobject( original_requester_id, expected_run_mode, details, checksum):
-	var client_id = get_tree().get_rpc_sender_id()
+	var client_id = cfc.get_rpc_sender_id()
 					
 	var type = details["type"]
 	display_debug(str(client_id) + " wants me to add a " + type + "- " + checksum )
@@ -306,7 +306,7 @@ remotesync func client_create_and_add_stackobject( original_requester_id, expect
 	remove_yield_counter("client_create_and_add_stackobject")
 		
 	add_event_to_stack(stackEvent, checksum)
-	rpc_id(1, "from_client_script_received_ack", expected_run_mode, checksum)
+	cfc._rpc_id(self,1, "from_client_script_received_ack", expected_run_mode, checksum)
 
 func set_pending_network_interaction(interaction_authority, checksum, reason:=""):
 	add_yield_counter("set_pending_network_interaction")
@@ -326,10 +326,10 @@ func set_pending_network_interaction(interaction_authority, checksum, reason:=""
 #client asking everyone to resume
 #the expectation is to call this only when it is clear that everyone is pending interaction
 func resume_operations_to_all(checksum):
-	rpc("resume_operations", RUN_MODE.PENDING_USER_INTERACTION, checksum)
+	cfc._rpc(self,"resume_operations", RUN_MODE.PENDING_USER_INTERACTION, checksum)
 	
 remotesync func resume_operations(expected_run_mode, checksum):
-	var client_id = get_tree().get_rpc_sender_id()	
+	var client_id = cfc.get_rpc_sender_id()	
 #	if stack.empty() or run_mode == RUN_MODE.NO_BRAKES:
 #		var _error = 1
 
@@ -526,11 +526,11 @@ func activate_exclusive_hero(hero_id):
 
 var _interrupting_hero_data = {}
 mastersync func master_set_interrupting_hero(hero_id, interrupters):
-	var client_id = get_tree().get_rpc_sender_id()
+	var client_id = cfc.get_rpc_sender_id()
 	_interrupting_hero_data[client_id] = hero_id
 	if _interrupting_hero_data.size() == gameData.network_players.size():
 		_interrupting_hero_data = {}
-		rpc("clients_set_interrupting_hero", hero_id, interrupters)
+		cfc._rpc(self,"clients_set_interrupting_hero", hero_id, interrupters)
 
 func set_interrupting_hero(hero_id, interrupters):
 	display_debug("set interrupting hero id to " + str(hero_id) + " with interrupters " + to_json(interrupters))
@@ -538,7 +538,7 @@ func set_interrupting_hero(hero_id, interrupters):
 	set_current_interrupting_cards(interrupters)
 	interrupting_hero_id = hero_id
 #	activate_exclusive_hero(hero_id)
-	rpc_id(1, "master_set_interrupting_hero", hero_id, interrupters)
+	cfc._rpc_id(self,1, "master_set_interrupting_hero", hero_id, interrupters)
 
 func set_current_interrupting_cards(interrupters):
 	display_debug("setting current_interrupting_cards to :" + to_json(interrupters))
@@ -563,15 +563,15 @@ func pass_interrupt (hero_id):
 	if not hero_id in gameData.get_my_heroes():
 		cfc.LOG("{error}: pass_interrupt called for hero_id by non controlling player")
 		return
-	#rpc("clients_pass_interrupt", hero_id)	
-	rpc("clients_pass_interrupt", hero_id)
+	#cfc._rpc(self,"clients_pass_interrupt", hero_id)	
+	cfc._rpc(self,"clients_pass_interrupt", hero_id)
 
 func get_current_interrupted_event():
 	return _current_interrupted_event
 
 #call to all when I've chosen to pass my opportunity to interrupt 
 remotesync func clients_pass_interrupt (hero_id):
-	var client_id = get_tree().get_rpc_sender_id()
+	var client_id = cfc.get_rpc_sender_id()
 	display_debug(str(client_id) + " wants to pass for hero:" + str(hero_id) )
 
 	add_yield_counter("clients_pass_interrupt")
@@ -765,10 +765,10 @@ func set_run_mode(new_value, caller = ""):
 		reset_interrupt_states()
 	
 	gameData.game_state_changed()
-	rpc("client_run_mode_changed", all_clients_status[cfc.get_network_unique_id()])
+	cfc._rpc(self,"client_run_mode_changed", all_clients_status[cfc.get_network_unique_id()])
 
 remote func client_run_mode_changed (new_status):
-	var client_id = get_tree().get_rpc_sender_id()
+	var client_id = cfc.get_rpc_sender_id()
 	for key in new_status:
 		set_client_status(client_id, key, new_status[key])
 
@@ -951,7 +951,7 @@ func stack_back():
 func stack_remove(stack_id):
 	stack.remove(stack_id)
 	
-	#rpc_id(1, "master_stack_object_removed", stack_uid)	
+	#cfc._rpc_id(self,1, "master_stack_object_removed", stack_uid)	
 		
 func stack_pop_back():
 	if !stack.size():

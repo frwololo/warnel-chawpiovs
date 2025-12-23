@@ -1,11 +1,19 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://src/wc/lobby/MultiplayerLobby.gd" type="Script" id=1]
 [ext_resource path="res://themes/darktheme/darktheme.theme" type="Theme" id=2]
 [ext_resource path="res://themes/darktheme/fonts/Bangers/Bangers-Regular.ttf" type="DynamicFontData" id=3]
 
 [sub_resource type="DynamicFont" id=2]
-size = 107
+size = 200
+font_data = ExtResource( 3 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 80
+font_data = ExtResource( 3 )
+
+[sub_resource type="DynamicFont" id=4]
+size = 80
 font_data = ExtResource( 3 )
 
 [node name="Lobby" type="Panel"]
@@ -35,9 +43,9 @@ size_flags_vertical = 3
 custom_constants/margin_top = 90
 
 [node name="Label" type="Label" parent="MainMenu/VBox/Margin"]
-margin_top = 145.0
+margin_top = 96.0
 margin_right = 1920.0
-margin_bottom = 260.0
+margin_bottom = 310.0
 custom_fonts/font = SubResource( 2 )
 text = "Lobby"
 align = 1
@@ -63,23 +71,27 @@ margin_bottom = 964.0
 size_flags_vertical = 3
 
 [node name="VButtons" type="VBoxContainer" parent="MainMenu/VBox/Center"]
-margin_left = 864.0
-margin_top = 126.0
-margin_right = 1056.0
-margin_bottom = 190.0
+margin_left = 710.0
+margin_top = 63.0
+margin_right = 1210.0
+margin_bottom = 253.0
 rect_min_size = Vector2( 192, 0 )
 custom_constants/separation = 10
 alignment = 2
 
 [node name="Launch" type="Button" parent="MainMenu/VBox/Center/VButtons"]
-margin_right = 192.0
-margin_bottom = 27.0
+margin_right = 500.0
+margin_bottom = 90.0
+rect_min_size = Vector2( 500, 0 )
+custom_fonts/font = SubResource( 3 )
 text = "Launch"
 
 [node name="Cancel" type="Button" parent="MainMenu/VBox/Center/VButtons"]
-margin_top = 37.0
-margin_right = 192.0
-margin_bottom = 64.0
+margin_top = 100.0
+margin_right = 500.0
+margin_bottom = 190.0
+rect_min_size = Vector2( 500, 0 )
+custom_fonts/font = SubResource( 4 )
 text = "Cancel"
 
 [node name="Margin2" type="MarginContainer" parent="MainMenu/VBox"]

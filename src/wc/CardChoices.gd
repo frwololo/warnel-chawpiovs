@@ -15,7 +15,7 @@ var text_to_id:= {}
 var title = "test title"
 var has_been_centered = false
 
-var SCALE = 1.5
+var SCALE = 1.2
 # Called from Card.execute_scripts() when a card has multiple options.
 #
 # It prepares the menu items based on the dictionary keys and bring the
@@ -52,6 +52,8 @@ func _ready():
 		i+=1		
 		var button:Button = Button.new()
 		button.connect("pressed", self, "_button_pressed", [button])
+		button.connect("mouse_entered", self, "_mouse_entered", [button])
+		button.connect("mouse_exited", self, "_mouse_exited", [button])
 		button.text = item
 		text_to_id[item.to_lower()] = i
 		menu.add_child(button)
@@ -65,6 +67,14 @@ func _process(_delta:float):
 	#$HorizontalHighlights.rect_position = rect_position
 	$VerticalHighlights.rect_size = $Panel.rect_size
 	#$VerticalHighlights.rect_position = rect_position
+
+	
+func _mouse_entered(button):
+	button.grab_focus()
+	
+	
+func _mouse_exited(button):
+	pass
 	
 func _button_pressed(button):
 	var text = button.text

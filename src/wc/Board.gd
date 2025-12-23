@@ -63,30 +63,15 @@ func set_groups(grid_or_pile, additional_groups:= []):
 func _ready() -> void:
 	cfc.map_node(self)	
 	counters = $Counters
-	# We use the below while to wait until all the nodes we need have been mapped
-	# "hand" should be one of them.
-	# We're assigning our positions programmatically,
-	# instead of defining them on the scene.
-	# This way any they will work with any size of viewport in a game.
-	# Discard pile goes bottom right
-	$FancyMovementToggle.pressed = cfc.game_settings.fancy_movement
-	$OvalHandToggle.pressed = cfc.game_settings.hand_use_oval_shape
-	$ScalingFocusOptions.selected = cfc.game_settings.focus_style
+
 	$Debug.pressed = cfc._debug
-	# Fill up the deck for demo purposes
-
-
-	# warning-ignore:return_value_discarded
-	#$DeckBuilderPopup.connect('popup_hide', self, '_on_DeckBuilder_hide')	
-	
-	#gameData.init_save_folder()
 	
 	grid_setup()
-	rpc("ready_for_step", LOADING_STEPS.RNG_INIT)	
+	cfc._rpc(self,"ready_for_step", LOADING_STEPS.RNG_INIT)	
 
 var _clients_ready_for_step = {}
 remotesync func ready_for_step(next_step):
-	var client_id = get_tree().get_rpc_sender_id() 	
+	var client_id = cfc.get_rpc_sender_id() 	
 	_clients_ready_for_step[client_id] = next_step
 	if _clients_ready_for_step.size() != gameData.network_players.size():
 		return
@@ -102,50 +87,52 @@ func load_next_step(next_step):
 		LOADING_STEPS.RNG_INIT:
 			if cfc.is_game_master():
 				var my_seed = CFUtils.generate_random_seed()
-				rpc("set_random_seed", my_seed)
+				cfc._rpc(self,"set_random_seed", my_seed)
 		LOADING_STEPS.READY_TO_LOAD:
 			load_cards()
-			rpc("ready_for_step", LOADING_STEPS.CARDS_PRELOADED)
+			cfc._rpc(self,"ready_for_step", LOADING_STEPS.CARDS_PRELOADED)
 		LOADING_STEPS.CARDS_PRELOADED:
 			post_load_move()
-			rpc("ready_for_step", LOADING_STEPS.CARDS_MOVED)
+			cfc._rpc(self,"ready_for_step", LOADING_STEPS.CARDS_MOVED)
 		LOADING_STEPS.CARDS_PRELOADED_SKIP_LOAD:
 			post_load_move()
-			rpc("ready_for_step", LOADING_STEPS.START_GAME)			
+			cfc._rpc(self,"ready_for_step", LOADING_STEPS.START_GAME)			
 		LOADING_STEPS.CARDS_MOVED:
 			post_cards_moved_load()
 			#next step called from within function
 		LOADING_STEPS.READY_TO_START:
 			offer_to_load_last_game()
 		LOADING_STEPS.START_GAME:
-			gameData.start_game()				
+			gameData.start_game()
+#			if !gamepadHandler.fake_mouse_pointer in get_children():
+#				add_child(gamepadHandler.fake_mouse_pointer)			
 
 func _decline_offer_to_load_last_game():
 	gameData.init_save_folder()
-	rpc("ready_for_step", LOADING_STEPS.START_GAME)
+	cfc._rpc(self,"ready_for_step", LOADING_STEPS.START_GAME)
 	return	
 
 func _load_last_game():
 	var json_data = gameData.get_ongoing_game()
 	if !json_data:
-		rpc("ready_for_step", LOADING_STEPS.START_GAME)
+		cfc._rpc(self,"ready_for_step", LOADING_STEPS.START_GAME)
 		return
 	gameData.load_gamedata(json_data)
 
 func offer_to_load_last_game():
 	if !cfc.is_game_master():
-		rpc("ready_for_step", LOADING_STEPS.START_GAME)
+		cfc._rpc(self,"ready_for_step", LOADING_STEPS.START_GAME)
 		return
 		
 	var json_data = gameData.get_ongoing_game()
 	if !json_data:
-		rpc("ready_for_step", LOADING_STEPS.START_GAME)
+		cfc._rpc(self,"ready_for_step", LOADING_STEPS.START_GAME)
 		return
 
 	#only offer to load if the previous save game had the same number of heroes
 	var hero_data:Array = json_data.get("heroes", [])	
 	if hero_data.size() != gameData.get_team_size():
-		rpc("ready_for_step", LOADING_STEPS.START_GAME)
+		cfc._rpc(self,"ready_for_step", LOADING_STEPS.START_GAME)
 		return
 
 		
@@ -159,8 +146,7 @@ func offer_to_load_last_game():
 remotesync func set_random_seed(my_seed):
 	cfc.LOG("setting random seed to " + str(my_seed))
 	cfc.game_rng_seed = my_seed
-	$SeedLabel.text = "Game Seed is: " + cfc.game_rng_seed
-	rpc("ready_for_step", LOADING_STEPS.READY_TO_LOAD)
+	cfc._rpc(self,"ready_for_step", LOADING_STEPS.READY_TO_LOAD)
 
 
 func blocking_activity_ongoing():
@@ -370,7 +356,7 @@ func post_cards_moved_load():
 	#Save gamedata for restart
 	gameData.save_gamedata_to_file("user://Saves/_restart.json")	
 
-	rpc("ready_for_step", LOADING_STEPS.READY_TO_START)
+	cfc._rpc(self,"ready_for_step", LOADING_STEPS.READY_TO_START)
 
 func get_villain_card():
 	return villain.get_villain()
@@ -890,7 +876,7 @@ func loadstate_from_json(json:Dictionary):
 	var other_data = json_data.get("others", [])
 	load_cards_to_pile(other_data, "")
 	
-	rpc("ready_for_step", LOADING_STEPS.CARDS_PRELOADED_SKIP_LOAD) #tell everyone we're done preloading
+	cfc._rpc(self,"ready_for_step", LOADING_STEPS.CARDS_PRELOADED_SKIP_LOAD) #tell everyone we're done preloading
 
 	#gameData.start_game()	
 	return
@@ -918,7 +904,7 @@ func flip_doublesided_card(card:WCCard):
 			#new_card.move_to(cfc.NMAP.board, -1, slot)	
 			new_card.position = slot.rect_global_position
 			slot.set_occupying_card(new_card)
-			new_card.state = Card.CardState.ON_PLAY_BOARD
+			new_card.set_state(Card.CardState.ON_PLAY_BOARD)
 			#new_card.reorganize_self()
 			return new_card
 		
@@ -1001,3 +987,4 @@ func add_child_to_top_layer(child):
 	control.add_child(child)
 	#ensure the top layer stays on top for user clicks
 	move_child(get_node("%TopMenu"), get_children().size()-1)
+	

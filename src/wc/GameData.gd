@@ -171,7 +171,7 @@ func _ready():
 	#scripting_bus.connect("optional_window_closed", self, "attempt_user_input_unlock")	
 
 func _all_clients_game_loaded(status):
-	rpc("start_phaseContainer")
+	cfc._rpc(self,"start_phaseContainer")
 	pass
 
 func _script_added_to_stack (script):
@@ -264,16 +264,16 @@ puppetsync func user_input_unlock_denied():
 	return #TODO ?	
 
 mastersync func request_user_input_lock():
-	var requester = get_tree().get_rpc_sender_id()
+	var requester = cfc.get_rpc_sender_id()
 	if (user_input_ongoing && (user_input_ongoing != requester)):
-		rpc_id(requester,"user_input_lock_denied") # tell the sender their request is denied
-	rpc("acquire_user_input_lock", requester)	
+		cfc._rpc_id(self, requester,"user_input_lock_denied") # tell the sender their request is denied
+	cfc._rpc(self,"acquire_user_input_lock", requester)	
 
 mastersync func request_user_input_unlock():
-	var requester = get_tree().get_rpc_sender_id()
+	var requester = cfc.get_rpc_sender_id()
 	if (!user_input_ongoing || (user_input_ongoing != requester)):
-		rpc_id(requester,"user_input_unlock_denied") # tell the sender their request is denied
-	rpc("release_user_input_lock", requester)
+		cfc._rpc_id(self,requester,"user_input_unlock_denied") # tell the sender their request is denied
+	cfc._rpc(self,"release_user_input_lock", requester)
 
 puppetsync func acquire_user_input_lock(requester:int, details = {}):
 	_acquire_user_input_lock(requester, details)
@@ -294,10 +294,10 @@ func attempt_user_input_lock(_request_object = null,details = {}):
 	if (!is_master):
 		return
 			
-	rpc_id(1, "request_user_input_lock" )		
+	cfc._rpc_id(self,1, "request_user_input_lock" )		
 	
 func attempt_user_input_unlock(_request_object = null,_details = {}):	
-	rpc_id(1, "request_user_input_unlock")	
+	cfc._rpc_id(self,1, "request_user_input_unlock")	
 
 func _selection_window_closed(request_object = null,details = {}):	
 	attempt_user_input_unlock(request_object, details)
@@ -309,13 +309,13 @@ func can_i_play() -> bool:
 	
 	#If there is blocking user input ongoing and it isn't me, I can't play
 	if (user_input_ongoing):
-		if (user_input_ongoing != get_tree().get_network_unique_id()):
+		if (user_input_ongoing != cfc.get_network_unique_id()):
 			return false
 	
 	return true 	
 
 func start_tests():
-	rpc("init_client_tests")
+	cfc._rpc(self,"init_client_tests")
 
 remotesync func init_client_tests():
 	if !testSuite:
@@ -522,7 +522,7 @@ func get_player_by_index(id) -> PlayerData:
 #setup default for 1player mode	
 func init_1player():
 	is_multiplayer_game = false
-	init_as_server()
+	#init_as_server()
 	var dic = {1 : {"name" : "Player1", "id" : 1}}
 	init_network_players(dic)
 	
@@ -720,7 +720,7 @@ func ready_all_player_cards():
 		var cards:Array = cfc.NMAP["board"].get_all_cards() #TODO hero cards only
 		for card in cards:
 			if card.get_controller_hero_id() > 0:
-				if not card.properties.get("_horizontal", false):
+				if not card._horizontal:
 					card.readyme()	
 
 
@@ -786,7 +786,7 @@ func attack_prevented():
 func current_enemy_finished():
 	attackers.pop_front()
 	_current_enemy_attack_step = EnemyAttackStatus.NONE
-	#rpc("remove_client_status")
+	#cfc._rpc(self,"remove_client_status")
 
 func attack_is_ongoing():
 	return _current_enemy_attack_step != EnemyAttackStatus.NONE
@@ -888,7 +888,7 @@ func enemy_activates() :
 		return
 	
 	var guid = guidMaster.get_guid(enemy)
-	rpc("set_client_status",  "activation", guid,  _current_enemy_attack_step)	
+	cfc._rpc(self,"set_client_status",  "activation", guid,  _current_enemy_attack_step)	
 	#not stunned, proceed
 	match _current_enemy_attack_step:
 		EnemyAttackStatus.NONE:	
@@ -1144,7 +1144,7 @@ func current_encounter_finished():
 	if _current_encounter and is_instance_valid(_current_encounter):
 		_current_encounter.encounter_status = EncounterStatus.NONE			
 	_current_encounter = null
-	#rpc("remove_client_status")
+	#cfc._rpc(self,"remove_client_status")
 	pass
 
 #actual reveal of the current encounter
@@ -1235,7 +1235,7 @@ func client_aligned_or_catching_up():
 	return false
 	
 remotesync func set_client_status(type, guid, value):
-	var client_id = get_tree().get_rpc_sender_id()
+	var client_id = cfc.get_rpc_sender_id()
 	var status_str = ""
 
 	
@@ -1270,7 +1270,7 @@ remotesync func set_client_status(type, guid, value):
 		_clients_current_activation[client_id]["status_str"] = status_str	
 	
 #remotesync func remove_client_status():
-#	var client_id = get_tree().get_rpc_sender_id() 
+#	var client_id = cfc.get_rpc_sender_id() 
 #	_clients_current_activation.erase(client_id)	
 
 #attempt to pace encounters in order to avoid race conditions
@@ -1364,7 +1364,7 @@ func reveal_encounter(target_id = 0):
 		return
 	
 	var guid = guidMaster.get_guid(_current_encounter)
-	rpc("set_client_status", "encounter", guid, _current_encounter.encounter_status)
+	cfc._rpc(self,"set_client_status", "encounter", guid, _current_encounter.encounter_status)
 	#an encounter is available, proceed
 	match _current_encounter.encounter_status:
 		EncounterStatus.NONE:
@@ -1745,7 +1745,7 @@ func can_i_play_this_hero(hero_index)-> bool:
 	if (!get_tree().get_network_peer()):
 		return true
 		
-	var network_id = get_tree().get_network_unique_id()	
+	var network_id = cfc.get_network_unique_id()	
 	var hero_deck_data:HeroDeckData = get_team_member(hero_index)["hero_data"]
 	var owner_player:PlayerData = hero_deck_data.owner
 	if (owner_player.network_id == network_id):
@@ -1923,10 +1923,10 @@ func save_gamedata_to_file(path):
 func load_gamedata(json_data:Dictionary):
 	json_data = WCUtils.replace_real_to_int(json_data)
 	gamesave_load_status = {}
-	rpc("remote_load_gamedata",json_data)
+	cfc._rpc(self,"remote_load_gamedata",json_data)
 
 remotesync func remote_load_game_data_finished(result:int):
-	var caller_id = get_tree().get_rpc_sender_id()
+	var caller_id = cfc.get_rpc_sender_id()
 	gamesave_load_status[caller_id] = result
 	if (gamesave_load_status.size() == network_players.size()):
 		scripting_bus.emit_signal("all_clients_game_loaded",  gamesave_load_status)
@@ -1936,7 +1936,7 @@ remotesync func remote_load_game_data_finished(result:int):
 remotesync func remote_load_gamedata(json_data:Dictionary):
 	var previous_pause_state = cfc.game_paused
 	cfc.set_game_paused(true)
-	var caller_id = get_tree().get_rpc_sender_id()
+	var caller_id = cfc.get_rpc_sender_id()
 
 	#TODO sanity check of the save file
 	cleanup_post_game()
@@ -1994,7 +1994,7 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 	#TODO
 	cfc.set_game_paused(previous_pause_state)
 	assign_starting_hero()		
-	rpc_id(caller_id,"remote_load_game_data_finished",CFConst.ReturnCode.OK)
+	cfc._rpc_id(self, caller_id,"remote_load_game_data_finished",CFConst.ReturnCode.OK)
 
 remotesync func start_phaseContainer():
 	phaseContainer.start_current_step()
@@ -2035,7 +2035,7 @@ func _server_disconnected():
 func systems_check():
 	cfc.LOG ("initiated systems check")
 	_clients_system_status[cfc.get_network_unique_id()] = "pending"
-	rpc("clients_send_system_status")	
+	cfc._rpc(self,"clients_send_system_status")	
 #	pass
 #	initiate_network_ack("get_my_system_status")
 
@@ -2095,7 +2095,7 @@ func get_my_system_status() -> Dictionary:
 var _clients_system_status:= {}
 
 remotesync func receive_system_status(status:Dictionary):
-	var client_id = get_tree().get_rpc_sender_id() 	
+	var client_id = cfc.get_rpc_sender_id() 	
 	_clients_system_status[client_id] = status
 	cfc.LOG ("received status from" + str(client_id))
 	if _clients_system_status.size() == gameData.network_players.size():
@@ -2110,9 +2110,9 @@ remotesync func receive_system_status(status:Dictionary):
 			#TODO handle desync
 
 remotesync func clients_send_system_status():
-	var client_id  = get_tree().get_rpc_sender_id() 
+	var client_id  = cfc.get_rpc_sender_id() 
 	var my_status = get_my_system_status()
-	rpc_id(client_id, "receive_system_status", my_status)
+	cfc._rpc_id(self, client_id, "receive_system_status", my_status)
 
 
 func pending_network_ack():

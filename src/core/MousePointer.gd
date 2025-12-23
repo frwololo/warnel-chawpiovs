@@ -44,10 +44,10 @@ func _process(_delta: float) -> void:
 		# the card still after the drag, we focus it again
 		if current_focused_card.get_parent() == cfc.NMAP.board \
 				and current_focused_card.state == Card.CardState.ON_PLAY_BOARD:
-			current_focused_card.state = Card.CardState.FOCUSED_ON_BOARD
+			current_focused_card.set_state(Card.CardState.FOCUSED_ON_BOARD)
 		if current_focused_card.get_parent().is_in_group("hands") \
 				and current_focused_card.state == Card.CardState.IN_HAND:
-			current_focused_card.state = Card.CardState.FOCUSED_IN_HAND
+			current_focused_card.set_state(Card.CardState.FOCUSED_IN_HAND)
 	if cfc.card_drag_ongoing and cfc.card_drag_ongoing != current_focused_card:
 		#current_focused_card = cfc.card_drag_ongoing
 		set_current_focused_card(cfc.card_drag_ongoing)
@@ -132,6 +132,19 @@ func determine_global_mouse_pos() -> Vector2:
 	else: mouse_position = offset_mouse_position
 	return mouse_position
 
+func move_mouse(movement):
+	var viewport = get_viewport()
+	if !viewport:
+		return
+	
+	var modified_movement = movement
+	var zoom = Vector2(1,1)	
+	if get_viewport() and get_viewport().has_node("Camera2D"):
+		zoom = get_viewport().get_node("Camera2D").zoom
+	
+	modified_movement *= zoom
+		
+	viewport.warp_mouse(determine_global_mouse_pos() + modified_movement)
 
 # Disables the mouse from interacting with the board
 func disable() -> void:

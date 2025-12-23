@@ -132,7 +132,7 @@ func reset_between_tests():
 	_action_ongoing = 0	
 	if cfc.is_game_master():
 		var my_seed = "test suite"
-		rpc("set_random_seed", my_seed)
+		cfc._rpc(self,"set_random_seed", my_seed)
 		
 		
 	cfc.set_game_paused(false)
@@ -166,7 +166,7 @@ func reset():
 	gameData.theAnnouncer.skip_announcer()	
 	gameData.disable_desync_recovery()
 		
-	if 1 != get_tree().get_network_unique_id():
+	if 1 != cfc.get_network_unique_id():
 		return
 		
 	load_test_files()
@@ -272,7 +272,7 @@ func _process(_delta: float) -> void:
 #		return
 	
 	#only server is allowed to run the main process	
-	if 1 != get_tree().get_network_unique_id():
+	if 1 != cfc.get_network_unique_id():
 		return
 
 	delta += _delta
@@ -307,8 +307,10 @@ func should_wait(my_action, _delta):
 	#up while not marked as "pending user interaction"
 	#ritual combat is such an example, at the time of writing
 	#see execute_scripts in Scriptingengine, for the culprit
-	if cfc.get_modal_menu() and action_type in ["choose", "select"]:
+	if cfc.get_modal_menu() and action_type in ["choose", "select"] and _delta > 0.2:
 		return false
+
+
 
 	if (!gameData.theStack.is_accepting_user_interaction()):
 		count_delay("stack")			
@@ -346,7 +348,7 @@ func should_wait(my_action, _delta):
 	if (action_type == "pass"):
 		var hero_id = int(action_value)
 		var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id-1]
-		if (heroPhase.get_label_text()!="PASS"):
+		if (! heroPhase.can_hero_phase_action() or ! heroPhase.can_hero_pass()) :
 			if ( _delta <short_wait_time * delay_multiplier):
 				count_delay("action_pass")
 				if ( _delta >0.2):
@@ -480,7 +482,7 @@ func next_action():
 		var next_action_value = next_action.get("value", "")
 		match next_action_type:
 			"target":
-				rpc("set_upcoming_target", next_action_value)			
+				cfc._rpc(self,"set_upcoming_target", next_action_value)			
 	
 	process_action(my_action)
 	if my_action.get("simultaneous_action", {}):
@@ -538,7 +540,7 @@ func process_action(my_action:Dictionary, skip_play_tests:= false):
 	my_action["hero"] = current_playing_hero_id #This will pass the determined hero id to the rpc call 
 	var network_player_id = get_hero_player_network_owner(current_playing_hero_id)
 	_action_ongoing +=1
-	rpc_id(network_player_id, "run_action", my_action, skip_play_tests)
+	cfc._rpc_id(self, network_player_id, "run_action", my_action, skip_play_tests)
 
 func get_hero_player_network_owner(hero_id):
 	var player = 1
@@ -606,7 +608,7 @@ remotesync func run_action(my_action:Dictionary,  skip_play_tests:= false):
 	while should_wait_after_action(my_action, _delta):
 		yield(get_tree().create_timer(0.1), "timeout")
 		_delta += 0.1			
-	rpc_id(1, "action_complete")
+	cfc._rpc_id(self,1, "action_complete")
 
 	var new_rng_state = cfc.game_rng.state
 	if new_rng_state != last_rng_state:
@@ -780,11 +782,11 @@ func get_card_in_hero_board(card_id, hero_id):
 					
 #Check the end state for the current test
 func finalize_test():
-	rpc("finalize_test_allclients", forced_status)	
+	cfc._rpc(self,"finalize_test_allclients", forced_status)	
 	return
 
 mastersync func test_finalized(result):
-	var client_id = get_tree().get_rpc_sender_id() 
+	var client_id = cfc.get_rpc_sender_id() 
 	_allclients_finalized[client_id] = result
 	if _allclients_finalized.size() == gameData.network_players.size():
 		for id in _allclients_finalized:
@@ -825,7 +827,7 @@ remotesync func finalize_test_allclients(force_status:int):
 		
 	#Remove crap that might still be lurking around
 	reset_between_tests()
-	rpc_id(1, "test_finalized", result)
+	cfc._rpc_id(self,1, "test_finalized", result)
 
 	return
 
@@ -1036,7 +1038,7 @@ func load_test(test_file)-> bool:
 		"test_conditions" : test_conditions,
 	}
 	gameData.load_gamedata(initial_state)
-	rpc("initialize_clients_test", remote_init_data)
+	cfc._rpc(self,"initialize_clients_test", remote_init_data)
 	
 	return true
 
@@ -1056,16 +1058,16 @@ remotesync func set_card_speeds():
 
 func all_clients_game_loaded(details = {}):
 	#increase speed
-	rpc("set_card_speeds")
+	cfc._rpc(self,"set_card_speeds")
 	#only server is allowed to run the main process	
-	if 1 != get_tree().get_network_unique_id():
+	if 1 != cfc.get_network_unique_id():
 		return
 			
 	game_loaded = true
 	for value in details.values():
 		if value != CFConst.ReturnCode.OK:
 			actions = [] #empty the actions stack, this will force a finalize test
-			rpc("add_skipped_msg", "error loading game (wrong number of players?)") #weird that I have to send this kind of info to remote clients, ideally they would compute their own issues
+			cfc._rpc(self,"add_skipped_msg", "error loading game (wrong number of players?)") #weird that I have to send this kind of info to remote clients, ideally they would compute their own issues
 			forced_status = TestStatus.SKIPPED
 			return
 
@@ -1082,7 +1084,7 @@ func next_test() -> bool:
 	reset_between_tests()
 	if (test_files.size() <= current_test):
 		finished = true
-		rpc("save_results")
+		cfc._rpc(self,"save_results")
 		return false
 	var found = false
 	while !found and current_test < test_files.size():
@@ -1090,7 +1092,7 @@ func next_test() -> bool:
 		found = load_test(test_files[current_test-1])
 	if (!found):
 		finished = true
-		rpc("save_results")
+		cfc._rpc(self,"save_results")
 		return false
 
 	return found
@@ -1148,7 +1150,7 @@ remotesync func save_results():
 	for key in count_delays:
 		to_print+= key + " - " + str(count_delays[key]) + "\n"
 
-	var player = gameData.get_player_by_network_id(get_tree().get_network_unique_id())
+	var player = gameData.get_player_by_network_id(cfc.get_network_unique_id())
 	var player_id = player.get_id()
 	var filename = "user://test_results_" + str(player_id) +".txt"
 	

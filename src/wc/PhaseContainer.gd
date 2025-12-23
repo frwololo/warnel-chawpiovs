@@ -422,9 +422,9 @@ func is_ready_for_next_phase() -> bool :
 
 
 mastersync func client_ready_for_next_phase(current_phase):
-	if (not get_tree().is_network_server()):
+	if (not cfc.is_game_master()):
 		return -1
-	var client_id = get_tree().get_rpc_sender_id() 
+	var client_id = cfc.get_rpc_sender_id() 
 	display_debug(str(client_id) + " is ready for next phase Their current phase is" + StepStrings[current_phase])
 	
 	#potential desync and tentative to fix, we only go up
@@ -448,13 +448,13 @@ mastersync func client_ready_for_next_phase(current_phase):
 		else:
 			clients_ready_for_next_phase = {}
 			display_debug("everyone is ready for next phase, go")
-			rpc("proceed_to_next_phase")
+			cfc._rpc(self,"proceed_to_next_phase")
 		
 		
 mastersync func client_unready_for_next_phase():
-	if (not get_tree().is_network_server()):
+	if (not cfc.is_game_master()):
 		return -1
-	var client_id = get_tree().get_rpc_sender_id() 
+	var client_id = cfc.get_rpc_sender_id() 
 
 	if clients_ready_for_next_phase.has(client_id):
 		clients_ready_for_next_phase.erase(client_id)
@@ -470,12 +470,12 @@ func request_next_phase(caller = ""):
 	_pending_next_phase_reply = true	
 	display_debug("I'm asking the master to move to next phase (" + caller +  "). I'm currently at " + StepStrings[current_step])	
 	#set_current_step_complete(false, caller + ", request_next_phase")
-	rpc_id(1, "client_ready_for_next_phase", current_step)
+	cfc._rpc_id(self,1, "client_ready_for_next_phase", current_step)
 	return true
 	
 func unrequest_next_phase():
 	_pending_next_phase_reply = false
-	rpc_id(1, "client_unready_for_next_phase")	
+	cfc._rpc_id(self,1, "client_unready_for_next_phase")	
 
 func set_current_step_complete(value:bool, caller = ""):
 	if value:

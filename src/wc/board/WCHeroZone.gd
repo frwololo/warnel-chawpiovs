@@ -66,7 +66,7 @@ func post_load_move():
 
 
 remotesync func cards_preloaded():
-	var client_id = get_tree().get_rpc_sender_id() 	
+	var client_id = cfc.get_rpc_sender_id() 	
 	_cards_loaded[client_id] = true
 	if _cards_loaded.size() == gameData.network_players.size():
 		_cards_loaded = {} #reset just in case
@@ -132,7 +132,7 @@ func load_identity(card_id, modifiers ={}):
 		cfc.LOG("{error} grid/slot not found for " + card.canonical_name)
 		
 	set_identity_card(card)
-	rpc("cards_preloaded")
+	cfc._rpc(self,"cards_preloaded")
 	return identity_card
 
 func set_identity_card(card):

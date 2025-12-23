@@ -60,6 +60,7 @@ onready var shuffle_button := $Control/ManipulationButtons/Shuffle
 # Container higlight
 onready var highlight := $Control/Highlight
 
+var _card_count = 0
 
 func _process(_delta: float) -> void:
 	# Debug labels
@@ -71,6 +72,8 @@ func _process(_delta: float) -> void:
 	else:
 		$Debug.visible = false
 
+	#cache refrehs all frames
+	_are_cards_still_animating = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -148,10 +151,15 @@ func _on_viewport_resized() -> void:
 		re_place()
 
 
+var _are_cards_still_animating:= []
 func are_cards_still_animating() -> bool:
+	if  _are_cards_still_animating:
+		return _are_cards_still_animating[0]
 	for c in get_all_cards():
 		if c.is_animating():
+			_are_cards_still_animating.append(true)
 			return true
+	_are_cards_still_animating.append(false)
 	return(false)
 
 # Hides manipulation buttons
@@ -216,7 +224,8 @@ func delete_all_cards():
 
 # Returns an int with the amount of children nodes which are of Card class
 func get_card_count() -> int:
-	return(get_all_cards().size())
+	return _card_count
+	#return(get_all_cards().size())
 
 
 # Returns a card object of the card in the specified index among all cards.
@@ -442,3 +451,11 @@ func reset_location():
 		# Finally, we move to the right location.
 		position = place
 		call_deferred("_init_control_size")
+
+func add_child(node, _legible_unique_name=false) -> void:
+	.add_child(node)
+	_card_count +=1
+	
+func remove_child(node) -> void:
+	.remove_child(node)
+	_card_count -=1

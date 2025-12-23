@@ -17,7 +17,6 @@ var _on_ready_load_from_json:Dictionary = {}
 #marvel champions specific variables
 var _can_change_form := true
 var _is_exhausted:= false
-
 var _is_boost:=false
 
 #an array of ManaCost variables representing everything that's been used to pay for this card
@@ -119,6 +118,7 @@ func set_controller_hero_id(hero_id:int):
 func queue_refresh_cache():
 	_cache_refresh_needed = true
 
+#refresh cache for all data
 func refresh_cache(forced=false):
 	if !forced and ! _cache_refresh_needed:
 		return
@@ -128,6 +128,7 @@ func refresh_cache(forced=false):
 		_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID
 	check_death()
 	_cache_resource_value = {}
+	
 	_cache_refresh_needed = false
 
 func is_character() -> bool:
@@ -216,8 +217,8 @@ func get_controller_player_id() -> int:
 	return player_data.get_id()		
 
 func _runtime_properties_setup():
-	if canonical_name == "Highway Robbery":
-		var _tmp = 1
+	_horizontal = self.get_property("_horizontal", false)
+	
 	var base_threat = self.get_property("base_threat",0)
 	var base_threat_fixed = get_property("base_threat_fixed", true)
 	if base_threat and !base_threat_fixed:
@@ -358,7 +359,7 @@ func display_health():
 	pass
 
 func position_ui_elements():
-	if properties.get("_horizontal", 0):
+	if _horizontal:
 		#reposition the token drawer for horizontal cards
 		tokens.set_is_horizontal()
 
@@ -380,6 +381,7 @@ func _ready():
 
 func _class_specific_process(delta):
 	._class_specific_process(delta)
+	pass
 		
 
 func _process(delta) -> void:
@@ -465,10 +467,9 @@ func get_cropped_art_texture():
 	if not new_img:
 		return	false
 
-	var is_horizontal = properties.get("_horizontal", 0)
 	var type_code = properties.get("type_code", 0)
 	
-	if is_horizontal:
+	if _horizontal:
 		new_img = WCUtils.rotate_90(new_img)	
 		
 	var imgtex = ImageTexture.new()
@@ -477,7 +478,7 @@ func get_cropped_art_texture():
 	var width = imgtex.get_width()
 	var height = imgtex.get_height()	
 	var region := Rect2(0, 0, width, width)
-	if is_horizontal:
+	if _horizontal:
 		match type_code:
 			"main_scheme":
 				region = Rect2(width/2,0, width/2, height)
@@ -502,7 +503,25 @@ func set_card_art():
 # based on the card's state.
 #
 # Returns either "board", "hand", "pile" or "NONE".
+var _state_exec_cache := ""
+
+func set_state(value: int) -> void:
+	if state == CardState.DRAGGED:
+		pass
+	var prev_state = state
+	state = value
+	if prev_state != state:
+		emit_signal("state_changed", self, prev_state, state)
+		_state_exec_cache = ""
+
 func get_state_exec() -> String:
+	#return get_state_exec_no_cache()
+	
+	if !_state_exec_cache:
+		 _state_exec_cache = get_state_exec_no_cache()
+	return _state_exec_cache
+	
+func get_state_exec_no_cache() -> String:	
 	var state_exec := "NONE"
 	# We don't check according to the parent name
 	# as that can change.
@@ -1388,7 +1407,7 @@ func _process_card_state() -> void:
 			#does that need to change eventually ?	
 			#note: setting tweening to false otherwise it causes issues with
 			#tweening never ending
-			if get_property("_horizontal", false) and not _is_boost:
+			if _horizontal and not _is_boost:
 				set_card_rotation(90, false, false)
 
 

@@ -28,14 +28,14 @@ func _process(delta):
 		if loader.poll() == ERR_FILE_EOF:
 			game = loader.get_resource()
 			#I'm ready, tell myself then tell the server
-			clients_ready[get_tree().get_network_unique_id()] = true;
+			clients_ready[cfc.get_network_unique_id()] = true;
 			ready = true;
-			rpc_id(1, "client_ready")
+			cfc._rpc_id(self, 1, "client_ready")
 	
 remotesync func client_ready():
-	var client_id = get_tree().get_rpc_sender_id()
+	var client_id = cfc.get_rpc_sender_id()
 	clients_ready[client_id] = true;
-	if (get_tree().is_network_server()):
+	if (cfc.is_game_master()):
 		if (clients_ready.size() == gameData.network_players.size()):
 			_launch_server_game()
 
@@ -44,12 +44,12 @@ func _launch_server_game():
 	# Finalize Network players data
 	#var i = 0
 	#for player in players:
-	#	rpc("set_network_player_index", player, i)
+	#	cfc._rpc(self,"set_network_player_index", player, i)
 	#	i+=1
-	rpc("launch_client_game")	
-	_launch_game()
+	cfc._rpc(self, "launch_client_game")	
+	#_launch_game()
 	
-remote func launch_client_game():
+remotesync func launch_client_game():
 	_launch_game() 	
 	
 func _launch_game():	

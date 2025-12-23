@@ -41,7 +41,7 @@ func _load_players():
 
 func _toggle_gui():
 	var my_owner_network_id = gameData.get_player_by_index(my_owner).network_id
-	if (get_tree().get_network_unique_id() == my_owner_network_id) :
+	if (cfc.get_network_unique_id() == my_owner_network_id) :
 		deckSelect.set_disabled(false)
 	else:
 		deckSelect.set_disabled(true)	
@@ -54,7 +54,7 @@ func set_owner (id):
 		
 func _on_deck_changed(index):
 	var my_owner_network_id = gameData.get_player_by_index(my_owner).network_id
-	if (get_tree().get_network_unique_id() == my_owner_network_id) :
+	if (cfc.get_network_unique_id() == my_owner_network_id) :
 		var _deck_id = deckSelect.get_item_id(index)
 		lobby.deck_changed(_deck_id, my_index)
 
@@ -87,7 +87,7 @@ func refresh_decks():
 	#_on_deck_changed(deckSelect.selected)	
 	
 func _on_owner_changed(id):
-	if get_tree().is_network_server():
+	if cfc.is_game_master():
 		#item_selected passes the id which is 0 indexed, but players are 1 indexed
 		my_owner = id+1 
 		_toggle_gui()

@@ -678,7 +678,7 @@ func spawn_card(script: ScriptTask) -> void:
 					cfc.NMAP.board.add_child(card)
 					card.position = slot.rect_global_position
 					slot.set_occupying_card(card)
-					card.state = Card.CardState.ON_PLAY_BOARD
+					card.set_state(Card.CardState.ON_PLAY_BOARD)
 					spawned_cards.append(card)
 					scripting_bus.emit_signal("card_spawned", card, {"tags": tags})
 	else:
@@ -691,7 +691,7 @@ func spawn_card(script: ScriptTask) -> void:
 			# +1 card-length to the right each.
 			card.position.x += \
 					iter * card.canonical_size.x * card.play_area_scale
-			card.state = Card.CardState.ON_PLAY_BOARD
+			card.set_state(Card.CardState.ON_PLAY_BOARD)
 			card.set_to_idle()
 			spawned_cards.append(card)
 			scripting_bus.emit_signal("card_spawned", card, {"tags": tags})
@@ -794,7 +794,7 @@ func spawn_card_to_container(script: ScriptTask) -> void:
 			card.global_position.x += \
 					iter * CFConst.CARD_SIZE.x * 0.2
 			card.spawn_destination = dest_container
-			card.state = Card.CardState.MOVING_TO_SPAWN_DESTINATION
+			card.set_state(Card.CardState.MOVING_TO_SPAWN_DESTINATION)
 		else:
 			dest_container.add_child(card)
 			card.set_to_idle()

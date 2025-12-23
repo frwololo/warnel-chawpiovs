@@ -82,19 +82,13 @@ func _ready():
 		if (gameData.is_multiplayer_game):
 			yield(get_tree().create_timer(0.5), "timeout")	
 			owner_changed(1, 1)
-			rpc("assign_hero", "01001a", 0)
-			rpc("assign_hero", "01010a", 1)
+			cfc._rpc(self, "assign_hero", "01001a", 0)
+			cfc._rpc(self, "assign_hero", "01010a", 1)
 			yield(get_tree().create_timer(0.5), "timeout")
 			scenario_select("01097")
 			yield(get_tree().create_timer(0.5), "timeout")	
 			if CFConst.DEBUG_AUTO_START_MULTIPLAYER:			
 				_launch_server_game()
-#		else:
-#			yield(get_tree().create_timer(0.05), "timeout")	
-#			#rpc("assign_hero", "01001a", 0) #peter
-#			rpc("assign_hero", "01010a", 0)#carol		
-#			yield(get_tree().create_timer(0.2), "timeout")	
-#			_launch_server_game()	
 		pass	
 
 func _process(delta:float):
@@ -175,7 +169,7 @@ func scenario_select(scenario_id):
 	if (not cfc.is_game_master()):
 		return
 	add_pending_acks()			
-	rpc("client_scenario_select", scenario_id)
+	cfc._rpc(self, "client_scenario_select", scenario_id)
 
 puppet func modular_encounter_select(index):
 	ack()
@@ -185,7 +179,7 @@ func _on_EncounterSelect_item_selected(index):
 	if (not cfc.is_game_master()):
 		return
 	add_pending_acks()	
-	rpc("modular_encounter_select", index)			
+	cfc._rpc(self, "modular_encounter_select", index)			
 	pass # Replace with function body.
 
 puppet func expert_mode_toggle (button_pressed):
@@ -196,20 +190,20 @@ func _on_ExpertMode_toggled(button_pressed):
 	if (not cfc.is_game_master()):
 		return
 	add_pending_acks()	
-	rpc("expert_mode_toggle", button_pressed)			
+	cfc._rpc(self,"expert_mode_toggle", button_pressed)			
 	pass # Replace with function body.	
 	pass # Replace with function body.
 
 
 func request_hero_slot(hero_id):
-	rpc_id(1, "get_next_hero_slot",hero_id)
+	cfc._rpc_id(self, 1, "get_next_hero_slot",hero_id)
 
 #Attempt to get a slot for a given hero for a given player
 #If succesful, tell everyone to update their info
 mastersync func get_next_hero_slot(hero_id) -> int:
-	if (not get_tree().is_network_server()):
+	if (not cfc.is_game_master()):
 		return -1
-	var client_id = get_tree().get_rpc_sender_id() 
+	var client_id = cfc.get_rpc_sender_id() 
 	for i in HERO_COUNT:
 		var data: HeroDeckData = team[i]
 		if (data.get_hero_id() == hero_id):
@@ -219,7 +213,7 @@ mastersync func get_next_hero_slot(hero_id) -> int:
 		var data: HeroDeckData = team[i]
 		if (data.owner.network_id == client_id and data.get_hero_id() == ""):
 			add_pending_acks()
-			rpc("assign_hero", hero_id, i)
+			cfc._rpc(self, "assign_hero", hero_id, i)
 			return i
 	return -1			
 
@@ -277,24 +271,20 @@ func check_ready_to_launch() -> bool:
 	
 	
 func request_release_hero_slot(hero_id):
-	rpc_id(1, "release_hero_slot",hero_id)
+	cfc._rpc_id(self,1, "release_hero_slot",hero_id)
 
 #Attempt to release a slot for a given hero for a given player
 #If succesful, tell everyone to update their info
 remotesync func release_hero_slot(hero_id) -> int:
-	if (not get_tree().is_network_server()):
+	if (not cfc.is_game_master()):
 		return -1
-	var client_id = get_tree().get_rpc_sender_id()
-#	var remaining_team_members = 0;
-#	for i in HERO_COUNT:
-#		var data: HeroDeckData = team[i]
-#		if (data.hero_id):
-#			remaining_team_members += 1
+	var client_id = cfc.get_rpc_sender_id()
+
 	var result = -1
 	for i in HERO_COUNT:
 		var data: HeroDeckData = team[i]
 		if (data.owner.network_id == client_id and data.get_hero_id() == hero_id):
-			rpc("assign_hero", "", i)
+			cfc._rpc(self,"assign_hero", "", i)
 #			remaining_team_members -=1
 #			if (not remaining_team_members):
 #				launch_button.hide()
@@ -307,7 +297,7 @@ func owner_changed(id, index):
 	#item_selected passes the id which is 0 indexed, but players are 1 indexed
 	var player : PlayerData = gameData.get_player_by_index(id+1)
 	team[index].owner = player
-	rpc("remote_owner_changed",id,index)
+	cfc._rpc(self,"remote_owner_changed",id,index)
 
 remote func remote_owner_changed (id, index):
 	#update data
@@ -320,10 +310,10 @@ remote func remote_owner_changed (id, index):
 
 func deck_changed(_deck_id, hero_index):
 	team[hero_index].deck_id = _deck_id
-	rpc("remote_deck_changed",_deck_id, hero_index)	
+	cfc._rpc(self,"remote_deck_changed",_deck_id, hero_index)	
 
 remote func remote_deck_changed (_deck_id, hero_index):
-	var client_id =  get_tree().get_rpc_sender_id() 	
+	var client_id =  cfc.get_rpc_sender_id() 	
 	#update data
 	team[hero_index].deck_id = _deck_id
 	#update GUI
@@ -331,15 +321,15 @@ remote func remote_deck_changed (_deck_id, hero_index):
 	_heroDeckSelect.set_deck(_deck_id, client_id)
 
 func request_deck_data(caller_id, _deck_id):
-	rpc_id(caller_id, "upload_deck_data", _deck_id)
+	cfc._rpc_id(self, caller_id, "upload_deck_data", _deck_id)
 
 remotesync func upload_deck_data(_deck_id):
-	var client_id =  get_tree().get_rpc_sender_id() 
+	var client_id =  cfc.get_rpc_sender_id() 
 	var deck_data = cfc.deck_definitions[_deck_id]
-	rpc_id(client_id, "receive_deck_data", _deck_id, deck_data)
+	cfc._rpc_id(self,client_id, "receive_deck_data", _deck_id, deck_data)
 
 remotesync func receive_deck_data(_deck_id, deck_data):
-	var _client_id =  get_tree().get_rpc_sender_id() 
+	var _client_id =  cfc.get_rpc_sender_id() 
 	var existing_data = cfc.deck_definitions.get(_deck_id, {})
 	if existing_data:
 		var checksum1= WCUtils.ordered_hash(existing_data)
@@ -375,11 +365,11 @@ func refresh_deck_containers():
 
 var _ready_to_launch:= {}
 mastersync func ready_to_launch():
-	var client_id =  get_tree().get_rpc_sender_id()
+	var client_id =  cfc.get_rpc_sender_id()
 	_ready_to_launch[client_id] = true
 	if _ready_to_launch.size() == gameData.network_players.size():
 		_ready_to_launch = {}
-		rpc("launch_client_game")
+		cfc._rpc(self,"launch_client_game")
 	
 func _launch_server_game():
 	launch_button.hide()
@@ -393,12 +383,12 @@ func _launch_server_game():
 		"modular_encounters":[get_selected_modular()], #TODO maybe more than one eventually
 		"expert_mode": is_expert_mode()
 	}
-	rpc("get_launch_data_from_server", launch_data)	
+	cfc._rpc(self, "get_launch_data_from_server", launch_data)	
 	#_launch_game()
 	
 remotesync func get_launch_data_from_server(_scenario_data):
 	launch_data = _scenario_data
-	rpc_id(1, "ready_to_launch")
+	cfc._rpc_id(self, 1, "ready_to_launch")
 	
 remotesync func launch_client_game():
 	_launch_game() 	
@@ -470,10 +460,10 @@ func remove_pending_ack(client_id):
 		return false
 
 func ack():
-	rpc_id(1, "master_ack")
+	cfc._rpc_id(self, 1, "master_ack")
 
 mastersync func master_ack():
-	var client_id = get_tree().get_rpc_sender_id()
+	var client_id = cfc.get_rpc_sender_id()
 	remove_pending_ack(client_id)
 	verify_launch_button()
 

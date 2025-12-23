@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://src/wc/menus/OptionsMenu.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/wc/PhaseContainer.gd" type="Script" id=2]
@@ -8,15 +8,7 @@
 [ext_resource path="res://src/wc/CGFCounters.tscn" type="PackedScene" id=6]
 [ext_resource path="res://src/wc/board/WCVillainZone.tscn" type="PackedScene" id=7]
 [ext_resource path="res://assets/icons/server_activity.png" type="Texture" id=8]
-[ext_resource path="res://fonts/Comfortaa-Bold.ttf" type="DynamicFontData" id=9]
 [ext_resource path="res://themes/darktheme/darktheme.theme" type="Theme" id=12]
-
-[sub_resource type="DynamicFont" id=2]
-size = 14
-outline_size = 2
-outline_color = Color( 0, 0, 0, 1 )
-use_filter = true
-font_data = ExtResource( 9 )
 
 [node name="Board" type="Control"]
 anchor_right = 1.0
@@ -86,83 +78,6 @@ visible = false
 margin_top = 205.0
 margin_bottom = 219.0
 
-[node name="FancyMovementToggle" type="CheckButton" parent="."]
-visible = false
-margin_right = 12.0
-margin_bottom = 20.0
-pressed = true
-text = "Fancy Movement"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="EnableAttach" type="CheckButton" parent="."]
-visible = false
-margin_left = 194.978
-margin_top = 1.33486
-margin_right = 395.978
-margin_bottom = 41.3349
-text = "Enable Attachment"
-
-[node name="ScalingFocusOptions" type="OptionButton" parent="."]
-visible = false
-margin_left = -1.33484
-margin_top = 44.0497
-margin_right = 187.665
-margin_bottom = 84.0497
-pressed = true
-text = "Scaling + Viewport Focus"
-items = [ "Scaling Focus", null, false, 0, null, "Viewport Focus", null, false, 1, null, "Scaling + Viewport Focus", null, false, 2, null, "Scaling + Info Panels", null, false, 3, null ]
-selected = 2
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ReshuffleAllDeck" type="Button" parent="."]
-visible = false
-margin_left = 9.89948
-margin_top = 116.762
-margin_right = 200.899
-margin_bottom = 136.762
-text = "Reshuffle all cards into deck"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ReshuffleAllDiscard" type="Button" parent="."]
-visible = false
-margin_left = 9.89948
-margin_top = 140.334
-margin_right = 200.899
-margin_bottom = 160.334
-text = "Reshuffle all cards into discard"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="OvalHandToggle" type="CheckButton" parent="."]
-visible = false
-margin_left = 405.31
-margin_top = 1.12245
-margin_right = 594.31
-margin_bottom = 41.1225
-pressed = true
-text = "Oval Hand Shape"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="BackToMain" type="Button" parent="."]
-visible = false
-margin_left = 393.448
-margin_top = 43.7401
-margin_right = 533.448
-margin_bottom = 83.7401
-text = "Back to Main"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="Debug" type="CheckButton" parent="."]
 visible = false
 margin_left = 789.192
@@ -171,18 +86,6 @@ margin_right = 978.192
 margin_bottom = 43.3674
 pressed = true
 text = "Debug"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="SeedLabel" type="Label" parent="."]
-visible = false
-margin_left = 10.0
-margin_top = 175.0
-margin_right = 265.0
-margin_bottom = 200.0
-custom_fonts/font = SubResource( 2 )
-text = "Game Seed is: "
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -230,13 +133,6 @@ margin_right = 40.0
 margin_bottom = 40.0
 theme = ExtResource( 12 )
 
-[connection signal="toggled" from="FancyMovementToggle" to="." method="_on_FancyMovementToggle_toggled"]
-[connection signal="toggled" from="EnableAttach" to="." method="_on_EnableAttach_toggled"]
-[connection signal="item_selected" from="ScalingFocusOptions" to="." method="_on_ScalingFocusOptions_item_selected"]
-[connection signal="pressed" from="ReshuffleAllDeck" to="." method="_on_ReshuffleAllDeck_pressed"]
-[connection signal="pressed" from="ReshuffleAllDiscard" to="." method="_on_ReshuffleAllDiscard_pressed"]
-[connection signal="toggled" from="OvalHandToggle" to="." method="_on_OvalHandToggle_toggled"]
-[connection signal="pressed" from="BackToMain" to="." method="_on_BackToMain_pressed"]
 [connection signal="toggled" from="Debug" to="." method="_on_Debug_toggled"]
 [connection signal="pressed" from="OptionsButton" to="." method="_on_OptionsButton_pressed"]
 [connection signal="gui_input" from="ServerActivity" to="." method="_on_ServerActivity_gui_input"]

@@ -69,7 +69,7 @@ func get_avg_ping(client_id):
 	return ping_info["avg"]
 	
 remote func ping_ack(start_time):	
-	var client_id = get_tree().get_rpc_sender_id() 
+	var client_id = cfc.get_rpc_sender_id() 
 	var end_time = Time.get_ticks_msec()
 	var last_ping = end_time - start_time
 		
@@ -96,7 +96,7 @@ func ping():
 	rpc_unreliable("receive_ping_request", last_ping_time)
 
 remote func receive_ping_request(start_time):
-	var client_id = get_tree().get_rpc_sender_id() 
+	var client_id = cfc.get_rpc_sender_id() 
 	rpc_unreliable_id(client_id, "ping_ack", start_time)
 
 func delete_log_files():
@@ -930,12 +930,12 @@ func get_network_unique_id():
 func is_game_master() -> bool:	
 	if !gameData.is_multiplayer_game:
 		return true
-	return get_tree().is_network_server() #Todo: return something more specific to handle case where game master isn't server, for headless mode
+	return get_tree().is_network_server() 
 
 var _log_buffer := ""
 func INIT_LOG():
 	var file = File.new()
-	var network_id = get_tree().get_network_unique_id() if get_tree().has_network_peer() else 0
+	var network_id = cfc.get_network_unique_id() if get_tree().has_network_peer() else 0
 	var player = gameData.get_player_by_network_id(network_id) if network_id else null
 	var player_id = player.get_id()	if player else 0
 	var filename = "user://log_" + str(player_id) +".txt"
@@ -955,7 +955,7 @@ func LOG(to_print:String):
 func FLUSH_LOG():
 	INIT_LOG()
 	var file = File.new()
-	var network_id = get_tree().get_network_unique_id() if get_tree().has_network_peer() else 0
+	var network_id = cfc.get_network_unique_id() if get_tree().has_network_peer() else 0
 	var player = gameData.get_player_by_network_id(network_id)  if network_id else null
 	var player_id = player.get_id()	if player else 0
 	file.open("user://log_" + str(player_id) +".txt", File.READ_WRITE)
@@ -1024,7 +1024,55 @@ func is_modal_event_ongoing():
 	if gameData.is_ongoing_blocking_announce():
 		return true
 	return false
-	
+
+func _rpc(object, func_name, arg0=null,
+	arg1 =null,
+	arg2 =null,
+	arg3 =null,
+	arg4 =null,
+	arg5 =null,
+	arg6 = null,
+	arg7 = null,
+	arg8 = null,
+	arg9 = null):
+
+	var params = []
+	for i in [arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9]:
+		if i== null:
+			break
+		params.append(i)
+
+	if gameData.is_multiplayer_game:
+		object.callv("rpc", [func_name] +  params)
+	else:
+		#object.callv(func_name, params)
+		object.call_deferred("callv", func_name,  params)	
+func _rpc_id(object, client_id, func_name, arg0=null,
+	arg1 =null,
+	arg2 =null,
+	arg3 =null,
+	arg4 =null,
+	arg5 =null,
+	arg6 = null,
+	arg7 = null,
+	arg8 = null,
+	arg9 = null):
+
+	var params = []
+	for i in [arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9]:
+		if i== null:
+			break
+		params.append(i)
+
+	if gameData.is_multiplayer_game:
+		object.callv("rpc_id", [client_id,func_name] + params)
+	else:
+		object.call_deferred("callv", func_name,  params)	
+
+func get_rpc_sender_id():
+	if gameData.is_multiplayer_game:
+		return get_tree().get_rpc_sender_id()
+	return 1
 
 # Ensures proper cleanup when a card is queue_free() for any reason
 func _on_tree_exiting():	

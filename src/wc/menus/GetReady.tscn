@@ -5,7 +5,7 @@
 [ext_resource path="res://src/wc/menus/GetReady.gd" type="Script" id=3]
 
 [sub_resource type="DynamicFont" id=2]
-size = 107
+size = 200
 font_data = ExtResource( 2 )
 
 [node name="Menu" type="Panel"]
@@ -35,9 +35,9 @@ size_flags_vertical = 3
 custom_constants/margin_top = 90
 
 [node name="Label" type="Label" parent="MainMenu/VBox/Margin"]
-margin_top = 166.0
+margin_top = 117.0
 margin_right = 1920.0
-margin_bottom = 281.0
+margin_bottom = 331.0
 custom_fonts/font = SubResource( 2 )
 text = "Get Ready!"
 align = 1

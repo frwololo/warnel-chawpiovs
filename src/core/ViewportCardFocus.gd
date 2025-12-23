@@ -61,7 +61,7 @@ func _process(_delta) -> void:
 	if _current_focus_source and is_instance_valid(_current_focus_source):
 		
 		#horizontal case
-		if (_current_focus_source.get_property("_horizontal", false)) and _current_focus_source.get_state_exec() != "pile":
+		if (_current_focus_source._horizontal) and _current_focus_source.get_state_exec() != "pile":
 			canonical_size = Vector2(_current_focus_source.canonical_size.y, _current_focus_source.canonical_size.x )	
 			vbc_rect_offset = Vector2 (30, $VBC.rect_size.x)
 			_focus_camera.set_offset(Vector2(0, -20))
@@ -156,7 +156,7 @@ func focus_card(card: Card, show_preview := true) -> void:
 			_extra_dupe_preparation(dupe_focus, card)
 			# We display a "pure" version of the card
 			# This means we hide buttons, tokens etc
-			dupe_focus.state = Card.CardState.VIEWPORT_FOCUS
+			dupe_focus.set_state(Card.CardState.VIEWPORT_FOCUS)
 			_focus_viewport.add_child(dupe_focus)
 			_extra_dupe_ready(dupe_focus, card)
 			dupe_focus.is_faceup = card.is_faceup
@@ -214,7 +214,7 @@ func focus_card(card: Card, show_preview := true) -> void:
 		$VBC.rect_size = Vector2(0,0)
 		
 		#handle rendering horizontal cards
-		if (card.properties.get("_horizontal", 0) and card.get_is_faceup()):
+		if (card._horizontal and card.get_is_faceup()):
 			$VBC.rect_rotation = 90
 		else:
 			$VBC.rect_rotation = 0

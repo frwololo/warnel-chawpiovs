@@ -1,7 +1,17 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://src/wc/lobby/TeamSelection.gd" type="Script" id=1]
 [ext_resource path="res://themes/darktheme/darktheme.theme" type="Theme" id=2]
+[ext_resource path="res://themes/darktheme/fonts/Bangers/Bangers-Regular.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://fonts/Bangers-Regular.ttf" type="DynamicFontData" id=4]
+
+[sub_resource type="DynamicFont" id=1]
+size = 40
+font_data = ExtResource( 4 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 50
+font_data = ExtResource( 3 )
 
 [node name="TeamSelection" type="Panel"]
 margin_right = 1920.0
@@ -20,285 +30,290 @@ anchor_bottom = 1.0
 margin_top = 20.0
 
 [node name="Outercontainer" type="VBoxContainer" parent="MainMenu"]
-margin_left = 715.0
-margin_right = 1205.0
+margin_left = 660.0
+margin_right = 1260.0
 margin_bottom = 1060.0
 size_flags_horizontal = 4
 
 [node name="LeftRight" type="HBoxContainer" parent="MainMenu/Outercontainer"]
-margin_right = 490.0
-margin_bottom = 567.0
+margin_right = 600.0
+margin_bottom = 643.0
 custom_constants/separation = 100
 
 [node name="PanelContainer" type="PanelContainer" parent="MainMenu/Outercontainer/LeftRight"]
-margin_right = 76.0
-margin_bottom = 567.0
+margin_right = 99.0
+margin_bottom = 643.0
 
 [node name="HeroesPanel" type="VBoxContainer" parent="MainMenu/Outercontainer/LeftRight/PanelContainer"]
 margin_left = 2.0
 margin_top = 2.0
-margin_right = 74.0
-margin_bottom = 565.0
+margin_right = 97.0
+margin_bottom = 641.0
 custom_constants/separation = 20
 
 [node name="HeroesTitle" type="Label" parent="MainMenu/Outercontainer/LeftRight/PanelContainer/HeroesPanel"]
-margin_right = 72.0
-margin_bottom = 23.0
+margin_right = 95.0
+margin_bottom = 30.0
 text = "HEROES"
 align = 1
 
 [node name="Heroes" type="GridContainer" parent="MainMenu/Outercontainer/LeftRight/PanelContainer/HeroesPanel"]
 unique_name_in_owner = true
-margin_top = 43.0
-margin_right = 72.0
-margin_bottom = 43.0
+margin_top = 50.0
+margin_right = 95.0
+margin_bottom = 50.0
 columns = 3
 
 [node name="Panel" type="VBoxContainer" parent="MainMenu/Outercontainer/LeftRight"]
-margin_left = 176.0
-margin_right = 490.0
-margin_bottom = 567.0
+margin_left = 199.0
+margin_right = 598.0
+margin_bottom = 643.0
 custom_constants/separation = 50
 
 [node name="PanelContainer3" type="PanelContainer" parent="MainMenu/Outercontainer/LeftRight/Panel"]
-margin_right = 314.0
-margin_bottom = 113.0
+margin_right = 399.0
+margin_bottom = 155.0
 
 [node name="TeamPanel" type="VBoxContainer" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer3"]
 margin_left = 2.0
 margin_top = 2.0
-margin_right = 312.0
-margin_bottom = 111.0
+margin_right = 397.0
+margin_bottom = 153.0
 
 [node name="Label" type="Label" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer3/TeamPanel"]
-margin_right = 310.0
-margin_bottom = 23.0
+margin_right = 395.0
+margin_bottom = 30.0
 text = "TEAM"
 align = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer3/TeamPanel"]
-margin_top = 26.0
-margin_right = 310.0
-margin_bottom = 109.0
+margin_top = 33.0
+margin_right = 395.0
+margin_bottom = 151.0
 size_flags_vertical = 4
 custom_constants/separation = 50
 
 [node name="MarginContainer" type="MarginContainer" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer3/TeamPanel/HBoxContainer"]
-margin_bottom = 83.0
+margin_bottom = 118.0
 custom_constants/margin_top = 20
 custom_constants/margin_bottom = 20
 
 [node name="TeamContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer3/TeamPanel/HBoxContainer/MarginContainer"]
 unique_name_in_owner = true
 margin_top = 20.0
-margin_bottom = 63.0
+margin_bottom = 98.0
 
 [node name="DownloadDeckContainer" type="PanelContainer" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer3/TeamPanel/HBoxContainer"]
 margin_left = 50.0
-margin_right = 310.0
-margin_bottom = 83.0
+margin_right = 395.0
+margin_bottom = 118.0
 size_flags_horizontal = 8
 size_flags_vertical = 8
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer3/TeamPanel/HBoxContainer/DownloadDeckContainer"]
 margin_left = 2.0
 margin_top = 2.0
-margin_right = 258.0
-margin_bottom = 81.0
+margin_right = 343.0
+margin_bottom = 116.0
 
 [node name="Label" type="Label" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer3/TeamPanel/HBoxContainer/DownloadDeckContainer/VBoxContainer"]
-margin_right = 256.0
-margin_bottom = 23.0
+margin_right = 341.0
+margin_bottom = 30.0
 text = "Download Deck id: (e.g. 50904)"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer3/TeamPanel/HBoxContainer/DownloadDeckContainer/VBoxContainer"]
-margin_top = 26.0
-margin_right = 256.0
-margin_bottom = 53.0
+margin_top = 33.0
+margin_right = 341.0
+margin_bottom = 81.0
 
 [node name="DownloadDeckNumber" type="LineEdit" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer3/TeamPanel/HBoxContainer/DownloadDeckContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_right = 64.0
-margin_bottom = 27.0
+margin_right = 88.0
+margin_bottom = 48.0
 caret_blink = true
 caret_blink_speed = 0.5
 
 [node name="DownloadDeckButton" type="Button" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer3/TeamPanel/HBoxContainer/DownloadDeckContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 67.0
-margin_right = 150.0
-margin_bottom = 27.0
+margin_left = 91.0
+margin_right = 242.0
+margin_bottom = 48.0
+custom_fonts/font = SubResource( 1 )
 text = "Download"
 
 [node name="DeckDownloadError" type="Label" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer3/TeamPanel/HBoxContainer/DownloadDeckContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 56.0
-margin_right = 256.0
-margin_bottom = 79.0
+margin_top = 84.0
+margin_right = 341.0
+margin_bottom = 114.0
 custom_colors/font_color = Color( 0.933333, 0.0823529, 0.0823529, 1 )
 
 [node name="PanelContainer" type="PanelContainer" parent="MainMenu/Outercontainer/LeftRight/Panel"]
-margin_top = 163.0
-margin_right = 314.0
-margin_bottom = 567.0
+margin_top = 205.0
+margin_right = 399.0
+margin_bottom = 643.0
 
 [node name="ScenarioContainer" type="VBoxContainer" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer"]
 margin_left = 2.0
 margin_top = 2.0
-margin_right = 312.0
-margin_bottom = 402.0
+margin_right = 397.0
+margin_bottom = 436.0
 custom_constants/separation = 20
 
 [node name="Label" type="Label" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer/ScenarioContainer"]
-margin_right = 310.0
-margin_bottom = 23.0
+margin_right = 395.0
+margin_bottom = 30.0
 text = "SCENARIO"
 align = 1
 
 [node name="MarginContainer2" type="MarginContainer" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer/ScenarioContainer"]
-margin_top = 43.0
-margin_right = 310.0
-margin_bottom = 400.0
+margin_top = 50.0
+margin_right = 395.0
+margin_bottom = 434.0
 custom_constants/margin_top = 20
 
 [node name="ScenarioContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer/ScenarioContainer/MarginContainer2"]
 unique_name_in_owner = true
 margin_top = 20.0
-margin_right = 310.0
-margin_bottom = 357.0
+margin_right = 395.0
+margin_bottom = 384.0
 custom_constants/separation = 20
 
 [node name="PanelContainer" type="PanelContainer" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer/ScenarioContainer/MarginContainer2/ScenarioContainer"]
 margin_right = 4.0
-margin_bottom = 337.0
+margin_bottom = 364.0
 
 [node name="Scenarios" type="GridContainer" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer/ScenarioContainer/MarginContainer2/ScenarioContainer/PanelContainer"]
 unique_name_in_owner = true
 margin_left = 2.0
 margin_top = 2.0
 margin_right = 2.0
-margin_bottom = 335.0
+margin_bottom = 362.0
 columns = 4
 
 [node name="PanelContainer2" type="PanelContainer" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer/ScenarioContainer/MarginContainer2/ScenarioContainer"]
 margin_left = 24.0
-margin_right = 228.0
-margin_bottom = 337.0
+margin_right = 250.0
+margin_bottom = 364.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer/ScenarioContainer/MarginContainer2/ScenarioContainer/PanelContainer2"]
 margin_left = 2.0
 margin_top = 2.0
-margin_right = 202.0
-margin_bottom = 335.0
+margin_right = 224.0
+margin_bottom = 362.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 custom_constants/separation = 20
 
 [node name="ScenarioTitle" type="Label" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer/ScenarioContainer/MarginContainer2/ScenarioContainer/PanelContainer2/VBoxContainer"]
 unique_name_in_owner = true
-margin_right = 200.0
-margin_bottom = 23.0
+margin_right = 222.0
+margin_bottom = 30.0
 text = "Scenario"
 
 [node name="ScenarioTexture" type="TextureRect" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer/ScenarioContainer/MarginContainer2/ScenarioContainer/PanelContainer2/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 43.0
-margin_right = 200.0
-margin_bottom = 243.0
+margin_top = 50.0
+margin_right = 222.0
+margin_bottom = 250.0
 rect_min_size = Vector2( 200, 200 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer/ScenarioContainer/MarginContainer2/ScenarioContainer/PanelContainer2/VBoxContainer"]
-margin_top = 263.0
-margin_right = 200.0
-margin_bottom = 290.0
+margin_top = 270.0
+margin_right = 222.0
+margin_bottom = 310.0
 
 [node name="ModularLabel" type="Label" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer/ScenarioContainer/MarginContainer2/ScenarioContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
-margin_top = 2.0
-margin_right = 156.0
-margin_bottom = 25.0
+margin_top = 5.0
+margin_right = 203.0
+margin_bottom = 35.0
 text = "Modular encounter"
 
 [node name="EncounterSelect" type="OptionButton" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer/ScenarioContainer/MarginContainer2/ScenarioContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 159.0
-margin_right = 175.0
-margin_bottom = 27.0
+margin_left = 206.0
+margin_right = 222.0
+margin_bottom = 40.0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer/ScenarioContainer/MarginContainer2/ScenarioContainer/PanelContainer2/VBoxContainer"]
-margin_top = 310.0
-margin_right = 200.0
-margin_bottom = 333.0
+margin_top = 330.0
+margin_right = 222.0
+margin_bottom = 360.0
 
 [node name="ExpertMode" type="CheckBox" parent="MainMenu/Outercontainer/LeftRight/Panel/PanelContainer/ScenarioContainer/MarginContainer2/ScenarioContainer/PanelContainer2/VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
-margin_right = 122.0
-margin_bottom = 23.0
+margin_right = 155.0
+margin_bottom = 30.0
 text = "Expert Mode"
 
 [node name="MarginContainer3" type="MarginContainer" parent="MainMenu/Outercontainer"]
-margin_left = 373.0
-margin_top = 570.0
-margin_right = 490.0
-margin_bottom = 697.0
+margin_left = 180.0
+margin_top = 646.0
+margin_right = 600.0
+margin_bottom = 746.0
 size_flags_horizontal = 8
 size_flags_vertical = 8
-custom_constants/margin_top = 100
+custom_constants/margin_top = 10
 
 [node name="ReadyLaunch" type="HBoxContainer" parent="MainMenu/Outercontainer/MarginContainer3"]
-margin_top = 100.0
-margin_right = 117.0
-margin_bottom = 127.0
+margin_top = 10.0
+margin_right = 420.0
+margin_bottom = 100.0
 
 [node name="ReadyButton" type="Button" parent="MainMenu/Outercontainer/MarginContainer3/ReadyLaunch"]
 unique_name_in_owner = true
-margin_right = 52.0
-margin_bottom = 27.0
+margin_right = 167.438
+margin_bottom = 90.0
 text = "Ready"
 
 [node name="LaunchButton" type="Button" parent="MainMenu/Outercontainer/MarginContainer3/ReadyLaunch"]
 unique_name_in_owner = true
-margin_left = 55.0
-margin_right = 117.0
-margin_bottom = 27.0
+margin_left = 170.0
+margin_right = 420.0
+margin_bottom = 90.0
+rect_min_size = Vector2( 250, 0 )
 text = "Launch"
 
 [node name="Margin2" type="MarginContainer" parent="MainMenu/Outercontainer"]
-margin_top = 700.0
-margin_right = 490.0
-margin_bottom = 847.0
+margin_top = 749.0
+margin_right = 600.0
+margin_bottom = 911.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
-custom_constants/margin_top = 90
+custom_constants/margin_top = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Outercontainer/Margin2"]
-margin_top = 90.0
-margin_right = 490.0
-margin_bottom = 147.0
+margin_top = 10.0
+margin_right = 600.0
+margin_bottom = 162.0
 
 [node name="CancelButton" type="Button" parent="MainMenu/Outercontainer/Margin2/VBoxContainer"]
 unique_name_in_owner = true
-margin_right = 154.0
-margin_bottom = 27.0
+margin_right = 600.0
+margin_bottom = 90.0
+rect_min_size = Vector2( 600, 0 )
 size_flags_horizontal = 2
 text = "Back to main menu"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/Margin2/VBoxContainer"]
-margin_top = 30.0
-margin_right = 490.0
-margin_bottom = 57.0
+margin_top = 93.0
+margin_right = 600.0
+margin_bottom = 152.0
 
 [node name="FolderLabel" type="Label" parent="MainMenu/Outercontainer/Margin2/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_top = 2.0
-margin_right = 99.0
-margin_bottom = 25.0
+margin_top = 14.0
+margin_right = 128.0
+margin_bottom = 44.0
 text = "user folder:"
 valign = 2
 
 [node name="OpenFolderButton" type="Button" parent="MainMenu/Outercontainer/Margin2/VBoxContainer/HBoxContainer"]
-margin_left = 102.0
-margin_right = 147.0
-margin_bottom = 27.0
+margin_left = 131.0
+margin_right = 231.0
+margin_bottom = 59.0
+rect_min_size = Vector2( 100, 0 )
+custom_fonts/font = SubResource( 2 )
 text = "Open"
 
 [node name="LargePicture" type="TextureRect" parent="MainMenu"]

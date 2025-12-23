@@ -10,7 +10,7 @@ onready var v_buttons := $MainMenu/VBox/Center/VButtons
 onready var exit_button := $MainMenu/VBox/Center/VButtons/Exit
 onready var main_menu := $MainMenu
 onready var v_folder_label := get_node("%FolderLabel")
-onready var main_title := $MainMenu/VBox/Margin/Label
+onready var main_title := $MainMenu/VBox/Label
 
 var http_request: HTTPRequest = null
 var _current_destination = ""
@@ -209,6 +209,8 @@ func _all_downloads_completed():
 	display_folder_info()
 
 	main_title.text = "WARNEL CHAWPIOVS"
+	main_title.visible = false
+	get_node("%TextureRect").visible = true
 	cfc.all_loaded = true
 
 func create_default_folders():

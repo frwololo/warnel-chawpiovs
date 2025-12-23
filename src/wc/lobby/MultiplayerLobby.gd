@@ -115,7 +115,7 @@ func _on_Menu_resized() -> void:
 					tab.rect_position.x = get_viewport().size.x
 
 func register_self(info):
-	var id = get_tree().get_network_unique_id()
+	var id = cfc.get_network_unique_id()
 	# Store the info
 	players[id] = info
 
@@ -148,7 +148,7 @@ func find_player_by_network_id(network_id):
 
 remote func register_player(info):
 	# Get the id of the RPC sender.
-	var id = get_tree().get_rpc_sender_id()
+	var id = cfc.get_rpc_sender_id()
 	# Store the info
 	players[id] = info
 
@@ -163,10 +163,10 @@ remote func register_player(info):
 	
 
 	
-	if get_tree().is_network_server():
+	if cfc.is_game_master():
 		launch_button.disabled = true
 		new_person.kick.show()
-		rpc_id(id, "multiplayer_database_comparison")
+		cfc._rpc_id(self, id, "multiplayer_database_comparison")
 
 		launch_button.disabled = false	
 		if CFConst.DEBUG_AUTO_START_MULTIPLAYER:	
@@ -175,7 +175,7 @@ remote func register_player(info):
 		new_person.kick.hide()
 
 mastersync func master_multiplayer_database_comparison(other_status):
-	var client_id = get_tree().get_rpc_sender_id()
+	var client_id = cfc.get_rpc_sender_id()
 	var my_status = compute_database_hash()
 	if !(WCUtils.json_equal(my_status, other_status)):
 			_multiplayer_desync = other_status
@@ -196,7 +196,7 @@ func compute_database_hash() -> Dictionary:
 	
 remotesync func multiplayer_database_comparison():
 	var status = compute_database_hash()
-	rpc_id(1, "master_multiplayer_database_comparison", status)
+	cfc._rpc_id(self,1, "master_multiplayer_database_comparison", status)
 
 
 
@@ -204,16 +204,16 @@ func set_my_info(info):
 	my_info = info
 	
 	#update info locally
-	var id = get_tree().get_network_unique_id()
+	var id = cfc.get_network_unique_id()
 	players[id] = info
 	
 	#update my info on other clients/server
-	rpc("update_player", my_info)
+	cfc._rpc(self,"update_player", my_info)
 
 # Update player names remotely	
 remote func update_player(info):
 	# Get the id of the RPC sender.
-	var id = get_tree().get_rpc_sender_id()
+	var id = cfc.get_rpc_sender_id()
 	players[id] = info
 	if players_container.has_node("Player_%s" % str(id)):
 		var the_player = players_container.get_node("Player_%s" % str(id))
@@ -224,16 +224,16 @@ remote func update_player(info):
 # Callback from SceneTree.
 func _player_connected(id):
 	_set_status ("connected: " + str(id), false)
-	rpc_id(id, "register_player", my_info)
+	cfc._rpc_id(self, id, "register_player", my_info)
 
 func _launch_server_game():
 	# Finalize Network players data
 	var i = 1
 	for player in players:
-		rpc("set_network_player_index", player, i)
+		cfc._rpc(self,"set_network_player_index", player, i)
 		i+=1
 	_launch_game()
-	rpc("launch_client_game")
+	cfc._rpc(self,"launch_client_game")
 
 remotesync func set_network_player_index(player, i):
 	players[player].id = i
@@ -253,7 +253,7 @@ func _launch_game():
 
 
 func _player_disconnected(_id):
-	if get_tree().is_network_server():
+	if cfc.is_game_master():
 		#TODO remove player from list
 		pass
 	else:
@@ -327,6 +327,6 @@ func _join_as_client(host_ip):
 	peer.set_compression_mode(NetworkedMultiplayerENet.COMPRESS_RANGE_CODER)
 	peer.create_client(ip, CFConst.MULTIPLAYER_PORT)
 	get_tree().set_network_peer(peer)
-	my_info.name = "Player " + str(get_tree().get_network_unique_id())
+	my_info.name = "Player " + str(cfc.get_network_unique_id())
 	_set_status("Connecting...", true)
 

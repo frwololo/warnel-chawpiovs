@@ -82,6 +82,8 @@ signal dragging_started(card)
 signal state_changed(card, old_state, new_state)
 signal scripts_executed(card, sceng, trigger)
 
+#horizontal cards
+var _horizontal:= false
 
 # The properties dictionary will be filled in by the setup() code
 # according to the card definintion.
@@ -1714,6 +1716,7 @@ func retrieve_all_scripts() -> Dictionary:
 		found_scripts = cfc.set_scripts.get(canonical_id,{}).duplicate(true)
 	return(found_scripts)
 
+
 # Determines which play position (board, pile or hand)
 # a script should look for to find card scripts
 # based on the card's state.
@@ -2754,7 +2757,7 @@ func _process_card_state() -> void:
 				
 				#TODO bugfix I've had cards staying in "VIEWED_IN_PILE" limbo...
 				if get_parent().get_top_card() != self:
-					self.state = CardState.IN_PILE
+					self.set_state(CardState.IN_PILE)
 
 
 		CardState.IN_POPUP:

@@ -133,11 +133,12 @@ func show_preview_card(card) -> void:
 			preview_card.position = Vector2(0,0)
 			preview_card.scale = Vector2(1,1)
 		add_child(preview_card)
+		preview_card.set_is_faceup(true,true)		
 		# It's necessary we do this here because if we only we it during
 		# the process, the card will appear to teleport
 		if CFConst.VIEWPORT_FOCUS_ZOOM_TYPE == "resize":
 			preview_card.resize_recursively(preview_card._control, preview_card.preview_scale * cfc.curr_scale)
-			preview_card.card_front.scale_to(preview_card.preview_scale * cfc.curr_scale)
+			preview_card.get_card_front().scale_to(preview_card.preview_scale * cfc.curr_scale)
 		cfc.ov_utils.populate_info_panels(preview_card,focus_info)
 		call_deferred("_set_placement")
 		mouse_filter = Control.MOUSE_FILTER_IGNORE

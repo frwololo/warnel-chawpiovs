@@ -3,6 +3,7 @@ extends CardBackGlow
 var font_scaled : float = 1
 onready var art := $Art
 onready var art2 := $TextureRect2
+var art_filename = ""
 
 func _ready() -> void:
 	viewed_node = $Viewed
@@ -29,12 +30,8 @@ func scale_to(scale_multiplier: float) -> void:
 		
 	
 func set_card_art(filename) -> void:
-	var new_img = WCUtils.load_img(filename)
-	if not new_img:
-		return
-	var imgtex = ImageTexture.new()
-	imgtex.create_from_image(new_img)	
-	art.texture = imgtex
+	art_filename = filename		
+	art.texture = cfc.get_external_texture(art_filename)
 	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	# In case the generic art has been modulated, we switch it back to normal colour
 	art.self_modulate = Color(1,1,1)

@@ -193,7 +193,7 @@ var attachments := []
 # this tracks who its host is.
 var current_host_card : Card = null
 # If true, the card will be displayed faceup. If false, it will be facedown
-var is_faceup := true setget set_is_faceup, get_is_faceup
+var is_faceup := false setget set_is_faceup, get_is_faceup
 # Used to keep the card and mouse cursor in sync when dragging the card around
 # Represents the cursor's position relative to the card origin when drag was initiated
 var _drag_offset: Vector2
@@ -334,14 +334,16 @@ func _ready() -> void:
 	#this gives an options for subclasses to skip this parent's ready calls if needed
 	_class_specific_ready()
 
-func _init_card_layout() -> void:
+func get_card_back():
+	if !card_back:
+		_init_card_back()
+	return card_back
+
+func _init_card_back():
 	# Because we duplicate the card when adding to the viewport focus
 	# It already has a CardBack node, so we don't want to replicate it
 	# so we only add a CardBack node, if we know it's not a dupe focus
 	if get_parent().name != "Viewport":
-		var card_front_instance = card_front_design.instance()
-		_card_front_container.add_child(card_front_instance)
-		card_front = card_front_instance
 		# We do not need to instance the card_back when card is seen
 		# in a preview card grid
 		if get_parent().get_class() != "CVGridCardObject":
@@ -354,8 +356,32 @@ func _init_card_layout() -> void:
 	# internal variables.
 	else:
 		card_back = _card_back_container.get_child(0)
+
+func get_card_front():
+	if !card_front:
+		_init_card_front()
+	return card_front
+
+
+func _init_card_front() -> void:
+	# Because we duplicate the card when adding to the viewport focus
+	# It already has a CardBack node, so we don't want to replicate it
+	# so we only add a CardBack node, if we know it's not a dupe focus
+	if get_parent().name != "Viewport":
+		var card_front_instance = card_front_design.instance()
+		_card_front_container.add_child(card_front_instance)
+		card_front = card_front_instance
+	# If it is a viewport focus dupe, we still need to setup the
+	# card_back variable, as the .duplicate() method does not copy
+	# internal variables.
+	else:
 		card_front = _card_front_container.get_child(0)
-		var _tmp = 1
+
+
+func _init_card_layout() -> void:
+	_init_card_front()
+	_init_card_back()
+
 
 
 # Ensures that the canonical card name is set in all fields which use it.
@@ -672,7 +698,7 @@ func modify_property(
 							"previous_property_value": previous_value,
 							"tags": tags
 						}
-				)				
+				)			
 			if not card_front.card_labels.has(property):
 				if not property.begins_with("_"):
 					#print_debug("Warning: ", property,
@@ -1014,18 +1040,16 @@ func get_is_viewed() -> bool:
 func set_card_name(value : String, set_label := true) -> void:
 	# if the card_front.card_labels variable is not set it means ready() has not
 	# run yet, so we just store the card name for later.
-	if not card_front:
-		canonical_name = value
-	else:
+	if card_front:
 		# We set all areas of the card to match the canonical name.
 		var name_label = card_front.card_labels["Name"]
 		if set_label and name_label as RichTextLabel:
 			card_front.set_rich_label_text(name_label,value)
 		elif set_label:
 			card_front.set_label_text(name_label,value)
-		name = value + "-" + guidMaster.get_guid(self) #a unique identifier that will also work for network calls
-		canonical_name = value
-		properties["Name"] = value
+	name = value + "-" + guidMaster.get_guid(self) #a unique identifier that will also work for network calls
+	canonical_name = value
+	properties["Name"] = value
 
 
 # Getter for canonical_name
@@ -1038,7 +1062,8 @@ func get_card_name() -> String:
 # It's preferrable to set canonical_name instead.
 func set_name(value : String) -> void:
 	.set_name(value)
-	card_front.card_labels["Name"].text = value
+	if card_front:
+		card_front.card_labels["Name"].text = value
 	canonical_name = value
 
 
@@ -2803,8 +2828,8 @@ func _process_card_state() -> void:
 				set_scale(Vector2(1,1))
 				resize_recursively(_control, focused_scale * cfc.curr_scale)
 #				set_card_size(CFConst.CARD_SIZE * CFConst.FOCUSED_SCALE, true)
-				card_front.scale_to(focused_scale * cfc.curr_scale)
-				card_back.scale_to(focused_scale * cfc.curr_scale)
+				get_card_front().scale_to(focused_scale * cfc.curr_scale)
+				get_card_back().scale_to(focused_scale * cfc.curr_scale)
 			# If the card has already been been viewed while down,
 			# we allow the player hovering over it to see it
 			if not is_faceup:
@@ -2825,7 +2850,7 @@ func _process_card_state() -> void:
 			else:
 #				set_card_size(CFConst.CARD_SIZE * CFConst.PREVIEW_SCALE)
 				resize_recursively(_control, preview_scale * cfc.curr_scale)
-				card_front.scale_to(preview_scale * cfc.curr_scale)
+				get_card_front().scale_to(preview_scale * cfc.curr_scale)
 
 		CardState.DECKBUILDER_GRID:
 			$Control.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -2844,7 +2869,7 @@ func _process_card_state() -> void:
 			else:
 #				set_card_size(CFConst.CARD_SIZE * thumbnail_scale)
 				resize_recursively(_control, thumbnail_scale * cfc.curr_scale)
-				card_front.scale_to(thumbnail_scale * cfc.curr_scale)
+				get_card_front().scale_to(thumbnail_scale * cfc.curr_scale)
 
 		CardState.MOVING_TO_SPAWN_DESTINATION:
 			z_index = 99

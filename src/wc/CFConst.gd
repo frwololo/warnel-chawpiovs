@@ -639,7 +639,7 @@ const FORCE_LOGS:= false
 #seconds until we trigger a desync warning when the stack is blocked
 #set to 0 for infinite waiting time (debug)
 const DESYNC_TIMEOUT:= 5
-const DISPLAY_DEBUG_MSG = true
+const DISPLAY_DEBUG_MSG = false
 
 const DEBUG_AUTO_START_MULTIPLAYER = false
 

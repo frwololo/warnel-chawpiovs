@@ -248,7 +248,6 @@ func setup() -> void:
 	_runtime_properties_setup()
 	update_groups()
 	init_token_drawer()	
-	set_card_art()
 	position_ui_elements()
 	_ready_load_from_json()
 	
@@ -461,39 +460,15 @@ func get_art_filename(force_if_facedown: = true):
 
 	return ("res://assets/card_backs/generic_back.png")
 
+func get_art_texture(force_if_facedown: = true):
+	return cfc.get_card_texture(self, force_if_facedown)
+
 func get_cropped_art_texture():
-	var filename = get_art_filename()
-	var new_img = WCUtils.load_img(filename)
-	if not new_img:
-		return	false
+	return cfc.get_cropped_card_texture(self)
 
-	var type_code = properties.get("type_code", 0)
-	
-	if _horizontal:
-		new_img = WCUtils.rotate_90(new_img)	
-		
-	var imgtex = ImageTexture.new()
-	
-	imgtex.create_from_image(new_img)	
-	var width = imgtex.get_width()
-	var height = imgtex.get_height()	
-	var region := Rect2(0, 0, width, width)
-	if _horizontal:
-		match type_code:
-			"main_scheme":
-				region = Rect2(width/2,0, width/2, height)
-			_:
-				region = Rect2(0, 0, height, height)
-	var texture = _get_cropped_texture(imgtex, region)	
-	return texture
-
-func _get_cropped_texture(texture : Texture, region : Rect2) -> AtlasTexture:
-	var atlas_texture := AtlasTexture.new()
-	atlas_texture.set_atlas(texture)
-	atlas_texture.set_region(region)
-	return atlas_texture
-
-func set_card_art():
+func set_card_art(forced=false):
+	if card_front.art_filename and !forced:
+		return
 	var filename = get_art_filename()
 	if (filename):
 		card_front.set_card_art(filename)
@@ -1792,6 +1767,10 @@ func set_is_faceup(
 	
 	if check:
 		return retcode
+	
+	if value:
+		#initiate the card art if it's the first time we're setting this faceup
+		set_card_art()
 			
 	#we remove all of the card's properties as long as it's facedown on the board,
 	#to avoid triggering any weird things
@@ -2326,6 +2305,9 @@ func _ready_load_from_json(card_description: Dictionary = {}):
 					false,
 					["Init", "emit_signal"])
 		cfc.flush_cache()
+	else:
+		if state in[CardState.ON_PLAY_BOARD, CardState.IN_HAND]:
+			set_is_faceup(true, true)
 
 	#we don't handle the attachment/host content here, it is don by the board loading, after all cards are loaded
 

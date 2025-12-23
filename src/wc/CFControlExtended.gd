@@ -30,6 +30,8 @@ var _ongoing_processes:= {}
 var _total_cards:int = 0
 var _cards_loaded: int = 0
 
+var _card_texture_cache:= {}
+var _cropped_texture_cache:= {}
 
 var ping_data: = {}
 var last_ping_time:= 0
@@ -38,6 +40,61 @@ var fonts = {}
 
 # warning-ignore:unused_signal
 signal json_parse_error(msg)
+
+func get_card_texture(card, force_if_facedown: = true):
+	var filename = card.get_art_filename(force_if_facedown)
+	return get_external_texture(filename)
+	
+func get_external_texture(filename):
+	if !_card_texture_cache.has(filename):
+		_card_texture_cache[filename] = get_external_texture_no_cache(filename)
+	return _card_texture_cache[filename]
+
+func get_external_texture_no_cache(filename):	
+	var new_img = WCUtils.load_img(filename)
+	if not new_img:
+		return	null
+
+	var imgtex = ImageTexture.new()	
+	imgtex.create_from_image(new_img)	
+	return imgtex
+
+func get_cropped_card_texture(card, force_if_facedown: = true):
+	var filename = card.get_art_filename(force_if_facedown)
+	if !_cropped_texture_cache.has(filename):
+		_cropped_texture_cache[filename] = get_cropped_card_texture_no_cache(card, filename)
+	return _cropped_texture_cache[filename]
+
+func get_cropped_card_texture_no_cache(card, filename):
+	var new_img = WCUtils.load_img(filename)
+	if not new_img:
+		return	false
+
+	var type_code = card.get_property("type_code", 0)
+	
+	if card._horizontal:
+		new_img = WCUtils.rotate_90(new_img)	
+		
+	var imgtex = ImageTexture.new()
+	
+	imgtex.create_from_image(new_img)	
+	var width = imgtex.get_width()
+	var height = imgtex.get_height()	
+	var region := Rect2(0, 0, width, width)
+	if card._horizontal:
+		match type_code:
+			"main_scheme":
+				region = Rect2(width/2,0, width/2, height)
+			_:
+				region = Rect2(0, 0, height, height)
+	var texture = _get_cropped_texture(imgtex, region)	
+	return texture
+
+func _get_cropped_texture(texture : Texture, region : Rect2) -> AtlasTexture:
+	var atlas_texture := AtlasTexture.new()
+	atlas_texture.set_atlas(texture)
+	atlas_texture.set_region(region)
+	return atlas_texture
 
 func get_font(path, size) -> DynamicFont:
 	if fonts.has(path):
@@ -945,8 +1002,8 @@ func INIT_LOG():
 	file.close() 	
 	
 func LOG(to_print:String):
-#	if !cfc._debug:
-#		return
+	if !cfc._debug:
+		return
 	_log_buffer+= Time.get_datetime_string_from_system() + " - " + to_print + "\n"	
 	if _log_buffer.length() < 2000:
 		return

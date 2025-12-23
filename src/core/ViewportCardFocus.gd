@@ -258,7 +258,7 @@ func _extra_dupe_ready(dupe_focus: Card, card: Card) -> void:
 		dupe_focus.scale = Vector2(1,1) * dupe_focus.focused_scale * cfc.curr_scale
 	else:
 		dupe_focus.resize_recursively(dupe_focus._control, dupe_focus.focused_scale * cfc.curr_scale)
-		dupe_focus.card_front.scale_to(dupe_focus.focused_scale * cfc.curr_scale)
+		dupe_focus.get_card_front().scale_to(dupe_focus.focused_scale * cfc.curr_scale)
 		dupe_focus.tokens.token_drawer(false, true)
 
 func _input(event):

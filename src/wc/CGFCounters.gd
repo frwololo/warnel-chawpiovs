@@ -20,16 +20,38 @@ func _ready() -> void:
 	value_node = "Value"
 	needed_counters = {
 	}
-	
+
 
 	spawn_needed_counters()
-	
+
 	#Signals
 	scripting_bus.connect("current_playing_hero_changed", self, "_refresh")
 	#scripting_bus.connect("manapool_modified", self, "_refresh")
-	
+
 func _refresh (trigger_details: Dictionary = {}):
-	pass 
+	pass
+
+# add_new_counter moved from src/core Counters modifications
+func add_new_counter(counter_name, labels = {}):
+	if (not needed_counters.has(counter_name)):
+		needed_counters[counter_name] = labels
+
+	var counter = counter_scene.instance()
+	counters_container.add_child(counter)
+	counter.name = counter_name
+	var counter_labels = needed_counters[counter_name]
+	for label in counter_labels:
+		if not counter.has_node(label):
+			continue
+		counter.get_node(label).text = str(counter_labels[label])
+		# The value_node is also used determine the initial values
+		# of the counters dictionary
+		if label == value_node:
+			counters[counter_name] = counter_labels[label]
+			# _labels stores the label node which displays the value
+			# of the counter
+			_labels[counter_name] = counter.get_node(label)
+	return counter
 
 # We add counters dynamically at runtime as requested, even if they didn't exist in the game definition
 # We do this before calling the parent which actually needs the counter to exist
@@ -41,6 +63,6 @@ func mod_counter(counter_name: String,
 		tags := ["Manual"]) -> int:
 	if (not needed_counters.has(counter_name)):
 		add_new_counter(counter_name, {"CounterTitle": counter_name, "Value" : 0} )
-		
+
 	var result = .mod_counter(counter_name, value, set_to_mod, check, requesting_object, tags)
 	return result

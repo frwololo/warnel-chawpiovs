@@ -63,6 +63,9 @@ func _setup() -> void:
 	flush_cache()
 	# We need to reset these values for UNIT testing
 	NMAP = {}
+	# Initialize 'hand' to null to prevent errors in core MousePointer._process()
+	# which runs before WCMousePointer._process() due to Godot 3.6.2 behavior
+	NMAP["hand"] = null
 	are_all_nodes_mapped = false
 	card_drag_ongoing = null
 	# The below takes care that we adjust some settings when testing via Gut
@@ -670,12 +673,39 @@ func load_script_definitions() -> void:
 	var combined_scripts := {}
 
 	#load from user first
-	var script_definition_files := CFUtils.list_files_in_directory(
+	var user_script_files = CFUtils.list_files_in_directory(
 				"user://Sets/", CFConst.SCRIPT_SET_NAME_PREPEND, true)
+	print("CFControlExtended: Looking for script files in user://Sets/")
+	print("CFControlExtended: Found ", user_script_files.size(), " files in user://Sets/")
+	print("CFControlExtended: Files: ", user_script_files)
 
 	#then we load from resources (their entries will overwrite user ones only if they don't exist)
-	script_definition_files += CFUtils.list_files_in_directory(
-				"res://Sets/", CFConst.SCRIPT_SET_NAME_PREPEND, true)
+	# Note: Directory.open() may not work with res:// paths, so we use the cached filesystem
+	# or try to use ResourceLoader to find files
+	var res_script_files = []
+	if _cached_filesystem.has("res://Sets"):
+		# Use cached filesystem if available
+		for file in _cached_filesystem["res://Sets"]:
+			if file.begins_with(CFConst.SCRIPT_SET_NAME_PREPEND) and file.ends_with(".json"):
+				res_script_files.append("res://Sets/" + file)
+	else:
+		# Try using Directory (may not work with res://)
+		res_script_files = CFUtils.list_files_in_directory(
+					"res://Sets/", CFConst.SCRIPT_SET_NAME_PREPEND, true)
+		# If that fails, try manual listing
+		if res_script_files.empty():
+			# Manually check for known script files
+			var known_files = ["SetScripts_core.json"]
+			for known_file in known_files:
+				var full_path = "res://Sets/" + known_file
+				if ResourceLoader.exists(full_path) or WCUtils.file_exists(full_path):
+					res_script_files.append(full_path)
+
+	print("CFControlExtended: Looking for script files in res://Sets/")
+	print("CFControlExtended: Found ", res_script_files.size(), " files in res://Sets/")
+	print("CFControlExtended: Files: ", res_script_files)
+
+	var script_definition_files = user_script_files + res_script_files
 	WCUtils.debug_message("Found " + str(script_definition_files.size()) + " script files")
 	for script_file in script_definition_files:
 		var prefix_end = script_file.find(CFConst.SCRIPT_SET_NAME_PREPEND) + CFConst.SCRIPT_SET_NAME_PREPEND.length()
@@ -848,13 +878,26 @@ func instance_ghost_card(original_card, controller_id) -> Card:
 	card.set_controller_hero_id(controller_id)
 	return card
 
+# _instance_card moved from src/core CFControl modifications
+func _instance_card(card_id: String) -> Card:
+	# We discover the template from the "Type"  property defined
+	# in each card. Any property can be used
+	var template = load(CFConst.PATH_CARDS
+			+ card_definitions[card_id][CardConfig.SCENE_PROPERTY] + ".tscn")
+	var card = template.instance()
+	# We set the card_name variable so that it's able to be used later
+	card.canonical_name = card_definitions[card_id]["Name"]
+	card.canonical_id = card_id
+	emit_signal("new_card_instanced", card)
+	return(card)
+
 func instance_card(card_id: String) -> Card:
 	if (!card_definitions.has(card_id)):
 		#TODO error handling
 		var _error = 1
 		return null
 
-	return ._instance_card(card_id)
+	return _instance_card(card_id)
 
 func instance_card_with_owner(card_id: String, owner_id:int) -> Card:
 	var card = instance_card(card_id)

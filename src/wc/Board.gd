@@ -63,6 +63,9 @@ func set_groups(grid_or_pile, additional_groups:= []):
 func _ready() -> void:
 	cfc.map_node(self)
 	counters = $Counters
+	# PATH_MOUSE_POINTER is overridden in CFConst to use WCMousePointer
+	# so parent _ready() will create WCMousePointer automatically
+	._ready()
 	# We use the below while to wait until all the nodes we need have been mapped
 	# "hand" should be one of them.
 	# We're assigning our positions programmatically,
@@ -195,6 +198,9 @@ func grid_setup():
 			if cfc.NMAP.has(grid_name): #skip if already exists
 				continue
 			var scene = grid_info.get("scene", basicPile)
+			# Use WCPile for set_aside to get has_card_id function
+			if grid_name == "set_aside":
+				scene = preload("res://src/wc/WCPile.tscn")
 			var pile: Pile = scene.instance()
 			pile.add_to_group("piles")
 			pile.name = grid_name

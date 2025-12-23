@@ -19,6 +19,17 @@ func _init():
 		card_front_design = _CARDFRONT_SCENE
 	attachment_offset = AttachmentOffset.BOTTOM_RIGHT
 
+# Override _init_card_layout to ensure card_front_design and card_back_design are set
+# before the parent tries to instance them
+func _init_card_layout() -> void:
+	# Ensure card designs are set before calling parent
+	if not card_back_design:
+		card_back_design = _CARDBACK_SCENE
+	if not card_front_design:
+		card_front_design = _CARDFRONT_SCENE
+	# Now call parent which will instance the designs
+	._init_card_layout()
+
 # -1 uninitialized, 0 Villain, any positive value: hero
 var _owner_hero_id  := -1
 var _controller_hero_id  := -1 setget set_controller_hero_id, get_controller_hero_id
@@ -2312,6 +2323,14 @@ func clear_highlight():
 func get_state_scripts(card_scripts, trigger_card, trigger_details):
 	var state_scripts_dict = get_state_scripts_dict(card_scripts, trigger_card, trigger_details)
 	return state_scripts_dict["state_scripts"]
+
+# is_animating moved from src/core CardTemplate modifications
+func is_animating():
+	if _tween and _tween.is_active():
+		return true
+	if _flip_tween and _flip_tween.is_active():
+		return true
+	return false
 
 func get_state_scripts_dict(card_scripts, trigger_card, trigger_details):
 	var state_scripts = []

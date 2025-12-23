@@ -28,7 +28,7 @@ enum FLIP_STATUS {
 enum CanInterrupt {
 	NO,
 	MAY,
-	MUST	
+	MUST
 }
 
 enum USER_INTERACTION_STATUS {
@@ -84,7 +84,7 @@ const FOCUS_STYLE = CFInt.FocusStyle.BOTH
 # If set to resize, will resize the card's viewport dupe's dimentions.
 # This prevent blurry text, but needs more setup in the
 # card's front and card back scripts.
-# 
+#
 # Generally if the standard card size is large, this can stay as 'scale'
 # If the standard card size is small, then resize tends to work better.
 const VIEWPORT_FOCUS_ZOOM_TYPE = "resize"
@@ -147,7 +147,8 @@ const PATH_ALTERANT_ENGINE := PATH_CUSTOM + "ScriptingEngine/AlterantEngine.gd"
 # This specifies the path to the MousePointer. If you wish to extend
 # The mouse pointer functionality with your own code,
 # Point this to your own scene file with a scrip extending Mouse Pointer.
-const PATH_MOUSE_POINTER := PATH_CORE + "MousePointer.tscn"
+# Override to use WCMousePointer instead of core MousePointer
+const PATH_MOUSE_POINTER := "res://src/wc/WCMousePointer.tscn"
 # The amount of distance neighboring cards are pushed during card focus
 #
 # It's based on the card width. Bigger percentage means larger push.
@@ -235,7 +236,7 @@ const CostsState := {
 	"INCREASED": Color(1, 0.5, 0, 0) * 1.3, #alpha zero
 	"DECREASED": Color(0.5, 1, 0,0 ) * 1.3, #alpha zero
 	"OK": Color(0, 0.5, 1) * 1.3,
-	"OK_INTERRUPT": Color(0, 1, 0) * 1.3,	
+	"OK_INTERRUPT": Color(0, 1, 0) * 1.3,
 	"CACHE_INVALID": Color(1, 1, 1, 0), #alpha zero
 }
 # This is used when filling in card property labels in [Card].setup()
@@ -290,7 +291,7 @@ const ALL_TYPE_GROUPS: = [
 	"group_friendly",
 	"group_allies_and_heroes",
 ]
-	
+
 
 const FORCE_HORIZONTAL_CARDS := {
 	"main_scheme" : true,
@@ -311,7 +312,7 @@ const DEFAULT_PROPERTIES_BY_TYPE:= {
 		"boost_cards_per_attack":1,
 		"boost_cards_per_scheme": 1,
 	}
-} 
+}
 
 const TYPECODE_TO_PILE := {
 	"event" : "discard",
@@ -332,15 +333,15 @@ const GRID_SETUP := {
 		"x" : 0,
 		"y" : 20,
 		"type" : "pile",
-		"scale" : 0.5			
+		"scale" : 0.5
 	},
 	"discard_villain" :{
 		"x" : 150,
 		"y" : 20,
 		"type" : "pile",
 		"faceup" : true,
-		"scale" : 0.5			
-	},		
+		"scale" : 0.5
+	},
 	"villain" : {
 		"x" : 300,
 		"y" : 20,
@@ -360,27 +361,27 @@ const GRID_SETUP := {
 		"type" : "pile",
 		"faceup" : true,
 		"scale" : 0.5
-	},		
+	},
 }
 const HERO_GRID_SETUP := {
 	"encounters_facedown" :{
 		"x" : 0,
 		"y" : 0,
 		"type" : "pile",
-		"scale" : 0.5		
+		"scale" : 0.5
 	},
 	"encounters_reveal" :{
 		"x" : 150,
 		"y" : 0,
 		"type" : "pile",
 		"faceup": true,
-		"scale" : 0.5			
-	},	
+		"scale" : 0.5
+	},
 	"deck" :{
 		"x" : 150,
 		"y" : 440,
 		"type" : "pile",
-		"scale" : 0.5			
+		"scale" : 0.5
 	},
 	"discard" :{
 		"x" : 0,
@@ -388,8 +389,8 @@ const HERO_GRID_SETUP := {
 		"type" : "pile",
 		"faceup" : true,
 		"groups" : ["player_discard"],
-		"scale" : 0.5			
-	},	
+		"scale" : 0.5
+	},
 	"enemies" : {
 		"x" : 350,
 		"y" : 00,
@@ -406,12 +407,12 @@ const HERO_GRID_SETUP := {
 	"upgrade_support" : {
 		"x" : 350,
 		"y" : 440,
-	},									
+	},
 }
 
 const TOKENS_ONLY_ON_BOARD_EXCEPTIONS:= [
 	"encounters_facedown",
-	"encounters_reveal"	
+	"encounters_reveal"
 ]
 
 const HERO_GRID_LAYOUT := {
@@ -430,24 +431,24 @@ const HERO_GRID_LAYOUT := {
 					{
 						"name": "encounters_facedown",
 						"type": "pile",
-						"scale": 0.5,				
+						"scale": 0.5,
 					},
-# Example of spacer usage					
+# Example of spacer usage
 #					{
 #						"name": "test",
 #						"type": "spacer",
-#						"scale": 0.5,				
-#					},					
+#						"scale": 0.5,
+#					},
 					{
 						"name": "encounters_reveal",
 						"type": "pile",
-						"scale": 0.5,									
-					}					
+						"scale": 0.5,
+					}
 				]
 			},
 			{
 				"name": "identity",
-				"type": "grid"				
+				"type": "grid"
 			},
 			{
 				"name": "hero_piles",
@@ -456,14 +457,14 @@ const HERO_GRID_LAYOUT := {
 					{
 						"name": "discard",
 						"type": "pile",
-						"scale": 0.5,											
+						"scale": 0.5,
 					},
 					{
 						"name": "deck",
 						"type": "pile",
-						"scale": 0.5,											
-					}					
-				]				
+						"scale": 0.5,
+					}
+				]
 			}
 		]
 		},
@@ -475,18 +476,18 @@ const HERO_GRID_LAYOUT := {
 		"children": [
 			{
 				"name": "enemies",
-				"type": "grid"				
+				"type": "grid"
 			},
 			{
 				"name": "allies",
-				"type": "grid"				
+				"type": "grid"
 			},
 			{
 				"name": "upgrade_support",
-				"type": "grid"				
+				"type": "grid"
 			}
 		]
-		}		
+		}
 	]
 }
 
@@ -524,12 +525,12 @@ const AUTO_KEYWORDS := {
 	"toughness" : "bool",
 	"uses" : "string",
 	"victory" : "int",
-	"villainous" : "bool",	
-	
+	"villainous" : "bool",
+
 #additional ones not officially in the game
 
 	"invincible": "int",
-					
+
 }
 
 const MAX_TEAM_SIZE:int = 4
@@ -544,7 +545,7 @@ enum PHASE_STEP {
 	PLAYER_MULLIGAN,
 	MULLIGAN_DONE,
 	IDENTITY_SETUP,
-	GAME_READY, #an additional step to make sure nothing runs before game is loaded	 
+	GAME_READY, #an additional step to make sure nothing runs before game is loaded
 	PLAYER_TURN, #turn loops here
 	PLAYER_DISCARD,
 	PLAYER_DRAW,
@@ -557,7 +558,7 @@ enum PHASE_STEP {
 	VILLAIN_PASS_PLAYER_TOKEN,
 	VILLAIN_END,
 	ROUND_END,
-	SYSTEMS_CHECK		
+	SYSTEMS_CHECK
 }
 
 const CAN_PRECOMPUTE : = [
@@ -575,7 +576,7 @@ const OPTIONS := {
 }
 
 const TARGET_ARROW_COLOR_BY_TAG: = {
-	"attack" : Color(0.7, 0.1, 0.1) 
+	"attack" : Color(0.7, 0.1, 0.1)
 }
 
 const TARGET_ARROW_COLOR_BY_NAME: = {
@@ -605,7 +606,7 @@ const DEFAULT_SETTINGS:= {
 		'list_rooms_url': 'https://wololo.net/wc/lobby.php?mode=list_rooms',
 		'join_room_url': 'https://wololo.net/wc/lobby.php?mode=join_room&room_name=__ROOM_NAME__',
 	}
-	
+
 }
 
 #if a menu only has one entry, it will auto execute it whenever possible
@@ -623,12 +624,12 @@ const AUTO_EXECUTE_ONE_ENTRY_MENU = AUTO_EXECUTE_MENU.OFF # SCRIPTED_ONLY
 # Debugging options
 #
 #set to true to help with breakpoints and debug
-const DISABLE_THREADS:= true 
+const DISABLE_THREADS:= true
 #this disables the announcer messages. Usually not recommended, but might help with speeding up tests
 const DISABLE_ANNOUNCER:= false
 #useful only for tests to accelerate the loading of the game and get to gameplay faster
 const SKIP_MULLIGAN:= false
-#if set to true, the system checks will only send hashed instead of 
+#if set to true, the system checks will only send hashed instead of
 #full dictionaries. Probably better for bandwidth
 #set to false when debugging a network/desync issue
 const SYSTEMS_CHECK_HASH_ONLY:= true

@@ -69,6 +69,7 @@ func _ready() -> void:
 	$ArrowHead/Area2D.connect("area_entered", self, "_on_ArrowHead_area_entered")
 	# warning-ignore:return_value_discarded
 	$ArrowHead/Area2D.connect("area_exited", self, "_on_ArrowHead_area_exited")
+	self.z_index = CFConst.Z_INDEX_BOARD_CARDS_ABOVE + 1
 
 func show_arrow_head():
 	show_arrow_head = true
@@ -90,31 +91,39 @@ var _modulate_direction = 1
 func _process(_delta: float) -> void:
 	if is_targeting:
 		var destination = get_stored_destination_position()
-		var pointing_to = destination if destination else cfc.NMAP.board.mouse_pointer.determine_global_mouse_pos()	
+		var pointing_to = destination
+		if !pointing_to:
+			if gamepadHandler.is_mouse_input():
+				pointing_to = cfc.NMAP.board.mouse_pointer.determine_global_mouse_pos()	
+			else:
+				pointing_to = gamepadHandler.get_approx_position()
 		_draw_targeting_arrow(pointing_to)
 		
 	match display_mode:
 		DISPLAY_MODE.SHADOW:
 			$Highlight.width = 5
 			
-			var owner_z_index = 98
+			var min_z_index = CFConst.Z_INDEX_BOARD_CARDS_ABOVE
+			var owner_z_index = CFConst.Z_INDEX_ANNOUNCER
 			if owner_object and is_instance_valid(owner_object) and "z_index" in owner_object:
 				owner_z_index = owner_object.z_index
+			
+			var base_index = min(owner_z_index, min_z_index)
 				
 			self.z_as_relative = false
-			self.z_index = owner_z_index  - 1
+			self.z_index = base_index - 1
 
 			if _stored_destination and is_instance_valid(_stored_destination):
 				if "z_index" in _stored_destination:
 					_stored_destination.z_as_relative = false
-					_stored_destination.z_index = owner_z_index  + 1
+					_stored_destination.z_index = base_index
 				else:
 					var parent = _stored_destination.get_parent()
 					if parent and  "z_index" in parent:
-						parent.z_index = owner_z_index  + 1
+						parent.z_index = base_index
 
 			$Highlight.z_as_relative = false
-			$Highlight.z_index = owner_z_index - 2
+			$Highlight.z_index = self.z_index -1
 			var modulate_modification = 1 + _delta * _modulate_direction
 			var the_max = $Highlight.modulate.r
 			if $Highlight.modulate.g > the_max:

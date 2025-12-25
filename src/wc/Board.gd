@@ -41,6 +41,8 @@ var _ready_to_load:= {}
 
 var _team_size = 0
 var _total_delta:float = 0.0
+var card_focus_allowed = true
+var _cached_pile_data = {}
 
 func get_team_size():
 	if !_team_size:
@@ -67,6 +69,7 @@ func _ready() -> void:
 	$Debug.pressed = cfc._debug
 	
 	grid_setup()
+	ui_setup()
 	cfc._rpc(self,"ready_for_step", LOADING_STEPS.RNG_INIT)	
 
 var _clients_ready_for_step = {}
@@ -85,6 +88,8 @@ remotesync func ready_for_step(next_step):
 func load_next_step(next_step):
 	match next_step:
 		LOADING_STEPS.RNG_INIT:
+			#setup the controller handler
+			gamepadHandler.connect_viewport()
 			if cfc.is_game_master():
 				var my_seed = CFUtils.generate_random_seed()
 				cfc._rpc(self,"set_random_seed", my_seed)
@@ -102,10 +107,18 @@ func load_next_step(next_step):
 			#next step called from within function
 		LOADING_STEPS.READY_TO_START:
 			offer_to_load_last_game()
+			#need to move gamePadHandler below any potential dialog box to ensure it captures events beforehand
+			get_tree().root.move_child(gamepadHandler, get_tree().root.get_children().size()-1)
+
 		LOADING_STEPS.START_GAME:
+			grab_default_focus()
+			
+			#refresh game session specific cache
+			_cached_pile_data = {}
+			
+			#start game
 			gameData.start_game()
-#			if !gamepadHandler.fake_mouse_pointer in get_children():
-#				add_child(gamepadHandler.fake_mouse_pointer)			
+			
 
 func _decline_offer_to_load_last_game():
 	gameData.init_save_folder()
@@ -192,6 +205,8 @@ func grid_setup():
 			pile.faceup_cards = grid_info.get("faceup", false)
 			add_child(pile)
 			set_groups(pile, grid_info.get("groups", []))
+			if grid_info["x"] < 0 or grid_info["y"] <0:
+				pile.visible = false
 		else:
 			if has_node(grid_name): #skip if already exists
 				continue
@@ -207,6 +222,7 @@ func grid_setup():
 			grid.rect_position = Vector2(grid_info["x"], grid_info["y"])			
 			grid.auto_extend = grid_info.get("auto_extend", true)
 			set_groups(grid, grid_info.get("groups", []))
+
 
 	for i in range(get_team_size()):
 		var hero_id = i+1
@@ -239,6 +255,8 @@ func grid_setup():
 				pile.faceup_cards = grid_info.get("faceup", false)
 				add_child(pile)
 				set_groups(pile, grid_info.get("groups", []))
+				if x < 0 or y <0:
+					pile.visible = false
 			else:
 				if has_node(real_grid_name): #skip if already exists
 					continue
@@ -404,13 +422,41 @@ func init_hero_zones():
 		heroZones[index] = new_hero_zone		
 
 # Returns an array with all children nodes which are of Card class
-func get_all_cards() -> Array:
+func get_all_cards(include_piles = false) -> Array:
 	var cardsArray := []
 	for obj in get_children():
 		if obj as Card: cardsArray.append(obj)
 	cardsArray += $VillainZone.get_all_cards() #technically villain zone has no cards AFAIK
 
-	return(cardsArray)
+	if !include_piles:
+		return(cardsArray)
+		
+	#get everything in hands	
+	for i in range(get_team_size()):
+		var hand:Hand = cfc.NMAP["hand" + str(i+1)]
+		cardsArray +=hand.get_all_cards()
+		var ghost_hand:Hand = cfc.NMAP["ghosthand" + str(i+1)]
+		cardsArray +=ghost_hand.get_all_cards()		
+		
+	#get everything in other piles
+	#villain piles
+	for grid_name in GRID_SETUP.keys():
+		var grid_info = GRID_SETUP[grid_name]
+		if "pile" == grid_info.get("type", ""):
+			var pile:Pile = cfc.NMAP[grid_name]
+			cardsArray +=pile.get_all_cards()
+			
+	#hero piles
+	for i in range(get_team_size()):
+		var hero_id = i+1
+		for grid_name in HERO_GRID_SETUP.keys():
+			var grid_info = HERO_GRID_SETUP[grid_name]
+			var real_grid_name = grid_name + str(hero_id)		
+			if "pile" == grid_info.get("type", ""):
+				var pile:Pile = cfc.NMAP[real_grid_name]
+				cardsArray += pile.get_all_cards()
+	
+	return cardsArray		
 
 func get_all_cards_controlled_by(hero_id):
 	var cardsArray := []
@@ -945,10 +991,11 @@ func unique_card_in_play(unique_card:WCCard):
 	return false
 
 func _on_OptionsButton_pressed():
-	cfc.set_game_paused(true)
-	options_menu.set_as_toplevel(true)
-	options_menu.visible = true
-	pass # Replace with function body.
+	show_options_menu()
+
+func show_options_menu():
+	options_menu.show_me()
+
 
 #card_id_or_name can be an id, a shortname, or a name
 func find_card_by_name(card_id_or_name, include_back:= false):
@@ -982,9 +1029,203 @@ func _on_ServerActivity_gui_input(event):
 	pass # Replace with function body.
 
 
+func get_all_focusable_cards():
+	var cards_array = get_all_cards()
+
+	#hand, only for the current hero	
+	var my_hero_id = gameData.get_current_local_hero_id()
+	var hand:Hand = cfc.NMAP["hand" + str(my_hero_id)]
+	cards_array += hand.get_all_cards()
+	var ghost_hand:Hand = cfc.NMAP["ghosthand" + str(my_hero_id)]
+	cards_array += ghost_hand.get_all_cards()
+			
+	#piles: piles themselves are focusable, not the cards in them
+#	for grid_name in GRID_SETUP.keys():
+#		var grid_info = GRID_SETUP[grid_name]
+#		if "pile" == grid_info.get("type", ""):
+#			var pile:Pile = cfc.NMAP[grid_name]
+#			var top_card = pile.get_top_card()
+#			if top_card:
+#				cards_array.append(top_card)
+#	#hero piles		
+#	for i in range(gameData.get_team_size()):
+#		var hero_id = i+1
+#		for grid_name in HERO_GRID_SETUP.keys():
+#			var grid_info = HERO_GRID_SETUP[grid_name]
+#			var real_grid_name = grid_name + str(hero_id)		
+#			if "pile" == grid_info.get("type", ""):
+#				var pile:Pile = cfc.NMAP[real_grid_name]
+#				var top_card = pile.get_top_card()
+#				if top_card:
+#					cards_array.append(top_card)			
+			
+	return cards_array		
+
+
+func get_all_pile_data():
+	if !_cached_pile_data:
+		_cached_pile_data = get_all_pile_data_no_cache()
+	return _cached_pile_data
+	
+func get_all_pile_data_no_cache():	
+	var pile_info = {}
+	
+	for grid_name in GRID_SETUP.keys():
+		var grid_info = GRID_SETUP[grid_name]
+		if "pile" == grid_info.get("type", ""):
+			pile_info[grid_name] = grid_info
+	#hero piles		
+	for i in range(gameData.get_team_size()):
+		var hero_id = i+1
+		for grid_name in HERO_GRID_SETUP.keys():
+			var grid_info = HERO_GRID_SETUP[grid_name]
+			var real_grid_name = grid_name + str(hero_id)		
+			if "pile" == grid_info.get("type", ""):
+				pile_info[real_grid_name] = grid_info
+	
+	return pile_info	
+
 func add_child_to_top_layer(child):
 	var control = get_node("%TopMenuControl")
 	control.add_child(child)
 	#ensure the top layer stays on top for user clicks
 	move_child(get_node("%TopMenu"), get_children().size()-1)
+
+func remove_child_from_top_layer(child):
+	var control = get_node("%TopMenuControl")
+	if child in control.get_children():
+		control.remove_child(child)
+	else:
+		remove_child(child)
+
+#
+# Game Controller related functions, to handle focus grabbing,
+# determine which components can be reached by the controller,
+# etc
+#
 	
+func grab_default_focus():
+	if !card_focus_allowed:
+		return
+	var hero_id = gameData.get_current_local_hero_id()
+#	var hand:Hand = cfc.NMAP["hand" + str(hero_id)]
+#	var card = hand.get_leftmost_card()
+#	if card and card._control.focus_mode:
+#		card.grab_focus()
+#	else:
+	var hero = gameData.get_identity_card(hero_id)
+	if hero:
+		hero.grab_focus()
+
+
+func update_card_focus(card, details = {}):
+	if !card_focus_allowed:
+		card.disable_focus_mode()
+		return
+	
+	var parent = card.get_parent()
+	if !parent:
+		card.disable_focus_mode()
+		return
+	
+	if parent == self:
+		card.enable_focus_mode()
+		if card == gameData.get_identity_card(gameData.get_current_local_hero_id()):
+			card.grab_focus()
+		return
+
+
+	card.disable_focus_mode()
+	
+	var hero_id = gameData.get_current_local_hero_id()
+	var need_hand_reorganize = {}
+	var checks = [parent.name.to_lower()]
+	for key in ["new_host", "old_host"]:
+		var to_check = details.get(key, "")
+		if !to_check:
+			continue
+		checks.append(to_check.to_lower())
+	for to_check in checks:
+		if to_check.to_lower() in ["hand" + str(hero_id), "ghosthand" + str(hero_id)]:
+			need_hand_reorganize[to_check] = true
+			if to_check == parent.name.to_lower():
+				card.enable_focus_mode()
+	
+	if need_hand_reorganize:
+		for key in need_hand_reorganize:
+			cfc.NMAP[key].reorganize_focus_mode()
+
+#Called when no modal menus are shown on the screen:
+#enables back all valid cards/piles as focusable
+#can get an optional array of cards to only enable those
+func enable_focus_mode(cards = null):
+	
+	#Cards
+	if cards == null:
+		cards = get_all_focusable_cards()
+	var _tmp = 1
+	for card in cards:
+		card.enable_focus_mode()
+
+	
+	#Piles
+	var pile_data = get_all_pile_data()
+	for pile_name in pile_data:
+		var pile_info = pile_data[pile_name]
+		if pile_info.get("focusable", true):
+			var pile = cfc.NMAP[pile_name]
+			pile.enable_focus_mode()
+			
+	#Hero faces	
+	for i in range(gameData.get_team_size()):
+		var heroPhase:HeroPhase = gameData.phaseContainer.heroesStatus[i]
+		heroPhase.enable_focus_mode()	
+	#Done
+	card_focus_allowed = true
+	grab_default_focus()
+
+#called when a modal menu is shown on screen:
+#we disable focus grabbing for all game elements on the board
+#TODO: I'm sure there's a better way to do that without
+# disabling all the elements... focus layer?
+func disable_focus_mode():
+	var cards = get_all_cards(true)
+	var _tmp = 1
+	for card in cards:
+		card.disable_focus_mode()
+
+	#Piles
+	var pile_data = get_all_pile_data()
+	for pile_name in pile_data:
+		var pile = cfc.NMAP[pile_name]
+		pile.disable_focus_mode()
+			
+	#Hero faces	
+	for i in range(gameData.get_team_size()):
+		var heroPhase:HeroPhase = gameData.phaseContainer.heroesStatus[i]
+		heroPhase.disable_focus_mode()
+		
+	#Done	
+	card_focus_allowed = false
+		
+func _unhandled_input(event):
+	if event is InputEvent:
+		if event.is_action_pressed("ui_options"):	
+			show_options_menu()
+	#safeguard if we ever lose all focus
+	if !get_focus_owner():
+		grab_default_focus()
+		
+func ui_setup():
+	if gamepadHandler.is_controller_input():
+		var options_button = get_node("%OptionsButton")
+
+
+
+		var new_img = WCUtils.load_img("res://assets/icons/options_switch.png")
+		if not new_img:
+			return	
+		var imgtex = ImageTexture.new()
+		imgtex.create_from_image(new_img)	
+			
+		options_button.texture_normal = imgtex

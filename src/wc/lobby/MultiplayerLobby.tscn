@@ -37,22 +37,22 @@ margin_bottom = 1080.0
 
 [node name="Margin" type="MarginContainer" parent="MainMenu/VBox"]
 margin_right = 1920.0
-margin_bottom = 316.0
+margin_bottom = 309.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/margin_top = 90
 
 [node name="Label" type="Label" parent="MainMenu/VBox/Margin"]
-margin_top = 96.0
+margin_top = 92.0
 margin_right = 1920.0
-margin_bottom = 310.0
+margin_bottom = 306.0
 custom_fonts/font = SubResource( 2 )
 text = "Lobby"
 align = 1
 
 [node name="WaitingMsg" type="Label" parent="MainMenu/VBox"]
 unique_name_in_owner = true
-margin_top = 319.0
+margin_top = 312.0
 margin_right = 1920.0
 margin_bottom = 342.0
 text = "Waiting for Players..."
@@ -67,14 +67,14 @@ rect_min_size = Vector2( 0, 300 )
 [node name="Center" type="CenterContainer" parent="MainMenu/VBox"]
 margin_top = 648.0
 margin_right = 1920.0
-margin_bottom = 964.0
+margin_bottom = 957.0
 size_flags_vertical = 3
 
 [node name="VButtons" type="VBoxContainer" parent="MainMenu/VBox/Center"]
 margin_left = 710.0
-margin_top = 63.0
+margin_top = 59.0
 margin_right = 1210.0
-margin_bottom = 253.0
+margin_bottom = 249.0
 rect_min_size = Vector2( 192, 0 )
 custom_constants/separation = 10
 alignment = 2
@@ -95,7 +95,7 @@ custom_fonts/font = SubResource( 4 )
 text = "Cancel"
 
 [node name="Margin2" type="MarginContainer" parent="MainMenu/VBox"]
-margin_top = 967.0
+margin_top = 960.0
 margin_right = 1920.0
 margin_bottom = 1080.0
 size_flags_horizontal = 3
@@ -105,7 +105,7 @@ custom_constants/margin_top = 90
 [node name="Label" type="Label" parent="MainMenu/VBox/Margin2"]
 margin_top = 90.0
 margin_right = 1920.0
-margin_bottom = 113.0
+margin_bottom = 120.0
 text = "user folder:"
 valign = 2
 

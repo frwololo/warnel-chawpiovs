@@ -2,27 +2,78 @@
 
 [ext_resource path="res://src/core/SelectionWindow.gd" type="Script" id=1]
 
-[node name="SelectionWindow" type="AcceptDialog" groups=["selection_windows"]]
+[node name="SelectionWindow" type="Container" groups=["selection_windows"]]
 modulate = Color( 1, 1, 1, 0 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = -1837.0
 margin_bottom = -1022.0
-popup_exclusive = true
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
-[node name="GridContainer" type="GridContainer" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 8.0
-margin_top = 8.0
-margin_right = -8.0
-margin_bottom = -36.0
+[node name="Panel" type="PanelContainer" parent="."]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 9.0
+margin_bottom = 9.0
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 48.0
+margin_bottom = 59.0
+custom_constants/margin_right = 5
+custom_constants/margin_top = 5
+custom_constants/margin_left = 5
+custom_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/Margin"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 36.0
+margin_bottom = 47.0
+alignment = 1
+
+[node name="Title" type="Label" parent="Panel/Margin/VBoxContainer"]
+unique_name_in_owner = true
+margin_right = 31.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+text = "Title"
+align = 1
+
+[node name="GridContainer" type="GridContainer" parent="Panel/Margin/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 18.0
+margin_right = 31.0
+margin_bottom = 18.0
+size_flags_horizontal = 3
 custom_constants/vseparation = 5
 custom_constants/hseparation = 5
 columns = 8
 
+[node name="buttons" type="HBoxContainer" parent="Panel/Margin/VBoxContainer"]
+margin_top = 22.0
+margin_right = 31.0
+margin_bottom = 42.0
+size_flags_horizontal = 3
+custom_constants/separation = 54
+alignment = 1
+
+[node name="ok" type="Button" parent="Panel/Margin/VBoxContainer/buttons"]
+unique_name_in_owner = true
+margin_right = 31.0
+margin_bottom = 20.0
+text = "OK"
+
+[node name="cancel" type="Button" parent="Panel/Margin/VBoxContainer/buttons"]
+unique_name_in_owner = true
+visible = false
+margin_left = 35.0
+margin_right = 89.0
+margin_bottom = 20.0
+text = "Cancel"
+
 [node name="Tween" type="Tween" parent="."]
+unique_name_in_owner = true
+
+[connection signal="pressed" from="Panel/Margin/VBoxContainer/buttons/ok" to="." method="_on_ok_pressed"]

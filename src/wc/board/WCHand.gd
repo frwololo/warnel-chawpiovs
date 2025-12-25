@@ -126,11 +126,22 @@ func reorganize_hands():
 func add_child(node:Node, legible_unique_name:bool=false):
 	.add_child(node, legible_unique_name)
 	reorganize_hands()
+	reorganize_focus_mode()
 	
 	
 func remove_child(node:Node):
 	.remove_child(node)
+	clear_focus_mode(node)
 	reorganize_hands()	
+	reorganize_focus_mode()	
+
+func clear_focus_mode(node):
+	if !node as Card:
+		return
+	var control = node._control
+	control.focus_neighbour_left = ""				
+	control.focus_neighbour_right = ""
+
 
 func retrieve_ghostable_scripts(card):
 	var state_exec = card.get_state_exec()

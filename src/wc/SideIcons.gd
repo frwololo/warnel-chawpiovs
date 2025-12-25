@@ -49,21 +49,22 @@ var offsets_by_type_code : = {
 
 var cache_dynamic_font = null
 var icons = []
+var icons_initialized = false
+var show_icons = false
 # Called when the node enters the scene tree for the first time.
 
 func _init():
 	pass
 
 func _ready():
-	reinit_children()	
-
+	reinit_children()
+	owner_card.connect("state_changed", self, "owner_state_changed")
+	update_state()
+	
 func init_font() -> DynamicFont:
 	if cache_dynamic_font:
 		return cache_dynamic_font
-	cache_dynamic_font = DynamicFont.new()
-	cache_dynamic_font.font_data = load("res://fonts/Bangers-Regular.ttf")
-	cache_dynamic_font.size = 32
-	cache_dynamic_font.set_use_filter(true)
+	cache_dynamic_font = cfc.get_font("res://fonts/Bangers-Regular.ttf", 32)
 	return cache_dynamic_font
 
 func reinit_children():
@@ -71,11 +72,18 @@ func reinit_children():
 		child.queue_free()
 		remove_child(child)
 	icons = []
+	icons_initialized = false
+	self.visible = false		
 
 func set_icons():
 	reinit_children()
 	self.visible = false
 	icons = icons_by_type_code.get(owner_card.get_property("type_code", ""), {})
+
+	if !icons:
+		icons_initialized = true
+		return
+
 	title = Label.new()
 	var dynamic_font = init_font()	
 	title.add_font_override("font", dynamic_font)
@@ -107,30 +115,56 @@ func set_icons():
 			label.add_font_override("font", dynamic_font)
 			label.name = "label_" + icon
 			label.set_h_size_flags(Control.SIZE_SHRINK_CENTER)
-			add_child(label)	
+			add_child(label)
 
+	icons_initialized = true
 
-func _process(_delta):
+func owner_state_changed(card, before, after):
+	update_state()
+
+func update_state():
 	if !owner_card.state in [Card.CardState.PREVIEW, Card.CardState.DECKBUILDER_GRID, Card.CardState.VIEWPORT_FOCUS, Card.CardState.ON_PLAY_BOARD,Card.CardState.FOCUSED_ON_BOARD, Card.CardState.DROPPING_TO_BOARD]:
-		reinit_children()
+		show_icons = false
 		return
 	if owner_card.state  == Card.CardState.VIEWPORT_FOCUS:
 		var origin = cfc.NMAP.main.get_origin_card(owner_card)
 		if !origin or !is_instance_valid(origin) or !origin.is_onboard():
-			reinit_children()
-			return
-	var set_visible = true		
-	if !icons:
-		set_visible = false
+			show_icons = false
+			return	
+
+	show_icons = true
+
+func _process(_delta):
+	if !show_icons:
+		self.visible = false
+		return	
+	if !icons_initialized:
 		set_icons()
-	if !owner_card.is_faceup:
-		title.text = owner_card.get_display_name()
+		self.visible = false
+		return
+	if !icons:
+		self.visible = false
+		return
+
+	#if we're on a low fps machine,
+	#reduce calls to this function
+	if cfc.throttle_process_for_performance():
+		return
+	
+	var data_source = owner_card 
+	if owner_card.state  == Card.CardState.VIEWPORT_FOCUS:
+		data_source = cfc.NMAP.main.get_origin_card(owner_card)
+	if !data_source or ! is_instance_valid(data_source):
+		self.visible = false
+		return
+
+			
+	if !data_source.is_faceup:
+		title.text = data_source.get_display_name()
 		title.rect_position = Vector2(control.rect_size.x/2 - title.rect_size.x/2, 10) # * owner_card.card_size / CFConst.CARD_SIZE
 		title.rect_scale =  owner_card.card_size / CFConst.CARD_SIZE	
 	for icon in icons:
-		if owner_card.canonical_name == "Iron Man":
-			var _tmp = 1
-		var offset_data = offsets_by_type_code.get(owner_card.get_property("type_code", ""), {})		
+		var offset_data = offsets_by_type_code.get(data_source.get_property("type_code", ""), {})		
 		var offset_y = offset_data.get("y", 0)
 		var offset_x = offset_data.get("x", 0)		
 		var offset_scale = offset_data.get("scale", 1)
@@ -141,11 +175,11 @@ func _process(_delta):
 			var y = x_y[1] 
 			child.rect_position = (Vector2(x, y) + Vector2(offset_x, offset_y)) * owner_card.card_size / CFConst.CARD_SIZE
 			child.rect_scale = Vector2(0.15, 0.15) * offset_scale * owner_card.card_size / CFConst.CARD_SIZE
-			var text = owner_card.get_property(icon)
+			var text = data_source.get_property(icon)
 			if text:
 				text = str(text)
 			else:
-				var can = owner_card.get_property("can_" + icon, false)
+				var can = data_source.get_property("can_" + icon, false)
 				text = "0" if can else "-"
 				
 			var label = get_node("label_" + icon)
@@ -162,16 +196,13 @@ func _process(_delta):
 			shadow.rect_position = label.rect_position + (Vector2(3,3) * label.rect_scale)#child.rect_position
 		else:
 			#bug ?
-			set_visible = false
+			show_icons = false
 			set_icons()
 		
-		if set_visible:
+		if show_icons:
 			self.visible = true
 		else:
 			self.visible = false	
 		pass
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
 
 

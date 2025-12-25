@@ -49,6 +49,18 @@ onready var launch_button = get_node("%LaunchButton")
 onready var all_scenarios_container = get_node("%Scenarios")
 onready var v_folder_label = get_node("%FolderLabel")
 # Called when the node enters the scene tree for the first time.
+
+var focus_chosen = false
+var large_picture_id = ""
+
+func grab_default_focus():
+	for child in all_heroes_container.get_children():
+		child.grab_focus()	
+		return
+	
+	#last hope
+	get_node("%CancelButton").grab_focus()
+
 func _ready():
 	# If nothing's setup, start server for Single player mode
 	if (not get_tree().get_network_peer()):
@@ -56,7 +68,7 @@ func _ready():
 	
 	v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
 
-	
+	get_viewport().connect("gui_focus_changed", self, "gui_focus_changed")	
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')
 	_create_team_container()
 	_create_hero_container()
@@ -74,7 +86,8 @@ func _ready():
 	http_request = HTTPRequest.new()
 	add_child(http_request)	
 	http_request.connect("request_completed", self, "_deck_download_completed")
-	
+
+	cfc.buttons_grab_focus_on_mouse_entered(self)	
 
 #Quickstart for tests
 #TODO remove
@@ -91,14 +104,24 @@ func _ready():
 				_launch_server_game()
 		pass	
 
+#TODO: need to do this hack because gamepadHandler "gui_focus_changed" only works automatically when the
+#board has been set up
+#this is because a new viewport is created for the board
+func gui_focus_changed(control):
+	gamepadHandler.gui_focus_changed(control)
+
 func _process(delta:float):
 	var scenario_picture:TextureRect = get_node("%ScenarioTexture") 
 	scenario_picture.rect_pivot_offset = scenario_picture.rect_size / 2
 	scenario_picture.rect_rotation = _rotation
 	scenario_picture.rect_size = Vector2(150, 150)
 	
-	var large_picture = get_node("%LargePicture")		
-	large_picture.rect_position = get_tree().current_scene.get_global_mouse_position()
+	var large_picture = get_node("%LargePicture")
+	if gamepadHandler.is_mouse_input():		
+		large_picture.rect_position = get_tree().current_scene.get_global_mouse_position()
+	else:
+		var focused = get_focus_owner()
+		large_picture.rect_position = focused.get_global_position() + focused.rect_size/2
 	large_picture.rect_size = Vector2(300, 420)
 	large_picture.rect_rotation = _preview_rotation
 	
@@ -120,7 +143,10 @@ func _create_hero_container():
 			continue
 		var new_hero = heroSelect.instance()
 		new_hero.load_hero(hero_id)
-		all_heroes_container.add_child(new_hero)	
+		all_heroes_container.add_child(new_hero)
+		if !focus_chosen:
+			new_hero.grab_focus()
+			focus_chosen = true	
 	
 
 func _load_encounters():
@@ -239,8 +265,15 @@ remotesync func assign_hero(hero_id, slot):
 func verify_launch_button():
 	if check_ready_to_launch():
 		launch_button.show()
+		launch_button.grab_focus()
 	else:
 		launch_button.hide()
+		if !get_focus_owner():
+			grab_default_focus()
+
+#shortcut for cleanliness because get_focus_owner needs a control node...
+func get_focus_owner():
+	return launch_button.get_focus_owner()
 
 func check_ready_to_launch() -> bool:
 	if !cfc.is_game_master():
@@ -539,8 +572,11 @@ func show_preview(card_id):
 	else:
 		_preview_rotation = 0
 	large_picture.rect_size = Vector2(300, 420)
+	large_picture_id = card_id
 	
 func hide_preview(card_id):
+	if large_picture_id!= card_id:
+		return
 	var large_picture = get_node("%LargePicture")		
 	large_picture.visible = false
 

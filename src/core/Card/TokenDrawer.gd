@@ -38,6 +38,7 @@ func _process(_delta: float) -> void:
 		# We're extending the area of the drawer a bit, to try and avoid it
 		# glitching when moving from card to drawer and back
 		shape.extents = $Drawer.rect_size/2 + Vector2(10,0)
+		
 
 # Setter for is_drawer_open
 # Simply calls token_drawer()
@@ -94,7 +95,7 @@ func token_drawer(requested_state := true, forced: bool = false) -> void:
 			# warning-ignore:return_value_discarded
 			_tween.start()
 			# We need to make our tokens appear on top of other cards on the table
-			z_index = 99
+			z_index = CFConst.Z_INDEX_BOARD_CARDS_ABOVE
 		else:
 			var x_modifier = 0
 			var y_modifier = 0
@@ -125,7 +126,7 @@ func token_drawer(requested_state := true, forced: bool = false) -> void:
 				token.retract()
 			$Drawer.self_modulate.a = 0
 			is_drawer_open = false
-			z_index = 0
+			z_index = CFConst.Z_INDEX_BOARD_CARDS_NORMAL
 
 
 # Adds a token to the card

@@ -123,8 +123,43 @@ func load_hero(_hero_id):
 		hero_picture.texture = null	
 
 
-func _on_HeroDeckSelect_gui_input(event):
-	if event is InputEventMouseButton: #TODO better way to handle Tablets and consoles
+
+
+func gain_focus():
+	if gamepadHandler.is_mouse_input():
+		return
+		
+	var hero_picture: TextureRect = get_node("%HeroPicture")
+	var v = $Panel/VerticalHighlights
+	v.visible = true
+	var h = $Panel/HorizontalHighlights
+	h.visible = true
+	h.rect_size = hero_picture.rect_size
+	#$HorizontalHighlights.rect_position = rect_position
+	v.rect_size = hero_picture.rect_size	
+	
+func lose_focus():
+	var v = $Panel/VerticalHighlights
+	var h = $Panel/HorizontalHighlights	
+	v.visible = false
+	h.visible = false
+	
+
+
+func _on_HeroPicture_focus_entered():
+	gain_focus()
+
+
+func _on_HeroPicture_focus_exited():
+	lose_focus()
+
+
+func _on_HeroPicture_gui_input(event):
+	if event is InputEventMouseButton: 
 		if event.button_index == BUTTON_LEFT and event.pressed:
-			#Tell the server I want this hero
+			#Tell the server I don't want this hero
+			lobby.request_release_hero_slot(hero_id)
+	elif event is InputEvent:
+		if event.is_action_pressed("ui_accept"):	
+			#Tell the server I don't want this hero
 			lobby.request_release_hero_slot(hero_id)

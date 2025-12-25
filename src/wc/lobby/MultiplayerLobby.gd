@@ -25,18 +25,21 @@ var person = preload("res://src/wc/lobby/Player.tscn")
 
 var http_request: HTTPRequest = null
 
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+
+	launch_button.disabled = true
+	cfc.default_button_focus(v_buttons)
 		
 	for option_button in v_buttons.get_children():
 		if option_button.has_signal('pressed'):
 			option_button.connect('pressed', self, 'on_button_pressed', [option_button.name])
+			option_button.connect('mouse_entered', option_button, 'grab_focus')			
 	# warning-ignore:return_value_discarded
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')
 	v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
 	
-	launch_button.disabled = true
+
 	
 # Network setup
 	get_tree().connect("network_peer_connected", self, "_player_connected")

@@ -484,9 +484,12 @@ func enrich_window_title(selectionWindow, script:ScriptObject, title:String) -> 
 func add_modal_menu(object):
 	if not object in modal_menus:
 		modal_menus.append(object)
+	NMAP.board.disable_focus_mode()
 
 func remove_modal_menu(object):
 	modal_menus.erase(object)
+	if !modal_menus:
+		NMAP.board.enable_focus_mode()
 
 func get_modal_menu():
 	if modal_menus:

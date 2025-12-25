@@ -95,7 +95,7 @@ var attackers: = []
 var immediate_encounters: = []
 var user_input_ongoing:int = 0 #ID of the current player (or remote player) doing a blocking game interraction
 var _garbage:= []
-var _targeting_ongoing:= false
+var _targeting_ongoing= null
 var _desync_recovery_enabled = true
 
 var _clients_current_activation = {}
@@ -190,10 +190,10 @@ func _script_executed_from_stack (script):
 			return
 		
 func _initiated_targeting(owner_card) -> void:
-	_targeting_ongoing = true
+	_targeting_ongoing = owner_card
 
 func _target_selected(owner_card, details) -> void:	
-	_targeting_ongoing = false
+	_targeting_ongoing = null
 	
 func is_targeting_ongoing():
 	return _targeting_ongoing	
@@ -235,7 +235,7 @@ func targeting_happened_too_recently():
 	return (_targeting_timer > 0)
 
 func _process(_delta: float):
-	cfc.ping()
+	cfc.performance_checks()
 	#mechanism to avoid processing
 	#a target click as an action click
 	if _targeting_ongoing:

@@ -11,6 +11,8 @@ var parent_scene = null
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	get_node("%Label").text = room_name
+	var option_button = get_node("%Button")
+	option_button.connect('mouse_entered', option_button, 'grab_focus')
 	pass # Replace with function body.
 
 func setup(_room_name, _parent_scene):

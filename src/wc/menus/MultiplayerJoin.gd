@@ -22,9 +22,11 @@ func _ready() -> void:
 	fetch_list_rooms()
 		
 	v_join_button.connect('pressed', self, 'on_button_pressed', ["Join"])
+	v_join_button.connect('mouse_entered', v_join_button, 'grab_focus')
 	for option_button in v_buttons.get_children():
 		if option_button.has_signal('pressed'):
 			option_button.connect('pressed', self, 'on_button_pressed', [option_button.name])
+			option_button.connect('mouse_entered', option_button, 'grab_focus')
 	# warning-ignore:return_value_discarded
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')
 	v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")

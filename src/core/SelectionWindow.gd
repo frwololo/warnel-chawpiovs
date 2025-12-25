@@ -1,6 +1,7 @@
 class_name SelectionWindow
-extends AcceptDialog
+extends Container
 
+signal confirmed()
 
 # The path to the GridCardObject scene.
 const _GRID_CARD_OBJECT_SCENE_FILE = CFConst.PATH_CORE\
@@ -33,11 +34,14 @@ var my_script
 var card_array
 var stored_integer
 
-onready var _card_grid = $GridContainer
-onready var _tween = $Tween
+onready var _card_grid = get_node("%GridContainer")
+onready var _tween = get_node("%Tween")
 
 var _assign_mode := false
 var _assign_max_function := ""
+var has_been_centered := false
+var focus_grabbed = false
+var window_title:= ""
 
 #Not an actual _init!
 #this is because caller calls "instance()" and right now 
@@ -68,6 +72,7 @@ func _ready() -> void:
 	connect("confirmed", self, "_on_card_selection_confirmed")
 
 func _process(_delta):
+	popup_centered()
 	var _result = check_ok_button()
 
 
@@ -97,9 +102,6 @@ func initiate_selection(_card_array: Array) -> void:
 	
 	_compute_columns()
 		
-	# We don't allow the player to close the popup with the close button
-	# as that will not send the mandatory signal to unpause the game
-	get_close_button().visible = false
 
 	
 	for c in _card_grid.get_children():
@@ -145,6 +147,8 @@ func initiate_selection(_card_array: Array) -> void:
 		# warning-ignore:return_value_discarded
 		dupe_selection.set_is_faceup(true,true)
 		dupe_selection.ensure_proper()
+#		dupe_selection.enable_focus_mode()
+
 		# We connect each card grid's gui input into a call which will handle
 		# The selections
 		if _assign_mode:
@@ -152,6 +156,10 @@ func initiate_selection(_card_array: Array) -> void:
 			dupe_selection.spinbox.init_plus_minus_mode(0, 0, max_assign_value)
 			dupe_selection.spinbox.connect("value_changed", self, "spinbox_value_changed", [dupe_selection, card])
 		card_grid_obj.connect("gui_input", self, "on_selection_gui_input", [dupe_selection, card])
+		card_grid_obj.focus_mode = Control.FOCUS_ALL
+		if !focus_grabbed:
+			card_grid_obj.grab_focus()
+			focus_grabbed = true		
 	# We don't want to show a popup longer than the cards. So the width is based on the lowest
 	# between the grid columns or the amount of cards
 
@@ -170,7 +178,7 @@ func initiate_selection(_card_array: Array) -> void:
 	popup_size_x = max(popup_size_x, 600)		
 	# The height will be automatically adjusted based on the amount of cards
 	rect_size = Vector2(popup_size_x,0)
-	popup_centered_minsize()
+
 	# Spawning all the duplicates is a bit heavy
 	# So we delay showing the tween to avoid having it look choppy
 	#yield(get_tree().create_timer(0.2), "timeout")
@@ -189,6 +197,27 @@ func initiate_selection(_card_array: Array) -> void:
 		print("DEBUG INFO:SelectionWindow: Started Card Display with a %s card selection" % [_card_grid.get_child_count()])
 
 
+func popup_centered():
+	if has_been_centered:
+		return	
+		
+	if !$Panel.rect_size:
+		return
+
+	var size = $Panel.rect_size * self.rect_scale
+
+	self.rect_position = get_viewport().size/2	- size/2
+	has_been_centered = true
+
+func add_cancel(text) -> Button:
+	var cancel_button = get_node("%cancel")
+	cancel_button.text = text
+	cancel_button.visible = true
+	return cancel_button
+
+func get_ok():
+	return get_node("%ok")
+	
 func post_initiate_checks():
 		
 	# If the selection is optional, we allow the player to cancel out
@@ -246,6 +275,7 @@ func post_initiate_checks():
 	if (my_script):
 		window_title = cfc.enrich_window_title(self, my_script, window_title)
 
+	get_node("%Title").text = window_title
 
 #example of constraints
 #{
@@ -452,29 +482,48 @@ func spinbox_value_changed( new_value,  dupe_selection: Card, origin_card) -> vo
 	pass
 	
 func card_clicked(dupe_selection: Card, origin_card) -> void:
+	if selection_type == "as_much_as_possible":
+		var current_total = get_count(card_array)
+		var spinbox = dupe_selection.spinbox
+		if current_total >= selection_count:
+			#we're already at max, go back to zero
+			spinbox.set_value(0)
+		else:
+			spinbox.set_value(spinbox.get_value() + 1)
+		return
+		
 	# Each time a card is clicked, it's selected/unselected
+	var grid_card_obj = dupe_selection.get_parent()
+	
 	if origin_card in selected_cards:
 		selected_cards.erase(origin_card)
 		dupe_selection.highlight.set_highlight(false)
+		grid_card_obj.set_selected(false)
 	else:
 		selected_cards.append(origin_card)
 		dupe_selection.highlight.set_highlight(true)
+		grid_card_obj.set_selected(true)
 	# We want to avoid the player being able to select more cards than
 	# the max, even if the OK button is disabled
 	# So whenever they exceed the max, we unselect the first card in the array.
 	if selection_type in ["equal", "max"]  and selected_cards.size() > selection_count:
-		_card_dupe_map[selected_cards[0]].highlight.set_highlight(false)
+		var dupe = _card_dupe_map[selected_cards[0]]
+		dupe.highlight.set_highlight(false)
+		dupe.get_parent().set_selected(false)
 		selected_cards.remove(0)	
 
 # The player can select the cards using a simple left-click.
 func on_selection_gui_input(event: InputEvent, dupe_selection: Card, origin_card) -> void:
+	if selection_type == 'display':
+		return
+		
 	if event is InputEventMouseButton\
 			and event.is_pressed()\
-			and event.get_button_index() == 1\
-			and selection_type != 'display':
-				
+			and event.get_button_index() == 1:		
 		card_clicked(dupe_selection, origin_card)
-
+	elif event is InputEvent:
+		if event.is_action_pressed("ui_accept"):	
+			card_clicked(dupe_selection, origin_card)
 
 #used mostly for testing
 func select_cards_by_name(names :Array = []) -> Array:
@@ -525,3 +574,6 @@ func _on_card_selection_confirmed() -> void:
 			self,
 			{"selected_cards": selected_cards}
 	)
+
+func _on_ok_pressed() -> void:
+	emit_signal("confirmed")

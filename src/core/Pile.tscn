@@ -36,6 +36,7 @@ __meta__ = {
 
 [node name="Control" type="Panel" parent="."]
 self_modulate = Color( 1, 1, 1, 0.5 )
+focus_mode = 2
 mouse_filter = 1
 custom_styles/panel = SubResource( 1 )
 
@@ -182,3 +183,6 @@ margin_right = 40.0
 margin_bottom = 50.0
 
 [node name="OpacityTween" type="Tween" parent="." groups=["cgf_tween"]]
+
+[connection signal="focus_entered" from="Control" to="." method="_on_Control_focus_entered"]
+[connection signal="focus_exited" from="Control" to="." method="_on_Control_focus_exited"]

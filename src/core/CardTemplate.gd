@@ -85,6 +85,9 @@ signal scripts_executed(card, sceng, trigger)
 #horizontal cards
 var _horizontal:= false
 
+#when creating duplicates, this can be used to track the original card
+var is_duplicate_of = null
+
 # The properties dictionary will be filled in by the setup() code
 # according to the card definintion.
 export var properties : Dictionary
@@ -451,11 +454,15 @@ func _process(delta) -> void:
 	_class_specific_process(delta)
 
 
+
 # Triggers the focus-in effect on the card
 func _on_Card_mouse_entered() -> void:
+	gain_focus()
+
+func gain_focus():
 	# This triggers the focus-in effect on the card
 	#print(state,":enter:",get_index(), ":", buttons._are_hovered()) # Debug
-	#print($Control/Tokens/Drawer/VBoxContainer.rect_size) # debug
+	#print($Control/Tokens/Drawer/VBoxContainer.rect_size) # debug	
 	match state:
 		CardState.IN_HAND, CardState.REORGANIZING, CardState.PUSHED_ASIDE:
 			if not cfc.card_drag_ongoing:
@@ -485,6 +492,7 @@ func _class_specific_input(event) -> void:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 			$Control.set_default_cursor_shape(Input.CURSOR_ARROW)
 			cfc.card_drag_ongoing = null
+	
 
 func _input(event) -> void:
 	_class_specific_input(event)
@@ -561,10 +569,10 @@ func _on_Card_gui_input(event) -> void:
 				CardState.DRAGGED:
 					# if the card was being dragged, it's index is very high
 					# to always draw above other objects
-					# We need to reset it to the default of 0
-					z_index = 0
+					# We need to reset it to the default
+					z_index = CFConst.Z_INDEX_BOARD_CARDS_NORMAL
 					for attachment in self.attachments:
-						attachment.z_index = 0
+						attachment.z_index = CFConst.Z_INDEX_BOARD_CARDS_NORMAL
 
 					var destination = cfc.NMAP.board
 					if potential_container:
@@ -583,8 +591,13 @@ func _process_more_card_inputs(_event) -> void:
 	pass
 
 
+
+
 # Triggers the focus-out effect on the card
 func _on_Card_mouse_exited() -> void:
+	lose_focus()
+
+func lose_focus():
 	# On exiting this node, we wait a tiny bit to make sure the mouse didn't
 	# just enter a child button
 	# If it did, then that button will immediately set a variable to let us know
@@ -2227,9 +2240,9 @@ func _pushAside(targetpos: Vector2, target_rotation: float) -> void:
 func _start_dragging(drag_offset: Vector2) -> void:
 	_drag_offset = drag_offset
 	# When dragging we want the dragged card and attachments to always be drawn above all else
-	z_index = 99
+	z_index = CFConst.Z_INDEX_HAND_CARDS_NORMAL + 1
 	for attachment in self.attachments:
-		attachment.z_index = 99
+		attachment.z_index = CFConst.Z_INDEX_HAND_CARDS_NORMAL + 1
 	# We have use parent viewport to calculate global_position
 	# due to godotengine/godot#30215
 	# This is caused because we're using a viewport node and scaling the game
@@ -2445,10 +2458,11 @@ func _add_tween_scale(
 #
 # Makes sure that when a card is in a specific state while
 # its position, highlights, scaling and so on, stay as expected
+
 func _process_card_state() -> void:
 	match state:
 		CardState.IN_HAND:
-			z_index = 0
+			z_index = CFConst.Z_INDEX_HAND_CARDS_NORMAL
 			set_focus(false)
 			set_control_mouse_filters(true)
 			buttons.set_active(false)
@@ -2469,7 +2483,7 @@ func _process_card_state() -> void:
 			# Used when card is focused on by the mouse hovering over it.
 			# We increase the z_index to allow the focused card appear
 			# always over its neighbours
-			z_index = 10
+			z_index = CFConst.Z_INDEX_HAND_CARDS_NORMAL + 10
 #			print(global_position + _control.rect_size)
 			set_focus(true,check_play_costs())
 			set_control_mouse_filters(true)
@@ -2545,7 +2559,7 @@ func _process_card_state() -> void:
 		CardState.MOVING_TO_CONTAINER:
 			# Used when moving card between places
 			# (i.e. deck to hand, hand to discard etc)
-			z_index = 0
+			z_index = CFConst.Z_INDEX_BOARD_CARDS_NORMAL
 			set_focus(false)
 			clear_highlight()
 			set_control_mouse_filters(false)
@@ -2621,7 +2635,7 @@ func _process_card_state() -> void:
 
 		CardState.REORGANIZING:
 			# Used when reorganizing the cards in the hand
-			z_index = 0
+			z_index = CFConst.Z_INDEX_HAND_CARDS_NORMAL
 			set_focus(false)
 			set_control_mouse_filters(true)
 			buttons.set_active(false)
@@ -2639,7 +2653,7 @@ func _process_card_state() -> void:
 
 		CardState.PUSHED_ASIDE:
 			# Used when card is being pushed aside due to the focusing of a neighbour.
-			z_index = 0
+			z_index = CFConst.Z_INDEX_HAND_CARDS_NORMAL
 			set_focus(false)
 			set_control_mouse_filters(true)
 			buttons.set_active(false)
@@ -2682,12 +2696,12 @@ func _process_card_state() -> void:
 
 		CardState.ON_PLAY_BOARD:
 			# Used when the card is idle on the board
-			z_index = 0
+			z_index = CFConst.Z_INDEX_BOARD_CARDS_NORMAL
 
 			# if this card is an attachment and it's host is being dragged
 			# then we want this card to be above everything like the host
 			if current_host_card and current_host_card.state == CardState.DRAGGED:
-				z_index = 99
+				z_index = CFConst.Z_INDEX_HAND_CARDS_NORMAL + 1
 
 			set_focus(false)
 			set_control_mouse_filters(true)
@@ -2712,7 +2726,7 @@ func _process_card_state() -> void:
 			_organize_attachments()
 
 		CardState.DROPPING_TO_BOARD:
-			z_index = 0
+			z_index = CFConst.Z_INDEX_BOARD_CARDS_NORMAL
 			set_control_mouse_filters(true)
 			buttons.set_active(false)
 			# Used when dropping the cards to the table
@@ -2744,7 +2758,7 @@ func _process_card_state() -> void:
 				set_state(CardState.ON_PLAY_BOARD)
 
 		CardState.FOCUSED_ON_BOARD:
-			z_index = 0
+			z_index = CFConst.Z_INDEX_BOARD_CARDS_NORMAL
 			# Used when card is focused on by the mouse hovering over it while it is on the board.
 			set_focus(true)
 			set_control_mouse_filters(true)
@@ -2753,7 +2767,7 @@ func _process_card_state() -> void:
 			_organize_attachments()
 
 		CardState.IN_PILE:
-			z_index = 0
+			z_index = CFConst.Z_INDEX_BOARD_CARDS_NORMAL
 			set_focus(false)
 			clear_highlight()
 			set_control_mouse_filters(false)
@@ -2769,7 +2783,7 @@ func _process_card_state() -> void:
 				ensure_proper()
 
 		CardState.VIEWED_IN_PILE:
-			z_index = 0
+			z_index = CFConst.Z_INDEX_BOARD_CARDS_NORMAL
 			cfc.NMAP.main.focus_card(self)
 			set_control_mouse_filters(false)
 			buttons.set_active(false)
@@ -2786,7 +2800,7 @@ func _process_card_state() -> void:
 
 
 		CardState.IN_POPUP:
-			z_index = 0
+			z_index = CFConst.Z_INDEX_BOARD_CARDS_NORMAL
 			# We make sure that a card in a popup stays in its position
 			# Unless moved
 			set_focus(false)
@@ -2803,13 +2817,18 @@ func _process_card_state() -> void:
 				position = Vector2(0,0)
 
 		CardState.FOCUSED_IN_POPUP:
-			z_index = 0
+			z_index = CFConst.Z_INDEX_BOARD_CARDS_NORMAL
 			# Used when the card is displayed in the popup grid container
 			set_focus(true)
 			# warning-ignore:return_value_discarded
 			set_card_rotation(0)
 
 		CardState.VIEWPORT_FOCUS:
+			if gameData.is_ongoing_blocking_announce():
+				self.modulate.a = 0			
+			else:
+				self.modulate.a = 1
+			z_index = CFConst.Z_INDEX_TOP_MENU + 500	
 			$Control.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			set_focus(false)
 			set_control_mouse_filters(false)
@@ -2853,6 +2872,8 @@ func _process_card_state() -> void:
 				get_card_front().scale_to(preview_scale * cfc.curr_scale)
 
 		CardState.DECKBUILDER_GRID:
+			z_index = 1
+			z_as_relative = true
 			$Control.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			set_focus(false)
 			self.tokens.set_is_drawer_open(false)
@@ -2872,7 +2893,7 @@ func _process_card_state() -> void:
 				get_card_front().scale_to(thumbnail_scale * cfc.curr_scale)
 
 		CardState.MOVING_TO_SPAWN_DESTINATION:
-			z_index = 99
+			z_index = CFConst.Z_INDEX_HAND_CARDS_NORMAL + 1
 			set_focus(false)
 			set_control_mouse_filters(false)
 			buttons.set_active(false)

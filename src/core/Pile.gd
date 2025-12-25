@@ -90,14 +90,8 @@ func _process(_delta) -> void:
 			obj.queue_free()
 	# We make sure to adjust our popup if cards were removed from it while it's open
 	$ViewPopup.set_as_minsize()
-	if _has_cards and cfc.game_settings.focus_style:
-		var top_card = get_top_card()
-		if cfc.NMAP.board.mouse_pointer in get_overlapping_areas()\
-				and not cfc.card_drag_ongoing:
-			if top_card and top_card.state == Card.CardState.IN_PILE:
-				top_card.set_state(Card.CardState.VIEWED_IN_PILE)
-		elif top_card and top_card.state == Card.CardState.VIEWED_IN_PILE:
-			top_card.set_state(Card.CardState.IN_PILE)
+	if gamepadHandler.is_mouse_input():
+		check_mouse_overlap()
 
 
 # Populates the popup view window with all the cards in the deck
@@ -380,7 +374,7 @@ func shuffle_cards(animate = true) -> void:
 		var shuffle_rotation = (shuffle_position.x - position.x) \
 				/ abs(shuffle_position.x - position.x) * 10
 		# To make sure the shuffle draws above other objects
-		z_index = 50
+		z_index = CFConst.Z_INDEX_BOARD_CARDS_ABOVE + 1
 		# Handles how fast cards start animating after another.
 		# If not used, all cards animate at the same time (e.g. see splash)
 		var next_card_speed: float
@@ -478,7 +472,7 @@ func shuffle_cards(animate = true) -> void:
 			_add_tween_position(position,init_position,0.2)
 			_add_tween_rotation(rotation_degrees,0,0.2)
 			_tween.start()
-		z_index = 0
+		z_index = CFConst.Z_INDEX_BOARD_CARDS_NORMAL
 	else:
 		# if we're already running another animation, just shuffle
 		.shuffle_cards()
@@ -520,3 +514,36 @@ func _add_tween_position(
 	_tween.interpolate_property(self,'position',
 			expected_position, target_position, runtime,
 			trans_type, ease_type)
+
+func enable_focus_mode():
+	$Control.focus_mode = Control.FOCUS_ALL
+
+func disable_focus_mode():
+	$Control.focus_mode = Control.FOCUS_NONE
+
+func _on_Control_focus_entered():
+	gain_focus()
+
+func gain_focus():
+	if !gamepadHandler.is_mouse_input():
+		$Control/Highlight.visible = true
+	var top_card = get_top_card()
+	if top_card and top_card.state == Card.CardState.IN_PILE:
+		top_card.set_state(Card.CardState.VIEWED_IN_PILE)
+
+func _on_Control_focus_exited():
+	lose_focus()
+
+func lose_focus():
+	$Control/Highlight.visible = false	
+	var top_card = get_top_card()
+	if top_card and top_card.state == Card.CardState.VIEWED_IN_PILE:
+		top_card.set_state(Card.CardState.IN_PILE)
+
+func check_mouse_overlap():		
+	if _has_cards and cfc.game_settings.focus_style:
+		if cfc.NMAP.board.mouse_pointer in get_overlapping_areas()\
+				and not cfc.card_drag_ongoing:
+			gain_focus()
+		else:
+			lose_focus() 

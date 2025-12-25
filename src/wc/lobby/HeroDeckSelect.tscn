@@ -1,6 +1,24 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://src/wc/lobby/HeroDeckSelect.gd" type="Script" id=1]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 1, 1, 1, 1 )
+draw_center = false
+border_width_left = 3
+border_width_right = 3
+border_color = Color( 2.2, 1.6, 3, 1 )
+corner_radius_top_left = 3
+corner_radius_bottom_right = 3
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 1, 1, 1, 1 )
+draw_center = false
+border_width_top = 3
+border_width_bottom = 3
+border_color = Color( 1.5, 1.1, 2, 1 )
+corner_radius_top_left = 3
+corner_radius_bottom_right = 3
 
 [node name="HeroDeckSelect" type="VBoxContainer"]
 script = ExtResource( 1 )
@@ -10,12 +28,31 @@ unique_name_in_owner = true
 margin_right = 140.0
 margin_bottom = 20.0
 
-[node name="HeroPicture" type="TextureRect" parent="."]
-unique_name_in_owner = true
+[node name="Panel" type="MarginContainer" parent="."]
 margin_top = 24.0
 margin_right = 140.0
 margin_bottom = 224.0
+
+[node name="HeroPicture" type="TextureRect" parent="Panel"]
+unique_name_in_owner = true
+margin_right = 140.0
+margin_bottom = 200.0
 rect_min_size = Vector2( 140, 200 )
+focus_mode = 2
+
+[node name="HorizontalHighlights" type="Panel" parent="Panel"]
+visible = false
+margin_right = 140.0
+margin_bottom = 200.0
+mouse_filter = 2
+custom_styles/panel = SubResource( 1 )
+
+[node name="VerticalHighlights" type="Panel" parent="Panel"]
+visible = false
+margin_right = 140.0
+margin_bottom = 200.0
+mouse_filter = 2
+custom_styles/panel = SubResource( 2 )
 
 [node name="DeckSelect" type="OptionButton" parent="."]
 unique_name_in_owner = true
@@ -24,4 +61,6 @@ margin_right = 140.0
 margin_bottom = 248.0
 clip_text = true
 
-[connection signal="gui_input" from="." to="." method="_on_HeroDeckSelect_gui_input"]
+[connection signal="focus_entered" from="Panel/HeroPicture" to="." method="_on_HeroPicture_focus_entered"]
+[connection signal="focus_exited" from="Panel/HeroPicture" to="." method="_on_HeroPicture_focus_exited"]
+[connection signal="gui_input" from="Panel/HeroPicture" to="." method="_on_HeroPicture_gui_input"]

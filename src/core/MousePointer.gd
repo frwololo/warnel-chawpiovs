@@ -35,6 +35,7 @@ func _ready() -> void:
 	connect("area_exited",self,"_on_MousePointer_area_exited")
 	if cfc._debug:
 		$DebugShape.visible = true
+	self.z_index = CFConst.Z_INDEX_MOUSE_POINTER
 
 
 func _process(_delta: float) -> void:
@@ -115,6 +116,7 @@ func _on_MousePointer_area_exited(area: Area2D) -> void:
 # Returns either the adjusted global mouse position
 # or a fake mouse position provided by integration testing
 func determine_global_mouse_pos() -> Vector2:
+
 	var mouse_position
 	var zoom = Vector2(1,1)
 	# We have to do the below offset hack due to godotengine/godot#30215

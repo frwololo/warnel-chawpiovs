@@ -248,3 +248,14 @@ func disable():
 func enable():
 	visible = true	
 	$CollisionShape2D.disabled = false	
+
+func reorganize_focus_mode():
+	var previous_control:Control = null
+	for card in get_all_cards():
+		var control = card._control
+		control.focus_neighbour_left = ""
+		control.focus_neighbour_right = ""
+		if previous_control:
+			control.focus_neighbour_left = previous_control.get_path()				
+			previous_control.focus_neighbour_right = control.get_path()
+		previous_control = control

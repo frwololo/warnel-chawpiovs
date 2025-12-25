@@ -32,9 +32,9 @@ func prep(title_reference: String, script_with_choices: Dictionary, _rules:Dicti
 			add_item(key)
 
 		rules = _rules
-#		var forced = rules.get("forced", false)
-#		if !forced:
-#			add_item("cancel")	
+		var forced = rules.get("forced", false)
+		if !forced and !gamepadHandler.is_mouse_input():
+			add_item("cancel")	
 			
 		cfc.NMAP.board.add_child_to_top_layer(self)
 
@@ -58,7 +58,7 @@ func _ready():
 		text_to_id[item.to_lower()] = i
 		menu.add_child(button)
 		
-
+	cfc.default_button_focus(menu)
 	self.rect_scale = Vector2(SCALE, SCALE)
 
 func _process(_delta:float):
@@ -79,6 +79,7 @@ func _mouse_exited(button):
 func _button_pressed(button):
 	var text = button.text
 	select_by_title(text)
+	get_tree().root.set_input_as_handled()
 	
 func set_title(text):
 	title = text
@@ -119,10 +120,14 @@ func cancel_input():
 	select_by_title("cancel")
 	
 #handling input outside of the window for cancel	
-func _input(event):
+func _unhandled_input(event):
 	#get_viewport().set_input_as_handled()  # Prevents further propagation
 	var forced = rules.get("forced", false)
 	if forced:
+		return
+	
+	if event.is_action_pressed("ui_cancel"):
+		cancel_input()
 		return
 		
 	if not event is InputEventMouseButton: return

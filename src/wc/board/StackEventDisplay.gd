@@ -120,7 +120,7 @@ func show_arrows():
 	rect_size = control.rect_size
 	rect_position = control.rect_position		
 	self.visible = true
-	self.z_index = 99
+	self.z_index = CFConst.Z_INDEX_BOARD_CARDS_ABOVE
 	
 	arrows_initialized = true	
 

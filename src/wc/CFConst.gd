@@ -195,10 +195,12 @@ const ATTACHMENT_OFFSET := [
 	# BOTTOM_RIGHT
 	Vector2(0.2,0.2),
 ]
+const FOCUS_COLOUR_ACTIVE := Color(0, 1, 0) * 1.2
+const FOCUS_COLOUR_INACTIVE := Color(1, 0, 0.3) * 1.2
 # The colour to use when hovering over a card.
 #
 # Reduce the multiplier to reduce glow effect or stop it altogether
-const FOCUS_HOVER_COLOUR := Color(1, 1, 1) * 1
+const FOCUS_HOVER_COLOUR := Color(1, 0.8, 0.8) * 1
 # The colour to use when hovering over a card with an attachment to signify
 # a valid host.
 #
@@ -269,6 +271,15 @@ const TOKENS_MAP := {
 #	'gold coin': 'yellow.svg',
 #	'void': 'black.svg',
 }
+
+const Z_INDEX_MOUSE_POINTER := 4050
+const Z_INDEX_TOP_MENU := 2000
+const Z_INDEX_BOARD_CARDS_ABOVE := 100
+const Z_INDEX_BOARD_CARDS_NORMAL := 0
+const Z_INDEX_ANNOUNCER := 1000
+const Z_INDEX_HAND_CARDS_NORMAL :=200
+	
+
 
 const TYPES_TO_GROUPS := {
 	"main_scheme" : ["group_schemes"],
@@ -359,7 +370,8 @@ const GRID_SETUP := {
 		"y" : -300,
 		"type" : "pile",
 		"faceup" : true,
-		"scale" : 0.5
+		"scale" : 0.5,
+		"focusable": false
 	},		
 }
 const HERO_GRID_SETUP := {

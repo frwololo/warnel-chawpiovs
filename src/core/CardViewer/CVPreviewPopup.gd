@@ -39,8 +39,10 @@ func create_debug_text_edit():
 	text_edit.anchor_top = 0.2
 
 func _get_global_mouse_position() -> Vector2:
-	return cfc.NMAP.board.mouse_pointer.determine_global_mouse_pos() 
-
+	if gamepadHandler.is_mouse_input():
+		return cfc.NMAP.board.mouse_pointer.determine_global_mouse_pos() 
+	return gamepadHandler.get_approx_position() + Vector2(40, 40)
+	
 func _set_placement() -> void:
 	if _tween.is_active():
 		return
@@ -91,29 +93,32 @@ func get_preview_placement() -> Vector2:
 	# If the card width is to small, we will place the info panels instead to the left of the card preview
 	if focus_info.visible:
 		focus_panel_offset = focus_info.rect_size.x
-	if _get_global_mouse_position().x\
+	var mouse_position = _get_global_mouse_position()
+	var x_offset = 20
+	var y_offset = 30
+	if mouse_position.x\
 			+ card_size.x\
-			+ 20\
+			+ x_offset\
 			+ focus_panel_offset\
 			> get_viewport().size.x:
-		ret.x = _get_global_mouse_position().x - card_size.x - 20 - focus_panel_offset
+		ret.x = mouse_position.x - card_size.x - x_offset - focus_panel_offset
 	else:
-		ret.x = _get_global_mouse_position().x + 20
-	var card_offscreen_y = _get_global_mouse_position().y\
+		ret.x = mouse_position.x + x_offset
+	var card_offscreen_y = mouse_position.y\
 			+ card_size.y
-	var focus_offscreen_y = _get_global_mouse_position().y + focus_info.rect_size.y
+	var focus_offscreen_y = mouse_position.y + focus_info.rect_size.y
 	if card_offscreen_y > focus_offscreen_y\
 			and is_instance_valid(preview_card)\
 			and card_offscreen_y > get_viewport().size.y:
 		ret.y = get_viewport().size.y\
 				- card_size.y\
-				+ 30
+				+ y_offset
 	elif card_offscreen_y < focus_offscreen_y\
 			and focus_offscreen_y > get_viewport().size.y:
 		ret.y = get_viewport().size.y\
-				- focus_info.rect_size.y + 30
+				- focus_info.rect_size.y + y_offset
 	else:
-		ret.y = _get_global_mouse_position().y + 30
+		ret.y = mouse_position.y + y_offset
 #	print_debug(ret)
 
 
@@ -133,6 +138,7 @@ func show_preview_card(card) -> void:
 			preview_card.position = Vector2(0,0)
 			preview_card.scale = Vector2(1,1)
 		add_child(preview_card)
+		preview_card.set_state(Card.CardState.VIEWPORT_FOCUS)
 		preview_card.set_is_faceup(true,true)		
 		# It's necessary we do this here because if we only we it during
 		# the process, the card will appear to teleport

@@ -50,15 +50,15 @@ size_flags_vertical = 3
 
 [node name="VButtons" type="VBoxContainer" parent="MainMenu/VBox/Center"]
 margin_left = 710.0
-margin_top = 34.0
+margin_top = 80.0
 margin_right = 1210.0
-margin_bottom = 324.0
+margin_bottom = 277.0
 rect_min_size = Vector2( 192, 0 )
 custom_constants/separation = 10
 
 [node name="Host" type="Button" parent="MainMenu/VBox/Center/VButtons"]
 margin_right = 500.0
-margin_bottom = 90.0
+margin_bottom = 59.0
 rect_min_size = Vector2( 500, 0 )
 text = "Host"
 __meta__ = {
@@ -66,15 +66,15 @@ __meta__ = {
 }
 
 [node name="Join" type="Button" parent="MainMenu/VBox/Center/VButtons"]
-margin_top = 100.0
+margin_top = 69.0
 margin_right = 500.0
-margin_bottom = 190.0
+margin_bottom = 128.0
 text = "Join"
 
 [node name="Cancel" type="Button" parent="MainMenu/VBox/Center/VButtons"]
-margin_top = 200.0
+margin_top = 138.0
 margin_right = 500.0
-margin_bottom = 290.0
+margin_bottom = 197.0
 text = "Cancel"
 
 [node name="Margin2" type="MarginContainer" parent="MainMenu/VBox"]
@@ -86,9 +86,9 @@ size_flags_vertical = 3
 custom_constants/margin_top = 90
 
 [node name="Label" type="Label" parent="MainMenu/VBox/Margin2"]
-margin_top = 212.0
+margin_top = 209.0
 margin_right = 1920.0
-margin_bottom = 235.0
+margin_bottom = 239.0
 text = "user folder:"
 valign = 2
 

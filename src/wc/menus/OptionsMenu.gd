@@ -1,21 +1,23 @@
 class_name OptionsMenu
-extends Control
+extends Node2D
 
-onready var v_box_container = $MarginContainer/VBoxContainer
+onready var v_box_container = $PanelContainer/MarginContainer/VBoxContainer
 onready var file_dialog = $FileDialog
-onready var h_box_container = $MarginContainer/VBoxContainer/HBoxContainer
+onready var h_box_container = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer
 
 # warning-ignore:unused_signal
 signal exit_options_menu
 
 func _ready():
 	for option_button in v_box_container.get_children():
-		if option_button.has_signal('pressed'):
+		if option_button.has_signal('pressed'):			
 			option_button.connect('pressed', self, 'on_button_pressed', [option_button.name])
-
+			option_button.connect('mouse_entered', option_button, 'grab_focus')
+			
 	for option_button in h_box_container.get_children():
 		if option_button.has_signal('pressed'):
 			option_button.connect('pressed', self, 'on_button_pressed', [option_button.name])
+			option_button.connect('mouse_entered', option_button, 'grab_focus')
 		if option_button.name in ["ForceResyncButton"]:
 			if !cfc.is_game_master():
 				option_button.hide()	
@@ -56,6 +58,14 @@ func close_me():
 	set_process(false)
 	cfc.set_game_paused(false)
 	visible = false
+	get_parent().enable_focus_mode()
+
+func show_me():
+	set_process(true)
+	visible = true
+	cfc.set_game_paused(true)
+	get_parent().disable_focus_mode()
+	cfc.default_button_focus(v_box_container)	
 
 func restart_game():
 	var path = "user://Saves/_restart.json"

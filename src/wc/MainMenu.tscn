@@ -9,7 +9,7 @@
 size = 107
 font_data = ExtResource( 2 )
 
-[node name="Menu2" type="Panel"]
+[node name="MainMenuRoot" type="Panel"]
 margin_right = 1920.0
 margin_bottom = 1080.0
 theme = ExtResource( 1 )

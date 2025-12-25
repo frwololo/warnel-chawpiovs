@@ -19,6 +19,7 @@ position = Vector2( 75, 105 )
 margin_right = 200.0
 margin_bottom = 280.0
 rect_min_size = Vector2( 200, 280 )
+focus_mode = 2
 
 [node name="Highlight" parent="Control" index="0"]
 margin_right = -3.0
@@ -75,6 +76,7 @@ script = ExtResource( 6 )
 manipulation_button = ExtResource( 5 )
 
 [node name="SideIcons" type="MarginContainer" parent="Control" index="9"]
+unique_name_in_owner = true
 margin_right = 40.0
 margin_bottom = 200.0
 mouse_filter = 2
@@ -97,3 +99,6 @@ margin_bottom = 50.0
 [node name="parent" parent="Debug" index="3"]
 margin_top = 54.0
 margin_bottom = 68.0
+
+[connection signal="focus_entered" from="Control" to="." method="_on_Control_focus_entered"]
+[connection signal="focus_exited" from="Control" to="." method="_on_Control_focus_exited"]

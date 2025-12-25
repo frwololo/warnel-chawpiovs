@@ -32,11 +32,13 @@ var _cards_loaded: int = 0
 
 var _card_texture_cache:= {}
 var _cropped_texture_cache:= {}
+var fonts = {}
 
+#performance check data
 var ping_data: = {}
 var last_ping_time:= 0
-
-var fonts = {}
+var fps = 0
+var low_fps = false
 
 # warning-ignore:unused_signal
 signal json_parse_error(msg)
@@ -108,6 +110,28 @@ func get_font(path, size) -> DynamicFont:
 	fonts[path] = cache_dynamic_font
 	return cache_dynamic_font
 
+var _process_period = 0
+var _process_counter = 0
+func _process(_delta:float):
+	_process_counter +=1
+	if _process_counter > _process_period:
+		_process_counter = 0
+
+	if low_fps:
+		_process_period = 10
+	else:
+		_process_period = 0
+
+func throttle_process_for_performance():
+	return (_process_counter < _process_period)
+
+#grab focus for the first (visible and enabled) button in a container
+func default_button_focus(container):
+	for button in container.get_children():
+		if button.has_signal('pressed') and !button.disabled and button.visible:
+				button.grab_focus()
+				return
+
 func _setup() -> void:
 	._setup()
 	delete_log_files()
@@ -151,6 +175,15 @@ func ping():
 		return
 	last_ping_time = new_ping_time
 	rpc_unreliable("receive_ping_request", last_ping_time)
+
+
+func performance_checks():
+	ping()
+	fps = Performance.get_monitor(Performance.TIME_FPS)
+	if fps < 25:
+		low_fps = true
+	else:
+		low_fps = false
 
 remote func receive_ping_request(start_time):
 	var client_id = cfc.get_rpc_sender_id() 
@@ -1068,6 +1101,13 @@ func is_process_ongoing() -> int:
 
 func reset_ongoing_process_stack():
 	_ongoing_processes = {}
+
+func buttons_grab_focus_on_mouse_entered(node):
+	if node as Button:
+		node.connect("mouse_entered", node, "grab_focus")
+	if node.has_method("get_children"):
+		for child in node.get_children():
+			buttons_grab_focus_on_mouse_entered(child)
 
 func is_modal_event_ongoing():
 	if get_modal_menu():

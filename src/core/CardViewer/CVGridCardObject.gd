@@ -5,6 +5,8 @@ extends CenterContainer
 
 var display_card: Card = null
 var card_list_object
+var has_focus = false
+var selected = false
 
 onready var preview_popup := $PreviewPopup
 
@@ -27,22 +29,19 @@ func setup(card) -> Card:
 	else:
 		display_card.resize_recursively(display_card._control, display_card.thumbnail_scale * cfc.curr_scale)
 		display_card.get_card_front().scale_to(display_card.thumbnail_scale * cfc.curr_scale)
-	display_card.state = Card.CardState.DECKBUILDER_GRID
+	display_card.set_state(Card.CardState.DECKBUILDER_GRID)
 	rect_min_size = display_card.canonical_size * display_card.thumbnail_scale * cfc.curr_scale
 	rect_size = rect_min_size
 	return(display_card)
 
 
 func _on_GridCardObject_mouse_entered() -> void:
-	if (!display_card):
-		return
-	preview_popup.show_preview_card(display_card.canonical_id)
+	gain_focus()
+
 
 
 func _on_GridCardObject_mouse_exited() -> void:
-	if (!display_card):
-		return	
-	preview_popup.hide_preview_card()
+	lose_focus()
 
 
 func get_class() -> String:
@@ -55,3 +54,37 @@ func _on_viewport_resized() -> void:
 		return	
 	rect_min_size = display_card.canonical_size * display_card.thumbnail_scale * cfc.curr_scale
 	rect_size = rect_min_size
+
+
+
+func _on_GridCardObject_focus_entered():
+	gain_focus()
+
+
+func set_selected(value):
+	selected = value
+
+
+func gain_focus():
+	if (!display_card):
+		return
+	preview_popup.show_preview_card(display_card.canonical_id)	
+	has_focus = true
+	if !gamepadHandler.is_mouse_input():
+		display_card.highlight.set_highlight(true, CFConst.FOCUS_COLOUR_ACTIVE)
+	pass
+
+func _on_GridCardObject_focus_exited():
+	lose_focus()
+	
+func lose_focus():
+	if (!display_card):
+		return	
+	preview_popup.hide_preview_card()
+		
+	has_focus = false
+	if selected:
+		display_card.highlight.set_highlight(true)
+	else:
+		display_card.highlight.set_highlight(false)
+	pass

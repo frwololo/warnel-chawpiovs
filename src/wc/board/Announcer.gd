@@ -40,15 +40,21 @@ const _script_name_to_function:={
 	"choices_menu": "choices_menu",
 }
 
-func add_child_to_board(child):
+func add_child_to_board(child, details = {}):
 	var container = cfc.NMAP.board
-	container.add_child(child)
-	if "z_index" in child:
-		child.z_index = 1024
 
-func remove_child_from_board(child):
+	if details.get("set_as_toplevel", false):
+		container.add_child_to_top_layer(child)
+	else:
+		container.add_child(child)
+		if "z_index" in child:
+			child.z_index = CFConst.Z_INDEX_ANNOUNCER
+	
+
+
+func remove_child_from_board(child,details = {}):
 	var container = cfc.NMAP.board
-	container.remove_child(child)
+	container.remove_child_from_top_layer(child)
 
 func _ready():
 	gameData.theStack.connect("stack_interrupt", self, "_stack_interrupt")
@@ -105,7 +111,8 @@ func _step_started(details:Dictionary):
 			"object" : current_step,
 			"is_blocking" : true, #false,
 			"storage": {},
-			"current_delta" : 0.0
+			"current_delta" : 0.0,
+			"set_as_toplevel": true
 		}
 		ongoing_announces.append(announce)		
 		var func_return = call("init_simple_announce", settings, announce)
@@ -400,7 +407,7 @@ func init_simple_announce(settings:Dictionary, announce):
 	if settings.has("scale"):
 		announce_scene.set_scale(settings["scale"])
 
-	add_child_to_board(announce_scene)
+	add_child_to_board(announce_scene, announce)
 	storage["announce"] = announce_scene
 	
 func process_simple_announce(announce) -> bool:
@@ -429,6 +436,7 @@ func simple_announce (settings:Dictionary, force:bool = false):
 		"is_blocking" : false,
 		"storage": {},
 		"current_delta" : 0.0,
+		"set_as_toplevel": true
 	}	
 	var func_return = call("init_simple_announce", settings, announce)
 	while func_return is GDScriptFunctionState && func_return.is_valid():

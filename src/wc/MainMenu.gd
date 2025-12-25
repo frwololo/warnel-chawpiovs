@@ -40,11 +40,12 @@ func _ready() -> void:
 	#hide all buttons while we load, but keep the exit button
 	_hide_buttons()	
 	exit_button.visible = true
-
+	exit_button.grab_focus()
+	
 	for option_button in v_buttons.get_children():
 		if option_button.has_signal('pressed'):
 			option_button.connect('pressed', self, 'on_button_pressed', [option_button.name])
-
+			option_button.connect('mouse_entered', option_button, 'grab_focus')
 	# warning-ignore:return_value_discarded
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')
 	_loading_text_prefix = "Loading Card Definitions - "
@@ -200,6 +201,8 @@ func _show_buttons():
 	for option_button in v_buttons.get_children():
 		if option_button.has_signal('pressed'):
 			option_button.visible = true
+
+	cfc.default_button_focus(v_buttons)
 	
 func _all_downloads_completed():
 	if (_loading_error):

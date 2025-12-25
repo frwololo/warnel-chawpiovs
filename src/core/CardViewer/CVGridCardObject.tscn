@@ -17,5 +17,7 @@ margin_top = 120.0
 margin_right = 75.0
 margin_bottom = 120.0
 
+[connection signal="focus_entered" from="." to="." method="_on_GridCardObject_focus_entered"]
+[connection signal="focus_exited" from="." to="." method="_on_GridCardObject_focus_exited"]
 [connection signal="mouse_entered" from="." to="." method="_on_GridCardObject_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_GridCardObject_mouse_exited"]

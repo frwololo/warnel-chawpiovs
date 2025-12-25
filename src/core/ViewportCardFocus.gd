@@ -152,6 +152,7 @@ func focus_card(card: Card, show_preview := true) -> void:
 			dupe_focus.tokens.load_from_json(tokens_dict)
 		else:
 			dupe_focus = card.duplicate(DUPLICATE_USE_INSTANCING)
+			dupe_focus.is_duplicate_of = card
 			dupe_focus.remove_from_group("cards")
 			_extra_dupe_preparation(dupe_focus, card)
 			# We display a "pure" version of the card
@@ -287,10 +288,8 @@ func toggle_glow(is_enabled := true) -> void:
 	world_environemt.environment.glow_enabled = is_enabled
 
 func get_origin_card(dupe_card):
-	for card in _previously_focused_cards:
-		if _previously_focused_cards[card] == dupe_card:
-			return card
-	return null
+	return dupe_card.is_duplicate_of
 
-func get_viewport_container():
+
+func get_viewport():
 	return $ViewportContainer/Viewport

@@ -4,6 +4,8 @@
 class_name WCCard
 extends Card
 
+var has_focus = false
+
 # -1 uninitialized, 0 Villain, any positive value: hero
 var _owner_hero_id  := -1
 var _controller_hero_id  := -1 setget set_controller_hero_id, get_controller_hero_id
@@ -128,7 +130,7 @@ func refresh_cache(forced=false):
 		_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID
 	check_death()
 	_cache_resource_value = {}
-	
+
 	_cache_refresh_needed = false
 
 func is_character() -> bool:
@@ -378,6 +380,58 @@ func _class_specific_ready():
 func _ready():
 	scripting_bus.connect("scripting_event_about_to_trigger", self, "execute_before_scripts")
 
+
+func _on_Control_focus_entered():	
+	#doing the focus thing only for non mouse inputs
+	if !gamepadHandler.is_mouse_input():
+		gain_focus()
+	
+func _on_Control_focus_exited():
+	lose_focus()
+
+
+func grab_focus():
+	_control.grab_focus()
+
+func gain_focus():
+	has_focus = true
+	.gain_focus()
+	
+func lose_focus():
+	has_focus = false
+	.lose_focus()
+	
+func enable_focus_mode():
+	_control.focus_mode = Control.FOCUS_ALL
+
+func disable_focus_mode():
+	_control.focus_mode = Control.FOCUS_NONE
+
+func _class_specific_input(event) -> void:
+	if event is InputEventMouseButton and not event.is_pressed():
+		if targeting_arrow.is_targeting:
+			if event.get_button_index() == 2: #todo have a cancel button on screen instead
+				targeting_arrow.cancel_targeting()
+			else:
+				targeting_arrow.complete_targeting()
+		if  event.get_button_index() == 1:
+			# On depressed left mouse click anywhere on the board
+			# We stop all attempts at dragging this card
+			# We cannot do this in gui_input, because some thing
+			# like the targetting arrow, will trigger dragging
+			# because the click depress will not trigger on the card for some reason
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+			$Control.set_default_cursor_shape(Input.CURSOR_ARROW)
+			cfc.card_drag_ongoing = null
+	elif event is InputEvent:
+		if targeting_arrow.is_targeting:
+			if gamepadHandler.is_ui_accept_pressed(event):
+				targeting_arrow.complete_targeting()
+			elif gamepadHandler.is_ui_cancel_pressed(event):
+				targeting_arrow.cancel_targeting()		
+
+	
+
 func _class_specific_process(delta):
 	._class_specific_process(delta)
 	pass
@@ -425,9 +479,14 @@ func _process(delta) -> void:
 		if gameData.is_interrupt_mode():
 			colour = CFConst.CostsState.OK_INTERRUPT
 		set_target_highlight(colour)
+		if has_focus and !gamepadHandler.is_mouse_input():
+			set_target_highlight(CFConst.FOCUS_COLOUR_ACTIVE)			
 	else:
 		#pass
 		clear_highlight()
+		#card with focus overrides previous highlight color	
+		if has_focus and !gamepadHandler.is_mouse_input():
+			set_target_highlight(CFConst.FOCUS_COLOUR_INACTIVE)	
 
 func set_target_highlight(colour):
 	highlight.set_target_highlight(colour)
@@ -487,6 +546,7 @@ func set_state(value: int) -> void:
 	state = value
 	if prev_state != state:
 		emit_signal("state_changed", self, prev_state, state)
+		
 		_state_exec_cache = ""
 
 func get_state_exec() -> String:
@@ -563,7 +623,7 @@ func update_groups() -> void :
 
 		
 		
-func common_post_move_scripts(new_host: String, _old_host: String, _move_tags: Array) -> void:
+func common_post_move_scripts(new_host: String, old_host: String, _move_tags: Array) -> void:
 	#change controller as needed
 	var new_grid = get_grid_name()
 	var new_hero_id = 0
@@ -588,6 +648,9 @@ func common_post_move_scripts(new_host: String, _old_host: String, _move_tags: A
 		_is_exhausted = false
 		#reset some cache data
 		_died_signal_sent = false	
+	
+	#determine if this card can be selected with a controller	
+	cfc.NMAP.board.update_card_focus(self, {"new_host" : new_host, "old_host": old_host} )
 		
 
 #Tries to play the card assuming costs aren't impossible to pay
@@ -1148,8 +1211,12 @@ func add_script_to_stack(sceng, run_type, trigger, trigger_details, action_name,
 
 # A signal for whenever the player clicks on a card
 func _on_Card_gui_input(event) -> void:
+	if !cfc.NMAP.has("board"):
+		return
+		
 	cfc.add_ongoing_process(self, "_on_Card_gui_input_" + canonical_name)
-	if event is InputEventMouseButton and cfc.NMAP.has("board"):	
+
+	if event is InputEventMouseButton:	
 		# because of https://github.com/godotengine/godot/issues/44138
 		# we need to double check that the card which is receiving the
 		# gui input, is actually the one with the highest index.
@@ -1211,9 +1278,9 @@ func _on_Card_gui_input(event) -> void:
 					# if the card was being dragged, it's index is very high
 					# to always draw above other objects
 					# We need to reset it to the default of 0
-					z_index = 0
+					z_index = CFConst.Z_INDEX_BOARD_CARDS_NORMAL
 					for attachment in self.attachments:
-						attachment.z_index = 0
+						attachment.z_index = CFConst.Z_INDEX_BOARD_CARDS_NORMAL
 
 					var destination = cfc.NMAP.board
 					if potential_container:
@@ -1235,6 +1302,11 @@ func _on_Card_gui_input(event) -> void:
 						attempt_to_play(true)
 		else:
 			_process_more_card_inputs(event)
+	elif event is InputEvent:
+		if event.is_action_pressed("ui_accept"):
+			attempt_to_play(true)
+	else:
+		var _tmp = 1
 	cfc.remove_ongoing_process(self, "_on_Card_gui_input_"  + canonical_name)	
 
 # Game specific code and/or shortcuts
@@ -1366,8 +1438,16 @@ func die(script):
 				
 	return CFConst.ReturnCode.OK		
 
-
+var _cached_state = -1
 func _process_card_state() -> void:
+	
+	#if state hasn't changed and we're on a low fps machine,
+	#reduce calls to this function
+	if _cached_state == state:
+		if cfc.throttle_process_for_performance():
+			return
+
+	_cached_state = state	
 	._process_card_state()
 
 	#TODO bug?
@@ -2362,3 +2442,4 @@ func get_printed_text(section = ""):
 			result = substring.substr(0, end)
 	_cached_printed_text[section] = result
 	return result	
+

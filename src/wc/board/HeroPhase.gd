@@ -103,6 +103,9 @@ func _on_HeroPhase_gui_input(event):
 	if event is InputEventMouseButton: #TODO better way to handle Tablets and consoles
 		if event.button_index == BUTTON_LEFT and event.pressed:
 			var _result = heroPhase_action()
+	elif event is InputEvent:
+		if event.is_action_pressed("ui_accept"):
+			var _result = heroPhase_action()
 
 func can_hero_phase_action() -> bool:
 	if !gameData.theStack.is_player_allowed_to_click():
@@ -216,3 +219,29 @@ func _first_player_changed(details:Dictionary):
 		first_player.visible = true
 	else:
 		first_player.visible = false
+
+#
+# Game controller related functions
+#
+
+func gain_focus():
+	get_node("%VerticalHighlights").visible = true
+	get_node("%HorizontalHighlights").visible = true
+	
+func lose_focus():
+	get_node("%VerticalHighlights").visible = false
+	get_node("%HorizontalHighlights").visible = false
+
+func enable_focus_mode():
+	get_node("%Control").focus_mode = Control.FOCUS_ALL
+
+func disable_focus_mode():
+	get_node("%Control").focus_mode = Control.FOCUS_NONE
+
+
+func _on_Control_focus_entered():
+	gain_focus()
+
+
+func _on_Control_focus_exited():
+	lose_focus()

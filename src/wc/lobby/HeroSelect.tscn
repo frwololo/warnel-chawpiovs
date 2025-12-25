@@ -1,21 +1,59 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://src/wc/lobby/HeroSelect.gd" type="Script" id=1]
+[ext_resource path="res://assets/icons/icon_256.png" type="Texture" id=2]
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 1, 1, 1, 1 )
+draw_center = false
+border_width_left = 3
+border_width_right = 3
+border_color = Color( 2.2, 1.6, 3, 1 )
+corner_radius_top_left = 3
+corner_radius_bottom_right = 3
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 1, 1, 1, 1 )
+draw_center = false
+border_width_top = 3
+border_width_bottom = 3
+border_color = Color( 1.5, 1.1, 2, 1 )
+corner_radius_top_left = 3
+corner_radius_bottom_right = 3
 
 [node name="HeroSelect" type="VBoxContainer"]
 script = ExtResource( 1 )
 
-[node name="HeroPicture" type="TextureRect" parent="."]
+[node name="Panel" type="MarginContainer" parent="."]
+margin_right = 256.0
+margin_bottom = 256.0
+
+[node name="HeroPicture" type="TextureButton" parent="Panel"]
 unique_name_in_owner = true
-margin_right = 14.0
-margin_bottom = 20.0
+margin_right = 256.0
+margin_bottom = 256.0
 rect_min_size = Vector2( 14, 20 )
+texture_normal = ExtResource( 2 )
+
+[node name="HorizontalHighlights" type="Panel" parent="Panel"]
+visible = false
+margin_right = 256.0
+margin_bottom = 256.0
+mouse_filter = 2
+custom_styles/panel = SubResource( 2 )
+
+[node name="VerticalHighlights" type="Panel" parent="Panel"]
+visible = false
+margin_right = 256.0
+margin_bottom = 256.0
+mouse_filter = 2
+custom_styles/panel = SubResource( 1 )
 
 [node name="HeroName" type="Label" parent="."]
 unique_name_in_owner = true
-margin_top = 24.0
-margin_right = 14.0
-margin_bottom = 38.0
+margin_top = 260.0
+margin_right = 256.0
+margin_bottom = 274.0
 
 [node name="LargePicture" type="TextureRect" parent="."]
 unique_name_in_owner = true
@@ -25,5 +63,6 @@ margin_right = 14.0
 margin_bottom = 42.0
 
 [connection signal="gui_input" from="." to="." method="_on_HeroSelect_gui_input"]
-[connection signal="mouse_entered" from="HeroPicture" to="." method="_on_HeroPicture_mouse_entered"]
-[connection signal="mouse_exited" from="HeroPicture" to="." method="_on_HeroPicture_mouse_exited"]
+[connection signal="mouse_entered" from="Panel/HeroPicture" to="." method="_on_HeroPicture_mouse_entered"]
+[connection signal="mouse_exited" from="Panel/HeroPicture" to="." method="_on_HeroPicture_mouse_exited"]
+[connection signal="pressed" from="Panel/HeroPicture" to="." method="_on_HeroPicture_pressed"]

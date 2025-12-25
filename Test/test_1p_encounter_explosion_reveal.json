@@ -1,5 +1,5 @@
 {
-	"_comments": "Tests False Alaem encounter does confuse the hero",
+	"_comments": "Tests Explosion reveal",
 	"init": {
 		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [

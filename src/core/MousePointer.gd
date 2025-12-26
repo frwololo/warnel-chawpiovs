@@ -39,6 +39,9 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	if is_disabled:
+		return
+		 
 	if current_focused_card:
 		# After a card has been dragged, it generally clears its
 		# focused state. This check ensures that if the mouse hovers over

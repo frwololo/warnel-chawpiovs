@@ -18,6 +18,9 @@ onready var _focus_camera := $VBC/Focus/Viewport/Camera2D
 onready var world_environemt : WorldEnvironment = $WorldEnvironment
 onready var viewport = $ViewportContainer/Viewport
 
+var canonical_size:= Vector2(0,0)
+var vbc_rect_offset:= Vector2(0,0)
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	cfc.map_node(self)
@@ -41,43 +44,15 @@ func _ready():
 	focus_info.setup()
 
 
-func _process(_delta) -> void:
-#	if cfc.game_paused:
-#		print_debug(_current_focus_source)
-	# This code makes sure that the focus viewport size always matches the size of the card
-	# shown into it. Don't know why but it's a bit buggy still, but only in CFG. Works in Hypnagonia.
-#	if _current_focus_source:
-#		pass
-##		card_focus.rect_min_size = _current_focus_source.canonical_size * _current_focus_source.focused_scale * cfc.curr_scale
-#		card_focus.rect_min_size.y *= 1.25
-#		card_focus.rect_size = _current_focus_source.canonical_size * _current_focus_source.focused_scale * cfc.curr_scale
-#		card_focus.rect_size.y *= 1.25
-#		_focus_viewport.size = _current_focus_source.canonical_size * _current_focus_source.focused_scale * cfc.curr_scale
-#		focus_info.rect_size.x = _current_focus_source.canonical_size.x * _current_focus_source.focused_scale * cfc.curr_scale
-	# The below makes sure to display the closeup of the card, only on the side
-	# the player's mouse is not in.
-	var canonical_size:Vector2
-	var vbc_rect_offset: Vector2
+#func _process(_delta) -> void:
 
+func reposition():
 	var mouse_pos: Vector2
 	if gamepadHandler.is_mouse_input():
 		mouse_pos = get_global_mouse_position()	
 	else:
 		mouse_pos = gamepadHandler.get_approx_position()	
-	
-	if _current_focus_source and is_instance_valid(_current_focus_source):
 		
-		#horizontal case
-		if (_current_focus_source._horizontal) and _current_focus_source.get_state_exec() != "pile":
-			canonical_size = Vector2(_current_focus_source.canonical_size.y, _current_focus_source.canonical_size.x )	
-			vbc_rect_offset = Vector2 (30, $VBC.rect_size.x)
-			_focus_camera.set_offset(Vector2(0, -20))
-		#normal case
-		else:
-			vbc_rect_offset = $VBC.rect_size
-			canonical_size = _current_focus_source.canonical_size
-			_focus_camera.set_offset(Vector2(0, 0))
-	
 	if _current_focus_source and is_instance_valid(_current_focus_source)\
 			and _current_focus_source.get_state_exec() != "pile"\
 			and cfc.game_settings.focus_style == CFInt.FocusStyle.BOTH_INFO_PANELS_ONLY:
@@ -99,6 +74,13 @@ func _process(_delta) -> void:
 	elif _current_focus_source:
 		$VBC.rect_position.x = get_viewport().size.x - vbc_rect_offset.x
 		$VBC.rect_position.y = 0
+
+	if not is_instance_valid(_current_focus_source)\
+			and $VBC/Focus.modulate.a != 0\
+			and not $VBC/Focus/Tween.is_active():
+		$VBC/Focus.modulate.a = 0
+
+func garbage_collection():
 	# The below performs some garbage collection on previously focused cards.
 	var to_delete = []
 	for c in _previously_focused_cards:
@@ -118,25 +100,9 @@ func _process(_delta) -> void:
 			current_dupe_focus.visible = false
 	for c in to_delete:
 		var _found = _previously_focused_cards.erase(c)
-	if not is_instance_valid(_current_focus_source)\
-			and $VBC/Focus.modulate.a != 0\
-			and not $VBC/Focus/Tween.is_active():
-		$VBC/Focus.modulate.a = 0
-
 
 # Displays the card closeup in the Focus viewport
 func focus_card(card: Card, show_preview := true) -> void:
-
-	#having issues with focus on shuffling cards, this is a hack fix for that
-#	if card._tween.is_active():
-#		return
-#
-#	match card.state:
-#		Card.CardState.VIEWED_IN_PILE:
-#			var parent = card.get_parent()
-#			if parent.is_shuffling:
-#				return
-
 	# We check if we're already focused on this card, to avoid making duplicates
 	# the whole time		
 	if not _current_focus_source == card:
@@ -194,10 +160,9 @@ func focus_card(card: Card, show_preview := true) -> void:
 		# We store all our previously focused cards in an array, and clean them
 		# up when they're not focused anymore
 		_previously_focused_cards[card] = dupe_focus
-		# We have to copy these internal vars because they are reset
-		# see https://github.com/godotengine/godot/issues/3393
-		# We make the viewport camera focus on it
-		$VBC/Focus/Viewport/Camera2D.position = dupe_focus.global_position
+		
+		set_camera_position(dupe_focus)
+
 		# We always make sure to clean tweening conflicts
 		$VBC/Focus/Tween.remove_all()
 		# We do a nice alpha-modulate tween
@@ -226,7 +191,29 @@ func focus_card(card: Card, show_preview := true) -> void:
 			$VBC.rect_rotation = 90
 		else:
 			$VBC.rect_rotation = 0
+		
+	garbage_collection()
+	reposition()		
 
+func set_camera_position(dupe_focus):
+	if !_current_focus_source or !is_instance_valid(_current_focus_source):
+		return
+
+	# We have to copy these internal vars because they are reset
+	# see https://github.com/godotengine/godot/issues/3393
+	# We make the viewport camera focus on it
+	_focus_camera.position = dupe_focus.global_position
+	
+	#horizontal case
+	if (_current_focus_source._horizontal) and _current_focus_source.get_state_exec() != "pile":
+		canonical_size = Vector2(_current_focus_source.canonical_size.y, _current_focus_source.canonical_size.x )	
+		vbc_rect_offset = Vector2 (30, $VBC.rect_size.x)
+		_focus_camera.set_offset(Vector2(0, -20))
+	#normal case
+	else:
+		vbc_rect_offset = $VBC.rect_size
+		canonical_size = _current_focus_source.canonical_size
+		_focus_camera.set_offset(Vector2(0, 0))
 
 # Hides the focus viewport when we're done looking at it
 func unfocus(card: Card) -> void:
@@ -241,12 +228,16 @@ func unfocus(card: Card) -> void:
 					focus_info.modulate, Color(1,1,1,0), 0.25,
 					Tween.TRANS_SINE, Tween.EASE_IN)
 		$VBC/Focus/Tween.start()
+	garbage_collection()
+	reposition()
 
 
 # Tells the currently focused card to stop focusing.
 func unfocus_all() -> void:
 	if _current_focus_source:
 		_current_focus_source.set_to_idle()
+	garbage_collection()
+	reposition()
 
 
 # Overridable function for games to extend preprocessing of dupe card

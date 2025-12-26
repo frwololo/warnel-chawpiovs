@@ -64,6 +64,7 @@ func _ready():
 	if CFConst.HIDE_PILE_DETAILS:
 		pile_name_label.modulate = Color(0,0,0,0)
 		$Control.self_modulate = Color(0,0,0,0.2)
+		panel_container.visible = false	
 		
 	$Control/Highlight.visible = false
 	
@@ -78,14 +79,7 @@ func _on_Pile_gui_input(event) -> void:
 			_on_View_Button_pressed()
 
 
-func _process(_delta) -> void:
-	if CFConst.HIDE_PILE_DETAILS:
-		if !get_card_count():
-			panel_container.visible = false
-		else:
-			panel_container.visible = true
-			
-	pass
+func _process(_delta) -> void:			
 	# This performs a bit of garbage collection to make sure no Control temp objects
 	# are leftover empty in the popup
 	for obj in _popup_grid.get_children():
@@ -204,6 +198,8 @@ func add_child(node, _legible_unique_name=false) -> void:
 			# By raising the $Control every time a card is added
 			# we ensure it's always drawn on top of the card objects
 			$Control.raise()
+			if CFConst.HIDE_PILE_DETAILS:
+				panel_container.visible = true			
 			# If this was the first card which enterred this pile
 			# We hide the pile "floor" by making it transparent
 #			if get_card_count() >= 1:
@@ -231,6 +227,8 @@ func remove_child(node, _legible_unique_name=false) -> void:
 	if get_card_count() == 0:
 		_has_cards = false
 		reorganize_stack()
+		if CFConst.HIDE_PILE_DETAILS:
+			panel_container.visible = false	
 		if not _opacity_tween.is_active():
 			_opacity_tween.remove($Control,'self_modulate:a')
 			_opacity_tween.interpolate_property($Control,'self_modulate:a',

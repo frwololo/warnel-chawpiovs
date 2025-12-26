@@ -11,12 +11,18 @@ extends "res://src/core/CFUtils.gd"
 # var b = "text"
 
 static func read_json_file_with_user_override(file_path) -> Dictionary:
-	var result:Dictionary = read_json_file("res://" + file_path)
+	var result = read_json_file("res://" + file_path)
 	if !result:
 		result = {}
 	var user_data = read_json_file("user://" + file_path)
 	if !user_data:
 		return result
+	#we have a user file and possibly a res file.
+	#if they're both dictionaries, we want to overwrite res entries with existing user entries
+	#otherwise we just return the user data	
+	if typeof (user_data) != TYPE_DICTIONARY or typeof(result) != TYPE_DICTIONARY:
+		return user_data
+		
 	for key in user_data:
 		result[key] = user_data[key]
 	return result
@@ -51,11 +57,14 @@ static func debug_message(msg):
 
 #checks if a file exists either as a resource or
 #on disk
-static func file_exists(file):
+static func file_exists(file:String):
+	if !file.begins_with("res://") and !file.begins_with("user://"):
+		return file_exists("res://" + file) or file_exists("user://" + file)	
 	if ResourceLoader.exists(file):
 		return true
 	var _file = File.new()
 	return _file.file_exists(file)	
+
 
 #load Image Data from jpeg/png file	
 #either from resources or from filesystem (filesystem prioritized)	
@@ -223,13 +232,25 @@ static func sort_cards(a, b):
 	return (a.get("card") < b.get("card"))
 
 	
-static func to_grayscale(texture : Texture) -> Texture:
-	var image = texture.get_data()
+static func to_grayscale(_texture : Texture) -> Texture:
+	var texture = _texture
+	if _texture as AtlasTexture:
+		texture = _texture.get_atlas()
+		var _tmp = 1		
+	else:
+		pass
+	var cur_image = texture.get_data()
+	if cur_image.is_compressed():
+		cur_image.decompress()
+	var image = Image.new()
+	image.copy_from(cur_image)
 	image.convert(Image.FORMAT_LA8)
 	image.convert(Image.FORMAT_RGBA8) # Not strictly necessary
 	
 	var image_texture = ImageTexture.new()
 	image_texture.create_from_image(image)
+	if _texture as AtlasTexture:
+		image_texture = cfc._get_cropped_texture(image_texture, _texture.get_region())
 	return image_texture
 
 static func search_and_replace_str (orig_str:String, replacements:Dictionary, exact_match:bool = false):

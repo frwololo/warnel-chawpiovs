@@ -119,14 +119,16 @@ func select_by_title(keyword):
 func cancel_input():
 	select_by_title("cancel")
 	
-#handling input outside of the window for cancel	
-func _unhandled_input(event):
+#handling input outside of the window for cancel
+
+
+func _input(event):
 	#get_viewport().set_input_as_handled()  # Prevents further propagation
 	var forced = rules.get("forced", false)
 	if forced:
 		return
 	
-	if event.is_action_pressed("ui_cancel"):
+	if gamepadHandler.is_ui_cancel_pressed(event):
 		cancel_input()
 		return
 		

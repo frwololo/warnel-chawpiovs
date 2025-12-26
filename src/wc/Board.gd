@@ -1085,6 +1085,9 @@ func get_all_pile_data_no_cache():
 	
 	return pile_info	
 
+func get_options_menu_z_index():
+	return get_node("%TopMenu").z_index
+
 func add_child_to_top_layer(child):
 	var control = get_node("%TopMenuControl")
 	control.add_child(child)

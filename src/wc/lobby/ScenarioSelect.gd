@@ -38,22 +38,20 @@ func _process(_delta:float):
 		var display_name = cfc.get_card_name_by_id(scenario_id)
 		var villains = ScenarioDeckData.get_villains_from_scheme(scenario_id)
 		var picture_card_id = scenario_id
-		var img
+		var texture
 		if (villains):
 			var villain = villains[0]
 			display_name = villain["shortname"]
 			picture_card_id = villain["_code"]
-			img = cfc.get_villain_portrait(picture_card_id)
+			texture = cfc.get_villain_portrait(picture_card_id)
 			_rotation = 0
 		else:
-			img = cfc.get_scheme_portrait(picture_card_id)
+			texture = cfc.get_scheme_portrait(picture_card_id)
 			_rotation = 90
 		scenario_name.set_text(display_name)
 		 
-		if (img):
-			var imgtex = ImageTexture.new()
-			imgtex.create_from_image(img)	
-			scenario_picture.texture_normal = imgtex
+		if (texture):
+			scenario_picture.texture_normal = texture
 			#scenario_picture.stretch_mode = TextureRect.STRETCH_SCALE_ON_EXPAND
 			
 	scenario_picture.rect_size = Vector2(200,200)	

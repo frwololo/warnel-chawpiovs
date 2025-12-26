@@ -375,7 +375,8 @@ func _class_specific_ready():
 	._class_specific_ready()
 	spinbox = $Control/SpinPanel/SpinBox
 	healthbar = $Control/HealthPanel/healthbar
-	info_icon = get_node("%info_icon")	
+	info_icon = get_node("%info_icon")
+
 
 func _ready():
 	scripting_bus.connect("scripting_event_about_to_trigger", self, "execute_before_scripts")
@@ -395,10 +396,21 @@ func grab_focus():
 
 func gain_focus():
 	has_focus = true
+#	var _material = ShaderMaterial.new()
+#	if cfc.focused_shader and card_front and card_front.art:
+#		_material.set_shader(cfc.focused_shader)
+#		card_front.art.set_material(_material)
+	if card_front and card_front.art:
+		card_front.art.self_modulate = CFConst.FOCUS_CARD_MODULATE
+		card_front.art.self_modulate.a = 1.0
 	.gain_focus()
 	
 func lose_focus():
 	has_focus = false
+#	if card_front and card_front.art:
+#		card_front.art.set_material(null)
+	if card_front and card_front.art:
+		card_front.art.self_modulate = Color(1.0,1.0,1.0,1.0)
 	.lose_focus()
 	
 func enable_focus_mode():
@@ -472,10 +484,17 @@ func _process(delta) -> void:
 		return
 	if (gameData.is_targeting_ongoing()):
 		return
+		
+	display_play_highlight()	
+
+
+func display_play_highlight():
 	var can_play = check_play_costs()
 	if (can_play == CFConst.CostsState.OK):
 		#if modal menu is displayed we don't want to mess up those cards highlights
 		var colour = can_play
+		if !gamepadHandler.is_mouse_input():
+			colour = CFConst.CostsState.OK_NO_MOUSE
 		if gameData.is_interrupt_mode():
 			colour = CFConst.CostsState.OK_INTERRUPT
 		set_target_highlight(colour)
@@ -486,7 +505,7 @@ func _process(delta) -> void:
 		clear_highlight()
 		#card with focus overrides previous highlight color	
 		if has_focus and !gamepadHandler.is_mouse_input():
-			set_target_highlight(CFConst.FOCUS_COLOUR_INACTIVE)	
+			set_target_highlight(CFConst.FOCUS_COLOUR_INACTIVE)		
 
 func set_target_highlight(colour):
 	highlight.set_target_highlight(colour)

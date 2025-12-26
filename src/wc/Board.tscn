@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://src/wc/menus/OptionsMenu.tscn" type="PackedScene" id=1]
-[ext_resource path="res://src/wc/PhaseContainer.gd" type="Script" id=2]
+[ext_resource path="res://src/wc/PhaseContainer.tscn" type="PackedScene" id=2]
 [ext_resource path="res://src/wc/board/WCHand.tscn" type="PackedScene" id=3]
 [ext_resource path="res://assets/icons/options.png" type="Texture" id=4]
 [ext_resource path="res://src/wc/Board.gd" type="Script" id=5]
@@ -90,18 +90,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="PhaseContainer" type="VBoxContainer" parent="."]
-anchor_left = 0.812
-anchor_top = 0.826
-anchor_right = 0.961
-anchor_bottom = 0.926
-margin_left = 208.96
-margin_top = -0.0799561
-margin_right = 39.88
-margin_bottom = 20.92
-grow_vertical = 0
-alignment = 2
-script = ExtResource( 2 )
+[node name="PhaseContainer" parent="." instance=ExtResource( 2 )]
 
 [node name="OptionsMenu" parent="." instance=ExtResource( 1 )]
 

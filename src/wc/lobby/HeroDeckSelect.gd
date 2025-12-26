@@ -100,14 +100,12 @@ func load_hero(_hero_id):
 	var deck_select: OptionButton = get_node("%DeckSelect")
 	deck_select.clear()
 	
-	var img = 0
+	var imgtex = null
 	var decks = 0
 	if (hero_id):
-		img = cfc.get_hero_portrait(hero_id)
+		imgtex = cfc.get_hero_portrait(hero_id)
 		decks = cfc.idx_hero_to_deck_ids[hero_id]
-	if (img and decks):
-		var imgtex = ImageTexture.new()
-		imgtex.create_from_image(img)	
+	if (imgtex and decks):	
 		hero_picture.texture = imgtex
 		hero_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 		for _deck_id in decks:

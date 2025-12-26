@@ -195,8 +195,9 @@ const ATTACHMENT_OFFSET := [
 	# BOTTOM_RIGHT
 	Vector2(0.2,0.2),
 ]
-const FOCUS_COLOUR_ACTIVE := Color(0, 1, 0) * 1.2
-const FOCUS_COLOUR_INACTIVE := Color(1, 0, 0.3) * 1.2
+const FOCUS_COLOUR_ACTIVE :=  Color(0, 0.5, 1) * 1.3 #Color(0.1, 0.1, 1) * 1.2
+const FOCUS_CARD_MODULATE :=  Color(1, 1, 1) * 1.2
+const FOCUS_COLOUR_INACTIVE := Color(1, 0, 0) * 1.2
 # The colour to use when hovering over a card.
 #
 # Reduce the multiplier to reduce glow effect or stop it altogether
@@ -237,6 +238,7 @@ const CostsState := {
 	"INCREASED": Color(1, 0.5, 0, 0) * 1.3, #alpha zero
 	"DECREASED": Color(0.5, 1, 0,0 ) * 1.3, #alpha zero
 	"OK": Color(0, 0.5, 1) * 1.3,
+	"OK_NO_MOUSE": Color(0, 0, 1) * 1.2,	
 	"OK_INTERRUPT": Color(0, 1, 0) * 1.3,	
 	"CACHE_INVALID": Color(1, 1, 1, 0), #alpha zero
 }

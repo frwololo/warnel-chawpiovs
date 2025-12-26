@@ -34,6 +34,7 @@ onready var pile_name_label := $Control/CenterContainer/VBoxContainer/Label
 # The label node which shows the amount of cards in the pile.
 onready var card_count_label := $Control/CenterContainer/VBoxContainer\
 		/PanelContainer/CenterContainer/CardCount
+onready var panel_container := get_node("%PanelContainer")
 
 # The popup node
 onready var _opacity_tween := $OpacityTween
@@ -63,7 +64,9 @@ func _ready():
 	if CFConst.HIDE_PILE_DETAILS:
 		pile_name_label.modulate = Color(0,0,0,0)
 		$Control.self_modulate = Color(0,0,0,0.2)
-
+		
+	$Control/Highlight.visible = false
+	
 func _on_Pile_gui_input(event) -> void:
 	if !faceup_cards:
 		return
@@ -78,18 +81,18 @@ func _on_Pile_gui_input(event) -> void:
 func _process(_delta) -> void:
 	if CFConst.HIDE_PILE_DETAILS:
 		if !get_card_count():
-			get_node("%PanelContainer").visible = false
+			panel_container.visible = false
 		else:
-			get_node("%PanelContainer").visible = true
+			panel_container.visible = true
 			
 	pass
 	# This performs a bit of garbage collection to make sure no Control temp objects
 	# are leftover empty in the popup
-	for obj in $ViewPopup/CardView.get_children():
+	for obj in _popup_grid.get_children():
 		if not obj.get_child_count():
 			obj.queue_free()
 	# We make sure to adjust our popup if cards were removed from it while it's open
-	$ViewPopup.set_as_minsize()
+	pile_popup.set_as_minsize()
 	if gamepadHandler.is_mouse_input():
 		check_mouse_overlap()
 
@@ -526,7 +529,7 @@ func _on_Control_focus_entered():
 
 func gain_focus():
 	if !gamepadHandler.is_mouse_input():
-		$Control/Highlight.visible = true
+		$Control/Highlight.set_highlight(true, CFConst.FOCUS_COLOUR_ACTIVE)
 	var top_card = get_top_card()
 	if top_card and top_card.state == Card.CardState.IN_PILE:
 		top_card.set_state(Card.CardState.VIEWED_IN_PILE)

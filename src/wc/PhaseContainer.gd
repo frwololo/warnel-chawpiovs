@@ -2,11 +2,13 @@
 # warning-ignore-all:RETURN_VALUE_DISCARDED
 
 class_name PhaseContainer
-extends VBoxContainer
+extends Node2D
 
 var phaseLabel
 var heroesStatus = []
 var heroPhaseScene = preload("res://src/wc/board/HeroPhase.tscn")
+onready var container = $MarginContainer/VBoxContainer
+var positioned = false
 
 #debug display for 
 #TODO something fancier
@@ -141,7 +143,8 @@ func update_text():
 	phaseLabel.text = StepStrings[current_step]
 
 # Called when the node enters the scene tree for the first time.
-func _ready():	
+func _ready():
+	reset(true)	
 	gameData.registerPhaseContainer(self)
 	update_text()
 	
@@ -151,11 +154,11 @@ func _init():
 	scripting_bus.connect("step_ended", self, "_step_ended")
 	if CFConst.SKIP_MULLIGAN:
 		current_step = CFConst.PHASE_STEP.MULLIGAN_DONE
-	reset(true)
 
-func reset(reset_phase:= true):	
-	for child in get_children():
-		remove_child(child)
+
+func reset(reset_phase:= true):
+	for child in container.get_children():
+		container.remove_child(child)
 		child.queue_free()
 	heroesStatus = []
 	
@@ -165,12 +168,12 @@ func reset(reset_phase:= true):
 		var heroButton = heroPhaseScene.instance()
 		heroButton.init_hero(hero_index)
 		heroButton.name = "HeroButton" + str(hero_index)
-		add_child(heroButton)
+		container.add_child(heroButton)
 		heroesStatus.append(heroButton)
 			
 	#Create label
 	phaseLabel = Label.new()
-	add_child(phaseLabel)
+	container.add_child(phaseLabel)
 	update_text()	
 	
 	if text_edit:
@@ -186,6 +189,13 @@ func reset(reset_phase:= true):
 func _process(_delta: float) -> void:
 	if !gameData.is_game_started():
 		return
+	
+#	if !positioned:	
+#		var rect_size = container.rect_size
+#		var screen_rect = get_viewport_rect()
+#		if rect_size:
+#			self.position = screen_rect.size - container.rect_size
+#			positioned = true
 	#don't move if the stack has something going on
 	#NOTE: calling theStack.is_processing() here doesn't work: if the stack is idle
 	#but not empty, it means it is waiting for some playing interruption

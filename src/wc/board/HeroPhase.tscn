@@ -84,6 +84,8 @@ margin_top = 2.0
 margin_right = 100.0
 margin_bottom = 100.0
 rect_min_size = Vector2( 100, 100 )
+expand = true
+stretch_mode = 7
 
 [node name="Label" type="Label" parent="HBoxContainer/Control"]
 unique_name_in_owner = true

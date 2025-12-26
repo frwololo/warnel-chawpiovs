@@ -38,6 +38,7 @@ const _script_name_to_function:={
 	"simple_announce" : "simple_announce",
 	"generic_stack": "generic_stack",
 	"choices_menu": "choices_menu",
+	"black_cover" : "black_cover"
 }
 
 func add_child_to_board(child, details = {}):
@@ -443,3 +444,55 @@ func simple_announce (settings:Dictionary, force:bool = false):
 		func_return = func_return.resume()
 	ongoing_announces.append(announce)	
 	return true
+
+
+func init_black_cover(top_object, announce):
+	var storage = announce["storage"]
+	
+	var announce_scene = ColorRect.new()
+	announce_scene.self_modulate = Color(0,0,0,0.4)
+	var screen_size = get_viewport().size
+	announce_scene.rect_size = screen_size
+	announce_scene.rect_position = Vector2(0, 0)
+
+	add_child_to_board(announce_scene, announce)
+	storage["z_index"] = top_object.z_index
+	top_object.z_index = cfc.NMAP.board.get_options_menu_z_index() + 10
+	storage["announce"] = announce_scene
+	storage["is_ongoing"] = true
+	
+func process_black_cover(announce) -> bool:
+	var storage=announce["storage"]
+	if storage["is_ongoing"]:
+		return true
+	return false
+	
+func cleanup_black_cover(announce):
+	var storage=announce["storage"]	
+	var announce_scene = storage["announce"]
+	remove_child_from_board(announce_scene)
+	announce_scene.queue_free()
+	var top_object = announce["object"]
+	top_object.z_index = storage["z_index"]
+	pass
+
+func black_cover (top_object, force:bool = false):
+	var announce = {
+		"announce" :"black_cover",
+		"object" : top_object,
+		"is_blocking" : false,
+		"storage": {},
+		"current_delta" : 0.0,
+		"set_as_toplevel": true
+	}	
+	var func_return = call("init_black_cover", top_object, announce)
+	while func_return is GDScriptFunctionState && func_return.is_valid():
+		func_return = func_return.resume()
+	ongoing_announces.append(announce)	
+	return true
+
+func stop_black_cover():
+	for announce in ongoing_announces:
+		if announce["announce"] == "black_cover":
+			announce["storage"]["is_ongoing"] = false
+		

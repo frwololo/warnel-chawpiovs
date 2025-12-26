@@ -18,6 +18,7 @@ onready var label := get_node("%Label")
 onready var selected :=  get_node("%ColorRect")
 onready var ping :=  get_node("%Ping")
 onready var first_player :=  get_node("%FirstPlayer")
+
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -36,7 +37,8 @@ func _ready():
 	else:
 		first_player.visible = false	
 	
-	pass # Replace with function body.
+	get_node("%VerticalHighlights").self_modulate = CFConst.FOCUS_COLOUR_ACTIVE
+	get_node("%HorizontalHighlights").self_modulate = CFConst.FOCUS_COLOUR_ACTIVE
 
 func _process(_delta):
 	if (gameData.get_current_local_hero_id() == hero_index):
@@ -87,14 +89,10 @@ func init_hero(_hero_index):
 func update_picture():	
 	var hero_deck_data = gameData.get_team_member(hero_index)["hero_data"]
  
-	var img = cfc.get_hero_portrait(hero_deck_data.get_hero_id())
-	if (img):
-		var imgtex = ImageTexture.new()
-		imgtex.create_from_image(img)
-		imgtex.set_size_override(face_size)
+	var imgtex = cfc.get_hero_portrait(hero_deck_data.get_hero_id())
+	if (imgtex):
 		color_tex = imgtex
 		grayscale_tex = WCUtils.to_grayscale(color_tex)
-		grayscale_tex.set_size_override(face_size)
 		heroNode.texture = imgtex
 		heroNode.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 
@@ -116,7 +114,7 @@ func can_hero_phase_action() -> bool:
 	
 	if (hero_index == gameData.get_current_local_hero_id()):
 		#special case: cannot switch my status from inactive to active outside of main player phase
-		if (current_state == State.FINISHED) and (get_parent().current_step != CFConst.PHASE_STEP.PLAYER_TURN):
+		if (current_state == State.FINISHED) and (gameData.phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN):
 			return false
 	return true	
 
@@ -175,7 +173,7 @@ remotesync func switch_status(forced_state:int = -1):
 		return
 			
 	_update_labels()
-	var parent = get_parent()
+	var parent = gameData.phaseContainer
 	if parent and is_instance_valid(parent):
 		parent.check_end_of_player_phase()
 				
@@ -227,11 +225,17 @@ func _first_player_changed(details:Dictionary):
 func gain_focus():
 	get_node("%VerticalHighlights").visible = true
 	get_node("%HorizontalHighlights").visible = true
+	#this is a small picture so we make it brighter than cards when it gains focus
+	heroNode.self_modulate = CFConst.FOCUS_CARD_MODULATE * 1.1
+	heroNode.self_modulate.a = 1.0	
+	gameData.theAnnouncer.black_cover(gameData.phaseContainer)
 	
 func lose_focus():
 	get_node("%VerticalHighlights").visible = false
 	get_node("%HorizontalHighlights").visible = false
-
+	heroNode.self_modulate = Color(1.0, 1.0, 1.0, 1.0)
+	gameData.theAnnouncer.stop_black_cover()
+	
 func enable_focus_mode():
 	get_node("%Control").focus_mode = Control.FOCUS_ALL
 

@@ -16,7 +16,7 @@ onready var focus_info := $VBC/FocusInfo
 onready var _focus_viewport := $VBC/Focus/Viewport
 onready var _focus_camera := $VBC/Focus/Viewport/Camera2D
 onready var world_environemt : WorldEnvironment = $WorldEnvironment
-
+onready var viewport = $ViewportContainer/Viewport
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -58,6 +58,13 @@ func _process(_delta) -> void:
 	# the player's mouse is not in.
 	var canonical_size:Vector2
 	var vbc_rect_offset: Vector2
+
+	var mouse_pos: Vector2
+	if gamepadHandler.is_mouse_input():
+		mouse_pos = get_global_mouse_position()	
+	else:
+		mouse_pos = gamepadHandler.get_approx_position()	
+	
 	if _current_focus_source and is_instance_valid(_current_focus_source):
 		
 		#horizontal case
@@ -74,19 +81,19 @@ func _process(_delta) -> void:
 	if _current_focus_source and is_instance_valid(_current_focus_source)\
 			and _current_focus_source.get_state_exec() != "pile"\
 			and cfc.game_settings.focus_style == CFInt.FocusStyle.BOTH_INFO_PANELS_ONLY:
-		if get_global_mouse_position().y + focus_info.rect_size.y/2 > get_viewport().size.y:
+		if mouse_pos.y + focus_info.rect_size.y/2 > get_viewport().size.y:
 			$VBC.rect_position.y = get_viewport().size.y - focus_info.rect_size.y
 		else:
-			$VBC.rect_position.y = get_global_mouse_position().y - focus_info.rect_size.y / 2
-		if get_global_mouse_position().x + focus_info.rect_size.x + 60 > get_viewport().size.x:
+			$VBC.rect_position.y = mouse_pos.y - focus_info.rect_size.y / 2
+		if mouse_pos.x + focus_info.rect_size.x + 60 > get_viewport().size.x:
 			$VBC.rect_position.x = get_viewport().size.x - focus_info.rect_size.x
-			$VBC.rect_position.y = get_global_mouse_position().y - 500
+			$VBC.rect_position.y = mouse_pos.y - 500
 		else:
-			$VBC.rect_position.x = get_global_mouse_position().x + 60
+			$VBC.rect_position.x = mouse_pos.x + 60
 
 	elif _current_focus_source and is_instance_valid(_current_focus_source)\
-			and get_global_mouse_position().x > get_viewport().size.x - canonical_size.x*2.5\
-			and get_global_mouse_position().y < canonical_size.y*2:
+			and mouse_pos.x > get_viewport().size.x - canonical_size.x*2.5\
+			and mouse_pos.y < canonical_size.y*2:
 		$VBC.rect_position.x = 0
 		$VBC.rect_position.y = 0
 	elif _current_focus_source:
@@ -292,4 +299,4 @@ func get_origin_card(dupe_card):
 
 
 func get_viewport():
-	return $ViewportContainer/Viewport
+	return viewport 

@@ -33,6 +33,7 @@ var _cards_loaded: int = 0
 var _card_texture_cache:= {}
 var _cropped_texture_cache:= {}
 var fonts = {}
+#var focused_shader = null
 
 #performance check data
 var ping_data: = {}
@@ -42,6 +43,9 @@ var low_fps = false
 
 # warning-ignore:unused_signal
 signal json_parse_error(msg)
+
+#func _ready():
+#	focused_shader = preload("res://src/wc/shaders/focused.tres")
 
 func get_card_texture(card, force_if_facedown: = true):
 	var filename = card.get_art_filename(force_if_facedown)
@@ -517,9 +521,15 @@ func load_card_definitions() -> Dictionary:
 	if (primitives.empty()):
 		load_card_scenarios()
 	var combined_sets := {} #.load_card_definitions(); #TODO Remove the call to parent eventually ?
-	# Load from external user files as well	
-	var set_files = CFUtils.list_files_in_directory(
+	# Load from external user files
+	var the_files = CFUtils.list_files_in_directory(
 			"user://Sets/", CFConst.CARD_SET_NAME_PREPEND)
+	#load from "res://" as well
+	the_files += CFUtils.list_files_in_directory(
+			"res://Sets/", CFConst.CARD_SET_NAME_PREPEND)
+	var set_files = {}
+	for file in the_files:
+		set_files[file] = true				
 	WCUtils.debug_message(set_files.size())	
 	var json_card_data : Dictionary = {}
 	_total_cards = 0	
@@ -527,7 +537,7 @@ func load_card_definitions() -> Dictionary:
 		var prefix_length = CFConst.CARD_SET_NAME_PREPEND.length()
 		var extension_idx = set_file.find(".")
 		var box_name = set_file.substr(prefix_length, extension_idx-prefix_length)
-		var json_array = WCUtils.read_json_file("user://Sets/" + set_file)
+		var json_array = WCUtils.read_json_file_with_user_override	("Sets/" + set_file)
 		_total_cards += json_array.size() 
 		json_card_data[box_name] = json_array
 		
@@ -718,7 +728,7 @@ func load_script_definitions() -> void:
 	var script_definition_files := CFUtils.list_files_in_directory(
 				"user://Sets/", CFConst.SCRIPT_SET_NAME_PREPEND, true)
 	
-	#then we load from resources (their entries will overwrite user ones only if they don't exist)
+	#then we load from resources (their entries will overwrite user ones only if the user entries don't exist)
 	script_definition_files += CFUtils.list_files_in_directory(
 				"res://Sets/", CFConst.SCRIPT_SET_NAME_PREPEND, true)
 	WCUtils.debug_message("Found " + str(script_definition_files.size()) + " script files")			
@@ -742,8 +752,9 @@ func load_script_definitions() -> void:
 			var card_name = card_info["name"]
 			var card_code = card_info["code"]
 			if card_code:
-				var script_data = json_card_data[fuzzy_card_name]
-				combined_scripts[card_code]	= script_data
+				if not combined_scripts.get(card_code): #this ensures the first data that was read gets precedence
+					var script_data = json_card_data[fuzzy_card_name]
+					combined_scripts[card_code]	= script_data
 			else:
 				var card_datas = box_contents_by_name[box_name].get(card_name, [])
 				if !card_datas:
@@ -751,7 +762,7 @@ func load_script_definitions() -> void:
 					cfc.emit_signal("json_parse_error", error_msg)				
 				for card_data in card_datas:
 					var card_id = card_data["_code"]
-					if not combined_scripts.get(card_id):
+					if not combined_scripts.get(card_id):  #this ensures the first data that was read gets precedence
 						var script_data = json_card_data[card_name]
 						combined_scripts[card_id]	= script_data	
 					
@@ -854,11 +865,11 @@ func get_img_filename(card_id) -> String:
 
 
 
-func get_villain_portrait(card_id) -> Image:
+func get_villain_portrait(card_id) -> Texture:
 	var area = 	Rect2 ( 65, 60, 155, 155 )
-	return get_sub_image(card_id, area)
+	return get_sub_texture(card_id, area)
 
-func get_scheme_portrait(card_id) -> Image:
+func get_scheme_portrait(card_id) -> Texture:
 	var real_id = card_id
 #	var card_data = get_card_by_id(card_id)
 #	if card_data.get("original_stage","") == "1A":
@@ -867,19 +878,17 @@ func get_scheme_portrait(card_id) -> Image:
 #			real_id = back_code
 			
 	var area = 	Rect2 ( 55, 15, 200, 155 )
-	return get_sub_image(real_id, area)
+	return get_sub_texture(real_id, area)
 	
-func get_hero_portrait(card_id) -> Image:
+func get_hero_portrait(card_id) -> Texture:
 	var area = 	Rect2 ( 60, 40, 170, 180 )
-	return get_sub_image(card_id, area)
+	return get_sub_texture(card_id, area)
 	
-func get_sub_image(card_id, area):
+func get_sub_texture(card_id, area):
 	var filename = get_img_filename(card_id)
-	var img_data: Image = WCUtils.load_img(filename)
-	if (not img_data):
-		return null
-	var sub_img = img_data.get_rect(area) #Todo more flexible?
-	return sub_img		
+	var texture = get_external_texture(filename)
+	var sub_tex= _get_cropped_texture(texture , area)
+	return sub_tex		
 
 func instance_ghost_card(original_card, controller_id) -> Card:
 	var card_id = original_card.canonical_id
@@ -992,9 +1001,23 @@ func preload_pck():
 		#TODO error
 		return
 	
+	var file = File.new()
+	
+	#for each set, try to load package files for it
+	#loading data from a file overrides the previous one, so a package file
+	#has higher priority (its content will override previously loaded ones if they exist)
+	#lower priority <<< higher priority
+	#res pck <<< res zip <<< user pck <<< user zip
+	#user files have priority to let users put mods in their user folder
+	#zip files have priority because I have found they have better compatibility
+	# (pck files will refuse to load if wrong godot version number for example)
+	# see https://www.reddit.com/r/godot/comments/11pfoon/comment/jbxyp2x/
 	for set in database.keys():
-		var _success_res = ProjectSettings.load_resource_pack("res://" + set + ".pck")
-		var _success_user = ProjectSettings.load_resource_pack("user://" + set + ".pck")
+		for folder in ["res://", "user://"]:		
+			for format in [".pck", ".zip"]:
+				var filename = folder + set + format
+				if file.file_exists(filename):
+					var _success_res = ProjectSettings.load_resource_pack(filename)
 	return
 #
 # Network related functions

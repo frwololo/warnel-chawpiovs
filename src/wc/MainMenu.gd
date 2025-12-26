@@ -169,7 +169,7 @@ func download_database():
 	for set in database.keys():
 		yield(get_tree(), "idle_frame")	
 		var url = database[set]
-		var filename = "user://Sets/" + CFConst.CARD_SET_NAME_PREPEND  + set + ".json"		
+		var filename = "Sets/" + CFConst.CARD_SET_NAME_PREPEND  + set + ".json"		
 		if WCUtils.file_exists(filename):
 			continue
 		if !url:

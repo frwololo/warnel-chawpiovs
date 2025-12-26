@@ -190,12 +190,6 @@ func _process(_delta: float) -> void:
 	if !gameData.is_game_started():
 		return
 	
-#	if !positioned:	
-#		var rect_size = container.rect_size
-#		var screen_rect = get_viewport_rect()
-#		if rect_size:
-#			self.position = screen_rect.size - container.rect_size
-#			positioned = true
 	#don't move if the stack has something going on
 	#NOTE: calling theStack.is_processing() here doesn't work: if the stack is idle
 	#but not empty, it means it is waiting for some playing interruption

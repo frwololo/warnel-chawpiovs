@@ -38,19 +38,16 @@ func _ready() -> void:
 		container.re_place()
 
 
-func _process(_delta: float) -> void:
-	mouse_pointer.global_position = \
-			mouse_pointer.determine_global_mouse_pos()
 
-func _physics_process(delta) -> void:
-	if _UT_interpolation_requested:
-		if _t < 1:
-			_t += delta * _UT_mouse_speed
-			_UT_mouse_position = _UT_current_mouse_position.linear_interpolate(
-					_UT_target_mouse_position, _t)
-		else:
-			_t = 0
-			_UT_interpolation_requested = false
+#func _physics_process(delta) -> void:
+#	if _UT_interpolation_requested:
+#		if _t < 1:
+#			_t += delta * _UT_mouse_speed
+#			_UT_mouse_position = _UT_current_mouse_position.linear_interpolate(
+#					_UT_target_mouse_position, _t)
+#		else:
+#			_t = 0
+#			_UT_interpolation_requested = false
 
 
 # This function is called by unit testing to simulate mouse movement on the board

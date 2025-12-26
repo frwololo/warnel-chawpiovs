@@ -308,7 +308,7 @@ remotesync func client_create_and_add_stackobject( original_requester_id, expect
 	add_event_to_stack(stackEvent, checksum)
 	cfc._rpc_id(self,1, "from_client_script_received_ack", expected_run_mode, checksum)
 
-func set_pending_network_interaction(interaction_authority, checksum, reason:=""):
+func set_pending_network_interaction(_interaction_authority, checksum, reason:=""):
 	add_yield_counter("set_pending_network_interaction")
 	while (yield_wait_time < yield_max_wait_time) and _pending_flush:
 		display_debug("flush ongoing in set_pending_network_interaction")
@@ -547,7 +547,7 @@ func set_current_interrupting_cards(interrupters):
 		var card = guidMaster.get_object_by_guid(card_guid)
 		_current_interrupting_cards.append(card)	
 
-remotesync func clients_set_interrupting_hero(hero_id, interrupters):
+remotesync func clients_set_interrupting_hero(hero_id, _interrupters):
 	activate_exclusive_hero(hero_id)
 
 func reset_interrupt_states():

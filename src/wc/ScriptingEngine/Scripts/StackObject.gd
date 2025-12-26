@@ -161,8 +161,6 @@ func _get_display_text_nocache():
 	if task: 	
 		var owner = task.owner
 		var owner_name = owner.canonical_name if owner else ""
-		var subjects = get_subjects()
-		var only_one_subject = (subjects and subjects.size() == 1)
 		match task.script_name:
 			"reveal_encounter":
 				if owner:

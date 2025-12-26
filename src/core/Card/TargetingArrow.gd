@@ -35,7 +35,7 @@ func set_display_mode(mode):
 
 var valid_targets: Array = []
 var _stored_destination = null
-var show_arrow_head = true
+var _show_arrow_head = true
 
 func set_destination(_dest):
 	_stored_destination = _dest
@@ -72,10 +72,10 @@ func _ready() -> void:
 	self.z_index = CFConst.Z_INDEX_BOARD_CARDS_ABOVE + 1
 
 func show_arrow_head():
-	show_arrow_head = true
+	_show_arrow_head = true
 	
 func hide_arrow_head():
-	show_arrow_head = false
+	_show_arrow_head = false
 	
 func set_text(_text):
 	label.text = _text
@@ -164,8 +164,8 @@ func show_me():
 			$ArrowHead.visible = false			
 		_:
 			$Line.visible = true	
-			$ArrowHead.visible = show_arrow_head			
-	$HighlightArrowHead.visible = show_arrow_head
+			$ArrowHead.visible = _show_arrow_head			
+	$HighlightArrowHead.visible = _show_arrow_head
 		
 func hide_me():
 	$ArrowHead.visible = false

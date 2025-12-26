@@ -32,9 +32,12 @@ func _ready():
 	_check_input_device()	
 
 func connect_viewport():
-	var viewport = cfc.NMAP.main.get_viewport()
+	var viewport = cfc.NMAP.main.get_main_viewport()
 	viewport.connect("gui_focus_changed", self, "gui_focus_changed")
-
+	
+	#another chance to deactivate the mouse
+	if cfc.NMAP.has("board") and !is_mouse_input():
+		cfc.NMAP.board.mouse_pointer.disable()
 
 func gui_focus_changed(control):
 	current_focused_control = control
@@ -68,7 +71,7 @@ func _check_input_device():
 	else:
 		set_input_mode(INPUT_MODE.MOUSE)
 		
-func _on_joy_connection_changed(device: int, connected: bool):
+func _on_joy_connection_changed(_device: int, _connected: bool):
 	# Recheck input device when joypad connection changes
 	_check_input_device()	
 
@@ -85,12 +88,12 @@ func set_input_mode(new_mode):
 			Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 			input_mode = new_mode
 			if cfc.NMAP.has("board"):
-				cfc.NMAP.board.mouse_pointer.set_disabled(true)
+				cfc.NMAP.board.mouse_pointer.disable()
 		_:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 			input_mode = INPUT_MODE.MOUSE 
 			if cfc.NMAP.has("board"):
-				cfc.NMAP.board.mouse_pointer.set_disabled(false)			
+				cfc.NMAP.board.mouse_pointer.enable()		
 
 
 	

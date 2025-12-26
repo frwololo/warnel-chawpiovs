@@ -452,8 +452,8 @@ func reset_location():
 		position = place
 		call_deferred("_init_control_size")
 
-func add_child(node, _legible_unique_name=false) -> void:
-	.add_child(node)
+func add_child(node, legible_unique_name=false) -> void:
+	.add_child(node, legible_unique_name)
 	_card_count +=1
 	
 func remove_child(node) -> void:

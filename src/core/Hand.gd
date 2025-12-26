@@ -40,6 +40,7 @@ onready var _counter_cards = $Counters/Cards
 
 func _ready() -> void:
 	add_to_group("hands")
+	update_card_count_text()
 
 func prepare_excess_discard_pile() -> void:
 	if excess_discard_pile_name\
@@ -48,10 +49,18 @@ func prepare_excess_discard_pile() -> void:
 		_excess_discard_pile = cfc.NMAP[excess_discard_pile_name.to_lower()]
 
 
-func _process(_delta: float) -> void:
-	#._process(_delta)
+func add_child(node, legible_unique_name=false) -> void:
+	.add_child(node, legible_unique_name)
+	update_card_count_text()
+	
+func update_card_count_text():
 	_counter_cards.text = "Hand: " + str(get_card_count()) \
-			+ "/" + str(hand_size)
+			+ "/" + str(hand_size)		
+
+func remove_child(node) -> void:
+	.remove_child(node)
+	update_card_count_text()
+
 
 
 # Button which shuffles the children [Card] objects

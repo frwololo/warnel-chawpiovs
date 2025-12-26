@@ -43,9 +43,6 @@ func _ready():
 	focus_info.info_panel_scene = info_panel_scene
 	focus_info.setup()
 
-
-#func _process(_delta) -> void:
-
 func reposition():
 	var mouse_pos: Vector2
 	if gamepadHandler.is_mouse_input():
@@ -289,5 +286,5 @@ func get_origin_card(dupe_card):
 	return dupe_card.is_duplicate_of
 
 
-func get_viewport():
+func get_main_viewport():
 	return viewport 

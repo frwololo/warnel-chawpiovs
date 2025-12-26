@@ -223,12 +223,15 @@ func _first_player_changed(details:Dictionary):
 #
 
 func gain_focus():
+	if gamepadHandler.is_mouse_input():
+		return
+	gameData.theAnnouncer.black_cover(gameData.phaseContainer)	
 	get_node("%VerticalHighlights").visible = true
 	get_node("%HorizontalHighlights").visible = true
 	#this is a small picture so we make it brighter than cards when it gains focus
 	heroNode.self_modulate = CFConst.FOCUS_CARD_MODULATE * 1.1
 	heroNode.self_modulate.a = 1.0	
-	gameData.theAnnouncer.black_cover(gameData.phaseContainer)
+
 	
 func lose_focus():
 	get_node("%VerticalHighlights").visible = false

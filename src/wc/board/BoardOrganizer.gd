@@ -322,6 +322,3 @@ func new_instance():
 	var obj = load(get_script().resource_path).new() # at runtime, the script is already loaded
 	return obj
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass

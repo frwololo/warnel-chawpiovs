@@ -1472,7 +1472,7 @@ func _process_card_state() -> void:
 	#TODO bug?
 	#sometimes the card reports being "faceup" while actually showing the back
 	#this is a fix for that
-	if get_node('Control/Back').visible == is_faceup:
+	if _card_back_container.visible == is_faceup:
 		is_faceup = !is_faceup
 		set_is_faceup(!is_faceup, true)
 	match state:

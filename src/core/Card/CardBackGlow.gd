@@ -17,6 +17,9 @@ func _ready() -> void:
 	_tween.connect("tween_all_completed", self, "_on_Pulse_completed")
 
 func _process(_delta:float):
+	if cfc.throttle_process_for_performance():
+		return	
+	
 	if not _tween:
 		return
 		

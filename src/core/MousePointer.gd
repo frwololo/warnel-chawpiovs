@@ -41,6 +41,8 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if is_disabled:
 		return
+
+	global_position = determine_global_mouse_pos()
 		 
 	if current_focused_card:
 		# After a card has been dragged, it generally clears its
@@ -154,6 +156,7 @@ func move_mouse(movement):
 # Disables the mouse from interacting with the board
 func disable() -> void:
 	is_disabled = true
+	set_process(false)
 	for area in overlaps:
 		# We stop the highlight on any areas we were currently highlighting
 		if area as Card or area as CardContainer:
@@ -166,6 +169,7 @@ func disable() -> void:
 # Re-enables the mouse interacting with the board
 func enable() -> void:
 	is_disabled = false
+	set_process(true)
 	overlaps = get_overlapping_areas().duplicate()
 	_discover_focus()
 

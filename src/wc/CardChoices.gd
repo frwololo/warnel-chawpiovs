@@ -53,7 +53,6 @@ func _ready():
 		var button:Button = Button.new()
 		button.connect("pressed", self, "_button_pressed", [button])
 		button.connect("mouse_entered", self, "_mouse_entered", [button])
-		button.connect("mouse_exited", self, "_mouse_exited", [button])
 		button.text = item
 		text_to_id[item.to_lower()] = i
 		menu.add_child(button)
@@ -72,9 +71,6 @@ func _process(_delta:float):
 func _mouse_entered(button):
 	button.grab_focus()
 	
-	
-func _mouse_exited(button):
-	pass
 	
 func _button_pressed(button):
 	var text = button.text

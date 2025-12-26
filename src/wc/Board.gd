@@ -173,6 +173,10 @@ func blocking_activity_ongoing():
 func _process(delta:float):
 	_total_delta += delta
 	#todo this is a heavy call, maybe do it only when cards move
+	
+	if cfc.throttle_process_for_performance():
+		return
+	
 	if board_organizers:
 		for board_organizer in board_organizers:
 			board_organizer.organize()
@@ -181,7 +185,10 @@ func _process(delta:float):
 		var last_index = get_child_count() - 1
 		move_child(_server_activity, last_index)
 		_server_activity.visible = true
-		_server_activity.rect_position = self.mouse_pointer.determine_global_mouse_pos() - _server_activity.rect_size * _server_activity.rect_scale
+		if gamepadHandler.is_mouse_input():
+			_server_activity.rect_position = self.mouse_pointer.determine_global_mouse_pos() - _server_activity.rect_size * _server_activity.rect_scale
+		else:
+			_server_activity.rect_position = get_viewport_rect().size/2
 		_server_activity.modulate = Color(1, 1, 1, sin(_total_delta*2)*0.4 + 0.5)
 		_server_activity.rect_rotation = _total_delta * 100
 	pass

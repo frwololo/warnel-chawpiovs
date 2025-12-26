@@ -119,7 +119,7 @@ func set_icons():
 
 	icons_initialized = true
 
-func owner_state_changed(card, before, after):
+func owner_state_changed(_card, _before, _after):
 	update_state()
 
 func update_state():

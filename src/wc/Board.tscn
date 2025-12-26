@@ -17,6 +17,8 @@ mouse_filter = 2
 theme = ExtResource( 12 )
 script = ExtResource( 5 )
 
+[node name="PhaseContainer" parent="." instance=ExtResource( 2 )]
+
 [node name="VillainZone" parent="." instance=ExtResource( 7 )]
 
 [node name="Hand1" parent="." instance=ExtResource( 3 )]
@@ -89,8 +91,6 @@ text = "Debug"
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="PhaseContainer" parent="." instance=ExtResource( 2 )]
 
 [node name="OptionsMenu" parent="." instance=ExtResource( 1 )]
 

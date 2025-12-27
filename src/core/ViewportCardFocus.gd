@@ -78,7 +78,12 @@ func reposition_vbc():
 			$VBC.rect_rotation = 0
 			vbc_rect_offset = Vector2 (0,0)
 			display_size = Vector2(card_size.x, card_size.y)
-		if mouse_pos.x + display_size.x >= viewport_size.x :
+		
+		#if announcer has anannounce onthe right of the screen e.g. stackeventdisplay)
+		#we don't want to cover it	
+		if gameData.theAnnouncer.is_right_side_announce_ongoing():	
+			display_position = Vector2( spacer, spacer)
+		elif mouse_pos.x + display_size.x >= viewport_size.x :
 			display_position = Vector2( spacer, spacer)
 		else:
 			display_position = Vector2(viewport_size.x - display_size.x - spacer,  spacer)

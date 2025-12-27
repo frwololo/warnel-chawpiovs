@@ -18,6 +18,7 @@ var announcer_minimum_time: float= 2
 #}
 var ongoing_announces = []
 var _skip_announcer := false
+var right_screen_announces = 0
 
 const _SIMPLE_ANNOUNCE_SCENE_FILE = CFConst.PATH_CUSTOM + "Announce.tscn"
 const _SIMPLE_ANNOUNCE_SCENE = preload(_SIMPLE_ANNOUNCE_SCENE_FILE)
@@ -162,6 +163,18 @@ func is_announce_ongoing():
 		return true
 	return false
 
+func add_right_announce():
+	right_screen_announces +=1
+	
+	#ask the focused card to move if it's in the way
+	cfc.NMAP.main.reposition()
+
+func remove_right_announce():
+	right_screen_announces +=1
+	
+func is_right_side_announce_ongoing():
+	return right_screen_announces
+
 func cleanup(announce = null):
 	#not passing anything means cleanup everything
 	if !announce:
@@ -202,7 +215,8 @@ func init_choices_menu(script, announce):
 	#var announce_scene = StackEventDisplay.new(script)
 	storage["scene"] = announce_scene
 	add_child_to_board(announce_scene)
-	announce_scene.set_target_position(GENERIC_STACK_POSITION * cfc.screen_scale)	
+	announce_scene.set_target_position(GENERIC_STACK_POSITION * cfc.screen_scale)
+	self.add_right_announce()	
 	return true
 	
 #the process_* functions in Announcer return false if they are finished,
@@ -216,8 +230,11 @@ func process_choices_menu(announce):
 func cleanup_choices_menu(announce):
 	var storage = announce["storage"]
 	var announce_scene = storage["scene"]
+	if !announce_scene or not is_instance_valid(announce_scene):
+		return		
 	announce_scene.force_close()	
 	remove_child_from_board(announce_scene)	
+	self.remove_right_announce()	
 	announce_scene.queue_free()
 
 func _stack_interrupt(stack_object, mode):
@@ -269,7 +286,8 @@ func init_generic_stack(script, announce):
 	#var announce_scene = StackEventDisplay.new(script)
 	storage["scene"] = announce_scene
 	add_child_to_board(announce_scene)
-	announce_scene.set_target_position(GENERIC_STACK_POSITION * cfc.screen_scale)	
+	announce_scene.set_target_position(GENERIC_STACK_POSITION * cfc.screen_scale)
+	self.add_right_announce()		
 	return true
 	
 #the process_* functions in Announcer return false if they are finished,
@@ -285,7 +303,10 @@ func process_generic_stack(announce):
 func cleanup_generic_stack(announce):
 	var storage = announce["storage"]
 	var announce_scene = storage["scene"]
+	if !announce_scene or not is_instance_valid(announce_scene):
+		return		
 	remove_child_from_board(announce_scene)	
+	self.remove_right_announce()
 	announce_scene.queue_free()
 	
 func init_receive_damage(script:ScriptTask, announce:Dictionary) -> bool:
@@ -369,8 +390,9 @@ func cleanup_receive_damage(announce):
 	var storage = announce["storage"]	
 	var arrows = storage["arrows"]
 	for arrow in arrows:
-		arrow.get_parent().remove_child(arrow)
-		arrow.queue_free()
+		if arrow and is_instance_valid(arrow):	
+			arrow.get_parent().remove_child(arrow)
+			arrow.queue_free()
 
 
 func init_simple_announce(settings:Dictionary, announce):
@@ -421,6 +443,8 @@ func process_simple_announce(announce) -> bool:
 func cleanup_simple_announce(announce):
 	var storage=announce["storage"]	
 	var announce_scene = storage["announce"]
+	if !announce_scene or not is_instance_valid(announce_scene):
+		return	
 	remove_child_from_board(announce_scene)
 	announce_scene.queue_free()
 	pass
@@ -470,11 +494,12 @@ func process_black_cover(announce) -> bool:
 func cleanup_black_cover(announce):
 	var storage=announce["storage"]	
 	var announce_scene = storage["announce"]
+	if !announce_scene or not is_instance_valid(announce_scene):
+		return
 	remove_child_from_board(announce_scene)
 	announce_scene.queue_free()
 	var top_object = announce["object"]
 	top_object.z_index = storage["z_index"]
-	pass
 
 func black_cover (top_object, force:bool = false):
 	var announce = {
@@ -496,3 +521,9 @@ func stop_black_cover():
 		if announce["announce"] == "black_cover":
 			announce["storage"]["is_ongoing"] = false
 		
+func reset():
+	for announce in ongoing_announces:
+		cleanup(announce)
+	var ongoing_announces = []
+	right_screen_announces = 0	
+	

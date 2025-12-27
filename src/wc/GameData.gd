@@ -1853,6 +1853,7 @@ func cleanup_post_game():
 	_clients_system_status = {}
 	_villain_current_hero_target = 1
 	_first_player_hero_id = 1
+	theAnnouncer.reset()
 	theStack.flush_logs()
 	flush_debug_display()
 	theStack.reset()

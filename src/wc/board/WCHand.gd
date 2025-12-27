@@ -63,7 +63,7 @@ func re_place() -> void:
 			expected_size_x = max(expected_size_x, get_viewport().size.x/3)
 		expected_size_x = min (get_viewport().size.x/2, expected_size_x)
 		set_control_size(expected_size_x, card_size.y)
-		position.x = 100 * cfc.screen_scale
+		position.x = 100 * cfc.screen_scale.x
 	
 	else:
 		#hand's position depends on ghosthand 
@@ -179,6 +179,8 @@ func check_ghost_card(card):
 		if (!has_card):
 			has_card = cfc.instance_ghost_card(card, get_my_hero_id())
 			add_child(has_card)
+			#cards come as facedown by default, forcing it as faceup loads the front card art
+			has_card.set_is_faceup(true, true)
 	else:
 		if (has_card):
 			remove_child(has_card)

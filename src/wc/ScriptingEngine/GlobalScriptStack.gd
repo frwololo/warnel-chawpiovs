@@ -1058,11 +1058,10 @@ func flush_logs():
 
 
 func display_debug_info():
-
 	#the expectation at this point is that
 	#the announcer gives enough info to not have to show this debug panel	
 	if gameData.is_announce_ongoing():
-		if text_edit:
+		if text_edit and is_instance_valid(text_edit):
 			text_edit.visible = false
 		return
 

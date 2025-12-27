@@ -155,7 +155,11 @@ func resize():
 		get_node("%ScenarioOverContainer").add_constant_override("separation", 2)
 		get_node("%EncounterSelect").clip_text = true
 		get_node("%VBoxContainer").add_constant_override("separation", 2)
+		get_node("%MarginContainer").add_constant_override("margin_top", 5)
+		get_node("%MarginContainer").add_constant_override("margin_bottom", 5)
 		scenario_picture.rect_min_size = Vector2(100, 100)
+		$MainMenu.rect_position.y = 5
+		
 
 	scenario_picture.rect_pivot_offset = scenario_picture.rect_size / 2
 	scenario_picture.rect_rotation = _rotation

@@ -30,7 +30,8 @@ func _ready() -> void:
 
 	launch_button.disabled = true
 	cfc.default_button_focus(v_buttons)
-		
+	resize()
+	
 	for option_button in v_buttons.get_children():
 		if option_button.has_signal('pressed'):
 			option_button.connect('pressed', self, 'on_button_pressed', [option_button.name])
@@ -109,13 +110,10 @@ func on_button_pressed(_button_name : String) -> void:
 
 	
 func _on_Menu_resized() -> void:
-	for tab in [main_menu]:
-		if is_instance_valid(tab):
-			tab.rect_size = get_viewport().size
-			if tab.rect_position.x < 0.0:
-					tab.rect_position.x = -get_viewport().size.x
-			elif tab.rect_position.x > 0.0:
-					tab.rect_position.x = get_viewport().size.x
+	resize()
+	
+func resize():
+	self.rect_scale = cfc.screen_scale
 
 func register_self(info):
 	var id = cfc.get_network_unique_id()

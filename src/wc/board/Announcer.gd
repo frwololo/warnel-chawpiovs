@@ -170,7 +170,7 @@ func add_right_announce():
 	cfc.NMAP.main.reposition()
 
 func remove_right_announce():
-	right_screen_announces +=1
+	right_screen_announces -=1
 	
 func is_right_side_announce_ongoing():
 	return right_screen_announces

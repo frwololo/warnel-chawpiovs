@@ -83,6 +83,8 @@ func reposition_vbc():
 		#we don't want to cover it	
 		if gameData.theAnnouncer.is_right_side_announce_ongoing():	
 			display_position = Vector2( spacer, spacer)
+			if mouse_pos.x < display_size.x + (spacer*2) and mouse_pos.y < display_size.y + (spacer*2):
+				display_position.y = viewport.size.y -  display_size.y - spacer
 		elif mouse_pos.x + display_size.x >= viewport_size.x :
 			display_position = Vector2( spacer, spacer)
 		else:

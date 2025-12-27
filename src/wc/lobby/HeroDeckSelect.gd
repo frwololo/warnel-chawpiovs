@@ -34,6 +34,7 @@ func resize():
 		hero_picture.rect_min_size = Vector2(140, 200)
 	else:		
 		hero_picture.rect_min_size = Vector2(100, 100)
+		get_node("%PlayerName").clip_text = true
 	
 	hero_picture.rect_size = hero_picture.rect_min_size	
 	$Panel/HorizontalHighlights.rect_min_size = hero_picture.rect_min_size

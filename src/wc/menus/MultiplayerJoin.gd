@@ -30,7 +30,7 @@ func _ready() -> void:
 	# warning-ignore:return_value_discarded
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')
 	v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
-
+	resize()
 
 func fetch_list_rooms():
 	var rooms_list = get_node("%Rooms")
@@ -165,13 +165,10 @@ func join_game(ip_address : String):
 	get_tree().change_scene(CFConst.PATH_CUSTOM + 'lobby/MultiplayerLobby.tscn')
 	
 func _on_Menu_resized() -> void:
-	for tab in [main_menu]:
-		if is_instance_valid(tab):
-			tab.rect_size = get_viewport().size
-			if tab.rect_position.x < 0.0:
-					tab.rect_position.x = -get_viewport().size.x
-			elif tab.rect_position.x > 0.0:
-					tab.rect_position.x = get_viewport().size.x
+	resize()
+	
+func resize():
+	self.rect_scale = cfc.screen_scale
 
 
 func _on_RefreshButton_pressed():

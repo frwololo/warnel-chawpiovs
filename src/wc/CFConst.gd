@@ -69,7 +69,7 @@ const CARD_SIZE := Vector2(200,280)
 # This is the resolution the game was developed in. It is used to adjust the card sizes
 # for smaller resolutions. Any lower resoluton will adjust its card sizes for previews/thumbnails
 # based on the percentage of difference between the two resolutions in absolute pixel number.
-const DESIGN_RESOLUTION := Vector2(1920,1080)
+const DESIGN_RESOLUTION := Vector2(1280, 720) #Vector2(1920,1080)
 # Switch this off to disable fancy movement of cards during draw/discard
 const FANCY_MOVEMENT := true
 # The focus style selected for this game. See enum `FocusStyle`
@@ -368,8 +368,8 @@ const GRID_SETUP := {
 		"y" : 20,
 	},
 	"set_aside" :{
-		"x" : -300,
-		"y" : -300,
+		"x" : 3000,
+		"y" : 500,
 		"type" : "pile",
 		"faceup" : true,
 		"scale" : 0.5,

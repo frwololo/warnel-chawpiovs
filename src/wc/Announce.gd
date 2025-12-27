@@ -130,8 +130,10 @@ func _ready():
 	load_texture(bottom_texture, _bottom_texture_filename)	
 	self.fade(self, 0)
 	self.rect_position = get_viewport().size/2 - self.rect_size/2
-	#set_scale(0.5)
-	#set_bg_color(Color(0,0,0,0))
+
+func _init():
+	set_scale(1)
+
 
 func set_bg_color(color):
 	_bg_color = color
@@ -187,7 +189,7 @@ func set_duration(delta):
 	delta_max = delta
 	
 func set_scale(scale):
-	self.rect_scale = Vector2(scale, scale)
+	self.rect_scale = Vector2(scale, scale) * cfc.screen_scale
 
 		
 func load_texture(target, filename):

@@ -28,6 +28,7 @@ rect_min_size = Vector2( 450, 630 )
 
 [node name="Viewport" parent="VBC/Focus" index="0"]
 size = Vector2( 450, 630 )
+hdr = false
 
 [node name="FocusInfo" parent="VBC" index="1"]
 margin_top = 634.0

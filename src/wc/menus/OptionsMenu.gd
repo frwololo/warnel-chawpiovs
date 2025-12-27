@@ -23,7 +23,8 @@ func _ready():
 				option_button.hide()	
 
 	
-	file_dialog.connect("file_selected", self, "_on_file_selected")		
+	file_dialog.connect("file_selected", self, "_on_file_selected")	
+	self.scale = cfc.screen_scale	
 	set_process(false)
 			
 func on_button_pressed(_button_name : String) -> void:

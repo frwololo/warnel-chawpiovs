@@ -2478,6 +2478,8 @@ func _process_card_state() -> void:
 					_add_tween_rotation($Control.rect_rotation,_target_rotation,
 						in_hand_tween_duration)
 					$Tween.start()
+			if not scale.is_equal_approx(cfc.screen_scale):
+				set_scale(cfc.screen_scale)
 
 		CardState.FOCUSED_IN_HAND:
 			# Used when card is focused on by the mouse hovering over it.
@@ -2528,7 +2530,7 @@ func _process_card_state() -> void:
 					while  get_parent().get_parent().rect_global_position.y\
 							+ get_parent().bottom_margin \
 							+ _target_position.y \
-							+ card_size.y * 1.5 > get_viewport().size.y:
+							+ card_size.y * 1.5> get_viewport().size.y:
 						_target_position.y -= 1
 				else:
 					while get_parent().position.y \
@@ -2644,12 +2646,13 @@ func _process_card_state() -> void:
 			if not $Tween.is_active():
 				$Tween.remove(self,'position') #
 				_add_tween_position(position, _target_position, reorganization_tween_duration)
-				if not scale.is_equal_approx(Vector2(1,1)):
-					_add_tween_scale(scale, Vector2(1,1), reorganization_tween_duration)
+				if not scale.is_equal_approx(cfc.screen_scale):
+					_add_tween_scale(scale, cfc.screen_scale, reorganization_tween_duration)
 				_add_tween_rotation($Control.rect_rotation,_target_rotation,
 					reorganization_tween_duration)
 				$Tween.start()
 				set_state(CardState.IN_HAND)
+	
 
 		CardState.PUSHED_ASIDE:
 			# Used when card is being pushed aside due to the focusing of a neighbour.
@@ -2664,12 +2667,13 @@ func _process_card_state() -> void:
 					pushed_aside_tween_duration, Tween.TRANS_QUART, Tween.EASE_IN)
 				_add_tween_rotation($Control.rect_rotation, _target_rotation,
 					pushed_aside_tween_duration)
-				if not scale.is_equal_approx(Vector2(1,1)):
-					_add_tween_scale(scale, Vector2(1,1), pushed_aside_tween_duration,
+				if not scale.is_equal_approx(cfc.screen_scale):
+					_add_tween_scale(scale, cfc.screen_scale, pushed_aside_tween_duration,
 						Tween.TRANS_QUART, Tween.EASE_IN)
 				$Tween.start()
 				# We don't change state yet,
 				# only when the focus is removed from the neighbour
+	
 
 		CardState.DRAGGED:
 			# Used when the card is dragged around the game with the mouse
@@ -2710,6 +2714,8 @@ func _process_card_state() -> void:
 			var target_scale = play_area_scale
 			if (_placement_slot):
 				target_scale = _placement_slot.get_scale_modifier()
+			if ( current_host_card and  current_host_card._placement_slot):
+				target_scale =  current_host_card._placement_slot.get_scale_modifier()				
 			if canonical_name =="The Break-In!":
 				var _tmp = 1	
 			if not $Tween.is_active():
@@ -2847,7 +2853,7 @@ func _process_card_state() -> void:
 				set_scale(Vector2(1,1))
 				resize_recursively(_control, focused_scale * cfc.curr_scale)
 #				set_card_size(CFConst.CARD_SIZE * CFConst.FOCUSED_SCALE, true)
-				get_card_front().scale_to(focused_scale * cfc.curr_scale)
+				get_card_front().scale_to(focused_scale * cfc.curr_scale )
 				get_card_back().scale_to(focused_scale * cfc.curr_scale)
 			# If the card has already been been viewed while down,
 			# we allow the player hovering over it to see it

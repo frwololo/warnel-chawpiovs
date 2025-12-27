@@ -104,8 +104,8 @@ func init_display(forced = false):
 	initialized = load_card_texture()
 	load_text()
 	init_arrows()
-	$Control.rect_scale = Vector2(SCALE,SCALE)
-	$Shadow.rect_scale = Vector2(SCALE,SCALE)
+	$Control.rect_scale = Vector2(SCALE,SCALE) * cfc.screen_scale
+	$Shadow.rect_scale = Vector2(SCALE,SCALE) * cfc.screen_scale
 
 func show_arrows():
 	if arrows_initialized:
@@ -238,7 +238,7 @@ func _on_Button_pressed():
 	var button = get_node("%Button")
 	var tween = get_node("Tween")
 	
-	var hidden_position = Vector2(1870, target_position.y)
+	var hidden_position = Vector2(1870 * cfc.screen_scale.x, target_position.y)
 	var before = target_position
 	var after = hidden_position
 	match button.text:

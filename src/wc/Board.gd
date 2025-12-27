@@ -930,8 +930,7 @@ func loadstate_from_json(json:Dictionary):
 	load_cards_to_pile(other_data, "")
 	
 	cfc._rpc(self,"ready_for_step", LOADING_STEPS.CARDS_PRELOADED_SKIP_LOAD) #tell everyone we're done preloading
-
-	#gameData.start_game()	
+	
 	return
 #The game engine doesn't really have a concept of double sided cards, so instead,
 #when flipping such a card, we destroy it and create a new card
@@ -1033,7 +1032,6 @@ func _on_ServerActivity_gui_input(event):
 		if event.doubleclick and cfc.is_game_master():
 			gameData.theStack.attempt_unlock()
 		
-	pass # Replace with function body.
 
 
 func get_all_focusable_cards():
@@ -1045,26 +1043,6 @@ func get_all_focusable_cards():
 	cards_array += hand.get_all_cards()
 	var ghost_hand:Hand = cfc.NMAP["ghosthand" + str(my_hero_id)]
 	cards_array += ghost_hand.get_all_cards()
-			
-	#piles: piles themselves are focusable, not the cards in them
-#	for grid_name in GRID_SETUP.keys():
-#		var grid_info = GRID_SETUP[grid_name]
-#		if "pile" == grid_info.get("type", ""):
-#			var pile:Pile = cfc.NMAP[grid_name]
-#			var top_card = pile.get_top_card()
-#			if top_card:
-#				cards_array.append(top_card)
-#	#hero piles		
-#	for i in range(gameData.get_team_size()):
-#		var hero_id = i+1
-#		for grid_name in HERO_GRID_SETUP.keys():
-#			var grid_info = HERO_GRID_SETUP[grid_name]
-#			var real_grid_name = grid_name + str(hero_id)		
-#			if "pile" == grid_info.get("type", ""):
-#				var pile:Pile = cfc.NMAP[real_grid_name]
-#				var top_card = pile.get_top_card()
-#				if top_card:
-#					cards_array.append(top_card)			
 			
 	return cards_array		
 
@@ -1243,7 +1221,5 @@ func ui_setup():
 	resize()
 
 func resize():
-	var screen_size = cfc.screen_resolution
-	var margin_container = $PhaseContainer/MarginContainer
-	margin_container.margin_right = screen_size.x
-	margin_container.margin_bottom = screen_size.y
+	$PhaseContainer.resize()	
+	get_node("%OptionsButton").rect_scale = cfc.screen_scale

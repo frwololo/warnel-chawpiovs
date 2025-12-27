@@ -5,6 +5,7 @@ func _ready() -> void:
 	# warning-ignore:return_value_discarded
 	$Control/ManipulationButtons/DiscardRandom.connect("pressed",self,'_on_DiscardRandom_Button_pressed')
 	excess_cards = ExcessCardsBehaviour.ALLOW
+	card_size = card_size * cfc.screen_scale
 
 func _process(_delta: float) -> void:
 	var hero_id = get_my_hero_id()
@@ -62,12 +63,12 @@ func re_place() -> void:
 			expected_size_x = max(expected_size_x, get_viewport().size.x/3)
 		expected_size_x = min (get_viewport().size.x/2, expected_size_x)
 		set_control_size(expected_size_x, card_size.y)
-		position.x = 100
+		position.x = 100 * cfc.screen_scale
 	
 	else:
 		#hand's position depends on ghosthand 
 		var offset = calculate_others_offset()
-		var offset_right = Vector2(200,0)
+		var offset_right = Vector2(200,0) * cfc.screen_scale
 		var control_size = get_viewport().size - offset_right  - offset
 		position.x = offset.x
 		set_control_size(control_size.x, card_size.y)

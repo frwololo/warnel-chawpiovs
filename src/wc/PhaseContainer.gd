@@ -589,3 +589,12 @@ func _on_tree_exiting():
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		flush_debug_display()
+
+func resize():
+		
+	var screen_size = cfc.screen_resolution
+	#self.scale = cfc.screen_scale
+	var margin_container = $MarginContainer
+	margin_container.rect_scale = cfc.screen_scale
+	margin_container.margin_right = screen_size.x / cfc.screen_scale.y
+	margin_container.margin_bottom = screen_size.y / cfc.screen_scale.y

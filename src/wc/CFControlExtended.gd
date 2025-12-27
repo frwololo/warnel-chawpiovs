@@ -41,7 +41,8 @@ var last_ping_time:= 0
 var fps = 0
 var low_fps = false
 
-var texture_scale = 1.0
+#a variable used to compare the scale of the screen to a 1920*1080 screen
+var screen_scale = 1.0
 var screen_resolution = Vector2(1920, 1080)
 
 # warning-ignore:unused_signal
@@ -50,8 +51,44 @@ signal json_parse_error(msg)
 func _ready():
 #	focused_shader = preload("res://src/wc/shaders/focused.tres")
 	screen_resolution = get_viewport().size
-	texture_scale = screen_resolution / Vector2(1920, 1080)
-	var _tmp = 1
+	screen_scale = screen_resolution / Vector2(1920, 1080)
+	scale_grids()
+
+func scale_grids():
+	for config in [CFConst.GRID_SETUP, CFConst.HERO_GRID_SETUP]:
+		for grid_name in config:
+			var grid_info = config[grid_name]
+			for key in ["x", "y", "scale"]:
+				if grid_info.has(key):
+					grid_info[key] = grid_info[key] * screen_scale.x 
+				else:
+					match key:
+						"scale":
+							grid_info[key] = screen_scale.x 
+	scale_grid_layout_recursive(CFConst.HERO_GRID_LAYOUT)
+	var _tmp = CFConst.HERO_GRID_LAYOUT
+	var poil = 1
+
+func scale_grid_layout_recursive(config):
+	match typeof(config):
+		TYPE_DICTIONARY:
+			if !config.has("scale"):
+				if config.get("type", "") in ["grid", "pile"]:
+					config["scale"] = 1.0
+			for k in config:
+				if k in ["x", "y", "scale", "max_width", "max_height"]:
+					config[k] = config[k] * screen_scale.x
+				else:
+					scale_grid_layout_recursive(config[k])
+		TYPE_ARRAY:
+			for v in config:
+				scale_grid_layout_recursive(v)
+		_:
+			pass
+
+	
+	#todo reorganizers?
+	
 func get_card_texture(card, force_if_facedown: = true):
 	var filename = card.get_art_filename(force_if_facedown)
 	return get_external_texture(filename)

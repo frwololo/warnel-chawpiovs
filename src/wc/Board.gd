@@ -234,13 +234,13 @@ func grid_setup():
 	for i in range(get_team_size()):
 		var hero_id = i+1
 		var scale = 1
-		var start_x = 500
-		var start_y = 220
+		var start_x = 500 * cfc.screen_scale.x
+		var start_y = 220 * cfc.screen_scale.y
 		
 		if (hero_id > 1):
 			scale = 0.3
 			start_x = 0
-			start_y = 220 + (hero_id * 200)
+			start_y = (220 + (hero_id * 200)) * cfc.screen_scale.y
 			
 		for grid_name in HERO_GRID_SETUP.keys():
 			var grid_info = HERO_GRID_SETUP[grid_name]
@@ -289,14 +289,14 @@ func init_board_organizers(current_hero_id):
 	for i in range(get_team_size()):
 		var hero_id = i+1
 		var scale = 1
-		var start_x = 500
-		var start_y = 220
+		var start_x = 500 * cfc.screen_scale.x
+		var start_y = 220 * cfc.screen_scale.y
 		var grid_layout = CFConst.HERO_GRID_LAYOUT.duplicate(true)
 		
 		if (hero_id != current_hero_id):
 			scale = 0.3
 			start_x = 0
-			start_y = 220 + (other_counter * 200)
+			start_y = (220 + (other_counter * 200)) * cfc.screen_scale.y
 			other_counter+=1
 			#hacky way to force resize
 			var right_container_def = grid_layout["children"][1]

@@ -19,6 +19,7 @@ var my_scale: float = 1
 #to compute scale
 var max_size: Vector2
 var min_size: Vector2
+var spacer:Vector2
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -34,6 +35,8 @@ func set_absolute_position(position):
 func setup(def:Dictionary, hero_id, _scale = 0):
 	my_name = def.get("name", "")
 	my_scale = _scale if _scale else def.get("scale", 1)
+	
+	spacer = Vector2(50,50) * cfc.screen_scale
 	
 	box_type = string_to_box_type(def.get("type", "horizontal"))
 	var x = def.get("x", 0)
@@ -85,8 +88,7 @@ func setup(def:Dictionary, hero_id, _scale = 0):
 func compute_spacer_size(child_data):
 	var new_scale = my_scale * child_data["scale"] 
 	#add a bit of spacing
-	var spacing = Vector2(50, 50) 
-	var size = CFConst.CARD_SIZE + spacing
+	var size = CFConst.CARD_SIZE + spacer
 	return new_scale * size 
 
 func compute_pile_size(child_data):
@@ -97,23 +99,20 @@ func compute_pile_size(child_data):
 	var new_scale = my_scale * child_data["scale"] 
 
 	#add a bit of spacing
-	var spacing = Vector2(50, 50)
 
-	var size = child.card_size + spacing
+	var size = child.card_size + spacer
 
 
 	return new_scale * size 
 
-func compute_grid_size(child_data):
-	var spacing = Vector2(50, 50)
-	
+func compute_grid_size(child_data):	
 	var child = child_data["item"]
 	if !child as BoardPlacementGrid:
 		return Vector2(0,0)
 	
 	var cards = child.get_all_cards()
 	if !cards:
-		return  my_scale * spacing
+		return  my_scale * spacer
 	
 	#grids have this square shape
 	var tmp = child.card_size
@@ -121,8 +120,8 @@ func compute_grid_size(child_data):
 	var _card_size:Vector2 = Vector2(max_axis, max_axis)
 	
 	var new_scale = my_scale * child_data["scale"] * CFConst.PLAY_AREA_SCALE
-	var x = new_scale * (_card_size.x * cards.size() + spacing.x)
-	var y = new_scale * (_card_size.y + spacing.y) 
+	var x = new_scale * (_card_size.x * cards.size() + spacer.x)
+	var y = new_scale * (_card_size.y + spacer.y) 
 		
 	return Vector2(x, y)
 

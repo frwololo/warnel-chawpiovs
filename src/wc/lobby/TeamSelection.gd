@@ -134,7 +134,7 @@ func _process(delta:float):
 		var focused = get_focus_owner()
 		large_picture.rect_position = focused.get_global_position() + focused.rect_size/2
 	large_picture.rect_size = Vector2(300, 420)
-	large_picture.rect_scale = cfc.texture_scale
+	large_picture.rect_scale = cfc.screen_scale
 	large_picture.rect_rotation = _preview_rotation
 
 func resize():

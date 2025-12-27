@@ -274,10 +274,16 @@ func _input(event):
 
 # Takes care to resize the child viewport, when the main viewport is resized
 func _on_Viewport_size_changed() -> void:
-	if ProjectSettings.get("display/window/stretch/mode") == "disabled" and is_instance_valid(get_viewport()):
+	resize()
+	
+func resize():
+	var stretch_mode = cfc.get_screen_stretch_mode()
+	if stretch_mode == SceneTree.STRETCH_MODE_2D:
+		return
+
+	if is_instance_valid(get_viewport()):
 		$ViewportContainer.rect_size = get_viewport().size
-#		for c in _previously_focused_cards.values().duplicate():
-#			c.queue_free()
+
 
 func toggle_glow(is_enabled := true) -> void:
 	world_environemt.environment.glow_enabled = is_enabled

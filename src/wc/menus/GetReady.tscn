@@ -9,57 +9,63 @@ size = 200
 font_data = ExtResource( 2 )
 
 [node name="Menu" type="Panel"]
-margin_right = 1920.0
-margin_bottom = 1080.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme = ExtResource( 1 )
 script = ExtResource( 3 )
 
-[node name="MainMenu" type="MarginContainer" parent="."]
+[node name="CenterContainer" type="CenterContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="ColorRect" type="ColorRect" parent="MainMenu"]
-margin_right = 1920.0
-margin_bottom = 1080.0
-color = Color( 0.0705882, 0.0705882, 0.0705882, 1 )
+[node name="VBox" type="VBoxContainer" parent="CenterContainer"]
+margin_left = 266.0
+margin_top = 145.0
+margin_right = 1013.0
+margin_bottom = 575.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
 
-[node name="VBox" type="VBoxContainer" parent="MainMenu"]
-margin_right = 1920.0
-margin_bottom = 1080.0
-
-[node name="Margin" type="MarginContainer" parent="MainMenu/VBox"]
-margin_right = 1920.0
-margin_bottom = 358.0
+[node name="Margin" type="MarginContainer" parent="CenterContainer/VBox"]
+margin_right = 747.0
+margin_bottom = 304.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/margin_top = 90
 
-[node name="Label" type="Label" parent="MainMenu/VBox/Margin"]
-margin_top = 117.0
-margin_right = 1920.0
-margin_bottom = 331.0
+[node name="Label" type="Label" parent="CenterContainer/VBox/Margin"]
+unique_name_in_owner = true
+margin_top = 90.0
+margin_right = 747.0
+margin_bottom = 304.0
+size_flags_horizontal = 3
 custom_fonts/font = SubResource( 2 )
 text = "Get Ready!"
 align = 1
 
-[node name="Center" type="CenterContainer" parent="MainMenu/VBox"]
-margin_top = 361.0
-margin_right = 1920.0
-margin_bottom = 719.0
+[node name="Center" type="CenterContainer" parent="CenterContainer/VBox"]
+margin_top = 307.0
+margin_right = 747.0
+margin_bottom = 307.0
 size_flags_vertical = 3
 
-[node name="Margin2" type="MarginContainer" parent="MainMenu/VBox"]
-margin_top = 722.0
-margin_right = 1920.0
-margin_bottom = 1080.0
+[node name="Margin2" type="MarginContainer" parent="CenterContainer/VBox"]
+margin_top = 310.0
+margin_right = 747.0
+margin_bottom = 430.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/margin_top = 90
 
-[node name="Label" type="Label" parent="MainMenu/VBox/Margin2"]
-margin_top = 212.0
-margin_right = 1920.0
-margin_bottom = 235.0
+[node name="Label" type="Label" parent="CenterContainer/VBox/Margin2"]
+margin_top = 90.0
+margin_right = 747.0
+margin_bottom = 120.0
 text = "user folder:"
 valign = 2
 

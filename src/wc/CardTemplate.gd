@@ -396,13 +396,11 @@ func grab_focus():
 
 func gain_focus():
 	has_focus = true
-#	var _material = ShaderMaterial.new()
-#	if cfc.focused_shader and card_front and card_front.art:
-#		_material.set_shader(cfc.focused_shader)
-#		card_front.art.set_material(_material)
-	if card_front and card_front.art:
-		card_front.art.self_modulate = CFConst.FOCUS_CARD_MODULATE
-		card_front.art.self_modulate.a = 1.0
+	
+	if !gamepadHandler.is_mouse_input():
+		if card_front and card_front.art:
+			card_front.art.self_modulate = CFConst.FOCUS_CARD_MODULATE
+			card_front.art.self_modulate.a = 1.0
 	.gain_focus()
 	
 func lose_focus():

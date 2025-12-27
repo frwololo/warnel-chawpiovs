@@ -12,11 +12,29 @@ var available = true
 func _ready():
 	if color_tex:
 		hero_picture.texture_normal = color_tex
-		hero_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		resize()
 		get_viewport().connect("gui_focus_changed", self, "gui_focus_changed")
-	pass
 	
+	get_viewport().connect("size_changed", self, '_on_Menu_resized')
 
+
+
+func resize():
+	var stretch_mode = cfc.get_screen_stretch_mode()
+	if stretch_mode != SceneTree.STRETCH_MODE_VIEWPORT:
+		return
+		
+	var screen_size = get_viewport().size
+	if screen_size.x > CFConst.LARGE_SCREEN_WIDTH:
+		hero_picture.rect_min_size = Vector2(200, 200)
+	else:		
+		hero_picture.rect_min_size = Vector2(100, 100)
+	
+	hero_picture.rect_size = hero_picture.rect_min_size	
+	$Panel/HorizontalHighlights.rect_min_size = hero_picture.rect_min_size
+	$Panel/VerticalHighlights.rect_min_size = hero_picture.rect_min_size
+	$Panel/HorizontalHighlights.rect_size = hero_picture.rect_size
+	$Panel/VerticalHighlights.rect_size = hero_picture.rect_size			
 func grab_focus():
 	hero_picture.grab_focus()
 
@@ -81,3 +99,6 @@ func action():
 		lobby.request_hero_slot(hero_id)
 	else:
 		lobby.request_release_hero_slot(hero_id)
+
+func _on_Menu_resized() -> void:
+	resize()

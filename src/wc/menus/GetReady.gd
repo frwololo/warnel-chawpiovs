@@ -6,8 +6,7 @@ extends Panel
 # The time it takes to switch from one menu tab to another
 const menu_switch_time = 0.35
 
-onready var main_menu := $MainMenu
-onready var v_folder_label := $MainMenu/VBox/Margin2/Label
+onready var v_folder_label := $CenterContainer/VBox/Margin2/Label
 
 var ready = false
 var clients_ready = {}
@@ -19,7 +18,7 @@ func _ready() -> void:
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')
 	v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
 
-	#do loading related stuff
+	resize()
 
 func _process(delta):
 	if (not ready):
@@ -41,13 +40,7 @@ remotesync func client_ready():
 
 
 func _launch_server_game():
-	# Finalize Network players data
-	#var i = 0
-	#for player in players:
-	#	cfc._rpc(self,"set_network_player_index", player, i)
-	#	i+=1
 	cfc._rpc(self, "launch_client_game")	
-	#_launch_game()
 	
 remotesync func launch_client_game():
 	_launch_game() 	
@@ -56,11 +49,16 @@ func _launch_game():
 	# server said start the game!
 	get_tree().change_scene_to(game)
 	
+func resize():
+	var stretch_mode = cfc.get_screen_stretch_mode()
+	if stretch_mode != SceneTree.STRETCH_MODE_VIEWPORT:
+		return	
+			
+	var target_size = get_viewport().size
+	var label = get_node("%Label")
+	label.rect_min_size = Vector2(target_size.x,label.rect_min_size.y) 
+	label.rect_size = label.rect_min_size
+	rect_min_size = target_size	
+
 func _on_Menu_resized() -> void:
-	for tab in [main_menu]:
-		if is_instance_valid(tab):
-			tab.rect_size = get_viewport().size
-			if tab.rect_position.x < 0.0:
-					tab.rect_position.x = -get_viewport().size.x
-			elif tab.rect_position.x > 0.0:
-					tab.rect_position.x = get_viewport().size.x
+	resize()

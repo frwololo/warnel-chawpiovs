@@ -6,11 +6,11 @@ extends Panel
 # The time it takes to switch from one menu tab to another
 const menu_switch_time = 0.35
 
-onready var v_buttons := $MainMenu/VBox/Center/VButtons
-onready var exit_button := $MainMenu/VBox/Center/VButtons/Exit
-onready var main_menu := $MainMenu
+onready var v_buttons := $CenterContainer/VBox/VButtons
+onready var exit_button := $CenterContainer/VBox/VButtons/Exit
 onready var v_folder_label := get_node("%FolderLabel")
-onready var main_title := $MainMenu/VBox/Label
+onready var main_title := $CenterContainer/VBox/Label
+onready var texture_rect = get_node("%TextureRect")
 
 var http_request: HTTPRequest = null
 var _current_destination = ""
@@ -47,7 +47,7 @@ func _ready() -> void:
 			option_button.connect('pressed', self, 'on_button_pressed', [option_button.name])
 			option_button.connect('mouse_entered', option_button, 'grab_focus')
 	# warning-ignore:return_value_discarded
-	get_viewport().connect("size_changed", self, '_on_Menu_resized')
+	resize()
 	_loading_text_prefix = "Loading Card Definitions - "
 	v_folder_label.text = _loading_text_prefix
 	main_title.text = "LOADING..."
@@ -213,8 +213,16 @@ func _all_downloads_completed():
 
 	main_title.text = "WARNEL CHAWPIOVS"
 	main_title.visible = false
-	get_node("%TextureRect").visible = true
+
+#	texture_rect.rect_size = Vector2(50,50)
+#	texture_rect.rect_scale = Vector2(0.5,0.5)
+#	texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	texture_rect.visible = true
+#	texture_rect.get_parent().rect_min_size = texture_rect.rect_size * texture_rect.rect_scale
+#	texture_rect.get_parent().rect_size = texture_rect.rect_size * texture_rect.rect_scale
 	cfc.all_loaded = true
+
+
 
 func create_default_folders():
 	var dir = Directory.new()
@@ -277,6 +285,11 @@ func _sets_download_completed():
 	start_images_dl()
 
 func _process(delta):
+#	var target_size = get_viewport().size
+#	if target_size.x > 1800:
+#		texture_rect.rect_min_size = Vector2(1616, 604)
+#		texture_rect.rect_size = texture_rect.rect_min_size
+
 	if (_loading_error):
 		return
 	
@@ -310,14 +323,23 @@ func on_button_pressed(_button_name : String) -> void:
 		"Exit":
 			get_tree().quit()
 
+func resize():
+	var stretch_mode = cfc.get_screen_stretch_mode()
+	if stretch_mode != SceneTree.STRETCH_MODE_VIEWPORT:
+		return	
+	var target_size = get_viewport().size
+	if target_size.x > CFConst.LARGE_SCREEN_WIDTH:
+		#loading a higher res title screen
+		texture_rect.texture = load("res://assets/icons/title.png")
+		texture_rect.rect_min_size = Vector2(1616, 604)
+		texture_rect.rect_size = texture_rect.rect_min_size
+
+	self.margin_right = target_size.x
+	self.margin_bottom = target_size.y
+	self.rect_size = target_size
+	$CenterContainer.rect_size = target_size
+
+
 	
-func _on_Menu_resized() -> void:
-	for tab in [main_menu]:
-		if is_instance_valid(tab):
-			tab.rect_size = get_viewport().size
-			if tab.rect_position.x < 0.0:
-					tab.rect_position.x = -get_viewport().size.x
-			elif tab.rect_position.x > 0.0:
-					tab.rect_position.x = get_viewport().size.x
 
 

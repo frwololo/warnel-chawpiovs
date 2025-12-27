@@ -1239,3 +1239,11 @@ func ui_setup():
 		imgtex.create_from_image(new_img)	
 			
 		options_button.texture_normal = imgtex
+	
+	resize()
+
+func resize():
+	var screen_size = cfc.screen_resolution
+	var margin_container = $PhaseContainer/MarginContainer
+	margin_container.margin_right = screen_size.x
+	margin_container.margin_bottom = screen_size.y

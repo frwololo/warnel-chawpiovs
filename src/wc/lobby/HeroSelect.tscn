@@ -25,35 +25,37 @@ corner_radius_bottom_right = 3
 script = ExtResource( 1 )
 
 [node name="Panel" type="MarginContainer" parent="."]
-margin_right = 256.0
-margin_bottom = 256.0
+margin_right = 100.0
+margin_bottom = 100.0
 
 [node name="HeroPicture" type="TextureButton" parent="Panel"]
 unique_name_in_owner = true
-margin_right = 256.0
-margin_bottom = 256.0
-rect_min_size = Vector2( 14, 20 )
+margin_right = 100.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
 texture_normal = ExtResource( 2 )
+expand = true
+stretch_mode = 6
 
 [node name="HorizontalHighlights" type="Panel" parent="Panel"]
 visible = false
-margin_right = 256.0
-margin_bottom = 256.0
+margin_right = 100.0
+margin_bottom = 100.0
 mouse_filter = 2
 custom_styles/panel = SubResource( 2 )
 
 [node name="VerticalHighlights" type="Panel" parent="Panel"]
 visible = false
-margin_right = 256.0
-margin_bottom = 256.0
+margin_right = 100.0
+margin_bottom = 100.0
 mouse_filter = 2
 custom_styles/panel = SubResource( 1 )
 
 [node name="HeroName" type="Label" parent="."]
 unique_name_in_owner = true
-margin_top = 260.0
-margin_right = 256.0
-margin_bottom = 274.0
+margin_top = 104.0
+margin_right = 100.0
+margin_bottom = 118.0
 
 [node name="LargePicture" type="TextureRect" parent="."]
 unique_name_in_owner = true

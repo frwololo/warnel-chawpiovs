@@ -52,12 +52,29 @@ func _process(_delta:float):
 		 
 		if (texture):
 			scenario_picture.texture_normal = texture
-			#scenario_picture.stretch_mode = TextureRect.STRETCH_SCALE_ON_EXPAND
-			
-	scenario_picture.rect_size = Vector2(200,200)	
+		resize()	
+
+
+func resize():
+
+	
+	var screen_size = get_viewport().size
+	if screen_size.x > 1800:
+		scenario_picture.rect_min_size = Vector2(200, 200)
+	else:		
+		scenario_picture.rect_min_size = Vector2(120, 120)
+	
+	scenario_picture.rect_size = scenario_picture.rect_min_size	
+
 	scenario_picture.rect_pivot_offset = scenario_picture.rect_size / 2
 	scenario_picture.rect_rotation = _rotation
-	#scenario_name.rect_position = Vector2(0, 210)
+	#scenario_name.rect_position = Vector2(0, 210)		
+	
+	$Panel/HorizontalHighlights.rect_min_size = scenario_picture.rect_min_size
+	$Panel/VerticalHighlights.rect_min_size = scenario_picture.rect_min_size
+	$Panel/HorizontalHighlights.rect_size = scenario_picture.rect_size
+	$Panel/VerticalHighlights.rect_size = scenario_picture.rect_size
+
 func _ready():
 	get_viewport().connect("gui_focus_changed", self, "gui_focus_changed")
 

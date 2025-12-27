@@ -76,7 +76,6 @@ func _ready():
 	_load_encounters()
 	
 	ready_button.hide() #todo do something with this guy
-	launch_button.hide()
 	launch_button.connect('pressed', self, 'on_button_pressed', [launch_button.name])
 
 	if !cfc.is_game_master():
@@ -88,6 +87,7 @@ func _ready():
 	http_request.connect("request_completed", self, "_deck_download_completed")
 
 	cfc.buttons_grab_focus_on_mouse_entered(self)	
+	disable_launch_button()
 
 #Quickstart for tests
 #TODO remove
@@ -104,6 +104,22 @@ func _ready():
 				_launch_server_game()
 		pass	
 
+	resize()
+
+func enable_launch_button():
+	if !launch_button.disabled:
+		return
+			
+	launch_button.disabled = false
+	launch_button.connect("mouse_entered", launch_button, "grab_focus")
+
+func disable_launch_button():
+	if launch_button.disabled:
+		return
+		
+	launch_button.disabled = true
+	launch_button.disconnect("mouse_entered", launch_button, "grab_focus")	
+
 #TODO: need to do this hack because gamepadHandler "gui_focus_changed" only works automatically when the
 #board has been set up
 #this is because a new viewport is created for the board
@@ -111,11 +127,6 @@ func gui_focus_changed(control):
 	gamepadHandler.gui_focus_changed(control)
 
 func _process(delta:float):
-	var scenario_picture:TextureRect = get_node("%ScenarioTexture") 
-	scenario_picture.rect_pivot_offset = scenario_picture.rect_size / 2
-	scenario_picture.rect_rotation = _rotation
-	scenario_picture.rect_size = Vector2(150, 150)
-	
 	var large_picture = get_node("%LargePicture")
 	if gamepadHandler.is_mouse_input():		
 		large_picture.rect_position = get_tree().current_scene.get_global_mouse_position()
@@ -123,7 +134,31 @@ func _process(delta:float):
 		var focused = get_focus_owner()
 		large_picture.rect_position = focused.get_global_position() + focused.rect_size/2
 	large_picture.rect_size = Vector2(300, 420)
+	large_picture.rect_scale = cfc.texture_scale
 	large_picture.rect_rotation = _preview_rotation
+
+func resize():
+	var stretch_mode = cfc.get_screen_stretch_mode()
+
+	var screen_size = get_viewport().size
+	var scenario_picture:TextureRect = get_node("%ScenarioTexture") 
+	if stretch_mode == SceneTree.STRETCH_MODE_VIEWPORT and screen_size.x > 1800:
+		get_node("%LeftRight").add_constant_override("separation", 100)
+		get_node("%TeamScenarioPanel").add_constant_override("separation", 50)
+		get_node("%ScenarioOverContainer").add_constant_override("separation", 20)		
+		scenario_picture.rect_min_size = Vector2(200, 200)
+		get_node("%EncounterSelect").clip_text = false
+		get_node("%VBoxContainer").add_constant_override("separation", 20)
+	else:		
+		get_node("%LeftRight").add_constant_override("separation", 10)
+		get_node("%TeamScenarioPanel").add_constant_override("separation", 5)
+		get_node("%ScenarioOverContainer").add_constant_override("separation", 2)
+		get_node("%EncounterSelect").clip_text = true
+		get_node("%VBoxContainer").add_constant_override("separation", 2)
+		scenario_picture.rect_min_size = Vector2(100, 100)
+
+	scenario_picture.rect_pivot_offset = scenario_picture.rect_size / 2
+	scenario_picture.rect_rotation = _rotation
 	
 func _load_scenarios():
 	for scenario_id in cfc.scenarios:
@@ -182,10 +217,11 @@ remotesync func client_scenario_select(scenario_id):
 		var scenario_picture: TextureRect = get_node("%ScenarioTexture")
 		if (imgtex):
 			scenario_picture.texture = imgtex
-			scenario_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-			scenario_picture.rect_size = Vector2(150, 150)
-			_rotation = scenario_scene._rotation
-			scenario_picture.rect_rotation = _rotation
+#			scenario_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+#			scenario_picture.rect_size = Vector2(150, 150)
+#			_rotation = scenario_scene._rotation
+#			scenario_picture.rect_rotation = _rotation
+			resize()
 		var scenario_title = get_node("%ScenarioTitle")
 		scenario_title.text = scenario_scene.get_text()
 		
@@ -264,10 +300,10 @@ remotesync func assign_hero(hero_id, slot):
 
 func verify_launch_button():
 	if check_ready_to_launch():
-		launch_button.show()
+		enable_launch_button()
 		launch_button.grab_focus()
 	else:
-		launch_button.hide()
+		disable_launch_button()
 		if !get_focus_owner():
 			grab_default_focus()
 
@@ -405,7 +441,7 @@ mastersync func ready_to_launch():
 		cfc._rpc(self,"launch_client_game")
 	
 func _launch_server_game():
-	launch_button.hide()
+	disable_launch_button()
 	var serialized_team = {}
 	for key in team.keys():
 		serialized_team[key] = team[key].savestate_to_json()
@@ -456,13 +492,7 @@ func on_button_pressed(_button_name : String) -> void:
 		#	get_tree().change_scene(CFConst.PATH_CUSTOM + 'MainMenu.tscn')
 
 func _on_Menu_resized() -> void:
-	for tab in [main_menu]:
-		if is_instance_valid(tab):
-			tab.rect_size = get_viewport().size
-			if tab.rect_position.x < 0.0:
-					tab.rect_position.x = -get_viewport().size.x
-			elif tab.rect_position.x > 0.0:
-					tab.rect_position.x = get_viewport().size.x
+	resize()
 
 
 #

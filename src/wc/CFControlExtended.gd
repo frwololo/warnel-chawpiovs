@@ -41,12 +41,17 @@ var last_ping_time:= 0
 var fps = 0
 var low_fps = false
 
+var texture_scale = 1.0
+var screen_resolution = Vector2(1920, 1080)
+
 # warning-ignore:unused_signal
 signal json_parse_error(msg)
 
-#func _ready():
+func _ready():
 #	focused_shader = preload("res://src/wc/shaders/focused.tres")
-
+	screen_resolution = get_viewport().size
+	texture_scale = screen_resolution / Vector2(1920, 1080)
+	var _tmp = 1
 func get_card_texture(card, force_if_facedown: = true):
 	var filename = card.get_art_filename(force_if_facedown)
 	return get_external_texture(filename)
@@ -1131,6 +1136,20 @@ func buttons_grab_focus_on_mouse_entered(node):
 	if node.has_method("get_children"):
 		for child in node.get_children():
 			buttons_grab_focus_on_mouse_entered(child)
+
+var stretch_mode = -1
+func get_screen_stretch_mode():
+	if stretch_mode >=0:
+		return stretch_mode
+	var stretch_mode_str = ProjectSettings.get_setting("display/window/stretch/mode")
+	match stretch_mode_str:
+		"viewport":
+			stretch_mode = SceneTree.STRETCH_MODE_VIEWPORT
+		"2d":
+			stretch_mode = SceneTree.STRETCH_MODE_2D
+		_:	
+			stretch_mode = SceneTree.STRETCH_MODE_DISABLED
+	return stretch_mode
 
 func is_modal_event_ongoing():
 	if get_modal_menu():

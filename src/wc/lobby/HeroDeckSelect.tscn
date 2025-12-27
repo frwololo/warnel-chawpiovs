@@ -39,6 +39,8 @@ margin_right = 140.0
 margin_bottom = 200.0
 rect_min_size = Vector2( 140, 200 )
 focus_mode = 2
+expand = true
+stretch_mode = 7
 
 [node name="HorizontalHighlights" type="Panel" parent="Panel"]
 visible = false

@@ -19,12 +19,27 @@ var _needs_refresh = 0
 # 
 onready var playerName := $PlayerName
 onready var deckSelect := $DeckSelect
+onready var hero_picture := get_node("%HeroPicture")
 onready var lobby = find_parent("TeamSelection")
 
 func _ready():
 	playerName.connect("item_selected", self, "_on_owner_changed")
 	deckSelect.connect("item_selected", self, "_on_deck_changed")	
 	_load_players()
+	resize()
+
+func resize():
+	var screen_size = get_viewport().size
+	if screen_size.x > 1800:
+		hero_picture.rect_min_size = Vector2(140, 200)
+	else:		
+		hero_picture.rect_min_size = Vector2(100, 100)
+	
+	hero_picture.rect_size = hero_picture.rect_min_size	
+	$Panel/HorizontalHighlights.rect_min_size = hero_picture.rect_min_size
+	$Panel/VerticalHighlights.rect_min_size = hero_picture.rect_min_size
+	$Panel/HorizontalHighlights.rect_size = hero_picture.rect_size
+	$Panel/VerticalHighlights.rect_size = hero_picture.rect_size	
 	
 func set_idx(idx):
 	my_index = idx
@@ -95,8 +110,7 @@ func _on_owner_changed(id):
 
 func load_hero(_hero_id):
 	hero_id = _hero_id
-
-	var hero_picture: TextureRect = get_node("%HeroPicture")
+	
 	var deck_select: OptionButton = get_node("%DeckSelect")
 	deck_select.clear()
 	
@@ -107,7 +121,8 @@ func load_hero(_hero_id):
 		decks = cfc.idx_hero_to_deck_ids[hero_id]
 	if (imgtex and decks):	
 		hero_picture.texture = imgtex
-		hero_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		#hero_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		resize()
 		for _deck_id in decks:
 			var deck_data = cfc.deck_definitions[_deck_id]
 			var hero_name = cfc.get_card_name_by_id(hero_id)
@@ -127,7 +142,6 @@ func gain_focus():
 	if gamepadHandler.is_mouse_input():
 		return
 		
-	var hero_picture: TextureRect = get_node("%HeroPicture")
 	var v = $Panel/VerticalHighlights
 	v.visible = true
 	var h = $Panel/HorizontalHighlights

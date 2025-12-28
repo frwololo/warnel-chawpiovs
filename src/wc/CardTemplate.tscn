@@ -55,11 +55,8 @@ script = ExtResource( 3 )
 script = ExtResource( 6 )
 manipulation_button = ExtResource( 5 )
 
-[node name="SideIcons" type="MarginContainer" parent="Control" index="8"]
+[node name="SideIcons" type="Node2D" parent="Control" index="8"]
 unique_name_in_owner = true
-margin_right = 40.0
-margin_bottom = 200.0
-mouse_filter = 2
 script = ExtResource( 8 )
 
 [node name="Label" type="Label" parent="Control/SideIcons" index="0"]

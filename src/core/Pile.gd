@@ -207,13 +207,13 @@ func add_child(node, _legible_unique_name=false) -> void:
 				panel_container.visible = true			
 			# If this was the first card which enterred this pile
 			# We hide the pile "floor" by making it transparent
-#			if get_card_count() >= 1:
-#				if not _opacity_tween.is_active():
-#					_opacity_tween.remove($Control,'self_modulate:a')
-#					_opacity_tween.interpolate_property($Control,'self_modulate:a',
-#							$Control.self_modulate.a, 0.0, 1,
-#							Tween.TRANS_SINE, Tween.EASE_OUT)
-#					_opacity_tween.start()
+			if get_card_count() >= 1:
+				if not _opacity_tween.is_active():
+					_opacity_tween.remove($Control,'self_modulate:a')
+					_opacity_tween.interpolate_property($Control,'self_modulate:a',
+							$Control.self_modulate.a, 0.0, 1,
+							Tween.TRANS_SINE, Tween.EASE_OUT)
+					_opacity_tween.start()
 			card_count_label.text = str(get_card_count())
 	elif node as Card: # This triggers if the ViewPopup node is active
 		# When the player adds card while the viewpopup is active

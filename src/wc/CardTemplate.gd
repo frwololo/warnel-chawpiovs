@@ -35,6 +35,7 @@ var spinbox = null
 #healthbar on top of characters, allies, villains, etc...
 var healthbar
 var info_icon
+var side_icons
 
 var hints:= []
 
@@ -133,7 +134,7 @@ func refresh_cache(forced=false):
 		_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID
 	check_death()
 	_cache_resource_value = {}
-
+	side_icons.update_state(true)
 	_cache_refresh_needed = false
 
 func is_character() -> bool:
@@ -378,6 +379,7 @@ func _class_specific_ready():
 	._class_specific_ready()
 	healthbar = $Control/HealthPanel/healthbar
 	info_icon = get_node("%info_icon")
+	side_icons = get_node("%SideIcons")
 	#deactivate collision support for performance
 	if CFConst.PERFORMANCE_HACKS:
 		self.monitoring = false

@@ -1,4 +1,4 @@
-extends MarginContainer
+extends Node2D
 
 onready var control = get_parent()
 onready var owner_card = get_parent().get_parent()
@@ -8,32 +8,32 @@ var title:Label
 # to accomodate different renderings
 var icons_by_type_code : = {
 	"hero" : {
-		"thwart" : [-2, 40], 
-		"attack" :  [-2,80], 
-		"defense" :  [-2,120], 
+		"thwart" : [0, 34], 
+		"attack" :  [0,74.5], 
+		"defense" :  [0,114.5], 
 	},
 	"alter_ego": {
-		"recover":  [-2,40], 
+		"recover":  [0,34], 
 	},
 	"ally": {
-		"thwart" :  [-2,52],  
-		"attack" :  [-2,110], 
-		"health" :  [150,154], 
+		"thwart" :  [0,45],  
+		"attack" :  [0,103], 
+		"health" :  [150,154,28,28], 
 	},
 	"minion": {
-		"scheme" :  [-2,42],  
-		"attack" :  [-2,80], 
-		"health" :  [153,141], 		
+		"scheme" :  [0,38],  
+		"attack" :  [0,75], 
+		"health" :  [153,141,28,28], 		
 	},
 	"villain": {
-		"scheme" :  [-2,42],  
-		"attack" :  [-2,80], 
+		"scheme" :  [0,38],  
+		"attack" :  [0,74.5], 
 
 	}			
 }
 
 
-var default_font_offset = Vector2(4, 4)
+var default_font_offset = Vector2(-2, 10)
 
 var font_offset_by_icon:= {
 	"health": Vector2(-5, 0)				
@@ -41,8 +41,8 @@ var font_offset_by_icon:= {
 
 var offsets_by_type_code : = {
 	"ally": {
-		"scale" : 1.06, 
-		"x": 1
+		"scale" : 1.15, 
+		"x": 0
 	}
 }
 
@@ -51,6 +51,7 @@ var cache_dynamic_font = null
 var icons = []
 var icons_initialized = false
 var show_icons = false
+var _refresh_icon_passes = 0
 # Called when the node enters the scene tree for the first time.
 
 func _init():
@@ -59,6 +60,7 @@ func _init():
 func _ready():
 	reinit_children()
 	owner_card.connect("state_changed", self, "owner_state_changed")
+	scripting_bus.connect("card_moved_to_board", self, "_card_moved_to_board")
 	update_state()
 	
 func init_font() -> DynamicFont:
@@ -100,6 +102,8 @@ func set_icons():
 			new_texture.create_from_image(image)
 			textrect.texture = new_texture
 			textrect.name = "texture_" + icon
+			textrect.expand = true
+			textrect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			#textrect.rect_position = Vector2(0, y_positions[icon])
 			#textrect.rect_size = Vector2(20, 20)
 			add_child(textrect)	
@@ -119,38 +123,61 @@ func set_icons():
 
 	icons_initialized = true
 
+#when my card owner moves to board, I'm resetting everything
+func _card_moved_to_board(card, details):
+	var origin = owner_card
+	
+	if owner_card.state  == Card.CardState.VIEWPORT_FOCUS:
+		origin = cfc.NMAP.main.get_origin_card(owner_card)
+	
+	if card != origin:
+		return
+	
+	reinit_children()	
+	
+
 func owner_state_changed(_card, _before, _after):
 	update_state()
 
-func update_state():
+func update_state(forced = false):
+	var previous_show_icons = show_icons
+
+	show_icons = true
 	if !owner_card.state in [Card.CardState.PREVIEW, Card.CardState.DECKBUILDER_GRID, Card.CardState.VIEWPORT_FOCUS, Card.CardState.ON_PLAY_BOARD,Card.CardState.FOCUSED_ON_BOARD, Card.CardState.DROPPING_TO_BOARD]:
 		show_icons = false
-		return
-	if owner_card.state  == Card.CardState.VIEWPORT_FOCUS:
+	elif owner_card.state  == Card.CardState.VIEWPORT_FOCUS:
 		var origin = cfc.NMAP.main.get_origin_card(owner_card)
 		if !origin or !is_instance_valid(origin) or !origin.is_onboard():
 			show_icons = false
-			return	
 
-	show_icons = true
+	if forced or (show_icons != previous_show_icons):
+		#two iterations of _process are needed to take into account scale changes of some items...
+		_refresh_icon_passes = 2
 
 func _process(_delta):
+	if cfc.throttle_process_for_performance():
+		return
+	
+	#don't update if something else is going on,
+	#we'll wait for idle time
+	if gameData.gui_activity_ongoing():
+		return
+	
+	if _refresh_icon_passes:
+		display_icons()
+		_refresh_icon_passes -= 1
+	pass
+	
+func display_icons():
 	if !show_icons:
 		self.visible = false
 		return	
 	if !icons_initialized:
 		set_icons()
-		self.visible = false
-		return
 	if !icons:
 		self.visible = false
 		return
 
-	#if we're on a low fps machine,
-	#reduce calls to this function
-	if cfc.throttle_process_for_performance():
-		return
-	
 	var data_source = owner_card 
 	if owner_card.state  == Card.CardState.VIEWPORT_FOCUS:
 		data_source = cfc.NMAP.main.get_origin_card(owner_card)
@@ -158,7 +185,8 @@ func _process(_delta):
 		self.visible = false
 		return
 
-			
+	
+	
 	if !data_source.is_faceup:
 		title.text = data_source.get_display_name()
 		title.rect_position = Vector2(control.rect_size.x/2 - title.rect_size.x/2, 10) # * owner_card.card_size / CFConst.CARD_SIZE
@@ -173,8 +201,15 @@ func _process(_delta):
 			var x_y = icons[icon]
 			var x = x_y[0]
 			var y = x_y[1] 
+			var texture_size = Vector2(38, 38)
+			if x_y.size()> 2:
+				texture_size.x = x_y[2]
+				texture_size.y = x_y[3]
+			
 			child.rect_position = (Vector2(x, y) + Vector2(offset_x, offset_y)) * owner_card.card_size / CFConst.CARD_SIZE
-			child.rect_scale = Vector2(0.15, 0.15) * offset_scale * owner_card.card_size / CFConst.CARD_SIZE
+			#child.rect_scale = Vector2(0.15, 0.15) * offset_scale * owner_card.card_size / CFConst.CARD_SIZE
+			child.rect_min_size =  texture_size * offset_scale * owner_card.card_size / CFConst.CARD_SIZE
+			child.rect_size = child.rect_min_size
 			var text = data_source.get_property(icon)
 			if text:
 				text = str(text)
@@ -188,10 +223,12 @@ func _process(_delta):
 			shadow.text = text	
 			var size = Vector2(label.rect_size.x, 0)
 			
+			#label.rect_min_size = Vector2(10, 10) *  offset_scale *owner_card.card_size / CFConst.CARD_SIZE
 			label.rect_scale = Vector2(0.75, 0.75) *  offset_scale *owner_card.card_size / CFConst.CARD_SIZE
 			var font_offset = font_offset_by_icon.get(icon, default_font_offset)
-			label.rect_position = child.rect_position + Vector2((child.rect_size.x * child.rect_scale.x) / 2, 0) - (size * label.rect_scale)  + (font_offset * label.rect_scale)#child.rect_position
-			
+			label.rect_position.x = child.rect_position.x  + child.rect_size.x*child.rect_scale.x / 2  - label.rect_size.x*label.rect_scale.x/2 + (font_offset.x * label.rect_scale.x)#child.rect_position
+			label.rect_position.y = child.rect_position.y + (font_offset * label.rect_scale).y
+			#shadow.rect_min_size = label.rect_min_size 
 			shadow.rect_scale = label.rect_scale
 			shadow.rect_position = label.rect_position + (Vector2(3,3) * label.rect_scale)#child.rect_position
 		else:

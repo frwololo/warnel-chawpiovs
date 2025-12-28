@@ -235,6 +235,9 @@ func targeting_happened_too_recently():
 	return (_targeting_timer > 0)
 
 func _process(_delta: float):
+	#cache to refresh every tick:
+	_auto_gui_activity_ongoing = []
+	_gui_activity_ongoing = []
 	cfc.performance_checks()
 	#mechanism to avoid processing
 	#a target click as an action click
@@ -1816,7 +1819,13 @@ func interrupt_player_pressed_pass(hero_id):
 
 
 #some gui activity is ongoing, not controlled by any player (animations, etc...)
+var _auto_gui_activity_ongoing = []
 func auto_gui_activity_ongoing() -> bool:		
+	if !_auto_gui_activity_ongoing:
+		_auto_gui_activity_ongoing.append(auto_gui_activity_ongoing_no_cache())		
+	return _auto_gui_activity_ongoing[0]
+	
+func auto_gui_activity_ongoing_no_cache() -> bool:		
 	if cfc.NMAP.board.are_cards_still_animating():
 		return true
 		
@@ -1825,8 +1834,14 @@ func auto_gui_activity_ongoing() -> bool:
 	
 	return false	
 
+var _gui_activity_ongoing = []
+func gui_activity_ongoing() -> bool:		
+	if !_gui_activity_ongoing:
+		_gui_activity_ongoing.append(gui_activity_ongoing_no_cache())		
+	return _gui_activity_ongoing[0]
+	
 #some gui_activity ongoing, aither player controlled or automated
-func gui_activity_ongoing()-> bool:	
+func gui_activity_ongoing_no_cache()-> bool:	
 	# if modal user input is being requested, can't move on
 	if (user_input_ongoing):
 		return true

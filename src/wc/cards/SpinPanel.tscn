@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://src/wc/cards/SpinBox.gd" type="Script" id=1]
+
+[node name="SpinPanel" type="PanelContainer"]
+visible = false
+margin_left = 39.0
+margin_top = 42.0
+margin_right = 127.0
+margin_bottom = 80.0
+
+[node name="SpinBox" type="SpinBox" parent="."]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 81.0
+margin_bottom = 31.0
+max_value = 10.0
+rounded = true
+align = 3
+script = ExtResource( 1 )
+
+[node name="Tween" type="Tween" parent="SpinBox"]

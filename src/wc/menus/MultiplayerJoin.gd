@@ -51,7 +51,7 @@ func fetch_list_rooms():
 	else:
 		signal_server_error()
 
-func retrieve_server_rooms_list(result, response_code, headers, body):
+func retrieve_server_rooms_list(result, _response_code, _headers, body):
 	if result != HTTPRequest.RESULT_SUCCESS:
 		return ""
 
@@ -105,7 +105,7 @@ func request_join_room(room_name):
 	else:
 		signal_server_error()
 
-func join_room_process_request(result, response_code, headers, body):
+func join_room_process_request(result, _response_code, _headers, body):
 	if result != HTTPRequest.RESULT_SUCCESS:
 		return ""
 

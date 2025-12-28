@@ -23,10 +23,10 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="VBox" type="VBoxContainer" parent="CenterContainer"]
-margin_left = 266.0
-margin_top = 145.0
-margin_right = 1013.0
-margin_bottom = 575.0
+margin_left = 586.0
+margin_top = 325.0
+margin_right = 1333.0
+margin_bottom = 755.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 1

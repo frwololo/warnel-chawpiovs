@@ -21,9 +21,9 @@ anchor_bottom = 1.0
 
 [node name="VBox" type="VBoxContainer" parent="CenterContainer"]
 margin_left = 607.0
-margin_top = 167.0
+margin_top = 152.0
 margin_right = 1312.0
-margin_bottom = 912.0
+margin_bottom = 927.0
 custom_constants/separation = 10
 alignment = 1
 
@@ -50,14 +50,14 @@ stretch_mode = 6
 [node name="VButtons" type="VBoxContainer" parent="CenterContainer/VBox"]
 margin_top = 385.0
 margin_right = 705.0
-margin_bottom = 705.0
+margin_bottom = 735.0
 size_flags_horizontal = 3
 custom_constants/separation = 10
 
 [node name="SinglePlayer" type="Button" parent="CenterContainer/VBox/VButtons"]
 margin_right = 705.0
-margin_bottom = 100.0
-rect_min_size = Vector2( 0, 100 )
+margin_bottom = 80.0
+rect_min_size = Vector2( 0, 80 )
 size_flags_horizontal = 3
 text = "Sivgle Player"
 __meta__ = {
@@ -65,21 +65,32 @@ __meta__ = {
 }
 
 [node name="Multiplayer" type="Button" parent="CenterContainer/VBox/VButtons"]
-margin_top = 110.0
+margin_top = 90.0
 margin_right = 705.0
-margin_bottom = 210.0
-rect_min_size = Vector2( 0, 100 )
+margin_bottom = 170.0
+rect_min_size = Vector2( 0, 80 )
 size_flags_horizontal = 3
 text = "Wultiplayer"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Exit" type="Button" parent="CenterContainer/VBox/VButtons"]
-margin_top = 220.0
+[node name="Credits" type="Button" parent="CenterContainer/VBox/VButtons"]
+margin_top = 180.0
 margin_right = 705.0
-margin_bottom = 320.0
-rect_min_size = Vector2( 0, 100 )
+margin_bottom = 260.0
+rect_min_size = Vector2( 0, 80 )
+size_flags_horizontal = 3
+text = "Credits"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Exit" type="Button" parent="CenterContainer/VBox/VButtons"]
+margin_top = 270.0
+margin_right = 705.0
+margin_bottom = 350.0
+rect_min_size = Vector2( 0, 80 )
 size_flags_horizontal = 3
 text = "EXIT"
 __meta__ = {
@@ -87,9 +98,9 @@ __meta__ = {
 }
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBox"]
-margin_top = 715.0
+margin_top = 745.0
 margin_right = 128.0
-margin_bottom = 745.0
+margin_bottom = 775.0
 size_flags_horizontal = 0
 size_flags_vertical = 4
 

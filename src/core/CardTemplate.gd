@@ -346,7 +346,14 @@ func _init_card_back():
 	# Because we duplicate the card when adding to the viewport focus
 	# It already has a CardBack node, so we don't want to replicate it
 	# so we only add a CardBack node, if we know it's not a dupe focus
-	if get_parent().name != "Viewport":
+
+	# If it is a viewport focus dupe, we still need to setup the
+	# card_back variable, as the .duplicate() method does not copy
+	# internal variables.	
+	
+	if _card_back_container.get_children():
+		card_back = _card_back_container.get_child(0)	
+	else:
 		# We do not need to instance the card_back when card is seen
 		# in a preview card grid
 		if get_parent().get_class() != "CVGridCardObject":
@@ -354,11 +361,8 @@ func _init_card_back():
 			_card_back_container.add_child(card_back_instance)
 			card_back = card_back_instance
 			_card_back_container.move_child(card_back,0)
-	# If it is a viewport focus dupe, we still need to setup the
-	# card_back variable, as the .duplicate() method does not copy
-	# internal variables.
-	else:
-		card_back = _card_back_container.get_child(0)
+
+
 
 func get_card_front():
 	if !card_front:
@@ -370,15 +374,18 @@ func _init_card_front() -> void:
 	# Because we duplicate the card when adding to the viewport focus
 	# It already has a CardBack node, so we don't want to replicate it
 	# so we only add a CardBack node, if we know it's not a dupe focus
-	if get_parent().name != "Viewport":
+
+	# If it is a viewport focus dupe, we still need to setup the
+	# card_back variable, as the .duplicate() method does not copy
+	# internal variables.	
+	
+	if _card_front_container.get_children():
+		card_front = _card_front_container.get_child(0)
+	else:
 		var card_front_instance = card_front_design.instance()
 		_card_front_container.add_child(card_front_instance)
 		card_front = card_front_instance
-	# If it is a viewport focus dupe, we still need to setup the
-	# card_back variable, as the .duplicate() method does not copy
-	# internal variables.
-	else:
-		card_front = _card_front_container.get_child(0)
+
 
 
 func _init_card_layout() -> void:
@@ -497,6 +504,15 @@ func _class_specific_input(event) -> void:
 func _input(event) -> void:
 	_class_specific_input(event)
 
+func are_hovered_manipulation_buttons():
+	if !buttons:
+		return false
+	return buttons.hovered()	
+
+func set_manipulation_buttons_active(value):
+	if !buttons:
+		return false
+	return buttons.set_active(value)
 
 # A signal for whenever the player clicks on a card
 func _on_Card_gui_input(event) -> void:
@@ -513,7 +529,7 @@ func _on_Card_gui_input(event) -> void:
 		# or a long click
 		elif event.is_pressed() \
 				and event.get_button_index() == 1 \
-				and not buttons.are_hovered() \
+				and not are_hovered_manipulation_buttons() \
 				and not tokens.are_hovered():
 			# If it's a double-click, then it's not a card drag
 			# But rather it's script execution
@@ -962,12 +978,14 @@ func set_is_faceup(
 			_flip_card(_card_back_container, _card_front_container,instant)
 			# We need this check, as this node might not be ready
 			# Yet when a viewport focus dupe is instancing
-			buttons.set_button_visible("View", false)
+			if buttons:
+				buttons.set_button_visible("View", false)
 			if is_instance_valid(card_back):
 				card_back.stop_card_back_animation()
 		else:
 			_flip_card(_card_front_container, _card_back_container,instant)
-			buttons.set_button_visible("View", true)
+			if buttons:
+				buttons.set_button_visible("View", true)
 #			if get_parent() == cfc.NMAP.board:
 			if is_instance_valid(card_back):
 				card_back.start_card_back_animation()
@@ -2468,7 +2486,7 @@ func _process_card_state() -> void:
 			z_index = CFConst.Z_INDEX_HAND_CARDS_NORMAL
 			set_focus(false)
 			set_control_mouse_filters(true)
-			buttons.set_active(false)
+			set_manipulation_buttons_active(false)
 			# warning-ignore:return_value_discarded
 			set_card_rotation(0)
 			# warning-ignore:return_value_discarded
@@ -2492,7 +2510,7 @@ func _process_card_state() -> void:
 #			print(global_position + _control.rect_size)
 			set_focus(true,check_play_costs())
 			set_control_mouse_filters(true)
-			buttons.set_active(false)
+			set_manipulation_buttons_active(false)
 			# warning-ignore:return_value_discarded
 			set_card_rotation(0,false,false)
 			if not $Tween.is_active() and \
@@ -2568,7 +2586,7 @@ func _process_card_state() -> void:
 			set_focus(false)
 			clear_highlight()
 			set_control_mouse_filters(false)
-			buttons.set_active(false)
+			set_manipulation_buttons_active(false)
 			# warning-ignore:return_value_discarded
 			# set_card_rotation(0,false,false)
 			if not $Tween.is_active():
@@ -2643,7 +2661,7 @@ func _process_card_state() -> void:
 			z_index = CFConst.Z_INDEX_HAND_CARDS_NORMAL
 			set_focus(false)
 			set_control_mouse_filters(true)
-			buttons.set_active(false)
+			set_manipulation_buttons_active(false)
 			# warning-ignore:return_value_discarded
 			set_card_rotation(0,false,false)
 			if not $Tween.is_active():
@@ -2662,7 +2680,7 @@ func _process_card_state() -> void:
 			z_index = CFConst.Z_INDEX_HAND_CARDS_NORMAL
 			set_focus(false)
 			set_control_mouse_filters(true)
-			buttons.set_active(false)
+			set_manipulation_buttons_active(false)
 			# warning-ignore:return_value_discarded
 			if not $Tween.is_active() and \
 					not position.is_equal_approx(_target_position):
@@ -2682,7 +2700,7 @@ func _process_card_state() -> void:
 			# Used when the card is dragged around the game with the mouse
 			set_focus(true)
 			set_control_mouse_filters(true)
-			buttons.set_active(false)
+			set_manipulation_buttons_active(false)
 			if (not $Tween.is_active() and
 				not scale.is_equal_approx(CFConst.CARD_SCALE_WHILE_DRAGGING) and
 				get_parent() != cfc.NMAP.board):
@@ -2712,7 +2730,7 @@ func _process_card_state() -> void:
 
 			set_focus(false)
 			set_control_mouse_filters(true)
-			buttons.set_active(false)
+			set_manipulation_buttons_active(false)
 			#TODO this messes up attached components such as the targeting arrow
 			var target_scale = play_area_scale
 			if (_placement_slot):
@@ -2737,7 +2755,7 @@ func _process_card_state() -> void:
 		CardState.DROPPING_TO_BOARD:
 			z_index = CFConst.Z_INDEX_BOARD_CARDS_NORMAL
 			set_control_mouse_filters(true)
-			buttons.set_active(false)
+			set_manipulation_buttons_active(false)
 			# Used when dropping the cards to the table
 			# When dragging the card, the card is slightly behind the mouse cursor
 			# so we tween it to the right location
@@ -2771,7 +2789,7 @@ func _process_card_state() -> void:
 			# Used when card is focused on by the mouse hovering over it while it is on the board.
 			set_focus(true)
 			set_control_mouse_filters(true)
-			buttons.set_active(true)
+			set_manipulation_buttons_active(true)
 			# We don't change state yet, only when the focus is removed from this card
 			_organize_attachments()
 
@@ -2780,7 +2798,7 @@ func _process_card_state() -> void:
 			set_focus(false)
 			clear_highlight()
 			set_control_mouse_filters(false)
-			buttons.set_active(false)
+			set_manipulation_buttons_active(false)
 			# warning-ignore:return_value_discarded
 			set_card_rotation(0)
 			if scale != Vector2(1,1):
@@ -2795,7 +2813,7 @@ func _process_card_state() -> void:
 			z_index = CFConst.Z_INDEX_BOARD_CARDS_NORMAL
 			cfc.NMAP.main.focus_card(self)
 			set_control_mouse_filters(false)
-			buttons.set_active(false)
+			set_manipulation_buttons_active(false)
 			# warning-ignore:return_value_discarded
 			set_card_rotation(0)
 			if scale != Vector2(1,1):
@@ -2815,7 +2833,7 @@ func _process_card_state() -> void:
 			set_focus(false)
 			clear_highlight()
 			set_control_mouse_filters(true)
-			buttons.set_active(false)
+			set_manipulation_buttons_active(false)
 			# warning-ignore:return_value_discarded
 			set_card_rotation(0)
 			if modulate[3] != 1:
@@ -2841,7 +2859,7 @@ func _process_card_state() -> void:
 			$Control.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			set_focus(false)
 			set_control_mouse_filters(false)
-			buttons.set_active(false)
+			set_manipulation_buttons_active(false)
 			# warning-ignore:return_value_discarded
 			set_card_rotation(0)
 			$Control.rect_rotation = 0
@@ -2868,7 +2886,7 @@ func _process_card_state() -> void:
 			$Control.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			set_focus(false)
 			set_control_mouse_filters(false)
-			buttons.set_active(false)
+			set_manipulation_buttons_active(false)
 			# warning-ignore:return_value_discarded
 			set_card_rotation(0)
 			$Control.rect_rotation = 0
@@ -2887,7 +2905,7 @@ func _process_card_state() -> void:
 			set_focus(false)
 			self.tokens.set_is_drawer_open(false)
 			set_control_mouse_filters(false)
-			buttons.set_active(false)
+			set_manipulation_buttons_active(false)
 			# warning-ignore:return_value_discarded
 			set_card_rotation(0)
 			$Control.rect_rotation = 0
@@ -2905,7 +2923,7 @@ func _process_card_state() -> void:
 			z_index = CFConst.Z_INDEX_HAND_CARDS_NORMAL + 1
 			set_focus(false)
 			set_control_mouse_filters(false)
-			buttons.set_active(false)
+			set_manipulation_buttons_active(false)
 			if not _tween.is_active()\
 					and not scale.is_equal_approx(Vector2(1,1)):
 				_add_tween_scale(scale, Vector2(1,1),0.75)

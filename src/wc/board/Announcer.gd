@@ -524,6 +524,6 @@ func stop_black_cover():
 func reset():
 	for announce in ongoing_announces:
 		cleanup(announce)
-	var ongoing_announces = []
+	ongoing_announces = []
 	right_screen_announces = 0	
 	

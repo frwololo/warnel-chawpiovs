@@ -27,9 +27,6 @@ func setup(_room_name, _parent_scene):
 
 func set_disabled(disable=false):
 	button.disabled = disable
-
-func grab_focus():
-	button.grab_focus
 	
 
 func _on_Button_pressed():

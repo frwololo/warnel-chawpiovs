@@ -297,7 +297,7 @@ func _draw_targeting_arrow(destination = null) -> void:
 		card_half_size = owner_object.rect_size/2
 	else: 
 		card_half_size = owner_object.card_size/2
-	var centerpos = global_position + card_half_size * scale
+	var centerpos = global_position + card_half_size * scale * cfc.screen_scale
 	# We want the line to be drawn anew every frame
 	clear_points()
 	# The final position is the mouse position,

@@ -4,6 +4,9 @@
 class_name WCCard
 extends Card
 
+const _SPINBOX_SCENE_FILE = CFConst.PATH_CUSTOM + "cards/SpinPanel.tscn"
+const _SPINBOX_SCENE = preload(_SPINBOX_SCENE_FILE)
+
 var has_focus = false
 
 # -1 uninitialized, 0 Villain, any positive value: hero
@@ -28,7 +31,7 @@ var extra_scripts := {}
 var extra_script_uid := 0
 
 # The node with number manipulation box on this card
-var spinbox
+var spinbox = null
 #healthbar on top of characters, allies, villains, etc...
 var healthbar
 var info_icon
@@ -373,10 +376,23 @@ func execute_before_scripts(
 
 func _class_specific_ready():
 	._class_specific_ready()
-	spinbox = $Control/SpinPanel/SpinBox
 	healthbar = $Control/HealthPanel/healthbar
 	info_icon = get_node("%info_icon")
+	#deactivate collision support for performance
+	if CFConst.PERFORMANCE_HACKS:
+		self.monitoring = false
+		remove_child($Debug)
+		$Control.remove_child($Control/ManipulationButtons)
+		buttons = null
 
+func get_spinbox():
+	if !spinbox:
+		var spinbox_panel = _SPINBOX_SCENE.instance()
+		$Control.add_child(spinbox_panel)
+		spinbox = spinbox_panel.get_node("SpinBox")
+
+	return spinbox		
+		
 
 func _ready():
 	scripting_bus.connect("scripting_event_about_to_trigger", self, "execute_before_scripts")
@@ -386,6 +402,10 @@ func _ready():
 #
 func reorganize_attachments_focus_mode():
 	var previous_control:Control = self.get_focus_control()
+	previous_control.focus_neighbour_left = ""
+	previous_control.focus_neighbour_right = ""
+	previous_control.focus_neighbour_bottom = ""
+	previous_control.focus_neighbour_top = ""		
 	for card in attachments:
 		var control = card.get_focus_control()
 		control.focus_neighbour_left = ""
@@ -467,7 +487,16 @@ func _class_specific_input(event) -> void:
 	
 
 func _class_specific_process(delta):
-	._class_specific_process(delta)
+	if $Tween.is_active() and not cfc.ut: # Debug code for catch potential Tween deadlocks
+		_tween_stuck_time += delta
+		if _tween_stuck_time > 5 and int(fmod(_tween_stuck_time,3)) == 2 :
+			print_debug("Tween Stuck for ",_tween_stuck_time,
+					"seconds. Reports leftover runtime: ",$Tween.get_runtime ( ))
+			$Tween.remove_all()
+			_tween_stuck_time = 0
+	else:
+		_tween_stuck_time = 0
+	_process_card_state()
 	pass
 		
 
@@ -691,11 +720,16 @@ func common_post_move_scripts(new_host: String, old_host: String, _move_tags: Ar
 	#display_health()
 	display_threat()
 	
-	#rest exhausted status
-	if new_host.to_lower() != "board":
-		_is_exhausted = false
-		#reset some cache data
-		_died_signal_sent = false	
+	#cached data and flag updates for new zone
+	match new_host.to_lower():
+		"board":
+			if !is_faceup:
+				get_card_back().start_card_back_animation()
+		_:
+			_is_exhausted = false
+			#reset some cache data
+			_died_signal_sent = false
+
 	
 	#determine if this card can be selected with a controller	
 	cfc.NMAP.board.update_card_focus(self, {"new_host" : new_host, "old_host": old_host} )
@@ -1276,7 +1310,7 @@ func _on_Card_gui_input(event) -> void:
 		# or a long click
 		elif event.is_pressed() \
 				and event.get_button_index() == 1 \
-				and not buttons.are_hovered() \
+				and not are_hovered_manipulation_buttons() \
 				and not tokens.are_hovered():
 
 			if event.doubleclick and (get_state_exec() == "hand"):

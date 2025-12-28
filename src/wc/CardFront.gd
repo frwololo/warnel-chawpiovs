@@ -47,7 +47,11 @@ func _ready() -> void:
 
 func set_card_art(filename) -> void:
 	art_filename = filename		
-	art.texture = cfc.get_external_texture(art_filename)
-	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	# In case the generic art has been modulated, we switch it back to normal colour
-	art.self_modulate = Color(1,1,1)
+	var texture = cfc.get_external_texture(art_filename)
+	if texture:
+		art.texture = texture
+		art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		# In case the generic art has been modulated, we switch it back to normal colour
+		art.self_modulate = Color(1,1,1)
+		if CFConst.PERFORMANCE_HACKS:
+			remove_child($Margin)

@@ -66,8 +66,6 @@ func scale_grids():
 						"scale":
 							grid_info[key] = screen_scale.x 
 	scale_grid_layout_recursive(CFConst.HERO_GRID_LAYOUT)
-	var _tmp = CFConst.HERO_GRID_LAYOUT
-	var poil = 1
 
 func scale_grid_layout_recursive(config):
 	match typeof(config):

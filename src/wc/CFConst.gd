@@ -668,3 +668,6 @@ const SCRIPT_BREAKPOINT_CARD_NAME := "Whirlwind"
 const SCRIPT_BREAKPOINT_TRIGGER_NAME := "enemy_attack"
 
 const LARGE_SCREEN_WIDTH:= 1600
+
+#enables various performance tweaks for loend platforms such as the Nintendo Switch
+const PERFORMANCE_HACKS = true

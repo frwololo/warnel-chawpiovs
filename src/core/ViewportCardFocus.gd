@@ -85,7 +85,7 @@ func reposition_vbc():
 			display_position = Vector2( spacer, spacer)
 			if mouse_pos.x < display_size.x + (spacer*2) and mouse_pos.y < display_size.y + (spacer*2):
 				display_position.y = viewport.size.y -  display_size.y - spacer
-		elif mouse_pos.x + display_size.x >= viewport_size.x :
+		elif mouse_pos.x + display_size.x + (spacer*2) >= viewport_size.x :
 			display_position = Vector2( spacer, spacer)
 		else:
 			display_position = Vector2(viewport_size.x - display_size.x - spacer,  spacer)

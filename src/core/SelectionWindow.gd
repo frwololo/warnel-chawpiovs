@@ -153,8 +153,9 @@ func initiate_selection(_card_array: Array) -> void:
 		# The selections
 		if _assign_mode:
 			var max_assign_value = card.call(_assign_max_function)
-			dupe_selection.spinbox.init_plus_minus_mode(0, 0, max_assign_value)
-			dupe_selection.spinbox.connect("value_changed", self, "spinbox_value_changed", [dupe_selection, card])
+			var spinbox = dupe_selection.get_spinbox()
+			spinbox.init_plus_minus_mode(0, 0, max_assign_value)
+			spinbox.connect("value_changed", self, "spinbox_value_changed", [dupe_selection, card])
 		card_grid_obj.connect("gui_input", self, "on_selection_gui_input", [dupe_selection, card])
 		card_grid_obj.focus_mode = Control.FOCUS_ALL
 		if !focus_grabbed:
@@ -347,8 +348,9 @@ func can_still_select_more() -> bool :
 		return false
 		
 	for card in card_array:
-		var remaining = card.spinbox.max_value
-		var currently_assigned = card.spinbox.value
+		var spinbox = card.get_spinbox()
+		var remaining = spinbox.max_value
+		var currently_assigned = spinbox.value
 		if remaining > currently_assigned:
 			return true
 			
@@ -359,7 +361,8 @@ func get_count(_card_array: Array) -> int:
 		"assign":
 			var total = 0
 			for card in card_array: #for "assign" we actually ignore the passed array and use our currently displayed one
-				total = total + _card_dupe_map[card].spinbox.value
+				var spinbox = _card_dupe_map[card].get_spinbox()
+				total = total + spinbox.value
 			return total			
 		"":
 			return _card_array.size()
@@ -465,7 +468,8 @@ func spinbox_value_changed( new_value,  dupe_selection: Card, origin_card) -> vo
 	#we added too much, this is a problem in general. set the value again and let it call us back
 	if current_total > selection_count and selection_type in ["max", "equal", "as_much_as_possible"]:
 		var diff = current_total - selection_count
-		dupe_selection.spinbox.value -= diff
+		var spinbox = dupe_selection.get_spinbox()
+		spinbox.value -= diff
 		return
 	
 	var count = selected_cards.count(origin_card)
@@ -484,7 +488,7 @@ func spinbox_value_changed( new_value,  dupe_selection: Card, origin_card) -> vo
 func card_clicked(dupe_selection: Card, origin_card) -> void:
 	if selection_type == "as_much_as_possible":
 		var current_total = get_count(card_array)
-		var spinbox = dupe_selection.spinbox
+		var spinbox = dupe_selection.get_spinbox()
 		if current_total >= selection_count:
 			#we're already at max, go back to zero
 			spinbox.set_value(0)
@@ -534,7 +538,8 @@ func select_cards_by_name(names :Array = []) -> Array:
 					or (card.get_property("_code", "").to_lower() == name_or_id.to_lower()):
 				var dupe_card = _card_dupe_map[card]
 				if _assign_mode:
-					dupe_card.spinbox.value +=1
+					var spinbox = dupe_card.get_spinbox()
+					spinbox.value +=1
 				else:
 					card_clicked(dupe_card, card)
 					

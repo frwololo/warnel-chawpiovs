@@ -23,24 +23,12 @@ func init_plus_minus_mode(_value, _min_value, _max_value):
 
 
 
-# Changes the hosted button node mouse filters
-#
-# * When set to false, buttons cannot receive inputs anymore
-#    (this is useful when a card is in hand or a pile)
-# * When set to true, buttons can receive inputs again
 func set_active(value = true) -> void:
 	if (_is_active == value) and _initialized:
 		return
 	_initialized = true
 	_is_active = value
-#	var button_filter := 1
-#
-#	if not value or owner_node.highlight.modulate == CFConst.TARGET_HOVER_COLOUR:
-#		button_filter = 2
-#	# We do a comparison first, to make sure we avoid unnecessary operations
-#	for button in get_children():
-#		if button as Button and button.mouse_filter != button_filter:
-#			button.mouse_filter = button_filter
+
 	# When we deactivate the buttons, we ensure they're hidden
 	set_alpha(int(value))
 	if (value):

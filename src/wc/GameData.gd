@@ -2010,10 +2010,10 @@ func display_debug(msg, prefix = ""):
 
 	print_debug(prefix + msg)
 
-func _player_connected():
+func _player_connected(network_id):
 	pass
 	
-func _player_disconnected():
+func _player_disconnected(network_id):
 	pass
 	
 func _connected_ok():

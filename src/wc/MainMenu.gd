@@ -320,6 +320,8 @@ func on_button_pressed(_button_name : String) -> void:
 			get_tree().change_scene(CFConst.PATH_CUSTOM + 'lobby/TeamSelection.tscn')
 		"Multiplayer":
 			get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/MultiplayerMenu1.tscn')
+		"Credits":
+			get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/Credits.tscn')
 		"Exit":
 			get_tree().quit()
 

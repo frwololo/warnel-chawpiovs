@@ -249,7 +249,7 @@ func compute_focus_neighbors():
 	if target_control:	
 		get_node("%Control").focus_neighbour_left = target_control.get_path()
 
-func _card_moved_zone(card, details):
+func _card_moved_zone(_card, details):
 	var hero_id = gameData.get_current_local_hero_id()
 	var hand_name = "hand" + str(hero_id)
 	for k in ["source", "destination"]:

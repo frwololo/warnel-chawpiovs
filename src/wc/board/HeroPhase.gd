@@ -30,6 +30,10 @@ func _ready():
 	scripting_bus.connect("current_playing_hero_changed", self, "_current_playing_hero_changed")
 	gameData.connect("game_state_changed", self, "_game_state_changed")
 	gameData.connect("first_player_changed", self, "_first_player_changed")
+	
+	scripting_bus.connect("card_moved_to_hand", self, "_card_moved_zone")
+	scripting_bus.connect("card_moved_to_board", self, "_card_moved_zone")
+	scripting_bus.connect("card_moved_to_pile", self, "_card_moved_zone")		
 	_update_labels()
 
 	if hero_index == gameData.first_player_hero_id():
@@ -39,6 +43,7 @@ func _ready():
 	
 	get_node("%VerticalHighlights").self_modulate = CFConst.FOCUS_COLOUR_ACTIVE
 	get_node("%HorizontalHighlights").self_modulate = CFConst.FOCUS_COLOUR_ACTIVE
+	compute_focus_neighbors()
 
 func _process(_delta):
 	if (gameData.get_current_local_hero_id() == hero_index):
@@ -184,6 +189,7 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 	else:		
 		_update_labels()
 			
+	compute_focus_neighbors()		
 
 func get_label_text():
 	return label.text
@@ -221,6 +227,36 @@ func _first_player_changed(details:Dictionary):
 #
 # Game controller related functions
 #
+
+func compute_focus_neighbors():
+	var target_control = null
+	var hero_id = gameData.get_current_local_hero_id()
+			
+	#but we're trting to get to the rightmost card in the current hand
+	var hand_name = "hand" + str(hero_id)	
+	if cfc.NMAP.has(hand_name):
+		var rightmost_card = cfc.NMAP[hand_name].get_rightmost_card()
+		if rightmost_card:
+			target_control = rightmost_card.get_focus_control()
+
+	#fallback is hero card
+	if !target_control:
+		var target_card = gameData.get_identity_card(hero_id)
+		if target_card:
+			target_control = target_card.get_focus_control()	
+
+		
+	if target_control:	
+		get_node("%Control").focus_neighbour_left = target_control.get_path()
+
+func _card_moved_zone(card, details):
+	var hero_id = gameData.get_current_local_hero_id()
+	var hand_name = "hand" + str(hero_id)
+	for k in ["source", "destination"]:
+		if details[k].to_lower() == hand_name:
+			compute_focus_neighbors()
+			return	
+
 
 func gain_focus():
 	if gamepadHandler.is_mouse_input():

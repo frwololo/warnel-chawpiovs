@@ -1808,7 +1808,7 @@ func attach_to_host(
 		# is being attached to this host, because its previous host
 		# also became an attachment here.
 		if current_host_card and not is_following_previous_host:
-			current_host_card.attachments.erase(self)
+			current_host_card.remove_attachment(self)
 			scripting_bus.emit_signal("card_unattached",
 					self,
 					{"host": current_host_card, "tags": tags})
@@ -2305,6 +2305,9 @@ func host_is_gone(former_host):
 	# Attachments typically follow their parents to the same container
 	move_to(get_parent())
 
+func remove_attachment(card):
+	attachments.erase(card)
+
 # Clears all attachment/hosting status.
 # It is typically called when a card is removed from the table
 func _clear_attachment_status(tags := ["Manual"]) -> void:
@@ -2313,7 +2316,7 @@ func _clear_attachment_status(tags := ["Manual"]) -> void:
 		scripting_bus.emit_signal("card_unattached",
 				self,
 				{"host": current_host_card, "tags": tags})
-		current_host_card.attachments.erase(self)
+		current_host_card.remove_attachment(self)
 		current_host_card = null
 	for card in attachments:
 		card.current_host_card = null

@@ -459,3 +459,5 @@ func add_child(node, legible_unique_name=false) -> void:
 func remove_child(node) -> void:
 	.remove_child(node)
 	_card_count -=1
+	if !_card_count:
+		scripting_bus.emit_signal("card_container_emptied", {"container" : self})

@@ -492,6 +492,7 @@ func init_network_players(players:Dictionary):
 
 func set_team_data(_team:Dictionary):
 	#filter out empty slots
+	team = {}
 	var hero_count = 0;
 	for hero_idx in _team:
 		var hero_data:HeroDeckData = _team[hero_idx]
@@ -1499,6 +1500,8 @@ func get_minions_engaged_with_hero(hero_id:int):
 	return results
 	
 func get_identity_card(owner_id) -> Card:
+	if !cfc.NMAP.has("board"):
+		return null
 	var board:Board = cfc.NMAP.board
 
 	if !board.heroZones.has(owner_id):

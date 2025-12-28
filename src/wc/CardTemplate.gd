@@ -381,6 +381,24 @@ func _class_specific_ready():
 func _ready():
 	scripting_bus.connect("scripting_event_about_to_trigger", self, "execute_before_scripts")
 
+#
+# Keyboard/Gamepad focus related functions
+#
+func reorganize_attachments_focus_mode():
+	var previous_control:Control = self.get_focus_control()
+	for card in attachments:
+		var control = card.get_focus_control()
+		control.focus_neighbour_left = ""
+		control.focus_neighbour_right = ""
+		control.focus_neighbour_bottom = ""
+		control.focus_neighbour_top = ""		
+		if previous_control:
+			#attachments are slightly below, slightly to the right of each other
+			control.focus_neighbour_left = previous_control.get_path()	
+			control.focus_neighbour_top = control.focus_neighbour_left			
+			previous_control.focus_neighbour_right = control.get_path()
+			previous_control.focus_neighbour_bottom = previous_control.focus_neighbour_right
+		previous_control = control
 
 func _on_Control_focus_entered():	
 	#doing the focus thing only for non mouse inputs
@@ -390,9 +408,11 @@ func _on_Control_focus_entered():
 func _on_Control_focus_exited():
 	lose_focus()
 
-
 func grab_focus():
 	_control.grab_focus()
+
+func get_focus_control():
+	return _control
 
 func gain_focus():
 	has_focus = true
@@ -416,6 +436,10 @@ func enable_focus_mode():
 
 func disable_focus_mode():
 	_control.focus_mode = Control.FOCUS_NONE
+
+#
+# User Interface/Input functions
+#
 
 func _class_specific_input(event) -> void:
 	if event is InputEventMouseButton and not event.is_pressed():
@@ -636,9 +660,16 @@ func update_groups() -> void :
 	for group in groups:
 		self.add_to_group(group)
 
+func remove_attachment(card):
+	attachments.erase(card)
+	reorganize_attachments_focus_mode()
 
-
-		
+func attach_to_host(
+			host: Card,
+			is_following_previous_host = false,
+			tags := ["Manual"]) -> void:
+	.attach_to_host(host, is_following_previous_host, tags)
+	host.reorganize_attachments_focus_mode()		
 		
 func common_post_move_scripts(new_host: String, old_host: String, _move_tags: Array) -> void:
 	#change controller as needed

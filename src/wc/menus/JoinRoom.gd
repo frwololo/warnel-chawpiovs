@@ -7,12 +7,12 @@ extends HBoxContainer
 
 var room_name = ""
 var parent_scene = null
+onready var button = get_node("%Button")
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	get_node("%Label").text = room_name
-	var option_button = get_node("%Button")
-	option_button.connect('mouse_entered', option_button, 'grab_focus')
+	button.connect('mouse_entered', button, 'grab_focus')
 	pass # Replace with function body.
 
 func setup(_room_name, _parent_scene):
@@ -26,7 +26,11 @@ func setup(_room_name, _parent_scene):
 #	pass
 
 func set_disabled(disable=false):
-	get_node("%Button").disabled = disable
+	button.disabled = disable
+
+func grab_focus():
+	button.grab_focus
+	
 
 func _on_Button_pressed():
 	parent_scene.request_join_room(room_name)

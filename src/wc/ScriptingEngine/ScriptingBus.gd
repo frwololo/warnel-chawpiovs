@@ -6,8 +6,7 @@ extends ScriptingBus
 # we use a specialized signal to trigger effects which fire after playing cards
 # warning-ignore:unused_signal
 signal card_played(card,details)
-# warning-ignore:unused_signal
-signal card_removed(card,details)
+
 # warning-ignore:unused_signal
 signal card_selected(selection_window, details)
 # warning-ignore:unused_signal

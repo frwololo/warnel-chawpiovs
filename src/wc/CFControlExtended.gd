@@ -172,11 +172,15 @@ func throttle_process_for_performance():
 	return (_process_counter < _process_period)
 
 #grab focus for the first (visible and enabled) button in a container
-func default_button_focus(container):
-	for button in container.get_children():
-		if button.has_signal('pressed') and !button.disabled and button.visible:
-				button.grab_focus()
-				return
+func default_button_focus(container) -> bool:
+	for maybe_button in container.get_children():
+		if maybe_button.has_signal('pressed') and !maybe_button.disabled and maybe_button.visible:
+				maybe_button.grab_focus()
+				return true
+		var found = default_button_focus(maybe_button)
+		if found:
+			return true
+	return false
 
 func _setup() -> void:
 	._setup()

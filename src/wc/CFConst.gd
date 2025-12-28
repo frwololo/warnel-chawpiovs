@@ -355,7 +355,7 @@ const GRID_SETUP := {
 		"scale" : 0.5			
 	},		
 	"villain" : {
-		"x" : 300,
+		"x" : 250,
 		"y" : 20,
 		"auto_extend": false,
 	},

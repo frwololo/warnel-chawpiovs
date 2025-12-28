@@ -379,7 +379,7 @@ func return_attachments_to_owner(script: ScriptTask) -> int:
 		to_move.append(card)
 		
 	for card in to_move:
-		host.attachments.erase(card)
+		host.remove_attachment(card)
 		card.current_host_card = null
 		var card_owner = card.get_owner_hero_id()
 		var destination = destination_prefix

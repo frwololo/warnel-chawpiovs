@@ -261,7 +261,7 @@ func enable():
 func reorganize_focus_mode():
 	var previous_control:Control = null
 	for card in get_all_cards():
-		var control = card._control
+		var control = card.get_focus_control()
 		control.focus_neighbour_left = ""
 		control.focus_neighbour_right = ""
 		if previous_control:

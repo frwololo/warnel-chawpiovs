@@ -31,6 +31,7 @@ func _ready() -> void:
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')
 	v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
 	resize()
+	cfc.default_button_focus(v_buttons)
 
 func fetch_list_rooms():
 	var rooms_list = get_node("%Rooms")
@@ -78,6 +79,7 @@ func _check_rooms_list(result, response_code, headers, body):
 			var new_room = roomSelect.instance()
 			new_room.setup(result["room_name"], self)
 			rooms_list.add_child(new_room)
+		cfc.default_button_focus(rooms_list)
 		show_buttons()
 		if CFConst.DEBUG_AUTO_START_MULTIPLAYER:
 			var room_name = rooms_list.get_child(0).room_name

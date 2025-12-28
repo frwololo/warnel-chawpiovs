@@ -22,6 +22,9 @@ signal card_moved_to_pile(card,details)
 # Emited whenever a card is moved to a hand
 # warning-ignore:unused_signal
 signal card_moved_to_hand(card,details)
+# Emited whenever a card container gets empty
+# warning-ignore:unused_signal
+signal card_container_emptied(details) #container
 # Emited whenever a card's tokens are modified
 # warning-ignore:unused_signal
 signal card_token_modified(card,details)

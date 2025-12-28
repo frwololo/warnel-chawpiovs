@@ -843,6 +843,9 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 		var new_hand: Hand = get_node("%" + v + str(new_hero_id))
 		new_hand.re_place()
 
+	#disable and reenable focus to update cards accessible by keyboard
+	disable_focus_mode()
+	enable_focus_mode()
 
 
 
@@ -1107,6 +1110,12 @@ func grab_default_focus():
 
 
 func update_card_focus(card, details = {}):
+	var control:Control = card.get_focus_control()
+	control.focus_neighbour_left = ""
+	control.focus_neighbour_right = ""
+	control.focus_neighbour_top = ""
+	control.focus_neighbour_bottom = ""
+	
 	if !card_focus_allowed:
 		card.disable_focus_mode()
 		return
@@ -1119,9 +1128,10 @@ func update_card_focus(card, details = {}):
 	if parent == self:
 		card.enable_focus_mode()
 		if card == gameData.get_identity_card(gameData.get_current_local_hero_id()):
+			#force grab focus when an identity comes into play. Needed because
+			#otherwise we lose focus when changing form
 			card.grab_focus()
 		return
-
 
 	card.disable_focus_mode()
 	

@@ -485,6 +485,7 @@ func _launch_game():
 	gameData.set_team_data(team)
 	
 	gameData.set_scenario_data(launch_data)
+	set_process(false) #prevents calling process on variables being deleted during scene change
 	get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/GetReady.tscn')
 
 func on_button_pressed(_button_name : String) -> void:

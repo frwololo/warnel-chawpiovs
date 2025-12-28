@@ -62,7 +62,10 @@ func load_from_dict(_scenario:Dictionary):
 	modular_sets = _scenario.get("modular_encounters", [])
 	
 	#Preload
+	villains = []
 	get_villains()
+	
+	encounter_deck = []
 	get_encounter_deck()
 
 func get_villains():

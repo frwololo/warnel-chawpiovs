@@ -77,6 +77,8 @@ func _on_Pile_gui_input(event) -> void:
 	if event is InputEventMouseButton and cfc.NMAP.has("board"):	
 		if event.is_pressed() and event.get_button_index() == 1:
 			_on_View_Button_pressed()
+	if gamepadHandler.is_ui_accept_pressed(event):
+		_on_View_Button_pressed()
 
 
 func _process(_delta) -> void:			
@@ -194,6 +196,9 @@ func add_child(node, _legible_unique_name=false) -> void:
 	if not $ViewPopup.visible:
 		.add_child(node)
 		if node as Card:
+			#TODO there might be cases where this node was explicitly disabled for focus,
+			#and this overrides that. Might lead to bugs ?
+			enable_focus_mode()
 			_has_cards = true
 			# By raising the $Control every time a card is added
 			# we ensure it's always drawn on top of the card objects
@@ -226,6 +231,7 @@ func remove_child(node, _legible_unique_name=false) -> void:
 	# Panel is made transparent so that the card backs are seen instead
 	if get_card_count() == 0:
 		_has_cards = false
+		disable_focus_mode()
 		reorganize_stack()
 		if CFConst.HIDE_PILE_DETAILS:
 			panel_container.visible = false	
@@ -517,6 +523,8 @@ func _add_tween_position(
 			trans_type, ease_type)
 
 func enable_focus_mode():
+	if !_has_cards:
+		return
 	$Control.focus_mode = Control.FOCUS_ALL
 
 func disable_focus_mode():

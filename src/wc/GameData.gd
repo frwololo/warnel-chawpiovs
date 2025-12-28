@@ -539,7 +539,7 @@ func init_as_server():
 
 func archive_save_folder(save_dir):
 	var dir:Directory = Directory.new()
-	var past_dir = "user://Saves/past_games/"
+	var past_dir = "user://Saves/previous_game/"
 	dir.make_dir_recursive(past_dir)
 	if !dir.dir_exists(save_dir):
 		return
@@ -549,9 +549,13 @@ func archive_save_folder(save_dir):
 	var files_in_save = CFUtils.list_files_in_directory(save_dir)
 	if !files_in_save:
 		return	
-	var cur_time = Time.get_datetime_dict_from_system()
-	var cur_time_str = str(cur_time["month"]) + "_" + str(cur_time["day"]) + "_" + str(cur_time["hour"]) + "_" + str(cur_time["minute"])
-	dir.rename(save_dir, past_dir + cur_time_str + "/")
+	
+	var files_in_past = CFUtils.list_files_in_directory(past_dir)
+	for file in files_in_past:
+		if file.ends_with(".json"):
+			dir.remove(past_dir + file)		
+		
+	dir.rename(save_dir, past_dir )
 
 #we delete all existing saves of a previous game
 func init_save_folder():
@@ -879,8 +883,10 @@ func enemy_activates() :
 		target_id = override_target_id
 
 
-
 	var status = "stunned" if (action=="attack") else "confused"
+
+	if target_id != get_current_local_hero_id():
+		self.select_current_playing_hero(target_id) 
 	
 	#check for stun/confused
 	var is_status = enemy.tokens.get_token_count(status)

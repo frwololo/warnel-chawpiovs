@@ -2,8 +2,13 @@ extends CardFront
 
 onready var art := $Art
 var art_filename:= ""
+var text_enabled = false
 
 func _ready() -> void:
+	pass
+	
+func setup_text_mode():
+	text_enabled = true
 	_card_text = find_node("CardText")
 #	# Map your card text label layout here. We use this when scaling
 #	# The card or filling up its text
@@ -55,3 +60,32 @@ func set_card_art(filename) -> void:
 		art.self_modulate = Color(1,1,1)
 		if CFConst.PERFORMANCE_HACKS:
 			remove_child($Margin)
+			text_enabled = false
+	else:
+		setup_text_mode()
+		card_owner.refresh_card_front()
+
+func set_label_text(node: Label, value, scale: float = 1):
+	if !text_enabled:
+		return
+	.set_label_text(node, value, scale)
+	
+func get_card_label_font(label: Label) -> Font:
+	if !text_enabled:
+		return null
+	return .get_card_label_font(label)
+	
+func set_card_label_font(label: Label, font: Font) -> void:
+	if !text_enabled:
+		return
+	label.add_font_override("font", font)	
+
+func scale_to(scale_multiplier: float) -> void:
+	if !text_enabled:
+		return	
+	.scale_to(scale_multiplier)
+
+func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false, scale : float = 1):
+	if !text_enabled:
+		return	
+	.set_rich_label_text(node, value, is_resize, scale)

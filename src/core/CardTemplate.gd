@@ -3142,3 +3142,24 @@ func queue_free():
 		var source = conn["source"]
 		source.disconnect(conn["signal_name"],self , conn["method_name"])
 	.queue_free()
+	
+var _duplicate = null
+func get_duplicate(refresh_variables = true):
+	if !_duplicate:
+		_duplicate = get_duplicate_no_cache()
+	elif refresh_variables:
+		#duplicate already exists, we refresh it
+		_duplicate.clear_highlight()
+		var tokens_json = tokens.export_to_json()
+		_duplicate.tokens.load_from_json(tokens_json)
+	return _duplicate
+	
+func get_duplicate_no_cache():
+	var dupe = self.duplicate(DUPLICATE_USE_INSTANCING)
+	# This prevents the card from being scripted with the
+	# signal propagator and other things going via groups
+	dupe.remove_from_group("cards")
+	dupe.canonical_name = canonical_name
+	dupe.canonical_id = canonical_id
+	dupe.properties = properties.duplicate()
+	return dupe

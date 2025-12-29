@@ -43,9 +43,7 @@ var has_been_centered := false
 var focus_grabbed = false
 var window_title:= ""
 
-#Not an actual _init!
-#this is because caller calls "instance()" and right now 
-# I'm too lazy to figure out why I can't give it params
+#note: this is not _init !
 func init(
 		params: Dictionary,
 		_script: ScriptObject = null,
@@ -75,9 +73,15 @@ func _process(_delta):
 	popup_centered()
 	var _result = check_ok_button()
 
-
+var _force_compressed_view = false
 func _compute_columns():
-	_card_grid.columns = 8
+	_card_grid.columns = 7
+	if cfc.screen_resolution.x > CFConst.LARGE_SCREEN_WIDTH:
+		_card_grid.columns = 8
+	
+	if !card_array:
+		return
+	
 	var counts:= {}
 	for card in card_array:
 		var parent = card.get_parent()
@@ -85,8 +89,16 @@ func _compute_columns():
 		parent_count += 1
 		counts[parent] = parent_count
 	
+	#if we have a big amount of cards, we will try to show them in a compressed way
+	var most_kids_per_parent = counts.values().max()
+	if cfc.screen_resolution.x < CFConst.LARGE_SCREEN_WIDTH:
+		if counts.size() > 2 or\
+			((most_kids_per_parent > _card_grid.columns) and counts.size() > 1):
+				_force_compressed_view = true
+			
 	if counts:
-		_card_grid.columns =  min (8, counts.values().max())
+		_card_grid.columns =  min (_card_grid.columns, most_kids_per_parent )
+	var _tmp =1
 
 # Populates the selection window with duplicates of the possible cards
 # Then displays them in a popup for the player to select them.
@@ -105,7 +117,8 @@ func initiate_selection(_card_array: Array) -> void:
 
 	
 	for c in _card_grid.get_children():
-		c.queue_free()
+		#c.queue_free()
+		remove_child(c)
 	# We use this to quickly store a copy of a card object to use to get
 	# the card sizes for adjusting the size of the popup
 	var card_sample: Card
@@ -122,19 +135,24 @@ func initiate_selection(_card_array: Array) -> void:
 			dupe_selection = cfc.instance_card(card, -20)
 		else:
 			#add separator for cards from different zones
-			if (current_parent and (card.get_parent() != current_parent)):
-				for _i in range (current_column, _card_grid.columns):
+			if (current_parent and (card.get_parent() != current_parent) and current_column !=0):
+				if _force_compressed_view:
 					_card_grid.add_child(grid_card_object_scene.instance())
-				current_column = 0
+					current_column += 1
+				else:
+					for _i in range (current_column, _card_grid.columns):
+						_card_grid.add_child(grid_card_object_scene.instance())
+					current_column = 0
 			current_parent = card.get_parent()
 			
-			dupe_selection = card.duplicate(DUPLICATE_USE_INSTANCING)
-			# This prevents the card from being scripted with the
-			# signal propagator and other things going via groups
-			dupe_selection.remove_from_group("cards")
-			dupe_selection.canonical_name = card.canonical_name
-			dupe_selection.canonical_id = card.canonical_id
-			dupe_selection.properties = card.properties.duplicate()
+			dupe_selection = card.get_duplicate()
+#			dupe_selection = card.duplicate(DUPLICATE_USE_INSTANCING)
+#			# This prevents the card from being scripted with the
+#			# signal propagator and other things going via groups
+#			dupe_selection.remove_from_group("cards")
+#			dupe_selection.canonical_name = card.canonical_name
+#			dupe_selection.canonical_id = card.canonical_id
+#			dupe_selection.properties = card.properties.duplicate()
 		card_sample = dupe_selection
 		var card_grid_obj = grid_card_object_scene.instance()
 		_card_grid.add_child(card_grid_obj)
@@ -356,6 +374,7 @@ func can_still_select_more() -> bool :
 			
 	return false			
 
+var _cache_count_per_card = {}
 func get_count(_card_array: Array) -> int:
 	match what_to_count:
 		"assign":
@@ -371,7 +390,9 @@ func get_count(_card_array: Array) -> int:
 			var func_name = what_to_count
 			for card in _card_array:
 				if card and is_instance_valid(card):
-					total = total + card.call(func_name, my_script)
+					if !_cache_count_per_card.has(card):
+						_cache_count_per_card[card] =  card.call(func_name, my_script)
+					total = total + _cache_count_per_card[card]
 			return total
 
 #Returns arbitrary (valid) targets for the purpose of cost check

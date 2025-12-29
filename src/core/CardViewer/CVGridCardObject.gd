@@ -22,6 +22,10 @@ func setup(card) -> Card:
 		display_card = card
 		display_card.position = Vector2(0,0)
 		display_card.scale = Vector2(1,1)
+	var parent = display_card.get_parent()
+	if parent:
+		cfc.LOG("card " + display_card.canonical_name + "wasn't properly removed from " + parent.name)
+		parent.remove_child(display_card)
 	add_child(display_card)
 	display_card.set_owner(self)
 	if CFConst.VIEWPORT_FOCUS_ZOOM_TYPE == "scale":
@@ -88,3 +92,9 @@ func lose_focus():
 	else:
 		display_card.highlight.set_highlight(false)
 	pass
+
+#on exit we remove cards instead of freeing them, to reuse them later
+func _exit_tree():
+	for child in get_children():
+		if child as Card:
+			remove_child(child)

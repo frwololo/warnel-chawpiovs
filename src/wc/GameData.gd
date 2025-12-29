@@ -1588,6 +1588,14 @@ func victory():
 		"top_color": Color8(50,50,200, 255),
 		"bottom_color": Color8(200,50,50,255)
 	}
+
+	var hero_deck_data = get_team_member(get_current_local_hero_id())["hero_data"]
+	var hero_card_data = cfc.get_card_by_id(hero_deck_data.get_hero_id())	
+	if hero_card_data:
+		var meta_colors = hero_card_data.get("meta", {}).get("colors", {})
+		if meta_colors and typeof(meta_colors) == TYPE_ARRAY and meta_colors.size() >=2:
+			announce_settings["top_color"] = meta_colors[0]
+			announce_settings["bottom_color"] = meta_colors[1]		
 	theAnnouncer.simple_announce(announce_settings, true )
 	
 func first_player_hero_id():

@@ -61,6 +61,9 @@ func reset_destination():
 func set_valid_targets (objects):
 	valid_targets = objects
 
+func get_valid_targets():
+	return valid_targets
+
 func _ready() -> void:
 	# We set the targetting arrow modulation to match our config specification
 	default_color = CFConst.TARGETTING_ARROW_COLOUR

@@ -421,6 +421,7 @@ func clear() -> void:
 	card_drag_ongoing = null
 	if cfc.NMAP.has("board"):
 		cfc.NMAP.board.queue_free()
+	cleanup_modal_menu()
 	# We need to give Godot time to deinstance all nodes.
 	yield(get_tree().create_timer(0.1), "timeout")
 	NMAP.clear()

@@ -71,6 +71,8 @@ func _ready() -> void:
 	grid_setup()
 	ui_setup()
 	cfc._rpc(self,"ready_for_step", LOADING_STEPS.RNG_INIT)	
+	scripting_bus.connect("initiated_targeting", self, "_initiated_targeting")
+	scripting_bus.connect("target_selected", self, "_target_selected")
 
 var _clients_ready_for_step = {}
 remotesync func ready_for_step(next_step):
@@ -230,6 +232,18 @@ func grid_setup():
 			grid.auto_extend = grid_info.get("auto_extend", true)
 			set_groups(grid, grid_info.get("groups", []))
 
+	
+	var start_ys = []
+	match get_team_size():
+		2:
+			start_ys = [420]
+		3:
+			start_ys = [320, 520]
+		4:
+			start_ys = [220, 420, 620]
+		_:
+			pass
+			
 
 	for i in range(get_team_size()):
 		var hero_id = i+1
@@ -240,7 +254,7 @@ func grid_setup():
 		if (hero_id > 1):
 			scale = 0.3
 			start_x = 0
-			start_y = (220 + (hero_id * 200)) * cfc.screen_scale.y
+			start_y = start_ys[i-1] * cfc.screen_scale.y
 			
 		for grid_name in HERO_GRID_SETUP.keys():
 			var grid_info = HERO_GRID_SETUP[grid_name]
@@ -286,6 +300,18 @@ func grid_setup():
 func init_board_organizers(current_hero_id):
 	board_organizers = []
 	var other_counter = 0
+	
+	var start_ys = []
+	match get_team_size():
+		2:
+			start_ys = [420]
+		3:
+			start_ys = [320, 520]
+		4:
+			start_ys = [220, 420, 620]
+		_:
+			pass
+	
 	for i in range(get_team_size()):
 		var hero_id = i+1
 		var scale = 1
@@ -296,7 +322,7 @@ func init_board_organizers(current_hero_id):
 		if (hero_id != current_hero_id):
 			scale = 0.3
 			start_x = 0
-			start_y = (220 + (other_counter * 200)) * cfc.screen_scale.y
+			start_y = start_ys[other_counter] * cfc.screen_scale.y
 			other_counter+=1
 			#hacky way to force resize
 			var right_container_def = grid_layout["children"][1]
@@ -1153,34 +1179,55 @@ func update_card_focus(card, details = {}):
 		for key in need_hand_reorganize:
 			cfc.NMAP[key].reorganize_focus_mode()
 
+func _initiated_targeting(owner_card):
+	if !owner_card:
+		return
+	var arrow = owner_card.targeting_arrow
+	if !arrow:
+		return
+	var valid_targets = arrow.get_valid_targets()
+	if !valid_targets:return
+	
+	disable_focus_mode()
+	enable_focus_mode(valid_targets, valid_targets[0])
+	
+
+func _target_selected(owner_card, _target):
+	enable_focus_mode()
+
 #Called when no modal menus are shown on the screen:
 #enables back all valid cards/piles as focusable
 #can get an optional array of cards to only enable those
-func enable_focus_mode(cards = null):
+func enable_focus_mode(cards = null, default_grab = null):
 	
+	var cards_only = true
 	#Cards
-	if cards == null:
+	if !cards:
+		cards_only = false
 		cards = get_all_focusable_cards()
 	var _tmp = 1
 	for card in cards:
 		card.enable_focus_mode()
 
-	
-	#Piles
-	var pile_data = get_all_pile_data()
-	for pile_name in pile_data:
-		var pile_info = pile_data[pile_name]
-		if pile_info.get("focusable", true):
-			var pile = cfc.NMAP[pile_name]
-			pile.enable_focus_mode()
-			
-	#Hero faces	
-	for i in range(gameData.get_team_size()):
-		var heroPhase:HeroPhase = gameData.phaseContainer.heroesStatus[i]
-		heroPhase.enable_focus_mode()	
-	#Done
+	if !cards_only:
+		#Piles
+		var pile_data = get_all_pile_data()
+		for pile_name in pile_data:
+			var pile_info = pile_data[pile_name]
+			if pile_info.get("focusable", true):
+				var pile = cfc.NMAP[pile_name]
+				pile.enable_focus_mode()
+				
+		#Hero faces	
+		for i in range(gameData.get_team_size()):
+			var heroPhase:HeroPhase = gameData.phaseContainer.heroesStatus[i]
+			heroPhase.enable_focus_mode()	
+		#Done
 	card_focus_allowed = true
-	grab_default_focus()
+	if default_grab:
+		default_grab.grab_focus()
+	else:
+		grab_default_focus()
 
 #called when a modal menu is shown on screen:
 #we disable focus grabbing for all game elements on the board

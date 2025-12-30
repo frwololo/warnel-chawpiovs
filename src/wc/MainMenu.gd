@@ -177,7 +177,7 @@ func download_database():
 		if !url:
 			continue
 		# Perform the HTTP request. should return a json file
-		self._current_destination = filename
+		self._current_destination = "user://" + filename
 		self._current_url = url
 		var error = http_request.request(url)
 		if error != OK:

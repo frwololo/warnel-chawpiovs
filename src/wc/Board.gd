@@ -153,6 +153,8 @@ func offer_to_load_last_game():
 		
 	var load_dialog:ConfirmationDialog = ConfirmationDialog.new()
 	load_dialog.window_title = "Load last game?"
+	load_dialog.connect("modal_closed", self, "_decline_offer_to_load_last_game")
+	load_dialog.get_close_button().connect("pressed", self, "_decline_offer_to_load_last_game")
 	load_dialog.get_cancel().connect("pressed", self, "_decline_offer_to_load_last_game")
 	load_dialog.connect("confirmed", self, "_load_last_game")
 	add_child(load_dialog)

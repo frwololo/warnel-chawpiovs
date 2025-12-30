@@ -33,9 +33,11 @@ var selection_additional_constraints = null
 var my_script
 var card_array
 var stored_integer
+var hide_ok_on_zero = false
 
 onready var _card_grid = get_node("%GridContainer")
 onready var _tween = get_node("%Tween")
+onready var cancel_button = get_node("%cancel")
 
 var _assign_mode := false
 var _assign_max_function := ""
@@ -57,7 +59,7 @@ func init(
 	is_selection_optional = params.get(SP.KEY_SELECTION_OPTIONAL, false)
 	what_to_count = params.get(SP.KEY_SELECTION_WHAT_TO_COUNT, "")
 	selection_additional_constraints = params.get("selection_additional_constraints", {})
-		
+	hide_ok_on_zero = params.get("hide_ok_on_zero", false)	
 
 	if what_to_count.begins_with("assign_"):
 		_assign_mode = true
@@ -239,7 +241,6 @@ func popup_centered():
 	call_deferred("init_default_focus")	
 
 func add_cancel(text) -> Button:
-	var cancel_button = get_node("%cancel")
 	cancel_button.text = text
 	cancel_button.visible = true
 	cancel_button.icon = gamepadHandler.get_icon_for_action("ui_cancel")
@@ -253,9 +254,9 @@ func post_initiate_checks():
 	# If the selection is optional, we allow the player to cancel out
 	# of the popup
 	if is_selection_optional:
-		var cancel_button := add_cancel("Cancel")
+		var button = add_cancel("Cancel")
 		# warning-ignore:return_value_discarded
-		cancel_button.connect("pressed",self, "_on_cancel_pressed")
+		button.connect("pressed",self, "_on_cancel_pressed")
 	# If the amount of cards available for the choice are below the requirements
 	# We return that the selection was canceled
 	if get_count(card_array) < selection_count\
@@ -336,7 +337,7 @@ func check_ok_button() -> bool:
 	#if current count is zero, we disable it all the time, to make it
 	# clear that nothing has been selected
 	#clicking on cancel should have the same effect
-	if current_count == 0:
+	if current_count == 0 and hide_ok_on_zero:
 		get_ok().disabled = true
 	else:
 		match selection_type:

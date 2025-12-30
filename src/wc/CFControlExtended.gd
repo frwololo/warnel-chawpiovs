@@ -860,6 +860,17 @@ func enrich_window_title(selectionWindow, script:ScriptObject, title:String) -> 
 			result = owner.get_display_name() + " attacks" + target_str +". Choose 1 defender or cancel for undefended" 
 		"pay_as_resource":
 			result = owner.canonical_name + " - Select at least " + str(selectionWindow.selection_count) + " resources."
+	match forced_title:
+		"__end_phase_discard__":
+			var cancel_str = "."
+			if selectionWindow.cancel_button.visible:
+				cancel_str = " or cancel to keep your hand"
+			result = owner.get_display_name() + ": Player phase end. Choose cards to discard" +cancel_str			
+		"__mulligan__":
+			var cancel_str = "."
+			if selectionWindow.cancel_button.visible:
+				cancel_str = " or cancel to keep your hand"
+			result = owner.get_display_name() + ": Mulligan. Choose cards to discard" +cancel_str			
 	return result;
 
 #A poor man's mechanism to pass parameters betwen scenes

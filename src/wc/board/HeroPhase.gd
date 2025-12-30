@@ -295,3 +295,10 @@ func _on_Control_focus_exited():
 	
 func grab_focus():
 	control.grab_focus()
+
+func _input(event):
+	if gamepadHandler.is_ui_cancel_pressed(event):
+		if !can_hero_pass():
+			return
+		grab_focus()
+		heroPhase_action()	

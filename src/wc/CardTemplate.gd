@@ -1460,6 +1460,8 @@ func remove_threat(modification: int, script = null) -> int:
 			var crisis = scheme.get_property("scheme_crisis", 0, true)
 			if crisis:
 				return CFConst.ReturnCode.FAILED
+				scheme.hint("Crisis!", Color8(200, 50, 50))
+				self.hint("Crisis!", Color8(200, 50, 50))
 	
 	var token_name = "threat"
 	var current_tokens = tokens.get_token_count(token_name)
@@ -1592,7 +1594,6 @@ func check_play_costs(params:Dictionary = {}, _debug = false) -> Color:
 
 	#skip if card is not in hand and not on board. TODO: will have to take into account cards than can be played from other places
 	var state_exec = get_state_exec()
-	var the_state = self.state
 
 	if !(state_exec in ["hand", "board"]):
 		return _check_play_costs_cache[hero_id]

@@ -305,9 +305,10 @@ func get_scripts(scripts: Dictionary, card_id: String, _get_modified = true) -> 
 						SP.KEY_SELECTION_COUNT:0, 
 						SP.KEY_SELECTION_TYPE: "min",
 						SP.KEY_SELECTION_OPTIONAL: true,
+						"hide_ok_on_zero": true,
 						"src_container": "hand",
 						"dest_container": "discard",						
-						"display_title": "Mulligan"
+						"display_title": "__mulligan__"
 					},
 					{
 						"name" : "draw_to_hand_size",
@@ -326,9 +327,10 @@ func get_scripts(scripts: Dictionary, card_id: String, _get_modified = true) -> 
 						SP.KEY_SELECTION_COUNT:0, 
 						SP.KEY_SELECTION_TYPE: "min",
 						SP.KEY_SELECTION_OPTIONAL: true,
+						"hide_ok_on_zero": true,
 						"src_container": "hand",
 						"dest_container": "discard",						
-						"display_title": "End phase discard"
+						"display_title": "__end_phase_discard__"
 					}				
 				]
 			}						
@@ -359,6 +361,7 @@ static func get_enemy_scripts():
 					"subject": "boardseek",	
 					"is_cost": true,
 					"subject_count": "all",
+					"hide_ok_on_zero": true,
 					SP.KEY_NEEDS_SELECTION: true,
 					SP.KEY_SELECTION_COUNT: 1,
 					SP.KEY_SELECTION_TYPE: "max",

@@ -72,7 +72,7 @@ func loading_error(msg):
 
 func display_folder_info():
 	v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
-	v_folder_label.text = "joycon: " + gamepadHandler.get_full_joy_name()
+
 func _set_download_completed(result, response_code, headers, body):
 	if result != HTTPRequest.RESULT_SUCCESS:
 		push_error("Set couldn't be downloaded.")

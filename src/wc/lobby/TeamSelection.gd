@@ -53,6 +53,11 @@ onready var v_folder_label = get_node("%FolderLabel")
 var focus_chosen = false
 var large_picture_id = ""
 
+func grab_scenario_focus():
+	for child in all_scenarios_container.get_children():
+		child.grab_focus()	
+		return	
+
 func grab_default_focus():
 	for child in all_heroes_container.get_children():
 		child.grab_focus()	
@@ -308,6 +313,10 @@ func verify_launch_button():
 		launch_button.grab_focus()
 	else:
 		disable_launch_button()
+		
+		if all_players_have_a_hero():
+			grab_scenario_focus()
+		
 		if !get_focus_owner():
 			grab_default_focus()
 
@@ -327,6 +336,12 @@ func check_ready_to_launch() -> bool:
 	if are_acks_pending():
 		return false
 	
+	if !all_players_have_a_hero():
+		return false
+	
+	return true
+
+func all_players_have_a_hero() -> bool:
 	#can't launch if all players don't have at least one hero
 	var players_with_heroes:= {}
 

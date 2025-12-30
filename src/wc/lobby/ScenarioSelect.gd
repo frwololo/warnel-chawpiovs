@@ -85,6 +85,9 @@ func gui_focus_changed(control):
 	else:
 		lose_focus()	
 
+func grab_focus():
+	scenario_picture.grab_focus()
+
 func load_scenario(_scenario_id):
 	scenario_id = _scenario_id
 	var villains = ScenarioDeckData.get_villains_from_scheme(scenario_id)

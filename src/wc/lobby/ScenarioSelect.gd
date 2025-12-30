@@ -76,6 +76,7 @@ func resize():
 	$Panel/VerticalHighlights.rect_size = scenario_picture.rect_size
 
 func _ready():
+	# warning-ignore:return_value_discarded
 	get_viewport().connect("gui_focus_changed", self, "gui_focus_changed")
 
 func gui_focus_changed(control):

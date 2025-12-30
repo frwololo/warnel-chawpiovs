@@ -1,3 +1,4 @@
+# warning-ignore:return_value_discarded
 extends Node2D
 
 onready var control = get_parent()
@@ -60,6 +61,7 @@ func _init():
 func _ready():
 	reinit_children()
 	owner_card.connect("state_changed", self, "owner_state_changed")
+	# warning-ignore:return_value_discarded
 	scripting_bus.connect("card_moved_to_board", self, "_card_moved_to_board")
 	update_state()
 	

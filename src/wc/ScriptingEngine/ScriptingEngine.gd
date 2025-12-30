@@ -250,6 +250,7 @@ func attack(script: ScriptTask) -> int:
 		damage = owner.get_property("attack", 0)
 
 	if (owner.is_stunned()):
+		owner.hint("Stunned!", Color8(50,200,50))
 		owner.disable_stun()
 		
 	else:
@@ -1101,6 +1102,7 @@ func thwart(script: ScriptTask) -> int:
 	var confused = owner.tokens.get_token_count("confused")
 	if (confused):
 		owner.tokens.mod_token("confused", -1)
+		owner.hint("Confused!", Color8(240,110,255))
 	else:
 		for card in script.subjects:
 			retcode = card.remove_threat(modification)

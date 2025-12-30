@@ -378,7 +378,7 @@ func _scripting_event_triggered(_trigger_object = null,
 				"card_played", \
 				"card_token_modified",\
 				"step_started" :		
-			game_state_changed()
+			game_state_changed(_trigger_object, trigger, _trigger_details)
 	return
 
 #a function that checks if any deck becomes empty after a card is moved,
@@ -479,7 +479,9 @@ func check_main_scheme_defeat():
 	if (!next_scheme):		
 		defeat()	
 	
-func game_state_changed():
+func game_state_changed(_trigger_object = null,
+		trigger: String = "manual",
+		_trigger_details: Dictionary = {}):
 	emit_signal("game_state_changed",{})
 
 func init_network_players(players:Dictionary):
@@ -887,7 +889,7 @@ func enemy_activates() :
 
 
 	var status = "stunned" if (action=="attack") else "confused"
-
+	var hint_color = Color8(50,200,50) if (action=="attack") else Color8(240,110,255)
 	if target_id != get_current_local_hero_id():
 		self.select_current_playing_hero(target_id) 
 	
@@ -895,6 +897,7 @@ func enemy_activates() :
 	var is_status = enemy.tokens.get_token_count(status)
 	if (is_status):
 		enemy.tokens.mod_token(status, -1)
+		enemy.hint(status + "!", hint_color)
 		current_enemy_finished()
 		return
 	

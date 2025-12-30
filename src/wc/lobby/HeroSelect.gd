@@ -13,8 +13,9 @@ func _ready():
 	if color_tex:
 		hero_picture.texture_normal = color_tex
 		resize()
+		# warning-ignore:return_value_discarded
 		get_viewport().connect("gui_focus_changed", self, "gui_focus_changed")
-	
+	# warning-ignore:return_value_discarded
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')
 
 

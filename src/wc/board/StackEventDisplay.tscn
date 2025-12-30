@@ -20,8 +20,9 @@ margin_bottom = 40.0
 [node name="HBoxContainer" type="HBoxContainer" parent="Control"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 231.0
+margin_right = 242.0
 margin_bottom = 226.0
+custom_constants/separation = 15
 
 [node name="Button" type="Button" parent="Control/HBoxContainer"]
 unique_name_in_owner = true
@@ -30,8 +31,8 @@ margin_bottom = 219.0
 text = ">"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/HBoxContainer"]
-margin_left = 24.0
-margin_right = 224.0
+margin_left = 35.0
+margin_right = 235.0
 margin_bottom = 219.0
 
 [node name="Card" type="TextureRect" parent="Control/HBoxContainer/VBoxContainer"]
@@ -41,8 +42,10 @@ margin_bottom = 200.0
 rect_min_size = Vector2( 200, 200 )
 texture = ExtResource( 2 )
 expand = true
+stretch_mode = 6
 
 [node name="MarginContainer" type="MarginContainer" parent="Control/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
 margin_top = 204.0
 margin_right = 200.0
 margin_bottom = 219.0

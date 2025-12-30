@@ -194,6 +194,26 @@ func _process(delta:float):
 		_server_activity.modulate = Color(1, 1, 1, sin(_total_delta*2)*0.4 + 0.5)
 		_server_activity.rect_rotation = _total_delta * 100
 	pass
+
+#todo move to a config file
+func get_hero_grid_start_coordinates():
+	var start_ys = [220,0,0,0]
+	var start_xs = [500,0,0,0]
+	match get_team_size():
+		2:
+			start_ys = [220,420]
+		3:
+			start_ys = [220,320, 520]
+		4:
+			start_ys = [220, 220, 420, 620]
+		_:
+			start_ys = [300,0,0,0]
+			start_xs = [150,0,0,0]
+	
+	return {
+		"x": start_xs,
+		"y": start_ys,
+	}
 	
 func grid_setup():
 	_team_size = 0 #reset team size to fetch it from gameData	
@@ -233,28 +253,20 @@ func grid_setup():
 			set_groups(grid, grid_info.get("groups", []))
 
 	
-	var start_ys = []
-	match get_team_size():
-		2:
-			start_ys = [420]
-		3:
-			start_ys = [320, 520]
-		4:
-			start_ys = [220, 420, 620]
-		_:
-			pass
-			
-
+	var start_coords = get_hero_grid_start_coordinates()
+	var start_xs = start_coords["x"]
+	var start_ys = start_coords["y"]	
+	
 	for i in range(get_team_size()):
 		var hero_id = i+1
 		var scale = 1
-		var start_x = 500 * cfc.screen_scale.x
-		var start_y = 220 * cfc.screen_scale.y
+		var start_x = start_xs[i] * cfc.screen_scale.x
+		var start_y = start_ys[i] * cfc.screen_scale.y
 		
 		if (hero_id > 1):
 			scale = 0.3
-			start_x = 0
-			start_y = start_ys[i-1] * cfc.screen_scale.y
+			start_x = start_xs[i]
+			start_y = start_ys[i] * cfc.screen_scale.y
 			
 		for grid_name in HERO_GRID_SETUP.keys():
 			var grid_info = HERO_GRID_SETUP[grid_name]
@@ -301,28 +313,21 @@ func init_board_organizers(current_hero_id):
 	board_organizers = []
 	var other_counter = 0
 	
-	var start_ys = []
-	match get_team_size():
-		2:
-			start_ys = [420]
-		3:
-			start_ys = [320, 520]
-		4:
-			start_ys = [220, 420, 620]
-		_:
-			pass
+	var start_coords = get_hero_grid_start_coordinates()
+	var start_xs = start_coords["x"]
+	var start_ys = start_coords["y"]	
 	
 	for i in range(get_team_size()):
 		var hero_id = i+1
 		var scale = 1
-		var start_x = 500 * cfc.screen_scale.x
-		var start_y = 220 * cfc.screen_scale.y
+		var start_x = start_xs[0] * cfc.screen_scale.x
+		var start_y = start_ys[0] * cfc.screen_scale.y
 		var grid_layout = CFConst.HERO_GRID_LAYOUT.duplicate(true)
 		
 		if (hero_id != current_hero_id):
 			scale = 0.3
-			start_x = 0
-			start_y = start_ys[other_counter] * cfc.screen_scale.y
+			start_x = start_xs[other_counter + 1]
+			start_y = start_ys[other_counter + 1] * cfc.screen_scale.y
 			other_counter+=1
 			#hacky way to force resize
 			var right_container_def = grid_layout["children"][1]
@@ -1193,7 +1198,7 @@ func _initiated_targeting(owner_card):
 	
 
 func _target_selected(owner_card, _target):
-	enable_focus_mode()
+	enable_focus_mode(null, owner_card)
 
 #Called when no modal menus are shown on the screen:
 #enables back all valid cards/piles as focusable
@@ -1224,7 +1229,7 @@ func enable_focus_mode(cards = null, default_grab = null):
 			heroPhase.enable_focus_mode()	
 		#Done
 	card_focus_allowed = true
-	if default_grab:
+	if default_grab and default_grab.get_state_exec() == "board":
 		default_grab.grab_focus()
 	else:
 		grab_default_focus()
@@ -1257,6 +1262,11 @@ func _unhandled_input(event):
 	if event is InputEvent:
 		if event.is_action_pressed("ui_options"):	
 			show_options_menu()
+
+		if event.is_action_pressed("ui_focus_character"):	
+			var heroPhase:HeroPhase = gameData.phaseContainer.heroesStatus[0]
+			heroPhase.grab_focus()
+	
 	#safeguard if we ever lose all focus
 	if !get_focus_owner():
 		grab_default_focus()

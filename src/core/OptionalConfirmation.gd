@@ -14,6 +14,8 @@ func _ready() -> void:
 	# warning-ignore:return_value_discarded
 	get_cancel().connect("pressed", self, "_on_OptionalConfirmation_cancelled")
 
+	get_cancel().icon = gamepadHandler.get_icon_for_action("ui_cancel")	
+
 
 func prep(card_name: String, task_name: String, _is_master:bool = true) -> void:
 		dialog_text =  card_name + ": Do you want to activate " + task_name + "?"

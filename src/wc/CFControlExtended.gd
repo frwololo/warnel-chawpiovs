@@ -243,6 +243,7 @@ func delete_log_files():
 	var log_files = CFUtils.list_files_in_directory(log_dir, "log_" )
 	for file in log_files:
 		if file.ends_with(".txt"):
+			# warning-ignore:return_value_discarded
 			dir.remove(log_dir + file)
 
 func init_settings_from_file() -> void:

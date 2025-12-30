@@ -7,13 +7,24 @@ var display_card: Card = null
 var card_list_object
 var has_focus = false
 var selected = false
-
+var show_card_focus = true
 onready var preview_popup := $PreviewPopup
 
 
 func _ready() -> void:
 # warning-ignore:return_value_discarded
+	show_card_focus = cfc.NMAP.main.show_card_focus
 	get_viewport().connect("size_changed", self, '_on_viewport_resized')
+	cfc.NMAP.main.connect("show_card_focus_changed", self, "_show_card_focus_changed")
+
+func _show_card_focus_changed(new_value):
+	if new_value == show_card_focus:
+		return
+	show_card_focus = new_value
+	if show_card_focus:
+		try_to_show_preview()
+	else:
+		hide_preview()
 
 func setup(card) -> Card:
 	if typeof(card) == TYPE_STRING:
@@ -68,12 +79,29 @@ func _on_GridCardObject_focus_entered():
 func set_selected(value):
 	selected = value
 
+func try_to_show_preview():
+	if !show_card_focus:
+		return
 
+	if (!display_card):
+		return
+	
+	if (!has_focus):
+		return		
+		
+	preview_popup.show_preview_card(display_card.canonical_id)	
+
+func hide_preview():
+	preview_popup.hide_preview_card()
+	
 func gain_focus():
 	if (!display_card):
 		return
-	preview_popup.show_preview_card(display_card.canonical_id)	
+
 	has_focus = true
+	
+	try_to_show_preview()	
+	
 	if !gamepadHandler.is_mouse_input():
 		display_card.highlight.set_highlight(true, CFConst.FOCUS_COLOUR_ACTIVE)
 	pass
@@ -84,7 +112,7 @@ func _on_GridCardObject_focus_exited():
 func lose_focus():
 	if (!display_card):
 		return	
-	preview_popup.hide_preview_card()
+	hide_preview()
 		
 	has_focus = false
 	if selected:

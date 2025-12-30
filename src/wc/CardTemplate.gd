@@ -129,6 +129,7 @@ func refresh_cache(forced=false):
 	if !forced and ! _cache_refresh_needed:
 		return
 		
+		
 	for i in gameData.get_team_size():
 		var hero_id = i+1
 		_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID
@@ -439,10 +440,13 @@ func get_focus_control():
 func gain_focus():
 	has_focus = true
 	
+	#TODO this is a lame attempt to make it clearer which card is being 
+	#currently selected. Doesn"t work so well tbh..
 	if !gamepadHandler.is_mouse_input():
-		if card_front and card_front.art:
-			card_front.art.self_modulate = CFConst.FOCUS_CARD_MODULATE
-			card_front.art.self_modulate.a = 1.0
+		if get_state_exec()!= "hand":
+			if card_front and card_front.art:
+				card_front.art.self_modulate = CFConst.FOCUS_CARD_MODULATE
+				card_front.art.self_modulate.a = 1.0
 	.gain_focus()
 	
 func lose_focus():
@@ -624,7 +628,11 @@ func set_state(value: int) -> void:
 func get_state_exec() -> String:
 	#return get_state_exec_no_cache()
 	
-	if !_state_exec_cache:
+	# I can't cache CardState.MOVING_TO_CONTAINER:
+	#I've seen cases where it keeps that state while moving between multiple places,
+	#which makes the cached value stale
+	
+	if !_state_exec_cache or state == CardState.MOVING_TO_CONTAINER:
 		 _state_exec_cache = get_state_exec_no_cache()
 	return _state_exec_cache
 	
@@ -1584,13 +1592,13 @@ func check_play_costs(params:Dictionary = {}, _debug = false) -> Color:
 
 	#skip if card is not in hand and not on board. TODO: will have to take into account cards than can be played from other places
 	var state_exec = get_state_exec()
-	
+	var the_state = self.state
+
 	if !(state_exec in ["hand", "board"]):
 		return _check_play_costs_cache[hero_id]
 	
 
-	if (canonical_name == "Jessica Jones"):
-		var _tmp = 1
+
 	
 	var trigger_details = {
 		"for_hero_id": hero_id,

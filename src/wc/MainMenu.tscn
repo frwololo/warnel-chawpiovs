@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://themes/darktheme/darktheme.theme" type="Theme" id=1]
 [ext_resource path="res://themes/darktheme/fonts/Bangers/Bangers-Regular.ttf" type="DynamicFontData" id=2]
@@ -7,6 +7,10 @@
 
 [sub_resource type="DynamicFont" id=2]
 size = 107
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 50
 font_data = ExtResource( 2 )
 
 [node name="MainMenuRoot" type="Panel"]
@@ -20,10 +24,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 
 [node name="VBox" type="VBoxContainer" parent="CenterContainer"]
-margin_left = 607.0
-margin_top = 152.0
-margin_right = 1312.0
-margin_bottom = 927.0
+margin_left = 287.0
+margin_right = 992.0
+margin_bottom = 775.0
 custom_constants/separation = 10
 alignment = 1
 
@@ -110,3 +113,24 @@ margin_right = 128.0
 margin_bottom = 30.0
 text = "user folder:"
 valign = 2
+
+[node name="LoadingPanel" type="CenterContainer" parent="CenterContainer"]
+unique_name_in_owner = true
+visible = false
+margin_left = 551.0
+margin_top = 360.0
+margin_right = 729.0
+margin_bottom = 415.0
+
+[node name="ColorRect" type="ColorRect" parent="CenterContainer/LoadingPanel"]
+margin_left = 89.0
+margin_top = 27.0
+margin_right = 89.0
+margin_bottom = 27.0
+color = Color( 0, 0, 0, 0.694118 )
+
+[node name="Loading" type="Label" parent="CenterContainer/LoadingPanel"]
+margin_right = 178.0
+margin_bottom = 55.0
+custom_fonts/font = SubResource( 3 )
+text = "Loading..."

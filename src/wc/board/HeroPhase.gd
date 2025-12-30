@@ -18,6 +18,7 @@ onready var label := get_node("%Label")
 onready var selected :=  get_node("%ColorRect")
 onready var ping :=  get_node("%Ping")
 onready var first_player :=  get_node("%FirstPlayer")
+onready var control = get_node("%Control")
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -250,7 +251,7 @@ func compute_focus_neighbors():
 
 		
 	if target_control:	
-		get_node("%Control").focus_neighbour_left = target_control.get_path()
+		 control .focus_neighbour_left = target_control.get_path()
 
 func _card_moved_zone(_card, details):
 	var hero_id = gameData.get_current_local_hero_id()
@@ -279,10 +280,10 @@ func lose_focus():
 	gameData.theAnnouncer.stop_black_cover()
 	
 func enable_focus_mode():
-	get_node("%Control").focus_mode = Control.FOCUS_ALL
+	 control .focus_mode = Control.FOCUS_ALL
 
 func disable_focus_mode():
-	get_node("%Control").focus_mode = Control.FOCUS_NONE
+	 control .focus_mode = Control.FOCUS_NONE
 
 
 func _on_Control_focus_entered():
@@ -291,3 +292,6 @@ func _on_Control_focus_entered():
 
 func _on_Control_focus_exited():
 	lose_focus()
+	
+func grab_focus():
+	control.grab_focus()

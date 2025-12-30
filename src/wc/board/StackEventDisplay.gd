@@ -1,3 +1,4 @@
+# warning-ignore-all:RETURN_VALUE_DISCARDED
 class_name StackEventDisplay
 extends Node2D
 
@@ -36,6 +37,7 @@ onready var card_texture:TextureRect = get_node("%Card")
 onready var control:Control= get_node("%Control")
 onready var display_text:RichTextLabel = get_node("%DisplayText")
 onready var shadow:ColorRect = get_node("%Shadow")
+onready var tween:Tween = get_node("Tween")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -46,14 +48,36 @@ func _ready():
 	pass # Replace with function body.
 
 
+#there is an issue where the theme of this control
+#isn't the sam between godot 3.6 (default theme) and godot 3.5 (darktheme)
+#possibly this ? https://github.com/godotengine/godot/pull/61588
+#this leads to size issues on 3.5 at runtime
+func handle_size_bug():
+	if tween.is_active():
+		return
+	var bottom_right = control.rect_size * control.rect_scale + control.rect_position
+	if bottom_right.y > get_viewport().size.y:
+		display_text.rect_min_size = Vector2(display_text.rect_min_size.x + 10,0)
+		display_text.rect_size = Vector2(display_text.rect_min_size.x, display_text.rect_min_size.y)
+
+	control.rect_min_size = Vector2(control.rect_min_size.x, 0)
+	control.rect_size = control.rect_min_size
+	if bottom_right.x > get_viewport().size.x:
+		if get_node("%Button").text !="<":
+			control.rect_position.x -= 100	
+			set_target_position(control.rect_position)	
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	if control:
+		handle_size_bug()
+		if shadow:
+			shadow.rect_min_size = control.rect_min_size
+			shadow.rect_size = control.rect_size
+			shadow.rect_position = control.rect_position + (Vector2(10, 10) * SCALE)
+
 		rect_size = control.rect_size
 		rect_position = control.rect_position
-		if shadow:
-			shadow.rect_min_size = control.rect_size
-			shadow.rect_position = control.rect_position + (Vector2(10, 10) * SCALE)
 	init_display()
 	show_arrows()
 
@@ -92,20 +116,28 @@ func init_display(forced = false):
 	
 	control.rect_position = owner_card.global_position
 
-	var tween = get_node("Tween")
-	tween.interpolate_property(control, "rect_position",
-			control.rect_position, target_position, 0.2,
-			Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
-	tween.interpolate_property(self, "modulate",
-			Color(1,1,1,0), Color(1,1,1,1), 0.2,
-			Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)		
-	tween.start()		
+	move_to_target_position()	
 	
 	initialized = load_card_texture()
 	load_text()
 	init_arrows()
 	$Control.rect_scale = Vector2(SCALE,SCALE) * cfc.screen_scale
 	$Shadow.rect_scale = Vector2(SCALE,SCALE) * cfc.screen_scale
+
+func move_to_target_position():
+	if tween.is_active():
+		# warning-ignore:return_value_discarded
+		tween.remove_all()
+	# warning-ignore:return_value_discarded
+	tween.interpolate_property(control, "rect_position",
+			control.rect_position, target_position, 0.2,
+			Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
+	# warning-ignore:return_value_discarded		
+	tween.interpolate_property(self, "modulate",
+			Color(1,1,1,0), Color(1,1,1,1), 0.2,
+			Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)	
+	# warning-ignore:return_value_discarded			
+	tween.start()	
 
 func show_arrows():
 	if arrows_initialized:
@@ -161,7 +193,7 @@ func load_card_texture() -> bool:
 		
 	card_texture.texture =  owner_card.get_cropped_art_texture()
 
-	card_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	#card_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	# In case the generic art has been modulated, we switch it back to normal colour
 	card_texture.self_modulate = Color(1,1,1)
 	return true
@@ -171,14 +203,15 @@ func load_text():
 		return
 
 			
-	if !stack_event:
+	if stack_event:
+		display_text.bbcode_text = stack_event.get_display_text()
+	else:
 		if owner_card:
 			display_text.bbcode_text = owner_card.get_printed_text()
 		else:
 			display_text.bbcode_text = "---"
-		return
+
 		
-	display_text.bbcode_text = stack_event.get_display_text()
 
 func load_from_event(event):
 	stack_event = event
@@ -236,7 +269,6 @@ func set_target_position(pos):
 
 func _on_Button_pressed():
 	var button = get_node("%Button")
-	var tween = get_node("Tween")
 	
 	var hidden_position = Vector2(1870 * cfc.screen_scale.x, target_position.y)
 	var before = target_position

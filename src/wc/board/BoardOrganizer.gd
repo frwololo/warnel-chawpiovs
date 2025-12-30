@@ -1,3 +1,4 @@
+# warning-ignore-all:RETURN_VALUE_DISCARDED
 class_name BoardOrganizer
 extends Reference
 
@@ -286,6 +287,7 @@ func organize():
 		return
 #	var previous_data = to_json(retrieve_all_children_data())	
 	
+	# warning-ignore:return_value_discarded
 	compute_min_size()
 	rescale()
 	reposition_children()

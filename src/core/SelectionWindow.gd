@@ -69,6 +69,13 @@ func _ready() -> void:
 	# warning-ignore:return_value_discarded
 	connect("confirmed", self, "_on_card_selection_confirmed")
 
+
+func init_default_focus():
+	if _card_grid.get_children().size():
+		_card_grid.get_children()[0].grab_focus()
+	else:
+		cfc.default_button_focus(get_node("%buttons"))
+
 func _process(_delta):
 	popup_centered()
 	var _result = check_ok_button()
@@ -126,6 +133,7 @@ func initiate_selection(_card_array: Array) -> void:
 	# we create a duplicate card inside a Card Grid object
 	var current_parent = null
 	var current_column = -1
+	var previous_card_grid_obj = null
 	for card in card_array:
 		current_column += 1
 		if current_column == _card_grid.columns:
@@ -176,9 +184,10 @@ func initiate_selection(_card_array: Array) -> void:
 			spinbox.connect("value_changed", self, "spinbox_value_changed", [dupe_selection, card])
 		card_grid_obj.connect("gui_input", self, "on_selection_gui_input", [dupe_selection, card])
 		card_grid_obj.focus_mode = Control.FOCUS_ALL
-		if !focus_grabbed:
-			card_grid_obj.grab_focus()
-			focus_grabbed = true		
+		if previous_card_grid_obj:
+			previous_card_grid_obj.focus_neighbour_right = card_grid_obj.get_path()
+			card_grid_obj.focus_neighbour_left = previous_card_grid_obj.get_path()
+		previous_card_grid_obj = card_grid_obj
 	# We don't want to show a popup longer than the cards. So the width is based on the lowest
 	# between the grid columns or the amount of cards
 
@@ -215,7 +224,6 @@ func initiate_selection(_card_array: Array) -> void:
 	if OS.has_feature("debug") and not cfc.is_testing:
 		print("DEBUG INFO:SelectionWindow: Started Card Display with a %s card selection" % [_card_grid.get_child_count()])
 
-
 func popup_centered():
 	if has_been_centered:
 		return	
@@ -228,10 +236,13 @@ func popup_centered():
 	self.rect_position = get_viewport().size/2	- size/2
 	has_been_centered = true
 
+	call_deferred("init_default_focus")	
+
 func add_cancel(text) -> Button:
 	var cancel_button = get_node("%cancel")
 	cancel_button.text = text
 	cancel_button.visible = true
+	cancel_button.icon = gamepadHandler.get_icon_for_action("ui_cancel")
 	return cancel_button
 
 func get_ok():
@@ -321,32 +332,39 @@ func check_ok_button() -> bool:
 	var current_count = get_count(selected_cards)
 	# We disable the OK button, if the amount of cards to be
 	# chosen do not match our expectations
-	match selection_type:
-		"min":
-			if current_count < selection_count:
-				get_ok().disabled = true
-			else:
-				get_ok().disabled = false
-		"equal":
-			if current_count != selection_count:
-				get_ok().disabled = true
-			else:
-				get_ok().disabled = false
-		"max":
-			if current_count > selection_count:
-				get_ok().disabled = true
-			else:
-				get_ok().disabled = false
-		"as_much_as_possible":
-			if (current_count < selection_count and can_still_select_more()):
-				get_ok().disabled = true
-			else:
-				get_ok().disabled = false
-		"all":
-			if current_count < card_array.size():
-				get_ok().disabled = true
-			else:
-				get_ok().disabled = false				
+	
+	#if current count is zero, we disable it all the time, to make it
+	# clear that nothing has been selected
+	#clicking on cancel should have the same effect
+	if current_count == 0:
+		get_ok().disabled = true
+	else:
+		match selection_type:
+			"min":
+				if current_count < selection_count:
+					get_ok().disabled = true
+				else:
+					get_ok().disabled = false
+			"equal":
+				if current_count != selection_count:
+					get_ok().disabled = true
+				else:
+					get_ok().disabled = false
+			"max":
+				if current_count > selection_count:
+					get_ok().disabled = true
+				else:
+					get_ok().disabled = false
+			"as_much_as_possible":
+				if (current_count < selection_count and can_still_select_more()):
+					get_ok().disabled = true
+				else:
+					get_ok().disabled = false
+			"all":
+				if current_count < card_array.size():
+					get_ok().disabled = true
+				else:
+					get_ok().disabled = false				
 	
 	if (!get_ok().disabled):
 		if !check_additional_constraints():
@@ -603,3 +621,9 @@ func _on_card_selection_confirmed() -> void:
 
 func _on_ok_pressed() -> void:
 	emit_signal("confirmed")
+
+
+func _input(event):	
+	if gamepadHandler.is_ui_cancel_pressed(event):
+		_on_cancel_pressed()
+		return

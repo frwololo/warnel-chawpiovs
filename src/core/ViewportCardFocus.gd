@@ -4,6 +4,8 @@
 class_name ViewportCardFocus
 extends Node2D
 
+signal show_card_focus_changed(value)
+
 export(PackedScene) var board_scene : PackedScene
 export(PackedScene) var info_panel_scene : PackedScene
 # This array holds all the previously focused cards.
@@ -25,6 +27,7 @@ var vbc_rect_offset:= Vector2(0,0)
 #in 1280x720. Instead I'm using a different method there, adding the cards
 #directly into $VBC. It's gross but it works
 var vbc_position_mode = true
+var show_card_focus = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -68,6 +71,9 @@ func reposition_vbc():
 	var spacer = 15
 	if _current_focus_source and is_instance_valid(_current_focus_source):	
 		var card = _current_focus_source
+		if card.get_state_exec() == "hand":
+			$VBC.visible = false
+			return
 		var multiplier =  card.focused_scale * cfc.curr_scale		
 		var card_size = card.canonical_size * multiplier
 		if (card._horizontal and card.get_is_faceup()):
@@ -89,11 +95,25 @@ func reposition_vbc():
 			display_position = Vector2( spacer, spacer)
 		else:
 			display_position = Vector2(viewport_size.x - display_size.x - spacer,  spacer)
-		pass
+		
+		#last resort if I end up overlapping my own card
+		var expected_position = display_position + vbc_rect_offset
+		var vbc_bounding:Rect2 = Rect2(expected_position, card_size)
+		var source_bounding = Rect2(_current_focus_source.get_global_position().x, 0,_current_focus_source.card_size.x, get_viewport().size.y)
+		if vbc_bounding.intersects( source_bounding):
+			display_position.x = _current_focus_source.get_global_position().x + _current_focus_source.card_size.x -  vbc_rect_offset.x
+		
+		
 
 	$VBC.rect_position = display_position + vbc_rect_offset
 
+
 func reposition():
+	if show_card_focus:
+		$VBC.visible = true
+	else:
+		$VBC.visible = false
+	
 	if vbc_position_mode:
 		reposition_vbc()
 		return
@@ -157,6 +177,8 @@ func garbage_collection():
 
 # Displays the card closeup in the Focus viewport
 func focus_card(card: Card, show_preview := true) -> void:
+	if !show_card_focus:
+		return
 	# We check if we're already focused on this card, to avoid making duplicates
 	# the whole time		
 	if not _current_focus_source == card:
@@ -338,6 +360,11 @@ func _input(event):
 		
 	if event.is_action_pressed("toggle_fullscreen"):
 		OS.set_window_fullscreen(!OS.window_fullscreen)	
+		
+	if event.is_action_pressed("ui_toggle_big_card"):	
+		show_card_focus = !show_card_focus
+		emit_signal("show_card_focus_changed", show_card_focus)
+		reposition()		
 
 
 # Takes care to resize the child viewport, when the main viewport is resized

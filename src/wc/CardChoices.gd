@@ -51,10 +51,14 @@ func _ready():
 	for item in items:
 		i+=1		
 		var button:Button = Button.new()
+		# warning-ignore:return_value_discarded
 		button.connect("pressed", self, "_button_pressed", [button])
+		# warning-ignore:return_value_discarded
 		button.connect("mouse_entered", self, "_mouse_entered", [button])
 		button.text = item
-		text_to_id[item.to_lower()] = i
+		if item == "cancel":
+			button.icon = gamepadHandler.get_icon_for_action("ui_cancel")		
+		text_to_id[item.to_lower()] = i		
 		menu.add_child(button)
 		
 	cfc.default_button_focus(menu)

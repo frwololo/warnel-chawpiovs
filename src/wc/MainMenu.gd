@@ -33,6 +33,8 @@ signal one_download_completed()
 signal images_download_completed()
 signal sets_download_completed()
 
+var _next_scene = ""
+var _next_scene_counter = 0
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	gameData.disconnect_from_network()	
@@ -70,7 +72,7 @@ func loading_error(msg):
 
 func display_folder_info():
 	v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
-
+	v_folder_label.text = "joycon: " + gamepadHandler.get_full_joy_name()
 func _set_download_completed(result, response_code, headers, body):
 	if result != HTTPRequest.RESULT_SUCCESS:
 		push_error("Set couldn't be downloaded.")
@@ -305,7 +307,13 @@ func _process(delta):
 		#warning-ignore:INTEGER_DIVISION
 		var percent_loaded:int = (100*cfc._cards_loaded) / cfc._total_cards
 		v_folder_label.text = _loading_text_prefix +  str(percent_loaded) + "%"
-		
+	
+	if 	_next_scene_counter:
+		_next_scene_counter-=1
+		if !_next_scene_counter:
+			var new_scene = _next_scene
+			_next_scene = ""
+			get_tree().call_deferred("change_scene", new_scene)	
 	
 func _one_download_completed():
 	if (_loading_error):
@@ -317,13 +325,18 @@ func on_button_pressed(_button_name : String) -> void:
 	match _button_name:
 		"SinglePlayer":
 			# warning-ignore:return_value_discarded
-			get_tree().change_scene(CFConst.PATH_CUSTOM + 'lobby/TeamSelection.tscn')
-		"Multiplayer":
+			next_scene(CFConst.PATH_CUSTOM + 'lobby/TeamSelection.tscn')
+		"Multiplayer":		
 			get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/MultiplayerMenu1.tscn')
 		"Credits":
 			get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/Credits.tscn')
 		"Exit":
 			get_tree().quit()
+
+func next_scene(scene_path):
+	get_node("%LoadingPanel").visible = true
+	_next_scene_counter = 2
+	_next_scene = scene_path
 
 func resize():
 	var stretch_mode = cfc.get_screen_stretch_mode()
@@ -340,6 +353,12 @@ func resize():
 	self.margin_bottom = target_size.y
 	self.rect_size = target_size
 	$CenterContainer.rect_size = target_size
+	$CenterContainer/LoadingPanel/ColorRect.rect_min_size = target_size
+#	$CenterContainer/LoadingPanel/Panel.rect_min_size = target_size
+	$CenterContainer/LoadingPanel/ColorRect.rect_size = target_size
+#	$CenterContainer/LoadingPanel/Panel.rect_size = target_size	
+	$CenterContainer/LoadingPanel.rect_min_size = target_size
+	$CenterContainer/LoadingPanel.rect_size = target_size
 
 
 	

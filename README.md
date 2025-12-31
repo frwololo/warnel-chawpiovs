@@ -14,6 +14,8 @@ A card game based on a well known cooperative board game, with full rules enforc
 ## Current Status (General)
 As of this writing, this simulator supports the Core Box with its 3 villains and 5 heroes. There is no tutorial included, and, although the rules are automatically handled by the engine, it will quickly become confusing if you are not already familar with the original game.
 
+Rules can be found [here](https://images-cdn.fantasyflightgames.com/filer_public/ab/be/abbef836-d5ef-4241-b2bd-1062df73f367/mvc01_learn_to_play_eng-compressed.pdf). (if broken link, go to [fantasy flight's official page](https://www.fantasyflightgames.com/en/products/marvel-champions-the-card-game/), scroll down to "support/rules" and select "Leanr to play"
+
 For all intents and purposes, Warnel Chawpiovs works for a single player using 1 or 2 heroes. Other game modes, in particular Multiplayer, are hit and miss. The Multiplayer layer in particular is a disgusting pile of race conditions and I'm not sure I have the skills to fix it for now.
 * Single Player Mode:
   * 1 Player, 1 Hero: Generally works well
@@ -166,7 +168,7 @@ Warnel Chawpiovs, by Wololo (https://wololo.net)
 
 Uses the Godot Engine (https://godotengine.org/)
 
-Godot Switch port (https://github.com/Homebrodo)  thanks in particular to fhidalgosola/utnad, Stary2001, cpasjuste, halotroop2288
+Godot Switch port (https://github.com/Homebrodot)  thanks in particular to fhidalgosola/utnad, Stary2001, cpasjuste, halotroop2288
 
 ### Disclaimer
 This is a fan-created work and is not affiliated with, endorsed by, or sponsored by Fantasy Flight Games. All characters, settings, and related elements are the property of their respective owners.

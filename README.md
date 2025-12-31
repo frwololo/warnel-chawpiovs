@@ -35,9 +35,9 @@ I don't distribute binaries for Linux or Mac at the moment because I don't have 
 
 
 ## Users: Installing the Game
-1. Download the binary and the pck file from the releases section, and copy them to any folder on your device (on the Switch, this should probably be in the "switch" folder of your SD card)
-2. (optional) get your hands on a pck or zip file containing the images (it should be named core.zip or core.pck) and put it either in the same folder as your binary, or in the game's user folder. **be aware that PCK files are depending on Godot's version, and some PCK files might be specific to a particular version or port of the game. E.g a PCK file that works fine on PC might not necessarily work on Sitch**
-   * If you skip this step, the game will automatically download images the first time it runs. This might take a while!
+1. Download the binary and the pck file from the [releases section](https://github.com/frwololo/warnel-chawpiovs/releases), and copy them to any folder on your device (on the Switch, this should probably be in the "switch" folder of your SD card)
+2. (optional) get your hands on a pck or zip file containing the images (it should be named core.zip or core.pck) and put it either in the same folder as your binary, or in the game's user folder. **be aware that PCK files are depending on Godot's version, and some PCK files might be specific to a particular version or port of the game. E.g a PCK file that works fine on PC might not necessarily work on Switch**
+   * If you skip this step, the game will automatically download images the first time it runs. This requires internet access enabled, and might take a while!
 3. That's it, you can run the game. (On Switch, you need to launch it from the homebrew menu - not in applet mode! -)
 
 ## Users: Running the game
@@ -46,6 +46,9 @@ When you run the game for the first time, Warnel Chawpiovs needs to download som
 Image downloads in particular might take some time, but this should only happen the first time you run the game.
 
 **Alternatively**, it is possible to have all the images packed either in a PCK or a ZIP file at the root of the user folder (PCK are the DLC file format for Godot) with the right structure. See below for folder structure.
+
+### How to play
+https://www.youtube.com/watch?v=AbOm5UHoGbE
 
 ### Hosting a Multiplayer game
 See the Current Status section above for disclaimers about the multiplayer mode.
@@ -60,7 +63,7 @@ Relevant files and subfolders of the user folder are:
 * *.pck and *.zip: all your dlc/mods can live as pck and/or files at the root of the user folder. For example a file named core.pck (or core.zip) can include all images for the core Set ![pck_example](doc/pictures/pck_format.png "pck_example")
 * Saves: where the savegames live.
 * Decks: Hero decks (those follow the format of marvelcdb.com)
-* Sets: where the Set definitions and images live. Note: These will override any images with the same name that can be found in the µ.pck and*.zip files mentioned above
+* Sets: where the Set definitions and images live. Note: These will override any images with the same name that can be found in the *.pck and*.zip files mentioned above
   * images: image subfolder for set. Each "box" is a subfolder with its own pictures, e.g. images/core/01001a.png
   * SetDefinition_*.json: definition of a given set, typically downloaded "as is" from marvelcdb.com. This describes the cards in a given set, but does not contain the scripting data for these cards (see the Modders section below) 
 

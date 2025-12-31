@@ -78,8 +78,12 @@ Relevant files and subfolders of the user folder are:
 
 ## Modders: Adding new cards to the Game
 The basics to adding new cards to the game is to choose a specific set from marvelcdb, create a scripts json file for it (in addition to downloading marvelcdb's own json), and modify the settings file to include this set. Specifically:
-* open settings.json from the user folder, and modify the "database" entry, by adding a new element to it. For example: *"trors" : "https://marvelcdb.com/api/public/cards/trors.json"* to add *the return of Red Skull* set.
-* Next you'll want to create a file *Sets/SetScripts_name.json* where you'll replace *name* with the actual entry key. In our example, *Sets/SetScripts_trors.json*. This should work in the User Sets folders, but has only been tested in the res folder so far
+1. open settings.json from the user folder, and modify the "database" entry, by adding a new element to it. For example: *"trors" : "https://marvelcdb.com/api/public/cards/trors.json"* to add *the return of Red Skull* set.
+2. To make the scenarios (if any) of the set available, you need to add entries in _scenarios.json for each of these scenarios. see the original [_scenarios.json](https://github.com/frwololo/warnel-chawpiovs/blob/master/Sets/_scenarios.json) file for examples on how it's done. The game engine will automatically merge your entries with the ones already existing in the game. After completing Steps 1 and 2 you should have enough data for the scenarios to show up and be selectable in the game (they won't do much yet, though)
+3. For heroes to show up they need two things:
+   1. at least one valid deck. "valid" means (among other things) a deck with only cards currently known by the game (this means all cards in the game so far + your newly added set). You can download their default decks from marvelcdb in the json format, from their public api. e.g starter deck for hawkeye: https://marvelcdb.com/api/public/decklist/3483.json . Copy those json files in the Decks folder of your user directory.
+   2. A scripted entry for either their alter ego form or their hero form, in the *Sets/SetScripts_name.json* file described below. (This is an additional requirement for the game to avoid showing heroes that are not coded yet)
+4. Next you'll want to create a file *Sets/SetScripts_name.json* where you'll replace *name* with the actual entry key. In our example, *Sets/SetScripts_trors.json*. This should work in the User Sets folders, but has only been tested in the res folder so far. At the very minimum, this file must contain and empty json dictionary "{}" or the game will fail to load it (and complain about it)
 * Now the actual work: you'll want to add an entry for each card in *Sets/SetScripts_trors.json*, that describes the behavior of each card for the engine.
   * inspiration for how to do this can be found in the [core set](Sets/SetScripts_core.json)
  

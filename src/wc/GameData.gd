@@ -119,6 +119,7 @@ func stop_game():
 
 func start_game():
 	cfc.LOG("game starting")
+	theGameObserver.setup(scenario)
 	_game_started = true
 
 func is_game_started():
@@ -820,7 +821,10 @@ func start_activity(enemy, action, script, target_id = 0):
 	display_debug("drawing boost cards")	
 	if (enemy.get_property("type_code") == "villain"): #Or villainous?
 		display_debug("villain confirmed, drawing boost cards")
-		enemy.draw_boost_cards(action)
+		if script and script.has_tag("no_boost"):
+			pass
+		else:
+			enemy.draw_boost_cards(action)
 	else:
 		 display_debug("not a villain, won't draw boost cards")
 	var script_name
@@ -1919,9 +1923,9 @@ func save_gamedata() -> Dictionary:
 		saved_item.merge(hero_deck_data_json)
 		
 		#Manapool
-		var hero_manapool: ManaPool = get_team_member(i+1)["manapool"]
-		var hero_manapool_json = hero_manapool.savestate_to_json()
-		saved_item.merge(hero_manapool_json)
+#		var hero_manapool: ManaPool = get_team_member(i+1)["manapool"]
+#		var hero_manapool_json = hero_manapool.savestate_to_json()
+#		saved_item.merge(hero_manapool_json)
 				
 		
 		
@@ -1933,18 +1937,20 @@ func save_gamedata() -> Dictionary:
 	json_data.merge(boardstate_json)
 	
 	#Save scenario data
-	json_data["scenario"] = {}
+	json_data["scenario"] = scenario.save_to_json()
 	
 	#other stuff
 	json_data["round"] = current_round
 	
 	#encounters state
-	json_data["encounters"] = {
-		"immediate_encounters": replace_cards_to_cardids(immediate_encounters)
-	}
-	if _current_encounter:
-		json_data["encounters"]["current_encounter"] = replace_cards_to_cardids(_current_encounter)
-	
+	#TODO this has caused significant issues in game
+	#for now it's better to avoid saving in the middle of an encounter...?
+#	json_data["encounters"] = {
+#		"immediate_encounters": replace_cards_to_cardids(immediate_encounters)
+#	}
+#	if _current_encounter:
+#		json_data["encounters"]["current_encounter"] = replace_cards_to_cardids(_current_encounter)
+#
 
 	return json_data
 
@@ -2002,33 +2008,35 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 	set_team_data(_team)
 	
 	#Manapools
-	for i in range(hero_data.size()):
-		var saved_item:Dictionary = hero_data[i]
-		var hero_manapool: ManaPool = get_team_member(i+1)["manapool"]
-		hero_manapool.loadstate_from_json(saved_item)
+#	for i in range(hero_data.size()):
+#		var saved_item:Dictionary = hero_data[i]
+#		var hero_manapool: ManaPool = get_team_member(i+1)["manapool"]
+#		hero_manapool.loadstate_from_json(saved_item)
+
+	#scenario
+	var scenario_data = json_data.get("scenario", {})
+	if scenario_data:
+		scenario.load_from_dict(scenario_data)
 
 	#Board State ()
 	cfc.NMAP.board.loadstate_from_json(json_data)
 
 	#encounters
-	var encounter_data = json_data.get("encounters", {})
-	if encounter_data:
-		var immediate = encounter_data.get("immediate_encounters", null)
-		if immediate:
-			immediate_encounters = replace_cardids_to_cards(immediate)
-		var current = encounter_data.get("current_encounter", "")
-		if current:
-			_current_encounter = replace_cardids_to_cards(current)
+#	var encounter_data = json_data.get("encounters", {})
+#	if encounter_data:
+#		var immediate = encounter_data.get("immediate_encounters", null)
+#		if immediate:
+#			immediate_encounters = replace_cardids_to_cards(immediate)
+#		var current = encounter_data.get("current_encounter", "")
+#		if current:
+#			_current_encounter = replace_cardids_to_cards(current)
 	
 	
 	#This reloads hero faces, etc...
 	#we don't start the phaseContainer just yet, we'll wait for other players to be ready
 	phaseContainer.reset(false) 
-
-
 	
-	#scenario
-	#TODO
+	
 	cfc.set_game_paused(previous_pause_state)
 	assign_starting_hero()		
 	cfc._rpc_id(self, caller_id,"remote_load_game_data_finished",CFConst.ReturnCode.OK)

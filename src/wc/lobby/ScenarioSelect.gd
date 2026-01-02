@@ -88,12 +88,16 @@ func gui_focus_changed(control):
 func grab_focus():
 	scenario_picture.grab_focus()
 
-func load_scenario(_scenario_id):
+func load_scenario(_scenario_id) -> bool:
 	scenario_id = _scenario_id
 	var villains = ScenarioDeckData.get_villains_from_scheme(scenario_id)
 	if (villains):
 		var villain = villains[0]
 		villain_id = villain["_code"]
+		return true
+	
+	cfc.LOG("no villain defined for scenario id:" + _scenario_id)
+	return false
 
 func _on_ScenarioSelect_gui_input(event):
 	if (not cfc.is_game_master()):

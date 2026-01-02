@@ -11,6 +11,14 @@ var script_definition:= {}
 func set_values(_parent_script, _script: Dictionary):
 	parent_script = _parent_script
 	script_definition = _script
+	canonical_name = "Game Observer Item"
+	
+	#initializing the owner_id to a value >=0 is required to pass security checks in execute_scripts
+	#TODO this is fishy, rather than parent_script, might want the targeted card to own this?
+	var owner_hero_id = 0
+	if parent_script:
+		owner_hero_id = WCScriptingEngine.get_hero_id_from_script(parent_script)
+	init_owner_hero_id(owner_hero_id )
 		
 func get_parent_script():
 	return parent_script

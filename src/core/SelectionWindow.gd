@@ -66,6 +66,11 @@ func init(
 		var function_suffix = what_to_count.substr(7)
 		_assign_max_function = "get_remaining_" + function_suffix		
 		what_to_count = "assign"
+	elif what_to_count.begins_with("remove_"):
+		_assign_mode = true
+		var function_suffix = what_to_count.substr(7)
+		_assign_max_function = "get_current_" + function_suffix		
+		what_to_count = "assign"		
 		
 func _ready() -> void:
 	# warning-ignore:return_value_discarded

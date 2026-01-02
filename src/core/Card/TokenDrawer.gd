@@ -142,6 +142,13 @@ func mod_token(
 			check := false,
 			tags := ["Manual"]) -> int:
 	var retcode : int
+	
+	#unallowed token names
+	if !token_name:
+		return CFConst.ReturnCode.FAILED
+	if token_name in ["_", "__"]:
+		return CFConst.ReturnCode.FAILED
+	
 	if CFConst.TOKENS_ONLY_ON_BOARD:
 		var parent = owner_card.get_parent()
 		if parent != cfc.NMAP.board:

@@ -114,11 +114,18 @@ func move_card_to_board(script: ScriptTask) -> int:
 	return result
 
 
-func shuffle_card_into_container(script:ScriptTask) -> int:
-	var result = move_card_to_container(script)
+func shuffle_container(script) -> int:
+	if (costs_dry_run()): 
+		return CFConst.ReturnCode.CHANGED
+		
 	var dest_container_str = script.get_property(SP.KEY_DEST_CONTAINER).to_lower()
 	var dest_container: CardContainer = cfc.NMAP[dest_container_str]
 	dest_container.shuffle_cards()
+	return CFConst.ReturnCode.CHANGED
+	
+func shuffle_card_into_container(script:ScriptTask) -> int:
+	var result = move_card_to_container(script)
+	shuffle_container(script)
 	
 	return result
 	
@@ -145,6 +152,13 @@ func move_card_to_container(script: ScriptTask) -> int:
 		{"from":"_previous_subject" , "to": previous_hero_id},
 		{"from":"_current_hero_target" , "to": enemy_target_hero_id},		
 	]
+
+	var more_replacements = script.get_property("zone_name_replacement", {})
+	for replacement in more_replacements:
+		var key = replacement
+		var value = script.retrieve_integer_subproperty(key, more_replacements, 0)
+		_replacements.append ({"from" : "_" + key, "to": value})
+
 
 	var replacements = {}
 
@@ -383,6 +397,8 @@ func return_attachments_to_owner(script: ScriptTask) -> int:
 		host.remove_attachment(card)
 		card.current_host_card = null
 		var card_owner = card.get_owner_hero_id()
+		if card_owner < 0:
+			card_owner = 1 #TODO hack to avoid crashes
 		var destination = destination_prefix
 		#TODO bit of a hack here
 		#unfortunately my code already added a suffix number priori to this, so I have to be sneaky :(
@@ -468,6 +484,9 @@ func receive_damage(script: ScriptTask) -> int:
 						1,false,costs_dry_run(), tags)
 				if ("exhaust_if_damage" in tags):
 					card.exhaustme()
+				if ("run_post_damage_script" in tags):
+					script.owner.execute_scripts(script.owner, "post_damage_script", {})
+						
 				if ("1_threat_on_main_scheme_if_damage" in tags):
 					var main_scheme = gameData.get_main_scheme()
 					var task = ScriptTask.new(script.owner, {"name": "add_threat", "amount": 1}, card, {})
@@ -1061,21 +1080,8 @@ func remove_threat(script: ScriptTask) -> int:
 		retcode = card.remove_threat(modification, script)
 	
 		if "side_scheme" == card.properties.get("type_code", "false"):
-			if card.get_current_threat() == 0:
-				#card.die(script)
-	
-				var card_dies_definition = {
-					"name": "card_dies",
-					"tags": ["remove_threat", "Scripted"] + script.get_property(SP.KEY_TAGS)
-				}
-				var trigger_details = script.trigger_details.duplicate(true)
-				trigger_details["source"] = guidMaster.get_guid(script.owner)
-
-				var card_dies_script:ScriptTask = ScriptTask.new(card, card_dies_definition, script.trigger_object, trigger_details)
-				card_dies_script.subjects = [card]
-
-				var task_event = SimplifiedStackScript.new( card_dies_script)
-				gameData.theStack.add_script(task_event)		
+			card.check_scheme_defeat(script)
+		
 
 	return retcode	
 	
@@ -1098,7 +1104,8 @@ func thwart(script: ScriptTask) -> int:
 	if !type in ["hero", "ally"]:
 		owner = _get_identity_from_script(script)
 
-
+	var tags = script.get_property(SP.KEY_TAGS, [])
+	
 	var confused = owner.tokens.get_token_count("confused")
 	if (confused):
 		owner.tokens.mod_token("confused", -1)
@@ -1107,25 +1114,21 @@ func thwart(script: ScriptTask) -> int:
 		for card in script.subjects:
 			retcode = card.remove_threat(modification)
 			if "side_scheme" == card.properties.get("type_code", "false"):
-				if card.get_current_threat() == 0:
-					#card.die(script)
-		
-					var card_dies_definition = {
-						"name": "card_dies",
-						"tags": ["remove_threat", "Scripted"] + script.get_property(SP.KEY_TAGS)
-					}
-					var trigger_details = script.trigger_details.duplicate(true)
-					trigger_details["source"] = guidMaster.get_guid(script.owner)
+				card.check_scheme_defeat(script)
 
-					var card_dies_script:ScriptTask = ScriptTask.new(card, card_dies_definition, script.trigger_object, trigger_details)
-					card_dies_script.subjects = [card]
-
-					var task_event = SimplifiedStackScript.new(card_dies_script)
-					gameData.theStack.add_script(task_event)
 		consequential_damage(script)
+		if ("basic power" in tags):
+			var signal_details = {
+				"source": owner,
+				"amount": modification,
+			}
+			gameData.theStack.add_script(SignalStackScript.new("basic_thwart_happened",  owner,  signal_details))				
+#				scripting_bus.emit_signal("basic_attack_happened", script.owner, signal_details)
+		
 		scripting_bus.emit_signal("thwarted", owner, {"amount" : modification, "target" : script.subjects[0]})
 	
 	return retcode	
+
 
 # Task for executing nested tasks
 # This task will execute internal non-cost cripts accordin to its own
@@ -1579,9 +1582,9 @@ func _pre_task_prime(script: ScriptTask, prev_subjects:= []) -> void:
 	if script.prev_subjects:
 		prev_subjects = script.prev_subjects
 	
-	script.script_definition = static_pre_task_prime(script.script_definition, script.owner, prev_subjects)
+	script.script_definition = static_pre_task_prime(script.script_definition, script.owner, script, prev_subjects)
 	
-static func static_pre_task_prime(script_definition, owner, prev_subjects:= []):
+static func static_pre_task_prime(script_definition, owner, script = null, prev_subjects:= []):
 	var previous_hero = prev_subjects[0] if prev_subjects else null	
 	var previous_hero_id = 0
 	if previous_hero:
@@ -1601,6 +1604,13 @@ static func static_pre_task_prime(script_definition, owner, prev_subjects:= []):
 		{"from":"_previous_subject" , "to": previous_hero_id},
 		{"from":"_current_hero_target" , "to": current_hero_target},		
 	]
+
+	if script:
+		var more_replacements = script.get_property("zone_name_replacement", {})
+		for replacement in more_replacements:
+			var key = replacement
+			var value = script.retrieve_integer_subproperty(key, more_replacements, 0)
+			_replacements.append ({"from" : "_" + key, "to": value})
 
 
 	for zone in ["hand"] + CFConst.HERO_GRID_SETUP.keys() + CFConst.ALL_TYPE_GROUPS:

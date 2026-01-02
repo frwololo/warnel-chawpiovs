@@ -994,12 +994,12 @@ func find_last_event_before_me(requester:ScriptTask):
 		
 	return stack[max_id]	
 
-func find_event(_event_details, details, owner_card, _trigger_details):
+func find_event(_event_details, filters, owner_card, _trigger_details):
 	for event in stack:
 		var task = event.get_script_by_event_details(_event_details)			
 		if (!task):
 			continue			
-		if event.matches_filters(task, details, owner_card, _trigger_details):
+		if cfc.ov_utils.matches_filters( filters, owner_card, _trigger_details):
 			return event
 	return null			
 
@@ -1076,6 +1076,7 @@ func display_debug_info():
 		 display_text += "run mode: " + RunModeStr[run_mode] + "\n"
 	if interrupt_mode != InterruptMode.NONE:
 		display_text += "interrupt_mode" + InterruptModeStr[interrupt_mode] + "\n" 
+		display_text += "interrupt_hero" + str(interrupting_hero_id) + "\n" 
 
 	for event in stack:
 		display_text += str(event.stack_uid) + " - " + event.get_display_name() + "\n"

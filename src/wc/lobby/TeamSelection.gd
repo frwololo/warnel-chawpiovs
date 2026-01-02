@@ -173,7 +173,9 @@ func _load_scenarios():
 	for scenario_id in cfc.scenarios:
 
 		var new_scenario = scenarioSelect.instance()
-		new_scenario.load_scenario(scenario_id)
+		var load_success = new_scenario.load_scenario(scenario_id)
+		if !load_success:
+			continue
 		new_scenario.name = "scenario_" + scenario_id
 		all_scenarios_container.add_child(new_scenario)
 

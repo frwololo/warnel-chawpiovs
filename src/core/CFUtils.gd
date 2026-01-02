@@ -109,6 +109,8 @@ static func list_files_in_directory(path: String, prepend_needed := "", full_pat
 	if cfc._cached_filesystem.has(path):
 		var to_merge = cfc._cached_filesystem[path]
 		for file in to_merge:
+			if full_path:
+				file = path + file	
 			if !(file in files):
 				if file == "":
 					break
@@ -117,10 +119,7 @@ static func list_files_in_directory(path: String, prepend_needed := "", full_pat
 						and not file.ends_with(".remap")\
 						and not file.ends_with(".import")\
 						and not file.ends_with(".md"):				
-						if full_path:
-							files.append(path + file)
-						else:
-							files.append(file)
+						files.append(file)
 	return(files)
 
 

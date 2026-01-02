@@ -76,7 +76,7 @@ func _check_input_device():
 	else:
 		set_input_mode(INPUT_MODE.MOUSE)
 		
-func _on_joy_connection_changed(device: int, _connected: bool):
+func _on_joy_connection_changed(_device: int, _connected: bool):
 	# Recheck input device when joypad connection changes
 	_check_input_device()	
 

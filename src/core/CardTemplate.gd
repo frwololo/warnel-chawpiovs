@@ -2206,9 +2206,9 @@ func _organize_attachments() -> void:
 				card._set_target_position(global_position + \
 						Vector2(
 						(attach_index + 1) * card_size.x
-						* CFConst.ATTACHMENT_OFFSET[attachment_offset].x,
+						* CFConst.ATTACHMENT_OFFSET[attachment_offset].x * cfc.screen_scale.x,
 						(attach_index + 1) * card_size.y \
-						* CFConst.ATTACHMENT_OFFSET[attachment_offset].y))
+						* CFConst.ATTACHMENT_OFFSET[attachment_offset].y * cfc.screen_scale.y))
 
 # Returns the global mouse position but ensures it does not exit the
 # viewport limits when including the card rect

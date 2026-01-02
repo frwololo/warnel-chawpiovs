@@ -1,8 +1,10 @@
 {
-	"01097":{
+	"01097": {
 		"code": "01097",
 		"name": "The Break-In!",
-		"modular_default": ["bomb_scare"],
+		"modular_default": [
+			"bomb_scare"
+		],
 		"encounter_sets": [
 			"Rhino",
 			"Standard",
@@ -25,10 +27,12 @@
 			]
 		}
 	},
-	"01116":{
+	"01116": {
 		"code": "01116",
 		"name": "Underground Distribution",
-		"modular_default": ["masters_of_evil"],
+		"modular_default": [
+			"masters_of_evil"
+		],
 		"encounter_sets": [
 			"Klaw",
 			"Standard",
@@ -51,10 +55,12 @@
 			]
 		}
 	},
-	"01137":{
+	"01137": {
 		"code": "01137",
 		"name": "The Crimson Cowl",
-		"modular_default": ["under_attack"],
+		"modular_default": [
+			"under_attack"
+		],
 		"encounter_sets": [
 			"Ultron",
 			"Standard",
@@ -76,5 +82,185 @@
 				"Ultron - 3"
 			]
 		}
-	},	
+	},
+	"04061": {
+		"code": "04061",
+		"name": "Attack on Mount Athena",
+		"extra_decks": [
+			{
+				"name": "deck_experimental_weapons",
+				"encounter_sets": [
+					"exper_weapon"
+				]
+			}
+		],
+		"modular_default": [
+			"hydra_patrol",
+			"weapon_master",
+			"legions_of_hydra"
+		],
+		"encounter_sets": [
+			"Crossbones",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Crossbones - 1",
+			"Crossbones - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"Crossbones",
+				"Standard",
+				"Modular",
+				"expert"
+			],
+			"villains": [
+				"Crossbones - 2",
+				"Crossbones - 3"
+			]
+		}
+	},
+	"04079": {
+		"code": "04079",
+		"name": "None Shall Pass",
+		"modular_default": [
+			"hydra_patrol"
+		],
+		"encounter_sets": [
+			"Absorbing_Man",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Absorbing Man - 1",
+			"Absorbing Man - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"Absorbing_Man",
+				"Standard",
+				"Modular",
+				"expert"
+			],
+			"villains": [
+				"Absorbing Man - 2",
+				"Absorbing Man - 3"
+			]
+		}
+	},
+	"04096": {
+		"code": "04096",
+		"name": "Hunting Down Heroes",
+		"modular_default": [
+			"weapon_master"
+		],
+		"encounter_sets": [
+			"Taskmaster",
+			"hydra_patrol",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Taskmaster - 1",
+			"Taskmaster - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"Taskmaster",
+				"hydra_patrol",
+				"Standard",
+				"Modular",
+				"expert"
+			],
+			"villains": [
+				"Taskmaster - 2",
+				"Taskmaster - 3"
+			]
+		}
+	},
+	"04112": {
+		"code": "04112",
+		"name": "The Island of Dr. Zola",
+		"modular_default": [
+			"under_attack"
+		],
+		"encounter_sets": [
+			"Zola",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Zola - 1",
+			"Zola - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"Zola",
+				"Standard",
+				"Modular",
+				"expert"
+			],
+			"villains": [
+				"Zola - 2",
+				"Zola - 3"
+			]
+		}
+	},
+	"04128": {
+		"code": "04128",
+		"name": "The Rise of Red Skull",
+		"extra_decks": [
+			{
+				"name": "discard_side_schemes",
+				"faceup": true,
+			},			
+			{
+				"name": "deck_side_schemes"
+			},			
+		],
+		"extra_rules": {
+			"card_defeated": {
+				"filter_state_trigger": [
+					{
+						"filter_properties": {
+							"type_code": "side_scheme"
+						}
+					}
+				],
+				"all": [
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_side_schemes",
+						"subject": "trigger"
+					}
+				]
+			}
+		},
+		"modular_default": [
+			"hydra_assault",
+			"hydra_patrol"
+		],
+		"encounter_sets": [
+			"Red_Skull",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Red Skull - 1",
+			"Red Skull - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"Red_Skull",
+				"Standard",
+				"Modular",
+				"expert"
+			],
+			"villains": [
+				"Red Skull - 2",
+				"Red Skull - 3"
+			]
+		}
+	}
 }

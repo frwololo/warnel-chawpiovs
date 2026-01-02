@@ -36,7 +36,7 @@
 			],
 			"allies1": [
 				{
-					"card": "Hawkeye",
+					"card": "Hawkeye - Clint Barton",
 					"tokens": {"arrow" : 4}
 				}
 			],
@@ -104,7 +104,7 @@
 			],
 			"allies1": [
 				{
-					"card": "Hawkeye",
+					"card": "Hawkeye - Clint Barton",
 					"tokens": {"arrow" : 3}
 				}
 			],			

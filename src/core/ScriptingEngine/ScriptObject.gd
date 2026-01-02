@@ -615,6 +615,10 @@ static func get_int_value (value, retrieved_integer):
 		return value
 	return int(value)
 
+func has_tag(tag) -> bool:
+	var tags = get_property("tags", [])
+	return tag in tags
+
 # Sorts the subjects list
 # according to the directives in the following three keys
 # * [KEY_SORT_BY](ScriptProperties#KEY_SORT_BY)
@@ -638,6 +642,15 @@ func sort_subjects(subject_list: Array) -> Array:
 		# or a property name, so I name the variable accordingly.
 		var thing : String = get_property(SP.KEY_SORT_NAME)
 		var sorting_list := []
+		if sort_by == "function":
+			for c in subject_list:
+				# We create a list of dictionaries
+				# because we cannot tell the sort_custom()
+				# method what to search for
+				sorting_list.append({
+					"card": c,
+					"value": c.call(thing)
+				})		
 		if sort_by == "property":
 			for c in subject_list:
 				# We create a list of dictionaries

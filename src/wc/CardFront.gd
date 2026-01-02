@@ -62,6 +62,7 @@ func set_card_art(filename) -> void:
 			remove_child($Margin)
 			text_enabled = false
 	else:
+		art_filename = "-"
 		setup_text_mode()
 		card_owner.refresh_card_front()
 

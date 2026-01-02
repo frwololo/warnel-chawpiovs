@@ -58,6 +58,10 @@ func replace_ability(new_ability_name:String):
 func prevent_value(property, amount_prevented):
 	pass		
 
+func replace_script_property(key, value):
+	for task in get_tasks():
+		task.script_definition[key] = value
+	
 
 
 #modification scripts such as partial prevent and replacement effects
@@ -82,46 +86,8 @@ func modify(script):
 					"additional_tags":
 						add_tags(value)
 					_:
-						#not implemented
-						pass
+						replace_script_property(property, value)
 
-#TODO this function shouldn't be here? doesn't use any of its data
-func matches_filters(task, _filters:Dictionary, owner_card, _trigger_details):
-	var filters = _filters #.duplicate(true)
-	var controller_hero_id = owner_card.get_controller_hero_id()
-	
-	
-	var replacements = {
-		"villain": gameData.get_villain(),
-		"self": owner_card
-	}	
-	if (controller_hero_id > 0):
-		replacements["my_hero"] = gameData.get_identity_card(controller_hero_id)
-
-	filters = WCUtils.search_and_replace_multi(filters, replacements, true)
-
-	var trigger_details = guidMaster.replace_guids_to_objects(_trigger_details)
-
-	
-	if filters.has("filter_state_event_source"):
-		var script = trigger_details.get("event_object")
-		if !script:
-			return false
-		var owner = script.owner
-		if !owner:
-			return false		
-		var is_valid = SP.check_validity(owner, filters, "event_source")
-		if !is_valid:
-			return false
-		filters.erase("filter_state_event_source")
-
-
-	if (filters):
-		var _tmp = 0	
-	#var script_details = task.script_definition
-	var result = WCUtils.is_element1_in_element2(filters, trigger_details, ["tags"])
-
-	return result
 
 func get_owner_card():
 	var first_task = get_first_task()

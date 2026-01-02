@@ -42,6 +42,8 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 				results.append(hero_card)							
 		SP.KEY_SUBJECT_V_VILLAIN:
 			results.append(gameData.get_villain())
+		SP.KEY_SUBJECT_V_MAIN_SCHEME:
+			results.append(gameData.get_main_scheme())			
 		SP.KEY_SUBJECT_V_GRAB_UNTIL:
 			results = _grab_until_find(script, run_type)
 		SP.KEY_SUBJECT_CURRENT_ACTIVATION_ENEMY:
@@ -120,7 +122,11 @@ static func func_name_run(object, func_name, func_params, script = null):
 	
 	if typeof(result) in [TYPE_INT, TYPE_BOOL] and reverse_result:
 		result = !result
-	
+
+	var prefix = func_params.get("prefix", "")
+	var suffix = func_params.get("suffix", "")
+	if typeof(result) in [TYPE_STRING] and prefix or suffix:
+		result = prefix + result + suffix	
 		
 	return result
 	
@@ -224,6 +230,9 @@ func filter_trigger(
 
 	#if this is not an interrupt, I let it through
 	if (trigger != "interrupt"):
+		var trigger_filters = card_scripts.get("event_filters", {})
+		if trigger_filters:
+			return matches_filters(trigger_filters, owner_card, _trigger_details)
 		return true
 	
 	#If this *is* an interrupt but I don't have an answer, I'll fail it
@@ -237,22 +246,67 @@ func filter_trigger(
 	if event_name == "receive_damage":
 		var _tmp = 1
 	
-	var expected_trigger_name = card_scripts.get("event_name", "")
-	
-	#skip if we're expecting an interrupt but not this one
-	if expected_trigger_name and (expected_trigger_name != event_name):
-		return false;
-	
 	var expected_trigger_type = card_scripts.get("event_type", "")
 	if expected_trigger_type and (expected_trigger_type != _trigger_details.get("trigger_type", "")):
-		return false;
+		return false;	
 	
-	var event_details = {
-		"event_name":  expected_trigger_name,
-		"event_type": expected_trigger_type
-	}	
+	var expected_trigger_names = card_scripts.get("event_name", "")
+	if typeof(expected_trigger_names) == TYPE_STRING:
+		expected_trigger_names = [expected_trigger_names]
+	for expected_trigger_name in expected_trigger_names:
+	#skip if we're expecting an interrupt but not this one
+		if expected_trigger_name and (expected_trigger_name != event_name):
+			continue;
 		
-	var trigger_filters = card_scripts.get("event_filters", {})
-	var event = (gameData.theStack.find_event(event_details, trigger_filters, owner_card, _trigger_details))
 
-	return event #note: force conversion from stack event to bool
+		
+		var event_details = {
+			"event_name":  expected_trigger_name,
+			"event_type": expected_trigger_type
+		}	
+			
+		var trigger_filters = card_scripts.get("event_filters", {})
+		var event = (gameData.theStack.find_event(event_details, trigger_filters, owner_card, _trigger_details))
+
+		if event:
+			return event #note: force conversion from stack event to bool
+	return false
+
+
+
+func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
+	var filters = _filters #.duplicate(true)
+	var controller_hero_id = owner_card.get_controller_hero_id()
+	
+	
+	var replacements = {
+		"villain": gameData.get_villain(),
+		"self": owner_card
+	}	
+	if (controller_hero_id > 0):
+		replacements["my_hero"] = gameData.get_identity_card(controller_hero_id)
+
+	filters = WCUtils.search_and_replace_multi(filters, replacements, true)
+
+	var trigger_details = guidMaster.replace_guids_to_objects(_trigger_details)
+
+	
+	if filters.has("filter_state_event_source"):
+		var script = trigger_details.get("event_object")
+		if !script:
+			return false
+		var owner = script.owner
+		if !owner:
+			return false		
+		var is_valid = SP.check_validity(owner, filters, "event_source")
+		if !is_valid:
+			return false
+		filters.erase("filter_state_event_source")
+
+
+	if (filters):
+		var _tmp = 0	
+	#var script_details = task.script_definition
+	var result = WCUtils.is_element1_in_element2(filters, trigger_details, ["tags"])
+
+	return result

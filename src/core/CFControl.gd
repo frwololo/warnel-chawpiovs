@@ -319,12 +319,18 @@ func load_script_definitions() -> void:
 	emit_signal("scripts_loaded")
 	scripts_loading = false
 
-func pile_or_grid(object_name):
+func pile_or_grid(object_name, grid_def = null):
+	if !grid_def:
+		if gameData.scenario and gameData.scenario.grid_setup:
+			grid_def = gameData.scenario.grid_setup
+		else:
+			grid_def = CFConst.GRID_SETUP
+		
 	if CFConst.HERO_GRID_SETUP.has(object_name):
 		var type = CFConst.HERO_GRID_SETUP[object_name].get("type", "grid")
 		return type 
-	if CFConst.GRID_SETUP.has(object_name):
-		var type = CFConst.GRID_SETUP[object_name].get("type", "grid")
+	if grid_def.has(object_name):
+		var type = grid_def[object_name].get("type", "grid")
 		return type 		
 	if object_name.begins_with("hand"):
 		return "pile"

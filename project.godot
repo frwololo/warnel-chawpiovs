@@ -603,6 +603,10 @@ window/stretch/aspect="keep"
 
 enabled=PoolStringArray( "gut" )
 
+[global]
+
+export=false
+
 [input]
 
 ui_accept={
@@ -684,4 +688,5 @@ ui_focus_character={
 
 [rendering]
 
+quality/driver/fallback_to_gles2=true
 environment/default_environment="res://default_env.tres"

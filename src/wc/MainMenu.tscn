@@ -24,10 +24,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 
 [node name="VBox" type="VBoxContainer" parent="CenterContainer"]
-margin_left = 607.0
-margin_top = 152.0
-margin_right = 1312.0
-margin_bottom = 927.0
+margin_left = 287.0
+margin_right = 992.0
+margin_bottom = 775.0
 custom_constants/separation = 10
 alignment = 1
 
@@ -118,10 +117,10 @@ valign = 2
 [node name="LoadingPanel" type="CenterContainer" parent="CenterContainer"]
 unique_name_in_owner = true
 visible = false
-margin_left = 871.0
-margin_top = 512.0
-margin_right = 1049.0
-margin_bottom = 567.0
+margin_left = 551.0
+margin_top = 360.0
+margin_right = 729.0
+margin_bottom = 415.0
 
 [node name="ColorRect" type="ColorRect" parent="CenterContainer/LoadingPanel"]
 margin_left = 89.0

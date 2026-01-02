@@ -20,6 +20,7 @@ const KEY_SUBJECT_V_MY_ALTER_EGO := "my_alter_ego"
 const KEY_SUBJECT_V_MY_IDENTITY := "my_identity"
 const KEY_SUBJECT_V_A_IDENTITY := "identity_"
 const KEY_SUBJECT_V_VILLAIN := "villain"
+const KEY_SUBJECT_V_MAIN_SCHEME := "main_scheme"
 const KEY_SUBJECT_V_GRAB_UNTIL := "grab_until"
 const KEY_SUBJECT_CURRENT_ACTIVATION_ENEMY:= "current_activation_enemy"
 
@@ -92,6 +93,7 @@ static func filter_trigger(
 	if is_valid and card_scripts.get(FILTER_EVENT_SOURCE) \
 			and !check_filter_event_source(trigger_card,owner_card,trigger_details, card_scripts.get(FILTER_EVENT_SOURCE)):
 		return false	
+		
 
 	return true
 

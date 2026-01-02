@@ -62,6 +62,20 @@ func get_all_cards():
 		if obj as Card: cardsArray.append(obj)	
 	return(cardsArray)	
 
+func load_deck(encounter_deck_data, target_deck = "deck_villain"):
+	var card_array = []
+	for card_data in encounter_deck_data:
+		var quantity = card_data.get("quantity", 1)
+		#cards.append(ckey)
+		for _i in range (quantity):
+			var ckey = card_data["_code"]
+			card_array.append(cfc.instance_card(ckey, 0))
+
+	for card in card_array:
+		cfc.NMAP[target_deck].add_child(card)
+		#card.set_is_faceup(false,true)
+		card._determine_idle_state()	
+
 func load_scenario():
 	# DONE in ScenarioDeckData.gd
 	# select the villain
@@ -74,20 +88,12 @@ func load_scenario():
 		# suggested modular
 	
 	#Create Draw Pile from encounter deck
-	var card_array = []
-	var encounter_deck_data = scenario_data.encounter_deck
-	for card_data in encounter_deck_data:
-		var quantity = card_data.get("quantity", 1)
-		#cards.append(ckey)
-		for _i in range (quantity):
-			var ckey = card_data["_code"]
-			card_array.append(cfc.instance_card(ckey, 0))
+	load_deck(scenario_data.encounter_deck)
 
-	for card in card_array:
-		cfc.NMAP["deck_villain"].add_child(card)
-		#card.set_is_faceup(false,true)
-		card._determine_idle_state()
-	
+	var extra_decks = scenario_data.get_extra_decks()
+	for extra_deck in extra_decks:
+		load_deck(extra_deck["deck_contents"], extra_deck["name"])
+		shuffle_deck( extra_deck["name"])
 	
 	var villain_data = scenario_data.villains[0]
 	var ckey = villain_data["_code"] 
@@ -146,8 +152,8 @@ func load_scheme(card_id, call_preloaded = {}):
 	pass
 
 
-func shuffle_deck() -> void:
-	var pile = cfc.NMAP["deck_villain"]
+func shuffle_deck(target_deck = "deck_villain") -> void:
+	var pile = cfc.NMAP[target_deck]
 	while pile.are_cards_still_animating():
 		yield(pile.get_tree().create_timer(0.2), "timeout")
 	pile.shuffle_cards()

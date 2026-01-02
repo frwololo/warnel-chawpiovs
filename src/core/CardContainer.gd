@@ -72,7 +72,7 @@ func _process(_delta: float) -> void:
 	else:
 		$Debug.visible = false
 
-	#cache refrehs all frames
+	#cache refresh all frames
 	_are_cards_still_animating = []
 
 # Called when the node enters the scene tree for the first time.
@@ -461,3 +461,7 @@ func remove_child(node) -> void:
 	_card_count -=1
 	if !_card_count:
 		scripting_bus.emit_signal("card_container_emptied", {"container" : self})
+
+func set_process(enable:bool):
+	_are_cards_still_animating = []	
+	.set_process(enable)

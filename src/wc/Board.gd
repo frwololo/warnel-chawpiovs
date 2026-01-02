@@ -17,7 +17,6 @@ var board_organizers: Array = []
 # heroZones is 1 indexed (index is hero_id)
 var heroZones: Dictionary = {}
 
-const GRID_SETUP = CFConst.GRID_SETUP
 const HERO_GRID_SETUP = CFConst.HERO_GRID_SETUP
 
 enum LOADING_STEPS {
@@ -219,6 +218,7 @@ func get_hero_grid_start_coordinates():
 	
 func grid_setup():
 	_team_size = 0 #reset team size to fetch it from gameData	
+	var GRID_SETUP = gameData.scenario.grid_setup
 	for grid_name in GRID_SETUP.keys():
 		var grid_info = GRID_SETUP[grid_name]
 		if "pile" == grid_info.get("type", ""):
@@ -480,6 +480,7 @@ func get_all_cards(include_piles = false) -> Array:
 		
 	#get everything in other piles
 	#villain piles
+	var GRID_SETUP = gameData.scenario.grid_setup	
 	for grid_name in GRID_SETUP.keys():
 		var grid_info = GRID_SETUP[grid_name]
 		if "pile" == grid_info.get("type", ""):
@@ -539,6 +540,7 @@ func delete_all_cards():
 		hand.delete_all_cards()
 		
 	#delete everything in other piles
+	var GRID_SETUP = gameData.scenario.grid_setup	
 	for grid_name in GRID_SETUP.keys():
 		var grid_info = GRID_SETUP[grid_name]
 		if "pile" == grid_info.get("type", ""):
@@ -810,6 +812,7 @@ func are_cards_still_animating(check_everything:bool = true) -> bool:
 		
 	#check other piles
 	#Villain piles
+	var GRID_SETUP = gameData.scenario.grid_setup	
 	for grid_name in GRID_SETUP.keys():
 		var grid_info = GRID_SETUP[grid_name]
 		if "pile" == grid_info.get("type", ""):
@@ -887,6 +890,7 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 func savestate_to_json() -> Dictionary:	
 	var json_data:Dictionary = {}
 	var seen_cards:= {}
+	var GRID_SETUP = gameData.scenario.grid_setup	
 	for grid_name in GRID_SETUP.keys():
 		var grid_info = GRID_SETUP[grid_name]
 		if "pile" == grid_info.get("type", ""):
@@ -936,6 +940,7 @@ func loadstate_from_json(json:Dictionary):
 	reset_board()
 	
 	#Load all grids with matching data
+	var GRID_SETUP = gameData.scenario.grid_setup	
 	for grid_name in GRID_SETUP.keys():
 		var grid_info = GRID_SETUP[grid_name]
 		var card_data = json_data.get(grid_name, [])
@@ -1091,6 +1096,7 @@ func get_all_pile_data():
 func get_all_pile_data_no_cache():	
 	var pile_info = {}
 	
+	var GRID_SETUP = gameData.scenario.grid_setup	
 	for grid_name in GRID_SETUP.keys():
 		var grid_info = GRID_SETUP[grid_name]
 		if "pile" == grid_info.get("type", ""):

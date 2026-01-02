@@ -830,8 +830,8 @@ func attach_to_card(script: ScriptTask) -> int:
 		return CFConst.ReturnCode.CHANGED
 	# We inject the tags from the script into the tags sent by the signal
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
-	for card in script.subjects:
-		script.owner.attach_to_host(card, false, tags)
+
+	script.owner.attach_to_host(script.subjects[0], false, tags)
 
 	return CFConst.ReturnCode.CHANGED
 
@@ -843,8 +843,14 @@ func host_card(script: ScriptTask) -> void:
 	#var card: Card = script.subjects[0]
 	# We inject the tags from the script into the tags sent by the signal
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
+	
+	var host = script.owner
+	var host_str = script.get_property("host", "")
+	if host_str:
+		host = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : host_str})
+	
 	for card in script.subjects:
-		card.attach_to_host(script.owner, false, tags)
+		card.attach_to_host(host, false, tags)
 
 
 # Task for modifying a card's properties

@@ -99,7 +99,9 @@ func load_nemesis_aside(hero_card_data):
 	var hero_set = hero_card_data["card_set_code"]
 	var nemesis_set = hero_set + "_nemesis"
 	
-	var nemesis_cards_data = cfc.cards_by_set[nemesis_set]
+	var nemesis_cards_data = cfc.cards_by_set.get(nemesis_set, [])
+	if !nemesis_cards_data:
+		cfc.LOG("nemesis data missing for "  + hero_set)
 	for card_data in nemesis_cards_data:
 		var quantity = card_data.get("quantity", 1)
 		for _i in range (quantity):

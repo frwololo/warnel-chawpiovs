@@ -102,7 +102,6 @@ func display_debug(msg:String, prefix = "phase"):
 	text_edit.cursor_set_line(last_line)
 	text_edit.center_viewport_to_cursor()	
 
-#TODO Actual names needed here
 #WARNING: These are just strings, the actual enum is in CFConst
 const StepStrings = [
 	"GAME_NOT_STARTED",
@@ -488,13 +487,16 @@ func set_current_step_complete(value:bool, caller = ""):
 			caller = "unknown"
 	display_debug("marking current_step_complete as " + str(value) + " per request of " + caller )
 	current_step_complete = value
+
+func step_signal(signal_name):
+	scripting_bus.emit_signal(signal_name,  {"step" : current_step, "step_name":StepStrings[current_step] })
 	
 remotesync func proceed_to_next_phase():
 	_pending_next_phase_reply = false
 	set_current_step_complete(false, "proceed_to_next_phase")
 	display_debug("master tells me to move to next phase, I'm currently at " + StepStrings[current_step] )	
-	scripting_bus.emit_signal("step_about_to_end",  {"step" : current_step})
-	scripting_bus.emit_signal("step_ended",  {"step" : current_step})
+	step_signal("step_about_to_end")
+	step_signal("step_ended")
 	if (current_step == CFConst.PHASE_STEP.SYSTEMS_CHECK):
 		current_step = CFConst.PHASE_STEP.PLAYER_TURN
 	elif ((current_step == CFConst.PHASE_STEP.VILLAIN_ACTIVATES) and gameData.villain_next_target(true, "proceed_to_next_phase")):
@@ -506,8 +508,8 @@ remotesync func proceed_to_next_phase():
 	start_current_step()
 
 func start_current_step():		
-	scripting_bus.emit_signal("step_about_to_start",  {"step" : current_step})
-	scripting_bus.emit_signal("step_started",  {"step" : current_step})	
+	step_signal("step_about_to_start")
+	step_signal("step_started")	
 	update_text()
 	
 

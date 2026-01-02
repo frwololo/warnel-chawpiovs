@@ -20,6 +20,10 @@ func reset():
 	_objects = []
 	_remove_all_children()
 
+func setup(scenario:ScenarioDeckData):
+	var extra_rules = scenario.scenario_data.get("extra_rules", {})
+	if extra_rules:
+		add_script(null, extra_rules)
 
 #cleans up everything during reset phase (new game, etc...)
 func _remove_all_children():

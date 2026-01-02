@@ -11,6 +11,17 @@
 			]
 		}
 	},
+	"incite": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": "__amount__",
+					"subject": "main_scheme",
+				}
+			]
+		}
+	},	
 	"once_per_round": {
 		"round_ended": {
 			"board": [
@@ -36,6 +47,26 @@
 			]
 		}
 	},
+	"on_reveal_one_threat_per_hero": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": "per_boardseek",
+					"subject": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						]
+					}
+				}
+			]
+		}
+	},	
 	"quickstrike": {
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -46,6 +77,17 @@
 				}
 			]
 		}
+	},
+	"_surge": {
+		"card_moved_to_pile": {
+			"trigger": "self",
+			"filter_destination": "encounters_reveal",
+			"pile": [
+				{
+					"name": "surge"
+				}
+			]
+		},
 	},
 	"todo": {
 		"manual": {

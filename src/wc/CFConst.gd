@@ -286,7 +286,7 @@ const Z_INDEX_HAND_CARDS_NORMAL :=200
 const TYPES_TO_GROUPS := {
 	"main_scheme" : ["group_schemes"],
 	"player_scheme" : ["group_schemes"],
-	"side_scheme" : ["group_schemes"],
+	"side_scheme" : ["group_schemes", "group_side_schemes"],
 	"minion" : ["group_enemies", "group_characters"],
 	"villain" : ["group_enemies", "group_villains", "group_characters"],
 	"hero" : ["group_identities", "group_characters", "group_friendly", "group_allies_and_heroes"],
@@ -341,17 +341,17 @@ const TYPECODE_TO_GRID := {
 }
 
 const GRID_SETUP := {
-	"deck_villain" :{
+	"discard_villain" :{
 		"x" : 0,
 		"y" : 20,
 		"type" : "pile",
+		"faceup" : true,
 		"scale" : 0.5			
-	},
-	"discard_villain" :{
+	},	
+	"deck_villain" :{
 		"x" : 150,
 		"y" : 20,
 		"type" : "pile",
-		"faceup" : true,
 		"scale" : 0.5			
 	},		
 	"villain" : {
@@ -541,7 +541,7 @@ const AUTO_KEYWORDS := {
 	"villainous" : "bool",	
 	
 #additional ones not officially in the game
-
+	"cannot_leave_play": "int",
 	"invincible": "int",
 					
 }
@@ -606,6 +606,7 @@ const HIDE_PILE_DETAILS:= true
 const FACEUP_PILE_VIEW_ON_CLICK := true
 #set to true to fetch card datasets online and download images
 const LOAD_CARDS_ONLINE := true
+const ATTEMPT_TO_GUESS_IMAGE_URL := true
 
 
 const DEFAULT_SETTINGS:= {
@@ -613,7 +614,8 @@ const DEFAULT_SETTINGS:= {
 	'images_base_url': "https://marvelcdb.com",
 	"decks_base_url": "https://marvelcdb.com/api/public/decklist/",
 	'database': {
-		"core": "https://marvelcdb.com/api/public/cards/core.json"
+		"core": "https://marvelcdb.com/api/public/cards/core.json",
+#		"trors" : "https://marvelcdb.com/api/public/cards/trors.json"
 	},
 	'lobby_server': {
 		'server': 'https://wololo.net/',
@@ -664,8 +666,8 @@ const DEBUG_SIMULATE_NETWORK_DELAY = 1.5
 const DEBUG_NETWORK_DELAY_RANDOM = false
 const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 
-const SCRIPT_BREAKPOINT_CARD_NAME := "Whirlwind"
-const SCRIPT_BREAKPOINT_TRIGGER_NAME := "enemy_attack"
+const SCRIPT_BREAKPOINT_CARD_NAME := "Game Observer Item"
+const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_defeated"
 
 const LARGE_SCREEN_WIDTH:= 1600
 

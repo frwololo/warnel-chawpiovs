@@ -14,6 +14,7 @@ var shortname_to_name : Dictionary
 var idx_hero_to_deck_ids : Dictionary
 var box_contents_by_name: Dictionary
 var all_traits: Dictionary = {}
+var duplicates: Dictionary = {}
 
 var obligations : Dictionary
 var schemes: Dictionary 
@@ -64,7 +65,7 @@ func scale_grids():
 				else:
 					match key:
 						"scale":
-							grid_info[key] = screen_scale.x 
+							grid_info[key] = screen_scale.x 					
 	scale_grid_layout_recursive(CFConst.HERO_GRID_LAYOUT)
 
 func scale_grid_layout_recursive(config):
@@ -249,10 +250,7 @@ func delete_log_files():
 func init_settings_from_file() -> void:
 	.init_settings_from_file()
 	#Settings default values
-	for key in CFConst.DEFAULT_SETTINGS:
-		var value = CFConst.DEFAULT_SETTINGS[key]
-		if not game_settings.has(key):
-			game_settings[key] = value
+	game_settings = WCUtils.merge_dict(CFConst.DEFAULT_SETTINGS, game_settings,  true)
 	save_settings() #will generate settings file on disc if not exist yet
 
 func get_card_name_by_id(id):
@@ -480,7 +478,7 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	var lc_set_name = set_name.to_lower()	
 
 	
-	#name alone isn't enough as a unique identifier, so we're adding
+	#name alone isn't enough as a unique identifier (for the "unique" rule), so we're adding
 	#subname
 	card_data["shortname"] = card_data["Name"]
 	if (card_data.get("subname", "")):
@@ -499,8 +497,7 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	if !box_contents_by_name.has(box_name):
 		box_contents_by_name[box_name] = {}
 	#the same card name can happen multiple times in a single box with a different ID, 
-	#(maybe with different art but not necessarily), for example "Wakanda Forever"
-	#not sure why but this is why the card data here is an array and not a single element
+	#for example "Wakanda Forever"
 	if !box_contents_by_name[box_name].has(card_data["Name"]):
 		box_contents_by_name[box_name][card_data["Name"]] = []
 	box_contents_by_name[box_name][card_data["Name"]].append(card_data)	
@@ -542,21 +539,8 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 
 	card_data[CardConfig.SCENE_PROPERTY] = "CardTemplate"	
 
-	if card_data.get("imagesrc", ""):
-		_seen_images[card_id] = card_data["imagesrc"]
-	
-
-func _fix_missing_images():
-	for card_key in card_definitions:
-		var card_data = card_definitions[card_key]
-		#skip if we have an image
-		if card_data.get("imagesrc", ""):
-			continue			
-		
-		#we probably erased our image definition with a reprint	
-		if _seen_images.has(card_data["_code"]):
-			var repair = _seen_images[card_data["_code"]]
-			card_data["imagesrc"] = repair
+	if card_data.get("duplicate_of_code", ""):
+		duplicates[card_id] = card_data["duplicate_of_code"]
 
 			
 # Returns a Dictionary with the combined Card definitions of all set files
@@ -597,7 +581,7 @@ func load_card_definitions() -> Dictionary:
 			
 			var linked_card_data = card_data.get("linked_card", {})
 			if (linked_card_data):
-				_load_one_card_definition(linked_card_data)
+				_load_one_card_definition(linked_card_data, box_name)
 				linked_card_data["back_card_code"] = card_data["_code"]
 				card_data["back_card_code"] = linked_card_data["_code"]
 				combined_sets[linked_card_data["_code"]] = linked_card_data
@@ -618,7 +602,6 @@ func load_card_definitions() -> Dictionary:
 	card_definitions = combined_sets
 	
 	#post load cleanup and config
-	_fix_missing_images()
 	setup_traits_as_alterants()
 	
 	#done!
@@ -682,7 +665,9 @@ func get_hero_obligation(hero_id:String):
 	var hero_name = hero_data["Name"]
 	var obligation = obligations[hero_name.to_lower()]
 	return obligation
-		
+
+#returns all schemes belonging to the same collection as scheme_id,
+#sorted in expected appearance order		
 func get_schemes(scheme_id):	
 	#todo error handling
 	var scheme = get_card_by_id(scheme_id)
@@ -692,7 +677,9 @@ func get_schemes(scheme_id):
 	return my_schemes
 
 func get_encounter_cards(set_name:String):
-	var encounters = cards_by_set[set_name.to_lower()]
+	var encounters = cards_by_set.get(set_name.to_lower(), [])
+	if !encounters:
+		cfc.LOG("encounters missing for set name " + set_name.to_lower() )
 	return encounters
 
 #check if a given deck is valid (we must own all cards)
@@ -780,7 +767,9 @@ func load_script_definitions() -> void:
 	for script_file in script_definition_files:
 		var prefix_end = script_file.find(CFConst.SCRIPT_SET_NAME_PREPEND) + CFConst.SCRIPT_SET_NAME_PREPEND.length()
 		var extension_idx = script_file.find(".")
-		var box_name = script_file.substr(prefix_end, extension_idx-prefix_end)		
+		var box_name = script_file.substr(prefix_end, extension_idx-prefix_end)	
+		if !box_contents_by_name.has(box_name):
+			continue
 		var json_card_data : Dictionary
 		json_card_data = WCUtils.read_json_file(script_file)
 		#delete comments from dictionary
@@ -810,7 +799,14 @@ func load_script_definitions() -> void:
 					if not combined_scripts.get(card_id):  #this ensures the first data that was read gets precedence
 						var script_data = json_card_data[card_name]
 						combined_scripts[card_id]	= script_data	
-					
+		
+	#once everything is loaded, fill the script of cards that are duplicates
+	#we only fill with duplicate data if we don't already have info on this card
+	for card_id in duplicates:
+		var duplicate_of = duplicates[card_id]
+		if not combined_scripts.get(card_id):
+			var duplicate_data = combined_scripts.get(duplicate_of, {})	
+			combined_scripts[card_id] = duplicate_data		
 
 	for card_id in card_definitions.keys():
 		var card_script = script_overrides.get_scripts(combined_scripts, card_id)
@@ -883,8 +879,6 @@ func get_next_scene_params() -> Dictionary:
 var _img_filename_cache:= {}
 # These functions live here for lack of a better place. Todo create classes?
 func get_img_filename(card_id) -> String:
-
-
 	if (not card_id):
 		print_debug("CFCExtended: no id passed to get_img_filename")
 		return ""
@@ -892,7 +886,7 @@ func get_img_filename(card_id) -> String:
 	if (not card):
 		print_debug("CFCExtended: couldn't find card matching id" + card_id)
 		return ""	
-
+		
 	var card_code = card["_code"]
 	var card_set = card["_set"]
 	if !(card_code and card_set):
@@ -1031,9 +1025,17 @@ func get_image_dl_url(card_id):
 	if !base_url:
 		fail_img_download(card_id)
 		return ""
+	if !card_data:
+		if CFConst.ATTEMPT_TO_GUESS_IMAGE_URL:
+			var url = base_url + "/bundles/cards/" + str(card_id) + ".png"
+			return url
 	if !card_data.has("imagesrc"):
-		fail_img_download(card_id)
-		return ""
+			var duplicate_of = card_data.get("duplicate_of_code", "")
+			if duplicate_of:
+				return get_image_dl_url(duplicate_of)
+			else:
+				fail_img_download(card_id)
+				return ""
 	var url = base_url + card_data["imagesrc"]
 	return url
 
@@ -1108,7 +1110,7 @@ func INIT_LOG():
 	file.close() 	
 	
 func LOG(to_print:String):
-	if !cfc._debug:
+	if !cfc._debug and !CFConst.FORCE_LOGS:
 		return
 	_log_buffer+= Time.get_datetime_string_from_system() + " - " + to_print + "\n"	
 	if _log_buffer.length() < 2000:

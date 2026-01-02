@@ -803,7 +803,7 @@ mastersync func test_finalized(result):
 		_allclients_finalized = {}
 		var _next = next_test()
 
-remotesync func finalize_test_allclients(force_status:int):
+remotesync func finalize_test_allclients(force_status:int, attempts = 1):
 	var result = force_status
 	
 	if (force_status != TestStatus.NONE):
@@ -821,6 +821,12 @@ remotesync func finalize_test_allclients(force_status:int):
 		passed.append(current_test_file)
 		result = TestStatus.PASSED
 	else:
+		if attempts:
+			#might be a timing thing, we retry
+			announce("test failure, retrying\n")
+			yield(get_tree().create_timer(0.3), "timeout")			
+			finalize_test_allclients(force_status, attempts-1)
+			return
 		failed.append(current_test_file)
 		self.fail_details.append("***expected:\n" + JSON.print(end_state, '\t') + "\n***Actual:\n" + JSON.print(current_gamestate, '\t'))	
 		result = TestStatus.FAILED

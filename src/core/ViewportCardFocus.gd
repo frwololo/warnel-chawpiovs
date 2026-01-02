@@ -75,17 +75,20 @@ func reposition_vbc():
 			$VBC.visible = false
 			return
 		var multiplier =  card.focused_scale * cfc.curr_scale		
-		var card_size = card.canonical_size * multiplier
+		display_size = card.canonical_size * multiplier
+		var board_card_size = card.card_size * card.scale
+		var board_top_left_corner = card._control.get_global_position()
 		if (card._horizontal and card.get_is_faceup()):
 			$VBC.rect_rotation = 90
-			vbc_rect_offset = Vector2 (card_size.y, 0)
-			display_size = Vector2(card_size.y, card_size.x)
+			vbc_rect_offset = Vector2 ( display_size.y, 0)
+			display_size = Vector2( display_size.y,  display_size.x)
+			board_card_size = Vector2(board_card_size.y, board_card_size.x)
+			board_top_left_corner.x = board_top_left_corner.x - board_card_size.x 
 		else:
 			$VBC.rect_rotation = 0
 			vbc_rect_offset = Vector2 (0,0)
-			display_size = Vector2(card_size.x, card_size.y)
 		
-		#if announcer has anannounce onthe right of the screen e.g. stackeventdisplay)
+		#if announcer has an announce on the right of the screen e.g. stackeventdisplay)
 		#we don't want to cover it	
 		if gameData.theAnnouncer.is_right_side_announce_ongoing():	
 			display_position = Vector2( spacer, spacer)
@@ -97,13 +100,25 @@ func reposition_vbc():
 			display_position = Vector2(viewport_size.x - display_size.x - spacer,  spacer)
 		
 		#last resort if I end up overlapping my own card
-		var expected_position = display_position + vbc_rect_offset
-		var vbc_bounding:Rect2 = Rect2(expected_position, card_size)
-		var source_bounding = Rect2(_current_focus_source.get_global_position().x, 0,_current_focus_source.card_size.x, get_viewport().size.y)
+
+		var vbc_bounding:Rect2 = Rect2(display_position, display_size)
+		var source_bounding:Rect2 = Rect2(board_top_left_corner,board_card_size)
 		if vbc_bounding.intersects( source_bounding):
-			display_position.x = _current_focus_source.get_global_position().x + _current_focus_source.card_size.x -  vbc_rect_offset.x
+			display_position.x = board_top_left_corner.x + board_card_size.x + spacer
 		
-		
+		#For testing: create two ColorRect nodes as children of Main.tscn
+		#named  ColorRect and ColorRect2
+#		var color_rect = get_node("%ColorRect")
+#		color_rect.rect_min_size = source_bounding.size	
+#		color_rect.rect_size = color_rect.rect_min_size
+#		color_rect.rect_position = source_bounding.position
+#		color_rect.visible = true
+#
+#		var color_rect2 = get_node("%ColorRect2")
+#		color_rect2.rect_min_size = vbc_bounding.size	
+#		color_rect2.rect_size = color_rect2.rect_min_size
+#		color_rect2.rect_position = vbc_bounding.position
+#		color_rect2.visible = true
 
 	$VBC.rect_position = display_position + vbc_rect_offset
 

@@ -1,0 +1,5051 @@
+{
+	"Abandoned Facility": {
+		"_surge": {},
+		"TODO": {},
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Absorbing Man - 1": {
+		"TODO": {}
+	},
+	"Absorbing Man - 2": {
+		"TODO": {},
+		"reveal": {
+			"all": [
+				{
+					"TODO": {}
+				}
+			]
+		}
+	},
+	"Absorbing Man - 3": {
+		"TODO": {}
+	},
+	"Adrenal Stims": {
+		"TODO": {}
+	},
+	"Anti-Hero Propaganda": {
+		"TODO": {}
+	},
+	"Attack on Mount Athena": {
+		"reveal": {
+			"all": [
+				{
+					"name": "reveal_encounters",
+					"subject": "index",
+					"subject_count": 1,
+					"src_container": "deck_experimental_weapons"
+				}
+			]
+		}
+	},
+	"Avalanche!": {
+		"TODO": {
+			"_comments": "delay counters"
+		},
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Pay Resource": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"energy": 1
+						},
+						"is_cost": true
+					}
+				],
+				"Take Damage": [
+					{
+						"name": "receive_damage",
+						"amount": 2,
+						"subject": "my_identity"
+					}
+				]
+			}
+		}
+	},
+	"Avengers Tower": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "ally_limit",
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"alteration": 1
+				}
+			],
+			"_comments": "TODO needs to account for allies type"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"token_name": "_avengers_tower"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "_avengers_tower",
+						"is_inverted": true
+					},
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_avenger": 1
+							},
+							"filter_properties2": {
+								"type_code": "ally"
+							}
+						}
+					]
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "another",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"trait_avenger": 1
+					},
+					"filter_properties2": {
+						"type_code": "ally"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "_avengers_tower"
+				}
+			]
+		},
+		"phase_ended": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "_avengers_tower"
+				}
+			]
+		}
+	},
+	"Ball and Chain": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"dest_container": "deck_villain",
+					"subject": "self"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "reveal_encounters",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Basic Attack Upgrade": {
+		"TODO": {}
+	},
+	"Basic Defense Upgrade": {
+		"TODO": {}
+	},
+	"Basic Recovery Upgrade": {
+		"TODO": {}
+	},
+	"Basic Thwart Upgrade": {
+		"TODO": {}
+	},
+	"Berserk Mutate": {
+		"quickstrike": {},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "test",
+					"subject": "main_scheme"
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "phase_ended",
+					"subject": "villain",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Zola"
+											}
+										}
+									],
+									"alteration": {
+										"func_name": "count_tokens",
+										"func_params": {
+											"token_name": "test",
+											"subject": "main_scheme"
+										}
+									}
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Zola"
+											}
+										}
+									],
+									"alteration": {
+										"func_name": "count_tokens",
+										"func_params": {
+											"token_name": "test",
+											"subject": "main_scheme"
+										}
+									}
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Bitter Rival": {
+		"reveal": {
+			"all": [
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": "per_boardseek",
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_characters_my_hero"
+						}
+					],
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_side_schemes"
+							}
+						]
+					}
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_characters_my_hero"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Black Knight - Dane Whitman": {
+		"interrupt": {
+			"event_name": "deal_damage",
+			"event_filters": {
+				"source": "self",
+				"tags": [
+					"attack",
+					"basic power"
+				]
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
+				}
+			]
+		}
+	},
+	"Cable Arrow": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Hawkeye's Bow"
+							}
+						}
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 3,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					],
+					"tags": [
+						"bypass_crisis"
+					]
+				}
+			]
+		}
+	},
+	"Captain Marvel - Carol Danvers": {
+		"response": {
+			"event_name": [
+				"basic_attack_happened",
+				"basic_thwart_happened"
+			],
+			"event_filters": {
+				"source": "self"
+			},
+			"board": [
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Captured by Hydra": {
+		"reveal": {
+			"all": [
+				{
+					"name": "host_card",
+					"tags": [
+						"facedown"
+					],
+					"src_container": "set_aside",
+					"needs_subject": true,
+					"subject": "tutor",
+					"sort_by": "random",
+					"subject_count": 1,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"comparison": "gt",
+								"trait_captive": 0
+							},
+							"filter_properties2": {
+								"type_code": "ally"
+							}
+						}
+					]
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "card_dies",
+			"board": [
+				{
+					"name": "return_attachments_to_owner",
+					"dest_container": "hand",
+					"tags": [
+						"facedown"
+					]
+				}
+			],
+			"trigger": "self"
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "set_aside",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Censor the Past": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": {
+				"_rules": {
+					"for_each_player": true
+				},
+				"Uncensor": [
+					{
+						"name": "shuffle_card_into_container",
+						"src_container": "discard",
+						"dest_container": "deck",
+						"subject": "tutor",
+						"subject_count": "all",
+						"selection_count": 3,
+						"selection_type": "max",
+						"needs_selection": true
+					}
+				]
+			}
+		}
+	},
+	"Clear the Area": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "remove_threat",
+					"amount": 2,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				},
+				{
+					"name": "draw_cards",
+					"amount": {
+						"if": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"token_name": [
+									"threat"
+								],
+								"subject": "previous"
+							}
+						},
+						"then": 0,
+						"else": 1
+					}
+				}
+			]
+		}
+	},
+	"Clint Barton": {
+		"once_per_round": {
+			"__name__": "_weapon_of_choice"
+		},
+		"manual": {
+			"board": {
+				"Weapon of Choice": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "self",
+						"modification": -1,
+						"token_name": "_weapon_of_choice",
+						"is_cost": true
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 1
+						},
+						"is_cost": true
+					},
+					{
+						"name": "move_card_to_container",
+						"subject": "tutor",
+						"src_container": [
+							"deck",
+							"discard"
+						],
+						"dest_container": "hand",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"Name": "Hawkeye's Bow"
+								}
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Combat Knife": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "deal_damage",
+			"event_filters": {
+				"source": "host",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 1,
+						"mental": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Concussion Grenade": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": {
+						"if": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"token_name": [
+									"confused"
+								],
+								"subject": "my_hero"
+							}
+						},
+						"then": 2,
+						"else": 1
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "confused",
+					"subject": "my_hero"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"subject": "my_hero",
+					"amount": {
+						"if": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"token_name": [
+									"stunned"
+								],
+								"subject": "my_hero"
+							}
+						},
+						"then": 2,
+						"else": 1
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "stunned",
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Contaminant Immunity": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "heal",
+					"amount": 3,
+					"subject": "my_hero"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Cornered Staff": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"src_container": "hand",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "random",
+					"for_each_player": true
+				},
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "all_previous"
+						}
+					},
+					"subject": "main_scheme"
+				}
+			]
+		}
+	},
+	"Criminal Past": {
+		"give_obligation": {
+			"__to__": "Clint Barton"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Flip then Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity",
+						"_comments": "we need to exhaust before changing form here due to a bug"
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Flip then Discard Bow": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard",
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Hawkeye's Bow'"
+								}
+							}
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				],
+				"Discard Bow": [
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard",
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Hawkeye's Bow'"
+								}
+							}
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Crossbones - 1": {
+		"TODO": {}
+	},
+	"Crossbones - 2": {
+		"TODO": {},
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Crossbones' Machine Gun"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Crossbones - 3": {
+		"TODO": {}
+	},
+	"Crossbones' Armor": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "modify_properties",
+					"tags": [
+						"Init"
+					],
+					"subject": "self",
+					"set_properties": {
+						"health": 5
+					}
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "villain"
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"subject": "self"
+					}
+				}
+			]
+		}
+	},
+	"Crossbones' Assault": {
+		"interrupt": {
+			"event_name": "card_dies",
+			"board": [
+				{
+					"name": "villain_attacks_you"
+				}
+			],
+			"trigger": "self"
+		}
+	},
+	"Crossbones' Machine Gun": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": "per_boardseek",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						],
+						"multiplier": 2
+					},
+					"token_name": "ammo"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "enemy_attack_damage",
+			"trigger": "host",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"is_cost": true,
+					"token_name": "ammo"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain"
+				},
+				{
+					"name": "deal_damage",
+					"subject": "my_hero",
+					"amount": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					}
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_count": 0,
+			"filter_token_name": "ammo",
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard"
+				}
+			]
+		}
+	},
+	"Crossfire": {
+		"quickstrike": {},
+		"interrupt": {
+			"event_name": "deal_damage",
+			"event_filters": {
+				"source": "self",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
+				}
+			]
+		}
+	},
+	"Crossfire's Rifle": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Crossfire"
+							}
+						}
+					]
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "villain",
+					"is_else": true
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "deal_damage",
+			"event_filters": {
+				"source": "host",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"ranged"
+						]
+					}
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"wild": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Defensive Programming": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "get_remaining_damage",
+					"sort_descending": true,
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_max_per_host": 1
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard_villain",
+					"is_else": true
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "host",
+					"alteration": 2
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "guard",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Dense Forest": {
+		"_surge": {},
+		"TODO": {},
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Earth's Mightiest Heroes": {
+		"manual": {
+			"hand": [
+				{
+					"name": "exhaust_card",
+					"subject": "target",
+					"is_cost": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_characters_my_hero"
+						},
+						{
+							"filter_properties": {
+								"trait_avenger": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_characters_my_hero"
+						},
+						{
+							"filter_properties": {
+								"trait_avenger": 1
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Electric Arrow": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Hawkeye's Bow"
+							}
+						}
+					]
+				},
+				{
+					"name": "nop",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "attack",
+					"is_cost": true,
+					"subject": "previous",
+					"amount": {
+						"if": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"token_name": [
+									"stunned"
+								],
+								"subject": "previous"
+							}
+						},
+						"then": 5,
+						"else": 3
+					},
+					"tags": [
+						"arrow"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "stunned",
+					"needs_subject": true,
+					"subject": "previous"
+				}
+			]
+		}
+	},
+	"Elektra": {
+		"response": {
+			"event_name": "card_played",
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"subject": "target",
+					"amount": 3,
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Emergency Teleporter": {
+		"TODO": {}
+	},
+	"Energy Shield": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1,
+						"energy": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Expert Marksman": {
+		"resource": {
+			"board": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_arrow": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Explosive Arrow": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Hawkeye's Bow"
+							}
+						}
+					]
+				},
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"needs_subject": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 3,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies_previous_subject"
+						}
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 3,
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Exo-Suit": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1,
+						"physical": 1,
+						"energy": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Finesse": {
+		"resource": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_resource"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": {
+						"if": {
+							"func_name": "get_aspect_name",
+							"func_params": {
+								"subject": "trigger"
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Full Auto": {
+		"reveal": {
+			"all": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_index": "top",
+					"subject_count": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"property": "attack",
+							"subject": "villain"
+						}
+					},
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain"
+				},
+				{
+					"name": "deal_damage",
+					"subject": "my_hero",
+					"amount": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					}
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				}
+			]
+		}
+	},
+	"Goliath - Bill Foster": {
+		"once_per_round": {
+			"__name__": "__attack_boost"
+		},
+		"manual": {
+			"board": {
+				"+4 ATK": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"subject": "self",
+						"token_name": "__attack_boost",
+						"is_cost": true
+					},
+					{
+						"name": "add_script",
+						"end_condition": "phase_ended",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"trigger": "self",
+										"alteration": 4
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "add_script",
+						"end_condition": "round_ended",
+						"subject": "self",
+						"script": {
+							"round_ended": {
+								"board": [
+									{
+										"name": "move_card_to_container",
+										"subject": "self",
+										"dest_container": "discard"
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		}
+	},
+	"Hail Hydra!": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Hydra Attack": [
+					{
+						"name": "enemy_attacks_engaged_hero",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"trait_hydra": 1
+								},
+								"filter_properties2": {
+									"type_code": "minion"
+								}
+							}
+						]
+					},
+					{
+						"is_else": true,
+						"name": "move_card_to_board",
+						"subject": "tutor",
+						"src_container": [
+							"deck_villain",
+							"discard_villain"
+						],
+						"subject_count": "all",
+						"selection_count": 1,
+						"selection_type": "equal",
+						"needs_selection": true,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"trait_hydra": 1
+								},
+								"filter_properties2": {
+									"type_code": "minion"
+								}
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Hard as Nails": {
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"is_cost": true,
+					"subject": "villain"
+				},
+				{
+					"is_else": true,
+					"name": "heal",
+					"amount": 3,
+					"is_cost": true,
+					"subject": "villain"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"is_cost": true,
+					"subject": "villain"
+				},
+				{
+					"is_else": true,
+					"name": "heal",
+					"amount": 3,
+					"is_cost": true,
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Hawkeye": {
+		"manual": {
+			"board": {
+				"Quick Draw": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "ready_card",
+						"subject": "boardseek",
+						"subject_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Hawkeye's Bow"
+								}
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Hawkeye - Kate Bishop": {
+		"manual": {
+			"board": {
+				"X Damage": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"src_container": "hand",
+						"dest_container": "discard",
+						"subject": "index",
+						"subject_count": "all",
+						"selection_count": 1,
+						"selection_type": "equal",
+						"needs_selection": true,
+						"is_cost": true
+					},
+					{
+						"name": "deal_damage",
+						"subject": "target",
+						"amount": {
+							"func_name": "count_printed_resources",
+							"func_params": {
+								"subject": "previous"
+							}
+						},
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_enemies"
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Hawkeye's Bow": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "deal_damage",
+			"event_filters": {
+				"source": "my_hero",
+				"tags": [
+					"attack",
+					"arrow"
+				]
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"ranged"
+						]
+					}
+				}
+			]
+		}
+	},
+	"Hawkeye's Quiver": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "nop",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 5,
+					"src_container": "deck"
+				},
+				{
+					"name": "host_card",
+					"subject": "previous",
+					"subject_count": 1,
+					"filter_each_previous_subject": "true",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"comparison": "gt",
+								"trait_arrow": 0
+							},
+							"filter_properties2": {
+								"code_type": "event"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_script",
+					"subject": "previous",
+					"script": {
+						"manual": {
+							"board": [
+								{
+									"name": "pay_regular_cost",
+									"is_cost": true,
+									"cost": "card_cost"
+								},
+								{
+									"name": "move_card_to_board",
+									"subject": "self"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Hunted by Hydra": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "main_scheme"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"src_container": "hand",
+					"subject": "index",
+					"subject_index": "random",
+					"subject_count": {
+						"if": {
+							"func_name": "is_hero_form",
+							"func_params": {
+								"subject": "my_hero"
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"for_each_player": true
+				},
+				{
+					"name": "receive_damage",
+					"subject": "my_hero",
+					"amount": {
+						"if": {
+							"func_name": "is_hero_form",
+							"func_params": {
+								"subject": "my_hero"
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"for_each_player": true
+				}
+			]
+		}
+	},
+	"Hydra Bomber": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Take 2 damage": [
+					{
+						"name": "receive_damage",
+						"subject": "my_identity",
+						"amount": 2
+					}
+				],
+				"1 Threat on Main Scheme": [
+					{
+						"name": "add_threat",
+						"amount": 1,
+						"subject": "main_scheme"
+					}
+				]
+			}
+		}
+	},
+	"Hydra Exo-Soldier": {
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "villain"
+				},
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Hydra Flame-Soldier": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"src_container": "upgrade_support",
+					"is_cost": true,
+					"subject": "index",
+					"subject_count": "all",
+					"selection_count": {
+						"if": {
+							"func_name": "current_activation_status",
+							"func_params": {
+								"undefended": true
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"selection_type": "equal",
+					"needs_selection": true
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"src_container": "upgrade_support",
+					"is_cost": true,
+					"subject": "index",
+					"subject_count": "all",
+					"selection_count": {
+						"if": {
+							"func_name": "current_activation_status",
+							"func_params": {
+								"undefended": true
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"selection_type": "equal",
+					"needs_selection": true
+				}
+			]
+		}
+	},
+	"Hydra Hunter": {
+		"interrupt": {
+			"event_name": "deal_damage",
+			"event_filters": {
+				"source": "self",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"piercing",
+							"ranged"
+						]
+					}
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "receive_damage",
+					"amount": 1,
+					"subject": "my_hero"
+				},
+				{
+					"is_else": true,
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "main_scheme"
+				}
+			]
+		}
+	},
+	"Hydra Jet-Trooper": {
+		"quickstrike": {},
+		"boost": {
+			"all": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "villain_attacks_you",
+					"tags": [
+						"no_boost"
+					]
+				}
+			]
+		}
+	},
+	"Hydra Patrol": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Patrol": [
+					{
+						"name": "move_card_to_board",
+						"subject": "tutor",
+						"src_container": [
+							"deck_villain",
+							"discard_villain"
+						],
+						"subject_count": "all",
+						"selection_count": 1,
+						"selection_type": "equal",
+						"needs_selection": true,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"trait_hydra": 1
+								},
+								"filter_properties2": {
+									"type_code": "minion"
+								}
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Hydra Prison": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Capture": [
+					{
+						"name": "host_card",
+						"tags": [
+							"facedown"
+						],
+						"src_container": [
+							"hand",
+							"deck",
+							"discard"
+						],
+						"subject": "tutor",
+						"subject_count": 1,
+						"selection_count": "all",
+						"needs_selection": true,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "ally"
+								}
+							}
+						]
+					},
+					{
+						"name": "add_threat",
+						"subject": "self",
+						"amount": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "previous",
+								"property": "Cost"
+							}
+						}
+					}
+				]
+			}
+		},
+		"interrupt": {
+			"event_name": "card_dies",
+			"board": [
+				{
+					"name": "return_attachments_to_owner",
+					"dest_container": "hand",
+					"tags": [
+						"facedown"
+					]
+				}
+			],
+			"trigger": "self"
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "set_aside",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Hydra Regular": {
+		"incite": {
+			"__amount__": 1
+		}
+	},
+	"Hydra Reinforcements": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"trait_elite": 0
+							},
+							"filter_group": "group_enemies_my_hero"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Hydra Sidearm": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "deal_damage",
+			"event_filters": {
+				"source": "host",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"ranged"
+						]
+					}
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 1,
+						"mental": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Hydra Soldier": {
+		"interrupt": {
+			"event_name": "card_dies",
+			"board": [
+				{
+					"name": "deal_encounter",
+					"subject": "my_hero"
+				}
+			],
+			"trigger": "self"
+		}
+	},
+	"Hunting Down Heroes": {
+		"TODO": {}
+	},
+	"Icy Grip": {
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "stunned",
+					"subject": "my_hero"
+				},
+				{
+					"name": "receive_damage",
+					"subject": "my_hero",
+					"amount": {
+						"if": {
+							"func_name": "has_trait",
+							"func_params": {
+								"subject": "villain",
+								"trait": "ice"
+							}
+						},
+						"then": 2,
+						"else": 0
+					}
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": {
+						"if": {
+							"func_name": "has_trait",
+							"func_params": {
+								"subject": "villain",
+								"trait": "ice"
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"token_name": "tough",
+					"subject": "villain"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": {
+						"if": {
+							"func_name": "has_trait",
+							"func_params": {
+								"subject": "villain",
+								"trait": "metal"
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"token_name": "tough",
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Improved Attack Upgrade": {
+		"TODO": {}
+	},
+	"Improved Defense Upgrade": {
+		"TODO": {}
+	},
+	"Improved Recovery Upgrade": {
+		"TODO": {}
+	},
+	"Improved Thwart Upgrade": {
+		"TODO": {}
+	},
+	"Inconspicuous": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 3,
+					"selection_type": "as_much_as_possible",
+					"selection_what_to_count": "remove_threat",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Infinite Power": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "villain"
+				},
+				{
+					"name": "enemy_schemes",
+					"subject": "villain"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "villain"
+				},
+				{
+					"name": "villain_attacks_you"
+				}
+			]
+		}
+	},
+	"Jessica Drew": {
+		"once_per_round": {
+			"__name__": "_peek"
+		},
+		"manual": {
+			"board": {
+				"Peek": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"subject": "self",
+						"token_name": "_peek",
+						"is_cost": true
+					},
+					{
+						"name": "nop",
+						"subject": "tutor",
+						"subject_index": "top",
+						"subject_count": 1,
+						"src_container": "deck"
+					}
+				]
+			}
+		}
+	},
+	"Laser Cannon": {
+		"TODO": {}
+	},
+	"Laser Rifle": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "deal_damage",
+			"event_filters": {
+				"source": "host",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"ranged"
+						]
+					}
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 1,
+						"energy": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Marked for Death": {
+		"reveal": {
+			"all": [
+				{
+					"name": "host_card",
+					"tags": [
+						"facedown"
+					],
+					"subject": "tutor",
+					"src_container": [
+						"deck_hero_id",
+						"discard_hero_id",
+						"hand_hero_id"
+					],
+					"zone_name_replacement": {
+						"hero_id": {
+							"func_name": "get_hero_id",
+							"func_params": {
+								"name": "Clint Barton"
+							}
+						}
+					},
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Mockingbird"
+							}
+						}
+					]
+				},
+				{
+					"name": "host_card",
+					"tags": [
+						"facedown"
+					],
+					"zone_name_replacement": {
+						"hero_id": {
+							"func_name": "get_hero_id",
+							"func_params": {
+								"name": "Clint Barton"
+							}
+						}
+					},
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Mockingbird"
+							},
+							"filter_group": "group_allies_hero_id"
+						}
+					]
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "card_dies",
+			"board": [
+				{
+					"name": "return_attachments_to_owner",
+					"dest_container": "hand",
+					"tags": [
+						"facedown"
+					]
+				}
+			],
+			"trigger": "self"
+		}
+	},
+	"Martial Law": {
+		"TODO": {}
+	},
+	"Mass Chaos": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Chaos": [
+					{
+						"name": "move_card_to_container",
+						"subject": "tutor",
+						"subject_index": "top",
+						"subject_count": 5,
+						"src_container": "deck",
+						"dest_container": "discard"
+					},
+					{
+						"name": "add_threat",
+						"amount": {
+							"func_name": "count_resource_types",
+							"func_params": {
+								"subject": "previous"
+							}
+						},
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Master Strategist": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": [
+				"commit_scheme",
+				"enemy_attack"
+			],
+			"trigger": "host",
+			"board": [
+				{
+					"name": "draw_boost_card",
+					"subject": "host",
+					"amount": "per_boardseek",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "side_scheme"
+								}
+							}
+						]
+					}
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Medical Emergency": {
+		"TODO": {}
+	},
+	"Mimicry": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_index": "top",
+					"up_to": true,
+					"subject_count": 5,
+					"src_container": "deck",
+					"dest_container": "discard"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "has_trait",
+								"func_params": {
+									"subject": "previous",
+									"trait": "thwart"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "villain"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_index": "top",
+					"up_to": true,
+					"subject_count": 5,
+					"src_container": "deck",
+					"dest_container": "discard"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "has_trait",
+								"func_params": {
+									"subject": "previous",
+									"trait": "attack"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "villain_attacks_you"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Mind Ray": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "enemy_schemes",
+					"subject": "villain"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "confused",
+					"subject": "my_hero"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "villain_attacks_you"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "stunned",
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Mockingbird - Bobbi Morse": {
+		"interrupt": {
+			"event_name": "enemy_initiates_attack",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "pay_cost",
+					"cost": {
+						"unc": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "hand",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				}
+			],
+			"filter_target_hero": "Hawkeye",
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_villains"
+				}
+			]
+		}
+	},
+	"Moon Knight - Marc Spector": {
+		"response": {
+			"event_name": "card_played",
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "pay_cost",
+					"cost": {
+						"wild": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 2
+				}
+			]
+		}
+	},
+	"Neurological Implants": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "get_remaining_damage",
+					"sort_descending": true,
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_max_per_host": 1
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard_villain",
+					"is_else": true
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "host",
+					"alteration": 2
+				}
+			]
+		}
+	},
+	"New World Hydra": {
+		"TODO": {}
+	},
+	"None Shall Pass": {
+		"TODO": {}
+	},
+	"Omni-Morph Duplication": {
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "has_trait",
+								"func_params": {
+									"subject": "villain",
+									"trait": "ice"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "exhaust_card",
+									"subject": "my_hero"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "has_trait",
+								"func_params": {
+									"subject": "villain",
+									"trait": "metal"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"modification": 1,
+									"token_name": "tough",
+									"subject": "villain"
+								},
+								{
+									"name": "heal",
+									"amount": 1,
+									"subject": "villain"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "has_trait",
+								"func_params": {
+									"subject": "villain",
+									"trait": "stone"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "draw_boost_card",
+									"subject": "villain"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "has_trait",
+								"func_params": {
+									"subject": "villain",
+									"trait": "wood"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_card_to_container",
+									"dest_container": "discard",
+									"src_container": "hand",
+									"subject": "index",
+									"subject_count": 1,
+									"subject_index": "random"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Pain Inhibitors": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "get_remaining_damage",
+					"sort_descending": true,
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_max_per_host": 1
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard_villain",
+					"is_else": true
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "host",
+					"alteration": 2
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Pheromones": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "stunned",
+					"needs_subject": true,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "confused",
+					"subject": "previous"
+				}
+			]
+		}
+	},
+	"Photographic Reflexes": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "villain",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"subject": "my_hero"
+					}
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Piercing Strike": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"subject": "target",
+					"amount": 3,
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"tags": [
+						"piercing"
+					]
+				}
+			]
+		}
+	},
+	"Piercing Thorns": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"src_container": "hand",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "random"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": {
+						"if": {
+							"func_name": "has_trait",
+							"func_params": {
+								"subject": "villain",
+								"trait": "wood"
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"selection_type": "equal",
+					"needs_selection": true
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": {
+						"if": {
+							"func_name": "has_trait",
+							"func_params": {
+								"subject": "villain",
+								"trait": "wood"
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"token_name": "stunned",
+					"subject": "my_hero"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": {
+						"if": {
+							"func_name": "has_trait",
+							"func_params": {
+								"subject": "villain",
+								"trait": "stone"
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"token_name": "stunned",
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Power Gauntlets": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "enemy_attack_damage",
+			"trigger": "host",
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"run_post_damage_script"
+						]
+					}
+				}
+			]
+		},
+		"post_damage_script": {
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"src_container": "hand",
+					"dest_container": "discard",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1,
+						"physical": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Press the Advantage": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"subject": "target",
+					"amount": 2,
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "draw_cards",
+					"amount": {
+						"if": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"token_name": [
+									"stunned",
+									"confused"
+								],
+								"subject": "previous"
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
+				}
+			]
+		}
+	},
+	"Prison Camps": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"src_container": [
+						"deck",
+						"discard"
+					],
+					"dest_container": "hand",
+					"subject": "tutor",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Raid the Armory": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "main_scheme"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"trait_weapon": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "reveal_encounters",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"Ready for Action": {
+		"manual": {
+			"hand": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_allies_my_hero"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Red Skull - 1": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "side_scheme"
+								}
+							}
+						]
+					},
+					"alteration": "per_boardseek"
+				}
+			]
+		}
+	},
+	"Red Skull - 2": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "side_scheme"
+								}
+							}
+						]
+					},
+					"alteration": "per_boardseek"
+				}
+			]
+		},
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Deal encounter": [
+					{
+						"name": "deal_encounter",
+						"subject": "my_hero"
+					}
+				]
+			}
+		}
+	},
+	"Red Skull - 3": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "side_scheme"
+								}
+							}
+						]
+					},
+					"alteration": "per_boardseek"
+				}
+			]
+		},
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Deal encounter": [
+					{
+						"name": "deal_encounter",
+						"subject": "my_hero"
+					}
+				]
+			}
+		}
+	},
+	"Red Skull's Luger": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "deal_damage",
+			"event_filters": {
+				"source": "host",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"piercing",
+							"ranged"
+						]
+					}
+				}
+			]
+		},
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1,
+						"physical": 1,
+						"energy": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Red Skull's Right Hook": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1,
+						"physical": 1,
+						"energy": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Rocky Outcrop": {
+		"_surge": {},
+		"TODO": {},
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Self-Propelled Glide": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "round_ended",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "trait_aerial",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"Name": "Spider-Woman"
+											}
+										}
+									],
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Shang-Chi": {
+		"response": {
+			"event_name": "card_played",
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "stunned",
+					"needs_subject": true,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Skilled Investigator": {
+		"TODO": {}
+	},
+	"Sky Cycle": {
+		"manual": {
+			"hand": [
+				{
+					"name": "attach_to_card",
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							},
+							"filter_properties2": {
+								"comparison": "gt",
+								"trait_aerial": 0
+							},
+							"filter_max_per_host": 1
+						}
+					]
+				}
+			],
+			"board": [
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "ready_card",
+					"subject": "host"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_aerial",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Sniper Shot": {
+		"reveal": {
+			"all": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "deal_damage",
+					"subject": "my_hero",
+					"amount": 3
+				},
+				{
+					"is_else": true,
+					"name": "add_threat",
+					"amount": 3,
+					"subject": "main_scheme"
+				}
+			]
+		}
+	},
+	"Snowy Hillside": {
+		"_surge": {},
+		"TODO": {},
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Sonic Arrow": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Hawkeye's Bow"
+							}
+						}
+					]
+				},
+				{
+					"name": "nop",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "attack",
+					"is_cost": true,
+					"subject": "previous",
+					"amount": {
+						"if": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"token_name": [
+									"confused"
+								],
+								"subject": "previous"
+							}
+						},
+						"then": 5,
+						"else": 3
+					},
+					"tags": [
+						"arrow"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "confused",
+					"needs_subject": true,
+					"subject": "previous"
+				}
+			]
+		}
+	},
+	"Spider-Girl - Anya Corazon": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "stunned",
+					"needs_subject": true,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "confused",
+					"subject": "previous"
+				}
+			]
+		}
+	},
+	"Spider-Man - Peter Parker": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "remove_threat",
+					"amount": 3,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Spider-Woman": {
+		"card_played": {
+			"trigger": "another",
+			"filter_same_controller": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": {
+						"func_name": "get_aspect_name",
+						"func_params": {
+							"subject": "trigger",
+							"prefix": "__"
+						}
+					}
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "__aggression"
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "__aggression"
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "__aggression"
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "__justice"
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "__justice"
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "__justice"
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "__leadership"
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "__leadership"
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "__leadership"
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "__protection"
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "__protection"
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "__protection"
+					}
+				}
+			]
+		},
+		"round_ended": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "__aggression"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "__justice"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "__leadership"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "__protection"
+				}
+			]
+		}
+	},
+	"Spreading Lies": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"amount": 2,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Stall Tactics": {
+		"TODO": {}
+	},
+	"Steel Kick": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": {
+						"if": {
+							"func_name": "has_trait",
+							"func_params": {
+								"subject": "villain",
+								"trait": "metal"
+							}
+						},
+						"then": 3,
+						"else": 2
+					}
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "receive_damage",
+					"subject": "my_hero",
+					"amount": {
+						"if": {
+							"func_name": "has_trait",
+							"func_params": {
+								"subject": "villain",
+								"trait": "metal"
+							}
+						},
+						"then": 4,
+						"else": 3
+					}
+				}
+			]
+		}
+	},
+	"Super Absorbing Power": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_ice",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"shortname": "Absorbing Man"
+							}
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_metal",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"shortname": "Absorbing Man"
+							}
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_stone",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"shortname": "Absorbing Man"
+							}
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_wood",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"shortname": "Absorbing Man"
+							}
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Swinging Stone": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "temporary_effect",
+					"end_condition": "phase_ended",
+					"_comments": "TODO End condition here is wrong, need to create an activation finished signal",
+					"subject": "villain",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "scheme",
+									"trigger": "villain",
+									"alteration": {
+										"if": {
+											"func_name": "has_trait",
+											"func_params": {
+												"subject": "villain",
+												"trait": "stone"
+											}
+										},
+										"then": 1,
+										"else": 0
+									}
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "enemy_schemes",
+					"subject": "villain"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "temporary_effect",
+					"end_condition": "phase_ended",
+					"_comments": "TODO End condition here is wrong, need to create an activation finished signal",
+					"subject": "villain",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "villain",
+									"alteration": {
+										"if": {
+											"func_name": "has_trait",
+											"func_params": {
+												"subject": "villain",
+												"trait": "stone"
+											}
+										},
+										"then": 1,
+										"else": 0
+									}
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "villain_attacks_you"
+				}
+			]
+		}
+	},
+	"Tactical Scanner": {
+		"TODO": {}
+	},
+	"Taskmaster - 1": {
+		"response": {
+			"event_name": "identity_changed_form",
+			"event_filters": {
+				"after": "hero"
+			},
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain"
+				},
+				{
+					"name": "deal_damage",
+					"amount": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					},
+					"subject": "trigger"
+				}
+			]
+		}
+	},
+	"Taskmaster - 2": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Deal encounter": [
+					{
+						"name": "deal_encounter",
+						"subject": "my_hero"
+					}
+				]
+			}
+		},
+		"response": {
+			"event_name": "identity_changed_form",
+			"event_filters": {
+				"after": "hero"
+			},
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain"
+				},
+				{
+					"name": "deal_damage",
+					"amount": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					},
+					"subject": "trigger"
+				}
+			]
+		}
+	},
+	"Taskmaster - 3": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Deal encounter": [
+					{
+						"name": "deal_encounter",
+						"subject": "my_hero"
+					}
+				]
+			}
+		},
+		"response": {
+			"event_name": "identity_changed_form",
+			"event_filters": {
+				"after": "hero"
+			},
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain"
+				},
+				{
+					"name": "deal_damage",
+					"amount": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					},
+					"subject": "trigger"
+				}
+			]
+		}
+	},
+	"Taskmaster's Shield": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1,
+						"physical": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Taskmaster's Sword": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Taskmaster"
+							}
+						}
+					]
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "villain",
+					"is_else": true
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "deal_damage",
+			"event_filters": {
+				"source": "host",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1,
+						"physical": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Taskmaster's Training Camp": {
+		"card_moved_to_board": {
+			"trigger": "another",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "trigger"
+				}
+			]
+		}
+	},
+	"Team Training": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero_any": 1
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_to_player_zone",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities",
+							"filter_max_per_hero": 1
+						}
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_allies"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Technological Enhancements": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "main_scheme"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "test",
+					"subject": "main_scheme"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "test",
+					"subject": "main_scheme"
+				}
+			]
+		}
+	},
+	"Test Subjects": {
+		"interrupt": {
+			"event_name": "card_dies",
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"name": "deal_encounter",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				}
+			],
+			"trigger": "self"
+		}
+	},
+	"The Getaway": {
+		"TODO": {}
+	},
+	"The Infinity Stone": {
+		"TODO": {}
+	},
+	"The Island of Dr. Zola": {
+		"TODO": {}
+	},
+	"The Mad Doctor": {
+		"TODO": {}
+	},
+	"The Red House": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "invincible",
+					"trigger": "villain",
+					"alteration": 1
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "thwart",
+			"event_filters": {
+				"target": "self",
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"amount": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"property": "attack",
+								"subject": "trigger"
+							}
+						}
+					}
+				}
+			]
+		}
+	},
+	"The Rise of Red Skull": {
+		"setup": {
+			"all": [		
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": [
+						"deck_villain",
+					],
+					"dest_container": "deck_side_schemes",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"deck_side_schemes"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "The Red House"
+							}
+						}
+					]
+				},					
+				
+			]
+		},
+		"step_ended":{
+			"event_filters": {
+				"step_name": "VILLAIN_THREAT",
+			},
+			"board": [
+				{
+					"name": "reveal_encounters",
+					"subject": "tutor",
+					"subject_index": "top",
+					"src_container": "deck_side_scheme",
+					"subject_count": 1
+				}
+			]
+		}
+		
+	},
+	"The Sleeper": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self",
+					"grid_name": "enemies_first_player"
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "set_aside",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"The Sleeper Awakened": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "The Sleeper"
+							}
+						}
+					],
+					"grid_name": "enemies_first_player"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_leave_play",
+					"trigger": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "The Sleeper"
+								}
+							}
+						]
+					},
+					"alteration": "per_boardseek"
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "another",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"Name": "The Sleeper"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "set_aside",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"The Viper": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "hand_size",
+					"trigger": "my_hero",
+					"alteration": -1
+				}
+			]
+		}
+	},
+	"The Viper's Ambition": {
+		"on_reveal_one_threat_per_hero": {}
+	},
+	"Twisted Reality": {
+		"incite": {
+			"__amount__": 1
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_side_schemes"
+						}
+					]
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "host",
+			"all": [
+				{
+					"name": "deal_encounter",
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities_first_player"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Ultimate Bio-Servant": {
+		"TODO": {},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Uncertain Loyalties": {
+		"give_obligation": {
+			"__to__": "Jessica Drew"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Flip then Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity",
+						"_comments": "we need to exhaust before changing form here due to a bug"
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Flip then Add Threat": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "add_threat",
+						"amount": 3,
+						"subject": "main_scheme"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				],
+				"Add Threat": [
+					{
+						"name": "add_threat",
+						"amount": 3,
+						"subject": "main_scheme"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Venom Blast": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"subject": "target",
+					"amount": 5,
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Vibranium Arrow": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Hawkeye's Bow"
+							}
+						}
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 6,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"tags": [
+						"piercing",
+						"arrow"
+					]
+				}
+			]
+		}
+	},
+	"War Machine - James Rhodes": {
+		"interrupt": {
+			"event_name": "deal_damage",
+			"event_filters": {
+				"source": "self",
+				"tags": [
+					"attack",
+					"basic power"
+				]
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"ranged"
+						]
+					}
+				}
+			]
+		}
+	},
+	"Weapon Master": {
+		"TODO": {},
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "enemy_schemes",
+					"subject": "villain"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "villain_attacks_you"
+				}
+			]
+		}
+	},
+	"White Tiger - Angela Del Toro": {
+		"response": {
+			"event_name": "card_played",
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"amount": 3,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Zola - 2": {
+		"reveal": {
+			"all": [
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Test Subjects"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Zola - 3": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Minion": [
+					{
+						"name": "reveal_encounters",
+						"subject": "tutor",
+						"src_container": [
+							"deck_villain",
+							"discard_villain"
+						],
+						"subject_count": "all",
+						"selection_count": 1,
+						"selection_type": "equal",
+						"needs_selection": true,
+						"filter_state_tutor": [
+							{
+								"filter_properties2": {
+									"type_code": "minion"
+								}
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Zola's Algorithm": {
+		"TODO": {}
+	},
+	"Zola's Experiments": {
+		"card_moved_to_board": {
+			"trigger": "another",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "host_card",
+					"src_container": "discard_villain",
+					"host": "trigger",
+					"subject": "tutor",
+					"sort_descending": true,
+					"subject_count": 1,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"comparison": "gt",
+								"trait_tech": 0
+							},
+							"filter_properties2": {
+								"type_code": "attachment"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Zola's Mutate": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"trait_tech": 1
+							},
+							"filter_properties2": {
+								"type_code": "attachment"
+							}
+						}
+					]
+				},
+				{
+					"name": "host_card",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "shuffle_card_into_container",
+					"dest_container": "deck_villain",
+					"subject": "self"
+				}
+			]
+		}
+	}
+}

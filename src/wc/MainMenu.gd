@@ -129,6 +129,9 @@ func _img_download_completed(result, response_code, headers, body):
 	emit_signal("one_download_completed")
 
 func mask_image(image:Image, destination, card_key):
+	if not destination:
+		var _error = 1
+		return
 	var mask_filename = "res://assets/utils/wc_card_mask.png"	
 	var mask_tex = load(mask_filename)
 	var mask_image = mask_tex.get_data()	

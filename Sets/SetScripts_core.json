@@ -164,7 +164,7 @@
 						"is_cost": true,
 						"subject": "my_identity",
 						"_comments": "we need to exhaust before changing form here due to a bug"
-					},					
+					},
 					{
 						"name": "change_form",
 						"subject": "my_hero"
@@ -590,15 +590,7 @@
 		}
 	},
 	"Biomechanical Upgrades": {
-		"card_moved_to_pile": {
-			"trigger": "self",
-			"filter_destination": "encounters_reveal",
-			"pile": [
-				{
-					"name": "surge"
-				}
-			]
-		},
+		"_surge": {},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
@@ -727,24 +719,7 @@
 		}
 	},
 	"Breakin' & Takin'": {
-		"reveal": {
-			"all": [
-				{
-					"name": "add_threat",
-					"amount": "per_boardseek",
-					"subject": "self",
-					"per_boardseek": {
-						"subject": "boardseek",
-						"subject_count": "all",
-						"filter_state_seek": [
-							{
-								"filter_group": "group_identities"
-							}
-						]
-					}
-				}
-			]
-		}
+		"on_reveal_one_threat_per_hero": {}
 	},
 	"Business Problems": {
 		"give_obligation": {
@@ -769,7 +744,7 @@
 						"is_cost": true,
 						"subject": "my_identity",
 						"_comments": "we need to exhaust before changing form here due to a bug"
-					},					
+					},
 					{
 						"name": "change_form",
 						"subject": "my_hero"
@@ -1342,24 +1317,7 @@
 		}
 	},
 	"Defense Network": {
-		"reveal": {
-			"all": [
-				{
-					"name": "add_threat",
-					"amount": "per_boardseek",
-					"subject": "self",
-					"per_boardseek": {
-						"subject": "boardseek",
-						"subject_count": "all",
-						"filter_state_seek": [
-							{
-								"filter_group": "group_identities"
-							}
-						]
-					}
-				}
-			]
-		}
+		"on_reveal_one_threat_per_hero": {}
 	},
 	"Drone Factory": {
 		"reveal": {
@@ -1778,7 +1736,7 @@
 						"is_cost": true,
 						"subject": "my_identity",
 						"_comments": "we need to exhaust before changing form here due to a bug"
-					},					
+					},
 					{
 						"name": "change_form",
 						"subject": "my_hero"
@@ -1956,7 +1914,7 @@
 						"is_cost": true,
 						"subject": "my_identity",
 						"_comments": "we need to exhaust before changing form here due to a bug"
-					},					
+					},
 					{
 						"name": "change_form",
 						"subject": "my_hero"
@@ -2193,10 +2151,9 @@
 				{
 					"name": "surge",
 					"is_else": true
-				}				
+				}
 			]
 		},
-		
 		"alterants": {
 			"board": [
 				{
@@ -2313,15 +2270,7 @@
 					"name": "heal",
 					"amount": 4,
 					"is_cost": true,
-					"subject": "boardseek",
-					"subject_count": 1,
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "villain"
-							}
-						}
-					]
+					"subject": "villain",
 				},
 				{
 					"name": "surge",
@@ -2725,14 +2674,7 @@
 					{
 						"name": "add_threat",
 						"amount": 1,
-						"subject": "boardseek",
-						"filter_state_seek": [
-							{
-								"filter_properties": {
-									"type_code": "main_scheme"
-								}
-							}
-						]
+						"subject": "main_scheme"
 					}
 				]
 			}
@@ -2751,44 +2693,10 @@
 		}
 	},
 	"Illegal Arms Factory": {
-		"reveal": {
-			"all": [
-				{
-					"name": "add_threat",
-					"amount": "per_boardseek",
-					"subject": "self",
-					"per_boardseek": {
-						"subject": "boardseek",
-						"subject_count": "all",
-						"filter_state_seek": [
-							{
-								"filter_group": "group_identities"
-							}
-						]
-					}
-				}
-			]
-		}
+		"on_reveal_one_threat_per_hero": {}
 	},
 	"Imminent Overload": {
-		"reveal": {
-			"all": [
-				{
-					"name": "add_threat",
-					"amount": "per_boardseek",
-					"subject": "self",
-					"per_boardseek": {
-						"subject": "boardseek",
-						"subject_count": "all",
-						"filter_state_seek": [
-							{
-								"filter_group": "group_identities"
-							}
-						]
-					}
-				}
-			]
-		}
+		"on_reveal_one_threat_per_hero": {}
 	},
 	"\"I'm Tough\"": {
 		"reveal": {
@@ -2798,14 +2706,7 @@
 					"token_name": "tough",
 					"modification": 1,
 					"is_cost": true,
-					"subject": "boardseek",
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "villain"
-							}
-						}
-					]
+					"subject": "villain",
 				},
 				{
 					"name": "surge",
@@ -2893,7 +2794,6 @@
 					"name": "remove_threat",
 					"amount": 1,
 					"subject": "target",
-					"needs_subject": true,
 					"filter_state_subject": [
 						{
 							"filter_group": "group_schemes"
@@ -3134,14 +3034,7 @@
 				{
 					"name": "add_threat",
 					"amount": 1,
-					"subject": "boardseek",
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "main_scheme"
-							}
-						}
-					]
+					"subject": "main_scheme",
 				}
 			]
 		},
@@ -3159,14 +3052,7 @@
 						"then": 1,
 						"else": 0
 					},
-					"subject": "boardseek",
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "main_scheme"
-							}
-						}
-					]
+					"subject": "main_scheme"
 				}
 			]
 		}
@@ -3286,7 +3172,7 @@
 						"is_cost": true,
 						"subject": "my_identity",
 						"_comments": "we need to exhaust before changing form here due to a bug"
-					},					
+					},
 					{
 						"name": "change_form",
 						"subject": "my_hero"
@@ -3337,14 +3223,7 @@
 						"name": "mod_tokens",
 						"token_name": "acceleration",
 						"modification": 1,
-						"subject": "boardseek",
-						"filter_state_seek": [
-							{
-								"filter_properties": {
-									"type_code": "main_scheme"
-								}
-							}
-						]
+						"subject": "main_scheme"
 					}
 				],
 				"Accelerate": [
@@ -3357,14 +3236,7 @@
 						"name": "mod_tokens",
 						"token_name": "acceleration",
 						"modification": 1,
-						"subject": "boardseek",
-						"filter_state_seek": [
-							{
-								"filter_properties": {
-									"type_code": "main_scheme"
-								}
-							}
-						]
+						"subject": "main_scheme"
 					}
 				]
 			}
@@ -3939,24 +3811,7 @@
 		}
 	},
 	"Personal Challenge": {
-		"reveal": {
-			"all": [
-				{
-					"name": "add_threat",
-					"amount": "per_boardseek",
-					"subject": "self",
-					"per_boardseek": {
-						"subject": "boardseek",
-						"subject_count": "all",
-						"filter_state_seek": [
-							{
-								"filter_group": "group_identities"
-							}
-						]
-					}
-				}
-			]
-		}
+		"on_reveal_one_threat_per_hero": {}
 	},
 	"Peter Parker": {
 		"once_per_round": {
@@ -4335,7 +4190,7 @@
 					"name": "deal_encounter",
 					"immediate_reveal": true,
 					"subject": "tutor",
-					"src_container": "deck_villain",
+					"src_container": ["deck_villain", "discard_villain"],
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -4344,19 +4199,6 @@
 						}
 					]
 				},
-				{
-					"name": "deal_encounter",
-					"immediate_reveal": true,
-					"subject": "tutor",
-					"src_container": "discard_villain",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"Name": "Breakin' & Takin'"
-							}
-						}
-					]
-				}
 			]
 		}
 	},
@@ -4434,14 +4276,7 @@
 							}
 						},
 						"plus_amount": 1,
-						"subject": "boardseek",
-						"filter_state_seek": [
-							{
-								"filter_properties": {
-									"type_code": "main_scheme"
-								}
-							}
-						]
+						"subject": "main_scheme"
 					}
 				]
 			}
@@ -4546,7 +4381,7 @@
 		}
 	},
 	"She-Hulk": {
-		"response":{
+		"response": {
 			"event_name": "identity_changed_form",
 			"trigger": "self",
 			"is_optional_board": true,
@@ -5036,7 +4871,7 @@
 					"token_name": "stunned",
 					"modification": 1,
 					"subject": "trigger_details_target",
-					"is_cost": true,
+					"is_cost": true
 				}
 			]
 		}
@@ -5551,24 +5386,7 @@
 		}
 	},
 	"The Psyche-Magnitron": {
-		"reveal": {
-			"all": [
-				{
-					"name": "add_threat",
-					"amount": "per_boardseek",
-					"subject": "self",
-					"per_boardseek": {
-						"subject": "boardseek",
-						"subject_count": "all",
-						"filter_state_seek": [
-							{
-								"filter_group": "group_identities"
-							}
-						]
-					}
-				}
-			]
-		}
+		"on_reveal_one_threat_per_hero": {}
 	},
 	"The Triskelion": {
 		"alterants": {
@@ -5607,14 +5425,7 @@
 							"subject": "all_previous"
 						}
 					},
-					"subject": "boardseek",
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "main_scheme"
-							}
-						}
-					]
+					"subject": "main_scheme",
 				}
 			]
 		}
@@ -5776,14 +5587,7 @@
 					{
 						"name": "add_threat",
 						"amount": 1,
-						"subject": "boardseek",
-						"filter_state_seek": [
-							{
-								"filter_properties": {
-									"type_code": "main_scheme"
-								}
-							}
-						]
+						"subject": "main_scheme"
 					}
 				],
 				"Drone": [
@@ -6499,7 +6303,7 @@
 			"event_name": "enemy_initiates_attack",
 			"trigger": "self",
 			"event_filters": {
-				"target": "my_hero",
+				"target": "my_hero"
 			},
 			"board": [
 				{

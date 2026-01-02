@@ -126,7 +126,7 @@ func set_icons():
 	icons_initialized = true
 
 #when my card owner moves to board, I'm resetting everything
-func _card_moved_to_board(card, details):
+func _card_moved_to_board(card, _details):
 	var origin = owner_card
 	
 	if owner_card.state  == Card.CardState.VIEWPORT_FOCUS:
@@ -223,7 +223,6 @@ func display_icons():
 			var shadow = get_node("shadow_" + icon)			
 			label.text = text
 			shadow.text = text	
-			var size = Vector2(label.rect_size.x, 0)
 			
 			#label.rect_min_size = Vector2(10, 10) *  offset_scale *owner_card.card_size / CFConst.CARD_SIZE
 			label.rect_scale = Vector2(0.75, 0.75) *  offset_scale *owner_card.card_size / CFConst.CARD_SIZE

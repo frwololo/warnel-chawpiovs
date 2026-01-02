@@ -605,8 +605,7 @@ func set_card_art(forced=false):
 	if card_front.art_filename and !forced:
 		return
 	var filename = get_art_filename()
-	if (filename):
-		card_front.set_card_art(filename)
+	card_front.set_card_art(filename)
 
 # Determines which play position (board, pile or hand)
 # a script should look for to find card scripts
@@ -1449,6 +1448,26 @@ func add_threat(threat : int):
 func get_current_threat():
 	return tokens.get_token_count("threat")
 
+func check_scheme_defeat(script):
+	if get_current_threat() <= 0:
+	#card.die(script)
+		if get_property("cannot_leave_play", 0):
+			return
+			
+		var card_dies_definition = {
+			"name": "card_dies",
+			"tags": ["remove_threat", "Scripted"] + script.get_property(SP.KEY_TAGS)
+		}
+		var trigger_details = script.trigger_details.duplicate(true)
+		trigger_details["source"] = guidMaster.get_guid(script.owner)
+
+		var card_dies_script:ScriptTask = ScriptTask.new(self, card_dies_definition, script.trigger_object, trigger_details)
+		card_dies_script.subjects = [self]
+
+		var task_event = SimplifiedStackScript.new( card_dies_script)
+		gameData.theStack.add_script(task_event)
+
+
 func remove_threat(modification: int, script = null) -> int:
 	
 	#Crisis special case: can't remove threat from main scheme
@@ -1459,10 +1478,10 @@ func remove_threat(modification: int, script = null) -> int:
 			#we add all acceleration tokens	
 			var crisis = scheme.get_property("scheme_crisis", 0, true)
 			if crisis:
-				return CFConst.ReturnCode.FAILED
 				scheme.hint("Crisis!", Color8(200, 50, 50))
 				self.hint("Crisis!", Color8(200, 50, 50))
-	
+				return CFConst.ReturnCode.FAILED
+					
 	var token_name = "threat"
 	var current_tokens = tokens.get_token_count(token_name)
 	if current_tokens - modification < 0:
@@ -1517,7 +1536,6 @@ func die(script):
 	var trigger_details = {}
 	if script:
 		trigger_details = script.trigger_details
-	scripting_bus.emit_signal("card_defeated", self, trigger_details)
 	match type_code:
 		"hero", "alter_ego":
 			gameData.hero_died(self, script)
@@ -1529,7 +1547,8 @@ func die(script):
 			gameData.villain_died(self, script)
 		_:
 			self.discard()
-				
+			
+	scripting_bus.emit_signal("card_defeated", self, trigger_details)			
 	return CFConst.ReturnCode.OK		
 
 var _cached_state = -1
@@ -2061,25 +2080,7 @@ func get_instance_runtime_scripts(trigger:String = "", filters:={}) -> Dictionar
 	
 	return found_scripts
 
-#returns true if this card has a given trait
-func has_trait(params) -> bool:
-	var trait = ""
-	match typeof(params):
-		TYPE_DICTIONARY:
-			trait = params.get("trait", "")
-		TYPE_STRING:
-			trait = params
-		_:
-			return false
 
-	if !trait:
-		return false
-	if trait == "aerial":
-		var _tmp = 1
-	trait = "trait_" + trait
-	if get_property(trait, 0, true):
-		return true
-	return false
 
 func set_activity_script(script):
 	activity_script = script
@@ -2104,15 +2105,136 @@ func remove_current_activation(script):
 #FUNCTIONS USED DIRECTLY BY JSON SCRIPTS
 #
 
+func is_hero_form(params = {}, script:ScriptTask = null) -> bool:
+	var subject = self
+
+	if script:
+		subject = null
+		var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
+		if subjects:
+			subject = subjects[0]
+					
+	if !subject:
+		return false	
+	
+	if "hero" == subject.properties.get("type_code", ""):
+		return true
+	return false
+	
+func is_alter_ego_form(params = {}, script:ScriptTask = null) -> bool:
+	var subject = self
+
+	if script:
+		subject = null
+		var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
+		if subjects:
+			subject = subjects[0]
+			
+	if !subject:
+		return false
+		
+	if "alter_ego" == subject.properties.get("type_code", ""):
+		return true
+	return false
+
 func get_script_bool_property(params, script:ScriptTask = null) -> bool:
 	var property = params.get("property", "")
 	if !property:
 		return false
 	return script.get_property(property, false)
+	
+func get_subject_int_property(params, script:ScriptTask = null) -> int:
+	var subject = self
+	if script:
+		subject = null
+		var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
+		if subjects:
+			subject = subjects[0]
+	if !subject:
+		return 0
+	
+	var property = params.get("property", "")
+	if !property:
+		return 0
+	return subject.get_property(property, 0)	
+
+func count_tokens(params, script:ScriptTask = null) -> int:
+	var subjects = [self]
+	var token_names = params.get("token_name", [])
+	if typeof(token_names) == TYPE_STRING:
+		token_names = [token_names]
+	
+	if script:
+		subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
+			
+	if !subjects:
+		return 0
+	
+	var count = 0
+	for subject in subjects:
+		for token_name in token_names:
+			count+= subject.tokens.get_token_count(token_name)
+	
+	return count
+
+#returns true if this card (or script subject) has a given trait
+func has_trait(params, script:ScriptTask = null) -> bool:
+	var subject = self
+	
+	if script:
+		subject = null
+		var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
+		if subjects:
+			subject = subjects[0]
+			
+	var trait = ""
+	match typeof(params):
+		TYPE_DICTIONARY:
+			trait = params.get("trait", "")
+		TYPE_STRING:
+			trait = params
+		_:
+			return false
+
+	if !trait:
+		return false
+
+	trait = "trait_" + trait
+	if subject.get_property(trait, 0, true):
+		return true
+	return false
 
 func identity_has_trait(params, script:ScriptTask = null) -> bool:
 	var hero = get_controller_hero_card()
 	return hero.has_trait(params)	
+
+func get_hero_id(params, script:ScriptTask = null) -> int:
+	var hero_name = params.get("name")
+	if !hero_name:
+		return 1 #default to avoid crashes
+
+	var hero_card = cfc.NMAP.board.find_card_by_name(hero_name, true)
+	if !hero_card:
+		return 1 #default to avoid crashes
+	
+	return hero_card.get_controller_hero_id()	
+
+func get_aspect(params, script:ScriptTask = null) -> String:
+	var subject = self
+	
+	if script:
+		subject = null
+		var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
+		if subjects:
+			subject = subjects[0]
+			
+	if !subject:
+		return ""
+	
+	var aspect = subject.get_property("faction_code", "")
+	if aspect == "basic":
+		aspect = ""
+	return aspect
 
 func card_is_in_play(params, script:ScriptTask = null) -> bool:
 	var card_name = params.get("card_name", "")
@@ -2377,6 +2499,9 @@ func display_debug(msg):
 
 
 
+func get_remaining_threat():
+	var current_threat = self.tokens.get_token_count("threat")
+	return current_threat
 
 #used for some scripts
 func get_remaining_indirect_damage():
@@ -2486,15 +2611,7 @@ func _ready_load_from_json(card_description: Dictionary = {}):
 
 	return self
 
-func is_hero_form() -> bool:
-	if "hero" == properties.get("type_code", ""):
-		return true
-	return false
-	
-func is_alter_ego_form() -> bool:
-	if "alter_ego" == properties.get("type_code", ""):
-		return true
-	return false
+
 
 func get_global_center():
 	var xy = get_global_position()

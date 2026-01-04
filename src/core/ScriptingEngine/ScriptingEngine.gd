@@ -482,7 +482,10 @@ func move_card_to_container(script: ScriptTask) -> int:
 	if not costs_dry_run():
 		# We inject the tags from the script into the tags sent by the signal
 		var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
-		var dest_container: CardContainer = cfc.NMAP[script.get_property(SP.KEY_DEST_CONTAINER).to_lower()]
+		var dest_str = script.get_property(SP.KEY_DEST_CONTAINER)
+		if !dest_str:
+			return CFConst.ReturnCode.FAILED
+		var dest_container: CardContainer = cfc.NMAP[dest_str.to_lower()]
 		var dest_index = script.get_property(SP.KEY_DEST_INDEX)
 		if str(dest_index) == SP.KEY_SUBJECT_INDEX_V_TOP:
 			dest_index = -1

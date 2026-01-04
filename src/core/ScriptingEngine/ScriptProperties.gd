@@ -606,6 +606,20 @@ const KEY_PER_TOKEN := "per_token"
 const KEY_PER_TOKEN_SELF := "per_token_self"
 # Value Type: Dictionary
 #
+# A [VALUE_PER](#VALUE_PER) key for perfoming an effect equal to a number of attachments on the subject(s)
+#
+# Other than the subject defintions the [KEY_TOKEN_NAME](#KEY_TOKEN_NAME)
+# has to also be provided
+const KEY_PER_ATTACHMENT := "per_attachment"
+# Value Type: Dictionary
+#
+# A [VALUE_PER](#VALUE_PER) key for perfoming an effect equal to a number of tokens on the script owner
+#
+# Other than the subject defintions the [KEY_TOKEN_NAME](#KEY_TOKEN_NAME)
+# has to also be provided
+const KEY_PER_ATTACHMENT_SELF := "per_attachment_self"
+# Value Type: Dictionary
+#
 # A [VALUE_PER](#VALUE_PER) key for perfoming an effect equal to a accumulated property on the subject(s)
 #
 # Other than the subject defintions the [KEY_PROPERTY_NAME](#KEY_PROPERTY_NAME)

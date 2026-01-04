@@ -18,11 +18,15 @@ var heroDeckSelect = preload("res://src/wc/lobby/HeroDeckSelect.tscn")
 
 var scenarioSelect = preload("res://src/wc/lobby/ScenarioSelect.tscn")
 
+var modularSelect = preload("res://src/wc/lobby/ModularSelect.tscn")
+
+
 #
 #data
 #
 var team := {} #container for the team information, indexed by slot id (0,1,2,3)
 var _scenario:= ""
+var selected_modulars:= []
 var _rotation = 0
 var _preview_rotation = 0
 var launch_data
@@ -40,18 +44,19 @@ var _pending_ack:= {}
 # shortcuts
 #
 onready var main_menu := $MainMenu
-onready var modular_container: OptionButton = get_node("%EncounterSelect")
 onready var expert_mode: CheckBox = get_node("%ExpertMode")
 onready var all_heroes_container = get_node("%Heroes")
 onready var heroes_container = get_node("%TeamContainer")
-onready var ready_button = get_node("%ReadyButton")
 onready var launch_button = get_node("%LaunchButton")
 onready var all_scenarios_container = get_node("%Scenarios")
 onready var v_folder_label = get_node("%FolderLabel")
+onready var modular_selection = $MainMenu/ModularSelection
+
 # Called when the node enters the scene tree for the first time.
 
 var focus_chosen = false
 var large_picture_id = ""
+var modular_one_or_more = 1
 
 func grab_scenario_focus():
 	for child in all_scenarios_container.get_children():
@@ -59,6 +64,10 @@ func grab_scenario_focus():
 		return	
 
 func grab_default_focus():
+	if modular_selection.visible:
+		get_node("%ModularOK").grab_focus()
+		return
+	
 	for child in all_heroes_container.get_children():
 		child.grab_focus()	
 		return
@@ -78,13 +87,11 @@ func _ready():
 	_create_team_container()
 	_create_hero_container()
 	_load_scenarios()
-	_load_encounters()
+	get_node("%ModularButton").disabled = true
 	
-	ready_button.hide() #todo do something with this guy
 	launch_button.connect('pressed', self, 'on_button_pressed', [launch_button.name])
 
 	if !cfc.is_game_master():
-		get_node("%EncounterSelect").disabled = true
 		get_node("%ExpertMode").disabled = true
 
 	http_request = HTTPRequest.new()
@@ -137,7 +144,8 @@ func _process(delta:float):
 		large_picture.rect_position = get_tree().current_scene.get_global_mouse_position()
 	else:
 		var focused = get_focus_owner()
-		large_picture.rect_position = focused.get_global_position() + focused.rect_size/2
+		if focused:
+			large_picture.rect_position = focused.get_global_position() + focused.rect_size/2
 	large_picture.rect_size = Vector2(300, 420)
 	large_picture.rect_scale = cfc.screen_scale
 	large_picture.rect_rotation = _preview_rotation
@@ -152,14 +160,12 @@ func resize():
 		get_node("%TeamScenarioPanel").add_constant_override("separation", 50)
 		get_node("%ScenarioOverContainer").add_constant_override("separation", 20)		
 		scenario_picture.rect_min_size = Vector2(200, 200)
-		get_node("%EncounterSelect").clip_text = false
 		get_node("%VBoxContainer").add_constant_override("separation", 20)
 	else:		
 		get_node("%LeftRight").add_constant_override("separation", 10)
 		get_node("%TeamScenarioPanel").add_constant_override("separation", 5)
 		get_node("%ScenarioOverContainer").add_constant_override("separation", 2)
-		get_node("%EncounterSelect").clip_text = true
-		get_node("%VBoxContainer").add_constant_override("separation", 2)
+		get_node("%VBoxContainer").add_constant_override("separation", 5)
 		get_node("%MarginContainer").add_constant_override("margin_top", 5)
 		get_node("%MarginContainer").add_constant_override("margin_bottom", 5)
 		scenario_picture.rect_min_size = Vector2(100, 100)
@@ -170,8 +176,21 @@ func resize():
 	scenario_picture.rect_rotation = _rotation
 	
 func _load_scenarios():
+	
+	#sorting by alphabetical name of villain
+	var names_to_id = {}
 	for scenario_id in cfc.scenarios:
+		var villains = ScenarioDeckData.get_villains_from_scheme(scenario_id)
+		if villains:
+			var villain = villains[0]
+			var	villain_name = villain["shortname"]
+			names_to_id[villain_name] = scenario_id			
 
+	var ordered_names = names_to_id.keys()
+	ordered_names.sort()
+
+	for villain_name in ordered_names:
+		var scenario_id = names_to_id[villain_name]
 		var new_scenario = scenarioSelect.instance()
 		var load_success = new_scenario.load_scenario(scenario_id)
 		if !load_success:
@@ -180,7 +199,18 @@ func _load_scenarios():
 		all_scenarios_container.add_child(new_scenario)
 
 func _create_hero_container():
+	
+	#show in alphabetical order
+	var names_to_id = {}
 	for hero_id in cfc.idx_hero_to_deck_ids:
+		var hero_name = cfc.get_card_name_by_id(hero_id)
+		names_to_id[hero_name] = hero_id
+
+	var ordered_names = names_to_id.keys()
+	ordered_names.sort()
+	
+	for hero_name in ordered_names:
+		var hero_id = names_to_id[hero_name]
 		#skip heroes that are not implemented
 		var hero_card_data = cfc.get_card_by_id(hero_id)
 		var alter_ego_id =  hero_card_data.get("back_card_code", "undef")
@@ -195,15 +225,128 @@ func _create_hero_container():
 			focus_chosen = true	
 	
 
-func _load_encounters():
+#
+# modular encounters functions
+#
+var _mainmenu_focus_nodes = {}
+func display_modular_selection():
+	var title = get_node("%ModularSelectionTitle")
+	var default_modulars = ScenarioDeckData.get_recommended_modular_encounters(_scenario)		
+	var nb_modulars = default_modulars.size()
+	var plural = "" if nb_modulars <= 1 else "s"
+	var villains = ScenarioDeckData.get_villains_from_scheme(_scenario)
+	var villain_name = ""
+	if villains:
+		var villain = villains[0]
+		villain_name = villain["shortname"]
+	
+	title.text = villain_name + " -  select " + str(nb_modulars) + " modular set" + plural 
+	
+	var grid:GridContainer = get_node("%ModularGrid")
+	for child in grid.get_children():
+		var modular_id = child.get_modular_id()
+		if modular_id in selected_modulars:
+			child.init_status(true)
+		else:
+			child.init_status(false)
+	modular_selection.visible = true
+	_mainmenu_focus_nodes = cfc.disable_focus_mode($MainMenu/Outercontainer) 
+	grab_default_focus()
+
+
+var _modulars_init_done = false
+func _load_modulars(scenario_id):
+	if _modulars_init_done:
+		return
+	var grid:GridContainer = get_node("%ModularGrid")
 	var modular_sets = cfc.modular_encounters.keys()
 	modular_sets.sort()
-	for modular_set in modular_sets:
-		#TODO more advanced?
-		var display_name = modular_set	
-		modular_container.add_item(display_name)	
+	var sets_per_column = 15
+	var columns = modular_sets.size()/sets_per_column
+	if modular_sets.size() % sets_per_column:
+		columns+=1
+	grid.columns = columns
+	for modular_set in modular_sets:			
+		var new_modular = modularSelect.instance()		
+		grid.add_child(new_modular)	
+		new_modular.load_modular(modular_set)
+	
+	var button = get_node("%ModularButton")
+	if cfc.is_game_master():
+		button.disabled = false	
+	_modulars_init_done = true
+
+
+func _update_modular_button():
+	var button:Button = get_node("%ModularButton")
+	button.text =  ""
+	var separator = ""
+	for modular in get_selected_modulars():
+		button.text+= separator + modular
+		separator = ","		
+	button.set_tooltip(button.text)
+
+func _select_default_modular(scenario_id):
+	var default_modulars = ScenarioDeckData.get_recommended_modular_encounters(scenario_id)
+	if !default_modulars:
+		return
+	reset_selected_modulars()
+	for modular in default_modulars:
+		modular_select(modular)
+	_update_modular_button()	
+
+func reset_selected_modulars():
+	selected_modulars = []
+
+func _update_modular_data():
+	var default_modulars = ScenarioDeckData.get_recommended_modular_encounters(_scenario)		
+	var nb_modulars = default_modulars.size()
+
+	var disable_all = false
+	var disable_ok = false
+	
+	if selected_modulars.size() >= nb_modulars:
+		disable_all = true
+
+	if selected_modulars.size() < nb_modulars:
+		disable_ok = true
 
 	
+	var grid:GridContainer = get_node("%ModularGrid")
+	for child in grid.get_children():
+		var modular_id = child.get_modular_id()
+		if modular_id in selected_modulars:
+			child.set_disabled(false)
+		else:
+			child.set_disabled(disable_all)
+
+	get_node("%ModularOK").disabled = disable_ok
+	
+	_update_modular_button()
+
+
+func get_selected_modulars():
+	return selected_modulars
+	
+func modular_select(modular_id):
+	if !modular_id in selected_modulars:
+		selected_modulars.append(modular_id)
+	_update_modular_data()
+	
+func modular_deselect(modular_id):
+	selected_modulars.erase(modular_id)
+	_update_modular_data()		
+
+func _on_ModularButton_pressed():
+	display_modular_selection()
+	pass # Replace with function body.
+
+
+func _on_ModularOK_pressed():	
+	cfc.enable_focus_mode(_mainmenu_focus_nodes)
+	modular_selection.visible = false
+	pass # Replace with function body.
+		
 func _create_team_container():	
 	for i in HERO_COUNT: 
 		var new_team_member = heroDeckSelect.instance()
@@ -211,16 +354,14 @@ func _create_team_container():
 		heroes_container.add_child(new_team_member)
 		team[i] = HeroDeckData.new()
 
+
+
 remotesync func client_scenario_select(scenario_id):
 	_scenario = scenario_id
 
-	var default_modular = ScenarioDeckData.get_recommended_modular_encounter(scenario_id)
-	if default_modular:
-		var modular_option:OptionButton = get_node("%EncounterSelect")
-		for i in modular_option.get_item_count():
-			if modular_option.get_item_text(i) == default_modular:
-				modular_option.select(i)
-				break	
+	_load_modulars(scenario_id)
+	_select_default_modular(scenario_id)
+
 	
 	var scenario_scene = all_scenarios_container.get_node("scenario_" + scenario_id)
 	if (scenario_scene):
@@ -235,6 +376,8 @@ remotesync func client_scenario_select(scenario_id):
 			resize()
 		var scenario_title = get_node("%ScenarioTitle")
 		scenario_title.text = scenario_scene.get_text()
+	
+
 		
 	ack()	
 	
@@ -243,17 +386,6 @@ func scenario_select(scenario_id):
 		return
 	add_pending_acks()			
 	cfc._rpc(self, "client_scenario_select", scenario_id)
-
-puppet func modular_encounter_select(index):
-	ack()
-	get_node("%EncounterSelect").select(index)
-
-func _on_EncounterSelect_item_selected(index):
-	if (not cfc.is_game_master()):
-		return
-	add_pending_acks()	
-	cfc._rpc(self, "modular_encounter_select", index)			
-	pass # Replace with function body.
 
 puppet func expert_mode_toggle (button_pressed):
 	ack()
@@ -324,7 +456,11 @@ func verify_launch_button():
 
 #shortcut for cleanliness because get_focus_owner needs a control node...
 func get_focus_owner():
-	return launch_button.get_focus_owner()
+	var focus_owner = launch_button.get_focus_owner()
+	if !focus_owner:
+		grab_default_focus()
+		focus_owner = launch_button.get_focus_owner()
+	return focus_owner
 
 func check_ready_to_launch() -> bool:
 	if !cfc.is_game_master():
@@ -470,7 +606,7 @@ func _launch_server_game():
 	launch_data = {
 		"team": serialized_team,
 		"scheme_id" : _scenario, 
-		"modular_encounters":[get_selected_modular()], #TODO maybe more than one eventually
+		"modular_encounters":get_selected_modulars(),
 		"expert_mode": is_expert_mode()
 	}
 	cfc._rpc(self, "get_launch_data_from_server", launch_data)	
@@ -483,9 +619,7 @@ remotesync func get_launch_data_from_server(_scenario_data):
 remotesync func launch_client_game():
 	_launch_game() 	
 
-func get_selected_modular():
-	return modular_container.get_item_text(modular_container.selected)
-
+	
 func is_expert_mode():
 	return expert_mode.pressed
 	
@@ -559,6 +693,10 @@ func are_acks_pending():
 		if _pending_ack[client_id]:
 			return true
 	return false
+
+#
+# Deck Download functions
+#
 
 func _deck_download_completed(result, response_code, headers, body):
 	if result != HTTPRequest.RESULT_SUCCESS:
@@ -637,3 +775,5 @@ func _on_CancelButton_pressed():
 	self.queue_free()
 	gameData.disconnect_from_network()
 	get_tree().change_scene(CFConst.PATH_CUSTOM + 'MainMenu.tscn')
+
+

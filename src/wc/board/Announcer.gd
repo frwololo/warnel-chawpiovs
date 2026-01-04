@@ -76,7 +76,7 @@ func _stack_event_deleted(event):
 			announce["object_deleted"] = true
 				
 
-func _step_started(details:Dictionary):
+func _step_started(_trigger_object, details:Dictionary):
 	if (_skip_announcer):
 		return
 		

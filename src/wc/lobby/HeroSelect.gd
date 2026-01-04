@@ -29,7 +29,7 @@ func resize():
 	if screen_size.x > CFConst.LARGE_SCREEN_WIDTH:
 		hero_picture.rect_min_size = Vector2(200, 200)
 	else:		
-		hero_picture.rect_min_size = Vector2(100, 100)
+		hero_picture.rect_min_size = Vector2(130, 130)
 	
 	hero_picture.rect_size = hero_picture.rect_min_size	
 	$Panel/HorizontalHighlights.rect_min_size = hero_picture.rect_min_size

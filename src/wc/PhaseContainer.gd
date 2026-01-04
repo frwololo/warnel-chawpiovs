@@ -325,7 +325,8 @@ func _force_go_to_next_phase(caller = "") -> bool:
 	var result = request_next_phase(caller)
 	return result
 
-func _step_ended(	
+func _step_ended(
+		_trigger_object = null,	
 		trigger_details: Dictionary = {}):
 	var step = trigger_details["step"]
 	match step:
@@ -348,6 +349,7 @@ func reset_hero_activation_for_step(hero_id):
 	hero_phase.switch_status(new_status)	
 
 func _step_started(	
+		_trigger_object = null,
 		trigger_details: Dictionary = {}):
 	var step = trigger_details["step"]
 	set_current_step_complete(false, "_step_started")
@@ -489,7 +491,7 @@ func set_current_step_complete(value:bool, caller = ""):
 	current_step_complete = value
 
 func step_signal(signal_name):
-	scripting_bus.emit_signal(signal_name,  {"step" : current_step, "step_name":StepStrings[current_step] })
+	scripting_bus.emit_signal(signal_name, null,  {"step" : current_step, "step_name":StepStrings[current_step] })
 	
 remotesync func proceed_to_next_phase():
 	_pending_next_phase_reply = false

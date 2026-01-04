@@ -170,6 +170,24 @@ func _process(_delta:float):
 func throttle_process_for_performance():
 	return (_process_counter < _process_period)
 
+#disable focus_mode for all children of a node,
+#return an array of children that had focus mode and lost it
+func disable_focus_mode(container) -> Dictionary:
+	var result = {}
+	if "focus_mode" in container:
+		result[container] = container.focus_mode
+		container.focus_mode = Control.FOCUS_NONE		
+	for child in container.get_children():
+		var child_data = disable_focus_mode(child)
+		for key in child_data:
+			result[key] = child_data[key]
+	return result
+	
+func enable_focus_mode(list:Dictionary):
+	for node in list:
+		if is_instance_valid(node) and "focus_mode" in node: 
+			node.focus_mode = list[node]
+
 #grab focus for the first (visible and enabled) button in a container
 func default_button_focus(container) -> bool:
 	for maybe_button in container.get_children():

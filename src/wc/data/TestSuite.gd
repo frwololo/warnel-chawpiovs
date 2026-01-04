@@ -18,7 +18,7 @@ const multiplayer_sped_up_time_between_steps: float = 0.5
 
 var time_between_tests = 0.3 #waiting between tests to clean stuff up
 #long amount of time to wait if the game state is not the one we expect
-const long_wait_time: = 2 #below 2 sec fails for multiplayer
+const long_wait_time: float = 2.0 #below 2 sec fails for multiplayer
 #same as above but for events that require a shorter patience time
 var short_wait_time: = 0.8 #below 0.4 has had failures formultiplayer
 #amount of time to wait if the test explicitely requests it
@@ -236,6 +236,9 @@ func _process(_delta: float) -> void:
 #		count_delay("phaseContainer")
 #		return
 
+	if !cfc.NMAP.has("board") or !is_instance_valid(cfc.NMAP.board):
+		return
+		
 	if cfc.NMAP.board.are_cards_still_animating():
 		count_delay("cards_animating")	
 		return	

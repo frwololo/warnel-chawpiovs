@@ -34,6 +34,10 @@ func return_per_count() -> int:
 			ret = _count_tokens([owner])
 		SP.KEY_PER_TOKEN:
 			ret = _count_tokens(subjects)
+		SP.KEY_PER_ATTACHMENT_SELF:
+			ret = _count_attachments([owner])
+		SP.KEY_PER_ATTACHMENT:
+			ret = _count_attachments(subjects)			
 		SP.KEY_PER_PROPERTY:
 			ret = _count_property()
 		# These two keys simply count the number
@@ -56,9 +60,22 @@ func return_per_count() -> int:
 func _count_tokens(targets:Array) -> int:
 	var ret := 0
 	for card in targets:
-		ret = card.tokens.get_token_count(get_property(SP.KEY_TOKEN_NAME))
+		ret += card.tokens.get_token_count(get_property(SP.KEY_TOKEN_NAME))
 	return(ret)
 
+# Do something per attachments count
+func _count_attachments(targets:Array) -> int:
+	var ret := 0
+	
+	if get_property("filter_state_attachment", []):
+		for card in targets:
+			for attachment in card.attachments:
+				if SP.check_validity(attachment, script_definition, "attachment", owner):
+					ret+= 1
+	else:
+		for card in targets:
+			ret += card.attachments.size()
+	return(ret)
 
 # Do something per property amount
 func _count_property() -> int:

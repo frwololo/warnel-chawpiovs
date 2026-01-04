@@ -816,8 +816,6 @@ func refresh_card_front() -> void:
 # properties.get() as it takes into account the temp_properties_modifiers var
 # and also checks for alterant scripts
 func get_property(property: String, default = null, force_alterant_check = false):
-	if property =="scheme_crisis":
-		var _tmp = 1
 	if not (properties.has(property)) and not force_alterant_check:
 		return default
 	return(get_property_and_alterants(property, false, default).value)
@@ -1423,6 +1421,7 @@ func move_to(targetHost: Node,
 						"tags": tags
 					}
 			)
+			self.execute_scripts(self, "self_moved_to_board")
 		if is_instance_valid(parentHost) and parentHost.is_in_group("hands"):
 			# We also want to rearrange the hand when we take cards out of it
 			for c in parentHost.get_all_cards():
@@ -1496,6 +1495,15 @@ func move_to(targetHost: Node,
 					if _placement_slot:
 							_placement_slot.remove_occupying_card(self)
 				raise()
+			if "force_emit_card_moved_signal" in tags:
+				scripting_bus.emit_signal("card_moved_to_board",
+						self,
+						 {
+							"destination": targetHost.name,
+							"source": parentHost.name,
+							"tags": tags
+						}
+				)				
 		elif parentHost == targetHost and index != get_my_card_index():
 			parentHost.move_child(self,
 					parentHost.translate_card_index_to_node_index(index))

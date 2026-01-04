@@ -1,0 +1,143 @@
+{
+	"_comments": "Tests piercing",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}				
+			],
+			"villain": [
+				{
+					"card": "Absorbing Man - 1",
+					"tokens": {"tough": 1}
+				}
+			],
+			"schemes": [
+				{
+					"card": "None Shall Pass",
+					"tokens": {"threat": 2}					
+				}
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"allies1": [
+				{
+					"card": "Black Knight - Dane Whitman"
+				}				
+			],			
+			"hand1": [
+				{
+					"card": "01056",
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Snowy Hillside",
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "activate",
+			"value": "Black Knight - Dane Whitman",
+		},
+		{
+			"type": "choose",
+			"value": "attack",
+		},	
+		{
+			"type": "target",
+			"value": "Absorbing Man - 1",
+		},		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}				
+			],
+			"villain": [
+				{
+					"card": "Absorbing Man - 1",
+					"tokens": {"damage": 2}
+				}
+			],
+			"schemes": [
+				{
+					"card": "None Shall Pass",
+					"tokens": {"threat": 2}					
+				}
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"allies1": [
+				{
+					"card": "Black Knight - Dane Whitman"
+				}					
+			],			
+			"hand1": [
+				{
+					"card": "01056",
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Snowy Hillside",
+				}
+			]
+		}
+	},
+}

@@ -65,9 +65,9 @@ func _process(_delta):
 	else:
 		var fps = Performance.get_monitor(Performance.TIME_FPS)
 		ping.text = str(fps) + " fps"
-		if fps > 50:
+		if fps > 40:
 			ping.add_color_override("font_color", Color8(50, 255, 50))
-		elif fps > 30:
+		elif fps > 20:
 			ping.add_color_override("font_color", Color8(220, 150, 50))
 		else:
 			ping.add_color_override("font_color", Color8(255, 50, 50))		

@@ -594,7 +594,8 @@ const TARGET_ARROW_COLOR_BY_TAG: = {
 }
 
 const TARGET_ARROW_COLOR_BY_NAME: = {
-	"deal_damage" : Color(0.5, 0.1, 0.1)
+	"deal_damage" : Color(0.5, 0.1, 0.1),
+	"receive_damage" : Color(0.5, 0.1, 0.1)	
 }
 
 const DEACTIVATE_SLOTS_HIGHLIGHT := true
@@ -666,8 +667,8 @@ const DEBUG_SIMULATE_NETWORK_DELAY = 1.5
 const DEBUG_NETWORK_DELAY_RANDOM = false
 const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 
-const SCRIPT_BREAKPOINT_CARD_NAME := "Game Observer Item"
-const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_defeated"
+const SCRIPT_BREAKPOINT_CARD_NAME := "None Shall Pass"
+const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_moved_to_board"
 
 const LARGE_SCREEN_WIDTH:= 1600
 

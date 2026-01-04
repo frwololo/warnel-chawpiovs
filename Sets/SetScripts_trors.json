@@ -1,7 +1,42 @@
 {
 	"Abandoned Facility": {
 		"_surge": {},
-		"TODO": {},
+		"response": {
+			"condition_board": {
+				"func_name": "current_activation_status",
+				"func_params": {
+					"undefended": true
+				}
+			},
+			"event_name": "enemy_attack_happened",
+			"trigger": "villain",
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"src_container": "hand",
+					"is_cost": true,
+					"subject": "index",
+					"subject_count": "all",
+					"selection_count": {
+						"if": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"token_name": "delay",
+								"subject": "main_scheme"
+							},
+							"comparison": "ge",
+							"comparison_value": 5
+						},
+						"then": 2,
+						"else": 1
+					},
+					"selection_type": "min",
+					"selection_what_to_count": "get_resource_value_as_int",
+					"needs_selection": true
+				}
+			]
+		},
 		"boost": {
 			"all": [
 				{
@@ -12,26 +47,113 @@
 		}
 	},
 	"Absorbing Man - 1": {
-		"TODO": {}
+		"absorb_properties": {
+			"__properties__": "trait_*",
+			"__type_code__": "environment"
+		}
 	},
 	"Absorbing Man - 2": {
-		"TODO": {},
+		"absorb_properties": {
+			"__properties__": "trait_*",
+			"__type_code__": "environment"
+		},
 		"reveal": {
 			"all": [
 				{
-					"TODO": {}
+					"is_cost": true,
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Super Absorbing Power"
+							}
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "deal_encounter",
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
 				}
 			]
 		}
 	},
 	"Absorbing Man - 3": {
-		"TODO": {}
+		"absorb_properties": {
+			"__properties__": "trait_*",
+			"__type_code__": "environment"
+		},
+		"response": {
+			"event_name": [
+				"enemy_attack_happened",
+				"enemy_scheme_happened"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "has_trait",
+								"func_params": {
+									"subject": "villain",
+									"trait": [
+										"ice",
+										"stone"
+									],
+									"and_or": "or"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_threat",
+									"subject": "main_scheme",
+									"amount": 1
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "has_trait",
+								"func_params": {
+									"subject": "villain",
+									"trait": [
+										"metal",
+										"wood"
+									],
+									"and_or": "or"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "receive_damage",
+									"subject": "my_hero",
+									"amount": 1
+								}
+							]
+						}
+					]
+				}
+			]
+		}
 	},
 	"Adrenal Stims": {
-		"TODO": {}
+		"TODO": "campaign mode unsupported"
 	},
 	"Anti-Hero Propaganda": {
-		"TODO": {}
+		"TODO": "campaign mode unsupported"
 	},
 	"Attack on Mount Athena": {
 		"reveal": {
@@ -46,9 +168,6 @@
 		}
 	},
 	"Avalanche!": {
-		"TODO": {
-			"_comments": "delay counters"
-		},
 		"reveal": {
 			"all": {
 				"_rules": {
@@ -67,7 +186,19 @@
 				"Take Damage": [
 					{
 						"name": "receive_damage",
-						"amount": 2,
+						"amount": {
+							"if": {
+								"func_name": "count_tokens",
+								"func_params": {
+									"token_name": "delay",
+									"subject": "main_scheme"
+								},
+								"comparison": "ge",
+								"comparison_value": 5
+							},
+							"then": 3,
+							"else": 2
+						},
 						"subject": "my_identity"
 					}
 				]
@@ -213,16 +344,16 @@
 		}
 	},
 	"Basic Attack Upgrade": {
-		"TODO": {}
+		"TODO": "campaign mode unsupported"
 	},
 	"Basic Defense Upgrade": {
-		"TODO": {}
+		"TODO": "campaign mode unsupported"
 	},
 	"Basic Recovery Upgrade": {
-		"TODO": {}
+		"TODO": "campaign mode unsupported"
 	},
 	"Basic Thwart Upgrade": {
-		"TODO": {}
+		"TODO": "campaign mode unsupported"
 	},
 	"Berserk Mutate": {
 		"quickstrike": {},
@@ -236,7 +367,7 @@
 				},
 				{
 					"name": "temporary_effect",
-					"end_condition": "phase_ended",
+					"end_condition": "enemy_activation_finished",
 					"subject": "villain",
 					"effect": {
 						"alterants": {
@@ -331,14 +462,13 @@
 	},
 	"Black Knight - Dane Whitman": {
 		"interrupt": {
-			"event_name": "deal_damage",
+			"event_name": "receive_damage",
 			"event_filters": {
-				"source": "self",
 				"tags": [
-					"attack",
-					"basic power"
+					"attack"
 				]
 			},
+			"trigger": "self",
 			"board": [
 				{
 					"name": "replacement_effect",
@@ -397,9 +527,7 @@
 				"basic_attack_happened",
 				"basic_thwart_happened"
 			],
-			"event_filters": {
-				"source": "self"
-			},
+			"trigger": "self",
 			"board": [
 				{
 					"name": "draw_cards",
@@ -579,9 +707,9 @@
 			]
 		},
 		"interrupt": {
-			"event_name": "deal_damage",
+			"event_name": "receive_damage",
+			"trigger": "host",
 			"event_filters": {
-				"source": "host",
 				"tags": [
 					"attack"
 				]
@@ -834,10 +962,76 @@
 		}
 	},
 	"Crossbones - 1": {
-		"TODO": {}
+		"interrupt": {
+			"event_name": "receive_damage",
+			"trigger": "self",
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"condition_board": {
+				"func_name": "count_attachments",
+				"func_params": {
+					"subject": "self",
+					"filter_state_attachment": [
+						{
+							"filter_properties": {
+								"comparison": "gt",
+								"trait_weapon": 0
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
+				}
+			]
+		}
 	},
 	"Crossbones - 2": {
-		"TODO": {},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"trigger": "self",
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"condition_board": {
+				"func_name": "count_attachments",
+				"func_params": {
+					"subject": "self",
+					"filter_state_attachment": [
+						{
+							"filter_properties": {
+								"comparison": "gt",
+								"trait_weapon": 0
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
+				}
+			]
+		},
 		"reveal": {
 			"all": [
 				{
@@ -859,7 +1053,50 @@
 		}
 	},
 	"Crossbones - 3": {
-		"TODO": {}
+		"interrupt": {
+			"event_name": "receive_damage",
+			"trigger": "self",
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"condition_board": {
+				"func_name": "count_attachments",
+				"func_params": {
+					"subject": "self",
+					"filter_state_attachment": [
+						{
+							"filter_properties": {
+								"comparison": "gt",
+								"trait_weapon": 0
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "reveal_encounters",
+					"subject": "index",
+					"subject_count": 1,
+					"src_container": "deck_experimental_weapons"
+				}
+			]
+		}
 	},
 	"Crossbones' Armor": {
 		"card_moved_to_board": {
@@ -981,9 +1218,9 @@
 	"Crossfire": {
 		"quickstrike": {},
 		"interrupt": {
-			"event_name": "deal_damage",
+			"event_name": "receive_damage",
+			"trigger": "self",
 			"event_filters": {
-				"source": "self",
 				"tags": [
 					"attack"
 				]
@@ -1038,9 +1275,9 @@
 			]
 		},
 		"interrupt": {
-			"event_name": "deal_damage",
+			"event_name": "receive_damage",
+			"trigger": "self",
 			"event_filters": {
-				"source": "host",
 				"tags": [
 					"attack"
 				]
@@ -1138,7 +1375,35 @@
 	},
 	"Dense Forest": {
 		"_surge": {},
-		"TODO": {},
+		"response": {
+			"condition_board": {
+				"func_name": "current_activation_status",
+				"func_params": {
+					"undefended": true
+				}
+			},
+			"event_name": "enemy_attack_happened",
+			"trigger": "villain",
+			"board": [
+				{
+					"name": "receive_damage",
+					"subject": "my_hero",
+					"amount": {
+						"if": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"token_name": "delay",
+								"subject": "main_scheme"
+							},
+							"comparison": "ge",
+							"comparison_value": 5
+						},
+						"then": 2,
+						"else": 1
+					}
+				}
+			]
+		},
 		"boost": {
 			"all": [
 				{
@@ -1275,7 +1540,7 @@
 		}
 	},
 	"Emergency Teleporter": {
-		"TODO": {}
+		"TODO": "campaign mode unsupported"
 	},
 	"Energy Shield": {
 		"card_moved_to_board": {
@@ -1753,9 +2018,9 @@
 			]
 		},
 		"interrupt": {
-			"event_name": "deal_damage",
+			"event_name": "receive_damage",
+			"trigger": "my_hero",
 			"event_filters": {
-				"source": "my_hero",
 				"tags": [
 					"attack",
 					"arrow"
@@ -1971,9 +2236,9 @@
 	},
 	"Hydra Hunter": {
 		"interrupt": {
-			"event_name": "deal_damage",
+			"event_name": "receive_damage",
+			"trigger": "self",
 			"event_filters": {
-				"source": "self",
 				"tags": [
 					"attack"
 				]
@@ -2172,9 +2437,9 @@
 			]
 		},
 		"interrupt": {
-			"event_name": "deal_damage",
+			"event_name": "receive_damage",
+			"trigger": "host",
 			"event_filters": {
-				"source": "host",
 				"tags": [
 					"attack"
 				]
@@ -2229,7 +2494,86 @@
 		}
 	},
 	"Hunting Down Heroes": {
-		"TODO": {}
+		"step_ended": {
+			"event_filters": {
+				"step_name": "VILLAIN_THREAT"
+			},
+			"board": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"1 Threat": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "add_threat",
+						"subject": "self",
+						"amount": 1
+					}
+				],
+				"1 Damage": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "deal_damage",
+						"amount": 1,
+						"subject": "my_identity"
+					}
+				],
+				"Phew!": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_form"
+						]
+					}
+				]
+			}
+		},
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck_villain",
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_captive": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Hydra Patrol"
+							}
+						}
+					]
+				}
+			]
+		}
 	},
 	"Icy Grip": {
 		"reveal": {
@@ -2295,16 +2639,16 @@
 		}
 	},
 	"Improved Attack Upgrade": {
-		"TODO": {}
+		"TODO": "campaign mode unsupported"
 	},
 	"Improved Defense Upgrade": {
-		"TODO": {}
+		"TODO": "campaign mode unsupported"
 	},
 	"Improved Recovery Upgrade": {
-		"TODO": {}
+		"TODO": "campaign mode unsupported"
 	},
 	"Improved Thwart Upgrade": {
-		"TODO": {}
+		"TODO": "campaign mode unsupported"
 	},
 	"Inconspicuous": {
 		"manual": {
@@ -2396,7 +2740,7 @@
 		}
 	},
 	"Laser Cannon": {
-		"TODO": {}
+		"TODO": "campaign mode unsupported"
 	},
 	"Laser Rifle": {
 		"card_moved_to_board": {
@@ -2409,9 +2753,9 @@
 			]
 		},
 		"interrupt": {
-			"event_name": "deal_damage",
+			"event_name": "receive_damage",
+			"trigger": "host",
 			"event_filters": {
-				"source": "host",
 				"tags": [
 					"attack"
 				]
@@ -2523,7 +2867,7 @@
 		}
 	},
 	"Martial Law": {
-		"TODO": {}
+		"TODO": "campaign mode unsupported"
 	},
 	"Mass Chaos": {
 		"reveal": {
@@ -2597,7 +2941,7 @@
 		}
 	},
 	"Medical Emergency": {
-		"TODO": {}
+		"TODO": "campaign mode unsupported"
 	},
 	"Mimicry": {
 		"reveal_alter_ego": {
@@ -2791,10 +3135,104 @@
 		}
 	},
 	"New World Hydra": {
-		"TODO": {}
+		"reveal_side_a": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor",
+					"subject_index": "top",
+					"src_container": "deck_side_schemes"
+				}
+			]
+		},
+		"step_ended": {
+			"event_filters": {
+				"step_name": "VILLAIN_THREAT"
+			},
+			"board": [
+				{
+					"name": "reveal_encounters",
+					"subject": "tutor",
+					"subject_index": "top",
+					"src_container": "deck_side_schemes",
+					"subject_count": 1
+				}
+			]
+		}
 	},
 	"None Shall Pass": {
-		"TODO": {}
+		"step_ended": {
+			"event_filters": {
+				"step_name": "VILLAIN_THREAT"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "delay",
+					"subject": "self"
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "boardseek",
+					"dest_container": "discard_villain",
+					"subject_exclude": "trigger",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "environment"
+							}
+						}
+					]
+				}
+			],
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "environment"
+					}
+				}
+			]			
+		},
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "environment"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "discard_villain",
+					"dest_container": "deck_villain"
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
+				}
+			]
+		}
 	},
 	"Omni-Morph Duplication": {
 		"reveal": {
@@ -3379,9 +3817,9 @@
 			]
 		},
 		"interrupt": {
-			"event_name": "deal_damage",
+			"event_name": "receive_damage",
+			"trigger": "host",
 			"event_filters": {
-				"source": "host",
 				"tags": [
 					"attack"
 				]
@@ -3481,7 +3919,35 @@
 	},
 	"Rocky Outcrop": {
 		"_surge": {},
-		"TODO": {},
+		"response": {
+			"condition_board": {
+				"func_name": "current_activation_status",
+				"func_params": {
+					"undefended": true
+				}
+			},
+			"event_name": "enemy_attack_happened",
+			"trigger": "villain",
+			"board": [
+				{
+					"name": "heal",
+					"subject": "villain",
+					"amount": {
+						"if": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"token_name": "delay",
+								"subject": "main_scheme"
+							},
+							"comparison": "ge",
+							"comparison_value": 5
+						},
+						"then": 2,
+						"else": 1
+					}
+				}
+			]
+		},
 		"boost": {
 			"all": [
 				{
@@ -3560,7 +4026,61 @@
 		}
 	},
 	"Skilled Investigator": {
-		"TODO": {}
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero_any": 1
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_to_player_zone",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities",
+							"filter_max_per_hero": 1
+						}
+					]
+				}
+			]
+		},
+		"response": {
+			"event": "card_defeated",
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_side_schemes"
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
 	},
 	"Sky Cycle": {
 		"manual": {
@@ -3632,7 +4152,35 @@
 	},
 	"Snowy Hillside": {
 		"_surge": {},
-		"TODO": {},
+		"response": {
+			"condition_board": {
+				"func_name": "current_activation_status",
+				"func_params": {
+					"undefended": true
+				}
+			},
+			"event_name": "enemy_attack_happened",
+			"trigger": "villain",
+			"board": [
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": {
+						"if": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"token_name": "delay",
+								"subject": "main_scheme"
+							},
+							"comparison": "ge",
+							"comparison_value": 5
+						},
+						"then": 2,
+						"else": 1
+					}
+				}
+			]
+		},
 		"boost": {
 			"all": [
 				{
@@ -3931,7 +4479,45 @@
 		}
 	},
 	"Stall Tactics": {
-		"TODO": {}
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": "per_token",
+					"is_cost": true,
+					"per_token": {
+						"token_name": "delay",
+						"divider": 2
+					}
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "receive_damage",
+					"subject": "my_hero",
+					"amount": {
+						"if": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"token_name": "delay",
+								"subject": "main_scheme"
+							},
+							"comparison": "ge",
+							"comparison_value": 5
+						},
+						"then": 1,
+						"else": 0
+					}
+				}
+			]
+		}
 	},
 	"Steel Kick": {
 		"reveal_alter_ego": {
@@ -4032,8 +4618,7 @@
 			"all": [
 				{
 					"name": "temporary_effect",
-					"end_condition": "phase_ended",
-					"_comments": "TODO End condition here is wrong, need to create an activation finished signal",
+					"end_condition": "enemy_activation_finished",
 					"subject": "villain",
 					"effect": {
 						"alterants": {
@@ -4068,8 +4653,7 @@
 			"all": [
 				{
 					"name": "temporary_effect",
-					"end_condition": "phase_ended",
-					"_comments": "TODO End condition here is wrong, need to create an activation finished signal",
+					"end_condition": "enemy_activation_finished",
 					"subject": "villain",
 					"effect": {
 						"alterants": {
@@ -4101,7 +4685,7 @@
 		}
 	},
 	"Tactical Scanner": {
-		"TODO": {}
+		"TODO": "campaign mode unsupported"
 	},
 	"Taskmaster - 1": {
 		"response": {
@@ -4289,9 +4873,9 @@
 			]
 		},
 		"interrupt": {
-			"event_name": "deal_damage",
+			"event_name": "receive_damage",
+			"trigger": "host",
 			"event_filters": {
-				"source": "host",
 				"tags": [
 					"attack"
 				]
@@ -4459,16 +5043,209 @@
 		}
 	},
 	"The Getaway": {
-		"TODO": {}
+		"reveal": {
+			"all": [
+				{
+					"name": "reveal_encounters",
+					"subject": "index",
+					"subject_count": 1,
+					"src_container": "deck_experimental_weapons"
+				}
+			]
+		}
 	},
 	"The Infinity Stone": {
-		"TODO": {}
+		"reveal": {
+			"all": [
+				{
+					"name": "reveal_encounters",
+					"subject": "index",
+					"subject_count": 1,
+					"src_container": "deck_experimental_weapons"
+				}
+			]
+		}
 	},
 	"The Island of Dr. Zola": {
-		"TODO": {}
+		"setup": {
+			"all": [
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": "deck_villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Hydra Prison"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "deck_villain",
+					"grid_name": "enemies_my_hero",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Ultimate Bio-Servant"
+							}
+						}
+					],
+					"for_each_player": true
+				}
+			]
+		},
+		"step_ended": {
+			"event_filters": {
+				"step_name": "VILLAIN_THREAT"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "test",
+					"subject": "self"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_tokens",
+								"func_params": {
+									"token_name": "delay",
+									"subject": "self"
+								},
+								"comparison": "ge",
+								"comparison_value": 3
+							},
+							"nested_tasks": [
+								{
+									"name": "move_card_to_container",
+									"subject": "grab_until",
+									"src_container": "deck_villain",
+									"dest_container": "discard_villain",
+									"filter_state_grab_until": [
+										{
+											"filter_properties": {
+												"type_code": "minion"
+											}
+										}
+									]
+								},
+								{
+									"name": "move_card_to_board",
+									"subject": "index",
+									"subject_count": 1,
+									"grid_name": "enemies_first_player",
+									"subject_index": "retrieve_integer",
+									"src_container": "deck_villain"
+								},
+								{
+									"name": "mod_tokens",
+									"modification": -3,
+									"token_name": "test",
+									"subject": "self"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
 	},
 	"The Mad Doctor": {
-		"TODO": {}
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Reveal Minion": [
+					{
+						"name": "deal_encounter",
+						"immediate_reveal": true,
+						"subject": "tutor",
+						"src_container": [
+							"deck_villain",
+							"discard_villain"
+						],
+						"subject_count": "all",
+						"selection_count": 1,
+						"selection_type": "equal",
+						"needs_selection": true,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "minion"
+								}
+							}
+						]
+					}
+				]
+			}
+		},
+		"step_ended": {
+			"event_filters": {
+				"step_name": "VILLAIN_THREAT"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "test",
+					"subject": "self"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_tokens",
+								"func_params": {
+									"token_name": "delay",
+									"subject": "self"
+								},
+								"comparison": "ge",
+								"comparison_value": 3
+							},
+							"nested_tasks": [
+								{
+									"name": "move_card_to_container",
+									"subject": "grab_until",
+									"src_container": "deck_villain",
+									"dest_container": "discard_villain",
+									"filter_state_grab_until": [
+										{
+											"filter_properties": {
+												"type_code": "minion"
+											}
+										}
+									]
+								},
+								{
+									"name": "move_card_to_board",
+									"subject": "index",
+									"subject_count": 1,
+									"grid_name": "enemies_first_player",
+									"subject_index": "retrieve_integer",
+									"src_container": "deck_villain"
+								},
+								{
+									"name": "mod_tokens",
+									"modification": -3,
+									"token_name": "test",
+									"subject": "self"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
 	},
 	"The Red House": {
 		"alterants": {
@@ -4482,37 +5259,47 @@
 			]
 		},
 		"interrupt": {
-			"event_name": "thwart",
+			"event_name": "remove_threat",
 			"event_filters": {
 				"target": "self",
+				"tags": [
+					"thwart"
+				]
 			},
 			"is_optional_board": true,
-			"board": [
-				{
-					"name": "replacement_effect",
-					"subject": "interrupted_event",
-					"replacements": {
-						"amount": {
-							"func_name": "get_subject_int_property",
-							"func_params": {
-								"property": "attack",
-								"subject": "trigger"
+			"board": {
+				"Use THW": [
+					{
+						"name": "nop"
+					}
+				],
+				"Use ATK": [
+					{
+						"name": "replacement_effect",
+						"subject": "interrupted_event",
+						"replacements": {
+							"amount": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"property": "attack",
+									"subject": "trigger"
+								}
 							}
 						}
 					}
-				}
-			]
+				]
+			}
 		}
 	},
 	"The Rise of Red Skull": {
 		"setup": {
-			"all": [		
+			"all": [
 				{
 					"name": "move_card_to_container",
 					"subject": "tutor",
 					"subject_count": "all",
 					"src_container": [
-						"deck_villain",
+						"deck_villain"
 					],
 					"dest_container": "deck_side_schemes",
 					"filter_state_tutor": [
@@ -4537,13 +5324,12 @@
 							}
 						}
 					]
-				},					
-				
+				}
 			]
 		},
-		"step_ended":{
+		"step_ended": {
 			"event_filters": {
-				"step_name": "VILLAIN_THREAT",
+				"step_name": "VILLAIN_THREAT"
 			},
 			"board": [
 				{
@@ -4555,7 +5341,6 @@
 				}
 			]
 		}
-		
 	},
 	"The Sleeper": {
 		"reveal": {
@@ -4687,7 +5472,17 @@
 		}
 	},
 	"Ultimate Bio-Servant": {
-		"TODO": {},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": "per_attachment_self",
+					"per_attachment_self": {},
+					"trigger": "self"
+				}
+			]
+		},
 		"boost": {
 			"all": [
 				{
@@ -4856,9 +5651,9 @@
 	},
 	"War Machine - James Rhodes": {
 		"interrupt": {
-			"event_name": "deal_damage",
+			"event_name": "receive_damage",
+			"trigger": "self",
 			"event_filters": {
-				"source": "self",
 				"tags": [
 					"attack",
 					"basic power"
@@ -4878,12 +5673,37 @@
 		}
 	},
 	"Weapon Master": {
-		"TODO": {},
 		"reveal_alter_ego": {
 			"all": [
 				{
 					"name": "enemy_schemes",
 					"subject": "villain"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_attachments",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_attachment": [
+										{
+											"filter_properties": {
+												"comparison": "gt",
+												"trait_weapon": 0
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "surge"
+								}
+							]
+						}
+					]
 				}
 			]
 		},
@@ -4891,6 +5711,32 @@
 			"all": [
 				{
 					"name": "villain_attacks_you"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_attachments",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_attachment": [
+										{
+											"filter_properties": {
+												"comparison": "gt",
+												"trait_weapon": 0
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "surge"
+								}
+							]
+						}
+					]
 				}
 			]
 		}
@@ -4975,7 +5821,7 @@
 		}
 	},
 	"Zola's Algorithm": {
-		"TODO": {}
+		"TODO": "campaign mode unsupported"
 	},
 	"Zola's Experiments": {
 		"card_moved_to_board": {

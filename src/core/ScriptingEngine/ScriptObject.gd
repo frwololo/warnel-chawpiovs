@@ -100,6 +100,12 @@ func get_property(property: String, default = null, subscript_definition = null,
 			var func_name = _if["func_name"]
 			var params = _if.get("func_params", {})
 			var if_check_result = owner.call(func_name, params, self)
+
+			#asked to compare int results
+			var comparison = _if.get("comparison", "")
+			if comparison:
+				var value = retrieve_integer_subproperty("comparison_value", _if, 0)
+				if_check_result = CFUtils.compare_numbers(if_check_result,value,comparison)
 			if (if_check_result):
 				return get_property(property, default, result["then"], root)
 			else:
@@ -318,7 +324,8 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 
 	var to_exclude = get_property("subject_exclude", null)
 	if to_exclude:
-		var exclude_result = cfc.ov_utils.get_subjects(self, to_exclude, stored_integer, run_type, trigger_details)
+		var exclude_result = _local_find_subjects(stored_integer, run_type, {"subject" : to_exclude, "subject_exclude" : ""})
+		#cfc.ov_utils.get_subjects(self, to_exclude, stored_integer, run_type, trigger_details)
 		if typeof(exclude_result) == TYPE_ARRAY:
 			for exclude in exclude_result:
 				subjects_array.erase(exclude)

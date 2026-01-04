@@ -72,7 +72,7 @@ var my_script_requests_pending_execution: = 0
 func _ready():
 	scripting_bus.connect("step_started", self, "_step_started")
 
-func _step_started(details:Dictionary):
+func _step_started(_trigger_object, details:Dictionary):
 	var current_step = details["step"]
 	match current_step:
 		CFConst.PHASE_STEP.PLAYER_MULLIGAN, CFConst.PHASE_STEP.PLAYER_DISCARD, CFConst.PHASE_STEP.IDENTITY_SETUP:

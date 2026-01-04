@@ -1,6 +1,7 @@
 class_name OptionsMenu
 extends Node2D
 
+
 onready var v_box_container = $PanelContainer/MarginContainer/VBoxContainer
 onready var file_dialog = get_node("%FileDialog")
 onready var h_box_container = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer
@@ -86,24 +87,26 @@ func _input(event):
 		hide_controls()
 		
 func close_me():
-	set_process(false)
+	#set_process(false)
 	cfc.set_game_paused(false)
 	visible = false
 	#doing a pause here to not react to a previous button press
 	yield(get_tree().create_timer(0.1), "timeout")	
-	get_parent().enable_focus_mode()
+	cfc.NMAP.board.enable_focus_mode()
+	cfc.NMAP.board.visible = true
 
 func show_me():
-	set_process(true)
+	#set_process(true)
 	if gamepadHandler.is_controller_input():
 		get_node("%Controls").visible = true
 	else:
 		get_node("%Controls").visible = false
 	visible = true
 	cfc.set_game_paused(true)
-	get_parent().disable_focus_mode()
+	cfc.NMAP.board.disable_focus_mode()
 	cfc.default_button_focus(v_box_container)	
-
+	cfc.NMAP.board.visible = false 
+	
 func restart_game():
 	var path = "user://Saves/_restart.json"
 	var json = WCUtils.read_json_file(path)

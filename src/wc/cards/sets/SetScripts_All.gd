@@ -179,8 +179,7 @@ func get_scripts(scripts: Dictionary, card_id: String, _get_modified = true) -> 
 		
 		if "scheme" in type_code:
 			var scheme_comes_to_play: Dictionary = { 
-				"card_moved_to_board": {
-					"trigger": "self",
+				"self_moved_to_board": {
 					"board": [
 						{
 							"name": "scheme_base_threat",

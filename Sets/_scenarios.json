@@ -96,7 +96,7 @@
 		],
 		"modular_default": [
 			"hydra_patrol",
-			"weapon_master",
+			"weap_master",
 			"legions_of_hydra"
 		],
 		"encounter_sets": [
@@ -153,7 +153,7 @@
 		"code": "04096",
 		"name": "Hunting Down Heroes",
 		"modular_default": [
-			"weapon_master"
+			"weap_master"
 		],
 		"encounter_sets": [
 			"Taskmaster",

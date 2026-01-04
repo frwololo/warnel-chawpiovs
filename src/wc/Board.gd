@@ -9,7 +9,6 @@ var basicGrid = preload("res://src/wc/grids/BasicGrid.tscn")
 var basicPile = preload("res://src/core/Pile.tscn")
 
 onready var villain := $VillainZone
-onready var options_menu = $OptionsMenu
 
 onready var _server_activity = get_node("%ServerActivity")
 var board_organizers: Array = []
@@ -1041,7 +1040,7 @@ func _on_OptionsButton_pressed():
 	show_options_menu()
 
 func show_options_menu():
-	options_menu.show_me()
+	cfc.NMAP.main.show_options_menu()
 
 
 #card_id_or_name can be an id, a shortname, or a name

@@ -105,7 +105,8 @@ func reposition_vbc():
 		var source_bounding:Rect2 = Rect2(board_top_left_corner,board_card_size)
 		if vbc_bounding.intersects( source_bounding):
 			display_position.x = board_top_left_corner.x + board_card_size.x + spacer
-		
+			if display_position.x + display_size.x + (spacer*2) >= viewport_size.x :
+				display_position.x = spacer
 		#For testing: create two ColorRect nodes as children of Main.tscn
 		#named  ColorRect and ColorRect2
 #		var color_rect = get_node("%ColorRect")
@@ -222,6 +223,10 @@ func focus_card(card: Card, show_preview := true) -> void:
 			# We display a "pure" version of the card
 			# This means we hide buttons, tokens etc
 			dupe_focus.set_state(Card.CardState.VIEWPORT_FOCUS)
+			
+			#remove unecessary children
+			if dupe_focus.targeting_arrow:
+				dupe_focus.remove_child(dupe_focus.targeting_arrow)
 			if vbc_position_mode:
 				dupe_focus.set_position(Vector2(0,0))						
 				$VBC.add_child(dupe_focus)
@@ -403,6 +408,8 @@ func toggle_glow(is_enabled := true) -> void:
 func get_origin_card(dupe_card):
 	return dupe_card.is_duplicate_of
 
+func show_options_menu():
+	$OptionsMenu.show_me()
 
 func get_main_viewport():
 	return viewport 

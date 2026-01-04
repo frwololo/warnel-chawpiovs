@@ -103,6 +103,7 @@ func move_card_to_board(script: ScriptTask) -> int:
 		if card.is_boost():
 			card.set_is_boost(false)
 			card._clear_attachment_status()
+			script.script_definition[SP.KEY_TAGS] = ["force_emit_card_moved_signal"] +  script.get_property(SP.KEY_TAGS)
 
 	var result = .move_card_to_board(script)
 	if override_properties:
@@ -265,7 +266,7 @@ func attack(script: ScriptTask) -> int:
 
 	if (owner.is_stunned()):
 		owner.hint("Stunned!", Color8(50,200,50))
-		owner.disable_stun()
+		owner.remove_stun()
 		
 	else:
 		if (damage):	
@@ -300,24 +301,13 @@ func character_died(script: ScriptTask) -> int:
 		return retcode
 	
 	for card in script.subjects:
-#		var damageScript:DamageScript = DamageScript.new(card, amount, script.script_definition, tags)
-#		gameData.theStack.add_script(damageScript)
-		
-		#scripting_bus.emit_signal("damage_incoming", card, script.script_definition)	
-#		var owner_hero_id = card.get_owner_hero_id()
-#		if owner_hero_id > 0:
-#			card.move_to(cfc.NMAP["discard" + str(owner_hero_id)])
-#		else:
-#			card.move_to(cfc.NMAP["discard_villain"])
 		var type = card.get_property("type_code", "")
 		if type:
 			var stackEvent:SignalStackScript = SignalStackScript.new(type + "_died", card, script.trigger_details)
 			gameData.theStack.add_script(stackEvent)			
-			#scripting_bus.emit_signal(type + "_died", card, script.trigger_details)
 		if type in ["minion", "villain"]: #TODO more generic way to handle this?
 			var stackEvent:SignalStackScript = SignalStackScript.new("enemy_died", card, script.trigger_details)
 			gameData.theStack.add_script(stackEvent)			
-			#scripting_bus.emit_signal("enemy_died", card, script.trigger_details)
 
 		var owner_hero_id = card.get_owner_hero_id()
 		if owner_hero_id > 0:
@@ -469,7 +459,14 @@ func receive_damage(script: ScriptTask) -> int:
 		if card.get_property("invincible", 0):
 			continue
 
+		if (amount and script.has_tag("piercing")):
+			var tough = card.tokens.get_token_count("tough")
+			card.tokens.mod_token("tough", 0, true)
+			if tough:
+				card.hint("Piercing!", Color8(255,50,50))
 		var tough = card.tokens.get_token_count("tough")
+
+			
 		if (amount and tough):
 			card.tokens.mod_token("tough", -1)
 		else:	
@@ -532,12 +529,17 @@ func receive_damage(script: ScriptTask) -> int:
 			#retaliate against an attack only if I didn't die
 			var retaliate = card.get_property("retaliate", 0)
 			if retaliate:
-				var script_modifications = {
-					"tags" : ["retaliate", "Scripted"],
-					"subjects": [attacker],
-					"owner": card,
-				}
-				_add_receive_damage_on_stack(retaliate, script, script_modifications)
+				card.hint("Retaliate!", Color8(255,50,50))
+
+				if script.has_tag("ranged"):
+					attacker.hint("Ranged Attack!", Color8(50,50,255))
+				else:
+					var script_modifications = {
+						"tags" : ["retaliate", "Scripted"],
+						"subjects": [attacker],
+						"owner": card,
+					}
+					_add_receive_damage_on_stack(retaliate, script, script_modifications)
 							
 	return retcode
 
@@ -864,6 +866,17 @@ func _add_receive_damage_on_stack(amount, original_script, modifications:Diction
 		var task_event = SimplifiedStackScript.new(receive_damage_script)
 		gameData.theStack.add_script(task_event)	
 
+func _add_remove_threat_on_stack(amount, original_script, modifications:Dictionary = {}):		
+		var remove_threat_script_definition = {
+			"name": "remove_threat",
+			"amount": amount,
+		}
+		modifications["script_definition"] =  remove_threat_script_definition	
+		var remove_threat_script = _modify_script(original_script, modifications, "replace")
+	
+		var task_event = SimplifiedStackScript.new(remove_threat_script)
+		gameData.theStack.add_script(task_event)
+
 func _add_receive_threat_on_stack(amount, original_script, modifications:Dictionary = {}):		
 		var receive_threat_script_definition = {
 			"name": "add_threat",
@@ -952,7 +965,7 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 		amount = max(amount-damage_reduction, 0)		
 	else:
 		script.subjects.append(my_hero)
-		#TODO add variable stating attack was undefended
+		script.script_definition["tags"].append("undefended")
 		
 	var overkill_amount = 0
 	
@@ -995,7 +1008,7 @@ func consequential_damage(script: ScriptTask) -> int:
 	var damage = owner.get_property("attack_cost", 0)
 	
 	match script.script_name:
-		"thwart":
+		"thwart", "remove_threat":
 			damage = owner.get_property("thwart_cost",0)
 
 	var additional_task := ScriptTask.new(
@@ -1074,13 +1087,24 @@ func remove_threat(script: ScriptTask) -> int:
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
 
-	var modification = script.retrieve_integer_property("amount")
+	var amount = script.retrieve_integer_property("amount")
 
 	for card in script.subjects:
-		retcode = card.remove_threat(modification, script)
+		retcode = card.remove_threat(amount, script)
 	
 		if "side_scheme" == card.properties.get("type_code", "false"):
 			card.check_scheme_defeat(script)
+
+
+	consequential_damage(script)
+	if (script.has_tag("basic power")):
+		var signal_details = {
+			"source": owner,
+			"amount": amount,
+		}
+		gameData.theStack.add_script(SignalStackScript.new("basic_thwart_happened",  owner,  signal_details))				
+		scripting_bus.emit_signal("thwarted", owner, {"amount" : amount, "target" : script.subjects[0]})
+
 		
 
 	return retcode	
@@ -1093,18 +1117,16 @@ func thwart(script: ScriptTask) -> int:
 	var owner = script.owner
 	#we can provide a thwart amount in the script,
 	#otherwise we use the thwart property if the script owner is a friendly character
-	var modification = script.retrieve_integer_property("amount")
-	if !modification:
-		modification = owner.get_property("thwart", 0)
+	var amount = script.retrieve_integer_property("amount")
+	if !amount:
+		amount = owner.get_property("thwart", 0)
 
-	if !modification:
-		modification = 0
+	if !amount:
+		amount = 0
 
 	var type = owner.get_property("type_code", "")
 	if !type in ["hero", "ally"]:
 		owner = _get_identity_from_script(script)
-
-	var tags = script.get_property(SP.KEY_TAGS, [])
 	
 	var confused = owner.tokens.get_token_count("confused")
 	if (confused):
@@ -1112,24 +1134,97 @@ func thwart(script: ScriptTask) -> int:
 		owner.hint("Confused!", Color8(240,110,255))
 	else:
 		for card in script.subjects:
-			retcode = card.remove_threat(modification)
-			if "side_scheme" == card.properties.get("type_code", "false"):
-				card.check_scheme_defeat(script)
+			var script_modifications = {
+				"additional_tags" : ["thwart"],
+				"subjects": [card],
+			}			
+			_add_remove_threat_on_stack(amount, script, script_modifications )
+			retcode = CFConst.ReturnCode.CHANGED
 
-		consequential_damage(script)
-		if ("basic power" in tags):
-			var signal_details = {
-				"source": owner,
-				"amount": modification,
-			}
-			gameData.theStack.add_script(SignalStackScript.new("basic_thwart_happened",  owner,  signal_details))				
-#				scripting_bus.emit_signal("basic_attack_happened", script.owner, signal_details)
-		
-		scripting_bus.emit_signal("thwarted", owner, {"amount" : modification, "target" : script.subjects[0]})
-	
 	return retcode	
 
 
+func add_properties_from(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.FAILED
+
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED	
+
+	var properties_list= script.get_property("properties", [])
+	if !properties_list:
+		return CFConst.ReturnCode.FAILED	
+	
+	if (costs_dry_run()):
+		return CFConst.ReturnCode.CHANGED
+	
+	if typeof(properties_list) == TYPE_STRING:
+		properties_list = [properties_list]
+	
+	var target = script.owner
+	
+	var subjects = script.subjects
+	for subject in subjects:
+		var properties_to_copy = compile_property_list(subject, properties_list)
+		for property in properties_to_copy:
+			#we're intentionally not using get_properties here to not copy an altered value
+			var value = subject.properties.get(property)
+			match typeof(value):
+				TYPE_INT:
+					var v1 = target.properties.get(property, 0)
+					target.properties[property] = v1 + value
+				_:
+					target.properties[property] = value					
+				
+	return retcode
+	
+func subtract_properties_from(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.FAILED
+
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED	
+
+	var properties_list= script.get_property("properties", [])
+	if !properties_list:
+		return CFConst.ReturnCode.FAILED	
+	
+	if (costs_dry_run()):
+		return CFConst.ReturnCode.CHANGED
+	
+	if typeof(properties_list) == TYPE_STRING:
+		properties_list = [properties_list]
+	
+	var target = script.owner
+	
+	var subjects = script.subjects
+	for subject in subjects:
+		var properties_to_copy = compile_property_list(subject, properties_list)
+		for property in properties_to_copy:
+			#we're intentionally not using get_properties here to not copy an altered value
+			var value = subject.properties.get(property)
+			match typeof(value):
+				TYPE_INT:
+					var v1 = target.properties.get(property, 0)
+					target.properties[property] = v1 - value
+				TYPE_STRING:	
+					target.properties[property] = "value"	
+				_:
+					target.properties.erase(property)					
+				
+	return retcode			
+
+func compile_property_list(subject, properties_list):
+	var properties_to_copy = []
+	for property_name in properties_list:
+		if property_name.ends_with("*"):
+			property_name = property_name.substr(0, property_name.length() - 1)
+			for property in subject.properties:
+				if property.begins_with(property_name):
+					properties_to_copy.append(property)
+		else:
+			if subject.properties.has(property_name):
+				properties_to_copy.append(property_name)
+	return properties_to_copy	
+		
 # Task for executing nested tasks
 # This task will execute internal non-cost cripts accordin to its own
 # nested cost instructions.
@@ -1191,8 +1286,12 @@ func cancel_current_encounter(script: ScriptTask) -> int:
 func deal_encounter(script: ScriptTask) -> int:
 
 	var retcode: int = CFConst.ReturnCode.FAILED
+	
+	if !script.subjects:
+		return retcode
 
-	if (costs_dry_run()): #not allowed ?
+
+	if (costs_dry_run()): 
 		return CFConst.ReturnCode.CHANGED
 
 	var owner = script.owner
@@ -1427,9 +1526,11 @@ func reveal_nemesis (script:ScriptTask) -> int:
 const _tags_to_tags: = {
 	"hero_action" : ["hero_form", "action_ability"],
 	"hero_interrupt": ["hero_form", "interrupt_ability"],
+	"hero_response": ["hero_form", "interrupt_ability"],	
 	"hero_resource": ["hero_form", "resource_ability"],
 	"alter_ego_action": ["alter_ego_form", "action_ability"], 
 	"alter_ego_interrupt": ["alter_ego_form", "interrupt_ability"], 
+	"alter_ego_response": ["alter_ego_form", "interrupt_ability"],	
 	"alter_ego_resource": ["alter_ego_form", "resource_ability"],
 	"as_action": ["action_ability"] 	
 }

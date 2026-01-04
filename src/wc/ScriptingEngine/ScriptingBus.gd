@@ -20,14 +20,15 @@ signal interrupt(card, details)
 signal card_damaged(card,details)
 
 #Game Phases
+#we have to pass a card to not break the scripting_bus mechanism :(
 # warning-ignore:unused_signal
-signal step_about_to_start(details)
+signal step_about_to_start(card, details)
 # warning-ignore:unused_signal
-signal step_started(details)
+signal step_started(card, details)
 # warning-ignore:unused_signal
-signal step_about_to_end(details)
+signal step_about_to_end(card, details)
 # warning-ignore:unused_signal
-signal step_ended(details)
+signal step_ended(card, details)
 
 #GUI and game Interface signals
 # warning-ignore:unused_signal
@@ -51,6 +52,10 @@ signal enemy_initiates_scheme(card,details)
 signal enemy_attack_happened (card,details)
 # warning-ignore:unused_signal
 signal enemy_scheme_happened (card,details)
+
+#emitted when an enemy activation is finished, whether it was succesful or not
+# warning-ignore:unused_signal
+signal enemy_activation_finished(card,details)
 
 # warning-ignore:unused_signal
 signal villain_step_one_threat_added(card, details)

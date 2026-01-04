@@ -62,7 +62,7 @@ func resize():
 	if screen_size.x > 1800:
 		scenario_picture.rect_min_size = Vector2(200, 200)
 	else:		
-		scenario_picture.rect_min_size = Vector2(120, 120)
+		scenario_picture.rect_min_size = Vector2(100, 100)
 	
 	scenario_picture.rect_size = scenario_picture.rect_min_size	
 

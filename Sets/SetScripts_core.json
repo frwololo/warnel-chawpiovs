@@ -2270,7 +2270,7 @@
 					"name": "heal",
 					"amount": 4,
 					"is_cost": true,
-					"subject": "villain",
+					"subject": "villain"
 				},
 				{
 					"name": "surge",
@@ -2706,7 +2706,7 @@
 					"token_name": "tough",
 					"modification": 1,
 					"is_cost": true,
-					"subject": "villain",
+					"subject": "villain"
 				},
 				{
 					"name": "surge",
@@ -2944,20 +2944,10 @@
 					"name": "deal_encounter",
 					"immediate_reveal": true,
 					"subject": "tutor",
-					"src_container": "deck_villain",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"Name": "The \"Immortal\" Klaw"
-							}
-						}
-					]
-				},
-				{
-					"name": "deal_encounter",
-					"immediate_reveal": true,
-					"subject": "tutor",
-					"src_container": "discard_villain",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -3034,7 +3024,7 @@
 				{
 					"name": "add_threat",
 					"amount": 1,
-					"subject": "main_scheme",
+					"subject": "main_scheme"
 				}
 			]
 		},
@@ -4190,7 +4180,10 @@
 					"name": "deal_encounter",
 					"immediate_reveal": true,
 					"subject": "tutor",
-					"src_container": ["deck_villain", "discard_villain"],
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -4198,7 +4191,7 @@
 							}
 						}
 					]
-				},
+				}
 			]
 		}
 	},
@@ -5425,7 +5418,7 @@
 							"subject": "all_previous"
 						}
 					},
-					"subject": "main_scheme",
+					"subject": "main_scheme"
 				}
 			]
 		}

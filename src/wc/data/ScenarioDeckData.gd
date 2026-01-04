@@ -19,15 +19,15 @@ func _init():
 	pass
 
 
-static func get_recommended_modular_encounter(scheme_id):
+static func get_recommended_modular_encounters(scheme_id):
 	var scheme_primitive = cfc.primitives.get(scheme_id, {})
 	if !scheme_primitive:
-		return ""
+		return []
 	
 	var modular_defaults: Array = scheme_primitive.get("modular_default", [])
 	if modular_defaults:
-		return modular_defaults[0]
-	return ""
+		return modular_defaults
+	return []
 	
 static func get_villains_from_scheme(scheme_id, expert_mode:= false):
 	var scheme_primitive = cfc.primitives.get(scheme_id, {})

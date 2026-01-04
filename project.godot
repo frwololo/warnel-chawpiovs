@@ -389,6 +389,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/wc/cards/sets/SetScripts_All.gd"
 }, {
+"base": "Node2D",
+"class": "SideIcons",
+"language": "GDScript",
+"path": "res://src/wc/SideIcons.gd"
+}, {
 "base": "StackObject",
 "class": "SignalStackScript",
 "language": "GDScript",
@@ -556,6 +561,7 @@ _global_script_class_icons={
 "ScriptingEngine": "",
 "SelectionWindow": "",
 "SetScripts_All": "",
+"SideIcons": "",
 "SignalStackScript": "",
 "SimplifiedStackScript": "",
 "StackEventDisplay": "",
@@ -589,6 +595,10 @@ gameData="*res://src/wc/GameData.gd"
 scripting_bus="*res://src/wc/ScriptingEngine/ScriptingBus.gd"
 guidMaster="*res://src/multiplayer/GUID.gd"
 gamepadHandler="*res://src/wc/GamepadHandler.gd"
+
+[debug]
+
+settings/fps/force_fps=60
 
 [display]
 

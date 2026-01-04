@@ -53,9 +53,12 @@ func hint (text, color, details = {}):
 		"bottom_right":
 			pos_x = 100
 			pos_y = 200
+		_:
+			pos_x += (randi() % 100) - 50
+			pos_y += (randi() % 100) - 50
 		
 	var _hint_label = Label.new()
-	var _hint= PanelContainer.new()
+	var _hint= Container.new()
 	_hint_label.text = text
 	var dynamic_font = cfc.get_font("res://fonts/Bangers-Regular.ttf", 32)	
 	_hint_label.add_font_override("font", dynamic_font)	
@@ -69,7 +72,11 @@ func hint (text, color, details = {}):
 		"direction": Vector2(dir_x, dir_y)
 	}
 	hints.append(settings)
+	var _hint_label_shadow = _hint_label.duplicate(DUPLICATE_USE_INSTANCING)
+	_hint_label_shadow.add_color_override("font_color", Color8(0,0,0,150))
+	_hint.add_child(_hint_label_shadow)	
 	_hint.add_child(_hint_label)
+	_hint_label_shadow.rect_position = _hint_label.rect_position + Vector2(10, 10)
 	$Control.add_child(_hint)
 	_hint.rect_position = Vector2(pos_x, pos_y)
 
@@ -519,16 +526,30 @@ func _process(delta) -> void:
 
 	#hints
 	var hints_to_erase = []
+	var stop = false
 	for _hint_data in hints:
-
 		var hint_object = _hint_data.get("hint_object", null)
 		if hint_object:
+			hint_object.visible = false
+		
+	for _hint_data in hints:
+		if stop:
+			break
+		var hint_object = _hint_data.get("hint_object", null)
+		if hint_object:
+			hint_object.visible = true
 			hint_object.modulate.a -= delta / 3
 			hint_object.rect_scale += Vector2(delta *3, delta *3)
 			hint_object.rect_position+= _hint_data.get("direction") * delta
+		if self._is_exhausted:
+			hint_object.rect_rotation = -90
 		var lifetime = _hint_data.get("lifetime", 0)
 		lifetime -= delta
-		if lifetime < 0:
+		if lifetime < 0.2 or hint_object.modulate.a <=0.2:
+			stop = false
+		else:
+			stop = true
+		if lifetime < 0 or hint_object.modulate.a <=0:
 			hints_to_erase.append(_hint_data)
 		_hint_data["lifetime"] = lifetime
 	for data in hints_to_erase:
@@ -577,7 +598,7 @@ func _cfc_cache_cleared():
 	queue_refresh_cache()
 
 #reset some variables at new turn
-func _game_step_started(details:Dictionary):
+func _game_step_started(_trigger_object, details:Dictionary):
 	var current_step = details["step"]
 	match current_step:
 		CFConst.PHASE_STEP.PLAYER_TURN:
@@ -806,8 +827,8 @@ func can_interrupt(
 		return CFConst.CanInterrupt.NO
 	
 	var _debug = false
-	if canonical_name == "Whirlwind" and trigger_card:
-		if trigger_details["event_name"] == "enemy_initiates_attack":
+	if canonical_name == "Black Knight - Dane Whitman" and trigger_card:
+		if trigger_details["event_name"] == "receive_damage":
 			_debug = true
 
 	if (_debug):
@@ -868,13 +889,13 @@ func execute_scripts_no_stack(
 
 
 func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
-	var card_scripts = retrieve_scripts(trigger)
 	# I use this spot to add a breakpoint when testing script behaviour
 	# especially on filters
 	if _debugger_hook:
 		pass
 	if trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME and canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME:
 		pass	
+	var card_scripts = retrieve_scripts(trigger)		
 	# We check the trigger against the filter defined
 	# If it does not match, then we don't pass any scripts for this trigger.
 	if not SP.filter_trigger(
@@ -1471,16 +1492,19 @@ func check_scheme_defeat(script):
 func remove_threat(modification: int, script = null) -> int:
 	
 	#Crisis special case: can't remove threat from main scheme
-	if "main_scheme" == properties.get("type_code", "false"):
-		var all_schemes:Array = cfc.NMAP.board.get_all_cards_by_property("type_code", "side_scheme")
-		all_schemes.append(self) #some main schemes such as countdown to oblivion give themselves crisis
-		for scheme in all_schemes:
-			#we add all acceleration tokens	
-			var crisis = scheme.get_property("scheme_crisis", 0, true)
-			if crisis:
-				scheme.hint("Crisis!", Color8(200, 50, 50))
-				self.hint("Crisis!", Color8(200, 50, 50))
-				return CFConst.ReturnCode.FAILED
+	if script and script.has_tag("bypass_crisis"):
+		pass
+	else:
+		if "main_scheme" == properties.get("type_code", "false"):
+			var all_schemes:Array = cfc.NMAP.board.get_all_cards_by_property("type_code", "side_scheme")
+			all_schemes.append(self) #some main schemes such as countdown to oblivion give themselves crisis
+			for scheme in all_schemes:
+				#we add all acceleration tokens	
+				var crisis = scheme.get_property("scheme_crisis", 0, true)
+				if crisis:
+					scheme.hint("Crisis!", Color8(200, 50, 50))
+					self.hint("Crisis!", Color8(200, 50, 50))
+					return CFConst.ReturnCode.FAILED
 					
 	var token_name = "threat"
 	var current_tokens = tokens.get_token_count(token_name)
@@ -1870,7 +1894,7 @@ func is_stunned() -> bool:
 func set_stunned(value:bool = true):
 	enable_token("stunned", value)
 
-func disable_stun():
+func remove_stun():
 	set_stunned(false)
 
 func is_confused() -> bool:
@@ -2084,7 +2108,8 @@ func get_instance_runtime_scripts(trigger:String = "", filters:={}) -> Dictionar
 
 func set_activity_script(script):
 	activity_script = script
-	gameData.set_latest_activity_script(script)
+	if script:
+		gameData.set_latest_activity_script(script)
 
 # For boost cards to know who's calling them
 var _current_activation_details = null
@@ -2104,6 +2129,30 @@ func remove_current_activation(script):
 #
 #FUNCTIONS USED DIRECTLY BY JSON SCRIPTS
 #
+
+func count_attachments(params = {}, script:ScriptTask = null) -> int:
+	var subjects = [self]
+
+	if script:
+		subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
+					
+	if !subjects:
+		return 0	
+	
+	var ret := 0
+	
+	if params.get("filter_state_attachment", []):
+		for card in subjects:
+			for attachment in card.attachments:
+				var script_owner = self
+				if script:
+					script_owner = script.owner 
+				if SP.check_validity(attachment, params, "attachment", script_owner):
+					ret+= 1
+	else:
+		for card in subjects:
+			ret += card.attachments.size()
+	return(ret)
 
 func is_hero_form(params = {}, script:ScriptTask = null) -> bool:
 	var subject = self
@@ -2181,28 +2230,40 @@ func count_tokens(params, script:ScriptTask = null) -> int:
 func has_trait(params, script:ScriptTask = null) -> bool:
 	var subject = self
 	
+	var and_or = "or"
+	
 	if script:
 		subject = null
 		var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
 		if subjects:
 			subject = subjects[0]
 			
-	var trait = ""
+	var traits = []
 	match typeof(params):
 		TYPE_DICTIONARY:
-			trait = params.get("trait", "")
+			and_or = params.get("and_or", and_or)
+			traits = params.get("trait", "")
 		TYPE_STRING:
-			trait = params
+			traits = params
 		_:
 			return false
 
-	if !trait:
-		return false
+	if typeof(traits) == TYPE_STRING:
+		traits = [traits]
 
-	trait = "trait_" + trait
-	if subject.get_property(trait, 0, true):
-		return true
-	return false
+	if !traits:
+		return false
+	for trait in traits:
+		trait = "trait_" + trait
+		if and_or =="or":
+			if subject.get_property(trait, 0, true):
+				return true
+		else:
+			if !subject.get_property(trait, 0, true):
+				return false
+	if and_or =="or":
+		return false
+	return true
 
 func identity_has_trait(params, script:ScriptTask = null) -> bool:
 	var hero = get_controller_hero_card()
@@ -2246,7 +2307,8 @@ func card_is_in_play(params, script:ScriptTask = null) -> bool:
 	return true
 
 func current_activation_status(params:Dictionary, _script:ScriptTask = null) -> bool:
-	var script = get_current_activation_details()
+#	var script = get_current_activation_details()
+	var script = gameData.get_latest_activity_script()
 	if !script:
 		return false
 	var expected_activation_type = params.get("type", "")	
@@ -2268,7 +2330,8 @@ func current_activation_status(params:Dictionary, _script:ScriptTask = null) -> 
 	
 	if null != undefended:
 		if undefended and script.subjects:
-			return false
+			if !script.has_tag("undefended"):
+				return false
 		if !undefended and !scripts.subjects:
 			return false
 			

@@ -1,4 +1,5 @@
 # warning-ignore:return_value_discarded
+class_name SideIcons
 extends Node2D
 
 onready var control = get_parent()
@@ -11,10 +12,13 @@ var icons_by_type_code : = {
 	"hero" : {
 		"thwart" : [0, 34], 
 		"attack" :  [0,74.5], 
-		"defense" :  [0,114.5], 
+		"defense" :  [0,114.5],
+		"heart": [0, 155],
 	},
 	"alter_ego": {
-		"recover":  [0,34], 
+		"recover":  [0,34],	
+		"heart": [0, 145],
+		 
 	},
 	"ally": {
 		"thwart" :  [0,45],  
@@ -29,15 +33,19 @@ var icons_by_type_code : = {
 	"villain": {
 		"scheme" :  [0,38],  
 		"attack" :  [0,74.5], 
-
+		"heart": [0, 145],
 	}			
 }
 
+var icons_to_property: = {
+	"heart": {"func_name": "get_remaining_damage"}
+}
 
 var default_font_offset = Vector2(-2, 10)
 
 var font_offset_by_icon:= {
-	"health": Vector2(-5, 0)				
+	"health": Vector2(-5, 0),
+	"heart": Vector2(-2, 5)					
 }
 
 var offsets_by_type_code : = {
@@ -212,11 +220,20 @@ func display_icons():
 			#child.rect_scale = Vector2(0.15, 0.15) * offset_scale * owner_card.card_size / CFConst.CARD_SIZE
 			child.rect_min_size =  texture_size * offset_scale * owner_card.card_size / CFConst.CARD_SIZE
 			child.rect_size = child.rect_min_size
-			var text = data_source.get_property(icon)
+			var property = icons_to_property.get(icon, icon)
+			var text = ""
+			match typeof(property):
+				TYPE_STRING:
+					text = data_source.get_property(property)
+				TYPE_DICTIONARY:
+					if property.has("func_name"):
+						var params = property.get("func_params", {})
+						text = cfc.ov_utils.func_name_run(data_source, property["func_name"], params)
+	
 			if text:
 				text = str(text)
 			else:
-				var can = data_source.get_property("can_" + icon, false)
+				var can = data_source.get_property("can_" + property, false)
 				text = "0" if can else "-"
 				
 			var label = get_node("label_" + icon)

@@ -62,6 +62,18 @@ func replace_script_property(key, value):
 	for task in get_tasks():
 		task.script_definition[key] = value
 	
+func is_silent():
+	return false
+
+func get_trigger():
+	#TODO I've seen cases where the stackobject trigger is "interrupt" but all is children are "manual".
+	# Where does this come from and how to fix?
+	if "trigger" in self and self.trigger:
+		return self.trigger 
+	for task in get_tasks():
+		if "trigger" in task and task.trigger:
+			return task.trigger
+	return ""
 
 
 #modification scripts such as partial prevent and replacement effects
@@ -102,18 +114,13 @@ func get_subjects():
 		return first_task.subjects
 	return []		
 
-func get_first_task_name():
-	var first_task = get_first_task()
-	if first_task:
-		return first_task.script_name
-	return ""
 
 func get_display_name():
 	if display_name:
 		return display_name
 		
 	for task in get_tasks():
-		return task.owner.canonical_name + "-" + task.script_name
+		return task.owner.properties["shortname"] + "-" + task.script_name
 
 var _cache_display_text = ""
 func get_display_text():
@@ -124,10 +131,24 @@ func get_display_text():
 func _get_display_text_nocache():	
 	var task = get_first_task()
 	var result = get_display_name()
+	var subjects = ""	
 	if task: 	
 		var owner = task.owner
-		var owner_name = owner.canonical_name if owner else ""
+		var owner_name = owner.properties["shortname"] if owner else ""
+
+		var separator = ""
+		if "subjects" in task:
+			for subject in task.subjects:
+				subjects = separator + subject.properties["shortname"]
+				separator = ", "
+			if subjects:
+				subjects = " (" + subjects + ")"
+			
 		match task.script_name:
+			"add_threat":
+				var amount = task.retrieve_integer_property("amount", 0)
+				result = owner_name + " adds " + str(amount) + " threat" + subjects
+				return result			
 			"reveal_encounter":
 				if owner:
 					var text = owner.get_printed_text("when revealed")
@@ -137,12 +158,19 @@ func _get_display_text_nocache():
 					var text2 = owner.get_printed_text("When Revealed (Hero)")
 					if text1 or text2:
 						return "(Alter-Ego) " + text1 + "\n(Hero) " + text2
-			"add_threat":
-				var amount = task.retrieve_integer_property("amount", 0)
-				result = owner_name + " adds " + str(amount) + " threat"
+			"surge":
+				result = owner_name + " - Surge"
 				return result
-				
+		var trigger = self.get_trigger()
+		match trigger:
+			"interrupt":
+				if owner:
+					for id in ["forced interrupt", "interrupt", "forced response", "response"]:
+						var text = owner.get_printed_text(id)
+						if text:
+							return text					
 	result = result.replace("_", " ")
+	result = result + subjects
 	return result
 			
 
@@ -150,10 +178,20 @@ func _get_display_text_nocache():
 func set_display_name(_name):
 	display_name = _name
 
-func get_first_task():
+func get_first_task_name(meaningful = true):
+	var first_task = get_first_task(meaningful)
+	if first_task:
+		return first_task.script_name
+	return ""
+
+const _meaningless_tasks := ["nop", "constraints"]
+func get_first_task(meaningful = true):
 	for task in get_tasks():
+		if meaningful and (task.script_name in _meaningless_tasks):
+			continue		
 		return task
 	return null
+
 
 static func sort_stack(a, b):
 	if a.stack_uid < b.stack_uid:

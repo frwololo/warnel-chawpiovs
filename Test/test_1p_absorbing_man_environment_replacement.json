@@ -1,0 +1,142 @@
+{
+	"_comments": "Tests Snowy Hill getting replaced by Rocky Outcrop then Dense Forest",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Dense Forest"
+				},				
+				{
+					"card": "Rocky Outcrop"
+				}				
+			],
+			"schemes": [
+				{
+					"card": "None Shall Pass",
+					"tokens": {"threat": 2}					
+				}
+			],			
+			"villain": [
+				{
+					"card": "Absorbing Man - 1",
+					"tokens": {"damage" : 2},
+				}
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"hand1": [
+				{
+					"card": "01056",
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Snowy Hillside",
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "take undefended attack against Absorbing Man"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "wait for player turn"
+		},			
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},		
+			],
+			"discard_villain": [
+				{
+					"card": "Snowy Hillside"
+				},
+				{
+					"card": "Rocky Outcrop",
+				}				
+			],
+			"villain": [
+				{
+					"card": "Absorbing Man - 1",
+					"tokens": {"damage" : 1},				
+				}
+			],
+			"schemes": [
+				{
+					"card": "None Shall Pass",
+					"tokens": {"threat": 2}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye",
+					"tokens": {"damage": 2}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				},
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"hand1": [
+				{
+					"card": "01056",
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Dense Forest",
+				}
+			]
+		}
+	}
+}

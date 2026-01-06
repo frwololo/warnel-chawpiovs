@@ -233,7 +233,7 @@ func display_icons():
 			if text:
 				text = str(text)
 			else:
-				var can = data_source.get_property("can_" + property, false)
+				var can = data_source.get_property("can_" + property, false) if typeof(property) == TYPE_STRING else false
 				text = "0" if can else "-"
 				
 			var label = get_node("label_" + icon)

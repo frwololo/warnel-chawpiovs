@@ -2,31 +2,36 @@ class_name OptionsMenu
 extends Node2D
 
 
-onready var v_box_container = $PanelContainer/MarginContainer/VBoxContainer
+onready var v_box_container = $PanelContainer/general/VBoxContainer
 onready var file_dialog = get_node("%FileDialog")
-onready var h_box_container = $PanelContainer/MarginContainer/VBoxContainer/HBoxContainer
+onready var h_box_container = $PanelContainer/general/VBoxContainer/HBoxContainer
+
+const NOTIFICATION_LEVELS := [
+	"noob",
+	"normal",
+	"expert",
+	"debug"
+]
 
 # warning-ignore:unused_signal
 signal exit_options_menu
 
-func _ready():
-	for option_button in v_box_container.get_children():
-		if option_button.has_signal('pressed'):			
-			option_button.connect('pressed', self, 'on_button_pressed', [option_button.name])
-			option_button.connect('mouse_entered', option_button, 'grab_focus')
-			
-	for option_button in h_box_container.get_children():
-		if option_button.has_signal('pressed'):
-			option_button.connect('pressed', self, 'on_button_pressed', [option_button.name])
-			option_button.connect('mouse_entered', option_button, 'grab_focus')
-		if option_button.name in ["ForceResyncButton"]:
-			if !cfc.is_game_master():
-				option_button.hide()	
+func init_button_signals(node):
+	if node.has_signal('pressed'):			
+		node.connect('pressed', self, 'on_button_pressed', [node.name])
+		node.connect('mouse_entered', node, 'grab_focus')		
+
+	for child in node.get_children():
+		init_button_signals(child)
+
+func _ready():		
+	init_button_signals(self)
 
 	
 	file_dialog.connect("file_selected", self, "_on_file_selected")	
 	resize()
-	set_process(false)
+	self.visible = false
+	select_tab("general")
 			
 func on_button_pressed(_button_name : String) -> void:
 	match _button_name:
@@ -40,6 +45,7 @@ func on_button_pressed(_button_name : String) -> void:
 		"DebugButton":
 			var debug_button:CheckButton = get_node("%DebugButton")
 			var value = debug_button.pressed
+			cfc._debug = value
 			gameData.phaseContainer.toggle_display_debug(value)
 			close_me()			
 		"SaveButton":
@@ -56,6 +62,42 @@ func on_button_pressed(_button_name : String) -> void:
 			restart_game()	
 		"Controls":
 			show_controls()
+		"GameplayBackButton":
+			hide_gameplay_options()
+		"GameplayOptionsButton":
+			show_gameplay_options()
+
+func select_tab(tab_name):
+	for tab in ["general", "gameplay"]:
+		get_node("%" + tab).visible = false
+
+	get_node("%" + tab_name).visible = true
+	#get_node("%" + tab_name).set_as_toplevel(true)	
+
+func hide_gameplay_options():
+	save_options()
+	select_tab("general")
+
+func show_gameplay_options():
+	load_options()
+	select_tab("gameplay")
+
+func load_options():
+	var notifications_level = cfc.game_settings.get("notifications_level", "normal").to_lower()
+	var options_button:OptionButton = get_node("%NotificationsLevel")
+	options_button.select(1) #normal
+	
+	for i in NOTIFICATION_LEVELS.size():
+		if NOTIFICATION_LEVELS[i] == notifications_level: 
+			options_button.select(i)
+			break
+
+func save_options():
+	var options_button:OptionButton = get_node("%NotificationsLevel")
+			
+	cfc.game_settings["notifications_level"] = NOTIFICATION_LEVELS[options_button.selected]
+	gameData.theAnnouncer.init_notifications_level()
+	cfc.save_settings()
 
 func show_controls():
 	var overlay = get_node("%Overlay")

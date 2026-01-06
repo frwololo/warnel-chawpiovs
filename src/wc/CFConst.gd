@@ -302,6 +302,7 @@ const ALL_TYPE_GROUPS: = [
 	"group_identities",
 	"group_friendly",
 	"group_allies_and_heroes",
+	"group_allies"	
 ]
 	
 
@@ -360,7 +361,7 @@ const GRID_SETUP := {
 		"auto_extend": false,
 	},
 	"schemes" : {
-		"x" : 500,
+		"x" : 600,
 		"y" : 20,
 	},
 	"villain_misc" : {
@@ -546,6 +547,41 @@ const AUTO_KEYWORDS := {
 					
 }
 
+#list of events for which we don't show a GUI announce to the user by default
+#(interrupts override this)
+const NOOB_SKIP_ANNOUNCE_STACK_EVENTS:= {
+	"trigger": {
+		"manual": true,
+
+		#we already show the damage with an arrow
+		"enemy_attack_damage": true,	
+		
+	}
+}
+const SKIP_ANNOUNCE_STACK_EVENTS:= {
+	"trigger": {
+		"manual": true,
+		"self_moved_to_board" : true, 
+		"about_to_reveal" : true,
+		"end_phase_discard" : true,
+		
+		#we already have reveal_encounter which is redundant with those
+		"reveal": true,
+		"reveal_hero": true,
+		"reveal_alter_ego": true	,	
+		
+		#we already show the damage with an arrow
+		"enemy_attack_damage": true,	
+		
+		"card_dies": true,
+		"character_died": true,	
+	},
+	"boost": {
+		"discard": true,
+	}
+}
+
+
 const MAX_TEAM_SIZE:int = 4
 
 enum PHASE {
@@ -623,7 +659,8 @@ const DEFAULT_SETTINGS:= {
 		'create_room_url': 'wc/lobby.php?mode=create_room',
 		'list_rooms_url': 'wc/lobby.php?mode=list_rooms',
 		'join_room_url': 'wc/lobby.php?mode=join_room&room_name=__ROOM_NAME__',
-	}
+	},
+	'notifications_level': 'normal',
 	
 }
 
@@ -643,10 +680,13 @@ const AUTO_EXECUTE_ONE_ENTRY_MENU = AUTO_EXECUTE_MENU.OFF # SCRIPTED_ONLY
 #
 #set to true to help with breakpoints and debug
 const DISABLE_THREADS:= true 
-#this disables the announcer messages. Usually not recommended, but might help with speeding up tests
+#this disables the announcer messages. Should be set to false unless you want to speed up debugging sessions
 const DISABLE_ANNOUNCER:= false
-#useful only for tests to accelerate the loading of the game and get to gameplay faster
+#useful only for debuggingto accelerate the loading of the game and get to gameplay faster
 const SKIP_MULLIGAN:= false
+#enables various performance tweaks for loend platforms such as the Nintendo Switch. Disable only for debugging
+const PERFORMANCE_HACKS = true
+
 #if set to true, the system checks will only send hashed instead of 
 #full dictionaries. Probably better for bandwidth
 #set to false when debugging a network/desync issue
@@ -667,10 +707,9 @@ const DEBUG_SIMULATE_NETWORK_DELAY = 1.5
 const DEBUG_NETWORK_DELAY_RANDOM = false
 const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 
-const SCRIPT_BREAKPOINT_CARD_NAME := "None Shall Pass"
-const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_moved_to_board"
+const SCRIPT_BREAKPOINT_CARD_NAME := "Abandoned Facility"
+const SCRIPT_BREAKPOINT_TRIGGER_NAME := "interrupt"
 
 const LARGE_SCREEN_WIDTH:= 1600
 
-#enables various performance tweaks for loend platforms such as the Nintendo Switch
-const PERFORMANCE_HACKS = true
+

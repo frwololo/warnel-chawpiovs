@@ -1,54 +1,4 @@
 {
-	"absorb_properties": {
-		"self_moved_to_board": {
-			"board": [
-				{
-					"name": "add_properties_from",
-					"subject": "boardseek",
-					"properties": "__properties__",
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "__type_code__"
-							}
-						}
-					]
-				}
-			]
-		},
-		"card_moved_to_board": {
-			"board": [
-				{
-					"name": "add_properties_from",
-					"subject": "trigger",
-					"properties": "__properties__",
-					"filter_state_trigger": [
-						{
-							"filter_properties": {
-								"type_code": "__type_code__"
-							}
-						}
-					]
-				}
-			]
-		},
-		"card_defeated": {
-			"board": [
-				{
-					"name": "subtract_properties_from",
-					"subject": "trigger",
-					"properties": "__properties__",
-					"filter_state_trigger": [
-						{
-							"filter_properties": {
-								"type_code": "__type_code__"
-							}
-						}
-					]
-				}
-			]
-		}
-	},
 	"give_obligation": {
 		"about_to_reveal": {
 			"trigger": "self",
@@ -74,6 +24,7 @@
 	},
 	"once_per_round": {
 		"round_ended": {
+			"_silent": true,
 			"board": [
 				{
 					"name": "mod_tokens",
@@ -85,6 +36,7 @@
 			]
 		},
 		"card_moved_to_board": {
+			"_silent": true,
 			"trigger": "self",
 			"board": [
 				{

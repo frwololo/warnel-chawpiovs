@@ -1,0 +1,113 @@
+{
+	"_comments": "Tests Expert Marksman resource",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Absorbing Man - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "None shall Pass"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Explosive Arrow"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"upgrade_support1":[
+				{
+					"card" : "Expert Marksman",
+				},
+				{
+					"card" : "Hawkeye's Bow",
+				}				
+			],
+			"hand1": [
+				{
+					"card": "Sonic Arrow"
+				},
+				{
+					"card": "The Power of Justice"
+				},
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Sonic Arrow"
+		},	
+		{
+			"type": "target",
+			"value": "Absorbing Man - 1"
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Absorbing Man - 1",
+					"tokens": {"damage": 3, "confused": 1}
+				}
+			],
+			"schemes": [
+				{
+					"card": "None shall Pass"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Explosive Arrow"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"upgrade_support1":[
+				{
+					"card" : "Expert Marksman",
+					"exhausted": true,
+				},
+				{
+					"card" : "Hawkeye's Bow",
+					"exhausted": true,					
+				}					
+			],
+			"discard1": [
+				{
+					"card": "The Power of Justice"
+				},			
+				{
+					"card": "Sonic Arrow"
+				},
+			]
+		}
+	}
+}

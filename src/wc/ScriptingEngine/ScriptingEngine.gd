@@ -529,11 +529,10 @@ func receive_damage(script: ScriptTask) -> int:
 			#retaliate against an attack only if I didn't die
 			var retaliate = card.get_property("retaliate", 0)
 			if retaliate:
-				card.hint("Retaliate!", Color8(255,50,50))
-
 				if script.has_tag("ranged"):
-					attacker.hint("Ranged Attack!", Color8(50,50,255))
+					attacker.hint("Ranged!", Color8(50,50,255))
 				else:
+					card.hint("Retaliate!", Color8(255,50,50))
 					var script_modifications = {
 						"tags" : ["retaliate", "Scripted"],
 						"subjects": [attacker],
@@ -692,7 +691,11 @@ func replacement_effect(script: ScriptTask) -> int:
 	return retcode					
 
 func ready_card(script: ScriptTask) -> int:
-	var retcode: int
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+		
 	# We inject the tags from the script into the tags sent by the signal
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
 	for card in script.subjects:
@@ -700,7 +703,11 @@ func ready_card(script: ScriptTask) -> int:
 	return(retcode)
 
 func exhaust_card(script: ScriptTask) -> int:
-	var retcode: int
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+	
 	# We inject the tags from the script into the tags sent by the signal
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
 	for card in script.subjects:
@@ -859,9 +866,12 @@ func _add_receive_damage_on_stack(amount, original_script, modifications:Diction
 		var receive_damage_script_definition = {
 			"name": "receive_damage",
 			"amount": amount,
+			"source": original_script.get_property("source", owner)
 		}
+		
 		modifications["script_definition"] =  receive_damage_script_definition	
 		var receive_damage_script = _modify_script(original_script, modifications, "replace")
+	
 	
 		var task_event = SimplifiedStackScript.new(receive_damage_script)
 		gameData.theStack.add_script(task_event)	

@@ -13,8 +13,8 @@
 			"board": [
 				{
 					"name": "move_card_to_container",
-					"dest_container": "discard",
-					"src_container": "hand",
+					"dest_container": "discard_current_hero_target",
+					"src_container": "hand_current_hero_target",
 					"is_cost": true,
 					"subject": "index",
 					"subject_count": "all",
@@ -47,15 +47,51 @@
 		}
 	},
 	"Absorbing Man - 1": {
-		"absorb_properties": {
-			"__properties__": "trait_*",
-			"__type_code__": "environment"
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_*",
+					"trigger": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_has_requested_property": true,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "environment"
+								}
+							}
+						]
+					},
+					"alteration": "per_boardseek"
+				}
+			]
 		}
 	},
 	"Absorbing Man - 2": {
-		"absorb_properties": {
-			"__properties__": "trait_*",
-			"__type_code__": "environment"
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_*",
+					"trigger": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_has_requested_property": true,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "environment"
+								}
+							}
+						]
+					},
+					"alteration": "per_boardseek"
+				}
+			]
 		},
 		"reveal": {
 			"all": [
@@ -90,9 +126,27 @@
 		}
 	},
 	"Absorbing Man - 3": {
-		"absorb_properties": {
-			"__properties__": "trait_*",
-			"__type_code__": "environment"
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_*",
+					"trigger": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_has_requested_property": true,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "environment"
+								}
+							}
+						]
+					},
+					"alteration": "per_boardseek"
+				}
+			]
 		},
 		"response": {
 			"event_name": [
@@ -484,7 +538,7 @@
 	},
 	"Cable Arrow": {
 		"manual": {
-			"board": [
+			"hand": [
 				{
 					"name": "constraints",
 					"is_cost": true,
@@ -1451,7 +1505,7 @@
 	},
 	"Electric Arrow": {
 		"manual": {
-			"board": [
+			"hand": [
 				{
 					"name": "constraints",
 					"is_cost": true,
@@ -1474,6 +1528,7 @@
 				},
 				{
 					"name": "nop",
+					"is_cost": true,					
 					"subject": "target",
 					"filter_state_subject": [
 						{
@@ -1589,24 +1644,19 @@
 	},
 	"Expert Marksman": {
 		"resource": {
-			"board": [
+			"filter_state_trigger": [
 				{
-					"name": "nop",
-					"fail_cost_on_skip": true,
-					"is_cost": true,
-					"filter_state_trigger": [
-						{
-							"filter_properties": {
-								"trait_arrow": 1
-							}
-						}
-					]
-				},
+					"filter_properties": {
+						"trait_arrow": 1
+					}
+				}
+			],		
+			"board": [		
 				{
 					"name": "exhaust_card",
 					"subject": "self",
 					"is_cost": true
-				},
+				},			
 				{
 					"name": "add_resource",
 					"amount": 1,
@@ -1617,7 +1667,7 @@
 	},
 	"Explosive Arrow": {
 		"manual": {
-			"board": [
+			"hand": [
 				{
 					"name": "constraints",
 					"is_cost": true,
@@ -2019,7 +2069,7 @@
 		},
 		"interrupt": {
 			"event_name": "receive_damage",
-			"trigger": "my_hero",
+			"filter_source_controlled_by": "my_hero",			
 			"event_filters": {
 				"tags": [
 					"attack",
@@ -2300,7 +2350,8 @@
 		}
 	},
 	"Hydra Patrol": {
-		"reveal": {
+		"card_defeated": {
+			"trigger": "self",
 			"all": {
 				"_rules": {
 					"for_each_player": true,
@@ -3695,6 +3746,13 @@
 		"manual": {
 			"hand": [
 				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},		
+				{
 					"name": "mod_tokens",
 					"modification": 1,
 					"token_name": "tough",
@@ -4096,7 +4154,7 @@
 							},
 							"filter_properties2": {
 								"comparison": "gt",
-								"trait_aerial": 0
+								"trait_avenger": 0
 							},
 							"filter_max_per_host": 1
 						}
@@ -4192,7 +4250,7 @@
 	},
 	"Sonic Arrow": {
 		"manual": {
-			"board": [
+			"hand": [
 				{
 					"name": "constraints",
 					"is_cost": true,
@@ -4215,6 +4273,7 @@
 				},
 				{
 					"name": "nop",
+					"is_cost": true,					
 					"subject": "target",
 					"filter_state_subject": [
 						{
@@ -5611,7 +5670,7 @@
 	},
 	"Vibranium Arrow": {
 		"manual": {
-			"board": [
+			"hand": [
 				{
 					"name": "constraints",
 					"is_cost": true,

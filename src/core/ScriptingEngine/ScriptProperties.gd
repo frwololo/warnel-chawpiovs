@@ -1333,9 +1333,11 @@ static func filter_trigger(
 		trigger_details) -> bool:
 	# Checking card properties is its own function as it might be
 	# called from other places as well
-	var is_valid := check_validity(trigger_card, card_scripts, "trigger", owner_card)
-	if is_valid and not check_validity(owner_card, card_scripts, "self", owner_card):
-		is_valid = false
+	if !check_validity(trigger_card, card_scripts, "trigger", owner_card):
+		return false
+		
+	if !check_validity(owner_card, card_scripts, "self", owner_card):
+		return false
 
 	# Here we check that the trigger matches the _request_ for trigger
 	# A trigger which requires "another" card, should not trigger
@@ -1344,18 +1346,15 @@ static func filter_trigger(
 	# is rotated, should not automatically rotate when itself rotates.
 	#"host" triggers when the trigger is the host of the current card
 	#(which is, therefore, one of the trigger's attachments)
-	if is_valid\
-			and card_scripts.get("trigger") == "self"\
+	if  card_scripts.get("trigger") == "self"\
 			and trigger_card != owner_card:
-		is_valid = false
-	if is_valid\
-			and card_scripts.get("trigger") == "another"\
+		return false
+	if  card_scripts.get("trigger") == "another"\
 			and trigger_card == owner_card:
-		is_valid = false
-	if is_valid\
-			and card_scripts.get("trigger") == "host"\
+		return false
+	if  card_scripts.get("trigger") == "host"\
 			and owner_card.current_host_card != trigger_card:
-		is_valid = false
+		return false
 
 
 	var comparison : String = card_scripts.get(
@@ -1363,7 +1362,7 @@ static func filter_trigger(
 
 	# Script tags filter checks
 	var filter_tags = card_scripts.get(FILTER_TAGS)
-	if is_valid and filter_tags:
+	if filter_tags:
 		# We set the variable manually here because `.get(key,[])` returns null
 		var script_tags = trigger_details.get(KEY_TAGS)
 		if not script_tags:
@@ -1373,91 +1372,97 @@ static func filter_trigger(
 		if typeof(filter_tags) == TYPE_ARRAY:
 			for tag in filter_tags:
 				if not tag in script_tags:
-					is_valid = false
+					return false
 		else:
 			if not filter_tags in script_tags:
-				is_valid = false
+				return false
 
 	# Card task name filter checks
-	if is_valid and card_scripts.get(FILTER_TASK) \
+	if card_scripts.get(FILTER_TASK) \
 			and card_scripts.get(FILTER_TASK) != \
 			trigger_details.get(TRIGGER_TASK_NAME):
-		is_valid = false
+		return false
 
 	# Card Parent filter checks
-	if is_valid and card_scripts.get(FILTER_PARENT) \
+	if card_scripts.get(FILTER_PARENT) \
 			and check_parent_filter(trigger_card,card_scripts.get(FILTER_PARENT)):
-		is_valid = false
+		return false
 
 	# Card Rotation filter checks
-	if is_valid and card_scripts.get(FILTER_DEGREES) != null \
+	if  card_scripts.get(FILTER_DEGREES) != null \
 			and card_scripts.get(FILTER_DEGREES) != \
 			trigger_details.get(TRIGGER_DEGREES):
-		is_valid = false
+		return false
 
 	# Card Flip filter checks
-	if is_valid and card_scripts.get(FILTER_FACEUP) \
+	if card_scripts.get(FILTER_FACEUP) \
 			and card_scripts.get(FILTER_FACEUP) != \
 			trigger_details.get(TRIGGER_FACEUP):
-		is_valid = false
+		return false
 
 	# Card move filter checks
-	if is_valid and card_scripts.get(FILTER_SOURCE) \
+	if card_scripts.get(FILTER_SOURCE) \
 			and ! trigger_details.get(TRIGGER_SOURCE).to_lower().begins_with(card_scripts.get(FILTER_SOURCE).to_lower()):
-		is_valid = false
-	if is_valid and card_scripts.get(FILTER_DESTINATION) \
+		return  false
+	if  card_scripts.get(FILTER_DESTINATION) \
 			and ! trigger_details.get(TRIGGER_DESTINATION).to_lower().begins_with(card_scripts.get(FILTER_DESTINATION).to_lower()):
-		is_valid = false
+		return false
 
 	# Card Tokens filter checks
-	if is_valid and card_scripts.get(FILTER_COUNT) != null:
+	if card_scripts.get(FILTER_COUNT) != null:
 		if not CFUtils.compare_numbers(
 				trigger_details.get(TRIGGER_NEW_COUNT),
 				card_scripts.get(FILTER_COUNT),
 				comparison):
-			is_valid = false
-	if is_valid and card_scripts.get(FILTER_COUNT_DIFFERENCE):
+			return false
+	if card_scripts.get(FILTER_COUNT_DIFFERENCE):
 		var prev_count = trigger_details.get(TRIGGER_PREV_COUNT)
 		var new_count = trigger_details.get(TRIGGER_NEW_COUNT)
 		# Is true if the amount of tokens decreased
 		if card_scripts.get(FILTER_COUNT_DIFFERENCE) == \
 				TRIGGER_V_COUNT_INCREASED and prev_count > new_count:
-			is_valid = false
+			return false
 		# Is true if the amount of tokens increased
 		if card_scripts.get(FILTER_COUNT_DIFFERENCE) == \
 				TRIGGER_V_COUNT_DECREASED and prev_count < new_count:
-			is_valid = false
+			return false
 
 	# Token Name filter checks
-	if is_valid and card_scripts.get("filter_" + TRIGGER_TOKEN_NAME) \
+	if card_scripts.get("filter_" + TRIGGER_TOKEN_NAME) \
 			and card_scripts.get("filter_" + TRIGGER_TOKEN_NAME) != \
 			trigger_details.get(TRIGGER_TOKEN_NAME):
-		is_valid = false
+		return false
 
 	# Counter Name filter checks
-	if is_valid and card_scripts.get("filter_" + TRIGGER_COUNTER_NAME) \
+	if card_scripts.get("filter_" + TRIGGER_COUNTER_NAME) \
 			and card_scripts.get("filter_" + TRIGGER_COUNTER_NAME) != \
 			trigger_details.get(TRIGGER_COUNTER_NAME):
-		is_valid = false
+		return false
 
 	# Property Name filter checks
 	# Typically used by alterants
-	if is_valid and card_scripts.get("filter_" + TRIGGER_PROPERTY_NAME) \
-			and card_scripts.get("filter_" + TRIGGER_PROPERTY_NAME) != \
-			trigger_details.get(TRIGGER_PROPERTY_NAME):
-		is_valid = false
+	var property_name_filter = card_scripts.get("filter_" + TRIGGER_PROPERTY_NAME)
+	if property_name_filter:
+			var property_name = trigger_details.get(TRIGGER_PROPERTY_NAME)
+			if property_name_filter.ends_with("*"):
+				property_name_filter = property_name_filter.substr(0, property_name_filter.length()-1)
+				if !property_name.begins_with(property_name_filter):
+					return false
+			else:
+				if property_name != property_name_filter:
+					return false
 
 	# Card spawn filter checks
-	if is_valid and card_scripts.get(FILTER_CARD_NAME) \
+	if card_scripts.get(FILTER_CARD_NAME) \
 			and card_scripts.get(FILTER_CARD_NAME) != \
 			trigger_details.get(KEY_CARD_NAME):
-		is_valid = false
+		return false
 
 
 	# Modified Property filter checks
 	# See FILTER_MODIFIED_PROPERTIES documentation
 	# If the trigger requires a filter on modified properties...
-	if is_valid and card_scripts.get(FILTER_MODIFIED_PROPERTIES):
+	if card_scripts.get(FILTER_MODIFIED_PROPERTIES):
 		# Then the filter entry will always contain a dictionary.
 		# We extract that dictionary in mod_prop_dict.
 		var mod_prop_dict = card_scripts.get(FILTER_MODIFIED_PROPERTIES)
@@ -1468,7 +1473,7 @@ static func filter_trigger(
 		# does not match any of the properties requested in the filter,
 		# then the trigger does not match
 		if not signal_modified_property in mod_prop_dict.keys():
-			is_valid = false
+			return false
 		else:
 			# if the property changed that is mentioned in the signal
 			# matches the properties requested in the filter
@@ -1484,14 +1489,14 @@ static func filter_trigger(
 			if mod_prop_values.get(FILTER_MODIFIED_PROPERTY_NEW_VALUE) != null \
 					and mod_prop_values.get(FILTER_MODIFIED_PROPERTY_NEW_VALUE) != \
 					trigger_details.get(TRIGGER_NEW_PROPERTY_VALUE):
-				is_valid = false
+				return false
 			if mod_prop_values.get(FILTER_MODIFIED_PROPERTY_PREV_VALUE) != null \
 					and mod_prop_values.get(FILTER_MODIFIED_PROPERTY_PREV_VALUE) != \
 					trigger_details.get(TRIGGER_PREV_PROPERTY_VALUE):
-				is_valid = false
+				return  false
 
 	# Counter comparison check
-	if is_valid and card_scripts.get(FILTER_PER_COUNTER):
+	if card_scripts.get(FILTER_PER_COUNTER):
 		var counter = card_scripts.get(FILTER_PER_COUNTER).get(KEY_COUNTER_NAME)
 		var found_count = cfc.NMAP.board.counters.get_counter(counter)
 		var required_count = card_scripts.\
@@ -1502,10 +1507,10 @@ static func filter_trigger(
 				found_count,
 				required_count,
 				comparison_type):
-			is_valid = false
+			return false
 
 	# Card Count on board filter check
-	if is_valid and card_scripts.get(FILTER_PER_BOARDSEEK):
+	if card_scripts.get(FILTER_PER_BOARDSEEK):
 		var per_msg = perMessage.new(
 				KEY_PER_BOARDSEEK,
 				owner_card,
@@ -1519,10 +1524,10 @@ static func filter_trigger(
 				found_count,
 				required_count,
 				comparison_type):
-			is_valid = false
+			return false
 
 	# Card Count in CardContainer filter check
-	if is_valid and card_scripts.get(FILTER_PER_TUTOR):
+	if card_scripts.get(FILTER_PER_TUTOR):
 		var per_msg = perMessage.new(
 				KEY_PER_TUTOR,
 				owner_card,
@@ -1536,8 +1541,9 @@ static func filter_trigger(
 				found_count,
 				required_count,
 				comparison_type):
-			is_valid = false
-	return(is_valid)
+			return false
+	
+	return true
 
 
 # Returns true  if the card properties match against filters specified in

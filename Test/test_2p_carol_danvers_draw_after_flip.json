@@ -77,7 +77,11 @@
 		{
 			"type": "choose",
 			"value": "Change Form",
-		},	
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+		},		
 		{
 			"type": "activate",
 			"value": "Carol Danvers",

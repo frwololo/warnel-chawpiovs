@@ -864,7 +864,7 @@ func enrich_window_title(selectionWindow, script:ScriptObject, title:String) -> 
 		result = forced_title + " - " + result
 	else:
 	
-		result = owner.canonical_name + " - " + result
+		result = owner.properties.get("shortname", owner.canonical_name) + " - " + result
 	
 	match script_name:
 		"enemy_attack":

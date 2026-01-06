@@ -283,8 +283,8 @@ func execute(_run_type) -> void:
 			if script.get_property(SP.KEY_SUBJECT) == SP.KEY_SUBJECT_V_PREVIOUS\
 					and prev_subjects.size() == 0:
 				var current_index := scripts_queue.find(task)
-				var next_task: ScriptTask =  scripts_queue[current_index + 1]
-				if next_task.subjects.size() > 0:
+				var next_task: ScriptTask = null if scripts_queue.size() <= (current_index +1) else  scripts_queue[current_index + 1]
+				if next_task and next_task.subjects.size() > 0:
 					prev_subjects = next_task.subjects
 			var retrieved_integer = get_stored_integer(script)
 			var all_prev_subjects = all_subjects_so_far.duplicate()		

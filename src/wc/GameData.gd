@@ -131,6 +131,18 @@ func is_announce_ongoing():
 func is_ongoing_blocking_announce():
 	return theAnnouncer and theAnnouncer.get_blocking_announce()	
 
+func should_hide_viewport_focus():
+	if !is_ongoing_blocking_announce():
+		return false
+	
+	#blocking anounce ongoing but which one?
+	if theAnnouncer.is_right_side_announce_ongoing():
+		return false
+	
+	#blocking announce and it'sone that might occupy the whole screen: 
+	# we should hide the viewport card
+	return true
+
 func _init():
 	scenario = ScenarioDeckData.new()
 	theStack = GlobalScriptStack.new()

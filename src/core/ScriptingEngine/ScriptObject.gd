@@ -178,8 +178,11 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 	var interaction_authority:UserInteractionAuthority = UserInteractionAuthority.new(owner, trigger_object, trigger, trigger_details, run_type)
 	var interaction_authorized = interaction_authority.interaction_authorized()
 	
-	for key in overrides:
-		self.script_definition[key] = overrides[key]
+	var backup_definition = self.script_definition
+	if overrides:
+		self.script_definition = overrides
+#	for key in overrides:
+#		self.script_definition[key] = overrides[key]
 	
 #	var subject = overrides.get("subject", get_property(SP.KEY_SUBJECT))
 	var subject = get_property(SP.KEY_SUBJECT)
@@ -236,6 +239,8 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 			if !interaction_authorized:
 				user_interaction_status = CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER
 				cfc.remove_ongoing_process(self, "_local_find_subjects")
+				if overrides:
+					self.script_definition = backup_definition
 				return []
 			var c = null
 			if (run_type == CFInt.RunType.BACKGROUND_COST_CHECK):
@@ -288,6 +293,8 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 		if !interaction_authorized:
 			user_interaction_status = CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER
 			cfc.remove_ongoing_process(self, "_local_find_subjects")
+			if overrides:
+				self.script_definition = backup_definition
 			return []	
 		if get_property(SP.KEY_SELECTION_IGNORE_SELF):
 			subjects_array.erase(owner)
@@ -329,7 +336,9 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 		if typeof(exclude_result) == TYPE_ARRAY:
 			for exclude in exclude_result:
 				subjects_array.erase(exclude)
-				
+		
+	if overrides:
+		self.script_definition = backup_definition			
 	cfc.remove_ongoing_process(self, "_local_find_subjects")
 	return(subjects_array)
 

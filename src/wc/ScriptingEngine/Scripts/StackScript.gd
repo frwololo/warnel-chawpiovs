@@ -47,6 +47,13 @@ func prevent_value(property, amount_prevented):
 			#todo what if zero
 
 
+func is_silent():
+	for task in get_tasks():
+		if task.trigger_details.get("_silent", false):
+			return true
+	if sceng.trigger_details.get("_silent", false):
+		return true
+	return false
 
 func execute():
 	cfc.add_ongoing_process(self)

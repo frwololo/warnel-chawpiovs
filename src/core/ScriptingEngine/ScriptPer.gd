@@ -27,8 +27,22 @@ func _init(per_msg: perMessage).(
 
 # Goes through the subjects specied for this per calculation
 # and counts the number of "things" requested
-func return_per_count() -> int:
+func return_per_count(filters:={}) -> int:
 	var ret: int
+
+	var backup
+	if filters:
+		backup = subjects.duplicate()
+		var exclude = []
+		if filters.get("has_property", ""):
+			var property_filter = filters.get("has_property")
+			for s in subjects:
+				if !s.get_property(property_filter):
+					exclude.append(s)
+			for s in exclude:
+				subjects.erase(s)
+	
+	
 	match script_name:
 		SP.KEY_PER_TOKEN_SELF:
 			ret = _count_tokens([owner])
@@ -53,6 +67,9 @@ func return_per_count() -> int:
 			ret = _count_custom()
 	if get_property(SP.KEY_IS_INVERTED):
 		ret *= -1
+		
+	if backup:
+		subjects = backup
 	return(ret)
 
 

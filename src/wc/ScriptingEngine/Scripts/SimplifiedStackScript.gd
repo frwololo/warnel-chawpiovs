@@ -23,6 +23,9 @@ func _init(_task, _owner = null, _trigger_object = null, _trigger_details = {}):
 	
 	if _trigger_object:
 		task.trigger_object = _trigger_object
+
+	if _trigger_details:
+		task.trigger_details = _trigger_details
 	
 	task_name = task.script_name
 		
@@ -48,6 +51,8 @@ func init_task_from_script_definition(definition:Dictionary, _owner, _trigger_ob
 
 func get_tasks() -> Array:
 	return tasks
+
+
 	
 func execute():
 	if (!task.is_primed):

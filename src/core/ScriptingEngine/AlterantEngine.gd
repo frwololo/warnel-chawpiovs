@@ -72,12 +72,36 @@ func calculate_alteration(script: ScriptAlter) -> void:
 		var custom := CustomScripts.new(false)
 		alteration_requested += custom.custom_alterants(script)
 	elif SP.VALUE_PER in str(alteration_requested):
+		var per_definition = script.get_property(script.get_property(SP.KEY_ALTERATION))
 		var per_msg = perMessage.new(
 				script.get_property(SP.KEY_ALTERATION),
 				script.owner,
-				script.get_property(script.get_property(SP.KEY_ALTERATION)),
+				per_definition,
 				script.trigger_object)
-		alteration = per_msg.found_things
+
+		#TODO this is a very hacky way to handle cards such as absorbing man ,which says:
+		#"absorbing man gets the trait of each environment in play"
+		#this is defined as "trait_*" in filter_property_name for alterants,
+		#but after that we need to filter out the environments that only have the property we're trying to mimic
+		var filters = {}
+		if per_definition.get("filter_has_requested_property", false):
+			var property_name = script.trigger_details.get("property_name", "")
+			if property_name:
+				filters = {"has_property" : property_name}
+#		var property_name_filter = script.get_property("filter_property_name")
+#		var filters = {}
+#		if property_name_filter:
+#				if property_name_filter.ends_with("*"):
+#					var property_name = script.trigger_details.get("property_name", "")
+#					property_name_filter = property_name_filter.substr(0, property_name_filter.length()-1)
+#					if !property_name.begins_with(property_name_filter):
+#						alteration = 0
+#						return	
+#					filters = {"has_property" : property_name}				
+				
+		alteration = per_msg.count_found_things(filters)
+		if alteration:
+			var _tmp =1
 	else:
 		alteration += alteration_requested
 

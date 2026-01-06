@@ -38,6 +38,9 @@ onready var control:Control= get_node("%Control")
 onready var display_text:RichTextLabel = get_node("%DisplayText")
 onready var shadow:ColorRect = get_node("%Shadow")
 onready var tween:Tween = get_node("Tween")
+onready var ok_checkbox:CheckBox = get_node("%OKCheckBox")
+onready var ok_button = get_node("%OKButton")
+var show_ok = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -81,6 +84,8 @@ func _process(_delta):
 	init_display()
 	show_arrows()
 
+	_dispay_ok_button()
+
 	for arrow in arrows:
 		arrow.owner_object = control
 		arrow.set_global_position(control.get_global_position())
@@ -98,7 +103,7 @@ func _process(_delta):
 
 func force_close():
 	for arrow in arrows:
-		var container = cfc.NMAP.board
+		var container = self  #cfc.NMAP.board
 		container.remove_child(arrow)
 		arrow.queue_free()
 	arrows = []
@@ -175,13 +180,14 @@ func init_arrows():
 func init_one_arrow(object, color):		
 	var owner_arrow = _TARGETING_SCENE.instance()
 	var container = cfc.NMAP.board
-	container.add_child(owner_arrow)
+	self.add_child(owner_arrow)
 	owner_arrow.set_display_mode(TargetingArrow.DISPLAY_MODE.SHADOW)	
 	owner_arrow.hide_arrow_head()
 	owner_arrow.set_arrow_color(color)
 	owner_arrow.set_destination(object)
 	owner_arrow.show_me()
 	arrows.append(owner_arrow)
+
 
 
 func load_card_texture() -> bool:
@@ -286,3 +292,33 @@ func _on_Button_pressed():
 			Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 	tween.start()				
 	pass # Replace with function body.
+
+func show_ok_button():
+	show_ok = true
+
+func _dispay_ok_button():
+	if !show_ok:
+		return
+	show_ok = false
+	ok_button.visible = true
+	ok_button.flat = false	
+	ok_button.text = "OK"
+	ok_button.disabled = false
+	ok_checkbox.visible = true
+	var tooltip_data = gameData.theAnnouncer.get_ignore_list_path(owner_card, stack_event)
+	
+	var separator = ""
+	var tooltip = ""
+	for key in tooltip_data:
+		if key in ["trigger", "cards"]:
+			continue
+		tooltip+= separator + key 
+		separator = "/"
+	ok_checkbox.hint_tooltip = tooltip
+	
+	z_index = 0
+	
+func _on_OKButton_pressed():
+	if ok_checkbox.pressed:
+		gameData.theAnnouncer.add_event_to_ignore_list(owner_card, stack_event)
+	terminate()

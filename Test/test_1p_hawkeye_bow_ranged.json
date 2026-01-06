@@ -1,0 +1,113 @@
+{
+	"_comments": "Tests Hawkeye's Bow ranged attacks",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Zola - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Island of Dr. Zola"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Explosive Arrow"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye",
+					"tokens": {"damage": 1}
+				}
+			],
+			"upgrade_support1":[
+				{
+					"card" : "Expert Marksman",
+				},
+				{
+					"card" : "Hawkeye's Bow",
+				}				
+			],
+			"hand1": [
+				{
+					"card": "Sonic Arrow"
+				},
+				{
+					"card": "The Power of Justice"
+				},
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "play",
+			"value": "Sonic Arrow"
+		},	
+		{
+			"type": "target",
+			"value": "Zola - 1"
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Zola - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Island of Dr. Zola"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Explosive Arrow"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye",
+					"tokens": {"damage": 1}
+				}
+			],
+			"upgrade_support1":[
+				{
+					"card" : "Expert Marksman",
+					"exhausted": true,
+				},
+				{
+					"card" : "Hawkeye's Bow",
+					"exhausted": true,					
+				}					
+			],
+			"discard1": [
+				{
+					"card": "The Power of Justice"
+				},			
+				{
+					"card": "Sonic Arrow"
+				},
+			]
+		}
+	}
+}

@@ -57,8 +57,7 @@ func keyword_to_script(keyword, _value):
 			pass 
 		"toughness" :
 			return { 
-				"card_moved_to_board": {
-					"trigger": "self",
+				"self_moved_to_board": {
 					"board": [
 						{
 							"name": "mod_tokens",

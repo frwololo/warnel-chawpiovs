@@ -20,7 +20,7 @@ var is_targeting := false
 var target_object : Node = null
 # Stores a reference to the Card that is hosting this node
 onready var owner_object = get_parent()
-
+onready var z_index_owner_object = get_parent()
 onready var label = $PanelContainer/Label
 
 enum DISPLAY_MODE {
@@ -108,8 +108,8 @@ func _process(_delta: float) -> void:
 			
 			var min_z_index = CFConst.Z_INDEX_BOARD_CARDS_ABOVE
 			var owner_z_index = CFConst.Z_INDEX_ANNOUNCER
-			if owner_object and is_instance_valid(owner_object) and "z_index" in owner_object:
-				owner_z_index = owner_object.z_index
+			if z_index_owner_object and is_instance_valid(z_index_owner_object) and "z_index" in z_index_owner_object:
+				owner_z_index = z_index_owner_object.z_index
 			
 			var base_index = min(owner_z_index, min_z_index)
 				

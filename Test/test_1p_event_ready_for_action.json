@@ -1,0 +1,123 @@
+{
+	"_comments": "Test Ready for Action",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Zola - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Island of Dr. Zola"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Explosive Arrow"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye",
+					"tokens": {"damage": 1}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Hawkeye - Kate Bishop",
+					"tokens": {"damage": 1}
+				}
+			],			
+			"upgrade_support1":[
+				{
+					"card" : "Expert Marksman",
+				},
+				{
+					"card" : "Hawkeye's Bow",
+				}				
+			],
+			"hand1": [
+				{
+					"card": "Ready for Action"
+				},
+				{
+					"card": "Electric Arrow"
+				},
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "play",
+			"value": "Ready for Action"
+		},	
+		{
+			"type": "target",
+			"value": "Hawkeye - Kate Bishop"
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Zola - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Island of Dr. Zola"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Explosive Arrow"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye",
+					"tokens": {"damage": 1}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Hawkeye - Kate Bishop",
+					"tokens": {"damage": 1, "tough": 1}
+				}
+			],			
+			"upgrade_support1":[
+				{
+					"card" : "Expert Marksman",
+				},
+				{
+					"card" : "Hawkeye's Bow",
+				}				
+			],
+			"discard1": [
+				{
+					"card": "Electric Arrow"
+				},			
+				{
+					"card": "Ready for Action"
+				},
+			]
+		}
+	}
+}

@@ -58,7 +58,9 @@ func hint (text, color, details = {}):
 			pos_y += (randi() % 100) - 50
 		
 	var _hint_label = Label.new()
-	var _hint= Container.new()
+	var _hint= Node2D.new()
+	var _hint_control= Control.new()
+	_hint.add_child(_hint_control)
 	_hint_label.text = text
 	var dynamic_font = cfc.get_font("res://fonts/Bangers-Regular.ttf", 32)	
 	_hint_label.add_font_override("font", dynamic_font)	
@@ -67,18 +69,21 @@ func hint (text, color, details = {}):
 	var dir_y = randf() * 10
 	
 	var settings = {
-		"hint_object": _hint,
+		"hint_node": _hint,
+		"hint_control": _hint_control,
 		"lifetime": details.get("lifetime", 1.0),
 		"direction": Vector2(dir_x, dir_y)
 	}
 	hints.append(settings)
 	var _hint_label_shadow = _hint_label.duplicate(DUPLICATE_USE_INSTANCING)
 	_hint_label_shadow.add_color_override("font_color", Color8(0,0,0,150))
-	_hint.add_child(_hint_label_shadow)	
-	_hint.add_child(_hint_label)
+	_hint_control.add_child(_hint_label_shadow)	
+	_hint_control.add_child(_hint_label)
 	_hint_label_shadow.rect_position = _hint_label.rect_position + Vector2(10, 10)
 	$Control.add_child(_hint)
-	_hint.rect_position = Vector2(pos_x, pos_y)
+	_hint.z_as_relative = false
+	_hint.z_index = CFConst.Z_INDEX_HAND_CARDS_NORMAL
+	_hint_control.rect_position = Vector2(pos_x, pos_y)
 
 func add_extra_script(script_definition, allowed_hero_id = 0):
 	extra_script_uid+= 1
@@ -204,7 +209,9 @@ func check_death(script = null) -> bool:
 		"name": "card_dies",
 		"tags": tags
 	}
-			
+	#force changing the trigger here. Might not be the best idea but it's useful for UI display
+	trigger_details["trigger_type"] = "card_dies"	
+	
 	var card_dies_script:ScriptTask = ScriptTask.new(self, card_dies_definition, trigger_card, trigger_details)
 	card_dies_script.subjects = [self]
 	var task_event = SimplifiedStackScript.new(card_dies_script)
@@ -500,6 +507,43 @@ func _class_specific_input(event) -> void:
 	
 
 func _class_specific_process(delta):
+	if !CFConst.PERFORMANCE_HACKS:
+		if cfc._debug and not get_parent().is_in_group("piles"):
+			var stateslist = [
+				"IN_HAND",
+				"FOCUSED_IN_HAND",
+				"MOVING_TO_CONTAINER",
+				"REORGANIZING",
+				"PUSHED_ASIDE",
+				"DRAGGED",
+				"DROPPING_TO_BOARD",
+				"ON_PLAY_BOARD",
+				"FOCUSED_ON_BOARD",
+				"IN_PILE",
+				"VIEWED_IN_PILE",
+				"IN_POPUP",
+				"FOCUSED_IN_POPUP",
+				"VIEWPORT_FOCUS",
+				"PREVIEW",
+				"DECKBUILDER_GRID",
+				"MOVING_TO_SPAWN_DESTINATION",
+			]	
+			$Debug.visible = true
+			$Debug/Panel/V/id.text = "ID:  " + str(self)
+			$Debug/Panel/V/state.text = "STATE: " + stateslist[state]
+			$Debug/Panel/V/index.text = "INDEX: " + str(get_index())
+			$Debug/Panel/V/parent.text = "PARENT: " + str(get_parent().name)
+			if !get_owner_hero_id():
+				var traits = ""
+				var separator = "/"
+				for trait in cfc.all_traits:
+					var value = get_property("trait_" + trait, 0, true)
+					if value:
+						traits += trait +"(" + str(value) +")" + separator
+				$Debug/Panel/V/misc.text = "TRAITS: " + str(traits)
+			$Debug.rect_scale = Vector2(2.0, 2.0)
+		else:
+			$Debug.visible = false	
 	if $Tween.is_active() and not cfc.ut: # Debug code for catch potential Tween deadlocks
 		_tween_stuck_time += delta
 		if _tween_stuck_time > 5 and int(fmod(_tween_stuck_time,3)) == 2 :
@@ -528,16 +572,17 @@ func _process(delta) -> void:
 	var hints_to_erase = []
 	var stop = false
 	for _hint_data in hints:
-		var hint_object = _hint_data.get("hint_object", null)
-		if hint_object:
-			hint_object.visible = false
+		var hint_node = _hint_data.get("hint_node", null)
+		if hint_node:
+			hint_node.visible = false
 		
 	for _hint_data in hints:
 		if stop:
 			break
-		var hint_object = _hint_data.get("hint_object", null)
-		if hint_object:
-			hint_object.visible = true
+		var hint_node = _hint_data.get("hint_node", null)
+		var hint_object = _hint_data.get("hint_control", null)		
+		if hint_node:
+			hint_node.visible = true
 			hint_object.modulate.a -= delta / 3
 			hint_object.rect_scale += Vector2(delta *3, delta *3)
 			hint_object.rect_position+= _hint_data.get("direction") * delta
@@ -553,7 +598,7 @@ func _process(delta) -> void:
 			hints_to_erase.append(_hint_data)
 		_hint_data["lifetime"] = lifetime
 	for data in hints_to_erase:
-		$Control.remove_child(data["hint_object"])
+		$Control.remove_child(data["hint_node"])
 		hints.erase(data)
 	hints_to_erase = []
 	
@@ -827,7 +872,7 @@ func can_interrupt(
 		return CFConst.CanInterrupt.NO
 	
 	var _debug = false
-	if canonical_name == "Black Knight - Dane Whitman" and trigger_card:
+	if canonical_name == "Hawkeye's Bow" and trigger_card:
 		if trigger_details["event_name"] == "receive_damage":
 			_debug = true
 
@@ -1059,6 +1104,10 @@ func execute_scripts(
 	#select valid scripts that match the current trigger
 	var card_scripts = retrieve_filtered_scripts(trigger_card, trigger, trigger_details)
 	
+	#tells the game engine to not display this event prominently to the users
+	if card_scripts.get("_silent", false):
+		trigger_details["_silent"] = true
+		
 	# We select which scripts to run from the card, based on it state	
 	state_scripts_dict = get_state_scripts_dict(card_scripts, trigger_card, trigger_details)
 	show_optional_confirmation_menu = show_optional_confirmation_menu and card_scripts.get("is_optional_" + get_state_exec(), false)
@@ -1192,11 +1241,12 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 	# we evoke the ScriptingEngine only if we have something to execute
 	# We do not statically type it as this causes a circular reference
 	var sceng = null
+	var shortname = properties.get("shortname", canonical_name)
 	if len(state_scripts):
 		if action_name:
-			action_name = canonical_name + "(" + action_name + ")"
+			action_name = shortname + "(" + action_name + ")"
 		else:
-			action_name = canonical_name
+			action_name = shortname
 		action_name = action_name + " - " + trigger
 		action_name =  trigger_details.get("_display_name", action_name) #override		
 		
@@ -2447,9 +2497,11 @@ func pay_as_resource(script):
 	var owner_card = script.owner
 	if owner_card:
 		hero_id = owner_card.get_controller_hero_id()
+	else:
+		owner_card = self
 	if hero_id:
 		delegate = {"for_hero_id" : hero_id}
-	var exe_sceng = self.execute_scripts_no_stack(self, "resource", delegate)				
+	var exe_sceng = self.execute_scripts_no_stack(owner_card, "resource", delegate)				
 	while exe_sceng is GDScriptFunctionState && exe_sceng.is_valid():
 		exe_sceng  = exe_sceng.resume()	
 

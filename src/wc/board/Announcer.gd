@@ -5,6 +5,8 @@
 class_name Announcer
 extends Node
 
+var ignore_stack_events := {}
+
 var default_announcer_minimum_time: float= 2
 var announcer_minimum_time: float= 2
 
@@ -51,15 +53,35 @@ func add_child_to_board(child, details = {}):
 		container.add_child(child)
 		if "z_index" in child:
 			child.z_index = CFConst.Z_INDEX_ANNOUNCER
-	
+
 
 
 func remove_child_from_board(child,details = {}):
 	var container = cfc.NMAP.board
 	container.remove_child_from_top_layer(child)
 
+var _last_notifications_level = ""
+func init_notifications_level():
+	var notifications_level = cfc.game_settings.get("notifications_level", "normal").to_lower()	
+	if notifications_level == _last_notifications_level:
+		return
+	_last_notifications_level = notifications_level
+	match notifications_level:
+		"noob":
+			ignore_stack_events = CFConst.NOOB_SKIP_ANNOUNCE_STACK_EVENTS.duplicate(true)
+		"debug":
+			ignore_stack_events = {}
+		_:
+			ignore_stack_events = CFConst.SKIP_ANNOUNCE_STACK_EVENTS.duplicate(true)
+	#failsafe
+	for key in ["trigger", "boost", "cards"]:
+		if !ignore_stack_events.has(key):
+			ignore_stack_events[key] = {}
+
 func _ready():
-	gameData.theStack.connect("stack_interrupt", self, "_stack_interrupt")
+	init_notifications_level()
+
+	gameData.theStack.connect("stack_interrupt", self, "_stack_interrupt")			
 	scripting_bus.connect("step_started", self, "_step_started")
 	scripting_bus.connect("stack_event_deleted", self, "_stack_event_deleted")
 	if CFConst.DISABLE_ANNOUNCER:
@@ -74,12 +96,12 @@ func _stack_event_deleted(event):
 		var ongoing_announce_object = announce.get("object", null)
 		if ongoing_announce_object == event:
 			announce["object_deleted"] = true
-				
+
 
 func _step_started(_trigger_object, details:Dictionary):
 	if (_skip_announcer):
 		return
-		
+
 	var current_step = details["step"]
 	var settings = {}
 	match current_step:
@@ -237,16 +259,108 @@ func cleanup_choices_menu(announce):
 	self.remove_right_announce()	
 	announce_scene.queue_free()
 
-func _stack_interrupt(stack_object, mode):
+#those are vents that happen when a card is on board
+#but we want them to be taken into account by
+#the general "trigger" case
+const _force_general_notification := [
+	"card_dies",
+	"character_died"
+]
+func get_ignore_list_path(owner_card, stack_event):
+	var card_name = ""
+	var is_boost = false
+	var trigger = stack_event.get_trigger()
+	if !trigger:
+		trigger = stack_event.get_first_task_name()
+	if owner_card and ! (trigger in _force_general_notification):
+		if owner_card.is_boost():
+			return ["boost", trigger]
+		elif owner_card.get_state_exec() == "board":
+			card_name = owner_card.properties.get("shortname", "")
+			return ["cards", card_name, trigger]
+
+	return ["trigger", trigger]
+	
+func add_event_to_ignore_list(owner_card, stack_event):
+	var path = get_ignore_list_path (owner_card, stack_event)
+	var root = ignore_stack_events
+	var last_index = path.size() -1
+	for i in range (path.size()):
+		var key = path[i]
+		if i > 0 and i < last_index:
+			if !root.has(key):
+				root[key] = {}
+		elif i == last_index:
+			root[key] = true
+		root = root[key]
+
+	var _tmp = ignore_stack_events
+	_tmp = 1
+
+
+func show_stack_announce(stack_object, mode = GlobalScriptStack.InterruptMode.NONE) -> bool:
+	if (_skip_announcer):
+		return false
+
+	var notifications_level = cfc.game_settings.get("notifications_level", "normal").to_lower()	
+	if notifications_level == "expert":
+		return false
+		
+	#if we're interrupting, we'll be showing another message 
+	if mode == GlobalScriptStack.InterruptMode.OPTIONAL_INTERRUPT_CHECK:
+		return false
+	if mode == GlobalScriptStack.InterruptMode.FORCED_INTERRUPT_CHECK:
+		var _tmp = 1
+	
+	if !is_instance_valid(stack_object):
+		return false
+	
+	if stack_object.is_silent() and notifications_level != "debug":
+		if mode != GlobalScriptStack.InterruptMode.FORCED_INTERRUPT_CHECK:
+			return false
+	
+	#we intentionally ignore a bunch of events to not make it noisy for the user	
+	var trigger = stack_object.get_trigger()
+	var script_name =  stack_object.get_first_task_name()
+	if !trigger:
+		trigger = script_name
+	
+	if trigger == "card_defeated":
+		var _tmp = 1
+			
+	if ignore_stack_events["trigger"].get(trigger, false):
+		return false
+
+	var owner_card = stack_object.get_owner_card()
+	if owner_card:
+		if owner_card.is_boost():
+			if ignore_stack_events["boost"].get(trigger, false):
+				return false
+		else:
+			var card_name = owner_card.properties["shortname"]
+			if ignore_stack_events["cards"].get(card_name, {}).get(trigger, false):
+				return false
+	
+
+	init_generic_stack_display(stack_object, true )
+	return true
+		
+func _stack_interrupt(stack_object, mode = GlobalScriptStack.InterruptMode.NONE):
+	#we're skipping forced interrupts...
 	if mode != GlobalScriptStack.InterruptMode.OPTIONAL_INTERRUPT_CHECK:
-		return
+		return	
+	init_generic_stack_display(stack_object, false )
+
+func init_generic_stack_display(stack_object, show_ok):
+
 
 	var announce = {
 		"announce" :"generic_stack",
 		"object" : stack_object,
-		"is_blocking" : false,
+		"is_blocking" : show_ok, #when not showing the ok button, it means it's an interrupt
 		"storage": {},
 		"current_delta" : 0.0,
+		"show_ok": show_ok,
 	}			
 	var func_return = init_generic_stack(stack_object, announce)
 	if (func_return):
@@ -285,7 +399,12 @@ func init_generic_stack(script, announce):
 	
 	#var announce_scene = StackEventDisplay.new(script)
 	storage["scene"] = announce_scene
+	
 	add_child_to_board(announce_scene)
+
+	if announce.get("show_ok", false):
+		announce_scene.show_ok_button()	
+				
 	announce_scene.set_target_position(GENERIC_STACK_POSITION * cfc.screen_scale)
 	self.add_right_announce()		
 	return true
@@ -339,6 +458,7 @@ func init_receive_damage(script:ScriptTask, announce:Dictionary) -> bool:
 		
 		var targeting_arrow = owner.targeting_arrow.duplicate(DUPLICATE_USE_INSTANCING)
 		owner.add_child(targeting_arrow)
+		targeting_arrow.set_color_from_script(script.script_definition)		
 		storage["arrows"].append(targeting_arrow)
 		targeting_arrow.set_text(str(damage) + " DAMAGE")
 		targeting_arrow.show_me()

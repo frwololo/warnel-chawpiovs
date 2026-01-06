@@ -65,17 +65,48 @@ margin_right = 40.0
 margin_bottom = 107.0
 text = "aaa"
 
-[node name="state" parent="Debug" index="1"]
+[node name="Panel" type="PanelContainer" parent="Debug" index="0"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="V" type="VBoxContainer" parent="Debug/Panel" index="0"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="id" type="Label" parent="Debug/Panel/V" index="0"]
+margin_right = 40.0
+margin_bottom = 14.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="state" type="Label" parent="Debug/Panel/V" index="1"]
 margin_top = 18.0
+margin_right = 40.0
 margin_bottom = 32.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="index" parent="Debug" index="2"]
+[node name="index" type="Label" parent="Debug/Panel/V" index="2"]
 margin_top = 36.0
+margin_right = 40.0
 margin_bottom = 50.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="parent" parent="Debug" index="3"]
+[node name="parent" type="Label" parent="Debug/Panel/V" index="3"]
 margin_top = 54.0
+margin_right = 40.0
 margin_bottom = 68.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="misc" type="Label" parent="Debug/Panel/V" index="4"]
+margin_right = 40.0
+margin_bottom = 14.0
 
 [connection signal="focus_entered" from="Control" to="." method="_on_Control_focus_entered"]
 [connection signal="focus_exited" from="Control" to="." method="_on_Control_focus_exited"]

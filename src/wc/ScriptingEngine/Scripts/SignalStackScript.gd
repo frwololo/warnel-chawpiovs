@@ -24,6 +24,11 @@ func execute():
 func get_tasks():
 	return [self]
 
+#generally speaking we don't want these to be verbose
+func is_silent():
+	return true
+	
+
 func get_subjects():
 	#TODO cleaner way to do this?
 	var target = script_definition.get("target", null)

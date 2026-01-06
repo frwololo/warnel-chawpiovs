@@ -507,7 +507,7 @@ func _input(event) -> void:
 func are_hovered_manipulation_buttons():
 	if !buttons:
 		return false
-	return buttons.hovered()	
+	return buttons.are_hovered()	
 
 func set_manipulation_buttons_active(value):
 	if !buttons:
@@ -832,8 +832,6 @@ func get_property(property: String, default = null, force_alterant_check = false
 func get_property_and_alterants(property: String,
 		use_global_temp_mods := false, default = null) -> Dictionary:
 
-	if canonical_id == "01027" and property == "attack":
-		var _tmp = 1
 	var property_value = properties.get(property, default)
 	var alteration = {
 		"value_alteration": 0,
@@ -2859,7 +2857,7 @@ func _process_card_state() -> void:
 			set_card_rotation(0)
 
 		CardState.VIEWPORT_FOCUS:
-			if gameData.is_ongoing_blocking_announce():
+			if gameData.should_hide_viewport_focus():
 				self.modulate.a = 0			
 			else:
 				self.modulate.a = 1

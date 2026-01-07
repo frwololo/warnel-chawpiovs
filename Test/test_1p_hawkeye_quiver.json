@@ -1,0 +1,151 @@
+{
+	"_comments": "Tests Hawkeye's Quiver",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Zola - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Island of Dr. Zola"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Vibranium Arrow"
+				},				
+				{
+					"card": "Ready For Action"
+				},	
+				{
+					"card": "Genius"
+				},					
+				{
+					"card": "Team Training"
+				},				
+				{
+					"card": "Explosive Arrow"
+				},
+				{
+					"card": "Sky Cycle"
+				},							
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye",
+					"tokens": {"damage": 1}
+				}
+			],
+			"upgrade_support1":[
+				{
+					"card" : "Expert Marksman",
+				},
+				{
+					"card" : "Hawkeye's Quiver",
+				},
+				{
+					"card" : "Hawkeye's Bow",
+				}					
+			],
+			"hand1": [
+				{
+					"card": "The Power of Justice"
+				},
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "activate",
+			"value": "Hawkeye's Quiver"
+		},	
+		{
+			"type": "select",
+			"value": "Vibranium Arrow"
+		},	
+		{
+			"type": "play",
+			"value": "Vibranium Arrow"
+		},
+		{
+			"type": "target",
+			"value": "Zola - 1"
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Zola - 1",
+					"tokens": {"damage": 6}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Island of Dr. Zola"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Ready For Action"
+				},	
+				{
+					"card": "Genius"
+				},					
+				{
+					"card": "Team Training"
+				},				
+				{
+					"card": "Explosive Arrow"
+				},
+				{
+					"card": "Sky Cycle"
+				},								
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye",
+					"tokens": {"damage": 1}
+				}
+			],
+			"upgrade_support1":[
+				{
+					"card" : "Expert Marksman",
+				},
+				{
+					"card" : "Hawkeye's Quiver",
+				},
+				{
+					"card" : "Hawkeye's Bow",
+				}					
+			],
+			"discard1": [
+				{
+					"card": "The Power of Justice"
+				},
+				{
+					"card": "Vibranium Arrow"
+				}				
+				
+			]
+		}
+	}
+}

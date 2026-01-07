@@ -302,6 +302,11 @@ func show_stack_announce(stack_object, mode = GlobalScriptStack.InterruptMode.NO
 	if (_skip_announcer):
 		return false
 
+	if is_right_side_announce_ongoing():
+		#already showing something and for now I don't have a good
+		#mechanism to show multiples
+		return false
+		
 	var notifications_level = cfc.game_settings.get("notifications_level", "normal").to_lower()	
 	if notifications_level == "expert":
 		return false

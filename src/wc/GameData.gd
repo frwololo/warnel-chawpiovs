@@ -54,6 +54,9 @@ const EncounterStatusStr = [
 	"ENCOUNTER_POST_COMPLETE"
 ]
 
+const _GAME_OVER_SCENE_FILE = CFConst.PATH_CUSTOM + "board/GameOver.tscn"
+const _GAME_OVER_SCENE = preload(_GAME_OVER_SCENE_FILE)
+
 var _current_encounter = null #WCCard
 
 #emit whenever something changes in the game state. This will trigger some recomputes
@@ -111,7 +114,7 @@ var _targeting_timer:= 0.2
 #var _clients_system_status: Dictionary = {}
 var _network_ack: Dictionary = {}
 var _multiplayer_desync = null
-var _game_over := false
+var _game_over := ""
 var _game_started := false 
 
 func stop_game():
@@ -216,13 +219,17 @@ func end_game(result:String):
 	init_save_folder()
 	cleanup_post_game()	
 	cfc.set_game_paused(true)
-	var end_dialog:AcceptDialog = AcceptDialog.new()
-	end_dialog.window_title = result
-	end_dialog.add_button ( "retry", true, "retry")
-	end_dialog.connect("custom_action", cfc.NMAP.board, "_retry_game")
-	end_dialog.connect("confirmed", cfc.NMAP.board, "_close_game")
-	cfc.NMAP.board.add_child(end_dialog)
-	end_dialog.popup_centered()
+	var game_over_screen = _GAME_OVER_SCENE.instance()
+	if _game_over == "victory":
+		game_over_screen.victory()
+	cfc.NMAP.board.add_child(game_over_screen)
+#	var end_dialog:AcceptDialog = AcceptDialog.new()
+#	end_dialog.window_title = result
+#	end_dialog.add_button ( "retry", true, "retry")
+#	end_dialog.connect("custom_action", cfc.NMAP.board, "_retry_game")
+#	end_dialog.connect("confirmed", cfc.NMAP.board, "_close_game")
+#	cfc.NMAP.board.add_child(end_dialog)
+#	end_dialog.popup_centered()
 
 
 #for testing
@@ -265,7 +272,7 @@ func _process(_delta: float):
 		
 	if _game_over: 
 		end_game("game over")
-		_game_over = false
+		_game_over = ""
 		return
 		
 	if _multiplayer_desync:
@@ -954,6 +961,9 @@ func enemy_activates() :
 					"target" : target_hero,
 					SP.TRIGGER_TARGET_HERO : target_hero.canonical_name
 				}
+				 #some cleanup to prevent any misunderstanding
+				 #activity script will be set once the activity actually starts (which might be a mistake...?)
+				set_latest_activity_script(null)
 				var stackEvent:SignalStackScript = SignalStackScript.new("enemy_initiates_" + action, enemy,  details)
 				theStack.add_script(stackEvent)
 				_current_enemy_attack_step = EnemyAttackStatus.PENDING_INTERRUPT
@@ -1009,12 +1019,51 @@ func enemy_activates() :
 
 	return
 
+
+var _current_activity_script_modifiers = []
 var _latest_activity_script = null
 func set_latest_activity_script(script):
 	_latest_activity_script = script
+	if !_latest_activity_script:
+		_current_activity_script_modifiers = []
+	if _current_activity_script_modifiers:	
+		apply_mods_to_current_activity_script()
 
 func get_latest_activity_script():
 	return _latest_activity_script
+
+func prevent_value(script, property, amount_prevented):
+		var script_definition = script.script_definition
+		if script_definition.has(property):
+			var value = script.retrieve_integer_property(property)
+			value = max(0, value-amount_prevented)
+			script_definition[property] = value
+		else:
+			#if the script doesn't have the expected property, we try to pass it along
+			var prevent = "prevent_" + property
+			var value = script.retrieve_integer_property(prevent, 0)
+			script_definition[prevent] = value + amount_prevented			
+			#todo what if zero
+
+func apply_mods_to_current_activity_script(modification_script = null):
+	if modification_script:
+		_current_activity_script_modifiers.append(modification_script)
+	
+	#if activity scriptisn't set yet, we'll apply the modifications later
+	if !_latest_activity_script:
+		return
+	for script in _current_activity_script_modifiers:
+		match script.script_name:
+			"prevent":
+				var amount = script.retrieve_integer_property("amount")
+				if !amount:
+					var _error = 1
+				else:
+					prevent_value(_latest_activity_script, "amount", amount)
+			_:
+				#TODO
+				pass	
+	_current_activity_script_modifiers = []
 
 func enemy_action_happened():
 	if  _current_enemy_attack_step != EnemyAttackStatus.ATTACK_COMPLETE:
@@ -1593,7 +1642,7 @@ func character_died(card:Card, script = null):
 	theStack.add_script(task_event)
 
 func defeat():
-	_game_over = true
+	_game_over = "defeat"
 	var announce_settings = {
 		"text": "Defeat Defeat",
 		"top_color": Color8(25,20,20,255),
@@ -1602,7 +1651,7 @@ func defeat():
 	theAnnouncer.simple_announce(announce_settings, true)	
 
 func victory():
-	_game_over = true
+	_game_over = "victory"
 	var announce_settings = {
 		"text": "Victory Victory",
 		"top_color": Color8(50,50,200, 255),

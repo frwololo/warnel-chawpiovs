@@ -586,7 +586,7 @@ func _process(delta) -> void:
 			hint_object.modulate.a -= delta / 3
 			hint_object.rect_scale += Vector2(delta *3, delta *3)
 			hint_object.rect_position+= _hint_data.get("direction") * delta
-		if self._is_exhausted:
+		if self._is_exhausted or self._horizontal:
 			hint_object.rect_rotation = -90
 		var lifetime = _hint_data.get("lifetime", 0)
 		lifetime -= delta
@@ -932,6 +932,20 @@ func execute_scripts_no_stack(
 	new_trigger_details["use_stack"] = false
 	return execute_scripts(trigger_card, trigger, new_trigger_details, run_type)	
 
+func retrieve_script_by_path(path:String):
+	var found_scripts = get_instance_runtime_scripts()
+	var result = {}
+	if !found_scripts:
+		# This retrieves all the script from the card, stored in cfc
+		# The seeks in them the specific trigger we're using in this
+		# execution
+		found_scripts = cfc.set_scripts.get(canonical_id,{}).duplicate(true)	
+	var nodes = path.split("/")
+	for node in nodes:
+		
+		found_scripts = found_scripts.get(node, {})
+	
+	return found_scripts
 
 func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 	# I use this spot to add a breakpoint when testing script behaviour
@@ -1924,6 +1938,10 @@ func get_grid_name():
 		return _placement_slot.get_grid_name()
 	return null	
 
+func to_grayscale():
+	if card_front:
+		card_front.to_grayscale()
+
 #
 #Marvel Champions Specific functionality
 #
@@ -2277,13 +2295,12 @@ func count_tokens(params, script:ScriptTask = null) -> int:
 	return count
 
 #returns true if this card (or script subject) has a given trait
-func has_trait(params, script:ScriptTask = null) -> bool:
+func has_trait(params, script:ScriptTask = null) -> int:
 	var subject = self
 	
 	var and_or = "or"
 	
 	if script:
-		subject = null
 		var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
 		if subjects:
 			subject = subjects[0]
@@ -2296,31 +2313,31 @@ func has_trait(params, script:ScriptTask = null) -> bool:
 		TYPE_STRING:
 			traits = params
 		_:
-			return false
+			return 0
 
 	if typeof(traits) == TYPE_STRING:
 		traits = [traits]
 
 	if !traits:
-		return false
+		return 0
 	for trait in traits:
 		trait = "trait_" + trait
 		if and_or =="or":
 			if subject.get_property(trait, 0, true):
-				return true
+				return 1
 		else:
 			if !subject.get_property(trait, 0, true):
-				return false
+				return 0
 	if and_or =="or":
-		return false
-	return true
+		return 0
+	return 1
 
 func identity_has_trait(params, script:ScriptTask = null) -> bool:
 	var hero = get_controller_hero_card()
 	return hero.has_trait(params)	
 
 func get_hero_id(params, script:ScriptTask = null) -> int:
-	var hero_name = params.get("name")
+	var hero_name = params.get("card_name")
 	if !hero_name:
 		return 1 #default to avoid crashes
 

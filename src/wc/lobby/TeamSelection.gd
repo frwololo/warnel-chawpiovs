@@ -80,6 +80,21 @@ func _ready():
 	if (not get_tree().get_network_peer()):
 		gameData.init_1player()
 	
+	var adventure_mode = cfc.is_adventure_mode()
+	get_node("%AdventureModeWarning").visible = adventure_mode
+	if adventure_mode:
+		var suffix = " (all unlocked!)"
+		var heroes_left_to_unlock = cfc.get_locked_heroes().size()
+		if heroes_left_to_unlock:
+			suffix = " (" +str(heroes_left_to_unlock) + " left to unlock)"
+		get_node("%HeroesTitle").text += suffix
+
+		suffix = " (all unlocked!)"
+		var scenarios_left_to_unlock = cfc.get_locked_scenarios().size()
+		if scenarios_left_to_unlock:
+			suffix = " (" +str(scenarios_left_to_unlock) + " left to unlock)"
+		get_node("%ScenarioHeader").text +=  suffix
+	
 	v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
 
 	get_viewport().connect("gui_focus_changed", self, "gui_focus_changed")	
@@ -179,7 +194,7 @@ func _load_scenarios():
 	
 	#sorting by alphabetical name of villain
 	var names_to_id = {}
-	for scenario_id in cfc.scenarios:
+	for scenario_id in cfc.get_unlocked_scenarios():
 		var villains = ScenarioDeckData.get_villains_from_scheme(scenario_id)
 		if villains:
 			var villain = villains[0]
@@ -202,7 +217,7 @@ func _create_hero_container():
 	
 	#show in alphabetical order
 	var names_to_id = {}
-	for hero_id in cfc.idx_hero_to_deck_ids:
+	for hero_id in cfc.get_unlocked_heroes():
 		var hero_name = cfc.get_card_name_by_id(hero_id)
 		names_to_id[hero_name] = hero_id
 

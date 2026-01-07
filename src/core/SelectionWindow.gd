@@ -28,12 +28,14 @@ var selection_type: String
 var is_selection_optional: bool
 var is_cancelled := false
 var _card_dupe_map := {}
-var what_to_count: String
+var what_to_count = null
 var selection_additional_constraints = null
 var my_script
 var card_array
 var stored_integer
 var hide_ok_on_zero = false
+var show_cards_with_zero_value: = false
+var can_select_cards_with_zero_value: = false
 
 onready var _card_grid = get_node("%GridContainer")
 onready var _tween = get_node("%Tween")
@@ -61,19 +63,26 @@ func init(
 	selection_type = params.get(SP.KEY_SELECTION_TYPE, "min")
 	is_selection_optional = params.get(SP.KEY_SELECTION_OPTIONAL, false)
 	what_to_count = params.get(SP.KEY_SELECTION_WHAT_TO_COUNT, "")
+	show_cards_with_zero_value = params.get("selection_show_cards_with_zero_value", false)
 	selection_additional_constraints = params.get("selection_additional_constraints", {})
 	hide_ok_on_zero = params.get("hide_ok_on_zero", false)	
 
-	if what_to_count.begins_with("assign_"):
-		_assign_mode = true
-		var function_suffix = what_to_count.substr(7)
-		_assign_max_function = "get_remaining_" + function_suffix		
-		what_to_count = "assign"
-	elif what_to_count.begins_with("remove_"):
-		_assign_mode = true
-		var function_suffix = what_to_count.substr(7)
-		_assign_max_function = "get_current_" + function_suffix		
-		what_to_count = "assign"		
+	if typeof(what_to_count) == TYPE_STRING:
+		
+		#TODO technically not possible but these modes allow
+		#for cards to start at value zero, and otherwise this crashes
+		#the game
+		can_select_cards_with_zero_value = true
+		if what_to_count.begins_with("assign_"):
+			_assign_mode = true
+			var function_suffix = what_to_count.substr(7)
+			_assign_max_function = "get_remaining_" + function_suffix		
+			what_to_count = "assign"
+		elif what_to_count.begins_with("remove_"):
+			_assign_mode = true
+			var function_suffix = what_to_count.substr(7)
+			_assign_max_function = "get_current_" + function_suffix		
+			what_to_count = "assign"		
 		
 func _ready() -> void:
 	# warning-ignore:return_value_discarded
@@ -126,7 +135,7 @@ func initiate_selection(_card_array: Array) -> void:
 	#only include cards that can actually be used 
 	card_array = []
 	for card in _card_array:
-		if ( _assign_mode or get_count([card]) >= 1): #TODO better way for assign mode ?
+		if (show_cards_with_zero_value or _assign_mode or get_count([card]) >= 1): #TODO better way for assign mode ?
 			card_array.append(card)
 	
 	_compute_columns()
@@ -182,6 +191,8 @@ func initiate_selection(_card_array: Array) -> void:
 		_card_dupe_map[card] = dupe_selection
 		# warning-ignore:return_value_discarded
 		dupe_selection.set_is_faceup(true,true)
+		if !can_select_cards_with_zero_value and (get_count([card]) <= 0):
+			dupe_selection.to_grayscale()
 		dupe_selection.ensure_proper()
 #		dupe_selection.enable_focus_mode()
 
@@ -403,24 +414,37 @@ func can_still_select_more() -> bool :
 
 var _cache_count_per_card = {}
 func get_count(_card_array: Array) -> int:
-	match what_to_count:
-		"assign":
-			var total = 0
-			for card in card_array: #for "assign" we actually ignore the passed array and use our currently displayed one
-				var spinbox = _card_dupe_map[card].get_spinbox()
-				total = total + spinbox.value
-			return total			
-		"":
-			return _card_array.size()
-		_:
-			var total = 0
-			var func_name = what_to_count
-			for card in _card_array:
-				if card and is_instance_valid(card):
-					if !_cache_count_per_card.has(card):
-						_cache_count_per_card[card] =  card.call(func_name, my_script)
-					total = total + _cache_count_per_card[card]
-			return total
+	if typeof(what_to_count) == TYPE_STRING:
+		match what_to_count:
+			"assign":
+				var total = 0
+				for card in card_array: #for "assign" we actually ignore the passed array and use our currently displayed one
+					var spinbox = _card_dupe_map[card].get_spinbox()
+					total = total + spinbox.value
+				return total			
+			"":
+				return _card_array.size()
+			_:
+				var total = 0
+				var func_name = what_to_count
+				for card in _card_array:
+					if card and is_instance_valid(card):
+						if !_cache_count_per_card.has(card):
+							_cache_count_per_card[card] =  card.call(func_name, my_script)
+						total = total + _cache_count_per_card[card]
+				return total
+	elif typeof(what_to_count) == TYPE_DICTIONARY and what_to_count.has("func_name"):
+		var params = what_to_count.get("func_params", {})
+		var total = 0
+		var func_name = what_to_count.get("func_name")
+		for card in _card_array:
+			if card and is_instance_valid(card):
+				if !_cache_count_per_card.has(card):
+					_cache_count_per_card[card] = cfc.ov_utils.func_name_run(card, func_name, params, my_script)
+				total = total + _cache_count_per_card[card]
+		return total
+	
+	return 0		
 
 #Returns arbitrary (valid) targets for the purpose of cost check
 func dry_run(_card_array: Array) -> void:	
@@ -534,6 +558,9 @@ func spinbox_value_changed( new_value,  dupe_selection: Card, origin_card) -> vo
 	pass
 	
 func card_clicked(dupe_selection: Card, origin_card) -> void:
+	if !can_select_cards_with_zero_value:
+		if get_count([origin_card]) <= 0:
+			return
 	if selection_type == "as_much_as_possible":
 		var current_total = get_count(card_array)
 		var spinbox = dupe_selection.get_spinbox()
@@ -558,6 +585,7 @@ func card_clicked(dupe_selection: Card, origin_card) -> void:
 	# We want to avoid the player being able to select more cards than
 	# the max, even if the OK button is disabled
 	# So whenever they exceed the max, we unselect the first card in the array.
+	#TODO should use get_count
 	if selection_type in ["equal", "max"]  and selected_cards.size() > selection_count:
 		var dupe = _card_dupe_map[selected_cards[0]]
 		dupe.highlight.set_highlight(false)

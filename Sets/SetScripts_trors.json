@@ -890,11 +890,11 @@
 			"all": [
 				{
 					"name": "move_card_to_container",
-					"dest_container": "discard",
-					"src_container": "hand",
-					"subject": "index",
+					"dest_container": "discard_villain",
+					"src_container": "deck_villain",
+					"subject": "tutor",
+					"subject_index": "top",
 					"subject_count": 1,
-					"subject_index": "random",
 					"for_each_player": true
 				},
 				{
@@ -982,7 +982,7 @@
 						"filter_state_seek": [
 							{
 								"filter_properties": {
-									"Name": "Hawkeye's Bow'"
+									"Name": "Hawkeye's Bow"
 								}
 							}
 						]
@@ -1001,7 +1001,7 @@
 						"filter_state_seek": [
 							{
 								"filter_properties": {
-									"Name": "Hawkeye's Bow'"
+									"Name": "Hawkeye's Bow"
 								}
 							}
 						]
@@ -1528,7 +1528,7 @@
 				},
 				{
 					"name": "nop",
-					"is_cost": true,					
+					"is_cost": true,
 					"subject": "target",
 					"filter_state_subject": [
 						{
@@ -1650,13 +1650,13 @@
 						"trait_arrow": 1
 					}
 				}
-			],		
-			"board": [		
+			],
+			"board": [
 				{
 					"name": "exhaust_card",
 					"subject": "self",
 					"is_cost": true
-				},			
+				},
 				{
 					"name": "add_resource",
 					"amount": 1,
@@ -1853,7 +1853,7 @@
 					},
 					{
 						"name": "add_script",
-						"end_condition": "phase_ended",
+						"end_condition": "round_ended",
 						"subject": "self",
 						"script": {
 							"alterants": {
@@ -1873,7 +1873,7 @@
 						"end_condition": "round_ended",
 						"subject": "self",
 						"script": {
-							"round_ended": {
+							"phase_ended": {
 								"board": [
 									{
 										"name": "move_card_to_container",
@@ -2069,7 +2069,7 @@
 		},
 		"interrupt": {
 			"event_name": "receive_damage",
-			"filter_source_controlled_by": "my_hero",			
+			"filter_source_controlled_by": "my_hero",
 			"event_filters": {
 				"tags": [
 					"attack",
@@ -2105,45 +2105,32 @@
 					"is_cost": true
 				},
 				{
-					"name": "nop",
-					"subject": "index",
+					"name": "host_card",
+					"subject": "tutor",
 					"subject_index": "top",
 					"subject_count": 5,
-					"src_container": "deck"
-				},
-				{
-					"name": "host_card",
-					"subject": "previous",
-					"subject_count": 1,
-					"filter_each_previous_subject": "true",
-					"filter_state_subject": [
-						{
-							"filter_properties": {
-								"comparison": "gt",
-								"trait_arrow": 0
-							},
-							"filter_properties2": {
-								"code_type": "event"
-							}
+					"up_to": true,
+					"src_container": "deck",
+					"selection_count": 1,
+					"selection_type": "max",
+					"needs_selection": true,
+					"selection_show_cards_with_zero_value": true,
+					"selection_what_to_count": {
+						"func_name": "has_trait",
+						"func_params": {
+							"trait": "arrow"
 						}
-					]
+					}
 				},
 				{
 					"name": "add_script",
 					"subject": "previous",
-					"script": {
-						"manual": {
-							"board": [
-								{
-									"name": "pay_regular_cost",
-									"is_cost": true,
-									"cost": "card_cost"
-								},
-								{
-									"name": "move_card_to_board",
-									"subject": "self"
-								}
-							]
+					"fetch_script": {
+						"script_path": "manual/hand",
+						"result": {
+							"manual": {
+								"board": "__fetched_script__"
+							}
 						}
 					}
 				}
@@ -2866,7 +2853,7 @@
 						"hero_id": {
 							"func_name": "get_hero_id",
 							"func_params": {
-								"name": "Clint Barton"
+								"card_name": "Clint Barton"
 							}
 						}
 					},
@@ -2887,7 +2874,7 @@
 						"hero_id": {
 							"func_name": "get_hero_id",
 							"func_params": {
-								"name": "Clint Barton"
+								"card_name": "Clint Barton"
 							}
 						}
 					},
@@ -3110,7 +3097,8 @@
 				},
 				{
 					"name": "prevent",
-					"subject": "interrupted_event"
+					"subject": "current_activation",
+					"amount": 100
 				}
 			],
 			"filter_target_hero": "Hawkeye",
@@ -3247,7 +3235,7 @@
 						"type_code": "environment"
 					}
 				}
-			]			
+			]
 		},
 		"setup": {
 			"all": [
@@ -3751,7 +3739,7 @@
 					"tags": [
 						"hero_action"
 					]
-				},		
+				},
 				{
 					"name": "mod_tokens",
 					"modification": 1,
@@ -4273,7 +4261,7 @@
 				},
 				{
 					"name": "nop",
-					"is_cost": true,					
+					"is_cost": true,
 					"subject": "target",
 					"filter_state_subject": [
 						{

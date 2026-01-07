@@ -66,6 +66,11 @@ func set_card_art(filename) -> void:
 		setup_text_mode()
 		card_owner.refresh_card_front()
 
+func to_grayscale():
+	if !art.texture:
+		return
+	art.texture = WCUtils.to_grayscale(art.texture)
+
 func set_label_text(node: Label, value, scale: float = 1):
 	if !text_enabled:
 		return

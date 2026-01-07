@@ -1754,8 +1754,6 @@ func retrieve_scripts(trigger: String, filters := {}) -> Dictionary:
 		# The seeks in them the specific trigger we're using in this
 		# execution
 		found_scripts = cfc.set_scripts.get(canonical_id,{}).get(trigger,{}).duplicate(true)
-	if (canonical_name == "Wakanda Forever!" and trigger == "manual"):
-		var _tmp = 1
 	return(found_scripts)
 
 # Retrieves the card scripts either from those defined on the card

@@ -4,7 +4,7 @@ extends Node2D
 
 onready var v_box_container = $PanelContainer/general/VBoxContainer
 onready var file_dialog = get_node("%FileDialog")
-onready var h_box_container = $PanelContainer/general/VBoxContainer/HBoxContainer
+onready var h_box_container = $PanelContainer/general/VBoxContainer/DebugContainer
 
 const NOTIFICATION_LEVELS := [
 	"noob",
@@ -16,6 +16,8 @@ const NOTIFICATION_LEVELS := [
 # warning-ignore:unused_signal
 signal exit_options_menu
 
+var board_mode = true
+
 func init_button_signals(node):
 	if node.has_signal('pressed'):			
 		node.connect('pressed', self, 'on_button_pressed', [node.name])
@@ -24,7 +26,7 @@ func init_button_signals(node):
 	for child in node.get_children():
 		init_button_signals(child)
 
-func _ready():		
+func _ready():	
 	init_button_signals(self)
 
 	
@@ -91,12 +93,19 @@ func load_options():
 		if NOTIFICATION_LEVELS[i] == notifications_level: 
 			options_button.select(i)
 			break
+			
+	var adventure_mode = cfc.game_settings.get("adventure_mode", true)
+	var adv_check:CheckBox = get_node("%AdventureMode")
+	adv_check.set_pressed_no_signal(adventure_mode)		
 
 func save_options():
 	var options_button:OptionButton = get_node("%NotificationsLevel")
-			
 	cfc.game_settings["notifications_level"] = NOTIFICATION_LEVELS[options_button.selected]
 	gameData.theAnnouncer.init_notifications_level()
+	
+	var adv_check:CheckBox = get_node("%AdventureMode")
+	cfc.game_settings["adventure_mode"] = adv_check.pressed
+
 	cfc.save_settings()
 
 func show_controls():
@@ -133,9 +142,10 @@ func close_me():
 	cfc.set_game_paused(false)
 	visible = false
 	#doing a pause here to not react to a previous button press
-	yield(get_tree().create_timer(0.1), "timeout")	
-	cfc.NMAP.board.enable_focus_mode()
-	cfc.NMAP.board.visible = true
+	yield(get_tree().create_timer(0.1), "timeout")
+	if cfc.NMAP.has("board"):	
+		cfc.NMAP.board.enable_focus_mode()
+		cfc.NMAP.board.visible = true
 
 func show_me():
 	#set_process(true)
@@ -143,11 +153,24 @@ func show_me():
 		get_node("%Controls").visible = true
 	else:
 		get_node("%Controls").visible = false
+
+	if !cfc.NMAP.has("board"):
+		board_mode = false
+	
+	if !board_mode:
+		get_node("%LoadSave").visible = false
+		get_node("%DebugContainer").visible = false		
+		get_node("%RestartButton").visible = false	
+		get_node("%MainMenuButton").visible = false	
+		$PanelContainer.self_modulate.a = 1	
+		
 	visible = true
 	cfc.set_game_paused(true)
-	cfc.NMAP.board.disable_focus_mode()
+	if cfc.NMAP.has("board"):
+		cfc.NMAP.board.disable_focus_mode()
+		cfc.NMAP.board.visible = false 		
+		
 	cfc.default_button_focus(v_box_container)	
-	cfc.NMAP.board.visible = false 
 	
 func restart_game():
 	var path = "user://Saves/_restart.json"

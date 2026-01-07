@@ -643,16 +643,26 @@ func prevent(script: ScriptTask) -> int:
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode	
 
-	if script.script_definition.has("amount"): #this is a partial prevention effect
-		var stack_object = gameData.theStack.find_last_event_before_me(script)
-		if (!stack_object):	
-			return CFConst.ReturnCode.FAILED
-		
-		gameData.theStack.modify_object(stack_object, script)		
-	else:	
-		#Find the event on the stack and remove it
-		#TOdo take into action subject, etc...
-		var _result = gameData.theStack.delete_last_event(script)
+	var subject_target = script.script_definition.get("subject")
+	match subject_target:
+		"current_activation":
+			if script.script_definition.has("amount"): #this is a partial prevention effect
+				gameData.apply_mods_to_current_activity_script(script)	
+			else:	
+				#TODO
+				#unsupported
+				return CFConst.ReturnCode.FAILED
+		_:
+			if script.script_definition.has("amount"): #this is a partial prevention effect
+				var stack_object = gameData.theStack.find_last_event_before_me(script)
+				if (!stack_object):	
+					return CFConst.ReturnCode.FAILED
+				
+				gameData.theStack.modify_object(stack_object, script)		
+			else:	
+				#Find the event on the stack and remove it
+				#TOdo take into action subject, etc...
+				var _result = gameData.theStack.delete_last_event(script)
 		
 	return retcode		
 	
@@ -969,6 +979,13 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 	var boost_data = script.get_property("boost", [])
 	for boost_amount in boost_data:
 		amount+= boost_amount	
+
+	var prevent = script.retrieve_integer_property("prevent_amount", 0)	
+	if prevent:
+		amount-= prevent
+	
+	amount = 0 if amount <0 else amount
+
 			
 	if defender:
 		var damage_reduction = defender.get_property("defense", 0)
@@ -1625,13 +1642,19 @@ func add_script(script: ScriptTask) -> int:
 		return retcode
 
 	var subscript = script.get_property("script", {})
+	var fetch_script = script.get_property("fetch_script", {})
 	var end_condition = script.get_property("end_condition", "")
 	var subjects = script.subjects
-	
+		
 	var this_card = script.owner
 	var my_hero_id = this_card.get_controller_hero_id()
 	
 	for subject in subjects:
+		if fetch_script:
+			var fetched_script = subject.retrieve_script_by_path(fetch_script["script_path"])
+			subscript = fetch_script["result"]
+			subscript = WCUtils.search_and_replace (subscript, "__fetched_script__", fetched_script, true)
+			
 		var subscript_id = subject.add_extra_script( subscript, my_hero_id)
 		if (end_condition):
 				gameData.theGameObserver.add_script_removal_effect(script, subject, subscript_id, end_condition)

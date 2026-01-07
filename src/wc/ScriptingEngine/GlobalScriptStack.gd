@@ -440,7 +440,7 @@ func add_script_and_run(stackEvent):
 func add_script(stackEvent):
 	add_script_and_run(stackEvent)
 
-var _sent_about_to_execute_signal = false
+var _sent_about_to_execute_signal = {}
 func _process(_delta: float):
 	display_debug_info()
 	
@@ -472,13 +472,11 @@ func _process(_delta: float):
 	var stack_object = stack.back()
 	var _interrupt_state = compute_interrupts(stack_object)
 	
-	if !_sent_about_to_execute_signal:
-		_sent_about_to_execute_signal = true
+	if !_sent_about_to_execute_signal.has(stack_object):
+		_sent_about_to_execute_signal[stack_object] = true
 		var message_to_show = gameData.theAnnouncer.show_stack_announce(stack_object , _interrupt_state["interrupt_mode"])
 		if message_to_show: 
 			return
-	else:
-		_sent_about_to_execute_signal = false
 		
 	interrupt_mode = _interrupt_state["interrupt_mode"]
 	var potential_interrupters = _interrupt_state.get("potential_interrupters", {})
@@ -1054,7 +1052,7 @@ func reset():
 	history = {}
 	pending_interaction_checksums = {}
 	_pending_flush = {}
-
+	_sent_about_to_execute_signal = {}
 
 
 func flush_logs():

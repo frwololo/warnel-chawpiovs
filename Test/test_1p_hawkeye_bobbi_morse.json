@@ -1,0 +1,118 @@
+{
+	"_comments": "Tests Bobbi Morse",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Absorbing Man - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},				
+				{
+					"card": "Armored Guard"
+				},					
+				{
+					"card": "Assault"
+				},
+			],
+			"schemes": [
+				{
+					"card": "None shall Pass"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Explosive Arrow"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"allies1":[
+				{
+					"card" : "04004",
+				},			
+			],
+			"hand1": [
+				{
+					"card": "Sonic Arrow"
+				},
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "04004"
+		},	
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comment": "undefended attack"
+		},	
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Absorbing Man - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},			
+			],
+			"schemes": [
+				{
+					"card": "None shall Pass"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Explosive Arrow"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"hand1":[
+				{
+					"card" : "04004",
+				},			
+			],
+			"discard1": [
+				{
+					"card": "Sonic Arrow"
+				},
+			]
+		}
+	}
+}

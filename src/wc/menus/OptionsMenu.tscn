@@ -21,7 +21,7 @@ z_index = 4000
 script = ExtResource( 2 )
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
-self_modulate = Color( 1, 1, 1, 0.74902 )
+self_modulate = Color( 1, 1, 1, 0.866667 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = 1920.0
@@ -67,14 +67,15 @@ size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "Gameplay"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/general/VBoxContainer"]
+[node name="LoadSave" type="HBoxContainer" parent="PanelContainer/general/VBoxContainer"]
+unique_name_in_owner = true
 margin_top = 373.0
 margin_right = 1896.0
 margin_bottom = 493.0
 size_flags_vertical = 3
 custom_constants/separation = 100
 
-[node name="LoadButton" type="Button" parent="PanelContainer/general/VBoxContainer/HBoxContainer2"]
+[node name="LoadButton" type="Button" parent="PanelContainer/general/VBoxContainer/LoadSave"]
 margin_top = 45.0
 margin_right = 898.0
 margin_bottom = 120.0
@@ -83,7 +84,7 @@ size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "Load"
 
-[node name="SaveButton" type="Button" parent="PanelContainer/general/VBoxContainer/HBoxContainer2"]
+[node name="SaveButton" type="Button" parent="PanelContainer/general/VBoxContainer/LoadSave"]
 margin_left = 998.0
 margin_top = 45.0
 margin_right = 1896.0
@@ -93,14 +94,15 @@ size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "Save"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/general/VBoxContainer"]
+[node name="DebugContainer" type="HBoxContainer" parent="PanelContainer/general/VBoxContainer"]
+unique_name_in_owner = true
 margin_top = 519.0
 margin_right = 1896.0
 margin_bottom = 638.0
 size_flags_vertical = 3
 custom_constants/separation = 326
 
-[node name="TestsButton" type="Button" parent="PanelContainer/general/VBoxContainer/HBoxContainer"]
+[node name="TestsButton" type="Button" parent="PanelContainer/general/VBoxContainer/DebugContainer"]
 margin_top = 44.0
 margin_right = 414.0
 margin_bottom = 119.0
@@ -109,7 +111,7 @@ size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "Tests"
 
-[node name="ForceResyncButton" type="Button" parent="PanelContainer/general/VBoxContainer/HBoxContainer"]
+[node name="ForceResyncButton" type="Button" parent="PanelContainer/general/VBoxContainer/DebugContainer"]
 margin_left = 740.0
 margin_top = 44.0
 margin_right = 1155.0
@@ -119,7 +121,7 @@ size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "FORCE RESYNC"
 
-[node name="DebugButton" type="CheckButton" parent="PanelContainer/general/VBoxContainer/HBoxContainer"]
+[node name="DebugButton" type="CheckButton" parent="PanelContainer/general/VBoxContainer/DebugContainer"]
 unique_name_in_owner = true
 margin_left = 1481.0
 margin_right = 1896.0
@@ -129,6 +131,7 @@ custom_fonts/font = ExtResource( 3 )
 text = "DEBUG"
 
 [node name="RestartButton" type="Button" parent="PanelContainer/general/VBoxContainer"]
+unique_name_in_owner = true
 margin_top = 709.0
 margin_right = 1896.0
 margin_bottom = 784.0
@@ -137,6 +140,7 @@ custom_fonts/font = SubResource( 2 )
 text = "Restart"
 
 [node name="MainMenuButton" type="Button" parent="PanelContainer/general/VBoxContainer"]
+unique_name_in_owner = true
 margin_top = 855.0
 margin_right = 1896.0
 margin_bottom = 930.0
@@ -150,7 +154,7 @@ margin_right = 1896.0
 margin_bottom = 1076.0
 size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
-text = "BACK"
+text = "CLOSE"
 
 [node name="gameplay" type="MarginContainer" parent="PanelContainer"]
 unique_name_in_owner = true
@@ -192,6 +196,13 @@ margin_bottom = 40.0
 text = "Noob (very verbose)"
 items = [ "Noob (very verbose)", null, false, 0, null, "Normal", null, false, 1, null, "Expert (only show interrupts)", null, false, 2, null, "Debug (show everything)", null, false, 3, null ]
 selected = 0
+
+[node name="AdventureMode" type="CheckBox" parent="PanelContainer/gameplay/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 148.0
+margin_right = 1896.0
+margin_bottom = 178.0
+text = "Adventure Mode"
 
 [node name="GameplayBackButton" type="Button" parent="PanelContainer/gameplay/VBoxContainer"]
 margin_top = 1001.0

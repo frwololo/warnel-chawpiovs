@@ -170,6 +170,93 @@ func _process(_delta:float):
 func throttle_process_for_performance():
 	return (_process_counter < _process_period)
 
+#
+# Adventure Mode related functions
+#
+func is_adventure_mode():
+	var adventure_mode = game_settings.get("adventure_mode", false)
+	return (!gameData.is_multiplayer_game) and adventure_mode
+
+func get_unlocked_heroes():
+	if !is_adventure_mode():
+		return idx_hero_to_deck_ids
+	
+	var unlocked_hero_ids = game_settings.get("unlocked_heroes", [])
+	if !unlocked_hero_ids:
+		var hero_id = adventure_unlock_random_hero()
+		unlocked_hero_ids = game_settings.get("unlocked_heroes", [])
+	
+	var result = {}
+	for hero_id in unlocked_hero_ids:
+		if idx_hero_to_deck_ids.has(hero_id):
+			result[hero_id] = idx_hero_to_deck_ids[hero_id]
+	return result
+
+func get_locked_heroes():
+	var unlocked_heroes = get_unlocked_heroes()
+
+	var result = idx_hero_to_deck_ids.duplicate()
+	for hero_id in unlocked_heroes:
+			result.erase(hero_id)
+	return result
+	
+
+func get_unlocked_scenarios():
+	if !is_adventure_mode():
+		return self.scenarios
+	
+	var unlocked_scenarios_ids = game_settings.get("unlocked_villains", [])
+	if !unlocked_scenarios_ids:
+		var scenario_id = adventure_unlock_next_scenario()
+		unlocked_scenarios_ids = game_settings.get("unlocked_villains", [])
+	
+	return unlocked_scenarios_ids
+
+func get_locked_scenarios():
+	var unlocked_scenarios = get_unlocked_scenarios()
+
+	var result = scenarios.duplicate()
+	for scenario_id in unlocked_scenarios:
+			result.erase(scenario_id)
+	return result
+
+func adventure_unlock_random_hero():
+	if !game_settings.has("unlocked_heroes"):
+		game_settings["unlocked_heroes"] = []
+		
+	var unlocked_hero_ids = game_settings.get("unlocked_heroes", [])
+	var all_hero_ids = 	idx_hero_to_deck_ids.keys().duplicate()
+	for hero_id in unlocked_hero_ids:
+		all_hero_ids.erase(hero_id)
+
+	#nothing left to unlock
+	if !all_hero_ids:
+		return ""
+		
+	var random_hero_id = all_hero_ids[randi() % all_hero_ids.size()]
+	game_settings["unlocked_heroes"].append(random_hero_id)
+	save_settings()
+	return random_hero_id
+	
+func adventure_unlock_next_scenario():
+	if !game_settings.has("unlocked_villains"):
+		game_settings["unlocked_villains"] = []
+		
+	var unlocked_scenario_ids = game_settings.get("unlocked_villains", [])
+	var all_scenario_ids = 	self.scenarios.duplicate()
+	for scenario_id in unlocked_scenario_ids:
+		all_scenario_ids.erase(scenario_id)
+
+	#nothing left to unlock
+	if !all_scenario_ids:
+		return ""
+		
+#	var selected_scenario_id = all_scenario_ids[randi() % all_scenario_ids.size()]
+	var selected_scenario_id = all_scenario_ids[0]
+	game_settings["unlocked_villains"].append(selected_scenario_id)
+	save_settings()
+	return selected_scenario_id	
+
 #disable focus_mode for all children of a node,
 #return an array of children that had focus mode and lost it
 func disable_focus_mode(container) -> Dictionary:
@@ -301,6 +388,7 @@ func load_card_scenarios():
 		#creating entries for both id and name so I never have to remember which one to use...
 		primitives[card_data["code"]] = card_data;
 		primitives[card_data["name"]] = card_data;
+		scenarios.append(key)
 
 func stage_variant_to_int(stage):
 	if typeof(stage) == TYPE_INT:
@@ -526,7 +614,7 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	shortname_to_name[card_data["shortname"].to_lower()] = card_name
 	lowercase_card_name_to_name[card_name.to_lower()] = card_name
 	
-	#scenarios cache
+	#schemes cache
 	if (lc_card_type == "main_scheme"):
 		var full_stage_id = card_data["original_stage"]	
 		#skip the weird "1A", "1B" cards for now...
@@ -534,10 +622,7 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 			if (not schemes.has(lc_set_code)):
 				schemes[lc_set_code] = []
 			schemes[lc_set_code].push_back(card_data)
-
-			if(card_data.get("stage", 0) == 1 ):
-				scenarios.push_back(card_id)
-	
+		
 	var card_set_type_name_code = card_data.get("card_set_type_name_code", "")
 	if card_set_type_name_code == "modular":
 		if not modular_encounters.has(lc_set_code):

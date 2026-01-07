@@ -661,6 +661,9 @@ const DEFAULT_SETTINGS:= {
 		'join_room_url': 'wc/lobby.php?mode=join_room&room_name=__ROOM_NAME__',
 	},
 	'notifications_level': 'normal',
+	'adventure_mode': true,
+	'unlocked_heroes': ["01001a"], #spider-man is default unlocked character
+	'unlocked_villains': ["01097"], #the break-in (Rhino) is default unlocked villain
 	
 }
 

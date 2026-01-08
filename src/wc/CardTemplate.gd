@@ -935,7 +935,6 @@ func execute_scripts_no_stack(
 
 func retrieve_script_by_path(path:String):
 	var found_scripts = get_instance_runtime_scripts()
-	var result = {}
 	if !found_scripts:
 		# This retrieves all the script from the card, stored in cfc
 		# The seeks in them the specific trigger we're using in this
@@ -1024,15 +1023,24 @@ func execute_scripts(
 		trigger_details: Dictionary = {},
 		run_type := CFInt.RunType.NORMAL):
 
-	if cfc.game_paused:
-		return
+
+	if (trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME and canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME ):
+		var _tmp = 1
+
+	while cfc.game_paused:
+		#TODO
+		#2026/01/08 This yield was introduced
+		#to replace the simple "return" which was eating signals
+		#in some caseS. But I'm afraid this could bring discrepancies in multiplayer
+		if get_parent() and !("tree_" in trigger): #dirty check to avoid crashes
+			yield(get_tree().create_timer(0.1), "timeout")
+		else:
+			return
 	# Just in case the card is displayed outside the main game
 	# and somehow its script is triggered.
 	if not cfc.NMAP.has('board'):
 		return
 
-	if (trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME and canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME ):
-		var _tmp = 1
 	
 	var _debug = trigger_details.get("_debug", false)
 			

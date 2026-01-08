@@ -179,7 +179,7 @@ func init_arrows():
 	
 func init_one_arrow(object, color):		
 	var owner_arrow = _TARGETING_SCENE.instance()
-	var container = cfc.NMAP.board
+#	var container = cfc.NMAP.board
 	self.add_child(owner_arrow)
 	owner_arrow.set_display_mode(TargetingArrow.DISPLAY_MODE.SHADOW)	
 	owner_arrow.hide_arrow_head()

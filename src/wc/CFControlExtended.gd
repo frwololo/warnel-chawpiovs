@@ -183,7 +183,7 @@ func get_unlocked_heroes():
 	
 	var unlocked_hero_ids = game_settings.get("unlocked_heroes", [])
 	if !unlocked_hero_ids:
-		var hero_id = adventure_unlock_random_hero()
+		var _hero_id = adventure_unlock_random_hero()
 		unlocked_hero_ids = game_settings.get("unlocked_heroes", [])
 	
 	var result = {}
@@ -207,7 +207,7 @@ func get_unlocked_scenarios():
 	
 	var unlocked_scenarios_ids = game_settings.get("unlocked_villains", [])
 	if !unlocked_scenarios_ids:
-		var scenario_id = adventure_unlock_next_scenario()
+		var _scenario_id = adventure_unlock_next_scenario()
 		unlocked_scenarios_ids = game_settings.get("unlocked_villains", [])
 	
 	return unlocked_scenarios_ids

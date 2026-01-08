@@ -76,8 +76,9 @@ func return_per_count(filters:={}) -> int:
 # Do something per token count
 func _count_tokens(targets:Array) -> int:
 	var ret := 0
+	var token_name = get_property(SP.KEY_TOKEN_NAME)
 	for card in targets:
-		ret += card.tokens.get_token_count(get_property(SP.KEY_TOKEN_NAME))
+		ret += card.tokens.get_token_count(token_name)
 	return(ret)
 
 # Do something per attachments count

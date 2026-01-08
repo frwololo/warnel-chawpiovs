@@ -2777,6 +2777,40 @@
 			}
 		}
 	},
+	"Jessica Drew's Apartment": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "hand",
+					"subject": "tutor",
+					"subject_index": "top",
+					"subject_count": 5,
+					"up_to": true,
+					"src_container": "deck",
+					"selection_count": 1,
+					"selection_type": "max",
+					"needs_selection": true,
+					"selection_show_cards_with_zero_value": true,
+					"selection_what_to_count": {
+						"func_name": "get_aspect_name",
+					}
+				},
+			]
+		}
+	},	
 	"Laser Cannon": {
 		"TODO": "campaign mode unsupported"
 	},

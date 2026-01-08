@@ -65,7 +65,6 @@ func load_from_villain(villain_id):
 	if !villain_id:
 		return
 	for scheme_id in cfc.primitives:
-		var s_data = cfc.primitives[scheme_id]
 		for expert in [false, true]:
 			var villain_ids = get_villain_ids_from_scheme(scheme_id, expert)
 			if villain_id in villain_ids:

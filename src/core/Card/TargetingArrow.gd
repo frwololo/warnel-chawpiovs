@@ -261,6 +261,14 @@ func force_select_target(target):
 #
 # It takes care to highlight potential cards which can serve as targets.
 func _on_ArrowHead_area_entered(area: Area2D) -> void:
+	
+	#Code for targeting Top card of Piles
+	var area_class = area.get_class()
+	if area_class == "CardContainer" and area.has_method("get_top_card"):
+		var top_card = area.get_top_card()
+		if top_card:
+			area = top_card
+			
 	if !(area in valid_targets):
 		return
 			
@@ -277,6 +285,13 @@ func _on_ArrowHead_area_entered(area: Area2D) -> void:
 #
 # It clears potential highlights and adjusts potential cards as targets
 func _on_ArrowHead_area_exited(area: Area2D) -> void:
+	#Code for targeting Top card of Piles
+	var area_class = area.get_class()
+	if area_class == "CardContainer" and area.has_method("get_top_card"):
+		var top_card = area.get_top_card()
+		if top_card:
+			area = top_card
+				
 	if area.get_class() == 'Card' and area in _potential_targets:
 		# We remove the card we stopped hovering from the _potential_targets
 		_potential_targets.erase(area)

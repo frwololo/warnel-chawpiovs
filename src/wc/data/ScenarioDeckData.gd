@@ -13,7 +13,7 @@ var is_expert_mode:= false
 var encounter_deck:Array
 var extra_decks: = []
 var grid_setup:= {}
-var scenario_data
+var scenario_data: = {}
 
 func _init():
 	pass
@@ -28,8 +28,18 @@ static func get_recommended_modular_encounters(scheme_id):
 	if modular_defaults:
 		return modular_defaults
 	return []
-	
+
 static func get_villains_from_scheme(scheme_id, expert_mode:= false):
+	var villain_ids = get_villain_ids_from_scheme (scheme_id, expert_mode)
+
+	var results = []
+	#get villains in order, split strings to get name and stage.
+	for villain_id in villain_ids:
+		results.append(cfc.card_definitions[villain_id])
+
+	return results
+	
+static func get_villain_ids_from_scheme(scheme_id, expert_mode:= false):
 	var scheme_primitive = cfc.primitives.get(scheme_id, {})
 	if !scheme_primitive:
 		return []
@@ -46,9 +56,26 @@ static func get_villains_from_scheme(scheme_id, expert_mode:= false):
 	#get villains in order, split strings to get name and stage.
 	for villain_string in villain_strings:
 		var card_id = cfc.get_corrected_card_id(villain_string)
-		results.append(cfc.card_definitions[card_id])
+		if card_id:
+			results.append(card_id)
 
 	return results	
+
+func load_from_villain(villain_id):
+	if !villain_id:
+		return
+	for scheme_id in cfc.primitives:
+		var s_data = cfc.primitives[scheme_id]
+		for expert in [false, true]:
+			var villain_ids = get_villain_ids_from_scheme(scheme_id, expert)
+			if villain_id in villain_ids:
+				return load_from_dict(
+					{
+						"scheme_id": scheme_id,
+						"modular_encounters": get_recommended_modular_encounters(scheme_id),
+						"expert_mode": expert
+					}
+				)
 
 #		"scheme_id" : "01097", 
 #		"modular_encounters": ["bomb_scare"],
@@ -196,6 +223,17 @@ func get_encounter_deck():
 		var obligation_card = cfc.get_hero_obligation(hero_data.get_hero_id())
 		encounter_deck.push_back(obligation_card)
 	return encounter_deck
+
+func reset():
+	scheme_card_id= ""
+	schemes = []
+	modular_sets=[]
+	is_expert_mode = false
+	encounter_deck = []
+	extra_decks = []
+	villains = []
+	grid_setup = {}
+	scenario_data = {}
 
 #		"scheme_id" : "01097", 
 #		"modular_encounters": ["bomb_scare"],

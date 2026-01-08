@@ -498,6 +498,34 @@ func get_all_cards(include_piles = false) -> Array:
 	
 	return cardsArray		
 
+func get_top_card_of_each_pile():
+	var cardsArray := []
+
+	#get everything in other piles
+	#villain piles
+	var GRID_SETUP = gameData.scenario.grid_setup	
+	for grid_name in GRID_SETUP.keys():
+		var grid_info = GRID_SETUP[grid_name]
+		if "pile" == grid_info.get("type", ""):
+			var pile:Pile = cfc.NMAP[grid_name]
+			var top_card = pile.get_top_card()
+			if top_card: 
+				cardsArray.append(top_card)
+			
+	#hero piles
+	for i in range(get_team_size()):
+		var hero_id = i+1
+		for grid_name in HERO_GRID_SETUP.keys():
+			var grid_info = HERO_GRID_SETUP[grid_name]
+			var real_grid_name = grid_name + str(hero_id)		
+			if "pile" == grid_info.get("type", ""):
+				var pile:Pile = cfc.NMAP[real_grid_name]
+				var top_card = pile.get_top_card()
+				if top_card: 
+					cardsArray.append(top_card)
+	
+	return cardsArray	
+
 func get_all_cards_controlled_by(hero_id):
 	var cardsArray := []
 	for obj in get_children():
@@ -543,8 +571,9 @@ func delete_all_cards():
 	for grid_name in GRID_SETUP.keys():
 		var grid_info = GRID_SETUP[grid_name]
 		if "pile" == grid_info.get("type", ""):
-			var pile:Pile = cfc.NMAP[grid_name]
-			pile.delete_all_cards()
+			var pile:Pile = cfc.NMAP.get(grid_name, null)
+			if pile:
+				pile.delete_all_cards()
 		else: #it's a grid
 			var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(grid_name)
 			grid.delete_all_slots_but_one()

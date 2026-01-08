@@ -99,7 +99,7 @@ func calculate_alteration(script: ScriptAlter) -> void:
 #						return	
 #					filters = {"has_property" : property_name}				
 				
-		alteration = per_msg.count_found_things(filters)
+		alteration += per_msg.count_found_things(filters)
 		if alteration:
 			var _tmp =1
 	else:

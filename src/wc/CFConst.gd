@@ -614,6 +614,8 @@ const CAN_PRECOMPUTE : = [
 	"add_resource"
 ]
 
+const ASPECTS:= ["aggression", "justice", "leadership", "protection"]
+
 const STATS_URI := "http://127.0.0.1"
 const STATS_PORT := 8000
 

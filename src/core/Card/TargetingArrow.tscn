@@ -39,7 +39,7 @@ polygon = PoolVector2Array( 16, 24, 32, 8, 16, -8 )
 
 [node name="Area2D" type="Area2D" parent="ArrowHead"]
 collision_layer = 2
-collision_mask = 2
+collision_mask = 3
 monitoring = false
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="ArrowHead/Area2D"]

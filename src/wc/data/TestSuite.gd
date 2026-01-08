@@ -737,10 +737,8 @@ func get_card(card_id_or_name:String, requesting_hero_id):
 		card = get_card_in_hero_board(card_id, hero_id)
 		if card:
 			return card
-
-	#todo search villain piles
-
-	#Finally, search on board
+			
+	#search on board
 	var board_cards = cfc.NMAP.board.get_all_cards()
 	for c in board_cards:
 		if !is_instance_valid(c):
@@ -748,6 +746,13 @@ func get_card(card_id_or_name:String, requesting_hero_id):
 		if c.canonical_id == card_id:
 			return c
 
+	#look at top of piles
+	var pile_cards = cfc.NMAP.board.get_top_card_of_each_pile()
+	for c in pile_cards:
+		if !is_instance_valid(c):
+			continue
+		if c.canonical_id == card_id:
+			return c
 	
 	return null
 

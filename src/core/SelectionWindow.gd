@@ -404,7 +404,7 @@ func can_still_select_more() -> bool :
 		return false
 		
 	for card in card_array:
-		var spinbox = card.get_spinbox()
+		var spinbox = _card_dupe_map[card].get_spinbox()
 		var remaining = spinbox.max_value
 		var currently_assigned = spinbox.value
 		if remaining > currently_assigned:

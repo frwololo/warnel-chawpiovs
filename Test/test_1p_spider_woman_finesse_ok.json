@@ -1,0 +1,124 @@
+{
+	"_comments": "Tests Spider Woman Finesse - OK case",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Assault"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Pheromones"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Finesse"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Energy"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Jessica Jones"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Assault"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Pheromones"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Finesse",
+					"exhausted": true
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jessica Jones"
+				}
+			]
+		}
+	}
+}

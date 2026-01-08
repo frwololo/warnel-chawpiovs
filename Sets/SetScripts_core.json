@@ -990,12 +990,6 @@
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "attack",
-					"trigger": "host",
-					"alteration": 3
-				},
-				{
-					"filter_task": "get_property",
 					"filter_property_name": "overkill",
 					"trigger": "host",
 					"alteration": 1
@@ -1650,16 +1644,6 @@
 				{
 					"name": "attach_to_card",
 					"subject": "villain"
-				}
-			]
-		},
-		"alterants": {
-			"board": [
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "attack",
-					"trigger": "host",
-					"alteration": 1
 				}
 			]
 		},
@@ -4536,16 +4520,6 @@
 				{
 					"name": "attach_to_card",
 					"subject": "villain"
-				}
-			]
-		},
-		"alterants": {
-			"board": [
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "attack",
-					"trigger": "host",
-					"alteration": 1
 				}
 			]
 		},

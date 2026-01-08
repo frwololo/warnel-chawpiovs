@@ -207,7 +207,8 @@ func add_child(node, _legible_unique_name=false) -> void:
 				panel_container.visible = true			
 			# If this was the first card which enterred this pile
 			# We hide the pile "floor" by making it transparent
-			if get_card_count() >= 1:
+			if get_card_count() == 1:
+				_opacity_tween.remove_all()
 				if not _opacity_tween.is_active():
 					_opacity_tween.remove($Control,'self_modulate:a')
 					_opacity_tween.interpolate_property($Control,'self_modulate:a',

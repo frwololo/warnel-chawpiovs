@@ -805,6 +805,7 @@ func common_post_move_scripts(new_host: String, old_host: String, _move_tags: Ar
 			#reset some cache data
 			_died_signal_sent = false
 
+	set_is_viewed(false)
 	
 	#determine if this card can be selected with a controller	
 	cfc.NMAP.board.update_card_focus(self, {"new_host" : new_host, "old_host": old_host} )
@@ -987,7 +988,8 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 			if !func_name:
 				continue
 			var func_params = condition.get("func_params", {})
-			var check = cfc.ov_utils.func_name_run(self, func_name, func_params, null)
+			var dummy_script = ScriptTask.new(self, {"name": "nop"}, trigger_card, trigger_details)			
+			var check = cfc.ov_utils.func_name_run(self, func_name, func_params, dummy_script)
 			if !check:
 				to_erase.append(key)
 				to_erase.append("condition_" + key)		
@@ -2049,6 +2051,10 @@ func set_is_faceup(
 	var retcode = .set_is_faceup(value, instant, check, tags)
 	var _after = is_faceup
 	
+#issues with facedown cards if I do this?	
+#	if _before == _after:
+#		return retcode
+	
 	if check:
 		return retcode
 	
@@ -2347,7 +2353,7 @@ func get_hero_id(params, script:ScriptTask = null) -> int:
 	
 	return hero_card.get_controller_hero_id()	
 
-func get_aspect(params, script:ScriptTask = null) -> String:
+func get_aspect_name(params, script:ScriptTask = null) -> String:
 	var subject = self
 	
 	if script:
@@ -2359,9 +2365,9 @@ func get_aspect(params, script:ScriptTask = null) -> String:
 	if !subject:
 		return ""
 	
-	var aspect = subject.get_property("faction_code", "")
-	if aspect == "basic":
-		aspect = ""
+	var aspect = subject.get_property("faction_code", "").to_lower()
+	if !(aspect in CFConst.ASPECTS):
+		return ""
 	return aspect
 
 func card_is_in_play(params, script:ScriptTask = null) -> bool:
@@ -2677,9 +2683,14 @@ func export_to_json():
 	var card_description = {
 		"card" : card_id,
 		"owner_hero_id": owner_hero_id,
-		"exhausted": is_exhausted(),
-		"can_change_form": _can_change_form,
 	}
+	if is_exhausted():
+		card_description["exhausted"] = true
+	if is_hero_form() or is_alter_ego_form():
+		card_description["can_change_form"] =  _can_change_form
+	if is_viewed:
+		card_description["is_viewed"] = true
+	
 	if (tokens_to_json):
 		card_description["tokens"] = tokens_to_json
 	
@@ -2718,6 +2729,12 @@ func _ready_load_from_json(card_description: Dictionary = {}):
 		exhaustme()
 	else:
 		readyme()
+
+	var viewed = card_description.get("is_viewed", false)
+	if viewed:
+		set_is_viewed(true)
+	else:
+		set_is_viewed(false)
 			
 	self._can_change_form = card_description.get("can_change_form", true)	
 

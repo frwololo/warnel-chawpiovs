@@ -44,10 +44,7 @@ func _ready() -> void:
 	exit_button.visible = true
 	exit_button.grab_focus()
 	
-	for option_button in v_buttons.get_children():
-		if option_button.has_signal('pressed'):
-			option_button.connect('pressed', self, 'on_button_pressed', [option_button.name])
-			option_button.connect('mouse_entered', option_button, 'grab_focus')
+	init_button_signals(v_buttons)
 	# warning-ignore:return_value_discarded
 	resize()
 	_loading_text_prefix = "Loading Card Definitions - "
@@ -64,6 +61,14 @@ func _ready() -> void:
 	if cfc.all_loaded:
 		_load_status = LOAD_STATUS.COMPLETE
 		_all_downloads_completed()			
+
+func init_button_signals(node):
+	if node.has_signal('pressed'):			
+		node.connect('pressed', self, 'on_button_pressed', [node.name])
+		node.connect('mouse_entered', node, 'grab_focus')		
+
+	for child in node.get_children():
+		init_button_signals(child)
 
 func loading_error(msg):
 	v_folder_label.text = "ERROR: " + msg
@@ -194,18 +199,20 @@ func download_database():
 func _images_download_completed():	
 	emit_signal("all_downloads_completed")
 
+func _recursive_visible_buttons(node, value = true):
+	if node.has_signal('pressed'):			
+		node.visible = value	
+
+	for child in node.get_children():
+		_recursive_visible_buttons(child, value)
+
 func _hide_buttons():
 	#activate the interface buttons after download is finished
-	for option_button in v_buttons.get_children():
-		if option_button.has_signal('pressed'):
-			option_button.visible = false
-			#option_button.connect('pressed', self, 'on_button_pressed', [option_button.name])
+	_recursive_visible_buttons(v_buttons, false)
 	
 func _show_buttons():
 	#activate the interface buttons after download is finished
-	for option_button in v_buttons.get_children():
-		if option_button.has_signal('pressed'):
-			option_button.visible = true
+	_recursive_visible_buttons(v_buttons)
 
 	cfc.default_button_focus(v_buttons)
 	

@@ -304,6 +304,7 @@ func shuffle_cards() -> void:
 	CFUtils.shuffle_array(cardsArray)
 	for card in cardsArray:
 		move_child(card, cardsArray.find(card))
+		card.set_is_viewed(false)
 
 # Overridable function to allow the container to specify different
 # effects to happen when a card is attempted to be added

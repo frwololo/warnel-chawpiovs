@@ -968,8 +968,8 @@ func set_is_faceup(
 		# We make sure to remove other tweens of the same type to avoid a deadlock
 		is_faceup = value
 		# When we change faceup state, we reset the is_viewed to false
-		if set_is_viewed(false) == CFConst.ReturnCode.FAILED:
-			printerr("ERROR: Something went unexpectedly in set_is_faceup")
+#		if set_is_viewed(false) == CFConst.ReturnCode.FAILED:
+#			printerr("ERROR: Something went unexpectedly in set_is_faceup")
 		if value:
 			_flip_card(_card_back_container, _card_front_container,instant)
 			# We need this check, as this node might not be ready
@@ -2810,7 +2810,10 @@ func _process_card_state() -> void:
 			if get_parent() in get_tree().get_nodes_in_group("piles"):
 				if card_front.resizing_labels.size() and not get_parent().faceup_cards:
 					return
-				set_is_faceup(get_parent().faceup_cards, true)
+				var faceup = get_parent().faceup_cards
+				if is_viewed: 
+					faceup = true
+				set_is_faceup(faceup, true)
 				ensure_proper()
 
 		CardState.VIEWED_IN_PILE:
@@ -2823,7 +2826,10 @@ func _process_card_state() -> void:
 			if scale != Vector2(1,1):
 				set_scale(Vector2(1,1))
 			if get_parent() in get_tree().get_nodes_in_group("piles"):
-				set_is_faceup(get_parent().faceup_cards, true)
+				var faceup = get_parent().faceup_cards
+				if is_viewed: 
+					faceup = true
+				set_is_faceup(faceup, true)
 				
 				#TODO bugfix I've had cards staying in "VIEWED_IN_PILE" limbo...
 				if get_parent().get_top_card() != self:

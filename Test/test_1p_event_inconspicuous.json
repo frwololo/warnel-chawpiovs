@@ -1,0 +1,120 @@
+{
+	"_comments": "Tests Spider Woman Inconspicuous when not enough",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Assault"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Pheromones"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Captain Marvel - Carol Danvers"
+				},
+				{
+					"card": "Inconspicuous"
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "play",
+			"value": "Inconspicuous"
+		},
+		{
+			"type": "select",
+			"value": [
+				"Attack on Mount Athena"
+			]
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Assault"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Pheromones"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Captain Marvel - Carol Danvers"
+				},
+				{
+					"card": "Inconspicuous"
+				}
+			]
+		}
+	}
+}

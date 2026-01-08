@@ -1759,6 +1759,12 @@
 	},
 	"Finesse": {
 		"resource": {
+			"condition_board": {
+				"func_name": "get_aspect_name",
+				"func_params": {
+					"subject": "trigger"
+				}
+			},		
 			"board": [
 				{
 					"name": "constraints",
@@ -1774,16 +1780,7 @@
 				},
 				{
 					"name": "add_resource",
-					"amount": {
-						"if": {
-							"func_name": "get_aspect_name",
-							"func_params": {
-								"subject": "trigger"
-							}
-						},
-						"then": 1,
-						"else": 0
-					},
+					"amount": 1,
 					"resource_name": "wild"
 				}
 			]
@@ -2767,11 +2764,14 @@
 						"is_cost": true
 					},
 					{
-						"name": "nop",
-						"subject": "tutor",
-						"subject_index": "top",
-						"subject_count": 1,
-						"src_container": "deck"
+						"name": "view_card",
+						"subject": "target",
+						"target_include_piles": true,
+						"filter_state_subject": [
+							{
+								"filter_faceup": false
+							}
+						]
 					}
 				]
 			}
@@ -4100,8 +4100,7 @@
 				}
 			]
 		},
-		"response": {
-			"event": "card_defeated",
+		"card_defeated": {
 			"filter_state_trigger": [
 				{
 					"filter_group": "group_side_schemes"
@@ -4312,7 +4311,9 @@
 					"subject": "target",
 					"filter_state_subject": [
 						{
-							"filter_group": "group_enemies"
+							"filter_properties": {
+								"type_code": "minion"
+							}
 						}
 					]
 				},
@@ -4370,6 +4371,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "thwart",
+					"trigger": "self",
 					"alteration": "per_token_self",
 					"per_token_self": {
 						"token_name": "__aggression"
@@ -4378,6 +4380,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "attack",
+					"trigger": "self",					
 					"alteration": "per_token_self",
 					"per_token_self": {
 						"token_name": "__aggression"
@@ -4386,6 +4389,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "defense",
+					"trigger": "self",
 					"alteration": "per_token_self",
 					"per_token_self": {
 						"token_name": "__aggression"
@@ -4394,6 +4398,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "thwart",
+					"trigger": "self",
 					"alteration": "per_token_self",
 					"per_token_self": {
 						"token_name": "__justice"
@@ -4402,6 +4407,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "attack",
+					"trigger": "self",
 					"alteration": "per_token_self",
 					"per_token_self": {
 						"token_name": "__justice"
@@ -4410,6 +4416,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "defense",
+					"trigger": "self",
 					"alteration": "per_token_self",
 					"per_token_self": {
 						"token_name": "__justice"
@@ -4418,6 +4425,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "thwart",
+					"trigger": "self",
 					"alteration": "per_token_self",
 					"per_token_self": {
 						"token_name": "__leadership"
@@ -4426,6 +4434,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "attack",
+					"trigger": "self",
 					"alteration": "per_token_self",
 					"per_token_self": {
 						"token_name": "__leadership"
@@ -4434,6 +4443,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "defense",
+					"trigger": "self",
 					"alteration": "per_token_self",
 					"per_token_self": {
 						"token_name": "__leadership"
@@ -4442,6 +4452,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "thwart",
+					"trigger": "self",
 					"alteration": "per_token_self",
 					"per_token_self": {
 						"token_name": "__protection"
@@ -4450,6 +4461,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "attack",
+					"trigger": "self",
 					"alteration": "per_token_self",
 					"per_token_self": {
 						"token_name": "__protection"
@@ -4458,6 +4470,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "defense",
+					"trigger": "self",
 					"alteration": "per_token_self",
 					"per_token_self": {
 						"token_name": "__protection"
@@ -4465,7 +4478,42 @@
 				}
 			]
 		},
+		"self_moved_to_board": {
+			"_silent": true,
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "__aggression"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "__justice"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "__leadership"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "__protection"
+				}
+			]
+		},	
 		"round_ended": {
+			"_silent": true,		
 			"board": [
 				{
 					"name": "mod_tokens",

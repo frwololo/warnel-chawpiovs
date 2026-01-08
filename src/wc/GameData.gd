@@ -1958,9 +1958,10 @@ func cleanup_post_game():
 	theStack.flush_logs()
 	flush_debug_display()
 	theStack.reset()
+	scenario.reset()
 
 	theGameObserver.reset()
-	
+	cfc.cleanup_modal_menu()
 	cfc.reset_ongoing_process_stack()
 	cfc.flush_cache()
 	guidMaster.reset()
@@ -2079,6 +2080,13 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 	var scenario_data = json_data.get("scenario", {})
 	if scenario_data:
 		scenario.load_from_dict(scenario_data)
+	else:
+		var villain_def = json_data.get("board", {}).get("villain", {})
+		if villain_def:
+			villain_def = villain_def[0].get("card", {})
+		if villain_def:
+			var villain_id = cfc.get_corrected_card_id(villain_def)
+			scenario.load_from_villain(villain_id)
 
 	#Board State ()
 	cfc.NMAP.board.loadstate_from_json(json_data)

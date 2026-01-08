@@ -554,7 +554,14 @@ func _initiate_card_targeting() -> Card:
 	# The double-click which started the script and immediately triggerring
 	# the target completion
 	yield(owner.get_tree().create_timer(0.1), "timeout")
-	var all_cards = cfc.NMAP.board.get_all_cards()
+	var all_cards = [] 
+	var include_board = script_definition.get("target_include_board", true)
+	var include_piles = script_definition.get("target_include_piles", false)	
+	
+	if include_board:
+		all_cards+=	cfc.NMAP.board.get_all_cards()
+	if include_piles:
+		all_cards+=cfc.NMAP.board.get_top_card_of_each_pile()
 	var valid_targets = []
 	#TODO also check cards in piles ?
 	for c in all_cards:

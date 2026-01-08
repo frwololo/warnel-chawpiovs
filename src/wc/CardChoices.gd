@@ -121,6 +121,8 @@ func cancel_input():
 	
 #handling input outside of the window for cancel
 
+func force_cancel():
+	cancel_input()
 
 func _input(event):
 	#get_viewport().set_input_as_handled()  # Prevents further propagation

@@ -506,7 +506,8 @@ func get_modal_menu():
 func cleanup_modal_menu():
 	if (modal_menus):
 		for modal_menu in modal_menus:
-			modal_menu.force_cancel()
+			if modal_menu.has_method("force_cancel"):
+				modal_menu.force_cancel()
 		modal_menus = []
 	return
 

@@ -1,0 +1,149 @@
+{
+	"_comments": "Tests Spider Woman Nemesis",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Assault"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Pheromones"
+				},
+				{
+					"card": "Captain Marvel - Carol Danvers"
+				},
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Inconspicuous"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "The Viper"
+				}
+			],
+			"hand1": []
+		}
+	},
+	"actions": [
+		{
+			"type": "next_phase",
+			"value": "1"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack against villain"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack against nemesis"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 1"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Assault"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "The Viper"
+				},
+				{
+					"card": "Armored Guard"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Inconspicuous"
+				},			
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Captain Marvel - Carol Danvers"
+				},				
+				{
+					"card": "Pheromones"
+				}
+			]
+		}
+	}
+}

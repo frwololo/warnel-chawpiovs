@@ -1,0 +1,123 @@
+{
+	"_comments": "Tests Spider Woman Super Human powers when playing an aspect card",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Assault"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Pheromones"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Jessica Drew",
+					"tokens": {
+						"_peek": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Venom Blast"
+				},
+				{
+					"card": "The Power of Aggression"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Jessica Drew"
+		},
+		{
+			"type": "choose",
+			"value": "peek"
+		},
+		{
+			"type": "target",
+			"value": "Assault"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Assault",
+					"is_viewed": true
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Pheromones"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Jessica Drew",
+				}
+			],
+			"hand1": [
+				{
+					"card": "Venom Blast"
+				},
+				{
+					"card": "The Power of Aggression"
+				}
+			]
+		}
+	}
+}

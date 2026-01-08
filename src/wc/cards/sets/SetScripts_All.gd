@@ -348,6 +348,26 @@ func get_scripts(scripts: Dictionary, card_id: String, _get_modified = true) -> 
 		if (k_script):
 			script = WCUtils.merge_dict(script,k_script, true)
 	
+	if type_code == "attachment":
+		var alterants = []
+		for action in ["attack", "scheme"]:
+			var mod = card.get(action, 0)
+			if mod:
+				alterants.append(
+					{
+						"filter_task": "get_property",
+						"filter_property_name": action,
+						"trigger": "host",
+						"alteration": mod
+					}
+				)
+		if alterants:
+			var a_script = {
+				"alterants": {
+					"board": alterants
+				}
+			}
+			script = WCUtils.merge_dict(script,a_script, true)
 	return script
 
 static func get_enemy_scripts():

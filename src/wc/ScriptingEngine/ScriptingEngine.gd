@@ -57,8 +57,6 @@ func add_resource(script: ScriptTask) -> int:
 		script.process_result = pre_result	
 		return retcode
 	
-	#there is no manapool anymore
-	#manapool.add_resource(counter_name, modification)
 	return retcode	
 
 #override for parent
@@ -1521,13 +1519,13 @@ func reveal_nemesis (script:ScriptTask) -> int:
 	
 	for card in cfc.NMAP["set_aside"].get_all_cards():
 		if card.get_property("card_set_code", "") == my_nemesis_set:
-			match card.get_property("type_code"):
-				"minion":
-					my_nemesis = card
-				"side_scheme":
-					my_nemesis_scheme = card
-				_:
-					other_nemesis_cards.append(card)			
+			var type_code = card.get_property("type_code")
+			if type_code == "minion" and card.get_property("is_unique", false):
+				my_nemesis = card
+			elif type_code == "side_scheme":
+				my_nemesis_scheme = card
+			else:
+				other_nemesis_cards.append(card)			
 	
 	if (my_nemesis):
 		gameData.deal_one_encounter_to(my_hero_id, true, my_nemesis)	

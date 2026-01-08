@@ -1,0 +1,128 @@
+{
+	"_comments": "Tests Spider Woman Super Human powers when playing an aspect card",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},				
+				{
+					"card": "Armored Guard"
+				},					
+				{
+					"card": "Assault"
+				},
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Pheromones"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Venom Blast"
+				},
+				{
+					"card": "The Power of Aggression"
+				},				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Venom Blast"
+		},	
+		{
+			"type": "target",
+			"value": "Crossbones - 1",
+		},	
+		{
+			"type": "activate",
+			"value": "Spider-Woman",
+		},	
+		{
+			"type": "choose",
+			"value": "attack",
+		},
+		{
+			"type": "target",
+			"value": "Crossbones - 1",
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 1",
+					"tokens": {"damage": 7}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},				
+				{
+					"card": "Armored Guard"
+				},					
+				{
+					"card": "Assault"
+				},
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Pheromones"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"discard1": [
+				{
+					"card": "The Power of Aggression"
+				},			
+				{
+					"card": "Venom Blast"
+				},				
+			]
+		}
+	}
+}

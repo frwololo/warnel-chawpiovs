@@ -284,6 +284,8 @@ const Z_INDEX_HAND_CARDS_NORMAL :=200
 
 
 const TYPES_TO_GROUPS := {
+	"upgrade": ["group_upgrade_support"],
+	"support": ["group_upgrade_support"],
 	"main_scheme" : ["group_schemes"],
 	"player_scheme" : ["group_schemes"],
 	"side_scheme" : ["group_schemes", "group_side_schemes"],
@@ -295,6 +297,7 @@ const TYPES_TO_GROUPS := {
 }
 
 const ALL_TYPE_GROUPS: = [
+	"group_upgrade_support",
 	"group_schemes",
 	"group_enemies",
 	"group_characters",
@@ -712,8 +715,8 @@ const DEBUG_SIMULATE_NETWORK_DELAY = 1.5
 const DEBUG_NETWORK_DELAY_RANDOM = false
 const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 
-const SCRIPT_BREAKPOINT_CARD_NAME := "Spider-Woman"
-const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_played"
+const SCRIPT_BREAKPOINT_CARD_NAME := "Dense Forest"
+const SCRIPT_BREAKPOINT_TRIGGER_NAME := "interrupt"
 
 const LARGE_SCREEN_WIDTH:= 1600
 

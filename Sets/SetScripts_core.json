@@ -797,9 +797,7 @@
 						"subject_count": "all",
 						"filter_state_seek": [
 							{
-								"filter_group": "group_upgrade_support_my_hero"
-							},
-							{
+								"filter_group": "group_upgrade_support_my_hero",
 								"filter_properties": {
 									"type_code": "upgrade"
 								}

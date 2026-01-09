@@ -1265,7 +1265,7 @@ func enable_focus_mode(cards = null, default_grab = null):
 			heroPhase.enable_focus_mode()	
 		#Done
 	card_focus_allowed = true
-	if default_grab and default_grab.get_state_exec() == "board":
+	if default_grab: # and default_grab.get_state_exec() == "board": piles are allowed in some cases...
 		default_grab.grab_focus()
 	else:
 		grab_default_focus()

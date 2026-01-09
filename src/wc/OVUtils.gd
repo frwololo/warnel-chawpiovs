@@ -48,8 +48,16 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 			results = _grab_until_find(script, run_type)
 		SP.KEY_SUBJECT_CURRENT_ACTIVATION_ENEMY:
 			var activation_script = script.owner.get_current_activation_details()
+			if !activation_script:
+				activation_script = gameData.get_latest_activity_script()			
 			if activation_script:
 				results.append(activation_script.owner)
+		SP.KEY_SUBJECT_CURRENT_ACTIVATION_TARGET:
+			var activation_script = script.owner.get_current_activation_details()
+			if !activation_script:
+				activation_script = gameData.get_latest_activity_script()			
+			if activation_script and activation_script.subjects:
+				results+= activation_script.subjects				
 									
 	return results
 

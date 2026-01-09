@@ -952,8 +952,11 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 	# especially on filters
 	if _debugger_hook:
 		pass
+
 	if trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME and canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME:
-		pass	
+		if trigger_details.get("event_name", "") == "enemy_attack_happened":
+			pass	
+
 	var card_scripts = retrieve_scripts(trigger)		
 	# We check the trigger against the filter defined
 	# If it does not match, then we don't pass any scripts for this trigger.
@@ -963,6 +966,8 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 			self,
 			trigger_details):
 		card_scripts.clear()
+		return card_scripts
+	
 	
 	#additional filter check for interrupts/responses
 	if not cfc.ov_utils.filter_trigger(
@@ -972,6 +977,7 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 			self,
 			trigger_details):
 		card_scripts.clear()
+		return card_scripts
 	
 	var to_erase = []
 #					"condition":{
@@ -1585,7 +1591,13 @@ func remove_threat(modification: int, script = null) -> int:
 	if current_tokens - modification < 0:
 		modification = current_tokens
 	var result = tokens.mod_token(token_name,-modification)
-			
+	
+	var new_amount = tokens.get_token_count(token_name)
+	if current_tokens > 0 and !new_amount:	
+		var signal_details = {}
+		if script:	
+			signal_details["source"] =  script.owner
+		scripting_bus.emit_signal("last_threat_removed", self, signal_details)		
 	return result
 
 func discard():
@@ -1952,6 +1964,10 @@ func to_grayscale():
 	if card_front:
 		card_front.to_grayscale()
 
+func to_color():
+	if card_front:
+		card_front.to_color()
+
 #
 #Marvel Champions Specific functionality
 #
@@ -2309,12 +2325,12 @@ func count_tokens(params, script:ScriptTask = null) -> int:
 	return count
 
 #returns true if this card (or script subject) has a given trait
-func has_trait(params, script:ScriptTask = null) -> int:
+func has_trait(params, script:ScriptObject = null) -> int:
 	var subject = self
 	
 	var and_or = "or"
 	
-	if script:
+	if script and params.has("subject"):
 		var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
 		if subjects:
 			subject = subjects[0]
@@ -2364,7 +2380,7 @@ func get_hero_id(params, script:ScriptTask = null) -> int:
 func get_aspect_name(params, script:ScriptTask = null) -> String:
 	var subject = self
 	
-	if script:
+	if script and params.has("subject"):
 		subject = null
 		var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
 		if subjects:

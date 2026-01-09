@@ -61,6 +61,9 @@ signal enemy_activation_finished(card,details)
 signal villain_step_one_threat_added(card, details)
 
 # warning-ignore:unused_signal
+signal last_threat_removed(card, details)
+
+# warning-ignore:unused_signal
 signal thwarted (card,details)
 # warning-ignore:unused_signal
 signal character_dies(card, details)

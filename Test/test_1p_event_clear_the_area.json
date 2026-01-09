@@ -1,0 +1,130 @@
+{
+	"_comments": "Tests Spider Woman Clear the Area actually draws",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Absorbing Man - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Assault"
+				}
+			],
+			"schemes": [
+				{
+					"card": "None Shall Pass",
+					"tokens": {
+						"threat": 1,
+						"delay": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "skilled Investigator"
+				},			
+				{
+					"card": "Pheromones"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Clear the Area"
+				},
+				{
+					"card": "Inconspicuous"
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "play",
+			"value": "Clear the Area"
+		},
+		{
+			"type": "target",
+			"value": "None shall Pass"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Absorbing Man - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Assault"
+				}
+			],
+			"schemes": [
+				{
+					"card": "None Shall Pass",
+					"tokens": {
+						"delay": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "skilled Investigator"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Inconspicuous"
+				},
+				{
+					"card": "Clear the Area"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Pheromones"
+				}
+			]
+		}
+	}
+}

@@ -1,0 +1,147 @@
+{
+	"_comments": "Tests Dense forest bug (triggers for minion)",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}				
+			],
+			"villain": [
+				{
+					"card": "Absorbing Man - 1",
+				}
+			],
+			"schemes": [
+				{
+					"card": "None Shall Pass",
+					"tokens": {"threat": 2}					
+				}
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"hand1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"deck1": [
+				{
+					"card": "01056",
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Dense Forest",
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "take undefended attack against Absorbing man"
+		},		
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "take undefended attack against Hydra Regular"
+		},		
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "wait for player turn"
+		},			
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Armored Guard"
+				}	
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},		
+			],
+			"villain": [
+				{
+					"card": "Absorbing Man - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "None Shall Pass",
+					"tokens": {"threat": 2}					
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				},			
+				{
+					"card": "Hydra Mercenary"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye",
+					"tokens": {"damage": 6},
+				}
+			],
+			"hand1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"deck1": [
+				{
+					"card": "01056",
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Dense Forest",
+				}
+			]
+		}
+	}
+}

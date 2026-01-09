@@ -674,7 +674,7 @@
 					]
 				},
 				{
-					"name": "remove_threat",
+					"name": "thwart",
 					"amount": 2,
 					"subject": "target",
 					"filter_state_subject": [
@@ -682,22 +682,17 @@
 							"filter_group": "group_schemes"
 						}
 					]
-				},
+				}
+			]
+		},
+		"last_threat_removed": {
+			"event_filters": {
+				"source": "self"
+			},
+			"all": [
 				{
 					"name": "draw_cards",
-					"amount": {
-						"if": {
-							"func_name": "count_tokens",
-							"func_params": {
-								"token_name": [
-									"threat"
-								],
-								"subject": "previous"
-							}
-						},
-						"then": 0,
-						"else": 1
-					}
+					"amount": 1
 				}
 			]
 		}
@@ -1264,7 +1259,7 @@
 				{
 					"name": "move_card_to_container",
 					"subject": "self",
-					"dest_container": "discard"
+					"dest_container": "discard_villain"
 				}
 			]
 		}
@@ -1441,7 +1436,7 @@
 			"board": [
 				{
 					"name": "receive_damage",
-					"subject": "my_hero",
+					"subject": "current_activation_target",
 					"amount": {
 						"if": {
 							"func_name": "count_tokens",
@@ -1764,7 +1759,7 @@
 				"func_params": {
 					"subject": "trigger"
 				}
-			},		
+			},
 			"board": [
 				{
 					"name": "constraints",
@@ -1800,6 +1795,7 @@
 					"name": "move_card_to_container",
 					"subject": "tutor",
 					"subject_index": "top",
+					"up_to": true,
 					"subject_count": {
 						"func_name": "get_subject_int_property",
 						"func_params": {
@@ -2805,12 +2801,16 @@
 					"needs_selection": true,
 					"selection_show_cards_with_zero_value": true,
 					"selection_what_to_count": {
-						"func_name": "get_aspect_name",
+						"func_name": "get_aspect_name"
 					}
 				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck"
+				}
 			]
 		}
-	},	
+	},
 	"Laser Cannon": {
 		"TODO": "campaign mode unsupported"
 	},
@@ -3559,6 +3559,14 @@
 						"then": 1,
 						"else": 0
 					},
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero"
+						},
+						{
+							"filter_group": "group_upgrade_support_my_hero"
+						}
+					],
 					"selection_type": "equal",
 					"needs_selection": true
 				}
@@ -4366,9 +4374,19 @@
 			"board": [
 				{
 					"name": "remove_threat",
-					"amount": 3,
+					"amount": "per_boardseek",
 					"subject": "target",
 					"needs_subject": true,
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						],
+						"multiplier": 3
+					},
 					"filter_state_subject": [
 						{
 							"filter_properties": {
@@ -4414,7 +4432,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "attack",
-					"trigger": "self",					
+					"trigger": "self",
 					"alteration": "per_token_self",
 					"per_token_self": {
 						"token_name": "__aggression"
@@ -4545,9 +4563,9 @@
 					"token_name": "__protection"
 				}
 			]
-		},	
+		},
 		"round_ended": {
-			"_silent": true,		
+			"_silent": true,
 			"board": [
 				{
 					"name": "mod_tokens",

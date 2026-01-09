@@ -4,6 +4,9 @@ onready var art := $Art
 var art_filename:= ""
 var text_enabled = false
 
+var color_texture = null
+var grayscale_texture = null
+
 func _ready() -> void:
 	pass
 	
@@ -54,6 +57,7 @@ func set_card_art(filename) -> void:
 	art_filename = filename		
 	var texture = cfc.get_external_texture(art_filename)
 	if texture:
+		color_texture = texture
 		art.texture = texture
 		art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 		# In case the generic art has been modulated, we switch it back to normal colour
@@ -67,9 +71,16 @@ func set_card_art(filename) -> void:
 		card_owner.refresh_card_front()
 
 func to_grayscale():
-	if !art.texture:
+	if !color_texture:
 		return
-	art.texture = WCUtils.to_grayscale(art.texture)
+	if !grayscale_texture:
+		grayscale_texture = WCUtils.to_grayscale(color_texture)
+	art.texture = grayscale_texture
+
+func to_color():
+	if !color_texture:
+		return
+	art.texture = color_texture	
 
 func set_label_text(node: Label, value, scale: float = 1):
 	if !text_enabled:

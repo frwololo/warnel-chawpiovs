@@ -240,7 +240,7 @@ var _debugger_hook := false
 var _tween_stuck_time = 0
 # This variable is being used to avoid an infinite loop when alterants
 # are altering get_property based on filtering properties of cards
-var _is_property_being_altered := false
+var _is_property_being_altered := {}
 # The node which has the design of the card back
 # And the methods which are used for its potential animation.
 # This will be loaded in `_init_card_back()`
@@ -865,8 +865,8 @@ func get_property_and_alterants(property: String,
 		property_value += temp_modifiers.value_modification
 		# We use this flag to avoid an alteranty which alters get_property
 		# by filtering the card's properties, causing an infinite loop.
-		if not _is_property_being_altered:
-			_is_property_being_altered = true
+		if not _is_property_being_altered.get(property, false):
+			_is_property_being_altered[property] = true
 			alteration = CFScriptUtils.get_altered_value(
 				self,
 				"get_property",
@@ -874,7 +874,7 @@ func get_property_and_alterants(property: String,
 				properties.get(property, default))
 			if alteration is GDScriptFunctionState:
 				alteration = yield(alteration, "completed")
-			_is_property_being_altered = false
+			_is_property_being_altered.erase(property)
 			# The first element is always the total modifier from all alterants
 			property_value += alteration.value_alteration
 		if property_value < 0:
@@ -1662,6 +1662,7 @@ func execute_scripts(
 	# If the state_scripts return a dictionary entry
 	# it means it's a multiple choice between two scripts
 	if typeof(state_scripts) == TYPE_DICTIONARY:
+		cfc.game_paused = true
 		var choices_menu = _CARD_CHOICES_SCENE.instance()
 		choices_menu.prep(canonical_name,state_scripts)
 		# We have to wait until the player has finished selecting an option
@@ -1673,6 +1674,7 @@ func execute_scripts(
 		else: state_scripts = []
 		# Garbage cleanup
 		choices_menu.queue_free()
+		cfc.game_paused = false
 	# To avoid unnecessary operations
 	# we evoke the ScriptingEngine only if we have something to execute
 	# We do not statically type it as this causes a circular reference
@@ -3132,7 +3134,7 @@ func copy_tokens_to(to_card, details:= {}):
 		if (token_name in exclude):
 			continue
 		var count = tokens.get_token_count(token_name)
-		to_card.tokens.mod_token(token_name, count, true)		
+		to_card.tokens.mod_token(token_name, count, true, false, ["forced"])		
 
 
 # Ensures proper cleanup when a card is queue_free() for any reason

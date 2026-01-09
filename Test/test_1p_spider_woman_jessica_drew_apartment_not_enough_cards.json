@@ -1,0 +1,138 @@
+{
+	"_comments": "Tests Jessica Drew's Apartment",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Assault"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Pheromones"
+				},
+				{
+					"card": "Skilled Investigator"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Jessica Drew",
+					"tokens": {
+						"_peek": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Jessica Drew's Apartment"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Venom Blast"
+				},
+				{
+					"card": "The Power of Aggression"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Jessica Drew's Apartment"
+		},
+		{
+			"type": "select",
+			"value": "Pheromones"
+		},
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Assault"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"deck1": [			
+				{
+					"card": "Skilled Investigator"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Jessica Drew",
+					"tokens": {
+						"_peek": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Jessica Drew's Apartment",
+					"exhausted": true,
+				}
+			],
+			"hand1": [
+				{
+					"card": "Venom Blast"
+				},
+				{
+					"card": "The Power of Aggression"
+				},
+				{
+					"card": "Pheromones"
+				},				
+			]
+		}
+	}
+}

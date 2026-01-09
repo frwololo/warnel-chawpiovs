@@ -1,0 +1,121 @@
+{
+	"_comments": "Tests that Tokens stay after a villain phase change",
+	"test_conditions": {
+		"ignore_order": [
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {
+						"damage": 13,
+						"stunned": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Breakin' & Takin'"
+				},
+				{
+					"card": "Enhanced Ivory Horn"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Spider-Man"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "01094"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+			"_comments": "giving time for the threat tokens to arrive"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 2",
+					"tokens": {
+						"stunned": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Enhanced Ivory Horn"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097"
+				},
+				{
+					"card": "Breakin' & Takin'",
+					"tokens": {"threat": 3}
+				}				
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			]
+		}
+	}
+}

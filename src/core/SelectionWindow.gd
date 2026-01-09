@@ -193,6 +193,8 @@ func initiate_selection(_card_array: Array) -> void:
 		dupe_selection.set_is_faceup(true,true)
 		if !can_select_cards_with_zero_value and (get_count([card]) <= 0):
 			dupe_selection.to_grayscale()
+		else:
+			dupe_selection.to_color()
 		dupe_selection.ensure_proper()
 #		dupe_selection.enable_focus_mode()
 
@@ -440,7 +442,11 @@ func get_count(_card_array: Array) -> int:
 		for card in _card_array:
 			if card and is_instance_valid(card):
 				if !_cache_count_per_card.has(card):
-					_cache_count_per_card[card] = cfc.ov_utils.func_name_run(card, func_name, params, my_script)
+					var number = cfc.ov_utils.func_name_run(card, func_name, params, my_script)
+					#this allows using even string or bool returns as counters
+					if typeof(number) != TYPE_INT:
+						number = 1 if number else 0
+					_cache_count_per_card[card] = number
 				total = total + _cache_count_per_card[card]
 		return total
 	

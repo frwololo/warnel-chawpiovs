@@ -23,6 +23,7 @@ const KEY_SUBJECT_V_VILLAIN := "villain"
 const KEY_SUBJECT_V_MAIN_SCHEME := "main_scheme"
 const KEY_SUBJECT_V_GRAB_UNTIL := "grab_until"
 const KEY_SUBJECT_CURRENT_ACTIVATION_ENEMY:= "current_activation_enemy"
+const KEY_SUBJECT_CURRENT_ACTIVATION_TARGET:= "current_activation_target"
 
 const FILTER_HOST_OF := "filter_is_host_of"
 const FILTER_SAME_CONTROLLER := "filter_same_controller"
@@ -58,9 +59,8 @@ static func filter_trigger(
 	# when itself causes the effect.
 	# For example, a card which rotates itself whenever another card
 	# is rotated, should not automatically rotate when itself rotates.
-	if card_scripts.get("trigger") == "my_hero" and\
-		trigger_card != owner_card.get_controller_hero_card():
-			return false
+	if !subject_matches(trigger_card, card_scripts.get("trigger"), owner_card):
+		return false
 
 	# Card Host filter checks
 	if is_valid and card_scripts.get(FILTER_HOST_OF):
@@ -97,6 +97,16 @@ static func filter_trigger(
 
 	return true
 
+static func subject_matches(card, string_value, owner_card):
+	match string_value:
+		KEY_SUBJECT_V_MY_HERO:
+			return card == owner_card.get_controller_hero_card()
+		KEY_SUBJECT_V_VILLAIN:
+			return card == gameData.get_villain()
+		KEY_SUBJECT_V_MAIN_SCHEME:
+			return card == gameData.get_main_scheme()
+	return true
+			
 # Returns true if the trigger is the host of the owner, false otherwise
 static func check_host_filter(trigger_card, owner_card, host_description : String) -> bool:
 	var card_matches := false

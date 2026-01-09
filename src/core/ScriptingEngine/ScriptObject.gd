@@ -99,7 +99,8 @@ func get_property(property: String, default = null, subscript_definition = null,
 			var _if = result["if"]
 			var func_name = _if["func_name"]
 			var params = _if.get("func_params", {})
-			var if_check_result = owner.call(func_name, params, self)
+			var if_check_result = cfc.ov_utils.func_name_run(owner, func_name, params, self)	
+#			var if_check_result = owner.call(func_name, params, self)
 
 			#asked to compare int results
 			var comparison = _if.get("comparison", "")

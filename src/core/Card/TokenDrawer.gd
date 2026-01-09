@@ -149,7 +149,7 @@ func mod_token(
 	if token_name in ["_", "__"]:
 		return CFConst.ReturnCode.FAILED
 	
-	if CFConst.TOKENS_ONLY_ON_BOARD:
+	if CFConst.TOKENS_ONLY_ON_BOARD and !"forced" in tags:
 		var parent = owner_card.get_parent()
 		if parent != cfc.NMAP.board:
 			var is_exception = false

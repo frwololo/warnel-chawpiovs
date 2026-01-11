@@ -555,7 +555,7 @@ const AUTO_KEYWORDS := {
 const NOOB_SKIP_ANNOUNCE_STACK_EVENTS:= {
 	"trigger": {
 		"manual": true,
-
+		"mulligan": true,
 		#we already show the damage with an arrow
 		"enemy_attack_damage": true,	
 		
@@ -564,6 +564,7 @@ const NOOB_SKIP_ANNOUNCE_STACK_EVENTS:= {
 const SKIP_ANNOUNCE_STACK_EVENTS:= {
 	"trigger": {
 		"manual": true,
+		"mulligan": true,		
 		"self_moved_to_board" : true, 
 		"about_to_reveal" : true,
 		"end_phase_discard" : true,
@@ -715,8 +716,8 @@ const DEBUG_SIMULATE_NETWORK_DELAY = 1.5
 const DEBUG_NETWORK_DELAY_RANDOM = false
 const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 
-const SCRIPT_BREAKPOINT_CARD_NAME := "Dense Forest"
-const SCRIPT_BREAKPOINT_TRIGGER_NAME := "interrupt"
+const SCRIPT_BREAKPOINT_CARD_NAME := "Piercing Thorns"
+const SCRIPT_BREAKPOINT_TRIGGER_NAME := "reveal"
 
 const LARGE_SCREEN_WIDTH:= 1600
 

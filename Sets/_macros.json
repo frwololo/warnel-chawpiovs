@@ -74,6 +74,13 @@
 			"trigger": "self",
 			"board": [
 				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},			
+				{
 					"name": "enemy_attacks_you",
 					"subject": "self"
 				}

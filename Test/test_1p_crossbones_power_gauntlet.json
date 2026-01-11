@@ -1,0 +1,140 @@
+{
+	"_comments": "Tests Crossbones Power gauntlets",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "hydra regular"
+				},
+				{
+					"card": "hydra mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Clear the Area"
+				},
+				{
+					"card": "Pheromones"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"others": [
+				{
+					"card": "Power gauntlets",
+					"host": "Crossbones - 1"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "take undefended attack"
+		},
+		{
+			"type": "select",
+			"value": "Pheromones",
+			"_comments": "discard from power gauntlets"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Armored Guard"
+				},			
+			],
+			"villain": [
+				{
+					"card": "Crossbones - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "hydra regular"
+				},
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Pheromones"
+				}			
+			],
+			"hand1": [
+				{
+					"card": "Clear the Area"
+				},
+
+			],
+			"enemies1": [
+				{
+					"card": "hydra mercenary"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"others": [
+				{
+					"card": "Power gauntlets",
+					"host": "Crossbones - 1"
+				}
+			]
+		}
+	}
+}

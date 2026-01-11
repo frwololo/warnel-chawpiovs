@@ -259,12 +259,13 @@ func cleanup_choices_menu(announce):
 	self.remove_right_announce()	
 	announce_scene.queue_free()
 
-#those are vents that happen when a card is on board
+#those are events that happen when a card is on board
 #but we want them to be taken into account by
 #the general "trigger" case
 const _force_general_notification := [
 	"card_dies",
-	"character_died"
+	"character_died",
+	"mulligan"
 ]
 func get_ignore_list_path(owner_card, stack_event):
 	var card_name = ""
@@ -273,10 +274,12 @@ func get_ignore_list_path(owner_card, stack_event):
 	if !trigger:
 		trigger = stack_event.get_first_task_name()
 	if owner_card and ! (trigger in _force_general_notification):
+		card_name = owner_card.properties.get("shortname", "")
 		if owner_card.is_boost():
+			if trigger == "boost":
+				return ["cards", card_name, trigger]
 			return ["boost", trigger]
 		elif owner_card.get_state_exec() == "board":
-			card_name = owner_card.properties.get("shortname", "")
 			return ["cards", card_name, trigger]
 
 	return ["trigger", trigger]
@@ -448,7 +451,7 @@ func init_receive_damage(script:ScriptTask, announce:Dictionary) -> bool:
 	if hero_id:
 		return false	
 	
-	var amount = script.retrieve_integer_property("amount")
+	var amount = WCScriptingEngine.calculate_damage(script) #script.retrieve_integer_property("amount")
 
 	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
 	# e.g. Spider man gets 3*1 damage = 3 damage

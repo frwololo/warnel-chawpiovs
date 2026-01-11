@@ -664,8 +664,8 @@ func get_art_filename(force_if_facedown: = true):
 func get_art_texture(force_if_facedown: = true):
 	return cfc.get_card_texture(self, force_if_facedown)
 
-func get_cropped_art_texture():
-	return cfc.get_cropped_card_texture(self)
+func get_cropped_art_texture(force_if_facedown = true):
+	return cfc.get_cropped_card_texture(self, force_if_facedown)
 
 func set_card_art(forced=false):
 	if card_front.art_filename and !forced:
@@ -954,7 +954,7 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 		pass
 
 	if trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME and canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME:
-		if trigger_details.get("event_name", "") == "enemy_attack_happened":
+		if trigger_details.get("event_name", "") == "card_dies":
 			pass	
 
 	var card_scripts = retrieve_scripts(trigger)		
@@ -1218,13 +1218,20 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 
 		gameData.select_current_playing_hero(interacting_hero)
 		force_user_interaction_required = true	
+		
 		var confirm_return = cfc.ov_utils.confirm(
 			self,
-			{"is_optional_" + get_state_exec() : true},
+			{
+				"is_optional_" + get_state_exec() : true,
+				"announcer_data": {
+					"origin_event": origin_event,
+					"interacting_hero": interacting_hero
+				}
+			},
 			canonical_name,
 			trigger,
 			get_state_exec())
-		if confirm_return is GDScriptFunctionState: # Still working.
+		if confirm_return is GDScriptFunctionState: # Still working.			
 			confirm_return = yield(confirm_return, "completed")
 			# If the player chooses not to play an optional cost
 			# We consider the whole cost dry run unsuccesful
@@ -1246,6 +1253,7 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 				return null	
 			force_user_interaction_required = true				
 			gameData.select_current_playing_hero(interacting_hero)
+			cfc.game_paused = true
 			var choices_menu = _CARD_CHOICES_SCENE.instance()
 			cfc.add_modal_menu(choices_menu)
 			choices_menu.prep(canonical_name,state_scripts, rules)
@@ -1259,6 +1267,7 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 			# Garbage cleanup
 			cfc.remove_modal_menu(choices_menu)
 			choices_menu.queue_free()
+			cfc.game_paused = false
 			if !selected_key:
 				gameData.theStack.resume_operations_to_all(checksum)
 		if selected_key:
@@ -2305,7 +2314,7 @@ func get_subject_int_property(params, script:ScriptTask = null) -> int:
 		return 0
 	return subject.get_property(property, 0)	
 
-func count_tokens(params, script:ScriptTask = null) -> int:
+func count_tokens(params, script:ScriptObject = null) -> int:
 	var subjects = [self]
 	var token_names = params.get("token_name", [])
 	if typeof(token_names) == TYPE_STRING:

@@ -81,7 +81,7 @@ margin_top = 223.0
 margin_right = 200.0
 margin_bottom = 243.0
 disabled = true
-text = "Optional interrupt!"
+text = "Interrupt!"
 flat = true
 
 [node name="Tween" type="Tween" parent="."]

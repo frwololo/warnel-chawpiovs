@@ -1,5 +1,20 @@
 extends OVUtils
 
+func get_script_identity(script, trigger_details):
+	var hero_id = 0
+	
+	var override_hero_id = trigger_details.get("override_hero_id", 0)
+	if override_hero_id:
+		hero_id = override_hero_id
+	else:
+		var owner:WCCard = script.owner
+		hero_id = owner.get_controller_hero_id()
+	
+	if not hero_id:
+		var _error = 1 #that's a bug?
+		
+	return gameData.get_identity_card(hero_id)
+		
 
 func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int = 0, run_type = CFInt.RunType.NORMAL, trigger_details :={}) -> Array:
 	var results = []
@@ -26,18 +41,15 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 			if (owner.current_host_card):
 				results.append(owner.current_host_card)
 		SP.KEY_SUBJECT_V_MY_HERO:
-			var owner:WCCard = script.owner
-			var hero_card = gameData.get_identity_card(owner.get_controller_hero_id())
+			var hero_card = get_script_identity(script, trigger_details)
 			if (hero_card and hero_card.is_hero_form()):
 				results.append(hero_card)
 		SP.KEY_SUBJECT_V_MY_IDENTITY:
-			var owner:WCCard = script.owner
-			var hero_card = gameData.get_identity_card(owner.get_controller_hero_id())
+			var hero_card = get_script_identity(script, trigger_details)
 			if (hero_card): #At load time it is possible the hero isn't set yet
 				results.append(hero_card)
 		SP.KEY_SUBJECT_V_MY_ALTER_EGO:
-			var owner:WCCard = script.owner
-			var hero_card = gameData.get_identity_card(owner.get_controller_hero_id())
+			var hero_card = get_script_identity(script, trigger_details)
 			if (hero_card and hero_card.is_alter_ego_form()):
 				results.append(hero_card)							
 		SP.KEY_SUBJECT_V_VILLAIN:
@@ -152,10 +164,18 @@ func confirm(
 	# We do not use SP.KEY_IS_OPTIONAL here to avoid causing cyclical
 	# references when calling CFUtils from SP
 	if script.get("is_optional_" + type):
+		cfc.game_paused = true
 		gameData._acquire_user_input_lock(owner.get_controller_player_network_id())
 		var my_network_id = cfc.get_network_unique_id()
 		var is_master:bool =  (owner.get_controller_player_network_id() == my_network_id)
 		var confirm = _OPTIONAL_CONFIRM_SCENE.instance()
+
+#Showing this menu here has led to weird side effects such as non trigger of some ability, need to dig
+#		if task_name != "manual":
+#			var announcer_data = script.get("announcer_data", {})
+#			if announcer_data:
+#				gameData.theAnnouncer.choices_menu(owner, announcer_data["origin_event"] ,confirm ,announcer_data["interacting_hero"] )			
+					
 		cfc.add_modal_menu(confirm)
 		confirm.prep(card_name,task_name, is_master)
 		# We have to wait until the player has finished selecting an option
@@ -168,6 +188,7 @@ func confirm(
 		cfc.remove_modal_menu(confirm)
 		confirm.queue_free()
 		gameData._release_user_input_lock(owner.get_controller_player_network_id())
+		cfc.game_paused = false
 	cfc.remove_ongoing_process(owner, "confirm")	
 	return(is_accepted)
 	
@@ -311,6 +332,40 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 			return false
 		filters.erase("filter_state_event_source")
 
+	for filter_key in filters.keys():
+		var value = filters[filter_key]
+		var compared_to_str = trigger_details.get(filter_key, "")
+		var compared_to_int = 0
+		match typeof(compared_to_str):
+			TYPE_STRING, TYPE_INT:
+				compared_to_int = int(compared_to_str)		
+		
+		if typeof(value) == TYPE_STRING:
+			if value.begins_with(">="):
+				value = int(value.substr(2))
+				if compared_to_int >= value:
+					filters.erase(filter_key)
+				else:
+					return false
+			elif value.begins_with("<="):
+				value = int(value.substr(2))
+				if compared_to_int <= value:
+					filters.erase(filter_key)
+				else:
+					return false				
+			elif value.begins_with(">"):
+				value = int(value.substr(2))
+				if compared_to_int > value:
+					filters.erase(filter_key)	
+				else:
+					return false								
+			elif value.begins_with("<"):
+				value = int(value.substr(2))
+				if compared_to_int < value:
+					filters.erase(filter_key)
+				else:
+					return false									
+				
 
 	if (filters):
 		var _tmp = 0	

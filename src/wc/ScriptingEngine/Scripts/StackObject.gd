@@ -134,12 +134,13 @@ func _get_display_text_nocache():
 	var subjects = ""	
 	if task: 	
 		var owner = task.owner
-		var owner_name = owner.properties["shortname"] if owner else ""
+		var owner_name = owner.get_property("shortname", "") if owner else ""
 
 		var separator = ""
 		if "subjects" in task:
 			for subject in task.subjects:
-				subjects = separator + subject.properties["shortname"]
+				var shortname = subject.get_property("shortname","") if subject.is_faceup else "facedown card"
+				subjects += separator + shortname
 				separator = ", "
 			if subjects:
 				subjects = " (" + subjects + ")"
@@ -168,7 +169,12 @@ func _get_display_text_nocache():
 					for id in ["forced interrupt", "interrupt", "forced response", "response"]:
 						var text = owner.get_printed_text(id)
 						if text:
-							return text					
+							return text		
+			"boost":
+				if owner:
+					var text = owner.get_printed_text("boost")
+					if text:
+						return text												
 	result = result.replace("_", " ")
 	result = result + subjects
 	return result

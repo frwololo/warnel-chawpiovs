@@ -1038,7 +1038,8 @@ func set_is_viewed(value: bool) -> int:
 				var dupe_card : Card = cfc.NMAP.main._previously_focused_cards[self]
 				# warning-ignore:return_value_discarded
 				dupe_card.set_is_faceup(true, true)
-			card_back.is_viewed_visible = true
+			if card_back:
+				card_back.is_viewed_visible = true
 			retcode = CFConst.ReturnCode.CHANGED
 			# We only emit a signal when we view the card
 			# not when we unview it as that happens naturally
@@ -1228,6 +1229,7 @@ func move_to(targetHost: Node,
 	# depending on the board_placement variable
 	targetHost = targetHost.get_final_placement_node(self)
 	targetHost = common_pre_move_scripts(targetHost, parentHost, tags)
+	var emit_signals = !("disable_move_signals" in tags)
 	if targetHost == cfc.NMAP.board and not board_position:
 		match board_placement:
 			BoardPlacement.NONE:
@@ -1317,14 +1319,15 @@ func move_to(targetHost: Node,
 			card_rotation = 0
 			_set_target_rotation(_recalculate_rotation())
 			set_state(CardState.MOVING_TO_CONTAINER)
-			scripting_bus.emit_signal("card_moved_to_hand",
-					self,
-					 {
-						"destination": targetHost.name,
-						"source": parentHost.name,
-						"tags": tags
-					}
-			)
+			if emit_signals:
+				scripting_bus.emit_signal("card_moved_to_hand",
+						self,
+						 {
+							"destination": targetHost.name,
+							"source": parentHost.name,
+							"tags": tags
+						}
+				)
 			# We reorganize the left over cards in hand.
 			for c in targetHost.get_all_cards():
 				if c != self:
@@ -1356,14 +1359,15 @@ func move_to(targetHost: Node,
 				_set_target_position(targetHost.get_stack_position(self))
 				_set_target_rotation(0.0)
 				set_state(CardState.MOVING_TO_CONTAINER)
-				scripting_bus.emit_signal("card_moved_to_pile",
-						self,
-						{
-							"destination": targetHost.name,
-							"source": parentHost.name,
-							"tags": tags
-						}
-				)
+				if emit_signals:
+					scripting_bus.emit_signal("card_moved_to_pile",
+							self,
+							{
+								"destination": targetHost.name,
+								"source": parentHost.name,
+								"tags": tags
+							}
+					)
 				# We start the flipping animation here, even though it also
 				# set in the card state, because we want to see it while the
 				# card is moving to the CardContainer
@@ -1411,15 +1415,16 @@ func move_to(targetHost: Node,
 				set_is_faceup(false)
 			else:
 				set_is_faceup(true)
-			scripting_bus.emit_signal("card_moved_to_board",
-					self,
-					 {
-						"destination": targetHost.name,
-						"source": parentHost.name,
-						"tags": tags
-					}
-			)
-			self.execute_scripts(self, "self_moved_to_board")
+			if emit_signals:	
+				scripting_bus.emit_signal("card_moved_to_board",
+						self,
+						 {
+							"destination": targetHost.name,
+							"source": parentHost.name,
+							"tags": tags
+						}
+				)
+				self.execute_scripts(self, "self_moved_to_board")
 		if is_instance_valid(parentHost) and parentHost.is_in_group("hands"):
 			# We also want to rearrange the hand when we take cards out of it
 			for c in parentHost.get_all_cards():

@@ -197,7 +197,7 @@ func load_card_texture() -> bool:
 	if !card_texture:
 		return false
 		
-	card_texture.texture =  owner_card.get_cropped_art_texture()
+	card_texture.texture =  owner_card.get_cropped_art_texture(false)
 
 	#card_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	# In case the generic art has been modulated, we switch it back to normal colour
@@ -317,8 +317,17 @@ func _dispay_ok_button():
 	ok_checkbox.hint_tooltip = tooltip
 	
 	z_index = 0
+	ok_button.icon = gamepadHandler.get_icon_for_action("ui_cancel")
+	
+	ok_button.grab_focus()
 	
 func _on_OKButton_pressed():
 	if ok_checkbox.pressed:
 		gameData.theAnnouncer.add_event_to_ignore_list(owner_card, stack_event)
 	terminate()
+
+func _input(event):	
+	if gamepadHandler.is_ui_cancel_pressed(event):
+		get_tree().is_input_handled()
+		_on_OKButton_pressed()
+		return

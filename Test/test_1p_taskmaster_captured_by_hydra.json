@@ -1,0 +1,183 @@
+{
+	"_comments": "Tests Captured By Hydra",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"set_aside": [
+				{
+					"card": "Elektra"
+				},
+				{
+					"card": "Shang-Chi"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Captured by Hydra"
+				}
+			],
+			"villain": [
+				{
+					"card": "Taskmaster - 1",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting down Heroes",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Spider-Man - Peter Parker"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "The Power of Aggression"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Heroic Intuition"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "wait for player turn"
+		},
+		{
+			"type": "play",
+			"value": "Spider-Man - Peter Parker"
+		},
+		{
+			"type": "target",
+			"value": "Captured by Hydra"
+		},
+		{
+			"type": "activate",
+			"value": "Spider-Woman"
+		},
+		{
+			"type": "choose",
+			"value": "thwart"
+		},
+		{
+			"type": "target",
+			"value": "Captured by Hydra"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"set_aside": [
+				{
+					"card": "Elektra"
+				},
+				{
+					"card": "Captured by Hydra"
+				}				
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				},
+			],
+			"villain": [
+				{
+					"card": "Taskmaster - 1",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting down Heroes",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Shang-Chi"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Spider-Man - Peter Parker"
+				},
+			],
+			"discard1": [
+				{
+					"card": "The Power of Aggression"
+				},
+				{
+					"card": "Energy"
+				},				
+				{
+					"card": "Strength"
+				},
+
+			],
+			"upgrade_support1": [
+				{
+					"card": "Heroic Intuition"
+				}
+			]
+		}
+	}
+}

@@ -621,8 +621,8 @@
 			"event_name": "card_dies",
 			"board": [
 				{
-					"name": "return_attachments_to_owner",
-					"dest_container": "hand",
+					"name": "return_attachments_to",
+					"dest_container": "hand_event_source_hero",
 					"tags": [
 						"facedown"
 					]
@@ -2359,6 +2359,10 @@
 								}
 							}
 						]
+					},
+					{
+						"name": "shuffle_container",
+						"dest_container": "deck_villain",
 					}
 				]
 			}
@@ -2383,8 +2387,8 @@
 							"discard"
 						],
 						"subject": "tutor",
-						"subject_count": 1,
-						"selection_count": "all",
+						"subject_count": "all",
+						"selection_count": 1,
 						"needs_selection": true,
 						"filter_state_tutor": [
 							{
@@ -2613,11 +2617,11 @@
 					"name": "mod_tokens",
 					"modification": 1,
 					"token_name": "stunned",
-					"subject": "my_hero"
+					"subject": "my_identity"
 				},
 				{
 					"name": "receive_damage",
-					"subject": "my_hero",
+					"subject": "my_identity",
 					"amount": {
 						"if": {
 							"func_name": "has_trait",
@@ -3545,7 +3549,6 @@
 				{
 					"name": "move_card_to_container",
 					"dest_container": "discard",
-					"is_cost": true,
 					"subject": "boardseek",
 					"subject_count": "all",
 					"selection_count": {
@@ -3588,7 +3591,7 @@
 						"else": 0
 					},
 					"token_name": "stunned",
-					"subject": "my_hero"
+					"subject": "current_activation_target"
 				},
 				{
 					"name": "mod_tokens",
@@ -3604,7 +3607,7 @@
 						"else": 0
 					},
 					"token_name": "stunned",
-					"subject": "my_hero"
+					"subject": "current_activation_target"
 				}
 			]
 		}
@@ -3619,28 +3622,17 @@
 				}
 			]
 		},
-		"interrupt": {
-			"event_name": "enemy_attack_damage",
+		"attack_happened": {
 			"trigger": "host",
-			"board": [
-				{
-					"name": "replacement_effect",
-					"subject": "current_activation",
-					"replacements": {
-						"additional_tags": [
-							"run_post_damage_script"
-						]
-					}
-				}
-			]
-		},
-		"post_damage_script": {
+			"event_filters": {
+				"damage": ">0"
+			},
 			"board": [
 				{
 					"name": "move_card_to_container",
 					"subject": "tutor",
-					"src_container": "hand",
-					"dest_container": "discard",
+					"src_container": "hand_current_hero_target",
+					"dest_container": "discard_current_hero_target",
 					"subject_count": "all",
 					"selection_count": 1,
 					"selection_type": "equal",
@@ -4634,6 +4626,7 @@
 					"amount": "per_token",
 					"is_cost": true,
 					"per_token": {
+						"subject": "main_scheme",
 						"token_name": "delay",
 						"divider": 2
 					}
@@ -4648,7 +4641,7 @@
 			"all": [
 				{
 					"name": "receive_damage",
-					"subject": "my_hero",
+					"subject": "current_activation_target",
 					"amount": {
 						"if": {
 							"func_name": "count_tokens",
@@ -4843,7 +4836,7 @@
 			"board": [
 				{
 					"name": "move_card_to_container",
-					"subject": "tutor",
+					"subject": "index",
 					"subject_index": "top",
 					"subject_count": 1,
 					"src_container": "deck_villain",
@@ -4885,7 +4878,7 @@
 			"board": [
 				{
 					"name": "move_card_to_container",
-					"subject": "tutor",
+					"subject": "index",
 					"subject_index": "top",
 					"subject_count": 1,
 					"src_container": "deck_villain",
@@ -4927,7 +4920,7 @@
 			"board": [
 				{
 					"name": "move_card_to_container",
-					"subject": "tutor",
+					"subject": "index",
 					"subject_index": "top",
 					"subject_count": 1,
 					"src_container": "deck_villain",
@@ -5261,13 +5254,17 @@
 					"options": [
 						{
 							"condition": {
-								"func_name": "count_tokens",
-								"func_params": {
-									"token_name": "delay",
-									"subject": "self"
+								"if": {
+									"func_name": "count_tokens",
+									"func_params": {
+										"token_name": "test",
+										"subject": "self"
+									},
+									"comparison": "ge",
+									"comparison_value": 3
 								},
-								"comparison": "ge",
-								"comparison_value": 3
+								"then": 1,
+								"else": 0
 							},
 							"nested_tasks": [
 								{
@@ -5353,7 +5350,7 @@
 							"condition": {
 								"func_name": "count_tokens",
 								"func_params": {
-									"token_name": "delay",
+									"token_name": "test",
 									"subject": "self"
 								},
 								"comparison": "ge",
@@ -6027,7 +6024,9 @@
 					"subject": "index",
 					"subject_count": 1,
 					"subject_index": "retrieve_integer",
-					"src_container": "deck_villain"
+					"src_container": "deck_villain",
+					"tags": ["disable_attach_trigger"],
+					"_comments": "disable_attach_trigger in tags prevents the attachment from moving somewhere else as it comes into play"
 				}
 			]
 		},

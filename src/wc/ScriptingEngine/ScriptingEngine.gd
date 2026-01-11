@@ -149,7 +149,7 @@ func move_card_to_container(script: ScriptTask) -> int:
 		{"from":"_my_hero" , "to": controller_hero_id },
 		{"from":"_first_player" , "to": gameData.first_player_hero_id() },
 		{"from":"_previous_subject" , "to": previous_hero_id},
-		{"from":"_current_hero_target" , "to": enemy_target_hero_id},		
+		{"from":"_current_hero_target" , "to": enemy_target_hero_id},			
 	]
 
 	var more_replacements = script.get_property("zone_name_replacement", {})
@@ -356,8 +356,9 @@ func scheme_base_threat(script:ScriptTask) -> int:
 	var base_threat = scheme.get_property("base_threat", 0)
 	var retcode = scheme.tokens.mod_token("threat", base_threat, false,costs_dry_run(), tags)
 	return retcode
-	
-func return_attachments_to_owner(script: ScriptTask) -> int:
+
+
+func return_attachments_to(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
 	var host = script.owner
@@ -384,21 +385,22 @@ func return_attachments_to_owner(script: ScriptTask) -> int:
 	for card in to_move:
 		host.remove_attachment(card)
 		card.current_host_card = null
-		var card_owner = card.get_owner_hero_id()
-		if card_owner < 0:
-			card_owner = 1 #TODO hack to avoid crashes
 		var destination = destination_prefix
-		#TODO bit of a hack here
-		#unfortunately my code already added a suffix number priori to this, so I have to be sneaky :(
-		var zones = ["hand"] + CFConst.HERO_GRID_SETUP.keys()
-		for zone in zones:
-			if zone in destination:
-				destination = zone
-				break
-		if !card_owner:
-			destination += "_villain"
-		else:
-			destination += str(card_owner)
+		if script.get_property("return_to", "") == "owner":		
+			var card_owner = card.get_owner_hero_id()
+			if card_owner < 0:
+				card_owner = 1 #TODO hack to avoid crashes
+			#TODO bit of a hack here
+			#unfortunately my code already added a suffix number priori to this, so I have to be sneaky :(
+			var zones = ["hand"] + CFConst.HERO_GRID_SETUP.keys()
+			for zone in zones:
+				if zone in destination:
+					destination = zone
+					break
+			if !card_owner:
+				destination += "_villain"
+			else:
+				destination += str(card_owner)
 
 		var pile_or_grid = cfc.pile_or_grid(destination)
 		match pile_or_grid:
@@ -409,6 +411,10 @@ func return_attachments_to_owner(script: ScriptTask) -> int:
 
 
 	return retcode	
+	
+func return_attachments_to_owner(script: ScriptTask) -> int:
+	script.script_definition["return_to"] = "owner"
+	return return_attachments_to(script)	
 
 
 func card_dies(script:ScriptTask) -> int:
@@ -421,6 +427,53 @@ func card_dies(script:ScriptTask) -> int:
 		retcode = CFConst.ReturnCode.CHANGED
 
 	return retcode
+
+static func calculate_damage(script:ScriptTask) -> int:
+	if script.script_name != "receive_damage":
+		return 0
+		
+	if !script.subjects:
+		return 0
+
+	#damages don't always come from an attacker, but it's easier to compute it here
+	var attacker = script.owner
+	var type = attacker.get_property("type_code", "")
+	if !type in ["hero", "ally", "minion", "villain"]:
+		attacker = _get_identity_from_script(script)
+		
+	var tags: Array = script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
+	var base_amount = script.retrieve_integer_property("amount")
+	
+	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
+	# e.g. Spider man gets 3*1 damage = 3 damage
+	var consolidated_subjects:= {}
+	for card in script.subjects:
+		if !consolidated_subjects.has(card):
+			consolidated_subjects[card] = 0
+		consolidated_subjects[card] += 1
+	
+	#this is a for loop but in reality we return at the first iteration
+	for card in consolidated_subjects.keys():
+		var multiplier = consolidated_subjects[card]
+		var damage_happened = 0
+		var amount = base_amount * multiplier
+		
+		if !amount:
+			return 0
+		
+		if card.get_property("invincible", 0):
+			return 0
+
+		var tough = card.tokens.get_token_count("tough")
+		if (amount and script.has_tag("piercing")):
+			tough = 0
+		if tough: 
+			return 0
+			
+		return amount
+		
+	return 0	
+		
 
 func receive_damage(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -542,13 +595,16 @@ func receive_damage(script: ScriptTask) -> int:
 
 func _receive_threat(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
-	if (costs_dry_run()): 
-		if !script.subjects:
-			return CFConst.ReturnCode.FAILED
-		return retcode
 	
 	var tags: Array = script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
 	var amount = script.retrieve_integer_property("amount")
+
+	if (costs_dry_run()): 
+		if !script.subjects:
+			return CFConst.ReturnCode.FAILED
+		if !amount:
+			return CFConst.ReturnCode.FAILED
+		return retcode
 	
 	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
 	# e.g. Spider man gets 3*1 damage = 3 damage
@@ -585,6 +641,17 @@ func _receive_threat(script: ScriptTask) -> int:
 func add_threat(script: ScriptTask) -> int:
 	return _receive_threat(script)
 
+func attach_to_card(script: ScriptTask) -> int:	
+	if script.has_tag("disable_attach_trigger"):
+		script.script_definition["tags"].append("disable_move_signals")
+	
+	return .attach_to_card(script)
+
+func host_card(script: ScriptTask) -> void:
+	#
+	if script.has_tag("disable_attach_trigger"):
+		script.script_definition["tags"].append("disable_move_signals")
+	.host_card(script)
 
 func conditional_script(script:ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -1726,7 +1793,17 @@ static func static_pre_task_prime(script_definition, owner, script = null, prev_
 	
 	var current_hero_target = gameData.get_villain_current_hero_target()
 
-
+	var event_source_hero_id = 1
+	if script and script.trigger_details.has("event_object"):
+		var event_object = script.trigger_details.get("event_object")		
+		if "trigger_details" in event_object and event_object.trigger_details.has("source"):
+			var source = event_object.trigger_details.get("source", null)
+			if guidMaster.is_guid(source):
+				source = guidMaster.get_object_by_guid(source)
+			if source:
+				var hero_id = source.get_controller_hero_id()
+				if hero_id > 0:
+					event_source_hero_id = hero_id
 
 	var replacements = {}
 			
@@ -1734,7 +1811,8 @@ static func static_pre_task_prime(script_definition, owner, script = null, prev_
 		{"from":"_my_hero" , "to": controller_hero_id },
 		{"from":"_first_player" , "to": gameData.first_player_hero_id() },
 		{"from":"_previous_subject" , "to": previous_hero_id},
-		{"from":"_current_hero_target" , "to": current_hero_target},		
+		{"from":"_current_hero_target" , "to": current_hero_target},
+		{"from":"_event_source_hero" , "to": event_source_hero_id},					
 	]
 
 	if script:

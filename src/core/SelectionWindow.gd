@@ -668,5 +668,6 @@ func _on_ok_pressed() -> void:
 
 func _input(event):	
 	if gamepadHandler.is_ui_cancel_pressed(event):
+		get_tree().is_input_handled()
 		_on_cancel_pressed()
 		return

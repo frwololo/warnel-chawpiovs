@@ -1,0 +1,112 @@
+{
+	"_comments": "Tests Taskmaster stage 2 deals encounter",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"set_aside": [
+				{
+					"card": "Taskmaster - 2"
+				},
+				{
+					"card": "Shang-Chi"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}
+			],
+			"villain": [
+				{
+					"card": "Taskmaster - 1",
+					"tokens": {
+						"damage": 12
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting down Heroes",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Spider-Woman"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Taskmaster - 1"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"villain": [
+				{
+					"card": "Taskmaster - 2"
+				}
+			],
+			"encounters_facedown1": [
+				{
+					"card": "Armored Guard"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting down Heroes",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			]
+		}
+	}
+}

@@ -206,7 +206,7 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 			if hero_id:
 				all_cards =  cfc.NMAP.board.get_enemies_engaged_with(hero_id)
 		for card in all_cards:
-			if card.get_keyword("guard") and card.is_faceup: #TODO better way to ignore face down cards?
+			if card.get_property("guard") and card.is_faceup: #TODO better way to ignore face down cards?
 				return false
 
 	var card_matches = true

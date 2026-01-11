@@ -1,0 +1,126 @@
+{
+	"_comments": "Test of Boost card: Berserk Mutate",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Zola - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},			
+				{
+					"card": "Hydra Mercenary"
+				},			
+				{
+					"card": "Berserk Mutate"
+				}
+			],			
+			"schemes": [
+				{
+					"card": "The Island of Dr. Zola",
+					"tokens": {"test": 2}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Pheromones"
+				},
+			],
+		}
+	},
+	"actions": [		
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "click cancel on defenders to take an undefended attack"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"wait_longer": true,
+			"_comments": "wait as much as needed for player turn"
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Zola - 1"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Berserk Mutate"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},					
+
+			],			
+			"schemes": [
+				{
+					"card": "The Island of Dr. Zola",
+					"tokens": {"test": 3}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman",
+					"tokens": {"damage": 4}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				},	
+			],
+			"hand1": [
+				{
+					"card": "Pheromones"
+				},
+			],
+		}
+	}
+}

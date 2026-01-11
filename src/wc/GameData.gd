@@ -216,12 +216,14 @@ func is_targeting_ongoing():
 
 
 func end_game(result:String):
-	init_save_folder()
-	cleanup_post_game()	
-	cfc.set_game_paused(true)
 	var game_over_screen = _GAME_OVER_SCENE.instance()
 	if _game_over == "victory":
 		game_over_screen.victory()
+
+	init_save_folder()
+	cleanup_post_game()	
+	cfc.set_game_paused(true)
+
 	cfc.NMAP.board.add_child(game_over_screen)
 #	var end_dialog:AcceptDialog = AcceptDialog.new()
 #	end_dialog.window_title = result

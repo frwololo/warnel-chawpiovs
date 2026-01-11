@@ -1,0 +1,134 @@
+{
+	"_comments": "Tests Skilled Investigator interaction with other message",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Regular"
+				},				
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Assault"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				},
+				{
+					"card": "Hydra Patrol",
+					"tokens": {"threat": 2}
+				}				
+			],
+			"deck1": [
+				{
+					"card": "Pheromones"
+				},
+				{
+					"card": "Finesse"
+				}				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "skilled Investigator"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Clear the Area"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "gain_control"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Assault"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Pheromones"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Finesse",
+					"exhausted": true
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jessica Jones"
+				}
+			]
+		}
+	}
+}

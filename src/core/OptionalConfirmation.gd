@@ -52,6 +52,7 @@ func _on_OptionalConfirmation_cancelled() -> void:
 
 remotesync func confirmed() -> void:
 	is_accepted = true
+	GameRecorder.add_entry(GameRecorder.ACTIONS.CHOOSE, "yes", dialog_text)
 	emit_signal("selected")
 	scripting_bus.emit_signal(
 		"optional_window_closed",
@@ -61,6 +62,7 @@ remotesync func confirmed() -> void:
 	
 remotesync func cancelled() -> void:
 	is_accepted = false
+	GameRecorder.add_entry(GameRecorder.ACTIONS.CHOOSE, "no" , dialog_text)	
 	emit_signal("selected")
 	scripting_bus.emit_signal(
 		"optional_window_closed",

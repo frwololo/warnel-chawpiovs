@@ -240,6 +240,11 @@ _global_script_classes=[ {
 "path": "res://src/wc/ScriptingEngine/GameObserverItem.gd"
 }, {
 "base": "Reference",
+"class": "GameRecorder",
+"language": "GDScript",
+"path": "res://src/wc/GameRecorder.gd"
+}, {
+"base": "Reference",
 "class": "GameStats",
 "language": "GDScript",
 "path": "res://src/core/GameStats.gd"
@@ -531,6 +536,7 @@ _global_script_class_icons={
 "GameData": "",
 "GameObserver": "",
 "GameObserverItem": "",
+"GameRecorder": "",
 "GameStats": "",
 "GamepadHandler": "",
 "GhostCard": "",

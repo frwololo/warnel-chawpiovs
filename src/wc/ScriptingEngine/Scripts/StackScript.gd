@@ -111,12 +111,15 @@ func get_script_by_event_details(event_details):
 		if !(("trigger_" + _type) in (trigger_details["tags"])):
 			return null
 
-	var _name = event_details["event_name"]		
-	for task in get_tasks():
-		var my_name = task.script_name
-		if _name and (my_name != _name):
-			continue
-		return task		
-	return null
+	var _names = event_details["event_name"]		
+	if typeof(_names) == TYPE_STRING:
+		_names = [_names]
+	for _name in _names:
+		for task in get_tasks():
+			var my_name = task.script_name
+			if _name and (my_name != _name):
+				continue
+			return task		
+		return null
 	
 

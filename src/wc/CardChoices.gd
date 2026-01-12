@@ -103,6 +103,9 @@ func force_select_by_title(keyword: String):
 	select_by_title(keyword)
 
 func select_by_title(keyword):
+	
+	GameRecorder.add_entry(GameRecorder.ACTIONS.CHOOSE, keyword)
+	
 	var id = text_to_id.get(keyword.to_lower(), 0)
 	
 	if keyword == "cancel":

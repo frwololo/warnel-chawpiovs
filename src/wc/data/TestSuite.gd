@@ -132,14 +132,15 @@ func reset_between_tests():
 	_action_ongoing = 0	
 	if cfc.is_game_master():
 		var my_seed = "test suite"
-		cfc._rpc(self,"set_random_seed", my_seed)
+		var my_state = 0
+		cfc._rpc(self,"set_random_seed", my_seed, my_state)
 		
 		
 	cfc.set_game_paused(false)
 
-remotesync func set_random_seed(my_seed):
-	cfc.LOG("setting random seed to " + str(my_seed))
-	cfc.game_rng_seed = my_seed
+remotesync func set_random_seed(my_seed, my_state):
+	cfc.LOG("setting random seed to " + str(my_seed) + ", state " + str(my_state))
+	cfc.set_seed(my_seed, my_state)
 		
 func reset():
 	start_time = Time.get_ticks_msec()
@@ -533,6 +534,10 @@ func get_hero_for_action(my_action:Dictionary):
 				hero = get_default_hero()
 			_:
 				hero = get_default_hero()
+				
+	#finally if nothing else works
+	if !hero:
+		hero = 1
 	return hero	
 
 #The bulk of the GUI control to process one event	

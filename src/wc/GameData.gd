@@ -123,6 +123,7 @@ func stop_game():
 func start_game():
 	cfc.LOG("game starting")
 	theGameObserver.setup(scenario)
+	GameRecorder.init_game()
 	_game_started = true
 
 func is_game_started():
@@ -423,6 +424,19 @@ func check_empty_decks(pile_to_check):
 			else:
 				var _error = 1 #TODO error handling 
 		return
+
+	elif (pile_to_check.begins_with("deck_")): #other, non player decks
+		var suffix = pile_to_check.substr(5)
+		var deck:Pile = cfc.NMAP[pile_to_check]
+		if (deck.get_card_count() == 0):
+			var discard:Pile = cfc.NMAP.get("discard_" + suffix, null)
+			if discard:
+				var all_discarded = discard.get_all_cards()
+				for card in all_discarded:
+					card.move_to(deck)
+				display_debug("shuffle " + pile_to_check + " after empty")
+				deck.shuffle_cards()
+		return	
 	
 	elif (pile_to_check.begins_with("deck")): #player decks
 		var hero_id_str = pile_to_check.substr(4,1)
@@ -667,7 +681,8 @@ func get_currently_playing_hero_ids():
 	#if some attacks are ongoing or enouncters are being revealed, the
 	#target player is the one being returned
 	if !attackers.empty():
-		return [get_current_activity_hero_target()]
+		var current_hero_target = get_current_activity_hero_target()
+		return [current_hero_target]
 		#return [_villain_current_hero_target]
 	
 	if !immediate_encounters.empty():
@@ -677,7 +692,8 @@ func get_currently_playing_hero_ids():
 		CFConst.PHASE_STEP.VILLAIN_ACTIVATES,
 		CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER
 	]:
-		return [get_current_activity_hero_target()]
+		var current_hero_target = get_current_activity_hero_target()
+		return [current_hero_target]
 		#return [_villain_current_hero_target]
 	
 	#during player turn and outside of all other considerations, all heroes can play simultaneously
@@ -785,7 +801,10 @@ func get_current_activity_hero_target():
 	if attackers:
 		var attacker_data = attackers.front()
 		if (typeof (attacker_data) == TYPE_DICTIONARY):
-			return attacker_data.get("target_id", _villain_current_hero_target)
+			var target_id = attacker_data.get("target_id", 0)
+			if !target_id:
+				target_id = _villain_current_hero_target
+			return target_id
 	
 	return _villain_current_hero_target
 
@@ -1515,6 +1534,9 @@ func reveal_encounter(target_id = 0):
 	return
 
 func encounter_revealed():
+	if !_current_encounter:
+		display_debug("encounter_revealed: I'm being told to move to OK_TO_EXECUTE but there is no encounter")
+		return
 	if _current_encounter.encounter_status !=EncounterStatus.PENDING_REVEAL_INTERRUPT:
 		display_debug("encounter_revealed: I'm being told to move to OK_TO_EXECUTE but I'm not at PENDING_REVEAL_INTERRUPT")
 		return
@@ -1938,6 +1960,8 @@ func cleanup_post_game():
 	cfc.LOG("\n###\ngameData cleanup_post_game")
 	cfc.set_game_paused(true)
 	
+	GameRecorder.finalize_game()
+	
 	attackers = []
 
 	_clients_current_activation = {}
@@ -2006,6 +2030,8 @@ func save_gamedata() -> Dictionary:
 	
 	#other stuff
 	json_data["round"] = current_round
+	json_data["rng"] = cfc.game_rng_seed
+	json_data["rng_state"] = cfc.game_rng.state
 	
 	#encounters state
 	#TODO this has caused significant issues in game
@@ -2107,6 +2133,11 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 	#This reloads hero faces, etc...
 	#we don't start the phaseContainer just yet, we'll wait for other players to be ready
 	phaseContainer.reset(false) 
+
+	var rng = json_data.get("rng", "")
+	if rng:
+		var rng_state = int(json_data.get("rng_state", 0))
+		cfc.set_seed(rng, rng_state)
 	
 	
 	cfc.set_game_paused(previous_pause_state)
@@ -2244,6 +2275,7 @@ func flush_debug_display():
 
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
+		cleanup_post_game()
 		cfc.set_game_paused(true)
 		#init_save_folder()
 

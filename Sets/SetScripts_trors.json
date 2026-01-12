@@ -2243,11 +2243,19 @@
 			"all": [
 				{
 					"name": "move_card_to_container",
-					"dest_container": "discard",
-					"src_container": "upgrade_support",
+					"dest_container": "discard_current_hero_target",
+					"src_container": "upgrade_support_current_hero_target",
 					"is_cost": true,
-					"subject": "index",
+					"subject": "boardseek",
 					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_current_hero_target",
+							"filter_properties": {
+								"type_code": "support"
+							}
+						}
+					],
 					"selection_count": {
 						"if": {
 							"func_name": "current_activation_status",
@@ -3097,7 +3105,7 @@
 					"name": "mod_tokens",
 					"modification": 1,
 					"token_name": "confused",
-					"subject": "my_hero"
+					"subject": "my_identity"
 				}
 			]
 		},
@@ -3918,7 +3926,7 @@
 			]
 		},
 		"manual": {
-			"hand": [
+			"board": [
 				{
 					"name": "constraints",
 					"is_cost": true,
@@ -3972,7 +3980,7 @@
 			]
 		},
 		"manual": {
-			"hand": [
+			"board": [
 				{
 					"name": "constraints",
 					"is_cost": true,
@@ -5173,6 +5181,7 @@
 				},
 				{
 					"name": "deal_encounter",
+					"immediate_reveal": true,
 					"subject": "index",
 					"subject_count": 1,
 					"subject_index": "retrieve_integer",
@@ -5348,13 +5357,17 @@
 					"options": [
 						{
 							"condition": {
-								"func_name": "count_tokens",
-								"func_params": {
-									"token_name": "test",
-									"subject": "self"
+								"if": {
+									"func_name": "count_tokens",
+									"func_params": {
+										"token_name": "test",
+										"subject": "self"
+									},
+									"comparison": "ge",
+									"comparison_value": 3
 								},
-								"comparison": "ge",
-								"comparison_value": 3
+								"then" : 1,
+								"else": 0
 							},
 							"nested_tasks": [
 								{
@@ -5478,9 +5491,9 @@
 			"board": [
 				{
 					"name": "reveal_encounters",
-					"subject": "tutor",
+					"subject": "index",
 					"subject_index": "top",
-					"src_container": "deck_side_scheme",
+					"src_container": "deck_side_schemes",
 					"subject_count": 1
 				}
 			]
@@ -5929,6 +5942,10 @@
 							}
 						}
 					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
 				}
 			]
 		}

@@ -47,9 +47,13 @@ func get_script_by_event_details(event_details):
 	if (_type):
 		return null
 
-	var _name = event_details["event_name"]		
-	if _name and (script_name != _name):
-		return null
-	
-	return self	
+	var _names = event_details["event_name"]		
+	if typeof(_names) == TYPE_STRING:
+		_names = [_names]
+	for _name in _names:
+		if _name and (script_name != _name):
+			continue
+		return self	
+	return null
+
 

@@ -377,7 +377,6 @@ static func get_enemy_scripts():
 				{
 					"name": "enemy_attack",
 					"subject": "boardseek",	
-					"is_cost": true,
 					"subject_count": "all",
 					"hide_ok_on_zero": true,
 					SP.KEY_NEEDS_SELECTION: true,
@@ -387,10 +386,6 @@ static func get_enemy_scripts():
 					"filter_state_seek": [{
 						"filter_group": "group_defenders"
 					},],
-				},
-				{
-					"name": "undefend",	
-					"is_else": true,
 				}					
 			]
 		},

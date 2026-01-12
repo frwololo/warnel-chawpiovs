@@ -126,6 +126,7 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 				prepaid_uids.append(prepaid_uids_task)
 			var remote_trigger_details: Dictionary = trigger_details.duplicate()
 			remote_trigger_details["network_prepaid"] =  prepaid_uids
+			remote_trigger_details["network_rng_state"] =  cfc.game_rng.state
 			
 			var trigger_card_uid = guidMaster.get_guid(sceng.trigger_object)
 			var owner_uid = guidMaster.get_guid(sceng.owner)
@@ -232,11 +233,18 @@ mastersync func master_create_and_add_script(expected_run_mode, state_scripts, o
 	
 	if accept_request:
 		#master_request_add_stack_object(client_id, original_details)
-		cfc._rpc_id(self, client_id, "accepted_add_script_request", expected_run_mode, original_details)				
+		cfc._rpc_id(self, client_id, "accepted_add_script_request", expected_run_mode, original_details)
+		cfc._rpc(self,"client_sync_rng", original_details["remote_trigger_details"]["network_rng_state"])						
 		display_debug("Asking clients to add script " + action_name) 			
 		cfc._rpc(self,"client_create_and_add_stackobject", client_id, expected_run_mode, original_details, checksum)
 	else:
 		cfc._rpc_id(self, client_id, "rejected_add_script_request", expected_run_mode, original_details)
+
+remotesync func client_sync_rng(new_state):
+	var current_state = cfc.game_rng.state
+	if current_state!= new_state:
+		cfc.game_rng.state = new_state
+		cfc.LOG("Game rng state sync from " + str(current_state) + " to " + str(new_state))
 
 func display_stack_error_for_card(card):
 	if guidMaster.is_guid(card):

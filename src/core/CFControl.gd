@@ -252,10 +252,12 @@ func map_node(node) -> void:
 #	print_debug("Map Node %s End: %sms" % [node.name, str(OS.get_ticks_msec() - load_start_time)])
 
 
-# Setter for the ranom seed.
-func set_seed(_seed) -> void:
+# Setter for the random seed.
+func set_seed(_seed, state = 0) -> void:
 	game_rng_seed = str(_seed)
 	game_rng.set_seed(hash(game_rng_seed))
+	if state:
+		game_rng.state = state
 
 
 func restore_rng_state() -> void:

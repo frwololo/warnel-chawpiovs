@@ -158,10 +158,12 @@ func heroPhase_action() -> bool:
 		return false	
 	if (hero_index == gameData.get_current_local_hero_id()):
 		if can_hero_pass():
+			GameRecorder.add_entry(GameRecorder.ACTIONS.PASS, str(self.hero_index) )
 			gameData.interrupt_player_pressed_pass(self.hero_index)		
 			#return to default
 			cfc.NMAP.board.grab_default_focus()
-		
+		else:
+			GameRecorder.add_entry(GameRecorder.ACTIONS.NEXT_PHASE, str(self.hero_index))
 		cfc._rpc(self,"switch_status")
 	else:	
 		gameData.select_current_playing_hero(hero_index)

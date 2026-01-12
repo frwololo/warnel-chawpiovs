@@ -1,0 +1,171 @@
+{
+	"_comments": "Tests villain attack Boost Flame Soldier",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Red Skull - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "advance"
+				},
+				{
+					"card": "hydra soldier"
+				},
+				{
+					"card": "hydra mercenary"
+				},
+				{
+					"card": "Hydra Flame-Soldier"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Rise of Red Skull"
+				},
+				{
+					"card": "Prison Camps",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the call"
+				},
+				{
+					"card": "Lead from the front"
+				},
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Avengers Tower"
+				},
+				{
+					"card": "Hawkeye's Bow"
+				},				
+			],
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Red Skull - 1"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Hydra Flame-Soldier"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "advance"
+				},
+				{
+					"card": "hydra soldier"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Rise of Red Skull"
+				},
+				{
+					"card": "Prison Camps",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the call"
+				},
+				{
+					"card": "Lead from the front"
+				},
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "hydra mercenary"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Avengers Tower"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Hawkeye's Bow"
+				},	
+			],
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	}
+}

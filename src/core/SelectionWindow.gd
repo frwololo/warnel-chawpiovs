@@ -262,9 +262,13 @@ func popup_centered():
 	call_deferred("init_default_focus")	
 
 func add_cancel(text) -> Button:
+	if cancel_button.visible:
+		return cancel_button
 	cancel_button.text = text
 	cancel_button.visible = true
 	cancel_button.icon = gamepadHandler.get_icon_for_action("ui_cancel")
+	# warning-ignore:return_value_discarded
+	cancel_button.connect("pressed",self, "_on_cancel_pressed")	
 	return cancel_button
 
 func get_ok():
@@ -273,11 +277,11 @@ func get_ok():
 func post_initiate_checks():
 		
 	# If the selection is optional, we allow the player to cancel out
-	# of the popup
-	if is_selection_optional:
-		var button = add_cancel("Cancel")
-		# warning-ignore:return_value_discarded
-		button.connect("pressed",self, "_on_cancel_pressed")
+	# of the popup	
+	if is_selection_optional:	
+		var _button = add_cancel("Cancel")
+
+		
 	# If the amount of cards available for the choice are below the requirements
 	# We return that the selection was canceled
 	if get_count(card_array) < selection_count\
@@ -292,10 +296,13 @@ func post_initiate_checks():
 		return
 
 	# When we have 0 cards to select from, we consider the selection cancelled
-	elif get_count(card_array) == 0\
-			and (!_assign_mode): #TODO better check here?
-		force_cancel()
-		return
+	elif get_count(card_array) == 0:
+			if (!_assign_mode) and (!show_cards_with_zero_value): #TODO better check here?
+				force_cancel()
+				return
+			if show_cards_with_zero_value:
+				var _button = add_cancel("Cancel")
+				hide_ok_on_zero = true
 		
 	if !(check_additional_constraints(card_array)):
 		force_cancel()
@@ -634,10 +641,15 @@ func get_all_card_options() -> Array:
 	return(_card_dupe_map.keys())
 
 func force_cancel():
-	_on_cancel_pressed()
+	_trigger_cancel()
 
 # Cancels out of the selection window
 func _on_cancel_pressed() -> void:
+	GameRecorder.add_entry(GameRecorder.ACTIONS.SELECT, "cancel", "cancel " + window_title)
+	_trigger_cancel()
+	
+# Cancels out of the selection window
+func _trigger_cancel() -> void:	
 	selected_cards.clear()
 	is_cancelled = true
 	# The signal is the same, but the calling method, should be checking the
@@ -663,6 +675,16 @@ func _on_card_selection_confirmed() -> void:
 	)
 
 func _on_ok_pressed() -> void:
+	
+	var selected_ids = []
+	var selected_str = ""
+	var separator = ""
+	for card in selected_cards:
+		selected_str += separator + card.get_property("shortname", "")
+		separator = ","
+		selected_ids.append(card.canonical_id)
+	GameRecorder.add_entry(GameRecorder.ACTIONS.SELECT, selected_ids, "selected " + selected_str + " for " + window_title )
+	
 	emit_signal("confirmed")
 
 

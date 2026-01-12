@@ -915,63 +915,6 @@ func villain_and_enemies_attack_you(script:ScriptTask) ->int:
 	script.subjects = [ gameData.get_villain()] + gameData.get_minions_engaged_with_hero(hero.get_controller_hero_id())
 	return enemy_attacks_you(script)
 
-func _modify_script(script, modifications:Dictionary = {}, script_definition_replacement_mode = "add"):
-		var output = duplicate_script(script)
-		var modified_script_definition = modifications.get("script_definition", {})
-
-		if (script_definition_replacement_mode == "add"):
-			for k in modified_script_definition.keys():
-				output.script_definition[k] = modified_script_definition[k]			
-		else: #replace entirely
-			output.script_definition = modified_script_definition
-
-		var add_tags = modifications.get("additional_tags", [])
-		if add_tags:
-			output.script_definition["tags"] = script.script_definition.get("tags", []) + add_tags
-			
-		output.subjects = modifications.get("subjects", output.subjects)
-		output.owner =  modifications.get("owner", output.owner)	
-		
-		if modified_script_definition.has("name"):
-			output.script_name = modified_script_definition["name"]
-			
-		return output
-
-func _add_receive_damage_on_stack(amount, original_script, modifications:Dictionary = {}):		
-		var receive_damage_script_definition = {
-			"name": "receive_damage",
-			"amount": amount,
-			"source": original_script.get_property("source", owner)
-		}
-		
-		modifications["script_definition"] =  receive_damage_script_definition	
-		var receive_damage_script = _modify_script(original_script, modifications, "replace")
-	
-	
-		var task_event = SimplifiedStackScript.new(receive_damage_script)
-		gameData.theStack.add_script(task_event)	
-
-func _add_remove_threat_on_stack(amount, original_script, modifications:Dictionary = {}):		
-		var remove_threat_script_definition = {
-			"name": "remove_threat",
-			"amount": amount,
-		}
-		modifications["script_definition"] =  remove_threat_script_definition	
-		var remove_threat_script = _modify_script(original_script, modifications, "replace")
-	
-		var task_event = SimplifiedStackScript.new(remove_threat_script)
-		gameData.theStack.add_script(task_event)
-
-func _add_receive_threat_on_stack(amount, original_script, modifications:Dictionary = {}):		
-		var receive_threat_script_definition = {
-			"name": "add_threat",
-			"amount": amount,
-		}
-		modifications["script_definition"] =  receive_threat_script_definition	
-		var receive_threat_script = _modify_script(original_script, modifications, "replace")
-	
-		var task_event = SimplifiedStackScript.new(receive_threat_script)
-		gameData.theStack.add_script(task_event)
 	
 #the ability that is triggered by enemy_attack
 func enemy_attack(script: ScriptTask) -> int:
@@ -1084,8 +1027,65 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 	attacker.set_activity_script(null)		
 	return retcode
 
-func undefend(script: ScriptTask) -> int:
-	return enemy_attack(script)
+
+func _modify_script(script, modifications:Dictionary = {}, script_definition_replacement_mode = "add"):
+		var output = duplicate_script(script)
+		var modified_script_definition = modifications.get("script_definition", {})
+
+		if (script_definition_replacement_mode == "add"):
+			for k in modified_script_definition.keys():
+				output.script_definition[k] = modified_script_definition[k]			
+		else: #replace entirely
+			output.script_definition = modified_script_definition
+
+		var add_tags = modifications.get("additional_tags", [])
+		if add_tags:
+			output.script_definition["tags"] = script.script_definition.get("tags", []) + add_tags
+			
+		output.subjects = modifications.get("subjects", output.subjects)
+		output.owner =  modifications.get("owner", output.owner)	
+		
+		if modified_script_definition.has("name"):
+			output.script_name = modified_script_definition["name"]
+			
+		return output
+
+func _add_receive_damage_on_stack(amount, original_script, modifications:Dictionary = {}):		
+		var receive_damage_script_definition = {
+			"name": "receive_damage",
+			"amount": amount,
+			"source": original_script.get_property("source", owner)
+		}
+		
+		modifications["script_definition"] =  receive_damage_script_definition	
+		var receive_damage_script = _modify_script(original_script, modifications, "replace")
+	
+	
+		var task_event = SimplifiedStackScript.new(receive_damage_script)
+		gameData.theStack.add_script(task_event)	
+
+func _add_remove_threat_on_stack(amount, original_script, modifications:Dictionary = {}):		
+		var remove_threat_script_definition = {
+			"name": "remove_threat",
+			"amount": amount,
+		}
+		modifications["script_definition"] =  remove_threat_script_definition	
+		var remove_threat_script = _modify_script(original_script, modifications, "replace")
+	
+		var task_event = SimplifiedStackScript.new(remove_threat_script)
+		gameData.theStack.add_script(task_event)
+
+func _add_receive_threat_on_stack(amount, original_script, modifications:Dictionary = {}):		
+		var receive_threat_script_definition = {
+			"name": "add_threat",
+			"amount": amount,
+		}
+		modifications["script_definition"] =  receive_threat_script_definition	
+		var receive_threat_script = _modify_script(original_script, modifications, "replace")
+	
+		var task_event = SimplifiedStackScript.new(receive_threat_script)
+		gameData.theStack.add_script(task_event)
+
 	
 func consequential_damage(script: ScriptTask) -> int:	
 	var retcode: int = CFConst.ReturnCode.OK

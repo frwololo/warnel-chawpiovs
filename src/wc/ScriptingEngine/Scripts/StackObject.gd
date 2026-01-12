@@ -120,7 +120,7 @@ func get_display_name():
 		return display_name
 		
 	for task in get_tasks():
-		return task.owner.properties["shortname"] + "-" + task.script_name
+		return task.owner.get_property("shortname", "") + "-" + task.script_name
 
 var _cache_display_text = ""
 func get_display_text():

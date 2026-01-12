@@ -249,6 +249,8 @@ func complete_targeting() -> void:
 	is_targeting = false
 	clear_points()
 	hide_me()
+
+	GameRecorder.add_entry(GameRecorder.ACTIONS.TARGET, target_object.canonical_id, "targeting " + target_object.canonical_name)	
 	emit_signal("target_selected",target_object)
 	scripting_bus.emit_signal("target_selected", owner_object, {"target": target_object})	
 

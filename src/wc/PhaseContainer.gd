@@ -366,6 +366,7 @@ func _step_started(
 		CFConst.PHASE_STEP.IDENTITY_SETUP:
 			identity_setup()			
 		CFConst.PHASE_STEP.PLAYER_TURN:
+			GameRecorder.add_entry(GameRecorder.ACTIONS.WAIT, "wait_for_player_turn")
 			return
 		CFConst.PHASE_STEP.PLAYER_DISCARD:
 			_player_discard()

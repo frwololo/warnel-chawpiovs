@@ -147,6 +147,7 @@ func refresh_cache(forced=false):
 		_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID
 	check_death()
 	_cache_resource_value = {}
+	_state_exec_cache = ""
 	side_icons.update_state(true)
 	_cache_refresh_needed = false
 
@@ -772,8 +773,17 @@ func attach_to_host(
 			host: Card,
 			is_following_previous_host = false,
 			tags := ["Manual"]) -> void:
+	if "as_boost" in tags:
+		set_is_boost(true)
+	else:
+		if self.is_boost():
+			cfc.flush_cache()
+			set_is_boost(false)
+
 	.attach_to_host(host, is_following_previous_host, tags)
-	host.reorganize_attachments_focus_mode()		
+	host.reorganize_attachments_focus_mode()
+	if "as_boost" in tags:			
+		set_is_faceup(false)
 		
 func common_post_move_scripts(new_host: String, old_host: String, _move_tags: Array) -> void:
 	#change controller as needed
@@ -831,10 +841,20 @@ func attempt_to_play(user_click:bool = false, origin_event = null):
 		if gameData.scripted_play_sequence:
 			return	
 		
+	
 	var state_exec = get_state_exec()
 	
 	if !state_exec in ["hand", "board"]:
 		return false
+
+	if user_click:
+		match state_exec:
+			"hand":
+				GameRecorder.add_entry(GameRecorder.ACTIONS.PLAY, canonical_id, "playing " + canonical_name)
+			_:
+				GameRecorder.add_entry(GameRecorder.ACTIONS.ACTIVATE, canonical_id, "activating " + canonical_name)
+				
+	
 	
 	match state_exec:
 		"hand":
@@ -2139,9 +2159,9 @@ func draw_boost_card():
 	var villain_deck:Pile = cfc.NMAP["deck_villain"]	
 	var boost_card:Card = villain_deck.get_top_card()
 	if boost_card:
-		boost_card.set_is_boost(true)
-		boost_card.attach_to_host(self) #,false, ["facedown"])
-		boost_card.set_is_faceup(false)
+#		boost_card.set_is_boost(true)
+		boost_card.attach_to_host(self, false, ["as_boost"]) #,false, ["facedown"])
+#		boost_card.set_is_faceup(false)
 
 func draw_boost_cards(action_type):
 	var amount = self.get_property("boost_cards_per_" + action_type, 0)
@@ -2424,7 +2444,7 @@ func current_activation_status(params:Dictionary, _script:ScriptTask = null) -> 
 	
 	match expected_activation_type:
 		"attack":
-			if not script.script_name in ["enemy_attack", "undefend"]:
+			if not script.script_name in ["enemy_attack"]:
 				return false
 		"scheme":
 			if not script.script_name in ["commit_scheme"]:
@@ -2716,6 +2736,7 @@ func export_to_json():
 	var card_description = {
 		"card" : card_id,
 		"owner_hero_id": owner_hero_id,
+		"_comments": canonical_name
 	}
 	if is_exhausted():
 		card_description["exhausted"] = true

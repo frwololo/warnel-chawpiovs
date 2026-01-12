@@ -345,7 +345,7 @@ func show_stack_announce(stack_object, mode = GlobalScriptStack.InterruptMode.NO
 			if ignore_stack_events["boost"].get(trigger, false):
 				return false
 		else:
-			var card_name = owner_card.properties["shortname"]
+			var card_name = owner_card.get_property("shortname", "")
 			if ignore_stack_events["cards"].get(card_name, {}).get(trigger, false):
 				return false
 	

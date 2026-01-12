@@ -220,7 +220,10 @@
 			},			
 		],
 		"extra_rules": {
-			"card_defeated": {
+			"card_moved_to_pile": {
+				"event_filters": {
+					"destination": "discard_villain"
+				},
 				"filter_state_trigger": [
 					{
 						"filter_properties": {

@@ -405,8 +405,6 @@ func resize():
 func toggle_glow(is_enabled := true) -> void:
 	world_environemt.environment.glow_enabled = is_enabled
 
-func get_origin_card(dupe_card):
-	return dupe_card.is_duplicate_of
 
 func show_options_menu():
 	$OptionsMenu.show_me()

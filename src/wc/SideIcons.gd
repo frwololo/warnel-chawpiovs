@@ -137,8 +137,8 @@ func set_icons():
 func _card_moved_to_board(card, _details):
 	var origin = owner_card
 	
-	if owner_card.state  == Card.CardState.VIEWPORT_FOCUS:
-		origin = cfc.NMAP.main.get_origin_card(owner_card)
+	if owner_card.is_duplicate_of:
+		origin = owner_card.is_duplicate_of
 	
 	if card != origin:
 		return
@@ -153,10 +153,11 @@ func update_state(forced = false):
 	var previous_show_icons = show_icons
 
 	show_icons = true
+
 	if !owner_card.state in [Card.CardState.PREVIEW, Card.CardState.DECKBUILDER_GRID, Card.CardState.VIEWPORT_FOCUS, Card.CardState.ON_PLAY_BOARD,Card.CardState.FOCUSED_ON_BOARD, Card.CardState.DROPPING_TO_BOARD]:
 		show_icons = false
-	elif owner_card.state  == Card.CardState.VIEWPORT_FOCUS:
-		var origin = cfc.NMAP.main.get_origin_card(owner_card)
+	elif owner_card.is_duplicate_of:
+		var origin = owner_card.is_duplicate_of
 		if !origin or !is_instance_valid(origin) or !origin.is_onboard():
 			show_icons = false
 
@@ -170,7 +171,7 @@ func _process(_delta):
 	
 	#don't update if something else is going on,
 	#we'll wait for idle time
-	if gameData.gui_activity_ongoing():
+	if gameData.auto_gui_activity_ongoing(): #gui_activity_ongoing():
 		return
 	
 	if _refresh_icon_passes:
@@ -189,8 +190,8 @@ func display_icons():
 		return
 
 	var data_source = owner_card 
-	if owner_card.state  == Card.CardState.VIEWPORT_FOCUS:
-		data_source = cfc.NMAP.main.get_origin_card(owner_card)
+	if owner_card.is_duplicate_of:
+		data_source = owner_card.is_duplicate_of
 	if !data_source or ! is_instance_valid(data_source):
 		self.visible = false
 		return

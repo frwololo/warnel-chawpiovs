@@ -129,7 +129,7 @@ func get_preview_placement() -> Vector2:
 # Then displays it in the popup.
 # The variable passed can be a card name, or a card instance.
 # If it's a card instance, it will be added to this node as a child directly.
-func show_preview_card(card) -> void:
+func show_preview_card(card):
 	if not has_preview_card():
 		if typeof(card) == TYPE_STRING:
 			preview_card = cfc.instance_card(card,-2)
@@ -156,6 +156,8 @@ func show_preview_card(card) -> void:
 	#show()
 	if _placement_initialized:
 		modulate.a = 1
+		
+	return preview_card
 
 
 

@@ -800,7 +800,10 @@ func common_post_move_scripts(new_host: String, old_host: String, _move_tags: Ar
 	
 	
 	#init owner once and only once, if not already done
-	init_owner_hero_id(new_hero_id)	
+	init_owner_hero_id(new_hero_id)
+
+	update_groups()
+	update_hero_groups()		
 	
 	#display_health()
 	display_threat()
@@ -1157,16 +1160,19 @@ func execute_scripts(
 	#tells the game engine to not display this event prominently to the users
 	if card_scripts.get("_silent", false):
 		trigger_details["_silent"] = true
-		
-	# We select which scripts to run from the card, based on it state	
-	state_scripts_dict = get_state_scripts_dict(card_scripts, trigger_card, trigger_details)
-	show_optional_confirmation_menu = show_optional_confirmation_menu and card_scripts.get("is_optional_" + get_state_exec(), false)
+
+	show_optional_confirmation_menu = show_optional_confirmation_menu and card_scripts.get("is_optional_" + get_state_exec(), false)		
 
 	exec_config = {
 		"show_optional_confirmation_menu" : show_optional_confirmation_menu,
 		"checksum": checksum,
 		"force_user_interaction_required": force_user_interaction_required
 	}
+
+	# We select which scripts to run from the card, based on it state	
+	state_scripts_dict = get_state_scripts_dict(card_scripts, trigger_card, trigger_details, exec_config)
+
+
 	
 	var rules = state_scripts_dict.get("rules", {})
 
@@ -1686,8 +1692,10 @@ func die(script):
 			gameData.villain_died(self, script)
 		_:
 			self.discard()
-			
-	scripting_bus.emit_signal("card_defeated", self, trigger_details)			
+
+	var stackEvent:SignalStackScript = SignalStackScript.new("card_defeated", self, trigger_details)
+	gameData.theStack.add_script(stackEvent)			
+	#scripting_bus.emit_signal("card_defeated", self, trigger_details)			
 	return CFConst.ReturnCode.OK		
 
 var _cached_state = -1
@@ -2318,21 +2326,35 @@ func get_script_bool_property(params, script:ScriptTask = null) -> bool:
 	if !property:
 		return false
 	return script.get_property(property, false)
-	
-func get_subject_int_property(params, script:ScriptTask = null) -> int:
+
+func get_param_subject(params, script:ScriptObject = null):
 	var subject = self
 	if script:
-		subject = null
 		var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
 		if subjects:
 			subject = subjects[0]
-	if !subject:
-		return 0
+	return subject	
+	
+func get_subject_int_property(params, script:ScriptTask = null) -> int:
+	var subject = get_param_subject(params, script)
 	
 	var property = params.get("property", "")
 	if !property:
 		return 0
 	return subject.get_property(property, 0)	
+
+func get_subject_int_printed_property(params, script:ScriptObject = null) -> int:
+	var subject = get_param_subject(params, script)
+	
+	var property = params.get("property", "")
+	if !property:
+		return 0
+	var id = subject.get_property("_code", "")
+	if !id:
+		return 0
+		
+	var card_data = cfc.get_card_by_id(id)
+	return int(card_data.get(property, 0))
 
 func count_tokens(params, script:ScriptObject = null) -> int:
 	var subjects = [self]
@@ -2780,7 +2802,9 @@ func _ready_load_from_json(card_description: Dictionary = {}):
 
 	var exhausted = card_description.get("exhausted", false)
 	if exhausted:
-		exhaustme()
+		# 2nd paramters set to false: 
+		# we don't start the tween here to give time for the card to arrive on board
+		exhaustme(false, false) 
 	else:
 		readyme()
 

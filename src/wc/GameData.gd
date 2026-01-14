@@ -1984,6 +1984,9 @@ func cleanup_post_game():
 	theStack.flush_logs()
 	flush_debug_display()
 	theStack.reset()
+	
+	if cfc.NMAP.has("board") and is_instance_valid(cfc.NMAP.board):
+		cfc.NMAP.board.reset_board()
 	scenario.reset()
 
 	theGameObserver.reset()

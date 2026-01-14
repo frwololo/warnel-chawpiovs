@@ -1551,7 +1551,7 @@ func get_state_scripts(card_scripts, trigger_card, trigger_details):
 	var state_scripts_dict = get_state_scripts_dict(card_scripts, trigger_card, trigger_details)
 	return state_scripts_dict["state_scripts"]
 
-func get_state_scripts_dict(card_scripts, trigger_card, trigger_details):
+func get_state_scripts_dict(card_scripts, trigger_card, trigger_details, exec_config = {}):
 	var state_scripts = []
 	var action_name = ""
 	# We select which scripts to run from the card, based on it state
@@ -1560,6 +1560,7 @@ func get_state_scripts_dict(card_scripts, trigger_card, trigger_details):
 	state_scripts = card_scripts.get(state_exec, any_state_scripts)
 
 	var rules = {}
+	var show_optional_confirmation_menu = exec_config.get("show_optional_confirmation_menu", false)
 	#If it's a multiple choice, filter down only to only the ones we can afford to pay
 	if typeof(state_scripts) == TYPE_DICTIONARY:
 		#special case if only one entry in a dictionary, this is a choice by the script writer,
@@ -1598,6 +1599,20 @@ func get_state_scripts_dict(card_scripts, trigger_card, trigger_details):
 					action_name = first_key
 			if !state_scripts:
 				state_scripts = []
+	#if there is going to be an optional confirmation menu, we want to ensure there's actually
+	#something we can do afterwards
+	elif show_optional_confirmation_menu:
+		var sceng = cfc.scripting_engine.new(
+			state_scripts,
+			self,
+			trigger_card,
+			trigger_details)
+		common_pre_run(sceng)	
+		var func_return = sceng.execute(CFInt.RunType.BACKGROUND_COST_CHECK)
+		while func_return is GDScriptFunctionState && func_return.is_valid():
+			func_return = func_return.resume()
+		if !sceng.can_all_costs_be_paid:
+			state_scripts = []
 				
 
 	
@@ -3179,4 +3194,5 @@ func get_duplicate_no_cache():
 	dupe.canonical_name = canonical_name
 	dupe.canonical_id = canonical_id
 	dupe.properties = properties.duplicate()
+	dupe.is_duplicate_of = self
 	return dupe

@@ -477,11 +477,12 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"selection_count": "per_boardseek",
-					"selection_type": "equal",
+					"selection_type": "as_much_as_possible",
 					"needs_selection": true,
 					"filter_state_seek": [
 						{
-							"filter_group": "group_characters_my_hero"
+							"filter_group": "group_friendly_my_hero",
+							"filter_is_exhausted": false
 						}
 					],
 					"per_boardseek": {
@@ -507,7 +508,8 @@
 					"needs_selection": true,
 					"filter_state_seek": [
 						{
-							"filter_group": "group_characters_my_hero"
+							"filter_group": "group_friendly_my_hero",
+							"filter_is_exhausted": false
 						}
 					]
 				}
@@ -1471,9 +1473,7 @@
 					"is_cost": true,
 					"filter_state_subject": [
 						{
-							"filter_group": "group_characters_my_hero"
-						},
-						{
+							"filter_group": "group_friendly_my_hero",
 							"filter_properties": {
 								"trait_avenger": 1
 							}
@@ -1486,9 +1486,7 @@
 					"needs_subject": true,
 					"filter_state_subject": [
 						{
-							"filter_group": "group_characters_my_hero"
-						},
-						{
+							"filter_group": "group_friendly_my_hero",
 							"filter_properties": {
 								"trait_avenger": 1
 							}
@@ -2370,7 +2368,7 @@
 					},
 					{
 						"name": "shuffle_container",
-						"dest_container": "deck_villain",
+						"dest_container": "deck_villain"
 					}
 				]
 			}
@@ -2402,7 +2400,10 @@
 							{
 								"filter_properties": {
 									"type_code": "ally"
-								}
+								},
+								"filter_properties2": {
+									"faction_code": "hero"
+								},								
 							}
 						]
 					},
@@ -2410,13 +2411,18 @@
 						"name": "add_threat",
 						"subject": "self",
 						"amount": {
-							"func_name": "get_subject_int_property",
+							"func_name": "get_subject_int_printed_property",
 							"func_params": {
 								"subject": "previous",
-								"property": "Cost"
+								"property": "cost"
 							}
 						}
+					},
+					{
+						"name": "shuffle_container",
+						"dest_container": "deck"
 					}
+					
 				]
 			}
 		},
@@ -2966,6 +2972,7 @@
 						"subject": "tutor",
 						"subject_index": "top",
 						"subject_count": 5,
+						"up_to": true,
 						"src_container": "deck",
 						"dest_container": "discard"
 					},
@@ -3719,12 +3726,11 @@
 			"trigger": "self",
 			"all": [
 				{
-					"name": "move_card_to_container",
+					"name": "move_card_to_board",
 					"src_container": [
 						"deck",
 						"discard"
 					],
-					"dest_container": "hand",
 					"subject": "tutor",
 					"subject_count": "all",
 					"selection_count": 1,
@@ -5366,7 +5372,7 @@
 									"comparison": "ge",
 									"comparison_value": 3
 								},
-								"then" : 1,
+								"then": 1,
 								"else": 0
 							},
 							"nested_tasks": [
@@ -5423,6 +5429,11 @@
 					"thwart"
 				]
 			},
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_friendly"
+				}
+			],
 			"is_optional_board": true,
 			"board": {
 				"Use THW": [
@@ -5605,6 +5616,7 @@
 				{
 					"name": "attach_to_card",
 					"subject": "target",
+					"is_optional_target": false,
 					"filter_state_subject": [
 						{
 							"filter_group": "group_side_schemes"
@@ -5613,7 +5625,8 @@
 				}
 			]
 		},
-		"card_defeated": {
+		"response": {
+			"event_name": "card_dies",
 			"trigger": "host",
 			"all": [
 				{
@@ -5976,6 +5989,10 @@
 								}
 							}
 						]
+					},
+					{
+						"name": "shuffle_container",
+						"dest_container": "deck_villain"
 					}
 				]
 			}
@@ -6042,7 +6059,9 @@
 					"subject_count": 1,
 					"subject_index": "retrieve_integer",
 					"src_container": "deck_villain",
-					"tags": ["disable_attach_trigger"],
+					"tags": [
+						"disable_attach_trigger"
+					],
 					"_comments": "disable_attach_trigger in tags prevents the attachment from moving somewhere else as it comes into play"
 				}
 			]

@@ -251,7 +251,10 @@ func map_node(node) -> void:
 		emit_signal("all_nodes_mapped")
 #	print_debug("Map Node %s End: %sms" % [node.name, str(OS.get_ticks_msec() - load_start_time)])
 
-
+func unmap_node(node) -> void:
+	var node_name: String = node.name.to_lower()
+	NMAP.erase(node_name)
+	
 # Setter for the random seed.
 func set_seed(_seed, state = 0) -> void:
 	game_rng_seed = str(_seed)

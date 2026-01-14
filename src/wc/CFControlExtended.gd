@@ -454,10 +454,11 @@ func _split_traits(traits:String) -> Array:
 
 func setup_traits_as_alterants():
 	for trait in self.all_traits:
-		if trait.begins_with("black"):
-			var _tmp=1
+
 		CardConfig.PROPERTIES_NUMBERS.append("trait_" + trait)
 	for keyword in CFConst.AUTO_KEYWORDS:
+		if keyword =="guard":
+			var _tmp=1		
 		if CFConst.AUTO_KEYWORDS[keyword] in ["int", "bool"]:
 			CardConfig.PROPERTIES_NUMBERS.append(keyword)
 

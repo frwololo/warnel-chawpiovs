@@ -518,7 +518,7 @@ const AUTO_KEYWORDS := {
 	"alliance" : "bool",
 	"assault" : "bool",
 	"form" : "bool",
-	"guard" : "bool",
+	"guard" : "int",
 	"hinder" : "int",
 	"incite" : "int",
 	"linked" : "string",
@@ -559,6 +559,9 @@ const NOOB_SKIP_ANNOUNCE_STACK_EVENTS:= {
 		#we already show the damage with an arrow
 		"enemy_attack_damage": true,	
 		
+	},
+	"script_name": {
+		"move_to_player_zone": true		
 	}
 }
 const SKIP_ANNOUNCE_STACK_EVENTS:= {
@@ -582,7 +585,10 @@ const SKIP_ANNOUNCE_STACK_EVENTS:= {
 	},
 	"boost": {
 		"discard": true,
-	}
+	},
+	"script_name": {
+		"move_to_player_zone": true
+	}	
 }
 
 
@@ -716,8 +722,8 @@ const DEBUG_SIMULATE_NETWORK_DELAY = 1.5
 const DEBUG_NETWORK_DELAY_RANDOM = false
 const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 
-const SCRIPT_BREAKPOINT_CARD_NAME := "Piercing Thorns"
-const SCRIPT_BREAKPOINT_TRIGGER_NAME := "reveal"
+const SCRIPT_BREAKPOINT_CARD_NAME := "Captured by Hydra"
+const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_defeated"
 
 const LARGE_SCREEN_WIDTH:= 1600
 

@@ -10,7 +10,7 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	var hero_id = get_my_hero_id()
 	var hero = gameData.get_identity_card(hero_id)
-	if hero:
+	if hero and is_instance_valid(hero):
 		var previous = self.hand_size 
 		self.hand_size = hero.get_max_hand_size()
 		if previous != self.hand_size:

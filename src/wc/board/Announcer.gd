@@ -74,7 +74,7 @@ func init_notifications_level():
 		_:
 			ignore_stack_events = CFConst.SKIP_ANNOUNCE_STACK_EVENTS.duplicate(true)
 	#failsafe
-	for key in ["trigger", "boost", "cards"]:
+	for key in ["trigger", "boost", "cards", "script_name"]:
 		if !ignore_stack_events.has(key):
 			ignore_stack_events[key] = {}
 
@@ -330,6 +330,10 @@ func show_stack_announce(stack_object, mode = GlobalScriptStack.InterruptMode.NO
 	#we intentionally ignore a bunch of events to not make it noisy for the user	
 	var trigger = stack_object.get_trigger()
 	var script_name =  stack_object.get_first_task_name()
+	
+	if ignore_stack_events["script_name"].get(script_name, false):
+		return false
+	
 	if !trigger:
 		trigger = script_name
 	

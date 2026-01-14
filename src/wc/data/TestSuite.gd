@@ -681,8 +681,9 @@ func action_target(hero_id, action_value):
 	var target_card = get_card(action_value, hero_id)
 
 	if (_current_targeting_card):
-		_current_targeting_card.targeting_arrow.force_select_target(target_card)
-		_current_targeting_card = null
+		var result = _current_targeting_card.targeting_arrow.force_select_target(target_card)
+		if result:
+			_current_targeting_card = null
 	return
 	
 func action_choose(hero_id, action_value):

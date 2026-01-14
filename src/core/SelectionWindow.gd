@@ -196,6 +196,7 @@ func initiate_selection(_card_array: Array) -> void:
 		else:
 			dupe_selection.to_color()
 		dupe_selection.ensure_proper()
+		dupe_selection.side_icons.update_state(true)
 #		dupe_selection.enable_focus_mode()
 
 		# We connect each card grid's gui input into a call which will handle
@@ -325,7 +326,10 @@ func post_initiate_checks():
 		"equal":
 			window_title = "Select exactly " + str(selection_count) + " cards."
 		"as_much_as_possible":
-			window_title = "Assign " + str(selection_count) + " points."
+			if _assign_mode:
+				window_title = "Assign " + str(selection_count) + " points."
+			else:
+				window_title = "Select as many as possible, up to " + str(selection_count) + " cards."
 		"display":
 			window_title = "Press OK to continue"
 		"all":
@@ -407,16 +411,20 @@ func can_still_select_more() -> bool :
 	if (selection_type != "as_much_as_possible"):
 		#basically not implemented in other cases
 		return true
-
-	var current_count = get_count(card_array)
-	if current_count >= selection_count:
-		return false
+	
+	if _assign_mode:	
+		var current_count = get_count(card_array)
+		if current_count >= selection_count:
+			return false
 		
-	for card in card_array:
-		var spinbox = _card_dupe_map[card].get_spinbox()
-		var remaining = spinbox.max_value
-		var currently_assigned = spinbox.value
-		if remaining > currently_assigned:
+		for card in card_array:
+			var spinbox = _card_dupe_map[card].get_spinbox()
+			var remaining = spinbox.max_value
+			var currently_assigned = spinbox.value
+			if remaining > currently_assigned:
+				return true
+	else:
+		if selected_cards.size() < card_array.size():
 			return true
 			
 	return false			
@@ -514,16 +522,24 @@ func dry_run(_card_array: Array) -> void:
 					i += 1			
 					#TODO we might have an error here where we don't get the exact number if we add 2 or more in one step
 			"as_much_as_possible":
-				var remaining = selection_count
-				for card in _card_array:
-					var can_assign = card.call(_assign_max_function)
-					if can_assign > remaining:
-						can_assign = remaining
-					remaining -= can_assign
-					for _i in range (can_assign):
-						selected_cards.append(card)
-					if remaining <= 0:
-						break	
+				if _assign_mode:
+					var remaining = selection_count
+					for card in _card_array:
+						var can_assign = card.call(_assign_max_function)
+						if can_assign > remaining:
+							can_assign = remaining
+						remaining -= can_assign
+						for _i in range (can_assign):
+							selected_cards.append(card)
+						if remaining <= 0:
+							break	
+				else:
+					var total = 0
+					var i = 0
+					while total < selection_count and i < _card_array.size():
+						selected_cards.append(_card_array[i])
+						total = get_count(selected_cards)
+						i += 1	
 	
 	#we tried our best, we might still be failing
 	if (!check_ok_button()):
@@ -574,7 +590,7 @@ func card_clicked(dupe_selection: Card, origin_card) -> void:
 	if !can_select_cards_with_zero_value:
 		if get_count([origin_card]) <= 0:
 			return
-	if selection_type == "as_much_as_possible":
+	if selection_type == "as_much_as_possible" and _assign_mode:
 		var current_total = get_count(card_array)
 		var spinbox = dupe_selection.get_spinbox()
 		if current_total >= selection_count:
@@ -599,7 +615,7 @@ func card_clicked(dupe_selection: Card, origin_card) -> void:
 	# the max, even if the OK button is disabled
 	# So whenever they exceed the max, we unselect the first card in the array.
 	#TODO should use get_count
-	if selection_type in ["equal", "max"]  and selected_cards.size() > selection_count:
+	if selection_type in ["equal", "max", "as_much_as_possible"]  and selected_cards.size() > selection_count:
 		var dupe = _card_dupe_map[selected_cards[0]]
 		dupe.highlight.set_highlight(false)
 		dupe.get_parent().set_selected(false)

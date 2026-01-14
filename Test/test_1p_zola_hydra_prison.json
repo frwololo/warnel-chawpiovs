@@ -1,0 +1,198 @@
+{
+	"_comments": "Test of Hydra Prison + Concussion Blaster",
+	"test_conditions": {
+		"ignore_order": [
+			"hand1",
+			"deck1"
+		]
+	},
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Zola - 1",
+					"tokens": {
+						"stunned": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Defensive Programming"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Concussive Blast"
+				},
+				{
+					"card": "Hydra Prison"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Island of Dr. Zola"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Captain Marvel - Carol Danvers"
+				},
+				{
+					"card": "Pheromones"
+				},
+				{
+					"card": "Clear the Area"
+				},
+				{
+					"card": "Interrogation Room"
+				},
+				{
+					"card": "Piercing Strike"
+				},
+				{
+					"card": "Tac Team"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Nick Fury"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"wait_longer": true,
+			"_comments": "get ally stolen then wait as much as needed for player turn"
+		},
+		{
+			"type": "next_phase",
+			"value": "1",
+			"_comments": "get to next villain phase"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"wait_longer": true,
+			"_comments": "Take 1 damage from blast then wait as much as needed for player turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Zola - 1"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Concussive Blast"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Defensive Programming"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Island of Dr. Zola",
+					"tokens": {
+						"threat": 1,
+						"test": 1
+					}
+				},
+				{
+					"card": "Hydra Prison",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Clear the Area"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"others": [
+				{
+					"card": "Captain Marvel - Carol Danvers",
+					"host": "Hydra Prison"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Nick Fury"
+				}
+			],			
+			"hand1": [
+				{
+					"card": "Pheromones"
+				},
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Piercing Strike"
+				},
+				{
+					"card": "Interrogation Room"
+				},
+				{
+					"card": "Tac Team"
+				}
+			]
+		}
+	}
+}

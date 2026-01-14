@@ -29,7 +29,7 @@ const FILTER_HOST_OF := "filter_is_host_of"
 const FILTER_SAME_CONTROLLER := "filter_same_controller"
 const FILTER_EVENT_SOURCE:= "filter_event_source"
 const FILTER_SOURCE_CONTROLLED_BY := "filter_source_controlled_by"
-
+const FILTER_EXHAUSTED := "filter_is_exhausted"
 const FILTER_MAX_PER_HERO := "filter_max_per_hero"
 const FILTER_MAX_PER_HOST := "filter_max_per_host"
 
@@ -206,8 +206,10 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 			if hero_id:
 				all_cards =  cfc.NMAP.board.get_enemies_engaged_with(hero_id)
 		for card in all_cards:
-			if card.get_property("guard") and card.is_faceup: #TODO better way to ignore face down cards?
+			if card.get_property("guard", 0, true) and card.is_faceup: #TODO better way to ignore face down cards?
 				return false
+
+
 
 	var card_matches = true
 	if is_instance_valid(card) and card_scripts.get(ScriptProperties.FILTER_STATE + type):
@@ -231,7 +233,9 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 					card_matches = false
 				elif filter == FILTER_MAX_PER_HOST\
 						and not check_max_per_host(card, state_filters[filter], owner_card):
-					card_matches = false					
+					card_matches = false
+				elif filter == FILTER_EXHAUSTED and (card.is_exhausted() != state_filters[filter]):
+					card_matches = false			
 			if card_matches:
 				break
 	return(card_matches)

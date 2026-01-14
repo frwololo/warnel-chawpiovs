@@ -89,8 +89,11 @@ func try_to_show_preview():
 	if (!has_focus):
 		return		
 		
-	preview_popup.show_preview_card(display_card.canonical_id)	
-
+	var card = preview_popup.show_preview_card(display_card.canonical_id)	
+	if card:
+		card.is_duplicate_of = display_card
+		if display_card.is_duplicate_of:
+			card.is_duplicate_of = display_card.is_duplicate_of
 func hide_preview():
 	preview_popup.hide_preview_card()
 	

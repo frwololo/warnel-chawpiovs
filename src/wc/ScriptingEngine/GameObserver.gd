@@ -31,7 +31,7 @@ func _remove_all_children():
 			var object = removal_condition["object"]
 			_objects.erase(object)
 			remove_child(object)
-	cfc.flush_cache()
+			object.queue_free()
 
 	for removal_condition in extra_script_removal_conditions:
 			var card = removal_condition["card"]
@@ -39,7 +39,12 @@ func _remove_all_children():
 			card.remove_extra_script(script_id)
 
 	removal_conditions = []
-	extra_script_removal_conditions = []	
+	extra_script_removal_conditions = []
+	for child in get_children():
+		remove_child(child)
+		child.queue_free()
+	_objects = []
+	cfc.flush_cache()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

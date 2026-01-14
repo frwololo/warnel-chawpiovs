@@ -441,7 +441,6 @@ static func calculate_damage(script:ScriptTask) -> int:
 	if !type in ["hero", "ally", "minion", "villain"]:
 		attacker = _get_identity_from_script(script)
 		
-	var tags: Array = script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
 	var base_amount = script.retrieve_integer_property("amount")
 	
 	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
@@ -455,7 +454,6 @@ static func calculate_damage(script:ScriptTask) -> int:
 	#this is a for loop but in reality we return at the first iteration
 	for card in consolidated_subjects.keys():
 		var multiplier = consolidated_subjects[card]
-		var damage_happened = 0
 		var amount = base_amount * multiplier
 		
 		if !amount:
@@ -520,6 +518,7 @@ func receive_damage(script: ScriptTask) -> int:
 			
 		if (amount and tough):
 			card.tokens.mod_token("tough", -1)
+			card.hint("Tough!", Color8(50,50,255))
 		else:	
 			retcode = card.tokens.mod_token("damage",
 					amount,false,costs_dry_run(), tags)	

@@ -22,6 +22,7 @@ var target_object : Node = null
 onready var owner_object = get_parent()
 onready var z_index_owner_object = get_parent()
 onready var label = $PanelContainer/Label
+var is_optional = true
 
 enum DISPLAY_MODE {
 	NORMAL,
@@ -205,6 +206,8 @@ func set_color_from_script(script_definition):
 func initiate_targeting(_valid_targets, _script_definition:Dictionary = {}) -> void:
 	set_valid_targets(_valid_targets)
 	set_color_from_script(_script_definition)
+	if !_script_definition.get("is_optional_target", true):
+		is_optional = false
 	is_targeting = true
 	show_me()
 	emit_signal("initiated_targeting")
@@ -214,6 +217,9 @@ func initiate_targeting(_valid_targets, _script_definition:Dictionary = {}) -> v
 func cancel_targeting() -> void:
 	#TODO send another signal
 	if !is_targeting:
+		return
+	
+	if !is_optional:
 		return
 	
 	reset_destination()		
@@ -255,9 +261,12 @@ func complete_targeting() -> void:
 	scripting_bus.emit_signal("target_selected", owner_object, {"target": target_object})	
 
 #for internal testing
-func force_select_target(target):
+func force_select_target(target) -> bool:
+	if !(target in valid_targets):
+		return false
 	_potential_targets.append(target)
 	complete_targeting()
+	return true
 
 # Triggers when a targetting arrow hovers over another card while being dragged
 #

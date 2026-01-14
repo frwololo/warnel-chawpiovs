@@ -1,0 +1,158 @@
+{
+	"_comments": "Test of Reveal: Zola's Mutate",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Zola - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Defensive Programming"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},				
+				{
+					"card": "Zola's Mutate"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Island of Dr. Zola",
+					"tokens": {
+						"test": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Pheromones"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"wait_longer": true,
+			"_comments": "wait as much as needed for player turn"
+		},
+		{
+			"type": "activate",
+			"value": "Spider-Woman"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Zola - 1",
+			"expected_to_fail": true
+		},
+		{
+			"type": "target",
+			"value": "Zola's Mutate"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Zola - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+			],
+			"schemes": [
+				{
+					"card": "The Island of Dr. Zola",
+					"tokens": {
+						"test": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Zola's Mutate",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"others": [
+				{
+					"card": "Defensive Programming",
+					"host": "Zola's Mutate"
+				},
+			],
+			"hand1": [
+				{
+					"card": "Pheromones"
+				}
+			]
+		}
+	}
+}

@@ -41,6 +41,7 @@ var _team_size = 0
 var _total_delta:float = 0.0
 var card_focus_allowed = true
 var _cached_pile_data = {}
+var current_containers = []
 
 func get_team_size():
 	if !_team_size:
@@ -119,7 +120,6 @@ func load_next_step(next_step):
 			#start game
 			gameData.start_game()
 			
-
 func _decline_offer_to_load_last_game():
 	gameData.init_save_folder()
 	cfc._rpc(self,"ready_for_step", LOADING_STEPS.START_GAME)
@@ -214,9 +214,18 @@ func get_hero_grid_start_coordinates():
 		"x": start_xs,
 		"y": start_ys,
 	}
+
+func erase_grids_and_piles():
+	for container in current_containers:
+		cfc.unmap_node(container)		
+		self.remove_child(container)
+		container.queue_free()
+	current_containers = []
+	_cached_pile_data = {}
 	
 func grid_setup():
 	_team_size = 0 #reset team size to fetch it from gameData	
+	erase_grids_and_piles()
 	var GRID_SETUP = gameData.scenario.grid_setup
 	for grid_name in GRID_SETUP.keys():
 		var grid_info = GRID_SETUP[grid_name]
@@ -234,6 +243,7 @@ func grid_setup():
 			pile.scale = Vector2(pile_scale, pile_scale)
 			pile.faceup_cards = grid_info.get("faceup", false)
 			add_child(pile)
+			current_containers.append(pile)
 			set_groups(pile, grid_info.get("groups", []))
 			if grid_info["x"] < 0 or grid_info["y"] <0:
 				pile.visible = false
@@ -247,6 +257,7 @@ func grid_setup():
 			grid.rescale(CFConst.PLAY_AREA_SCALE  * grid_scale)
 			# A small delay to allow the instance to be added
 			add_child(grid)
+			current_containers.append(grid)
 			grid.name = grid_name
 			grid.name_label.text = grid_name
 			grid.rect_position = Vector2(grid_info["x"], grid_info["y"])			
@@ -288,6 +299,7 @@ func grid_setup():
 				pile.scale = Vector2(scale*pile_scale,scale*pile_scale)
 				pile.faceup_cards = grid_info.get("faceup", false)
 				add_child(pile)
+				current_containers.append(pile)
 				set_groups(pile, grid_info.get("groups", []))
 				if x < 0 or y <0:
 					pile.visible = false
@@ -301,6 +313,7 @@ func grid_setup():
 				var grid_scale = grid_info.get("scale", 1)				
 				grid.rescale(CFConst.PLAY_AREA_SCALE * scale * grid_scale)
 				add_child(grid)
+				current_containers.append(grid)
 				grid.name = real_grid_name
 				grid.name_label.text = real_grid_name
 				grid.rect_position = Vector2(x,y)
@@ -576,7 +589,8 @@ func delete_all_cards():
 				pile.delete_all_cards()
 		else: #it's a grid
 			var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(grid_name)
-			grid.delete_all_slots_but_one()
+			if grid:
+				grid.delete_all_slots_but_one()
 			
 
 	for i in range(get_team_size()):
@@ -586,10 +600,12 @@ func delete_all_cards():
 			var real_grid_name = grid_name + str(hero_id)		
 			if "pile" == grid_info.get("type", ""):
 				var pile:Pile = cfc.NMAP[real_grid_name]
-				pile.delete_all_cards()
+				if pile:
+					pile.delete_all_cards()
 			else: #it's a grid
 				var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(real_grid_name)
-				grid.delete_all_slots_but_one()								
+				if grid:
+					grid.delete_all_slots_but_one()								
 
 func _close_game():
 	cfc.quit_game()
@@ -1284,7 +1300,8 @@ func disable_focus_mode():
 	var pile_data = get_all_pile_data()
 	for pile_name in pile_data:
 		var pile = cfc.NMAP[pile_name]
-		pile.disable_focus_mode()
+		if pile:
+			pile.disable_focus_mode()
 			
 	#Hero faces	
 	for i in range(gameData.get_team_size()):

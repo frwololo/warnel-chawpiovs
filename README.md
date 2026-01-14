@@ -11,6 +11,15 @@ A card game based on a well known cooperative board game, with full rules enforc
 * [Installing the game](#users-installing-the-game)
 * [Running the game](#users-running-the-game)
 * [Users FAQ and Troublshooting](#users-faq-and-troubleshooting)
+
+## How is Warnel Chawpiovs different from the original game?
+Generally Speaking this tries to perfectly mimic the rules of the orginal board game. There are a few intentional exceptions (see below), the rest can probably be considered bugs
+
+* Unlike Marvel Champions, Warnel Chawpiovs allows heroes to play their turn in parallel. This is particularly obvious in Multiplayer mode. This is intentional: although the rules of the game state that each player should play their turn one player after the other (and explicitly ask other players to activate abilities or play cards as needed), in practice, most people play simultaneously and synchronize verbally. Because this is a video game, it felt important to me to minimize friction on that aspect, and allow clients to play simultaneously. If you'd rather follow the actual rules and play your turns in order, nothing prevents you from coordinating with your fellow players ;)
+
+Other than that, there are a few known limitations with the engine at the moment:
+* Responses aren't exactly supported. They're either treated as interrupts, or react to the internal engine's events in no specific order. It "works" except in tricky cases where order of events is critical
+
 ## Current Status (General)
 As of this writing, this simulator supports the Core Box with its 3 villains and 5 heroes. There is no tutorial included, and, although the rules are automatically handled by the engine, it will quickly become confusing if you are not already familar with the original game.
 

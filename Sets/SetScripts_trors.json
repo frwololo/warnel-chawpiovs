@@ -2297,6 +2297,7 @@
 				{
 					"name": "constraints",
 					"is_cost": true,
+					"subject": "current_activation_target",
 					"tags": [
 						"hero_form"
 					]
@@ -2304,7 +2305,7 @@
 				{
 					"name": "receive_damage",
 					"amount": 1,
-					"subject": "my_hero"
+					"subject": "current_activation_target"
 				},
 				{
 					"is_else": true,
@@ -2809,7 +2810,7 @@
 				{
 					"name": "move_card_to_container",
 					"dest_container": "hand",
-					"subject": "tutor",
+					"subject": "index",
 					"subject_index": "top",
 					"subject_count": 5,
 					"up_to": true,
@@ -6029,7 +6030,10 @@
 								"type_code": "attachment"
 							}
 						}
-					]
+					],
+					"tags": [
+						"disable_attach_trigger"
+					],					
 				}
 			]
 		}

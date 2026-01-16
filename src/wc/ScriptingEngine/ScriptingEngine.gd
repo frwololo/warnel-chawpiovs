@@ -1630,11 +1630,16 @@ const _tags_to_tags: = {
 func constraints(script: ScriptTask) -> int:
 	var retcode = CFConst.ReturnCode.CHANGED	
 	
+
 	var this_card = script.owner
 	var my_hero_id = this_card.get_controller_hero_id()
 	if !my_hero_id:
 		#trying to activate on a villain card
 		my_hero_id = gameData.get_current_local_hero_id()
+	
+	if script.subjects:
+		my_hero_id = script.subjects[0]
+		
 		
 	var my_hero_card = gameData.get_identity_card(my_hero_id)
 	

@@ -106,6 +106,8 @@ func victory():
 func _ready():
 	resize()
 	set_as_toplevel(true)
+	cfc.NMAP.board.disable_focus_mode()
+	get_node("%OKButton").grab_focus()
 	pass
 
 

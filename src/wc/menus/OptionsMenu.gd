@@ -74,6 +74,7 @@ func select_tab(tab_name):
 		get_node("%" + tab).visible = false
 
 	get_node("%" + tab_name).visible = true
+	cfc.default_button_focus(get_node("%" + tab_name))
 	#get_node("%" + tab_name).set_as_toplevel(true)	
 
 func hide_gameplay_options():
@@ -136,6 +137,9 @@ func show_menu():
 func _input(event):
 	if event.is_pressed() and !event.is_echo():
 		hide_controls()
+
+var _temporary_disabled_nodes = {}
+var disabled_container = null
 		
 func close_me():
 	#set_process(false)
@@ -147,8 +151,17 @@ func close_me():
 		cfc.NMAP.board.enable_focus_mode()
 		cfc.NMAP.board.visible = true
 
-func show_me():
+	if _temporary_disabled_nodes:
+		cfc.enable_focus_mode(_temporary_disabled_nodes)
+	if disabled_container:
+		cfc.default_button_focus(disabled_container)
+
+func show_me(container_to_disable = null):
 	#set_process(true)
+	if container_to_disable:
+		_temporary_disabled_nodes= cfc.disable_focus_mode(container_to_disable) 
+		disabled_container = container_to_disable
+		
 	if gamepadHandler.is_controller_input():
 		get_node("%Controls").visible = true
 	else:
@@ -158,10 +171,8 @@ func show_me():
 		board_mode = false
 	
 	if !board_mode:
-		get_node("%LoadSave").visible = false
-		get_node("%DebugContainer").visible = false		
-		get_node("%RestartButton").visible = false	
-		get_node("%MainMenuButton").visible = false	
+		for button_name in ["%LoadSave", "%DebugContainer", "%RestartButton", "%MainMenuButton"]:
+			get_node(button_name).visible = false
 		$PanelContainer.self_modulate.a = 1	
 		
 	visible = true

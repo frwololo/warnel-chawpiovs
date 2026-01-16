@@ -125,6 +125,7 @@ func start_game():
 	theGameObserver.setup(scenario)
 	GameRecorder.init_game()
 	_game_started = true
+	_game_over = ""
 
 func is_game_started():
 	return _game_started
@@ -225,14 +226,8 @@ func end_game(result:String):
 	cleanup_post_game()	
 	cfc.set_game_paused(true)
 
-	cfc.NMAP.board.add_child(game_over_screen)
-#	var end_dialog:AcceptDialog = AcceptDialog.new()
-#	end_dialog.window_title = result
-#	end_dialog.add_button ( "retry", true, "retry")
-#	end_dialog.connect("custom_action", cfc.NMAP.board, "_retry_game")
-#	end_dialog.connect("confirmed", cfc.NMAP.board, "_close_game")
-#	cfc.NMAP.board.add_child(end_dialog)
-#	end_dialog.popup_centered()
+	if cfc.NMAP.has("board") and is_instance_valid(cfc.NMAP.board):
+		cfc.NMAP.board.add_child(game_over_screen)
 
 
 #for testing
@@ -275,7 +270,6 @@ func _process(_delta: float):
 		
 	if _game_over: 
 		end_game("game over")
-		_game_over = ""
 		return
 		
 	if _multiplayer_desync:
@@ -1986,7 +1980,9 @@ func cleanup_post_game():
 	theStack.reset()
 	
 	if cfc.NMAP.has("board") and is_instance_valid(cfc.NMAP.board):
-		cfc.NMAP.board.reset_board()
+		if !_game_over: #in case ofgame over we want to be able to see the board post game
+			cfc.NMAP.board.reset_board()
+		_game_over= ""
 	scenario.reset()
 
 	theGameObserver.reset()
@@ -2002,6 +1998,8 @@ func cleanup_post_game():
 func save_gamedata() -> Dictionary:
 	var json_data:Dictionary = {}
 	#save current phase
+	if !is_instance_valid(phaseContainer):
+		return {}
 	var phase_data:Dictionary = phaseContainer.savestate_to_json()
 	json_data.merge(phase_data)
 	

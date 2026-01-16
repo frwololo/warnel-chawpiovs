@@ -47,7 +47,12 @@ func gui_focus_changed(control):
 	if control != null:
 		var parent = current_focused_control.get_parent()
 		if parent and parent.has_method("get_global_center"):
-			approx_position = parent.get_global_center()		
+			approx_position = parent.get_global_center()
+			#TODO: big hack here because if we focus on the hand's card's center,
+			#it tends to overlap cards on the board, leading to terrible
+			#GUI behavior (losing focus, etc...)
+			if parent as Card and parent.get_state_exec() == "hand":
+				approx_position.y  = get_viewport().size.y		
 		elif current_focused_control.has_method("get_global_center"):
 			approx_position = current_focused_control.get_global_center() 
 		else:
@@ -97,7 +102,7 @@ func set_input_mode(new_mode):
 		_:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 			input_mode = INPUT_MODE.MOUSE 
-			if cfc.NMAP.has("board"):
+			if cfc.NMAP.has("board") and is_instance_valid(cfc.NMAP.board):
 				cfc.NMAP.board.mouse_pointer.enable()		
 
 

@@ -72,6 +72,7 @@
 	"quickstrike": {
 		"card_moved_to_board": {
 			"trigger": "self",
+			"display_name": "Quickstrike",
 			"board": [
 				{
 					"name": "constraints",
@@ -137,6 +138,7 @@
 	"uses": {
 		"card_moved_to_board": {
 			"trigger": "self",
+			"_silent": true,
 			"board": [
 				{
 					"name": "mod_tokens",

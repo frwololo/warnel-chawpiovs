@@ -33,9 +33,6 @@
 			],
 			"deck1": [
 				{
-					"card": "Pheromones"
-				},
-				{
 					"card": "Skilled Investigator"
 				},
 				{
@@ -49,7 +46,10 @@
 				},
 				{
 					"card": "Nick Fury"
-				}
+				},
+				{
+					"card": "Pheromones"
+				},				
 			],
 			"identity1": [
 				{

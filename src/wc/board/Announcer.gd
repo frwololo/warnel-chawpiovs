@@ -211,7 +211,7 @@ func cleanup(announce = null):
 	announcer_minimum_time = default_announcer_minimum_time
 	ongoing_announces.erase(announce)
 
-func choices_menu(owner_card, origin_event, choices_menu, interacting_hero):
+func choices_menu(owner_card, trigger, origin_event, choices_menu, interacting_hero = 0):
 	var announce = {
 		"announce" :"choices_menu",
 		"object" : origin_event,
@@ -219,7 +219,8 @@ func choices_menu(owner_card, origin_event, choices_menu, interacting_hero):
 		"storage": {
 			"owner_card": owner_card,
 			"choices_menu": choices_menu,
-			"interacting_hero": interacting_hero
+			"interacting_hero": interacting_hero,
+			"trigger": trigger			
 		},
 		"current_delta" : 0.0,
 	}			
@@ -229,10 +230,20 @@ func choices_menu(owner_card, origin_event, choices_menu, interacting_hero):
 		#set_announcer_minimum_time(3.0)
 	return #exit after the first one	
 
-func init_choices_menu(script, announce):
+func init_choices_menu(stack_object, announce):
+	
+#	if stack_object and !can_display_stack_event(stack_object):
+#		return false
+		
 	var storage = announce["storage"]
+	var trigger = storage.get("trigger", "")
+	if trigger:
+		var to_skip = CFConst.SKIP_ANNOUNCE_CHOICE_MENU.get("trigger", {})
+		if to_skip.get(trigger, false):
+			return false
+	
 	var announce_scene = _STACK_GENERIC_SCENE.instance()
-	announce_scene.load_from_past_event(script, storage)
+	announce_scene.load_from_past_event(stack_object, storage)
 	
 	#var announce_scene = StackEventDisplay.new(script)
 	storage["scene"] = announce_scene
@@ -245,7 +256,7 @@ func init_choices_menu(script, announce):
 #true if they still have stuff to display		
 func process_choices_menu(announce):		
 	var storage = announce["storage"]
-	if !cfc.get_modal_menu():
+	if !cfc.get_modal_menu() and !gameData.is_targeting_ongoing():
 		return false
 	return true
 
@@ -301,7 +312,7 @@ func add_event_to_ignore_list(owner_card, stack_event):
 	_tmp = 1
 
 
-func show_stack_announce(stack_object, mode = GlobalScriptStack.InterruptMode.NONE) -> bool:
+func can_display_stack_event(stack_object, mode = GlobalScriptStack.InterruptMode.NONE) -> bool:
 	if (_skip_announcer):
 		return false
 
@@ -313,20 +324,10 @@ func show_stack_announce(stack_object, mode = GlobalScriptStack.InterruptMode.NO
 	var notifications_level = cfc.game_settings.get("notifications_level", "normal").to_lower()	
 	if notifications_level == "expert":
 		return false
-		
-	#if we're interrupting, we'll be showing another message 
-	if mode == GlobalScriptStack.InterruptMode.OPTIONAL_INTERRUPT_CHECK:
-		return false
-	if mode == GlobalScriptStack.InterruptMode.FORCED_INTERRUPT_CHECK:
-		var _tmp = 1
-	
+			
 	if !is_instance_valid(stack_object):
 		return false
-	
-	if stack_object.is_silent() and notifications_level != "debug":
-		if mode != GlobalScriptStack.InterruptMode.FORCED_INTERRUPT_CHECK:
-			return false
-	
+		
 	#we intentionally ignore a bunch of events to not make it noisy for the user	
 	var trigger = stack_object.get_trigger()
 	var script_name =  stack_object.get_first_task_name()
@@ -352,7 +353,24 @@ func show_stack_announce(stack_object, mode = GlobalScriptStack.InterruptMode.NO
 			var card_name = owner_card.get_property("shortname", "")
 			if ignore_stack_events["cards"].get(card_name, {}).get(trigger, false):
 				return false
+				
+	return true
+
+func show_stack_announce(stack_object, mode = GlobalScriptStack.InterruptMode.NONE) -> bool:
+		
+	#if we're interrupting, we'll be showing another message 
+	if mode == GlobalScriptStack.InterruptMode.OPTIONAL_INTERRUPT_CHECK:
+		return false
+	if mode == GlobalScriptStack.InterruptMode.FORCED_INTERRUPT_CHECK:
+		var _tmp = 1
 	
+	if !can_display_stack_event(stack_object, mode):
+		return false
+
+	var notifications_level = cfc.game_settings.get("notifications_level", "normal").to_lower()	
+	if stack_object.is_silent() and notifications_level != "debug":
+		if mode != GlobalScriptStack.InterruptMode.FORCED_INTERRUPT_CHECK:
+			return false	
 
 	init_generic_stack_display(stack_object, true )
 	return true

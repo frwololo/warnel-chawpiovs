@@ -552,6 +552,15 @@ const AUTO_KEYWORDS := {
 
 #list of events for which we don't show a GUI announce to the user by default
 #(interrupts override this)
+const SKIP_ANNOUNCE_CHOICE_MENU:= {
+	"trigger": {
+		"manual": true,
+		"mulligan": true,
+		"end_phase_discard": true,
+		#we already show the damage with an arrow
+		"enemy_attack_damage": true,			
+	}
+}
 const NOOB_SKIP_ANNOUNCE_STACK_EVENTS:= {
 	"trigger": {
 		"manual": true,

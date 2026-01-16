@@ -33,6 +33,12 @@ var rect_size = Vector2(200, 200)
 var rect_position = Vector2(0, 0)
 var target_position = Vector2(0,0)
 
+#if set to true, when the stack event goes off the stack, this will close this message
+#if set to false, you need another way to call terminate()
+var terminate_on_event_completion = true
+#if set to false, will show text from event in priorirty
+var prioritize_text_from_owner_card = false
+
 onready var card_texture:TextureRect = get_node("%Card")
 onready var control:Control= get_node("%Control")
 onready var display_text:RichTextLabel = get_node("%DisplayText")
@@ -41,6 +47,7 @@ onready var tween:Tween = get_node("Tween")
 onready var ok_checkbox:CheckBox = get_node("%OKCheckBox")
 onready var ok_button = get_node("%OKButton")
 var show_ok = false
+var ok_button_initialized = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -84,7 +91,7 @@ func _process(_delta):
 	init_display()
 	show_arrows()
 
-	_dispay_ok_button()
+	_display_ok_button()
 
 	for arrow in arrows:
 		arrow.owner_object = control
@@ -208,6 +215,21 @@ func load_text():
 	if !display_text:
 		return
 
+	if prioritize_text_from_owner_card and owner_card:
+		if owner_card.is_boost():
+			var text = owner_card.get_printed_text("boost")
+			if text:
+				display_text.bbcode_text = text
+				return
+		else: #there are cases where an interrupt is coming but we're not in interrupt mode, so
+			#I am forced to guess this is what's happening here				
+			for id in ["forced interrupt", "interrupt", "forced response", "response"]:
+				var text = owner_card.get_printed_text(id)
+				if text:
+					display_text.bbcode_text = text
+					return		
+		display_text.bbcode_text = owner_card.get_printed_text()
+		return
 			
 	if stack_event:
 		display_text.bbcode_text = stack_event.get_display_text()
@@ -225,11 +247,19 @@ func load_from_event(event):
 	subjects = stack_event.get_subjects()
 
 func load_from_past_event(event, storage):
+	terminate_on_event_completion = false
+	prioritize_text_from_owner_card = true
 	stack_event = event
+
+	owner_card = storage.get("owner_card", null)
+
 	if stack_event:
-		owner_card = stack_event.get_owner_card()
-	else:
-		owner_card = storage.get("owner_card", null)
+		var owner_card_2 = stack_event.get_owner_card()
+		if owner_card_2 and owner_card_2!= owner_card:
+			if owner_card:
+				subjects.append(owner_card_2)
+			else:
+				owner_card = owner_card_2
 	
 	if !owner_card:
 		return
@@ -251,12 +281,16 @@ func terminate():
 
 func _stack_event_deleted(event):
 	if event != stack_event:
+		return
+	if ! terminate_on_event_completion:
 		return	
 	terminate()
 	
 func _script_executed_from_stack(event):
 	if event != stack_event:
-		return		
+		return	
+	if ! terminate_on_event_completion:
+		return				
 	terminate()
 
 
@@ -296,9 +330,16 @@ func _on_Button_pressed():
 func show_ok_button():
 	show_ok = true
 
-func _dispay_ok_button():
-	if !show_ok:
+func _display_ok_button():
+	if ok_button_initialized:
 		return
+		
+	if !show_ok:
+		if gameData.is_interrupt_mode():
+			ok_button.text = "Interrupt!"
+		return
+	
+		
 	show_ok = false
 	ok_button.visible = true
 	ok_button.flat = false	
@@ -320,6 +361,7 @@ func _dispay_ok_button():
 	ok_button.icon = gamepadHandler.get_icon_for_action("ui_cancel")
 	
 	ok_button.grab_focus()
+	ok_button_initialized = true
 	
 func _on_OKButton_pressed():
 	if ok_checkbox.pressed:

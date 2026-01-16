@@ -119,8 +119,11 @@ func get_display_name():
 	if display_name:
 		return display_name
 		
-	for task in get_tasks():
+	var task = get_first_task()
+	if is_instance_valid(task) and is_instance_valid(task.owner):
 		return task.owner.get_property("shortname", "") + "-" + task.script_name
+
+	return ""
 
 var _cache_display_text = ""
 func get_display_text():
@@ -177,11 +180,15 @@ func _get_display_text_nocache():
 						return text												
 	result = result.replace("_", " ")
 	result = result + subjects
+	if "constraints" in result:
+		var _tmp =1
 	return result
 			
 
 
 func set_display_name(_name):
+	if "constraints" in _name:
+		var _tmp = 1
 	display_name = _name
 
 func get_first_task_name(meaningful = true):
@@ -192,10 +199,14 @@ func get_first_task_name(meaningful = true):
 
 const _meaningless_tasks := ["nop", "constraints"]
 func get_first_task(meaningful = true):
-	for task in get_tasks():
-		if meaningful and (task.script_name in _meaningless_tasks):
-			continue		
-		return task
+	for skip_cost_tasks in [true, false]:
+		for task in get_tasks():
+			if meaningful and (task.script_name in _meaningless_tasks):
+				continue
+			if skip_cost_tasks and task.has_method("get_property"):
+				if task.get_property("is_cost", false):
+					continue		
+			return task
 	return null
 
 

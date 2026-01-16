@@ -611,12 +611,23 @@ mastersync func ready_to_launch():
 	if _ready_to_launch.size() == gameData.network_players.size():
 		_ready_to_launch = {}
 		cfc._rpc(self,"launch_client_game")
+
+func save_last_used_deck(hero_id, deck_id):
+	if !cfc.game_settings.has("last_deck"):
+		cfc.game_settings["last_deck"] = {}
+		
+	var last_deck_used = cfc.game_settings.get("last_deck", {})
+	last_deck_used[hero_id] = deck_id
+	cfc.save_settings()
 	
+
 func _launch_server_game():
 	disable_launch_button()
 	var serialized_team = {}
 	for key in team.keys():
-		serialized_team[key] = team[key].savestate_to_json()
+		var hero_data = team[key]
+		serialized_team[key] = hero_data.savestate_to_json()
+		save_last_used_deck(hero_data.get_hero_id(), hero_data.deck_id)
 		
 	launch_data = {
 		"team": serialized_team,

@@ -479,6 +479,9 @@ func view_card(script: ScriptTask) -> int:
 #	* [KEY_SRC_CONTAINER](ScriptProperties#KEY_SRC_CONTAINER)
 func move_card_to_container(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+		
 	if not costs_dry_run():
 		# We inject the tags from the script into the tags sent by the signal
 		var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
@@ -851,7 +854,8 @@ func host_card(script: ScriptTask) -> void:
 	var host_str = script.get_property("host", "")
 	if host_str:
 		host = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : host_str})
-	
+		if host:
+			host = host[0]
 	for card in script.subjects:
 		card.attach_to_host(host, false, tags)
 

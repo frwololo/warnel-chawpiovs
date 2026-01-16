@@ -1182,6 +1182,9 @@ remotesync func set_upcoming_target(value:String):
 	_current_targeted_card = get_card(value, 1)
 
 func _initiated_targeting(_request_object = null):
+	
+	#yield required here because the arrow isn't ready by the time this starts
+	yield(get_tree().create_timer(0.11), "timeout")
 	_current_targeting_card = _request_object
 	
 	#is_instance_valid_check below:

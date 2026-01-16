@@ -172,6 +172,7 @@ margin_top = 84.0
 margin_right = 306.0
 margin_bottom = 114.0
 custom_colors/font_color = Color( 0.933333, 0.0823529, 0.0823529, 1 )
+autowrap = true
 
 [node name="PanelContainer" type="PanelContainer" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel"]
 margin_top = 205.0

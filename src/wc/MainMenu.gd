@@ -341,7 +341,7 @@ func on_button_pressed(_button_name : String) -> void:
 		"Credits":
 			get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/Credits.tscn')
 		"Options":
-			$OptionsMenu.show_me()
+			$OptionsMenu.show_me($CenterContainer)
 
 		"Exit":
 			get_tree().quit()

@@ -551,10 +551,7 @@ func _dry_run_card_targeting(_script_definition):
 # Returns a Card object.
 func _initiate_card_targeting() -> Card:
 	cfc.add_ongoing_process(self, owner.canonical_name)
-	# We wait a centisecond, to prevent the card's _input function from seeing
-	# The double-click which started the script and immediately triggerring
-	# the target completion
-	yield(owner.get_tree().create_timer(0.1), "timeout")
+
 	var all_cards = [] 
 	var include_board = script_definition.get("target_include_board", true)
 	var include_piles = script_definition.get("target_include_piles", false)	
@@ -571,8 +568,14 @@ func _initiate_card_targeting() -> Card:
 			valid_targets.append(c)
 	
 	var target = null		
-	if (valid_targets):			
-		owner.targeting_arrow.initiate_targeting(valid_targets, self.script_definition)
+	if (valid_targets):	
+		scripting_bus.emit_signal("initiated_targeting", owner)
+		# We wait a centisecond, to prevent the card's _input function from seeing
+		# The double-click which started the script and immediately triggerring
+		# the target completion
+		yield(owner.get_tree().create_timer(0.1), "timeout")
+				
+		owner.targeting_arrow.initiate_targeting(valid_targets, self.script_definition, false)
 		# We wait until the targetting has been completed to continue
 		yield(owner.targeting_arrow,"target_selected")
 		target = owner.targeting_arrow.target_object

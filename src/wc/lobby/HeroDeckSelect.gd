@@ -117,9 +117,11 @@ func load_hero(_hero_id):
 	
 	var imgtex = null
 	var decks = 0
+	var last_deck_id = 0 	
 	if (hero_id):
 		imgtex = cfc.get_hero_portrait(hero_id)
 		decks = cfc.idx_hero_to_deck_ids[hero_id]
+		last_deck_id = load_last_used_deck(hero_id)
 	if (imgtex and decks):	
 		hero_picture.texture = imgtex
 		#hero_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
@@ -131,13 +133,17 @@ func load_hero(_hero_id):
 			deck_name = deck_name.replacen(hero_name, "").trim_prefix(" ")
 			deck_name = deck_name.trim_prefix("- ")
 			deck_select.add_item(deck_name, deck_data.id)
+			if deck_data.id == last_deck_id:
+				deck_select.select(deck_select.get_item_count() -1)
 		#force refresh of selected data	
 		_on_deck_changed(deckSelect.selected)		
 	else:
 		hero_picture.texture = null	
 
 
-
+func load_last_used_deck(hero_id):
+	var last_deck_used = cfc.game_settings.get("last_deck", {})	
+	return last_deck_used.get(hero_id, 0)
 
 func gain_focus():
 	if gamepadHandler.is_mouse_input():

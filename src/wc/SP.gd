@@ -197,9 +197,9 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 		return is_valid
 		
 	var tags = card_scripts.get("tags", [])
-	
+	var script_name = card_scripts.get("name", "")
 	#check for special guard conditions if card is an attack
-	if ("attack" in tags) and card == gameData.get_villain():
+	if ((script_name == "attack") or ("attack" in tags)) and card == gameData.get_villain():
 		var all_cards = cfc.NMAP.board.get_all_cards()
 		if owner_card:		
 			var hero_id = owner_card.get_controller_hero_id()

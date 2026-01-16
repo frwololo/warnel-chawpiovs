@@ -11,7 +11,7 @@ const _CARD_SELECT_SCENE = preload(_CARD_SELECT_SCENE_FILE)
 
 # The path to the optional confirm scene. This has to be defined explicitly
 # here, in order to use it in its preload, otherwise the parser gives an error
-const _OPTIONAL_CONFIRM_SCENE_FILE = CFConst.PATH_CORE + "OptionalConfirmation.tscn"
+const _OPTIONAL_CONFIRM_SCENE_FILE = CFConst.PATH_CUSTOM + "OptionalConfirmation.tscn"
 const _OPTIONAL_CONFIRM_SCENE = preload(_OPTIONAL_CONFIRM_SCENE_FILE)
 
 # Populates the info panels under the card, when it is shown in the

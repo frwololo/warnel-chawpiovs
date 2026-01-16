@@ -19,6 +19,7 @@ func _init(_name = "", _owner = null, _details = {}):
 	tasks = [self]
 	
 func execute():
+	script_definition["origin_event"] = self
 	scripting_bus.emit_signal(script_name, owner, script_definition)
 
 func get_tasks():

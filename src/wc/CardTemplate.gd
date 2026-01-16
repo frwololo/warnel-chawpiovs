@@ -817,6 +817,9 @@ func common_post_move_scripts(new_host: String, old_host: String, _move_tags: Ar
 			_is_exhausted = false
 			#reset some cache data
 			_died_signal_sent = false
+			#if the card moves to anything else than the board
+			#it loses its boost status
+			set_is_boost(false) 
 
 	set_is_viewed(false)
 	
@@ -1056,7 +1059,7 @@ func execute_scripts(
 	if (trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME and canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME ):
 		var _tmp = 1
 
-	while cfc.game_paused:
+	while cfc.game_paused or cfc.is_modal_event_ongoing() or gameData.is_targeting_ongoing():
 		#TODO
 		#2026/01/08 This yield was introduced
 		#to replace the simple "return" which was eating signals
@@ -1161,6 +1164,9 @@ func execute_scripts(
 	if card_scripts.get("_silent", false):
 		trigger_details["_silent"] = true
 
+	
+	trigger_details["_display_name"] = card_scripts.get("display_name", trigger_details.get("_display_name", ""))
+
 	show_optional_confirmation_menu = show_optional_confirmation_menu and card_scripts.get("is_optional_" + get_state_exec(), false)		
 
 	exec_config = {
@@ -1191,12 +1197,18 @@ func execute_scripts(
 	else:	
 		sceng = choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigger_details, run_type, exec_config)
 		if sceng is GDScriptFunctionState: # Still working.
+			if trigger != "manual":
+				var origin_event = trigger_details.get("origin_event", null)
+				gameData.theAnnouncer.choices_menu(self, trigger, origin_event, cfc.get_modal_menu())			
+			
 			sceng = yield(sceng, "completed")
 	return sceng
 	
 func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigger_details, run_type, exec_config = {}):	
 	var state_scripts = state_scripts_dict["state_scripts"]
-
+	if !state_scripts:
+		return null
+		
 	var rules = state_scripts_dict.get("rules", {})
 
 	var show_optional_confirmation_menu = exec_config.get("show_optional_confirmation_menu", false)
@@ -1283,8 +1295,8 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 			var choices_menu = _CARD_CHOICES_SCENE.instance()
 			cfc.add_modal_menu(choices_menu)
 			choices_menu.prep(canonical_name,state_scripts, rules)
-			if trigger != "manual":
-				gameData.theAnnouncer.choices_menu(self, origin_event, choices_menu, interacting_hero)			
+#			if trigger != "manual":
+#				gameData.theAnnouncer.choices_menu(self, origin_event, choices_menu, interacting_hero)			
 			# We have to wait until the player has finished selecting an option
 			yield(choices_menu,"id_pressed")
 			# If the player just closed the pop-up without choosing

@@ -60,10 +60,11 @@ margin_right = 73.0
 margin_bottom = 38.0
 alignment = 1
 
-[node name="Button" type="Button" parent="CenterContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="OKButton" type="Button" parent="CenterContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
 margin_left = 21.0
 margin_right = 52.0
 margin_bottom = 20.0
 text = "OK"
 
-[connection signal="pressed" from="CenterContainer/MarginContainer/VBoxContainer/HBoxContainer/Button" to="." method="_on_Button_pressed"]
+[connection signal="pressed" from="CenterContainer/MarginContainer/VBoxContainer/HBoxContainer/OKButton" to="." method="_on_Button_pressed"]

@@ -203,7 +203,7 @@ func set_color_from_script(script_definition):
 # Will generate a targeting arrow on the card which will follow the mouse cursor.
 # The top card hovered over by the mouse cursor will be highlighted
 # and will become the target when complete_targeting() is called
-func initiate_targeting(_valid_targets, _script_definition:Dictionary = {}) -> void:
+func initiate_targeting(_valid_targets, _script_definition:Dictionary = {}, emit_signal = true) -> void:
 	set_valid_targets(_valid_targets)
 	set_color_from_script(_script_definition)
 	if !_script_definition.get("is_optional_target", true):
@@ -211,7 +211,8 @@ func initiate_targeting(_valid_targets, _script_definition:Dictionary = {}) -> v
 	is_targeting = true
 	show_me()
 	emit_signal("initiated_targeting")
-	scripting_bus.emit_signal("initiated_targeting", owner_object)
+	if emit_signal:
+		scripting_bus.emit_signal("initiated_targeting", owner_object)
 
 
 func cancel_targeting() -> void:

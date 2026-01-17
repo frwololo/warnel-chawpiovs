@@ -239,6 +239,8 @@ static func to_grayscale(_texture : Texture) -> Texture:
 		var _tmp = 1		
 	else:
 		pass
+	if !texture:
+		return null
 	var cur_image = texture.get_data()
 	if cur_image.is_compressed():
 		cur_image.decompress()

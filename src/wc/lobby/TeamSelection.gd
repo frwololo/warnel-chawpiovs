@@ -75,6 +75,12 @@ func grab_default_focus():
 	#last hope
 	get_node("%CancelButton").grab_focus()
 
+func critical_error():
+	var label =  get_node("%AdventureModeWarning")
+	label.visible = true
+	label.add_color_override("font_color", Color8(255, 50,50))
+	label.text = "It seems there was a critical issue loading the database. Please check your network connection and your local files (settings, Sets/*, etc...)"
+
 func _ready():
 	# If nothing's setup, start server for Single player mode
 	if (not get_tree().get_network_peer()):
@@ -192,6 +198,7 @@ func resize():
 	
 func _load_scenarios():
 	
+	var no_scenario_loaded = true
 	#sorting by alphabetical name of villain
 	var names_to_id = {}
 	for scenario_id in cfc.get_unlocked_scenarios():
@@ -212,9 +219,14 @@ func _load_scenarios():
 			continue
 		new_scenario.name = "scenario_" + scenario_id
 		all_scenarios_container.add_child(new_scenario)
+		no_scenario_loaded = false
+	
+	if no_scenario_loaded:
+		critical_error()
 
 func _create_hero_container():
 	
+	var no_hero_loaded = true
 	#show in alphabetical order
 	var names_to_id = {}
 	for hero_id in cfc.get_unlocked_heroes():
@@ -235,10 +247,13 @@ func _create_hero_container():
 		var new_hero = heroSelect.instance()
 		new_hero.load_hero(hero_id)
 		all_heroes_container.add_child(new_hero)
+		no_hero_loaded = false
 		if !focus_chosen:
 			new_hero.grab_focus()
 			focus_chosen = true	
 	
+	if no_hero_loaded:
+		critical_error()
 
 #
 # modular encounters functions

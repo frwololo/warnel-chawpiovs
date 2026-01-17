@@ -12,7 +12,7 @@ class_name CardConfig
 extends Reference
 
 # Properties which are placed as they are in appropriate labels
-const PROPERTIES_STRINGS := ["Type", "Requirements", "Abilities"]
+const PROPERTIES_STRINGS := ["Type", "Requirements", "Abilities", "text", "type_name", "faction_name"]
 # Properties which are converted into string using a format defined in setup()
 #WC traits and AUTO_KEYWORDS are added at runtime to this list
 const PROPERTIES_NUMBERS := ["cost", "attack", "defense", "thwart", "scheme", "health",

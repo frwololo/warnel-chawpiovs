@@ -115,7 +115,7 @@ func get_cropped_card_texture(card, force_if_facedown: = true):
 func get_cropped_card_texture_no_cache(card, filename):
 	var new_img = WCUtils.load_img(filename)
 	if not new_img:
-		return	false
+		return	null
 
 	var type_code = card.get_property("type_code", 0)
 	
@@ -470,10 +470,23 @@ func dont_load_this_card(card_data:Dictionary):
 		return true
 	return false
 
+func cleanup_bb_code(text):
+	var result = text
+	var replacements = {
+		"[[": "[i]",
+		"]]": "[/i]",
+		"[star]": "*",	
+		"→": "-->",	
+	}
+	for key in replacements:
+		result = result.replace(key, replacements[key])
+	return result
+
 func convert_to_bbcode(text):
-	var result = text.replace("<", "[")
+	var result = text
+	result = result.replace("<", "[")
 	result = result.replace (">", "]")
-	result = result.replace("→", "-->")
+	result = cleanup_bb_code(result)	
 	return result
 
 var _seen_images:= {}
@@ -540,7 +553,7 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 		else:
 			card_data["can_" + action] = false	
 
-	card_data["text"] = convert_to_bbcode(card_data.get("text", ""))
+	card_data["text"] = convert_to_bbcode(card_data.get("real_text", ""))
 
 	###END Fixing missing data
 
@@ -1021,26 +1034,40 @@ func get_img_filename(card_id) -> String:
 
 func get_villain_portrait(card_id) -> Texture:
 	var area = 	Rect2 ( 65, 60, 155, 155 )
-	return get_sub_texture(card_id, area)
+	var result = get_sub_texture(card_id, area)
+	if result:
+		return result
+	return fallback_villain_portrait(card_id, area)
+	
+func fallback_villain_portrait(card_id, area) -> Texture:
+	var filename = "res://assets/other/villain_card.png"
+	var texture = get_external_texture(filename)
+	var sub_tex= _get_cropped_texture(texture , area)
+	return sub_tex	
 
 func get_scheme_portrait(card_id) -> Texture:
-	var real_id = card_id
-#	var card_data = get_card_by_id(card_id)
-#	if card_data.get("original_stage","") == "1A":
-#		var back_code = card_data.get("back_card_code","")
-#		if back_code:
-#			real_id = back_code
-			
+	var real_id = card_id			
 	var area = 	Rect2 ( 55, 15, 200, 155 )
 	return get_sub_texture(real_id, area)
 	
 func get_hero_portrait(card_id) -> Texture:
 	var area = 	Rect2 ( 60, 40, 170, 180 )
-	return get_sub_texture(card_id, area)
+	var result = get_sub_texture(card_id, area)
+	if result:
+		return result
+	return fallback_hero_portrait(card_id, area)
+	
+func fallback_hero_portrait(card_id, area) -> Texture:
+	var filename = "res://assets/other/hero_card.png"
+	var texture = get_external_texture(filename)
+	var sub_tex= _get_cropped_texture(texture , area)
+	return sub_tex		
 	
 func get_sub_texture(card_id, area):
 	var filename = get_img_filename(card_id)
 	var texture = get_external_texture(filename)
+	if !texture:
+		return null
 	var sub_tex= _get_cropped_texture(texture , area)
 	return sub_tex		
 

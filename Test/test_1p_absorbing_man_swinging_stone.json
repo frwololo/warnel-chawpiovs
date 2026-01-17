@@ -1,5 +1,5 @@
 {
-	"_comments": "Tests Swining Stone attack",
+	"_comments": "Tests Swinging Stone attack",
 	"init": {
 		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [

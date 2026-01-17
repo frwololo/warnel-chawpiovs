@@ -153,7 +153,7 @@ func _setup() -> void:
 	else:
 		# Initialize the game random seed
 		set_seed(game_rng_seed)
-	if !CFConst.LOAD_CARDS_ONLINE:	
+	if !cfc.game_settings.get("load_cards_online", true):	
 		load_cards_database()
 
 func load_scripts():

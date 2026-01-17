@@ -382,25 +382,26 @@ func _adjust_font_size(
 	# line_spacing should be calculated into rect_size
 	# This calculates the amount of vertical pixels the text would take
 	# once it was word-wrapped.
-	var label_rect_y = adjustment_font.get_wordwrap_string_size(
-			text, label_size.x).y \
-			/ line_height \
-			* (line_height + line_spacing) \
-			- line_spacing
-	# If the y-size of the wordwrapped text would be bigger than the current
-	# available y-size foir this label, we reduce the text, until we
-	# it's small enough to stay within the boundaries
-	while label_rect_y > label_size.y:
-		adjustment -= 1
-		adjustment_font.size = font.size + adjustment
-		line_height = adjustment_font.get_height()
-		label_rect_y = adjustment_font.get_wordwrap_string_size(
-				text,label_size.x).y \
+	if label_size.x > 0:
+		var label_rect_y = adjustment_font.get_wordwrap_string_size(
+				text, label_size.x).y \
 				/ line_height \
 				* (line_height + line_spacing) \
 				- line_spacing
-		if adjustment_font.size < 5:
-			break
+		# If the y-size of the wordwrapped text would be bigger than the current
+		# available y-size foir this label, we reduce the text, until we
+		# it's small enough to stay within the boundaries
+		while label_rect_y > label_size.y:
+			adjustment -= 1
+			adjustment_font.size = font.size + adjustment
+			line_height = adjustment_font.get_height()
+			label_rect_y = adjustment_font.get_wordwrap_string_size(
+					text,label_size.x).y \
+					/ line_height \
+					* (line_height + line_spacing) \
+					- line_spacing
+			if adjustment_font.size < 5:
+				break
 	return(adjustment)
 
 

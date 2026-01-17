@@ -39,14 +39,14 @@ anchor_bottom = 1.0
 margin_top = 20.0
 
 [node name="Outercontainer" type="VBoxContainer" parent="MainMenu"]
-margin_left = 660.0
-margin_right = 1260.0
-margin_bottom = 1060.0
+margin_left = 305.0
+margin_right = 974.0
+margin_bottom = 753.0
 size_flags_horizontal = 4
 
 [node name="AdventureModeWarning" type="Label" parent="MainMenu/Outercontainer"]
 unique_name_in_owner = true
-margin_right = 600.0
+margin_right = 669.0
 margin_bottom = 48.0
 rect_min_size = Vector2( 300, 0 )
 custom_colors/font_color = Color( 0.811765, 0.65098, 0.172549, 1 )
@@ -57,40 +57,41 @@ autowrap = true
 [node name="LeftRight" type="HBoxContainer" parent="MainMenu/Outercontainer"]
 unique_name_in_owner = true
 margin_top = 51.0
-margin_right = 600.0
+margin_right = 669.0
 margin_bottom = 619.0
 custom_constants/separation = 100
 
 [node name="PanelContainer" type="PanelContainer" parent="MainMenu/Outercontainer/LeftRight"]
-margin_right = 11.0
+margin_right = 204.0
 margin_bottom = 568.0
 
 [node name="HeroesPanel" type="VBoxContainer" parent="MainMenu/Outercontainer/LeftRight/PanelContainer"]
 margin_left = 2.0
 margin_top = 2.0
-margin_right = 9.0
+margin_right = 202.0
 margin_bottom = 566.0
+rect_min_size = Vector2( 200, 0 )
 custom_constants/separation = 20
 
 [node name="HeroesTitle" type="Label" parent="MainMenu/Outercontainer/LeftRight/PanelContainer/HeroesPanel"]
 unique_name_in_owner = true
-margin_right = 7.0
-margin_bottom = 254.0
+margin_right = 200.0
+margin_bottom = 30.0
 text = "HEROES"
 align = 1
 autowrap = true
 
 [node name="Heroes" type="GridContainer" parent="MainMenu/Outercontainer/LeftRight/PanelContainer/HeroesPanel"]
 unique_name_in_owner = true
-margin_top = 274.0
-margin_right = 7.0
-margin_bottom = 274.0
+margin_top = 50.0
+margin_right = 200.0
+margin_bottom = 50.0
 columns = 3
 
 [node name="TeamScenarioPanel" type="VBoxContainer" parent="MainMenu/Outercontainer/LeftRight"]
 unique_name_in_owner = true
-margin_left = 111.0
-margin_right = 476.0
+margin_left = 304.0
+margin_right = 669.0
 margin_bottom = 568.0
 custom_constants/separation = 50
 
@@ -291,7 +292,7 @@ text = "Launch"
 
 [node name="Margin2" type="MarginContainer" parent="MainMenu/Outercontainer"]
 margin_top = 622.0
-margin_right = 600.0
+margin_right = 669.0
 margin_bottom = 753.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
@@ -299,7 +300,7 @@ custom_constants/margin_top = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Outercontainer/Margin2"]
 margin_top = 10.0
-margin_right = 600.0
+margin_right = 669.0
 margin_bottom = 131.0
 
 [node name="CancelButton" type="Button" parent="MainMenu/Outercontainer/Margin2/VBoxContainer"]
@@ -312,7 +313,7 @@ text = "Back to main menu"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/Margin2/VBoxContainer"]
 margin_top = 62.0
-margin_right = 600.0
+margin_right = 669.0
 margin_bottom = 121.0
 
 [node name="FolderLabel" type="Label" parent="MainMenu/Outercontainer/Margin2/VBoxContainer/HBoxContainer"]
@@ -334,27 +335,26 @@ text = "Open"
 [node name="LargePicture" type="TextureRect" parent="MainMenu"]
 unique_name_in_owner = true
 visible = false
-margin_right = 1920.0
-margin_bottom = 1060.0
+margin_right = 1280.0
+margin_bottom = 753.0
 
 [node name="ModularSelection" type="CenterContainer" parent="MainMenu"]
 visible = false
-margin_right = 1920.0
-margin_bottom = 1060.0
+margin_right = 1280.0
+margin_bottom = 753.0
 
 [node name="ColorRect" type="ColorRect" parent="MainMenu/ModularSelection"]
-margin_left = 320.0
-margin_top = 170.0
-margin_right = 1600.0
-margin_bottom = 890.0
+margin_top = 16.0
+margin_right = 1280.0
+margin_bottom = 736.0
 rect_min_size = Vector2( 1280, 720 )
 color = Color( 0, 0, 0, 0.784314 )
 
 [node name="MarginContainer" type="MarginContainer" parent="MainMenu/ModularSelection"]
-margin_left = 910.0
-margin_top = 482.0
-margin_right = 1010.0
-margin_bottom = 577.0
+margin_left = 590.0
+margin_top = 329.0
+margin_right = 690.0
+margin_bottom = 424.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/ModularSelection/MarginContainer"]
 margin_right = 100.0

@@ -662,18 +662,17 @@ const HIDE_PILE_DETAILS:= true
 
 #this overrides the manipulation buttons in Piles
 const FACEUP_PILE_VIEW_ON_CLICK := true
-#set to true to fetch card datasets online and download images
-const LOAD_CARDS_ONLINE := true
 const ATTEMPT_TO_GUESS_IMAGE_URL := true
 
 
 const DEFAULT_SETTINGS:= {
 	'glow_intensity' : 0.01,
+	'load_cards_online' : true,
 	'images_base_url': "https://marvelcdb.com",
 	"decks_base_url": "https://marvelcdb.com/api/public/decklist/",
 	'database': {
 		"core": "https://marvelcdb.com/api/public/cards/core.json",
-#		"trors" : "https://marvelcdb.com/api/public/cards/trors.json"
+		"trors" : "https://marvelcdb.com/api/public/cards/trors.json"
 	},
 	'lobby_server': {
 		'server': 'https://wololo.net/',

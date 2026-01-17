@@ -18,6 +18,14 @@ const RESOURCE_TEXT := [
 	"WILD"
 ]
 
+func to_short_text():
+	var result = ""
+	for k in ResourceMana.values():
+		var amount = pool[k]
+		for i in amount:
+			result+= RESOURCE_TEXT[k][0]
+	return result
+
 const RESOURCE_TEXT_TO_ENUM := {
 	"UNC" : ResourceMana.UNCOLOR,
 	"MENTAL" : ResourceMana.MENTAL,

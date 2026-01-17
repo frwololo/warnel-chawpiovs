@@ -117,3 +117,9 @@ func force_select_by_title(keyword: String):
 
 func init_default_focus():
 	cfc.default_button_focus($Panel)
+
+func _input(event):	
+	if gamepadHandler.is_ui_cancel_pressed(event):
+		get_tree().is_input_handled()
+		_on_OptionalConfirmation_cancelled()
+		return

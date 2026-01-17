@@ -7,31 +7,41 @@ var text_enabled = false
 var color_texture = null
 var grayscale_texture = null
 
-func _ready() -> void:
-	pass
-	
+func _process(delta:float):
+	_handle_horizontal_card()
+
+func _handle_horizontal_card():
+	if !text_enabled:
+		return
+	_card_text = find_node("CardText")
+	if card_owner._horizontal:
+		_card_text.rect_rotation = -90
+		_card_text.rect_position.y = self.rect_size.y
+		_card_text.rect_min_size = Vector2(self.rect_min_size.y - 4, self.rect_min_size.x - 4) 
+		_card_text.rect_size = _card_text.rect_min_size
+
 func setup_text_mode():
 	text_enabled = true
 	_card_text = find_node("CardText")
+	_handle_horizontal_card()
+	
 #	# Map your card text label layout here. We use this when scaling
 #	# The card or filling up its text
 	card_labels["Name"] = find_node("Name")
-	card_labels["Type"] = find_node("Type")
-	card_labels["Tags"] = find_node("Tags")
-	card_labels["Requirements"] = find_node("Requirements")
+	card_labels["type_name"] = find_node("type_name")
+	card_labels["faction_name"] = find_node("faction_name")	
+	card_labels["text"] = find_node("text")					
+	#card_labels["Type"] = find_node("Type")
 #	card_labels["Abilities"] = find_node("Abilities")
 	card_labels["Cost"] = find_node("Cost")
-	card_labels["Power"] = find_node("Power")
+	if !card_owner.properties.has("Cost") or card_owner.properties["Cost"] == null:
+		find_node("HBCost").visible = false
 #
 #	# These set te max size of each label. This is used to calculate how much
 #	# To shrink the font when it doesn't fit in the rect.
 	card_label_min_sizes["Name"] = Vector2(CFConst.CARD_SIZE.x - 4, 19)
-	card_label_min_sizes["Type"] = Vector2(CFConst.CARD_SIZE.x - 4, 13)
-	card_label_min_sizes["Tags"] = Vector2(CFConst.CARD_SIZE.x - 4, 17)
-	card_label_min_sizes["Requirements"] = Vector2(CFConst.CARD_SIZE.x - 4, 11)
 #	card_label_min_sizes["Abilities"] = Vector2(CFConst.CARD_SIZE.x - 4, 120)
 	card_label_min_sizes["Cost"] = Vector2(16,16)
-	card_label_min_sizes["Power"] = Vector2(16,16)
 
 	# This is not strictly necessary, but it allows us to change
 	# the card label sizes without editing the scene
@@ -51,6 +61,19 @@ func setup_text_mode():
 				original_font_sizes[label] = 25
 			_:
 				original_font_sizes[label] = 16
+	
+	var res_node = find_node("Resources")
+	res_node.text = ""
+	var resources_mana = card_owner.get_printed_resource_value_as_mana()
+	if resources_mana:
+		res_node.text = resources_mana.to_short_text()
+	if (!res_node.text) and card_owner.properties.has("threat") and ! card_owner.properties["threat"] == null:
+		res_node.text = str(card_owner.properties["threat"])
+	if !res_node.text:
+		res_node.visible = false
+		
+	card_labels["text"].text = 	card_owner.properties.get("text", "")
+	card_labels["text"].bbcode_text = card_labels["text"].text 
 
 
 func set_card_art(filename) -> void:

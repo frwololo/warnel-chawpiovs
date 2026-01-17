@@ -20,8 +20,9 @@ func get_text():
 	return ""
 
 func gain_focus():
-	$Panel/VerticalHighlights.visible = true
-	$Panel/HorizontalHighlights.visible = true
+	if !gamepadHandler.is_mouse_input():
+		$Panel/VerticalHighlights.visible = true
+		$Panel/HorizontalHighlights.visible = true
 	$Panel/HorizontalHighlights.rect_size = scenario_picture.rect_size
 	#$HorizontalHighlights.rect_position = rect_position
 	$Panel/VerticalHighlights.rect_size = scenario_picture.rect_size	

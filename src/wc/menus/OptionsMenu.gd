@@ -28,7 +28,6 @@ func init_button_signals(node):
 
 func _ready():	
 	init_button_signals(self)
-
 	
 	file_dialog.connect("file_selected", self, "_on_file_selected")	
 	resize()
@@ -68,6 +67,13 @@ func on_button_pressed(_button_name : String) -> void:
 			hide_gameplay_options()
 		"GameplayOptionsButton":
 			show_gameplay_options()
+
+func get_cancel_button(tab_name):
+	match tab_name:
+		"gameplay":
+			return get_node("%GameplayBackButton")
+		_:
+			return get_node("%BackButton")
 
 func select_tab(tab_name):
 	for tab in ["general", "gameplay"]:
@@ -118,11 +124,13 @@ func show_controls():
 		overlay.visible = true
 		hide_menu()
 		
-func hide_controls():
+func hide_controls() -> bool:
 	var overlay = get_node("%Overlay")	
 	if overlay.visible:			
 		overlay.visible = false
 		show_menu()
+		return true
+	return false
 
 func hide_menu():
 	$PanelContainer.hide()
@@ -135,8 +143,20 @@ func show_menu():
 	cfc.default_button_focus($PanelContainer)
 	
 func _input(event):
+	if !self.visible:
+		return
 	if event.is_pressed() and !event.is_echo():
-		hide_controls()
+		if hide_controls():
+			return
+
+	if gamepadHandler.is_ui_cancel_pressed(event):
+#		get_tree().is_input_handled()
+		for tab in ["general", "gameplay"]:
+			if get_node("%" + tab).visible:
+				var button:Button = get_cancel_button(tab)
+#				get_tree().is_input_handled()
+				on_button_pressed(button.name)
+				return
 
 var _temporary_disabled_nodes = {}
 var disabled_container = null
@@ -157,7 +177,11 @@ func close_me():
 		cfc.default_button_focus(disabled_container)
 
 func show_me(container_to_disable = null):
-	#set_process(true)
+
+	get_node("%GameplayBackButton").icon = gamepadHandler.get_icon_for_action("ui_cancel")
+	get_node("%BackButton").icon = gamepadHandler.get_icon_for_action("ui_cancel")
+
+
 	if container_to_disable:
 		_temporary_disabled_nodes= cfc.disable_focus_mode(container_to_disable) 
 		disabled_container = container_to_disable
@@ -224,3 +248,4 @@ func _on_FileDialog_popup_hide():
 
 func resize():
 	self.scale = cfc.screen_scale
+

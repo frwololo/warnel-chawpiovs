@@ -27,6 +27,7 @@ enum LOAD_STATUS {
 
 var _load_status = LOAD_STATUS.NOT_STARTED
 var _loading_error = false
+var _network_error = ""
 
 signal all_downloads_completed()
 signal one_download_completed()
@@ -75,18 +76,27 @@ func loading_error(msg):
 	main_title.text = "SCRIPT ERROR :("
 	_loading_error  = true
 
+func network_error(msg):
+	v_folder_label.text = "NETWORK ERROR: " + msg
+	_network_error = msg +"(" + _current_url + ")"
+	#push_error(msg)
+
 func display_folder_info():
+	if _network_error:
+		v_folder_label.add_color_override("font_color", Color8(255, 0,0))
+		v_folder_label.text = "There was a network error while downloading game resources. Gameplay might be impacted.\n" +  _network_error
+		return
 	v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
 
 func _set_download_completed(result, response_code, headers, body):
 	if result != HTTPRequest.RESULT_SUCCESS:
-		push_error("Set couldn't be downloaded.")
+		network_error("Set couldn't be downloaded.")
 	else:
 		var content = body.get_string_from_utf8()
 
 		var json_result:JSONParseResult = JSON.parse(content)
 		if (json_result.error != OK):
-			push_error("Set couldn't be downloaded.")
+			network_error("Set couldn't be downloaded.")
 		else:
 			var file = File.new()
 			var filename = _current_destination
@@ -99,7 +109,7 @@ func _set_download_completed(result, response_code, headers, body):
 
 func _img_download_completed(result, response_code, headers, body):
 	if result != HTTPRequest.RESULT_SUCCESS:
-		push_error("Image couldn't be downloaded. Try a different image.")
+		network_error("Image couldn't be downloaded")
 
 	else:
 		var PNG_HEADER = [137,80,78,71,13,10,26,10]
@@ -124,7 +134,7 @@ func _img_download_completed(result, response_code, headers, body):
 			i+=1
 			
 		if loaded_ok != OK:
-			push_error("Couldn't load the image - " + _current_url)
+			network_error("Couldn't load the image - " + _current_url)
 		else:
 			var tmp_filename = "user://Sets/tmp_images/tmp.png"
 			image.save_png(tmp_filename)
@@ -165,11 +175,7 @@ func mask_image(image:Image, destination, card_key):
 	image.fix_alpha_edges()
 	image.save_png(destination)	
 
-func download_database():
-	http_request = HTTPRequest.new()
-	add_child(http_request)	
-	http_request.connect("request_completed", self, "_set_download_completed")
-	
+func download_database():	
 	var database = cfc.game_settings.get("database", {})
 	if typeof(database) != TYPE_DICTIONARY:
 		var _error = 1
@@ -184,16 +190,23 @@ func download_database():
 			continue
 		if !url:
 			continue
+		if !http_request:
+			http_request = HTTPRequest.new()
+			add_child(http_request)	
+			http_request.connect("request_completed", self, "_set_download_completed")
+
+			
 		# Perform the HTTP request. should return a json file
 		self._current_destination = "user://" + filename
 		self._current_url = url
 		var error = http_request.request(url)
 		if error != OK:
-			push_error("An error occurred in the HTTP request.")
+			network_error("An error occurred in the HTTP request.")
 			continue
 		yield(self, "one_download_completed")
-	remove_child(http_request)
-	http_request.queue_free()
+	if http_request:
+		remove_child(http_request)
+		http_request.queue_free()
 	emit_signal ("sets_download_completed")			
 
 func _images_download_completed():	
@@ -278,7 +291,7 @@ func start_images_dl():
 		self._current_card_key = card_key
 		var error = http_request.request(url)
 		if error != OK:
-			push_error("An error occurred in the HTTP request.")
+			network_error("An error occurred in the HTTP request for card" + card_id)
 			continue
 		yield(get_tree(), "idle_frame")
 		yield(self, "one_download_completed")
@@ -307,7 +320,7 @@ func _process(delta):
 	
 	if _load_status == LOAD_STATUS.NOT_STARTED:	
 		_load_status = LOAD_STATUS.IN_PROGRESS
-		if CFConst.LOAD_CARDS_ONLINE:
+		if cfc.game_settings.get("load_cards_online", true):
 			download_database()
 		else:
 			_load_status = LOAD_STATUS.COMPLETE
@@ -362,6 +375,7 @@ func resize():
 		texture_rect.rect_min_size = Vector2(1616, 604)
 		texture_rect.rect_size = texture_rect.rect_min_size
 
+	v_folder_label.rect_min_size.x = target_size.x - 100
 	self.margin_right = target_size.x
 	self.margin_bottom = target_size.y
 	self.rect_size = target_size

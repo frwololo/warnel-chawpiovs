@@ -149,6 +149,7 @@ custom_fonts/font = SubResource( 2 )
 text = "Main Menu"
 
 [node name="BackButton" type="Button" parent="PanelContainer/general/VBoxContainer"]
+unique_name_in_owner = true
 margin_top = 1001.0
 margin_right = 1896.0
 margin_bottom = 1076.0
@@ -205,6 +206,7 @@ margin_bottom = 178.0
 text = "Adventure Mode"
 
 [node name="GameplayBackButton" type="Button" parent="PanelContainer/gameplay/VBoxContainer"]
+unique_name_in_owner = true
 margin_top = 1001.0
 margin_right = 1896.0
 margin_bottom = 1076.0

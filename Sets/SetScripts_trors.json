@@ -192,8 +192,12 @@
 							},
 							"nested_tasks": [
 								{
-									"name": "receive_damage",
-									"subject": "my_hero",
+									"name": "indirect_damage",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_friendly_current_hero_target"
+										}
+									],
 									"amount": 1
 								}
 							]
@@ -239,7 +243,7 @@
 				],
 				"Take Damage": [
 					{
-						"name": "receive_damage",
+						"name": "indirect_damage",
 						"amount": {
 							"if": {
 								"func_name": "count_tokens",
@@ -252,8 +256,7 @@
 							},
 							"then": 3,
 							"else": 2
-						},
-						"subject": "my_identity"
+						}
 					}
 				]
 			}
@@ -1223,7 +1226,7 @@
 			]
 		},
 		"interrupt": {
-			"event_name": "enemy_attack_damage",
+			"event_name": "enemy_initiates_attack",
 			"trigger": "host",
 			"board": [
 				{
@@ -1235,21 +1238,25 @@
 				},
 				{
 					"name": "move_card_to_container",
-					"subject": "tutor",
+					"subject": "index",
 					"subject_index": "top",
 					"subject_count": 1,
 					"src_container": "deck_villain",
 					"dest_container": "discard_villain"
 				},
 				{
-					"name": "deal_damage",
-					"subject": "my_hero",
+					"name": "indirect_damage",
 					"amount": {
 						"func_name": "count_boost_icons",
 						"func_params": {
 							"subject": "previous"
 						}
-					}
+					},
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_current_hero_target"
+						}
+					]
 				}
 			]
 		},
@@ -1437,8 +1444,12 @@
 			"trigger": "villain",
 			"board": [
 				{
-					"name": "receive_damage",
-					"subject": "current_activation_target",
+					"name": "indirect_damage",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_current_hero_target"
+						}
+					],
 					"amount": {
 						"if": {
 							"func_name": "count_tokens",
@@ -1791,7 +1802,7 @@
 				},
 				{
 					"name": "move_card_to_container",
-					"subject": "tutor",
+					"subject": "index",
 					"subject_index": "top",
 					"up_to": true,
 					"subject_count": {
@@ -1805,8 +1816,7 @@
 					"dest_container": "discard_villain"
 				},
 				{
-					"name": "deal_damage",
-					"subject": "my_hero",
+					"name": "indirect_damage",
 					"amount": {
 						"func_name": "count_boost_icons",
 						"func_params": {
@@ -2404,7 +2414,7 @@
 								},
 								"filter_properties2": {
 									"faction_code": "hero"
-								},								
+								}
 							}
 						]
 					},
@@ -2423,7 +2433,6 @@
 						"name": "shuffle_container",
 						"dest_container": "deck"
 					}
-					
 				]
 			}
 		},
@@ -2635,8 +2644,7 @@
 					"subject": "my_identity"
 				},
 				{
-					"name": "receive_damage",
-					"subject": "my_identity",
+					"name": "indirect_damage",
 					"amount": {
 						"if": {
 							"func_name": "has_trait",
@@ -4697,8 +4705,7 @@
 		"reveal_hero": {
 			"all": [
 				{
-					"name": "receive_damage",
-					"subject": "my_hero",
+					"name": "indirect_damage",
 					"amount": {
 						"if": {
 							"func_name": "has_trait",
@@ -6033,7 +6040,7 @@
 					],
 					"tags": [
 						"disable_attach_trigger"
-					],					
+					]
 				}
 			]
 		}

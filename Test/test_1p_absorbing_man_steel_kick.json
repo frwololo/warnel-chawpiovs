@@ -68,6 +68,11 @@
 	},
 	"actions": [
 		{
+			"type": "select",
+			"value": ["Hawkeye","Hawkeye","Hawkeye","Hawkeye"],
+			"_comments": "wait for player turn"
+		},
+		{
 			"type": "other",
 			"value": "wait_for_player_turn",
 			"_comments": "wait for player turn"

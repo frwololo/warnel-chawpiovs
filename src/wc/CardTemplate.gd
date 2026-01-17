@@ -265,6 +265,11 @@ func get_display_name(force_canonical = false):
 	var shortname =  get_property("shortname", "---")
 	return shortname
 
+func get_duplicate(refresh_variables = true):
+	var duplicate = .get_duplicate(refresh_variables)
+	duplicate._hide_spinbox()
+	return _duplicate
+
 func setup() -> void:
 	.setup()
 	_runtime_properties_setup()
@@ -409,8 +414,18 @@ func get_spinbox():
 		$Control.add_child(spinbox_panel)
 		spinbox = spinbox_panel.get_node("SpinBox")
 
+	_show_spinbox()
 	return spinbox		
+
+func _hide_spinbox():
+	if !spinbox:
+		return
+	spinbox.get_parent().visible = false
 		
+func _show_spinbox():
+	if !spinbox:
+		return
+	spinbox.get_parent().visible = true
 
 func _ready():
 	scripting_bus.connect("scripting_event_about_to_trigger", self, "execute_before_scripts")
@@ -1913,6 +1928,12 @@ func common_pre_run(sceng) -> void:
 					script.script_definition = new_script
 					script.script_name = script.get_property("name") #TODO something cleaner? Maybe part of the script itself?
 					new_queue.append(script)
+			"indirect_damage":
+				var new_script = indirect_damage_replacement(script_definition, trigger_details)
+				if (new_script) :
+					script.script_definition = new_script
+					script.script_name = script.get_property("name") #TODO something cleaner? Maybe part of the script itself?
+					new_queue.append(script)					
 			"end_phase_discard":
 				#end phase discard is either optional, or forced if we're above max_hand_size
 				var hero = script.owner
@@ -1950,6 +1971,44 @@ func common_pre_run(sceng) -> void:
 			_:
 				new_queue.append(task)
 	sceng.scripts_queue = new_queue	
+
+#TODO cleanup, probably doesn't need to be a replacement
+func indirect_damage_replacement(script_definition: Dictionary, trigger_details) -> Dictionary:	
+	var owner_hero_id = trigger_details.get("override_controller_id", self.get_owner_hero_id())
+
+	# For cards owned by the Villain, owner_hero_id is zero.
+	# we set it to the current playing hero, meaning the currently active user
+	# can pay the cost
+	#TODO how does it work in Multiplayer?
+	if (!owner_hero_id):
+		owner_hero_id = gameData.get_current_local_hero_id()
+			
+	var filter_state_seek = [
+		{
+			"filter_group": "group_friendly" + str(owner_hero_id)
+		}
+	]
+	filter_state_seek = script_definition.get("filter_state_seek", filter_state_seek)
+	
+	var amount = script_definition.get("amount", 1)
+	
+	
+	#Note: amount in this case is actually set into selection_count, 
+	# due to how "assign_" works in selectionwindow			
+	var result  =	{
+		"name": "deal_damage",
+		"amount": 1,
+		"subject": "boardseek",
+		"abort_on_cost_failure": true,
+		"subject_count": "all",
+		"selection_count": amount,
+		"selection_type": "as_much_as_possible",
+		"selection_what_to_count": "assign_indirect_damage",
+		"needs_selection": true,
+		"filter_state_seek": filter_state_seek
+	}	
+
+	return result	
 
 #TODO cleanup, probably doesn't need to be a replacement
 func pay_regular_cost_replacement(script_definition: Dictionary, trigger_details) -> Dictionary:	

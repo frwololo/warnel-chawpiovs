@@ -67,7 +67,12 @@
 			"type": "select",
 			"value": "cancel",
 			"_comments": "take undefended attack against Absorbing man"
-		},		
+		},	
+		{
+			"type": "select",
+			"value": "Hawkeye",
+			"_comments": "take 1 indirect damage"
+		},			
 		{
 			"type": "select",
 			"value": "cancel",

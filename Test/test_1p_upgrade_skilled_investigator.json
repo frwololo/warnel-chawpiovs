@@ -1,5 +1,5 @@
 {
-	"_comments": "Tests Skilled Investigator interaction with other message",
+	"_comments": "Tests Skilled Investigator With the sleeper",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -12,7 +12,7 @@
 		"board": {
 			"villain": [
 				{
-					"card": "Crossbones - 1"
+					"card": "Red Skull - 1"
 				}
 			],
 			"deck_villain": [
@@ -21,7 +21,7 @@
 				},
 				{
 					"card": "Hydra Regular"
-				},				
+				},
 				{
 					"card": "Armored Guard"
 				},
@@ -31,12 +31,19 @@
 			],
 			"schemes": [
 				{
-					"card": "Attack on Mount Athena"
+					"card": "The Red House"
 				},
 				{
-					"card": "Hydra Patrol",
-					"tokens": {"threat": 2}
-				}				
+					"card": "The Sleeper Awakened"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "The Sleeper",
+					"tokens": {
+						"damage": 4
+					}
+				}
 			],
 			"deck1": [
 				{
@@ -44,7 +51,7 @@
 				},
 				{
 					"card": "Finesse"
-				}				
+				}
 			],
 			"identity1": [
 				{
@@ -68,8 +75,22 @@
 	},
 	"actions": [
 		{
-			"type": "other",
-			"value": "gain_control"
+			"type": "activate",
+			"value": "Spider-Woman"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "The sleeper"
+		},
+		{
+			"type": "choose",
+			"value": "yes",
+			"expected_to_fail": true,
+			"_comments": "(expected to fail) answer yes to draw from skilled investigator"
 		}
 	],
 	"end": {
@@ -84,12 +105,23 @@
 		"board": {
 			"villain": [
 				{
-					"card": "Crossbones - 1"
+					"card": "Red Skull - 1"
 				}
+			],
+			"set_aside": [
+				{
+					"card": "The Sleeper Awakened"
+				},			
+				{
+					"card": "The Sleeper"
+				},
 			],
 			"deck_villain": [
 				{
 					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Regular"
 				},
 				{
 					"card": "Armored Guard"
@@ -100,33 +132,33 @@
 			],
 			"schemes": [
 				{
-					"card": "Attack on Mount Athena"
+					"card": "The Red House"
 				}
 			],
 			"deck1": [
 				{
 					"card": "Pheromones"
-				}
-			],
-			"discard1": [
+				},
 				{
-					"card": "Energy"
-				}
+					"card": "Finesse"
+				}				
 			],
 			"identity1": [
 				{
 					"card": "Spider-Woman"
-				}
+				},
 			],
 			"upgrade_support1": [
 				{
-					"card": "Finesse",
-					"exhausted": true
+					"card": "skilled Investigator"
 				}
 			],
-			"allies1": [
+			"hand1": [
 				{
 					"card": "Jessica Jones"
+				},
+				{
+					"card": "Clear the Area"
 				}
 			]
 		}

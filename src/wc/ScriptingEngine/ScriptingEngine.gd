@@ -258,8 +258,10 @@ func attack(script: ScriptTask) -> int:
 	if !type in ["hero", "ally"]:
 		owner = _get_identity_from_script(script)	
 	
-	var damage = script.retrieve_integer_property("amount")
-	if not damage:
+	var damage = 0
+	if script.script_definition.has("amount"):
+		damage = script.retrieve_integer_property("amount")
+	else:
 		damage = owner.get_property("attack", 0)
 
 	if (owner.is_stunned()):

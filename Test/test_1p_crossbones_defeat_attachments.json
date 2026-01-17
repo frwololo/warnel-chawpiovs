@@ -1,0 +1,147 @@
+{
+	"_comments": "Bug: Crossbones' attachments don't all return to him",
+	"test_conditions": {
+		"ignore_order" : [
+			"others"
+		],
+	},		
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 1",
+					"tokens": {"damage": 11}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "hydra regular"
+				},
+				{
+					"card": "hydra mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Clear the Area"
+				},
+				{
+					"card": "Pheromones"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"others": [
+				{
+					"card": "Power gauntlets",
+					"host": "Crossbones - 1"
+				},
+				{
+					"card": "Crossbones' Machine Gun",
+					"tokens": {"ammo": 2},
+					"host": "Crossbones - 1"
+				},				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Spider-Woman",
+		},
+		{
+			"type": "choose",
+			"value": "attack",
+		},
+		{
+			"type": "target",
+			"value": "Crossbones - 1"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 2",
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "hydra regular"
+				},
+				{
+					"card": "hydra mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Clear the Area"
+				},
+				{
+					"card": "Pheromones"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"others": [
+				{
+					"card": "Power gauntlets",
+					"host": "Crossbones - 2"
+				},
+				{
+					"card": "Crossbones' Machine Gun",
+					"tokens": {"ammo": 2},
+					"host": "Crossbones - 2"
+				},				
+			]
+		}
+	}
+}

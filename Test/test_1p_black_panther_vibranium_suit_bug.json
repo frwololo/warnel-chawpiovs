@@ -1,0 +1,109 @@
+{
+	"_comments": "Bug: Vibranium Suit deals damage even if I have no damage to transfer",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Black Panther"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {"damage": 1}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",					
+				}			
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Vibranium Suit"
+				},			
+			],
+			"identity1": [
+				{
+					"card": "Black Panther",
+				}
+			],
+			"hand1": [
+				{
+					"card": "Wakanda Forever!"
+				},		
+				{
+					"card": "Shuri"
+				},
+			]
+		}
+	},
+	"actions": [		
+		{
+			"type": "play",
+			"value": "Wakanda Forever!"
+		},
+		{
+			"type": "select",
+			"value": ["Vibranium Suit"]
+		},
+		{
+			"type": "target",
+			"value":  "01094"
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Black Panther"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {"damage": 1}					
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097",					
+				}			
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Vibranium Suit"
+				},			
+			],
+			"identity1": [
+				{
+					"card": "Black Panther",
+				}
+			],
+			"discard1": [
+				{
+					"card": "Shuri"
+				},			
+				{
+					"card": "Wakanda Forever!"
+				},		
+			]
+		}
+	},
+}

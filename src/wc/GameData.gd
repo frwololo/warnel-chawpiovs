@@ -1779,9 +1779,12 @@ func move_to_next_villain(current_villain):
 	var ckey = new_villain_data["_code"] 		
 	var new_card = cfc.NMAP.board.load_villain(ckey)
 	current_villain.copy_tokens_to(new_card, {"exclude":["damage"]})
+	var attachments_to_move = []
 	for attachment in current_villain.attachments:
 		if attachment.is_boost():
 			continue
+		attachments_to_move.append(attachment)
+	for attachment in attachments_to_move:	
 		attachment.attach_to_host(new_card)
 		
 	set_aside(current_villain)	

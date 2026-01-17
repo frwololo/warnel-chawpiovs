@@ -509,6 +509,12 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	if not card_data.has("_code"):
 		card_data["_code"] = card_data.get("code", "")
 	var card_id = card_data["_code"]	
+
+	#hardcoded patches
+	var patches = CFConst.HARDCODED_DEF_PATCHES.get(card_id, {})
+	for key in patches:
+		card_data[key] = patches[key]
+
 	
 	if not card_data.has("Tags"):
 		card_data["Tags"] = []			

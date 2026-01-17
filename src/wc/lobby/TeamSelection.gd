@@ -178,7 +178,7 @@ func resize():
 	var scenario_picture:TextureRect = get_node("%ScenarioTexture") 
 	if stretch_mode == SceneTree.STRETCH_MODE_VIEWPORT and screen_size.x > 1800:
 		get_node("%LeftRight").add_constant_override("separation", 100)
-		get_node("%TeamScenarioPanel").add_constant_override("separation", 50)
+		get_node("%TeamScenarioPanel").add_constant_override("separation", 20)
 		get_node("%ScenarioOverContainer").add_constant_override("separation", 20)		
 		scenario_picture.rect_min_size = Vector2(200, 200)
 		get_node("%VBoxContainer").add_constant_override("separation", 20)

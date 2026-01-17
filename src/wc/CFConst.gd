@@ -687,6 +687,13 @@ const DEFAULT_SETTINGS:= {
 	
 }
 
+const HARDCODED_DEF_PATCHES = {
+	"04128": {
+		"name": "The Rise of Red Skull" #https://github.com/zzorba/marvelsdb/issues/339
+	}
+	
+}
+
 #if a menu only has one entry, it will auto execute it whenever possible
 
 enum AUTO_EXECUTE_MENU {

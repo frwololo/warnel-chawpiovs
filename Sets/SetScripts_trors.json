@@ -829,7 +829,7 @@
 					"name": "mod_tokens",
 					"modification": 1,
 					"token_name": "confused",
-					"subject": "my_hero"
+					"subject": "my_identity"
 				}
 			]
 		},
@@ -892,7 +892,7 @@
 					"name": "move_card_to_container",
 					"dest_container": "discard_villain",
 					"src_container": "deck_villain",
-					"subject": "tutor",
+					"subject": "index",
 					"subject_index": "top",
 					"subject_count": 1,
 					"for_each_player": true
@@ -905,7 +905,7 @@
 							"subject": "all_previous"
 						}
 					},
-					"subject": "main_scheme"
+					"subject": "self"
 				}
 			]
 		}
@@ -1572,8 +1572,7 @@
 		}
 	},
 	"Elektra": {
-		"response": {
-			"event_name": "card_played",
+		"card_played": {
 			"trigger": "self",
 			"is_optional_board": true,
 			"board": [
@@ -3048,7 +3047,7 @@
 			"all": [
 				{
 					"name": "move_card_to_container",
-					"subject": "tutor",
+					"subject": "index",
 					"subject_index": "top",
 					"up_to": true,
 					"subject_count": 5,
@@ -3081,7 +3080,7 @@
 			"all": [
 				{
 					"name": "move_card_to_container",
-					"subject": "tutor",
+					"subject": "index",
 					"subject_index": "top",
 					"up_to": true,
 					"subject_count": 5,
@@ -3172,8 +3171,7 @@
 		}
 	},
 	"Moon Knight - Marc Spector": {
-		"response": {
-			"event_name": "card_played",
+		"card_played": {
 			"trigger": "self",
 			"is_optional_board": true,
 			"board": [
@@ -4101,8 +4099,7 @@
 		}
 	},
 	"Shang-Chi": {
-		"response": {
-			"event_name": "card_played",
+		"card_played": {
 			"trigger": "self",
 			"is_optional_board": true,
 			"board": [
@@ -4663,8 +4660,12 @@
 		"boost": {
 			"all": [
 				{
-					"name": "receive_damage",
-					"subject": "current_activation_target",
+					"name": "indirect_damage",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_current_hero_target"
+						}
+					],
 					"amount": {
 						"if": {
 							"func_name": "count_tokens",
@@ -5920,8 +5921,7 @@
 		}
 	},
 	"White Tiger - Angela Del Toro": {
-		"response": {
-			"event_name": "card_played",
+		"card_played": {
 			"trigger": "self",
 			"is_optional_board": true,
 			"board": [

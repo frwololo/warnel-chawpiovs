@@ -25,18 +25,28 @@ const actions_to_string = [
 
 const tmp_filename:= "user://recorded_gameplay_tmp.txt"
 const filename:= "user://recorded_gameplay.txt"
+const SETTINGS := {
+	"active" : true
+}
+
+static func deactivate():
+	SETTINGS["active"] = false
 
 static func init_game():
-	INIT_LOG()
+	if !SETTINGS["active"]:
+		return
+	_INIT_LOG()
 	var data = {
 		"init": gameData.save_gamedata()
 	}
 	var buffer = JSON.print(data, '\t')
 	buffer = buffer.substr(0, buffer.length()-1)
 	buffer+= ",\n \"actions\": [\n"
-	log_string(buffer)
+	_log_string(buffer)
 	
 static func finalize_game():
+	if !SETTINGS["active"]:
+		return
 	var file = File.new()
 	if (!file.file_exists(tmp_filename)):
 		#this means we already closed
@@ -47,11 +57,13 @@ static func finalize_game():
 	}
 	var buffer = JSON.print(data, '\t')
 	buffer = "\n]," + buffer.substr(1)
-	log_string(buffer)
+	_log_string(buffer)
 	var dir = Directory.new()
 	dir.rename(tmp_filename, filename)	
 
 static func add_entry(action, values, comments = ""):
+	if !SETTINGS["active"]:
+		return	
 	var data = {
 		"type": actions_to_string[action],
 		"value" : values
@@ -61,9 +73,9 @@ static func add_entry(action, values, comments = ""):
 		
 	var buffer = JSON.print(data, '\t')
 	buffer+= ","				
-	log_string(buffer)
+	_log_string(buffer)
 	
-static func log_json(data):
+static func _log_json(data):
 	var file = File.new()
 
 	if (!file.file_exists(tmp_filename)):
@@ -75,7 +87,7 @@ static func log_json(data):
 	file.store_string(JSON.print(data, '\t'))
 	file.close()	
 
-static func log_string(buffer):
+static func _log_string(buffer):
 	var file = File.new()
 
 	if (!file.file_exists(tmp_filename)):
@@ -88,7 +100,7 @@ static func log_string(buffer):
 	file.close()	
 	
 	
-static func INIT_LOG():
+static func _INIT_LOG():
 	var file = File.new()
 	file.open(tmp_filename, File.WRITE)
 	file.close() 		

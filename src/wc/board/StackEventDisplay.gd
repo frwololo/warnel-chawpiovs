@@ -27,6 +27,7 @@ var owner_card
 var subjects:= []
 var status = ANIMATION_STATUS.NONE
 var initialized = false
+var text_loaded = false
 var arrows_initialized = false
 var arrows := []
 var rect_size = Vector2(200, 200)
@@ -49,12 +50,17 @@ onready var ok_button = get_node("%OKButton")
 var show_ok = false
 var ok_button_initialized = false
 
+
+func _init():
+	self.visible = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	scripting_bus.connect("stack_event_deleted", self, "_stack_event_deleted")	
 	gameData.theStack.connect("script_executed_from_stack", self, "_script_executed_from_stack")
 
-	start_animation()
+	if status == ANIMATION_STATUS.NONE:
+		self.visible = true
+		start_animation()
 	pass # Replace with function body.
 
 
@@ -215,6 +221,11 @@ func load_text():
 	if !display_text:
 		return
 
+	if text_loaded:
+		return
+
+	text_loaded = true
+
 	if prioritize_text_from_owner_card and owner_card:
 		if owner_card.is_boost():
 			var text = owner_card.get_printed_text("boost")
@@ -244,6 +255,11 @@ func load_text():
 func load_from_event(event):
 	stack_event = event
 	owner_card = stack_event.get_owner_card()
+	if !owner_card:
+		#There's an edge case where only irrelevant actions (e.g. only nop) are in the stack_event
+		#at which point this will return a weird empty event with no text. We don't want to display that		
+		terminate()
+		return	
 	subjects = stack_event.get_subjects()
 
 func load_from_past_event(event, storage):
@@ -252,7 +268,12 @@ func load_from_past_event(event, storage):
 	stack_event = event
 
 	owner_card = storage.get("owner_card", null)
-
+	if !owner_card:
+		#There's an edge case where only irrelevant actions (e.g. only nop) are in the stack_event
+		#at which point this will return a weird empty event with no text. We don't want to display that		
+		terminate()
+		return
+	
 	if stack_event:
 		var owner_card_2 = stack_event.get_owner_card()
 		if owner_card_2 and owner_card_2!= owner_card:

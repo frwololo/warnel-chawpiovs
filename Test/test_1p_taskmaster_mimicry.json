@@ -1,0 +1,161 @@
+{
+	"_comments": "Tests Mimicry",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Mimicry"
+				}
+			],
+			"villain": [
+				{
+					"card": "Taskmaster - 1",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting down Heroes",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Spider-Man - Peter Parker"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "The Power of Aggression"
+				},
+				{
+					"card": "Heroic Intuition"
+				},
+				{
+					"card": "Press the Advantage"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+			"_comments": "wait for attack"
+		},	
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack"
+		},		
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "wait for player turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Armored Guard"
+				},			
+				{
+					"card": "Mimicry"
+				},
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"villain": [
+				{
+					"card": "Taskmaster - 1",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting down Heroes",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Press the Advantage"
+				},			
+				{
+					"card": "Heroic Intuition"
+				},
+				{
+					"card": "The Power of Aggression"
+				},				
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Strength"
+				},
+			],
+			"deck1": [
+				{
+					"card": "Spider-Man - Peter Parker"
+				}
+			]
+		}
+	}
+}

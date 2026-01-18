@@ -239,7 +239,10 @@ func play_card(script: ScriptTask) -> int:
 	
 	#if (retcode == CFConst.ReturnCode.FAILED):
 	#	return retcode
-		
+
+#commented out for now but this is the right way moving forward
+#	var stackEvent:SignalStackScript = SignalStackScript.new("card_played", script.owner, script.trigger_details)
+#	gameData.theStack.add_script(stackEvent)		
 	scripting_bus.emit_signal("card_played", script.owner, script.script_definition)		
 	return retcode	
 
@@ -313,7 +316,10 @@ func character_died(script: ScriptTask) -> int:
 		if owner_hero_id > 0:
 			card.move_to(cfc.NMAP["discard" + str(owner_hero_id)])
 		else:
-			card.move_to(cfc.NMAP["discard_villain"])
+			if type in ["ally"]:
+				card.move_to(cfc.NMAP["discard" + str(card.get_controller_hero_id())])
+			else:
+				card.move_to(cfc.NMAP["discard_villain"])
 	
 	return retcode
 

@@ -229,7 +229,7 @@ func get_scripts(scripts: Dictionary, card_id: String, _get_modified = true) -> 
 		var alter_ego_actions: Dictionary = { 
 			"manual": {
 				"board": {
-					"recovery": [
+					"recover": [
 						{	
 							"name": "constraints",
 							"is_cost": true,

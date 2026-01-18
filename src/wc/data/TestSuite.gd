@@ -164,7 +164,8 @@ func reset():
 	skipped_reason = []
 	finished = false
 
-	gameData.theAnnouncer.skip_announcer()	
+	gameData.theAnnouncer.skip_announcer()
+	GameRecorder.deactivate()
 	gameData.disable_desync_recovery()
 		
 	if 1 != cfc.get_network_unique_id():
@@ -692,7 +693,7 @@ func action_choose(hero_id, action_value):
 		var _error =1	
 		return
 	
-	cfc.get_modal_menu().force_select_by_title(action_value)
+	cfc.get_modal_menu().force_select_by_title(action_value.to_lower())
 
 #clicked on next phase. Value is the hero id	
 func action_pass(hero_id):

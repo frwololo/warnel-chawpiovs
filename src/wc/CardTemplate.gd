@@ -2448,14 +2448,14 @@ func count_tokens(params, script:ScriptObject = null) -> int:
 
 #returns true if this card (or script subject) has a given trait
 func has_trait(params, script:ScriptObject = null) -> int:
-	var subject = self
+	var subjects = [self]
 	
 	var and_or = "or"
 	
 	if script and params.has("subject"):
-		var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
-		if subjects:
-			subject = subjects[0]
+		var new_subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
+		if new_subjects:
+			subjects = new_subjects
 			
 	var traits = []
 	match typeof(params):
@@ -2472,14 +2472,15 @@ func has_trait(params, script:ScriptObject = null) -> int:
 
 	if !traits:
 		return 0
-	for trait in traits:
-		trait = "trait_" + trait
-		if and_or =="or":
-			if subject.get_property(trait, 0, true):
-				return 1
-		else:
-			if !subject.get_property(trait, 0, true):
-				return 0
+	for subject in subjects:
+		for trait in traits:
+			trait = "trait_" + trait
+			if and_or == "or":
+				if subject.get_property(trait, 0, true):
+					return 1
+			else:
+				if !subject.get_property(trait, 0, true):
+					return 0
 	if and_or =="or":
 		return 0
 	return 1

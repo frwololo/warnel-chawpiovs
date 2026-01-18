@@ -291,14 +291,20 @@ func post_initiate_checks():
 		return
 	# If the selection count is 0 (e.g. reduced with an alterant)
 	# And we're looking for max or equal amount of cards, we return cancelled.
-	elif selection_count == 0\
-			and selection_type in ["equal", "max"]:
-		force_cancel()
-		return
+	elif selection_count == 0:
+		if selection_type in ["equal", "max", "as_much_as_possible"]:
+			force_cancel()
+			return
+
+	if !card_array.size() and _assign_mode:
+			force_cancel()
+			return			
 
 	# When we have 0 cards to select from, we consider the selection cancelled
 	elif get_count(card_array) == 0:
-			if (!_assign_mode) and (!show_cards_with_zero_value): #TODO better check here?
+			#if show_cards_with_zero_value is set to true we want to show the selection even if there is nothing to choose from,
+			#so that the player can see that they fetched nothing (e.g. Jessica Drew's Apartment, Hawkeye's Quiver)
+			if (!show_cards_with_zero_value) and (!_assign_mode):
 				force_cancel()
 				return
 			if show_cards_with_zero_value:

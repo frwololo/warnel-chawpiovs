@@ -57,6 +57,9 @@ signal optional_window_opened(optional_window, details)
 # warning-ignore:unused_signal
 signal optional_window_closed(optional_window, details)
 
+# Emitted right as targeting is about to happen.
+# warning-ignore:unused_signal
+signal about_to_initiate_targeting(card)
 # warning-ignore:unused_signal
 signal initiated_targeting(card)
 # warning-ignore:unused_signal

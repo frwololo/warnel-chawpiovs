@@ -690,7 +690,10 @@ const DEFAULT_SETTINGS:= {
 const HARDCODED_DEF_PATCHES = {
 	"04128": {
 		"name": "The Rise of Red Skull" #https://github.com/zzorba/marvelsdb/issues/339
-	}
+	},
+	"04150": {
+		"boost": 1 #https://github.com/zzorba/marvelsdb/issues/342
+	}	
 	
 }
 

@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://src/wc/board/StackEventDisplay.gd" type="Script" id=1]
 [ext_resource path="res://assets/card_backs/generic_back.png" type="Texture" id=2]
+
+[sub_resource type="Theme" id=1]
 
 [node name="StackEventDisplay" type="Node2D"]
 script = ExtResource( 1 )
@@ -16,6 +18,7 @@ color = Color( 0, 0, 0, 0.215686 )
 unique_name_in_owner = true
 margin_right = 40.0
 margin_bottom = 40.0
+theme = SubResource( 1 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control"]
 margin_left = 7.0

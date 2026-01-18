@@ -171,7 +171,8 @@ func _ready():
 	scripting_bus.connect("scripting_event_triggered", self, "_scripting_event_triggered")
 	scripting_bus.connect("scripting_event_about_to_trigger", self, "_scripting_event_about_to_trigger")
 
-	scripting_bus.connect("initiated_targeting", self, "_initiated_targeting")
+	scripting_bus.connect("about_to_initiate_targeting", self, "_initiated_targeting")
+#	scripting_bus.connect("initiated_targeting", self, "_initiated_targeting")
 	scripting_bus.connect("target_selected", self, "_target_selected")
 	
 	scripting_bus.connect("stack_event_deleted", self, "_stack_event_deleted")

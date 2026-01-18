@@ -1239,9 +1239,6 @@ func update_card_focus(card, details = {}):
 func _initiated_targeting(owner_card):
 	if !owner_card:
 		return
-
-	#yield required here because the arrow isn't ready by the time this starts
-	yield(get_tree().create_timer(0.11), "timeout")		
 		
 	var arrow = owner_card.targeting_arrow
 	if !arrow:

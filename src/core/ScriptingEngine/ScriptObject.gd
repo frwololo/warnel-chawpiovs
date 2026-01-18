@@ -569,13 +569,13 @@ func _initiate_card_targeting() -> Card:
 	
 	var target = null		
 	if (valid_targets):	
-		scripting_bus.emit_signal("initiated_targeting", owner)
+		scripting_bus.emit_signal("about_to_initiate_targeting", owner)
 		# We wait a centisecond, to prevent the card's _input function from seeing
 		# The double-click which started the script and immediately triggerring
 		# the target completion
 		yield(owner.get_tree().create_timer(0.1), "timeout")
 				
-		owner.targeting_arrow.initiate_targeting(valid_targets, self.script_definition, false)
+		owner.targeting_arrow.initiate_targeting(valid_targets, self.script_definition)
 		# We wait until the targetting has been completed to continue
 		yield(owner.targeting_arrow,"target_selected")
 		target = owner.targeting_arrow.target_object

@@ -1,0 +1,132 @@
+{
+	"_comments": "Tests Crossbones Power gauntlets against ally",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "hydra regular"
+				},
+				{
+					"card": "hydra mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Clear the Area"
+				},
+				{
+					"card": "Pheromones"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"others": [
+				{
+					"card": "Power gauntlets",
+					"host": "Crossbones - 1"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "Jessica Jones",
+			"_comments": "Defend with Jessica Jones"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Armored Guard"
+				},			
+			],
+			"villain": [
+				{
+					"card": "Crossbones - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "hydra regular"
+				},
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Clear the Area"
+				},
+				{
+					"card": "Pheromones"
+				}	
+			],
+			"enemies1": [
+				{
+					"card": "hydra mercenary"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"others": [
+				{
+					"card": "Power gauntlets",
+					"host": "Crossbones - 1"
+				}
+			]
+		}
+	}
+}

@@ -1045,7 +1045,7 @@ func get_villain_portrait(card_id) -> Texture:
 		return result
 	return fallback_villain_portrait(card_id, area)
 	
-func fallback_villain_portrait(card_id, area) -> Texture:
+func fallback_villain_portrait(_card_id, area) -> Texture:
 	var filename = "res://assets/other/villain_card.png"
 	var texture = get_external_texture(filename)
 	var sub_tex= _get_cropped_texture(texture , area)
@@ -1063,7 +1063,7 @@ func get_hero_portrait(card_id) -> Texture:
 		return result
 	return fallback_hero_portrait(card_id, area)
 	
-func fallback_hero_portrait(card_id, area) -> Texture:
+func fallback_hero_portrait(_card_id, area) -> Texture:
 	var filename = "res://assets/other/hero_card.png"
 	var texture = get_external_texture(filename)
 	var sub_tex= _get_cropped_texture(texture , area)

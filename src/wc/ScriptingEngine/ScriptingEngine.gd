@@ -240,10 +240,9 @@ func play_card(script: ScriptTask) -> int:
 	#if (retcode == CFConst.ReturnCode.FAILED):
 	#	return retcode
 
-#commented out for now but this is the right way moving forward
-#	var stackEvent:SignalStackScript = SignalStackScript.new("card_played", script.owner, script.trigger_details)
-#	gameData.theStack.add_script(stackEvent)		
-	scripting_bus.emit_signal("card_played", script.owner, script.script_definition)		
+	var stackEvent:SignalStackScript = SignalStackScript.new("card_played", script.owner, {})
+	gameData.theStack.add_script(stackEvent)		
+#	scripting_bus.emit_signal("card_played", script.owner, script.script_definition)		
 	return retcode	
 
 func attack(script: ScriptTask) -> int:

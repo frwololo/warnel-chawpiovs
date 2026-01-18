@@ -7,7 +7,7 @@ var text_enabled = false
 var color_texture = null
 var grayscale_texture = null
 
-func _process(delta:float):
+func _process(_delta:float):
 	_handle_horizontal_card()
 
 func _handle_horizontal_card():

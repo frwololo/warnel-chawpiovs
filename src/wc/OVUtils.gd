@@ -310,10 +310,13 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 	
 	var replacements = {
 		"villain": gameData.get_villain(),
-		"self": owner_card
+		"self": owner_card,
+		"current_hero_target": gameData.get_identity_card(gameData.get_current_activity_hero_target())
 	}	
 	if (controller_hero_id > 0):
 		replacements["my_hero"] = gameData.get_identity_card(controller_hero_id)
+	else:
+		replacements["my_hero"] = gameData.get_identity_card(gameData.get_current_activity_hero_target())
 
 	filters = WCUtils.search_and_replace_multi(filters, replacements, true)
 

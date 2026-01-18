@@ -141,9 +141,9 @@ func load_hero(_hero_id):
 		hero_picture.texture = null	
 
 
-func load_last_used_deck(hero_id):
+func load_last_used_deck(my_hero_id):
 	var last_deck_used = cfc.game_settings.get("last_deck", {})	
-	return last_deck_used.get(hero_id, 0)
+	return last_deck_used.get(my_hero_id, 0)
 
 func gain_focus():
 	if gamepadHandler.is_mouse_input():

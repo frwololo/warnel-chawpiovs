@@ -3647,7 +3647,8 @@
 		"attack_happened": {
 			"trigger": "host",
 			"event_filters": {
-				"damage": ">0"
+				"damage": ">0",
+				"target": "current_hero_target"
 			},
 			"board": [
 				{
@@ -4099,7 +4100,8 @@
 		}
 	},
 	"Shang-Chi": {
-		"card_played": {
+		"response": {
+			"event_name": "card_played",
 			"trigger": "self",
 			"is_optional_board": true,
 			"board": [

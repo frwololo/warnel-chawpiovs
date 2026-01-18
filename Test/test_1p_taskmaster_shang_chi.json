@@ -1,0 +1,152 @@
+{
+	"_comments": "Tests Shang-Chi ability optional",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Captured by Hydra"
+				}
+			],
+			"villain": [
+				{
+					"card": "Taskmaster - 1",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting down Heroes",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Shang-Chi"
+				},
+				{
+					"card": "The Power of Justice"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Heroic Intuition"
+				},
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "The Power of Aggression"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Shang-Chi"
+		},
+		{
+			"type": "activate",
+			"value": "Shang-Chi"
+		},
+		{
+			"type": "target",
+			"value": "Taskmaster - 1"
+		}		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Captured by Hydra"
+				}
+			],
+			"villain": [
+				{
+					"card": "Taskmaster - 1",
+					"tokens": {
+						"damage": 3,
+						"stunned": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting down Heroes",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Shang-Chi"
+				}
+			],
+			"discard1": [
+				{
+					"card": "The Power of Justice"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Heroic Intuition"
+				},
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "The Power of Aggression"
+				}
+			]
+		}
+	}
+}

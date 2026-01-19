@@ -1074,19 +1074,26 @@ func execute_scripts(
 	if (trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME and canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME ):
 		var _tmp = 1
 
-	while cfc.game_paused or cfc.is_modal_event_ongoing() or gameData.is_targeting_ongoing():
-		#TODO
-		#2026/01/08 This yield was introduced
-		#to replace the simple "return" which was eating signals
-		#in some caseS. But I'm afraid this could bring discrepancies in multiplayer
+	if cfc.game_paused or cfc.is_modal_event_ongoing() or gameData.is_targeting_ongoing():
 		if get_parent() and !("tree_" in trigger): #dirty check to avoid crashes
-			yield(get_tree().create_timer(0.1), "timeout")
+			gameData.add_script_to_execute(self, trigger_card, trigger, trigger_details, run_type)
+			return null
 		else:
-			return
+			return null
+
+#	while cfc.game_paused or cfc.is_modal_event_ongoing() or gameData.is_targeting_ongoing():
+#		#TODO
+#		#2026/01/08 This yield was introduced
+#		#to replace the simple "return" which was eating signals
+#		#in some caseS. But I'm afraid this could bring discrepancies in multiplayer
+#		if get_parent() and !("tree_" in trigger): #dirty check to avoid crashes
+#			yield(get_tree().create_timer(0.1), "timeout")
+#		else:
+#			return
 	# Just in case the card is displayed outside the main game
 	# and somehow its script is triggered.
 	if not cfc.NMAP.has('board'):
-		return
+		return null
 
 	
 	var _debug = trigger_details.get("_debug", false)
@@ -1145,13 +1152,13 @@ func execute_scripts(
 			
 		trigger = find_interrupt_script()
 		if (!trigger):
-			return
+			return null
 		trigger_details.merge(gameData.theStack.get_current_interrupted_event(), true)
 		if (!trigger_details):
-			return
+			return null
 		trigger_card = trigger_details["event_object"].owner #this is geting gross, how to clear that?
 		if (!trigger_card):
-			return
+			return null
 		#skip optional confirmation menu for interrupts,
 		#we have a different gui signal	
 		show_optional_confirmation_menu = false	

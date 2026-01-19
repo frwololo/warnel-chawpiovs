@@ -720,32 +720,54 @@ func add_script_to_execute(owner, trigger_card, trigger, trigger_details, run_ty
 
 func execute_priority_scripts() -> bool:
 	if _current_priority_script:
-		return _current_priority_script.get("sceng", true)
+		var sceng = _current_priority_script.get("sceng", null)
+		if sceng is GDScriptFunctionState && sceng.is_valid():
+			return sceng
+		else:
+			var override_hero = _current_priority_script.get("override_hero", 0)
+			if override_hero:  #else this is done later
+				reset_forced_current_playing_hero(override_hero)			
+			_current_priority_script = {}
 		
 	if !_priority_scripts:
 		_current_priority_script = {}
 		return false
-	var script_data = _priority_scripts.pop_front()
-	_current_priority_script = script_data
-	var script_owner = script_data.get("owner", null)
-	var trigger_card = script_data.get("trigger_card", null)
-	var trigger = script_data.get("trigger", "")
-	var trigger_details = script_data.get("trigger_details", {})
-	var run_type = script_data.get("run_type", CFInt.RunType.NORMAL)
-	
-	if !script_owner:
-		_current_priority_script = {}
-		return false
-	var override_hero = trigger_details.get("override_hero_id", 0)
-	if override_hero:
-		force_current_playing_hero(override_hero)
-	var sceng = script_owner.execute_scripts(trigger_card, trigger, trigger_details, run_type)
-	_current_priority_script["sceng"] = sceng
-	if sceng is GDScriptFunctionState && sceng.is_valid():		
-		yield(sceng,"completed")
+		
+	var sceng = null
+	var override_hero = 0
+	print_debug("priority scripts pending:" +str(_priority_scripts.size()))
+	while (_priority_scripts and !sceng):
+		var script_data = _priority_scripts.pop_front()
+		_current_priority_script = script_data
+		var script_owner = script_data.get("owner", null)
+		var trigger_card = script_data.get("trigger_card", null)
+		var trigger = script_data.get("trigger", "")
+		var trigger_details = script_data.get("trigger_details", {})
+		var run_type = script_data.get("run_type", CFInt.RunType.NORMAL)
+		
+		if !is_instance_valid(script_owner):
+			_current_priority_script = {}
+			continue
+		override_hero = trigger_details.get("override_hero_id", 0)
+		if override_hero:
+			force_current_playing_hero(override_hero)
+			_current_priority_script["override_hero"] = override_hero
 
-	if override_hero:
-		reset_forced_current_playing_hero(override_hero)
+		sceng = script_owner.execute_scripts(trigger_card, trigger, trigger_details, run_type)
+		
+		#either this returned nothing or execution was instant (no user interaction required),
+		#so we cleanup and move to the next candidate
+		if !(sceng is GDScriptFunctionState && sceng.is_valid()):
+			_current_priority_script = {}
+			sceng = null
+			if override_hero:  #else this is done later
+				reset_forced_current_playing_hero(override_hero)
+				override_hero = 0
+
+	print_debug("priority scripts pending after run:" +str(_priority_scripts.size()))
+	if sceng is GDScriptFunctionState && sceng.is_valid():
+		_current_priority_script["sceng"] = sceng		
+		return sceng
 			
 	_current_priority_script = {}
 	return sceng
@@ -2156,7 +2178,7 @@ func display_debug(msg, prefix = ""):
 	if(phaseContainer and is_instance_valid(phaseContainer)):
 		phaseContainer.display_debug(msg, prefix)
 
-	print_debug(prefix + msg)
+	#print_debug(prefix + msg)
 
 func _player_connected(network_id):
 	pass

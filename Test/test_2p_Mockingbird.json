@@ -37,7 +37,8 @@
 			],
 			"hand1": [
 				{
-					"card": "Mockingbird"
+					"card": "01083",
+					"_comments": "MockingBird"
 				},
 				{
 					"card": "Energy Absorption"
@@ -66,7 +67,7 @@
 	"actions": [
 		{
 			"type": "play",
-			"value": "MockingBird"
+			"value": "01083",
 		},
 		{
 			"type": "target",
@@ -116,7 +117,7 @@
 			],
 			"allies1": [
 				{
-					"card": "Mockingbird"
+					"card": "01083",
 				}
 			],
 			"deck2": [

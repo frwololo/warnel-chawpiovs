@@ -41,7 +41,7 @@
 			],
 			"allies1": [		
 				{
-					"card": "Mockingbird"
+					"card": "01083"
 				}				
 			]
 		}
@@ -65,7 +65,7 @@
 		},	
 		{
 			"type": "activate",
-			"value": "Mockingbird"
+			"value": "01083"
 		},
 		{
 			"type": "choose",
@@ -110,7 +110,7 @@
 			],
 			"allies1": [		
 				{
-					"card": "Mockingbird"
+					"card": "01083"
 				}
 			],
 			"discard1": [	

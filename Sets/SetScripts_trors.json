@@ -5503,7 +5503,23 @@
 							}
 						}
 					]
-				}
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"deck_side_schemes"
+					],
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "The Sleeper"
+							}
+						}
+					]
+				}				
 			]
 		},
 		"step_ended": {
@@ -5550,7 +5566,8 @@
 					"subject": "tutor",
 					"src_container": [
 						"deck_villain",
-						"discard_villain"
+						"discard_villain",
+						"set_aside",
 					],
 					"filter_state_tutor": [
 						{

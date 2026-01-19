@@ -1,0 +1,133 @@
+{
+	"_comments": "Tests Earth's Mightiest Heroes",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Absorbing Man - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},				
+				{
+					"card": "Armored Guard"
+				},					
+				{
+					"card": "Assault"
+				},
+			],
+			"schemes": [
+				{
+					"card": "None shall Pass"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Explosive Arrow"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye"
+				}
+			],
+			"allies1":[
+				{
+					"card" : "04004",
+					"exhausted": true,
+				},			
+			],
+			"hand1": [
+				{
+					"card": "Sonic Arrow"
+				},
+				{
+					"card": "Earth's Mightiest Heroes"
+				},				
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "play",
+			"value": "Earth's Mightiest Heroes",
+		},	
+		{
+			"type": "target",
+			"value": "Hawkeye",
+		},
+		{
+			"type": "target",
+			"value": "04004",
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Absorbing Man - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},				
+				{
+					"card": "Armored Guard"
+				},					
+				{
+					"card": "Assault"
+				},
+			],
+			"schemes": [
+				{
+					"card": "None shall Pass"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Explosive Arrow"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Hawkeye",
+					"exhausted": true,				
+				}
+			],
+			"allies1":[
+				{
+					"card" : "04004",
+				},			
+			],
+			"discard1": [
+				{
+					"card": "Earth's Mightiest Heroes"
+				},	
+			],
+			"hand1": [
+				{
+					"card": "Sonic Arrow"
+				},			
+			]
+		}
+	}
+}

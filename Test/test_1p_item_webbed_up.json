@@ -61,6 +61,10 @@
 			"type": "next_phase",
 			"value": 1,
 			"_comments": "go to enemy attack"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
 		}		
 	] ,
 	"end": {

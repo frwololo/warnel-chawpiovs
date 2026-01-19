@@ -264,7 +264,7 @@ var is_executing_scripts := false
 var spawn_destination
 
 # This variable will point to the scene which controls the targeting arrow
-var targeting_arrow
+var targeting_arrow = null
 
 var _tween
 var _flip_tween 
@@ -304,9 +304,15 @@ func _class_specific_ready():
 	tokens = $Control/Tokens
 	# The node which manipulates the highlight borders.
 	highlight = $Control/Highlight	
-	
-	targeting_arrow = targeting_arrow_scene.instance()
-	add_child(targeting_arrow)
+
+	#there is a bug where targeting arrows get copied from announcer	
+	if self.is_duplicate_of:
+		for child in get_children():
+			if child as TargetingArrow:
+				remove_child(child)
+	else:
+		targeting_arrow = targeting_arrow_scene.instance()
+		add_child(targeting_arrow)
 	set_card_size(card_size)
 
 	_init_card_layout()
@@ -2895,7 +2901,8 @@ func _process_card_state() -> void:
 			# warning-ignore:return_value_discarded
 			set_card_rotation(0)
 			$Control.rect_rotation = 0
-			targeting_arrow.cancel_targeting()
+			if targeting_arrow:
+				targeting_arrow.cancel_targeting()
 			$Control/Tokens.visible = true
 			# We scale the card dupe to allow the player a better viewing experience
 			if CFConst.VIEWPORT_FOCUS_ZOOM_TYPE == "scale":

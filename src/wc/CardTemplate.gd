@@ -499,7 +499,7 @@ func disable_focus_mode():
 
 func _class_specific_input(event) -> void:
 	if event is InputEventMouseButton and not event.is_pressed():
-		if targeting_arrow.is_targeting:
+		if targeting_arrow and targeting_arrow.is_targeting:
 			if event.get_button_index() == 2: #todo have a cancel button on screen instead
 				targeting_arrow.cancel_targeting()
 			else:
@@ -514,7 +514,7 @@ func _class_specific_input(event) -> void:
 			$Control.set_default_cursor_shape(Input.CURSOR_ARROW)
 			cfc.card_drag_ongoing = null
 	elif event is InputEvent:
-		if targeting_arrow.is_targeting:
+		if targeting_arrow and targeting_arrow.is_targeting:
 			if gamepadHandler.is_ui_accept_pressed(event):
 				targeting_arrow.complete_targeting()
 			elif gamepadHandler.is_ui_cancel_pressed(event):

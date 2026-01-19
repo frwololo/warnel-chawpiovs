@@ -566,8 +566,8 @@ func dry_run(_card_array: Array) -> void:
 
 # Overridable function for games to extend processing of dupe card
 # after adding it to the scene
-func _extra_dupe_ready(dupe_selection: Card, _card: Card) -> void:
-	dupe_selection.targeting_arrow.visible = false
+func _extra_dupe_ready(_dupe_selection: Card, _card: Card) -> void:
+	pass
 
 # integer up_down manipulation buttons
 func spinbox_value_changed( new_value,  dupe_selection: Card, origin_card) -> void:

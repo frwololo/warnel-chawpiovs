@@ -568,6 +568,7 @@
 					"name": "thwart",
 					"amount": 3,
 					"subject": "target",
+					"is_cost": true,					
 					"filter_state_subject": [
 						{
 							"filter_group": "group_schemes"
@@ -5834,6 +5835,7 @@
 					"name": "attack",
 					"amount": 6,
 					"subject": "target",
+					"is_cost": true,					
 					"filter_state_subject": [
 						{
 							"filter_group": "group_enemies"

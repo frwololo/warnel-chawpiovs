@@ -76,6 +76,8 @@ signal stack_event_deleted(event)
 
 #todo should be dynamic?
 # warning-ignore:unused_signal
+signal event_moved_to_board(card,details)
+# warning-ignore:unused_signal
 signal minion_moved_to_board(card,details)
 # warning-ignore:unused_signal
 signal main_scheme_moved_to_board(card,details)

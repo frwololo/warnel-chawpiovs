@@ -10,7 +10,7 @@ A card game based on a well known cooperative board game, with full rules enforc
 ## Shortcuts
 * [Installing the game](#users-installing-the-game)
 * [Running the game](#users-running-the-game)
-* [Users FAQ and Troublshooting](#users-faq-and-troubleshooting)
+* [Users FAQ and Troubleshooting](#users-faq-and-troubleshooting)
 
 ## How is Warnel Chawpiovs different from the original game?
 Generally Speaking this tries to perfectly mimic the rules of the orginal board game. There are a few intentional exceptions (see below), the rest can probably be considered bugs

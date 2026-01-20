@@ -22,7 +22,11 @@ Other than that, there are a few known limitations with the engine at the moment
 * Responses aren't exactly supported. They're either treated as interrupts, or react to the internal engine's events in no specific order. It "works" except in tricky cases where order of events is critical
 
 ## Current Status (General)
-As of this writing, this simulator supports the Core Box with its 3 villains and 5 heroes. There is no tutorial included, and, although the rules are automatically handled by the engine, it will quickly become confusing if you are not already familar with the original game.
+This simulator supports the following cards from the original game (current total 7 heroes, 8 villains):
+* Core box (5 heroes, 3 villains)
+* The Rise of Red skull ( 2 heroes, 5 villains)
+
+There is no tutorial included, and, although the rules are automatically handled by the engine, it will quickly become confusing if you are not already familar with the original game.
 
 Rules can be found [here](https://images-cdn.fantasyflightgames.com/filer_public/ab/be/abbef836-d5ef-4241-b2bd-1062df73f367/mvc01_learn_to_play_eng-compressed.pdf). (if broken link, go to [fantasy flight's official page](https://www.fantasyflightgames.com/en/products/marvel-champions-the-card-game/), scroll down to "support/rules" and select "Learn to play"
 

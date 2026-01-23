@@ -172,7 +172,9 @@ func load_scripts():
 	var scripts_load_end_time = OS.get_ticks_msec()
 	if OS.has_feature("debug") and not cfc.is_testing:
 		print_debug("DEBUG INFO:CFControl: card scripts load time = %sms" % [str(scripts_load_end_time - load_start_time)])	
-	
+
+func play_sfx(string):
+	pass	
 
 func load_cards_database():
 	if CFConst.DISABLE_THREADS or OS.get_name() == "HTML5":

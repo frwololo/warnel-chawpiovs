@@ -531,7 +531,15 @@ func receive_damage(script: ScriptTask) -> int:
 					amount,false,costs_dry_run(), tags)	
 			if amount:
 				card.hint(str(amount), Color8(255,50,50))
-				damage_happened = amount	
+				damage_happened = amount
+				if amount == 1:
+					gameData.play_sfx("small_damage*")	
+				elif amount > 6:
+					gameData.play_sfx("massive_damage*")					
+				elif amount > 3:
+					gameData.play_sfx("large_damage*")
+				else:
+					gameData.play_sfx("damage*")	
 				
 				if ("stun_if_damage" in tags):
 					card.tokens.mod_token("stunned",
@@ -647,17 +655,52 @@ func _receive_threat(script: ScriptTask) -> int:
 func add_threat(script: ScriptTask) -> int:
 	return _receive_threat(script)
 
-func attach_to_card(script: ScriptTask) -> int:	
-	if script.has_tag("disable_attach_trigger"):
-		script.script_definition["tags"].append("disable_move_signals")
+func attach_to_card(script: ScriptTask) -> int:
+	#TOOD: disable_attach_trigger is a hack to address a card such as Zola's Mutate
+	#which attaches an attachment to itself, overriding the attachment's own rules
+	#for now we do this by "hiding" the attachment's "card_moved_to_board" script
+	#temporarily while it's being attached, but that feels like it could lead to bugs	
+	var backup = null
+	if !costs_dry_run():
+		if script.has_tag("disable_attach_trigger"):
+			backup = script.owner.scripts.get("card_moved_to_board", null)
+			script.owner.scripts["card_moved_to_board"] = { "NOP": "NOP"}
 	
-	return .attach_to_card(script)
+	var result = .attach_to_card(script)
+	
+	if !costs_dry_run() and script.has_tag("disable_attach_trigger"):
+		if backup:
+			script.owner.scripts["card_moved_to_board"] = backup
+		else:
+			script.owner.scripts.erase("card_moved_to_board")
+	
+	return result
 
-func host_card(script: ScriptTask) -> void:
-	#
-	if script.has_tag("disable_attach_trigger"):
-		script.script_definition["tags"].append("disable_move_signals")
-	.host_card(script)
+func host_card(script: ScriptTask):
+	var backup = []
+	#TOOD: disable_attach_trigger is a hack to address a card such as Zola's Mutate
+	#which attaches an attachment to itself, overriding the attachment's own rules
+	#for now we do this by "hiding" the attachment's "card_moved_to_board" script
+	#temporarily while it's being attached, but that feels like it could lead to bugs
+	if !costs_dry_run():
+		if script.has_tag("disable_attach_trigger"):
+			for subject in script.subjects:
+				backup.append(subject.scripts.get("card_moved_to_board", null))
+				subject.scripts["card_moved_to_board"] = { "NOP": "NOP"}
+	
+	var result = .host_card(script)
+	
+	if !costs_dry_run() and script.has_tag("disable_attach_trigger"):
+		var i = 0
+		for subject in script.subjects:
+			var backup_value = backup[i]
+			if backup_value:
+				subject.scripts["card_moved_to_board"] = backup_value
+			else:
+				subject.scripts.erase("card_moved_to_board")
+			i+= 1
+	
+	return result
 
 func conditional_script(script:ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -1003,7 +1046,9 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 			
 	if defender:
 		var damage_reduction = defender.get_property("defense", 0)
-		amount = max(amount-damage_reduction, 0)		
+		amount = max(amount-damage_reduction, 0)
+		if damage_reduction and (amount == 0):
+			gameData.play_sfx("hint_tough")	
 	else:
 		script.subjects.append(my_hero)
 		script.script_definition["tags"].append("undefended")
@@ -1362,13 +1407,14 @@ func heal(script: ScriptTask) -> int:
 		return CFConst.ReturnCode.FAILED
 	
 	var amount = script.retrieve_integer_property("amount")	
+	var set_to_mod = script.get_property("set_to_mod", false)
 		
 	for subject in script.subjects:
 		if (costs_dry_run()): #healing as a cost can be used for "is_else" conditions, when saying "if no healing happened,..."
 			if (!subject.can_heal(amount)):
 				return CFConst.ReturnCode.FAILED #if at least one subject can't pay, we fail it
 		else:		
-			var result = subject.heal(amount)
+			var result = subject.heal(amount, set_to_mod)
 			if (result == CFConst.ReturnCode.CHANGED): #if at least one healing happened, the result is a change
 				retcode = CFConst.ReturnCode.CHANGED
 

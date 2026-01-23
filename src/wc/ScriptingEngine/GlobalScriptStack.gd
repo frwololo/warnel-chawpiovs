@@ -640,7 +640,9 @@ func flush_script(stack_object):
 		var _error = 1
 		display_debug("called to flush script but not allowed because run_mode is" + RunModeStr[run_mode])
 		return
-		
+	
+	for t in stack_object.get_tasks():
+		gameData.play_sfx(t)	
 	var func_return = stack_object.execute()	
 	if func_return is GDScriptFunctionState && func_return.is_valid():
 		func_return = yield(func_return, "completed")

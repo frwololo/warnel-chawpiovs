@@ -105,6 +105,14 @@ func load_options():
 	var adv_check:CheckBox = get_node("%AdventureMode")
 	adv_check.set_pressed_no_signal(adventure_mode)		
 
+	var music_vol_slider:HSlider = get_node("%MusicVol")
+	var music_vol = cfc.game_settings["music_volume"]
+	music_vol_slider.value = int (music_vol)
+	
+	var sfx_vol_slider:HSlider = get_node("%SfxVol")
+	var sfx_vol = cfc.game_settings["sfx_volume"]
+	sfx_vol_slider.value = int (sfx_vol)	
+
 func save_options():
 	var options_button:OptionButton = get_node("%NotificationsLevel")
 	cfc.game_settings["notifications_level"] = NOTIFICATION_LEVELS[options_button.selected]
@@ -112,6 +120,14 @@ func save_options():
 	
 	var adv_check:CheckBox = get_node("%AdventureMode")
 	cfc.game_settings["adventure_mode"] = adv_check.pressed
+
+	var music_vol_slider:HSlider = get_node("%MusicVol")
+	var music_vol = music_vol_slider.value
+	cfc.game_settings["music_volume"] = music_vol
+	
+	var sfx_vol_slider:HSlider = get_node("%SfxVol")
+	var sfx_vol = sfx_vol_slider.value
+	cfc.game_settings["sfx_volume"] = sfx_vol	
 
 	cfc.save_settings()
 

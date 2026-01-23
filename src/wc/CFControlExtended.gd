@@ -1207,16 +1207,21 @@ func preload_pck():
 	#zip files have priority because I have found they have better compatibility
 	# (pck files will refuse to load if wrong godot version number for example)
 	# see https://www.reddit.com/r/godot/comments/11pfoon/comment/jbxyp2x/
-	for set in database.keys():
+	for set in database.keys() + CFConst.ALLOWED_PCK_NAMES:
 		for folder in ["res://", "user://"]:		
 			for format in [".pck", ".zip"]:
 				var filename = folder + set + format
 				if file.file_exists(filename):
 					var _success_res = ProjectSettings.load_resource_pack(filename)
+					var _tmp = 0
 	return
+
+func play_sfx(string):
+	gameData.play_sfx(string)
+
 #
 # Network related functions
-
+#
 
 var _network_id = 0
 func get_network_unique_id():

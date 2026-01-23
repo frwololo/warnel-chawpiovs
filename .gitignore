@@ -13,3 +13,5 @@ WC.nro
 WC.vpk
 scripts/\#script_doc.py\#
 Test/recorded_gameplay.txt
+*.py#
+*.py~

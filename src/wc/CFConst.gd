@@ -655,6 +655,23 @@ const TARGET_ARROW_COLOR_BY_NAME: = {
 	"receive_damage" : Color(0.5, 0.1, 0.1)	
 }
 
+const ALLOWED_PCK_NAMES:= [
+	"music",
+	"cycle1",
+	"cycle2",
+	"cycle3",
+	"cycle4",
+	"cycle5",
+	"cycle6",
+	"cycle7",
+	"cycle8",
+	"cycle9",
+	"cycle10",
+	"cycle11",
+	"cycle12",
+	"cycle13",												
+]
+
 const DEACTIVATE_SLOTS_HIGHLIGHT := true
 const DISABLE_MANUAL_ATTACHMENTS : = true
 const HIDE_GRID_BACKGROUND:= true
@@ -666,13 +683,16 @@ const ATTEMPT_TO_GUESS_IMAGE_URL := true
 
 
 const DEFAULT_SETTINGS:= {
+	'music_volume': 20,
+	'sfx_volume': 5,
 	'glow_intensity' : 0.01,
 	'load_cards_online' : true,
 	'images_base_url': "https://marvelcdb.com",
 	"decks_base_url": "https://marvelcdb.com/api/public/decklist/",
 	'database': {
 		"core": "https://marvelcdb.com/api/public/cards/core.json",
-		"trors" : "https://marvelcdb.com/api/public/cards/trors.json"
+		"cap" : "https://marvelcdb.com/api/public/cards/cap.json",
+		"trors" : "https://marvelcdb.com/api/public/cards/trors.json",
 	},
 	'lobby_server': {
 		'server': 'https://wololo.net/',

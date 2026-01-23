@@ -112,11 +112,13 @@ func _step_started(_trigger_object, details:Dictionary):
 			var hero_card = gameData.get_identity_card(hero_to_display)
 			var filename = hero_card.get_art_filename()
 			settings["top_texture_filename"] = filename
+			gameData.play_sfx("player_phase")
 		CFConst.PHASE_STEP.VILLAIN_THREAT:
 			settings["text"] = "Villain Phase"
 			var villain_card = gameData.get_villain()
 			var filename = villain_card.get_art_filename()
 			settings["top_texture_filename"] = filename	
+			gameData.play_sfx("villain_phase")
 		CFConst.PHASE_STEP.VILLAIN_DEAL_ENCOUNTER:
 			settings = {
 					"top_text": "Reveal",

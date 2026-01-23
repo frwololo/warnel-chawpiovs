@@ -62,6 +62,7 @@ func set_groups(grid_or_pile, additional_groups:= []):
 	
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	gameData.play_music("battle*")
 	cfc.map_node(self)	
 	counters = $Counters
 

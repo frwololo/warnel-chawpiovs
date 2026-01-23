@@ -45,6 +45,7 @@ var activity_script
 #status of this card as an encounter (see GameData)
 var encounter_status = gameData.EncounterStatus.NONE
 
+
 func hint (text, color, details = {}):
 	var position = details.get("position", "")
 	var pos_x = 50
@@ -72,7 +73,8 @@ func hint (text, color, details = {}):
 		"hint_node": _hint,
 		"hint_control": _hint_control,
 		"lifetime": details.get("lifetime", 1.0),
-		"direction": Vector2(dir_x, dir_y)
+		"direction": Vector2(dir_x, dir_y),
+		"sound": "hint_" + text.to_lower().replace("!", "") + "*"
 	}
 	hints.append(settings)
 	var _hint_label_shadow = _hint_label.duplicate(DUPLICATE_USE_INSTANCING)
@@ -598,6 +600,13 @@ func _process(delta) -> void:
 		var hint_node = _hint_data.get("hint_node", null)
 		var hint_object = _hint_data.get("hint_control", null)		
 		if hint_node:
+			var sound_emitted = _hint_data.get("sound_emitted", false)
+			if !sound_emitted:
+				_hint_data["sound_emitted"] = true
+				var sound = _hint_data.get("sound", "")
+				if sound:
+					gameData.play_sfx(sound)
+			
 			hint_node.visible = true
 			hint_object.modulate.a -= delta / 3
 			hint_object.rect_scale += Vector2(delta *3, delta *3)
@@ -1686,10 +1695,14 @@ func can_heal(value):
 	var current_damage = tokens.get_token_count("damage")
 	return min(value, current_damage)	
 
-func heal(value):
-	var current_damage = tokens.get_token_count("damage")
-	var heal_value = min(value, current_damage)
-	return tokens.mod_token("damage",-heal_value)
+func heal(value, set_to_mod = false):
+	if set_to_mod:
+		var health = get_property("health", 0)
+		return tokens.mod_token("damage",health-value, true)
+	else:
+		var current_damage = tokens.get_token_count("damage")			
+		var heal_value = min(value, current_damage)
+		return tokens.mod_token("damage",-heal_value)
 
 
 func common_pre_execution_scripts(_trigger_card, _trigger: String, _trigger_details: Dictionary) -> void:

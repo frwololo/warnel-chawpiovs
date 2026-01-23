@@ -317,7 +317,7 @@ func _class_specific_ready():
 
 	_init_card_layout()
 
-	# The below call ensures out canonical_name variable is set.
+	# The below call ensures our canonical_name variable is set.
 	# Normally the setup() function should be used to set it,
 	# but setting the name here as well ensures that a card can be also put on
 	# The board without calling setup() and then use its hardcoded labels

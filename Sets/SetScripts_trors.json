@@ -275,6 +275,25 @@
 						}
 					],
 					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "_avengers_tower",
+						"is_inverted": true
+					},
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_avenger": 1
+							},
+							"filter_properties2": {
+								"type_code": "ally"
+							}
+						}
+					]
 				}
 			],
 			"_comments": "TODO needs to account for allies type"
@@ -298,29 +317,6 @@
 					"subject": "self",
 					"modification": 1,
 					"token_name": "_avengers_tower"
-				}
-			]
-		},
-		"alterants": {
-			"board": [
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "cost",
-					"alteration": "per_token_self",
-					"per_token_self": {
-						"token_name": "_avengers_tower",
-						"is_inverted": true
-					},
-					"filter_state_trigger": [
-						{
-							"filter_properties": {
-								"trait_avenger": 1
-							},
-							"filter_properties2": {
-								"type_code": "ally"
-							}
-						}
-					]
 				}
 			]
 		},
@@ -568,7 +564,7 @@
 					"name": "thwart",
 					"amount": 3,
 					"subject": "target",
-					"is_cost": true,					
+					"is_cost": true,
 					"filter_state_subject": [
 						{
 							"filter_group": "group_schemes"
@@ -5520,7 +5516,7 @@
 							}
 						}
 					]
-				}				
+				}
 			]
 		},
 		"step_ended": {
@@ -5568,7 +5564,7 @@
 					"src_container": [
 						"deck_villain",
 						"discard_villain",
-						"set_aside",
+						"set_aside"
 					],
 					"filter_state_tutor": [
 						{
@@ -5835,7 +5831,7 @@
 					"name": "attack",
 					"amount": 6,
 					"subject": "target",
-					"is_cost": true,					
+					"is_cost": true,
 					"filter_state_subject": [
 						{
 							"filter_group": "group_enemies"

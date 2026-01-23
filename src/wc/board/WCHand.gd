@@ -15,6 +15,15 @@ func _process(_delta: float) -> void:
 		self.hand_size = hero.get_max_hand_size()
 		if previous != self.hand_size:
 			update_card_count_text()
+
+# Takes the top card from the specified [CardContainer]
+# and adds it to this node
+# Returns a card object drawn
+func draw_card(pile : Pile = cfc.NMAP.deck) -> Card:
+	var card = .draw_card(pile)
+	if card:
+		gameData.play_sfx("draw_card*")
+	return(card)
 	
 func set_control_size(x, y):
 	$Control.rect_min_size = Vector2(x,y)

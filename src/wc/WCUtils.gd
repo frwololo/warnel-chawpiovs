@@ -93,6 +93,23 @@ static func load_img(file) -> Image :
 			return null	
 	return img	
 
+static func load_audio(file) -> AudioStream:
+	var img = Image.new()
+	#attempt from local file first, resource after
+	var audio_file = File.new()
+	if audio_file.open(file, File.READ):
+		if ResourceLoader.exists(file):
+			var audio = ResourceLoader.load(file)
+			return audio
+		return null
+		
+	var bytes = audio_file.get_buffer(audio_file.get_len())
+	audio_file.close()
+	
+	var result:AudioStreamMP3 = AudioStreamMP3.new()
+	result.data = bytes	
+	return result	
+
 
 static func ordered_hash(dict:Dictionary):
 	var sorted_dictionary = deep_dict_sort(dict)

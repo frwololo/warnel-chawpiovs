@@ -1,0 +1,137 @@
+{
+	"_comments": "Bug: Zola's Mutate when last card does not shuffle",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Zola - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Defensive Programming"
+				},				
+				{
+					"card": "Advance"
+				},					
+				{
+					"card": "Hydra Mercenary"
+				},			
+				{
+					"card": "Zola's Mutate"
+				}
+			],			
+			"schemes": [
+				{
+					"card": "The Island of Dr. Zola",
+					"tokens": {"test": 2}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},				
+			],
+			"enemies1": [
+				{
+					"card": "Ultimate Bio-Servant",
+					"tokens": {"tough" : 1}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Pheromones"
+				},
+			],
+		}
+	},
+	"actions": [		
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"wait_longer": true,
+			"_comments": "wait as much as needed for player turn"
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Zola - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},			
+				{
+					"card": "Advance"
+				},								
+
+			],			
+			"schemes": [
+				{
+					"card": "The Island of Dr. Zola",
+					"tokens": {"test": 2}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},				
+			],
+			"enemies1": [
+				{
+					"card": "Ultimate Bio-Servant",
+					"tokens": {"tough" : 1}
+				},
+				{
+					"card": "Zola's Mutate"
+				}				
+			],
+			"others": [
+				{
+					"card": "Defensive Programming",
+					"host": "Zola's Mutate" 
+				},
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Pheromones"
+				},
+			],
+		}
+	}
+}

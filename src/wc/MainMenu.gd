@@ -61,7 +61,7 @@ func _ready() -> void:
 	_load_status = LOAD_STATUS.NOT_STARTED
 	if cfc.all_loaded:
 		_load_status = LOAD_STATUS.COMPLETE
-		_all_downloads_completed()			
+		_all_downloads_completed()		
 
 func init_button_signals(node):
 	if node.has_signal('pressed'):			
@@ -246,14 +246,15 @@ func _all_downloads_completed():
 #	texture_rect.get_parent().rect_min_size = texture_rect.rect_size * texture_rect.rect_scale
 #	texture_rect.get_parent().rect_size = texture_rect.rect_size * texture_rect.rect_scale
 	cfc.all_loaded = true
+	gameData.play_music("menu")
 
 
 
 func create_default_folders():
 	var dir = Directory.new()
-	dir.make_dir_recursive("user://Sets/")
-	dir.make_dir_recursive("user://Decks/")
-	dir.make_dir_recursive("user://Saves/")
+	for folder in ["Sets", "Decks", "Saves", "Music", "Sfx"]:
+		dir.make_dir_recursive("user://" + folder + "/")
+	
 	
 func create_img_folders(card_data):
 	var set = card_data["_set"]

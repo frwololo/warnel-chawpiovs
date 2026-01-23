@@ -355,7 +355,7 @@ func _slot_card_into_popup(card: Card) -> void:
 # Pile shuffling includes a fancy animation
 func shuffle_cards(animate = true) -> void:
 	is_shuffling = true
-	
+	cfc.play_sfx("shuffle")
 	# Optimally the CFConst.ShuffleStyle enum should be defined in this class
 	# but if we did so, we would not be able to refer to it from the Card
 	# class, as that would cause a cyclic dependency on the parser

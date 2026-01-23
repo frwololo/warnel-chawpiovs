@@ -83,6 +83,7 @@ var theStack: GlobalScriptStack
 var testSuite: TestSuite = null
 var theAnnouncer: Announcer = null
 var theGameObserver = null
+var theAudioManager:AudioManager = null
 
 # Hero that I am currently controlling
 var current_local_hero_id := 1
@@ -153,6 +154,7 @@ func _init():
 	theStack = GlobalScriptStack.new()
 	theAnnouncer = Announcer.new()
 	theGameObserver = GameObserver.new()
+	theAudioManager = AudioManager.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():	
@@ -186,8 +188,27 @@ func _ready():
 	self.add_child(theStack) #Stack needs to be in the tree for rpc calls	
 	self.add_child(theAnnouncer)
 	self.add_child(theGameObserver)
+	self.add_child(theAudioManager)
 	#scripting_bus.connect("optional_window_opened", self, "attempt_user_input_lock")
 	#scripting_bus.connect("optional_window_closed", self, "attempt_user_input_unlock")	
+
+func play_sfx(sfx_data):
+	if typeof(sfx_data) == TYPE_STRING:
+		var sfx_name:String = sfx_data
+		if sfx_name.ends_with("*"):
+			sfx_name = sfx_name.substr(0, sfx_name.length() -1)
+			theAudioManager.play_random_sfx_starts_with(sfx_name)
+		else:	
+			theAudioManager.play_sfx_from_path([sfx_name])
+	else:
+		theAudioManager.play_sfx(sfx_data)
+		
+func play_music(shortname):
+	if shortname.ends_with("*"):
+		shortname = shortname.substr(0, shortname.length() -1)
+		theAudioManager.play_all(shortname)
+	else:
+		theAudioManager.play_music_by_shortname(shortname)
 
 func _all_clients_game_loaded(status):
 	cfc._rpc(self,"start_phaseContainer")
@@ -1032,8 +1053,14 @@ func enemy_activates() :
 					script_name = "enemy_scheme_threat"
 				"attack":
 					script_name = "enemy_attack_damage"
+			
+			var target_hero = get_identity_card(target_id)	
+			var details = {
+				"target" : target_hero,
+				SP.TRIGGER_TARGET_HERO : target_hero.canonical_name
+			}	
 						
-			var stackEvent = SimplifiedStackScript.new({"name": script_name, "target_hero_id" : target_id}, enemy)
+			var stackEvent = SimplifiedStackScript.new({"name": script_name, "target_hero_id" : target_id}, enemy, enemy, details)
 			theStack.add_script(stackEvent)
 			_current_enemy_attack_step = EnemyAttackStatus.ATTACK_COMPLETE
 			

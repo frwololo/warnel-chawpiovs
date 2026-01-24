@@ -24,12 +24,16 @@ func resize():
 	var stretch_mode = cfc.get_screen_stretch_mode()
 	if stretch_mode != SceneTree.STRETCH_MODE_VIEWPORT:
 		return
-		
+
 	var screen_size = get_viewport().size
+	var grid_width = 390
 	if screen_size.x > CFConst.LARGE_SCREEN_WIDTH:
-		hero_picture.rect_min_size = Vector2(200, 200)
-	else:		
-		hero_picture.rect_min_size = Vector2(130, 130)
+		grid_width = 600
+	var columns = get_parent().columns
+	var image_size = grid_width / columns
+	
+	hero_picture.rect_min_size = Vector2(image_size, image_size)
+
 	
 	hero_picture.rect_size = hero_picture.rect_min_size	
 	$Panel/HorizontalHighlights.rect_min_size = hero_picture.rect_min_size

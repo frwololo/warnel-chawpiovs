@@ -6,6 +6,7 @@ var text_enabled = false
 
 var color_texture = null
 var grayscale_texture = null
+var warning_timer = 0
 
 func _process(_delta:float):
 	_handle_horizontal_card()
@@ -19,6 +20,15 @@ func _handle_horizontal_card():
 		_card_text.rect_position.y = self.rect_size.y
 		_card_text.rect_min_size = Vector2(self.rect_min_size.y - 4, self.rect_min_size.x - 4) 
 		_card_text.rect_size = _card_text.rect_min_size
+
+func warning():
+	if art.texture:
+		art.self_modulate = Color(1,0,0)
+		$Tween.interpolate_property(
+				art,'self_modulate', art.self_modulate,
+				Color(1,1,1),
+				2.0, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
+		$Tween.start()		
 
 func setup_text_mode():
 	text_enabled = true

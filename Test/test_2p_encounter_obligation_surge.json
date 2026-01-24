@@ -75,6 +75,10 @@
 	},
 	"actions": [
 		{
+			"type": "other",
+			"value": "wait_a_bit",
+		},	
+		{
 			"type": "choose",
 			"hero": 2,
 			"value": "Get Stunned",

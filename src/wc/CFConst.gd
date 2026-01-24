@@ -691,7 +691,8 @@ const DEFAULT_SETTINGS:= {
 	"decks_base_url": "https://marvelcdb.com/api/public/decklist/",
 	'database': {
 		"core": "https://marvelcdb.com/api/public/cards/core.json",
-		"cap" : "https://marvelcdb.com/api/public/cards/cap.json",
+		#"cap" : "https://marvelcdb.com/api/public/cards/cap.json",
+		#"mts" : "https://marvelcdb.com/api/public/cards/mts.json",		
 		"trors" : "https://marvelcdb.com/api/public/cards/trors.json",
 	},
 	'lobby_server': {

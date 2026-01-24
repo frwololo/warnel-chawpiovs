@@ -634,10 +634,10 @@ func _receive_threat(script: ScriptTask) -> int:
 		retcode = card.tokens.mod_token("threat",
 				threat_amount,false,costs_dry_run(), tags)	
 		if threat_amount:
+			card.warning()				
 			if "villain_step_one_threat" in script.get_property(SP.KEY_TAGS):
 #			if gameData.phaseContainer.current_step == CFConst.PHASE_STEP.VILLAIN_THREAT:
-				var stackEvent:SignalStackScript = SignalStackScript.new("villain_step_one_threat_added", card, {"amount" : threat_amount})
-				gameData.theStack.add_script(stackEvent)
+				scripting_bus.emit_signal_on_stack("villain_step_one_threat_added", card, {"amount" : threat_amount})
 					
 			var if_threat: Dictionary = script.get_property("if_threat", {})
 			if if_threat:
@@ -676,7 +676,7 @@ func attach_to_card(script: ScriptTask) -> int:
 	
 	return result
 
-func host_card(script: ScriptTask):
+func host_card(script: ScriptTask) -> void:
 	var backup = []
 	#TOOD: disable_attach_trigger is a hack to address a card such as Zola's Mutate
 	#which attaches an attachment to itself, overriding the attachment's own rules
@@ -688,7 +688,7 @@ func host_card(script: ScriptTask):
 				backup.append(subject.scripts.get("card_moved_to_board", null))
 				subject.scripts["card_moved_to_board"] = { "NOP": "NOP"}
 	
-	var result = .host_card(script)
+	.host_card(script)
 	
 	if !costs_dry_run() and script.has_tag("disable_attach_trigger"):
 		var i = 0
@@ -699,8 +699,7 @@ func host_card(script: ScriptTask):
 			else:
 				subject.scripts.erase("card_moved_to_board")
 			i+= 1
-	
-	return result
+
 
 func conditional_script(script:ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -1526,12 +1525,21 @@ func surge(script: ScriptTask) -> int:
 
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
+	var amount = 1
+	if script.script_definition.has("amount"):
+		amount = script.retrieve_integer_property("amount")
+
+	if !amount:
+		return CFConst.ReturnCode.FAILED
+
 	if (costs_dry_run()): #not allowed ?
 		return retcode
 	var owner = script.owner
-	owner.hint("Surge", Color8(255,50,50))
 	var hero_id = owner.get_controller_hero_id()
-	gameData.deal_one_encounter_to(hero_id, true)
+		
+	for _i in amount:
+		owner.hint("Surge", Color8(255,50,50))
+		gameData.deal_one_encounter_to(hero_id, true)
 
 	return CFConst.ReturnCode.CHANGED
 

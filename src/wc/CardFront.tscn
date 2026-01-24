@@ -152,3 +152,5 @@ margin_right = 200.0
 margin_bottom = 280.0
 rect_min_size = Vector2( 200, 280 )
 expand = true
+
+[node name="Tween" type="Tween" parent="."]

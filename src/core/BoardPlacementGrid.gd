@@ -177,3 +177,5 @@ func rescale(scale, forced:bool= false):
 	rect_size = (card_size * card_play_scale) + Vector2(4,4)
 	
 
+func set_columns(value):
+	$GridContainer.columns = value

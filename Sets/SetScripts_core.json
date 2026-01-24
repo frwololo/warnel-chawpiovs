@@ -1799,15 +1799,7 @@
 		}
 	},
 	"Exhaustion": {
-		"card_moved_to_pile": {
-			"trigger": "self",
-			"filter_destination": "encounters_reveal",
-			"pile": [
-				{
-					"name": "surge"
-				}
-			]
-		},
+		"_surge": {},
 		"reveal": {
 			"all": [
 				{
@@ -2321,15 +2313,7 @@
 		}
 	},
 	"Heart-Shaped Herb": {
-		"card_moved_to_pile": {
-			"trigger": "self",
-			"filter_destination": "encounters_reveal",
-			"pile": [
-				{
-					"name": "surge"
-				}
-			]
-		},
+		"_surge": {},
 		"reveal": {
 			"all": [
 				{
@@ -2992,15 +2976,7 @@
 		}
 	},
 	"Kree Manipulator": {
-		"card_moved_to_pile": {
-			"trigger": "self",
-			"filter_destination": "encounters_reveal",
-			"pile": [
-				{
-					"name": "surge"
-				}
-			]
-		},
+		"_surge": {},
 		"reveal": {
 			"all": [
 				{
@@ -5772,15 +5748,7 @@
 		}
 	},
 	"Under Fire": {
-		"card_moved_to_pile": {
-			"trigger": "self",
-			"filter_destination": "encounters_reveal",
-			"pile": [
-				{
-					"name": "surge"
-				}
-			]
-		},
+		"_surge": {},
 		"reveal": {
 			"all": [
 				{
@@ -6161,15 +6129,7 @@
 		}
 	},
 	"Weapons Runner": {
-		"card_moved_to_pile": {
-			"trigger": "self",
-			"filter_destination": "encounters_reveal",
-			"pile": [
-				{
-					"name": "surge"
-				}
-			]
-		},
+		"_surge": {},
 		"boost": {
 			"all": [
 				{

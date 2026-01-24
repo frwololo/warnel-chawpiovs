@@ -66,7 +66,7 @@ signal initiated_targeting(card)
 signal target_selected(owner, details)
 
 # warning-ignore:unused_signal
-signal about_to_reveal(encounter, details)
+signal pile_emptied(card, details)
 
 # This signal is not triggerring init_scripting_event() 
 # It is used to trigger the execute_scripts functions on the various scriptable objects
@@ -121,3 +121,10 @@ func init_scripting_event(trigger_object: Card = null, details: Dictionary = {},
 	
 	#then fire the actual event
 	emit_signal("scripting_event_triggered", trigger_object, trigger, details)	
+
+func emit_signal_on_stack(signal_name, arg0 = null, arg1 = null):
+	if arg1 != null:
+		return emit_signal(signal_name, arg0, arg1)	
+	if arg0 != null:
+		return emit_signal(signal_name, arg0)	
+	return emit_signal(signal_name)	

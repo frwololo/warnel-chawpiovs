@@ -471,12 +471,12 @@ func check_empty_decks(pile_to_check):
 	
 func move_to_next_scheme(current_scheme):
 	var set_code = current_scheme.get_property("card_set_code", "").to_lower()
-	var stage = current_scheme.get_property("stage")
+	var stage = current_scheme.get_property("stage_int")
 	
 	var next_stage = stage + 1
 	var set_schemes = cfc.schemes[set_code]
 	for scheme in set_schemes:
-		if (scheme.get("stage", 0) == next_stage):
+		if (scheme.get("stage_int", 0) == next_stage):
 			var board = cfc.NMAP.board
 			var code = scheme.get("_code")
 			

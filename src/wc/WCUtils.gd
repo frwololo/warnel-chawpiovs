@@ -240,7 +240,7 @@ static func is_element1_in_element2 (element1, element2, order_doesnt_matter: Ar
 
 
 static func sort_stage(a, b):
-	if a["stage"] < b["stage"]:
+	if a.get("stage_int", 0) < b.get("stage_int", 0):
 		return true
 	return false
 

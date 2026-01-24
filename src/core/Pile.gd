@@ -231,6 +231,8 @@ func remove_child(node, _legible_unique_name=false) -> void:
 	# When we put the first card in the pile, we make sure the
 	# Panel is made transparent so that the card backs are seen instead
 	if get_card_count() == 0:
+		if node as Card:
+			scripting_bus.emit_signal_on_stack("pile_emptied", node, {"pile_name" : self.name} )
 		_has_cards = false
 		disable_focus_mode()
 		reorganize_stack()

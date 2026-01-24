@@ -180,7 +180,8 @@ func resize():
 		get_node("%LeftRight").add_constant_override("separation", 100)
 		get_node("%TeamScenarioPanel").add_constant_override("separation", 20)
 		get_node("%ScenarioOverContainer").add_constant_override("separation", 20)		
-		scenario_picture.rect_min_size = Vector2(200, 200)
+		scenario_picture.rect_min_size = Vector2(300, 300)
+		scenario_picture.rect_size = scenario_picture.rect_min_size
 		get_node("%VBoxContainer").add_constant_override("separation", 20)
 	else:		
 		get_node("%LeftRight").add_constant_override("separation", 10)
@@ -189,7 +190,8 @@ func resize():
 		get_node("%VBoxContainer").add_constant_override("separation", 5)
 		get_node("%MarginContainer").add_constant_override("margin_top", 5)
 		get_node("%MarginContainer").add_constant_override("margin_bottom", 5)
-		scenario_picture.rect_min_size = Vector2(100, 100)
+		scenario_picture.rect_min_size = Vector2(200, 200)
+		scenario_picture.rect_size = scenario_picture.rect_min_size
 		$MainMenu.rect_position.y = 5
 		
 
@@ -211,6 +213,10 @@ func _load_scenarios():
 	var ordered_names = names_to_id.keys()
 	ordered_names.sort()
 
+	var grid_columns = int(ceil(sqrt(2 * ordered_names.size())))
+	grid_columns = max(grid_columns, 3)
+	all_scenarios_container.columns = grid_columns
+
 	for villain_name in ordered_names:
 		var scenario_id = names_to_id[villain_name]
 		var new_scenario = scenarioSelect.instance()
@@ -230,20 +236,26 @@ func _create_hero_container():
 	#show in alphabetical order
 	var names_to_id = {}
 	for hero_id in cfc.get_unlocked_heroes():
-		var hero_name = cfc.get_card_name_by_id(hero_id)
-		names_to_id[hero_name] = hero_id
-
-	var ordered_names = names_to_id.keys()
-	ordered_names.sort()
-	
-	for hero_name in ordered_names:
-		var hero_id = names_to_id[hero_name]
 		#skip heroes that are not implemented
 		var hero_card_data = cfc.get_card_by_id(hero_id)
 		var alter_ego_id =  hero_card_data.get("back_card_code", "undef")
 		if !cfc.unmodified_set_scripts.get(hero_id,{}) and\
 			 !cfc.unmodified_set_scripts.get(alter_ego_id,{}):
 			continue
+		var hero_name = cfc.get_card_name_by_id(hero_id)
+		names_to_id[hero_name] = hero_id
+		
+	var ordered_names = names_to_id.keys()
+	ordered_names.sort()
+
+	var grid_columns = int(ceil(sqrt(ordered_names.size())))
+	grid_columns = max(grid_columns, 3)
+	all_heroes_container.columns = grid_columns
+	
+	
+	for hero_name in ordered_names:
+		var hero_id = names_to_id[hero_name]
+
 		var new_hero = heroSelect.instance()
 		new_hero.load_hero(hero_id)
 		all_heroes_container.add_child(new_hero)

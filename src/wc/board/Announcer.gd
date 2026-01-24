@@ -347,7 +347,7 @@ func can_display_stack_event(stack_object, mode = GlobalScriptStack.InterruptMod
 		return false
 
 	var owner_card = stack_object.get_owner_card()
-	if owner_card:
+	if is_instance_valid(owner_card):
 		if owner_card.is_boost():
 			if ignore_stack_events["boost"].get(trigger, false):
 				return false

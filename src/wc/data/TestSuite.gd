@@ -315,15 +315,49 @@ func should_wait(my_action, _delta):
 	if cfc.get_modal_menu() and action_type in ["choose", "select"] and _delta > 0.2:
 		return false
 
+	var delay_multiplier = get_delay_multiplier(my_action)
+
+	if (action_type == "other"):
+		match action_value:
+			"wait_for_interrupt":
+				if gameData.theStack.is_player_allowed_to_pass():
+					return false
+				if (!expected_to_fail) or (_delta <max_wait_time * delay_multiplier):
+					count_delay("action_wait_for_interrupt")
+					return true			
+			"wait_for_player_turn":
+				if (phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN):
+					if (!expected_to_fail) or (_delta <max_wait_time * delay_multiplier):
+						count_delay("action_wait_for_player_turn")
+						return true
+					elif !expected_to_fail:
+						announce("{warning} Timeout for "  + action_type + " " + str(action_value))					
+						
+			"wait_a_bit":
+				if (_delta < max_wait_time   *gameData.network_players.size() *gameData.network_players.size()):
+					count_delay("action_wait_a_bit")
+					return true
+			"wait_a_lot":
+				if (_delta < max_wait_time * 5 *gameData.network_players.size() *gameData.network_players.size()):
+					count_delay("action_wait_a_bit")
+					return true					
+			"wait_for_select_menu":
+				if !is_instance_valid(_current_selection_window):
+					if (!expected_to_fail) or (_delta <max_wait_time * delay_multiplier):
+						count_delay("action_wait_for_select_menu")
+						return true	
+			"gain_control":
+				return false
+			_:
+				announce("{error}: unsupported request :" + action_value + "\n")
+		return false				
+	
 
 
 	if (!gameData.theStack.is_accepting_user_interaction()):
 		count_delay("stack")			
 		return true	
 	
-	var delay_multiplier = get_delay_multiplier(my_action)
-		
-
 		#wait a bit if we need to choose from a selection window but that window isn't there
 	if (action_type == "select"):
 		if !(is_instance_valid(_current_selection_window)):
@@ -382,43 +416,7 @@ func should_wait(my_action, _delta):
 				return	true		
 			elif !expected_to_fail:
 				announce("{warning} Timeout for "  + action_type + " " + str(action_value))					
-				
-
-
-	if (action_type == "other"):
-		match action_value:
-			"wait_for_interrupt":
-				if gameData.theStack.is_player_allowed_to_pass():
-					return false
-				if (!expected_to_fail) or (_delta <max_wait_time * delay_multiplier):
-					count_delay("action_wait_for_interrupt")
-					return true			
-			"wait_for_player_turn":
-				if (phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN):
-					if (!expected_to_fail) or (_delta <max_wait_time * delay_multiplier):
-						count_delay("action_wait_for_player_turn")
-						return true
-					elif !expected_to_fail:
-						announce("{warning} Timeout for "  + action_type + " " + str(action_value))					
-						
-			"wait_a_bit":
-				if (_delta < max_wait_time   *gameData.network_players.size() *gameData.network_players.size()):
-					count_delay("action_wait_a_bit")
-					return true
-			"wait_a_lot":
-				if (_delta < max_wait_time * 5 *gameData.network_players.size() *gameData.network_players.size()):
-					count_delay("action_wait_a_bit")
-					return true					
-			"wait_for_select_menu":
-				if !is_instance_valid(_current_selection_window):
-					if (!expected_to_fail) or (_delta <max_wait_time * delay_multiplier):
-						count_delay("action_wait_for_select_menu")
-						return true	
-			"gain_control":
-				return false
-			_:
-				announce("{error}: unsupported request :" + action_value + "\n")				
-					
+								
 	return false		
 
 func should_wait_after_action(my_action, _delta):

@@ -52,6 +52,8 @@ func setup(def:Dictionary, hero_id, _scale = 0):
 	my_size = Vector2(width, height)
 
 	var max_width = def.get("max_width", 0)
+	if max_width and gameData.get_team_size() == 1:
+		max_width = max_width * 1.2
 	var max_height = def.get("max_height", 0)
 	max_size = Vector2(max_width, max_height)
 

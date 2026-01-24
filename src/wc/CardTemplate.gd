@@ -45,6 +45,9 @@ var activity_script
 #status of this card as an encounter (see GameData)
 var encounter_status = gameData.EncounterStatus.NONE
 
+func warning():
+	if card_front:
+		card_front.warning()
 
 func hint (text, color, details = {}):
 	var position = details.get("position", "")
@@ -1622,7 +1625,7 @@ func is_exhausted():
 	return _is_exhausted
 	
 func add_threat(threat : int):
-	tokens.mod_token("threat",threat)	
+	tokens.mod_token("threat",threat)
 
 func get_current_threat():
 	return tokens.get_token_count("threat")
@@ -2352,10 +2355,28 @@ func remove_current_activation(script):
 		var _error = 1
 	_current_activation_details = null
 
-#
+#############################
 #FUNCTIONS USED DIRECTLY BY JSON SCRIPTS
-#
+# These might not be always directly called by the code but instead
+# called as part of json script processing (through a .call run)
+#############################
 
+func check_validity(params, script:ScriptObject= null) -> int:
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return 0
+	if SP.check_validity(subject, params):
+		return 1	
+	return 0 
+
+func get_stage_level(params = {}, script:ScriptTask = null) -> int:
+	var subject = get_param_subject(params, script)
+						
+	if !subject:
+		return 0	
+	
+	return subject.get_property("stage_int", 0)
+	
 func count_attachments(params = {}, script:ScriptTask = null) -> int:
 	var subjects = [self]
 
@@ -2381,13 +2402,7 @@ func count_attachments(params = {}, script:ScriptTask = null) -> int:
 	return(ret)
 
 func is_hero_form(params = {}, script:ScriptTask = null) -> bool:
-	var subject = self
-
-	if script:
-		subject = null
-		var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
-		if subjects:
-			subject = subjects[0]
+	var subject = get_param_subject(params, script)
 					
 	if !subject:
 		return false	
@@ -2397,14 +2412,8 @@ func is_hero_form(params = {}, script:ScriptTask = null) -> bool:
 	return false
 	
 func is_alter_ego_form(params = {}, script:ScriptTask = null) -> bool:
-	var subject = self
+	var subject = get_param_subject(params, script)
 
-	if script:
-		subject = null
-		var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
-		if subjects:
-			subject = subjects[0]
-			
 	if !subject:
 		return false
 		
@@ -2425,6 +2434,14 @@ func get_param_subject(params, script:ScriptObject = null):
 		if subjects:
 			subject = subjects[0]
 	return subject	
+
+func get_param_subjects(params, script:ScriptObject = null):
+	var subjects = [self]
+	if script:
+		var new_subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
+		if new_subjects:
+			return new_subjects
+	return subjects		
 	
 func get_subject_int_property(params, script:ScriptTask = null) -> int:
 	var subject = get_param_subject(params, script)
@@ -2468,15 +2485,12 @@ func count_tokens(params, script:ScriptObject = null) -> int:
 
 #returns true if this card (or script subject) has a given trait
 func has_trait(params, script:ScriptObject = null) -> int:
-	var subjects = [self]
-	
+	var subjects = get_param_subjects(params, script)
+	if !subjects:
+		return 0
+		
 	var and_or = "or"
-	
-	if script and params.has("subject"):
-		var new_subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
-		if new_subjects:
-			subjects = new_subjects
-			
+
 	var traits = []
 	match typeof(params):
 		TYPE_DICTIONARY:
@@ -2505,6 +2519,35 @@ func has_trait(params, script:ScriptObject = null) -> int:
 		return 0
 	return 1
 
+func count_trait(params, script:ScriptObject = null) -> int:	
+	var subjects = get_param_subjects(params, script)
+	if !subjects:
+		return 0
+	
+			
+	var traits = []
+	match typeof(params):
+		TYPE_DICTIONARY:
+			traits = params.get("trait", "")
+		TYPE_STRING:
+			traits = params
+		_:
+			return 0
+
+	if typeof(traits) == TYPE_STRING:
+		traits = [traits]
+
+	if !traits:
+		return 0
+		
+	var count = 0
+	for subject in subjects:
+		for trait in traits:
+			trait = "trait_" + trait
+			if subject.get_property(trait, 0, true):
+				count += 1
+	return count
+
 func identity_has_trait(params, script:ScriptTask = null) -> bool:
 	var hero = get_controller_hero_card()
 	return hero.has_trait(params)	
@@ -2520,6 +2563,21 @@ func get_hero_id(params, script:ScriptTask = null) -> int:
 	
 	return hero_card.get_controller_hero_id()	
 
+func count_different_aspects(params, script:ScriptObject = null) -> int:
+	var subjects = get_param_subjects(params, script)
+	if !subjects:
+		return 0
+	var aspects = {}
+	for subject in subjects:
+		var aspect = subject.get_property("faction_code", "")
+		if aspect in CFConst.ASPECTS:
+			if not aspects.has(aspect):
+				aspects[aspect] = 0
+			aspects[aspect] += 1
+	
+	return aspects.size()
+			
+		
 func get_aspect_name(params, script:ScriptTask = null) -> String:
 	var subject = self
 	
@@ -2545,6 +2603,15 @@ func card_is_in_play(params, script:ScriptTask = null) -> bool:
 	if !card:
 		return false
 	return true
+
+func get_current_activation_amount(params:Dictionary, _script:ScriptTask = null) -> int:
+#	var script = get_current_activation_details()
+	var script = gameData.get_latest_activity_script()
+	if !script:
+		return 0
+	
+	var amount = script.retrieve_integer_property("amount", 0)
+	return amount
 
 func current_activation_status(params:Dictionary, _script:ScriptTask = null) -> bool:
 #	var script = get_current_activation_details()

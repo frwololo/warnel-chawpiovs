@@ -58,12 +58,20 @@ func _process(_delta:float):
 
 func resize():
 
-	
 	var screen_size = get_viewport().size
-	if screen_size.x > 1800:
-		scenario_picture.rect_min_size = Vector2(200, 200)
-	else:		
-		scenario_picture.rect_min_size = Vector2(100, 100)
+	var grid_width = 450
+	var grid_height = 220
+	if screen_size.x > CFConst.LARGE_SCREEN_WIDTH:
+		grid_width = 800
+		grid_height = 400
+	var columns = get_parent().columns
+	var rows = int(ceil(float(get_parent().get_children().size()) /float(columns)))
+	var image_width = grid_width / columns
+	var image_height = grid_height / rows
+	var image_size = min(image_width, image_height)
+	
+	scenario_picture.rect_min_size = Vector2(image_size, image_size)
+
 	
 	scenario_picture.rect_size = scenario_picture.rect_min_size	
 

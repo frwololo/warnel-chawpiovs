@@ -213,11 +213,11 @@
 		"extra_decks": [
 			{
 				"name": "discard_side_schemes",
-				"faceup": true,
-			},			
+				"faceup": true
+			},
 			{
 				"name": "deck_side_schemes"
-			},			
+			}
 		],
 		"extra_rules": {
 			"card_moved_to_pile": {
@@ -263,6 +263,153 @@
 			"villains": [
 				"Red Skull - 2",
 				"Red Skull - 3"
+			]
+		}
+	},
+	"21074": {
+		"code": "21074",
+		"name": "Attack on Knowhere",
+		"modular_default": [
+			"armies_of_titan",
+			"black_order"
+		],
+		"encounter_sets": [
+			"Ebony_Maw",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Ebony Maw - 1",
+			"Ebony Maw - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"Ebony_Maw",
+				"Standard",
+				"Modular",
+				"expert"
+			],
+			"villains": [
+				"Ebony Maw - 2",
+				"Ebony Maw - 3"
+			]
+		}
+	},
+	"21098": {
+		"code": "21098",
+		"name": "Under Siege",
+		"modular_default": [
+			"armies_of_titan"
+		],
+		"encounter_sets": [
+			"tower_defense",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Corvus Glaive - 1",
+			"Corvus Glaive - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"tower_defense",
+				"Standard",
+				"Modular",
+				"expert"
+			],
+			"villains": [
+				"Corvus Glaive - 2",
+				"Corvus Glaive - 3"
+			]
+		}
+	},
+	"21114": {
+		"code": "21114",
+		"name": "The Infinity Stones",
+		"modular_default": [
+			"black_order",
+			"children_of_thanos"
+		],
+		"encounter_sets": [
+			"Thanos",
+			"infinity_gauntlet",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Thanos - 1",
+			"Thanos - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"Thanos",
+				"infinity_gauntlet",
+				"Modular",
+				"expert"
+			],
+			"villains": [
+				"Thanos - 2",
+				"Thanos - 3"
+			]
+		}
+	},
+	"21138": {
+		"code": "21138",
+		"name": "Odin's Torment",
+		"modular_default": [
+			"legions_of_hel",
+			"frost_giants"
+		],
+		"encounter_sets": [
+			"Hela",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Hela - A1",
+			"Hela - A2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"Hela",
+				"Standard",
+				"Modular",
+				"expert"
+			],
+			"villains": [
+				"Hela - B1",
+				"Hela - B2"
+			]
+		}
+	},
+	"21165": {
+		"code": "21165",
+		"name": "All Hail King Loki",
+		"modular_default": [
+			"enchantress",
+			"frost_giants"
+		],
+		"encounter_sets": [
+			"Loki",
+			"infinity_gauntlet",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Loki - 1",
+			"Loki - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"Loki",
+				"infinity_gauntlet",
+				"Standard",
+				"Modular",
+				"expert"
+			],
+			"villains": [
+				"Loki - 2",
+				"Loki - 3"
 			]
 		}
 	}

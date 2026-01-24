@@ -390,6 +390,24 @@ func load_card_scenarios():
 		primitives[card_data["name"]] = card_data;
 		scenarios.append(key)
 
+func fix_stage(stage):
+	if typeof(stage) == TYPE_INT:
+		return str(stage)
+	if typeof(stage) == TYPE_STRING:
+		match stage.to_upper():
+			"I":
+				return "1"
+			"II":
+				return "2"
+			"III":
+				return "3"											
+			_:
+				return stage
+			
+	#todo error
+	var _error = 1
+	return "0"
+
 func stage_variant_to_int(stage):
 	if typeof(stage) == TYPE_INT:
 		return stage
@@ -401,6 +419,14 @@ func stage_variant_to_int(stage):
 				return 2
 			"III":
 				return 3
+			"A1":
+				return 1
+			"B1":
+				return 1
+			"A2":
+				return 2
+			"B2":
+				return 2												
 			_:
 				return int (stage.substr(0,1))
 			
@@ -456,9 +482,7 @@ func setup_traits_as_alterants():
 	for trait in self.all_traits:
 
 		CardConfig.PROPERTIES_NUMBERS.append("trait_" + trait)
-	for keyword in CFConst.AUTO_KEYWORDS:
-		if keyword =="guard":
-			var _tmp=1		
+	for keyword in CFConst.AUTO_KEYWORDS:	
 		if CFConst.AUTO_KEYWORDS[keyword] in ["int", "bool"]:
 			CardConfig.PROPERTIES_NUMBERS.append(keyword)
 
@@ -536,7 +560,8 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 
 	if card_data.get("stage", ""):
 		card_data["original_stage"] = str(card_data["stage"])
-		card_data["stage"] = stage_variant_to_int(card_data["stage"])
+		card_data["stage_int"] = stage_variant_to_int(card_data["stage"])
+		card_data["stage"] = fix_stage(card_data["stage"])
 		
 	#Are those still needed?
 	if not card_data.has("Power"):
@@ -560,6 +585,8 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 			card_data["can_" + action] = false	
 
 	card_data["text"] = convert_to_bbcode(card_data.get("real_text", ""))
+
+	card_data["aspect"] = card_data.get("faction_code", "")
 
 	###END Fixing missing data
 
@@ -701,7 +728,6 @@ func load_card_definitions() -> Dictionary:
 				continue			
 			_load_one_card_definition(card_data, box_name)	
 			combined_sets[card_data["_code"]] = card_data
-			
 			var linked_card_data = card_data.get("linked_card", {})
 			if (linked_card_data):
 				_load_one_card_definition(linked_card_data, box_name)
@@ -907,7 +933,7 @@ func load_script_definitions() -> void:
 		for fuzzy_card_name in json_card_data.keys():
 			var card_info = retrieve_card_info_from_fuzzy_name(fuzzy_card_name)
 			var card_name = card_info["name"]
-			var card_code = card_info["code"]
+			var card_code = card_info["code"]	
 			if card_code:
 				if not combined_scripts.get(card_code): #this ensures the first data that was read gets precedence
 					var script_data = json_card_data[fuzzy_card_name]
@@ -1166,7 +1192,7 @@ func get_image_dl_url(card_id):
 		if CFConst.ATTEMPT_TO_GUESS_IMAGE_URL:
 			var url = base_url + "/bundles/cards/" + str(card_id) + ".png"
 			return url
-	if !card_data.has("imagesrc"):
+	if !card_data.get("imagesrc", ""):
 			var duplicate_of = card_data.get("duplicate_of_code", "")
 			if duplicate_of:
 				return get_image_dl_url(duplicate_of)

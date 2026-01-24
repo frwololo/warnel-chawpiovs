@@ -58,18 +58,18 @@ autowrap = true
 unique_name_in_owner = true
 margin_top = 51.0
 margin_right = 669.0
-margin_bottom = 589.0
+margin_bottom = 639.0
 custom_constants/separation = 100
 
 [node name="PanelContainer" type="PanelContainer" parent="MainMenu/Outercontainer/LeftRight"]
 margin_right = 204.0
-margin_bottom = 538.0
+margin_bottom = 588.0
 
 [node name="HeroesPanel" type="VBoxContainer" parent="MainMenu/Outercontainer/LeftRight/PanelContainer"]
 margin_left = 2.0
 margin_top = 2.0
 margin_right = 202.0
-margin_bottom = 536.0
+margin_bottom = 586.0
 rect_min_size = Vector2( 200, 0 )
 custom_constants/separation = 20
 
@@ -92,7 +92,7 @@ columns = 3
 unique_name_in_owner = true
 margin_left = 304.0
 margin_right = 669.0
-margin_bottom = 538.0
+margin_bottom = 588.0
 custom_constants/separation = 20
 
 [node name="PanelContainer3" type="PanelContainer" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel"]
@@ -178,14 +178,14 @@ autowrap = true
 [node name="PanelContainer" type="PanelContainer" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel"]
 margin_top = 175.0
 margin_right = 365.0
-margin_bottom = 538.0
+margin_bottom = 588.0
 
 [node name="ScenarioOverContainer" type="VBoxContainer" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel/PanelContainer"]
 unique_name_in_owner = true
 margin_left = 2.0
 margin_top = 2.0
 margin_right = 363.0
-margin_bottom = 361.0
+margin_bottom = 411.0
 custom_constants/separation = 20
 
 [node name="ScenarioHeader" type="Label" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel/PanelContainer/ScenarioOverContainer"]
@@ -198,39 +198,39 @@ align = 1
 [node name="MarginContainer2" type="MarginContainer" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel/PanelContainer/ScenarioOverContainer"]
 margin_top = 50.0
 margin_right = 361.0
-margin_bottom = 359.0
+margin_bottom = 409.0
 custom_constants/margin_top = 20
 
 [node name="ScenarioContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel/PanelContainer/ScenarioOverContainer/MarginContainer2"]
 unique_name_in_owner = true
 margin_top = 20.0
 margin_right = 361.0
-margin_bottom = 309.0
+margin_bottom = 359.0
 custom_constants/separation = 20
 
 [node name="PanelContainer" type="PanelContainer" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel/PanelContainer/ScenarioOverContainer/MarginContainer2/ScenarioContainer"]
 margin_right = 4.0
-margin_bottom = 289.0
+margin_bottom = 339.0
 
 [node name="Scenarios" type="GridContainer" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel/PanelContainer/ScenarioOverContainer/MarginContainer2/ScenarioContainer/PanelContainer"]
 unique_name_in_owner = true
 margin_left = 2.0
 margin_top = 2.0
 margin_right = 2.0
-margin_bottom = 287.0
+margin_bottom = 337.0
 columns = 4
 
 [node name="PanelContainer2" type="PanelContainer" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel/PanelContainer/ScenarioOverContainer/MarginContainer2/ScenarioContainer"]
 margin_left = 24.0
 margin_right = 361.0
-margin_bottom = 289.0
+margin_bottom = 339.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel/PanelContainer/ScenarioOverContainer/MarginContainer2/ScenarioContainer/PanelContainer2"]
 unique_name_in_owner = true
 margin_left = 2.0
 margin_top = 2.0
 margin_right = 335.0
-margin_bottom = 287.0
+margin_bottom = 337.0
 custom_constants/separation = 20
 alignment = 2
 
@@ -239,20 +239,23 @@ unique_name_in_owner = true
 margin_right = 333.0
 margin_bottom = 30.0
 text = "Scenario"
+align = 1
 
 [node name="ScenarioTexture" type="TextureRect" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel/PanelContainer/ScenarioOverContainer/MarginContainer2/ScenarioContainer/PanelContainer2/VBoxContainer"]
 unique_name_in_owner = true
+margin_left = 116.0
 margin_top = 50.0
-margin_right = 333.0
-margin_bottom = 150.0
-rect_min_size = Vector2( 100, 100 )
+margin_right = 216.0
+margin_bottom = 200.0
+rect_min_size = Vector2( 100, 150 )
+size_flags_horizontal = 4
 expand = true
 stretch_mode = 7
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel/PanelContainer/ScenarioOverContainer/MarginContainer2/ScenarioContainer/PanelContainer2/VBoxContainer"]
-margin_top = 170.0
+margin_top = 220.0
 margin_right = 333.0
-margin_bottom = 206.0
+margin_bottom = 256.0
 
 [node name="ModularLabel" type="Label" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel/PanelContainer/ScenarioOverContainer/MarginContainer2/ScenarioContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
 margin_top = 3.0
@@ -271,9 +274,9 @@ text = "Modular encounter"
 clip_text = true
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel/PanelContainer/ScenarioOverContainer/MarginContainer2/ScenarioContainer/PanelContainer2/VBoxContainer"]
-margin_top = 226.0
+margin_top = 276.0
 margin_right = 333.0
-margin_bottom = 285.0
+margin_bottom = 335.0
 custom_constants/separation = 50
 
 [node name="ExpertMode" type="CheckBox" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel/PanelContainer/ScenarioOverContainer/MarginContainer2/ScenarioContainer/PanelContainer2/VBoxContainer/HBoxContainer2"]
@@ -291,9 +294,9 @@ size_flags_horizontal = 5
 text = "Launch"
 
 [node name="Margin2" type="MarginContainer" parent="MainMenu/Outercontainer"]
-margin_top = 592.0
+margin_top = 642.0
 margin_right = 669.0
-margin_bottom = 723.0
+margin_bottom = 773.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 custom_constants/margin_top = 10

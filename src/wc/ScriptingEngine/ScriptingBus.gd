@@ -37,6 +37,8 @@ signal current_playing_hero_changed(details) #before, after
 # warning-ignore:unused_signal
 signal stack_event_display_finished(details) #before, after
 
+# warning-ignore:unused_signal
+signal about_to_reveal(encounter, details)
 
 # warning-ignore:unused_signal
 signal all_clients_game_loaded(details) #status Dict for all players
@@ -134,3 +136,19 @@ signal ally_died(card,details)
 signal hero_died(card,details)
 # warning-ignore:unused_signal
 signal alter_ego_died(card,details)
+
+func emit_signal_on_stack(signal_name, arg0 = null, arg1 = null):
+	var stackEvent:SignalStackScript
+
+	if arg1 != null:
+		if typeof(arg1) == TYPE_DICTIONARY:
+			if !arg1.has("source"):
+				if arg0 as Card:
+					arg1["source"] = arg0.get_controller_hero_card()
+		stackEvent = SignalStackScript.new(signal_name, arg0, arg1)
+	elif arg0 != null:
+		stackEvent = SignalStackScript.new(signal_name, arg0)	
+	else:
+		stackEvent = SignalStackScript.new(signal_name)
+	
+	gameData.theStack.add_script(stackEvent)	

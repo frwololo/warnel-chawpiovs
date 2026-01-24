@@ -140,7 +140,7 @@ func get_all_sfx_starting_with(string):
 	if !sfx_wildcard_cache.has(string):
 		sfx_wildcard_cache[string] = []
 		for key in sfx_collection:
-			if string in key:
+			if key.begins_with(string):
 				sfx_wildcard_cache[string].append(key)
 
 	return sfx_wildcard_cache[string]

@@ -225,7 +225,8 @@ func erase_grids_and_piles():
 	_cached_pile_data = {}
 	
 func grid_setup():
-	_team_size = 0 #reset team size to fetch it from gameData	
+	_team_size = 0 #reset team size to fetch it from gameData
+	var default_grid_columns = 8 if gameData.get_team_size() == 1 else 6	
 	erase_grids_and_piles()
 	var GRID_SETUP = gameData.scenario.grid_setup
 	for grid_name in GRID_SETUP.keys():
@@ -310,6 +311,8 @@ func grid_setup():
 				var grid_scene = grid_info.get("scene", basicGrid)
 				var grid: BoardPlacementGrid = grid_scene.instance()
 				grid.add_to_group("placement_grid")
+				var grid_columns = grid_info.get("columns", default_grid_columns)
+				grid.set_columns(grid_columns)
 				# Need to rescale before adding ???
 				var grid_scale = grid_info.get("scale", 1)				
 				grid.rescale(CFConst.PLAY_AREA_SCALE * scale * grid_scale)

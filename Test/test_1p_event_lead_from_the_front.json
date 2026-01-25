@@ -17,7 +17,7 @@
 			],
 			"schemes": [
 				{
-					"card": "01097",
+					"card": "01097b",
 					"tokens" : {"threat" : 5}					
 				}
 			],
@@ -61,7 +61,7 @@
 		},
 		{
 			"type": "target",
-			"value": "01097"
+			"value": "01097b"
 		},	
 		{
 			"type": "activate",
@@ -73,7 +73,7 @@
 		},
 		{
 			"type": "target",
-			"value": "01097"
+			"value": "01097b"
 		},			
 		
 	] ,
@@ -94,7 +94,7 @@
 			],
 			"schemes": [
 				{
-					"card": "01097",
+					"card": "01097b",
 					"tokens" : {"threat" : 1}
 				}
 			],

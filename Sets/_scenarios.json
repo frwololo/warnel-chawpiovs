@@ -307,8 +307,8 @@
 			"Modular"
 		],
 		"villains": [
-			"Corvus Glaive - 1",
-			"Corvus Glaive - 2"
+			["Proxima Midnight - 1", "Proxima Midnight - 2"],
+			["Corvus Glaive - 1", "Corvus Glaive - 2"]
 		],
 		"expert": {
 			"encounter_sets": [
@@ -318,8 +318,8 @@
 				"expert"
 			],
 			"villains": [
-				"Corvus Glaive - 2",
-				"Corvus Glaive - 3"
+				["Proxima Midnight - 2", "Proxima Midnight - 3"],
+				["Corvus Glaive - 2", "Corvus Glaive - 3"]
 			]
 		}
 	},

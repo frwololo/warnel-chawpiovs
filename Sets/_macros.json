@@ -33,6 +33,18 @@
 			]
 		}
 	},
+	"hinder": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": "__amount__",
+					"subject": "self",
+					"for_each_player": "__each_player__"
+				}
+			]
+		}
+	},	
 	"incite": {
 		"reveal": {
 			"all": [

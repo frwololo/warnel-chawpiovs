@@ -432,6 +432,11 @@ const TOKENS_ONLY_ON_BOARD_EXCEPTIONS:= [
 	"encounters_reveal"	
 ]
 
+const TOKENS_INCREASE_PREVENTION_PROPERTIES:= {
+	"stunned": ["stalwart"],
+	"confused": ["stalwart"],
+}
+
 const HERO_GRID_LAYOUT := {
 	"type": "horizontal",
 	"x" : 500,
@@ -533,7 +538,7 @@ const AUTO_KEYWORDS := {
 	"restricted" : "bool",
 	"retaliate" : "int",
 	"setup" : "bool",
-	"stalwart" : "bool",
+	"stalwart" : "int",
 	"steady" : "bool",
 	"surge" : "bool",
 	"team-up" : "bool",
@@ -547,6 +552,7 @@ const AUTO_KEYWORDS := {
 #additional ones not officially in the game
 	"cannot_leave_play": "int",
 	"invincible": "int",
+	"cannot_remove_threat": "int",
 					
 }
 
@@ -709,12 +715,108 @@ const DEFAULT_SETTINGS:= {
 }
 
 const HARDCODED_DEF_PATCHES = {
+	"01043a": {
+		"imagesrc": "https://wololo.net/wc/images/01043a.png"		
+	},
+	"01043b": {
+		"imagesrc": "https://wololo.net/wc/images/01043b.png"		
+	},
+	"01043c": {
+		"imagesrc": "https://wololo.net/wc/images/01043c.png"		
+	},
+	"01043d": {
+		"imagesrc": "https://wololo.net/wc/images/01043d.png"		
+	},
+	"01116b":{
+		"imagesrc": "/bundles/cards/01116.png"
+	},
+	"01117b":{
+		"imagesrc": "/bundles/cards/01117.png"
+	},	
+	"01137b":{
+		"imagesrc": "/bundles/cards/01137.png"
+	},	
+	"01138b":{
+		"imagesrc": "/bundles/cards/01138.png"
+	},
+	"01139b":{
+		"imagesrc": "/bundles/cards/01139.png"
+	},			
+	"01144": {
+		"imagesrc": "https://wololo.net/wc/images/01144.png"		
+	},
+	"01144a": {
+		"imagesrc": "https://wololo.net/wc/images/01144a.png"		
+	},	
+	"01144b": {
+		"imagesrc": "https://wololo.net/wc/images/01144b.png"		
+	},	
+	"01144c": {
+		"imagesrc": "https://wololo.net/wc/images/01144c.png"		
+	},							
+	"01097b": {
+		"imagesrc": "/bundles/cards/01097.png"
+	},
+	"04061b":{
+		"imagesrc": "/bundles/cards/04061.png"
+	},	
+	"04062b":{
+		"imagesrc": "/bundles/cards/04062.png"
+	},
+	"04063b":{
+		"imagesrc": "/bundles/cards/04063.png"
+	},	
+	"04079b":{
+		"imagesrc": "/bundles/cards/04079.png"
+	},	
+	"04096b":{
+		"imagesrc": "/bundles/cards/04096.png"
+	},
+	"04112b":{
+		"imagesrc": "/bundles/cards/04112.png"
+	},	
+	"04113b":{
+		"imagesrc": "/bundles/cards/04113.png"
+	},					
 	"04128": {
 		"name": "The Rise of Red Skull" #https://github.com/zzorba/marvelsdb/issues/339
 	},
+	"04128b":{
+		"imagesrc": "/bundles/cards/04128.png"
+	},	
+	"04129b":{
+		"imagesrc": "/bundles/cards/04129.png"
+	},			
 	"04150": {
 		"boost": 1 #https://github.com/zzorba/marvelsdb/issues/342
-	}	
+	},
+	"21104"	: {
+		"name": "Corvus's Glaive", #https://github.com/zzorba/marvelsdb/issues/343
+	},
+	"21074b":{
+		"imagesrc": "https://wololo.net/wc/images/21074b.jpg"
+	},
+	"21075b":{
+		"imagesrc": "https://wololo.net/wc/images/21075b.jpg"
+	},		
+	"21098b":{
+		"imagesrc": "https://wololo.net/wc/images/21098b.jpg"
+	},
+	"21099b":{
+		"imagesrc": "https://wololo.net/wc/images/21099b.jpg"
+	},	
+	"21114b":{
+		"imagesrc": "https://wololo.net/wc/images/21114b.jpg"
+	},
+	"21115b":{
+		"imagesrc": "https://wololo.net/wc/images/21115b.jpg"
+	},	
+	"21138b":{
+		"imagesrc": "https://wololo.net/wc/images/21138b.jpg"
+	},	
+	"21165b":{
+		"imagesrc": "https://wololo.net/wc/images/21165b.jpg"
+	},				
 	
 }
 

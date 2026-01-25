@@ -160,7 +160,14 @@ func mod_token(
 					break
 			if !is_exception:
 				return CFConst.ReturnCode.FAILED
-		
+	
+	#some properties prevent adding certain tokens
+	if mod > 0:
+		var prevention_properties = CFConst.TOKENS_INCREASE_PREVENTION_PROPERTIES.get(token_name, [])
+		for property in prevention_properties:
+			if owner_card.get_property(property, 0, true):
+				return CFConst.ReturnCode.FAILED
+	
 	var token : Token = get_all_tokens().get(token_name, null)
 	# If the token does not exist in the card, we add its node
 	# and set it to 1

@@ -6,6 +6,8 @@ var sfx_players:= []
 var current_music_filename := ""
 var music_collection := {}
 var sfx_collection := {}
+var _sfx_collection_traits := {}
+
 var playlist_filter = ""
 var play_all_mode = false
 const SFX_CHANNELS = 8
@@ -70,12 +72,17 @@ func load_sfx_collection():
 	for file in result:
 		var basename = file.get_file()
 		basename = basename.split(".")[0]
-		var components = basename.split("-")
-		var current_node = sfx_collection
-		for component in components:
-			if !current_node.has(component):
-				current_node[component] = {"filename": file}
-			current_node = current_node[component]
+		if ("-") in basename:
+			var filters = basename.split("-")[0]
+			if filters.begins_with("trait_"):
+				_sfx_collection_traits[filters] = 1
+		sfx_collection[basename] = {"filename": file}
+#		var components = basename.split("-")
+#		var current_node = sfx_collection
+#		for component in components:
+#			if !current_node.has(component):
+#				current_node[component] = {"filename": file}
+#			current_node = current_node[component]
 			
 	var _tmp = 1
 
@@ -111,20 +118,21 @@ func find_sound_for_card_event(event_name, card_owner = null):
 		shortname = card_owner.get_property("shortname", "").to_lower()
 		type_code = card_owner.get_property("type_code", "").to_lower()	
 	
-	if shortname and sfx_collection.has(shortname):
-		if sfx_collection[shortname].has(event_name):
-			return load_stream(sfx_collection[shortname][event_name])
+	if shortname:
+		var fullname = shortname + "-" + event_name
+		if sfx_collection.has(fullname):
+			return load_random_sfx_starts_with(fullname)
 
 	if is_instance_valid(card_owner):
-		for key in sfx_collection:
-			if key.begins_with("trait_") and card_owner.get_property(key, 0, true):
-				if sfx_collection[key].has(event_name):
-					return load_stream(sfx_collection[key][event_name])
+		for trait in _sfx_collection_traits:
+			if card_owner.get_property(trait, 0, true):
+				var fullname = trait + "-" + event_name
+				if sfx_collection.has(fullname):
+					return load_random_sfx_starts_with(fullname)
 		
-		var type_code_key = "type_" + type_code
-		if type_code_key and sfx_collection.has(type_code_key):
-			if sfx_collection[type_code_key].has(event_name):
-				return load_stream(sfx_collection[type_code_key][event_name])
+		var type_code_key = "type_" + type_code + "-" + event_name
+		if sfx_collection.has(type_code_key):
+			return load_random_sfx_starts_with(type_code_key)
 
 	return load_random_sfx_starts_with(event_name)	
 

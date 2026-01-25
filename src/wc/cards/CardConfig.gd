@@ -18,7 +18,7 @@ const PROPERTIES_STRINGS := ["Type", "Requirements", "Abilities", "text", "type_
 const PROPERTIES_NUMBERS := ["cost", "attack", "defense", "thwart", "scheme", "health",
 	"attack_cost", "thwart_cost", #consequential damage
 	"printed_health", #TODO maybe retrieve this one from the database directly?
-	"invincible",
+	"invincible","cannot_remove_threat",
 	"scheme_crisis",
 	"resource_mental", "resource_wild", "resource_energy", "resource_physical",
 	"ally_limit", "hand_size", "boost_cards_per_attack", "boost_cards_per_scheme", "max_hand_size"]

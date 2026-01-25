@@ -1666,6 +1666,10 @@ func remove_threat(modification: int, script = null) -> int:
 					scheme.hint("Crisis!", Color8(200, 50, 50))
 					self.hint("Crisis!", Color8(200, 50, 50))
 					return CFConst.ReturnCode.FAILED
+	
+	if get_property("cannot_remove_threat", 0, true):
+		self.hint("Protected!", Color8(200, 50, 50))
+		return CFConst.ReturnCode.FAILED
 					
 	var token_name = "threat"
 	var current_tokens = tokens.get_token_count(token_name)

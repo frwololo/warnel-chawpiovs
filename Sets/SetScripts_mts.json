@@ -1,6 +1,14 @@
 {
 	"\"I Am Inevitable\"": {
-		"TODO": ""
+		"reveal": {
+			"all": [
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"TODO": "boost"
 	},
 	"Abjuration": {
 		"TODO": ""
@@ -392,7 +400,25 @@
 		"TODO": ""
 	},
 	"Avatar of Death": {
-		"TODO": ""
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "enemy_schemes",
+					"subject": "villain"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "villain_attacks_you",
+					"tags": [
+						"piercing",
+						"overkill"
+					]
+				}
+			]
+		}
 	},
 	"Avengers Mansion": {
 		"manual": {
@@ -555,7 +581,28 @@
 		"TODO": ""
 	},
 	"Black Order Infantry": {
-		"TODO": ""
+		"interrupt": {
+			"event_name": "card_dies",
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "villain"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "villain"
+				}
+			]
+		}
 	},
 	"Blade - Eric Brooks": {
 		"thwarted": {
@@ -608,7 +655,38 @@
 		"TODO": ""
 	},
 	"Bound by Blood": {
-		"TODO": ""
+		"reveal": {
+			"all": [
+				{
+					"name": "heal",
+					"amount": 2,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain"
+							}
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain"
+							}
+						}
+					]
+				}
+			]
+		},
+		"TODO": "boost"
 	},
 	"Captain America - Steve Rogers": {
 		"TODO": ""
@@ -667,7 +745,26 @@
 		}
 	},
 	"City Under Attack": {
-		"TODO": ""
+		"hinder": {
+			"__amount__": 1,
+			"__each_player__": true
+		},
+		"interrupt": {
+			"event_name": "card_dies",
+			"trigger": "self",
+			"board": [
+				{
+					"name": "draw_cards",
+					"amount": 1,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities_event_source_hero"
+						}
+					]
+				}
+			]
+		}
 	},
 	"Combat Training": {
 		"manual": {
@@ -724,7 +821,81 @@
 		"TODO": ""
 	},
 	"Corvus's Cunning": {
-		"TODO": ""
+		"reveal": {
+			"all": [
+				{
+					"name": "enemy_activates",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Corvus Glaive"
+							}
+						}
+					]
+				}
+			]
+		},
+		"TODO": "boost"
+	},
+	"Corvus's Glaive": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Corvus Glaive"
+							}
+						}
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 1,
+						"energy": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Cosmic Awareness": {
 		"TODO": ""
@@ -813,7 +984,26 @@
 		"TODO": ""
 	},
 	"Deviant Syndrome": {
-		"TODO": ""
+		"incite": {
+			"__amount__": 1
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "villain",
+					"is_cost": true
+				},
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": 2,
+					"is_else": true
+				}
+			]
+		}
 	},
 	"Devious Sorcery": {
 		"TODO": ""
@@ -1302,7 +1492,33 @@
 		"TODO": ""
 	},
 	"Landing Craft": {
-		"TODO": ""
+		"interrupt": {
+			"event_name": "card_dies",
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "index",
+					"grid_name": "enemies_event_source_hero",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				}
+			]
+		}
 	},
 	"Laufey": {
 		"TODO": ""
@@ -1525,7 +1741,51 @@
 		"TODO": ""
 	},
 	"Master of the Stones": {
-		"TODO": ""
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": [
+				"commit_scheme",
+				"enemy_attack"
+			],
+			"trigger": "host",
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_infinity_stone"
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard_villain"
+				}
+			]
+		},
+		"enemy_scheme_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard_villain"
+				}
+			]
+		}
 	},
 	"Mighty Avengers": {
 		"TODO": "max_1_team_per_player",
@@ -1678,7 +1938,30 @@
 		"TODO": ""
 	},
 	"Outrider": {
-		"TODO": ""
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"src_container": "hand",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "random"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_current_hero_target",
+					"src_container": "hand_current_hero_target",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "random"
+				}
+			]
+		}
 	},
 	"Pacification": {
 		"_surge": {},
@@ -1836,7 +2119,23 @@
 		"TODO": ""
 	},
 	"Proxima's Power": {
-		"TODO": ""
+		"reveal": {
+			"all": [
+				{
+					"name": "enemy_activates",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Proxima Midnight"
+							}
+						}
+					]
+				}
+			]
+		},
+		"TODO": "boost"
 	},
 	"Proxima's Spear": {
 		"TODO": ""
@@ -2374,31 +2673,261 @@
 		}
 	},
 	"Supergiant": {
-		"TODO": ""
+		"quickstrike": {},
+		"interrupt": {
+			"event_name": "enemy_attack_damage",
+			"trigger": "self",
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"stun_if_damage"
+						]
+					}
+				}
+			]
+		}
 	},
 	"System Shock": {
 		"TODO": ""
 	},
 	"Thanos - 1": {
-		"TODO": ""
+		"pile_emptied": {
+			"event_filters": {
+				"pile_name": "deck_infinity_stone"
+			},
+			"board": [
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
+				}
+			]
+		}
 	},
 	"Thanos - 2": {
-		"TODO": ""
+		"reveal": {
+			"all": [
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Thanos's Helmet"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
+				}
+			]
+		},
+		"pile_emptied": {
+			"event_filters": {
+				"pile_name": "deck_infinity_stone"
+			},
+			"board": [
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
+				}
+			]
+		}
 	},
 	"Thanos - 3": {
-		"TODO": ""
+		"reveal": {
+			"all": [
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Thanos's Armor"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
+				}
+			]
+		},
+		"pile_emptied": {
+			"event_filters": {
+				"pile_name": "deck_infinity_stone"
+			},
+			"board": [
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
+				}
+			]
+		}
 	},
 	"Thanos's Armor": {
-		"TODO": ""
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "host"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": 1,
+					"subject": "interrupted_event"
+				}
+			]
+		},
+		"attack_happened": {
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "hero"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 1,
+						"energy": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard_villain"
+				}
+			]
+		}
 	},
 	"Thanos's Helmet": {
-		"TODO": ""
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"attack_happened": {
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "hero"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 1,
+						"mental": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard_villain"
+				}
+			]
+		}
 	},
 	"The Armies of Thanos": {
 		"TODO": ""
 	},
 	"The Black Order": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_remove_threat",
+					"trigger": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"trait_black_order": 1,
+									"comparison": "ge"
+								},
+								"filter_properties2": {
+									"type_code": "minion"
+								}
+							}
+						]
+					},
+					"alteration": "per_boardseek"
+				}
+			]
+		}
 	},
 	"The Gardener": {
 		"manual": {

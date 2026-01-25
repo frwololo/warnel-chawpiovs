@@ -22,7 +22,7 @@
 			],
 			"schemes": [
 				{
-					"card": "01116",
+					"card": "01116b",
 					"tokens" :{"threat" : 3},
 				},			
 			],			
@@ -88,7 +88,7 @@
 			],
 			"schemes": [
 				{
-					"card": "01116",
+					"card": "01116b",
 					"tokens" :{"threat" : 3},
 				},			
 			],			

@@ -37,11 +37,10 @@ func lose_focus():
 func _process(_delta:float):
 	if scenario_picture and !scenario_picture.texture_normal:
 		var display_name = cfc.get_card_name_by_id(scenario_id)
-		var villains = ScenarioDeckData.get_villains_from_scheme(scenario_id)
+		var villain = ScenarioDeckData.get_first_villain_from_scheme(scenario_id)
 		var picture_card_id = scenario_id
 		var texture
-		if (villains):
-			var villain = villains[0]
+		if (villain):
 			display_name = villain["shortname"]
 			picture_card_id = villain["_code"]
 			texture = cfc.get_villain_portrait(picture_card_id)
@@ -99,9 +98,8 @@ func grab_focus():
 
 func load_scenario(_scenario_id) -> bool:
 	scenario_id = _scenario_id
-	var villains = ScenarioDeckData.get_villains_from_scheme(scenario_id)
-	if (villains):
-		var villain = villains[0]
+	var villain = ScenarioDeckData.get_first_villain_from_scheme(scenario_id)
+	if (villain):
 		villain_id = villain["_code"]
 		return true
 	

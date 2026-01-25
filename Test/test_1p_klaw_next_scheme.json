@@ -17,13 +17,13 @@
 			],
 			"schemes": [
 				{
-					"card": "01116",
+					"card": "01116b",
 					"tokens" :{"threat" : 5},
 				}				
 			],
 			"set_aside": [
 				{
-					"card": "01117",
+					"card": "01117b",
 				}			
 			],
 			"deck_villain": [	
@@ -97,13 +97,13 @@
 			],
 			"schemes": [
 				{
-					"card": "01117",
+					"card": "01117b",
 					"tokens": {"threat": 1}
 				}				
 			],
 			"set_aside": [
 				{
-					"card": "01116",
+					"card": "01116b",
 				}			
 			],
 			"deck_villain": [	

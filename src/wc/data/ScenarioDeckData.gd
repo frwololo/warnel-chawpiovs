@@ -3,7 +3,8 @@ class_name ScenarioDeckData
 extends Reference
 
 #card definitions
-var villains:Array
+var _villains:= []
+var _villains_by_level:= {}
 
 
 var scheme_card_id:= ""
@@ -29,52 +30,106 @@ static func get_recommended_modular_encounters(scheme_id):
 		return modular_defaults
 	return []
 
+static func get_first_villain_from_scheme(scheme_id, expert_mode:= false):
+	var villains = get_villains_from_scheme(scheme_id, expert_mode)
+	if !villains:
+		return null
+	return villains[0][0]
+	
 static func get_villains_from_scheme(scheme_id, expert_mode:= false):
-	var villain_ids = get_villain_ids_from_scheme (scheme_id, expert_mode)
+	var villain_groups = get_villain_id_groups_from_scheme (scheme_id, expert_mode)
 
 	var results = []
 	#get villains in order, split strings to get name and stage.
-	for villain_id in villain_ids:
-		results.append(cfc.card_definitions[villain_id])
-
+	for villain_ids in villain_groups:
+		var result = []
+		for villain_id in villain_ids:
+			result.append(cfc.card_definitions[villain_id])
+		results.append(result)
+		
 	return results
-	
-static func get_villain_ids_from_scheme(scheme_id, expert_mode:= false):
+
+#returns an array of arrays, representing multiple stages of several villains
+#[["1234", "2345"], ["a234", "b234"]]	
+#the typical use case is just one villain though, with multiple stages
+#[["1234", "2345"]]
+static func get_villain_id_groups_from_scheme(scheme_id, expert_mode:= false):
 	var scheme_primitive = cfc.primitives.get(scheme_id, {})
 	if !scheme_primitive:
 		return []
 		
-	var villain_strings : Array = scheme_primitive["villains"]
+	var villain_data : Array = scheme_primitive["villains"]
 	if expert_mode and scheme_primitive.has("expert"):		
-		villain_strings = scheme_primitive["expert"].get("villains", villain_strings)
+		villain_data = scheme_primitive["expert"].get("villains", villain_data)
 		
-	if (not villain_strings or villain_strings.empty()):
+	if (not villain_data or villain_data.empty()):
 		print_debug("villains missing in ScenarioDeckData")
 		return []			
 	
+	var check = villain_data[0]
+	if typeof(check) == TYPE_STRING:
+		villain_data = [villain_data]
+	
 	var results = []
 	#get villains in order, split strings to get name and stage.
-	for villain_string in villain_strings:
-		var card_id = cfc.get_corrected_card_id(villain_string)
-		if card_id:
-			results.append(card_id)
+	for villain_strings in villain_data:
+		var result = []
+		for villain_string in villain_strings:
+				var card_id = cfc.get_corrected_card_id(villain_string)
+				if card_id:
+					result.append(card_id)
+		results.append(result)
 
 	return results	
+
+func get_villain_family(current_villain):
+	if !current_villain:
+		return []
+	var the_name = current_villain.get_property("Name", "")
+	for villain_data in _villains:
+		for villain in villain_data:
+			if villain.get("Name", "") == the_name:
+				return villain_data
+	
+	return []
+
+func get_villains(index = 0):
+	if (!scenario_data):
+		print_debug("data not loaded in ScenarioDeckData")
+		return []
+	if (_villains.empty()):
+		load_villains()
+
+
+	if !_villains_by_level:
+		for villains_data in _villains:
+			var i = 0
+			for villain_data in villains_data:
+				if !_villains_by_level.has(i):
+					_villains_by_level[i] = []
+				_villains_by_level[i].append(villain_data)
+				i+= 1
+		
+	if _villains_by_level.size() < index+1:
+		return []
+			
+	return _villains_by_level[index]
 
 func load_from_villain(villain_id):
 	if !villain_id:
 		return
 	for scheme_id in cfc.primitives:
 		for expert in [false, true]:
-			var villain_ids = get_villain_ids_from_scheme(scheme_id, expert)
-			if villain_id in villain_ids:
-				return load_from_dict(
-					{
-						"scheme_id": scheme_id,
-						"modular_encounters": get_recommended_modular_encounters(scheme_id),
-						"expert_mode": expert
-					}
-				)
+			var villain_groups = get_villain_id_groups_from_scheme(scheme_id, expert)
+			for villain_ids in villain_groups:
+				if villain_id in villain_ids:
+					return load_from_dict(
+						{
+							"scheme_id": scheme_id,
+							"modular_encounters": get_recommended_modular_encounters(scheme_id),
+							"expert_mode": expert
+						}
+					)
 
 #		"scheme_id" : "01097", 
 #		"modular_encounters": ["bomb_scare"],
@@ -99,25 +154,41 @@ func load_from_dict(_scenario:Dictionary):
 	modular_sets = _scenario.get("modular_encounters", [])
 	
 	#Preload
-	villains = []
-	get_villains()
+	_villains = []
+	load_villains()
 	
 	encounter_deck = []
 	get_encounter_deck()
 	
-	setup_extra_decks()
+	setup_grid()
 
-func setup_extra_decks():
+func setup_grid():
 	if (!scenario_data):
 		print_debug("data not loaded in ScenarioDeckData")
 		return []	
 	var extra_decks_data = scenario_data.get("extra_decks", [])
+
+	var spacing = 120
+	#shift everything to the right if there are additional villains
+	var count_villains = get_villains().size()
+	if count_villains > 1:
+		var villain_x = grid_setup["villain"]["x"]
+		var displacement = 250 * (count_villains -1) * cfc.screen_scale.x
+		for key in grid_setup: 
+			if grid_setup[key].has("x"):
+				#if it's on the left we don't move it
+				if grid_setup[key]["x"] <= villain_x:
+					continue
+				#we don't want to push stuff outside of the screen
+				if grid_setup[key]["x"] + displacement > cfc.screen_resolution.x - ((250 + spacing) * cfc.screen_scale.x):
+					pass
+				else:
+					grid_setup[key]["x"] += displacement	
 	
 	var coord_source = grid_setup["discard_villain"]
 	var x = 0
 	var y = coord_source.get("y", 20)
 	var scale = coord_source.get("scale", 1)
-	var spacing = 120
 	#we invert the deck as we add items to the beginning of the screen,
 	#pushing the previous, this way it makes more sense when reading the _scenarios.json file
 	extra_decks_data.invert() 
@@ -158,15 +229,16 @@ func setup_extra_decks():
 func get_extra_decks():
 	return extra_decks		
 		
-func get_villains():
+func load_villains():
 	if (!scenario_data):
 		print_debug("data not loaded in ScenarioDeckData")
 		return []
-	if (not villains.empty()):
-		return villains
+	if (not _villains.empty()):
+		return _villains
 		
 	var first_scheme = schemes[0]
-	villains = get_villains_from_scheme(first_scheme["_code"], is_expert_mode)
+	_villains = get_villains_from_scheme(first_scheme["_code"], is_expert_mode)
+	return _villains
 
 func get_simple_encounter_deck(encounter_sets):
 	var result_deck = []
@@ -230,9 +302,10 @@ func reset():
 	is_expert_mode = false
 	encounter_deck = []
 	extra_decks = []
-	villains = []
+	_villains = []
 	grid_setup = {}
 	scenario_data = {}
+	_villains_by_level = {}
 
 #		"scheme_id" : "01097", 
 #		"modular_encounters": ["bomb_scare"],

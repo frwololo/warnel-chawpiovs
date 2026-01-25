@@ -224,17 +224,19 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 		for state_filters in state_filters_array:
 			card_matches = true
 			for filter in state_filters:
+				var state_filter = preprocess_numbers(state_filters[filter], card, owner_card)
+
 				# We check with like this, as it allows us to provide an "AND"
 				# check, by simply apprending something into the state string
 				# I.e. if we have filter_properties and filter_properties2
 				# It will treat these two states as an "AND"				
 				if filter == FILTER_MAX_PER_HERO\
-						and not check_max_per_hero(card, state_filters[filter], owner_card):
+						and not check_max_per_hero(card, state_filter, owner_card):
 					card_matches = false
 				elif filter == FILTER_MAX_PER_HOST\
-						and not check_max_per_host(card, state_filters[filter], owner_card):
+						and not check_max_per_host(card, state_filter, owner_card):
 					card_matches = false
-				elif filter == FILTER_EXHAUSTED and (card.is_exhausted() != state_filters[filter]):
+				elif filter == FILTER_EXHAUSTED and (card.is_exhausted() != state_filter):
 					card_matches = false			
 			if card_matches:
 				break

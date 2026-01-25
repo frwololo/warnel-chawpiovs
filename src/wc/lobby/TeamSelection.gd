@@ -204,9 +204,8 @@ func _load_scenarios():
 	#sorting by alphabetical name of villain
 	var names_to_id = {}
 	for scenario_id in cfc.get_unlocked_scenarios():
-		var villains = ScenarioDeckData.get_villains_from_scheme(scenario_id)
-		if villains:
-			var villain = villains[0]
+		var villain = ScenarioDeckData.get_first_villain_from_scheme(scenario_id)
+		if villain:
 			var	villain_name = villain["shortname"]
 			names_to_id[villain_name] = scenario_id			
 
@@ -276,10 +275,9 @@ func display_modular_selection():
 	var default_modulars = ScenarioDeckData.get_recommended_modular_encounters(_scenario)		
 	var nb_modulars = default_modulars.size()
 	var plural = "" if nb_modulars <= 1 else "s"
-	var villains = ScenarioDeckData.get_villains_from_scheme(_scenario)
+	var villain = ScenarioDeckData.get_first_villain_from_scheme(_scenario)
 	var villain_name = ""
-	if villains:
-		var villain = villains[0]
+	if villain:
 		villain_name = villain["shortname"]
 	
 	title.text = villain_name + " -  select " + str(nb_modulars) + " modular set" + plural 

@@ -94,14 +94,29 @@ func load_scenario():
 	for extra_deck in extra_decks:
 		load_deck(extra_deck["deck_contents"], extra_deck["name"])
 		shuffle_deck( extra_deck["name"])
-	
-	var villain_data = scenario_data.villains[0]
-	var ckey = villain_data["_code"] 
 
 	var scheme_data = scenario_data.schemes[0]
 	var scheme_ckey = scheme_data["_code"] 
-	load_scheme(scheme_ckey)		
-	load_villain(ckey)
+	load_scheme(scheme_ckey)	
+	
+	var villains_data = scenario_data.get_villains()
+	if !villains_data.size():
+		var _error = 1
+		return
+	
+	#creating the appropriate number of slots for villains in the scenario
+	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid("villain")
+	if grid:
+		grid.set_h_separation(100 * cfc.screen_scale.x)
+		if grid.get_slot_count() != villains_data.size():
+			grid.delete_all_slots_but_one()
+			for i in villains_data.size()-1:
+				#todo need to shift the position of schemes?
+				grid.add_slot()
+	
+	for villain_data in villains_data:
+		var ckey = villain_data["_code"] 
+		load_villain(ckey)
 
 
 	
@@ -115,6 +130,7 @@ func load_villain(card_id, call_preloaded = {"shuffle" : true}):
 	if grid:
 		slot = grid.find_available_slot()
 		if slot:
+			slot.reserve(card)
 			_post_load_move[card] = {
 				"slot": slot
 			}

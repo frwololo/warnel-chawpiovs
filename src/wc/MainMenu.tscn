@@ -138,7 +138,7 @@ autowrap = true
 margin_left = 1083.0
 margin_right = 1170.0
 margin_bottom = 30.0
-text = "v. 1.0.0"
+text = "v. 1.1.0"
 
 [node name="LoadingPanel" type="CenterContainer" parent="CenterContainer"]
 unique_name_in_owner = true

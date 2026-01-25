@@ -370,6 +370,7 @@ func get_card_by_id(id):
 	if (not id):
 		WCUtils.debug_message("no id passed to get_card_by_id")
 		return null		
+		
 	var card_data = card_definitions.get(id, {})
 	
 	if not card_data:
@@ -385,8 +386,20 @@ func load_card_scenarios():
 	json_card_data = WCUtils.read_json_file_with_user_override("Sets/_scenarios.json")	
 	for key in json_card_data:
 		var card_data = json_card_data[key]
+		#error correction
+		if !get_card_by_id(key):
+			var _error = 1
+			key = key + "b"
+			if !get_card_by_id(key):
+				continue
+		var card_code = card_data["code"]
+		if !get_card_by_id(card_code):
+			var _error = 1
+			card_code = card_code + "b"
+			if !get_card_by_id(card_code):
+				continue		
 		#creating entries for both id and name so I never have to remember which one to use...
-		primitives[card_data["code"]] = card_data;
+		primitives[card_code] = card_data;
 		primitives[card_data["name"]] = card_data;
 		scenarios.append(key)
 
@@ -489,10 +502,13 @@ func setup_traits_as_alterants():
 #we skip some cards from the marvelcdb database,
 #when they are redundant or not useful for this game
 func dont_load_this_card(card_data:Dictionary):
+	var type_code = card_data.get("type_code", "")
+	if type_code!= "main_scheme":
+		return false
 	var stage = card_data.get("stage", "").to_upper()
-	if (stage.ends_with("A") or stage.ends_with("B")):
-		return true
-	return false
+	if (stage.ends_with("A") or stage.ends_with("B")):	
+		return false
+	return true
 
 func cleanup_bb_code(text):
 	var result = text
@@ -508,6 +524,8 @@ func cleanup_bb_code(text):
 
 func convert_to_bbcode(text):
 	var result = text
+	if !result:
+		return ""
 	result = result.replace("<", "[")
 	result = result.replace (">", "]")
 	result = cleanup_bb_code(result)	
@@ -518,6 +536,9 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	#converting "real" numbers to "int"
 	for key in card_data.keys():
 		var value = card_data[key]
+		if value == null:
+			card_data.erase(key)
+			continue
 		if typeof(value) == TYPE_REAL:
 			var new_value:int = value
 			card_data[key] = new_value
@@ -643,7 +664,8 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	#e.g. "Rhino_2"
 	if (lc_card_type == "villain"):
 		card_data["Name"] = card_data["Name"] + " - " + String(card_data["stage"])
-	
+	if (lc_card_type == "main_scheme" and card_data["stage"].ends_with("A")):
+		card_data["Name"] = card_data["Name"] + " - " + String(card_data["stage"])	
 	card_data.erase("name")
 	
 		
@@ -664,8 +686,7 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	#schemes cache
 	if (lc_card_type == "main_scheme"):
 		var full_stage_id = card_data["original_stage"]	
-		#skip the weird "1A", "1B" cards for now...
-		if (!full_stage_id.ends_with("A") and !full_stage_id.ends_with("B")):
+		if full_stage_id.ends_with("B"):
 			if (not schemes.has(lc_set_code)):
 				schemes[lc_set_code] = []
 			schemes[lc_set_code].push_back(card_data)
@@ -697,8 +718,6 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 # loaded in card_definitions variable by core engine
 func load_card_definitions() -> Dictionary:
 	cards_loading = true	
-	if (primitives.empty()):
-		load_card_scenarios()
 	var combined_sets := {} #.load_card_definitions(); #TODO Remove the call to parent eventually ?
 	# Load from external user files
 	var the_files = CFUtils.list_files_in_directory(
@@ -752,6 +771,10 @@ func load_card_definitions() -> Dictionary:
 	
 	#post load cleanup and config
 	setup_traits_as_alterants()
+	
+	#Load scenarios
+	if (primitives.empty()):
+		load_card_scenarios()	
 	
 	#done!
 	cards_loading = false			
@@ -820,6 +843,12 @@ func get_hero_obligation(hero_id:String):
 func get_schemes(scheme_id):	
 	#todo error handling
 	var scheme = get_card_by_id(scheme_id)
+	#error correction
+	if !scheme:
+		scheme = get_card_by_id(scheme_id + "b")
+	if !scheme:
+		return []
+	 
 	var set_name = scheme["card_set_code"]
 	var my_schemes = schemes[set_name.to_lower()]
 	my_schemes.sort_custom(WCUtils, "sort_stage")
@@ -1199,7 +1228,9 @@ func get_image_dl_url(card_id):
 			else:
 				fail_img_download(card_id)
 				return ""
-	var url = base_url + card_data["imagesrc"]
+	var url = card_data["imagesrc"]
+	if !url.begins_with("http"):
+		url = base_url + url
 	return url
 
 #this precaches files on the system due to a bug in Godot

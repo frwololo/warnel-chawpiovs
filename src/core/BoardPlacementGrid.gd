@@ -133,8 +133,9 @@ func get_slot_count() -> int:
 func get_available_slots() -> Array:
 	var available_slots := []
 	for slot in get_all_slots():
-		if not slot.occupying_card:
-			available_slots.append(slot)
+		if slot.occupying_card or slot.reserved:
+			continue
+		available_slots.append(slot)
 	return(available_slots)
 
 func delete_all_slots():
@@ -176,6 +177,9 @@ func rescale(scale, forced:bool= false):
 		
 	rect_size = (card_size * card_play_scale) + Vector2(4,4)
 	
+
+func set_h_separation(value):
+	$GridContainer.add_constant_override("hseparation", value)
 
 func set_columns(value):
 	$GridContainer.columns = value

@@ -35,7 +35,7 @@
 						{
 							"filter_group": "group_friendly_my_hero",
 							"filter_properties": {
-								"trait_avengers": 1,
+								"trait_avenger": 1,
 								"comparison": "ge"
 							}
 						}
@@ -53,7 +53,7 @@
 									"filter_state_trigger": [
 										{
 											"filter_properties": {
-												"trait_avengers": 1,
+												"trait_avenger": 1,
 												"comparison": "ge"
 											}
 										}
@@ -66,7 +66,7 @@
 									"filter_state_trigger": [
 										{
 											"filter_properties": {
-												"trait_avengers": 1,
+												"trait_avenger": 1,
 												"comparison": "ge"
 											}
 										}
@@ -623,7 +623,7 @@
 				},
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "trait_avengers",
+					"filter_property_name": "trait_avenger",
 					"trigger": "host",
 					"alteration": 1
 				}
@@ -745,10 +745,15 @@
 						"name": "move_card_to_container",
 						"dest_container": "discard",
 						"src_container": "hand",
-						"selection_count": 1,
+						"selection_count": "per_tutor",
+						"per_tutor": {
+							"subject": "tutor",
+							"subject_count": "all",
+							"src_container": "hand",
+							"divider": 2
+						},
 						"selection_type": "equal",
 						"needs_selection": true,
-						"_comments": "TODO"
 					},
 					{
 						"name": "move_card_to_container",
@@ -761,10 +766,15 @@
 						"name": "move_card_to_container",
 						"dest_container": "discard",
 						"src_container": "hand",
-						"selection_count": 1,
+						"selection_count": "per_tutor",
+						"per_tutor": {
+							"subject": "tutor",
+							"subject_count": "all",
+							"src_container": "hand",
+							"divider": 2
+						},
 						"selection_type": "equal",
 						"needs_selection": true,
-						"_comments": "TODO"
 					},
 					{
 						"name": "move_card_to_container",
@@ -795,7 +805,57 @@
 		}
 	},
 	"Quinjet": {
-		"TODO": {}
+		"round_ended": {
+			"_silent": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"token_name": "time"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "hand",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"selection_optional": true,
+					"is_cost": true,
+					"needs_selection": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"cost": {
+									"func_name": "count_tokens",
+									"func_params": {
+										"token_name": "time"
+									}
+								},
+								"comparison": "le"
+							},
+							"filter_properties2": {
+								"type_code": "ally"
+							},
+							"filter_properties3": {
+								"trait_avenger": 1,
+								"comparison": "ge"
+							}							
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard"
+				}
+			]
+		}
 	},
 	"Shield Block": {
 		"interrupt": {

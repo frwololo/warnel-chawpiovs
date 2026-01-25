@@ -1,0 +1,119 @@
+{
+	"_comments": "Tests Quinjet Ability",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain America"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Captain America"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Quinjet",
+					"tokens": {"time" : 3}
+				},
+			],
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Falcon - Sam Wilson"
+				},				
+				{
+					"card": "Squirrel Girl - Doreen Green"
+				},	
+				{
+					"card": "Hawkeye - Clint Barton"
+				},				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Quinjet",
+		},
+		{
+			"type": "select",
+			"value": "Hawkeye - Clint Barton",
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain America"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Captain America"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Quinjet",
+				},
+			],
+			"allies1": [
+				{
+					"card": "Hawkeye - Clint Barton"
+				},
+			],
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Falcon - Sam Wilson"
+				},				
+				{
+					"card": "Squirrel Girl - Doreen Green"
+				},	
+				
+			]
+		}
+	}
+}

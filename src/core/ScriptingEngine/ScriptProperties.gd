@@ -1688,8 +1688,22 @@ static func check_parent_filter(card, parent: String) -> bool:
 	return(card_matches)
 
 
+static func preprocess_numbers(state_filter, _card = null, _owner_card = null):
+	if typeof(state_filter) != TYPE_DICTIONARY:
+		return state_filter 
+	var result = {}	
+	for key in state_filter.keys():
+		var value = state_filter[key]
+		if (typeof(value) == TYPE_DICTIONARY) and value.has("func_name"):
+			var params = value.get("func_params", {})
+			value = cfc.ov_utils.func_name_run(_owner_card, value["func_name"], params)
+			var _tmp = 1
+		result[key] = value
+	return result
+
+
 # Check if the card is a valid subject or trigger, according to its state.
-static func check_validity(card, card_scripts, type := "trigger", _owner_card = null) -> bool:
+static func check_validity(card, card_scripts, type := "trigger", owner_card = null) -> bool:
 	var card_matches := true
 	# We use the type of seek we're doing
 	# To know which dictionary property to pass for the required dict
@@ -1712,31 +1726,32 @@ static func check_validity(card, card_scripts, type := "trigger", _owner_card = 
 				# check, by simply apprending something into the state string
 				# I.e. if we have filter_properties and filter_properties2
 				# It will treat these two states as an "AND"
+				var state_filter = preprocess_numbers(state_filters[filter], card, owner_card)
 				if FILTER_PROPERTIES in filter\
-						and not check_properties(card, state_filters[filter]):
+						and not check_properties(card, state_filter):
 					card_matches = false
 				if FILTER_CARDFILTERS in filter\
-						and not check_cardfilters(card, state_filters[filter]):
+						and not check_cardfilters(card, state_filter):
 					card_matches = false
 				elif FILTER_TOKENS in filter\
-						and not check_token_filter(card, state_filters[filter]):
+						and not check_token_filter(card, state_filter):
 					card_matches = false
 				elif filter == FILTER_DEGREES\
-						and not check_rotation_filter(card,state_filters[filter]):
+						and not check_rotation_filter(card,state_filter):
 					card_matches = false
 				# There's no possible "AND" state for a boolean filter.
 				elif filter == FILTER_FACEUP\
-						and not check_faceup_filter(card,state_filters[filter]):
+						and not check_faceup_filter(card,state_filter):
 					card_matches = false
 				# There's no possible "AND" state for a boolean filter.
 				elif filter == FILTER_PARENT\
-						and not check_parent_filter(card,state_filters[filter]):
+						and not check_parent_filter(card,state_filter):
 					card_matches = false
 				elif filter == FILTER_GROUP\
-						and not card.is_in_group(state_filters[filter]):
+						and not card.is_in_group(state_filter):
 					card_matches = false
 				elif filter == FILTER_CLASS\
-						and card.get_class() != state_filters[filter]:
+						and card.get_class() != state_filter:
 					card_matches = false
 			# If at least one of our "or" array elements matches,
 			# We do not need to check the others.

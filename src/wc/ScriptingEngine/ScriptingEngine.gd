@@ -175,6 +175,7 @@ func move_card_to_container(script: ScriptTask) -> int:
 	script.script_definition = backup
 	return result
 
+
 func draw_cards (script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
@@ -1213,6 +1214,16 @@ func enemy_scheme_threat(_script: ScriptTask) -> int:
 	attacker.set_activity_script(null)
 	
 	return retcode
+
+func enemy_activates(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+	retcode = CFConst.ReturnCode.FAILED
+	for card in script.subjects:
+		retcode = CFConst.ReturnCode.CHANGED
+		gameData.add_enemy_activation(card, "activate")
+	return retcode	
 
 func enemy_schemes(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED

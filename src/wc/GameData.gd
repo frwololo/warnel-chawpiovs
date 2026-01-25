@@ -908,6 +908,14 @@ func start_activity(enemy, action, script, target_id = 0):
 		 display_debug("not a villain, won't draw boost cards")
 	var script_name
 	var next_step
+
+	var target_hero = get_identity_card(target_id)
+	if action == "activate":
+		if target_hero.is_hero_form():
+			action = "attack"
+		else:
+			action = "scheme" 
+			
 	match action:
 		"scheme":
 			script_name = "commit_scheme"
@@ -916,7 +924,7 @@ func start_activity(enemy, action, script, target_id = 0):
 			script_name = "enemy_attack"
 			next_step = EnemyAttackStatus.PENDING_DEFENDERS
 
-	var target_hero = get_identity_card(target_id)
+
 	var trigger_details = {
 		"additional_tags": [],
 		"target": target_hero,
@@ -1812,7 +1820,7 @@ func hero_died(card:Card, script = null):
 
 func move_to_next_villain(current_villain):
 	cfc.add_ongoing_process(self, "move_to_next_villain")
-	var villains = scenario.villains
+	var villains = scenario.get_villain_family(current_villain)
 	var new_villain_data = null
 	for i in range (villains.size() - 1): #-1 here because we want to get the +1 if we find it
 		if (villains[i]["Name"] == current_villain.get_property("Name", "")):

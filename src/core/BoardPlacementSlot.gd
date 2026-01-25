@@ -12,6 +12,7 @@ extends Control
 # to the Card object
 # and no other card can be placed in this slot
 var occupying_card = null
+var reserved = null
 var card_position_confirmed:= false
 
 # Stores a reference to the owning BoardPlacementGrid object
@@ -39,14 +40,22 @@ func _process(delta):
 func is_highlighted() -> bool:
 	return($Highlight.visible)
 
+#when a card intends to occupy this slot in the near future
+func reserve(card):
+	reserved = card
+
 #a safer way for a card to remove itself from this slot
 #(rather than drectly calling set_occupying_card null)
 func remove_occupying_card(card):
+	reserved = null
+	
 	if occupying_card == card:
 		set_occupying_card(null)
 		card._placement_slot = null
 
 func set_occupying_card(card):
+	reserved = null
+	
 	var slot_was_occupied = (occupying_card !=null)
 	if (slot_was_occupied and occupying_card != card):
 		if (is_instance_valid(occupying_card)):

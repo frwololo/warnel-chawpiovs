@@ -84,9 +84,8 @@ func victory():
 		texture = cfc.get_hero_portrait(unlocked_hero_id)
 		unlockedmsg = "New Hero Unlocked!"
 	elif unlocked_scenario_id:
-		var villains = ScenarioDeckData.get_villains_from_scheme(unlocked_scenario_id)
-		if (villains):
-			var villain = villains[0]
+		var villain = ScenarioDeckData.get_first_villain_from_scheme(unlocked_scenario_id)
+		if (villain):
 			var display_name = villain["shortname"]
 			texture = cfc.get_villain_portrait(villain["_code"])			
 			unlockedmsg = "New Villain Unlocked: " + display_name

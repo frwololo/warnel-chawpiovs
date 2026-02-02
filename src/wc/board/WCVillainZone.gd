@@ -62,6 +62,7 @@ func get_all_cards():
 		if obj as Card: cardsArray.append(obj)	
 	return(cardsArray)	
 
+
 func load_deck(encounter_deck_data, target_deck = "deck_villain"):
 	var card_array = []
 	for card_data in encounter_deck_data:
@@ -88,7 +89,8 @@ func load_scenario():
 		# suggested modular
 	
 	#Create Draw Pile from encounter deck
-	load_deck(scenario_data.encounter_deck)
+	load_deck(scenario_data.get_encounter_deck())
+	load_deck(scenario_data.get_aside_deck(), "set_aside")
 
 	var extra_decks = scenario_data.get_extra_decks()
 	for extra_deck in extra_decks:

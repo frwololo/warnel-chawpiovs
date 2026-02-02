@@ -176,7 +176,21 @@
 	},
 	"Baron Zemo": {
 		"quickstrike": {},
-		"TODO": {}
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_thwart",
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
 	},
 	"Captain America": {
 		"once_per_round": {
@@ -303,7 +317,7 @@
 					"resource_name": "mental"
 				}
 			]
-		}	
+		}
 	},
 	"Enraged": {
 		"manual": {
@@ -369,7 +383,38 @@
 		}
 	},
 	"Falcon - Sam Wilson": {
-		"TODO": {}
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "nop",
+					"subject": "tutor",
+					"subject_index": "top",
+					"subject_count": 3,
+					"up_to": true,
+					"src_container": "deck_villain",
+					"selection_type": "display",
+					"needs_selection": true
+				},
+				{
+					"name": "thwart",
+					"subject": "target",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "previous",
+							"property": "type_code",
+							"property_value": "treachery"
+						}
+					},
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
 	},
 	"Fearless Determination": {
 		"manual": {
@@ -753,7 +798,7 @@
 							"divider": 2
 						},
 						"selection_type": "equal",
-						"needs_selection": true,
+						"needs_selection": true
 					},
 					{
 						"name": "move_card_to_container",
@@ -774,7 +819,7 @@
 							"divider": 2
 						},
 						"selection_type": "equal",
-						"needs_selection": true,
+						"needs_selection": true
 					},
 					{
 						"name": "move_card_to_container",
@@ -845,7 +890,7 @@
 							"filter_properties3": {
 								"trait_avenger": 1,
 								"comparison": "ge"
-							}							
+							}
 						}
 					]
 				},
@@ -886,7 +931,57 @@
 		}
 	},
 	"Shield Toss": {
-		"TODO": {}
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "hand",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Captain America's Shield"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"src_container": "hand",
+					"is_cost": true,
+					"subject": "index",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "min",
+					"selection_ignore_self": true,
+					"needs_selection": true
+				},
+				{
+					"name": "attack",
+					"amount": 4,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": "count_previous_subjects",
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
 	},
 	"Squirrel Girl - Doreen Green": {
 		"card_moved_to_board": {
@@ -1003,7 +1098,36 @@
 		}
 	},
 	"Strength In Numbers": {
-		"TODO": {}
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "min",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero",
+							"filter_is_exhausted": false
+						}
+					]
+				},
+				{
+					"name": "draw_cards",
+					"amount": "count_previous_subjects"
+				}
+			]
+		}
 	},
 	"Super-Soldier Serum": {
 		"resource": {
@@ -1045,6 +1169,23 @@
 		}
 	},
 	"Wonder Man - Simon Williams": {
-		"TODO": {}
+		"manual": {
+			"board": {
+				"attack": [
+					{
+						"name": "move_card_to_container",
+						"subject": "index",
+						"is_cost": true,
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"selection_optional": true,
+						"src_container": "hand",
+						"dest_container": "discard"
+					}
+				]
+			}
+		}
 	}
 }

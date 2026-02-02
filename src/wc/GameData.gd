@@ -488,7 +488,8 @@ func move_to_next_scheme(current_scheme):
 	
 		
 			var new_card = board.load_scheme(code)
-		
+			#some tokens such as acceleration need to be preserved
+			current_scheme.copy_tokens_to(new_card, {"to_copy":["acceleration"]})
 			set_aside(current_scheme)	
 				
 
@@ -1650,7 +1651,9 @@ func get_minions_engaged_with_hero(hero_id:int):
 	var results = []
 	var minionsGrid:BoardPlacementGrid = get_enemies_grid(hero_id)
 	if minionsGrid:
-		results = minionsGrid.get_all_cards()
+		for card in minionsGrid.get_all_cards():
+			if card.get_property("type_code", "") == "minion":
+				results.append(card)
 	return results
 	
 func get_identity_card(owner_id) -> Card:

@@ -427,6 +427,17 @@ func post_cards_moved_load():
 	if func_return is GDScriptFunctionState && func_return.is_valid():
 		yield(func_return, "completed")			
 
+	#execute setup for remaining cards, if any 
+	for card in get_all_cards(true):
+		# we want to avoid running setup 
+		# for scheme and heroes, because we run them already in some other part of the code
+		var type_code = card.get_property("type_code")
+		if !type_code in ["side_scheme", "main_scheme", "hero", "alter_ego"]: 
+			func_return = card.execute_scripts_no_stack(card, "setup")
+			if func_return is GDScriptFunctionState && func_return.is_valid():
+				yield(func_return, "completed")		
+
+
 	#Save gamedata for restart
 	gameData.save_gamedata_to_file("user://Saves/_restart.json")	
 
@@ -1035,8 +1046,7 @@ func flip_doublesided_card(card:WCCard):
 			var new_card = heroZones[card.get_owner_hero_id()].load_identity(back_code, modifiers)
 			return new_card	
 		else:
-			var new_card = cfc.instance_card(back_code,card.get_owner_hero_id())
-			#TODO copy tokens, state, etc...
+			var new_card = gameData.retrieve_from_side_or_instance(back_code,card.get_owner_hero_id())
 			var slot = card._placement_slot
 			add_child(new_card)
 			card.copy_modifiers_to(new_card)

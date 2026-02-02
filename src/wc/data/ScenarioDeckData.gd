@@ -15,6 +15,7 @@ var encounter_deck:Array
 var extra_decks: = []
 var grid_setup:= {}
 var scenario_data: = {}
+var set_aside := []
 
 func _init():
 	pass
@@ -157,10 +158,27 @@ func load_from_dict(_scenario:Dictionary):
 	_villains = []
 	load_villains()
 	
+	set_aside = []
 	encounter_deck = []
 	get_encounter_deck()
-	
+	_load_extra_rules_from_encounters()
 	setup_grid()
+
+func _load_extra_rules_from_encounters():
+	var the_deck = get_encounter_deck()
+	for card_data in the_deck:
+		var canonical_id = card_data["code"]
+		var extra_decks = cfc.set_scripts.get(canonical_id,{}).get("extra_decks",{}).duplicate(true)
+		if extra_decks:
+			if ! scenario_data.has("extra_decks"):
+				scenario_data["extra_decks"] = []
+			scenario_data["extra_decks"] += extra_decks
+			
+		var extra_rules = cfc.set_scripts.get(canonical_id,{}).get("extra_rules",{}).duplicate(true)
+		if extra_rules:
+			if ! scenario_data.has("extra_rules"):
+				scenario_data["extra_rules"] = []
+			scenario_data["extra_rules"] += extra_rules			
 
 func setup_grid():
 	if (!scenario_data):
@@ -252,7 +270,9 @@ func get_simple_encounter_deck(encounter_sets):
 		var encounter_set : Array = cfc.get_encounter_cards(encounter_set_code)
 		for card_data in encounter_set:
 			var card_type = card_data["type_code"]
-			if (card_type != "main_scheme" and card_type != "villain"): #skip villain and schemes from the deck
+			if (card_type == "main_scheme" or card_type == "villain"): #skip villain and schemes from the deck
+				set_aside.append(card_data)
+			else:
 				var add_to_encounter_deck = true
 				var card_set_position = card_data["set_position"]
 				if positions.has(card_set_position):
@@ -268,6 +288,13 @@ func get_simple_encounter_deck(encounter_sets):
 					result_deck.push_back(card_data)
 					positions[card_set_position] = card_data	
 	return result_deck
+
+func get_aside_deck():
+	if (encounter_deck.empty()):
+		get_encounter_deck()
+		
+	return set_aside
+	
 		
 func get_encounter_deck():
 	if (not encounter_deck.empty()):
@@ -301,6 +328,7 @@ func reset():
 	modular_sets=[]
 	is_expert_mode = false
 	encounter_deck = []
+	set_aside = []
 	extra_decks = []
 	_villains = []
 	grid_setup = {}

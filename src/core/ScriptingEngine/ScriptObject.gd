@@ -670,13 +670,14 @@ func sort_subjects(subject_list: Array) -> Array:
 		var thing : String = get_property(SP.KEY_SORT_NAME)
 		var sorting_list := []
 		if sort_by == "function":
+			var params = get_property("func_params", {})
 			for c in subject_list:
 				# We create a list of dictionaries
 				# because we cannot tell the sort_custom()
 				# method what to search for
 				sorting_list.append({
 					"card": c,
-					"value": c.call(thing)
+					"value": c.call(thing, params, self)
 				})		
 		if sort_by == "property":
 			for c in subject_list:

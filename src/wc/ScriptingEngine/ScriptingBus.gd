@@ -123,6 +123,9 @@ signal basic_thwart_happened(card, details)
 # warning-ignore:unused_signal
 signal defense_happened(card, details)
 
+# warning-ignore:unused_signal
+signal event_prevented(card,details)
+
 #todo should be dynamic?
 
 # looking for this signal in the code ? Triggered typically by type + "_died"

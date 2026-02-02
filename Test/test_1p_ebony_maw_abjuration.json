@@ -1,0 +1,137 @@
+{
+	"_comments": "Tests Ebony Maw Abjuration",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Pacification"
+				},					
+				{
+					"card": "Hydra Mercenary"
+				},			
+				{
+					"card": "Channeling Trance"
+				}				
+			],
+			"schemes": [
+				{
+					"card": "Attack on Knowhere",
+					"tokens": {"threat": 2}					
+				}
+			],			
+			"villain": [
+				{
+					"card": "Ebony Maw - 1",
+					"tokens": {"damage" : 2},
+				}
+			],
+			"others": [
+				{
+					"card": "Abjuration",
+					"host": "Ebony Maw - 1"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Zone of Silence"
+				},
+				
+			],
+			"hand1": [
+				{
+					"card": "The Gardener"
+				}	
+			],
+		}
+	},
+	"actions": [	
+		{
+			"type": "activate",
+			"value": "Spider-Man"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},	
+		{
+			"type": "target",
+			"value": "Ebony Maw - 1"
+		},		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Pacification"
+				},					
+				{
+					"card": "Hydra Mercenary"
+				},			
+				{
+					"card": "Channeling Trance"
+				}				
+			],
+			"schemes": [
+				{
+					"card": "Attack on Knowhere",
+					"tokens": {"threat": 2}					
+				}
+			],			
+			"villain": [
+				{
+					"card": "Ebony Maw - 1",
+					"tokens": {"damage" : 2},
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Abjuration",
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Zone of Silence"
+				},
+				
+			],
+			"hand1": [
+				{
+					"card": "The Gardener"
+				}	
+			],
+		}
+	}
+}

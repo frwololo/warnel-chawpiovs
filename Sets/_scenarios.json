@@ -219,27 +219,29 @@
 				"name": "deck_side_schemes"
 			}
 		],
-		"extra_rules": {
-			"card_moved_to_pile": {
-				"event_filters": {
-					"destination": "discard_villain"
-				},
-				"filter_state_trigger": [
-					{
-						"filter_properties": {
-							"type_code": "side_scheme"
+		"extra_rules": [
+			{
+				"card_moved_to_pile": {
+					"event_filters": {
+						"destination": "discard_villain"
+					},
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
 						}
-					}
-				],
-				"all": [
-					{
-						"name": "move_card_to_container",
-						"dest_container": "discard_side_schemes",
-						"subject": "trigger"
-					}
-				]
+					],
+					"all": [
+						{
+							"name": "move_card_to_container",
+							"dest_container": "discard_side_schemes",
+							"subject": "trigger"
+						}
+					]
+				}
 			}
-		},
+		],
 		"modular_default": [
 			"hydra_assault",
 			"hydra_patrol"
@@ -307,8 +309,14 @@
 			"Modular"
 		],
 		"villains": [
-			["Proxima Midnight - 1", "Proxima Midnight - 2"],
-			["Corvus Glaive - 1", "Corvus Glaive - 2"]
+			[
+				"Proxima Midnight - 1",
+				"Proxima Midnight - 2"
+			],
+			[
+				"Corvus Glaive - 1",
+				"Corvus Glaive - 2"
+			]
 		],
 		"expert": {
 			"encounter_sets": [
@@ -318,8 +326,14 @@
 				"expert"
 			],
 			"villains": [
-				["Proxima Midnight - 2", "Proxima Midnight - 3"],
-				["Corvus Glaive - 2", "Corvus Glaive - 3"]
+				[
+					"Proxima Midnight - 2",
+					"Proxima Midnight - 3"
+				],
+				[
+					"Corvus Glaive - 2",
+					"Corvus Glaive - 3"
+				]
 			]
 		}
 	},

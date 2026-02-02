@@ -33,11 +33,13 @@ func replace_ability(new_ability:String):
 	var _tmp = sceng	
 
 func prevent_value(property, amount_prevented):
+	var prevented = 0
 	for task in get_tasks():
 		var script_definition = task.script_definition
 		if script_definition.has(property):
 			var value = task.retrieve_integer_property(property)
-			value = max(0, value-amount_prevented)
+			prevented = min(value, amount_prevented)
+			value = value-prevented
 			script_definition[property] = value
 		else:
 			#if the script doesn't have the expected property, we try to pass it along
@@ -45,6 +47,7 @@ func prevent_value(property, amount_prevented):
 			var value = task.retrieve_integer_property(prevent, 0)
 			script_definition[prevent] = value + amount_prevented			
 			#todo what if zero
+	return prevented
 
 
 func is_silent():

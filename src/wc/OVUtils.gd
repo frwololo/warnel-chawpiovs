@@ -311,6 +311,7 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 	var replacements = {
 		"villain": gameData.get_villain(),
 		"self": owner_card,
+		"host": owner_card.current_host_card,
 		"current_hero_target": gameData.get_identity_card(gameData.get_current_activity_hero_target())
 	}	
 	if (controller_hero_id > 0):
@@ -357,13 +358,13 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 				else:
 					return false				
 			elif value.begins_with(">"):
-				value = int(value.substr(2))
+				value = int(value.substr(1))
 				if compared_to_int > value:
 					filters.erase(filter_key)	
 				else:
 					return false								
 			elif value.begins_with("<"):
-				value = int(value.substr(2))
+				value = int(value.substr(1))
 				if compared_to_int < value:
 					filters.erase(filter_key)
 				else:

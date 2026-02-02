@@ -981,13 +981,15 @@ func has_script(script):
 	
 func delete_last_event(requester:ScriptTask):
 	#the requester usually doesn't want to delete themselves
+	var event = null
 	var max_id = find_last_event_id_before_me(requester)
 	if max_id >=0:
-		var event = stack[max_id]
+		event = stack[max_id]
 		stack_remove(max_id)
 		scripting_bus.emit_signal("stack_event_deleted", event)
 	else:
 		display_debug("Error: script " + requester.script_name + " asked me to delete event but I couldn't find it")
+	return event	
 
 func is_script_in_stack_object(script:ScriptTask, stack_item):
 	if script == stack_item: 

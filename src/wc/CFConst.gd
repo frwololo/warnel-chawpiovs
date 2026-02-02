@@ -294,6 +294,7 @@ const TYPES_TO_GROUPS := {
 	"hero" : ["group_identities", "group_characters", "group_friendly", "group_allies_and_heroes"],
 	"alter_ego" : ["group_identities", "group_characters", "group_friendly"],
 	"ally" : ["group_allies", "group_characters", "group_friendly", "group_allies_and_heroes"],
+	"environment": ["group_environments"]
 }
 
 const ALL_TYPE_GROUPS: = [
@@ -305,7 +306,8 @@ const ALL_TYPE_GROUPS: = [
 	"group_identities",
 	"group_friendly",
 	"group_allies_and_heroes",
-	"group_allies"	
+	"group_allies",
+	"group_environments"
 ]
 	
 
@@ -341,6 +343,7 @@ const TYPECODE_TO_GRID := {
 	"support" : "upgrade_support",
 	"minion" : "enemies",
 	"side_scheme" : "schemes",
+	"main_scheme": "schemes",
 	"environment" : "villain_misc"
 }
 
@@ -553,7 +556,7 @@ const AUTO_KEYWORDS := {
 	"cannot_leave_play": "int",
 	"invincible": "int",
 	"cannot_remove_threat": "int",
-					
+	"cannot_ready": "int",				
 }
 
 #list of events for which we don't show a GUI announce to the user by default
@@ -805,6 +808,12 @@ const HARDCODED_DEF_PATCHES = {
 	"21099b":{
 		"imagesrc": "https://wololo.net/wc/images/21099b.jpg"
 	},	
+	"21100a":{
+		"imagesrc": "/bundles/cards/21100.png"
+	},		
+	"21100b":{
+		"imagesrc": "https://wololo.net/wc/images/21100b.jpg"
+	},		
 	"21114b":{
 		"imagesrc": "https://wololo.net/wc/images/21114b.jpg"
 	},

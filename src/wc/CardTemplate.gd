@@ -894,7 +894,7 @@ func attempt_to_play(user_click:bool = false, origin_event = null):
 			if check_play_costs() == CFConst.CostsState.IMPOSSIBLE:
 				return false
 			#unique rule - Move to check costs ?
-			if get_property("is_unique", false):
+			if get_property("is_unique", 0, true):
 				var already_in_play = cfc.NMAP.board.unique_card_in_play(self)
 				if already_in_play:
 					return false	
@@ -1588,6 +1588,9 @@ func readyme(toggle := false,
 			check := false,
 			tags := ["Manual"]) :
 	
+	if get_property("cannot_ready", 0, true):
+		return CFConst.ReturnCode.FAILED
+	
 	var rot = 0
 	if CFConst.OPTIONS.get("enable_fuzzy_rotations", false):
 		if (is_exhausted()):			
@@ -1866,24 +1869,6 @@ func common_pre_run(sceng) -> void:
 	
 	var zones = ["hand"] + CFConst.HERO_GRID_SETUP.keys()
 		
-#	if sceng.additional_rules.has("for_each_player"):
-#		for i in gameData.get_team_size():
-#			var hero_queue = scripts_queue.duplicate()
-#			var hero_id = i+1
-#			for task in hero_queue:
-#				var script: ScriptTask = task
-#				var script_definition = script.script_definition
-#				var new_script_definition = script_definition.duplicate(true)
-#				new_script_definition.erase("for_each_player")
-#				for v in zones: # ["hand", "encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
-#					new_script_definition = WCUtils.search_and_replace(new_script_definition, v, v+str(hero_id), true)	
-#
-#				new_script_definition = WCUtils.search_and_replace(new_script_definition, "their_identity", "identity_" + str(hero_id), true)	
-#
-#				var new_script = ScriptTask.new(script.owner, new_script_definition, script.trigger_object, script.trigger_details)
-#				new_queue.append(new_script)
-#		scripts_queue = new_queue
-#		new_queue = []
 				
 	for task in scripts_queue:
 		var script: ScriptTask = task
@@ -2147,6 +2132,15 @@ func changed_form(details):
 #	scripting_bus.emit_signal("identity_changed_form", new_card, {"before": before , "after" : after } )
 	
 
+func flip_doublesided_card():
+	var new_card = cfc.NMAP.board.flip_doublesided_card(self)
+
+	if !new_card:
+		var _error = 1
+		return false
+		
+	return true
+
 func change_form(voluntary = true) -> bool:
 	#players have one voluntary change form per turn
 	#we check for that
@@ -2155,13 +2149,8 @@ func change_form(voluntary = true) -> bool:
 			return false
 		self._can_change_form = false
 
-
-	var new_card = cfc.NMAP.board.flip_doublesided_card(self)
-	if !new_card:
-		var _error = 1
-		return false
-		
-	return true
+	return flip_doublesided_card()
+	
 
 #a way to copy all modifications of this card to another card
 #used e.g. when flipping card
@@ -2446,15 +2435,47 @@ func get_param_subjects(params, script:ScriptObject = null):
 		if new_subjects:
 			return new_subjects
 	return subjects		
-	
-func get_subject_int_property(params, script:ScriptTask = null) -> int:
-	var subject = get_param_subject(params, script)
+
+func count_unique_property_value(params, script:ScriptTask = null) -> int:
+	var subjects = get_param_subjects(params, script)
 	
 	var property = params.get("property", "")
 	if !property:
 		return 0
-	return subject.get_property(property, 0)	
-
+	var count = {}
+	for subject in subjects:
+		var value = subject.get_property(property, 0)
+		if !value:
+			continue
+		count[value] = 1
+		
+	return count.size()
+		
+func get_subject_int_property(params, script:ScriptTask = null) -> int:
+	var subjects = get_param_subjects(params, script)
+	
+	var property = params.get("property", "")
+	var expected_value = params.get("property_value", "")
+	if !property:
+		return 0
+	var count = 0
+	for subject in subjects:
+		var value = subject.get_property(property, 0)
+		if expected_value:
+			if typeof(value) != typeof(expected_value):
+				value = 0
+			elif value != expected_value:
+				value = 0
+			else:
+				value = 1	
+		if typeof(value) != TYPE_INT:
+			if value:
+				value = 1
+			else:
+				value = 0
+		count+= value
+	return count
+	
 func get_subject_int_printed_property(params, script:ScriptObject = null) -> int:
 	var subject = get_param_subject(params, script)
 	

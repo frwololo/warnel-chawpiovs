@@ -251,15 +251,19 @@ func attack(script: ScriptTask) -> int:
 	
 	if !script.subjects:
 		return CFConst.ReturnCode.FAILED
-	
-	if (costs_dry_run()):
-		return retcode
 
 	var owner = script.owner	
 
 	var type = owner.get_property("type_code", "")
 	if !type in ["hero", "ally"]:
 		owner = _get_identity_from_script(script)	
+	
+	if (costs_dry_run()):
+		if owner.get_property("cannot_attack", 0, true):
+			return CFConst.ReturnCode.FAILED 
+		return retcode	
+
+
 	
 	var damage = 0
 	if script.script_definition.has("amount"):
@@ -757,10 +761,18 @@ func prevent(script: ScriptTask) -> int:
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode	
 
+	if script.script_definition.has("amount"): #this is a partial prevention effect
+		if typeof(script.script_definition["amount"]) == TYPE_STRING:
+			if script.script_definition["amount"] == "all":
+				script.script_definition["amount"] = 999 #TODO hack		
+			else: #unsupported values
+				script.script_definition["amount"] = 0 
+
 	var subject_target = script.script_definition.get("subject")
+	var amount_prevented = 0
 	match subject_target:
 		"current_activation":
-			if script.script_definition.has("amount"): #this is a partial prevention effect
+			if script.script_definition.has("amount"): #this is a partial prevention effect		
 				gameData.apply_mods_to_current_activity_script(script)	
 			else:	
 				#TODO
@@ -772,11 +784,16 @@ func prevent(script: ScriptTask) -> int:
 				if (!stack_object):	
 					return CFConst.ReturnCode.FAILED
 				
-				gameData.theStack.modify_object(stack_object, script)		
+				var results = gameData.theStack.modify_object(stack_object, script)
+				if results.has("amount_prevented"):
+					amount_prevented = results["amount_prevented"]		
 			else:	
 				#Find the event on the stack and remove it
 				#TOdo take into action subject, etc...
-				var _result = gameData.theStack.delete_last_event(script)
+				var event = gameData.theStack.delete_last_event(script)
+				#todo find amount prevented
+			if amount_prevented:
+				scripting_bus.emit_signal_on_stack("event_prevented", script.owner, {"amount_prevented" : amount_prevented})
 		
 	return retcode		
 	
@@ -1264,8 +1281,6 @@ func remove_threat(script: ScriptTask) -> int:
 	
 func thwart(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
-	if (costs_dry_run()): #Shouldn't be allowed as a cost?
-		return retcode
 
 	var owner = script.owner
 	#we can provide a thwart amount in the script,
@@ -1280,6 +1295,11 @@ func thwart(script: ScriptTask) -> int:
 	var type = owner.get_property("type_code", "")
 	if !type in ["hero", "ally"]:
 		owner = _get_identity_from_script(script)
+	
+	if (costs_dry_run()):
+		if owner.get_property("cannot_thwart", 0, true):
+			return CFConst.ReturnCode.FAILED 
+		return retcode	
 	
 	var confused = owner.tokens.get_token_count("confused")
 	if (confused):
@@ -1566,6 +1586,27 @@ func recovery(script: ScriptTask) -> int:
 
 	return CFConst.ReturnCode.CHANGED
 
+func defeat(script: ScriptTask) -> int:
+	if (costs_dry_run()):
+		return CFConst.ReturnCode.CHANGED	
+	
+	gameData.defeat()
+	return CFConst.ReturnCode.CHANGED	
+
+func flip_doublesided_card(script: ScriptTask) -> int:
+
+		if (!script.subjects):	
+			return CFConst.ReturnCode.FAILED
+			
+		if (costs_dry_run()):
+			return CFConst.ReturnCode.CHANGED
+		
+		for subject in script.subjects:
+			subject.flip_doublesided_card()
+		
+		return CFConst.ReturnCode.CHANGED
+		
+			
 func change_form(script: ScriptTask) -> int:
 
 	var tags: Array = script.get_property(SP.KEY_TAGS)
@@ -1665,13 +1706,15 @@ func reveal_nemesis (script:ScriptTask) -> int:
 			else:
 				other_nemesis_cards.append(card)			
 	
+	
+	if (my_nemesis_scheme):
+		gameData.deal_one_encounter_to(my_hero_id, true, my_nemesis_scheme)	
+
 	if (my_nemesis):
 		gameData.deal_one_encounter_to(my_hero_id, true, my_nemesis)	
 	else:
 		do_surge = true
-	
-	if (my_nemesis_scheme):
-		gameData.deal_one_encounter_to(my_hero_id, true, my_nemesis_scheme)	
+
 		
 	for card in other_nemesis_cards:
 		card.move_to(cfc.NMAP["deck_villain"])

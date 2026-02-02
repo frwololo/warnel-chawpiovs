@@ -1391,6 +1391,7 @@ func move_to(targetHost: Node,
 		else:
 			interruptTweening()
 			_set_target_rotation( _recalculate_rotation())
+			var destination_grid = ""
 			if potential_host:
 				# The _potential_cards are always organized so that the card higher
 				# in index that we were hovering over, is the last in the array.
@@ -1404,8 +1405,10 @@ func move_to(targetHost: Node,
 				elif board_position as BoardPlacementSlot:
 					_set_target_position(board_position.rect_global_position)
 					board_position.set_occupying_card(self)
+					destination_grid = board_position.get_grid_name()
 				elif board_position and board_position as String:
 					var grid = cfc.NMAP.board.get_grid(board_position)
+					destination_grid = board_position
 					var slot = grid.find_available_slot()
 					# We need a small delay, to allow a potential new slot to instance
 					#TODO this might cause issues with the stack
@@ -1426,6 +1429,7 @@ func move_to(targetHost: Node,
 						self,
 						 {
 							"destination": targetHost.name,
+							"destination_grid": destination_grid,
 							"source": parentHost.name,
 							"tags": tags
 						}
@@ -3156,8 +3160,10 @@ func serialize_to_json():
 	
 func copy_tokens_to(to_card, details:= {}):
 	var exclude = details.get("exclude",[])
-	var my_tokens = tokens.get_all_tokens()
-	for token_name in my_tokens.keys():
+	var to_copy = details.get("to_copy",[])
+	if !to_copy:
+		to_copy = tokens.get_all_tokens().keys() #everything by default
+	for token_name in to_copy:
 		if (token_name in exclude):
 			continue
 		var count = tokens.get_token_count(token_name)

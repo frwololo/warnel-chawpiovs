@@ -1026,6 +1026,7 @@ func load_test(test_file)-> bool:
 		announce("skipped (script error)\n")		
 		return false
 	json_card_data = WCUtils.replace_real_to_int(json_card_data)
+	WCUtils.erase_key_recursive(json_card_data, "_comments")
 	
 	var integrity_errors = test_integrity(json_card_data)
 	if integrity_errors:

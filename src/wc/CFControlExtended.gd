@@ -469,6 +469,11 @@ func parse_keywords(text:String) -> Dictionary:
 				if  position >=0:
 					var value = lc_text.substr(position + keyword.length() + 1, 1)
 					result[keyword] = int(value)
+				else:
+					#some bools are defined as ints for alterants purpose
+					position = lc_text.find(keyword + ".")
+					if position >=0:
+						result[keyword] = 1
 			"string":
 				#TODO
 				result[keyword] = ""
@@ -599,11 +604,11 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	
 	for action in ["attack","thwart", "scheme"]:	
 		if card_data.has(action) and (card_data[action] != null):
-			card_data["can_" + action] = true
+			card_data["can_" + action] = 1
 			if card_data[action] < 0: #e.g. Titania gets "-1" in marvelcdb which is a problem for alterants
 				 card_data[action] = 0
 		else:
-			card_data["can_" + action] = false	
+			card_data["can_" + action] = 0	
 
 	card_data["text"] = convert_to_bbcode(card_data.get("real_text", ""))
 

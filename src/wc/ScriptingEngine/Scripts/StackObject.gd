@@ -78,13 +78,16 @@ func get_trigger():
 
 #modification scripts such as partial prevent and replacement effects
 func modify(script):
+	var result = {}
 	match script.script_name:
 		"prevent":
 			var amount = script.retrieve_integer_property("amount")
 			if !amount:
 				var _error = 1
+				return {}
 			else:
-				self.prevent_value("amount", amount)
+				var prevented_amount = self.prevent_value("amount", amount)
+				return {"amount_prevented" : prevented_amount}
 		_:
 			var replacements = script.get_property("replacements", {})
 			for property in replacements.keys():
@@ -93,12 +96,17 @@ func modify(script):
 					"subject":
 						var new_subjects = SP.retrieve_subjects(value, script)
 						replace_subjects(new_subjects)
+						result["TODO"] =  "todo"
 					"name":
 						replace_ability(value)
+						result["TODO"] =  "todo"
 					"additional_tags":
 						add_tags(value)
+						result["additional_tags"] = value #TODO only the ones that are new?
 					_:
 						replace_script_property(property, value)
+						result["TODO"] =  "todo"
+	return result
 
 
 func get_owner_card():

@@ -11,7 +11,48 @@
 		"TODO": "boost"
 	},
 	"Abjuration": {
-		"TODO": ""
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Ebony Maw"
+							}
+						}
+					]
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "host"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": "all",
+					"subject": "interrupted_event"
+				}
+			]
+		},
+		"event_prevented": {
+			"trigger": "self",
+			"event_filters": {
+				"amount_prevented": ">1"
+			},
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard_villain"
+				}
+			]
+		}
 	},
 	"Adam Warlock #21031a": {
 		"once_per_phase": {
@@ -20,6 +61,13 @@
 		"manual": {
 			"board": {
 				"Battle Mage": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
 					{
 						"name": "mod_tokens",
 						"subject": "self",
@@ -218,6 +266,13 @@
 			"board": {
 				"Remove Stunned": [
 					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
 						"name": "mod_tokens",
 						"modification": -1,
 						"token_name": "stunned",
@@ -240,6 +295,13 @@
 				],
 				"Remove Confused": [
 					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
 						"name": "mod_tokens",
 						"modification": -1,
 						"token_name": "confused",
@@ -261,6 +323,13 @@
 					}
 				],
 				"Remove Tough": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
 					{
 						"name": "mod_tokens",
 						"modification": -1,
@@ -298,9 +367,7 @@
 						"subject_count": "all",
 						"filter_state_seek": [
 							{
-								"filter_properties": {
-									"type_code": "environment"
-								},
+								"filter_group": "group_environments_my_hero",
 								"filter_properties2": {
 									"trait_spell": 1,
 									"comparison": "ge"
@@ -327,9 +394,7 @@
 						"subject_count": "all",
 						"filter_state_seek": [
 							{
-								"filter_properties": {
-									"type_code": "environment"
-								},
+								"filter_group": "group_environments_my_hero",
 								"filter_properties2": {
 									"trait_spell": 1,
 									"comparison": "ge"
@@ -394,7 +459,30 @@
 		}
 	},
 	"Attack on Knowhere": {
-		"TODO": ""
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Reveal Spell": [
+					{
+						"name": "move_card_to_board",
+						"grid_name": "enemies_my_hero",
+						"subject": "tutor",
+						"src_container": "deck_villain",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"trait_spell": 1,
+									"comparison": "ge"
+								}
+							}
+						]
+					}
+				]
+			}
+		}
 	},
 	"Audacity": {
 		"TODO": ""
@@ -452,7 +540,7 @@
 			]
 		}
 	},
-	"Avengers Tower": {
+	"Avengers Tower #21020": {
 		"alterants": {
 			"board": [
 				{
@@ -540,6 +628,134 @@
 					"subject": "self",
 					"set_to_mod": true,
 					"token_name": "_avengers_tower"
+				}
+			]
+		}
+	},
+	"Avengers Tower #21100a": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "modify_properties",
+					"tags": [
+						"Init"
+					],
+					"subject": "self",
+					"set_properties": {
+						"health": 100
+					}
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "is_unique",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"Name": "Avengers Tower"
+							}
+						}
+					],
+					"alteration": -1
+				}
+			]
+		},
+		"receive_damage": {
+			"event_filters": {
+				"target": "self"
+			},
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"if": {
+									"func_name": "count_tokens",
+									"func_params": {
+										"token_name": "damage",
+										"subject": "self"
+									},
+									"comparison": "ge",
+									"comparison_value": 9
+								},
+								"then": 1,
+								"else": 0
+							},
+							"nested_tasks": [
+								{
+									"name": "flip_doublesided_card",
+									"subject": "self"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Avengers Tower #21100b": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "modify_properties",
+					"tags": [
+						"Init"
+					],
+					"subject": "self",
+					"set_properties": {
+						"health": 100
+					}
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"subject": "boardseek",
+					"subject_exclude": "self",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Avengers Tower"
+							}
+						}
+					]
+				}
+			]
+		},
+		"receive_damage": {
+			"event_filters": {
+				"target": "self"
+			},
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"if": {
+									"func_name": "count_tokens",
+									"func_params": {
+										"token_name": "damage",
+										"subject": "self"
+									},
+									"comparison": "ge",
+									"comparison_value": 9
+								},
+								"then": 1,
+								"else": 0
+							},
+							"nested_tasks": [
+								{
+									"name": "defeat"
+								}
+							]
+						}
+					]
 				}
 			]
 		}
@@ -700,18 +916,16 @@
 				{
 					"name": "mod_tokens",
 					"subject": "boardseek",
+					"subject_count": "all",
 					"token_name": "invocation",
 					"modification": -1,
 					"is_cost": true,
 					"filter_state_seek": [
 						{
-							"filter_group": "enemies_my_hero",
+							"filter_group": "group_environments_my_hero",
 							"filter_properties": {
 								"trait_spell": 1,
 								"comparison": "ge"
-							},
-							"filter_properties2": {
-								"type_code": "environment"
 							}
 						}
 					]
@@ -1025,6 +1239,7 @@
 				{
 					"name": "mod_tokens",
 					"subject": "boardseek",
+					"subject_count": "all",
 					"token_name": "invocation",
 					"modification": -1,
 					"filter_state_seek": [
@@ -1083,6 +1298,7 @@
 				{
 					"name": "mod_tokens",
 					"subject": "boardseek",
+					"subject_count": "all",
 					"token_name": "invocation",
 					"modification": -1,
 					"filter_state_seek": [
@@ -1141,6 +1357,7 @@
 				{
 					"name": "mod_tokens",
 					"subject": "boardseek",
+					"subject_count": "all",
 					"token_name": "invocation",
 					"modification": -1,
 					"filter_state_seek": [
@@ -1210,6 +1427,20 @@
 					"subject": "self",
 					"modification": 4,
 					"token_name": "invocation"
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"_silent": true,
+			"trigger": "self",
+			"event_filters": {
+				"destination_grid": "villain_misc"
+			},
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self",
+					"grid_name": "enemies_current_hero_target"
 				}
 			]
 		},
@@ -1398,7 +1629,107 @@
 		"TODO": ""
 	},
 	"Infinity Gauntlet": {
-		"TODO": ""
+		"extra_decks": [
+			{
+				"name": "discard_infinity_stone",
+				"faceup": true
+			},
+			{
+				"name": "deck_infinity_stone"
+			}
+		],
+		"extra_rules": [
+			{
+				"card_moved_to_pile": {
+					"event_filters": {
+						"destination": "discard_villain"
+					},
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "environment"
+							},
+							"filter_properties2": {
+								"trait_infinity_stone": 1
+							}
+						}
+					],
+					"all": [
+						{
+							"name": "move_card_to_container",
+							"dest_container": "discard_infinity_stone",
+							"subject": "trigger"
+						}
+					]
+				}
+			}
+		],
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": [
+						"deck_villain"
+					],
+					"dest_container": "deck_infinity_stone",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "environment"
+							},
+							"filter_properties2": {
+								"trait_infinity_stone": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "self"
+				}
+			]
+		},
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"response": {
+			"event_name": [
+				"enemy_attack_happened",
+				"enemy_scheme_happened"
+			],
+			"trigger": "host",
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "special",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_infinity_stone": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"src_container": "deck_infinity_stone",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"is_else": true
+				}
+			]
+		}
 	},
 	"Innovation": {
 		"TODO": ""
@@ -1658,6 +1989,20 @@
 				}
 			]
 		},
+		"card_moved_to_board": {
+			"_silent": true,
+			"trigger": "self",
+			"event_filters": {
+				"destination_grid": "villain_misc"
+			},
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self",
+					"grid_name": "enemies_current_hero_target"
+				}
+			]
+		},
 		"card_token_modified": {
 			"trigger": "self",
 			"filter_count": 0,
@@ -1665,7 +2010,7 @@
 			"board": [
 				{
 					"name": "mod_tokens",
-					"subject": "my_hero",
+					"subject": "my_identity",
 					"amount": 1,
 					"token_name": "confused"
 				},
@@ -1841,7 +2186,31 @@
 		}
 	},
 	"Mind Stone": {
-		"TODO": ""
+		"special": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "confused",
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"src_container": "hand",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "random"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Moxie": {
 		"response": {
@@ -1976,6 +2345,20 @@
 				}
 			]
 		},
+		"card_moved_to_board": {
+			"_silent": true,
+			"trigger": "self",
+			"event_filters": {
+				"destination_grid": "villain_misc"
+			},
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self",
+					"grid_name": "enemies_current_hero_target"
+				}
+			]
+		},
 		"card_token_modified": {
 			"trigger": "self",
 			"filter_count": 0,
@@ -1983,7 +2366,7 @@
 			"board": [
 				{
 					"name": "mod_tokens",
-					"subject": "my_hero",
+					"subject": "my_identity",
 					"amount": 1,
 					"token_name": "stunned"
 				},
@@ -2104,7 +2487,28 @@
 		}
 	},
 	"Power Stone": {
-		"TODO": ""
+		"special": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "confused",
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "deal_damage",
+					"subject": "my_identity",
+					"amount": 3
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Preservation": {
 		"TODO": ""
@@ -2306,7 +2710,45 @@
 		}
 	},
 	"Reality Stone": {
-		"TODO": ""
+		"special": {
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_group": "group_upgrade_support_my_hero"
+						},
+						{
+							"filter_properties": {
+								"type_code": "support"
+							},
+							"filter_group": "group_upgrade_support_my_hero"
+						},
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							},
+							"filter_group": "group_allies_my_hero"
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Regeneration Cycle": {
 		"give_obligation": {
@@ -2428,7 +2870,71 @@
 		}
 	},
 	"Restrained": {
-		"TODO": ""
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "function",
+					"is_cost": true,
+					"sort_name": "get_subject_int_property",
+					"func_params": {
+						"property": "attack"
+					},
+					"sort_descending": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly"
+						}
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "host"
+				},
+				{
+					"is_else": true,
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard_villain"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_ready",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 1,
+						"energy": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Rubblestorm": {
 		"_surge": {},
@@ -2440,6 +2946,20 @@
 					"subject": "self",
 					"modification": 3,
 					"token_name": "invocation"
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"_silent": true,
+			"trigger": "self",
+			"event_filters": {
+				"destination_grid": "villain_misc"
+			},
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self",
+					"grid_name": "enemies_current_hero_target"
 				}
 			]
 		},
@@ -2560,7 +3080,7 @@
 					"name": "move_card_to_container",
 					"subject": "index",
 					"subject_index": "top",
-					"is_cost": "true",
+					"is_cost": true,
 					"subject_count": {
 						"func_name": "get_current_activation_amount"
 					},
@@ -2579,7 +3099,24 @@
 		"TODO": ""
 	},
 	"Soul Stone": {
-		"TODO": ""
+		"special": {
+			"board": [
+				{
+					"name": "heal",
+					"amount": 3,
+					"subject": "villain"
+				},
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Soul World": {
 		"pile_emptied": {
@@ -2620,7 +3157,35 @@
 		}
 	},
 	"Space Stone": {
-		"TODO": ""
+		"special": {
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Spectrum": {
 		"TODO": ""
@@ -2900,7 +3465,42 @@
 		}
 	},
 	"The Armies of Thanos": {
-		"TODO": ""
+		"_comments": "no use of reveal_side_a here because this is spawned by another card (Under Siege)",
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Reveal": [
+					{
+						"name": "move_card_to_board",
+						"subject": "tutor",
+						"src_container": "deck_villain",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"Name": "Avengers Tower"
+								}
+							}
+						]
+					},
+					{
+						"name": "move_card_to_board",
+						"subject": "tutor",
+						"grid_name": "enemies_my_hero",
+						"src_container": "deck_villain",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"Name": "Black Order Besieger"
+								}
+							}
+						]
+					}
+				]
+			}
+		}
 	},
 	"The Black Order": {
 		"alterants": {
@@ -2988,7 +3588,55 @@
 		}
 	},
 	"The Power Stone": {
-		"TODO": ""
+		"reveal_side_a": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "discard_villain",
+					"dest_container": "deck_villain"
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
+				}
+			]
+		},
+		"reveal": {
+			"_comments": "split from side a here otherwise the for_each_player would apply to shuffle as well",
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Reveal Spell": [
+					{
+						"name": "move_card_to_container",
+						"subject": "grab_until",
+						"src_container": "deck_villain",
+						"dest_container": "discard_villain",
+						"filter_state_grab_until": [
+							{
+								"filter_properties": {
+									"trait_spell": 1,
+									"comparison": "ge"
+								}
+							}
+						]
+					},
+					{
+						"name": "move_card_to_board",
+						"grid_name": "enemies_my_hero",
+						"TODO": "create a special zone for heroes bad cards",
+						"subject": "index",
+						"subject_count": 1,
+						"subject_index": "retrieve_integer",
+						"src_container": "deck_villain"
+					}
+				]
+			}
+		}
 	},
 	"The Queen of Hel": {
 		"reveal_alter_ego": {
@@ -3043,13 +3691,106 @@
 		"TODO": ""
 	},
 	"Time Stone": {
-		"TODO": ""
+		"special": {
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"up_to": true,
+					"subject_count": 4,
+					"src_container": "deck",
+					"dest_container": "discard",
+					"needs_subject": true
+				},
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": {
+						"func_name": "count_unique_property_value",
+						"func_params": {
+							"subject": "previous",
+							"property": "type_code"
+						}
+					}
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Tribute": {
-		"TODO": ""
+		"response": {
+			"event_name": "card_dies",
+			"trigger": "self",
+			"all": [
+				{
+					"name": "deal_encounter",
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities_event_source_hero"
+						}
+					]
+				}
+			]
+		}
 	},
 	"Under Siege": {
-		"TODO": ""
+		"setup": {
+			"all": [
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "The Armies of Thanos"
+							}
+						}
+					]
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "stage_completed",
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"set_to_mod": true,
+					"token_name": "threat",
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"amount": "per_boardseek",
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Avengers Tower"
+							}
+						}
+					],
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						],
+						"multiplier": 6
+					}
+				}
+			]
+		}
 	},
 	"Universal Church of Truth": {
 		"pile_emptied": {

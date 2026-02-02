@@ -1,0 +1,125 @@
+{
+	"_comments": "Tests Ebony Maw Spell reveal",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain America"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},			
+				{
+					"card": "RubbleStorm"
+				}				
+			],
+			"schemes": [
+				{
+					"card": "Attack on Knowhere",
+					"tokens": {"threat": 2}					
+				}
+			],			
+			"villain": [
+				{
+					"card": "Ebony Maw - 1",
+					"tokens": {"damage" : 2},
+				}
+			],
+			"identity1": [
+				{
+					"card": "Captain America"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				}	
+			],
+			"enemies1": [
+				{
+					"card": "Fireball",
+					"tokens": {"invocation": 2}
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "wait for player turn"
+		},			
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain America"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},						
+			],
+			"schemes": [
+				{
+					"card": "Attack on Knowhere",
+					"tokens": {"threat": 2}					
+				}
+			],			
+			"villain": [
+				{
+					"card": "Ebony Maw - 1",
+					"tokens": {"damage" : 2},
+				}
+			],
+			"identity1": [
+				{
+					"card": "Captain America"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				}	
+			],
+			"enemies1": [
+				{
+					"card": "Fireball",
+					"tokens": {"invocation": 2}
+				},
+				{
+					"card": "RubbleStorm",
+					"tokens": {"invocation": 3}
+				},
+				{
+					"card": "Hydra Mercenary"
+				},					
+			]
+		}
+	}
+}

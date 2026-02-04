@@ -18,7 +18,8 @@ Generally Speaking this tries to perfectly mimic the rules of the orginal board 
 * Unlike Marvel Champions, Warnel Chawpiovs allows heroes to play their turn in parallel. This is particularly obvious in Multiplayer mode. This is intentional: although the rules of the game state that each player should play their turn one player after the other (and explicitly ask other players to activate abilities or play cards as needed), in practice, most people play simultaneously and synchronize verbally. Because this is a video game, it felt important to me to minimize friction on that aspect, and allow clients to play simultaneously. If you'd rather follow the actual rules and play your turns in order, nothing prevents you from coordinating with your fellow players ;)
 * In Warnel Chawpiovs, minions attack in the order in which they appeared on the board, instead of letting the players choose the order. This is mostly a design decision for gameplay speed. It sometimes impact one's strategy but I felt the benefit was worth it
 
-Other than that, there are a few known limitations with the engine at the moment:
+Other than that, here are known limitations with the engine at the moment:
+* Warnel Chawpiovs doesn't support Campaign mode currently
 * Responses aren't exactly supported. They're either treated as interrupts, or react to the internal engine's events in no specific order. It "works" except in tricky cases where order of events is critical
 
 ## Current Status (General)

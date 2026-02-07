@@ -63,18 +63,26 @@ remote func force_set_guid(stuff, uid) -> String:
 		current_guid_int = uid_int
 	return uid
 
-func array_of_objects_to_guid(objects:Array)-> Array:
+#int_passthrough: there are cases where we pass both uids AND integers
+# we do want to preserve the integers in this case
+func array_of_objects_to_guid(objects:Array, int_passthrough = false)-> Array:
 	var results:Array = []
 	for o in objects:
-		var uid = get_guid(o)
-		results.append(uid)
+		if int_passthrough and typeof(o) == TYPE_INT:
+			results.append(o)
+		else:
+			var uid = get_guid(o)
+			results.append(uid)
 	return results
 	
-func array_of_guid_to_objects(uids:Array)-> Array:
+func array_of_guid_to_objects(uids:Array, int_passthrough = false)-> Array:
 	var results:Array = []
 	for uid in uids:
-		var o = get_object_by_guid(uid)
-		results.append(o)
+		if int_passthrough and typeof(uid) == TYPE_INT:
+			results.append(uid)
+		else:
+			var o = get_object_by_guid(uid)
+			results.append(o)
 	return results
 	
 func get_guids_check_data():

@@ -6,7 +6,8 @@ extends Node2D
 # var b = "text"
 
 var scenario_data: ScenarioDeckData
-var villain = null
+var active_villain = null
+var villains = {}
 
 # a temporary variable to move cards after all clients have loaded them,
 # to avoid scripts triggering incorrectly
@@ -115,6 +116,20 @@ func load_scenario():
 			for i in villains_data.size()-1:
 				#todo need to shift the position of schemes?
 				grid.add_slot()
+
+	#check if we have a rules override
+	var sceng = gameData.theGameObserver._get_script_sceng("override_get_next_villain")
+	if sceng:	
+		var sceng_return = sceng.execute(CFInt.RunType.PRIME_ONLY)
+		#if not sceng.all_tasks_completed:
+		if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
+			yield(sceng_return,"completed")	
+		for potential_villain in sceng.all_subjects_so_far:
+			var type_code = potential_villain.get_property("type_code")
+			if type_code == "villain":
+				var ckey = potential_villain.get_property("_code")
+				load_villain(ckey)	
+		return null	
 	
 	for villain_data in villains_data:
 		var ckey = villain_data["_code"] 
@@ -133,15 +148,16 @@ func load_villain(card_id, call_preloaded = {"shuffle" : true}):
 		slot = grid.find_available_slot()
 		if slot:
 			slot.reserve(card)
+			villains[slot] = card
 			_post_load_move[card] = {
 				"slot": slot
 			}
 		else:
 			var _error = 1
-	villain = card
+	active_villain = card
 	if call_preloaded:
 		cfc._rpc(self,"cards_preloaded", call_preloaded)
-	return villain
+	return active_villain
 	
 
 func load_scheme(card_id, call_preloaded = {}):	
@@ -176,6 +192,14 @@ func shuffle_deck(target_deck = "deck_villain") -> void:
 		yield(pile.get_tree().create_timer(0.2), "timeout")
 	pile.shuffle_cards()
 
+func get_villains():
+	var result = []
+	for key in villains:
+		result.append(villains[key])
+	return result
+	
 func get_villain():
-	return villain
-		
+	return active_villain
+
+func set_active_villain(card):
+	active_villain = card		

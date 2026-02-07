@@ -316,14 +316,7 @@ func character_died(script: ScriptTask) -> int:
 			var stackEvent:SignalStackScript = SignalStackScript.new("enemy_died", card, script.trigger_details)
 			gameData.theStack.add_script(stackEvent)			
 
-		var owner_hero_id = card.get_owner_hero_id()
-		if owner_hero_id > 0:
-			card.move_to(cfc.NMAP["discard" + str(owner_hero_id)])
-		else:
-			if type in ["ally"]:
-				card.move_to(cfc.NMAP["discard" + str(card.get_controller_hero_id())])
-			else:
-				card.move_to(cfc.NMAP["discard_villain"])
+		card.post_death_move()
 	
 	return retcode
 
@@ -374,6 +367,10 @@ func return_attachments_to(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
 	var host = script.owner
+	
+	if script.subjects:
+		host = script.subjects[0]
+	
 	if !host.attachments:
 		return 	CFConst.ReturnCode.FAILED
 	
@@ -660,12 +657,29 @@ func _receive_threat(script: ScriptTask) -> int:
 func add_threat(script: ScriptTask) -> int:
 	return _receive_threat(script)
 
+func tuck_under_card(script: ScriptTask) -> int:
+	script.script_definition["tags"] = ["as_inactive_attachment"] + script.get_property(SP.KEY_TAGS)
+	return attach_to_card(script)
+
+func tuck_card_under_me(script: ScriptTask) -> int:
+	script.script_definition["tags"] = ["as_inactive_attachment"] + script.get_property(SP.KEY_TAGS)
+	return host_card(script)
+	
+	
 func attach_to_card(script: ScriptTask) -> int:
 	#TOOD: disable_attach_trigger is a hack to address a card such as Zola's Mutate
 	#which attaches an attachment to itself, overriding the attachment's own rules
 	#for now we do this by "hiding" the attachment's "card_moved_to_board" script
 	#temporarily while it's being attached, but that feels like it could lead to bugs	
 	var backup = null
+
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+
+	var host = script.subjects[0]
+	if host.get_property("cannot_have_attachments", 0, true):
+		return CFConst.ReturnCode.FAILED
+	
 	if !costs_dry_run():
 		if script.has_tag("disable_attach_trigger"):
 			backup = script.owner.scripts.get("card_moved_to_board", null)
@@ -681,7 +695,7 @@ func attach_to_card(script: ScriptTask) -> int:
 	
 	return result
 
-func host_card(script: ScriptTask) -> void:
+func host_card(script: ScriptTask) -> int:
 	var backup = []
 	#TOOD: disable_attach_trigger is a hack to address a card such as Zola's Mutate
 	#which attaches an attachment to itself, overriding the attachment's own rules
@@ -693,7 +707,7 @@ func host_card(script: ScriptTask) -> void:
 				backup.append(subject.scripts.get("card_moved_to_board", null))
 				subject.scripts["card_moved_to_board"] = { "NOP": "NOP"}
 	
-	.host_card(script)
+	var result = .host_card(script)
 	
 	if !costs_dry_run() and script.has_tag("disable_attach_trigger"):
 		var i = 0
@@ -704,8 +718,25 @@ func host_card(script: ScriptTask) -> void:
 			else:
 				subject.scripts.erase("card_moved_to_board")
 			i+= 1
+	
+	return result
 
-
+func set_active_villain(script:ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+	
+	if (costs_dry_run()): 
+		return retcode	
+		
+	var villain = script.subjects[0]
+	if villain.get_property("type_code") != "villain":
+		villain = villain.get_associated_villain()
+	
+	gameData.set_active_villain(villain)
+	return CFConst.ReturnCode.CHANGED
+	
 func conditional_script(script:ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	
@@ -713,12 +744,22 @@ func conditional_script(script:ScriptTask) -> int:
 		return retcode	
 
 	var options = script.get_property("options")
+
+	#erase inconvenient variables temporarily
+	var backup = {
+		"trigger_details": script.trigger_details
+	}
+	script.trigger_details = {}
+	
 	for option in options:
 		var subscript = script.get_sub_property("nested_tasks", option, {})
 		var condition = script.retrieve_integer_subproperty("condition", option, 0)
 		if condition:
+			
 			script.script_definition["nested_tasks"] = subscript
 			nested_script(script)
+			
+	script.trigger_details = backup["trigger_details"]
 	return retcode
 
 func move_token_to(script: ScriptTask) -> int:
@@ -840,6 +881,9 @@ func ready_card(script: ScriptTask) -> int:
 	# We inject the tags from the script into the tags sent by the signal
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
 	for card in script.subjects:
+		if card.get_property("cannot_ready_by_player_card", 0, true):
+			retcode = CFConst.ReturnCode.FAILED
+			continue
 		retcode = card.readyme(false, true, costs_dry_run(), tags)
 	return(retcode)
 
@@ -951,6 +995,19 @@ func i_attack(script: ScriptTask) -> int:
 		retcode = CFConst.ReturnCode.CHANGED
 	return retcode
 
+func swap_villain(script:ScriptTask) -> int:
+	var retcode = CFConst.ReturnCode.CHANGED
+	
+	if !script.subjects:
+		retcode = CFConst.ReturnCode.FAILED
+
+	if (costs_dry_run()):
+		return retcode		
+		
+	var subject = script.subjects[0]
+	gameData.swap_villain(gameData.get_active_villain(), subject.get_property("_code"))
+	return retcode
+
 func draw_boost_card(script:ScriptTask) ->int:
 	var retcode = CFConst.ReturnCode.CHANGED
 	
@@ -965,10 +1022,12 @@ func draw_boost_card(script:ScriptTask) ->int:
 	var script_amount = script.retrieve_integer_property("amount")
 	if script_amount:
 		amount = script_amount
+
+	var src_container = script.get_property(SP.KEY_SRC_CONTAINER, "")
 	
 	for card in script.subjects:
 		for i in amount:
-			card.draw_boost_card()
+			card.draw_boost_card(src_container )
 			retcode = CFConst.ReturnCode.CHANGED
 	return retcode
 	
@@ -1022,14 +1081,18 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 		
 	boost_card.set_current_activation(script)	
 	boost_card.set_is_faceup(true)
+
+	var func_return = boost_card.execute_scripts(boost_card, "boost")
+	if func_return is GDScriptFunctionState && func_return.is_valid():
+		yield(func_return, "completed")	
+	
 	var boost_amount = boost_card.get_property("boost",0)
+	boost_amount += cfc.NMAP.board.count_amplify_icons()
 	if boost_amount:
 		boost_card.hint("+" + str(boost_amount), Color8(100,255,150), {"position": "bottom_right"})
 	script_definition["boost"].append(boost_amount)
 	
-	var func_return = boost_card.execute_scripts(boost_card, "boost")
-	if func_return is GDScriptFunctionState && func_return.is_valid():
-		yield(func_return, "completed")
+
 	return retcode
 
 func enemy_attack_damage(_script: ScriptTask) -> int:
@@ -1234,6 +1297,9 @@ func enemy_scheme_threat(_script: ScriptTask) -> int:
 
 func enemy_activates(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
+	if !script.subjects():
+		return CFConst.ReturnCode.FAILED
+		
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
 	retcode = CFConst.ReturnCode.FAILED
@@ -1586,6 +1652,14 @@ func recovery(script: ScriptTask) -> int:
 
 	return CFConst.ReturnCode.CHANGED
 
+
+func victory(script: ScriptTask) -> int:
+	if (costs_dry_run()):
+		return CFConst.ReturnCode.CHANGED	
+	
+	gameData.victory()
+	return CFConst.ReturnCode.CHANGED
+
 func defeat(script: ScriptTask) -> int:
 	if (costs_dry_run()):
 		return CFConst.ReturnCode.CHANGED	
@@ -1605,9 +1679,58 @@ func flip_doublesided_card(script: ScriptTask) -> int:
 			subject.flip_doublesided_card()
 		
 		return CFConst.ReturnCode.CHANGED
+
+
+func change_secondary_form(script: ScriptTask) -> int:	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
 		
+	if costs_dry_run():
+		return CFConst.ReturnCode.CHANGED
+
+	var hero = null
+	var my_hero_id = get_hero_id_from_script(script)
+	if my_hero_id:
+		hero = gameData.get_identity_card(my_hero_id)	
 			
+	var new_form = script.subjects[0] #the form to change to
+		
+	var family = new_form.get_property("form_family", "")
+	if !family:
+		var error = 1
+		return CFConst.ReturnCode.FAILED
+
+	#get current form if any
+	var current_form = cfc.NMAP.board.find_card_by_property("form_family", family, my_hero_id)
+	
+	if current_form == new_form:
+		#no change
+		return CFConst.ReturnCode.OK
+
+	var signal_details = {
+		"before": "",
+		"after": new_form.canonical_name,
+		"form_family": family,
+	}
+	
+	#remove current form card
+	if current_form:
+		signal_details["before"] =  current_form.canonical_name
+		current_form.move_to(cfc.NMAP["tmp_pile1"])
+	
+	move_card_to_board(script)
+	#new_form.move_to(cfc.NMAP.board)
+
+	scripting_bus.emit_signal_on_stack("identity_changed_form", hero, signal_details)	
+
+	return CFConst.ReturnCode.CHANGED
+		
+					
 func change_form(script: ScriptTask) -> int:
+
+	var form_family:String = script.get_property("form_family", "")
+	if form_family:
+		return change_secondary_form(script)
 
 	var tags: Array = script.get_property(SP.KEY_TAGS)
 	var is_manual = "player_initiated" in tags
@@ -1681,6 +1804,23 @@ func change_controller_hero(script:ScriptTask) -> int:
 		retcode = CFConst.ReturnCode.CHANGED
 		
 	return retcode	
+
+func remove_card_from_game (script:ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+	
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+		
+	var set_aside = script.get_property("set_aside", true)
+	for card in script.subjects:
+		if set_aside:
+			gameData.set_aside(card)
+		else:
+			card.get_parent().remove_child(card)
+	return retcode
 
 func reveal_nemesis (script:ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -1903,7 +2043,11 @@ func _pre_task_prime(script: ScriptTask, prev_subjects:= []) -> void:
 	script.script_definition = static_pre_task_prime(script.script_definition, script.owner, script, prev_subjects)
 	
 static func static_pre_task_prime(script_definition, owner, script = null, prev_subjects:= []):
-	var previous_hero = prev_subjects[0] if prev_subjects else null	
+	var previous_hero = prev_subjects[0] if prev_subjects else null
+	#previous_subjects can sometimes contain ints (for ask_integer) instead of cards
+	if typeof(previous_hero) == TYPE_INT:
+		previous_hero = 0
+		
 	var previous_hero_id = 0
 	if previous_hero:
 		previous_hero_id = previous_hero.get_controller_hero_id()

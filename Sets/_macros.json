@@ -44,7 +44,7 @@
 				}
 			]
 		}
-	},	
+	},
 	"incite": {
 		"reveal": {
 			"all": [
@@ -109,7 +109,7 @@
 				}
 			]
 		}
-	},	
+	},
 	"on_reveal_one_threat_per_hero": {
 		"reveal": {
 			"all": [
@@ -141,7 +141,7 @@
 					"tags": [
 						"hero_form"
 					]
-				},			
+				},
 				{
 					"name": "enemy_attacks_you",
 					"subject": "self"

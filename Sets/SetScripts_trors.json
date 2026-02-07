@@ -3122,7 +3122,7 @@
 			"all": [
 				{
 					"name": "reveal_encounter",
-					"subject": "tutor",
+					"subject": "index",
 					"subject_index": "top",
 					"src_container": "deck_side_schemes"
 				}
@@ -3134,11 +3134,10 @@
 			},
 			"board": [
 				{
-					"name": "reveal_encounters",
-					"subject": "tutor",
+					"name": "reveal_encounter",
+					"subject": "index",
 					"subject_index": "top",
 					"src_container": "deck_side_schemes",
-					"subject_count": 1
 				}
 			]
 		}

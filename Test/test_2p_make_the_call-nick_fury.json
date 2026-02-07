@@ -97,7 +97,7 @@
 			"type": "play",
 			"value": "Nick Fury",
 			"hero": 2
-		},
+		},		
 		{
 			"type": "choose",
 			"value": "Draw 3",

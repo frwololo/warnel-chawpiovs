@@ -48,6 +48,9 @@ var all_prev_subjects := []
 
 var my_stored_integer = null
 
+func set_stored_integer(value:int):
+	my_stored_integer = value
+
 func set_prev_subjects(new_subjects):
 	if prev_subjects and trigger_details["prev_subjects"]:
 		#we've already forced the previous subjects in an earlier step
@@ -145,7 +148,10 @@ func _network_prepaid():
 	#prepayment should be an array of GUID
 	var result = []
 	for uid in prepayment:
-		result.append(guidMaster.get_object_by_guid(uid))
+		if guidMaster.is_guid(uid):
+			result.append(guidMaster.get_object_by_guid(uid))
+		else:
+			result.append(uid)
 		
 	return result
 	
@@ -167,6 +173,8 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 	
 	subjects = result
 	return subjects
+
+
 
 #runs "find_subjects" locally, does not store the result
 #this allows to run a "find subjects" activity within
@@ -284,7 +292,7 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 				subjects_array = subjects_result["subjects"]
 				var to_store = subjects_result.get("stored_integer", null)
 				if to_store != null:
-					 self.my_stored_integer = to_store
+					 self.set_stored_integer(to_store)
 			else:
 				subjects_array = subjects_result
 			for c in subjects_array:
@@ -608,7 +616,7 @@ func retrieve_integer_subproperty(property, root, stored_integer:int = 0):
 	
 func retrieve_integer_property(property, stored_integer:int = 0,root = null):
 	var value = get_property(property, null, null, root)
-	if !value:
+	if value == null:
 		return 0
 		
 	if SP.VALUE_PER in str(value):

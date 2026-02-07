@@ -308,6 +308,56 @@
 			"Standard",
 			"Modular"
 		],
+		"extra_rules": [
+			{
+				"card_moved_to_board": {
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"_code": "21100a"
+							}
+						}
+					],
+					"all": [
+						{
+							"name": "deal_damage",
+							"amount": {
+								"func_name": "get_scenario_option_value",
+								"func_params": {
+									"option_name": "tower_initial_damage"
+								}
+							},
+							"subject": "trigger"
+						}
+					]
+				}
+			}
+		],
+		"options": [
+			{
+				"name": "tower_initial_damage",
+				"display_name": "Tower start DMG",
+				"type": "option_button",
+				"options": [
+					{
+						"display_name": "None",
+						"value": 0
+					},
+					{
+						"display_name": "Standard (1)",
+						"value": 1
+					},
+					{
+						"display_name": "Expert (2)",
+						"value": 2
+					},
+					{
+						"display_name": "Heroic (3)",
+						"value": 3
+					}
+				]
+			}
+		],
 		"villains": [
 			[
 				"Proxima Midnight - 1",
@@ -381,7 +431,6 @@
 		],
 		"villains": [
 			"Hela - A1",
-			"Hela - A2"
 		],
 		"expert": {
 			"encounter_sets": [
@@ -392,7 +441,6 @@
 			],
 			"villains": [
 				"Hela - B1",
-				"Hela - B2"
 			]
 		}
 	},
@@ -409,9 +457,60 @@
 			"Standard",
 			"Modular"
 		],
+		"extra_rules": [
+			{
+				"override_get_next_villain": {
+					"all": [
+						{
+							"name": "nop",
+							"src_container": "set_aside",
+							"needs_subject": true,
+							"subject": "tutor",
+							"sort_by": "random",
+							"subject_count": 1,
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"type_code": "villain"
+									}
+								}
+							]
+						}
+					]
+				},
+			}
+		],
+		"options": [
+			{
+				"name": "loki_victory",
+				"display_name": "Loki Level",
+				"type": "option_button",
+				"options": [
+					{
+						"display_name": "Rookie Mode",
+						"value": 1
+					},
+					{
+						"display_name": "Standard Mode",
+						"value": 2
+					},
+					{
+						"display_name": "Expert Mode",
+						"value": 3
+					},
+					{
+						"display_name": "Heroic Mode",
+						"value": 4
+					}
+				]
+			}
+		],
 		"villains": [
-			"Loki - 1",
-			"Loki - 2"
+			"Loki - 1 #21160",
+			"Loki - 1 #21161",
+			"Loki - 1 #21162",
+			"Loki - 1 #21163",
+			"Loki - 1 #21164"
 		],
 		"expert": {
 			"encounter_sets": [
@@ -422,8 +521,11 @@
 				"expert"
 			],
 			"villains": [
-				"Loki - 2",
-				"Loki - 3"
+				"Loki - 1 #21160",
+				"Loki - 1 #21161",
+				"Loki - 1 #21162",
+				"Loki - 1 #21163",
+				"Loki - 1 #21164"
 			]
 		}
 	}

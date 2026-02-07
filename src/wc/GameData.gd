@@ -123,8 +123,8 @@ func stop_game():
 
 func start_game():
 	cfc.LOG("game starting")
-	theGameObserver.setup(scenario)
 	GameRecorder.init_game()
+	theGameObserver.execute_scripts("setup")
 	_game_started = true
 	_game_over = ""
 
@@ -514,7 +514,12 @@ func check_ally_limit():
 			continue #this can happen at setup time
 		var ally_limit = identity_card.get_property("ally_limit", 0)
 		var my_cards = cfc.NMAP.board.get_grid("allies" + String(hero_id)).get_all_cards()
-		if (my_cards.size()) > ally_limit:
+		var count = 0
+		for card in my_cards:
+			if card.get_property("exclude_from_ally_limit", 0, true):
+				continue
+			count += 1
+		if (count) > ally_limit:
 			identity_card.execute_scripts(identity_card, "ally_limit_rule")
 		
 #a function that checks regularly (sepcifically, whenever threat changes) if the main scheme has too much threat	
@@ -567,6 +572,7 @@ func set_scenario_data(_scenario:Dictionary):
 		print_debug("scenario variable is not set")
 		return
 	scenario.load_from_dict(_scenario)
+
 
 func get_network_id_by_hero_id(hero_id):
 	var hero_deck_data:HeroDeckData = team[hero_id]["hero_data"]
@@ -974,11 +980,18 @@ func enemy_activates() :
 	attacker_data = get_current_attacker_data()
 	var enemy = attacker_data.get("subject", null)
 	action = attacker_data.get("type", action)
+
 	script = attacker_data.get("script", script)
 	var override_target_id = attacker_data.get("target_id", 0)
 	if override_target_id:
 		target_id = override_target_id
 
+	var target_hero = get_identity_card(target_id)		
+	if action == "activate":
+		if target_hero.is_hero_form():
+			action = "attack"
+		else:
+			action = "scheme" 	
 
 	var status = "stunned" if (action=="attack") else "confused"
 	var hint_color = Color8(50,200,50) if (action=="attack") else Color8(240,110,255)
@@ -1024,7 +1037,6 @@ func enemy_activates() :
 				#I had a race condition where if only the executing player would add a global script,
 				#it could arrive before network players where at this status.
 				#Making it a local script (everyone adds it) is an attempt at fixing this
-				var target_hero = get_identity_card(target_id)
 				var details = {
 					"target" : target_hero,
 					SP.TRIGGER_TARGET_HERO : target_hero.canonical_name
@@ -1062,8 +1074,7 @@ func enemy_activates() :
 					script_name = "enemy_scheme_threat"
 				"attack":
 					script_name = "enemy_attack_damage"
-			
-			var target_hero = get_identity_card(target_id)	
+				
 			var details = {
 				"target" : target_hero,
 				SP.TRIGGER_TARGET_HERO : target_hero.canonical_name
@@ -1078,7 +1089,6 @@ func enemy_activates() :
 			for boost_card in boost_cards:
 				var discard_event = WCScriptingEngine.simple_discard_task(boost_card)
 				gameData.theStack.add_script(discard_event)	
-			var target_hero = get_identity_card(target_id)	
 			var details = {
 				"target" : target_hero,
 				SP.TRIGGER_TARGET_HERO : target_hero.canonical_name
@@ -1179,6 +1189,9 @@ func defenders_chosen():
 func set_aside(card):
 	card.move_to(cfc.NMAP["set_aside"])
 
+func move_to_victory(card):
+	card.move_to(cfc.NMAP["victory_display"])
+
 func retrieve_from_side_or_instance(card_id, owner_id):
 	var card = cfc.NMAP["set_aside"].has_card_id(card_id)
 	if card:
@@ -1187,32 +1200,35 @@ func retrieve_from_side_or_instance(card_id, owner_id):
 	cfc.NMAP["set_aside"].add_child(card)
 	card._determine_idle_state()
 	return card
-	
+
+# Adds threat to main schemes in the first villain step	
 func villain_threat():
-	var main_scheme:Card = find_main_scheme()
-	if not main_scheme:
+	var main_schemes:Array = find_main_schemes()
+	if not main_schemes:
 		return CFConst.ReturnCode.FAILED
-		
-	#basic threat computation, check if it's a constant or multiplied by numbers of players	
-	var escalation_threat = main_scheme.properties["escalation_threat"]	
-	var escalation_threat_fixed = main_scheme.properties["escalation_threat_fixed"]
-	if (not escalation_threat_fixed):
-		escalation_threat *= get_team_size()
-	
+
 	var all_schemes:Array = cfc.NMAP.board.get_grid("schemes").get_all_cards()
-	for scheme in all_schemes:
-		#we add all acceleration tokens	
-		escalation_threat += scheme.tokens.get_token_count("acceleration")
+
+	for main_scheme in main_schemes:		
+		#basic threat computation, check if it's a constant or multiplied by numbers of players	
+		var escalation_threat = main_scheme.properties["escalation_threat"]	
+		var escalation_threat_fixed = main_scheme.properties["escalation_threat_fixed"]
+		if (not escalation_threat_fixed):
+			escalation_threat *= get_team_size()
 		
-		#we also add acceleration icons from other schemes
-		escalation_threat += scheme.get_property("scheme_acceleration", 0)
-	if escalation_threat:
-		var villain = gameData.get_villain()
-		var task = ScriptTask.new(villain, {"name": "add_threat", "amount": escalation_threat, "tags": ["villain_step_one_threat"]}, villain, {})
-		task.subjects= [main_scheme]
-		var stackEvent = SimplifiedStackScript.new(task)
-		gameData.theStack.add_script(stackEvent)			
-		#main_scheme.add_threat(escalation_threat)
+		for scheme in all_schemes:
+			#we add all acceleration tokens	
+			escalation_threat += scheme.tokens.get_token_count("acceleration")
+			
+			#we also add acceleration icons from other schemes
+			escalation_threat += scheme.get_property("scheme_acceleration", 0)
+		if escalation_threat:
+			var villain = gameData.get_villain()
+			var task = ScriptTask.new(villain, {"name": "add_threat", "amount": escalation_threat, "tags": ["villain_step_one_threat"]}, villain, {})
+			task.subjects= [main_scheme]
+			var stackEvent = SimplifiedStackScript.new(task)
+			gameData.theStack.add_script(stackEvent)			
+			#main_scheme.add_threat(escalation_threat)
 
 func get_facedown_encounters_pile(target_id = 0) -> Pile :
 	if (!target_id):
@@ -1634,6 +1650,13 @@ func _stack_event_deleted(event):
 		"reveal_encounter":	
 			encounter_revealed()				
 
+
+func set_active_villain(new_villain):
+	cfc.NMAP.board.set_active_villain(new_villain)
+	
+func get_active_villain() -> Card:
+	return get_villain()
+
 func get_villain() -> Card :
 	return cfc.NMAP.board.get_villain_card()
 
@@ -1646,6 +1669,14 @@ func find_main_scheme() :
 		if "main_scheme" == card.properties.get("type_code", "false"):
 			return card
 	return null	
+	
+func find_main_schemes() :
+	var result = []
+	var cards:Array = cfc.NMAP.board.get_grid("schemes").get_all_cards()
+	for card in cards:
+		if "main_scheme" == card.properties.get("type_code", "false"):
+			result.append(card)
+	return result	
 	
 func get_minions_engaged_with_hero(hero_id:int):
 	var results = []
@@ -1821,24 +1852,15 @@ func hero_died(card:Card, script = null):
 		#for now if one hero dies, we lose. Will see what I do about this later
 		defeat()
 
-func move_to_next_villain(current_villain):
-	cfc.add_ongoing_process(self, "move_to_next_villain")
-	var villains = scenario.get_villain_family(current_villain)
-	var new_villain_data = null
-	for i in range (villains.size() - 1): #-1 here because we want to get the +1 if we find it
-		if (villains[i]["Name"] == current_villain.get_property("Name", "")):
-			new_villain_data = villains[i+1]
-	
-	if !new_villain_data :
-		return null
-
+func swap_villain(current_villain, next_villain_key, died = false):
 	#hacky way to move the current card out of the way
 	#while still leaving it on the board
 	if current_villain._placement_slot:
 		current_villain._placement_slot.remove_occupying_card(current_villain)
+
+
+	var new_card = cfc.NMAP.board.load_villain(next_villain_key)
 	
-	var ckey = new_villain_data["_code"] 		
-	var new_card = cfc.NMAP.board.load_villain(ckey)
 	current_villain.copy_tokens_to(new_card, {"exclude":["damage"]})
 	var attachments_to_move = []
 	for attachment in current_villain.attachments:
@@ -1847,11 +1869,51 @@ func move_to_next_villain(current_villain):
 		attachments_to_move.append(attachment)
 	for attachment in attachments_to_move:	
 		attachment.attach_to_host(new_card)
-		
-	set_aside(current_villain)	
+	
+	if died:
+		if current_villain.get_property("victory", 0):
+			move_to_victory(current_villain)
+		else:
+			set_aside(current_villain) #todo remove from game
+	else:	
+		set_aside(current_villain)	
 	var func_return = new_card.execute_scripts(new_card, "reveal")
 	while func_return is GDScriptFunctionState && func_return.is_valid():
-		func_return = func_return.resume()			
+		func_return = func_return.resume()	
+	
+	return new_card
+		
+func move_to_next_villain(current_villain):
+	cfc.add_ongoing_process(self, "move_to_next_villain")
+	var ckey
+	
+	#check to see if we have an override in the rules on how to retrieve the next villain
+	var sceng = theGameObserver._get_script_sceng("override_get_next_villain")
+	if sceng:	
+		var sceng_return = sceng.execute(CFInt.RunType.PRIME_ONLY)
+		#if not sceng.all_tasks_completed:
+		if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
+			yield(sceng_return,"completed")	
+		for potential_villain in sceng.all_subjects_so_far:
+			var type_code = potential_villain.get_property("type_code")
+			if type_code == "villain":
+				ckey = potential_villain.get_property("_code")	
+		if !ckey:
+			return null	
+	else:		
+		var villains = scenario.get_villain_family(current_villain)
+		var new_villain_data = null
+		for i in range (villains.size() - 1): #-1 here because we want to get the +1 if we find it
+			if (villains[i]["Name"] == current_villain.get_property("Name", "")):
+				new_villain_data = villains[i+1]
+		
+		if !new_villain_data :
+			return null
+		
+		ckey = new_villain_data["_code"] 		
+
+	var new_card = swap_villain(current_villain, ckey, true)
+	
 	
 	cfc.remove_ongoing_process(self, "move_to_next_villain")
 	return new_card			

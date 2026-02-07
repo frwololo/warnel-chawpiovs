@@ -100,7 +100,6 @@
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
-		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
 				"herodeckdata": {

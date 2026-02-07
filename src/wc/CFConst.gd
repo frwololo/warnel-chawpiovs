@@ -374,6 +374,14 @@ const GRID_SETUP := {
 		"x" : 1500,
 		"y" : 20,
 	},
+	"victory_display" :{
+		"x" : 1800,
+		"y" : 250,
+		"type" : "pile",
+		"faceup" : true,
+		"scale" : 0.5,
+		"focusable": false
+	},	
 	"set_aside" :{
 		"x" : 3000,
 		"y" : 500,
@@ -381,7 +389,31 @@ const GRID_SETUP := {
 		"faceup" : true,
 		"scale" : 0.5,
 		"focusable": false
-	},		
+	},
+	"tmp_pile1" :{
+		"x" : 3000,
+		"y" : 0,
+		"type" : "pile",
+		"faceup" : true,
+		"scale" : 0.5,
+		"focusable": false
+	},	
+	"tmp_pile2" :{
+		"x" : 3000,
+		"y" : 150,
+		"type" : "pile",
+		"faceup" : true,
+		"scale" : 0.5,
+		"focusable": false
+	},	
+	"tmp_pile3" :{
+		"x" : 3000,
+		"y" : 300,
+		"type" : "pile",
+		"faceup" : true,
+		"scale" : 0.5,
+		"focusable": false
+	},					
 }
 const HERO_GRID_SETUP := {
 	"encounters_facedown" :{
@@ -556,7 +588,10 @@ const AUTO_KEYWORDS := {
 	"cannot_leave_play": "int",
 	"invincible": "int",
 	"cannot_remove_threat": "int",
-	"cannot_ready": "int",				
+	"cannot_ready": "int",
+	"cannot_ready_by_player_card": "int",
+	"cannot_have_attachments": "int",
+	"exclude_from_ally_limit": "int",				
 }
 
 #list of events for which we don't show a GUI announce to the user by default

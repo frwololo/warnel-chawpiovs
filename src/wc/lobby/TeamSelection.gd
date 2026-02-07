@@ -26,6 +26,7 @@ var modularSelect = preload("res://src/wc/lobby/ModularSelect.tscn")
 #
 var team := {} #container for the team information, indexed by slot id (0,1,2,3)
 var _scenario:= ""
+var _scenario_options:= {}
 var selected_modulars:= []
 var _rotation = 0
 var _preview_rotation = 0
@@ -394,7 +395,12 @@ func _create_team_container():
 		heroes_container.add_child(new_team_member)
 		team[i] = HeroDeckData.new()
 
-
+	
+func scenario_select(scenario_id):
+	if (not cfc.is_game_master()):
+		return
+	add_pending_acks()			
+	cfc._rpc(self, "client_scenario_select", scenario_id)
 
 remotesync func client_scenario_select(scenario_id):
 	_scenario = scenario_id
@@ -417,15 +423,70 @@ remotesync func client_scenario_select(scenario_id):
 		var scenario_title = get_node("%ScenarioTitle")
 		scenario_title.text = scenario_scene.get_text()
 	
-
+		load_scenario_options(scenario_id)
 		
 	ack()	
+
+
+#		"options": [
+#			{
+#				"name": "tower_initial_damage",
+#				"display_name": "Tower start DMG",
+#				"type": "option_button",
+#				"options": [
+#					{
+#						"display_name": "None",
+#						"value": 0
+#					},					
+#					{
+#						"display_name": "Standard (1)",
+#						"value": 1
+#					},
+#					{
+#						"display_name": "Expert (2)",
+#						"value": 3
+#					},
+#					{
+#						"display_name": "Heroic (3)",
+#						"value": 2
+#					},
+#
+#				]
+#			}
+#		],
+# Loads options for a given scenario and displays them for user to choose
+func load_scenario_options(_scenario_id):
+	var container = get_node("%ScenarioOptions")
 	
-func scenario_select(scenario_id):
-	if (not cfc.is_game_master()):
-		return
-	add_pending_acks()			
-	cfc._rpc(self, "client_scenario_select", scenario_id)
+	#cleanup previous values
+	_scenario_options = {}
+	for child in container.get_children():
+		container.remove_child(child)
+		
+	for option_data in ScenarioDeckData.get_scenario_options(_scenario_id):
+		#integrity check
+		if !option_data.has("name"):
+			continue
+		if !option_data.has("options"):
+			continue
+					
+		var h_container := HBoxContainer.new()
+		
+		var label:= Label.new()
+		label.text = option_data.get("display_name",  option_data.get("name", "error") )
+		
+		var option_menu:= OptionButton.new()
+		var index = 0
+		for option_item in option_data["options"]:
+			option_menu.add_item(option_item.get("display_name", "error"))
+			option_menu.set_item_metadata(index, option_item["value"])
+			index+=1
+		
+		h_container.add_child(label)
+		h_container.add_child(option_menu)
+		_scenario_options[option_data["name"]] = option_menu
+		container.add_child(h_container)
+	
 
 puppet func expert_mode_toggle (button_pressed):
 	ack()
@@ -653,12 +714,17 @@ func _launch_server_game():
 		var hero_data = team[key]
 		serialized_team[key] = hero_data.savestate_to_json()
 		save_last_used_deck(hero_data.get_hero_id(), hero_data.deck_id)
-		
+	
+	var scenario_options = {}
+	for key in _scenario_options:
+		var option_button:OptionButton =  _scenario_options[key]
+		scenario_options[key] = option_button.get_selected_metadata()
 	launch_data = {
 		"team": serialized_team,
 		"scheme_id" : _scenario, 
 		"modular_encounters":get_selected_modulars(),
-		"expert_mode": is_expert_mode()
+		"expert_mode": is_expert_mode(),
+		"scenario_options": scenario_options,
 	}
 	cfc._rpc(self, "get_launch_data_from_server", launch_data)	
 	#_launch_game()

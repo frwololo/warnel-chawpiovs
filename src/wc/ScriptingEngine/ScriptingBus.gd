@@ -29,6 +29,10 @@ signal step_started(card, details)
 signal step_about_to_end(card, details)
 # warning-ignore:unused_signal
 signal step_ended(card, details)
+# warning-ignore:unused_signal 
+signal round_ended()
+# warning-ignore:unused_signal
+signal phase_ended(card, details)
 
 #GUI and game Interface signals
 # warning-ignore:unused_signal
@@ -45,6 +49,8 @@ signal all_clients_game_loaded(details) #status Dict for all players
 
 # warning-ignore:unused_signal
 signal manapool_modified(details)
+# warning-ignore:unused_signal
+signal paid_as_resource(card, details)
 
 # warning-ignore:unused_signal
 signal enemy_initiates_attack(card,details)
@@ -69,10 +75,6 @@ signal last_threat_removed(card, details)
 signal thwarted (card,details)
 # warning-ignore:unused_signal
 signal character_dies(card, details)
-# warning-ignore:unused_signal 
-signal round_ended()
-# warning-ignore:unused_signal
-signal phase_ended(details)
 # warning-ignore:unused_signal
 signal stack_event_deleted(event)
 
@@ -113,6 +115,7 @@ signal card_defeated(card,details)
 
 # warning-ignore:unused_signal
 signal identity_changed_form(card, details)
+
 
 # warning-ignore:unused_signal
 signal attack_happened(card, details)

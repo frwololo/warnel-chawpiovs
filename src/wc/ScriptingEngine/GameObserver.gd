@@ -26,6 +26,17 @@ func setup(scenario:ScenarioDeckData):
 		for extra_rule in extra_rules:
 			add_script(null, extra_rule)
 
+func execute_scripts(trigger):
+	for child in get_children():
+		child.execute_scripts(child, trigger)
+
+func _get_script_sceng(trigger, script = null, run_bg_cost_check = true):
+	for child in get_children():
+		var sceng = child._get_script_sceng(trigger, script, run_bg_cost_check)
+		if sceng:
+			return sceng
+	return null	
+
 #cleans up everything during reset phase (new game, etc...)
 func _remove_all_children():
 	for removal_condition in removal_conditions:

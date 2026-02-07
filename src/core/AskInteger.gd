@@ -1,4 +1,3 @@
-# Pops up a dialogie for the player to enter an integer.
 # Typically called by a card script that needs that player
 # to provide a value
 extends AcceptDialog

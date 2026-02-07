@@ -19,6 +19,9 @@ func set_values(_parent_script, _script: Dictionary):
 	if parent_script:
 		owner_hero_id = WCScriptingEngine.get_hero_id_from_script(parent_script)
 	init_owner_hero_id(owner_hero_id )
+	
+	#more required data to pass script execution
+	properties["type_code"] = "game_observer_item"
 		
 func get_parent_script():
 	return parent_script

@@ -16,6 +16,7 @@ var _controller_hero_id  := -1 setget set_controller_hero_id, get_controller_her
 var _check_play_costs_cache: Dictionary = {}
 var _cache_resource_value: = {}
 var _cache_refresh_needed:= false
+var _cached_all_traits = null
 
 var _on_ready_load_from_json:Dictionary = {}
 
@@ -23,6 +24,7 @@ var _on_ready_load_from_json:Dictionary = {}
 var _can_change_form := true
 var _is_exhausted:= false
 var _is_boost:=false
+var _is_inactive_attachment:= false
 
 #an array of ManaCost variables representing everything that's been used to pay for this card
 var _last_paid_with := []
@@ -106,6 +108,16 @@ func remove_extra_script(script_uid):
 	check_ghost_card()
 	return extra_script_uid
 
+func set_is_inactive_attachment(value:=true):
+	self._is_inactive_attachment = value
+
+	#removing the card from this group will prevent
+	#triggering alterants
+	if value and self.is_in_group("cards"):
+		self.remove_from_group("cards") 
+	if !value and !self.is_in_group("cards"):
+		self.add_to_group("cards")
+
 func set_is_boost(value:=true):
 	self._is_boost = value
 	
@@ -118,6 +130,9 @@ func set_is_boost(value:=true):
 	
 func is_boost():
 	return self._is_boost
+
+func is_inactive_attachment():
+	return self._is_inactive_attachment
 
 #what to do when I'm an attachement and my host is removed from the table
 func host_is_gone(former_host):
@@ -155,6 +170,17 @@ func refresh_cache(forced=false):
 	_state_exec_cache = ""
 	side_icons.update_state(true)
 	_cache_refresh_needed = false
+	_cached_all_traits = null
+
+func get_all_traits() -> Dictionary:
+	if _cached_all_traits == null:
+		for trait in cfc.all_traits:
+			var trait_property = "trait_" + trait
+			if get_property(trait_property, 0, true):
+				_cached_all_traits[trait] = true
+	
+	return _cached_all_traits
+	
 
 func is_character() -> bool:
 	var type_code = get_property("type_code", "")
@@ -185,9 +211,16 @@ func check_death(script = null) -> bool:
 			return false
 		if !gameData.theStack.is_idle():
 			return false
+	
+	if get_property("cannot_leave_play", 0, true):
+		return false
 		
 	var total_damage:int =  tokens.get_token_count("damage")
 	var health = get_property("health", 0)
+	
+	#things that don't have health cannot die
+	if !health:
+		return false
 
 	if total_damage < health:
 		return false
@@ -807,6 +840,9 @@ func attach_to_host(
 			cfc.flush_cache()
 			set_is_boost(false)
 
+	if "as_inactive_attachment" in tags:
+		set_is_inactive_attachment(true)
+
 	.attach_to_host(host, is_following_previous_host, tags)
 	host.reorganize_attachments_focus_mode()
 	if "as_boost" in tags:			
@@ -847,6 +883,7 @@ func common_post_move_scripts(new_host: String, old_host: String, _move_tags: Ar
 			#if the card moves to anything else than the board
 			#it loses its boost status
 			set_is_boost(false) 
+			set_is_inactive_attachment(false)
 
 	set_is_viewed(false)
 	
@@ -1127,6 +1164,9 @@ func execute_scripts(
 	var exec_config = trigger_details.get("exec_config", {})
 	var state_scripts_dict = trigger_details.get("state_scripts_dict", {})
 	if state_scripts_dict:
+		#erase the variables to avoid re_running them
+		trigger_details.erase("exec_config")
+		trigger_details.erase("state_scripts_dict")
 		return choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigger_details, run_type, exec_config)
 
 	#last minute swap for hero vs alter ego reveals
@@ -1345,6 +1385,7 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 		if selected_key:
 			state_scripts = state_scripts[selected_key]
 			action_name = selected_key
+			trigger_details["action_name_id"] = action_name.to_lower().replace(" ", "_")
 		else: 
 			state_scripts = []
 
@@ -1636,7 +1677,7 @@ func get_current_threat():
 func check_scheme_defeat(script):
 	if get_current_threat() <= 0:
 	#card.die(script)
-		if get_property("cannot_leave_play", 0):
+		if get_property("cannot_leave_play", 0, true):
 			return
 			
 		var card_dies_definition = {
@@ -1691,6 +1732,7 @@ func remove_threat(modification: int, script = null) -> int:
 func discard():
 	#cleanup some variables
 	set_is_boost(false)
+	set_is_inactive_attachment(false)
 	
 	#move to correct pile
 	var hero_owner_id = get_owner_hero_id()
@@ -1732,6 +1774,21 @@ func can_defend(hero_id = 0):
 	
 	return true
 
+func post_death_move():
+	var card = self
+	var type = card.get_property("type_code", "")
+	var owner_hero_id = card.get_owner_hero_id()
+	
+	if card.get_property("victory", 0):
+		card.move_to(cfc.NMAP["victory_display"])
+	else:
+		if owner_hero_id > 0:
+			card.move_to(cfc.NMAP["discard" + str(owner_hero_id)])
+		else:
+			if type in ["ally"]:
+				card.move_to(cfc.NMAP["discard" + str(card.get_controller_hero_id())])
+			else:
+				card.move_to(cfc.NMAP["discard_villain"])	
 
 func die(script):
 	var type_code = properties.get("type_code", "")
@@ -1979,10 +2036,95 @@ func common_pre_run(sceng) -> void:
 						if found_ally:
 							script.script_definition[SP.KEY_SELECTION_TYPE] = "equal"
 							script.script_definition[SP.KEY_SELECTION_OPTIONAL] = false
-				new_queue.append(script)							
+				new_queue.append(script)
+			"change_form":
+				if script_definition.has("form_family") or script_definition.has("form_name"):
+					var new_script = change_form_script_replacement(script_definition, trigger_details)
+					if (new_script) :
+						script.script_definition = new_script
+						script.script_name = script.get_property("name") #TODO something cleaner? Maybe part of the script itself?
+						new_queue.append(script)	
+				else:
+					new_queue.append(task)										
 			_:
 				new_queue.append(task)
 	sceng.scripts_queue = new_queue	
+
+func change_form_script_replacement(script_definition: Dictionary, trigger_details) -> Dictionary:	
+	var owner_hero_id = trigger_details.get("override_controller_id", self.get_owner_hero_id())
+
+	var family = script_definition.get("form_family", "")
+	var new_form = script_definition.get("form_name", "")
+	if !family and new_form:
+		var new_form_card = cfc.NMAP.board.find_card_by_name(new_form, false, true)
+		family = new_form_card.get_property("form_family", "")
+			
+	if !family:
+		return {}
+	
+	#get list of cards we can change to
+	var available_forms = []
+	for card in cfc.NMAP["set_aside"].get_all_cards():
+		var card_family = card.get_property("form_family", "")
+		if  card_family == family:
+			available_forms.append(card)	
+	
+	#if we can't switch to anything, we fail
+	if !available_forms:
+		return {}
+	
+	#get current form if any
+	var current_form = cfc.NMAP.board.find_card_by_property("form_family", family, owner_hero_id)
+			
+
+	var change_form_script = []
+	#a new form is provided, we want to change to that
+	if new_form:
+		# if we want to switch to a form that isn't available
+		# (possibly because we're already in that form), we fail
+		var new_form_available = false
+		for card in available_forms:
+			if card.canonical_name.to_lower() == new_form.to_lower():
+				new_form_available = true
+				break
+		if !new_form_available:
+			return {}
+		
+		#new form is available, we return the script
+		change_form_script = {
+			"name": "change_secondary_form",
+			"src_container": "set_aside",
+			"subject": "tutor",
+			"subject_count": 1,
+			"filter_state_tutor": [
+				{
+					"filter_properties": {
+						"Name": new_form
+					}
+				},
+			]
+		}
+			
+	#no new form is provided, leave user the choice
+	else:
+		change_form_script = {
+			"name": "change_secondary_form",
+			"src_container": "set_aside",
+			"subject": "tutor",
+			"subject_count": "all",
+			"selection_count": 1,
+			"selection_type": "equal",
+			"needs_selection": true,
+			"filter_state_tutor": [
+				{
+					"filter_properties": {
+						"form_family": family
+					}
+				},
+			]
+		}
+
+	return change_form_script
 
 #TODO cleanup, probably doesn't need to be a replacement
 func indirect_damage_replacement(script_definition: Dictionary, trigger_details) -> Dictionary:	
@@ -2091,6 +2233,20 @@ func to_color():
 #
 #Marvel Champions Specific functionality
 #
+
+func get_associated_villain():
+	var sceng = _get_script_sceng("associated_villain")
+	if sceng:		
+		var sceng_return = sceng.execute(CFInt.RunType.PRIME_ONLY)
+		#if not sceng.all_tasks_completed:
+		if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
+			yield(sceng_return,"completed")	
+		for potential_villain in sceng.all_subjects_so_far:
+			var type_code = potential_villain.get_property("type_code")
+			if type_code == "villain":
+				return potential_villain
+		
+	return gameData.get_villain()
 
 #easy access functions for tokens that are either 1 or 0
 func is_token_set(token_name):
@@ -2250,8 +2406,12 @@ func copy_modifiers_to(to_card:WCCard):
 	var modifiers = export_modifiers()
 	to_card.import_modifiers(modifiers)
 
-func draw_boost_card():
-	var villain_deck:Pile = cfc.NMAP["deck_villain"]	
+func draw_boost_card(src_container = ""):
+	if !src_container:
+		src_container = "deck_villain"
+	var villain_deck:Pile = cfc.NMAP.get(src_container, null)
+	if !villain_deck:
+		return	
 	var boost_card:Card = villain_deck.get_top_card()
 	if boost_card:
 #		boost_card.set_is_boost(true)
@@ -2270,6 +2430,9 @@ func can_execute_scripts():
 	#checks for cases where we don't want to execute scripts on this card	
 	if self.is_boost():
 		return ['boost']
+	#if it's tucked under another card in most cases we don't want to execute, but there are execptions	
+	if self.is_inactive_attachment():
+		return false
 	return true
 
 func get_boost_cards(flip_status:int = CFConst.FLIP_STATUS.BOTH):
@@ -2488,6 +2651,21 @@ func get_subject_int_printed_property(params, script:ScriptObject = null) -> int
 		
 	var card_data = cfc.get_card_by_id(id)
 	return int(card_data.get(property, 0))
+
+func get_scenario_option_value(params, script:ScriptObject = null) -> int:
+	if !params.has("option_name"):
+		return 0
+	var result = gameData.scenario.get_scenario_option(params["option_name"])
+	return result
+
+func count_cards(params, script:ScriptObject = null) -> int:
+	var subjects = get_param_subjects(params, script)
+	
+	if !subjects:
+		return 0
+	
+	return subjects.size()
+
 
 func count_tokens(params, script:ScriptObject = null) -> int:
 	var subjects = [self]
@@ -2790,13 +2968,17 @@ func pay_as_resource(script):
 	if (get_state_exec()) == "hand":
 		self.discard()
 	cfc.remove_ongoing_process(self, "pay_as_resource")
+	scripting_bus.emit_signal_on_stack("paid_as_resource", self, script.trigger_details)
 	return result_mana
 
-func _get_resource_sceng(script):
+func _get_resource_sceng(script = null):	
+	return _get_script_sceng( "resource", script)
+
+func _get_script_sceng(trigger, script = null, run_bg_cost_check = true):
 	#var my_state = _state if _state else get_state_exec()
-	var trigger_card = script.owner
+	var trigger_card = script.owner if script else self
 	var trigger_details = {}
-	var card_scripts = retrieve_filtered_scripts(trigger_card, "resource", trigger_details)	
+	var card_scripts = retrieve_filtered_scripts(trigger_card, trigger, trigger_details)	
 	var state_scripts = get_state_scripts(card_scripts, trigger_card, trigger_details)
 	
 	if !state_scripts:
@@ -2808,8 +2990,14 @@ func _get_resource_sceng(script):
 			trigger_card,
 			trigger_details)	
 	
+	if run_bg_cost_check:		
+		common_pre_run(sceng)
+		
+		var func_return = sceng.execute(CFInt.RunType.BACKGROUND_COST_CHECK)
+		while func_return is GDScriptFunctionState && func_return.is_valid():
+			func_return = func_return.resume()			
+	
 	return sceng
-
 
 #computes how much resources this card would generate as part of a payment
 #this uses its "resource" script in priority (for card that have either special resource abilities,
@@ -2827,16 +3015,10 @@ func get_resource_value_as_mana(script):
 	var sceng = _get_resource_sceng(script)
 	var result_mana:ManaCost = ManaCost.new()
 	
-	if sceng:
-		common_pre_run(sceng)
-		
-		var func_return = sceng.execute(CFInt.RunType.BACKGROUND_COST_CHECK)
-		while func_return is GDScriptFunctionState && func_return.is_valid():
-			func_return = func_return.resume()
-		
+	if sceng:		
 		if (sceng.can_all_costs_be_paid):
 			# run in precompute mode to try and calculate how much resources this would give us
-			func_return = sceng.execute(CFInt.RunType.PRECOMPUTE)
+			var func_return = sceng.execute(CFInt.RunType.PRECOMPUTE)
 			while func_return is GDScriptFunctionState && func_return.is_valid():
 				func_return = func_return.resume()
 				

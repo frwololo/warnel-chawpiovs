@@ -12,6 +12,7 @@ onready var villain := $VillainZone
 
 onready var _server_activity = get_node("%ServerActivity")
 var board_organizers: Array = []
+var _has_victory_cards = false
 
 # heroZones is 1 indexed (index is hero_id)
 var heroZones: Dictionary = {}
@@ -68,6 +69,7 @@ func _ready() -> void:
 
 	$Debug.pressed = cfc._debug
 	
+	_has_victory_cards = false
 	grid_setup()
 	ui_setup()
 	cfc._rpc(self,"ready_for_step", LOADING_STEPS.RNG_INIT)	
@@ -432,12 +434,17 @@ func post_cards_moved_load():
 		# we want to avoid running setup 
 		# for scheme and heroes, because we run them already in some other part of the code
 		var type_code = card.get_property("type_code")
+		var has_victory = card.get_property("victory", 0)
+		if has_victory:
+			_has_victory_cards = true
 		if !type_code in ["side_scheme", "main_scheme", "hero", "alter_ego"]: 
 			func_return = card.execute_scripts_no_stack(card, "setup")
 			if func_return is GDScriptFunctionState && func_return.is_valid():
 				yield(func_return, "completed")		
 
-
+	if !_has_victory_cards:
+		cfc.NMAP["victory_display"].visible = false
+		
 	#Save gamedata for restart
 	gameData.save_gamedata_to_file("user://Saves/_restart.json")	
 
@@ -446,6 +453,8 @@ func post_cards_moved_load():
 func get_villain_card():
 	return villain.get_villain()
 
+func set_active_villain(card):
+	villain.set_active_villain(card)
 
 func load_villain(card_id, call_preloaded = {"shuffle" : false}):
 	return villain.load_villain(card_id, call_preloaded)
@@ -458,6 +467,12 @@ func load_heroes():
 	for i in range (hero_count): 
 		heroZones[i+1].load_starting_identity()
 
+func count_amplify_icons():
+	var total_amplify = 0
+	for card in get_all_cards():
+		total_amplify += card.get_property("scheme_amplify", 0, true)
+	
+	return total_amplify	
 
 func hide_all_hands():
 	#exchange hands
@@ -699,16 +714,24 @@ func load_cards() -> void:
 	for i in range(gameData.get_team_size()):
 		var hero_id = i+1
 		var hero_deck_data: HeroDeckData = gameData.get_team_member(hero_id)["hero_data"] #TODO actually load my player's stuff
-		var card_ids = hero_deck_data.get_deck_cards()
+		var card_datas = hero_deck_data.get_deck_cards()
 		
-		var card_data:Array = []
-		for card_id in card_ids:
-			#cards.append(ckey)
-			card_data.append({
-				"card" : card_id,
-				"owner_hero_id": hero_id
-			})
-		load_cards_to_pile(card_data, "deck" + str(hero_id))
+		var card_info:Array = []
+		var set_aside_info: Array = []
+		for card_data in card_datas:
+			var card_id = card_data["code"]
+			if card_data.get("permanent", false):
+				set_aside_info.append({
+					"card" : card_id,
+					"owner_hero_id": hero_id
+				})					
+			else:	
+				card_info.append({
+					"card" : card_id,
+					"owner_hero_id": hero_id
+				})			
+		load_cards_to_pile(card_info, "deck" + str(hero_id))
+		load_cards_to_pile(set_aside_info, "set_aside")
 
 
 
@@ -795,7 +818,7 @@ func load_cards_to_pile(card_data:Array, pile_name):
 
 		#dirty way to set some important variables
 		if (pile_name =="villain"):
-			villain.villain = card
+			villain.set_active_villain(card)
 		if (pile_name.begins_with("identity")):
 			heroZones[pile_owner].set_identity_card(card)
 
@@ -1103,7 +1126,7 @@ func show_options_menu():
 
 
 #card_id_or_name can be an id, a shortname, or a name
-func find_card_by_name(card_id_or_name, include_back:= false):
+func find_card_by_name(card_id_or_name, include_back:= false, include_piles := false):
 	var card_name = cfc.get_card_name_by_id(card_id_or_name)
 	if !card_name:
 		card_name = card_id_or_name.to_lower()
@@ -1112,7 +1135,7 @@ func find_card_by_name(card_id_or_name, include_back:= false):
 		card_name = card_id_or_name
 	card_name = card_name.to_lower()
 		
-	for card in get_all_cards():
+	for card in get_all_cards(include_piles):
 		if (card.canonical_name.to_lower() == card_name):
 			return card
 		if (include_back):
@@ -1123,6 +1146,16 @@ func find_card_by_name(card_id_or_name, include_back:= false):
 					return card
 	return null
 
+func find_card_by_property(property_name, property_value, controller_hero_id = 0):		
+	for card in get_all_cards():
+		if controller_hero_id:
+			var controller_id = card.get_controller_hero_id()
+			if controller_id != controller_hero_id:
+				continue
+		var property = card.get_property(property_name, null)
+		if property and property == property_value:
+			return card
+	return null
 
 
 

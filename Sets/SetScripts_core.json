@@ -3600,8 +3600,7 @@
 		}
 	},
 	"Nick Fury": {
-		"card_moved_to_board": {
-			"trigger": "self",
+		"self_moved_to_board": {
 			"board": {
 				"_rules": {
 					"forced": true
@@ -4334,6 +4333,9 @@
 	"She-Hulk": {
 		"response": {
 			"event_name": "identity_changed_form",
+			"event_filters": {
+				"after": "hero"
+			},			
 			"trigger": "self",
 			"is_optional_board": true,
 			"board": [

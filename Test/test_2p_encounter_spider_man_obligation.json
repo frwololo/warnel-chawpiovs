@@ -12,7 +12,7 @@
 				"herodeckdata": {
 					"hero": "Captain Marvel"
 				}
-			}			
+			}
 		],
 		"board": {
 			"villain": [
@@ -20,17 +20,16 @@
 					"card": "01094"
 				}
 			],
-			"deck_villain":[
+			"deck_villain": [
 				{
 					"card": "Hydra Mercenary"
-				},				
+				},
 				{
 					"card": "Eviction Notice"
 				},
 				{
 					"card": "Hydra Mercenary"
-				},					
-			
+				}
 			],
 			"schemes": [
 				{
@@ -67,16 +66,20 @@
 				{
 					"card": "Hawkeye - Clint Barton"
 				}
-			]			
+			]
 		}
 	},
 	"actions": [
 		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
 			"type": "choose",
 			"hero": 1,
-			"value": "Flip then Remove from the game",
-		}		
-	] ,
+			"value": "Flip then Remove from the game"
+		}
+	],
 	"end": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -89,7 +92,7 @@
 				"herodeckdata": {
 					"hero": "Captain Marvel"
 				}
-			}			
+			}
 		],
 		"board": {
 			"villain": [
@@ -97,15 +100,15 @@
 					"card": "01094"
 				}
 			],
-			"deck_villain":[
+			"deck_villain": [
 				{
 					"card": "Hydra Mercenary"
-				}							
+				}
 			],
 			"schemes": [
 				{
 					"card": "01097b"
-				}			
+				}
 			],
 			"deck1": [
 				{
@@ -120,7 +123,7 @@
 			"hand1": [
 				{
 					"card": "Mockingbird"
-				},				
+				}
 			],
 			"identity2": [
 				{
@@ -130,13 +133,13 @@
 			"enemies1": [
 				{
 					"card": "Hydra Mercenary"
-				}			
+				}
 			],
 			"hand2": [
 				{
 					"card": "Energy Absorption"
 				}
-			]			
+			]
 		}
 	}
 }

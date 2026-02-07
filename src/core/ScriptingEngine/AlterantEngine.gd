@@ -9,7 +9,7 @@
 class_name AlterantEngine
 extends Reference
 
-const _ASK_INTEGER_SCENE_FILE = CFConst.PATH_CORE + "AskInteger.tscn"
+const _ASK_INTEGER_SCENE_FILE = CFConst.PATH_CUSTOM + "AskInteger.tscn"
 const _ASK_INTEGER_SCENE = preload(_ASK_INTEGER_SCENE_FILE)
 
 # Emitted when all alterations have been run succesfully

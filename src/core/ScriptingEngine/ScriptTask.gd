@@ -7,6 +7,10 @@ class_name ScriptTask
 extends ScriptObject
 
 
+const _ASK_INTEGER_SCENE_FILE = CFConst.PATH_CUSTOM + "AskInteger.tscn"
+const _ASK_INTEGER_SCENE = preload(_ASK_INTEGER_SCENE_FILE)
+
+
 # If true if this task has been confirmed to run by the player
 # Only relevant for optional tasks (see [SP].KEY_IS_OPTIONAL)
 var is_accepted := true
@@ -39,14 +43,18 @@ func _init(owner,
 
 #Prime is the act of choosing subjects and valid targets in preparation for the script
 func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int, _all_prev_subjects: Array) -> void:
-	# We store the prev_subjects we sent to this task in case we need to
-	# refer to them later
+
+	#special case for ask_integer which is looking for an int, not subjects
+	if self.script_name == "ask_integer":
+		return prime_ask_integer(run_type)
 
 	cfc.add_ongoing_process(self)
-
+	
 	var only_cost_check = ((run_type == CFInt.RunType.COST_CHECK) or
 		 (run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
-	
+
+	# We store the prev_subjects we sent to this task in case we need to
+	# refer to them later	
 	set_prev_subjects(_prev_subjects)
 	all_prev_subjects = _all_prev_subjects
 	if ((!only_cost_check
@@ -81,11 +89,47 @@ func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int, _all_pre
 	#print_debug(str(subjects), str(cost_dry_run))
 	# We emit a signal when done so that our ScriptingEngine
 	# knows we're ready to continue
-	is_primed = true
-	script_definition = cfc.ov_utils.parse_post_prime_replacements(self)	
-	cfc.remove_ongoing_process(self)
-	emit_signal("primed")
+	_set_primed()
+	cfc.remove_ongoing_process(self)	
 #	print_debug("skipped: " + str(is_skipped) +  " valid: " + str(is_valid))
+
+func prime_ask_integer(run_type: int) -> int:
+	var prepayment = get_property("network_prepaid", null)
+	if typeof(prepayment) == TYPE_ARRAY:
+		var number = prepayment[0]
+		if typeof(number) == TYPE_INT:
+			subjects = [number]
+			_set_primed()
+			return number
+			
+			
+	cfc.add_ongoing_process(self)
+	var integer_dialog = _ASK_INTEGER_SCENE.instance()
+	cfc.add_modal_menu(integer_dialog)
+	# AskInteger tasks have to always provide a min and max value
+	var minimum = self.get_property(SP.KEY_ASK_INTEGER_MIN)
+	var maximum = self.get_property(SP.KEY_ASK_INTEGER_MAX)
+	integer_dialog.prep(self.owner.canonical_name, minimum, maximum)
+	# We have to wait until the player has finished selecting an option
+	
+	yield(integer_dialog,"popup_hide")
+	var number = integer_dialog.number
+	set_stored_integer(number)
+	# Garbage cleanup
+	cfc.remove_modal_menu(integer_dialog)
+	integer_dialog.queue_free()
+	cfc.remove_ongoing_process(self)
+	#this is a hack to store the value in "subjects"
+	subjects = [number]
+	_set_primed()
+	return number
+
+
+
+func _set_primed():
+	is_primed = true
+	script_definition = cfc.ov_utils.parse_post_prime_replacements(self)		
+	emit_signal("primed")
 
 func check_confirm() -> bool:
 	var owner_name = ''

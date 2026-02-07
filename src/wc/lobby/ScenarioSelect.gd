@@ -6,6 +6,7 @@ onready var scenario_name: Label = get_node("%ScenarioName")
 #onready var playerName := $PlayerName
 #onready var kick := $Kick
 var scenario_id
+var _options:= []
 var villain_id
 var _rotation = 0
 
@@ -99,12 +100,14 @@ func grab_focus():
 func load_scenario(_scenario_id) -> bool:
 	scenario_id = _scenario_id
 	var villain = ScenarioDeckData.get_first_villain_from_scheme(scenario_id)
-	if (villain):
-		villain_id = villain["_code"]
-		return true
+	if (!villain):
+		cfc.LOG("no villain defined for scenario id:" + _scenario_id)
+		return false
 	
-	cfc.LOG("no villain defined for scenario id:" + _scenario_id)
-	return false
+	villain_id = villain["_code"]
+		
+	return true
+	
 
 func _on_ScenarioSelect_gui_input(event):
 	if (not cfc.is_game_master()):

@@ -68,6 +68,9 @@ signal target_selected(owner, details)
 # warning-ignore:unused_signal
 signal pile_emptied(card, details)
 
+# warning-ignore:unused_signal
+signal script_executed(card, details)
+
 # This signal is not triggerring init_scripting_event() 
 # It is used to trigger the execute_scripts functions on the various scriptable objects
 signal scripting_event_about_to_trigger(trigger_card, trigger, details)
@@ -117,7 +120,8 @@ func init_scripting_event(trigger_object: Card = null, details: Dictionary = {},
 		details.erase("network_prepaid")
 
 	#fire a first "pre" event for engine abilities that need to trigger before cards
-	emit_signal("scripting_event_about_to_trigger", trigger_object, trigger, details)
+	var pre_details = details.duplicate(true)
+	emit_signal("scripting_event_about_to_trigger", trigger_object, trigger, pre_details)
 	
 	#then fire the actual event
 	emit_signal("scripting_event_triggered", trigger_object, trigger, details)	

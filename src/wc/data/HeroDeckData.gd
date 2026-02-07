@@ -35,7 +35,8 @@ static func _get_deck_cards(_deck_id):
 	for card_id in slots:
 		var quantity = slots[card_id]
 		for _i in range (quantity):
-			result.append(card_id)
+			var card_data = cfc.get_card_by_id(card_id)
+			result.append(card_data)
 	return result	
 	
 func get_deck_cards(): #todo cache?

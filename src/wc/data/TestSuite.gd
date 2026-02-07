@@ -165,6 +165,7 @@ func reset():
 	finished = false
 
 	gameData.theAnnouncer.skip_announcer()
+	Engine.set_target_fps(0)
 	GameRecorder.deactivate()
 	gameData.disable_desync_recovery()
 		
@@ -1067,14 +1068,16 @@ remotesync func set_card_speeds():
 		return
 	var cards = get_tree().get_nodes_in_group("cards")
 	for card in cards:
-		card.in_hand_tween_duration = 0.01
-		card.reorganization_tween_duration = 0.01
-		card.focus_tween_duration = 0.01
-		card.to_container_tween_duration = 0.01
-		card.pushed_aside_tween_duration = 0.01
-		card.to_board_tween_duration = 0.01
-		card.on_board_tween_duration = 0.01
-		card.dragged_tween_duration = 0.01
+		card.in_hand_tween_duration = 0.001
+		card.reorganization_tween_duration = 0.001
+		card.focus_tween_duration = 0.001
+		card.to_container_tween_duration = 0.001
+		card.pushed_aside_tween_duration = 0.001
+		card.to_board_tween_duration = 0.001
+		card.on_board_tween_duration = 0.001
+		card.dragged_tween_duration = 0.001
+		card.rotation_tween_duration = 0.001
+		card.position_tween_duration = 0.001
 
 func all_clients_game_loaded(details = {}):
 	#increase speed

@@ -124,8 +124,9 @@ func parse_post_prime_replacements(script_task:ScriptObject) -> Dictionary:
 		subjects = script_task.owner.parent_script.subjects
 	var subject_controller_hero = 0
 	if subjects:
-		subject_controller_hero = subjects[0].get_controller_hero_id()
-		wip_definitions = WCUtils.search_and_replace(wip_definitions, "{__subject_hero_id__}", str(subject_controller_hero), false)	
+		if typeof(subjects[0]) != TYPE_INT: #AskInteger passes an int, not a card, we need to skip that case
+			subject_controller_hero = subjects[0].get_controller_hero_id()
+			wip_definitions = WCUtils.search_and_replace(wip_definitions, "{__subject_hero_id__}", str(subject_controller_hero), false)	
 			
 	return wip_definitions
 
@@ -147,6 +148,14 @@ static func func_name_run(object, func_name, func_params, script = null):
 	var suffix = func_params.get("suffix", "")
 	if typeof(result) in [TYPE_STRING] and prefix or suffix:
 		result = prefix + result + suffix	
+	
+	if typeof(result) == TYPE_INT:
+		var max_value =  func_params.get("max", null)
+		if max_value != null:
+			result = min(result, max_value)
+		var min_value =  func_params.get("min", null)
+		if min_value != null:
+			result = max(result, min_value)		
 		
 	return result
 	

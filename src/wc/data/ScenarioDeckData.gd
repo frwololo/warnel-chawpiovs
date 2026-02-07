@@ -12,6 +12,7 @@ var schemes:Array
 var modular_sets:=[]
 var is_expert_mode:= false
 var encounter_deck:Array
+var scenario_options:= {}
 var extra_decks: = []
 var grid_setup:= {}
 var scenario_data: = {}
@@ -21,19 +22,25 @@ func _init():
 	pass
 
 
-static func get_recommended_modular_encounters(scheme_id):
+static func get_array_data(scheme_id, key):
 	var scheme_primitive = cfc.primitives.get(scheme_id, {})
 	if !scheme_primitive:
 		return []
 	
-	var modular_defaults: Array = scheme_primitive.get("modular_default", [])
-	if modular_defaults:
-		return modular_defaults
+	var data: Array = scheme_primitive.get(key, [])
+	if typeof(data) == TYPE_ARRAY:
+		return data
 	return []
+	
+static func get_recommended_modular_encounters(scheme_id):
+	return get_array_data(scheme_id,"modular_default")
+
+static func get_scenario_options(scheme_id):
+	return get_array_data(scheme_id,"options")		
 
 static func get_first_villain_from_scheme(scheme_id, expert_mode:= false):
 	var villains = get_villains_from_scheme(scheme_id, expert_mode)
-	if !villains:
+	if !villains or !villains[0]:
 		return null
 	return villains[0][0]
 	
@@ -77,8 +84,14 @@ static func get_villain_id_groups_from_scheme(scheme_id, expert_mode:= false):
 		var result = []
 		for villain_string in villain_strings:
 				var card_id = cfc.get_corrected_card_id(villain_string)
+				if !card_id:
+					#attempt to fetch the card another way
+					var card_info = cfc.retrieve_card_info_from_fuzzy_name(villain_string)
+					if card_info and card_info.has("code"):
+						card_id = card_info["code"]
 				if card_id:
 					result.append(card_id)
+					
 		results.append(result)
 
 	return results	
@@ -153,6 +166,7 @@ func load_from_dict(_scenario:Dictionary):
 	
 	is_expert_mode =  _scenario.get("expert_mode", false)
 	modular_sets = _scenario.get("modular_encounters", [])
+	scenario_options = _scenario.get("scenario_options", {})
 	
 	#Preload
 	_villains = []
@@ -163,6 +177,10 @@ func load_from_dict(_scenario:Dictionary):
 	get_encounter_deck()
 	_load_extra_rules_from_encounters()
 	setup_grid()
+	gameData.theGameObserver.setup(self)	
+
+func get_scenario_option(key):
+	return scenario_options.get(key, 0)
 
 func _load_extra_rules_from_encounters():
 	var the_deck = get_encounter_deck()
@@ -285,7 +303,11 @@ func get_simple_encounter_deck(encounter_sets):
 					else:
 						add_to_encounter_deck = false
 				if add_to_encounter_deck:
-					result_deck.push_back(card_data)
+					#permanent cards are set aside in setup
+					if card_data.get("permanent", false):
+						set_aside.append(card_data)
+					else:
+						result_deck.push_back(card_data)
 					positions[card_set_position] = card_data	
 	return result_deck
 
@@ -334,6 +356,7 @@ func reset():
 	grid_setup = {}
 	scenario_data = {}
 	_villains_by_level = {}
+	scenario_options = {}
 
 #		"scheme_id" : "01097", 
 #		"modular_encounters": ["bomb_scare"],
@@ -342,6 +365,7 @@ func save_to_json():
 	return {
 		"scheme_id" : scheme_card_id,
 		"modular_encounters" : self.modular_sets,
-		"expert_mode": self.is_expert_mode
+		"expert_mode": self.is_expert_mode,
+		"scenario_options": self.scenario_options
 	}
 	

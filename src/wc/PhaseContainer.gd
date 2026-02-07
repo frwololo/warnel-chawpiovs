@@ -557,12 +557,12 @@ func _deal_encounters():
 	pass
 
 func _player_end():
-	scripting_bus.emit_signal("phase_ended", {"phase": "player"})
+	scripting_bus.emit_signal( "phase_ended", null, {"phase": "player"})
 	#give time to create the discard option
 	set_current_step_complete(true, "_player_end") # Do nothing	
 
 func _round_end():
-	scripting_bus.emit_signal("phase_ended", {"phase": "villain"})
+	scripting_bus.emit_signal("phase_ended",null,  {"phase": "villain"})
 	gameData.end_round()
 	set_current_step_complete(true, "_round_end")	
 	pass

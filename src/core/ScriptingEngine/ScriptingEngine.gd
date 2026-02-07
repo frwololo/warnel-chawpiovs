@@ -9,7 +9,7 @@
 class_name ScriptingEngine
 extends Reference
 
-const _ASK_INTEGER_SCENE_FILE = CFConst.PATH_CORE + "AskInteger.tscn"
+const _ASK_INTEGER_SCENE_FILE = CFConst.PATH_CUSTOM + "AskInteger.tscn"
 const _ASK_INTEGER_SCENE = preload(_ASK_INTEGER_SCENE_FILE)
 
 # Emitted when all tasks have been run succesfully
@@ -154,6 +154,7 @@ func costs_dry_run() -> bool:
 	return ((run_type == CFInt.RunType.COST_CHECK) or 
 		(run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
 
+
 func add_rules(dict:Dictionary):
 	additional_rules = dict
 
@@ -211,7 +212,8 @@ func execute(_run_type) -> void:
 	snapshot_id = rand_range(1,10000000)
 	all_tasks_completed = false
 	run_type = _run_type
-
+	var actual_execution_happened = false
+	
 	var only_cost_check = ((run_type == CFInt.RunType.COST_CHECK) or
 		 (run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
 	
@@ -287,7 +289,7 @@ func execute(_run_type) -> void:
 				if next_task and next_task.subjects.size() > 0:
 					prev_subjects = next_task.subjects
 			var retrieved_integer = get_stored_integer(script)
-			var all_prev_subjects = all_subjects_so_far.duplicate()		
+			var all_prev_subjects = all_subjects_so_far.duplicate()
 			script.prime(prev_subjects,run_type,retrieved_integer, all_prev_subjects)
 			# In case the task involves targetting, we need to wait on further
 			# execution until targetting has completed
@@ -353,6 +355,7 @@ func execute(_run_type) -> void:
 						"modifier": _retrieve_temp_modifiers(script, "properties")
 					}
 				var retcode = call(script.script_name, script)
+				actual_execution_happened = true
 				if retcode is GDScriptFunctionState:
 					retcode = yield(retcode, "completed")
 				# We set the previous subjects only after the execution, because some tasks
@@ -416,6 +419,8 @@ func execute(_run_type) -> void:
 		self.user_interaction_status =  CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED
 	cfc.remove_ongoing_process(self, "scriptingengine execute")
 	emit_signal("tasks_completed")
+	if !costs_dry_run() and actual_execution_happened and trigger_details.has("action_name_id"):
+		scripting_bus.emit_signal_on_stack("script_executed", self.owner, trigger_details)
 	# checking costs on multiple targeted cards in the same script,
 	# is not supported at the moment due to the exponential complexities
 #	elif costs_dry_run() and ta.target_dry_run_card and \
@@ -844,7 +849,7 @@ func attach_to_card(script: ScriptTask) -> int:
 # Task from making the subject card an attachment to the owner card.
 # * Requires the following keys:
 #	* [KEY_SUBJECT](ScriptProperties#KEY_SUBJECT)
-func host_card(script: ScriptTask) -> void:
+func host_card(script: ScriptTask) -> int:
 	# host_card can only ever use one subject
 	#var card: Card = script.subjects[0]
 	# We inject the tags from the script into the tags sent by the signal
@@ -859,6 +864,7 @@ func host_card(script: ScriptTask) -> void:
 	for card in script.subjects:
 		card.attach_to_host(host, false, tags)
 
+	return CFConst.ReturnCode.CHANGED
 
 # Task for modifying a card's properties
 # * Requires the following keys:
@@ -973,20 +979,10 @@ func modify_properties(script: ScriptTask) -> int:
 # * Requires the following keys:
 #	* [KEY_ASK_INTEGER_MIN](ScriptProperties#KEY_ASK_INTEGER_MIN)
 #	* [KEY_ASK_INTEGER_MAX](ScriptProperties#KEY_ASK_INTEGER_MAX)
-func ask_integer(script: ScriptTask) -> void:
-	cfc.add_ongoing_process(self)
-	var integer_dialog = _ASK_INTEGER_SCENE.instance()
-	# AskInteger tasks have to always provide a min and max value
-	var minimum = script.get_property(SP.KEY_ASK_INTEGER_MIN)
-	var maximum = script.get_property(SP.KEY_ASK_INTEGER_MAX)
-	integer_dialog.prep(script.owner.canonical_name, minimum, maximum)
-	# We have to wait until the player has finished selecting an option
+# moved all functionality to the prime function in ScriptObject
+func ask_integer(script: ScriptTask) -> int:
+	return CFConst.ReturnCode.CHANGED
 	
-	yield(integer_dialog,"popup_hide")
-	set_stored_integer(integer_dialog.number, script)
-	# Garbage cleanup
-	integer_dialog.queue_free()
-	cfc.remove_ongoing_process(self)
 
 # counts the number of subjects of a task, then stores that number in stored_integer
 func count_subjects(script: ScriptTask) -> int:

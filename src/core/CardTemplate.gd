@@ -165,6 +165,9 @@ export(float, 0.0, 1.0, 0.05) var to_board_tween_duration := 0.25
 export(float, 0.0, 1.0, 0.05) var on_board_tween_duration := 0.3
 # The duration of the tweening animation when cards are scaled when being dragged
 export(float, 0.0, 1.0, 0.05) var dragged_tween_duration := 0.2
+
+var rotation_tween_duration := 0.3
+var position_tween_duration := 0.3
 # Stores the normal size of the card as it should appear on the hand.
 # It should typically should be the same as card_size,
 # but unlike card_size, it should not be adjusted in runtime
@@ -1236,6 +1239,7 @@ func move_to(targetHost: Node,
 	targetHost = targetHost.get_final_placement_node(self)
 	targetHost = common_pre_move_scripts(targetHost, parentHost, tags)
 	var emit_signals = !("disable_move_signals" in tags)
+	var execute_self_moved_to_board = false
 	if targetHost == cfc.NMAP.board and not board_position:
 		match board_placement:
 			BoardPlacement.NONE:
@@ -1434,7 +1438,7 @@ func move_to(targetHost: Node,
 							"tags": tags
 						}
 				)
-				self.execute_scripts(self, "self_moved_to_board")
+				execute_self_moved_to_board = true
 		if is_instance_valid(parentHost) and parentHost.is_in_group("hands"):
 			# We also want to rearrange the hand when we take cards out of it
 			for c in parentHost.get_all_cards():
@@ -1523,6 +1527,8 @@ func move_to(targetHost: Node,
 		elif "CardPopUpSlot" in parentHost.name:
 			set_state(CardState.IN_POPUP)
 	common_post_move_scripts(targetHost.name, parentHost.name, tags)
+	if execute_self_moved_to_board:
+		self.execute_scripts(self, "self_moved_to_board")
 	cfc.remove_ongoing_process(self)
 
 func set_scale(value):		
@@ -2458,9 +2464,11 @@ func _flip_card(to_invisible: Control, to_visible: Control, instant := false) ->
 func _add_tween_rotation(
 		expected_rotation: float,
 		target_rotation: float,
-		runtime := 0.3,
+		runtime := 0.0,
 		trans_type = Tween.TRANS_BACK,
 		ease_type = Tween.EASE_IN_OUT):
+	if !runtime:
+		runtime = self.rotation_tween_duration
 	$Tween.remove($Control,'rect_rotation')
 	$Tween.interpolate_property($Control,'rect_rotation',
 			expected_rotation, target_rotation, runtime,
@@ -2476,9 +2484,11 @@ func _add_tween_rotation(
 func _add_tween_position(
 		expected_position: Vector2,
 		target_position: Vector2,
-		runtime := 0.3,
+		runtime := 0.0,
 		trans_type = Tween.TRANS_CUBIC,
 		ease_type = Tween.EASE_OUT):
+	if !runtime:
+		runtime = self.position_tween_duration			
 	$Tween.remove(self,'position')
 	$Tween.interpolate_property(self,'position',
 			expected_position, target_position, runtime,
@@ -2489,9 +2499,11 @@ func _add_tween_position(
 func _add_tween_global_position(
 		expected_position: Vector2,
 		target_position: Vector2,
-		runtime := 0.5,
+		runtime := 0.0,
 		trans_type = Tween.TRANS_BACK,
 		ease_type = Tween.EASE_IN_OUT):
+	if !runtime:
+		runtime = self.position_tween_duration				
 	$Tween.remove(self,'global_position')
 	$Tween.interpolate_property(self,'global_position',
 			expected_position, target_position, runtime,

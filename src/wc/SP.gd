@@ -29,6 +29,7 @@ const FILTER_HOST_OF := "filter_is_host_of"
 const FILTER_SAME_CONTROLLER := "filter_same_controller"
 const FILTER_EVENT_SOURCE:= "filter_event_source"
 const FILTER_SOURCE_CONTROLLED_BY := "filter_source_controlled_by"
+const FILTER_SHARES_TRAIT_WITH_IDENTITY := "filter_shares_trait_with_identity"
 const FILTER_EXHAUSTED := "filter_is_exhausted"
 const FILTER_MAX_PER_HERO := "filter_max_per_hero"
 const FILTER_MAX_PER_HOST := "filter_max_per_host"
@@ -89,6 +90,10 @@ static func filter_trigger(
 	if is_valid and card_scripts.get(FILTER_SOURCE_CONTROLLED_BY) \
 			and !check_source_controlled_by_filter(trigger_card,owner_card,trigger_details, card_scripts.get(FILTER_SOURCE_CONTROLLED_BY)):
 		return false	
+
+	if is_valid and card_scripts.get(FILTER_SHARES_TRAIT_WITH_IDENTITY) \
+			and !check_trigger_shares_trait_with_identity(trigger_card,owner_card,trigger_details):
+		return false	
 		
 	if is_valid and card_scripts.get(FILTER_EVENT_SOURCE) \
 			and !check_filter_event_source(trigger_card,owner_card,trigger_details, card_scripts.get(FILTER_EVENT_SOURCE)):
@@ -106,7 +111,23 @@ static func subject_matches(card, string_value, owner_card):
 		KEY_SUBJECT_V_MAIN_SCHEME:
 			return card == gameData.get_main_scheme()
 	return true
-			
+
+
+static func check_trigger_shares_trait_with_identity(trigger_card,owner_card,trigger_details) -> bool:
+	#TODO more advanced targeting
+	if !is_instance_valid(trigger_card): return false
+	if !is_instance_valid(owner_card): return false
+
+	var identity = owner_card.get_controller_hero_card()
+	if  !is_instance_valid(identity): return false
+
+	var trigger_traits = trigger_card.get_all_traits()	
+	var identity_traits = identity.get_all_traits()
+	for trait in trigger_traits:
+		if identity_traits.has(trait):
+			return true
+	return false
+				
 # Returns true if the trigger is the host of the owner, false otherwise
 static func check_host_filter(trigger_card, owner_card, host_description : String) -> bool:
 	var card_matches := false

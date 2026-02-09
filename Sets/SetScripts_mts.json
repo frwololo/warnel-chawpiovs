@@ -51,7 +51,8 @@
 		"event_prevented": {
 			"trigger": "self",
 			"event_filters": {
-				"amount_prevented": ">1"
+				"amount_prevented": ">1",
+				"tags": ["attack"]
 			},
 			"board": [
 				{
@@ -376,7 +377,7 @@
 						"filter_state_seek": [
 							{
 								"filter_group": "group_environments_my_hero",
-								"filter_properties2": {
+								"filter_properties": {
 									"trait_spell": 1,
 									"comparison": "ge"
 								}
@@ -403,7 +404,7 @@
 						"filter_state_seek": [
 							{
 								"filter_group": "group_environments_my_hero",
-								"filter_properties2": {
+								"filter_properties": {
 									"trait_spell": 1,
 									"comparison": "ge"
 								}
@@ -563,8 +564,7 @@
 		}
 	},
 	"Audacity": {
-		"response": {
-			"event_name": "paid_as_resource",
+		"paid_as_resource": {
 			"trigger": "self",
 			"is_optional_all": true,
 			"all": [
@@ -576,7 +576,7 @@
 					]
 				},
 				{
-					"name": "damage",
+					"name": "deal_damage",
 					"amount": 1,
 					"subject": "villain"
 				}
@@ -1824,8 +1824,7 @@
 		}
 	},
 	"Determination": {
-		"response": {
-			"event_name": "paid_as_resource",
+		"paid_as_resource" :{
 			"trigger": "self",
 			"is_optional_all": true,
 			"all": [
@@ -2361,7 +2360,7 @@
 			"board": [
 				{
 					"name": "deal_damage",
-					"subject": "my_hero",
+					"subject": "my_identity",
 					"amount": 4
 				},
 				{
@@ -2381,6 +2380,7 @@
 				{
 					"name": "attach_to_card",
 					"subject": "boardseek",
+					"subject_count": "all",
 					"subject_exclude": "host",
 					"filter_state_seek": [
 						{
@@ -3270,8 +3270,7 @@
 		}
 	},
 	"Innovation": {
-		"response": {
-			"event_name": "paid_as_resource",
+		"paid_as_resource" :{
 			"trigger": "self",
 			"is_optional_all": true,
 			"all": [
@@ -3374,7 +3373,7 @@
 				{
 					"name": "ask_integer",
 					"ask_int_min": 0,
-					"ask_int_max": 4
+					"ask_int_max": 4,
 				},
 				{
 					"name": "move_card_to_container",
@@ -4056,7 +4055,6 @@
 	},
 	"Martinex - T'Naga": {
 		"alterants": {
-			"trigger": "self",
 			"hand": [
 				{
 					"filter_task": "get_property",
@@ -4067,7 +4065,8 @@
 							"trait": "guardian",
 							"multiplier": -1
 						}
-					}
+					},
+					"trigger": "self",
 				}
 			]
 		}
@@ -4455,8 +4454,7 @@
 		}
 	},
 	"Mystic Senses": {
-		"response": {
-			"event_name": "script_executed",
+		"script_executed": {
 			"event_filters": {
 				"action_name_id": "battle_mage"
 			},
@@ -5077,8 +5075,7 @@
 		}
 	},
 	"Preservation": {
-		"response": {
-			"event_name": "paid_as_resource",
+		"paid_as_resource" : {
 			"trigger": "self",
 			"is_optional_all": true,
 			"all": [
@@ -5118,7 +5115,13 @@
 									{
 										"filter_task": "get_property",
 										"filter_property_name": "attack",
-										"trigger": "self",
+										"filter_state_trigger": [
+											{
+												"filter_properties": {
+													"shortname": "Proxima Midnight"
+												}
+											}
+										],
 										"alteration": 2
 									}
 								]
@@ -5189,7 +5192,13 @@
 									{
 										"filter_task": "get_property",
 										"filter_property_name": "attack",
-										"trigger": "self",
+										"filter_state_trigger": [
+											{
+												"filter_properties": {
+													"shortname": "Proxima Midnight"
+												}
+											}
+										],
 										"alteration": 2
 									}
 								]
@@ -5260,7 +5269,13 @@
 									{
 										"filter_task": "get_property",
 										"filter_property_name": "attack",
-										"trigger": "self",
+										"filter_state_trigger": [
+											{
+												"filter_properties": {
+													"shortname": "Proxima Midnight"
+												}
+											}
+										],
 										"alteration": 2
 									}
 								]
@@ -6279,14 +6294,17 @@
 					"subject_index": "top",
 					"is_cost": true,
 					"subject_count": {
-						"func_name": "get_current_activation_amount"
+						"func_name": "get_interrupted_event_property",
+						"func_params": {
+							"property": "amount"
+						}
 					},
 					"src_container": "deck",
 					"dest_container": "discard"
-				},
+				},				
 				{
 					"name": "prevent",
-					"subject": "current_activation",
+					"subject": "interrupted_event",
 					"amount": 100
 				}
 			]
@@ -6366,6 +6384,11 @@
 						"alter_ego_action"
 					]
 				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true,
+				},			
 				{
 					"name": "mod_tokens",
 					"subject": "self",
@@ -6764,7 +6787,7 @@
 					{
 						"name": "host_card",
 						"subject": "tutor",
-						"src_container": "deck_villain",
+						"src_container": ["deck_villain", "set_aside"],
 						"filter_state_tutor": [
 							{
 								"filter_properties": {
@@ -7386,8 +7409,7 @@
 		}
 	},
 	"Warlock's Cape": {
-		"response": {
-			"event_name": "script_executed",
+		"script_executed":{
 			"event_filters": {
 				"action_name_id": "battle_mage"
 			},
@@ -7397,7 +7419,7 @@
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
-						"hero_ability"
+						"hero_form"
 					]
 				},
 				{

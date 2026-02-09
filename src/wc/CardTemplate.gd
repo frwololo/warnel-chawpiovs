@@ -527,10 +527,11 @@ func lose_focus():
 	
 func enable_focus_mode():
 	_control.focus_mode = Control.FOCUS_ALL
+	set_control_mouse_filters(true)
 
 func disable_focus_mode():
 	_control.focus_mode = Control.FOCUS_NONE
-
+	set_control_mouse_filters(false)
 #
 # User Interface/Input functions
 #
@@ -1116,7 +1117,7 @@ func has_potential_scripts(trigger_card, trigger):
 func execute_scripts(
 		trigger_card: Card = self,
 		trigger: String = "manual",
-		trigger_details: Dictionary = {},
+		orig_trigger_details: Dictionary = {},
 		run_type := CFInt.RunType.NORMAL):
 
 
@@ -1125,7 +1126,7 @@ func execute_scripts(
 
 	if cfc.game_paused or cfc.is_modal_event_ongoing() or gameData.is_targeting_ongoing():
 		if get_parent() and !("tree_" in trigger): #dirty check to avoid crashes
-			gameData.add_script_to_execute(self, trigger_card, trigger, trigger_details, run_type)
+			gameData.add_script_to_execute(self, trigger_card, trigger, orig_trigger_details, run_type)
 			return null
 		else:
 			return null
@@ -1145,7 +1146,7 @@ func execute_scripts(
 		return null
 
 	
-	var _debug = trigger_details.get("_debug", false)
+	var _debug = orig_trigger_details.get("_debug", false)
 			
 	#temporary bug fix: prevent uninitalized cards from running scripts
 	#these cards are duplicates that shouldn't exist?
@@ -1161,13 +1162,13 @@ func execute_scripts(
 			return null	
 
 	#Force execute some previously selected scripts, bypassing the rest of the process
-	var exec_config = trigger_details.get("exec_config", {})
-	var state_scripts_dict = trigger_details.get("state_scripts_dict", {})
+	var exec_config = orig_trigger_details.get("exec_config", {})
+	var state_scripts_dict = orig_trigger_details.get("state_scripts_dict", {})
 	if state_scripts_dict:
 		#erase the variables to avoid re_running them
-		trigger_details.erase("exec_config")
-		trigger_details.erase("state_scripts_dict")
-		return choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigger_details, run_type, exec_config)
+		orig_trigger_details.erase("exec_config")
+		orig_trigger_details.erase("state_scripts_dict")
+		return choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, orig_trigger_details, run_type, exec_config)
 
 	#last minute swap for hero vs alter ego reveals
 	if trigger == "reveal":
@@ -1179,7 +1180,7 @@ func execute_scripts(
 			trigger = specific_trigger		
 				
 	if _debug:
-		display_debug("executing scripts :" +trigger_card.canonical_name + "-'"+ to_json(trigger_details))	
+		display_debug("executing scripts :" +trigger_card.canonical_name + "-'"+ to_json(orig_trigger_details))	
 
 
 	
@@ -1193,7 +1194,7 @@ func execute_scripts(
 		if gameData.is_forced_interrupt_mode():
 			force_user_interaction_required = false
 
-	trigger_details["trigger_type"] = trigger
+	orig_trigger_details["trigger_type"] = trigger
 	
 	#we're playing a card manually but in interrupt mode.
 	#What we want to do here is play the optional triggered effect instead
@@ -1205,10 +1206,10 @@ func execute_scripts(
 		trigger = find_interrupt_script()
 		if (!trigger):
 			return null
-		trigger_details.merge(gameData.theStack.get_current_interrupted_event(), true)
-		if (!trigger_details):
+		orig_trigger_details.merge(gameData.theStack.get_current_interrupted_event(), true)
+		if (!orig_trigger_details):
 			return null
-		trigger_card = trigger_details["event_object"].owner #this is geting gross, how to clear that?
+		trigger_card = orig_trigger_details["event_object"].owner #this is geting gross, how to clear that?
 		if (!trigger_card):
 			return null
 		#skip optional confirmation menu for interrupts,
@@ -1217,6 +1218,10 @@ func execute_scripts(
 
 	if ! has_potential_scripts(trigger_card, trigger):
 		return null
+
+	#from this point we work on a copy of the passed trigger_details,
+	#to avoid modifying the original ones
+	var trigger_details = orig_trigger_details.duplicate()
 
 	var checksum = trigger
 	if trigger_card:
@@ -1241,7 +1246,8 @@ func execute_scripts(
 	
 	trigger_details["_display_name"] = card_scripts.get("display_name", trigger_details.get("_display_name", ""))
 
-	show_optional_confirmation_menu = show_optional_confirmation_menu and card_scripts.get("is_optional_" + get_state_exec(), false)		
+	var script_is_optional = card_scripts.get("is_optional_" + get_state_exec(), false) or  card_scripts.get("is_optional_all", false)
+	show_optional_confirmation_menu = show_optional_confirmation_menu and script_is_optional		
 
 	exec_config = {
 		"show_optional_confirmation_menu" : show_optional_confirmation_menu,
@@ -1252,7 +1258,7 @@ func execute_scripts(
 	# We select which scripts to run from the card, based on it state	
 	state_scripts_dict = get_state_scripts_dict(card_scripts, trigger_card, trigger_details, exec_config)
 
-
+	trigger_details["action_name_id"] = ""
 	
 	var rules = state_scripts_dict.get("rules", {})
 
@@ -2322,10 +2328,10 @@ func export_modifiers():
 #this is different from loading from json because
 # 1) it only impacts some variables, not all,
 # 2) it doesn't reset to a default value if the modifier isn't set
-func import_modifiers(modifiers:Dictionary):
+func import_modifiers(modifiers:Dictionary, keep_existing = false):
 	var token_data = modifiers.get("tokens", {})
 	if token_data:
-		tokens.load_from_json(token_data)
+		tokens.load_from_json(token_data, keep_existing)
 	
 	if modifiers.has("exhausted"):
 		if modifiers["exhausted"]:
@@ -2807,14 +2813,17 @@ func card_is_in_play(params, script:ScriptTask = null) -> bool:
 		return false
 	return true
 
-func get_current_activation_amount(params:Dictionary, _script:ScriptTask = null) -> int:
+func get_interrupted_event_property(params:Dictionary, _script:ScriptTask = null) -> int:
 #	var script = get_current_activation_details()
-	var script = gameData.get_latest_activity_script()
-	if !script:
+	var event = gameData.theStack.get_current_interrupted_event()
+	if !event:
+		return 0
+	var property = params.get("property", "")
+	if !property:
 		return 0
 	
-	var amount = script.retrieve_integer_property("amount", 0)
-	return amount
+	var value = event.get(property, 0)
+	return value
 
 func current_activation_status(params:Dictionary, _script:ScriptTask = null) -> bool:
 #	var script = get_current_activation_details()
@@ -2916,12 +2925,7 @@ func get_sustained_damage(params:Dictionary = {}, script = null) -> int:
 	return subject.tokens.get_token_count("damage")
 
 func get_remaining_damage(params:Dictionary = {}, script = null) -> int:
-	var subject = self
-	if params and script and params.has("subject"):
-		var subjects = SP.retrieve_subjects(params.get("subject"), script)
-		if !subjects:
-			return 0
-		subject = subjects[0]
+	var subject = get_param_subject(params, script)
 	
 	var current_damage = subject.tokens.get_token_count("damage")
 	var health = subject.get_property("health", 0)

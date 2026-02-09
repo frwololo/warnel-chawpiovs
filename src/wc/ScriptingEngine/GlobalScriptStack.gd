@@ -646,6 +646,11 @@ func flush_script(stack_object):
 	var func_return = stack_object.execute()	
 	if func_return is GDScriptFunctionState && func_return.is_valid():
 		func_return = yield(func_return, "completed")
+
+	var sceng = stack_object.get_sceng()
+	if sceng and sceng.trigger_details.get("action_name_id", ""):
+		scripting_bus.emit_signal_on_stack("script_executed", sceng.owner, sceng.trigger_details)
+		
 #	var user_interaction_status = stack_object.get_user_interaction_status()
 	#something todo here ???
 	interrupt_mode = InterruptMode.NONE

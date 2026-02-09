@@ -323,15 +323,19 @@ func character_died(script: ScriptTask) -> int:
 func deal_damage(script:ScriptTask) -> int:
 	var retcode = CFConst.ReturnCode.FAILED
 
-	if costs_dry_run():
-		if script.subjects:
-			return CFConst.ReturnCode.CHANGED
-		return retcode
-	#we split the damage into multiple "receive_damage" events, one per subject
-
 	#I've had issues where computing the damage afterwards leads to inconsistency
 	#calculating it now
 	var base_amount = script.retrieve_integer_property("amount")
+
+	if costs_dry_run():
+		if !script.subjects:
+			return CFConst.ReturnCode.FAILED
+		if !base_amount:
+			return CFConst.ReturnCode.FAILED
+		return CFConst.ReturnCode.CHANGED
+	#we split the damage into multiple "receive_damage" events, one per subject
+
+
 	
 	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
 	# e.g. Spider man gets 3*1 damage = 3 damage
@@ -834,7 +838,9 @@ func prevent(script: ScriptTask) -> int:
 				var event = gameData.theStack.delete_last_event(script)
 				#todo find amount prevented
 			if amount_prevented:
-				scripting_bus.emit_signal_on_stack("event_prevented", script.owner, {"amount_prevented" : amount_prevented})
+				var trigger_details = script.trigger_details.duplicate()
+				trigger_details["amount_prevented"] =  amount_prevented
+				scripting_bus.emit_signal_on_stack("event_prevented", script.owner, trigger_details )
 		
 	return retcode		
 	
@@ -1297,7 +1303,7 @@ func enemy_scheme_threat(_script: ScriptTask) -> int:
 
 func enemy_activates(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
-	if !script.subjects():
+	if !script.subjects:
 		return CFConst.ReturnCode.FAILED
 		
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?

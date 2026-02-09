@@ -263,15 +263,13 @@ const SHOW_TOKEN_BUTTONS := false
 # This allows us to reuse a token image for more than 1 token type
 # 'default' is required
 const TOKENS_MAP := {
-	'default': 'blue.svg',
+	'default': 'yellow.svg',
+	'tough': 'blue.svg',
 	'threat' : 'black.svg',
 	'damage': 'red.svg',
 	'stunned': 'green.svg',
 #	'industry': 'grey.svg',
 	'confused': 'purple.svg',
-#	'blood': 'red.svg',
-#	'gold coin': 'yellow.svg',
-#	'void': 'black.svg',
 }
 
 const Z_INDEX_MOUSE_POINTER := 4050
@@ -907,8 +905,8 @@ const DEBUG_SIMULATE_NETWORK_DELAY = 1.5
 const DEBUG_NETWORK_DELAY_RANDOM = false
 const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 
-const SCRIPT_BREAKPOINT_CARD_NAME := "Captured by Hydra"
-const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_defeated"
+const SCRIPT_BREAKPOINT_CARD_NAME := "Soul World"
+const SCRIPT_BREAKPOINT_TRIGGER_NAME := "pile_emptied"
 
 const LARGE_SCREEN_WIDTH:= 1600
 

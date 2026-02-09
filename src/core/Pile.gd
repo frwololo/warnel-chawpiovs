@@ -9,6 +9,7 @@ signal popup_closed
 var is_popup_open := false
 # Used to avoid performance-heavy checks in process
 var _has_cards := false
+var emit_on_pile_empty = true
 
 # The pile's name. If this value is changed, it will change the
 # `pile_name_label` text.
@@ -91,7 +92,12 @@ func _process(_delta) -> void:
 	pile_popup.set_as_minsize()
 	if gamepadHandler.is_mouse_input():
 		check_mouse_overlap()
-
+		
+	if $ViewPopup.visible:
+		var size = $ViewPopup.rect_size * $ViewPopup.rect_scale
+		if size.y > get_viewport().size.y or size.x > get_viewport().size.x:
+			$ViewPopup.rect_scale *= 0.9
+		
 
 # Populates the popup view window with all the cards in the deck
 # then displays it
@@ -143,8 +149,15 @@ func _on_ViewPopup_popup_hide() -> void:
 	if show_manipulation_buttons:
 		manipulation_buttons.visible = true
 	emit_signal("popup_closed")
+	enable_pile_emptied_signal()
 	is_popup_open = false
 
+
+func disable_pile_emptied_signal():
+	emit_on_pile_empty = false
+	
+func enable_pile_emptied_signal():
+	emit_on_pile_empty = true
 
 # Populated the popup card viewer with the cards and displays them
 func populate_popup(sorted:= sorted_popup) -> void:
@@ -157,6 +170,7 @@ func populate_popup(sorted:= sorted_popup) -> void:
 	pre_sorted_order = get_all_cards()
 	if sorted:
 		card_array.sort_custom(CFUtils, "sort_scriptables_by_name")
+	disable_pile_emptied_signal()
 	for card in card_array:
 		# We remove the card to rehost it in the popup grid container
 		remove_child(card)
@@ -165,6 +179,7 @@ func populate_popup(sorted:= sorted_popup) -> void:
 	$ViewPopup.popup_centered()
 	is_popup_open = true
 	card_count_label.text = str(get_card_count())
+
 
 
 # Setter for pile_name.
@@ -231,8 +246,8 @@ func remove_child(node, _legible_unique_name=false) -> void:
 	# When we put the first card in the pile, we make sure the
 	# Panel is made transparent so that the card backs are seen instead
 	if get_card_count() == 0:
-		if node as Card:
-			scripting_bus.emit_signal_on_stack("pile_emptied", node, {"pile_name" : self.name} )
+		if node as Card and emit_on_pile_empty:
+			scripting_bus.emit_signal_on_stack("pile_emptied", node, {"pile_name" : self.name.to_lower()} )
 		_has_cards = false
 		disable_focus_mode()
 		reorganize_stack()

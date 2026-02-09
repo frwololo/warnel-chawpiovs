@@ -1,0 +1,274 @@
+{
+	"_comments": "(0) Shield Spell: interrupt (defense) when you would take any amount of damage from an attack, prevent all of that damage",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [		
+				{
+					"card": "21102",
+					"_comments": "Black Order Besieger"
+				},
+				{
+					"card": "01186",
+					"_comments": "Advance"
+				},
+				{
+					"card": "Hydra Soldier",
+				},					
+				{
+					"card": "01188",
+					"_comments": "Caught Off Guard"
+				}
+			],
+			"villain": [
+				{
+					"card": "21095",
+					"_comments": "Corvus Glaive - 1"
+				},			
+				{
+					"card": "21092",
+					"_comments": "Proxima Midnight - 1 - Note :last villain is active villain"
+				}
+			],
+			"schemes": [
+				{
+					"card": "21098b",
+					"_comments": "Under Siege",
+					"tokens": {
+						"threat": 1
+					}
+				},
+				{
+					"card": "21099b",
+					"_comments": "The Armies of Thanos",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "21100a",
+					"_comments": "Avengers Tower",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "21101",
+					"host": "Under Siege",
+					"_comments": "Focused Defense"
+				}
+			],
+			"deck1": [
+				{
+					"card": "21046",
+					"_comments": "Audacity"
+				},
+				{
+					"card": "21034",
+					"_comments": "Karmic Staff"
+				},
+				{
+					"card": "21054",
+					"_comments": "Eternity"
+				}
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock",
+					"can_change_form": true
+				}
+			],
+			"hand1": [
+				{
+					"card": "21035",
+					"owner_hero_id": 1,
+					"_comments": "Warlock's Cape"
+				},
+				{
+					"card": "01057",
+					"owner_hero_id": 1,
+					"_comments": "Combat Training"
+				},
+				{
+					"card": "21038",
+					"owner_hero_id": 1,
+					"_comments": "Karmic Blast"
+				},
+				{
+					"card": "21041",
+					"owner_hero_id": 1,
+					"_comments": "Marvel Boy - Noh-Var"
+				},
+				{
+					"card": "21038",
+					"owner_hero_id": 1,
+					"_comments": "Karmic Blast"
+				},
+				{
+					"card": "21033",
+					"owner_hero_id": 1,
+					"_comments": "Soul World"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack"
+		},
+		{
+			"type": "choose",
+			"value": "+2 ATK"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "01188",
+					"_comments": "Caught Off Guard"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "21102",
+					"_comments": "Black Order Besieger"
+				},
+				{
+					"card": "01186",
+					"_comments": "Advance"
+				},
+
+			],
+			"villain": [
+				{
+					"card": "21095",
+					"_comments": "Corvus Glaive - 1"
+				},			
+				{
+					"card": "21092",
+					"_comments": "Proxima Midnight - 1"
+				},
+
+			],
+			"schemes": [
+				{
+					"card": "21098b",
+					"_comments": "Under Siege",
+					"tokens": {
+						"threat": 1
+					}
+				},
+				{
+					"card": "21099b",
+					"_comments": "The Armies of Thanos",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "21100a",
+					"_comments": "Avengers Tower",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "21101",
+					"host": "Under Siege",
+					"_comments": "Focused Defense"
+				}
+			],
+			"deck1": [
+				{
+					"card": "21046",
+					"_comments": "Audacity"
+				},
+				{
+					"card": "21034",
+					"_comments": "Karmic Staff"
+				},
+				{
+					"card": "21054",
+					"_comments": "Eternity"
+				}
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock",
+					"tokens": {"damage": 5},
+					"can_change_form": true
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"hand1": [
+				{
+					"card": "21035",
+					"owner_hero_id": 1,
+					"_comments": "Warlock's Cape"
+				},
+				{
+					"card": "01057",
+					"owner_hero_id": 1,
+					"_comments": "Combat Training"
+				},
+				{
+					"card": "21038",
+					"owner_hero_id": 1,
+					"_comments": "Karmic Blast"
+				},
+				{
+					"card": "21041",
+					"owner_hero_id": 1,
+					"_comments": "Marvel Boy - Noh-Var"
+				},
+				{
+					"card": "21038",
+					"owner_hero_id": 1,
+					"_comments": "Karmic Blast"
+				},
+				{
+					"card": "21033",
+					"owner_hero_id": 1,
+					"_comments": "Soul World"
+				}
+			]
+		}
+	}
+}

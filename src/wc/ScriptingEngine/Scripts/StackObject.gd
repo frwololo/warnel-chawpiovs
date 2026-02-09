@@ -42,6 +42,9 @@ func get_user_interaction_status():
 func execute():
 	pass
 
+func get_sceng():
+	return null
+
 #replacement tasks
 func add_tags(new_tags:Array):
 	for task in get_tasks():

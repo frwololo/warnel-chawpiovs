@@ -28,7 +28,7 @@ static func get_altered_value(
 		"task_name": task_name,
 		"task_properties": task_properties,
 		"value": value,
-		"subject": value
+		"subject": subject,
 	}.hash()
 	var return_dict: Dictionary
 	# If we've already performed this alterant engine run, we just

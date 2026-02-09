@@ -27,7 +27,7 @@ func _process (delta:float):
 		var callback_params = modifiers.get("callback_params", {})
 		modifiers.erase("callback")
 		modifiers.erase("callback_params")
-		card.import_modifiers(modifiers)
+		card.import_modifiers(modifiers, true)
 		post_move_modifiers.erase(card)
 		if callback_function:
 			card.call(callback_function, callback_params)

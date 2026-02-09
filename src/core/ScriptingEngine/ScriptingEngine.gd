@@ -419,8 +419,7 @@ func execute(_run_type) -> void:
 		self.user_interaction_status =  CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED
 	cfc.remove_ongoing_process(self, "scriptingengine execute")
 	emit_signal("tasks_completed")
-	if !costs_dry_run() and actual_execution_happened and trigger_details.has("action_name_id"):
-		scripting_bus.emit_signal_on_stack("script_executed", self.owner, trigger_details)
+
 	# checking costs on multiple targeted cards in the same script,
 	# is not supported at the moment due to the exponential complexities
 #	elif costs_dry_run() and ta.target_dry_run_card and \

@@ -300,9 +300,17 @@ func export_to_json():
 		result[token_name] = get_token_count(token_name)
 	return result
 
-func load_from_json(description:Dictionary):
-	for child in $Drawer/VBoxContainer.get_children():
-		child.queue_free()	
+func load_from_json(description:Dictionary, keep_existing = false):
+	if keep_existing:
+		for token_name in description:
+			var value =  description[token_name]
+			if (value >0):
+				var node = get_token(token_name)
+				if node:
+					node.queue_free()		
+	else:
+		for child in $Drawer/VBoxContainer.get_children():
+			child.queue_free()	
 
 	var token_names = description.keys()
 	for token_name in token_names:

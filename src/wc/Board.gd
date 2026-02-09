@@ -1020,6 +1020,7 @@ func loadstate_from_json(json:Dictionary):
 		return #TODO Error msg
 
 	reset_board()
+	villain.init_scenario_villains()
 	
 	#Load all grids with matching data
 	var GRID_SETUP = gameData.scenario.grid_setup	
@@ -1065,8 +1066,21 @@ func flip_doublesided_card(card:WCCard):
 			var modifiers = card.export_modifiers()
 			modifiers["callback"] = "changed_form"
 			modifiers["callback_params"] = {"before": type_code}
-			gameData.set_aside(card) 
+			
+			#hacky way to move the current card out of the way
+			#while still leaving it on the board
+			if card._placement_slot:
+				card._placement_slot.remove_occupying_card(card)			
+		
 			var new_card = heroZones[card.get_owner_hero_id()].load_identity(back_code, modifiers)
+			var attachments_to_move = []
+			for attachment in card.attachments:
+				attachments_to_move.append(attachment)
+			for attachment in attachments_to_move:	
+				attachment.attach_to_host(new_card)
+				
+			gameData.set_aside(card) 
+				
 			return new_card	
 		else:
 			var new_card = gameData.retrieve_from_side_or_instance(back_code,card.get_owner_hero_id())

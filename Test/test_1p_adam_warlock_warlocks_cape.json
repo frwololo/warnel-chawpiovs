@@ -1,0 +1,192 @@
+{
+	"_comments": "Tests Audacity Adam Warlock",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Pacification"
+				},					
+				{
+					"card": "Hydra Mercenary"
+				},			
+				{
+					"card": "Channeling Trance"
+				}				
+			],
+			"schemes": [
+				{
+					"card": "Attack on Knowhere",
+					"tokens": {"threat": 5}					
+				}
+			],			
+			"villain": [
+				{
+					"card": "Ebony Maw - 1",
+					"tokens": {"damage" : 2},
+				}
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"exhausted": true,
+					"tokens": { "_battle_mage": 1},
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Zone of Silence"
+				},					
+				
+			],
+			"hand1": [
+				{
+					"card": "Heroic Intuition"
+				},
+				{
+					"card": "Audacity"
+				},	
+				{
+					"card": "Magic Attack"
+				},				
+			],
+			"upgrade_support1": [
+				{
+					"card": "Warlock's Cape"
+				},
+			],			
+			"enemies1": [
+				{
+					"card": "Fireball",
+					"tokens": {"invocation": 2}
+				},
+				{
+					"card": "RubbleStorm",
+					"tokens": {"invocation": 3}
+				},
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "activate",
+			"value": "Adam Warlock",
+		},
+		{
+			"type": "choose",
+			"value": "Battle Mage",
+		},	
+		{
+			"type": "select",
+			"value": "Heroic Intuition",
+		},
+		{
+			"type": "target",
+			"value": "Attack on Knowhere",
+		},
+		{
+			"type": "choose",
+			"value": "Yes",
+		},	
+		{
+			"type": "activate",
+			"value": "Adam Warlock",
+		},
+		{
+			"type": "choose",
+			"value": "Attack",
+		},
+		{
+			"type": "target",
+			"value": "Ebony Maw - 1",
+		},		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Pacification"
+				},					
+				{
+					"card": "Hydra Mercenary"
+				},			
+				{
+					"card": "Channeling Trance"
+				}				
+			],
+			"schemes": [
+				{
+					"card": "Attack on Knowhere",
+					"tokens": {"threat": 3}					
+				}
+			],			
+			"villain": [
+				{
+					"card": "Ebony Maw - 1",
+					"tokens": {"damage" : 3},
+				}
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+				}
+			],
+			"deck1": [
+				{
+					"card": "Zone of Silence"
+				},					
+				
+			],
+			"discard1": [
+				{
+					"card": "Heroic Intuition"
+				},
+			],
+			"hand1": [
+				{
+					"card": "Audacity"
+				},	
+				{
+					"card": "Magic Attack"
+				},				
+			],
+			"upgrade_support1": [
+				{
+					"card": "Warlock's Cape"
+				},
+			],			
+			"enemies1": [
+				{
+					"card": "Fireball",
+					"tokens": {"invocation": 2}
+				},
+				{
+					"card": "RubbleStorm",
+					"tokens": {"invocation": 3}
+				},
+			]
+		}
+	}
+}

@@ -74,7 +74,7 @@ func init_notifications_level():
 		_:
 			ignore_stack_events = CFConst.SKIP_ANNOUNCE_STACK_EVENTS.duplicate(true)
 	#failsafe
-	for key in ["trigger", "boost", "cards", "script_name"]:
+	for key in ["trigger", "boost", "cards", "script_name", "reveal"]:
 		if !ignore_stack_events.has(key):
 			ignore_stack_events[key] = {}
 
@@ -292,6 +292,8 @@ func get_ignore_list_path(owner_card, stack_event):
 			if trigger == "boost":
 				return ["cards", card_name, trigger]
 			return ["boost", trigger]
+		elif trigger == "reveal_encounter":
+			return ["reveal", card_name, trigger]
 		elif owner_card.get_state_exec() == "board":
 			return ["cards", card_name, trigger]
 
@@ -346,15 +348,28 @@ func can_display_stack_event(stack_object, mode = GlobalScriptStack.InterruptMod
 	if ignore_stack_events["trigger"].get(trigger, false):
 		return false
 
+
+
 	var owner_card = stack_object.get_owner_card()
 	if is_instance_valid(owner_card):
-		if owner_card.is_boost():
-			if ignore_stack_events["boost"].get(trigger, false):
-				return false
-		else:
-			var card_name = owner_card.get_property("shortname", "")
-			if ignore_stack_events["cards"].get(card_name, {}).get(trigger, false):
-				return false
+		var path = get_ignore_list_path(owner_card, stack_object)
+		var root = ignore_stack_events	
+		for node in path:
+			root = root.get(node, {})
+		if root:
+			return false
+			
+#	if is_instance_valid(owner_card):
+#		var card_name = owner_card.get_property("shortname", "")
+#		if owner_card.is_boost():
+#			if ignore_stack_events["boost"].get(trigger, false):
+#				return false
+#		elif trigger == "reveal_encounter":
+#			if ignore_stack_events["reveal"].get(card_name, {}).get(trigger, false):
+#				return false			
+#		else:
+#			if ignore_stack_events["cards"].get(card_name, {}).get(trigger, false):
+#				return false
 				
 	return true
 

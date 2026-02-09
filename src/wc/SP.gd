@@ -216,6 +216,13 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 	var is_valid = .check_validity(card, card_scripts, type, owner_card)
 	if (!is_valid):
 		return is_valid
+	
+	#permanent cards cannot be targeted by cards of a different set code
+	if card.get_property("permanent", 0):
+		var set_code = card.get_property("card_set_code", "")
+		var owner_set_code = owner_card.get_property("card_set_code", "")
+		if set_code != owner_set_code:
+			return false
 		
 	var tags = card_scripts.get("tags", [])
 	var script_name = card_scripts.get("name", "")

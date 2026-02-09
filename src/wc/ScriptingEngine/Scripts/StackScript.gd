@@ -16,6 +16,9 @@ func _init(_sceng = null, _run_type = 0, _trigger = "", _trigger_details = {}):
 	trigger = _trigger
 	trigger_details = _trigger_details
 
+func get_sceng():
+	return sceng
+
 #replacement task
 func replace_subjects(new_subjects:Array):
 	for task in get_tasks():

@@ -196,7 +196,8 @@ func confirm(
 		confirm.hide()
 		cfc.remove_modal_menu(confirm)
 		confirm.queue_free()
-		gameData._release_user_input_lock(owner.get_controller_player_network_id())
+		if is_instance_valid(owner):
+			gameData._release_user_input_lock(owner.get_controller_player_network_id())
 		cfc.game_paused = false
 	cfc.remove_ongoing_process(owner, "confirm")	
 	return(is_accepted)
@@ -327,6 +328,23 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 		replacements["my_hero"] = gameData.get_identity_card(controller_hero_id)
 	else:
 		replacements["my_hero"] = gameData.get_identity_card(gameData.get_current_activity_hero_target())
+
+	var zone_replacements = [
+		{"from":"_my_hero" , "to": controller_hero_id },
+		{"from":"_first_player" , "to": gameData.first_player_hero_id() },
+#		{"from":"_previous_subject" , "to": previous_hero_id},
+#		{"from":"_current_hero_target" , "to": current_hero_target},
+#		{"from":"_event_source_hero" , "to": event_source_hero_id},					
+	]
+
+	for zone in ["hand"] + CFConst.HERO_GRID_SETUP.keys() + CFConst.ALL_TYPE_GROUPS:
+		for replacement in zone_replacements:
+			var from_str = replacement["from"]
+			var to = replacement["to"]
+			if !to:
+				continue
+			replacements[zone + from_str] = zone+str(to)
+
 
 	filters = WCUtils.search_and_replace_multi(filters, replacements, true)
 

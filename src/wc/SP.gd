@@ -107,13 +107,13 @@ static func subject_matches(card, string_value, owner_card):
 		KEY_SUBJECT_V_MY_HERO:
 			return card == owner_card.get_controller_hero_card()
 		KEY_SUBJECT_V_VILLAIN:
-			return card == gameData.get_villain()
+			return card in gameData.get_villains()
 		KEY_SUBJECT_V_MAIN_SCHEME:
-			return card == gameData.get_main_scheme()
+			return card in gameData.get_main_schemes()
 	return true
 
 
-static func check_trigger_shares_trait_with_identity(trigger_card,owner_card,trigger_details) -> bool:
+static func check_trigger_shares_trait_with_identity(trigger_card,owner_card,_trigger_details) -> bool:
 	#TODO more advanced targeting
 	if !is_instance_valid(trigger_card): return false
 	if !is_instance_valid(owner_card): return false

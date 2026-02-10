@@ -91,6 +91,9 @@ func _get_card_pool() -> Dictionary:
 func parse_post_prime_replacements(script_task: ScriptObject) -> Dictionary:
 	return script_task.script_definition
 
+func preprocess_subject_definition(script: ScriptObject):
+	return script.script_definition		
+
 # Creates a ConfirmationDialog for the player to approve the
 # Use of an optional script or task.
 func confirm(

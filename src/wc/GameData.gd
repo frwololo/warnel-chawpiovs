@@ -391,13 +391,13 @@ func _emit_additional_signals(_trigger_object = null,
 				scripting_bus.emit_signal(signal, _trigger_object, _trigger_details)
 				
 
-func _scripting_event_triggered(_trigger_object = null,
+func _scripting_event_triggered(trigger_object = null,
 		trigger: String = "manual",
 		_trigger_details: Dictionary = {}):
 	
 	match trigger:
 		"card_moved_to_board":
-			_emit_additional_signals(_trigger_object, trigger, _trigger_details)	
+			_emit_additional_signals(trigger_object, trigger, _trigger_details)	
 			
 	match trigger:
 		"card_token_modified":
@@ -408,7 +408,9 @@ func _scripting_event_triggered(_trigger_object = null,
 			check_empty_decks(_trigger_details["source"])
 		"enemy_initiates_attack",\
 				"enemy_initiates_scheme":
-			pre_attack_interrupts_done()			
+			pre_attack_interrupts_done()
+		"stage_completed": 
+			main_scheme_stage_completed(trigger_object)			
 
 	#Game state changed signal (to compute card costs, etc...)
 	match trigger:
@@ -417,7 +419,7 @@ func _scripting_event_triggered(_trigger_object = null,
 				"card_played", \
 				"card_token_modified",\
 				"step_started" :		
-			game_state_changed(_trigger_object, trigger, _trigger_details)
+			game_state_changed(trigger_object, trigger, _trigger_details)
 	return
 
 #a function that checks if any deck becomes empty after a card is moved,
@@ -522,16 +524,18 @@ func check_ally_limit():
 		if (count) > ally_limit:
 			identity_card.execute_scripts(identity_card, "ally_limit_rule")
 		
-#a function that checks regularly (sepcifically, whenever threat changes) if the main scheme has too much threat	
+#a function that checks regularly (specifically, whenever threat changes) if the main scheme has too much threat	
 func check_main_scheme_defeat():
-	var scheme = find_main_scheme()
-	if (!scheme):
+	var schemes = find_main_schemes()
+	if (!schemes):
 		var _error = 1 #TODO error handling
 		return
 	
-	if scheme.get_current_threat() < scheme.get_property("threat", 0):
-		return
-	
+	for scheme in schemes:
+		if scheme.get_current_threat() >= scheme.get_property("threat", 0):
+			scripting_bus.emit_signal_on_stack("stage_completed", scheme, {})
+
+func main_scheme_stage_completed(scheme):
 	var next_scheme = move_to_next_scheme(scheme)
 	
 	if (!next_scheme):		
@@ -1660,16 +1664,38 @@ func get_active_villain() -> Card:
 func get_villain() -> Card :
 	return cfc.NMAP.board.get_villain_card()
 
+func get_villains() :
+	var result = [get_villain()] #we ensure first ubject is the active villain
+	var cards:Array = cfc.NMAP.board.get_grid("villain").get_all_cards()
+	for card in cards:
+		if !card in result:
+			if "villain" == card.properties.get("type_code", "false"):
+				result.append(card)
+	return result	
+
+
 func get_main_scheme() -> Card :
 	return find_main_scheme()
 	
 func find_main_scheme() : 
-	var cards:Array = cfc.NMAP.board.get_grid("schemes").get_all_cards()
-	for card in cards:
-		if "main_scheme" == card.properties.get("type_code", "false"):
-			return card
-	return null	
+	var schemes = get_main_schemes()
+	if !schemes:
+		return null
+	if schemes.size() == 1:
+		return schemes[0]
 	
+	#multiple schemes. We return the scheme associated to the current villain if possible
+	var active_villain = get_active_villain()
+	for card in schemes:
+		var associated_villain = card.get_associated_villain()
+		if associated_villain == active_villain:
+			return card
+	#fallback, return the first scheme		
+	return schemes[0]
+
+func get_main_schemes() :
+	return find_main_schemes()
+		
 func find_main_schemes() :
 	var result = []
 	var cards:Array = cfc.NMAP.board.get_grid("schemes").get_all_cards()

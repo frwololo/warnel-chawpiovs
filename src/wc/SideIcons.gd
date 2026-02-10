@@ -198,7 +198,7 @@ func display_icons():
 
 	
 	
-	if !data_source.is_faceup:
+	if !owner_card.is_faceup:
 		title.text = data_source.get_display_name()
 		title.rect_position = Vector2(control.rect_size.x/2 - title.rect_size.x/2, 10) # * owner_card.card_size / CFConst.CARD_SIZE
 		title.rect_scale =  owner_card.card_size / CFConst.CARD_SIZE	

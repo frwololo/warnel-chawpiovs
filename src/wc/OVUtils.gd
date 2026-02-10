@@ -15,6 +15,56 @@ func get_script_identity(script, trigger_details):
 		
 	return gameData.get_identity_card(hero_id)
 		
+func preprocess_subject_definition(script: ScriptObject):
+#	var subject = overrides.get("subject", get_property(SP.KEY_SUBJECT))
+	var subject = script.get_property(SP.KEY_SUBJECT)
+	var script_definition = script.script_definition.duplicate()		
+	#replace targeting with selection (optional)
+	if CFConst.OPTIONS.get("replace_targetting_with_selection", false):
+		if subject == SP.KEY_SUBJECT_V_TARGET:
+			script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_BOARDSEEK
+			script_definition[SP.KEY_SELECTION_TYPE] = "equal" 
+			script_definition[SP.KEY_SELECTION_COUNT] = 1
+			script_definition[SP.KEY_NEEDS_SELECTION] = true
+			script_definition[SP.KEY_SUBJECT_COUNT] = "all"
+			script_definition["filter_state_seek"] = script_definition["filter_state_subject"]	
+	
+	#more than 1 villain, need to modify some cards rules in real time
+	if subject == SP.KEY_SUBJECT_V_VILLAIN:
+		var villains = gameData.get_villains()
+		if villains.size() > 1:
+			if !script.owner.is_encounter():
+				script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_BOARDSEEK
+				script_definition[SP.KEY_SELECTION_TYPE] = "equal" 
+				script_definition[SP.KEY_SELECTION_COUNT] = 1
+				script_definition[SP.KEY_NEEDS_SELECTION] = true
+				script_definition[SP.KEY_SUBJECT_COUNT] = "all"
+				script_definition["filter_state_seek"] = [
+					{
+						"filter_properties": {
+							"type_code": "villain"
+						}
+					}
+				]
+	#more than 1 main scheme, need to modify some cards rules in real time
+	if subject == SP.KEY_SUBJECT_V_MAIN_SCHEME:
+		var schemes = gameData.get_main_schemes()
+		if schemes.size() > 1:
+			if !script.owner.is_encounter():
+				script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_BOARDSEEK
+				script_definition[SP.KEY_SELECTION_TYPE] = "equal" 
+				script_definition[SP.KEY_SELECTION_COUNT] = 1
+				script_definition[SP.KEY_NEEDS_SELECTION] = true
+				script_definition[SP.KEY_SUBJECT_COUNT] = "all"
+				script_definition["filter_state_seek"] = [
+					{
+						"filter_properties": {
+							"type_code": "main_scheme"
+						}
+					}
+				]
+						
+	return script_definition 
 
 func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int = 0, run_type = CFInt.RunType.NORMAL, trigger_details :={}) -> Array:
 	var results = []
@@ -55,7 +105,7 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 		SP.KEY_SUBJECT_V_VILLAIN:
 			results.append(gameData.get_villain())
 		SP.KEY_SUBJECT_V_MAIN_SCHEME:
-			results.append(gameData.get_main_scheme())			
+			results.append(gameData.get_main_scheme())					
 		SP.KEY_SUBJECT_V_GRAB_UNTIL:
 			results = _grab_until_find(script, run_type)
 		SP.KEY_SUBJECT_CURRENT_ACTIVATION_ENEMY:

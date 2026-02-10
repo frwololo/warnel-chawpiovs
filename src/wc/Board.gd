@@ -410,25 +410,18 @@ func post_cards_moved_load():
 	while are_cards_still_animating():
 		yield(get_tree().create_timer(0.1), "timeout")
 
-	#TODO better way to do a reveal ?
-	var current_villain = get_villain_card()
-	var func_return = current_villain.execute_scripts_no_stack(current_villain, "reveal")
-	if func_return is GDScriptFunctionState && func_return.is_valid():
-		yield(func_return, "completed")		
+
 
 	var scheme = null
 	while !scheme: #in network settings, this varialbe sometimes takes some time to get to us
 		scheme = gameData.get_main_scheme()
 		yield(get_tree().create_timer(0.1), "timeout")
 		
-	func_return = scheme.execute_scripts_no_stack(scheme, "setup")
+	var func_return = scheme.execute_scripts_no_stack(scheme, "setup")
 	if func_return is GDScriptFunctionState && func_return.is_valid():
 		yield(func_return, "completed")		
 		
-	func_return = scheme.execute_scripts_no_stack(scheme, "reveal")
-	if func_return is GDScriptFunctionState && func_return.is_valid():
-		yield(func_return, "completed")			
-
+	
 	#execute setup for remaining cards, if any 
 	for card in get_all_cards(true):
 		# we want to avoid running setup 
@@ -441,6 +434,16 @@ func post_cards_moved_load():
 			func_return = card.execute_scripts_no_stack(card, "setup")
 			if func_return is GDScriptFunctionState && func_return.is_valid():
 				yield(func_return, "completed")		
+
+	#TODO better way to do a reveal ?
+	var current_villain = get_villain_card()
+	func_return = current_villain.execute_scripts_no_stack(current_villain, "reveal")
+	if func_return is GDScriptFunctionState && func_return.is_valid():
+		yield(func_return, "completed")		
+
+	func_return = scheme.execute_scripts_no_stack(scheme, "reveal")
+	if func_return is GDScriptFunctionState && func_return.is_valid():
+		yield(func_return, "completed")		
 
 	if !_has_victory_cards:
 		cfc.NMAP["victory_display"].visible = false
@@ -1085,7 +1088,10 @@ func flip_doublesided_card(card:WCCard):
 		else:
 			var new_card = gameData.retrieve_from_side_or_instance(back_code,card.get_owner_hero_id())
 			var slot = card._placement_slot
-			add_child(new_card)
+			if new_card.get_parent():
+				new_card.move_to(cfc.NMAP.board, -1, slot)
+			else:
+				add_child(new_card)
 			card.copy_modifiers_to(new_card)
 			gameData.set_aside(card) #is more required to remove it?		
 			#new_card._determine_idle_state()

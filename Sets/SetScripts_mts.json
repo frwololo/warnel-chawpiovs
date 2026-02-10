@@ -759,7 +759,7 @@
 				}
 			]
 		},
-		"receive_damage": {
+		"card_damaged": {
 			"event_filters": {
 				"target": "self"
 			},
@@ -782,6 +782,11 @@
 								"else": 0
 							},
 							"nested_tasks": [
+								{
+									"name": "heal",
+									"subject": "self",
+									"amount": 100,
+								},							
 								{
 									"name": "flip_doublesided_card",
 									"subject": "self"
@@ -808,21 +813,23 @@
 					}
 				},
 				{
-					"name": "move_card_to_container",
-					"dest_container": "discard",
+					"name": "discard",
 					"subject": "boardseek",
 					"subject_exclude": "self",
 					"filter_state_seek": [
 						{
 							"filter_properties": {
 								"Name": "Avengers Tower"
-							}
+							},
+							"filter_properties2": {
+								"type_code": "support"
+							},							
 						}
 					]
 				}
 			]
 		},
-		"receive_damage": {
+		"card_damaged": {
 			"event_filters": {
 				"target": "self"
 			},
@@ -1431,7 +1438,7 @@
 							"filter_state_seek": [
 								{
 									"filter_properties": {
-										"shortname": "Proxima Midnight"
+										"Name": "Proxima Midnight - 1"
 									}
 								}
 							]
@@ -1495,7 +1502,7 @@
 							"filter_state_seek": [
 								{
 									"filter_properties": {
-										"shortname": "Proxima Midnight"
+										"Name": "Proxima Midnight - 2"
 									}
 								}
 							]
@@ -1559,7 +1566,7 @@
 							"filter_state_seek": [
 								{
 									"filter_properties": {
-										"shortname": "Proxima Midnight"
+										"Name": "Proxima Midnight - 3"
 									}
 								}
 							]
@@ -1586,53 +1593,44 @@
 				}
 			]
 		},
-		"boost": {
+		"boost_alterants": {
 			"all": [
 				{
-					"name": "temporary_effect",
-					"end_condition": "enemy_activation_finished",
-					"subject": "host",
-					"effect": {
-						"alterants": {
-							"all": [
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "host",
+					"alteration": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"property": "attack",
+							"subject": "boardseek",
+							"subject_count": "all",
+							"subject_exclude": "host",
+							"filter_state_seek": [
 								{
-									"filter_task": "get_property",
-									"filter_property_name": "attack",
-									"trigger": "villain",
-									"alteration": {
-										"func_name": "get_subject_int_property",
-										"func_params": {
-											"property": "attack",
-											"subject": "boardseek",
-											"subject_exclude": "villain",
-											"filter_state_seek": [
-												{
-													"filter_properties": {
-														"type_code": "villain"
-													}
-												}
-											]
-										}
+									"filter_properties": {
+										"type_code": "villain"
 									}
-								},
+								}
+							]
+						}
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
+					"trigger": "host",
+					"alteration": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"property": "scheme",
+							"subject": "boardseek",
+							"subject_count": "all",
+							"subject_exclude": "host",
+							"filter_state_seek": [
 								{
-									"filter_task": "get_property",
-									"filter_property_name": "scheme",
-									"trigger": "villain",
-									"alteration": {
-										"func_name": "get_subject_int_property",
-										"func_params": {
-											"property": "scheme",
-											"subject": "boardseek",
-											"subject_exclude": "villain",
-											"filter_state_seek": [
-												{
-													"filter_properties": {
-														"type_code": "villain"
-													}
-												}
-											]
-										}
+									"filter_properties": {
+										"type_code": "villain"
 									}
 								}
 							]
@@ -5161,7 +5159,7 @@
 							"filter_state_seek": [
 								{
 									"filter_properties": {
-										"shortname": "Corvus Glaive"
+										"Name": "Corvus Glaive - 1"
 									}
 								}
 							]
@@ -5238,7 +5236,7 @@
 							"filter_state_seek": [
 								{
 									"filter_properties": {
-										"shortname": "Corvus Glaive"
+										"Name": "Corvus Glaive - 2"
 									}
 								}
 							]
@@ -5315,7 +5313,7 @@
 							"filter_state_seek": [
 								{
 									"filter_properties": {
-										"shortname": "Corvus Glaive"
+										"Name": "Corvus Glaive - 3"
 									}
 								}
 							]
@@ -5342,53 +5340,44 @@
 				}
 			]
 		},
-		"boost": {
+		"boost_alterants": {
 			"all": [
 				{
-					"name": "temporary_effect",
-					"end_condition": "enemy_activation_finished",
-					"subject": "host",
-					"effect": {
-						"alterants": {
-							"all": [
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "host",
+					"alteration": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"property": "attack",
+							"subject": "boardseek",
+							"subject_count": "all",
+							"subject_exclude": "host",
+							"filter_state_seek": [
 								{
-									"filter_task": "get_property",
-									"filter_property_name": "attack",
-									"trigger": "villain",
-									"alteration": {
-										"func_name": "get_subject_int_property",
-										"func_params": {
-											"property": "attack",
-											"subject": "boardseek",
-											"subject_exclude": "villain",
-											"filter_state_seek": [
-												{
-													"filter_properties": {
-														"type_code": "villain"
-													}
-												}
-											]
-										}
+									"filter_properties": {
+										"type_code": "villain"
 									}
-								},
+								}
+							]
+						}
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
+					"trigger": "host",
+					"alteration": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"property": "scheme",
+							"subject": "boardseek",
+							"subject_count": "all",
+							"subject_exclude": "host",
+							"filter_state_seek": [
 								{
-									"filter_task": "get_property",
-									"filter_property_name": "scheme",
-									"trigger": "villain",
-									"alteration": {
-										"func_name": "get_subject_int_property",
-										"func_params": {
-											"property": "scheme",
-											"subject": "boardseek",
-											"subject_exclude": "villain",
-											"filter_state_seek": [
-												{
-													"filter_properties": {
-														"type_code": "villain"
-													}
-												}
-											]
-										}
+									"filter_properties": {
+										"type_code": "villain"
 									}
 								}
 							]
@@ -6798,7 +6787,33 @@
 					}
 				]
 			}
-		}
+		},
+		"interrupt": {
+			"event_name": "stage_completed",
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"set_to_mod": true,
+					"token_name": "threat",
+					"subject": "self"
+				},
+				{
+					"name": "deal_encounter",
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		}		
 	},
 	"The Black Order": {
 		"alterants": {
@@ -7253,6 +7268,10 @@
 			"event_name": "stage_completed",
 			"trigger": "self",
 			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
 				{
 					"name": "mod_tokens",
 					"modification": 0,

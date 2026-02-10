@@ -113,6 +113,10 @@ signal environment_moved_to_board(card,details)
 # warning-ignore:unused_signal
 signal card_defeated(card,details)
 
+#emitted when a stage is completed on a main scheme
+# warning-ignore:unused_signal
+signal stage_completed(card,details)
+
 # warning-ignore:unused_signal
 signal identity_changed_form(card, details)
 

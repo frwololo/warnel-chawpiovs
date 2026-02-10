@@ -1200,6 +1200,8 @@ func set_card_rotation(
 func get_card_rotation() -> int:
 	return card_rotation
 
+func get_alterants_key():
+	return SP.KEY_ALTERANTS
 
 # Discovers if a grid placement slot is currently highlighted to be used
 func get_potential_placement_slot() -> BoardPlacementSlot:

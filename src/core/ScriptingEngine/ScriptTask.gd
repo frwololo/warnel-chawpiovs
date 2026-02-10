@@ -93,7 +93,7 @@ func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int, _all_pre
 	cfc.remove_ongoing_process(self)	
 #	print_debug("skipped: " + str(is_skipped) +  " valid: " + str(is_valid))
 
-func prime_ask_integer(run_type: int) -> int:
+func prime_ask_integer(_run_type: int) -> int:
 	var prepayment = get_property("network_prepaid", null)
 	if typeof(prepayment) == TYPE_ARRAY:
 		var number = prepayment[0]

@@ -183,14 +183,15 @@ func get_scenario_option(key):
 	return scenario_options.get(key, 0)
 
 func _load_extra_rules_from_encounters():
-	var the_deck = get_encounter_deck()
+	var the_deck: Array = get_encounter_deck()
+	the_deck += get_aside_deck()
 	for card_data in the_deck:
 		var canonical_id = card_data["code"]
-		var extra_decks = cfc.set_scripts.get(canonical_id,{}).get("extra_decks",{}).duplicate(true)
-		if extra_decks:
+		var encounter_extra_decks = cfc.set_scripts.get(canonical_id,{}).get("extra_decks",{}).duplicate(true)
+		if encounter_extra_decks:
 			if ! scenario_data.has("extra_decks"):
 				scenario_data["extra_decks"] = []
-			scenario_data["extra_decks"] += extra_decks
+			scenario_data["extra_decks"] += encounter_extra_decks
 			
 		var extra_rules = cfc.set_scripts.get(canonical_id,{}).get("extra_rules",{}).duplicate(true)
 		if extra_rules:

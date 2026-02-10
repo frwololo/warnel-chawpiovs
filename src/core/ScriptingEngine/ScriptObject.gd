@@ -193,6 +193,8 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 #	for key in overrides:
 #		self.script_definition[key] = overrides[key]
 	
+	self.script_definition = cfc.ov_utils.preprocess_subject_definition(self)
+	
 #	var subject = overrides.get("subject", get_property(SP.KEY_SUBJECT))
 	var subject = get_property(SP.KEY_SUBJECT)
 	

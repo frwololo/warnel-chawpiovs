@@ -247,7 +247,7 @@ func _launch_game():
 	gameData.init_network_players(players)
 	var game = load(CFConst.PATH_CUSTOM + "lobby/TeamSelection.tscn").instance()
 	# Connect deferred so we can safely erase it from the callback.
-	game.connect("game_finished", self, "_end_game", [], CONNECT_DEFERRED)
+#	game.connect("game_finished", self, "_end_game", [], CONNECT_DEFERRED)
 
 	get_tree().get_root().add_child(game)
 	hide()

@@ -282,7 +282,7 @@ func attack(script: ScriptTask) -> int:
 			}
 			_add_receive_damage_on_stack (damage, script, script_modifications)	
 		
-		var overkill = owner.get_property("overkill", 0) or (script.retrieve_integer_property("overkill"))	
+		var overkill = owner.get_property("overkill", 0, true) or (script.retrieve_integer_property("overkill"))	
 		if overkill:
 			var defender = script.subjects[0]
 			var defender_type = defender.get_property("type_code")
@@ -476,7 +476,7 @@ static func calculate_damage(script:ScriptTask) -> int:
 			return 0
 
 		var tough = card.tokens.get_token_count("tough")
-		if (amount and script.has_tag("piercing")):
+		if (amount and script.has_tag("piercing") or script.has_tag("ignore_tough")):
 			tough = 0
 		if tough: 
 			return 0
@@ -527,6 +527,9 @@ func receive_damage(script: ScriptTask) -> int:
 			if tough:
 				card.hint("Piercing!", Color8(255,50,50))
 		var tough = card.tokens.get_token_count("tough")
+		
+		if script.has_tag("ignore_tough"):
+			tough = 0
 
 			
 		if (amount and tough):
@@ -835,7 +838,7 @@ func prevent(script: ScriptTask) -> int:
 			else:	
 				#Find the event on the stack and remove it
 				#TOdo take into action subject, etc...
-				var event = gameData.theStack.delete_last_event(script)
+				var _event = gameData.theStack.delete_last_event(script)
 				#todo find amount prevented
 			if amount_prevented:
 				var trigger_details = script.trigger_details.duplicate()
@@ -1148,7 +1151,7 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 		}
 		_add_receive_damage_on_stack (amount, script, script_modifications)
 	
-	if defender and attacker.get_property("overkill", 0):
+	if defender and attacker.get_property("overkill", 0, true):
 		var defender_type = defender.get_property("type_code")
 		if defender_type in ["minion", "ally"]:
 			overkill_amount = amount - defender.get_remaining_damage()
@@ -1253,7 +1256,6 @@ func consequential_damage(script: ScriptTask) -> int:
 func commit_scheme(script: ScriptTask):
 	var retcode: int = CFConst.ReturnCode.CHANGED
 			
-	#TODO special case villain needs to receive a boost card
 	var owner = script.owner
 	
 	var main_scheme = gameData.find_main_scheme()
@@ -1552,7 +1554,7 @@ func deal_encounter(script: ScriptTask) -> int:
 	
 	for subject in script.subjects:
 		match subject.get_property("type_code", ""):
-			"hero": #subject is a hero, we deal them an encounter from the deck
+			"hero", "alter_ego": #subject is a hero, we deal them an encounter from the deck
 				gameData.deal_one_encounter_to(subject.get_controller_hero_id(), immediate_reveal)
 			_: #other uses cases, we assume that's the card we want to reveal
 				gameData.deal_one_encounter_to(owner_hero_id, immediate_reveal, subject)
@@ -1703,7 +1705,6 @@ func change_secondary_form(script: ScriptTask) -> int:
 		
 	var family = new_form.get_property("form_family", "")
 	if !family:
-		var error = 1
 		return CFConst.ReturnCode.FAILED
 
 	#get current form if any

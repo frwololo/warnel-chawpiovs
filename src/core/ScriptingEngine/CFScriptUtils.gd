@@ -44,7 +44,10 @@ static func get_altered_value(
 		scriptables_array +=\
 				cfc.get_tree().get_nodes_in_group("cards")
 		for obj in scriptables_array:
-			var scripts = obj.retrieve_scripts(SP.KEY_ALTERANTS)
+			var alterants_key = obj.get_alterants_key()
+			if !alterants_key:
+				continue
+			var scripts = obj.retrieve_scripts(alterants_key)
 			# We select which scripts to run from the card, based on it state
 			var any_state_scripts = scripts.get('all', [])
 			var state_scripts = scripts.get(obj.get_state_exec(), any_state_scripts)			
@@ -52,6 +55,8 @@ static func get_altered_value(
 			# we evoke the AlterantEngine only if we have something to execute
 			var task_details = _generate_trigger_details(task_name, task_properties)
 			if len(state_scripts):
+#				if task_properties.get("property_name", "") == "attack" and alterants_key == "boost_alterants" and _owner.get_property("shortname", "") == "Proxima Midnight":
+#					var _tmp = 1				
 				var alteng = cfc.alterant_engine.new(
 						_owner,
 						obj,

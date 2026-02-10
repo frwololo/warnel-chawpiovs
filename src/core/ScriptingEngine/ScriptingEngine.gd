@@ -211,9 +211,7 @@ func precompute(script):
 func execute(_run_type) -> void:
 	snapshot_id = rand_range(1,10000000)
 	all_tasks_completed = false
-	run_type = _run_type
-	var actual_execution_happened = false
-	
+	run_type = _run_type	
 	var only_cost_check = ((run_type == CFInt.RunType.COST_CHECK) or
 		 (run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
 	
@@ -355,7 +353,6 @@ func execute(_run_type) -> void:
 						"modifier": _retrieve_temp_modifiers(script, "properties")
 					}
 				var retcode = call(script.script_name, script)
-				actual_execution_happened = true
 				if retcode is GDScriptFunctionState:
 					retcode = yield(retcode, "completed")
 				# We set the previous subjects only after the execution, because some tasks
@@ -492,7 +489,9 @@ func move_card_to_container(script: ScriptTask) -> int:
 		var dest_str = script.get_property(SP.KEY_DEST_CONTAINER)
 		if !dest_str:
 			return CFConst.ReturnCode.FAILED
-		var dest_container: CardContainer = cfc.NMAP[dest_str.to_lower()]
+		var dest_container: CardContainer = cfc.NMAP.get(dest_str.to_lower(), null)
+		if !dest_container:
+			return CFConst.ReturnCode.FAILED
 		var dest_index = script.get_property(SP.KEY_DEST_INDEX)
 		if str(dest_index) == SP.KEY_SUBJECT_INDEX_V_TOP:
 			dest_index = -1
@@ -979,7 +978,7 @@ func modify_properties(script: ScriptTask) -> int:
 #	* [KEY_ASK_INTEGER_MIN](ScriptProperties#KEY_ASK_INTEGER_MIN)
 #	* [KEY_ASK_INTEGER_MAX](ScriptProperties#KEY_ASK_INTEGER_MAX)
 # moved all functionality to the prime function in ScriptObject
-func ask_integer(script: ScriptTask) -> int:
+func ask_integer(_script: ScriptTask) -> int:
 	return CFConst.ReturnCode.CHANGED
 	
 

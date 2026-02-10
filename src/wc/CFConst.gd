@@ -295,6 +295,17 @@ const TYPES_TO_GROUPS := {
 	"environment": ["group_environments"]
 }
 
+const ENCOUNTER_CARD_TYPES:= [
+	"main_scheme", 
+	"side_scheme", 
+	"environment", 
+	"attachment", 
+	"villain", 
+	"minion", 
+	"obligation", 
+	"treachery"
+]
+
 const ALL_TYPE_GROUPS: = [
 	"group_upgrade_support",
 	"group_schemes",
@@ -905,8 +916,8 @@ const DEBUG_SIMULATE_NETWORK_DELAY = 1.5
 const DEBUG_NETWORK_DELAY_RANDOM = false
 const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 
-const SCRIPT_BREAKPOINT_CARD_NAME := "Soul World"
-const SCRIPT_BREAKPOINT_TRIGGER_NAME := "pile_emptied"
+const SCRIPT_BREAKPOINT_CARD_NAME := "Avengers Tower"
+const SCRIPT_BREAKPOINT_TRIGGER_NAME := "receive_damage"
 
 const LARGE_SCREEN_WIDTH:= 1600
 

@@ -121,12 +121,22 @@ func set_is_inactive_attachment(value:=true):
 func set_is_boost(value:=true):
 	self._is_boost = value
 	
-	#removing the card from this group will prevent
-	#triggering alterants
-	if value and self.is_in_group("cards"):
-		self.remove_from_group("cards") 
-	if !value and !self.is_in_group("cards"):
-		self.add_to_group("cards")
+#	#removing the card from this group will prevent
+#	#triggering alterants
+#	if value and self.is_in_group("cards"):
+#		self.remove_from_group("cards")
+#		self.add_to_group("boost_cards")
+#	if !value and !self.is_in_group("cards"):
+#		self.add_to_group("cards")
+#		self.remove_from_group("boost_cards")
+
+
+func get_alterants_key():
+	if is_boost():
+		if is_faceup:
+			return "boost_alterants"
+		return ""
+	return SP.KEY_ALTERANTS
 	
 func is_boost():
 	return self._is_boost
@@ -1121,7 +1131,7 @@ func execute_scripts(
 		run_type := CFInt.RunType.NORMAL):
 
 
-	if (trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME and canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME ):
+	if (trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME) : # and canonical_name.begins_with(CFConst.SCRIPT_BREAKPOINT_CARD_NAME)):
 		var _tmp = 1
 
 	if cfc.game_paused or cfc.is_modal_event_ongoing() or gameData.is_targeting_ongoing():
@@ -2080,7 +2090,7 @@ func change_form_script_replacement(script_definition: Dictionary, trigger_detai
 		return {}
 	
 	#get current form if any
-	var current_form = cfc.NMAP.board.find_card_by_property("form_family", family, owner_hero_id)
+#	var current_form = cfc.NMAP.board.find_card_by_property("form_family", family, owner_hero_id)
 			
 
 	var change_form_script = []
@@ -2240,6 +2250,10 @@ func to_color():
 #Marvel Champions Specific functionality
 #
 
+func is_encounter():
+	var type = get_property("type_code", "")
+	return type in CFConst.ENCOUNTER_CARD_TYPES
+
 func get_associated_villain():
 	var sceng = _get_script_sceng("associated_villain")
 	if sceng:		
@@ -2367,7 +2381,7 @@ func set_is_faceup(
 	
 	if check:
 		return retcode
-	
+		
 	if value:
 		#initiate the card art if it's the first time we're setting this faceup
 		set_card_art()
@@ -2404,6 +2418,9 @@ func set_is_faceup(
 				scripts = {}				
 			
 			_hidden_properties = {}
+
+	if _before != _after and is_onboard():
+		cfc.flush_cache()
 	
 	return retcode	
 		
@@ -2620,7 +2637,7 @@ func count_unique_property_value(params, script:ScriptTask = null) -> int:
 		
 	return count.size()
 		
-func get_subject_int_property(params, script:ScriptTask = null) -> int:
+func get_subject_int_property(params, script:ScriptObject= null) -> int:
 	var subjects = get_param_subjects(params, script)
 	
 	var property = params.get("property", "")

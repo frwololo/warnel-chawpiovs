@@ -1088,7 +1088,7 @@ func flip_doublesided_card(card:WCCard):
 		else:
 			var new_card = gameData.retrieve_from_side_or_instance(back_code,card.get_owner_hero_id())
 			var slot = card._placement_slot
-			if new_card.get_parent():
+			if new_card.get_parent() and slot:
 				new_card.move_to(cfc.NMAP.board, -1, slot)
 			else:
 				add_child(new_card)
@@ -1096,8 +1096,9 @@ func flip_doublesided_card(card:WCCard):
 			gameData.set_aside(card) #is more required to remove it?		
 			#new_card._determine_idle_state()
 			#new_card.move_to(cfc.NMAP.board, -1, slot)	
-			new_card.position = slot.rect_global_position
-			slot.set_occupying_card(new_card)
+			if slot:
+				new_card.position = slot.rect_global_position
+				slot.set_occupying_card(new_card)
 			new_card.set_state(Card.CardState.ON_PLAY_BOARD)
 			#new_card.reorganize_self()
 			return new_card

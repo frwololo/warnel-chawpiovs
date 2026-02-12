@@ -149,6 +149,7 @@ func load_from_villain(villain_id):
 #		"modular_encounters": ["bomb_scare"],
 #		"expert_mode": true,false	
 func load_from_dict(_scenario:Dictionary):
+	reset()
 	grid_setup = CFConst.GRID_SETUP.duplicate(true)	
 	scheme_card_id = _scenario.get("scheme_id")
 	if !scheme_card_id:
@@ -162,7 +163,7 @@ func load_from_dict(_scenario:Dictionary):
 		print_debug("Can't find schemes for " + scheme_card_id)
 		return	
 		
-	scenario_data = cfc.primitives[scheme_card_id]
+	scenario_data = cfc.primitives[scheme_card_id].duplicate(true)
 	
 	is_expert_mode =  _scenario.get("expert_mode", false)
 	modular_sets = _scenario.get("modular_encounters", [])

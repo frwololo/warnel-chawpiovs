@@ -5,7 +5,7 @@ extends Reference
 func has_interrupt(script:Dictionary) -> String:
 	for _k in script.keys():
 		var k:String = _k
-		if (k=="interrupt"):
+		if (k.begins_with("interrupt")):
 			return k
 	return ""
 

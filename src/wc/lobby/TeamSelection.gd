@@ -605,6 +605,9 @@ func request_release_hero_slot(hero_id):
 remotesync func release_hero_slot(hero_id) -> int:
 	if (not cfc.is_game_master()):
 		return -1
+	if !hero_id:
+		return -1
+		
 	var client_id = cfc.get_rpc_sender_id()
 
 	var result = -1

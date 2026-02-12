@@ -1073,18 +1073,26 @@ func enemy_activates() :
 		
 		EnemyAttackStatus.DAMAGE_OR_THREAT:
 			var script_name
+			var details = {
+				"target" : target_hero,
+				SP.TRIGGER_TARGET_HERO : target_hero.canonical_name
+			}				
 			match action:
 				"scheme":
 					script_name = "enemy_scheme_threat"
 				"attack":
 					script_name = "enemy_attack_damage"
+					if enemy.activity_script.subjects:
+						details["defender"] = enemy.activity_script.subjects[0]
 				
-			var details = {
-				"target" : target_hero,
-				SP.TRIGGER_TARGET_HERO : target_hero.canonical_name
-			}	
+			var script_definition = {
+				"name": script_name, 
+				"target_hero_id" : target_id
+			}
+			#most filters check on script definition instead of trigger_details (because _current_interrupted_event in globalstack script is based on script definition for some reason)
+			script_definition.merge(details)
 						
-			var stackEvent = SimplifiedStackScript.new({"name": script_name, "target_hero_id" : target_id}, enemy, enemy, details)
+			var stackEvent = SimplifiedStackScript.new(script_definition, enemy, enemy, details)
 			theStack.add_script(stackEvent)
 			_current_enemy_attack_step = EnemyAttackStatus.ATTACK_COMPLETE
 			
@@ -1831,14 +1839,19 @@ func play_scripted_sequence():
 		
 	if gameData.is_targeting_ongoing() or gameData.targeting_happened_too_recently():
 		return
-	#we already sent a request and should be waiting for full resolution	
-	if !gameData.theStack.is_player_allowed_to_click():
-		return		
+		
+	var next_play_event = scripted_play_sequence.front()
+	if next_play_event["is_villain"]:
+		pass
+	else:	
+		#we already sent a request and should be waiting for full resolution	
+		if !gameData.theStack.is_player_allowed_to_click():
+			return		
 	
 
 	
 	_ready_for_next_sequence = false
-	var next_play_event = scripted_play_sequence.pop_front()
+	next_play_event = scripted_play_sequence.pop_front()
 	var subject = next_play_event["card"]
 	var trigger = next_play_event["trigger"]	
 		
@@ -1858,12 +1871,17 @@ func play_scripted_sequence():
 #script requests some manual triggers of cards
 func start_play_sequence(cards, trigger, script):
 	var owner_hero_id = WCScriptingEngine.get_hero_id_from_script(script)
+	var is_villain = false
+	if !owner_hero_id:
+		owner_hero_id = self.get_current_activity_hero_target()
+		is_villain = true
 	if !owner_hero_id in (self.get_my_heroes()):
 		return
 	for subject in cards:
 		scripted_play_sequence.append({
 			"card" : subject,
-			"trigger" : trigger
+			"trigger" : trigger,
+			"is_villain": is_villain
 		})
 
 	

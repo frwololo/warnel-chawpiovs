@@ -24,6 +24,7 @@ const KEY_SUBJECT_V_MAIN_SCHEME := "main_scheme"
 const KEY_SUBJECT_V_GRAB_UNTIL := "grab_until"
 const KEY_SUBJECT_CURRENT_ACTIVATION_ENEMY:= "current_activation_enemy"
 const KEY_SUBJECT_CURRENT_ACTIVATION_TARGET:= "current_activation_target"
+const KEY_SUBJECT_CURRENT_HERO_TARGET:= "current_hero_target"
 
 const FILTER_HOST_OF := "filter_is_host_of"
 const FILTER_SAME_CONTROLLER := "filter_same_controller"
@@ -227,7 +228,7 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 	var tags = card_scripts.get("tags", [])
 	var script_name = card_scripts.get("name", "")
 	#check for special guard conditions if card is an attack
-	if ((script_name == "attack") or ("attack" in tags)) and card == gameData.get_villain():
+	if ((script_name == "attack") or ("attack" in tags)) and card in gameData.get_villains():
 		var all_cards = cfc.NMAP.board.get_all_cards()
 		if owner_card:		
 			var hero_id = owner_card.get_controller_hero_id()

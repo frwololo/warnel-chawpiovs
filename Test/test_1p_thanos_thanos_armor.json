@@ -1,0 +1,153 @@
+{
+	"_comments": "Bug: Thanos's armor removal condtiontion not triggering",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spectrum"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1"
+				}
+			],
+			"others": [
+				{
+					"card": "Thanos's Armor",
+					"host": "Thanos - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				},
+				{
+					"card": "The Titan's Throne",
+					"tokens": {"threat": 1}
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Soul Stone"
+				}
+			
+			],
+			"identity1": [
+				{
+					"card": "Spectrum",
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Gamma",
+				}
+			],
+			"hand1": [
+				{
+					"card": "Pulsar shield"
+				},
+				{
+					"card": "Gamma Blast"
+				},				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Spectrum",
+		},	
+		{
+			"type": "choose",
+			"value": "Attack",
+		},	
+		{
+			"type": "target",
+			"value": "Thanos - 1",
+		},
+		{
+			"type": "activate",
+			"value": "Thanos's Armor",
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spectrum"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Thanos's Armor",
+				}
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1",
+					"tokens": {"damage": 2}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				},
+				{
+					"card": "The Titan's Throne",
+					"tokens": {"threat": 1}
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Soul Stone"
+				}
+			
+			],
+			"identity1": [
+				{
+					"card": "Spectrum",
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Gamma",
+				}
+			],
+			"discard1": [
+				{
+					"card": "Gamma Blast"
+				},				
+				{
+					"card": "Pulsar shield"
+				},			
+			]
+		}
+	}
+}

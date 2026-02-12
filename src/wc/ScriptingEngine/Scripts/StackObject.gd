@@ -6,6 +6,7 @@ extends Reference
 
 var stack_uid:int = 0
 var display_name: = ""
+var interrupt_marker = false
 
 #task elements, generally speaking, should be ScriptTask objects
 #at the very least, they need a script_definition and a script_name value
@@ -177,13 +178,14 @@ func _get_display_text_nocache():
 				result = owner_name + " - Surge"
 				return result
 		var trigger = self.get_trigger()
-		match trigger:
-			"interrupt":
-				if owner:
-					for id in ["forced interrupt", "interrupt", "forced response", "response"]:
-						var text = owner.get_printed_text(id)
-						if text:
-							return text		
+
+		if trigger.begins_with("interrupt"):
+			if owner:
+				for id in ["forced interrupt", "interrupt", "forced response", "response"]:
+					var text = owner.get_printed_text(id)
+					if text:
+						return text		
+		match trigger:							
 			"boost":
 				if owner:
 					var text = owner.get_printed_text("boost")

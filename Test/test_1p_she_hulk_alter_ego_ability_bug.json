@@ -1,0 +1,116 @@
+{
+	"_comments": "Jennifer Walters bug with Hinder",
+	"init": {
+		"phase": "VILLAIN_REVEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"encounters_facedown1": [
+				{
+					"card": "Sanctuary"
+				}
+			
+			],
+			"identity1": [
+				{
+					"card": "Jennifer Walters",
+					"tokens": {"__jennifer_resource": 1}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+		},	
+		{
+			"type": "activate",
+			"value": "Jennifer Walters",
+			"_comments": "interrupt Encounter"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		},
+
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],		
+			"villain": [
+				{
+					"card": "Thanos - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				},
+				{
+					"card": "Sanctuary",
+					"tokens": {"threat": 3}
+				}				
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"encounters_facedown1": [			
+			],
+			"identity1": [
+				{
+					"card": "Jennifer Walters"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

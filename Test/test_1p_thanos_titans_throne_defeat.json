@@ -1,0 +1,121 @@
+{
+	"_comments": "Titan's throne defeat condition not working",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spectrum"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				},
+				{
+					"card": "The Titan's Throne",
+					"tokens": {"threat": 1}
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Soul Stone"
+				}
+			
+			],
+			"identity1": [
+				{
+					"card": "Spectrum",
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Spectrum",
+		},	
+		{
+			"type": "choose",
+			"value": "Thwart",
+		},	
+		{
+			"type": "target",
+			"value": "The Titan's Throne",
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spectrum"
+				}
+			}
+		],
+		"board": {
+			"discard_infinity_stone": [
+				{
+					"card": "Soul Stone"
+				}			
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				},		
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "The Titan's Throne",
+				},				
+			],
+			"identity1": [
+				{
+					"card": "Spectrum",
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

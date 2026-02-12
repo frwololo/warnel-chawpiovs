@@ -1,0 +1,160 @@
+{
+	"_comments": "Bug: I am inevitable boost sends Infinity Stone to discard pile",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spectrum"
+				}
+			}
+		],
+		"board": {
+			"deck_infinity_stone": [
+				{
+					"card": "Time Stone"
+				},
+				{
+					"card": "Power Stone"
+				},			
+			],			
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},			
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "\"I Am Inevitable\""
+				},
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1",
+					"tokens": {"damage": 4}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				},		
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Soul Stone"
+				}
+			
+			],
+			"identity1": [
+				{
+					"card": "Spectrum",
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Gamma",
+				}
+			],
+			"hand1": [
+				{
+					"card": "Gamma Blast"
+				},				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack"
+		},	
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		},	
+		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spectrum"
+				}
+			}
+		],
+		"board": {
+			"discard_infinity_stone": [
+				{
+					"card": "Power Stone"
+				},				
+			],
+			"deck_infinity_stone": [
+				{
+					"card": "Time Stone"
+				},
+		
+			],	
+			"discard_villain": [
+				{
+					"card": "\"I Am Inevitable\""
+				},
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},			
+
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1",
+					"tokens": {"damage": 4}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Soul Stone"
+				}
+			
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Soldier"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Spectrum",
+					"tokens": {"damage": 5}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Gamma",
+				}
+			],
+			"hand1": [
+				{
+					"card": "Gamma Blast"
+				},				
+			]
+		}
+	}
+}

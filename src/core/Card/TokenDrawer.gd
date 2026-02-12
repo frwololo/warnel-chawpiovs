@@ -291,6 +291,11 @@ func _on_VBoxContainer_sort_children() -> void:
 func set_max(token_name, max_value):
 	max_tokens[token_name] = max_value
 
+func get_max(token_name):
+	if !max_tokens.has(token_name):
+		return 0
+	return max_tokens[token_name]
+
 func export_to_json():
 	var result = {}
 	var token_names = get_all_tokens()

@@ -759,6 +759,14 @@ func get_card(card_id_or_name:String, requesting_hero_id):
 			continue
 		if c.canonical_id == card_id:
 			return c
+
+	#look again in all cards, including in all piles
+	var all_cards = cfc.NMAP.board.get_all_cards(true)
+	for c in all_cards:
+		if !is_instance_valid(c):
+			continue
+		if c.canonical_id == card_id:
+			return c
 	
 	return null
 
@@ -983,6 +991,10 @@ remote func initialize_clients_test(details:Dictionary):
 	current_test_file = details["current_test_file"]
 	test_conditions = details["test_conditions"]
 	delta = 0
+	if test_conditions.has("setup"):
+		for card_id in test_conditions["setup"]:
+			var card:WCCard = get_card(card_id, 1)
+			card.execute_scripts_no_stack(card, "setup")
 	if !cfc.is_game_master():
 		announce("running test: " + current_test_file+"\n")
 

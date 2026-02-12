@@ -120,7 +120,8 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 				activation_script = gameData.get_latest_activity_script()			
 			if activation_script and activation_script.subjects:
 				results+= activation_script.subjects				
-									
+		SP.KEY_SUBJECT_CURRENT_HERO_TARGET:
+			results.append(gameData.get_identity_card(gameData.get_current_activity_hero_target()))							
 	return results
 
 func _grab_until_find(script: ScriptObject, _run_type) -> Dictionary:
@@ -318,7 +319,7 @@ func filter_trigger(
 	#from this point this is only checks for interrupts
 
 	#if this is not an interrupt, I let it through
-	if (trigger != "interrupt"):
+	if (!trigger.begins_with("interrupt")):
 		var trigger_filters = card_scripts.get("event_filters", {})
 		if trigger_filters:
 			return matches_filters(trigger_filters, owner_card, _trigger_details)
@@ -367,7 +368,7 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 	var filters = _filters #.duplicate(true)
 	var controller_hero_id = owner_card.get_controller_hero_id()
 	
-	
+
 	var replacements = {
 		"villain": gameData.get_villain(),
 		"self": owner_card,
@@ -379,12 +380,15 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 	else:
 		replacements["my_hero"] = gameData.get_identity_card(gameData.get_current_activity_hero_target())
 
+	var trigger_details = guidMaster.replace_guids_to_objects(_trigger_details)
+	var event_source_hero_id = WCScriptingEngine.get_event_source_hero_id(trigger_details)
+
 	var zone_replacements = [
 		{"from":"_my_hero" , "to": controller_hero_id },
-		{"from":"_first_player" , "to": gameData.first_player_hero_id() },
+		{"from":"_first_player" , "to": gameData.first_player_hero_id() },		
 #		{"from":"_previous_subject" , "to": previous_hero_id},
 #		{"from":"_current_hero_target" , "to": current_hero_target},
-#		{"from":"_event_source_hero" , "to": event_source_hero_id},					
+		{"from":"_event_source_hero" , "to": event_source_hero_id},					
 	]
 
 	for zone in ["hand"] + CFConst.HERO_GRID_SETUP.keys() + CFConst.ALL_TYPE_GROUPS:
@@ -398,7 +402,7 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 
 	filters = WCUtils.search_and_replace_multi(filters, replacements, true)
 
-	var trigger_details = guidMaster.replace_guids_to_objects(_trigger_details)
+	
 
 	
 	if filters.has("filter_state_event_source"):

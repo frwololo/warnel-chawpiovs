@@ -1,0 +1,199 @@
+{
+	"_comments": "Test Pulsar Shield timing",
+	"test_conditions": {
+		"setup" : [
+			"Gamma",
+			"Pulsar",
+			"Photon"
+		],
+	},	
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spectrum"
+				}
+			}
+		],
+		"board": {
+			"deck_infinity_stone": [
+				{
+					"card": "Time Stone"
+				},
+				{
+					"card": "Power Stone"
+				},			
+			],
+			"deck_villain": [
+				{
+					"card": "\"I Am Inevitable\""
+				},	
+				{
+					"card": "Advance"
+				},								
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},			
+			],			
+			"villain": [
+				{
+					"card": "Thanos - 3"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Soul Stone"
+				}
+			
+			],			
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spectrum"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Gamma"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Pulsar"
+				},
+				{
+					"card": "Photon"
+				}				
+			],
+			"hand1": [
+				{
+					"card": "Pulsar Shield"
+				},
+				{
+					"card": "Gamma Blast"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "Spectrum",
+			"_comments": "defend with spectrum"
+		},
+		{
+			"type": "play",
+			"value": "Pulsar Shield",
+			"_comments": "Play pulsar shield as interrupt"
+		},
+		{
+			"type": "choose",
+			"value": "yes",
+			"_comments": "accept to heal from Pulsar"
+		},			
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "wait for player turn"
+		},		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+			"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spectrum"
+				}
+			}
+		],
+		"board": {
+			"deck_infinity_stone": [
+				{
+					"card": "Time Stone"
+				},
+				{
+					"card": "Power Stone"
+				},			
+			],
+			"discard_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},			
+			],
+			"deck_villain": [
+				{
+					"card": "\"I Am Inevitable\""
+				},			
+				{
+					"card": "Advance"
+				},						
+			],			
+			"villain": [
+				{
+					"card": "Thanos - 3"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Soul Stone"
+				}
+			
+			],			
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spectrum",
+					"tokens": {"damage": 2} 
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Pulsar"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Soldier"
+				},
+			],
+			"set_aside": [
+				{
+					"card": "Photon"
+				},
+				{
+					"card": "Gamma"
+				},				
+			],
+			"discard1": [
+				{
+					"card": "Gamma Blast"
+				},			
+				{
+					"card": "Pulsar Shield"
+				},
+			]
+		}
+	}
+}

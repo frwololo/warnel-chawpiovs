@@ -62,6 +62,7 @@ var yield_wait_time: float= 0
 var history := {}
 var pending_interaction_checksums := {}
 var sync_enabled = true
+var yielded_scripts = []
 
 
 #stores unique IDs for all stack events
@@ -96,18 +97,34 @@ func remove_yield_counter(name):
 	yield_wait_time = 0
 					
 func create_and_add_script(sceng, run_type, trigger, trigger_details, action_name, checksum):
-	add_yield_counter("create_and_add_script")
+
+	var yield_data = {
+		"sceng": sceng,
+		"run_type": run_type,
+		"trigger": trigger,
+		"trigger_details": trigger_details,
+		"action_name": action_name,
+		"checksum": checksum,
+		"yield_reason": "create_and_add_script",
+	}
+	if _pending_flush and sync_enabled:
+		add_yielded_script(yield_data)
+		return
+		
+	if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER:
+		if trigger != "manual":	
+			set_run_mode(RUN_MODE.PENDING_USER_INTERACTION)	
+			#gameData.theStack.set_pending_network_interaction(interaction_authority, checksum, "authorized user ready to interact")
+	
+	
 	if !run_mode in [RUN_MODE.NOTHING_TO_RUN, RUN_MODE.PENDING_USER_INTERACTION] :
 		if trigger in ["manual"]: #todo might need interrupt in there as well?
 			var _error = 1
 			display_stack_error_for_card(sceng.owner)
 			return
 		elif sync_enabled:
-			while (yield_wait_time < yield_max_wait_time) and !run_mode in [RUN_MODE.NOTHING_TO_RUN, RUN_MODE.PENDING_USER_INTERACTION]:
-				display_debug("yield for NOTHING_TO_RUN or PENDING_USER_INTERACTION in create_and_add_script")
-				yield(get_tree().create_timer(0.1), "timeout")
-				yield_wait_time += 0.1
-	remove_yield_counter("create_and_add_script")
+			add_yielded_script(yield_data)
+			return
 	#if the script required user interaction, we send it
 	#to the master for replication on all clients
 	#else, all machines are expected to run it locally
@@ -142,6 +159,24 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 		_:
 			#this shouldn't happen
 			display_debug("error in create_and_add_script, invalid sceng.user_interaction_status:" +str(sceng.user_interaction_status))
+
+func add_yielded_script(yield_data):
+	add_yield_counter("yielded_script")
+	yielded_scripts.append(yield_data)
+
+func attempt_yielded_script():
+	if !yielded_scripts:
+		return false
+		
+	var script_data = yielded_scripts.pop_front()
+	remove_yield_counter("yielded_script")	
+	create_and_add_script(
+		script_data["sceng"],
+		script_data["run_type"],
+		script_data["trigger"],
+		script_data["trigger_details"],
+		script_data["action_name"] ,
+		script_data["checksum"] )
 
 func create_and_add_signal(_name, _owner, _details):
 	var stackEvent:SignalStackScript = SignalStackScript.new(_name, _owner, _details)
@@ -418,21 +453,40 @@ func add_event_to_stack(stackEvent, checksum = ""):
 			#reset_interrupt_states()
 
 	
-	stackEvent.stack_uid = get_next_stack_uid()
 
-	if is_interrupt_mode():	
+
+	if is_interrupt_mode():
+		var buffer = StackObject.new()
+		buffer.interrupt_marker = true
+		insert_event_into_stack(buffer)
+		insert_event_into_stack(stackEvent)
+	else:
+		var pos = 0
+		for i in stack.size():
+			var j = stack.size() - 1 - i
+			if stack[j].interrupt_marker:
+				pos = j + 1
+				break
+		insert_event_into_stack(stackEvent, pos)
+		#stack.push_front(stackEvent)
+	
+	emit_signal("script_added_to_stack",stackEvent)
+	display_debug("added script to stack - " + checksum + ". my current_stack_uid is " + str(current_stack_uid) )
+	return result
+
+func insert_event_into_stack(stackEvent, pos = -1):
+	stackEvent.stack_uid = get_next_stack_uid()
+	if pos == -1:
 		stack.append(stackEvent)
 	else:
-		stack.push_front(stackEvent)
-	
+		stack.insert(pos, stackEvent)
+
 	history[stackEvent.stack_uid] = {
 		"stack_uid" : stackEvent.stack_uid,
 		"details": stackEvent.get_display_name(),
 		"class": stackEvent.get_class(),	
-	}
-	emit_signal("script_added_to_stack",stackEvent)
-	display_debug("added script to stack - " + checksum + ". my current_stack_uid is " + str(current_stack_uid) )
-	return result
+	}	
+	
 
 #wrapper around add_event_to_stack that also tries to restart the execution of scripts
 func add_script_and_run(stackEvent):
@@ -453,6 +507,11 @@ func _process(_delta: float):
 	display_debug_info()
 	
 	show_server_activity()
+	
+	if run_mode in [RUN_MODE.NOTHING_TO_RUN]: #, RUN_MODE.PENDING_USER_INTERACTION]:
+		if yielded_scripts:
+			attempt_yielded_script()
+			return
 			
 	if run_mode != RUN_MODE.NO_BRAKES:
 		return
@@ -478,6 +537,18 @@ func _process(_delta: float):
 		return
 
 	var stack_object = stack.back()
+	#we're giving the chance for pending scripts to execute as part of
+	# an interrupt flow, before resuming normal execution
+	if stack_object.interrupt_marker:
+		if yielded_scripts:
+			var backup_state = run_mode
+			set_run_mode(RUN_MODE.PENDING_USER_INTERACTION)
+			attempt_yielded_script()
+			#run_mode = backup_state
+			return
+#		if gameData.execute_priority_scripts():
+#			return
+		
 	var _interrupt_state = compute_interrupts(stack_object)
 	
 	if !_sent_about_to_execute_signal.has(stack_object):
@@ -707,6 +778,10 @@ func compute_interrupts(script):
 						var guid = guidMaster.get_guid(card)
 						my_interrupters.append(guid)
 						interrupters_found = true
+				#we break here if we found interrupters for the current subtask
+				#this ensures the _current_interrupted_event variable matches the current interruption
+				if interrupters_found:
+					break
 		
 			potential_interrupters[hero_id] = my_interrupters
 		if interrupters_found:
@@ -787,6 +862,8 @@ func set_run_mode(new_value, caller = ""):
 	if !run_mode in [RUN_MODE.PENDING_USER_INTERACTION, RUN_MODE.PENDING_REQUEST_ACK]:
 		reset_interrupt_states()
 	
+	if run_mode == RUN_MODE.PENDING_USER_INTERACTION:
+		var _tmp =1
 	gameData.game_state_changed()
 	cfc._rpc(self,"client_run_mode_changed", all_clients_status[cfc.get_network_unique_id()])
 
@@ -1009,7 +1086,10 @@ func find_last_event_id_before_me(requester:ScriptTask):
 	for i in stack.size():
 		var j = stack.size() -1 -i
 		if is_script_in_stack_object(requester, stack[j]):
-			return j-1
+			j = j-1
+			while j >=0 and stack[j].interrupt_marker:
+				j = j-1
+			return j
 	return -1
 		
 func find_last_event_before_me(requester:ScriptTask):
@@ -1017,7 +1097,8 @@ func find_last_event_before_me(requester:ScriptTask):
 	if max_id < 0:
 		return null
 		
-	return stack[max_id]	
+	var event = stack[max_id]
+	return event	
 
 func find_event(_event_details, filters, owner_card, _trigger_details):
 	for event in stack:

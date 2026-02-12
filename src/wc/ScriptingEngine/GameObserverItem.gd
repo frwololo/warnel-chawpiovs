@@ -33,8 +33,8 @@ func _class_specific_ready():
 
 
 func retrieve_scripts(trigger, _filters:={}) -> Dictionary:
-	var scripts = script_definition.get(trigger, {})
-	return scripts.duplicate()
+	var the_scripts = script_definition.get(trigger, {})
+	return the_scripts.duplicate()
 	
 func retrieve_all_scripts():
 	return script_definition

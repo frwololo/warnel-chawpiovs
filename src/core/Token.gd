@@ -71,7 +71,10 @@ func set_count(value := 1) -> void:
 	# Solution taken from
 	# https://github.com/godotengine/godot/issues/30460#issuecomment-509697259
 	if is_inside_tree():
-		count_label.text = str(count)
+		if token_drawer and (token_drawer.get_max(get_token_name()) == 1):
+			count_label.text = canonical_name[0].to_upper()
+		else:
+			count_label.text = str(count)
 
 
 # Returns the amount of tokens of this type

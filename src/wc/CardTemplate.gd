@@ -122,13 +122,13 @@ func set_is_boost(value:=true):
 	self._is_boost = value
 	
 #	#removing the card from this group will prevent
-#	#triggering alterants
-#	if value and self.is_in_group("cards"):
-#		self.remove_from_group("cards")
-#		self.add_to_group("boost_cards")
-#	if !value and !self.is_in_group("cards"):
-#		self.add_to_group("cards")
-#		self.remove_from_group("boost_cards")
+#	#triggering incorrect interrupts
+	if value and self.is_in_group("cards"):
+		self.remove_from_group("cards")
+		self.add_to_group("scriptables")
+	if !value and !self.is_in_group("cards"):
+		self.add_to_group("cards")
+		self.remove_from_group("scriptables")
 
 
 func get_alterants_key():
@@ -256,8 +256,10 @@ func check_death(script = null) -> bool:
 
 	var card_dies_definition = {
 		"name": "card_dies",
-		"tags": tags
+		"tags": tags,
 	}
+	if trigger_details.has("source"):
+		card_dies_definition["source"] = trigger_details["source"]
 	#force changing the trigger here. Might not be the best idea but it's useful for UI display
 	trigger_details["trigger_type"] = "card_dies"	
 	
@@ -974,15 +976,17 @@ func can_interrupt(
 		return CFConst.CanInterrupt.NO
 	
 	var _debug = false
-	if canonical_name == "Hawkeye's Bow" and trigger_card:
-		if trigger_details["event_name"] == "receive_damage":
+	if canonical_name == "Proxima Midnight - 1" and trigger_card:
+		if trigger_details["event_name"] == "card_dies":
 			_debug = true
 
 	if (_debug):
 		display_debug("{interrupt} Hero:" + str(hero_id) + " Checks for " + canonical_name + " vs " + trigger_details.get("event_name") + " - " + trigger_card.canonical_name)		
 
 	#select valid scripts that match the current trigger
-	var card_scripts = retrieve_filtered_scripts(trigger_card, "interrupt", trigger_details)
+	var card_scripts = retrieve_filtered_scripts(trigger_card, "interrupt_" + trigger_details.get("event_name", ""), trigger_details)
+	if !card_scripts:	
+		card_scripts = retrieve_filtered_scripts(trigger_card, "interrupt", trigger_details)
 	if (_debug):
 		display_debug("card_scripts: " + to_json(card_scripts))
 	if (!card_scripts):
@@ -1024,6 +1028,7 @@ func can_interrupt(
 
 
 	return may_interrupt
+
 
 func execute_scripts_no_stack(
 		trigger_card: Card = self,
@@ -1114,6 +1119,24 @@ func has_potential_scripts(trigger_card, trigger):
 	var any_state_scripts = card_scripts.get('all', [])
 	var state_scripts = card_scripts.get(state_exec, any_state_scripts)
 	return state_scripts
+
+#returns true if something is going on that prevents execution of card scripts
+func script_exec_temporarily_blocked(run_type) -> bool:
+	if cfc.game_paused: 
+		return true
+	#background cost check is awlays acceptable
+	#in particular, we don't want to block/delay can_interrupt checks!
+	if run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
+		return false
+		
+	if cfc.is_modal_event_ongoing():
+		return true
+	if gameData.is_targeting_ongoing():
+		return true
+		
+	
+	return false
+
 	
 # Executes the tasks defined in the card's scripts in order.
 #
@@ -1130,26 +1153,16 @@ func execute_scripts(
 		orig_trigger_details: Dictionary = {},
 		run_type := CFInt.RunType.NORMAL):
 
-
 	if (trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME) : # and canonical_name.begins_with(CFConst.SCRIPT_BREAKPOINT_CARD_NAME)):
 		var _tmp = 1
 
-	if cfc.game_paused or cfc.is_modal_event_ongoing() or gameData.is_targeting_ongoing():
+	if script_exec_temporarily_blocked(run_type):
 		if get_parent() and !("tree_" in trigger): #dirty check to avoid crashes
 			gameData.add_script_to_execute(self, trigger_card, trigger, orig_trigger_details, run_type)
 			return null
 		else:
 			return null
 
-#	while cfc.game_paused or cfc.is_modal_event_ongoing() or gameData.is_targeting_ongoing():
-#		#TODO
-#		#2026/01/08 This yield was introduced
-#		#to replace the simple "return" which was eating signals
-#		#in some caseS. But I'm afraid this could bring discrepancies in multiplayer
-#		if get_parent() and !("tree_" in trigger): #dirty check to avoid crashes
-#			yield(get_tree().create_timer(0.1), "timeout")
-#		else:
-#			return
 	# Just in case the card is displayed outside the main game
 	# and somehow its script is triggered.
 	if not cfc.NMAP.has('board'):
@@ -1212,8 +1225,8 @@ func execute_scripts(
 		#TODO very flaky code, how to fix?
 		if (canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME):
 			var _tmp =1
-			
-		trigger = find_interrupt_script()
+		var event_name = gameData.theStack.get_current_interrupted_event().get("event_name", "")
+		trigger = find_interrupt_script(event_name)
 		if (!trigger):
 			return null
 		orig_trigger_details.merge(gameData.theStack.get_current_interrupted_event(), true)
@@ -1513,9 +1526,6 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 				if force_user_interaction_required:
 					sceng.user_interaction_status = CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER
 			
-			if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER:
-				if trigger != "manual":		
-					gameData.theStack.set_pending_network_interaction(interaction_authority, checksum, "authorized user ready to interact")
 			
 			# 2) Once done with payment, Client A sends ability + payment information to all clients (including itself)
 			# 3) That data is added to all clients stacks

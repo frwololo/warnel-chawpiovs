@@ -502,7 +502,7 @@ func receive_damage(script: ScriptTask) -> int:
 	if !type in ["hero", "ally", "minion", "villain"]:
 		attacker = _get_identity_from_script(script)
 		
-	var tags: Array = script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
+	var tags: Array = script.get_property(SP.KEY_TAGS) 
 	var base_amount = script.retrieve_integer_property("amount")
 	
 	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
@@ -580,6 +580,7 @@ func receive_damage(script: ScriptTask) -> int:
 				"attacker": attacker,
 				"target": card,
 				"damage": damage_happened,
+				"tags": tags,
 			}
 			gameData.theStack.add_script(SignalStackScript.new("attack_happened",  attacker,  signal_details))			
 #			scripting_bus.emit_signal("attack_happened", script.owner, signal_details)
@@ -1103,6 +1104,31 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 	
 
 	return retcode
+
+#assigns defender to attack
+#this only works if there isn't a defender chosen already,
+#or if the defender was already the same as the one requested
+func set_defender(script: ScriptTask) -> int:
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+
+	var attack_script = gameData.get_latest_activity_script()
+	if !attack_script:
+		return CFConst.ReturnCode.FAILED
+
+	var defender = script.subjects[0]
+	
+	if attack_script.subjects:
+		if attack_script.subjects[0] != defender:
+			return CFConst.ReturnCode.FAILED
+		
+	if costs_dry_run():
+		return CFConst.ReturnCode.CHANGED
+	
+	attack_script.subjects[0] = defender
+	return CFConst.ReturnCode.CHANGED
+	
+
 
 func enemy_attack_damage(_script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -1723,7 +1749,7 @@ func change_secondary_form(script: ScriptTask) -> int:
 	#remove current form card
 	if current_form:
 		signal_details["before"] =  current_form.canonical_name
-		current_form.move_to(cfc.NMAP["tmp_pile1"])
+		current_form.move_to(cfc.NMAP["set_aside"])
 	
 	move_card_to_board(script)
 	#new_form.move_to(cfc.NMAP.board)
@@ -2048,6 +2074,21 @@ func _pre_task_prime(script: ScriptTask, prev_subjects:= []) -> void:
 		prev_subjects = script.prev_subjects
 	
 	script.script_definition = static_pre_task_prime(script.script_definition, script.owner, script, prev_subjects)
+
+
+static func get_event_source_hero_id(trigger_details):
+	var event_source_hero_id = 1
+	if trigger_details.has("event_object"):
+		var event_object = trigger_details.get("event_object")		
+		if "trigger_details" in event_object and event_object.trigger_details.has("source"):
+			var source = event_object.trigger_details.get("source", null)
+			if guidMaster.is_guid(source):
+				source = guidMaster.get_object_by_guid(source)
+			if source and typeof(source) == TYPE_OBJECT:
+				var hero_id = source.get_controller_hero_id()
+				if hero_id > 0:
+					event_source_hero_id = hero_id
+	return event_source_hero_id
 	
 static func static_pre_task_prime(script_definition, owner, script = null, prev_subjects:= []):
 	var previous_hero = prev_subjects[0] if prev_subjects else null
@@ -2063,17 +2104,7 @@ static func static_pre_task_prime(script_definition, owner, script = null, prev_
 	
 	var current_hero_target = gameData.get_villain_current_hero_target()
 
-	var event_source_hero_id = 1
-	if script and script.trigger_details.has("event_object"):
-		var event_object = script.trigger_details.get("event_object")		
-		if "trigger_details" in event_object and event_object.trigger_details.has("source"):
-			var source = event_object.trigger_details.get("source", null)
-			if guidMaster.is_guid(source):
-				source = guidMaster.get_object_by_guid(source)
-			if source:
-				var hero_id = source.get_controller_hero_id()
-				if hero_id > 0:
-					event_source_hero_id = hero_id
+	var event_source_hero_id = get_event_source_hero_id(script.trigger_details) if script else 1
 
 	var replacements = {}
 			

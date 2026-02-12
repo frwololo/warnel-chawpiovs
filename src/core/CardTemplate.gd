@@ -1513,7 +1513,7 @@ func move_to(targetHost: Node,
 					"tags": tags
 				}
 		)		
-	if execute_self_moved_to_board:
+	if execute_self_moved_to_board:		
 		self.execute_scripts(self, "self_moved_to_board")
 	cfc.remove_ongoing_process(self)
 
@@ -1521,13 +1521,13 @@ func set_scale(value):
 	scale = value
 
 #Return interrupt string to hijack manual run
-#TODO right now this returns the first one, need to be more specific
-func find_interrupt_script() -> String:
-	var my_scripts = retrieve_all_scripts()	
-	for _k in my_scripts.keys():
-		var k:String = _k 
-		if (k == "interrupt"):
-			return k
+#tries with a more specific one based on event name first (e.g. interrupt_card_dies)
+#	(this allows to have multiple interrupts on the same card See rain fire in mts)
+func find_interrupt_script(event_name) -> String:
+	var my_scripts = retrieve_all_scripts()
+	for to_find in ["interrupt_" + event_name, "interrupt"]:
+		if my_scripts.has(to_find):
+			return to_find
 	return ""
 	
 

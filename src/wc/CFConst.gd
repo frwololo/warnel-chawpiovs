@@ -837,8 +837,12 @@ const HARDCODED_DEF_PATCHES = {
 	"04150": {
 		"boost": 1 #https://github.com/zzorba/marvelsdb/issues/342
 	},
+	"21041": {
+		"subname": "Noh-Varr" #https://github.com/zzorba/marvelsdb/issues/345
+	},	
 	"21104"	: {
 		"name": "Corvus's Glaive", #https://github.com/zzorba/marvelsdb/issues/343
+		"attack": 1,
 	},
 	"21074b":{
 		"imagesrc": "https://wololo.net/wc/images/21074b.jpg"
@@ -864,6 +868,9 @@ const HARDCODED_DEF_PATCHES = {
 	"21115b":{
 		"imagesrc": "https://wololo.net/wc/images/21115b.jpg"
 	},	
+	"21124":{
+		"real_text": "<b>When Defeated</b>: Choose and Discard an Infinity Stone from Play"
+	},			
 	"21138b":{
 		"imagesrc": "https://wololo.net/wc/images/21138b.jpg"
 	},	
@@ -884,6 +891,8 @@ enum AUTO_EXECUTE_MENU {
 #TODO other values than OFF break some tests and multiplayer interaction
 const AUTO_EXECUTE_ONE_ENTRY_MENU = AUTO_EXECUTE_MENU.OFF # SCRIPTED_ONLY
 
+const LARGE_SCREEN_WIDTH:= 1600
+
 #
 # Debugging options
 #
@@ -893,7 +902,7 @@ const DISABLE_THREADS:= true
 const DISABLE_ANNOUNCER:= false
 #useful only for debuggingto accelerate the loading of the game and get to gameplay faster
 const SKIP_MULLIGAN:= false
-#enables various performance tweaks for loend platforms such as the Nintendo Switch. Disable only for debugging
+#enables various performance tweaks for lowend platforms such as the Nintendo Switch. Disable only for debugging
 const PERFORMANCE_HACKS = true
 
 #if set to true, the system checks will only send hashed instead of 
@@ -919,6 +928,6 @@ const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 const SCRIPT_BREAKPOINT_CARD_NAME := "Avengers Tower"
 const SCRIPT_BREAKPOINT_TRIGGER_NAME := "receive_damage"
 
-const LARGE_SCREEN_WIDTH:= 1600
+
 
 

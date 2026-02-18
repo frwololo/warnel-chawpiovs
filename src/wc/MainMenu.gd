@@ -33,6 +33,7 @@ signal all_downloads_completed()
 signal one_download_completed()
 signal images_download_completed()
 signal sets_download_completed()
+signal release_check_completed()
 
 var _next_scene = ""
 var _next_scene_counter = 0
@@ -51,6 +52,7 @@ func _ready() -> void:
 	_loading_text_prefix = "Loading Card Definitions - "
 	v_folder_label.text = _loading_text_prefix
 	main_title.text = "LOADING..."
+	get_node("%VersionLabel").text = "v. " + CFConst.VERSION
 		
 	self.connect("all_downloads_completed", self, "_all_downloads_completed")
 	self.connect("one_download_completed", self, "_one_download_completed")
@@ -247,7 +249,52 @@ func _all_downloads_completed():
 #	texture_rect.get_parent().rect_size = texture_rect.rect_size * texture_rect.rect_scale
 	cfc.all_loaded = true
 	gameData.play_music("menu")
+	check_for_new_release()
 
+func check_for_new_release():
+	http_request = HTTPRequest.new()
+	add_child(http_request)	
+	http_request.connect("request_completed", self, "_version_check_completed")	
+	var url = CFConst.VERSION_CHECK_URL
+	var error = http_request.request(url)
+	
+	if error != OK:
+		network_error("Couldn't check for latest release")
+		return
+		
+	yield(get_tree(), "idle_frame")
+	yield(self, "release_check_completed")
+	remove_child(http_request)
+	http_request.queue_free()	
+
+func _version_check_completed(result, response_code, headers, body):
+	var latest_release_data = {}
+	if result != HTTPRequest.RESULT_SUCCESS:
+		network_error("Couldn't check for version update")
+
+	else:
+		var content = body.get_string_from_utf8()
+
+		var json_result:JSONParseResult = JSON.parse(content)
+		if (json_result.error != OK):
+			network_error("Couldn't check for version update")
+		else:
+			var json_data = json_result.result
+			if typeof(json_data) == TYPE_ARRAY and json_data:
+				latest_release_data = json_data[0]
+			else:
+				network_error("Couldn't check for version update")
+	
+	if latest_release_data:
+		var version = latest_release_data.get("tag_name", "")
+		var is_newer = cfc.v1_newer_than_v2(version, CFConst.VERSION)
+		if is_newer:
+			message_newer_version_available(version)
+
+	emit_signal("release_check_completed")	
+
+func message_newer_version_available(version):
+	v_folder_label.bbcode_text = "[color=green]New Version " + version + " available. [/color][color=aqua][url=" + CFConst.GITHUB_URL + "]Download Page[/url][/color]"
 
 
 func create_default_folders():
@@ -392,3 +439,6 @@ func resize():
 	
 
 
+func _on_FolderLabel_meta_clicked(meta):
+	# `meta` is of Variant type, so convert it to a String to avoid script errors at run-time.
+	OS.shell_open(str(meta))

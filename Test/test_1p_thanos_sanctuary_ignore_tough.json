@@ -1,0 +1,143 @@
+{
+	"_comments": "Bug: Sanctuary damage ignore tough",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1",
+					"tokens": {"tough": 1}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				},	
+				{
+					"card": "Sanctuary",
+					"tokens": {"threat" : 1}
+				},				
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Soul Stone"
+				}
+			
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+
+			"hand1": [
+				{
+					"card": "Cosmic Ward"
+				},
+				{
+					"card": "Karmic Blast"
+				}
+			],
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Adam Warlock",
+		},	
+		{
+			"type": "choose",
+			"value": "Thwart",
+		},	
+		{
+			"type": "target",
+			"value": "Sanctuary",
+		},
+		{
+			"type": "choose",
+			"value": "2 Damage",
+		},
+		{
+			"type": "select",
+			"value": "Karmic Blast",
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"victory_display": [
+				{
+					"card": "Sanctuary",
+				},	
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1",
+					"tokens": {"tough": 1, "damage" : 2}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				},				
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Soul Stone"
+				}
+			
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Karmic Blast"
+				}			
+			],
+			"hand1": [
+				{
+					"card": "Cosmic Ward"
+				}
+			],
+		}
+	}
+}

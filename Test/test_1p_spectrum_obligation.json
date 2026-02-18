@@ -1,7 +1,7 @@
 {
-	"_comments": "Confirm Pulsar Shield can't be used if an ally is defending",
+	"_comments": "Test Monica Rambeau Obligation - Bug after discarding it",
 	"init": {
-		"phase": "VILLAIN_ACTIVATES",
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -16,22 +16,22 @@
 				},
 				{
 					"card": "Power Stone"
-				}
+				},			
 			],
 			"deck_villain": [
 				{
 					"card": "\"I Am Inevitable\""
-				},
+				},	
 				{
 					"card": "Advance"
-				},
+				},								
 				{
 					"card": "Hydra Soldier"
 				},
 				{
-					"card": "Hydra Mercenary"
-				}
-			],
+					"card": "Loss of Control"
+				},			
+			],			
 			"villain": [
 				{
 					"card": "Thanos - 3"
@@ -41,7 +41,8 @@
 				{
 					"card": "Soul Stone"
 				}
-			],
+			
+			],			
 			"schemes": [
 				{
 					"card": "The Infinity Stones"
@@ -54,13 +55,10 @@
 			],
 			"identity1": [
 				{
-					"card": "Spectrum"
+					"card": "Monica Rambeau"
 				}
 			],
 			"upgrade_support1": [
-				{
-					"card": "Gamma"
-				}
 			],
 			"set_aside": [
 				{
@@ -68,41 +66,67 @@
 				},
 				{
 					"card": "Photon"
-				}
-			],
-			"allies1": [
+				},
 				{
-					"card": "Jessica Jones"
-				}
+					"card": "Gamma"
+				}				
 			],
 			"hand1": [
 				{
 					"card": "Pulsar Shield"
 				},
 				{
-					"card": "Gamma Blast"
-				}
+					"card": "Strength"
+				},
+				{
+					"card": "Blue Marvel - Adam Brashear"
+				},				
 			]
 		}
 	},
-	"actions": [
-		{
-			"type": "select",
-			"value": "Jessica Jones",
-			"_comments": "defend with Jessica Jones"
-		},
-		{
-			"type": "play",
-			"value": "Pulsar Shield",
-			"_comments": "Can I Play pulsar shield as interrupt?",
-			"expected_to_fail": "true"
-		},
+	"actions": [			
 		{
 			"type": "other",
 			"value": "wait_for_player_turn",
 			"_comments": "wait for player turn"
-		}
-	],
+		},		
+		{
+			"type": "activate",
+			"value": "Loss of Control",
+		},
+		{
+			"type": "activate",
+			"value": "Monica Rambeau",
+		},
+		{
+			"type": "choose",
+			"value": "Change Form",
+		},	
+		{
+			"type": "select",
+			"value": "Pulsar",
+			"_comments": "Switch to Pulsar Form"
+		},	
+		{
+			"type": "choose",
+			"value": "yes",
+			"_comments": "accept to heal from Pulsar"
+		},		
+		{
+			"type": "play",
+			"value": "Blue Marvel - Adam Brashear"
+		},		
+		{
+			"type": "select",
+			"value": "Gamma",
+			"_comments": "Switch to Gamma Form"
+		},
+		{
+			"type": "target",
+			"value": "Thanos - 3",
+			"_comments": "Damage Thanos for 1 with Gamma"
+		},		
+	] ,
 	"end": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -119,31 +143,31 @@
 				},
 				{
 					"card": "Power Stone"
-				}
+				},			
 			],
 			"deck_villain": [
 				{
 					"card": "\"I Am Inevitable\""
-				},
+				},	
 				{
 					"card": "Advance"
-				}
-			],
-			"discard_villain": [
+				},								
 				{
-					"card": "Hydra Mercenary"
-				}
-			],
+					"card": "Hydra Soldier"
+				},		
+			],			
 			"villain": [
 				{
-					"card": "Thanos - 3"
+					"card": "Thanos - 3",
+					"tokens": {"damage": 1}
 				}
 			],
 			"villain_misc": [
 				{
 					"card": "Soul Stone"
 				}
-			],
+			
+			],			
 			"schemes": [
 				{
 					"card": "The Infinity Stones"
@@ -156,39 +180,41 @@
 			],
 			"identity1": [
 				{
-					"card": "Spectrum"
+					"card": "Spectrum",
+					"exhausted": true
 				}
 			],
 			"upgrade_support1": [
 				{
 					"card": "Gamma"
-				}
+				}	
 			],
 			"set_aside": [
 				{
-					"card": "Pulsar"
-				},
+					"card": "Loss of Control"
+				},	
 				{
 					"card": "Photon"
-				}
+				},	
+				{
+					"card": "Monica Rambeau"
+				},				
+				{
+					"card": "Pulsar"
+				},							
 			],
 			"discard1": [
 				{
-					"card": "Jessica Jones"
-				}
-			],
-			"enemies1": [
-				{
-					"card": "Hydra Soldier"
-				}
-			],
-			"hand1": [
+					"card": "Strength"
+				},			
 				{
 					"card": "Pulsar Shield"
 				},
+			],
+			"allies1":[
 				{
-					"card": "Gamma Blast"
-				}
+					"card": "Blue Marvel - Adam Brashear"
+				},				
 			]
 		}
 	}

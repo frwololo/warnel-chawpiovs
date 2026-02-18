@@ -125,20 +125,20 @@ margin_bottom = 775.0
 size_flags_horizontal = 0
 size_flags_vertical = 4
 
-[node name="FolderLabel" type="Label" parent="CenterContainer/VBox/HBoxContainer"]
+[node name="FolderLabel" type="RichTextLabel" parent="CenterContainer/VBox/HBoxContainer"]
 unique_name_in_owner = true
 margin_right = 1080.0
 margin_bottom = 30.0
 rect_min_size = Vector2( 1080, 0 )
-text = "user folder:"
-valign = 2
-autowrap = true
+bbcode_enabled = true
+fit_content_height = true
 
-[node name="Label" type="Label" parent="CenterContainer/VBox/HBoxContainer"]
+[node name="VersionLabel" type="Label" parent="CenterContainer/VBox/HBoxContainer"]
+unique_name_in_owner = true
 margin_left = 1083.0
 margin_right = 1170.0
 margin_bottom = 30.0
-text = "v. 1.1.0"
+text = "v. 1.0.0"
 
 [node name="LoadingPanel" type="CenterContainer" parent="CenterContainer"]
 unique_name_in_owner = true
@@ -165,3 +165,5 @@ text = "Loading..."
 visible = false
 z_index = 0
 z_as_relative = false
+
+[connection signal="meta_clicked" from="CenterContainer/VBox/HBoxContainer/FolderLabel" to="." method="_on_FolderLabel_meta_clicked"]

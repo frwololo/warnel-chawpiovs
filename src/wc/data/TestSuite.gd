@@ -630,6 +630,10 @@ func display_debug(text):
 func action_other(action_value):
 	match action_value:
 		"gain_control":
+			gameData.theAnnouncer.skip_announcer(false)
+			var piles = cfc.get_tree().get_nodes_in_group("piles")
+			for pile in piles:
+				pile.allow_facedown_popup = true
 			finished = true #forces pause the test suite to give user control
 
 func action_play(hero_id, card_id_or_name):
@@ -1061,6 +1065,11 @@ func load_test(test_file)-> bool:
 	announce("running test: " + test_file +"\n")	
 	initial_state = json_card_data["init"]
 	actions = json_card_data["actions"]
+	for action in actions:
+		var type = action.get("type", "")
+		type = type.to_lower()
+		action["type"] = type
+		
 	end_state = json_card_data["end"]
 	test_conditions = json_card_data.get("test_conditions", {})
 	

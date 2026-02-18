@@ -1,0 +1,206 @@
+{
+	"_comments": "Balance the Scales reveal not working",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spectrum"
+				}
+			}
+		],
+		"board": {
+			"deck_infinity_stone": [
+				{
+					"card": "Time Stone"
+				},
+				{
+					"card": "Power Stone"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Bomber"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones",
+					"tokens": {
+						"threat": 11
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Photon Speed"
+				},
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Inspired"
+				},
+				{
+					"card": "Pulsar shield"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Gamma Blast"
+				},
+				{
+					"card": "Speed of Light"
+				},
+				{
+					"card": "Energy Duplication"
+				},
+				{
+					"card": "Make the Call"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Soul Stone"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Monica Rambeau"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spectrum"
+				}
+			}
+		],
+		"board": {
+			"deck_infinity_stone": [
+				{
+					"card": "Time Stone"
+				},
+				{
+					"card": "Power Stone"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Bomber"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Soul Stone"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Balance the Scales"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "The Infinity Stones"
+				},
+				{
+					"card": "Speed of Light"
+				},
+				{
+					"card": "Energy Duplication"
+				},
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				},
+				{
+					"card": "Photon Speed"
+				},
+				{
+					"card": "Gamma Blast"
+				},				
+				{
+					"card": "Inspired"
+				},
+				{
+					"card": "Pulsar shield"
+				},
+
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Monica Rambeau"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

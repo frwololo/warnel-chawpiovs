@@ -125,6 +125,11 @@ func start_game():
 	cfc.LOG("game starting")
 	GameRecorder.init_game()
 	theGameObserver.execute_scripts("setup")
+
+	var piles = cfc.get_tree().get_nodes_in_group("piles")
+	for pile in piles:
+		pile.enable_pile_emptied_signal()
+	
 	_game_started = true
 	_game_over = ""
 
@@ -206,7 +211,7 @@ func play_sfx(sfx_data):
 func play_music(shortname):
 	if shortname.ends_with("*"):
 		shortname = shortname.substr(0, shortname.length() -1)
-		theAudioManager.play_all(shortname)
+		theAudioManager.play_all_random(shortname)
 	else:
 		theAudioManager.play_music_by_shortname(shortname)
 
@@ -1087,7 +1092,8 @@ func enemy_activates() :
 				
 			var script_definition = {
 				"name": script_name, 
-				"target_hero_id" : target_id
+				"target_hero_id" : target_id,
+				"tags": enemy.activity_script.get_property(SP.KEY_TAGS)
 			}
 			#most filters check on script definition instead of trigger_details (because _current_interrupted_event in globalstack script is based on script definition for some reason)
 			script_definition.merge(details)
@@ -2284,7 +2290,7 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 		if villain_def:
 			villain_def = villain_def[0].get("card", {})
 		if villain_def:
-			var villain_id = cfc.get_corrected_card_id(villain_def)
+			var villain_id = cfc.get_corrected_card_id(villain_def)		
 			scenario.load_from_villain(villain_id)
 
 	#Board State ()

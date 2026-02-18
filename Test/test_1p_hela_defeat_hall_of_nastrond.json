@@ -1,0 +1,169 @@
+{
+	"_comments": "Bug: Hela Hall of Nastrond Defeat doesn't Free Odin",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},				
+			],
+			"set_aside": [
+			
+			],
+			"villain": [
+				{
+					"card": "Hela - A1"
+				}
+			],
+			"others": [
+				{
+					"card": "21139a",
+					"host": "Odin's Torment",
+					"_comments": "Odin"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Odin's Torment"
+				},
+				{
+					"card": "Hall of Nastrond",
+					"tokens": {"threat": 1}
+				}
+		
+			],
+			"victory_display": [
+				{
+					"card": "Garm"
+				},
+				{
+					"card": "Gnipahellir",
+				},
+				{
+					"card": "Gjallerbru",
+				},
+				{
+					"card": "Skurge",				
+				},
+				{
+					"card": "Nidhogg",				
+				},					
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},			
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Adam Warlock",
+		},	
+		{
+			"type": "choose",
+			"value": "Thwart",
+		},	
+		{
+			"type": "target",
+			"value": "Hall of Nastrond",
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},				
+			],
+			"set_aside": [
+			
+			],
+			"villain": [
+				{
+					"card": "Hela - A1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Odin's Torment"
+				},
+		
+			],
+			"victory_display": [
+				{
+					"card": "Garm"
+				},
+				{
+					"card": "Gnipahellir",
+				},
+				{
+					"card": "Gjallerbru",
+				},
+				{
+					"card": "Skurge",				
+				},
+				{
+					"card": "Nidhogg",				
+				},
+				{
+					"card": "Hall of Nastrond",
+				}				
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"allies1": [
+				{
+					"card": "21139a",
+					"_comments": "Odin"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},			
+			]
+		}
+	}
+}

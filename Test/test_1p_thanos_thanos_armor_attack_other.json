@@ -1,0 +1,165 @@
+{
+	"_comments": "Bug: Thanos's armor removal condition triggering even when attacking others",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spectrum"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1"
+				}
+			],
+			"others": [
+				{
+					"card": "Thanos's Armor",
+					"host": "Thanos - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				},
+				{
+					"card": "The Titan's Throne",
+					"tokens": {"threat": 1}
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Soul Stone"
+				}
+			
+			],
+			"identity1": [
+				{
+					"card": "Spectrum",
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Supergiant",
+				}			
+			],
+			"upgrade_support1": [
+				{
+					"card": "Gamma",
+				}
+			],
+			"hand1": [
+				{
+					"card": "Pulsar shield"
+				},
+				{
+					"card": "Gamma Blast"
+				},				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Spectrum",
+		},	
+		{
+			"type": "choose",
+			"value": "Attack",
+		},	
+		{
+			"type": "target",
+			"value": "Supergiant",
+		},
+		{
+			"type": "activate",
+			"value": "Thanos's Armor",
+			"expected_to_fail": true
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spectrum"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"others": [
+				{
+					"card": "Thanos's Armor",
+					"host": "Thanos - 1"
+				}
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1",
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				},
+				{
+					"card": "The Titan's Throne",
+					"tokens": {"threat": 1}
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Soul Stone"
+				}
+			
+			],
+			"identity1": [
+				{
+					"card": "Spectrum",
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Gamma",
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Supergiant",
+					"tokens": {"damage": 3}					
+				}			
+			],			
+			"hand1": [
+				{
+					"card": "Pulsar shield"
+				},				
+				{
+					"card": "Gamma Blast"
+				},						
+			]
+		}
+	}
+}

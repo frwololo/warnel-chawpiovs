@@ -1,0 +1,167 @@
+{
+	"_comments": "Mind Stone already confused",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spectrum"
+				}
+			}
+		],
+		"board": {
+			"deck_infinity_stone": [
+				{
+					"card": "Time Stone"
+				},			
+			],			
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},			
+				{
+					"card": "Hydra Soldier"
+				},			
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1"
+				}
+			],
+			"others": [
+				{
+					"card": "Infinity Gauntlet",
+					"host": "Thanos - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				},
+				{
+					"card": "The Titan's Throne",
+					"tokens": {"threat": 1}
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Mind Stone"
+				},
+				{
+					"card": "Power Stone"
+				},			
+			],
+			"identity1": [
+				{
+					"card": "Spectrum",
+					"tokens": {"confused": 1, "stunned": 1}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Gamma Blast"
+				},			
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack"
+		},	
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spectrum"
+				}
+			}
+		],
+		"board": {
+			"discard_infinity_stone": [
+							{
+					"card": "Mind Stone"
+				},
+				{
+					"card": "Power Stone"
+				},					
+			],
+			"deck_infinity_stone": [
+				{
+					"card": "Time Stone"
+				},		
+			],	
+			"discard_villain": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},					
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Soldier"
+				},	
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				},
+				{
+					"card": "The Titan's Throne",
+					"tokens": {"threat": 1}
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"villain_misc": [			
+			],
+			"identity1": [
+				{
+					"card": "Spectrum",
+					"tokens": {"confused": 1, "damage": 8}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				},
+			],
+			"hand1": [
+
+				{
+					"card": "Gamma Blast"
+				},			
+			]
+		}
+	}
+}

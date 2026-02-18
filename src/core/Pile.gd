@@ -9,7 +9,8 @@ signal popup_closed
 var is_popup_open := false
 # Used to avoid performance-heavy checks in process
 var _has_cards := false
-var emit_on_pile_empty = true
+var emit_on_pile_empty = false
+var allow_facedown_popup = false
 
 # The pile's name. If this value is changed, it will change the
 # `pile_name_label` text.
@@ -70,7 +71,7 @@ func _ready():
 	$Control/Highlight.visible = false
 	
 func _on_Pile_gui_input(event) -> void:
-	if !faceup_cards:
+	if !faceup_cards and !allow_facedown_popup:
 		return
 	if show_manipulation_buttons: #show manipulation buttons override this
 		return

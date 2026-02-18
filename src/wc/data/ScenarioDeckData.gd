@@ -84,11 +84,6 @@ static func get_villain_id_groups_from_scheme(scheme_id, expert_mode:= false):
 		var result = []
 		for villain_string in villain_strings:
 				var card_id = cfc.get_corrected_card_id(villain_string)
-				if !card_id:
-					#attempt to fetch the card another way
-					var card_info = cfc.retrieve_card_info_from_fuzzy_name(villain_string)
-					if card_info and card_info.has("code"):
-						card_id = card_info["code"]
 				if card_id:
 					result.append(card_id)
 					
@@ -145,9 +140,8 @@ func load_from_villain(villain_id):
 						}
 					)
 
-#		"scheme_id" : "01097", 
-#		"modular_encounters": ["bomb_scare"],
-#		"expert_mode": true,false	
+	var _error = 1
+
 func load_from_dict(_scenario:Dictionary):
 	reset()
 	grid_setup = CFConst.GRID_SETUP.duplicate(true)	

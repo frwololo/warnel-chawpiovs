@@ -257,6 +257,8 @@ func grid_setup():
 			var grid_scene = grid_info.get("scene", basicGrid)
 			var grid: BoardPlacementGrid = grid_scene.instance()
 			grid.add_to_group("placement_grid")
+			var grid_columns = grid_info.get("columns", default_grid_columns)
+			grid.set_columns(grid_columns)			
 			var grid_scale = grid_info.get("scale", 1)				
 			grid.rescale(CFConst.PLAY_AREA_SCALE  * grid_scale)
 			# A small delay to allow the instance to be added
@@ -435,6 +437,7 @@ func post_cards_moved_load():
 			if func_return is GDScriptFunctionState && func_return.is_valid():
 				yield(func_return, "completed")		
 
+
 	#TODO better way to do a reveal ?
 	var current_villain = get_villain_card()
 	func_return = current_villain.execute_scripts_no_stack(current_villain, "reveal")
@@ -470,11 +473,13 @@ func load_heroes():
 	for i in range (hero_count): 
 		heroZones[i+1].load_starting_identity()
 
-func count_amplify_icons():
+func count_amplify_icons(display_hint = true):
 	var total_amplify = 0
 	for card in get_all_cards():
-		total_amplify += card.get_property("scheme_amplify", 0, true)
-	
+		var amplify = card.get_property("scheme_amplify", 0, true)
+		if amplify and display_hint:
+			card.hint("Amplify", Color8(100,255,150))
+		total_amplify += amplify
 	return total_amplify	
 
 func hide_all_hands():
@@ -778,6 +783,10 @@ func post_load_move():
 		
 	_post_load_move = {} #reset	
 
+	for card in get_all_cards(true):
+		var func_return = card.execute_scripts_no_stack(card, "on_load")
+		if func_return is GDScriptFunctionState && func_return.is_valid():
+			yield(func_return, "completed")	
 		
 	return			
 
@@ -828,7 +837,8 @@ func load_cards_to_pile(card_data:Array, pile_name):
 	for card in card_array:				
 		#card.interruptTweening()
 		card.reorganize_self()		
-	
+	if (pile_name and cfc.NMAP.has(pile_name)): #it's a pile
+		cfc.NMAP[pile_name].re_place()
 	return
 			
 func load_cards_to_grid(card_data:Array, grid_name):

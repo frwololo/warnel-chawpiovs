@@ -1,0 +1,146 @@
+{
+	"_comments": "Bug: Marvel Boy interrupt crashes the game",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},	
+				{
+					"card": "Hydra Mercenary"
+				},					
+				{
+					"card": "The Trickster"
+				},					
+			],
+			"set_aside": [
+				{
+					"card": "Loki - 1 #21160",				
+				},				
+			],
+			"villain": [
+				{
+					"card": "Loki - 1 #21161",
+					"tokens": {"tough": 1}
+				}
+			],
+			"schemes": [
+				{
+					"card": "All Hail King Loki"
+				},						
+			],
+			"victory_display": [			
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Marvel Boy - Noh-Varr"
+				},			
+			],
+			"hand1": [
+				{
+					"card": "Combat Training"
+				},			
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Marvel Boy", 
+		},		
+		{
+			"type": "choose",
+			"value": "attack",
+		},
+		{
+			"type": "target",
+			"value": "Loki - 1 #21161",
+		},	
+		{
+			"type": "activate",
+			"value": "Marvel Boy", 
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},	
+				{
+					"card": "Hydra Mercenary"
+				},					
+				{
+					"card": "The Trickster"
+				},					
+			],
+			"set_aside": [
+				{
+					"card": "Loki - 1 #21160",				
+				},				
+			],
+			"villain": [
+				{
+					"card": "Loki - 1 #21161",
+					"tokens": {"damage": 2}
+				}
+			],
+			"schemes": [
+				{
+					"card": "All Hail King Loki"
+				},						
+			],
+			"victory_display": [			
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Marvel Boy - Noh-Varr",
+					"tokens": {"damage": 1}
+				},			
+			],
+			"discard1": [
+				{
+					"card": "Combat Training"
+				},			
+			]
+		}
+	}
+}

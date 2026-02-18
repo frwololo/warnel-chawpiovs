@@ -767,6 +767,7 @@ func compute_interrupts(script):
 				_current_interrupted_event = task.script_definition.duplicate()
 				_current_interrupted_event["event_name"] = task.script_name
 				_current_interrupted_event["event_object"] = task
+				_current_interrupted_event["stack_object"] = script
 				for card in get_tree().get_nodes_in_group("cards"):
 					if (card in card_already_played_for_stack_uid.get(script_uid, [])):
 						continue

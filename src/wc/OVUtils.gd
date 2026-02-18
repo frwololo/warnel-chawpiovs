@@ -86,6 +86,23 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 		return results		
 			
 	match _subject_request:
+		"flip_side":
+			var owner:WCCard = script.owner
+			var back_code = owner.get_card_back_code()
+			if (back_code):
+				var new_card = gameData.retrieve_from_side_or_instance(back_code,owner.get_owner_hero_id())
+				if new_card:
+					results.append(new_card)
+		"trigger_flip_side":
+			var trigger_object:WCCard = script.trigger_object
+			var back_code = trigger_object.get_card_back_code() if trigger_object else null
+			if (back_code):
+				var new_card = gameData.retrieve_from_side_or_instance(back_code,trigger_object.get_owner_hero_id())
+				if new_card:
+					results.append(new_card)					
+		#when an existing subject already exists for the script
+		"current_subject":
+			results = script.subjects		
 		SP.KEY_SUBJECT_V_HOST:
 			var owner:WCCard = script.owner
 			if (owner.current_host_card):
@@ -188,12 +205,21 @@ static func func_name_run(object, func_name, func_params, script = null):
 		reverse_result = true
 	var result = object.call(func_name, func_params, script)
 
+	if typeof(result) == TYPE_BOOL:
+		if result:
+			result = 1
+		else:
+			result = 0
+
 	var multiplier = func_params.get("multiplier", 1)
 	if typeof(result) in [TYPE_INT]:
 		result = result * multiplier
 	
 	if typeof(result) in [TYPE_INT, TYPE_BOOL] and reverse_result:
-		result = !result
+		if result:
+			result = 0
+		else:
+			result = 1
 
 	var prefix = func_params.get("prefix", "")
 	var suffix = func_params.get("suffix", "")

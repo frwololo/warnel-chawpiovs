@@ -1,0 +1,153 @@
+{
+	"_comments": "Bug: Avatar of Death no overkill",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spectrum"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [		
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},					
+				{
+					"card": "Avatar of Death"
+				},				
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Soul Stone"
+				}
+			
+			],
+			"identity1": [
+				{
+					"card": "Spectrum",
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Gamma",
+				}
+			],
+			"allies1": [
+				{
+					"card": "Kaluu",
+					"tokens": {"damage": 1}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Pulsar shield"
+				},
+				{
+					"card": "Gamma Blast"
+				},				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "Kaluu",
+			"_comments": "defend with Kaluu"
+		},	
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spectrum"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},			
+				{
+					"card": "Avatar of Death"
+				},					
+			],
+			"deck_villain": [		
+				{
+					"card": "Hydra Soldier"
+				},					
+				
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Soul Stone"
+				}
+			
+			],
+			"identity1": [
+				{
+					"card": "Spectrum",
+					"tokens": {"damage": 2}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Gamma",
+				}
+			],
+			"discard1": [
+				{
+					"card": "Kaluu",
+				}
+			],
+			"hand1": [
+				{
+					"card": "Pulsar shield"
+				},
+				{
+					"card": "Gamma Blast"
+				},				
+			]
+		}
+	}
+}

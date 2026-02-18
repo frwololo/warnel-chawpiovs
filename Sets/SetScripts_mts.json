@@ -876,26 +876,32 @@
 						"name": "move_card_to_container",
 						"subject": "tutor",
 						"subject_count": "all",
-						"src_container": "discard",
-						"dest_container": "deck"
+						"src_container": "discard_my_hero",
+						"dest_container": "deck_my_hero"
 					},
 					{
 						"name": "shuffle_container",
-						"dest_container": "deck"
+						"dest_container": "deck_my_hero"
 					},
 					{
 						"name": "move_card_to_container",
 						"dest_container": "set_aside",
-						"src_container": "deck",
-						"selection_count": "per_tutor",
+						"src_container": [
+							"deck_my_hero",
+							"discard_my_hero"
+						],
+						"subject": "tutor",
+						"sort_by": "random",
+						"subject_count": "per_tutor",
 						"per_tutor": {
 							"subject": "tutor",
 							"subject_count": "all",
-							"src_container": "deck",
+							"src_container": [
+								"deck_my_hero",
+								"discard_my_hero"
+							],
 							"divider": 2
-						},
-						"selection_type": "equal",
-						"needs_selection": true
+						}
 					}
 				]
 			}
@@ -1114,15 +1120,11 @@
 				"Black Order Attack": [
 					{
 						"name": "enemy_activates",
-						"is_cost": true,
 						"subject": "boardseek",
 						"subject_count": "all",
 						"filter_state_seek": [
 							{
 								"filter_group": "group_enemies_my_hero",
-								"filter_properties": {
-									"trait_black_order": 1
-								},
 								"filter_properties2": {
 									"type_code": "minion"
 								}
@@ -1130,25 +1132,48 @@
 						]
 					},
 					{
-						"is_else": true,
-						"name": "move_card_to_board",
-						"subject": "tutor",
-						"src_container": [
-							"deck_villain",
-							"discard_villain"
-						],
-						"subject_count": "all",
-						"selection_count": 1,
-						"selection_type": "equal",
-						"needs_selection": true,
-						"filter_state_tutor": [
+						"name": "conditional_script",
+						"options": [
 							{
-								"filter_properties": {
-									"trait_black_order": 1
+								"condition": {
+									"func_name": "!count_cards",
+									"func_params": {
+										"subject": "boardseek",
+										"subject_count": "all",
+										"filter_state_seek": [
+											{
+												"filter_group": "group_enemies_my_hero",
+												"filter_properties2": {
+													"type_code": "minion"
+												}
+											}
+										]
+									}
 								},
-								"filter_properties2": {
-									"type_code": "minion"
-								}
+								"nested_tasks": [
+									{
+										"name": "move_card_to_board",
+										"subject": "tutor",
+										"src_container": [
+											"deck_villain",
+											"discard_villain"
+										],
+										"subject_count": "all",
+										"selection_count": 1,
+										"selection_type": "equal",
+										"needs_selection": true,
+										"filter_state_tutor": [
+											{
+												"filter_properties": {
+													"trait_black_order": 1
+												},
+												"filter_properties2": {
+													"type_code": "minion"
+												}
+											}
+										]
+									}
+								]
 							}
 						]
 					}
@@ -1747,25 +1772,7 @@
 		"reveal": {
 			"all": [
 				{
-					"name": "move_card_to_container",
-					"subject": "tutor",
-					"up_to": true,
-					"subject_count": {
-						"if": {
-							"func_name": "card_is_in_play",
-							"func_params": {
-								"card_name": "The Universal Church of Truth"
-							}
-						},
-						"then": 10,
-						"else": 0
-					},
-					"src_container": "deck",
-					"dest_container": "discard",
-					"is_cost": true
-				},
-				{
-					"is_else": true,
+					"is_cost": true,
 					"name": "deal_encounter",
 					"immediate_reveal": true,
 					"subject": "tutor",
@@ -1777,10 +1784,19 @@
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
-								"Name": "The Universal Church of Truth"
+								"Name": "Universal Church of Truth"
 							}
 						}
 					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"up_to": true,
+					"subject_count": 10,
+					"src_container": "deck",
+					"dest_container": "discard",
+					"is_else": true
 				}
 			]
 		}
@@ -2255,78 +2271,104 @@
 		"self_moved_to_board": {
 			"board": [
 				{
-					"name": "move_card_to_container",
-					"subject": "grab_until",
-					"src_container": "deck",
-					"dest_container": "discard",
-					"filter_state_grab_until": [
+					"name": "conditional_script",
+					"options": [
 						{
-							"filter_properties": {
-								"type_code": "ally"
-							}
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": "deck_current_hero_target",
+									"subject_count": "all",
+									"filter_state_tutor": [
+										{
+											"filter_properties": {
+												"type_code": "ally"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_card_to_container",
+									"subject": "grab_until",
+									"src_container": "deck_current_hero_target",
+									"dest_container": "discard_current_hero_target",
+									"needs_subject": true,
+									"filter_state_grab_until": [
+										{
+											"filter_properties": {
+												"type_code": "ally"
+											}
+										}
+									]
+								},
+								{
+									"name": "move_card_to_board",
+									"subject": "index",
+									"subject_count": 1,
+									"subject_index": "retrieve_integer",
+									"src_container": "deck_current_hero_target",
+									"tags": [
+										"facedown",
+										"Init"
+									],
+									"set_properties": {
+										"type_code": "minion",
+										"shortname": "Undead",
+										"trait_undead": 1,
+										"attack": {
+											"func_name": "get_subject_int_printed_property",
+											"func_params": {
+												"property": "attack",
+												"subject": "current_subject"
+											}
+										},
+										"scheme": {
+											"func_name": "get_subject_int_printed_property",
+											"func_params": {
+												"property": "thwart",
+												"subject": "current_subject"
+											}
+										},
+										"health": {
+											"func_name": "get_subject_int_printed_property",
+											"func_params": {
+												"property": "health",
+												"subject": "current_subject"
+											}
+										}
+									}
+								},
+								{
+									"name": "attach_to_card",
+									"subject": "previous"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "move_card_to_container",
+							"subject": "grab_until",
+							"src_container": "deck_current_hero_target",
+							"dest_container": "discard_current_hero_target",
+							"needs_subject": true,
+							"filter_state_grab_until": [
+								{
+									"filter_properties": {
+										"type_code": "ally"
+									}
+								}
+							]
+						},
+						{
+							"name": "move_card_to_container",
+							"subject": "self",
+							"dest_container": "discard_villain",
 						}
 					]
-				},
-				{
-					"name": "move_card_to_board",
-					"subject": "index",
-					"subject_count": 1,
-					"subject_index": "retrieve_integer",
-					"src_container": "deck"
-				},
-				{
-					"name": "attach_to_card",
-					"subject": "previous",
-					"is_cost": true
-				},
-				{
-					"name": "move_card_to_container",
-					"subject": "self",
-					"dest_container": "discard_villain",
-					"is_else": true
-				},
-				{
-					"name": "surge",
-					"is_else": true
-				}
-			]
-		},
-		"card_attached": {
-			"trigger": "self",
-			"board": [
-				{
-					"name": "move_card_to_board",
-					"tags": [
-						"facedown",
-						"Init"
-					],
-					"set_properties": {
-						"type_code": "minion",
-						"shortname": "Undead",
-						"trait_undead": 1,
-						"attack": {
-							"func_name": "get_subject_int_printed_property",
-							"func_params": {
-								"property": "attack",
-								"subject": "host"
-							}
-						},
-						"scheme": {
-							"func_name": "get_subject_int_printed_property",
-							"func_params": {
-								"property": "thwart",
-								"subject": "host"
-							}
-						},
-						"health": {
-							"func_name": "get_subject_int_printed_property",
-							"func_params": {
-								"property": "health",
-								"subject": "host"
-							}
-						}
-					},
-					"subject": "host"
 				}
 			]
 		}
@@ -2506,7 +2548,7 @@
 		}
 	},
 	"Gamma": {
-		"setup": {
+		"on_load": {
 			"all": [
 				{
 					"name": "modify_properties",
@@ -2590,7 +2632,7 @@
 										}
 									],
 									"tags": [
-										"overkil"
+										"overkill"
 									]
 								}
 							]
@@ -2714,21 +2756,14 @@
 					{
 						"name": "move_card_to_board",
 						"subject": "tutor",
+						"subject_count": "all",
 						"src_container": "set_aside",
 						"filter_state_tutor": [
 							{
 								"filter_properties": {
 									"Name": "Gjallerbru"
 								}
-							}
-						]
-					},
-					{
-						"name": "move_card_to_board",
-						"subject": "tutor",
-						"src_container": "set_aside",
-						"is_cost": true,
-						"filter_state_tutor": [
+							},
 							{
 								"filter_properties": {
 									"Name": "Skurge"
@@ -2751,13 +2786,12 @@
 	"Hall of Nastrond": {
 		"card_defeated": {
 			"trigger": "self",
-			"board": [
+			"all": [
 				{
-					"name": "move_card_to_board",
-					"grid_name": "allies_first_player",
+					"name": "detach",
 					"subject": "boardseek",
 					"is_cost": true,
-					"filter_state_tutor": [
+					"filter_state_seek": [
 						{
 							"filter_properties": {
 								"shortname": "Odin"
@@ -2766,7 +2800,13 @@
 					]
 				},
 				{
+					"name": "move_card_to_board",
+					"grid_name": "allies_first_player",
+					"subject": "previous"
+				},
+				{
 					"name": "deal_encounter",
+					"is_else": true,
 					"subject": "boardseek",
 					"filter_state_seek": [
 						{
@@ -2922,8 +2962,8 @@
 			],
 			"board": [
 				{
-					"name": "flip_doublesided_card",
-					"subject": "self"
+					"name": "swap_villain",
+					"subject": "flip_side"
 				}
 			]
 		}
@@ -3047,7 +3087,6 @@
 					"script": {
 						"interrupt_card_dies": {
 							"event_filters": {
-								"source": "host",
 								"tags": [
 									"attack"
 								]
@@ -3473,6 +3512,7 @@
 				{
 					"name": "add_threat",
 					"subject": "self",
+					"is_cost": true,
 					"amount": "per_boardseek",
 					"per_boardseek": {
 						"subject": "boardseek",
@@ -3489,6 +3529,10 @@
 						],
 						"multiplier": 2
 					}
+				},
+				{
+					"is_else": true,
+					"name": "surge"
 				}
 			]
 		}
@@ -3794,22 +3838,8 @@
 				},
 				{
 					"name": "move_card_to_container",
-					"dest_container": "tmp_pile2",
+					"dest_container": "tmp_pile1",
 					"src_container": "set_aside",
-					"subject": "tutor",
-					"subject_count": "all",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"form_family": "energy"
-							}
-						}
-					]
-				},
-				{
-					"name": "move_card_to_container",
-					"dest_container": "tmp_pile3",
-					"src_container": "tmp_pile1",
 					"subject": "tutor",
 					"subject_count": "all",
 					"filter_state_tutor": [
@@ -3844,21 +3874,7 @@
 				{
 					"name": "move_card_to_container",
 					"dest_container": "set_aside",
-					"src_container": "tmp_pile2",
-					"subject": "tutor",
-					"subject_count": "all",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"form_family": "energy"
-							}
-						}
-					]
-				},
-				{
-					"name": "move_card_to_container",
-					"dest_container": "tmp_pile1",
-					"src_container": "tmp_pile3",
+					"src_container": "tmp_pile1",
 					"subject": "tutor",
 					"subject_count": "all",
 					"filter_state_tutor": [
@@ -4342,6 +4358,11 @@
 					"is_cost": true
 				},
 				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_infinity_stone",
+					"subject": "self"
+				},
+				{
 					"is_else": true,
 					"name": "move_card_to_container",
 					"dest_container": "discard_current_hero_target",
@@ -4353,7 +4374,8 @@
 				{
 					"name": "move_card_to_container",
 					"dest_container": "discard_infinity_stone",
-					"subject": "self"
+					"subject": "self",
+					"is_else": true
 				}
 			]
 		}
@@ -4548,7 +4570,7 @@
 				"Damage": [
 					{
 						"name": "deal_damage",
-						"subject": "my_hero",
+						"subject": "my_identity",
 						"amount": "per_boardseek",
 						"per_boardseek": {
 							"subject": "boardseek",
@@ -4576,7 +4598,7 @@
 						"sort_descending": true,
 						"filter_state_seek": [
 							{
-								"filter_group": "upgrade_support_my_hero"
+								"filter_group": "group_upgrade_support_my_hero"
 							}
 						]
 					}
@@ -4607,17 +4629,18 @@
 			]
 		},
 		"alterants": {
-			"trigger": "self",
 			"board": [
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "cannot_have_attachments",
-					"alteration": 1
+					"alteration": 1,
+					"trigger": "self"
 				},
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "exclude_from_ally_limit",
-					"alteration": 1
+					"alteration": 1,
+					"trigger": "self"
 				}
 			]
 		}
@@ -4631,6 +4654,7 @@
 				{
 					"name": "move_card_to_board",
 					"subject": "tutor",
+					"subject_count": "all",
 					"src_container": "deck_villain",
 					"filter_state_tutor": [
 						{
@@ -4661,6 +4685,7 @@
 					"name": "move_card_to_container",
 					"dest_container": "set_aside",
 					"subject": "tutor",
+					"subject_count": "all",
 					"src_container": "deck_villain",
 					"is_cost": true,
 					"filter_state_tutor": [
@@ -4726,8 +4751,8 @@
 					"subject": "trigger"
 				},
 				{
-					"name": "flip_doublesided_card",
-					"subject": "trigger"
+					"name": "swap_villain",
+					"subject": "trigger_flip_side"
 				}
 			]
 		}
@@ -4853,7 +4878,7 @@
 		}
 	},
 	"Photon": {
-		"setup": {
+		"on_load": {
 			"all": [
 				{
 					"name": "modify_properties",
@@ -5073,6 +5098,11 @@
 					"is_cost": true
 				},
 				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_infinity_stone",
+					"subject": "self"
+				},
+				{
 					"is_else": true,
 					"name": "deal_damage",
 					"subject": "current_hero_target",
@@ -5081,7 +5111,8 @@
 				{
 					"name": "move_card_to_container",
 					"dest_container": "discard_infinity_stone",
-					"subject": "self"
+					"subject": "self",
+					"is_else": true
 				}
 			]
 		}
@@ -5454,7 +5485,7 @@
 		}
 	},
 	"Pulsar": {
-		"setup": {
+		"on_load": {
 			"all": [
 				{
 					"name": "modify_properties",
@@ -5506,7 +5537,7 @@
 		"interrupt": {
 			"event_name": "enemy_attack_damage",
 			"event_filters": {
-				"target": "my_hero",
+				"target": "my_hero"
 			},
 			"is_optional_hand": true,
 			"hand": [
@@ -5522,7 +5553,7 @@
 					"is_cost": true,
 					"subject": "my_hero",
 					"_comments": "set_defender here has a double role, 1) sets my_hero as a defender if not already the case, 2) because it is a cost, it will fail if there is already a different defender chosen"
-				},				
+				},
 				{
 					"name": "conditional_script",
 					"options": [
@@ -6465,7 +6496,7 @@
 					"is_cost": true,
 					"tags": [
 						"hero_action"
-					],
+					]
 				},
 				{
 					"name": "change_form",
@@ -6653,6 +6684,9 @@
 			]
 		},
 		"response_basic_attack_happened": {
+			"event_filters": {
+				"target": "host"
+			},
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
@@ -6706,6 +6740,9 @@
 			]
 		},
 		"basic_attack_happened": {
+			"event_filters": {
+				"target": "host"
+			},
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
@@ -7123,7 +7160,8 @@
 				},
 				{
 					"name": "enemy_activates",
-					"subject": "villain"
+					"subject": "previous",
+					"_comments": "need to use previous here because villain still points to former villain"
 				}
 			]
 		},
@@ -7148,7 +7186,29 @@
 				{
 					"name": "indirect_damage",
 					"amount": "per_tutor",
-					"plus_amount": 1,
+					"per_tutor": {
+						"subject": "tutor",
+						"src_container": "victory_display",
+						"subject_count": "all",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "side_scheme"
+								}
+							}
+						],
+						"plus": 1
+					}
+				}
+			]
+		},
+		"boost_alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "boost",
+					"trigger": "self",
+					"alteration": "per_tutor",
 					"per_tutor": {
 						"subject": "tutor",
 						"src_container": "victory_display",
@@ -7161,40 +7221,7 @@
 							}
 						]
 					}
-				}
-			]
-		},
-		"boost": {
-			"all": [
-				{
-					"name": "temporary_effect",
-					"end_condition": "enemy_activation_finished",
-					"subject": "self",
-					"effect": {
-						"alterants": {
-							"all": [
-								{
-									"filter_task": "get_property",
-									"filter_property_name": "boost",
-									"trigger": "self",
-									"alteration": "per_tutor",
-									"per_tutor": {
-										"subject": "tutor",
-										"src_container": "victory_display",
-										"subject_count": "all",
-										"filter_state_tutor": [
-											{
-												"filter_properties": {
-													"type_code": "side_scheme"
-												}
-											}
-										]
-									}
-								}
-							]
-						}
-					}
-				}
+				},		
 			]
 		}
 	},
@@ -7493,7 +7520,7 @@
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
-						"Name": "The Universal Church of Truth"
+						"Name": "Universal Church of Truth"
 					}
 				}
 			],

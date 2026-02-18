@@ -1,0 +1,179 @@
+{
+	"_comments": "Bug: Fallen Warrior not discarding if no target",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},				
+				{
+					"card": "Hydra Soldier"
+				},	
+				{
+					"card": "Fallen Warrior"
+				},					
+			],
+			"set_aside": [
+				{
+					"card": "Nidhogg",				
+				},				
+			],
+			"villain": [
+				{
+					"card": "Hela - A1"
+				}
+			],
+			"others": [
+				{
+					"card": "21139a",
+					"host": "Odin's Torment",
+					"_comments": "Odin"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Odin's Torment"
+				},
+				{
+					"card": "Gjallerbru",
+					"tokens": {"threat": 1}		
+				},							
+			],
+			"victory_display": [
+				{
+					"card": "Garm"
+				},
+				{
+					"card": "Gnipahellir",
+				},
+				{
+					"card": "Skurge",				
+				},				
+			],
+			"discard1": [
+				{
+					"card": "Pip the Troll"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Karmic Blast"
+				},	
+				{
+					"card": "Genius"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},			
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Fallen Warrior",
+				},				
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},						
+			],
+			"set_aside": [
+				{
+					"card": "Nidhogg",				
+				},				
+			],
+			"villain": [
+				{
+					"card": "Hela - A1"
+				}
+			],
+			"others": [
+				{
+					"card": "21139a",
+					"host": "Odin's Torment",
+					"_comments": "Odin"
+				},				
+			],
+			"schemes": [
+				{
+					"card": "Odin's Torment"
+				},
+				{
+					"card": "Gjallerbru",
+					"tokens": {"threat": 1}		
+				},							
+			],
+			"victory_display": [
+				{
+					"card": "Garm"
+				},
+				{
+					"card": "Gnipahellir",
+				},
+				{
+					"card": "Skurge",				
+				},				
+			],
+			"deck1": [
+				{
+					"card": "Pip the Troll"
+				},				
+				{
+					"card": "Karmic Blast"
+				},					
+				{
+					"card": "Genius"
+				},								
+			],			
+			"enemies1": [
+				{
+					"card": "Hydra Soldier"
+				},						
+			],			
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},			
+			]
+		}
+	}
+}

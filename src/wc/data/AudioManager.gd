@@ -8,8 +8,11 @@ var music_collection := {}
 var sfx_collection := {}
 var _sfx_collection_traits := {}
 
+
 var playlist_filter = ""
 var play_all_mode = false
+var play_all_random_mode = false
+
 const SFX_CHANNELS = 8
 var last_sound_played = 0
 
@@ -252,6 +255,41 @@ func play_music_by_shortname(shortname):
 func song_finished():
 	if play_all_mode:
 		play_all(playlist_filter)
+		return
+		
+	if play_all_random_mode:
+		play_random(playlist_filter)
+		return
+		
+var music_wildcard_cache = {}
+func get_all_music_starting_with(string):
+	if !music_wildcard_cache.has(string):
+		music_wildcard_cache[string] = []
+		for key in music_collection.get("generic", {}):
+			if string in key:
+				music_wildcard_cache[string].append(key)
+
+	return music_wildcard_cache[string]
+
+func get_random_music_starts_with(string):
+	var list = get_all_music_starting_with(string)
+	if !list:
+		return null
+	var random_index = randi() % list.size()
+	
+	var key = list[random_index]
+
+	return key
+
+func play_random(filter = ""):
+	var filename = get_random_music_starts_with(filter)
+	if filename:
+		start_music(filename, false)	
+
+func play_all_random(filter=""):
+	play_all_random_mode = true	
+	playlist_filter = filter	
+	play_random(filter)
 
 func play_all(filter = ""):
 	#not initialized

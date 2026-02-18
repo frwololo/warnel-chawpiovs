@@ -382,6 +382,7 @@ const GRID_SETUP := {
 	"villain_misc" : {
 		"x" : 1500,
 		"y" : 20,
+		"columns": 1,
 	},
 	"victory_display" :{
 		"x" : 1800,
@@ -870,7 +871,13 @@ const HARDCODED_DEF_PATCHES = {
 	},	
 	"21124":{
 		"real_text": "<b>When Defeated</b>: Choose and Discard an Infinity Stone from Play"
-	},			
+	},
+	"21136b":{
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21136b.jpg"
+	},	
+	"21137b":{
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21137b.jpg"
+	},						
 	"21138b":{
 		"imagesrc": "https://wololo.net/wc/images/21138b.jpg"
 	},	
@@ -928,6 +935,9 @@ const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 const SCRIPT_BREAKPOINT_CARD_NAME := "Avengers Tower"
 const SCRIPT_BREAKPOINT_TRIGGER_NAME := "receive_damage"
 
+const VERSION := "1.1.0"
+const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
+const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 
 
 

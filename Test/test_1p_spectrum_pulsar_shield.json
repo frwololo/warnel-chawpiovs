@@ -1,12 +1,5 @@
 {
 	"_comments": "Test Pulsar Shield timing",
-	"test_conditions": {
-		"setup" : [
-			"Gamma",
-			"Pulsar",
-			"Photon"
-		],
-	},	
 	"init": {
 		"phase": "VILLAIN_ACTIVATES",
 		"heroes": [

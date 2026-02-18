@@ -1,0 +1,139 @@
+{
+	"_comments": "Bug: Thanos's armor removal condition not triggering if 0 damage",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1",
+					"tokens": {"tough": 1}
+				}
+			],
+			"others": [
+				{
+					"card": "Thanos's Armor",
+					"host": "Thanos - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Soul Stone"
+				}
+			
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+
+			"hand1": [
+				{
+					"card": "Cosmic Ward"
+				},
+				{
+					"card": "Karmic Blast"
+				}
+			],
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Adam Warlock",
+		},	
+		{
+			"type": "choose",
+			"value": "Attack",
+		},	
+		{
+			"type": "target",
+			"value": "Thanos - 1",
+		},
+		{
+			"type": "activate",
+			"value": "Thanos's Armor",
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Thanos's Armor",
+				}
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1",
+					"tokens": {"tough": 1}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Soul Stone"
+				}
+			
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Karmic Blast"
+				},			
+				{
+					"card": "Cosmic Ward"
+				},
+			],
+		}
+	}
+}

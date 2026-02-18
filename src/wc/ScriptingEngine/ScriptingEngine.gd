@@ -62,63 +62,96 @@ func add_resource(script: ScriptTask) -> int:
 #override for parent
 func move_card_to_board(script: ScriptTask) -> int:
 
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+
 	if (costs_dry_run()): 
 		return .move_card_to_board(script)
 
 	#TODO might be better to be able to duplicate scriptTasks ?
 	#var modified_script:ScriptTask = script.duplicate
-	
+
 	var backup:Dictionary = script.script_definition.duplicate()
-
-	var override_properties = script.get_property("set_properties", {})
+	var subjects = script.subjects.duplicate()
 	
-	var subject = script.subjects[0] if script.subjects else null
+	var result = CFConst.ReturnCode.FAILED
 
-	#we force a grid container in all cases
-	if script.subjects and !script.get_property("grid_name"):
-		var type_code = override_properties.get("type_code", subject.get_property("type_code"))
-		if CFConst.TYPECODE_TO_GRID.has(type_code):
-			script.script_definition["grid_name"] = CFConst.TYPECODE_TO_GRID[type_code]
+	for card in subjects:
+	
+		script.script_definition = backup.duplicate()
+
+		if card.canonical_name == "Garm":
+			var _tmp =1
+
+		var override_properties = script.get_property("set_properties", {})
+	
+		var subject = card
+		script.subjects = [subject]
+		#we force a grid container in all cases
+		if !script.get_property("grid_name"):
+			var type_code = override_properties.get("type_code", subject.get_property("type_code"))
+			if CFConst.TYPECODE_TO_GRID.has(type_code):
+				script.script_definition["grid_name"] = CFConst.TYPECODE_TO_GRID[type_code]
 
 	
-	#Replace all occurrences of un_numberd "discard", etc... with the actual id
-	#This ensures we use e.g. the correct discard pile, etc...
-	var owner_hero_id = script.trigger_details.get("override_controller_id")
-	if !owner_hero_id and subject:
-		owner_hero_id = subject.get_controller_hero_id()
-	if !owner_hero_id:
-		owner_hero_id = script.owner.get_owner_hero_id()
-	if !owner_hero_id:
-		owner_hero_id = gameData.get_villain_current_hero_target()
-	
-	var replacements = {}	
-	for zone in CFConst.HERO_GRID_SETUP:
-		replacements[zone] = zone+str(owner_hero_id)
+		#Replace all occurrences of un_numberd "discard", etc... with the actual id
+		#This ensures we use e.g. the correct discard pile, etc...
+		var owner_hero_id = script.trigger_details.get("override_controller_id")
+		if !owner_hero_id and subject:
+			owner_hero_id = subject.get_controller_hero_id()
+		if !owner_hero_id:
+			owner_hero_id = script.owner.get_owner_hero_id()
+		if !owner_hero_id:
+			owner_hero_id = gameData.get_villain_current_hero_target()
 		
-	script.script_definition = WCUtils.search_and_replace_multi(script.script_definition, replacements, true)
+		var replacements = {}	
+		for zone in CFConst.HERO_GRID_SETUP:
+			replacements[zone] = zone+str(owner_hero_id)
+
+#		var zone_replacements = [
+#	#		{"from":"_my_hero" , "to": controller_hero_id },
+#			{"from":"_first_player" , "to": gameData.first_player_hero_id() },		
+#	#		{"from":"_previous_subject" , "to": previous_hero_id},
+#	#		{"from":"_current_hero_target" , "to": current_hero_target},
+#	#		{"from":"_event_source_hero" , "to": event_source_hero_id},					
+#		]
+#
+#		for zone in ["hand"] + CFConst.HERO_GRID_SETUP.keys() + CFConst.ALL_TYPE_GROUPS:
+#			for replacement in zone_replacements:
+#				var from_str = replacement["from"]
+#				var to = replacement["to"]
+#				if !to:
+#					continue
+#				replacements[zone + from_str] = zone+str(to)
+
+			
+		script.script_definition = WCUtils.search_and_replace_multi(script.script_definition, replacements, true)
 	
-	for card in script.subjects:
 		if card.is_boost():
 			card.set_is_boost(false)
 			card._clear_attachment_status()
 			script.script_definition[SP.KEY_TAGS] = ["force_emit_card_moved_signal"] +  script.get_property(SP.KEY_TAGS)
 
-	var result = .move_card_to_board(script)
-	if override_properties:
-		var tags: Array = ["emit_signal"] + script.get_property(SP.KEY_TAGS)
-		script.script_definition[SP.KEY_TAGS] = tags
-		modify_properties(script)
+		result = .move_card_to_board(script)
+		if override_properties:
+			var tags: Array = ["emit_signal"] + script.get_property(SP.KEY_TAGS)
+			script.script_definition[SP.KEY_TAGS] = tags
+			modify_properties(script)
 	
 	script.script_definition = backup
 	return result
 
 
 func shuffle_container(script) -> int:
-	if (costs_dry_run()): 
-		return CFConst.ReturnCode.CHANGED
-		
 	var dest_container_str = script.get_property(SP.KEY_DEST_CONTAINER).to_lower()
-	var dest_container: CardContainer = cfc.NMAP[dest_container_str]
+	var dest_container: CardContainer = cfc.NMAP.get(dest_container_str, null)
+	if not dest_container:
+		var _error = 1
+		return CFConst.ReturnCode.FAILED
+
+	if (costs_dry_run()): 
+		return CFConst.ReturnCode.CHANGED		
+		
 	dest_container.shuffle_cards()
 	return CFConst.ReturnCode.CHANGED
 	
@@ -672,7 +705,20 @@ func tuck_under_card(script: ScriptTask) -> int:
 func tuck_card_under_me(script: ScriptTask) -> int:
 	script.script_definition["tags"] = ["as_inactive_attachment"] + script.get_property(SP.KEY_TAGS)
 	return host_card(script)
+
+
+func detach(script: ScriptTask) -> int:	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
 	
+	if costs_dry_run():
+		return CFConst.ReturnCode.CHANGED
+	
+	var result = CFConst.ReturnCode.CHANGED
+	for subject in script.subjects:
+		result = subject.detach_self()
+	
+	return result
 	
 func attach_to_card(script: ScriptTask) -> int:
 	#TOOD: disable_attach_trigger is a hack to address a card such as Zola's Mutate
@@ -759,12 +805,20 @@ func conditional_script(script:ScriptTask) -> int:
 	}
 	script.trigger_details = {}
 	
+	var at_least_one_condition_met = false
+	
 	for option in options:
 		var subscript = script.get_sub_property("nested_tasks", option, {})
 		var condition = script.retrieve_integer_subproperty("condition", option, 0)
 		if condition:
-			
+			at_least_one_condition_met = true
 			script.script_definition["nested_tasks"] = subscript
+			nested_script(script)
+	
+	if !at_least_one_condition_met:
+		var else_script = script.get_property("else")
+		if else_script:
+			script.script_definition["nested_tasks"] = else_script
 			nested_script(script)
 			
 	script.trigger_details = backup["trigger_details"]
@@ -859,7 +913,8 @@ func replacement_effect(script: ScriptTask) -> int:
 	#TOdo take into action subject, etc...
 	match subject:
 		SP.KEY_SUBJECT_V_INTERUPTED_EVENT:
-			var stack_object = gameData.theStack.find_last_event_before_me(script)
+			var stack_object = script.trigger_details.get("stack_object", null) 
+			#var stack_object = gameData.theStack.find_last_event_before_me(script)
 			if (!stack_object):	
 				return CFConst.ReturnCode.FAILED
 			
@@ -1096,7 +1151,7 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 	if func_return is GDScriptFunctionState && func_return.is_valid():
 		yield(func_return, "completed")	
 	
-	var boost_amount = boost_card.get_property("boost",0)
+	var boost_amount = boost_card.get_property("boost",0, true)
 	boost_amount += cfc.NMAP.board.count_amplify_icons()
 	if boost_amount:
 		boost_card.hint("+" + str(boost_amount), Color8(100,255,150), {"position": "bottom_right"})
@@ -1177,7 +1232,7 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 		}
 		_add_receive_damage_on_stack (amount, script, script_modifications)
 	
-	if defender and attacker.get_property("overkill", 0, true):
+	if defender and (script.has_tag("overkill") or attacker.get_property("overkill", 0, true)):
 		var defender_type = defender.get_property("type_code")
 		if defender_type in ["minion", "ally"]:
 			overkill_amount = amount - defender.get_remaining_damage()
@@ -1220,7 +1275,8 @@ func _add_receive_damage_on_stack(amount, original_script, modifications:Diction
 		var receive_damage_script_definition = {
 			"name": "receive_damage",
 			"amount": amount,
-			"source": original_script.get_property("source", owner)
+			"source": original_script.get_property("source", owner),
+			"tags": original_script.get_property("tags", [])
 		}
 		
 		modifications["script_definition"] =  receive_damage_script_definition	

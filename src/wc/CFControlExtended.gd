@@ -1171,7 +1171,7 @@ func instance_card(card_id: String, owner_id:int) -> Card:
 	return card
 	
 #card here is either a card id or a card name, we try to accomodate for both
-func get_corrected_card_id (card) -> String:
+func get_corrected_card_id (card, fuzzy_fallback = true) -> String:
 	#if it's in the database, it's already an id
 	if self.card_definitions.has(card):
 		var card_data = self.card_definitions[card]
@@ -1190,6 +1190,12 @@ func get_corrected_card_id (card) -> String:
 		if box.has(actual_card_name):
 			var card_datas = box[actual_card_name]
 			return card_datas[0]["_code"]
+	
+	if fuzzy_fallback:
+		var card_info = cfc.retrieve_card_info_from_fuzzy_name(card)
+		if card_info and card_info.has("code"):
+			return card_info["code"]	
+			
 	return ""
 
 #mark a download as failed to avoid constantly attempting it
@@ -1408,6 +1414,21 @@ func get_screen_stretch_mode():
 		_:	
 			stretch_mode = SceneTree.STRETCH_MODE_DISABLED
 	return stretch_mode
+
+func v1_newer_than_v2(v1, v2):
+	var v1_array = v1.split(".")
+	var v2_array = v2.split(".")
+	
+	for i in v1_array.size():
+		if v2_array.size() <= i:
+			return true
+		var v1_int = int(v1_array[i])
+		var v2_int = int(v2_array[i])
+		if v1_int < v2_int:
+			return false
+		if v1_int > v2_int:
+			return true
+	return false
 
 func is_modal_event_ongoing():
 	if get_modal_menu():

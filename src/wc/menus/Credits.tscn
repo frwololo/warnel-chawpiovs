@@ -19,10 +19,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 
 [node name="VBox" type="VBoxContainer" parent="CenterContainer"]
-margin_left = 140.0
-margin_top = 5.0
-margin_right = 1140.0
-margin_bottom = 714.0
+margin_left = 460.0
+margin_top = 303.0
+margin_right = 1460.0
+margin_bottom = 776.0
 custom_constants/separation = 10
 alignment = 1
 
@@ -37,7 +37,7 @@ align = 1
 [node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer/VBox"]
 margin_top = 125.0
 margin_right = 1000.0
-margin_bottom = 559.0
+margin_bottom = 323.0
 rect_min_size = Vector2( 1000, 0 )
 bbcode_enabled = true
 bbcode_text = "Warnel Chawpiovs, by Wololo ([url]https://wololo.net[/url])
@@ -63,9 +63,9 @@ This is a fan-created work and is not affiliated with, endorsed by, or sponsored
 fit_content_height = true
 
 [node name="VButtons" type="VBoxContainer" parent="CenterContainer/VBox"]
-margin_top = 569.0
+margin_top = 333.0
 margin_right = 1000.0
-margin_bottom = 669.0
+margin_bottom = 433.0
 size_flags_horizontal = 3
 custom_constants/separation = 10
 
@@ -80,9 +80,9 @@ __meta__ = {
 }
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBox"]
-margin_top = 679.0
+margin_top = 443.0
 margin_right = 128.0
-margin_bottom = 709.0
+margin_bottom = 473.0
 size_flags_horizontal = 0
 size_flags_vertical = 4
 

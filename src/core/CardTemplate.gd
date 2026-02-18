@@ -2354,16 +2354,22 @@ func host_is_gone(former_host):
 func remove_attachment(card):
 	attachments.erase(card)
 
+func detach_self(tags := ["Manual"]):
+	if !current_host_card:
+		return CFConst.ReturnCode.FAILED
+		
+	current_host_card.remove_attachment(self)
+	current_host_card = null
+	scripting_bus.emit_signal("card_unattached",
+			self,
+			{"host": current_host_card, "tags": tags})	
+	return CFConst.ReturnCode.CHANGED
+
 # Clears all attachment/hosting status.
 # It is typically called when a card is removed from the table
 func _clear_attachment_status(tags := ["Manual"]) -> void:
 	cfc.add_ongoing_process(self)
-	if current_host_card:
-		scripting_bus.emit_signal("card_unattached",
-				self,
-				{"host": current_host_card, "tags": tags})
-		current_host_card.remove_attachment(self)
-		current_host_card = null
+	detach_self(tags)
 	for card in attachments:
 		card.current_host_card = null
 		card.host_is_gone(self)
@@ -3151,7 +3157,10 @@ func _on_Back_resized() -> void:
 		pass
 #		print_debug($Control/Back.rect_size) # Replace with function body.
 
-
+func get_grid_name():
+	if (_placement_slot):
+		return _placement_slot.get_grid_name()
+	return null	
 
 func serialize_to_json():
 	return {"TODO": "TODO"}

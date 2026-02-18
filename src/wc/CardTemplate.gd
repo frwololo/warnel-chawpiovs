@@ -142,6 +142,10 @@ func is_boost():
 	return self._is_boost
 
 func is_inactive_attachment():
+	#last minute check
+	if !self.current_host_card:
+		return false
+		
 	return self._is_inactive_attachment
 
 #what to do when I'm an attachement and my host is removed from the table
@@ -1794,8 +1798,12 @@ func can_defend(hero_id = 0):
 	var type_code = get_property("type_code", "")
 	if type_code != "hero" and type_code != "ally": return false
 	
+	var controller_hero_id = get_controller_hero_id()
+	if controller_hero_id <= 0:
+		return false
+	
 	if hero_id:
-		if get_controller_hero_id() != hero_id:
+		if controller_hero_id != hero_id:
 			return false
 	
 	return true
@@ -1827,7 +1835,8 @@ func die(script):
 		"ally", "minion":
 			gameData.character_died(self, script)
 		"side_scheme":
-			move_to(cfc.NMAP["discard_villain"])	
+			post_death_move()
+#			move_to(cfc.NMAP["discard_villain"])	
 		"villain":
 			gameData.villain_died(self, script)
 		_:
@@ -2187,6 +2196,8 @@ func indirect_damage_replacement(script_definition: Dictionary, trigger_details)
 		"needs_selection": true,
 		"filter_state_seek": filter_state_seek
 	}	
+	
+	result = WCUtils.merge_dict(script_definition, result, true)
 
 	return result	
 
@@ -2242,11 +2253,6 @@ func pay_regular_cost_replacement(script_definition: Dictionary, trigger_details
 			}		
 
 	return result	
-
-func get_grid_name():
-	if (_placement_slot):
-		return _placement_slot.get_grid_name()
-	return null	
 
 func to_grayscale():
 	if card_front:
@@ -2618,18 +2624,16 @@ func get_script_bool_property(params, script:ScriptTask = null) -> bool:
 
 func get_param_subject(params, script:ScriptObject = null):
 	var subject = self
-	if script:
+	if script and params.get("subject", ""):
 		var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
-		if subjects:
-			subject = subjects[0]
+		subject = subjects[0] if subjects else null
 	return subject	
 
 func get_param_subjects(params, script:ScriptObject = null):
 	var subjects = [self]
-	if script:
+	if script and params.get("subject", ""):
 		var new_subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
-		if new_subjects:
-			return new_subjects
+		return new_subjects
 	return subjects		
 
 func count_unique_property_value(params, script:ScriptTask = null) -> int:

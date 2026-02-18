@@ -1,0 +1,143 @@
+{
+	"_comments": "Tests Blood To Spare",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Supergiant"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Black Dwarf"
+				},
+				{
+					"card": "advance"
+				},
+				{
+					"card": "stampede"
+				},
+				{
+					"card": "Blood To Spare"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "hydra mercenary"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Supergiant"
+				},
+				{
+					"card": "Blood To Spare"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Black Dwarf"
+				},		
+				{
+					"card": "advance"
+				},
+				{
+					"card": "stampede"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "hydra mercenary"
+				}
+			],			
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {"damage": 1}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			]
+		}
+	}
+}

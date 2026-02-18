@@ -1,0 +1,185 @@
+{
+	"_comments": "Tests Cosmic Inquisition Adam Warlock",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Pacification"
+				},
+				{
+					"card": "Universal Church of Truth"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Channeling Trance"
+				},
+				{
+					"card": "Cosmic Inquisition"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Knowhere",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"villain": [
+				{
+					"card": "Ebony Maw - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Zone of Silence"
+				},
+				{
+					"card": "Audacity"
+				},
+				{
+					"card": "Magic Attack"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Cosmic Awareness"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Fireball",
+					"tokens": {
+						"invocation": 2
+					}
+				},
+				{
+					"card": "RubbleStorm",
+					"tokens": {
+						"invocation": 3
+					}
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Cosmic Inquisition"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Pacification"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Channeling Trance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Knowhere",
+					"tokens": {
+						"threat": 5
+					}
+				},
+				{
+					"card": "Universal Church of Truth"
+				}
+			],
+			"villain": [
+				{
+					"card": "Ebony Maw - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Zone of Silence"
+				},
+				{
+					"card": "Audacity"
+				},
+				{
+					"card": "Magic Attack"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Cosmic Awareness"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Fireball",
+					"tokens": {
+						"invocation": 2
+					}
+				},
+				{
+					"card": "RubbleStorm",
+					"tokens": {
+						"invocation": 3
+					}
+				}
+			]
+		}
+	}
+}

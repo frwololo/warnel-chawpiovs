@@ -1,0 +1,221 @@
+{
+	"_comments": "Test Hela A2 switch condition",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Gjallerbru"
+				},
+				{
+					"card": "Skurge"
+				},
+				{
+					"card": "Nidhogg"
+				}
+			],
+			"villain": [
+				{
+					"card": "Hela - A1",
+					"tokens": {
+						"damage": 7
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "21139a",
+					"host": "Odin's Torment",
+					"_comments": "Odin"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Odin's Torment"
+				},
+				{
+					"card": "Gnipahellir",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"victory_display": [
+				{
+					"card": "Garm"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Shield Spell"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Nick fury"
+				},
+				{
+					"card": "Karmic Blast"
+				}
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"hand1": [
+				{
+					"card": "For Justice!"
+				},
+				{
+					"card": "Genius"
+				},				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Adam Warlock"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Hela - A1"
+		},		
+		{
+			"type": "play",
+			"value": "For Justice!"
+		},
+		{
+			"type": "target",
+			"value": "Gnipahellir"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Nidhogg"
+				},
+				{
+					"card": "Hela - A2"
+				},				
+			],
+			"villain": [
+				{
+					"card": "Hela - A1"
+				}
+			],
+			"others": [
+				{
+					"card": "21139a",
+					"host": "Odin's Torment",
+					"_comments": "Odin"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Odin's Torment"
+				},
+				{
+					"card": "Gjallerbru"
+				}
+			],
+			"victory_display": [
+				{
+					"card": "Garm"
+				},
+				{
+					"card": "Gnipahellir"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Genius"
+				},			
+				{
+					"card": "For Justice!"
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Shield Spell"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Nick fury"
+				},
+				{
+					"card": "Karmic Blast"
+				}
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Skurge"
+				}
+			],
+			"hand1": []
+		}
+	}
+}

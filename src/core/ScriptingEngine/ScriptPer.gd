@@ -65,11 +65,22 @@ func return_per_count(filters:={}) -> int:
 			ret = _count_counter()
 		_:
 			ret = _count_custom()
+
+	var _backup = ret
+	ret = ret + get_property("plus", 0)				
+	
+	if ret !=_backup:
+		var tmp = 1		
+			
 	if get_property(SP.KEY_IS_INVERTED):
 		ret *= -1
 		
 	if backup:
 		subjects = backup
+		
+	
+
+		
 	return(ret)
 
 

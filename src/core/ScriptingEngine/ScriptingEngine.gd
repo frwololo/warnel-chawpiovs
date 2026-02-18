@@ -539,6 +539,9 @@ func move_card_to_board(script: ScriptTask) -> int:
 				retcode = CFConst.ReturnCode.FAILED
 			elif not costs_dry_run():
 				for card in script.subjects:
+					if card.get_grid_name() == grid_name:
+						#skip if we're trying to move to the same place
+						continue
 					slot = grid.find_available_slot()
 					# We need a small delay, to allow a potential new slot to instance
 					#yield(script.owner.get_tree().create_timer(0.05), "timeout")
@@ -921,7 +924,7 @@ func modify_properties(script: ScriptTask) -> int:
 					# (i.e. we do nothing at this point,
 					# and it is assigned later in the code)
 				else:
-					modification = properties[property]
+					modification = script.retrieve_integer_property(property, 0, properties) # properties[property]
 					new_value = modification
 				# We do not check for alterants on card numer properties
 				# which are set as strings (e.g. things like 'X')
@@ -940,6 +943,8 @@ func modify_properties(script: ScriptTask) -> int:
 			# which covers string and array values
 			# but integers will need some processing for alterants.
 			var value = properties[property]
+			if typeof(properties[property]) != TYPE_STRING:
+				value = script.retrieve_integer_property(property, 0, properties)
 			# Alteration should work on both property sets and mods
 			# Since mods are specified with a string (e.g. "+3")
 			# We need to convert the value + alteration into a string as well

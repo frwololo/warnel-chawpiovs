@@ -622,10 +622,11 @@ func retrieve_integer_property(property, stored_integer:int = 0,root = null):
 		return 0
 		
 	if SP.VALUE_PER in str(value):
-		value = count_per(
-				value,
-				owner,
-				get_property(value))
+		var per_property = get_property(value)
+		if per_property == null:
+			var _error = 1
+			return 0
+		value = count_per(value, owner, per_property)
 	elif str(value) ==  SP.KEY_COUNT_PREVIOUS_SUBJECTS:
 		value = self.prev_subjects.size()
 	else:

@@ -102,7 +102,7 @@ func add_scripts(_state_scripts,
 		fifo:bool = true) -> void:
 			
 		var tmp_array: Array = []
-		for t in _state_scripts: 		
+		for t in _state_scripts: 	
 		# We do a duplicate to allow repeat to modify tasks without danger.
 			var task: Dictionary = t.duplicate(true)
 			# This is the only script property which we use outside of the
@@ -231,7 +231,10 @@ func execute(_run_type) -> void:
 			scripts_queue[i].script_definition["network_prepaid"] =  prepaid[i]		
 		
 	var prev_subjects := []
+	var has_else = self.has_else_condition()
 	for task in scripts_queue:
+		if !can_all_costs_be_paid and !has_else and CFConst.ABORT_EARLY_ON_COST_FAILURE:
+			break
 		# Failsafe for GUT tearing down while Sceng is running
 		if not cfc.NMAP.has("board") or not is_instance_valid(cfc.NMAP.board): return
 		# We put it into another variable to allow Static Typing benefits

@@ -1,0 +1,158 @@
+{
+	"_comments": "Bug: Seduced doesn't prevent from playing attack events",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Seduced"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},					
+				{
+					"card": "Enchantress"
+				},					
+			],
+			"set_aside": [
+				{
+					"card": "Loki - 1 #21160",				
+				},				
+			],
+			"villain": [
+				{
+					"card": "Loki - 1 #21161"
+				}
+			],
+			"schemes": [
+				{
+					"card": "All Hail King Loki"
+				},						
+			],
+			"victory_display": [			
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Cosmic Ward"
+				},	
+				{
+					"card": "Mystic Senses"
+				},					
+				{
+					"card": "Karmic Blast"
+				},				
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		},	
+		{
+			"type": "play",
+			"value": "Karmic Blast",
+			"expected_to_fail": true,
+		},	
+		{
+			"type": "choose",
+			"value": "0",
+			"expected_to_fail": true,
+		},
+		{
+			"type": "target",
+			"value": "Enchantress",
+			"expected_to_fail": true,			
+		},			
+			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},										
+			],
+			"set_aside": [
+				{
+					"card": "Loki - 1 #21160",				
+				},				
+			],
+			"villain": [
+				{
+					"card": "Loki - 1 #21161"
+				}
+			],
+			"schemes": [
+				{
+					"card": "All Hail King Loki"
+				},						
+			],
+			"others": [
+				{
+					"card": "Seduced",
+					"host": "21031a"
+				},
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Enchantress"
+				},
+			],
+			"hand1": [
+				{
+					"card": "Cosmic Ward"
+				},	
+				{
+					"card": "Mystic Senses"
+				},	
+				{
+					"card": "Karmic Blast"
+				},				
+			]
+		}
+	}
+}

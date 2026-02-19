@@ -51,6 +51,10 @@
 	},
 	"actions": [
 		{
+			"type": "other",
+			"value": "wait_a_bit",
+		},	
+		{
 			"type": "pass",
 			"value": "1",
 			"_comments": "pass SpiderMan ability to draw"

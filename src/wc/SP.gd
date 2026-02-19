@@ -161,7 +161,7 @@ static func check_source_controlled_by_filter(_trigger_card, owner_card, trigger
 			pass
 	return false
 	
-# Returns true if the trigger and the owner belong to the same hero, false otherwise
+# Returns true if
 static func check_filter_event_source(_trigger_card, owner_card, trigger_details, _expected_event_source) -> bool:
 	var source = trigger_details.get("source", null)
 	if guidMaster.is_guid(source):

@@ -1279,6 +1279,9 @@
 				},
 				{
 					"name": "swap_villain",
+					"options": {
+						"copy_damage": true
+					},					
 					"src_container": "set_aside",
 					"subject": "tutor",
 					"sort_by": "random",
@@ -2158,6 +2161,7 @@
 			"all": [
 				{
 					"name": "move_card_to_board",
+					"grid_name": "enemies_my_hero",
 					"subject": "tutor",
 					"subject_count": 1,
 					"src_container": [
@@ -2508,7 +2512,7 @@
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "current_activation_target"
+					"subject": "current_hero_target"
 				}
 			]
 		},
@@ -3213,7 +3217,16 @@
 					"src_container": "deck_infinity_stone"
 				}
 			]
-		}
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "draw_boost_card",
+					"subject": "host",
+					"src_container": "deck_infinity_stone"
+				}
+			]
+		}		
 	},
 	"Infinity Gauntlet": {
 		"extra_decks": [
@@ -3728,6 +3741,15 @@
 		}
 	},
 	"Loki's Cape": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},	
 		"villain_swapped": {
 			"board": [
 				{
@@ -3739,10 +3761,16 @@
 			]
 		},
 		"response": {
-			"event_name": [
-				"basic_attack_happened"
+			"event_filters": {
+				"target": "host"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "hero"
+					}
+				}
 			],
-			"trigger": "my_hero",
 			"is_optional_board": true,
 			"board": [
 				{
@@ -3762,11 +3790,26 @@
 		}
 	},
 	"Loki's Crown": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},	
 		"response": {
-			"event_name": [
-				"basic_attack_happened"
+			"event_filters": {
+				"target": "host"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "hero"
+					}
+				}
 			],
-			"trigger": "my_hero",
 			"is_optional_board": true,
 			"board": [
 				{
@@ -3794,11 +3837,26 @@
 		}
 	},
 	"Loki's Staff": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},	
 		"response": {
-			"event_name": [
-				"basic_attack_happened"
+			"event_filters": {
+				"target": "host"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "hero"
+					}
+				}
 			],
-			"trigger": "my_hero",
 			"is_optional_board": true,
 			"board": [
 				{
@@ -3902,6 +3960,9 @@
 				},
 				{
 					"name": "swap_villain",
+					"options": {
+						"copy_damage": true
+					},
 					"src_container": "set_aside",
 					"subject": "tutor",
 					"sort_by": "random",
@@ -4771,6 +4832,9 @@
 				},
 				{
 					"name": "swap_villain",
+					"options": {
+						"copy_damage": true
+					},					
 					"src_container": "set_aside",
 					"subject": "tutor",
 					"sort_by": "random",
@@ -6269,7 +6333,24 @@
 					"filter_property_name": "cannot_attack",
 					"trigger": "host",
 					"alteration": 1
-				}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_play",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_attack": 1,
+								"comparison": "ge"
+							},
+							"filter_properties2": {
+								"type_code": "event"
+							},
+							"filter_same_controller": true
+						}
+					],
+					"alteration": 1
+				}				
 			]
 		},
 		"manual": {
@@ -7143,6 +7224,9 @@
 			"all": [
 				{
 					"name": "swap_villain",
+					"options": {
+						"copy_damage": true
+					},					
 					"src_container": "set_aside",
 					"subject": "tutor",
 					"sort_by": "random",
@@ -7451,6 +7535,9 @@
 				},
 				{
 					"name": "swap_villain",
+					"options": {
+						"copy_damage": true
+					},					
 					"src_container": "set_aside",
 					"subject": "tutor",
 					"sort_by": "random",

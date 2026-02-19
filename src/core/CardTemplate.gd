@@ -1495,6 +1495,9 @@ func move_to(targetHost: Node,
 					if _placement_slot:
 							_placement_slot.remove_occupying_card(self)
 				raise()
+			#force set is faceup to true if tags ask for it
+			if "facedown" in tags:
+				set_is_faceup(false)	
 			if "force_emit_card_moved_signal" in tags:
 				signal_to_emit = "card_moved_to_board"			
 		elif parentHost == targetHost and index != get_my_card_index():

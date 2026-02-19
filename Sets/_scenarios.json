@@ -102,6 +102,8 @@
 		"encounter_sets": [
 			"Crossbones",
 			"Standard",
+			"Modular",
+			"Modular",
 			"Modular"
 		],
 		"villains": [
@@ -112,6 +114,8 @@
 			"encounter_sets": [
 				"Crossbones",
 				"Standard",
+				"Modular",
+				"Modular",
 				"Modular",
 				"expert"
 			],
@@ -249,6 +253,7 @@
 		"encounter_sets": [
 			"Red_Skull",
 			"Standard",
+			"Modular",
 			"Modular"
 		],
 		"villains": [
@@ -259,6 +264,7 @@
 			"encounter_sets": [
 				"Red_Skull",
 				"Standard",
+				"Modular",
 				"Modular",
 				"expert"
 			],
@@ -278,6 +284,7 @@
 		"encounter_sets": [
 			"Ebony_Maw",
 			"Standard",
+			"Modular",
 			"Modular"
 		],
 		"villains": [
@@ -288,6 +295,7 @@
 			"encounter_sets": [
 				"Ebony_Maw",
 				"Standard",
+				"Modular",
 				"Modular",
 				"expert"
 			],
@@ -398,6 +406,7 @@
 			"Thanos",
 			"infinity_gauntlet",
 			"Standard",
+			"Modular",
 			"Modular"
 		],
 		"villains": [
@@ -408,6 +417,7 @@
 			"encounter_sets": [
 				"Thanos",
 				"infinity_gauntlet",
+				"Modular",
 				"Modular",
 				"expert"
 			],
@@ -427,20 +437,22 @@
 		"encounter_sets": [
 			"Hela",
 			"Standard",
+			"Modular",
 			"Modular"
 		],
 		"villains": [
-			"Hela - A1",
+			"Hela - A1"
 		],
 		"expert": {
 			"encounter_sets": [
 				"Hela",
 				"Standard",
 				"Modular",
+				"Modular",
 				"expert"
 			],
 			"villains": [
-				"Hela - B1",
+				"Hela - B1"
 			]
 		}
 	},
@@ -455,6 +467,7 @@
 			"Loki",
 			"infinity_gauntlet",
 			"Standard",
+			"Modular",
 			"Modular"
 		],
 		"extra_rules": [
@@ -477,7 +490,7 @@
 							]
 						}
 					]
-				},
+				}
 			}
 		],
 		"options": [
@@ -517,6 +530,7 @@
 				"Loki",
 				"infinity_gauntlet",
 				"Standard",
+				"Modular",
 				"Modular",
 				"expert"
 			],

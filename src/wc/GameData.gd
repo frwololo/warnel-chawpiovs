@@ -1902,7 +1902,7 @@ func hero_died(card:Card, script = null):
 		#for now if one hero dies, we lose. Will see what I do about this later
 		defeat()
 
-func swap_villain(current_villain, next_villain_key, died = false):
+func swap_villain(current_villain, next_villain_key, options = {}):
 	#hacky way to move the current card out of the way
 	#while still leaving it on the board
 	if current_villain._placement_slot:
@@ -1911,7 +1911,12 @@ func swap_villain(current_villain, next_villain_key, died = false):
 
 	var new_card = cfc.NMAP.board.load_villain(next_villain_key)
 	
-	current_villain.copy_tokens_to(new_card, {"exclude":["damage"]})
+	var copy_damage = options.get("copy_damage", false)
+	var copy_token_options = {}
+	if !copy_damage:
+		copy_token_options["exclude"]  = ["damage"]
+		
+	current_villain.copy_tokens_to(new_card, copy_token_options)
 	var attachments_to_move = []
 	for attachment in current_villain.attachments:
 		if attachment.is_boost():
@@ -1920,12 +1925,14 @@ func swap_villain(current_villain, next_villain_key, died = false):
 	for attachment in attachments_to_move:	
 		attachment.attach_to_host(new_card)
 	
+	var died = options.get("died", false)
 	if died:
 		if current_villain.get_property("victory", 0):
 			move_to_victory(current_villain)
 		else:
 			set_aside(current_villain) #todo remove from game
-	else:	
+	else:
+		scripting_bus.emit_signal_on_stack("villain_swapped", new_card, {})
 		set_aside(current_villain)	
 	var func_return = new_card.execute_scripts(new_card, "reveal")
 	while func_return is GDScriptFunctionState && func_return.is_valid():
@@ -1962,7 +1969,7 @@ func move_to_next_villain(current_villain):
 		
 		ckey = new_villain_data["_code"] 		
 
-	var new_card = swap_villain(current_villain, ckey, true)
+	var new_card = swap_villain(current_villain, ckey, {"died": true})
 	
 	
 	cfc.remove_ongoing_process(self, "move_to_next_villain")

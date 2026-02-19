@@ -1,0 +1,138 @@
+{
+	"_comments": "Bug: The trickster makes Villain attack with wrong Loki",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},	
+				{
+					"card": "Hydra Mercenary"
+				},					
+				{
+					"card": "The Trickster"
+				},					
+			],
+			"set_aside": [
+				{
+					"card": "Loki - 1 #21160",				
+				},				
+			],
+			"villain": [
+				{
+					"card": "Loki - 1 #21161"
+				}
+			],
+			"schemes": [
+				{
+					"card": "All Hail King Loki"
+				},						
+			],
+			"others": [	
+				{
+					"card": "Loki's Cape",
+					"host": "21161"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},			
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel", 
+			"_comments": "undefended attack"
+		},		
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},				
+				{
+					"card": "The Trickster"
+				},					
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},					
+			],
+			"set_aside": [
+				{
+					"card": "Loki - 1 #21161",				
+				},				
+			],
+			"villain": [
+				{
+					"card": "Loki - 1 #21160",
+					"tokens": {"tough": 1}
+				}
+			],
+			"schemes": [
+				{
+					"card": "All Hail King Loki"
+				},						
+			],
+			"others": [	
+				{
+					"card": "Loki's Cape",
+					"host": "21160"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id",
+					"tokens": {"damage": 3}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},			
+			]
+		}
+	}
+}

@@ -476,6 +476,8 @@ func load_heroes():
 func count_amplify_icons(display_hint = true):
 	var total_amplify = 0
 	for card in get_all_cards():
+		if card.is_boost(): #skip boost cards
+			continue
 		var amplify = card.get_property("scheme_amplify", 0, true)
 		if amplify and display_hint:
 			card.hint("Amplify", Color8(100,255,150))

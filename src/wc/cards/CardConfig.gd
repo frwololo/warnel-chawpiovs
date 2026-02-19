@@ -17,7 +17,7 @@ const PROPERTIES_STRINGS := ["Type", "Requirements", "Abilities", "text", "type_
 #WC traits and AUTO_KEYWORDS are added at runtime to this list
 const PROPERTIES_NUMBERS := ["cost", "attack", "defense", "thwart", "scheme", "health",
 	"attack_cost", "thwart_cost", #consequential damage
-	"cannot_attack", "cannot_thwart",
+	"cannot_attack", "cannot_thwart", "cannot_play",
 	"printed_health", #TODO maybe retrieve this one from the database directly?
 	"invincible","cannot_remove_threat", "is_unique", 
 	"boost", "scheme_crisis", "scheme_amplify",

@@ -75,6 +75,10 @@
 	},
 	"actions": [
 		{
+			"type": "other",
+			"value": "wait_a_bit",
+		},	
+		{
 			"type": "play",
 			"value": "get behind me!",
 			"hero": 2,

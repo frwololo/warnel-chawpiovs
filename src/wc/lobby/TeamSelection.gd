@@ -818,6 +818,7 @@ func are_acks_pending():
 # Deck Download functions
 #
 
+var _deck_dl_backup = false
 func _deck_download_completed(result, response_code, headers, body):
 	if result != HTTPRequest.RESULT_SUCCESS:
 		push_error("Set couldn't be downloaded.")
@@ -826,10 +827,15 @@ func _deck_download_completed(result, response_code, headers, body):
 
 		var json_result:JSONParseResult = JSON.parse(content)
 		if (json_result.error != OK):
+			if !_deck_dl_backup:
+				_deck_dl_backup = true
+				_on_DownloadDeck_pressed()
+				return
 			push_error("Set couldn't be downloaded.")
 		else:
 			process_deck_download(json_result.result)	 		
 	
+	_deck_dl_backup = false
 	var button = get_node("%DownloadDeckButton")
 	button.disabled = false
 
@@ -837,6 +843,8 @@ func start_deck_download(deck_id_str):
 	var button = get_node("%DownloadDeckButton")
 	button.disabled = true
 	var base_url = cfc.game_settings.get("decks_base_url","")
+	if _deck_dl_backup:
+		base_url = cfc.game_settings.get("decks_base_url_backup","")
 	if !base_url:
 		deck_download_error("missing download url in settings file")
 		button.disabled = false

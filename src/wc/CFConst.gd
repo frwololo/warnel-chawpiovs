@@ -743,6 +743,7 @@ const DEFAULT_SETTINGS:= {
 	'load_cards_online' : true,
 	'images_base_url': "https://marvelcdb.com",
 	"decks_base_url": "https://marvelcdb.com/api/public/decklist/",
+	"decks_base_url_backup": "https://marvelcdb.com/api/public/deck/",
 	'database': {
 		"core": "https://marvelcdb.com/api/public/cards/core.json",
 		#"cap" : "https://marvelcdb.com/api/public/cards/cap.json",
@@ -883,7 +884,10 @@ const HARDCODED_DEF_PATCHES = {
 	},	
 	"21165b":{
 		"imagesrc": "https://wololo.net/wc/images/21165b.jpg"
-	},				
+	},
+	"21167": {
+		"scheme_amplify": 0 #https://github.com/zzorba/marvelsdb/issues/347
+	}				
 	
 }
 
@@ -897,6 +901,8 @@ enum AUTO_EXECUTE_MENU {
 
 #TODO other values than OFF break some tests and multiplayer interaction
 const AUTO_EXECUTE_ONE_ENTRY_MENU = AUTO_EXECUTE_MENU.OFF # SCRIPTED_ONLY
+
+const ABORT_EARLY_ON_COST_FAILURE = true 
 
 const LARGE_SCREEN_WIDTH:= 1600
 

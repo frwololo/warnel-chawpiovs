@@ -1,0 +1,130 @@
+{
+	"_comments": "Bug: The trickster makes Villain attack with wrong Loki",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},	
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Frozen"
+				},				
+				{
+					"card": "Advance"
+				},					
+			],
+			"set_aside": [
+				{
+					"card": "Loki - 1 #21160",				
+				},				
+			],
+			"villain": [
+				{
+					"card": "Loki - 1 #21161"
+				}
+			],
+			"schemes": [
+				{
+					"card": "All Hail King Loki"
+				},						
+			],
+			"victory_display": [			
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "21031b",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},			
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Advance"
+				},	
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},	
+				{
+					"card": "Hydra Mercenary"
+				},				
+			],
+			"set_aside": [
+				{
+					"card": "Loki - 1 #21160",				
+				},				
+			],
+			"villain": [
+				{
+					"card": "Loki - 1 #21161"
+				}
+			],
+			"schemes": [
+				{
+					"card": "All Hail King Loki"
+				},						
+			],
+			"others": [		
+				{
+					"card": "Frozen",
+					"host": "21031b"
+				},	
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "21031b",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},			
+			]
+		}
+	}
+}

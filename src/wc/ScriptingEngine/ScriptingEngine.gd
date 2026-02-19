@@ -25,6 +25,8 @@ func pay_as_resource(script: ScriptTask) -> int:
 		return retcode
 
 	var resources_paid := []
+	if !script.subjects:
+		var _tmp = 1
 	for subject in script.subjects:
 		var resource = subject.pay_as_resource(script)
 		resources_paid.append(resource)
@@ -259,6 +261,9 @@ func draw_to_hand_size (script: ScriptTask) -> int:
 # more importantly, sends the signal "card played" to the scripting engine
 func play_card(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
+
+	if script.owner.get_property("cannot_play", 0, true):
+		return CFConst.ReturnCode.FAILED
 
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode	
@@ -1068,9 +1073,10 @@ func swap_villain(script:ScriptTask) -> int:
 
 	if (costs_dry_run()):
 		return retcode		
-		
+	
+	var options = script.get_property("options", {})	
 	var subject = script.subjects[0]
-	gameData.swap_villain(gameData.get_active_villain(), subject.get_property("_code"))
+	gameData.swap_villain(gameData.get_active_villain(), subject.get_property("_code"), options)
 	return retcode
 
 func draw_boost_card(script:ScriptTask) ->int:
@@ -1276,7 +1282,7 @@ func _add_receive_damage_on_stack(amount, original_script, modifications:Diction
 			"name": "receive_damage",
 			"amount": amount,
 			"source": original_script.get_property("source", owner),
-			"tags": original_script.get_property("tags", [])
+			"tags": modifications.get("tags", original_script.get_property("tags", []))
 		}
 		
 		modifications["script_definition"] =  receive_damage_script_definition	

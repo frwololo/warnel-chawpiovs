@@ -2958,6 +2958,9 @@ func get_sustained_damage(params:Dictionary = {}, script = null) -> int:
 func get_remaining_damage(params:Dictionary = {}, script = null) -> int:
 	var subject = get_param_subject(params, script)
 	
+	if !subject:
+		return 0
+	
 	var current_damage = subject.tokens.get_token_count("damage")
 	var health = subject.get_property("health", 0)
 	var diff = health - current_damage

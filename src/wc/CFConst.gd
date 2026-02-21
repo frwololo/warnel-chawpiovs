@@ -758,23 +758,23 @@ const DEFAULT_SETTINGS:= {
 	},
 	'notifications_level': 'normal',
 	'adventure_mode': true,
-	'unlocked_heroes': ["01001a"], #spider-man is default unlocked character
-	'unlocked_villains': ["01097"], #the break-in (Rhino) is default unlocked villain
+	'unlocked_heroes': ["01001a"], #default unlocked character
+	'unlocked_villains': ["01097"], #default unlocked villain
 	
 }
 
 const HARDCODED_DEF_PATCHES = {
 	"01043a": {
-		"imagesrc": "https://wololo.net/wc/images/01043a.png"		
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01043a.jpg"		
 	},
 	"01043b": {
-		"imagesrc": "https://wololo.net/wc/images/01043b.png"		
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01043b.jpg"		
 	},
 	"01043c": {
-		"imagesrc": "https://wololo.net/wc/images/01043c.png"		
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01043c.jpg"		
 	},
 	"01043d": {
-		"imagesrc": "https://wololo.net/wc/images/01043d.png"		
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01043d.jpg"		
 	},
 	"01116b":{
 		"imagesrc": "/bundles/cards/01116.png"
@@ -795,13 +795,13 @@ const HARDCODED_DEF_PATCHES = {
 		"imagesrc": "https://wololo.net/wc/images/01144.png"		
 	},
 	"01144a": {
-		"imagesrc": "https://wololo.net/wc/images/01144a.png"		
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01144a.jpg"		
 	},	
 	"01144b": {
-		"imagesrc": "https://wololo.net/wc/images/01144b.png"		
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01144b.jpg"		
 	},	
 	"01144c": {
-		"imagesrc": "https://wololo.net/wc/images/01144c.png"		
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01144c.jpg"		
 	},							
 	"01097b": {
 		"imagesrc": "/bundles/cards/01097.png"
@@ -847,28 +847,28 @@ const HARDCODED_DEF_PATCHES = {
 		"attack": 1,
 	},
 	"21074b":{
-		"imagesrc": "https://wololo.net/wc/images/21074b.jpg"
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21074b.jpg"
 	},
 	"21075b":{
-		"imagesrc": "https://wololo.net/wc/images/21075b.jpg"
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21075b.jpg"
 	},		
 	"21098b":{
-		"imagesrc": "https://wololo.net/wc/images/21098b.jpg"
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21098b.jpg"
 	},
 	"21099b":{
-		"imagesrc": "https://wololo.net/wc/images/21099b.jpg"
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21099b.jpg"
 	},	
 	"21100a":{
 		"imagesrc": "/bundles/cards/21100.png"
 	},		
 	"21100b":{
-		"imagesrc": "https://wololo.net/wc/images/21100b.jpg"
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21100b.jpg"
 	},		
 	"21114b":{
-		"imagesrc": "https://wololo.net/wc/images/21114b.jpg"
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21114b.jpg"
 	},
 	"21115b":{
-		"imagesrc": "https://wololo.net/wc/images/21115b.jpg"
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21115b.jpg"
 	},	
 	"21124":{
 		"real_text": "<b>When Defeated</b>: Choose and Discard an Infinity Stone from Play"
@@ -883,10 +883,10 @@ const HARDCODED_DEF_PATCHES = {
 		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21137b.jpg"
 	},						
 	"21138b":{
-		"imagesrc": "https://wololo.net/wc/images/21138b.jpg"
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21138b.jpg"
 	},	
 	"21165b":{
-		"imagesrc": "https://wololo.net/wc/images/21165b.jpg"
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21165b.jpg"
 	},
 	"21167": {
 		"scheme_amplify": 0 #https://github.com/zzorba/marvelsdb/issues/347

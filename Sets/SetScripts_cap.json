@@ -62,7 +62,7 @@
 								},
 								{
 									"filter_task": "get_property",
-									"filter_property_name": "attack",
+									"filter_property_name": "thwart",
 									"filter_state_trigger": [
 										{
 											"filter_properties": {
@@ -1009,7 +1009,7 @@
 			"all": [
 				{
 					"name": "move_card_to_container",
-					"src_container": "deck",
+					"src_container": ["deck", "discard"],
 					"dest_container": "hand",
 					"subject": "tutor",
 					"filter_state_tutor": [
@@ -1089,7 +1089,7 @@
 					"filter_state_seek": [
 						{
 							"filter_properties": {
-								"Name": "Stever Rogers"
+								"Name": "Steve Rogers"
 							}
 						}
 					]

@@ -248,6 +248,7 @@ func _all_downloads_completed():
 #	texture_rect.get_parent().rect_min_size = texture_rect.rect_size * texture_rect.rect_scale
 #	texture_rect.get_parent().rect_size = texture_rect.rect_size * texture_rect.rect_scale
 	cfc.all_loaded = true
+	get_node("%VersionLabel").text = "v. " + CFConst.VERSION + " (" + str(cfc.count_unique_cards()) +" cards)"
 	gameData.play_music("menu")
 	check_for_new_release()
 
@@ -423,7 +424,7 @@ func resize():
 		texture_rect.rect_min_size = Vector2(1616, 604)
 		texture_rect.rect_size = texture_rect.rect_min_size
 
-	v_folder_label.rect_min_size.x = target_size.x - 200
+	v_folder_label.rect_min_size.x = target_size.x - 300
 	self.margin_right = target_size.x
 	self.margin_bottom = target_size.y
 	self.rect_size = target_size

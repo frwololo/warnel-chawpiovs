@@ -20,8 +20,10 @@ func get_sceng():
 	return sceng
 
 #replacement task
-func replace_subjects(new_subjects:Array):
+func replace_subjects(new_subjects:Array, task_object = null):
 	for task in get_tasks():
+		if task_object and task != task_object:
+			continue		
 		task.subjects = new_subjects
 		#TODO hack force select...
 		#not sure why I have to do this but
@@ -29,15 +31,19 @@ func replace_subjects(new_subjects:Array):
 		task.is_primed = true
 
 #replacement task
-func replace_ability(new_ability:String):
+func replace_ability(new_ability:String, task_object = null):
 	for task in get_tasks():
+		if task_object and task != task_object:
+			continue		
 		task.script_name = new_ability
 		task.script_definition["name"] = new_ability
 	var _tmp = sceng	
 
-func prevent_value(property, amount_prevented):
+func prevent_value(property, amount_prevented, task_object = null):
 	var prevented = 0
 	for task in get_tasks():
+		if task_object and task != task_object:
+			continue		
 		var script_definition = task.script_definition
 		if script_definition.has(property):
 			var value = task.retrieve_integer_property(property)

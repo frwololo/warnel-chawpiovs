@@ -541,7 +541,7 @@ func _process(_delta: float):
 	# an interrupt flow, before resuming normal execution
 	if stack_object.interrupt_marker:
 		if yielded_scripts:
-			var backup_state = run_mode
+			#var backup_state = run_mode
 			set_run_mode(RUN_MODE.PENDING_USER_INTERACTION)
 			attempt_yielded_script()
 			#run_mode = backup_state
@@ -1113,10 +1113,10 @@ func find_event(_event_details, filters, owner_card, _trigger_details):
 
 
 #scripted replacement effects
-func modify_object(stack_object, script:ScriptTask):
+func modify_object(stack_object, script:ScriptTask, task_object = null):
 	if !stack_object:
 		return false
-	return stack_object.modify(script)
+	return stack_object.modify(script, task_object)
 	
 	
 		

@@ -2086,7 +2086,7 @@ func common_pre_run(sceng) -> void:
 	sceng.scripts_queue = new_queue	
 
 func change_form_script_replacement(script_definition: Dictionary, trigger_details) -> Dictionary:	
-	var owner_hero_id = trigger_details.get("override_controller_id", self.get_owner_hero_id())
+	#var owner_hero_id = trigger_details.get("override_controller_id", self.get_owner_hero_id())
 
 	var family = script_definition.get("form_family", "")
 	var new_form = script_definition.get("form_name", "")
@@ -2163,18 +2163,18 @@ func change_form_script_replacement(script_definition: Dictionary, trigger_detai
 
 #TODO cleanup, probably doesn't need to be a replacement
 func indirect_damage_replacement(script_definition: Dictionary, trigger_details) -> Dictionary:	
-	var owner_hero_id = trigger_details.get("override_controller_id", self.get_owner_hero_id())
+	var controller_hero_id = trigger_details.get("override_controller_id", self.get_controller_hero_id())
 
 	# For cards owned by the Villain, owner_hero_id is zero.
 	# we set it to the current playing hero, meaning the currently active user
 	# can pay the cost
 	#TODO how does it work in Multiplayer?
-	if (!owner_hero_id):
-		owner_hero_id = gameData.get_current_local_hero_id()
+	if (!controller_hero_id):
+		controller_hero_id = gameData.get_current_local_hero_id()
 			
 	var filter_state_seek = [
 		{
-			"filter_group": "group_friendly" + str(owner_hero_id)
+			"filter_group": "group_friendly" + str(controller_hero_id)
 		}
 	]
 	filter_state_seek = script_definition.get("filter_state_seek", filter_state_seek)
@@ -2458,7 +2458,7 @@ func draw_boost_card(src_container = ""):
 #		boost_card.set_is_faceup(false)
 
 func draw_boost_cards(action_type):
-	var amount = self.get_property("boost_cards_per_" + action_type, 0)
+	var amount = self.get_property("boost_cards_per_" + action_type, 1)
 	for i in amount:
 		draw_boost_card()
 	#TODO if pile empty...need to reshuffle ?
@@ -3000,7 +3000,8 @@ func pay_as_resource(script):
 	while exe_sceng is GDScriptFunctionState && exe_sceng.is_valid():
 		exe_sceng  = exe_sceng.resume()	
 
-	if (get_state_exec()) == "hand":
+	var state_exec = get_state_exec()
+	if state_exec == "hand":	
 		self.discard()
 	cfc.remove_ongoing_process(self, "pay_as_resource")
 	scripting_bus.emit_signal_on_stack("paid_as_resource", self, script.trigger_details)

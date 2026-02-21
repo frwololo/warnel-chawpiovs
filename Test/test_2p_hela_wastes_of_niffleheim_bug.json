@@ -1,0 +1,226 @@
+{
+	"_comments": "Bug: Wastes of niffleheim targeting wrong player",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "The Wastes of Niffleheim"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Nidhogg"
+				}
+			],
+			"villain": [
+				{
+					"card": "Hela - A1"
+				}
+			],
+			"others": [
+				{
+					"card": "21139a",
+					"host": "Odin's Torment",
+					"_comments": "Odin"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Odin's Torment"
+				},
+				{
+					"card": "Gjallerbru",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"victory_display": [
+				{
+					"card": "Garm"
+				},
+				{
+					"card": "Gnipahellir"
+				},
+				{
+					"card": "Skurge"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"allies1": [
+				{
+					"card": "War Machine - James Rhodes"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity2": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Karmic Blast"
+				},
+				{
+					"card": "Get Behind Me!"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+		},	
+		{
+			"type": "pass",
+			"value": 2,
+			"_comments": "pass offer to play Get Behind Me"
+		},
+		{
+			"type": "select",
+			"value": [
+				"Iron Man",
+				"Iron Man"
+			],
+			"hero": 1,
+			"_comments": "Iron Man takes indirect damage"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "The Wastes of Niffleheim"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Nidhogg"
+				}
+			],
+			"villain": [
+				{
+					"card": "Hela - A1"
+				}
+			],
+			"others": [
+				{
+					"card": "21139a",
+					"host": "Odin's Torment",
+					"_comments": "Odin"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Odin's Torment"
+				},
+				{
+					"card": "Gjallerbru",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"victory_display": [
+				{
+					"card": "Garm"
+				},
+				{
+					"card": "Gnipahellir"
+				},
+				{
+					"card": "Skurge"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Iron Man",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "War Machine - James Rhodes"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"enemies2": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"identity2": [
+				{
+					"card": "21031a",
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Karmic Blast"
+				},
+				{
+					"card": "Get Behind Me!"
+				}
+			]
+		}
+	}
+}

@@ -972,7 +972,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"selection_count": "count_previous_subjects",
-					"selection_type": "equal",
+					"selection_type": "max",
 					"needs_selection": true,
 					"filter_state_seek": [
 						{

@@ -592,7 +592,7 @@ const AUTO_KEYWORDS := {
 	"toughness" : "bool",
 	"uses" : "string",
 	"victory" : "int",
-	"villainous" : "bool",	
+	"villainous" : "int",	
 	
 #additional ones not officially in the game
 	"cannot_leave_play": "int",
@@ -872,6 +872,9 @@ const HARDCODED_DEF_PATCHES = {
 	},	
 	"21124":{
 		"real_text": "<b>When Defeated</b>: Choose and Discard an Infinity Stone from Play"
+	},
+	"21127":{
+		"real_text": "Villainous. (When this minion activates, give it a boost card.)\n<hr />\n[star] <b>Boost</b>: Give this enemy 1 additional boost card"
 	},
 	"21136b":{
 		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21136b.jpg"

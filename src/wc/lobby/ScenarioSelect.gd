@@ -49,6 +49,11 @@ func _process(_delta:float):
 		else:
 			texture = cfc.get_scheme_portrait(picture_card_id)
 			_rotation = 90
+
+		var villain_unlocks = cfc._get_corrected_scenario_ids("villains_used_for_unlocks")
+		if !scenario_id in villain_unlocks:
+			display_name = "*" + display_name			
+			
 		scenario_name.set_text(display_name)
 		 
 		if (texture):

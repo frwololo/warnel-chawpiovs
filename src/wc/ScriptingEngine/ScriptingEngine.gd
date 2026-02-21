@@ -919,11 +919,12 @@ func replacement_effect(script: ScriptTask) -> int:
 	match subject:
 		SP.KEY_SUBJECT_V_INTERUPTED_EVENT:
 			var stack_object = script.trigger_details.get("stack_object", null) 
+			var task_object = script.trigger_details.get("event_object", null)
 			#var stack_object = gameData.theStack.find_last_event_before_me(script)
 			if (!stack_object):	
 				return CFConst.ReturnCode.FAILED
 			
-			gameData.theStack.modify_object(stack_object, script)
+			gameData.theStack.modify_object(stack_object, script, task_object)
 		SP.KEY_SUBJECT_V_CURRENT_ACTIVATION:
 			var activation_script = script.owner.get_current_activation_details()
 			if !activation_script:

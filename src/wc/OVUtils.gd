@@ -95,7 +95,7 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 					results.append(new_card)
 		"trigger_flip_side":
 			var trigger_object:WCCard = script.trigger_object
-			var back_code = trigger_object.get_card_back_code() if trigger_object else null
+			var back_code = trigger_object.get_card_back_code() if trigger_object else ""
 			if (back_code):
 				var new_card = gameData.retrieve_from_side_or_instance(back_code,trigger_object.get_owner_hero_id())
 				if new_card:

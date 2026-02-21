@@ -2708,7 +2708,7 @@
 				{
 					"name": "attach_to_card",
 					"subject": "target",
-					"needs_subject": true,
+					"is_cost": true,
 					"filter_state_subject": [
 						{
 							"filter_properties": {

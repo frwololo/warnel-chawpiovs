@@ -47,23 +47,27 @@ func get_sceng():
 	return null
 
 #replacement tasks
-func add_tags(new_tags:Array):
+func add_tags(new_tags:Array, task_object = null):
 	for task in get_tasks():
+		if task_object and task != task_object:
+			continue
 		var tags = task.get_property("tags", [])
 		tags+= new_tags
 		task.script_definition["tags"] = tags
 
-func replace_subjects(new_subjects:Array):
+func replace_subjects(new_subjects:Array,  task_object = null):
 	pass
 	
-func replace_ability(new_ability_name:String):
+func replace_ability(new_ability_name:String, task_object = null):
 	pass	
 
-func prevent_value(property, amount_prevented):
+func prevent_value(property, amount_prevented, task_object = null):
 	pass		
 
-func replace_script_property(key, value):
+func replace_script_property(key, value, task_object = null):
 	for task in get_tasks():
+		if task_object and task != task_object:
+			continue		
 		task.script_definition[key] = value
 	
 func is_silent():
@@ -81,7 +85,7 @@ func get_trigger():
 
 
 #modification scripts such as partial prevent and replacement effects
-func modify(script):
+func modify(script, task_object = null):
 	var result = {}
 	match script.script_name:
 		"prevent":
@@ -90,7 +94,7 @@ func modify(script):
 				var _error = 1
 				return {}
 			else:
-				var prevented_amount = self.prevent_value("amount", amount)
+				var prevented_amount = self.prevent_value("amount", amount, task_object)
 				return {"amount_prevented" : prevented_amount}
 		_:
 			var replacements = script.get_property("replacements", {})
@@ -99,16 +103,16 @@ func modify(script):
 				match property:
 					"subject":
 						var new_subjects = SP.retrieve_subjects(value, script)
-						replace_subjects(new_subjects)
+						replace_subjects(new_subjects, task_object)
 						result["TODO"] =  "todo"
 					"name":
-						replace_ability(value)
+						replace_ability(value, task_object)
 						result["TODO"] =  "todo"
 					"additional_tags":
-						add_tags(value)
+						add_tags(value, task_object)
 						result["additional_tags"] = value #TODO only the ones that are new?
 					_:
-						replace_script_property(property, value)
+						replace_script_property(property, value, task_object)
 						result["TODO"] =  "todo"
 	return result
 

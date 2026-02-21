@@ -224,7 +224,22 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 		var owner_set_code = owner_card.get_property("card_set_code", "")
 		if set_code != owner_set_code:
 			return false
-		
+	
+	#generally speaking, boost cards are not valid targets...
+	if card.is_boost():
+		#...but we want them to be able to target themselves ("put this card into play")
+		if card != owner_card:
+			return false	
+
+	#I've had countless bugs with Odin in Hela's scenario
+	# so this is a preventive measure: inactive attachments can only
+	#be targeted by their set (like permanents)
+	if card.is_inactive_attachment():
+		var set_code = card.get_property("card_set_code", "")
+		var owner_set_code = owner_card.get_property("card_set_code", "")
+		if set_code != owner_set_code:
+			return false	
+				
 	var tags = card_scripts.get("tags", [])
 	var script_name = card_scripts.get("name", "")
 	#check for special guard conditions if card is an attack

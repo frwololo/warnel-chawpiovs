@@ -201,11 +201,24 @@ func get_locked_heroes():
 	return result
 	
 
+func _get_corrected_scenario_ids(settings_key = "unlocked_villains"):
+	var _unlocked_scenarios_ids = game_settings.get(settings_key, [])
+
+	var unlocked_scenarios_ids = []
+	for key in _unlocked_scenarios_ids:
+		key = get_corrected_scheme_card_id(key)
+		if !key:
+			continue
+		unlocked_scenarios_ids.append(key)
+	
+	return 	unlocked_scenarios_ids
+
 func get_unlocked_scenarios():
 	if !is_adventure_mode():
 		return self.scenarios
 	
-	var unlocked_scenarios_ids = game_settings.get("unlocked_villains", [])
+	var unlocked_scenarios_ids = _get_corrected_scenario_ids()
+	
 	if !unlocked_scenarios_ids:
 		var _scenario_id = adventure_unlock_next_scenario()
 		unlocked_scenarios_ids = game_settings.get("unlocked_villains", [])
@@ -242,7 +255,9 @@ func adventure_unlock_next_scenario():
 	if !game_settings.has("unlocked_villains"):
 		game_settings["unlocked_villains"] = []
 		
-	var unlocked_scenario_ids = game_settings.get("unlocked_villains", [])
+	var unlocked_scenario_ids = _get_corrected_scenario_ids()
+
+		
 	var all_scenario_ids = 	self.scenarios.duplicate()
 	for scenario_id in unlocked_scenario_ids:
 		all_scenario_ids.erase(scenario_id)
@@ -374,12 +389,18 @@ func get_card_by_id(id):
 	var card_data = card_definitions.get(id, {})
 	
 	if not card_data:
-		WCUtils.debug_message("no data matching get_card_by_id " + str(id))
 		return null	
 	
 	return card_data
 
-	
+
+func get_corrected_scheme_card_id(key):
+	if !get_card_by_id(key):
+		key = key + "b"
+		if !get_card_by_id(key):
+			key = ""
+			var _error = 1
+	return key	
 
 func load_card_scenarios():
 	var json_card_data : Dictionary
@@ -387,17 +408,12 @@ func load_card_scenarios():
 	for key in json_card_data:
 		var card_data = json_card_data[key]
 		#error correction
-		if !get_card_by_id(key):
-			var _error = 1
-			key = key + "b"
-			if !get_card_by_id(key):
-				continue
-		var card_code = card_data["code"]
-		if !get_card_by_id(card_code):
-			var _error = 1
-			card_code = card_code + "b"
-			if !get_card_by_id(card_code):
-				continue		
+		key = get_corrected_scheme_card_id(key)
+		if !key:
+			continue
+		var card_code = get_corrected_scheme_card_id(card_data["code"])
+		if !card_code:
+			continue		
 		#creating entries for both id and name so I never have to remember which one to use...
 		primitives[card_code] = card_data;
 		primitives[card_data["name"]] = card_data;
@@ -1169,6 +1185,19 @@ func instance_card(card_id: String, owner_id:int) -> Card:
 	card.init_owner_hero_id(owner_id)
 	card.set_controller_hero_id(owner_id)
 	return card
+
+var _unique_cards_count = 0
+func count_unique_cards():
+	if _unique_cards_count:
+		return _unique_cards_count
+	var count = card_definitions.size() 
+	count = count - duplicates.size()
+	for card_id in unmodified_set_scripts:
+		if unmodified_set_scripts[card_id].has("TODO"):
+			count -=1
+	_unique_cards_count = count
+	return _unique_cards_count
+	
 	
 #card here is either a card id or a card name, we try to accomodate for both
 func get_corrected_card_id (card, fuzzy_fallback = true) -> String:

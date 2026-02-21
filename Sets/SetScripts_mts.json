@@ -2959,7 +2959,7 @@
 		"card_defeated": {
 			"filter_state_trigger": [
 				{
-					"filter_state_trigger": {
+					"filter_properties": {
 						"type_code": "side_scheme"
 					}
 				}
@@ -2986,7 +2986,7 @@
 		"card_defeated": {
 			"filter_state_trigger": [
 				{
-					"filter_state_trigger": {
+					"filter_properties": {
 						"type_code": "side_scheme"
 					}
 				}

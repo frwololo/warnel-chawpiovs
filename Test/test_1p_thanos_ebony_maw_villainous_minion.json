@@ -1,0 +1,176 @@
+{
+	"_comments": "Bug: Ebony Maw (Children of Thanos) doesn't have villainous",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spectrum"
+				}
+			}
+		],
+		"board": {
+			"deck_infinity_stone": [
+				{
+					"card": "Time Stone"
+				},
+				{
+					"card": "Power Stone"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Masterplan"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1",
+					"tokens": {
+						"damage": 4
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Ebony Maw"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Soul Stone"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spectrum"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Gamma"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Gamma Blast"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spectrum"
+				}
+			}
+		],
+		"board": {
+			"deck_infinity_stone": [
+				{
+					"card": "Time Stone"
+				},
+				{
+					"card": "Power Stone"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Masterplan"
+				}
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1",
+					"tokens": {
+						"damage": 4
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Ebony Maw"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Soul Stone"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spectrum",
+					"tokens": {"damage": 4}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Gamma"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Gamma Blast"
+				}
+			]
+		}
+	}
+}

@@ -61,13 +61,13 @@ func execute():
 	var _retcode = sceng.call(task_name, task)
 
 #replacement task
-func replace_ability(new_ability:String):
-	.replace_ability(new_ability)
+func replace_ability(new_ability:String, task_object = null):
+	.replace_ability(new_ability, task_object)
 	task_name = new_ability
 
 #replacement task
-func replace_subjects(new_subjects:Array):
-	.replace_subjects(new_subjects)
+func replace_subjects(new_subjects:Array, task_object = null):
+	.replace_subjects(new_subjects, task_object)
 	task.subjects = new_subjects
 
 	if (task.subjects):

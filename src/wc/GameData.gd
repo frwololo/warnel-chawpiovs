@@ -914,7 +914,7 @@ func start_activity(enemy, action, script, target_id = 0):
 		target_id = _villain_current_hero_target
 		
 	display_debug("drawing boost cards")	
-	if (enemy.get_property("type_code") == "villain"): #Or villainous?
+	if (enemy.get_property("type_code") == "villain") or enemy.get_property("villainous", 0, true):
 		display_debug("villain confirmed, drawing boost cards")
 		if script and script.has_tag("no_boost"):
 			pass
@@ -1026,7 +1026,7 @@ func enemy_activates() :
 					top_color = Color8(40,20,40,255)
 				var announce_settings = {
 					"top_text": enemy.get_property("shortname", ""),
-					"bottom_text" : action,
+					"bottom_text" : action + "s",
 					"top_color": top_color,
 					"bottom_color": Color8(18,18,18,255),
 					"bg_color" : Color8(0,0,0,0),

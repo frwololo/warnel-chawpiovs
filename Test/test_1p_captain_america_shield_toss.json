@@ -1,0 +1,138 @@
+{
+	"_comments": "Tests Shield Toss (damage x enemies)",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain America"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Captain America"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Bomber",
+				},
+				{
+					"card": "Shocker",
+					"tokens": {"damage": 1},
+				},				
+			],
+			"upgrade_support1": [
+				{
+					"card": "Captain America's Shield"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Falcon - Sam Wilson"
+				},				
+				{
+					"card": "Shield Toss"
+				},	
+			
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Shield toss",
+		},
+		{
+			"type": "select",
+			"value": ["Jessica Jones","Falcon - Sam Wilson"] ,
+		},	
+		{
+			"type": "select",
+			"value": ["Hydra Bomber","Rhino - 1"] ,
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain America"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Hydra Bomber",					
+				},			
+			],
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {"damage": 4},
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Captain America"
+				}
+			],
+			"enemies1": [
+
+				{
+					"card": "Shocker",
+					"tokens": {"damage": 1},					
+				},				
+			],
+			"hand1": [
+				{
+					"card": "Captain America's Shield"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Shield Toss"
+				},				
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Falcon - Sam Wilson"
+				},				
+
+			
+			]
+		}
+	}
+}

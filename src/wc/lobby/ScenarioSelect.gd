@@ -34,6 +34,13 @@ func lose_focus():
 	$Panel/HorizontalHighlights.visible = false
 	lobby.hide_preview(villain_id)
 	
+
+func set_display_name(display_name):
+	var villain_unlocks = cfc._get_corrected_scenario_ids("villains_used_for_unlocks")
+	if (!scenario_id in villain_unlocks) and cfc.get_locked_scenarios():
+		display_name = "*" + display_name			
+		
+	scenario_name.set_text(display_name)	
 	
 func _process(_delta:float):
 	if scenario_picture and !scenario_picture.texture_normal:
@@ -50,11 +57,7 @@ func _process(_delta:float):
 			texture = cfc.get_scheme_portrait(picture_card_id)
 			_rotation = 90
 
-		var villain_unlocks = cfc._get_corrected_scenario_ids("villains_used_for_unlocks")
-		if !scenario_id in villain_unlocks:
-			display_name = "*" + display_name			
-			
-		scenario_name.set_text(display_name)
+		set_display_name(display_name)
 		 
 		if (texture):
 			scenario_picture.texture_normal = texture

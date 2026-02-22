@@ -68,7 +68,7 @@ func replace_ability(new_ability:String, task_object = null):
 #replacement task
 func replace_subjects(new_subjects:Array, task_object = null):
 	.replace_subjects(new_subjects, task_object)
-	task.subjects = new_subjects
+	task.set_subjects(new_subjects)
 
 	if (task.subjects):
 		task.script_definition["target"] = task.subjects[0]

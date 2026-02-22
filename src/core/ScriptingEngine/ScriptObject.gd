@@ -139,9 +139,47 @@ func get_sub_property(property: String, root, default = null):
 #		return(value)
 #	return(found_value)
 
+func set_subjects(new_subjects):
+	match typeof(new_subjects):
+		TYPE_ARRAY:
+			subjects = new_subjects
+		TYPE_OBJECT:
+			if new_subjects as Card:
+				subjects = [new_subjects]
+			else:
+				var _error = 1
+		_:
+			var _error = 1
+			
+
+func network_prepaid_sanity_check() -> bool:
+	if !_network_prepaid_called:
+		var _error = 1
+	var prepayment = get_property("network_prepaid", null)
+	if null == prepayment:
+		return true
+	#prepayment should be an array of GUID
+	var result = []
+	for uid in prepayment:
+		if guidMaster.is_guid(uid):
+			result.append(guidMaster.get_object_by_guid(uid))
+		else:
+			result.append(uid)
+		
+	if result.size() != subjects.size():
+		return false
+	for i in result.size():
+		if result[i] != subjects[i]:
+			return false
+
+	return true
+		
+		
 #TODO MULTIPLAYER_MODIFICATION
 #TODO move this outside of core classes
+var _network_prepaid_called = false
 func _network_prepaid():
+	_network_prepaid_called = true
 	var prepayment = get_property("network_prepaid", null)
 	if null == prepayment:
 		return null
@@ -163,7 +201,7 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 	var prepaid = _network_prepaid()
 	if (null != prepaid):
 		user_interaction_status =  CFConst.USER_INTERACTION_STATUS.DONE_NETWORK_PREPAID
-		subjects = prepaid
+		set_subjects(prepaid)
 		return prepaid
 
 	var result = _local_find_subjects(stored_integer, run_type)
@@ -171,7 +209,7 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 	if result is GDScriptFunctionState: # Still working.
 		result = yield(result, "completed")	
 	
-	subjects = result
+	set_subjects(result)
 	return subjects
 
 

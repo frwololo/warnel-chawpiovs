@@ -1786,7 +1786,7 @@ func character_died(card:Card, script = null):
 	}
 	
 	var character_died_script:ScriptTask = ScriptTask.new(card, character_died_definition, card, trigger_details)
-	character_died_script.subjects = [card]
+	character_died_script.set_subjects(card)
 	
 	var task_event = SimplifiedStackScript.new(character_died_script)
 	theStack.add_script(task_event)

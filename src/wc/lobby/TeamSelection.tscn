@@ -77,7 +77,7 @@ custom_constants/separation = 20
 unique_name_in_owner = true
 margin_right = 200.0
 margin_bottom = 62.0
-text = "1) CHOOSE HEROES"
+text = "1) CHOOSE UP TO 4 HEROES"
 align = 1
 autowrap = true
 

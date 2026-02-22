@@ -60,8 +60,10 @@ func victory():
 	#has this hero already been used for an other hero unlock
 	var hero_used_for_unlocks = cfc.game_settings["heroes_used_for_unlocks"].get(hero_id, false)
 	if (!hero_used_for_unlocks) or hero_unlock_gridlock() :
-		cfc.game_settings["heroes_used_for_unlocks"][hero_id] = true
 		unlocked_hero_id = cfc.adventure_unlock_random_hero()
+		if unlocked_hero_id:
+			cfc.game_settings["heroes_used_for_unlocks"][hero_id] = true
+
 	
 	var scenario = gameData.scenario
 	var scenario_id = scenario.scheme_card_id
@@ -75,8 +77,10 @@ func victory():
 		var scenario_used_for_unlocks = (scenario_id in villains_already_used_for_unlocks)
 
 		if (!scenario_used_for_unlocks) or scenario_unlock_gridlock():
-			cfc.game_settings["villains_used_for_unlocks"][scenario_id] = true
 			unlocked_scenario_id = cfc.adventure_unlock_next_scenario()
+			if unlocked_scenario_id:
+				cfc.game_settings["villains_used_for_unlocks"][scenario_id] = true
+
 		
 	
 	var texture = null

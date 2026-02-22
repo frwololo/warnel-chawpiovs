@@ -1281,7 +1281,7 @@
 					"name": "swap_villain",
 					"options": {
 						"copy_damage": true
-					},					
+					},
 					"src_container": "set_aside",
 					"subject": "tutor",
 					"sort_by": "random",
@@ -1410,6 +1410,35 @@
 						}
 					],
 					"alteration": 1
+				}
+			]
+		}
+	},
+	"Corvus Glaive #21125": {
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "support"
+							},
+							"filter_group": "group_upgrade_support_current_hero_target"
+						},
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							},
+							"filter_group": "group_allies_current_hero_target"
+						}
+					]
 				}
 			]
 		}
@@ -2014,6 +2043,16 @@
 			}
 		}
 	},
+	"Ebony Maw #21127": {
+		"boost": {
+			"all": [
+				{
+					"name": "draw_boost_card",
+					"subject": "host"
+				}
+			]
+		}
+	},
 	"Ebony Maw - 1": {
 		"interrupt": {
 			"event_name": [
@@ -2370,7 +2409,7 @@
 						{
 							"name": "move_card_to_container",
 							"subject": "self",
-							"dest_container": "discard_villain",
+							"dest_container": "discard_villain"
 						}
 					]
 				}
@@ -3226,7 +3265,7 @@
 					"src_container": "deck_infinity_stone"
 				}
 			]
-		}		
+		}
 	},
 	"Infinity Gauntlet": {
 		"extra_decks": [
@@ -3749,7 +3788,7 @@
 					"subject": "villain"
 				}
 			]
-		},	
+		},
 		"villain_swapped": {
 			"board": [
 				{
@@ -3760,7 +3799,7 @@
 				}
 			]
 		},
-		"response": {
+		"response_basic_attack_happened": {
 			"event_filters": {
 				"target": "host"
 			},
@@ -3798,8 +3837,8 @@
 					"subject": "villain"
 				}
 			]
-		},	
-		"response": {
+		},
+		"response_basic_attack_happened": {
 			"event_filters": {
 				"target": "host"
 			},
@@ -3845,8 +3884,8 @@
 					"subject": "villain"
 				}
 			]
-		},	
-		"response": {
+		},
+		"response_basic_attack_happened": {
 			"event_filters": {
 				"target": "host"
 			},
@@ -4834,7 +4873,7 @@
 					"name": "swap_villain",
 					"options": {
 						"copy_damage": true
-					},					
+					},
 					"src_container": "set_aside",
 					"subject": "tutor",
 					"sort_by": "random",
@@ -5197,6 +5236,39 @@
 					"name": "heal",
 					"amount": 1,
 					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Proxima Midnight #21126": {
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "piercing"
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_group": "group_upgrade_support_current_hero_target"
+						},
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							},
+							"filter_group": "group_allies_current_hero_target"
+						}
+					]
 				}
 			]
 		}
@@ -6350,7 +6422,7 @@
 						}
 					],
 					"alteration": 1
-				}				
+				}
 			]
 		},
 		"manual": {
@@ -7226,7 +7298,7 @@
 					"name": "swap_villain",
 					"options": {
 						"copy_damage": true
-					},					
+					},
 					"src_container": "set_aside",
 					"subject": "tutor",
 					"sort_by": "random",
@@ -7305,7 +7377,7 @@
 							}
 						]
 					}
-				},		
+				}
 			]
 		}
 	},
@@ -7537,7 +7609,7 @@
 					"name": "swap_villain",
 					"options": {
 						"copy_damage": true
-					},					
+					},
 					"src_container": "set_aside",
 					"subject": "tutor",
 					"sort_by": "random",

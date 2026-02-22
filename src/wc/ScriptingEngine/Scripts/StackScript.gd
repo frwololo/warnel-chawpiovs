@@ -24,7 +24,7 @@ func replace_subjects(new_subjects:Array, task_object = null):
 	for task in get_tasks():
 		if task_object and task != task_object:
 			continue		
-		task.subjects = new_subjects
+		task.set_subjects(new_subjects)
 		#TODO hack force select...
 		#not sure why I have to do this but
 		#this is being called beofre prime in some cases

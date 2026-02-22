@@ -88,7 +88,7 @@ func move_card_to_board(script: ScriptTask) -> int:
 		var override_properties = script.get_property("set_properties", {})
 	
 		var subject = card
-		script.subjects = [subject]
+		script.set_subjects(subject)
 		#we force a grid container in all cases
 		if !script.get_property("grid_name"):
 			var type_code = override_properties.get("type_code", subject.get_property("type_code"))
@@ -140,6 +140,7 @@ func move_card_to_board(script: ScriptTask) -> int:
 			script.script_definition[SP.KEY_TAGS] = tags
 			modify_properties(script)
 	
+	script.set_subjects(subjects)
 	script.script_definition = backup
 	return result
 
@@ -378,6 +379,7 @@ func deal_damage(script:ScriptTask) -> int:
 	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
 	# e.g. Spider man gets 3*1 damage = 3 damage
 	var consolidated_subjects:= {}
+	var backup_subjects = script.subjects
 	#TODO BUG sometimes subjects contains a null card?
 	for card in script.subjects:
 		if !consolidated_subjects.has(card):
@@ -390,11 +392,12 @@ func deal_damage(script:ScriptTask) -> int:
 		
 		#it's ok to modify directly script here because 
 		# _add_receive_damage_on_stack creates a copy
-		script.subjects = [card]
+		script.set_subjects(card)
 	
 		_add_receive_damage_on_stack(amount, script)
 		retcode = CFConst.ReturnCode.CHANGED
 #	return receive_damage(script)
+	script.set_subjects(backup_subjects)
 	return retcode
 
 func scheme_base_threat(script:ScriptTask) -> int:
@@ -988,7 +991,7 @@ static func simple_discard_task(target_card):
 				"name": "discard",
 	}
 	var discard_task = ScriptTask.new(target_card, discard_script, target_card, {})	
-	discard_task.subjects = [target_card]
+	discard_task.set_subjects([target_card])
 	var task_event = SimplifiedStackScript.new(discard_task)
 	return task_event
 
@@ -1104,12 +1107,12 @@ func draw_boost_card(script:ScriptTask) ->int:
 	return retcode
 	
 func villain_attacks_you(script:ScriptTask) ->int:
-	script.subjects = [ gameData.get_villain()]
+	script.set_subjects(gameData.get_villain())
 	return enemy_attacks_you(script)
 
 func villain_and_enemies_attack_you(script:ScriptTask) ->int:
 	var hero = _get_identity_from_script(script)
-	script.subjects = [ gameData.get_villain()] + gameData.get_minions_engaged_with_hero(hero.get_controller_hero_id())
+	script.set_subjects ([ gameData.get_villain()] + gameData.get_minions_engaged_with_hero(hero.get_controller_hero_id()))
 	return enemy_attacks_you(script)
 
 	
@@ -1187,7 +1190,9 @@ func set_defender(script: ScriptTask) -> int:
 	if costs_dry_run():
 		return CFConst.ReturnCode.CHANGED
 	
-	attack_script.subjects[0] = defender
+	attack_script.set_subjects([])
+	attack_script.subjects.append(defender)
+
 	return CFConst.ReturnCode.CHANGED
 	
 
@@ -1270,7 +1275,7 @@ func _modify_script(script, modifications:Dictionary = {}, script_definition_rep
 		if add_tags:
 			output.script_definition["tags"] = script.script_definition.get("tags", []) + add_tags
 			
-		output.subjects = modifications.get("subjects", output.subjects)
+		output.set_subjects (modifications.get("subjects", output.subjects))
 		output.owner =  modifications.get("owner", output.owner)	
 		
 		if modified_script_definition.has("name"):
@@ -1354,7 +1359,7 @@ func commit_scheme(script: ScriptTask):
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
 
-	script.subjects = [main_scheme]
+	script.set_subjects ([main_scheme])
 
 	owner.set_activity_script(script)
 	return retcode
@@ -1832,7 +1837,7 @@ func change_form(script: ScriptTask) -> int:
 	var is_manual = "player_initiated" in tags
 	
 	if (!script.subjects):
-		script.subjects =  [_get_identity_from_script(script)]
+		script.set_subjects(_get_identity_from_script(script))
 	
 	for subject in script.subjects: #should be really one subject only, generally
 		var hero = subject
@@ -2111,7 +2116,7 @@ static func duplicate_script(script):
 	var result = ScriptTask.new(script.owner, script.script_definition, script.trigger_object, script.trigger_details)
 
 	if (script.subjects):
-		result.subjects = script.subjects.duplicate()
+		result.set_subjects(script.subjects.duplicate())
 
 	result.is_primed = script.is_primed
 	result.is_valid = script.is_valid

@@ -328,7 +328,11 @@ func execute(_run_type) -> void:
 				
 			continue
 		
-		if script.is_primed:	
+		if script.is_primed:
+			#sanity check for subjects
+			var subjects_ok = script.network_prepaid_sanity_check()
+			if !subjects_ok:
+				var _error = 1	
 			_pre_task_exec(script)
 			
 			#for some scripts we have a possibility to precompute their result
@@ -712,7 +716,7 @@ func spawn_card(script: ScriptTask) -> void:
 			scripting_bus.emit_signal("card_spawned", card, {"tags": tags})
 	# We set the spawned cards as the subjects, so that they can be
 	# used by other followup scripts
-	script.subjects = spawned_cards
+	script.set_subjects(spawned_cards)
 	# Adding a small delay to allow the cards to finish instancing and setting their
 	# properties
 	yield(script.owner.get_tree().create_timer(0.1), "timeout")
@@ -818,7 +822,7 @@ func spawn_card_to_container(script: ScriptTask) -> void:
 		# used by other followup scripts
 		yield(cfc.get_tree().create_timer(0.2), "timeout")
 		spawned_cards.append(card)
-	script.subjects = spawned_cards
+	script.set_subjects(spawned_cards)
 
 # Task from shuffling a CardContainer
 # * Requires the following keys:

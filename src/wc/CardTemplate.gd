@@ -268,7 +268,7 @@ func check_death(script = null) -> bool:
 	trigger_details["trigger_type"] = "card_dies"	
 	
 	var card_dies_script:ScriptTask = ScriptTask.new(self, card_dies_definition, trigger_card, trigger_details)
-	card_dies_script.subjects = [self]
+	card_dies_script.set_subjects(self)
 	var task_event = SimplifiedStackScript.new(card_dies_script)
 	gameData.theStack.add_script(task_event)
 	_died_signal_sent = true
@@ -1718,7 +1718,7 @@ func check_scheme_defeat(script):
 		trigger_details["source"] = guidMaster.get_guid(script.owner)
 
 		var card_dies_script:ScriptTask = ScriptTask.new(self, card_dies_definition, script.trigger_object, trigger_details)
-		card_dies_script.subjects = [self]
+		card_dies_script.set_subjects(self)
 
 		var task_event = SimplifiedStackScript.new( card_dies_script)
 		gameData.theStack.add_script(task_event)
@@ -2243,7 +2243,7 @@ func pay_regular_cost_replacement(script_definition: Dictionary, trigger_details
 				"subject_count": "all",
 				"subject_index": "top",
 				SP.KEY_NEEDS_SELECTION: true,
-				SP.KEY_SELECTION_COUNT: manacost.converted_mana_cost(), #TODO put real missing cost here
+				SP.KEY_SELECTION_COUNT: manacost.converted_mana_cost(), 
 				SP.KEY_SELECTION_TYPE: "min",
 				SP.KEY_SELECTION_OPTIONAL: is_optional,
 				SP.KEY_SELECTION_IGNORE_SELF: true,
@@ -3006,6 +3006,8 @@ func pay_as_resource(script):
 	var state_exec = get_state_exec()
 	if state_exec == "hand":	
 		self.discard()
+	else:
+		var _tmp = 1
 	cfc.remove_ongoing_process(self, "pay_as_resource")
 	scripting_bus.emit_signal_on_stack("paid_as_resource", self, script.trigger_details)
 	return result_mana

@@ -737,8 +737,8 @@ const ATTEMPT_TO_GUESS_IMAGE_URL := true
 
 
 const DEFAULT_SETTINGS:= {
-	'music_volume': 20,
-	'sfx_volume': 5,
+	'music_volume': 5,
+	'sfx_volume': 10,
 	'glow_intensity' : 0.01,
 	'load_cards_online' : true,
 	'images_base_url': "https://marvelcdb.com",
@@ -746,8 +746,8 @@ const DEFAULT_SETTINGS:= {
 	"decks_base_url_backup": "https://marvelcdb.com/api/public/deck/",
 	'database': {
 		"core": "https://marvelcdb.com/api/public/cards/core.json",
-		#"cap" : "https://marvelcdb.com/api/public/cards/cap.json",
-		#"mts" : "https://marvelcdb.com/api/public/cards/mts.json",		
+		"cap" : "https://marvelcdb.com/api/public/cards/cap.json",
+		"mts" : "https://marvelcdb.com/api/public/cards/mts.json",		
 		"trors" : "https://marvelcdb.com/api/public/cards/trors.json",
 	},
 	'lobby_server': {

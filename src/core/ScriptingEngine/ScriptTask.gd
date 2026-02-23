@@ -95,6 +95,7 @@ func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int, _all_pre
 
 func prime_ask_integer(_run_type: int) -> int:
 	var prepayment = get_property("network_prepaid", null)
+	_network_prepaid_called = true
 	if typeof(prepayment) == TYPE_ARRAY:
 		var number = prepayment[0]
 		if typeof(number) == TYPE_INT:

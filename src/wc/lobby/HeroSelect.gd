@@ -46,7 +46,7 @@ func grab_focus():
 func load_hero(_hero_id):
 	hero_id = _hero_id
 	var hero_name = cfc.get_card_name_by_id(hero_id)
-	var hero_unlocks = cfc.game_settings["heroes_used_for_unlocks"]
+	var hero_unlocks = cfc.game_settings.get("heroes_used_for_unlocks", [])
 	if !(hero_id in hero_unlocks) and cfc.get_locked_heroes():
 		hero_name = "*"	+ hero_name
 	get_node("%HeroName").set_text(hero_name)

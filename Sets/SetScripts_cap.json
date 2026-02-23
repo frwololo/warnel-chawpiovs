@@ -276,7 +276,7 @@
 					"filter_state_trigger": [
 						{
 							"filter_properties": {
-								"Name": "Captain Aerica"
+								"Name": "Captain America"
 							}
 						}
 					],
@@ -387,10 +387,9 @@
 			"board": [
 				{
 					"name": "nop",
-					"subject": "tutor",
+					"subject": "index",
 					"subject_index": "top",
 					"subject_count": 3,
-					"up_to": true,
 					"src_container": "deck_villain",
 					"selection_type": "display",
 					"needs_selection": true
@@ -863,6 +862,13 @@
 		},
 		"manual": {
 			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},			
 				{
 					"name": "move_card_to_board",
 					"subject": "tutor",

@@ -288,7 +288,7 @@ func execute(_run_type) -> void:
 				var current_index := scripts_queue.find(task)
 				var next_task: ScriptTask = null if scripts_queue.size() <= (current_index +1) else  scripts_queue[current_index + 1]
 				if next_task and next_task.subjects.size() > 0:
-					prev_subjects = next_task.subjects
+					prev_subjects = next_task.subjects.duplicate()
 			var retrieved_integer = get_stored_integer(script)
 			var all_prev_subjects = all_subjects_so_far.duplicate()
 			script.prime(prev_subjects,run_type,retrieved_integer, all_prev_subjects)
@@ -324,7 +324,7 @@ func execute(_run_type) -> void:
 			#This solves it but might lead to other issues in the future, because
 			#modifications are normally possible before setting prev_subjects
 			if not script.get_property(SP.KEY_PROTECT_PREVIOUS):
-				prev_subjects = script.subjects
+				prev_subjects = script.subjects.duplicate()
 				
 			continue
 		

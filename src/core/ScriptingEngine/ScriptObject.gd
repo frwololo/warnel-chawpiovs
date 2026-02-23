@@ -153,13 +153,12 @@ func set_subjects(new_subjects):
 			
 
 func network_prepaid_sanity_check() -> bool:
-	if !_network_prepaid_called:
-		var _error = 1
 	var prepayment = get_property("network_prepaid", null)
 	if null == prepayment:
 		return true
 	#prepayment should be an array of GUID
 	var result = []
+	var to_return = true
 	for uid in prepayment:
 		if guidMaster.is_guid(uid):
 			result.append(guidMaster.get_object_by_guid(uid))
@@ -167,12 +166,17 @@ func network_prepaid_sanity_check() -> bool:
 			result.append(uid)
 		
 	if result.size() != subjects.size():
-		return false
-	for i in result.size():
-		if result[i] != subjects[i]:
-			return false
+		to_return = false
+	else:
+		for i in result.size():
+			if result[i] != subjects[i]:
+				to_return = false
+				break
 
-	return true
+	if !to_return:
+		if !_network_prepaid_called:
+			var _error = 1
+	return to_return
 		
 		
 #TODO MULTIPLAYER_MODIFICATION

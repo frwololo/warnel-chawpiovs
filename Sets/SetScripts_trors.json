@@ -1954,6 +1954,11 @@
 						]
 					},
 					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self",
+					},					
+					{
 						"name": "move_card_to_container",
 						"src_container": "hand",
 						"dest_container": "discard",

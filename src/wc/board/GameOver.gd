@@ -24,8 +24,7 @@ func scenario_unlock_gridlock():
 	var villain_unlocks = cfc._get_corrected_scenario_ids("villains_used_for_unlocks")
 	var unlocked_scenarios = cfc.get_unlocked_scenarios()
 	for unlocked_scenario_id in unlocked_scenarios:
-		var unlock = villain_unlocks.get(unlocked_scenario_id, false)
-		if !unlock:
+		if !unlocked_scenario_id in villain_unlocks:
 			return false
 	return true	
 

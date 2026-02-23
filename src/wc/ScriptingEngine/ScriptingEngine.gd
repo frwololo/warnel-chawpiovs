@@ -82,9 +82,6 @@ func move_card_to_board(script: ScriptTask) -> int:
 	
 		script.script_definition = backup.duplicate()
 
-		if card.canonical_name == "Garm":
-			var _tmp =1
-
 		var override_properties = script.get_property("set_properties", {})
 	
 		var subject = card
@@ -176,7 +173,7 @@ func move_card_to_container(script: ScriptTask) -> int:
 	
 	var previous_hero = script.prev_subjects[0] if script.prev_subjects else null
 	var previous_hero_id = 0
-	if previous_hero:
+	if previous_hero and typeof(previous_hero) == TYPE_OBJECT:
 		previous_hero_id = previous_hero.get_controller_hero_id()
 	
 	var enemy_target_hero_id = gameData.get_villain_current_hero_target()
@@ -379,7 +376,7 @@ func deal_damage(script:ScriptTask) -> int:
 	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
 	# e.g. Spider man gets 3*1 damage = 3 damage
 	var consolidated_subjects:= {}
-	var backup_subjects = script.subjects
+	var backup_subjects = script.subjects.duplicate()
 	#TODO BUG sometimes subjects contains a null card?
 	for card in script.subjects:
 		if !consolidated_subjects.has(card):
@@ -602,7 +599,7 @@ func receive_damage(script: ScriptTask) -> int:
 				if ("1_threat_on_main_scheme_if_damage" in tags):
 					var main_scheme = gameData.get_main_scheme()
 					var task = ScriptTask.new(script.owner, {"name": "add_threat", "amount": 1}, card, {})
-					task.subjects= [main_scheme]
+					task.set_subjects([main_scheme])
 					var stackEvent = SimplifiedStackScript.new(task)
 					gameData.theStack.add_script(stackEvent)
 				
@@ -643,7 +640,7 @@ func receive_damage(script: ScriptTask) -> int:
 
 		if ("attack" in tags) and !lethal:
 			#retaliate against an attack only if I didn't die
-			var retaliate = card.get_property("retaliate", 0)
+			var retaliate = card.get_property("retaliate", 0, true)
 			if retaliate:
 				if script.has_tag("ranged"):
 					attacker.hint("Ranged!", Color8(50,50,255))

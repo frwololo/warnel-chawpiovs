@@ -1243,7 +1243,7 @@ func villain_threat():
 		if escalation_threat:
 			var villain = gameData.get_villain()
 			var task = ScriptTask.new(villain, {"name": "add_threat", "amount": escalation_threat, "tags": ["villain_step_one_threat"]}, villain, {})
-			task.subjects= [main_scheme]
+			task.set_subjects ([main_scheme])
 			var stackEvent = SimplifiedStackScript.new(task)
 			gameData.theStack.add_script(stackEvent)			
 			#main_scheme.add_threat(escalation_threat)

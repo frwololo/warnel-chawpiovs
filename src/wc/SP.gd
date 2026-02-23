@@ -151,6 +151,10 @@ static func check_source_controlled_by_filter(_trigger_card, owner_card, trigger
 	if !source:
 		return false
 		
+	#unfortunately "source" is overused and can sometimes be used to designate a container name
+	if typeof(source) != TYPE_OBJECT: 
+		return false
+		
 	match expected_controller:
 		"my_hero":
 			var controller_hero_id = source.get_controller_hero_id()
@@ -169,6 +173,10 @@ static func check_filter_event_source(_trigger_card, owner_card, trigger_details
 		
 	if !source:
 		return false	
+
+	#unfortunately "source" is overused and can sometimes be used to designate a container name
+	if typeof(source) != TYPE_OBJECT: 
+		return false
 		
 	match _expected_event_source:
 		"self":

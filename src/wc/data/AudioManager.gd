@@ -18,18 +18,31 @@ var last_sound_played = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	load_sfx_collection()
-	load_music_collection()
+	reset()
+
 	music_player = AudioStreamPlayer.new()
 	add_child(music_player)
 	for _i in range (SFX_CHANNELS):
 		var player = AudioStreamPlayer.new()
 		sfx_players.append(player)
 		add_child(player)
-		
+
 	music_player.connect("finished", self, "song_finished")
 	scripting_bus.connect("card_moved_to_board", self,  "_card_moved_to_board")
 	scripting_bus.connect("card_moved_to_pile", self,  "_card_moved_to_pile")
+	
+	
+
+func reset():
+	current_music_filename = ""
+	_sfx_collection_traits = {}	
+	music_collection = {}
+	sfx_collection = {}
+	
+	load_sfx_collection()
+	load_music_collection()
+
+		
 
 func _card_moved_to_pile(card_owner, details):
 	#moving a lot of cards early game, too noisy

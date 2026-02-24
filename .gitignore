@@ -15,3 +15,4 @@ scripts/\#script_doc.py\#
 Test/recorded_gameplay.txt
 *.py#
 *.py~
+*.x86_64

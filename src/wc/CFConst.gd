@@ -763,6 +763,8 @@ const DEFAULT_SETTINGS:= {
 	
 }
 
+const RESOURCES_URL = "https://wololo.net/wc/resources/"
+
 const HARDCODED_DEF_PATCHES = {
 	"01043a": {
 		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01043a.jpg"		

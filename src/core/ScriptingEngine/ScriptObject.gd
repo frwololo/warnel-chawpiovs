@@ -152,7 +152,7 @@ func set_subjects(new_subjects):
 			var _error = 1
 			
 
-func network_prepaid_sanity_check() -> bool:
+func network_prepaid_sanity_check(enable_correction = true) -> bool:
 	var prepayment = get_property("network_prepaid", null)
 	if null == prepayment:
 		return true
@@ -174,8 +174,20 @@ func network_prepaid_sanity_check() -> bool:
 				break
 
 	if !to_return:
-		if !_network_prepaid_called:
-			var _error = 1
+		if enable_correction:
+			subjects = result
+			var backup = cfc._debug
+			cfc.LOG_DICT(
+				{
+					"error": "BUG: Subjects incorrect",
+					"network_prepaid" :prepayment,
+					"script_name": script_name,
+					"script_definition": script_definition
+						
+				}
+				)
+			
+			cfc._debug = backup
 	return to_return
 		
 		

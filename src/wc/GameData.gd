@@ -196,6 +196,34 @@ func _ready():
 	self.add_child(theAudioManager)
 	#scripting_bus.connect("optional_window_opened", self, "attempt_user_input_lock")
 	#scripting_bus.connect("optional_window_closed", self, "attempt_user_input_unlock")	
+	download_music()
+	
+func download_music():
+	if WCUtils.file_exists("music.zip"):
+		return
+	
+	fileDownloader.connect("downloads_finished", self, "_music_downloaded")
+	
+	var music_url = CFConst.RESOURCES_URL + "music.zip"	
+	var urls = PoolStringArray([music_url])
+	fileDownloader.start_download(urls)
+
+func _music_downloaded():
+	var save_path = "user://cache/"
+	var files_to_move = CFUtils.list_files_in_directory(save_path)
+	var dir:Directory = Directory.new()
+	for file_to_move in files_to_move:
+		filename = save_path + file_to_move
+		dir.rename(filename, "user://" + file_to_move)
+
+
+	var filename = "user://music.zip"
+	if WCUtils.file_exists(filename):
+		var _success_res = ProjectSettings.load_resource_pack(filename)
+		var _tmp = 0
+		theAudioManager.reset()
+		play_music("menu")
+
 
 func play_sfx(sfx_data):
 	if typeof(sfx_data) == TYPE_STRING:

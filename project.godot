@@ -224,6 +224,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/core/DetailPanels.gd"
 }, {
+"base": "HTTPRequest",
+"class": "FileDownloader",
+"language": "GDScript",
+"path": "res://src/wc/data/FileDownloader.gd"
+}, {
 "base": "Node",
 "class": "GUID",
 "language": "GDScript",
@@ -538,6 +543,7 @@ _global_script_class_icons={
 "DeckLoader": "",
 "DeckNameRandomizer": "",
 "DetailPanels": "",
+"FileDownloader": "",
 "GUID": "",
 "GameData": "",
 "GameObserver": "",
@@ -607,6 +613,7 @@ gameData="*res://src/wc/GameData.gd"
 scripting_bus="*res://src/wc/ScriptingEngine/ScriptingBus.gd"
 guidMaster="*res://src/multiplayer/GUID.gd"
 gamepadHandler="*res://src/wc/GamepadHandler.gd"
+fileDownloader="*res://src/wc/data/FileDownloader.gd"
 
 [debug]
 

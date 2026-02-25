@@ -25,7 +25,7 @@ Other than that, here are known limitations with the engine at the moment:
 ## Current Status (General)
 This simulator supports the following cards from the original game (current total 10 heroes, 13 villains):
 * Core box (5 heroes, 3 villains)
-* Captain american (1 Hero)
+* Captain America (1 Hero)
 * The Rise of Red skull ( 2 heroes, 5 villains)
 * The Mad Titan's Shadow ( 2 heroes, 5 villains)
 

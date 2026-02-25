@@ -23,9 +23,11 @@ Other than that, here are known limitations with the engine at the moment:
 * Responses aren't exactly supported. They're either treated as interrupts, or react to the internal engine's events in no specific order. It "works" except in tricky cases where order of events is critical
 
 ## Current Status (General)
-This simulator supports the following cards from the original game (current total 7 heroes, 8 villains):
+This simulator supports the following cards from the original game (current total 10 heroes, 13 villains):
 * Core box (5 heroes, 3 villains)
+* Captain american (1 Hero)
 * The Rise of Red skull ( 2 heroes, 5 villains)
+* The Mad Titan's Shadow ( 2 heroes, 5 villains)
 
 There is no tutorial included, and, although the rules are automatically handled by the engine, it will quickly become confusing if you are not already familar with the original game.
 
@@ -48,7 +50,7 @@ Playing with more than one hero adds to the CPU load...It works, it just gets si
 I have personally seen the multiplayer mode (between a PC - as the host of course - and a Nintendo Switch) working on my local network. So I know this works, but the console has to be overclocked, otherwise it loses its connection eventually. This might be fixable, but if you really wish to test multiplayer on a Switch (I don't currently recommend this, with both the Switch port AND multiplayer being quite rough around the edges), for now please overclock the console.
 
 ### Linux and Mac Ports
-I don't distribute binaries for Linux or Mac at the moment because I don't have ways/time to test those. However people have confirmed to me that it works on these platforms, all you need is Godot to compile the source (or find someone to send you a binary)
+I do distributes binaries for Mac and Linux, but those are mostly untested. On Linux I check that the game actualy runs. I do not have a Mac so I cannot test the MacOS version myself.
 
 
 ## Users: Installing the Game

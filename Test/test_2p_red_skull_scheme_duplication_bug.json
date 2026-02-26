@@ -1,0 +1,228 @@
+{
+	"_comments": "Bug: Red skull main scheme update duplicates the scheme",
+	"init": {
+		"phase": "VILLAIN_THREAT",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Red Skull - 1",
+					"tokens": {
+						"stunned": 1,
+						"confused": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "advance"
+				},
+				{
+					"card": "Caught off guard"
+				},
+				{
+					"card": "Gang-Up"
+				},
+				{
+					"card": "hydra mercenary"
+				},
+				{
+					"card": "hydra soldier"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "New World Hydra"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Rise of Red Skull",
+					"tokens": {
+						"threat": 15
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Peter Parker"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy Absorption"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Hawkeye - Clint Barton"
+				},
+				{
+					"card": "Make the call"
+				},
+				{
+					"card": "Lead from the front"
+				},
+				{
+					"card": "The Triskelion"
+				},
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "wait until player turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Red Skull - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "advance"
+				},
+				{
+					"card": "Caught off guard"
+				},
+				{
+					"card": "Gang-Up"
+				}
+			],
+			"schemes": [
+				{
+					"card": "New World Hydra"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Peter Parker"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy Absorption"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "hydra soldier"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Hawkeye - Clint Barton"
+				},
+				{
+					"card": "Make the call"
+				},
+				{
+					"card": "Lead from the front"
+				},
+				{
+					"card": "The Triskelion"
+				},
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			],
+			"enemies2": [
+				{
+					"card": "hydra mercenary"
+				}
+			]
+		}
+	}
+}

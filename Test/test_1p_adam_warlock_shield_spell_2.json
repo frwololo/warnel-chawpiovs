@@ -1,0 +1,133 @@
+{
+	"_comments": "(0) Shield Spell: interrupt (defense) when you would take any amount of damage from an attack, prevent all of that damage",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [	
+				{
+					"card": "Pacification"
+				},			
+				{
+					"card": "Hydra Regular"
+				},	
+				{
+					"card": "Hydra Soldier"
+				},					
+				{
+					"card": "Hydra Mercenary"
+				},				
+			],
+			"villain": [
+				{
+					"card": "Ebony Maw - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Knowhere"
+				}
+			],
+			"deck1": [
+				{
+					"card": "The Gardener"
+				},	
+				{
+					"card": "Summoning Spell"
+				},					
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"tokens": {"damage": 1},
+					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Shield Spell"
+				}
+			]
+		}
+	},
+	"actions": [		
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "click cancel on defenders to take an undefended attack"
+		},		
+		{
+			"type": "play",
+			"value": "Shield Spell"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Adam Warlock"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},
+			],
+			"deck_villain": [
+				{
+					"card": "Pacification"
+				},										
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Regular"
+				},					
+			],
+			"villain": [
+				{
+					"card": "Ebony Maw - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Knowhere"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Summoning Spell"
+				},				
+				{
+					"card": "The Gardener"
+				},
+			],
+			"discard1": [
+				{
+					"card": "Shield Spell"
+				}				
+			],
+			"identity1": [
+				{
+					"card": "21031a",
+					"tokens": {"damage": 1},
+				}
+			],
+		}
+	}
+}

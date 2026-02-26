@@ -542,5 +542,150 @@
 				"Loki - 1 #21164"
 			]
 		}
-	}
+	},
+	"27064": {
+		"code": "27064",
+		"name": "Hapless Pedestrians",
+		"modular_default": [
+			"down_to_earth"
+		],
+		"encounter_sets": [
+			"sandman",
+			"city_in_chaos",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Sandman - 1",
+			"Sandman - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"sandman",
+				"city_in_chaos",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Sandman - 2",
+				"Sandman - 3"
+			]
+		}
+	},	
+	"27076": {
+		"code": "27076",
+		"name": "Leave Us Alone!",
+		"modular_default": [
+			"down_to_earth"
+		],
+		"encounter_sets": [
+			"venom",
+			"symbiotic_strength",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Venom - 1",
+			"Venom - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"venom",
+				"symbiotic_strength",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Venom - 2",
+				"Venom - 3"
+			]
+		}
+	},	
+	"27087": {
+		"code": "27087",
+		"name": "Maze of Mirrors",
+		"modular_default": [
+			"whispers_of_paranoia"
+		],
+		"encounter_sets": [
+			"mysterio",
+			"personal_nightmare",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Mysterio - 1",
+			"Mysterio - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"mysterio",
+				"personal_nightmare",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Mysterio - 2",
+				"Mysterio - 3"
+			]
+		}
+	},
+	"27100": {
+		"code": "27100",
+		"name": "Sinister Synchronization",
+		"modular_default": [],
+		"encounter_sets": [
+			"sinister_six",
+			"guerrilla_tactics",			
+			"Standard",
+		],
+		"villains": [
+			"Vulture - 1",
+		],
+		"expert": {
+			"encounter_sets": [
+				"sinister_six",
+				"guerrilla_tactics",				
+				"Standard",
+				"expert"
+			],
+			"villains": [
+				"Vulture - 1",
+			]
+		}
+	},
+	"27116": {
+		"code": "27116",
+		"name": "Skies Over New York",
+		"modular_default": [
+			"goblin_gear"
+		],
+		"encounter_sets": [
+			"venom_goblin",
+			"symbiotic_strength",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Venom Goblin - 1",
+			"Venom Goblin - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"venom_goblin",
+				"symbiotic_strength",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Venom Goblin - 2",
+				"Venom Goblin - 3"
+			]
+		}
+	},
+	
 }

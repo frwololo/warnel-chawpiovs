@@ -243,7 +243,8 @@ func _create_hero_container():
 			 !cfc.unmodified_set_scripts.get(alter_ego_id,{}):
 			continue
 		var hero_name = cfc.get_card_name_by_id(hero_id)
-		names_to_id[hero_name] = hero_id
+		var alter_ego_name = cfc.get_card_name_by_id(alter_ego_id)
+		names_to_id[hero_name + " - " + alter_ego_name] = hero_id
 		
 	var ordered_names = names_to_id.keys()
 	ordered_names.sort()

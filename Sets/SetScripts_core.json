@@ -2327,7 +2327,13 @@
 							"filter_group": "group_enemies_my_hero"
 						}
 					]
-				}
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "villain",
+				}				
 			]
 		},
 		"boost": {

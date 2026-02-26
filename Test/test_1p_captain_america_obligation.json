@@ -1,0 +1,138 @@
+{
+	"_comments": "Tests Captain America obligation discard half",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain America"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "advance"
+				},		
+				{
+					"card": "Man out of Time"
+				},
+			
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Captain America"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				},
+				{
+					"card": "Fearless determination"
+				},
+				{
+					"card": "Heroic Strike"
+				},
+				{
+					"card": "Shield Block"
+				}					
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "choose",
+			"value": "Discard Half",
+			"_comments": "Discard Half Cards"
+		},
+		{
+			"type": "select",
+			"value": ["Heroic Strike", "Fearless Determination"],
+			"_comments": "Discard Half Cards"
+		},		
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		}		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain America"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Man out of Time"
+				},
+			],
+			"deck_villain":[
+				{
+					"card": "advance"
+				},					
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Captain America"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Heroic Strike"
+				},			
+				{
+					"card": "Fearless determination"
+				},
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				},
+				{
+					"card": "Shield Block"
+				}					
+			]
+		}
+	}
+}

@@ -745,10 +745,12 @@ const DEFAULT_SETTINGS:= {
 	"decks_base_url": "https://marvelcdb.com/api/public/decklist/",
 	"decks_base_url_backup": "https://marvelcdb.com/api/public/deck/",
 	'database': {
-		"core": "https://marvelcdb.com/api/public/cards/core.json",
-		"cap" : "https://marvelcdb.com/api/public/cards/cap.json",
-		"mts" : "https://marvelcdb.com/api/public/cards/mts.json",		
-		"trors" : "https://marvelcdb.com/api/public/cards/trors.json",
+		"core": "https://marvelcdb.com/api/public/cards/core.json", #Core Box
+		"cap" : "https://marvelcdb.com/api/public/cards/cap.json", #Captain America Hero Pack
+		"drs" : "https://marvelcdb.com/api/public/cards/drs.json", #Doctor Strange Hero Pack		
+		"mts" : "https://marvelcdb.com/api/public/cards/mts.json", #Mad Titan's Shadow Expansion Box
+		"sm" : "https://marvelcdb.com/api/public/cards/sm.json", #Sinister Motives Expansion Box				
+		"trors" : "https://marvelcdb.com/api/public/cards/trors.json", #The Rise of Red Skull Expansion Box
 	},
 	'lobby_server': {
 		'server': 'https://wololo.net/',
@@ -946,7 +948,7 @@ const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 const SCRIPT_BREAKPOINT_CARD_NAME := "Avengers Tower"
 const SCRIPT_BREAKPOINT_TRIGGER_NAME := "receive_damage"
 
-const VERSION := "1.1.0"
+const VERSION := "1.2.0"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
 const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 

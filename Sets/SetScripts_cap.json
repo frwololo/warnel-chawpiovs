@@ -789,6 +789,8 @@
 						"name": "move_card_to_container",
 						"dest_container": "discard",
 						"src_container": "hand",
+						"subject": "tutor",
+						"subject_count": "all",
 						"selection_count": "per_tutor",
 						"per_tutor": {
 							"subject": "tutor",
@@ -810,6 +812,8 @@
 						"name": "move_card_to_container",
 						"dest_container": "discard",
 						"src_container": "hand",
+						"subject": "tutor",
+						"subject_count": "all",
 						"selection_count": "per_tutor",
 						"per_tutor": {
 							"subject": "tutor",

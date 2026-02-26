@@ -888,11 +888,14 @@ func prevent(script: ScriptTask) -> int:
 				return CFConst.ReturnCode.FAILED
 		_:
 			if script.script_definition.has("amount"): #this is a partial prevention effect
-				var stack_object = gameData.theStack.find_last_event_before_me(script)
+				var stack_object = script.trigger_details.get("stack_object", null) 
+				var task_object = script.trigger_details.get("event_object", null)
+
+				#var stack_object = gameData.theStack.find_last_event_before_me(script)
 				if (!stack_object):	
 					return CFConst.ReturnCode.FAILED
 				
-				var results = gameData.theStack.modify_object(stack_object, script)
+				var results = gameData.theStack.modify_object(stack_object, script, task_object)
 				if results.has("amount_prevented"):
 					amount_prevented = results["amount_prevented"]		
 			else:	

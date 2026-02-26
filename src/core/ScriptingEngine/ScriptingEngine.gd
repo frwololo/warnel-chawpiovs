@@ -60,6 +60,7 @@ var network_prepaid:Array = []
 
 var all_subjects_so_far:= []
 var additional_rules:= {}
+var full_execution_complete = false
 
 var owner
 var trigger
@@ -417,6 +418,8 @@ func execute(_run_type) -> void:
 					card.temp_properties_modifiers.erase(self)
 #	print_debug(str(card_owner) + 'Scripting: All done!') # Debug
 	all_tasks_completed = true
+	if run_type in [CFInt.RunType.NORMAL, CFInt.RunType.ELSE]:
+		full_execution_complete = true
 	#all other use cases are handled above. If our user_interaction_status is still unset,
 	#it means no interaction was required
 	if self.user_interaction_status ==  CFConst.USER_INTERACTION_STATUS.NOT_CHECKED_YET:

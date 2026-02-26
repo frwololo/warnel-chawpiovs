@@ -1296,8 +1296,8 @@ func execute_scripts(
 			var hero_id = i+1
 			var hero_triggers = trigger_details.duplicate()
 			hero_triggers["override_hero_id"] = hero_id
-			hero_triggers["state_scripts_dict"] = state_scripts_dict
-			hero_triggers["exec_config"] = exec_config
+			hero_triggers["state_scripts_dict"] = state_scripts_dict.duplicate()
+			hero_triggers["exec_config"] = exec_config.duplicate()
 			gameData.add_script_to_execute(self, trigger_card, trigger, hero_triggers, run_type)
 		#kickstart the process to return a sceng object if possible
 		gameData.execute_priority_scripts()	

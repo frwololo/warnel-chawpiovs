@@ -2867,7 +2867,7 @@
 					{
 						"name": "move_card_to_container",
 						"subject": "tutor",
-						"subject_index": "top",
+						"sort_descending": true,
 						"subject_count": 5,
 						"up_to": true,
 						"src_container": "deck",

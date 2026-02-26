@@ -551,6 +551,7 @@
 						"name": "move_card_to_board",
 						"grid_name": "enemies_my_hero",
 						"subject": "tutor",
+						"sort_descending": true,
 						"src_container": "deck_villain",
 						"filter_state_tutor": [
 							{
@@ -2069,6 +2070,7 @@
 					"modification": -1,
 					"filter_state_seek": [
 						{
+							"filter_group": "play_area_current_hero_target",
 							"filter_properties": {
 								"trait_spell": 1,
 								"comparison": "ge"
@@ -2127,6 +2129,7 @@
 					"modification": -1,
 					"filter_state_seek": [
 						{
+							"filter_group": "play_area_current_hero_target",
 							"filter_properties": {
 								"trait_spell": 1,
 								"comparison": "ge"
@@ -2185,6 +2188,7 @@
 					"modification": -1,
 					"filter_state_seek": [
 						{
+							"filter_group": "play_area_current_hero_target",
 							"filter_properties": {
 								"trait_spell": 1,
 								"comparison": "ge"

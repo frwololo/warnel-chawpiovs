@@ -802,7 +802,7 @@ func add_script_to_execute(owner, trigger_card, trigger, trigger_details, run_ty
 		}
 	)
 
-func execute_priority_scripts() -> bool:
+func execute_priority_scripts() -> bool:	
 	if _current_priority_script:
 		var sceng = _current_priority_script.get("sceng", null)
 		if sceng is GDScriptFunctionState && sceng.is_valid():
@@ -821,6 +821,9 @@ func execute_priority_scripts() -> bool:
 	var override_hero = 0
 	print_debug("priority scripts pending:" +str(_priority_scripts.size()))
 	while (_priority_scripts and !sceng):
+		if !theStack.is_phasecontainer_allowed_to_process():
+			return false
+			
 		var script_data = _priority_scripts.pop_front()
 		_current_priority_script = script_data
 		var script_owner = script_data.get("owner", null)

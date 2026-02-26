@@ -2164,13 +2164,17 @@ static func static_pre_task_prime(script_definition, owner, script = null, prev_
 	var previous_hero_id = 0
 	if previous_hero:
 		previous_hero_id = previous_hero.get_controller_hero_id()
-	
+
 	var controller_hero_id = owner.get_controller_hero_id()
 	
 	var current_hero_target = gameData.get_villain_current_hero_target()
 
-	var event_source_hero_id = get_event_source_hero_id(script.trigger_details) if script else 1
-
+	var event_source_hero_id = 1
+	if script:
+		var trigger_details = script.trigger_details
+		event_source_hero_id = get_event_source_hero_id(trigger_details)
+		controller_hero_id = trigger_details.get("override_hero_id", controller_hero_id)
+	
 	var replacements = {}
 			
 	var _replacements = [

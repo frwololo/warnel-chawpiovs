@@ -282,29 +282,18 @@ const Z_INDEX_HAND_CARDS_NORMAL :=200
 
 
 const TYPES_TO_GROUPS := {
-	"upgrade": ["group_upgrade_support"],
-	"support": ["group_upgrade_support"],
-	"main_scheme" : ["group_schemes"],
-	"player_scheme" : ["group_schemes"],
-	"side_scheme" : ["group_schemes", "group_side_schemes"],
-	"minion" : ["group_enemies", "group_characters"],
-	"villain" : ["group_enemies", "group_villains", "group_characters"],
-	"hero" : ["group_identities", "group_characters", "group_friendly", "group_allies_and_heroes"],
-	"alter_ego" : ["group_identities", "group_characters", "group_friendly"],
-	"ally" : ["group_allies", "group_characters", "group_friendly", "group_allies_and_heroes"],
-	"environment": ["group_environments"]
+	"upgrade": ["group_upgrade_support", "play_area"],
+	"support": ["group_upgrade_support", "play_area"],
+	"main_scheme" : ["group_schemes", "play_area"],
+	"player_scheme" : ["group_schemes", "play_area"],
+	"side_scheme" : ["group_schemes", "group_side_schemes", "play_area"],
+	"minion" : ["group_enemies", "group_characters", "play_area"],
+	"villain" : ["group_enemies", "group_villains", "group_characters", "play_area"],
+	"hero" : ["group_identities", "group_characters", "group_friendly", "group_allies_and_heroes", "play_area"],
+	"alter_ego" : ["group_identities", "group_characters", "group_friendly", "play_area"],
+	"ally" : ["group_allies", "group_characters", "group_friendly", "group_allies_and_heroes", "play_area"],
+	"environment": ["group_environments", "play_area"]
 }
-
-const ENCOUNTER_CARD_TYPES:= [
-	"main_scheme", 
-	"side_scheme", 
-	"environment", 
-	"attachment", 
-	"villain", 
-	"minion", 
-	"obligation", 
-	"treachery"
-]
 
 const ALL_TYPE_GROUPS: = [
 	"group_upgrade_support",
@@ -316,10 +305,21 @@ const ALL_TYPE_GROUPS: = [
 	"group_friendly",
 	"group_allies_and_heroes",
 	"group_allies",
-	"group_environments"
+	"group_environments",
+	"play_area",
 ]
 	
 
+const ENCOUNTER_CARD_TYPES:= [
+	"main_scheme", 
+	"side_scheme", 
+	"environment", 
+	"attachment", 
+	"villain", 
+	"minion", 
+	"obligation", 
+	"treachery"
+]
 const FORCE_HORIZONTAL_CARDS := {
 	"main_scheme" : true,
 	"player_scheme" : true,

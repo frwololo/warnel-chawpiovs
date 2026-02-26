@@ -1,0 +1,172 @@
+{
+	"_comments": "Tests Ebony Maw Spell activation with 2 players",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain America"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}			
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Agent of Thanos"
+				},				
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},		
+				{
+					"card": "Advance"
+				},	
+								
+			],
+			"schemes": [
+				{
+					"card": "Attack on Knowhere",
+					"tokens": {"threat": 2}					
+				}
+			],			
+			"villain": [
+				{
+					"card": "Ebony Maw - 1",
+					"tokens": {"damage" : 2, "stunned": 1},
+				}
+			],
+			"identity1": [
+				{
+					"card": "Captain America"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				}	
+			],
+			"identity2": [
+				{
+					"card": "Iron Man"
+				}
+			],			
+			"enemies1": [
+				{
+					"card": "Fireball",
+					"tokens": {"invocation": 2}
+				}
+			],
+			"enemies2": [
+				{
+					"card": "RubbleStorm",
+					"tokens": {"invocation": 2}
+				}	
+			],
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"hero" : 2,
+			"_comments": "undefended attack for Iron Man"
+		},	
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "wait for player turn"
+		},			
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain America"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}			
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Advance"
+				},	
+			],
+			"deck_villain": [
+				{
+					"card": "Agent of Thanos"
+				},				
+			],
+			"schemes": [
+				{
+					"card": "Attack on Knowhere",
+					"tokens": {"threat": 2}					
+				}
+			],			
+			"villain": [
+				{
+					"card": "Ebony Maw - 1",
+					"tokens": {"damage" : 2},
+				}
+			],
+			"identity1": [
+				{
+					"card": "Captain America"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				}	
+			],
+			"identity2": [
+				{
+					"card": "Iron Man",
+					"tokens": {"damage": 1},
+				}
+			],			
+			"enemies1": [
+				{
+					"card": "Fireball",
+					"tokens": {"invocation": 2}
+				},
+				{
+					"card": "Hydra Mercenary"
+				},				
+			],
+			"enemies2": [
+				{
+					"card": "RubbleStorm",
+					"tokens": {"invocation": 1}
+				},
+				{
+					"card": "Hydra Soldier"
+				},				
+			],
+		}
+	}
+}

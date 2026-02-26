@@ -1,0 +1,159 @@
+{
+	"_comments": "Bug 2p: Attack on knowhere reveal puts both spells in p1 area",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain America"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Agent of Thanos"
+				},
+				{
+					"card": "Fireball"
+				},
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Pacification"
+				},				
+				{
+					"card": "Rubblestorm"
+				},
+				{
+					"card": "Attack on Knowhere"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"villain": [
+				{
+					"card": "Ebony Maw - 1"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Captain America"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Iron Man"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "wait for player turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain America"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Agent of Thanos"
+				},
+				{
+					"card": "Fireball"
+				},				
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Knowhere"
+				}
+			],
+			"villain": [
+				{
+					"card": "Ebony Maw - 1"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Captain America"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Rubblestorm",
+					"tokens": {
+						"invocation": 3
+					}
+				}
+			],
+			"enemies2": [
+				{
+					"card": "Pacification",
+					"tokens": {
+						"invocation": 3
+					}
+				}
+			]
+		}
+	}
+}

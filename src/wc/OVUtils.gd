@@ -392,8 +392,8 @@ func filter_trigger(
 
 func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 	var filters = _filters #.duplicate(true)
-	var controller_hero_id = owner_card.get_controller_hero_id()
-	
+
+	var controller_hero_id = _trigger_details.get("override_hero_id", 	owner_card.get_controller_hero_id())
 
 	var replacements = {
 		"villain": gameData.get_villain(),

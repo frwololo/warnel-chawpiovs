@@ -86,20 +86,30 @@ func setup_text_mode():
 	card_labels["text"].bbcode_text = card_labels["text"].text 
 
 
+func _enable_texture(texture):
+	color_texture = texture
+	art.texture = texture
+	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	# In case the generic art has been modulated, we switch it back to normal colour
+	art.self_modulate = Color(1,1,1)
+	if CFConst.PERFORMANCE_HACKS:
+		remove_child($Margin)
+		text_enabled = false	
+
+func card_image_download_complete(_card_id):
+	if !art_filename:
+		return
+	var texture = cfc.get_external_texture(art_filename)	
+	_enable_texture(texture)
+
 func set_card_art(filename) -> void:
 	art_filename = filename		
 	var texture = cfc.get_external_texture(art_filename)
 	if texture:
-		color_texture = texture
-		art.texture = texture
-		art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-		# In case the generic art has been modulated, we switch it back to normal colour
-		art.self_modulate = Color(1,1,1)
-		if CFConst.PERFORMANCE_HACKS:
-			remove_child($Margin)
-			text_enabled = false
+		_enable_texture(texture)
 	else:
-		art_filename = "-"
+		gameData.urgent_image_download(card_owner.properties.get("_code"), self)
+		#art_filename = "-"
 		setup_text_mode()
 		card_owner.refresh_card_front()
 

@@ -84,6 +84,7 @@ var testSuite: TestSuite = null
 var theAnnouncer: Announcer = null
 var theGameObserver = null
 var theAudioManager:AudioManager = null
+var cardImageDownloader:CardImageDownloader = null
 
 # Hero that I am currently controlling
 var current_local_hero_id := 1
@@ -160,6 +161,7 @@ func _init():
 	theAnnouncer = Announcer.new()
 	theGameObserver = GameObserver.new()
 	theAudioManager = AudioManager.new()
+	cardImageDownloader = CardImageDownloader.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():	
@@ -189,40 +191,57 @@ func _ready():
 	theStack.connect("script_executed_from_stack", self, "_script_executed_from_stack")
 	theStack.connect("script_added_to_stack", self, "_script_added_to_stack")
 
+	cardImageDownloader.connect("download_complete", self, "_card_img_download_complete")
 
 	self.add_child(theStack) #Stack needs to be in the tree for rpc calls	
 	self.add_child(theAnnouncer)
 	self.add_child(theGameObserver)
 	self.add_child(theAudioManager)
+	self.add_child(cardImageDownloader)
 	#scripting_bus.connect("optional_window_opened", self, "attempt_user_input_lock")
 	#scripting_bus.connect("optional_window_closed", self, "attempt_user_input_unlock")	
 	download_music()
+
+
+var _image_download_callbacks := {}
+func _card_img_download_complete(card_id):
+	cfc.invalidate_texture_cache(card_id)
+	var callbacks = _image_download_callbacks.get(card_id, [])
+	for callback in callbacks:
+		if !is_instance_valid(callback):
+			continue
+		if !callback.has_method("card_image_download_complete"):
+			continue
+		callback.card_image_download_complete(card_id)
+	_image_download_callbacks[card_id] = []
+
+func urgent_image_download(card_id, callback_owner):
+	if !_image_download_callbacks.has(card_id):
+		_image_download_callbacks[card_id] = []
+	_image_download_callbacks[card_id].append(callback_owner)
+	cardImageDownloader.add_card(card_id, true)
 	
 func download_music():
 	if WCUtils.file_exists("music.zip"):
 		return
-	
-	fileDownloader.connect("downloads_finished", self, "_music_downloaded")
+	fileDownloader.connect("file_downloaded", self, "_file_downloaded")
 	
 	var music_url = CFConst.RESOURCES_URL + "music.zip"	
 	var urls = PoolStringArray([music_url])
 	fileDownloader.start_download(urls)
 
-func _music_downloaded():
-	var save_path = "user://cache/"
-	var files_to_move = CFUtils.list_files_in_directory(save_path)
-	var dir:Directory = Directory.new()
-	for file_to_move in files_to_move:
-		filename = save_path + file_to_move
-		dir.rename(filename, "user://" + file_to_move)
+func _file_downloaded(url, destination):
+	if url == CFConst.RESOURCES_URL + "music.zip":
+		var dir:Directory = Directory.new()	
+		dir.rename(destination, "user://music.zip")
 
 
-	var filename = "user://music.zip"
-	if WCUtils.file_exists(filename):
-		var _success_res = ProjectSettings.load_resource_pack(filename)
-		var _tmp = 0
-		theAudioManager.reset()
-		play_music("menu")
+		var filename = "user://music.zip"
+		if WCUtils.file_exists(filename):
+			var _success_res = ProjectSettings.load_resource_pack(filename)
+			var _tmp = 0
+			theAudioManager.reset()
+			play_music("menu")
 
 
 func play_sfx(sfx_data):

@@ -2,16 +2,16 @@ class_name FileDownloader
 extends HTTPRequest
 
 signal downloads_started
-signal file_downloaded
+signal file_downloaded(url, destination)
+signal download_error (url, destination)
 signal downloads_finished
 signal stats_updated
 
 export(bool)            var blind_mode : bool   = false
 export(String)          var save_path  : String = "user://cache/"
-export(PoolStringArray) var file_urls  : PoolStringArray
+var file_urls :=[]
 
 var _current_url       : String
-var _current_url_index : int = 0
 
 var _file := File.new()
 var _file_name : String
@@ -39,17 +39,10 @@ func _process(_delta) -> void:
 	_update_stats()
 
 
-func start_download(p_urls       : PoolStringArray = [],
-					p_save_path  : String          = "",
-					p_blind_mode : bool            = false) -> void:
+func start_download(p_urls: = []) -> void:
 	_create_directory()
 	if p_urls.empty() == false:
-		file_urls = p_urls
-	
-	if p_save_path != "":
-		save_path = p_save_path
-	
-	blind_mode = p_blind_mode
+		file_urls += p_urls
 	
 	_download_next_file()
 
@@ -65,10 +58,9 @@ func get_stats() -> Dictionary:
 
 func _reset() -> void:
 	_current_url = ""
-	_current_url_index = 0
 	_downloaded_percent = 0
 	_downloaded_size = 0
-
+	file_urls = []
 
 func _downloads_done() -> void:
 	set_process(false)
@@ -77,8 +69,6 @@ func _downloads_done() -> void:
 	emit_signal("downloads_finished")
 	_reset()
 	
-
-
 
 func _send_head_request() -> void:
 	# The HEAD method only gets the head and not the body. Therefore, doesn't
@@ -93,12 +83,14 @@ func _send_get_request() -> void:
 		emit_signal("downloads_started")
 		_last_method = HTTPClient.METHOD_GET
 		set_process(true)
+		return
 	
 	elif error == ERR_INVALID_PARAMETER:
 		print("Given string isn't a valid url ")
 	elif error == ERR_CANT_CONNECT:
 		print("Can't connect to host")
 	
+	emit_signal("download_error", _current_url, download_file)
 
 func _update_stats() -> void:
 	if blind_mode == false:
@@ -130,12 +122,14 @@ func _create_directory() -> void:
 
 
 func _download_next_file() -> void:
-	if _current_url_index < file_urls.size():
-		_current_url  = file_urls[_current_url_index]
+	if _current_url:
+		return
+		
+	if file_urls.size():
+		_current_url  = file_urls.pop_back()
 		_file_name    = _current_url.get_file()
 		download_file = save_path + _file_name
 		_send_head_request()
-		_current_url_index += 1  
 	else:
 		_downloads_done()
 
@@ -167,17 +161,20 @@ func _on_request_completed(p_result,
 			_send_get_request()
 			
 		elif _last_method == HTTPClient.METHOD_GET:
-			emit_signal("file_downloaded")
+			_file.close()
+			emit_signal("file_downloaded", _current_url, download_file)
+			_current_url = ""
 			_download_next_file()
 	else:
+		emit_signal("download_error", _current_url, download_file)
 		print("HTTP Request error: ", p_result)
 
+func _notification(what):
+	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
+		var files = CFUtils.list_files_in_directory(save_path )
+		var dir = Directory.new()
+		for file in files:
+			dir.remove(save_path + file)
 
-func _on_file_downloaded() -> void:
-	_current_url_index += 1
-	
-	if _current_url_index < file_urls.size():
-		_download_next_file()
-	
-	else:
-		_downloads_done()
+#func _on_file_downloaded() -> void:
+#	_download_next_file()

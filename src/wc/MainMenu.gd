@@ -29,9 +29,7 @@ var _load_status = LOAD_STATUS.NOT_STARTED
 var _loading_error = false
 var _network_error = ""
 
-signal all_downloads_completed()
 signal one_download_completed()
-signal images_download_completed()
 signal sets_download_completed()
 signal release_check_completed()
 
@@ -54,9 +52,7 @@ func _ready() -> void:
 	main_title.text = "LOADING..."
 	get_node("%VersionLabel").text = "v. " + CFConst.VERSION
 		
-	self.connect("all_downloads_completed", self, "_all_downloads_completed")
 	self.connect("one_download_completed", self, "_one_download_completed")
-	self.connect("images_download_completed", self, "_images_download_completed")
 	self.connect("sets_download_completed", self, "_sets_download_completed")	
 	cfc.connect("json_parse_error", self, "loading_error")	
 
@@ -78,7 +74,11 @@ func loading_error(msg):
 	main_title.text = "SCRIPT ERROR :("
 	_loading_error  = true
 
-func network_error(msg):
+func network_error(msg, high_priority = true):
+	
+	#a high priority error is already displayed and we don't wan't to override that
+	if _network_error and !high_priority:
+		return
 	v_folder_label.text = "NETWORK ERROR: " + msg
 	_network_error = msg +"(" + _current_url + ")"
 	#push_error(msg)
@@ -108,74 +108,6 @@ func _set_download_completed(result, response_code, headers, body):
 			file.close()  		
 	
 	emit_signal("one_download_completed")
-
-func _img_download_completed(result, response_code, headers, body):
-	if result != HTTPRequest.RESULT_SUCCESS:
-		network_error("Image couldn't be downloaded")
-
-	else:
-		var PNG_HEADER = [137,80,78,71,13,10,26,10]
-		var image = Image.new()
-		var formats = ["png", "jpg"]
-		
-		#guessing the format of the image based on header, can't trust the filename
-		for i in range (PNG_HEADER.size()):
-			if body[i] != PNG_HEADER[i]:
-				formats = ["jpg", "png"]
-				break
-		
-		var loaded_ok = FAILED
-		var i = 0
-		while loaded_ok!=OK and i < formats.size():
-			var format = formats[i]
-			match format:
-				"png":
-					loaded_ok = image.load_png_from_buffer(body)
-				"jpg":
-					loaded_ok = image.load_jpg_from_buffer(body)
-			i+=1
-			
-		if loaded_ok != OK:
-			network_error("Couldn't load the image - " + _current_url)
-		else:
-			var tmp_filename = "user://Sets/tmp_images/tmp.png"
-			image.save_png(tmp_filename)
-			mask_image(image, _current_destination, _current_card_key)
-
-
-	emit_signal("one_download_completed")
-
-func mask_image(image:Image, destination, card_key):
-	if not destination:
-		var _error = 1
-		return
-	var mask_filename = "res://assets/utils/wc_card_mask.png"	
-	var mask_tex = load(mask_filename)
-	var mask_image = mask_tex.get_data()	
-	
-	#var mask_image = Image.new()
-	#mask_image.load(mask_filename)
-	var transparent_filename = "res://assets/utils/wc_transparent.png"	
-	var transparent_tex = load(transparent_filename)
-	var transparent_image = transparent_tex.get_data()		
-	#var transparent_image = Image.new()
-	#transparent_image.load(transparent_filename)
-	
-	var card_data = cfc.card_definitions[card_key]
-	if card_data and card_data.get("_horizontal", false):
-		#needs rotation
-		image = WCUtils.rotate_90(image, false)
-		
-	image.convert(transparent_image.get_format())
-	if image.get_size() != transparent_image.get_size():
-		var size = transparent_image.get_size()
-		image.resize(size.x, size.y)
-	var rect = image.get_used_rect()
-	
-	#image.blit_rect(transparent_image, rect,Vector2(0,0))	
-	image.blit_rect_mask(transparent_image,mask_image, rect,Vector2(0,0))	
-	image.fix_alpha_edges()
-	image.save_png(destination)	
 
 func download_database():	
 	var database = cfc.game_settings.get("database", {})
@@ -211,8 +143,7 @@ func download_database():
 		http_request.queue_free()
 	emit_signal ("sets_download_completed")			
 
-func _images_download_completed():	
-	emit_signal("all_downloads_completed")
+
 
 func _recursive_visible_buttons(node, value = true):
 	if node.has_signal('pressed'):			
@@ -260,7 +191,7 @@ func check_for_new_release():
 	var error = http_request.request(url)
 	
 	if error != OK:
-		network_error("Couldn't check for latest release")
+		network_error("Couldn't check for latest release", false)
 		return
 		
 	yield(get_tree(), "idle_frame")
@@ -271,20 +202,20 @@ func check_for_new_release():
 func _version_check_completed(result, response_code, headers, body):
 	var latest_release_data = {}
 	if result != HTTPRequest.RESULT_SUCCESS:
-		network_error("Couldn't check for version update")
+		network_error("Couldn't check for version update", false)
 
 	else:
 		var content = body.get_string_from_utf8()
 
 		var json_result:JSONParseResult = JSON.parse(content)
 		if (json_result.error != OK):
-			network_error("Couldn't check for version update")
+			network_error("Couldn't check for version update", false)
 		else:
 			var json_data = json_result.result
 			if typeof(json_data) == TYPE_ARRAY and json_data:
 				latest_release_data = json_data[0]
 			else:
-				network_error("Couldn't check for version update")
+				network_error("Couldn't check for version update", false)
 	
 	if latest_release_data:
 		var version = latest_release_data.get("tag_name", "")
@@ -303,50 +234,22 @@ func create_default_folders():
 	for folder in ["Sets", "Decks", "Saves", "Music", "Sfx"]:
 		dir.make_dir_recursive("user://" + folder + "/")
 	
-	
-func create_img_folders(card_data):
-	var set = card_data["_set"]
-	var dir = Directory.new()
-	dir.make_dir_recursive("user://Sets/tmp_images")
-	dir.make_dir_recursive("user://Sets/images/" + set)
 
 func start_images_dl():
-	http_request = HTTPRequest.new()
-	add_child(http_request)	
-	http_request.connect("request_completed", self, "_img_download_completed")
-	_loading_text_prefix = "Downloading Images - "
-	
-	var total_images = cfc.card_definitions.size()
-	var i = 0
-	
-	for card_key in cfc.card_definitions.keys():
-		i+=1
-		var card = cfc.card_definitions[card_key]
-		_current_percent = i*100/total_images
-		var card_id = card["_code"]
-		var img_filename = cfc.get_img_filename(card_id)
-		if WCUtils.file_exists(img_filename):
-			continue
-		if cfc.is_image_download_failed(card_id):
-			continue
-		var url = cfc.get_image_dl_url(card_id)
-		if !url:
-			continue
-		#we're good to go. create folders as needed
-		create_img_folders(card)	
-		# Perform the HTTP request. should return a png image
-		self._current_destination = img_filename
-		self._current_url = url
-		self._current_card_key = card_key
-		var error = http_request.request(url)
-		if error != OK:
-			network_error("An error occurred in the HTTP request for card" + card_id)
-			continue
-		yield(get_tree(), "idle_frame")
-		yield(self, "one_download_completed")
-	remove_child(http_request)
-	http_request.queue_free()
-	emit_signal ("images_download_completed")	
+	gameData.cardImageDownloader.load_pending_images()
+	var dl_stats = gameData.cardImageDownloader.get_stats()
+	var remaining = dl_stats["remaining"]
+	if remaining:
+		var dialog:AcceptDialog = AcceptDialog.new()
+		dialog.window_title = "Image Download"
+		dialog.set_text(str(remaining) + " card images will be downloaded in the background.\nYou can play while this happens.\nMake sure you have an internet connection enabled")
+		dialog.connect("modal_closed", self, "_all_downloads_completed")
+		dialog.get_close_button().connect("pressed", self, "_all_downloads_completed")
+		dialog.connect("confirmed", self, "_all_downloads_completed")
+		add_child(dialog)
+		dialog.popup_centered()			
+	else:
+		_all_downloads_completed()
 	
 func _sets_download_completed():
 	#database download is complete, we load all sets then start the images
@@ -363,7 +266,18 @@ func _process(delta):
 #	if target_size.x > 1800:
 #		texture_rect.rect_min_size = Vector2(1616, 604)
 #		texture_rect.rect_size = texture_rect.rect_min_size
-
+	
+	var dl_info = get_node("%DownloadInfo")
+	var dl_stats = gameData.cardImageDownloader.get_stats()
+	if dl_stats["remaining"] > 0:
+		dl_info.visible = true
+		dl_info.text = "image downloads: " + str(dl_stats["remaining"]) +\
+		 " remaining. (OK: " + str(dl_stats["downloaded_ok"]) + ", ERR: " +\
+		  str(dl_stats["download_errors"]) + ") - " + dl_stats["current_url"]
+	else:
+		dl_info.visible = false
+		dl_info.text = ""
+		
 	if (_loading_error):
 		return
 	

@@ -87,6 +87,12 @@ func scale_grid_layout_recursive(config):
 
 	
 	#todo reorganizers?
+
+func invalidate_texture_cache(id_or_filename):
+	var filename = id_or_filename
+	if get_card_by_id(id_or_filename):
+		filename = get_img_filename(id_or_filename)
+	_card_texture_cache.erase(filename)
 	
 func get_card_texture(card, force_if_facedown: = true):
 	var filename = card.get_art_filename(force_if_facedown)
@@ -1115,11 +1121,13 @@ func get_img_filename(card_id) -> String:
 
 
 
-func get_villain_portrait(card_id) -> Texture:
+func get_villain_portrait(card_id, callback_owner = null) -> Texture:
 	var area = 	Rect2 ( 65, 60, 155, 155 )
 	var result = get_sub_texture(card_id, area)
 	if result:
 		return result
+	if callback_owner:
+		gameData.urgent_image_download(card_id, callback_owner)		
 	return fallback_villain_portrait(card_id, area)
 	
 func fallback_villain_portrait(_card_id, area) -> Texture:
@@ -1133,11 +1141,15 @@ func get_scheme_portrait(card_id) -> Texture:
 	var area = 	Rect2 ( 55, 15, 200, 155 )
 	return get_sub_texture(real_id, area)
 	
-func get_hero_portrait(card_id) -> Texture:
+func get_hero_portrait(card_id, callback_owner = null) -> Texture:
 	var area = 	Rect2 ( 60, 40, 170, 180 )
 	var result = get_sub_texture(card_id, area)
 	if result:
 		return result
+	#if we failed, assume we need to download the picture
+	#then callback the caller
+	if callback_owner:
+		gameData.urgent_image_download(card_id, callback_owner)
 	return fallback_hero_portrait(card_id, area)
 	
 func fallback_hero_portrait(_card_id, area) -> Texture:

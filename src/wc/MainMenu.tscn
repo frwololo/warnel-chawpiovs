@@ -26,9 +26,9 @@ anchor_bottom = 1.0
 
 [node name="VBox" type="VBoxContainer" parent="CenterContainer"]
 margin_left = 375.0
-margin_top = 152.0
+margin_top = 132.0
 margin_right = 1545.0
-margin_bottom = 927.0
+margin_bottom = 947.0
 custom_constants/separation = 10
 alignment = 1
 
@@ -139,6 +139,14 @@ margin_left = 1083.0
 margin_right = 1170.0
 margin_bottom = 30.0
 text = "v. 1.0.0"
+
+[node name="DownloadInfo" type="RichTextLabel" parent="CenterContainer/VBox"]
+unique_name_in_owner = true
+margin_top = 785.0
+margin_right = 1170.0
+margin_bottom = 815.0
+rect_min_size = Vector2( 0, 30 )
+text = "DL Info"
 
 [node name="LoadingPanel" type="CenterContainer" parent="CenterContainer"]
 unique_name_in_owner = true

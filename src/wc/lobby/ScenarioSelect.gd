@@ -41,6 +41,12 @@ func set_display_name(display_name):
 		display_name = "*" + display_name			
 		
 	scenario_name.set_text(display_name)	
+
+func card_image_download_complete(_card_id):
+	reload_texture()
+
+func reload_texture():
+	scenario_picture.texture_normal = null
 	
 func _process(_delta:float):
 	if scenario_picture and !scenario_picture.texture_normal:
@@ -51,7 +57,7 @@ func _process(_delta:float):
 		if (villain):
 			display_name = villain["shortname"]
 			picture_card_id = villain["_code"]
-			texture = cfc.get_villain_portrait(picture_card_id)
+			texture = cfc.get_villain_portrait(picture_card_id, self)
 			_rotation = 0
 		else:
 			texture = cfc.get_scheme_portrait(picture_card_id)

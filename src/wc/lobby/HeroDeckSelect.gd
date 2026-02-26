@@ -109,6 +109,20 @@ func _on_owner_changed(id):
 		_toggle_gui()
 		lobby.owner_changed(id, my_index)
 
+func card_image_download_complete(card_id):
+	if card_id != hero_id:
+		return
+	reload_texture()
+
+func reload_texture():
+	if !hero_id:
+		return
+	var imgtex = cfc.get_hero_portrait(hero_id)
+	if (imgtex and cfc.idx_hero_to_deck_ids[hero_id]):	
+		hero_picture.texture = imgtex
+		#hero_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		resize()	
+
 func load_hero(_hero_id):
 	hero_id = _hero_id
 	
@@ -119,7 +133,7 @@ func load_hero(_hero_id):
 	var decks = 0
 	var last_deck_id = 0 	
 	if (hero_id):
-		imgtex = cfc.get_hero_portrait(hero_id)
+		imgtex = cfc.get_hero_portrait(hero_id, self)
 		decks = cfc.idx_hero_to_deck_ids[hero_id]
 		last_deck_id = load_last_used_deck(hero_id)
 	if (imgtex and decks):	

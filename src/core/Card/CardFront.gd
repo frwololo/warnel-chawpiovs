@@ -205,7 +205,8 @@ func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false,
 		if bbcode_height > label_size.y:
 			font_adjustment = _adjust_font_size(label_fonts["normal_font"], node.text, label_size)
 			_set_card_rtl_fonts(node, label_fonts, starting_font_size + font_adjustment)
-			yield(get_tree(), "idle_frame")
+			if (get_tree()):
+				yield(get_tree(), "idle_frame")
 			bbcode_height = node.get_content_height()
 #			print_debug(["Font Adjustment", font_adjustment, "Code Height", bbcode_height])
 	#		print_debug(bbcode_height, ':', font_adjustment, ':', label_size.y)

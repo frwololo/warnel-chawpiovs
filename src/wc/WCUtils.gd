@@ -81,16 +81,38 @@ static func load_img(file) -> Image :
 	else:
 		var bytes = img_file.get_buffer(img_file.get_len())
 		img_file.close()
+
+		var PNG_HEADER = [137,80,78,71,13,10,26,10]
+		var formats = ["png", "jpg"]
 		
+		#guessing the format of the image based on header, can't trust the filename
+		for i in range (PNG_HEADER.size()):
+			if bytes[i] != PNG_HEADER[i]:
+				formats = ["jpg", "png"]
+				break		
+
+		var loaded_ok = FAILED
+		var i = 0
+		while loaded_ok!=OK and i < formats.size():
+			var format = formats[i]
+			match format:
+				"png":
+					loaded_ok = img.load_png_from_buffer(bytes)
+				"jpg":
+					loaded_ok = img.load_jpg_from_buffer(bytes)
+			i+=1
 		
-		var extension = file.get_extension().to_lower()
-		var error_code = 0
-		if extension == "png":
-			error_code = img.load_png_from_buffer(bytes)
-		else:
-			error_code = img.load_jpg_from_buffer(bytes)
-		if error_code:
+		if loaded_ok != OK:
 			return null	
+		
+#		var extension = file.get_extension().to_lower()
+#		var error_code = 0
+#		if extension == "png":
+#			error_code = img.load_png_from_buffer(bytes)
+#		else:
+#			error_code = img.load_jpg_from_buffer(bytes)
+#		if error_code:
+#			return null	
 	return img	
 
 static func load_audio(file) -> AudioStream:

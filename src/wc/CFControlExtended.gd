@@ -11,6 +11,7 @@ var unknown_types : Dictionary
 var next_scene_params : Dictionary
 var lowercase_card_name_to_name : Dictionary
 var shortname_to_name : Dictionary
+var subname_to_name: Dictionary
 var idx_hero_to_deck_ids : Dictionary
 var box_contents_by_name: Dictionary
 var all_traits: Dictionary = {}
@@ -684,6 +685,7 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	card_data["shortname"] = card_data["Name"]
 	if (card_data.get("subname", "")):
 		card_data["Name"] += " - " + card_data["subname"]	
+		subname_to_name[card_data["subname"].to_lower()] = card_data["Name"]
 		var _tmp = card_data["Name"]
 		var _error = 0
 	#Villains: multiple cards have the same name.
@@ -1054,6 +1056,10 @@ func enrich_window_title(selectionWindow, script:ScriptObject, title:String) -> 
 	
 		result = owner.properties.get("shortname", owner.canonical_name) + " - " + result
 	
+	var additional_constraints_str = selectionWindow.additional_constraints_to_text()
+	if additional_constraints_str:
+		additional_constraints_str = " (" + additional_constraints_str + ")"
+	
 	match script_name:
 		"enemy_attack":
 			var target_str = ""
@@ -1061,7 +1067,7 @@ func enrich_window_title(selectionWindow, script:ScriptObject, title:String) -> 
 				target_str = " " +  script.trigger_details.get(SP.TRIGGER_TARGET_HERO)
 			result = owner.get_display_name() + " attacks" + target_str +". Choose 1 defender or cancel for undefended" 
 		"pay_as_resource":
-			result = owner.canonical_name + " - Select at least " + str(selectionWindow.selection_count) + " resources."
+			result = owner.canonical_name + " - Select at least " + str(selectionWindow.selection_count) + " resources" + additional_constraints_str + "." 
 	match forced_title:
 		"__end_phase_discard__":
 			var cancel_str = "."

@@ -1290,7 +1290,7 @@
 		}
 	},
 	"Daredevil - Matt Murdock": {
-		"thwarted": {
+		"thwart_happened": {
 			"trigger": "self",
 			"is_optional_board": true,
 			"board": [
@@ -2332,8 +2332,8 @@
 					"name": "mod_tokens",
 					"modification": 1,
 					"token_name": "tough",
-					"subject": "villain",
-				}				
+					"subject": "villain"
+				}
 			]
 		},
 		"boost": {
@@ -2374,6 +2374,7 @@
 					"name": "mod_tokens",
 					"subject": "self",
 					"modification": 1,
+					"set_to_mod": true,
 					"token_name": "_helicarrier"
 				}
 			]
@@ -4341,7 +4342,7 @@
 			"event_name": "identity_changed_form",
 			"event_filters": {
 				"after": "hero"
-			},			
+			},
 			"trigger": "self",
 			"is_optional_board": true,
 			"board": [

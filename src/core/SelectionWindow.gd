@@ -353,6 +353,21 @@ func post_initiate_checks():
 
 	get_node("%Title").text = window_title
 
+
+func additional_constraints_to_text():
+	if (!selection_additional_constraints):
+		return ""
+	
+	var result = ""
+	var separator = ""
+	#this is kind of hardcoded to only work with "pay as resources" for now,
+	#might need to evolve
+	var constraints = selection_additional_constraints.get("func_params", {})
+	for key in constraints:
+		result += separator + str(constraints[key]) + " " + key
+		separator = ", "
+	return result
+	
 #example of constraints
 #{
 #	"func_name": "can_pay_as_resource",

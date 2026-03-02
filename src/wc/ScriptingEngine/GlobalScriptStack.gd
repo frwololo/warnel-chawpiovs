@@ -144,6 +144,21 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			var remote_trigger_details: Dictionary = trigger_details.duplicate()
 			remote_trigger_details["network_prepaid"] =  prepaid_uids
 			remote_trigger_details["network_rng_state"] =  cfc.game_rng.state
+
+			#convert stack_object and event_object to integers for network
+			#TODO this should be encapsulated somewhere
+			var stack_object = trigger_details.get("stack_object", null)
+			if stack_object:
+				remote_trigger_details["stack_object"] = stack_object.stack_uid
+				var _tmp = 1
+				var task_object = trigger_details.get("event_object", null)
+				if task_object:
+					var tasks = stack_object.get_tasks()
+					var i = 0
+					for task in tasks:
+						if task == task_object:
+							remote_trigger_details["event_object"] = i
+						i+= 1
 			
 			var trigger_card_uid = guidMaster.get_guid(sceng.trigger_object)
 			var owner_uid = guidMaster.get_guid(sceng.owner)
@@ -408,6 +423,24 @@ func client_create_script(details):
 	var trigger_card = guidMaster.get_object_by_guid(trigger_card_uid)
 	var owner_card = guidMaster.get_object_by_guid(_owner_uid)
 
+	#retrieve objects from network integers
+	#TODO this should be encapsulated somewhere
+	var stack_object_uid = remote_trigger_details.get("stack_object", null)
+	if stack_object_uid:
+		var convert_success = false
+		var _tmp = 1
+		var stack_object = get_stack_object_by_uid(stack_object_uid)
+		if stack_object:
+			remote_trigger_details["stack_object"] = stack_object
+			var event_object_uid = remote_trigger_details.get("event_object", null)
+			if (event_object_uid != null) and stack_object.get_tasks().size() > event_object_uid:
+				var event_object = 	stack_object.get_tasks()[event_object_uid]
+				remote_trigger_details["event_object"] = event_object
+				convert_success = true			
+		if !convert_success:
+			var _error = 1
+			remote_trigger_details.erase("stack_object")
+			remote_trigger_details.erase("event_object")
 	
 	var sceng = cfc.scripting_engine.new(
 				state_scripts,
@@ -483,6 +516,7 @@ func insert_event_into_stack(stackEvent, pos = -1):
 
 	history[stackEvent.stack_uid] = {
 		"stack_uid" : stackEvent.stack_uid,
+		"stack_object": stackEvent,
 		"details": stackEvent.get_display_name(),
 		"class": stackEvent.get_class(),	
 	}	
@@ -1081,6 +1115,13 @@ func is_script_in_stack_object(script:ScriptTask, stack_item):
 		if task == script:
 			return true
 	return false
+
+func get_stack_object_by_uid(stack_uid):
+	for obj in stack:
+		if obj.stack_uid == stack_uid:
+			return obj
+	
+	return history.get(stack_uid, null)
 
 func find_last_event_id_before_me(requester:ScriptTask):
 	#the requester usually doesn't want to delete themselves

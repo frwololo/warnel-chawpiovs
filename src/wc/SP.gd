@@ -27,6 +27,7 @@ const KEY_SUBJECT_CURRENT_ACTIVATION_TARGET:= "current_activation_target"
 const KEY_SUBJECT_CURRENT_HERO_TARGET:= "current_hero_target"
 
 const FILTER_HOST_OF := "filter_is_host_of"
+const FILTER_HOSTED_BY  := "filter_is_hosted_by"
 const FILTER_SAME_CONTROLLER := "filter_same_controller"
 const FILTER_EVENT_SOURCE:= "filter_event_source"
 const FILTER_SOURCE_CONTROLLED_BY := "filter_source_controlled_by"
@@ -67,6 +68,10 @@ static func filter_trigger(
 	# Card Host filter checks
 	if is_valid and card_scripts.get(FILTER_HOST_OF):
 		if !check_host_filter(trigger_card,owner_card,card_scripts.get(FILTER_HOST_OF)):
+			return false
+
+	if is_valid and card_scripts.get(FILTER_HOSTED_BY):
+		if !check_hosted_by_filter(trigger_card,owner_card,card_scripts.get(FILTER_HOSTED_BY)):
 			return false
 
 	# Same Controller filter check
@@ -141,6 +146,9 @@ static func check_host_filter(trigger_card, owner_card, host_description : Strin
 			if owner_card.current_host_card == trigger_card: 
 				card_matches = true
 	return(card_matches)
+	
+static func check_hosted_by_filter(trigger_card, owner_card, host_description : String) -> bool:
+	return check_host_filter(owner_card, trigger_card, host_description) 	
 
 # Returns true if the trigger and the owner belong to the same hero, false otherwise
 static func check_source_controlled_by_filter(_trigger_card, owner_card, trigger_details, expected_controller) -> bool:

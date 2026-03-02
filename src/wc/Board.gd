@@ -1162,13 +1162,12 @@ func show_options_menu():
 func find_card_by_name(card_id_or_name, include_back:= false, include_piles := false):
 	var card_name = cfc.get_card_name_by_id(card_id_or_name)
 	if !card_name:
-		card_name = card_id_or_name.to_lower()
-		card_name = cfc.shortname_to_name.get(card_name, "")
-	if !card_name:
 		card_name = card_id_or_name
 	card_name = card_name.to_lower()
-		
-	for card in get_all_cards(include_piles):
+	
+	var all_cards = get_all_cards(include_piles)
+	#search by full name first 
+	for card in all_cards:
 		if (card.canonical_name.to_lower() == card_name):
 			return card
 		if (include_back):
@@ -1177,6 +1176,28 @@ func find_card_by_name(card_id_or_name, include_back:= false, include_piles := f
 				var back_name = cfc.get_card_name_by_id(back_code)
 				if back_name.to_lower() == card_name:
 					return card
+					
+	#then we try shortname or subname
+	for card in all_cards:
+		var shortname = card.get_property("shortname", "").to_lower()
+		var subname = card.get_property("subname", "").to_lower()
+		if (shortname == card_name):
+			return card
+		if (subname == card_name):
+			return card			
+		if (include_back):
+			var back_code = card.get_card_back_code()
+			if (back_code):
+				var back_data = cfc.get_card_by_id(back_code)
+				if !back_data:
+					continue
+				var back_shortname = back_data.get("shortname", "").to_lower()
+				var back_subname = back_data.get("subname", "").to_lower()
+				if (back_shortname == card_name):
+					return card
+				if (back_subname == card_name):
+					return card	
+					
 	return null
 
 func find_card_by_property(property_name, property_value, controller_hero_id = 0):		

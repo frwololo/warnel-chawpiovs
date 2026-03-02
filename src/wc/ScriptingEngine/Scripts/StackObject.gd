@@ -64,10 +64,16 @@ func replace_ability(new_ability_name:String, task_object = null):
 func prevent_value(property, amount_prevented, task_object = null):
 	pass		
 
+func increase_value(property, amount_increased, task_object = null):
+	pass	
+
 func replace_script_property(key, value, task_object = null):
 	for task in get_tasks():
 		if task_object and task != task_object:
-			continue		
+			continue
+		if value.begins_with("interrupted_event_"):
+			value = value.replace("interrupted_event_", "")
+			value = task_object.get_property(value)		
 		task.script_definition[key] = value
 	
 func is_silent():
@@ -88,6 +94,14 @@ func get_trigger():
 func modify(script, task_object = null):
 	var result = {}
 	match script.script_name:
+		"increase":
+			var amount = script.retrieve_integer_property("amount")
+			if !amount:
+				var _error = 1
+				return {}
+			else:
+				var increased_amount = self.increase_value("amount", amount, task_object)
+				return {"amount_increase" : increased_amount}		
 		"prevent":
 			var amount = script.retrieve_integer_property("amount")
 			if !amount:

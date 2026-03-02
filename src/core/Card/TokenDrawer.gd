@@ -238,6 +238,20 @@ func mod_token(
 				SP.TRIGGER_PREV_COUNT: prev_value,
 				SP.TRIGGER_NEW_COUNT: new_value,
 				"tags": tags})
+		if new_value > prev_value:
+			for i in (new_value - prev_value):
+				scripting_bus.emit_signal(
+						"card_token_added",
+						owner_card,
+						{SP.TRIGGER_TOKEN_NAME: token.get_token_name(),
+						"tags": tags})	
+		elif prev_value > new_value:
+			for i in ( prev_value - new_value):
+				scripting_bus.emit_signal(
+						"card_token_removed",
+						owner_card,
+						{SP.TRIGGER_TOKEN_NAME: token.get_token_name(),
+						"tags": tags})					
 	return(retcode)
 
 

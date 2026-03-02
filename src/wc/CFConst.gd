@@ -601,7 +601,9 @@ const AUTO_KEYWORDS := {
 	"cannot_ready": "int",
 	"cannot_ready_by_player_card": "int",
 	"cannot_have_attachments": "int",
-	"exclude_from_ally_limit": "int",				
+	"exclude_from_ally_limit": "int",
+	"attack_indirect_damage": "int",
+	"blank_abilities": "int"				
 }
 
 #list of events for which we don't show a GUI announce to the user by default
@@ -751,6 +753,8 @@ const DEFAULT_SETTINGS:= {
 		"mts" : "https://marvelcdb.com/api/public/cards/mts.json", #Mad Titan's Shadow Expansion Box
 		"sm" : "https://marvelcdb.com/api/public/cards/sm.json", #Sinister Motives Expansion Box				
 		"trors" : "https://marvelcdb.com/api/public/cards/trors.json", #The Rise of Red Skull Expansion Box
+		"warm" : "https://marvelcdb.com/api/public/cards/warm.json", #War Machine Hero Pack
+
 	},
 	'lobby_server': {
 		'server': 'https://wololo.net/',

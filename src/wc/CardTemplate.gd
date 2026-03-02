@@ -239,6 +239,8 @@ func check_death(script = null) -> bool:
 	if total_damage < health:
 		return false
 	
+	var excess_damage = total_damage - health
+	
 	var tags = []
 	var trigger_details = {}
 	var trigger_card = self
@@ -266,11 +268,15 @@ func check_death(script = null) -> bool:
 		card_dies_definition["source"] = trigger_details["source"]
 	#force changing the trigger here. Might not be the best idea but it's useful for UI display
 	trigger_details["trigger_type"] = "card_dies"	
-	
+	trigger_details["excess_damage"] = excess_damage
 	var card_dies_script:ScriptTask = ScriptTask.new(self, card_dies_definition, trigger_card, trigger_details)
 	card_dies_script.set_subjects(self)
 	var task_event = SimplifiedStackScript.new(card_dies_script)
 	gameData.theStack.add_script(task_event)
+	
+	#TODO this might need to move to another place, there are other ways a card could leave play than dying
+	scripting_bus.emit_signal_on_stack("card_leaves_play", self, {})
+	
 	_died_signal_sent = true
 	return true
 	
@@ -1043,6 +1049,12 @@ func execute_scripts_no_stack(
 	new_trigger_details["use_stack"] = false
 	return execute_scripts(trigger_card, trigger, new_trigger_details, run_type)	
 
+func retrieve_scripts(trigger: String, filters := {}) -> Dictionary:
+	if self.get_property("blank_abilities", 0, true):
+		return {}
+	
+	return .retrieve_scripts(trigger, filters)
+
 func retrieve_script_by_path(path:String):
 	var found_scripts = get_instance_runtime_scripts()
 	if !found_scripts:
@@ -1222,7 +1234,8 @@ func execute_scripts(
 			force_user_interaction_required = false
 
 	orig_trigger_details["trigger_type"] = trigger
-	
+#	orig_trigger_details.erase("is_interrupt_or_response")
+		
 	#we're playing a card manually but in interrupt mode.
 	#What we want to do here is play the optional triggered effect instead
 	if (trigger == "manual" and gameData.is_interrupt_mode()):
@@ -1242,6 +1255,7 @@ func execute_scripts(
 		#skip optional confirmation menu for interrupts,
 		#we have a different gui signal	
 		show_optional_confirmation_menu = false	
+		orig_trigger_details["is_interrupt_or_response"] = true
 
 	if ! has_potential_scripts(trigger_card, trigger):
 		return null
@@ -1285,6 +1299,7 @@ func execute_scripts(
 	# We select which scripts to run from the card, based on it state	
 	state_scripts_dict = get_state_scripts_dict(card_scripts, trigger_card, trigger_details, exec_config)
 
+	#delete this to avoid sending "script_executed" over and over
 	trigger_details["action_name_id"] = ""
 	
 	var rules = state_scripts_dict.get("rules", {})
@@ -1428,6 +1443,8 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 	var sceng = null
 	var shortname = properties.get("shortname", canonical_name)
 	if len(state_scripts):
+		if ! trigger_details.get("action_name_id", ""):
+			trigger_details["action_name_id"] = action_name
 		if action_name:
 			action_name = shortname + "(" + action_name + ")"
 		else:
@@ -2218,9 +2235,10 @@ func pay_regular_cost_replacement(script_definition: Dictionary, trigger_details
 	#precompute cost replacement macros
 	if (typeof(cost) == TYPE_STRING):
 		if cost == "card_cost":
-			cost = self.get_property("cost")
+			cost = self.get_property("override_play_cost", self.get_property("cost"))
 
 	var selection_additional_constraints = null
+
 	if (typeof(cost) == TYPE_DICTIONARY):
 		manacost.init_from_dictionary(cost)
 		selection_additional_constraints = {
@@ -2266,9 +2284,7 @@ func to_color():
 #Marvel Champions Specific functionality
 #
 
-func is_encounter():
-	var type = get_property("type_code", "")
-	return type in CFConst.ENCOUNTER_CARD_TYPES
+
 
 func get_associated_villain():
 	var sceng = _get_script_sceng("associated_villain")
@@ -2635,6 +2651,14 @@ func get_param_subjects(params, script:ScriptObject = null):
 		var new_subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
 		return new_subjects
 	return subjects		
+
+func is_encounter(params = {}, script:ScriptTask = null):
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return false
+		
+	var type = subject.get_property("type_code", "")
+	return type in CFConst.ENCOUNTER_CARD_TYPES
 
 func count_unique_property_value(params, script:ScriptTask = null) -> int:
 	var subjects = get_param_subjects(params, script)

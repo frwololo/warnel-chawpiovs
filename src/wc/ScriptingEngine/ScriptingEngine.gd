@@ -141,6 +141,33 @@ func move_card_to_board(script: ScriptTask) -> int:
 	script.script_definition = backup
 	return result
 
+func init_properties(script: ScriptTask) -> int:
+
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+
+	if (costs_dry_run()): 
+		return CFConst.ReturnCode.CHANGED
+
+	var retcode = CFConst.ReturnCode.CHANGED
+	for card in script.subjects:
+		var properties = script.get_property(SP.KEY_MODIFY_PROPERTIES)
+		for property in properties:
+			var value = properties[property]
+			var ret_once = card.modify_property(
+					property,
+					value,
+					costs_dry_run(),
+					["Init"])
+			if ret_once == CFConst.ReturnCode.FAILED:
+				retcode = ret_once
+			elif ret_once == CFConst.ReturnCode.CHANGED\
+					and retcode != CFConst.ReturnCode.FAILED:
+				# We only need one of the properties requested to be
+				# modified before we consider that we changed something.
+				# But only if any of the other modifications hasn't failed
+				retcode = ret_once
+	return(retcode)
 
 func shuffle_container(script) -> int:
 	var dest_container_str = script.get_property(SP.KEY_DEST_CONTAINER).to_lower()
@@ -556,6 +583,11 @@ func receive_damage(script: ScriptTask) -> int:
 		var multiplier = consolidated_subjects[card]
 		var damage_happened = 0
 		var amount = base_amount * multiplier
+		
+		var increase = script.retrieve_integer_property("increase_amount", 0)	
+		if increase:
+			amount+= increase
+		
 		if card.get_property("invincible", 0):
 			continue
 
@@ -573,7 +605,18 @@ func receive_damage(script: ScriptTask) -> int:
 		if (amount and tough):
 			card.tokens.mod_token("tough", -1)
 			card.hint("Tough!", Color8(50,50,255))
-		else:	
+		else:
+			#indirect damage in attack, we replace all damages with an indirect damage command
+			if ("attack" in tags) and attacker.get_property("attack_indirect_damage", 0, true):
+				var indirect_damage_script_definition = {
+					"name": "indirect_damage",
+					"amount": amount,
+					"tags": []
+				}
+				var task_event = SimplifiedStackScript.new(indirect_damage_script_definition, attacker)
+				gameData.theStack.add_script(task_event)	
+				continue
+				
 			retcode = card.tokens.mod_token("damage",
 					amount,false,costs_dry_run(), tags)	
 			if amount:
@@ -846,9 +889,7 @@ func move_token_to(script: ScriptTask) -> int:
 	
 	var source_str = script.get_property("source", "")
 	var sources = SP.retrieve_subjects(source_str, script)	
-	var source = sources[0] if sources else null
-	if !source:
-		return CFConst.ReturnCode.FAILED
+	var source = sources[0] if sources else script.owner
 		
 	var tokens_amount = source.tokens.get_token_count(token_name)
 	amount = min(tokens_amount, amount)
@@ -872,7 +913,7 @@ func prevent(script: ScriptTask) -> int:
 	if script.script_definition.has("amount"): #this is a partial prevention effect
 		if typeof(script.script_definition["amount"]) == TYPE_STRING:
 			if script.script_definition["amount"] == "all":
-				script.script_definition["amount"] = 999 #TODO hack		
+				script.script_definition["amount"] = 666 #TODO hack		
 			else: #unsupported values
 				script.script_definition["amount"] = 0 
 
@@ -1055,6 +1096,26 @@ func enemy_attacks_engaged_hero(script: ScriptTask) -> int:
 func i_attack(script: ScriptTask) -> int:
 	var retcode = CFConst.ReturnCode.FAILED
 
+	var attacker = get_action_owner_from_script(script)
+
+	if !attacker:
+		return CFConst.ReturnCode.FAILED
+	#here we try to predict if the attack will actually happen, but we'll need something better,
+	#signal based... (e.g. for Titania's Fury
+	if (costs_dry_run()):
+		if !script.subjects:
+			return CFConst.ReturnCode.FAILED
+		return CFConst.ReturnCode.CHANGED	
+
+	for card in script.subjects:
+		gameData.add_enemy_activation(attacker, "attack", script, card.get_controller_hero_id())
+		retcode = CFConst.ReturnCode.CHANGED
+	return retcode
+	
+#adds specific attacker against specific targets
+func source_attacks_subjects(script: ScriptTask) -> int:
+	var retcode = CFConst.ReturnCode.FAILED
+
 	var attacker = script.owner
 
 	#here we try to predict if the attack will actually happen, but we'll need something better,
@@ -1067,7 +1128,7 @@ func i_attack(script: ScriptTask) -> int:
 	for card in script.subjects:
 		gameData.add_enemy_activation(attacker, "attack", script, card.get_controller_hero_id())
 		retcode = CFConst.ReturnCode.CHANGED
-	return retcode
+	return retcode	
 
 func swap_villain(script:ScriptTask) -> int:
 	var retcode = CFConst.ReturnCode.CHANGED
@@ -1163,10 +1224,14 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 	
 	var boost_amount = boost_card.get_property("boost",0, true)
 	boost_amount += cfc.NMAP.board.count_amplify_icons()
+	if script.has_tag("amplify"):
+		attacker.hint("Amplify", Color8(100,255,150))
+		boost_amount += 1
 	if boost_amount:
 		boost_card.hint("+" + str(boost_amount), Color8(100,255,150), {"position": "bottom_right"})
 	script_definition["boost"].append(boost_amount)
 	
+	scripting_bus.emit_signal_on_stack("boost_card_resolved", boost_card, {"boost_amount" : boost_amount})
 
 	return retcode
 
@@ -1337,14 +1402,16 @@ func consequential_damage(script: ScriptTask) -> int:
 		"thwart", "remove_threat":
 			damage = owner.get_property("thwart_cost",0)
 
+	var new_tags = ["consequential_damage"]
 	var additional_task := ScriptTask.new(
 		script.owner,
-		{"name": "receive_damage", "amount" : damage, "subject" : "self"}, 
+		{"name": "receive_damage", "amount" : damage, "subject" : "self", "tags" : new_tags}, 
 		script.trigger_object,
 		script.trigger_details)
-	additional_task.prime([], CFInt.RunType.NORMAL,0, []) #TODO gross
-	retcode = receive_damage(additional_task)
-	
+	additional_task.subjects = [script.owner]
+	#additional_task.prime([], CFInt.RunType.NORMAL,0, []) #TODO gross
+	#retcode = receive_damage(additional_task)	
+	_add_receive_damage_on_stack (damage, additional_task, {})	
 	return CFConst.ReturnCode.CHANGED
 
 func commit_scheme(script: ScriptTask):
@@ -1407,7 +1474,7 @@ func enemy_activates(script: ScriptTask) -> int:
 	retcode = CFConst.ReturnCode.FAILED
 	for card in script.subjects:
 		retcode = CFConst.ReturnCode.CHANGED
-		gameData.add_enemy_activation(card, "activate")
+		gameData.add_enemy_activation(card, "activate", script)
 	return retcode	
 
 func enemy_schemes(script: ScriptTask) -> int:
@@ -1441,7 +1508,10 @@ func remove_threat(script: ScriptTask) -> int:
 			"amount": amount,
 		}
 		gameData.theStack.add_script(SignalStackScript.new("basic_thwart_happened",  owner,  signal_details))				
-		scripting_bus.emit_signal("thwarted", owner, {"amount" : amount, "target" : script.subjects[0]})
+	if script.has_tag("thwart"):
+#		scripting_bus.emit_signal("thwarted", owner, {"amount" : amount, "target" : script.subjects[0]})
+		scripting_bus.emit_signal_on_stack("thwart_happened", owner, {"amount" : amount, "target" : script.subjects[0]})
+#		gameData.theStack.add_script(SignalStackScript.new("attack_happened",  attacker,  signal_details))			
 
 		
 
@@ -1649,9 +1719,12 @@ func deal_encounter(script: ScriptTask) -> int:
 	for subject in script.subjects:
 		match subject.get_property("type_code", ""):
 			"hero", "alter_ego": #subject is a hero, we deal them an encounter from the deck
-				gameData.deal_one_encounter_to(subject.get_controller_hero_id(), immediate_reveal)
+				var amount = script.get_property("amount", 1)
+				for i in amount:
+					gameData.deal_one_encounter_to(subject.get_controller_hero_id(), immediate_reveal)
 			_: #other uses cases, we assume that's the card we want to reveal
-				gameData.deal_one_encounter_to(owner_hero_id, immediate_reveal, subject)
+				var target_hero_id = script.get_property("target_hero_id", owner_hero_id)
+				gameData.deal_one_encounter_to(target_hero_id, immediate_reveal, subject)
 		
 		retcode = CFConst.ReturnCode.CHANGED
 
@@ -1993,8 +2066,8 @@ func constraints(script: ScriptTask) -> int:
 		#trying to activate on a villain card
 		my_hero_id = gameData.get_current_local_hero_id()
 	
-	if script.subjects:
-		my_hero_id = script.subjects[0]
+#	if script.subjects:
+#		my_hero_id = script.subjects[0]
 		
 		
 	var my_hero_card = gameData.get_identity_card(my_hero_id)
@@ -2026,10 +2099,11 @@ func constraints(script: ScriptTask) -> int:
 				if cfc.is_modal_event_ongoing():
 					return 	CFConst.ReturnCode.FAILED			
 	
+	var board:Board = cfc.NMAP.board
 	#Max per player rule to play
 	var max_per_hero = script.get_property("max_per_hero", 0)
 	if max_per_hero:
-		var already_in_play = cfc.NMAP.board.count_card_per_player_in_play(this_card, my_hero_id)
+		var already_in_play = board.count_card_per_player_in_play(this_card, my_hero_id)
 		if already_in_play >= max_per_hero:
 			return 	CFConst.ReturnCode.FAILED			
 
@@ -2039,6 +2113,14 @@ func constraints(script: ScriptTask) -> int:
 		var already_in_play = cfc.NMAP.board.count_card_per_player_in_play(this_card)
 		if already_in_play >= max_per_hero_any * gameData.get_team_size():
 			return 	CFConst.ReturnCode.FAILED		
+
+
+	var teamup = script.get_property("team_up", [])
+	if teamup:
+		for identity_name in teamup:
+			if !board.find_card_by_name(identity_name): #TODO this should be only ally/identity
+				return 	CFConst.ReturnCode.FAILED		
+
 
 	var constraints: Array = script.get_property("constraints", [])
 	for constraint in constraints:
@@ -2094,6 +2176,20 @@ func message(script: ScriptTask) -> int:
 	msg_dialog.popup_centered()	
 	
 	return CFConst.ReturnCode.OK
+
+#returns the source of a given script action
+#in most cases this is the script owner (the card which executes the script)
+#but there are exceptions
+static func get_action_owner_from_script(script:ScriptTask):
+	var action_owner_desc = script.get_property("action_owner", null)
+
+	if !action_owner_desc:
+		return script.owner
+
+	var action_owners = script._local_find_subjects(0, CFInt.RunType.NORMAL, action_owner_desc)		
+	if !action_owners:
+		return null
+	return action_owners[0]
 
 
 #returns thecurrent hero id based on a script.
@@ -2196,7 +2292,7 @@ static func static_pre_task_prime(script_definition, owner, script = null, prev_
 			_replacements.append ({"from" : "_" + key, "to": value})
 
 
-	for zone in ["hand"] + CFConst.HERO_GRID_SETUP.keys() + CFConst.ALL_TYPE_GROUPS:
+	for zone in ["", "hand"] + CFConst.HERO_GRID_SETUP.keys() + CFConst.ALL_TYPE_GROUPS:
 		for replacement in _replacements:
 			var from_str = replacement["from"]
 			var to = replacement["to"]

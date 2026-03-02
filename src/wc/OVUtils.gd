@@ -139,6 +139,13 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 				results+= activation_script.subjects				
 		SP.KEY_SUBJECT_CURRENT_HERO_TARGET:
 			results.append(gameData.get_identity_card(gameData.get_current_activity_hero_target()))							
+		"":
+			pass
+		_: 
+			#anything else we try to find a card by that name on the board
+			var card = cfc.NMAP.board.find_card_by_name(_subject_request)
+			if card:
+				results.append(card)
 	return results
 
 func _grab_until_find(script: ScriptObject, _run_type) -> Dictionary:
@@ -212,8 +219,9 @@ static func func_name_run(object, func_name, func_params, script = null):
 			result = 0
 
 	var multiplier = func_params.get("multiplier", 1)
+	var divider:int = int(func_params.get("divider", 1))	
 	if typeof(result) in [TYPE_INT]:
-		result = result * multiplier
+		result = result * multiplier / divider
 	
 	if typeof(result) in [TYPE_INT, TYPE_BOOL] and reverse_result:
 		if result:
@@ -429,7 +437,18 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 	filters = WCUtils.search_and_replace_multi(filters, replacements, true)
 
 	
-
+	if filters.has("filter_state_event_target"):
+		var script = trigger_details.get("event_object")
+		if !script:
+			return false
+		var subjects = script.subjects
+		var subject = script.subjects[0] if subjects else null
+		if !subject:
+			return false		
+		var is_valid = SP.check_validity(subject, filters, "event_target")
+		if !is_valid:
+			return false
+		filters.erase("filter_state_event_target")
 	
 	if filters.has("filter_state_event_source"):
 		var script = trigger_details.get("event_object")

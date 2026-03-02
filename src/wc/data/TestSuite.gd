@@ -691,12 +691,18 @@ func action_target(hero_id, action_value):
 	return
 	
 func action_choose(hero_id, action_value):
-	if !cfc.get_modal_menu():
+	var menu = cfc.get_modal_menu()
+	if !menu:
 		#TODO error handling
 		var _error =1	
 		return
-	
-	cfc.get_modal_menu().force_select_by_title(action_value.to_lower())
+		
+	if !menu.has_method("force_select_by_title"):
+		#TODO error handling
+		var _error =1	
+		return
+				
+	menu.force_select_by_title(action_value.to_lower())
 
 #clicked on next phase. Value is the hero id	
 func action_pass(hero_id):

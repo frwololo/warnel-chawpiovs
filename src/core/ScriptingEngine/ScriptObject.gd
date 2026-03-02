@@ -88,13 +88,17 @@ func get_property(property: String, default = null, subscript_definition = null,
 #	var found_value = lookup_script_property(script_definition.get(property,default))
 	
 	var result = ""
-	if (subscript_definition != null):
-			#used for recursive calls of if/then/else
-		result = subscript_definition
-	elif root!= null:
-		result = root.get(property,default)
+	if property.begins_with("trigger_details_"):
+		property = property.replace("trigger_details_", "")
+		result = trigger_details.get(property)
 	else:
-		result = script_definition.get(property,default)
+		if (subscript_definition != null):
+				#used for recursive calls of if/then/else
+			result = subscript_definition
+		elif root!= null:
+			result = root.get(property,default)
+		else:
+			result = script_definition.get(property,default)
 	
 	#if then else special case. Todo could this maybe go into a more generic location to work on all script variables ?
 	if (typeof (result) == TYPE_DICTIONARY):
@@ -683,6 +687,8 @@ func retrieve_integer_property(property, stored_integer:int = 0,root = null):
 		value = count_per(value, owner, per_property)
 	elif str(value) ==  SP.KEY_COUNT_PREVIOUS_SUBJECTS:
 		value = self.prev_subjects.size()
+	elif str(value) == SP.KEY_SUBJECT_COUNT_V_ALL:
+		value = 666 #TODO hack
 	else:
 		value = get_int_value (value, stored_integer)
 

@@ -1197,6 +1197,20 @@ func prevent_value(script, property, amount_prevented):
 			script_definition[prevent] = value + amount_prevented			
 			#todo what if zero
 
+
+func increase_value(script, property, amount_increased):
+		var script_definition = script.script_definition
+		if script_definition.has(property):
+			var value = script.retrieve_integer_property(property)
+			value += amount_increased
+			script_definition[property] = value
+		else:
+			#if the script doesn't have the expected property, we try to pass it along
+			var increase = "increase_" + property
+			var value = script.retrieve_integer_property(increase, 0)
+			script_definition[increase] = value + amount_increased			
+			#todo what if zero
+
 func apply_mods_to_current_activity_script(modification_script = null):
 	if modification_script:
 		_current_activity_script_modifiers.append(modification_script)
@@ -1206,6 +1220,12 @@ func apply_mods_to_current_activity_script(modification_script = null):
 		return
 	for script in _current_activity_script_modifiers:
 		match script.script_name:
+			"increase":
+				var amount = script.retrieve_integer_property("amount")
+				if !amount:
+					var _error = 1
+				else:
+					increase_value(_latest_activity_script, "amount", amount)			
 			"prevent":
 				var amount = script.retrieve_integer_property("amount")
 				if !amount:

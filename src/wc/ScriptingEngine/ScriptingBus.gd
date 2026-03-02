@@ -60,6 +60,8 @@ signal enemy_initiates_scheme(card,details)
 signal enemy_attack_happened (card,details)
 # warning-ignore:unused_signal
 signal enemy_scheme_happened (card,details)
+# warning-ignore:unused_signal
+signal boost_card_resolved (card,details)
 
 #emitted when an enemy activation is finished, whether it was succesful or not
 # warning-ignore:unused_signal
@@ -75,7 +77,7 @@ signal villain_swapped(card,details)
 signal last_threat_removed(card, details)
 
 # warning-ignore:unused_signal
-signal thwarted (card,details)
+signal thwart_happened (card,details)
 # warning-ignore:unused_signal
 signal character_dies(card, details)
 # warning-ignore:unused_signal
@@ -149,6 +151,8 @@ signal ally_died(card,details)
 signal hero_died(card,details)
 # warning-ignore:unused_signal
 signal alter_ego_died(card,details)
+# warning-ignore:unused_signal
+signal card_leaves_play (card,details)
 
 func emit_signal_on_stack(signal_name, arg0 = null, arg1 = null):
 	var stackEvent:SignalStackScript

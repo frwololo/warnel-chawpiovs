@@ -28,6 +28,12 @@ signal card_container_emptied(details) #container
 # Emited whenever a card's tokens are modified
 # warning-ignore:unused_signal
 signal card_token_modified(card,details)
+# Emited whenever a card's tokens are added (signal sent once per token)
+# warning-ignore:unused_signal
+signal card_token_added(card,details)
+# Emited whenever a card's tokens are removed (signal sent once per token)
+# warning-ignore:unused_signal
+signal card_token_removed(card,details)
 # Emited whenever a card attaches to another
 # warning-ignore:unused_signal
 signal card_attached(card,details)

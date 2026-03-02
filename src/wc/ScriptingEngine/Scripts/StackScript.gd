@@ -58,6 +58,23 @@ func prevent_value(property, amount_prevented, task_object = null):
 			#todo what if zero
 	return prevented
 
+func increase_value(property, amount_increased, task_object = null):
+	var increased = amount_increased
+	for task in get_tasks():
+		if task_object and task != task_object:
+			continue		
+		var script_definition = task.script_definition
+		if script_definition.has(property):
+			var value = task.retrieve_integer_property(property)
+			value += amount_increased
+			script_definition[property] = value
+		else:
+			#if the script doesn't have the expected property, we try to pass it along
+			var increase = "increase_" + property
+			var value = task.retrieve_integer_property(increase, 0)
+			script_definition[increase] = value + amount_increased			
+			#todo what if zero
+	return increased
 
 func is_silent():
 	for task in get_tasks():

@@ -55,7 +55,7 @@
 			],
 			"hand1": [
 				{
-					"card": "Spider-Man - Peter Parker"
+					"card": "Spider-Man - Peter Parker #04045"
 				},
 				{
 					"card": "Strength"
@@ -82,7 +82,7 @@
 		},
 		{
 			"type": "play",
-			"value": "Spider-Man - Peter Parker"
+			"value": "Spider-Man - Peter Parker #04045"
 		},
 		{
 			"type": "target",
@@ -158,7 +158,7 @@
 			],
 			"allies1": [
 				{
-					"card": "Spider-Man - Peter Parker"
+					"card": "Spider-Man - Peter Parker #04045"
 				},
 			],
 			"discard1": [

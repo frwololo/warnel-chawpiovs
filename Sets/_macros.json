@@ -20,6 +20,29 @@
 			]
 		}
 	},
+	"_conditional_move_to_play": {
+		"condition": {
+			"func_name": "!card_is_in_play",
+			"func_params": {
+				"subject": "__subject_name__"
+			}
+		},
+		"nested_tasks": [
+			{
+				"name": "move_card_to_board",
+				"src_container": "__src_container__",
+				"subject": "tutor",
+				"subject_count": 1,
+				"filter_state_tutor": [
+					{
+						"filter_properties": {
+							"shortname": "__subject_name__"
+						}
+					}
+				]
+			}
+		]	
+	},	
 	"give_obligation": {
 		"about_to_reveal": {
 			"trigger": "self",

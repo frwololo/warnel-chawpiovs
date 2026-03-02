@@ -1094,15 +1094,7 @@
 				{
 					"name": "heal",
 					"amount": 1,
-					"subject": "boardseek",
-					"subject_count": 1,
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"Name": "Steve Rogers"
-							}
-						}
-					]
+					"subject": "Steve Rogers",
 				}
 			]
 		}

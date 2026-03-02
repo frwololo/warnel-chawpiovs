@@ -459,9 +459,11 @@ def all_html():
 
 #main loop    
 for my_file in files:
+    print (my_file +"\n")   
     parse_file(my_file)
 
 for my_file in definition_files:
+    print (my_file +"\n")
     parse_definition_file(my_file)
 
 html = all_html()

@@ -21,7 +21,6 @@ var _cached_all_traits = null
 var _on_ready_load_from_json:Dictionary = {}
 
 #marvel champions specific variables
-var _can_change_form := true
 var _is_exhausted:= false
 var _is_boost:=false
 var _is_inactive_attachment:= false
@@ -339,7 +338,8 @@ func setup() -> void:
 	_ready_load_from_json()
 	
 	gameData.connect("game_state_changed", self, "_game_state_changed")
-	scripting_bus.connect("step_started", self, "_game_step_started")
+	scripting_bus.connect("step_about_to_start", self, "_game_step_about_to_start")	
+
 	scripting_bus.connect("card_token_modified", self, "_card_token_modified")
 
 	scripting_bus.connect("card_moved_to_hand", self, "_card_moved")
@@ -727,11 +727,11 @@ func _cfc_cache_cleared():
 	queue_refresh_cache()
 
 #reset some variables at new turn
-func _game_step_started(_trigger_object, details:Dictionary):
+func _game_step_about_to_start(_trigger_object, details:Dictionary):
 	var current_step = details["step"]
 	match current_step:
 		CFConst.PHASE_STEP.PLAYER_TURN:
-			_can_change_form = true
+			self.tokens.mod_token("__can_change_form", 1)
 	return	
 	
 
@@ -2328,8 +2328,12 @@ func set_confused(value:bool = true):
 func disable_confused():
 	set_confused(false)
 
-func can_change_form() -> bool:
-	return _can_change_form
+func can_change_form(voluntary:= false) -> bool:
+	if self.get_property("cannot_change_form", 0, true):
+		return false
+	if voluntary:
+		return self.tokens.get_token_count("__can_change_form") > 0
+	return true
 
 func changed_form(details):
 	var before = details.get("before")
@@ -2352,10 +2356,10 @@ func flip_doublesided_card():
 func change_form(voluntary = true) -> bool:
 	#players have one voluntary change form per turn
 	#we check for that
+	if !can_change_form(voluntary):	
+		return false
 	if (voluntary):
-		if !can_change_form():
-			return false
-		self._can_change_form = false
+		self.tokens.mod_token("__can_change_form", 0, true)
 
 	return flip_doublesided_card()
 	
@@ -2366,7 +2370,6 @@ func export_modifiers():
 	var result = {
 		"tokens" : tokens.export_to_json(),
 		"exhausted" : self.is_exhausted(),
-		"can_change_form": self._can_change_form
 	}
 	return result
 
@@ -2384,9 +2387,7 @@ func import_modifiers(modifiers:Dictionary, keep_existing = false):
 			exhaustme()
 		else:
 			readyme()
-			
-	self._can_change_form = modifiers.get("can_change_form", self._can_change_form)	
-
+	
 func is_onboard():
 	return state in [
 		CardState.ON_PLAY_BOARD,
@@ -2954,10 +2955,15 @@ func count_boost_icons(params:Dictionary, script) -> int:
 	if !subjects:
 		cfc.LOG("error retrieving subjects for " + to_json(params))
 		return 0
+	
+	var count_star_icons = params.get("count_star_icons", false)
 		
 	for subject in subjects:
 		var boost_icons = subject.get_property("boost", 0)
 		count+= boost_icons
+		if count_star_icons:
+			var star = 1 if subject.get_property("boost_star", false) else 0
+			count += star
 
 	return count	
 
@@ -3193,8 +3199,6 @@ func export_to_json():
 	}
 	if is_exhausted():
 		card_description["exhausted"] = true
-	if is_hero_form() or is_alter_ego_form():
-		card_description["can_change_form"] =  _can_change_form
 	if is_viewed:
 		card_description["is_viewed"] = true
 	
@@ -3245,8 +3249,6 @@ func _ready_load_from_json(card_description: Dictionary = {}):
 	else:
 		set_is_viewed(false)
 			
-	self._can_change_form = card_description.get("can_change_form", true)	
-
 	self.encounter_status = int(card_description.get("encounter_status", gameData.EncounterStatus.NONE))
 
 	var facedown_properties = card_description.get("facedown_properties", {})

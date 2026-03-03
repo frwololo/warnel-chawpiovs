@@ -2,6 +2,8 @@
 class_name ManaCost
 extends Reference
 
+var force_printed_cost = false
+
 enum ResourceMana {
 	UNCOLOR,
 	MENTAL,
@@ -112,7 +114,11 @@ func init_from_expression(expression):
 
 func init_from_dictionary(dict:Dictionary):
 	for k in dict.keys():
-		add_resource(k, dict[k])
+		match k:
+			"force_printed_cost":
+				force_printed_cost = dict[k]
+			_:
+				add_resource(k, dict[k])
 
 func add_manacost(other_manacost):
 	if !other_manacost:

@@ -151,7 +151,7 @@ func mod_token(
 	
 	if CFConst.TOKENS_ONLY_ON_BOARD and !"forced" in tags:
 		var parent = owner_card.get_parent()
-		if parent != cfc.NMAP.board:
+		if parent and (parent != cfc.NMAP.board):
 			var is_exception = false
 			var parent_name:String = parent.name.to_lower()
 			for exception in CFConst.TOKENS_ONLY_ON_BOARD_EXCEPTIONS:

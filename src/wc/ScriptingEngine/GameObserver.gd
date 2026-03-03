@@ -60,20 +60,34 @@ func _remove_all_children():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	scripting_bus.connect("scripting_event_triggered", self, "removal_checks")
+	scripting_bus.connect("after_scripting_event_triggered", self, "removal_checks")
 	scripting_bus.connect("scripting_event_about_to_trigger", self, "early_removal_checks")
 
-func add_script(parent_script, script_definition, remove_condition:= ""):
+func add_script(parent_script, script_definition, remove_condition = null):
 	var new_script = GameObserverItem.new()
 	new_script.set_values(parent_script, script_definition)
 	_objects.append(new_script)
 	add_child(new_script)
 	cfc.flush_cache()
 	if remove_condition:
-		removal_conditions.append({"trigger": remove_condition, "object": new_script})
+		var remove_condition_str = remove_condition
+		var filters = {}
+		if typeof(remove_condition) == TYPE_DICTIONARY:
+			remove_condition_str = remove_condition.get("trigger", "")
+			filters = remove_condition.get("event_filters", {})
+		removal_conditions.append({"trigger": remove_condition_str, "filters": filters, "object": new_script})
 
-func add_script_removal_effect(_parent_script,subject, script_id, remove_condition:= ""):
-	extra_script_removal_conditions.append({"trigger": remove_condition, "card": subject, "script_id": script_id})
+func add_script_removal_effect(_parent_script,subject, script_id, remove_condition = null):
+	if !remove_condition:
+		return false
+
+	var remove_condition_str = remove_condition
+	var filters = {}
+	if typeof(remove_condition) == TYPE_DICTIONARY:
+		remove_condition_str = remove_condition.get("trigger", "")
+		filters = remove_condition.get("event_filters", {})
+	
+	extra_script_removal_conditions.append({"trigger": remove_condition_str, "filters": filters, "card": subject, "script_id": script_id})
 
 func early_removal_checks(
 		trigger_card = null,
@@ -83,9 +97,9 @@ func early_removal_checks(
 	return removal_checks(trigger_card, "before_" + trigger, trigger_details, run_type)
 
 func removal_checks(
-		_trigger_card = null,
+		trigger_card = null,
 		trigger: String = "manual",
-		_trigger_details: Dictionary = {},
+		trigger_details: Dictionary = {},
 		run_type := CFInt.RunType.NORMAL):
 	if cfc.game_paused:		
 		return
@@ -95,7 +109,7 @@ func removal_checks(
 	var to_remove = []
 	
 	for removal_condition in removal_conditions:
-		if removal_condition["trigger"] == trigger:
+		if matches_condition(trigger_card, trigger, trigger_details, removal_condition):
 			var object = removal_condition["object"]
 			_objects.erase(object)
 			remove_child(object)
@@ -107,7 +121,7 @@ func removal_checks(
 	
 	to_remove = []	
 	for removal_condition in extra_script_removal_conditions:
-		if removal_condition["trigger"] == trigger:
+		if matches_condition(trigger_card, trigger, trigger_details, removal_condition):
 			var card = removal_condition["card"]
 			var script_id= removal_condition["script_id"]
 			card.remove_extra_script(script_id)
@@ -115,3 +129,21 @@ func removal_checks(
 	for v in to_remove:
 		extra_script_removal_conditions.erase(v)	
 
+func matches_condition(
+		trigger_card = null,
+		trigger: String = "manual",
+		trigger_details: Dictionary = {},
+		removal_condition: Dictionary = {}):
+	if !removal_condition:
+		return false
+		
+	if removal_condition.get("trigger", "") != trigger:
+		return false
+		
+	var filters = removal_condition.get("event_filters", {})
+	if !filters:
+		return true
+
+	#fishy, not sure what card to compare it to at the moment...
+	var card = removal_condition.get("card", trigger_card)
+	return cfc.ov_utils.matches_filters( filters, card, trigger_details)

@@ -1860,7 +1860,7 @@ func attach_to_host(
 			current_host_card.remove_attachment(self)
 			scripting_bus.emit_signal("card_unattached",
 					self,
-					{"host": current_host_card, "tags": tags})
+					{"host_card": current_host_card, "tags": tags})
 		# If card was on a grid slot, we clear that occupation
 		if _placement_slot:
 			_placement_slot.remove_occupying_card(self)
@@ -1894,7 +1894,7 @@ func attach_to_host(
 		_set_target_rotation(target_rotation)		
 		scripting_bus.emit_signal("card_attached",
 				self,
-				{"host": host, "tags": tags})
+				{"host_card": host, "tags": tags})
 
 
 # Overrides the built-in get_class to
@@ -2365,7 +2365,7 @@ func detach_self(tags := ["Manual"]):
 	current_host_card = null
 	scripting_bus.emit_signal("card_unattached",
 			self,
-			{"host": current_host_card, "tags": tags})	
+			{"host_card": current_host_card, "tags": tags})	
 	return CFConst.ReturnCode.CHANGED
 
 # Clears all attachment/hosting status.

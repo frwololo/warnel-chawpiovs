@@ -561,7 +561,8 @@ const HERO_GRID_LAYOUT := {
 const DEFAULT_TOKEN_MAX_VALUE := {
 	"tough" : 1,
 	"stunned" : 1,
-	"confused" : 1
+	"confused" : 1,
+	"__can_change_form": 1,
 }
 
 const AUTO_KEYWORDS := {
@@ -603,7 +604,8 @@ const AUTO_KEYWORDS := {
 	"cannot_have_attachments": "int",
 	"exclude_from_ally_limit": "int",
 	"attack_indirect_damage": "int",
-	"blank_abilities": "int"				
+	"blank_abilities": "int",
+	"cannot_change_form": "int",				
 }
 
 #list of events for which we don't show a GUI announce to the user by default

@@ -41,15 +41,16 @@ func compute_missing(cost:ManaCost) -> ManaCost:
 	var temp_pool:ManaCost = ManaCost.new()
 	temp_pool.set_cost(self.pool)
 	
+
 	#WILD Cost first 
 	temp_pool.pool[ResourceMana.WILD] -= cost.pool[ResourceMana.WILD]	
-	
+		
 	#All Colored Mana/Energy
 	for k in cost.pool.keys():
 		#skip specific cases
 		if (ResourceMana.WILD == k) or (ResourceMana.UNCOLOR == k):
 			continue
-		if temp_pool.pool[k] >= cost.pool[k]:
+		if (temp_pool.pool[k] >= cost.pool[k]) or force_printed_cost:
 			temp_pool.pool[k] -= cost.pool[k]
 		else:
 			#if not enough to pay the exact color, we can use the WILD resource

@@ -85,10 +85,130 @@
 		}
 	},
 	"\"Threat or Menace?\"": {
-		"TODO": ""
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Change Form": [
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "execute_scripts",
+						"exec_trigger": "reveal_action",
+						"subject": "self"
+					}
+				],
+				"DON'T Change Form": [
+					{
+						"name": "execute_scripts",
+						"exec_trigger": "reveal_action",
+						"subject": "self"
+					}
+				]
+			}
+		},
+		"reveal_action": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "is_hero_form",
+								"func_params": {
+									"subject": "my_identity"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_threat",
+									"subject": "main_scheme",
+									"amount": 2
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "add_script",
+							"start_condition": "round_ended",
+							"end_condition": {
+								"trigger": "phase_ended",
+								"event_filters": {
+									"phase": "player"
+								}
+							},
+							"subject": "my_identity",
+							"script": {
+								"alterants": {
+									"board": [
+										{
+											"filter_task": "get_property",
+											"filter_property_name": "cannot_change_form",
+											"trigger": "my_identity",
+											"alteration": 1
+										}
+									]
+								}
+							}
+						}
+					]
+				}
+			]
+		}
 	},
 	"Across the Spider-Verse": {
-		"TODO": ""
+		"TODO": "dual player",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "play_area_my_hero",
+							"filter_properties": {
+								"trait_web-warrior": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"needs_selection": true,
+					"selection_count": 1
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "discard",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_web-warrior": 1,
+								"comparison": "ge"
+							},
+							"filter_properties2": {
+								"type_code": "ally"
+							}
+						}
+					],
+					"needs_selection": true,
+					"selection_count": 1
+				}
+			]
+		}
 	},
 	"Advanced Glider": {
 		"TODO": ""
@@ -191,10 +311,21 @@
 		"TODO": ""
 	},
 	"Back Alley Burglary": {
-		"TODO": ""
+		"TODO": "campaign mode not supported"
 	},
 	"Bait and Switch": {
-		"TODO": ""
+		"manual": {
+			"hand": [
+				{
+					"name": "villain_attacks_you"
+				},
+				{
+					"name": "thwart",
+					"amount": 4,
+					"subject": "main_scheme"
+				}
+			]
+		}
 	},
 	"Bell Tower #27077a": {
 		"interrupt_receive_damage": {
@@ -335,10 +466,76 @@
 		}
 	},
 	"Calling in Favors": {
-		"TODO": ""
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "card_is_in_play",
+								"func_params": {
+									"card_name": "Rhino"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "temporary_effect",
+									"end_condition": "enemy_activation_finished",
+									"subject": "self",
+									"effect": {
+										"alterants": {
+											"all": [
+												{
+													"filter_task": "get_property",
+													"filter_property_name": "thwart",
+													"filter_state_trigger": [
+														{
+															"filter_properties": {
+																"shortname": "Rhino"
+															}
+														}
+													],
+													"alteration": 2
+												}
+											]
+										}
+									}
+								},
+								{
+									"name": "enemy_schemes",
+									"subject": "Rhino"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "move_card_to_board",
+							"grid_name": "enemies_my_hero",
+							"subject": "tutor",
+							"src_container": [
+								"deck_villain",
+								"discard_villain"
+							],
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"Name": "Rhino"
+									},
+									"filter_properties2": {
+										"type_code": "minion"
+									}
+								}
+							]
+						}
+					]
+				}
+			]
+		}
 	},
 	"Cat in a Tree": {
-		"TODO": ""
+		"TODO": "campaign mode not supported"
 	},
 	"City Streets": {
 		"special": {
@@ -404,10 +601,64 @@
 		}
 	},
 	"Common Criminal": {
-		"TODO": ""
+		"_surge": {},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"is_cost": true,
+					"cost": {
+						"physical": 1
+					}
+				},
+				{
+					"name": "deal_damage",
+					"amount": 3,
+					"subject": "self"
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"trigger": "self",
+			"event_filters": {
+				"source": "self"
+			},
+			"all": {
+				"Draw 1": [
+					{
+						"name": "draw_cards",
+						"amount": 1
+					}
+				],
+				"Remove 3 Threat": [
+					{
+						"name": "remove_threat",
+						"amount": 3,
+						"subject": "target",
+						"filter_state_subject": [
+							{
+								"filter_properties": {
+									"type_code": "side_scheme"
+								}
+							}
+						]
+					}
+				]
+			}
+		}
 	},
-	"Compact Darts": {
-		"TODO": ""
+	"Compact Darts #27182a": {
+		"TODO": "campaign mode not supported"
+	},
+	"Compact Darts #27182b": {
+		"TODO": "campaign mode not supported"
 	},
 	"Concussive Bombs": {
 		"TODO": ""
@@ -799,7 +1050,53 @@
 		"TODO": ""
 	},
 	"Experimental Injection": {
-		"TODO": ""
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "get_remaining_damage",
+					"sort_descending": true,
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard_villain",
+					"is_else": true
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "host",
+					"alteration": 4
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_creature",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		}
 	},
 	"Fearmonger": {
 		"_surge": {},
@@ -825,7 +1122,6 @@
 					{
 						"name": "pay_cost",
 						"is_cost": true,
-						"selection_optional": false,
 						"cost": {
 							"mental": 2
 						}
@@ -841,7 +1137,15 @@
 		}
 	},
 	"Festering Mass": {
-		"TODO": ""
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "reveal_encounters",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Field Agent": {
 		"uses": {
@@ -993,7 +1297,69 @@
 		}
 	},
 	"Friends and Family": {
-		"TODO": ""
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": {
+						"func_name": "is_hero_form",
+						"func_params": {
+							"subject": "my_identity"
+						}
+					},
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "event"
+							},
+							"filter_same_controller": true
+						}
+					]
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"src_container": "hand",
+					"subject": "tutor",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"faction_code": "hero"
+							}
+						}
+					],
+					"need_selection": true,
+					"selection_count": 1
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"From Every Direction": {
 		"TODO": ""
@@ -1046,7 +1412,71 @@
 		}
 	},
 	"George Stacy": {
-		"TODO": ""
+		"card_attached": {
+			"event_filters": {
+				"host_card": "self"
+			},
+			"board": [
+				{
+					"name": "add_script",
+					"subject": "trigger",
+					"fetch_script": {
+						"script_path": "manual/hand",
+						"result": {
+							"manual": {
+								"board": "__fetched_script__"
+							}
+						}
+					}
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "!count_attachments",
+								"func_params": {
+									"subject": "self",
+									"divider": 3
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "host_card",
+									"subject": "tutor",
+									"src_container": "hand",
+									"needs_selection": true,
+									"selection_count": 1,
+									"filter_state_tutor": [
+										{
+											"filter_property": {
+												"type_code": "event"
+											}
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
 	},
 	"Ghost Kick": {
 		"response": {
@@ -1410,7 +1840,7 @@
 		"TODO": ""
 	},
 	"Henchmen Heist": {
-		"TODO": ""
+		"TODO": "campaign mode not supported"
 	},
 	"Hidden in Shadow": {
 		"TODO": ""
@@ -1579,14 +2009,67 @@
 			]
 		}
 	},
-	"Impact-Dampening Suit": {
-		"TODO": ""
+	"Impact-Dampening Suit #27183a": {
+		"TODO": "campaign mode not supported"
+	},
+	"Impact-Dampening Suit #27183b": {
+		"TODO": "campaign mode not supported"
 	},
 	"Improvised Weapons": {
 		"TODO": ""
 	},
 	"In Cold Blood": {
-		"TODO": ""
+		"reveal": {
+			"all": [
+				{
+					"name": "enemy_attacks_you",
+					"is_cost": true,
+					"subject": "The Lizard"
+				},
+				{
+					"is_else": true,
+					"name": "surge"
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "enemy_activation_finished",
+					"subject": "boardseek",
+					"needs_subject": true,
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"effect": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "cannot_play",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"trait_attack": 1,
+												"comparison": "ge"
+											},
+											"filter_properties2": {
+												"type_code": "event"
+											},
+											"filter_same_controller": true
+										}
+									],
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
 	},
 	"Incendiary Bombs": {
 		"TODO": ""
@@ -1632,10 +2115,76 @@
 		}
 	},
 	"Joy Ride": {
-		"TODO": ""
+		"hinder": {
+			"__amount__": 1,
+			"__each_player__": true
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "move_token_to",
+					"token_name": "glider",
+					"source": "current",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"sort_descending": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "main_scheme"
+							}
+						}
+					]
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "special",
+					"subject": "previous"
+				}
+			]
+		}
 	},
 	"Jump Flip": {
-		"TODO": ""
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "prevent",
+					"amount": 2,
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "remove_threat",
+					"subject": "main_scheme",
+					"amount": {
+						"if": {
+							"func_name": "paid_with_includes",
+							"func_params": {
+								"energy": 1
+							}
+						},
+						"then": 2,
+						"else": 0
+					}
+				}
+			]
+		}
 	},
 	"Keeping Secrets": {
 		"give_obligation": {
@@ -1789,8 +2338,11 @@
 	"Kraven the Hunter": {
 		"TODO": ""
 	},
-	"Laser Goggles": {
-		"TODO": ""
+	"Laser Goggles #27184a": {
+		"TODO": "campaign mode not supported"
+	},
+	"Laser Goggles #27184b": {
+		"TODO": "campaign mode not supported"
 	},
 	"Lashing Out": {
 		"response": {
@@ -2187,16 +2739,88 @@
 		"TODO": ""
 	},
 	"Now or Never": {
-		"TODO": ""
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Acceleration": [
+					{
+						"name": "mod_token",
+						"subject": "main_scheme",
+						"token_name": "acceleration",
+						"modification": 1
+					}
+				],
+				"Exhaust and Pay": [
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_friendly_my_hero",
+								"filter_is_exhausted": false
+							}
+						],
+						"need_selection": true,
+						"selection_count": 1
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 1
+						},
+						"is_cost": true
+					}
+				]
+			}
+		}
 	},
 	"Off the Rails": {
-		"TODO": ""
+		"TODO": "campaign mode not supported"
 	},
 	"Old Grudge": {
 		"TODO": ""
 	},
 	"Panic in the Streets": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "blank_abilities",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "support"
+							},
+							"filter_properties2": {
+								"trait_location": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "blank_abilities",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "support"
+							},
+							"filter_properties2": {
+								"trait_persona": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
 	},
 	"Parental Guidance": {
 		"manual": {
@@ -2328,7 +2952,67 @@
 		}
 	},
 	"Plan B": {
-		"TODO": ""
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero_any": 1
+				}
+			],
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "move_card_to_container",
+					"is_cost": true,
+					"dest_container": "discard",
+					"src_container": "hand",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "random"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_to_player_zone",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities",
+							"filter_max_per_hero": 1
+						}
+					]
+				}
+			]
+		}
 	},
 	"Power Within": {
 		"response_basic_attack_happened": {
@@ -2378,8 +3062,11 @@
 			]
 		}
 	},
-	"Propulsion Gauntlet": {
-		"TODO": ""
+	"Propulsion Gauntlet #27185a": {
+		"TODO": "campaign mode not supported"
+	},
+	"Propulsion Gauntlet #27185b": {
+		"TODO": "campaign mode not supported"
 	},
 	"Prowler": {
 		"reveal_alter_ego": {
@@ -2393,8 +3080,11 @@
 			]
 		}
 	},
-	"Public Outcry": {
-		"TODO": ""
+	"Public Outcry #27174a": {
+		"TODO": "campaign mode not supported"
+	},
+	"Public Outcry #27174b": {
+		"TODO": "campaign mode not supported"
 	},
 	"Razor Claws": {
 		"self_moved_to_board": {
@@ -2436,19 +3126,108 @@
 		}
 	},
 	"Regenerative Research": {
-		"TODO": ""
+		"phase_ended": {
+			"event_filters": {
+				"phase": "player"
+			},
+			"board": [
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
 	},
 	"Remote Navigation": {
 		"TODO": ""
 	},
-	"Retinal Display": {
-		"TODO": ""
+	"Retinal Display #27186a": {
+		"TODO": "campaign mode not supported"
+	},
+	"Retinal Display #27186b": {
+		"TODO": "campaign mode not supported"
 	},
 	"Return the Favor": {
-		"TODO": ""
+		"manual": {
+			"hand": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": "deck_villain",
+									"filter_state_tutor": [
+										{
+											"filter_properties": {
+												"type_code": "treachery"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_card_to_container",
+									"subject": "grab_until",
+									"src_container": "deck_villain",
+									"dest_container": "discard_villain",
+									"filter_state_grab_until": [
+										{
+											"filter_properties": {
+												"type_code": "treachery"
+											}
+										}
+									]
+								},
+								{
+									"name": "reveal_encounters",
+									"subject": "index",
+									"subject_count": 1,
+									"subject_index": "retrieve_integer",
+									"src_container": "deck_villain"
+								},
+								{
+									"name": "attack",
+									"subject": "villain",
+									"amount": 5
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "move_card_to_container",
+							"subject": "grab_until",
+							"src_container": "deck_villain",
+							"dest_container": "discard_villain",
+							"filter_state_grab_until": [
+								{
+									"filter_properties": {
+										"type_code": "treachery"
+									}
+								}
+							]
+						}
+					]
+				}
+			]
+		}
 	},
 	"Rhino": {
-		"TODO": ""
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "piercing\",\"overkill"
+		}
 	},
 	"Robotic Enhancements": {
 		"TODO": "expert_mode",
@@ -2524,7 +3303,7 @@
 		}
 	},
 	"Rubble Rescue": {
-		"TODO": ""
+		"TODO": "campaign mode not supported"
 	},
 	"Sand Clone": {
 		"alterants": {
@@ -2876,11 +3655,55 @@
 			]
 		}
 	},
-	"Shock Knuckles": {
-		"TODO": ""
+	"Shock Knuckles #27187a": {
+		"TODO": "campaign mode not supported"
+	},
+	"Shock Knuckles #27187b": {
+		"TODO": "campaign mode not supported"
 	},
 	"Silk - Cindy Moon": {
-		"TODO": ""
+		"card_played": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_exclude": "self",
+					"filter_state_seek": [
+						{
+							"filter_group": "play_area_my_hero",
+							"filter_properties": {
+								"trait_web-warrior": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"src_container": "deck_villain",
+					"subject": "tutor",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "treachery"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"src_container": "deck_villain"
+				}
+			]
+		}
 	},
 	"Sinister Beatdown": {
 		"TODO": "expert mode, active counter",
@@ -3055,19 +3878,105 @@
 		}
 	},
 	"Smear Campaign": {
-		"TODO": ""
+		"TODO": "campaign mode not supported"
 	},
 	"Smoke Bombs": {
 		"TODO": ""
 	},
 	"Snitches Get Stitches": {
-		"TODO": ""
+		"TODO": "campaign mode not supported"
 	},
 	"Spider-Man - Miles Morales": {
-		"TODO": ""
+		"card_played": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "play_area_my_hero",
+							"filter_properties": {
+								"trait_web-warrior": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"divider": 3
+				}
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "previous"
+				}
+			]
+		}
 	},
 	"Spider-Man - Hobie Brown": {
-		"TODO": ""
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"constraints": [
+						{
+							"func_name": "count_card",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_group": "play_area_my_hero",
+										"filter_properties": {
+											"trait_web-warrior": 1,
+											"comparison": "ge"
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		"interrupt_card_leaves_play": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"sort_descending": true,
+					"subject_count": 3,
+					"up_to": true,
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain"
+				},
+				{
+					"name": "deal_damage",
+					"subject": "villain",
+					"amount": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					}
+				}
+			]
+		}
 	},
 	"Spider-Man #27030a": {
 		"venom_blast": {
@@ -3158,7 +4067,32 @@
 		}
 	},
 	"Spider-UK - Billy Braddock": {
-		"TODO": ""
+		"interrupt_enemy_attack_damage": {
+			"event_filters": {
+				"defender": "self"
+			},
+			"board": [
+				{
+					"name": "deal_damage",
+					"subject": "trigger",
+					"amount": {
+						"func_name": "count_card",
+						"func_params": {
+							"subject": "boardseek",
+							"filter_state_seek": [
+								{
+									"filter_group": "play_area_my_hero",
+									"filter_properties": {
+										"trait_web-warrior": 1,
+										"comparison": "ge"
+									}
+								}
+							]
+						}
+					}
+				}
+			]
+		}
 	},
 	"Spider-Woman - Jessica Drew": {
 		"alterants": {
@@ -3192,7 +4126,51 @@
 		"TODO": ""
 	},
 	"Spreading Panic": {
-		"TODO": ""
+		"_surge": {},
+		"reveal": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "special",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_tokens": [
+								{
+									"filter_token_name": "glider",
+									"filter_token_count": 1
+								}
+							],
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "special",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_tokens": [
+								{
+									"filter_token_name": "glider",
+									"filter_token_count": 1
+								}
+							],
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
 	},
 	"Surprise!": {
 		"TODO": "expert mode",
@@ -3323,16 +4301,226 @@
 		"TODO": ""
 	},
 	"Symbiote Suit": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "boardseek",
+					"alteration": 10,
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "boardseek",
+					"alteration": 1,
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"trigger": "boardseek",
+					"alteration": 1,
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"trigger": "boardseek",
+					"alteration": 1,
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "hand_size",
+					"trigger": "boardseek",
+					"alteration": 1,
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		}
 	},
 	"Symbiotic Berserker": {
-		"TODO": ""
+		"card_moved_to_board": {
+			"trigger": "self",
+			"display_name": "Quickstrike",
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_symbiote": 1,
+								"comparison": "ge"
+							},
+							"filter_properties2": {
+								"type_code": "environment"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "enemy_attacks_you",
+					"subject": "self"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "move_token_to",
+					"token_name": "glider",
+					"source": "current",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"sort_descending": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "main_scheme"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "previous"
+				}
+			]
+		}
 	},
 	"Symbiotic Monstrosity": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"alteration": "per_boardseek",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"trait_symbiote": 1,
+									"comparison": "ge"
+								},
+								"filter_properties2": {
+									"type_code": "environment"
+								}
+							}
+						],
+						"multiplier": 3
+					}
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"attack_indirect_damage"
+						]
+					}
+				}
+			]
+		}
 	},
 	"Symbiotic Thrall": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "patrol",
+					"trigger": "self",
+					"alteration": "per_boardseek",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"trait_symbiote": 1,
+									"comparison": "ge"
+								},
+								"filter_properties2": {
+									"type_code": "environment"
+								}
+							}
+						]
+					}
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_tokens": [
+								{
+									"filter_token_name": "glider",
+									"filter_token_count": 0
+								}
+							],
+							"filter_properties": {
+								"type_code": "main_scheme"
+							}
+						}
+					]
+				}
+			]
+		}
 	},
 	"Take One for the Team": {
 		"TODO": ""
@@ -3347,10 +4535,67 @@
 		"TODO": ""
 	},
 	"The Lizard": {
-		"TODO": ""
+		"phase_ended": {
+			"event_filters": {
+				"phase": "player"
+			},
+			"board": [
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Ticket to the Multiverse": {
-		"TODO": ""
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"is_cost": true,
+					"subject": "self",
+					"dest_container": "set_aside"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"dest_container": "discard",
+					"src_container": "hand",
+					"subject_count": "all"
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "tutor",
+					"dest_container": "deck",
+					"src_container": "discard",
+					"subject_count": "all"
+				},
+				{
+					"name": "draw_to_hand_size"
+				},
+				{
+					"name": "ready_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "play_area_my_hero",
+							"filter_properties": {
+								"faction_code": "hero"
+							}
+						}
+					]
+				}
+			]
+		}
 	},
 	"Tidal Sands": {
 		"reveal": {
@@ -3520,7 +4765,32 @@
 		}
 	},
 	"Venom - Eddie Brock": {
-		"TODO": ""
+		"reveal_encounter": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"amount": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "trigger",
+							"count_star_icons": true
+						}
+					}
+				}
+			]
+		}
 	},
 	"Venom Goblin - 1": {
 		"TODO": ""
@@ -3565,7 +4835,49 @@
 		"TODO": ""
 	},
 	"Volunteer Work": {
-		"TODO": ""
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"unc": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_identity",
+							"property": "recover"
+						}
+					},
+					"subject": "self"
+				},
+				{
+					"name": "draw_cards",
+					"amount": {
+						"if": {
+							"func_name": "has_trait",
+							"func_params": {
+								"subject": "my_identity",
+								"trait": "civilian"
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
+				}
+			]
+		}
 	},
 	"Vulture - 1": {
 		"TODO": ""
@@ -3573,11 +4885,47 @@
 	"Vulture": {
 		"TODO": ""
 	},
-	"Wave Bracers": {
-		"TODO": ""
+	"Wave Bracers #27188a": {
+		"TODO": "campaign mode not supported"
+	},
+	"Wave Bracers #27188b": {
+		"TODO": "campaign mode not supported"
 	},
 	"We Are One": {
-		"TODO": ""
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Venom Goblin"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 1,
+						"mental": 1,
+						"physical": 1,
+						"force_printed_cost": true
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Weakness from Within": {
 		"TODO": ""
@@ -3675,10 +5023,84 @@
 		}
 	},
 	"Web of Life and Destiny": {
-		"TODO": ""
+		"alterants": {
+			"hand": [
+				{
+					"trigger": "self",
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": {
+						"func_name": "has_trait",
+						"func_params": {
+							"subject": "my_identity",
+							"trait": "web-warrior",
+							"multiplier": -3
+						}
+					}
+				}
+			]
+		},
+		"card_leaves_play": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"trait_web-warrior": 1,
+						"comparison": "ge"
+					}
+				}
+			],
+			"is_optional_board": "true",
+			"board": [
+				{
+					"name": "draw_cards",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		}
 	},
 	"Web-Bracelet": {
-		"TODO": ""
+		"response_script_executed": {
+			"event_filters": {
+				"is_interrupt_or_response": true,
+				"filter_state_event_source": [
+					{
+						"filter_same_controller": true,
+						"filter_properties": {
+							"type_code": "event"
+						}
+					}
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
 	},
 	"Web-Shooter": {
 		"uses": {
@@ -3761,13 +5183,118 @@
 		"TODO": ""
 	},
 	"What Doesn't Kill Me": {
-		"TODO": ""
+		"on_load": {
+			"all": [
+				{
+					"name": "init_properties",
+					"subject": "self",
+					"set_properties": {
+						"override_play_cost": {
+							"unc": 1,
+							"physical": 1
+						}
+					}
+				}
+			]
+		},
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "heal",
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				}
+			]
+		}
 	},
 	"Worried Father": {
-		"TODO": ""
+		"give_obligation": {
+			"__to__": "Gwen Stacy"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "set_aside",
+					"src_container": [
+						"deck",
+						"hand",
+						"discard"
+					],
+					"subject": "tutor",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "George Stacy"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "set_aside",
+					"subject": "George Stacy"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "my_identity"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "set_aside",
+					"subject": "self"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "hand",
+					"src_container": "set_aside",
+					"subject": "tutor",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "George Stacy"
+							}
+						}
+					]
+				}
+			]
+		}
 	},
-	"Wrist Navigators": {
-		"TODO": ""
+	"Wrist Navigator #27189a": {
+		"TODO": "campaign mode not supported"
+	},
+	"Wrist Navigator #27189b": {
+		"TODO": "campaign mode not supported"
 	},
 	"Young Love": {
 		"manual": {

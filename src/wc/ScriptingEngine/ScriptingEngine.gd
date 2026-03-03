@@ -607,7 +607,7 @@ func receive_damage(script: ScriptTask) -> int:
 			card.hint("Tough!", Color8(50,50,255))
 		else:
 			#indirect damage in attack, we replace all damages with an indirect damage command
-			if ("attack" in tags) and attacker.get_property("attack_indirect_damage", 0, true):
+			if ("attack" in tags) and (attacker.get_property("attack_indirect_damage", 0, true) or ("attack_indirect_damage" in tags)):
 				var indirect_damage_script_definition = {
 					"name": "indirect_damage",
 					"amount": amount,
@@ -722,6 +722,11 @@ func _receive_threat(script: ScriptTask) -> int:
 	for card in consolidated_subjects.keys():
 		var multiplier = consolidated_subjects[card]
 		var threat_amount = amount * multiplier
+		
+		var increase = script.retrieve_integer_property("increase_amount", 0)	
+		if increase:
+			threat_amount+= increase
+		
 		retcode = card.tokens.mod_token("threat",
 				threat_amount,false,costs_dry_run(), tags)	
 		if threat_amount:
@@ -887,9 +892,22 @@ func move_token_to(script: ScriptTask) -> int:
 	
 	var target = script.subjects[0]
 	
+	var source =  null
 	var source_str = script.get_property("source", "")
-	var sources = SP.retrieve_subjects(source_str, script)	
-	var source = sources[0] if sources else script.owner
+	
+	#if source says "current" we move a unique token from its current "owner" to a new one
+	if source_str == "current":
+		var all_cards = cfc.NMAP.board.get_all_cards()
+		for card in all_cards:
+			var tokens_amount = card.tokens.get_token_count(token_name)
+			if tokens_amount:
+				source = card
+	else:
+		var sources = SP.retrieve_subjects(source_str, script)	
+		source = sources[0] if sources else script.owner
+	
+	if !source:
+		return CFConst.ReturnCode.FAILED
 		
 	var tokens_amount = source.tokens.get_token_count(token_name)
 	amount = min(tokens_amount, amount)
@@ -1484,7 +1502,7 @@ func enemy_schemes(script: ScriptTask) -> int:
 	retcode = CFConst.ReturnCode.FAILED
 	for card in script.subjects:
 		retcode = CFConst.ReturnCode.CHANGED
-		gameData.add_enemy_activation(card, "scheme")
+		gameData.add_enemy_activation(card, "scheme", script)
 	return retcode	
 
 func remove_threat(script: ScriptTask) -> int:
@@ -1915,7 +1933,7 @@ func change_form(script: ScriptTask) -> int:
 	for subject in script.subjects: #should be really one subject only, generally
 		var hero = subject
 		#todo check that subject is indeed a hero
-		if is_manual and !hero.can_change_form():
+		if !hero.can_change_form(is_manual):
 			return CFConst.ReturnCode.FAILED
 		
 		if (!costs_dry_run()):
@@ -2151,6 +2169,7 @@ func add_script(script: ScriptTask) -> int:
 	var subscript = script.get_property("script", {})
 	var fetch_script = script.get_property("fetch_script", {})
 	var end_condition = script.get_property("end_condition", "")
+	var start_condition = script.get_property("start_condition", "")
 	var subjects = script.subjects
 		
 	var this_card = script.owner
@@ -2161,10 +2180,26 @@ func add_script(script: ScriptTask) -> int:
 			var fetched_script = subject.retrieve_script_by_path(fetch_script["script_path"])
 			subscript = fetch_script["result"]
 			subscript = WCUtils.search_and_replace (subscript, "__fetched_script__", fetched_script, true)
-			
-		var subscript_id = subject.add_extra_script( subscript, my_hero_id)
-		if (end_condition):
-				gameData.theGameObserver.add_script_removal_effect(script, subject, subscript_id, end_condition)
+		if start_condition:
+			var new_script = {
+				start_condition: {
+					"all": [
+						{
+							"name": "add_script",
+							"script": subscript,
+							"end_condition": end_condition
+						}
+					]
+				}
+			}
+			#notably here the end condition is "start_condition"
+			#we're telling the GameObserver to add a script that will itself add a subscript when the start
+			#condition is triggered, then delete itself
+			gameData.theGameObserver.add_script(script, new_script, start_condition)
+		else:		
+			var subscript_id = subject.add_extra_script( subscript, my_hero_id)
+			if (end_condition):
+					gameData.theGameObserver.add_script_removal_effect(script, subject, subscript_id, end_condition)
 	
 	return retcode		
 

@@ -1095,7 +1095,16 @@ func stack_pop_back():
 
 func has_script(script):
 	return script in stack
-	
+
+func retrieve_last_event(requester:ScriptTask):
+	#the requester usually doesn't want to delete themselves
+	var event = null
+	var max_id = find_last_event_id_before_me(requester)
+	if max_id >=0:
+		event = stack[max_id]
+
+	return event
+		
 func delete_last_event(requester:ScriptTask):
 	#the requester usually doesn't want to delete themselves
 	var event = null

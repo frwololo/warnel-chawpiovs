@@ -1976,7 +1976,7 @@ func common_pre_run(sceng) -> void:
 	var new_queue: Array = []
 	var temp_queue: Array = []
 	
-	var zones = ["hand"] + CFConst.HERO_GRID_SETUP.keys()
+	var zones = ["hand"] + CFConst.HERO_GRID_SETUP.keys() + cfc.NMAP.board.heroes_extra_deck_names()
 		
 				
 	for task in scripts_queue:
@@ -2044,7 +2044,7 @@ func common_pre_run(sceng) -> void:
 			# 2) empty the manapool
 			"pay_cost",\
 			"pay_regular_cost":
-				var new_script = pay_regular_cost_replacement(script_definition, trigger_details)
+				var new_script = pay_regular_cost_replacement(script, trigger_details)
 				if (new_script) :
 					script.script_definition = new_script
 					script.script_name = script.get_property("name") #TODO something cleaner? Maybe part of the script itself?
@@ -2219,9 +2219,9 @@ func indirect_damage_replacement(script_definition: Dictionary, trigger_details)
 	return result	
 
 #TODO cleanup, probably doesn't need to be a replacement
-func pay_regular_cost_replacement(script_definition: Dictionary, trigger_details) -> Dictionary:	
+func pay_regular_cost_replacement(script, trigger_details) -> Dictionary:	
 	var owner_hero_id = trigger_details.get("override_controller_id", self.get_owner_hero_id())
-
+	var script_definition = script.script_definition
 	# For cards owned by the Villain, owner_hero_id is zero.
 	# we set it to the current playing hero, meaning the currently active user
 	# can pay the cost
@@ -2234,9 +2234,17 @@ func pay_regular_cost_replacement(script_definition: Dictionary, trigger_details
 	var is_optional = script_definition.get(SP.KEY_SELECTION_OPTIONAL, true)
 	#precompute cost replacement macros
 	if (typeof(cost) == TYPE_STRING):
-		if cost == "card_cost":
-			cost = self.get_property("override_play_cost", self.get_property("cost"))
-
+		match cost:
+			"card_cost":
+				cost = self.get_property("override_play_cost", self.get_property("cost"))
+			"subject_cost":
+				var subject = get_param_subject(script_definition, script)
+				if subject:
+					cost = subject.get_property("override_play_cost", subject.get_property("cost"))
+				else:
+					var _error = 1
+					cost = self.get_property("override_play_cost", self.get_property("cost"))
+						
 	var selection_additional_constraints = null
 
 	if (typeof(cost) == TYPE_DICTIONARY):

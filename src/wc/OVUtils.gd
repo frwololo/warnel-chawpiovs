@@ -425,7 +425,12 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 		{"from":"_event_source_hero" , "to": event_source_hero_id},					
 	]
 
-	for zone in ["hand"] + CFConst.HERO_GRID_SETUP.keys() + CFConst.ALL_TYPE_GROUPS:
+	var zones = ["hand"] +\
+	 CFConst.HERO_GRID_SETUP.keys() +\
+	 CFConst.ALL_TYPE_GROUPS +\
+	 CFConst.PER_PLAYER_MODIFIABLE_KEYS +\
+	 cfc.NMAP.board.heroes_extra_deck_names()
+	for zone in zones :
 		for replacement in zone_replacements:
 			var from_str = replacement["from"]
 			var to = replacement["to"]

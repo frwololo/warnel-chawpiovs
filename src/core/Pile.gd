@@ -24,6 +24,7 @@ export var faceup_cards := false
 # and not in their actual order
 export var sorted_popup := false
 
+var can_view_if_faceup := true
 
 # The popup node
 onready var pile_popup := $ViewPopup
@@ -73,6 +74,9 @@ func _ready():
 func _on_Pile_gui_input(event) -> void:
 	if !faceup_cards and !allow_facedown_popup:
 		return
+	if !can_view_if_faceup:	
+		return
+		
 	if show_manipulation_buttons: #show manipulation buttons override this
 		return
 			

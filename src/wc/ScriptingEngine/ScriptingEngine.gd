@@ -170,7 +170,7 @@ func init_properties(script: ScriptTask) -> int:
 	return(retcode)
 
 func shuffle_container(script) -> int:
-	var dest_container_str = script.get_property(SP.KEY_DEST_CONTAINER).to_lower()
+	var dest_container_str = script.get_property(SP.KEY_DEST_CONTAINER, "").to_lower()
 	var dest_container: CardContainer = cfc.NMAP.get(dest_container_str, null)
 	if not dest_container:
 		var _error = 1
@@ -221,7 +221,8 @@ func move_card_to_container(script: ScriptTask) -> int:
 
 	var replacements = {}
 
-	for zone in ["hand"] + CFConst.HERO_GRID_SETUP.keys():
+	var zones = ["hand"] + CFConst.HERO_GRID_SETUP.keys() + cfc.NMAP.board.heroes_extra_deck_names()
+	for zone in zones :
 		for replacement in _replacements:
 			var from_str = replacement["from"]
 			var to = replacement["to"]
@@ -568,6 +569,7 @@ func receive_damage(script: ScriptTask) -> int:
 		attacker = _get_identity_from_script(script)
 		
 	var tags: Array = script.get_property(SP.KEY_TAGS) 
+	var additional_scripts: Array = script.get_property("additional_scripts", []) 
 	var base_amount = script.retrieve_integer_property("amount")
 	
 	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
@@ -656,6 +658,14 @@ func receive_damage(script: ScriptTask) -> int:
 						trigger_details["additional_script_definition"] = params
 					script.owner.execute_scripts(script.owner, post_damage_trigger, trigger_details)
 		
+		if !damage_happened:
+			var if_no_damage: Dictionary = script.get_property("if_no_damage", {})
+			if if_no_damage:
+				var backup = script.script_definition.get("nested_tasks", [])
+				script.script_definition["nested_tasks"] = if_no_damage
+				nested_script(script)
+				script.script_definition["nested_tasks"] = backup
+			
 		if ("attack" in tags):
 			var signal_details = {
 				"attacker": attacker,
@@ -906,13 +916,19 @@ func move_token_to(script: ScriptTask) -> int:
 		var sources = SP.retrieve_subjects(source_str, script)	
 		source = sources[0] if sources else script.owner
 	
-	if !source:
-		return CFConst.ReturnCode.FAILED
+	match source_str:
+		"current":
+			if !script.script_definition.has("amount"):
+				amount = 1
+		_:
+			if !source:
+				return CFConst.ReturnCode.FAILED
 		
-	var tokens_amount = source.tokens.get_token_count(token_name)
-	amount = min(tokens_amount, amount)
 	
-	source.tokens.mod_token(token_name, -amount)
+	if source:		
+		var tokens_amount = source.tokens.get_token_count(token_name)
+		amount = min(tokens_amount, amount)		
+		source.tokens.mod_token(token_name, -amount)
 	
 	if token_name == "damage" and ("attack" in tags):
 		script.script_definition["amount"] = amount
@@ -925,8 +941,7 @@ func move_token_to(script: ScriptTask) -> int:
 
 func prevent(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
-	if (costs_dry_run()): #Shouldn't be allowed as a cost?
-		return retcode	
+
 
 	if script.script_definition.has("amount"): #this is a partial prevention effect
 		if typeof(script.script_definition["amount"]) == TYPE_STRING:
@@ -935,11 +950,14 @@ func prevent(script: ScriptTask) -> int:
 			else: #unsupported values
 				script.script_definition["amount"] = 0 
 
+
 	var subject_target = script.script_definition.get("subject")
 	var amount_prevented = 0
 	match subject_target:
 		"current_activation":
 			if script.script_definition.has("amount"): #this is a partial prevention effect		
+				if (costs_dry_run()):
+					return retcode	
 				gameData.apply_mods_to_current_activity_script(script)	
 			else:	
 				#TODO
@@ -953,14 +971,26 @@ func prevent(script: ScriptTask) -> int:
 				#var stack_object = gameData.theStack.find_last_event_before_me(script)
 				if (!stack_object):	
 					return CFConst.ReturnCode.FAILED
-				
+
+				if (costs_dry_run()):
+					return retcode					
 				var results = gameData.theStack.modify_object(stack_object, script, task_object)
 				if results.has("amount_prevented"):
 					amount_prevented = results["amount_prevented"]		
 			else:	
 				#Find the event on the stack and remove it
 				#TOdo take into action subject, etc...
-				var _event = gameData.theStack.delete_last_event(script)
+			
+				var _event = gameData.theStack.retrieve_last_event(script)
+				if !_event:
+					return CFConst.ReturnCode.FAILED
+				var event_owner = _event.get_owner_card()
+				if event_owner and event_owner.get_property("cannot_be_canceled", 0, true):
+					return CFConst.ReturnCode.FAILED
+					
+				if (costs_dry_run()):
+					return retcode						
+				_event = gameData.theStack.delete_last_event(script)
 				#todo find amount prevented
 			if amount_prevented:
 				var trigger_details = script.trigger_details.duplicate()
@@ -1184,6 +1214,33 @@ func draw_boost_card(script:ScriptTask) ->int:
 			card.draw_boost_card(src_container )
 			retcode = CFConst.ReturnCode.CHANGED
 	return retcode
+
+func move_boost_cards(script:ScriptTask) ->int:
+	var retcode = CFConst.ReturnCode.CHANGED
+	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+
+	var source_str = script.get_property("source", "")
+	if !source_str:
+		return CFConst.ReturnCode.FAILED
+	var source = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : source_str})
+	if source:
+		source = source[0]
+
+	if !source:
+		return CFConst.ReturnCode.FAILED
+
+	if costs_dry_run():
+		return retcode
+
+	var subject = script.subjects[0]
+
+	var boost_cards = source.get_boost_cards(CFConst.FLIP_STATUS.FACEDOWN)
+	for card in boost_cards:
+		card.attach_to_card(subject)
+
+	return retcode
 	
 func villain_attacks_you(script:ScriptTask) ->int:
 	script.set_subjects(gameData.get_villain())
@@ -1240,7 +1297,8 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 	if func_return is GDScriptFunctionState && func_return.is_valid():
 		yield(func_return, "completed")	
 	
-	var boost_amount = boost_card.get_property("boost",0, true)
+	var boost_icons = boost_card.get_property("boost",0, true)
+	var boost_amount = boost_icons
 	boost_amount += cfc.NMAP.board.count_amplify_icons()
 	if script.has_tag("amplify"):
 		attacker.hint("Amplify", Color8(100,255,150))
@@ -1249,7 +1307,8 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 		boost_card.hint("+" + str(boost_amount), Color8(100,255,150), {"position": "bottom_right"})
 	script_definition["boost"].append(boost_amount)
 	
-	scripting_bus.emit_signal_on_stack("boost_card_resolved", boost_card, {"boost_amount" : boost_amount})
+	var tags = script.get_property(SP.KEY_TAGS, [])
+	scripting_bus.emit_signal_on_stack("boost_card_resolved", boost_card, {"boost_amount" : boost_amount, "boost_icons": boost_icons, "tags": tags })
 
 	return retcode
 
@@ -2027,16 +2086,24 @@ func reveal_nemesis (script:ScriptTask) -> int:
 	var my_nemesis_scheme = null
 	var other_nemesis_cards = []	
 	var do_surge = false
+
+	var type_codes = script.get_property("type_codes", [])
+	var src_containers = script.get_property("src_container", "set_aside")
+	if typeof(src_containers) == TYPE_STRING:
+		src_containers = [src_containers]
 	
-	for card in cfc.NMAP["set_aside"].get_all_cards():
-		if card.get_property("card_set_code", "") == my_nemesis_set:
-			var type_code = card.get_property("type_code")
-			if type_code == "minion" and card.get_property("is_unique", false):
-				my_nemesis = card
-			elif type_code == "side_scheme":
-				my_nemesis_scheme = card
-			else:
-				other_nemesis_cards.append(card)			
+	for src_container in src_containers:
+		for card in cfc.NMAP[src_container].get_all_cards():		
+			if card.get_property("card_set_code", "") == my_nemesis_set:
+				var type_code = card.get_property("type_code")
+				if type_codes and !(type_code in type_codes):
+					continue
+				if type_code == "minion" and card.get_property("is_unique", false):
+					my_nemesis = card
+				elif type_code == "side_scheme":
+					my_nemesis_scheme = card
+				else:
+					other_nemesis_cards.append(card)			
 	
 	
 	if (my_nemesis_scheme):
@@ -2045,13 +2112,16 @@ func reveal_nemesis (script:ScriptTask) -> int:
 	if (my_nemesis):
 		gameData.deal_one_encounter_to(my_hero_id, true, my_nemesis)	
 	else:
-		do_surge = true
+		do_surge = script.get_property("surge_on_failure", false)
 
 		
+	var do_shuffle = false
 	for card in other_nemesis_cards:
 		card.move_to(cfc.NMAP["deck_villain"])
+		do_shuffle = true
 	
-	cfc.NMAP["deck_villain"].shuffle_cards()	
+	if do_shuffle:
+		cfc.NMAP["deck_villain"].shuffle_cards()	
 	
 	if (do_surge):
 		return surge(script)
@@ -2326,8 +2396,12 @@ static func static_pre_task_prime(script_definition, owner, script = null, prev_
 			var value = script.retrieve_integer_subproperty(key, more_replacements, 0)
 			_replacements.append ({"from" : "_" + key, "to": value})
 
-
-	for zone in ["", "hand"] + CFConst.HERO_GRID_SETUP.keys() + CFConst.ALL_TYPE_GROUPS:
+	var zones = ["", "hand"] +\
+	 CFConst.HERO_GRID_SETUP.keys() +\
+	 CFConst.ALL_TYPE_GROUPS +\
+	 CFConst.PER_PLAYER_MODIFIABLE_KEYS +\
+	 cfc.NMAP.board.heroes_extra_deck_names()
+	for zone in zones :
 		for replacement in _replacements:
 			var from_str = replacement["from"]
 			var to = replacement["to"]

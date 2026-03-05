@@ -104,7 +104,12 @@ static func filter_trigger(
 	if is_valid and card_scripts.get(FILTER_EVENT_SOURCE) \
 			and !check_filter_event_source(trigger_card,owner_card,trigger_details, card_scripts.get(FILTER_EVENT_SOURCE)):
 		return false	
-		
+	
+	for key in card_scripts:
+		if key.begins_with("filter_") and key.ends_with("_same_as_identity"):
+			var property = key.replace("filter_", "").replace("_same_as_identity", "")
+			if !check_trigger_shares_property_with_identity(trigger_card,owner_card,property):
+				return false
 
 	return true
 
@@ -118,9 +123,19 @@ static func subject_matches(card, string_value, owner_card):
 			return card in gameData.get_main_schemes()
 	return true
 
+static func check_trigger_shares_property_with_identity(trigger_card,owner_card,property) -> bool:
+	if !is_instance_valid(trigger_card): return false
+	if !is_instance_valid(owner_card): return false
+
+	var identity = owner_card.get_controller_hero_card()
+	if  !is_instance_valid(identity): return false
+	
+	var value1 = str(trigger_card.get_property(property, "", true)).to_lower()
+	var value2 = str(owner_card.get_property(property, "", true)).to_lower()
+	
+	return value1 == value2
 
 static func check_trigger_shares_trait_with_identity(trigger_card,owner_card,_trigger_details) -> bool:
-	#TODO more advanced targeting
 	if !is_instance_valid(trigger_card): return false
 	if !is_instance_valid(owner_card): return false
 
@@ -265,11 +280,15 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 			var hero_id = owner_card.get_controller_hero_id()
 			if hero_id:
 				all_cards =  cfc.NMAP.board.get_enemies_engaged_with(hero_id)
-		for card in all_cards:
-			if card.get_property("guard", 0, true) and card.is_faceup: #TODO better way to ignore face down cards?
+		for other_card in all_cards:
+			if other_card.get_property("guard", 0, true) and other_card.is_faceup: #TODO better way to ignore face down cards?
 				return false
 
-
+	var type_code = card.get_property("type_code", "")
+	#cannot thwart side schemes
+	if ((script_name == "thwart") or ("thwart" in tags)):
+		if owner_card.get_property("cannot_thwart_" + type_code, 0, true):
+			return false	
 
 	var card_matches = true
 	if is_instance_valid(card) and card_scripts.get(ScriptProperties.FILTER_STATE + type):

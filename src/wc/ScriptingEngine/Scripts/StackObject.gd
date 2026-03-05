@@ -71,9 +71,10 @@ func replace_script_property(key, value, task_object = null):
 	for task in get_tasks():
 		if task_object and task != task_object:
 			continue
-		if value.begins_with("interrupted_event_"):
-			value = value.replace("interrupted_event_", "")
-			value = task_object.get_property(value)		
+		if typeof(value) == TYPE_STRING:
+			if value.begins_with("interrupted_event_"):
+				value = value.replace("interrupted_event_", "")
+				value = task_object.get_property(value)		
 		task.script_definition[key] = value
 	
 func is_silent():

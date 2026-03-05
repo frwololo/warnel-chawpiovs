@@ -42,6 +42,26 @@ static func _get_deck_cards(_deck_id):
 func get_deck_cards(): #todo cache?
 	return _get_deck_cards(deck_id)
 
+func get_extra_deck_cards(container:= "set_aside"):
+	var alter_ego_data = get_alter_ego_card_data()
+	var alter_ego_id = alter_ego_data.get("_code", "")
+	if !alter_ego_id:
+		#TODO error
+		return []
+	
+	var result = []
+	var extra_cards_str = "additional_cards_" + container		
+	var extra_cards = cfc.set_scripts.get(alter_ego_id,{}).get(extra_cards_str,[]).duplicate(true)
+
+	for card in extra_cards:
+		var card_id_or_name = card.get("card", "")
+		if !card_id_or_name:
+			continue
+		var card_id = cfc.get_corrected_card_id(card_id_or_name)
+		var card_data = cfc.get_card_by_id(card_id)
+		result.append(card_data)
+
+	return result
 
 func savestate_to_json() -> Dictionary:
 	var json_data:Dictionary = {

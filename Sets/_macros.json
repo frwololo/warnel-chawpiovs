@@ -132,6 +132,75 @@
 			]
 		}
 	},
+	"once_per_round_per_player": {
+		"round_ended": {
+			"_silent": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"set_to_mod": true,
+					"token_name": "__player_token1"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"set_to_mod": true,
+					"token_name": "__player_token2"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"set_to_mod": true,
+					"token_name": "__player_token3"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"set_to_mod": true,
+					"token_name": "__player_token4"
+				},				
+			]
+		},
+		"card_moved_to_board": {
+			"_silent": true,
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"set_to_mod": true,
+					"token_name": "__player_token1"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"set_to_mod": true,
+					"token_name": "__player_token2"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"set_to_mod": true,
+					"token_name": "__player_token3"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"set_to_mod": true,
+					"token_name": "__player_token4"
+				},
+			]
+		}
+	},	
 	"on_reveal_one_threat_per_hero": {
 		"reveal": {
 			"all": [

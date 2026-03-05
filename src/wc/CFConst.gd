@@ -308,7 +308,13 @@ const ALL_TYPE_GROUPS: = [
 	"group_environments",
 	"play_area",
 ]
-	
+
+#list of hardcoded entries for which we will update
+#scripts at runtime to append player info
+#e.g. "__player_token" will become "__player_token1"
+const PER_PLAYER_MODIFIABLE_KEYS:= [
+	"__player_token"
+]	
 
 const ENCOUNTER_CARD_TYPES:= [
 	"main_scheme", 
@@ -469,17 +475,8 @@ const HERO_GRID_SETUP := {
 	"upgrade_support" : {
 		"x" : 350,
 		"y" : 440,
-	},									
-}
-
-const TOKENS_ONLY_ON_BOARD_EXCEPTIONS:= [
-	"encounters_facedown",
-	"encounters_reveal"	
-]
-
-const TOKENS_INCREASE_PREVENTION_PROPERTIES:= {
-	"stunned": ["stalwart"],
-	"confused": ["stalwart"],
+	},	
+								
 }
 
 const HERO_GRID_LAYOUT := {
@@ -536,11 +533,28 @@ const HERO_GRID_LAYOUT := {
 		]
 		},
 		{
+			"name": "middle",
+			"type" : "vertical",		
+			"children": [
+				{
+					"name": "optional_discard_a",
+					"type": "pile",
+					"scale": 0.5,											
+				},
+				{
+					"name": "optional_deck_a",
+					"type": "pile",
+					"scale": 0.5,											
+				}					
+			]					
+		},
+		{
 		"name": "right",
 		"type": "vertical",
 		"max_width" : 1000,
 		"max_height": 600,
 		"children": [
+		
 			{
 				"name": "enemies",
 				"type": "grid"				
@@ -557,6 +571,18 @@ const HERO_GRID_LAYOUT := {
 		}		
 	]
 }
+
+
+const TOKENS_ONLY_ON_BOARD_EXCEPTIONS:= [
+	"encounters_facedown",
+	"encounters_reveal"	
+]
+
+const TOKENS_INCREASE_PREVENTION_PROPERTIES:= {
+	"stunned": ["stalwart"],
+	"confused": ["stalwart"],
+}
+
 
 const DEFAULT_TOKEN_MAX_VALUE := {
 	"tough" : 1,
@@ -601,11 +627,13 @@ const AUTO_KEYWORDS := {
 	"cannot_remove_threat": "int",
 	"cannot_ready": "int",
 	"cannot_ready_by_player_card": "int",
+	"cannot_thwart_side_scheme": "int",
 	"cannot_have_attachments": "int",
 	"exclude_from_ally_limit": "int",
 	"attack_indirect_damage": "int",
 	"blank_abilities": "int",
-	"cannot_change_form": "int",				
+	"cannot_change_form": "int",
+	"cannot_be_canceled": "int",				
 }
 
 #list of events for which we don't show a GUI announce to the user by default
@@ -918,6 +946,15 @@ const AUTO_EXECUTE_ONE_ENTRY_MENU = AUTO_EXECUTE_MENU.OFF # SCRIPTED_ONLY
 const ABORT_EARLY_ON_COST_FAILURE = true 
 
 const LARGE_SCREEN_WIDTH:= 1600
+
+#
+# Bug Workarounds
+#
+
+#Card container sorting started reporting a broken sorting function
+#not sure what broke it but also I'm not really using that,
+#so this const disables the sorting
+const BUG_PATCH_IGNORE_CONTAINER_SORT := true
 
 #
 # Debugging options

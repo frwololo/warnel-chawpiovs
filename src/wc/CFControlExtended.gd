@@ -731,11 +731,18 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 		obligations[lc_set_code] = card_data
 		obligations[lc_set_name] = card_data
 		
-	#encounter/set cache
+	#encounter and set cache
 	if (not cards_by_set.has(lc_set_code)):
 		cards_by_set[lc_set_code] = []
 	cards_by_set[lc_set_code].push_back(card_data)				
-		
+	
+	#parents set cache
+	var card_set_parent_code = card_data.get("card_set_parent_code", "").to_lower()
+	if card_set_parent_code:
+		if (not cards_by_set.has(card_set_parent_code)):
+			cards_by_set[card_set_parent_code] = []
+			
+		cards_by_set[card_set_parent_code].push_back(card_data)			
 
 	card_data[CardConfig.SCENE_PROPERTY] = "CardTemplate"	
 

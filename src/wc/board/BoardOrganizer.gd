@@ -70,7 +70,10 @@ func setup(def:Dictionary, hero_id, _scale = 0):
 				new_child = new_instance()
 				new_child.setup(child, hero_id, my_scale)
 			"pile":
+				var _tmp = cfc.NMAP
 				new_child = cfc.NMAP[child.get("name", "") + hero_id_str]
+				new_child.faceup_cards = child.get("faceup", new_child.faceup_cards)
+				new_child.can_view_if_faceup = child.get("can_view", new_child.can_view_if_faceup)
 			"grid":
 				new_child = cfc.NMAP.board.get_grid(child.get("name", "") + hero_id_str)
 			_:

@@ -80,6 +80,8 @@ func is_silent():
 	for task in get_tasks():
 		if task.trigger_details.get("_silent", false):
 			return true
+		if task.script_definition.get("_silent", false):
+			return true			
 	if sceng.trigger_details.get("_silent", false):
 		return true
 	return false

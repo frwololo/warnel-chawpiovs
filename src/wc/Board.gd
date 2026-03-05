@@ -275,6 +275,8 @@ func grid_setup():
 	var start_xs = start_coords["x"]
 	var start_ys = start_coords["y"]	
 	
+	var hero_grid_setup = get_hero_grid_setup()
+	
 	for i in range(get_team_size()):
 		var hero_id = i+1
 		var scale = 1
@@ -286,8 +288,8 @@ func grid_setup():
 			start_x = start_xs[i]
 			start_y = start_ys[i] * cfc.screen_scale.y
 			
-		for grid_name in HERO_GRID_SETUP.keys():
-			var grid_info = HERO_GRID_SETUP[grid_name]
+		for grid_name in hero_grid_setup.keys():
+			var grid_info = hero_grid_setup[grid_name]
 			var x = start_x + grid_info["x"]*scale
 			var y = start_y + grid_info["y"]*scale	
 			var real_grid_name = grid_name + str(hero_id)		
@@ -331,6 +333,104 @@ func grid_setup():
 	init_board_organizers(1)
 #	board_organizer.organize()
 
+var _hero_grid_layout_cache = {}
+func get_hero_grid_setup() :
+	if _hero_grid_layout_cache:
+		_hero_grid_layout_cache
+		
+	_hero_grid_layout_cache = HERO_GRID_SETUP.duplicate()
+	var more_decks = heroes_extra_deck_names()
+	for deck_name in more_decks:
+		if _hero_grid_layout_cache.has(deck_name):
+			continue
+		else:
+			_hero_grid_layout_cache[deck_name] = {
+				"type" : "pile",		
+				"x" : 3500,
+				"y" : 4400,
+			}	
+	return _hero_grid_layout_cache
+	
+var _extra_deck_names_cache = {}
+func heroes_extra_deck_names():
+	if _extra_deck_names_cache:
+		return _extra_deck_names_cache ["names"]
+		
+	var extra_decks = load_extra_decks()
+	var names = []
+	for deck in extra_decks:
+		var deck_name = deck.get("name", "")
+		if !deck_name or (deck_name in names):
+			continue
+		names.append(deck_name)
+	_extra_deck_names_cache ["names"] = names
+	return _extra_deck_names_cache ["names"]
+
+func load_extra_decks(hero_id = 0):
+	if !hero_id:
+		var extra_decks = []
+		for i in gameData.get_team_size():
+			var tmp_hero_id = i+1
+			extra_decks += load_extra_decks(tmp_hero_id)
+		return extra_decks
+		
+	var hero_deck_data = gameData.get_team_member(hero_id)["hero_data"]
+	var hero_card_data = cfc.get_card_by_id(hero_deck_data.get_hero_id())
+	var alter_ego_id = hero_card_data.get("back_card_code", "")
+	if !alter_ego_id:
+		#TODO error
+		return []
+			
+	var extra_decks = cfc.set_scripts.get(alter_ego_id,{}).get("extra_player_decks",[]).duplicate(true)
+	return extra_decks
+
+func replace_in_grid(grid_parent, position_name, new_data):
+	for child in grid_parent.get("children", []):
+		var child_name = child.get("name", "")
+		if child_name == position_name:
+			for key in new_data:
+				child[key] = new_data[key]
+			return
+		replace_in_grid(child, position_name, new_data)
+
+func grid_layout_delete_optional(grid_parent):
+	var to_delete = []
+	var children:Array = grid_parent.get("children", [])
+	var had_children = children.size()
+	for child in children:
+		var needs_deletion = grid_layout_delete_optional(child)
+		var child_name = child.get("name", "")
+		if child_name.begins_with("optional_"):
+			to_delete.append(child)
+		elif needs_deletion:
+			to_delete.append(child)
+	for child in to_delete:
+		children.erase(child)
+	if !children:
+		grid_parent.erase("children")
+		if had_children:
+			return true
+	return false
+
+func prepare_hero_grid_layout(hero_id):
+	var grid_layout = CFConst.HERO_GRID_LAYOUT.duplicate(true)
+	var extra_decks = load_extra_decks(hero_id)
+	for deck in extra_decks:
+		var deck_name = deck.get("name", "")
+		if !deck_name: 
+			continue
+		var deck_position = deck.get("position", "")
+		if !deck_position:
+			if deck_name.begins_with("discard_"):
+				deck_position = "optional_discard_a"
+			else:
+				deck_position = "optional_deck_a"
+		replace_in_grid(grid_layout, deck_position, deck)
+
+	grid_layout_delete_optional(grid_layout)
+	return grid_layout
+
+
 func init_board_organizers(current_hero_id):
 	board_organizers = []
 	var other_counter = 0
@@ -344,7 +444,7 @@ func init_board_organizers(current_hero_id):
 		var scale = 1
 		var start_x = start_xs[0] * cfc.screen_scale.x
 		var start_y = start_ys[0] * cfc.screen_scale.y
-		var grid_layout = CFConst.HERO_GRID_LAYOUT.duplicate(true)
+		var grid_layout = prepare_hero_grid_layout(hero_id)
 		
 		if (hero_id != current_hero_id):
 			scale = 0.3
@@ -352,7 +452,12 @@ func init_board_organizers(current_hero_id):
 			start_y = start_ys[other_counter + 1] * cfc.screen_scale.y
 			other_counter+=1
 			#hacky way to force resize
-			var right_container_def = grid_layout["children"][1]
+			var children = grid_layout["children"]
+			var right_container_def = children[1]
+			for child in children:
+				if child.get("name","") == "right":
+					right_container_def = child
+					break
 			right_container_def["max_width"] = 400	
 			right_container_def["max_height"] = 200
 		var board_organizer = BoardOrganizer.new()
@@ -471,8 +576,10 @@ func load_scheme(card_id, call_preloaded = {"shuffle" : false}):
 func load_heroes():
 	var hero_count: int = get_team_size()
 	for i in range (hero_count): 
-		heroZones[i+1].load_starting_identity()
+		var alter_ego = heroZones[i+1].load_starting_identity()
 
+
+	
 func count_amplify_icons(display_hint = true):
 	var total_amplify = 0
 	for card in get_all_cards():
@@ -540,10 +647,11 @@ func get_all_cards(include_piles = false) -> Array:
 			cardsArray +=pile.get_all_cards()
 			
 	#hero piles
+	var hero_grid_setup = get_hero_grid_setup()
 	for i in range(get_team_size()):
 		var hero_id = i+1
-		for grid_name in HERO_GRID_SETUP.keys():
-			var grid_info = HERO_GRID_SETUP[grid_name]
+		for grid_name in hero_grid_setup.keys():
+			var grid_info = hero_grid_setup[grid_name]
 			var real_grid_name = grid_name + str(hero_id)		
 			if "pile" == grid_info.get("type", ""):
 				var pile:Pile = cfc.NMAP[real_grid_name]
@@ -566,10 +674,11 @@ func get_top_card_of_each_pile():
 				cardsArray.append(top_card)
 			
 	#hero piles
+	var hero_grid_setup = get_hero_grid_setup()
 	for i in range(get_team_size()):
 		var hero_id = i+1
-		for grid_name in HERO_GRID_SETUP.keys():
-			var grid_info = HERO_GRID_SETUP[grid_name]
+		for grid_name in hero_grid_setup.keys():
+			var grid_info = hero_grid_setup[grid_name]
 			var real_grid_name = grid_name + str(hero_id)		
 			if "pile" == grid_info.get("type", ""):
 				var pile:Pile = cfc.NMAP[real_grid_name]
@@ -596,6 +705,8 @@ func get_all_cards_by_property(property:String, value):
 	return cardsArray	
 
 func reset_board():
+	_extra_deck_names_cache = {}
+	_hero_grid_layout_cache = {}
 	gameData.stop_game()
 	delete_all_cards()
 	_team_size = 0
@@ -632,11 +743,11 @@ func delete_all_cards():
 			if grid:
 				grid.delete_all_slots_but_one()
 			
-
+	var hero_grid_setup = get_hero_grid_setup()
 	for i in range(get_team_size()):
 		var hero_id = i+1
-		for grid_name in HERO_GRID_SETUP.keys():
-			var grid_info = HERO_GRID_SETUP[grid_name]
+		for grid_name in hero_grid_setup.keys():
+			var grid_info = hero_grid_setup[grid_name]
 			var real_grid_name = grid_name + str(hero_id)		
 			if "pile" == grid_info.get("type", ""):
 				var pile:Pile = cfc.NMAP[real_grid_name]
@@ -725,7 +836,7 @@ func load_cards() -> void:
 		var hero_id = i+1
 		var hero_deck_data: HeroDeckData = gameData.get_team_member(hero_id)["hero_data"] #TODO actually load my player's stuff
 		var card_datas = hero_deck_data.get_deck_cards()
-		
+	
 		var card_info:Array = []
 		var set_aside_info: Array = []
 		for card_data in card_datas:
@@ -739,7 +850,16 @@ func load_cards() -> void:
 				card_info.append({
 					"card" : card_id,
 					"owner_hero_id": hero_id
-				})			
+				})
+
+		var set_aside_datas = hero_deck_data.get_extra_deck_cards()
+		for card_data in set_aside_datas:
+			var card_id = card_data["code"]
+			set_aside_info.append({
+				"card" : card_id,
+				"owner_hero_id": hero_id
+			})					
+							
 		load_cards_to_pile(card_info, "deck" + str(hero_id))
 		load_cards_to_pile(set_aside_info, "set_aside")
 
@@ -916,11 +1036,12 @@ func are_cards_still_animating(check_everything:bool = true) -> bool:
 			var pile:Pile = cfc.NMAP[grid_name]
 			if (pile.are_cards_still_animating()):
 				return true
-	#hero piles		
+	#hero piles
+	var hero_grid_setup = get_hero_grid_setup()		
 	for i in range(gameData.get_team_size()):
 		var hero_id = i+1
-		for grid_name in HERO_GRID_SETUP.keys():
-			var grid_info = HERO_GRID_SETUP[grid_name]
+		for grid_name in hero_grid_setup.keys():
+			var grid_info = hero_grid_setup[grid_name]
 			var real_grid_name = grid_name + str(hero_id)		
 			if "pile" == grid_info.get("type", ""):
 				var pile:Pile = cfc.NMAP[real_grid_name]
@@ -995,11 +1116,12 @@ func savestate_to_json() -> Dictionary:
 		else:
 			json_data.merge(export_grid_to_json(grid_name, seen_cards))
 
+	var hero_grid_setup = get_hero_grid_setup()
 	for i in range(gameData.get_team_size()):
 		var hero_id = i+1
 
-		for grid_name in HERO_GRID_SETUP.keys():
-			var grid_info = HERO_GRID_SETUP[grid_name]
+		for grid_name in hero_grid_setup.keys():
+			var grid_info = hero_grid_setup[grid_name]
 			var real_grid_name = grid_name + str(hero_id)		
 			if "pile" == grid_info.get("type", ""):
 				json_data.merge(export_pile_to_json(real_grid_name, seen_cards))
@@ -1047,11 +1169,12 @@ func loadstate_from_json(json:Dictionary):
 		else:
 			load_cards_to_grid(card_data, grid_name)
 
+	var hero_grid_setup = get_hero_grid_setup()
 	for i in range(gameData.get_team_size()):
 		var hero_id = i+1
 
-		for grid_name in HERO_GRID_SETUP.keys():
-			var grid_info = HERO_GRID_SETUP[grid_name]
+		for grid_name in hero_grid_setup.keys():
+			var grid_info = hero_grid_setup[grid_name]
 			var real_grid_name = grid_name + str(hero_id)
 			var card_data = json_data.get(real_grid_name, [])		
 			if "pile" == grid_info.get("type", ""):
@@ -1246,11 +1369,12 @@ func get_all_pile_data_no_cache():
 		var grid_info = GRID_SETUP[grid_name]
 		if "pile" == grid_info.get("type", ""):
 			pile_info[grid_name] = grid_info
-	#hero piles		
+	#hero piles	
+	var hero_grid_setup = get_hero_grid_setup()	
 	for i in range(gameData.get_team_size()):
 		var hero_id = i+1
-		for grid_name in HERO_GRID_SETUP.keys():
-			var grid_info = HERO_GRID_SETUP[grid_name]
+		for grid_name in hero_grid_setup.keys():
+			var grid_info = hero_grid_setup[grid_name]
 			var real_grid_name = grid_name + str(hero_id)		
 			if "pile" == grid_info.get("type", ""):
 				pile_info[real_grid_name] = grid_info

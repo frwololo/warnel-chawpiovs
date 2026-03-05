@@ -160,6 +160,8 @@ func load_from_dict(_scenario:Dictionary):
 	scenario_data = cfc.primitives[scheme_card_id].duplicate(true)
 	
 	is_expert_mode =  _scenario.get("expert_mode", false)
+	scenario_options["expert_mode"] = is_expert_mode
+	
 	modular_sets = _scenario.get("modular_encounters", [])
 	scenario_options = _scenario.get("scenario_options", {})
 	

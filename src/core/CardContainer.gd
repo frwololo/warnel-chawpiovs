@@ -424,7 +424,8 @@ func reset_location():
 					# Otherwise the containers with the highest index will be at
 					# The back of the array.
 					# This allows us to control which node will be "pushed".
-					cc_array.sort_custom(CFUtils,"sort_by_shift_priority")
+					if !CFConst.BUG_PATCH_IGNORE_CONTAINER_SORT:
+						cc_array.sort_custom(CFUtils,"sort_by_shift_priority")
 					# We reset this variable every time
 					accumulated_shift = Vector2(0,0)
 					# Now we start going through the sorted array of CardContainers

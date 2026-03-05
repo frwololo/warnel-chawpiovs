@@ -29,8 +29,9 @@
 			],
 			"board": [
 				{
-					"name": "nop",
-					"_comments": "TODO_current_hero_target"
+					"name": "move_boost_cards",
+					"source": "current_hero_target",
+					"subject": "Venom"
 				}
 			]
 		},
@@ -44,8 +45,9 @@
 			],
 			"board": [
 				{
-					"name": "nop",
-					"_comments": "TODO_current_hero_target"
+					"name": "move_boost_cards",
+					"source": "current_hero_target",
+					"subject": "Venom"
 				}
 			]
 		}
@@ -211,7 +213,72 @@
 		}
 	},
 	"Advanced Glider": {
-		"TODO": ""
+		"once_per_round_per_player": {},
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "mod_token",
+					"token_name": "__player_token_current_hero_target",
+					"modification": -1,
+					"is_cost": true
+				},
+				{
+					"name": "i_attack",
+					"action_owner": "host",
+					"subject": "current_hero_target"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"src_container": "hand",
+					"is_cost": true,
+					"subject": "tutor",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_attack": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"needs_selection": true,
+					"selection_count": 3,
+					"selection_type": "min",
+					"selection_what_to_count": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"property": "cost"
+						}
+					}
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Agent 13 - Sharon Carter": {
 		"response": {
@@ -244,7 +311,50 @@
 		}
 	},
 	"Analysis Paralysis": {
-		"TODO": ""
+		"reveal": {
+			"all": [
+				{
+					"name": "add_script",
+					"end_condition": "self_moved_to_board",
+					"subject": "self",
+					"script": {
+						"card_moved_to_board": {
+							"filter_state_trigger": [
+								{
+									"filter_properties": {
+										"type_code": "side_scheme"
+									}
+								}
+							],
+							"all": [
+								{
+									"name": "add_threat",
+									"subject": "self",
+									"amount": {
+										"func_name": "count_tokens",
+										"func_params": {
+											"token_name": "threat",
+											"subject": "trigger"
+										}
+									}
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "reveal_nemesis",
+					"src_container": [
+						"deck_villain",
+						"set_aside",
+						"discard_villain"
+					],
+					"type_codes": [
+						"side_scheme"
+					]
+				}
+			]
+		}
 	},
 	"Arachnobatics": {
 		"manual": {
@@ -308,7 +418,56 @@
 		}
 	},
 	"Arm Cannon": {
-		"TODO": ""
+		"_surge": {},
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "piercing\",\"overkill"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "get_subject_int_printed_property",
+					"func_params": {
+						"property": "cost"
+					},
+					"sort_descending": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "upgrade"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Back Alley Burglary": {
 		"TODO": "campaign mode not supported"
@@ -661,10 +820,103 @@
 		"TODO": "campaign mode not supported"
 	},
 	"Concussive Bombs": {
-		"TODO": ""
+		"uses": {
+			"__name__": "bomb",
+			"__amount__": 2
+		},
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"token_name": "bomb",
+					"is_cost": true
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "play_area_current_hero_target",
+							"filter_is_exhausted": false,
+							"filter_properties": {
+								"type_code": "upgrade"
+							}
+						}
+					],
+					"needs_selection": true,
+					"selection_count": 1
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "play_area_current_hero_target",
+							"filter_is_exhausted": false,
+							"filter_properties": {
+								"type_code": "support"
+							}
+						}
+					],
+					"needs_selection": true,
+					"selection_count": 1
+				}
+			]
+		}
 	},
 	"Coordinated Effort": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme_acceleration",
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				},
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "expert_mode"
+						}
+					},
+					"subject": "main_scheme"
+				}
+			]
+		}
 	},
 	"Deepest Fears": {
 		"TODO": ""
@@ -1252,9 +1504,34 @@
 		}
 	},
 	"Frequent Flyers": {
-		"TODO": "expert_mode",
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_be_canceled",
+					"alteration": {
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "expert_mode"
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		},
 		"reveal": {
 			"all": [
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "expert_mode"
+						}
+					},
+					"subject": "main_scheme",
+					"_comments": "incite 1 in expert mode"
+				},
 				{
 					"name": "conditional_script",
 					"options": [
@@ -1846,9 +2123,34 @@
 		"TODO": ""
 	},
 	"High Fashion": {
-		"TODO": "expert_mode",
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_be_canceled",
+					"alteration": {
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "expert_mode"
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		},
 		"reveal": {
 			"all": [
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "expert_mode"
+						}
+					},
+					"subject": "main_scheme",
+					"_comments": "incite 1 in expert mode"
+				},
 				{
 					"name": "conditional_script",
 					"options": [
@@ -2072,7 +2374,35 @@
 		}
 	},
 	"Incendiary Bombs": {
-		"TODO": ""
+		"uses": {
+			"__name__": "bomb",
+			"__amount__": 2
+		},
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"token_name": "bomb",
+					"is_cost": true
+				},
+				{
+					"name": "indirect_damage",
+					"subject": "current_hero_target",
+					"amount": 2
+				}
+			]
+		}
 	},
 	"Induced Panic": {
 		"TODO": ""
@@ -2363,16 +2693,119 @@
 		}
 	},
 	"Life-Size Decoy": {
-		"TODO": ""
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": {
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "expert_mode"
+						}
+					},
+					"token_name": "tough"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_thwart_side_scheme",
+					"trigger": "my_identity",
+					"alteration": 1
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self"
+				}
+			]
+		}
 	},
-	"Light at the End": {
-		"TODO": ""
+	"Light at the End #27102a": {
+		"hinder": {
+			"__amount__": 10,
+			"__each_player__": true
+		},
+		"interrupt_card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Light at the End #27102b": {
+		"hinder": {
+			"__amount__": 10,
+			"__each_player__": true
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "victory"
+				}
+			]
+		}
 	},
 	"Limitless Supply": {
-		"TODO": ""
+		"card_moved_to_pile": {
+			"trigger": "another",
+			"filter_destination": "encounters_reveal_current_hero_target",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "attachment"
+					},
+					"filter_properties2": {
+						"trait_tech": 1,
+						"comparison": "ge"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "surge"
+				}
+			]
+		}
 	},
 	"Loose Ends": {
-		"TODO": ""
+		"TODO": "discard 1 if change form",
+		"reveal": {
+			"all": [
+				{
+					"name": "reveal_encounters",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain",
+						"set_aside"
+					],
+					"subject_count": 1,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "obligation"
+							},
+							"filter_card_set_code_same_as_identity": true
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "surge"
+				}
+			]
+		}
 	},
 	"Lower Manhattan #27117a": {
 		"special": {
@@ -3146,7 +3579,55 @@
 		}
 	},
 	"Remote Navigation": {
-		"TODO": ""
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "card_is_in_play",
+								"func_params": {
+									"card_name": "Advanced Glider"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "villain_attacks_you"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "deal_encounter",
+							"immediate_reveal": true,
+							"subject": "tutor",
+							"src_container": [
+								"deck_villain",
+								"discard_villain"
+							],
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"Name": "Advanced Glider"
+									}
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "draw_boost_card",
+					"subject": "villain",
+					"amount": 2
+				}
+			]
+		}
 	},
 	"Retinal Display #27186a": {
 		"TODO": "campaign mode not supported"
@@ -3230,9 +3711,34 @@
 		}
 	},
 	"Robotic Enhancements": {
-		"TODO": "expert_mode",
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_be_canceled",
+					"alteration": {
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "expert_mode"
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		},
 		"reveal": {
 			"all": [
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "expert_mode"
+						}
+					},
+					"subject": "main_scheme",
+					"_comments": "incite 1 in expert mode"
+				},
 				{
 					"name": "conditional_script",
 					"options": [
@@ -3706,7 +4212,79 @@
 		}
 	},
 	"Sinister Beatdown": {
-		"TODO": "expert mode, active counter",
+		"reveal_side_a": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"filter_state_tutor": [
+										{
+											"filter_properties": {
+												"type_code": "villain"
+											}
+										}
+									],
+									"src_container": "set_aside"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_card_to_board",
+									"src_container": "set_aside",
+									"subject": "tutor",
+									"sort_by": "random",
+									"subject_count": 1,
+									"filter_state_tutor": [
+										{
+											"filter_properties": {
+												"type_code": "villain"
+											}
+										}
+									]
+								},
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "previous"
+								},
+								{
+									"name": "deal_encounter",
+									"subject": "boardseek",
+									"amount": {
+										"func_name": "get_scenario_option_value",
+										"func_params": {
+											"option_name": "expert_mode"
+										}
+									},
+									"filter_state_seek": [
+										{
+											"filter_group": "group_identities_first_player"
+										}
+									]
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "deal_encounter",
+							"subject": "boardseek",
+							"filter_state_seek": [
+								{
+									"filter_group": "group_identities_first_player"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
 		"ambush": {
 			"board": [
 				{
@@ -3722,15 +4300,121 @@
 							}
 						}
 					]
+				},
+				{
+					"name": "move_token_to",
+					"token_name": "active_counter",
+					"source": "current",
+					"subject": "previous"
+				},
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "expert_mode",
+							"multiplier": 2
+						}
+					},
+					"subject": "Light at the End"
 				}
 			]
 		},
-		"interrupt": {
-			"event_name": "TODO"
+		"step_started": {
+			"event_filters": {
+				"step_name": "VILLAIN_ACTIVATES"
+			},
+			"condition_board": {
+				"func_name": "!count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "execute_scripts",
+					"exec_trigger": "ambush",
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"Sinister Synchronization": {
-		"TODO": "expert mode, active counter",
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"src_container": "set_aside",
+					"subject": "tutor",
+					"sort_by": "random",
+					"subject_count": 1,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "villain"
+							}
+						}
+					],
+					"for_each_player": true
+				},
+				{
+					"name": "move_card_to_board",
+					"src_container": "set_aside",
+					"subject": "tutor",
+					"sort_by": "random",
+					"subject_count": 1,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "villain"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_token_to",
+					"token_name": "active_counter",
+					"source": "current",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "get_subject_int_printed_property",
+					"func_params": {
+						"property": "activation_order"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain"
+							}
+						}
+					]
+				},
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Light at the End"
+							}
+						}
+					]
+				}
+			]
+		},
 		"ambush": {
 			"board": [
 				{
@@ -3746,11 +4430,50 @@
 							}
 						}
 					]
+				},
+				{
+					"name": "move_token_to",
+					"token_name": "active_counter",
+					"source": "current",
+					"subject": "previous"
+				},
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "expert_mode",
+							"multiplier": 2
+						}
+					},
+					"subject": "Light at the End"
 				}
 			]
 		},
-		"interrupt": {
-			"event_name": "TODO"
+		"step_started": {
+			"event_filters": {
+				"step_name": "VILLAIN_ACTIVATES"
+			},
+			"condition_board": {
+				"func_name": "!count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "execute_scripts",
+					"exec_trigger": "ambush",
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"Skies Over New York #27116a": {
@@ -3881,7 +4604,49 @@
 		"TODO": "campaign mode not supported"
 	},
 	"Smoke Bombs": {
-		"TODO": ""
+		"uses": {
+			"__name__": "bomb",
+			"__amount__": 2
+		},
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"token_name": "bomb",
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_current_hero_target",
+					"src_container": "hand_current_hero_target",
+					"subject": "tutor",
+					"subject_count": 1,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "event"
+							}
+						}
+					],
+					"sort_by": "function",
+					"sort_name": "get_subject_int_property",
+					"func_params": {
+						"property": "cost"
+					}
+				}
+			]
+		}
 	},
 	"Snitches Get Stitches": {
 		"TODO": "campaign mode not supported"

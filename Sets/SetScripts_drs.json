@@ -1,119 +1,1823 @@
 {
 	"Astral Projection": {
-		"TODO": ""
+		"manual": {
+			"hand": [
+				{
+					"name": "view_card",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "thwart",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_groups": "group_schemes"
+						}
+					],
+					"amount": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					},
+					"plus_amount": 3
+				}
+			]
+		}
 	},
 	"Avengers Mansion": {
-		"TODO": ""
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		}
 	},
 	"Baron Mordo": {
-		"TODO": ""
+		"interrupt": {
+			"event_name": "enemy_attack",
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_current_hero_target",
+					"dest_container": "discard"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "physical"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "stunned",
+									"modification": 1,
+									"subject": "current_hero_target"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "energy"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "receive_damage",
+									"amount": 2,
+									"subject": "current_hero_target"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "mental"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "confused",
+									"modification": 1,
+									"subject": "current_hero_target"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "wild"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "stunned",
+									"modification": 1,
+									"subject": "current_hero_target"
+								},
+								{
+									"name": "mod_tokens",
+									"token_name": "confused",
+									"modification": 1,
+									"subject": "current_hero_target"
+								},
+								{
+									"name": "receive_damage",
+									"amount": 2,
+									"subject": "current_hero_target"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
 	},
 	"Brother Voodoo - Jericho Drumm": {
-		"TODO": ""
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"sort_descending": true,
+					"subject_count": 5,
+					"up_to": true,
+					"src_container": "deck",
+					"selection_count": 1,
+					"selection_type": "max",
+					"needs_selection": true,
+					"selection_show_cards_with_zero_value": true,
+					"selection_what_to_count": {
+						"func_name": "check_validity",
+						"func_params": {
+							"filter_state_trigger": [
+								{
+									"filter_properties": {
+										"type_code": "event"
+									}
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck"
+				}
+			]
+		}
 	},
 	"Clea": {
-		"TODO": ""
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "self",
+					"dest_container": "deck"
+				}
+			]
+		}
 	},
 	"Cloak of Levitation": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_aerial",
+					"trigger": "my_identity",
+					"alteration": 1
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				}
+			]
+		}
 	},
 	"Counterspell": {
-		"TODO": ""
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_hero"
+				}
+			]
+		},
+		"interrupt_card_played": {
+			"trigger": "another",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "event"
+					},
+					"filter_same_controller": true
+				}
+			],
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard_villain"
+				}
+			]
+		}
 	},
 	"Crimson Bands of Cyttorak": {
-		"TODO": ""
+		"special": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 7,
+					"subject": "previous"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_invocation",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Desperate Defense": {
-		"TODO": ""
+		"interrupt": {
+			"event_name": "enemy_attack_damage",
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "set_defender",
+					"is_cost": true,
+					"subject": "my_hero",
+					"_comments": "set_defender here has a double role, 1) sets my_hero as a defender if not already the case, 2) because it is a cost, it will fail if there is already a different defender chosen"
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "enemy_activation_finished",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "defense",
+									"trigger": "my_hero",
+									"alteration": 2
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"if_no_damage": [
+							{
+								"name": "ready_card",
+								"subject": "current_hero_target"
+							}
+						]
+					}
+				}
+			]
+		}
 	},
 	"Doctor Strange": {
-		"TODO": ""
-	},
-	"Energy": {
-		"TODO": ""
+		"card_moved_to_pile": {
+			"event_filters": {
+				"destination": "discard"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"card_set_code": "doctor_strange_invocation_deck"
+					}
+				}
+			],
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_invocation",
+					"subject": "trigger"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Spell Mastery": [
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "pay_cost",
+						"is_cost": true,
+						"cost": "subject_cost",
+						"subject": "index",
+						"subject_index": "top",
+						"subject_count": 1,
+						"src_container": "deck_invocation"
+					},
+					{
+						"name": "sequence",
+						"sequence_ability": "special",
+						"subject": "index",
+						"subject_index": "top",
+						"subject_count": 1,
+						"src_container": "deck_invocation"
+					}
+				]
+			}
+		}
 	},
 	"Foiled!": {
-		"TODO": ""
-	},
-	"Genius": {
-		"TODO": ""
+		"interrupt_boost_card_resolved": {
+			"event_filters": {
+				"tags": [
+					"scheme"
+				]
+			},
+			"is_optional_hand": "true",
+			"hand": [
+				{
+					"name": "prevent",
+					"subject": "current_activation",
+					"amount": "trigger_details_boost_icons"
+				}
+			]
+		}
 	},
 	"Images of Ikonn": {
-		"TODO": ""
+		"special": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "villain"
+				},
+				{
+					"name": "remove_threat",
+					"amount": 4,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_invocation",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Iron Fist - Danny Rand": {
-		"TODO": ""
+		"self_moved_to_board": {
+			"trigger": "self",
+			"_silent": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 2,
+					"token_name": "mystic"
+				}
+			]
+		},
+		"interrupt_receive_damage": {
+			"trigger": "self",
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "mystic",
+					"modification": -1,
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "trigger_details_target"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "trigger_details_target"
+				}
+			]
+		}
 	},
 	"Iron Man - Tony Stark": {
-		"TODO": ""
+		"TODO": "alterant should only work when targeting iron man",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": -1,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "upgrade"
+							}
+						}
+					]
+				}
+			]
+		}
 	},
 	"Magic Blast": {
-		"TODO": ""
+		"manual": {
+			"hand": [
+				{
+					"name": "attack",
+					"subject": "target",
+					"amount": 5,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck",
+					"dest_container": "discard"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "physical"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "stunned",
+									"modification": 1,
+									"subject": "all_previous"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "energy"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "receive_damage",
+									"amount": 2,
+									"subject": "all_previous"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "mental"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "confused",
+									"modification": 1,
+									"subject": "all_previous"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "wild"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "stunned",
+									"modification": 1,
+									"subject": "all_previous"
+								},
+								{
+									"name": "mod_tokens",
+									"token_name": "confused",
+									"modification": 1,
+									"subject": "all_previous"
+								},
+								{
+									"name": "receive_damage",
+									"amount": 2,
+									"subject": "all_previous"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
 	},
 	"Magical Enhancements": {
-		"TODO": ""
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero_any": 1
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_to_player_zone",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities",
+							"filter_max_per_hero": 1
+						}
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"round_ended": {
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Master of the Mystic Arts": {
-		"TODO": ""
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"is_cost": true,
+					"cost": "subject_cost",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_invocation"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "special",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_invocation"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "previous",
+					"dest_container": "deck_invocation"
+				}
+			]
+		}
 	},
 	"Med Team": {
-		"TODO": ""
+		"uses": {
+			"__name__": "medical",
+			"__amount__": 3
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"token_name": "medical",
+					"is_cost": true
+				},
+				{
+					"name": "heal",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_friendly"
+						}
+					]
+				}
+			]
+		}
 	},
 	"Momentum Shift": {
-		"TODO": ""
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "heal",
+					"subject": "my_hero",
+					"amount": 2,
+					"is_cost": true
+				},
+				{
+					"name": "attack",
+					"subject": "target",
+					"amount": 2,
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
 	},
 	"Mystical Studies": {
-		"TODO": ""
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "hand",
+					"src_container": [
+						"deck",
+						"discard"
+					],
+					"subject": "tutor",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"faction_code": "hero"
+							}
+						}
+					],
+					"need_selection": true,
+					"selection_count": 1
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck"
+				}
+			]
+		}
 	},
 	"Open the Dark Dimension": {
-		"TODO": ""
+		"reveal": {
+			"all": [
+				{
+					"name": "host_card",
+					"tags": [
+						"facedown"
+					],
+					"src_container": "deck_invocation",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "top"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "card_dies",
+			"trigger": "self",
+			"board": [
+				{
+					"name": "return_attachments_to_owner",
+					"dest_container": "deck_invocation",
+					"tags": [
+						"facedown"
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_invocation"
+				}
+			]
+		}
 	},
 	"Physical Toll": {
-		"TODO": ""
+		"give_obligation": {
+			"__to__": "Stephen Strange"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Flip then Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity",
+						"_comments": "we need to exhaust before changing form here due to a bug"
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Flip then Increase Cost": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "attach_card_to",
+						"subject": "my_identity"
+					}
+				],
+				"Increase Cost": [
+					{
+						"name": "attach_card_to",
+						"subject": "my_identity"
+					}
+				]
+			}
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": 3,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "event"
+							},
+							"filter_same_controller": true
+						}
+					]
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "another",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "event"
+					},
+					"filter_same_controller": true
+				}
+			],
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard_villain"
+				}
+			]
+		}
 	},
 	"Protective Ward": {
-		"TODO": ""
+		"interrupt": {
+			"event_name": "reveal_encounter",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				}
+			],
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "treachery"
+					}
+				}
+			]
+		}
 	},
 	"Sanctum Sanctorum": {
-		"TODO": ""
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"dest_container": "deck",
+					"subject": "tutor",
+					"src_container": "discard",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_spell": 1
+							}
+						}
+					],
+					"need_selection": true,
+					"selection_count": 1
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
 	},
 	"Seven Rings of Raggadorr": {
-		"TODO": ""
+		"special": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_characters"
+						}
+					],
+					"needs_selection": true,
+					"selection_count": 3,
+					"selection_type": "max"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_invocation",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Skilled Strike": {
-		"TODO": ""
+		"interrupt_receive_damage": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"tags": [
+					"basic power",
+					"attack"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"increase": 2
+				}
+			]
+		}
 	},
-	"Strength": {
-		"TODO": ""
+	"Stephen Strange": {
+		"once_per_phase": {
+			"__name__": "_natural_talent"
+		},
+		"extra_player_decks": [
+			{
+				"name": "discard_invocation",
+				"faceup": true
+			},
+			{
+				"name": "deck_invocation",
+				"faceup": true,
+				"can_view": false
+			}
+		],
+		"additional_cards_set_aside": [
+			{
+				"card": "Seven Rings of Raggadorr"
+			},
+			{
+				"card": "Images of Ikonn"
+			},
+			{
+				"card": "Winds of Watoomb"
+			},
+			{
+				"card": "Crimson Bands of Cyttorak"
+			},
+			{
+				"card": "Vapors of Valtorr"
+			}
+		],
+		"card_moved_to_pile": {
+			"event_filters": {
+				"destination": "discard"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"card_set_code": "doctor_strange_invocation_deck"
+					}
+				}
+			],
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_invocation",
+					"subject": "trigger"
+				}
+			]
+		},
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": [
+						"deck",
+						"set_aside"
+					],
+					"dest_container": "deck_invocation_my_hero",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "doctor_strange_invocation_deck"
+							}
+						}
+					],
+					"_silent": true
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_invocation_my_hero"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Natural Talent": [
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"is_cost": true,
+						"token_name": "_natural_talent",
+						"subject": "self"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_invocation",
+						"subject": "index",
+						"subject_index": "top",
+						"src_container": "deck_invocation"
+					}
+				]
+			}
+		}
 	},
 	"The Eye of Agamotto": {
-		"TODO": ""
+		"resource": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_resource"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				}
+			]
+		}
 	},
 	"The Night Nurse": {
-		"TODO": ""
+		"uses": {
+			"__name__": "medical",
+			"__amount__": 3
+		},
+		"manual": {
+			"board": {
+				"Remove Tough": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "self",
+						"modification": -1,
+						"token_name": "medical",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"token_name": "tough",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_subject": true,
+						"needs_selection": true,
+						"selection_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "hero"
+								},
+								"filter_tokens": [
+									{
+										"filter_token_name": "tough",
+										"filter_token_count": 1
+									}
+								]
+							}
+						]
+					},
+					{
+						"name": "heal",
+						"amount": 1,
+						"subject": "previous"
+					}
+				],
+				"Remove Stunned": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "self",
+						"modification": -1,
+						"token_name": "medical",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"token_name": "stunned",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_subject": true,
+						"needs_selection": true,
+						"selection_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "hero"
+								},
+								"filter_tokens": [
+									{
+										"filter_token_name": "stunned",
+										"filter_token_count": 1
+									}
+								]
+							}
+						]
+					},
+					{
+						"name": "heal",
+						"amount": 1,
+						"subject": "previous"
+					}
+				],
+				"Remove Confused": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "self",
+						"modification": -1,
+						"token_name": "medical",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"token_name": "confused",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_subject": true,
+						"needs_selection": true,
+						"selection_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "hero"
+								},
+								"filter_tokens": [
+									{
+										"filter_token_name": "confused",
+										"filter_token_count": 1
+									}
+								]
+							}
+						]
+					},
+					{
+						"name": "heal",
+						"amount": 1,
+						"subject": "previous"
+					}
+				]
+			}
+		}
 	},
 	"The Power of Protection": {
-		"TODO": ""
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "protection"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
+				}
+			]
+		}
 	},
 	"The Sorcerer Supreme": {
-		"TODO": ""
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "mystic"
+							}
+						}
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "hand_size",
+					"trigger": "my_heri",
+					"alteration": 1
+				}
+			]
+		}
 	},
 	"Thoughtcasting": {
-		"TODO": ""
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"is_cost": true,
+					"subject": "tutor",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "get_subject_int_printed_property",
+					"func_params": {
+						"property": "cost"
+					},
+					"sort_descending": true,
+					"src_container": "hand"
+				},
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": {
+						"func_name": "get_subject_int_printed_property",
+						"func_params": {
+							"subject": "previous",
+							"property": "cost"
+						}
+					}
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"is_cost": true,
+					"subject": "tutor",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "get_subject_int_printed_property",
+					"func_params": {
+						"property": "cost"
+					},
+					"sort_descending": true,
+					"src_container": "hand"
+				},
+				{
+					"name": "receive_damage",
+					"subject": "my_hero",
+					"amount": {
+						"func_name": "get_subject_int_printed_property",
+						"func_params": {
+							"subject": "previous",
+							"property": "cost"
+						}
+					}
+				}
+			]
+		}
 	},
 	"Unflappable": {
-		"TODO": ""
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero_any": 1
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_to_player_zone",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities",
+							"filter_max_per_hero": 1
+						}
+					]
+				}
+			]
+		},
+		"response": {
+			"event_name": "defense_happened",
+			"event_filters": {
+				"target": "my_hero",
+				"damage": "<1"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1,
+					"subject": "my_hero"
+				}
+			]
+		}
 	},
 	"Vapors of Valtorr": {
-		"TODO": ""
+		"special": {
+			"all": {
+				"Tough --> Stunned": [
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"token_name": "tough",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_subject": true,
+						"needs_selection": true,
+						"selection_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_tokens": [
+									{
+										"filter_token_name": "tough",
+										"filter_token_count": 1
+									}
+								]
+							}
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"modification": 1,
+						"token_name": "stunned",
+						"subject": "previous"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_invocation",
+						"subject": "self"
+					}
+				],
+				"Tough --> Confused": [
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"token_name": "tough",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_subject": true,
+						"needs_selection": true,
+						"selection_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_tokens": [
+									{
+										"filter_token_name": "tough",
+										"filter_token_count": 1
+									}
+								]
+							}
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"modification": 1,
+						"token_name": "confused",
+						"subject": "previous"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_invocation",
+						"subject": "self"
+					}
+				],
+				"Stunned --> Tough": [
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"token_name": "stunned",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_subject": true,
+						"needs_selection": true,
+						"selection_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_tokens": [
+									{
+										"filter_token_name": "stunned",
+										"filter_token_count": 1
+									}
+								]
+							}
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"modification": 1,
+						"token_name": "tough",
+						"subject": "previous"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_invocation",
+						"subject": "self"
+					}
+				],
+				"Confused --> Tough": [
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"token_name": "confused",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_subject": true,
+						"needs_selection": true,
+						"selection_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_tokens": [
+									{
+										"filter_token_name": "confused",
+										"filter_token_count": 1
+									}
+								]
+							}
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"modification": 1,
+						"token_name": "tough",
+						"subject": "previous"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_invocation",
+						"subject": "self"
+					}
+				],
+				"Stunned --> Confused": [
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"token_name": "stunned",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_subject": true,
+						"needs_selection": true,
+						"selection_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_tokens": [
+									{
+										"filter_token_name": "stunned",
+										"filter_token_count": 1
+									}
+								]
+							}
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"modification": 1,
+						"token_name": "confused",
+						"subject": "previous"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_invocation",
+						"subject": "self"
+					}
+				],
+				"Confused --> Stunned": [
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"token_name": "confused",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_subject": true,
+						"needs_selection": true,
+						"selection_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_tokens": [
+									{
+										"filter_token_name": "stunned",
+										"filter_token_count": 1
+									}
+								]
+							}
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"modification": 1,
+						"token_name": "stunned",
+						"subject": "previous"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_invocation",
+						"subject": "self"
+					}
+				]
+			}
+		}
 	},
 	"Warning": {
-		"TODO": ""
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"filter_state_event_target": [
+					{
+						"filter_properties": {
+							"type_code": "hero"
+						}
+					}
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "prevent",
+					"amount": 1,
+					"subject": "interrupted_event"
+				}
+			]
+		}
 	},
 	"Winds of Watoomb": {
-		"TODO": ""
+		"special": {
+			"all": [
+				{
+					"name": "draw_cards",
+					"amount": 3
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_invocation",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Wong": {
-		"TODO": ""
+		"manual": {
+			"board": {
+				"Heal": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "heal",
+						"amount": 1,
+						"subject": "my_identity"
+					}
+				],
+				"Discard Invocation": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_invocation",
+						"subject": "index",
+						"subject_index": "top",
+						"src_container": "deck_invocation"
+					}
+				]
+			}
+		}
 	}
 }

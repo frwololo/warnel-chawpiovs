@@ -92,7 +92,7 @@ func load_starting_identity():
 		return
 	var ckey = alter_ego_id
 	load_nemesis_aside(hero_card_data)	
-	load_identity (ckey)
+	return load_identity (ckey)
 	
 func load_nemesis_aside(hero_card_data):
 	#return	

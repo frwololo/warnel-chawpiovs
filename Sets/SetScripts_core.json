@@ -4332,7 +4332,8 @@
 		"reveal": {
 			"all": [
 				{
-					"name": "reveal_nemesis"
+					"name": "reveal_nemesis",
+					"surge_on_failure": true 
 				}
 			]
 		}

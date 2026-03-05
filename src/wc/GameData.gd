@@ -1296,7 +1296,7 @@ func villain_threat():
 		return CFConst.ReturnCode.FAILED
 
 	var all_schemes:Array = cfc.NMAP.board.get_grid("schemes").get_all_cards()
-
+	var all_cards:Array = cfc.NMAP.board.get_all_cards()
 	for main_scheme in main_schemes:		
 		#basic threat computation, check if it's a constant or multiplied by numbers of players	
 		var escalation_threat = main_scheme.properties["escalation_threat"]	
@@ -1304,12 +1304,12 @@ func villain_threat():
 		if (not escalation_threat_fixed):
 			escalation_threat *= get_team_size()
 		
-		for scheme in all_schemes:
+		for card in all_cards:
 			#we add all acceleration tokens	
-			escalation_threat += scheme.tokens.get_token_count("acceleration")
+			escalation_threat += card.tokens.get_token_count("acceleration")
 			
 			#we also add acceleration icons from other schemes
-			escalation_threat += scheme.get_property("scheme_acceleration", 0)
+			escalation_threat += card.get_property("scheme_acceleration", 0, true)
 		if escalation_threat:
 			var villain = gameData.get_villain()
 			var task = ScriptTask.new(villain, {"name": "add_threat", "amount": escalation_threat, "tags": ["villain_step_one_threat"]}, villain, {})

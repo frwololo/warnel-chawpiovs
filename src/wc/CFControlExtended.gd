@@ -22,9 +22,6 @@ var schemes: Dictionary
 var modular_encounters: Dictionary = {}
 var cards_by_set: Dictionary
 
-var primitives: Dictionary
-var scenarios : Array
-
 #Hero deck data identified by integer id (marvelcdb id)
 var deck_definitions : Dictionary
 
@@ -208,37 +205,7 @@ func get_locked_heroes():
 	return result
 	
 
-func _get_corrected_scenario_ids(settings_key = "unlocked_villains"):
-	var _unlocked_scenarios_ids = game_settings.get(settings_key, [])
 
-	var unlocked_scenarios_ids = []
-	for key in _unlocked_scenarios_ids:
-		key = get_corrected_scheme_card_id(key)
-		if !key:
-			continue
-		unlocked_scenarios_ids.append(key)
-	
-	return 	unlocked_scenarios_ids
-
-func get_unlocked_scenarios():
-	if !is_adventure_mode():
-		return self.scenarios
-	
-	var unlocked_scenarios_ids = _get_corrected_scenario_ids()
-	
-	if !unlocked_scenarios_ids:
-		var _scenario_id = adventure_unlock_next_scenario()
-		unlocked_scenarios_ids = game_settings.get("unlocked_villains", [])
-	
-	return unlocked_scenarios_ids
-
-func get_locked_scenarios():
-	var unlocked_scenarios = get_unlocked_scenarios()
-
-	var result = scenarios.duplicate()
-	for scenario_id in unlocked_scenarios:
-			result.erase(scenario_id)
-	return result
 
 func adventure_unlock_random_hero():
 	if !game_settings.has("unlocked_heroes"):
@@ -258,26 +225,7 @@ func adventure_unlock_random_hero():
 	save_settings()
 	return random_hero_id
 	
-func adventure_unlock_next_scenario():
-	if !game_settings.has("unlocked_villains"):
-		game_settings["unlocked_villains"] = []
-		
-	var unlocked_scenario_ids = _get_corrected_scenario_ids()
 
-		
-	var all_scenario_ids = 	self.scenarios.duplicate()
-	for scenario_id in unlocked_scenario_ids:
-		all_scenario_ids.erase(scenario_id)
-
-	#nothing left to unlock
-	if !all_scenario_ids:
-		return ""
-		
-#	var selected_scenario_id = all_scenario_ids[randi() % all_scenario_ids.size()]
-	var selected_scenario_id = all_scenario_ids[0]
-	game_settings["unlocked_villains"].append(selected_scenario_id)
-	save_settings()
-	return selected_scenario_id	
 
 #disable focus_mode for all children of a node,
 #return an array of children that had focus mode and lost it
@@ -401,30 +349,8 @@ func get_card_by_id(id):
 	return card_data
 
 
-func get_corrected_scheme_card_id(key):
-	if !get_card_by_id(key):
-		key = key + "b"
-		if !get_card_by_id(key):
-			key = ""
-			var _error = 1
-	return key	
 
-func load_card_scenarios():
-	var json_card_data : Dictionary
-	json_card_data = WCUtils.read_json_file_with_user_override("Sets/_scenarios.json")	
-	for key in json_card_data:
-		var card_data = json_card_data[key]
-		#error correction
-		key = get_corrected_scheme_card_id(key)
-		if !key:
-			continue
-		var card_code = get_corrected_scheme_card_id(card_data["code"])
-		if !card_code:
-			continue		
-		#creating entries for both id and name so I never have to remember which one to use...
-		primitives[card_code] = card_data;
-		primitives[card_data["name"]] = card_data;
-		scenarios.append(key)
+
 
 func fix_stage(stage):
 	if typeof(stage) == TYPE_INT:
@@ -531,12 +457,17 @@ func setup_traits_as_alterants():
 #when they are redundant or not useful for this game
 func dont_load_this_card(card_data:Dictionary):
 	var type_code = card_data.get("type_code", "")
-	if type_code!= "main_scheme":
-		return false
-	var stage = card_data.get("stage", "").to_upper()
-	if (stage.ends_with("A") or stage.ends_with("B")):	
-		return false
-	return true
+	var card_id = card_data.get("code", "").to_lower()
+	
+	#main scheme definition have a "bogus" entry that represents both sides
+	#since the db also have sidea and sideb defined in other entries, we keep those
+	#and discard the generic one
+	if type_code == "main_scheme":
+		if card_id.ends_with("a") or card_id.ends_with("b"):
+			return false
+		return true
+	
+	return false
 
 func cleanup_bb_code(text):
 	var result = text
@@ -558,6 +489,16 @@ func convert_to_bbcode(text):
 	result = result.replace (">", "]")
 	result = cleanup_bb_code(result)	
 	return result
+
+var _database_patches = {}
+func get_database_patches():
+	if _database_patches:
+		return _database_patches
+	
+	_database_patches = WCUtils.read_json_file_with_user_override("Sets/_cdb_patches.json")	
+
+	return _database_patches
+	
 
 var _seen_images:= {}
 func _load_one_card_definition(card_data, box_name:= "core"):
@@ -584,7 +525,7 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	var card_id = card_data["_code"]	
 
 	#hardcoded patches
-	var patches = CFConst.HARDCODED_DEF_PATCHES.get(card_id, {})
+	var patches = get_database_patches().get(card_id, {})
 	for key in patches:
 		card_data[key] = patches[key]
 
@@ -693,7 +634,7 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	#e.g. "Rhino_2"
 	if (lc_card_type == "villain"):
 		card_data["Name"] = card_data["Name"] + " - " + String(card_data["stage"])
-	if (lc_card_type == "main_scheme" and card_data["stage"].ends_with("A")):
+	if (lc_card_type == "main_scheme" and card_data["stage"]):
 		card_data["Name"] = card_data["Name"] + " - " + String(card_data["stage"])	
 	card_data.erase("name")
 	
@@ -714,11 +655,9 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	
 	#schemes cache
 	if (lc_card_type == "main_scheme"):
-		var full_stage_id = card_data["original_stage"]	
-		if full_stage_id.ends_with("B"):
-			if (not schemes.has(lc_set_code)):
-				schemes[lc_set_code] = []
-			schemes[lc_set_code].push_back(card_data)
+		if (not schemes.has(lc_set_code)):
+			schemes[lc_set_code] = []
+		schemes[lc_set_code].push_back(card_data)
 		
 	var card_set_type_name_code = card_data.get("card_set_type_name_code", "")
 	if card_set_type_name_code == "modular":
@@ -807,11 +746,7 @@ func load_card_definitions() -> Dictionary:
 	
 	#post load cleanup and config
 	setup_traits_as_alterants()
-	
-	#Load scenarios
-	if (primitives.empty()):
-		load_card_scenarios()	
-	
+		
 	#done!
 	cards_loading = false			
 	emit_signal("card_definitions_loaded")
@@ -874,21 +809,6 @@ func get_hero_obligation(hero_id:String):
 	var obligation = obligations[hero_name.to_lower()]
 	return obligation
 
-#returns all schemes belonging to the same collection as scheme_id,
-#sorted in expected appearance order		
-func get_schemes(scheme_id):	
-	#todo error handling
-	var scheme = get_card_by_id(scheme_id)
-	#error correction
-	if !scheme:
-		scheme = get_card_by_id(scheme_id + "b")
-	if !scheme:
-		return []
-	 
-	var set_name = scheme["card_set_code"]
-	var my_schemes = schemes[set_name.to_lower()]
-	my_schemes.sort_custom(WCUtils, "sort_stage")
-	return my_schemes
 
 func get_encounter_cards(set_name:String):
 	var encounters = cards_by_set.get(set_name.to_lower(), [])
@@ -1261,6 +1181,13 @@ func get_failed_files():
 	var filename = "user://failed_image_downloads.json"
 	var _failed_files = WCUtils.read_json_file(filename)
 	failed_files =  _failed_files if _failed_files else {}
+
+	var last_check = failed_files.get("_last_check", 0)
+	var current_time = Time.get_unix_time_from_system()
+	var older_time = current_time - (3600 * 24 * 5)
+	if !last_check or last_check < 	older_time:
+		failed_files = {}
+		failed_files["_last_check"] = current_time
 	#return failed_files
 
 func fail_img_download(card_id):
@@ -1268,6 +1195,7 @@ func fail_img_download(card_id):
 	var filename = "user://failed_image_downloads.json"
 	get_failed_files()
 	failed_files[card_id] = true
+	failed_files["_last_check"] = Time.get_unix_time_from_system()
 	var to_print = to_json(failed_files)	
 	file.open(filename, File.WRITE)
 	file.store_string(to_print)

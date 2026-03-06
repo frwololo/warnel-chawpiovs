@@ -470,8 +470,8 @@
 			]
 		}
 	},
-	"Assault on NORAD": {
-		"reveal_side_a": {
+	"Assault on NORAD - 2A": {
+		"reveal": {
 			"all": [
 				{
 					"ultron_drone": {
@@ -479,9 +479,15 @@
 						"__each_player__": true,
 						"__src_container__": "deck"
 					}
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
-		},
+		}
+	},
+	"Assault on NORAD - 2B": {
 		"villain_step_one_threat_added": {
 			"trigger": "self",
 			"board": {
@@ -1117,8 +1123,8 @@
 			]
 		}
 	},
-	"Countdown to Oblivion": {
-		"reveal_side_a": {
+	"Countdown to Oblivion - 3A": {
+		"reveal": {
 			"all": [
 				{
 					"ultron_drone": {
@@ -1126,9 +1132,16 @@
 						"__each_player__": true,
 						"__src_container__": "deck"
 					}
-				}
+				},
+					{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}				
 			]
 		},
+	},
+	"Countdown to Oblivion - 3B": {
+
 		"alterants": {
 			"board": [
 				{
@@ -4301,8 +4314,8 @@
 			]
 		}
 	},
-	"Secret Rendezvous": {
-		"reveal_side_a": {
+	"Secret Rendezvous - 2A": {
+		"reveal": {
 			"all": [
 				{
 					"name": "move_card_to_container",
@@ -4324,6 +4337,10 @@
 					"grid_name": "enemies_first_player",
 					"subject_index": "retrieve_integer",
 					"src_container": "deck_villain"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
 		}
@@ -4333,7 +4350,7 @@
 			"all": [
 				{
 					"name": "reveal_nemesis",
-					"surge_on_failure": true 
+					"surge_on_failure": true
 				}
 			]
 		}
@@ -5120,7 +5137,17 @@
 			]
 		}
 	},
-	"The Crimson Cowl": {
+	"The Break-In! - 1A": {
+		"setup": {
+			"all": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"The Crimson Cowl - 1A": {
 		"setup": {
 			"all": [
 				{
@@ -5137,9 +5164,15 @@
 							}
 						}
 					]
-				}
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}				
 			]
-		},
+		},	
+	},
+	"The Crimson Cowl - 1B": {
 		"reveal": {
 			"all": [
 				{
@@ -5770,7 +5803,7 @@
 			]
 		}
 	},
-	"Underground Distribution": {
+	"Underground Distribution - 1A": {
 		"setup": {
 			"all": [
 				{
@@ -5785,9 +5818,15 @@
 							}
 						}
 					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
-		},
+		}
+	},
+	"Underground Distribution - 1B": {
 		"reveal": {
 			"all": [
 				{

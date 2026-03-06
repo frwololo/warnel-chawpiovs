@@ -21,8 +21,8 @@ func hero_unlock_gridlock():
 #this could indicate a gridlock where we are not able to unlock more
 #due to a bug 
 func scenario_unlock_gridlock():
-	var villain_unlocks = cfc._get_corrected_scenario_ids("villains_used_for_unlocks")
-	var unlocked_scenarios = cfc.get_unlocked_scenarios()
+	var villain_unlocks = ScenarioDeckData._get_corrected_scenario_ids("villains_used_for_unlocks")
+	var unlocked_scenarios = ScenarioDeckData.get_unlocked_scenarios()
 	for unlocked_scenario_id in unlocked_scenarios:
 		if !unlocked_scenario_id in villain_unlocks:
 			return false
@@ -72,11 +72,11 @@ func victory():
 	villain_defeats[scenario_id] +=1
 	
 	if !unlocked_hero_id:	
-		var villains_already_used_for_unlocks = cfc._get_corrected_scenario_ids("villains_used_for_unlocks")
+		var villains_already_used_for_unlocks = ScenarioDeckData._get_corrected_scenario_ids("villains_used_for_unlocks")
 		var scenario_used_for_unlocks = (scenario_id in villains_already_used_for_unlocks)
 
 		if (!scenario_used_for_unlocks) or scenario_unlock_gridlock():
-			unlocked_scenario_id = cfc.adventure_unlock_next_scenario()
+			unlocked_scenario_id = ScenarioDeckData.adventure_unlock_next_scenario()
 			if unlocked_scenario_id:
 				cfc.game_settings["villains_used_for_unlocks"][scenario_id] = true
 

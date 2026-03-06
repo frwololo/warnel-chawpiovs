@@ -569,7 +569,6 @@ func receive_damage(script: ScriptTask) -> int:
 		attacker = _get_identity_from_script(script)
 		
 	var tags: Array = script.get_property(SP.KEY_TAGS) 
-	var additional_scripts: Array = script.get_property("additional_scripts", []) 
 	var base_amount = script.retrieve_integer_property("amount")
 	
 	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage

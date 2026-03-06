@@ -1,5 +1,5 @@
 {
-	"\"Leave Us Alone!\"": {
+	"\"Leave Us Alone!\" - 1A": {
 		"setup": {
 			"all": [
 				{
@@ -16,9 +16,15 @@
 							}
 						}
 					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
-		},
+		}
+	},
+	"\"Leave Us Alone!\" - 1B": {
 		"interrupt_commit_scheme": {
 			"filter_state_trigger": [
 				{
@@ -1198,8 +1204,8 @@
 			]
 		}
 	},
-	"Edge of Reality": {
-		"reveal_side_a": {
+	"Edge of Reality - 2A": {
+		"reveal": {
 			"all": {
 				"_rules": {
 					"forced": true,
@@ -1217,6 +1223,16 @@
 				]
 			}
 		},
+		"post_reveal": {
+			"all": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Edge of Reality - 2B": {
 		"interrupt_card_moved_to_pile": {
 			"event_filters": {
 				"destination": "discard_any_hero"
@@ -2071,7 +2087,7 @@
 			}
 		}
 	},
-	"Hapless Pedestrians": {
+	"Hapless Pedestrians - 1A": {
 		"setup": {
 			"all": [
 				{
@@ -2093,9 +2109,15 @@
 					"token_name": "sand",
 					"modification": 4,
 					"subject": "previous"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
-		},
+		}
+	},
+	"Hapless Pedestrians - 1B": {
 		"card_token_added": {
 			"trigger": "self",
 			"filter_token_name": "acceleration",
@@ -2808,6 +2830,22 @@
 		}
 	},
 	"Lower Manhattan #27117a": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "ignore_external_acceleration",
+					"alteration": {
+						"func_name": "!count_tokens",
+						"func_params": {
+							"subject": "self",
+							"token_name": "glider"
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		},
 		"special": {
 			"board": [
 				{
@@ -2898,7 +2936,7 @@
 			]
 		}
 	},
-	"Maze of Mirrors": {
+	"Maze of Mirrors - 1A": {
 		"setup": {
 			"all": {
 				"_rules": {
@@ -2925,6 +2963,16 @@
 				]
 			}
 		},
+		"post_setup": {
+			"all": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Maze of Mirrors - 1B": {
 		"interrupt_card_moved_to_pile": {
 			"event_filters": {
 				"destination": "discard_any_hero"
@@ -2993,6 +3041,24 @@
 							]
 						}
 					]
+				}
+			]
+		}
+	},
+	"Midtown Manhattan #27118a": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "ignore_external_acceleration",
+					"alteration": {
+						"func_name": "!count_tokens",
+						"func_params": {
+							"subject": "self",
+							"token_name": "glider"
+						}
+					},
+					"trigger": "self"
 				}
 			]
 		}
@@ -4211,8 +4277,8 @@
 			]
 		}
 	},
-	"Sinister Beatdown": {
-		"reveal_side_a": {
+	"Sinister Beatdown - 2A": {
+		"reveal": {
 			"all": [
 				{
 					"name": "conditional_script",
@@ -4282,9 +4348,15 @@
 							]
 						}
 					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
-		},
+		}
+	},
+	"Sinister Beatdown - 2B": {
 		"ambush": {
 			"board": [
 				{
@@ -4346,7 +4418,7 @@
 			]
 		}
 	},
-	"Sinister Synchronization": {
+	"Sinister Synchronization - 1A": {
 		"setup": {
 			"all": [
 				{
@@ -4412,9 +4484,15 @@
 							}
 						}
 					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
-		},
+		}
+	},
+	"Sinister Synchronization - 1B": {
 		"ambush": {
 			"board": [
 				{
@@ -4476,32 +4554,36 @@
 			]
 		}
 	},
-	"Skies Over New York #27116a": {
+	"Skies Over New York - A": {
 		"setup": {
 			"board": [
 				{
 					"name": "move_card_to_board",
 					"subject": "tutor",
 					"subject_count": "all",
-					"src_container": "deck_villain",
+					"src_container": ["deck_villain", "set_aside"],
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
-								"Name": "Lower Manhattan"
+								"Name": "Lower Manhattan - B"
 							}
 						},
 						{
 							"filter_properties": {
-								"Name": "Midtown Manhattan"
+								"Name": "Midtown Manhattan - C"
 							}
 						},
 						{
 							"filter_properties": {
-								"Name": "Upper Manhattan"
+								"Name": "Upper Manhattan - D"
 							}
 						}
 					]
 				},
+			]
+		},
+		"post_setup": {
+			"all": [
 				{
 					"name": "mod_tokens",
 					"modification": 1,
@@ -4509,15 +4591,16 @@
 					"subject": "Midtown Manhattan"
 				},
 				{
-					"name": "move_card_to_container",
-					"dest_container": "set_aside",
+					"name": "move_card_to_board",
+					"grid_name": "villain_misc",
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
 					"subject": "self"
 				}
 			]
 		}
-	},
-	"Skies Over New York #27116b": {
-		"TODO": ""
 	},
 	"Sky-Destroyer": {
 		"response_card_played": {
@@ -5416,7 +5499,22 @@
 		"TODO": ""
 	},
 	"Upper Manhattan #27119a": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "ignore_external_acceleration",
+					"alteration": {
+						"func_name": "!count_tokens",
+						"func_params": {
+							"subject": "self",
+							"token_name": "glider"
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		}
 	},
 	"Venom - 1": {
 		"response_attack_happened": {
@@ -5558,7 +5656,70 @@
 		}
 	},
 	"Venom Goblin - 1": {
-		"TODO": ""
+		"response": {
+			"event_name": [
+				"enemy_attack_happened",
+				"enemy_scheme_happened"
+			],
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"2 Threat": [
+					{
+						"name": "move_token_to",
+						"token_name": "glider",
+						"source": "current",
+						"subject": "boardseek",
+						"subject_count": 1,
+						"sort_by": "function",
+						"sort_name": "count_tokens",
+						"func_params": {
+							"token_name": "threat"
+						},
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "main_scheme"
+								}
+							}
+						]
+					},
+					{
+						"name": "add_threat",
+						"amount": 2,
+						"subject": "previous"
+					}
+				],
+				"Special": [
+					{
+						"name": "move_token_to",
+						"token_name": "glider",
+						"source": "current",
+						"subject": "boardseek",
+						"subject_count": 1,
+						"sort_by": "function",
+						"sort_name": "count_tokens",
+						"func_params": {
+							"token_name": "threat"
+						},
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "main_scheme"
+								}
+							}
+						]
+					},
+					{
+						"name": "sequence",
+						"sequence_ability": "special",
+						"subject": "previous"
+					}
+				]
+			}
+		}
 	},
 	"Venom Goblin - 2": {
 		"TODO": "",

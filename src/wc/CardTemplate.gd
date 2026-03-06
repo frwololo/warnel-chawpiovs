@@ -2353,6 +2353,8 @@ func changed_form(details):
 	
 
 func flip_doublesided_card():
+	if !self.is_onboard():
+		return false
 	var new_card = cfc.NMAP.board.flip_doublesided_card(self)
 
 	if !new_card:

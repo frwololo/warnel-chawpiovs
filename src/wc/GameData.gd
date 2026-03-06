@@ -547,14 +547,18 @@ func move_to_next_scheme(current_scheme):
 			set_aside(current_scheme)	
 				
 
-			var func_return = new_card.execute_scripts(new_card, "reveal_side_a")
-			while func_return is GDScriptFunctionState && func_return.is_valid():
-				func_return = func_return.resume()			
+#Obsolete, delete 
+#			var func_return = new_card.execute_scripts(new_card, "reveal_side_a")
+#			while func_return is GDScriptFunctionState && func_return.is_valid():
+#				func_return = func_return.resume()			
 			
-			func_return = new_card.execute_scripts(new_card, "reveal")
+			var func_return = new_card.execute_scripts(new_card, "reveal")
 			while func_return is GDScriptFunctionState && func_return.is_valid():
 				func_return = func_return.resume()			
-		
+
+			func_return = new_card.execute_scripts(new_card, "post_reveal")
+			while func_return is GDScriptFunctionState && func_return.is_valid():
+				func_return = func_return.resume()			
 			
 			return new_card
 	
@@ -791,7 +795,7 @@ func get_currently_playing_hero_ids():
 	
 var _priority_scripts = []
 var _current_priority_script = {}
-func add_script_to_execute(owner, trigger_card, trigger, trigger_details, run_type):
+func add_script_to_execute(owner, trigger_card, trigger, trigger_details = {}, run_type = CFInt.RunType.NORMAL):
 	_priority_scripts.append(
 		{
 			"owner": owner,
@@ -1295,7 +1299,6 @@ func villain_threat():
 	if not main_schemes:
 		return CFConst.ReturnCode.FAILED
 
-	var all_schemes:Array = cfc.NMAP.board.get_grid("schemes").get_all_cards()
 	var all_cards:Array = cfc.NMAP.board.get_all_cards()
 	for main_scheme in main_schemes:		
 		#basic threat computation, check if it's a constant or multiplied by numbers of players	
@@ -1304,12 +1307,17 @@ func villain_threat():
 		if (not escalation_threat_fixed):
 			escalation_threat *= get_team_size()
 		
-		for card in all_cards:
-			#we add all acceleration tokens	
-			escalation_threat += card.tokens.get_token_count("acceleration")
-			
-			#we also add acceleration icons from other schemes
-			escalation_threat += card.get_property("scheme_acceleration", 0, true)
+		#venom goblin scenario (sinister motives) states that main schemes ignore other counters
+		#unless they are the active scheme. This is achieved by setting the "ignore_external_acceleration" on non active main schemes
+		if main_scheme.get_property("ignore_external_acceleration", 0, true):
+			escalation_threat += main_scheme.tokens.get_token_count("acceleration")
+		else:
+			for card in all_cards:
+				#we add all acceleration tokens	
+				escalation_threat += card.tokens.get_token_count("acceleration")
+				
+				#we also add acceleration icons from other schemes
+				escalation_threat += card.get_property("scheme_acceleration", 0, true)
 		if escalation_threat:
 			var villain = gameData.get_villain()
 			var task = ScriptTask.new(villain, {"name": "add_threat", "amount": escalation_threat, "tags": ["villain_step_one_threat"]}, villain, {})
@@ -1418,7 +1426,7 @@ func reveal_current_encounter(target_id = 0):
 
 
 	_current_encounter.execute_scripts(_current_encounter, "reveal") 
-
+	_current_encounter.execute_scripts(_current_encounter, "post_reveal") 
 
 func is_client_aligned(a, b):
 	if !a or !b:

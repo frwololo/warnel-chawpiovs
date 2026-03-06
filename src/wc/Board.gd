@@ -336,7 +336,7 @@ func grid_setup():
 var _hero_grid_layout_cache = {}
 func get_hero_grid_setup() :
 	if _hero_grid_layout_cache:
-		_hero_grid_layout_cache
+		return _hero_grid_layout_cache
 		
 	_hero_grid_layout_cache = HERO_GRID_SETUP.duplicate()
 	var more_decks = heroes_extra_deck_names()
@@ -528,6 +528,10 @@ func post_cards_moved_load():
 	if func_return is GDScriptFunctionState && func_return.is_valid():
 		yield(func_return, "completed")		
 		
+
+	func_return = scheme.execute_scripts_no_stack(scheme, "post_setup")
+	if func_return is GDScriptFunctionState && func_return.is_valid():
+		yield(func_return, "completed")		
 	
 	#execute setup for remaining cards, if any 
 	for card in get_all_cards(true):
@@ -576,7 +580,7 @@ func load_scheme(card_id, call_preloaded = {"shuffle" : false}):
 func load_heroes():
 	var hero_count: int = get_team_size()
 	for i in range (hero_count): 
-		var alter_ego = heroZones[i+1].load_starting_identity()
+		var _alter_ego = heroZones[i+1].load_starting_identity()
 
 
 	
@@ -1235,6 +1239,10 @@ func flip_doublesided_card(card:WCCard):
 				new_card.position = slot.rect_global_position
 				slot.set_occupying_card(new_card)
 			new_card.set_state(Card.CardState.ON_PLAY_BOARD)
+
+			var func_return = new_card.execute_scripts(new_card, "reveal")
+			while func_return is GDScriptFunctionState && func_return.is_valid():
+				func_return = func_return.resume()					
 			#new_card.reorganize_self()
 			return new_card
 		

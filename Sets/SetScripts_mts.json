@@ -413,8 +413,8 @@
 			]
 		}
 	},
-	"All Hail King Loki": {
-		"reveal_side_a": {
+	"All Hail King Loki - 1A": {
+		"setup": {
 			"all": [
 				{
 					"name": "deal_encounter",
@@ -437,9 +437,15 @@
 					"subject": "index",
 					"subject_index": "top",
 					"src_container": "deck_infinity_stone"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
-		},
+		}
+	},
+	"All Hail King Loki - 1B": {
 		"card_moved_to_pile": {
 			"event_filters": {
 				"destination": "victory_display"
@@ -531,7 +537,17 @@
 			]
 		}
 	},
-	"Attack on Knowhere": {
+	"Attack on Knowhere - 1A": {
+		"setup": {
+			"all": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Attack on Knowhere - 1B": {
 		"reveal": {
 			"all": {
 				"_rules": {
@@ -857,8 +873,8 @@
 			]
 		}
 	},
-	"Balance the Scales": {
-		"reveal_side_a": {
+	"Balance the Scales - 2A": {
+		"reveal": {
 			"all": {
 				"_rules": {
 					"for_each_player": true,
@@ -898,6 +914,14 @@
 					}
 				]
 			}
+		},
+		"post_reveal": {
+			"all": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"Band Together": {
@@ -4729,7 +4753,7 @@
 	"Odin - All-Father #21139b": {
 		"TODO": "campaign mode not supported"
 	},
-	"Odin's Torment": {
+	"Odin's Torment - 1A": {
 		"setup": {
 			"board": [
 				{
@@ -4791,9 +4815,15 @@
 							}
 						}
 					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
-		},
+		}
+	},
+	"Odin's Torment - 1B": {
 		"interrupt": {
 			"event_name": "card_dies",
 			"filter_state_trigger": [
@@ -6902,23 +6932,7 @@
 			]
 		}
 	},
-	"The Armies of Thanos": {
-		"associated_villain": {
-			"all": [
-				{
-					"name": "nop",
-					"subject": "boardseek",
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"shortname": "Corvus Glaive"
-							}
-						}
-					]
-				}
-			]
-		},
-		"_comments": "no use of reveal_side_a here because this is spawned by another card (Under Siege)",
+	"The Armies of Thanos - 2A": {
 		"reveal": {
 			"all": {
 				"_rules": {
@@ -6968,6 +6982,31 @@
 					}
 				]
 			}
+		},
+		"post_reveal": {
+			"all": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"The Armies of Thanos - 2B": {
+		"associated_villain": {
+			"all": [
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Corvus Glaive"
+							}
+						}
+					]
+				}
+			]
 		},
 		"interrupt": {
 			"event_name": "stage_completed",
@@ -7053,7 +7092,17 @@
 			}
 		}
 	},
-	"The Infinity Stones": {
+	"The Infinity Stones - 1A": {
+		"setup": {
+			"all": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"The Infinity Stones - 1B": {
 		"reveal": {
 			"all": [
 				{
@@ -7147,8 +7196,8 @@
 			]
 		}
 	},
-	"The Power Stone": {
-		"reveal_side_a": {
+	"The Power Stone - 2A": {
+		"reveal": {
 			"all": [
 				{
 					"name": "move_card_to_container",
@@ -7160,9 +7209,15 @@
 				{
 					"name": "shuffle_container",
 					"dest_container": "deck_villain"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
-		},
+		}
+	},
+	"The Power Stone - 2B": {
 		"reveal": {
 			"_comments": "split from side a here otherwise the for_each_player would apply to shuffle as well",
 			"all": {
@@ -7403,22 +7458,7 @@
 			]
 		}
 	},
-	"Under Siege": {
-		"associated_villain": {
-			"all": [
-				{
-					"name": "nop",
-					"subject": "boardseek",
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"shortname": "Proxima Midnight"
-							}
-						}
-					]
-				}
-			]
-		},
+	"Under Siege - 1A": {
 		"setup": {
 			"all": [
 				{
@@ -7429,7 +7469,28 @@
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
-								"Name": "The Armies of Thanos"
+								"Name": "The Armies of Thanos - 1A"
+							}
+						}
+					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Under Siege - 1B": {
+		"associated_villain": {
+			"all": [
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Proxima Midnight"
 							}
 						}
 					]

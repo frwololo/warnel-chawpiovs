@@ -36,8 +36,8 @@ func lose_focus():
 	
 
 func set_display_name(display_name):
-	var villain_unlocks = cfc._get_corrected_scenario_ids("villains_used_for_unlocks")
-	if (!scenario_id in villain_unlocks) and cfc.get_locked_scenarios():
+	var villain_unlocks = ScenarioDeckData._get_corrected_scenario_ids("villains_used_for_unlocks")
+	if (!scenario_id in villain_unlocks) and ScenarioDeckData.get_locked_scenarios():
 		display_name = "*" + display_name			
 		
 	scenario_name.set_text(display_name)	

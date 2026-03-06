@@ -204,7 +204,7 @@ func _load_scenarios():
 	var no_scenario_loaded = true
 	#sorting by alphabetical name of villain
 	var names_to_id = {}
-	for scenario_id in cfc.get_unlocked_scenarios():
+	for scenario_id in ScenarioDeckData.get_unlocked_scenarios():
 		var villain = ScenarioDeckData.get_first_villain_from_scheme(scenario_id)
 		if villain:
 			var	villain_name = villain["shortname"]

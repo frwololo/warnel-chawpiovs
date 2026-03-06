@@ -18,12 +18,40 @@ var grid_setup:= {}
 var scenario_data: = {}
 var set_aside := []
 
+const all_scenarios:= []
+const primitives:= {}
+
 func _init():
 	pass
 
 
+static func _get_corrected_scheme_card_id(key):
+	if !cfc.get_card_by_id(key):
+		key = key + "a"
+		if !cfc.get_card_by_id(key):
+			key = ""
+			var _error = 1
+	return key	
+
+
+static func _load_card_scenarios():
+	var json_card_data : Dictionary
+	json_card_data = WCUtils.read_json_file_with_user_override("Sets/_scenarios.json")	
+	for key in json_card_data:
+		var card_data = json_card_data[key]
+		#error correction
+		key = _get_corrected_scheme_card_id(key)
+		if !key:
+			continue
+		var card_code = _get_corrected_scheme_card_id(card_data["code"])
+		if !card_code:
+			continue		
+		primitives[card_code] = card_data;
+		all_scenarios.append(key)
+	
+
 static func get_array_data(scheme_id, key):
-	var scheme_primitive = cfc.primitives.get(scheme_id, {})
+	var scheme_primitive = primitives.get(scheme_id, {})
 	if !scheme_primitive:
 		return []
 	
@@ -62,7 +90,7 @@ static func get_villains_from_scheme(scheme_id, expert_mode:= false):
 #the typical use case is just one villain though, with multiple stages
 #[["1234", "2345"]]
 static func get_villain_id_groups_from_scheme(scheme_id, expert_mode:= false):
-	var scheme_primitive = cfc.primitives.get(scheme_id, {})
+	var scheme_primitive = primitives.get(scheme_id, {})
 	if !scheme_primitive:
 		return []
 		
@@ -127,7 +155,7 @@ func get_villains(index = 0):
 func load_from_villain(villain_id):
 	if !villain_id:
 		return
-	for scheme_id in cfc.primitives:
+	for scheme_id in primitives:
 		for expert in [false, true]:
 			var villain_groups = get_villain_id_groups_from_scheme(scheme_id, expert)
 			for villain_ids in villain_groups:
@@ -151,13 +179,14 @@ func load_from_dict(_scenario:Dictionary):
 		print_debug("Scheme ID not set in load_from_dict")
 		return
 	
-	schemes = cfc.get_schemes(scheme_card_id)
+	schemes = get_schemes(scheme_card_id)
 	if !schemes:
 		var _error =1
 		print_debug("Can't find schemes for " + scheme_card_id)
+		var tmp = cfc.schemes
 		return	
 		
-	scenario_data = cfc.primitives[scheme_card_id].duplicate(true)
+	scenario_data = primitives[scheme_card_id].duplicate(true)
 	
 	is_expert_mode =  _scenario.get("expert_mode", false)
 	scenario_options["expert_mode"] = is_expert_mode
@@ -175,6 +204,26 @@ func load_from_dict(_scenario:Dictionary):
 	_load_extra_rules_from_encounters()
 	setup_grid()
 	gameData.theGameObserver.setup(self)	
+
+#returns all schemes belonging to the same collection as scheme_id,
+#sorted in expected appearance order		
+static func get_schemes(scheme_id):	
+	#todo error handling
+	var scheme = cfc.get_card_by_id(scheme_id)
+	#error correction
+	if !scheme:
+		scheme = cfc.get_card_by_id(scheme_id + "b")
+	if !scheme:
+		return []
+	 
+	var set_name = scheme["card_set_code"]
+	if !set_name:
+		return []
+		
+	var my_schemes = cfc.schemes.get(set_name.to_lower(), [])
+	my_schemes.sort_custom(WCUtils, "sort_stage")
+	return my_schemes
+
 
 func get_scenario_option(key):
 	return scenario_options.get(key, 0)
@@ -341,6 +390,71 @@ func get_encounter_deck():
 		var obligation_card = cfc.get_hero_obligation(hero_data.get_hero_id())
 		encounter_deck.push_back(obligation_card)
 	return encounter_deck
+
+#
+# Adventure mode functions
+#
+
+static func _get_corrected_scenario_ids(settings_key = "unlocked_villains"):
+	var _unlocked_scenarios_ids = cfc.game_settings.get(settings_key, [])
+
+	var unlocked_scenarios_ids = []
+	for key in _unlocked_scenarios_ids:
+		key = _get_corrected_scheme_card_id(key)
+		if !key:
+			continue
+		unlocked_scenarios_ids.append(key)
+	
+	return 	unlocked_scenarios_ids
+
+static func get_unlocked_scenarios():
+	if !all_scenarios:
+		_load_card_scenarios()
+		
+	if !cfc.is_adventure_mode():
+		return all_scenarios
+	
+	var unlocked_scenarios_ids = _get_corrected_scenario_ids()
+	
+	if !unlocked_scenarios_ids:
+		var _scenario_id = adventure_unlock_next_scenario()
+		unlocked_scenarios_ids = cfc.game_settings.get("unlocked_villains", [])
+	
+	return unlocked_scenarios_ids
+
+static func get_locked_scenarios():
+	var unlocked_scenarios = get_unlocked_scenarios()
+
+	var result = all_scenarios.duplicate()
+	for scenario_id in unlocked_scenarios:
+			result.erase(scenario_id)
+	return result
+
+static func adventure_unlock_next_scenario():
+	if !cfc.game_settings.has("unlocked_villains"):
+		cfc.game_settings["unlocked_villains"] = []
+		
+	var unlocked_scenario_ids = _get_corrected_scenario_ids()
+
+		
+	var all_scenario_ids = 	all_scenarios.duplicate()
+	for scenario_id in unlocked_scenario_ids:
+		all_scenario_ids.erase(scenario_id)
+
+	#nothing left to unlock
+	if !all_scenario_ids:
+		return ""
+		
+#	var selected_scenario_id = all_scenario_ids[randi() % all_scenario_ids.size()]
+	var selected_scenario_id = all_scenario_ids[0]
+	cfc.game_settings["unlocked_villains"].append(selected_scenario_id)
+	cfc.save_settings()
+	return selected_scenario_id	
+
+
+#
+# Utility functions
+#
 
 func reset():
 	scheme_card_id= ""

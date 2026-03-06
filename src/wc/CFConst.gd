@@ -633,7 +633,8 @@ const AUTO_KEYWORDS := {
 	"attack_indirect_damage": "int",
 	"blank_abilities": "int",
 	"cannot_change_form": "int",
-	"cannot_be_canceled": "int",				
+	"cannot_be_canceled": "int",
+	"ignore_external_acceleration": "int",				
 }
 
 #list of events for which we don't show a GUI announce to the user by default
@@ -801,136 +802,6 @@ const DEFAULT_SETTINGS:= {
 
 const RESOURCES_URL = "https://wololo.net/wc/resources/"
 
-const HARDCODED_DEF_PATCHES = {
-	"01043a": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01043a.jpg"		
-	},
-	"01043b": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01043b.jpg"		
-	},
-	"01043c": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01043c.jpg"		
-	},
-	"01043d": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01043d.jpg"		
-	},
-	"01116b":{
-		"imagesrc": "/bundles/cards/01116.png"
-	},
-	"01117b":{
-		"imagesrc": "/bundles/cards/01117.png"
-	},	
-	"01137b":{
-		"imagesrc": "/bundles/cards/01137.png"
-	},	
-	"01138b":{
-		"imagesrc": "/bundles/cards/01138.png"
-	},
-	"01139b":{
-		"imagesrc": "/bundles/cards/01139.png"
-	},			
-	"01144": {
-		"imagesrc": "https://wololo.net/wc/images/01144.png"		
-	},
-	"01144a": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01144a.jpg"		
-	},	
-	"01144b": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01144b.jpg"		
-	},	
-	"01144c": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01144c.jpg"		
-	},							
-	"01097b": {
-		"imagesrc": "/bundles/cards/01097.png"
-	},
-	"04061b":{
-		"imagesrc": "/bundles/cards/04061.png"
-	},	
-	"04062b":{
-		"imagesrc": "/bundles/cards/04062.png"
-	},
-	"04063b":{
-		"imagesrc": "/bundles/cards/04063.png"
-	},	
-	"04079b":{
-		"imagesrc": "/bundles/cards/04079.png"
-	},	
-	"04096b":{
-		"imagesrc": "/bundles/cards/04096.png"
-	},
-	"04112b":{
-		"imagesrc": "/bundles/cards/04112.png"
-	},	
-	"04113b":{
-		"imagesrc": "/bundles/cards/04113.png"
-	},					
-	"04128": {
-		"name": "The Rise of Red Skull" #https://github.com/zzorba/marvelsdb/issues/339
-	},
-	"04128b":{
-		"imagesrc": "/bundles/cards/04128.png"
-	},	
-	"04129b":{
-		"imagesrc": "/bundles/cards/04129.png"
-	},			
-	"04150": {
-		"boost": 1 #https://github.com/zzorba/marvelsdb/issues/342
-	},
-	"21041": {
-		"subname": "Noh-Varr" #https://github.com/zzorba/marvelsdb/issues/345
-	},	
-	"21104"	: {
-		"name": "Corvus's Glaive", #https://github.com/zzorba/marvelsdb/issues/343
-		"attack": 1,
-	},
-	"21074b":{
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21074b.jpg"
-	},
-	"21075b":{
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21075b.jpg"
-	},		
-	"21098b":{
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21098b.jpg"
-	},
-	"21099b":{
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21099b.jpg"
-	},	
-	"21100a":{
-		"imagesrc": "/bundles/cards/21100.png"
-	},		
-	"21100b":{
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21100b.jpg"
-	},		
-	"21114b":{
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21114b.jpg"
-	},
-	"21115b":{
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21115b.jpg"
-	},	
-	"21124":{
-		"real_text": "<b>When Defeated</b>: Choose and Discard an Infinity Stone from Play"
-	},
-	"21127":{
-		"real_text": "Villainous. (When this minion activates, give it a boost card.)\n<hr />\n[star] <b>Boost</b>: Give this enemy 1 additional boost card"
-	},
-	"21136b":{
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21136b.jpg"
-	},	
-	"21137b":{
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21137b.jpg"
-	},						
-	"21138b":{
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21138b.jpg"
-	},	
-	"21165b":{
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21165b.jpg"
-	},
-	"21167": {
-		"scheme_amplify": 0 #https://github.com/zzorba/marvelsdb/issues/347
-	}				
-	
-}
 
 #if a menu only has one entry, it will auto execute it whenever possible
 

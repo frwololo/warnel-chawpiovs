@@ -213,7 +213,17 @@
 	"Anti-Hero Propaganda": {
 		"TODO": "campaign mode unsupported"
 	},
-	"Attack on Mount Athena": {
+	"Attack on Mount Athena - 1A": {
+		"setup": {
+			"all": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Attack on Mount Athena - 1B": {
 		"reveal": {
 			"all": [
 				{
@@ -2449,7 +2459,45 @@
 			"trigger": "self"
 		}
 	},
-	"Hunting Down Heroes": {
+	"Hunting Down Heroes - 1A": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck_villain",
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_captive": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Hydra Patrol"
+							}
+						}
+					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Hunting Down Heroes - 1B": {
 		"step_ended": {
 			"event_filters": {
 				"step_name": "VILLAIN_THREAT"
@@ -2497,38 +2545,6 @@
 					}
 				]
 			}
-		},
-		"setup": {
-			"all": [
-				{
-					"name": "move_card_to_container",
-					"subject": "tutor",
-					"subject_count": "all",
-					"src_container": "deck_villain",
-					"dest_container": "set_aside",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"trait_captive": 1
-							}
-						}
-					]
-				},
-				{
-					"name": "move_card_to_board",
-					"subject": "tutor",
-					"src_container": [
-						"deck_villain"
-					],
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"Name": "Hydra Patrol"
-							}
-						}
-					]
-				}
-			]
 		}
 	},
 	"Icy Grip": {
@@ -3115,17 +3131,23 @@
 			]
 		}
 	},
-	"New World Hydra": {
-		"reveal_side_a": {
+	"New World Hydra - 2A": {
+		"reveal": {
 			"all": [
 				{
 					"name": "reveal_encounter",
 					"subject": "index",
 					"subject_index": "top",
 					"src_container": "deck_side_schemes"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
-		},
+		}
+	},
+	"New World Hydra - 2B": {
 		"step_ended": {
 			"event_filters": {
 				"step_name": "VILLAIN_THREAT"
@@ -3140,7 +3162,48 @@
 			]
 		}
 	},
-	"None Shall Pass": {
+	"None Shall Pass - 1A": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "environment"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "discard_villain",
+					"dest_container": "deck_villain"
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"None Shall Pass - 1B": {
 		"step_ended": {
 			"event_filters": {
 				"step_name": "VILLAIN_THREAT"
@@ -3175,41 +3238,6 @@
 					"filter_properties": {
 						"type_code": "environment"
 					}
-				}
-			]
-		},
-		"setup": {
-			"all": [
-				{
-					"name": "move_card_to_container",
-					"subject": "grab_until",
-					"src_container": "deck_villain",
-					"dest_container": "discard_villain",
-					"filter_state_grab_until": [
-						{
-							"filter_properties": {
-								"type_code": "environment"
-							}
-						}
-					]
-				},
-				{
-					"name": "move_card_to_board",
-					"subject": "index",
-					"subject_count": 1,
-					"subject_index": "retrieve_integer",
-					"src_container": "deck_villain"
-				},
-				{
-					"name": "move_card_to_container",
-					"subject": "tutor",
-					"subject_count": "all",
-					"src_container": "discard_villain",
-					"dest_container": "deck_villain"
-				},
-				{
-					"name": "shuffle_container",
-					"dest_container": "deck_villain"
 				}
 			]
 		}
@@ -5056,7 +5084,17 @@
 			"trigger": "self"
 		}
 	},
-	"The Getaway": {
+	"The Getaway - 3A": {
+		"setup": {
+			"all": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"The Getaway - 3B": {
 		"reveal": {
 			"all": [
 				{
@@ -5068,7 +5106,17 @@
 			]
 		}
 	},
-	"The Infinity Stone": {
+	"The Infinity Stone - 2A": {
+		"setup": {
+			"all": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"The Infinity Stone - 2B": {
 		"reveal": {
 			"all": [
 				{
@@ -5080,7 +5128,7 @@
 			]
 		}
 	},
-	"The Island of Dr. Zola": {
+	"The Island of Dr. Zola - 1A": {
 		"setup": {
 			"all": [
 				{
@@ -5109,9 +5157,15 @@
 						}
 					],
 					"for_each_player": true
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
-		},
+		}
+	},
+	"The Island of Dr. Zola - 1B": {
 		"step_ended": {
 			"event_filters": {
 				"step_name": "VILLAIN_THREAT"
@@ -5175,7 +5229,7 @@
 			]
 		}
 	},
-	"The Mad Doctor": {
+	"The Mad Doctor - 2A": {
 		"reveal": {
 			"all": {
 				"_rules": {
@@ -5206,6 +5260,16 @@
 				]
 			}
 		},
+		"post_reveal": {
+			"all": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"The Mad Doctor - 2B": {
 		"step_ended": {
 			"event_filters": {
 				"step_name": "VILLAIN_THREAT"
@@ -5318,7 +5382,7 @@
 			}
 		}
 	},
-	"The Rise of Red Skull": {
+	"The Rise of Red Skull - 1A": {
 		"setup": {
 			"all": [
 				{
@@ -5367,9 +5431,15 @@
 							}
 						}
 					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
-		},
+		}
+	},
+	"The Rise of Red Skull - 1B": {
 		"step_ended": {
 			"event_filters": {
 				"step_name": "VILLAIN_THREAT"

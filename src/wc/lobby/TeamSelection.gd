@@ -132,7 +132,7 @@ func _ready():
 			cfc._rpc(self, "assign_hero", "01001a", 0)
 			cfc._rpc(self, "assign_hero", "01010a", 1)
 			yield(get_tree().create_timer(0.5), "timeout")
-			scenario_select("01097")
+			scenario_select("01097a")
 			yield(get_tree().create_timer(0.5), "timeout")	
 			if CFConst.DEBUG_AUTO_START_MULTIPLAYER:			
 				_launch_server_game()

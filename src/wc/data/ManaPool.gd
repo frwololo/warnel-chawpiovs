@@ -50,7 +50,7 @@ func compute_missing(cost:ManaCost) -> ManaCost:
 		#skip specific cases
 		if (ResourceMana.WILD == k) or (ResourceMana.UNCOLOR == k):
 			continue
-		if (temp_pool.pool[k] >= cost.pool[k]) or force_printed_cost:
+		if (temp_pool.pool[k] >= cost.pool[k]) or cost.force_printed_cost:
 			temp_pool.pool[k] -= cost.pool[k]
 		else:
 			#if not enough to pay the exact color, we can use the WILD resource

@@ -508,3 +508,24 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 	var result = WCUtils.is_element1_in_element2(filters, trigger_details, ["tags"])
 
 	return result
+
+func compare_string_properties(property_filters, card, property, comparison_type):
+	var card_property
+	if property == "Name":
+		card_property = card.canonical_name
+	else:
+		card_property = card.get_property(property, "")
+	var result =  CFUtils.compare_strings(
+					str(property_filters[property]),
+					str(card_property),
+					comparison_type)
+	if result:
+		return true
+		
+		
+	card_property = card.get_property("secondary_" + property, "", true)
+	return CFUtils.compare_strings(
+					str(property_filters[property]),
+					str(card_property),
+					comparison_type)
+		

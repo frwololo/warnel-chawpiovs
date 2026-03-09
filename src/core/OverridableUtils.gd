@@ -128,3 +128,15 @@ func filter_trigger(
 		_trigger_details) -> bool:
 			return true
 
+
+func compare_string_properties(property_filters, card, property, comparison_type):
+	var card_property
+	if property == "Name":
+		card_property = card.canonical_name
+	else:
+		card_property = card.get_property(property, "")
+	return  CFUtils.compare_strings(
+					str(property_filters[property]),
+					str(card_property),
+					comparison_type)
+

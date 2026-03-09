@@ -1405,7 +1405,145 @@
 		}
 	},
 	"Festering Mass": {
-		"TODO": "",
+		"on_load": {
+			"all":
+			[
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"trait_symbiote": 1,
+												"comparison": "ge"
+											},
+											"filter_properties2": {
+												"type_code": "environment"
+											}
+										}
+									],
+									"subject_exclude": "self"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "modify_properties",
+									"tags": [
+										"Init"
+									],
+									"subject": "self",
+									"set_properties": {
+										"secondary_type_code": ""
+									}
+								},
+							]
+						}
+					],
+					"else": [							
+						{
+							"name": "modify_properties",
+							"tags": [
+								"Init"
+							],
+							"subject": "self",
+							"set_properties": {
+								"secondary_type_code": "environment"
+							}
+						},
+					]
+				}
+			]
+		},	
+		"card_moved_to_board": {
+			"board":
+			[
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"trait_symbiote": 1,
+												"comparison": "ge"
+											},
+											"filter_properties2": {
+												"type_code": "environment"
+											}
+										}
+									],
+									"subject_exclude": "self"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "modify_properties",
+									"tags": [
+										"Init"
+									],
+									"subject": "self",
+									"set_properties": {
+										"secondary_type_code": ""
+									}
+								},
+							]
+						}
+					],
+					"else": [							
+						{
+							"name": "modify_properties",
+							"tags": [
+								"Init"
+							],
+							"subject": "self",
+							"set_properties": {
+								"secondary_type_code": "environment"
+							}
+						},
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_symbiote",
+					"alteration": {
+						"if": {
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_properties": {
+											"trait_symbiote": 1,
+											"comparison": "ge"
+										},
+										"filter_properties2": {
+											"type_code": "environment"
+										}
+									}
+								],
+								"subject_exclude": "self"
+							}
+						},
+						"then":  0,
+						"else":	1,
+					},
+					"trigger": "self"
+				},			
+			]		
+		},
 		"boost": {
 			"all": [
 				{
@@ -2884,10 +3022,108 @@
 					}
 				}
 			]
+		},
+		"interrupt": {
+			"event_name": "stage_completed",
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"set_to_mod": true,
+					"token_name": "threat",
+					"subject": "self"
+				},
+				{
+					"name": "move_token_to",
+					"token_name": "glider",
+					"source": "self",
+					"subject": "boardseek",
+					"subject_exclude": "self",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "main_scheme"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_token_to",
+					"token_name": "acceleration",
+					"source": "self",
+					"subject": "boardseek",
+					"subject_exclude": "self",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "main_scheme"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"grid_name": "villain_misc",
+					"subject": "self"
+				},				
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"Lower Manhattan #27117b": {
-		"TODO": ""
+		"card_moved_to_board": {
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"trait_symbiote": 1
+											},
+											"filter_properties2": {
+												"type_code": "environment"
+											}
+										}
+									]
+								},
+								"divider": 2
+							},
+							"nested_tasks": [
+								{
+									"name": "defeat"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
 	},
 	"Manipulated Mind": {
 		"TODO": ""
@@ -3061,10 +3297,136 @@
 					"trigger": "self"
 				}
 			]
+		},
+		"special": {
+			"board": [
+				{
+					"name": "indirect_damage",
+					"subject": "current_hero_target",
+					"amount": {
+						"if": {
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_properties": {
+											"trait_symbiote": 1
+										},
+										"filter_properties2": {
+											"type_code": "environment"
+										}
+									}
+								]
+							}
+						},
+						"then": 3,
+						"else": 2
+					}
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "stage_completed",
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"set_to_mod": true,
+					"token_name": "threat",
+					"subject": "self"
+				},
+				{
+					"name": "move_token_to",
+					"token_name": "glider",
+					"source": "self",
+					"subject": "boardseek",
+					"subject_exclude": "self",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "main_scheme"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_token_to",
+					"token_name": "acceleration",
+					"source": "self",
+					"subject": "boardseek",
+					"subject_exclude": "self",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "main_scheme"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"grid_name": "villain_misc",
+					"subject": "self"
+				},				
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"Midtown Manhattan #27118b": {
-		"TODO": ""
+		"card_moved_to_board": {
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"trait_symbiote": 1
+											},
+											"filter_properties2": {
+												"type_code": "environment"
+											}
+										}
+									]
+								},
+								"divider": 2
+							},
+							"nested_tasks": [
+								{
+									"name": "defeat"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
 	},
 	"Miles Morales": {
 		"response": {
@@ -3830,7 +4192,7 @@
 									"filter_tokens": [
 										{
 											"filter_token_name": "confused",
-											"filter_token_count": 0
+											"filter_count": 0
 										}
 									]
 								}
@@ -3863,7 +4225,7 @@
 									"filter_tokens": [
 										{
 											"filter_token_name": "stunned",
-											"filter_token_count": 0
+											"filter_count": 0
 										}
 									]
 								}
@@ -4561,7 +4923,10 @@
 					"name": "move_card_to_board",
 					"subject": "tutor",
 					"subject_count": "all",
-					"src_container": ["deck_villain", "set_aside"],
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -4579,7 +4944,7 @@
 							}
 						}
 					]
-				},
+				}
 			]
 		},
 		"post_setup": {
@@ -4959,7 +5324,7 @@
 								"filter_tokens": [
 									{
 										"filter_token_name": "confused",
-										"filter_token_count": 1
+										"filter_count": 1
 									}
 								]
 							}
@@ -4988,7 +5353,7 @@
 							"filter_tokens": [
 								{
 									"filter_token_name": "glider",
-									"filter_token_count": 1
+									"filter_count": 1
 								}
 							],
 							"filter_group": "group_schemes"
@@ -5010,7 +5375,7 @@
 							"filter_tokens": [
 								{
 									"filter_token_name": "glider",
-									"filter_token_count": 1
+									"filter_count": 1
 								}
 							],
 							"filter_group": "group_schemes"
@@ -5284,24 +5649,29 @@
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "attack",
+					"filter_property_name": "health",
 					"trigger": "self",
-					"alteration": "per_boardseek",
-					"per_boardseek": {
-						"subject": "boardseek",
-						"subject_count": 1,
-						"filter_state_seek": [
-							{
-								"filter_properties": {
-									"trait_symbiote": 1,
-									"comparison": "ge"
-								},
-								"filter_properties2": {
-									"type_code": "environment"
-								}
+					"alteration": {
+						"if": {
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"subject_count": "all",
+								"filter_state_seek": [
+									{
+										"filter_properties": {
+											"trait_symbiote": 1,
+											"comparison": "ge"
+										},
+										"filter_properties2": {
+											"type_code": "environment"
+										}
+									}
+								],
 							}
-						],
-						"multiplier": 3
+						},
+						"then": 3,
+						"else": 0,
 					}
 				}
 			]
@@ -5358,7 +5728,7 @@
 							"filter_tokens": [
 								{
 									"filter_token_name": "glider",
-									"filter_token_count": 0
+									"filter_count": 0
 								}
 							],
 							"filter_properties": {
@@ -5496,7 +5866,51 @@
 		}
 	},
 	"Unstable Sentience": {
-		"TODO": ""
+		"_surge": {},	
+		"reveal": {
+			"all": {
+				"name": "draw_boost_card",
+				"subject": "villain"
+			}
+		},
+		"boost": {
+			"condition_all": {
+				"func_name": "current_activation_status",
+				"func_params": {
+					"type": "attack"
+				}
+			},			
+			"all": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"overkill"
+						]
+					}
+				},			
+			]
+		},
+		"boost_alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "boost",
+					"trigger": "self",
+					"alteration": {
+						"if": {
+							"func_name": "current_activation_status",
+							"func_params": {
+								"type": "attack"
+							}
+						},
+						"then": 2,
+						"else": 0
+					}
+				}
+			]
+		}		
 	},
 	"Upper Manhattan #27119a": {
 		"alterants": {
@@ -5512,6 +5926,148 @@
 						}
 					},
 					"trigger": "self"
+				}
+			]
+		},
+		"special": {
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"src_container": "hand_current_hero_target",
+					"dest_container": "discard_current_hero_target",
+					"subject_count": "all",
+					"need_selection": true,
+					"selection_count": 1
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"src_container": "deck_current_hero_target",
+					"dest_container": "discard_current_hero_target",
+					"sort_descending": true,
+					"up_to": true,
+					"subject_count": {
+						"if": {
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_properties": {
+											"trait_symbiote": 1
+										},
+										"filter_properties2": {
+											"type_code": "environment"
+										}
+									}
+								]
+							}
+						},
+						"then": 4,
+						"else": 0
+					}
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "stage_completed",
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"set_to_mod": true,
+					"token_name": "threat",
+					"subject": "self"
+				},
+				{
+					"name": "move_token_to",
+					"token_name": "glider",
+					"source": "self",
+					"subject": "boardseek",
+					"subject_exclude": "self",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "main_scheme"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_token_to",
+					"token_name": "acceleration",
+					"source": "self",
+					"subject": "boardseek",
+					"subject_exclude": "self",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "main_scheme"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"grid_name": "villain_misc",
+					"subject": "self"
+				},				
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Upper Manhattan #27119b": {
+		"card_moved_to_board": {
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"trait_symbiote": 1
+											},
+											"filter_properties2": {
+												"type_code": "environment"
+											}
+										}
+									]
+								},
+								"divider": 2
+							},
+							"nested_tasks": [
+								{
+									"name": "defeat"
+								}
+							]
+						}
+					]
 				}
 			]
 		}
@@ -5838,7 +6394,7 @@
 				{
 					"name": "pay_cost",
 					"cost": {
-						"physical": 1,
+						"energy": 1,
 						"mental": 1,
 						"physical": 1,
 						"force_printed_cost": true

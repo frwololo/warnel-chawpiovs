@@ -1,0 +1,142 @@
+{
+	"_comments": "Tests Festering Mass becomes a symbiotic environment",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom Goblin - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Lower Manhattan - B",
+					"tokens": {
+						"threat": 2,
+						"glider": 1
+					}
+				},
+				{
+					"card": "Midtown Manhattan - C"
+				},
+				{
+					"card": "Upper Manhattan - D"
+				},
+				{
+					"card": "Festering Mass"
+				},				
+			],
+			"enemies1": [
+				{
+					"card": "Symbiotic Monstrosity",
+					"tokens": {	"damage": 5}
+				}
+			],			
+			"hand1": [
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Jefferson Davis"
+				},
+				{
+					"card": "Ganke Lee"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			],
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Spider-Man #27030a",
+		},
+		{
+			"type":  "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Symbiotic Monstrosity"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom Goblin - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Lower Manhattan - B",
+					"tokens": {
+						"threat": 2,
+						"glider": 1
+					}
+				},
+				{
+					"card": "Midtown Manhattan - C"
+				},
+				{
+					"card": "Upper Manhattan - D"
+				},
+				{
+					"card": "Festering Mass"
+				},				
+			],
+			"enemies1": [
+				{
+					"card": "Symbiotic Monstrosity",
+					"tokens": {	"damage": 7}
+				}
+			],			
+			"hand1": [
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Jefferson Davis"
+				},
+				{
+					"card": "Ganke Lee"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a",
+					"tokens": {"damage": 1}
+				}
+			]
+		}
+	}
+}

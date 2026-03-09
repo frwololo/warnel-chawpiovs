@@ -522,7 +522,8 @@ func check_empty_decks(pile_to_check):
 			#deal a new encounter
 			deal_one_encounter_to(int(hero_id_str))
 		return		
-	
+
+var _next_scheme = null	
 func move_to_next_scheme(current_scheme):
 	var set_code = current_scheme.get_property("card_set_code", "").to_lower()
 	var stage = current_scheme.get_property("stage_int")
@@ -552,17 +553,46 @@ func move_to_next_scheme(current_scheme):
 #			while func_return is GDScriptFunctionState && func_return.is_valid():
 #				func_return = func_return.resume()			
 			
-			var func_return = new_card.execute_scripts(new_card, "reveal")
-			while func_return is GDScriptFunctionState && func_return.is_valid():
-				func_return = func_return.resume()			
-
-			func_return = new_card.execute_scripts(new_card, "post_reveal")
-			while func_return is GDScriptFunctionState && func_return.is_valid():
-				func_return = func_return.resume()			
+			_next_scheme = new_card
+			cfc._rpc(self,"next_scheme_loaded")	
+			
+#			var func_return = new_card.execute_scripts(new_card, "reveal")
+#			while func_return is GDScriptFunctionState && func_return.is_valid():
+#				func_return = func_return.resume()			
+#
+#			func_return = new_card.execute_scripts(new_card, "post_reveal")
+#			while func_return is GDScriptFunctionState && func_return.is_valid():
+#				func_return = func_return.resume()			
 			
 			return new_card
 	
 	return null
+
+var _clients_next_scheme_loaded = {}
+remotesync func next_scheme_loaded():
+	var client_id = cfc.get_rpc_sender_id() 	
+	_clients_next_scheme_loaded[client_id] = true
+	if _clients_next_scheme_loaded.size() != gameData.network_players.size():
+		return
+	
+	_clients_next_scheme_loaded = {}
+	
+	if !_next_scheme:
+		var _error = 1
+		return
+	
+	var new_card = _next_scheme
+	var func_return = new_card.execute_scripts(new_card, "reveal")
+	while func_return is GDScriptFunctionState && func_return.is_valid():
+		func_return = func_return.resume()			
+
+	func_return = new_card.execute_scripts(new_card, "post_reveal")
+	while func_return is GDScriptFunctionState && func_return.is_valid():
+		func_return = func_return.resume()			
+
+	_next_scheme = null	
+	return new_card			
+
 
 func check_ally_limit():
 	var my_heroes = gameData.get_my_heroes()
@@ -582,12 +612,18 @@ func check_ally_limit():
 		
 #a function that checks regularly (specifically, whenever threat changes) if the main scheme has too much threat	
 func check_main_scheme_defeat():
+	if !is_game_started():
+		return
 	var schemes = find_main_schemes()
 	if (!schemes):
 		var _error = 1 #TODO error handling
 		return
 	
 	for scheme in schemes:
+		#skip schemes with no threat
+		#error case: Side A improperly taken into account
+		if !scheme.get_property("threat", 0):
+			continue
 		if scheme.get_current_threat() >= scheme.get_property("threat", 0):
 			scripting_bus.emit_signal_on_stack("stage_completed", scheme, {})
 

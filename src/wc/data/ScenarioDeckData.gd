@@ -172,6 +172,8 @@ func load_from_villain(villain_id):
 
 func load_from_dict(_scenario:Dictionary):
 	reset()
+	if !primitives:
+		_load_card_scenarios()
 	grid_setup = CFConst.GRID_SETUP.duplicate(true)	
 	scheme_card_id = _scenario.get("scheme_id")
 	if !scheme_card_id:

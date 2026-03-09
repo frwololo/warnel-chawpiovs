@@ -1580,9 +1580,9 @@ static func check_properties(card, property_filters: Dictionary) -> bool:
 				# Then it must be a special value provided by the designer
 				# We obviously cannot compare it as int, so we will compare is as string.
 				comparison_value = property_filters[property]	
-			if typeof(comparison_value) == TYPE_INT and typeof(card.get_property(property, 0)) == TYPE_INT:
+			if typeof(comparison_value) == TYPE_INT and typeof(card.get_property(property, 0, true)) == TYPE_INT:
 				if not CFUtils.compare_numbers(
-						card.get_property(property, 0),
+						card.get_property(property, 0, true),
 						comparison_value,
 						comparison_type):
 					card_matches = false
@@ -1591,17 +1591,8 @@ static func check_properties(card, property_filters: Dictionary) -> bool:
 					str(card.get_property(property)),
 					comparison_type):
 				card_matches = false
-		elif property == "Name":
-			if not CFUtils.compare_strings(
-					property_filters[property],
-					card.canonical_name,
-					comparison_type):
-				card_matches = false
 		else:
-			if not CFUtils.compare_strings(
-					str(property_filters[property]),
-					str(card.get_property(property, "")),
-					comparison_type):
+			if not cfc.ov_utils.compare_string_properties (property_filters, card,property, comparison_type):
 				card_matches = false
 	return(card_matches)
 

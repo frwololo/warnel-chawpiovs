@@ -374,7 +374,8 @@ func _card_properties_modified(owner_card, details):
 			scripts = SetScripts_All.get_enemy_scripts()
 		update_groups()
 		update_hero_groups()
-	
+	queue_refresh_cache()
+		
 #		scripting_bus.emit_signal(
 #				"card_token_modified",
 #				owner_card,
@@ -2740,16 +2741,14 @@ func count_cards(params, script:ScriptObject = null) -> int:
 
 
 func count_tokens(params, script:ScriptObject = null) -> int:
-	var subjects = [self]
+	var subjects = get_param_subjects(params, script)
+	
+	if !subjects:
+		return 0
+		
 	var token_names = params.get("token_name", [])
 	if typeof(token_names) == TYPE_STRING:
 		token_names = [token_names]
-	
-	if script:
-		subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
-			
-	if !subjects:
-		return 0
 	
 	var count = 0
 	for subject in subjects:

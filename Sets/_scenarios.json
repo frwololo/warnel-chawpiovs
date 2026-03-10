@@ -572,7 +572,7 @@
 				"Sandman - 3"
 			]
 		}
-	},	
+	},
 	"27076": {
 		"code": "27076",
 		"name": "Leave Us Alone!",
@@ -602,7 +602,7 @@
 				"Venom - 3"
 			]
 		}
-	},	
+	},
 	"27087": {
 		"code": "27087",
 		"name": "Maze of Mirrors",
@@ -639,21 +639,76 @@
 		"modular_default": [],
 		"encounter_sets": [
 			"sinister_six",
-			"guerrilla_tactics",			
-			"Standard",
+			"guerrilla_tactics",
+			"Standard"
 		],
 		"villains": [
-			"Vulture - 1",
+			[
+				"Doctor Octopus - 1"
+			],
+			[
+				"Electro - 1"
+			],
+			[
+				"Hobgoblin - 1"
+			],
+			[
+				"Kraven the Hunter - 1"
+			],
+			[
+				"Scorpion - 1"
+			],
+			[
+				"Vulture - 1"
+			]
+		],
+		"extra_rules": [
+			{
+				"override_get_next_villain": {
+					"all": [
+						{
+							"name": "nop"
+						}
+					]
+				},
+				"card_token_modified": {
+					"filter_count": 1,
+					"filter_token_name": "active_counter",
+					"all": [
+						{
+							"name": "set_active_villain",
+							"subject": "trigger",
+						}
+					]
+				}				
+			}
 		],
 		"expert": {
 			"encounter_sets": [
 				"sinister_six",
-				"guerrilla_tactics",				
+				"guerrilla_tactics",
 				"Standard",
 				"expert"
 			],
 			"villains": [
-				"Vulture - 1",
+				[
+					"Doctor Octopus - 1"
+				],
+				[
+					"Electro - 1"
+				],
+				[
+					"Hobgoblin - 1"
+				],
+				[
+					"Kraven the Hunter - 1"
+				],
+				[
+					"Scorpion - 1"
+				],
+				[
+					"Vulture - 1"
+				]
 			]
 		}
 	},
@@ -686,6 +741,5 @@
 				"Venom Goblin - 3"
 			]
 		}
-	},
-	
+	}
 }

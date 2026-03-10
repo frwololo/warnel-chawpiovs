@@ -450,6 +450,13 @@ func quit_game() -> void:
 	if main:
 		main.queue_free()
 
+func count_players():
+	return 1
+
+func clear_group(group_name):
+	var nodes = get_tree().get_nodes_in_group(group_name)
+	for node in nodes:
+		node.remove_from_group(group_name)
 
 # Empties the alterants cache (only thing cached for now) which will cause
 # all the alterants engine fire anew for all requests.

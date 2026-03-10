@@ -119,7 +119,7 @@ func load_next_step(next_step):
 			
 			#refresh game session specific cache
 			_cached_pile_data = {}
-			
+			CFScriptUtils.init_alterants_super_cache()
 			#start game
 			gameData.start_game()
 			
@@ -533,7 +533,8 @@ func post_cards_moved_load():
 	if func_return is GDScriptFunctionState && func_return.is_valid():
 		yield(func_return, "completed")		
 	
-	#execute setup for remaining cards, if any 
+	#execute setup for remaining cards, if any
+	execute_cards_on_load()
 	for card in get_all_cards(true):
 		# we want to avoid running setup 
 		# for scheme and heroes, because we run them already in some other part of the code
@@ -545,6 +546,10 @@ func post_cards_moved_load():
 			func_return = card.execute_scripts_no_stack(card, "setup")
 			if func_return is GDScriptFunctionState && func_return.is_valid():
 				yield(func_return, "completed")		
+
+
+	while villain._post_load_move or cfc.NMAP["deck_villain"].is_shuffling:
+		yield(get_tree().create_timer(0.05), "timeout")	
 
 
 	#TODO better way to do a reveal ?
@@ -709,8 +714,13 @@ func get_all_cards_by_property(property:String, value):
 	return cardsArray	
 
 func reset_board():
+	
+	for group in ["cards", "scriptables"]:
+		cfc.clear_group(group)
+	
 	_extra_deck_names_cache = {}
 	_hero_grid_layout_cache = {}
+	_on_load_called = {}
 	gameData.stop_game()
 	delete_all_cards()
 	_team_size = 0
@@ -908,14 +918,20 @@ func post_load_move():
 		card.reorganize_self()	
 		
 	_post_load_move = {} #reset	
-
-	for card in get_all_cards(true):
-		var func_return = card.execute_scripts_no_stack(card, "on_load")
-		if func_return is GDScriptFunctionState && func_return.is_valid():
-			yield(func_return, "completed")	
+	
+	execute_cards_on_load()
 		
 	return			
 
+var _on_load_called = {}
+func execute_cards_on_load():
+	for card in get_all_cards(true):
+		if _on_load_called.get(card,false):
+			continue
+		var func_return = card.execute_scripts_no_stack(card, "on_load")
+		_on_load_called[card] = true
+		if func_return is GDScriptFunctionState && func_return.is_valid():
+			yield(func_return, "completed")	
 
 func load_cards_to_pile(card_data:Array, pile_name):
 	var card_array = []
@@ -1342,7 +1358,13 @@ func find_card_by_property(property_name, property_value, controller_hero_id = 0
 			return card
 	return null
 
-
+func find_card_with_token(token_name):
+	var all_cards = get_all_cards()
+	for card in all_cards:
+		var tokens_amount = card.tokens.get_token_count(token_name)
+		if tokens_amount:
+			return card
+	return null
 
 func _on_ServerActivity_gui_input(event):
 	if event is InputEventMouseButton:

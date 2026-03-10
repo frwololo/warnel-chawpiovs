@@ -83,9 +83,15 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 		var hero_id = _subject_request.substr(SP.KEY_SUBJECT_V_A_IDENTITY.length())
 		var hero_card = gameData.get_identity_card(int(hero_id))
 		results.append(hero_card)	
-		return results		
-			
+		return results	
+					
 	match _subject_request:
+		"function":
+			var func_name = script.get_property("subject_func_name", {})
+			var func_params = script.get_property("subject_func_params", {})
+			if func_name:
+				var subjects = call(func_name, func_params, script)
+				results += subjects
 		"flip_side":
 			var owner:WCCard = script.owner
 			var back_code = owner.get_card_back_code()
@@ -196,7 +202,7 @@ func parse_post_prime_replacements(script_task:ScriptObject) -> Dictionary:
 	var wip_definitions := script_task.script_definition.duplicate(true)
 	var subjects = script_task.subjects
 	if !subjects and script_task.owner.has_method("get_parent_script"):
-		subjects = script_task.owner.parent_script.subjects
+		subjects = script_task.owner.parent_script.subjects if script_task.owner.parent_script else []
 	var subject_controller_hero = 0
 	if subjects:
 		if typeof(subjects[0]) != TYPE_INT: #AskInteger passes an int, not a card, we need to skip that case
@@ -204,6 +210,31 @@ func parse_post_prime_replacements(script_task:ScriptObject) -> Dictionary:
 			wip_definitions = WCUtils.search_and_replace(wip_definitions, "{__subject_hero_id__}", str(subject_controller_hero), false)	
 			
 	return wip_definitions
+
+static func next_activation_order_villain(func_params, script = null):
+	var token_name = func_params.get("token_name", "active_counter")
+	var counter_name = func_params.get("counter_name", "activation_order")
+	var start_value = 0
+	
+	var source = cfc.NMAP.board.find_card_with_token(token_name) if token_name else null
+	if source:
+		start_value = source.get_property(counter_name, start_value)
+	
+	var chosen_villain = null
+	var current_value = start_value
+	var current_villains = gameData.get_villains()
+	for villain in current_villains:
+		var new_value = villain.get_property(counter_name, current_value)		
+		if !chosen_villain: 
+			chosen_villain = villain
+			current_value = new_value
+		if new_value < current_value and new_value >= start_value:
+			chosen_villain = villain
+			current_value = new_value
+	if chosen_villain:
+		return [chosen_villain]
+	return []
+		
 
 static func func_name_run(object, func_name, func_params, script = null):
 	var reverse_result = false

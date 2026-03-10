@@ -1376,6 +1376,9 @@ func is_process_ongoing() -> int:
 func reset_ongoing_process_stack():
 	_ongoing_processes = {}
 
+func count_players():
+	return gameData.get_team_size()
+
 func buttons_grab_focus_on_mouse_entered(node):
 	if node as Button:
 		node.connect("mouse_entered", node, "grab_focus")

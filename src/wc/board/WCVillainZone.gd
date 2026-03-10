@@ -106,7 +106,8 @@ func load_scenario():
 
 	#check if we have a rules override
 	var sceng = gameData.theGameObserver._get_script_sceng("override_get_next_villain")
-	if sceng:	
+	if sceng:
+		var villain_loaded = false
 		var sceng_return = sceng.execute(CFInt.RunType.PRIME_ONLY)
 		#if not sceng.all_tasks_completed:
 		if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
@@ -115,7 +116,10 @@ func load_scenario():
 			var type_code = potential_villain.get_property("type_code")
 			if type_code == "villain":
 				var ckey = potential_villain.get_property("_code")
-				load_villain(ckey)	
+				load_villain(ckey)
+				villain_loaded = true
+		if !villain_loaded:
+			cfc._rpc(self,"cards_preloaded", {"shuffle" : true})	
 		return null	
 
 	if !villains_data:
@@ -127,17 +131,21 @@ func load_scenario():
 
 func init_scenario_villains():
 	var villains_data = scenario_data.get_villains()
-	if !villains_data.size():
+	var count_villains = villains_data.size()
+	if !count_villains:
 		var _error = 1
 		return []
 	
+	var grid_spacer = 100
+	if count_villains > 3:
+		grid_spacer = 0
 	#creating the appropriate number of slots for villains in the scenario
 	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid("villain")
 	if grid:
-		grid.set_h_separation(100 * cfc.screen_scale.x)
-		if grid.get_slot_count() != villains_data.size():
+		grid.set_h_separation(grid_spacer * cfc.screen_scale.x)
+		if grid.get_slot_count() != count_villains:
 			grid.delete_all_slots_but_one()
-			for i in villains_data.size()-1:
+			for i in count_villains-1:
 				#todo need to shift the position of schemes?
 				grid.add_slot()
 	

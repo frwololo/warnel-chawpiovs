@@ -131,7 +131,12 @@ func move_card_to_board(script: ScriptTask) -> int:
 			card._clear_attachment_status()
 			script.script_definition[SP.KEY_TAGS] = ["force_emit_card_moved_signal"] +  script.get_property(SP.KEY_TAGS)
 
-		result = .move_card_to_board(script)
+		var type_code = card.get_property("type_code", "")
+		if type_code == "villain":
+			cfc.NMAP.board.load_villain(card.canonical_id)
+			result = CFConst.ReturnCode.CHANGED
+		else:
+			result = .move_card_to_board(script)
 		if override_properties:
 			var tags: Array = ["emit_signal"] + script.get_property(SP.KEY_TAGS)
 			script.script_definition[SP.KEY_TAGS] = tags
@@ -906,11 +911,7 @@ func move_token_to(script: ScriptTask) -> int:
 	
 	#if source says "current" we move a unique token from its current "owner" to a new one
 	if source_str == "current":
-		var all_cards = cfc.NMAP.board.get_all_cards()
-		for card in all_cards:
-			var tokens_amount = card.tokens.get_token_count(token_name)
-			if tokens_amount:
-				source = card
+		source = cfc.NMAP.board.find_card_with_token(token_name)
 	else:
 		var sources = SP.retrieve_subjects(source_str, script)	
 		source = sources[0] if sources else script.owner

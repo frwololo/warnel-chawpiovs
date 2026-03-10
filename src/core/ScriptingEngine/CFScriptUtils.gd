@@ -7,6 +7,56 @@
 class_name CFScriptUtils
 extends Reference
 
+const _alteration_super_cache := {
+	"properties": {},
+	"wildcard_properties" : {},
+	"initialized": false
+}
+
+
+# Finds all values in a dictionary (including nested dictionaries)
+# where the key matches the given target_key.
+# Supports nested dictionaries and lists containing dictionaries.
+static func find_all_values_by_key(container, target_key: String) -> Array:
+	var results: Array = []
+
+	if typeof(container) == TYPE_DICTIONARY:
+		for key in container.keys():
+			if str(key) == target_key:
+				results.append(container[key])
+			else:
+				results+= find_all_values_by_key(container[key], target_key)  # Recursively search deeper
+	elif typeof(container) == TYPE_ARRAY:
+		for item in container:
+			results+= find_all_values_by_key(item, target_key) # Search inside arrays too	
+	else:
+		return []
+			
+
+	return results
+
+static func init_alterants_super_cache():
+	_alteration_super_cache["properties"] = {}
+	_alteration_super_cache["wildcard_properties"] = {}
+	var scriptables_array :Array =\
+		cfc.get_tree().get_nodes_in_group("scriptables")
+	
+	scriptables_array +=\
+			cfc.get_tree().get_nodes_in_group("cards")
+	
+	for obj in scriptables_array:
+		var all_scripts = obj.retrieve_all_scripts()
+		var altered_properties = find_all_values_by_key(all_scripts, "filter_property_name")
+		for property in altered_properties:
+			if property.ends_with("*"):
+				property = property.substr(0, property.length() - 1)
+				_alteration_super_cache["wildcard_properties"][property] = true
+			else:
+				_alteration_super_cache["properties"][property] = true
+
+	_alteration_super_cache["initialized"] = true
+	return
+
 # Handles modifying the intensity of tasks based on altering scripts on cards
 #
 # Returns a Dictionary holding two keys
@@ -20,6 +70,24 @@ static func get_altered_value(
 		task_properties: Dictionary,
 		value: int,
 		subject = null) -> Dictionary:
+
+
+	#bypass the whole calculation if we know that no item in the game alters this
+	if _alteration_super_cache["initialized"] and task_properties.has(SP.KEY_PROPERTY_NAME):
+		var property_name = task_properties[SP.KEY_PROPERTY_NAME]
+	
+		if ! _alteration_super_cache["properties"].get(property_name):
+			for key in _alteration_super_cache["wildcard_properties"]:
+				if property_name.begins_with(key):
+					_alteration_super_cache["properties"][property_name] = true
+					break			
+
+		if ! _alteration_super_cache["properties"].get(property_name):
+			return {
+					"value_alteration": 0,
+					"alterants_details": {}
+				}			
+					
 	# The key for the alterant cache is the hash of the
 	# values passed to this function.
 	# This is the only way to compare dicts.

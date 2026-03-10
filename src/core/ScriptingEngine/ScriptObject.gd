@@ -493,6 +493,8 @@ func _tutor_subjects(stored_integer: int) -> Array:
 		subject_count = stored_integer
 		if get_property(SP.KEY_IS_INVERTED):
 			subject_count *= -1
+	else:
+		subject_count = retrieve_integer_property(SP.KEY_SUBJECT_COUNT)
 	requested_subjects = subject_count
 	var src_container = get_property(SP.KEY_SRC_CONTAINER)
 	var subject_list := get_all_cards_from_containers(src_container)
@@ -686,9 +688,11 @@ func retrieve_integer_property(property, stored_integer:int = 0,root = null):
 			return 0
 		value = count_per(value, owner, per_property)
 	elif str(value) ==  SP.KEY_COUNT_PREVIOUS_SUBJECTS:
-		value = self.prev_subjects.size()
+		value = self.prev_subjects.size()	
 	elif str(value) == SP.KEY_SUBJECT_COUNT_V_ALL:
 		value = 666 #TODO hack
+	elif str(value) == "count_players":
+		value =  cfc.count_players()
 	else:
 		value = get_int_value (value, stored_integer)
 

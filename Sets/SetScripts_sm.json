@@ -232,7 +232,7 @@
 			"trigger": "host",
 			"board": [
 				{
-					"name": "mod_token",
+					"name": "mod_tokens",
 					"token_name": "__player_token_current_hero_target",
 					"modification": -1,
 					"is_cost": true
@@ -460,7 +460,7 @@
 					"sort_descending": true,
 					"filter_state_seek": [
 						{
-							"filter_group": "upgrade_support_my_hero",
+							"filter_group": "group_upgrade_support_my_hero",
 							"filter_properties": {
 								"type_code": "upgrade"
 							}
@@ -996,10 +996,96 @@
 		}
 	},
 	"Doctor Octopus - 1": {
-		"TODO": ""
-	},
-	"Doctor Octopus": {
-		"TODO": ""
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"trigger": "self",
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"1_threat_on_main_scheme_if_damage"
+						],
+						"if_damage": {
+							"trigger": "post_activity_trigger"
+						}
+					}
+				}
+			]
+		},
+		"post_activity_trigger": {
+			"all": [
+				{
+					"name": "move_token_to",
+					"token_name": "active_counter",
+					"source": "current",
+					"subject": "function",
+					"subject_func_name": "next_activation_order_villain"
+				}
+			]
+		},
+		"on_load": {
+			"all": [
+				{
+					"name": "modify_properties",
+					"subject": "self",
+					"set_properties": {
+						"activation_order": 1
+					},
+					"tags": [
+						"Init"
+					]
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "remove_threat",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					],
+					"amount": {
+						"if": {
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_properties": {
+											"type_code": "villain"
+										}
+									}
+								],
+								"subject_exclude": "self"
+							}
+						},
+						"then": 4,
+						"else": 7
+					}
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside"
+				}
+			]
+		}
 	},
 	"Double Life": {
 		"manual": {
@@ -1306,10 +1392,101 @@
 		}
 	},
 	"Electro - 1": {
-		"TODO": ""
-	},
-	"Electro": {
-		"TODO": ""
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"trigger": "self",
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"if_damage": {
+							"trigger": "post_activity_trigger"
+						}
+					}
+				}
+			]
+		},
+		"post_activity_trigger": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"up_to": true,
+					"src_container": "deck_current_hero_target",
+					"dest_container": "discard_current_hero_target",
+					"amount": 7
+				},
+				{
+					"name": "move_token_to",
+					"token_name": "active_counter",
+					"source": "current",
+					"subject": "function",
+					"subject_func_name": "next_activation_order_villain"
+				}
+			]
+		},
+		"on_load": {
+			"all": [
+				{
+					"name": "modify_properties",
+					"subject": "self",
+					"set_properties": {
+						"activation_order": 2
+					},
+					"tags": [
+						"Init"
+					]
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "remove_threat",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					],
+					"amount": {
+						"if": {
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_properties": {
+											"type_code": "villain"
+										}
+									}
+								],
+								"subject_exclude": "self"
+							}
+						},
+						"then": 4,
+						"else": 7
+					}
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside"
+				}
+			]
+		}
 	},
 	"Enraged Symbiote": {
 		"TODO": ""
@@ -1406,8 +1583,7 @@
 	},
 	"Festering Mass": {
 		"on_load": {
-			"all":
-			[
+			"all": [
 				{
 					"name": "conditional_script",
 					"options": [
@@ -1440,11 +1616,11 @@
 									"set_properties": {
 										"secondary_type_code": ""
 									}
-								},
+								}
 							]
 						}
 					],
-					"else": [							
+					"else": [
 						{
 							"name": "modify_properties",
 							"tags": [
@@ -1454,14 +1630,13 @@
 							"set_properties": {
 								"secondary_type_code": "environment"
 							}
-						},
+						}
 					]
 				}
 			]
-		},	
+		},
 		"card_moved_to_board": {
-			"board":
-			[
+			"board": [
 				{
 					"name": "conditional_script",
 					"options": [
@@ -1494,11 +1669,11 @@
 									"set_properties": {
 										"secondary_type_code": ""
 									}
-								},
+								}
 							]
 						}
 					],
-					"else": [							
+					"else": [
 						{
 							"name": "modify_properties",
 							"tags": [
@@ -1508,7 +1683,7 @@
 							"set_properties": {
 								"secondary_type_code": "environment"
 							}
-						},
+						}
 					]
 				}
 			]
@@ -1537,12 +1712,12 @@
 								"subject_exclude": "self"
 							}
 						},
-						"then":  0,
-						"else":	1,
+						"then": 0,
+						"else": 1
 					},
 					"trigger": "self"
-				},			
-			]		
+				}
+			]
 		},
 		"boost": {
 			"all": [
@@ -1708,7 +1883,7 @@
 					"options": [
 						{
 							"_conditional_move_to_play": {
-								"__subject_name__": "Vulture",
+								"__subject_name__": "Vulture - 1",
 								"__src_container__": "set_aside"
 							}
 						}
@@ -1793,7 +1968,41 @@
 		}
 	},
 	"From Every Direction": {
-		"TODO": ""
+		"card_moved_to_pile": {
+			"trigger": "self",
+			"filter_destination": "encounters_reveal",
+			"pile": [
+				{
+					"name": "surge",
+					"amount": {
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "expert_mode"
+						}
+					}
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": "per_boardseek",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "villain"
+								}
+							}
+						]
+					}
+				}
+			]
+		}
 	},
 	"Ganke Lee": {
 		"manual": {
@@ -2336,7 +2545,7 @@
 							"sort_descending": true,
 							"filter_state_seek": [
 								{
-									"filter_group": "upgrade_support_my_hero"
+									"filter_group": "group_upgrade_support_my_hero"
 								},
 								{
 									"filter_group": "allies_my_hero"
@@ -2369,7 +2578,7 @@
 							},
 							"filter_state_seek": [
 								{
-									"filter_group": "upgrade_support_my_hero"
+									"filter_group": "group_upgrade_support_my_hero"
 								},
 								{
 									"filter_group": "allies_my_hero"
@@ -2382,10 +2591,98 @@
 		}
 	},
 	"Hobgoblin - 1": {
-		"TODO": ""
-	},
-	"Hobgoblin": {
-		"TODO": ""
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"trigger": "self",
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"if_damage": {
+							"trigger": "post_activity_trigger"
+						}
+					}
+				}
+			]
+		},
+		"post_activity_trigger": {
+			"all": [
+				{
+					"name": "indirect_damage",
+					"subject": "current_hero_target",
+					"amount": 2
+				},
+				{
+					"name": "move_token_to",
+					"token_name": "active_counter",
+					"source": "current",
+					"subject": "function",
+					"subject_func_name": "next_activation_order_villain"
+				}
+			]
+		},
+		"on_load": {
+			"all": [
+				{
+					"name": "modify_properties",
+					"subject": "self",
+					"set_properties": {
+						"activation_order": 3
+					},
+					"tags": [
+						"Init"
+					]
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "remove_threat",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					],
+					"amount": {
+						"if": {
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_properties": {
+											"type_code": "villain"
+										}
+									}
+								],
+								"subject_exclude": "self"
+							}
+						},
+						"then": 4,
+						"else": 7
+					}
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside"
+				}
+			]
+		}
 	},
 	"Homeland Intervention": {
 		"manual": {
@@ -2823,10 +3120,105 @@
 		"TODO": ""
 	},
 	"Kraven the Hunter - 1": {
-		"TODO": ""
-	},
-	"Kraven the Hunter": {
-		"TODO": ""
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"trigger": "self",
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"if_damage": {
+							"trigger": "post_activity_trigger"
+						}
+					}
+				}
+			]
+		},
+		"post_activity_trigger": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_current_hero_target"
+						}
+					]
+				},
+				{
+					"name": "move_token_to",
+					"token_name": "active_counter",
+					"source": "current",
+					"subject": "function",
+					"subject_func_name": "next_activation_order_villain"
+				}
+			]
+		},
+		"on_load": {
+			"all": [
+				{
+					"name": "modify_properties",
+					"subject": "self",
+					"set_properties": {
+						"activation_order": 4
+					},
+					"tags": [
+						"Init"
+					]
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "remove_threat",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					],
+					"amount": {
+						"if": {
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_properties": {
+											"type_code": "villain"
+										}
+									}
+								],
+								"subject_exclude": "self"
+							}
+						},
+						"then": 4,
+						"else": 7
+					}
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside"
+				}
+			]
+		}
 	},
 	"Laser Goggles #27184a": {
 		"TODO": "campaign mode not supported"
@@ -2892,7 +3284,7 @@
 			"__amount__": 10,
 			"__each_player__": true
 		},
-		"interrupt_card_defeated": {
+		"interrupt_card_dies": {
 			"trigger": "self",
 			"all": [
 				{
@@ -3082,7 +3474,7 @@
 					"name": "move_card_to_board",
 					"grid_name": "villain_misc",
 					"subject": "self"
-				},				
+				},
 				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
@@ -3385,7 +3777,7 @@
 					"name": "move_card_to_board",
 					"grid_name": "villain_misc",
 					"subject": "self"
-				},				
+				},
 				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
@@ -3607,7 +3999,7 @@
 				},
 				"Acceleration": [
 					{
-						"name": "mod_token",
+						"name": "mod_tokens",
 						"subject": "main_scheme",
 						"token_name": "acceleration",
 						"modification": 1
@@ -4567,7 +4959,111 @@
 		}
 	},
 	"Scorpion - 1": {
-		"TODO": ""
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"trigger": "self",
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"if_damage": {
+							"trigger": "post_activity_trigger"
+						}
+					}
+				}
+			]
+		},
+		"post_activity_trigger": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_characters_current_hero_target",
+							"filter_tokens": [
+								{
+									"filter_token_name": "stunned",
+									"filter_count": 0
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "move_token_to",
+					"token_name": "active_counter",
+					"source": "current",
+					"subject": "function",
+					"subject_func_name": "next_activation_order_villain"
+				}
+			]
+		},
+		"on_load": {
+			"all": [
+				{
+					"name": "modify_properties",
+					"subject": "self",
+					"set_properties": {
+						"activation_order": 5
+					},
+					"tags": [
+						"Init"
+					]
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "remove_threat",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					],
+					"amount": {
+						"if": {
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_properties": {
+											"type_code": "villain"
+										}
+									}
+								],
+								"subject_exclude": "self"
+							}
+						},
+						"then": 4,
+						"else": 7
+					}
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside"
+				}
+			]
+		}
 	},
 	"Scorpion": {
 		"TODO": ""
@@ -4788,42 +5284,9 @@
 					"src_container": "set_aside",
 					"subject": "tutor",
 					"sort_by": "random",
-					"subject_count": 1,
+					"subject_count": "count_players",
+					"plus_subject_count": 1,
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "villain"
-							}
-						}
-					],
-					"for_each_player": true
-				},
-				{
-					"name": "move_card_to_board",
-					"src_container": "set_aside",
-					"subject": "tutor",
-					"sort_by": "random",
-					"subject_count": 1,
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "villain"
-							}
-						}
-					]
-				},
-				{
-					"name": "move_token_to",
-					"token_name": "active_counter",
-					"source": "current",
-					"subject": "boardseek",
-					"subject_count": 1,
-					"sort_by": "function",
-					"sort_name": "get_subject_int_printed_property",
-					"func_params": {
-						"property": "activation_order"
-					},
-					"filter_state_seek": [
 						{
 							"filter_properties": {
 								"type_code": "villain"
@@ -4846,6 +5309,17 @@
 							}
 						}
 					]
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "move_token_to",
+					"token_name": "active_counter",
+					"source": "current",
+					"subject": "function",
+					"subject_func_name": "next_activation_order_villain"
 				},
 				{
 					"name": "flip_doublesided_card",
@@ -5386,7 +5860,36 @@
 		}
 	},
 	"Surprise!": {
-		"TODO": "expert mode",
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_be_canceled",
+					"alteration": {
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "expert_mode"
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"card_moved_to_pile": {
+			"trigger": "self",
+			"filter_destination": "encounters_reveal",
+			"pile": [
+				{
+					"name": "surge",
+					"amount": {
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "expert_mode"
+						}
+					}
+				}
+			]
+		},
 		"reveal": {
 			"all": [
 				{
@@ -5667,11 +6170,11 @@
 											"type_code": "environment"
 										}
 									}
-								],
+								]
 							}
 						},
 						"then": 3,
-						"else": 0,
+						"else": 0
 					}
 				}
 			]
@@ -5750,7 +6253,49 @@
 		"TODO": ""
 	},
 	"Teamwork Makes the Dream Work": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"alteration": 1
+				}				
+			]
+		},
+		"boost_alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "boost",
+					"trigger": "self",
+					"alteration": {
+						"if": {
+							"func_name": "get_scenario_option_value",
+							"func_params": {
+								"option_name": "expert_mode"
+							}
+						},
+						"then": 2,
+						"else": 0
+					}
+				}
+			]
+		}
 	},
 	"The Lizard": {
 		"phase_ended": {
@@ -5866,12 +6411,14 @@
 		}
 	},
 	"Unstable Sentience": {
-		"_surge": {},	
+		"_surge": {},
 		"reveal": {
-			"all": {
-				"name": "draw_boost_card",
-				"subject": "villain"
-			}
+			"all": [
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
+				}
+			]
 		},
 		"boost": {
 			"condition_all": {
@@ -5879,7 +6426,7 @@
 				"func_params": {
 					"type": "attack"
 				}
-			},			
+			},
 			"all": [
 				{
 					"name": "replacement_effect",
@@ -5889,7 +6436,7 @@
 							"overkill"
 						]
 					}
-				},			
+				}
 			]
 		},
 		"boost_alterants": {
@@ -5910,7 +6457,7 @@
 					}
 				}
 			]
-		}		
+		}
 	},
 	"Upper Manhattan #27119a": {
 		"alterants": {
@@ -6029,7 +6576,7 @@
 					"name": "move_card_to_board",
 					"grid_name": "villain_misc",
 					"subject": "self"
-				},				
+				},
 				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
@@ -6362,10 +6909,102 @@
 		}
 	},
 	"Vulture - 1": {
-		"TODO": ""
-	},
-	"Vulture": {
-		"TODO": ""
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"trigger": "self",
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"if_damage": {
+							"trigger": "post_activity_trigger"
+						}
+					}
+				}
+			]
+		},
+		"post_activity_trigger": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "index",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"src_container": "hand_current_hero_target",
+					"dest_container": "discard_current_hero_target"
+				},
+				{
+					"name": "move_token_to",
+					"token_name": "active_counter",
+					"source": "current",
+					"subject": "function",
+					"subject_func_name": "next_activation_order_villain"
+				}
+			]
+		},
+		"on_load": {
+			"all": [
+				{
+					"name": "modify_properties",
+					"subject": "self",
+					"set_properties": {
+						"activation_order": 6
+					},
+					"tags": [
+						"Init"
+					]
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "remove_threat",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					],
+					"amount": {
+						"if": {
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_properties": {
+											"type_code": "villain"
+										}
+									}
+								],
+								"subject_exclude": "self"
+							}
+						},
+						"then": 4,
+						"else": 7
+					}
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside"
+				}
+			]
+		}
 	},
 	"Wave Bracers #27188a": {
 		"TODO": "campaign mode not supported"

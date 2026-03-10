@@ -4775,18 +4775,6 @@
 					]
 				},
 				{
-					"name": "tuck_card_under_me",
-					"subject": "tutor",
-					"src_container": "deck_villain",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"code": "21139a"
-							}
-						}
-					]
-				},
-				{
 					"name": "move_card_to_container",
 					"dest_container": "set_aside",
 					"subject": "tutor",
@@ -4824,6 +4812,22 @@
 		}
 	},
 	"Odin's Torment - 1B": {
+		"reveal": {
+			"all": [
+				{
+					"name": "tuck_card_under_me",
+					"subject": "tutor",
+					"src_container": "deck_villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"code": "21139a"
+							}
+						}
+					]
+				}
+			]
+		},
 		"interrupt": {
 			"event_name": "card_dies",
 			"filter_state_trigger": [

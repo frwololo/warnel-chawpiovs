@@ -237,6 +237,12 @@ func move_card_to_container(script: ScriptTask) -> int:
 			
 	script.script_definition = WCUtils.search_and_replace_multi(script.script_definition, replacements, true)	
 	
+	if !costs_dry_run():
+		for subject in script.subjects:
+			var type_code = subject.get_property("type_code", "")
+			if type_code == "villain":
+				cfc.NMAP.board.remove_villain(subject)
+	
 	var result = .move_card_to_container(script)
 	script.script_definition = backup
 	return result
@@ -2088,6 +2094,7 @@ func reveal_nemesis (script:ScriptTask) -> int:
 	var do_surge = false
 
 	var type_codes = script.get_property("type_codes", [])
+	var nemesis_only = script.get_property("nemesis_only", false)
 	var src_containers = script.get_property("src_container", "set_aside")
 	if typeof(src_containers) == TYPE_STRING:
 		src_containers = [src_containers]
@@ -2106,7 +2113,7 @@ func reveal_nemesis (script:ScriptTask) -> int:
 					other_nemesis_cards.append(card)			
 	
 	
-	if (my_nemesis_scheme):
+	if (my_nemesis_scheme and !nemesis_only):
 		gameData.deal_one_encounter_to(my_hero_id, true, my_nemesis_scheme)	
 
 	if (my_nemesis):
@@ -2116,9 +2123,10 @@ func reveal_nemesis (script:ScriptTask) -> int:
 
 		
 	var do_shuffle = false
-	for card in other_nemesis_cards:
-		card.move_to(cfc.NMAP["deck_villain"])
-		do_shuffle = true
+	if !nemesis_only:
+		for card in other_nemesis_cards:
+			card.move_to(cfc.NMAP["deck_villain"])
+			do_shuffle = true
 	
 	if do_shuffle:
 		cfc.NMAP["deck_villain"].shuffle_cards()	

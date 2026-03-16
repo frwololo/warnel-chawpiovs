@@ -570,6 +570,9 @@ func post_cards_moved_load():
 
 	cfc._rpc(self,"ready_for_step", LOADING_STEPS.READY_TO_START)
 
+func remove_villain(card):
+	return villain.remove_villain(card)
+
 func get_villain_card():
 	return villain.get_villain()
 
@@ -724,6 +727,7 @@ func reset_board():
 	gameData.stop_game()
 	delete_all_cards()
 	_team_size = 0
+	villain.reset()
 	init_hero_zones()
 	grid_setup()
 
@@ -805,9 +809,12 @@ func _on_ReshuffleAllDeck_pressed() -> void:
 	reshuffle_all_in_pile(cfc.NMAP.deck)
 
 
-func get_enemies_engaged_with(hero_id):
+func get_enemies_engaged_with(hero_id, include_villains = true):
 	var grid = get_grid("enemies" + str(hero_id))
-	return grid.get_all_cards()
+	var result = grid.get_all_cards()
+	if include_villains:
+		result+= gameData.get_villains()
+	return result
 	
 func _on_ReshuffleAllDiscard_pressed() -> void:
 	reshuffle_all_in_pile(cfc.NMAP.discard)
@@ -907,7 +914,9 @@ func post_load_move():
 			if grid:
 				slot = grid.find_available_slot()
 				if slot:
-					card.move_to(cfc.NMAP.board, -1, slot)	
+					card.move_to(cfc.NMAP.board, -1, slot)
+					if card.get_property("type_code", "") == "villain":
+						villain.add_villain(card)
 		if host_id:
 			var host_card = find_card_by_name(host_id)
 			if host_card:

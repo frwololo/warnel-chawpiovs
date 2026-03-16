@@ -201,5 +201,11 @@
 	"21167": {
 		"scheme_amplify": 0,
 		"_comments": "https://github.com/zzorba/marvelsdb/issues/347"
+	},
+	"27102a": {
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/27102a.jpg"
+	},
+	"27102b": {
+		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/27102b.jpg"
 	}
 }

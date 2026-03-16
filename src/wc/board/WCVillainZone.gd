@@ -26,7 +26,7 @@ func post_load_move(details):
 		if (pile_name):
 			card.move_to(cfc.NMAP[pile_name])
 		if slot:
-			card.move_to(cfc.NMAP.board, -1, slot)		
+			card.move_to(cfc.NMAP.board, -1, slot)
 			card.set_is_faceup(true)
 		
 	
@@ -51,10 +51,21 @@ remotesync func cards_preloaded(details):
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	scenario_data = gameData.scenario
-
+	scripting_bus.connect("card_moved_to_hand", self, "_card_moved_to_pile")
+	scripting_bus.connect("card_moved_to_board", self, "_card_moved_to_board")
+	scripting_bus.connect("card_moved_to_pile", self, "_card_moved_to_pile")	
 	
 	pass # Replace with function body.
 
+func _card_moved_to_board(card, details):	
+	add_villain(card)
+
+func _card_moved_to_pile(card, details):
+	var type_code = card.get_property("type_code", "")
+	if type_code != "villain":
+		return	
+	
+	remove_villain(card)	
 
 func get_all_cards():
 	#todo
@@ -209,11 +220,47 @@ func shuffle_deck(target_deck = "deck_villain") -> void:
 func get_villains():
 	var result = []
 	for key in villains:
+		var villain = villains[key]
+		if !villain.is_onboard:
+			continue
 		result.append(villains[key])
 	return result
 	
 func get_villain():
 	return active_villain
 
-func set_active_villain(card):
-	active_villain = card		
+func set_active_villain(card):			
+	active_villain = card
+
+func add_villain(card):
+	var type_code = card.get_property("type_code", "")
+	if type_code != "villain":
+		return
+			
+	villains[card._placement_slot] = card
+
+func remove_villain(card):
+	var key_to_remove = ""
+	for key in villains:
+		var villain = villains[key]	
+		if villain == card:
+			key_to_remove = key
+			break
+	if key_to_remove:
+		villains.erase(key_to_remove)
+	
+	if card == active_villain:
+		active_villain = null
+		for key in villains:
+			active_villain = villains[key]
+			break
+	if !active_villain:
+		var _error = 1
+		#revert to avoid crashes
+		active_villain = card
+
+func reset():
+	active_villain = null
+	villains = {}
+	_post_load_move= {}
+	_cards_loaded= {}	

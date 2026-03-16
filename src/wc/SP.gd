@@ -281,8 +281,17 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 			if hero_id:
 				all_cards =  cfc.NMAP.board.get_enemies_engaged_with(hero_id)
 		for other_card in all_cards:
+			if other_card == card:
+				continue
 			if other_card.get_property("guard", 0, true) and other_card.is_faceup: #TODO better way to ignore face down cards?
-				return false
+				var other_type_code = other_card.get_property("type_code", "")
+				if other_type_code == "villain":
+					#if another villain has "guard" and I don't have it myself,
+					#it means that other villain is protecting me
+					if !card.get_property("guard", 0, true):
+						return false
+				else:
+					return false
 
 	var type_code = card.get_property("type_code", "")
 	#cannot thwart side schemes

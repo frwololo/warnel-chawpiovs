@@ -873,10 +873,11 @@ func replace_one_macro(script_definition, macro_key, macro_value):
 			result = script_definition
 	return result;	
 
-func replace_macros(json_card_data, json_macro_data):
+func replace_macros(json_card_data, local_macro_data, json_macro_data):
 	var result = json_card_data
-	for macro_key in json_macro_data.keys():
-		result = replace_one_macro(result, macro_key, json_macro_data[macro_key])
+	var macro_data = WCUtils.merge_dict(json_macro_data, local_macro_data)
+	for macro_key in macro_data.keys():
+		result = replace_one_macro(result, macro_key, macro_data[macro_key])
 	return result
 
 
@@ -908,7 +909,9 @@ func load_script_definitions() -> void:
 		json_card_data = WCUtils.read_json_file(script_file)
 		#delete comments from dictionary
 		WCUtils.erase_key_recursive(json_card_data, "_comments")
-		json_card_data = replace_macros(json_card_data, json_macro_data)
+		var local_macros = json_card_data.get("_macros", {})
+		json_card_data.erase("_macros")
+		json_card_data = replace_macros(json_card_data, local_macros, json_macro_data)
 		
 		#we don't support "response" yet but want to in the future. For now they're just interrupts
 		json_card_data = WCUtils.search_and_replace (json_card_data, "response", "interrupt", true)

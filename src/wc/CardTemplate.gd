@@ -2319,17 +2319,13 @@ func enable_token(token_name, value:bool):
 	else:
 		tokens.mod_token(token_name, 0, true)	
 
-func is_stunned() -> bool:
-	return is_token_set("stunned")
+
 
 func set_stunned(value:bool = true):
 	enable_token("stunned", value)
 
 func remove_stun():
 	set_stunned(false)
-
-func is_confused() -> bool:
-	return is_token_set("confused")
 
 func set_confused(value:bool = true):
 	enable_token("confused", value)
@@ -2583,6 +2579,26 @@ func remove_current_activation(script):
 # These might not be always directly called by the code but instead
 # called as part of json script processing (through a .call run)
 #############################
+
+func is_stunned(params := {}, script:ScriptObject= null) -> int:
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return 0
+			
+	var result = subject.is_token_set("stunned")
+	if result:
+		return 1
+	return 0
+
+func is_confused(params := {}, script:ScriptObject= null) -> int:
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return 0
+			
+	var result = subject.is_token_set("confused")
+	if result:
+		return 1
+	return 0
 
 func check_validity(params, script:ScriptObject= null) -> int:
 	var subject = get_param_subject(params, script)

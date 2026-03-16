@@ -1,4 +1,26 @@
 {
+	"_macros": {
+		"ultron_drone": {
+			"name": "move_card_to_board",
+			"tags": [
+				"facedown",
+				"Init"
+			],
+			"set_properties": {
+				"type_code": "minion",
+				"shortname": "Drone",
+				"trait_drone": 1,
+				"attack": 0,
+				"scheme": 0,
+				"health": 0
+			},
+			"src_container": "__src_container__",
+			"subject": "index",
+			"subject_count": "__count__",
+			"subject_index": "top",
+			"for_each_player": "__each_player__"
+		},	
+	},
 	"Advance": {
 		"reveal": {
 			"all": [

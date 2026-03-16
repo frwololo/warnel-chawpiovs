@@ -1399,10 +1399,10 @@ func deal_encounters():
 	
 	#Hazard cards
 	var hazard = 0		
-	var all_schemes:Array = cfc.NMAP.board.get_grid("schemes").get_all_cards()
-	for scheme in all_schemes:
+	var all_cards:Array = cfc.NMAP.board.get_all_cards()
+	for card in all_cards:
 		#we add all hazard icons	
-		hazard  += scheme.get_property("scheme_hazard", 0)
+		hazard  += card.get_property("scheme_hazard", 0)
 	
 	while hazard:
 		deal_one_encounter_to(_villain_current_hero_target)
@@ -1826,7 +1826,12 @@ func get_main_schemes() :
 		
 func find_main_schemes() :
 	var result = []
-	var cards:Array = cfc.NMAP.board.get_grid("schemes").get_all_cards()
+	var schemes_grid = cfc.NMAP.board.get_grid("schemes")
+	if !schemes_grid:
+		var _error =1
+		return result
+		
+	var cards:Array = schemes_grid.get_all_cards()
 	for card in cards:
 		if "main_scheme" == card.properties.get("type_code", "false"):
 			result.append(card)
@@ -1860,14 +1865,18 @@ func get_current_target_hero() -> Card:
 func compute_potential_defenders(hero_id, attacker):		
 	var board:Board = cfc.NMAP.board
 	var defenders = []
-	
-	for c in board.get_all_cards():
-		if c.can_defend(): #hero_id):
-			defenders.append(c)
+
 
 	#clear old stuff
 	for node in cfc.get_tree().get_nodes_in_group("group_defenders"):
 		node.remove_from_group("group_defenders")
+
+	if attacker.get_property("cannot_be_blocked", 0, true):
+		return []
+
+	for c in board.get_all_cards():
+		if c.can_defend(): #hero_id):
+			defenders.append(c)
 
 	var modifiers = attacker.retrieve_scripts("modifiers")
 	var defense_selection_modifier = modifiers.get("defense_selection", "")

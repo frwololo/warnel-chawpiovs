@@ -634,6 +634,7 @@ const AUTO_KEYWORDS := {
 	"blank_abilities": "int",
 	"cannot_change_form": "int",
 	"cannot_be_canceled": "int",
+	"cannot_be_blocked": "int",
 	"ignore_external_acceleration": "int",				
 }
 

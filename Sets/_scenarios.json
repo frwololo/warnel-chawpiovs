@@ -677,10 +677,52 @@
 					"all": [
 						{
 							"name": "set_active_villain",
-							"subject": "trigger",
+							"subject": "trigger"
 						}
 					]
-				}				
+				},
+				"card_moved_to_pile": {
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "villain"
+							}
+						}
+					],
+					"all": [
+						{
+							"name": "conditional_script",
+							"options": [
+								{
+									"condition": {
+										"func_name": "!count_tokens",
+										"func_params": {
+											"token_name": "active_counter",
+											"subject": "boardseek",
+											"subject_count": "all",
+											"filter_state_seek": [
+												{
+													"filter_properties": {
+														"type_code": "villain"
+													}
+												}
+											]
+										}
+									},
+									"nested_tasks": [
+										{
+											"name": "move_token_to",
+											"token_name": "active_counter",
+											"source": "current",
+											"subject": "function",
+											"subject_func_name": "next_activation_order_villain"
+										}
+									]
+								}
+							]
+						}
+					]
+				}
 			}
 		],
 		"expert": {

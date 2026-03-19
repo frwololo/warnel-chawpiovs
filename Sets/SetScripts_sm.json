@@ -780,7 +780,7 @@
 					"name": "mod_tokens",
 					"token_name": "sand",
 					"modification": 1,
-					"subject": "self"
+					"subject": "self",
 				},
 				{
 					"name": "move_card_to_container",
@@ -790,7 +790,9 @@
 					"subject_index": "top",
 					"subject_count": "per_token_self",
 					"per_token_self": {
-						"token_name": "sand"
+						"token_name": "sand",
+						"plus": 1,
+						"_comments": "we have to add 1 here because the number is computed before actually adding it"
 					}
 				}
 			]
@@ -5504,9 +5506,11 @@
 				}
 			]
 		},
-		"interrupt_receive_damage": {
+		"attack_happened": {
 			"event_filters": {
-				"target": "current_hero_target"
+				"target": "current_hero_target",
+				"damage": ">0",
+				"tags": ["attack"]
 			},
 			"trigger": "self",
 			"board": [
@@ -5546,24 +5550,18 @@
 				}
 			]
 		},
-		"interrupt_receive_damage": {
+		"attack_happened": {
 			"event_filters": {
-				"target": "current_hero_target"
+				"target": "current_hero_target",
+				"damage": ">0",
+				"tags": ["attack"]
 			},
 			"trigger": "self",
 			"board": [
 				{
 					"name": "sequence",
 					"sequence_ability": "special",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"Name": "City Streets"
-							}
-						}
-					]
+					"subject": "City Streets"
 				}
 			]
 		}
@@ -5610,24 +5608,18 @@
 				}
 			]
 		},
-		"interrupt_receive_damage": {
+		"attack_happened": {
 			"event_filters": {
-				"target": "current_hero_target"
+				"target": "current_hero_target",
+				"damage": ">0",
+				"tags": ["attack"]
 			},
 			"trigger": "self",
 			"board": [
 				{
 					"name": "sequence",
 					"sequence_ability": "special",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"Name": "City Streets"
-							}
-						}
-					]
+					"subject": "City Streets"
 				}
 			]
 		}
@@ -6315,7 +6307,7 @@
 					"is_cost": true,
 					"constraints": [
 						{
-							"func_name": "count_card",
+							"func_name": "count_cards",
 							"func_params": {
 								"subject": "boardseek",
 								"filter_state_seek": [
@@ -6456,7 +6448,7 @@
 					"name": "deal_damage",
 					"subject": "trigger",
 					"amount": {
-						"func_name": "count_card",
+						"func_name": "count_cards",
 						"func_params": {
 							"subject": "boardseek",
 							"filter_state_seek": [

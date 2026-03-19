@@ -2195,29 +2195,20 @@ func indirect_damage_replacement(script_definition: Dictionary, trigger_details)
 			"filter_group": "group_friendly" + str(controller_hero_id)
 		}
 	]
-	filter_state_seek = script_definition.get("filter_state_seek", filter_state_seek)
+	filter_state_seek = script_definition.get("filter_state_seek", {})
 	
 	var amount = script_definition.get("amount", 1)
 	
 	
 	#Note: amount in this case is actually set into selection_count, 
 	# due to how "assign_" works in selectionwindow			
-	var result  =	{
-		"name": "deal_damage",
-		"amount": 1,
-		"subject": "boardseek",
-		"abort_on_cost_failure": true,
-		"subject_count": "all",
-		"selection_count": amount,
-		"selection_type": "as_much_as_possible",
-		"selection_what_to_count": "assign_indirect_damage",
-		"needs_selection": true,
-		"filter_state_seek": filter_state_seek
-	}	
+	var result  =	WCScriptingEngine.indirect_damage_script_definition (amount, controller_hero_id, filter_state_seek)	
 	
 	result = WCUtils.merge_dict(script_definition, result, true)
 
 	return result	
+
+		
 
 #TODO cleanup, probably doesn't need to be a replacement
 func pay_regular_cost_replacement(script, trigger_details) -> Dictionary:	

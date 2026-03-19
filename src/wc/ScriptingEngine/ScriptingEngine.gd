@@ -619,15 +619,26 @@ func receive_damage(script: ScriptTask) -> int:
 			card.hint("Tough!", Color8(50,50,255))
 		else:
 			#indirect damage in attack, we replace all damages with an indirect damage command
-			if ("attack" in tags) and (attacker.get_property("attack_indirect_damage", 0, true) or ("attack_indirect_damage" in tags)):
-				var indirect_damage_script_definition = {
-					"name": "indirect_damage",
-					"amount": amount,
-					"tags": []
+			if ("attack" in tags) and (!"indirect_damage" in tags) and (attacker.get_property("attack_indirect_damage", 0, true) or ("attack_indirect_damage" in tags)):
+				var indirect_damage_script_definition = \
+					indirect_damage_script_definition(amount, card.get_controller_hero_id())
+				indirect_damage_script_definition["tags"] = indirect_damage_script_definition.get("tags", []) + tags
+				var state_scripts_dict = {
+					"state_scripts": [
+						indirect_damage_script_definition
+					],
+					"action_name": "indirect_damage"
 				}
-				var task_event = SimplifiedStackScript.new(indirect_damage_script_definition, attacker)
-				gameData.theStack.add_script(task_event)	
-				continue
+				var new_action = {
+					"state_scripts_dict": state_scripts_dict
+				}
+#				var task_event = SimplifiedStackScript.new(indirect_damage_script_definition, attacker)
+#				gameData.theStack.add_script(task_event)
+				attacker.execute_scripts(attacker, "__damage_replacement__", new_action)
+				#TODO the return here implies that this replacement to indirect damage will only
+				#ever work if there's only one target. I'm not sure how future proof this is
+				return retcode	
+				#continue
 				
 			retcode = card.tokens.mod_token("damage",
 					amount,false,costs_dry_run(), tags)	
@@ -2342,7 +2353,27 @@ static func duplicate_script(script):
 	
 	return result
 
+static func indirect_damage_script_definition(amount, controller_hero_id, filter_state_seek = {}):
+	if !filter_state_seek:
+		filter_state_seek = [
+		{
+			"filter_group": "group_friendly" + str(controller_hero_id)
+		}
+	]
 
+	return	{
+		"name": "deal_damage",
+		"amount": 1,
+		"subject": "boardseek",
+		"abort_on_cost_failure": true,
+		"subject_count": "all",
+		"selection_count": amount,
+		"selection_type": "as_much_as_possible",
+		"selection_what_to_count": "assign_indirect_damage",
+		"needs_selection": true,
+		"filter_state_seek": filter_state_seek,
+		"tags": ["indirect_damage"]
+	}
 
 # Extendable function to perform extra checks on the script
 # according to game logic

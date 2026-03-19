@@ -1,0 +1,167 @@
+{
+	"_comments": "Bug: Sandman attack doesn't do indirect damage",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ghost-Spider"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Assault"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"villain": [
+				{
+					"card": "Sandman - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hapless Pedestrians"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "City Streets",
+					"tokens": {
+						"sand": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ghost-Spider"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack"
+		},	
+		{
+			"type": "select",
+			"value": [
+				"Jessica Jones",
+				"Ghost-Spider"
+			],
+			"_comments": "indirect damage"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ghost-Spider"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Assault"
+				},				
+				{
+					"card": "Advance"
+				},
+
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"villain": [
+				{
+					"card": "Sandman - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hapless Pedestrians"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "City Streets",
+					"tokens": {
+						"sand": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ghost-Spider",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jessica Jones",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

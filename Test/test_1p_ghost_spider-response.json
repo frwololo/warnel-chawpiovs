@@ -1,0 +1,177 @@
+{
+	"_comments": "Bug: Ghost Spider's 'response to response' ability doesn't work",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ghost-Spider"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Assault"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"villain": [
+				{
+					"card": "Sandman - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hapless Pedestrians"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "City Streets",
+					"tokens": {
+						"sand": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ghost-Spider",
+					"tokens": {"_ready": 1},
+					"exhausted": true,
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Pirouette and Punch"
+				},				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Pirouette and Punch",
+			"_comments": "cancel the encounter"
+		},		
+		{
+			"type": "choose",
+			"value": "Yes",
+			"_comments": "untap ghost spider"
+		},			
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		},
+		{
+			"type": "activate",
+			"value": "Ghost-Spider",
+		},			
+		{
+			"type": "choose",
+			"value": "attack",
+		},			
+		{
+			"type": "target",
+			"value": "Sandman - 1",
+		},			
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ghost-Spider"
+				}
+			}
+		],
+		"board": {	
+			"discard_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Assault"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+			],
+			"villain": [
+				{
+					"card": "Sandman - 1",
+					"tokens": {"damage": 3}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hapless Pedestrians"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "City Streets",
+					"tokens": {
+						"sand": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ghost-Spider",
+					"exhausted": true,
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Pirouette and Punch"
+				},				
+			]
+		}
+	}
+}

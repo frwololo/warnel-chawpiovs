@@ -160,7 +160,7 @@ func emit_signal_on_stack(signal_name, arg0 = null, arg1 = null):
 	if arg1 != null:
 		if typeof(arg1) == TYPE_DICTIONARY:
 			if !arg1.has("source"):
-				if arg0 as Card:
+				if is_instance_valid(arg0) and (arg0 as Card):
 					arg1["source"] = arg0.get_controller_hero_card()
 		stackEvent = SignalStackScript.new(signal_name, arg0, arg1)
 	elif arg0 != null:

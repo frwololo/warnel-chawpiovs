@@ -93,8 +93,11 @@ func _init(_state_scripts: Array,
 	
 	trigger_object = _trigger_object
 	trigger_details = _trigger_details.duplicate()
+	var children_trigger_details = trigger_details.duplicate()
+	for redundant in CFConst.SCENG_TRIGGER_DETAILS_ERASE_FROM_CHILDREN_SCRIPTS:
+		children_trigger_details.erase(redundant)
 	state_scripts = _state_scripts.duplicate() 	
-	add_scripts(state_scripts, owner,  trigger_object, trigger_details)
+	add_scripts(state_scripts, owner,  trigger_object, children_trigger_details)
 
 func add_scripts(_state_scripts,
 		_owner,

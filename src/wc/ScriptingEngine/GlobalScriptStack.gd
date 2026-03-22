@@ -753,8 +753,14 @@ func flush_script(stack_object):
 		func_return = yield(func_return, "completed")
 
 	var sceng = stack_object.get_sceng()
-	if sceng and sceng.trigger_details.get("action_name_id", ""):
-		scripting_bus.emit_signal_on_stack("script_executed", sceng.owner, sceng.trigger_details)
+	if stack_object.get_first_task_name() != "script_executed" and sceng: # and sceng.trigger_details.get("action_name_id", ""):
+		var trigger_details = sceng.trigger_details.duplicate()
+		#the trigger details of sceng might contain information about the interrupted
+		#event rather than the event that was just executed
+		#not sure what's a proper way to address that, for now I'm overwriting the values here
+		trigger_details["stack_object"] = stack_object
+		trigger_details["event_object"] = stack_object.get_first_task()
+		scripting_bus.emit_signal_on_stack("script_executed", sceng.owner, trigger_details)
 		
 #	var user_interaction_status = stack_object.get_user_interaction_status()
 	#something todo here ???
@@ -1130,8 +1136,9 @@ func get_stack_object_by_uid(stack_uid):
 		if obj.stack_uid == stack_uid:
 			return obj
 	
-	return history.get(stack_uid, null)
-
+	var fallback_obj = history.get(stack_uid, null)
+	if fallback_obj:
+		return (fallback_obj.get("stack_object", null))
 func find_last_event_id_before_me(requester:ScriptTask):
 	#the requester usually doesn't want to delete themselves
 	for i in stack.size():

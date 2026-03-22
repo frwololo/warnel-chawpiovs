@@ -696,6 +696,15 @@ enum PHASE {
 	VILLAIN
 }
 
+# the sceng variable copies its trigger details to all children subscripts
+# this has led to issues where some scripts react to multiple
+# subscripts
+# this variable forces not passing specific variables
+# to childrend when duplicating the trigger_details variable from sceng
+const SCENG_TRIGGER_DETAILS_ERASE_FROM_CHILDREN_SCRIPTS := [
+	"is_interrupt_or_response"
+]
+
 enum PHASE_STEP {
 	GAME_NOT_STARTED,
 	PLAYER_MULLIGAN,

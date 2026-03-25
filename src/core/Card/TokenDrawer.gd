@@ -14,8 +14,6 @@ onready var _tween : Tween = $Tween
 # Stores a reference to the Card that is hosting this node
 onready var owner_card = get_parent().get_parent()
 
-#sets a max limit for some tokens
-var max_tokens: Dictionary = {}
 var _is_horizontal:= false
 var show_manipulation_buttons:= true
 
@@ -204,23 +202,25 @@ func mod_token(
 			else:
 				retcode = CFConst.ReturnCode.CHANGED
 				#fail if we can't add the full amount requested
-				if max_tokens.has(token_name) and ((token.count + mod > max_tokens[token_name])):
+				var max_tokens = get_max(token_name)
+				if max_tokens and ((token.count + mod > max_tokens)):
 					retcode = CFConst.ReturnCode.FAILED
 					
 	else:
 		cfc.flush_cache()
 		var prev_value = token.count
+		var max_tokens = get_max(token_name)
 		# The set_to_mod value means that we want to set the tokens to the
 		# exact value specified
 		if set_to_mod:
 			var value = mod
-			if max_tokens.has(token_name):
-				value = min(value, max_tokens[token_name])
+			if max_tokens:
+				value = min(value, max_tokens)
 			token.count = value
 		else:
 			token.count += mod
-			if max_tokens.has(token_name) and token.count > max_tokens[token_name]:
-				token.count = max_tokens[token_name]
+			if max_tokens and token.count > max_tokens:
+				token.count = max_tokens
 		# We store the count in a new variable, to be able to use it
 		# in the signal even after the token is deinstanced.
 		var new_value = token.count
@@ -302,13 +302,9 @@ func _on_VBoxContainer_sort_children() -> void:
 	$Drawer.rect_size = \
 			$Drawer.rect_min_size
 
-func set_max(token_name, max_value):
-	max_tokens[token_name] = max_value
 
 func get_max(token_name):
-	if !max_tokens.has(token_name):
-		return 0
-	return max_tokens[token_name]
+	return owner_card.get_max_tokens(token_name)
 
 func export_to_json():
 	var result = {}

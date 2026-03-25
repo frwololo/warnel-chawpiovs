@@ -295,7 +295,7 @@ func draw_to_hand_size (script: ScriptTask) -> int:
 	return draw_cards(script)
 
 #play card and move it either to a pile or a container
-# more importantly, sends the signal "card played" to the scripting engine
+#sends the signal "card played" to the scripting engine
 func play_card(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
@@ -655,8 +655,7 @@ func receive_damage(script: ScriptTask) -> int:
 					gameData.play_sfx("damage*")	
 				
 				if ("stun_if_damage" in tags):
-					card.tokens.mod_token("stunned",
-						1,false,costs_dry_run(), tags)
+					card.set_stunned()
 				if ("exhaust_if_damage" in tags):
 					card.exhaustme()
 				if ("run_post_damage_script" in tags):
@@ -1496,6 +1495,10 @@ func consequential_damage(script: ScriptTask) -> int:
 		"thwart", "remove_threat":
 			damage = owner.get_property("thwart_cost",0)
 
+	#skip the whole thing if no consequential damage
+	if !damage:
+		return CFConst.ReturnCode.OK
+
 	var new_tags = ["consequential_damage"]
 	var additional_task := ScriptTask.new(
 		script.owner,
@@ -1633,9 +1636,8 @@ func thwart(script: ScriptTask) -> int:
 			return CFConst.ReturnCode.FAILED 
 		return retcode	
 	
-	var confused = owner.tokens.get_token_count("confused")
-	if (confused):
-		owner.tokens.mod_token("confused", -1)
+	if (owner.is_confused()):
+		owner.remove_confused()
 		owner.hint("Confused!", Color8(240,110,255))
 	else:
 		for card in script.subjects:

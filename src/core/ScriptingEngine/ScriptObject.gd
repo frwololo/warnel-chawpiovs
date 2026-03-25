@@ -447,6 +447,11 @@ func _boardseek_subjects(stored_integer: int) -> Array:
 
 func get_all_cards_from_containers(container_names) -> Array:
 	var all_cards = []
+	if !container_names:
+		var _error = 1
+		print_debug("missing parameter in get_all_cards_from_containers")
+		return all_cards
+
 	if (typeof(container_names) != TYPE_ARRAY):
 		container_names = [container_names]
 	

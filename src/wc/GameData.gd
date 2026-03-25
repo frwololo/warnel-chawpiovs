@@ -1098,9 +1098,9 @@ func enemy_activates() :
 		self.select_current_playing_hero(target_id) 
 	
 	#check for stun/confused
-	var is_status = enemy.tokens.get_token_count(status)
+	var is_status = enemy.is_token_status({"status_name": status})
 	if (is_status):
-		enemy.tokens.mod_token(status, -1)
+		enemy.tokens.mod_token(status, 0, true)
 		enemy.hint(status + "!", hint_color)
 		current_enemy_finished()
 		return

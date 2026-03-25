@@ -1116,6 +1116,7 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 			if !func_name:
 				continue
 			var func_params = condition.get("func_params", {})
+			func_params = WCScriptingEngine.static_pre_task_prime(func_params, self)
 			var dummy_script = ScriptTask.new(self, {"name": "nop"}, trigger_card, trigger_details)			
 			var check = cfc.ov_utils.func_name_run(self, func_name, func_params, dummy_script)
 			if !check:
@@ -2301,16 +2302,23 @@ func get_associated_villain():
 	return gameData.get_villain()
 
 #easy access functions for tokens that are either 1 or 0
-func is_token_set(token_name):
-	return tokens.get_token_count(token_name) > 0
 
 func enable_token(token_name, value:bool):
 	if value:
-		tokens.mod_token(token_name, 1, true)
+		tokens.mod_token(token_name, 1)
 	else:
 		tokens.mod_token(token_name, 0, true)	
 
 
+func get_max_tokens(token_name) -> int:
+	if token_name in ["stunned", "confused"]:
+		if self.get_property("steady", 0, true):
+			return 2
+	
+	if CFConst.DEFAULT_TOKEN_MAX_VALUE.has(token_name):
+		return CFConst.DEFAULT_TOKEN_MAX_VALUE[token_name]
+	
+	return 0
 
 func set_stunned(value:bool = true):
 	enable_token("stunned", value)
@@ -2321,7 +2329,7 @@ func remove_stun():
 func set_confused(value:bool = true):
 	enable_token("confused", value)
 
-func disable_confused():
+func remove_confused():
 	set_confused(false)
 
 func can_change_form(voluntary:= false) -> bool:
@@ -2571,25 +2579,36 @@ func remove_current_activation(script):
 # called as part of json script processing (through a .call run)
 #############################
 
-func is_stunned(params := {}, script:ScriptObject= null) -> int:
+func is_token_status(params := {}, script:ScriptObject= null) -> int:
+	var token_name = params.get("status_name", "")
+	if !token_name:
+		return 0
+
 	var subject = get_param_subject(params, script)
 	if !subject:
 		return 0
-			
-	var result = subject.is_token_set("stunned")
-	if result:
+	
+	var trigger_value = subject.get_max_tokens(token_name)
+
+	#if there is no max, we consider the trigger to be at 1
+	if !trigger_value:
+		trigger_value = 1
+
+	var result = subject.tokens.get_token_count(token_name)
+
+	if result >= trigger_value:
 		return 1
+	
 	return 0
+	 
+	
+func is_stunned(params := {}, script:ScriptObject= null) -> int:
+	params["status_name"] = "stunned"
+	return is_token_status(params, script)
 
 func is_confused(params := {}, script:ScriptObject= null) -> int:
-	var subject = get_param_subject(params, script)
-	if !subject:
-		return 0
-			
-	var result = subject.is_token_set("confused")
-	if result:
-		return 1
-	return 0
+	params["status_name"] = "confused"
+	return is_token_status(params, script)
 
 func check_validity(params, script:ScriptObject= null) -> int:
 	var subject = get_param_subject(params, script)
@@ -2631,7 +2650,7 @@ func count_attachments(params = {}, script:ScriptTask = null) -> int:
 			ret += card.attachments.size()
 	return(ret)
 
-func is_hero_form(params = {}, script:ScriptTask = null) -> bool:
+func is_hero_form(params = {}, script:ScriptObject = null) -> bool:
 	var subject = get_param_subject(params, script)
 					
 	if !subject:
@@ -2641,7 +2660,7 @@ func is_hero_form(params = {}, script:ScriptTask = null) -> bool:
 		return true
 	return false
 	
-func is_alter_ego_form(params = {}, script:ScriptTask = null) -> bool:
+func is_alter_ego_form(params = {}, script:ScriptObject = null) -> bool:
 	var subject = get_param_subject(params, script)
 
 	if !subject:
@@ -2651,7 +2670,7 @@ func is_alter_ego_form(params = {}, script:ScriptTask = null) -> bool:
 		return true
 	return false
 
-func get_script_bool_property(params, script:ScriptTask = null) -> bool:
+func get_script_bool_property(params, script:ScriptObject = null) -> bool:
 	var property = params.get("property", "")
 	if !property:
 		return false
@@ -3185,10 +3204,6 @@ func get_max_hand_size():
 func init_token_drawer():
 	#set token drawer to disable manipulation buttons
 	tokens.show_manipulation_buttons = false
-	#tokens with a max value
-	for token_name in CFConst.DEFAULT_TOKEN_MAX_VALUE.keys():
-		var value = CFConst.DEFAULT_TOKEN_MAX_VALUE[token_name]
-		tokens.set_max(token_name, value)
 
 func get_keywords () -> Dictionary:
 	return get_property("keywords", {})

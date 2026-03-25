@@ -1,7 +1,11 @@
 {
-	"_comments": "Bug: Ghost Spider's 'response to response' ability doesn't work",
+	"_comments": "Bug: Cards tucked under George Stacy don't work after 1 turn",
+	"test_conditions": {
+		"bug_type": "no_repro",
+		"_comments": "no_repro bug indicates the issue could not be reproduced when testing"
+	},		
 	"init": {
-		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -14,15 +18,16 @@
 				{
 					"card": "Hydra Soldier"
 				},
-				{
-					"card": "Hydra Mercenary"
-				},
+
 				{
 					"card": "Assault"
 				},
 				{
 					"card": "Caught Off guard"
 				},
+				{
+					"card": "Hydra Mercenary"
+				},				
 				{
 					"card": "Advance"
 				}
@@ -53,52 +58,77 @@
 			"identity1": [
 				{
 					"card": "Ghost-Spider",
-					"tokens": {"_dizzying_reflexes": 1},
 					"exhausted": true,
+					"tokens": {"damage": 3}
 				}
 			],
-			"allies1": [
+			"upgrade_support1": [
 				{
-					"card": "Jessica Jones"
-				}
+					"card": "George Stacy"
+				},			
 			],
 			"hand1": [
 				{
 					"card": "Strength"
+				},	
+				{
+					"card": "What Doesn't Kill me"
+				},	
+				{
+					"card": "Young Love"
 				},
 				{
-					"card": "Pirouette and Punch"
+					"card": "Ticket to the Multiverse"
+				},	
+				{
+					"card": "Phantom Flip"
+				},
+				{
+					"card": "Ghost Kick"
 				},				
 			]
 		}
 	},
-	"actions": [
+	"actions": [	
 		{
 			"type": "activate",
-			"value": "Pirouette and Punch",
-			"_comments": "cancel the encounter"
-		},		
+			"value": "George Stacy",
+		},			
 		{
-			"type": "choose",
-			"value": "Yes",
-			"_comments": "untap ghost spider"
+			"type": "select",
+			"value": "What Doesn't Kill me",
+		},	
+		{
+			"type": "next_phase",
+			"value": 1,
+			"_comments": "go to villain phase",
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "don't discard hand",
 		},			
 		{
 			"type": "other",
-			"value": "wait_for_player_turn"
+			"value": "wait_a_bit",
+		},	
+		{
+			"type": "select",
+			"value": "Ghost-Spider",
+			"_comments": "block attack withghost spider"
 		},
 		{
-			"type": "activate",
-			"value": "Ghost-Spider",
-		},			
+			"type": "other",
+			"value": "wait_for_player_turn",
+		},
 		{
-			"type": "choose",
-			"value": "attack",
-		},			
+			"type": "play",
+			"value": "What Doesn't Kill me",
+		},	
 		{
-			"type": "target",
-			"value": "Sandman - 1",
-		},			
+			"type": "select",
+			"value": "Strength",
+		},		
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -109,30 +139,27 @@
 				}
 			}
 		],
-		"board": {	
+		"board": {
 			"discard_villain": [
 				{
 					"card": "Advance"
-				}
+				}		
 			],
 			"deck_villain": [
 				{
 					"card": "Hydra Soldier"
 				},
-				{
-					"card": "Hydra Mercenary"
-				},
+
 				{
 					"card": "Assault"
 				},
 				{
 					"card": "Caught Off guard"
-				},
+				},				
 			],
 			"villain": [
 				{
-					"card": "Sandman - 1",
-					"tokens": {"damage": 3}
+					"card": "Sandman - 1"
 				}
 			],
 			"schemes": [
@@ -156,20 +183,39 @@
 			"identity1": [
 				{
 					"card": "Ghost-Spider",
-					"exhausted": true,
+					"tokens": {"damage": 1}
 				}
 			],
-			"allies1": [
+			"enemies1": [
 				{
-					"card": "Jessica Jones"
-				}
+					"card": "Hydra Mercenary"
+				},
+			],
+			"upgrade_support1": [
+				{
+					"card": "George Stacy"
+				},			
 			],
 			"discard1": [
 				{
 					"card": "Strength"
+				},		
+				{
+					"card": "What Doesn't Kill me"
+				},					
+			],
+			"hand1": [
+				{
+					"card": "Young Love"
 				},
 				{
-					"card": "Pirouette and Punch"
+					"card": "Ticket to the Multiverse"
+				},	
+				{
+					"card": "Phantom Flip"
+				},
+				{
+					"card": "Ghost Kick"
 				},				
 			]
 		}

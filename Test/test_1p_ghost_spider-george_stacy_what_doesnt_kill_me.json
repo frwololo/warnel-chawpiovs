@@ -1,7 +1,7 @@
 {
-	"_comments": "Bug: Ghost Spider's 'response to response' ability doesn't work",
+	"_comments": "Bug: Cards tucked under George Stacy don't work",
 	"init": {
-		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -53,44 +53,38 @@
 			"identity1": [
 				{
 					"card": "Ghost-Spider",
-					"tokens": {"_dizzying_reflexes": 1},
-					"exhausted": true,
+					"exhausted": "true",
+					"tokens": {"damage": 2}
 				}
 			],
-			"allies1": [
+			"upgrade_support1": [
 				{
-					"card": "Jessica Jones"
-				}
+					"card": "George Stacy"
+				},			
 			],
 			"hand1": [
 				{
 					"card": "Strength"
-				},
+				},	
 				{
-					"card": "Pirouette and Punch"
+					"card": "What Doesn't Kill me"
 				},				
 			]
 		}
 	},
-	"actions": [
+	"actions": [	
 		{
 			"type": "activate",
-			"value": "Pirouette and Punch",
-			"_comments": "cancel the encounter"
-		},		
-		{
-			"type": "choose",
-			"value": "Yes",
-			"_comments": "untap ghost spider"
+			"value": "George Stacy",
 		},			
 		{
-			"type": "other",
-			"value": "wait_for_player_turn"
-		},
+			"type": "play",
+			"value": "What Doesn't Kill me",
+		},	
 		{
 			"type": "activate",
 			"value": "Ghost-Spider",
-		},			
+		},	
 		{
 			"type": "choose",
 			"value": "attack",
@@ -109,12 +103,7 @@
 				}
 			}
 		],
-		"board": {	
-			"discard_villain": [
-				{
-					"card": "Advance"
-				}
-			],
+		"board": {
 			"deck_villain": [
 				{
 					"card": "Hydra Soldier"
@@ -128,11 +117,14 @@
 				{
 					"card": "Caught Off guard"
 				},
+				{
+					"card": "Advance"
+				}
 			],
 			"villain": [
 				{
 					"card": "Sandman - 1",
-					"tokens": {"damage": 3}
+					"tokens": {"damage": 2}
 				}
 			],
 			"schemes": [
@@ -159,17 +151,17 @@
 					"exhausted": true,
 				}
 			],
-			"allies1": [
+			"upgrade_support1": [
 				{
-					"card": "Jessica Jones"
-				}
+					"card": "George Stacy"
+				},			
 			],
 			"discard1": [
 				{
 					"card": "Strength"
-				},
+				},	
 				{
-					"card": "Pirouette and Punch"
+					"card": "What Doesn't Kill me"
 				},				
 			]
 		}

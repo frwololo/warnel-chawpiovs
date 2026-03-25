@@ -52,8 +52,5 @@ func _init_card_layout() -> void:
 	pass
 
 	
-func init_default_max_tokens():
-	pass
-	
 func set_card_size(_value: Vector2, _ignore_area = false) -> void:
 	pass

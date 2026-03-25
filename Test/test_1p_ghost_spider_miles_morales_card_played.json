@@ -1,7 +1,11 @@
 {
-	"_comments": "Bug: Ghost Spider's 'response to response' ability doesn't work",
+	"_comments": "Bug: Miles Morales ability doesn't trigger",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},
 	"init": {
-		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -53,13 +57,14 @@
 			"identity1": [
 				{
 					"card": "Ghost-Spider",
-					"tokens": {"_dizzying_reflexes": 1},
-					"exhausted": true,
+					"tokens": {
+						"_dizzying_reflexes": 1
+					}
 				}
 			],
 			"allies1": [
 				{
-					"card": "Jessica Jones"
+					"card": "Silk - Cindy Moon"
 				}
 			],
 			"hand1": [
@@ -67,38 +72,23 @@
 					"card": "Strength"
 				},
 				{
-					"card": "Pirouette and Punch"
+					"card": "Energy"
 				},				
+				{
+					"card": "Spider-Man - Miles Morales"
+				}
 			]
 		}
 	},
 	"actions": [
 		{
-			"type": "activate",
-			"value": "Pirouette and Punch",
-			"_comments": "cancel the encounter"
-		},		
-		{
-			"type": "choose",
-			"value": "Yes",
-			"_comments": "untap ghost spider"
-		},			
-		{
-			"type": "other",
-			"value": "wait_for_player_turn"
+			"type": "Play",
+			"value": "Spider-Man - Miles Morales"
 		},
 		{
-			"type": "activate",
-			"value": "Ghost-Spider",
-		},			
-		{
-			"type": "choose",
-			"value": "attack",
-		},			
-		{
 			"type": "target",
-			"value": "Sandman - 1",
-		},			
+			"value": "Sandman - 1"
+		},		
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -109,12 +99,7 @@
 				}
 			}
 		],
-		"board": {	
-			"discard_villain": [
-				{
-					"card": "Advance"
-				}
-			],
+		"board": {
 			"deck_villain": [
 				{
 					"card": "Hydra Soldier"
@@ -128,11 +113,14 @@
 				{
 					"card": "Caught Off guard"
 				},
+				{
+					"card": "Advance"
+				}
 			],
 			"villain": [
 				{
 					"card": "Sandman - 1",
-					"tokens": {"damage": 3}
+					"tokens": {"stunned": 1, "confused": 1}
 				}
 			],
 			"schemes": [
@@ -156,21 +144,26 @@
 			"identity1": [
 				{
 					"card": "Ghost-Spider",
-					"exhausted": true,
+					"tokens": {
+						"_dizzying_reflexes": 1
+					}
 				}
 			],
 			"allies1": [
 				{
-					"card": "Jessica Jones"
-				}
+					"card": "Silk - Cindy Moon"
+				},
+				{
+					"card": "Spider-Man - Miles Morales"
+				}				
 			],
 			"discard1": [
 				{
-					"card": "Strength"
-				},
-				{
-					"card": "Pirouette and Punch"
+					"card": "Energy"
 				},				
+				{
+					"card": "Strength"
+				},			
 			]
 		}
 	}

@@ -1071,6 +1071,7 @@
 				{
 					"name": "move_card_to_board",
 					"subject": "tutor",
+					"src_container": "hand",
 					"subject_count": "all",
 					"selection_count": 1,
 					"selection_type": "equal",
@@ -1227,7 +1228,7 @@
 				},
 				{
 					"name": "shuffle_container",
-					"src_container": "deck"
+					"dest_container": "deck"
 				},
 				{
 					"name": "ready_card",

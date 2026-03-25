@@ -1,7 +1,7 @@
 {
-	"_comments": "Bug: Ghost Spider's 'response to response' ability doesn't work",
+	"_comments": "Bug: Silk ability doesn't trigger",
 	"init": {
-		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -53,13 +53,9 @@
 			"identity1": [
 				{
 					"card": "Ghost-Spider",
-					"tokens": {"_dizzying_reflexes": 1},
-					"exhausted": true,
-				}
-			],
-			"allies1": [
-				{
-					"card": "Jessica Jones"
+					"tokens": {
+						"_dizzying_reflexes": 1
+					}
 				}
 			],
 			"hand1": [
@@ -67,38 +63,24 @@
 					"card": "Strength"
 				},
 				{
-					"card": "Pirouette and Punch"
-				},				
+					"card": "Silk - Cindy Moon"
+				}
 			]
 		}
 	},
 	"actions": [
 		{
-			"type": "activate",
-			"value": "Pirouette and Punch",
-			"_comments": "cancel the encounter"
-		},		
-		{
-			"type": "choose",
-			"value": "Yes",
-			"_comments": "untap ghost spider"
-		},			
-		{
-			"type": "other",
-			"value": "wait_for_player_turn"
+			"type": "Play",
+			"value": "Silk - Cindy Moon"
 		},
 		{
-			"type": "activate",
-			"value": "Ghost-Spider",
-		},			
-		{
 			"type": "choose",
-			"value": "attack",
-		},			
+			"value": "yes"
+		},		
 		{
-			"type": "target",
-			"value": "Sandman - 1",
-		},			
+			"type": "select",
+			"value": "Caught Off guard"
+		}
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -109,30 +91,29 @@
 				}
 			}
 		],
-		"board": {	
+		"board": {
 			"discard_villain": [
 				{
-					"card": "Advance"
+					"card": "Caught Off guard"
 				}
 			],
 			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Assault"
+				},				
 				{
 					"card": "Hydra Soldier"
 				},
 				{
 					"card": "Hydra Mercenary"
 				},
-				{
-					"card": "Assault"
-				},
-				{
-					"card": "Caught Off guard"
-				},
 			],
 			"villain": [
 				{
-					"card": "Sandman - 1",
-					"tokens": {"damage": 3}
+					"card": "Sandman - 1"
 				}
 			],
 			"schemes": [
@@ -156,21 +137,20 @@
 			"identity1": [
 				{
 					"card": "Ghost-Spider",
-					"exhausted": true,
-				}
-			],
-			"allies1": [
-				{
-					"card": "Jessica Jones"
+					"tokens": {
+						"_dizzying_reflexes": 1
+					}
 				}
 			],
 			"discard1": [
 				{
 					"card": "Strength"
-				},
+				}
+			],
+			"allies1": [
 				{
-					"card": "Pirouette and Punch"
-				},				
+					"card": "Silk - Cindy Moon"
+				}
 			]
 		}
 	}

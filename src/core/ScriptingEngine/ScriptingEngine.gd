@@ -231,6 +231,10 @@ func execute(_run_type) -> void:
 		is_network_master = false
 		self.user_interaction_status = CFConst.USER_INTERACTION_STATUS.DONE_NETWORK_PREPAID
 		var prepaid = trigger_details["network_prepaid"]
+		if scripts_queue.size() != prepaid.size():
+			var _error = 1
+			print_debug ("ScriptingEngine: prepaid not same size as scripts queue" + JSON.print(trigger_details, '\t'))
+			return
 		for i in range(prepaid.size()):
 			scripts_queue[i].script_definition["network_prepaid"] =  prepaid[i]		
 		

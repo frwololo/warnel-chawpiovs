@@ -437,6 +437,8 @@ func parse_keywords(text:String) -> Dictionary:
 
 func _split_traits(traits:String) -> Array:
 	var result = []
+	#some traits end with ! instead of ".". Example: Trap!
+	traits = traits.replace("!", ".")
 	var a_traits = traits.split(". ")
 	for trait in a_traits:
 		trait = trait.to_lower().trim_suffix(".")

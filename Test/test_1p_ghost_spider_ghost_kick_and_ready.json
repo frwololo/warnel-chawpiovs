@@ -1,7 +1,11 @@
 {
-	"_comments": "Bug: Ghost Spider's 'response to response' ability doesn't work",
+	"_comments": "Bug: Ghost Kick doesn't trigger Ghost spider response ability",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},	
 	"init": {
-		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -54,12 +58,6 @@
 				{
 					"card": "Ghost-Spider",
 					"tokens": {"_dizzying_reflexes": 1},
-					"exhausted": true,
-				}
-			],
-			"allies1": [
-				{
-					"card": "Jessica Jones"
 				}
 			],
 			"hand1": [
@@ -67,7 +65,7 @@
 					"card": "Strength"
 				},
 				{
-					"card": "Pirouette and Punch"
+					"card": "Ghost Kick"
 				},				
 			]
 		}
@@ -75,17 +73,27 @@
 	"actions": [
 		{
 			"type": "activate",
-			"value": "Pirouette and Punch",
-			"_comments": "cancel the encounter"
-		},		
+			"value": "Ghost-Spider",
+		},			
+		{
+			"type": "choose",
+			"value": "attack",
+		},			
+		{
+			"type": "target",
+			"value": "Sandman - 1",
+		},	
+		{
+			"type": "play",
+			"value": "Ghost Kick",
+		},
+		{
+			"type": "target",
+			"value": "Sandman - 1",
+		},
 		{
 			"type": "choose",
 			"value": "Yes",
-			"_comments": "untap ghost spider"
-		},			
-		{
-			"type": "other",
-			"value": "wait_for_player_turn"
 		},
 		{
 			"type": "activate",
@@ -98,7 +106,7 @@
 		{
 			"type": "target",
 			"value": "Sandman - 1",
-		},			
+		},		
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -109,12 +117,7 @@
 				}
 			}
 		],
-		"board": {	
-			"discard_villain": [
-				{
-					"card": "Advance"
-				}
-			],
+		"board": {
 			"deck_villain": [
 				{
 					"card": "Hydra Soldier"
@@ -128,11 +131,14 @@
 				{
 					"card": "Caught Off guard"
 				},
+				{
+					"card": "Advance"
+				}
 			],
 			"villain": [
 				{
 					"card": "Sandman - 1",
-					"tokens": {"damage": 3}
+					"tokens": {"damage": 10}
 				}
 			],
 			"schemes": [
@@ -159,18 +165,13 @@
 					"exhausted": true,
 				}
 			],
-			"allies1": [
-				{
-					"card": "Jessica Jones"
-				}
-			],
 			"discard1": [
 				{
 					"card": "Strength"
-				},
+				},			
 				{
-					"card": "Pirouette and Punch"
-				},				
+					"card": "Ghost Kick"
+				},							
 			]
 		}
 	}

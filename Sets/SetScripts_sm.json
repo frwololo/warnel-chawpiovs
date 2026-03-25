@@ -1155,7 +1155,7 @@
 							}
 						}
 					],
-					"need_selection": true,
+					"needs_selection": true,
 					"selection_count": 1
 				},
 				{
@@ -2209,7 +2209,7 @@
 					"alteration": {
 						"func_name": "is_hero_form",
 						"func_params": {
-							"subject": "my_identity"
+							"subject": "host"
 						}
 					},
 					"filter_state_trigger": [
@@ -2245,8 +2245,9 @@
 							}
 						}
 					],
-					"need_selection": true,
-					"selection_count": 1
+					"needs_selection": true,
+					"selection_count": 1,
+					"is_cost": true
 				},
 				{
 					"name": "move_card_to_container",
@@ -2389,12 +2390,13 @@
 								{
 									"name": "host_card",
 									"subject": "tutor",
+									"subject_count": "all",
 									"src_container": "hand",
 									"needs_selection": true,
 									"selection_count": 1,
 									"filter_state_tutor": [
 										{
-											"filter_property": {
+											"filter_properties": {
 												"type_code": "event"
 											}
 										}
@@ -2409,11 +2411,10 @@
 	},
 	"Ghost Kick": {
 		"response": {
-			"event_filters": {
-				"tags": [
-					"basic power"
-				]
-			},
+			"event_name": [
+			"basic_attack_happened",
+			"basic_thwart_happened"
+			],
 			"trigger": "my_hero",
 			"is_optional_hand": true,
 			"hand": [
@@ -2439,7 +2440,7 @@
 	},
 	"Ghost-Spider": {
 		"once_per_phase": {
-			"__name__": "_ready"
+			"__name__": "_dizzying_reflexes"
 		},
 		"script_executed": {
 			"event_filters": {
@@ -2458,7 +2459,7 @@
 				{
 					"name": "mod_tokens",
 					"is_cost": true,
-					"token_name": "_ready",
+					"token_name": "_dizzying_reflexes",
 					"modification": -1,
 					"subject": "self"
 				},
@@ -2519,7 +2520,7 @@
 				},
 				{
 					"name": "shuffle_container",
-					"src_container": "deck"
+					"dest_container": "deck"
 				}
 			]
 		}
@@ -3452,7 +3453,8 @@
 		"interrupt": {
 			"event_name": "receive_damage",
 			"event_filters": {
-				"target": "my_hero"
+				"target": "my_hero",
+				"damage": ">0"
 			},
 			"is_optional_hand": true,
 			"hand": [
@@ -4679,7 +4681,7 @@
 								"filter_is_exhausted": false
 							}
 						],
-						"need_selection": true,
+						"needs_selection": true,
 						"selection_count": 1
 					},
 					{
@@ -4851,11 +4853,10 @@
 	},
 	"Phantom Flip": {
 		"response": {
-			"event_filters": {
-				"tags": [
-					"basic power"
-				]
-			},
+			"event_name": [
+			"basic_attack_happened",
+			"basic_thwart_happened"
+			],
 			"trigger": "my_hero",
 			"is_optional_hand": true,
 			"hand": [
@@ -5783,6 +5784,7 @@
 				"func_name": "count_cards",
 				"func_params": {
 					"subject": "boardseek",
+					"subject_count": "all",
 					"subject_exclude": "self",
 					"filter_state_seek": [
 						{
@@ -5814,7 +5816,7 @@
 				},
 				{
 					"name": "shuffle_container",
-					"src_container": "deck_villain"
+					"dest_container": "deck_villain"
 				}
 			]
 		}
@@ -6266,6 +6268,7 @@
 				"func_name": "count_cards",
 				"func_params": {
 					"subject": "boardseek",
+					"subject_count": "all",
 					"filter_state_seek": [
 						{
 							"filter_group": "play_area_my_hero",
@@ -7479,7 +7482,7 @@
 					"src_container": "hand_current_hero_target",
 					"dest_container": "discard_current_hero_target",
 					"subject_count": "all",
-					"need_selection": true,
+					"needs_selection": true,
 					"selection_count": 1
 				},
 				{
@@ -8481,6 +8484,7 @@
 				{
 					"name": "heal",
 					"subject": "my_hero",
+					"amount": 2,
 					"is_cost": true
 				},
 				{

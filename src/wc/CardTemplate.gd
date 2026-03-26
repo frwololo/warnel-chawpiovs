@@ -352,6 +352,7 @@ func setup() -> void:
 	cfc.connect("cache_cleared", self, "_cfc_cache_cleared")
 	scripting_bus.connect("stack_event_deleted", self, "_stack_event_deleted")
 	
+	scripting_bus.connect("card_selected", self, "_window_selection_confirmed")
 	attachment_mode = AttachmentMode.ATTACH_BEHIND
 	
 	#this prevents moving cards around. A bit annoying but avoids weird double click envents leading to a drag and drop
@@ -1571,7 +1572,13 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 				while sceng_return is GDScriptFunctionState && sceng_return.is_valid():
 					sceng_return = sceng_return.resume()	
 
-			
+		else:
+			#cleanup after cost failure
+			if sceng and sceng.network_prepaid:
+				for prepaid_data in sceng.network_prepaid:
+					for card in prepaid_data:
+						if card as Card:
+							card.remove_resource_lock()
 	is_executing_scripts = false
 	return sceng
 
@@ -2009,6 +2016,7 @@ func common_pre_run(sceng) -> void:
 	
 	scripts_queue = temp_queue	
 
+	var pay_resource_index = 0
 	
 	for task in scripts_queue:
 		var script: ScriptTask = task
@@ -2056,6 +2064,8 @@ func common_pre_run(sceng) -> void:
 			"pay_regular_cost":
 				var new_script = pay_regular_cost_replacement(script, trigger_details)
 				if (new_script) :
+					pay_resource_index+= 1
+					new_script["_pay_resource_index"] = pay_resource_index
 					script.script_definition = new_script
 					script.script_name = script.get_property("name") #TODO something cleaner? Maybe part of the script itself?
 					new_queue.append(script)
@@ -3046,7 +3056,58 @@ func get_remaining_damage(params:Dictionary = {}, script = null) -> int:
 func set_last_paid_with(manacost_array:Array):
 	_last_paid_with = manacost_array
 
+#	scripting_bus.emit_signal(
+#			"card_selected",
+#			self,
+#			{"selected_cards": selected_cards}
+#	)
+
+var _locked_for_resource = null
+func script_signature(script):
+	var definition = {
+		"owner": script.owner,
+		"definition": script.script_definition
+	}
+	var signature = WCUtils.ordered_hash(definition)
+	return signature
+
+func remove_resource_lock():
+	_locked_for_resource = null
+			
+func set_resource_lock(script):
+	var signature = script_signature(script)
+	_locked_for_resource = signature
+	
+func is_resource_locked(script):
+	if !_locked_for_resource:
+		return false
+	
+	if !script:
+		return false
+		
+	if script.script_definition.has("network_prepaid"):
+		return false
+		
+	var signature = script_signature(script)
+	if _locked_for_resource != signature:
+		return true
+	
+	return false
+	
+func _window_selection_confirmed(window, details):
+	var selected_cards = details.get("selected_cards", [])
+	if !self in selected_cards:
+		return
+	var script = window.my_script
+	if !script:
+		return
+	if script.script_name == "pay_as_resource":
+		set_resource_lock(script)
+
 func pay_as_resource(script):
+	if is_resource_locked(script):
+		return null
+		
 	cfc.add_ongoing_process(self, "pay_as_resource")
 
 	#generate a summary of resources generated
@@ -3079,6 +3140,9 @@ func pay_as_resource(script):
 		self.discard()
 	else:
 		var _tmp = 1
+	
+	remove_resource_lock()
+	
 	cfc.remove_ongoing_process(self, "pay_as_resource")
 	scripting_bus.emit_signal_on_stack("paid_as_resource", self, script.trigger_details)
 	return result_mana
@@ -3115,6 +3179,9 @@ func _get_script_sceng(trigger, script = null, run_bg_cost_check = true):
 #this uses its "resource" script in priority (for card that have either special resource abilities,
 #or cards that modify their resource based on some scripted conditions - e.g. The Power of Justice
 func get_resource_value_as_mana(script):
+	if is_resource_locked(script):
+		return null
+		
 	var cache_key = {
 		"owner": script.owner
 	}.hash()

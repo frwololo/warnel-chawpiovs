@@ -768,7 +768,7 @@ func delete_all_cards():
 			var grid_info = hero_grid_setup[grid_name]
 			var real_grid_name = grid_name + str(hero_id)		
 			if "pile" == grid_info.get("type", ""):
-				var pile:Pile = cfc.NMAP[real_grid_name]
+				var pile:Pile = cfc.NMAP.get(real_grid_name)
 				if pile:
 					pile.delete_all_cards()
 			else: #it's a grid

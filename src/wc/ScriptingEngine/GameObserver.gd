@@ -87,7 +87,7 @@ func add_script_removal_effect(_parent_script,subject, script_id, remove_conditi
 		remove_condition_str = remove_condition.get("trigger", "")
 		filters = remove_condition.get("event_filters", {})
 	
-	extra_script_removal_conditions.append({"trigger": remove_condition_str, "filters": filters, "card": subject, "script_id": script_id})
+	extra_script_removal_conditions.append({"trigger": remove_condition_str, "event_filters": filters, "card": subject, "script_id": script_id})
 
 func early_removal_checks(
 		trigger_card = null,

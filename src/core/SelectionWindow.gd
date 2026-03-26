@@ -308,7 +308,7 @@ func post_initiate_checks():
 			return			
 
 	# When we have 0 cards to select from, we consider the selection cancelled
-	elif get_count(card_array) == 0:
+	elif get_count(card_array) == 0 and selection_count:
 			#if show_cards_with_zero_value is set to true we want to show the selection even if there is nothing to choose from,
 			#so that the player can see that they fetched nothing (e.g. Jessica Drew's Apartment, Hawkeye's Quiver)
 			if (!show_cards_with_zero_value) and (!_assign_mode):

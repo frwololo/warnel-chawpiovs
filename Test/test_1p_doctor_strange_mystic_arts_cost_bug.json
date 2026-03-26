@@ -1,0 +1,171 @@
+{
+	"_comments": "Bug: Mystic Arts double pay bug",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Desperate Defense"
+				},
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Med Team"
+				},
+				{
+					"card": "Strength"
+				},				
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},	
+				{
+					"card": "Images of Ikonn"
+				},
+				
+				{
+					"card": "Vapors of Valtorr"
+				},	
+
+
+				{
+					"card": "Winds of Watoomb"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},					
+			
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Bomber",
+				},
+				{
+					"card": "Shocker",
+					"tokens": {"damage": 1},
+				},				
+			],
+			"hand1": [			
+				{
+					"card": "Clea"
+				},	
+				
+				{
+					"card": "Master of the Mystic Arts"
+				},	
+			
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "play",
+			"value": "Master of the Mystic Arts",
+		},
+		
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Desperate Defense"
+				},
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Med Team"
+				},
+				{
+					"card": "Strength"
+				},				
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},	
+				{
+					"card": "Images of Ikonn"
+				},
+				
+				{
+					"card": "Vapors of Valtorr"
+				},	
+
+
+				{
+					"card": "Winds of Watoomb"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},					
+			
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Bomber",
+				},
+				{
+					"card": "Shocker",
+					"tokens": {"damage": 1},
+				},				
+			],
+			"hand1": [			
+				{
+					"card": "Clea"
+				},				
+				{
+					"card": "Master of the Mystic Arts"
+				},	
+			
+			]
+		}
+	}
+}

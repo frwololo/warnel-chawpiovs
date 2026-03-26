@@ -707,6 +707,7 @@
 					"subject_count": 1,
 					"src_container": "deck_invocation"
 				},
+				
 				{
 					"name": "sequence",
 					"sequence_ability": "special",
@@ -716,10 +717,27 @@
 					"src_container": "deck_invocation"
 				},
 				{
-					"name": "move_card_to_container",
+					"name": "add_script",
+					"end_condition": {
+						"trigger": "card_moved_to_pile",
+						"event_filters": {
+							"destination": "discard_invocation"
+						}
+					},
 					"subject": "previous",
-					"dest_container": "deck_invocation"
-				}
+					"script": {
+						"card_moved_to_pile": {
+							"trigger": "self",
+							"all": [
+								{
+									"name": "move_card_to_container",
+									"subject": "self",
+									"dest_container": "deck_invocation"
+								}
+							]
+						}
+					}
+				}				
 			]
 		}
 	},

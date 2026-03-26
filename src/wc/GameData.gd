@@ -1127,12 +1127,7 @@ func enemy_activates() :
 					"bottom_texture_filename": get_identity_card(target_id).get_art_filename(),
 				}
 				theAnnouncer.simple_announce(announce_settings )
-				
-				#target player is the one adding the event to the stack
-#				if can_i_play_this_hero(target_id):	
-#					display_debug("I am the owner of hero " + str(target_id) +", I will handle the attack")			
-#					theStack.create_and_add_signal("enemy_initiates_" + action, enemy, {SP.TRIGGER_TARGET_HERO : get_current_target_hero().canonical_name})
-				
+							
 				#I had a race condition where if only the executing player would add a global script,
 				#it could arrive before network players where at this status.
 				#Making it a local script (everyone adds it) is an attempt at fixing this
@@ -1143,8 +1138,7 @@ func enemy_activates() :
 				 #some cleanup to prevent any misunderstanding
 				 #activity script will be set once the activity actually starts (which might be a mistake...?)
 				set_latest_activity_script(null)
-				var stackEvent:SignalStackScript = SignalStackScript.new("enemy_initiates_" + action, enemy,  details)
-				theStack.add_script(stackEvent)
+				scripting_bus.emit_signal_on_stack("enemy_initiates_" + action, enemy,  details)
 				_current_enemy_attack_step = EnemyAttackStatus.PENDING_INTERRUPT
 				return
 				
@@ -1201,8 +1195,7 @@ func enemy_activates() :
 				"target" : target_hero,
 				SP.TRIGGER_TARGET_HERO : target_hero.canonical_name
 			}				
-			var stackEvent:SignalStackScript = SignalStackScript.new("enemy_" + action + "_happened", enemy,  details)
-			theStack.add_script(stackEvent)
+			scripting_bus.emit_signal_on_stack("enemy_" + action + "_happened", enemy,  details)
 			#scripting_bus.emit_signal("enemy_" + action + "_happened", enemy, {})
 			return 
 		EnemyAttackStatus.ATTACK_POST_COMPLETE:	
@@ -1674,9 +1667,7 @@ func reveal_encounter(target_id = 0):
 			var pile = get_revealed_encounters_pile(target_id)
 			_current_encounter.set_is_faceup(true,false)
 			_current_encounter.move_to(pile)
-			#_current_encounter.execute_scripts(_current_encounter, "about_to_reveal")
-			var task_event = SignalStackScript.new("about_to_reveal", _current_encounter)
-			theStack.add_script(task_event)			
+			scripting_bus.emit_signal_on_stack("about_to_reveal", _current_encounter)	
 			_current_encounter.encounter_status = EncounterStatus.ABOUT_TO_REVEAL
 			return
 		EncounterStatus.ABOUT_TO_REVEAL:

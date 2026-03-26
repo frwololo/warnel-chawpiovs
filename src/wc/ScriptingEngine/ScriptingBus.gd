@@ -154,7 +154,42 @@ signal alter_ego_died(card,details)
 # warning-ignore:unused_signal
 signal card_leaves_play (card,details)
 
+var registered_signals = {}
+
+func register_card_signals(card, signal_names):
+	for signal_name in signal_names:
+		register_card_signal(card, signal_name)
+
+func register_card_signal(card, signal_name):
+	if !is_instance_valid(card):
+		print_debug("invalid card in register_card_signal")
+		var _error = 1
+		return
+	if !signal_name:
+		print_debug("missing signal name in register_card_signal")
+		var _error = 1
+		return		
+		
+	if !registered_signals.has(signal_name):
+		registered_signals[signal_name] = {}
+	
+	registered_signals[signal_name][card] = true
+
+func unregister_card(card):
+	for key in registered_signals:
+		registered_signals[key].erase(card)
+
+func is_signal_registered(signal_name):
+	return registered_signals.get(signal_name, {})
+
 func emit_signal_on_stack(signal_name, arg0 = null, arg1 = null):
+
+	#some signals need to have listeners for us to emit them
+	#this is to not constantly bloat the stack if/when not needed
+	if signal_name in CFConst.REGISTERED_SIGNALS:
+		if !is_signal_registered(signal_name):
+			return
+			
 	var stackEvent:SignalStackScript
 
 	if arg1 != null:

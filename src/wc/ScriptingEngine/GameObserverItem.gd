@@ -22,6 +22,7 @@ func set_values(_parent_script, _script: Dictionary):
 	
 	#more required data to pass script execution
 	properties["type_code"] = "game_observer_item"
+	register_signals()
 		
 func get_parent_script():
 	return parent_script

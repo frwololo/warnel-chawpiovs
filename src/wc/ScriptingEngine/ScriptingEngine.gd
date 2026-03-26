@@ -312,13 +312,8 @@ func play_card(script: ScriptTask) -> int:
 	else:
 		definition.name="move_card_to_container"
 		retcode = move_card_to_container(script)		
-	
-	#if (retcode == CFConst.ReturnCode.FAILED):
-	#	return retcode
-
-	var stackEvent:SignalStackScript = SignalStackScript.new("card_played", script.owner, {})
-	gameData.theStack.add_script(stackEvent)		
-#	scripting_bus.emit_signal("card_played", script.owner, script.script_definition)		
+			
+	scripting_bus.emit_signal_on_stack("card_played", script.owner, {})		
 	return retcode	
 
 func attack(script: ScriptTask) -> int:
@@ -384,12 +379,10 @@ func character_died(script: ScriptTask) -> int:
 	
 	for card in script.subjects:
 		var type = card.get_property("type_code", "")
-		if type:
-			var stackEvent:SignalStackScript = SignalStackScript.new(type + "_died", card, script.trigger_details)
-			gameData.theStack.add_script(stackEvent)			
-		if type in ["minion", "villain"]: #TODO more generic way to handle this?
-			var stackEvent:SignalStackScript = SignalStackScript.new("enemy_died", card, script.trigger_details)
-			gameData.theStack.add_script(stackEvent)			
+		if type:			
+			scripting_bus.emit_signal_on_stack(type + "_died", card, script.trigger_details)			
+		if type in ["minion", "villain"]: #TODO more generic way to handle this?			
+			scripting_bus.emit_signal_on_stack("enemy_died", card, script.trigger_details)			
 
 		card.post_death_move()
 	
@@ -693,16 +686,12 @@ func receive_damage(script: ScriptTask) -> int:
 				"damage": damage_happened,
 				"tags": tags,
 			}
-			gameData.theStack.add_script(SignalStackScript.new("attack_happened",  attacker,  signal_details))			
-#			scripting_bus.emit_signal("attack_happened", script.owner, signal_details)
+			scripting_bus.emit_signal_on_stack("attack_happened",  attacker,  signal_details)			
 						
 			if ("basic power" in tags):
-				gameData.theStack.add_script(SignalStackScript.new("basic_attack_happened",  attacker,  signal_details))				
-#				scripting_bus.emit_signal("basic_attack_happened", script.owner, signal_details)
+				scripting_bus.emit_signal_on_stack("basic_attack_happened",  attacker,  signal_details)				
 		
-			var stackEvent:SignalStackScript = SignalStackScript.new("defense_happened", card,  signal_details)
-			gameData.theStack.add_script(stackEvent)
-			#scripting_bus.emit_signal("defense_happened", card, signal_details)
+			scripting_bus.emit_signal_on_stack("defense_happened", card,  signal_details)
 			
 		#check for death
 		var lethal = false
@@ -1604,11 +1593,9 @@ func remove_threat(script: ScriptTask) -> int:
 			"source": owner,
 			"amount": amount,
 		}
-		gameData.theStack.add_script(SignalStackScript.new("basic_thwart_happened",  owner,  signal_details))				
+		scripting_bus.emit_signal_on_stack("basic_thwart_happened",  owner,  signal_details)				
 	if script.has_tag("thwart"):
-#		scripting_bus.emit_signal("thwarted", owner, {"amount" : amount, "target" : script.subjects[0]})
 		scripting_bus.emit_signal_on_stack("thwart_happened", owner, {"amount" : amount, "target" : script.subjects[0]})
-#		gameData.theStack.add_script(SignalStackScript.new("attack_happened",  attacker,  signal_details))			
 
 		
 

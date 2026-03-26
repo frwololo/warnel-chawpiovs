@@ -279,7 +279,22 @@ const Z_INDEX_BOARD_CARDS_NORMAL := 0
 const Z_INDEX_ANNOUNCER := 1000
 const Z_INDEX_HAND_CARDS_NORMAL :=200
 	
+#signals that will be sent only if cards register for them
+#DO NOT put signals in there that are needed by the core engine
+# In particular DO NOT ADD:
+# enemy_initiates*
+# enemy_*_happened
+const REGISTERED_SIGNALS:= [
+	"about_to_reveal",
+	"boost_card_resolved",
+	"card_leaves_play",
+	"card_played",	
+	"identity_changed_form",
+	"paid_as_resource",
+	"pile_emptied",
+	"script_executed",
 
+]
 
 const TYPES_TO_GROUPS := {
 	"upgrade": ["group_upgrade_support", "play_area"],

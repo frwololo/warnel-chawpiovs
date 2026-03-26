@@ -100,6 +100,7 @@ func add_extra_script(script_definition, allowed_hero_id = 0):
 		extra_scripts[extra_script_uid]["controller_id"] = allowed_hero_id
 		
 	check_ghost_card()
+	register_signals()
 	return extra_script_uid
 
 func remove_extra_script(script_uid):
@@ -330,6 +331,7 @@ func get_duplicate(refresh_variables = true):
 	return _duplicate
 
 func setup() -> void:
+	register_signals()
 	.setup()
 	_runtime_properties_setup()
 	update_groups()
@@ -913,6 +915,13 @@ func common_post_move_scripts(new_host: String, old_host: String, _move_tags: Ar
 	
 	#determine if this card can be selected with a controller	
 	cfc.NMAP.board.update_card_focus(self, {"new_host" : new_host, "old_host": old_host} )
+
+func register_signals():
+	scripting_bus.unregister_card(self)
+	var scripts = retrieve_all_scripts()
+	for trigger in CFConst.REGISTERED_SIGNALS:
+		if WCUtils.is_string_in_variant(scripts, trigger):
+			scripting_bus.register_card_signal(self, trigger)
 		
 
 #Tries to play the card assuming costs aren't impossible to pay
@@ -1861,8 +1870,7 @@ func die(script):
 		_:
 			self.discard()
 
-	var stackEvent:SignalStackScript = SignalStackScript.new("card_defeated", self, trigger_details)
-	gameData.theStack.add_script(stackEvent)			
+	scripting_bus.emit_signal_on_stack("card_defeated", self, trigger_details)			
 	#scripting_bus.emit_signal("card_defeated", self, trigger_details)			
 	return CFConst.ReturnCode.OK		
 
@@ -2343,10 +2351,8 @@ func changed_form(details):
 	var before = details.get("before")
 	#hopefully after and before are actually different...
 	var after = "alter_ego" if self.is_alter_ego_form() else "hero"		
-	var stackEvent:SignalStackScript = SignalStackScript.new("identity_changed_form", self, {"before": before , "after" : after })
-	gameData.theStack.add_script(stackEvent)		
-#	scripting_bus.emit_signal("identity_changed_form", new_card, {"before": before , "after" : after } )
-	
+	scripting_bus.emit_signal_on_stack("identity_changed_form", self, {"before": before , "after" : after })	
+
 
 func flip_doublesided_card():
 	if !self.is_onboard():
@@ -3344,3 +3350,6 @@ func get_printed_text(section = ""):
 	_cached_printed_text[section] = result
 	return result	
 
+func queue_free():
+	scripting_bus.unregister_card(self)
+	.queue_free()

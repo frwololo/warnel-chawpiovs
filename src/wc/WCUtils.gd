@@ -392,6 +392,28 @@ static func search_and_replace (script_definition, from: String, to, exact_match
 			result = script_definition
 	return result;
 
+static func is_string_in_variant (script_definition, needle: String) -> bool:
+	match typeof(script_definition):
+		TYPE_DICTIONARY:
+			for key in script_definition.keys():
+				var value = script_definition[key]
+				if is_string_in_variant(value, needle):
+					return true
+
+				#do the key too	
+				if ((typeof(key) == TYPE_STRING) and (needle in key)):
+					return true
+
+		TYPE_ARRAY:
+			for x in script_definition:
+				if is_string_in_variant(x, needle):
+					return true
+
+		TYPE_STRING:
+			return (needle in script_definition)
+	return false
+
+
 #replace "REAL" (float) numbers into "INT".
 #Patch utility for json loading issues
 static func replace_real_to_int (script_definition):

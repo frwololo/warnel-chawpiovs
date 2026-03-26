@@ -592,38 +592,41 @@
 			"__name__": "_war_machine"
 		},
 		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action_ability"
-					]
-				},
-				{
-					"name": "mod_tokens",
-					"subject": "self",
-					"modification": -1,
-					"token_name": "_war_machine",
-					"is_cost": true
-				},
-				{
-					"name": "shuffle_card_into_container",
-					"subject": "tutor",
-					"subject_count": "all",
-					"src_container": "discard",
-					"selection_count": 1,
-					"selection_type": "max",
-					"needs_selection": true,
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"faction_code": "hero"
+			"board": {
+				"War Machine Card": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "self",
+						"modification": -1,
+						"token_name": "_war_machine",
+						"is_cost": true
+					},
+					{
+						"name": "shuffle_card_into_container",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "discard",
+						"dest_container": "deck",
+						"selection_count": 1,
+						"selection_type": "max",
+						"needs_selection": true,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"faction_code": "hero"
+								}
 							}
-						}
-					]
-				}
-			]
+						]
+					}
+				]
+			}
 		}
 	},
 	"Laser Strike": {

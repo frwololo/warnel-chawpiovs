@@ -193,11 +193,6 @@ func attempt_yielded_script():
 		script_data["action_name"] ,
 		script_data["checksum"] )
 
-func create_and_add_signal(_name, _owner, _details):
-	var stackEvent:SignalStackScript = SignalStackScript.new(_name, _owner, _details)
-	stackEvent.set_display_name(_name)
-	add_script_and_run(stackEvent)
-
 func create_and_add_simplescript( _owner, trigger_card, definition,  trigger_details):
 	var task = ScriptTask.new(_owner, definition, trigger_card, trigger_details)	
 	var stackEvent = SimplifiedStackScript.new(task)

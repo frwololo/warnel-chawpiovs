@@ -3,6 +3,13 @@
 		"manual": {
 			"hand": [
 				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},			
+				{
 					"name": "view_card",
 					"subject": "index",
 					"subject_index": "top",
@@ -169,6 +176,7 @@
 					"subject_count": 5,
 					"up_to": true,
 					"src_container": "deck",
+					"dest_container": "hand",
 					"selection_count": 1,
 					"selection_type": "max",
 					"needs_selection": true,
@@ -542,7 +550,7 @@
 									"name": "mod_tokens",
 									"token_name": "stunned",
 									"modification": 1,
-									"subject": "all_previous"
+									"subject": "last_target"
 								}
 							]
 						},
@@ -558,7 +566,7 @@
 								{
 									"name": "receive_damage",
 									"amount": 2,
-									"subject": "all_previous"
+									"subject": "last_target"
 								}
 							]
 						},
@@ -575,7 +583,7 @@
 									"name": "mod_tokens",
 									"token_name": "confused",
 									"modification": 1,
-									"subject": "all_previous"
+									"subject": "last_target"
 								}
 							]
 						},
@@ -592,18 +600,18 @@
 									"name": "mod_tokens",
 									"token_name": "stunned",
 									"modification": 1,
-									"subject": "all_previous"
+									"subject": "last_target"
 								},
 								{
 									"name": "mod_tokens",
 									"token_name": "confused",
 									"modification": 1,
-									"subject": "all_previous"
+									"subject": "last_target"
 								},
 								{
 									"name": "receive_damage",
 									"amount": 2,
-									"subject": "all_previous"
+									"subject": "last_target"
 								}
 							]
 						}
@@ -837,7 +845,7 @@
 							}
 						}
 					],
-					"need_selection": true,
+					"needs_selection": true,
 					"selection_count": 1
 				},
 				{
@@ -1048,7 +1056,7 @@
 							}
 						}
 					],
-					"need_selection": true,
+					"needs_selection": true,
 					"selection_count": 1
 				},
 				{

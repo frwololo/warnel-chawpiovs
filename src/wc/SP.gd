@@ -66,25 +66,25 @@ static func filter_trigger(
 		return false
 
 	# Card Host filter checks
-	if is_valid and card_scripts.get(FILTER_HOST_OF):
+	if card_scripts.get(FILTER_HOST_OF):
 		if !check_host_filter(trigger_card,owner_card,card_scripts.get(FILTER_HOST_OF)):
 			return false
 
-	if is_valid and card_scripts.get(FILTER_HOSTED_BY):
+	if card_scripts.get(FILTER_HOSTED_BY):
 		if !check_hosted_by_filter(trigger_card,owner_card,card_scripts.get(FILTER_HOSTED_BY)):
 			return false
 
 	# Same Controller filter check
-	if is_valid and card_scripts.get(FILTER_SAME_CONTROLLER) \
+	if card_scripts.get(FILTER_SAME_CONTROLLER) \
 			and !check_same_controller_filter(trigger_card,owner_card,card_scripts.get(FILTER_SAME_CONTROLLER)):
 		return false
 		
-	if is_valid and card_scripts.get("filter_" + TRIGGER_TARGET_HERO) \
+	if card_scripts.get("filter_" + TRIGGER_TARGET_HERO) \
 			and card_scripts.get("filter_" + TRIGGER_TARGET_HERO) != \
 			trigger_details.get(TRIGGER_TARGET_HERO):
 		return false		
 
-	if is_valid and card_scripts.get(TRIGGER_SUBJECT):
+	if card_scripts.get(TRIGGER_SUBJECT):
 		match card_scripts.get(TRIGGER_SUBJECT):
 			"self":
 				var subjects = trigger_details.get("subjects", [])
@@ -93,20 +93,20 @@ static func filter_trigger(
 			_: 
 				return false
 
-	if is_valid and card_scripts.get(FILTER_SOURCE_CONTROLLED_BY) \
+	if card_scripts.get(FILTER_SOURCE_CONTROLLED_BY) \
 			and !check_source_controlled_by_filter(trigger_card,owner_card,trigger_details, card_scripts.get(FILTER_SOURCE_CONTROLLED_BY)):
 		return false	
 
-	if is_valid and card_scripts.get(FILTER_SHARES_TRAIT_WITH_IDENTITY) \
+	if card_scripts.get(FILTER_SHARES_TRAIT_WITH_IDENTITY) \
 			and !check_trigger_shares_trait_with_identity(trigger_card,owner_card,trigger_details):
 		return false	
 		
-	if is_valid and card_scripts.get(FILTER_EVENT_SOURCE) \
+	if card_scripts.get(FILTER_EVENT_SOURCE) \
 			and !check_filter_event_source(trigger_card,owner_card,trigger_details, card_scripts.get(FILTER_EVENT_SOURCE)):
 		return false	
 	
 	for key in card_scripts:
-		if key.begins_with("filter_") and key.ends_with("_same_as_identity"):
+		if key.ends_with("_same_as_identity"):
 			var property = key.replace("filter_", "").replace("_same_as_identity", "")
 			if !check_trigger_shares_property_with_identity(trigger_card,owner_card,property):
 				return false
@@ -131,7 +131,7 @@ static func check_trigger_shares_property_with_identity(trigger_card,owner_card,
 	if  !is_instance_valid(identity): return false
 	
 	var value1 = str(trigger_card.get_property(property, "", true)).to_lower()
-	var value2 = str(owner_card.get_property(property, "", true)).to_lower()
+	var value2 = str(identity.get_property(property, "", true)).to_lower()
 	
 	return value1 == value2
 
@@ -338,7 +338,12 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 						and not check_max_per_host(card, state_filter, owner_card):
 					card_matches = false
 				elif filter == FILTER_EXHAUSTED and (card.is_exhausted() != state_filter):
-					card_matches = false			
+					card_matches = false
+					
+				if filter.ends_with("_same_as_identity"):
+					var property = filter.replace("filter_", "").replace("_same_as_identity", "")
+					if !check_trigger_shares_property_with_identity(card,owner_card,property):
+						card_matches = false								
 			if card_matches:
 				break
 	return(card_matches)

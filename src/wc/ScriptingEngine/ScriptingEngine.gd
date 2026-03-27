@@ -612,7 +612,7 @@ func receive_damage(script: ScriptTask) -> int:
 			card.hint("Tough!", Color8(50,50,255))
 		else:
 			#indirect damage in attack, we replace all damages with an indirect damage command
-			if ("attack" in tags) and (!"indirect_damage" in tags) and (attacker.get_property("attack_indirect_damage", 0, true) or ("attack_indirect_damage" in tags)):
+			if amount and ("attack" in tags) and (!"indirect_damage" in tags) and (attacker.get_property("attack_indirect_damage", 0, true) or ("attack_indirect_damage" in tags)):
 				var indirect_damage_script_definition = \
 					indirect_damage_script_definition(amount, card.get_controller_hero_id())
 				indirect_damage_script_definition["tags"] = indirect_damage_script_definition.get("tags", []) + tags

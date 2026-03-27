@@ -102,6 +102,7 @@ var user_input_ongoing:int = 0 #ID of the current player (or remote player) doin
 var _garbage:= []
 var _targeting_ongoing= null
 var _desync_recovery_enabled = true
+var last_target = null
 
 var _clients_current_activation = {}
 var _clients_activation_counter = {}
@@ -286,6 +287,7 @@ func _initiated_targeting(owner_card) -> void:
 
 func _target_selected(owner_card, details) -> void:	
 	_targeting_ongoing = null
+	last_target = details.get("target")
 	
 func is_targeting_ongoing():
 	return _targeting_ongoing	
@@ -2267,6 +2269,7 @@ func cleanup_post_game():
 	_current_encounter = null
 	immediate_encounters = []	
 	current_round = 1
+	last_target = null
 	_multiplayer_desync = null
 	_clients_system_status = {}
 	_villain_current_hero_target = 1
@@ -2309,12 +2312,7 @@ func save_gamedata() -> Dictionary:
 		var hero_deck_data_json = hero_deck_data.savestate_to_json()
 		saved_item.merge(hero_deck_data_json)
 		
-		#Manapool
-#		var hero_manapool: ManaPool = get_team_member(i+1)["manapool"]
-#		var hero_manapool_json = hero_manapool.savestate_to_json()
-#		saved_item.merge(hero_manapool_json)
-				
-		
+
 		
 		#Merge result with the saved data
 		json_data["heroes"].append(saved_item)
@@ -2417,16 +2415,6 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 	#Board State ()
 	cfc.NMAP.board.loadstate_from_json(json_data)
 
-	#encounters
-#	var encounter_data = json_data.get("encounters", {})
-#	if encounter_data:
-#		var immediate = encounter_data.get("immediate_encounters", null)
-#		if immediate:
-#			immediate_encounters = replace_cardids_to_cards(immediate)
-#		var current = encounter_data.get("current_encounter", "")
-#		if current:
-#			_current_encounter = replace_cardids_to_cards(current)
-	
 	
 	#This reloads hero faces, etc...
 	#we don't start the phaseContainer just yet, we'll wait for other players to be ready

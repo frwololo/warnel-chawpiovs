@@ -1,0 +1,174 @@
+{
+	"_comments": "Bug: MAgic Blast not stunning",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Desperate Defense"
+				},
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Med Team"
+				},			
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},	
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},					
+				{
+					"card": "Vapors of Valtorr"
+				},	
+				{
+					"card": "Winds of Watoomb"
+				},
+				
+			
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Bomber",
+				},
+				{
+					"card": "Shocker",
+					"tokens": {"damage": 1},
+				},				
+			],
+			"hand1": [				
+				{
+					"card": "Strength"
+				},	
+				{
+					"card": "Clea"
+				},					
+				{
+					"card": "Magic Blast"
+				},	
+			
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "play",
+			"value": "Magic Blast",
+		},
+		{
+			"type": "target",
+			"value": "Rhino - 1",
+		},		
+	
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {"damage": 7}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+				},			
+			],
+			"discard1": [
+				{
+					"card": "Clea"
+				},				
+				{
+					"card": "Strength"
+				},			
+				{
+					"card": "Magic Blast"
+				},	
+				{
+					"card": "Med Team"
+				},					
+			],
+			"deck1": [
+				{
+					"card": "Desperate Defense"
+				},
+				{
+					"card": "Momentum Shift"
+				},
+		
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},	
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},					
+				{
+					"card": "Vapors of Valtorr"
+				},	
+				{
+					"card": "Winds of Watoomb"
+				},
+				
+			
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Bomber",
+				},
+				{
+					"card": "Shocker",
+					"tokens": {"damage": 1},
+				},				
+			],
+			"hand1": [				
+			
+			]
+		}
+	}
+}

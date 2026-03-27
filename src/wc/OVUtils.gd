@@ -105,7 +105,11 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 			if (back_code):
 				var new_card = gameData.retrieve_from_side_or_instance(back_code,trigger_object.get_owner_hero_id())
 				if new_card:
-					results.append(new_card)					
+					results.append(new_card)
+		"last_target":
+			var card = gameData.last_target
+			if card:
+				results.append(card)					
 		#when an existing subject already exists for the script
 		"current_subject":
 			results = script.subjects		

@@ -5626,13 +5626,12 @@
 		}
 	},
 	"Sandslide": {
-		"TODO": "stun",
 		"reveal": {
 			"all": [
 				{
 					"name": "mod_tokens",
 					"token_name": "sand",
-					"amount": 2,
+					"modification": 2,
 					"subject": "City Streets"
 				},
 				{
@@ -5640,6 +5639,47 @@
 					"sequence_ability": "special",
 					"subject": "City Streets"
 				},
+				{
+					"name": "add_script",
+					"end_condition": {
+						"trigger": "script_executed",
+						"event_filters": {
+							"additional_script_definition": {
+								"sequence_trigger": "special"
+							},
+							"filter_state_event_source": [
+								{
+									"filter_properties": {
+								
+										"Name": "City Streets"
+									}
+								}
+							]
+						}
+					},
+					"subject": "self",
+					"script": {
+						"card_moved_to_pile": {
+							"trigger": "another",
+							"filter_state_trigger": [
+								{
+								"filter_properties": {
+									"card_set_code": "sandman"
+									}
+								}
+							],
+							"all": [
+								{
+									"name": "mod_tokens",
+									"token_name": "stunned",
+									"subject": "my_identity",
+									"modification": 1,
+									
+								}
+							]
+						}
+					}
+				}				
 			]
 		},
 		"boost": {

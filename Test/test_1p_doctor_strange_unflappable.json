@@ -1,0 +1,234 @@
+{
+	"_comments": "Bug: Unflappable not triggered when no damage",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Sandman - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hapless Pedestrians",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "City Streets",
+					"tokens": {
+						"sand": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Advance"
+				},			
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Loose Ends"
+				}
+			],			
+			"deck1": [
+				{
+					"card": "Desperate Defense"
+				},
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Med Team"
+				},			
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},	
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},					
+				{
+					"card": "Vapors of Valtorr"
+				},	
+				{
+					"card": "Winds of Watoomb"
+				},
+				
+			
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Unflappable"
+				},				
+			],
+			"hand1": [				
+				{
+					"card": "Strength"
+				},	
+				{
+					"card": "Clea"
+				},					
+				{
+					"card": "Magic Blast"
+				},	
+			
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "select",
+			"value": "Doctor Strange",
+			"_comments": "Defend with Doctor Strange, take no damage"
+		},
+		{
+			"type": "activate",
+			"value": "Unflappable",
+		},			
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		},		
+	
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Sandman - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hapless Pedestrians",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "City Streets",
+					"tokens": {
+						"sand": 1
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Loose Ends"
+				}			
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Advance"
+				},			
+				{
+					"card": "Hydra Soldier"
+				},
+
+			],			
+			"deck1": [
+				{
+					"card": "Desperate Defense"
+				},
+				{
+					"card": "Momentum Shift"
+				},			
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},	
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},					
+				{
+					"card": "Vapors of Valtorr"
+				},	
+				{
+					"card": "Winds of Watoomb"
+				},
+				
+			
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Unflappable",
+					"exhausted": true,
+				},				
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				},
+			],
+			"hand1": [				
+				{
+					"card": "Strength"
+				},	
+				{
+					"card": "Clea"
+				},					
+				{
+					"card": "Magic Blast"
+				},	
+				{
+					"card": "Med Team"
+				},			
+			]
+		}
+	}
+}

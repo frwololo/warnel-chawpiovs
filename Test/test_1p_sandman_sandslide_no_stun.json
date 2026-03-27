@@ -1,0 +1,177 @@
+{
+	"_comments": "Bug: Sandslide not behaving correctly",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},	
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ghost-Spider"
+				}
+			}
+		],
+		"board": {
+			"set_aside": [
+				{
+					"card": "Worried Father"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Sandslide"
+				}
+			],
+			"villain": [
+				{
+					"card": "Sandman - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hapless Pedestrians",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "City Streets",
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "George Stacy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ghost-Spider"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "For Justice!"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ghost-Spider"
+				}
+			}
+		],
+		"board": {
+			"set_aside": [
+				{
+					"card": "Worried Father"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Sandslide"
+				},		
+				{
+					"card": "Caught Off guard"
+				},	
+				{
+					"card": "Friends and Family"
+				},				
+				{
+					"card": "Hydra Mercenary"
+				},
+
+
+
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"villain": [
+				{
+					"card": "Sandman - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hapless Pedestrians",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "City Streets",
+					"tokens": {
+						"sand": 3
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "George Stacy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ghost-Spider",
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "For Justice!"
+				}
+			]
+		}
+	}
+}

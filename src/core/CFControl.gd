@@ -465,8 +465,10 @@ func clear_group(group_name):
 # if you add an alterant to a card's `scripts` variable manually, then you need
 # to flush the cache afterwards using this function.
 var _flush_cache_requested = false
-func flush_cache() -> void:
+func flush_cache(force = false) -> void:
 	_flush_cache_requested = true
+	if force:
+		flush_cache_as_needed()
 
 func flush_cache_as_needed() -> void:
 	if !_flush_cache_requested:

@@ -375,8 +375,10 @@ func _slot_card_into_popup(card: Card) -> void:
 
 # Randomly rearranges the order of the [Card] nodes.
 # Pile shuffling includes a fancy animation
-func shuffle_cards(animate = true) -> void:
+func shuffle_cards(animate = true, shuffle_after_animation = true) -> void:
 	is_shuffling = true
+	if !shuffle_after_animation:
+		.shuffle_cards()
 	cfc.play_sfx("shuffle")
 	# Optimally the CFConst.ShuffleStyle enum should be defined in this class
 	# but if we did so, we would not be able to refer to it from the Card
@@ -449,7 +451,8 @@ func shuffle_cards(animate = true) -> void:
 			# This is where the shuffle actually happens
 			# The effect looks like the cards shuffle in the middle of their
 			# animations
-			.shuffle_cards()
+			if shuffle_after_animation:
+				.shuffle_cards()
 			# This wait gives the carde enough time to return to
 			# their original position.
 			yield(get_tree().create_timer(anim_speed * 2.5), "timeout")
@@ -466,7 +469,8 @@ func shuffle_cards(animate = true) -> void:
 			# The shuffle happens, which makes the z-index change
 			# unnoticeable to the player
 			yield(get_tree().create_timer(anim_speed - 0.5), "timeout")
-			.shuffle_cards()
+			if shuffle_after_animation:
+				.shuffle_cards()
 			# The extra time is to give the cards enough time to return
 			# To the starting location, and let reorganize_stack() do its magic
 			yield(get_tree().create_timer(anim_speed + 0.6), "timeout")
@@ -479,7 +483,8 @@ func shuffle_cards(animate = true) -> void:
 			var card = get_random_card()
 			card.animate_shuffle(anim_speed, CFConst.ShuffleStyle.SNAP)
 			yield(get_tree().create_timer(anim_speed * 2.5), "timeout")
-			.shuffle_cards()
+			if shuffle_after_animation:
+				.shuffle_cards()
 		elif style == CFConst.ShuffleStyle.OVERHAND:
 			anim_speed = 0.15
 			for _i in range(3):
@@ -496,7 +501,8 @@ func shuffle_cards(animate = true) -> void:
 				yield(get_tree().create_timer(anim_speed * 2.3), "timeout")
 				# The shuffle after every jump in a face-up pile
 				# really sells it :)
-				.shuffle_cards()
+				if shuffle_after_animation:
+					.shuffle_cards()
 				reorganize_stack()
 		if position != init_position:
 			_add_tween_position(position,init_position,0.2)
@@ -505,7 +511,8 @@ func shuffle_cards(animate = true) -> void:
 		z_index = CFConst.Z_INDEX_BOARD_CARDS_NORMAL
 	else:
 		# if we're already running another animation, just shuffle
-		.shuffle_cards()
+		if shuffle_after_animation:
+			.shuffle_cards()
 	reorganize_stack()
 	
 	is_shuffling = false

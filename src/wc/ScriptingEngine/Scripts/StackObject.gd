@@ -147,7 +147,7 @@ func get_subjects():
 
 
 func get_display_name():
-	if display_name:
+	if display_name and !display_name in ["nested_script"]: 
 		return display_name
 		
 	var task = get_first_task()
@@ -196,6 +196,17 @@ func _get_display_text_nocache():
 			"surge":
 				result = owner_name + " - Surge"
 				return result
+			"mod_tokens":
+				var token_name = task.get_property("token_name", "")
+				var modification = task.retrieve_integer_property("modification", 0)
+				if modification:
+					match token_name:
+						"stunned", "confused", "tough":
+							var action = "add status:"
+							if modification < 0:
+								action = "remove status:"						
+							result = owner_name + " - " + action + token_name + subjects
+							return result				
 		var trigger = self.get_trigger()
 
 		if trigger.begins_with("interrupt"):

@@ -1030,6 +1030,11 @@ func test_integrity(json_card_data) -> Array:
 				var identity_data = board[pile]
 				if identity_data.size() != 1:
 					errors.append("identity data incorrect")
+					
+	for action in json_card_data["actions"]:
+		for key in ["type", "value"]:
+			if !action.has(key):
+				errors.append("missing action data")				
 	return errors
 
 #Loads a single test file 	

@@ -123,6 +123,9 @@
 		"boost": 1,
 		"_comments": "https://github.com/zzorba/marvelsdb/issues/342"
 	},
+	"09007": {
+		"traits": "Spell.",
+	},
 	"21041": {
 		"subname": "Noh-Varr",
 		"_comments": "https://github.com/zzorba/marvelsdb/issues/345"

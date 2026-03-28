@@ -517,6 +517,13 @@
 		"manual": {
 			"hand": [
 				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},			
+				{
 					"name": "attack",
 					"subject": "target",
 					"amount": 5,
@@ -954,13 +961,13 @@
 						"subject": "my_hero"
 					},
 					{
-						"name": "attach_card_to",
+						"name": "attach_to_card",
 						"subject": "my_identity"
 					}
 				],
 				"Increase Cost": [
 					{
-						"name": "attach_card_to",
+						"name": "attach_to_card",
 						"subject": "my_identity"
 					}
 				]
@@ -1741,7 +1748,7 @@
 							{
 								"filter_tokens": [
 									{
-										"filter_token_name": "stunned",
+										"filter_token_name": "confused",
 										"filter_token_count": 1
 									}
 								]

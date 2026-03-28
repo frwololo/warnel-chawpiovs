@@ -1,0 +1,219 @@
+{
+	"_comments": "Bug: Desperate Defense not giving +2 Def",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "\"Leave Us Alone!\"",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Bell Tower",
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},		
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Loose Ends"
+				},				
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Guard the Bell Tower"
+				},					
+			],			
+			"deck1": [
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Med Team"
+				},			
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},	
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},					
+				{
+					"card": "Vapors of Valtorr"
+				},	
+				{
+					"card": "Winds of Watoomb"
+				},
+				
+			
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange",
+					"tokens": {"damage": 1},
+				}
+			],
+			"hand1": [					
+				{
+					"card": "Clea"
+				},					
+				{
+					"card": "Desperate Defense"
+				},	
+			
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "select",
+			"value": "Doctor Strange",
+			"_comments": "Defend with Doctor Strange"
+		},
+		{
+			"type": "play",
+			"value": "Desperate Defense",
+		},			
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		},	
+		{
+			"type": "activate",
+			"value": "Doctor Strange",
+		},
+		{
+			"type": "choose",
+			"value": "thwart",
+		},			
+		{
+			"type": "target",
+			"value": "\"Leave Us Alone!\"",
+		},		
+	
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "\"Leave Us Alone!\"",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Bell Tower",
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Guard the Bell Tower"
+				},	
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},		
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Loose Ends"
+				},								
+			],			
+			"deck1": [
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Med Team"
+				},			
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},	
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},					
+				{
+					"card": "Vapors of Valtorr"
+				},	
+				{
+					"card": "Winds of Watoomb"
+				},
+				
+			
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange",
+					"tokens": {"damage": 1},
+				}
+			],
+			"discard1": [					
+				{
+					"card": "Clea"
+				},					
+				{
+					"card": "Desperate Defense"
+				},	
+			
+			]
+		}
+	}
+}

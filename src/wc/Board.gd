@@ -1243,8 +1243,11 @@ func flip_doublesided_card(card:WCCard):
 			var attachments_to_move = []
 			for attachment in card.attachments:
 				attachments_to_move.append(attachment)
-			for attachment in attachments_to_move:	
-				attachment.attach_to_host(new_card)
+			for attachment in attachments_to_move:
+				var tags = []
+				if attachment.is_boost():
+					tags = ["as_boost"]	
+				attachment.attach_to_host(new_card,false, tags)
 				
 			gameData.set_aside(card) 
 				

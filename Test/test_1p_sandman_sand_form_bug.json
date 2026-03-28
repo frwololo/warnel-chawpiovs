@@ -1,0 +1,207 @@
+{
+	"_comments": "Bug: 2 Sand Forms both trigger",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},	
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ghost-Spider"
+				}
+			}
+		],
+		"board": {
+			"set_aside": [
+				{
+					"card": "Worried Father"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Sandslide"
+				}
+			],
+			"villain": [
+				{
+					"card": "Sandman - 1",
+					"tokens": {"damage": 1}
+				}
+			],
+			"others": [
+				{
+					"card": "Sand Form",
+					"host": "Sandman - 1"
+				},	
+				{
+					"card": "Sand Form",
+					"host": "Sandman - 1"
+				},				
+			],
+			"schemes": [
+				{
+					"card": "Hapless Pedestrians",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "City Streets",
+					"tokens": {
+						"sand": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "George Stacy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ghost-Spider"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "For Justice!"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Ghost-Spider"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Sandman - 1"
+		},		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ghost-Spider"
+				}
+			}
+		],
+		"board": {
+			"set_aside": [
+				{
+					"card": "Worried Father"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Sand Form"
+				},	
+				{
+					"card": "Sandslide"
+				},					
+				{
+					"card": "Caught Off guard"
+				},			
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Friends and Family"
+				},
+
+			],
+			"villain": [
+				{
+					"card": "Sandman - 1",
+					"tokens": {"damage": 1}
+				}
+			],
+			"others": [
+				{
+					"card": "Sand Form",
+					"host": "Sandman - 1"
+				},					
+			],
+			"schemes": [
+				{
+					"card": "Hapless Pedestrians",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "City Streets",
+					"tokens": {
+						"sand": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "George Stacy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ghost-Spider"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "For Justice!"
+				}
+			]
+		}
+	}
+}

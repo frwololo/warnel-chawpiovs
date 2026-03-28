@@ -184,12 +184,14 @@ func shuffle_container(script) -> int:
 	if (costs_dry_run()): 
 		return CFConst.ReturnCode.CHANGED		
 		
-	dest_container.shuffle_cards()
+	dest_container.shuffle_cards(true, false) #"true, false": force shuffling before the animation, to ensure cards are actually shuffled
+
 	return CFConst.ReturnCode.CHANGED
 	
 func shuffle_card_into_container(script:ScriptTask) -> int:
 	var result = move_card_to_container(script)
 	shuffle_container(script)
+
 	
 	return result
 	
@@ -672,7 +674,7 @@ func receive_damage(script: ScriptTask) -> int:
 					script.owner.execute_scripts(script.owner, post_damage_trigger, trigger_details)
 		
 		if !damage_happened:
-			var if_no_damage: Dictionary = script.get_property("if_no_damage", {})
+			var if_no_damage = script.get_property("if_no_damage", {})
 			if if_no_damage:
 				var backup = script.script_definition.get("nested_tasks", [])
 				script.script_definition["nested_tasks"] = if_no_damage
@@ -1243,7 +1245,7 @@ func move_boost_cards(script:ScriptTask) ->int:
 
 	var boost_cards = source.get_boost_cards(CFConst.FLIP_STATUS.FACEDOWN)
 	for card in boost_cards:
-		card.attach_to_card(subject)
+		card.attach_to_host(subject, false, ["as_boost"])
 
 	return retcode
 	
@@ -1349,10 +1351,12 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 
 	var attacker = _script.owner
 	var target_hero_id = _script.get_property("target_hero_id")	
-	#the _script passed here is not super useful,
-	#except to retrieve the attacker's ongoing real attack script
+		
 	var script = attacker.activity_script
 
+	#merge potential changes from this script into the attacker's script
+	transfer_default_damage_properties(_script, script)
+	
 	var defender = script.subjects[0] if script.subjects else null
 	var my_hero:Card
 
@@ -1430,6 +1434,12 @@ func _modify_script(script, modifications:Dictionary = {}, script_definition_rep
 			
 		return output
 
+static func transfer_default_damage_properties(from_script, to_script):
+	for additional_data in CFConst.DAMAGE_TRANSFER_SCRIPT_PROPERTIES:
+		if from_script.script_definition.has(additional_data):
+			to_script.script_definition[additional_data] = from_script.script_definition[additional_data].duplicate()
+		
+
 func _add_receive_damage_on_stack(amount, original_script, modifications:Dictionary = {}):		
 		var receive_damage_script_definition = {
 			"name": "receive_damage",
@@ -1441,7 +1451,8 @@ func _add_receive_damage_on_stack(amount, original_script, modifications:Diction
 		modifications["script_definition"] =  receive_damage_script_definition	
 		var receive_damage_script = _modify_script(original_script, modifications, "replace")
 	
-	
+		transfer_default_damage_properties(original_script, receive_damage_script)
+		
 		var task_event = SimplifiedStackScript.new(receive_damage_script)
 		gameData.theStack.add_script(task_event)	
 
@@ -1739,8 +1750,10 @@ func nested_script(script: ScriptTask) -> int:
 		"action_name": "nested_script",
 		"force_user_interaction_required": false
 	}
+	var trigger_details = script.trigger_details.duplicate()
+	trigger_details.erase("network_prepaid")
 	var card = script.owner
-	var sceng = card.execute_chosen_script(nested_task_list, script.trigger_object, script.trigger_details, CFInt.RunType.NORMAL, exec_config)
+	var sceng = card.execute_chosen_script(nested_task_list, script.trigger_object, trigger_details, CFInt.RunType.NORMAL, exec_config)
 	if sceng is GDScriptFunctionState && sceng.is_valid():		
 		yield(sceng,"completed")
 		
@@ -2234,7 +2247,11 @@ func temporary_effect(script:ScriptTask) -> int:
 	var temporary_script = script.get_property("effect", {})
 	var end_condition = script.get_property("end_condition", "")
 
+
 	gameData.theGameObserver.add_script(script, temporary_script, end_condition)
+
+	if temporary_script.has("alterants"):
+		cfc.flush_cache(true)
 	
 	return retcode
 

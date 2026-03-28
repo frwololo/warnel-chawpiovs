@@ -48,16 +48,16 @@
 			],
 			"deck1": [
 				{
-					"card": "Strength"
+					"card": "Pheromones"
 				},
 				{
 					"card": "Energy"
+				},				
+				{
+					"card": "Strength"
 				},
 				{
 					"card": "Captain Marvel - Carol Danvers"
-				},
-				{
-					"card": "Pheromones"
 				},
 				{
 					"card": "Clear the Area"

@@ -164,20 +164,22 @@
 			],
 			"deck1": [
 				{
+					"card": "Pulsar shield"
+				},			
+				{
 					"card": "Make the Call"
 				},
+				{
+					"card": "Inspired"
+				},				
 				{
 					"card": "Photon Speed"
 				},
 				{
 					"card": "Gamma Blast"
 				},				
-				{
-					"card": "Inspired"
-				},
-				{
-					"card": "Pulsar shield"
-				},
+
+
 
 			],
 			"enemies1": [

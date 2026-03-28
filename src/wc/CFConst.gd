@@ -720,6 +720,11 @@ const SCENG_TRIGGER_DETAILS_ERASE_FROM_CHILDREN_SCRIPTS := [
 	"is_interrupt_or_response"
 ]
 
+const DAMAGE_TRANSFER_SCRIPT_PROPERTIES:= [
+	"if_damage",
+	"if_no_damage"
+]
+
 enum PHASE_STEP {
 	GAME_NOT_STARTED,
 	PLAYER_MULLIGAN,

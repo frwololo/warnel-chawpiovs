@@ -1,5 +1,5 @@
 {
-	"_comments": "Bug: MAgic Blast not stunning",
+	"_comments": "Bug: Magic Blast not stunning",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [

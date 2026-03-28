@@ -100,15 +100,15 @@
 			"deck_villain": [
 				{
 					"card": "Advance"
-				},
+				},			
+				{
+					"card": "Hydra Mercenary"
+				},			
 				{
 					"card": "Assault"
 				},				
 				{
 					"card": "Hydra Soldier"
-				},
-				{
-					"card": "Hydra Mercenary"
 				},
 			],
 			"villain": [

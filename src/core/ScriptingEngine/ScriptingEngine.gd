@@ -291,7 +291,7 @@ func execute(_run_type) -> void:
 			# This is useful for example, when the targeting task would move
 			# The subject to another pile but we want to check (#SUBJECT_PARENT)
 			# against the parent it had before it was moved.
-			if script.get_property(SP.KEY_SUBJECT) == SP.KEY_SUBJECT_V_PREVIOUS\
+			if script.get_property_raw(SP.KEY_SUBJECT) == SP.KEY_SUBJECT_V_PREVIOUS\
 					and prev_subjects.size() == 0:
 				var current_index := scripts_queue.find(task)
 				var next_task: ScriptTask = null if scripts_queue.size() <= (current_index +1) else  scripts_queue[current_index + 1]
@@ -619,8 +619,12 @@ func mod_tokens(script: ScriptTask) -> int:
 				script.subjects,
 				script.prev_subjects)
 		modification = per_msg.found_things
+		if script.get_property(SP.KEY_IS_INVERTED):
+			modification *= -1		
 	else:
-		modification = script.get_property(SP.KEY_MODIFICATION)
+		modification = script.retrieve_integer_property(SP.KEY_MODIFICATION)
+		if script.get_property(SP.KEY_IS_INVERTED):
+			modification *= -1		
 	var set_to_mod: bool = script.get_property(SP.KEY_SET_TO_MOD)
 	if not set_to_mod:
 		alteration = _check_for_alterants(script, modification)

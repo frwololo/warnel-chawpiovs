@@ -945,6 +945,39 @@ func move_token_to(script: ScriptTask) -> int:
 						
 	return retcode
 
+func increase(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+
+
+	var subject_target = script.script_definition.get("subject")
+
+	match subject_target:
+		"current_activation":
+			if script.script_definition.has("amount"): #this is a partial prevention effect		
+				if (costs_dry_run()):
+					return retcode	
+				gameData.apply_mods_to_current_activity_script(script)	
+			else:	
+				#TODO
+				#unsupported
+				return CFConst.ReturnCode.FAILED
+		_:
+			if script.script_definition.has("amount"): #this is a partial prevention effect
+				var stack_object = script.trigger_details.get("stack_object", null) 
+				var task_object = script.trigger_details.get("event_object", null)
+
+				#var stack_object = gameData.theStack.find_last_event_before_me(script)
+				if (!stack_object):	
+					return CFConst.ReturnCode.FAILED
+
+				if (costs_dry_run()):
+					return retcode					
+				var results = gameData.theStack.modify_object(stack_object, script, task_object)
+			else:	
+				#TODO
+				#unsupported
+				return CFConst.ReturnCode.FAILED
+	return retcode		
 
 func prevent(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED

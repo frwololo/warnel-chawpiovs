@@ -68,7 +68,7 @@ func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int, _all_pre
 			# ScriptingEngine loop
 			or (only_cost_check
 			and (is_cost or needs_subject)
-			and get_property(SP.KEY_SUBJECT) == "target")):
+			and get_property_raw(SP.KEY_SUBJECT) == "target")):
 		# If this task has been specified as optional
 		# We check if the player confirms it, before looking for targets
 		# We check for optional confirmations only during

@@ -18,6 +18,7 @@ func get_script_identity(script, trigger_details):
 func preprocess_subject_definition(script: ScriptObject):
 #	var subject = overrides.get("subject", get_property(SP.KEY_SUBJECT))
 	var subject = script.get_property(SP.KEY_SUBJECT)
+	var subject_str = subject if (typeof(subject) == TYPE_STRING) else ""
 	var script_definition = script.script_definition.duplicate()		
 	#replace targeting with selection (optional)
 	if CFConst.OPTIONS.get("replace_targetting_with_selection", false):
@@ -30,7 +31,7 @@ func preprocess_subject_definition(script: ScriptObject):
 			script_definition["filter_state_seek"] = script_definition["filter_state_subject"]	
 	
 	#more than 1 villain, need to modify some cards rules in real time
-	if subject == SP.KEY_SUBJECT_V_VILLAIN:
+	if subject_str == SP.KEY_SUBJECT_V_VILLAIN:
 		var villains = gameData.get_villains()
 		if villains.size() > 1:
 			if !script.owner.is_encounter():
@@ -47,7 +48,7 @@ func preprocess_subject_definition(script: ScriptObject):
 					}
 				]
 	#more than 1 main scheme, need to modify some cards rules in real time
-	if subject == SP.KEY_SUBJECT_V_MAIN_SCHEME:
+	if subject_str == SP.KEY_SUBJECT_V_MAIN_SCHEME:
 		var schemes = gameData.get_main_schemes()
 		if schemes.size() > 1:
 			if !script.owner.is_encounter():

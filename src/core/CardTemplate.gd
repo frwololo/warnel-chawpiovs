@@ -1523,17 +1523,7 @@ func move_to(targetHost: Node,
 func set_scale(value):		
 	scale = value
 
-#Return interrupt string to hijack manual run
-#tries with a more specific one based on event name first (e.g. interrupt_card_dies)
-#	(this allows to have multiple interrupts on the same card See rain fire in mts)
-func find_interrupt_script(event_name) -> String:
-	var my_scripts = retrieve_all_scripts()
-	for to_find in ["interrupt_" + event_name, "interrupt"]:
-		if my_scripts.has(to_find):
-			return to_find
-	return ""
 	
-
 func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 	var card_scripts = retrieve_scripts(trigger)
 	# I use this spot to add a breakpoint when testing script behaviour

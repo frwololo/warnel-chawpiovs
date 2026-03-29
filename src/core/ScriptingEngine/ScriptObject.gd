@@ -76,6 +76,13 @@ func _init(_owner, script: Dictionary,  _trigger_object = null, 	_trigger_detail
 	user_interaction_status =  CFConst.USER_INTERACTION_STATUS.NOT_CHECKED_YET
 	parse_replacements()
 
+
+func get_property_raw(property: String, default = null):
+	if default == null:
+		default = SP.get_default(property)
+	
+	return script_definition.get(property,default)
+	
 # Returns the specified property of the string.
 # Also sets appropriate defaults when then property has not beend defined.
 # A default value can also be passed directly, which is useful when
@@ -88,17 +95,18 @@ func get_property(property: String, default = null, subscript_definition = null,
 #	var found_value = lookup_script_property(script_definition.get(property,default))
 	
 	var result = ""
-	if property.begins_with("trigger_details_"):
-		property = property.replace("trigger_details_", "")
-		result = trigger_details.get(property)
+	if (subscript_definition != null):
+			#used for recursive calls of if/then/else
+		result = subscript_definition
+	elif root!= null:
+		result = root.get(property,default)
 	else:
-		if (subscript_definition != null):
-				#used for recursive calls of if/then/else
-			result = subscript_definition
-		elif root!= null:
-			result = root.get(property,default)
-		else:
-			result = script_definition.get(property,default)
+		result = script_definition.get(property,default)
+	
+
+	if (typeof (result) == TYPE_STRING) and result.begins_with("trigger_details_"):
+		result = result.replace("trigger_details_", "")
+		result = trigger_details.get(result)	
 	
 	#if then else special case. Todo could this maybe go into a more generic location to work on all script variables ?
 	if (typeof (result) == TYPE_DICTIONARY):
@@ -254,7 +262,7 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 	self.script_definition = cfc.ov_utils.preprocess_subject_definition(self)
 	
 #	var subject = overrides.get("subject", get_property(SP.KEY_SUBJECT))
-	var subject = get_property(SP.KEY_SUBJECT)
+	var subject = get_property_raw(SP.KEY_SUBJECT)
 	
 	#replace targeting with selection (optional)
 	if CFConst.OPTIONS.get("replace_targetting_with_selection", false):
@@ -347,7 +355,7 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 			subjects_array.append(owner)
 		_:
 			var subjects_result = cfc.ov_utils.get_subjects(self, 
-					get_property(SP.KEY_SUBJECT), stored_integer, run_type, trigger_details)
+					get_property_raw(SP.KEY_SUBJECT), stored_integer, run_type, trigger_details)
 			if typeof(subjects_result) == TYPE_DICTIONARY:
 				subjects_array = subjects_result["subjects"]
 				var to_store = subjects_result.get("stored_integer", null)

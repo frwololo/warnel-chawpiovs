@@ -983,6 +983,20 @@ func network_request_rejected():
 		info_icon.visible = true
 		info_icon.modulate = Color(1,1,1,1)
 
+func find_interrupt_script(trigger_card, trigger_details):
+	#select valid scripts that match the current trigger
+	for trigger_name in  ["interrupt_" + trigger_details.get("event_name", ""), "interrupt"]:
+		var card_scripts = retrieve_filtered_scripts(trigger_card, trigger_name, trigger_details)
+		if card_scripts:
+			var state_scripts = get_state_scripts(card_scripts, trigger_card, trigger_details)
+			if state_scripts:
+				return {
+					"card_scripts": card_scripts,
+					"state_scripts": state_scripts,
+					"trigger": trigger_name
+				}
+	return {}
+	
 #returns true if this card has some ability that can interrupt
 #the current action (and if hero_id is the one who can play it)
 func can_interrupt(
@@ -1004,18 +1018,16 @@ func can_interrupt(
 	if (_debug):
 		display_debug("{interrupt} Hero:" + str(hero_id) + " Checks for " + canonical_name + " vs " + trigger_details.get("event_name") + " - " + trigger_card.canonical_name)		
 
+	var interrupt_data = find_interrupt_script(trigger_card, trigger_details)
+	if !interrupt_data:
+		return CFConst.CanInterrupt.NO	
 	#select valid scripts that match the current trigger
-	var card_scripts = retrieve_filtered_scripts(trigger_card, "interrupt_" + trigger_details.get("event_name", ""), trigger_details)
-	if !card_scripts:	
-		card_scripts = retrieve_filtered_scripts(trigger_card, "interrupt", trigger_details)
+	var card_scripts = interrupt_data["card_scripts"]
+	var state_scripts = interrupt_data["state_scripts"]
+			
 	if (_debug):
 		display_debug("card_scripts: " + to_json(card_scripts))
-	if (!card_scripts):
-		if (_debug):
-			display_debug("no filtered scripts found")
-		return CFConst.CanInterrupt.NO	
-	
-	var state_scripts = get_state_scripts(card_scripts, trigger_card, trigger_details)
+
 	if (_debug):
 		display_debug("state_scripts: " + to_json(state_scripts))	
 	if (!state_scripts):
@@ -1254,16 +1266,18 @@ func execute_scripts(
 		#TODO very flaky code, how to fix?
 		if (canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME):
 			var _tmp =1
-		var event_name = gameData.theStack.get_current_interrupted_event().get("event_name", "")
-		trigger = find_interrupt_script(event_name)
+		var interrupted_event_data = gameData.theStack.get_current_interrupted_event()
+		trigger_card = interrupted_event_data["event_object"].owner #this is geting gross, how to clear that?
+		if (!trigger_card):
+			return null		
+		var interrupt_script_data = find_interrupt_script(trigger_card, interrupted_event_data)
+		trigger = interrupt_script_data["trigger"] if interrupt_script_data else ""
 		if (!trigger):
 			return null
 		orig_trigger_details.merge(gameData.theStack.get_current_interrupted_event(), true)
 		if (!orig_trigger_details):
 			return null
-		trigger_card = orig_trigger_details["event_object"].owner #this is geting gross, how to clear that?
-		if (!trigger_card):
-			return null
+
 		#skip optional confirmation menu for interrupts,
 		#we have a different gui signal	
 		show_optional_confirmation_menu = false	
@@ -2975,7 +2989,10 @@ func paid_with_includes(params:Dictionary, script:ScriptTask = null) -> bool:
 	var compared_to = ManaCost.new()
 	compared_to.init_from_dictionary(params)
 	
-	return paid_with.can_pay_total_cost(compared_to)
+	var result = paid_with.can_pay_total_cost(compared_to)
+	if result:
+		return true
+	return false
 
 func count_printed_resources(params:Dictionary, script) -> int:
 	var mana = ManaCost.new()

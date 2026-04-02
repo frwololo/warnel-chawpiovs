@@ -919,10 +919,13 @@ func common_post_move_scripts(new_host: String, old_host: String, _move_tags: Ar
 
 func register_signals():
 	scripting_bus.unregister_card(self)
-	var scripts = retrieve_all_scripts()
-	for trigger in CFConst.REGISTERED_SIGNALS:
-		if WCUtils.is_string_in_variant(scripts, trigger):
-			scripting_bus.register_card_signal(self, trigger)
+	var tmp_scripts = retrieve_all_scripts()
+	for trigger in CFConst.OPTIONAL_SIGNALS + CFConst.NO_STACK_BY_DEFAULT_SIGNALS:
+		if WCUtils.has_interrupt_or_response (tmp_scripts, trigger):
+			scripting_bus.register_card_signal(self, trigger, true)
+		else:
+			if WCUtils.is_string_in_variant(tmp_scripts, trigger):
+				scripting_bus.register_card_signal(self, trigger)
 		
 
 #Tries to play the card assuming costs aren't impossible to pay

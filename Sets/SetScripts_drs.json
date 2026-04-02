@@ -110,7 +110,7 @@
 							},
 							"nested_tasks": [
 								{
-									"name": "receive_damage",
+									"name": "deal_damage",
 									"amount": 2,
 									"subject": "current_hero_target"
 								}
@@ -155,7 +155,7 @@
 									"subject": "current_hero_target"
 								},
 								{
-									"name": "receive_damage",
+									"name": "deal_damage",
 									"amount": 2,
 									"subject": "current_hero_target"
 								}
@@ -464,7 +464,7 @@
 				}
 			]
 		},
-		"interrupt_receive_damage": {
+		"interrupt_pre_receive_damage": {
 			"trigger": "self",
 			"event_filters": {
 				"tags": [
@@ -526,6 +526,7 @@
 				{
 					"name": "attack",
 					"subject": "target",
+					"is_cost": true,
 					"amount": 5,
 					"filter_state_subject": [
 						{
@@ -571,7 +572,7 @@
 							},
 							"nested_tasks": [
 								{
-									"name": "receive_damage",
+									"name": "deal_damage",
 									"amount": 2,
 									"subject": "last_target"
 								}
@@ -616,7 +617,7 @@
 									"subject": "last_target"
 								},
 								{
-									"name": "receive_damage",
+									"name": "deal_damage",
 									"amount": 2,
 									"subject": "last_target"
 								}
@@ -1497,7 +1498,7 @@
 					"src_container": "hand"
 				},
 				{
-					"name": "receive_damage",
+					"name": "deal_damage",
 					"subject": "my_hero",
 					"amount": {
 						"func_name": "get_subject_int_printed_property",

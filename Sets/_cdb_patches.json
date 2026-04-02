@@ -210,5 +210,9 @@
 	},
 	"27102b": {
 		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/27102b.jpg"
+	},
+	"27167": {
+		"text": "Guard. Patrol. (While this minion is engaged with you, you cannot thwart the main scheme.)\n<hr />\n[star] <b>Boost</b>: Put enraged Symbiote into play engaged with you.",
+		"real_text": "Guard. Patrol. (While this minion is engaged with you, you cannot thwart the main scheme.)\n<hr />\n[star] <b>Boost</b>: Put enraged Symbiote into play engaged with you.",
 	}
 }

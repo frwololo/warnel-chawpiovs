@@ -341,7 +341,7 @@ func pile_or_grid(object_name, grid_def = null):
 		return type 		
 	if object_name.begins_with("hand"):
 		return "pile"
-	for zone in CFConst.HERO_GRID_SETUP.keys:
+	for zone in CFConst.HERO_GRID_SETUP.keys():
 		if object_name.begins_with(zone):
 			var type = CFConst.HERO_GRID_SETUP[zone].get("type", "grid")
 			return type 		

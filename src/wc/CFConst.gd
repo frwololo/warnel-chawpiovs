@@ -280,11 +280,12 @@ const Z_INDEX_ANNOUNCER := 1000
 const Z_INDEX_HAND_CARDS_NORMAL :=200
 	
 #signals that will be sent only if cards register for them
+#this is an optimization to avoid calling the stack constantly for games that don't need it
 #DO NOT put signals in there that are needed by the core engine
 # In particular DO NOT ADD:
 # enemy_initiates*
 # enemy_*_happened
-const REGISTERED_SIGNALS:= [
+const OPTIONAL_SIGNALS:= [
 	"about_to_reveal",
 	"boost_card_resolved",
 	"card_leaves_play",
@@ -293,6 +294,15 @@ const REGISTERED_SIGNALS:= [
 	"paid_as_resource",
 	"pile_emptied",
 	"script_executed",
+
+]
+#unless a card registers an interrupt, these signals will
+#be emitted directly without being added to the stack
+#this is an optimization to avoid calling the stack constantly for games that don't need it
+const NO_STACK_BY_DEFAULT_SIGNALS:= [
+	"card_moved_to_board",
+	"card_moved_to_hand",	
+	"card_moved_to_pile",
 
 ]
 
@@ -699,7 +709,8 @@ const SKIP_ANNOUNCE_STACK_EVENTS:= {
 		"discard": true,
 	},
 	"script_name": {
-		"move_to_player_zone": true
+		"move_to_player_zone": true,
+		"pre_receive_damage": true,		
 	}	
 }
 

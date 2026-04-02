@@ -1034,7 +1034,7 @@
 				},
 				"Take 2 damage": [
 					{
-						"name": "receive_damage",
+						"name": "deal_damage",
 						"subject": "my_identity",
 						"amount": 2
 					}
@@ -2037,7 +2037,7 @@
 				},
 				"Take 1 damage": [
 					{
-						"name": "receive_damage",
+						"name": "deal_damage",
 						"subject": "my_identity",
 						"amount": 1
 					}
@@ -4211,7 +4211,7 @@
 	},
 	"Marvel Boy - Noh-Varr": {
 		"interrupt": {
-			"event_name": "receive_damage",
+			"event_name": "pre_receive_damage",
 			"event_filters": {
 				"tags": [
 					"attack"
@@ -4302,7 +4302,7 @@
 			]
 		},
 		"interrupt": {
-			"event_name": "receive_damage",
+			"event_name": "pre_receive_damage",
 			"event_filters": {
 				"target": "host",
 				"tags": [
@@ -6832,7 +6832,7 @@
 				}
 			]
 		},
-		"interrupt_receive_damage": {
+		"interrupt_pre_receive_damage": {
 			"event_filters": {
 				"target": "host"
 			},

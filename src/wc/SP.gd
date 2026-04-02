@@ -257,7 +257,7 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 			return false
 	
 	#generally speaking, boost cards are not valid targets...
-	if card.is_boost():
+	if card.is_boost() and !card_scripts.get("force_valid_boost_target", false):
 		#...but we want them to be able to target themselves ("put this card into play")
 		if card != owner_card:
 			return false	

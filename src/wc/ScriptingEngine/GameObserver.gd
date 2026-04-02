@@ -123,7 +123,7 @@ func removal_checks(
 	for removal_condition in extra_script_removal_conditions:
 		if matches_condition(trigger_card, trigger, trigger_details, removal_condition):
 			var card = removal_condition["card"]
-			var script_id= removal_condition["script_id"]
+			var script_id = removal_condition["script_id"]
 			card.remove_extra_script(script_id)
 			to_remove.append(removal_condition)
 	for v in to_remove:
@@ -146,4 +146,5 @@ func matches_condition(
 
 	#fishy, not sure what card to compare it to at the moment...
 	var card = removal_condition.get("card", trigger_card)
-	return cfc.ov_utils.matches_filters( filters, card, trigger_details)
+	var result =  cfc.ov_utils.matches_filters( filters, card, trigger_details)
+	return result

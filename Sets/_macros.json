@@ -1,6 +1,6 @@
 {
 	"attacks_gain": {
-		"interrupt_receive_damage": {
+		"interrupt_pre_receive_damage": {
 			"event_filters": {
 				"tags": [
 					"attack"

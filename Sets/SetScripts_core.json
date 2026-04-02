@@ -1471,7 +1471,7 @@
 						"needs_subject": true
 					},
 					{
-						"name": "receive_damage",
+						"name": "deal_damage",
 						"subject": "my_identity",
 						"amount": {
 							"func_name": "count_printed_resources",
@@ -2032,7 +2032,7 @@
 					"is_cost": true
 				},
 				{
-					"name": "receive_damage",
+					"name": "deal_damage",
 					"amount": 1,
 					"subject": "my_hero",
 					"is_cost": true
@@ -2242,7 +2242,7 @@
 					"subject": "interrupted_event",
 					"replacements": {
 						"subject": "my_hero",
-						"name": "receive_damage"
+						"name": "deal_damage"
 					}
 				}
 			]
@@ -2673,7 +2673,7 @@
 				},
 				"Take 2 damage": [
 					{
-						"name": "receive_damage",
+						"name": "deal_damage",
 						"subject": "my_identity",
 						"amount": 2
 					}
@@ -4626,7 +4626,7 @@
 					]
 				},
 				{
-					"name": "receive_damage",
+					"name": "deal_damage",
 					"amount": 2,
 					"subject": "my_hero"
 				}
@@ -6179,7 +6179,7 @@
 						"is_cost": true
 					},
 					{
-						"name": "receive_damage",
+						"name": "deal_damage",
 						"amount": 2,
 						"subject": "self",
 						"is_cost": true

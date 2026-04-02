@@ -352,7 +352,7 @@ func attack(script: ScriptTask) -> int:
 			var script_modifications = {
 				"additional_tags" : ["attack", "Scripted"],
 			}
-			_add_receive_damage_on_stack (damage, script, script_modifications)	
+			_add_pre_receive_damage_on_stack (damage, script, script_modifications)	
 		
 		var overkill = owner.get_property("overkill", 0, true) or (script.retrieve_integer_property("overkill"))	
 		if overkill:
@@ -367,7 +367,7 @@ func attack(script: ScriptTask) -> int:
 						"tags" : ["Scripted", "overkill"], #notably, overkill isn't an attack
 						"subjects": [gameData.get_villain()]
 					}
-					_add_receive_damage_on_stack (overkill_amount, script, script_modifications)
+					_add_pre_receive_damage_on_stack (overkill_amount, script, script_modifications)
 	
 				
 		consequential_damage(script)
@@ -425,7 +425,7 @@ func deal_damage(script:ScriptTask) -> int:
 		# _add_receive_damage_on_stack creates a copy
 		script.set_subjects(card)
 	
-		_add_receive_damage_on_stack(amount, script)
+		_add_pre_receive_damage_on_stack(amount, script)
 		retcode = CFConst.ReturnCode.CHANGED
 #	return receive_damage(script)
 	script.set_subjects(backup_subjects)
@@ -558,7 +558,7 @@ static func calculate_damage(script:ScriptTask) -> int:
 	return 0	
 		
 
-func receive_damage(script: ScriptTask) -> int:
+func pre_receive_damage(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
 	if !script.subjects:
@@ -588,7 +588,6 @@ func receive_damage(script: ScriptTask) -> int:
 	
 	for card in consolidated_subjects.keys():
 		var multiplier = consolidated_subjects[card]
-		var damage_happened = 0
 		var amount = base_amount * multiplier
 		
 		var increase = script.retrieve_integer_property("increase_amount", 0)	
@@ -608,70 +607,106 @@ func receive_damage(script: ScriptTask) -> int:
 		if script.has_tag("ignore_tough"):
 			tough = 0
 
-			
 		if (amount and tough):
 			card.tokens.mod_token("tough", -1)
 			card.hint("Tough!", Color8(50,50,255))
-		else:
-			#indirect damage in attack, we replace all damages with an indirect damage command
-			if amount and ("attack" in tags) and (!"indirect_damage" in tags) and (attacker.get_property("attack_indirect_damage", 0, true) or ("attack_indirect_damage" in tags)):
-				var indirect_damage_script_definition = \
-					indirect_damage_script_definition(amount, card.get_controller_hero_id())
-				indirect_damage_script_definition["tags"] = indirect_damage_script_definition.get("tags", []) + tags
-				var state_scripts_dict = {
-					"state_scripts": [
-						indirect_damage_script_definition
-					],
-					"action_name": "indirect_damage"
-				}
-				var new_action = {
-					"state_scripts_dict": state_scripts_dict
-				}
+			amount = 0
+		var script_modifications = {
+			"subjects": [card]
+		}
+		_add_receive_damage_on_stack (amount, script, script_modifications)
+	
+	return retcode		
+
+func receive_damage(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+	
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+	
+
+	#damages don't always come from an attacker, but it's easier to compute it here
+	var attacker = script.owner
+	var type = attacker.get_property("type_code", "")
+	if !type in ["hero", "ally", "minion", "villain"]:
+		attacker = _get_identity_from_script(script)
+		
+	var tags: Array = script.get_property(SP.KEY_TAGS) 
+	var amount = script.retrieve_integer_property("amount")
+	
+	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
+	# e.g. Spider man gets 3*1 damage = 3 damage
+	var consolidated_subjects:= {}
+	#TODO BUG sometimes subjects contains a null card?
+	for card in script.subjects:
+		if !consolidated_subjects.has(card):
+			consolidated_subjects[card] = 0
+		consolidated_subjects[card] += 1
+	
+	for card in consolidated_subjects.keys():
+		var damage_happened = 0
+		#indirect damage in attack, we replace all damages with an indirect damage command
+		if amount and ("attack" in tags) and (!"indirect_damage" in tags) and (attacker.get_property("attack_indirect_damage", 0, true) or ("attack_indirect_damage" in tags)):
+			var indirect_damage_script_definition = \
+				indirect_damage_script_definition(amount, card.get_controller_hero_id())
+			indirect_damage_script_definition["tags"] = indirect_damage_script_definition.get("tags", []) + tags
+			var state_scripts_dict = {
+				"state_scripts": [
+					indirect_damage_script_definition
+				],
+				"action_name": "indirect_damage"
+			}
+			var new_action = {
+				"state_scripts_dict": state_scripts_dict
+			}
 #				var task_event = SimplifiedStackScript.new(indirect_damage_script_definition, attacker)
 #				gameData.theStack.add_script(task_event)
-				attacker.execute_scripts(attacker, "__damage_replacement__", new_action)
-				#TODO the return here implies that this replacement to indirect damage will only
-				#ever work if there's only one target. I'm not sure how future proof this is
-				return retcode	
-				#continue
-				
-			retcode = card.tokens.mod_token("damage",
-					amount,false,costs_dry_run(), tags)	
-			if amount:
-				card.hint(str(amount), Color8(255,50,50))
-				damage_happened = amount
-				if amount == 1:
-					gameData.play_sfx("small_damage*")	
-				elif amount > 6:
-					gameData.play_sfx("massive_damage*")					
-				elif amount > 3:
-					gameData.play_sfx("large_damage*")
-				else:
-					gameData.play_sfx("damage*")	
-				
-				if ("stun_if_damage" in tags):
-					card.set_stunned()
-				if ("exhaust_if_damage" in tags):
-					card.exhaustme()
-				if ("run_post_damage_script" in tags):
-					script.owner.execute_scripts(script.owner, "post_damage_script", {})
-						
-				if ("1_threat_on_main_scheme_if_damage" in tags):
-					var main_scheme = gameData.get_main_scheme()
-					var task = ScriptTask.new(script.owner, {"name": "add_threat", "amount": 1}, card, {})
-					task.set_subjects([main_scheme])
-					var stackEvent = SimplifiedStackScript.new(task)
-					gameData.theStack.add_script(stackEvent)
-				
-				var if_damage: Dictionary = script.get_property("if_damage", {})
-				if if_damage:
-					var post_damage_trigger = if_damage["trigger"]
-					var params = if_damage.get("func_params", {})
-					params = WCUtils.search_and_replace(params, "damage", amount, true)
-					var trigger_details = {}
-					if params:
-						trigger_details["additional_script_definition"] = params
-					script.owner.execute_scripts(script.owner, post_damage_trigger, trigger_details)
+			attacker.execute_scripts(attacker, "__damage_replacement__", new_action)
+			#TODO the return here implies that this replacement to indirect damage will only
+			#ever work if there's only one target. I'm not sure how future proof this is
+			return retcode	
+			#continue
+			
+		retcode = card.tokens.mod_token("damage",
+				amount,false,costs_dry_run(), tags)	
+		if amount:
+			card.hint(str(amount), Color8(255,50,50))
+			damage_happened = amount
+			if amount == 1:
+				gameData.play_sfx("small_damage*")	
+			elif amount > 6:
+				gameData.play_sfx("massive_damage*")					
+			elif amount > 3:
+				gameData.play_sfx("large_damage*")
+			else:
+				gameData.play_sfx("damage*")	
+			
+			if ("stun_if_damage" in tags):
+				card.set_stunned()
+			if ("exhaust_if_damage" in tags):
+				card.exhaustme()
+			if ("run_post_damage_script" in tags):
+				script.owner.execute_scripts(script.owner, "post_damage_script", {})
+					
+			if ("1_threat_on_main_scheme_if_damage" in tags):
+				var main_scheme = gameData.get_main_scheme()
+				var task = ScriptTask.new(script.owner, {"name": "add_threat", "amount": 1}, card, {})
+				task.set_subjects([main_scheme])
+				var stackEvent = SimplifiedStackScript.new(task)
+				gameData.theStack.add_script(stackEvent)
+			
+			var if_damage: Dictionary = script.get_property("if_damage", {})
+			if if_damage:
+				var post_damage_trigger = if_damage["trigger"]
+				var params = if_damage.get("func_params", {})
+				params = WCUtils.search_and_replace(params, "damage", amount, true)
+				var trigger_details = {}
+				if params:
+					trigger_details["additional_script_definition"] = params
+				script.owner.execute_scripts(script.owner, post_damage_trigger, trigger_details)
 		
 		if !damage_happened:
 			var if_no_damage = script.get_property("if_no_damage", {})
@@ -715,7 +750,7 @@ func receive_damage(script: ScriptTask) -> int:
 						"subjects": [attacker],
 						"owner": card,
 					}
-					_add_receive_damage_on_stack(retaliate, script, script_modifications)
+					_add_pre_receive_damage_on_stack(retaliate, script, script_modifications)
 							
 	return retcode
 
@@ -1426,7 +1461,7 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 		var script_modifications = {
 			"additional_tags" : ["attack", "Scripted"],
 		}
-		_add_receive_damage_on_stack (amount, script, script_modifications)
+		_add_pre_receive_damage_on_stack (amount, script, script_modifications)
 	
 	if defender and (script.has_tag("overkill") or attacker.get_property("overkill", 0, true)):
 		var defender_type = defender.get_property("type_code")
@@ -1438,7 +1473,7 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 				"tags" : ["Scripted", "overkill"], #notably, overkill isn't an attack
 				"subjects": [my_hero]
 			}
-			_add_receive_damage_on_stack (overkill_amount, script, script_modifications)
+			_add_pre_receive_damage_on_stack (overkill_amount, script, script_modifications)
 	
 	#We're done, cleanup attacker script
 	attacker.set_activity_script(null)		
@@ -1471,7 +1506,22 @@ static func transfer_default_damage_properties(from_script, to_script):
 	for additional_data in CFConst.DAMAGE_TRANSFER_SCRIPT_PROPERTIES:
 		if from_script.script_definition.has(additional_data):
 			to_script.script_definition[additional_data] = from_script.script_definition[additional_data].duplicate()
+
+func _add_pre_receive_damage_on_stack(amount, original_script, modifications:Dictionary = {}):		
+		var receive_damage_script_definition = {
+			"name": "pre_receive_damage",
+			"amount": amount,
+			"source": original_script.get_property("source", owner),
+			"tags": modifications.get("tags", original_script.get_property("tags", []))
+		}
 		
+		modifications["script_definition"] =  receive_damage_script_definition	
+		var receive_damage_script = _modify_script(original_script, modifications, "replace")
+	
+		transfer_default_damage_properties(original_script, receive_damage_script)
+		
+		var task_event = SimplifiedStackScript.new(receive_damage_script)
+		gameData.theStack.add_script(task_event)			
 
 func _add_receive_damage_on_stack(amount, original_script, modifications:Dictionary = {}):		
 		var receive_damage_script_definition = {
@@ -1535,13 +1585,13 @@ func consequential_damage(script: ScriptTask) -> int:
 	var new_tags = ["consequential_damage"]
 	var additional_task := ScriptTask.new(
 		script.owner,
-		{"name": "receive_damage", "amount" : damage, "subject" : "self", "tags" : new_tags}, 
+		{"name": "pre_receive_damage", "amount" : damage, "subject" : "self", "tags" : new_tags}, 
 		script.trigger_object,
 		script.trigger_details)
 	additional_task.subjects = [script.owner]
 	#additional_task.prime([], CFInt.RunType.NORMAL,0, []) #TODO gross
 	#retcode = receive_damage(additional_task)	
-	_add_receive_damage_on_stack (damage, additional_task, {})	
+	_add_pre_receive_damage_on_stack (damage, additional_task, {})	
 	return CFConst.ReturnCode.CHANGED
 
 func commit_scheme(script: ScriptTask):

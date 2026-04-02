@@ -1507,7 +1507,7 @@ func move_to(targetHost: Node,
 			set_state(CardState.IN_POPUP)
 	common_post_move_scripts(targetHost.name, parentHost.name, tags)
 	if signal_to_emit:
-		scripting_bus.emit_signal(signal_to_emit,
+		scripting_bus.emit_signal_on_stack(signal_to_emit,
 				self,
 				 {
 					"destination": targetHost.name,

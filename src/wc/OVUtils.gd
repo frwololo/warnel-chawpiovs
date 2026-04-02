@@ -380,9 +380,23 @@ func filter_trigger(
 		if !trigger_card.get_property("type_code", null):
 			return false
 		if trigger_card.is_boost(): 
-			if trigger!= "boost":
-				return false
-			if trigger_card!= owner_card:
+			#... but there are exceptions
+			#The boost trigger is accepted
+			if trigger == "boost": 
+				if trigger_card!= owner_card:
+					return false
+			#interrupt/response for events wontaining the name "boost" e.g. boost_card_revealed		
+			elif trigger.begins_with("interrupt"):
+				if !"boost" in trigger:
+					var expected_trigger_names = card_scripts.get("event_name", "")	
+					var trigger_chain = ""
+					if typeof(expected_trigger_names) == TYPE_STRING:
+						expected_trigger_names = [expected_trigger_names]
+					for expected_trigger_name in expected_trigger_names:
+						trigger_chain += expected_trigger_name + "-"
+					if 	!"boost" in trigger_chain:
+						return false			
+			else:
 				return false
 
 
@@ -403,8 +417,6 @@ func filter_trigger(
 
 	var event_name = _trigger_details["event_name"]
 	
-	if event_name == "receive_damage":
-		var _tmp = 1
 	
 	var expected_trigger_type = card_scripts.get("event_type", "")
 	if expected_trigger_type and (expected_trigger_type != _trigger_details.get("trigger_type", "")):
@@ -535,7 +547,14 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 				if compared_to_int < value:
 					filters.erase(filter_key)
 				else:
-					return false									
+					return false
+			elif value.ends_with("_any_hero"):
+				for i in gameData.get_team_size():
+					var hero_id = i+1
+					var comp_value = value.replace("_any_hero", str(hero_id))
+					if compared_to_str == comp_value:
+						filters.erase(filter_key)
+						break									
 				
 
 	if (filters):

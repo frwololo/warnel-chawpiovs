@@ -154,13 +154,19 @@ signal alter_ego_died(card,details)
 # warning-ignore:unused_signal
 signal card_leaves_play (card,details)
 
-var registered_signals = {}
+var registered_signals := {}
+var registered_interrupt_signals := {}
+enum SignalLevel {
+	NONE,
+	NORMAL,
+	INTERRUPT,
+}
 
-func register_card_signals(card, signal_names):
+func register_card_signals(card, signal_names, has_interrupt:= false):
 	for signal_name in signal_names:
-		register_card_signal(card, signal_name)
+		register_card_signal(card, signal_name, has_interrupt)
 
-func register_card_signal(card, signal_name):
+func register_card_signal(card, signal_name, has_interrupt:=false ):
 	if !is_instance_valid(card):
 		print_debug("invalid card in register_card_signal")
 		var _error = 1
@@ -169,25 +175,47 @@ func register_card_signal(card, signal_name):
 		print_debug("missing signal name in register_card_signal")
 		var _error = 1
 		return		
-		
-	if !registered_signals.has(signal_name):
-		registered_signals[signal_name] = {}
 	
-	registered_signals[signal_name][card] = true
+	if has_interrupt:	
+		if !registered_interrupt_signals.has(signal_name):
+			registered_interrupt_signals[signal_name] = {}
+		
+		registered_interrupt_signals[signal_name][card] = true	
+	else:
+		if !registered_signals.has(signal_name):
+			registered_signals[signal_name] = {}
+		
+		registered_signals[signal_name][card] = true		
 
 func unregister_card(card):
 	for key in registered_signals:
 		registered_signals[key].erase(card)
 
-func is_signal_registered(signal_name):
-	return registered_signals.get(signal_name, {})
+	for key in registered_interrupt_signals:
+		registered_interrupt_signals[key].erase(card)		
 
+func get_signal_registered(signal_name):
+	if registered_interrupt_signals.get(signal_name, {}):
+		return SignalLevel.INTERRUPT
+		
+	if registered_signals.get(signal_name, {}):
+		return SignalLevel.NORMAL
+	
+	return SignalLevel.NONE
+	
 func emit_signal_on_stack(signal_name, arg0 = null, arg1 = null):
 
 	#some signals need to have listeners for us to emit them
 	#this is to not constantly bloat the stack if/when not needed
-	if signal_name in CFConst.REGISTERED_SIGNALS:
-		if !is_signal_registered(signal_name):
+	var signal_level = SignalLevel.INTERRUPT
+	if signal_name in CFConst.NO_STACK_BY_DEFAULT_SIGNALS:
+		signal_level = SignalLevel.NORMAL
+		var expected_level = get_signal_registered(signal_name)
+		if expected_level == SignalLevel.INTERRUPT:
+			signal_level =  SignalLevel.INTERRUPT
+	elif signal_name in CFConst.OPTIONAL_SIGNALS:
+		signal_level = get_signal_registered(signal_name)
+		if signal_level == SignalLevel.NONE:
 			return
 			
 	var stackEvent:SignalStackScript
@@ -202,5 +230,8 @@ func emit_signal_on_stack(signal_name, arg0 = null, arg1 = null):
 		stackEvent = SignalStackScript.new(signal_name, arg0)	
 	else:
 		stackEvent = SignalStackScript.new(signal_name)
-	
-	gameData.theStack.add_script(stackEvent)	
+
+	if signal_level == SignalLevel.INTERRUPT:	
+		gameData.theStack.add_script(stackEvent)
+	else:
+		stackEvent.execute()

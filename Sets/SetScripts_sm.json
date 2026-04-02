@@ -158,10 +158,19 @@
 				{
 					"name": "mod_tokens",
 					"token_name": "rage",
-					"modification": -1
+					"modification": -1,
+					"subject": "self"
 				}
 			]
-		}
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "reveal_encounters",
+					"subject": "self"
+				}
+			]
+		}		
 	},
 	"\"Threat or Menace?\"": {
 		"reveal": {
@@ -392,17 +401,13 @@
 			"all": [
 				{
 					"name": "add_script",
-					"end_condition": "self_moved_to_board",
+					"end_condition": "phase_ended",
 					"subject": "self",
 					"script": {
-						"card_moved_to_board": {
-							"filter_state_trigger": [
-								{
-									"filter_properties": {
-										"type_code": "side_scheme"
-									}
-								}
-							],
+						"card_token_modified": {
+							"trigger": "another",
+							"filter_count_difference": "increased",
+							"filter_token_name": "threat",
 							"all": [
 								{
 									"name": "add_threat",
@@ -566,6 +571,7 @@
 	"Bell Tower #27077a": {
 		"interrupt_receive_damage": {
 			"event_filters": {
+				"amount": ">0",
 				"target": "villain",
 				"tags": [
 					"attack"
@@ -1229,7 +1235,7 @@
 		}
 	},
 	"Doctor Octopus - 1": {
-		"interrupt_receive_damage": {
+		"interrupt_pre_receive_damage": {
 			"event_filters": {
 				"tags": [
 					"attack"
@@ -1441,7 +1447,7 @@
 				},
 				"Take 1 damage": [
 					{
-						"name": "receive_damage",
+						"name": "deal_damage",
 						"subject": "my_identity",
 						"amount": 1
 					},
@@ -1534,73 +1540,60 @@
 	"Edge of Reality - 2B": {
 		"interrupt_card_moved_to_pile": {
 			"event_filters": {
-				"destination": "discard_any_hero"
+				"destination": "discard_any_hero",
+				"source": "deck_any_hero",				
 			},
-			"all": [
+			"condition_board": {
+				"func_name": "is_encounter",
+				"func_params": {
+					"subject": "trigger"
+				}
+			},
+			"board": [
+
 				{
-					"name": "conditional_script",
-					"options": [
+					"name": "deal_encounter",
+					"subject": "trigger",
+					"target_hero_id": "_event_source_hero"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1,
+					"subject": "boardseek",
+					"filter_state_seek": [
 						{
-							"condition": {
-								"func_name": "is_encounter",
-								"func_params": {
-									"subject": "trigger"
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "deal_encounter",
-									"subject": "trigger",
-									"target_hero_id": "_event_source_hero"
-								},
-								{
-									"name": "draw_cards",
-									"amount": 1,
-									"subject": "boardseek",
-									"filter_state_seek": [
-										{
-											"filter_group": "group_identities_event_source_hero"
-										}
-									]
-								}
-							]
+							"filter_group": "group_identities_event_source_hero"
 						}
 					]
 				}
+
 			]
 		},
 		"interrupt_card_moved_to_hand": {
-			"all": [
+			"condition_board": {
+				"func_name": "is_encounter",
+				"func_params": {
+					"subject": "trigger"
+				}
+			},
+			"board": [
+
 				{
-					"name": "conditional_script",
-					"options": [
+					"name": "deal_encounter",
+					"subject": "trigger",
+					"target_hero_id": "_event_source_hero"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1,
+					"subject": "boardseek",
+					"filter_state_seek": [
 						{
-							"condition": {
-								"func_name": "is_encounter",
-								"func_params": {
-									"subject": "trigger"
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "deal_encounter",
-									"subject": "trigger",
-									"target_hero_id": "_event_source_hero"
-								},
-								{
-									"name": "draw_cards",
-									"amount": 1,
-									"subject": "boardseek",
-									"filter_state_seek": [
-										{
-											"filter_group": "group_identities_event_source_hero"
-										}
-									]
-								}
-							]
+							"filter_group": "group_identities_event_source_hero"
 						}
 					]
 				}
+
 			]
 		}
 	},
@@ -1824,7 +1817,8 @@
 					"name": "move_card_to_container",
 					"subject": "tutor",
 					"subject_count": "all",
-					"src_container": "hand_my_hero"
+					"src_container": "hand_my_hero",
+					"dest_container": "discard_my_hero",
 				},
 				{
 					"name": "draw_to_hand_size"
@@ -2066,16 +2060,6 @@
 					],
 					"alteration": 2
 				},
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "max_hand_size",
-					"filter_state_trigger": [
-						{
-							"filter_group": "group_identities"
-						}
-					],
-					"alteration": 2
-				}
 			]
 		}
 	},
@@ -3107,7 +3091,7 @@
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "Sandman"
+					"subject": "Mysterio"
 				}
 			]
 		},
@@ -4150,7 +4134,7 @@
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "Sandman"
+					"subject": "Mysterio"
 				}
 			]
 		},
@@ -4228,73 +4212,60 @@
 	"Maze of Mirrors - 1B": {
 		"interrupt_card_moved_to_pile": {
 			"event_filters": {
-				"destination": "discard_any_hero"
+				"destination": "discard_any_hero",
+				"source": "deck_any_hero",
 			},
-			"all": [
+			"condition_board": {
+				"func_name": "is_encounter",
+				"func_params": {
+					"subject": "trigger"
+				}
+			},
+			"board": [
+
 				{
-					"name": "conditional_script",
-					"options": [
+					"name": "deal_encounter",
+					"subject": "trigger",
+					"target_hero_id": "_event_source_hero"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1,
+					"subject": "boardseek",
+					"filter_state_seek": [
 						{
-							"condition": {
-								"func_name": "is_encounter",
-								"func_params": {
-									"subject": "trigger"
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "deal_encounter",
-									"subject": "trigger",
-									"target_hero_id": "_event_source_hero"
-								},
-								{
-									"name": "draw_cards",
-									"amount": 1,
-									"subject": "boardseek",
-									"filter_state_seek": [
-										{
-											"filter_group": "group_identities_event_source_hero"
-										}
-									]
-								}
-							]
+							"filter_group": "group_identities_event_source_hero"
 						}
 					]
 				}
+
 			]
 		},
 		"interrupt_card_moved_to_hand": {
-			"all": [
+			"condition_board": {
+				"func_name": "is_encounter",
+				"func_params": {
+					"subject": "trigger"
+				}
+			},
+			"board": [
+
 				{
-					"name": "conditional_script",
-					"options": [
+					"name": "deal_encounter",
+					"subject": "trigger",
+					"target_hero_id": "_event_source_hero"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1,
+					"subject": "boardseek",
+					"filter_state_seek": [
 						{
-							"condition": {
-								"func_name": "is_encounter",
-								"func_params": {
-									"subject": "trigger"
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "deal_encounter",
-									"subject": "trigger",
-									"target_hero_id": "_event_source_hero"
-								},
-								{
-									"name": "draw_cards",
-									"amount": 1,
-									"subject": "boardseek",
-									"filter_state_seek": [
-										{
-											"filter_group": "group_identities_event_source_hero"
-										}
-									]
-								}
-							]
+							"filter_group": "group_identities_event_source_hero"
 						}
 					]
 				}
+
 			]
 		}
 	},
@@ -4530,7 +4501,9 @@
 				{
 					"name": "move_card_to_container",
 					"dest_container": "discard_current_hero_target",
-					"subject": "trigger"
+					"subject": "trigger",
+					"force_valid_boost_target": true,
+					"_comments": "boost cards are generally considered non valid subjects, this bypasses that check"
 				}
 			]
 		}
@@ -8000,7 +7973,7 @@
 				"tags": [
 					"attack"
 				],
-				"damage": ">3",
+				"amount": ">3",
 				"target": "host"
 			},
 			"board": [
@@ -8490,13 +8463,13 @@
 							"condition": {
 								"func_name": "is_stunned",
 								"func_params": {
-									"subject": "my_identity"
+									"subject": "current_hero_target"
 								}
 							},
 							"nested_tasks": [
 								{
 									"name": "deal_damage",
-									"subject": "my_identity",
+									"subject": "current_hero_target",
 									"amount": 2
 								}
 							]
@@ -8505,7 +8478,7 @@
 					"else": [
 						{
 							"name": "mod_tokens",
-							"subject": "my_identity",
+							"subject": "current_hero_target",
 							"modification": 1,
 							"token_name": "stunned"
 						}

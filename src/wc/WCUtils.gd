@@ -392,6 +392,37 @@ static func search_and_replace (script_definition, from: String, to, exact_match
 			result = script_definition
 	return result;
 
+static func has_interrupt_or_response (script_definition, trigger: String) -> bool:
+	var match_list = ["interrupt_" + trigger, "response_" + trigger]
+	match typeof(script_definition):
+		TYPE_DICTIONARY:
+			for key in script_definition.keys():
+				if key in match_list:
+					return true
+				var value = script_definition[key]
+				if key in ["interrupt", "response"]:
+					if value.has("event_name"):
+						var event_name = value["event_name"]
+						match typeof(event_name):
+							TYPE_STRING:
+								if event_name == trigger:
+									return true
+							TYPE_ARRAY:
+								if trigger in event_name:
+									return true
+							_:
+								pass
+						
+				if has_interrupt_or_response(value, trigger):
+					return true
+
+		TYPE_ARRAY:
+			for x in script_definition:
+				if has_interrupt_or_response(x, trigger):
+					return true
+
+	return false
+
 static func is_string_in_variant (script_definition, needle: String) -> bool:
 	match typeof(script_definition):
 		TYPE_DICTIONARY:

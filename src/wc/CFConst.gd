@@ -300,6 +300,7 @@ const OPTIONAL_SIGNALS:= [
 #be emitted directly without being added to the stack
 #this is an optimization to avoid calling the stack constantly for games that don't need it
 const NO_STACK_BY_DEFAULT_SIGNALS:= [
+	"card_damaged",	
 	"card_moved_to_board",
 	"card_moved_to_hand",	
 	"card_moved_to_pile",
@@ -657,6 +658,7 @@ const AUTO_KEYWORDS := {
 	"exclude_from_ally_limit": "int",
 	"attack_indirect_damage": "int",
 	"blank_abilities": "int",
+	"blank_printed_trigger_abilities": "int",
 	"cannot_change_form": "int",
 	"cannot_be_canceled": "int",
 	"cannot_be_blocked": "int",

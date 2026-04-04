@@ -807,8 +807,8 @@ func load_deck_definitions():
 func get_hero_obligation(hero_id:String):
 	#todo error handling
 	var hero_data = get_card_by_id(hero_id)
-	var hero_name = hero_data["Name"]
-	var obligation = obligations[hero_name.to_lower()]
+	var hero_set_code = hero_data["card_set_code"]
+	var obligation = obligations[hero_set_code]
 	return obligation
 
 

@@ -19,7 +19,7 @@
 			"subject_count": "__count__",
 			"subject_index": "top",
 			"for_each_player": "__each_player__"
-		},	
+		}
 	},
 	"Advance": {
 		"reveal": {
@@ -1155,15 +1155,14 @@
 						"__src_container__": "deck"
 					}
 				},
-					{
+				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
-				}				
+				}
 			]
-		},
+		}
 	},
 	"Countdown to Oblivion - 3B": {
-
 		"alterants": {
 			"board": [
 				{
@@ -5190,9 +5189,9 @@
 				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
-				}				
+				}
 			]
-		},	
+		}
 	},
 	"The Crimson Cowl - 1B": {
 		"reveal": {

@@ -205,6 +205,18 @@
 		"scheme_amplify": 0,
 		"_comments": "https://github.com/zzorba/marvelsdb/issues/347"
 	},
+	"27013": {
+		"imagesrc": "/bundles/cards/15030.png"
+	},
+	"27020": {
+		"imagesrc": "/bundles/cards/01088.png"
+	},
+	"27021": {
+		"imagesrc": "/bundles/cards/01089.png"
+	},	
+	"27022": {
+		"imagesrc": "/bundles/cards/01090.png"
+	},		
 	"27102a": {
 		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/27102a.jpg"
 	},

@@ -2,14 +2,14 @@ class_name SetScripts_All
 extends Reference
 
 
-func has_interrupt(script:Dictionary) -> String:
+static func has_interrupt(script:Dictionary) -> String:
 	for _k in script.keys():
 		var k:String = _k
 		if (k.begins_with("interrupt")):
 			return k
 	return ""
 
-func keyword_to_script(keyword, _value):
+static func keyword_to_script(keyword, _value):
 	match keyword:
 		"alliance" :
 			pass
@@ -79,7 +79,7 @@ func keyword_to_script(keyword, _value):
 # This fuction merges text files scripts for a given card 
 # with default rules for the game (rules that apply to all cards)
 # Specifically, it converts card keywords (cost, threat,...) into actual scripts for the engine
-func get_scripts(scripts: Dictionary, card_id: String, _get_modified = true) -> Dictionary:
+static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = true) -> Dictionary:
 	if !_get_modified:
 		return scripts.get(card_id,{})
 

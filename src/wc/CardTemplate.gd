@@ -1079,7 +1079,23 @@ func retrieve_scripts(trigger: String, filters := {}) -> Dictionary:
 	if self.get_property("blank_abilities", 0, true):
 		return {}
 	
-	return .retrieve_scripts(trigger, filters)
+	var result =  .retrieve_scripts(trigger, filters)
+	
+	if !result:
+		return result
+	
+	#Induced Panic blanks all triggered abilities
+	#we mimic that by only surfacing default "game rule" abilities when a card is impacted
+	if self.get_property("blank_printed_trigger_abilities", 0, true):
+		#todo more triggers to ignore ?
+		if !trigger in ["alterants"]:
+			var found_scripts = get_instance_runtime_scripts(trigger, filters)
+			if found_scripts:
+				return found_scripts
+			var base_scripts = SetScripts_All.get_scripts({}, self.canonical_id)
+			return base_scripts.get(trigger, {}).duplicate(true)
+	return result
+
 
 func retrieve_script_by_path(path:String):
 	var found_scripts = get_instance_runtime_scripts()
@@ -1943,7 +1959,9 @@ func check_ghost_card():
 #
 # If it returns false, the card will be highlighted with a red tint, and the
 # player will not be able to drag it out of the hand.
-func check_play_costs_no_cache(hero_id, _debug = false)-> Color:
+func check_play_costs_no_cache(hero_id = 0, _debug = false)-> Color:
+	if !hero_id:
+		hero_id = gameData.get_current_local_hero_id()
 	_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID
 	return check_play_costs({"hero_id" : hero_id}, _debug)
 
@@ -2722,6 +2740,16 @@ func get_param_subjects(params, script:ScriptObject = null):
 		var new_subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
 		return new_subjects
 	return subjects		
+
+func is_first_player(params = {}, script:ScriptTask = null):
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return false
+		
+	var controller_id = subject.get_controller_hero_id()
+	if controller_id == gameData.first_player_hero_id():
+		return 1
+	return 0
 
 func is_encounter(params = {}, script:ScriptTask = null):
 	var subject = get_param_subject(params, script)

@@ -129,8 +129,34 @@ func get_property(property: String, default = null, subscript_definition = null,
 		elif result.has("func_name"):
 			var params = result.get("func_params", {})
 			result = cfc.ov_utils.func_name_run(self.owner, result["func_name"], params, self)
+
+	if property in [SP.KEY_DEST_CONTAINER, SP.KEY_SRC_CONTAINER]:
+		result = get_container_property(result)
 			
 	return result
+
+func get_container_property(value):
+	var from_card = null
+	var from_container = null
+	match value:
+		"previous":
+			if !prev_subjects:
+				return ""
+			from_card = prev_subjects[0]
+		"last_target":
+			from_card = gameData.last_target
+		"last_target_container":
+			from_container = gameData.last_target_container
+				
+	if from_card:
+		from_container = from_card.get_parent()
+		if !from_container or from_container == cfc.NMAP.board:
+			return ""
+	if from_container:
+		var result =  from_container.name.to_lower()
+		return result		
+		
+	return value
 	
 func get_sub_property(property: String, root, default = null):
 	return get_property(property, default, null, root)	
@@ -279,7 +305,7 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 		# if the value "previous" is given to the "subjects" key,
 		# it simple reuses the same ones.
 		SP.KEY_SUBJECT_V_PREVIOUS:
-			if get_property(SP.KEY_FILTER_EACH_REVIOUS_SUBJECT):
+			if get_property(SP.KEY_FILTER_EACH_PREVIOUS_SUBJECT):
 				# We still check all previous subjects to check that they match the filters
 				# If not, we remove them from the subject list
 				for c in prev_subjects:
@@ -296,7 +322,7 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 					if not SP.check_validity(c, script_definition, "subject", owner):
 						is_valid = false
 		SP.KEY_SUBJECT_V_ALL_PREVIOUS:
-			if get_property(SP.KEY_FILTER_EACH_REVIOUS_SUBJECT):
+			if get_property(SP.KEY_FILTER_EACH_PREVIOUS_SUBJECT):
 				# We still check all previous subjects to check that they match the filters
 				# If not, we remove them from the subject list
 				for c in all_prev_subjects:
@@ -720,6 +746,10 @@ func retrieve_integer_property(property, stored_integer:int = 0,root = null):
 	var min_value = retrieve_integer_property("min_" + property, stored_integer, root)
 	if min_value:
 		value = max(value, min_value)			
+
+	var multiplier_value = retrieve_integer_property("multiplier_" + property, stored_integer, root)
+	if multiplier_value:
+		value = value * multiplier_value
 		
 	return value	
 

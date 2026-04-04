@@ -46,6 +46,7 @@ var _assign_max_function := ""
 var has_been_centered := false
 var focus_grabbed = false
 var window_title:= ""
+var exclude_subjects:= []
 
 #note: this is not _init !
 func init(
@@ -58,6 +59,10 @@ func init(
 
 	if _script:
 		selection_count = _script.retrieve_integer_property(SP.KEY_SELECTION_COUNT, stored_integer)
+		var to_exclude = _script.get_property("subject_exclude", null)
+		if to_exclude:
+			exclude_subjects = _script._local_find_subjects(stored_integer, CFInt.RunType.NORMAL, {"subject" : to_exclude, "subject_exclude" : ""})
+
 	else:
 		selection_count = ScriptObject.get_int_value(params.get(SP.KEY_SELECTION_COUNT,0), stored_integer)
 	selection_type = params.get(SP.KEY_SELECTION_TYPE, "min")
@@ -67,12 +72,14 @@ func init(
 	selection_additional_constraints = params.get("selection_additional_constraints", {})
 	hide_ok_on_zero = params.get("hide_ok_on_zero", false)	
 
+
+
 	if typeof(what_to_count) == TYPE_STRING:
 		
 		#TODO technically not possible but these modes allow
 		#for cards to start at value zero, and otherwise this crashes
 		#the game
-		can_select_cards_with_zero_value = true
+		can_select_cards_with_zero_value = !show_cards_with_zero_value
 		if what_to_count.begins_with("assign_"):
 			_assign_mode = true
 			var function_suffix = what_to_count.substr(7)
@@ -452,13 +459,22 @@ func can_still_select_more() -> bool :
 			if remaining > currently_assigned:
 				return true
 	else:
-		if selected_cards.size() < card_array.size():
+		var _card_array = []
+		for card in card_array:
+			if !card in exclude_subjects:
+				_card_array.append(card)
+		if selected_cards.size() < _card_array.size():
 			return true
 			
 	return false			
 
 var _cache_count_per_card = {}
-func get_count(_card_array: Array) -> int:
+func get_count(the_card_array: Array) -> int:
+	var _card_array = []
+	for card in the_card_array:
+		if !card in exclude_subjects:
+			_card_array.append(card)
+		
 	if typeof(what_to_count) == TYPE_STRING:
 		match what_to_count:
 			"assign":
@@ -525,7 +541,7 @@ func dry_run(_card_array: Array) -> void:
 
 	# When we have 0 cards to select from, we consider the selection cancelled
 	if get_count(_card_array) == 0\
-			and !_assign_mode:
+			and !_assign_mode and selection_count >0:
 		force_cancel()
 		return
 	

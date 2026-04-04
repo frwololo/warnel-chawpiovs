@@ -247,6 +247,8 @@ func execute(_run_type) -> void:
 		if not cfc.NMAP.has("board") or not is_instance_valid(cfc.NMAP.board): return
 		# We put it into another variable to allow Static Typing benefits
 		var script: ScriptTask = task
+		if !only_cost_check:
+			_execute_before_instructions(script)
 		if is_network_master:# and not costs_dry_run():
 			if script.is_else:
 				network_prepaid.append(null)
@@ -442,6 +444,8 @@ func execute(_run_type) -> void:
 #			run_next_script(card_owner,
 #					scripts_queue,prev_subjects)
 
+func _execute_before_instructions(script: ScriptTask):
+	pass
 
 # Task for rotating cards
 # * Supports [KEY_IS_COST](ScriptProperties#KEY_IS_COST).

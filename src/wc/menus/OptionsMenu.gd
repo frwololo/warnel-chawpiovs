@@ -47,6 +47,10 @@ func on_button_pressed(_button_name : String) -> void:
 			var debug_button:CheckButton = get_node("%DebugButton")
 			var value = debug_button.pressed
 			cfc._debug = value
+			var piles = cfc.get_tree().get_nodes_in_group("piles")
+			for pile in piles:
+				pile.allow_facedown_popup = cfc._debug
+				
 			gameData.phaseContainer.toggle_display_debug(value)
 			close_me()			
 		"SaveButton":

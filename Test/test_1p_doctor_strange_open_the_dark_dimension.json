@@ -1,0 +1,201 @@
+{
+	"_comments": "Bug: Doctor Strange Side Scheme not returning card correctly",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "\"Leave Us Alone!\"",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Bell Tower"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Loose Ends"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Open the Dark Dimension"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Med Team"
+				}
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},
+				{
+					"card": "Vapors of Valtorr"
+				},
+				{
+					"card": "Winds of Watoomb"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "For Justice!"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		},
+		{
+			"type": "play",
+			"value": "For Justice!"
+		},
+		{
+			"type": "target",
+			"value": "Open the Dark Dimension"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "\"Leave Us Alone!\"",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Bell Tower"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Open the Dark Dimension"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Loose Ends"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Med Team"
+				}
+			],
+			"deck_invocation1": [
+				{
+					"card": "Winds of Watoomb"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},
+				{
+					"card": "Vapors of Valtorr"
+				},
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Crimson Bands of Cyttorak"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "For Justice!"
+				}
+			]
+		}
+	}
+}

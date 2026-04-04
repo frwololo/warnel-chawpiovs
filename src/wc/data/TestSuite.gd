@@ -607,7 +607,7 @@ remotesync func run_action(my_action:Dictionary,  skip_play_tests:= false):
 		"pass":
 			action_pass(action_hero)			
 		"other":
-			action_other(action_value)
+			action_other(my_action)
 		_:
 			#TODO error
 			var _error = 1
@@ -627,13 +627,16 @@ remotesync func run_action(my_action:Dictionary,  skip_play_tests:= false):
 func display_debug(text):
 	gameData.display_debug("{testsuite} " + text)
 
-func action_other(action_value):
+func action_other(action):
+	var action_value = action["value"]
 	match action_value:
 		"gain_control":
 			gameData.theAnnouncer.skip_announcer(false)
-			var piles = cfc.get_tree().get_nodes_in_group("piles")
-			for pile in piles:
-				pile.allow_facedown_popup = true
+			var enable_piles = action.get("enable_piles", true)
+			if enable_piles:
+				var piles = cfc.get_tree().get_nodes_in_group("piles")
+				for pile in piles:
+					pile.allow_facedown_popup = true
 			finished = true #forces pause the test suite to give user control
 
 func action_play(hero_id, card_id_or_name):

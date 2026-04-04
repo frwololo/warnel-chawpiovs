@@ -10,7 +10,8 @@ var script_definition:= {}
 
 func set_values(_parent_script, _script: Dictionary):
 	parent_script = _parent_script
-	script_definition = _script
+	script_definition = precompute_script_values(_script)
+
 	canonical_name = "Game Observer Item"
 	
 	#initializing the owner_id to a value >=0 is required to pass security checks in execute_scripts
@@ -24,6 +25,33 @@ func set_values(_parent_script, _script: Dictionary):
 	#more required data to pass script execution
 	properties["type_code"] = "game_observer_item"
 	register_signals()
+
+#retrieves and hardcodes values as needed from parent script
+func precompute_script_values(script_def, key_name = ""):
+	var result = null
+	match typeof(script_def):
+		TYPE_DICTIONARY:
+			result = {}	
+			for key in script_def.keys():
+				var value = script_def[key]
+				result[key] = precompute_script_values(value, key)
+
+		TYPE_ARRAY:
+			result = []
+			for x in script_def:
+				var computed = precompute_script_values(x, "")
+				result.append(computed)
+
+		TYPE_STRING:
+			if script_def.begins_with("parent_"):
+				var value = script_def.replace("parent_", "")
+				var property = parent_script.retrieve_integer_property(value)
+				result = property
+			else:
+				result = script_def
+		_:
+			result = script_def
+	return result
 		
 func get_parent_script():
 	return parent_script

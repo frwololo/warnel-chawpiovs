@@ -81,7 +81,9 @@ func is_silent():
 		if task.trigger_details.get("_silent", false):
 			return true
 		if task.script_definition.get("_silent", false):
-			return true			
+			return true		
+		if task.script_name == "mod_tokens"	and task.script_definition.get("token_name", "").begins_with("__"):
+			return true
 	if sceng.trigger_details.get("_silent", false):
 		return true
 	return false

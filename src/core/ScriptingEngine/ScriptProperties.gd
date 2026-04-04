@@ -83,7 +83,7 @@ const KEY_SUBJECT_V_ALL_PREVIOUS := "all_previous"
 # be affected
 # With this key, even if some subjects don't pass the filter, the subjects will do, will be affected
 # but in return, the total previous_subjects array will be reduced to only the matching subjects
-const KEY_FILTER_EACH_REVIOUS_SUBJECT := "filter_each_previous_subject"
+const KEY_FILTER_EACH_PREVIOUS_SUBJECT := "filter_each_previous_subject"
 # Value Type: Bool (Default = False)
 #
 # If this is set, the subjects found by this task, will not overwrite the previous

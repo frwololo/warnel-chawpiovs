@@ -103,6 +103,7 @@ var _garbage:= []
 var _targeting_ongoing= null
 var _desync_recovery_enabled = true
 var last_target = null
+var last_target_container = null
 
 var _clients_current_activation = {}
 var _clients_activation_counter = {}
@@ -288,6 +289,10 @@ func _initiated_targeting(owner_card) -> void:
 func _target_selected(owner_card, details) -> void:	
 	_targeting_ongoing = null
 	last_target = details.get("target")
+	if last_target:
+		var parent = last_target.get_parent()
+		if parent and parent!= cfc.NMAP.board:
+			last_target_container = parent
 	
 func is_targeting_ongoing():
 	return _targeting_ongoing	
@@ -2270,6 +2275,7 @@ func cleanup_post_game():
 	immediate_encounters = []	
 	current_round = 1
 	last_target = null
+	last_target_container = null
 	_multiplayer_desync = null
 	_clients_system_status = {}
 	_villain_current_hero_target = 1

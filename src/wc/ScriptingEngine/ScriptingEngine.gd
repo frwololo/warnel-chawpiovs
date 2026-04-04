@@ -17,6 +17,15 @@ func _init(state_scripts: Array,
 		_trigger_details) -> void:
 	pass
 
+func _execute_before_instructions(script: ScriptTask):
+	if !is_instance_valid(script):
+		return
+	var before_instructions = script.script_definition.get("_before_execute", [])
+	for inst in before_instructions:
+		match inst:
+			"reset_all_previous_counter":
+				self.all_subjects_so_far = []
+
 #Scripting functions 
 
 func pay_as_resource(script: ScriptTask) -> int:
@@ -452,8 +461,11 @@ func return_attachments_to(script: ScriptTask) -> int:
 	
 
 	var tags = script.get_property("tags", [])
-	var destination_prefix = script.get_property("dest_container")
-	if !destination_prefix:
+	var destination_name = script.get_property("dest_container")
+	var destination_prefix = destination_name
+	if destination_prefix:
+		destination_prefix = get_zone_basename(destination_prefix)
+	else:
 		destination_prefix = "discard"	
 	
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
@@ -470,18 +482,19 @@ func return_attachments_to(script: ScriptTask) -> int:
 	for card in to_move:
 		host.remove_attachment(card)
 		card.current_host_card = null
-		var destination = destination_prefix
-		if script.get_property("return_to", "") == "owner":		
+		var destination = destination_name
+		if script.get_property("return_to", "") == "owner":	
+			destination = destination_prefix	
 			var card_owner = card.get_owner_hero_id()
 			if card_owner < 0:
 				card_owner = 1 #TODO hack to avoid crashes
 			#TODO bit of a hack here
 			#unfortunately my code already added a suffix number priori to this, so I have to be sneaky :(
-			var zones = ["hand"] + CFConst.HERO_GRID_SETUP.keys()
-			for zone in zones:
-				if zone in destination:
-					destination = zone
-					break
+#			var zones = ["hand"] + CFConst.HERO_GRID_SETUP.keys()
+#			for zone in zones:
+#				if zone in destination:
+#					destination = zone
+#					break
 			if !card_owner:
 				destination += "_villain"
 			else:
@@ -733,7 +746,13 @@ func receive_damage(script: ScriptTask) -> int:
 		#check for death
 		var lethal = false
 		if damage_happened:
-			scripting_bus.emit_signal("card_damaged", card, script.script_definition)
+			var signal_details = {
+				"attacker": attacker,
+				"target": card,
+				"damage": damage_happened,
+				"tags": tags,
+			}
+			scripting_bus.emit_signal_on_stack("card_damaged", card, signal_details)
 
 			lethal = card.check_death(script)
 
@@ -2541,3 +2560,14 @@ static func static_pre_task_prime(script_definition, owner, script = null, prev_
 
 	return script_definition
 	
+static func get_zone_basename(zone_name):
+	if !zone_name:
+		return ""
+	if zone_name.ends_with("_villain"):
+		return zone_name.replace("_villain", "")
+	
+	var last_char = zone_name[-1]  # Get last character
+	if last_char.is_valid_integer():
+		return zone_name.replace(last_char, "")	
+		
+	return zone_name

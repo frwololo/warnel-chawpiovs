@@ -67,14 +67,14 @@ func execute() -> void:
 # This is called if the alterants passes all validity checks
 # it calculates how much to alter, based on the script definition.
 func calculate_alteration(script: ScriptAlter) -> void:
-	var alteration_requested = script.get_property(SP.KEY_ALTERATION)
+	var alteration_requested = script.get_property_raw(SP.KEY_ALTERATION)
 	if str(alteration_requested) == "custom_script":
 		var custom := CustomScripts.new(false)
 		alteration_requested += custom.custom_alterants(script)
 	elif SP.VALUE_PER in str(alteration_requested):
-		var per_definition = script.get_property(script.get_property(SP.KEY_ALTERATION))
+		var per_definition = script.get_property(alteration_requested)
 		var per_msg = perMessage.new(
-				script.get_property(SP.KEY_ALTERATION),
+				alteration_requested,
 				script.owner,
 				per_definition,
 				script.trigger_object)
@@ -103,6 +103,7 @@ func calculate_alteration(script: ScriptAlter) -> void:
 		if alteration:
 			var _tmp =1
 	else:
+		alteration_requested = script.retrieve_integer_property(SP.KEY_ALTERATION)
 		alteration += alteration_requested
 
 func common_pre_run(scripts_queue, _trigger_object):

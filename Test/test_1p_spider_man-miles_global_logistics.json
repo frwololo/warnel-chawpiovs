@@ -1,0 +1,184 @@
+{
+	"_comments": "Implementation: Global Logistics",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom Goblin - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				},
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Loose Ends"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Sandman"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Lower Manhattan - B",
+					"tokens": {
+						"threat": 2,
+						"glider": 1
+					}
+				},
+				{
+					"card": "Midtown Manhattan - C"
+				},
+				{
+					"card": "Upper Manhattan - D"
+				},
+				{
+					"card": "Festering Mass"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Symbiotic Monstrosity",
+					"tokens": {
+						"damage": 5
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Monica Chang"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Global Logistics"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "global Logistics"
+		},
+		{
+			"type": "target",
+			"value": "Sandman"
+		},
+		{
+			"type": "select",
+			"value": ["Caught off Guard" ],
+		},
+		{
+			"type": "select",
+			"value": ["Loose Ends"],
+		},
+		{
+			"type": "select",
+			"value": ["Sandman", "Hydra Mercenary", ],
+		},			
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom Goblin - 1"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Caught Off guard"
+				},			
+			],
+			"deck_villain": [
+				{
+					"card": "Loose Ends"
+				},			
+				{
+					"card": "Symbiotic Thrall"
+				},
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Sandman"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+			],
+			"schemes": [
+				{
+					"card": "Lower Manhattan - B",
+					"tokens": {
+						"threat": 2,
+						"glider": 1
+					}
+				},
+				{
+					"card": "Midtown Manhattan - C"
+				},
+				{
+					"card": "Upper Manhattan - D"
+				},
+				{
+					"card": "Festering Mass"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Symbiotic Monstrosity",
+					"tokens": {
+						"damage": 5
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Monica Chang",
+					"exhausted": true,
+				}
+			],
+			"discard1": [
+				{
+					"card": "Global Logistics"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			]
+		}
+	}
+}

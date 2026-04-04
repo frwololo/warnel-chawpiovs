@@ -146,10 +146,10 @@
 			"__trigger__": "host",
 			"__tags__": "overkill"
 		},
-		"response": {
-			"event_name": "receive_damage",
+		"response_card_damaged": {
 			"event_filters": {
 				"target": "host",
+				"amount": ">0",
 				"tags": [
 					"attack"
 				]
@@ -170,7 +170,7 @@
 					"subject": "self"
 				}
 			]
-		}		
+		}
 	},
 	"\"Threat or Menace?\"": {
 		"reveal": {
@@ -621,7 +621,9 @@
 			"event_name": "receive_damage",
 			"trigger": "villain",
 			"event_filters": {
-				"tags": ["attack"],
+				"tags": [
+					"attack"
+				],
 				"amount": ">0",
 				"filter_state_event_target": [
 					{
@@ -793,7 +795,7 @@
 					"name": "mod_tokens",
 					"token_name": "sand",
 					"modification": 1,
-					"subject": "self",
+					"subject": "self"
 				},
 				{
 					"name": "move_card_to_container",
@@ -1368,6 +1370,7 @@
 					"name": "temporary_effect",
 					"end_condition": "attack_happened",
 					"subject": "self",
+					"passthrough_alteration": "count_previous_subjects",
 					"effect": {
 						"alterants": {
 							"all": [
@@ -1379,7 +1382,7 @@
 											"filter_card_name": "Dum Dum Dugan"
 										}
 									],
-									"alteration": "count_previous_subjects"
+									"alteration": "parent_passthrough_alteration"
 								}
 							]
 						}
@@ -1541,7 +1544,7 @@
 		"interrupt_card_moved_to_pile": {
 			"event_filters": {
 				"destination": "discard_any_hero",
-				"source": "deck_any_hero",				
+				"source": "deck_any_hero"
 			},
 			"condition_board": {
 				"func_name": "is_encounter",
@@ -1550,7 +1553,6 @@
 				}
 			},
 			"board": [
-
 				{
 					"name": "deal_encounter",
 					"subject": "trigger",
@@ -1566,7 +1568,6 @@
 						}
 					]
 				}
-
 			]
 		},
 		"interrupt_card_moved_to_hand": {
@@ -1577,7 +1578,6 @@
 				}
 			},
 			"board": [
-
 				{
 					"name": "deal_encounter",
 					"subject": "trigger",
@@ -1593,7 +1593,6 @@
 						}
 					]
 				}
-
 			]
 		}
 	},
@@ -1818,7 +1817,7 @@
 					"subject": "tutor",
 					"subject_count": "all",
 					"src_container": "hand_my_hero",
-					"dest_container": "discard_my_hero",
+					"dest_container": "discard_my_hero"
 				},
 				{
 					"name": "draw_to_hand_size"
@@ -2059,7 +2058,7 @@
 						}
 					],
 					"alteration": 2
-				},
+				}
 			]
 		}
 	},
@@ -2403,8 +2402,8 @@
 	"Ghost Kick": {
 		"response": {
 			"event_name": [
-			"basic_attack_happened",
-			"basic_thwart_happened"
+				"basic_attack_happened",
+				"basic_thwart_happened"
 			],
 			"trigger": "my_hero",
 			"is_optional_hand": true,
@@ -2529,9 +2528,11 @@
 				{
 					"name": "exhaust_card",
 					"is_cost": true,
-					"subject": "target",
-					"subject_count": 1,
-					"filter_state_subject": [
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_seek": [
 						{
 							"filter_group": "play_area_my_hero",
 							"filter_is_exhausted": false,
@@ -2543,8 +2544,57 @@
 					]
 				},
 				{
-					"name": "nop",
-					"_comments": "TODO"
+					"name": "view_card",
+					"subject": "target",
+					"target_include_piles": true,
+					"filter_state_subject": [
+						{
+							"filter_faceup": false
+						}
+					]
+				},
+				{
+					"_before_execute": [
+						"reset_all_previous_counter"
+					],
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "previous",
+					"subject_count": 4,
+					"needs_selection": true,
+					"display_title": "choose cards to discard",
+					"selection_count": 4,
+					"selection_type": "max"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "last_target_container",
+					"dest_index": "bottom",
+					"subject_exclude": "all_previous",
+					"selection_show_cards_with_zero_value": true,
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "last_target_container",
+					"subject_count": 4,
+					"needs_selection": true,
+					"display_title": "choose cards to move to bottom",
+					"selection_count": 4,
+					"selection_type": "max"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "last_target_container",
+					"subject_exclude": "all_previous",
+					"selection_show_cards_with_zero_value": true,
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "last_target_container",
+					"subject_count": 4,
+					"needs_selection": true,
+					"display_title": "choose cards to move to top",
+					"selection_count": 4,
+					"selection_type": "as_much_as_possible"
 				}
 			]
 		}
@@ -2559,6 +2609,7 @@
 						"hero_action"
 					]
 				},
+			
 				{
 					"name": "exhaust_card",
 					"subject": "self",
@@ -2569,8 +2620,8 @@
 					"subject": "self",
 					"modification": 1,
 					"set_to_mod": true,
-					"token_name": "_liaison"
-				}
+					"token_name": "__liaison"
+				}	,
 			]
 		},
 		"alterants": {
@@ -2588,7 +2639,7 @@
 					],
 					"alteration": "per_token_self",
 					"per_token_self": {
-						"token_name": "_liaison",
+						"token_name": "__liaison",
 						"is_inverted": true
 					}
 				}
@@ -2610,7 +2661,7 @@
 					"modification": 0,
 					"subject": "self",
 					"set_to_mod": true,
-					"token_name": "_liaison"
+					"token_name": "__liaison"
 				}
 			]
 		},
@@ -2621,7 +2672,7 @@
 					"modification": 0,
 					"subject": "self",
 					"set_to_mod": true,
-					"token_name": "_liaison"
+					"token_name": "__liaison"
 				}
 			]
 		}
@@ -2850,7 +2901,6 @@
 		"TODO": "campaign mode not supported"
 	},
 	"Hidden in Shadow": {
-		"TODO": "expert mode boost",
 		"alterants": {
 			"board": [
 				{
@@ -2875,7 +2925,25 @@
 					{
 						"name": "indirect_damage",
 						"subject": "my_identity",
-						"amount": 1
+						"amount": 	{							
+							"if": {
+								"func_name": "is_first_player",
+								"func_params": {
+									"subject": "my_identity",
+								}
+							},
+							"then": {
+								"if": {	
+									"func_name": "get_scenario_option_value",
+									"func_params": {
+										"option_name": "expert_mode"
+									},
+								},
+								"then": 2,
+								"else": 1
+							},
+							"else": 1
+						}
 					}
 				]
 			}
@@ -3076,6 +3144,7 @@
 				{
 					"name": "remove_threat",
 					"amount": "count_previous_subjects",
+					"multiplier_amount": 2,
 					"subject": "target",
 					"filter_state_subject": [
 						{
@@ -3254,7 +3323,6 @@
 		}
 	},
 	"Induced Panic": {
-		"TODO": "triggered abilities only",
 		"self_moved_to_board": {
 			"board": [
 				{
@@ -3267,8 +3335,8 @@
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "blank_abilities",
-					"trigger": "my_host",
+					"filter_property_name": "blank_printed_trigger_abilities",
+					"trigger": "host",
 					"alteration": 1
 				}
 			]
@@ -3767,7 +3835,7 @@
 	},
 	"Lashing Out": {
 		"response": {
-			"event_name": "receive_damage",
+			"event_name": "card_damaged",
 			"event_filters": {
 				"target": "villain",
 				"tags": [
@@ -4213,7 +4281,7 @@
 		"interrupt_card_moved_to_pile": {
 			"event_filters": {
 				"destination": "discard_any_hero",
-				"source": "deck_any_hero",
+				"source": "deck_any_hero"
 			},
 			"condition_board": {
 				"func_name": "is_encounter",
@@ -4222,7 +4290,6 @@
 				}
 			},
 			"board": [
-
 				{
 					"name": "deal_encounter",
 					"subject": "trigger",
@@ -4238,7 +4305,6 @@
 						}
 					]
 				}
-
 			]
 		},
 		"interrupt_card_moved_to_hand": {
@@ -4249,7 +4315,6 @@
 				}
 			},
 			"board": [
-
 				{
 					"name": "deal_encounter",
 					"subject": "trigger",
@@ -4265,7 +4330,6 @@
 						}
 					]
 				}
-
 			]
 		}
 	},
@@ -4472,6 +4536,13 @@
 					"name": "mod_tokens",
 					"token_name": "snoop",
 					"modification": 1,
+					"subject": "previous",
+					"_comments": "when boardseek is called, the selected card isn't in play yet, so this forces adding a token on it"
+				},				
+				{
+					"name": "mod_tokens",
+					"token_name": "snoop",
+					"modification": 1,
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
@@ -4482,7 +4553,8 @@
 							}
 						}
 					]
-				}
+				},
+				
 			]
 		}
 	},
@@ -4680,7 +4752,82 @@
 		"TODO": "campaign mode not supported"
 	},
 	"Old Grudge": {
-		"TODO": ""
+		"reveal": {
+			"all": [
+				{
+					"name": "reveal_nemesis",
+					"src_container": [
+						"deck_villain",
+						"set_aside",
+						"discard_villain"
+					],
+					"nemesis_only": true
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"condition_board": {
+				"func_name": "!count_attachments",
+				"func_params": {
+					"subject": "host"
+				}
+			},
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					},
+					"filter_properties": {
+						"is_unique": true
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "trigger"
+				}
+			]
+		},
+		"phase_ended": {
+			"condition_board": {
+				"func_name": "!count_attachments",
+				"func_params": {
+					"subject": "host"
+				}
+			},
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard_villain"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero"
+						}
+					]
+				}
+			]
+		}
 	},
 	"Panic in the Streets": {
 		"alterants": {
@@ -4835,8 +4982,8 @@
 	"Phantom Flip": {
 		"response": {
 			"event_name": [
-			"basic_attack_happened",
-			"basic_thwart_happened"
+				"basic_attack_happened",
+				"basic_thwart_happened"
 			],
 			"trigger": "my_hero",
 			"is_optional_hand": true,
@@ -5493,7 +5640,9 @@
 			"event_filters": {
 				"target": "current_hero_target",
 				"damage": ">0",
-				"tags": ["attack"]
+				"tags": [
+					"attack"
+				]
 			},
 			"trigger": "self",
 			"board": [
@@ -5537,7 +5686,9 @@
 			"event_filters": {
 				"target": "current_hero_target",
 				"damage": ">0",
-				"tags": ["attack"]
+				"tags": [
+					"attack"
+				]
 			},
 			"trigger": "self",
 			"board": [
@@ -5595,7 +5746,9 @@
 			"event_filters": {
 				"target": "current_hero_target",
 				"damage": ">0",
-				"tags": ["attack"]
+				"tags": [
+					"attack"
+				]
 			},
 			"trigger": "self",
 			"board": [
@@ -5632,7 +5785,6 @@
 							"filter_state_event_source": [
 								{
 									"filter_properties": {
-								
 										"Name": "City Streets"
 									}
 								}
@@ -5645,8 +5797,8 @@
 							"trigger": "another",
 							"filter_state_trigger": [
 								{
-								"filter_properties": {
-									"card_set_code": "sandman"
+									"filter_properties": {
+										"card_set_code": "sandman"
 									}
 								}
 							],
@@ -5655,13 +5807,12 @@
 									"name": "mod_tokens",
 									"token_name": "stunned",
 									"subject": "my_identity",
-									"modification": 1,
-									
+									"modification": 1
 								}
 							]
 						}
 					}
-				}				
+				}
 			]
 		},
 		"boost": {
@@ -7986,14 +8137,14 @@
 		}
 	},
 	"Volunteer Work": {
-		"alterants": {	
+		"alterants": {
 			"board": [
 				{
 					"trigger": "self",
 					"filter_task": "get_property",
 					"filter_property_name": "cannot_thwart",
 					"alteration": 1
-				}			
+				}
 			]
 		},
 		"manual": {

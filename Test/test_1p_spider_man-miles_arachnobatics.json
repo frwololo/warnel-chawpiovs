@@ -1,0 +1,137 @@
+{
+	"_comments": "Bug: Arachnobatics no additional damage",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},		
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom Goblin - 1",
+					"tokens": { "stunned": 1}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Lower Manhattan - B",
+					"tokens": {
+						"threat": 2,
+						"glider": 1
+					}
+				},
+				{
+					"card": "Midtown Manhattan - C"
+				},
+				{
+					"card": "Upper Manhattan - D"
+				},
+				{
+					"card": "Festering Mass"
+				},				
+			],
+			"enemies1": [
+				{
+					"card": "Symbiotic Monstrosity",
+					"tokens": {	"damage": 5}
+				}
+			],			
+			"hand1": [
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Arachnobatics"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			],
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Arachnobatics"
+		},
+		{
+			"type":  "target",
+			"value": "Venom Goblin - 1"
+		},
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom Goblin - 1",
+					"tokens": { "stunned": 1, "damage" : 5}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Lower Manhattan - B",
+					"tokens": {
+						"threat": 2,
+						"glider": 1
+					}
+				},
+				{
+					"card": "Midtown Manhattan - C"
+				},
+				{
+					"card": "Upper Manhattan - D"
+				},
+				{
+					"card": "Festering Mass"
+				},				
+			],
+			"enemies1": [
+				{
+					"card": "Symbiotic Monstrosity",
+					"tokens": {	"damage": 5}
+				}
+			],			
+			"discard1": [
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Arachnobatics"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			],
+		}
+	}
+}

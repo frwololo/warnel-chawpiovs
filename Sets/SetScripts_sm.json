@@ -408,6 +408,12 @@
 							"trigger": "another",
 							"filter_count_difference": "increased",
 							"filter_token_name": "threat",
+							"filter_state_trigger": [
+								{
+									"filter_properties": {
+									"card_set_type_name_code": "nemesis"}
+								}
+							],
 							"all": [
 								{
 									"name": "add_threat",
@@ -473,7 +479,7 @@
 							"nested_tasks": [
 								{
 									"name": "deal_damage",
-									"subject": "previous",
+									"subject": "last_target",
 									"amount": 3
 								}
 							]
@@ -489,7 +495,7 @@
 							"nested_tasks": [
 								{
 									"name": "deal_damage",
-									"subject": "previous",
+									"subject": "last_target",
 									"amount": 3
 								}
 							]
@@ -1505,8 +1511,7 @@
 		"boost": {
 			"all": [
 				{
-					"name": "execute_scripts",
-					"exec_trigger": "reveal",
+					"name": "reveal_encounters",
 					"subject": "self"
 				}
 			]
@@ -1746,12 +1751,17 @@
 			"all": [
 				{
 					"name": "draw_cards",
+					"is_cost": true,
 					"amount": 3
 				},
 				{
+					"name": "shuffle_container",
+					"dest_container": "hand_current_hero_target",
+				},				
+				{
 					"name": "move_card_to_container",
-					"dest_container": "discard",
-					"src_container": "hand",
+					"dest_container": "discard_current_hero_target",
+					"src_container": "hand_current_hero_target",
 					"subject": "index",
 					"subject_count": 3,
 					"subject_index": "random"
@@ -2002,6 +2012,7 @@
 		"interrupt": {
 			"event_name": "receive_damage",
 			"event_filters": {
+				"amount": ">0",
 				"tags": [
 					"consequential_damage"
 				]
@@ -3460,9 +3471,9 @@
 					"subject": "boardseek",
 					"subject_count": 1,
 					"sort_by": "function",
-					"sort_name": "get_subject_int_property",
+					"sort_name": "count_tokens",
 					"func_params": {
-						"property": "threat"
+						"token_name": "threat"
 					},
 					"sort_descending": false,
 					"filter_state_seek": [
@@ -4223,7 +4234,8 @@
 					"sort_descending": true,
 					"subject_count": 4,
 					"up_to": true,
-					"src_container": "deck_event_source_hero"
+					"src_container": "deck_event_source_hero",
+					"dest_container": "discard_event_source_hero"
 				},
 				{
 					"name": "move_card_to_container",
@@ -4612,9 +4624,10 @@
 			"board": [
 				{
 					"name": "move_card_to_container",
-					"dest_container": "deck_current_hero_target",
-					"dest_index": "bottom",
-					"subject": "trigger"
+					"dest_container": "discard_current_hero_target",
+					"subject": "trigger",
+					"force_valid_boost_target": true,
+					"_comments": "boost cards are generally considered non valid subjects, this bypasses that check"
 				}
 			]
 		}
@@ -4652,8 +4665,10 @@
 			"board": [
 				{
 					"name": "move_card_to_container",
-					"dest_container": "deck_current_hero_target",
-					"subject": "trigger"
+					"dest_container": "discard_current_hero_target",
+					"subject": "trigger",
+					"force_valid_boost_target": true,
+					"_comments": "boost cards are generally considered non valid subjects, this bypasses that check"
 				}
 			]
 		}
@@ -4820,6 +4835,7 @@
 					"name": "deal_damage",
 					"amount": 1,
 					"subject": "boardseek",
+					"subject_count": "all",
 					"filter_state_seek": [
 						{
 							"filter_group": "group_friendly_my_hero"
@@ -6310,6 +6326,7 @@
 					}
 				}
 			],
+			"is_optional_board": true,
 			"board": [
 				{
 					"name": "exhaust_card",
@@ -6334,7 +6351,7 @@
 			"all": [
 				{
 					"name": "i_attack",
-					"action_source": {
+					"action_owner": {
 						"subject": "boardseek",
 						"filter_state_seek": [
 							{
@@ -6591,8 +6608,8 @@
 				"thwart_happened"
 			],
 			"trigger": "self",
-			"is_optional_board": true,
-			"board": [
+			"is_optional_all": true,
+			"all": [
 				{
 					"name": "ready_card",
 					"is_cost": true,

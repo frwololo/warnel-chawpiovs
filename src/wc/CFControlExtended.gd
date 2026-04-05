@@ -502,6 +502,19 @@ func get_database_patches():
 	return _database_patches
 	
 
+static func text_cleanup(text):
+	# Create a RegEx object
+	var regex := RegEx.new()
+	var error := regex.compile(" +")  # Match one or more spaces
+	
+	if error != OK:
+		push_error("Failed to compile regex")
+		return
+	
+	# Replace all occurrences of multiple spaces with a single space
+	var cleaned_text := regex.sub(text, " ", true)
+	return cleaned_text
+
 var _seen_images:= {}
 func _load_one_card_definition(card_data, box_name:= "core"):
 	#converting "real" numbers to "int"
@@ -576,6 +589,7 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 		else:
 			card_data["can_" + action] = 0	
 
+	card_data["real_text"] = text_cleanup(card_data.get("real_text", ""))
 	card_data["text"] = convert_to_bbcode(card_data.get("real_text", ""))
 
 	card_data["aspect"] = card_data.get("faction_code", "")

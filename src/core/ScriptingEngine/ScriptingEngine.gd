@@ -1144,7 +1144,8 @@ func execute_scripts(script: ScriptTask) -> int:
 	# If your subject is "self" make sure you know what you're doing
 	# or you might end up in an inifinite loop
 	var _trigger_details = {
-		"prev_subjects" : script.prev_subjects 
+		"prev_subjects" : script.prev_subjects,
+		"parent_script": script 
 	}
 	for card in script.subjects:
 		var requested_exec_state = script.get_property(SP.KEY_REQUIRE_EXEC_STATE)

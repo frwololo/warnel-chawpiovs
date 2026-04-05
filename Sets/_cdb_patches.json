@@ -216,7 +216,13 @@
 	},	
 	"27022": {
 		"imagesrc": "/bundles/cards/01090.png"
-	},		
+	},
+	"27089": {
+		"attack": 3,
+	},
+	"27090": {
+		"scheme": 1,
+	},
 	"27102a": {
 		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/27102a.jpg"
 	},

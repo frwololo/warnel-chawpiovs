@@ -1,0 +1,224 @@
+{
+	"_comments": "Bug: For Whom the Bell Tolls boost not working",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "\"Leave Us Alone!\"",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Bell Tower #27077b",
+					"tokens": {
+						"chime": 5
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Loose Ends"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "For Whom the Bell tolls"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Magic Blast"
+				},
+				{
+					"card": "Astral Projection"
+				}
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},
+				{
+					"card": "Vapors of Valtorr"
+				},
+				{
+					"card": "Winds of Watoomb"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Clea"
+				},
+				{
+					"card": "The Power of Protection"
+				},
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Med Team"
+				},
+				{
+					"card": "Unflappable"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack"
+		},	
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "\"Leave Us Alone!\"",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Bell Tower #27077b",
+					"tokens": {
+						"chime": 1
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "For Whom the Bell tolls"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Loose Ends"
+				},
+			],
+			"deck1": [
+				{
+					"card": "Magic Blast"
+				},
+				{
+					"card": "Astral Projection"
+				}
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},
+				{
+					"card": "Vapors of Valtorr"
+				},
+				{
+					"card": "Winds of Watoomb"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				},			
+			],
+			"hand1": [
+				{
+					"card": "Clea"
+				},
+				{
+					"card": "The Power of Protection"
+				},
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Med Team"
+				},
+				{
+					"card": "Unflappable"
+				}
+			]
+		}
+	}
+}

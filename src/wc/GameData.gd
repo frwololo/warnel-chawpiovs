@@ -913,8 +913,14 @@ func draw_all_players() :
 		var max_hand_size = identity.get_max_hand_size()
 		var hand:Hand = cfc.NMAP["hand" + str(hero_id)]
 		var to_draw = max_hand_size - hand.get_card_count()
-		for _j in range(to_draw):
-			hand.draw_card (cfc.NMAP["deck" + str(hero_id)])	
+		var definition = {
+			"name": "draw_cards",
+			"amount": to_draw,
+		}
+		var task = SimplifiedStackScript.new(definition, identity)
+		task.execute()		
+#		for _j in range(to_draw):
+#			hand.draw_card (cfc.NMAP["deck" + str(hero_id)])	
 
 func ready_all_player_cards():
 		var cards:Array = cfc.NMAP["board"].get_all_cards() #TODO hero cards only
@@ -1717,7 +1723,7 @@ func reveal_encounter(target_id = 0):
 			
 		EncounterStatus.ENCOUNTER_COMPLETE:
 			var target_pile = get_encounter_target_pile(_current_encounter)
-			if (target_pile and !target_pile.has_card(_current_encounter)):
+			if encounter_needs_to_be_discarded(_current_encounter):
 				display_debug("encounter: " + _current_encounter.canonical_name + " moving to pile. Target_id " + str(target_id))
 				_current_encounter.move_to(target_pile)
 				_current_encounter.encounter_status = EncounterStatus.ENCOUNTER_POST_COMPLETE
@@ -1725,12 +1731,34 @@ func reveal_encounter(target_id = 0):
 				display_debug("encounter: not moving : " + _current_encounter.canonical_name + ". Finishing it already. Target_id " + str(target_id))
 				current_encounter_finished()
 		EncounterStatus.ENCOUNTER_POST_COMPLETE:
-			var target_pile = get_encounter_target_pile(_current_encounter)
-			if target_pile and target_pile.has_card(_current_encounter):
+			if !encounter_needs_to_be_discarded(_current_encounter):
 				display_debug("encounter:" + _current_encounter.canonical_name + "is in its target pile. Calling for end of encounter. Target_id " + str(target_id))
 				current_encounter_finished()
 			return 
 	return
+
+func encounter_needs_to_be_discarded(encounter):
+	var target_pile = get_encounter_target_pile(encounter)
+	if !target_pile:
+		return false
+		
+	if target_pile.has_card(encounter):
+		return false
+	
+	#If the encounter is faceup either on the board or in a an encounter revealed piles, it needs to be discarded
+	if encounter.is_faceup:
+		var parent = encounter.get_parent()
+		if !parent:
+			var _error = null
+			return true
+		if parent == cfc.NMAP.board:
+			return true
+		if parent.name.to_lower().begins_with("encounters_reveal"):
+			return true
+	
+	return false
+	
+
 
 func encounter_revealed():
 	if !_current_encounter:

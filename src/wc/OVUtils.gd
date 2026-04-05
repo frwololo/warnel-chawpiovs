@@ -382,11 +382,11 @@ func filter_trigger(
 		if trigger_card.is_boost(): 
 			#... but there are exceptions
 			#The boost trigger is accepted
-			if trigger == "boost": 
-				if trigger_card!= owner_card:
-					return false
+#			if trigger == "boost": 
+#				if trigger_card!= owner_card:
+#					return false
 			#interrupt/response for events wontaining the name "boost" e.g. boost_card_revealed		
-			elif trigger.begins_with("interrupt"):
+			if trigger.begins_with("interrupt"):
 				if !"boost" in trigger:
 					var expected_trigger_names = card_scripts.get("event_name", "")	
 					var trigger_chain = ""
@@ -397,7 +397,8 @@ func filter_trigger(
 					if 	!"boost" in trigger_chain:
 						return false			
 			else:
-				return false
+				if trigger_card!= owner_card:
+					return false
 
 
 	#from this point this is only checks for interrupts

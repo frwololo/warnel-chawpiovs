@@ -1118,8 +1118,7 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 		pass
 
 	if trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME and canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME:
-		if trigger_details.get("event_name", "") == "card_dies":
-			pass	
+		pass	
 
 	var card_scripts = retrieve_scripts(trigger)		
 	# We check the trigger against the filter defined
@@ -1241,7 +1240,15 @@ func execute_scripts(
 			return null
 	else:
 		if !(trigger in (can_i_run)):
-			return null	
+			#if this trigger doesn't match, we try one above, this is for specific
+			#cases where a card calls a script within another e.g. execute_scripts for a boost
+			# e.g. For Whom the Bell Tolls
+			var parent_script = orig_trigger_details.get("parent_script", null)
+			if !parent_script:
+				return null
+			var parent_trigger = parent_script.trigger
+			if !(parent_trigger in (can_i_run)):
+				return null
 
 	#Force execute some previously selected scripts, bypassing the rest of the process
 	var exec_config = orig_trigger_details.get("exec_config", {})

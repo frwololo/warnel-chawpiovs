@@ -266,6 +266,8 @@ func draw_cards (script: ScriptTask) -> int:
 	if !amount:
 		return CFConst.ReturnCode.FAILED
 	
+	var allow_retry = script.get_property("allow_retry", true)
+	
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode			
 	
@@ -281,8 +283,23 @@ func draw_cards (script: ScriptTask) -> int:
 
 		var hand:Hand = cfc.NMAP["hand" + str(controller_id)]
 		var deck = cfc.NMAP["deck" + str(controller_id)]
+		var discard = cfc.NMAP["discard" + str(controller_id)]
 		for _i in range (amount):
-			hand.draw_card(deck)
+			var card = hand.draw_card(deck)
+			if !card and allow_retry:
+				if (discard.get_card_count() or deck.get_card_count()):
+					#draw failed while the deck was reshuffling,
+					#we attempt another draw
+					var new_amount = amount - _i
+					var definition = {
+						"name": "draw_cards",
+						"amount": new_amount,
+						"allow_retry": false, #to avoid infinite loope
+					}
+					var task = SimplifiedStackScript.new(definition, subject)
+					gameData.theStack.add_script(task)
+					return retcode
+				return CFConst.ReturnCode.FAILED				
 	return retcode
 	
 func draw_to_hand_size (script: ScriptTask) -> int:

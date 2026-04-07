@@ -34,9 +34,11 @@ func replace_subjects(new_subjects:Array, task_object = null):
 func replace_ability(new_ability:String, task_object = null):
 	for task in get_tasks():
 		if task_object and task != task_object:
-			continue		
+			continue	
+		task.script_definition["replaced_script_name"] = task.script_name				
 		task.script_name = new_ability
 		task.script_definition["name"] = new_ability
+
 	var _tmp = sceng	
 
 func prevent_value(property, amount_prevented, task_object = null):

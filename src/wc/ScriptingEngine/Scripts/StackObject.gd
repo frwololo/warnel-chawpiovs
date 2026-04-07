@@ -165,6 +165,8 @@ func get_display_text():
 func _get_display_text_nocache():	
 	var task = get_first_task()
 	var result = get_display_name()
+	if result == "conditional script":
+		var _tmp = 1
 	var subjects = ""	
 	if task: 	
 		var owner = task.owner

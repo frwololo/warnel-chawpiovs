@@ -1,0 +1,176 @@
+{
+	"_comments": "Bug: Damage Replacement prevents the attack_happened signal from being sent",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "\"Leave Us Alone!\"",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Bell Tower"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Loose Ends"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Sandman"
+				},
+				{
+					"card": "Guard the Bell Tower"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Power Within"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Energy"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Spider-Man #27030a"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Venom - 1"
+		},
+		{
+			"type": "activate",
+			"value": "Bell Tower"
+		},
+		{
+			"type": "activate",
+			"value": "Power Within"
+		},
+		{
+			"type": "target",
+			"value": "Venom - 1"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom - 1",
+					"tokens": {
+						"damage": 2,
+						"stunned": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "\"Leave Us Alone!\"",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Bell Tower",
+					"tokens": {
+						"chime": 2
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Loose Ends"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Sandman"
+				},
+				{
+					"card": "Guard the Bell Tower"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Power Within"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Energy"
+				}
+			]
+		}
+	}
+}

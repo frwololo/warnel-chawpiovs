@@ -1,0 +1,246 @@
+{
+	"_comments": "Bug: Volunteer Work can be thwarted",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "\"Leave Us Alone!\"",
+					"tokens": {
+						"threat": 4
+					}
+				},
+				{
+					"card": "Volunteer Work",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Bell Tower",
+					"tokens": {
+						"chime": 2
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Loose Ends"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Sandman"
+				},
+				{
+					"card": "Guard the Bell Tower"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Magic Blast"
+				},
+				{
+					"card": "Astral Projection"
+				}
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},
+				{
+					"card": "Vapors of Valtorr"
+				},
+				{
+					"card": "Winds of Watoomb"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Clea"
+				},
+				{
+					"card": "The Power of Protection"
+				},
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Med Team"
+				},
+				{
+					"card": "Unflappable"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Doctor Strange"
+		},
+		{
+			"type": "choose",
+			"value": "thwart"
+		},
+		{
+			"type": "target",
+			"value": "Volunteer Work",
+			"expected_to_fail": true
+		},
+		{
+			"type": "target",
+			"value": "\"Leave Us Alone!\"",
+		}		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "\"Leave Us Alone!\"",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Volunteer Work",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Bell Tower",
+					"tokens": {
+						"chime": 2
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Loose Ends"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Sandman"
+				},
+				{
+					"card": "Guard the Bell Tower"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Magic Blast"
+				},
+				{
+					"card": "Astral Projection"
+				}
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},
+				{
+					"card": "Vapors of Valtorr"
+				},
+				{
+					"card": "Winds of Watoomb"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Clea"
+				},
+				{
+					"card": "The Power of Protection"
+				},
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Med Team"
+				},
+				{
+					"card": "Unflappable"
+				}
+			]
+		}
+	}
+}

@@ -255,28 +255,6 @@ func _process(_delta: float) -> void:
 		return	
 	
 	
-#	var next_clicked_card = null
-#	if actions.size() > current_action:
-#		var my_action = actions[current_action]
-#		var action_type = my_action.get("type", "")
-#		var action_value = my_action.get("value", "")
-#		if action_type in ["play", "activate"]: 
-#			var hero_id = get_card_owner_hero_id(action_value)		
-#			next_clicked_card = get_card(action_value, hero_id)		
-#	if (!gameData.theStack.is_player_allowed_to_click(next_clicked_card)):
-#		count_delay("stack")
-#		return	
-
-#	if (actions.size() <= current_action):
-#		if gameData.is_interrupt_mode() or  !gameData.theStack.is_player_allowed_to_click():
-#			count_delay("stack_finalize")			
-#			return
-	#don't proceed if stack is doing stuff
-	#TODO: we'll want to proceed in some cases though (HERO_IS_INTERRUPTING) ?
-#	if (!gameData.theStack.is_accepting_user_interaction()):
-#		count_delay("stack")			
-#		return
-	
 	#only server is allowed to run the main process	
 	if 1 != cfc.get_network_unique_id():
 		return

@@ -369,7 +369,7 @@ func execute(_run_type) -> void:
 						"requesting_object": script.owner,
 						"modifier": _retrieve_temp_modifiers(script, "properties")
 					}
-				var retcode = call(script.script_name, script)
+				var retcode = call_task(script.script_name, script)
 				if retcode is GDScriptFunctionState:
 					retcode = yield(retcode, "completed")
 				# We set the previous subjects only after the execution, because some tasks
@@ -444,8 +444,18 @@ func execute(_run_type) -> void:
 #			run_next_script(card_owner,
 #					scripts_queue,prev_subjects)
 
+func call_task(script_name, script) -> int: 
+	var retcode = self.call(script.script_name, script)
+	if retcode is GDScriptFunctionState:
+		retcode = yield(retcode, "completed")
+	post_action_events(script)
+	return retcode	
+
 func _execute_before_instructions(script: ScriptTask):
 	pass
+
+func post_action_events(script: ScriptTask) -> int:
+	return CFConst.ReturnCode.OK
 
 # Task for rotating cards
 # * Supports [KEY_IS_COST](ScriptProperties#KEY_IS_COST).

@@ -294,17 +294,23 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 					return false
 
 	#check for special patrol conditions if card is an attack
-	if ((script_name == "thwart") or ("thwart" in tags)) and card in gameData.get_main_schemes():
-		var all_cards = cfc.NMAP.board.get_all_cards()
-		if owner_card:		
-			var hero_id = owner_card.get_controller_hero_id()
-			if hero_id:
-				all_cards =  cfc.NMAP.board.get_enemies_engaged_with(hero_id)
-		for other_card in all_cards:
-			if other_card == card:
-				continue
-			if other_card.get_property("patrol", 0, true) and other_card.is_faceup: #TODO better way to ignore face down cards?
+	if ((script_name == "thwart") or ("thwart" in tags)):
+		if card.get_property("cannot_be_thwarted", 0, true):
+			return false
+		if owner_card and owner_card.get_property("cannot_thwart_side_schemes", 0, true):
+			if card.get_property("type_code", "") == "side_scheme":
 				return false
+		if card in gameData.get_main_schemes():
+			var all_cards = cfc.NMAP.board.get_all_cards()
+			if owner_card:		
+				var hero_id = owner_card.get_controller_hero_id()
+				if hero_id:
+					all_cards =  cfc.NMAP.board.get_enemies_engaged_with(hero_id)
+			for other_card in all_cards:
+				if other_card == card:
+					continue
+				if other_card.get_property("patrol", 0, true) and other_card.is_faceup: #TODO better way to ignore face down cards?
+					return false
 
 	var type_code = card.get_property("type_code", "")
 	#cannot thwart side schemes

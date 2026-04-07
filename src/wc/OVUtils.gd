@@ -363,15 +363,13 @@ func select_card(
 	return(selected_cards)
 
 
-# Additional filter for triggers,
-# also see core/ScriptProperties.gd
-func filter_trigger(
-		trigger:String,
+func is_boost_trigger_accepted(
+			trigger:String,
 		card_scripts,
 		trigger_card,
 		owner_card,
-		_trigger_details) -> bool:
-
+		_trigger_details):
+	
 	#Generally speaking I don't want to trigger
 	#on facedown cards such as boost cards
 	#(e.g. bug with Hawkeye, Charge, and a bunch of others)
@@ -397,8 +395,51 @@ func filter_trigger(
 					if 	!"boost" in trigger_chain:
 						return false			
 			else:
+				if trigger_card== owner_card:
+					return true
+				return false			
+
+	if owner_card and is_instance_valid(owner_card):
+		#facedown cards won't have a type_code unless they are used on the board (e.g. facedown ultron drones)
+		if !owner_card.get_property("type_code", null):
+			return false
+		if owner_card.is_boost(): 
+			#... but there are exceptions
+			#The boost trigger is accepted
+#			if trigger == "boost": 
+#				if trigger_card!= owner_card:
+#					return false
+			#interrupt/response for events wontaining the name "boost" e.g. boost_card_revealed		
+			if trigger.begins_with("interrupt"):
+				if !"boost" in trigger:
+					var expected_trigger_names = card_scripts.get("event_name", "")	
+					var trigger_chain = ""
+					if typeof(expected_trigger_names) == TYPE_STRING:
+						expected_trigger_names = [expected_trigger_names]
+					for expected_trigger_name in expected_trigger_names:
+						trigger_chain += expected_trigger_name + "-"
+					if 	!"boost" in trigger_chain:
+						return false			
+			else:
 				if trigger_card!= owner_card:
-					return false
+					return false	
+	
+	return true
+	
+# Additional filter for triggers,
+# also see core/ScriptProperties.gd
+func filter_trigger(
+		trigger:String,
+		card_scripts,
+		trigger_card,
+		owner_card,
+		_trigger_details) -> bool:
+
+	#Generally speaking I don't want to trigger
+	#on facedown cards such as boost cards
+	#(e.g. bug with Hawkeye, Charge, and a bunch of others)
+	if !is_boost_trigger_accepted(trigger, card_scripts, trigger_card,owner_card, _trigger_details):
+		return false
 
 
 	#from this point this is only checks for interrupts

@@ -611,7 +611,7 @@
 		}
 	},
 	"Bell Tower #27077b": {
-		"interrupt_receive_damage": {
+		"interrupt_pre_receive_damage": {
 			"event_filters": {
 				"target": "villain"
 			},
@@ -1755,9 +1755,18 @@
 					"amount": 3
 				},
 				{
+					"name": "execute_scripts",
+					"exec_trigger": "post_boost",
+					"subject": "self"
+				}
+			]
+		},
+		"post_boost":  {
+			"all" : [
+				{
 					"name": "shuffle_container",
 					"dest_container": "hand_current_hero_target",
-				},				
+				},			
 				{
 					"name": "move_card_to_container",
 					"dest_container": "discard_current_hero_target",
@@ -3882,8 +3891,12 @@
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "cannot_thwart_side_scheme",
-					"trigger": "my_identity",
+					"filter_property_name": "cannot_thwart_side_schemes",
+					"filter_state_trigger": [
+						{
+							"filter_same_controller": true
+						}
+					],
 					"alteration": 1
 				}
 			]
@@ -8159,7 +8172,7 @@
 				{
 					"trigger": "self",
 					"filter_task": "get_property",
-					"filter_property_name": "cannot_thwart",
+					"filter_property_name": "cannot_be_thwarted",
 					"alteration": 1
 				}
 			]
@@ -8561,6 +8574,7 @@
 					"name": "attack",
 					"amount": 4,
 					"subject": "target",
+					"needs_subject": true,
 					"filter_state_subject": [
 						{
 							"filter_group": "group_enemies"

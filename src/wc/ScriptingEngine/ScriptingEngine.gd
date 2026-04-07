@@ -840,6 +840,45 @@ func _receive_threat(script: ScriptTask) -> int:
 						
 	return retcode
 
+#Replacement effects occasionally prevent some signals to be sent
+# This is a poor man's hack to fix that
+# Basically if we know some specific effects (that need to send a signal)
+# were replaced (and thus will lose the opportunity to send their signal),
+# we force send the signal here.
+# Example in Tests/test_1p_spider_man_miles_morales_damage_replacement.json
+func post_action_events(script: ScriptTask) -> int:
+	if costs_dry_run():
+		return CFConst.ReturnCode.CHANGED
+	
+	var prevented_action = script.get_property("replaced_script_name", "")
+	if !prevented_action: 
+		return CFConst.ReturnCode.FAILED
+	
+	var tags: Array = script.get_property(SP.KEY_TAGS) 
+		
+	if prevented_action in ["receive_damage"]:
+		if ("attack" in tags):
+			var attacker = script.owner
+			var type = attacker.get_property("type_code", "")
+			if !type in ["hero", "ally", "minion", "villain"]:
+				attacker = _get_identity_from_script(script)
+								 
+			var target = script.subjects[0]	if script.subjects else null			
+			var signal_details = {
+				"attacker": attacker,
+				"target": target,
+				"damage": 0,
+				"tags": tags,
+			}
+			scripting_bus.emit_signal_on_stack("attack_happened",  attacker,  signal_details)			
+						
+			if ("basic power" in tags):
+				scripting_bus.emit_signal_on_stack("basic_attack_happened",  attacker,  signal_details)				
+			return CFConst.ReturnCode.CHANGED	
+		
+	return CFConst.ReturnCode.FAILED	
+
+
 func add_threat(script: ScriptTask) -> int:
 	return _receive_threat(script)
 

@@ -58,7 +58,7 @@ func execute():
 	if (!task.is_primed):
 		task.prime([],run_type,0, [])
 	
-	var _retcode = sceng.call(task_name, task)
+	var _retcode = sceng.call_task(task_name, task)
 
 #replacement task
 func replace_ability(new_ability:String, task_object = null):

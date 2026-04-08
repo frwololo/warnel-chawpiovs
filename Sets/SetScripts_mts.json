@@ -1021,10 +1021,16 @@
 		}
 	},
 	"Black Dwarf": {
-		"attacks_gain": {
-			"__trigger__": "self",
-			"__tags__": "overkill"
-		}
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "overkill",
+					"trigger": "self",
+					"alteration": 1
+				}
+			]
+		},
 	},
 	"Black Order Besieger": {
 		"self_moved_to_board": {
@@ -4621,10 +4627,6 @@
 				}
 			]
 		},
-		"attacks_gain": {
-			"__trigger__": "self",
-			"__tags__": "overkill"
-		},
 		"alterants": {
 			"board": [
 				{
@@ -4638,7 +4640,13 @@
 						}
 					],
 					"alteration": 1
-				}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "overkill",
+					"trigger": "self",
+					"alteration": 1
+				}		
 			]
 		}
 	},
@@ -5595,8 +5603,18 @@
 		},
 		"attacks_gain": {
 			"__trigger__": "host",
-			"__tags__": "overkill\",\"piercing"
+			"__tags__": "piercing"
 		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "overkill",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},		
 		"manual": {
 			"board": [
 				{
@@ -6983,7 +7001,7 @@
 								}
 							}
 						]
-					}
+					},					
 				]
 			}
 		},
@@ -7473,7 +7491,7 @@
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
-								"Name": "The Armies of Thanos - 1A"
+								"Name": "The Armies of Thanos - 2A"
 							}
 						}
 					]

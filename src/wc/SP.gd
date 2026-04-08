@@ -248,13 +248,19 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 	var is_valid = .check_validity(card, card_scripts, type, owner_card)
 	if (!is_valid):
 		return is_valid
+
+	var tags = card_scripts.get("tags", [])
+	var script_name = card_scripts.get("name", "")
 	
+	#For certain effects,
 	#permanent cards cannot be targeted by cards of a different set code
+	#this is a hardcoded blacklist approach for now. Not great but...
 	if card.get_property("permanent", 0):
-		var set_code = card.get_property("card_set_code", "")
-		var owner_set_code = owner_card.get_property("card_set_code", "")
-		if set_code != owner_set_code:
-			return false
+		if script_name in ["move_card_to_container", "discard", "attach_to_card", "host_card", "shuffle_card_into_container"]:
+			var set_code = card.get_property("card_set_code", "")
+			var owner_set_code = owner_card.get_property("card_set_code", "")
+			if set_code != owner_set_code:
+				return false
 	
 	#generally speaking, boost cards are not valid targets...
 	if card.is_boost() and !card_scripts.get("force_valid_boost_target", false):
@@ -271,8 +277,6 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 		if set_code != owner_set_code:
 			return false	
 				
-	var tags = card_scripts.get("tags", [])
-	var script_name = card_scripts.get("name", "")
 	#check for special guard conditions if card is an attack
 	if ((script_name == "attack") or ("attack" in tags)) and card in gameData.get_villains():
 		var all_cards = cfc.NMAP.board.get_all_cards()

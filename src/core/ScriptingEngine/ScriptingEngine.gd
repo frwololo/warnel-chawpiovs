@@ -616,7 +616,9 @@ func mod_tokens(script: ScriptTask) -> int:
 	var retcode: int
 	var modification: int
 	var alteration = 0
-	var token_name: String = script.get_property(SP.KEY_TOKEN_NAME)
+	var token_name: String = script.get_property(SP.KEY_TOKEN_NAME, "")
+	if !token_name:
+		return CFConst.ReturnCode.FAILED
 	# We inject the tags from the script into the tags sent by the signal
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
 	if str(script.get_property(SP.KEY_MODIFICATION)) == SP.VALUE_RETRIEVE_INTEGER:

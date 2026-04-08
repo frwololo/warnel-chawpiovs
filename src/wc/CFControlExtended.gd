@@ -400,6 +400,9 @@ func parse_keywords(text:String) -> Dictionary:
 	var result:= {}
 	
 	var lc_text:String = text.to_lower()
+	var potential_keywords:PoolStringArray = lc_text.split(".")
+	for i in potential_keywords.size():
+		potential_keywords[i] = potential_keywords[i].trim_prefix(" ")
 	for _keyword in CFConst.AUTO_KEYWORDS.keys():
 		var keyword:String = _keyword.to_lower()
 		var type = CFConst.AUTO_KEYWORDS[keyword]
@@ -408,31 +411,33 @@ func parse_keywords(text:String) -> Dictionary:
 		
 		match type:
 			"bool":
-				result[keyword] = false		
-				var position = lc_text.find(keyword + ".")
-				if  position >=0:
-					result[keyword] = true
+				result[keyword] = keyword in potential_keywords
 			"int":
 				result[keyword] = 0
-				var position = lc_text.find(keyword + " ")
-				if  position >=0:
-					var value = lc_text.substr(position + keyword.length() + 1, 1)
-					result[keyword] = int(value)
-				else:
+				var found = false
+				for potential_keyword in potential_keywords:
+					if potential_keyword.begins_with(keyword + " "):
+						var value = potential_keyword.replace(keyword+" ", "")
+						#hack for now, we just remove the [per_hero]
+						value = value.replace("[per_hero]", "")
+						var int_value = int(value)
+						if !int_value:
+							var _error = 1
+						result[keyword] = int_value
+						found = true
+						break
+				if !found:
 					#some bools are defined as ints for alterants purpose
-					position = lc_text.find(keyword + ".")
-					if position >=0:
+					if keyword in potential_keywords:	
 						result[keyword] = 1
 			"string":
 				#TODO
-				result[keyword] = ""
-				var position = lc_text.find(keyword + ".")
-				if  position >=0:
-					result[keyword] = true
 				pass
 			_:
 				#error
 				pass
+		if result.get(keyword):
+			var _tmp = 1
 	return result
 
 func _split_traits(traits:String) -> Array:
@@ -879,6 +884,7 @@ func replace_one_macro(script_definition, macro_key, macro_value):
 					var dict = replace_text_macro(replacements, macro_value)
 					for replaced_key in dict.keys():
 						result[replaced_key] = dict[replaced_key]
+					result["macro_name"] = macro_key
 				else:
 					result[key] = replace_one_macro(script_definition[key], macro_key, macro_value)
 		TYPE_ARRAY:	

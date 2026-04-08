@@ -2407,7 +2407,7 @@ func changed_form(details):
 
 
 func flip_doublesided_card():
-	if !self.is_onboard():
+	if !self.is_onboard({"include_zones" : ["encounters_reveal"]}):
 		return false
 	var new_card = cfc.NMAP.board.flip_doublesided_card(self)
 
@@ -2452,13 +2452,28 @@ func import_modifiers(modifiers:Dictionary, keep_existing = false):
 		else:
 			readyme()
 	
-func is_onboard():
-	return state in [
+func is_onboard(params = {}):
+	if state in [
 		CardState.ON_PLAY_BOARD,
 		CardState.FOCUSED_ON_BOARD, 
 		CardState.DROPPING_TO_BOARD
-	]
+	]:
+		return true
+
+	if !params:
+		return false
 	
+	var include_zones = params.get("include_zones", [])
+	if include_zones:
+		var parent = get_parent()
+		if !parent:
+			return false
+		var container_name = parent.name.to_lower()	
+		for zone in include_zones:
+			if container_name.begins_with(zone):
+				return true
+		
+	return false
 func is_onboard_facedown():
 	return !is_faceup and is_onboard()
 

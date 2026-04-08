@@ -226,16 +226,22 @@ static func next_activation_order_villain(func_params, script = null):
 		start_value = source.get_property(counter_name, start_value)
 	
 	var chosen_villain = null
-	var current_value = start_value
 	var current_villains = gameData.get_villains()
+	var sorting_list:= []
 	for villain in current_villains:
-		var new_value = villain.get_property(counter_name, current_value)		
-		if !chosen_villain: 
-			chosen_villain = villain
-			current_value = new_value
-		if new_value < current_value and new_value >= start_value:
-			chosen_villain = villain
-			current_value = new_value
+		sorting_list.append({
+			"card": villain,
+			"value": villain.get_property(counter_name, 0)
+		})
+	sorting_list.sort_custom(CFUtils,'sort_by_card_field')	
+				
+	for i in sorting_list.size():
+		var element = sorting_list[i]
+		if element["value"] > start_value:
+			chosen_villain = element["card"]
+			break
+	if sorting_list and !chosen_villain:
+		chosen_villain = sorting_list[0]["card"]
 	if chosen_villain:
 		return [chosen_villain]
 	return []

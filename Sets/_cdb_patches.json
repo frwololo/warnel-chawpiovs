@@ -12,6 +12,12 @@
 	"01043d": {
 		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01043d.jpg"
 	},
+	"01097a": {
+		"imagesrc": "/bundles/cards/01097b.png"
+	},
+	"01097b": {
+		"imagesrc": "/bundles/cards/01097.png"
+	},	
 	"01116a": {
 		"imagesrc": "/bundles/cards/01116b.png"
 	},
@@ -54,11 +60,9 @@
 	"01144c": {
 		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01144c.jpg"
 	},
-	"01097a": {
-		"imagesrc": "/bundles/cards/01097b.png"
-	},
-	"01097b": {
-		"imagesrc": "/bundles/cards/01097.png"
+	"01172": {
+		"text": "Retaliate 1. <i>(After this character is attacked, deal 1 damage to the attacking character.)</i>",
+		"real_text": "Retaliate 1. <i>(After this character is attacked, deal 1 damage to the attacking character.)</i>",
 	},
 	"04061a": {
 		"imagesrc": "/bundles/cards/04061b.png"

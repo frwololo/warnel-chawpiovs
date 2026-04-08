@@ -307,6 +307,7 @@
 	},
 	"21098": {
 		"code": "21098",
+		"scenario_display_name": "Tower Defense",
 		"name": "Under Siege",
 		"modular_default": [
 			"armies_of_titan"
@@ -635,6 +636,7 @@
 	},
 	"27100": {
 		"code": "27100",
+		"scenario_display_name": "Sinister 6",
 		"name": "Sinister Synchronization",
 		"modular_default": [],
 		"encounter_sets": [

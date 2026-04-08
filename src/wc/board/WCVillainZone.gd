@@ -179,7 +179,8 @@ func load_villain(card_id, call_preloaded = {"shuffle" : true}):
 			}
 		else:
 			var _error = 1
-	active_villain = card
+	if !active_villain:
+		set_active_villain(card)
 	if call_preloaded:
 		cfc._rpc(self,"cards_preloaded", call_preloaded)
 	return active_villain
@@ -250,17 +251,17 @@ func remove_villain(card):
 		villains.erase(key_to_remove)
 	
 	if card == active_villain:
-		active_villain = null
+		set_active_villain(null)
 		for key in villains:
-			active_villain = villains[key]
+			set_active_villain(villains[key])
 			break
 	if !active_villain:
 		var _error = 1
 		#revert to avoid crashes
-		active_villain = card
+		set_active_villain(card)
 
 func reset():
-	active_villain = null
+	set_active_villain(null)
 	villains = {}
 	_post_load_move= {}
 	_cards_loaded= {}	

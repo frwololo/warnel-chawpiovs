@@ -123,9 +123,9 @@ func get_property(property: String, default = null, subscript_definition = null,
 				var value = retrieve_integer_subproperty("comparison_value", _if, 0)
 				if_check_result = CFUtils.compare_numbers(if_check_result,value,comparison)
 			if (if_check_result):
-				return get_property(property, default, result["then"], root)
+				return get_property(property, default, result.get("then", null), root)
 			else:
-				return get_property(property, default, result["else"], root)
+				return get_property(property, default, result.get("else", null), root)
 		elif result.has("func_name"):
 			var params = result.get("func_params", {})
 			result = cfc.ov_utils.func_name_run(self.owner, result["func_name"], params, self)

@@ -1468,7 +1468,7 @@ func reveal_current_encounter(target_id = 0):
 
 
 	_current_encounter.execute_scripts(_current_encounter, "reveal") 
-	_current_encounter.execute_scripts(_current_encounter, "post_reveal") 
+#	_current_encounter.execute_scripts(_current_encounter, "post_reveal") 
 
 func is_client_aligned(a, b):
 	if !a or !b:
@@ -1709,6 +1709,7 @@ func reveal_encounter(target_id = 0):
 			var slot: BoardPlacementSlot = grid.find_available_slot()
 			if slot:
 				_current_encounter.move_to(cfc.NMAP.board, -1, slot)
+				_current_encounter.execute_scripts(_current_encounter, "post_reveal") 
 				display_debug("encounter: " + _current_encounter.canonical_name + " moving to PENDING_COMPLETE. Target_id " + str(target_id))
 				_current_encounter.encounter_status = EncounterStatus.PENDING_COMPLETE
 			else:
@@ -2056,8 +2057,8 @@ func swap_villain(current_villain, next_villain_key, options = {}):
 	#while still leaving it on the board
 	if current_villain._placement_slot:
 		current_villain._placement_slot.remove_occupying_card(current_villain)
-
-
+	cfc.NMAP.board.set_active_villain(null)
+	
 	var new_card = cfc.NMAP.board.load_villain(next_villain_key)
 	
 	var copy_damage = options.get("copy_damage", false)

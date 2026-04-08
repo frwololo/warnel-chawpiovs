@@ -1,0 +1,198 @@
+{
+	"_comments": "Bug: Taunting presence not attaching to villain",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},		
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Electro - 1"
+				},
+				{
+					"card": "Doctor Octopus - 1",
+					"tokens": {
+						"damage": 7,
+						"active_counter": 1
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Vulture - 1"
+				},
+				{
+					"card": "Hobgoblin - 1"
+				},
+				{
+					"card": "Kraven the Hunter - 1"
+				},
+				{
+					"card": "Scorpion - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Frequent Flyers"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Taunting Presence"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Sinister Synchronization",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Light at the End",
+					"tokens": {
+						"threat": 20
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Power within"
+				},
+				{
+					"card": "Defense Mechanism"
+				},
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Jefferson Davis"
+				},
+				{
+					"card": "Ganke Lee"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Electro - 1"
+				},
+				{
+					"card": "Doctor Octopus - 1",
+					"tokens": {
+						"damage": 7,
+						"active_counter": 1
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Taunting Presence",
+					"host": "Electro - 1"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Vulture - 1"
+				},
+				{
+					"card": "Hobgoblin - 1"
+				},
+				{
+					"card": "Kraven the Hunter - 1"
+				},
+				{
+					"card": "Scorpion - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Frequent Flyers"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Sinister Synchronization",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Light at the End",
+					"tokens": {
+						"threat": 20
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Power within"
+				},
+				{
+					"card": "Defense Mechanism"
+				},
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Jefferson Davis"
+				},
+				{
+					"card": "Ganke Lee"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			]
+		}
+	}
+}

@@ -4,7 +4,7 @@
 			"condition": {
 				"func_name": "!card_is_in_play",
 				"func_params": {
-					"subject": "__subject_name__"
+					"card_name": "__subject_name__"
 				}
 			},
 			"nested_tasks": [
@@ -142,9 +142,15 @@
 				}
 			]
 		},
-		"attacks_gain": {
-			"__trigger__": "host",
-			"__tags__": "overkill"
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "overkill",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
 		},
 		"response_card_damaged": {
 			"event_filters": {
@@ -411,7 +417,8 @@
 							"filter_state_trigger": [
 								{
 									"filter_properties": {
-									"card_set_type_name_code": "nemesis"}
+										"card_set_type_name_code": "nemesis"
+									}
 								}
 							],
 							"all": [
@@ -457,48 +464,32 @@
 				{
 					"name": "attack",
 					"subject": "target",
-					"amount": 2,
+					"amount": {
+						"if": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"token_name": "stunned",
+								"subject": "current_subject"
+							}
+						},
+						"then": 5,
+						"else": 2
+					},
+					"plus_amount": {
+						"if": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"token_name": "confused",
+								"subject": "current_subject"
+							}
+						},
+						"then": 3,
+						"else": 0
+					},
 					"needs_subject": true,
 					"filter_state_subject": [
 						{
 							"filter_group": "group_enemies"
-						}
-					]
-				},
-				{
-					"name": "conditional_script",
-					"options": [
-						{
-							"condition": {
-								"func_name": "count_tokens",
-								"func_params": {
-									"token_name": "stunned",
-									"subject": "previous"
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "deal_damage",
-									"subject": "last_target",
-									"amount": 3
-								}
-							]
-						},
-						{
-							"condition": {
-								"func_name": "count_tokens",
-								"func_params": {
-									"token_name": "confused",
-									"subject": "previous"
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "deal_damage",
-									"subject": "last_target",
-									"amount": 3
-								}
-							]
 						}
 					]
 				}
@@ -517,7 +508,17 @@
 		},
 		"attacks_gain": {
 			"__trigger__": "self",
-			"__tags__": "piercing\",\"overkill"
+			"__tags__": "piercing"
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "overkill",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
 		},
 		"manual": {
 			"board": [
@@ -1243,8 +1244,10 @@
 		}
 	},
 	"Doctor Octopus - 1": {
-		"interrupt_pre_receive_damage": {
+		"interrupt_receive_damage": {
 			"event_filters": {
+				"target": "current_hero_target",
+				"amount": ">0",
 				"tags": [
 					"attack"
 				]
@@ -1255,9 +1258,6 @@
 					"name": "replacement_effect",
 					"subject": "interrupted_event",
 					"replacements": {
-						"additional_tags": [
-							"1_threat_on_main_scheme_if_damage"
-						],
 						"if_damage": {
 							"trigger": "post_activity_trigger"
 						}
@@ -1267,6 +1267,17 @@
 		},
 		"post_activity_trigger": {
 			"all": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				},
 				{
 					"name": "move_token_to",
 					"token_name": "active_counter",
@@ -1644,6 +1655,8 @@
 	"Electro - 1": {
 		"interrupt_receive_damage": {
 			"event_filters": {
+				"target": "current_hero_target",
+				"amount": ">0",
 				"tags": [
 					"attack"
 				]
@@ -1761,12 +1774,12 @@
 				}
 			]
 		},
-		"post_boost":  {
-			"all" : [
+		"post_boost": {
+			"all": [
 				{
 					"name": "shuffle_container",
-					"dest_container": "hand_current_hero_target",
-				},			
+					"dest_container": "hand_current_hero_target"
+				},
 				{
 					"name": "move_card_to_container",
 					"dest_container": "discard_current_hero_target",
@@ -2629,7 +2642,6 @@
 						"hero_action"
 					]
 				},
-			
 				{
 					"name": "exhaust_card",
 					"subject": "self",
@@ -2641,7 +2653,7 @@
 					"modification": 1,
 					"set_to_mod": true,
 					"token_name": "__liaison"
-				}	,
+				}
 			]
 		},
 		"alterants": {
@@ -2867,7 +2879,7 @@
 				},
 				{
 					"name": "sequence",
-					"exec_trigger": "attach_action",
+					"sequence_ability": "attach_action",
 					"subject": "self"
 				}
 			]
@@ -2945,19 +2957,19 @@
 					{
 						"name": "indirect_damage",
 						"subject": "my_identity",
-						"amount": 	{							
+						"amount": {
 							"if": {
 								"func_name": "is_first_player",
 								"func_params": {
-									"subject": "my_identity",
+									"subject": "my_identity"
 								}
 							},
 							"then": {
-								"if": {	
+								"if": {
 									"func_name": "get_scenario_option_value",
 									"func_params": {
 										"option_name": "expert_mode"
-									},
+									}
 								},
 								"then": 2,
 								"else": 1
@@ -3083,6 +3095,8 @@
 	"Hobgoblin - 1": {
 		"interrupt_receive_damage": {
 			"event_filters": {
+				"target": "current_hero_target",
+				"amount": ">0",
 				"tags": [
 					"attack"
 				]
@@ -3696,10 +3710,10 @@
 								"func_params": {
 									"subject": "previous"
 								}
-							}
-						},
-						"then": 0,
-						"else": 1
+							},
+							"then": 0,
+							"else": 1
+						}
 					},
 					{
 						"name": "move_card_to_container",
@@ -3756,6 +3770,8 @@
 	"Kraven the Hunter": {
 		"interrupt_receive_damage": {
 			"event_filters": {
+				"target": "current_hero_target",
+				"amount": ">0",
 				"tags": [
 					"attack"
 				]
@@ -3791,6 +3807,7 @@
 	"Kraven the Hunter - 1": {
 		"interrupt_receive_damage": {
 			"event_filters": {
+				"target": "current_hero_target",
 				"tags": [
 					"attack"
 				]
@@ -3865,7 +3882,7 @@
 			"board": [
 				{
 					"name": "remove_threat",
-					"amount": "trigger_details_amount",
+					"amount": "trigger_details_damage",
 					"subject": "self"
 				}
 			]
@@ -4563,7 +4580,7 @@
 					"modification": 1,
 					"subject": "previous",
 					"_comments": "when boardseek is called, the selected card isn't in play yet, so this forces adding a token on it"
-				},				
+				},
 				{
 					"name": "mod_tokens",
 					"token_name": "snoop",
@@ -4578,8 +4595,7 @@
 							}
 						}
 					]
-				},
-				
+				}
 			]
 		}
 	},
@@ -4637,7 +4653,8 @@
 			"board": [
 				{
 					"name": "move_card_to_container",
-					"dest_container": "discard_current_hero_target",
+					"dest_container": "deck_current_hero_target",
+					"dest_index": "bottom",
 					"subject": "trigger",
 					"force_valid_boost_target": true,
 					"_comments": "boost cards are generally considered non valid subjects, this bypasses that check"
@@ -4678,7 +4695,7 @@
 			"board": [
 				{
 					"name": "move_card_to_container",
-					"dest_container": "discard_current_hero_target",
+					"dest_container": "deck_current_hero_target",
 					"subject": "trigger",
 					"force_valid_boost_target": true,
 					"_comments": "boost cards are generally considered non valid subjects, this bypasses that check"
@@ -5390,7 +5407,17 @@
 	"Rhino": {
 		"attacks_gain": {
 			"__trigger__": "self",
-			"__tags__": "piercing\",\"overkill"
+			"__tags__": "piercing"
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "overkill",
+					"trigger": "self",
+					"alteration": 1
+				}
+			]
 		}
 	},
 	"Robotic Enhancements": {
@@ -5443,7 +5470,7 @@
 							"selection_count": 1,
 							"filter_state_seek": [
 								{
-									"filter_group": "allies_my_hero",
+									"filter_group": "group_friendly_my_hero",
 									"filter_tokens": [
 										{
 											"filter_token_name": "confused",
@@ -5476,7 +5503,7 @@
 							"selection_count": 1,
 							"filter_state_seek": [
 								{
-									"filter_group": "allies_my_hero",
+									"filter_group": "group_friendly_my_hero",
 									"filter_tokens": [
 										{
 											"filter_token_name": "stunned",
@@ -5857,6 +5884,8 @@
 	"Scorpion - 1": {
 		"interrupt_receive_damage": {
 			"event_filters": {
+				"target": "current_hero_target",
+				"amount": ">0",
 				"tags": [
 					"attack"
 				]
@@ -5879,6 +5908,7 @@
 				{
 					"name": "mod_tokens",
 					"subject": "boardseek",
+					"token_name": "stunned",
 					"subject_count": "all",
 					"needs_selection": true,
 					"selection_count": 1,
@@ -7219,7 +7249,7 @@
 				},
 				{
 					"name": "sequence",
-					"exec_trigger": "attach_action",
+					"sequence_ability": "attach_action",
 					"subject": "self"
 				}
 			]
@@ -7291,7 +7321,7 @@
 				},
 				{
 					"name": "sequence",
-					"exec_trigger": "attach_action",
+					"sequence_ability": "attach_action",
 					"subject": "self"
 				}
 			]
@@ -7366,7 +7396,7 @@
 				},
 				{
 					"name": "sequence",
-					"exec_trigger": "attach_action",
+					"sequence_ability": "attach_action",
 					"subject": "self"
 				}
 			]
@@ -7521,7 +7551,7 @@
 	},
 	"Tooth and Nail": {
 		"response": {
-			"event_name": "receive_damage",
+			"event_name": "card_damaged",
 			"event_filters": {
 				"target": "villain",
 				"tags": [
@@ -7531,7 +7561,7 @@
 			"board": [
 				{
 					"name": "remove_threat",
-					"amount": "trigger_details_amount",
+					"amount": "trigger_details_damage",
 					"subject": "self"
 				}
 			]
@@ -8154,10 +8184,15 @@
 				"tags": [
 					"attack"
 				],
-				"amount": ">3",
+				"amount": ">=3",
 				"target": "host"
 			},
 			"board": [
+				{
+					"name": "draw_boost_card",
+					"subject": "host",
+					"_comments": "replicating here because otherwise this card gets discarded before it can react to trigger attack_happened"
+				},
 				{
 					"name": "move_card_to_container",
 					"subject": "self",
@@ -8243,6 +8278,8 @@
 	"Vulture - 1": {
 		"interrupt_receive_damage": {
 			"event_filters": {
+				"target": "current_hero_target",
+				"amount": ">0",
 				"tags": [
 					"attack"
 				]

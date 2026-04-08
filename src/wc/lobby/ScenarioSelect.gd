@@ -50,12 +50,14 @@ func reload_texture():
 	
 func _process(_delta:float):
 	if scenario_picture and !scenario_picture.texture_normal:
-		var display_name = cfc.get_card_name_by_id(scenario_id)
+		var display_name = ScenarioDeckData.get_scenario_display_name(scenario_id)
 		var villain = ScenarioDeckData.get_first_villain_from_scheme(scenario_id)
 		var picture_card_id = scenario_id
 		var texture
 		if (villain):
-			display_name = villain["shortname"]
+			if !display_name:
+				display_name = villain["shortname"]	
+			
 			picture_card_id = villain["_code"]
 			texture = cfc.get_villain_portrait(picture_card_id, self)
 			_rotation = 0
@@ -63,6 +65,8 @@ func _process(_delta:float):
 			texture = cfc.get_scheme_portrait(picture_card_id)
 			_rotation = 90
 
+		if !display_name:
+			display_name = cfc.get_card_name_by_id(scenario_id)
 		set_display_name(display_name)
 		 
 		if (texture):

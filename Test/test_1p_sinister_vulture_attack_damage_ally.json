@@ -1,0 +1,212 @@
+{
+	"_comments": "Bug: Vulture 'damages you' triggers on ally",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Electro - 1"
+				},
+				{
+					"card": "Vulture - 1",
+					"tokens": {
+						"active_counter": 1
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Doctor Octopus - 1"
+				},
+				{
+					"card": "Hobgoblin - 1"
+				},
+				{
+					"card": "Kraven the Hunter - 1"
+				},
+				{
+					"card": "Scorpion - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Frequent Flyers"
+				},
+				{
+					"card": "Surprise!"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Sinister Synchronization",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Light at the End",
+					"tokens": {
+						"threat": 20
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Power within"
+				},
+				{
+					"card": "Defense Mechanism"
+				},
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Jefferson Davis"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Ganke Lee"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "Maria Hill",
+			"_comments": "defend with Maria"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Electro - 1"
+				},
+				{
+					"card": "Vulture - 1",
+					"tokens": {
+						"active_counter": 1
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Doctor Octopus - 1"
+				},
+				{
+					"card": "Hobgoblin - 1"
+				},
+				{
+					"card": "Kraven the Hunter - 1"
+				},
+				{
+					"card": "Scorpion - 1"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Frequent Flyers"
+				},
+				{
+					"card": "Surprise!"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Sinister Synchronization",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Light at the End",
+					"tokens": {
+						"threat": 20
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Power within"
+				},
+				{
+					"card": "Defense Mechanism"
+				},
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Jefferson Davis"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Ganke Lee"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			]
+		}
+	}
+}

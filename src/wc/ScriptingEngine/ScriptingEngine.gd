@@ -1051,7 +1051,7 @@ func move_token_to(script: ScriptTask) -> int:
 		script.script_definition["amount"] = amount
 		return attack(script)
 	else:
-		target.tokens.mod_token(token_name, amount)
+		target.tokens.mod_token(token_name, amount, false, false, ["forced"])
 						
 	return retcode
 

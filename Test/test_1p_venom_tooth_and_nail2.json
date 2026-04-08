@@ -1,0 +1,244 @@
+{
+	"_comments": "Bug: Tooth and Nail not reducing threat when attack damage",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},		
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom - 1",			
+				}
+			],
+			"schemes": [
+				{
+					"card": "\"Leave Us Alone!\"",
+					"tokens": {
+						"threat": 4
+					}
+				},
+					{
+					"card": "Tooth and Nail",
+					"tokens": {
+						"threat": 4
+					}
+				},			
+			],
+			"villain_misc": [
+				{
+					"card": "Bell Tower #27077b",
+					"tokens": {
+						"chime": 4
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Loose Ends"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},				
+				{
+					"card": "Sandman"
+				},
+				{
+					"card": "Guard the Bell Tower"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Magic Blast"
+				},
+				{
+					"card": "Astral Projection"
+				}
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},
+				{
+					"card": "Vapors of Valtorr"
+				},
+				{
+					"card": "Winds of Watoomb"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Clea"
+				},
+				{
+					"card": "The Power of Protection"
+				},
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Med Team"
+				},
+				{
+					"card": "Unflappable"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Doctor Strange"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Venom - 1"
+		},
+	
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom - 1",
+					"tokens": {"damage": 2},
+				}
+			],
+			"schemes": [
+				{
+					"card": "\"Leave Us Alone!\"",
+					"tokens": {
+						"threat": 4
+					}
+				},
+					{
+					"card": "Tooth and Nail",
+					"tokens": {
+						"threat": 2
+					}
+				},			
+			],
+			"others": [
+				{
+					"card": "Guard the Bell Tower",
+					"host": "Doctor Strange"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Bell Tower #27077b",
+					"tokens": {
+						"chime": 4
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Loose Ends"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},				
+				{
+					"card": "Sandman"
+				},
+			],
+			"deck1": [
+				{
+					"card": "Magic Blast"
+				},
+				{
+					"card": "Astral Projection"
+				}
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},
+				{
+					"card": "Vapors of Valtorr"
+				},
+				{
+					"card": "Winds of Watoomb"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Clea"
+				},
+				{
+					"card": "The Power of Protection"
+				},
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Med Team"
+				},
+				{
+					"card": "Unflappable"
+				}
+			]
+		}
+	}
+}

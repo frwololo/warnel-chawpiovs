@@ -57,4 +57,8 @@ func get_script_by_event_details(event_details):
 		return self	
 	return null
 
-
+func get_property(property: String, default = null):
+	if default == null:
+		default = SP.get_default(property)
+	
+	return script_definition.get(property,default)

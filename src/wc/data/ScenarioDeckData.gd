@@ -33,6 +33,15 @@ static func _get_corrected_scheme_card_id(key):
 			var _error = 1
 	return key	
 
+static func get_scenario_display_name(scenario_id):
+	if !primitives:
+		_load_card_scenarios()	
+	
+	var scheme_primitive = primitives.get(scenario_id, {})	
+	if !scheme_primitive:
+		return ""
+	var display_name = scheme_primitive.get("scenario_display_name", "")
+	return display_name
 
 static func _load_card_scenarios():
 	var json_card_data : Dictionary

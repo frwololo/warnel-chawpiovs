@@ -503,7 +503,10 @@ func init_receive_damage(script:ScriptTask, announce:Dictionary) -> bool:
 	for card in consolidated_subjects.keys():
 		var damage = amount * consolidated_subjects[card]
 		
-		var targeting_arrow = owner.targeting_arrow.duplicate(DUPLICATE_USE_INSTANCING)
+		var targeting_arrow = owner.targeting_arrow
+		if !targeting_arrow:
+			continue
+		targeting_arrow = targeting_arrow.duplicate(DUPLICATE_USE_INSTANCING)
 		owner.add_child(targeting_arrow)
 		targeting_arrow.set_color_from_script(script.script_definition)		
 		storage["arrows"].append(targeting_arrow)

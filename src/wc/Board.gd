@@ -1260,6 +1260,16 @@ func flip_doublesided_card(card:WCCard):
 			else:
 				add_child(new_card)
 			card.copy_modifiers_to(new_card)
+
+			var attachments_to_move = []
+			for attachment in card.attachments:
+				attachments_to_move.append(attachment)
+			for attachment in attachments_to_move:
+				var tags = []
+				if attachment.is_boost():
+					tags = ["as_boost"]	
+				attachment.attach_to_host(new_card,false, tags)			
+			
 			gameData.set_aside(card) #is more required to remove it?		
 			#new_card._determine_idle_state()
 			#new_card.move_to(cfc.NMAP.board, -1, slot)	

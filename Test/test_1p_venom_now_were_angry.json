@@ -1,0 +1,253 @@
+{
+	"_comments": "Bug: Now we're angry no overkill",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},		
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "\"Leave Us Alone!\"",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Bell Tower",
+					"tokens": {
+						"chime": 1
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "\"Now We're Angry!\"",
+					"host": "Venom - 1",
+					"tokens": {"rage": 2}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Loose Ends"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Guard the Bell Tower"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Magic Blast"
+				},
+				{
+					"card": "Astral Projection"
+				}
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},
+				{
+					"card": "Vapors of Valtorr"
+				},
+				{
+					"card": "Winds of Watoomb"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Maria Hill",
+					"tokens": {"damage": 1}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Clea"
+				},
+				{
+					"card": "The Power of Protection"
+				},
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Med Team"
+				},
+				{
+					"card": "Unflappable"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "Maria Hill",
+			"_comments": "Defend with Maria Hille"
+		},	
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "\"Leave Us Alone!\"",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Bell Tower",
+					"tokens": {
+						"chime": 1
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Guard the Bell Tower"
+				}
+			],
+			"others": [
+				{
+					"card": "\"Now We're Angry!\"",
+					"host": "Venom - 1",
+					"tokens": {"rage": 2}				
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Loose Ends"
+				},
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				},			
+			],
+			"deck1": [
+				{
+					"card": "Magic Blast"
+				},
+				{
+					"card": "Astral Projection"
+				}
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},
+				{
+					"card": "Vapors of Valtorr"
+				},
+				{
+					"card": "Winds of Watoomb"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange",
+					"tokens": {
+						"damage": 7
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Clea"
+				},
+				{
+					"card": "The Power of Protection"
+				},
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Med Team"
+				},
+				{
+					"card": "Unflappable"
+				}
+			]
+		}
+	}
+}

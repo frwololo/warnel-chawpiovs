@@ -248,7 +248,8 @@ func _process(_delta: float) -> void:
 	if (!current_step_complete) :
 		return		
 
-
+	if gameData.scripted_play_sequence:
+		return
 		
 	match current_step:
 		CFConst.PHASE_STEP.SYSTEMS_CHECK:
@@ -492,7 +493,7 @@ func set_current_step_complete(value:bool, caller = ""):
 	current_step_complete = value
 
 func step_signal(signal_name):
-	scripting_bus.emit_signal(signal_name, null,  {"step" : current_step, "step_name":StepStrings[current_step] })
+	scripting_bus.emit_signal_on_stack(signal_name, null,  {"step" : current_step, "step_name":StepStrings[current_step] })
 	
 remotesync func proceed_to_next_phase():
 	_pending_next_phase_reply = false

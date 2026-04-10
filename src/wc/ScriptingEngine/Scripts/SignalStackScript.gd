@@ -10,6 +10,7 @@ extends StackObject
 var owner
 var script_name
 var script_definition:={}
+var trigger_details:= {} #unused, just here to prevent crashes
 
 
 func _init(_name = "", _owner = null, _details = {}):

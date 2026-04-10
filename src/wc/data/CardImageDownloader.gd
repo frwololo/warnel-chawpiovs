@@ -4,13 +4,21 @@ extends Node
 const servers := [
 	{
 		"url": "https://marvelcdb.com",
-		"is_up": true,		
+		"is_up": true,
+		"health_check": "not_started",
+		"health_check_url": ""		
 	},
 	{
-		"url": "https://db.merlindumesnil.net",
+		"url": "https://mc4db.merlindumesnil.net",
 		"is_up": true,
+		"health_check": "not_started",	
+		"health_check_url": "",		
 		"modifications": {
-			"extension": ".jpg"
+			"extension": ".webp",
+			"replace_path": {
+				"from": "/bundles/cards/",
+				"to": "/bundles/cards/EN/[box_name]/"
+			}
 		}
 	},	
 ]
@@ -27,7 +35,9 @@ var current_file = {}
 
 var dl_ok = 0
 var dl_errors = 0
+var http_request: HTTPRequest = null
 
+signal one_server_check_completed()
 signal download_complete(card_id)
 
 func _ready():
@@ -58,6 +68,9 @@ func process_next_file():
 	
 	if !cards_to_download:
 		return
+
+	if !is_all_servers_checked():
+		return
 		
 	current_file = cards_to_download.pop_back()
 	var dest_file = current_file.get("destination", "")
@@ -76,6 +89,14 @@ func select_server():
 func process_current_file():
 
 	var path:String = current_file.get("url")
+
+
+	if path.begins_with("http"):	
+		for s in servers:
+			if path.begins_with(s["url"]):
+				if !s.get("is_up"):
+					path = path.replace(s["url"], "")
+				break
 	
 	#if path is relative, 
 	#target the appropriate server and attempt download
@@ -97,11 +118,35 @@ func process_current_file():
 			var split_path = path.split(".")
 			path = split_path[0] + extension	
 		
+		var replace_path = modifications.get("replace_path", {})
+		if replace_path:
+			var from = replace_path["from"]
+			var to = replace_path["to"]
+			to = path_variable_process(to, current_file)
+			path = path.replace(from, to)
 		path = base_url + path
 	
 	current_file["path"] = path			
 	fileDownloader.start_download([path])
 
+func path_variable_process(to, current_file):
+	var card_id = current_file["card_id"]
+	var box_name = "core"
+	var card_data = cfc.card_definitions[card_id]
+	if card_data and card_data.get("_set", ""): 
+		box_name = card_data["_set"]
+	
+	var replacements = {
+		"box_name": box_name
+	}
+	
+	for key in replacements:
+		var to_seek = "[" + key + "]"
+		var replacement = replacements[key]
+		to = to.replace(to_seek, replacement)
+	
+	return to
+	
 func retry_or_cancel_current_file():
 	var path:String = current_file.get("path")
 	
@@ -174,6 +219,7 @@ func add_card(card_id, priority = false):
 	var url = cfc.get_image_dl_url(card_id)
 	if !url:
 		return
+	
 	#we're good to go. create folders as needed
 	create_img_folders(card_id)	
 
@@ -187,9 +233,55 @@ func add_card(card_id, priority = false):
 		priority_cards_to_download.append(to_add)
 	else:
 		cards_to_download.append(to_add)
-	pass
-
 	
+	check_servers_health()
+
+func is_all_servers_checked():
+	for s in servers:
+		if s.get("health_check") != "complete":
+			return false
+	return true	
+	
+#ping servers to see if they're ok for download
+func check_servers_health():
+	if is_all_servers_checked():
+		return
+	for s in servers:
+		if s.get("health_check") == "not_started":
+			s["health_check"] = "in_progress"
+			http_request = HTTPRequest.new()
+			add_child(http_request)	
+			http_request.connect("request_completed", self, "_health_check_complete")
+			var url = s["url"] + s["health_check_url"]
+			var error = http_request.request(url)
+			if error != OK:
+				s["health_check"] = "complete"
+				s["is_up"] = false
+				continue
+			else:
+				yield(self, "one_server_check_completed")
+			if http_request:
+				remove_child(http_request)
+				http_request.queue_free()			
+
+func _health_check_complete(result, response_code, headers, body):
+	var current_server = {}
+	for s in servers:
+		if s.get("health_check") == "in_progress":
+			current_server = s
+			break
+	if !current_server:
+		var _error = 1
+		return
+	current_server["health_check"] = "complete"
+	if result == HTTPRequest.RESULT_SUCCESS:
+		current_server["is_up"] = true
+	else:
+		current_server["is_up"] = false
+
+	emit_signal("one_server_check_completed")			
+			
+				
 func create_img_folders(card_id):
 	var card_data = cfc.card_definitions[card_id]
 	if card_data and card_data.get("_set", ""):

@@ -103,10 +103,7 @@
 					"card": "Worried Father"
 				}
 			],
-			"discard_villain": [
-				{
-					"card": "Sandslide"
-				},		
+			"discard_villain": [		
 				{
 					"card": "Caught Off guard"
 				},	
@@ -116,7 +113,9 @@
 				{
 					"card": "Hydra Mercenary"
 				},
-
+				{
+					"card": "Sandslide"
+				},
 
 
 			],

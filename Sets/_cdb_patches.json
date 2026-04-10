@@ -1,16 +1,16 @@
 {
 	"_comments": "a Series of patches for typos and bugs in marvelcdb dataset",
 	"01043a": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01043a.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/core/01043a.webp"
 	},
 	"01043b": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01043b.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/core/01043b.webp"
 	},
 	"01043c": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01043c.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/core/01043c.webp"
 	},
 	"01043d": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01043d.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/core/01043d.webp"
 	},
 	"01097a": {
 		"imagesrc": "/bundles/cards/01097b.png"
@@ -52,13 +52,13 @@
 		"imagesrc": "https://wololo.net/wc/images/01144.png"
 	},
 	"01144a": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01144a.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/core/01144a.webp"
 	},
 	"01144b": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01144b.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/core/01144b.webp"
 	},
 	"01144c": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/01144c.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/core/01144c.webp"
 	},
 	"01172": {
 		"text": "Retaliate 1. <i>(After this character is attacked, deal 1 damage to the attacking character.)</i>",
@@ -143,43 +143,43 @@
 		"imagesrc": "/bundles/cards/21074.png"
 	},
 	"21074b": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21074b.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21074b.webp"
 	},
 	"21075a": {
 		"imagesrc": "/bundles/cards/21075.png"
 	},
 	"21075b": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21075b.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21075b.webp"
 	},
 	"21098a": {
 		"imagesrc": "/bundles/cards/21098.png"
 	},
 	"21098b": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21098b.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21098b.webp"
 	},
 	"21099a": {
 		"imagesrc": "/bundles/cards/21099.png"
 	},
 	"21099b": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21099b.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21099b.webp"
 	},
 	"21100a": {
 		"imagesrc": "/bundles/cards/21100.png"
 	},
 	"21100b": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21100b.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21100b.webp"
 	},
 	"21114a": {
 		"imagesrc": "/bundles/cards/21114.png"
 	},
 	"21114b": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21114b.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21114b.webp"
 	},
 	"21115a": {
 		"imagesrc": "/bundles/cards/21115.png"
 	},
 	"21115b": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21115b.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21115b.webp"
 	},
 	"21124": {
 		"real_text": "<b>When Defeated</b>: Choose and Discard an Infinity Stone from Play"
@@ -188,22 +188,22 @@
 		"real_text": "Villainous. (When this minion activates, give it a boost card.)\n<hr />\n[star] <b>Boost</b>: Give this enemy 1 additional boost card"
 	},
 	"21136b": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21136b.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21136b.webp"
 	},
 	"21137b": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21137b.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21137b.webp"
 	},
 	"21138a": {
 		"imagesrc": "/bundles/cards/21138.png"
 	},
 	"21138b": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21138b.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21138b.webp"
 	},
 	"21165a": {
 		"imagesrc": "/bundles/cards/21165.png"
 	},
 	"21165b": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/21165b.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21165b.webp"
 	},
 	"21167": {
 		"scheme_amplify": 0,
@@ -228,10 +228,12 @@
 		"scheme": 1,
 	},
 	"27102a": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/27102a.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/sm/27102a.webp"
 	},
 	"27102b": {
-		"imagesrc": "https://db.merlindumesnil.net/bundles/cards/27102b.jpg"
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/sm/27102b.webp",
+		"scheme_amplify": 0,
+		"scheme_hazard": 1,		
 	},
 	"27167": {
 		"text": "Guard. Patrol. (While this minion is engaged with you, you cannot thwart the main scheme.)\n<hr />\n[star] <b>Boost</b>: Put enraged Symbiote into play engaged with you.",

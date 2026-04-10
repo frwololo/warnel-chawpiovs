@@ -388,10 +388,11 @@ func attack(script: ScriptTask) -> int:
 				var overkill_amount = damage - defender.get_remaining_damage()
 				overkill_amount = max(0, overkill_amount)
 				if overkill_amount:
-
+					var villain = gameData.get_villain()
+					var overkill_subjects = [villain] if villain else []
 					var script_modifications = {
 						"tags" : ["Scripted", "overkill"], #notably, overkill isn't an attack
-						"subjects": [gameData.get_villain()]
+						"subjects": overkill_subjects
 					}
 					_add_pre_receive_damage_on_stack (overkill_amount, script, script_modifications)
 	
@@ -1393,12 +1394,19 @@ func move_boost_cards(script:ScriptTask) ->int:
 	return retcode
 	
 func villain_attacks_you(script:ScriptTask) ->int:
-	script.set_subjects(gameData.get_villain())
+	var villain = gameData.get_villain()
+	if !villain:
+		return CFConst.ReturnCode.FAILED
+	script.set_subjects(villain)
 	return enemy_attacks_you(script)
 
 func villain_and_enemies_attack_you(script:ScriptTask) ->int:
 	var hero = _get_identity_from_script(script)
-	script.set_subjects ([ gameData.get_villain()] + gameData.get_minions_engaged_with_hero(hero.get_controller_hero_id()))
+	var subjects = []
+	var villain = gameData.get_villain()
+	if villain:
+		subjects.append(villain)
+	script.set_subjects (subjects + gameData.get_minions_engaged_with_hero(hero.get_controller_hero_id()))
 	return enemy_attacks_you(script)
 
 	

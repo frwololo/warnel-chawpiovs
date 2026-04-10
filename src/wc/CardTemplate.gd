@@ -1295,7 +1295,8 @@ func execute_scripts(
 		var interrupted_event_data = gameData.theStack.get_current_interrupted_event()
 		trigger_card = interrupted_event_data["event_object"].owner #this is geting gross, how to clear that?
 		if (!trigger_card):
-			return null		
+#			return null	
+			trigger_card = self	
 		var interrupt_script_data = find_interrupt_script(trigger_card, interrupted_event_data)
 		trigger = interrupt_script_data["trigger"] if interrupt_script_data else ""
 		if (!trigger):
@@ -1335,7 +1336,9 @@ func execute_scripts(
 	#tells the game engine to not display this event prominently to the users
 	if card_scripts.get("_silent", false):
 		trigger_details["_silent"] = true
-
+	
+	if card_scripts.has("macro_name"):
+		trigger_details["macro_name"] = card_scripts["macro_name"]
 	
 	trigger_details["_display_name"] = card_scripts.get("display_name", trigger_details.get("_display_name", ""))
 
@@ -1384,6 +1387,8 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 		return null
 		
 	var rules = state_scripts_dict.get("rules", {})
+
+
 
 	var show_optional_confirmation_menu = exec_config.get("show_optional_confirmation_menu", false)
 	var checksum = exec_config.get("checksum", "")

@@ -79,16 +79,25 @@ func increase_value(property, amount_increased, task_object = null):
 	return increased
 
 func is_silent():
+	if sceng.trigger_details.get("_silent", false):
+		return true
+	
+	var do_show = get_tasks().size()
 	for task in get_tasks():
 		if task.trigger_details.get("_silent", false):
 			return true
 		if task.script_definition.get("_silent", false):
 			return true		
 		if task.script_name == "mod_tokens"	and task.script_definition.get("token_name", "").begins_with("__"):
-			return true
-	if sceng.trigger_details.get("_silent", false):
-		return true
-	return false
+			do_show -=1
+		#don't show for some categories of scripts where amount is 0	
+		if task.script_name in ["surge"] and task.script_definition.has("amount"):		
+			var amount = task.retrieve_integer_property("amount", 0)
+			if !amount:
+				do_show -=1
+	if do_show:
+		return false
+	return true
 
 func execute():
 	cfc.add_ongoing_process(self)

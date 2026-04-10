@@ -970,7 +970,8 @@ func get_villain_current_hero_target():
 
 func villain_init_attackers():
 	attackers = []
-	attackers.append(get_villain())
+	if get_villain():
+		attackers.append(get_villain())
 	attackers.append("load_minions")
 
 func villain_next_target(force_switch_ui:= true, caller:= "") -> int:
@@ -1361,8 +1362,12 @@ func villain_threat():
 				#we also add acceleration icons from other schemes
 				escalation_threat += card.get_property("scheme_acceleration", 0, true)
 		if escalation_threat:
-			var villain = gameData.get_villain()
-			var task = ScriptTask.new(villain, {"name": "add_threat", "amount": escalation_threat, "tags": ["villain_step_one_threat"]}, villain, {})
+			#todo maybe threat source should always be the scheme itself?
+			#nothing in the rules states it should be the villain
+			var threat_source = gameData.get_villain()
+			if !threat_source:
+				threat_source = main_scheme
+			var task = ScriptTask.new(threat_source, {"name": "add_threat", "amount": escalation_threat, "tags": ["villain_step_one_threat"]}, threat_source, {})
 			task.set_subjects ([main_scheme])
 			var stackEvent = SimplifiedStackScript.new(task)
 			gameData.theStack.add_script(stackEvent)			
@@ -1820,7 +1825,13 @@ func get_villain() -> Card :
 	return cfc.NMAP.board.get_villain_card()
 
 func get_villains() :
-	var result = [get_villain()] #we ensure first ubject is the active villain
+	var result :=[] 
+	
+	 #we ensure first subject is the active villain
+	var active_villain = get_villain()
+	if active_villain:
+		result.append(active_villain)
+
 	var cards:Array = cfc.NMAP.board.get_grid("villain").get_all_cards()
 	for card in cards:
 		if !card in result:
@@ -2026,10 +2037,14 @@ func play_scripted_sequence():
 
 #script requests some manual triggers of cards
 func start_play_sequence(cards, trigger, script):
+	if !cards:
+		return
+		
 	var owner_hero_id = WCScriptingEngine.get_hero_id_from_script(script)
 	var is_villain = false
-	if !owner_hero_id:
-		owner_hero_id = self.get_current_activity_hero_target()
+	if cards[0].is_encounter() or !owner_hero_id:
+		if !owner_hero_id:
+			owner_hero_id = self.get_current_activity_hero_target()
 		is_villain = true
 	if !owner_hero_id in (self.get_my_heroes()):
 		return
@@ -2128,7 +2143,9 @@ func move_to_next_villain(current_villain):
 func villain_died(card:Card, script = null):
 	if (!move_to_next_villain(card)):
 		victory()
-	else:	
+	else:
+		var villain = 	get_villain()
+		var texture_filename = villain.get_art_filename() if villain else ""
 		var announce_settings = {
 			"top_color": Color8(18,18,30,255),
 			"bottom_color": Color8(18,18,30,255),
@@ -2137,7 +2154,7 @@ func villain_died(card:Card, script = null):
 			"duration": 2,
 			"animation_style": Announce.ANIMATION_STYLE.SPEED_OUT,			
 			"top_text": "Next Stage",
-			"top_texture_filename": get_villain().get_art_filename()
+			"top_texture_filename": texture_filename
 		}
 		theAnnouncer.simple_announce(announce_settings )			
 

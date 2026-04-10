@@ -208,10 +208,20 @@ func _get_display_text_nocache():
 							if modification < 0:
 								action = "remove status:"						
 							result = owner_name + " - " + action + token_name + subjects
-							return result				
+							return result
+		
+		var macro_name = task.trigger_details.get("macro_name", "")
+		if macro_name:
+			var _tmp = 1							
 		var trigger = self.get_trigger()
 
 		if trigger.begins_with("interrupt"):
+			match macro_name:
+				"attacks_gain":
+					var replacements = task.get_property("replacements", {})
+					var additional_tags = replacements.get("additional_tags", [])
+					var tags = PoolStringArray(additional_tags).join(", ")
+					return owner_name + " - attacks gain " + tags
 			if owner:
 				for id in ["forced interrupt", "interrupt", "forced response", "response"]:
 					var text = owner.get_printed_text(id)
@@ -225,7 +235,7 @@ func _get_display_text_nocache():
 						return text												
 	result = result.replace("_", " ")
 	result = result + subjects
-	if "constraints" in result:
+	if "conditional script" in result:
 		var _tmp =1
 	return result
 			

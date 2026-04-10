@@ -2634,6 +2634,15 @@
 	},
 	"Government Liaison": {
 		"manual": {
+			"condition_board": {
+				"func_name": "has_trait",
+				"func_params": {
+					"trait": "s.h.i.e.l.d",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "hand_my_hero",
+				}
+			},		
 			"board": [
 				{
 					"name": "constraints",
@@ -3935,6 +3944,11 @@
 		"interrupt_card_dies": {
 			"trigger": "self",
 			"all": [
+				{
+					"name": "execute_scripts",
+					"exec_trigger": "ambush",
+					"subject": "main_scheme"
+				},			
 				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
@@ -6281,7 +6295,7 @@
 				}
 			]
 		},
-		"step_started": {
+		"interrupt_step_started": {
 			"event_filters": {
 				"step_name": "VILLAIN_ACTIVATES"
 			},

@@ -304,7 +304,10 @@ const NO_STACK_BY_DEFAULT_SIGNALS:= [
 	"card_moved_to_board",
 	"card_moved_to_hand",	
 	"card_moved_to_pile",
-
+	"step_about_to_end",		
+	"step_about_to_start",
+	"step_ended",	
+	"step_started",	
 ]
 
 const TYPES_TO_GROUPS := {

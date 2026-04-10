@@ -111,9 +111,6 @@
 			],
 			"discard_villain": [
 				{
-					"card": "Sandslide"
-				},	
-				{
 					"card": "Sand Form"
 				},	
 				{
@@ -125,7 +122,9 @@
 				{
 					"card": "Hydra Mercenary"
 				},
-
+				{
+					"card": "Sandslide"
+				},	
 
 
 			],

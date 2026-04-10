@@ -131,7 +131,9 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 			if (hero_card and hero_card.is_alter_ego_form()):
 				results.append(hero_card)							
 		SP.KEY_SUBJECT_V_VILLAIN:
-			results.append(gameData.get_villain())
+			var villain = gameData.get_villain()
+			if villain:
+				results.append(villain)
 		SP.KEY_SUBJECT_V_MAIN_SCHEME:
 			results.append(gameData.get_main_scheme())					
 		SP.KEY_SUBJECT_V_GRAB_UNTIL:
@@ -500,11 +502,12 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 	var controller_hero_id = _trigger_details.get("override_hero_id", 	owner_card.get_controller_hero_id())
 
 	var replacements = {
-		"villain": gameData.get_villain(),
 		"self": owner_card,
 		"host": owner_card.current_host_card,
 		"current_hero_target": gameData.get_identity_card(gameData.get_current_activity_hero_target())
-	}	
+	}
+	if gameData.get_villain():
+		replacements["villain"] = gameData.get_villain()	
 	if (controller_hero_id > 0):
 		replacements["my_hero"] = gameData.get_identity_card(controller_hero_id)
 	else:

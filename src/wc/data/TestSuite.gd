@@ -145,7 +145,7 @@ remotesync func set_random_seed(my_seed, my_state):
 func reset():
 	start_time = Time.get_ticks_msec()
 	end_time = 0
-	if text_edit:
+	if is_instance_valid(text_edit):
 		text_edit.text = ""
 
 	count_delays = {}

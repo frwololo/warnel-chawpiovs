@@ -255,10 +255,10 @@ func remove_villain(card):
 		for key in villains:
 			set_active_villain(villains[key])
 			break
-	if !active_villain:
-		var _error = 1
-		#revert to avoid crashes
-		set_active_villain(card)
+#	if !active_villain:
+#		var _error = 1
+#		#revert to avoid crashes
+#		set_active_villain(card)
 
 func reset():
 	set_active_villain(null)

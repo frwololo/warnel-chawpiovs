@@ -116,10 +116,13 @@ func _step_started(_trigger_object, details:Dictionary):
 		CFConst.PHASE_STEP.VILLAIN_THREAT:
 			settings["text"] = "Villain Phase"
 			var villain_card = gameData.get_villain()
-			var filename = villain_card.get_art_filename()
-			settings["top_texture_filename"] = filename	
+			if villain_card:
+				var filename = villain_card.get_art_filename()
+				settings["top_texture_filename"] = filename	
 			gameData.play_sfx("villain_phase")
 		CFConst.PHASE_STEP.VILLAIN_DEAL_ENCOUNTER:
+			var villain = gameData.get_villain()
+			var texture_filename = villain.get_art_filename() if villain else ""
 			settings = {
 					"top_text": "Reveal",
 					"bottom_text" : "Encounters",
@@ -129,7 +132,7 @@ func _step_started(_trigger_object, details:Dictionary):
 					"scale": 0.6,
 					"duration": 2,
 					"animation_style": Announce.ANIMATION_STYLE.SPEED_OUT,
-					"top_texture_filename": gameData.get_villain().get_art_filename(),
+					"top_texture_filename": texture_filename,
 			}		
 	if settings:
 		var announce = {

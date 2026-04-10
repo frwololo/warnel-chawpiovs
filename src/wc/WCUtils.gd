@@ -83,13 +83,22 @@ static func load_img(file) -> Image :
 		img_file.close()
 
 		var PNG_HEADER = [137,80,78,71,13,10,26,10]
-		var formats = ["png", "jpg"]
+		var WEBP_HEADER = [82,73,70,70]
+		var formats = ["jpg", "png", "webp"]
 		
 		#guessing the format of the image based on header, can't trust the filename
 		for i in range (PNG_HEADER.size()):
-			if bytes[i] != PNG_HEADER[i]:
-				formats = ["jpg", "png"]
+			if bytes[i] == PNG_HEADER[i]:
+				formats = ["png", "jpg", "webp"]
+			else:
 				break		
+
+		for i in range (WEBP_HEADER.size()):
+			if bytes[i] == WEBP_HEADER[i]:
+				formats = ["webp","png", "jpg"]
+			else:
+				break	
+
 
 		var loaded_ok = FAILED
 		var i = 0
@@ -100,6 +109,8 @@ static func load_img(file) -> Image :
 					loaded_ok = img.load_png_from_buffer(bytes)
 				"jpg":
 					loaded_ok = img.load_jpg_from_buffer(bytes)
+				"webp":
+					loaded_ok = img.load_webp_from_buffer(bytes)					
 			i+=1
 		
 		if loaded_ok != OK:

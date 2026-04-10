@@ -1,0 +1,221 @@
+{
+	"_comments": "Bug: When all villains are defeated, one remains the active villain",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [		
+				{
+					"card": "Doctor Octopus - 1",
+					"tokens": {
+						"damage": 7,
+						"active_counter": 1
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Electro - 1"
+				},				
+				{
+					"card": "Vulture - 1"
+				},
+				{
+					"card": "Hobgoblin - 1"
+				},
+				{
+					"card": "Kraven the Hunter - 1"
+				},
+				{
+					"card": "Scorpion - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Frequent Flyers"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Sinister Synchronization",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Light at the End",
+					"tokens": {
+						"threat": 20
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Power within"
+				},
+				{
+					"card": "Defense Mechanism"
+				},
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Jefferson Davis"
+				},
+				{
+					"card": "Ganke Lee"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Spider-Man #27030a"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Doctor Octopus - 1",
+			"_comments": "we expect Doctor Octupus to die and Ambush to trigger at next turn"
+		},
+		{
+			"type": "target",
+			"value": "Light at the End",
+			"_comments": "choose to remove threat from light at the end"
+		},
+		{
+			"type": "next_phase",
+			"value": "1"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "Spider-Man #27030a",
+			"_comments": "defend with spider-man"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Electro - 1"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Vulture - 1"
+				},
+				{
+					"card": "Hobgoblin - 1"
+				},
+				{
+					"card": "Kraven the Hunter - 1"
+				},
+				{
+					"card": "Scorpion - 1"
+				},
+				{
+					"card": "Doctor Octopus - 1"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Frequent Flyers"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Sinister Synchronization",
+					"tokens": {
+						"threat": 3
+					}
+				},
+				{
+					"card": "Light at the End",
+					"tokens": {
+						"threat": 13
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Ganke Lee"
+				},
+				{
+					"card": "Jefferson Davis"
+				},
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Defense Mechanism"
+				},
+				{
+					"card": "Power within"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a",
+					"tokens": {
+						"damage": 0
+					}
+				}
+			]
+		}
+	}
+}

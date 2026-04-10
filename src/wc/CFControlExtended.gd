@@ -884,7 +884,10 @@ func replace_one_macro(script_definition, macro_key, macro_value):
 					var dict = replace_text_macro(replacements, macro_value)
 					for replaced_key in dict.keys():
 						result[replaced_key] = dict[replaced_key]
-					result["macro_name"] = macro_key
+						if typeof(result[replaced_key]) == TYPE_DICTIONARY:
+							result[replaced_key]["macro_name"] = macro_key
+						else:
+							result["macro_name"] = macro_key
 				else:
 					result[key] = replace_one_macro(script_definition[key], macro_key, macro_value)
 		TYPE_ARRAY:	
@@ -941,6 +944,13 @@ func load_script_definitions() -> void:
 		#bugfix: replace "floats" to "ints"
 		json_card_data = WCUtils.replace_real_to_int(json_card_data)
 		var _text = to_json(json_card_data)
+
+#		var file = File.new()
+#		var fname = "user://log_" + box_name + ".json"
+#		file.open(fname, File.WRITE)
+#		file.store_string(_text)
+#		file.close() 
+
 		for fuzzy_card_name in json_card_data.keys():
 			var card_info = retrieve_card_info_from_fuzzy_name(fuzzy_card_name)
 			var card_name = card_info["name"]

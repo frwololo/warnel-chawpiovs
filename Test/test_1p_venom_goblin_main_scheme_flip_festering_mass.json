@@ -1,0 +1,162 @@
+{
+	"_comments": "Tests 1 main scheme flips with Festering Mass in play",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom Goblin - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},				
+					{
+					"card": "Advance"
+				},			
+			],
+			"schemes": [
+				{
+					"card": "Lower Manhattan - B",
+					"tokens": {
+						"threat": 10,
+						"glider": 1
+					}
+				},
+				{
+					"card": "Midtown Manhattan - C",
+					"tokens": {
+						"threat": 1,
+					}					
+				},	
+				{
+					"card": "Upper Manhattan - D",
+					"tokens": {
+						"threat": 2,
+					}					
+				},	
+				{
+					"card": "Festering Mass",
+					"tokens": {
+						"threat": 2,
+					}					
+				},				
+			],		
+			"hand1": [
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Jefferson Davis"
+				},
+				{
+					"card": "Ganke Lee"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Miles Morales"
+				}
+			],
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},	
+		{
+			"type": "choose",
+			"value": "2 Threat"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom Goblin - 1"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				},				
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				},				
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				},
+			],
+			"schemes": [
+				{
+					"card": "Midtown Manhattan - C",
+					"tokens": {
+						"threat": 3,
+						"glider": 1,
+					}					
+				},	
+				{
+					"card": "Upper Manhattan - D",
+					"tokens": {
+						"threat": 2,
+					}					
+				},
+				{
+					"card": "Festering Mass",
+					"tokens": {
+						"threat": 2,
+					}					
+				},				
+			],
+			"villain_misc": [
+				{
+					"card": "Lower Manhattan #27117b"
+				},
+			],			
+			"hand1": [
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Jefferson Davis"
+				},
+				{
+					"card": "Ganke Lee"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Miles Morales"
+				}
+			],
+		}
+	}
+}

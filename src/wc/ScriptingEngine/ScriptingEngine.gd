@@ -975,6 +975,22 @@ func set_active_villain(script:ScriptTask) -> int:
 	
 	gameData.set_active_villain(villain)
 	return CFConst.ReturnCode.CHANGED
+
+func set_active_main_scheme(script:ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+
+	var scheme = script.subjects[0]
+	if scheme.get_property("type_code") != "main_scheme":
+		return CFConst.ReturnCode.FAILED
+	
+	if (costs_dry_run()): 
+		return retcode	
+			
+	gameData.set_active_main_scheme(scheme)
+	return CFConst.ReturnCode.CHANGED
 	
 func conditional_script(script:ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -1019,7 +1035,13 @@ func move_token_to(script: ScriptTask) -> int:
 		return retcode
 	
 	var tags: Array = script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
-	var amount = script.retrieve_integer_property("amount")
+	var amount_str = str(script.get_property_raw("amount", ""))
+	var amount = 0
+	if amount_str == "all":
+		#TODO hack
+		amount = 666
+	else:
+		amount = script.retrieve_integer_property("amount")
 	var token_name = script.get_property("token_name")
 	
 	var target = script.subjects[0]
@@ -1042,7 +1064,9 @@ func move_token_to(script: ScriptTask) -> int:
 			if !source:
 				return CFConst.ReturnCode.FAILED
 		
-	
+	if source == target:
+		return retcode
+		
 	if source:		
 		var tokens_amount = source.tokens.get_token_count(token_name)
 		amount = min(tokens_amount, amount)		
@@ -1140,7 +1164,8 @@ func prevent(script: ScriptTask) -> int:
 					return CFConst.ReturnCode.FAILED
 					
 				if (costs_dry_run()):
-					return retcode						
+					return retcode
+				script.script_definition["pay_costs_anyway"] = true						
 				_event = gameData.theStack.delete_last_event(script)
 				#todo find amount prevented
 			if amount_prevented:
@@ -2481,6 +2506,9 @@ static func get_action_owner_from_script(script:ScriptTask):
 
 	if !action_owner_desc:
 		return script.owner
+
+	if typeof(action_owner_desc) == TYPE_STRING:
+		action_owner_desc = { "subject" : action_owner_desc }
 
 	var action_owners = script._local_find_subjects(0, CFInt.RunType.NORMAL, action_owner_desc)		
 	if !action_owners:

@@ -378,7 +378,9 @@ func get_aside_deck():
 		get_encounter_deck()
 		
 	return set_aside
-	
+
+func get_setting(key, default = null):
+	return scenario_data.get("settings", {}).get(key, default)	
 		
 func get_encounter_deck():
 	if (not encounter_deck.empty()):

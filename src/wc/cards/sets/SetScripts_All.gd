@@ -209,7 +209,7 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 				{
 					"name": action,
 					"subject": "target",
-					"is_cost": true,
+					"needs_subject": true,
 					"tags": [action, "basic power"],
 					"filter_state_subject": [{
 						"filter_group": "group_" + target

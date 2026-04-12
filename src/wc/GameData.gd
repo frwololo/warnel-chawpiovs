@@ -1814,6 +1814,9 @@ func _stack_event_deleted(event):
 		"reveal_encounter":	
 			encounter_revealed()				
 
+var _active_main_scheme = null
+func set_active_main_scheme(new_scheme):
+	_active_main_scheme = new_scheme
 
 func set_active_villain(new_villain):
 	cfc.NMAP.board.set_active_villain(new_villain)
@@ -1839,6 +1842,7 @@ func get_villains() :
 				result.append(card)
 	return result	
 
+	
 
 func get_main_scheme() -> Card :
 	return find_main_scheme()
@@ -1861,16 +1865,25 @@ func find_main_scheme() :
 
 func get_main_schemes() :
 	return find_main_schemes()
-		
+
+#TODO some caching ?		
 func find_main_schemes() :
 	var result = []
 	var schemes_grid = cfc.NMAP.board.get_grid("schemes")
 	if !schemes_grid:
 		var _error =1
 		return result
-		
+			
 	var cards:Array = schemes_grid.get_all_cards()
+
+	#active main scheme goes first in all cases,
+	#to ensure that subjects[0] prioritize it 
+	if _active_main_scheme and 	(_active_main_scheme in cards):
+		result.append(_active_main_scheme)
+	
 	for card in cards:
+		if card in result:
+			continue
 		if "main_scheme" == card.properties.get("type_code", "false"):
 			result.append(card)
 	return result	
@@ -2326,6 +2339,8 @@ func cleanup_post_game():
 	_clients_system_status = {}
 	_villain_current_hero_target = 1
 	_first_player_hero_id = 1
+	_active_main_scheme = null
+	
 	theAnnouncer.reset()
 	theStack.flush_logs()
 	flush_debug_display()

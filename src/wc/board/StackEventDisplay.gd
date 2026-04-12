@@ -33,6 +33,7 @@ var arrows := []
 var rect_size = Vector2(200, 200)
 var rect_position = Vector2(0, 0)
 var target_position = Vector2(0,0)
+var trigger = ""
 
 #if set to true, when the stack event goes off the stack, this will close this message
 #if set to false, you need another way to call terminate()
@@ -233,8 +234,15 @@ func load_text():
 				display_text.bbcode_text = text
 				return
 		else: #there are cases where an interrupt is coming but we're not in interrupt mode, so
-			#I am forced to guess this is what's happening here				
-			for id in ["forced interrupt", "interrupt", "forced response", "response"]:
+			#I am forced to guess this is what's happening here
+			var sections = ["forced interrupt", "interrupt", "forced response", "response"]
+			if trigger:
+				var potential_scripts = owner_card.retrieve_scripts(trigger)
+				if potential_scripts and typeof(potential_scripts) == TYPE_DICTIONARY:
+					var display_section = potential_scripts.get("display_section", "")
+					if display_section:
+						sections = [display_section] + sections
+			for id in sections:
 				var text = owner_card.get_printed_text(id)
 				if text:
 					display_text.bbcode_text = text
@@ -266,7 +274,8 @@ func load_from_past_event(event, storage):
 	terminate_on_event_completion = false
 	prioritize_text_from_owner_card = true
 	stack_event = event
-
+	trigger =  storage.get("trigger", "")
+	
 	owner_card = storage.get("owner_card", null)
 	if !owner_card:
 		#There's an edge case where only irrelevant actions (e.g. only nop) are in the stack_event

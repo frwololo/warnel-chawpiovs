@@ -99,6 +99,15 @@ func is_silent():
 		return false
 	return true
 
+func remove_non_cost_tasks():
+	var to_remove = []
+	for task in sceng.scripts_queue:
+		if !task.is_cost:
+			to_remove.append(task)
+	
+	for task in to_remove:
+		sceng.remove_script(task)
+
 func execute():
 	cfc.add_ongoing_process(self)
 	var owner = sceng.owner

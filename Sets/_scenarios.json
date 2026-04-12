@@ -317,6 +317,9 @@
 			"Standard",
 			"Modular"
 		],
+		"settings": {
+			"encounter_requests_main_scheme": "all_main_schemes",
+		},
 		"extra_rules": [
 			{
 				"card_moved_to_board": {

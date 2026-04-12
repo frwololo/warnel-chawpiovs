@@ -26,10 +26,16 @@
 		"_sinister_six_villain_death": {
 			"interrupt_card_dies": {
 				"trigger": "self",
+				"display_section": "When Defeated",
 				"board": [
 					{
 						"name": "prevent",
 						"subject": "interrupted_event"
+					},
+					{
+						"name": "move_card_to_container",
+						"subject": "self",
+						"dest_container": "set_aside"
 					},
 					{
 						"name": "remove_threat",
@@ -60,11 +66,6 @@
 							"then": 4,
 							"else": 7
 						}
-					},
-					{
-						"name": "move_card_to_container",
-						"subject": "self",
-						"dest_container": "set_aside"
 					}
 				]
 			}
@@ -320,6 +321,7 @@
 				{
 					"name": "mod_tokens",
 					"token_name": "__player_token_current_hero_target",
+					"subject": "self",
 					"modification": -1,
 					"is_cost": true
 				},
@@ -717,10 +719,12 @@
 			]
 		},
 		"boost": {
-			"all": {
-				"name": "draw_boost_card",
-				"subject": "villain"
-			}
+			"all": [
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
+				}
+			]
 		}
 	},
 	"Calling in Favors": {
@@ -1679,10 +1683,11 @@
 				{
 					"name": "move_card_to_container",
 					"subject": "tutor",
+					"sort_descending": true,
 					"up_to": true,
 					"src_container": "deck_current_hero_target",
 					"dest_container": "discard_current_hero_target",
-					"amount": 7
+					"subject_count": 7
 				},
 				{
 					"name": "move_token_to",
@@ -1884,6 +1889,7 @@
 			"all": [
 				{
 					"name": "conditional_script",
+					"_silent": true,
 					"options": [
 						{
 							"condition": {
@@ -1907,6 +1913,7 @@
 							"nested_tasks": [
 								{
 									"name": "modify_properties",
+									"_silent": true,
 									"tags": [
 										"Init"
 									],
@@ -1921,6 +1928,7 @@
 					"else": [
 						{
 							"name": "modify_properties",
+							"_silent": true,
 							"tags": [
 								"Init"
 							],
@@ -1933,10 +1941,12 @@
 				}
 			]
 		},
-		"card_moved_to_board": {
+		"before_card_moved_to_board": {
+			"_silent": true,
 			"board": [
 				{
 					"name": "conditional_script",
+					"_silent": true,
 					"options": [
 						{
 							"condition": {
@@ -1960,6 +1970,7 @@
 							"nested_tasks": [
 								{
 									"name": "modify_properties",
+									"_silent": true,
 									"tags": [
 										"Init"
 									],
@@ -1974,6 +1985,7 @@
 					"else": [
 						{
 							"name": "modify_properties",
+							"_silent": true,
 							"tags": [
 								"Init"
 							],
@@ -2310,6 +2322,11 @@
 								"filter_properties": {
 									"type_code": "villain"
 								}
+							},
+							{
+								"filter_properties": {
+									"type_code": "minion"
+								}
 							}
 						]
 					}
@@ -2640,9 +2657,9 @@
 					"trait": "s.h.i.e.l.d",
 					"subject": "tutor",
 					"subject_count": "all",
-					"src_container": "hand_my_hero",
+					"src_container": "hand_my_hero"
 				}
-			},		
+			},
 			"board": [
 				{
 					"name": "constraints",
@@ -3948,7 +3965,7 @@
 					"name": "execute_scripts",
 					"exec_trigger": "ambush",
 					"subject": "main_scheme"
-				},			
+				},
 				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
@@ -4095,6 +4112,7 @@
 				{
 					"name": "move_token_to",
 					"token_name": "glider",
+					"amount": 1,
 					"source": "self",
 					"subject": "boardseek",
 					"subject_exclude": "self",
@@ -4115,6 +4133,7 @@
 				{
 					"name": "move_token_to",
 					"token_name": "acceleration",
+					"amount": "all",
 					"source": "self",
 					"subject": "boardseek",
 					"subject_exclude": "self",
@@ -4155,6 +4174,7 @@
 								"func_name": "count_cards",
 								"func_params": {
 									"subject": "boardseek",
+									"subject_count": "all",
 									"filter_state_seek": [
 										{
 											"filter_properties": {
@@ -4164,9 +4184,9 @@
 												"type_code": "environment"
 											}
 										}
-									]
-								},
-								"divider": 2
+									],
+									"divider": 2
+								}
 							},
 							"nested_tasks": [
 								{
@@ -4452,6 +4472,7 @@
 				{
 					"name": "move_token_to",
 					"token_name": "glider",
+					"amount": 1,
 					"source": "self",
 					"subject": "boardseek",
 					"subject_exclude": "self",
@@ -4472,6 +4493,7 @@
 				{
 					"name": "move_token_to",
 					"token_name": "acceleration",
+					"amount": "all",
 					"source": "self",
 					"subject": "boardseek",
 					"subject_exclude": "self",
@@ -4512,6 +4534,7 @@
 								"func_name": "count_cards",
 								"func_params": {
 									"subject": "boardseek",
+									"subject_count": "all",
 									"filter_state_seek": [
 										{
 											"filter_properties": {
@@ -4521,9 +4544,9 @@
 												"type_code": "environment"
 											}
 										}
-									]
-								},
-								"divider": 2
+									],
+									"divider": 2
+								}
 							},
 							"nested_tasks": [
 								{
@@ -4994,11 +5017,10 @@
 		}
 	},
 	"Partnership of Pain": {
-		"TODO": " scheme/attack alterant",
 		"reveal_alter_ego": {
 			"all": [
 				{
-					"name": "enemy_schemes",
+					"name": "nop",
 					"subject": "boardseek",
 					"subject_count": 1,
 					"sort_by": "function",
@@ -5013,13 +5035,49 @@
 							}
 						}
 					]
+				},
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "previous",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "scheme",
+									"trigger": "self",
+									"alteration": {
+										"func_name": "get_subject_int_property",
+										"func_params": {
+											"property": "scheme",
+											"subject": "boardseek",
+											"subject_count": "all",
+											"subject_exclude": "self",
+											"filter_state_seek": [
+												{
+													"filter_properties": {
+														"type_code": "villain"
+													}
+												}
+											]
+										}
+									}
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "enemy_schemes",
+					"subject": "previous"
 				}
 			]
 		},
 		"reveal_hero": {
 			"all": [
 				{
-					"name": "enemy_attacks_you",
+					"name": "nop",
 					"subject": "boardseek",
 					"subject_count": 1,
 					"sort_by": "function",
@@ -5035,6 +5093,42 @@
 							}
 						}
 					]
+				},
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "previous",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": {
+										"func_name": "get_subject_int_property",
+										"func_params": {
+											"property": "attack",
+											"subject": "boardseek",
+											"subject_count": "all",
+											"subject_exclude": "self",
+											"filter_state_seek": [
+												{
+													"filter_properties": {
+														"type_code": "villain"
+													}
+												}
+											]
+										}
+									}
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "enemy_attacks_you",
+					"subject": "previous"
 				}
 			]
 		}
@@ -6180,7 +6274,7 @@
 				}
 			]
 		},
-		"step_started": {
+		"interrupt_step_started": {
 			"event_filters": {
 				"step_name": "VILLAIN_ACTIVATES"
 			},
@@ -6361,13 +6455,67 @@
 					"subject": "Midtown Manhattan"
 				},
 				{
+					"name": "set_active_main_scheme",
+					"subject": "Midtown Manhattan"
+				},
+				{
 					"name": "move_card_to_board",
 					"grid_name": "villain_misc",
 					"subject": "self"
 				},
 				{
+					"_comments": "not sure why these cards end up in the villain's pile at setup, butI found the easiest way to deal with it is to move them to set_aside",
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck_villain",
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Lower Manhattan"
+							}
+						},
+						{
+							"filter_properties": {
+								"Name": "Midtown Manhattan"
+							}
+						},
+						{
+							"filter_properties": {
+								"Name": "Upper Manhattan"
+							}
+						},
+						{
+							"filter_properties": {
+								"Name": "Skies Over New York"
+							}
+						}
+					]
+				},
+				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
+				}
+			]
+		}
+	},
+	"Skies Over New York #27116b": {
+		"card_token_modified": {
+			"trigger": "another",
+			"filter_count_difference": "increased",
+			"filter_token_name": "glider",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "main_scheme"
+					}
+				}
+			],
+			"all": [
+				{
+					"name": "set_active_main_scheme",
+					"subject": "trigger"
 				}
 			]
 		}
@@ -6948,6 +7096,7 @@
 					"name": "thwart",
 					"amount": 4,
 					"subject": "target",
+					"needs_subject": true,
 					"filter_state_subject": [
 						{
 							"filter_group": "group_schemes"
@@ -7778,6 +7927,7 @@
 				{
 					"name": "move_token_to",
 					"token_name": "glider",
+					"amount": 1,
 					"source": "self",
 					"subject": "boardseek",
 					"subject_exclude": "self",
@@ -7798,6 +7948,7 @@
 				{
 					"name": "move_token_to",
 					"token_name": "acceleration",
+					"amount": "all",
 					"source": "self",
 					"subject": "boardseek",
 					"subject_exclude": "self",
@@ -7838,6 +7989,7 @@
 								"func_name": "count_cards",
 								"func_params": {
 									"subject": "boardseek",
+									"subject_count": "all",
 									"filter_state_seek": [
 										{
 											"filter_properties": {
@@ -7847,9 +7999,9 @@
 												"type_code": "environment"
 											}
 										}
-									]
-								},
-								"divider": 2
+									],
+									"divider": 2
+								}
 							},
 							"nested_tasks": [
 								{
@@ -8678,12 +8830,12 @@
 				},
 				{
 					"name": "prevent",
-					"subject": "interrupted_event"
+					"subject": "interrupted_event",
 				},
 				{
 					"name": "move_card_to_container",
 					"subject": "self",
-					"dest_container": "discard"
+					"dest_container": "discard_villain"
 				}
 			]
 		},

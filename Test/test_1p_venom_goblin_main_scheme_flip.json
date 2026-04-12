@@ -1,7 +1,7 @@
 {
-	"_comments": "Tests Symbiotic Monstrosity with Symbiote Environment",
+	"_comments": "Tests 1 main scheme flips",
 	"init": {
-		"phase": "PLAYER_TURN",
+		"phase": "VILLAIN_ACTIVATES",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -18,31 +18,35 @@
 			"deck_villain": [
 				{
 					"card": "Symbiotic Thrall"
-				}
+				},
+				{
+					"card": "Hydra Mercenary"
+				},				
+					{
+					"card": "Advance"
+				},			
 			],
 			"schemes": [
 				{
 					"card": "Lower Manhattan - B",
 					"tokens": {
-						"threat": 2,
+						"threat": 10,
 						"glider": 1
 					}
 				},
 				{
-					"card": "Midtown Manhattan - C"
-				},			
-			],
-			"villain_misc": [
+					"card": "Midtown Manhattan - C",
+					"tokens": {
+						"threat": 1,
+					}					
+				},	
 				{
-					"card": "Upper Manhattan #27119b"
-				},
-			],
-			"enemies1": [
-				{
-					"card": "Symbiotic Monstrosity",
-					"tokens": {	"damage": 5}
-				}
-			],
+					"card": "Upper Manhattan - D",
+					"tokens": {
+						"threat": 2,
+					}					
+				},				
+			],		
 			"hand1": [
 				{
 					"card": "Web-Shot"
@@ -56,23 +60,19 @@
 			],
 			"identity1": [
 				{
-					"card": "Spider-Man #27030a"
+					"card": "Miles Morales"
 				}
 			],
 		}
 	},
 	"actions": [
 		{
-			"type": "activate",
-			"value": "Spider-Man #27030a",
+			"type": "choose",
+			"value": "2 Threat"
 		},
 		{
-			"type":  "choose",
-			"value": "attack"
-		},
-		{
-			"type": "target",
-			"value": "Symbiotic Monstrosity"
+			"type": "other",
+			"value": "wait_for_player_turn"
 		}
 	],
 	"end": {
@@ -90,34 +90,41 @@
 					"card": "Venom Goblin - 1"
 				}
 			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				},				
+			],
 			"deck_villain": [
 				{
 					"card": "Symbiotic Thrall"
-				}
+				},				
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				},
 			],
 			"schemes": [
 				{
-					"card": "Lower Manhattan - B",
+					"card": "Midtown Manhattan - C",
+					"tokens": {
+						"threat": 3,
+						"glider": 1,
+					}					
+				},	
+				{
+					"card": "Upper Manhattan - D",
 					"tokens": {
 						"threat": 2,
-						"glider": 1
-					}
-				},
-				{
-					"card": "Midtown Manhattan - C"
+					}					
 				},			
 			],
 			"villain_misc": [
 				{
-					"card": "Upper Manhattan #27119b"
+					"card": "Lower Manhattan #27117b"
 				},
-			],
-			"enemies1": [
-				{
-					"card": "Symbiotic Monstrosity",
-					"tokens": {	"damage": 7}
-				}
-			],		
+			],			
 			"hand1": [
 				{
 					"card": "Web-Shot"
@@ -131,8 +138,7 @@
 			],
 			"identity1": [
 				{
-					"card": "Spider-Man #27030a",
-					"tokens": {	"damage": 1}					
+					"card": "Miles Morales"
 				}
 			],
 		}

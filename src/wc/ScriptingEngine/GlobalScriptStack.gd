@@ -1108,11 +1108,21 @@ func retrieve_last_event(requester:ScriptTask):
 		
 func delete_last_event(requester:ScriptTask):
 	#the requester usually doesn't want to delete themselves
+	var pay_costs_anyway = requester.get_property("pay_costs_anyway", false)
 	var event = null
 	var max_id = find_last_event_id_before_me(requester)
 	if max_id >=0:
 		event = stack[max_id]
-		stack_remove(max_id)
+		if pay_costs_anyway:
+			var sceng = event.get_sceng()
+			if sceng and sceng.has_cost_scripts() and sceng.has_non_cost_scripts():
+				event.remove_non_cost_tasks()
+			else:
+				#fallback: asked to prevent an event that is all costs or no costs
+				pay_costs_anyway = false
+		if !pay_costs_anyway:	
+			stack_remove(max_id)
+		#this can be sent whether the event was deleted or just modifid (with remove_non_cost) but this might bite me back later	
 		scripting_bus.emit_signal("stack_event_deleted", event)
 	else:
 		display_debug("Error: script " + requester.script_name + " asked me to delete event but I couldn't find it")

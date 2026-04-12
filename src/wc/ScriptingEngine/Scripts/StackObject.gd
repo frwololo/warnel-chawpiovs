@@ -16,6 +16,9 @@ var tasks:= []
 func get_tasks():
 	return tasks
 
+func remove_non_cost_tasks():
+	pass
+
 #can be overriden by children classes
 func get_script_by_event_details(_details):
 	return null
@@ -211,6 +214,7 @@ func _get_display_text_nocache():
 							return result
 		
 		var macro_name = task.trigger_details.get("macro_name", "")
+		var display_section = task.trigger_details.get("display_section", "")
 		if macro_name:
 			var _tmp = 1							
 		var trigger = self.get_trigger()
@@ -223,7 +227,10 @@ func _get_display_text_nocache():
 					var tags = PoolStringArray(additional_tags).join(", ")
 					return owner_name + " - attacks gain " + tags
 			if owner:
-				for id in ["forced interrupt", "interrupt", "forced response", "response"]:
+				var sections = ["forced interrupt", "interrupt", "forced response", "response"]
+				if display_section:
+					sections = [display_section] + sections
+				for id in sections:
 					var text = owner.get_printed_text(id)
 					if text:
 						return text		

@@ -1,0 +1,177 @@
+{
+	"_comments": "Tests Advanced Glider",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom Goblin - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Common Criminal"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"others": [
+				{
+					"card": "Advanced Glider",
+					"tokens": {"__player_token1": 1},
+					"host": "Venom Goblin - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Lower Manhattan - B",
+					"tokens": {
+						"glider": 1
+					}
+				},
+				{
+					"card": "Midtown Manhattan - C",
+					"tokens": {
+						"threat": 1
+					}
+				},
+				{
+					"card": "Upper Manhattan - D",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Jefferson Davis"
+				},
+				{
+					"card": "Ganke Lee"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "Spider-Man #27030a",
+			"_comments": "defend first attack. There should be a second one, undefendend"
+		},
+		{
+			"type": "choose",
+			"value": "2 Threat"
+		},
+		{
+			"type": "choose",
+			"value": "2 Threat"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom Goblin - 1"
+				}
+			],
+			"others": [
+				{
+					"card": "Advanced Glider",
+					"host": "Venom Goblin - 1"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Common Criminal"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Lower Manhattan - B",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Midtown Manhattan - C",
+					"tokens": {
+						"threat": 3,
+						"glider": 1
+					}
+				},
+				{
+					"card": "Upper Manhattan - D",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Jefferson Davis"
+				},
+				{
+					"card": "Ganke Lee"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			]
+		}
+	}
+}

@@ -535,6 +535,9 @@ func _tutor_subjects(stored_integer: int) -> Array:
 	else:
 		subject_count = retrieve_integer_property(SP.KEY_SUBJECT_COUNT)
 	requested_subjects = subject_count
+	if !requested_subjects:
+		return []
+		
 	var src_container = get_property(SP.KEY_SRC_CONTAINER)
 	var subject_list := get_all_cards_from_containers(src_container)
 	subject_list = sort_subjects(subject_list)

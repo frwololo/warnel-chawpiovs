@@ -242,7 +242,7 @@ static func check_max_per_host(target_card, max_value, owner_card) -> bool:
 		return false
 	return true
 
-
+			
 # Check if the card is a valid subject or trigger, according to its state.
 static func check_validity(card, card_scripts, type := "trigger", owner_card = null) -> bool:
 	var is_valid = .check_validity(card, card_scripts, type, owner_card)
@@ -314,7 +314,8 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 				if other_card == card:
 					continue
 				if other_card.get_property("patrol", 0, true) and other_card.is_faceup: #TODO better way to ignore face down cards?
-					return false
+					if card in other_card.get_active_main_schemes(): #last verification to make sure that the patrol card considers this main scheme as an active main scheme
+						return false
 
 	var type_code = card.get_property("type_code", "")
 	#cannot thwart side schemes

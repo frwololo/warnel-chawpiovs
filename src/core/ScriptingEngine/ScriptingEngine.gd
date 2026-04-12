@@ -152,6 +152,20 @@ func add_scripts(_state_scripts,
 		for _i in range (scripts_queue.size()):
 			stored_integers.append([false, 0])								
 
+func remove_script(script_ref):
+	var i = 0
+	var found = false
+	for task in scripts_queue:
+		if task == script_ref:
+			found = true
+			break
+		i += 1
+	if !found:
+		return null
+	scripts_queue.remove(i)
+	if trigger_details.has("network_prepaid"):
+		trigger_details["network_prepaid"].remove(i)
+
 # This flag will be true if we're attempting to find if the card
 # has costs that need to be paid, before the effects take place.
 func costs_dry_run() -> bool:
@@ -168,6 +182,17 @@ func has_else_condition():
 			return true
 	return false
 
+func has_cost_scripts():
+	for task in scripts_queue:
+		if task.is_cost:
+			return true
+	return false	
+
+func has_non_cost_scripts():
+	for task in scripts_queue:
+		if !task.is_cost:
+			return true
+	return false
 
 #sets the stored_integer for future use. 
 #Also sets it in the current ongoing script so we can refer to it

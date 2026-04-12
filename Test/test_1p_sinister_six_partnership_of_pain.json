@@ -1,0 +1,220 @@
+{
+	"_comments": "Bug: Partnership of pain not adding atk",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},		
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Electro - 1"
+				},
+				{
+					"card": "Doctor Octopus - 1",
+					"tokens": {
+						"damage": 7,
+						"active_counter": 1
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Vulture - 1"
+				},
+				{
+					"card": "Hobgoblin - 1"
+				},
+				{
+					"card": "Kraven the Hunter - 1"
+				},
+				{
+					"card": "Scorpion - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Frequent Flyers"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Partnership of Pain"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Sinister Synchronization",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Light at the End",
+					"tokens": {
+						"threat": 20
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Power within"
+				},
+				{
+					"card": "Defense Mechanism"
+				},
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Jefferson Davis"
+				},
+				{
+					"card": "Ganke Lee"
+				},
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Genius"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Electro - 1",
+					"tokens": {
+						"active_counter": 1
+					}
+				},
+				{
+					"card": "Doctor Octopus - 1",
+					"tokens": {
+						"damage": 7
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Vulture - 1"
+				},
+				{
+					"card": "Hobgoblin - 1"
+				},
+				{
+					"card": "Kraven the Hunter - 1"
+				},
+				{
+					"card": "Scorpion - 1"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Partnership of Pain"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Frequent Flyers"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Sinister Synchronization",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Light at the End",
+					"tokens": {
+						"threat": 20
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Ganke Lee"
+				},
+				{
+					"card": "Jefferson Davis"
+				},
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Defense Mechanism"
+				},
+				{
+					"card": "Power within"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			]
+		}
+	}
+}

@@ -1337,8 +1337,9 @@ func execute_scripts(
 	if card_scripts.get("_silent", false):
 		trigger_details["_silent"] = true
 	
-	if card_scripts.has("macro_name"):
-		trigger_details["macro_name"] = card_scripts["macro_name"]
+	for key in ["macro_name", "display_section"]:
+		if card_scripts.has(key):
+			trigger_details[key] = card_scripts[key]
 	
 	trigger_details["_display_name"] = card_scripts.get("display_name", trigger_details.get("_display_name", ""))
 
@@ -1811,13 +1812,17 @@ func remove_threat(modification: int, script = null) -> int:
 		pass
 	else:
 		if "main_scheme" == properties.get("type_code", "false"):
-			var all_schemes:Array = cfc.NMAP.board.get_all_cards_by_property("type_code", "side_scheme")
-			all_schemes.append(self) #some main schemes such as countdown to oblivion give themselves crisis
-			for scheme in all_schemes:
+			var all_cards:Array = cfc.NMAP.board.get_all_cards()
+			#some main schemes such as countdown to oblivion give themselves crisis,
+			#so it's ok to include the card itself in there
+			for card in all_cards:
 				#we add all acceleration tokens	
-				var crisis = scheme.get_property("scheme_crisis", 0, true)
+				var crisis = card.get_property("scheme_crisis", 0, true)
 				if crisis:
-					scheme.hint("Crisis!", Color8(200, 50, 50))
+					if !self in card.get_active_main_schemes(): #last verification to make sure that the crisis card considers this main scheme as an active main scheme
+						crisis = false
+				if crisis:
+					card.hint("Crisis!", Color8(200, 50, 50))
 					self.hint("Crisis!", Color8(200, 50, 50))
 					return CFConst.ReturnCode.FAILED
 	
@@ -2650,6 +2655,22 @@ func remove_current_activation(script):
 	if _current_activation_details != script:
 		var _error = 1
 	_current_activation_details = null
+
+#returns a list of active main schemes **from this card's perspective**
+#typically it contains only one element, but in some cases (e.g. Tower defense)
+# it might be multiple entries
+# Also see Venom Goblin Scenario in Sinister Motives which has multiple main schemes
+func get_active_main_schemes():
+	var scenario = gameData.scenario
+	if !self.is_encounter():
+		return [gameData.get_main_scheme()]
+	var setting = scenario.get_setting("encounter_requests_main_scheme", "")
+	match setting:
+		"all_main_schemes":
+			return gameData.get_main_schemes()
+		_:
+			return [gameData.get_main_scheme()]
+			
 
 #############################
 #FUNCTIONS USED DIRECTLY BY JSON SCRIPTS

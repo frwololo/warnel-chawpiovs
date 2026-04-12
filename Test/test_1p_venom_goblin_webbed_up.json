@@ -1,5 +1,5 @@
 {
-	"_comments": "Tests Symbiotic Monstrosity with Symbiote Environment",
+	"_comments": "Tests Webbed Up Encounter",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -12,35 +12,42 @@
 		"board": {
 			"villain": [
 				{
-					"card": "Venom Goblin - 1"
+					"card": "Venom Goblin - 1",
+					"tokens": {"damage": 1}
 				}
 			],
 			"deck_villain": [
 				{
 					"card": "Symbiotic Thrall"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Common Criminal"
+				},
+				{
+					"card": "Advance"
 				}
 			],
 			"schemes": [
 				{
 					"card": "Lower Manhattan - B",
 					"tokens": {
-						"threat": 2,
 						"glider": 1
 					}
 				},
 				{
-					"card": "Midtown Manhattan - C"
-				},			
-			],
-			"villain_misc": [
-				{
-					"card": "Upper Manhattan #27119b"
+					"card": "Midtown Manhattan - C",
+					"tokens": {
+						"threat": 1
+					}
 				},
-			],
-			"enemies1": [
 				{
-					"card": "Symbiotic Monstrosity",
-					"tokens": {	"damage": 5}
+					"card": "Upper Manhattan - D",
+					"tokens": {
+						"threat": 2
+					}
 				}
 			],
 			"hand1": [
@@ -59,6 +66,12 @@
 					"card": "Spider-Man #27030a"
 				}
 			],
+			"others": [
+				{
+					"card": "Webbed Up #27166",
+					"host": "Spider-Man"
+				}
+			],			
 		}
 	},
 	"actions": [
@@ -67,13 +80,13 @@
 			"value": "Spider-Man #27030a",
 		},
 		{
-			"type":  "choose",
-			"value": "attack"
+			"type": "choose",
+			"value": "attack",
 		},
 		{
 			"type": "target",
-			"value": "Symbiotic Monstrosity"
-		}
+			"value": "Venom Goblin - 1",
+		},	
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -87,37 +100,49 @@
 		"board": {
 			"villain": [
 				{
-					"card": "Venom Goblin - 1"
+					"card": "Venom Goblin - 1",
+					"tokens": {"damage": 1}
 				}
 			],
 			"deck_villain": [
 				{
 					"card": "Symbiotic Thrall"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Common Criminal"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Webbed Up",
 				}
 			],
 			"schemes": [
 				{
 					"card": "Lower Manhattan - B",
 					"tokens": {
-						"threat": 2,
 						"glider": 1
 					}
 				},
 				{
-					"card": "Midtown Manhattan - C"
-				},			
-			],
-			"villain_misc": [
-				{
-					"card": "Upper Manhattan #27119b"
+					"card": "Midtown Manhattan - C",
+					"tokens": {
+						"threat": 1
+					}
 				},
-			],
-			"enemies1": [
 				{
-					"card": "Symbiotic Monstrosity",
-					"tokens": {	"damage": 7}
+					"card": "Upper Manhattan - D",
+					"tokens": {
+						"threat": 2
+					}
 				}
-			],		
+			],
 			"hand1": [
 				{
 					"card": "Web-Shot"
@@ -132,9 +157,10 @@
 			"identity1": [
 				{
 					"card": "Spider-Man #27030a",
-					"tokens": {	"damage": 1}					
+					"exhausted": true,
+					"tokens": { "stunned": 1}
 				}
-			],
+			]
 		}
 	}
 }

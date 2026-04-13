@@ -218,14 +218,14 @@
 		}
 	},
 	"_surge": {
-		"card_moved_to_pile": {
+		"post_reveal": {
 			"trigger": "self",
-			"filter_destination": "encounters_reveal",
-			"pile": [
+			"all": [
 				{
 					"name": "surge"
 				}
-			]
+			],
+			"_comments": "this used to be card_moved_to_pile encounters_reveal but needed to be changed to accomodate for cards that prevent full effects such as dr strange protective ward"
 		}
 	},
 	"todo": {

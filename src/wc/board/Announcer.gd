@@ -46,7 +46,9 @@ const _script_name_to_function:={
 
 func add_child_to_board(child, details = {}):
 	var container = cfc.NMAP.board
-
+	if !is_instance_valid(container):
+		return
+		
 	if details.get("set_as_toplevel", false):
 		container.add_child_to_top_layer(child)
 	else:
@@ -194,7 +196,8 @@ func add_right_announce():
 	right_screen_announces +=1
 	
 	#ask the focused card to move if it's in the way
-	cfc.NMAP.main.reposition()
+	if is_instance_valid(cfc.NMAP.main):
+		cfc.NMAP.main.reposition()
 
 func remove_right_announce():
 	right_screen_announces -=1

@@ -1373,6 +1373,7 @@
 					"is_cost": true,
 					"subject": "boardseek",
 					"subject_count": "all",
+					"subject_exclude": "self",
 					"selection_count": 3,
 					"selection_type": "max",
 					"needs_selection": true,

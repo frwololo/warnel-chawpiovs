@@ -1,0 +1,136 @@
+{
+	"_comments": "Spider Sense only prevents when revealed, but not surge effect",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom Goblin - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				},
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},				
+				{
+					"card": "Unstable Sentience"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Lower Manhattan - B",
+					"tokens": {
+						"threat": 2,
+						"glider": 1
+					}
+				},
+				{
+					"card": "Midtown Manhattan - C"
+				},
+				{
+					"card": "Upper Manhattan - D"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Clea"
+				},
+				{
+					"card": "Enhanced Spider-Sense"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Enhanced Spider-Sense"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom Goblin - 1"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Unstable Sentience"
+				}			
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				},
+				{
+					"card": "Hydra Soldier"
+				},			
+
+			],
+			"schemes": [
+				{
+					"card": "Lower Manhattan - B",
+					"tokens": {
+						"threat": 2,
+						"glider": 1
+					}
+				},
+				{
+					"card": "Midtown Manhattan - C"
+				},
+				{
+					"card": "Upper Manhattan - D"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				},	
+			],
+			"discard1": [
+				{
+					"card": "Clea"
+				},
+				{
+					"card": "Enhanced Spider-Sense"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			]
+		}
+	}
+}

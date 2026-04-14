@@ -124,6 +124,12 @@ var _game_started := false
 func stop_game():
 	_game_started = false
 
+#TODO hack: I've had issues where a new game would start with
+#remaining bits of previous games
+func sanity_cleanup():
+	if is_instance_valid(theStack):
+		theStack.reset()
+
 func start_game():
 	cfc.LOG("game starting")
 	GameRecorder.init_game()
@@ -415,16 +421,18 @@ func can_i_play() -> bool:
 	
 	return true 	
 
-func start_tests():
-	cfc._rpc(self,"init_client_tests")
+func start_tests(test_options = ""):
+	cfc._rpc(self,"init_client_tests", test_options)
 
-remotesync func init_client_tests():
+remotesync func init_client_tests(test_options = ""):
 	if !testSuite:
 		testSuite = TestSuite.new()
 		testSuite.name = "testSuite"
 		self.add_child(testSuite) #Test suite needs to be in the tree for rpc calls	
 	else:
 		testSuite.reset()
+	
+	testSuite.set_test_options(test_options)
 
 func registerPhaseContainer(phasecont:PhaseContainer):
 	phaseContainer = phasecont

@@ -380,6 +380,7 @@ func attack(script: ScriptTask) -> int:
 			}
 			_add_pre_receive_damage_on_stack (damage, script, script_modifications)	
 		
+		#TODO everything below this line might have to move to the actual receive_damage section?
 		var overkill = owner.get_property("overkill", 0, true) or (script.retrieve_integer_property("overkill"))	
 		if overkill:
 			var defender = script.subjects[0]
@@ -1139,13 +1140,13 @@ func prevent(script: ScriptTask) -> int:
 				#unsupported
 				return CFConst.ReturnCode.FAILED
 		_:
-			if script.script_definition.has("amount"): #this is a partial prevention effect
-				var stack_object = script.trigger_details.get("stack_object", null) 
-				var task_object = script.trigger_details.get("event_object", null)
+			var stack_object = script.trigger_details.get("stack_object", null) 
+			var task_object = script.trigger_details.get("event_object", null)
 
-				#var stack_object = gameData.theStack.find_last_event_before_me(script)
-				if (!stack_object):	
-					return CFConst.ReturnCode.FAILED
+			#var stack_object = gameData.theStack.find_last_event_before_me(script)
+			if (!stack_object):	
+				return CFConst.ReturnCode.FAILED			
+			if script.script_definition.has("amount"): #this is a partial prevention effect
 
 				if (costs_dry_run()):
 					return retcode					
@@ -1155,18 +1156,18 @@ func prevent(script: ScriptTask) -> int:
 			else:	
 				#Find the event on the stack and remove it
 				#TOdo take into action subject, etc...
-			
-				var _event = gameData.theStack.retrieve_last_event(script)
-				if !_event:
-					return CFConst.ReturnCode.FAILED
-				var event_owner = _event.get_owner_card()
+#
+#				var _event = gameData.theStack.retrieve_last_event(script)
+#				if !_event:
+#					return CFConst.ReturnCode.FAILED
+				var event_owner = stack_object.get_owner_card()
 				if event_owner and event_owner.get_property("cannot_be_canceled", 0, true):
 					return CFConst.ReturnCode.FAILED
 					
 				if (costs_dry_run()):
 					return retcode
 				script.script_definition["pay_costs_anyway"] = true						
-				_event = gameData.theStack.delete_last_event(script)
+				gameData.theStack.delete_event(stack_object, script)
 				#todo find amount prevented
 			if amount_prevented:
 				var trigger_details = script.trigger_details.duplicate()
@@ -1616,12 +1617,22 @@ static func transfer_default_damage_properties(from_script, to_script):
 			to_script.script_definition[additional_data] = from_script.script_definition[additional_data].duplicate()
 
 func _add_pre_receive_damage_on_stack(amount, original_script, modifications:Dictionary = {}):		
+		var source = original_script.get_property("source", owner)
+
+		var source_character = source
+		var type = source_character.get_property("type_code", "")
+		if !type in ["hero", "ally", "villain", "minion"]:
+			source_character = _get_identity_from_script(original_script)	
+		
 		var receive_damage_script_definition = {
 			"name": "pre_receive_damage",
 			"amount": amount,
-			"source": original_script.get_property("source", owner),
+			"source": source,
+			"source_character": source_character,
 			"tags": modifications.get("tags", original_script.get_property("tags", []))
 		}
+
+
 		
 		modifications["script_definition"] =  receive_damage_script_definition	
 		var receive_damage_script = _modify_script(original_script, modifications, "replace")

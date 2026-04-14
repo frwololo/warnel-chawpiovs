@@ -102,9 +102,22 @@ margin_bottom = 638.0
 size_flags_vertical = 3
 custom_constants/separation = 326
 
-[node name="TestsButton" type="Button" parent="PanelContainer/general/VBoxContainer/DebugContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/general/VBoxContainer/DebugContainer"]
+margin_right = 200.0
+margin_bottom = 119.0
+
+[node name="TestOptions" type="OptionButton" parent="PanelContainer/general/VBoxContainer/DebugContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_right = 200.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 200, 0 )
+text = "ALL"
+items = [ "ALL", null, false, 0, false, "Sanity", null, false, 0, false ]
+selected = 0
+
+[node name="TestsButton" type="Button" parent="PanelContainer/general/VBoxContainer/DebugContainer/VBoxContainer"]
 margin_top = 44.0
-margin_right = 414.0
+margin_right = 200.0
 margin_bottom = 119.0
 size_flags_horizontal = 3
 size_flags_vertical = 10
@@ -112,9 +125,9 @@ custom_fonts/font = SubResource( 2 )
 text = "Tests"
 
 [node name="ForceResyncButton" type="Button" parent="PanelContainer/general/VBoxContainer/DebugContainer"]
-margin_left = 740.0
+margin_left = 526.0
 margin_top = 44.0
-margin_right = 1155.0
+margin_right = 1048.0
 margin_bottom = 119.0
 size_flags_horizontal = 3
 size_flags_vertical = 10
@@ -123,7 +136,7 @@ text = "FORCE RESYNC"
 
 [node name="DebugButton" type="CheckButton" parent="PanelContainer/general/VBoxContainer/DebugContainer"]
 unique_name_in_owner = true
-margin_left = 1481.0
+margin_left = 1374.0
 margin_right = 1896.0
 margin_bottom = 119.0
 size_flags_horizontal = 3

@@ -23,6 +23,114 @@
 				}
 			]
 		},
+		"_manhattan_completed": {
+			"interrupt": {
+				"event_name": "stage_completed",
+				"trigger": "self",
+				"board": [
+					{
+						"name": "prevent",
+						"subject": "interrupted_event"
+					},
+					{
+						"name": "mod_tokens",
+						"modification": 0,
+						"set_to_mod": true,
+						"token_name": "threat",
+						"subject": "self"
+					},
+					{
+						"name": "move_token_to",
+						"token_name": "glider",
+						"amount": 1,
+						"source": "self",
+						"subject": "boardseek",
+						"subject_exclude": "self",
+						"subject_count": 1,
+						"sort_by": "function",
+						"sort_name": "count_tokens",
+						"func_params": {
+							"token_name": "threat"
+						},
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "main_scheme"
+								}
+							}
+						]
+					},
+					{
+						"name": "move_token_to",
+						"token_name": "acceleration",
+						"amount": "all",
+						"source": "self",
+						"subject": "boardseek",
+						"subject_exclude": "self",
+						"subject_count": 1,
+						"sort_by": "function",
+						"sort_name": "count_tokens",
+						"func_params": {
+							"token_name": "threat"
+						},
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "main_scheme"
+								}
+							}
+						]
+					},
+					{
+						"name": "move_card_to_board",
+						"grid_name": "villain_misc",
+						"subject": "self"
+					},
+					{
+						"name": "flip_doublesided_card",
+						"subject": "self"
+					}
+				]
+			}
+		},
+		"_manhattan_defeat_check": {
+			"card_moved_to_board": {
+				"_silent": "true",
+				"board": [
+					{
+						"name": "conditional_script",
+						"_silent": true,
+						"options": [
+							{
+								"condition": {
+									"func_name": "count_cards",
+									"func_params": {
+										"subject": "boardseek",
+										"subject_count": "all",
+										"filter_state_seek": [
+											{
+												"filter_properties": {
+													"trait_symbiote": 1
+												},
+												"filter_properties2": {
+													"type_code": "environment"
+												}
+											}
+										],
+										"divider": 2
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "defeat"
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		},
 		"_sinister_six_villain_death": {
 			"interrupt_card_dies": {
 				"trigger": "self",
@@ -4095,110 +4203,10 @@
 				}
 			]
 		},
-		"interrupt": {
-			"event_name": "stage_completed",
-			"trigger": "self",
-			"board": [
-				{
-					"name": "prevent",
-					"subject": "interrupted_event"
-				},
-				{
-					"name": "mod_tokens",
-					"modification": 0,
-					"set_to_mod": true,
-					"token_name": "threat",
-					"subject": "self"
-				},
-				{
-					"name": "move_token_to",
-					"token_name": "glider",
-					"amount": 1,
-					"source": "self",
-					"subject": "boardseek",
-					"subject_exclude": "self",
-					"subject_count": 1,
-					"sort_by": "function",
-					"sort_name": "count_tokens",
-					"func_params": {
-						"token_name": "threat"
-					},
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "main_scheme"
-							}
-						}
-					]
-				},
-				{
-					"name": "move_token_to",
-					"token_name": "acceleration",
-					"amount": "all",
-					"source": "self",
-					"subject": "boardseek",
-					"subject_exclude": "self",
-					"subject_count": 1,
-					"sort_by": "function",
-					"sort_name": "count_tokens",
-					"func_params": {
-						"token_name": "threat"
-					},
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "main_scheme"
-							}
-						}
-					]
-				},
-				{
-					"name": "move_card_to_board",
-					"grid_name": "villain_misc",
-					"subject": "self"
-				},
-				{
-					"name": "flip_doublesided_card",
-					"subject": "self"
-				}
-			]
-		}
+		"_manhattan_completed": {}
 	},
 	"Lower Manhattan #27117b": {
-		"card_moved_to_board": {
-			"board": [
-				{
-					"name": "conditional_script",
-					"options": [
-						{
-							"condition": {
-								"func_name": "count_cards",
-								"func_params": {
-									"subject": "boardseek",
-									"subject_count": "all",
-									"filter_state_seek": [
-										{
-											"filter_properties": {
-												"trait_symbiote": 1
-											},
-											"filter_properties2": {
-												"type_code": "environment"
-											}
-										}
-									],
-									"divider": 2
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "defeat"
-								}
-							]
-						}
-					]
-				}
-			]
-		}
+		"_manhattan_defeat_check": {}
 	},
 	"Manipulated Mind": {
 		"self_moved_to_board": {
@@ -4455,110 +4463,10 @@
 				}
 			]
 		},
-		"interrupt": {
-			"event_name": "stage_completed",
-			"trigger": "self",
-			"board": [
-				{
-					"name": "prevent",
-					"subject": "interrupted_event"
-				},
-				{
-					"name": "mod_tokens",
-					"modification": 0,
-					"set_to_mod": true,
-					"token_name": "threat",
-					"subject": "self"
-				},
-				{
-					"name": "move_token_to",
-					"token_name": "glider",
-					"amount": 1,
-					"source": "self",
-					"subject": "boardseek",
-					"subject_exclude": "self",
-					"subject_count": 1,
-					"sort_by": "function",
-					"sort_name": "count_tokens",
-					"func_params": {
-						"token_name": "threat"
-					},
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "main_scheme"
-							}
-						}
-					]
-				},
-				{
-					"name": "move_token_to",
-					"token_name": "acceleration",
-					"amount": "all",
-					"source": "self",
-					"subject": "boardseek",
-					"subject_exclude": "self",
-					"subject_count": 1,
-					"sort_by": "function",
-					"sort_name": "count_tokens",
-					"func_params": {
-						"token_name": "threat"
-					},
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "main_scheme"
-							}
-						}
-					]
-				},
-				{
-					"name": "move_card_to_board",
-					"grid_name": "villain_misc",
-					"subject": "self"
-				},
-				{
-					"name": "flip_doublesided_card",
-					"subject": "self"
-				}
-			]
-		}
+		"_manhattan_completed": {}
 	},
 	"Midtown Manhattan #27118b": {
-		"card_moved_to_board": {
-			"board": [
-				{
-					"name": "conditional_script",
-					"options": [
-						{
-							"condition": {
-								"func_name": "count_cards",
-								"func_params": {
-									"subject": "boardseek",
-									"subject_count": "all",
-									"filter_state_seek": [
-										{
-											"filter_properties": {
-												"trait_symbiote": 1
-											},
-											"filter_properties2": {
-												"type_code": "environment"
-											}
-										}
-									],
-									"divider": 2
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "defeat"
-								}
-							]
-						}
-					]
-				}
-			]
-		}
+		"_manhattan_defeat_check": {}
 	},
 	"Miles Morales": {
 		"response": {
@@ -4640,12 +4548,12 @@
 	"Mysterio - 1": {
 		"response": {
 			"event_name": "boost_card_resolved",
+			"filter_is_hosted_by": "self",
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
 						"trait_illusion": 1
-					},
-					"filter_is_hosted_by": "self"
+					}
 				}
 			],
 			"board": [
@@ -4680,12 +4588,12 @@
 		},
 		"response": {
 			"event_name": "boost_card_resolved",
+			"filter_is_hosted_by": "self",
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
 						"trait_illusion": 1
-					},
-					"filter_is_hosted_by": "self"
+					}
 				}
 			],
 			"board": [
@@ -4722,12 +4630,12 @@
 		},
 		"response": {
 			"event_name": "boost_card_resolved",
+			"filter_is_hosted_by": "self",
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
 						"trait_illusion": 1
-					},
-					"filter_is_hosted_by": "self"
+					}
 				}
 			],
 			"board": [
@@ -7910,110 +7818,10 @@
 				}
 			]
 		},
-		"interrupt": {
-			"event_name": "stage_completed",
-			"trigger": "self",
-			"board": [
-				{
-					"name": "prevent",
-					"subject": "interrupted_event"
-				},
-				{
-					"name": "mod_tokens",
-					"modification": 0,
-					"set_to_mod": true,
-					"token_name": "threat",
-					"subject": "self"
-				},
-				{
-					"name": "move_token_to",
-					"token_name": "glider",
-					"amount": 1,
-					"source": "self",
-					"subject": "boardseek",
-					"subject_exclude": "self",
-					"subject_count": 1,
-					"sort_by": "function",
-					"sort_name": "count_tokens",
-					"func_params": {
-						"token_name": "threat"
-					},
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "main_scheme"
-							}
-						}
-					]
-				},
-				{
-					"name": "move_token_to",
-					"token_name": "acceleration",
-					"amount": "all",
-					"source": "self",
-					"subject": "boardseek",
-					"subject_exclude": "self",
-					"subject_count": 1,
-					"sort_by": "function",
-					"sort_name": "count_tokens",
-					"func_params": {
-						"token_name": "threat"
-					},
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "main_scheme"
-							}
-						}
-					]
-				},
-				{
-					"name": "move_card_to_board",
-					"grid_name": "villain_misc",
-					"subject": "self"
-				},
-				{
-					"name": "flip_doublesided_card",
-					"subject": "self"
-				}
-			]
-		}
+		"_manhattan_completed": {}
 	},
 	"Upper Manhattan #27119b": {
-		"card_moved_to_board": {
-			"board": [
-				{
-					"name": "conditional_script",
-					"options": [
-						{
-							"condition": {
-								"func_name": "count_cards",
-								"func_params": {
-									"subject": "boardseek",
-									"subject_count": "all",
-									"filter_state_seek": [
-										{
-											"filter_properties": {
-												"trait_symbiote": 1
-											},
-											"filter_properties2": {
-												"type_code": "environment"
-											}
-										}
-									],
-									"divider": 2
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "defeat"
-								}
-							]
-						}
-					]
-				}
-			]
-		}
+		"_manhattan_defeat_check": {}
 	},
 	"Venom - 1": {
 		"response_attack_happened": {
@@ -8818,9 +8626,13 @@
 				}
 			]
 		},
-		"interrupt": {
-			"event_name": "attack",
-			"trigger": "host",
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"source_character": "host",
+				"tags": [
+					"attack"
+				]
+			},
 			"board": [
 				{
 					"name": "mod_tokens",
@@ -8831,7 +8643,7 @@
 				},
 				{
 					"name": "prevent",
-					"subject": "interrupted_event",
+					"subject": "interrupted_event"
 				},
 				{
 					"name": "move_card_to_container",

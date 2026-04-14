@@ -1105,6 +1105,28 @@ func retrieve_last_event(requester:ScriptTask):
 		event = stack[max_id]
 
 	return event
+
+func delete_event(event, requester):
+	#the requester usually doesn't want to delete themselves
+	var pay_costs_anyway = requester.get_property("pay_costs_anyway", false)
+	var found_id = find_event_id_in_stack(event)
+	var overall_event = null
+	if found_id >=0:
+		overall_event = stack[found_id]
+		if pay_costs_anyway:
+			var sceng = overall_event.get_sceng()
+			if sceng and sceng.has_cost_scripts() and sceng.has_non_cost_scripts():
+				overall_event.remove_non_cost_tasks()
+			else:
+				#fallback: asked to prevent an event that is all costs or no costs
+				pay_costs_anyway = false
+		if !pay_costs_anyway:	
+			stack_remove(found_id)
+		#this can be sent whether the event was deleted or just modifid (with remove_non_cost) but this might bite me back later	
+		scripting_bus.emit_signal("stack_event_deleted", overall_event)
+	else:
+		display_debug("Error: script " + requester.script_name + " asked me to delete event but I couldn't find it")
+	return overall_event
 		
 func delete_last_event(requester:ScriptTask):
 	#the requester usually doesn't want to delete themselves
@@ -1128,7 +1150,7 @@ func delete_last_event(requester:ScriptTask):
 		display_debug("Error: script " + requester.script_name + " asked me to delete event but I couldn't find it")
 	return event	
 
-func is_script_in_stack_object(script:ScriptTask, stack_item):
+func is_script_in_stack_object(script, stack_item):
 	if script == stack_item: 
 		return true
 	for task in stack_item.get_tasks():
@@ -1144,6 +1166,14 @@ func get_stack_object_by_uid(stack_uid):
 	var fallback_obj = history.get(stack_uid, null)
 	if fallback_obj:
 		return (fallback_obj.get("stack_object", null))
+
+func find_event_id_in_stack(event):
+	#the requester usually doesn't want to delete themselves
+	for i in stack.size():
+		if is_script_in_stack_object(event, stack[i]):
+			return i
+	return -1
+
 func find_last_event_id_before_me(requester:ScriptTask):
 	#the requester usually doesn't want to delete themselves
 	for i in stack.size():

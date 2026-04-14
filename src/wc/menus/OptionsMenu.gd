@@ -41,7 +41,9 @@ func on_button_pressed(_button_name : String) -> void:
 			close_me()
 		"TestsButton":
 			# warning-ignore:return_value_discarded
-			gameData.start_tests()
+			var test_options:OptionButton = get_node("%TestOptions")
+			var test_option = test_options.get_item_text(test_options.selected)
+			gameData.start_tests(test_option.to_lower())
 			close_me()
 		"DebugButton":
 			var debug_button:CheckButton = get_node("%DebugButton")

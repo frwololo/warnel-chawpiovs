@@ -30,6 +30,7 @@ var announce_verbose_whitelist:= ["running", "rng", "error", "warning"]
 var last_rng_state = 0
 var start_time = 0
 var end_time = 0
+var test_list_filter = ""
 
 enum TestStatus {
 	NONE,
@@ -281,6 +282,9 @@ func get_delay_multiplier(my_action = {}):
 		if wait_longer:
 			wait_multiplier = wait_multiplier * 10
 	return wait_multiplier	
+
+func set_test_options(test_options:String):
+	test_list_filter = test_options
 
 func should_wait(my_action, _delta):
 	var action_type = my_action.get("type", "")
@@ -1053,6 +1057,17 @@ func load_test(test_file)-> bool:
 			skipped.append(test_file)
 			skipped_reason.append("multiplayer game - skip 1P test")
 			return false
+
+	test_conditions = json_card_data.get("test_conditions", {})
+	match test_list_filter:
+		"sanity":
+			var bug_type = test_conditions.get("bug_type", "")
+			if bug_type =="card_json":
+				skipped.append(test_file)
+				skipped_reason.append("Sanity checks - skip card bug test")
+				return false			
+		_:
+			pass
 	
 	announce("running test: " + test_file +"\n")	
 	initial_state = json_card_data["init"]
@@ -1063,7 +1078,7 @@ func load_test(test_file)-> bool:
 		action["type"] = type
 		
 	end_state = json_card_data["end"]
-	test_conditions = json_card_data.get("test_conditions", {})
+
 	
 	#init remote clients
 	var remote_init_data = {

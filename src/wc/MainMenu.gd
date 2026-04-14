@@ -37,7 +37,8 @@ var _next_scene = ""
 var _next_scene_counter = 0
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	gameData.disconnect_from_network()	
+	gameData.disconnect_from_network()
+	gameData.sanity_cleanup()	
 	create_default_folders()
 	#hide all buttons while we load, but keep the exit button
 	_hide_buttons()	

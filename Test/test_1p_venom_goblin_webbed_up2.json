@@ -1,0 +1,165 @@
+{
+	"_comments": "Tests Webbed Up Encounter vs Momentum Shift",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom Goblin - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Common Criminal"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Lower Manhattan - B",
+					"tokens": {
+						"glider": 1
+					}
+				},
+				{
+					"card": "Midtown Manhattan - C",
+					"tokens": {
+						"threat": 1
+					}
+				},
+				{
+					"card": "Upper Manhattan - D",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Webbed Up #27166",
+					"host": "Spider-Man"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Momentum Shift"
+		},
+		{
+			"type": "target",
+			"value": "Venom Goblin - 1"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom Goblin - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Common Criminal"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Webbed Up"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Lower Manhattan - B",
+					"tokens": {
+						"glider": 1
+					}
+				},
+				{
+					"card": "Midtown Manhattan - C",
+					"tokens": {
+						"threat": 1
+					}
+				},
+				{
+					"card": "Upper Manhattan - D",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Momentum Shift"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a",
+					"tokens": {
+						"stunned": 1,
+						"damage": 1
+					}
+				}
+			]
+		}
+	}
+}

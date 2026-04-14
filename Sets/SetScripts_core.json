@@ -6286,11 +6286,7 @@
 					"dest_container": "discard"
 				}
 			],
-			"filter_state_trigger": [
-				{
-					"filter_is_host_of": "self"
-				}
-			]
+			"filter_is_host_of": "self"
 		}
 	},
 	"Whirlwind": {

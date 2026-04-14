@@ -263,9 +263,8 @@
 			"filter_token_name": "__name__",
 			"board": [
 				{
-					"name": "move_card_to_container",
+					"name": "discard",
 					"subject": "self",
-					"dest_container": "discard"
 				}
 			]
 		}

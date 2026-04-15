@@ -1421,7 +1421,7 @@ func deal_encounters():
 	var all_cards:Array = cfc.NMAP.board.get_all_cards()
 	for card in all_cards:
 		#we add all hazard icons	
-		hazard  += card.get_property("scheme_hazard", 0)
+		hazard  += card.get_property("scheme_hazard", 0, true)
 	
 	while hazard:
 		deal_one_encounter_to(_villain_current_hero_target)

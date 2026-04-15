@@ -88,8 +88,10 @@ func is_silent():
 			return true
 		if task.script_definition.get("_silent", false):
 			return true		
-		if task.script_name == "mod_tokens"	and task.script_definition.get("token_name", "").begins_with("__"):
-			do_show -=1
+		if task.script_name == "mod_tokens":
+			var token_name = task.get_property("token_name", "")
+			if typeof(token_name) == TYPE_STRING and token_name.begins_with("__"):
+				do_show -=1
 		#don't show for some categories of scripts where amount is 0	
 		if task.script_name in ["surge"] and task.script_definition.has("amount"):		
 			var amount = task.retrieve_integer_property("amount", 0)

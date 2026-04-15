@@ -5085,7 +5085,7 @@
 		}
 	},
 	"The Getaway - 3A": {
-		"setup": {
+		"reveal": {
 			"all": [
 				{
 					"name": "flip_doublesided_card",
@@ -5107,7 +5107,7 @@
 		}
 	},
 	"The Infinity Stone - 2A": {
-		"setup": {
+		"reveal": {
 			"all": [
 				{
 					"name": "flip_doublesided_card",

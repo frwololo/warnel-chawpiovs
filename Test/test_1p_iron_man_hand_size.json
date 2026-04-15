@@ -1,0 +1,170 @@
+{
+	"_comments": "Bug for Iron Man Hand Size modified by Tech",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"set_aside": [
+				{
+					"card": "Iron Man"
+				}
+			],		
+			"deck_villain": [
+				{
+					"card": "Shocker"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Assault"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"villain": [
+				{
+					"card": "01113"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116b",
+					"tokens": {
+						"threat": 3
+					}
+				},
+			],
+			"deck1": [
+				{
+					"card": "Relentless Assault"
+				},
+				{
+					"card": "Chase Them Down"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "The Power of Aggression"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Tony Stark"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Rocket Boots"
+				},
+				{
+					"card": "Powered Gauntlets"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Tony Stark"
+		},
+		{
+			"type": "choose",
+			"value": "Change form"
+		},		
+		{
+			"type": "next_phase",
+			"value": 1
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Advance"
+				},			
+				{
+					"card": "Assault"
+				},
+
+			],
+			"deck_villain": [
+				{
+					"card": "Shocker"
+				}
+			],
+			"villain": [
+				{
+					"card": "01113"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116b",
+					"tokens": {
+						"threat": 4
+					}
+				},
+			],
+			"deck1": [
+				{
+					"card": "Relentless Assault"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "The Power of Aggression"
+				},		
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Chase Them Down"
+				},
+			],
+			"upgrade_support1": [
+				{
+					"card": "Rocket Boots"
+				},
+				{
+					"card": "Powered Gauntlets"
+				}
+			]
+		}
+	}
+}

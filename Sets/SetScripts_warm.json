@@ -197,6 +197,7 @@
 			"all": [
 				{
 					"name": "deal_damage",
+					"amount": 1,
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
@@ -686,6 +687,7 @@
 		}
 	},
 	"Living Laser": {
+		"quickstrike": {},
 		"attacks_gain": {
 			"__trigger__": "self",
 			"__tags__": "piercing"

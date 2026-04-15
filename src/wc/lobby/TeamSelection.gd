@@ -97,7 +97,7 @@ func _ready():
 		get_node("%HeroesTitle").text += suffix
 
 		suffix = " (all unlocked!)"
-		var scenarios_left_to_unlock = cfc.get_locked_scenarios().size()
+		var scenarios_left_to_unlock = ScenarioDeckData.get_locked_scenarios().size()
 		if scenarios_left_to_unlock:
 			suffix = " (" +str(scenarios_left_to_unlock) + " left to unlock)"
 		get_node("%ScenarioHeader").text +=  suffix

@@ -7115,14 +7115,15 @@
 		}
 	},
 	"The Infinity Stones - 1A": {
-		"setup": {
+		"reveal": {
 			"all": [
 				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
 				}
 			]
-		}
+		},
+		"_comments": "this is done at reveal instead of setup, otherwise the deck_infinity_stone isn't ready yet"
 	},
 	"The Infinity Stones - 1B": {
 		"reveal": {

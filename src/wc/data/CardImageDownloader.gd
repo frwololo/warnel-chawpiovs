@@ -260,7 +260,7 @@ func check_servers_health():
 				continue
 			else:
 				yield(self, "one_server_check_completed")
-			if http_request:
+			if http_request and (http_request in get_children()):
 				remove_child(http_request)
 				http_request.queue_free()			
 

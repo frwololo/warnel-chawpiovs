@@ -1074,8 +1074,17 @@ func move_token_to(script: ScriptTask) -> int:
 		source.tokens.mod_token(token_name, -amount)
 	
 	if token_name == "damage" and ("attack" in tags):
+		var backup = script.script_definition.duplicate()
 		script.script_definition["amount"] = amount
-		return attack(script)
+		
+		#quick fix for an issue with Black Panther's move damage sequence
+		if source:
+			script.script_definition["source"] =  source
+		else:
+			script.script_definition.erase("source")
+		retcode = attack(script)
+		script.script_definition = backup
+		return retcode
 	else:
 		target.tokens.mod_token(token_name, amount, false, false, ["forced"])
 						

@@ -42,6 +42,7 @@ static func _get_deck_cards(_deck_id):
 func get_deck_cards(): #todo cache?
 	return _get_deck_cards(deck_id)
 
+#any additional cards from a hero that need to be set aside during setup
 func get_extra_deck_cards(container:= "set_aside"):
 	var alter_ego_data = get_alter_ego_card_data()
 	var alter_ego_id = alter_ego_data.get("_code", "")

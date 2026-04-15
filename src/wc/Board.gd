@@ -874,12 +874,16 @@ func load_cards() -> void:
 				})
 
 		var set_aside_datas = hero_deck_data.get_extra_deck_cards()
+		
+		#we also load the hero side of the card to set aside
+		set_aside_datas.append(hero_deck_data.get_hero_card_data())
 		for card_data in set_aside_datas:
 			var card_id = card_data["code"]
 			set_aside_info.append({
 				"card" : card_id,
 				"owner_hero_id": hero_id
 			})					
+				
 							
 		load_cards_to_pile(card_info, "deck" + str(hero_id))
 		load_cards_to_pile(set_aside_info, "set_aside")

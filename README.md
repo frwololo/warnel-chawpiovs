@@ -20,14 +20,16 @@ Generally Speaking this tries to perfectly mimic the rules of the orginal board 
 
 Other than that, here are known limitations with the engine at the moment:
 * Warnel Chawpiovs doesn't support Campaign mode currently
-* Responses aren't exactly supported. They're either treated as interrupts, or react to the internal engine's events in no specific order. It "works" except in tricky cases where order of events is critical
 
 ## Current Status (General)
-This simulator supports the following cards from the original game (current total 10 heroes, 13 villains):
+This simulator supports the following cards from the original game (current total 14 heroes, 18 villains):
 * Core box (5 heroes, 3 villains)
 * Captain America (1 Hero)
+* Doctor Strange (1 Hero)
 * The Rise of Red skull ( 2 heroes, 5 villains)
 * The Mad Titan's Shadow ( 2 heroes, 5 villains)
+* War Machine (1 Hero)
+* Sinister Motives ( 2 heroes, 5 villains)
 
 There is no tutorial included, and, although the rules are automatically handled by the engine, it will quickly become confusing if you are not already familar with the original game.
 
@@ -55,19 +57,17 @@ I do distributes binaries for Mac and Linux, but those are mostly untested. On L
 
 ## Users: Installing the Game
 1. Download the binary and the pck file from the [releases section](https://github.com/frwololo/warnel-chawpiovs/releases), and copy them to any folder on your device (on the Switch, this should probably be in the "switch" folder of your SD card)
-2. (optional) get your hands on a pck or zip file containing the images (it should be named core.zip or core.pck) and put it either in the same folder as your binary, or in the game's user folder. **be aware that PCK files are depending on Godot's version, and some PCK files might be specific to a particular version or port of the game. E.g a PCK file that works fine on PC might not necessarily work on Switch**
-   * If you skip this step, the game will automatically download images the first time it runs. This requires internet access enabled, and might take a while!
-3. That's it, you can run the game. (On Switch, you need to launch it from the homebrew menu - not in applet mode! -)
+2. That's it, you can run the game. (On Switch, you need to launch it from the homebrew menu - not in applet mode! -)
 
 ## Users: Running the game
 ### Downloading Images and other resources
 When you run the game for the first time, Warnel Chawpiovs needs to download some data, including card definitions and card pictures. By default, most of this data is downloaded from https://marvelcdb.com.
-Image downloads in particular might take some time, but this should only happen the first time you run the game.
+Image downloads in particular might take some time, but this should only happen the first time you run the game. This will happen in the background and you can play the game while pictures get downloaded.
 
 **Alternatively**, it is possible to have all the images packed either in a PCK or a ZIP file at the root of the user folder (PCK are the DLC file format for Godot) with the right structure. See below for folder structure.
 
 ### How to play
-https://www.youtube.com/watch?v=AbOm5UHoGbE
+[https://www.youtube.com/watch?v=AbOm5UHoGbE](https://www.youtube.com/watch?v=zeI4Mra8tAc)
 
 ### Hosting a Multiplayer game
 See the Current Status section above for disclaimers about the multiplayer mode.
@@ -91,7 +91,9 @@ Relevant files and subfolders of the user folder are:
 * What is Applet mode on Nintendo Switch and why is the game complaining about it?
   * Godot on the Nintendo Switch requires a lot of resources. The homebrew menu on the Nintendo Switch will run in a constrained environment called "applet mode" if you access it "normally" by pressing on the Album icon. In order to run the homebrew menu in the mode required for Godot games to run, you need to insert a game cartridge in the Switch, and press R while starting the game. This will start the Homebrew menu (instead of running the Switch cartridge) in the appropriate mode for Godot games.
 * Players can't connect to my multiplayer game
-  * Make sure you have forwarded port 7777 on your Router. That is the only strong requirement at the moment.    
+  * Make sure you have forwarded port 7777 on your Router. That is the only strong requirement at the moment.
+* I don't see all Heroes and Scenarios
+  * go to options > Gameplay and uncheck "Adventure Mode" if you want to play with all heroes/scenarios without having to unlock them (in Adventure mode you have to win games in order to unlcok more stuff)    
 
 ## Modders: Adding new cards to the Game
 The basics to adding new cards to the game is to choose a specific set from marvelcdb, create a scripts json file for it (in addition to downloading marvelcdb's own json), and modify the settings file to include this set. Specifically:

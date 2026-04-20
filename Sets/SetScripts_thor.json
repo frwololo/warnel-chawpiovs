@@ -1,0 +1,547 @@
+{
+	"Asgard": {
+		"TODO": "",
+		"alterants": [
+			{
+				"board": [
+					{
+						"filter_task": "get_property",
+						"filter_property_name": "TODO",
+						"filter_state_trigger": [
+							{
+								"TODO": "TODO"
+							}
+						],
+						"alteration": 1
+					}
+				]
+			}
+		]
+	},
+	"Avengers Mansion": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Battle Fury": {
+		"TODO": "",
+		"response": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Chase Them Down": {
+		"response": {
+			"event_name": "enemy_died",
+			"event_filters": {
+				"source": "my_hero",
+				"tags": [
+					"attack"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "remove_threat",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Defender of the Nine Realms": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart"
+				}
+			]
+		}
+	},
+	"Enhanced Physique": {
+		"TODO": "",
+		"resource": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_resource"
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "TODO"
+				}
+			]
+		}
+	},
+	"Family Feud": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"For Asgard!": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				}
+			]
+		}
+	},
+	"Frost Giant": {
+		"boost": {
+			"all": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"stun_if_damage"
+						]
+					}
+				}
+			]
+		}
+	},
+	"Get Over Here!": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart"
+				}
+			]
+		}
+	},
+	"God of Thunder": {
+		"TODO": "",
+		"resource": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_resource"
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "TODO"
+				}
+			]
+		}
+	},
+	"Hall of Heroes": {
+		"TODO": "",
+		"response": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Hammer Throw": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart"
+				}
+			]
+		}
+	},
+	"Heimdall": {
+		"TODO": "",
+		"response": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Hercules": {
+		"TODO": ""
+	},
+	"Invulnerability": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Jarnbjorn": {
+		"TODO": "",
+		"response": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Lady Sif": {
+		"self_moved_to_board": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "ready_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Thor"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Odinson"
+							}
+						},
+						{
+							"filter_properties": {
+								"subname": "Thor"
+							}
+						},
+						{
+							"filter_properties": {
+								"subname": "Odinson"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Lightning Strike": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Loki": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Mean Swing": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				}
+			]
+		},
+		"alterants": [
+			{
+				"hand": [
+					{
+						"filter_task": "get_property",
+						"filter_property_name": "TODO",
+						"filter_state_trigger": [
+							{
+								"TODO": "TODO"
+							}
+						],
+						"alteration": 1
+					}
+				]
+			}
+		]
+	},
+	"Mjolnir": {
+		"TODO": "",
+		"alterants": [
+			{
+				"board": [
+					{
+						"filter_task": "get_property",
+						"filter_property_name": "TODO",
+						"filter_state_trigger": [
+							{
+								"TODO": "TODO"
+							}
+						],
+						"alteration": 1
+					}
+				]
+			}
+		]
+	},
+	"Odin's Anger": {
+		"TODO": ""
+	},
+	"Odinson": {
+		"once_per_round": {
+			"__name__": "_worthy"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"token_name": "_worthy",
+					"modification": -1,
+					"is_cost": "true"
+				},
+				{
+					"name": "move_card_to_container",
+					"src_container": [
+						"deck",
+						"discard"
+					],
+					"dest_container": "hand",
+					"subject": "tutor",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Mjolnir"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Second Wind": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action"
+					]
+				},
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action"
+					]
+				}
+			]
+		}
+	},
+	"Teamwork": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				}
+			]
+		}
+	},
+	"The Power of Aggression": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "aggression"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Thor": {
+		"once_per_phase": {
+			"__name__": "_have_at_thee"
+		},
+		"response": {
+			"event_name": "card_moved_to_board",
+			"event_filters": {
+				"destination": "enemies_my_hero"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"token_name": "_have_at_thee",
+					"modification": -1,
+					"is_cost": "true"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 2
+				}
+			]
+		}
+	},
+	"Thor's Helmet": {
+		"TODO": "",
+		"alterants": [
+			{
+				"board": [
+					{
+						"filter_task": "get_property",
+						"filter_property_name": "TODO",
+						"filter_state_trigger": [
+							{
+								"TODO": "TODO"
+							}
+						],
+						"alteration": 1
+					}
+				]
+			}
+		]
+	},
+	"Trickster": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Under Surveillance": {
+		"TODO": "",
+		"card_moved_to_board": [
+			{
+				"trigger": "self",
+				"board": [
+					{
+						"name": "attach_to_card",
+						"subject": "TODO"
+					}
+				]
+			}
+		]
+	},
+	"Valkyrie": {
+		"TODO": "",
+		"response": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	}
+}

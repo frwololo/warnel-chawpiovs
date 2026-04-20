@@ -1,0 +1,215 @@
+{
+	"_comments": "Bug: Hidden in Shadow Hazard alterant not working",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Electro - 1"
+				},
+				{
+					"card": "Doctor Octopus - 1",
+					"tokens": {
+						"damage": 7,
+						"active_counter": 1
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Vulture - 1"
+				},
+				{
+					"card": "Hobgoblin - 1"
+				},
+				{
+					"card": "Kraven the Hunter - 1"
+				},
+				{
+					"card": "Scorpion - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Frequent Flyers"
+				},
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Life-Size Decoy"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Sinister Synchronization",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Hidden in Shadow",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Light at the End",
+					"tokens": {
+						"threat": 20
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Power within"
+				},
+				{
+					"card": "Defense Mechanism"
+				},
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Jefferson Davis"
+				},
+				{
+					"card": "Ganke Lee"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Electro - 1"
+				},
+				{
+					"card": "Doctor Octopus - 1",
+					"tokens": {
+						"damage": 7,
+						"active_counter": 1
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Vulture - 1"
+				},
+				{
+					"card": "Hobgoblin - 1"
+				},
+				{
+					"card": "Kraven the Hunter - 1"
+				},
+				{
+					"card": "Scorpion - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Frequent Flyers"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Sinister Synchronization",
+					"tokens": {
+						"threat": 3
+					}
+				},
+				{
+					"card": "Hidden in Shadow",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Light at the End",
+					"tokens": {
+						"threat": 20
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Life-Size Decoy"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Power within"
+				},
+				{
+					"card": "Defense Mechanism"
+				},
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Jefferson Davis"
+				},
+				{
+					"card": "Ganke Lee"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			]
+		}
+	}
+}

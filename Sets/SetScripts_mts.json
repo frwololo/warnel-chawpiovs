@@ -1030,7 +1030,7 @@
 					"alteration": 1
 				}
 			]
-		},
+		}
 	},
 	"Black Order Besieger": {
 		"self_moved_to_board": {
@@ -4646,7 +4646,7 @@
 					"filter_property_name": "overkill",
 					"trigger": "self",
 					"alteration": 1
-				}		
+				}
 			]
 		}
 	},
@@ -5614,7 +5614,7 @@
 					"alteration": 1
 				}
 			]
-		},		
+		},
 		"manual": {
 			"board": [
 				{
@@ -7001,7 +7001,7 @@
 								}
 							}
 						]
-					},					
+					}
 				]
 			}
 		},
@@ -7595,7 +7595,7 @@
 					"subject": "self"
 				}
 			]
-		}		
+		}
 	},
 	"Unnatural Storm": {
 		"reveal": {

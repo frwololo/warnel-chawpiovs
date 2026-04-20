@@ -872,7 +872,7 @@
 					"tags": [
 						"action_ability"
 					]
-				},			
+				},
 				{
 					"name": "move_card_to_board",
 					"subject": "tutor",
@@ -1019,7 +1019,10 @@
 			"all": [
 				{
 					"name": "move_card_to_container",
-					"src_container": ["deck", "discard"],
+					"src_container": [
+						"deck",
+						"discard"
+					],
 					"dest_container": "hand",
 					"subject": "tutor",
 					"filter_state_tutor": [
@@ -1094,7 +1097,7 @@
 				{
 					"name": "heal",
 					"amount": 1,
-					"subject": "Steve Rogers",
+					"subject": "Steve Rogers"
 				}
 			]
 		}

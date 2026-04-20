@@ -27,19 +27,19 @@ func set_values(_parent_script, _script: Dictionary):
 	register_signals()
 
 #retrieves and hardcodes values as needed from parent script
-func precompute_script_values(script_def, key_name = ""):
+func precompute_script_values(script_def):
 	var result = null
 	match typeof(script_def):
 		TYPE_DICTIONARY:
 			result = {}	
 			for key in script_def.keys():
 				var value = script_def[key]
-				result[key] = precompute_script_values(value, key)
+				result[key] = precompute_script_values(value)
 
 		TYPE_ARRAY:
 			result = []
 			for x in script_def:
-				var computed = precompute_script_values(x, "")
+				var computed = precompute_script_values(x)
 				result.append(computed)
 
 		TYPE_STRING:

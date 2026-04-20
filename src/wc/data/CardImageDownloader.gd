@@ -129,8 +129,8 @@ func process_current_file():
 	current_file["path"] = path			
 	fileDownloader.start_download([path])
 
-func path_variable_process(to, current_file):
-	var card_id = current_file["card_id"]
+func path_variable_process(to, the_current_file):
+	var card_id = the_current_file["card_id"]
 	var box_name = "core"
 	var card_data = cfc.card_definitions[card_id]
 	if card_data and card_data.get("_set", ""): 
@@ -264,7 +264,7 @@ func check_servers_health():
 				remove_child(http_request)
 				http_request.queue_free()			
 
-func _health_check_complete(result, response_code, headers, body):
+func _health_check_complete(result, _response_code, _headers, _body):
 	var current_server = {}
 	for s in servers:
 		if s.get("health_check") == "in_progress":

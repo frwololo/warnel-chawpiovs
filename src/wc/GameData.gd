@@ -114,8 +114,7 @@ var _clients_desync_start_time: int = 0
 # as a click for its abilities
 var _targeting_timer:= 0.2
  
-#var _systems_check_ongoing := false
-#var _clients_system_status: Dictionary = {}
+
 var _network_ack: Dictionary = {}
 var _multiplayer_desync = null
 var _game_over := ""
@@ -2542,6 +2541,10 @@ func _server_disconnected():
 	
 #TODO check for game integrity, save game for undo/save, etc...
 func systems_check():
+	if !self.is_multiplayer_game:
+		save_round(current_round -1 ) #save the current round for a potential rollback	
+		return
+		
 	cfc.LOG ("initiated systems check")
 	_clients_system_status[cfc.get_network_unique_id()] = "pending"
 	cfc._rpc(self,"clients_send_system_status")	

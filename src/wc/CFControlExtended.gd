@@ -634,12 +634,12 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 		card_data["card_set_code"] = "ERROR"	
 
 		
-
-	var set_code = card_data["card_set_code"]
-	var lc_set_code = set_code.to_lower()
-	
-	var set_name = card_data["card_set_name"]
-	var lc_set_name = set_name.to_lower()	
+#
+#	var set_code = card_data["card_set_code"]
+#	var lc_set_code = set_code.to_lower()
+#
+#	var set_name = card_data["card_set_name"]
+#	var lc_set_name = set_name.to_lower()	
 
 	
 	#name alone isn't enough as a unique identifier (for the "unique" rule), so we're adding
@@ -660,6 +660,59 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	card_data.erase("name")
 	
 		
+#	if !box_contents_by_name.has(box_name):
+#		box_contents_by_name[box_name] = {}
+#	#the same card name can happen multiple times in a single box with a different ID, 
+#	#for example "Wakanda Forever"
+#	if !box_contents_by_name[box_name].has(card_data["Name"]):
+#		box_contents_by_name[box_name][card_data["Name"]] = []
+#	box_contents_by_name[box_name][card_data["Name"]].append(card_data)	
+
+	var card_name:String = card_data["Name"]
+	
+	#caching and indexing
+	shortname_to_name[card_data["shortname"].to_lower()] = card_name
+	lowercase_card_name_to_name[card_name.to_lower()] = card_name
+	
+#	#schemes cache
+#	if (lc_card_type == "main_scheme"):
+#		if (not schemes.has(lc_set_code)):
+#			schemes[lc_set_code] = []
+#		schemes[lc_set_code].push_back(card_data)
+		
+#	var card_set_type_name_code = card_data.get("card_set_type_name_code", "")
+#	if card_set_type_name_code == "modular":
+#		if not modular_encounters.has(lc_set_code):
+#			modular_encounters[lc_set_code] = []
+#		modular_encounters[lc_set_code].append(card_data)
+	
+#	#obligations cache
+#	if (lc_card_type == "obligation"):
+#		obligations[lc_set_code] = card_data
+#		obligations[lc_set_name] = card_data
+#
+#	#encounter and set cache
+#	if (not cards_by_set.has(lc_set_code)):
+#		cards_by_set[lc_set_code] = []
+#	cards_by_set[lc_set_code].push_back(card_data)				
+#
+#	#parents set cache
+#	var card_set_parent_code = card_data.get("card_set_parent_code", "").to_lower()
+#	if card_set_parent_code:
+#		if (not cards_by_set.has(card_set_parent_code)):
+#			cards_by_set[card_set_parent_code] = []
+#
+#		cards_by_set[card_set_parent_code].push_back(card_data)			
+
+	card_data[CardConfig.SCENE_PROPERTY] = "CardTemplate"	
+
+	if card_data.get("duplicate_of_code", ""):
+		duplicates[card_id] = card_data["duplicate_of_code"]
+
+func load_one_card_extra_data(card_data):
+	var box_name = card_data["box_name"]
+
+	#content by box
 	if !box_contents_by_name.has(box_name):
 		box_contents_by_name[box_name] = {}
 	#the same card name can happen multiple times in a single box with a different ID, 
@@ -668,24 +721,28 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 		box_contents_by_name[box_name][card_data["Name"]] = []
 	box_contents_by_name[box_name][card_data["Name"]].append(card_data)	
 
-	var card_name:String = card_data["Name"]
+	var card_type:String = card_data["type_code"]
+	var lc_card_type = card_type.to_lower()
 	
-	#caching and indexing
-	shortname_to_name[card_data["shortname"].to_lower()] = card_name
-	lowercase_card_name_to_name[card_name.to_lower()] = card_name
+	var set_code = card_data["card_set_code"]
+	var lc_set_code = set_code.to_lower()
 	
+	var set_name = card_data["card_set_name"]
+	var lc_set_name = set_name.to_lower()
+		
 	#schemes cache
 	if (lc_card_type == "main_scheme"):
 		if (not schemes.has(lc_set_code)):
 			schemes[lc_set_code] = []
-		schemes[lc_set_code].push_back(card_data)
-		
+		schemes[lc_set_code].push_back(card_data)	
+
+	#modular encounters cache
 	var card_set_type_name_code = card_data.get("card_set_type_name_code", "")
 	if card_set_type_name_code == "modular":
 		if not modular_encounters.has(lc_set_code):
 			modular_encounters[lc_set_code] = []
 		modular_encounters[lc_set_code].append(card_data)
-	
+
 	#obligations cache
 	if (lc_card_type == "obligation"):
 		obligations[lc_set_code] = card_data
@@ -703,16 +760,131 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 			cards_by_set[card_set_parent_code] = []
 			
 		cards_by_set[card_set_parent_code].push_back(card_data)			
+	
+func load_card_definitions_extra_data():
+	for card_id in card_definitions:
+		var card_data = card_definitions[card_id]
+		load_one_card_extra_data(card_data)
+		
+func save_card_definitions_to_cache(the_files):
+	var to_save = [
+		card_definitions, 
+		subname_to_name, 
+		all_traits, 
+		shortname_to_name, 
+		lowercase_card_name_to_name,
+		duplicates,
+	]
+	var to_save_name = [
+		"card_definitions", 
+		"subname_to_name", 
+		"all_traits", 
+		"shortname_to_name", 
+		"lowercase_card_name_to_name",
+		"duplicates"
+	]
+	
+	for i in to_save.size():
+		var data = to_save[i]
+		var file_name =	to_save_name[i] 
+		var cached_filename = get_cache_filename(file_name)
 
-	card_data[CardConfig.SCENE_PROPERTY] = "CardTemplate"	
+		var file: File = File.new()	
+		file.open(cached_filename, File.WRITE)
+		file.store_var(data)
+		file.close()
 
-	if card_data.get("duplicate_of_code", ""):
-		duplicates[card_id] = card_data["duplicate_of_code"]
+		file.open(cached_filename + ".human_readable.json", File.WRITE)
+		file.store_string(JSON.print(data, '\t'))
+		file.close()	
 
+	get_cache_toc()
+	cache_toc["set_definitions"] = _get_set_definitions_md5_list(the_files)
+	save_cache_toc()	
 			
+
+func _get_set_definitions_md5_list(the_files):
+	var md5_list = {}
+	for file in the_files:
+		md5_list[file] = WCUtils.get_md5("Sets/" + file)
+	return md5_list
+
+func load_data_from_cache(file_name): 
+	var cached_filename = get_cache_filename(file_name)
+
+	var file: File = File.new()	
+	file.open(cached_filename, File.READ)
+	if !file.is_open():
+		return null
+	var result = file.get_var()
+	file.close()	
+	return result
+
+func load_card_definitions_from_cache(the_files) -> Dictionary:
+	var md5_list = _get_set_definitions_md5_list(the_files)
+	var comparison_data = get_cache_toc().get("set_definitions", {})
+	if WCUtils.ordered_hash(md5_list) != WCUtils.ordered_hash(comparison_data):
+		return {
+			"_error": "md5 not matching for sets definitions"
+		}
+
+	#all caches are up to date, we load from cache
+
+	var result = load_data_from_cache("card_definitions")
+	if result:
+		card_definitions = result
+	else:
+		return {
+				"_error": "card_definitions failed to load from cache"
+			}
+			
+	result =  load_data_from_cache("subname_to_name")
+	if result:
+		subname_to_name = result
+	else:
+		return {
+				"_error": "subname_to_name failed to load from cache"
+			}	
+			
+	result =  load_data_from_cache("all_traits") 
+	if result:
+		all_traits = result
+	else:
+		return {
+				"_error": "all_traits failed to load from cache"
+			}	
+				
+	result =  load_data_from_cache("shortname_to_name")
+	if result:
+		shortname_to_name = result
+	else:
+		return {
+				"_error": "shortname_to_name failed to load from cache"
+			}	
+				
+	result =  load_data_from_cache("lowercase_card_name_to_name")
+	if result:
+		lowercase_card_name_to_name = result
+	else:
+		return {
+				"_error": "lowercase_card_name_to_name failed to load from cache"
+			}	
+				
+	result =  load_data_from_cache("duplicates")
+	if result:
+		duplicates = result
+	else:	
+		pass
+		#no error check for this one
+	
+	return card_definitions
+			
+
+						
 # Returns a Dictionary with the combined Card definitions of all set files
 # loaded in card_definitions variable by core engine
 func load_card_definitions() -> Dictionary:
+	var _load_start_time = OS.get_ticks_msec()
 	cards_loading = true	
 	var combined_sets := {} #.load_card_definitions(); #TODO Remove the call to parent eventually ?
 	# Load from external user files
@@ -722,54 +894,58 @@ func load_card_definitions() -> Dictionary:
 	the_files += CFUtils.list_files_in_directory(
 			"res://Sets/", CFConst.CARD_SET_NAME_PREPEND)
 	var set_files = {}
-	for file in the_files:
+	for file in the_files:	
 		set_files[file] = true				
 	WCUtils.debug_message(set_files.size())	
 	var json_card_data : Dictionary = {}
 	_total_cards = 0	
-	for set_file in set_files:
-		var prefix_length = CFConst.CARD_SET_NAME_PREPEND.length()
-		var extension_idx = set_file.find(".")
-		var box_name = set_file.substr(prefix_length, extension_idx-prefix_length)
-		var json_array = WCUtils.read_json_file_with_user_override	("Sets/" + set_file)
-		_total_cards += json_array.size() 
-		json_card_data[box_name] = json_array
-		
-	var i = 0
-	for box_name in json_card_data.keys():	
-		for card_data in (json_card_data[box_name]):
-			i+=1
-			if dont_load_this_card(card_data):
-				continue			
-			_load_one_card_definition(card_data, box_name)	
-			combined_sets[card_data["_code"]] = card_data
-			var linked_card_data = card_data.get("linked_card", {})
-			if (linked_card_data):
-				_load_one_card_definition(linked_card_data, box_name)
-				linked_card_data["back_card_code"] = card_data["_code"]
-				card_data["back_card_code"] = linked_card_data["_code"]
-				combined_sets[linked_card_data["_code"]] = linked_card_data
+	combined_sets = load_card_definitions_from_cache(the_files)
+	if !combined_sets or combined_sets.has("_error"):
+		print_debug("error loading from cache: " + combined_sets.get("_error", ""))
+		combined_sets = {}	
+	if combined_sets:
+		_total_cards = combined_sets.size()
+		_cards_loaded = _total_cards
+		card_definitions = combined_sets	
+		print_debug("successfully loaded card definitions from cache")	
+	else:
+		for set_file in set_files:
+			var prefix_length = CFConst.CARD_SET_NAME_PREPEND.length()
+			var extension_idx = set_file.find(".")
+			var box_name = set_file.substr(prefix_length, extension_idx-prefix_length)
+			var json_array = WCUtils.read_json_file_with_user_override	("Sets/" + set_file)
+			_total_cards += json_array.size() 
+			json_card_data[box_name] = json_array
+			
+		var i = 0
+		for box_name in json_card_data.keys():	
+			for card_data in (json_card_data[box_name]):
+				i+=1
+				if dont_load_this_card(card_data):
+					continue			
+				_load_one_card_definition(card_data, box_name)	
+				combined_sets[card_data["_code"]] = card_data
+				var linked_card_data = card_data.get("linked_card", {})
+				if (linked_card_data):
+					_load_one_card_definition(linked_card_data, box_name)
+					linked_card_data["back_card_code"] = card_data["_code"]
+					card_data["back_card_code"] = linked_card_data["_code"]
+					combined_sets[linked_card_data["_code"]] = linked_card_data
 
-#			var double_sided = card_data.get("double_sided", false)
-#			if (double_sided):
-#				var back_side_data = card_data.duplicate()
-#				back_side_data["_code"] = card_data["_code"] + "b"
-#				back_side_data["code"] = back_side_data["_code"]
-#				back_side_data["text"] = back_side_data.get("back_text", "")
-#
-#				back_side_data["back_card_code"] = card_data["_code"]
-#				card_data["back_card_code"] = back_side_data["_code"]				
-#				#TODO more changes needed ?
-#				_load_one_card_definition(back_side_data)
-#				#yield(get_tree().create_timer(0.01), "timeout")
-			_cards_loaded = i
-	card_definitions = combined_sets
+				_cards_loaded = i
+		card_definitions = combined_sets		
+		save_card_definitions_to_cache(the_files)
+
 	
 	#post load cleanup and config
+	load_card_definitions_extra_data()	
 	setup_traits_as_alterants()
 		
 	#done!
-	cards_loading = false			
+	cards_loading = false
+	var load_end_time = OS.get_ticks_msec()	
+	print_debug("DEBUG INFO:Load Card Definitions time = %sms" % [str(load_end_time - _load_start_time)])
+			
 	emit_signal("card_definitions_loaded")
 	return(combined_sets)
 
@@ -906,9 +1082,72 @@ func replace_macros(json_card_data, local_macro_data, json_macro_data):
 	return result
 
 
+var cache_toc := {}
+func get_cache_toc():
+	if !cache_toc:
+		var result = WCUtils.read_json_file("user://cache/cache_index.json")
+		cache_toc = result if result else {}
+	return cache_toc
+
+func _is_md5_equal_to_cache(filepath, do_refresh_cache = true, do_save_cache = true) -> bool:
+	get_cache_toc()
+	var md5 = WCUtils.get_md5(filepath)
+	var result:bool = (md5 == cache_toc.get(filepath, ""))
+
+	if do_refresh_cache:
+		refresh_md5_cache(filepath, md5, do_save_cache)
+	
+	return result
+	
+func refresh_md5_cache(filepath, md5 = "", do_save_cache = true):
+	get_cache_toc()	
+	if !md5:
+		var file: File = File.new()
+		md5 = WCUtils.get_md5(filepath)
+		file.close()
+	cache_toc[filepath] = md5
+	if do_save_cache:
+		save_cache_toc()
+			
+func save_cache_toc():
+	get_cache_toc()	
+	var file: File = File.new()	
+	file.open("user://cache/cache_index.json", File.WRITE)
+	file.store_string(JSON.print(cache_toc, '\t'))
+	file.close()
+
+func get_cache_filename(filename):
+	var cached_filename = {
+		"filename": filename
+	}.hash()
+	cached_filename = "user://cache/" + str(cached_filename) + ".dat"
+	return cached_filename	
+
+func load_script_definition_from_cache(script_file) -> Dictionary:
+	if ! _is_md5_equal_to_cache(script_file):
+		return {}	
+	var cached_filename = get_cache_filename(script_file)
+	var file: File = File.new()	
+	file.open(cached_filename, File.READ)
+	var result = file.get_var()
+	file.close()
+	return result
+
+func save_script_definition_to_cache(script_file, data):
+	var cached_filename = get_cache_filename(script_file)
+
+	var file: File = File.new()	
+	file.open(cached_filename, File.WRITE)
+	file.store_var(data)
+	file.close()
+	
+	file.open(cached_filename + ".human_readable.json", File.WRITE)
+	file.store_string(JSON.print(data, '\t'))
+	file.close()	
 	
 # Returns a Dictionary with the combined Script definitions of all set files
 func load_script_definitions() -> void:
+	var _load_start_time = OS.get_ticks_msec()		
 	scripts_loading = true	
 	var script_overrides = load(CFConst.PATH_SETS + "SetScripts_All.gd").new()
 	var json_macro_data : Dictionary = WCUtils.read_json_file_with_user_override("Sets/_macros.json")
@@ -930,26 +1169,28 @@ func load_script_definitions() -> void:
 		var box_name = script_file.substr(prefix_end, extension_idx-prefix_end)	
 		if !box_contents_by_name.has(box_name):
 			continue
-		var json_card_data : Dictionary
-		json_card_data = WCUtils.read_json_file(script_file)
-		#delete comments from dictionary
-		WCUtils.erase_key_recursive(json_card_data, "_comments")
-		var local_macros = json_card_data.get("_macros", {})
-		json_card_data.erase("_macros")
-		json_card_data = replace_macros(json_card_data, local_macros, json_macro_data)
-		
-		#we don't support "response" yet but want to in the future. For now they're just interrupts
-		json_card_data = WCUtils.search_and_replace (json_card_data, "response", "interrupt", true)
-		json_card_data = WCUtils.search_and_replace (json_card_data, "response_", "interrupt_")
-		#bugfix: replace "floats" to "ints"
-		json_card_data = WCUtils.replace_real_to_int(json_card_data)
-		var _text = to_json(json_card_data)
-
-#		var file = File.new()
-#		var fname = "user://log_" + box_name + ".json"
-#		file.open(fname, File.WRITE)
-#		file.store_string(_text)
-#		file.close() 
+		var json_card_data: Dictionary = load_script_definition_from_cache(script_file)		
+		if !json_card_data:
+			json_card_data = WCUtils.read_json_file(script_file)
+			#delete comments from dictionary
+			WCUtils.erase_key_recursive(json_card_data, "_comments")
+			var local_macros = json_card_data.get("_macros", {})
+			json_card_data.erase("_macros")
+			json_card_data = replace_macros(json_card_data, local_macros, json_macro_data)
+			
+			#we don't support "response" yet but want to in the future. For now they're just interrupts
+			json_card_data = WCUtils.search_and_replace (json_card_data, "response", "interrupt", true)
+			json_card_data = WCUtils.search_and_replace (json_card_data, "response_", "interrupt_")
+			#bugfix: replace "floats" to "ints"
+			json_card_data = WCUtils.replace_real_to_int(json_card_data)
+			save_script_definition_to_cache(script_file, json_card_data)
+			
+#			var _text = to_json(json_card_data)
+#			var file = File.new()
+#			var fname = "user://log_" + box_name + ".json"
+#			file.open(fname, File.WRITE)
+#			file.store_string(_text)
+#			file.close() 
 
 		for fuzzy_card_name in json_card_data.keys():
 			var card_info = retrieve_card_info_from_fuzzy_name(fuzzy_card_name)
@@ -991,6 +1232,9 @@ func load_script_definitions() -> void:
 	load_deck_definitions()
 	
 	scripts_loading = false	
+	var load_end_time = OS.get_ticks_msec()	
+	print_debug("DEBUG INFO:Load Script Definitions time = %sms" % [str(load_end_time - _load_start_time)])
+		
 	emit_signal("scripts_loaded")
 
 func retrieve_card_info_from_fuzzy_name(fuzzy_card_name):

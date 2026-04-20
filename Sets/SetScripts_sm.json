@@ -3506,6 +3506,13 @@
 					"filter_task": "get_property",
 					"filter_property_name": "blank_printed_trigger_abilities",
 					"trigger": "host",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "hero"
+							}
+						}
+					],
 					"alteration": 1
 				}
 			]

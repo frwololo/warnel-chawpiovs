@@ -605,8 +605,7 @@ func pre_receive_damage(script: ScriptTask) -> int:
 	var type = attacker.get_property("type_code", "")
 	if !type in ["hero", "ally", "minion", "villain"]:
 		attacker = _get_identity_from_script(script)
-		
-	var tags: Array = script.get_property(SP.KEY_TAGS) 
+		 
 	var base_amount = script.retrieve_integer_property("amount")
 	
 	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
@@ -1117,7 +1116,7 @@ func increase(script: ScriptTask) -> int:
 
 				if (costs_dry_run()):
 					return retcode					
-				var results = gameData.theStack.modify_object(stack_object, script, task_object)
+				var _results = gameData.theStack.modify_object(stack_object, script, task_object)
 			else:	
 				#TODO
 				#unsupported

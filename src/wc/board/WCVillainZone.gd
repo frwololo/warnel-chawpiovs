@@ -57,10 +57,10 @@ func _ready():
 	
 	pass # Replace with function body.
 
-func _card_moved_to_board(card, details):	
+func _card_moved_to_board(card, _details):	
 	add_villain(card)
 
-func _card_moved_to_pile(card, details):
+func _card_moved_to_pile(card, _details):
 	var type_code = card.get_property("type_code", "")
 	if type_code != "villain":
 		return	

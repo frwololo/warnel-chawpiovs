@@ -36,7 +36,7 @@ static func read_json_file(file_path):
 		if ResourceLoader.exists(file_path):
 			content_as_text = ResourceLoader.load(file_path)
 		else:
-			return null
+			return {}
 	else:
 		content_as_text = file.get_as_text()
 	var json_errors = validate_json(content_as_text)
@@ -363,6 +363,20 @@ static func search_and_replace_multi_no_cache (script_definition, replacements:D
 			result = script_definition
 	return result;
 
+static func get_md5(filepath):
+	var file: File = File.new()
+	var is_absolute = filepath.begins_with("res://") or filepath.begins_with("user://")
+	var md5 = ""
+	if is_absolute:
+		md5 = file.get_md5(filepath)
+	else:
+		for path in ["user://", "res://"]:
+			md5 = file.get_md5(path + filepath)
+			if md5:
+				break
+	file.close()
+	return md5
+
 static func search_and_replace (script_definition, from: String, to, exact_match: bool = false) -> Dictionary:
 	var result = null
 	match typeof(script_definition):
@@ -375,9 +389,10 @@ static func search_and_replace (script_definition, from: String, to, exact_match
 				#do the key too	
 				if typeof(key) == TYPE_STRING:
 					if ((!exact_match) or (key == from)):
-						var new_string = key.replace(from, to)	
-						result[new_string] = result[key]
-						#TODO erase???	
+						var new_string = key.replace(from, to)
+						if new_string != key:	
+							result[new_string] = result[key]
+							result.erase(key)
 
 		TYPE_ARRAY:
 			result = []
@@ -394,7 +409,7 @@ static func search_and_replace (script_definition, from: String, to, exact_match
 			if (!exact_match):
 				result = script_definition.replace(from, to)	
 			elif (script_definition == from):
-				if from == "any_discard":
+				if from == "response":
 					var _tmp = 1
 				result = to
 			else:

@@ -469,17 +469,17 @@ func execute(_run_type) -> void:
 #			run_next_script(card_owner,
 #					scripts_queue,prev_subjects)
 
-func call_task(script_name, script) -> int: 
+func call_task(_script_name, script) -> int: 
 	var retcode = self.call(script.script_name, script)
 	if retcode is GDScriptFunctionState:
 		retcode = yield(retcode, "completed")
 	post_action_events(script)
 	return retcode	
 
-func _execute_before_instructions(script: ScriptTask):
+func _execute_before_instructions(_script: ScriptTask):
 	pass
 
-func post_action_events(script: ScriptTask) -> int:
+func post_action_events(_script: ScriptTask) -> int:
 	return CFConst.ReturnCode.OK
 
 # Task for rotating cards

@@ -1,0 +1,2581 @@
+{
+	"\"I Have You Now!\"": {
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"\"I am Groot\"": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart"
+				}
+			]
+		}
+	},
+	"\"I. AM. GROOT!\"": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart"
+				}
+			]
+		}
+	},
+	"\"Take What Is Mine\" - 2A": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"\"Take What Is Mine\" - 2B": {
+		"TODO": ""
+	},
+	"\"There is No Escape\"": {
+		"TODO": "",
+		"hinder": {
+			"__amount__": "TODO",
+			"__each_player__": true
+		}
+	},
+	"\"We Are Groot\"": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"\"You Stand Accused!\"": {
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Ardent Resolve": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Armor Plating": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				}
+			]
+		}
+	},
+	"Badoon Assassin": {
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Badoon Blitz": {
+		"TODO": "",
+		"hinder": {
+			"__amount__": "TODO",
+			"__each_player__": true
+		}
+	},
+	"Badoon Engineer": {
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Badoon Grunt": {
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Badoon Headhunter": {
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Badoon Lieutenant": {
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"alterants": [
+			{
+				"board": [
+					{
+						"filter_task": "get_property",
+						"filter_property_name": "TODO",
+						"filter_state_trigger": [
+							{
+								"TODO": "TODO"
+							}
+						],
+						"alteration": 1
+					}
+				]
+			}
+		]
+	},
+	"Badoon Sentry": {
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"alterants": [
+			{
+				"board": [
+					{
+						"filter_task": "get_property",
+						"filter_property_name": "TODO",
+						"filter_state_trigger": [
+							{
+								"TODO": "TODO"
+							}
+						],
+						"alteration": 1
+					}
+				]
+			}
+		]
+	},
+	"Badoon Ship": {
+		"TODO": ""
+	},
+	"Badoon Warlord": {
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"alterants": [
+			{
+				"board": [
+					{
+						"filter_task": "get_property",
+						"filter_property_name": "TODO",
+						"filter_state_trigger": [
+							{
+								"TODO": "TODO"
+							}
+						],
+						"alteration": 1
+					}
+				]
+			}
+		]
+	},
+	"Barrel Roll": {
+		"TODO": "",
+		"incite": {
+			"__amount__": "TODO"
+		},
+		"_surge": {},
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Battery Pack": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action"
+					]
+				},
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action"
+					]
+				}
+			]
+		}
+	},
+	"Biogram Image": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		}
+	},
+	"Blackjack O'Hare": {
+		"TODO": "",
+		"quickstrike": {}
+	},
+	"Blackjack's Bazooka": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		}
+	},
+	"Blazing Inferno": {
+		"TODO": ""
+	},
+	"Blind Side": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Blockade": {
+		"TODO": "",
+		"hinder": {
+			"__amount__": "TODO",
+			"__each_player__": true
+		}
+	},
+	"Bombardment": {
+		"TODO": ""
+	},
+	"Booster Boots": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				}
+			]
+		}
+	},
+	"Brainstorm": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart"
+				}
+			]
+		}
+	},
+	"Bug": {
+		"TODO": ""
+	},
+	"By Any Means": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart"
+				}
+			]
+		}
+	},
+	"Calculate the Odds": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Cannonade": {
+		"TODO": "",
+		"hinder": {
+			"__amount__": "TODO",
+			"__each_player__": true
+		}
+	},
+	"Cargo Hold": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Caught Off Guard": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"src_container": "upgrade_support",
+					"is_cost": true,
+					"subject": "index",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				}
+			]
+		}
+	},
+	"Chase Them Down": {
+		"response": {
+			"event_name": "enemy_died",
+			"event_filters": {
+				"source": "my_hero",
+				"tags": [
+					"attack"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "remove_threat",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Cloak of Hercules": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		}
+	},
+	"Close Call": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				}
+			]
+		}
+	},
+	"Collector - 1": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Collector - 2": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Collector - 3": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Collector - A1": {
+		"TODO": "",
+		"interrupt": {
+			"is_optional_board": true,
+			"board": []
+		}
+	},	
+	"Collector - B1": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},	
+	"Combat Ready": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Contingency Plan": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart"
+				}
+			]
+		}
+	},
+	"Creative Solution": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Crisis on Halfworld": {
+		"TODO": "",
+		"_surge": {}
+	},
+	"Crystal Ball": {
+		"TODO": "",
+		"hinder": {
+			"__amount__": "TODO",
+			"__each_player__": true
+		}
+	},
+	"Cut the Power": {
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Cutthroat Ambition": {
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		}
+	},
+	"Cybernetic Skeleton": {
+		"TODO": "",
+		"alterants": [
+			{
+				"board": [
+					{
+						"filter_task": "get_property",
+						"filter_property_name": "TODO",
+						"filter_state_trigger": [
+							{
+								"TODO": "TODO"
+							}
+						],
+						"alteration": 1
+					}
+				]
+			}
+		]
+	},
+	"Dauntless": {
+		"TODO": ""
+	},
+	"Dead to Rights": {
+		"TODO": "",
+		"_surge": {},
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Deft Focus": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Defy Danger": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart"
+				}
+			]
+		}
+	},
+	"Desperate Defense": {
+		"interrupt": {
+			"event_name": "enemy_attack_damage",
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "set_defender",
+					"is_cost": true,
+					"subject": "my_hero",
+					"_comments": "set_defender here has a double role, 1) sets my_hero as a defender if not already the case, 2) because it is a cost, it will fail if there is already a different defender chosen"
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "enemy_activation_finished",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "defense",
+									"trigger": "my_hero",
+									"alteration": 2
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"if_no_damage": [
+							{
+								"name": "ready_card",
+								"subject": "current_hero_target"
+							}
+						]
+					}
+				}
+			]
+		}
+	},
+	"Drang - 1": {
+		"TODO": ""
+	},
+	"Drang - 2": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Drang - 3": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Drang's Spear": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		}
+	},
+	"Entangling Vines": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				}
+			]
+		},
+		"alterants": [
+			{
+				"board": [
+					{
+						"filter_task": "get_property",
+						"filter_property_name": "TODO",
+						"filter_state_trigger": [
+							{
+								"TODO": "TODO"
+							}
+						],
+						"alteration": 1
+					}
+				]
+			}
+		]
+	},
+	"Evasive Maneuvering": {
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		}
+	},
+	"Fan the Flames": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Fanaticism": {
+		"TODO": "",
+		"_surge": {},
+		"uses": {
+			"__name__": "TODO",
+			"__amount__": "TODO"
+		},
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		}
+	},
+	"Fertile Ground": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				}
+			]
+		}
+	},
+	"Fighting Fit": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart"
+				}
+			]
+		}
+	},
+	"Flora and Fauna": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Follow Through": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				}
+			]
+		}
+	},
+	"Fruition": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action"
+					]
+				},
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action"
+					]
+				}
+			]
+		}
+	},
+	"Fugitive Recovery": {
+		"TODO": "",
+		"hinder": {
+			"__amount__": "TODO",
+			"__each_player__": true
+		},
+		"_surge": {}
+	},
+	"Furnax": {
+		"TODO": ""
+	},
+	"Gallery of Splendor": {
+		"TODO": "",
+		"hinder": {
+			"__amount__": "TODO",
+			"__each_player__": true
+		}
+	},
+	"Grand Strategy": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Grapple": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Groot": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action"
+					]
+				},
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action"
+					]
+				}
+			]
+		},
+		"once_per_round": {
+			"__name__": "__TODO"
+		}
+	},
+	"Guerrilla Tactics": {
+		"TODO": "",
+		"hinder": {
+			"__amount__": "TODO",
+			"__each_player__": true
+		}
+	},
+	"Hand Cannon": {
+		"TODO": "",
+		"uses": {
+			"__name__": "TODO",
+			"__amount__": "TODO"
+		},
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				}
+			]
+		},
+		"alterants": [
+			{
+				"board": [
+					{
+						"filter_task": "get_property",
+						"filter_property_name": "TODO",
+						"filter_state_trigger": [
+							{
+								"TODO": "TODO"
+							}
+						],
+						"alteration": 1
+					}
+				]
+			}
+		]
+	},
+	"Hard to Ignore": {
+		"TODO": ""
+	},
+	"Headhunter's Henchman": {
+		"TODO": "",
+		"_surge": {}
+	},
+	"Heavy Cannon": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Honor Among Thieves": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Hujahdarian Monarch Egg": {
+		"TODO": "",
+		"hinder": {
+			"__amount__": "TODO",
+			"__each_player__": true
+		}
+	},
+	"Hull Breach": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Hyper Thrusters": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"I've Got a Plan": {
+		"TODO": "",
+		"alterants": [
+			{
+				"hand": [
+					{
+						"filter_task": "get_property",
+						"filter_property_name": "TODO",
+						"filter_state_trigger": [
+							{
+								"TODO": "TODO"
+							}
+						],
+						"alteration": 1
+					}
+				]
+			}
+		]
+	},
+	"Impossible Geometry": {
+		"TODO": "",
+		"incite": {
+			"__amount__": "TODO"
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"In Defiance": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				}
+			]
+		}
+	},
+	"In Harm's Way": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart"
+				}
+			]
+		}
+	},
+	"Inconspicuous Box": {
+		"TODO": "",
+		"_surge": {},
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Indomitable": {
+		"response": {
+			"event_name": "defense_happened",
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Interception Imminent - 1A": {
+		"TODO": ""
+	},
+	"Interception Imminent - 1B": {
+		"TODO": ""
+	},
+	"Into the Fray": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart"
+				}
+			]
+		}
+	},
+	"Kree Combat Armor": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		}
+	},
+	"Kree Command Ship": {
+		"TODO": ""
+	},
+	"Kree Commando": {
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Kree Lieutenant": {
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"alterants": [
+			{
+				"board": [
+					{
+						"filter_task": "get_property",
+						"filter_property_name": "TODO",
+						"filter_state_trigger": [
+							{
+								"TODO": "TODO"
+							}
+						],
+						"alteration": 1
+					}
+				]
+			}
+		]
+	},
+	"Kree Physiology": {
+		"TODO": "",
+		"_surge": {},
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Kree Private": {
+		"TODO": "",
+		"quickstrike": {},
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Kree Supremacy": {
+		"TODO": "",
+		"hinder": {
+			"__amount__": "TODO",
+			"__each_player__": true
+		}
+	},
+	"Lashing Vines": {
+		"TODO": ""
+	},
+	"Lethal Intent": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Library Labyrinth": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		},
+		"once_per_round": {
+			"__name__": "__TODO"
+		}
+	},
+	"Looking for Trouble": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart"
+				}
+			]
+		}
+	},
+	"Lost in the Museum - 2A": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Lost in the Museum - 2B": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Magical Teapot": {
+		"TODO": "",
+		"hinder": {
+			"__amount__": "TODO",
+			"__each_player__": true
+		}
+	},
+	"Milano": {
+		"TODO": "",
+		"resource": {
+			"board": [
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "TODO"
+				}
+			]
+		}
+	},
+	"Monarch Starstalker": {
+		"TODO": ""
+	},
+	"Mounted Laser": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Museum Ship": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Navigation Column": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Nebula - 1": {
+		"TODO": "",
+		"_surge": {},
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Nebula - 2": {
+		"TODO": "",
+		"_surge": {},
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Nebula - 3": {
+		"TODO": "",
+		"_surge": {},
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Nebula's Ship": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Obedience Potion": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		}
+	},
+	"On the Hunt": {
+		"TODO": "",
+		"_surge": {},
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Onrush": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				}
+			]
+		}
+	},
+	"Oppressive Armada": {
+		"TODO": "",
+		"hinder": {
+			"__amount__": "TODO",
+			"__each_player__": true
+		}
+	},
+	"Particle Cannon": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart"
+				}
+			]
+		}
+	},
+	"Philosopher's Stone": {
+		"TODO": "",
+		"hinder": {
+			"__amount__": "TODO",
+			"__each_player__": true
+		}
+	},
+	"Pincer Maneuver": {
+		"TODO": "",
+		"hinder": {
+			"__amount__": "TODO",
+			"__each_player__": true
+		}
+	},
+	"Pirate Commander": {
+		"TODO": "",
+		"quickstrike": {},
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Pirate Lackey": {
+		"TODO": "",
+		"quickstrike": {},
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Planetary Invasion": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Power Siphon": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Power Stone": {
+		"special": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "stunned",
+					"subject": "current_hero_target",
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_infinity_stone",
+					"subject": "self"
+				},
+				{
+					"is_else": true,
+					"name": "deal_damage",
+					"subject": "current_hero_target",
+					"amount": 3
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_infinity_stone",
+					"subject": "self",
+					"is_else": true
+				}
+			]
+		}
+	},
+	"Power Unleashed": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Protect the Planet - 2A": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Protect the Planet - 2B": {
+		"TODO": ""
+	},
+	"Psionic Ghost": {
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Reactor Core": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Relentless Assault": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"subject": "target",
+					"amount": 5,
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					],
+					"tags": [
+						"hero_action",
+						"attack"
+					],
+					"overkill": {
+						"if": {
+							"func_name": "paid_with_includes",
+							"func_params": {
+								"physical": 1
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
+				}
+			]
+		}
+	},
+	"Reload": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Rocket Launcher": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Rocket Raccoon": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action"
+					]
+				},
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action"
+					]
+				}
+			]
+		},
+		"once_per_round": {
+			"__name__": "__TODO"
+		}
+	},
+	"Rocket's Pistol": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart"
+				}
+			]
+		}
+	},
+	"Rogue Vessel": {
+		"TODO": "",
+		"_surge": {},
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Ronan the Accuser - 1": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Ronan the Accuser - 2": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Ronan the Accuser - 3": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Root Stomp": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart"
+				}
+			]
+		}
+	},
+	"Ruthless": {
+		"TODO": "",
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Safeguard": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Salvage": {
+		"TODO": "",
+		"response": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Schadenfreude": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Servant Bot": {
+		"TODO": ""
+	},
+	"Single-Minded Fury": {
+		"TODO": "",
+		"_surge": {},
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Sound the Alarms": {
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"alterants": [
+			{
+				"board": [
+					{
+						"filter_task": "get_property",
+						"filter_property_name": "TODO",
+						"filter_state_trigger": [
+							{
+								"TODO": "TODO"
+							}
+						],
+						"alteration": 1
+					}
+				]
+			}
+		]
+	},
+	"Spatial Positioning": {
+		"TODO": ""
+	},
+	"Special Delivery": {
+		"TODO": "",
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Starhawk - Stakar Ogord": {
+		"TODO": ""
+	},
+	"Starshark": {
+		"TODO": "",
+		"quickstrike": {},
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Stay Awhile": {
+		"TODO": "",
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Superior Tactics": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Sure Gamble": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Take the Fight to Them": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Targeting Screen": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Terrestrial Invasion - 1A": {
+		"TODO": ""
+	},
+	"Terrestrial Invasion - 1B": {
+		"TODO": ""
+	},
+	"The Art of Evasion - 1A": {
+		"TODO": ""
+	},
+	"The Art of Evasion - 1B": {
+		"TODO": ""
+	},
+	"The Beyonder's Blazer": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		}
+	},
+	"The Grand Collection - 1A": {
+		"TODO": ""
+	},
+	"The Grand Collection - 1B": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		},
+		"once_per_round": {
+			"__name__": "__TODO"
+		}
+	},
+	"The Great Escape - 3A": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"The Great Escape - 3B": {
+		"TODO": ""
+	},
+	"The Missing Milano - 1A": {
+		"TODO": ""
+	},
+	"The Missing Milano - 1B": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"The Poison": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		}
+	},
+	"The Power of Protection": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "protection"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Thruster Boots": {
+		"TODO": "",
+		"alterants": [
+			{
+				"board": [
+					{
+						"filter_task": "get_property",
+						"filter_property_name": "TODO",
+						"filter_state_trigger": [
+							{
+								"TODO": "TODO"
+							}
+						],
+						"alteration": 1
+					}
+				]
+			}
+		]
+	},
+	"Tried and True": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Triple Threat": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Universal Weapon": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		}
+	},
+	"Unyielding Persistence": {
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		}
+	},
+	"Vandarian Power Stone": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		}
+	},
+	"Vendetta": {
+		"TODO": ""
+	},
+	"View the Cosmos": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Vine Shield": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				}
+			]
+		},
+		"alterants": [
+			{
+				"board": [
+					{
+						"filter_task": "get_property",
+						"filter_property_name": "TODO",
+						"filter_state_trigger": [
+							{
+								"TODO": "TODO"
+							}
+						],
+						"alteration": 1
+					}
+				]
+			}
+		]
+	},
+	"Vine Spikes": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				}
+			]
+		},
+		"alterants": [
+			{
+				"board": [
+					{
+						"filter_task": "get_property",
+						"filter_property_name": "TODO",
+						"filter_state_trigger": [
+							{
+								"TODO": "TODO"
+							}
+						],
+						"alteration": 1
+					}
+				]
+			}
+		]
+	},
+	"Warp Drive Initiated - 2A": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Warp Drive Initiated - 2B": {
+		"TODO": ""
+	},
+	"Weapon Mastery": {
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		}
+	},
+	"Wide Stance": {
+		"TODO": "",
+		"boost": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		}
+	},
+	"Wilt": {
+		"TODO": "",
+		"_surge": {}
+	},
+	"Wing It": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	}
+}

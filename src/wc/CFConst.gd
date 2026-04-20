@@ -827,9 +827,11 @@ const DEFAULT_SETTINGS:= {
 	'database': {
 		"core": "https://marvelcdb.com/api/public/cards/core.json", #Core Box
 		"cap" : "https://marvelcdb.com/api/public/cards/cap.json", #Captain America Hero Pack
-		"drs" : "https://marvelcdb.com/api/public/cards/drs.json", #Doctor Strange Hero Pack		
+		"drs" : "https://marvelcdb.com/api/public/cards/drs.json", #Doctor Strange Hero Pack
+		"gmw" : "https://marvelcdb.com/api/public/cards/gmw.json", #Galaxy's Most Wanted Expansion Box				
 		"mts" : "https://marvelcdb.com/api/public/cards/mts.json", #Mad Titan's Shadow Expansion Box
 		"sm" : "https://marvelcdb.com/api/public/cards/sm.json", #Sinister Motives Expansion Box				
+		"thor" : "https://marvelcdb.com/api/public/cards/thor.json", #Thor Hero Pack
 		"trors" : "https://marvelcdb.com/api/public/cards/trors.json", #The Rise of Red Skull Expansion Box
 		"warm" : "https://marvelcdb.com/api/public/cards/warm.json", #War Machine Hero Pack
 
@@ -909,7 +911,7 @@ const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 const SCRIPT_BREAKPOINT_CARD_NAME := "Avengers Tower"
 const SCRIPT_BREAKPOINT_TRIGGER_NAME := "receive_damage"
 
-const VERSION := "1.2.0"
+const VERSION := "1.3.0"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
 const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 

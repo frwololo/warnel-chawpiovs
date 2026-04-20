@@ -203,22 +203,21 @@ func _load_scenarios():
 	
 	var no_scenario_loaded = true
 	#sorting by alphabetical name of villain
-	var names_to_id = {}
-	for scenario_id in ScenarioDeckData.get_unlocked_scenarios():
-		var villain = ScenarioDeckData.get_first_villain_from_scheme(scenario_id)
-		if villain:
-			var	villain_name = villain["shortname"]
-			names_to_id[villain_name] = scenario_id			
+#	var names_to_id = {}
+#	for scenario_id in ScenarioDeckData.get_unlocked_scenarios():
+#		var villain = ScenarioDeckData.get_first_villain_from_scheme(scenario_id)
+#		if villain:
+#			var	villain_name = villain["shortname"]
+#			names_to_id[villain_name] = scenario_id			
 
-	var ordered_names = names_to_id.keys()
-	ordered_names.sort()
+	var ordered_scenarios = ScenarioDeckData.get_unlocked_scenarios() #names_to_id.keys()
+	ordered_scenarios.sort()
 
-	var grid_columns = int(ceil(sqrt(2 * ordered_names.size())))
+	var grid_columns = int(ceil(sqrt(2 * ordered_scenarios.size())))
 	grid_columns = max(grid_columns, 3)
 	all_scenarios_container.columns = grid_columns
 
-	for villain_name in ordered_names:
-		var scenario_id = names_to_id[villain_name]
+	for scenario_id in ordered_scenarios:
 		var new_scenario = scenarioSelect.instance()
 		var load_success = new_scenario.load_scenario(scenario_id)
 		if !load_success:

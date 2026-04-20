@@ -8,7 +8,7 @@ signal downloads_finished
 signal stats_updated
 
 export(bool)            var blind_mode : bool   = false
-export(String)          var save_path  : String = "user://cache/"
+export(String)          var save_path  : String = "user://dl_cache/"
 var file_urls :=[]
 
 var _current_url       : String

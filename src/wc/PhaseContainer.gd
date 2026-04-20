@@ -584,7 +584,7 @@ func loadstate_from_json(json:Dictionary):
 
 func _systems_check():
 	gameData.systems_check()
-	#setting the step complete here. gameData has its own variable (_systms_check_ongoing)
+	#setting the step complete here.
 	set_current_step_complete(true, "_systems_check") 
 	pass
 		

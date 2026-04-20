@@ -194,7 +194,6 @@ func load_from_dict(_scenario:Dictionary):
 	if !schemes:
 		var _error =1
 		print_debug("Can't find schemes for " + scheme_card_id)
-		var tmp = cfc.schemes
 		return	
 		
 	scenario_data = primitives[scheme_card_id].duplicate(true)

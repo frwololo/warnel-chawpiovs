@@ -8,7 +8,7 @@
 					"tags": [
 						"hero_action"
 					]
-				},			
+				},
 				{
 					"name": "view_card",
 					"subject": "index",
@@ -522,7 +522,7 @@
 					"tags": [
 						"hero_action"
 					]
-				},			
+				},
 				{
 					"name": "attack",
 					"subject": "target",
@@ -723,7 +723,6 @@
 					"subject_count": 1,
 					"src_container": "deck_invocation"
 				},
-				
 				{
 					"name": "sequence",
 					"sequence_ability": "special",
@@ -753,7 +752,7 @@
 							]
 						}
 					}
-				}				
+				}
 			]
 		}
 	},
@@ -1024,7 +1023,7 @@
 				},
 				{
 					"name": "cancel_current_encounter"
-				},
+				}
 			],
 			"filter_state_trigger": [
 				{

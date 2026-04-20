@@ -218,7 +218,7 @@ func parse_post_prime_replacements(script_task:ScriptObject) -> Dictionary:
 			
 	return wip_definitions
 
-static func next_activation_order_villain(func_params, script = null):
+static func next_activation_order_villain(func_params, _script = null):
 	var token_name = func_params.get("token_name", "active_counter")
 	var counter_name = func_params.get("counter_name", "activation_order")
 	var start_value = 0
@@ -387,10 +387,9 @@ func is_boost_trigger_accepted(
 			return false
 		if trigger_card.is_boost(): 
 			#... but there are exceptions
-			#The boost trigger is accepted
-#			if trigger == "boost": 
-#				if trigger_card!= owner_card:
-#					return false
+			#resources are acceptable as they can be requested by the boost itself...?
+			if trigger == "resource":
+				return true
 			#interrupt/response for events wontaining the name "boost" e.g. boost_card_revealed		
 			if trigger.begins_with("interrupt"):
 				if !"boost" in trigger:
@@ -403,7 +402,7 @@ func is_boost_trigger_accepted(
 					if 	!"boost" in trigger_chain:
 						return false			
 			else:
-				if trigger_card== owner_card:
+				if trigger_card == owner_card:
 					return true
 				return false			
 

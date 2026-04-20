@@ -274,6 +274,138 @@
 			]
 		}
 	},
+	"16061": {
+		"code": "16061",
+		"name": "Terrestrial Invasion",		
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Drang - 1",
+			"Drang - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Drang - 2",
+				"Drang - 3"
+			]
+		}
+	},
+	"16073": {
+		"code": "16073",
+		"name": "The Grand Collection",
+		"scenario_display_name": "Infiltrate the Museum",			
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Collector - 1",
+			"Collector - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Collector - 2",
+				"Collector - 3"
+			]
+		}
+	},
+	"16082": {
+		"code": "16082",
+		"name": "The Missing Milano",
+		"scenario_display_name": "Escape the Museum",		
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Collector - A1",
+			"Collector - B1"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Collector - A1",
+				"Collector - B1"
+			]
+		}
+	},
+	"16091": {
+		"code": "16091",
+		"name": "The Art of Evasion",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Nebula - 1",
+			"Nebula - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Nebula - 2",
+				"Nebula - 3"
+			]
+		}
+	},
+	"16106": {
+		"code": "16106",
+		"name": "Interception Imminent",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Ronan the Accuser - 1",
+			"Ronan the Accuser - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Ronan the Accuser - 2",
+				"Ronan the Accuser - 3"
+			]
+		}
+	},
 	"21074": {
 		"code": "21074",
 		"name": "Attack on Knowhere",
@@ -318,7 +450,7 @@
 			"Modular"
 		],
 		"settings": {
-			"encounter_requests_main_scheme": "all_main_schemes",
+			"encounter_requests_main_scheme": "all_main_schemes"
 		},
 		"extra_rules": [
 			{

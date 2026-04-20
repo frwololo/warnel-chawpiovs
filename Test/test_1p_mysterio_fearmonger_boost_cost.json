@@ -1,0 +1,175 @@
+{
+	"_comments": "Bug: Can't use mana abilities for boost use cases",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mysterio - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Maze of Mirrors",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Loose Ends"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Fearmonger"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "web-shooter",
+					"tokens": {
+						"web": 3
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Arachnobatics"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel"
+		},
+		{
+			"type": "choose",
+			"value": "Pay resources"
+		},
+		{
+			"type": "select",
+			"value": [
+				"Web-shooter",
+				"Arachnobatics"
+			]
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mysterio - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Maze of Mirrors",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Fearmonger"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Loose Ends"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "web-shooter",
+					"tokens": {
+						"web": 2
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Arachnobatics"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Web-Shot"
+				}
+			]
+		}
+	}
+}

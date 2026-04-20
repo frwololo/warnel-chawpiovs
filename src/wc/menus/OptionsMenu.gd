@@ -73,6 +73,8 @@ func on_button_pressed(_button_name : String) -> void:
 			hide_gameplay_options()
 		"GameplayOptionsButton":
 			show_gameplay_options()
+		"ClearCacheButton":
+			clear_cache()			
 
 func get_cancel_button(tab_name):
 	match tab_name:
@@ -96,6 +98,20 @@ func hide_gameplay_options():
 func show_gameplay_options():
 	load_options()
 	select_tab("gameplay")
+
+func clear_cache():
+	var cache_folder = "user://cache/"
+	var files = CFUtils.list_files_in_directory( cache_folder)
+	var dir = Directory.new()
+	for file in files:
+		dir.remove(cache_folder + file)
+		
+	var message = "please restart the game for changes to take effect"
+	var msg_dialog:AcceptDialog = AcceptDialog.new()
+	msg_dialog.window_title = message
+	$PanelContainer.add_child(msg_dialog)
+	msg_dialog.popup_centered()			
+	
 
 func load_options():
 	var notifications_level = cfc.game_settings.get("notifications_level", "normal").to_lower()

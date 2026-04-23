@@ -1023,18 +1023,25 @@ func _is_deck_valid(deck) -> bool:
 	if (not card_definitions.has(hero_code)):
 		var hero_name = deck.get("hero_name", hero_code )
 		_last_deck_error_msg= "This hero is not in our Database:" + hero_name
+		print_debug(_last_deck_error_msg)
 		return false
 	var slots: Dictionary = deck["slots"]
 	if (not slots or slots.empty()):
 		_last_deck_error_msg = "invalid deck, can't find cards"	
+		print_debug(_last_deck_error_msg)		
 		return false
 	for slot in slots:
 		if (not card_definitions.has(slot)):
 			_last_deck_error_msg = "We don't support at least one card in this deck (card id:" + str(slot) + ")" 
+			print_debug(_last_deck_error_msg)
 			return false		
 	return true
 
 func replace_text_macro (replacements, macro_value):
+	if typeof(replacements) != TYPE_DICTIONARY:
+		print_debug("error in macro replacements: " + str(replacements))
+		return {}
+		
 	var text = to_json(macro_value)
 	for key in replacements.keys():
 		var value = replacements[key]

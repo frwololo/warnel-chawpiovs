@@ -443,6 +443,7 @@ func _scripting_event_about_to_trigger(_trigger_object = null,
 	match trigger:
 		"card_moved_to_board":
 			check_ally_limit()
+			check_restricted_limit()
 	return
 
 #emit sub _signals for convenience
@@ -623,6 +624,22 @@ func check_ally_limit():
 			count += 1
 		if (count) > ally_limit:
 			identity_card.execute_scripts(identity_card, "ally_limit_rule")
+
+func check_restricted_limit():
+	var my_heroes = gameData.get_my_heroes()
+	for hero_id in my_heroes:
+		var identity_card = get_identity_card(hero_id)
+		if !identity_card:
+			continue #this can happen at setup time
+		var restricted_limit = identity_card.get_property("restricted_limit", 0)
+		var my_cards = get_tree().get_nodes_in_group("play_area" + str(hero_id))
+		var count = 0
+		for card in my_cards:
+			if card.get_property("restricted", 0):
+				count += 1
+		if (count) > restricted_limit:
+			identity_card.execute_scripts(identity_card, "restricted_limit_rule")
+
 		
 #a function that checks regularly (specifically, whenever threat changes) if the main scheme has too much threat	
 func check_main_scheme_defeat():

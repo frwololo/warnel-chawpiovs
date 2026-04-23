@@ -1443,7 +1443,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "hand_size",
-					"trigger": "my_heri",
+					"trigger": "my_hero",
 					"alteration": 1
 				}
 			]

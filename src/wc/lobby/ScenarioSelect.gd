@@ -82,6 +82,10 @@ func resize():
 	if screen_size.x > CFConst.LARGE_SCREEN_WIDTH:
 		grid_width = 800
 		grid_height = 400
+		var dynamic_font = cfc.get_font("res://fonts/ReggaeOne-Regular.ttf", 16)	
+		scenario_name.add_font_override("font", dynamic_font)	
+		scenario_name.add_color_override("font_color", Color8(220, 220,220))			
+		
 	var columns = get_parent().columns
 	var rows = int(ceil(float(get_parent().get_children().size()) /float(columns)))
 	var image_width = grid_width / columns

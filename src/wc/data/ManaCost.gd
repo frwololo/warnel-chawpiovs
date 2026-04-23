@@ -47,6 +47,7 @@ static func get_resource_from_keyword (keyword:String):
 
 var pool := {}
 
+#returns mana cost in converted int value
 func converted_mana_cost() -> int:
 	var total = 0
 	for k in ResourceMana.values():
@@ -125,3 +126,11 @@ func add_manacost(other_manacost):
 		return
 	for k in ResourceMana.values():
 		pool[k] += other_manacost.pool[k]	
+
+#set to zero all types that are not explicitly enabled in the filter		
+func filter(cost_filters:Dictionary):		
+	for k in ResourceMana.values():
+		var text_key = RESOURCE_TEXT[k].to_lower()
+		var include_type = cost_filters.get(text_key, false)
+		if !include_type:
+			pool[k] = 0			

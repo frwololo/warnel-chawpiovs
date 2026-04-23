@@ -3072,6 +3072,18 @@ func paid_with_includes(params:Dictionary, script:ScriptTask = null) -> bool:
 	if result:
 		return true
 	return false
+	
+func count_paid_resources(params:Dictionary, script:ScriptTask = null) -> bool:
+	var paid_with = ManaPool.new()
+	for resource in _last_paid_with:
+		paid_with.add_manacost(resource)
+
+	var cost_filters = params.get("filters", {})
+	if cost_filters:
+		paid_with.filter(cost_filters)
+
+	return paid_with.converted_mana_cost()
+	
 
 func count_printed_resources(params:Dictionary, script) -> int:
 	var mana = ManaCost.new()
@@ -3132,6 +3144,8 @@ func get_sustained_damage(params:Dictionary = {}, script = null) -> int:
 		subject = subjects[0]
 	return subject.tokens.get_token_count("damage")
 
+#returns how much damage this card can sustain before reaching zero life
+# returns 0 if <= 0
 func get_remaining_damage(params:Dictionary = {}, script = null) -> int:
 	var subject = get_param_subject(params, script)
 	

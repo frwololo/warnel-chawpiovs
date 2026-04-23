@@ -114,13 +114,34 @@ static func filter_trigger(
 	return true
 
 static func subject_matches(card, string_value, owner_card):
+	if !string_value:
+		return true
+		
 	match string_value:
 		KEY_SUBJECT_V_MY_HERO:
 			return card == owner_card.get_controller_hero_card()
+		KEY_SUBJECT_V_MY_IDENTITY:
+			#todo there should be a difference here, need to work it out
+			return card == owner_card.get_controller_hero_card()			
 		KEY_SUBJECT_V_VILLAIN:
 			return card in gameData.get_villains()
 		KEY_SUBJECT_V_MAIN_SCHEME:
 			return card in gameData.get_main_schemes()
+		"self":
+			if card != owner_card:
+				return false
+		"another":
+			if card == owner_card:
+				return false
+		"host":
+			if owner_card.current_host_card != card:
+				return false				
+		_:
+			#anything else we try to find a card by that name on the board
+			var found = cfc.NMAP.board.find_card_by_name(string_value)
+			if card != found:
+				return false
+			pass			
 	return true
 
 static func check_trigger_shares_property_with_identity(trigger_card,owner_card,property) -> bool:

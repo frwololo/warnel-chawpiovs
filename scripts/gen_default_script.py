@@ -22,14 +22,15 @@ primitives = [
   'Surge.',
   'Uses (',
   '<b>Hero Action</b>',
-  '<b>Alter-Ego Action</b>',  
+  '<b>Alter-Ego Action',  
   '<b>Hero Interrupt</b>',
+  '<b>Hero Response</b>',  
   '<b>Hero Resource</b>',
   '<b>Resource</b>',  
   '<b>Forced Interrupt</b>',
   '<b>Action</b>',
-  '<b>Action</b>',
-  '<b>Response',    
+  '<b>Response',
+  '<b>Interrupt</b>',      
   '<i>(attack)</i>',
   '<i>(thwart)</i>',
   '<b>Boost</b>',
@@ -81,7 +82,7 @@ def get_base_json(card_data):
       location = "hand"
 
     
-    if primitive in ['<b>hero action</b>', '<b>alter-ego action</b>', '<b>action</b>']:
+    if primitive in ['<b>hero action</b>', '<b>alter-ego action', '<b>action</b>']:
       if not "manual" in result:
         result["manual"] = {}
       if not location in result["manual"]:
@@ -148,7 +149,7 @@ def get_base_json(card_data):
 
 
       
-    if primitive == '<b>alter-ego action</b>':
+    if primitive == '<b>alter-ego action':
        result["manual"][location].append(
 	  {
 	    "name": "constraints",
@@ -199,7 +200,7 @@ def get_base_json(card_data):
     if primitive == '<i>(attack)</i>' and "manual" in result:
       result["manual"][location].append(
 	{
-	  "name": "thwart",
+	  "name": "attack",
 	}         
       )              
     if primitive == '<i>(thwart)</i>' and "manual" in result:
@@ -319,7 +320,7 @@ def get_base_json(card_data):
 	     "alteration": 1
 	   }
 	 ]
-       },        
+       }        
 
     if primitive == '<b>when revealed</b>':
        result["reveal"] = {

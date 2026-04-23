@@ -253,7 +253,7 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 		script = WCUtils.merge_dict(script,alter_ego_actions, true)
 
 	if type_code == "hero"  or type_code == "alter_ego": 
-		var hero_actions: Dictionary = { 
+		var identity_actions: Dictionary = { 
 			"manual": {
 				"board": {
 					"change form": [
@@ -285,12 +285,33 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 						"selection_type": "equal",					
 						"needs_selection": true,
 						"filter_state_seek": [{
-							"filter_group" : "group_allies"
+							"filter_group" : "group_allies_my_hero"
 						}],
 						"display_title": "Ally limit"
 					}				
 				]
 			},
+			"restricted_limit_rule": {
+				"board": [
+					{
+						"is_cost": true,
+						"subject_index": "top",
+						SP.KEY_SELECTION_OPTIONAL: false,
+						"name": "move_card_to_container",
+						"dest_container": "discard",
+						"subject":"boardseek",
+						"subject_count": "all",
+						"selection_count": 1,
+						"selection_type": "equal",					
+						"needs_selection": true,
+						"filter_state_seek": [{
+							"filter_group" : "play_area_my_hero",
+							"filter_properties" : {"restricted" : 1}
+						}],
+						"display_title": "Restricted limit"
+					}				
+				]
+			},			
 			"mulligan": {
 				"board": [
 					{
@@ -333,7 +354,7 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 				]
 			}						
 		}		
-		script = WCUtils.merge_dict(script,hero_actions, true)
+		script = WCUtils.merge_dict(script,identity_actions, true)
 
 
 	

@@ -68,9 +68,8 @@
 				}
 			]
 		},
-		"card_moved_to_board": {
+		"self_moved_to_board": {
 			"_silent": true,
-			"trigger": "self",
 			"board": [
 				{
 					"name": "mod_tokens",

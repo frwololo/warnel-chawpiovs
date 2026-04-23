@@ -1,0 +1,132 @@
+{
+	"_comments": "Have at Thee Thor test (draws card when egaging minion)",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},		
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Thor",
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "hydra mercenary"
+				},
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Hammer Throw"
+				},
+				{
+					"card": "Asgard"
+				},
+				{
+					"card": "God of Thunder"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Thor",
+					"tokens": {"_have_at_thee" : 1}					
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Lightning Strike"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},	
+		{
+			"type": "activate",
+			"value": "Thor"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Thor"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "hydra mercenary"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Hammer Throw"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Thor"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Lightning Strike"
+				},
+				{
+					"card": "God of Thunder"
+				},				
+				{
+					"card": "Asgard"
+				},
+			]
+		}
+	}
+}

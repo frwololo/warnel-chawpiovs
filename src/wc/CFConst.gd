@@ -364,10 +364,12 @@ const FORCE_HORIZONTAL_CARDS := {
 const DEFAULT_PROPERTIES_BY_TYPE:= {
 	"hero": {
 		"ally_limit" : 3,
+		"restricted_limit" : 2,		
 		"max_hand_size": 0,
 	},
 	"alter_ego": {
 		"ally_limit" : 3,
+		"restricted_limit" : 2,			
 		"max_hand_size": 0,
 	},
 	"villain" : {

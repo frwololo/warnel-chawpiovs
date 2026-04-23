@@ -2,6 +2,7 @@ extends VBoxContainer
 
 onready var lobby = find_parent("TeamSelection")
 onready var hero_picture: TextureButton = get_node("%HeroPicture")
+onready var hero_name_label: Label = get_node("%HeroName")
 #onready var playerName := $PlayerName
 #onready var kick := $Kick
 var hero_id
@@ -29,6 +30,9 @@ func resize():
 	var grid_width = 390
 	if screen_size.x > CFConst.LARGE_SCREEN_WIDTH:
 		grid_width = 600
+		var dynamic_font = cfc.get_font("res://fonts/ReggaeOne-Regular.ttf", 16)	
+		hero_name_label.add_font_override("font", dynamic_font)	
+		hero_name_label.add_color_override("font_color", Color8(220, 220,220))			
 	var columns = get_parent().columns
 	var image_size = grid_width / columns
 	

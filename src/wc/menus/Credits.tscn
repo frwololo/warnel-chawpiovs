@@ -26,9 +26,9 @@ anchor_bottom = 1.0
 
 [node name="VBox" type="VBoxContainer" parent="CenterContainer"]
 margin_left = 360.0
-margin_top = 181.0
+margin_top = 164.0
 margin_right = 1560.0
-margin_bottom = 898.0
+margin_bottom = 915.0
 custom_constants/separation = 10
 alignment = 1
 
@@ -44,7 +44,7 @@ align = 1
 unique_name_in_owner = true
 margin_top = 125.0
 margin_right = 1200.0
-margin_bottom = 567.0
+margin_bottom = 601.0
 rect_min_size = Vector2( 1200, 0 )
 custom_fonts/normal_font = SubResource( 2 )
 bbcode_enabled = true
@@ -56,7 +56,7 @@ Godot Switch port ([url]https://github.com/Homebrodot[/url])  thanks in particul
 Uses a heavyly modified version of Card Game Framework ([url]https://github.com/db0/godot-card-game-framework[/url])
 
 == Disclaimer ==
-This is a fan-created work and is not affiliated with, endorsed by, or sponsored by Fantasy Flight Games. All characters, settings, and related elements are the property of their respective owners.
+This is free, fan-created work and is not affiliated with, endorsed by, or sponsored by Fantasy Flight Games. All characters, settings, and related elements are the property of their respective owners.
 "
 text = "Warnel Chawpiovs, by Wololo (https://wololo.net)
 
@@ -66,14 +66,14 @@ Godot Switch port (https://github.com/Homebrodot)  thanks in particular to fhida
 Uses a heavyly modified version of Card Game Framework (https://github.com/db0/godot-card-game-framework)
 
 == Disclaimer ==
-This is a fan-created work and is not affiliated with, endorsed by, or sponsored by Fantasy Flight Games. All characters, settings, and related elements are the property of their respective owners.
+This is free, fan-created work and is not affiliated with, endorsed by, or sponsored by Fantasy Flight Games. All characters, settings, and related elements are the property of their respective owners.
 "
 fit_content_height = true
 
 [node name="VButtons" type="VBoxContainer" parent="CenterContainer/VBox"]
-margin_top = 577.0
+margin_top = 611.0
 margin_right = 1200.0
-margin_bottom = 677.0
+margin_bottom = 711.0
 size_flags_horizontal = 3
 custom_constants/separation = 10
 
@@ -88,9 +88,9 @@ __meta__ = {
 }
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBox"]
-margin_top = 687.0
+margin_top = 721.0
 margin_right = 128.0
-margin_bottom = 717.0
+margin_bottom = 751.0
 size_flags_horizontal = 0
 size_flags_vertical = 4
 

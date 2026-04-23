@@ -534,3 +534,8 @@ func serialize_object(object):
 		return null
 		
 	return object.serialize_to_json()
+
+func _input(event):
+	if event.is_action_pressed("toggle_fullscreen"):
+		OS.set_window_fullscreen(!OS.window_fullscreen)
+		get_tree().set_input_as_handled()	

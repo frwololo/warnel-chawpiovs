@@ -3391,7 +3391,6 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "health",
-					"trigger": "boardseek",
 					"alteration": 6,
 					"filter_same_controller": true,
 					"filter_state_trigger": [
@@ -4279,7 +4278,6 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "health",
-					"trigger": "boardseek",
 					"alteration": 1,
 					"filter_same_controller": true,
 					"filter_state_trigger": [
@@ -5377,7 +5375,6 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "health",
-					"trigger": "boardseek",
 					"alteration": 10,
 					"filter_state_trigger": [
 						{

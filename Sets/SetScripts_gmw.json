@@ -35,13 +35,22 @@
 					]
 				},
 				{
-					"name": "thwart"
+					"name": "thwart",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					],
+					"amount": "per_token_self",
+					"per_token_self": {
+						"token_name": "growth"
+					}
 				}
 			]
 		}
 	},
 	"\"I. AM. GROOT!\"": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -52,7 +61,17 @@
 					]
 				},
 				{
-					"name": "thwart"
+					"name": "attack",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					],
+					"amount": "per_token_self",
+					"per_token_self": {
+						"token_name": "growth"
+					}
 				}
 			]
 		}
@@ -78,17 +97,129 @@
 		}
 	},
 	"\"We Are Groot\"": {
-		"TODO": "",
 		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
-				}
-			]
+			"hand": {
+				"We Are 1 Groot": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": -1,
+						"token_name": "growth",
+						"subject": "Groot"
+					},
+					{
+						"name": "mod_tokens",
+						"modification": 1,
+						"token_name": "tough",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_group": "group_friendly"
+							}
+						]
+					}
+				],
+				"We Are 2 Groot": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": -2,
+						"token_name": "growth",
+						"subject": "Groot"
+					},
+					{
+						"name": "mod_tokens",
+						"modification": 1,
+						"token_name": "tough",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 2,
+						"filter_state_seek": [
+							{
+								"filter_group": "group_friendly"
+							}
+						]
+					}
+				],
+				"We Are 3 Groot": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": -3,
+						"token_name": "growth",
+						"subject": "Groot"
+					},
+					{
+						"name": "mod_tokens",
+						"modification": 1,
+						"token_name": "tough",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 3,
+						"filter_state_seek": [
+							{
+								"filter_group": "group_friendly"
+							}
+						]
+					}
+				],
+				"We Are 4 Groot": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": -4,
+						"token_name": "growth",
+						"subject": "Groot"
+					},
+					{
+						"name": "mod_tokens",
+						"modification": 1,
+						"token_name": "tough",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 4,
+						"filter_state_seek": [
+							{
+								"filter_group": "group_friendly"
+							}
+						]
+					}
+				]
+			}
 		}
 	},
 	"\"You Stand Accused!\"": {
@@ -201,22 +332,20 @@
 				}
 			]
 		},
-		"alterants": [
-			{
-				"board": [
-					{
-						"filter_task": "get_property",
-						"filter_property_name": "TODO",
-						"filter_state_trigger": [
-							{
-								"TODO": "TODO"
-							}
-						],
-						"alteration": 1
-					}
-				]
-			}
-		]
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "TODO",
+					"filter_state_trigger": [
+						{
+							"TODO": "TODO"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
 	},
 	"Badoon Sentry": {
 		"TODO": "",
@@ -227,25 +356,30 @@
 				}
 			]
 		},
-		"alterants": [
-			{
-				"board": [
-					{
-						"filter_task": "get_property",
-						"filter_property_name": "TODO",
-						"filter_state_trigger": [
-							{
-								"TODO": "TODO"
-							}
-						],
-						"alteration": 1
-					}
-				]
-			}
-		]
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "TODO",
+					"filter_state_trigger": [
+						{
+							"TODO": "TODO"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
 	},
 	"Badoon Ship": {
-		"TODO": ""
+		"charge_up": {
+			"board": [
+				{}
+			]
+		},
+		"barrage": {
+			"board": {}
+		}
 	},
 	"Badoon Warlord": {
 		"TODO": "",
@@ -256,22 +390,20 @@
 				}
 			]
 		},
-		"alterants": [
-			{
-				"board": [
-					{
-						"filter_task": "get_property",
-						"filter_property_name": "TODO",
-						"filter_state_trigger": [
-							{
-								"TODO": "TODO"
-							}
-						],
-						"alteration": 1
-					}
-				]
-			}
-		]
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "TODO",
+					"filter_state_trigger": [
+						{
+							"TODO": "TODO"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
 	},
 	"Barrel Roll": {
 		"TODO": "",
@@ -295,7 +427,17 @@
 		}
 	},
 	"Battery Pack": {
-		"TODO": "",
+		"self_moved_to_board": {
+			"_silent": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 2,
+					"token_name": "charge"
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -306,10 +448,33 @@
 					]
 				},
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action"
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "charge",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "charge",
+					"modification": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_properties2": {
+								"trait_tech": 1
+							}
+						}
 					]
 				}
 			]
@@ -340,11 +505,17 @@
 		}
 	},
 	"Blackjack O'Hare": {
-		"TODO": "",
 		"quickstrike": {}
 	},
 	"Blackjack's Bazooka": {
-		"TODO": "",
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -353,21 +524,40 @@
 					"tags": [
 						"hero_action"
 					]
-				}
-			]
-		},
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
+				},
 				{
-					"name": "attach_to_card",
-					"subject": "TODO"
+					"name": "pay_cost",
+					"cost": {
+						"mental": 3
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Blazing Inferno": {
-		"TODO": ""
+		"step_started": {
+			"event_filters": {
+				"step_name": "VILLAIN_THREAT"
+			},
+			"board": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Blazing Inferno": [
+					{
+						"name": "indirect_damage",
+						"amount": 2
+					}
+				]
+			}
+		}
 	},
 	"Blind Side": {
 		"TODO": "",
@@ -390,9 +580,29 @@
 		"TODO": ""
 	},
 	"Booster Boots": {
-		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "guardian"
+							}
+						}
+					],
+					"max_per_hero_any": 1
+				}
+			]
+		},
 		"interrupt": {
-			"event_name": "TODO",
+			"event_name": "receive_damage",
+			"event_filters": {
+				"damage": ">0",
+				"target": "my_hero"
+			},
 			"is_optional_board": true,
 			"board": [
 				{
@@ -401,6 +611,22 @@
 					"tags": [
 						"hero_interrupt"
 					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "discard",
+					"is_cost": true,
+					"subject": "index",
+					"src_container": "deck"
+				},
+				{
+					"name": "prevent",
+					"amount": 1,
+					"subject": "interrupted_event"
 				}
 			]
 		}
@@ -423,7 +649,18 @@
 		}
 	},
 	"Bug": {
-		"TODO": ""
+		"basic_attack_happened": {
+			"event_filters": {
+				"attacker": "my_hero"
+			},
+			"board": [
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"By Any Means": {
 		"TODO": "",
@@ -606,7 +843,7 @@
 			"is_optional_board": true,
 			"board": []
 		}
-	},	
+	},
 	"Collector - B1": {
 		"TODO": "",
 		"interrupt": {
@@ -614,7 +851,7 @@
 			"is_optional_board": true,
 			"board": []
 		}
-	},	
+	},
 	"Combat Ready": {
 		"TODO": "",
 		"reveal": {
@@ -657,8 +894,183 @@
 		}
 	},
 	"Crisis on Halfworld": {
-		"TODO": "",
-		"_surge": {}
+		"give_obligation": {
+			"__to__": "Rocket Rackoon"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Flip then Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity",
+						"_comments": "we need to exhaust before changing form here due to a bug"
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Flip then Discard upgrade": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "count_cards",
+									"func_params": {
+										"subject": "boardseek",
+										"filter_state_seek": [
+											{
+												"filter_group": "group_upgrade_support_my_hero",
+												"filter_properties": {
+													"type_code": "upgrade"
+												}
+											}
+										]
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "move_card_to_container",
+										"dest_container": "discard",
+										"is_cost": true,
+										"subject": "boardseek",
+										"subject_count": 1,
+										"sort_by": "function",
+										"sort_name": "get_subject_int_printed_property",
+										"func_params": {
+											"property": "cost"
+										},
+										"sort_descending": true,
+										"filter_state_seek": [
+											{
+												"filter_group": "group_upgrade_support_my_hero",
+												"filter_properties": {
+													"type_code": "upgrade"
+												}
+											}
+										]
+									}
+								]
+							}
+						],
+						"else": [
+							{
+								"name": "surge"
+							}
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				],
+				"Discard Upgrade": [
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "count_cards",
+									"func_params": {
+										"subject": "boardseek",
+										"filter_state_seek": [
+											{
+												"filter_group": "group_upgrade_support_my_hero",
+												"filter_properties": {
+													"type_code": "upgrade"
+												}
+											}
+										]
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "move_card_to_container",
+										"dest_container": "discard",
+										"is_cost": true,
+										"subject": "boardseek",
+										"subject_count": 1,
+										"sort_by": "function",
+										"sort_name": "get_subject_int_printed_property",
+										"func_params": {
+											"property": "cost"
+										},
+										"sort_descending": true,
+										"filter_state_seek": [
+											{
+												"filter_group": "group_upgrade_support_my_hero",
+												"filter_properties": {
+													"type_code": "upgrade"
+												}
+											}
+										]
+									}
+								]
+							}
+						],
+						"else": [
+							{
+								"name": "surge"
+							}
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				]
+			}
+		}
 	},
 	"Crystal Ball": {
 		"TODO": "",
@@ -697,26 +1109,80 @@
 		}
 	},
 	"Cybernetic Skeleton": {
-		"TODO": "",
-		"alterants": [
-			{
-				"board": [
-					{
-						"filter_task": "get_property",
-						"filter_property_name": "TODO",
-						"filter_state_trigger": [
-							{
-								"TODO": "TODO"
-							}
-						],
-						"alteration": 1
-					}
-				]
-			}
-		]
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"alteration": 6,
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": 1,
+					"trigger": "my_hero"
+				}
+			]
+		}
 	},
 	"Dauntless": {
-		"TODO": ""
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero_any": 1
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_to_player_zone",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities",
+							"filter_max_per_hero": 1
+						}
+					]
+				}
+			]
+		},
+		"alterants": {
+			"tmp_value": {
+				"func_name": "get_subject_int_printed_property",
+				"func_params": {
+					"subject": "my_hero",
+					"property": "health"
+				}
+			},
+			"condition_board": {
+				"func_name": "get_remaining_damage>=tmp_value",
+				"func_params": {
+					"subject": "my_hero"
+				}
+			},
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "my_hero",
+					"alteration": 1
+				}
+			]
+		}
 	},
 	"Dead to Rights": {
 		"TODO": "",
@@ -737,8 +1203,25 @@
 		}
 	},
 	"Deft Focus": {
-		"TODO": "",
 		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero_any": 1
+				}
+			]
+		},
+		"manual": {
+			"condition_board": {
+				"func_name": "has_trait",
+				"func_params": {
+					"trait": "superpower",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "hand_my_hero"
+				}
+			},
 			"board": [
 				{
 					"name": "constraints",
@@ -746,6 +1229,70 @@
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"set_to_mod": true,
+					"token_name": "__focus"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_superpower": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "__focus",
+						"is_inverted": true
+					}
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "another",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"trait_superpower": 1,
+						"comparison": "ge"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "__focus"
+				}
+			]
+		},
+		"phase_ended": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "__focus"
 				}
 			]
 		}
@@ -821,7 +1368,16 @@
 		}
 	},
 	"Drang - 1": {
-		"TODO": ""
+		"response_enemy_scheme_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "charge_up",
+					"subject": "Badoon Ship"
+				}
+			]
+		}
 	},
 	"Drang - 2": {
 		"TODO": "",
@@ -867,9 +1423,14 @@
 		}
 	},
 	"Entangling Vines": {
-		"TODO": "",
 		"interrupt": {
-			"event_name": "TODO",
+			"event_name": "thwart",
+			"event_filters": {
+				"event_source": "my_hero",
+				"tags": [
+					"basic power"
+				]
+			},
 			"is_optional_board": true,
 			"board": [
 				{
@@ -878,25 +1439,38 @@
 					"tags": [
 						"hero_interrupt"
 					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "growth",
+					"subject": "Groot"
+				},
+				{
+					"name": "add_script",
+					"end_condition": "basic_thwart_happened",
+					"subject": "previous",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"trigger": "self",
+									"alteration": 2
+								}
+							]
+						}
+					}
 				}
 			]
-		},
-		"alterants": [
-			{
-				"board": [
-					{
-						"filter_task": "get_property",
-						"filter_property_name": "TODO",
-						"filter_state_trigger": [
-							{
-								"TODO": "TODO"
-							}
-						],
-						"alteration": 1
-					}
-				]
-			}
-		]
+		}
 	},
 	"Evasive Maneuvering": {
 		"TODO": "",
@@ -918,11 +1492,30 @@
 		}
 	},
 	"Fan the Flames": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "indirect_damage",
+					"amount": {
+						"if": {
+							"func_name": "card_is_in_play",
+							"func_params": {
+								"card_name": "Blazing Inferno"
+							}
+						},
+						"then": 3,
+						"else": 2
+					},
+					"plus_amount": {
+						"if": {
+							"func_name": "card_is_in_play",
+							"func_params": {
+								"card_name": "Furnax"
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
 				}
 			]
 		}
@@ -959,12 +1552,36 @@
 					"tags": [
 						"alter_ego_action"
 					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "growth",
+					"modification": {
+						"if": {
+							"func_name": "count_tokens<10",
+							"func_params": {
+								"token_name": "growth",
+								"subject": "Groot"
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"subject": "Groot"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
 				}
 			]
 		}
 	},
 	"Fighting Fit": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -975,44 +1592,132 @@
 					]
 				},
 				{
-					"name": "thwart"
+					"name": "attack",
+					"target": "villain",
+					"tmp_value": {
+						"func_name": "get_subject_int_printed_property",
+						"func_params": {
+							"subject": "my_hero",
+							"property": "health"
+						}
+					},
+					"amount": {
+						"if": {
+							"func_name": "get_remaining_damage>=tmp_value",
+							"func_params": {
+								"subject": "my_hero"
+							}
+						},
+						"then": 5,
+						"else": 2
+					}
 				}
 			]
 		}
 	},
 	"Flora and Fauna": {
-		"TODO": "",
 		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
-				}
-			]
+			"hand": {
+				"Groot": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						],
+						"team_up": [
+							"Groot",
+							"Rocket Raccoon"
+						]
+					},
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "count_tokens<=9",
+									"func_params": {
+										"subject": "Groot",
+										"token_name": "growth"
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "mod_tokens",
+										"subject": "Groot",
+										"token_name": "growth",
+										"modification": {
+											"if": {
+												"func_name": "count_tokens==9",
+												"func_params": {
+													"subject": "Groot",
+													"token_name": "growth"
+												}
+											},
+											"then": 1,
+											"else": 2
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"name": "ready_card",
+						"subject": "Groot"
+					}
+				],
+				"Rocket Raccoon": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						],
+						"team_up": [
+							"Groot",
+							"Rocket Raccoon"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "charge",
+						"modification": 2,
+						"subject": "target",
+						"filter_state_subject": [
+							{
+								"filter_properties": {
+									"type_code": "upgrade"
+								},
+								"filter_properties2": {
+									"card_set_code": "rocket"
+								}
+							}
+						]
+					},
+					{
+						"name": "ready_card",
+						"subject": "previous"
+					}
+				]
+			}
 		}
 	},
 	"Follow Through": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_interrupt"
-					]
-				}
-			]
+		"attacks_gain": {
+			"__trigger__": "my_hero",
+			"__tags__": "plus_1_if_excess"
 		}
 	},
 	"Fruition": {
-		"TODO": "",
 		"manual": {
+			"condition_hand": {
+				"func_name": "count_tokens<10",
+				"func_params": {
+					"subject": "self",
+					"token_name": "growth"
+				}
+			},
 			"hand": [
 				{
 					"name": "constraints",
@@ -1022,11 +1727,20 @@
 					]
 				},
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action"
-					]
+					"name": "mod_tokens",
+					"token_name": "growth",
+					"modification": {
+						"if": {
+							"func_name": "count_tokens==9",
+							"func_params": {
+								"subject": "self",
+								"token_name": "growth"
+							}
+						},
+						"then": 1,
+						"else": 2
+					},
+					"subject": "self"
 				}
 			]
 		}
@@ -1040,7 +1754,25 @@
 		"_surge": {}
 	},
 	"Furnax": {
-		"TODO": ""
+		"response": {
+			"event_name": [
+				"enemy_attack_happened",
+				"enemy_scheme_happened"
+			],
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Flame": [
+					{
+						"name": "indirect_damage",
+						"amount": 2
+					}
+				]
+			}
+		}
 	},
 	"Gallery of Splendor": {
 		"TODO": "",
@@ -1077,28 +1809,137 @@
 			]
 		}
 	},
-	"Groot": {
-		"TODO": "",
+	"Groot #16047": {
 		"manual": {
-			"board": [
+			"hand": [
 				{
 					"name": "constraints",
 					"is_cost": true,
-					"tags": [
-						"action"
-					]
-				},
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action"
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "guardian"
+							}
+						}
 					]
 				}
 			]
 		},
+		"response": {
+			"event_name": "defense_happened",
+			"trigger": "self",
+			"board": [
+				{
+					"name": "heal",
+					"amount": 2,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Groot #16001a": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"trigger": "self",
+			"event_filters": {
+				"amount": ">0"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"token_name": "growth"
+						}
+					}
+				}
+			]
+		},
+		"event_prevented": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": "trigger_details_amount_prevented",
+					"is_inverted": true,
+					"token_name": "growth"
+				}
+			]
+		}
+	},
+	"Groot #16001b": {
 		"once_per_round": {
-			"__name__": "__TODO"
+			"__name__": "_growth_spurt"
+		},
+		"manual": {
+			"board": {
+				"Growth Spurt(1)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action"
+						],
+						"constraints": [
+							{
+								"func_name": "count_tokens==9",
+								"func_params": {
+									"subject": "self",
+									"token_name": "growth"
+								}
+							}
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "_growth_spurt",
+						"modification": -1,
+						"subject": "self",
+						"is_cost": 1
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "growth",
+						"modification": 1,
+						"subject": "self"
+					}
+				],
+				"Growth Spurt": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action"
+						],
+						"constraints": [
+							{
+								"func_name": "count_tokens<9",
+								"func_params": {
+									"subject": "self",
+									"token_name": "growth"
+								}
+							}
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "_growth_spurt",
+						"modification": -1,
+						"subject": "self",
+						"is_cost": 1
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "growth",
+						"modification": 2,
+						"subject": "self"
+					}
+				]
+			}
 		}
 	},
 	"Guerrilla Tactics": {
@@ -1109,13 +1950,19 @@
 		}
 	},
 	"Hand Cannon": {
-		"TODO": "",
 		"uses": {
-			"__name__": "TODO",
-			"__amount__": "TODO"
+			"__name__": "charge",
+			"__amount__": 3
 		},
 		"interrupt": {
-			"event_name": "TODO",
+			"event_name": "pre_receive_damage",
+			"trigger": "my_hero",
+			"event_filters": {
+				"tags": [
+					"attack",
+					"basic power"
+				]
+			},
 			"is_optional_board": true,
 			"board": [
 				{
@@ -1124,28 +1971,66 @@
 					"tags": [
 						"hero_interrupt"
 					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"token_name": "charge",
+					"modification": -1,
+					"subject": "self"
+				},
+				{
+					"name": "add_script",
+					"end_condition": "basic_attack_happened",
+					"subject": "my_hero",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": 2
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "overkill",
+									"trigger": "self",
+									"alteration": 1
+								}
+							]
+						}
+					}
 				}
 			]
-		},
-		"alterants": [
-			{
-				"board": [
-					{
-						"filter_task": "get_property",
-						"filter_property_name": "TODO",
-						"filter_state_trigger": [
-							{
-								"TODO": "TODO"
-							}
-						],
-						"alteration": 1
-					}
-				]
-			}
-		]
+		}
 	},
 	"Hard to Ignore": {
-		"TODO": ""
+		"response": {
+			"event_name": "defense_happened",
+			"event_filters": {
+				"target": "my_hero",
+				"damage": "<1"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"amount": 1,
+					"subject": "main_scheme"
+				}
+			]
+		}
 	},
 	"Headhunter's Henchman": {
 		"TODO": "",
@@ -1207,23 +2092,35 @@
 		}
 	},
 	"I've Got a Plan": {
-		"TODO": "",
-		"alterants": [
-			{
-				"hand": [
-					{
-						"filter_task": "get_property",
-						"filter_property_name": "TODO",
-						"filter_state_trigger": [
-							{
-								"TODO": "TODO"
-							}
-						],
-						"alteration": 1
+		"_comments": "todo: while in hero form",
+		"response": {
+			"event_name": "basic_thwart_happened",
+			"trigger": "my_hero",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				},
+				{
+					"name": "add_script",
+					"end_condition": "phase_ended",
+					"subject": "my_hero",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"trigger": "self",
+									"alteration": 1
+								}
+							]
+						}
 					}
-				]
-			}
-		]
+				}
+			]
+		}
 	},
 	"Impossible Geometry": {
 		"TODO": "",
@@ -1317,7 +2214,6 @@
 		"TODO": ""
 	},
 	"Into the Fray": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -1328,7 +2224,29 @@
 					]
 				},
 				{
-					"name": "thwart"
+					"name": "attack",
+					"amount": 6,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				}
+			]
+		},
+		"card_damaged": {
+			"event_filters": {
+				"damage_script_owner_card": "self",
+				"excess_damage": ">0"
+			},
+			"all": [
+				{
+					"name": "remove_threat",
+					"subject": "main_scheme",
+					"amount": "trigger_details_excess_damage"
 				}
 			]
 		}
@@ -1378,22 +2296,20 @@
 				}
 			]
 		},
-		"alterants": [
-			{
-				"board": [
-					{
-						"filter_task": "get_property",
-						"filter_property_name": "TODO",
-						"filter_state_trigger": [
-							{
-								"TODO": "TODO"
-							}
-						],
-						"alteration": 1
-					}
-				]
-			}
-		]
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "TODO",
+					"filter_state_trigger": [
+						{
+							"TODO": "TODO"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
 	},
 	"Kree Physiology": {
 		"TODO": "",
@@ -1425,7 +2341,44 @@
 		}
 	},
 	"Lashing Vines": {
-		"TODO": ""
+		"response": {
+			"event_name": [
+				"attack",
+				"thwart"
+			],
+			"event_filters": {
+				"event_source": "my_hero",
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -2,
+					"token_name": "growth",
+					"subject": "Groot"
+				},
+				{
+					"name": "ready_card",
+					"subject": "Groot"
+				}
+			]
+		}
 	},
 	"Lethal Intent": {
 		"TODO": "",
@@ -1455,7 +2408,6 @@
 		}
 	},
 	"Looking for Trouble": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -1466,7 +2418,32 @@
 					]
 				},
 				{
-					"name": "thwart"
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"is_cost": true,
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"is_cost": true,
+					"destination_grid": "enemies_my_hero",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "thwart",
+					"amount": 3,
+					"subject": "main_scheme"
 				}
 			]
 		}
@@ -1647,7 +2624,17 @@
 		}
 	},
 	"Particle Cannon": {
-		"TODO": "",
+		"self_moved_to_board": {
+			"_silent": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 2,
+					"token_name": "charge"
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -1658,7 +2645,30 @@
 					]
 				},
 				{
-					"name": "thwart"
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "charge",
+					"modification": -1,
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "attack",
+					"amount": 4,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"tags": [
+						"overkill",
+						"ranged"
+					]
 				}
 			]
 		}
@@ -1700,11 +2710,33 @@
 		}
 	},
 	"Planetary Invasion": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"name": "reveal_encounters",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "previous"
 				}
 			]
 		}
@@ -1848,7 +2880,6 @@
 		}
 	},
 	"Reload": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -1857,12 +2888,38 @@
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_properties2": {
+								"trait_tech": 1
+							}
+						}
+					]
 				}
 			]
 		}
 	},
 	"Rocket Launcher": {
-		"TODO": "",
+		"self_moved_to_board": {
+			"_silent": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 2,
+					"token_name": "charge"
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -1871,36 +2928,183 @@
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "charge",
+					"modification": -1,
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"needs_subject": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies_previous_subject"
+						}
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "villain"
 				}
 			]
 		}
 	},
-	"Rocket Raccoon": {
-		"TODO": "",
+	"Rocket Raccoon #16019": {
 		"manual": {
-			"board": [
+			"hand": [
 				{
 					"name": "constraints",
 					"is_cost": true,
-					"tags": [
-						"action"
-					]
-				},
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action"
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "guardian"
+							}
+						}
 					]
 				}
 			]
 		},
+		"interrupt": {
+			"event_name": "pre_receive_damage",
+			"trigger": "self",
+			"event_filters": {
+				"tags": [
+					"attack"
+				],
+				"filter_state_event_target": [
+					{
+						"filter_properties": {
+							"type_code": "minion"
+						}
+					}
+				]
+			},
+			"board": [
+				{
+					"name": "add_script",
+					"end_condition": "attack_happened",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": 3
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "overkill",
+									"trigger": "self",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Rocket Raccoon #16029a": {
+		"card_damaged": {
+			"event_filters": {
+				"attacker": "self",
+				"excess_damage": ">0"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Rocket Raccoon #16029b": {
 		"once_per_round": {
-			"__name__": "__TODO"
+			"__name__": "_tinkering"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"subject": "self",
+					"modification": -1,
+					"token_name": "_tinkering"
+				},
+				{
+					"name": "discard",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_properties2": {
+								"trait_tech": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "draw_cards",
+					"amount": 2
+				}
+			]
 		}
 	},
 	"Rocket's Pistol": {
-		"TODO": "",
+		"self_moved_to_board": {
+			"_silent": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 3,
+					"token_name": "charge"
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -1911,7 +3115,26 @@
 					]
 				},
 				{
-					"name": "thwart"
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "charge",
+					"modification": -1,
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "attack",
+					"amount": 2,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
 				}
 			]
 		}
@@ -1975,7 +3198,37 @@
 					]
 				},
 				{
-					"name": "thwart"
+					"name": "attack",
+					"amount": 5,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"event_filters": {
+				"source": "self"
+			},
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "growth",
+					"modification": {
+						"if": {
+							"func_name": "count_tokens<10",
+							"func_params": {
+								"token_name": "growth",
+								"subject": "Groot"
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"subject": "Groot"
 				}
 			]
 		}
@@ -2012,15 +3265,34 @@
 		}
 	},
 	"Salvage": {
-		"TODO": "",
-		"response": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
+		"paid_as_resource": {
+			"trigger": "self",
+			"is_optional_all": true,
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"src_container": "discard",
+					"dest_container": "deck",
+					"dest_index": "top",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_properties2": {
+								"trait_tech": 1
+							}
+						}
+					]
+				}
+			]
 		}
 	},
 	"Schadenfreude": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -2029,6 +3301,25 @@
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "add_script",
+					"end_condition": "phase_ended",
+					"subject": "my_hero",
+					"script": {
+						"card_damaged": {
+							"event_filters": {
+								"attacker": "my_hero"
+							},
+							"board": [
+								{
+									"name": "heal",
+									"amount": 2,
+									"subject": "my_hero"
+								}
+							]
+						}
+					}
 				}
 			]
 		}
@@ -2063,22 +3354,20 @@
 				}
 			]
 		},
-		"alterants": [
-			{
-				"board": [
-					{
-						"filter_task": "get_property",
-						"filter_property_name": "TODO",
-						"filter_state_trigger": [
-							{
-								"TODO": "TODO"
-							}
-						],
-						"alteration": 1
-					}
-				]
-			}
-		]
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "TODO",
+					"filter_state_trigger": [
+						{
+							"TODO": "TODO"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
 	},
 	"Spatial Positioning": {
 		"TODO": ""
@@ -2101,7 +3390,28 @@
 		}
 	},
 	"Starhawk - Stakar Ogord": {
-		"TODO": ""
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "self",
+				"damage": ">0"
+			},
+			"tmp_value": "trigger_details_damage",
+			"condition_board": {
+				"func_name": "get_remaining_damage==tmp_value"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "hand",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Starshark": {
 		"TODO": "",
@@ -2314,23 +3624,22 @@
 		}
 	},
 	"Thruster Boots": {
-		"TODO": "",
-		"alterants": [
-			{
-				"board": [
-					{
-						"filter_task": "get_property",
-						"filter_property_name": "TODO",
-						"filter_state_trigger": [
-							{
-								"TODO": "TODO"
-							}
-						],
-						"alteration": 1
-					}
-				]
-			}
-		]
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"alteration": 1,
+					"trigger": "my_hero"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_aerial",
+					"alteration": 1,
+					"trigger": "my_hero"
+				}
+			]
+		}
 	},
 	"Tried and True": {
 		"TODO": "",
@@ -2432,9 +3741,6 @@
 			]
 		}
 	},
-	"Vendetta": {
-		"TODO": ""
-	},
 	"View the Cosmos": {
 		"TODO": "",
 		"reveal": {
@@ -2446,9 +3752,11 @@
 		}
 	},
 	"Vine Shield": {
-		"TODO": "",
 		"interrupt": {
-			"event_name": "TODO",
+			"event_name": "enemy_attack_damage",
+			"event_filters": {
+				"target": "my_hero"
+			},
 			"is_optional_board": true,
 			"board": [
 				{
@@ -2457,30 +3765,54 @@
 					"tags": [
 						"hero_interrupt"
 					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "growth",
+					"subject": "Groot"
+				},
+				{
+					"name": "set_defender",
+					"is_cost": true,
+					"subject": "my_hero",
+					"_comments": "set_defender here has a double role, 1) sets my_hero as a defender if not already the case, 2) because it is a cost, it will fail if there is already a different defender chosen"
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "enemy_activation_finished",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "defense",
+									"trigger": "my_hero",
+									"alteration": 3
+								}
+							]
+						}
+					}
 				}
 			]
-		},
-		"alterants": [
-			{
-				"board": [
-					{
-						"filter_task": "get_property",
-						"filter_property_name": "TODO",
-						"filter_state_trigger": [
-							{
-								"TODO": "TODO"
-							}
-						],
-						"alteration": 1
-					}
-				]
-			}
-		]
+		}
 	},
 	"Vine Spikes": {
-		"TODO": "",
 		"interrupt": {
-			"event_name": "TODO",
+			"event_name": "attack",
+			"event_filters": {
+				"event_source": "my_hero",
+				"tags": [
+					"basic power"
+				]
+			},
 			"is_optional_board": true,
 			"board": [
 				{
@@ -2489,25 +3821,38 @@
 					"tags": [
 						"hero_interrupt"
 					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "growth",
+					"subject": "Groot"
+				},
+				{
+					"name": "add_script",
+					"end_condition": "basic_attack_happened",
+					"subject": "previous",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": 2
+								}
+							]
+						}
+					}
 				}
 			]
-		},
-		"alterants": [
-			{
-				"board": [
-					{
-						"filter_task": "get_property",
-						"filter_property_name": "TODO",
-						"filter_state_trigger": [
-							{
-								"TODO": "TODO"
-							}
-						],
-						"alteration": 1
-					}
-				]
-			}
-		]
+		}
 	},
 	"Warp Drive Initiated - 2A": {
 		"TODO": "",
@@ -2561,8 +3906,135 @@
 		}
 	},
 	"Wilt": {
-		"TODO": "",
-		"_surge": {}
+		"give_obligation": {
+			"__to__": "Groot"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Flip then Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity",
+						"_comments": "we need to exhaust before changing form here due to a bug"
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Flip then Remove Growth": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "!count_tokens",
+									"func_params": {
+										"subject": "Groot",
+										"token_name": "growth"
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "surge"
+									}
+								]
+							}
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"modification": -3,
+						"token_name": "growth",
+						"subject": "Groot"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				],
+				"Remove Growth": [
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "!count_tokens",
+									"func_params": {
+										"subject": "Groot",
+										"token_name": "growth"
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "surge"
+									}
+								]
+							}
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"modification": -3,
+						"token_name": "growth",
+						"subject": "Groot"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				]
+			}
+		}
 	},
 	"Wing It": {
 		"TODO": "",

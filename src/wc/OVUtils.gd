@@ -254,7 +254,24 @@ static func func_name_run(object, func_name, func_params, script = null):
 	if func_name.begins_with("!"):
 		func_name = func_name.substr(1)
 		reverse_result = true
+
+	#func_name: "foo_bar>=5"
+	var comparison = ""
+	var comparison_value = 0
+	for comparison_str in ["==", ">=", "<=", ">", "<"]:
+		var str_position = func_name.find(comparison_str)
+		if str_position == -1:
+			continue
+		comparison = comparison_str
+		comparison_value = func_name.substr(str_position + comparison_str.length())
+		func_name = func_name.substr(0, str_position)
+		if script:
+			comparison_value = script.retrieve_integer_property(comparison_value)
+		comparison_value = int(comparison_value)
+		
 	var result = object.call(func_name, func_params, script)
+
+
 
 	if typeof(result) == TYPE_BOOL:
 		if result:
@@ -285,6 +302,33 @@ static func func_name_run(object, func_name, func_params, script = null):
 		var min_value =  func_params.get("min", null)
 		if min_value != null:
 			result = max(result, min_value)		
+		
+		match comparison:
+			"==":
+				if result == comparison_value:
+					result = 1
+				else:
+					result = 0
+			">=":
+				if result >= comparison_value:
+					result = 1
+				else:
+					result = 0
+			"<=":
+				if result <= comparison_value:
+					result = 1
+				else:
+					result = 0			
+			">":
+				if result > comparison_value:
+					result = 1
+				else:
+					result = 0			
+			"<":
+				if result < comparison_value:
+					result = 1
+				else:
+					result = 0			
 		
 	return result
 	

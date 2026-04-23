@@ -700,6 +700,14 @@ func receive_damage(script: ScriptTask) -> int:
 			#ever work if there's only one target. I'm not sure how future proof this is
 			return retcode	
 			#continue
+
+			
+		var remaining_damage:int =  card.get_remaining_damage()
+		
+		var excess_damage = int(max(amount - remaining_damage, 0))	
+
+		if ("plus_1_if_excess" in tags):
+			amount+= 1
 			
 		retcode = card.tokens.mod_token("damage",
 				amount,false,costs_dry_run(), tags)	
@@ -763,11 +771,13 @@ func receive_damage(script: ScriptTask) -> int:
 			
 		#check for death
 		var lethal = false
-		if damage_happened:
+		if damage_happened:			
 			var signal_details = {
 				"attacker": attacker,
+				"damage_script_owner_card": script.owner, 
 				"target": card,
 				"damage": damage_happened,
+				"excess_damage": excess_damage,
 				"tags": tags,
 			}
 			scripting_bus.emit_signal_on_stack("card_damaged", card, signal_details)

@@ -130,6 +130,9 @@ static func subject_matches(card, string_value, owner_card):
 		"self":
 			if card != owner_card:
 				return false
+		"first_player":
+			if card != gameData.get_first_player():
+				return false				
 		"another":
 			if card == owner_card:
 				return false

@@ -2,28 +2,10 @@
 	"_macros": {
 		"nebula_attachment_boost": {
 			"name": "add_script",
-			"end_condition": {
-				"trigger": [
-					"enemy_attack_happened",
-					"enemy_scheme_happened"
-				]
-			},
+			"end_condition": "enemy_activation_finished",
 			"subject": "self",
 			"script": {
-				"enemy_attack_happened": {
-					"all": [
-						{
-							"name": "reveal_encounters",
-							"subject": "self"
-						},
-						{
-							"name": "sequence",
-							"sequence_ability": "special",
-							"subject": "self"
-						}
-					]
-				},
-				"enemy_scheme_happened": {
+				"enemy_activation_finished": {
 					"all": [
 						{
 							"name": "reveal_encounters",
@@ -78,7 +60,6 @@
 		}
 	},
 	"\"I am Groot\"": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -131,22 +112,76 @@
 		}
 	},
 	"\"Take What Is Mine\" - 2A": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_attachments",
+								"func_params": {
+									"subject": "Ronan the Accuser",
+									"filter_state_attachment": [
+										{
+											"filter_properties": {
+												"Name": "Power Stone"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "draw_boost_card",
+									"subject": "villain"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "host_card",
+							"host": "Ronan the Accuser",
+							"subject": "Power Stone"
+						}
+					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"\"Take What Is Mine\" - 2B": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_remove_threat",
+					"alteration": {
+						"func_name": "count_attachments",
+						"func_params": {
+							"subject": "Ronan the Accuser",
+							"filter_state_attachment": [
+								{
+									"filter_properties": {
+										"Name": "Power Stone"
+									}
+								}
+							]
+						}
+					},
+					"trigger": "main_scheme"
+				}
+			]
+		}
 	},
 	"\"There is No Escape\"": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"hinder": {
-			"__amount__": "TODO",
+			"__amount__": 3,
 			"__each_player__": true
 		}
 	},
@@ -277,31 +312,66 @@
 		}
 	},
 	"\"You Stand Accused!\"": {
-		"TODO": "",
-		"boost": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		},
 		"reveal_alter_ego": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "Ronan the Accuser",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "scheme",
+									"trigger": "self",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "enemy_schemes",
+					"subject": "villain"
 				}
 			]
 		},
 		"reveal_hero": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "Ronan the Accuser",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "villain_attacks_you"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
 				}
 			]
 		}
 	},
 	"Ardent Resolve": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -315,9 +385,9 @@
 		}
 	},
 	"Armor Plating": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"interrupt": {
-			"event_name": "TODO",
+			"event_name": "receive_damage",
 			"is_optional_board": true,
 			"board": [
 				{
@@ -331,19 +401,52 @@
 		}
 	},
 	"Badoon Assassin": {
-		"TODO": "",
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": 2
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "enemy_attacks_you",
+					"subject": "self"
+				}
+			]
+		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"overkill",
+							"piercing",
+							"ranged"
+						]
+					}
 				}
 			]
 		}
 	},
 	"Badoon Blitz": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"hinder": {
-			"__amount__": "TODO",
+			"__amount__": 3,
 			"__each_player__": true
 		}
 	},
@@ -388,69 +491,90 @@
 		}
 	},
 	"Badoon Grunt": {
-		"TODO": "",
+		"card_moved_to_board": {
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "count_engaged_minions==1",
+				"func_params": {
+					"subject": "my_hero"
+				}
+			},
+			"board": [
+				{
+					"name": "deal_encounter",
+					"subject": "my_hero"
+				}
+			]
+		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_board",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Badoon Headhunter": {
-		"TODO": "",
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_board",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Badoon Lieutenant": {
-		"TODO": "",
-		"boost": {
+		"boost_alterants": {
 			"all": [
 				{
-					"name": "TODO"
-				}
-			]
-		},
-		"alterants": {
-			"board": [
-				{
 					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
-					"alteration": 1
+					"filter_property_name": "boost",
+					"trigger": "self",
+					"alteration": {
+						"if": {
+							"func_name": "current_activation_status",
+							"func_params": {
+								"type": "attack"
+							}
+						},
+						"then": 2,
+						"else": 0
+					}
 				}
 			]
 		}
 	},
 	"Badoon Sentry": {
-		"TODO": "",
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "mod_tokens",
+					"modification": 1,
+					"is_cost": true,
+					"token_name": "tough",
+					"subject": "villain"
 				}
 			]
 		},
-		"alterants": {
-			"board": [
+		"boost_alterants": {
+			"all": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
-					"alteration": 1
+					"filter_property_name": "boost",
+					"trigger": "self",
+					"alteration": {
+						"if": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"subject": "villain",
+								"token_name": "tough"
+							}
+						},
+						"then": 0,
+						"else": 2
+					}
 				}
 			]
 		}
@@ -501,25 +625,32 @@
 		}
 	},
 	"Badoon Warlord": {
-		"TODO": "",
-		"boost": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		},
 		"alterants": {
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
+					"filter_property_name": "overkill",
+					"trigger": "self",
 					"alteration": 1
+				}
+			]
+		},
+		"boost_alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "boost",
+					"trigger": "self",
+					"alteration": {
+						"if": {
+							"func_name": "current_activation_status",
+							"func_params": {
+								"type": "attack"
+							}
+						},
+						"then": 2,
+						"else": 0
+					}
 				}
 			]
 		}
@@ -646,11 +777,21 @@
 			]
 		},
 		"boost": {
-			"TODO": "after activation",
 			"all": [
 				{
-					"name": "reveal_encounters",
-					"subject": "self"
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"enemy_activation_finished": {
+							"all": [
+								{
+									"name": "reveal_encounters",
+									"subject": "self"
+								}
+							]
+						}
+					}
 				}
 			]
 		}
@@ -711,13 +852,36 @@
 		}
 	},
 	"Blind Side": {
-		"TODO": "",
 		"reveal": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Exhaust Milano": [
+					{
+						"name": "exhaust_card",
+						"subject": "Milano",
+						"is_cost": true
+					}
+				],
+				"Spend Resources": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"physical": 2
+						},
+						"is_cost": true
+					}
+				],
+				"Stun First Player": [
+					{
+						"name": "mod_tokens",
+						"modification": 1,
+						"token_name": "stunned",
+						"subject": "first_player"
+					}
+				]
+			}
 		}
 	},
 	"Blockade": {
@@ -821,7 +985,7 @@
 		}
 	},
 	"Brainstorm": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -852,7 +1016,7 @@
 		}
 	},
 	"By Any Means": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -869,7 +1033,7 @@
 		}
 	},
 	"Calculate the Odds": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -883,14 +1047,27 @@
 		}
 	},
 	"Cannonade": {
-		"TODO": "",
 		"hinder": {
-			"__amount__": "TODO",
+			"__amount__": 3,
 			"__each_player__": true
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "Milano"
+				},
+				{
+					"name": "remove_threat",
+					"amount": 3,
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"Cargo Hold": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"board": [
 				{
@@ -950,7 +1127,23 @@
 		}
 	},
 	"Cloak of Hercules": {
-		"TODO": "",
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "property",
+					"sort_name": "attack",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -959,23 +1152,25 @@
 					"tags": [
 						"hero_action"
 					]
-				}
-			]
-		},
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
+				},
 				{
-					"name": "attach_to_card",
-					"subject": "TODO"
+					"name": "pay_cost",
+					"cost": {
+						"physical": 3
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Close Call": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"interrupt": {
-			"event_name": "TODO",
+			"event_name": "enemy_boost",
 			"is_optional_hand": true,
 			"hand": [
 				{
@@ -1270,7 +1465,7 @@
 		}
 	},
 	"Contingency Plan": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -1287,7 +1482,7 @@
 		}
 	},
 	"Creative Solution": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -1480,20 +1675,60 @@
 		}
 	},
 	"Crystal Ball": {
-		"TODO": "",
 		"hinder": {
-			"__amount__": "TODO",
+			"__amount__": 2,
 			"__each_player__": true
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"is_optional_all": "true",
+			"all": [
+				{
+					"name": "add_script",
+					"end_condition": "card_played",
+					"subject": "index",
+					"src_container": "hand",
+					"needs_subject": true,
+					"subject_count": "all",
+					"selection_count": 1,
+					"needs_selection": true,
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "cost",
+									"alteration": -3,
+									"trigger": "my_hero"
+								}
+							]
+						}
+					}
+				}
+			]
 		}
 	},
 	"Cut the Power": {
-		"TODO": "",
 		"boost": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Exhaust Milano": [
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "Milano"
+					}
+				],
+				"2 Threat": [
+					{
+						"name": "add_threat",
+						"amount": 2,
+						"subject": "main_scheme"
+					}
+				]
+			}
 		}
 	},
 	"Cutthroat Ambition": {
@@ -1616,19 +1851,27 @@
 		}
 	},
 	"Dead to Rights": {
-		"TODO": "",
 		"_surge": {},
-		"boost": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "exhaust_card",
+					"subject": "my_identity",
+					"is_cost": true
+				},
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": 2,
+					"is_else": true
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
 				}
 			]
 		}
@@ -1729,7 +1972,7 @@
 		}
 	},
 	"Defy Danger": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -2127,29 +2370,52 @@
 		}
 	},
 	"Fanaticism": {
-		"TODO": "",
 		"_surge": {},
-		"uses": {
-			"__name__": "TODO",
-			"__amount__": "TODO"
-		},
-		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
-		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "Ronan the Accuser"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "fury",
+					"subject": "self",
+					"modification": "per_boardseek",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						]
+					}
+				}
+			]
+		},
+		"uses": {
+			"__name__": "fury",
+			"__amount__": 1
+		},
+		"attacks_gain": {
+			"__trigger__": "host",
+			"__tags__": "piercing\",\"overkill"
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "fury",
+					"modification": -1,
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Fertile Ground": {
-		"TODO": "",
 		"manual": {
 			"board": [
 				{
@@ -2352,9 +2618,8 @@
 		}
 	},
 	"Fugitive Recovery": {
-		"TODO": "",
 		"hinder": {
-			"__amount__": "TODO",
+			"__amount__": 3,
 			"__each_player__": true
 		},
 		"_surge": {}
@@ -2381,14 +2646,14 @@
 		}
 	},
 	"Gallery of Splendor": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"hinder": {
-			"__amount__": "TODO",
+			"__amount__": 3,
 			"__each_player__": true
 		}
 	},
 	"Grand Strategy": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -2402,7 +2667,7 @@
 		}
 	},
 	"Grapple": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -2549,9 +2814,9 @@
 		}
 	},
 	"Guerrilla Tactics": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"hinder": {
-			"__amount__": "TODO",
+			"__amount__": 3,
 			"__each_player__": true
 		}
 	},
@@ -2639,11 +2904,10 @@
 		}
 	},
 	"Headhunter's Henchman": {
-		"TODO": "",
 		"_surge": {}
 	},
 	"Heavy Cannon": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"board": [
 				{
@@ -2657,34 +2921,94 @@
 		}
 	},
 	"Honor Among Thieves": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties": {
+								"trait_criminal": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "reveal_encounters",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "previous"
+				},
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
 				}
 			]
 		}
 	},
 	"Hujahdarian Monarch Egg": {
-		"TODO": "",
 		"hinder": {
-			"__amount__": "TODO",
+			"__amount__": 2,
 			"__each_player__": true
-		}
-	},
-	"Hull Breach": {
-		"TODO": "",
-		"reveal": {
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"is_optional_all": "true",
 			"all": [
 				{
-					"name": "TODO"
+					"name": "ready_card",
+					"subject": "my_identity"
 				}
 			]
 		}
 	},
+	"Hull Breach": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Exhaust Milano": [
+					{
+						"name": "exhaust_card",
+						"subject": "Milano",
+						"is_cost": true
+					}
+				],
+				"Spend Resources": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"mental": 3
+						},
+						"is_cost": true
+					}
+				],
+				"Damage First Player": [
+					{
+						"name": "deal_damage",
+						"amount": 3,
+						"subject": "first_player"
+					}
+				]
+			}
+		}
+	},
 	"Hyper Thrusters": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"board": [
 				{
@@ -2758,9 +3082,9 @@
 		}
 	},
 	"In Defiance": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"interrupt": {
-			"event_name": "TODO",
+			"event_name": "receive_damage",
 			"is_optional_hand": true,
 			"hand": [
 				{
@@ -2774,7 +3098,7 @@
 		}
 	},
 	"In Harm's Way": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -2859,10 +3183,87 @@
 		}
 	},
 	"Interception Imminent - 1A": {
-		"TODO": ""
+		"setup": {
+			"all": [
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Kree Command Ship"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
+					"grid_name": "upgrade_support_first_player",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Milano"
+							}
+						}
+					]
+				},
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities_first_player"
+						}
+					]
+				},
+				{
+					"name": "host_card",
+					"host": "previous",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Power Stone"
+							}
+						}
+					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Interception Imminent - 1B": {
-		"TODO": ""
+		"manual": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "Milano",
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"subject": "self",
+					"amount": 3
+				}
+			]
+		}
 	},
 	"Into the Fray": {
 		"manual": {
@@ -2903,7 +3304,39 @@
 		}
 	},
 	"Kree Combat Armor": {
-		"TODO": "",
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "property",
+					"sort_name": "attack",
+					"sort_descending": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		},
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"target": "host",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": 1,
+					"subject": "interrupted_event"
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -2912,82 +3345,136 @@
 					"tags": [
 						"hero_action"
 					]
-				}
-			]
-		},
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
+				},
 				{
-					"name": "attach_to_card",
-					"subject": "TODO"
+					"name": "pay_cost",
+					"cost": {
+						"unc": 3
+					},
+					"is_cost": true,
+					"TODO": "same type resource"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Kree Command Ship": {
-		"TODO": ""
+		"interrupt": {
+			"event_name": "reveal_encounter",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "treachery"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"first_player"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "Milano",
+					"is_cost": true
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"unc": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				}
+			]
+		}
 	},
 	"Kree Commando": {
-		"TODO": "",
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
 				}
 			]
 		}
 	},
 	"Kree Lieutenant": {
-		"TODO": "",
-		"boost": {
+		"boost_alterants": {
 			"all": [
 				{
-					"name": "TODO"
-				}
-			]
-		},
-		"alterants": {
-			"board": [
-				{
 					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
-					"alteration": 1
+					"filter_property_name": "boost",
+					"trigger": "self",
+					"alteration": {
+						"if": {
+							"func_name": "current_activation_status",
+							"func_params": {
+								"type": "attack"
+							}
+						},
+						"then": 3,
+						"else": 0
+					}
 				}
 			]
 		}
 	},
 	"Kree Physiology": {
-		"TODO": "",
 		"_surge": {},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "mod_tokens",
+					"modification": 1,
+					"is_cost": true,
+					"token_name": "tough",
+					"subject": "Ronan the Accuser"
+				},
+				{
+					"is_else": true,
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "my_hero"
 				}
 			]
 		}
 	},
 	"Kree Private": {
-		"TODO": "",
 		"quickstrike": {},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"overkill"
+						]
+					}
 				}
 			]
 		}
 	},
 	"Kree Supremacy": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"hinder": {
-			"__amount__": "TODO",
+			"__amount__": 3,
 			"__each_player__": true
 		}
 	},
@@ -3184,10 +3671,20 @@
 		}
 	},
 	"Magical Teapot": {
-		"TODO": "",
 		"hinder": {
-			"__amount__": "TODO",
+			"__amount__": 2,
 			"__each_player__": true
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"is_optional_all": "true",
+			"all": [
+				{
+					"name": "heal",
+					"amount": 4,
+					"subject": "my_identity"
+				}
+			]
 		}
 	},
 	"Milano": {
@@ -3216,7 +3713,7 @@
 		}
 	},
 	"Mounted Laser": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"board": [
 				{
@@ -3262,7 +3759,7 @@
 		}
 	},
 	"Navigation Column": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"board": [
 				{
@@ -3529,7 +4026,7 @@
 					{
 						"name": "pay_cost",
 						"cost": {
-							"unk": 1
+							"unc": 1
 						},
 						"is_cost": true
 					},
@@ -3549,7 +4046,7 @@
 					{
 						"name": "pay_cost",
 						"cost": {
-							"unk": 2
+							"unc": 2
 						},
 						"is_cost": true
 					},
@@ -3564,7 +4061,37 @@
 		}
 	},
 	"Obedience Potion": {
-		"TODO": "",
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "current_hero_target"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "host",
+					"alteration": -1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
+					"trigger": "host",
+					"alteration": -1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"trigger": "host",
+					"alteration": -1
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -3573,41 +4100,64 @@
 					"tags": [
 						"hero_action"
 					]
-				}
-			]
-		},
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
+				},
 				{
-					"name": "attach_to_card",
-					"subject": "TODO"
+					"name": "deal_damage",
+					"is_cost": true,
+					"subject": "my_hero",
+					"amount": 1
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"On the Hunt": {
-		"TODO": "",
 		"_surge": {},
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Damage": [
+					{
+						"name": "deal_damage",
+						"subject": "my_identity",
+						"amount": 2
+					}
+				],
+				"Discard": [
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "random",
+						"src_container": "hand"
+					}
+				]
+			}
+		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
-				}
-			]
-		},
-		"reveal": {
-			"all": [
-				{
-					"name": "TODO"
+					"name": "draw_boost_card",
+					"subject": "villain"
 				}
 			]
 		}
 	},
 	"Onrush": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"interrupt": {
-			"event_name": "TODO",
+			"event_name": "about_to_reveal",
 			"is_optional_hand": true,
 			"hand": [
 				{
@@ -3691,37 +4241,123 @@
 		}
 	},
 	"Philosopher's Stone": {
-		"TODO": "",
 		"hinder": {
-			"__amount__": "TODO",
+			"__amount__": 2,
 			"__each_player__": true
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"is_optional_all": "true",
+			"all": [
+				{
+					"name": "draw_cards",
+					"amount": 2
+				}
+			]
 		}
 	},
 	"Pincer Maneuver": {
-		"TODO": "",
 		"hinder": {
-			"__amount__": "TODO",
+			"__amount__": 2,
 			"__each_player__": true
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "Milano",
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"subject": "self",
+					"amount": 3
+				}
+			]
 		}
 	},
 	"Pirate Commander": {
-		"TODO": "",
 		"quickstrike": {},
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"target": "current_hero_target",
+				"amount": ">0",
+				"tags": [
+					"attack"
+				]
+			},
+			"trigger": "self",
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"if_damage": {
+							"trigger": "post_activity_trigger"
+						}
+					}
+				}
+			]
+		},
+		"post_activity_trigger": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "index",
+					"subject_index": "random",
+					"src_container": "hand",
+					"dest_container": "set_aside"
+				}
+			]
+		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "draw_boost_card",
+					"subject": "villain"
 				}
 			]
 		}
 	},
 	"Pirate Lackey": {
-		"TODO": "",
 		"quickstrike": {},
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"target": "current_hero_target",
+				"amount": ">0",
+				"tags": [
+					"attack"
+				]
+			},
+			"trigger": "self",
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"if_damage": {
+							"trigger": "post_activity_trigger"
+						}
+					}
+				}
+			]
+		},
+		"post_activity_trigger": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck",
+					"dest_container": "set_aside"
+				}
+			]
+		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "draw_boost_card",
+					"subject": "villain"
 				}
 			]
 		}
@@ -3759,47 +4395,73 @@
 		}
 	},
 	"Power Siphon": {
-		"TODO": "",
 		"reveal": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Exhaust Milano": [
+					{
+						"name": "exhaust_card",
+						"subject": "Milano",
+						"is_cost": true
+					}
+				],
+				"Spend Resources": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"energy": 2
+						},
+						"is_cost": true
+					}
+				],
+				"Discard First Player": [
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "random",
+						"src_container": "hand_first_player"
+					}
+				]
+			}
 		}
 	},
 	"Power Stone": {
-		"special": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self"
+				}
+			]
+		},
+		"self_moved_to_board": {
 			"board": [
 				{
-					"name": "mod_tokens",
-					"modification": 1,
-					"token_name": "stunned",
-					"subject": "current_hero_target",
-					"is_cost": true
-				},
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"card_damaged": {
+			"event_filters": {
+				"target": "host",
+				"damage": ">=3",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
 				{
-					"name": "move_card_to_container",
-					"dest_container": "discard_infinity_stone",
-					"subject": "self"
-				},
-				{
-					"is_else": true,
-					"name": "deal_damage",
-					"subject": "current_hero_target",
-					"amount": 3
-				},
-				{
-					"name": "move_card_to_container",
-					"dest_container": "discard_infinity_stone",
-					"subject": "self",
-					"is_else": true
+					"name": "attach_to_card",
+					"subject": "trigger_details_attacker"
 				}
 			]
 		}
 	},
 	"Power Unleashed": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -3877,24 +4539,33 @@
 		}
 	},
 	"Psionic Ghost": {
-		"TODO": "",
-		"boost": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "my_identity",
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"subject": "my_identity",
+					"is_else": true
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Reactor Core": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"board": [
 				{
@@ -4208,54 +4879,171 @@
 		}
 	},
 	"Rogue Vessel": {
-		"TODO": "",
 		"_surge": {},
-		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
+		"phase_ended": {
+			"event_filters": {
+				"phase": "villain"
+			},
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "Milano",
+					"is_cost": true
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"unc": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"Ronan the Accuser - 1": {
-		"TODO": "",
 		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
+			"event_name": [
+				"enemy_attack",
+				"commit_scheme"
+			],
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "count_attachments",
+				"func_params": {
+					"subject": "current_hero_target",
+					"filter_state_attachment": [
+						{
+							"filter_properties": {
+								"Name": "Power Stone"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "draw_boost_card",
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"Ronan the Accuser - 2": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
-		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Cut the Power"
+							}
+						}
+					]
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": [
+				"enemy_attack",
+				"commit_scheme"
+			],
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "count_attachments",
+				"func_params": {
+					"subject": "current_hero_target",
+					"filter_state_attachment": [
+						{
+							"filter_properties": {
+								"Name": "Power Stone"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "draw_boost_card",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Ronan the Accuser - 3": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
-		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Superior Tactics"
+							}
+						}
+					]
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": [
+				"enemy_attack",
+				"commit_scheme"
+			],
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "count_attachments",
+				"func_params": {
+					"subject": "current_hero_target",
+					"filter_state_attachment": [
+						{
+							"filter_properties": {
+								"Name": "Power Stone"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "draw_boost_card",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Root Stomp": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -4302,24 +5090,57 @@
 		}
 	},
 	"Ruthless": {
-		"TODO": "",
 		"reveal_alter_ego": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "add_script",
+					"end_condition": "enemy_scheme_happened",
+					"subject": "main_scheme",
+					"script": {
+						"card_token_modified": {
+							"filter_count_difference": "increased",
+							"filter_token_name": "threat",
+							"trigger": "self",
+							"board": [
+								{
+									"name": "mod_tokens",
+									"subject": "Nebula's Ship",
+									"modification": 1,
+									"token_name": "evasion"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "enemy_schemes",
+					"subject": "Nebula"
 				}
 			]
 		},
 		"reveal_hero": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "villain_attacks_you",
+					"if_damage": {
+						"trigger": "post_damage_trigger"
+					}
+				}
+			]
+		},
+		"post_damage_trigger": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"subject": "Nebula's Ship",
+					"modification": 1,
+					"token_name": "evasion"
 				}
 			]
 		}
 	},
 	"Safeguard": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -4392,47 +5213,104 @@
 			]
 		}
 	},
-	"Servant Bot": {
-		"TODO": ""
-	},
 	"Single-Minded Fury": {
-		"TODO": "",
-		"_surge": {},
-		"boost": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_attachments",
+								"func_params": {
+									"subject": "boardseek",
+									"subject_count": "all",
+									"filter_state_boardseek": [
+										{
+											"filter_group": "group_identities"
+										}
+									],
+									"filter_state_attachment": [
+										{
+											"filter_properties": {
+												"Name": "Power Stone"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "i_attack",
+									"action_owner": "Ronan the Accuser",
+									"is_cost": true,
+									"subject": "boardseek",
+									"subject_count": 1,
+									"sort_by": "function",
+									"sort_descending": true,
+									"sort_name": "count_attachments",
+									"func_params": {
+										"subject": "boardseek",
+										"subject_count": "all",
+										"filter_state_boardseek": [
+											{
+												"filter_group": "group_identities"
+											}
+										],
+										"filter_state_attachment": [
+											{
+												"filter_properties": {
+													"Name": "Power Stone"
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "surge",
+									"is_else": true
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "surge",
+							"is_else": true
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "host_card",
+					"subject": "Power Stone",
+					"host": "Ronan the Accuser"
 				}
 			]
 		}
 	},
 	"Sound the Alarms": {
-		"TODO": "",
-		"boost": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		},
 		"alterants": {
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "TODO",
+					"filter_property_name": "attack",
 					"filter_state_trigger": [
 						{
-							"TODO": "TODO"
+							"filter_group": "group_enemies"
 						}
 					],
 					"alteration": 1
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "reveal_encounter"
 				}
 			]
 		}
@@ -4454,20 +5332,77 @@
 		}
 	},
 	"Special Delivery": {
-		"TODO": "",
 		"reveal_alter_ego": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Exhaust Milano": [
+					{
+						"name": "exhaust_card",
+						"subject": "Milano",
+						"is_cost": true
+					}
+				],
+				"Villain Schemes": [
+					{
+						"name": "add_script",
+						"end_condition": "enemy_activation_finished",
+						"subject": "Villain",
+						"script": {
+							"alterants": {
+								"all": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "scheme",
+										"trigger": "self",
+										"alteration": 1
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "villain_schemes"
+					}
+				]
+			}
 		},
 		"reveal_hero": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Exhaust Milano": [
+					{
+						"name": "exhaust_card",
+						"subject": "Milano",
+						"is_cost": true
+					}
+				],
+				"Villain Attacks": [
+					{
+						"name": "add_script",
+						"end_condition": "enemy_activation_finished",
+						"subject": "Villain",
+						"script": {
+							"alterants": {
+								"all": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"trigger": "self",
+										"alteration": 1
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "villain_attacks_you"
+					}
+				]
+			}
 		}
 	},
 	"Starhawk - Stakar Ogord": {
@@ -4495,12 +5430,29 @@
 		}
 	},
 	"Starshark": {
-		"TODO": "",
 		"quickstrike": {},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack_indirect_damage",
+					"trigger": "self",
+					"alteration": 1
+				}
+			]
+		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "deal_damage",
+					"subject": "boardseek",
+					"amount": 1,
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero"
+						}
+					]
 				}
 			]
 		}
@@ -4585,17 +5537,69 @@
 		}
 	},
 	"Superior Tactics": {
-		"TODO": "",
+		"card_unattached": {
+			"event_filters": {
+				"host_card": "villain"
+			},
+			"trigger": "Power Stone",
+			"board": [
+				{
+					"name": "host_card",
+					"host": "villain",
+					"subject": "Power Stone"
+				}
+			]
+		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_attachments",
+								"func_params": {
+									"subject": "Ronan the Accuser",
+									"filter_state_attachment": [
+										{
+											"filter_properties": {
+												"Name": "Power Stone"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_threat",
+									"subject": "self",
+									"amount": "per_boardseek",
+									"per_boardseek": {
+										"subject": "boardseek",
+										"subject_count": "all",
+										"filter_state_seek": [
+											{
+												"filter_group": "group_identities"
+											}
+										]
+									}
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "host_card",
+							"host": "Ronan the Accuser",
+							"subject": "Power Stone"
+						}
+					]
 				}
 			]
 		}
 	},
 	"Sure Gamble": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -4609,7 +5613,7 @@
 		}
 	},
 	"Take the Fight to Them": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -4623,7 +5627,7 @@
 		}
 	},
 	"Targeting Screen": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"board": [
 				{
@@ -4808,7 +5812,24 @@
 		}
 	},
 	"The Beyonder's Blazer": {
-		"TODO": "",
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "property",
+					"sort_name": "scheme",
+					"sort_descending": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -4817,15 +5838,24 @@
 					"tags": [
 						"hero_action"
 					]
-				}
-			]
-		},
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
+				},
 				{
-					"name": "attach_to_card",
-					"subject": "TODO"
+					"name": "pay_cost",
+					"cost": {
+						"unc": 2
+					},
+					"is_cost": true,
+					"TODO": "same type resource"
+				},
+				{
+					"name": "add_threat",
+					"amount": 2,
+					"is_cost": true,
+					"subject": "main_scheme"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		}
@@ -4892,7 +5922,7 @@
 					{
 						"name": "pay_cost",
 						"cost": {
-							"unk": 2
+							"unc": 2
 						},
 						"is_cost": true
 					},
@@ -5075,7 +6105,39 @@
 		}
 	},
 	"The Poison": {
-		"TODO": "",
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "current_hero_target"
+				}
+			]
+		},
+		"step_started": {
+			"event_filters": {
+				"step_name": "PLAYER_TURN"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"token_name": "poison"
+				},
+				{
+					"name": "deal_damage",
+					"subject": "host",
+					"amount": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "self",
+							"token_name": "poison"
+						}
+					}
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -5084,20 +6146,18 @@
 					"tags": [
 						"hero_action"
 					]
-				}
-			]
-		},
-		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
-		},
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
+				},
 				{
-					"name": "attach_to_card",
-					"subject": "TODO"
+					"name": "pay_cost",
+					"cost": {
+						"unc": 3
+					},
+					"is_cost": true,
+					"todo": "different types"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		}
@@ -5144,7 +6204,7 @@
 		}
 	},
 	"Tried and True": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -5158,7 +6218,7 @@
 		}
 	},
 	"Triple Threat": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -5172,7 +6232,25 @@
 		}
 	},
 	"Universal Weapon": {
-		"TODO": "",
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Ronan the Accuser"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "stalwart",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -5181,22 +6259,29 @@
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "deal_damage",
+					"is_cost": true,
+					"amount": 2,
+					"subject": "my_hero"
+				},
+				{
+					"name": "deal_encounter",
+					"subject": "my_hero"
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "self",
+					"dest_container": "deck_villain"
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
-				}
-			]
-		},
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
-				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "Ronan the Accuser"
 				}
 			]
 		}
@@ -5262,7 +6347,23 @@
 		}
 	},
 	"Vandarian Power Stone": {
-		"TODO": "",
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "property",
+					"sort_name": "scheme",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -5271,15 +6372,18 @@
 					"tags": [
 						"hero_action"
 					]
-				}
-			]
-		},
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
+				},
 				{
-					"name": "attach_to_card",
-					"subject": "TODO"
+					"name": "pay_cost",
+					"cost": {
+						"energy": 3
+					},
+					"is_cost": true,
+					"TODO": "same type resource"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		}
@@ -5712,7 +6816,7 @@
 		}
 	},
 	"Wing It": {
-		"TODO": "",
+		"TODO": "campaign mode not supported",
 		"manual": {
 			"hand": [
 				{

@@ -129,7 +129,11 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 		SP.KEY_SUBJECT_V_MY_ALTER_EGO:
 			var hero_card = get_script_identity(script, trigger_details)
 			if (hero_card and hero_card.is_alter_ego_form()):
-				results.append(hero_card)							
+				results.append(hero_card)	
+		"first_player":
+			var first_player_card = gameData.get_first_player()
+			if first_player_card:
+				results.append(first_player_card)									
 		SP.KEY_SUBJECT_V_VILLAIN:
 			var villain = gameData.get_villain()
 			if villain:

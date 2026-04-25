@@ -1508,10 +1508,6 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 		
 	boost_card.set_current_activation(script)	
 	boost_card.set_is_faceup(true)
-
-	var func_return = boost_card.execute_scripts(boost_card, "boost")
-	if func_return is GDScriptFunctionState && func_return.is_valid():
-		yield(func_return, "completed")	
 	
 	var boost_icons = boost_card.get_property("boost",0, true)
 	var boost_amount = boost_icons
@@ -1522,6 +1518,10 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 	if boost_amount:
 		boost_card.hint("+" + str(boost_amount), Color8(100,255,150), {"position": "bottom_right"})
 	script_definition["boost"].append(boost_amount)
+
+	var func_return = boost_card.execute_scripts(boost_card, "boost")
+	if func_return is GDScriptFunctionState && func_return.is_valid():
+		yield(func_return, "completed")	
 	
 	var tags = script.get_property(SP.KEY_TAGS, [])
 	scripting_bus.emit_signal_on_stack("boost_card_resolved", boost_card, {"boost_amount" : boost_amount, "boost_icons": boost_icons, "tags": tags })
@@ -2440,7 +2440,13 @@ func constraints(script: ScriptTask) -> int:
 				if gameData.phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN:
 					return 	CFConst.ReturnCode.FAILED
 				if cfc.is_modal_event_ongoing():
-					return 	CFConst.ReturnCode.FAILED			
+					return 	CFConst.ReturnCode.FAILED
+			"first_player":
+				var first_player_id = gameData.first_player_hero_id()
+				if !gameData.can_i_play_this_hero(first_player_id):
+					return 	CFConst.ReturnCode.FAILED
+				if 	my_hero_id != first_player_id:
+					gameData.select_current_playing_hero(first_player_id)	
 	
 	var board:Board = cfc.NMAP.board
 	#Max per player rule to play

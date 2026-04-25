@@ -409,9 +409,11 @@
 	"16106": {
 		"code": "16106",
 		"name": "Interception Imminent",
-		"modular_default": [],
+		"modular_default": ["kree_militant"],
 		"encounter_sets": [
-			"TODO",
+			"ronan",
+			"power_stone",
+			"ship_command",
 			"Standard",
 			"Modular"
 		],
@@ -421,7 +423,9 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"ronan",
+				"power_stone",
+				"ship_command",
 				"Standard",
 				"modular",
 				"expert"

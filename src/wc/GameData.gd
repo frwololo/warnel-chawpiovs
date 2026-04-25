@@ -2019,6 +2019,9 @@ func first_player_hero_id():
 	#TODO
 	return _first_player_hero_id
 
+func get_first_player():
+	return self.get_identity_card(first_player_hero_id())
+
 func next_first_player():
 	var previous = _first_player_hero_id
 	_first_player_hero_id += 1

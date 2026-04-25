@@ -21,6 +21,15 @@ primitives = [
   'Quickstrike.',
   'Surge.',
   'Uses (',
+  'Limit once per phase',
+  'Limit once per round',
+  '<b>When Revealed</b>',
+  '<b>When Revealed (Alter-Ego)</b>',
+  '<b>When Revealed (Hero)</b>',    
+  '<b>When Defeated</b',
+  'Attach to ',
+  ' get +',
+  ' gets +',  
   '<b>Hero Action</b>',
   '<b>Alter-Ego Action',  
   '<b>Hero Interrupt</b>',
@@ -34,14 +43,6 @@ primitives = [
   '<i>(attack)</i>',
   '<i>(thwart)</i>',
   '<b>Boost</b>',
-  'Limit once per phase',
-  'Limit once per round',
-  '<b>When Revealed</b>',
-  '<b>When Revealed (Alter-Ego)</b>',
-  '<b>When Revealed (Hero)</b>',    
-  'Attach to ',
-  ' get +',
-  ' gets +',  
   
 ]
 
@@ -122,6 +123,44 @@ def get_base_json(card_data):
 	  "__name__": "TODO",
 	  "__amount__": "TODO"
       }       
+
+
+    if primitive == '<b>when revealed</b>':
+       result["reveal"] = {
+	  "all": [
+            {
+	      "name": "TODO",
+            }
+	    ]
+	}
+
+    if primitive == '<b>when defeated</b>':
+       result["card_defeated"] = {
+           "trigger": "self",
+	  "all": [
+            {
+	      "name": "TODO",
+            }
+	    ]
+	}       
+
+    if primitive == '<b>when revealed (alter-ego)</b>':
+       result["reveal_alter_ego"] = {
+	  "all": [
+            {
+	      "name": "TODO",
+            }
+	    ]
+	}
+
+    if primitive == '<b>when revealed (hero)</b>':
+       result["reveal_hero"] = {
+	  "all": [
+            {
+	      "name": "TODO",
+            }
+	    ]
+	}                                       
 
       
     if primitive == 'attach to ':  
@@ -280,30 +319,7 @@ def get_base_json(card_data):
 	  }                    
           ]
 	}         
-                    
-    if primitive == '<b>hero interrupt</b>':
-       result["interrupt"] = {
-	  "event_name": "TODO",
-          "is_optional_" + location: True,          
-          location: [
-            	  {
-	    "name": "constraints",
-	    "is_cost": True,
-	    "tags": [
-	      "hero_interrupt"
-	    ]
-	  }         
-          ]
-	}                                 
 
-    if primitive == '<b>boost</b>':
-       result["boost"] = {
-	  "all": [
-            {
-	      "name": "TODO",
-            }
-	    ]
-	}
 
 
     if primitive == ' get +' or primitive == ' gets +':
@@ -321,24 +337,21 @@ def get_base_json(card_data):
 	   }
 	 ]
        }        
-
-    if primitive == '<b>when revealed</b>':
-       result["reveal"] = {
-	  "all": [
-            {
-	      "name": "TODO",
-            }
+      
+    if primitive == '<b>hero interrupt</b>':
+       result["interrupt"] = {
+	  "event_name": "TODO",
+          "is_optional_" + location: True,          
+          location: [
+            	  {
+	    "name": "constraints",
+	    "is_cost": True,
+	    "tags": [
+	      "hero_interrupt"
 	    ]
-	}
-
-    if primitive == '<b>when revealed (alter-ego)</b>':
-       result["reveal_alter_ego"] = {
-	  "all": [
-            {
-	      "name": "TODO",
-            }
-	    ]
-	}
+	  }         
+          ]
+	}                                 
 
     if primitive == '<b>when revealed (hero)</b>':
        result["reveal_hero"] = {
@@ -348,6 +361,18 @@ def get_base_json(card_data):
             }
 	    ]
 	}                                       
+
+       
+    if primitive == '<b>boost</b>':
+       result["boost"] = {
+	  "all": [
+            {
+	      "name": "TODO",
+            }
+	    ]
+	}
+
+
 
   
   return result

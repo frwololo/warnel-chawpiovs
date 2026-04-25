@@ -4028,6 +4028,20 @@
 					"subject": "self"
 				}
 			]
+		},
+		"boost": {
+			"condition_all": {
+				"func_name": "current_activation_status",
+				"func_params": {
+					"type": "attack"
+				}
+			},
+			"all": [
+				{
+					"name": "indirect_damage",
+					"amount": 2
+				}
+			]
 		}
 	},
 	"Life-Size Decoy": {

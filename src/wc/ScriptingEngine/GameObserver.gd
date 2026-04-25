@@ -70,24 +70,26 @@ func add_script(parent_script, script_definition, remove_condition = null):
 	add_child(new_script)
 	cfc.flush_cache()
 	if remove_condition:
-		var remove_condition_str = remove_condition
-		var filters = {}
-		if typeof(remove_condition) == TYPE_DICTIONARY:
-			remove_condition_str = remove_condition.get("trigger", "")
-			filters = remove_condition.get("event_filters", {})
-		removal_conditions.append({"trigger": remove_condition_str, "filters": filters, "object": new_script})
-
-func add_script_removal_effect(_parent_script,subject, script_id, remove_condition = null):
+		add_script_removal_effect(parent_script, new_script, 0, remove_condition)
+		
+func add_script_removal_effect(_parent_script,subject, script_id = 0, remove_condition = null):
 	if !remove_condition:
 		return false
 
-	var remove_condition_str = remove_condition
+	var remove_condition_arr = remove_condition
 	var filters = {}
 	if typeof(remove_condition) == TYPE_DICTIONARY:
-		remove_condition_str = remove_condition.get("trigger", "")
+		remove_condition_arr = remove_condition.get("trigger", "")
 		filters = remove_condition.get("event_filters", {})
 	
-	extra_script_removal_conditions.append({"trigger": remove_condition_str, "event_filters": filters, "card": subject, "script_id": script_id})
+	if typeof(remove_condition_arr) == TYPE_STRING:
+		remove_condition_arr = [remove_condition_arr]
+	
+	for remove_condition_str in remove_condition_arr:
+		if script_id:
+			extra_script_removal_conditions.append({"trigger": remove_condition_str, "event_filters": filters, "card": subject, "script_id": script_id})
+		else:
+			removal_conditions.append({"trigger": remove_condition_str, "filters": filters, "object": subject})
 
 func early_removal_checks(
 		trigger_card = null,

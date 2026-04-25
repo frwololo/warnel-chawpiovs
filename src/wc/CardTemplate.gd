@@ -2260,6 +2260,9 @@ func indirect_damage_replacement(script_definition: Dictionary, trigger_details)
 	#TODO how does it work in Multiplayer?
 	if (!controller_hero_id):
 		controller_hero_id = gameData.get_current_local_hero_id()
+	
+	if script_definition.get("all_players", false):
+		controller_hero_id = ""
 			
 	var filter_state_seek = [
 		{
@@ -2821,6 +2824,22 @@ func count_unique_property_value(params, script:ScriptTask = null) -> int:
 		count[value] = 1
 		
 	return count.size()
+
+func count_engaged_minions(params, script:ScriptObject= null) -> int:
+	var subject = get_param_subject(params, script)
+	
+	if !subject:
+		return 0
+	
+	var controller_hero_id = subject.get_controller_hero_id()
+	if controller_hero_id <1:
+		return 0
+	var my_cards = get_tree().get_nodes_in_group("enemies" + str(controller_hero_id))
+	var count = 0
+	for card in my_cards:
+		if card.get_property("type_code", "") == "minion":
+			count +=1
+	return count
 		
 func get_subject_int_property(params, script:ScriptObject= null) -> int:
 	var subjects = get_param_subjects(params, script)

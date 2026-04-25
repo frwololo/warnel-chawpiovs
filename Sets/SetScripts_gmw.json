@@ -1,24 +1,78 @@
 {
-	"\"I Have You Now!\"": {
-		"TODO": "",
-		"boost": {
-			"all": [
-				{
-					"name": "TODO"
+	"_macros": {
+		"nebula_attachment_boost": {
+			"name": "add_script",
+			"end_condition": {
+				"trigger": [
+					"enemy_attack_happened",
+					"enemy_scheme_happened"
+				]
+			},
+			"subject": "self",
+			"script": {
+				"enemy_attack_happened": {
+					"all": [
+						{
+							"name": "reveal_encounters",
+							"subject": "self"
+						},
+						{
+							"name": "sequence",
+							"sequence_ability": "special",
+							"subject": "self"
+						}
+					]
+				},
+				"enemy_scheme_happened": {
+					"all": [
+						{
+							"name": "reveal_encounters",
+							"subject": "self"
+						},
+						{
+							"name": "sequence",
+							"sequence_ability": "special",
+							"subject": "self"
+						}
+					]
 				}
-			]
-		},
+			}
+		}
+	},
+	"\"I Have You Now!\"": {
 		"reveal_alter_ego": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "exhaust_card",
+					"subject": "my_identity"
+				},
+				{
+					"name": "enemy_schemes",
+					"subject": "Collector"
 				}
 			]
 		},
 		"reveal_hero": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "my_hero"
+				},
+				{
+					"name": "enemy_attacks_you",
+					"subject": "Collector"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "Collector"
 				}
 			]
 		}
@@ -294,11 +348,41 @@
 		}
 	},
 	"Badoon Engineer": {
-		"TODO": "",
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "charge_up",
+					"subject": "Badoon Ship"
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "charge_up",
+					"subject": "Badoon Ship"
+				}
+			]
+		},
+		"enemy_scheme_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "charge_up",
+					"subject": "Badoon Ship"
+				}
+			]
+		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "sequence",
+					"sequence_ability": "charge_up",
+					"subject": "Badoon Ship"
 				}
 			]
 		}
@@ -374,11 +458,46 @@
 	"Badoon Ship": {
 		"charge_up": {
 			"board": [
-				{}
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"subject": "self",
+					"token_name": "barrage"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "barrage",
+					"subject": "self"
+				}
 			]
 		},
 		"barrage": {
-			"board": {}
+			"condition_board": {
+				"func_name": "count_tokens>=4",
+				"func_params": {
+					"subject": "self",
+					"token_name": "barrage"
+				}
+			},
+			"board": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Barrage": [
+					{
+						"name": "indirect_damage",
+						"amount": 2
+					},
+					{
+						"name": "mod_tokens",
+						"modification": 0,
+						"set_to_mod": true,
+						"subject": "self",
+						"token_name": "barrage"
+					}
+				]
+			}
 		}
 	},
 	"Badoon Warlord": {
@@ -406,22 +525,27 @@
 		}
 	},
 	"Barrel Roll": {
-		"TODO": "",
 		"incite": {
-			"__amount__": "TODO"
+			"__amount__": 1
 		},
 		"_surge": {},
-		"boost": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "mod_tokens",
+					"subject": "Nebula's Ship",
+					"modification": 1,
+					"token_name": "evasion"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"subject": "Nebula's Ship",
+					"modification": 1,
+					"token_name": "evasion"
 				}
 			]
 		}
@@ -481,25 +605,52 @@
 		}
 	},
 	"Biogram Image": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
-		},
-		"boost": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "Colector"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "host"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": "all",
+					"subject": "interrupted_event"
+				}
+			]
+		},
+		"event_prevented": {
+			"trigger": "self",
+			"event_filters": {
+				"amount_prevented": ">1"
+			},
+			"board": [
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": "trigger_details_amount_prevented"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "the_collection"
+				}
+			]
+		},
+		"boost": {
+			"TODO": "after activation",
+			"all": [
+				{
+					"name": "reveal_encounters",
+					"subject": "self"
 				}
 			]
 		}
@@ -570,14 +721,52 @@
 		}
 	},
 	"Blockade": {
-		"TODO": "",
 		"hinder": {
-			"__amount__": "TODO",
+			"__amount__": 2,
 			"__each_player__": true
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "Milano",
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"subject": "self",
+					"amount": 3
+				}
+			]
 		}
 	},
 	"Bombardment": {
-		"TODO": ""
+		"step_ended": {
+			"event_filters": {
+				"step_name": "VILLAIN_THREAT"
+			},
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "charge_up",
+					"subject": "Badoon Ship"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "Milano",
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"subject": "self",
+					"amount": 3
+				}
+			]
+		}
 	},
 	"Booster Boots": {
 		"manual": {
@@ -800,64 +989,282 @@
 		}
 	},
 	"Collector - 1": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
+		"interrupt_card_moved_to_pile": {
+			"event_filters": {
+				"destination": "discard_any",
+				"source": "board"
+			},
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "the_collection",
+					"subject": "trigger"
+				}
+			]
 		}
 	},
 	"Collector - 2": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
-		},
 		"reveal": {
-			"all": [
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Add Card to Collection": [
+					{
+						"name": "move_card_to_container",
+						"subject": "index",
+						"src_container": "deck",
+						"dest_container": "the_collection"
+					}
+				],
+				"Take 3 Damage": [
+					{
+						"name": "deal_damage",
+						"amount": 3,
+						"subject": "my_identity"
+					}
+				]
+			}
+		},
+		"interrupt_card_moved_to_pile": {
+			"event_filters": {
+				"destination": "discard_any",
+				"source": "board"
+			},
+			"board": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_container",
+					"dest_container": "the_collection",
+					"subject": "trigger"
 				}
 			]
 		}
 	},
 	"Collector - 3": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
-		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_container",
+					"subject": "index",
+					"src_container": "deck",
+					"dest_container": "the_collection",
+					"for_each_player": true
+				},
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": "per_tutor",
+					"per_tutor": {
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "the_collection"
+					}
+				}
+			]
+		},
+		"interrupt_card_moved_to_pile": {
+			"event_filters": {
+				"destination": "discard_any",
+				"source": "board"
+			},
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "the_collection",
+					"subject": "trigger"
 				}
 			]
 		}
 	},
 	"Collector - A1": {
-		"TODO": "",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "main_scheme",
+							"property": "stage_int"
+						}
+					},
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
+					"alteration": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "main_scheme",
+							"property": "stage_int"
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		},
 		"interrupt": {
-			"is_optional_board": true,
-			"board": []
+			"event_name": "card_dies",
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "heal",
+					"subject": "self",
+					"amount": "all"
+				},
+				{
+					"name": "remove_threat",
+					"amount": 3,
+					"subject": "main_scheme"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Collector - A2": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_leave_play",
+					"trigger": "self",
+					"alteration": 1
+				}
+			]
+		},
+		"round_ended": {
+			"board": [
+				{
+					"name": "heal",
+					"amount": "all",
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"Collector - B1": {
-		"TODO": "",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "main_scheme",
+							"property": "stage_int"
+						}
+					},
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
+					"alteration": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "main_scheme",
+							"property": "stage_int"
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		},
 		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
+			"event_name": "card_dies",
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "heal",
+					"subject": "self",
+					"amount": "all"
+				},
+				{
+					"name": "remove_threat",
+					"amount": 3,
+					"subject": "main_scheme"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Collector - B2": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_leave_play",
+					"trigger": "self",
+					"alteration": 1
+				}
+			]
+		},
+		"round_ended": {
+			"board": [
+				{
+					"name": "heal",
+					"amount": "all",
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"Combat Ready": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "attachment"
+							},
+							"filter_properties": {
+								"trait_technique": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "reveal_encounters",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "special",
+					"subject": "previous"
 				}
 			]
 		}
@@ -1090,20 +1497,44 @@
 		}
 	},
 	"Cutthroat Ambition": {
-		"TODO": "",
-		"boost": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "Nebula"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "host",
+				"amount": ">5"
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"amount": 5
+					}
+				}
+			]
+		},
+		"special": {
+			"board": [
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": 1
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"nebula_attachment_boost": {}
 				}
 			]
 		}
@@ -1380,27 +1811,158 @@
 		}
 	},
 	"Drang - 2": {
-		"TODO": "",
+		"response_enemy_scheme_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "charge_up",
+					"subject": "Badoon Ship"
+				}
+			]
+		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "draw_boost_card",
+					"amount": {
+						"if": {
+							"func_name": "card_is_in_play",
+							"func_params": {
+								"card_name": "Drang's Spear"
+							}
+						},
+						"then": 0,
+						"else": 1
+					},
+					"subject": "villain"
+				},
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Drang's Spear"
+							}
+						}
+					]
 				}
 			]
 		}
 	},
 	"Drang - 3": {
-		"TODO": "",
+		"response_enemy_scheme_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "charge_up",
+					"subject": "Badoon Ship"
+				}
+			]
+		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "sequence",
+					"sequence_ability": "drang_minion_discard",
+					"subject": "self"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "drang_minion_discard",
+					"subject": "self"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "drang_minion_discard",
+					"subject": "self"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "drang_minion_discard",
+					"subject": "self"
+				}
+			]
+		},
+		"drang_minion_discard": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_villain",
+									"property": "type_code",
+									"property_value": "minion"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "nop",
+									"subject": "boardseek",
+									"subject_count": 1,
+									"sort_by": "function",
+									"sort_name": "count_engaged_minions",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_identities",
+											"filter_max_per_hero": 1
+										}
+									]
+								},
+								{
+									"name": "move_card_to_board",
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_villain",
+									"destination_grid": "enemies_previous_subject"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "discard",
+							"subject": "index",
+							"subject_index": "top",
+							"src_container": "deck_villain"
+						}
+					]
 				}
 			]
 		}
 	},
 	"Drang's Spear": {
-		"TODO": "",
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Drang"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "stalwart",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -1409,15 +1971,19 @@
 					"tags": [
 						"hero_action"
 					]
-				}
-			]
-		},
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
+				},
 				{
-					"name": "attach_to_card",
-					"subject": "TODO"
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1,
+						"physical": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
 				}
 			]
 		}
@@ -1473,20 +2039,60 @@
 		}
 	},
 	"Evasive Maneuvering": {
-		"TODO": "",
-		"boost": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "Nebula"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "stalwart",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"special": {
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "is_stunned",
+								"func_params": {
+									"subject": "current_hero_target"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "draw_boost_card",
+									"subject": "villain"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"subject": "current_hero_target",
+							"modification": 1,
+							"token_name": "stunned"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"nebula_attachment_boost": {}
 				}
 			]
 		}
@@ -2123,14 +2729,30 @@
 		}
 	},
 	"Impossible Geometry": {
-		"TODO": "",
 		"incite": {
-			"__amount__": "TODO"
+			"__amount__": 1
 		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "my_identity",
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "discard",
+					"subject_count": "all",
+					"subject": "boardseek",
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_group": "play_area_my_hero"
+						}
+					]
 				}
 			]
 		}
@@ -2169,19 +2791,48 @@
 		}
 	},
 	"Inconspicuous Box": {
-		"TODO": "",
-		"_surge": {},
-		"boost": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_container",
+					"dest_container": "the_collection",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_exclude": "my_identity",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "get_subject_int_printed_property",
+					"func_params": {
+						"property": "cost"
+					},
+					"filter_state_seek": [
+						{
+							"filter_group": "play_area_my_hero"
+						}
+					]
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				}
+			]
+		},
+		"boost": {
+			"condition_all": {
+				"func_name": "count_cards<=3",
+				"func_params": {
+					"subject": "index",
+					"subject_count": "all",
+					"src_container": "the_collection"
+				}
+			},
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "the_collection",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck"
 				}
 			]
 		}
@@ -2381,17 +3032,36 @@
 		}
 	},
 	"Lethal Intent": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "attachment"
+							},
+							"filter_properties": {
+								"trait_technique": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "reveal_encounters",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
 				}
 			]
 		}
 	},
 	"Library Labyrinth": {
-		"TODO": "",
+		"once_per_round_per_player": {},
 		"manual": {
 			"board": [
 				{
@@ -2400,11 +3070,25 @@
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "deal_encounter",
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "__player_token_my_hero",
+					"subject": "self",
+					"modification": -1,
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"subject": "main_scheme",
+					"amount": 5
 				}
 			]
-		},
-		"once_per_round": {
-			"__name__": "__TODO"
 		}
 	},
 	"Looking for Trouble": {
@@ -2449,21 +3133,54 @@
 		}
 	},
 	"Lost in the Museum - 2A": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"set_aside"
+					],
+					"grid_name": "upgrade_support_first_player",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Milano"
+							}
+						}
+					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Lost in the Museum - 2B": {
-		"TODO": "",
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_count": 0,
+			"filter_token_name": "threat",
+			"board": [
+				{
+					"name": "move_to_next_scheme",
+					"subject": "self"
+				}
+			]
+		},
 		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
+			"event_name": "stage_completed",
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "defeat"
+				}
+			]
 		}
 	},
 	"Magical Teapot": {
@@ -2474,19 +3191,29 @@
 		}
 	},
 	"Milano": {
-		"TODO": "",
 		"resource": {
+			"board": {
+				"_rules": {
+					"any_player_can_use": true
+				},
+				"Piloting": [
+					{
+						"name": "add_resource",
+						"amount": 1,
+						"resource_name": "wild"
+					}
+				]
+			}
+		},
+		"first_player_changed": {
 			"board": [
 				{
-					"name": "add_resource",
-					"amount": 1,
-					"resource_name": "TODO"
+					"name": "move_card_to_board",
+					"destination_grid": "upgrade_support_first_player",
+					"subject": "self"
 				}
 			]
 		}
-	},
-	"Monarch Starstalker": {
-		"TODO": ""
 	},
 	"Mounted Laser": {
 		"TODO": "",
@@ -2503,11 +3230,35 @@
 		}
 	},
 	"Museum Ship": {
-		"TODO": "",
 		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
+			"event_name": "step_started",
+			"event_filters": {
+				"step_name": "VILLAIN_THREAT"
+			},
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Exhaust Milano": [
+					{
+						"name": "exhaust_card",
+						"subject": "Milano",
+						"is_cost": true
+					},
+					{
+						"name": "indirect_damage",
+						"all_players": true,
+						"amount": 2
+					}
+				],
+				"3 Damage": [
+					{
+						"name": "indirect_damage",
+						"all_players": true,
+						"amount": 3
+					}
+				]
+			}
 		}
 	},
 	"Navigation Column": {
@@ -2525,38 +3276,291 @@
 		}
 	},
 	"Nebula - 1": {
-		"TODO": "",
-		"_surge": {},
+		"once_per_round": {
+			"__name__": "__technique"
+		},
+		"card_moved_to_pile": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "attachment"
+					},
+					"filter_properties2": {
+						"trait_technique": 1
+					}
+				}
+			],
+			"filter_destination": "encounters_reveal",
+			"pile": [
+				{
+					"name": "mod_tokens",
+					"token_name": "__technique",
+					"modification": -1,
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "surge"
+				}
+			]
+		},
 		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
+			"event_name": [
+				"enemy_attack",
+				"commit_scheme"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "special",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_technique": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_technique": 1
+							}
+						}
+					]
+				}
+			]
 		}
 	},
 	"Nebula - 2": {
-		"TODO": "",
-		"_surge": {},
+		"once_per_round_per_player": {},
+		"card_moved_to_pile": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "attachment"
+					},
+					"filter_properties2": {
+						"trait_technique": 1
+					}
+				}
+			],
+			"filter_destination": "encounters_reveal",
+			"pile": [
+				{
+					"name": "mod_tokens",
+					"token_name": "__player_token_current_hero_target",
+					"modification": -1,
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "surge"
+				}
+			]
+		},
 		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
+			"event_name": [
+				"enemy_attack",
+				"commit_scheme"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "special",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "attachment"
+							},
+							"filter_properties2": {
+								"trait_technique": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "attachment"
+							},
+							"filter_properties2": {
+								"trait_technique": 1
+							}
+						}
+					]
+				}
+			]
 		}
 	},
 	"Nebula - 3": {
-		"TODO": "",
-		"_surge": {},
+		"once_per_round_per_player": {},
+		"card_moved_to_pile": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "attachment"
+					},
+					"filter_properties2": {
+						"trait_technique": 1
+					}
+				}
+			],
+			"filter_destination": "encounters_reveal",
+			"pile": [
+				{
+					"name": "mod_tokens",
+					"token_name": "__player_token_current_hero_target",
+					"modification": -1,
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "surge"
+				}
+			]
+		},
 		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
+			"event_name": [
+				"enemy_attack",
+				"commit_scheme"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "special",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "attachment"
+							},
+							"filter_properties2": {
+								"trait_technique": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "remove_technique",
+					"subject": "self"
+				}
+			]
+		},
+		"remove_technique": {
+			"all": {
+				"Remove 1 Attachment": [
+					{
+						"name": "move_card_to_container",
+						"subject": "index",
+						"subject_index": "top",
+						"subject_count": 1,
+						"src_container": "deck",
+						"dest_container": "set_aside",
+						"is_cost": "true"
+					},
+					{
+						"name": "discard",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "attachment"
+								},
+								"filter_properties2": {
+									"trait_technique": 1
+								}
+							}
+						]
+					}
+				],
+				"Do Nothing": [
+					{
+						"name": "nop"
+					}
+				]
+			}
 		}
 	},
 	"Nebula's Ship": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
+		"step_started": {
+			"event_filters": {
+				"step_name": "VILLAIN_THREAT"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "evasion",
+					"modification": 1,
+					"subject": "self"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Shoot the Thrusters! (1)": [
+					{
+						"name": "exhaust_card",
+						"subject": "Milano",
+						"is_cost": true
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unk": 1
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "evasion",
+						"modification": -1,
+						"subject": "self"
+					}
+				],
+				"Shoot the Thrusters! (2)": [
+					{
+						"name": "exhaust_card",
+						"subject": "Milano",
+						"is_cost": true
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unk": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "evasion",
+						"modification": -2,
+						"subject": "self"
+					}
+				]
+			}
 		}
 	},
 	"Obedience Potion": {
@@ -2617,10 +3621,23 @@
 		}
 	},
 	"Oppressive Armada": {
-		"TODO": "",
 		"hinder": {
-			"__amount__": "TODO",
+			"__amount__": 3,
 			"__each_player__": true
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "Milano",
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"subject": "self",
+					"amount": 3
+				}
+			]
 		}
 	},
 	"Particle Cannon": {
@@ -2796,17 +3813,68 @@
 		}
 	},
 	"Protect the Planet - 2A": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "sequence",
+					"sequence_ability": "charge_up",
+					"subject": "Badoon Ship"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Protect the Planet - 2B": {
-		"TODO": ""
+		"step_ended": {
+			"event_filters": {
+				"step_name": "VILLAIN_THREAT"
+			},
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "charge_up",
+					"subject": "Badoon Ship"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Remove Threat": [
+					{
+						"name": "exhaust_card",
+						"subject": "Milano",
+						"is_cost": true
+					},
+					{
+						"name": "remove_threat",
+						"subject": "self",
+						"amount": 3
+					}
+				],
+				"Deal Damage": [
+					{
+						"name": "exhaust_card",
+						"subject": "Milano",
+						"is_cost": true
+					},
+					{
+						"name": "deal_damage",
+						"subject": "target",
+						"amount": 3,
+						"filter_state_subject": [
+							{
+								"filter_properties": {
+									"type_code": "minion"
+								}
+							}
+						]
+					}
+				]
+			}
+		}
 	},
 	"Psionic Ghost": {
 		"TODO": "",
@@ -3370,7 +4438,20 @@
 		}
 	},
 	"Spatial Positioning": {
-		"TODO": ""
+		"manual": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "Milano",
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"subject": "self",
+					"amount": 3
+				}
+			]
+		}
 	},
 	"Special Delivery": {
 		"TODO": "",
@@ -3425,18 +4506,80 @@
 		}
 	},
 	"Stay Awhile": {
-		"TODO": "",
 		"reveal_alter_ego": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
+			"all": {
+				"Resources": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"physical": 2
+						},
+						"is_cost": true
+					}
+				],
+				"Collection": [
+					{
+						"name": "move_card_to_container",
+						"subject": "index",
+						"subject_index": "top",
+						"src_container": "deck",
+						"dest_container": "the_collection",
+						"for_each_player": true
+					}
+				]
+			}
 		},
 		"reveal_hero": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "add_script",
+					"end_condition": "card_moved_to_pile",
+					"subject": "Collector",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": 1
+								}
+							]
+						},
+						"interrupt_receive_damage": {
+							"event_filters": {
+								"target": "current_hero_target",
+								"amount": ">0",
+								"tags": [
+									"attack"
+								]
+							},
+							"trigger": "self",
+							"board": [
+								{
+									"name": "replacement_effect",
+									"subject": "interrupted_event",
+									"replacements": {
+										"if_damage": {
+											"trigger": "post_activity_trigger"
+										}
+									}
+								}
+							]
+						},
+						"post_activity_trigger": {
+							"all": [
+								{
+									"name": "move_card_to_container",
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_current_hero_target",
+									"dest_container": "the_collection",
+									"for_each_player": true
+								}
+							]
+						}
+					}
 				}
 			]
 		}
@@ -3494,16 +4637,175 @@
 		}
 	},
 	"Terrestrial Invasion - 1A": {
-		"TODO": ""
+		"setup": {
+			"all": [
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Badoon Ship"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
+					"grid_name": "upgrade_support_first_player",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Milano"
+							}
+						}
+					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Terrestrial Invasion - 1B": {
-		"TODO": ""
+		"step_ended": {
+			"event_filters": {
+				"step_name": "VILLAIN_THREAT"
+			},
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "charge_up",
+					"subject": "Badoon Ship"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "Milano",
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"subject": "self",
+					"amount": 3
+				}
+			]
+		}
 	},
 	"The Art of Evasion - 1A": {
-		"TODO": ""
+		"setup": {
+			"all": [
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Nebula's Ship"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
+					"grid_name": "upgrade_support_first_player",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Milano"
+							}
+						}
+					]
+				},
+				{
+					"name": "host_card",
+					"host": "Nebula",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Power Stone"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"sort_descending": true,
+					"up_to": true,
+					"subject_count": 2,
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain"
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "previous",
+					"subject_count": "all",
+					"filter_each_previous_subject": "true",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"trait_technique": 1
+							},
+							"filter_properties2": {
+								"type_code": "attachment"
+							}
+						}
+					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"The Art of Evasion - 1B": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "escalation_threat",
+					"alteration": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "Nebula's Ship",
+							"token_name": "evasion"
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		}
 	},
 	"The Beyonder's Blazer": {
 		"TODO": "",
@@ -3529,47 +4831,247 @@
 		}
 	},
 	"The Grand Collection - 1A": {
-		"TODO": ""
-	},
-	"The Grand Collection - 1B": {
-		"TODO": "",
-		"manual": {
-			"board": [
+		"setup": {
+			"all": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
+					"name": "move_card_to_container",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck",
+					"dest_container": "the_collection",
+					"for_each_player": true
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
+		}
+	},
+	"The Grand Collection - 1B": {
+		"once_per_round_per_player": {},
+		"manual": {
+			"board": {
+				"Exhaust": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_hero"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "__player_token_my_hero",
+						"subject": "self",
+						"modification": -1,
+						"is_cost": true
+					},
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_count": "all",
+						"needs_selection": "true",
+						"selection_count": 1,
+						"src_container": "the_collection"
+					}
+				],
+				"Pay 2 Resources": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unk": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "__player_token_my_hero",
+						"subject": "self",
+						"modification": -1,
+						"is_cost": true
+					},
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_count": "all",
+						"needs_selection": "true",
+						"selection_count": 1,
+						"src_container": "the_collection"
+					}
+				]
+			}
 		},
-		"once_per_round": {
-			"__name__": "__TODO"
+		"card_moved_to_pile": {
+			"condition_board": {
+				"func_name": "count_cards>=5",
+				"func_params": {
+					"subject": "index",
+					"subject_count": "all",
+					"src_container": "the_collection"
+				}
+			},
+			"board": [
+				{
+					"name": "defeat"
+				}
+			]
 		}
 	},
 	"The Great Escape - 3A": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "flip_doublesided_card",
+					"subject": "Library Labyrinth"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "acceleration",
+					"subject": "self"
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": [
+						"set_aside"
+					],
+					"dest_container": "deck_villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "ship_command"
+							}
+						}
+					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"The Great Escape - 3B": {
-		"TODO": ""
+		"manual": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "Milano",
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"subject": "self",
+					"amount": 3
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_count": 0,
+			"filter_token_name": "threat",
+			"board": [
+				{
+					"name": "victory"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "stage_completed",
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "defeat"
+				}
+			]
+		}
 	},
 	"The Missing Milano - 1A": {
-		"TODO": ""
+		"setup": {
+			"all": [
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Library Labyrinth"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "ship_command"
+							}
+						}
+					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"The Missing Milano - 1B": {
-		"TODO": "",
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_count": 0,
+			"filter_token_name": "threat",
+			"board": [
+				{
+					"name": "move_to_next_scheme",
+					"subject": "self"
+				}
+			]
+		},
 		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
+			"event_name": "stage_completed",
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "defeat"
+				}
+			]
 		}
 	},
 	"The Poison": {
@@ -3700,20 +5202,61 @@
 		}
 	},
 	"Unyielding Persistence": {
-		"TODO": "",
-		"boost": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "Nebula"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "stalwart",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"special": {
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_tokens",
+								"func_params": {
+									"subject": "Nebula",
+									"token_name": "tough"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "draw_boost_card",
+									"subject": "villain"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"subject": "Nebula",
+							"modification": 1,
+							"token_name": "tough"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"nebula_attachment_boost": {}
 				}
 			]
 		}
@@ -3742,13 +5285,51 @@
 		}
 	},
 	"View the Cosmos": {
-		"TODO": "",
 		"reveal": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
+			"all": {
+				"To Collection": [
+					{
+						"name": "move_card_to_container",
+						"dest_container": "the_collection",
+						"src_container": "hand",
+						"is_cost": true,
+						"subject": "index",
+						"subject_count": 1,
+						"sort_by": "function",
+						"sort_descending": true,
+						"sort_name": "get_subject_int_printed_property",
+						"func_params": {
+							"property": "cost"
+						}
+					}
+				],
+				"Discard and Threat": [
+					{
+						"name": "discard",
+						"src_container": "hand",
+						"is_cost": true,
+						"subject": "index",
+						"subject_count": 1,
+						"sort_by": "function",
+						"sort_descending": true,
+						"sort_name": "get_subject_int_printed_property",
+						"func_params": {
+							"property": "cost"
+						}
+					},
+					{
+						"name": "add_threat",
+						"subject": "main_scheme",
+						"amount": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"subject": "previous",
+								"property": "cost"
+							}
+						}
+					}
+				]
+			}
 		}
 	},
 	"Vine Shield": {
@@ -3855,52 +5436,146 @@
 		}
 	},
 	"Warp Drive Initiated - 2A": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "mod_tokens",
+					"subject": "Nebula's Ship",
+					"modification": 2,
+					"token_name": "evasion"
+				},
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"sort_descending": true,
+					"up_to": true,
+					"subject_count": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"multiplier": 2,
+							"token_name": "evasion",
+							"subject": "Nebula's Ship"
+						}
+					},
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"sort_descending": true,
+					"up_to": true,
+					"subject_count": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"multiplier": 2,
+							"token_name": "evasion",
+							"subject": "Nebula's Ship"
+						}
+					},
+					"src_container": "deck_my_hero",
+					"for_each_player": true
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Warp Drive Initiated - 2B": {
-		"TODO": ""
-	},
-	"Weapon Mastery": {
-		"TODO": "",
-		"boost": {
-			"all": [
+		"alterants": {
+			"board": [
 				{
-					"name": "TODO"
+					"filter_task": "get_property",
+					"filter_property_name": "escalation_threat",
+					"alteration": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "Nebula's Ship",
+							"token_name": "evasion"
+						}
+					},
+					"trigger": "self"
 				}
 			]
-		},
+		}
+	},
+	"Weapon Mastery": {
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "Nebula"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"special": {
+			"board": [
+				{
+					"name": "deal_damage",
+					"subject": "current_hero_target",
+					"amount": 1
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"nebula_attachment_boost": {}
 				}
 			]
 		}
 	},
 	"Wide Stance": {
-		"TODO": "",
-		"boost": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "Nebula"
+				}
+			]
+		},
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"target": "host",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": 1,
+					"subject": "interrupted_event"
+				}
+			]
+		},
+		"special": {
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "random",
+					"src_container": "hand_current_hero_target"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"nebula_attachment_boost": {}
 				}
 			]
 		}

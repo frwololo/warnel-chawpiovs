@@ -21,6 +21,7 @@ const PROPERTIES_NUMBERS := ["cost", "attack", "defense", "thwart", "scheme", "h
 	"printed_health", #TODO maybe retrieve this one from the database directly?
 	"invincible","cannot_remove_threat", "is_unique", 
 	"boost", "scheme_crisis", "scheme_amplify", "scheme_acceleration", "scheme_hazard",
+	"escalation_threat", 
 	"resource_mental", "resource_wild", "resource_energy", "resource_physical",
 	"ally_limit", "restricted_limit", "hand_size", "boost_cards_per_attack", "boost_cards_per_scheme", "max_hand_size"]
 # The name of these properties will be prepended before their value to their label.

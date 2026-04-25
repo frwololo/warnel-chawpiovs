@@ -1369,7 +1369,7 @@ func villain_threat():
 	var all_cards:Array = cfc.NMAP.board.get_all_cards()
 	for main_scheme in main_schemes:		
 		#basic threat computation, check if it's a constant or multiplied by numbers of players	
-		var escalation_threat = main_scheme.properties["escalation_threat"]	
+		var escalation_threat = main_scheme.get_property("escalation_threat", 0)	
 		var escalation_threat_fixed = main_scheme.properties["escalation_threat_fixed"]
 		if (not escalation_threat_fixed):
 			escalation_threat *= get_team_size()

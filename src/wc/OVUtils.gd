@@ -649,7 +649,19 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 					if compared_to_str == comp_value:
 						filters.erase(filter_key)
 						break									
-				
+			elif value.ends_with("_any"):
+				var found = false
+				for i in gameData.get_team_size():
+					var hero_id = i+1
+					var comp_value = value.replace("_any", str(hero_id))
+					if compared_to_str == comp_value:
+						filters.erase(filter_key)
+						found = true
+						break	
+				if !found:
+					var comp_value = value.replace("_any", "_villain")
+					if compared_to_str == comp_value:
+						filters.erase(filter_key)				
 
 	if (filters):
 		var _tmp = 0	

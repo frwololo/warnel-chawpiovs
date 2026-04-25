@@ -599,6 +599,11 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 
 	card_data["aspect"] = card_data.get("faction_code", "")
 
+	#"X" in excalation threat is represented by -1, we replace it by a base
+	# of 0 and will handle it with card script alterants
+	if card_data.get("escalation_threat",0) == -1:
+		card_data["escalation_threat"] = 0
+
 	###END Fixing missing data
 
 	var card_type:String = card_data["type_code"]

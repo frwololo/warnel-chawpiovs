@@ -1387,6 +1387,20 @@ func swap_villain(script:ScriptTask) -> int:
 	gameData.swap_villain(gameData.get_active_villain(), subject.get_property("_code"), options)
 	return retcode
 
+func move_to_next_scheme(script:ScriptTask)-> int:
+	var retcode = CFConst.ReturnCode.CHANGED
+	
+	if !script.subjects:
+		retcode = CFConst.ReturnCode.FAILED
+
+	if (costs_dry_run()):
+		return retcode		
+		
+	var scheme = script.subjects[0]
+	gameData.move_to_next_scheme(scheme)
+	return retcode	
+	
+
 func draw_boost_card(script:ScriptTask) ->int:
 	var retcode = CFConst.ReturnCode.CHANGED
 	

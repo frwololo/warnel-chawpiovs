@@ -6,6 +6,7 @@ var trigger_card = null
 var trigger
 var trigger_details
 var run_type
+var rules := {}
 var authority_cache := {}
 
 var _last_error
@@ -15,7 +16,8 @@ func _init (
 		_trigger_card = null,
 		_trigger: String = "manual",
 		_trigger_details: Dictionary = {},
-		_run_type := CFInt.RunType.NORMAL):
+		_run_type := CFInt.RunType.NORMAL,
+		_rules:= {}):
 	owner_card = _owner_card
 	trigger_card = _trigger_card
 	if !trigger_card:
@@ -23,6 +25,7 @@ func _init (
 	trigger = _trigger
 	trigger_details = _trigger_details
 	run_type = _run_type
+	rules = _rules
 
 func interaction_authorized() -> bool:
 	var authority_status = compute_authority()
@@ -59,25 +62,30 @@ func compute_authority() -> Dictionary:
 
 	var authorized_hero_id = override_controller_id if override_controller_id else for_hero_id
 
-	if override_controller_id:
-		if gameData.get_current_local_hero_id() != override_controller_id:
-			authority_cache["error"] = "Current Local hero id (" +  str(gameData.get_current_local_hero_id()) + ") not matching override " + str(override_controller_id)
-			return authority_cache
+	#check for authorised hero id to use player cards
+	if rules.get("any_player_can_use", false):
+		pass
 	else:
-	#can only trigger if I'm the controller of the ability or if enemy card (will send online to other clients)
-
-		if for_hero_id:
-			if !gameData.can_hero_play_this_ability(for_hero_id, owner_card):
-				authority_cache["error"] = "Requested for_hero_id (" +  str(for_hero_id) + ") cannot play this ability"
+		if override_controller_id:
+			if gameData.get_current_local_hero_id() != override_controller_id:
+				authority_cache["error"] = "Current Local hero id (" +  str(gameData.get_current_local_hero_id()) + ") not matching override " + str(override_controller_id)
 				return authority_cache
 		else:
-			var allowed_hero_id = gameData.can_i_play_this_ability(owner_card, trigger)
-			if allowed_hero_id:
-				authorized_hero_id = allowed_hero_id
+		#can only trigger if I'm the controller of the ability or if enemy card (will send online to other clients)
+
+			if for_hero_id:
+				if !gameData.can_hero_play_this_ability(for_hero_id, owner_card):
+					authority_cache["error"] = "Requested for_hero_id (" +  str(for_hero_id) + ") cannot play this ability"
+					return authority_cache
 			else:
-				authority_cache["error"] = "I am not allowed to play " + owner_card.canonical_name
-				return authority_cache
-		
+				var allowed_hero_id = gameData.can_i_play_this_ability(owner_card, trigger)
+				if allowed_hero_id:
+					authorized_hero_id = allowed_hero_id
+				else:
+					authority_cache["error"] = "I am not allowed to play " + owner_card.canonical_name
+					return authority_cache
+	
+	#check for authorised hero id to use enemy cards	
 	#enemy cards, multiple players can react except when they're the specific target
 	if owner_card.get_controller_hero_id() <= 0:
 		var can_i_play_enemy_card = false

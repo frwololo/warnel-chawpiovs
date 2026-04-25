@@ -276,10 +276,13 @@
 	},
 	"16061": {
 		"code": "16061",
-		"name": "Terrestrial Invasion",		
-		"modular_default": [],
+		"name": "Terrestrial Invasion",
+		"modular_default": [
+			"band_of_badoon"
+		],
 		"encounter_sets": [
-			"TODO",
+			"brotherhood_of_badoon",
+			"ship_command",
 			"Standard",
 			"Modular"
 		],
@@ -289,7 +292,8 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"brotherhood_of_badoon",
+				"ship_command",
 				"Standard",
 				"modular",
 				"expert"
@@ -303,10 +307,19 @@
 	"16073": {
 		"code": "16073",
 		"name": "The Grand Collection",
-		"scenario_display_name": "Infiltrate the Museum",			
-		"modular_default": [],
+		"scenario_display_name": "Infiltrate the Museum",
+		"extra_decks": [
+			{
+				"name": "the_collection",
+				"faceup": true
+			}
+		],
+		"modular_default": [
+			"menagerie_medley"
+		],
 		"encounter_sets": [
-			"TODO",
+			"infiltrate_the_museum",
+			"galactic_artifacts",
 			"Standard",
 			"Modular"
 		],
@@ -316,7 +329,8 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"infiltrate_the_museum",
+				"galactic_artifacts",
 				"Standard",
 				"modular",
 				"expert"
@@ -330,10 +344,14 @@
 	"16082": {
 		"code": "16082",
 		"name": "The Missing Milano",
-		"scenario_display_name": "Escape the Museum",		
-		"modular_default": [],
+		"scenario_display_name": "Escape the Museum",
+		"modular_default": [
+			"menagerie_medley"
+		],
 		"encounter_sets": [
-			"TODO",
+			"escape_the_museum",
+			"galactic_artifacts",
+			"ship_command",
 			"Standard",
 			"Modular"
 		],
@@ -343,7 +361,9 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"escape_the_museum",
+				"galactic_artifacts",
+				"ship_command",
 				"Standard",
 				"modular",
 				"expert"
@@ -357,9 +377,13 @@
 	"16091": {
 		"code": "16091",
 		"name": "The Art of Evasion",
-		"modular_default": [],
+		"modular_default": [
+			"space_pirates"
+		],
 		"encounter_sets": [
-			"TODO",
+			"nebula",
+			"ship_command",
+			"power_stone",
 			"Standard",
 			"Modular"
 		],
@@ -369,7 +393,9 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"nebula",
+				"ship_command",
+				"power_stone",
 				"Standard",
 				"modular",
 				"expert"

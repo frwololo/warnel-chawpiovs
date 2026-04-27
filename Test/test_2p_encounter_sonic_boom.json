@@ -71,6 +71,10 @@
 	},
 	"actions": [
 		{
+			"type": "other",
+			"value": "wait_a_bit",
+		},	
+		{
 			"type": "choose",
 			"value": "exhaust all characters",
 		},	

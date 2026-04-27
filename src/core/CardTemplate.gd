@@ -312,7 +312,7 @@ func _class_specific_ready():
 	if self.is_duplicate_of:
 		for child in get_children():
 			if child as TargetingArrow:
-				remove_child(child)
+				child.queue_free()
 	else:
 		targeting_arrow = targeting_arrow_scene.instance()
 		add_child(targeting_arrow)
@@ -1084,7 +1084,7 @@ func set_card_name(value : String, set_label := true) -> void:
 			card_front.set_rich_label_text(name_label,value)
 		elif set_label:
 			card_front.set_label_text(name_label,value)
-	name = value + "-" + guidMaster.get_guid(self) #a unique identifier that will also work for network calls
+	name = value
 	canonical_name = value
 	properties["Name"] = value
 
@@ -1395,23 +1395,26 @@ func move_to(targetHost: Node,
 				# The developer is allowed to pass a position override to the
 				# card placement which also bypasses manual drop placement
 				# restrictions
-				if typeof(board_position) == TYPE_VECTOR2:
-					_set_target_position(board_position)
-				elif board_position as BoardPlacementSlot:
-					_set_target_position(board_position.rect_global_position)
-					board_position.set_occupying_card(self)
-					destination_grid = board_position.get_grid_name()
-				elif board_position and board_position as String:
-					var grid = cfc.NMAP.board.get_grid(board_position)
-					destination_grid = board_position
-					var slot = grid.find_available_slot()
-					# We need a small delay, to allow a potential new slot to instance
-					#TODO this might cause issues with the stack
-					#yield(get_tree().create_timer(0.05), "timeout")
-					_set_target_position(slot.rect_global_position)
-					slot.set_occupying_card(self)				
+				if is_instance_valid(board_position):
+					if typeof(board_position) == TYPE_VECTOR2:
+						_set_target_position(board_position)
+					elif board_position as BoardPlacementSlot:
+						_set_target_position(board_position.rect_global_position)
+						board_position.set_occupying_card(self)
+						destination_grid = board_position.get_grid_name()
+					elif board_position and board_position as String:
+						var grid = cfc.NMAP.board.get_grid(board_position)
+						destination_grid = board_position
+						var slot = grid.find_available_slot()
+						# We need a small delay, to allow a potential new slot to instance
+						#TODO this might cause issues with the stack
+						#yield(get_tree().create_timer(0.05), "timeout")
+						_set_target_position(slot.rect_global_position)
+						slot.set_occupying_card(self)				
+					else:
+						_determine_target_position_from_mouse()
 				else:
-					_determine_target_position_from_mouse()
+					_determine_target_position_from_mouse()						
 				raise()
 			set_state(CardState.DROPPING_TO_BOARD)
 			#force set is faceup to true when moving to board
@@ -1443,7 +1446,7 @@ func move_to(targetHost: Node,
 					token.queue_free()
 			# If the card was hosted in a board placement grid
 			# we clean the references.
-			if _placement_slot:
+			if is_instance_valid(_placement_slot):
 					_placement_slot.remove_occupying_card(self)
 	else:
 		# Here we check what to do if the player just moved the card back
@@ -2766,7 +2769,7 @@ func _process_card_state() -> void:
 			set_manipulation_buttons_active(false)
 			#TODO this messes up attached components such as the targeting arrow
 			var target_scale = play_area_scale
-			if (_placement_slot):
+			if is_instance_valid(_placement_slot):
 				target_scale = _placement_slot.get_scale_modifier()
 			if ( current_host_card and  current_host_card._placement_slot):
 				target_scale =  current_host_card._placement_slot.get_scale_modifier()				
@@ -3151,7 +3154,7 @@ func _on_Back_resized() -> void:
 #		print_debug($Control/Back.rect_size) # Replace with function body.
 
 func get_grid_name():
-	if (_placement_slot):
+	if is_instance_valid(_placement_slot):
 		return _placement_slot.get_grid_name()
 	return null	
 
@@ -3174,7 +3177,7 @@ func copy_tokens_to(to_card, details:= {}):
 func _on_tree_exiting():	
 	if cfc.NMAP.has("main"):
 		cfc.NMAP.main.unfocus(self)
-	if _placement_slot:
+	if is_instance_valid(_placement_slot):
 		_placement_slot.remove_occupying_card(self)
 		_placement_slot = null
 
@@ -3186,6 +3189,9 @@ func queue_free():
 	for conn in connections:
 		var source = conn["source"]
 		source.disconnect(conn["signal_name"],self , conn["method_name"])
+	if _duplicate:
+		_duplicate.queue_free()	
+	
 	.queue_free()
 	
 var _duplicate = null

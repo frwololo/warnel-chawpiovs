@@ -1,0 +1,148 @@
+{
+	"_comments": "Bug: Caught off guard discard Milano",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Caught Off Guard"
+				}
+			],
+			"villain": [
+				{
+					"card": "Drang - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Terrestrial Invasion",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Milano"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01056"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Badoon Ship",
+					"tokens": {
+						"barrage": 1
+					}
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "wait for player turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Caught Off Guard"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"villain": [
+				{
+					"card": "Drang - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Terrestrial Invasion",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Milano"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01056"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Badoon Ship",
+					"tokens": {
+						"barrage": 1
+					}
+				}
+			]
+		}
+	}
+}

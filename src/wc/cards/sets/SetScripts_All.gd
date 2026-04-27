@@ -172,9 +172,17 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 					]
 				}
 			}
-		#note: order matters here in some cases. generally speaking
-		# we want cost to be paid first, therefore be at the top of the array			
-		script = WCUtils.merge_dict( playFromHand, script, true)
+		#existing scripts are occasionally a dictionary instead of 
+		#array. e.g. Flora and Fauna. In this case the merge is a bit more complicated	
+		var hand_script = script.get("manual", {}).get("hand", [])
+		if typeof(hand_script) == TYPE_DICTIONARY:
+			var to_merge = playFromHand["manual"]["hand"]
+			for key in hand_script.keys():
+				hand_script[key] = to_merge + hand_script[key]
+		else:	
+			#note: order matters here in some cases. generally speaking
+			# we want cost to be paid first, therefore be at the top of the array			
+			script = WCUtils.merge_dict( playFromHand, script, true)
 		
 		if "scheme" in type_code:
 			var scheme_comes_to_play: Dictionary = { 

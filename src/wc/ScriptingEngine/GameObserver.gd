@@ -115,6 +115,7 @@ func removal_checks(
 			var object = removal_condition["object"]
 			_objects.erase(object)
 			remove_child(object)
+			object.queue_free()
 			to_remove.append(removal_condition)
 	if to_remove:
 		cfc.flush_cache()

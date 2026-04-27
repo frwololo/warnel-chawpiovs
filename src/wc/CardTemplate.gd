@@ -46,6 +46,15 @@ var activity_script
 #status of this card as an encounter (see GameData)
 var encounter_status = gameData.EncounterStatus.NONE
 
+# Setter for canonical_name
+# Also changes the card label and the node name
+func set_card_name(value : String, set_label := true) -> void:
+	.set_card_name(value, set_label)
+	name += "-" + guidMaster.get_guid(self) #a unique identifier that will also work for network calls	
+	if name.ends_with("guid_unknown"):
+		name +=  " - " + str(get_owner_hero_id())
+
+
 func warning():
 	if card_front:
 		card_front.warning()
@@ -468,8 +477,8 @@ func _class_specific_ready():
 	#deactivate collision support for performance
 	if CFConst.PERFORMANCE_HACKS:
 		self.monitoring = false
-		remove_child($Debug)
-		$Control.remove_child($Control/ManipulationButtons)
+		$Debug.queue_free()
+		$Control/ManipulationButtons.queue_free()
 		buttons = null
 
 func get_spinbox():
@@ -687,6 +696,7 @@ func _process(delta) -> void:
 		_hint_data["lifetime"] = lifetime
 	for data in hints_to_erase:
 		$Control.remove_child(data["hint_node"])
+		data["hint_node"].queue_free()
 		hints.erase(data)
 	hints_to_erase = []
 	
@@ -835,6 +845,8 @@ func update_hero_groups():
 	var groups:Array = CFConst.TYPES_TO_GROUPS.get(type_code, [])
 	
 	for group in groups:
+		if group == "play_area" and !self.is_onboard():
+			continue
 		for i in range (gameData.team.size() + 1):
 			var hero_group = group + str(i)
 			if self.get_controller_hero_id() == i:
@@ -850,6 +862,8 @@ func update_groups() -> void :
 			
 	var groups:Array = CFConst.TYPES_TO_GROUPS.get(type_code, [])
 	for group in groups:
+		if group == "play_area" and !self.is_onboard():
+			continue		
 		self.add_to_group(group)
 
 func remove_attachment(card):

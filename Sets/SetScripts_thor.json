@@ -846,7 +846,7 @@
 						"name": "constraints",
 						"is_cost": true,
 						"tags": [
-							"action"
+							"action_ability"
 						]
 					},
 					{
@@ -883,7 +883,7 @@
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
-						"action"
+						"action_ability"
 					]
 				},
 				{

@@ -33,6 +33,7 @@ func set_threat(_max_value, _value ):
 	self.rect_size = self.rect_min_size	
 	for child in get_children():
 		remove_child(child)
+		child.queue_free()
 	for i in range (_max_value):
 		var tex:ColorRect = ColorRect.new()
 		tex.modulate = health_color if i <  _value else COLOR_MISSING
@@ -59,6 +60,7 @@ func set_health(_max_value, _value ):
 	self.rect_size = self.rect_min_size	
 	for child in get_children():
 		remove_child(child)
+		child.queue_free()
 	for i in range (_max_value):
 		var tex:ColorRect = ColorRect.new()
 		tex.modulate = health_color + Color(0, i*0.1,0,0.3)  if i < _value else COLOR_MISSING

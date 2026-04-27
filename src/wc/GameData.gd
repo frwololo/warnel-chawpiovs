@@ -778,6 +778,9 @@ func get_ongoing_game():
 	
 
 func save_round(round_id):
+	#don't save when test suite is running
+	if testSuite:
+		return
 	var save_dir = "user://Saves/current_game/"
 	var save_file = "round_" + str(round_id) + ".json"
 	save_gamedata_to_file(save_dir + save_file)
@@ -890,7 +893,7 @@ func execute_priority_scripts() -> bool:
 		
 	var sceng = null
 	var override_hero = 0
-	print_debug("priority scripts pending:" +str(_priority_scripts.size()))
+	#print_debug("priority scripts pending:" +str(_priority_scripts.size()))
 	while (_priority_scripts and !sceng):
 		if !theStack.is_phasecontainer_allowed_to_process():
 			return false
@@ -922,7 +925,7 @@ func execute_priority_scripts() -> bool:
 				reset_forced_current_playing_hero(override_hero)
 				override_hero = 0
 
-	print_debug("priority scripts pending after run:" +str(_priority_scripts.size()))
+	#print_debug("priority scripts pending after run:" +str(_priority_scripts.size()))
 	if sceng is GDScriptFunctionState && sceng.is_valid():
 		_current_priority_script["sceng"] = sceng		
 		return sceng
@@ -1400,13 +1403,13 @@ func villain_threat():
 func get_facedown_encounters_pile(target_id = 0) -> Pile :
 	if (!target_id):
 		target_id = _villain_current_hero_target
-	var pile  = cfc.NMAP["encounters_facedown" + str(target_id)]
+	var pile  = cfc.NMAP.get("encounters_facedown" + str(target_id), null)
 	return pile
 	
 func get_revealed_encounters_pile(target_id = 0) :
 	if (!target_id):
 		target_id = _villain_current_hero_target
-	var pile  = cfc.NMAP["encounters_reveal" + str(target_id)]
+	var pile  = cfc.NMAP.get("encounters_reveal" + str(target_id), null)
 	return pile
 	
 func get_enemies_grid(target_id = 0) -> BoardPlacementGrid :
@@ -2384,6 +2387,7 @@ func cleanup_post_game():
 	cfc.reset_ongoing_process_stack()
 	cfc.flush_cache()
 	guidMaster.reset()
+	
 
 	cfc.set_game_paused(false)
 

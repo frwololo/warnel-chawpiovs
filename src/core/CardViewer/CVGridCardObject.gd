@@ -10,6 +10,7 @@ var selected = false
 var show_card_focus = true
 onready var preview_popup := $PreviewPopup
 
+const cached_cards:= {}
 
 func _ready() -> void:
 # warning-ignore:return_value_discarded
@@ -38,6 +39,7 @@ func setup(card) -> Card:
 		cfc.LOG("card " + display_card.canonical_name + "wasn't properly removed from " + parent.name)
 		parent.remove_child(display_card)
 	add_child(display_card)
+	cached_cards[display_card] = true
 	display_card.set_owner(self)
 	if CFConst.VIEWPORT_FOCUS_ZOOM_TYPE == "scale":
 		display_card.scale = Vector2(1,1) * display_card.thumbnail_scale * cfc.curr_scale
@@ -129,3 +131,14 @@ func _exit_tree():
 	for child in get_children():
 		if child as Card:
 			remove_child(child)
+
+static func queue_free_cache():
+	for card in cached_cards.keys():
+		if is_instance_valid(card):
+			#This is dumb but I have to add the child somewhere
+			#to prevent it from showing up in stray nodes
+			var parent = card.get_parent()
+			if !is_instance_valid(parent):
+				cfc.add_child(card)
+			card.queue_free()
+		cached_cards.erase(card)

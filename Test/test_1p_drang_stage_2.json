@@ -1,0 +1,164 @@
+{
+	"_comments": "Bug: Drang Stage 2 gets both facedown card and Spear",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},		
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Drang's Spear"
+				},				
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}				
+			],
+			"set_aside": [
+			
+			{"card": "Drang - 2"}
+			],
+			"villain": [
+				{
+					"card": "Drang - 1",
+					"tokens": {"damage": 12}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Terrestrial Invasion",
+					"tokens": {"threat": 2}					
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"upgrade_support1": [
+				{
+					"card": "Follow Through"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01056",
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Badoon Ship",
+					"tokens": {"barrage": 1}
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "activate",
+			"value": "Rocket Raccoon",
+		},	
+		{
+			"type": "choose",
+			"value": "attack",
+		},	
+		{
+			"type": "target",
+			"value": "Drang",
+		},		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},			
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}				
+			],
+			"set_aside": [
+				{
+					"card": "Drang - 1",
+				}			
+			],
+			"villain": [
+				{"card": "Drang - 2"}
+			],
+			"others": [
+							{
+					"card": "Drang's Spear",
+					"host": "Drang - 2"
+				},	
+			],
+			"schemes": [
+				{
+					"card": "Terrestrial Invasion",
+					"tokens": {"threat": 2}					
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"upgrade_support1": [
+				{
+					"card": "Follow Through"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01056",
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Badoon Ship",
+					"tokens": {"barrage": 1}
+				}
+			]
+		}
+	}
+}

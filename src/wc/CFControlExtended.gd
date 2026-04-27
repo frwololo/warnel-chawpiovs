@@ -400,6 +400,7 @@ func parse_keywords(text:String) -> Dictionary:
 	var result:= {}
 	
 	var lc_text:String = text.to_lower()
+		
 	var potential_keywords:PoolStringArray = lc_text.split(".")
 	for i in potential_keywords.size():
 		potential_keywords[i] = potential_keywords[i].trim_prefix(" ")
@@ -518,6 +519,10 @@ static func text_cleanup(text):
 	
 	# Replace all occurrences of multiple spaces with a single space
 	var cleaned_text := regex.sub(text, " ", true)
+	
+	#replace newline with space
+	cleaned_text = cleaned_text.replace("\n", " ")
+		
 	return cleaned_text
 
 var _seen_images:= {}
@@ -624,6 +629,9 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	#flatten it out to allow access through alterants and get_property
 	for k in card_data["keywords"].keys():
 		card_data[k] = card_data["keywords"][k]
+	
+#	if card_data.get("villainous", false):
+#		print_debug(card_data["Name"] + " is villainous")
 	
 	if (card_data.has("traits") and typeof(card_data["traits"]) == TYPE_STRING):
 		var traits = _split_traits(card_data["traits"])
@@ -826,6 +834,11 @@ func load_data_from_cache(file_name):
 	return result
 
 func load_card_definitions_from_cache(the_files) -> Dictionary:
+	if CFConst.DEBUG_DISABLE_SCRIPT_DATABASE_CACHE:
+		return {
+			"_error": "cache is disabled in CFConst"
+		}
+			
 	var md5_list = _get_set_definitions_md5_list(the_files)
 	var comparison_data = get_cache_toc().get("set_definitions", {})
 	if WCUtils.ordered_hash(md5_list) != WCUtils.ordered_hash(comparison_data):
@@ -1008,7 +1021,7 @@ func get_hero_obligation(hero_id:String):
 	#todo error handling
 	var hero_data = get_card_by_id(hero_id)
 	var hero_set_code = hero_data["card_set_code"]
-	var obligation = obligations[hero_set_code]
+	var obligation = obligations.get(hero_set_code, null)
 	return obligation
 
 
@@ -1136,6 +1149,8 @@ func get_cache_filename(filename):
 	return cached_filename	
 
 func load_script_definition_from_cache(script_file) -> Dictionary:
+	if CFConst.DEBUG_DISABLE_SCRIPT_DATABASE_CACHE:
+		return {}
 	if ! _is_md5_equal_to_cache(script_file):
 		return {}	
 	var cached_filename = get_cache_filename(script_file)
@@ -1221,7 +1236,7 @@ func load_script_definitions() -> void:
 					var card_id = card_data["_code"]
 					if not combined_scripts.get(card_id):  #this ensures the first data that was read gets precedence
 						var script_data = json_card_data[card_name]
-						combined_scripts[card_id]	= script_data	
+						combined_scripts[card_id]	= script_data.duplicate(true)	
 		
 	#once everything is loaded, fill the script of cards that are duplicates
 	#we only fill with duplicate data if we don't already have info on this card
@@ -1229,7 +1244,7 @@ func load_script_definitions() -> void:
 		var duplicate_of = duplicates[card_id]
 		if not combined_scripts.get(card_id):
 			var duplicate_data = combined_scripts.get(duplicate_of, {})	
-			combined_scripts[card_id] = duplicate_data		
+			combined_scripts[card_id] = duplicate_data.duplicate(true)	
 
 	for card_id in card_definitions.keys():
 		var card_script = script_overrides.get_scripts(combined_scripts, card_id)
@@ -1395,14 +1410,17 @@ func instance_ghost_card(original_card, controller_id) -> Card:
 	#var owner_id = original_card.get_owner_hero_id()
 	var card = ._instance_card(card_id)
 	card.set_script(load("res://src/wc/GhostCard.gd"))
-	card.canonical_name = card_definitions[card_id]["Name"]
-	card.canonical_id = card_id	
-	card.set_real_card(original_card)
+
 	#TODO We set GUID here in the hope that all clients create their cards in the exact 
 	#same order. This might be a very flawed assertion could need a significant overhaul	
 	var _tmp = guidMaster.set_guid(card)
 	card.init_owner_hero_id(controller_id)
 	card.set_controller_hero_id(controller_id)	
+
+	card.canonical_name = card_definitions[card_id]["Name"]
+	card.canonical_id = card_id	
+	card.set_real_card(original_card)	
+	
 	return card
 
 func instance_card(card_id: String, owner_id:int) -> Card:
@@ -1420,6 +1438,7 @@ func instance_card(card_id: String, owner_id:int) -> Card:
 		var _tmp = guidMaster.set_guid(card)
 	card.init_owner_hero_id(owner_id)
 	card.set_controller_hero_id(owner_id)
+	
 	return card
 
 var _unique_cards_count = 0
@@ -1770,6 +1789,11 @@ func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		FLUSH_LOG()
 	
-func quit_game() -> void:
+func quit_game() -> void:	
 	.quit_game()
-	gameData.cleanup_post_game()		
+	gameData.cleanup_post_game()
+	
+	print_debug("printing Stray nodes:")	
+	cfc.print_stray_nodes()	
+	print_debug("End of Stray nodes")		
+	

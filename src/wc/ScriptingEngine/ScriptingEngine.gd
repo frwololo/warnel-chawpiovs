@@ -706,7 +706,7 @@ func receive_damage(script: ScriptTask) -> int:
 		
 		var excess_damage = int(max(amount - remaining_damage, 0))	
 
-		if ("plus_1_if_excess" in tags):
+		if ("plus_1_if_excess" in tags) and excess_damage:
 			amount+= 1
 			
 		retcode = card.tokens.mod_token("damage",
@@ -1405,16 +1405,17 @@ func draw_boost_card(script:ScriptTask) ->int:
 	var retcode = CFConst.ReturnCode.CHANGED
 	
 	if !script.subjects:
-		retcode = CFConst.ReturnCode.FAILED
-
-	#TODO
-	if (costs_dry_run()):
-		return retcode	
+		return CFConst.ReturnCode.FAILED
 	
 	var amount = 1
-	var script_amount = script.retrieve_integer_property("amount")
-	if script_amount:
-		amount = script_amount
+	if script.script_definition.has("amount"):
+		amount = script.retrieve_integer_property("amount")
+
+	if !amount:
+		return CFConst.ReturnCode.FAILED
+
+	if (costs_dry_run()):
+		return retcode	
 
 	var src_container = script.get_property(SP.KEY_SRC_CONTAINER, "")
 	
@@ -1567,6 +1568,8 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 	transfer_default_damage_properties(_script, script)
 	
 	var defender = script.subjects[0] if script.subjects else null
+	var defender_type = defender.get_property("type_code") if defender else ""
+	
 	var my_hero:Card
 
 	if target_hero_id:
@@ -1587,6 +1590,8 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 
 			
 	if defender:
+		if defender_type == "ally":
+			my_hero = defender.get_controller_hero_card()
 		var damage_reduction = defender.get_property("defense", 0)
 		amount = max(amount-damage_reduction, 0)
 		if damage_reduction and (amount == 0):
@@ -1605,7 +1610,6 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 		_add_pre_receive_damage_on_stack (amount, script, script_modifications)
 	
 	if defender and (script.has_tag("overkill") or attacker.get_property("overkill", 0, true)):
-		var defender_type = defender.get_property("type_code")
 		if defender_type in ["minion", "ally"]:
 			overkill_amount = amount - defender.get_remaining_damage()
 			overkill_amount = max(0, overkill_amount)
@@ -2535,6 +2539,10 @@ func add_script(script: ScriptTask) -> int:
 			var subscript_id = subject.add_extra_script( subscript, my_hero_id)
 			if (end_condition):
 					gameData.theGameObserver.add_script_removal_effect(script, subject, subscript_id, end_condition)
+
+	if subscript.has("alterants"):
+		cfc.flush_cache(true)
+	
 	
 	return retcode		
 

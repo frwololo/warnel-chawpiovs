@@ -121,6 +121,9 @@ margin_right = 40.0
 margin_bottom = 40.0
 theme = ExtResource( 12 )
 
+[node name="Garbage" type="Control" parent="."]
+visible = false
+
 [connection signal="toggled" from="Debug" to="." method="_on_Debug_toggled"]
 [connection signal="pressed" from="OptionsButton" to="." method="_on_OptionsButton_pressed"]
 [connection signal="gui_input" from="ServerActivity" to="." method="_on_ServerActivity_gui_input"]

@@ -341,7 +341,7 @@
 							"end_condition": {
 								"trigger": "phase_ended",
 								"event_filters": {
-									"phase": "player"
+									"phase": "player_phase"
 								}
 							},
 							"subject": "my_identity",
@@ -5299,7 +5299,7 @@
 	"Regenerative Research": {
 		"phase_ended": {
 			"event_filters": {
-				"phase": "player"
+				"phase": "player_phase"
 			},
 			"board": [
 				{
@@ -7560,7 +7560,7 @@
 	"The Lizard": {
 		"phase_ended": {
 			"event_filters": {
-				"phase": "player"
+				"phase": "player_phase"
 			},
 			"board": [
 				{

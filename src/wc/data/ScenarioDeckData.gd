@@ -404,7 +404,11 @@ func get_encounter_deck():
 	for hero in gameData.team.values():
 		var hero_data = hero["hero_data"]
 		var obligation_card = cfc.get_hero_obligation(hero_data.get_hero_id())
-		encounter_deck.push_back(obligation_card)
+		if obligation_card:
+			encounter_deck.push_back(obligation_card)
+		else:
+			print_debug("missing obligation card for " + hero_data.get_hero_card_data()["Name"])
+	
 	return encounter_deck
 
 #

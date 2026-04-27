@@ -1,0 +1,145 @@
+{
+	"_comments": "Bug: Rogue Vessel not doing any damage",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}
+			],
+			"villain": [
+				{
+					"card": "Drang - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Terrestrial Invasion",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01056"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Badoon Ship",
+					"tokens": {
+						"barrage": 1
+					}
+				},
+				{
+					"card": "Rogue Vessel"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "wait for player turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"villain": [
+				{
+					"card": "Drang - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Terrestrial Invasion",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Armored Guard"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01056"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Badoon Ship",
+					"tokens": {
+						"barrage": 1
+					}
+				},
+				{
+					"card": "Rogue Vessel"
+				}
+			]
+		}
+	}
+}

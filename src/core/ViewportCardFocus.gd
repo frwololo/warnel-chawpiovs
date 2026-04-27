@@ -52,8 +52,8 @@ func _ready():
 	focus_info.setup()
 	
 	if vbc_position_mode:
-		$VBC.remove_child(card_focus)
-		$VBC.remove_child(focus_info)
+		card_focus.queue_free()
+		focus_info.queue_free()
 
 func reposition_vbc():
 	var mouse_pos: Vector2
@@ -174,7 +174,7 @@ func garbage_collection():
 	# The below performs some garbage collection on previously focused cards.
 	var to_delete = []
 	for c in _previously_focused_cards:
-		if not is_instance_valid(_previously_focused_cards[c]):
+		if not is_instance_valid(_previously_focused_cards[c]) or not is_instance_valid(c):
 			to_delete.append(c)
 			continue
 		var current_dupe_focus: Card = _previously_focused_cards[c]
@@ -189,7 +189,10 @@ func garbage_collection():
 			if vbc_position_mode or not $VBC/Focus/Tween.is_active():
 				current_dupe_focus.visible = false
 	for c in to_delete:
-		var _found = _previously_focused_cards.erase(c)
+		var dupe = _previously_focused_cards[c]
+		if is_instance_valid(dupe):
+			dupe.queue_free()
+		var _found = _previously_focused_cards.erase(c)	
 
 # Displays the card closeup in the Focus viewport
 func focus_card(card: Card, show_preview := true) -> void:
@@ -218,6 +221,7 @@ func focus_card(card: Card, show_preview := true) -> void:
 		else:
 			dupe_focus = card.duplicate(DUPLICATE_USE_INSTANCING)
 			dupe_focus.is_duplicate_of = card
+			dupe_focus.name = dupe_focus.name + "-VBC"
 			dupe_focus.remove_from_group("cards")
 			_extra_dupe_preparation(dupe_focus, card)
 			# We display a "pure" version of the card
@@ -226,7 +230,7 @@ func focus_card(card: Card, show_preview := true) -> void:
 			
 			#remove unecessary children
 			if dupe_focus.targeting_arrow:
-				dupe_focus.remove_child(dupe_focus.targeting_arrow)
+				dupe_focus.targeting_arrow.queue_free()
 			if vbc_position_mode:
 				dupe_focus.set_position(Vector2(0,0))						
 				$VBC.add_child(dupe_focus)
@@ -252,11 +256,12 @@ func focus_card(card: Card, show_preview := true) -> void:
 				c.visible = true
 		# If the card is facedown, we don't want the info panels
 		# giving away information
-		if not dupe_focus.is_faceup:
-			focus_info.visible = false
-		else:
-			cfc.ov_utils.populate_info_panels(card,focus_info)
-			focus_info.visible = true
+		if is_instance_valid(focus_info):
+			if not dupe_focus.is_faceup:
+				focus_info.visible = false
+			else:
+				cfc.ov_utils.populate_info_panels(card,focus_info)
+				focus_info.visible = true
 		# We store all our previously focused cards in an array, and clean them
 		# up when they're not focused anymore
 		_previously_focused_cards[card] = dupe_focus
@@ -350,7 +355,8 @@ func unfocus_all() -> void:
 func _extra_dupe_preparation(dupe_focus: Card, card: Card) -> void:
 	dupe_focus.canonical_name = card.canonical_name
 	dupe_focus.properties = card.properties.duplicate()
-	focus_info.hide_all_info()
+	if is_instance_valid(focus_info):
+		focus_info.hide_all_info()
 
 
 # Overridable function for games to extend processing of dupe card

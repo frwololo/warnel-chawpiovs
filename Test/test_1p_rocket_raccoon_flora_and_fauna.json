@@ -1,0 +1,172 @@
+{
+	"_comments": "Bug: Flora and Fauna cost",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}				
+			],
+			"villain": [
+				{
+					"card": "Drang - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Terrestrial Invasion",
+					"tokens": {"threat": 2}					
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"allies1": [
+				{
+					"card": "Groot #16047"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Rocket's Pistol",
+					"exhausted": true,
+				}
+			],			
+			"hand1": [
+				{
+					"card": "Flora and Fauna",
+				},
+				{
+					"card": "Chase them down",
+				}				
+			],
+			"villain_misc": [
+				{
+					"card": "Badoon Ship",
+					"tokens": {"barrage": 1}
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "play",
+			"value": "Flora and Fauna",
+		},	
+		{
+			"type": "choose",
+			"value": "Rocket Raccoon",
+		},	
+		{
+			"type": "target",
+			"value": "Rocket's Pistol",
+		},		
+		{
+			"type": "activate",
+			"value": "Rocket's Pistol",
+		},
+		{
+			"type": "target",
+			"value": "Drang",
+		},			
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}				
+			],
+			"villain": [
+				{
+					"card": "Drang - 1",
+					"tokens": {"damage": 2}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Terrestrial Invasion",
+					"tokens": {"threat": 2}					
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"allies1": [
+				{
+					"card": "Groot #16047"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Rocket's Pistol",
+					"tokens": {"charge": 1},
+					"exhausted": true
+				}
+			],			
+			"discard1": [
+				{
+					"card": "Chase them down",
+				},			
+				{
+					"card": "Flora and Fauna",
+				},
+				
+			],
+			"villain_misc": [
+				{
+					"card": "Badoon Ship",
+					"tokens": {"barrage": 1}
+				}
+			]
+		}
+	}
+}

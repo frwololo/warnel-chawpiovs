@@ -150,8 +150,8 @@ func initiate_selection(_card_array: Array) -> void:
 
 	
 	for c in _card_grid.get_children():
-		#c.queue_free()
-		remove_child(c)
+		c.queue_free()
+		#remove_child(c)
 	# We use this to quickly store a copy of a card object to use to get
 	# the card sizes for adjusting the size of the popup
 	var card_sample: Card
@@ -180,13 +180,7 @@ func initiate_selection(_card_array: Array) -> void:
 			current_parent = card.get_parent()
 			
 			dupe_selection = card.get_duplicate()
-#			dupe_selection = card.duplicate(DUPLICATE_USE_INSTANCING)
-#			# This prevents the card from being scripted with the
-#			# signal propagator and other things going via groups
-#			dupe_selection.remove_from_group("cards")
-#			dupe_selection.canonical_name = card.canonical_name
-#			dupe_selection.canonical_id = card.canonical_id
-#			dupe_selection.properties = card.properties.duplicate()
+
 		card_sample = dupe_selection
 		var card_grid_obj = grid_card_object_scene.instance()
 		_card_grid.add_child(card_grid_obj)

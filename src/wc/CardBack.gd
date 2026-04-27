@@ -58,4 +58,4 @@ func set_card_art(filename) -> void:
 	$TextureRect2.visible = false
 	stop_card_back_animation()
 	if CFConst.PERFORMANCE_HACKS:
-		remove_child($TextureRect2)
+		$TextureRect2.queue_free()

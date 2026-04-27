@@ -1,0 +1,140 @@
+{
+	"_comments": "Bug: Badoon Assassin doesn't get attack boost",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Badoon Assassin"
+				}					
+			],
+			"villain": [
+				{
+					"card": "Drang - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Terrestrial Invasion",
+					"tokens": {"threat": 2}					
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"hand1": [
+				{
+					"card": "01056",
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Badoon Ship",
+					"tokens": {"barrage": 1}
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack"
+		},	
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "wait for player turn"
+		},			
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				},					
+			],
+			"villain": [
+				{
+					"card": "Drang - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Terrestrial Invasion",
+					"tokens": {"threat": 2}					
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a",
+					"tokens": {"damage": 3}
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"enemies1": [
+				{
+					"card": "Badoon Assassin"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01056",
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Badoon Ship",
+					"tokens": {"barrage": 1}
+				}
+			]
+		}
+	}
+}

@@ -638,7 +638,7 @@ const AUTO_KEYWORDS := {
 	"quickstrike" : "bool",
 	"ranged" : "bool",
 	"requirement" : "string",
-	"restricted" : "bool",
+	"restricted" : "int",
 	"retaliate" : "int",
 	"setup" : "bool",
 	"stalwart" : "int",
@@ -901,6 +901,7 @@ const FORCE_LOGS:= false
 const DESYNC_TIMEOUT:= 5
 const DISPLAY_DEBUG_MSG = false
 
+const DEBUG_DISABLE_SCRIPT_DATABASE_CACHE = false
 const DEBUG_AUTO_START_MULTIPLAYER = false
 
 const DEBUG_ENABLE_NETWORK_TEST = false

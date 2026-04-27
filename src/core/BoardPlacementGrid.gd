@@ -68,8 +68,10 @@ func _card_added(card):
 func _card_removed(card):
 	if (auto_extend):
 		var empty_slots = get_available_slots()
-		for empty_slot in empty_slots:
-			$GridContainer.remove_child(empty_slot)
+		#keep at least 1 available
+		for i in (empty_slots.size() - 1):
+			var empty_slot = empty_slots[i]
+			empty_slot.queue_free()
 	pass
 
 

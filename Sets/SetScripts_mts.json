@@ -2488,7 +2488,7 @@
 	"Focused Defense": {
 		"phase_ended": {
 			"event_filters": {
-				"phase": "player"
+				"phase": "player_phase"
 			},
 			"board": [
 				{
@@ -6372,7 +6372,7 @@
 		},
 		"phase_ended": {
 			"event_filters": {
-				"phase": "player"
+				"phase": "player_phase"
 			},
 			"board": [
 				{

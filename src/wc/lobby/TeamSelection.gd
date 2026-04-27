@@ -462,6 +462,7 @@ func load_scenario_options(_scenario_id):
 	_scenario_options = {}
 	for child in container.get_children():
 		container.remove_child(child)
+		child.queue_free()
 		
 	for option_data in ScenarioDeckData.get_scenario_options(_scenario_id):
 		#integrity check

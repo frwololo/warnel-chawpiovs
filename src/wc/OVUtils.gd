@@ -268,11 +268,16 @@ static func func_name_run(object, func_name, func_params, script = null):
 			continue
 		comparison = comparison_str
 		comparison_value = func_name.substr(str_position + comparison_str.length())
-		func_name = func_name.substr(0, str_position)
-		if script:
+		if comparison_value.is_valid_integer():
+			comparison_value = int(comparison_value)
+		elif script:
 			comparison_value = script.retrieve_integer_property(comparison_value)
-		comparison_value = int(comparison_value)
+		else:
+			print_debug("error in script for " + func_name)
+			comparison_value = 0
 		
+		func_name = func_name.substr(0, str_position)
+		break
 	var result = object.call(func_name, func_params, script)
 
 

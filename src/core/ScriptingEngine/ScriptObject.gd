@@ -565,6 +565,15 @@ func _index_seek_subjects(stored_integer: int) -> Array:
 	#var src_containers:Array = get_all_containers(src_container_names)
 	#var first_container: CardContainer = src_containers[0]
 	var all_cards = get_all_cards_from_containers(src_container_names)
+	
+	#validity check
+	var to_remove = []	
+	for c in all_cards:
+		if !SP.check_validity(c, script_definition, "index", owner):
+			to_remove.append(c)
+	for c in to_remove:
+		all_cards.erase(c)
+	
 	var index = get_property(SP.KEY_SUBJECT_INDEX)
 	if str(index) == SP.KEY_SUBJECT_INDEX_V_TOP:
 		# We use the CardContainer functions, inctead of the Piles ones

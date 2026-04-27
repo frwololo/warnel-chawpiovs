@@ -17,6 +17,9 @@ const _OPTIONAL_CONFIRM_SCENE = preload(_OPTIONAL_CONFIRM_SCENE_FILE)
 # Populates the info panels under the card, when it is shown in the
 # viewport focus or deckbuilder
 func populate_info_panels(card: Card, focus_info: DetailPanels) -> void:
+	if !is_instance_valid(focus_info):
+		return
+		
 	focus_info.hide_all_info()
 	var card_illustration = card.get_property("_illustration")
 	if card_illustration:

@@ -14,7 +14,7 @@ var my_name
 var box_type = BOX_TYPES.HORIZONTAL
 var my_children:= []
 var my_absolute_position: Vector2
-var my_size: Vector2
+var my_size:= Vector2(1,1)
 var my_scale: float = 1
 
 #to compute scale
@@ -47,8 +47,8 @@ func setup(def:Dictionary, hero_id, _scale = 0):
 	if hero_id:
 		hero_id_str = str(hero_id)
 
-	var width = def.get("width", 0)
-	var height = def.get("height", 0)
+	var width = def.get("width", 1)
+	var height = def.get("height", 1)
 	my_size = Vector2(width, height)
 
 	var max_width = def.get("max_width", 0)
@@ -57,8 +57,8 @@ func setup(def:Dictionary, hero_id, _scale = 0):
 	var max_height = def.get("max_height", 0)
 	max_size = Vector2(max_width, max_height)
 
-	var min_width = def.get("min_width", 0)
-	var min_height = def.get("min_height", 0)
+	var min_width = def.get("min_width", 1)
+	var min_height = def.get("min_height", 1)
 	min_size = Vector2(min_width, min_height)
 	
 	var children = def.get("children", [])
@@ -71,24 +71,26 @@ func setup(def:Dictionary, hero_id, _scale = 0):
 				new_child.setup(child, hero_id, my_scale)
 			"pile":
 				var _tmp = cfc.NMAP
-				new_child = cfc.NMAP[child.get("name", "") + hero_id_str]
-				new_child.faceup_cards = child.get("faceup", new_child.faceup_cards)
-				new_child.can_view_if_faceup = child.get("can_view", new_child.can_view_if_faceup)
+				new_child = cfc.NMAP.get(child.get("name", "") + hero_id_str, null)
+				if new_child:
+					new_child.faceup_cards = child.get("faceup", new_child.faceup_cards)
+					new_child.can_view_if_faceup = child.get("can_view", new_child.can_view_if_faceup)
 			"grid":
 				new_child = cfc.NMAP.board.get_grid(child.get("name", "") + hero_id_str)
 			_:
 				new_child = null
-		var child_data = {
-			"name": child.get("name", "") + hero_id_str,
-			"absolute_position": Vector2(0, 0),			
-			"position": Vector2(0, 0),
-			"size": Vector2(0,0),
-			"scale" : child.get("scale", 1),
-			"cards_to_display": 0,
-			"item" : new_child,
-			"type" : type,
-		}
-		my_children.append(child_data)
+		if new_child:		
+			var child_data = {
+				"name": child.get("name", "") + hero_id_str,
+				"absolute_position": Vector2(0, 0),			
+				"position": Vector2(0, 0),
+				"size": Vector2(0,0),
+				"scale" : child.get("scale", 1),
+				"cards_to_display": 0,
+				"item" : new_child,
+				"type" : type,
+			}
+			my_children.append(child_data)
 
 
 func compute_spacer_size(child_data):
@@ -100,7 +102,7 @@ func compute_spacer_size(child_data):
 func compute_pile_size(child_data):
 	var child = child_data["item"]
 	if !child as Pile:
-		return Vector2(0,0)	
+		return Vector2(1,1)	
 		
 	var new_scale = my_scale * child_data["scale"] 
 
@@ -114,7 +116,7 @@ func compute_pile_size(child_data):
 func compute_grid_size(child_data):	
 	var child = child_data["item"]
 	if !child as BoardPlacementGrid:
-		return Vector2(0,0)
+		return Vector2(1,1)
 	
 	var cards = child.get_all_cards()
 	if !cards:
@@ -134,11 +136,13 @@ func compute_grid_size(child_data):
 
 
 func compute_hbox_min_size() -> Vector2:
-	var size = Vector2(0, 0)
+	var size = Vector2(1, 1)
 	
 	for child_data in my_children:
 		child_data["position"] = Vector2(size.x, 0)
 		var child = child_data["item"]
+		if !is_instance_valid(child):
+			continue
 		if child as BoardPlacementGrid:
 			var child_size = compute_grid_size(child_data)
 			child_data["size"] = child_size
@@ -166,6 +170,8 @@ func compute_vbox_min_size() -> Vector2:
 	
 	for child_data in my_children:
 		var child = child_data["item"]
+		if !is_instance_valid(child):
+			continue
 		child_data["position"] = Vector2(0, size.y)
 		if child as BoardPlacementGrid:
 			var child_size = compute_grid_size(child_data)
@@ -199,11 +205,15 @@ func compute_min_size() -> Vector2:
 			return my_size	
 		_:
 			#error
-			return Vector2(0,0)
+			return Vector2(1,1)
 
 func compute_allowed_scale():
 	#we assume min_size has been computed before this!!!
 	var final_scale = 1
+	
+	if !my_size.x or !my_size.y:
+		var _error = 1
+		return final_scale
 	
 	var _min_size = min_size #* my_scale
 	var _max_size = max_size #* my_scale
@@ -230,6 +240,8 @@ func rescale():
 	var scale = compute_allowed_scale()
 	for child_data in my_children:
 		var child = child_data["item"]
+		if !is_instance_valid(child):
+			continue
 		if child as BoardPlacementGrid:
 			if child.get_all_cards():
 				child_data["rescale"] = scale	
@@ -250,6 +262,8 @@ func reposition_children():
 	for child_data in my_children:
 		child_data["absolute_position"] = current_position 
 		var child = child_data["item"]
+		if !is_instance_valid(child):
+			continue
 		if child as BoardPlacementGrid:
 			pass
 		elif child as Pile:			
@@ -270,6 +284,8 @@ func reposition_children():
 func display_new_positions():		
 	for child_data in my_children:
 		var child = child_data["item"]
+		if !is_instance_valid(child):
+			continue
 		var new_position = child_data["absolute_position"]
 		var rescale = child_data.get("rescale", 1)
 		if child as BoardPlacementGrid:

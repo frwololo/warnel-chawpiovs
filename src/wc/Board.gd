@@ -220,8 +220,10 @@ func get_hero_grid_start_coordinates():
 
 func erase_grids_and_piles():
 	for container in current_containers:
-		cfc.unmap_node(container)		
-		self.remove_child(container)
+		cfc.unmap_node(container)
+		remove_child(container)
+#		#to avoid them showing up in stray nodes...
+		$Garbage.add_child(container)				
 		container.queue_free()
 	current_containers = []
 	_cached_pile_data = {}
@@ -621,7 +623,9 @@ func init_hero_zones():
 	if hero_count == heroZones.size():
 		return
 	while hero_count < heroZones.size():
-		heroZones.erase(heroZones.size())
+		var last_index = heroZones.size()
+		heroZones[last_index].queue_free()
+		heroZones.erase(last_index)
 	
 	while hero_count > heroZones.size():
 		var index = heroZones.size()+1
@@ -666,8 +670,9 @@ func get_all_cards(include_piles = false) -> Array:
 			var grid_info = hero_grid_setup[grid_name]
 			var real_grid_name = grid_name + str(hero_id)		
 			if "pile" == grid_info.get("type", ""):
-				var pile:Pile = cfc.NMAP[real_grid_name]
-				cardsArray += pile.get_all_cards()
+				var pile:Pile = cfc.NMAP.get(real_grid_name, null)
+				if pile:
+					cardsArray += pile.get_all_cards()
 	
 	return cardsArray		
 
@@ -725,6 +730,7 @@ func reset_board():
 	_hero_grid_layout_cache = {}
 	_on_load_called = {}
 	gameData.stop_game()
+	CVGridCardObject.queue_free_cache()
 	delete_all_cards()
 	_team_size = 0
 	villain.reset()
@@ -736,11 +742,11 @@ func server_activity(on = true):
 	pass
 
 func delete_all_cards():
-	
 	#delete everything on board and grids
 	var cards:Array = get_all_cards()
 	for obj in cards:
 		remove_child(obj)
+		$Garbage.add_child(obj)
 		obj.queue_free()
 		
 	#delete everything in hands	
@@ -1066,8 +1072,8 @@ func are_cards_still_animating(check_everything:bool = true) -> bool:
 	for grid_name in GRID_SETUP.keys():
 		var grid_info = GRID_SETUP[grid_name]
 		if "pile" == grid_info.get("type", ""):
-			var pile:Pile = cfc.NMAP[grid_name]
-			if (pile.are_cards_still_animating()):
+			var pile:Pile = cfc.NMAP.get(grid_name, null)
+			if (pile and pile.are_cards_still_animating()):
 				return true
 	#hero piles
 	var hero_grid_setup = get_hero_grid_setup()		
@@ -1077,8 +1083,8 @@ func are_cards_still_animating(check_everything:bool = true) -> bool:
 			var grid_info = hero_grid_setup[grid_name]
 			var real_grid_name = grid_name + str(hero_id)		
 			if "pile" == grid_info.get("type", ""):
-				var pile:Pile = cfc.NMAP[real_grid_name]
-				if (pile.are_cards_still_animating()):
+				var pile:Pile = cfc.NMAP.get(real_grid_name, null)
+				if (pile and pile.are_cards_still_animating()):
 					return true					
 			
 	return(false)				
@@ -1277,7 +1283,7 @@ func flip_doublesided_card(card:WCCard):
 			gameData.set_aside(card) #is more required to remove it?		
 			#new_card._determine_idle_state()
 			#new_card.move_to(cfc.NMAP.board, -1, slot)	
-			if slot:
+			if is_instance_valid(slot):
 				new_card.position = slot.rect_global_position
 				slot.set_occupying_card(new_card)
 			new_card.set_state(Card.CardState.ON_PLAY_BOARD)
@@ -1554,8 +1560,9 @@ func enable_focus_mode(cards = null, default_grab = null):
 		for pile_name in pile_data:
 			var pile_info = pile_data[pile_name]
 			if pile_info.get("focusable", true):
-				var pile = cfc.NMAP[pile_name]
-				pile.enable_focus_mode()
+				var pile = cfc.NMAP.get(pile_name, null)
+				if pile:
+					pile.enable_focus_mode()
 				
 		#Hero faces	
 		for i in range(gameData.get_team_size()):

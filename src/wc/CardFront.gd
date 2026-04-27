@@ -93,7 +93,7 @@ func _enable_texture(texture):
 	# In case the generic art has been modulated, we switch it back to normal colour
 	art.self_modulate = Color(1,1,1)
 	if CFConst.PERFORMANCE_HACKS:
-		remove_child($Margin)
+		$Margin.queue_free()
 		text_enabled = false	
 
 func card_image_download_complete(_card_id):

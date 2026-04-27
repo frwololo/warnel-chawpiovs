@@ -1,0 +1,259 @@
+{
+	"_comments": "Tests Overkill in 2P mode when defending with the other player's ally",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {
+						"stunned": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "advance"
+				},
+				{
+					"card": "Caught off guard"
+				},
+				{
+					"card": "hydra mercenary"
+				},
+				{
+					"card": "hydra soldier"
+				},
+				{
+					"card": "Gang-Up"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"others": [
+				{
+					"card": "Charge",
+					"host": "01094"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Black Cat"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy Absorption"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Hawkeye - Clint Barton"
+				},
+				{
+					"card": "Make the call"
+				},
+				{
+					"card": "Lead from the front"
+				},
+				{
+					"card": "The Triskelion"
+				},
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"hand2": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "Black Cat",
+			"hero": 2,
+			"_comments": "Spider-Man defends with Black Cat on behalf of Captain Marvel"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "wait until player turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Gang-Up"
+				},
+				{
+					"card": "Charge",
+				}				
+			],
+			"deck_villain": [
+				{
+					"card": "advance"
+				},
+				{
+					"card": "Caught off guard"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "hydra soldier"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Black Cat"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {
+						"damage": 5
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy Absorption"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Hawkeye - Clint Barton"
+				},
+				{
+					"card": "Make the call"
+				},
+				{
+					"card": "Lead from the front"
+				},
+				{
+					"card": "The Triskelion"
+				},
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"enemies2": [
+				{
+					"card": "hydra mercenary"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"hand2": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	}
+}

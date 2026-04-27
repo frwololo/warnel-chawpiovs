@@ -46,6 +46,7 @@ func _ready():
 	if items:
 		for child in menu.get_children():
 			menu.remove_child(child)
+			child.queue_free()
 	title_label.text = title
 	var i = 0
 	for item in items:

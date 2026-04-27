@@ -1,0 +1,155 @@
+{
+	"_comments": "Bug: Restricted Rule not working",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}				
+			],
+			"villain": [
+				{
+					"card": "Drang - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Terrestrial Invasion",
+					"tokens": {"threat": 2}					
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"upgrade_support1": [
+				{
+					"card": "Rocket's Pistol"
+				},
+				{
+					"card": "Particle Cannon"
+				}				
+			],
+			"hand1": [
+				{
+					"card": "Hand Cannon",
+				},
+				{
+					"card": "Strength",
+				}				
+			],
+			"villain_misc": [
+				{
+					"card": "Badoon Ship",
+					"tokens": {"barrage": 1}
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "play",
+			"value": "Hand Cannon",
+		},	
+		{
+			"type": "select",
+			"value": "Rocket's Pistol",
+		},			
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}				
+			],
+			"villain": [
+				{
+					"card": "Drang - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Terrestrial Invasion",
+					"tokens": {"threat": 2}					
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"upgrade_support1": [
+				{
+					"card": "Particle Cannon"
+				},
+				{
+					"card": "Hand Cannon",
+				},				
+			],
+			"discard1": [
+
+				{
+					"card": "Strength",
+				},
+				{
+					"card": "Rocket's Pistol"
+				},				
+			],
+			"hand1": [
+				
+			],
+			"villain_misc": [
+				{
+					"card": "Badoon Ship",
+					"tokens": {"barrage": 1}
+				}
+			]
+		}
+	}
+}

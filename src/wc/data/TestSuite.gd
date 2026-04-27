@@ -18,11 +18,14 @@ const multiplayer_sped_up_time_between_steps: float = 0.5
 
 var time_between_tests = 0.3 #waiting between tests to clean stuff up
 #long amount of time to wait if the game state is not the one we expect
-const long_wait_time: float = 2.0 #below 2 sec fails for multiplayer
+var long_wait_time: float = 1.2 #seen some failure at 1 s
+var multiplayer_long_wait_time: float = 2.0 #below 2 sec fails for multiplayer
 #same as above but for events that require a shorter patience time
-var short_wait_time: = 0.8 #below 0.4 has had failures formultiplayer
+var short_wait_time: = 0.3 #below 0.4 has had failures formultiplayer
+var multiplayer_short_wait_time: = 0.8 #below 0.4 has had failures formultiplayer
 #amount of time to wait if the test explicitely requests it
-const max_wait_time: = 2.0
+var max_wait_time: = 1.0
+var multiplayer_max_wait_time = 2.0
 const shorten_animations = true
 const STOP_AFTER_FIRST_FAILURE = true
 var announce_verbose = false
@@ -40,7 +43,7 @@ enum TestStatus {
 }
 
 var count_delays = {}
-
+var delays_timer = {}
 
 const GRID_SETUP = CFConst.GRID_SETUP
 const HERO_GRID_SETUP = CFConst.HERO_GRID_SETUP
@@ -93,6 +96,36 @@ func count_delay(_name):
 
 	count_delays[_name] += 1	
 		
+func start_timer(func_name):
+	if !delays_timer.has(func_name):
+		delays_timer[func_name] = {}
+	
+	if delays_timer[func_name].get("start_time",0):
+		return
+	
+	delays_timer[func_name]["start_time"] = OS.get_ticks_msec()
+	
+	
+func stop_timer(func_name):
+	if !delays_timer.has(func_name):
+		delays_timer[func_name] = {}
+			
+	var start_time = delays_timer[func_name].get("start_time",0)
+	if !start_time:
+		return	
+	
+	var end_time = 	OS.get_ticks_msec()
+	
+	if !delays_timer[func_name].has("total"):
+		delays_timer[func_name]["total"] = 0
+	
+	if !delays_timer[func_name].has("time"):
+		delays_timer[func_name]["time"] = 0
+		
+	delays_timer[func_name]["total"] += 1
+	delays_timer[func_name]["time"]+= (end_time - start_time)
+	delays_timer[func_name]["start_time"] = 0
+		
 
 func _init():
 	scripting_bus.connect("all_clients_game_loaded", self, "all_clients_game_loaded")
@@ -103,6 +136,7 @@ func _init():
 	create_text_edit()
 
 func reset_between_tests():
+	start_timer("reset_between_tests")
 	cfc.set_game_paused(true)
 	display_debug("reset_between_tests")
 	#force close any open window:
@@ -138,7 +172,8 @@ func reset_between_tests():
 		
 		
 	cfc.set_game_paused(false)
-
+	stop_timer("reset_between_tests")
+	
 remotesync func set_random_seed(my_seed, my_state):
 	cfc.LOG("setting random seed to " + str(my_seed) + ", state " + str(my_state))
 	cfc.set_seed(my_seed, my_state)
@@ -150,6 +185,8 @@ func reset():
 		text_edit.text = ""
 
 	count_delays = {}
+	delays_timer = {}
+	
 	reset_between_tests()
 
 	test_files = []
@@ -206,6 +243,7 @@ func create_text_edit():
 
 
 func announce(text:String, include_test_number:= true):
+	start_timer("announce")
 	if include_test_number:
 		if !announce_verbose:
 			var found = false
@@ -214,14 +252,19 @@ func announce(text:String, include_test_number:= true):
 					found = true
 					break
 			if !found:
+				stop_timer("announce")
 				return
 		text = str(current_test) + "/"+ str(test_files.size()) +"-" + text
+	if text_edit.text.length() > 2000:
+		text_edit.text = ""
+		
 	text_edit.text += text
 	text_edit.text = text_edit.text	
 	var last_line = text_edit.get_line_count() - 1
 	text_edit.cursor_set_line(last_line)
 	text_edit.center_viewport_to_cursor()
-
+	
+	stop_timer("announce")
 	
 
 #Gathers GUI objects from the game that we will be calling
@@ -229,7 +272,12 @@ func initialize_components():
 	phaseContainer = gameData.phaseContainer
 	initialized = true
 
-func _process(_delta: float) -> void:		
+func _process(_delta: float) -> void:
+	start_timer("_process")
+	_timed_process(_delta)
+	stop_timer("_process")
+
+func _timed_process(_delta: float) -> void:			
 	if (finished):
 		return
 	
@@ -261,8 +309,10 @@ func _process(_delta: float) -> void:
 		return
 
 	delta += _delta
-		
+	
+	start_timer("next_action")	
 	next_action()		
+	stop_timer("next_action")
 	return	
 
 func get_delay_multiplier(my_action = {}):
@@ -452,11 +502,6 @@ func next_action():
 	var action_type = my_action.get("type", "")
 	var action_value = my_action.get("value", "")
 
-#	if (action_type != "target" and gameData.targeting_happened_too_recently()):
-#		return
-	
-#	if should_wait(my_action, delta):
-#		return
 			
 
 	delta = 0
@@ -551,10 +596,12 @@ remotesync func run_action(my_action:Dictionary,  skip_play_tests:= false):
 	display_debug("running " + to_json(my_action))
 	var _delta = 0
 	if !skip_play_tests:
+		start_timer("should_wait")
 		while should_wait(my_action, _delta):
 			display_debug("waiting for " + to_json(my_action))
 			yield(get_tree().create_timer(0.1), "timeout")
 			_delta += 0.1
+		stop_timer("should_wait")
 	
 	display_debug("executing test step: " + to_json(my_action))
 	var action_type: String = my_action.get("type", "play")
@@ -595,9 +642,11 @@ remotesync func run_action(my_action:Dictionary,  skip_play_tests:= false):
 			var _error = 1
 			
 	_delta = 0
+	start_timer("should_wait_after_action")
 	while should_wait_after_action(my_action, _delta):
 		yield(get_tree().create_timer(0.1), "timeout")
-		_delta += 0.1			
+		_delta += 0.1
+	stop_timer("should_wait_after_action")				
 	cfc._rpc_id(self,1, "action_complete")
 
 	var new_rng_state = cfc.game_rng.state
@@ -762,6 +811,21 @@ func get_card(card_id_or_name:String, requesting_hero_id):
 			continue
 		if c.canonical_id == card_id:
 			return c
+	
+	#Try to search by name on the board:
+	var found = cfc.NMAP.board.find_card_by_name(card_id_or_name)
+	if found:
+		return found
+		
+	#try by including piles
+	found = cfc.NMAP.board.find_card_by_name(card_id_or_name, false, true)
+	if found:
+		return found
+
+	#try by including back of cards
+	found = cfc.NMAP.board.find_card_by_name(card_id_or_name, true, true)
+	if found:
+		return found
 	
 	return null
 
@@ -974,10 +1038,13 @@ func load_test_files():
 	if (adapt_speed_to_number_of_tests):
 		if (test_files.size() >= 5) :
 			min_time_between_steps = sped_up_time_between_steps
-			if gameData.is_multiplayer_game:
-				min_time_between_steps = multiplayer_sped_up_time_between_steps
 		if (test_files.size() < 2):
 			announce_verbose = true
+	if gameData.is_multiplayer_game:
+		min_time_between_steps = multiplayer_sped_up_time_between_steps
+		long_wait_time = multiplayer_long_wait_time
+		short_wait_time = multiplayer_short_wait_time
+		max_wait_time = multiplayer_max_wait_time			
 	file.close()		
 
 #Lightweight initialize remote clients with just enough data for them to run the final state comparison
@@ -1041,7 +1108,10 @@ func load_test(test_file)-> bool:
 	json_card_data = WCUtils.replace_real_to_int(json_card_data)
 	WCUtils.erase_key_recursive(json_card_data, "_comments")
 	
+	start_timer("test_integrity")
 	var integrity_errors = test_integrity(json_card_data)
+	stop_timer("test_integrity")
+	
 	if integrity_errors:
 		var integrity_errors_str = ""
 		for error in integrity_errors:
@@ -1131,7 +1201,9 @@ func next_test() -> bool:
 	if CFConst.DEBUG_ENABLE_NETWORK_TEST:
 		multiplier = 5
 	
+	start_timer("yield_time_between_tests")
 	yield(get_tree().create_timer(time_between_tests * multiplier), "timeout")
+	stop_timer("yield_time_between_tests")
 	reset_between_tests()
 	if (test_files.size() <= current_test):
 		finished = true
@@ -1200,6 +1272,9 @@ remotesync func save_results():
 	to_print+= "###\ntime details\n"
 	for key in count_delays:
 		to_print+= key + " - " + str(count_delays[key]) + "\n"
+
+	for key in delays_timer:
+		to_print+= key + " - " + str(delays_timer[key]["total"]) + " calls  - " +  str(delays_timer[key]["time"]) +  " ms\n"
 
 	var player = gameData.get_player_by_network_id(cfc.get_network_unique_id())
 	var player_id = player.get_id()

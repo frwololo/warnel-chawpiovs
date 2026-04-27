@@ -19,6 +19,29 @@
 					]
 				}
 			}
+		},
+		"milano_remove_threat": {
+			"manual": {
+				"board": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "Milano",
+						"is_cost": true
+					},
+					{
+						"name": "remove_threat",
+						"subject": "self",
+						"amount": 3
+					}
+				]
+			}
 		}
 	},
 	"\"I Have You Now!\"": {
@@ -494,7 +517,7 @@
 		"card_moved_to_board": {
 			"trigger": "self",
 			"condition_board": {
-				"func_name": "count_engaged_minions==1",
+				"func_name": "count_engaged_minions==0",
 				"func_params": {
 					"subject": "my_hero"
 				}
@@ -536,7 +559,7 @@
 						"if": {
 							"func_name": "current_activation_status",
 							"func_params": {
-								"type": "attack"
+								"type": "scheme"
 							}
 						},
 						"then": 2,
@@ -572,8 +595,8 @@
 								"token_name": "tough"
 							}
 						},
-						"then": 0,
-						"else": 2
+						"then": 2,
+						"else": 0
 					}
 				}
 			]
@@ -699,7 +722,7 @@
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
-						"action"
+						"action_ability"
 					]
 				},
 				{
@@ -889,20 +912,7 @@
 			"__amount__": 2,
 			"__each_player__": true
 		},
-		"manual": {
-			"board": [
-				{
-					"name": "exhaust_card",
-					"subject": "Milano",
-					"is_cost": true
-				},
-				{
-					"name": "remove_threat",
-					"subject": "self",
-					"amount": 3
-				}
-			]
-		}
+		"milano_remove_threat": {}
 	},
 	"Bombardment": {
 		"step_ended": {
@@ -917,20 +927,7 @@
 				}
 			]
 		},
-		"manual": {
-			"board": [
-				{
-					"name": "exhaust_card",
-					"subject": "Milano",
-					"is_cost": true
-				},
-				{
-					"name": "remove_threat",
-					"subject": "self",
-					"amount": 3
-				}
-			]
-		}
+		"milano_remove_threat": {}
 	},
 	"Booster Boots": {
 		"manual": {
@@ -953,7 +950,7 @@
 		"interrupt": {
 			"event_name": "receive_damage",
 			"event_filters": {
-				"damage": ">0",
+				"amount": ">0",
 				"target": "my_hero"
 			},
 			"is_optional_board": true,
@@ -1051,20 +1048,7 @@
 			"__amount__": 3,
 			"__each_player__": true
 		},
-		"manual": {
-			"board": [
-				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "Milano"
-				},
-				{
-					"name": "remove_threat",
-					"amount": 3,
-					"subject": "self"
-				}
-			]
-		}
+		"milano_remove_threat": {}
 	},
 	"Cargo Hold": {
 		"TODO": "campaign mode not supported",
@@ -1780,7 +1764,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "health",
-					"alteration": 6,
+					"alteration": 3,
 					"filter_same_controller": true,
 					"filter_state_trigger": [
 						{
@@ -2075,8 +2059,8 @@
 								"card_name": "Drang's Spear"
 							}
 						},
-						"then": 0,
-						"else": 1
+						"then": 1,
+						"else": 0
 					},
 					"subject": "villain"
 				},
@@ -2595,7 +2579,7 @@
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
-						"action"
+						"action_ability"
 					]
 				},
 				{
@@ -2753,7 +2737,7 @@
 						"name": "constraints",
 						"is_cost": true,
 						"tags": [
-							"action"
+							"action_ability"
 						],
 						"constraints": [
 							{
@@ -2784,7 +2768,7 @@
 						"name": "constraints",
 						"is_cost": true,
 						"tags": [
-							"action"
+							"action_ability"
 						],
 						"constraints": [
 							{
@@ -2826,11 +2810,10 @@
 			"__amount__": 3
 		},
 		"interrupt": {
-			"event_name": "pre_receive_damage",
+			"event_name": "attack",
 			"trigger": "my_hero",
 			"event_filters": {
 				"tags": [
-					"attack",
 					"basic power"
 				]
 			},
@@ -2858,20 +2841,20 @@
 				{
 					"name": "add_script",
 					"end_condition": "basic_attack_happened",
-					"subject": "my_hero",
+					"subject": "self",
 					"script": {
 						"alterants": {
 							"all": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "attack",
-									"trigger": "self",
+									"trigger": "my_hero",
 									"alteration": 2
 								},
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "overkill",
-									"trigger": "self",
+									"trigger": "my_hero",
 									"alteration": 1
 								}
 							]
@@ -3250,20 +3233,7 @@
 		}
 	},
 	"Interception Imminent - 1B": {
-		"manual": {
-			"board": [
-				{
-					"name": "exhaust_card",
-					"subject": "Milano",
-					"is_cost": true
-				},
-				{
-					"name": "remove_threat",
-					"subject": "self",
-					"amount": 3
-				}
-			]
-		}
+		"milano_remove_threat": {}
 	},
 	"Into the Fray": {
 		"manual": {
@@ -3279,6 +3249,7 @@
 					"name": "attack",
 					"amount": 6,
 					"subject": "target",
+					"needs_subject": true,
 					"filter_state_subject": [
 						{
 							"filter_properties": {
@@ -3591,7 +3562,6 @@
 				{
 					"name": "move_card_to_container",
 					"subject": "grab_until",
-					"is_cost": true,
 					"src_container": "deck_villain",
 					"dest_container": "discard_villain",
 					"filter_state_grab_until": [
@@ -3604,7 +3574,6 @@
 				},
 				{
 					"name": "move_card_to_board",
-					"is_cost": true,
 					"destination_grid": "enemies_my_hero",
 					"subject": "index",
 					"subject_count": 1,
@@ -3613,7 +3582,9 @@
 				},
 				{
 					"name": "thwart",
-					"amount": 3,
+					"amount": "count_previous_subjects",
+					"amount_multiplier": 3,
+					"_comments": "weird way to ensure we don't remove threat if we didn't find a minion",
 					"subject": "main_scheme"
 				}
 			]
@@ -3694,6 +3665,11 @@
 					"any_player_can_use": true
 				},
 				"Piloting": [
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
 					{
 						"name": "add_resource",
 						"amount": 1,
@@ -4175,20 +4151,7 @@
 			"__amount__": 3,
 			"__each_player__": true
 		},
-		"manual": {
-			"board": [
-				{
-					"name": "exhaust_card",
-					"subject": "Milano",
-					"is_cost": true
-				},
-				{
-					"name": "remove_threat",
-					"subject": "self",
-					"amount": 3
-				}
-			]
-		}
+		"milano_remove_threat": {}
 	},
 	"Particle Cannon": {
 		"self_moved_to_board": {
@@ -4261,20 +4224,7 @@
 			"__amount__": 2,
 			"__each_player__": true
 		},
-		"manual": {
-			"board": [
-				{
-					"name": "exhaust_card",
-					"subject": "Milano",
-					"is_cost": true
-				},
-				{
-					"name": "remove_threat",
-					"subject": "self",
-					"amount": 3
-				}
-			]
-		}
+		"milano_remove_threat": {}
 	},
 	"Pirate Commander": {
 		"quickstrike": {},
@@ -4506,6 +4456,13 @@
 			"board": {
 				"Remove Threat": [
 					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},				
+					{
 						"name": "exhaust_card",
 						"subject": "Milano",
 						"is_cost": true
@@ -4518,6 +4475,13 @@
 				],
 				"Deal Damage": [
 					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},				
+					{
 						"name": "exhaust_card",
 						"subject": "Milano",
 						"is_cost": true
@@ -4526,6 +4490,7 @@
 						"name": "deal_damage",
 						"subject": "target",
 						"amount": 3,
+						"needs_subject": true,
 						"filter_state_subject": [
 							{
 								"filter_properties": {
@@ -4792,44 +4757,46 @@
 			"__name__": "_tinkering"
 		},
 		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action"
-					]
-				},
-				{
-					"name": "mod_tokens",
-					"is_cost": true,
-					"subject": "self",
-					"modification": -1,
-					"token_name": "_tinkering"
-				},
-				{
-					"name": "discard",
-					"is_cost": true,
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "upgrade"
-							},
-							"filter_properties2": {
-								"trait_tech": 1
+			"board": {
+				"Tinkering": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"subject": "self",
+						"modification": -1,
+						"token_name": "_tinkering"
+					},
+					{
+						"name": "discard",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "upgrade"
+								},
+								"filter_properties2": {
+									"trait_tech": 1
+								}
 							}
-						}
-					]
-				},
-				{
-					"name": "draw_cards",
-					"amount": 2
-				}
-			]
+						]
+					},
+					{
+						"name": "draw_cards",
+						"amount": 2
+					}
+				]
+			}
 		}
 	},
 	"Rocket's Pistol": {
@@ -4882,7 +4849,7 @@
 		"_surge": {},
 		"phase_ended": {
 			"event_filters": {
-				"phase": "villain"
+				"phase": "villain_phase"
 			},
 			"board": [
 				{
@@ -4900,6 +4867,13 @@
 		},
 		"manual": {
 			"board": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},			
 				{
 					"name": "exhaust_card",
 					"subject": "Milano",
@@ -5316,20 +5290,7 @@
 		}
 	},
 	"Spatial Positioning": {
-		"manual": {
-			"board": [
-				{
-					"name": "exhaust_card",
-					"subject": "Milano",
-					"is_cost": true
-				},
-				{
-					"name": "remove_threat",
-					"subject": "self",
-					"amount": 3
-				}
-			]
-		}
+		"milano_remove_threat": {}
 	},
 	"Special Delivery": {
 		"reveal_alter_ego": {
@@ -5410,7 +5371,7 @@
 			"event_name": "receive_damage",
 			"event_filters": {
 				"target": "self",
-				"damage": ">0"
+				"amount": ">0"
 			},
 			"tmp_value": "trigger_details_damage",
 			"condition_board": {
@@ -5695,20 +5656,7 @@
 				}
 			]
 		},
-		"manual": {
-			"board": [
-				{
-					"name": "exhaust_card",
-					"subject": "Milano",
-					"is_cost": true
-				},
-				{
-					"name": "remove_threat",
-					"subject": "self",
-					"amount": 3
-				}
-			]
-		}
+		"milano_remove_threat": {}
 	},
 	"The Art of Evasion - 1A": {
 		"setup": {
@@ -5997,20 +5945,7 @@
 		}
 	},
 	"The Great Escape - 3B": {
-		"manual": {
-			"board": [
-				{
-					"name": "exhaust_card",
-					"subject": "Milano",
-					"is_cost": true
-				},
-				{
-					"name": "remove_threat",
-					"subject": "self",
-					"amount": 3
-				}
-			]
-		},
+		"milano_remove_threat": {},
 		"card_token_modified": {
 			"trigger": "self",
 			"filter_count": 0,

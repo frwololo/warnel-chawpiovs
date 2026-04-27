@@ -101,3 +101,5 @@ margin_bottom = 25.0
 custom_fonts/font = SubResource( 5 )
 align = 1
 valign = 1
+
+[node name="Garbage" type="Control" parent="."]

@@ -185,6 +185,7 @@ margin_bottom = 50.0
 [node name="OpacityTween" type="Tween" parent="." groups=["cgf_tween"]]
 
 [node name="Garbage" type="Control" parent="."]
+visible = false
 
 [connection signal="focus_entered" from="Control" to="." method="_on_Control_focus_entered"]
 [connection signal="focus_exited" from="Control" to="." method="_on_Control_focus_exited"]

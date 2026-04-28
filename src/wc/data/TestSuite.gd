@@ -913,7 +913,8 @@ remotesync func finalize_test_allclients(force_status:int, attempts = 1):
 		result = TestStatus.FAILED
 		
 	#Remove crap that might still be lurking around
-	reset_between_tests()
+	if gameData.is_multiplayer_game:
+		reset_between_tests()
 	cfc._rpc_id(self,1, "test_finalized", result)
 
 	return

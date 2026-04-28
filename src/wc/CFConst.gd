@@ -661,6 +661,7 @@ const AUTO_KEYWORDS := {
 	"cannot_thwart_side_schemes": "int",
 	"cannot_be_thwarted": "int",
 	"cannot_have_attachments": "int",
+	"excess_damage_boost": "int", #Rocket Raccoon's Follow Through card
 	"exclude_from_ally_limit": "int",
 	"attack_indirect_damage": "int",
 	"blank_abilities": "int",

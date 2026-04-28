@@ -68,10 +68,9 @@ func _card_added(card):
 func _card_removed(card):
 	if (auto_extend):
 		var empty_slots = get_available_slots()
-		#keep at least 1 available
-		for i in (empty_slots.size() - 1):
-			var empty_slot = empty_slots[i]
-			empty_slot.queue_free()
+		for empty_slot in empty_slots:
+			$GridContainer.remove_child(empty_slot)
+			$Garbage.add_child(empty_slot)
 	pass
 
 
@@ -107,8 +106,16 @@ func find_available_slot() -> BoardPlacementSlot:
 		found_slot = get_available_slots().front()
 	elif auto_extend:
 		found_slot = add_slot()
+		
+	#do some cleanup while we're at it
+	garbage_collection()
+				
 	return(found_slot)
 
+func garbage_collection():
+	for child in $Garbage.get_children():
+		if (is_instance_valid(child)):
+			child.queue_free()
 
 # Returns an array containing all the BoardPlacementSlot nodes
 func get_all_slots() -> Array:

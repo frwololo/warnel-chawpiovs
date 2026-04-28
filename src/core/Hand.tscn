@@ -103,3 +103,4 @@ align = 1
 valign = 1
 
 [node name="Garbage" type="Control" parent="."]
+visible = false

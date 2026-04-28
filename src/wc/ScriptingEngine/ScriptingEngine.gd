@@ -380,23 +380,23 @@ func attack(script: ScriptTask) -> int:
 			}
 			_add_pre_receive_damage_on_stack (damage, script, script_modifications)	
 		
-		#TODO everything below this line might have to move to the actual receive_damage section?
-		var overkill = owner.get_property("overkill", 0, true) or (script.retrieve_integer_property("overkill"))	
-		if overkill:
-			var defender = script.subjects[0]
-			var defender_type = defender.get_property("type_code")
-			if defender_type in ["minion"]:
-				var overkill_amount = damage - defender.get_remaining_damage()
-				overkill_amount = max(0, overkill_amount)
-				if overkill_amount:
-					var villain = gameData.get_villain()
-					var overkill_subjects = [villain] if villain else []
-					var script_modifications = {
-						"tags" : ["Scripted", "overkill"], #notably, overkill isn't an attack
-						"subjects": overkill_subjects
-					}
-					_add_pre_receive_damage_on_stack (overkill_amount, script, script_modifications)
-	
+#		#TODO everything below this line might have to move to the actual receive_damage section?
+#		var overkill = owner.get_property("overkill", 0, true) or (script.retrieve_integer_property("overkill"))	
+#		if overkill:
+#			var defender = script.subjects[0]
+#			var defender_type = defender.get_property("type_code")
+#			if defender_type in ["minion"]:
+#				var overkill_amount = damage - defender.get_remaining_damage()
+#				overkill_amount = max(0, overkill_amount)
+#				if overkill_amount:
+#					var villain = gameData.get_villain()
+#					var overkill_subjects = [villain] if villain else []
+#					var script_modifications = {
+#						"tags" : ["Scripted", "overkill"], #notably, overkill isn't an attack
+#						"subjects": overkill_subjects
+#					}
+#					_add_pre_receive_damage_on_stack (overkill_amount, script, script_modifications)
+#
 				
 		consequential_damage(script)
 
@@ -664,6 +664,9 @@ func receive_damage(script: ScriptTask) -> int:
 	var type = attacker.get_property("type_code", "")
 	if !type in ["hero", "ally", "minion", "villain"]:
 		attacker = _get_identity_from_script(script)
+		#fallback again to script owner if we failed to get an attacker
+		if !attacker:
+			attacker = script.owner
 		
 	var tags: Array = script.get_property(SP.KEY_TAGS) 
 	var amount = script.retrieve_integer_property("amount")
@@ -706,13 +709,18 @@ func receive_damage(script: ScriptTask) -> int:
 		
 		var excess_damage = int(max(amount - remaining_damage, 0))	
 
-		if ("plus_1_if_excess" in tags) and excess_damage:
-			amount+= 1
+		if excess_damage:
+			var excess_damage_boost = attacker.get_property("excess_damage_boost", 0, true)
+			amount+= excess_damage_boost
+			excess_damage += excess_damage_boost
 			
 		retcode = card.tokens.mod_token("damage",
 				amount,false,costs_dry_run(), tags)	
 		if amount:
-			card.hint(str(amount), Color8(255,50,50))
+			var hint_str = str(amount)
+			if "overkill" in tags and !"attack" in tags:
+				hint_str = "Overkill " + str(amount)
+			card.hint(hint_str, Color8(255,50,50))
 			damage_happened = amount
 			if amount == 1:
 				gameData.play_sfx("small_damage*")	
@@ -768,6 +776,25 @@ func receive_damage(script: ScriptTask) -> int:
 				scripting_bus.emit_signal_on_stack("basic_attack_happened",  attacker,  signal_details)				
 		
 			scripting_bus.emit_signal_on_stack("defense_happened", card,  signal_details)
+			
+			#overkill attack
+			#TODO this only handles ally/hero attack for now,
+			#enemy overkill is handled in another part of the code
+			#Note that this only happens for attacks
+			if damage_happened and excess_damage:
+				#TODO everything below this line might have to move to the actual receive_damage section?
+				var overkill = attacker.get_property("overkill", 0, true) or (script.retrieve_integer_property("overkill"))	
+				if overkill:
+					var defender = script.subjects[0]
+					var defender_type = defender.get_property("type_code")
+					if defender_type in ["minion"]:
+						var villain = gameData.get_villain()
+						var overkill_subjects = [villain] if villain else []
+						var script_modifications = {
+							"tags" : ["Scripted", "overkill"], #notably, overkill isn't an attack
+							"subjects": overkill_subjects
+						}
+						_add_pre_receive_damage_on_stack (excess_damage, script, script_modifications)
 			
 		#check for death
 		var lethal = false

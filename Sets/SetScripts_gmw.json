@@ -951,7 +951,8 @@
 			"event_name": "receive_damage",
 			"event_filters": {
 				"amount": ">0",
-				"target": "my_hero"
+				"target": "my_hero",
+				"tags": ["attack"]
 			},
 			"is_optional_board": true,
 			"board": [
@@ -2560,10 +2561,17 @@
 		}
 	},
 	"Follow Through": {
-		"attacks_gain": {
-			"__trigger__": "my_hero",
-			"__tags__": "plus_1_if_excess"
-		}
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "excess_damage_boost",
+					"trigger": "my_hero",
+					"alteration": 1
+				},
+			]
+		},
+		"_comments": "This is (incorrectly) implemented as a compulsive alterant instead of an interrupt, this is the only card in the game doing this kind of modification, doing it as an optional interrupt would imply massive changes in the engine"
 	},
 	"Fruition": {
 		"manual": {
@@ -3018,14 +3026,14 @@
 				{
 					"name": "add_script",
 					"end_condition": "phase_ended",
-					"subject": "my_hero",
+					"subject": "self",
 					"script": {
 						"alterants": {
 							"all": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "thwart",
-									"trigger": "self",
+									"trigger": "my_hero",
 									"alteration": 1
 								}
 							]
@@ -4190,6 +4198,7 @@
 					"name": "attack",
 					"amount": 4,
 					"subject": "target",
+					"needs_subject": true,
 					"filter_state_subject": [
 						{
 							"filter_group": "group_enemies"
@@ -4836,6 +4845,7 @@
 					"name": "attack",
 					"amount": 2,
 					"subject": "target",
+					"needs_subject": true,
 					"filter_state_subject": [
 						{
 							"filter_group": "group_enemies"
@@ -5166,15 +5176,15 @@
 					]
 				},
 				{
-					"name": "add_script",
+					"name": "temporary_effect",
 					"end_condition": "phase_ended",
-					"subject": "my_hero",
-					"script": {
+					"subject": "self",
+					"effect": {
 						"card_damaged": {
 							"event_filters": {
 								"attacker": "my_hero"
 							},
-							"board": [
+							"all": [
 								{
 									"name": "heal",
 									"amount": 2,

@@ -1,0 +1,181 @@
+{
+	"_comments": "Bug: Multiple copies of Follow Through",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}				
+			],
+			"villain": [
+				{
+					"card": "Drang - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Terrestrial Invasion",
+					"tokens": {"threat": 2}					
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}					
+			],
+			"enemies1": [
+				{
+					"card": "badoon assassin"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Follow Through"
+				},
+				{
+					"card": "Follow Through"
+				},	
+				{
+					"card": "Hand Cannon",
+					"tokens": {"charge": 2}
+				},					
+			],
+			"hand1": [
+				{
+					"card": "01056",
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Badoon Ship",
+					"tokens": {"barrage": 1}
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "activate",
+			"value": "Rocket Raccoon",
+		},	
+		{
+			"type": "choose",
+			"value": "attack",
+		},	
+		{
+			"type": "target",
+			"value": "Badoon Assassin",
+			"_comments": "attack badoon assassin with Rocket"
+		},
+		{
+			"type": "activate",
+			"value": "Hand Cannon",
+			"_comments": "Hand Cannon gives overkill"
+		},	
+		{
+			"type": "choose",
+			"value": "yes",
+			"_comments": "I draw with Rocket's ability thanks to excess damage"
+		},		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}				
+			],
+			"discard_villain": [
+				{
+					"card": "badoon assassin"
+				}
+			],
+			"villain": [
+				{
+					"card": "Drang - 1",
+					"tokens": {"damage": 4}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Terrestrial Invasion",
+					"tokens": {"threat": 2}					
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},					
+			],
+			"enemies1": [
+
+			],
+			"upgrade_support1": [
+				{
+					"card": "Follow Through"
+				},
+				{
+					"card": "Follow Through"
+				},	
+				{
+					"card": "Hand Cannon"
+				},					
+			],
+			"hand1": [
+				{
+					"card": "01056",
+				},
+				{
+					"card": "Mockingbird"
+				}				
+			],
+			"villain_misc": [
+				{
+					"card": "Badoon Ship",
+					"tokens": {"barrage": 1}
+				}
+			]
+		}
+	}
+}

@@ -54,3 +54,10 @@ margin_left = -20.0
 margin_top = -20.0
 margin_right = 475.0
 custom_fonts/font = SubResource( 2 )
+
+[node name="Garbage" type="GridContainer" parent="."]
+visible = false
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 122.0
+margin_bottom = 194.0

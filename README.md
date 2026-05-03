@@ -22,6 +22,7 @@ Other than that, here are known limitations with the engine at the moment:
 * Warnel Chawpiovs doesn't support Campaign mode currently
 
 ## Current Status (General)
+![Warnel Chawpiovs Supported Characters and Scenarios](doc/pictures/characters_and_scenarios.jpg "Warnel Chawpiovs Supported Characters and Scenarios")
 This simulator supports the following cards from the original game (current total 14 heroes, 18 villains):
 * Core box (5 heroes, 3 villains)
 * Captain America (1 Hero)
@@ -30,6 +31,8 @@ This simulator supports the following cards from the original game (current tota
 * The Mad Titan's Shadow ( 2 heroes, 5 villains)
 * War Machine (1 Hero)
 * Sinister Motives ( 2 heroes, 5 villains)
+
+This represents roughly 20% of all official cards at the time of this writing.
 
 There is no tutorial included, and, although the rules are automatically handled by the engine, it will quickly become confusing if you are not already familar with the original game.
 
@@ -67,7 +70,12 @@ Image downloads in particular might take some time, but this should only happen 
 **Alternatively**, it is possible to have all the images packed either in a PCK or a ZIP file at the root of the user folder (PCK are the DLC file format for Godot) with the right structure. See below for folder structure.
 
 ### How to play
+You can find a tutorial video here:
 [https://www.youtube.com/watch?v=AbOm5UHoGbE](https://www.youtube.com/watch?v=zeI4Mra8tAc)
+
+![Warnel Chawpiovs Gameplay](doc/pictures/gameplay_sample_1.jpg "Warnel Chawpiovs Gameplay")
+
+
 
 ### Hosting a Multiplayer game
 See the Current Status section above for disclaimers about the multiplayer mode.

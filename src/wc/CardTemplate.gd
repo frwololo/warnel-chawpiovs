@@ -203,7 +203,14 @@ func get_all_traits() -> Dictionary:
 				_cached_all_traits[trait] = true
 	
 	return _cached_all_traits
-	
+
+func considered_in_play()-> bool:
+	if is_boost():
+		return false
+	var type = get_property("type_code", "")
+	if type in ["treachery", "event"]:
+		return false
+	return true
 
 func is_character() -> bool:
 	var type_code = get_property("type_code", "")
@@ -1544,7 +1551,7 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 	var sceng = null
 	is_executing_scripts = true
 
-	var rules= exec_config.get("rules",{})
+	var rules = exec_config.get("rules",{})
 	var trigger = exec_config.get("trigger", "")
 	var checksum = exec_config.get("checksum", "")
 	var action_name = exec_config.get("action_name", "")
@@ -1858,11 +1865,7 @@ func remove_threat(modification: int, script = null) -> int:
 		scripting_bus.emit_signal("last_threat_removed", self, signal_details)		
 	return result
 
-func discard():
-	#cleanup some variables
-	set_is_boost(false)
-	set_is_inactive_attachment(false)
-	
+func discard():	
 	#move to correct pile
 	var hero_owner_id = get_owner_hero_id()
 	if (!hero_owner_id):
@@ -1870,6 +1873,10 @@ func discard():
 	else:
 		var destination = "discard" + str(hero_owner_id)
 		self.move_to(cfc.NMAP[destination])
+
+	#cleanup some variables
+	set_is_boost(false)
+	set_is_inactive_attachment(false)
 
 #returns the amount of healing that could happen for a given heal value
 func can_heal(value):
@@ -2055,6 +2062,7 @@ func common_pre_run(sceng) -> void:
 	
 	var controller_hero_id = trigger_details.get("override_controller_id", self.get_controller_hero_id())
 	
+	var rules = sceng.additional_rules
 	var scripts_queue: Array = sceng.scripts_queue
 	var new_queue: Array = []
 	var temp_queue: Array = []
@@ -2186,6 +2194,17 @@ func common_pre_run(sceng) -> void:
 					new_queue.append(task)										
 			_:
 				new_queue.append(task)
+	
+	#if script is marked as forced, 
+	#we force selections to be non-optional
+	# see Tests/test_1p_drang_blind_side.json
+	if rules.get("forced", false):
+		for task in new_queue:
+			var script: ScriptTask = task
+			var script_definition = script.script_definition
+			if script_definition.get("needs_selection", false):
+				script_definition[SP.KEY_SELECTION_OPTIONAL] = false
+	
 	sceng.scripts_queue = new_queue	
 
 func change_form_script_replacement(script_definition: Dictionary, trigger_details) -> Dictionary:	

@@ -1,0 +1,178 @@
+{
+	"_comments": "Test The Poison Cost constraint",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				},
+			],
+			"villain": [
+				{
+					"card": "Collector - 1"
+				}
+			],
+			"others": [
+							{
+					"card": "The Poison",
+					"host": "Rocket Raccoon"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Grand Collection",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"the_collection": [
+				{
+					"card": "Rocket's Pistol"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Groot #16047"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "hand cannon"
+				},
+				{
+					"card": "battery pack"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Hand Cannon"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},		
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "The Poison",
+			"expected_to_fail": true,
+		},			
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				},
+			],
+			"villain": [
+				{
+					"card": "Collector - 1"
+				}
+			],
+			"others": [
+							{
+					"card": "The Poison",
+					"host": "Rocket Raccoon"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Grand Collection",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"the_collection": [
+				{
+					"card": "Rocket's Pistol"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Groot #16047"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "hand cannon"
+				},
+				{
+					"card": "battery pack"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Hand Cannon"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},		
+			]
+		}
+	}
+}

@@ -39,7 +39,7 @@ var can_select_cards_with_zero_value: = false
 
 onready var _card_grid = get_node("%GridContainer")
 onready var _tween = get_node("%Tween")
-onready var cancel_button = get_node("%cancel")
+onready var cancel_button:Button = get_node("%cancel")
 
 var _assign_mode := false
 var _assign_max_function := ""
@@ -696,6 +696,12 @@ func get_all_card_options() -> Array:
 
 func force_cancel():
 	_trigger_cancel()
+
+func attempt_cancel() -> bool:
+	if !cancel_button.visible or cancel_button.disabled:
+		return false
+	force_cancel()
+	return true
 
 # Cancels out of the selection window
 func _on_cancel_pressed() -> void:

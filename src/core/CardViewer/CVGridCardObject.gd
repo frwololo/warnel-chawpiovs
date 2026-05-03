@@ -109,22 +109,22 @@ func gain_focus():
 	
 	if !gamepadHandler.is_mouse_input():
 		display_card.highlight.set_highlight(true, CFConst.FOCUS_COLOUR_ACTIVE)
-	pass
 
 func _on_GridCardObject_focus_exited():
 	lose_focus()
 	
 func lose_focus():
-	if (!display_card):
-		return	
 	hide_preview()
 		
 	has_focus = false
+
+	if (! is_instance_valid(display_card)):
+		return	
+	
 	if selected:
 		display_card.highlight.set_highlight(true)
 	else:
 		display_card.highlight.set_highlight(false)
-	pass
 
 #on exit we remove cards instead of freeing them, to reuse them later
 func _exit_tree():

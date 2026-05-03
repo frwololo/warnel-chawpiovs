@@ -2472,6 +2472,8 @@ func constraints(script: ScriptTask) -> int:
 					return 	CFConst.ReturnCode.FAILED
 				if cfc.is_modal_event_ongoing():
 					return 	CFConst.ReturnCode.FAILED
+				if gameData.is_interrupt_mode():
+					return 	CFConst.ReturnCode.FAILED
 			"first_player":
 				var first_player_id = gameData.first_player_hero_id()
 				if !gameData.can_i_play_this_hero(first_player_id):
@@ -2669,7 +2671,7 @@ func _pre_task_prime(script: ScriptTask, prev_subjects:= []) -> void:
 
 
 static func get_event_source_hero_id(trigger_details):
-	var event_source_hero_id = 1
+	var event_source_hero_id = gameData.get_current_local_hero_id()
 	if trigger_details.has("event_object"):
 		var event_object = trigger_details.get("event_object")		
 		if "trigger_details" in event_object and event_object.trigger_details.has("source"):
@@ -2696,7 +2698,7 @@ static func static_pre_task_prime(script_definition, owner, script = null, prev_
 	
 	var current_hero_target = gameData.get_villain_current_hero_target()
 
-	var event_source_hero_id = 1
+	var event_source_hero_id = gameData.get_current_local_hero_id()
 	if script:
 		var trigger_details = script.trigger_details
 		event_source_hero_id = get_event_source_hero_id(trigger_details)

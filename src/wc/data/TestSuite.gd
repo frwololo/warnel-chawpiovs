@@ -110,11 +110,11 @@ func stop_timer(func_name):
 	if !delays_timer.has(func_name):
 		delays_timer[func_name] = {}
 			
-	var start_time = delays_timer[func_name].get("start_time",0)
-	if !start_time:
+	var my_start_time = delays_timer[func_name].get("start_time",0)
+	if !my_start_time:
 		return	
 	
-	var end_time = 	OS.get_ticks_msec()
+	var my_end_time = 	OS.get_ticks_msec()
 	
 	if !delays_timer[func_name].has("total"):
 		delays_timer[func_name]["total"] = 0
@@ -123,7 +123,7 @@ func stop_timer(func_name):
 		delays_timer[func_name]["time"] = 0
 		
 	delays_timer[func_name]["total"] += 1
-	delays_timer[func_name]["time"]+= (end_time - start_time)
+	delays_timer[func_name]["time"]+= (my_end_time - my_start_time)
 	delays_timer[func_name]["start_time"] = 0
 		
 
@@ -685,7 +685,7 @@ func action_select(hero_id, action_value):
 	else:
 		match action_value:
 			"cancel":
-				return cancel_current_selection_window()
+				return cancel_current_selection_window(false)
 			_:
 				chosen_cards = [action_value]
 	
@@ -703,14 +703,19 @@ func action_select(hero_id, action_value):
 	_current_selection_window = null
 	return
 
-func cancel_current_selection_window():
+func cancel_current_selection_window(force_cancel = true):
 	if !is_instance_valid(_current_selection_window):
 		var _error = 1
 		_current_selection_window = null
 			
 	if (_current_selection_window):
-		_current_selection_window.force_cancel()
-		_current_selection_window = null
+		var closed_ok = true
+		if force_cancel:
+			_current_selection_window.force_cancel()
+		else:
+			closed_ok = _current_selection_window.attempt_cancel()
+		if closed_ok:
+			_current_selection_window = null
 	else:
 		#TODO error handling
 		var _error =1

@@ -1,0 +1,154 @@
+{
+	"_comments": "Bug: Inconspicuous Box not moving card",	
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},		
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Inconspicuous Box"
+				}
+			],
+			"villain": [
+				{
+					"card": "Collector - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Grand Collection",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"the_collection": [
+				{
+					"card": "Rocket's Pistol"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Hand Cannon"
+				}				
+			],
+			"hand1": [
+				{
+					"card": "01056"
+				}
+			],
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "wait for player turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+							{
+					"card": "Inconspicuous Box"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+
+			],
+			"villain": [
+				{
+					"card": "Collector - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Grand Collection",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"the_collection": [
+				{
+					"card": "Rocket's Pistol"
+				},
+				{
+					"card": "Hand Cannon"
+				}				
+			],
+			"enemies1": [
+							{
+					"card": "Armored Guard"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				},				
+			],
+			"hand1": [
+				{
+					"card": "01056"
+				}
+			],
+		}
+	}
+}

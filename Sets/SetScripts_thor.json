@@ -107,7 +107,7 @@
 			"is_optional_hand": true,
 			"hand": [
 				{
-					"name": "remove_threat",
+					"name": "thwart",
 					"amount": 2,
 					"subject": "target",
 					"needs_subject": true,

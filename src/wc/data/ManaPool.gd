@@ -60,8 +60,39 @@ func compute_missing(cost:ManaCost) -> ManaCost:
 
 	#UNCOLORED Cost last
 	var remaining = cost.pool[ResourceMana.UNCOLOR]
+	
+	if cost.type_constraint == TYPE_CONSTRAINT.SAME:
+		#USE CASE: SAME TYPES of MANA ONLY
+		#We find the amount for which we have the most,
+		#and will use that to pay
+		#everything else is forcefully set to 0 (except WILD)
+		var j = ResourceMana.WILD - 1
+		var max_available_resource = temp_pool.pool[j]
+		var max_index = j
+		while (j > ResourceMana.UNCOLOR) :	
+			if temp_pool.pool[j] > max_available_resource:
+				max_available_resource = temp_pool.pool[j]
+				max_index = j
+			j-= 1
+		#once we've found the max, we set all others to 0
+		j = ResourceMana.WILD - 1
+		while (j > ResourceMana.UNCOLOR) :
+			if j == max_index:
+				j -= 1
+				continue	
+			temp_pool.pool[j] = 0
+			j -= 1
+				
+
 	var i = ResourceMana.WILD
 	while (remaining and i > ResourceMana.UNCOLOR) :
+		
+		#USE CASE: DIFFERENT TYPES of MANA ONLY
+		if i!=ResourceMana.WILD and cost.type_constraint == TYPE_CONSTRAINT.DIFFERENT:
+			#we want to use exclusively different types of mana
+			#we do this by forcing available pool to be 1 at most (or 0 if none available			
+			temp_pool.pool[i] = min(temp_pool.pool[i], 1)
+			
 		if (temp_pool.pool[i] >= remaining):
 			temp_pool.pool[i] -= remaining
 			remaining = 0

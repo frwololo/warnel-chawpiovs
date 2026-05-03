@@ -156,6 +156,11 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 				results+= activation_script.subjects				
 		SP.KEY_SUBJECT_CURRENT_HERO_TARGET:
 			results.append(gameData.get_identity_card(gameData.get_current_activity_hero_target()))							
+		SP.KEY_SUBJECT_EVENT_SOURCE_HERO:
+			var event_source_hero_id = WCScriptingEngine.get_event_source_hero_id(trigger_details)
+			if event_source_hero_id > 0:
+				var event_source_hero = gameData.get_identity_card(event_source_hero_id)
+				results.append(event_source_hero)
 		"":
 			pass
 		_: 
@@ -270,6 +275,8 @@ static func func_name_run(object, func_name, func_params, script = null):
 		comparison_value = func_name.substr(str_position + comparison_str.length())
 		if comparison_value.is_valid_integer():
 			comparison_value = int(comparison_value)
+		elif comparison_value.trim_suffix("p").is_valid_integer():
+			comparison_value = int(comparison_value.trim_suffix("p")) * cfc.count_players()	
 		elif script:
 			comparison_value = script.retrieve_integer_property(comparison_value)
 		else:

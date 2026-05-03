@@ -1211,6 +1211,11 @@ func get_potential_placement_slot() -> BoardPlacementSlot:
 			placement_slot = ps
 	return(placement_slot)
 
+#overridable function so that some cards
+#can be considered to not belong to "board" even when they are on it
+#(can be useful to avoid triggering card_moved_to events)
+func considered_in_play()-> bool:
+	return true
 # Arranges so that the card enters the chosen container.
 #
 # Will take care of interpolation.
@@ -1233,6 +1238,9 @@ func move_to(targetHost: Node,
 	cfc.add_ongoing_process(self)
 	# We need to store the parent, because we won't be able to know it later
 	var parentHost = get_parent()
+	var source_str = parentHost.name
+	if source_str.to_lower() == "board" and !considered_in_play():
+		source_str = "void"
 	# We want to keep the token drawer closed during movement
 	tokens.set_is_drawer_open(false)
 	# This checks ensure we don't change parent to the board,
@@ -1510,12 +1518,15 @@ func move_to(targetHost: Node,
 			set_state(CardState.IN_POPUP)
 	common_post_move_scripts(targetHost.name, parentHost.name, tags)
 	if signal_to_emit:
+		var destination_str = targetHost.name
+		if destination_str.to_lower() == "board" and !considered_in_play():
+			destination_str = "void"
 		scripting_bus.emit_signal_on_stack(signal_to_emit,
 				self,
 				 {
-					"destination": targetHost.name,
+					"destination": destination_str,
 					"destination_grid": destination_grid,					
-					"source": parentHost.name,
+					"source": source_str,
 					"tags": tags
 				}
 		)		

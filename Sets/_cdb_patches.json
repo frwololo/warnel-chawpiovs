@@ -130,6 +130,9 @@
 	"09007": {
 		"traits": "Spell.",
 	},
+	"16122": {
+			"attack": 3,
+	},
 	"21041": {
 		"subname": "Noh-Varr",
 		"_comments": "https://github.com/zzorba/marvelsdb/issues/345"

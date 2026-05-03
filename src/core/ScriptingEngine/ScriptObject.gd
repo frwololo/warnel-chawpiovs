@@ -468,7 +468,15 @@ func _boardseek_subjects(stored_integer: int) -> Array:
 			subject_count *= -1
 	requested_subjects = int(subject_count)
 	var subject_list := sort_subjects(cfc.NMAP.board.get_all_scriptables())
+
+	var to_exclude = get_property("seek_exclude", "")
+	var exclude_result = []
+	if to_exclude:
+		exclude_result = _local_find_subjects(stored_integer, CFInt.RunType.NORMAL, {"subject" : to_exclude, "subject_exclude" : ""})
+	
 	for c in subject_list:
+		if c in exclude_result:
+			continue
 		if SP.check_validity(c, script_definition, "seek", owner):
 			subjects_array.append(c)
 			subject_count -= 1

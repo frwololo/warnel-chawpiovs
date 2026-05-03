@@ -25,6 +25,7 @@ const KEY_SUBJECT_V_GRAB_UNTIL := "grab_until"
 const KEY_SUBJECT_CURRENT_ACTIVATION_ENEMY:= "current_activation_enemy"
 const KEY_SUBJECT_CURRENT_ACTIVATION_TARGET:= "current_activation_target"
 const KEY_SUBJECT_CURRENT_HERO_TARGET:= "current_hero_target"
+const KEY_SUBJECT_EVENT_SOURCE_HERO:= "event_source_hero"
 
 const FILTER_HOST_OF := "filter_is_host_of"
 const FILTER_HOSTED_BY  := "filter_is_hosted_by"

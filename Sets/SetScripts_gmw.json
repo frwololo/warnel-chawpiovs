@@ -764,7 +764,7 @@
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "Colector"
+					"subject": "Collector"
 				}
 			]
 		},
@@ -1098,7 +1098,7 @@
 			"is_optional_hand": true,
 			"hand": [
 				{
-					"name": "remove_threat",
+					"name": "thwart",
 					"amount": 2,
 					"subject": "target",
 					"needs_subject": true,
@@ -1194,7 +1194,7 @@
 					{
 						"name": "move_card_to_container",
 						"subject": "index",
-						"src_container": "deck",
+						"src_container": "deck_my_hero",
 						"dest_container": "the_collection"
 					}
 				],
@@ -3113,16 +3113,16 @@
 					"dest_container": "the_collection",
 					"is_cost": true,
 					"subject": "boardseek",
-					"subject_exclude": "my_identity",
 					"subject_count": 1,
 					"sort_by": "function",
 					"sort_name": "get_subject_int_printed_property",
 					"func_params": {
 						"property": "cost"
 					},
+					"seek_exclude": "my_identity",
 					"filter_state_seek": [
 						{
-							"filter_group": "play_area_my_hero"
+							"filter_group": "play_area_my_hero",	
 						}
 					]
 				},
@@ -3134,9 +3134,9 @@
 		},
 		"boost": {
 			"condition_all": {
-				"func_name": "count_cards<=3",
+				"func_name": "count_cards<=3p",
 				"func_params": {
-					"subject": "index",
+					"subject": "tutor",
 					"subject_count": "all",
 					"src_container": "the_collection"
 				}
@@ -3147,7 +3147,7 @@
 					"dest_container": "the_collection",
 					"subject": "index",
 					"subject_index": "top",
-					"src_container": "deck"
+					"src_container": "deck_current_hero_target"
 				}
 			]
 		}
@@ -4064,7 +4064,7 @@
 				},
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "scheme",
+					"filter_property_name": "thwart",
 					"trigger": "host",
 					"alteration": -1
 				},
@@ -4525,6 +4525,7 @@
 				{
 					"name": "deal_damage",
 					"subject": "my_identity",
+					"amount": 1,
 					"is_else": true
 				}
 			]
@@ -5431,6 +5432,9 @@
 	"Stay Awhile": {
 		"reveal_alter_ego": {
 			"all": {
+				"_rules": {
+					"forced": true
+				},
 				"Resources": [
 					{
 						"name": "pay_cost",
@@ -5503,6 +5507,9 @@
 							]
 						}
 					}
+				},
+				{
+					"name": "villain_attacks_you"
 				}
 			]
 		}
@@ -5800,10 +5807,10 @@
 				{
 					"name": "pay_cost",
 					"cost": {
-						"unc": 2
+						"unc": 2,
+						"type_constraint": "same"
 					},
 					"is_cost": true,
-					"TODO": "same type resource"
 				},
 				{
 					"name": "add_threat",
@@ -5851,7 +5858,7 @@
 					{
 						"name": "exhaust_card",
 						"is_cost": true,
-						"subject": "my_hero"
+						"subject": "event_source_hero"
 					},
 					{
 						"name": "mod_tokens",
@@ -5866,6 +5873,7 @@
 						"subject_count": "all",
 						"needs_selection": "true",
 						"selection_count": 1,
+						"selection_type": "equal",
 						"src_container": "the_collection"
 					}
 				],
@@ -5897,6 +5905,7 @@
 						"subject_count": "all",
 						"needs_selection": "true",
 						"selection_count": 1,
+						"selection_type": "equal",
 						"src_container": "the_collection"
 					}
 				]
@@ -5904,7 +5913,7 @@
 		},
 		"card_moved_to_pile": {
 			"condition_board": {
-				"func_name": "count_cards>=5",
+				"func_name": "count_cards>=5p",
 				"func_params": {
 					"subject": "index",
 					"subject_count": "all",
@@ -6095,7 +6104,8 @@
 				{
 					"name": "pay_cost",
 					"cost": {
-						"unc": 3
+						"unc": 3,
+						"type_constraint": "different"
 					},
 					"is_cost": true,
 					"todo": "different types"
@@ -6342,7 +6352,7 @@
 						"dest_container": "the_collection",
 						"src_container": "hand",
 						"is_cost": true,
-						"subject": "index",
+						"subject": "tutor",
 						"subject_count": 1,
 						"sort_by": "function",
 						"sort_descending": true,
@@ -6357,7 +6367,7 @@
 						"name": "discard",
 						"src_container": "hand",
 						"is_cost": true,
-						"subject": "index",
+						"subject": "tutor",
 						"subject_count": 1,
 						"sort_by": "function",
 						"sort_descending": true,

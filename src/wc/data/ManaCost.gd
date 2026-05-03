@@ -3,6 +3,13 @@ class_name ManaCost
 extends Reference
 
 var force_printed_cost = false
+var type_constraint = TYPE_CONSTRAINT.NONE
+
+enum TYPE_CONSTRAINT {
+	NONE,
+	SAME,
+	DIFFERENT
+}
 
 enum ResourceMana {
 	UNCOLOR,
@@ -118,6 +125,14 @@ func init_from_dictionary(dict:Dictionary):
 		match k:
 			"force_printed_cost":
 				force_printed_cost = dict[k]
+			"type_constraint":
+				match dict[k]:
+					"same":
+						type_constraint = TYPE_CONSTRAINT.SAME
+					"different":
+						type_constraint = TYPE_CONSTRAINT.DIFFERENT
+					_:
+						type_constraint = TYPE_CONSTRAINT.NONE										
 			_:
 				add_resource(k, dict[k])
 

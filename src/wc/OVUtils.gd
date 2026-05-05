@@ -625,6 +625,15 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 			return false
 		filters.erase("filter_state_event_source")
 
+	if filters.has("filter_state_event_attacker"):
+		var attacker = trigger_details.get("attacker")
+		if !attacker:
+			return false	
+		var is_valid = SP.check_validity(attacker, filters, "event_attacker")
+		if !is_valid:
+			return false
+		filters.erase("filter_state_event_attacker")
+
 	for filter_key in filters.keys():
 		var value = filters[filter_key]
 		var compared_to_str = trigger_details.get(filter_key, "")

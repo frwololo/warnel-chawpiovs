@@ -330,7 +330,12 @@ static func search_and_replace_multi(script_definition, replacements:Dictionary,
 	
 	var result = _search_and_replace_multi_cache[_cache_key].duplicate(true)
 	return result
-	
+
+#stupid hardcoded exception
+const _never_replace = {
+	"name": "discard",
+	"type_code": "villain"
+}	
 static func search_and_replace_multi_no_cache (script_definition, replacements:Dictionary, exact_match: bool = false) -> Dictionary:
 	var result = null
 	match typeof(script_definition):
@@ -338,6 +343,9 @@ static func search_and_replace_multi_no_cache (script_definition, replacements:D
 			result = {}	
 			for key in script_definition.keys():
 				var value = script_definition[key]
+				if _never_replace.get(key, "") == str(value):
+					result[key] = value
+					continue
 				result[key] = search_and_replace_multi_no_cache(value, replacements, exact_match)
 
 				#do the key too	
@@ -384,6 +392,9 @@ static func search_and_replace (script_definition, from: String, to, exact_match
 			result = {}	
 			for key in script_definition.keys():
 				var value = script_definition[key]
+				if _never_replace.get(key, "") == str(value):
+					result[key] = value
+					continue				
 				result[key] = search_and_replace(value,from, to, exact_match)
 
 				#do the key too	

@@ -379,7 +379,7 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 	
 	if type_code == "attachment":
 		var alterants = []
-		for action in ["attack", "scheme"]:
+		for action in ["attack", "scheme", "thwart"]:
 			var mod = card.get(action, 0)
 			if mod:
 				alterants.append(

@@ -881,11 +881,13 @@ func attach_to_host(
 			host: Card,
 			is_following_previous_host = false,
 			tags := ["Manual"]) -> void:
+				
+	cfc.flush_cache()
+					
 	if "as_boost" in tags:
 		set_is_boost(true)
 	else:
 		if self.is_boost():
-			cfc.flush_cache()
 			set_is_boost(false)
 
 	if "as_inactive_attachment" in tags:
@@ -1232,7 +1234,7 @@ func execute_scripts(
 		orig_trigger_details: Dictionary = {},
 		run_type := CFInt.RunType.NORMAL):
 
-	if (trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME) : # and canonical_name.begins_with(CFConst.SCRIPT_BREAKPOINT_CARD_NAME)):
+	if (trigger == "post_setup" and canonical_name =="Interception Imminent - 1A"):
 		var _tmp = 1
 
 	if script_exec_temporarily_blocked(run_type):
@@ -1919,7 +1921,8 @@ func post_death_move():
 	var type = card.get_property("type_code", "")
 	var owner_hero_id = card.get_owner_hero_id()
 	
-	if card.get_property("victory", 0):
+	var victory_property = card.get_property("victory", null)
+	if victory_property != null:
 		card.move_to(cfc.NMAP["victory_display"])
 	else:
 		if owner_hero_id > 0:
@@ -3571,7 +3574,7 @@ func get_printed_text(section = ""):
 		result = ""
 	else:
 		var substring = full_text.substr(position + searching.length())
-		var end = substring.find('\n')
+		var end = substring.find("\n")
 		if end == -1:
 			result = substring
 		else:

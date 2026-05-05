@@ -130,9 +130,27 @@
 	"09007": {
 		"traits": "Spell.",
 	},
+	"16056": {
+			"attack": 2,
+	},
+	"16064": {
+			"attack": 1,
+	},
+	"16099": {
+			"boost": 3,
+	},
+	"16109": {
+			"attack": 1,
+			"scheme": 1
+	},	
 	"16122": {
 			"attack": 3,
 	},
+	"16149": {
+			"attack": 1,
+			"scheme": 1,
+			"thwart": 1
+	},	
 	"21041": {
 		"subname": "Noh-Varr",
 		"_comments": "https://github.com/zzorba/marvelsdb/issues/345"

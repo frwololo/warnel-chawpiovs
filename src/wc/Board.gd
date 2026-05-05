@@ -530,24 +530,24 @@ func post_cards_moved_load():
 	if func_return is GDScriptFunctionState && func_return.is_valid():
 		yield(func_return, "completed")		
 		
-
-	func_return = scheme.execute_scripts_no_stack(scheme, "post_setup")
-	if func_return is GDScriptFunctionState && func_return.is_valid():
-		yield(func_return, "completed")		
-	
+		
 	#execute setup for remaining cards, if any
 	execute_cards_on_load()
 	for card in get_all_cards(true):
 		# we want to avoid running setup 
 		# for scheme and heroes, because we run them already in some other part of the code
 		var type_code = card.get_property("type_code")
-		var has_victory = card.get_property("victory", 0)
-		if has_victory:
+		var has_victory = card.get_property("victory", null)
+		if has_victory != null:
 			_has_victory_cards = true
 		if !type_code in ["side_scheme", "main_scheme", "hero", "alter_ego"]: 
 			func_return = card.execute_scripts_no_stack(card, "setup")
 			if func_return is GDScriptFunctionState && func_return.is_valid():
 				yield(func_return, "completed")		
+
+	func_return = scheme.execute_scripts_no_stack(scheme, "post_setup")
+	if func_return is GDScriptFunctionState && func_return.is_valid():
+		yield(func_return, "completed")	
 
 
 	while villain._post_load_move or cfc.NMAP["deck_villain"].is_shuffling:

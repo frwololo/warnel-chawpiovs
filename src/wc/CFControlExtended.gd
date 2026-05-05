@@ -400,6 +400,9 @@ func parse_keywords(text:String) -> Dictionary:
 	var result:= {}
 	
 	var lc_text:String = text.to_lower()
+
+	#replace newline with space
+	lc_text = lc_text.replace("\n", " ")
 		
 	var potential_keywords:PoolStringArray = lc_text.split(".")
 	for i in potential_keywords.size():
@@ -413,8 +416,9 @@ func parse_keywords(text:String) -> Dictionary:
 		match type:
 			"bool":
 				result[keyword] = keyword in potential_keywords
-			"int":
-				result[keyword] = 0
+			"int", "int_no_alterant":
+				if type == "int":
+					result[keyword] = 0
 				var found = false
 				for potential_keyword in potential_keywords:
 					if potential_keyword.begins_with(keyword + " "):
@@ -519,10 +523,7 @@ static func text_cleanup(text):
 	
 	# Replace all occurrences of multiple spaces with a single space
 	var cleaned_text := regex.sub(text, " ", true)
-	
-	#replace newline with space
-	cleaned_text = cleaned_text.replace("\n", " ")
-		
+			
 	return cleaned_text
 
 var _seen_images:= {}

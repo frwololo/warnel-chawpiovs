@@ -1,0 +1,164 @@
+{
+	"_comments": "Nebula Stealing my power stone",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Lethal Intent"
+				}
+			],
+			"villain": [
+				{
+					"card": "Nebula - 1"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Nebula's Ship",
+					"tokens": {
+						"evasion": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Art of Evasion",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Power Stone #16149",
+					"host": "Rocket Raccoon"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01056"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "wait for player turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Lethal Intent"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+			],
+			"villain": [
+				{
+					"card": "Nebula - 1"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Nebula's Ship",
+					"tokens": {
+						"evasion": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Art of Evasion",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Power Stone #16149",
+					"host": "Nebula"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Armored Guard"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a",
+					"tokens": {
+						"damage": 5
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01056"
+				}
+			]
+		}
+	}
+}

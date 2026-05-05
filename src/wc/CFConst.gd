@@ -649,7 +649,7 @@ const AUTO_KEYWORDS := {
 	"temporary" : "bool",
 	"toughness" : "bool",
 	"uses" : "string",
-	"victory" : "int",
+	"victory" : "int_no_alterant", #victory 0 is different from no Victory, so we don't want to init it at 0
 	"villainous" : "int",	
 	
 #additional ones not officially in the game
@@ -742,7 +742,8 @@ const SCENG_TRIGGER_DETAILS_ERASE_FROM_CHILDREN_SCRIPTS := [
 
 const DAMAGE_TRANSFER_SCRIPT_PROPERTIES:= [
 	"if_damage",
-	"if_no_damage"
+	"if_no_damage",
+	"overkill"
 ]
 
 enum PHASE_STEP {

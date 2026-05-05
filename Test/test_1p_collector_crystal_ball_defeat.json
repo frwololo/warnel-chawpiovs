@@ -1,0 +1,199 @@
+{
+	"_comments": "Test Crystal Ball Defeat benefits",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				},
+			],
+			"villain": [
+				{
+					"card": "Collector - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Grand Collection",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Crystal Ball",
+					"tokens": {
+						"threat": 1
+					}
+				}				
+			],
+			"the_collection": [
+				{
+					"card": "Rocket's Pistol"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Groot #16047"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "hand cannon"
+				},
+				{
+					"card": "battery pack"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Hand Cannon"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Rocket Launcher"
+				},
+				{
+					"card": "Particle Cannon"
+				},		
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "activate",
+			"value":  "Rocket Raccoon",
+		},	
+		{
+			"type": "choose",
+			"value":  "Thwart",
+		},
+		{
+			"type": "target",
+			"value":  "Crystal Ball",
+		},
+		{
+			"type": "select",
+			"value":  "Particle Cannon",
+		},	
+		{
+			"type": "Play",
+			"value":  "Particle Cannon",
+		},	
+		{
+			"type": "select",
+			"value":  "ok",
+			"_comments": "empty selection for cost"
+		},			
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				},
+			],
+			"villain": [
+				{
+					"card": "Collector - 1"
+				}
+			],
+			"victory_display": [
+							{
+					"card": "Crystal Ball",
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Grand Collection",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				
+			],
+			"the_collection": [
+				{
+					"card": "Rocket's Pistol"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Groot #16047"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "hand cannon"
+				},
+				{
+					"card": "battery pack"
+				},
+				{
+					"card": "Particle Cannon"
+				},					
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Hand Cannon"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Rocket Launcher"
+				},
+	
+			]
+		}
+	}
+}

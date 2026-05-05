@@ -784,7 +784,7 @@
 		"event_prevented": {
 			"trigger": "self",
 			"event_filters": {
-				"amount_prevented": ">1"
+				"amount_prevented": ">0"
 			},
 			"board": [
 				{
@@ -952,7 +952,9 @@
 			"event_filters": {
 				"amount": ">0",
 				"target": "my_hero",
-				"tags": ["attack"]
+				"tags": [
+					"attack"
+				]
 			},
 			"is_optional_board": true,
 			"board": [
@@ -1666,16 +1668,16 @@
 		},
 		"card_defeated": {
 			"trigger": "self",
-			"is_optional_all": "true",
 			"all": [
 				{
 					"name": "add_script",
 					"end_condition": "card_played",
 					"subject": "index",
-					"src_container": "hand",
+					"src_container": "hand_event_source_hero",
 					"needs_subject": true,
 					"subject_count": "all",
 					"selection_count": 1,
+					"selection_type": "max",
 					"needs_selection": true,
 					"script": {
 						"alterants": {
@@ -1684,7 +1686,7 @@
 									"filter_task": "get_property",
 									"filter_property_name": "cost",
 									"alteration": -3,
-									"trigger": "my_hero"
+									"trigger": "self"
 								}
 							]
 						}
@@ -1743,7 +1745,7 @@
 			]
 		},
 		"special": {
-			"board": [
+			"all": [
 				{
 					"name": "add_threat",
 					"subject": "main_scheme",
@@ -2287,7 +2289,7 @@
 			]
 		},
 		"special": {
-			"board": [
+			"all": [
 				{
 					"name": "conditional_script",
 					"options": [
@@ -2356,8 +2358,7 @@
 	},
 	"Fanaticism": {
 		"_surge": {},
-		"card_moved_to_board": {
-			"trigger": "self",
+		"self_moved_to_board": {
 			"board": [
 				{
 					"name": "attach_to_card",
@@ -2568,7 +2569,7 @@
 					"filter_property_name": "excess_damage_boost",
 					"trigger": "my_hero",
 					"alteration": 1
-				},
+				}
 			]
 		},
 		"_comments": "This is (incorrectly) implemented as a compulsive alterant instead of an interrupt, this is the only card in the game doing this kind of modification, doing it as an optional interrupt would imply massive changes in the engine"
@@ -2983,7 +2984,7 @@
 					{
 						"name": "pay_cost",
 						"cost": {
-							"mental": 3
+							"mental": 2
 						},
 						"is_cost": true
 					}
@@ -3065,7 +3066,10 @@
 					"selection_count": 1,
 					"filter_state_seek": [
 						{
-							"filter_group": "play_area_my_hero"
+							"filter_group": "group_upgrade_support_my_hero"
+						},
+						{
+							"filter_group": "group_allies_my_hero"
 						}
 					]
 				}
@@ -3119,10 +3123,12 @@
 					"func_params": {
 						"property": "cost"
 					},
-					"seek_exclude": "my_identity",
 					"filter_state_seek": [
 						{
-							"filter_group": "play_area_my_hero",	
+							"filter_group": "group_upgrade_support_my_hero"
+						},
+						{
+							"filter_group": "group_allies_my_hero"
 						}
 					]
 				},
@@ -3209,23 +3215,31 @@
 					]
 				},
 				{
-					"name": "nop",
-					"subject": "boardseek",
-					"filter_state_seek": [
-						{
-							"filter_group": "group_identities_first_player"
-						}
-					]
-				},
-				{
 					"name": "host_card",
-					"host": "previous",
+					"host": "villain",
 					"subject": "tutor",
 					"src_container": [
 						"deck_villain",
 						"set_aside"
 					],
 					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Universal Weapon"
+							}
+						}
+					]
+				}
+			]
+		},
+		"post_setup": {
+			"_comments": "post_setup step here because power stone gets attached to villain automatically at setup",
+			"all": [
+				{
+					"name": "host_card",
+					"host": "first_player",
+					"subject": "boardseek",
+					"filter_state_seek": [
 						{
 							"filter_properties": {
 								"Name": "Power Stone"
@@ -3591,7 +3605,7 @@
 				{
 					"name": "thwart",
 					"amount": "count_previous_subjects",
-					"amount_multiplier": 3,
+					"multiplier_amount": 3,
 					"_comments": "weird way to ensure we don't remove threat if we didn't find a minion",
 					"subject": "main_scheme"
 				}
@@ -3986,7 +4000,7 @@
 		}
 	},
 	"Nebula's Ship": {
-		"step_started": {
+		"interrupt_step_started": {
 			"event_filters": {
 				"step_name": "VILLAIN_THREAT"
 			},
@@ -4390,14 +4404,6 @@
 		"setup": {
 			"all": [
 				{
-					"name": "move_card_to_board",
-					"subject": "self"
-				}
-			]
-		},
-		"self_moved_to_board": {
-			"board": [
-				{
 					"name": "attach_to_card",
 					"subject": "villain"
 				}
@@ -4409,6 +4415,18 @@
 				"damage": ">=3",
 				"tags": [
 					"attack"
+				],
+				"filter_state_event_attacker": [
+					{
+						"filter_properties": {
+							"type_code": "hero"
+						}
+					},
+					{
+						"filter_properties": {
+							"type_code": "villain"
+						}
+					}
 				]
 			},
 			"board": [
@@ -4470,7 +4488,7 @@
 						"tags": [
 							"action_ability"
 						]
-					},				
+					},
 					{
 						"name": "exhaust_card",
 						"subject": "Milano",
@@ -4489,7 +4507,7 @@
 						"tags": [
 							"action_ability"
 						]
-					},				
+					},
 					{
 						"name": "exhaust_card",
 						"subject": "Milano",
@@ -4878,13 +4896,13 @@
 		},
 		"manual": {
 			"board": [
-					{
-						"name": "constraints",
-						"is_cost": true,
-						"tags": [
-							"action_ability"
-						]
-					},			
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
 				{
 					"name": "exhaust_card",
 					"subject": "Milano",
@@ -5810,7 +5828,7 @@
 						"unc": 2,
 						"type_constraint": "same"
 					},
-					"is_cost": true,
+					"is_cost": true
 				},
 				{
 					"name": "add_threat",
@@ -6219,12 +6237,21 @@
 					"name": "deal_damage",
 					"is_cost": true,
 					"amount": 2,
-					"subject": "my_hero"
+					"subject": "event_source_hero"
 				},
 				{
 					"name": "deal_encounter",
-					"subject": "my_hero"
+					"subject": "event_source_hero"
 				},
+				{
+					"name": "sequence",
+					"sequence_ability": "shuffle_back",
+					"subject": "self"
+				}
+			]
+		},
+		"shuffle_back": {
+			"board": [
 				{
 					"name": "shuffle_card_into_container",
 					"subject": "self",
@@ -6262,7 +6289,7 @@
 			]
 		},
 		"special": {
-			"board": [
+			"all": [
 				{
 					"name": "conditional_script",
 					"options": [
@@ -6580,7 +6607,7 @@
 			]
 		},
 		"special": {
-			"board": [
+			"all": [
 				{
 					"name": "deal_damage",
 					"subject": "current_hero_target",
@@ -6622,7 +6649,7 @@
 			]
 		},
 		"special": {
-			"board": [
+			"all": [
 				{
 					"name": "discard",
 					"subject": "index",

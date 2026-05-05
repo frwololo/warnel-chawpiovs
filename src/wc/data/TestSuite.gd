@@ -684,6 +684,8 @@ func action_select(hero_id, action_value):
 		chosen_cards = action_value
 	else:
 		match action_value:
+			"ok":
+				ok_current_selection_window()			
 			"cancel":
 				return cancel_current_selection_window(false)
 			_:
@@ -692,16 +694,30 @@ func action_select(hero_id, action_value):
 	if !is_instance_valid(_current_selection_window):
 		var _error = 1
 		_current_selection_window = null
+		return
 	
 	for i in range (chosen_cards.size()):
 		chosen_cards[i] = get_corrected_card_id(chosen_cards[i])
 		
 	if (chosen_cards):
-		if (_current_selection_window):
-			_current_selection_window.select_cards_by_name(chosen_cards)
+		chosen_cards = _current_selection_window.select_cards_by_name(chosen_cards)
 
-	_current_selection_window = null
+	if (chosen_cards):
+		_current_selection_window = null
 	return
+
+func ok_current_selection_window():
+	if !is_instance_valid(_current_selection_window):
+		var _error = 1
+		_current_selection_window = null
+			
+	if (_current_selection_window):
+		var closed_ok = _current_selection_window.attempt_ok()
+		if closed_ok:
+			_current_selection_window = null
+	else:
+		#TODO error handling
+		var _error =1
 
 func cancel_current_selection_window(force_cancel = true):
 	if !is_instance_valid(_current_selection_window):

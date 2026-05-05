@@ -703,6 +703,12 @@ func attempt_cancel() -> bool:
 	force_cancel()
 	return true
 
+func attempt_ok() -> bool:
+	if !check_ok_button():
+		return false
+	emit_signal("confirmed")
+	return true
+
 # Cancels out of the selection window
 func _on_cancel_pressed() -> void:
 	GameRecorder.add_entry(GameRecorder.ACTIONS.SELECT, "cancel", "cancel " + window_title)

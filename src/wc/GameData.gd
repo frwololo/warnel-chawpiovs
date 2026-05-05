@@ -2135,7 +2135,8 @@ func swap_villain(current_villain, next_villain_key, options = {}):
 	
 	var died = options.get("died", false)
 	if died:
-		if current_villain.get_property("victory", 0):
+		var has_victory = current_villain.get_property("victory", null)
+		if has_victory != null:
 			move_to_victory(current_villain)
 		else:
 			set_aside(current_villain) #todo remove from game

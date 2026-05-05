@@ -1,0 +1,172 @@
+{
+	"_comments": "Bug: Relentless assault doesn't get overkill",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}
+			],
+			"villain": [
+				{
+					"card": "Drang - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Terrestrial Invasion",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Blackjack O'Hare"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Follow Through"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Relentless Assault"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Badoon Ship",
+					"tokens": {
+						"barrage": 1
+					}
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Relentless Assault"
+		},
+		{
+			"type": "target",
+			"value": "BlackJack O'Hare"
+		},
+		{
+			"type": "choose",
+			"value": "yes"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}
+			],
+			"villain": [
+				{
+					"card": "Drang - 1",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Terrestrial Invasion",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Blackjack O'Hare"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Follow Through"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Relentless Assault"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Badoon Ship",
+					"tokens": {
+						"barrage": 1
+					}
+				}
+			]
+		}
+	}
+}

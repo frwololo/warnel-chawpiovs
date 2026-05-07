@@ -718,7 +718,7 @@ func receive_damage(script: ScriptTask) -> int:
 				amount,false,costs_dry_run(), tags)	
 		if amount:
 			var hint_str = str(amount)
-			if "overkill" in tags and !"attack" in tags:
+			if "overkill_splash" in tags and !"attack" in tags:
 				hint_str = "Overkill " + str(amount)
 			card.hint(hint_str, Color8(255,50,50))
 			damage_happened = amount
@@ -782,8 +782,7 @@ func receive_damage(script: ScriptTask) -> int:
 			#enemy overkill is handled in another part of the code
 			#Note that this only happens for attacks
 			if damage_happened and excess_damage:
-				#TODO everything below this line might have to move to the actual receive_damage section?
-				var overkill = attacker.get_property("overkill", 0, true) or (script.retrieve_integer_property("overkill"))	
+				var overkill = attacker.get_property("overkill", 0, true) or (script.retrieve_integer_property("overkill"))	or ("overkill" in tags)
 				if overkill:
 					var defender = script.subjects[0]
 					var defender_type = defender.get_property("type_code")
@@ -791,7 +790,7 @@ func receive_damage(script: ScriptTask) -> int:
 						var villain = gameData.get_villain()
 						var overkill_subjects = [villain] if villain else []
 						var script_modifications = {
-							"tags" : ["Scripted", "overkill"], #notably, overkill isn't an attack
+							"tags" : ["Scripted", "overkill_splash"], #notably, overkill isn't an attack
 							"subjects": overkill_subjects
 						}
 						_add_pre_receive_damage_on_stack (excess_damage, script, script_modifications)
@@ -1677,7 +1676,12 @@ func _modify_script(script, modifications:Dictionary = {}, script_definition_rep
 static func transfer_default_damage_properties(from_script, to_script):
 	for additional_data in CFConst.DAMAGE_TRANSFER_SCRIPT_PROPERTIES:
 		if from_script.script_definition.has(additional_data):
-			to_script.script_definition[additional_data] = from_script.script_definition[additional_data].duplicate()
+			var type = typeof(from_script.script_definition[additional_data])
+			match type:
+				TYPE_DICTIONARY, TYPE_ARRAY:
+					to_script.script_definition[additional_data] = from_script.script_definition[additional_data].duplicate()
+				_:
+					to_script.script_definition[additional_data] = from_script.script_definition[additional_data]
 
 func _add_pre_receive_damage_on_stack(amount, original_script, modifications:Dictionary = {}):		
 		var source = original_script.get_property("source", owner)

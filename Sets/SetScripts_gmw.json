@@ -100,9 +100,10 @@
 							"filter_group": "group_schemes"
 						}
 					],
-					"amount": "per_token_self",
-					"per_token_self": {
-						"token_name": "growth"
+					"amount": "per_token",
+					"per_token": {
+						"token_name": "growth",
+						"subject": "Groot"
 					}
 				}
 			]
@@ -123,12 +124,13 @@
 					"subject": "target",
 					"filter_state_subject": [
 						{
-							"filter_group": "group_schemes"
+							"filter_group": "group_enemies"
 						}
 					],
-					"amount": "per_token_self",
-					"per_token_self": {
-						"token_name": "growth"
+					"amount": "per_token",
+					"per_token": {
+						"token_name": "growth",
+						"subject": "Groot"
 					}
 				}
 			]
@@ -1814,25 +1816,28 @@
 			]
 		},
 		"alterants": {
-			"tmp_value": {
-				"func_name": "get_subject_int_printed_property",
-				"func_params": {
-					"subject": "my_hero",
-					"property": "health"
-				}
-			},
-			"condition_board": {
-				"func_name": "get_remaining_damage>=tmp_value",
-				"func_params": {
-					"subject": "my_hero"
-				}
-			},
 			"board": [
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "retaliate",
 					"trigger": "my_hero",
-					"alteration": 1
+					"alteration": {
+						"if": {
+							"func_name": "get_remaining_damage>=printed_health",
+							"func_params": {
+								"subject": "my_hero",
+								"printed_health": {
+									"func_name": "get_subject_int_printed_property",
+									"func_params": {
+										"subject": "my_hero",
+										"property": "health"
+									}
+								}
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
 				}
 			]
 		}
@@ -1869,11 +1874,9 @@
 				{
 					"name": "constraints",
 					"is_cost": true,
-					"max_per_hero_any": 1
+					"max_per_hero": 1
 				}
-			]
-		},
-		"manual": {
+			],		
 			"condition_board": {
 				"func_name": "has_trait",
 				"func_params": {
@@ -2221,8 +2224,8 @@
 	"Entangling Vines": {
 		"interrupt": {
 			"event_name": "thwart",
+			"trigger": "my_hero",
 			"event_filters": {
-				"event_source": "my_hero",
 				"tags": [
 					"basic power"
 				]
@@ -2251,14 +2254,14 @@
 				{
 					"name": "add_script",
 					"end_condition": "basic_thwart_happened",
-					"subject": "previous",
+					"subject": "self",
 					"script": {
 						"alterants": {
 							"all": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "thwart",
-									"trigger": "self",
+									"trigger": "Groot",
 									"alteration": 2
 								}
 							]
@@ -2451,19 +2454,20 @@
 				},
 				{
 					"name": "attack",
-					"target": "villain",
-					"tmp_value": {
-						"func_name": "get_subject_int_printed_property",
-						"func_params": {
-							"subject": "my_hero",
-							"property": "health"
-						}
-					},
+					"subject": "villain",
+					"needs_subject": true,
 					"amount": {
 						"if": {
 							"func_name": "get_remaining_damage>=tmp_value",
 							"func_params": {
-								"subject": "my_hero"
+								"subject": "my_hero",
+								"tmp_value": {
+									"func_name": "get_subject_int_printed_property",
+									"func_params": {
+										"subject": "my_hero",
+										"property": "health"
+									}
+								}
 							}
 						},
 						"then": 5,
@@ -2579,7 +2583,7 @@
 			"condition_hand": {
 				"func_name": "count_tokens<10",
 				"func_params": {
-					"subject": "self",
+					"subject": "Groot",
 					"token_name": "growth"
 				}
 			},
@@ -2598,14 +2602,14 @@
 						"if": {
 							"func_name": "count_tokens==9",
 							"func_params": {
-								"subject": "self",
+								"subject": "Groot",
 								"token_name": "growth"
 							}
 						},
 						"then": 1,
 						"else": 2
 					},
-					"subject": "self"
+					"subject": "Groot"
 				}
 			]
 		}
@@ -2618,11 +2622,7 @@
 		"_surge": {}
 	},
 	"Furnax": {
-		"response": {
-			"event_name": [
-				"enemy_attack_happened",
-				"enemy_scheme_happened"
-			],
+		"enemy_attack_happened":{
 			"trigger": "self",
 			"board": {
 				"_rules": {
@@ -2632,11 +2632,28 @@
 				"Flame": [
 					{
 						"name": "indirect_damage",
+						"subject": "my_identity",
 						"amount": 2
 					}
 				]
 			}
-		}
+		},
+		"enemy_scheme_happened":{
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Flame": [
+					{
+						"name": "indirect_damage",
+						"subject": "my_identity",
+						"amount": 2
+					}
+				]
+			}
+		}		
 	},
 	"Gallery of Splendor": {
 		"TODO": "campaign mode not supported",
@@ -2705,9 +2722,9 @@
 	"Groot #16001a": {
 		"interrupt": {
 			"event_name": "receive_damage",
-			"trigger": "self",
 			"event_filters": {
-				"amount": ">0"
+				"amount": ">0",
+				"target": "self"
 			},
 			"board": [
 				{
@@ -3474,15 +3491,10 @@
 	"Lashing Vines": {
 		"response": {
 			"event_name": [
-				"attack",
-				"thwart"
+				"basic_attack_happened",
+				"basic_thwart_happened"
 			],
-			"event_filters": {
-				"event_source": "my_hero",
-				"tags": [
-					"basic power"
-				]
-			},
+			"trigger": "my_hero",
 			"is_optional_board": true,
 			"board": [
 				{
@@ -4740,26 +4752,15 @@
 			},
 			"board": [
 				{
-					"name": "add_script",
-					"end_condition": "attack_happened",
-					"subject": "self",
-					"script": {
-						"alterants": {
-							"all": [
-								{
-									"filter_task": "get_property",
-									"filter_property_name": "attack",
-									"trigger": "self",
-									"alteration": 3
-								},
-								{
-									"filter_task": "get_property",
-									"filter_property_name": "overkill",
-									"trigger": "self",
-									"alteration": 1
-								}
-							]
-						}
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": 3
+				},			
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": ["overkill"]
 					}
 				}
 			]
@@ -5060,6 +5061,7 @@
 					"name": "attack",
 					"amount": 5,
 					"subject": "target",
+					"needs_subject": true,
 					"filter_state_subject": [
 						{
 							"filter_group": "group_enemies"
@@ -5070,7 +5072,7 @@
 		},
 		"interrupt_card_dies": {
 			"event_filters": {
-				"source": "self"
+				"secondary_source": "self"
 			},
 			"all": [
 				{
@@ -5402,9 +5404,11 @@
 				"target": "self",
 				"amount": ">0"
 			},
-			"tmp_value": "trigger_details_damage",
 			"condition_board": {
-				"func_name": "get_remaining_damage==tmp_value"
+				"func_name": "get_remaining_damage==tmp_value",
+				"func_params": {
+					"tmp_value": "trigger_details_amount"
+				}
 			},
 			"board": [
 				{
@@ -6474,8 +6478,8 @@
 	"Vine Spikes": {
 		"interrupt": {
 			"event_name": "attack",
+			"trigger": "my_hero",
 			"event_filters": {
-				"event_source": "my_hero",
 				"tags": [
 					"basic power"
 				]
@@ -6504,14 +6508,14 @@
 				{
 					"name": "add_script",
 					"end_condition": "basic_attack_happened",
-					"subject": "previous",
+					"subject": "self",
 					"script": {
 						"alterants": {
 							"all": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "attack",
-									"trigger": "self",
+									"trigger": "my_hero",
 									"alteration": 2
 								}
 							]

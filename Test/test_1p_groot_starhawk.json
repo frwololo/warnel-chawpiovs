@@ -1,0 +1,140 @@
+{
+	"_comments": "Bug: Starhawk not returning to hand",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Groot"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Ronan the Accuser - 1"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Kree Command Ship"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Interception Imminent",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Power Stone #16149",
+					"host": "Groot"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Starhawk - Stakar Ogord",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Root Stomp"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Groot #16001a"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Starhawk"
+		},
+		{
+			"type": "choose",
+			"value": "thwart"
+		},
+		{
+			"type": "target",
+			"value": "Interception Imminent"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Groot"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Ronan the Accuser - 1"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Kree Command Ship"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Interception Imminent",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Power Stone #16149",
+					"host": "Groot"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Root Stomp"
+				},
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Starhawk - Stakar Ogord"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Groot #16001a"
+				}
+			]
+		}
+	}
+}

@@ -139,8 +139,9 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			#NOTE in some cases it is ok for prepaid to be empty. E.g. when refusing to defend
 
 			for array in prepaid:
-				var prepaid_uids_task = guidMaster.array_of_objects_to_guid(array, true)
-				prepaid_uids.append(prepaid_uids_task)
+				var data = {"is_valid": array["is_valid"]}
+				data["subjects"] =  guidMaster.array_of_objects_to_guid(array["subjects"], true)
+				prepaid_uids.append(data)
 			var remote_trigger_details: Dictionary = trigger_details.duplicate()
 			remote_trigger_details["network_prepaid"] =  prepaid_uids
 			remote_trigger_details["network_rng_state"] =  cfc.game_rng.state

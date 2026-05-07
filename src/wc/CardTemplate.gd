@@ -274,14 +274,16 @@ func check_death(script = null) -> bool:
 			var type = owner.get_property("type_code", "")
 			if !is_character_type(type):
 				owner = WCScriptingEngine._get_identity_from_script(script)	
+				trigger_details["secondary_source"] = trigger_details["source"]
 				trigger_details["source"] = guidMaster.get_guid(owner)
 
 	var card_dies_definition = {
 		"name": "card_dies",
 		"tags": tags,
 	}
-	if trigger_details.has("source"):
-		card_dies_definition["source"] = trigger_details["source"]
+	for param in ["source", "secondary_source"]:
+		if trigger_details.has(param):
+			card_dies_definition[param] = trigger_details[param]
 	#force changing the trigger here. Might not be the best idea but it's useful for UI display
 	trigger_details["trigger_type"] = "card_dies"	
 	trigger_details["excess_damage"] = excess_damage
@@ -971,10 +973,9 @@ func attempt_to_play(user_click:bool = false, origin_event = null):
 		if gameData.scripted_play_sequence:
 			return	
 		
-	
+	#for manual attempts to play we only allow board or hand
 	var state_exec = get_state_exec()
-	
-	if !state_exec in ["hand", "board"]:
+	if user_click and !(state_exec in ["hand", "board"]):
 		return false
 
 	if user_click:
@@ -1037,7 +1038,7 @@ func can_interrupt(
 		return CFConst.CanInterrupt.NO
 	
 	var _debug = false
-	if canonical_name == "Proxima Midnight - 1" and trigger_card:
+	if canonical_name == "Root Stomp" and trigger_card:
 		if trigger_details["event_name"] == "card_dies":
 			_debug = true
 
@@ -1134,6 +1135,34 @@ func retrieve_script_by_path(path:String):
 	
 	return found_scripts
 
+#returns true if no condition is set for a script,
+#or if the condition is met in the current game state,
+#false if the condition is not met
+#example:
+#					"condition_board":{
+#						"func_name": "current_activation_status",
+#						"func_params": {
+#							"undefended": true
+#						}
+#					},	
+func script_passes_condition(card_scripts, key, trigger_card, trigger_details = {}):
+	if typeof(card_scripts) != TYPE_DICTIONARY:
+		return true
+	
+	var condition = card_scripts.get("condition_" + key, {})
+	if !condition:
+		return true
+		
+	var func_name = condition.get("func_name", "")
+	if !func_name:
+		return true
+		
+	var func_params = condition.get("func_params", {})
+	func_params = WCScriptingEngine.static_pre_task_prime(func_params, self)
+	var dummy_script = ScriptTask.new(self, {"name": "nop"}, trigger_card, trigger_details)			
+	var check = cfc.ov_utils.func_name_run(self, func_name, func_params, dummy_script)
+	return check
+
 func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 	# I use this spot to add a breakpoint when testing script behaviour
 	# especially on filters
@@ -1166,25 +1195,11 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 		return card_scripts
 	
 	var to_erase = []
-#					"condition":{
-#						"func_name": "current_activation_status",
-#						"func_params": {
-#							"undefended": true
-#						}
-#					},	
+
 	for key in card_scripts:
-		if card_scripts.has("condition_" + key):
-			var condition = card_scripts["condition_" + key]
-			var func_name = condition.get("func_name", "")
-			if !func_name:
-				continue
-			var func_params = condition.get("func_params", {})
-			func_params = WCScriptingEngine.static_pre_task_prime(func_params, self)
-			var dummy_script = ScriptTask.new(self, {"name": "nop"}, trigger_card, trigger_details)			
-			var check = cfc.ov_utils.func_name_run(self, func_name, func_params, dummy_script)
-			if !check:
-				to_erase.append(key)
-				to_erase.append("condition_" + key)		
+		if !script_passes_condition(card_scripts, key, trigger_card, trigger_details):
+			to_erase.append(key)
+			to_erase.append("condition_" + key)		
 	for key in to_erase:
 		card_scripts.erase(key)
 		
@@ -1234,7 +1249,7 @@ func execute_scripts(
 		orig_trigger_details: Dictionary = {},
 		run_type := CFInt.RunType.NORMAL):
 
-	if (trigger == "post_setup" and canonical_name =="Interception Imminent - 1A"):
+	if (trigger == "card_dies"):
 		var _tmp = 1
 
 	if script_exec_temporarily_blocked(run_type):
@@ -1645,7 +1660,8 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 			#cleanup after cost failure
 			if sceng and sceng.network_prepaid:
 				for prepaid_data in sceng.network_prepaid:
-					for card in prepaid_data:
+					var prepaid_subjects = prepaid_data["subjects"]
+					for card in prepaid_subjects:
 						if card as Card:
 							card.remove_resource_lock()
 	is_executing_scripts = false

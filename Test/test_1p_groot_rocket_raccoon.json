@@ -1,0 +1,152 @@
+{
+	"_comments": "Bug: Rocket Raccoon not getting boost",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Groot"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Ronan the Accuser - 1"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Kree Command Ship"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Interception Imminent",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Power Stone #16149",
+					"host": "Groot"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Rocket Raccoon",
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra bomber"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Root Stomp"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Groot #16001a"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Rocket Raccoon"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Hydra Bomber"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Groot"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Ronan the Accuser - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Kree Command Ship"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Hydra bomber"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Interception Imminent",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Power Stone #16149",
+					"host": "Groot"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Rocket Raccoon"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Root Stomp"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Groot #16001a"
+				}
+			]
+		}
+	}
+}

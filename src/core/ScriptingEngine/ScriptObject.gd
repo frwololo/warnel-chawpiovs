@@ -197,7 +197,7 @@ func network_prepaid_sanity_check(enable_correction = true) -> bool:
 	#prepayment should be an array of GUID
 	var result = []
 	var to_return = true
-	for uid in prepayment:
+	for uid in prepayment["subjects"]:
 		if guidMaster.is_guid(uid):
 			result.append(guidMaster.get_object_by_guid(uid))
 		else:
@@ -239,13 +239,16 @@ func _network_prepaid():
 		return null
 	#prepayment should be an array of GUID
 	var result = []
-	for uid in prepayment:
+	for uid in prepayment["subjects"]:
 		if guidMaster.is_guid(uid):
 			result.append(guidMaster.get_object_by_guid(uid))
 		else:
 			result.append(uid)
 		
-	return result
+	return {
+		"is_valid": prepayment["is_valid"],
+		"subjects": result
+		}
 	
 # Figures out what the subjects of this script is supposed to be.
 #
@@ -255,8 +258,9 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 	var prepaid = _network_prepaid()
 	if (null != prepaid):
 		user_interaction_status =  CFConst.USER_INTERACTION_STATUS.DONE_NETWORK_PREPAID
-		set_subjects(prepaid)
-		return prepaid
+		set_subjects(prepaid["subjects"])
+		is_valid = prepaid["is_valid"]
+		return prepaid["subjects"]
 
 	var result = _local_find_subjects(stored_integer, run_type)
 
@@ -423,7 +427,11 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 		if typeof(select_return) == TYPE_ARRAY:
 			subjects_array = select_return
 		else:
-			is_valid = false
+			#not invalid if the selection is "max"
+			if get_property(SP.KEY_SELECTION_TYPE) == "max":
+				pass
+			else:
+				is_valid = false
 			subjects_array = []
 		user_interaction_status = CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER	
 	

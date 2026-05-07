@@ -1,0 +1,140 @@
+{
+	"_comments": "Bug: Root Stomp defeat use case",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Groot"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Ronan the Accuser - 1"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Kree Command Ship"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Interception Imminent",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Power Stone #16149",
+					"host": "Groot"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Furnax",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Root Stomp"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Groot #16001a",
+					"tokens": {
+						"growth": 1
+					}
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Root Stomp"
+		},
+		{
+			"type": "target",
+			"value": "Furnax"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Groot"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Furnax"
+				}
+			],
+			"villain": [
+				{
+					"card": "Ronan the Accuser - 1",
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Kree Command Ship"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Interception Imminent",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Power Stone #16149",
+					"host": "Groot"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Root Stomp"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Groot #16001a",
+					"tokens": {
+						"growth": 2
+					}
+				}
+			]
+		}
+	}
+}

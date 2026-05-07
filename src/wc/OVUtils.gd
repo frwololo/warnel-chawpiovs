@@ -278,7 +278,7 @@ static func func_name_run(object, func_name, func_params, script = null):
 		elif comparison_value.trim_suffix("p").is_valid_integer():
 			comparison_value = int(comparison_value.trim_suffix("p")) * cfc.count_players()	
 		elif script:
-			comparison_value = script.retrieve_integer_property(comparison_value)
+			comparison_value = script.retrieve_integer_property(comparison_value,0, func_params)
 		else:
 			print_debug("error in script for " + func_name)
 			comparison_value = 0

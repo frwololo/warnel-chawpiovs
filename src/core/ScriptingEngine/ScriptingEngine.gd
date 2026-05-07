@@ -276,9 +276,9 @@ func execute(_run_type) -> void:
 			_execute_before_instructions(script)
 		if is_network_master:# and not costs_dry_run():
 			if script.is_else:
-				network_prepaid.append(null)
+				network_prepaid.append({"is_valid": true, "subjects": null})
 			else:
-				network_prepaid.append([])
+				network_prepaid.append({"is_valid": true, "subjects": []})
 				
 		if ((only_cost_check and not script.is_cost and not script.needs_subject)
 				or (run_type == CFInt.RunType.ELSE and not script.is_else)
@@ -288,7 +288,7 @@ func execute(_run_type) -> void:
 		if script.is_else and run_type == CFInt.RunType.PRIME_ONLY and can_all_costs_be_paid:
 			if is_network_master:# and not costs_dry_run():
 				network_prepaid.pop_back()
-				network_prepaid.append([])			
+				network_prepaid.append({"is_valid": true, "subjects": []})			
 			continue	
 		# We store the temp modifiers to counters, so that things like
 		# info during targetting can take them into account
@@ -349,7 +349,7 @@ func execute(_run_type) -> void:
 			#Add to list of prepaid stuff only if I'm the one paying the costs and actually paying them
 			if is_network_master:# and not costs_dry_run():
 				network_prepaid.pop_back()
-				network_prepaid.append(script.subjects.duplicate()) #2025-03-01 added a duplicate here attempt at bug fix
+				network_prepaid.append({"is_valid": script.is_valid, "subjects": script.subjects.duplicate()}) #2025-03-01 added a duplicate here attempt at bug fix
 			
 			if script.my_stored_integer != null:
 				set_stored_integer(script.my_stored_integer,script)

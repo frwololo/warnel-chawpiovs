@@ -113,7 +113,8 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 	
 	#interrupt or response replacements
 	var interrupt_script = has_interrupt(script)
-	if (type_code == "event" && interrupt_script):
+	var has_manual_hand = script.get("manual", {}).get("hand", {})
+	if (type_code == "event" && interrupt_script && !has_manual_hand):
 		var playFromHand: Array = []
 		if (cost):
 			playFromHand =  [
@@ -136,7 +137,6 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 			} 
 		}
 		script = WCUtils.merge_dict(script, playInterrupt, true)
-		script = script
 	else: #Regular cards
 		#Play From hand: discard a specific number of cards to play
 		#TODO limit to player cards ?
@@ -183,7 +183,6 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 			#note: order matters here in some cases. generally speaking
 			# we want cost to be paid first, therefore be at the top of the array			
 			script = WCUtils.merge_dict( playFromHand, script, true)
-		
 		if "scheme" in type_code:
 			var scheme_comes_to_play: Dictionary = { 
 				"self_moved_to_board": {

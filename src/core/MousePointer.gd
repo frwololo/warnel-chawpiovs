@@ -25,6 +25,8 @@ var overlaps := []
 # When set to false, prevents the player from disable interacting with the game.
 var is_disabled := false setget set_disabled
 
+#CFUtils function to use to determine priority for card selection
+var priority_sort_function := "sort_index_ascending"
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -48,7 +50,7 @@ func _process(_delta: float) -> void:
 		# After a card has been dragged, it generally clears its
 		# focused state. This check ensures that if the mouse hovers over
 		# the card still after the drag, we focus it again
-		if current_focused_card.get_parent() == cfc.NMAP.board \
+		if cfc.NMAP.has("board") and current_focused_card.get_parent() == cfc.NMAP.board \
 				and current_focused_card.state == Card.CardState.ON_PLAY_BOARD:
 			current_focused_card.set_state(Card.CardState.FOCUSED_ON_BOARD)
 		if current_focused_card.get_parent().is_in_group("hands") \
@@ -254,7 +256,7 @@ func _discover_focus() -> void:
 		if cfc.card_drag_ongoing:
 			cfc.card_drag_ongoing.potential_container = null
 		# We sort the potential cards by their index on the board
-		potential_cards.sort_custom(CFUtils,"sort_index_ascending")
+		potential_cards.sort_custom(CFUtils,priority_sort_function)
 		# The candidate always has the highest index as it's drawn on top of
 		# others.
 		var card : Card = potential_cards.back()
@@ -266,6 +268,7 @@ func _discover_focus() -> void:
 			if not (current_focused_card
 					and current_focused_card.state == Card.CardState.DRAGGED) \
 				and not (current_focused_card
+					and is_instance_valid(current_focused_card.tokens)
 					and current_focused_card.tokens.are_hovered()
 					and current_focused_card.tokens.is_drawer_open):
 				# If we already highlighted a card that is lower in index
@@ -302,7 +305,8 @@ func _discover_focus() -> void:
 	# We make sure we don't try to change the current_focused_card while
 	# in the process of dragging one.
 	elif current_focused_card and current_focused_card.state != Card.CardState.DRAGGED:
-		if not current_focused_card.tokens.are_hovered() \
+		if not is_instance_valid(current_focused_card.tokens) \
+				or not current_focused_card.tokens.are_hovered() \
 				or not current_focused_card.tokens.is_drawer_open:
 			current_focused_card._on_Card_mouse_exited()
 			current_focused_card = null

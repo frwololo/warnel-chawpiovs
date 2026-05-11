@@ -184,7 +184,8 @@ func resize():
 		scenario_picture.rect_min_size = Vector2(300, 300)
 		scenario_picture.rect_size = scenario_picture.rect_min_size
 		get_node("%VBoxContainer").add_constant_override("separation", 20)
-	else:		
+	else:	
+		get_node("%DLLabel2").visible = false	
 		get_node("%LeftRight").add_constant_override("separation", 10)
 		get_node("%TeamScenarioPanel").add_constant_override("separation", 5)
 		get_node("%ScenarioOverContainer").add_constant_override("separation", 2)

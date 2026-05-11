@@ -7,7 +7,7 @@ extends Panel
 const menu_switch_time = 0.35
 
 onready var v_buttons := $CenterContainer/VBox/VButtons
-onready var exit_button := $CenterContainer/VBox/VButtons/Exit
+onready var exit_button := get_node("%Exit")
 onready var v_folder_label := get_node("%FolderLabel")
 onready var main_title := $CenterContainer/VBox/Label
 onready var texture_rect = get_node("%TextureRect")
@@ -315,6 +315,8 @@ func on_button_pressed(_button_name : String) -> void:
 			next_scene(CFConst.PATH_CUSTOM + 'lobby/TeamSelection.tscn')
 		"Multiplayer":		
 			get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/MultiplayerMenu1.tscn')
+		"DeckBuilder":		
+			get_tree().change_scene(CFConst.PATH_CUSTOM + 'deckbuilder/DeckManagement.tscn')
 		"Credits":
 			get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/Credits.tscn')
 		"Options":

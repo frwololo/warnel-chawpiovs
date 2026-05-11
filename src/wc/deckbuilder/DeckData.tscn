@@ -1,0 +1,99 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://src/wc/deckbuilder/DeckData.gd" type="Script" id=1]
+[ext_resource path="res://assets/icons/deck_plus.png" type="Texture" id=2]
+[ext_resource path="res://assets/icons/aspect_red.png" type="Texture" id=3]
+[ext_resource path="res://assets/icons/aspect_green.png" type="Texture" id=4]
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 1, 1, 1, 1 )
+draw_center = false
+border_width_left = 3
+border_width_right = 3
+border_color = Color( 2.2, 1.6, 3, 1 )
+corner_radius_top_left = 3
+corner_radius_bottom_right = 3
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 1, 1, 1, 1 )
+draw_center = false
+border_width_top = 3
+border_width_bottom = 3
+border_color = Color( 1.5, 1.1, 2, 1 )
+corner_radius_top_left = 3
+corner_radius_bottom_right = 3
+
+[node name="DeckData" type="VBoxContainer"]
+script = ExtResource( 1 )
+
+[node name="Panel" type="MarginContainer" parent="."]
+margin_right = 100.0
+margin_bottom = 100.0
+
+[node name="DeckPicture" type="TextureButton" parent="Panel"]
+unique_name_in_owner = true
+margin_right = 100.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
+texture_normal = ExtResource( 2 )
+expand = true
+stretch_mode = 6
+
+[node name="PanelContainer" type="MarginContainer" parent="Panel"]
+margin_top = 60.0
+margin_right = 84.0
+margin_bottom = 100.0
+size_flags_horizontal = 0
+size_flags_vertical = 8
+
+[node name="AspectsContainer" type="HBoxContainer" parent="Panel/PanelContainer"]
+unique_name_in_owner = true
+margin_right = 84.0
+margin_bottom = 40.0
+size_flags_horizontal = 0
+size_flags_vertical = 8
+
+[node name="TextureRect" type="TextureRect" parent="Panel/PanelContainer/AspectsContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+texture = ExtResource( 3 )
+
+[node name="TextureRect2" type="TextureRect" parent="Panel/PanelContainer/AspectsContainer"]
+margin_left = 44.0
+margin_right = 84.0
+margin_bottom = 40.0
+texture = ExtResource( 4 )
+
+[node name="HorizontalHighlights" type="Panel" parent="Panel"]
+visible = false
+margin_right = 100.0
+margin_bottom = 100.0
+mouse_filter = 2
+custom_styles/panel = SubResource( 2 )
+
+[node name="VerticalHighlights" type="Panel" parent="Panel"]
+visible = false
+margin_right = 100.0
+margin_bottom = 100.0
+mouse_filter = 2
+custom_styles/panel = SubResource( 1 )
+
+[node name="DeckName" type="Label" parent="."]
+unique_name_in_owner = true
+margin_top = 104.0
+margin_right = 100.0
+margin_bottom = 118.0
+text = "New Deck"
+align = 1
+autowrap = true
+max_lines_visible = 2
+
+[node name="LargePicture" type="TextureRect" parent="."]
+unique_name_in_owner = true
+visible = false
+margin_top = 42.0
+margin_right = 14.0
+margin_bottom = 42.0
+
+[connection signal="mouse_entered" from="Panel/DeckPicture" to="." method="_on_HeroPicture_mouse_entered"]
+[connection signal="mouse_exited" from="Panel/DeckPicture" to="." method="_on_HeroPicture_mouse_exited"]

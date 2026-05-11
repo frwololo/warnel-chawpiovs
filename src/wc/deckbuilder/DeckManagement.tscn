@@ -1,0 +1,242 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://src/wc/deckbuilder/DeckManagement.gd" type="Script" id=1]
+[ext_resource path="res://themes/darktheme/darktheme.theme" type="Theme" id=2]
+[ext_resource path="res://themes/darktheme/fonts/Bangers/Bangers-Regular.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://fonts/Bangers-Regular.ttf" type="DynamicFontData" id=4]
+
+[sub_resource type="DynamicFont" id=1]
+size = 32
+font_data = ExtResource( 3 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 40
+font_data = ExtResource( 4 )
+
+[node name="DeckManagement" type="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 2 )
+script = ExtResource( 1 )
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.0705882, 0.0705882, 0.0705882, 1 )
+
+[node name="MainMenu" type="MarginContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 20.0
+margin_right = -30.0
+margin_bottom = -30.0
+
+[node name="Outercontainer" type="VBoxContainer" parent="MainMenu"]
+margin_right = 1870.0
+margin_bottom = 1050.0
+custom_constants/separation = 10
+
+[node name="message" type="Label" parent="MainMenu/Outercontainer"]
+unique_name_in_owner = true
+margin_right = 1870.0
+margin_bottom = 30.0
+
+[node name="FiltersContainer" type="MarginContainer" parent="MainMenu/Outercontainer"]
+margin_top = 40.0
+margin_right = 1870.0
+margin_bottom = 80.0
+
+[node name="Filters" type="HBoxContainer" parent="MainMenu/Outercontainer/FiltersContainer"]
+margin_right = 1870.0
+margin_bottom = 40.0
+
+[node name="HeroesFilter" type="OptionButton" parent="MainMenu/Outercontainer/FiltersContainer/Filters"]
+unique_name_in_owner = true
+margin_right = 121.0
+margin_bottom = 40.0
+text = "All Heroes"
+items = [ "All Heroes", null, false, 0, null ]
+selected = 0
+
+[node name="Title" type="Label" parent="MainMenu/Outercontainer/FiltersContainer/Filters"]
+margin_left = 941.0
+margin_top = 2.0
+margin_right = 1052.0
+margin_bottom = 37.0
+size_flags_horizontal = 6
+custom_fonts/font = SubResource( 1 )
+text = "My Decks"
+align = 1
+
+[node name="DecksContainer" type="MarginContainer" parent="MainMenu/Outercontainer"]
+margin_top = 90.0
+margin_right = 1870.0
+margin_bottom = 90.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Outercontainer/DecksContainer"]
+margin_right = 1870.0
+
+[node name="MarginContainer" type="MarginContainer" parent="MainMenu/Outercontainer/DecksContainer/VBoxContainer"]
+margin_right = 1870.0
+
+[node name="DecksScroll" type="ScrollContainer" parent="MainMenu/Outercontainer/DecksContainer/VBoxContainer/MarginContainer"]
+unique_name_in_owner = true
+margin_right = 1870.0
+scroll_horizontal_enabled = false
+
+[node name="Decks" type="GridContainer" parent="MainMenu/Outercontainer/DecksContainer/VBoxContainer/MarginContainer/DecksScroll"]
+unique_name_in_owner = true
+custom_constants/hseparation = 10
+columns = 6
+
+[node name="ActionsContainer" type="MarginContainer" parent="MainMenu/Outercontainer"]
+margin_top = 100.0
+margin_right = 1870.0
+margin_bottom = 218.0
+custom_constants/margin_right = 100
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="MainMenu/Outercontainer/ActionsContainer"]
+margin_right = 1770.0
+margin_bottom = 118.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3"]
+margin_right = 235.0
+margin_bottom = 118.0
+custom_constants/separation = 20
+
+[node name="CloneButton" type="Button" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer"]
+unique_name_in_owner = true
+margin_top = 29.0
+margin_right = 105.0
+margin_bottom = 88.0
+size_flags_horizontal = 3
+size_flags_vertical = 4
+text = "CLONE"
+
+[node name="DeleteButton" type="Button" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 125.0
+margin_top = 29.0
+margin_right = 235.0
+margin_bottom = 88.0
+size_flags_horizontal = 3
+size_flags_vertical = 4
+text = "DELETE"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3"]
+margin_left = 912.0
+margin_right = 1770.0
+margin_bottom = 118.0
+size_flags_horizontal = 10
+size_flags_vertical = 8
+custom_constants/separation = 20
+alignment = 2
+
+[node name="DownloadDeckContainer" type="PanelContainer" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer2"]
+margin_right = 561.0
+margin_bottom = 118.0
+size_flags_horizontal = 9
+size_flags_vertical = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer2/DownloadDeckContainer"]
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 559.0
+margin_bottom = 116.0
+alignment = 1
+
+[node name="DLLabel" type="Label" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer2/DownloadDeckContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_right = 557.0
+margin_bottom = 30.0
+text = "Download MarvelCDB Deck. Enter Deck id: (e.g.103)"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer2/DownloadDeckContainer/VBoxContainer"]
+margin_top = 33.0
+margin_right = 557.0
+margin_bottom = 81.0
+custom_constants/separation = 20
+
+[node name="DownloadDeckNumber" type="LineEdit" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer2/DownloadDeckContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_right = 200.0
+margin_bottom = 48.0
+rect_min_size = Vector2( 200, 0 )
+caret_blink = true
+caret_blink_speed = 0.5
+
+[node name="DownloadDeckButton" type="Button" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer2/DownloadDeckContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 220.0
+margin_right = 371.0
+margin_bottom = 48.0
+custom_fonts/font = SubResource( 2 )
+text = "Download"
+
+[node name="DeckDownloadError" type="Label" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer2/DownloadDeckContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 84.0
+margin_right = 557.0
+margin_bottom = 114.0
+custom_colors/font_color = Color( 0.933333, 0.0823529, 0.0823529, 1 )
+autowrap = true
+
+[node name="ResetAllButton" type="Button" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer2"]
+unique_name_in_owner = true
+margin_left = 581.0
+margin_top = 29.0
+margin_right = 858.0
+margin_bottom = 88.0
+size_flags_horizontal = 3
+size_flags_vertical = 4
+text = "Reset ALL DEcks"
+
+[node name="BottomContainer" type="MarginContainer" parent="MainMenu/Outercontainer"]
+margin_top = 228.0
+margin_right = 1870.0
+margin_bottom = 287.0
+
+[node name="BackButton" type="Button" parent="MainMenu/Outercontainer/BottomContainer"]
+unique_name_in_owner = true
+margin_right = 1870.0
+margin_bottom = 59.0
+text = "Back to main menu"
+
+[node name="NewDeckContainer" type="CenterContainer" parent="."]
+unique_name_in_owner = true
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="NewDeckContainer"]
+margin_right = 355.0
+margin_bottom = 135.0
+
+[node name="Label" type="Label" parent="NewDeckContainer/VBoxContainer"]
+margin_right = 355.0
+margin_bottom = 30.0
+text = "New Deck Creation: Choose Hero"
+
+[node name="HeroesFilter2" type="OptionButton" parent="NewDeckContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 33.0
+margin_right = 355.0
+margin_bottom = 73.0
+
+[node name="DeckCreateHeroButton" type="Button" parent="NewDeckContainer/VBoxContainer"]
+margin_top = 76.0
+margin_right = 355.0
+margin_bottom = 135.0
+text = "OK"
+
+[node name="MenuTween" type="Tween" parent="."]
+
+[node name="DeckPicture2" type="TextureRect" parent="."]
+unique_name_in_owner = true
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+
+[connection signal="item_selected" from="MainMenu/Outercontainer/FiltersContainer/Filters/HeroesFilter" to="." method="_on_HeroesFilter_item_selected"]
+[connection signal="pressed" from="NewDeckContainer/VBoxContainer/DeckCreateHeroButton" to="." method="_on_DeckCreateHeroButton_pressed"]

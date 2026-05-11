@@ -24,6 +24,7 @@ var cards_by_set: Dictionary
 
 #Hero deck data identified by integer id (marvelcdb id)
 var deck_definitions : Dictionary
+var res_deck_ids: Dictionary
 
 var _ongoing_processes:= {}
 var _total_cards:int = 0
@@ -441,8 +442,7 @@ func parse_keywords(text:String) -> Dictionary:
 			_:
 				#error
 				pass
-		if result.get(keyword):
-			var _tmp = 1
+
 	return result
 
 func _split_traits(traits:String) -> Array:
@@ -968,30 +968,64 @@ func load_card_definitions() -> Dictionary:
 	emit_signal("card_definitions_loaded")
 	return(combined_sets)
 
-func save_one_deck_to_file(json_deck_data):
+func save_one_deck_to_file(json_deck_data, force_filename = ""):
 	if !(_is_deck_valid(json_deck_data)):
 		return
-	var deck_id: int = json_deck_data["id"]
-	var filename = "user://Decks/" + str(deck_id) + ".json"
+	json_deck_data.erase("filepath")	
+	var filename = force_filename
+	if filename:
+		if !filename.begins_with("user://"):
+			filename = "user://Decks/" + filename
+	else:
+		var deck_id: int = json_deck_data["id"]
+		var path = str(deck_id)
+		if deck_id > CFConst.LOCAL_DECK_ID_OFFSET:
+			path = "local_" + str(deck_id - CFConst.LOCAL_DECK_ID_OFFSET)
+		filename = "user://Decks/" + path + ".json"
 	var file = File.new()
 	file.open(filename, File.WRITE)
 	file.store_string(JSON.print(json_deck_data, '\t'))
 	file.close()
+	json_deck_data["filepath"] = filename
+	
+	#reload into database
+	return load_one_deck(json_deck_data, filename)
 
-
-func load_one_deck(json_deck_data):
-	if !(_is_deck_valid(json_deck_data)):
+func remove_one_deck(deck_id):
+	var json_data = deck_definitions.get(deck_id, {})
+	if !json_data:
 		return
+		
+	var hero_id = json_data.get("hero_code","")
+	if hero_id and idx_hero_to_deck_ids.has(hero_id):
+		idx_hero_to_deck_ids[hero_id].erase(deck_id)	
+	
+	deck_definitions.erase(deck_id)		
+
+func load_one_deck(json_deck_data, filepath = ""):
+	if !(_is_deck_valid(json_deck_data)):
+		return {}
+	json_deck_data = WCUtils.replace_real_to_int(json_deck_data)
 	var deck_id: int = json_deck_data["id"]
 	var hero_id = json_deck_data.get("hero_code",json_deck_data.get("investigator_code", ""))
+
+	#Begin data fixes
+	json_deck_data["hero_code"] = hero_id
+	json_deck_data["filepath"] = filepath
+	#End data fixes
+	
 	deck_definitions[deck_id] = json_deck_data
 	if (not idx_hero_to_deck_ids.has(hero_id)):
 		idx_hero_to_deck_ids[hero_id] = []
 	if not deck_id in (idx_hero_to_deck_ids[hero_id]):
 		idx_hero_to_deck_ids[hero_id].push_back(deck_id)	
+	
+	return json_deck_data
 
 # Returns a Dictionary with the Decks
 func load_deck_definitions():
+	idx_hero_to_deck_ids = {}
+	deck_definitions = {}
 	#copy default decks from Res: just in case they are missing
 	var res_deck_files = CFUtils.list_files_in_directory("res://Decks/")
 	# Load from external user files as well	for comparison
@@ -1001,6 +1035,9 @@ func load_deck_definitions():
 	for deck_file in res_deck_files:
 		if !deck_file.ends_with(".json"):
 			continue
+		var deck_id = deck_file.replace (".json", "")
+		deck_id = int(deck_id)
+		res_deck_ids[deck_id] = true
 		if !deck_file in deck_files:
 			var json_deck_data : Dictionary = WCUtils.read_json_file("res://Decks/" + deck_file)
 			save_one_deck_to_file(json_deck_data)
@@ -1011,10 +1048,11 @@ func load_deck_definitions():
 	
 	WCUtils.debug_message(deck_files.size())		
 	for deck_file in deck_files:
-		var json_deck_data : Dictionary = WCUtils.read_json_file("user://Decks/" + deck_file)
+		var full_path = "user://Decks/" + deck_file
+		var json_deck_data : Dictionary = WCUtils.read_json_file(full_path)
 		#Fixing missing Data
 		#nothing for now
-		load_one_deck(json_deck_data)
+		load_one_deck(json_deck_data, full_path)
 	return
 
 #card database related functions
@@ -1391,6 +1429,8 @@ func get_hero_portrait(card_id, callback_owner = null) -> Texture:
 	if callback_owner:
 		gameData.urgent_image_download(card_id, callback_owner)
 	return fallback_hero_portrait(card_id, area)
+
+
 	
 func fallback_hero_portrait(_card_id, area) -> Texture:
 	var filename = "res://assets/other/hero_card.png"

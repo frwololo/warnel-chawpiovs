@@ -338,7 +338,8 @@ func _class_specific_ready():
 	#cleanup for when this cards is instantiated as a copy of another
 	clear_highlight()
 	#TODO forcing here in the hope that it will fix the issue in selectionwindow
-	tokens.set_is_drawer_open(false, true)
+	if is_instance_valid(tokens):
+		tokens.set_is_drawer_open(false, true)
 	
 
 # Called when the node enters the scene tree for the first time.
@@ -539,7 +540,7 @@ func _on_Card_gui_input(event) -> void:
 		elif event.is_pressed() \
 				and event.get_button_index() == 1 \
 				and not are_hovered_manipulation_buttons() \
-				and not tokens.are_hovered():
+				and (is_instance_valid(tokens) and not tokens.are_hovered()):
 			# If it's a double-click, then it's not a card drag
 			# But rather it's script execution
 			if event.doubleclick\
@@ -973,7 +974,8 @@ func set_is_faceup(
 	# If it is not, this is a viewport dupe card that has not finished
 	# its ready() process
 	elif not check and is_instance_valid(get_parent()):
-		tokens.set_is_drawer_open(false)
+		if is_instance_valid(tokens):
+			tokens.set_is_drawer_open(false)
 		# We make sure to remove other tweens of the same type to avoid a deadlock
 		is_faceup = value
 		# When we change faceup state, we reset the is_viewed to false
@@ -1242,7 +1244,8 @@ func move_to(targetHost: Node,
 	if source_str.to_lower() == "board" and !considered_in_play():
 		source_str = "void"
 	# We want to keep the token drawer closed during movement
-	tokens.set_is_drawer_open(false)
+	if is_instance_valid(tokens):
+		tokens.set_is_drawer_open(false)
 	# This checks ensure we don't change parent to the board,
 	# if the placement to the board requested is invalid
 	# depending on the board_placement variable
@@ -1448,10 +1451,11 @@ func move_to(targetHost: Node,
 			# If the card has tokens, and tokens_only_on_board is true
 			# we remove all tokens
 			# (The cfc._ut_tokens_only_on_board is there for unit testing)
-			if CFConst.TOKENS_ONLY_ON_BOARD and cfc._ut_tokens_only_on_board:
-				for token in tokens.get_all_tokens().values():
-					print_debug(cfc._ut_tokens_only_on_board)
-					token.queue_free()
+			if is_instance_valid(tokens):
+				if CFConst.TOKENS_ONLY_ON_BOARD and cfc._ut_tokens_only_on_board:
+					for token in tokens.get_all_tokens().values():
+						print_debug(cfc._ut_tokens_only_on_board)
+						token.queue_free()
 			# If the card was hosted in a board placement grid
 			# we clean the references.
 			if is_instance_valid(_placement_slot):
@@ -1975,7 +1979,6 @@ func set_focus(requestedFocus: bool, colour := CFConst.FOCUS_HOVER_COLOUR) -> vo
 		else:
 			cfc.NMAP.main.unfocus(self)
 	# Tokens drawer is an optional node, so we check if it exists
-	# We also generally only have tokens on the table
 	if state in [CardState.ON_PLAY_BOARD, CardState.FOCUSED_ON_BOARD]:
 		if $Control.has_node("Tokens"):
 			tokens.set_is_drawer_open(requestedFocus)
@@ -2764,7 +2767,8 @@ func _process_card_state() -> void:
 			global_position = _determine_board_position_from_mouse() - Vector2(5,5)
 			_organize_attachments()
 			# We want to keep the token drawer closed during movement
-			tokens.set_is_drawer_open(false)
+			if is_instance_valid(tokens):
+				tokens.set_is_drawer_open(false)
 
 		CardState.ON_PLAY_BOARD:
 			# Used when the card is idle on the board
@@ -2918,7 +2922,8 @@ func _process_card_state() -> void:
 			$Control.rect_rotation = 0
 			if targeting_arrow:
 				targeting_arrow.cancel_targeting()
-			$Control/Tokens.visible = true
+			if is_instance_valid(tokens):
+				$Control/Tokens.visible = true
 			# We scale the card dupe to allow the player a better viewing experience
 			if CFConst.VIEWPORT_FOCUS_ZOOM_TYPE == "scale":
 				set_scale(Vector2(1,1) * focused_scale * cfc.curr_scale)
@@ -2953,12 +2958,13 @@ func _process_card_state() -> void:
 				get_card_front().scale_to(preview_scale * cfc.curr_scale)
 
 		CardState.DECKBUILDER_GRID:
-			z_index = 1
+			z_index = 0
 			z_as_relative = true
-			$Control.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			#$Control.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			set_focus(false)
-			self.tokens.set_is_drawer_open(false)
-			set_control_mouse_filters(false)
+			if is_instance_valid(tokens):
+				self.tokens.set_is_drawer_open(false)
+			#set_control_mouse_filters(false)
 			set_manipulation_buttons_active(false)
 			# warning-ignore:return_value_discarded
 			set_card_rotation(0)
@@ -3173,6 +3179,9 @@ func serialize_to_json():
 	return {"TODO": "TODO"}
 	
 func copy_tokens_to(to_card, details:= {}):
+	if !is_instance_valid(tokens):
+		return
+		
 	var exclude = details.get("exclude",[])
 	var to_copy = details.get("to_copy",[])
 	if !to_copy:
@@ -3212,8 +3221,9 @@ func get_duplicate(refresh_variables = true):
 	elif refresh_variables:
 		#duplicate already exists, we refresh it
 		_duplicate.clear_highlight()
-		var tokens_json = tokens.export_to_json()
-		_duplicate.tokens.load_from_json(tokens_json)
+		if is_instance_valid(tokens):
+			var tokens_json = tokens.export_to_json()
+			_duplicate.tokens.load_from_json(tokens_json)
 	return _duplicate
 	
 func get_duplicate_no_cache():

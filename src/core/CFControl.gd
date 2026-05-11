@@ -537,5 +537,16 @@ func serialize_object(object):
 
 func _input(event):
 	if event.is_action_pressed("toggle_fullscreen"):
+		
+		#skip if we're editing stuff
+		var current_scene = get_tree().current_scene
+		if current_scene and current_scene.has_method("get_focus_owner"):
+			var focus_owner = current_scene.get_focus_owner()
+			if focus_owner: 
+				if focus_owner as LineEdit:
+					return
+				if focus_owner as TextEdit:
+					return
+					
 		OS.set_window_fullscreen(!OS.window_fullscreen)
 		get_tree().set_input_as_handled()	

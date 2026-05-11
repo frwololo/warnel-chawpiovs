@@ -120,6 +120,9 @@ var _multiplayer_desync = null
 var _game_over := ""
 var _game_started := false 
 
+#data passed to deckbuilder
+var editor_deck_data:= {}
+
 func stop_game():
 	_game_started = false
 
@@ -2314,7 +2317,11 @@ func auto_gui_activity_ongoing() -> bool:
 		_auto_gui_activity_ongoing.append(auto_gui_activity_ongoing_no_cache())		
 	return _auto_gui_activity_ongoing[0]
 	
-func auto_gui_activity_ongoing_no_cache() -> bool:		
+func auto_gui_activity_ongoing_no_cache() -> bool:
+	#error cases and deckbuilder
+	if !cfc.NMAP.has("board") or !is_instance_valid(cfc.NMAP.board):
+		return false
+				
 	if cfc.NMAP.board.are_cards_still_animating():
 		return true
 		

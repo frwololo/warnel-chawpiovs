@@ -149,7 +149,17 @@ static func list_imported_in_directory(path: String,_prepend_needed := "", full_
 	return(files)
 
 
-
+static func sort_index_ascending_alternate(c1, c2) -> bool:
+	# Cards with higher index get moved to the back of the Array
+	# When this comparison is true, c2 is moved
+	# further back in the array
+	var parent = c1.get_parent()
+	if !parent:
+		return false
+	if parent != c2.get_parent():
+		return false
+		
+	return (c1.get_index() < c2.get_index())
 
 # Used with sort_custom to find the highest child index among multiple cards
 static func sort_index_ascending(c1, c2) -> bool:

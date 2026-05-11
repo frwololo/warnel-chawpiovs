@@ -719,6 +719,8 @@ func _process(delta) -> void:
 
 
 func display_play_highlight():
+	if not gameData.is_game_started():
+		return
 	var can_play = check_play_costs()
 	if (can_play == CFConst.CostsState.OK):
 		#if modal menu is displayed we don't want to mess up those cards highlights
@@ -754,7 +756,8 @@ func _game_step_about_to_start(_trigger_object, details:Dictionary):
 	var current_step = details["step"]
 	match current_step:
 		CFConst.PHASE_STEP.PLAYER_TURN:
-			self.tokens.mod_token("__can_change_form", 1)
+			if is_instance_valid(tokens):
+				self.tokens.mod_token("__can_change_form", 1)
 	return	
 	
 

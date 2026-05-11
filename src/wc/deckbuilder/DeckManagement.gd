@@ -35,12 +35,15 @@ onready var error_label := get_node("%message")
 onready var back_button := get_node("%BackButton")
 onready var clone_button := get_node("%CloneButton")
 onready var delete_button := get_node("%DeleteButton")
+onready var export_button := get_node("%ExportButton")
 onready var download_button := get_node("%DownloadDeckButton")
 onready var reset_all_button := get_node("%ResetAllButton")
 
 onready var deck_container := get_node("%Decks")
 onready var main_container := get_node("%MainMenu")
 onready var new_deck_menu := get_node("%NewDeckContainer")
+onready var export_container := get_node("%ExportContainer")
+onready var export_data := get_node("%ExportData")
 onready var deck_scroll := get_node("%DecksScroll")
 onready var heroes_filter:OptionButton = get_node("%HeroesFilter")
 onready var heroes_filter2:OptionButton = get_node("%HeroesFilter2")
@@ -83,6 +86,7 @@ func _ready():
 	download_button.connect("pressed", self, "_on_DownloadDeck_pressed")	
 	clone_button.connect("pressed", self, "_clone_pressed")
 	delete_button.connect("pressed", self, "_delete_pressed")
+	export_button.connect("pressed", self, "_export_pressed")	
 	reset_all_button.connect("pressed", self, "_reset_all_pressed")
 	
 	
@@ -94,13 +98,28 @@ func _ready():
 	_load_heroes()
 	
 	#initial UI state
-	delete_button.disabled = true
-	clone_button.disabled = true
-	main_container.visible = true
-	new_deck_menu.visible = false
+	disable_deck_buttons()
+
+	
+	tab_select(main_container)
+
 	
 	if gameData.editor_deck_data:
 		highlight_deck(gameData.editor_deck_data["id"])
+
+func disable_deck_buttons(value = true):
+	delete_button.disabled = value
+	clone_button.disabled = value
+	export_button.disabled = value	
+
+
+func enable_deck_buttons(value = true):
+	disable_deck_buttons(!value)
+	
+	
+func tab_select(chosen_container):
+	for container in [main_container, new_deck_menu, export_container]:
+		container.visible =  (container == chosen_container)
 
 #TODO: need to do this hack because gamepadHandler "gui_focus_changed" only works automatically when the
 #board has been set up
@@ -128,7 +147,8 @@ func resize():
 	deck_scroll.rect_min_size = screen_size - Vector2(50, 20)
 	deck_scroll.rect_min_size.y -= 300
 	new_deck_menu.rect_min_size = screen_size
-	
+	export_container.rect_min_size = screen_size
+	export_data.rect_min_size =  Vector2(screen_size.x /3, screen_size.y  - 100)
 	if stretch_mode == SceneTree.STRETCH_MODE_VIEWPORT and screen_size.x > 1800:
 		pass
 	else:	
@@ -151,9 +171,8 @@ func _load_hero_base_cards(hero_id):
 #creates a new deck then goes to editing mode
 func create_and_edit_new_deck(hero_id = ""):
 	if !hero_id:
-		#TODO ask for hero id selection
-		main_container.visible = false
-		new_deck_menu.visible = true
+		#ask for hero id selection
+		tab_select(new_deck_menu)
 		return
 	var hero_name = cfc.get_card_name_by_id(hero_id)
 	var deck_data = {
@@ -178,8 +197,7 @@ func deck_selected(deck_id):
 			current_deck.hide_highlights()		
 		current_deck = null
 		current_selected_deck_id = 0
-		delete_button.disabled = true
-		clone_button.disabled = true
+		disable_deck_buttons()
 		return
 	
 	#new deck
@@ -191,8 +209,7 @@ func deck_selected(deck_id):
 	if current_selected_deck_id == deck_id:
 		return
 
-	delete_button.disabled = false
-	clone_button.disabled = false
+	enable_deck_buttons()
 		
 	if current_deck:
 		current_deck.hide_highlights()
@@ -470,6 +487,17 @@ func delete_deck():
 	pass
 
 #clones current selected deck
+func export_current_deck():
+	#exclude "create deck" option which is 0
+	if !current_deck:
+		return
+	tab_select(export_container)
+	var text = current_deck.export_for_mcdb()
+	export_data.text = text
+
+	
+
+#clones current selected deck
 func clone_deck():
 	#exclude "create deck" option which is 0
 	if !current_selected_deck_id:
@@ -537,6 +565,9 @@ func _on_CancelButton_pressed():
 func _delete_pressed():
 	ask_delete_deck()
 
+func _export_pressed():
+	export_current_deck()
+
 func _clone_pressed():
 	clone_deck()
 	
@@ -567,3 +598,22 @@ func _on_DeckCreateHeroButton_pressed():
 	var hero_name = heroes_filter2.get_item_text(heroes_filter2.get_selected())
 	var hero_id = names_to_id[hero_name]
 	create_and_edit_new_deck(hero_id)
+
+
+func _on_CloseExportButton_pressed():
+	tab_select(main_container)
+
+
+func _on_ClipboardButton_pressed():
+	export_data.select_all() #this isn't useful but serves as a visual indication
+	OS.set_clipboard(export_data.text)
+	var message = "Deck copied to clipboard"
+	var msg_dialog:AcceptDialog = AcceptDialog.new()
+	msg_dialog.window_title = message
+	add_child(msg_dialog)
+	msg_dialog.popup_centered()		
+
+
+func _on_MCDBButton_pressed():
+	OS.set_clipboard(export_data.text)
+	OS.shell_open("https://marvelcdb.com/deck/import")

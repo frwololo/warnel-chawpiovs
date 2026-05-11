@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://src/wc/deckbuilder/DeckManagement.gd" type="Script" id=1]
 [ext_resource path="res://themes/darktheme/darktheme.theme" type="Theme" id=2]
 [ext_resource path="res://themes/darktheme/fonts/Bangers/Bangers-Regular.ttf" type="DynamicFontData" id=3]
 [ext_resource path="res://fonts/Bangers-Regular.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://fonts/comfortaa/Comfortaa-Bold.ttf" type="DynamicFontData" id=5]
 
 [sub_resource type="DynamicFont" id=1]
 size = 32
@@ -12,6 +13,9 @@ font_data = ExtResource( 3 )
 [sub_resource type="DynamicFont" id=2]
 size = 40
 font_data = ExtResource( 4 )
+
+[sub_resource type="DynamicFont" id=3]
+font_data = ExtResource( 5 )
 
 [node name="DeckManagement" type="Panel"]
 anchor_right = 1.0
@@ -26,7 +30,6 @@ color = Color( 0.0705882, 0.0705882, 0.0705882, 1 )
 
 [node name="MainMenu" type="MarginContainer" parent="."]
 unique_name_in_owner = true
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 20.0
@@ -102,7 +105,7 @@ margin_right = 1770.0
 margin_bottom = 118.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3"]
-margin_right = 235.0
+margin_right = 381.0
 margin_bottom = 118.0
 custom_constants/separation = 20
 
@@ -124,6 +127,16 @@ margin_bottom = 88.0
 size_flags_horizontal = 3
 size_flags_vertical = 4
 text = "DELETE"
+
+[node name="ExportButton" type="Button" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 255.0
+margin_top = 29.0
+margin_right = 381.0
+margin_bottom = 88.0
+size_flags_horizontal = 3
+size_flags_vertical = 4
+text = "Export"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3"]
 margin_left = 912.0
@@ -206,6 +219,7 @@ text = "Back to main menu"
 
 [node name="NewDeckContainer" type="CenterContainer" parent="."]
 unique_name_in_owner = true
+visible = false
 margin_right = 40.0
 margin_bottom = 40.0
 
@@ -230,6 +244,66 @@ margin_right = 355.0
 margin_bottom = 135.0
 text = "OK"
 
+[node name="ExportContainer" type="CenterContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ExportContainer"]
+margin_right = 977.0
+margin_bottom = 562.0
+size_flags_vertical = 11
+custom_constants/separation = 79
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ExportContainer/HBoxContainer"]
+margin_right = 462.0
+margin_bottom = 562.0
+size_flags_vertical = 9
+alignment = 2
+
+[node name="ExportData" type="TextEdit" parent="ExportContainer/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_right = 462.0
+margin_bottom = 500.0
+rect_min_size = Vector2( 100, 500 )
+custom_fonts/font = SubResource( 3 )
+text = "Test
+aaaa"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ExportContainer/HBoxContainer/VBoxContainer"]
+margin_top = 503.0
+margin_right = 462.0
+margin_bottom = 562.0
+custom_constants/separation = 30
+alignment = 2
+
+[node name="CopyButton" type="Button" parent="ExportContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_right = 328.0
+margin_bottom = 59.0
+text = "Copy to Clipboard"
+
+[node name="CopyButton2" type="Button" parent="ExportContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_right = 328.0
+margin_bottom = 59.0
+text = "Go to MarvelCDB"
+
+[node name="CloseExportButton" type="Button" parent="ExportContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 358.0
+margin_right = 462.0
+margin_bottom = 59.0
+text = "Close"
+
+[node name="Label" type="Label" parent="ExportContainer/HBoxContainer"]
+margin_left = 541.0
+margin_top = 468.0
+margin_right = 977.0
+margin_bottom = 562.0
+size_flags_vertical = 8
+text = "Copy this deck to clipboard,
+then use the \"import Deck > Copy/paste\"
+functionality on MarvelCDB.com"
+
 [node name="MenuTween" type="Tween" parent="."]
 
 [node name="DeckPicture2" type="TextureRect" parent="."]
@@ -240,3 +314,6 @@ mouse_filter = 2
 
 [connection signal="item_selected" from="MainMenu/Outercontainer/FiltersContainer/Filters/HeroesFilter" to="." method="_on_HeroesFilter_item_selected"]
 [connection signal="pressed" from="NewDeckContainer/VBoxContainer/DeckCreateHeroButton" to="." method="_on_DeckCreateHeroButton_pressed"]
+[connection signal="pressed" from="ExportContainer/HBoxContainer/VBoxContainer/HBoxContainer/CopyButton" to="." method="_on_ClipboardButton_pressed"]
+[connection signal="pressed" from="ExportContainer/HBoxContainer/VBoxContainer/HBoxContainer/CopyButton2" to="." method="_on_MCDBButton_pressed"]
+[connection signal="pressed" from="ExportContainer/HBoxContainer/VBoxContainer/HBoxContainer/CloseExportButton" to="." method="_on_CloseExportButton_pressed"]

@@ -234,3 +234,34 @@ func action():
 
 func _on_Menu_resized() -> void:
 	resize()
+
+func export_for_mcdb():		
+	var slots = deck_data.get("slots", {})
+	var slots_by_type = {}
+	var hero_data = cfc.get_card_by_id(deck_data.get("hero_code", ""))
+	
+	for card_id in slots:
+		var card_data = cfc.get_card_by_id(card_id)
+		var type = card_data["type_code"].to_lower()
+
+		if type in ["hero"]:
+			continue
+
+		var quantity = slots[card_id]
+			
+		if !slots_by_type.has(type):
+			slots_by_type[type] = []
+		
+		var fullname = card_data["shortname"]
+#		if card_data.get("subname", ""):
+#			fullname += ": " + card_data["subname"]
+		slots_by_type[type].append(str(quantity) +"x " +  fullname + " (" + card_data["pack_name"]  + ")")
+
+	var result = ""
+	result += hero_data["Name"] + " ("+ hero_data["pack_name"] + ")" + "\n"
+	for type in slots_by_type:
+		result+= "\n" + type.capitalize() +"\n"
+		for slot in slots_by_type[type]:
+			result+= slot + "\n"
+		
+	return result

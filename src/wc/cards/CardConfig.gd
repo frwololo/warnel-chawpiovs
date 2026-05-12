@@ -15,7 +15,7 @@ extends Reference
 const PROPERTIES_STRINGS := ["Type", "Requirements", "Abilities", "text", "type_name", "faction_name"]
 # Properties which are converted into string using a format defined in setup()
 #WC traits and AUTO_KEYWORDS are added at runtime to this list
-const PROPERTIES_NUMBERS := ["cost", "attack", "defense", "thwart", "scheme", "health",
+const PROPERTIES_NUMBERS := ["cost", "attack", "defense", "recover", "thwart", "scheme", "health",
 	"attack_cost", "thwart_cost", #consequential damage
 	"cannot_attack", "cannot_thwart",  "cannot_play",
 	"printed_health", #TODO maybe retrieve this one from the database directly?

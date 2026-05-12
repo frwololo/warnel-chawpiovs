@@ -161,23 +161,42 @@ func get_villains(index = 0):
 			
 	return _villains_by_level[index]
 
-func load_from_villain(villain_id):
+
+static func get_scheme_from_villain(villain_id):
+	if !primitives:
+		_load_card_scenarios()	
+			
 	if !villain_id:
-		return
+		return {}
 	for scheme_id in primitives:
 		for expert in [false, true]:
 			var villain_groups = get_villain_id_groups_from_scheme(scheme_id, expert)
 			for villain_ids in villain_groups:
 				if villain_id in villain_ids:
-					return load_from_dict(
-						{
-							"scheme_id": scheme_id,
-							"modular_encounters": get_recommended_modular_encounters(scheme_id),
-							"expert_mode": expert
-						}
-					)
+					return {
+						"scheme_id": scheme_id,
+						"expert": expert
+					}
+	
+	return {}
+	
+func load_from_villain(villain_id):
+	var scheme_info = get_scheme_from_villain(villain_id) 
+	if !scheme_info:
+		var _error = 1
+		return
 
-	var _error = 1
+	var scheme_id = scheme_info["scheme_id"]
+	var expert = scheme_info["expert"]
+
+	return load_from_dict(
+		{
+			"scheme_id": scheme_id,
+			"modular_encounters": get_recommended_modular_encounters(scheme_id),
+			"expert_mode": expert
+		}
+	)
+
 
 func load_from_dict(_scenario:Dictionary):
 	reset()

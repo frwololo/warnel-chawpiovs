@@ -62,6 +62,7 @@ var _current_encounter = null #WCCard
 #emit whenever something changes in the game state. This will trigger some recomputes
 signal game_state_changed(details)
 signal first_player_changed(details)
+signal game_started(details)
 
 #Singleton for game data shared across menus and views
 #network_players, indexed by network_id
@@ -134,6 +135,7 @@ func sanity_cleanup():
 
 func start_game():
 	cfc.LOG("game starting")
+	emit_signal("game_started")
 	GameRecorder.init_game()
 	theGameObserver.execute_scripts("setup")
 

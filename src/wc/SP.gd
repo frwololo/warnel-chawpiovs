@@ -304,10 +304,13 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 	#I've had countless bugs with Odin in Hela's scenario
 	# so this is a preventive measure: inactive attachments can only
 	#be targeted by their set (like permanents)
+	#or the card that attached them
 	if card.is_inactive_attachment():
 		var set_code = card.get_property("card_set_code", "")
 		var owner_set_code = owner_card.get_property("card_set_code", "")
-		if set_code != owner_set_code:
+		if (set_code == owner_set_code) or (owner_card == card.current_host_card):
+			pass
+		else:
 			return false	
 				
 	#check for special guard conditions if card is an attack
@@ -383,7 +386,9 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 					card_matches = false
 				elif filter == FILTER_EXHAUSTED and (card.is_exhausted() != state_filter):
 					card_matches = false
-					
+				elif filter == FILTER_HOSTED_BY:
+					if !check_hosted_by_filter(card,owner_card,state_filter):
+						card_matches =  false	
 				if filter.ends_with("_same_as_identity"):
 					var property = filter.replace("filter_", "").replace("_same_as_identity", "")
 					if !check_trigger_shares_property_with_identity(card,owner_card,property):

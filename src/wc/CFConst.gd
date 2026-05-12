@@ -833,6 +833,7 @@ const DEFAULT_SETTINGS:= {
 		"cap" : "https://marvelcdb.com/api/public/cards/cap.json", #Captain America Hero Pack
 		"drs" : "https://marvelcdb.com/api/public/cards/drs.json", #Doctor Strange Hero Pack
 		"gmw" : "https://marvelcdb.com/api/public/cards/gmw.json", #Galaxy's Most Wanted Expansion Box				
+		"msm" : "https://marvelcdb.com/api/public/cards/msm.json", #Ms Marvel Hero Pack
 		"mts" : "https://marvelcdb.com/api/public/cards/mts.json", #Mad Titan's Shadow Expansion Box
 		"sm" : "https://marvelcdb.com/api/public/cards/sm.json", #Sinister Motives Expansion Box				
 		"thor" : "https://marvelcdb.com/api/public/cards/thor.json", #Thor Hero Pack

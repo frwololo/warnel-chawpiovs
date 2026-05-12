@@ -1327,3 +1327,252 @@ func _selection_window_opened(_request_object = null,details = {}):
 
 func _selection_window_closed(_request_object = null,details = {}):
 	_current_selection_window = null
+
+
+static func get_all_card_ids(json_data):
+	var result = []
+	match typeof(json_data):
+		TYPE_DICTIONARY:
+			for key in json_data.keys():
+				if key == "card":
+					result.append(json_data[key])
+				else:
+					result+= get_all_card_ids(json_data[key])
+		TYPE_ARRAY:
+			for item in json_data:
+				result+= get_all_card_ids(item)
+		_ :
+			return []
+	return result
+
+static func generate_missing_tests():
+	var missing_card_ids = []
+	var tested_card_ids = {}
+	var duplicates = cfc.duplicates
+	var reverse_duplicates = {}
+	for key in duplicates:
+		var duplicate_id = duplicates[key]
+		if !reverse_duplicates.has(duplicate_id):
+			reverse_duplicates[duplicate_id] = []
+		reverse_duplicates[duplicate_id].append(key)
+	
+	var _test_files = CFUtils.list_files_in_directory(
+		"res://Test/", "test_", true)
+	_test_files += (CFUtils.list_files_in_directory(
+		"user://Test/", "test_", true))	
+
+	var file:File = File.new()
+	for test_file in _test_files:
+		if !file.file_exists(test_file):
+			continue
+				
+		var json_card_data:Dictionary = WCUtils.read_json_file(test_file)
+		if !json_card_data:
+			continue
+			
+		var tested_cards = get_all_card_ids(json_card_data)
+		for card_id_or_name in tested_cards:
+			var card_id = cfc.get_corrected_card_id(card_id_or_name)
+			if card_id:
+				tested_card_ids[card_id] = true
+				
+	for card_id in cfc.card_definitions:
+		if tested_card_ids.has(card_id):
+			continue
+		var card_data = cfc.card_definitions[card_id]
+
+		var type_code = card_data["type_code"]
+		if card_id.ends_with("a") and type_code =="main_scheme":
+			continue
+		var faction_code = card_data["faction_code"]
+		if faction_code in ["campaign"]:
+			continue
+		
+		#Maybe this card has a duplicate which is already tested
+		var found_duplicate = false	
+		var name = card_data["Name"]
+		if name =="Strength":
+			var _tmp = 1		
+		var duplicate_list = duplicates.get(card_id, [])
+		if duplicate_list:
+			var reverse_duplicate = reverse_duplicates.get(duplicate_list, [])
+			duplicate_list = [duplicate_list] + reverse_duplicate
+
+		duplicate_list += reverse_duplicates.get(card_id, [])
+		for duplicate_of in duplicate_list:
+			if tested_card_ids.has(duplicate_of):
+				found_duplicate = true
+				break
+		if found_duplicate:
+			continue
+		else:
+			var _tmp = 1
+		
+			
+		missing_card_ids.append(card_id)
+
+	var dir = Directory.new()
+	var test_folder = "user://missing_tests/"
+	dir.make_dir_recursive(test_folder)
+		
+	for card_id in missing_card_ids:
+		var card_data = cfc.card_definitions[card_id]
+		var pack_code = card_data["pack_code"]
+		dir.make_dir_recursive(test_folder + pack_code)
+		
+		var card_fullname = card_data["Name"] + " #" + card_id
+		var card_path = card_data["Name"].to_lower()
+		
+		
+		var card_set = cfc.cards_by_set.get(card_data["card_set_code"], [])
+		var card_type = card_data["type_code"]
+		var faction = card_data["faction_code"]
+		var belongs_to_hero = false
+		var belongs_to_villain = false
+		for adjacent_card_data in card_set:
+			if adjacent_card_data["type_code"] == "hero":
+				belongs_to_hero = adjacent_card_data
+				card_path = adjacent_card_data["shortname"].to_lower() + "_" + card_path
+				break
+			if adjacent_card_data["type_code"] == "villain":
+				belongs_to_villain = adjacent_card_data
+				card_path = adjacent_card_data["shortname"].to_lower() + "_" + card_path	
+				break			
+		if !belongs_to_hero and !belongs_to_villain:
+			for adjacent_card_id in cfc.card_definitions:
+				var adjacent_card = cfc.card_definitions[adjacent_card_id]
+				if adjacent_card["pack_code"] != pack_code:
+					continue
+				if faction == "encounter":
+					if adjacent_card["type_code"] == "villain" :
+						belongs_to_villain = adjacent_card
+						card_path = adjacent_card["shortname"].to_lower() + "_"	 + card_path
+						break
+				else:
+					if adjacent_card["type_code"] == "hero":
+						belongs_to_hero = adjacent_card
+						card_path = adjacent_card["shortname"].to_lower() + "_"	 + card_path
+						break
+		
+		card_path = card_path.replace(" ","_")
+		for symbol in ["!", ",", "\"", ":", ".", "'"]:
+			card_path = card_path.replace(symbol, "")
+		
+		var hero_shortname = belongs_to_hero["shortname"] if belongs_to_hero else "Spider-Man"
+		var hero_name = belongs_to_hero["Name"] if belongs_to_hero else "Spider-Man"
+		var villain_name = belongs_to_villain["Name"] if belongs_to_villain else "Rhino - 1"
+		var scheme_info = ScenarioDeckData.get_scheme_from_villain(belongs_to_villain["_code"])  if belongs_to_villain else {}
+		var scheme_name = "01097b"
+		if scheme_info:
+			var scheme_id = scheme_info["scheme_id"]
+			scheme_name = cfc.card_definitions[scheme_id]["Name"]
+			scheme_name = scheme_name + " #" + scheme_id
+		var filepath = test_folder + pack_code + "/test_1p_" + card_path + ".json"
+		var board_data = {
+			"villain": [
+				{
+					"card": villain_name
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},				
+			],			
+			"schemes": [
+				{
+					"card": scheme_name
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+			],
+			"identity1": [
+				{
+					"card": hero_name
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				},
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				},				
+			],
+			"allies1": [
+				
+			],		
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				},
+				
+			]
+		}
+		var the_data = {"card": card_fullname}
+		var phase = "PLAYER_TURN"
+		var actions = [
+			{
+				"type": "other",
+				"value": "gain_control"
+			}
+		]
+		match card_type:
+			"treachery":
+				board_data["deck_villain"].append(the_data)
+				phase = "VILLAIN_DEAL_ENCOUNTER"
+				actions.append({"type": "other", "value": "wait_for_player_turn"})
+			"main_scheme":
+				board_data["schemes"][0] = the_data
+			"side_scheme":
+				the_data["tokens"] = {"threat": 2}
+				board_data["schemes"].append(the_data)
+			"minion":
+				board_data["enemies1"][0] = the_data
+			"ally": 
+				board_data["allies1"].append(the_data)
+			"support", "upgrade":
+				board_data["upgrade_support1"][0] = the_data
+			_:
+				board_data["hand1"].append(the_data)
+		var json_data = {
+			"_comments": "Automated Test for " + card_fullname,
+			"init": {
+				"phase": phase,
+				"heroes": [
+					{
+						"herodeckdata": {
+							"hero": hero_shortname
+						}
+					}
+				],
+				"board":board_data,
+			}, 
+			"actions": actions,
+			"end": {
+				"phase": "PLAYER_TURN",
+					"heroes": [
+						{
+							"herodeckdata": {
+								"hero": hero_shortname
+							}
+						}
+					],
+				"board": board_data
+			}
+		}
+		
+		file.open(filepath, File.WRITE)
+		file.store_string(JSON.print(json_data, '\t'))
+		file.close()

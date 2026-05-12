@@ -1,0 +1,146 @@
+{
+	"_comments": "Automated Test for Lockjaw #05018",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ms. Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ms. Marvel"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [
+
+			],
+			"discard1": [
+							{
+					"card": "Lockjaw #05018"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Strength"
+				},
+
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Lockjaw"
+		},
+		{
+			"type": "activate",
+			"value": "Lockjaw"
+		},	
+		{
+			"type": "choose",
+			"value": "attack"
+		},	
+		{
+			"type": "target",
+			"value": "Rhino"
+		},		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ms. Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {"damage": 2}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ms. Marvel"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [
+
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				},			
+				{
+					"card": "Energy"
+				},
+			],
+			"allies1": [
+				{
+					"card": "Lockjaw #05018",
+					"tokens": {"damage": 2}
+				}
+			]
+		}
+	}
+}

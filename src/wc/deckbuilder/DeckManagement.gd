@@ -602,6 +602,7 @@ func _on_DeckCreateHeroButton_pressed():
 
 func _on_CloseExportButton_pressed():
 	tab_select(main_container)
+	highlight_deck(current_selected_deck_id)
 
 
 func _on_ClipboardButton_pressed():

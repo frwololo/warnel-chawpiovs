@@ -6130,7 +6130,6 @@
 						"type_constraint": "different"
 					},
 					"is_cost": true,
-					"todo": "different types"
 				},
 				{
 					"name": "discard",

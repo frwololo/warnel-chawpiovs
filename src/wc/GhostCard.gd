@@ -18,6 +18,9 @@ func execute_scripts(
 		trigger: String = "manual",
 		trigger_details: Dictionary = {},
 		run_type := CFInt.RunType.NORMAL):
+	if !is_instance_valid(_real_card):
+		return
+				
 	var passthrough_trigger = trigger_card
 	if passthrough_trigger == self:
 		passthrough_trigger = _real_card

@@ -1168,7 +1168,9 @@ func prevent(script: ScriptTask) -> int:
 			if script.script_definition["amount"] == "all":
 				script.script_definition["amount"] = 666 #TODO hack		
 			else: #unsupported values
-				script.script_definition["amount"] = 0 
+				var amount = script.retrieve_integer_property("amount")
+				script.script_definition["amount"] = amount
+				#script.script_definition["amount"] = 0 
 
 
 	var subject_target = script.script_definition.get("subject")
@@ -1213,10 +1215,10 @@ func prevent(script: ScriptTask) -> int:
 				script.script_definition["pay_costs_anyway"] = true						
 				gameData.theStack.delete_event(stack_object, script)
 				#todo find amount prevented
-			if amount_prevented:
-				var trigger_details = script.trigger_details.duplicate()
-				trigger_details["amount_prevented"] =  amount_prevented
-				scripting_bus.emit_signal_on_stack("event_prevented", script.owner, trigger_details )
+	if amount_prevented:
+		var trigger_details = script.trigger_details.duplicate()
+		trigger_details["amount_prevented"] =  amount_prevented
+		scripting_bus.emit_signal_on_stack("event_prevented", script.owner, trigger_details )
 		
 	return retcode		
 	
@@ -1510,7 +1512,8 @@ func enemy_attack(script: ScriptTask) -> int:
 	if defender:
 		defender.exhaustme()
 
-	
+	if !script.has_tag("attack"):
+		script.script_definition["tags"].append("attack")
 	attacker.set_activity_script(script)
 	return retcode
 
@@ -1793,7 +1796,9 @@ func commit_scheme(script: ScriptTask):
 		return retcode
 
 	script.set_subjects ([main_scheme])
-
+	if !script.has_tag("scheme"):
+		script.script_definition["tags"].append("scheme")
+		
 	owner.set_activity_script(script)
 	return retcode
 

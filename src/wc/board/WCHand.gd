@@ -7,6 +7,11 @@ func _ready() -> void:
 	excess_cards = ExcessCardsBehaviour.ALLOW
 	card_size = card_size * cfc.screen_scale
 
+	scripting_bus.connect("card_moved_to_hand", self, "_on_card_moved")
+	scripting_bus.connect("card_moved_to_board", self, "_on_card_moved")
+	scripting_bus.connect("card_moved_to_pile", self, "_on_card_moved")	
+	gameData.connect("game_started", self, "_on_game_started")	
+
 func _process(_delta: float) -> void:
 	var hero_id = get_my_hero_id()
 	var hero = gameData.get_identity_card(hero_id)
@@ -15,6 +20,7 @@ func _process(_delta: float) -> void:
 		self.hand_size = hero.get_max_hand_size()
 		if previous != self.hand_size:
 			update_card_count_text()
+	check_ghost_cards()
 
 # Takes the top card from the specified [CardContainer]
 # and adds it to this node
@@ -198,4 +204,30 @@ func check_ghost_card(card):
 			remove_child(has_card)
 			has_card.queue_free()
 			
+var _refresh_ghost_cards_needed = false
+func refresh_ghost_cards():
+	if self.name.to_lower().begins_with("ghost"):
+		_refresh_ghost_cards_needed = true
+
+func check_ghost_cards():
+	if !_refresh_ghost_cards_needed:
+		return
+	var hero_id = get_my_hero_id()
+	var discard_name = "discard" + str(hero_id)
+	var pile = cfc.NMAP.get(discard_name, null)
+	if !pile:
+		return
+	var cards = pile.get_all_cards()
+	for card in cards:
+		check_ghost_card(card)
+
+	for card in self.get_all_cards():
+		check_ghost_card(card.get_real_card())
 		
+	_refresh_ghost_cards_needed = false
+
+func _on_card_moved(card, _details):
+	refresh_ghost_cards()
+
+func _on_game_started():
+	refresh_ghost_cards()

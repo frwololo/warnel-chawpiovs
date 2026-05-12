@@ -127,6 +127,9 @@
 		"boost": 1,
 		"_comments": "https://github.com/zzorba/marvelsdb/issues/342"
 	},
+	"05026": {
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/msm/05026.webp"
+	},
 	"09007": {
 		"traits": "Spell.",
 	},

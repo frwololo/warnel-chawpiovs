@@ -183,6 +183,8 @@ func _all_downloads_completed():
 	get_node("%VersionLabel").text = "v. " + CFConst.VERSION + " (" + str(cfc.count_unique_cards()) +" cards)"
 	gameData.play_music("menu")
 	check_for_new_release()
+	
+	#TestSuite.generate_missing_tests()
 
 func check_for_new_release():
 	http_request = HTTPRequest.new()

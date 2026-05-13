@@ -1,7 +1,7 @@
 {
 	"\"You'll Pay for That!\"": {
 		"response_card_damaged": {
-			"trigger": "self",
+			"trigger": "my_hero",
 			"event_filters": {
 				"attacker": "villain",
 				"tags": [
@@ -319,14 +319,18 @@
 					"subject": "boardseek",
 					"subject_count": 1,
 					"sort_by": "function",
+					"sort_descending": true,
 					"sort_name": "get_subject_int_property",
 					"func_params": {
 						"property": "attack"
 					},
 					"filter_state_seek": [
 						{
-							"filter_group": "group_friendly"
-						}
+							"filter_properties": {"type_code": "ally"}
+						},
+						{
+							"filter_properties": {"type_code": "hero"}
+						}						
 					]
 				},
 				{

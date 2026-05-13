@@ -1379,7 +1379,11 @@ func i_attack(script: ScriptTask) -> int:
 		return CFConst.ReturnCode.CHANGED	
 
 	for card in script.subjects:
-		gameData.add_enemy_activation(attacker, "attack", script, card.get_controller_hero_id())
+		var target = card 
+		if !target.get_property("type_code") in ["ally", "alter_ego", "hero"]:
+			target = card.get_controller_hero_id()
+			
+		gameData.add_enemy_activation(attacker, "attack", script, target)
 		retcode = CFConst.ReturnCode.CHANGED
 	return retcode
 	
@@ -1589,22 +1593,22 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
 	var attacker = _script.owner
-	var target_hero_id = _script.get_property("target_hero_id")	
+
 		
 	var script = attacker.activity_script
 
 	#merge potential changes from this script into the attacker's script
 	transfer_default_damage_properties(_script, script)
-	
+	var target_friendly = _script.get_property("target")		
 	var defender = script.subjects[0] if script.subjects else null
 	var defender_type = defender.get_property("type_code") if defender else ""
 	
-	var my_hero:Card
+	
 
-	if target_hero_id:
-		my_hero = gameData.get_identity_card(target_hero_id)
-	else:
-		my_hero = gameData.get_current_target_hero()
+	if !target_friendly:
+		target_friendly = gameData.get_current_target_hero()
+	
+	var my_hero:Card = target_friendly.get_controller_hero_card()
 	
 	var amount = attacker.get_property("attack", 0)
 	var boost_data = script.get_property("boost", [])
@@ -1626,7 +1630,7 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 		if damage_reduction and (amount == 0):
 			gameData.play_sfx("hint_tough")	
 	else:
-		script.subjects.append(my_hero)
+		script.subjects.append(target_friendly)
 		script.script_definition["tags"].append("undefended")
 		
 	var overkill_amount = 0

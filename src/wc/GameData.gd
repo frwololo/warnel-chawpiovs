@@ -990,10 +990,12 @@ func get_current_activity_hero_target():
 	if attackers:
 		var attacker_data = attackers.front()
 		if (typeof (attacker_data) == TYPE_DICTIONARY):
-			var target_id = attacker_data.get("target_id", 0)
-			if !target_id:
-				target_id = _villain_current_hero_target
-			return target_id
+			var target = attacker_data.get("target_id", 0)
+			if !target:
+				target = _villain_current_hero_target
+			if typeof(target) == TYPE_INT:
+				return target
+			return target.get_controller_hero_id()
 	
 	return _villain_current_hero_target
 
@@ -1053,9 +1055,10 @@ func pre_attack_interrupts_done():
 func add_enemy_activation(enemy, activation_type:String = "attack", script = null, target_id = 0):
 	attackers.append({"subject":enemy, "type": activation_type, "script" : script, "target_id" : target_id})
 
-func start_activity(enemy, action, script, target_id = 0):
-	if !target_id:
-		target_id = _villain_current_hero_target
+func start_activity(enemy, action, script, target = 0):
+
+	if !target:
+		target = _villain_current_hero_target
 		
 	display_debug("drawing boost cards")	
 	if (enemy.get_property("type_code") == "villain") or enemy.get_property("villainous", 0, true):
@@ -1069,9 +1072,10 @@ func start_activity(enemy, action, script, target_id = 0):
 	var script_name
 	var next_step
 
-	var target_hero = get_identity_card(target_id)
+	
+	var target_friendly = get_identity_card(target) if (typeof(target) == TYPE_INT) else target
 	if action == "activate":
-		if target_hero.is_hero_form():
+		if target_friendly.is_hero_form():
 			action = "attack"
 		else:
 			action = "scheme" 
@@ -1087,12 +1091,12 @@ func start_activity(enemy, action, script, target_id = 0):
 
 	var trigger_details = {
 		"additional_tags": [],
-		"target": target_hero,
-		SP.TRIGGER_TARGET_HERO : target_hero.canonical_name
+		"target": target_friendly,
+		SP.TRIGGER_TARGET_HERO : target_friendly.canonical_name
 	}
 	if script:
 		trigger_details["additional_tags"] += script.get_property(SP.KEY_TAGS, [])
-		trigger_details["_display_name"] = "enemy " + action + " (" + enemy.canonical_name + " -> " + target_hero.canonical_name +")" 	
+		trigger_details["_display_name"] = "enemy " + action + " (" + enemy.canonical_name + " -> " + target_friendly.canonical_name +")" 	
 	var _sceng = enemy.execute_scripts(enemy, script_name,trigger_details)
 	_current_enemy_attack_step = next_step
 
@@ -1108,14 +1112,14 @@ func get_current_attacker_data():
 	}	
 
 func enemy_activates() :
-	var target_id = _villain_current_hero_target
-	
+	var target_hero_id = _villain_current_hero_target
+	var target_friendly = null
 
 	var attacker_data = attackers.front() if attackers else null
 	if (typeof (attacker_data) == TYPE_STRING):
 		match attacker_data:
 			"load_minions":
-				attackers += get_minions_engaged_with_hero(target_id)
+				attackers += get_minions_engaged_with_hero(target_hero_id)
 				attackers.pop_front()
 
 	if !attackers.size():
@@ -1126,7 +1130,7 @@ func enemy_activates() :
 		return
 
 	#there is an enemy, we'll try to attack
-	var heroZone:WCHeroZone = cfc.NMAP.board.heroZones[target_id]
+	var heroZone:WCHeroZone = cfc.NMAP.board.heroZones[target_hero_id]
 	var action = "attack" if (heroZone.is_hero_form()) else "scheme"
 	var script = null
 	
@@ -1137,19 +1141,26 @@ func enemy_activates() :
 	script = attacker_data.get("script", script)
 	var override_target_id = attacker_data.get("target_id", 0)
 	if override_target_id:
-		target_id = override_target_id
+		if typeof(override_target_id) == TYPE_INT:
+			target_hero_id = override_target_id
+		else:
+			target_friendly = override_target_id
+			target_hero_id = target_friendly.get_controller_hero_id()			
 
-	var target_hero = get_identity_card(target_id)		
+
+	if target_hero_id and !target_friendly:
+		target_friendly = get_identity_card(target_hero_id)
+				
 	if action == "activate":
-		if target_hero.is_hero_form():
+		if target_friendly.is_hero_form():
 			action = "attack"
 		else:
 			action = "scheme" 	
 
 	var status = "stunned" if (action=="attack") else "confused"
 	var hint_color = Color8(50,200,50) if (action=="attack") else Color8(240,110,255)
-	if target_id != get_current_local_hero_id():
-		self.select_current_playing_hero(target_id) 
+	if target_friendly.get_controller_hero_id() != get_current_local_hero_id():
+		self.select_current_playing_hero(target_hero_id) 
 	
 	#check for stun/confused
 	var is_status = enemy.is_token_status({"status_name": status})
@@ -1178,7 +1189,7 @@ func enemy_activates() :
 					"duration": 2,
 					"animation_style": Announce.ANIMATION_STYLE.SPEED_OUT,
 					"top_texture_filename": enemy.get_art_filename(false),
-					"bottom_texture_filename": get_identity_card(target_id).get_art_filename(),
+					"bottom_texture_filename": target_friendly.get_art_filename(),
 				}
 				theAnnouncer.simple_announce(announce_settings )
 							
@@ -1186,8 +1197,8 @@ func enemy_activates() :
 				#it could arrive before network players where at this status.
 				#Making it a local script (everyone adds it) is an attempt at fixing this
 				var details = {
-					"target" : target_hero,
-					SP.TRIGGER_TARGET_HERO : target_hero.canonical_name
+					"target" : target_friendly,
+					SP.TRIGGER_TARGET_HERO : target_friendly.canonical_name
 				}
 				 #some cleanup to prevent any misunderstanding
 				 #activity script will be set once the activity actually starts (which might be a mistake...?)
@@ -1197,7 +1208,7 @@ func enemy_activates() :
 				return
 				
 		EnemyAttackStatus.OK_TO_START_ATTACK:
-			start_activity(enemy, action, script, target_id)
+			start_activity(enemy, action, script, target_friendly)
 			return
 		
 		EnemyAttackStatus.BOOST_CARDS:
@@ -1217,8 +1228,8 @@ func enemy_activates() :
 		EnemyAttackStatus.DAMAGE_OR_THREAT:
 			var script_name
 			var details = {
-				"target" : target_hero,
-				SP.TRIGGER_TARGET_HERO : target_hero.canonical_name
+				"target" : target_friendly,
+				SP.TRIGGER_TARGET_HERO : target_friendly.canonical_name
 			}				
 			match action:
 				"scheme":
@@ -1230,7 +1241,7 @@ func enemy_activates() :
 				
 			var script_definition = {
 				"name": script_name, 
-				"target_hero_id" : target_id,
+				"target_hero_id" : target_hero_id,
 				"tags": enemy.activity_script.get_property(SP.KEY_TAGS)
 			}
 			#most filters check on script definition instead of trigger_details (because _current_interrupted_event in globalstack script is based on script definition for some reason)
@@ -1246,8 +1257,8 @@ func enemy_activates() :
 				var discard_event = WCScriptingEngine.simple_discard_task(boost_card)
 				gameData.theStack.add_script(discard_event)	
 			var details = {
-				"target" : target_hero,
-				SP.TRIGGER_TARGET_HERO : target_hero.canonical_name
+				"target" : target_friendly,
+				SP.TRIGGER_TARGET_HERO : target_friendly.canonical_name
 			}				
 			scripting_bus.emit_signal_on_stack("enemy_" + action + "_happened", enemy,  details)
 			#scripting_bus.emit_signal("enemy_" + action + "_happened", enemy, {})
@@ -2245,7 +2256,11 @@ func can_hero_play_this_ability(hero_index, card, trigger := "") -> bool:
 			if enemy:
 				var target_id = attacker_data.get("target_id", 0)
 				if target_id:
-					return hero_index == target_id
+					if typeof(target_id) == TYPE_INT:
+						return hero_index == target_id
+					else:
+						return (hero_index == target_id.get_controller_hero_id())
+					
 
 	if (card_controller_id <= 0 or card_controller_id == hero_index):
 		return true

@@ -1,0 +1,1035 @@
+{
+	"\"You'll Pay for That!\"": {
+		"response_card_damaged": {
+			"trigger": "self",
+			"event_filters": {
+				"attacker": "villain",
+				"tags": [
+					"attack"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": "trigger_details_damage",
+					"max_amount": 5,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Abomination": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_my_hero",
+					"subject_count": 1
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "physical"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "deal_damage",
+									"subject": "my_identity",
+									"amount": 2
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Avengers Mansion": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Banner's Laboratory": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "recover",
+					"trigger": "my_identity",
+					"alteration": 2
+				}
+			]
+		},
+		"resource": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "mental"
+				}
+			]
+		}
+	},
+	"Beat Cop": {
+		"manual": {
+			"board": {
+				"Receive Threat": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "nop",
+						"is_cost": true,
+						"subject": "target",
+						"filter_state_subject": [
+							{
+								"filter_group": "group_schemes"
+							}
+						]
+					},
+					{
+						"name": "move_token_to",
+						"token_name": "threat",
+						"source": "previous",
+						"amount": 1,
+						"subject": "self"
+					}
+				],
+				"Deal Damage": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "deal_damage",
+						"amount": "per_token_self",
+						"per_token_self": {
+							"token_name": "threat"
+						},
+						"subject": "target",
+						"filter_state_subject": [
+							{
+								"filter_properties": {
+									"type_code": "minion"
+								}
+							}
+						]
+					},
+					{
+						"name": "discard_card",
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Boundless Rage": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "my_hero",
+					"alteration": 1
+				}
+			]
+		},
+		"response": {
+			"event_name": "identity_changed_form",
+			"trigger": "my_identity",
+			"board": [
+				{
+					"name": "discard",
+					"subject_index": "self"
+				}
+			]
+		}
+	},
+	"Brawn - Amadeus Cho": {
+		"response": {
+			"event_name": "attack_happened",
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "remove_threat",
+					"amount": 1,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Bruce Banner": {
+		"once_per_round": {
+			"__name__": "__experimental_research"
+		},
+		"manual": {
+			"board": {
+				"Experimental Research": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"token_name": "__experimental_research",
+						"modification": -1,
+						"subject": "self"
+					},
+					{
+						"name": "draw_cards",
+						"amount": 1
+					},
+					{
+						"name": "sequence",
+						"sequence_ability": "discard_action",
+						"subject": "self"
+					}
+				]
+			}
+		},
+		"discard_action": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "hand",
+					"needs_selection": true,
+					"selection_count": 1
+				}
+			]
+		}
+	},
+	"Clash Of The Titans": {
+		"reveal": {
+			"all": [
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"is_cost": true,
+					"sort_by": "function",
+					"sort_name": "get_subject_int_property",
+					"func_params": {
+						"property": "attack"
+					},
+					"sort_descending": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "i_attack",
+					"action_owner": "previous",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "get_subject_int_property",
+					"func_params": {
+						"property": "attack"
+					},
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly"
+						}
+					]
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				}
+			]
+		}
+	},
+	"Crushing Blow": {
+		"on_load": {
+			"all": [
+				{
+					"name": "init_properties",
+					"subject": "self",
+					"set_properties": {
+						"override_play_cost": {
+							"physical": 1
+						}
+					}
+				}
+			]
+		},
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Drop Kick": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 4,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "previous",
+					"token_name": "stunned",
+					"modification": {
+						"if": {
+							"func_name": "paid_with_includes",
+							"func_params": {
+								"physical": 1,
+								"type_constraint": "same"
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
+				},
+				{
+					"name": "draw_cards",
+					"amount": {
+						"if": {
+							"func_name": "paid_with_includes",
+							"func_params": {
+								"physical": 1,
+								"type_constraint": "same"
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
+				}
+			]
+		}
+	},
+	"Electrostatic Armor": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero_any": 1
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_to_player_zone",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities",
+							"filter_max_per_hero": 1
+						}
+					]
+				}
+			]
+		},
+		"response": {
+			"event_name": "defense_happened",
+			"event_filters": {
+				"target": "my_hero",
+				"tags": [
+					"attack"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "trigger_details_attacker"
+				}
+			]
+		}
+	},
+	"Helicarrier": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"set_to_mod": true,
+					"token_name": "_helicarrier"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "_helicarrier",
+						"is_inverted": true
+					}
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "another",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "_helicarrier"
+				}
+			]
+		},
+		"phase_ended": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "_helicarrier"
+				}
+			]
+		}
+	},
+	"Hulk": {
+		"step_ended": {
+			"event_filters": {
+				"step_name": "PLAYER_TURN"
+			},
+			"board": [
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"src_container": "hand",
+					"subject_count": "all"
+				}
+			]
+		}
+	},
+	"Hulk Smash": {
+		"interrupt": {
+			"event_name": "attack",
+			"trigger": "my_hero",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "add_script",
+					"end_condition": "basic_attack_happened",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "my_hero",
+									"alteration": 10
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "overkill",
+									"trigger": "my_hero",
+									"alteration": {
+										"if": {
+											"func_name": "paid_with_includes",
+											"func_params": {
+												"physical": 1,
+												"type_constraint": "same"
+											}
+										},
+										"then": 1,
+										"else": 0
+									}
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Immovable Object": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "my_identity",
+					"alteration": 4
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "Hulk",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Inner Demons": {
+		"give_obligation": {
+			"__to__": "Bruce Banner"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "is_hero_form",
+								"func_params": {
+									"subject": "my_identity"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "change_form",
+									"subject": "my_identity"
+								},
+								{
+									"name": "discard",
+									"subject": "tutor",
+									"subject_count": "all",
+									"needs_selection": true,
+									"selection_count": 2
+								},
+								{
+									"name": "discard",
+									"subject": "self"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "exhaust_card",
+							"is_cost": true,
+							"subject": "my_identity",
+							"_comments": "we need to exhaust before changing form here due to a bug"
+						},
+						{
+							"name": "change_form",
+							"subject": "my_identity"
+						},
+						{
+							"name": "discard",
+							"subject": "self"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Inspiring Presence": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "avenger"
+							}
+						}
+					]
+				},
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							}
+						}
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "previous"
+				}
+			]
+		}
+	},
+	"Limitless Strength": {
+		"resource": {
+			"hand": [
+				{
+					"name": "add_resource",
+					"amount": {
+						"if": {
+							"func_name": "is_hero_form",
+							"func_params": {
+								"subject": "my_identity"
+							}
+						},
+						"then": 3,
+						"else": 0
+					},
+					"resource_name": "physical"
+				}
+			]
+		}
+	},
+	"Martial Prowess": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero_any": 1
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_to_player_zone",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities",
+							"filter_max_per_hero": 1
+						}
+					]
+				}
+			]
+		},
+		"resource": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "event"
+							},
+							"filter_properties2": {
+								"trait_attack": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "physical"
+				}
+			]
+		}
+	},
+	"Resourceful": {
+		"resource": {
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Sentry - Robert Reynolds": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "deal_encounter",
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"She-Hulk - Jennifer Walters": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "damage"
+					}
+				}
+			]
+		}
+	},
+	"Sub-Orbital Leap": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": {
+						"if": {
+							"func_name": "paid_with_includes",
+							"func_params": {
+								"physical": 1,
+								"type_constraint": "same"
+							}
+						},
+						"then": 5,
+						"else": 3
+					},
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"The Power of Aggression": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "aggression"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Thunderclap": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 3,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 3,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"To the Rescue!": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Toe to Toe": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"enemy_activation_finished": {
+							"all": [
+								{
+									"name": "deal_damage",
+									"amount": 5,
+									"subject": "trigger"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "enemy_attacks_you",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Total Destruction": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_remove_threat",
+					"trigger": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Abomination"
+								}
+							}
+						]
+					},
+					"alteration": "per_boardseek"
+				}
+			]
+		}
+	},
+	"Unstoppable Force": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "Hulk"
+				},
+				{
+					"name": "draw_cards",
+					"amount": {
+						"if": {
+							"func_name": "paid_with_includes",
+							"func_params": {
+								"physical": 1,
+								"type_constraint": "same"
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
+				}
+			]
+		}
+	}
+}

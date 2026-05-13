@@ -1026,8 +1026,16 @@ func attack_prevented():
 	current_enemy_finished()
 
 func current_enemy_finished():
-	var enemy = attackers.pop_front()
 	_current_enemy_attack_step = EnemyAttackStatus.NONE
+	
+	#shouldn't happen	
+	if !attackers.size():
+		var _error = 1
+		return
+	var attacker_data = get_current_attacker_data()
+	var enemy = attacker_data.get("subject", null)	
+	var _pop = attackers.pop_front()
+
 	scripting_bus.emit_signal("enemy_activation_finished", enemy, {})
 	#cfc._rpc(self,"remove_client_status")
 

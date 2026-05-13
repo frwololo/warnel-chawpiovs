@@ -494,6 +494,8 @@ func _on_viewport_resized() -> void:
 
 
 func _exit_tree():
+	save_settings()
+	
 	if script_load_thread:
 		script_load_thread.wait_to_finish()
 
@@ -548,5 +550,9 @@ func _input(event):
 				if focus_owner as TextEdit:
 					return
 					
-		OS.set_window_fullscreen(!OS.window_fullscreen)
+		set_fullscreen(!OS.window_fullscreen)
 		get_tree().set_input_as_handled()	
+
+func set_fullscreen(value):
+	game_settings["fullscreen"] = value
+	OS.set_window_fullscreen(value)

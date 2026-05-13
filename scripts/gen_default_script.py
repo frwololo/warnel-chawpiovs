@@ -245,8 +245,7 @@ def get_base_json(card_data):
             "needs_subject": True,
             "filter_state_subject": [
                 {"filter_group": "group_enemies"}
-                ]
-	  }                  
+            ]                  
 	}         
       )              
     if primitive == '<i>(thwart)</i>' and "manual" in result:
@@ -258,7 +257,7 @@ def get_base_json(card_data):
             "needs_subject": True,
             "filter_state_subject": [
                 {"filter_group": "group_schemes"}
-                ]
+            ]
 	  }         
       )
 

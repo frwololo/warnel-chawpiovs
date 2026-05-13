@@ -38,6 +38,8 @@ var _next_scene = ""
 var _next_scene_counter = 0
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	if cfc.game_settings.has("fullscreen"):
+		cfc.set_fullscreen(cfc.game_settings["fullscreen"])
 	gameData.disconnect_from_network()
 	gameData.sanity_cleanup()	
 	create_default_folders()
@@ -371,4 +373,4 @@ func _on_FolderLabel_meta_clicked(meta):
 
 
 func _on_FullscreenCheck_toggled(button_pressed):
-	OS.set_window_fullscreen(button_pressed)
+	cfc.set_fullscreen(button_pressed)

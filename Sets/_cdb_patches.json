@@ -133,6 +133,9 @@
 	"09007": {
 		"traits": "Spell.",
 	},
+	"10011": {
+		"subname": "Amadeus Cho"
+	},
 	"16056": {
 			"attack": 2,
 	},

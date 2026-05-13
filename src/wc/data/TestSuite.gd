@@ -1455,7 +1455,7 @@ static func generate_missing_tests():
 						break
 		
 		card_path = card_path.replace(" ","_")
-		for symbol in ["!", ",", "\"", ":", ".", "'"]:
+		for symbol in ["!", ",", "\"", ":", ".", "'", "?"]:
 			card_path = card_path.replace(symbol, "")
 		
 		var hero_shortname = belongs_to_hero["shortname"] if belongs_to_hero else "Spider-Man"
@@ -1573,6 +1573,9 @@ static func generate_missing_tests():
 			}
 		}
 		
-		file.open(filepath, File.WRITE)
-		file.store_string(JSON.print(json_data, '\t'))
-		file.close()
+		var error = file.open(filepath, File.WRITE)
+		if error == OK:
+			file.store_string(JSON.print(json_data, '\t'))
+			file.close()
+		else:
+			print_debug("could not open " + filepath)

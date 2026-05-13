@@ -2386,20 +2386,35 @@ func reveal_nemesis (script:ScriptTask) -> int:
 	if typeof(src_containers) == TYPE_STRING:
 		src_containers = [src_containers]
 	
+	#finding the nemesis minion in Database
+	var nemesis_id = ""
+	var potential_nemesis_id = ""
+	for card_data in cfc.cards_by_set[my_nemesis_set]:
+		if card_data["type_code"] != "minion":
+			continue
+		if !card_data.get("is_unique", false):
+			continue
+		if "nemesis" in card_data.get("real_text", "").to_lower():
+			nemesis_id = card_data["_code"]
+			break
+		potential_nemesis_id = card_data["_code"]		 
+	
+	if !nemesis_id and potential_nemesis_id:
+		nemesis_id = potential_nemesis_id
+	
 	for src_container in src_containers:
 		for card in cfc.NMAP[src_container].get_all_cards():		
 			if card.get_property("card_set_code", "") == my_nemesis_set:
 				var type_code = card.get_property("type_code")
 				if type_codes and !(type_code in type_codes):
 					continue
-				if type_code == "minion" and card.get_property("is_unique", false):
+				if card.canonical_id == nemesis_id:
 					my_nemesis = card
 				elif type_code == "side_scheme":
 					my_nemesis_scheme = card
 				else:
 					other_nemesis_cards.append(card)			
-	
-	
+
 	if (my_nemesis_scheme and !nemesis_only):
 		gameData.deal_one_encounter_to(my_hero_id, true, my_nemesis_scheme)	
 

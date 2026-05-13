@@ -1,0 +1,161 @@
+{
+	"_comments": "Bug: Thor Lightning Strike not working",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Thor"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "hydra mercenary"
+				},
+
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Hammer Throw"
+				},
+				{
+					"card": "Asgard"
+				},
+				{
+					"card": "God of Thunder"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Thor",
+					"tokens": {
+						"_have_at_thee": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Mjolnir"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Lightning Strike"
+				},
+				{
+					"card": "Mean Swing"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Lightning Strike"
+		},	
+		{
+			"type": "select",
+			"value": "Mean Swing"
+		},
+		{
+			"type": "select",
+			"value": "Energy"
+		},
+
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Thor"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {"damage": 2}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "hydra mercenary"
+				},
+
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Hammer Throw"
+				},
+				{
+					"card": "Asgard"
+				},
+				{
+					"card": "God of Thunder"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Thor",
+					"tokens": {
+						"_have_at_thee": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Mjolnir"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Mean Swing"
+				},
+				{
+					"card": "Lightning Strike"
+				},				
+				{
+					"card": "Energy"
+				},
+
+
+			]
+		}
+	}
+}

@@ -20,24 +20,31 @@ anchor_bottom = 1.0
 
 [node name="VBox" type="VBoxContainer" parent="CenterContainer"]
 margin_left = 733.0
-margin_top = 297.0
+margin_top = 245.0
 margin_right = 1187.0
-margin_bottom = 782.0
+margin_bottom = 834.0
 custom_constants/separation = 10
 alignment = 1
 
-[node name="Label" type="Label" parent="CenterContainer/VBox"]
+[node name="Label2" type="Label" parent="CenterContainer/VBox"]
 margin_right = 454.0
-margin_bottom = 115.0
+margin_bottom = 94.0
+text = "Please note: Multiplayer mode is untested for the most part. It works in theory, but expect a lot of game breaking bugs"
+autowrap = true
+
+[node name="Label" type="Label" parent="CenterContainer/VBox"]
+margin_top = 104.0
+margin_right = 454.0
+margin_bottom = 219.0
 size_flags_horizontal = 3
 custom_fonts/font = SubResource( 1 )
 text = "Multiplayer"
 align = 1
 
 [node name="VButtons" type="VBoxContainer" parent="CenterContainer/VBox"]
-margin_top = 125.0
+margin_top = 229.0
 margin_right = 454.0
-margin_bottom = 445.0
+margin_bottom = 549.0
 size_flags_horizontal = 3
 custom_constants/separation = 10
 
@@ -74,9 +81,9 @@ __meta__ = {
 }
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBox"]
-margin_top = 455.0
+margin_top = 559.0
 margin_right = 128.0
-margin_bottom = 485.0
+margin_bottom = 589.0
 size_flags_horizontal = 0
 size_flags_vertical = 4
 

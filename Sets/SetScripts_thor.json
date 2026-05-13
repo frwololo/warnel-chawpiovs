@@ -91,7 +91,11 @@
 				{
 					"name": "ready_card",
 					"subject": "my_hero"
-				}
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}				
 			]
 		}
 	},
@@ -358,7 +362,7 @@
 			]
 		},
 		"manual": {
-			"hand": [
+			"board": [
 				{
 					"name": "constraints",
 					"is_cost": true,
@@ -549,7 +553,6 @@
 		}
 	},
 	"Lightning Strike": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{

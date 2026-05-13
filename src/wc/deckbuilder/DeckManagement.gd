@@ -34,6 +34,7 @@ var http_request: HTTPRequest = null
 onready var error_label := get_node("%message")
 onready var back_button := get_node("%BackButton")
 onready var clone_button := get_node("%CloneButton")
+onready var edit_button := get_node("%EditButton")
 onready var delete_button := get_node("%DeleteButton")
 onready var export_button := get_node("%ExportButton")
 onready var download_button := get_node("%DownloadDeckButton")
@@ -85,6 +86,7 @@ func _ready():
 	back_button.connect("pressed", self, "_on_CancelButton_pressed")
 	download_button.connect("pressed", self, "_on_DownloadDeck_pressed")	
 	clone_button.connect("pressed", self, "_clone_pressed")
+	edit_button.connect("pressed", self, "_edit_pressed")
 	delete_button.connect("pressed", self, "_delete_pressed")
 	export_button.connect("pressed", self, "_export_pressed")	
 	reset_all_button.connect("pressed", self, "_reset_all_pressed")
@@ -99,7 +101,8 @@ func _ready():
 	
 	#initial UI state
 	disable_deck_buttons()
-
+	var loading_panel = get_node("%LoadingPanel")	
+	loading_panel.visible = false	
 	
 	tab_select(main_container)
 
@@ -111,7 +114,7 @@ func disable_deck_buttons(value = true):
 	delete_button.disabled = value
 	clone_button.disabled = value
 	export_button.disabled = value	
-
+	edit_button.disabled = value	
 
 func enable_deck_buttons(value = true):
 	disable_deck_buttons(!value)
@@ -192,6 +195,7 @@ func edit_deck(deck_data):
 
 func deck_selected(deck_id):
 	#unselect
+	get_node("%DeckTitle").text = ""
 	if deck_id == -1:
 		if current_deck and is_instance_valid(current_deck):
 			current_deck.hide_highlights()		
@@ -217,7 +221,10 @@ func deck_selected(deck_id):
 	current_selected_deck_id = deck_id
 	current_deck = all_decks.get(current_selected_deck_id)
 	if current_deck:
-		current_deck.show_highlights()	
+		current_deck.show_highlights()
+		get_node("%DeckTitle").text = current_deck.get_full_name()	
+		yield(get_tree(), "idle_frame")
+		deck_scroll.ensure_control_visible(current_deck)
 
 
 func start_highlight():
@@ -281,7 +288,7 @@ func _load_decks():
 	all_decks[0] = empty_deck
 				
 	for deck_info in cfc.deck_definitions.values():
-		_load_one_deck(deck_info)
+		_load_one_deck(deck_info.duplicate(true))
 
 func _load_one_deck(deck_info):
 	var new_deck = deckData.instance()
@@ -368,13 +375,6 @@ func refresh_deck_containers(json_deck_data):
 	highlight_deck(json_deck_data["id"])
 	
 
-func on_button_pressed(_button_name : String) -> void:
-	match _button_name:
-		"LaunchButton":
-			pass	
-		#"Cancel":
-			#TODO disconnect?
-		#	get_tree().change_scene(CFConst.PATH_CUSTOM + 'MainMenu.tscn')
 
 func _on_Menu_resized() -> void:
 	resize()
@@ -405,6 +405,8 @@ func _deck_download_completed(result, response_code, headers, body):
 	_deck_dl_backup = false
 	var button = get_node("%DownloadDeckButton")
 	button.disabled = false
+	var loading_panel = get_node("%LoadingPanel")	
+	loading_panel.visible = false	
 
 func start_deck_download(deck_id_str):
 	var button = get_node("%DownloadDeckButton")
@@ -435,13 +437,22 @@ func _on_DownloadDeck_pressed():
 	var to_download:LineEdit = get_node("%DownloadDeckNumber")
 	if !to_download.text.is_valid_integer():
 		return
+	
+	var loading_panel = get_node("%LoadingPanel")	
+	loading_panel.visible = true
+	for c in loading_panel.get_children():
+		c.rect_min_size = loading_panel.rect_size
+			
 	start_deck_download(to_download.text)
 	pass # Replace with function body.
 
-func get_current_deck_name():
+func get_current_deck_name(full_name:= true):
 	if !current_deck:
 		return "--"
 
+	if full_name:
+		return current_deck.get_full_name()
+		
 	return current_deck.get_display_name()
 
 #deletes current selected deck
@@ -570,6 +581,9 @@ func _export_pressed():
 
 func _clone_pressed():
 	clone_deck()
+
+func _edit_pressed():
+	edit_deck(current_deck.deck_data)
 	
 func _reset_all_pressed():
 	ask_reset_all_decks()	
@@ -618,3 +632,7 @@ func _on_ClipboardButton_pressed():
 func _on_MCDBButton_pressed():
 	OS.set_clipboard(export_data.text)
 	OS.shell_open("https://marvelcdb.com/deck/import")
+
+
+func _on_DownloadDeckNumber_text_entered(new_text):
+	_on_DownloadDeck_pressed()

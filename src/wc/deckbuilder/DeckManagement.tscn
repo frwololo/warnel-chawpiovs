@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://src/wc/deckbuilder/DeckManagement.gd" type="Script" id=1]
 [ext_resource path="res://themes/darktheme/darktheme.theme" type="Theme" id=2]
@@ -13,6 +13,10 @@ font_data = ExtResource( 3 )
 [sub_resource type="DynamicFont" id=2]
 size = 40
 font_data = ExtResource( 4 )
+
+[sub_resource type="DynamicFont" id=4]
+size = 50
+font_data = ExtResource( 3 )
 
 [sub_resource type="DynamicFont" id=3]
 font_data = ExtResource( 5 )
@@ -76,13 +80,28 @@ align = 1
 [node name="DecksContainer" type="MarginContainer" parent="MainMenu/Outercontainer"]
 margin_top = 90.0
 margin_right = 1870.0
-margin_bottom = 90.0
+margin_bottom = 108.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Outercontainer/DecksContainer"]
 margin_right = 1870.0
+margin_bottom = 18.0
+custom_constants/separation = -1
+
+[node name="ColorRect2" type="ColorRect" parent="MainMenu/Outercontainer/DecksContainer/VBoxContainer"]
+margin_right = 1870.0
+margin_bottom = 10.0
+rect_min_size = Vector2( 0, 10 )
+size_flags_horizontal = 3
+color = Color( 0.109804, 0.109804, 0.109804, 1 )
 
 [node name="MarginContainer" type="MarginContainer" parent="MainMenu/Outercontainer/DecksContainer/VBoxContainer"]
+margin_top = 9.0
 margin_right = 1870.0
+margin_bottom = 9.0
+
+[node name="ColorRect" type="ColorRect" parent="MainMenu/Outercontainer/DecksContainer/VBoxContainer/MarginContainer"]
+margin_right = 1870.0
+color = Color( 0.145098, 0.145098, 0.145098, 1 )
 
 [node name="DecksScroll" type="ScrollContainer" parent="MainMenu/Outercontainer/DecksContainer/VBoxContainer/MarginContainer"]
 unique_name_in_owner = true
@@ -94,46 +113,71 @@ unique_name_in_owner = true
 custom_constants/hseparation = 10
 columns = 6
 
-[node name="ActionsContainer" type="MarginContainer" parent="MainMenu/Outercontainer"]
-margin_top = 100.0
+[node name="ColorRect3" type="ColorRect" parent="MainMenu/Outercontainer/DecksContainer/VBoxContainer"]
+margin_top = 8.0
 margin_right = 1870.0
-margin_bottom = 218.0
+margin_bottom = 18.0
+rect_min_size = Vector2( 0, 10 )
+size_flags_horizontal = 3
+color = Color( 0.109804, 0.109804, 0.109804, 1 )
+
+[node name="ActionsContainer" type="MarginContainer" parent="MainMenu/Outercontainer"]
+margin_top = 118.0
+margin_right = 1870.0
+margin_bottom = 236.0
 custom_constants/margin_right = 100
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="MainMenu/Outercontainer/ActionsContainer"]
 margin_right = 1770.0
 margin_bottom = 118.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3"]
-margin_right = 381.0
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3"]
+margin_right = 472.0
 margin_bottom = 118.0
+
+[node name="DeckTitle" type="Label" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/VBoxContainer"]
+unique_name_in_owner = true
+margin_right = 472.0
+margin_bottom = 30.0
+custom_colors/font_color = Color( 0.45098, 0.45098, 0.45098, 1 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/VBoxContainer"]
+margin_top = 33.0
+margin_right = 472.0
+margin_bottom = 92.0
 custom_constants/separation = 20
 
-[node name="CloneButton" type="Button" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer"]
+[node name="EditButton" type="Button" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_top = 29.0
-margin_right = 105.0
-margin_bottom = 88.0
+margin_right = 71.0
+margin_bottom = 59.0
+size_flags_horizontal = 3
+size_flags_vertical = 4
+text = "EDIT"
+
+[node name="CloneButton" type="Button" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 91.0
+margin_right = 196.0
+margin_bottom = 59.0
 size_flags_horizontal = 3
 size_flags_vertical = 4
 text = "CLONE"
 
-[node name="DeleteButton" type="Button" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer"]
+[node name="DeleteButton" type="Button" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 125.0
-margin_top = 29.0
-margin_right = 235.0
-margin_bottom = 88.0
+margin_left = 216.0
+margin_right = 326.0
+margin_bottom = 59.0
 size_flags_horizontal = 3
 size_flags_vertical = 4
 text = "DELETE"
 
-[node name="ExportButton" type="Button" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer"]
+[node name="ExportButton" type="Button" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 255.0
-margin_top = 29.0
-margin_right = 381.0
-margin_bottom = 88.0
+margin_left = 346.0
+margin_right = 472.0
+margin_bottom = 59.0
 size_flags_horizontal = 3
 size_flags_vertical = 4
 text = "Export"
@@ -194,7 +238,31 @@ margin_top = 84.0
 margin_right = 557.0
 margin_bottom = 114.0
 custom_colors/font_color = Color( 0.933333, 0.0823529, 0.0823529, 1 )
-autowrap = true
+
+[node name="LoadingPanel" type="CenterContainer" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer2/DownloadDeckContainer"]
+unique_name_in_owner = true
+visible = false
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 559.0
+margin_bottom = 116.0
+
+[node name="ColorRect" type="ColorRect" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer2/DownloadDeckContainer/LoadingPanel"]
+margin_left = 278.0
+margin_top = 57.0
+margin_right = 278.0
+margin_bottom = 57.0
+color = Color( 0, 0, 0, 0.694118 )
+
+[node name="Loading" type="Label" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer2/DownloadDeckContainer/LoadingPanel"]
+margin_left = 139.0
+margin_top = 29.0
+margin_right = 417.0
+margin_bottom = 84.0
+custom_fonts/font = SubResource( 4 )
+text = "Downloading..."
+align = 1
+valign = 1
 
 [node name="ResetAllButton" type="Button" parent="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer2"]
 unique_name_in_owner = true
@@ -207,9 +275,9 @@ size_flags_vertical = 4
 text = "Reset ALL DEcks"
 
 [node name="BottomContainer" type="MarginContainer" parent="MainMenu/Outercontainer"]
-margin_top = 228.0
+margin_top = 246.0
 margin_right = 1870.0
-margin_bottom = 287.0
+margin_bottom = 305.0
 
 [node name="BackButton" type="Button" parent="MainMenu/Outercontainer/BottomContainer"]
 unique_name_in_owner = true
@@ -251,7 +319,7 @@ margin_right = 40.0
 margin_bottom = 40.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ExportContainer"]
-margin_right = 977.0
+margin_right = 1314.0
 margin_bottom = 562.0
 size_flags_vertical = 11
 custom_constants/separation = 79
@@ -313,6 +381,7 @@ margin_bottom = 40.0
 mouse_filter = 2
 
 [connection signal="item_selected" from="MainMenu/Outercontainer/FiltersContainer/Filters/HeroesFilter" to="." method="_on_HeroesFilter_item_selected"]
+[connection signal="text_entered" from="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer2/DownloadDeckContainer/VBoxContainer/HBoxContainer/DownloadDeckNumber" to="." method="_on_DownloadDeckNumber_text_entered"]
 [connection signal="pressed" from="NewDeckContainer/VBoxContainer/DeckCreateHeroButton" to="." method="_on_DeckCreateHeroButton_pressed"]
 [connection signal="pressed" from="ExportContainer/HBoxContainer/VBoxContainer/HBoxContainer/CopyButton" to="." method="_on_ClipboardButton_pressed"]
 [connection signal="pressed" from="ExportContainer/HBoxContainer/VBoxContainer/HBoxContainer/CopyButton2" to="." method="_on_MCDBButton_pressed"]

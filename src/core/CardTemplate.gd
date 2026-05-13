@@ -2958,13 +2958,21 @@ func _process_card_state() -> void:
 				get_card_front().scale_to(preview_scale * cfc.curr_scale)
 
 		CardState.DECKBUILDER_GRID:
-			z_index = 0
+			#if for some reason we're showing this mode in game (e.g. card select),
+			#the cards shouldn't react to direct click events
+			if cfc.NMAP.has("board"):
+				z_index = 1
+				$Control.mouse_filter = Control.MOUSE_FILTER_IGNORE
+				set_control_mouse_filters(false)				
+			
+			#but in deckbuilder it should work
+			else:
+				z_index = 0
+			
 			z_as_relative = true
-			#$Control.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			set_focus(false)
 			if is_instance_valid(tokens):
-				self.tokens.set_is_drawer_open(false)
-			#set_control_mouse_filters(false)
+				self.tokens.set_is_drawer_open(false)				
+			set_focus(false)
 			set_manipulation_buttons_active(false)
 			# warning-ignore:return_value_discarded
 			set_card_rotation(0)

@@ -25,14 +25,16 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 
 [node name="VBox" type="VBoxContainer" parent="CenterContainer"]
+unique_name_in_owner = true
 margin_left = 360.0
-margin_top = 164.0
+margin_top = 147.0
 margin_right = 1560.0
-margin_bottom = 915.0
+margin_bottom = 932.0
 custom_constants/separation = 10
 alignment = 1
 
 [node name="Label" type="Label" parent="CenterContainer/VBox"]
+unique_name_in_owner = true
 margin_right = 1200.0
 margin_bottom = 115.0
 size_flags_horizontal = 3
@@ -44,16 +46,17 @@ align = 1
 unique_name_in_owner = true
 margin_top = 125.0
 margin_right = 1200.0
-margin_bottom = 601.0
+margin_bottom = 635.0
 rect_min_size = Vector2( 1200, 0 )
 custom_fonts/normal_font = SubResource( 2 )
 bbcode_enabled = true
 bbcode_text = "Warnel Chawpiovs, by Wololo ([url]https://wololo.net[/url])
 
 == Credits ==
-Uses the Godot Engine ([url]https://godotengine.org/[/url])
-Godot Switch port ([url]https://github.com/Homebrodot[/url])  thanks in particular to fhidalgosola/utnad, Stary2001, cpasjuste, halotroop2288
-Uses a heavyly modified version of Card Game Framework ([url]https://github.com/db0/godot-card-game-framework[/url])
+* Uses the Godot Engine ([url]https://godotengine.org/[/url])
+* Godot Switch port ([url]https://github.com/Homebrodot[/url])  thanks in particular to fhidalgosola/utnad, Stary2001, cpasjuste, halotroop2288
+* Uses a heavyly modified version of Card Game Framework ([url]https://github.com/db0/godot-card-game-framework[/url])
+* Card Database is from MarvelCDB ([url]https://marvelcdb.com[/url])
 
 == Disclaimer ==
 This is free, fan-created work and is not affiliated with, endorsed by, or sponsored by Fantasy Flight Games. All characters, settings, and related elements are the property of their respective owners.
@@ -61,9 +64,10 @@ This is free, fan-created work and is not affiliated with, endorsed by, or spons
 text = "Warnel Chawpiovs, by Wololo (https://wololo.net)
 
 == Credits ==
-Uses the Godot Engine (https://godotengine.org/)
-Godot Switch port (https://github.com/Homebrodot)  thanks in particular to fhidalgosola/utnad, Stary2001, cpasjuste, halotroop2288
-Uses a heavyly modified version of Card Game Framework (https://github.com/db0/godot-card-game-framework)
+* Uses the Godot Engine (https://godotengine.org/)
+* Godot Switch port (https://github.com/Homebrodot)  thanks in particular to fhidalgosola/utnad, Stary2001, cpasjuste, halotroop2288
+* Uses a heavyly modified version of Card Game Framework (https://github.com/db0/godot-card-game-framework)
+* Card Database is from MarvelCDB (https://marvelcdb.com)
 
 == Disclaimer ==
 This is free, fan-created work and is not affiliated with, endorsed by, or sponsored by Fantasy Flight Games. All characters, settings, and related elements are the property of their respective owners.
@@ -71,9 +75,9 @@ This is free, fan-created work and is not affiliated with, endorsed by, or spons
 fit_content_height = true
 
 [node name="VButtons" type="VBoxContainer" parent="CenterContainer/VBox"]
-margin_top = 611.0
+margin_top = 645.0
 margin_right = 1200.0
-margin_bottom = 711.0
+margin_bottom = 745.0
 size_flags_horizontal = 3
 custom_constants/separation = 10
 
@@ -88,9 +92,9 @@ __meta__ = {
 }
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBox"]
-margin_top = 721.0
+margin_top = 755.0
 margin_right = 128.0
-margin_bottom = 751.0
+margin_bottom = 785.0
 size_flags_horizontal = 0
 size_flags_vertical = 4
 

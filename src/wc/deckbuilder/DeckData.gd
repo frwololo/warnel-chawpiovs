@@ -10,7 +10,8 @@ var deck_id = 0
 var hero_id = 0
 var deck_data:= {}
 var color_tex: Texture = null
-
+var modulate_h = false
+var modulate_direction = 0.92
 
 const ASPECT_TO_ICON = {
 	"aggression":"aspect_red.png",
@@ -54,6 +55,8 @@ func simplified_deck_name():
 	_simplified_deck_name = deck_name
 	return _simplified_deck_name
 
+func get_full_name():
+	return deck_data["name"]
 
 func get_display_name():
 	return simplified_deck_name()
@@ -74,10 +77,12 @@ func resize():
 
 	
 	deck_picture.rect_size = deck_picture.rect_min_size	
-	$Panel/HorizontalHighlights.rect_min_size = deck_picture.rect_min_size
-	$Panel/VerticalHighlights.rect_min_size = deck_picture.rect_min_size
-	$Panel/HorizontalHighlights.rect_size = deck_picture.rect_size
-	$Panel/VerticalHighlights.rect_size = deck_picture.rect_size			
+	$Panel/HorizontalHighlights.rect_min_size = deck_picture.rect_min_size +Vector2(5,5)
+	$Panel/VerticalHighlights.rect_min_size = deck_picture.rect_min_size  +Vector2(5,5)
+	$Panel/HorizontalHighlights.rect_size = deck_picture.rect_size   +Vector2(5,5)
+	$Panel/VerticalHighlights.rect_size = deck_picture.rect_size +Vector2(5,5)	
+	hide_highlights()	
+		
 func grab_focus():
 	deck_picture.grab_focus()
 
@@ -121,6 +126,17 @@ func load_deck(_deck_data):
 
 func _process(_delta):
 	refresh_display()
+	
+	if modulate_h:
+		var new_modulate = $Panel/VerticalHighlights.modulate.a * modulate_direction
+		if new_modulate < 0.01:
+			modulate_direction = 1.09
+		if new_modulate > 1.8:
+			modulate_direction = 0.92
+		$Panel/VerticalHighlights.modulate.a = new_modulate 
+		$Panel/HorizontalHighlights.modulate.a = new_modulate
+		if new_modulate >= 1:
+			deck_picture.modulate.a = new_modulate
 
 var _needs_refresh = true
 func refresh_display():
@@ -193,18 +209,25 @@ func gain_focus():
 
 func show_highlights():
 	$Panel/VerticalHighlights.visible = true
+	$Panel/VerticalHighlights.modulate = Color(0.7, 0.7, 1.5) * 1.8
 	$Panel/HorizontalHighlights.visible = true
-	$Panel/HorizontalHighlights.rect_size = deck_picture.rect_size
+	$Panel/HorizontalHighlights.modulate = Color(0.7, 0.7, 1.5) * 1.8
+	modulate_h = -1
+	#$Panel/HorizontalHighlights.rect_size = deck_picture.rect_size - Vector2(4, 4)
 	#$HorizontalHighlights.rect_position = rect_position
-	$Panel/VerticalHighlights.rect_size = deck_picture.rect_size	
+	#$Panel/VerticalHighlights.rect_size = deck_picture.rect_size  - Vector2(4, 4)
 	
 func lose_focus():
 	pass
 #	hide_highlights()
 
 func hide_highlights():
-	$Panel/VerticalHighlights.visible = false
-	$Panel/HorizontalHighlights.visible = false
+#	$Panel/VerticalHighlights.visible = false
+#	$Panel/HorizontalHighlights.visible = false
+	$Panel/VerticalHighlights.modulate.a = 0
+	$Panel/HorizontalHighlights.modulate.a = 0
+	modulate_h = 0
+
 	
 func _on_gui_input(event):
 	if event is InputEventMouseButton: #TODO better way to handle Tablets and consoles

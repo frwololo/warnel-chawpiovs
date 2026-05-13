@@ -1876,7 +1876,7 @@
 					"is_cost": true,
 					"max_per_hero": 1
 				}
-			],		
+			],
 			"condition_board": {
 				"func_name": "has_trait",
 				"func_params": {
@@ -2622,7 +2622,7 @@
 		"_surge": {}
 	},
 	"Furnax": {
-		"enemy_attack_happened":{
+		"enemy_attack_happened": {
 			"trigger": "self",
 			"board": {
 				"_rules": {
@@ -2638,7 +2638,7 @@
 				]
 			}
 		},
-		"enemy_scheme_happened":{
+		"enemy_scheme_happened": {
 			"trigger": "self",
 			"board": {
 				"_rules": {
@@ -2653,7 +2653,7 @@
 					}
 				]
 			}
-		}		
+		}
 	},
 	"Gallery of Splendor": {
 		"TODO": "campaign mode not supported",
@@ -4755,12 +4755,14 @@
 					"name": "increase",
 					"subject": "interrupted_event",
 					"amount": 3
-				},			
+				},
 				{
 					"name": "replacement_effect",
 					"subject": "interrupted_event",
 					"replacements": {
-						"additional_tags": ["overkill"]
+						"additional_tags": [
+							"overkill"
+						]
 					}
 				}
 			]
@@ -6129,7 +6131,7 @@
 						"unc": 3,
 						"type_constraint": "different"
 					},
-					"is_cost": true,
+					"is_cost": true
 				},
 				{
 					"name": "discard",

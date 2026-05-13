@@ -240,12 +240,25 @@ def get_base_json(card_data):
       result["manual"][location].append(
 	{
 	  "name": "attack",
+             "amount": 1,
+            "subject": "target",
+            "needs_subject": True,
+            "filter_state_subject": [
+                {"filter_group": "group_enemies"}
+                ]
+	  }                  
 	}         
       )              
     if primitive == '<i>(thwart)</i>' and "manual" in result:
       result["manual"][location].append(
 	  {
 	    "name": "thwart",
+            "amount": 1,
+            "subject": "target",
+            "needs_subject": True,
+            "filter_state_subject": [
+                {"filter_group": "group_schemes"}
+                ]
 	  }         
       )
 

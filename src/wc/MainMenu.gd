@@ -11,6 +11,7 @@ onready var exit_button := get_node("%Exit")
 onready var v_folder_label := get_node("%FolderLabel")
 onready var main_title := $CenterContainer/VBox/Label
 onready var texture_rect = get_node("%TextureRect")
+onready var deckbuild_button = get_node("%DeckBuilder")
 
 var http_request: HTTPRequest = null
 var _current_destination = ""
@@ -44,7 +45,14 @@ func _ready() -> void:
 	_hide_buttons()	
 	exit_button.visible = true
 	exit_button.grab_focus()
-	
+
+	if gamepadHandler.is_controller_input():
+		#disabling options not compatible with gamepad
+		get_node("%FullscreenCheck").visible = false
+		deckbuild_button.disabled = true
+		deckbuild_button.text = "Deck Editor (not compatible with gamepad input)"
+		deckbuild_button.focus_mode = Control.FOCUS_NONE
+		
 	init_button_signals(v_buttons)
 	# warning-ignore:return_value_discarded
 	resize()
@@ -265,10 +273,7 @@ func _sets_download_completed():
 	start_images_dl()
 
 func _process(delta):
-#	var target_size = get_viewport().size
-#	if target_size.x > 1800:
-#		texture_rect.rect_min_size = Vector2(1616, 604)
-#		texture_rect.rect_size = texture_rect.rect_min_size
+	get_node("%FullscreenCheck").pressed = OS.window_fullscreen
 	
 	var dl_info = get_node("%DownloadInfo")
 	var dl_stats = gameData.cardImageDownloader.get_stats()
@@ -343,6 +348,7 @@ func resize():
 		texture_rect.rect_min_size = Vector2(1616, 604)
 		texture_rect.rect_size = texture_rect.rect_min_size
 
+
 	v_folder_label.rect_min_size.x = target_size.x - 300
 	self.margin_right = target_size.x
 	self.margin_bottom = target_size.y
@@ -362,3 +368,7 @@ func resize():
 func _on_FolderLabel_meta_clicked(meta):
 	# `meta` is of Variant type, so convert it to a String to avoid script errors at run-time.
 	OS.shell_open(str(meta))
+
+
+func _on_FullscreenCheck_toggled(button_pressed):
+	OS.set_window_fullscreen(button_pressed)

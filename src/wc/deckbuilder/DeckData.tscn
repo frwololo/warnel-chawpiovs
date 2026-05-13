@@ -65,14 +65,12 @@ margin_bottom = 40.0
 texture = ExtResource( 4 )
 
 [node name="HorizontalHighlights" type="Panel" parent="Panel"]
-visible = false
 margin_right = 100.0
 margin_bottom = 100.0
 mouse_filter = 2
 custom_styles/panel = SubResource( 2 )
 
 [node name="VerticalHighlights" type="Panel" parent="Panel"]
-visible = false
 margin_right = 100.0
 margin_bottom = 100.0
 mouse_filter = 2

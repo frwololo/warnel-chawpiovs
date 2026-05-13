@@ -829,6 +829,7 @@ const DEFAULT_SETTINGS:= {
 	"decks_base_url": "https://marvelcdb.com/api/public/decklist/",
 	"decks_base_url_backup": "https://marvelcdb.com/api/public/deck/",
 	'database': {
+		"bkw" : "https://marvelcdb.com/api/public/cards/bkw.json", #Black Widow Hero Pack		
 		"core": "https://marvelcdb.com/api/public/cards/core.json", #Core Box
 		"cap" : "https://marvelcdb.com/api/public/cards/cap.json", #Captain America Hero Pack
 		"drs" : "https://marvelcdb.com/api/public/cards/drs.json", #Doctor Strange Hero Pack

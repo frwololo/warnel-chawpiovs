@@ -1,0 +1,152 @@
+{
+	"_comments": "Automated Test for Embiggen! #05010",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ms. Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ms. Marvel",
+					"exhausted": true
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Embiggen! #05010"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Badoon Headhunter"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Melee"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Melee"
+		},
+		{
+			"type": "select",
+			"value": [
+				"Rhino - 1",
+				"Badoon Headhunter"
+			]
+		},
+		{
+			"type": "activate",
+			"value": "Embiggen!"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ms. Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 5
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ms. Marvel"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Embiggen! #05010"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Badoon Headhunter",
+					"tokens": {
+						"damage": 5
+					}
+				}
+			],
+			"allies1": [],
+			"discard1": [
+				{
+					"card": "Strength"
+				},			
+				{
+					"card": "Mockingbird"
+				},
+
+				{
+					"card": "Melee"
+				}
+			]
+		}
+	}
+}

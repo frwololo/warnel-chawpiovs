@@ -36,6 +36,7 @@ var current_hover_card = null
 var current_active_card = null
 var show_hero_cards = true
 var rules_enforced = true
+var loaded = 0
 
 const aspects_dict := {}
 const types_dict := {}
@@ -79,7 +80,10 @@ func critical_error():
 	error_label.text = "It seems there was a critical issue loading the database. Please check your network connection and your local files (settings, Sets/*, etc...)"
 
 func _ready():
-
+	
+	var loading_panel = get_node("%LoadingPanel")
+	$LoadingPanel/ColorRect.rect_min_size = get_viewport().size
+	loading_panel.visible = true
 	#get_viewport().connect("gui_focus_changed", self, "gui_focus_changed")	
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')
 
@@ -93,18 +97,6 @@ func _ready():
 
 	CARDS_PER_PAGE = collection_grid.columns * 2
 	#load data
-	_build_card_collection()	
-	_load_deck()
-	
-#	mouse_pointer = load(CFConst.PATH_MOUSE_POINTER).instance()
-#	mouse_pointer.priority_sort_function = "sort_index_ascending_alternate"
-#	add_child(mouse_pointer)
-	
-	#initial UI state
-	load_page(0)
-	guess_aspect_from_deck()
-
-	resize()
 
 
 #TODO: need to do this hack because gamepadHandler "gui_focus_changed" only works automatically when the
@@ -116,12 +108,35 @@ func gui_focus_changed(control):
 	
 
 func _process(delta:float):
+	if loaded < 2:
+		loaded+= 1
+	if loaded == 2:	
+		_build_card_collection()	
+		_load_deck()
+		
+	#	mouse_pointer = load(CFConst.PATH_MOUSE_POINTER).instance()
+	#	mouse_pointer.priority_sort_function = "sort_index_ascending_alternate"
+	#	add_child(mouse_pointer)
+		
+		#initial UI state
+		load_page(0)
+		guess_aspect_from_deck()
+
+		resize()
+		var loading_panel = get_node("%LoadingPanel")
+		loading_panel.visible = false		
+		loaded = 3
+	
+	
+	
+	var mouse_pos = get_tree().current_scene.get_global_mouse_position()
 	if gamepadHandler.is_mouse_input():		
 		large_picture.rect_position = get_tree().current_scene.get_global_mouse_position() + Vector2(20, 20)
 	else:
 		var focused = get_focus_owner()
+		mouse_pos = focused.get_global_position() + focused.rect_size/2
 		if focused:
-			large_picture.rect_position = focused.get_global_position() + focused.rect_size/2
+			large_picture.rect_position = mouse_pos + Vector2(20, 20)
 	large_picture.rect_size = PREVIEW_CARD_SIZE
 	large_picture.rect_scale = cfc.screen_scale
 	large_picture.rect_rotation = _preview_rotation
@@ -130,10 +145,10 @@ func _process(delta:float):
 	var screen_size = get_viewport().size
 	var out_of_bounds = large_picture.rect_position + PREVIEW_CARD_SIZE
 	if out_of_bounds.x > screen_size.x:
-		large_picture.rect_position.x = screen_size.x -50 - PREVIEW_CARD_SIZE.x
+		large_picture.rect_position.x = mouse_pos.x - 50 - PREVIEW_CARD_SIZE.x
 
 	if out_of_bounds.y > screen_size.y:
-		large_picture.rect_position.y = screen_size.y -50 - PREVIEW_CARD_SIZE.y
+		large_picture.rect_position.y = screen_size.y - 50 - PREVIEW_CARD_SIZE.y
 	
 	if cache_pending:
 		var card_id = cache_pending.pop_back()
@@ -329,6 +344,7 @@ func card_quantity_changed(card, before, after):
 		else:
 			deck_data["slots"][card_id] = after		
 
+	count_deck_aspects() #is this necessary ?
 	reorganize_deck()
 	
 func reorganize_deck():
@@ -359,7 +375,7 @@ func reorganize_deck():
 				if type_code !="resource" or cost > 0:
 					total_cost+= cost
 					total_cards_counted_for_cost += 1
-				if (card.get_property("faction_code") == "hero"):
+				if (card.get_property("faction_code") == "hero") or (card.get_property("card_set_type_name_code") == "hero"):
 					hero_cards += quantity
 					if !show_hero_cards:
 						quantity = 0
@@ -484,14 +500,27 @@ func init_deck_container():
 			add_deck_row(type, "1")
 
 var _deck_aspects := {}
+func count_deck_aspects(include_hero_cards:= true):
+	_deck_aspects = {}
+	var slots = deck_data["slots"]
+	for card_id in slots:
+		var card_data = cfc.card_definitions[card_id]
+		var aspect = card_data["faction_code"]
+		if !include_hero_cards:
+			var card_set_type_name_code =card_data.get("card_set_type_name_code","")
+			if card_set_type_name_code == "hero":
+				continue
+		var quantity = slots[card_id] 
+		if aspects_dict.has(aspect) and aspect != "basic":
+			if !_deck_aspects.has(aspect):
+				_deck_aspects[aspect] = 0
+			_deck_aspects[aspect] += quantity		
+	
+	return _deck_aspects
+	
 func new_deck_card(card_data):
 	var card_id = card_data["_code"]
-	var aspect = card_data["faction_code"]
-	
-	if aspects_dict.has(aspect) and aspect != "basic":
-		if !_deck_aspects.has(aspect):
-			_deck_aspects[aspect] = 0
-		_deck_aspects[aspect] += 1
+
 	var card = cfc._instance_card(card_id)
 	card.set_script(load("res://src/wc/deckbuilder/DeckBuilderCard.gd"))
 	card.canonical_name = card_data["Name"]
@@ -588,6 +617,7 @@ func display_deck_data():
 		var card = new_deck_card(card_data)
 		add_card_to_deck_container(card, card_data)
 
+	count_deck_aspects()
 	reorganize_deck()
 
 func _on_Menu_resized() -> void:
@@ -699,7 +729,88 @@ func back_to_decks():
 	gameData.disconnect_from_network()
 	get_tree().change_scene(CFConst.PATH_CUSTOM + 'deckbuilder/DeckManagement.tscn')
 
+func final_rules_check_error():
+
+	var hero_id = deck_data["hero_code"]
+	var hero_data = cfc.card_definitions[hero_id]
+	var hero_deck_requirements = hero_data.get("deck_requirements", {})
+	if hero_deck_requirements:
+		hero_deck_requirements = hero_deck_requirements[0]
+	var count_aspects = hero_deck_requirements.get("aspects", 1)
+	var quantity_limit = hero_deck_requirements.get("limit", 3)
+	
+	var result =""
+	var slots = deck_data["slots"]
+	var total_cards = 0
+	var permanent_warning = ""
+	var permanent_str = "(permanents and identity are not counted)\n"
+	for card_id in slots:
+		var card_data = cfc.card_definitions[card_id]
+		var aspect = card_data["faction_code"]
+		
+		#permanent cards and hero are not counted for deck validity
+		if card_data.get("permanent", false):
+			permanent_warning = permanent_str
+			continue
+		if card_data["type_code"] in ["hero", "alter_ego"]:
+			continue			
+		var quantity = slots[card_id]
+		
+		if aspect!= "hero":
+			if quantity > quantity_limit:
+				var copy_str ="copies"
+				if quantity_limit < 2:
+					copy_str = "copy"
+				result = "Some cards have more than " + str(quantity_limit) + " " + copy_str +"\n"
+		
+		total_cards+= quantity
+		
+	var deck_aspects = count_deck_aspects(false)
+	if deck_aspects.size() != count_aspects:
+		var aspect_str = "aspect"
+		var comparison_str = "More"
+		if count_aspects > 1:
+			aspect_str = "aspects"
+		if deck_aspects.size() < count_aspects:
+			comparison_str = "Less"
+		result += comparison_str + " than " + str(count_aspects) +  " " + aspect_str + " in Deck" + "\n"
+	if total_cards > 50:
+		result += "More than 50 cards in Deck" + "\n" + permanent_warning
+	elif total_cards < 40:	
+		result += "Less than 40 cards in Deck" + "\n" + permanent_warning
+	return result
+
 func _on_DoneButton_pressed():
+
+	var deck_error_msg = ""
+	
+	if rules_enforced:
+		deck_error_msg = final_rules_check_error()
+			
+	if !deck_error_msg:
+		save_confirmed()
+		return
+		
+
+	var save_dialog:ConfirmationDialog = ConfirmationDialog.new()
+	save_dialog.window_title = "Deck might be invalid. Save anyway?"
+	save_dialog.get_ok().text = "Save anyway"
+	save_dialog.set_text("Your Deck has the following issues:\n" + deck_error_msg)
+	save_dialog.connect("modal_closed", self, "_decline_save")
+	save_dialog.get_close_button().connect("pressed", self, "_decline_save")
+	save_dialog.get_cancel().connect("pressed", self, "_decline_save")
+	save_dialog.connect("confirmed", self, "save_confirmed")
+	add_child(save_dialog)
+	save_dialog.popup_centered()		
+
+		
+
+
+func _decline_save():
+	pass
+	
+
+func save_confirmed():	
 	save_deck()
 	back_to_decks()
 

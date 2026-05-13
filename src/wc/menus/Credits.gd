@@ -45,8 +45,12 @@ func resize():
 	self.margin_bottom = target_size.y
 	self.rect_size = target_size
 	$CenterContainer.rect_size = target_size
-
-
+	if cfc.screen_resolution.x < CFConst.LARGE_SCREEN_WIDTH:
+		var dynamic_font = cfc.get_font("res://fonts/Bangers-Regular.ttf", 50)	
+		get_node("%Label").add_font_override("font", dynamic_font)	
+		get_node("%VBox").add_constant_override("separation", 4)
+		get_node("%RichTextLabel").bbcode_text = get_node("%RichTextLabel").bbcode_text.replace("\n\n", "\n")
+	
 func _on_RichTextLabel_meta_clicked(meta):
 	# `meta` is of Variant type, so convert it to a String to avoid script errors at run-time.
 	OS.shell_open(str(meta))

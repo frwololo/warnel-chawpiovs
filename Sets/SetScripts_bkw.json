@@ -1,0 +1,1153 @@
+{
+	"Agent Coulson": {
+		"self_moved_to_board": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"src_container": [
+						"deck",
+						"discard"
+					],
+					"dest_container": "hand",
+					"subject": "tutor",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_preparation": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck"
+				}
+			]
+		}
+	},
+	"Attacrobatics": {
+		"interrupt_boost_card_resolved": {
+			"is_optional_board": "true",
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"subject": "villain",
+					"amount": "trigger_details_boost_icons"
+				},
+				{
+					"name": "prevent",
+					"subject": "current_activation",
+					"amount": "trigger_details_boost_icons"
+				}
+			]
+		}
+	},
+	"Black Widow": {
+		"script_executed": {
+			"event_filters": {
+				"is_interrupt_or_response": true,
+				"filter_state_event_source": [
+					{
+						"filter_same_controller": true,
+						"filter_properties": {
+							"trait_preparation": 1
+						}
+					}
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Black Widow's Gauntlet": {
+		"resource": {
+			"board": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_preparation": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Burn Notice": {
+		"give_obligation": {
+			"__to__": "Natasha Romanoff"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Flip then Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity",
+						"_comments": "we need to exhaust before changing form here due to a bug"
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Flip then Discard 1": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "discard",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": 1,
+						"sort_by": "function",
+						"sort_name": "get_subject_int_printed_property",
+						"func_params": {
+							"property": "cost"
+						},
+						"sort_descending": true,
+						"filter_state_seek": [
+							{
+								"filter_same_controller": true,
+								"filter_properties": {
+									"trait_preparation": 1
+								}
+							}
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					},
+					{
+						"name": "surge",
+						"is_else": true
+					}
+				],
+				"Discard 1": [
+					{
+						"name": "discard",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": 1,
+						"sort_by": "function",
+						"sort_name": "get_subject_int_printed_property",
+						"func_params": {
+							"property": "cost"
+						},
+						"sort_descending": true,
+						"filter_state_seek": [
+							{
+								"filter_same_controller": true,
+								"filter_properties": {
+									"trait_preparation": 1
+								}
+							}
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					},
+					{
+						"name": "surge",
+						"is_else": true
+					}
+				]
+			}
+		}
+	},
+	"Counterattack": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero": 1
+				}
+			]
+		},
+		"response_card_damaged": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"tags": [
+					"attack"
+				],
+				"damage": ">0"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"subject": "trigger_details_attacker",
+					"amount": "trigger_details_damage"
+				}
+			]
+		}
+	},
+	"Counterintelligence": {
+		"interrupt": {
+			"event_name": "add_threat",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": 3
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Covert Ops": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 4,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"subject": "villain",
+					"token_name": "confused"
+				}
+			]
+		}
+	},
+	"Dance of Death": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 3,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Deadly Shot": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_group": "group_upgrade_support_current_hero_target"
+						}
+					]
+				},
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "main_scheme"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_group": "group_upgrade_support_my_hero"
+						}
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Defensive Stance": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero": 1
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "my_hero",
+				"tags": [
+					"attack"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "prevent",
+					"amount": 3,
+					"subject": "interrupted_event"
+				}
+			]
+		}
+	},
+	"Espionage": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"constraints": [
+						{
+							"func_name": "has_trait",
+							"func_params": {
+								"subject": "boardseek",
+								"subject_count": "all",
+								"filter_state_seek": [
+									{
+										"filter_group": "play_area_my_hero"
+									}
+								],
+								"trait": "spy"
+							}
+						}
+					]
+				}
+			]
+		},
+		"interrupt_surge": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 2
+				}
+			]
+		}
+	},
+	"Grappling Hook": {
+		"interrupt": {
+			"event_name": "reveal_encounter",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				}
+			],
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "treachery"
+					}
+				}
+			]
+		}
+	},
+	"Interrogation Room": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero": 1
+				}
+			]
+		},
+		"minion_died": {
+			"filter_source_controlled_by": "my_hero",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"amount": 1,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Killer for Hire": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": "per_boardseek",
+					"subject": "self",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						]
+					}
+				}
+			]
+		}
+	},
+	"Natasha Romanoff": {
+		"once_per_phase": {
+			"__name__": "__mission_prep"
+		},
+		"card_played": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"trait_preparation": 1
+					},
+					"filter_same_controller": true
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "__mission_prep",
+					"is_cost": true,
+					"modification": -1,
+					"subject": "self"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Nick Fury": {
+		"self_moved_to_board": {
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"remove 2 threat": [
+					{
+						"name": "remove_threat",
+						"amount": 2,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_schemes"
+							}
+						]
+					}
+				],
+				"draw 3": [
+					{
+						"name": "draw_cards",
+						"amount": 3
+					}
+				],
+				"deal 4 damage": [
+					{
+						"name": "deal_damage",
+						"subject": "target",
+						"amount": 4,
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_enemies"
+							}
+						]
+					}
+				]
+			}
+		},
+		"round_ended": {
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard"
+				}
+			]
+		}
+	},
+	"Quake - Daisy Johnson": {
+		"enemy_scheme_happened": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "trigger"
+				}
+			]
+		}
+	},
+	"Quincarrier": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "avenger"
+							}
+						}
+					]
+				}
+			]
+		},
+		"resource": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Rapid Response": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero": 1
+				}
+			]
+		},
+		"response_card_defeated": {
+			"filter_state_trigger": [
+				{
+					"filter_same_controller": true,
+					"filter_properties": {
+						"type_code": "ally"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "trigger"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "trigger"
+				}
+			]
+		}
+	},
+	"Safe House #29": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"src_container": "discard",
+					"dest_container": "hand",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_preparation": 1
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Spycraft": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"constraints": [
+						{
+							"func_name": "has_trait",
+							"func_params": {
+								"subject": "boardseek",
+								"subject_count": "all",
+								"filter_state_seek": [
+									{
+										"filter_group": "play_area_my_hero"
+									}
+								],
+								"trait": "spy"
+							}
+						}
+					]
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "about_to_reveal",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "cancel_current_encounter"
+				},
+				{
+					"name": "reveal_encounter",
+					"src_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"Stealth Strike": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 4,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"event_filters": {
+				"secondary_source": "self"
+			},
+			"all": [
+				{
+					"name": "remove_threat",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Surveillance Team": {
+		"uses": {
+			"__name__": "snoop",
+			"__amount__": 3
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"token_name": "snoop",
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Synth-Suit": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"filter_state_trigger": [
+						{
+							"Name": "Black Widow"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"script_executed": {
+			"event_filters": {
+				"is_interrupt_or_response": true,
+				"filter_state_event_source": [
+					{
+						"filter_same_controller": true,
+						"filter_properties": {
+							"trait_preparation": 1
+						}
+					}
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "ready_card",
+					"subject": "Black Widow"
+				}
+			]
+		}
+	},
+	"Target Acquired": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero": 1
+				}
+			]
+		},
+		"interrupt_boost": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				}
+			]
+		}
+	},
+	"Taskmaster": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
+					"trigger": "self",
+					"alteration": "per_boardseek",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_same_controller": true,
+								"filter_properties": {
+									"type_code": "upgrade"
+								}
+							}
+						]
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"alteration": "per_boardseek",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_same_controller": true,
+								"filter_properties": {
+									"type_code": "upgrade"
+								}
+							}
+						]
+					}
+				}
+			]
+		},
+		"boost_alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "host",
+					"alteration": "per_boardseek",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_same_controller": true,
+								"filter_properties": {
+									"type_code": "upgrade"
+								}
+							}
+						]
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
+					"trigger": "host",
+					"alteration": "per_boardseek",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_same_controller": true,
+								"filter_properties": {
+									"type_code": "upgrade"
+								}
+							}
+						]
+					}
+				}
+			]
+		}
+	},
+	"The Power of Justice": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "justice"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Widow's Bite": {
+		"card_moved_to_board": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "attack",
+					"amount": 2,
+					"subject": "trigger"
+				}
+			]
+		}
+	},
+	"Winter Soldier - Bucky Barnes": {
+		"alterants": {
+			"hand": [
+				{
+					"trigger": "self",
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": "per_boardseek",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"trait_preparation": 1
+								},
+								"filter_same_controller": true
+							}
+						],
+						"is_inverted": true
+					}
+				}
+			]
+		}
+	}
+}

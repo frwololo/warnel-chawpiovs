@@ -26,15 +26,24 @@ anchor_bottom = 1.0
 
 [node name="VBox" type="VBoxContainer" parent="CenterContainer"]
 margin_left = 375.0
-margin_top = 132.0
+margin_top = 112.0
 margin_right = 1545.0
-margin_bottom = 947.0
+margin_bottom = 967.0
 custom_constants/separation = 10
 alignment = 1
 
-[node name="Label" type="Label" parent="CenterContainer/VBox"]
+[node name="FullscreenCheck" type="CheckButton" parent="CenterContainer/VBox"]
+unique_name_in_owner = true
+margin_left = 1010.0
 margin_right = 1170.0
-margin_bottom = 115.0
+margin_bottom = 30.0
+size_flags_horizontal = 8
+text = "full screen"
+
+[node name="Label" type="Label" parent="CenterContainer/VBox"]
+margin_top = 40.0
+margin_right = 1170.0
+margin_bottom = 155.0
 size_flags_horizontal = 3
 custom_fonts/font = SubResource( 2 )
 text = "Warnel Chawpiovs"
@@ -42,9 +51,9 @@ align = 1
 
 [node name="TextureRect" type="TextureRect" parent="CenterContainer/VBox"]
 unique_name_in_owner = true
-margin_top = 125.0
+margin_top = 165.0
 margin_right = 1170.0
-margin_bottom = 375.0
+margin_bottom = 415.0
 rect_min_size = Vector2( 640, 250 )
 size_flags_horizontal = 5
 size_flags_vertical = 5
@@ -53,9 +62,9 @@ expand = true
 stretch_mode = 6
 
 [node name="VButtons" type="VBoxContainer" parent="CenterContainer/VBox"]
-margin_top = 385.0
+margin_top = 425.0
 margin_right = 1170.0
-margin_bottom = 735.0
+margin_bottom = 775.0
 size_flags_horizontal = 3
 custom_constants/separation = 10
 
@@ -69,24 +78,25 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Multiplayer" type="Button" parent="CenterContainer/VBox/VButtons"]
+[node name="DeckBuilder" type="Button" parent="CenterContainer/VBox/VButtons"]
+unique_name_in_owner = true
 margin_top = 90.0
 margin_right = 1170.0
 margin_bottom = 170.0
 rect_min_size = Vector2( 0, 80 )
 size_flags_horizontal = 3
-text = "Wultiplayer"
+text = "Deck Editor"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="DeckBuilder" type="Button" parent="CenterContainer/VBox/VButtons"]
+[node name="Multiplayer" type="Button" parent="CenterContainer/VBox/VButtons"]
 margin_top = 180.0
 margin_right = 1170.0
 margin_bottom = 260.0
 rect_min_size = Vector2( 0, 80 )
 size_flags_horizontal = 3
-text = "Deck Editor"
+text = "Wultiplayer"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -131,9 +141,9 @@ __meta__ = {
 }
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBox"]
-margin_top = 745.0
+margin_top = 785.0
 margin_right = 1170.0
-margin_bottom = 775.0
+margin_bottom = 815.0
 size_flags_horizontal = 0
 size_flags_vertical = 4
 
@@ -154,9 +164,9 @@ text = "v. 1.0.0"
 
 [node name="DownloadInfo" type="RichTextLabel" parent="CenterContainer/VBox"]
 unique_name_in_owner = true
-margin_top = 785.0
+margin_top = 825.0
 margin_right = 1170.0
-margin_bottom = 815.0
+margin_bottom = 855.0
 rect_min_size = Vector2( 0, 30 )
 text = "DL Info"
 
@@ -186,4 +196,5 @@ visible = false
 z_index = 0
 z_as_relative = false
 
+[connection signal="toggled" from="CenterContainer/VBox/FullscreenCheck" to="." method="_on_FullscreenCheck_toggled"]
 [connection signal="meta_clicked" from="CenterContainer/VBox/HBoxContainer/FolderLabel" to="." method="_on_FolderLabel_meta_clicked"]

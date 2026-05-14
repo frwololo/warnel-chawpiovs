@@ -112,6 +112,13 @@
 		"resource": {
 			"board": [
 				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_form"
+					]
+				},			
+				{
 					"name": "exhaust_card",
 					"subject": "self",
 					"is_cost": true
@@ -287,7 +294,8 @@
 					"subject_count": "all",
 					"src_container": "hand",
 					"needs_selection": true,
-					"selection_count": 1
+					"selection_count": 1,
+					"selection_type": "equal"
 				}
 			]
 		}
@@ -406,7 +414,7 @@
 							"func_name": "paid_with_includes",
 							"func_params": {
 								"physical": 1,
-								"type_constraint": "same"
+								"type_constraint": "exclusive"
 							}
 						},
 						"then": 1,
@@ -420,7 +428,7 @@
 							"func_name": "paid_with_includes",
 							"func_params": {
 								"physical": 1,
-								"type_constraint": "same"
+								"type_constraint": "exclusive"
 							}
 						},
 						"then": 1,
@@ -593,7 +601,7 @@
 											"func_name": "paid_with_includes",
 											"func_params": {
 												"physical": 1,
-												"type_constraint": "same"
+												"type_constraint": "exclusive"
 											}
 										},
 										"then": 1,
@@ -854,7 +862,7 @@
 							"func_name": "paid_with_includes",
 							"func_params": {
 								"physical": 1,
-								"type_constraint": "same"
+								"type_constraint": "exclusive"
 							}
 						},
 						"then": 5,
@@ -1026,7 +1034,7 @@
 							"func_name": "paid_with_includes",
 							"func_params": {
 								"physical": 1,
-								"type_constraint": "same"
+								"type_constraint": "exclusive"
 							}
 						},
 						"then": 1,

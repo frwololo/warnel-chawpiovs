@@ -615,6 +615,7 @@ func _on_DeckCreateHeroButton_pressed():
 
 
 func _on_CloseExportButton_pressed():
+	OS.window_fullscreen = cfc.game_settings.get("fullscreen", false) 
 	tab_select(main_container)
 	highlight_deck(current_selected_deck_id)
 
@@ -630,6 +631,7 @@ func _on_ClipboardButton_pressed():
 
 
 func _on_MCDBButton_pressed():
+	OS.window_fullscreen = false
 	OS.set_clipboard(export_data.text)
 	OS.shell_open("https://marvelcdb.com/deck/import")
 

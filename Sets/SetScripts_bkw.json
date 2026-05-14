@@ -1121,6 +1121,12 @@
 					"name": "attack",
 					"amount": 2,
 					"subject": "trigger"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "trigger"
 				}
 			]
 		}

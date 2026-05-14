@@ -223,14 +223,16 @@ func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false,
 			font_adjustment -= 1
 			_set_card_rtl_fonts(node, label_fonts, starting_font_size + font_adjustment)
 			_assign_bbcode_text(node, value, starting_font_size + font_adjustment)
-			yield(get_tree(), "idle_frame")
+			if (get_tree()):
+				yield(get_tree(), "idle_frame")
 			bbcode_height = node.get_content_height()
 #			print_debug(["Font Adjustment", font_adjustment, "Code Height", bbcode_height])
 			_retries = 0
 			while bbcode_height == 0 or bbcode_height > 1000:
 				_retries += 1
 #				print_debug("BBcode height:" + str(bbcode_height) + " retrying: " + str(_retries))
-				yield(get_tree(), "idle_frame")
+				if (get_tree()):
+					yield(get_tree(), "idle_frame")
 				bbcode_height = node.get_content_height()
 				if _retries >= 10:
 					break

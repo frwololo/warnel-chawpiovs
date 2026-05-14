@@ -655,6 +655,7 @@
 					"basic power"
 				]
 			},
+			"is_optional_hand": true,
 			"hand": [
 				{
 					"name": "exhaust_card",

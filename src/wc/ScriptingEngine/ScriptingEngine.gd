@@ -2648,7 +2648,8 @@ static func _get_identity_from_script(script):
 	
 static func duplicate_script(script):
 	var result = ScriptTask.new(script.owner, script.script_definition, script.trigger_object, script.trigger_details)
-
+	result.trigger = script.trigger
+	
 	if (script.subjects):
 		result.set_subjects(script.subjects.duplicate())
 

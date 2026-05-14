@@ -42,6 +42,27 @@ func compute_missing(cost:ManaCost) -> ManaCost:
 	temp_pool.set_cost(self.pool)
 	
 
+	#exclusive use case: ensure cost is exclusively paid with colors mentioned
+	if cost.type_constraint  == TYPE_CONSTRAINT.EXCLUSIVE:
+		var mask = {}
+		for k in cost.pool.keys():
+			if !cost.pool[k]:
+				continue
+			mask[k] = cost.pool[k]
+		for k in temp_pool.pool.keys():
+			if k == ResourceMana.WILD:
+				#wild accepted in all cases
+				continue
+				
+			var value = temp_pool.pool[k]
+			if !value:
+				continue
+			
+			if !mask.has(k):
+				temp_pool.pool[k] = -value
+		#TODO is it ok to return here or should computation proceed further?		
+		return temp_pool	
+
 	#WILD Cost first 
 	temp_pool.pool[ResourceMana.WILD] -= cost.pool[ResourceMana.WILD]	
 		
@@ -61,7 +82,7 @@ func compute_missing(cost:ManaCost) -> ManaCost:
 	#UNCOLORED Cost last
 	var remaining = cost.pool[ResourceMana.UNCOLOR]
 	
-	if cost.type_constraint == TYPE_CONSTRAINT.SAME:
+	if cost.type_constraint  == TYPE_CONSTRAINT.SAME:
 		#USE CASE: SAME TYPES of MANA ONLY
 		#We find the amount for which we have the most,
 		#and will use that to pay

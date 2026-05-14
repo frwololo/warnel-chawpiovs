@@ -672,6 +672,10 @@ func action_other(action):
 
 func action_play(hero_id, card_id_or_name):
 	var card:WCCard = get_card(card_id_or_name, hero_id)
+	if !card:
+		var _error = 1
+		announce("error, couldn't find card " + str(card_id_or_name))
+		return
 	card.attempt_to_play()
 	return
 	

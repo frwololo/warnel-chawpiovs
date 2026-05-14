@@ -8,7 +8,8 @@ var type_constraint = TYPE_CONSTRAINT.NONE
 enum TYPE_CONSTRAINT {
 	NONE,
 	SAME,
-	DIFFERENT
+	DIFFERENT,
+	EXCLUSIVE
 }
 
 enum ResourceMana {
@@ -131,6 +132,8 @@ func init_from_dictionary(dict:Dictionary):
 						type_constraint = TYPE_CONSTRAINT.SAME
 					"different":
 						type_constraint = TYPE_CONSTRAINT.DIFFERENT
+					"exclusive":
+						type_constraint = TYPE_CONSTRAINT.EXCLUSIVE						
 					_:
 						type_constraint = TYPE_CONSTRAINT.NONE										
 			_:

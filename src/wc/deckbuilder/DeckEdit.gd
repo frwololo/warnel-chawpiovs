@@ -464,7 +464,19 @@ func save_deck():
 	if !deck_name.text:
 		deck_name.text = "New Deck"	
 	deck_data["name"] = deck_name.text
+	
+	#we have the hero in ourd deck for convenience,
+	#but it shouldn't end up in the saved data
+	#we temporarily remove it before saving
+	var hero_code = deck_data["hero_code"]
+	var backup_hero_qty = 0
+	if deck_data["slots"].has(hero_code):
+			backup_hero_qty	= deck_data["slots"][hero_code]
+			deck_data["slots"].erase(hero_code) 
 	cfc.save_one_deck_to_file(deck_data)
+	
+	if backup_hero_qty:
+		deck_data["slots"][hero_code] = backup_hero_qty
 
 func _load_deck():
 	deck_data = gameData.editor_deck_data

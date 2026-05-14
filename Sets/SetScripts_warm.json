@@ -152,7 +152,7 @@
 			"__name__": "command",
 			"__amount__": 3
 		},
-		"resource": {
+		"manual": {
 			"board": [
 				{
 					"name": "constraints",

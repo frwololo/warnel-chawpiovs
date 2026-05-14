@@ -244,7 +244,7 @@ func message_newer_version_available(version):
 
 func create_default_folders():
 	var dir = Directory.new()
-	for folder in ["Sets", "Decks", "Saves", "Music", "Sfx"]:
+	for folder in ["Sets", "Decks", "Saves", "Music", "Sfx", "cache"]:
 		dir.make_dir_recursive("user://" + folder + "/")
 	
 

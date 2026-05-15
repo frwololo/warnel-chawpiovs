@@ -5,7 +5,7 @@
 
 ![Warnel Chawpiovs preview image](preview.png "Warnel Chawpiovs preview image")
 
-A card game based on a well known cooperative board game, with full rules enforcement, to play solo or (ultimately) multiplayer
+A card game based on a well known cooperative board game, with full rules enforcement, to play solo or (ultimately) multiplayer. Runs on Windows, Linux, MacOS, and Nintendo Switch.
 
 ## Shortcuts
 * [Installing the game](#users-installing-the-game)
@@ -23,16 +23,21 @@ Other than that, here are known limitations with the engine at the moment:
 
 ## Current Status (General)
 ![Warnel Chawpiovs Supported Characters and Scenarios](doc/pictures/characters_and_scenarios.jpg "Warnel Chawpiovs Supported Characters and Scenarios")
-This simulator supports the following cards from the original game (current total 14 heroes, 18 villains):
+This simulator supports the following cards from the original game (current total 20 heroes, 23 villains, as well as associated player cards and encounters):
 * Core box (5 heroes, 3 villains)
 * Captain America (1 Hero)
+* Ms. Marvel (1 Hero)
+* Thor (1 Hero)
+* Black Widow (1 Hero)
+* Hulk (1 Hero)
 * Doctor Strange (1 Hero)
 * The Rise of Red skull ( 2 heroes, 5 villains)
+* The Galaxy's Most Wanted (2 heroes, 5 villains)
 * The Mad Titan's Shadow ( 2 heroes, 5 villains)
 * War Machine (1 Hero)
 * Sinister Motives ( 2 heroes, 5 villains)
 
-This represents roughly 20% of all official cards at the time of this writing.
+This represents roughly 25% of all official cards at the time of this writing.
 
 There is no tutorial included, and, although the rules are automatically handled by the engine, it will quickly become confusing if you are not already familar with the original game.
 
@@ -55,7 +60,7 @@ Playing with more than one hero adds to the CPU load...It works, it just gets si
 I have personally seen the multiplayer mode (between a PC - as the host of course - and a Nintendo Switch) working on my local network. So I know this works, but the console has to be overclocked, otherwise it loses its connection eventually. This might be fixable, but if you really wish to test multiplayer on a Switch (I don't currently recommend this, with both the Switch port AND multiplayer being quite rough around the edges), for now please overclock the console.
 
 ### Linux and Mac Ports
-I do distributes binaries for Mac and Linux, but those are mostly untested. On Linux I check that the game actualy runs. I do not have a Mac so I cannot test the MacOS version myself.
+I do distributes binaries for Mac and Linux, but those are mostly untested. On Linux I check that the game actually runs. I do not have a Mac so I cannot test the MacOS version myself.
 
 
 ## Users: Installing the Game
@@ -75,7 +80,8 @@ You can find a tutorial video here:
 
 ![Warnel Chawpiovs Gameplay](doc/pictures/gameplay_sample_1.jpg "Warnel Chawpiovs Gameplay")
 
-
+Quick Tutorial for the included deck editor:
+[https://www.youtube.com/watch?v=xo86uE3PY2k](https://www.youtube.com/watch?v=xo86uE3PY2k)
 
 ### Hosting a Multiplayer game
 See the Current Status section above for disclaimers about the multiplayer mode.
@@ -200,6 +206,8 @@ Warnel Chawpiovs, by Wololo (https://wololo.net)
 Uses the Godot Engine (https://godotengine.org/)
 
 Godot Switch port (https://github.com/Homebrodot)  thanks in particular to fhidalgosola/utnad, Stary2001, cpasjuste, halotroop2288
+
+Card data mostly comes from MarvelCDB (https://marvelcdb.com/)
 
 ### Disclaimer
 This is a fan-created work and is not affiliated with, endorsed by, or sponsored by Fantasy Flight Games. All characters, settings, and related elements are the property of their respective owners.

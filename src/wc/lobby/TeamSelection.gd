@@ -102,7 +102,11 @@ func _ready():
 			suffix = " (" +str(scenarios_left_to_unlock) + " left to unlock)"
 		get_node("%ScenarioHeader").text +=  suffix
 	
-	v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
+	if cfc.game_settings.get("hide_folder_label", false):
+		v_folder_label.text = ""
+		v_folder_label.get_parent().visible = false
+	else:
+		v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
 
 	get_viewport().connect("gui_focus_changed", self, "gui_focus_changed")	
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')

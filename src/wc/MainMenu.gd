@@ -99,7 +99,10 @@ func display_folder_info():
 		v_folder_label.add_color_override("font_color", Color8(255, 0,0))
 		v_folder_label.text = "There was a network error while downloading game resources. Gameplay might be impacted.\n" +  _network_error
 		return
-	v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
+	if cfc.game_settings.get("hide_folder_label", false):
+		v_folder_label.text = " "
+	else:	
+		v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
 
 func _set_download_completed(result, response_code, headers, body):
 	if result != HTTPRequest.RESULT_SUCCESS:

@@ -20,7 +20,10 @@ func _ready() -> void:
 	cfc.default_button_focus(v_buttons)
 	# warning-ignore:return_value_discarded
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')
-	v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
+	if cfc.game_settings.get("hide_folder_label", false):
+		v_folder_label.text = " "
+	else:
+		v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
 	resize()
 
 

@@ -1,0 +1,168 @@
+{
+	"_comments": "Automated Test for Moxie #21017 - Bug when 2 Moxies",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Peter Parker"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [
+
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Moxie #21017"
+				},
+				{
+					"card": "Moxie #12016"
+				}				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Peter Parker"
+		},
+		{
+			"type": "choose",
+			"value": "Change Form"
+		},
+		{
+			"type": "activate",
+			"value": "Moxie #21017"
+		},
+		{
+			"type": "activate",
+			"value": "Moxie #12016"
+		},	
+		{
+			"type": "activate",
+			"value": "Spider-Man"
+		},
+			{
+			"type": "choose",
+			"value": "attack"
+		},	
+					{
+			"type": "target",
+			"value": "Rhino - 1"
+		},	
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {"damage": 5}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Moxie #21017"
+				},
+				{
+					"card": "Moxie #12016"
+				}	
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				},
+			
+			]
+		}
+	}
+}

@@ -143,3 +143,6 @@ func compare_string_properties(property_filters, card, property, comparison_type
 					str(card_property),
 					comparison_type)
 
+#post subject discovery validity check
+func check_validity_post_selection(card, script):
+	return true

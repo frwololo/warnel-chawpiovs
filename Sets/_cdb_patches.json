@@ -136,6 +136,12 @@
 	"10011": {
 		"subname": "Amadeus Cho"
 	},
+	"12001c": {
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/ant/12001c.webp",
+		"_side_icons_meta": {
+			"overlay": "#ffa2c2ee"
+		}
+	},
 	"16056": {
 			"attack": 2,
 	},

@@ -5,6 +5,7 @@ extends Node2D
 onready var control = get_parent()
 onready var owner_card = get_parent().get_parent()
 var title:Label
+var overlay: ColorRect
 
 #TODO this should move to an external config file
 # to accomodate different renderings
@@ -95,6 +96,13 @@ func set_icons():
 	if !icons:
 		icons_initialized = true
 		return
+
+	var side_icons_meta = owner_card.get_property("_side_icons_meta", {})
+	var overlay_color_str = side_icons_meta.get("overlay", "")
+	if overlay_color_str:
+		overlay = ColorRect.new()
+		overlay.color = Color(overlay_color_str)
+		add_child(overlay)
 
 	title = Label.new()
 	var dynamic_font = init_font()	
@@ -196,7 +204,9 @@ func display_icons():
 		self.visible = false
 		return
 
-	
+
+	var up_left_corner = Vector2(10000,10000)
+	var bottom_right_corner = Vector2(0, 0)
 	
 	if !owner_card.is_faceup:
 		title.text = data_source.get_display_name()
@@ -221,6 +231,16 @@ func display_icons():
 			#child.rect_scale = Vector2(0.15, 0.15) * offset_scale * owner_card.card_size / CFConst.CARD_SIZE
 			child.rect_min_size =  texture_size * offset_scale * owner_card.card_size / CFConst.CARD_SIZE
 			child.rect_size = child.rect_min_size
+			
+			if is_instance_valid(overlay) and icon != "heart":
+				if child.rect_position.x < up_left_corner.x:
+					up_left_corner.x = child.rect_position.x
+				if child.rect_position.y < up_left_corner.y:
+					up_left_corner.y = child.rect_position.y	
+				if child.rect_position.x + child.rect_size.x > bottom_right_corner.x:
+					bottom_right_corner.x = child.rect_position.x + child.rect_size.x
+				if child.rect_position.y + child.rect_size.y > bottom_right_corner.y:
+					bottom_right_corner.y = child.rect_position.y	+ child.rect_size.y						
 			var property = icons_to_property.get(icon, icon)
 			var text = ""
 			match typeof(property):
@@ -254,6 +274,11 @@ func display_icons():
 			#bug ?
 			show_icons = false
 			set_icons()
+		
+		if is_instance_valid(overlay):
+			overlay.rect_position = up_left_corner
+			overlay.rect_min_size = bottom_right_corner - up_left_corner
+			overlay.rect_size = overlay.rect_min_size
 		
 		if show_icons:
 			self.visible = true

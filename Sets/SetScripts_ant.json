@@ -1,0 +1,1413 @@
+{
+	"Ant-Man #12001a": {
+		"manual": {
+			"board": {
+				"Change Form (Alter-Ego)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "self",
+						"change_to": "#12001b",
+						"is_cost": true,
+						"tags": [
+							"player_initiated"
+						]
+					}
+				],
+				"Change Form (Giant)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "self",
+						"change_to": "#12001c",
+						"is_cost": true,
+						"tags": [
+							"player_initiated"
+						]
+					}
+				]
+			}
+		},
+		"response": {
+			"event_name": "identity_changed_form",
+			"event_filters": {
+				"after": "hero"
+			},
+			"trigger": "self",
+			"board": [
+				{
+					"name": "remove_threat",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Ant-Man #12001c": {
+		"manual": {
+			"board": {
+				"Change Form (Alter-Ego)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "self",
+						"change_to": "#12001b",
+						"is_cost": true,
+						"tags": [
+							"player_initiated"
+						]
+					}
+				],
+				"Change Form (Tiny)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "self",
+						"change_to": "#12001a",
+						"is_cost": true,
+						"tags": [
+							"player_initiated"
+						]
+					}
+				]
+			}
+		},
+		"response": {
+			"event_name": "identity_changed_form",
+			"event_filters": {
+				"after": "hero"
+			},
+			"trigger": "self",
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Ant-Man - Hank Pym": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "pym",
+					"subject": "self",
+					"modification": {
+						"func_name": "get_overpaid_amount"
+					},
+					"max_modification": 4
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "self",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "pym"
+					}
+				}
+			]
+		}
+	},
+	"Ant-Man's Helmet": {
+		"identity_changed_form": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"after": "hero"
+			},
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "identity_has_trait",
+								"func_params": {
+									"trait": "giant"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "heal",
+									"amount": 2,
+									"subject": "my_hero"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "draw_cards",
+							"amount": 1
+						}
+					]
+				}
+			]
+		}
+	},
+	"Army of Ants": {
+		"manual": {
+			"condition_board": {
+				"func_name": "identity_has_trait",
+				"func_params": {
+					"trait": "tiny"
+				}
+			},
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Assess the Situation": {
+		"manual": {
+			"hand": [
+				{
+					"name": "temporary_effect",
+					"end_condition": "phase_ended",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "hand_size",
+									"trigger": "my_identity",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Call for Aid": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck",
+					"dest_container": "discard",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							},
+							"filter_properties2": {
+								"trait_avenger": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck",
+					"dest_container": "hand"
+				}
+			]
+		}
+	},
+	"Care for Cassie": {
+		"give_obligation": {
+			"__to__": "Scott Lang"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Flip then Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity",
+						"_comments": "we need to exhaust before changing form here due to a bug"
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Flip then Discard": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_count": "all",
+						"src_container": "hand_my_hero",
+						"needs_selection": true,
+						"selection_type": "equal",
+						"selection_count": 1
+					},
+					{
+						"name": "add_script",
+						"subject": "my_identity",
+						"end_condition": {
+							"trigger": "phase_ended",
+							"event_filters": {
+								"phase": "player_phase"
+							}
+						},
+						"script": {
+							"alterants": {
+								"all": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "cannot_change_form",
+										"trigger": "self",
+										"alteration": 1
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				],
+				"Discard": [
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_count": "all",
+						"src_container": "hand_my_hero",
+						"needs_selection": true,
+						"selection_type": "equal",
+						"selection_count": 1
+					},
+					{
+						"name": "add_script",
+						"subject": "my_identity",
+						"end_condition": {
+							"trigger": "phase_ended",
+							"event_filters": {
+								"phase": "player_phase"
+							}
+						},
+						"script": {
+							"alterants": {
+								"all": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "cannot_change_form",
+										"trigger": "self",
+										"alteration": 1
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"First Aid": {
+		"manual": {
+			"hand": [
+				{
+					"name": "heal",
+					"subject": "target",
+					"amount": 2,
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_characters"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Giant Stomp": {
+		"manual": {
+			"condition_hand": {
+				"func_name": "identity_has_trait",
+				"func_params": {
+					"trait": "giant"
+				}
+			},
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 8,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Giant Strength": {
+		"phase_ended": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "_giant_strength",
+					"subject": "self",
+					"set_to_mod": true,
+					"modification": 0,
+					"_silent": true
+				}
+			]
+		},
+		"identity_changed_form": {
+			"condition_board": {
+				"func_name": "identity_has_trait",
+				"func_params": {
+					"trait": "giant"
+				}
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "_giant_strength",
+					"subject": "self",
+					"modification": 1
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "my_hero",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "_giant_strength"
+					}
+				}
+			]
+		}
+	},
+	"Giant-Man": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"alteration": {
+						"if": {
+							"func_name": "get_remaining_damage>=3"
+						},
+						"then": 2,
+						"else": 0
+					}
+				}
+			]
+		}
+	},
+	"Hive Mind": {
+		"manual": {
+			"condition_hand": {
+				"func_name": "identity_has_trait",
+				"func_params": {
+					"trait": "tiny"
+				}
+			},
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": "per_boardseek",
+					"plus_amount": 2,
+					"per_boardseek": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Army of Ants"
+								}
+							}
+						]
+					},
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Lay Down the Law": {
+		"identity_changed_form": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"after": "hero"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": {
+						"if": {
+							"func_name": "paid_with_includes",
+							"func_params": {
+								"mental": 1
+							}
+						},
+						"then": 4,
+						"else": 3
+					},
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Moment of Triumph": {
+		"response_card_dies": {
+			"event_filters": {
+				"source": "my_hero",
+				"excess_damage": ">0"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "heal",
+					"subject": "my_hero",
+					"amount": "trigger_details_excess_damage"
+				}
+			]
+		}
+	},
+	"Moxie": {
+		"response": {
+			"event_name": "identity_changed_form",
+			"trigger": "my_identity",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "add_script",
+					"end_condition": "round_ended",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "my_identity",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "add_script",
+					"end_condition": "round_ended",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"trigger": "my_identity",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "add_script",
+					"end_condition": "round_ended",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "defense",
+									"trigger": "my_identity",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Muster Courage": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "avenger"
+							}
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_type": "max",
+					"selection_count": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "villain",
+							"property": "stage_int",
+							"min": 1
+						}
+					},
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Power Gloves": {
+		"manual": {
+			"hand": [
+				{
+					"name": "attach_to_card",
+					"subject": "target",
+					"is_cost": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							},
+							"filter_properties2": {
+								"trait_avenger": 1
+							},
+							"filter_max_per_host": 1
+						}
+					]
+				}
+			]
+		},
+		"attack_happened": {
+			"trigger": "host",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		},
+		"thwart_happened": {
+			"trigger": "host",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Pym Particles": {
+		"paid_as_resource": {
+			"trigger": "self",
+			"is_optional_all": true,
+			"all": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "identity_has_trait",
+								"func_params": {
+									"trait": "giant"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "heal",
+									"amount": 2,
+									"subject": "my_hero"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "draw_cards",
+							"amount": 1
+						}
+					]
+				}
+			]
+		}
+	},
+	"Reinforced Suit": {
+		"manual": {
+			"hand": [
+				{
+					"name": "attach_to_card",
+					"subject": "target",
+					"is_cost": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							},
+							"filter_max_per_host": 1
+						}
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "host",
+					"alteration": 2
+				}
+			]
+		}
+	},
+	"Resize": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "change_form",
+					"subject": "my_hero",
+					"change_to": {
+						"if": {
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "giant"
+							}
+						},
+						"then": "#12001a",
+						"else": "#12001c"
+					}
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Ronin": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"alteration": {
+						"if": {
+							"func_name": "count_attachments",
+							"func_params": {
+								"subject": "self",
+								"filter_state_attachment": [
+									{
+										"filter_properties": {
+											"type_code": "upgrade"
+										}
+									}
+								]
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"trigger": "self",
+					"alteration": {
+						"if": {
+							"func_name": "count_attachments",
+							"func_params": {
+								"subject": "self",
+								"filter_state_attachment": [
+									{
+										"filter_properties": {
+											"type_code": "upgrade"
+										}
+									}
+								]
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
+				}
+			]
+		}
+	},
+	"Scott Lang": {
+		"manual": {
+			"board": {
+				"Change Form (Tiny)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "self",
+						"change_to": "#12001a",
+						"is_cost": true,
+						"tags": [
+							"player_initiated"
+						]
+					}
+				],
+				"Change Form (Giant)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "self",
+						"change_to": "#12001c",
+						"is_cost": true,
+						"tags": [
+							"player_initiated"
+						]
+					}
+				]
+			}
+		},
+		"response": {
+			"event_name": "identity_changed_form",
+			"event_filters": {
+				"after": "alter_ego"
+			},
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Size Increase": {
+		"uses": {
+			"__name__": "size",
+			"__amount__": 3
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Yellowjacket",
+					"is_cost": true
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "Villain",
+					"is_else": true
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "size",
+					"modification": -1,
+					"subject": "self"
+				}
+			]
+		},
+		"enemy_scheme_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "size",
+					"modification": -1,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Stinger - Cassie Lang": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "avenger"
+							}
+						}
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "exclude_from_ally_limit",
+					"trigger": "self",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Swarm Tactics": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"team_up": [
+						"Ant-Man",
+						"Wasp"
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				},
+				{
+					"name": "change_form",
+					"subject": "my_hero",
+					"change_to": {
+						"if": {
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "giant"
+							}
+						},
+						"then": "#12001a",
+						"else": "#12001c"
+					}
+				}
+			]
+		}
+	},
+	"Team-Building Exercise": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "add_script",
+					"end_condition": "card_played",
+					"subject": "tutor",
+					"src_container": "hand",
+					"needs_subject": true,
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "max",
+					"needs_selection": true,
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "cost",
+									"alteration": -1,
+									"trigger": "self"
+								}
+							]
+						}
+					},
+					"filter_state_tutor": [
+						{
+							"filter_shares_trait_with_identity": true
+						}
+					]
+				}
+			]
+		}
+	},
+	"Tech Theft": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "blank_abilities",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_tech": 1
+							},
+							"filter_group": "group_update_support",
+							"_comments": "upgrade_support is currently the best way to ensure this targets only friend tech cards"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Wasp - Nadia Van Dyne": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "identity_has_trait",
+								"func_params": {
+									"trait": "giant"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "deal_damage",
+									"amount": 2,
+									"subject": "target",
+									"needs_subject": true,
+									"filter_state_subject": [
+										{
+											"filter_group": "group_enemies"
+										}
+									]
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "remove_threat",
+							"amount": 2,
+							"subject": "target",
+							"needs_subject": true,
+							"filter_state_subject": [
+								{
+									"filter_group": "group_schemes"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Wrist Gauntlets": {
+		"manual": {
+			"board": {
+				"Stun": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						],
+						"constraints": [
+							{
+								"func_name": "identity_has_trait",
+								"func_params": {
+									"trait": "giant"
+								}
+							}
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"physical": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": 1,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_enemies"
+							}
+						]
+					}
+				],
+				"Confuse": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						],
+						"constraints": [
+							{
+								"func_name": "identity_has_trait",
+								"func_params": {
+									"trait": "giant"
+								}
+							}
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"energy": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": 1,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_enemies"
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Yellowjacket": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_tiny",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "identity_has_trait",
+						"func_params": {
+							"trait": "tiny"
+						}
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "identity_has_trait",
+						"func_params": {
+							"trait": "tiny"
+						}
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_giant",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "identity_has_trait",
+						"func_params": {
+							"trait": "giant"
+						}
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "identity_has_trait",
+						"func_params": {
+							"trait": "giant"
+						}
+					}
+				}
+			]
+		}
+	},
+	"Yellowjacket's Plan": {
+		"revealed": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"card_set_code": "ant_nemesis"
+							}
+						}
+					]
+				},
+				{
+					"name": "reveal_encounters",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				}
+			]
+		}
+	}
+}

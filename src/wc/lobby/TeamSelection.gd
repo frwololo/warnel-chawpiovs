@@ -126,6 +126,9 @@ func _ready():
 
 	cfc.buttons_grab_focus_on_mouse_entered(self)	
 	disable_launch_button()
+	
+	if gamepadHandler.is_controller_input():
+		get_node("%OpenFolderButton").visible = true	
 
 #Quickstart for tests
 #TODO remove

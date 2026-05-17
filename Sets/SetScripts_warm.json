@@ -1081,7 +1081,7 @@
 					"selection_count": 1,
 					"selection_type": "equal",
 					"needs_selection": true,
-					"is_cost": true,
+					"needs_subject": true,
 					"filter_state_tutor": [
 						{
 							"filter_properties": {

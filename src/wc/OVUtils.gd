@@ -199,14 +199,15 @@ func _grab_until_find(script: ScriptObject, _run_type) -> Dictionary:
 
 
 func can_pay_as_resource(to_pay:Dictionary, resource_cards:Array, script = null):
-	var total_resources: ManaPool= ManaPool.new()
+	var total_resources: ManaPool = ManaPool.new()
 	for card in resource_cards:
 		total_resources.add_manacost(card.get_resource_value_as_mana(script))
 	
 	var to_pay_as_cost : ManaCost = ManaCost.new()
 	to_pay_as_cost.init_from_dictionary(to_pay)
-	if total_resources.can_pay_total_cost(to_pay_as_cost):
-		return true
+	var post_payment_pool = total_resources.can_pay_total_cost(to_pay_as_cost)
+	if post_payment_pool:
+		return post_payment_pool
 	return false
 
 func parse_post_prime_replacements(script_task:ScriptObject) -> Dictionary:
@@ -715,3 +716,18 @@ func compare_string_properties(property_filters, card, property, comparison_type
 					str(card_property),
 					comparison_type)
 		
+#checks that some cards used for resource aren't also used for other subjects
+#in a multi-script series
+func check_validity_post_selection(card, script):
+	var trigger = script.trigger
+	if trigger == "resource":
+		return true
+	
+	#adding an exception for "self" targeting cards, to get them some agency
+	#this might be a bad design, but currently is required at least for cards with "use" keywords
+	if card == script.owner:
+		return true
+		
+	if card.is_resource_locked(script):
+		return false
+	return true

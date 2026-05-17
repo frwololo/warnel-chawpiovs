@@ -140,8 +140,9 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 	else: #Regular cards
 		#Play From hand: discard a specific number of cards to play
 		#TODO limit to player cards ?
+		var has_overpaid_check = WCUtils.is_string_in_variant(script, "overpaid")
 		var playFromHand: Dictionary = { }
-		if (cost):
+		if (cost or has_overpaid_check):
 			playFromHand = {
 				"manual": {
 					"hand": [
@@ -259,25 +260,8 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 		}		
 		script = WCUtils.merge_dict(script,alter_ego_actions, true)
 
-	if type_code == "hero"  or type_code == "alter_ego": 
-		var identity_actions: Dictionary = { 
-			"manual": {
-				"board": {
-					"change form": [
-						{	
-							"name": "constraints",
-							"is_cost": true,
-							"tags": ["as_action"]
-						},						
-						{
-							"name": "change_form",
-							"subject": "self",
-							"is_cost" : true,
-							"tags": ["player_initiated"]
-						}				
-					]
-				}
-			},
+	if type_code == "hero"  or type_code == "alter_ego":
+		var identity_actions: Dictionary = { 			
 			"ally_limit_rule": {
 				"board": [
 					{
@@ -360,7 +344,38 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 					}				
 				]
 			}						
+		}
+		
+		#adding change form script as needed
+		var change_form_script =  {
+			"manual": {
+				"board": {
+					"Change Form": [
+						{	
+							"name": "constraints",
+							"is_cost": true,
+							"tags": ["as_action"]
+						},						
+						{
+							"name": "change_form",
+							"subject": "self",
+							"is_cost" : true,
+							"tags": ["player_initiated"]
+						}	
+					]			
+				}
+			}
 		}		
+		#if the card has its own change form scripts (e.g. Ant-Man), we don't use the default one
+		var existing_manual_board_scripts = script.get("manual", {}).get("board", [])	
+		if typeof(existing_manual_board_scripts) == TYPE_DICTIONARY:
+			for key in existing_manual_board_scripts:
+				if key.to_lower().begins_with("change form"):
+					change_form_script = {}
+					break		
+		if change_form_script:
+			identity_actions = WCUtils.merge_dict(identity_actions, change_form_script)
+					
 		script = WCUtils.merge_dict(script,identity_actions, true)
 
 

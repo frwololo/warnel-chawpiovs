@@ -1,0 +1,140 @@
+{
+	"_comments": "Automated Test for Nova - Sam Alexander #05012",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ms. Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ms. Marvel"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [],
+			"allies1": [
+				{
+					"card": "Nova - Sam Alexander #05012"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Tac Team"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Nova - Sam Alexander #05012"
+		},
+		{
+			"type": "select",
+			"value": "cancel"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ms. Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ms. Marvel",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Nova - Sam Alexander #05012"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Tac Team"
+				}
+			]
+		}
+	}
+}

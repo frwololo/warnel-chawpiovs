@@ -958,7 +958,7 @@
 	"Nova - Sam Alexander": {
 		"interrupt": {
 			"event_name": "enemy_initiates_attack",
-			"filter_target_hero": "my_hero",
+			"filter_target_hero": "my_hero",			
 			"is_optional_board": true,
 			"board": [
 				{

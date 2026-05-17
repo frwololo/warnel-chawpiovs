@@ -447,6 +447,17 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 		if typeof(exclude_result) == TYPE_ARRAY:
 			for exclude in exclude_result:
 				subjects_array.erase(exclude)
+	
+
+	#post selection validity check
+	var to_erase = []
+	for card in subjects_array:
+		if !cfc.ov_utils.check_validity_post_selection(card, self):
+			to_erase.append(card)
+	if to_erase:
+		is_valid = false
+		for c in to_erase:
+			subjects_array.erase(c)
 		
 	if overrides:
 		self.script_definition = backup_definition			

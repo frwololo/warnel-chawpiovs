@@ -1,0 +1,159 @@
+{
+	"_comments": "Automated Test for Ant-Man - Hank Pym #12011",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ant-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ant-Man"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Ant-Man - Hank Pym #12011"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Ant-Man - Hank Pym #12011"
+		},
+		{
+			"type": "select",
+			"value": "Strength"
+		},
+		{
+			"type": "activate",
+			"value": "Ant-Man - Hank Pym #12011"
+		},
+		{
+			"type": "choose",
+			"value": "Attack"
+		},
+		{
+			"type": "target",
+			"value": "Rhino"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ant-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ant-Man"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Ant-Man - Hank Pym #12011",
+					"tokens": {
+						"pym": 2,
+						"damage": 1
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				}
+			]
+		}
+	}
+}

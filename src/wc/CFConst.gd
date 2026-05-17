@@ -829,17 +829,25 @@ const DEFAULT_SETTINGS:= {
 	"decks_base_url": "https://marvelcdb.com/api/public/decklist/",
 	"decks_base_url_backup": "https://marvelcdb.com/api/public/deck/",
 	'database': {
-		"bkw" : "https://marvelcdb.com/api/public/cards/bkw.json", #Black Widow Hero Pack		
+#cycle 1	
 		"core": "https://marvelcdb.com/api/public/cards/core.json", #Core Box
 		"cap" : "https://marvelcdb.com/api/public/cards/cap.json", #Captain America Hero Pack
-		"drs" : "https://marvelcdb.com/api/public/cards/drs.json", #Doctor Strange Hero Pack
-		"gmw" : "https://marvelcdb.com/api/public/cards/gmw.json", #Galaxy's Most Wanted Expansion Box				
 		"msm" : "https://marvelcdb.com/api/public/cards/msm.json", #Ms Marvel Hero Pack
-		"mts" : "https://marvelcdb.com/api/public/cards/mts.json", #Mad Titan's Shadow Expansion Box
-		"sm" : "https://marvelcdb.com/api/public/cards/sm.json", #Sinister Motives Expansion Box				
 		"thor" : "https://marvelcdb.com/api/public/cards/thor.json", #Thor Hero Pack
+		"bkw" : "https://marvelcdb.com/api/public/cards/bkw.json", #Black Widow Hero Pack		
+		"drs" : "https://marvelcdb.com/api/public/cards/drs.json", #Doctor Strange Hero Pack
+		"hlk" : "https://marvelcdb.com/api/public/cards/hlk.json", #Hulk Hero Pack
+#cycle 2
 		"trors" : "https://marvelcdb.com/api/public/cards/trors.json", #The Rise of Red Skull Expansion Box
+		"ant" : "https://marvelcdb.com/api/public/cards/ant.json", #Ant-Man Hero Pack		
+#cycle 3		
+		"gmw" : "https://marvelcdb.com/api/public/cards/gmw.json", #Galaxy's Most Wanted Expansion Box				
+#cycle 4
+		"mts" : "https://marvelcdb.com/api/public/cards/mts.json", #Mad Titan's Shadow Expansion Box
 		"warm" : "https://marvelcdb.com/api/public/cards/warm.json", #War Machine Hero Pack
+
+#cycle 5
+		"sm" : "https://marvelcdb.com/api/public/cards/sm.json", #Sinister Motives Expansion Box				
 
 	},
 	'lobby_server': {

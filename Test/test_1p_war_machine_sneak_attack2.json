@@ -1,0 +1,129 @@
+{
+	"_comments": "Automated Test for Sneak Attack #23017 - Bug where one can pay with the target card",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "War Machine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "War Machine"
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Goliath - Bill Foster #23015"
+				},
+				{
+					"card": "Sneak Attack #23017"
+				},
+				{
+					"card": "Combat Training"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Sneak Attack #23017"
+		},
+		{
+			"type": "select",
+			"value": "Goliath - Bill Foster #23015"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "War Machine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "War Machine"
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Goliath - Bill Foster #23015"
+				},
+				{
+					"card": "Sneak Attack #23017"
+				},
+				{
+					"card": "Combat Training"
+				}
+			]
+		}
+	}
+}

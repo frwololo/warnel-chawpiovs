@@ -342,6 +342,7 @@ text = "user folder:"
 valign = 2
 
 [node name="OpenFolderButton" type="Button" parent="MainMenu/Outercontainer/Margin2/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
 margin_left = 131.0
 margin_right = 231.0
 margin_bottom = 59.0

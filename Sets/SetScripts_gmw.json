@@ -1432,7 +1432,7 @@
 							"filter_properties": {
 								"type_code": "attachment"
 							},
-							"filter_properties": {
+							"filter_properties2": {
 								"trait_technique": 1
 							}
 						}
@@ -2361,6 +2361,10 @@
 	},
 	"Fanaticism": {
 		"_surge": {},
+		"uses": {
+			"__name__": "fury",
+			"__amount__": 1
+		},		
 		"self_moved_to_board": {
 			"board": [
 				{
@@ -2384,10 +2388,7 @@
 				}
 			]
 		},
-		"uses": {
-			"__name__": "fury",
-			"__amount__": 1
-		},
+
 		"attacks_gain": {
 			"__trigger__": "host",
 			"__tags__": "piercing\",\"overkill"
@@ -3536,7 +3537,7 @@
 							"filter_properties": {
 								"type_code": "attachment"
 							},
-							"filter_properties": {
+							"filter_properties2": {
 								"trait_technique": 1
 							}
 						}
@@ -3860,7 +3861,7 @@
 				}
 			],
 			"filter_destination": "encounters_reveal",
-			"pile": [
+			"board": [
 				{
 					"name": "mod_tokens",
 					"token_name": "__player_token_current_hero_target",
@@ -3930,7 +3931,7 @@
 				}
 			],
 			"filter_destination": "encounters_reveal",
-			"pile": [
+			"board": [
 				{
 					"name": "mod_tokens",
 					"token_name": "__player_token_current_hero_target",
@@ -5317,7 +5318,8 @@
 		"boost": {
 			"all": [
 				{
-					"name": "reveal_encounter"
+					"name": "reveal_encounters",
+					"subject": "self"
 				}
 			]
 		}

@@ -1235,8 +1235,8 @@ func loadstate_from_json(json:Dictionary):
 	return
 #The game engine doesn't really have a concept of double sided cards, so instead,
 #when flipping such a card, we destroy it and create a new card
-func flip_doublesided_card(card:WCCard):
-	var back_code = card.get_card_back_code()
+func flip_doublesided_card(card:WCCard, to_card_id = ""):
+	var back_code = to_card_id if to_card_id else card.get_card_back_code()
 	if (back_code):
 		var type_code = card.get_property("type_code")
 		if type_code in ["hero", "alter_ego"]:
@@ -1337,8 +1337,13 @@ func show_options_menu():
 	cfc.NMAP.main.show_options_menu()
 
 
+
+
 #card_id_or_name can be an id, a shortname, or a name
-func find_card_by_name(card_id_or_name, include_back:= false, include_piles := false):
+func find_card_by_name(card_id_or_name, include_back:= false, include_piles := false, extra_properties = {}):
+	if !card_id_or_name:
+		return null
+		
 	var card_name = cfc.get_card_name_by_id(card_id_or_name)
 	if !card_name:
 		card_name = card_id_or_name
@@ -1347,20 +1352,23 @@ func find_card_by_name(card_id_or_name, include_back:= false, include_piles := f
 	var all_cards = get_all_cards(include_piles)
 	#search by full name first 
 	for card in all_cards:
-		if (card.canonical_name.to_lower() == card_name):
+		if (card.canonical_name.to_lower() == card_name) and (SP.card_matches_properties (card, extra_properties)):
 			return card
 		if (include_back):
 			var back_code = card.get_card_back_code()
 			if (back_code):
+				var back_data = cfc.get_card_by_id(back_code)
+				if !back_data:
+					continue				
 				var back_name = cfc.get_card_name_by_id(back_code)
-				if back_name.to_lower() == card_name:
+				if back_name.to_lower() == card_name and (SP.card_matches_properties (back_data, extra_properties)):
 					return card
 					
 	#then we try shortname or subname
 	for card in all_cards:
 		var shortname = card.get_property("shortname", "").to_lower()
 		var subname = card.get_property("subname", "").to_lower()
-		if (shortname == card_name):
+		if (shortname == card_name)  and (SP.card_matches_properties (card, extra_properties)):
 			return card
 		if (subname == card_name):
 			return card			
@@ -1372,6 +1380,8 @@ func find_card_by_name(card_id_or_name, include_back:= false, include_piles := f
 					continue
 				var back_shortname = back_data.get("shortname", "").to_lower()
 				var back_subname = back_data.get("subname", "").to_lower()
+				if !(SP.card_matches_properties (back_data, extra_properties)):
+					continue
 				if (back_shortname == card_name):
 					return card
 				if (back_subname == card_name):

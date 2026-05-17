@@ -40,7 +40,10 @@ func pay_as_resource(script: ScriptTask) -> int:
 		var resource = subject.pay_as_resource(script)
 		resources_paid.append(resource)
 	
-	script.owner.set_last_paid_with(resources_paid)
+	#todo compute actual expected cost a bit better
+	var expected_cost:ManaCost = ManaCost.new()
+	expected_cost.init_from_expression(script.get_property("selection_count", 0))
+	script.owner.set_last_paid_with(resources_paid, expected_cost)
 	return retcode		
 
 #empty ability, used for filtering and script failure
@@ -2282,6 +2285,7 @@ func change_form(script: ScriptTask) -> int:
 
 	var tags: Array = script.get_property(SP.KEY_TAGS)
 	var is_manual = "player_initiated" in tags
+	var to_card_id = script.get_property("change_to", "").replace("#", "")
 	
 	if (!script.subjects):
 		script.set_subjects(_get_identity_from_script(script))
@@ -2294,7 +2298,7 @@ func change_form(script: ScriptTask) -> int:
 		
 		if (!costs_dry_run()):
 		#Get my current zone
-			hero.change_form(is_manual)
+			hero.change_form(is_manual, to_card_id)
 
 	return CFConst.ReturnCode.CHANGED
 	

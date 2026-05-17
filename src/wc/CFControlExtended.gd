@@ -1400,7 +1400,7 @@ func get_img_filename(card_id) -> String:
 
 
 func get_villain_portrait(card_id, callback_owner = null) -> Texture:
-	var area = 	Rect2 ( 65, 60, 155, 155 )
+	var area = 	Rect2 ( 65, 45, 155, 155 )
 	var result = get_sub_texture(card_id, area)
 	if result:
 		return result

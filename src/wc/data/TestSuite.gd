@@ -1548,6 +1548,8 @@ static func generate_missing_tests():
 				board_data["allies1"].append(the_data)
 			"support", "upgrade":
 				board_data["upgrade_support1"][0] = the_data
+			"villain":
+				board_data["villain"][0] = the_data
 			_:
 				board_data["hand1"].append(the_data)
 		var json_data = {

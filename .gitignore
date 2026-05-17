@@ -31,3 +31,5 @@ scripts/SetScripts_msm.json
 scripts/scenarios_bkw.json
 scripts/SetScripts_bkw.json
 scripts/scenarios_hlk.json
+scripts/scenarios_ant.json
+scripts/SetScripts_ant.json

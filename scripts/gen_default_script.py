@@ -30,16 +30,16 @@ primitives = [
   'Attach to ',
   ' get +',
   ' gets +',  
-  '<b>Hero Action</b>',
+  '<b>Hero Action',
   '<b>Alter-Ego Action',  
-  '<b>Hero Interrupt</b>',
-  '<b>Hero Response</b>',  
-  '<b>Hero Resource</b>',
-  '<b>Resource</b>',  
-  '<b>Forced Interrupt</b>',
-  '<b>Action</b>',
+  '<b>Hero Interrupt',
+  '<b>Hero Response',  
+  '<b>Hero Resource',
+  '<b>Resource',  
+  '<b>Forced Interrupt',
+  '<b>Action',
   '<b>Response',
-  '<b>Interrupt</b>',      
+  '<b>Interrupt',      
   '<i>(attack)</i>',
   '<i>(thwart)</i>',
   '<b>Boost</b>',
@@ -83,7 +83,7 @@ def get_base_json(card_data):
       location = "hand"
 
     
-    if primitive in ['<b>hero action</b>', '<b>alter-ego action', '<b>action</b>']:
+    if primitive in ['<b>hero action', '<b>alter-ego action', '<b>action']:
       if not "manual" in result:
         result["manual"] = {}
       if not location in result["manual"]:
@@ -175,7 +175,7 @@ def get_base_json(card_data):
       }
       
      
-    if primitive == '<b>hero action</b>':
+    if primitive == '<b>hero action':
       result["manual"][location].append(
 	  {
 	    "name": "constraints",
@@ -198,7 +198,7 @@ def get_base_json(card_data):
 	    ]
 	  }         
       )
-    if primitive == '<b>action</b>':
+    if primitive == '<b>action':
       result["manual"][location].append(
 	  {
 	    "name": "constraints",
@@ -209,7 +209,7 @@ def get_base_json(card_data):
 	  }         
       )
 
-    if primitive == '<b>hero resource</b>':
+    if primitive == '<b>hero resource':
       result["resource"] = {location: [
 	  {
 	    "name": "constraints",
@@ -226,7 +226,7 @@ def get_base_json(card_data):
         ]
       }
 
-    if primitive == '<b>resource</b>':
+    if primitive == '<b>resource':
       result["resource"] = {location:   [
   	  {
 	    "name": "add_resource",
@@ -270,7 +270,7 @@ def get_base_json(card_data):
           location: []
 	}         
                     
-    if primitive == '<b>interrupt</b>':
+    if primitive == '<b>interrupt':
        result["interrupt"] = {
 	  "event_name": "TODO",
           "is_optional_" + location: True,
@@ -278,7 +278,7 @@ def get_base_json(card_data):
 	}
 
 
-    if primitive == '<b>forced interrupt</b>':
+    if primitive == '<b>forced interrupt':
       result["interrupt"] = {
 	  "event_name": "TODO",
           "is_optional_" + location: True,
@@ -286,7 +286,7 @@ def get_base_json(card_data):
 	}               
       
 
-    if primitive == '<b>alter-ego response</b>':
+    if primitive == '<b>alter-ego response':
       result["response"] = {
 	  "event_name": "TODO",
           "is_optional_" + location: True,          
@@ -301,7 +301,7 @@ def get_base_json(card_data):
           ]
 	}         
                     
-    if primitive == '<b>alter_ego interrupt</b>':
+    if primitive == '<b>alter_ego interrupt':
        result["interrupt"] = {
 	  "event_name": "TODO",
           "is_optional_" + location: True,          
@@ -317,7 +317,7 @@ def get_base_json(card_data):
 	}         
       
 
-    if primitive == '<b>hero response</b>':
+    if primitive == '<b>hero response':
       result["response"] = {
 	  "event_name": "TODO",
            "is_optional_" + location: True,         
@@ -350,7 +350,7 @@ def get_base_json(card_data):
 	 ]
        }        
       
-    if primitive == '<b>hero interrupt</b>':
+    if primitive == '<b>hero interrupt':
        result["interrupt"] = {
 	  "event_name": "TODO",
           "is_optional_" + location: True,          

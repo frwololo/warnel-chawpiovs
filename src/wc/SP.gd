@@ -80,10 +80,11 @@ static func filter_trigger(
 			and !check_same_controller_filter(trigger_card,owner_card,card_scripts.get(FILTER_SAME_CONTROLLER)):
 		return false
 		
-	if card_scripts.get("filter_" + TRIGGER_TARGET_HERO) \
-			and card_scripts.get("filter_" + TRIGGER_TARGET_HERO) != \
-			trigger_details.get(TRIGGER_TARGET_HERO):
-		return false		
+	if card_scripts.get("filter_" + TRIGGER_TARGET_HERO):
+		var expected_hero = _get_subjects_simplified(card_scripts.get("filter_" + TRIGGER_TARGET_HERO), owner_card)
+		var actual_target = find_hero_by_name(trigger_details.get(TRIGGER_TARGET_HERO))
+		if expected_hero != actual_target:
+			return false		
 
 	if card_scripts.get(TRIGGER_SUBJECT):
 		match card_scripts.get(TRIGGER_SUBJECT):
@@ -114,39 +115,49 @@ static func filter_trigger(
 
 	return true
 
+static func find_hero_by_name(hero_name):
+	return cfc.NMAP.board.find_card_by_name(hero_name, false, false, {"type_code": "hero"})
+	
 static func subject_matches(card, string_value, owner_card):
 	if !string_value:
 		return true
+			
+	match string_value:			
+		"another":
+			if card == owner_card:
+				return false		
+		_:
+			#anything else we try to compare it to the found subject(s)
+			var potential_matches = _get_subjects_simplified(string_value, owner_card)
+			if typeof(potential_matches) == TYPE_ARRAY:
+				return card in potential_matches
+			else:
+				return card == potential_matches		
+	return true
+
+static func _get_subjects_simplified(string_value, owner_card):
+	if !string_value:
+		return null
 		
 	match string_value:
 		KEY_SUBJECT_V_MY_HERO:
-			return card == owner_card.get_controller_hero_card()
+			return owner_card.get_controller_hero_card()
 		KEY_SUBJECT_V_MY_IDENTITY:
 			#todo there should be a difference here, need to work it out
-			return card == owner_card.get_controller_hero_card()			
+			return owner_card.get_controller_hero_card()			
 		KEY_SUBJECT_V_VILLAIN:
-			return card in gameData.get_villains()
+			return gameData.get_villains()
 		KEY_SUBJECT_V_MAIN_SCHEME:
-			return card in gameData.get_main_schemes()
+			return gameData.get_main_schemes()
 		"self":
-			if card != owner_card:
-				return false
+			return owner_card
 		"first_player":
-			if card != gameData.get_first_player():
-				return false				
-		"another":
-			if card == owner_card:
-				return false
+			return gameData.get_first_player()			
 		"host":
-			if owner_card.current_host_card != card:
-				return false				
+			return owner_card.current_host_card			
 		_:
 			#anything else we try to find a card by that name on the board
-			var found = cfc.NMAP.board.find_card_by_name(string_value)
-			if card != found:
-				return false
-			pass			
-	return true
+			return cfc.NMAP.board.find_card_by_name(string_value)
 
 static func check_trigger_shares_property_with_identity(trigger_card,owner_card,property) -> bool:
 	if !is_instance_valid(trigger_card): return false
@@ -415,3 +426,16 @@ static func retrieve_subjects(value:String, script):
 	
 	return null
 					
+
+static func card_matches_properties (card, filter_properties = {}):
+	for key in filter_properties:
+		var value
+		if typeof(card) == TYPE_DICTIONARY:
+			value = card.get(key, "")
+		else:
+			value = card.get_property(key)
+			
+		if value != filter_properties[key]:
+			return false 
+
+	return true

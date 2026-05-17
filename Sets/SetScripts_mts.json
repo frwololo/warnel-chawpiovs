@@ -4545,10 +4545,10 @@
 				{
 					"name": "add_script",
 					"end_condition": "round_ended",
-					"subject": "my_identity",
+					"subject": "self",
 					"script": {
 						"alterants": {
-							"board": [
+							"all": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "attack",
@@ -4562,10 +4562,10 @@
 				{
 					"name": "add_script",
 					"end_condition": "round_ended",
-					"subject": "my_identity",
+					"subject": "self",
 					"script": {
 						"alterants": {
-							"board": [
+							"all": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "thwart",
@@ -4579,10 +4579,10 @@
 				{
 					"name": "add_script",
 					"end_condition": "round_ended",
-					"subject": "my_identity",
+					"subject": "self",
 					"script": {
 						"alterants": {
-							"board": [
+							"all": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "defense",

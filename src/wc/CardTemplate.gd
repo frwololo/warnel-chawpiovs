@@ -27,6 +27,8 @@ var _is_inactive_attachment:= false
 
 #an array of ManaCost variables representing everything that's been used to pay for this card
 var _last_paid_with := []
+var _last_cost: ManaCost = null
+var last_overpay
 
 var extra_scripts := {}
 var extra_script_uid := 0
@@ -2469,15 +2471,16 @@ func can_change_form(voluntary:= false) -> bool:
 
 func changed_form(details):
 	var before = details.get("before")
-	#hopefully after and before are actually different...
+	#in general, after and before are different, but this isn't always the case
+	#e.g. Ant-Man can switchbetween giant and tiny hero forms
 	var after = "alter_ego" if self.is_alter_ego_form() else "hero"		
 	scripting_bus.emit_signal_on_stack("identity_changed_form", self, {"before": before , "after" : after })	
 
 
-func flip_doublesided_card():
+func flip_doublesided_card(to_card_id = ""):
 	if !self.is_onboard({"include_zones" : ["encounters_reveal"]}):
 		return false
-	var new_card = cfc.NMAP.board.flip_doublesided_card(self)
+	var new_card = cfc.NMAP.board.flip_doublesided_card(self, to_card_id)
 
 	if !new_card:
 		var _error = 1
@@ -2485,7 +2488,7 @@ func flip_doublesided_card():
 		
 	return true
 
-func change_form(voluntary = true) -> bool:
+func change_form(voluntary = true, to_card_id = "") -> bool:
 	#players have one voluntary change form per turn
 	#we check for that
 	if !can_change_form(voluntary):	
@@ -2493,7 +2496,7 @@ func change_form(voluntary = true) -> bool:
 	if (voluntary):
 		self.tokens.mod_token("__can_change_form", 0, true)
 
-	return flip_doublesided_card()
+	return flip_doublesided_card(to_card_id)
 	
 
 #a way to copy all modifications of this card to another card
@@ -3147,6 +3150,18 @@ func paid_with_includes(params:Dictionary, script:ScriptTask = null) -> bool:
 		return true
 	return false
 	
+func get_overpaid_amount(params:Dictionary, script:ScriptTask = null) -> int:
+	if ! _last_cost:
+		_last_cost = ManaCost.new()
+
+	var paid_with = ManaPool.new()
+	for resource in _last_paid_with:
+		paid_with.add_manacost(resource)
+		
+	var result = paid_with.can_pay_total_cost(_last_cost)
+	result = result.converted_mana_cost()
+	return result
+	
 func count_paid_resources(params:Dictionary, script:ScriptTask = null) -> bool:
 	var paid_with = ManaPool.new()
 	for resource in _last_paid_with:
@@ -3237,42 +3252,63 @@ func get_remaining_damage(params:Dictionary = {}, script = null) -> int:
 # RESOURCE FUNCTIONS
 #
 
-func set_last_paid_with(manacost_array:Array):
+func set_last_paid_with(manacost_array:Array, expected_cost = null):
 	_last_paid_with = manacost_array
-
+	_last_cost = expected_cost
 #	scripting_bus.emit_signal(
 #			"card_selected",
 #			self,
 #			{"selected_cards": selected_cards}
 #	)
 
+#resource lock
+#checks to see if a given card is being used a payment, in which case
+#it is locked from being used in other scripts (e.g. as a subjct, etc...)
 var _locked_for_resource = null
-func script_signature(script):
-	var definition = {
-		"owner": script.owner,
-		"definition": script.script_definition
-	}
+
+#script can either be a script object (in which case its owner will be computed)
+#or a dict script definition (in which case the owner object also needs to be passed as parameter)			
+func script_signature(script, owner = null):
+	var definition := {}
+	if typeof(script) == TYPE_DICTIONARY:
+		definition = {
+			"owner": owner,
+			"definition": script
+		}		
+	else:			
+		definition = {
+			"owner": script.owner,
+			"definition": script.script_definition
+		}
 	var signature = WCUtils.ordered_hash(definition)
 	return signature
 
 func remove_resource_lock():
 	_locked_for_resource = null
-			
-func set_resource_lock(script):
-	var signature = script_signature(script)
+
+#script can either be a script object (in which case its owner will be computed)
+#or a dict script definition (in which case the owner object also needs to be passed as parameter)			
+func set_resource_lock(script, owner = null):
+	var signature = script_signature(script, owner)
 	_locked_for_resource = signature
-	
-func is_resource_locked(script):
+
+#script can either be a script object (in which case its owner will be computed)
+#or a dict script definition (in which case the owner object also needs to be passed as parameter)				
+func is_resource_locked(script, owner = null):
 	if !_locked_for_resource:
 		return false
 	
 	if !script:
 		return false
-		
-	if script.script_definition.has("network_prepaid"):
+	
+	var script_definition = script
+	if typeof(script_definition) != TYPE_DICTIONARY:
+		script_definition = script.script_definition
+			
+	if script_definition.has("network_prepaid"):
 		return false
 		
-	var signature = script_signature(script)
+	var signature = script_signature(script, owner)
 	if _locked_for_resource != signature:
 		return true
 	

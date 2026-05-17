@@ -5,7 +5,14 @@
 
 ![Warnel Chawpiovs preview image](preview.png "Warnel Chawpiovs preview image")
 
-A card game based on a well known cooperative board game, with full rules enforcement, to play solo or (ultimately) multiplayer. Runs on Windows, Linux, MacOS, and Nintendo Switch.
+A digital card game based on the Marvel Champions board game, with full rules enforcement, ideal for true solo or two-handed (but supports up to a full team of 4 heroes). Runs on Windows, Linux, MacOS, and Nintendo Switch.
+
+## Quickstart
+To play this game, all you need is to [download the game from the release page](https://github.com/frwololo/warnel-chawpiovs/releases), extract the zip to any folder on your machine, and run the executable.
+
+If you need more details, read along
+
+_This is a fan-created work and is not affiliated with, endorsed by, or sponsored by Fantasy Flight Games. All characters, settings, and related elements are the property of their respective owners._
 
 ## Shortcuts
 * [Installing the game](#users-installing-the-game)

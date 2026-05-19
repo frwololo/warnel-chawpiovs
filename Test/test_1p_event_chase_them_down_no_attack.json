@@ -41,6 +41,11 @@
 					"card": "Chase Them Down"
 				}
 			],	
+			"set_aside":[
+				{
+						"card": "She-Hulk"
+					}
+			],
 			"enemies1": [
 				{
 					"card": "Melter",
@@ -69,6 +74,10 @@
 			"type": "choose",
 			"value": "change form",
 		},
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+		},			
 		{
 			"type": "activate",
 			"value": "She-Hulk",

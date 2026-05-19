@@ -1315,7 +1315,7 @@ func retrieve_card_info_from_fuzzy_name(fuzzy_card_name):
 		"code" : card_code	
 	}
 
-func enrich_window_title(selectionWindow, script:ScriptObject, title:String) -> String:
+func enrich_window_title(selectionWindow, script, title:String) -> String:
 	var result:String = title
 	var script_definitions = script.script_definition
 	var script_name = script_definitions.name

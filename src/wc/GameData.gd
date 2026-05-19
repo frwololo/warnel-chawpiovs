@@ -486,6 +486,7 @@ func _scripting_event_triggered(trigger_object = null,
 
 	#Game state changed signal (to compute card costs, etc...)
 	match trigger:
+		"card_reloaded",\
 		"card_moved_to_hand",\
 		"card_moved_to_board", \
 				"card_played", \

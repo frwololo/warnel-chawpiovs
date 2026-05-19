@@ -934,8 +934,6 @@ func display_debug(msg):
 
 # Sets the card size and adjusts all nodes depending on it.
 func set_card_size(value: Vector2, ignore_area = false) -> void:
-	if (canonical_id == "01001b" or canonical_id =="01097"):
-		display_debug(canonical_name + "set size to " + str(value.x) + "x" + str(value.y))
 	card_size = value
 	_control.rect_min_size = value
 	# We set the card to always pivot from its center.
@@ -2788,8 +2786,6 @@ func _process_card_state() -> void:
 				target_scale = _placement_slot.get_scale_modifier()
 			if ( current_host_card and  current_host_card._placement_slot):
 				target_scale =  current_host_card._placement_slot.get_scale_modifier()				
-			if canonical_name =="The Break-In!":
-				var _tmp = 1	
 			if not $Tween.is_active():
 				var need_tweening = false
 				if not scale.is_equal_approx(Vector2(1,1) * target_scale):

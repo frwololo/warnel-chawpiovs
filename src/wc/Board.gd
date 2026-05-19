@@ -1240,28 +1240,45 @@ func flip_doublesided_card(card:WCCard, to_card_id = ""):
 	if (back_code):
 		var type_code = card.get_property("type_code")
 		if type_code in ["hero", "alter_ego"]:
-			var modifiers = card.export_modifiers()
-			modifiers["callback"] = "changed_form"
-			modifiers["callback_params"] = {"before": type_code}
+			card.load_from_card_id(back_code)
+			#TODO Historically changing form meant triggering the "card_moved_to_board"
+			#signal. It is still required (e.g. to add specific tokens)
+			#Will want to change this in the future but for now it is needed
+			scripting_bus.emit_signal_on_stack(
+				"card_moved_to_board",
+				card,
+				 {
+					"destination": "board",
+					"destination_grid": "",
+					"source": "board",
+					"tags": ["change_form"]
+				}
+			)
+			card.changed_form({"before": type_code})
+			return card
 			
-			#hacky way to move the current card out of the way
-			#while still leaving it on the board
-			if card._placement_slot:
-				card._placement_slot.remove_occupying_card(card)			
-		
-			var new_card = heroZones[card.get_owner_hero_id()].load_identity(back_code, modifiers)
-			var attachments_to_move = []
-			for attachment in card.attachments:
-				attachments_to_move.append(attachment)
-			for attachment in attachments_to_move:
-				var tags = []
-				if attachment.is_boost():
-					tags = ["as_boost"]	
-				attachment.attach_to_host(new_card,false, tags)
-				
-			gameData.set_aside(card) 
-				
-			return new_card	
+#			var modifiers = card.export_modifiers()
+#			modifiers["callback"] = "changed_form"
+#			modifiers["callback_params"] = {"before": type_code}
+#
+#			#hacky way to move the current card out of the way
+#			#while still leaving it on the board
+#			if card._placement_slot:
+#				card._placement_slot.remove_occupying_card(card)			
+#
+#			var new_card = heroZones[card.get_owner_hero_id()].load_identity(back_code, modifiers)
+#			var attachments_to_move = []
+#			for attachment in card.attachments:
+#				attachments_to_move.append(attachment)
+#			for attachment in attachments_to_move:
+#				var tags = []
+#				if attachment.is_boost():
+#					tags = ["as_boost"]	
+#				attachment.attach_to_host(new_card,false, tags)
+#
+#			gameData.set_aside(card) 
+#
+#			return new_card	
 		else:
 			var new_card = gameData.retrieve_from_side_or_instance(back_code,card.get_owner_hero_id())
 			var slot = card._placement_slot

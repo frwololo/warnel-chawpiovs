@@ -226,7 +226,7 @@ func check_ghost_cards():
 		
 	_refresh_ghost_cards_needed = false
 
-func _on_card_moved(card, _details):
+func _on_card_moved(_card, _details):
 	refresh_ghost_cards()
 
 func _on_game_started():

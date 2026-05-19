@@ -19,6 +19,9 @@ signal interrupt(card, details)
 # warning-ignore:unused_signal
 signal card_damaged(card,details)
 
+# warning-ignore:unused_signal
+signal card_reloaded(card,details)
+
 #Game Phases
 #we have to pass a card to not break the scripting_bus mechanism :(
 # warning-ignore:unused_signal

@@ -52,7 +52,7 @@
 				{
 					"card": "Mockingbird"
 				}
-			],
+			],		
 			"identity1": [
 				{
 					"card": "Monica Rambeau"
@@ -61,6 +61,9 @@
 			"upgrade_support1": [
 			],
 			"set_aside": [
+				{
+					"card": "Spectrum"
+				},			
 				{
 					"card": "Pulsar"
 				},
@@ -191,13 +194,13 @@
 			],
 			"set_aside": [
 				{
+					"card": "Spectrum"
+				},			
+				{
 					"card": "Loss of Control"
 				},	
 				{
 					"card": "Photon"
-				},	
-				{
-					"card": "Monica Rambeau"
 				},				
 				{
 					"card": "Pulsar"

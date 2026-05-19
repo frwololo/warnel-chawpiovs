@@ -70,6 +70,51 @@ var current_stack_uid:int = 0
 var card_already_played_for_stack_uid:Dictionary = {}
 var my_script_requests_pending_execution: = 0
 
+var  _interrupt_cache = {
+	"zones" : [],
+	"additional_cards": [],
+	"initialized": false
+}
+func init_interruptable_cache():
+	if _interrupt_cache["initialized"]:
+		return	
+	_interrupt_cache["zones"] = []
+	_interrupt_cache["additional_cards"] = []
+
+	if !CFConst.INTERRUPT_ALLOWED_PILES:
+		_interrupt_cache["initialized"] = true
+		return
+	
+	var scriptables_array :Array =\
+		cfc.get_tree().get_nodes_in_group("scriptables")
+	
+	scriptables_array +=\
+			cfc.get_tree().get_nodes_in_group("cards")
+	
+	var extra_cards = {}
+	
+	for obj in scriptables_array:
+		var all_scripts = obj.retrieve_all_scripts()
+		for key in all_scripts:
+			if key.begins_with("interrupt") or key.begins_with("response"):
+				var script_data = all_scripts[key]
+				if script_data.has("all") or script_data.has("pile"):
+					extra_cards[obj] = true
+					break
+
+	_interrupt_cache["additional_cards"] = extra_cards.keys()
+
+	_interrupt_cache["zones"] = ["board"]
+	for i in gameData.get_team_size():
+		var hero_id = i+1
+		for zone in CFConst.INTERRUPT_ALLOWED_PILES:
+			_interrupt_cache["zones"].append(zone + str(hero_id))
+
+	_interrupt_cache["initialized"] = true
+	return
+
+
+
 func _ready():
 	scripting_bus.connect("step_started", self, "_step_started")
 
@@ -784,6 +829,24 @@ func compute_interrupts(script):
 	var current_run_mode = run_mode
 	var potential_interrupters = {}
 	interrupting_hero_id = 0
+
+	#this is a very heavy call that happens a lot
+	#we need to minimize how many cards we check interrupts for
+	#this is done currently by only checking for 
+	# 1) Scriptables (temporary effects), 2) cards on Board and 3) cards in hands
+	# Everything else, in particular piles, is ignored
+	#can be Tweaked in CFConst.INTERRUPT_ALLOWED_PILES	
+	var cards_to_check = get_tree().get_nodes_in_group("scriptables")
+
+	init_interruptable_cache()
+	var interrupt_zones = _interrupt_cache["zones"]	
+	if interrupt_zones:
+		cards_to_check += cfc.get_all_cards_from_containers(interrupt_zones)
+		cards_to_check +=  _interrupt_cache["additional_cards"]
+	else:
+		cards_to_check +=\
+				cfc.get_tree().get_nodes_in_group("cards")	
+	
 	for mode in [InterruptMode.FORCED_INTERRUPT_CHECK, InterruptMode.OPTIONAL_INTERRUPT_CHECK]:
 		var interrupters_found = false
 		
@@ -798,13 +861,13 @@ func compute_interrupts(script):
 				continue
 
 			var tasks = script.get_tasks()
-			var my_interrupters:= []
+			var my_interrupters:= {}
 			for task in tasks:
 				_current_interrupted_event = task.script_definition.duplicate()
 				_current_interrupted_event["event_name"] = task.script_name
 				_current_interrupted_event["event_object"] = task
 				_current_interrupted_event["stack_object"] = script
-				for card in get_tree().get_nodes_in_group("scriptables") + get_tree().get_nodes_in_group("cards")  :
+				for card in cards_to_check :
 					if (card in card_already_played_for_stack_uid.get(script_uid, [])):
 						continue
 					if (task.script_name == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME):
@@ -813,14 +876,14 @@ func compute_interrupts(script):
 					var can_interrupt = card.can_interrupt(hero_id,task.owner, _current_interrupted_event)
 					if can_interrupt == INTERRUPT_FILTER[mode]:
 						var guid = guidMaster.get_guid(card)
-						my_interrupters.append(guid)
+						my_interrupters[guid] = true
 						interrupters_found = true
 				#we break here if we found interrupters for the current subtask
 				#this ensures the _current_interrupted_event variable matches the current interruption
 				if interrupters_found:
 					break
 		
-			potential_interrupters[hero_id] = my_interrupters
+			potential_interrupters[hero_id] = my_interrupters.keys()
 		if interrupters_found:
 			potential_interrupters = _filter_potential_interrupters(potential_interrupters)
 			#reset temp variables
@@ -1245,6 +1308,10 @@ func reset():
 	pending_interaction_checksums = {}
 	_pending_flush = {}
 	_sent_about_to_execute_signal = {}
+	
+	_interrupt_cache["zones"] = []
+	_interrupt_cache["additional_cards"] = []
+	_interrupt_cache["initialized"] = false
 
 
 func flush_logs():

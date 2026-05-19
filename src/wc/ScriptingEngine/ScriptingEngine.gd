@@ -333,9 +333,26 @@ func play_card(script: ScriptTask) -> int:
 	if script.owner.get_property("cannot_play", 0, true):
 		return CFConst.ReturnCode.FAILED
 
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode	
 	
+	var from = ""
+	var from_controller = 0
+	var subject = script.subjects[0]
+	var parentHost = subject.get_parent()
+	if parentHost:
+		from = parentHost.name.to_lower()
+		from_controller = cfc.NMAP.board.get_controller_from_pile_name(from)
+		for i in CFConst.MAX_TEAM_SIZE:
+			var hero_id = i+1
+			if (from.ends_with(str(hero_id))):
+				from = from.trim_suffix(str(hero_id))
+				break
+		
+		
 	var definition:Dictionary =  script.script_definition
 	if (definition.has("grid_name")):
 		definition.name="move_card_to_board"
@@ -344,7 +361,7 @@ func play_card(script: ScriptTask) -> int:
 		definition.name="move_card_to_container"
 		retcode = move_card_to_container(script)		
 			
-	scripting_bus.emit_signal_on_stack("card_played", script.owner, {})		
+	scripting_bus.emit_signal_on_stack("card_played", script.owner, {"from": from, "from_controller": from_controller })		
 	return retcode	
 
 func attack(script: ScriptTask) -> int:
@@ -2285,16 +2302,32 @@ func change_form(script: ScriptTask) -> int:
 
 	var tags: Array = script.get_property(SP.KEY_TAGS)
 	var is_manual = "player_initiated" in tags
-	var to_card_id = script.get_property("change_to", "").replace("#", "")
 	
 	if (!script.subjects):
 		script.set_subjects(_get_identity_from_script(script))
+
+	var to_card = script.get_property("change_to", "").replace("#", "")
 	
 	for subject in script.subjects: #should be really one subject only, generally
 		var hero = subject
 		#todo check that subject is indeed a hero
 		if !hero.can_change_form(is_manual):
 			return CFConst.ReturnCode.FAILED
+			
+		var to_card_id = to_card
+		if to_card_id == "other_hero_form":
+			var found = false
+			var card_set_code = hero.get_property("card_set_code", "")
+			if !card_set_code:
+				return CFConst.ReturnCode.FAILED
+			var set_cards = cfc.cards_by_set.get(card_set_code, [])
+			for card_data in set_cards:
+				if card_data["type_code"] == "hero" and card_data["_code"]!= hero.canonical_id:
+					to_card_id = card_data["_code"]
+					found  = true
+					break
+			if !found:
+				return CFConst.ReturnCode.FAILED		
 		
 		if (!costs_dry_run()):
 		#Get my current zone

@@ -7,6 +7,10 @@ extends Card
 const _SPINBOX_SCENE_FILE = CFConst.PATH_CUSTOM + "cards/SpinPanel.tscn"
 const _SPINBOX_SCENE = preload(_SPINBOX_SCENE_FILE)
 
+#this is emitted from front_card_container
+# warning-ignore:unused_signal
+signal card_texture_changed(card)
+
 var has_focus = false
 
 # -1 uninitialized, 0 Villain, any positive value: hero
@@ -350,6 +354,32 @@ func get_duplicate(refresh_variables = true):
 	duplicate._hide_spinbox()
 	return _duplicate
 
+#reloads content of the card from a nw card_id
+#this function reloads all properties
+#and cleans up temporary variables from the older card
+func load_from_card_id(card_id):
+	canonical_name = cfc.card_definitions[card_id]["Name"]
+	canonical_id = card_id	
+
+	#reload properties from new id
+	properties = {}
+	var read_properties = cfc.card_definitions.get(canonical_id, {})
+	for property in read_properties.keys():
+		# warning-ignore:return_value_discarded
+		modify_property(
+				property,
+				read_properties[property],
+				false,
+				["Init"])
+				
+	_init_card_name()
+	#force reload card art
+	set_card_art(true)
+	update_groups()
+	side_icons.set_icons()
+	_duplicate = null
+	scripting_bus.emit_signal("card_reloaded", self, {})
+	
 func setup() -> void:
 	register_signals()
 	.setup()
@@ -1043,8 +1073,8 @@ func can_interrupt(
 		return CFConst.CanInterrupt.NO
 	
 	var _debug = false
-	if canonical_name == "Root Stomp" and trigger_card:
-		if trigger_details["event_name"] == "card_dies":
+	if canonical_name == "She-Hulk" and trigger_card:
+		if trigger_details["event_name"] == "identity_changed_form":
 			_debug = true
 
 	if (_debug):
@@ -1112,17 +1142,19 @@ func retrieve_scripts(trigger: String, filters := {}) -> Dictionary:
 	
 	if !result:
 		return result
-	
+
 	#Induced Panic blanks all triggered abilities
 	#we mimic that by only surfacing default "game rule" abilities when a card is impacted
-	if self.get_property("blank_printed_trigger_abilities", 0, true):
-		#todo more triggers to ignore ?
-		if !trigger in ["alterants"]:
-			var found_scripts = get_instance_runtime_scripts(trigger, filters)
-			if found_scripts:
-				return found_scripts
-			var base_scripts = SetScripts_All.get_scripts({}, self.canonical_id)
-			return base_scripts.get(trigger, {}).duplicate(true)
+	#notably, alterants has to be ignored as it is not a triggered ability
+	#todo more triggers to ignore ?
+	#Warning, I had an infinite loop in alterants engine here when calling get_property before checking for alterants
+	if !trigger in ["alterants"]:	
+		if self.get_property("blank_printed_trigger_abilities", 0, true):
+				var found_scripts = get_instance_runtime_scripts(trigger, filters)
+				if found_scripts:
+					return found_scripts
+				var base_scripts = SetScripts_All.get_scripts({}, self.canonical_id)
+				return base_scripts.get(trigger, {}).duplicate(true)
 	return result
 
 
@@ -2485,10 +2517,13 @@ func flip_doublesided_card(to_card_id = ""):
 	if !new_card:
 		var _error = 1
 		return false
+
 		
 	return true
 
 func change_form(voluntary = true, to_card_id = "") -> bool:
+	if to_card_id == self.canonical_id:
+		return false
 	#players have one voluntary change form per turn
 	#we check for that
 	if !can_change_form(voluntary):	
@@ -2496,6 +2531,7 @@ func change_form(voluntary = true, to_card_id = "") -> bool:
 	if (voluntary):
 		self.tokens.mod_token("__can_change_form", 0, true)
 
+	cfc.play_sfx("change_form")
 	return flip_doublesided_card(to_card_id)
 	
 
@@ -3159,7 +3195,12 @@ func get_overpaid_amount(params:Dictionary, script:ScriptTask = null) -> int:
 		paid_with.add_manacost(resource)
 		
 	var result = paid_with.can_pay_total_cost(_last_cost)
-	result = result.converted_mana_cost()
+	
+	var resource_type = params.get("resource", "")
+	if resource_type:
+		result = result.get_resource(resource_type)
+	else:
+		result = result.converted_mana_cost()
 	return result
 	
 func count_paid_resources(params:Dictionary, script:ScriptTask = null) -> bool:
@@ -3484,6 +3525,12 @@ func get_remaining_threat():
 #used for some scripts
 func get_remaining_indirect_damage():
 	return get_remaining_damage()
+
+# "assign_any_damage" in scripts
+#assigning "any" damage means we can go over the limit.
+#As such, remaining is always non zero	
+func get_remaining_any_damage():
+	return 666	
 	
 func get_max_hand_size():
 	var max_hand_size = get_property("max_hand_size", 0)

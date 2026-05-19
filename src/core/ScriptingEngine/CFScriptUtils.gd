@@ -10,6 +10,7 @@ extends Reference
 const _alteration_super_cache := {
 	"properties": {},
 	"wildcard_properties" : {},
+	"container_names": [],
 	"initialized": false
 }
 
@@ -38,6 +39,8 @@ static func find_all_values_by_key(container, target_key: String) -> Array:
 static func init_alterants_super_cache():
 	_alteration_super_cache["properties"] = {}
 	_alteration_super_cache["wildcard_properties"] = {}
+	_alteration_super_cache["container_names"] = []
+	
 	var scriptables_array :Array =\
 		cfc.get_tree().get_nodes_in_group("scriptables")
 	
@@ -53,6 +56,13 @@ static func init_alterants_super_cache():
 				_alteration_super_cache["wildcard_properties"][property] = true
 			else:
 				_alteration_super_cache["properties"][property] = true
+
+	if CFConst.ALTERANTS_ALLOWED_PILES:
+		_alteration_super_cache["container_names"] = ["board"]
+		for i in gameData.get_team_size():
+			var hero_id = i+1
+			for zone in CFConst.ALTERANTS_ALLOWED_PILES:
+				_alteration_super_cache["container_names"].append(zone + str(hero_id))
 
 	_alteration_super_cache["initialized"] = true
 	return
@@ -109,12 +119,22 @@ static func get_altered_value(
 		var scriptables_array :Array =\
 			cfc.get_tree().get_nodes_in_group("scriptables")
 		
-		scriptables_array +=\
-				cfc.get_tree().get_nodes_in_group("cards")
+		if _alteration_super_cache["container_names"]:
+			scriptables_array += cfc.get_all_cards_from_containers(_alteration_super_cache["container_names"])
+		else:
+			scriptables_array +=\
+					cfc.get_tree().get_nodes_in_group("cards")
+		
+		#remove duplicates
+		var unique:= {}
+		for key in scriptables_array:
+			unique[key] = true
+		scriptables_array = unique.keys()
+		
 		for obj in scriptables_array:
 			var alterants_key = obj.get_alterants_key()
 			if !alterants_key:
-				continue
+				continue				
 			var scripts = obj.retrieve_scripts(alterants_key)
 			# We select which scripts to run from the card, based on it state
 			var any_state_scripts = scripts.get('all', [])
@@ -156,6 +176,7 @@ static func get_altered_value(
 		# If this is the first time we discover this alteration value
 		# we also store it in our alterant cache
 		cfc.alterant_cache[alterant_cache_key] = return_dict
+
 	return(return_dict)
 
 # Parses a [ScriptTask]'s properties and extracts the details a [ScriptAlter]

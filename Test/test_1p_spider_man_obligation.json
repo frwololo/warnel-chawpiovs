@@ -1,11 +1,11 @@
 {
-	"_comments": "Tests Tony Stark Obligation: doesn't exhaust character",
+	"_comments": "Tests Spider Man Obligation: Eviction Notice",
 	"init": {
 		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Iron Man"
+					"hero": "Spider-Man"
 				}
 			}
 		],
@@ -20,7 +20,7 @@
 					"card": "advance"
 				},		
 				{
-					"card": "Business problems"
+					"card": "Eviction Notice"
 				},
 			
 			],
@@ -36,7 +36,7 @@
 			],
 			"identity1": [
 				{
-					"card": "Iron Man"
+					"card": "Spider-Man"
 				}
 			],
 			"hand1": [
@@ -65,7 +65,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Iron Man"
+					"hero": "Spider-Man"
 				}
 			}
 		],
@@ -75,20 +75,21 @@
 					"card": "01094"
 				}
 			],
-			"deck_villain":[
+			"set_aside":[					
+				{
+					"card": "eviction notice"
+				},
+			
+			],
+			"deck_villain": [
 				{
 					"card": "advance"
-				},					
-			],
+				},				
+			],			
 			"schemes": [
 				{
-					"card": "01097b"
+					"card": "01097b",
 				}
-			],
-			"set_aside": [		
-				{
-					"card": "Business problems"
-				},
 			],
 			"deck1": [
 				{
@@ -97,7 +98,7 @@
 			],
 			"identity1": [
 				{
-					"card": "Tony Stark",
+					"card": "Peter Parker",
 					"exhausted": true
 				}
 			],

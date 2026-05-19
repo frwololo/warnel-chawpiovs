@@ -1526,7 +1526,7 @@ static func generate_missing_tests():
 		}
 		var the_data = {"card": card_fullname}
 		var phase = "PLAYER_TURN"
-		var actions = [
+		var test_actions = [
 			{
 				"type": "other",
 				"value": "gain_control"
@@ -1536,7 +1536,7 @@ static func generate_missing_tests():
 			"treachery":
 				board_data["deck_villain"].append(the_data)
 				phase = "VILLAIN_DEAL_ENCOUNTER"
-				actions.append({"type": "other", "value": "wait_for_player_turn"})
+				test_actions.append({"type": "other", "value": "wait_for_player_turn"})
 			"main_scheme":
 				board_data["schemes"][0] = the_data
 			"side_scheme":
@@ -1565,7 +1565,7 @@ static func generate_missing_tests():
 				],
 				"board":board_data,
 			}, 
-			"actions": actions,
+			"actions": test_actions,
 			"end": {
 				"phase": "PLAYER_TURN",
 					"heroes": [

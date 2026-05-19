@@ -282,6 +282,25 @@ func _instance_card(card_id: String) -> Card:
 	return(card)
 
 
+func get_all_cards_from_containers(container_names) -> Array:
+	var all_cards = []
+	if !container_names:
+		var _error = 1
+		print_debug("missing parameter in get_all_cards_from_containers")
+		return all_cards
+
+	if (typeof(container_names) != TYPE_ARRAY):
+		container_names = [container_names]
+	
+	for container_name in container_names:
+		var container = NMAP.get(container_name, null)
+		if !container:
+			container = NMAP.board.get_grid(container_name)
+		if container:
+			all_cards += container.get_all_cards()
+	
+	return all_cards
+
 # Returns a Dictionary with the combined Card definitions of all set files
 func load_card_definitions() -> Dictionary:
 	cards_loading = true
@@ -503,7 +522,7 @@ func _exit_tree():
 		cards_load_thread.wait_to_finish()	
 
 #A function to override as needed
-func enrich_window_title(selectionWindow, script:ScriptObject, title:String) -> String:
+func enrich_window_title(selectionWindow, script, title:String) -> String:
 	return title
 
 func add_modal_menu(object):

@@ -506,25 +506,6 @@ func _boardseek_subjects(stored_integer: int) -> Array:
 		is_valid = false
 	return(subjects_array)
 
-func get_all_cards_from_containers(container_names) -> Array:
-	var all_cards = []
-	if !container_names:
-		var _error = 1
-		print_debug("missing parameter in get_all_cards_from_containers")
-		return all_cards
-
-	if (typeof(container_names) != TYPE_ARRAY):
-		container_names = [container_names]
-	
-	for container_name in container_names:
-		var container = cfc.NMAP.get(container_name, null)
-		if !container:
-			container = cfc.NMAP.board.get_grid(container_name)
-		if container:
-			all_cards += container.get_all_cards()
-	
-	return all_cards
-
 func get_all_containers(container_names) -> Array:
 	var result = []
 	if (typeof(container_names) != TYPE_ARRAY):
@@ -566,7 +547,7 @@ func _tutor_subjects(stored_integer: int) -> Array:
 		return []
 		
 	var src_container = get_property(SP.KEY_SRC_CONTAINER)
-	var subject_list := get_all_cards_from_containers(src_container)
+	var subject_list :Array = cfc.get_all_cards_from_containers(src_container)
 	subject_list = sort_subjects(subject_list)
 	for c in subject_list:
 		if SP.check_validity(c, script_definition, "tutor", owner):
@@ -591,7 +572,7 @@ func _index_seek_subjects(stored_integer: int) -> Array:
 	var src_container_names = get_property(SP.KEY_SRC_CONTAINER)
 	#var src_containers:Array = get_all_containers(src_container_names)
 	#var first_container: CardContainer = src_containers[0]
-	var all_cards = get_all_cards_from_containers(src_container_names)
+	var all_cards:Array = cfc.get_all_cards_from_containers(src_container_names)
 	
 	#validity check
 	var to_remove = []	

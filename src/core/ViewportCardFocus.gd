@@ -189,10 +189,17 @@ func garbage_collection():
 			if vbc_position_mode or not $VBC/Focus/Tween.is_active():
 				current_dupe_focus.visible = false
 	for c in to_delete:
-		var dupe = _previously_focused_cards[c]
-		if is_instance_valid(dupe):
-			dupe.queue_free()
-		var _found = _previously_focused_cards.erase(c)	
+		forget_card(c)
+
+func forget_card(c):
+	var dupe = _previously_focused_cards[c]
+	if is_instance_valid(dupe):
+		dupe.queue_free()
+	var _found = _previously_focused_cards.erase(c)	
+	if _current_focus_source == c:
+		_current_focus_source = null
+	if is_instance_valid(c):	
+		c.disconnect("card_texture_changed",self , "_on_card_reloaded")	
 
 # Displays the card closeup in the Focus viewport
 func focus_card(card: Card, show_preview := true) -> void:
@@ -220,6 +227,7 @@ func focus_card(card: Card, show_preview := true) -> void:
 			dupe_focus.tokens.load_from_json(tokens_dict)
 		else:
 			dupe_focus = card.duplicate(DUPLICATE_USE_INSTANCING)
+			card.connect("card_texture_changed", self, "_on_card_reloaded")
 			dupe_focus.is_duplicate_of = card
 			dupe_focus.name = dupe_focus.name + "-VBC"
 			dupe_focus.remove_from_group("cards")
@@ -304,6 +312,10 @@ func focus_card(card: Card, show_preview := true) -> void:
 		
 		garbage_collection()
 		reposition()		
+
+func _on_card_reloaded(card):
+	if _previously_focused_cards.has(card):
+		forget_card(card)
 
 func set_camera_position(dupe_focus):
 	if !_current_focus_source or !is_instance_valid(_current_focus_source):

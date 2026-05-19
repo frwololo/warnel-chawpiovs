@@ -1,15 +1,27 @@
 extends CardFront
 
 onready var art := $Art
+onready var art_transition := $Art2
 var art_filename:= ""
 var text_enabled = false
 
 var color_texture = null
 var grayscale_texture = null
 var warning_timer = 0
+var _perf_hacks_done = false
 
-func _process(_delta:float):
+var shader_progress:float = 0.0
+var shader_active = false
+var shader_loaded = null
+
+func _process(delta:float):
 	_handle_horizontal_card()
+	
+	if shader_active:
+		art_transition.material.set_shader_param("progress", shader_progress)
+		shader_progress += delta * 3.0
+		if shader_progress > 4.0:
+			end_texture_transition()	
 
 func _handle_horizontal_card():
 	if !text_enabled:
@@ -85,16 +97,65 @@ func setup_text_mode():
 	card_labels["text"].text = 	card_owner.properties.get("text", "")
 	card_labels["text"].bbcode_text = card_labels["text"].text 
 
+func end_texture_transition():
+	shader_active = false
+	art_transition.visible = false
+	shader_progress = 0.0
+	art_transition.material.set_shader_param("progress", 0.0)
+	card_owner.emit_signal("card_texture_changed", card_owner)
+
+func set_texture(receiver, texture):
+	receiver.texture = texture
+	receiver.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	# In case the generic art has been modulated, we switch it back to normal colour
+	receiver.self_modulate = Color(1,1,1)	
+
+func _transition_texture(texture):
+	set_texture(art_transition, art.texture)	
+	set_texture(art, texture)
+	art_transition.visible = true
+	art.modulate = Color(0, 0.5, 1) * 10
+
+	$Tween.interpolate_property(
+		art,
+		"modulate",
+		art.modulate,
+		Color(1,1,1),
+		1.0, # Duration in seconds
+		Tween.TRANS_SINE,
+		Tween.EASE_OUT
+		)
+	$Tween.start()
+	
+	if !shader_loaded:
+		var material = load(CFConst.PATH_CUSTOM + "shaders/transition.gdshader")
+		art_transition.material = ShaderMaterial.new()
+		art_transition.material.set("shader", material)
+		art_transition.material.set_shader_param("transition_type", 2)	
+		art_transition.material.set_shader_param("position", Vector2(0.5,0.5) )	
+		art_transition.material.set_shader_param("grid_size",Vector2(0.5, 50.0) )	
+		art_transition.material.set_shader_param("edges", 3)	
+		art_transition.material.set_shader_param("shape_feather", 0.0)
+		art_transition.material.set_shader_param("progress", 0.0)		
+		shader_loaded = true
+	shader_active = true
+		
+	
+	
+
 
 func _enable_texture(texture):
+	
+	#if texture already exists, we do a transition
+	if art.texture and art.texture != texture:
+		_transition_texture(texture)
+		return
 	color_texture = texture
-	art.texture = texture
-	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	# In case the generic art has been modulated, we switch it back to normal colour
-	art.self_modulate = Color(1,1,1)
-	if CFConst.PERFORMANCE_HACKS:
+	set_texture(art, texture)
+	if CFConst.PERFORMANCE_HACKS and !_perf_hacks_done:
 		$Margin.queue_free()
-		text_enabled = false	
+		text_enabled = false
+		_perf_hacks_done = true
 
 func card_image_download_complete(_card_id):
 	if !art_filename:

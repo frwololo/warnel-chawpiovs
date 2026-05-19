@@ -144,5 +144,5 @@ func compare_string_properties(property_filters, card, property, comparison_type
 					comparison_type)
 
 #post subject discovery validity check
-func check_validity_post_selection(card, script):
+func check_validity_post_selection(_card, _script):
 	return true

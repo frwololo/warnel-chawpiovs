@@ -4543,10 +4543,10 @@
 					]
 				},
 				{
-					"name": "add_script",
+					"name": "temporary_effect",
 					"end_condition": "round_ended",
 					"subject": "self",
-					"script": {
+					"effect": {
 						"alterants": {
 							"all": [
 								{
@@ -4560,10 +4560,10 @@
 					}
 				},
 				{
-					"name": "add_script",
+					"name": "temporary_effect",
 					"end_condition": "round_ended",
 					"subject": "self",
-					"script": {
+					"effect": {
 						"alterants": {
 							"all": [
 								{
@@ -4577,10 +4577,10 @@
 					}
 				},
 				{
-					"name": "add_script",
+					"name": "temporary_effect",
 					"end_condition": "round_ended",
 					"subject": "self",
-					"script": {
+					"effect": {
 						"alterants": {
 							"all": [
 								{

@@ -661,10 +661,10 @@
 					]
 				},
 				{
-					"name": "add_script",
+					"name": "temporary_effect",
 					"end_condition": "round_ended",
 					"subject": "self",
-					"script": {
+					"effect": {
 						"alterants": {
 							"all": [
 								{
@@ -678,10 +678,10 @@
 					}
 				},
 				{
-					"name": "add_script",
+					"name": "temporary_effect",
 					"end_condition": "round_ended",
 					"subject": "self",
-					"script": {
+					"effect": {
 						"alterants": {
 							"all": [
 								{
@@ -695,10 +695,10 @@
 					}
 				},
 				{
-					"name": "add_script",
+					"name": "temporary_effect",
 					"end_condition": "round_ended",
 					"subject": "self",
-					"script": {
+					"effect": {
 						"alterants": {
 							"all": [
 								{
@@ -1114,16 +1114,7 @@
 				{
 					"name": "change_form",
 					"subject": "my_hero",
-					"change_to": {
-						"if": {
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "giant"
-							}
-						},
-						"then": "#12001a",
-						"else": "#12001c"
-					}
+					"change_to": "other_hero_form"
 				}
 			]
 		}

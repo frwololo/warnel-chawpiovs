@@ -609,6 +609,18 @@ const TOKENS_ONLY_ON_BOARD_EXCEPTIONS:= [
 	"encounters_reveal"	
 ]
 
+#list of non board zones that can have alterants (performance: piles not in this list will be excluded from the alterants loop)
+#leave empty == all cards will be considered for alterants
+const ALTERANTS_ALLOWED_PILES:= [
+	"hand"
+]
+
+#list of non board zones that can have interrupts (performance: piles not in this list will be excluded from the alterants loop)
+#leave empty == all cards will be considered for interrupts
+const INTERRUPT_ALLOWED_PILES:= [
+	"hand"
+]
+
 const TOKENS_INCREASE_PREVENTION_PROPERTIES:= {
 	"stunned": ["stalwart"],
 	"confused": ["stalwart"],

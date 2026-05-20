@@ -853,20 +853,23 @@ func compute_interrupts(script):
 		#have to do that because can_interrupt checks for the current state of the game
 		interrupt_mode = mode
 		run_mode = RUN_MODE.PENDING_USER_INTERACTION
+		var tasks = script.get_tasks()
 		
-		for i in range(gameData.get_team_size()):
-			var hero_id = i+1
-			
-			if mode == InterruptMode.OPTIONAL_INTERRUPT_CHECK and _heroes_passed_optional_interrupt.has(hero_id):
-				continue
+		for task in tasks:
+			_current_interrupted_event = task.script_definition.duplicate()
+			_current_interrupted_event["event_name"] = task.script_name
+			_current_interrupted_event["event_object"] = task
+			_current_interrupted_event["stack_object"] = script
+		
+			for i in range(gameData.get_team_size()):
+				var hero_id = i+1
+				
+				if mode == InterruptMode.OPTIONAL_INTERRUPT_CHECK and _heroes_passed_optional_interrupt.has(hero_id):
+					continue
 
-			var tasks = script.get_tasks()
-			var my_interrupters:= {}
-			for task in tasks:
-				_current_interrupted_event = task.script_definition.duplicate()
-				_current_interrupted_event["event_name"] = task.script_name
-				_current_interrupted_event["event_object"] = task
-				_current_interrupted_event["stack_object"] = script
+
+				var my_interrupters:= {}
+
 				for card in cards_to_check :
 					if (card in card_already_played_for_stack_uid.get(script_uid, [])):
 						continue
@@ -878,12 +881,14 @@ func compute_interrupts(script):
 						var guid = guidMaster.get_guid(card)
 						my_interrupters[guid] = true
 						interrupters_found = true
-				#we break here if we found interrupters for the current subtask
-				#this ensures the _current_interrupted_event variable matches the current interruption
-				if interrupters_found:
-					break
+				potential_interrupters[hero_id] = my_interrupters.keys()		
+			
+			#we break here if we found interrupters for the current subtask
+			#this ensures the _current_interrupted_event variable matches the current interruption
+			if interrupters_found:
+				break					
 		
-			potential_interrupters[hero_id] = my_interrupters.keys()
+
 		if interrupters_found:
 			potential_interrupters = _filter_potential_interrupters(potential_interrupters)
 			#reset temp variables

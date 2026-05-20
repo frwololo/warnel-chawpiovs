@@ -676,7 +676,7 @@ func action_play(hero_id, card_id_or_name):
 		var _error = 1
 		announce("error, couldn't find card " + str(card_id_or_name))
 		return
-	card.attempt_to_play()
+	card.attempt_to_play(true)
 	return
 	
 func action_activate(hero_id, card_id_or_name):

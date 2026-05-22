@@ -87,7 +87,7 @@ func grab_focus():
 	deck_picture.grab_focus()
 
 func get_deck_picture(callback_owner = null) -> Texture:
-	var area = 	Rect2 ( 60, 70, 170, 100 )
+	var area = 	Rect2 ( 65, 50, 190, 120 )
 	if !deck_data:
 		return cfc.fallback_hero_portrait(deck_id, area)
 	var my_hero_id = deck_data["hero_code"]	

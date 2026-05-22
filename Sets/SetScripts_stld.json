@@ -1,0 +1,670 @@
+{
+	"Adam Warlock": {
+		"TODO": "",
+		"response": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Agile Flight": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Air Supremacy": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Bad Boy": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				}
+			]
+		}
+	},
+	"Banishment": {
+		"TODO": ""
+	},
+	"Beta Ray Bill": {
+		"TODO": "",
+		"response": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Blaze of Glory": {
+		"TODO": "",
+		"alterants": {
+			"hand": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "TODO",
+					"filter_state_trigger": [
+						{
+							"TODO": "TODO"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Budding Crime Syndicate": {
+		"TODO": "",
+		"hinder": {
+			"__amount__": "TODO",
+			"__each_player__": true
+		}
+	},
+	"C.I.T.T.": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Cosmo": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Daring Escape": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "deal_encounter",
+					"subject": "my_identity",
+					"is_cost": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_identity"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Dive Bomb": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Element Gun": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Enhanced Awareness": {
+		"uses": {
+			"__name__": "mental",
+			"__amount__": 3
+		},
+		"resource": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_resource"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"token_name": "mental",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "mental"
+				}
+			]
+		}
+	},
+	"Ever Vigilant": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Get Ready": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_allies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Gutsy Move": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 2,
+					"plus_amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "tutor",
+							"subject_count": "all",
+							"src_container": "encounters_facedown_my_hero",
+							"multiplier": 2
+						}
+					},
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Jet Boots": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				}
+			]
+		}
+	},
+	"Knowhere": {
+		"TODO": "",
+		"response": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Laser Blaster": {
+		"TODO": "",
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "TODO",
+					"filter_state_trigger": [
+						{
+							"TODO": "TODO"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Leader of the Guardians": {
+		"TODO": "",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "TODO",
+					"filter_state_trigger": [
+						{
+							"TODO": "TODO"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Mister Knife": {
+		"TODO": "",
+		"_surge": {}
+	},
+	"Nova Prime - Richard Rider": {
+		"card_played": {
+			"event_filters": {
+				"from": "hand"
+			},
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_elite": 0
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Peter Quill": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"dest_container": "hand",
+					"src_container": [
+						"deck",
+						"discard"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Element Gun"
+							}
+						}
+					]
+				}
+			]
+		},
+		"once_per_round": {
+			"__name__": "__smooth_talker"
+		},
+		"manual": {
+			"board": {
+				"Smooth Talker": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": -1,
+						"subject": "self",
+						"token_name": "__smooth_talker"
+					},
+					{
+						"name": "nop",
+						"is_cost": true,
+						"subject": "index",
+						"subject_count": "all",
+						"src_container": "hand",
+						"needs_selection": true,
+						"selection_type": "equal"
+					},
+					{
+						"name": "draw_cards",
+						"amount": 1
+					},
+					{
+						"name": "move_card_to_container",
+						"subject": "previous",
+						"dest_container": "hand"
+					}
+				]
+			}
+		}
+	},
+	"Pulse Grenade": {
+		"TODO": "",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Sliding Shot": {
+		"TODO": "",
+		"manual": {
+			"condition_hand": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Element Gun"
+							},
+							"filter_same_controller": true
+						}
+					]
+				}
+			},
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 5,
+					"plus_amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "tutor",
+							"subject_count": "all",
+							"src_container": "encounters_facedown_my_hero",
+							"multiplier": 2
+						}
+					},
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Spartoi Cunning": {
+		"TODO": "",
+		"reveal": {
+			"all": [
+				{
+					"name": "TODO"
+				}
+			]
+		}
+	},
+	"Star-Lord": {
+		"once_per_round": {
+			"__name__": "_what_could_go_wrong"
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_guardian",
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_allies_my_hero"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"resource": {
+			"board": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_parent": "hand*"
+						}
+					]
+				},			
+				{
+					"name": "mod_tokens",
+					"token_name": "_what_could_go_wrong",
+					"is_cost": true,
+					"modification": -1,
+					"subject": "Star-Lord"
+				},
+				{
+					"name": "deal_encounter",
+					"subject": "my_identity",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 3,
+					"resource_name": "unc",
+					"is_cost_reduction": true
+				}
+			]
+		}
+	},
+	"Star-Lord's Helmet": {
+		"TODO": "",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "TODO",
+					"filter_state_trigger": [
+						{
+							"TODO": "TODO"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Target Practice": {
+		"TODO": "",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "TODO",
+					"filter_state_trigger": [
+						{
+							"TODO": "TODO"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"The Power of Leadership": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "leadership"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Yondu": {
+		"TODO": ""
+	}
+}

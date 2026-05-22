@@ -63,11 +63,12 @@ func add_resource(script: ScriptTask) -> int:
 	#TODO the scripting engine has better ways to handle alterations, etc... need to mimic that? See mod_counter
 	var modification: int  = script.retrieve_integer_property("amount")
 	# var set_to_mod: bool = script.get_property(SP.KEY_SET_TO_MOD)
-
+	var is_cost_reduction: bool  = script.get_property("is_cost_reduction", false)
 
 	if run_type == CFInt.RunType.PRECOMPUTE:
 		var pre_result:ManaCost = ManaCost.new()
 		pre_result.add_resource(counter_name, modification)
+		pre_result.is_cost_reduction = is_cost_reduction
 		script.process_result = pre_result	
 		return retcode
 	

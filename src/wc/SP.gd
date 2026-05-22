@@ -207,7 +207,7 @@ static func check_source_controlled_by_filter(_trigger_card, owner_card, trigger
 	if guidMaster.is_guid(source):
 		source = guidMaster.get_object_by_guid(source)
 	
-	if !source:
+	if !is_instance_valid(source):
 		return false
 		
 	#unfortunately "source" is overused and can sometimes be used to designate a container name

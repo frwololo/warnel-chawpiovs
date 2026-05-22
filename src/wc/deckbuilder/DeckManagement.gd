@@ -360,7 +360,7 @@ func process_deck_download(deck_data):
 
 func refresh_deck_containers(json_deck_data):
 	#add deck to current data
-	var created_deck = _load_one_deck(json_deck_data)
+	var _created_deck = _load_one_deck(json_deck_data)
 	#refresh display
 	_filter_by_hero(heroes_filter.get_selected())		
 	

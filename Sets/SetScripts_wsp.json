@@ -1,6 +1,5 @@
 {
 	"All for One": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -11,10 +10,27 @@
 					]
 				},
 				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_optional": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_friendly_my_hero",
+							"filter_properties": {
+								"trait_avenger": 1,
+								"comparison": "ge"
+							},
+							"filter_is_exhausted": "false"
+						}
+					]
+				},
+				{
 					"name": "attack",
-					"amount": 1,
+					"amount": 3,
+					"plus_amount": "count_previous_subjects",
 					"subject": "target",
-					"needs_subject": true,
 					"filter_state_subject": [
 						{
 							"filter_group": "group_enemies"
@@ -75,35 +91,83 @@
 		}
 	},
 	"Athletic Conditioning": {
-		"TODO": "",
 		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
-				}
-			]
+			"hand": {
+				"Remove Stun": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"is_cost": true,
+						"modification": -1,
+						"subject": "my_hero"
+					}
+				],
+				"Remove Confused": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "confused",
+						"is_cost": true,
+						"modification": -1,
+						"subject": "my_hero"
+					}
+				]
+			}
 		}
 	},
 	"Beetle": {
-		"TODO": "",
 		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
+			"event_name": "card_dies",
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Spend Resource": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"physical": 1
+						},
+						"is_cost": true
+					}
+				],
+				"Shuffle back": [
+					{
+						"name": "shuffle_card_into_container",
+						"subject": "self",
+						"dest_container": "deck_villain"
+					}
+				]
+			}
 		}
 	},
 	"Beetle Armor MK IV": {
-		"TODO": "",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "Beetle",
+					"is_cost": true
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "villain",
+					"is_else": true
 				}
 			]
 		},
@@ -111,31 +175,54 @@
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
-					"alteration": 1
+					"filter_property_name": "health",
+					"trigger": "host",
+					"alteration": 4
 				}
 			]
 		}
 	},
 	"Beetle Mania": {
-		"TODO": "",
-		"_surge": {},
 		"reveal_alter_ego": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "surge"
 				}
 			]
 		},
 		"reveal_hero": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "nop",
+					"is_cost": true,
+					"subject": "Beetle"
+				},
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "previous",
+					"is_cost": true,
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "enemy_attacks_you",
+					"subject": "previous",
+					"is_cost": true
+				},
+				{
+					"name": "surge",
+					"is_else": true
 				}
 			]
 		}
@@ -383,7 +470,34 @@
 		}
 	},
 	"Mother's Orders": {
-		"TODO": ""
+		"script_alterants": {
+			"board": [
+				{
+					"script": {
+						"manual": {
+							"board": {
+								"attack": [
+									{
+										"name": "pay_cost",
+										"cost": {
+											"unc": 1
+										},
+										"is_cost": true
+									}
+								]
+							}
+						}
+					},
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "hero"
+							}
+						}
+					]
+				}
+			]
+		}
 	},
 	"Nadia Van Dyne": {
 		"once_per_round": {
@@ -428,9 +542,8 @@
 		}
 	},
 	"Perseverance": {
-		"TODO": "",
-		"response": {
-			"event_name": "TODO",
+		"response_identity_changed_form": {
+			"trigger": "my_identity",
 			"is_optional_hand": true,
 			"hand": [
 				{
@@ -439,6 +552,12 @@
 					"tags": [
 						"hero_response"
 					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "my_hero"
 				}
 			]
 		}
@@ -840,7 +959,6 @@
 		}
 	},
 	"Running Interference": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -848,18 +966,29 @@
 					"is_cost": true,
 					"tags": [
 						"hero_action"
+					],
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "avenger"
+							}
+						}
 					]
 				},
 				{
 					"name": "thwart",
-					"amount": 1,
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_schemes"
+					"amount": 2,
+					"plus_amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "villain",
+							"property": "stage_int",
+							"max": 3
 						}
-					]
+					},
+					"subject": "main_scheme",
+					"needs_subject": true
 				}
 			]
 		}

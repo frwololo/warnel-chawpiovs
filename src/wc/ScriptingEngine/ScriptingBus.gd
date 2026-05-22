@@ -141,6 +141,13 @@ signal defense_happened(card, details)
 # warning-ignore:unused_signal
 signal event_prevented(card,details)
 
+
+# warning-ignore:unused_signal
+signal card_readied(card,details)
+
+# warning-ignore:unused_signal
+signal card_exhausted(card,details)
+
 #todo should be dynamic?
 
 # looking for this signal in the code ? Triggered typically by type + "_died"

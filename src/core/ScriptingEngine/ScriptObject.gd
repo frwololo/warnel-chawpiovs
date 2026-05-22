@@ -44,6 +44,7 @@ var trigger_object: Node
 # Stores the subjects discovered by the task previous to this one
 var prev_subjects := []
 var all_prev_subjects := []
+var alternate_cost_required = null
 
 
 var my_stored_integer = null
@@ -424,15 +425,21 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 		# was cancelled (either because there were not enough cards
 		# or because the player pressed cancel
 		# in which case we consider the task invalid
-		if typeof(select_return) == TYPE_ARRAY:
-			subjects_array = select_return
-		else:
-			#not invalid if the selection is "max"
-			if get_property(SP.KEY_SELECTION_TYPE) == "max":
-				pass
-			else:
-				is_valid = false
-			subjects_array = []
+		match typeof(select_return):
+			TYPE_ARRAY:
+				subjects_array = select_return
+			TYPE_DICTIONARY:
+				alternate_cost_required = select_return["alternate_cost"]
+				cfc.remove_ongoing_process(self, "_local_find_subjects")
+				subjects_array = []				
+				return(subjects_array)				
+			_:
+				#not invalid if the selection is "max"
+				if get_property(SP.KEY_SELECTION_TYPE) == "max":
+					pass
+				else:
+					is_valid = false
+				subjects_array = []
 		user_interaction_status = CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER	
 	
 	#all other use cases are handled above. If our user_interaction_status is still unset,

@@ -161,10 +161,32 @@ func remove_script(script_ref):
 			break
 		i += 1
 	if !found:
-		return null
+		return -1
 	scripts_queue.remove(i)
+	state_scripts.remove(i)
 	if trigger_details.has("network_prepaid"):
 		trigger_details["network_prepaid"].remove(i)
+	return i
+
+func insert_scripts(scripts_def, i):
+
+	var children_trigger_details = trigger_details.duplicate()
+	for redundant in CFConst.SCENG_TRIGGER_DETAILS_ERASE_FROM_CHILDREN_SCRIPTS:
+		children_trigger_details.erase(redundant)
+	
+	for task in scripts_def:
+		var script_task := ScriptTask.new(
+				owner,
+				task,
+				trigger_object,
+				children_trigger_details)		
+		scripts_queue.insert(i, script_task)
+		state_scripts.insert(i, task)
+		i += 1
+
+	if trigger_details.has("network_prepaid"):
+		#TODO
+		pass
 
 # This flag will be true if we're attempting to find if the card
 # has costs that need to be paid, before the effects take place.
@@ -331,6 +353,14 @@ func execute(_run_type) -> void:
 			# execution until targetting has completed
 			if not script.is_primed:
 				yield(script,"primed")
+			
+			
+			if script.alternate_cost_required:
+				var idx = remove_script(script)
+				if idx != -1:
+					insert_scripts(script.alternate_cost_required, idx)
+					cfc.remove_ongoing_process(self, "scriptingengine execute")
+					return execute(_run_type)
 			
 			all_subjects_so_far += 	script.subjects
 

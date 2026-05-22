@@ -17,7 +17,7 @@
 	},
 	"01097b": {
 		"imagesrc": "/bundles/cards/01097.png"
-	},	
+	},
 	"01116a": {
 		"imagesrc": "/bundles/cards/01116b.png"
 	},
@@ -62,7 +62,7 @@
 	},
 	"01172": {
 		"text": "Retaliate 1. <i>(After this character is attacked, deal 1 damage to the attacking character.)</i>",
-		"real_text": "Retaliate 1. <i>(After this character is attacked, deal 1 damage to the attacking character.)</i>",
+		"real_text": "Retaliate 1. <i>(After this character is attacked, deal 1 damage to the attacking character.)</i>"
 	},
 	"04061a": {
 		"imagesrc": "/bundles/cards/04061b.png"
@@ -131,7 +131,7 @@
 		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/msm/05026.webp"
 	},
 	"09007": {
-		"traits": "Spell.",
+		"traits": "Spell."
 	},
 	"10011": {
 		"subname": "Amadeus Cho"
@@ -142,27 +142,33 @@
 			"overlay": "#ffa2c2ee"
 		}
 	},
+	"14001b": {
+		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/qsv/14001b.webp"
+	},
+	"14012": {
+		"subname": "Jamie Madrox"
+	},
 	"16056": {
-			"attack": 2,
+		"attack": 2
 	},
 	"16064": {
-			"attack": 1,
+		"attack": 1
 	},
 	"16099": {
-			"boost": 3,
+		"boost": 3
 	},
 	"16109": {
-			"attack": 1,
-			"scheme": 1
-	},	
+		"attack": 1,
+		"scheme": 1
+	},
 	"16122": {
-			"attack": 3,
+		"attack": 3
 	},
 	"16149": {
-			"attack": 1,
-			"scheme": 1,
-			"thwart": 1
-	},	
+		"attack": 1,
+		"scheme": 1,
+		"thwart": 1
+	},
 	"21041": {
 		"subname": "Noh-Varr",
 		"_comments": "https://github.com/zzorba/marvelsdb/issues/345"
@@ -250,15 +256,15 @@
 	},
 	"27021": {
 		"imagesrc": "/bundles/cards/01089.png"
-	},	
+	},
 	"27022": {
 		"imagesrc": "/bundles/cards/01090.png"
 	},
 	"27089": {
-		"attack": 3,
+		"attack": 3
 	},
 	"27090": {
-		"scheme": 1,
+		"scheme": 1
 	},
 	"27102a": {
 		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/sm/27102a.webp"
@@ -266,10 +272,10 @@
 	"27102b": {
 		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/sm/27102b.webp",
 		"scheme_amplify": 0,
-		"scheme_hazard": 1,		
+		"scheme_hazard": 1
 	},
 	"27167": {
 		"text": "Guard. Patrol. (While this minion is engaged with you, you cannot thwart the main scheme.)\n<hr />\n[star] <b>Boost</b>: Put enraged Symbiote into play engaged with you.",
-		"real_text": "Guard. Patrol. (While this minion is engaged with you, you cannot thwart the main scheme.)\n<hr />\n[star] <b>Boost</b>: Put enraged Symbiote into play engaged with you.",
+		"real_text": "Guard. Patrol. (While this minion is engaged with you, you cannot thwart the main scheme.)\n<hr />\n[star] <b>Boost</b>: Put enraged Symbiote into play engaged with you."
 	}
 }

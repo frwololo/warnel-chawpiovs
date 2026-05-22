@@ -405,6 +405,7 @@ func select_card(
 	if parent_node == cfc.NMAP.get("board")  and (run_type != CFInt.RunType.BACKGROUND_COST_CHECK):
 		cfc.game_paused = true
 	var selected_cards
+	var alternate_cost = null
 	# This way we can override the card select scene with a custom one
 	var selection = card_select_scene.instance()
 	selection.init(selection_params, script, stored_integer)
@@ -422,13 +423,16 @@ func select_card(
 	if selection.is_cancelled:
 		selected_cards = false
 	else:
-		selected_cards = selection.selected_cards			
+		selected_cards = selection.selected_cards
+		alternate_cost = selection.alternate_cost_chosen			
 	selection.queue_free()
 		
 	if parent_node == cfc.NMAP.get("board"):
 		cfc.game_paused = false
 		
-	cfc.remove_ongoing_process(self)	
+	cfc.remove_ongoing_process(self)
+	if alternate_cost:
+		return {"alternate_cost": alternate_cost}	
 	return(selected_cards)
 
 

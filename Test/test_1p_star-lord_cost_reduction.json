@@ -1,0 +1,126 @@
+{
+	"_comments": "Automated Test for Star-Lord",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Star-Lord"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Star-Lord",
+					"tokens": {"_what_could_go_wrong": 1}
+				}
+			],
+			"upgrade_support1": [
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [
+			],
+			"hand1": [
+				{
+					"card": "Combat Training"
+				}				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "combat training"
+		},
+		{
+			"type": "select",
+			"value": "Star-Lord"
+		}		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Star-Lord"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Star-Lord",
+				}
+			],
+			"encounters_facedown1": [
+				{
+					"card": "Hydra Mercenary"
+				}			
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [
+			],
+			"hand1": [
+				
+			]
+		}
+	}
+}

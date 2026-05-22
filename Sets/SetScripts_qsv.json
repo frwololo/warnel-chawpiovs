@@ -1,0 +1,1233 @@
+{
+	"Accelerated Reflex": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"trigger": "Quicksilver",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Adrenaline Rush": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "phase_ended",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "my_hero",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Always Be Running": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "ready_card",
+					"is_cost": true,
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Armored Vest": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero_any": 1
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_to_player_zone",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities",
+							"filter_max_per_hero": 1
+						}
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Avalanche": {
+		"incite": {
+			"__amount__": 2
+		},
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"2 Indirect Damage": [
+					{
+						"name": "indirect_damage",
+						"subject": "my_identity",
+						"amount": 2
+					}
+				],
+				"Exhaust your Identity": [
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity"
+					}
+				]
+			}
+		}
+	},
+	"Beat 'Em Up": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies_my_hero"
+						},
+						{
+							"filter_properties": {
+								"type_code": "villain"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Brute Force": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "my_hero",
+					"alteration": 1
+				}
+			]
+		},
+		"attacks_gain": {
+			"__trigger__": "my_hero",
+			"__tags__": "piercing"
+		},
+		"basic_attack_happened": {
+			"trigger": "my_hero",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Civic Duty": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "phase_ended",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"trigger": "my_hero",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Double Time": {
+		"manual": {
+			"hand": {
+				"2 Damage, 2 Damage": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "deal_damage",
+						"amount": 2,
+						"subject": "target",
+						"filter_state_subject": [
+							{
+								"filter_group": "group_enemies"
+							}
+						]
+					},
+					{
+						"name": "deal_damage",
+						"amount": 2,
+						"subject": "target",
+						"filter_state_subject": [
+							{
+								"filter_group": "group_enemies"
+							}
+						]
+					}
+				],
+				"2 Damage, 2 Threat": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "deal_damage",
+						"amount": 2,
+						"subject": "target",
+						"filter_state_subject": [
+							{
+								"filter_group": "group_enemies"
+							}
+						]
+					},
+					{
+						"name": "remove_threat",
+						"amount": 2,
+						"subject": "target",
+						"filter_state_subject": [
+							{
+								"filter_group": "group_schemes"
+							}
+						]
+					}
+				],
+				"2 Threat, 2 Damage": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "remove_threat",
+						"amount": 2,
+						"subject": "target",
+						"filter_state_subject": [
+							{
+								"filter_group": "group_schemes"
+							}
+						]
+					},
+					{
+						"name": "deal_damage",
+						"amount": 2,
+						"subject": "target",
+						"filter_state_subject": [
+							{
+								"filter_group": "group_enemies"
+							}
+						]
+					}
+				],
+				"2 Threat, 2 Threat": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "remove_threat",
+						"amount": 2,
+						"subject": "target",
+						"filter_state_subject": [
+							{
+								"filter_group": "group_schemes"
+							}
+						]
+					},
+					{
+						"name": "remove_threat",
+						"amount": 2,
+						"subject": "target",
+						"filter_state_subject": [
+							{
+								"filter_group": "group_schemes"
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Earthquake": {
+		"incite": {
+			"__amount__": 1
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_count": "all",
+					"src_container": "hand_my_hero",
+					"needs_selection": true,
+					"selection_count": 2,
+					"selection_type": "equal"
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "my_hero"
+				}
+			]
+		},
+		"boost": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Spend Resources": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"physical": 2
+						},
+						"is_cost": true
+					}
+				],
+				"Exhaust Identity": [
+					{
+						"name": "exhaust_card",
+						"subject": "my_identity",
+						"is_cost": true
+					}
+				]
+			}
+		}
+	},
+	"Extortion of Seismic Proportion": {
+		"incite": {
+			"__amount__": 1
+		}
+	},
+	"Friction Resistance": {
+		"card_readied": {
+			"trigger": "Quicksilver",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "ready_card",
+					"subject": "self",
+					"is_cost": true
+				}
+			]
+		},
+		"resource": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "physical"
+				}
+			]
+		}
+	},
+	"Hyper Perception": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"trigger": "Quicksilver",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Maximum Velocity": {
+		"TODO": "max 1 per phase",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "round_ended",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "my_hero",
+									"alteration": 2
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"trigger": "my_hero",
+									"alteration": 2
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "defense",
+									"trigger": "my_hero",
+									"alteration": 2
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Multiple Man - Jamie Madrox": {
+		"self_moved_to_board": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"hand",
+						"deck"
+					],
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Multiple Man"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Need for Speed": {
+		"give_obligation": {
+			"__to__": "Pietro Maximoff"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Flip then Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity",
+						"_comments": "we need to exhaust before changing form here due to a bug"
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "self"
+					}
+				],
+				"Flip then exhaust": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity"
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "add_script",
+						"subject": "my_identity",
+						"end_condition": {
+							"trigger": "phase_ended",
+							"event_filters": {
+								"phase": "player_phase"
+							}
+						},
+						"script": {
+							"alterants": {
+								"all": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "cannot_ready",
+										"trigger": "self",
+										"alteration": 1
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				],
+				"Exhaust": [
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity"
+					},
+					{
+						"name": "add_script",
+						"subject": "my_identity",
+						"end_condition": {
+							"trigger": "phase_ended",
+							"event_filters": {
+								"phase": "player_phase"
+							}
+						},
+						"script": {
+							"alterants": {
+								"all": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "cannot_ready",
+										"trigger": "self",
+										"alteration": 1
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Nerves of Steel": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero_any": 1
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_to_player_zone",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities",
+							"filter_max_per_hero": 1
+						}
+					]
+				}
+			]
+		},
+		"resource": {
+			"board": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "event"
+							},
+							"filter_properties": {
+								"trait_defense": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "energy"
+				}
+			]
+		}
+	},
+	"Never Back Down": {
+		"interrupt": {
+			"event_name": "enemy_attack_damage",
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "set_defender",
+					"is_cost": true,
+					"subject": "my_hero",
+					"_comments": "set_defender here has a double role, 1) sets my_hero as a defender if not already the case, 2) because it is a cost, it will fail if there is already a different defender chosen"
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "enemy_activation_finished",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "defense",
+									"trigger": "my_hero",
+									"alteration": 2
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"if_no_damage": [
+							{
+								"name": "mod_tokens",
+								"token_name": "stunned",
+								"modification": 1,
+								"subject": "trigger"
+							}
+						]
+					}
+				}
+			]
+		}
+	},
+	"Order and Chaos": {
+		"interrupt": {
+			"event_name": "reveal_encounter",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "treachery"
+					}
+				}
+			],
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					],
+					"team_up": [
+						"Quicksilver",
+						"Scarlet Witch"
+					]
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Pietro Maximoff": {
+		"once_per_round": {
+			"__name__": "__superpowered_siblings"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "__superpowered_siblings",
+					"modification": -1,
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"src_container": "hand",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 2,
+					"selection_type": "equal",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": {
+						"if": {
+							"func_name": "card_is_in_play",
+							"func_params": {
+								"card_name": "Wanda Maximoff"
+							}
+						},
+						"then": 3,
+						"else": 2
+					}
+				}
+			]
+		}
+	},
+	"Quicksilver": {
+		"once_per_phase": {
+			"__name__": "__super_speed"
+		},
+		"attack_happened": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "__super_speed",
+					"modification": -1,
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "ready_card",
+					"subject": "self"
+				}
+			]
+		},
+		"thwart_happened": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "__super_speed",
+					"modification": -1,
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "ready_card",
+					"subject": "self"
+				}
+			]
+		},
+		"defense_happened": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "__super_speed",
+					"modification": -1,
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "ready_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Reinforced Sinew": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "Quicksilver",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Scarlet Witch - Wanda Maximoff": {
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack",
+					"basic power"
+				]
+			},
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "discard",
+					"src_container": "deck_villain",
+					"subject_count": 1,
+					"subject": "index",
+					"subject_index": "top"
+				},
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					}
+				}
+			]
+		},
+		"interrupt_remove_threat": {
+			"event_filters": {
+				"tags": [
+					"scheme",
+					"basic power"
+				]
+			},
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "discard",
+					"src_container": "deck_villain",
+					"subject_count": 1,
+					"subject": "index",
+					"subject_index": "top"
+				},
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					}
+				}
+			]
+		}
+	},
+	"Sense of Justice": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero_any": 1
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_to_player_zone",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities",
+							"filter_max_per_hero": 1
+						}
+					]
+				}
+			]
+		},
+		"resource": {
+			"board": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "event"
+							},
+							"filter_properties": {
+								"trait_thwart": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "energy"
+				}
+			]
+		}
+	},
+	"Serval Industries": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "shuffle_card_into_containers",
+					"subject": "tutor",
+					"src_container": "discard",
+					"dest_container": "deck",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 2,
+					"selection_type": "max",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "qsv"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Side Step": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "my_hero",
+				"amount": ">0"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "prevent",
+					"amount": 3,
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "deal_damage",
+					"amount": {
+						"func_name": "paid_with_includes",
+						"func_params": {
+							"mental": 1
+						}
+					},
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Speed Cyclone": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"need_selection": true,
+					"selection_count": "max",
+					"selection_count": {
+						"func_name": "count_paid_resources"
+					},
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"United We Stand": {
+		"manual": {
+			"condition_hand": {
+				"func_name": "identity_has_trait",
+				"func_params": {
+					"trait": "avenger"
+				}
+			},
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "heal",
+					"amount": 1,
+					"needs_selection": true,
+					"selection_count": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "villain",
+							"property": "stage_int",
+							"max": 3
+						}
+					},
+					"selection_type": "max",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_subject": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Vibration Resistance": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Avalanche",
+					"is_cost": true
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "villain",
+					"is_else": true
+				}
+			]
+		},
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"target": "host",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": 1,
+					"subject": "interrupted_event"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "my_hero"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Warlock": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "heal",
+					"amount": 2,
+					"subject": "self"
+				}
+			]
+		}
+	}
+}

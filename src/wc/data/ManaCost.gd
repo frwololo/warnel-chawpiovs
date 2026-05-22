@@ -3,6 +3,7 @@ class_name ManaCost
 extends Reference
 
 var force_printed_cost = false
+var is_cost_reduction = false
 var type_constraint = TYPE_CONSTRAINT.NONE
 
 enum TYPE_CONSTRAINT {
@@ -60,6 +61,9 @@ func converted_mana_cost() -> int:
 	var total = 0
 	for k in ResourceMana.values():
 		total += pool[k]
+	
+	if is_cost_reduction:
+		return -total
 	return total	
 
 func get_normalized_type(type):
@@ -124,6 +128,8 @@ func init_from_expression(expression):
 func init_from_dictionary(dict:Dictionary):
 	for k in dict.keys():
 		match k:
+			"is_cost_reduction":
+				is_cost_reduction = dict[k]			
 			"force_printed_cost":
 				force_printed_cost = dict[k]
 			"type_constraint":

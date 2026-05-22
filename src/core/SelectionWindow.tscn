@@ -78,6 +78,15 @@ rect_min_size = Vector2( 250, 0 )
 text = "Cancel"
 icon = ExtResource( 2 )
 
+[node name="alternate_ok" type="Button" parent="Panel/Margin/VBoxContainer/buttons"]
+unique_name_in_owner = true
+visible = false
+margin_left = 35.0
+margin_right = 89.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 250, 0 )
+text = "Cancel"
+
 [node name="Tween" type="Tween" parent="."]
 unique_name_in_owner = true
 

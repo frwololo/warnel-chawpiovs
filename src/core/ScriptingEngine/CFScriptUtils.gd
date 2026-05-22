@@ -11,6 +11,7 @@ const _alteration_super_cache := {
 	"properties": {},
 	"wildcard_properties" : {},
 	"container_names": [],
+	"has_script_alterants": false,
 	"initialized": false
 }
 
@@ -36,11 +37,17 @@ static func find_all_values_by_key(container, target_key: String) -> Array:
 
 	return results
 
+static func game_has_script_alterants():
+	if !_alteration_super_cache["initialized"]:
+		return {}
+	return _alteration_super_cache["has_script_alterants"]
+
 static func init_alterants_super_cache():
 	_alteration_super_cache["properties"] = {}
 	_alteration_super_cache["wildcard_properties"] = {}
 	_alteration_super_cache["container_names"] = []
-	
+	_alteration_super_cache["has_script_alterants"] = false
+		
 	var scriptables_array :Array =\
 		cfc.get_tree().get_nodes_in_group("scriptables")
 	
@@ -49,6 +56,9 @@ static func init_alterants_super_cache():
 	
 	for obj in scriptables_array:
 		var all_scripts = obj.retrieve_all_scripts()
+		if all_scripts.has("script_alterants"):
+			_alteration_super_cache["has_script_alterants"] = true
+			
 		var altered_properties = find_all_values_by_key(all_scripts, "filter_property_name")
 		for property in altered_properties:
 			if property.ends_with("*"):

@@ -21,6 +21,7 @@ var _check_play_costs_cache: Dictionary = {}
 var _cache_resource_value: = {}
 var _cache_refresh_needed:= false
 var _cached_all_traits = null
+var _script_alter_cache := {}
 
 var _on_ready_load_from_json:Dictionary = {}
 
@@ -200,6 +201,7 @@ func refresh_cache(forced=false):
 	side_icons.update_state(true)
 	_cache_refresh_needed = false
 	_cached_all_traits = null
+	_script_alter_cache = {}
 
 func get_all_traits() -> Dictionary:
 	if _cached_all_traits == null:
@@ -1134,11 +1136,62 @@ func execute_scripts_no_stack(
 	new_trigger_details["use_stack"] = false
 	return execute_scripts(trigger_card, trigger, new_trigger_details, run_type)	
 
+
+func retrieve_altered_scripts(trigger: String, filters := {}):
+	var alterant_cache_key = {
+		"trigger": trigger,
+		"filters": filters,
+	}.hash()	
+	
+	if _script_alter_cache.has(alterant_cache_key):
+		return _script_alter_cache[alterant_cache_key]
+	
+	var scriptables_array :Array =\
+		cfc.get_tree().get_nodes_in_group("scriptables")
+		
+	scriptables_array +=\
+			cfc.get_tree().get_nodes_in_group("cards")
+		
+	#remove duplicates
+	var unique:= {}
+	for key in scriptables_array:
+		unique[key] = true
+	scriptables_array = unique.keys()
+	
+	var result = {}
+		
+	for obj in scriptables_array:			
+		var scripts = obj.retrieve_scripts("script_alterants")
+		if !scripts:
+			continue
+		# We select which scripts to run from the card, based on it state
+		var any_state_scripts = scripts.get('all', [])
+		var state_scripts = scripts.get(obj.get_state_exec(), any_state_scripts)			
+
+		for script in state_scripts:
+			if not SP.filter_trigger(
+				script,
+				self,
+				obj,
+				{}):
+				continue
+			#this card is considered a valid target for alteration by obj
+			result = WCUtils.merge_dict(result, script.get("script", {}), true)
+	
+	result = result.get(trigger, {})
+	_script_alter_cache[alterant_cache_key] = result
+	return 	_script_alter_cache[alterant_cache_key]
+
 func retrieve_scripts(trigger: String, filters := {}) -> Dictionary:
-	if self.get_property("blank_abilities", 0, true):
+	if self.is_onboard() && self.get_property("blank_abilities", 0, true):
 		return {}
 	
-	var result =  .retrieve_scripts(trigger, filters)
+	var result = .retrieve_scripts(trigger, filters)
+	
+	if CFScriptUtils.game_has_script_alterants() and (trigger != "script_alterants"): #avoiding an infinite loop
+		var altered_results = retrieve_altered_scripts(trigger, filters)
+		if altered_results:
+			result = WCUtils.merge_dict(result, altered_results.duplicate(), true)
 	
 	if !result:
 		return result
@@ -1828,6 +1881,7 @@ func readyme(toggle := false,
 	var retcode = set_card_rotation(rot, toggle, start_tween, check, tags)
 	if !check and retcode != CFConst.ReturnCode.FAILED:
 		_is_exhausted = false
+		#scripting_bus.emit_signal_on_stack("card_readied", self, {})
 	return retcode
 	
 func exhaustme(toggle := false,
@@ -1847,6 +1901,7 @@ func exhaustme(toggle := false,
 	var retcode = set_card_rotation(rot, toggle, start_tween, check, tags)
 	if !check and retcode != CFConst.ReturnCode.FAILED:
 		_is_exhausted = true
+		scripting_bus.emit_signal_on_stack("card_exhausted", self, {})
 	return retcode	
 
 func is_ready() :
@@ -2112,7 +2167,6 @@ func check_play_costs(params:Dictionary = {}, _debug = false) -> Color:
 # the first time
 #
 # Used to hijack the scripts at runtime if needed
-# Current use case: check manapool before asking to pay for cards
 func common_pre_run(sceng) -> void:
 	var trigger_details = sceng.trigger_details
 	
@@ -2185,11 +2239,7 @@ func common_pre_run(sceng) -> void:
 		script.script_definition = script_definition
 				
 		match script_definition["name"]:
-			# To pay for cards: We check if the manapool has some mana
-			# If so, use that in "priority" and reduce the actual cost of the card
-			# We then replace the "pay" trigger with a combination of
-			# 1) discard the appropriate number of cards from hand (minored by what's available in manapool)
-			# 2) empty the manapool
+			# To pay for cards:
 			"pay_cost",\
 			"pay_regular_cost":
 				var new_script = pay_regular_cost_replacement(script, trigger_details)
@@ -2416,7 +2466,7 @@ func pay_regular_cost_replacement(script, trigger_details) -> Dictionary:
 	var resource_containers = []
 	for v in resource_container_names:
 		resource_containers.append(v + str(owner_hero_id) )
-		
+			
 	var result  ={
 				"name": "pay_as_resource",
 				"is_cost": true,
@@ -2432,6 +2482,10 @@ func pay_regular_cost_replacement(script, trigger_details) -> Dictionary:
 				"selection_additional_constraints": selection_additional_constraints,
 				"src_container": resource_containers
 			}		
+
+	var alternative_payment = retrieve_scripts(script_definition["name"] + "_alternative")
+	if alternative_payment:
+		result["alternative_ok"] = alternative_payment
 
 	return result	
 
@@ -2814,7 +2868,7 @@ func check_validity(params, script:ScriptObject= null) -> int:
 		return 1	
 	return 0 
 
-func get_stage_level(params = {}, script:ScriptTask = null) -> int:
+func get_stage_level(params = {}, script:ScriptObject  = null) -> int:
 	var subject = get_param_subject(params, script)
 						
 	if !subject:
@@ -2822,7 +2876,7 @@ func get_stage_level(params = {}, script:ScriptTask = null) -> int:
 	
 	return subject.get_property("stage_int", 0)
 	
-func count_attachments(params = {}, script:ScriptTask = null) -> int:
+func count_attachments(params = {}, script:ScriptObject = null) -> int:
 	var subjects = [self]
 
 	if script:
@@ -2886,7 +2940,7 @@ func get_param_subjects(params, script:ScriptObject = null):
 		return new_subjects
 	return subjects		
 
-func is_first_player(params = {}, script:ScriptTask = null):
+func is_first_player(params = {}, script:ScriptObject = null):
 	var subject = get_param_subject(params, script)
 	if !subject:
 		return false
@@ -2896,7 +2950,7 @@ func is_first_player(params = {}, script:ScriptTask = null):
 		return 1
 	return 0
 
-func is_encounter(params = {}, script:ScriptTask = null):
+func is_encounter(params = {}, script:ScriptObject = null):
 	var subject = get_param_subject(params, script)
 	if !subject:
 		return false
@@ -2904,7 +2958,7 @@ func is_encounter(params = {}, script:ScriptTask = null):
 	var type = subject.get_property("type_code", "")
 	return type in CFConst.ENCOUNTER_CARD_TYPES
 
-func count_unique_property_value(params, script:ScriptTask = null) -> int:
+func count_unique_property_value(params, script:ScriptObject = null) -> int:
 	var subjects = get_param_subjects(params, script)
 	
 	var property = params.get("property", "")

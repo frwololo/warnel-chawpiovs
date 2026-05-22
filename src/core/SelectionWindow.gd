@@ -15,6 +15,7 @@ export(PackedScene) var grid_card_object_scene := _GRID_CARD_OBJECT_SCENE
 export(PackedScene) var info_panel_scene := _INFO_PANEL_SCENE
 
 var selected_cards := []
+var alternate_cost_chosen = null
 var selection_count : int
 
 #accepted values:
@@ -29,6 +30,7 @@ var is_selection_optional: bool
 var is_cancelled := false
 var _card_dupe_map := {}
 var what_to_count = null
+var alternative_ok:= {}
 var selection_additional_constraints = null
 var my_script
 var card_array
@@ -40,6 +42,7 @@ var can_select_cards_with_zero_value: = false
 onready var _card_grid = get_node("%GridContainer")
 onready var _tween = get_node("%Tween")
 onready var cancel_button:Button = get_node("%cancel")
+onready var third_button:Button = get_node("%alternate_ok")
 
 var _assign_mode := false
 var _assign_max_function := ""
@@ -62,15 +65,16 @@ func init(
 		var to_exclude = _script.get_property("subject_exclude", null)
 		if to_exclude:
 			exclude_subjects = _script._local_find_subjects(stored_integer, CFInt.RunType.NORMAL, {"subject" : to_exclude, "subject_exclude" : ""})
-
 	else:
 		selection_count = ScriptObject.get_int_value(params.get(SP.KEY_SELECTION_COUNT,0), stored_integer)
+
 	selection_type = params.get(SP.KEY_SELECTION_TYPE, "min")
 	is_selection_optional = params.get(SP.KEY_SELECTION_OPTIONAL, false)
 	what_to_count = params.get(SP.KEY_SELECTION_WHAT_TO_COUNT, "")
 	show_cards_with_zero_value = params.get("selection_show_cards_with_zero_value", false)
 	selection_additional_constraints = params.get("selection_additional_constraints", {})
 	hide_ok_on_zero = params.get("hide_ok_on_zero", false)	
+	alternative_ok = params.get("alternative_ok", {})
 
 
 
@@ -280,6 +284,15 @@ func add_cancel(text) -> Button:
 	cancel_button.connect("pressed",self, "_on_cancel_pressed")	
 	return cancel_button
 
+func add_third_button(text) -> Button:
+	if third_button.visible:
+		return third_button
+	third_button.text = text
+	third_button.visible = true
+	# warning-ignore:return_value_discarded
+	third_button.connect("pressed",self, "_on_alternate_ok_pressed")	
+	return third_button
+
 func get_ok():
 	return get_node("%ok")
 	
@@ -290,16 +303,22 @@ func post_initiate_checks():
 	if is_selection_optional:	
 		var _button = add_cancel("Cancel")
 
+	if alternative_ok:
+		for key in alternative_ok:
+			if can_pay_alternative_cost():
+				var new_button = add_third_button(key)
+				set_window_title()
+				return
 		
 	# If the amount of cards available for the choice are below the requirements
 	# We return that the selection was canceled
-	if get_count(card_array) < selection_count\
+	if get_count(card_array) < get_selection_count()\
 			and selection_type in ["equal", "min"]:
 		force_cancel()
 		return
 	# If the selection count is 0 (e.g. reduced with an alterant)
 	# And we're looking for max or equal amount of cards, we return cancelled.
-	elif selection_count == 0:
+	elif get_selection_count() == 0:
 		if selection_type in ["equal", "max", "as_much_as_possible"]:
 			force_cancel()
 			return
@@ -309,7 +328,7 @@ func post_initiate_checks():
 			return			
 
 	# When we have 0 cards to select from, we consider the selection cancelled
-	elif get_count(card_array) == 0 and selection_count:
+	elif get_count(card_array) == 0 and get_selection_count():
 			#if show_cards_with_zero_value is set to true we want to show the selection even if there is nothing to choose from,
 			#so that the player can see that they fetched nothing (e.g. Jessica Drew's Apartment, Hawkeye's Quiver)
 			if (!show_cards_with_zero_value) and (!_assign_mode):
@@ -326,12 +345,15 @@ func post_initiate_checks():
 	# If the amount of cards available for the choice are exactly the requirements
 	# And we're looking for equal or minimum amount
 	# We immediately return what is there.
-	if get_count(card_array) == selection_count\
+	if get_count(card_array) == get_selection_count()\
 			and selection_type in ["equal", "min"]:
 		selected_cards = card_array
 		emit_signal("confirmed")
 		return
 	
+	set_window_title()
+
+func set_window_title():
 	match selection_type:
 		"min":
 			window_title = "Select at least " + str(selection_count) + " cards."
@@ -352,7 +374,7 @@ func post_initiate_checks():
 	if (my_script):
 		window_title = cfc.enrich_window_title(self, my_script, window_title)
 
-	get_node("%Title").text = window_title
+	get_node("%Title").text = window_title	
 
 
 func additional_constraints_to_text():
@@ -403,22 +425,22 @@ func check_ok_button() -> bool:
 	else:
 		match selection_type:
 			"min":
-				if current_count < selection_count:
+				if current_count < get_selection_count(selected_cards):
 					get_ok().disabled = true
 				else:
 					get_ok().disabled = false
 			"equal":
-				if current_count != selection_count:
+				if current_count != get_selection_count(selected_cards):
 					get_ok().disabled = true
 				else:
 					get_ok().disabled = false
 			"max":
-				if current_count > selection_count:
+				if current_count > get_selection_count(selected_cards):
 					get_ok().disabled = true
 				else:
 					get_ok().disabled = false
 			"as_much_as_possible":
-				if (current_count < selection_count and can_still_select_more()):
+				if (current_count < get_selection_count(selected_cards) and can_still_select_more()):
 					get_ok().disabled = true
 				else:
 					get_ok().disabled = false
@@ -443,7 +465,7 @@ func can_still_select_more() -> bool :
 	
 	if _assign_mode:	
 		var current_count = get_count(card_array)
-		if current_count >= selection_count:
+		if current_count >= get_selection_count():
 			return false
 		
 		for card in card_array:
@@ -463,6 +485,20 @@ func can_still_select_more() -> bool :
 	return false			
 
 var _cache_count_per_card = {}
+var _selection_modifier_per_card = {}
+func get_selection_count(selected_card_array: Array = []):
+	if !selected_card_array and is_instance_valid(self.card_array):
+		selected_card_array = self.card_array
+		
+	var result = selection_count
+	for card in selected_card_array:
+		result -= _selection_modifier_per_card.get(card, 0)
+	
+	if result < 0:
+		result = 0
+	return result
+
+
 func get_count(the_card_array: Array) -> int:
 	var _card_array = []
 	for card in the_card_array:
@@ -485,7 +521,13 @@ func get_count(the_card_array: Array) -> int:
 				for card in _card_array:
 					if card and is_instance_valid(card):
 						if !_cache_count_per_card.has(card):
-							_cache_count_per_card[card] =  card.call(func_name, my_script)
+							var tmp_result =  card.call(func_name, my_script)
+							#as a convention, negative numbers in this case are a cost reduction
+							if tmp_result >= 0:
+								_cache_count_per_card[card] = tmp_result
+							else:
+								_cache_count_per_card[card] = 0
+								_selection_modifier_per_card[card] = tmp_result
 						total = total + _cache_count_per_card[card]
 				return total
 	elif typeof(what_to_count) == TYPE_DICTIONARY and what_to_count.has("func_name"):
@@ -505,28 +547,69 @@ func get_count(the_card_array: Array) -> int:
 	
 	return 0		
 
+var _can_pay_alternative_cost_cache = {}
+func can_pay_alternative_cost():
+	if !alternative_ok:
+		return false
+	if _can_pay_alternative_cost_cache:
+		return _can_pay_alternative_cost_cache["result"]
+	
+	var state_scripts = []
+	for key in alternative_ok:
+		state_scripts = alternative_ok[key]
+	
+	var trigger_card = my_script.owner
+	
+	var sceng = cfc.scripting_engine.new(
+		state_scripts,
+			trigger_card,
+			trigger_card,
+			{})	
+			
+	trigger_card.common_pre_run(sceng)
+		
+	var func_return = sceng.execute(CFInt.RunType.BACKGROUND_COST_CHECK)
+	while func_return is GDScriptFunctionState && func_return.is_valid():
+		func_return = func_return.resume()	
+		
+	_can_pay_alternative_cost_cache["result"] =  sceng.can_all_costs_be_paid		
+	
+	return _can_pay_alternative_cost_cache["result"]
+
+func get_chosen_alternate_cost():
+	for key in alternative_ok:
+		return alternative_ok[key]
+	return []
+	
 #Returns arbitrary (valid) targets for the purpose of cost check
 func dry_run(_card_array: Array) -> void:	
 			
 	if (selection_type in ["display"]): #or is_selection_optional
 		force_cancel()
 		return
+	
+	#if there is an alternative cost, need to check it too
+	if can_pay_alternative_cost():
+		alternate_cost_chosen = get_chosen_alternate_cost()
+		emit_signal("confirmed")
+		return
+		
 	# If the amount of cards available for the choice are below the requirements
 	# We return that the selection was canceled
-	if get_count(_card_array) < selection_count\
+	if get_count(_card_array) < get_selection_count()\
 			and selection_type in ["equal", "min"]:
 		force_cancel()
 		return
 	# If the selection count is 0 (e.g. reduced with an alterant)
 	# And we're looking for max or equal amount of cards, we return cancelled.
-	if selection_count == 0\
+	if get_selection_count() == 0\
 			and selection_type in ["equal", "max"]:
 		force_cancel()
 		return
 	# If the amount of cards available for the choice are exactly the requirements
 	# And we're looking for equal or minimum amount
 	# We immediately select
-	if get_count(_card_array) == selection_count\
+	if get_count(_card_array) == get_selection_count()\
 			and selection_type in ["equal", "min"]:
 		selected_cards = _card_array
 		
@@ -535,7 +618,7 @@ func dry_run(_card_array: Array) -> void:
 
 	# When we have 0 cards to select from, we consider the selection cancelled
 	if get_count(_card_array) == 0\
-			and !_assign_mode and selection_count >0:
+			and !_assign_mode and get_selection_count() >0:
 		force_cancel()
 		return
 	
@@ -545,7 +628,7 @@ func dry_run(_card_array: Array) -> void:
 			"min":
 				var total = 0
 				var i = 0
-				while total < selection_count and i < _card_array.size():
+				while total < get_selection_count(selected_cards) and i < _card_array.size():
 					selected_cards.append(_card_array[i])
 					total = get_count(selected_cards)
 					i += 1
@@ -554,14 +637,14 @@ func dry_run(_card_array: Array) -> void:
 			"equal":
 				var total = 0
 				var i = 0
-				while total < selection_count and i < _card_array.size():
+				while total < get_selection_count(selected_cards) and i < _card_array.size():
 					selected_cards.append(_card_array[i])
 					total = get_count(selected_cards)
 					i += 1			
 					#TODO we might have an error here where we don't get the exact number if we add 2 or more in one step
 			"as_much_as_possible":
 				if _assign_mode:
-					var remaining = selection_count
+					var remaining = get_selection_count()
 					for card in _card_array:
 						var can_assign = card.call(_assign_max_function)
 						if can_assign > remaining:
@@ -574,7 +657,7 @@ func dry_run(_card_array: Array) -> void:
 				else:
 					var total = 0
 					var i = 0
-					while total < selection_count and i < _card_array.size():
+					while total < get_selection_count() and i < _card_array.size():
 						selected_cards.append(_card_array[i])
 						total = get_count(selected_cards)
 						i += 1	
@@ -605,8 +688,8 @@ func _extra_dupe_ready(_dupe_selection: Card, _card: Card) -> void:
 func spinbox_value_changed( new_value,  dupe_selection: Card, origin_card) -> void:
 	var current_total = get_count(card_array)
 	#we added too much, this is a problem in general. set the value again and let it call us back
-	if current_total > selection_count and selection_type in ["max", "equal", "as_much_as_possible"]:
-		var diff = current_total - selection_count
+	if current_total > get_selection_count() and selection_type in ["max", "equal", "as_much_as_possible"]:
+		var diff = current_total - get_selection_count()
 		var spinbox = dupe_selection.get_spinbox()
 		spinbox.value -= diff
 		return
@@ -631,7 +714,7 @@ func card_clicked(dupe_selection: Card, origin_card) -> void:
 	if selection_type == "as_much_as_possible" and _assign_mode:
 		var current_total = get_count(card_array)
 		var spinbox = dupe_selection.get_spinbox()
-		if current_total >= selection_count:
+		if current_total >= get_selection_count():
 			#we're already at max, go back to zero
 			spinbox.set_value(0)
 		else:
@@ -653,7 +736,7 @@ func card_clicked(dupe_selection: Card, origin_card) -> void:
 	# the max, even if the OK button is disabled
 	# So whenever they exceed the max, we unselect the first card in the array.
 	#TODO should use get_count
-	if selection_type in ["equal", "max", "as_much_as_possible"]  and selected_cards.size() > selection_count:
+	if selection_type in ["equal", "max", "as_much_as_possible"]  and selected_cards.size() > get_selection_count():
 		var dupe = _card_dupe_map[selected_cards[0]]
 		dupe.highlight.set_highlight(false)
 		dupe.get_parent().set_selected(false)
@@ -737,7 +820,7 @@ func _on_card_selection_confirmed() -> void:
 	scripting_bus.emit_signal(
 			"card_selected",
 			self,
-			{"selected_cards": selected_cards}
+			{"selected_cards": selected_cards, "alternate_cost_chosen": alternate_cost_chosen}
 	)
 
 func _on_ok_pressed() -> void:
@@ -753,6 +836,10 @@ func _on_ok_pressed() -> void:
 	
 	emit_signal("confirmed")
 
+func _on_alternate_ok_pressed() -> void:
+	selected_cards = []
+	alternate_cost_chosen = get_chosen_alternate_cost()
+	emit_signal("confirmed")
 
 func _input(event):	
 	if gamepadHandler.is_ui_cancel_pressed(event):

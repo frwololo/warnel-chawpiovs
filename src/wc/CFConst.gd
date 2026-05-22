@@ -843,6 +843,8 @@ const DEFAULT_SETTINGS:= {
 	'database': {
 #cycle 1	
 		"core": "https://marvelcdb.com/api/public/cards/core.json", #Core Box
+#		"gob": "https://marvelcdb.com/api/public/cards/gob.json", #Green Goblin Scenario Pack	
+#		"twc": "https://marvelcdb.com/api/public/cards/twc.json", #The Wrecking Crew Scenario Pack
 		"cap" : "https://marvelcdb.com/api/public/cards/cap.json", #Captain America Hero Pack
 		"msm" : "https://marvelcdb.com/api/public/cards/msm.json", #Ms Marvel Hero Pack
 		"thor" : "https://marvelcdb.com/api/public/cards/thor.json", #Thor Hero Pack
@@ -851,15 +853,70 @@ const DEFAULT_SETTINGS:= {
 		"hlk" : "https://marvelcdb.com/api/public/cards/hlk.json", #Hulk Hero Pack
 #cycle 2
 		"trors" : "https://marvelcdb.com/api/public/cards/trors.json", #The Rise of Red Skull Expansion Box
-		"ant" : "https://marvelcdb.com/api/public/cards/ant.json", #Ant-Man Hero Pack		
+#		"toafk": "https://marvelcdb.com/api/public/cards/toafk.json", #The Once and Future Kang Scenario Pack
+		"ant" : "https://marvelcdb.com/api/public/cards/ant.json", #Ant-Man Hero Pack
+		"wsp" : "https://marvelcdb.com/api/public/cards/wsp.json", #Wasp Hero Pack
+		"qsv" : "https://marvelcdb.com/api/public/cards/qsv.json", #Quicksilver Hero Pack						
+#		"scw": "https://marvelcdb.com/api/public/cards/scw.json", #Scarlet Witch Hero Pack
 #cycle 3		
 		"gmw" : "https://marvelcdb.com/api/public/cards/gmw.json", #Galaxy's Most Wanted Expansion Box				
+		"stld" : "https://marvelcdb.com/api/public/cards/stld.json", #Star-Lord Hero Pack
+#		"gam": "https://marvelcdb.com/api/public/cards/gam.json", #Gamora Hero Pack	
+#		"drax": "https://marvelcdb.com/api/public/cards/drax.json", #Drax Hero Pack	
+#		"vnm": "https://marvelcdb.com/api/public/cards/vnm.json", #Venom Hero Pack
 #cycle 4
 		"mts" : "https://marvelcdb.com/api/public/cards/mts.json", #Mad Titan's Shadow Expansion Box
+#		"nebu": "https://marvelcdb.com/api/public/cards/nebu.json", #Nebula Hero Pack	
 		"warm" : "https://marvelcdb.com/api/public/cards/warm.json", #War Machine Hero Pack
-
+#		"hood": "https://marvelcdb.com/api/public/cards/hood.json", #The Hood scenario pack	
+#		"valk": "https://marvelcdb.com/api/public/cards/valk.json", #Valkyrie Hero Pack	
+#		"vision": "https://marvelcdb.com/api/public/cards/vision.json", #Vision Hero Pack	
 #cycle 5
 		"sm" : "https://marvelcdb.com/api/public/cards/sm.json", #Sinister Motives Expansion Box				
+#		"nova": "https://marvelcdb.com/api/public/cards/nova.json", #Nova Hero Pack	
+#		"ironheart": "https://marvelcdb.com/api/public/cards/ironheart.json", #Ironheart Hero Pack	
+#		"spiderham": "https://marvelcdb.com/api/public/cards/spiderham.json", #Spiderham Hero Pack	
+#		"spdr": "https://marvelcdb.com/api/public/cards/spdr.json", #SP//DR Hero Pack	
+#cycle 6
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#cycle 7
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#cycle 8
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#cycle 9
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"": "https://marvelcdb.com/api/public/cards/.json", #
+#cycle 10
+#		"": "https://marvelcdb.com/api/public/cards/.json", #
+#		"": "https://marvelcdb.com/api/public/cards/.json", #
+#		"": "https://marvelcdb.com/api/public/cards/.json", #
+#		"": "https://marvelcdb.com/api/public/cards/.json", #
+#cycle 11
+#		"": "https://marvelcdb.com/api/public/cards/.json", #
+#		"": "https://marvelcdb.com/api/public/cards/.json", #
+#		"": "https://marvelcdb.com/api/public/cards/.json", #
+#		"": "https://marvelcdb.com/api/public/cards/.json", #
+#		"": "https://marvelcdb.com/api/public/cards/.json", #
+#		"": "https://marvelcdb.com/api/public/cards/.json", #
 
 	},
 	'lobby_server': {
@@ -939,7 +996,7 @@ const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 const SCRIPT_BREAKPOINT_CARD_NAME := "Avengers Tower"
 const SCRIPT_BREAKPOINT_TRIGGER_NAME := "receive_damage"
 
-const VERSION := "1.3.0"
+const VERSION := "1.4.0"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
 const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 

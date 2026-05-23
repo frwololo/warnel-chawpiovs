@@ -1,0 +1,140 @@
+{
+	"_comments": "Automated Test for Cybernetic Arm #54002",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Winter Soldier"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Winter Soldier"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Cybernetic Arm #54002"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Weapons Runner"
+				}				
+			],
+			"allies1": [
+
+			],
+			"hand1": [
+				{
+					"card": "One by One"
+				},
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "One by One"
+		},
+		{
+			"type": "target",
+			"value": "Armored Guard"
+		},	
+		{
+			"type": "target",
+			"value": "Weapons Runner"
+		},			
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Winter Soldier"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Winter Soldier"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Cybernetic Arm #54002",
+					"exhausted": true
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Weapons Runner"
+				},
+				{
+					"card": "Armored Guard"
+				},				
+			],
+			"allies1": [
+
+			],
+			"discard1": [
+				{
+					"card": "One by One"
+				},
+			]
+		}
+	}
+}

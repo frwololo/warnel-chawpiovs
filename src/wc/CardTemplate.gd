@@ -3228,16 +3228,32 @@ func current_activation_status(params:Dictionary, _script:ScriptTask = null) -> 
 #it would say true to {"mental": 1}, to {"physical" : 2}, or to {"mental" :1, "physical": 1}
 #but false to {"mental": 2}, or {"mental": 1, "wild": 1} 
 func paid_with_includes(params:Dictionary, script:ScriptTask = null) -> bool:
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return false
+		
 	var paid_with = ManaPool.new()
-	for resource in _last_paid_with:
+	for data in subject._last_paid_with:
+		var resource = data.get("resource", "")
 		paid_with.add_manacost(resource)
 
 	var compared_to = ManaCost.new()
 	compared_to.init_from_dictionary(params)
 	
 	var result = paid_with.can_pay_total_cost(compared_to)
-	if result:
+	if !result:
+		return false
+	
+	if !params.has("filter_state_source"):
+		#no additional checks and we passed the rest
 		return true
+	
+	for data in subject._last_paid_with:
+		var source = data["source"]
+		var owner = script.owner if script else subject
+		if SP.check_validity(source, params, "source", owner):
+			return true	
+	
 	return false
 	
 func get_overpaid_amount(params:Dictionary, script:ScriptTask = null) -> int:
@@ -3245,7 +3261,8 @@ func get_overpaid_amount(params:Dictionary, script:ScriptTask = null) -> int:
 		_last_cost = ManaCost.new()
 
 	var paid_with = ManaPool.new()
-	for resource in _last_paid_with:
+	for data in _last_paid_with:
+		var resource = data.get("resource", "")
 		paid_with.add_manacost(resource)
 		
 	var result = paid_with.can_pay_total_cost(_last_cost)
@@ -3259,7 +3276,8 @@ func get_overpaid_amount(params:Dictionary, script:ScriptTask = null) -> int:
 	
 func count_paid_resources(params:Dictionary, script:ScriptTask = null) -> bool:
 	var paid_with = ManaPool.new()
-	for resource in _last_paid_with:
+	for data in _last_paid_with:
+		var resource = data["resource"]
 		paid_with.add_manacost(resource)
 
 	var cost_filters = params.get("filters", {})

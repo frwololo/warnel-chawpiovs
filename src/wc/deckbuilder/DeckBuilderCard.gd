@@ -79,6 +79,9 @@ func gain_focus():
 func lose_focus():
 	main_scene.hide_preview(self)
 
+func get_property(property: String, default = null, _force_alterant_check = false):
+	return properties.get(property, default)
+
 func _class_specific_ready():
 	._class_specific_ready()
 	for container in [self, self._control]:

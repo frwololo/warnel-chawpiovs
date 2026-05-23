@@ -1094,56 +1094,7 @@ func _is_deck_valid(deck) -> bool:
 			return false		
 	return true
 
-func replace_text_macro (replacements, macro_value):
-	if typeof(replacements) != TYPE_DICTIONARY:
-		print_debug("error in macro replacements: " + str(replacements))
-		return {}
-		
-	var text = to_json(macro_value)
-	for key in replacements.keys():
-		var value = replacements[key]
-		var to_replace = key
-		if typeof(value) in [TYPE_REAL,TYPE_INT,TYPE_BOOL]:
-			to_replace = "\"" + key + "\""
-			value = str(value).to_lower()
-		text = text.replace(to_replace, str(value))
-	
-	var result = parse_json(text)
-	if !result:
-		var _error = 1
-	return result
 
-func replace_one_macro(script_definition, macro_key, macro_value):
-	var result = null
-	match typeof(script_definition):
-		TYPE_DICTIONARY:
-			result = {}	
-			for key in script_definition.keys():
-				if (key == macro_key):
-					var replacements = script_definition[key]
-					var dict = replace_text_macro(replacements, macro_value)
-					for replaced_key in dict.keys():
-						result[replaced_key] = dict[replaced_key]
-						if typeof(result[replaced_key]) == TYPE_DICTIONARY:
-							result[replaced_key]["macro_name"] = macro_key
-						else:
-							result["macro_name"] = macro_key
-				else:
-					result[key] = replace_one_macro(script_definition[key], macro_key, macro_value)
-		TYPE_ARRAY:	
-			result = []
-			for value in script_definition:
-				result.append(replace_one_macro(value, macro_key, macro_value))
-		_:
-			result = script_definition
-	return result;	
-
-func replace_macros(json_card_data, local_macro_data, json_macro_data):
-	var result = json_card_data
-	var macro_data = WCUtils.merge_dict(json_macro_data, local_macro_data)
-	for macro_key in macro_data.keys():
-		result = replace_one_macro(result, macro_key, macro_data[macro_key])
-	return result
 
 
 var cache_toc := {}
@@ -1242,7 +1193,7 @@ func load_script_definitions() -> void:
 			WCUtils.erase_key_recursive(json_card_data, "_comments")
 			var local_macros = json_card_data.get("_macros", {})
 			json_card_data.erase("_macros")
-			json_card_data = replace_macros(json_card_data, local_macros, json_macro_data)
+			json_card_data = WCUtils.replace_macros(json_card_data, local_macros, json_macro_data)
 			
 			#we don't support "response" yet but want to in the future. For now they're just interrupts
 			json_card_data = WCUtils.search_and_replace (json_card_data, "response", "interrupt", true)

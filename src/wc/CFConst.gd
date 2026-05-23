@@ -899,12 +899,12 @@ const DEFAULT_SETTINGS:= {
 #		"": "https://marvelcdb.com/api/public/cards/.json", #	
 #		"": "https://marvelcdb.com/api/public/cards/.json", #	
 #cycle 9
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #
+#		"aos": "https://marvelcdb.com/api/public/cards/aos.json", #Agents of Shield Expansion
+#		"bp": "https://marvelcdb.com/api/public/cards/bp.json", #Black Panther Hero Pack	
+#		"silk": "https://marvelcdb.com/api/public/cards/silk.json", #Silk Hero Pack	
+#		"falcon": "https://marvelcdb.com/api/public/cards/falcon.json", #Falcon Hero Pack	
+		"winter": "https://marvelcdb.com/api/public/cards/winter.json", #Winter Soldier Hero Pack	
+#		"tt": "https://marvelcdb.com/api/public/cards/tt.json", #Trickster Takeover Scenario Pack
 #cycle 10
 #		"": "https://marvelcdb.com/api/public/cards/.json", #
 #		"": "https://marvelcdb.com/api/public/cards/.json", #

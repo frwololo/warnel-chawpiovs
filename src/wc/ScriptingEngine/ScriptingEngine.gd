@@ -38,7 +38,7 @@ func pay_as_resource(script: ScriptTask) -> int:
 		var _tmp = 1
 	for subject in script.subjects:
 		var resource = subject.pay_as_resource(script)
-		resources_paid.append(resource)
+		resources_paid.append({"source": subject, "resource" : resource})
 	
 	#todo compute actual expected cost a bit better
 	var expected_cost:ManaCost = ManaCost.new()
@@ -1673,9 +1673,7 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 				"subjects": [my_hero]
 			}
 			_add_pre_receive_damage_on_stack (overkill_amount, script, script_modifications)
-	
-	#We're done, cleanup attacker script
-	attacker.set_activity_script(null)		
+		
 	return retcode
 
 

@@ -1260,7 +1260,15 @@ func enemy_activates() :
 			var details = {
 				"target" : target_friendly,
 				SP.TRIGGER_TARGET_HERO : target_friendly.canonical_name
-			}				
+			}
+			if is_instance_valid(enemy.activity_script) and enemy.activity_script.subjects:
+				details["defender"] = enemy.activity_script.subjects[0]
+			else:
+				details["defender"] = target_friendly	
+
+			#We're done, cleanup attacker script
+			enemy.set_activity_script(null)					
+									
 			scripting_bus.emit_signal_on_stack("enemy_" + action + "_happened", enemy,  details)
 			#scripting_bus.emit_signal("enemy_" + action + "_happened", enemy, {})
 			return 

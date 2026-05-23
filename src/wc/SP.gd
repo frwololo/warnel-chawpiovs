@@ -324,25 +324,41 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 		else:
 			return false	
 				
-	#check for special guard conditions if card is an attack
-	if ((script_name == "attack") or ("attack" in tags)) and card in gameData.get_villains():
-		var all_cards = cfc.NMAP.board.get_all_cards()
-		if owner_card:		
-			var hero_id = owner_card.get_controller_hero_id()
-			if hero_id:
-				all_cards =  cfc.NMAP.board.get_enemies_engaged_with(hero_id)
-		for other_card in all_cards:
-			if other_card == card:
-				continue
-			if other_card.get_property("guard", 0, true) and other_card.is_faceup: #TODO better way to ignore face down cards?
-				var other_type_code = other_card.get_property("type_code", "")
-				if other_type_code == "villain":
-					#if another villain has "guard" and I don't have it myself,
-					#it means that other villain is protecting me
-					if !card.get_property("guard", 0, true):
+	#check for special conditions if card is an attack
+	if ((script_name == "attack") or ("attack" in tags)):
+		if owner_card:
+			var attacker = owner_card
+			var owner_type = owner_card.get_property("type_code", "")
+			if !owner_type in ["hero", "ally", "minion", "villain"]:
+				attacker = owner_card.get_controller_hero_card()
+				
+			if attacker:
+				#Check for "can only attack this card" restriction (e.g. Encased in Ice)	
+				var can_only_attack =  attacker.get_property("can_only_attack_card", "")
+				if can_only_attack:
+					var valid_targets = _get_subjects_simplified(can_only_attack, attacker)
+					if not card in valid_targets:
 						return false
-				else:
-					return false
+		
+		#check for "Guard" keyword			
+		if card in gameData.get_villains():
+			var all_cards = cfc.NMAP.board.get_all_cards()
+			if owner_card:		
+				var hero_id = owner_card.get_controller_hero_id()
+				if hero_id:
+					all_cards =  cfc.NMAP.board.get_enemies_engaged_with(hero_id)
+			for other_card in all_cards:
+				if other_card == card:
+					continue
+				if other_card.get_property("guard", 0, true) and other_card.is_faceup: #TODO better way to ignore face down cards?
+					var other_type_code = other_card.get_property("type_code", "")
+					if other_type_code == "villain":
+						#if another villain has "guard" and I don't have it myself,
+						#it means that other villain is protecting me
+						if !card.get_property("guard", 0, true):
+							return false
+					else:
+						return false
 
 	#check for special patrol conditions if card is an attack
 	if ((script_name == "thwart") or ("thwart" in tags)):

@@ -50,8 +50,7 @@ static func get_resource_from_keyword (keyword:String):
 	if RESOURCE_TEXT_TO_ENUM.has(key):
 		return RESOURCE_TEXT_TO_ENUM[key]
 	
-	#Failsafe but not great
-	return ResourceMana.UNCOLOR 
+	return -1
 	
 
 var pool := {}
@@ -85,9 +84,13 @@ func set_cost(values:Dictionary):
 	for k in values.keys():
 		pool[k] = values[k]
 
-#_type is either an in or a matching Keyword
+#_type is either an int or a matching Keyword
 func add_resource(_type, amount) :
 	var type = get_normalized_type(_type)
+	if type == -1:
+		return
+	if typeof(amount) != TYPE_INT:
+		return
 	pool[type] += amount
 
 func get_resource(_type) :

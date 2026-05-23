@@ -1,0 +1,163 @@
+{
+	"_comments": "Automated Test for Cosmo #17020",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Star-Lord"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Star-Lord"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Cosmo #17020",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Cosmo"
+		},
+		{
+			"type": "choose",
+			"value": "Attack"
+		},
+		{
+			"type": "target",
+			"value": "Rhino - 1"
+		},
+		{
+			"type": "activate",
+			"value": "Cosmo"
+		},
+		{
+			"type": "choose",
+			"value": "Resource"
+		},
+		{
+			"type": "target",
+			"value": "Energy"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Star-Lord"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Star-Lord"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Cosmo #17020",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

@@ -1,14 +1,220 @@
 {
+	"_macros": {
+		"__cosmo": [
+			{
+				"name": "view_card",
+				"subject": "target",
+				"target_include_piles": true,
+				"target_include_board": false
+			},
+			{
+				"name": "discard",
+				"subject": "previous"
+			},
+			{
+				"name": "prevent",
+				"subject": "interrupted_event",
+				"amount": {
+					"if": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "previous",
+							"property": "type_code",
+							"property_value": "__type_code__"
+						}
+					},
+					"then": "all",
+					"else": 0
+				}
+			}
+		]
+	},
 	"Adam Warlock": {
-		"TODO": "",
 		"response": {
-			"event_name": "TODO",
+			"event_name": [
+				"attack_happened",
+				"thwart_happened"
+			],
+			"trigger": "self",
 			"is_optional_board": true,
-			"board": []
+			"board": [
+				{
+					"name": "discard",
+					"is_cost": true,
+					"subject": "index",
+					"subject_index": "random",
+					"subject_count": 1
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "physical"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "remove_threat",
+									"amount": 3,
+									"subject": "target",
+									"needs_subject": true,
+									"filter_state_subject": [
+										{
+											"filter_group": "group_schemes"
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "energy"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "heal",
+									"amount": 3,
+									"subject": "boardseek",
+									"needs_subject": true,
+									"filter_state_seek": [
+										{
+											"filter_group": "group_identities"
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "mental"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "deal_damage",
+									"amount": 3,
+									"subject": "target",
+									"needs_subject": true,
+									"filter_state_subject": [
+										{
+											"filter_group": "group_enemies"
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "wild"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "sequence",
+									"sequence_ability": "choose_action",
+									"subject": "self"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"choose_action": {
+			"all": {
+				"Remove 3 Threat": [
+					{
+						"name": "remove_threat",
+						"amount": 3,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_schemes"
+							}
+						]
+					}
+				],
+				"Heal 3": [
+					{
+						"name": "heal",
+						"amount": 3,
+						"subject": "boardseek",
+						"needs_subject": true,
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						]
+					}
+				],
+				"Deal 3 Damage": [
+					{
+						"name": "deal_damage",
+						"amount": 3,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_enemies"
+							}
+						]
+					}
+				]
+			}
 		}
 	},
 	"Agile Flight": {
-		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "aerial"
+							}
+						}
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 5,
+					"selection_type": "as_much_as_possible",
+					"selection_what_to_count": "remove_threat",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Air Supremacy": {
 		"manual": {
 			"hand": [
 				{
@@ -19,37 +225,47 @@
 					]
 				},
 				{
-					"name": "thwart",
-					"amount": 1,
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
+					"name": "deal_damage",
+					"amount": 3,
+					"subject": "boardseek",
+					"filter_state_seek": [
 						{
-							"filter_group": "group_schemes"
+							"filter_group": "group_enemies"
 						}
-					]
-				}
-			]
-		}
-	},
-	"Air Supremacy": {
-		"TODO": "",
-		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
+					],
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_type": "max",
+					"selection_count": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_group": "group_friendly_my_hero",
+									"filter_properties": {
+										"trait_aerial": 1,
+										"comparison": "ge"
+									}
+								}
+							]
+						}
+					}
 				}
 			]
 		}
 	},
 	"Bad Boy": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
+		"interrupt_receive_damage": {
+			"trigger": "villain",
+			"event_filters": {
+				"target": "my_hero",
+				"amount": ">0",
+				"tags": [
+					"attack"
+				]
+			},
 			"is_optional_board": true,
 			"board": [
 				{
@@ -58,37 +274,151 @@
 					"tags": [
 						"hero_interrupt"
 					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				},
+				{
+					"name": "change_form",
+					"subject": "my_hero"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 2
 				}
 			]
 		}
 	},
 	"Banishment": {
-		"TODO": ""
+		"give_obligation": {
+			"__to__": "Peter Quill"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Flip then remove from the game": {
+					"obligation_flip_remove": {}
+				},
+				"Remove from the game": {
+					"obligation_remove": {}
+				},
+				"Flip then Discard": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "card_is_in_play",
+									"func_params": {
+										"card_name": "Element Gun"
+									}
+								},
+								"nested_scripts": [
+									{
+										"name": "discard",
+										"subject": "boardseek",
+										"filter_state_seek": [
+											{
+												"filter_properties": {
+													"Name": "Element Gun"
+												}
+											}
+										]
+									}
+								]
+							}
+						],
+						"else": [
+							{
+								"name": "add_threat",
+								"amount": 3,
+								"subject": "main_scheme"
+							}
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				],
+				"Discard": [
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "card_is_in_play",
+									"func_params": {
+										"card_name": "Element Gun"
+									}
+								},
+								"nested_scripts": [
+									{
+										"name": "discard",
+										"subject": "boardseek",
+										"filter_state_seek": [
+											{
+												"filter_properties": {
+													"Name": "Element Gun"
+												}
+											}
+										]
+									}
+								]
+							}
+						],
+						"else": [
+							{
+								"name": "add_threat",
+								"amount": 3,
+								"subject": "main_scheme"
+							}
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				]
+			}
+		}
 	},
 	"Beta Ray Bill": {
-		"TODO": "",
-		"response": {
-			"event_name": "TODO",
+		"minion_died": {
+			"filter_event_source": "self",
 			"is_optional_board": true,
-			"board": []
+			"board": [
+				{
+					"name": "remove_threat",
+					"amount": 2,
+					"subject": "main_scheme"
+				}
+			]
 		}
 	},
 	"Blaze of Glory": {
-		"TODO": "",
-		"alterants": {
-			"hand": [
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
-					"alteration": 1
-				}
-			]
-		},
 		"manual": {
 			"hand": [
 				{
@@ -97,19 +427,81 @@
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "phase_ended",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"filter_state_trigger": [
+										{
+											"filter_group": "group_characters",
+											"filter_properties": {
+												"trait_guardian": 1,
+												"comparison": "ge"
+											}
+										}
+									],
+									"alteration": 2
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"filter_state_trigger": [
+										{
+											"filter_group": "group_characters",
+											"filter_properties": {
+												"trait_guardian": 1,
+												"comparison": "ge"
+											}
+										}
+									],
+									"alteration": 2
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "add_script",
+					"end_condition": "phase_ended",
+					"subject": "self",
+					"script": {
+						"phase_ended": {
+							"all": [
+								{
+									"name": "deal_damage",
+									"amount": 1,
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_characters",
+											"filter_properties": {
+												"trait_guardian": 1,
+												"comparison": "ge"
+											}
+										}
+									]
+								}
+							]
+						}
+					}
 				}
 			]
 		}
 	},
 	"Budding Crime Syndicate": {
-		"TODO": "",
 		"hinder": {
-			"__amount__": "TODO",
+			"__amount__": 2,
 			"__each_player__": true
 		}
 	},
 	"C.I.T.T.": {
-		"TODO": "",
 		"manual": {
 			"board": [
 				{
@@ -118,16 +510,92 @@
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"unc": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "target",
+					"ineeds_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_characters",
+							"filter_properties": {
+								"trait_guardian": 1,
+								"comparison": "ge"
+							}
+						}
+					]
 				}
 			]
 		}
 	},
 	"Cosmo": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"target": "self",
+				"tags": [
+					"consequential_damage"
+				]
+			},
 			"is_optional_board": true,
-			"board": []
+			"board": {
+				"Ally": {
+					"__cosmo": {
+						"__type_code__": "ally"
+					}
+				},
+				"Event": {
+					"__cosmo": {
+						"__type_code__": "event"
+					}
+				},
+				"Resource": {
+					"__cosmo": {
+						"__type_code__": "resource"
+					}
+				},
+				"Support": {
+					"__cosmo": {
+						"__type_code__": "support"
+					}
+				},
+				"Upgrade": {
+					"__cosmo": {
+						"__type_code__": "upgrade"
+					}
+				},
+				"Attachment": {
+					"__cosmo": {
+						"__type_code__": "attachment"
+					}
+				},
+				"Environment": {
+					"__cosmo": {
+						"__type_code__": "environment"
+					}
+				},
+				"Side Scheme": {
+					"__cosmo": {
+						"__type_code__": "side_scheme"
+					}
+				},
+				"Treachery": {
+					"__cosmo": {
+						"__type_code__": "treachery"
+					}
+				}
+			}
 		}
 	},
 	"Daring Escape": {
@@ -157,7 +625,6 @@
 		}
 	},
 	"Dive Bomb": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -165,14 +632,34 @@
 					"is_cost": true,
 					"tags": [
 						"hero_action"
+					],
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "aerial"
+							}
+						}
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 7,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
 					]
 				},
 				{
 					"name": "attack",
 					"amount": 1,
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
+					"subject": "boardseek",
+					"subject_count": "all",
+					"subject_exclude": "previous",
+					"filter_state_seek": [
 						{
 							"filter_group": "group_enemies"
 						}
@@ -182,7 +669,6 @@
 		}
 	},
 	"Element Gun": {
-		"TODO": "",
 		"manual": {
 			"board": [
 				{
@@ -193,14 +679,29 @@
 					]
 				},
 				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"unc": 1
+					},
+					"is_cost": true
+				},
+				{
 					"name": "attack",
-					"amount": 1,
+					"amount": 3,
 					"subject": "target",
 					"needs_subject": true,
 					"filter_state_subject": [
 						{
 							"filter_group": "group_enemies"
 						}
+					],
+					"tags": [
+						"piercing"
 					]
 				}
 			]
@@ -241,7 +742,6 @@
 		}
 	},
 	"Ever Vigilant": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -249,7 +749,24 @@
 					"is_cost": true,
 					"tags": [
 						"hero_action"
+					],
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "aerial"
+							}
+						}
 					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				},
+				{
+					"name": "remove_threat",
+					"amount": 2,
+					"subject": "main_scheme"
 				}
 			]
 		}
@@ -310,9 +827,21 @@
 		}
 	},
 	"Jet Boots": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_aerial",
+					"trigger": "Star-Lord",
+					"alteration": 1
+				}
+			]
+		},
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"target": "my_hero",
+				"amount": ">0"
+			},
 			"is_optional_board": true,
 			"board": [
 				{
@@ -321,26 +850,41 @@
 					"tags": [
 						"hero_interrupt"
 					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "tutor",
+							"subject_count": "all",
+							"src_container": "encounters_facedown_my_hero"
+						}
+					}
 				}
 			]
 		}
 	},
 	"Knowhere": {
-		"TODO": "",
-		"response": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
-		}
-	},
-	"Laser Blaster": {
-		"TODO": "",
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
+		"manual": {
+			"hand": [
 				{
-					"name": "attach_to_card",
-					"subject": "TODO"
+					"name": "constraints",
+					"is_cost": true,
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "guardian"
+							}
+						}
+					]
 				}
 			]
 		},
@@ -348,27 +892,97 @@
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
+					"filter_property_name": "ally_limit",
+					"filter_same_controller": true,
+					"trigger": "my_identity",
+					"alteration": 1
+				}
+			]
+		},
+		"card_played": {
+			"filter_state_triggert": [
+				{
+					"filter_properties": {
+						"type_code": "ally"
+					},
+					"filter_properties2": {
+						"trait_guardian": 1,
+						"comparison": "ge"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"subject": "boardseek",
+					"filter_state_seek": [
 						{
-							"TODO": "TODO"
+							"filter_group": "group_identities_event_source_hero"
 						}
 					],
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Laser Blaster": {
+		"manual": {
+			"hand": [
+				{
+					"name": "attach_to_card",
+					"subject": "target",
+					"is_cost": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							},
+							"filter_properties2": {
+								"trait_guardian": 1,
+								"comparison": "ge"
+							},
+							"filter_max_per_host": 1
+						}
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "host",
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "overkill",
+					"trigger": "host",
 					"alteration": 1
 				}
 			]
 		}
 	},
 	"Leader of the Guardians": {
-		"TODO": "",
 		"alterants": {
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "TODO",
+					"filter_property_name": "thwart",
 					"filter_state_trigger": [
 						{
-							"TODO": "TODO"
+							"filter_group": "group_friendly_my_hero",
+							"filter_properties": {
+								"trait_guardian": 1,
+								"comparison": "ge"
+							}
 						}
 					],
 					"alteration": 1
@@ -377,8 +991,32 @@
 		}
 	},
 	"Mister Knife": {
-		"TODO": "",
-		"_surge": {}
+		"once_per_phase": {
+			"__name__": "__mister_knife"
+		},
+		"card_moved_to_pile": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "treachery"
+					},
+					"filter_same_controller": true
+				}
+			],
+			"filter_destination": "encounters_reveal",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "__mister_knife",
+					"modification": -1,
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "surge"
+				}
+			]
+		}
 	},
 	"Nova Prime - Richard Rider": {
 		"card_played": {
@@ -469,7 +1107,6 @@
 		}
 	},
 	"Pulse Grenade": {
-		"TODO": "",
 		"manual": {
 			"board": [
 				{
@@ -480,8 +1117,27 @@
 					]
 				},
 				{
+					"name": "discard",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"sort_descending": true,
+					"src_container": "deck_villain",
+					"subject_count": 2,
+					"up_to": true,
+					"needs_subject": true
+				},
+				{
 					"name": "attack",
-					"amount": 1,
+					"amount": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					},
 					"subject": "target",
 					"needs_subject": true,
 					"filter_state_subject": [
@@ -494,7 +1150,6 @@
 		}
 	},
 	"Sliding Shot": {
-		"TODO": "",
 		"manual": {
 			"condition_hand": {
 				"func_name": "count_cards",
@@ -542,11 +1197,23 @@
 		}
 	},
 	"Spartoi Cunning": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "random",
+					"src_container": "hand_my_hero"
+				},
+				{
+					"name": "deal_damage",
+					"subject": "my_hero",
+					"amount": 1
+				},
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": 1
 				}
 			]
 		}
@@ -580,7 +1247,7 @@
 							"filter_parent": "hand*"
 						}
 					]
-				},			
+				},
 				{
 					"name": "mod_tokens",
 					"token_name": "_what_could_go_wrong",
@@ -603,42 +1270,65 @@
 		}
 	},
 	"Star-Lord's Helmet": {
-		"TODO": "",
 		"alterants": {
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
+					"filter_property_name": "hand_size",
+					"trigger": "Star-Lord",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "tutor",
+							"subject_count": "all",
+							"src_container": "encounters_facedown_my_hero",
+							"max": 3
 						}
-					],
-					"alteration": 1
+					}
 				}
 			]
 		}
 	},
 	"Target Practice": {
-		"TODO": "",
-		"alterants": {
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack"
+				],
+				"filter_state_trigger": [
+					{
+						"filter_properties": {
+							"type_code": "ally"
+						}
+					}
+				]
+			},
+			"condition_board": {
+				"func_name": "count_attachments",
+				"func_params": {
+					"subject": "trigger",
+					"filter_state_attachment": [
+						{
+							"filter_properties": {
+								"trait_weapon": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			},
+			"is_optional_board": true,
 			"board": [
 				{
-					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
-					"alteration": 1
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "increase",
+					"amount": 2,
+					"subject": "interrupted_event"
 				}
 			]
-		},
-		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
 		}
 	},
 	"The Power of Leadership": {
@@ -665,6 +1355,9 @@
 		}
 	},
 	"Yondu": {
-		"TODO": ""
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "piercing"
+		}
 	}
 }

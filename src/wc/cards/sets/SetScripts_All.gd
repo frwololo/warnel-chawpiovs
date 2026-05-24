@@ -86,22 +86,14 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 	var card = cfc.card_definitions[card_id]
 	var	cost = card["Cost"] if (card && card.has("Cost")) else 0
 	
-	#Grid position depending on card type
-	var type_code:String = card["type_code"] if (card && card.has("type_code")) else ""
-	var grid = CFConst.TYPECODE_TO_GRID.get(type_code, "")
-	var move_after_play : Dictionary = {
+
+	var type_code:String = card.get("type_code", "") 
+	var play_action : Dictionary = {
 		"name": "play_card",
 		"subject": "self",
 		"is_cost" : true,
-		"grid_name" : grid
 	}	
-	if CFConst.TYPECODE_TO_PILE.has(type_code):
-		move_after_play  = {
-		"name": "play_card",
-		"subject": "self",
-		"is_cost" : true,
-		"dest_container" : CFConst.TYPECODE_TO_PILE[type_code]
-	}
+
 
 	
 	var script:Dictionary = scripts.get(card_id,{})
@@ -110,25 +102,45 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 	script = script.duplicate()
 	
 	#Add game specific rules valid for all cards
-	
+
+	var post_play_actions = []
+	var hand_constraints = []
+
+	var is_defense = card.get("trait_defense", 0)
+	if (type_code == "event" && is_defense):
+		post_play_actions.append(
+			{
+				"name": "set_defender",
+				"subject": "my_identity"
+			}
+		)
+		hand_constraints.append(
+			{	
+				"name": "constraints",
+				"is_cost": true,
+				"tags": ["defense_ability"]
+			}			
+		)
 	#interrupt or response replacements
 	var interrupt_script = has_interrupt(script)
 	var has_manual_hand = script.get("manual", {}).get("hand", {})
 	if (type_code == "event" && interrupt_script && !has_manual_hand):
-		var playFromHand: Array = []
+		var playFromHand: Array = hand_constraints
 		if (cost):
-			playFromHand =  [
+			playFromHand +=  [
 				{
 					"name": "pay_regular_cost",
 					"is_cost": true,
 					"cost" : "card_cost", #keyword here to retrieve cost realtime
 				},
-				move_after_play
+				play_action
 			]	
 		elif (card.has("Cost"))	: #Card has a cost but it's zero
-			playFromHand = [
-				move_after_play
+			playFromHand += [
+				play_action
 			]
+		
+		playFromHand += post_play_actions
 					
 		var playInterrupt: Dictionary = {
 			#TODO add trigger filters + interrupt data
@@ -145,7 +157,7 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 		if (cost or has_overpaid_check):
 			playFromHand = {
 				"manual": {
-					"hand": [
+					"hand": hand_constraints + [
 						{	
 							"name": "constraints",
 							"is_cost": true,
@@ -156,21 +168,21 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 							"is_cost": true,
 							"cost" : "card_cost", #keyword here to retrieve cost realtime
 						},
-						move_after_play
-					]
+						play_action
+					] + post_play_actions
 				}
 			}
 		elif (card.has("Cost"))	: #Card has a cost but it's zero
 			playFromHand = {
 				"manual": {
-					"hand": [
+					"hand": hand_constraints +[
 						{	
 							"name": "constraints",
 							"is_cost": true,
 							"tags": ["as_action"]
 						},						
-						move_after_play
-					]
+						play_action
+					] + post_play_actions
 				}
 			}
 		#existing scripts are occasionally a dictionary instead of 

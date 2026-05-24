@@ -1248,9 +1248,7 @@ func script_passes_condition(card_scripts, key, trigger_card, trigger_details = 
 		return true
 		
 	var func_params = condition.get("func_params", {})
-	func_params = WCScriptingEngine.static_pre_task_prime(func_params, self)
-	var dummy_script = ScriptTask.new(self, {"name": "nop"}, trigger_card, trigger_details)			
-	var check = cfc.ov_utils.func_name_run(self, func_name, func_params, dummy_script)
+	var check = cfc.ov_utils.dummy_func_name_run(self, trigger_card, func_name, func_params, trigger_details)
 	return check
 
 func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
@@ -1936,10 +1934,17 @@ func check_scheme_defeat(script):
 		gameData.theStack.add_script(task_event)
 
 
-func remove_threat(modification: int, script = null) -> int:
+func remove_threat(modification: int, script = null) -> int:	
+	var action_owner = null
+	if script:
+		action_owner = script.owner
+		var type = action_owner.get_property("type_code", "")
+		if !type in ["hero", "ally", "alter_ego"]:
+			action_owner = null #WCScriptingEngine._get_identity_from_script(script)
 	
 	#Crisis special case: can't remove threat from main scheme
-	if script and script.has_tag("bypass_crisis"):
+	if (script and script.has_tag("bypass_crisis")) or\
+	 (action_owner and action_owner.get_property("bypass_crisis", 0, true)):
 		pass
 	else:
 		if "main_scheme" == properties.get("type_code", "false"):
@@ -2530,6 +2535,10 @@ func get_max_tokens(token_name) -> int:
 	if token_name in ["stunned", "confused"]:
 		if self.get_property("steady", 0, true):
 			return 2
+
+	var max_tokens = self.get_property("max_tokens_" + token_name, 0, true)
+	if max_tokens:
+		return max_tokens
 	
 	if CFConst.DEFAULT_TOKEN_MAX_VALUE.has(token_name):
 		return CFConst.DEFAULT_TOKEN_MAX_VALUE[token_name]

@@ -157,7 +157,7 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 		SP.KEY_SUBJECT_CURRENT_HERO_TARGET:
 			results.append(gameData.get_identity_card(gameData.get_current_activity_hero_target()))							
 		SP.KEY_SUBJECT_EVENT_SOURCE_HERO:
-			var event_source_hero_id = WCScriptingEngine.get_event_source_hero_id(trigger_details)
+			var event_source_hero_id = get_event_source_hero_id(trigger_details)
 			if event_source_hero_id > 0:
 				var event_source_hero = gameData.get_identity_card(event_source_hero_id)
 				results.append(event_source_hero)
@@ -348,7 +348,11 @@ static func func_name_run(object, func_name, func_params, script = null):
 					result = 0			
 		
 	return result
-	
+
+static func dummy_func_name_run(owner_card, trigger_card, func_name, func_params, trigger_details = {}):
+	func_params = static_pre_task_prime(func_params, owner_card)
+	var dummy_script = ScriptTask.new(owner_card, {"name": "nop"}, trigger_card, trigger_details)	
+	return func_name_run(owner_card, func_name, func_params, dummy_script)	
 
 #TODO all calls to this method are in core which isn't good
 #Need to move something, somehow
@@ -578,7 +582,7 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 		replacements["my_hero"] = gameData.get_identity_card(gameData.get_current_activity_hero_target())
 
 	var trigger_details = guidMaster.replace_guids_to_objects(_trigger_details)
-	var event_source_hero_id = WCScriptingEngine.get_event_source_hero_id(trigger_details)
+	var event_source_hero_id = get_event_source_hero_id(trigger_details)
 
 	var zone_replacements = [
 		{"from":"_my_hero" , "to": controller_hero_id },
@@ -735,3 +739,71 @@ func check_validity_post_selection(card, script):
 	if card.is_resource_locked(script):
 		return false
 	return true
+
+static func static_pre_task_prime(script_definition, owner, script = null, prev_subjects:= []):
+	var previous_hero = prev_subjects[0] if prev_subjects else null
+	#previous_subjects can sometimes contain ints (for ask_integer) instead of cards
+	if typeof(previous_hero) == TYPE_INT:
+		previous_hero = 0
+		
+	var previous_hero_id = 0
+	if previous_hero:
+		previous_hero_id = previous_hero.get_controller_hero_id()
+
+	var controller_hero_id = owner.get_controller_hero_id()
+	
+	var current_hero_target = gameData.get_villain_current_hero_target()
+
+	var event_source_hero_id = gameData.get_current_local_hero_id()
+	if script:
+		var trigger_details = script.trigger_details
+		event_source_hero_id = get_event_source_hero_id(trigger_details)
+		controller_hero_id = trigger_details.get("override_hero_id", controller_hero_id)
+	
+	var replacements = {}
+			
+	var _replacements = [
+		{"from":"_my_hero" , "to": controller_hero_id },
+		{"from":"_first_player" , "to": gameData.first_player_hero_id() },
+		{"from":"_previous_subject" , "to": previous_hero_id},
+		{"from":"_current_hero_target" , "to": current_hero_target},
+		{"from":"_event_source_hero" , "to": event_source_hero_id},					
+	]
+
+	if script:
+		var more_replacements = script.get_property("zone_name_replacement", {})
+		for replacement in more_replacements:
+			var key = replacement
+			var value = script.retrieve_integer_subproperty(key, more_replacements, 0)
+			_replacements.append ({"from" : "_" + key, "to": value})
+
+	var zones = ["", "hand"] +\
+	 CFConst.HERO_GRID_SETUP.keys() +\
+	 CFConst.ALL_TYPE_GROUPS +\
+	 CFConst.PER_PLAYER_MODIFIABLE_KEYS +\
+	 cfc.NMAP.board.heroes_extra_deck_names()
+	for zone in zones :
+		for replacement in _replacements:
+			var from_str = replacement["from"]
+			var to = replacement["to"]
+			if !to:
+				to = current_hero_target
+			replacements[zone + from_str] = zone+str(to)
+	script_definition = WCUtils.search_and_replace_multi(script_definition, replacements, true)	
+	
+
+	return script_definition
+
+static func get_event_source_hero_id(trigger_details):
+	var event_source_hero_id = gameData.get_current_local_hero_id()
+	if trigger_details.has("event_object"):
+		var event_object = trigger_details.get("event_object")		
+		if "trigger_details" in event_object and event_object.trigger_details.has("source"):
+			var source = event_object.trigger_details.get("source", null)
+			if guidMaster.is_guid(source):
+				source = guidMaster.get_object_by_guid(source)
+			if source and typeof(source) == TYPE_OBJECT:
+				var hero_id = source.get_controller_hero_id()
+				if hero_id > 0:
+					event_source_hero_id = hero_id
+	return event_source_hero_id

@@ -48,9 +48,11 @@ func _ready() -> void:
 	exit_button.visible = true
 	exit_button.grab_focus()
 
+	if gamepadHandler.is_controller_input() or !cfc.game_settings.get("can_toggle_fullscreen", true):
+			get_node("%FullscreenCheck").visible = false
+
 	if gamepadHandler.is_controller_input():
 		#disabling options not compatible with gamepad
-		get_node("%FullscreenCheck").visible = false
 		deckbuild_button.disabled = true
 		deckbuild_button.text = "Deck Editor (not compatible with gamepad input)"
 		deckbuild_button.focus_mode = Control.FOCUS_NONE

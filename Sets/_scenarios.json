@@ -950,5 +950,135 @@
 				"Venom Goblin - 3"
 			]
 		}
-	}
+	},
+	"32063": {
+		"code": "32063",
+		"name": "Stalked by Sabretooth",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Sabretooth - 1",
+			"Sabretooth - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Sabretooth - 2",
+				"Sabretooth - 3"
+			]
+		}
+	},
+	"32087": {
+		"code": "32087",
+		"name": "Night of the Sentinels",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Sentinel - 1",
+			"Sentinel - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Sentinel - 2",
+				"Sentinel - 3"
+			]
+		}
+	},
+	"32112": {
+		"code": "32112",
+		"name": "The Sentinel Factory",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Master Mold - 1",
+			"Master Mold - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Master Mold - 2",
+				"Master Mold - 3"
+			]
+		}
+	},
+	"32125": {
+		"code": "32125",
+		"name": "The Brotherhood Strikes!",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"TODO - 1",
+			"TODO - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"TODO - 2",
+				"TODO - 3"
+			]
+		}
+	},
+	"32141": {
+		"code": "32141",
+		"name": "Asteroid M",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Magneto - 1",
+			"Magneto - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Magneto - 2",
+				"Magneto - 3"
+			]
+		}
+	}	
 }

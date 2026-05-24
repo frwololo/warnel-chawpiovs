@@ -144,6 +144,8 @@ func scale_to(scale_multiplier: float) -> void:
 # Set a label node's bbcode text.
 # As the string becomes longer, the font size becomes smaller
 func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false, scale : float = 1):
+	if !is_instance_valid(node):
+		return
 	# We need to avoid other functions to trying to resize this label
 	# while it's already resizing, as due to all the yields
 	# it causes a mess
@@ -185,6 +187,8 @@ func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false,
 		# After we set the bbcode, we need to wait for the next frame for the label to adjust
 		# and then we can grab its height
 		yield(get_tree(), "idle_frame")
+		if !is_instance_valid(node):
+			return		
 		var _retries := 0
 		var bbcode_height = node.get_content_height()
 #		print_debug([bbcode_height, label_size.y])
@@ -192,6 +196,8 @@ func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false,
 			_retries += 1
 #			print_debug("{0} BBcode height:{1} retrying: {2}".format([card_owner.canonical_name, bbcode_height, _retries]))
 			yield(get_tree(), "idle_frame")
+			if !is_instance_valid(node):
+				return
 			bbcode_height = node.get_content_height()
 #			print_debug(["Retry", _retries, "Code Height", bbcode_height])
 			if _retries >= 10:
@@ -207,6 +213,8 @@ func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false,
 			_set_card_rtl_fonts(node, label_fonts, starting_font_size + font_adjustment)
 			if (get_tree()):
 				yield(get_tree(), "idle_frame")
+				if !is_instance_valid(node):
+					return
 			bbcode_height = node.get_content_height()
 #			print_debug(["Font Adjustment", font_adjustment, "Code Height", bbcode_height])
 	#		print_debug(bbcode_height, ':', font_adjustment, ':', label_size.y)
@@ -225,6 +233,8 @@ func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false,
 			_assign_bbcode_text(node, value, starting_font_size + font_adjustment)
 			if (get_tree()):
 				yield(get_tree(), "idle_frame")
+				if !is_instance_valid(node):
+					return
 			bbcode_height = node.get_content_height()
 #			print_debug(["Font Adjustment", font_adjustment, "Code Height", bbcode_height])
 			_retries = 0
@@ -233,6 +243,8 @@ func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false,
 #				print_debug("BBcode height:" + str(bbcode_height) + " retrying: " + str(_retries))
 				if (get_tree()):
 					yield(get_tree(), "idle_frame")
+					if !is_instance_valid(node):
+						return
 				bbcode_height = node.get_content_height()
 				if _retries >= 10:
 					break

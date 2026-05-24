@@ -70,12 +70,6 @@
 					"subject": "trigger"
 				},
 				{
-					"name": "set_defender",
-					"is_cost": true,
-					"subject": "my_hero",
-					"_comments": "set_defender here has a double role, 1) sets my_hero as a defender if not already the case, 2) because it is a cost, it will fail if there is already a different defender chosen"
-				},
-				{
 					"name": "prevent",
 					"subject": "interrupted_event",
 					"amount": {

@@ -23,7 +23,8 @@ const PROPERTIES_NUMBERS := ["cost", "attack", "defense", "recover", "thwart", "
 	"boost", "scheme_crisis", "scheme_amplify", "scheme_acceleration", "scheme_hazard",
 	"escalation_threat", 
 	"resource_mental", "resource_wild", "resource_energy", "resource_physical",
-	"ally_limit", "restricted_limit", "hand_size", "boost_cards_per_attack", "boost_cards_per_scheme", "max_hand_size"]
+	"ally_limit", "restricted_limit", "hand_size", "boost_cards_per_attack", "boost_cards_per_scheme", "max_hand_size",
+	"max_tokens_tough"]
 # The name of these properties will be prepended before their value to their label.
 const NUMBER_WITH_LABEL := []
 # Properties provided in a list which are converted into a string for the

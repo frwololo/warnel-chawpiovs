@@ -18,6 +18,6 @@ func common_pre_run(scripts_queue, trigger_object):
 	var new_scripts_queue = []
 	
 	for script in scripts_queue:
-		 new_scripts_queue.append(WCScriptingEngine.static_pre_task_prime(script, trigger_object))
+		 new_scripts_queue.append(cfc.ov_utils.static_pre_task_prime(script, trigger_object))
 	
 	return new_scripts_queue

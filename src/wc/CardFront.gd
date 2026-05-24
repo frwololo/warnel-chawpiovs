@@ -45,6 +45,8 @@ func warning():
 func setup_text_mode():
 	text_enabled = true
 	_card_text = find_node("CardText")
+	if not is_instance_valid(_card_text):
+		return
 	_handle_horizontal_card()
 	
 #	# Map your card text label layout here. We use this when scaling
@@ -205,6 +207,9 @@ func scale_to(scale_multiplier: float) -> void:
 	if !text_enabled:
 		return	
 	.scale_to(scale_multiplier)
+
+func refresh_art_size():
+	art.rect_min_size = self.rect_size	
 
 func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false, scale : float = 1):
 	if !text_enabled:

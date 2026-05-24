@@ -4,6 +4,8 @@
 class_name ViewportCardFocus
 extends Node2D
 
+const WAIT_BEFORE_PREVIEW = 0.7
+
 signal show_card_focus_changed(value)
 
 export(PackedScene) var board_scene : PackedScene
@@ -72,8 +74,10 @@ func reposition_vbc():
 	if _current_focus_source and is_instance_valid(_current_focus_source):	
 		var card = _current_focus_source
 		if card.get_state_exec() == "hand":
-			$VBC.visible = false
-			return
+			var show_preview = cfc.game_settings.get("show_hand_cards_preview", true)
+			if !show_preview:
+				$VBC.visible = false
+				return
 		var multiplier =  card.focused_scale * cfc.curr_scale		
 		display_size = card.canonical_size * multiplier
 		var board_card_size = card.card_size * card.scale
@@ -205,6 +209,7 @@ func forget_card(c):
 func focus_card(card: Card, show_preview := true) -> void:
 	if !show_card_focus:
 		return
+			
 	# We check if we're already focused on this card, to avoid making duplicates
 	# the whole time		
 	if not _current_focus_source == card:
@@ -255,6 +260,9 @@ func focus_card(card: Card, show_preview := true) -> void:
 				else:
 					dupe_focus._flip_card(dupe_focus._card_front_container,dupe_focus._card_back_container, true)
 		_current_focus_source = card
+		
+	
+		
 		for c in _previously_focused_cards.values():
 			if not is_instance_valid(c):
 				continue
@@ -273,10 +281,23 @@ func focus_card(card: Card, show_preview := true) -> void:
 		# We store all our previously focused cards in an array, and clean them
 		# up when they're not focused anymore
 		_previously_focused_cards[card] = dupe_focus
+
 		
-		if vbc_position_mode:
+		if vbc_position_mode:					
 			garbage_collection()
 			reposition()
+
+			#hide everything and wait until display
+			for c in _previously_focused_cards.values():
+				if not is_instance_valid(c):
+					continue
+				c.visible = false		
+			yield(get_tree().create_timer(WAIT_BEFORE_PREVIEW), "timeout")	
+			if is_instance_valid(_current_focus_source):
+				var c = _previously_focused_cards.get(_current_focus_source, null)
+				if is_instance_valid(c) and c == dupe_focus:
+					c.visible = true			
+			
 			return
 		
 		set_camera_position(dupe_focus)
@@ -376,7 +397,7 @@ func _extra_dupe_preparation(dupe_focus: Card, card: Card) -> void:
 # warning-ignore:unused_argument
 # warning-ignore:unused_argument
 func _extra_dupe_ready(dupe_focus: Card, card: Card) -> void:
-	var multiplier =  dupe_focus.focused_scale * cfc.curr_scale 
+	var multiplier =  dupe_focus.focused_scale * cfc.curr_scale
 	if CFConst.VIEWPORT_FOCUS_ZOOM_TYPE == "scale":
 		dupe_focus.scale = Vector2(1,1) * multiplier
 	else:

@@ -339,6 +339,10 @@ func play_card(script: ScriptTask) -> int:
 
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode	
+
+	var type_code:String = script.owner.get_property("type_code", "")
+	var grid_name = CFConst.TYPECODE_TO_GRID.get(type_code, "")
+	var dest_container = CFConst.TYPECODE_TO_PILE.get(type_code, "")
 	
 	var from = ""
 	var from_controller = 0
@@ -355,12 +359,15 @@ func play_card(script: ScriptTask) -> int:
 		
 		
 	var definition:Dictionary =  script.script_definition
-	if (definition.has("grid_name")):
-		definition.name="move_card_to_board"
-		retcode =  move_card_to_board(script)
-	else:
+	if dest_container:
 		definition.name="move_card_to_container"
-		retcode = move_card_to_container(script)		
+		definition["dest_container"] = dest_container
+		retcode = move_card_to_container(script)	
+	else:
+		definition.name="move_card_to_board"
+		definition["grid_name"] = grid_name
+		retcode =  move_card_to_board(script)
+	
 			
 	scripting_bus.emit_signal_on_stack("card_played", script.owner, {"from": from, "from_controller": from_controller })		
 	return retcode	
@@ -566,7 +573,7 @@ func card_dies(script:ScriptTask) -> int:
 
 	return retcode
 
-static func calculate_damage(script:ScriptTask) -> int:
+static func calculate_damage(script: ScriptTask) -> int:
 	if script.script_name != "receive_damage":
 		return 0
 		
@@ -1535,7 +1542,8 @@ func enemy_attack(script: ScriptTask) -> int:
 	var defender = script.subjects[0] if script.subjects else null
 		
 	if defender:
-		defender.exhaustme()
+		if script.script_definition.get("exhaust_defenders", true):
+			defender.exhaustme()
 
 	if !script.has_tag("attack"):
 		script.script_definition["tags"].append("attack")
@@ -1586,6 +1594,7 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 #assigns defender to attack
 #this only works if there isn't a defender chosen already,
 #or if the defender was already the same as the one requested
+# this happens when playing a defense event
 func set_defender(script: ScriptTask) -> int:
 	if !script.subjects:
 		return CFConst.ReturnCode.FAILED
@@ -1599,12 +1608,15 @@ func set_defender(script: ScriptTask) -> int:
 	if attack_script.subjects:
 		if attack_script.subjects[0] != defender:
 			return CFConst.ReturnCode.FAILED
+		return CFConst.ReturnCode.CHANGED
 		
 	if costs_dry_run():
 		return CFConst.ReturnCode.CHANGED
 	
+	#when no defender was previously set
 	attack_script.set_subjects([])
 	attack_script.subjects.append(defender)
+	attack_script.definition["exhaust_defenders"] = false
 
 	return CFConst.ReturnCode.CHANGED
 	
@@ -1923,7 +1935,7 @@ func thwart(script: ScriptTask) -> int:
 		amount = 0
 
 	var type = owner.get_property("type_code", "")
-	if !type in ["hero", "ally"]:
+	if !type in ["hero", "ally", "alter_ego"]:
 		owner = _get_identity_from_script(script)
 	
 	if (costs_dry_run()):
@@ -2543,7 +2555,17 @@ func constraints(script: ScriptTask) -> int:
 				if !gameData.can_i_play_this_hero(first_player_id):
 					return 	CFConst.ReturnCode.FAILED
 				if 	my_hero_id != first_player_id:
-					gameData.select_current_playing_hero(first_player_id)	
+					gameData.select_current_playing_hero(first_player_id)
+			"defense_ability":
+				#once a player resolves a defense labeled ability during an enemy attack,
+				#other players cannot resolve defense-labelled abilities for that same attack
+				#this is checked here, by ensuring that there isn't a defender set for the attack,
+				#or, if a defender is set, they are controlled by me
+				#this works because any defense ability that resolves will forcefully set
+				#my hero as defender if no other defender is set yet
+				var defender = null #gameData.get_attack_defender()
+				if defender and defender.get_controller_hero_id != my_hero_id:
+					return 	CFConst.ReturnCode.FAILED
 	
 	var board:Board = cfc.NMAP.board
 	#Max per player rule to play
@@ -2732,76 +2754,12 @@ func _pre_task_prime(script: ScriptTask, prev_subjects:= []) -> void:
 	if script.prev_subjects:
 		prev_subjects = script.prev_subjects
 	
-	script.script_definition = static_pre_task_prime(script.script_definition, script.owner, script, prev_subjects)
+	script.script_definition = cfc.ov_utils.static_pre_task_prime(script.script_definition, script.owner, script, prev_subjects)
 
 
-static func get_event_source_hero_id(trigger_details):
-	var event_source_hero_id = gameData.get_current_local_hero_id()
-	if trigger_details.has("event_object"):
-		var event_object = trigger_details.get("event_object")		
-		if "trigger_details" in event_object and event_object.trigger_details.has("source"):
-			var source = event_object.trigger_details.get("source", null)
-			if guidMaster.is_guid(source):
-				source = guidMaster.get_object_by_guid(source)
-			if source and typeof(source) == TYPE_OBJECT:
-				var hero_id = source.get_controller_hero_id()
-				if hero_id > 0:
-					event_source_hero_id = hero_id
-	return event_source_hero_id
-	
-static func static_pre_task_prime(script_definition, owner, script = null, prev_subjects:= []):
-	var previous_hero = prev_subjects[0] if prev_subjects else null
-	#previous_subjects can sometimes contain ints (for ask_integer) instead of cards
-	if typeof(previous_hero) == TYPE_INT:
-		previous_hero = 0
-		
-	var previous_hero_id = 0
-	if previous_hero:
-		previous_hero_id = previous_hero.get_controller_hero_id()
 
-	var controller_hero_id = owner.get_controller_hero_id()
-	
-	var current_hero_target = gameData.get_villain_current_hero_target()
-
-	var event_source_hero_id = gameData.get_current_local_hero_id()
-	if script:
-		var trigger_details = script.trigger_details
-		event_source_hero_id = get_event_source_hero_id(trigger_details)
-		controller_hero_id = trigger_details.get("override_hero_id", controller_hero_id)
-	
-	var replacements = {}
-			
-	var _replacements = [
-		{"from":"_my_hero" , "to": controller_hero_id },
-		{"from":"_first_player" , "to": gameData.first_player_hero_id() },
-		{"from":"_previous_subject" , "to": previous_hero_id},
-		{"from":"_current_hero_target" , "to": current_hero_target},
-		{"from":"_event_source_hero" , "to": event_source_hero_id},					
-	]
-
-	if script:
-		var more_replacements = script.get_property("zone_name_replacement", {})
-		for replacement in more_replacements:
-			var key = replacement
-			var value = script.retrieve_integer_subproperty(key, more_replacements, 0)
-			_replacements.append ({"from" : "_" + key, "to": value})
-
-	var zones = ["", "hand"] +\
-	 CFConst.HERO_GRID_SETUP.keys() +\
-	 CFConst.ALL_TYPE_GROUPS +\
-	 CFConst.PER_PLAYER_MODIFIABLE_KEYS +\
-	 cfc.NMAP.board.heroes_extra_deck_names()
-	for zone in zones :
-		for replacement in _replacements:
-			var from_str = replacement["from"]
-			var to = replacement["to"]
-			if !to:
-				to = current_hero_target
-			replacements[zone + from_str] = zone+str(to)
-	script_definition = WCUtils.search_and_replace_multi(script_definition, replacements, true)	
 	
 
-	return script_definition
 	
 static func get_zone_basename(zone_name):
 	if !zone_name:

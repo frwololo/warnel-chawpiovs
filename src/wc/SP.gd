@@ -36,6 +36,7 @@ const FILTER_SHARES_TRAIT_WITH_IDENTITY := "filter_shares_trait_with_identity"
 const FILTER_EXHAUSTED := "filter_is_exhausted"
 const FILTER_MAX_PER_HERO := "filter_max_per_hero"
 const FILTER_MAX_PER_HOST := "filter_max_per_host"
+const FILTER_FUNC := "filter_func"
 
 const TRIGGER_TARGET_HERO = "target_hero"
 const TRIGGER_SUBJECT = "trigger_subject"
@@ -278,6 +279,12 @@ static func check_max_per_host(target_card, max_value, owner_card) -> bool:
 		return false
 	return true
 
+static func check_func_filter(card, owner_card, filter_details) -> bool:
+	var func_name = filter_details["func_name"]
+	var func_params = filter_details["func_params"]
+			
+	var check = cfc.ov_utils.dummy_func_name_run(owner_card, card, func_name, func_params)
+	return check	
 			
 # Check if the card is a valid subject or trigger, according to its state.
 static func check_validity(card, card_scripts, type := "trigger", owner_card = null) -> bool:
@@ -287,6 +294,13 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 
 	var tags = card_scripts.get("tags", [])
 	var script_name = card_scripts.get("name", "")
+
+	var action_character = null
+	if owner_card:
+		action_character = owner_card
+		var owner_type = owner_card.get_property("type_code", "")
+		if !owner_type in ["hero", "ally", "minion", "villain"]:
+			action_character = owner_card.get_controller_hero_card()
 	
 	#For certain effects,
 	#permanent cards cannot be targeted by cards of a different set code
@@ -325,23 +339,18 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 			return false	
 				
 	#check for special conditions if card is an attack
-	if ((script_name == "attack") or ("attack" in tags)):
-		if owner_card:
-			var attacker = owner_card
-			var owner_type = owner_card.get_property("type_code", "")
-			if !owner_type in ["hero", "ally", "minion", "villain"]:
-				attacker = owner_card.get_controller_hero_card()
-				
-			if attacker:
-				#Check for "can only attack this card" restriction (e.g. Encased in Ice)	
-				var can_only_attack =  attacker.get_property("can_only_attack_card", "")
-				if can_only_attack:
-					var valid_targets = _get_subjects_simplified(can_only_attack, attacker)
-					if not card in valid_targets:
-						return false
+	if ((script_name == "attack") or ("attack" in tags)):			
+		if action_character:
+			#Check for "can only attack this card" restriction (e.g. Encased in Ice)	
+			var can_only_attack =  action_character.get_property("can_only_attack_card", "")
+			if can_only_attack:
+				var valid_targets = _get_subjects_simplified(can_only_attack, action_character)
+				if not card in valid_targets:
+					return false
 		
+		var bypass_guard = action_character.get_property("bypass_guard", 0, true) if action_character else 0
 		#check for "Guard" keyword			
-		if card in gameData.get_villains():
+		if !bypass_guard and (card in gameData.get_villains()):
 			var all_cards = cfc.NMAP.board.get_all_cards()
 			if owner_card:		
 				var hero_id = owner_card.get_controller_hero_id()
@@ -360,14 +369,17 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 					else:
 						return false
 
-	#check for special patrol conditions if card is an attack
+	#check for condition preventing thwart
 	if ((script_name == "thwart") or ("thwart" in tags)):
 		if card.get_property("cannot_be_thwarted", 0, true):
 			return false
 		if owner_card and owner_card.get_property("cannot_thwart_side_schemes", 0, true):
 			if card.get_property("type_code", "") == "side_scheme":
 				return false
-		if card in gameData.get_main_schemes():
+		
+		var bypass_patrol = action_character.get_property("bypass_patrol", 0, true) if action_character else 0		
+		#check for special patrol condition	on thwart	
+		if !bypass_patrol and (card in gameData.get_main_schemes()):
 			var all_cards = cfc.NMAP.board.get_all_cards()
 			if owner_card:		
 				var hero_id = owner_card.get_controller_hero_id()
@@ -416,6 +428,9 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 				elif filter == FILTER_HOSTED_BY:
 					if !check_hosted_by_filter(card,owner_card,state_filter):
 						card_matches =  false	
+				elif filter == FILTER_FUNC:
+					if !check_func_filter(card,owner_card,state_filter):
+						card_matches =  false							
 				if filter.ends_with("_same_as_identity"):
 					var property = filter.replace("filter_", "").replace("_same_as_identity", "")
 					if !check_trigger_shares_property_with_identity(card,owner_card,property):

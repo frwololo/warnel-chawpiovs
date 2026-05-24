@@ -346,6 +346,9 @@ func _class_specific_ready():
 func _ready() -> void:
 	#this gives an options for subclasses to skip this parent's ready calls if needed
 	_class_specific_ready()
+	var settings_focused_scale = cfc.game_settings.get("gui_card_focused_scale", 0)
+	if settings_focused_scale:
+		focused_scale = settings_focused_scale
 
 func get_card_back():
 	if !card_back:
@@ -2928,8 +2931,8 @@ func _process_card_state() -> void:
 				# in case it was already scaled due to being on the table etc.
 				set_scale(Vector2(1,1))
 				resize_recursively(_control, focused_scale * cfc.curr_scale)
-#				set_card_size(CFConst.CARD_SIZE * CFConst.FOCUSED_SCALE, true)
 				get_card_front().scale_to(focused_scale * cfc.curr_scale )
+				get_card_front().refresh_art_size()
 				get_card_back().scale_to(focused_scale * cfc.curr_scale)
 			# If the card has already been been viewed while down,
 			# we allow the player hovering over it to see it

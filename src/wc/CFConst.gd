@@ -366,11 +366,13 @@ const DEFAULT_PROPERTIES_BY_TYPE:= {
 		"ally_limit" : 3,
 		"restricted_limit" : 2,		
 		"max_hand_size": 0,
+		"max_tokens_tough": 1,
 	},
 	"alter_ego": {
 		"ally_limit" : 3,
 		"restricted_limit" : 2,			
 		"max_hand_size": 0,
+		"max_tokens_tough": 1,
 	},
 	"villain" : {
 		"boost_cards_per_attack":1,
@@ -666,6 +668,9 @@ const AUTO_KEYWORDS := {
 	
 #additional ones not officially in the game
 	"cannot_leave_play": "int",
+	"bypass_crisis": "int",
+	"bypass_guard": "int",
+	"bypass_patrol": "int",
 	"invincible": "int",
 	"cannot_remove_threat": "int",
 	"cannot_ready": "int",
@@ -831,6 +836,26 @@ const HIDE_PILE_DETAILS:= true
 const FACEUP_PILE_VIEW_ON_CLICK := true
 const ATTEMPT_TO_GUESS_IMAGE_URL := true
 
+#default settings that will be merged into config file at first startup
+#order matters, most relevant at the top. e.g. if a device is both mobile AND Android,
+#and both entries have a shared key, the one at the top will take precedence
+const OS_DEFAULT_SETTINGS := {
+	"Android": {
+		"can_toggle_fullscreen": "false",
+		"gui_bigger_buttons": true,		
+		"gui_card_focused_scale": 3,
+
+	},
+	"pc": {
+		"can_toggle_fullscreen": "true",
+		"gui_card_focused_scale": 2
+	},		
+	"mobile":{
+		"can_toggle_fullscreen": "false",
+		"gui_bigger_buttons": true,			
+		"gui_card_focused_scale": 3
+	},					
+}
 
 const DEFAULT_SETTINGS:= {
 	'music_volume': 5,

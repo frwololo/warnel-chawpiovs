@@ -33,3 +33,6 @@ scripts/SetScripts_bkw.json
 scripts/scenarios_hlk.json
 scripts/scenarios_ant.json
 scripts/SetScripts_ant.json
+WC.apk
+WC.apk.idsig
+scripts/scenarios_mut_gen.json

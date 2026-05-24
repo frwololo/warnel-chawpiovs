@@ -338,7 +338,7 @@ func mask_image(image:Image, destination, card_key):
 	image.convert(transparent_image.get_format())
 	if image.get_size() != transparent_image.get_size():
 		var size = transparent_image.get_size()
-		image.resize(size.x, size.y)
+		image.resize(size.x, size.y, Image.INTERPOLATE_LANCZOS)
 	var rect = image.get_used_rect()
 	
 	#image.blit_rect(transparent_image, rect,Vector2(0,0))	

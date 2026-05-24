@@ -1290,6 +1290,14 @@ func set_latest_activity_script(script):
 
 func get_latest_activity_script():
 	return _latest_activity_script
+	
+func get_attack_defender(script = null):
+	if !script:
+		script = get_latest_activity_script()
+	if !script:
+		return null
+	var defender = script.subjects[0] if script.subjects else null
+	return defender	
 
 func prevent_value(script, property, amount_prevented):
 		var script_definition = script.script_definition

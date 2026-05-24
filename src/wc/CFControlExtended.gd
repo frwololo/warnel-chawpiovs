@@ -327,6 +327,15 @@ func init_settings_from_file() -> void:
 	.init_settings_from_file()
 	#Settings default values
 	game_settings = WCUtils.merge_dict(CFConst.DEFAULT_SETTINGS, game_settings,  true)
+	
+	#once game setings are loaded (+contents of file merged into default),
+	#we expand missing keys from default OS values
+	for feature in CFConst.OS_DEFAULT_SETTINGS:
+		if OS.has_feature(feature):
+			var defaults = CFConst.OS_DEFAULT_SETTINGS[feature]
+			for key in defaults:
+				if !game_settings.has(key):
+					game_settings[key] = defaults[key]
 	save_settings() #will generate settings file on disc if not exist yet
 
 func get_card_name_by_id(id):

@@ -62,6 +62,8 @@ func _ready():
 	if status == ANIMATION_STATUS.NONE:
 		self.visible = true
 		start_animation()
+		
+	resize()	
 	pass # Replace with function body.
 
 
@@ -403,3 +405,14 @@ func _input(event):
 		get_tree().is_input_handled()
 		_on_OKButton_pressed()
 		return
+
+func resize():
+	if !cfc.game_settings.get("gui_bigger_buttons", false):
+		return
+		
+	var dynamic_font = cfc.get_font("res://fonts/Bangers-Regular.ttf", 32)	
+	ok_button.add_font_override("font", dynamic_font)
+	var texture =load("res://assets/icons/checkbox_checked.png")
+	ok_checkbox.add_icon_override("checked", texture)
+	texture = load("res://assets/icons/checkbox_unchecked.png")
+	ok_checkbox.add_icon_override("unchecked", texture)

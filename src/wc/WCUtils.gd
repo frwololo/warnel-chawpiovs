@@ -596,3 +596,86 @@ static func replace_macros(json_card_data, local_macro_data, json_macro_data):
 	for macro_key in macro_data.keys():
 		result = replace_one_macro(result, macro_key, macro_data[macro_key])
 	return result	
+
+# Recursively deletes a directory and all its contents
+static func delete_dir_recursive(path: String) -> bool:
+	var dir := Directory.new()
+	
+	# Try to open the directory
+	if dir.open(path) != OK:
+		push_error("Failed to open directory: %s" % path)
+		return false
+	
+	dir.list_dir_begin(true, false)
+	var file_name = dir.get_next()
+	
+	while file_name != "":
+		var file_path = path.plus_file(file_name)
+		
+		if dir.current_is_dir():
+			# Recursively delete subdirectory
+			if not delete_dir_recursive(file_path):
+				dir.list_dir_end()
+				return false
+		else:
+			# Delete file
+			var err = dir.remove(file_path)
+			if err != OK:
+				push_error("Failed to delete file: %s" % file_path)
+				dir.list_dir_end()
+				return false
+		
+		file_name = dir.get_next()
+	
+	dir.list_dir_end()
+	
+	# Remove the now-empty directory itself
+	var err = dir.remove(path)
+	if err != OK:
+		push_error("Failed to remove directory: %s" % path)
+		return false
+	
+	return true
+
+
+#deletes all user additional resources
+const delete_pck_mark = "user://.delete_all_pck"
+static func mark_all_pck_for_deletion():
+	var file = File.new()
+	file.open(delete_pck_mark, File.WRITE)
+	file.store_string("1")
+	file.close()
+	
+static func check_delete_all_pck():	
+	var file = File.new()
+	
+	if !file.file_exists(delete_pck_mark):
+		return
+	
+	var dir = Directory.new()
+
+	var database = cfc.game_settings.get("database", {})
+	if typeof(database) != TYPE_DICTIONARY:
+		var _error = 1
+		#TODO error
+		return
+
+	#for each set, try to load package files for it
+	#loading data from a file overrides the previous one, so a package file
+	#has higher priority (its content will override previously loaded ones if they exist)
+	#lower priority <<< higher priority
+	#res pck <<< res zip <<< user pck <<< user zip
+	#user files have priority to let users put mods in their user folder
+	#zip files have priority because I have found they have better compatibility
+	# (pck files will refuse to load if wrong godot version number for example)
+	# see https://www.reddit.com/r/godot/comments/11pfoon/comment/jbxyp2x/
+	for set in database.keys() + CFConst.ALLOWED_PCK_NAMES:
+		for folder in ["user://"]:		
+			for format in [".pck", ".zip"]:
+				var filename = folder + set + format
+				if file.file_exists(filename):
+					var result = dir.remove(filename)
+					var _tmp = result
+	
+	dir.remove(delete_pck_mark)
+	return

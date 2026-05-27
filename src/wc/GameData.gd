@@ -2060,7 +2060,6 @@ func victory():
 	theAnnouncer.simple_announce(announce_settings, true )
 	
 func first_player_hero_id():
-	#TODO
 	return _first_player_hero_id
 
 func get_first_player():

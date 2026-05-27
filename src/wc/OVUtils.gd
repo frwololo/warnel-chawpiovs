@@ -85,6 +85,8 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 		var hero_card = gameData.get_identity_card(int(hero_id))
 		results.append(hero_card)	
 		return results	
+	
+	var owner:WCCard = script.owner
 					
 	match _subject_request:
 		"function":
@@ -94,7 +96,6 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 				var subjects = call(func_name, func_params, script)
 				results += subjects
 		"flip_side":
-			var owner:WCCard = script.owner
 			var back_code = owner.get_card_back_code()
 			if (back_code):
 				var new_card = gameData.retrieve_from_side_or_instance(back_code,owner.get_owner_hero_id())
@@ -115,9 +116,15 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 		"current_subject":
 			results = script.subjects		
 		SP.KEY_SUBJECT_V_HOST:
-			var owner:WCCard = script.owner
 			if (owner.current_host_card):
 				results.append(owner.current_host_card)
+		SP.KEY_SUBJECT_V_ATTACHMENTS:
+			var host = script.script_definition.get(SP.KEY_ATTACHMENTS_HOST, "self")
+			host = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : host})
+			var subjects_array = host.attachments
+			for c in subjects_array:
+				if SP.check_validity(c, script.script_definition, "attachment", owner):
+					results.append(c)			
 		SP.KEY_SUBJECT_V_MY_HERO:
 			var hero_card = get_script_identity(script, trigger_details)
 			if (hero_card and hero_card.is_hero_form()):
@@ -297,9 +304,10 @@ static func func_name_run(object, func_name, func_params, script = null):
 			result = 0
 
 	var multiplier = func_params.get("multiplier", 1)
-	var divider:int = int(func_params.get("divider", 1))	
+	var divider:int = int(func_params.get("divider", 1))
+	var plus:int = int(func_params.get("plus", 0))		
 	if typeof(result) in [TYPE_INT]:
-		result = result * multiplier / divider
+		result = (result + plus) * multiplier / divider
 	
 	if typeof(result) in [TYPE_INT, TYPE_BOOL] and reverse_result:
 		if result:

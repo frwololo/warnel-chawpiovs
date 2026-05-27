@@ -1491,6 +1491,12 @@ func execute_scripts(
 		rules.erase("for_each_player")
 		for i in gameData.get_team_size():
 			var hero_id = i+1
+			
+			if rules.get("exclude_first_player", false):
+				if hero_id == gameData.first_player_hero_id():
+					rules.erase("exclude_first_player")
+					continue
+					
 			var hero_triggers = trigger_details.duplicate()
 			hero_triggers["override_hero_id"] = hero_id
 			hero_triggers["state_scripts_dict"] = state_scripts_dict.duplicate()
@@ -1940,24 +1946,25 @@ func remove_threat(modification: int, script = null) -> int:
 		action_owner = script.owner
 		var type = action_owner.get_property("type_code", "")
 		if !type in ["hero", "ally", "alter_ego"]:
-			action_owner = null #WCScriptingEngine._get_identity_from_script(script)
+			action_owner = WCScriptingEngine._get_identity_from_script(script)
 	
+	var bypass_crisis = action_owner.get_property("bypass_crisis", 0, true) if action_owner else 0
+	bypass_crisis = bypass_crisis or (script and script.has_tag("bypass_crisis"))
 	#Crisis special case: can't remove threat from main scheme
-	if (script and script.has_tag("bypass_crisis")) or\
-	 (action_owner and action_owner.get_property("bypass_crisis", 0, true)):
-		pass
-	else:
-		if "main_scheme" == properties.get("type_code", "false"):
-			var all_cards:Array = cfc.NMAP.board.get_all_cards()
-			#some main schemes such as countdown to oblivion give themselves crisis,
-			#so it's ok to include the card itself in there
-			for card in all_cards:
-				#we add all acceleration tokens	
-				var crisis = card.get_property("scheme_crisis", 0, true)
-				if crisis:
-					if !self in card.get_active_main_schemes(): #last verification to make sure that the crisis card considers this main scheme as an active main scheme
-						crisis = false
-				if crisis:
+	if "main_scheme" == properties.get("type_code", "false"):
+		var all_cards:Array = cfc.NMAP.board.get_all_cards()
+		#some main schemes such as countdown to oblivion give themselves crisis,
+		#so it's ok to include the card itself in there
+		for card in all_cards:
+			#we add all acceleration tokens	
+			var crisis = card.get_property("scheme_crisis", 0, true)
+			if crisis:
+				if !self in card.get_active_main_schemes(): #last verification to make sure that the crisis card considers this main scheme as an active main scheme
+					crisis = false
+			if crisis:
+				if bypass_crisis:
+					scripting_bus.emit_signal_on_stack("bypass_crisis_happened", action_owner, {"target": card})
+				else:
 					card.hint("Crisis!", Color8(200, 50, 50))
 					self.hint("Crisis!", Color8(200, 50, 50))
 					return CFConst.ReturnCode.FAILED
@@ -2193,6 +2200,12 @@ func common_pre_run(sceng) -> void:
 			scripts = []
 			for i in gameData.get_team_size():
 				var hero_id = i+1
+
+				if script_definition.get("exclude_first_player", false):
+					if hero_id == gameData.first_player_hero_id():
+						script_definition.erase("exclude_first_player")
+						continue
+				
 				var new_script_definition = script_definition.duplicate(true)
 				new_script_definition.erase("for_each_player")
 				for v in zones: #["hand", "encounters_facedown","deck" ,"discard","enemies","identity","allies","upgrade_support"]:
@@ -2557,9 +2570,21 @@ func set_confused(value:bool = true):
 func remove_confused():
 	set_confused(false)
 
-func can_change_form(voluntary:= false) -> bool:
+func can_change_form(voluntary:= false, to_card_id = "") -> bool:
 	if self.get_property("cannot_change_form", 0, true):
 		return false
+	
+	#cannot change to alter ego" restriction
+	var expected_form = "alter_ego"
+	if self.is_alter_ego_form():
+		expected_form == "hero"
+	if to_card_id:
+		var card_data = cfc.get_card_by_id(to_card_id)
+		expected_form = card_data["type_code"]		
+	if expected_form == "alter_ego":
+		if self.get_property("cannot_change_to_alter_ego", 0, true):
+			return false	
+		
 	if voluntary:
 		return self.tokens.get_token_count("__can_change_form") > 0
 	return true
@@ -2589,7 +2614,7 @@ func change_form(voluntary = true, to_card_id = "") -> bool:
 		return false
 	#players have one voluntary change form per turn
 	#we check for that
-	if !can_change_form(voluntary):	
+	if !can_change_form(voluntary, to_card_id):	
 		return false
 	if (voluntary):
 		self.tokens.mod_token("__can_change_form", 0, true)
@@ -2847,6 +2872,10 @@ func is_token_status(params := {}, script:ScriptObject= null) -> int:
 	if !subject:
 		return 0
 	
+	var forced_status = subject.get_property("force_" + token_name, 0)
+	if forced_status:
+		return 1
+	
 	var trigger_value = subject.get_max_tokens(token_name)
 
 	#if there is no max, we consider the trigger to be at 1
@@ -2928,6 +2957,18 @@ func is_alter_ego_form(params = {}, script:ScriptObject = null) -> bool:
 	if "alter_ego" == subject.properties.get("type_code", ""):
 		return true
 	return false
+
+func is_defending(params = {}, script:ScriptObject = null) -> bool:
+	var subject = get_param_subject(params, script)
+
+	if !subject:
+		return false
+		
+	var current_defender = gameData.get_attack_defender()
+	if !current_defender:
+		return false
+		
+	return current_defender == subject
 
 func get_script_bool_property(params, script:ScriptObject = null) -> bool:
 	var property = params.get("property", "")
@@ -3068,6 +3109,41 @@ func count_tokens(params, script:ScriptObject = null) -> int:
 	
 	return count
 
+#returns true if this card (or script subject)'s property contains specified text
+func property_contains(params, script:ScriptObject = null) -> int:
+	var subjects = get_param_subjects(params, script)
+	if !subjects:
+		return 0
+		
+	var and_or =  params.get("and_or", "or")
+	var values = params.get("value", [])
+	if typeof (values) == TYPE_STRING:
+		values = [values]
+
+	var property = params.get("property", "")
+	if !property:
+		return 0
+	
+
+
+	if !values:
+		return 0
+		
+	for subject in subjects:
+		var text = subject.get_property(property, "", true)
+		text = text.to_lower()
+		for value in values:
+			value = value.to_lower
+			if and_or == "or":
+				if value in text:
+					return 1
+			else:
+				if !value in text:
+					return 0
+	if and_or =="or":
+		return 0
+	return 1
+
 #returns true if this card (or script subject) has a given trait
 func has_trait(params, script:ScriptObject = null) -> int:
 	var subjects = get_param_subjects(params, script)
@@ -3100,7 +3176,7 @@ func has_trait(params, script:ScriptObject = null) -> int:
 			else:
 				if !subject.get_property(trait, 0, true):
 					return 0
-	if and_or =="or":
+	if and_or == "or":
 		return 0
 	return 1
 

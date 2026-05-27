@@ -317,8 +317,19 @@ func _filter_decks(hero_id = ""):
 		for deck_id in deck_ids:
 			decks.append(cfc.deck_definitions[deck_id])
 	else:
-		for hero_id in cfc.idx_hero_to_deck_ids:
-			var deck_ids = cfc.idx_hero_to_deck_ids[hero_id]
+		var names_to_id = {}
+		for my_hero_id in cfc.idx_hero_to_deck_ids:
+			var hero_card_data = cfc.get_card_by_id(my_hero_id)
+			var alter_ego_id =  hero_card_data.get("back_card_code", "undef")			
+			var hero_name = cfc.get_card_name_by_id(my_hero_id)
+			var alter_ego_name = cfc.get_card_name_by_id(alter_ego_id)
+			names_to_id[hero_name + " - " + alter_ego_name] = my_hero_id
+		
+		var ordered_names = names_to_id.keys()
+		ordered_names.sort()
+		for hero_name in ordered_names:
+			var my_hero_id = names_to_id[hero_name] 		
+			var deck_ids = cfc.idx_hero_to_deck_ids[my_hero_id]
 			for deck_id in deck_ids:
 				decks.append(cfc.deck_definitions[deck_id])		
 

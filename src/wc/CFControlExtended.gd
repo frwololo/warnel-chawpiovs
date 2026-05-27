@@ -331,7 +331,7 @@ func init_settings_from_file() -> void:
 	#once game setings are loaded (+contents of file merged into default),
 	#we expand missing keys from default OS values
 	for feature in CFConst.OS_DEFAULT_SETTINGS:
-		if OS.has_feature(feature):
+		if os_has_feature(feature):
 			var defaults = CFConst.OS_DEFAULT_SETTINGS[feature]
 			for key in defaults:
 				if !game_settings.has(key):
@@ -1147,6 +1147,25 @@ func get_cache_filename(filename):
 	cached_filename = "user://cache/" + str(cached_filename) + ".dat"
 	return cached_filename	
 
+#deletes cards cache files.
+#optional display_container displays a warning message in popu
+func clear_cards_cache(display_container= null):
+	var cache_folder = "user://cache/"
+	var files = CFUtils.list_files_in_directory( cache_folder)
+	var dir = Directory.new()
+	for file in files:
+		dir.remove(cache_folder + file)
+	
+	if display_container:	
+		var message = "please restart the game for changes to take effect"
+		var msg_dialog:AcceptDialog = AcceptDialog.new()
+		msg_dialog.window_title = message
+		display_container.add_child(msg_dialog)
+		msg_dialog.popup_centered()		
+
+func delete_all_images():
+	WCUtils.delete_dir_recursive("user://Sets/images")
+
 func load_script_definition_from_cache(script_file) -> Dictionary:
 	if CFConst.DEBUG_DISABLE_SCRIPT_DATABASE_CACHE:
 		return {}
@@ -1559,6 +1578,10 @@ func preload_pck():
 		return
 	
 	var file = File.new()
+	
+
+	#checks if usr pck are marked for deletion and deletes them appropriately
+	WCUtils.check_delete_all_pck()
 	
 	#for each set, try to load package files for it
 	#loading data from a file overrides the previous one, so a package file

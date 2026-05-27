@@ -464,6 +464,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/core/Card/TokenDrawer.gd"
 }, {
+"base": "ScrollContainer",
+"class": "TouchScrollContainer",
+"language": "GDScript",
+"path": "res://src/core/Utils/TouchScrollContainer.gd"
+}, {
 "base": "Reference",
 "class": "UserInteractionAuthority",
 "language": "GDScript",
@@ -601,6 +606,7 @@ _global_script_class_icons={
 "TestSuite": "",
 "Token": "",
 "TokenDrawer": "",
+"TouchScrollContainer": "",
 "UserInteractionAuthority": "",
 "ViewportCardFocus": "",
 "WCAlterantEngine": "",

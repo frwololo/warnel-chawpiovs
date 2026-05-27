@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://src/wc/deckbuilder/DeckManagement.gd" type="Script" id=1]
 [ext_resource path="res://themes/darktheme/darktheme.theme" type="Theme" id=2]
 [ext_resource path="res://themes/darktheme/fonts/Bangers/Bangers-Regular.ttf" type="DynamicFontData" id=3]
 [ext_resource path="res://fonts/Bangers-Regular.ttf" type="DynamicFontData" id=4]
 [ext_resource path="res://fonts/comfortaa/Comfortaa-Bold.ttf" type="DynamicFontData" id=5]
+[ext_resource path="res://src/core/Utils/TouchScrollContainer.gd" type="Script" id=6]
 
 [sub_resource type="DynamicFont" id=1]
 size = 32
@@ -107,6 +108,7 @@ color = Color( 0.145098, 0.145098, 0.145098, 1 )
 unique_name_in_owner = true
 margin_right = 1870.0
 scroll_horizontal_enabled = false
+script = ExtResource( 6 )
 
 [node name="Decks" type="GridContainer" parent="MainMenu/Outercontainer/DecksContainer/VBoxContainer/MarginContainer/DecksScroll"]
 unique_name_in_owner = true

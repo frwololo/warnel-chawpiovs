@@ -26,6 +26,8 @@ const KEY_SUBJECT_CURRENT_ACTIVATION_ENEMY:= "current_activation_enemy"
 const KEY_SUBJECT_CURRENT_ACTIVATION_TARGET:= "current_activation_target"
 const KEY_SUBJECT_CURRENT_HERO_TARGET:= "current_hero_target"
 const KEY_SUBJECT_EVENT_SOURCE_HERO:= "event_source_hero"
+const KEY_SUBJECT_V_ATTACHMENTS:= "attachments"
+const KEY_ATTACHMENTS_HOST:= "attachments_host"
 
 const FILTER_HOST_OF := "filter_is_host_of"
 const FILTER_HOSTED_BY  := "filter_is_hosted_by"
@@ -350,8 +352,17 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 		
 		var bypass_guard = action_character.get_property("bypass_guard", 0, true) if action_character else 0
 		#check for "Guard" keyword			
-		if !bypass_guard and (card in gameData.get_villains()):
+		if card in gameData.get_villains():
 			var all_cards = cfc.NMAP.board.get_all_cards()
+			
+			#guard_all keyword
+			for other_card in all_cards:
+				if other_card == card:
+					continue
+				if other_card.get_property("guard_all", 0, true) and other_card.is_faceup: #TODO better way to ignore face down cards?
+					return false
+			
+			#guard keyword				
 			if owner_card:		
 				var hero_id = owner_card.get_controller_hero_id()
 				if hero_id:
@@ -367,7 +378,10 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 						if !card.get_property("guard", 0, true):
 							return false
 					else:
-						return false
+						if bypass_guard:
+							scripting_bus.emit_signal_on_stack("bypass_guard_happened", action_character, {"target": other_card})
+						else:
+							return false
 
 	#check for condition preventing thwart
 	if ((script_name == "thwart") or ("thwart" in tags)):
@@ -379,7 +393,7 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 		
 		var bypass_patrol = action_character.get_property("bypass_patrol", 0, true) if action_character else 0		
 		#check for special patrol condition	on thwart	
-		if !bypass_patrol and (card in gameData.get_main_schemes()):
+		if card in gameData.get_main_schemes():
 			var all_cards = cfc.NMAP.board.get_all_cards()
 			if owner_card:		
 				var hero_id = owner_card.get_controller_hero_id()
@@ -390,7 +404,10 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 					continue
 				if other_card.get_property("patrol", 0, true) and other_card.is_faceup: #TODO better way to ignore face down cards?
 					if card in other_card.get_active_main_schemes(): #last verification to make sure that the patrol card considers this main scheme as an active main scheme
-						return false
+						if bypass_patrol:
+							scripting_bus.emit_signal_on_stack("bypass_patrol_happened", action_character, {"target": other_card})
+						else:
+							return false
 
 	var type_code = card.get_property("type_code", "")
 	#cannot thwart side schemes

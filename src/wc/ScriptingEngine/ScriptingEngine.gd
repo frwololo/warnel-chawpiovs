@@ -982,6 +982,14 @@ func attach_to_card(script: ScriptTask) -> int:
 	var host = script.subjects[0]
 	if host.get_property("cannot_have_attachments", 0, true):
 		return CFConst.ReturnCode.FAILED
+
+	if host.get_property("cannot_have_upgrade_attachments", 0, true):
+		if script.owner.get_property("type_code", "") == "upgrade":
+			return CFConst.ReturnCode.FAILED	
+
+	if host.get_property("cannot_have_player_card_attachments", 0, true):
+		if script.owner.get_controller_hero_id():
+			return CFConst.ReturnCode.FAILED	
 	
 	if !costs_dry_run():
 		if script.has_tag("disable_attach_trigger"):
@@ -1878,9 +1886,12 @@ func enemy_activates(script: ScriptTask) -> int:
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
 	retcode = CFConst.ReturnCode.FAILED
+	
+	var target_hero_id = script.retrieve_integer_property("target_hero_id")
+	
 	for card in script.subjects:
 		retcode = CFConst.ReturnCode.CHANGED
-		gameData.add_enemy_activation(card, "activate", script)
+		gameData.add_enemy_activation(card, "activate", script, target_hero_id)
 	return retcode	
 
 func enemy_schemes(script: ScriptTask) -> int:
@@ -2083,7 +2094,17 @@ func heal(script: ScriptTask) -> int:
 	var set_to_mod = script.get_property("set_to_mod", false)
 		
 	for subject in script.subjects:
+		if subject.get_property("cannot_be_healed_by_player_cards", 0, true):
+			if script.owner.get_controller_hero_id(): 
+				#if attempt to heal with a player card on a target that cannot,
+				#fail for cost checks, skips this card for actual run
+				if (costs_dry_run()):
+					return CFConst.ReturnCode.FAILED	
+				else:
+					continue		
+			
 		if (costs_dry_run()): #healing as a cost can be used for "is_else" conditions, when saying "if no healing happened,..."
+			#failed check above, we abort for a cost check
 			if (!subject.can_heal(amount)):
 				return CFConst.ReturnCode.FAILED #if at least one subject can't pay, we fail it
 		else:		
@@ -2117,7 +2138,7 @@ func deal_encounter(script: ScriptTask) -> int:
 	#TODO
 	#If not specified, Probably need to deal to the first player instead of hero #1
 	if !owner_hero_id:
-		owner_hero_id = 1
+		owner_hero_id = gameData.first_player_hero_id()
 	
 	var immediate_reveal = script.script_definition.get("immediate_reveal", false)
 	
@@ -2129,6 +2150,9 @@ func deal_encounter(script: ScriptTask) -> int:
 					gameData.deal_one_encounter_to(subject.get_controller_hero_id(), immediate_reveal)
 			_: #other uses cases, we assume that's the card we want to reveal
 				var target_hero_id = script.get_property("target_hero_id", owner_hero_id)
+				if script.get_property("target_identity"):
+					var target_identity = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : script.get_property("target_identity")})
+					target_hero_id = target_identity.get_controller_hero_id() if target_identity else 1				
 				gameData.deal_one_encounter_to(target_hero_id, immediate_reveal, subject)
 		
 		retcode = CFConst.ReturnCode.CHANGED
@@ -2321,9 +2345,7 @@ func change_form(script: ScriptTask) -> int:
 	
 	for subject in script.subjects: #should be really one subject only, generally
 		var hero = subject
-		#todo check that subject is indeed a hero
-		if !hero.can_change_form(is_manual):
-			return CFConst.ReturnCode.FAILED
+
 			
 		var to_card_id = to_card
 		if to_card_id == "other_hero_form":
@@ -2339,6 +2361,10 @@ func change_form(script: ScriptTask) -> int:
 					break
 			if !found:
 				return CFConst.ReturnCode.FAILED		
+
+		#todo check that subject is indeed a hero
+		if !hero.can_change_form(is_manual, to_card_id):
+			return CFConst.ReturnCode.FAILED
 		
 		if (!costs_dry_run()):
 		#Get my current zone

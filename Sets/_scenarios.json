@@ -409,7 +409,9 @@
 	"16106": {
 		"code": "16106",
 		"name": "Interception Imminent",
-		"modular_default": ["kree_militant"],
+		"modular_default": [
+			"kree_militant"
+		],
 		"encounter_sets": [
 			"ronan",
 			"power_stone",
@@ -954,10 +956,14 @@
 	"32063": {
 		"code": "32063",
 		"name": "Stalked by Sabretooth",
-		"modular_default": [],
+		"modular_default": [
+			"brotherhood",
+			"mystique"
+		],
 		"encounter_sets": [
-			"TODO",
+			"sabretooth",
 			"Standard",
+			"Modular",
 			"Modular"
 		],
 		"villains": [
@@ -966,9 +972,10 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"sabretooth",
 				"Standard",
 				"modular",
+				"Modular",
 				"expert"
 			],
 			"villains": [
@@ -980,9 +987,12 @@
 	"32087": {
 		"code": "32087",
 		"name": "Night of the Sentinels",
-		"modular_default": [],
+		"modular_default": [
+			"sentinels"
+		],
 		"encounter_sets": [
-			"TODO",
+			"project_wideawake",
+			"zero_tolerance",
 			"Standard",
 			"Modular"
 		],
@@ -992,7 +1002,8 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"project_wideawake",
+				"zero_tolerance",
 				"Standard",
 				"modular",
 				"expert"
@@ -1080,5 +1091,5 @@
 				"Magneto - 3"
 			]
 		}
-	}	
+	}
 }

@@ -73,15 +73,36 @@ func reposition_vbc():
 	var spacer = 15
 	if _current_focus_source and is_instance_valid(_current_focus_source):	
 		var card = _current_focus_source
+		
+		#
+		#use cases where we don't want to show the preview
+		#
+		var show_preview = true
+		#settings can choose to hide cards in hands
 		if card.get_state_exec() == "hand":
-			var show_preview = cfc.game_settings.get("show_hand_cards_preview", true)
-			if !show_preview:
-				$VBC.visible = false
-				return
+
+			show_preview = cfc.game_settings.get("show_hand_cards_preview", true)
+		
+		#if the screen is crowded with menus, we don't show the preview			
+		if gameData.theAnnouncer.is_right_side_announce_ongoing():
+			if cfc.get_modal_menu():
+				show_preview = false
+		
+		
+		if !show_preview:
+			$VBC.visible = false
+			return
+		
+		
+			
+		#We're showing the preview! keep processing	
 		var multiplier =  card.focused_scale * cfc.curr_scale		
 		display_size = card.canonical_size * multiplier
 		var board_card_size = card.card_size * card.scale
 		var board_top_left_corner = card._control.get_global_position()
+		var source_bounding:Rect2 = Rect2(board_top_left_corner,board_card_size)
+		if !source_bounding.has_point(mouse_pos):
+			mouse_pos = board_top_left_corner + Vector2(10, 10)		
 		if (card._horizontal and card.get_is_faceup()):
 			$VBC.rect_rotation = 90
 			vbc_rect_offset = Vector2 ( display_size.y, 0)
@@ -104,13 +125,14 @@ func reposition_vbc():
 			display_position = Vector2(viewport_size.x - display_size.x - spacer,  spacer)
 		
 		#last resort if I end up overlapping my own card
-
 		var vbc_bounding:Rect2 = Rect2(display_position, display_size)
-		var source_bounding:Rect2 = Rect2(board_top_left_corner,board_card_size)
 		if vbc_bounding.intersects( source_bounding):
 			display_position.x = board_top_left_corner.x + board_card_size.x + spacer
 			if display_position.x + display_size.x + (spacer*2) >= viewport_size.x :
 				display_position.x = spacer
+		
+
+					
 		#For testing: create two ColorRect nodes as children of Main.tscn
 		#named  ColorRect and ColorRect2
 #		var color_rect = get_node("%ColorRect")

@@ -129,15 +129,16 @@ func _ready() -> void:
 func _process(_delta:float):
 	flush_cache_as_needed()
 
+func reset_settings_to_default():
+	var dir = Directory.new()
+	dir.remove(CFConst.SETTINGS_FILENAME)
+	game_settings = {}
+	init_settings_from_file()
+	
 func _setup() -> void:
 	init_settings_from_file()
 	init_font_cache()
-	if not game_settings.has('fancy_movement'):
-		game_settings['fancy_movement'] = CFConst.FANCY_MOVEMENT
-	if not game_settings.has('focus_style'):
-		game_settings['focus_style'] = CFConst.FOCUS_STYLE
-	if not game_settings.has('hand_use_oval_shape'):
-		game_settings['hand_use_oval_shape'] = CFConst.HAND_USE_OVAL_SHAPE
+
 	# We reset our node mapping variables every time
 	# as they repopulate during unit testing many times.
 	# warning-ignore:return_value_discarded
@@ -395,6 +396,13 @@ func init_settings_from_file() -> void:
 		if typeof(data) == TYPE_DICTIONARY:
 			game_settings = data.duplicate()
 
+	if not game_settings.has('fancy_movement'):
+		game_settings['fancy_movement'] = CFConst.FANCY_MOVEMENT
+	if not game_settings.has('focus_style'):
+		game_settings['focus_style'] = CFConst.FOCUS_STYLE
+	if not game_settings.has('hand_use_oval_shape'):
+		game_settings['hand_use_oval_shape'] = CFConst.HAND_USE_OVAL_SHAPE
+
 
 func set_font_cache() -> void:
 #	var timer = Timer.new()
@@ -457,6 +465,7 @@ func clear() -> void:
 	# We need to give Godot time to deinstance all nodes.
 	yield(get_tree().create_timer(0.1), "timeout")
 	NMAP.clear()
+
 
 
 # This function exits the card-game part of the framework
@@ -572,6 +581,19 @@ func _input(event):
 		set_fullscreen(!OS.window_fullscreen)
 		get_tree().set_input_as_handled()	
 
+func os_has_feature(tag_name) -> bool:
+	if _is_steam_deck():
+		if tag_name == "mobile":
+			return true
+			
+	return OS.has_feature(tag_name)
+
 func set_fullscreen(value):
 	game_settings["fullscreen"] = value
 	OS.set_window_fullscreen(value)
+
+func _is_steam_deck() -> bool:
+	if "AMD CUSTOM APU 0405" in OS.get_processor_name():
+		return true
+	else:
+		return false

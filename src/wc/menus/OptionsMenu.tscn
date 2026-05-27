@@ -30,6 +30,7 @@ theme = ExtResource( 4 )
 
 [node name="general" type="MarginContainer" parent="PanelContainer"]
 unique_name_in_owner = true
+visible = false
 margin_left = 2.0
 margin_top = 2.0
 margin_right = 1918.0
@@ -151,23 +152,23 @@ size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "Restart"
 
-[node name="MainMenuButton" type="Button" parent="PanelContainer/general/VBoxContainer"]
+[node name="AdvancedSettingsButton" type="Button" parent="PanelContainer/general/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 750.0
 margin_right = 1896.0
 margin_bottom = 825.0
 size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
-text = "Main Menu"
+text = "Advanced Settings"
 
-[node name="ClearCacheButton" type="Button" parent="PanelContainer/general/VBoxContainer"]
+[node name="MainMenuButton" type="Button" parent="PanelContainer/general/VBoxContainer"]
+unique_name_in_owner = true
 margin_top = 875.0
 margin_right = 1896.0
 margin_bottom = 950.0
-size_flags_horizontal = 3
 size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
-text = "Clear Cache"
+text = "Main Menu"
 
 [node name="BackButton" type="Button" parent="PanelContainer/general/VBoxContainer"]
 unique_name_in_owner = true
@@ -230,65 +231,141 @@ text = "Adventure Mode"
 [node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/gameplay/VBoxContainer"]
 margin_top = 204.0
 margin_right = 1896.0
-margin_bottom = 234.0
+margin_bottom = 254.0
 
 [node name="Label" type="Label" parent="PanelContainer/gameplay/VBoxContainer/HBoxContainer2"]
+margin_top = 10.0
 margin_right = 156.0
-margin_bottom = 30.0
+margin_bottom = 40.0
 text = "Music volume "
 
 [node name="CenterContainer" type="CenterContainer" parent="PanelContainer/gameplay/VBoxContainer/HBoxContainer2"]
 margin_left = 159.0
 margin_right = 509.0
-margin_bottom = 30.0
+margin_bottom = 50.0
 
 [node name="ColorRect" type="ColorRect" parent="PanelContainer/gameplay/VBoxContainer/HBoxContainer2/CenterContainer"]
 margin_right = 350.0
-margin_bottom = 30.0
-rect_min_size = Vector2( 350, 30 )
+margin_bottom = 50.0
+rect_min_size = Vector2( 350, 50 )
 color = Color( 0.286275, 0.278431, 0.278431, 1 )
 
 [node name="MusicVol" type="HSlider" parent="PanelContainer/gameplay/VBoxContainer/HBoxContainer2/CenterContainer"]
 unique_name_in_owner = true
 margin_left = 25.0
-margin_top = 8.0
 margin_right = 325.0
-margin_bottom = 21.0
-rect_min_size = Vector2( 300, 10 )
+margin_bottom = 50.0
+rect_min_size = Vector2( 300, 50 )
 rounded = true
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="PanelContainer/gameplay/VBoxContainer"]
-margin_top = 260.0
+margin_top = 280.0
 margin_right = 1896.0
-margin_bottom = 290.0
+margin_bottom = 330.0
 
 [node name="Label" type="Label" parent="PanelContainer/gameplay/VBoxContainer/HBoxContainer3"]
+margin_top = 10.0
 margin_right = 135.0
-margin_bottom = 30.0
+margin_bottom = 40.0
 text = "SFX volume "
 
 [node name="CenterContainer" type="CenterContainer" parent="PanelContainer/gameplay/VBoxContainer/HBoxContainer3"]
 margin_left = 138.0
 margin_right = 488.0
-margin_bottom = 30.0
+margin_bottom = 50.0
 
 [node name="ColorRect" type="ColorRect" parent="PanelContainer/gameplay/VBoxContainer/HBoxContainer3/CenterContainer"]
 margin_right = 350.0
-margin_bottom = 30.0
-rect_min_size = Vector2( 350, 30 )
+margin_bottom = 50.0
+rect_min_size = Vector2( 350, 50 )
 color = Color( 0.286275, 0.278431, 0.278431, 1 )
 
 [node name="SfxVol" type="HSlider" parent="PanelContainer/gameplay/VBoxContainer/HBoxContainer3/CenterContainer"]
 unique_name_in_owner = true
 margin_left = 25.0
-margin_top = 8.0
 margin_right = 325.0
-margin_bottom = 21.0
-rect_min_size = Vector2( 300, 10 )
+margin_bottom = 50.0
+rect_min_size = Vector2( 300, 50 )
 rounded = true
 
 [node name="GameplayBackButton" type="Button" parent="PanelContainer/gameplay/VBoxContainer"]
 unique_name_in_owner = true
+margin_top = 1001.0
+margin_right = 1896.0
+margin_bottom = 1076.0
+size_flags_vertical = 10
+custom_fonts/font = SubResource( 2 )
+text = "BACK"
+
+[node name="advanced" type="MarginContainer" parent="PanelContainer"]
+unique_name_in_owner = true
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 1918.0
+margin_bottom = 1078.0
+custom_constants/margin_right = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/advanced"]
+margin_right = 1896.0
+margin_bottom = 1076.0
+custom_constants/separation = 26
+
+[node name="Label" type="Label" parent="PanelContainer/advanced/VBoxContainer"]
+margin_right = 1896.0
+margin_bottom = 56.0
+custom_fonts/font = SubResource( 1 )
+text = "Advanced Settings"
+align = 1
+valign = 1
+
+[node name="AdvancedSettingsContainer" type="VBoxContainer" parent="PanelContainer/advanced/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 82.0
+margin_right = 1896.0
+margin_bottom = 82.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/advanced/VBoxContainer"]
+margin_top = 108.0
+margin_right = 1876.0
+margin_bottom = 183.0
+custom_constants/separation = 183
+
+[node name="ResetSettingsButton" type="Button" parent="PanelContainer/advanced/VBoxContainer/HBoxContainer"]
+margin_right = 463.0
+margin_bottom = 75.0
+size_flags_horizontal = 3
+size_flags_vertical = 10
+custom_fonts/font = SubResource( 2 )
+text = "Reset Settings"
+
+[node name="DeleteResourcesButton" type="Button" parent="PanelContainer/advanced/VBoxContainer/HBoxContainer"]
+margin_left = 646.0
+margin_right = 1230.0
+margin_bottom = 75.0
+size_flags_horizontal = 3
+size_flags_vertical = 10
+custom_fonts/font = SubResource( 2 )
+text = "Delete User PCK/ZIP files"
+
+[node name="DeleteImgButton" type="Button" parent="PanelContainer/advanced/VBoxContainer/HBoxContainer"]
+margin_left = 1413.0
+margin_right = 1876.0
+margin_bottom = 75.0
+size_flags_horizontal = 3
+size_flags_vertical = 10
+custom_fonts/font = SubResource( 2 )
+text = "Delete card images"
+
+[node name="ClearCacheButton" type="Button" parent="PanelContainer/advanced/VBoxContainer"]
+margin_top = 554.0
+margin_right = 1896.0
+margin_bottom = 629.0
+size_flags_horizontal = 3
+size_flags_vertical = 10
+custom_fonts/font = SubResource( 2 )
+text = "Clear Cache"
+
+[node name="AdvancedSettingsBackButton" type="Button" parent="PanelContainer/advanced/VBoxContainer"]
 margin_top = 1001.0
 margin_right = 1896.0
 margin_bottom = 1076.0

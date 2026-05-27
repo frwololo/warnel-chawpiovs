@@ -667,26 +667,40 @@ const AUTO_KEYWORDS := {
 	"villainous" : "int",	
 	
 #additional ones not officially in the game
-	"cannot_leave_play": "int",
+	"attack_indirect_damage": "int",
+	"blank_abilities": "int",
+	"blank_printed_trigger_abilities": "int",
+
 	"bypass_crisis": "int",
 	"bypass_guard": "int",
 	"bypass_patrol": "int",
-	"invincible": "int",
+
+
+	"cannot_be_canceled": "int",
+	"cannot_be_blocked": "int",
+	"cannot_be_healed_by_player_cards": "int",	
+	"cannot_be_thwarted": "int",	
+	"cannot_change_form": "int",
+	"cannot_change_to_alter_ego": "int",	
+	"cannot_have_attachments": "int",	
+	"cannot_have_player_card_attachments": "int",	
+	"cannot_have_upgrade_attachments": "int",				
+	"cannot_leave_play": "int",	
 	"cannot_remove_threat": "int",
 	"cannot_ready": "int",
 	"cannot_ready_by_player_card": "int",
 	"cannot_thwart_side_schemes": "int",
-	"cannot_be_thwarted": "int",
-	"cannot_have_attachments": "int",
+
 	"excess_damage_boost": "int", #Rocket Raccoon's Follow Through card
 	"exclude_from_ally_limit": "int",
-	"attack_indirect_damage": "int",
-	"blank_abilities": "int",
-	"blank_printed_trigger_abilities": "int",
-	"cannot_change_form": "int",
-	"cannot_be_canceled": "int",
-	"cannot_be_blocked": "int",
-	"ignore_external_acceleration": "int",				
+
+	"force_confused": "int",
+	"force_stunned": "int",
+	
+	"guard_all": "int",
+	
+	"ignore_external_acceleration": "int",		
+	"invincible": "int",			
 }
 
 #list of events for which we don't show a GUI announce to the user by default
@@ -841,17 +855,17 @@ const ATTEMPT_TO_GUESS_IMAGE_URL := true
 #and both entries have a shared key, the one at the top will take precedence
 const OS_DEFAULT_SETTINGS := {
 	"Android": {
-		"can_toggle_fullscreen": "false",
+		"can_toggle_fullscreen": false,
 		"gui_bigger_buttons": true,		
 		"gui_card_focused_scale": 3,
 
 	},
 	"pc": {
-		"can_toggle_fullscreen": "true",
+		"can_toggle_fullscreen": true,
 		"gui_card_focused_scale": 2
 	},		
 	"mobile":{
-		"can_toggle_fullscreen": "false",
+		"can_toggle_fullscreen": false,
 		"gui_bigger_buttons": true,			
 		"gui_card_focused_scale": 3
 	},					

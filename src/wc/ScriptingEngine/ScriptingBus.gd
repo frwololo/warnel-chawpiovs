@@ -164,6 +164,13 @@ signal alter_ego_died(card,details)
 # warning-ignore:unused_signal
 signal card_leaves_play (card,details)
 
+# warning-ignore:unused_signal
+signal bypass_guard_happened (card,details)
+# warning-ignore:unused_signal
+signal bypass_crisis_happened (card,details)
+# warning-ignore:unused_signal
+signal bypass_patrol_happened (card,details)
+
 var registered_signals := {}
 var registered_interrupt_signals := {}
 enum SignalLevel {

@@ -5,7 +5,7 @@ extends Node2D
 onready var v_box_container = $PanelContainer/general/VBoxContainer
 onready var file_dialog = get_node("%FileDialog")
 onready var h_box_container = $PanelContainer/general/VBoxContainer/DebugContainer
-
+onready var advanced_settings_container = get_node("%AdvancedSettingsContainer")
 const NOTIFICATION_LEVELS := [
 	"noob",
 	"normal",
@@ -74,7 +74,17 @@ func on_button_pressed(_button_name : String) -> void:
 		"GameplayOptionsButton":
 			show_gameplay_options()
 		"ClearCacheButton":
-			clear_cache()			
+			clear_cache()	
+		"AdvancedSettingsButton":
+			show_advanced_settings()
+		"AdvancedSettingsBackButton":
+			hide_advanced_settings()
+		"ResetSettingsButton":
+			reset_settings()
+		"DeleteResourcesButton":
+			delete_resources()
+		"DeleteImgButton":
+			delete_images()			
 
 func get_cancel_button(tab_name):
 	match tab_name:
@@ -84,8 +94,8 @@ func get_cancel_button(tab_name):
 			return get_node("%BackButton")
 
 func select_tab(tab_name):
-	for tab in ["general", "gameplay"]:
-		get_node("%" + tab).visible = false
+	for tab in $PanelContainer.get_children():
+		tab.visible = false
 
 	get_node("%" + tab_name).visible = true
 	cfc.default_button_focus(get_node("%" + tab_name))
@@ -99,20 +109,45 @@ func show_gameplay_options():
 	load_options()
 	select_tab("gameplay")
 
-func clear_cache():
-	var cache_folder = "user://cache/"
-	var files = CFUtils.list_files_in_directory( cache_folder)
-	var dir = Directory.new()
-	for file in files:
-		dir.remove(cache_folder + file)
-		
-	var message = "please restart the game for changes to take effect"
-	var msg_dialog:AcceptDialog = AcceptDialog.new()
-	msg_dialog.window_title = message
-	$PanelContainer.add_child(msg_dialog)
-	msg_dialog.popup_centered()			
-	
+func hide_advanced_settings():
+	save_advanced_settings()
+	select_tab("general")
 
+func show_advanced_settings():
+	load_advanced_settings()	
+	select_tab("advanced")
+
+func clear_cache():
+	cfc.clear_cards_cache($PanelContainer)
+
+
+func warning(title, message, action):
+	var dialog:ConfirmationDialog = ConfirmationDialog.new()
+	dialog.window_title = title
+	dialog.set_text(message)		
+
+	dialog.connect("confirmed", self, action)
+	add_child(dialog)
+	dialog.popup_centered()			
+
+func reset_settings():
+	warning ("reset settings", "Settings will be reset to default.\nYou might lose some game progress!!!", "confirm_reset_settings")
+func delete_resources():
+	warning ("delete resources", "This will delete all zip/pck resource files at next startup.\nYou might have to redownload them!!!", "confirm_delete_resources")
+func delete_images():
+	warning ("delete images", "This will delete all downloaded images, the game will re-create them at next launch", "confirm_delete_images")			
+
+func confirm_reset_settings():
+	cfc.reset_settings_to_default()
+	load_advanced_settings()
+		
+func confirm_delete_resources():
+	WCUtils.mark_all_pck_for_deletion()
+	
+func confirm_delete_images():
+	cfc.delete_all_images()
+
+	
 func load_options():
 	var notifications_level = cfc.game_settings.get("notifications_level", "normal").to_lower()
 	var options_button:OptionButton = get_node("%NotificationsLevel")
@@ -150,6 +185,68 @@ func save_options():
 	var sfx_vol_slider:HSlider = get_node("%SfxVol")
 	var sfx_vol = sfx_vol_slider.value
 	cfc.game_settings["sfx_volume"] = sfx_vol	
+
+	cfc.save_settings()
+
+const NON_ADVANCED_OPTIONS = [
+	"sfx_volume", 
+	"music_volume", 
+	"adventure_mode", 
+	"notifications_level"]
+	
+func load_advanced_settings():
+	for child in advanced_settings_container.get_children():
+		advanced_settings_container.remove_child(child)
+	
+	var setting_keys = cfc.game_settings.keys() 
+	setting_keys.sort()
+	
+	for setting_key in setting_keys:
+		if setting_key in NON_ADVANCED_OPTIONS:
+			continue
+		var value = cfc.game_settings.get(setting_key, null)
+		if value == null:
+			continue		
+		var element = null		
+		match typeof(value):
+			TYPE_STRING:
+				element = LineEdit.new()
+				element.rect_min_size.x = 700
+				element.text = value
+			TYPE_BOOL:
+				element = CheckBox.new()
+				element.pressed = value
+			TYPE_INT, TYPE_REAL:
+				element = LineEdit.new()
+				element.rect_min_size.x = 50
+				element.text = str(value)
+		if element:
+			var container = HBoxContainer.new()
+			container.name = setting_key
+			var label = Label.new()
+			label.text = setting_key
+			container.add_child(label)			
+			container.add_child(element)
+			advanced_settings_container.add_child(container)
+
+func save_advanced_settings():
+	for child in advanced_settings_container.get_children():
+		var setting_key = child.name
+		var element = child.get_children()[1]
+		var old_value = cfc.game_settings.get(setting_key, null)
+		if old_value == null:
+			continue				
+		match typeof(old_value):
+			TYPE_STRING:
+				cfc.game_settings[setting_key] = element.text
+			TYPE_BOOL:
+				cfc.game_settings[setting_key] = element.pressed
+			TYPE_INT, TYPE_REAL:
+				var value = element.text
+				if value.is_valid_integer():
+					 cfc.game_settings[setting_key] = int(value)
+				else:
+					cfc.game_settings[setting_key] = float(value)
 
 	cfc.save_settings()
 

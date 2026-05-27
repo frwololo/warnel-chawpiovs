@@ -85,6 +85,7 @@ func init_button_signals(node):
 func loading_error(msg):
 	v_folder_label.text = "ERROR: " + msg
 	main_title.text = "SCRIPT ERROR :("
+	exit_button.text = "Clear Cache & Exit"
 	_loading_error  = true
 
 func network_error(msg, high_priority = true):
@@ -337,7 +338,12 @@ func on_button_pressed(_button_name : String) -> void:
 			$OptionsMenu.show_me($CenterContainer)
 
 		"Exit":
-			get_tree().quit()
+			if _loading_error:
+				cfc.clear_cards_cache()
+			exit()
+
+func exit():
+	get_tree().quit()
 
 func next_scene(scene_path):
 	get_node("%LoadingPanel").visible = true

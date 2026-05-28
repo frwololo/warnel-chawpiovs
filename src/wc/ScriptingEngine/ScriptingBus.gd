@@ -170,6 +170,8 @@ signal bypass_guard_happened (card,details)
 signal bypass_crisis_happened (card,details)
 # warning-ignore:unused_signal
 signal bypass_patrol_happened (card,details)
+# warning-ignore:unused_signal
+signal villain_unique_card_conflict (card,details)
 
 var registered_signals := {}
 var registered_interrupt_signals := {}

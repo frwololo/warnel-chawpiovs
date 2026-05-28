@@ -288,13 +288,16 @@ const Z_INDEX_HAND_CARDS_NORMAL :=200
 const OPTIONAL_SIGNALS:= [
 	"about_to_reveal",
 	"boost_card_resolved",
+	"bypass_guard_happened", 
+	"bypass_crisis_happened",
+	"bypass_patrol_happened", 	
 	"card_leaves_play",
 	"card_played",	
 	"identity_changed_form",
 	"paid_as_resource",
 	"pile_emptied",
 	"script_executed",
-
+	"villain_unique_card_conflict",
 ]
 #unless a card registers an interrupt, these signals will
 #be emitted directly without being added to the stack
@@ -624,8 +627,8 @@ const INTERRUPT_ALLOWED_PILES:= [
 ]
 
 const TOKENS_INCREASE_PREVENTION_PROPERTIES:= {
-	"stunned": ["stalwart"],
-	"confused": ["stalwart"],
+	"stunned": ["stalwart", "cannot_be_stunned"],
+	"confused": ["stalwart", "cannot_be_confused"],
 }
 
 
@@ -676,9 +679,11 @@ const AUTO_KEYWORDS := {
 	"bypass_patrol": "int",
 
 
-	"cannot_be_canceled": "int",
 	"cannot_be_blocked": "int",
+	"cannot_be_canceled": "int",
+	"cannot_be_confused": "int",
 	"cannot_be_healed_by_player_cards": "int",	
+	"cannot_be_stunned": "int",	
 	"cannot_be_thwarted": "int",	
 	"cannot_change_form": "int",
 	"cannot_change_to_alter_ego": "int",	
@@ -700,7 +705,7 @@ const AUTO_KEYWORDS := {
 	"guard_all": "int",
 	
 	"ignore_external_acceleration": "int",		
-	"invincible": "int",			
+	"invincible": "int",		
 }
 
 #list of events for which we don't show a GUI announce to the user by default

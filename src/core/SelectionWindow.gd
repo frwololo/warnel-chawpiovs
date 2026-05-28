@@ -306,7 +306,7 @@ func post_initiate_checks():
 	if alternative_ok:
 		for key in alternative_ok:
 			if can_pay_alternative_cost():
-				var new_button = add_third_button(key)
+				var _new_button = add_third_button(key)
 				set_window_title()
 				return
 		

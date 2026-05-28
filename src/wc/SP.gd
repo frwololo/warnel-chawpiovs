@@ -303,6 +303,19 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 		var owner_type = owner_card.get_property("type_code", "")
 		if !owner_type in ["hero", "ally", "minion", "villain"]:
 			action_character = owner_card.get_controller_hero_card()
+
+	#more complex handling of validity for some cards that define additional filters
+	var validity_extra_scripts = card.get_potential_scripts("is_valid_target_filters") 
+	if validity_extra_scripts:
+		for key in [script_name] + tags:
+			if validity_extra_scripts.has(key):
+				validity_extra_scripts = validity_extra_scripts[key]
+				break
+				
+		if validity_extra_scripts:
+			var source_validity_script = validity_extra_scripts.get("source_condition", {})
+			if !check_func_filter(owner_card,owner_card,source_validity_script):
+				return false			
 	
 	#For certain effects,
 	#permanent cards cannot be targeted by cards of a different set code

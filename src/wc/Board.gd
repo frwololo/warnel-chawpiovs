@@ -1334,18 +1334,36 @@ func count_card_per_player_in_play(unique_card:WCCard, hero_id = 0, exclude_self
 			result +=1
 	return result
 	
-func unique_card_in_play(unique_card:WCCard):
-	#note: sometimes subname can be set but still equal to null, so we have to force it to empty string
-	var unique_name = unique_card.get_unique_name().to_lower()
+func unique_card_in_play(unique_card:WCCard):	
+	if ! unique_card.get_property("is_unique", 0, true):
+		return null
+		
+	var title = unique_card.get_property("shortname", "").to_lower()
+	var subtitle = unique_card.get_property("subname", "").to_lower()
 	
 	var all_cards = self.get_all_cards()
 	for card in all_cards:
 		if !card.is_faceup:
+			continue
+		if card == unique_card:
+			continue
+		if ! card.get_property("is_unique", 0, true):
 			continue	
-		var card_unique_name = card.get_unique_name().to_lower()
-		if card_unique_name == unique_name:
-			return true
-	return false
+		var card_title = card.get_property("shortname", "").to_lower()
+		var card_subtitle = card.get_property("subname", "").to_lower()
+		var card_type_code = card.get_property("type_code", "")
+		var card_alter_ego_title = ""
+		if card_type_code in ["hero", "alter_ego"]:
+			var alter_ego_data = cfc.get_alter_ego_data(card.canonical_id)
+			card_alter_ego_title = alter_ego_data.get("shortname", "").to_lower()
+	
+		if title and (title == card_title):
+			if (!subtitle and !card_subtitle and !card_alter_ego_title):
+				return card
+		if subtitle and (subtitle in [card_title, card_subtitle, card_alter_ego_title]):
+			return card
+		
+	return null
 
 func _on_OptionsButton_pressed():
 	show_options_menu()

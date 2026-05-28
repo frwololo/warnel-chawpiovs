@@ -658,7 +658,7 @@
 							]
 						}
 					]
-				}
+				},				
 			}
 		],
 		"options": [
@@ -1017,11 +1017,17 @@
 	"32112": {
 		"code": "32112",
 		"name": "The Sentinel Factory",
-		"modular_default": [],
+		"modular_default": [
+			"zero_tolerance"
+		],
 		"encounter_sets": [
-			"TODO",
+			"master_mold",
+			"sentinels",
 			"Standard",
 			"Modular"
+		],
+		"additional_cards": [
+			"32172b"
 		],
 		"villains": [
 			"Master Mold - 1",
@@ -1029,7 +1035,8 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"master_mold",
+				"sentinels",
 				"Standard",
 				"modular",
 				"expert"
@@ -1043,35 +1050,110 @@
 	"32125": {
 		"code": "32125",
 		"name": "The Brotherhood Strikes!",
-		"modular_default": [],
+		"modular_default": [
+			"mystique"
+		],
 		"encounter_sets": [
-			"TODO",
+			"mansion_attack",
+			"brotherhood",
 			"Standard",
 			"Modular"
 		],
 		"villains": [
-			"TODO - 1",
-			"TODO - 2"
+			"Avalanche - A",
+			"Blob - A",
+			"Pyro - A",
+			"Toad - A"
+		],
+		"extra_rules": [
+			{
+				"override_get_next_villain": {
+					"all": [
+						{
+							"name": "nop",
+							"src_container": "set_aside",
+							"needs_subject": true,
+							"subject": "tutor",
+							"sort_by": "random",
+							"subject_count": 1,
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"type_code": "villain"
+									}
+								}
+							]
+						}
+					]
+				},
+				"override_get_next_scheme": {
+					"all": [
+						{
+							"name": "nop",
+							"src_container": "set_aside",
+							"needs_subject": true,
+							"subject": "tutor",
+							"sort_by": "random",
+							"subject_count": 1,
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"type_code": "main_scheme"
+									}
+								}
+							]
+						}
+					]
+				}				
+			}
+		],
+		"options": [
+			{
+				"name": "mansion_victory",
+				"display_name": "Difficulty Level",
+				"type": "option_button",
+				"options": [
+					{
+						"display_name": "Skirmish Mode",
+						"value": 1
+					},
+					{
+						"display_name": "Standard Mode",
+						"value": 2
+					},
+					{
+						"display_name": "Expert Mode",
+						"value": 3
+					},
+					{
+						"display_name": "Heroic Mode",
+						"value": 4
+					}
+				]
+			}
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"mansion_attack",
+				"brotherhood",
 				"Standard",
 				"modular",
 				"expert"
 			],
 			"villains": [
-				"TODO - 2",
-				"TODO - 3"
+				"Avalanche - B",
+				"Blob - B",
+				"Pyro - B",
+				"Toad - B"
 			]
 		}
 	},
 	"32141": {
 		"code": "32141",
 		"name": "Asteroid M",
-		"modular_default": [],
+		"modular_default": ["acolytes"],
 		"encounter_sets": [
-			"TODO",
+			"magneto",
 			"Standard",
 			"Modular"
 		],
@@ -1081,7 +1163,7 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"magneto",
 				"Standard",
 				"modular",
 				"expert"

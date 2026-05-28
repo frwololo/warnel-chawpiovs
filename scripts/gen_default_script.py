@@ -26,7 +26,7 @@ primitives = [
   '<b>When Revealed</b>',
   '<b>When Revealed (Alter-Ego)</b>',
   '<b>When Revealed (Hero)</b>',    
-  '<b>When Defeated</b',
+  '<b>When Defeated',
   'Attach to ',
   ' get +',
   ' gets +',  
@@ -134,7 +134,7 @@ def get_base_json(card_data):
 	    ]
 	}
 
-    if primitive == '<b>when defeated</b>':
+    if primitive == '<b>when defeated':
        result["card_defeated"] = {
            "trigger": "self",
 	  "all": [

@@ -1676,7 +1676,6 @@ static func check_parent_filter(card, parent: String) -> bool:
 	if !is_instance_valid(card):
 		return false
 		
-	var card_matches := true
 	var actual_parent_name = card.get_parent().name.to_lower()
 	parent = parent.to_lower()  
 	

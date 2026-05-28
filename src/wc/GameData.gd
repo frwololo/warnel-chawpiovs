@@ -482,7 +482,7 @@ func _scripting_event_triggered(trigger_object = null,
 				"enemy_initiates_scheme":
 			pre_attack_interrupts_done()
 		"stage_completed": 
-			main_scheme_stage_completed(trigger_object)			
+			main_scheme_stage_completed(trigger_object)				
 
 	#Game state changed signal (to compute card costs, etc...)
 	match trigger:
@@ -546,48 +546,51 @@ func check_empty_decks(pile_to_check):
 
 var _next_scheme = null	
 func move_to_next_scheme(current_scheme):
-	var set_code = current_scheme.get_property("card_set_code", "").to_lower()
-	var stage = current_scheme.get_property("stage_int")
-	
-	var next_stage = stage + 1
-	var set_schemes = cfc.schemes[set_code]
-	for scheme in set_schemes:
-		if (scheme.get("stage_int", 0) == next_stage):
-			var board = cfc.NMAP.board
-			var code = scheme.get("_code")
-			
-
-			#hacky way to move the current card out of the way
-			#while still leaving it on the board
-			if current_scheme._placement_slot:
-				current_scheme._placement_slot.remove_occupying_card(current_scheme)
-	
+	var ckey
+	#check to see if we have an override in the rules on how to retrieve the next villain
+	var sceng = theGameObserver._get_script_sceng("override_get_next_scheme")
+	if sceng:	
+		var sceng_return = sceng.execute(CFInt.RunType.PRIME_ONLY)
+		#if not sceng.all_tasks_completed:
+		if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
+			yield(sceng_return,"completed")	
+		for potential_scheme in sceng.all_subjects_so_far:
+			var type_code = potential_scheme.get_property("type_code")
+			if type_code == "main_scheme":
+				ckey = potential_scheme.get_property("_code")	
+		if !ckey:
+			return null		
+	else:
+		var set_code = current_scheme.get_property("card_set_code", "").to_lower()
+		var stage = current_scheme.get_property("stage_int")
 		
-			var new_card = board.load_scheme(code)
-			#some tokens such as acceleration need to be preserved
-			current_scheme.copy_tokens_to(new_card, {"to_copy":["acceleration"]})
-			set_aside(current_scheme)	
-				
+		var next_stage = stage + 1
+		var set_schemes = cfc.schemes[set_code]
+		for scheme in set_schemes:
+			if (scheme.get("stage_int", 0) == next_stage):
+				ckey = scheme.get("_code")
+				break
+		
+	if !ckey:
+		return null	
+		
+	var board = cfc.NMAP.board
+	#hacky way to move the current card out of the way
+	#while still leaving it on the board
+	if current_scheme._placement_slot:
+		current_scheme._placement_slot.remove_occupying_card(current_scheme)
 
-#Obsolete, delete 
-#			var func_return = new_card.execute_scripts(new_card, "reveal_side_a")
-#			while func_return is GDScriptFunctionState && func_return.is_valid():
-#				func_return = func_return.resume()			
-			
-			_next_scheme = new_card
-			cfc._rpc(self,"next_scheme_loaded")	
-			
-#			var func_return = new_card.execute_scripts(new_card, "reveal")
-#			while func_return is GDScriptFunctionState && func_return.is_valid():
-#				func_return = func_return.resume()			
-#
-#			func_return = new_card.execute_scripts(new_card, "post_reveal")
-#			while func_return is GDScriptFunctionState && func_return.is_valid():
-#				func_return = func_return.resume()			
-			
-			return new_card
-	
-	return null
+
+	var new_card = board.load_scheme(ckey)
+	#some tokens such as acceleration need to be preserved
+	current_scheme.copy_tokens_to(new_card, {"to_copy":["acceleration"]})
+	set_aside(current_scheme)	
+							
+	_next_scheme = new_card
+	cfc._rpc(self,"next_scheme_loaded")	
+					
+	return new_card
+
 
 var _clients_next_scheme_loaded = {}
 remotesync func next_scheme_loaded():
@@ -1753,6 +1756,14 @@ func reveal_encounter(target_id = 0):
 			var pile = get_revealed_encounters_pile(target_id)
 			_current_encounter.set_is_faceup(true,false)
 			_current_encounter.move_to(pile)
+			
+			#if a unique card with the same name already exists,
+			#we cancel the reveal and deal a new encounter, per 1.7 rules
+			if cfc.NMAP.board.unique_card_in_play(_current_encounter):
+				_current_encounter.hint("Unique!", Color8(200,50,50))
+				cancel_current_encounter()
+				deal_one_encounter_to(target_id)
+				
 			scripting_bus.emit_signal_on_stack("about_to_reveal", _current_encounter)	
 			_current_encounter.encounter_status = EncounterStatus.ABOUT_TO_REVEAL
 			return
@@ -2187,6 +2198,10 @@ func swap_villain(current_villain, next_villain_key, options = {}):
 	while func_return is GDScriptFunctionState && func_return.is_valid():
 		func_return = func_return.resume()	
 	
+	var unique_conflict = cfc.NMAP.board.unique_card_in_play(new_card)
+	if unique_conflict:
+		unique_conflict.hint("Unique!", Color8(200,50,50))
+		scripting_bus.emit_signal_on_stack("villain_unique_card_conflict", unique_conflict, {"controller_id": unique_conflict.get_controller_hero_id()})
 	return new_card
 		
 func move_to_next_villain(current_villain):
@@ -2261,7 +2276,8 @@ func can_i_play_this_ability(card, trigger := "") -> int:
 	
 func can_hero_play_this_ability(hero_index, card, trigger := "") -> bool:
 	var card_controller_id = card.get_controller_hero_id()
-
+	var hero_card = get_identity_card(hero_index)
+	
 	#TODO hack here where for an enemy attack trigger, we force 
 	#the allowed user id based on the attack target id
 	#required at least for Whirlwind
@@ -2280,6 +2296,16 @@ func can_hero_play_this_ability(hero_index, card, trigger := "") -> bool:
 
 	if (card_controller_id <= 0 or card_controller_id == hero_index):
 		return true
+
+	#more complex handling of authority for some cards that define additional filters
+	var authority_scripts = card.get_potential_scripts("_authority_override") 
+	if authority_scripts:
+		var func_name = authority_scripts["func_name"]
+		var func_params = authority_scripts["func_params"]
+				
+		var check = cfc.ov_utils.dummy_func_name_run(hero_card, card, func_name, func_params)
+		return check
+		
 	return false
 
 func can_i_play_this_hero(hero_index)-> bool:

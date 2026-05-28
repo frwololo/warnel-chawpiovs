@@ -428,8 +428,15 @@ func get_encounter_deck():
 		else:
 			print_debug("missing obligation card for " + hero_data.get_hero_card_data()["Name"])
 	
+	#add extra cards from the scenario
+	var additional_cards = scenario_data.get("additional_cards", [])
+	for card_id in additional_cards:
+		var card = cfc.get_card_by_id(card_id)
+		if card:
+			encounter_deck.push_back(card)
+			
 	return encounter_deck
-
+			
 #
 # Adventure mode functions
 #

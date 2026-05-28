@@ -746,19 +746,22 @@ func retrieve_integer_property(property, stored_integer:int = 0,root = null):
 	var value = get_property(property, null, null, root)
 	if value == null:
 		return 0
-		
-	if SP.VALUE_PER in str(value):
+	
+	var value_str = str(value)	
+	if SP.VALUE_PER in value_str:
 		var per_property = get_property(value)
 		if per_property == null:
 			var _error = 1
 			return 0
 		value = count_per(value, owner, per_property)
-	elif str(value) ==  SP.KEY_COUNT_PREVIOUS_SUBJECTS:
+	elif value_str ==  SP.KEY_COUNT_PREVIOUS_SUBJECTS:
 		value = self.prev_subjects.size()	
-	elif str(value) == SP.KEY_SUBJECT_COUNT_V_ALL:
+	elif value_str == SP.KEY_SUBJECT_COUNT_V_ALL:
 		value = 666 #TODO hack
-	elif str(value) == "count_players":
+	elif value_str == "count_players":
 		value =  cfc.count_players()
+	elif value_str.ends_with("p") and value_str.trim_suffix("p").is_valid_integer():
+			value = int(value_str.trim_suffix("p")) * cfc.count_players()				
 	else:
 		value = get_int_value (value, stored_integer)
 

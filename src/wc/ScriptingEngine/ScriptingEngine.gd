@@ -77,6 +77,18 @@ func add_resource(script: ScriptTask) -> int:
 #override for parent
 func move_card_to_board(script: ScriptTask) -> int:
 
+	#unique rule
+	var to_remove = []
+	for card in script.subjects:
+		var type_code = card.get_property("type_code")
+		#Villain cards are a notable exception, they get into play no matter what
+		if type_code =="villain":
+			continue
+		if cfc.NMAP.board.unique_card_in_play(card):
+			to_remove.append(card)
+	for card in to_remove:
+		script.subjects.erase(card)
+
 	if !script.subjects:
 		return CFConst.ReturnCode.FAILED
 
@@ -1612,6 +1624,10 @@ func set_defender(script: ScriptTask) -> int:
 		return CFConst.ReturnCode.FAILED
 
 	var defender = script.subjects[0]
+
+	if (costs_dry_run()):
+		if defender.get_property("cannot_defend", 0, true):
+			return CFConst.ReturnCode.FAILED 
 	
 	if attack_script.subjects:
 		if attack_script.subjects[0] != defender:
@@ -1888,6 +1904,9 @@ func enemy_activates(script: ScriptTask) -> int:
 	retcode = CFConst.ReturnCode.FAILED
 	
 	var target_hero_id = script.retrieve_integer_property("target_hero_id")
+	if script.get_property("target_identity"):
+		var target_identity = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : script.get_property("target_identity")})
+		target_hero_id = target_identity.get_controller_hero_id() if target_identity else 1				
 	
 	for card in script.subjects:
 		retcode = CFConst.ReturnCode.CHANGED
@@ -2246,8 +2265,12 @@ func surge(script: ScriptTask) -> int:
 
 func recovery(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
-	if (costs_dry_run()): #Shouldn't be allowed as a cost?
-		return retcode
+	
+	if (costs_dry_run()):
+		if owner.get_property("cannot_recover", 0, true):
+			return CFConst.ReturnCode.FAILED 
+		return retcode		
+
 	
 	for subject in script.subjects: #should be really one subject only, generally
 		var hero = subject
@@ -2444,6 +2467,10 @@ func remove_card_from_game (script:ScriptTask) -> int:
 			card.get_parent().remove_child(card)
 	return retcode
 
+func engage_nemesis (script:ScriptTask) -> int:
+	script.script_definition["put_into_play_only"] = true
+	return reveal_nemesis(script)
+
 func reveal_nemesis (script:ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
@@ -2460,6 +2487,7 @@ func reveal_nemesis (script:ScriptTask) -> int:
 
 	var type_codes = script.get_property("type_codes", [])
 	var nemesis_only = script.get_property("nemesis_only", false)
+	var put_into_play_only = script.get_property("put_into_play_only", false)
 	var src_containers = script.get_property("src_container", "set_aside")
 	if typeof(src_containers) == TYPE_STRING:
 		src_containers = [src_containers]
@@ -2494,10 +2522,20 @@ func reveal_nemesis (script:ScriptTask) -> int:
 					other_nemesis_cards.append(card)			
 
 	if (my_nemesis_scheme and !nemesis_only):
-		gameData.deal_one_encounter_to(my_hero_id, true, my_nemesis_scheme)	
+		if put_into_play_only:
+			script.subjects = [my_nemesis_scheme]
+			script.script_definition.name="move_card_to_board"
+			retcode = move_card_to_container(script)	
+		else:
+			gameData.deal_one_encounter_to(my_hero_id, true, my_nemesis_scheme)	
 
 	if (my_nemesis):
-		gameData.deal_one_encounter_to(my_hero_id, true, my_nemesis)	
+		if put_into_play_only:
+			script.subjects = [my_nemesis]
+			script.script_definition.name="move_card_to_board"
+			retcode = move_card_to_container(script)				
+		else:	
+			gameData.deal_one_encounter_to(my_hero_id, true, my_nemesis)	
 	else:
 		do_surge = script.get_property("surge_on_failure", false)
 

@@ -272,6 +272,43 @@
 			"_comments": "this used to be card_moved_to_pile encounters_reveal but needed to be changed to accomodate for cards that prevent full effects such as dr strange protective ward"
 		}
 	},
+	"teamwork": {
+		"self_moved_to_board": {
+			"board" : [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_enemies_my_hero",
+											"filter_properties": {
+												"type_code": "minion"
+											},
+											"filter_properties2": {
+												"trait___trait__": 1,
+												"comparison": "ge"
+											},
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_activates",
+									"subject": "self"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+	},
 	"todo": {
 		"manual": {
 			"hand": [

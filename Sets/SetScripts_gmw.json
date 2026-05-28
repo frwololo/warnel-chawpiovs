@@ -2327,7 +2327,7 @@
 		"uses": {
 			"__name__": "fury",
 			"__amount__": 1
-		},		
+		},
 		"self_moved_to_board": {
 			"board": [
 				{
@@ -2351,7 +2351,6 @@
 				}
 			]
 		},
-
 		"attacks_gain": {
 			"__trigger__": "host",
 			"__tags__": "piercing\",\"overkill"
@@ -3323,10 +3322,10 @@
 				{
 					"name": "pay_cost",
 					"cost": {
-						"unc": 3
+						"unc": 3,
+						"type_constraint": "same"
 					},
-					"is_cost": true,
-					"TODO": "same type resource"
+					"is_cost": true
 				},
 				{
 					"name": "discard",
@@ -6330,8 +6329,7 @@
 					"cost": {
 						"energy": 3
 					},
-					"is_cost": true,
-					"TODO": "same type resource"
+					"is_cost": true
 				},
 				{
 					"name": "discard",

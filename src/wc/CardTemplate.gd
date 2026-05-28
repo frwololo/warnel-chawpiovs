@@ -311,6 +311,7 @@ func get_controller_hero_id() -> int:
 
 func get_controller_hero_card():
 	return gameData.get_identity_card(_controller_hero_id)	
+
 	
 func get_controller_player_network_id() -> int:
 	var player_data:PlayerData = gameData.get_hero_owner(get_controller_hero_id())
@@ -1029,10 +1030,9 @@ func attempt_to_play(user_click:bool = false, origin_event = null):
 			if check_play_costs() == CFConst.CostsState.IMPOSSIBLE:
 				return false
 			#unique rule - Move to check costs ?
-			if get_property("is_unique", 0, true):
-				var already_in_play = cfc.NMAP.board.unique_card_in_play(self)
-				if already_in_play:
-					return false	
+			var already_in_play = cfc.NMAP.board.unique_card_in_play(self)
+			if already_in_play:
+				return false	
 
 
 	cfc.card_drag_ongoing = null
@@ -1295,7 +1295,7 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 
 
 #a quick check fnction for performance to return early in execute_scripts
-func has_potential_scripts(trigger_card, trigger):
+func get_potential_scripts(trigger):
 	var card_scripts = retrieve_scripts(trigger)
 	if !card_scripts:
 		return false
@@ -1436,7 +1436,7 @@ func execute_scripts(
 		show_optional_confirmation_menu = false	
 		orig_trigger_details["is_interrupt_or_response"] = true
 
-	if ! has_potential_scripts(trigger_card, trigger):
+	if ! get_potential_scripts(trigger):
 		return null
 
 	#from this point we work on a copy of the passed trigger_details,
@@ -2020,6 +2020,7 @@ func common_pre_execution_scripts(_trigger_card, _trigger: String, _trigger_deta
 		"enemy_attack":
 			gameData.compute_potential_defenders(gameData.get_current_activity_hero_target(), _trigger_card)
 
+#checks if a character can defend for the "normal" defender selection step
 func can_defend(hero_id = 0):
 	if is_exhausted() : return false
 
@@ -2033,6 +2034,9 @@ func can_defend(hero_id = 0):
 	if hero_id:
 		if controller_hero_id != hero_id:
 			return false
+
+	if get_property("cannot_defend", 0, true):
+		return false
 	
 	return true
 
@@ -2295,7 +2299,7 @@ func common_pre_run(sceng) -> void:
 				var modifiers = attacker.retrieve_scripts("modifiers")
 				var defense_selection_modifier = modifiers.get("defense_selection", "")
 				match defense_selection_modifier:
-					#TODO this is split with GameData.compute_defenders(), need a cleaner, centralized place
+					#TODO this is split with GameData.compute_potential_defenders(), need a cleaner, centralized place
 					"my_allies_if_able":
 						var defenders = cfc.get_tree().get_nodes_in_group("group_defenders")
 						var found_ally = false
@@ -2577,7 +2581,7 @@ func can_change_form(voluntary:= false, to_card_id = "") -> bool:
 	#cannot change to alter ego" restriction
 	var expected_form = "alter_ego"
 	if self.is_alter_ego_form():
-		expected_form == "hero"
+		expected_form = "hero"
 	if to_card_id:
 		var card_data = cfc.get_card_by_id(to_card_id)
 		expected_form = card_data["type_code"]		

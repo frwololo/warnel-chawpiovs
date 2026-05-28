@@ -1072,6 +1072,24 @@ func get_hero_obligation(hero_id:String):
 	var obligation = obligations.get(hero_set_code, null)
 	return obligation
 
+func get_alter_ego_data(card_id):
+	var my_data = get_card_by_id(card_id)
+	var type_code = my_data.get("type_code", "")
+	if  type_code == "alter_ego":
+		return my_data
+	if type_code == "hero":
+		var back_code =  my_data.get("back_card_code", "")
+		if back_code:
+			var alter_ego_data = get_card_by_id(back_code)
+			if alter_ego_data.get("type_code", "") == "alter_ego":
+				return alter_ego_data
+						
+		var hero_set = my_data["card_set_code"]
+		var card_set_data = cards_by_set.get(hero_set, [])
+		for card_data in card_set_data:
+			if card_data.get("type_code", "") == "alter_ego":
+				return card_data
+	return {}
 
 func get_encounter_cards(set_name:String):
 	var encounters = cards_by_set.get(set_name.to_lower(), [])

@@ -496,6 +496,10 @@ func gain_focus():
 		CardState.IN_POPUP:
 			set_state(CardState.FOCUSED_IN_POPUP)
 
+func cancel_targeting():
+	if targeting_arrow.is_targeting:
+		targeting_arrow.cancel_targeting()
+		
 func _class_specific_input(event) -> void:
 	if event is InputEventMouseButton and not event.is_pressed():
 		if targeting_arrow.is_targeting:

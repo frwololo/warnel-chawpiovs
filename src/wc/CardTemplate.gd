@@ -797,7 +797,17 @@ func _game_step_about_to_start(_trigger_object, details:Dictionary):
 	
 
 func get_card_back_code() -> String:
-	return get_property("back_card_code")
+	var back_code = get_property("back_card_code")
+
+	if !back_code:
+		var type_code = get_property("type_code")	
+		if type_code == "hero":
+			#multiple hero modes sometimes don't have the matching back card, e.g. Ant-Man giant form
+			var alter_ego_data = cfc.get_alter_ego_data(canonical_id)
+			back_code = alter_ego_data["_code"]
+	
+	return back_code
+	
 
 func get_art_filename(force_if_facedown: = true):
 	if force_if_facedown or is_faceup:
@@ -1884,8 +1894,10 @@ func readyme(toggle := false,
 			
 	var retcode = set_card_rotation(rot, toggle, start_tween, check, tags)
 	if !check and retcode != CFConst.ReturnCode.FAILED:
+		var before = _is_exhausted
 		_is_exhausted = false
-		#scripting_bus.emit_signal_on_stack("card_readied", self, {})
+		if before:
+			scripting_bus.emit_signal_on_stack("card_readied", self, {})
 	return retcode
 	
 func exhaustme(toggle := false,
@@ -3397,14 +3409,10 @@ func count_printed_resources(params:Dictionary, script) -> int:
 	return count
 	
 func count_boost_icons(params:Dictionary, script) -> int:
-	var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)	
-	var count = 0
-	
-	while subjects is GDScriptFunctionState && subjects.is_valid():
-		subjects = subjects.resume()	
+	var subjects = get_param_subjects(params, script)
 	if !subjects:
-		cfc.LOG("error retrieving subjects for " + to_json(params))
 		return 0
+	var count = 0
 	
 	var count_star_icons = params.get("count_star_icons", false)
 		
@@ -3427,12 +3435,10 @@ func count_resource_types(params:Dictionary, script) -> int:
 	return count
 	
 func get_sustained_damage(params:Dictionary = {}, script = null) -> int:
-	var subject = self
-	if params and script and params.has("subject"):
-		var subjects = SP.retrieve_subjects(params.get("subject"), script)
-		if !subjects:
-			return 0
-		subject = subjects[0]
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return 0
+		
 	return subject.tokens.get_token_count("damage")
 
 #returns how much damage this card can sustain before reaching zero life

@@ -141,6 +141,10 @@ static func subject_matches(card, string_value, owner_card):
 static func _get_subjects_simplified(string_value, owner_card):
 	if !string_value:
 		return null
+
+	if string_value.begins_with("identity_"):
+		var hero_id = int(string_value.substr(9))
+		return gameData.get_identity_card(hero_id)
 		
 	match string_value:
 		KEY_SUBJECT_V_MY_HERO:
@@ -287,6 +291,20 @@ static func check_func_filter(card, owner_card, filter_details) -> bool:
 			
 	var check = cfc.ov_utils.dummy_func_name_run(owner_card, card, func_name, func_params)
 	return check	
+
+static func check_attachment_validity(host, hosted):
+	if host.get_property("cannot_have_attachments", 0, true):
+		return false
+
+	if host.get_property("cannot_have_upgrade_attachments", 0, true):
+		if hosted.get_property("type_code", "") == "upgrade":
+			return false	
+
+	if host.get_property("cannot_have_player_card_attachments", 0, true):
+		if hosted.get_controller_hero_id():
+			return false	
+			
+	return true	
 			
 # Check if the card is a valid subject or trigger, according to its state.
 static func check_validity(card, card_scripts, type := "trigger", owner_card = null) -> bool:
@@ -352,7 +370,18 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 			pass
 		else:
 			return false	
-				
+	
+	if script_name in ["attach_to_card", "host_card"]:
+		var host = card
+		var hosted = owner_card
+		if script_name == "host_card":
+			#TODO host might be different with variable "host" in the script
+			host = owner_card
+			hosted = card
+
+		if !check_attachment_validity(host, hosted):
+			return false
+					
 	#check for special conditions if card is an attack
 	if ((script_name == "attack") or ("attack" in tags)):			
 		if action_character:
@@ -472,20 +501,15 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 
 #todo in the future this needs to redo targeting, etc...
 static func retrieve_subjects(value:String, script):
-	match value:
-		"self":
-			return [script.owner]
-		"my_hero":
-			return [script.owner.get_controller_hero_card()]			
-		_:
-			#not implemented
-			pass
-	
-	if value.begins_with("identity_"):
-		var hero_id = int(value.substr(9))
-		return [gameData.get_identity_card(hero_id)]
-	
-	return null
+	var subjects = _get_subjects_simplified(value, script.owner)
+
+	if !subjects:
+		return []
+
+	if typeof(subjects) == TYPE_ARRAY:
+		return subjects
+		
+	return [subjects]	
 					
 
 static func card_matches_properties (card, filter_properties = {}):

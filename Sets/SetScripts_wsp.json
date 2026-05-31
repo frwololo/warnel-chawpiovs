@@ -500,6 +500,11 @@
 		}
 	},
 	"Nadia Van Dyne": {
+		"additional_cards_set_aside": [
+			{
+				"card": "Wasp #13001c"
+			},
+		],	
 		"once_per_round": {
 			"__name__": "__girl"
 		},

@@ -100,15 +100,15 @@ func add_slot() -> BoardPlacementSlot:
 
 
 # Returns a slot that is not currently occupied by a card
-func find_available_slot() -> BoardPlacementSlot:
+func find_available_slot() -> BoardPlacementSlot:		
 	var found_slot : BoardPlacementSlot
 	if not get_available_slots().empty():
 		found_slot = get_available_slots().front()
 	elif auto_extend:
 		found_slot = add_slot()
-		
+
 	#do some cleanup while we're at it
-	garbage_collection()
+	garbage_collection()		
 				
 	return(found_slot)
 
@@ -142,6 +142,8 @@ func get_slot_count() -> int:
 func get_available_slots() -> Array:
 	var available_slots := []
 	for slot in get_all_slots():
+		if !is_instance_valid(slot):
+			continue
 		if slot.occupying_card or slot.reserved:
 			continue
 		available_slots.append(slot)

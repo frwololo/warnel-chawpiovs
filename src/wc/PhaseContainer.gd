@@ -9,6 +9,7 @@ var heroesStatus = []
 var heroPhaseScene = preload("res://src/wc/board/HeroPhase.tscn")
 onready var container = $MarginContainer/VBoxContainer
 var positioned = false
+var target_cancel_button = null
 
 #debug display for 
 #TODO something fancier
@@ -154,12 +155,32 @@ func _init():
 	if CFConst.SKIP_MULLIGAN:
 		current_step = CFConst.PHASE_STEP.MULLIGAN_DONE
 
+func show_target_cancel_button():
+	if target_cancel_button:
+		target_cancel_button.visible = true
+
+func hide_target_cancel_button():
+	if target_cancel_button:
+		target_cancel_button.visible = false
+		
+func _on_target_cancel():
+	var owner_card = gameData.is_targeting_ongoing()
+	if !owner_card:
+		return
+	owner_card.cancel_targeting()		
 
 func reset(reset_phase:= true):
 	for child in container.get_children():
 		container.remove_child(child)
 		child.queue_free()
 	heroesStatus = []
+	
+	#Target cancel button
+	target_cancel_button = Button.new()
+	target_cancel_button.text = "Cancel"
+	container.add_child(target_cancel_button)
+	target_cancel_button.visible = false
+	target_cancel_button.connect("pressed", self, "_on_target_cancel")
 	
 	#create the hero face buttons
 	for i in range(gameData.get_team_size()):

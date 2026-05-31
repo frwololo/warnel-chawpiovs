@@ -2122,7 +2122,7 @@
 									"subject": "index",
 									"subject_index": "top",
 									"src_container": "deck_villain",
-									"destination_grid": "enemies_previous_subject"
+									"grid_name": "enemies_previous_subject"
 								}
 							]
 						}
@@ -3571,7 +3571,7 @@
 				},
 				{
 					"name": "move_card_to_board",
-					"destination_grid": "enemies_my_hero",
+					"grid_name": "enemies_my_hero",
 					"subject": "index",
 					"subject_count": 1,
 					"subject_index": "retrieve_integer",
@@ -3679,7 +3679,7 @@
 			"board": [
 				{
 					"name": "move_card_to_board",
-					"destination_grid": "upgrade_support_first_player",
+					"grid_name": "upgrade_support_first_player",
 					"subject": "self"
 				}
 			]

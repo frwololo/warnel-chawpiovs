@@ -1,0 +1,172 @@
+{
+	"_comments": "Sabertooth - Mystique not inheriting attack/scheme",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Sabretooth - 1 #32060",
+					"tokens": {
+						"damage": 3,
+						"stunned": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary #01101"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Stalked by Sabretooth - 1B"
+				},
+				{
+					"card": "Find the Senator",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Robert Kelly",
+					"host": "Find the Senator"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Mystique"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Mockingbird",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"hand1": []
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "MockingBird",
+			"_comment": "defend with mockingbird"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Sabretooth - 1 #32060",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Stalked by Sabretooth - 1B",
+				},
+				{
+					"card": "Find the Senator",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Robert Kelly",
+					"host": "Find the Senator"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Strength"
+				}				
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Mystique"
+				},
+				{
+					"card": "Hydra Mercenary #01101"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"hand1": [
+
+			]
+		}
+	}
+}

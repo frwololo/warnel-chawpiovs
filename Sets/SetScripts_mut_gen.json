@@ -67,7 +67,7 @@
 					"subject": "tutor",
 					"src_container": "set_aside",
 					"sort_by": "random",
-					"destination_grid": "allies_event_source_hero",
+					"grid_name": "allies_event_source_hero",
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -1182,7 +1182,7 @@
 				},
 				{
 					"name": "move_card_to_board",
-					"destination_grid": "enemies_event_source_hero",
+					"grid_name": "enemies_event_source_hero",
 					"subject": "index",
 					"subject_count": 1,
 					"subject_index": "retrieve_integer",
@@ -1330,29 +1330,43 @@
 		"TODO": "campaign mode not supported"
 	},
 	"Find the Senator": {
-		"interrupt_card_defeated": {
-			"subject": "self",
+		"interrupt_card_dies": {
+			"trigger": "self",
 			"all": [
 				{
-					"name": "move_card_to_board",
-					"destination_grid": "allies_first_player",
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "detach",
 					"subject": "Robert Kelly"
 				},
 				{
 					"name": "move_card_to_board",
-					"subject": "tutor",
-					"src_container": "set_aside",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"Name": "Protect the Senator"
-							}
-						}
-					]
+					"grid_name": "allies_first_player",
+					"subject": "Robert Kelly"
 				},
 				{
 					"name": "move_to_next_scheme",
 					"subject": "main_scheme"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "flip_self",
+					"subject": "self"
+				}
+			]
+		},
+		"flip_self": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"grid_name": "villain_misc",
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
 		},
@@ -1633,6 +1647,12 @@
 					"subject": "previous"
 				},
 				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard_villain",
+					"is_else": true
+				},				
+				{
 					"name": "surge",
 					"is_else": true
 				}
@@ -1882,7 +1902,7 @@
 				},
 				{
 					"name": "move_card_to_board",
-					"destination_grid": "enemies_event_source_hero",
+					"grid_name": "enemies_event_source_hero",
 					"subject": "index",
 					"subject_count": 1,
 					"subject_index": "retrieve_integer",
@@ -1920,7 +1940,7 @@
 			"board": [
 				{
 					"name": "move_card_to_board",
-					"destination_grid": "allies_first_player",
+					"grid_name": "allies_first_player",
 					"subject": "self"
 				}
 			]
@@ -1929,7 +1949,7 @@
 			"board": [
 				{
 					"name": "move_card_to_board",
-					"destination_grid": "allies_first_player",
+					"grid_name": "allies_first_player",
 					"subject": "self"
 				}
 			]
@@ -2562,7 +2582,7 @@
 			"board": [
 				{
 					"name": "move_card_to_board",
-					"destination_grid": "upgrade_support_first_player",
+					"grid_name": "upgrade_support_first_player",
 					"subject": "self"
 				}
 			]
@@ -2748,7 +2768,7 @@
 				},
 				{
 					"name": "move_card_to_board",
-					"destination_grid": "enemies_current_hero_target",
+					"grid_name": "enemies_current_hero_target",
 					"subject": "index",
 					"subject_count": 1,
 					"subject_index": "retrieve_integer",
@@ -2790,7 +2810,7 @@
 				},
 				{
 					"name": "move_card_to_board",
-					"destination_grid": "enemies_current_hero_target",
+					"grid_name": "enemies_current_hero_target",
 					"subject": "index",
 					"subject_count": 1,
 					"subject_index": "retrieve_integer",
@@ -2832,7 +2852,7 @@
 				},
 				{
 					"name": "move_card_to_board",
-					"destination_grid": "enemies_current_hero_target",
+					"grid_name": "enemies_current_hero_target",
 					"subject": "index",
 					"subject_count": 1,
 					"subject_index": "retrieve_integer",
@@ -2883,7 +2903,7 @@
 					},
 					{
 						"name": "move_card_to_board",
-						"destination_grid": "enemies_my_hero",
+						"grid_name": "enemies_my_hero",
 						"subject": "index",
 						"subject_count": 1,
 						"subject_index": "retrieve_integer",
@@ -3154,7 +3174,7 @@
 				},
 				{
 					"name": "move_card_to_board",
-					"destination_grid": "allies_my_hero",
+					"grid_name": "allies_my_hero",
 					"subject": "tutor",
 					"subject_count": "all",
 					"needs_selection": true,
@@ -3277,7 +3297,7 @@
 	},
 	"Mystique": {
 		"alterants": {
-			"board": [
+			"all": [
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "guard_all",
@@ -4164,16 +4184,22 @@
 				},
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "cannot_have_upgrades_attachments",
+					"filter_property_name": "cannot_have_upgrade_attachments",
 					"trigger": "Robert Kelly",
 					"alteration": 1
 				}
 			]
 		},
 		"response_defense_happened": {
-			"trigger": "my_hero",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "hero"
+					}
+				}
+			],
 			"event_filters": {
-				"attacker": "Sabretooth"
+				"attacker": "villain"
 			},
 			"is_optional_board": true,
 			"condition_board": {
@@ -4182,7 +4208,7 @@
 					"subject": "boardseek",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_allies_my_hero",
+							"filter_group": "group_allies_event_source_hero",
 							"filter_properties": {
 								"Name": "Robert Kelly"
 							}
@@ -4207,7 +4233,7 @@
 				},
 				{
 					"name": "ready_card",
-					"subject": "my_hero",
+					"subject": "event_source_hero",
 					"is_cost": true
 				}
 			]
@@ -4650,7 +4676,7 @@
 					"subject": "self",
 					"amount": {
 						"func_name": "count_boost_icons",
-						"params": {
+						"func_params": {
 							"subject": "previous"
 						}
 					}
@@ -4673,7 +4699,7 @@
 					"subject": "self",
 					"amount": {
 						"func_name": "count_boost_icons",
-						"params": {
+						"func_params": {
 							"subject": "previous"
 						}
 					}
@@ -4696,7 +4722,7 @@
 					"subject": "self",
 					"amount": {
 						"func_name": "count_boost_icons",
-						"params": {
+						"func_params": {
 							"subject": "previous"
 						}
 					}
@@ -4733,10 +4759,10 @@
 			"all": [
 				{
 					"name": "add_script",
-					"subject": "self",
+					"subject": "Sabretooth",
 					"end_condition": "enemy_attack_happened",
 					"script": {
-						"card_dies": {
+						"interrupt_card_dies": {
 							"filter_state_trigger": [
 								{
 									"filter_properties": {
@@ -5680,7 +5706,7 @@
 					"amount": {
 						"if": {
 							"func_name": "count_tokens>=6p",
-							"params": {
+							"func_params": {
 								"token_name": "threat",
 								"subject": "self"
 							}
@@ -6215,7 +6241,7 @@
 		"card_moved_to_board": {
 			"filter_state_trigger": [
 				{
-					"filter_properties": {
+					"filter_properties2": {
 						"type_code": "minion"
 					},
 					"filter_properties": {
@@ -6423,7 +6449,7 @@
 						"discard_villain",
 						"deck_villain"
 					],
-					"destination_grid": "enemies_event_source_hero",
+					"grid_name": "enemies_event_source_hero",
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -6616,7 +6642,7 @@
 						"deck_villain",
 						"set_aside"
 					],
-					"destination_grid": "allies_first_player",
+					"grid_name": "allies_first_player",
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -6681,7 +6707,7 @@
 					},
 					{
 						"name": "move_card_to_board",
-						"destination_grid": "enemies_my_hero",
+						"grid_name": "enemies_my_hero",
 						"subject": "index",
 						"subject_count": 1,
 						"subject_index": "retrieve_integer",

@@ -284,6 +284,11 @@
 	"32048": {
 		"subname": "Piotr Rasputin"
 	},
+	"32080" :{
+		"attack": 0,
+		"scheme": 0,
+		"_comments": "engine considers that if those aren't defined, the character isn't able to attack/scheme"
+	},
 	"32174b": {
 		"name": "Reactivate Defenses"
 	},		

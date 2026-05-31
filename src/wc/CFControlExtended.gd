@@ -537,6 +537,16 @@ static func text_cleanup(text):
 
 var _seen_images:= {}
 func _load_one_card_definition(card_data, box_name:= "core"):
+	#linked cards might be missing preprocessing data
+	if not card_data.has("_code"):
+		card_data["_code"] = card_data.get("code", "")
+	var card_id = card_data["_code"]	
+	
+	#hardcoded patches
+	var patches = get_database_patches().get(card_id, {})
+	for key in patches:
+		card_data[key] = patches[key]	
+	
 	#converting "real" numbers to "int"
 	for key in card_data.keys():
 		var value = card_data[key]
@@ -554,17 +564,7 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	#Fixing missing Data
 	card_data["box_name"] = box_name
 	
-	#linked cards might be missing preprocessing data
-	if not card_data.has("_code"):
-		card_data["_code"] = card_data.get("code", "")
-	var card_id = card_data["_code"]	
-
-	#hardcoded patches
-	var patches = get_database_patches().get(card_id, {})
-	for key in patches:
-		card_data[key] = patches[key]
-
-	
+		
 	if not card_data.has("Tags"):
 		card_data["Tags"] = []			
 

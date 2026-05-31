@@ -1,0 +1,168 @@
+{
+	"_comments": "Automated Test for Unrelenting Savage #32070",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Sabretooth - 1 #32060",
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary #01101"
+				},
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Unrelenting Savage"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Stalked by Sabretooth - 1B"
+				},
+				{
+					"card": "Find the Senator",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Robert Kelly",
+					"host": "Find the Senator"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Spider-Man",
+			"_comment": "draw free card"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comment": "undefended attack"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Sabretooth - 1 #32060",
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary #01101"
+				},
+				{
+					"card": "Unrelenting Savage"
+				},				
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Stalked by Sabretooth - 1B"
+				},
+				{
+					"card": "Find the Senator",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Robert Kelly",
+					"host": "Find the Senator"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {"damage": 3}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

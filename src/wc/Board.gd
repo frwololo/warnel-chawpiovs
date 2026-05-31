@@ -1111,7 +1111,7 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 		var new_hand: Hand = get_node("%" + v + str(new_hero_id))	
 		new_hand.add_to_group("bottom")		
 		WCUtils.enable_and_show_node(new_hand)
-		new_hand.enable()	
+		new_hand.enable()
 		new_hand.re_place()	
 
 	init_board_organizers(new_hero_id)
@@ -1237,8 +1237,9 @@ func loadstate_from_json(json:Dictionary):
 #when flipping such a card, we destroy it and create a new card
 func flip_doublesided_card(card:WCCard, to_card_id = ""):
 	var back_code = to_card_id if to_card_id else card.get_card_back_code()
+
 	if (back_code):
-		var type_code = card.get_property("type_code")
+		var type_code = card.get_property("type_code")			
 		if type_code in ["hero", "alter_ego"]:
 			card.load_from_card_id(back_code)
 			#TODO Historically changing form meant triggering the "card_moved_to_board"

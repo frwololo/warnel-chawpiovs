@@ -1219,7 +1219,7 @@
 				},
 				{
 					"name": "move_card_to_board",
-					"destination_grid": "enemies_my_hero",
+					"grid_name": "enemies_my_hero",
 					"subject": "index",
 					"subject_count": 1,
 					"subject_index": "retrieve_integer",
@@ -1319,7 +1319,7 @@
 								{
 									"name": "move_card_to_board",
 									"subject": "Blizzard",
-									"destination_grid": "enemies_my_hero"
+									"grid_name": "enemies_my_hero"
 								}
 							]
 						}

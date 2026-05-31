@@ -992,16 +992,8 @@ func attach_to_card(script: ScriptTask) -> int:
 		return CFConst.ReturnCode.FAILED
 
 	var host = script.subjects[0]
-	if host.get_property("cannot_have_attachments", 0, true):
+	if !SP.check_attachment_validity(host, script.owner):
 		return CFConst.ReturnCode.FAILED
-
-	if host.get_property("cannot_have_upgrade_attachments", 0, true):
-		if script.owner.get_property("type_code", "") == "upgrade":
-			return CFConst.ReturnCode.FAILED	
-
-	if host.get_property("cannot_have_player_card_attachments", 0, true):
-		if script.owner.get_controller_hero_id():
-			return CFConst.ReturnCode.FAILED	
 	
 	if !costs_dry_run():
 		if script.has_tag("disable_attach_trigger"):

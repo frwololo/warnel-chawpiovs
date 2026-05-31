@@ -821,7 +821,7 @@
 				{
 					"name": "attach_to_card",
 					"subject": "target",
-					"is_cost": true,
+					"need_subject": true,
 					"filter_state_subject": [
 						{
 							"filter_properties": {
@@ -926,6 +926,11 @@
 		}
 	},
 	"Scott Lang": {
+		"additional_cards_set_aside": [
+			{
+				"card": "Ant-Man #12001c"
+			},
+		],
 		"manual": {
 			"board": {
 				"Change Form (Tiny)": [
@@ -1208,7 +1213,7 @@
 						"name": "constraints",
 						"is_cost": true,
 						"tags": [
-							"hero_form"
+							"hero_action"
 						],
 						"constraints": [
 							{
@@ -1249,7 +1254,7 @@
 						"name": "constraints",
 						"is_cost": true,
 						"tags": [
-							"hero_form"
+							"hero_action"
 						],
 						"constraints": [
 							{

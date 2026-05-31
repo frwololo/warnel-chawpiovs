@@ -348,13 +348,17 @@ func _process(_delta: float):
 	_auto_gui_activity_ongoing = []
 	_gui_activity_ongoing = []
 	cfc.performance_checks()
-	#mechanism to avoid processing
-	#a target click as an action click
-	if _targeting_ongoing:
-		_targeting_timer = 0.2
-	else:
-		_targeting_timer -= _delta
-		_targeting_timer = max(0, _targeting_timer)
+	
+	if _game_started:
+		#mechanism to avoid processing
+		#a target click as an action click
+		if _targeting_ongoing:
+			_targeting_timer = 0.2
+			phaseContainer.show_target_cancel_button()
+		else:
+			_targeting_timer -= _delta
+			_targeting_timer = max(0, _targeting_timer)
+			phaseContainer.hide_target_cancel_button()
 		
 	if theAnnouncer.get_blocking_announce():
 		return

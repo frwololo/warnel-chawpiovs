@@ -754,52 +754,54 @@
 			"__name__": "__superpowered_siblings"
 		},
 		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action"
-					]
-				},
-				{
-					"name": "mod_tokens",
-					"token_name": "__superpowered_siblings",
-					"modification": -1,
-					"is_cost": true,
-					"subject": "self"
-				},
-				{
-					"name": "discard",
-					"subject": "tutor",
-					"src_container": "hand",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 2,
-					"selection_type": "equal",
-					"is_cost": true
-				},
-				{
-					"name": "draw_cards",
-					"amount": {
-						"if": {
-							"func_name": "card_is_in_play",
-							"func_params": {
-								"card_name": "Wanda Maximoff"
-							}
-						},
-						"then": 3,
-						"else": 2
+			"board": {
+				"Superpowered Siblings": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "__superpowered_siblings",
+						"modification": -1,
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "discard",
+						"subject": "tutor",
+						"src_container": "hand",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 2,
+						"selection_type": "equal",
+						"is_cost": true
+					},
+					{
+						"name": "draw_cards",
+						"amount": {
+							"if": {
+								"func_name": "card_is_in_play",
+								"func_params": {
+									"card_name": "Wanda Maximoff"
+								}
+							},
+							"then": 3,
+							"else": 2
+						}
 					}
-				}
-			]
+				]
+			}
 		}
 	},
 	"Quicksilver": {
 		"once_per_phase": {
 			"__name__": "__super_speed"
 		},
-		"attack_happened": {
+		"basic_attack_happened": {
 			"trigger": "self",
 			"is_optional_board": true,
 			"board": [
@@ -816,7 +818,7 @@
 				}
 			]
 		},
-		"thwart_happened": {
+		"basic_thwart_happened": {
 			"trigger": "self",
 			"is_optional_board": true,
 			"board": [
@@ -833,7 +835,7 @@
 				}
 			]
 		},
-		"defense_happened": {
+		"basic_defense_happened": {
 			"trigger": "self",
 			"is_optional_board": true,
 			"board": [
@@ -896,7 +898,6 @@
 		"interrupt_remove_threat": {
 			"event_filters": {
 				"tags": [
-					"scheme",
 					"basic power"
 				]
 			},
@@ -993,7 +994,7 @@
 					]
 				},
 				{
-					"name": "shuffle_card_into_containers",
+					"name": "shuffle_card_into_container",
 					"subject": "tutor",
 					"src_container": "discard",
 					"dest_container": "deck",
@@ -1031,7 +1032,7 @@
 					"amount": {
 						"func_name": "paid_with_includes",
 						"func_params": {
-							"mental": 1
+							"energy": 1
 						}
 					},
 					"subject": "target",

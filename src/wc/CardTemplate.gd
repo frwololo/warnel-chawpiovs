@@ -2299,7 +2299,7 @@ func common_pre_run(sceng) -> void:
 				var min_to_discard = 0
 				if (current_hand_size > max_hand_size):
 					min_to_discard = current_hand_size - max_hand_size
-				script.script_name = "move_card_to_container"
+				script.script_name = "discard"
 				script.script_definition["name"] = script.script_name
 				if (min_to_discard > 0):
 					script.script_definition["selection_optional"] = false
@@ -3015,6 +3015,14 @@ func is_first_player(params = {}, script:ScriptObject = null):
 	if controller_id == gameData.first_player_hero_id():
 		return 1
 	return 0
+
+func is_player_card(params = {}, script:ScriptObject = null):
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return false
+		
+	var type = subject.get_property("type_code", "")
+	return type in CFConst.PLAYER_CARD_TYPES
 
 func is_encounter(params = {}, script:ScriptObject = null):
 	var subject = get_param_subject(params, script)

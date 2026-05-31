@@ -428,7 +428,9 @@
 					"subject_count": "all",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_enemies"
+							"filter_properties": {
+								"type_code": "minion"
+							}
 						}
 					]
 				},
@@ -821,7 +823,7 @@
 				{
 					"name": "attach_to_card",
 					"subject": "target",
-					"need_subject": true,
+					"needs_subject": true,
 					"filter_state_subject": [
 						{
 							"filter_properties": {
@@ -929,7 +931,7 @@
 		"additional_cards_set_aside": [
 			{
 				"card": "Ant-Man #12001c"
-			},
+			}
 		],
 		"manual": {
 			"board": {
@@ -1002,7 +1004,7 @@
 				},
 				{
 					"name": "attach_to_card",
-					"subject": "Villain",
+					"subject": "villain",
 					"is_else": true
 				}
 			]
@@ -1144,7 +1146,7 @@
 							"filter_properties": {
 								"trait_tech": 1
 							},
-							"filter_group": "group_update_support",
+							"filter_group": "group_upgrade_support",
 							"_comments": "upgrade_support is currently the best way to ensure this targets only friend tech cards"
 						}
 					],
@@ -1344,7 +1346,7 @@
 		}
 	},
 	"Yellowjacket's Plan": {
-		"revealed": {
+		"reveal": {
 			"all": [
 				{
 					"name": "move_card_to_container",

@@ -1,0 +1,229 @@
+{
+	"_comments": "Automated Test for Sabretooth - Shapeshifter surprise",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Sabretooth - 1 #32060",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary #01101"
+				},
+				{
+					"card": "Mystique"
+				},
+				{
+					"card": "Medical Emergency"
+				},				
+				{
+					"card": "Unrelenting Savage"
+				},
+				{
+					"card": "Advance"
+				},
+
+			],
+			"schemes": [
+				{
+					"card": "The Injured Senator",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "protect the Senator"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Combat Training"
+				},
+				{
+					"card": "Shapeshifter Surprise"
+				},
+				{
+					"card": "For Justice!"
+				},
+				{
+					"card": "Genius"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [],
+			"allies1": [
+				{
+					"card": "Robert Kelly"
+				}
+			],
+			"hand1": []
+		}
+	},
+	"actions": [
+		{
+			"type": "next_phase",
+			"value": 1
+		},
+		{
+			"type": "activate",
+			"value": "Spider-Man"
+		},
+		{
+			"type": "select",
+			"value": "cancel"
+		},
+		{
+			"type": "select",
+			"value": "Spider-Man"
+		},		
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Sabretooth - 1 #32060",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				},			
+							{
+					"card": "Unrelenting Savage"
+				},
+
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary #01101"
+				},
+
+
+			],
+			"schemes": [
+				{
+					"card": "The Injured Senator",
+					"tokens": {
+						"threat": 3
+					}
+				},
+				{
+					"card": "Medical Emergency"
+				},				
+				
+			],
+			"villain_misc": [
+				{
+					"card": "protect the Senator"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+			],
+			"discard1": [
+			],
+
+			"allies1": [
+				{
+					"card": "Robert Kelly",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Genius"
+				},	
+				{
+					"card": "For Justice!"
+				},	
+				{
+					"card": "Shapeshifter Surprise"
+				},		
+				{
+					"card": "Combat Training"
+				},
+				{
+					"card": "Strength"
+				},
+				
+				{
+					"card": "Energy"
+				},
+
+
+
+			],
+			"enemies1": [
+				{
+					"card": "Mystique"
+				},			
+			],			
+		}
+	}
+}

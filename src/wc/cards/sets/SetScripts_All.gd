@@ -350,8 +350,7 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 						SP.KEY_SELECTION_TYPE: "min",
 						SP.KEY_SELECTION_OPTIONAL: true,
 						"hide_ok_on_zero": true,
-						"src_container": "hand",
-						"dest_container": "discard",						
+						"src_container": "hand",						
 						"display_title": "__end_phase_discard__"
 					}				
 				]

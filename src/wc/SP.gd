@@ -301,7 +301,7 @@ static func check_attachment_validity(host, hosted):
 			return false	
 
 	if host.get_property("cannot_have_player_card_attachments", 0, true):
-		if hosted.get_controller_hero_id():
+		if hosted.is_player_card():
 			return false	
 			
 	return true	

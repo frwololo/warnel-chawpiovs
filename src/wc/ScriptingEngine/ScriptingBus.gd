@@ -136,6 +136,8 @@ signal basic_attack_happened(card, details)
 # warning-ignore:unused_signal
 signal basic_thwart_happened(card, details)
 # warning-ignore:unused_signal
+signal basic_defense_happened(card, details)
+# warning-ignore:unused_signal
 signal defense_happened(card, details)
 
 # warning-ignore:unused_signal

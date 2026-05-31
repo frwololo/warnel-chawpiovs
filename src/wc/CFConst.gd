@@ -358,6 +358,16 @@ const ENCOUNTER_CARD_TYPES:= [
 	"obligation", 
 	"treachery"
 ]
+
+const PLAYER_CARD_TYPES:= [
+	"ally", 
+	"event", 
+	"hero", 
+	"alter_ego", 
+	"resource", 
+	"support", 
+	"upgrade", 
+]
 const FORCE_HORIZONTAL_CARDS := {
 	"main_scheme" : true,
 	"player_scheme" : true,

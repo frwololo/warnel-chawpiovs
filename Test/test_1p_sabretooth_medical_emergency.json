@@ -1,0 +1,203 @@
+{
+	"_comments": "Automated Test for Sabretooth - Medical Emergency",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Sabretooth - 1 #32060",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary #01101"
+				},
+				{
+					"card": "Unrelenting Savage"
+				},
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Medical Emergency"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Stalked by Sabretooth - 1B"
+				},
+				{
+					"card": "The Injured Senator",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "protect the Senator"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [],
+			"allies1": [
+				{
+					"card": "Robert Kelly",
+					"tokens": {
+						"damage": 4
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "For Justice!"
+				},
+				{
+					"card": "Genius"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		},
+		{
+			"type": "play",
+			"value": "For Justice!"
+		},
+		{
+			"type": "target",
+			"value": "Medical emergency"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Sabretooth - 1 #32060",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary #01101"
+				},
+				{
+					"card": "Unrelenting Savage"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Stalked by Sabretooth - 1B"
+				},
+				{
+					"card": "The Injured Senator",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"victory_display": [
+				{
+					"card": "Medical Emergency"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "protect the Senator"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Genius"
+				},			
+				{
+					"card": "For Justice!"
+				}
+
+			],
+			"enemies1": [],
+			"allies1": [
+				{
+					"card": "Robert Kelly",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"hand1": []
+		}
+	}
+}

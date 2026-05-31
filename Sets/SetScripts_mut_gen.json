@@ -1380,7 +1380,7 @@
 				},
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "cannot_have_upgrades_attachments",
+					"filter_property_name": "cannot_have_upgrade_attachments",
 					"trigger": "Robert Kelly",
 					"alteration": 1
 				}
@@ -1793,7 +1793,8 @@
 			"all": [
 				{
 					"name": "shuffle_card_into_container",
-					"subject": "self"
+					"subject": "self",
+					"dest_container": "deck_my_hero",
 				},
 				{
 					"name": "surge"
@@ -5461,7 +5462,8 @@
 			"all": [
 				{
 					"name": "shuffle_card_into_container",
-					"subject": "self"
+					"subject": "self",
+					"dest_container": "deck_my_hero"
 				},
 				{
 					"name": "surge"
@@ -5469,13 +5471,31 @@
 			]
 		},
 		"card_moved_to_hand": {
-			"subject": "self",
+			"trigger": "self",
+			"display_section": "Forced Response",
 			"hand": [
 				{
 					"name": "enemy_activates",
 					"subject": "Mystique",
-					"target_hero_id": "_event_source_hero"
-				}
+					"target_hero_id": "_event_source_hero",
+					"is_cost": true
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Mystique"
+							}
+						}
+					],
+					"is_else": true
+				}				
 			]
 		}
 	},
@@ -6512,7 +6532,21 @@
 					"name": "defeat"
 				}
 			]
-		}
+		},
+		"interrupt_card_moved_to_pile": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"Name": "Robert Kelly"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "defeat"
+				}
+			]
+		}		
 	},
 	"The Rule of Magnus - 3A": {
 		"reveal": {

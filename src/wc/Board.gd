@@ -1242,8 +1242,8 @@ func flip_doublesided_card(card:WCCard, to_card_id = ""):
 		var type_code = card.get_property("type_code")			
 		if type_code in ["hero", "alter_ego"]:
 			card.load_from_card_id(back_code)
-			#TODO Historically changing form meant triggering the "card_moved_to_board"
-			#signal. It is still required (e.g. to add specific tokens)
+			#TODO Historically changing form meant triggering the "card_moved_to_board" and "self_moved_to_board"
+			#signals. It is still required (e.g. to add specific tokens)
 			#Will want to change this in the future but for now it is needed
 			scripting_bus.emit_signal_on_stack(
 				"card_moved_to_board",
@@ -1255,6 +1255,7 @@ func flip_doublesided_card(card:WCCard, to_card_id = ""):
 					"tags": ["change_form"]
 				}
 			)
+			card.execute_scripts(card, "self_moved_to_board")
 			card.changed_form({"before": type_code})
 			return card
 			

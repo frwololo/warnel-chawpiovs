@@ -816,7 +816,9 @@ func receive_damage(script: ScriptTask) -> int:
 				scripting_bus.emit_signal_on_stack("basic_attack_happened",  attacker,  signal_details)				
 		
 			scripting_bus.emit_signal_on_stack("defense_happened", card,  signal_details)
-			
+			if ("basic_defense" in tags):
+				scripting_bus.emit_signal_on_stack("basic_defense_happened",  card,  signal_details)				
+
 			#overkill attack
 			#TODO this only handles ally/hero attack for now,
 			#enemy overkill is handled in another part of the code
@@ -1308,6 +1310,7 @@ func ready_card(script: ScriptTask) -> int:
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
 	for card in script.subjects:
 		if card.get_property("cannot_ready_by_player_card", 0, true):
+			#TODO use WC/CardTemplate's is_player_card()
 			retcode = CFConst.ReturnCode.FAILED
 			continue
 		retcode = card.readyme(false, true, costs_dry_run(), tags)
@@ -1556,6 +1559,9 @@ func enemy_attack(script: ScriptTask) -> int:
 	if defender:
 		if script.script_definition.get("exhaust_defenders", true):
 			defender.exhaustme()
+		if script.script_definition.get("basic_defense", true):	
+			if !script.has_tag("basic_defense"):
+				script.script_definition["tags"].append("basic_defense")
 
 	if !script.has_tag("attack"):
 		script.script_definition["tags"].append("attack")
@@ -1633,7 +1639,8 @@ func set_defender(script: ScriptTask) -> int:
 	attack_script.set_subjects([])
 	attack_script.subjects.append(defender)
 	attack_script.definition["exhaust_defenders"] = false
-
+	attack_script.definition["basic_defense"] = false
+	
 	return CFConst.ReturnCode.CHANGED
 	
 
@@ -2106,7 +2113,7 @@ func heal(script: ScriptTask) -> int:
 		
 	for subject in script.subjects:
 		if subject.get_property("cannot_be_healed_by_player_cards", 0, true):
-			if script.owner.get_controller_hero_id(): 
+			if script.owner.is_player_card(): 
 				#if attempt to heal with a player card on a target that cannot,
 				#fail for cost checks, skips this card for actual run
 				if (costs_dry_run()):

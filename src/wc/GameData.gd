@@ -354,7 +354,8 @@ func _process(_delta: float):
 		#a target click as an action click
 		if _targeting_ongoing:
 			_targeting_timer = 0.2
-			phaseContainer.show_target_cancel_button()
+			if _targeting_ongoing.targeting_arrow.is_optional:
+				phaseContainer.show_target_cancel_button()
 		else:
 			_targeting_timer -= _delta
 			_targeting_timer = max(0, _targeting_timer)
@@ -1170,19 +1171,22 @@ func enemy_activates() :
 	if target_friendly.get_controller_hero_id() != get_current_local_hero_id():
 		self.select_current_playing_hero(target_hero_id) 
 	
-	#check for stun/confused
-	var is_status = enemy.is_token_status({"status_name": status})
-	if (is_status):
-		enemy.tokens.mod_token(status, 0, true)
-		enemy.hint(status + "!", hint_color)
-		current_enemy_finished()
-		return
+
 	
 	var guid = guidMaster.get_guid(enemy)
 	cfc._rpc(self,"set_client_status",  "activation", guid,  _current_enemy_attack_step)	
-	#not stunned, proceed
+
 	match _current_enemy_attack_step:
 		EnemyAttackStatus.NONE:	
+				#check for stun/confused
+				var is_status = enemy.is_token_status({"status_name": status})
+				if (is_status):
+					enemy.tokens.mod_token(status, 0, true)
+					enemy.hint(status + "!", hint_color)
+					current_enemy_finished()
+					return			
+			
+				#not stunned, proceed
 				#GUI announce
 				var top_color = Color8(40,20,20,255)
 				if action == "scheme":

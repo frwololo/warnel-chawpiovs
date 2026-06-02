@@ -184,10 +184,10 @@ func _grab_until_find(script: ScriptObject, _run_type) -> Dictionary:
 	if !src_container:
 		return{"subjects" : [], "stored_integer" : 0}
 		
-	var dest_container = script.get_property(SP.KEY_DEST_CONTAINER)
-	dest_container = cfc.NMAP.get(dest_container, null)	
-	if !dest_container:
-		return{"subjects" : [], "stored_integer" : 0}
+#	var dest_container = script.get_property(SP.KEY_DEST_CONTAINER)
+#	dest_container = cfc.NMAP.get(dest_container, null)	
+#	if !dest_container:
+#		return{"subjects" : [], "stored_integer" : 0}
 	
 	var src_cards:Array = src_container.get_all_cards()
 	var found_index = 0
@@ -705,8 +705,8 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 					if compared_to_str == comp_value:
 						filters.erase(filter_key)				
 
-	if (filters):
-		var _tmp = 0	
+#	if (filters):
+#		var _tmp = 0	
 	#var script_details = task.script_definition
 	var result = WCUtils.is_element1_in_element2(filters, trigger_details, ["tags"])
 

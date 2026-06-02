@@ -100,8 +100,8 @@ func calculate_alteration(script: ScriptAlter) -> void:
 #					filters = {"has_property" : property_name}				
 				
 		alteration += per_msg.count_found_things(filters)
-		if alteration:
-			var _tmp =1
+#		if alteration:
+#			var _tmp =1
 	else:
 		alteration_requested = script.retrieve_integer_property(SP.KEY_ALTERATION)
 		alteration += alteration_requested

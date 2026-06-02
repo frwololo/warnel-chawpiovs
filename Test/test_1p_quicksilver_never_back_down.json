@@ -1,0 +1,153 @@
+{
+	"_comments": "Never Back Down bug: Stun gets automatically removed",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Quicksilver"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Quicksilver"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [],
+			"allies1": [
+				{
+					"card": "Scarlet Witch - Wanda Maximoff #14002"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Never Back Down"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel"
+		},
+		{
+			"type": "play",
+			"value": "Never Back Down"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Quicksilver"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"stunned": 1
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Quicksilver"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Scarlet Witch - Wanda Maximoff #14002"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Never Back Down"
+				}
+			]
+		}
+	}
+}

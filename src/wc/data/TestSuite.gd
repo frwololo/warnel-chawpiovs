@@ -49,7 +49,6 @@ const GRID_SETUP = CFConst.GRID_SETUP
 const HERO_GRID_SETUP = CFConst.HERO_GRID_SETUP
 
 #GUI components required for interaction
-var phaseContainer:PhaseContainer = null
 var initialized:bool = false
 var text_edit:TextEdit = null
 
@@ -243,6 +242,8 @@ func create_text_edit():
 
 
 func announce(text:String, include_test_number:= true):
+	if !is_instance_valid(text_edit):
+		create_text_edit()
 	start_timer("announce")
 	if include_test_number:
 		if !announce_verbose:
@@ -269,8 +270,10 @@ func announce(text:String, include_test_number:= true):
 
 #Gathers GUI objects from the game that we will be calling
 func initialize_components():
-	phaseContainer = gameData.phaseContainer
 	initialized = true
+
+func phaseContainer():
+	return gameData.phaseContainer
 
 func _process(_delta: float) -> void:
 	start_timer("_process")
@@ -359,7 +362,7 @@ func should_wait(my_action, _delta):
 					count_delay("action_wait_for_interrupt")
 					return true			
 			"wait_for_player_turn":
-				if (phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN):
+				if (phaseContainer().current_step != CFConst.PHASE_STEP.PLAYER_TURN):
 					if (!expected_to_fail) or (_delta <max_wait_time * delay_multiplier):
 						count_delay("action_wait_for_player_turn")
 						return true
@@ -419,7 +422,7 @@ func should_wait(my_action, _delta):
 	#there's an issue where the offer to "pass" sometimes takes a few cycles
 	if (action_type == "pass"):
 		var hero_id = int(action_value)
-		var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id-1]
+		var heroPhase:HeroPhase = phaseContainer().heroesStatus[hero_id-1]
 		if (! heroPhase.can_hero_phase_action() or ! heroPhase.can_hero_pass()) :
 			if ( _delta <short_wait_time * delay_multiplier):
 				count_delay("action_pass")
@@ -431,7 +434,7 @@ func should_wait(my_action, _delta):
 	
 	if (action_type == "next_phase"):
 		var hero_id = int(action_value)
-		var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id-1]
+		var heroPhase:HeroPhase = phaseContainer().heroesStatus[hero_id-1]
 		if (!heroPhase.can_hero_phase_action()):
 			if ( _delta <long_wait_time * delay_multiplier):
 				count_delay("action_nextphase")
@@ -463,9 +466,6 @@ func should_wait_after_action(my_action, _delta):
 #If no actions remaining, check final state and load the next test
 func next_action():
 	#TODO need to ensure the previous action and its effects are completed before moving to the next
-	#If phasecontainer is running stuff, we wait
-#	if phaseContainer.is_in_progress():
-#		return
 
 	if cfc.NMAP.board.are_cards_still_animating():
 		return	
@@ -487,8 +487,8 @@ func next_action():
 		#of the test suite, this can lead to desyncs at the test time
 		#crappy way of dealing with it is to let the phase container run a bit
 		#before finalizing the test
-		var expected_phase = phaseContainer.step_string_to_step_id(end_state["phase"])
-		var current_phase = phaseContainer.current_step
+		var expected_phase = phaseContainer().step_string_to_step_id(end_state["phase"])
+		var current_phase = phaseContainer().current_step
 		var delay_multiplier = get_delay_multiplier()
 		if ((expected_phase != current_phase) && delta < long_wait_time * delay_multiplier):
 			count_delay("expected_phase")
@@ -765,7 +765,7 @@ func action_choose(hero_id, action_value):
 
 #clicked on next phase. Value is the hero id	
 func action_pass(hero_id):
-	var heroPhase:HeroPhase = phaseContainer.heroesStatus[hero_id -1]
+	var heroPhase:HeroPhase = phaseContainer().heroesStatus[hero_id -1]
 	var result = heroPhase.heroPhase_action()
 	return		
 
@@ -1011,8 +1011,7 @@ func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
 				if key in (ignore_order):
 					if (typeof(val1) == TYPE_ARRAY and typeof(val2) == TYPE_ARRAY):
 							sort_card_array(val1)
-							sort_card_array(val2)
-							var _tmp = 1			
+							sort_card_array(val2)		
 				if !is_element1_in_element2(val1, val2, parent_append + key):
 					return false
 		TYPE_ARRAY:
@@ -1099,6 +1098,11 @@ func test_integrity(json_card_data) -> Array:
 	if errors:
 		return errors
 	
+	#TODO check integrity for scenarios
+	if json_card_data["init"].has("scenario"):
+		return errors
+		
+	
 	for section_name in ["init", "end"]:
 		var section = json_card_data[section_name]
 		var board = section["board"]
@@ -1114,6 +1118,46 @@ func test_integrity(json_card_data) -> Array:
 			if !action.has(key):
 				errors.append("missing action data")				
 	return errors
+
+
+func load_scenario(init_state):
+	var team:= {}
+	var i = 0
+	var serialized_team = init_state["heroes"]	
+	for saved_item in serialized_team:
+		var hero_deck_data: HeroDeckData = HeroDeckData.new()
+		#if owner isn't set in the save game, we force it to 1 hero per player
+		var default_owner_id = 1
+		saved_item["herodeckdata"]["owner"] = 	int(saved_item["herodeckdata"].get("owner", default_owner_id ))
+		hero_deck_data.loadstate_from_json(saved_item)
+		team[i] = hero_deck_data			
+		i+= 1
+
+	var scenario_load_data = init_state["scenario"]
+	var scenario_name = scenario_load_data.get("name", "")
+	var scenario_data
+	if scenario_name:
+		scenario_data = ScenarioDeckData.get_primitive_by_attribute("name", scenario_name)
+	else:
+		return
+		
+	if !scenario_data:
+		return	
+	gameData.set_team_data(team)
+
+	var launch_data = {
+		"team": serialized_team,
+		"scheme_id" : ScenarioDeckData._get_corrected_scheme_card_id(scenario_data["code"]), 
+		"modular_encounters":scenario_data["modular_default"],
+		"expert_mode": false,
+		"scenario_options": scenario_load_data.get("options", {})
+	}
+		
+	gameData.set_scenario_data(launch_data)
+	gameData.phaseContainer.loadstate_from_json(init_state)
+	cfc.NMAP.board.board_ready(false)
+	#todo should be done via rpc
+	game_loaded = true
 
 #Loads a single test file 	
 func load_test(test_file)-> bool:
@@ -1157,12 +1201,24 @@ func load_test(test_file)-> bool:
 	test_conditions = json_card_data.get("test_conditions", {})
 	match test_list_filter:
 		"sanity":
+			#for sanity tests we skip bugs and scenario tests
 			var bug_type = test_conditions.get("bug_type", "")
 			if bug_type =="card_json":
 				skipped.append(test_file)
 				skipped_reason.append("Sanity checks - skip card bug test")
-				return false			
+				return false	
+			if json_card_data["init"].has("scenario"):
+				skipped.append(test_file)
+				skipped_reason.append("Sanity checks - skip scenario test")				
+				return false
+		"scenario":
+			#for scenario tests we only test scenarios	
+			if !json_card_data["init"].has("scenario"):
+				skipped.append(test_file)
+				skipped_reason.append("Scenario checks - skip non scenario tests")				
+				return false						
 		_:
+			#test all
 			pass
 	
 	announce("running test: " + test_file +"\n")	
@@ -1182,7 +1238,10 @@ func load_test(test_file)-> bool:
 		"current_test_file" : current_test_file,
 		"test_conditions" : test_conditions,
 	}
-	gameData.load_gamedata(initial_state)
+	if initial_state.has("scenario"):
+		load_scenario(initial_state)
+	else:
+		gameData.load_gamedata(initial_state)
 	cfc._rpc(self,"initialize_clients_test", remote_init_data)
 	
 	return true
@@ -1393,10 +1452,7 @@ static func generate_missing_tests():
 			continue
 		
 		#Maybe this card has a duplicate which is already tested
-		var found_duplicate = false	
-		var name = card_data["Name"]
-		if name =="Strength":
-			var _tmp = 1		
+		var found_duplicate = false		
 		var duplicate_list = duplicates.get(card_id, [])
 		if duplicate_list:
 			var reverse_duplicate = reverse_duplicates.get(duplicate_list, [])
@@ -1409,8 +1465,6 @@ static func generate_missing_tests():
 				break
 		if found_duplicate:
 			continue
-		else:
-			var _tmp = 1
 		
 			
 		missing_card_ids.append(card_id)

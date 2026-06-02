@@ -33,6 +33,26 @@ static func _get_corrected_scheme_card_id(key):
 			var _error = 1
 	return key	
 
+#eg: "get_primitive_by_attribute("name", "The Break-In!")
+static func get_primitive_by_attribute(attribute, value):
+	if !primitives:
+		_load_card_scenarios()	
+	if typeof(value) == TYPE_STRING:
+		value = value.to_lower()
+		
+	for key in primitives:
+		var primitive = primitives[key]
+		var to_compare = primitive.get(attribute, null)
+		if !to_compare:
+			continue
+		if typeof(to_compare) != typeof(value):
+			continue
+		if typeof(to_compare) == TYPE_STRING:
+			to_compare = to_compare.to_lower()
+		if to_compare == value:
+			return primitive
+	return {}
+
 static func get_scenario_display_name(scenario_id):
 	if !primitives:
 		_load_card_scenarios()	
@@ -366,10 +386,12 @@ func get_simple_encounter_deck(encounter_sets):
 			encounter_set_code = modular_sets[modular_set_count]
 			modular_set_count += 1
 		var encounter_set : Array = cfc.get_encounter_cards(encounter_set_code)
+		
 		for card_data in encounter_set:
 			var card_type = card_data["type_code"]
 			if (card_type == "main_scheme" or card_type == "villain"): #skip villain and schemes from the deck
-				set_aside.append(card_data)
+				if ! card_data in set_aside:
+					set_aside.append(card_data)
 			else:
 				var add_to_encounter_deck = true
 				var card_set_position = card_data["set_position"]
@@ -381,7 +403,8 @@ func get_simple_encounter_deck(encounter_sets):
 					if code.begins_with(existing_code): #we have the more precise
 						result_deck.erase(existing_card_data)
 					else:
-						add_to_encounter_deck = false
+						if card_data["Name"] == existing_card_data["Name"]:
+							add_to_encounter_deck = false
 				if add_to_encounter_deck:
 					#permanent cards are set aside in setup
 					if card_data.get("permanent", false):

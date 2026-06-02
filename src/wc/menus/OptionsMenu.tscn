@@ -111,8 +111,8 @@ unique_name_in_owner = true
 margin_right = 200.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 200, 0 )
-text = "ALL"
-items = [ "ALL", null, false, 0, false, "Sanity", null, false, 0, false ]
+text = "All"
+items = [ "All", null, false, 0, false, "Sanity", null, false, 1, false, "Scenario", null, false, 2, null ]
 selected = 0
 
 [node name="TestsButton" type="Button" parent="PanelContainer/general/VBoxContainer/DebugContainer/VBoxContainer"]
@@ -326,12 +326,12 @@ margin_bottom = 82.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/advanced/VBoxContainer"]
 margin_top = 108.0
-margin_right = 1876.0
+margin_right = 1896.0
 margin_bottom = 183.0
 custom_constants/separation = 183
 
 [node name="ResetSettingsButton" type="Button" parent="PanelContainer/advanced/VBoxContainer/HBoxContainer"]
-margin_right = 463.0
+margin_right = 473.0
 margin_bottom = 75.0
 size_flags_horizontal = 3
 size_flags_vertical = 10
@@ -339,8 +339,8 @@ custom_fonts/font = SubResource( 2 )
 text = "Reset Settings"
 
 [node name="DeleteResourcesButton" type="Button" parent="PanelContainer/advanced/VBoxContainer/HBoxContainer"]
-margin_left = 646.0
-margin_right = 1230.0
+margin_left = 656.0
+margin_right = 1240.0
 margin_bottom = 75.0
 size_flags_horizontal = 3
 size_flags_vertical = 10
@@ -348,8 +348,8 @@ custom_fonts/font = SubResource( 2 )
 text = "Delete User PCK/ZIP files"
 
 [node name="DeleteImgButton" type="Button" parent="PanelContainer/advanced/VBoxContainer/HBoxContainer"]
-margin_left = 1413.0
-margin_right = 1876.0
+margin_left = 1423.0
+margin_right = 1896.0
 margin_bottom = 75.0
 size_flags_horizontal = 3
 size_flags_vertical = 10

@@ -251,7 +251,6 @@ func _file_downloaded(url, destination):
 		var filename = "user://music.zip"
 		if WCUtils.file_exists(filename):
 			var _success_res = ProjectSettings.load_resource_pack(filename)
-			var _tmp = 0
 			theAudioManager.reset()
 			play_music("menu")
 
@@ -352,7 +351,7 @@ func _process(_delta: float):
 	if _game_started:
 		#mechanism to avoid processing
 		#a target click as an action click
-		if _targeting_ongoing:
+		if is_instance_valid(_targeting_ongoing):
 			_targeting_timer = 0.2
 			if _targeting_ongoing.targeting_arrow.is_optional:
 				phaseContainer.show_target_cancel_button()
@@ -1171,8 +1170,6 @@ func enemy_activates() :
 	if target_friendly.get_controller_hero_id() != get_current_local_hero_id():
 		self.select_current_playing_hero(target_hero_id) 
 	
-
-	
 	var guid = guidMaster.get_guid(enemy)
 	cfc._rpc(self,"set_client_status",  "activation", guid,  _current_enemy_attack_step)	
 
@@ -1214,7 +1211,8 @@ func enemy_activates() :
 				}
 				 #some cleanup to prevent any misunderstanding
 				 #activity script will be set once the activity actually starts (which might be a mistake...?)
-				set_latest_activity_script(null)
+				var tmp_script = ScriptTask.new(enemy, {"name": "uninitialized_activity_script"}, enemy, {})
+				enemy.set_activity_script(tmp_script)
 				scripting_bus.emit_signal_on_stack("enemy_initiates_" + action, enemy,  details)
 				_current_enemy_attack_step = EnemyAttackStatus.PENDING_INTERRUPT
 				return

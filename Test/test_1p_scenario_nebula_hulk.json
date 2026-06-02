@@ -1,0 +1,582 @@
+{
+	"_comments": "Scenario Start Test : Nebula vs Hulk",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hulk",
+					"deck_id": 2465
+				}
+			}
+		],
+		"scenario": {
+			"name": "The Art of Evasion"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 2465,
+					"hero": "10001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "16102",
+					"owner_hero_id": 0,
+					"_comments": "Ruthless"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "16140",
+					"owner_hero_id": 0,
+					"_comments": "Sound the Alarms"
+				},
+				{
+					"card": "16143",
+					"owner_hero_id": 0,
+					"_comments": "Rogue Vessel"
+				},
+				{
+					"card": "16099",
+					"owner_hero_id": 0,
+					"_comments": "Lethal Intent"
+				},
+				{
+					"card": "10025",
+					"owner_hero_id": 0,
+					"_comments": "Inner Demons"
+				},
+				{
+					"card": "16102",
+					"owner_hero_id": 0,
+					"_comments": "Ruthless"
+				},
+				{
+					"card": "16099",
+					"owner_hero_id": 0,
+					"_comments": "Lethal Intent"
+				},
+				{
+					"card": "16101",
+					"owner_hero_id": 0,
+					"_comments": "Combat Ready"
+				},
+				{
+					"card": "16100",
+					"owner_hero_id": 0,
+					"_comments": "Barrel Roll"
+				},
+				{
+					"card": "16098",
+					"owner_hero_id": 0,
+					"_comments": "Wide Stance"
+				},
+				{
+					"card": "16146",
+					"owner_hero_id": 0,
+					"_comments": "Hull Breach"
+				},
+				{
+					"card": "16095",
+					"owner_hero_id": 0,
+					"_comments": "Evasive Maneuvering"
+				},
+				{
+					"card": "16145",
+					"owner_hero_id": 0,
+					"_comments": "Blind Side"
+				},
+				{
+					"card": "16139",
+					"owner_hero_id": 0,
+					"_comments": "Pirate Lackey"
+				},
+				{
+					"card": "16139",
+					"owner_hero_id": 0,
+					"_comments": "Pirate Lackey"
+				},
+				{
+					"card": "16094",
+					"owner_hero_id": 0,
+					"_comments": "Cutthroat Ambition"
+				},
+				{
+					"card": "16097",
+					"owner_hero_id": 0,
+					"_comments": "Weapon Mastery"
+				},
+				{
+					"card": "16097",
+					"owner_hero_id": 0,
+					"_comments": "Weapon Mastery"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "16147",
+					"owner_hero_id": 0,
+					"_comments": "Power Siphon"
+				},
+				{
+					"card": "16139",
+					"owner_hero_id": 0,
+					"_comments": "Pirate Lackey"
+				},
+				{
+					"card": "16144",
+					"owner_hero_id": 0,
+					"_comments": "Cannonade"
+				},
+				{
+					"card": "16139",
+					"owner_hero_id": 0,
+					"_comments": "Pirate Lackey"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "16141",
+					"owner_hero_id": 0,
+					"_comments": "Honor Among Thieves"
+				},
+				{
+					"card": "16141",
+					"owner_hero_id": 0,
+					"_comments": "Honor Among Thieves"
+				},
+				{
+					"card": "16100",
+					"owner_hero_id": 0,
+					"_comments": "Barrel Roll"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "16148",
+					"owner_hero_id": 0,
+					"_comments": "Special Delivery"
+				},
+				{
+					"card": "16101",
+					"owner_hero_id": 0,
+					"_comments": "Combat Ready"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "16138",
+					"owner_hero_id": 0,
+					"_comments": "Pirate Commander"
+				},
+				{
+					"card": "16096",
+					"owner_hero_id": 0,
+					"_comments": "Unyielding Persistence"
+				},
+				{
+					"card": "16094",
+					"owner_hero_id": 0,
+					"_comments": "Cutthroat Ambition"
+				},
+				{
+					"card": "16098",
+					"owner_hero_id": 0,
+					"_comments": "Wide Stance"
+				}
+			],
+			"villain": [
+				{
+					"card": "16088",
+					"owner_hero_id": 0,
+					"_comments": "Nebula - 1",
+					"tokens": {
+						"__technique": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "16091b",
+					"owner_hero_id": 0,
+					"_comments": "The Art of Evasion - 1B",
+					"tokens": {
+						"threat": 2,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "16093",
+					"owner_hero_id": 0,
+					"_comments": "Nebula's Ship",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "10001a",
+					"owner_hero_id": 1,
+					"_comments": "Hulk"
+				},
+				{
+					"card": "10026",
+					"owner_hero_id": 0,
+					"_comments": "Abomination"
+				},
+				{
+					"card": "10027",
+					"owner_hero_id": 0,
+					"_comments": "Total Destruction"
+				},
+				{
+					"card": "10028",
+					"owner_hero_id": 0,
+					"_comments": "Clash Of The Titans"
+				},
+				{
+					"card": "10028",
+					"owner_hero_id": 0,
+					"_comments": "Clash Of The Titans"
+				},
+				{
+					"card": "10028",
+					"owner_hero_id": 0,
+					"_comments": "Clash Of The Titans"
+				},
+				{
+					"card": "16089",
+					"owner_hero_id": 0,
+					"_comments": "Nebula - 2"
+				},
+				{
+					"card": "16090",
+					"owner_hero_id": 0,
+					"_comments": "Nebula - 3"
+				},
+				{
+					"card": "16092a",
+					"owner_hero_id": 0,
+					"_comments": "Warp Drive Initiated - 2A"
+				},
+				{
+					"card": "16092b",
+					"owner_hero_id": 0,
+					"_comments": "Warp Drive Initiated - 2B"
+				},
+				{
+					"card": "16091a",
+					"owner_hero_id": 0,
+					"_comments": "The Art of Evasion - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "10018",
+					"owner_hero_id": 1,
+					"_comments": "Martial Prowess"
+				},
+				{
+					"card": "10016",
+					"owner_hero_id": 1,
+					"_comments": "\"You'll Pay for That!\""
+				},
+				{
+					"card": "10014",
+					"owner_hero_id": 1,
+					"_comments": "Drop Kick"
+				},
+				{
+					"card": "10007",
+					"owner_hero_id": 1,
+					"_comments": "Limitless Strength"
+				},
+				{
+					"card": "10014",
+					"owner_hero_id": 1,
+					"_comments": "Drop Kick"
+				},
+				{
+					"card": "10015",
+					"owner_hero_id": 1,
+					"_comments": "Toe to Toe"
+				},
+				{
+					"card": "10006",
+					"owner_hero_id": 1,
+					"_comments": "Unstoppable Force"
+				},
+				{
+					"card": "10019",
+					"owner_hero_id": 1,
+					"_comments": "To the Rescue!"
+				},
+				{
+					"card": "10003",
+					"owner_hero_id": 1,
+					"_comments": "Hulk Smash"
+				},
+				{
+					"card": "10010",
+					"owner_hero_id": 1,
+					"_comments": "Immovable Object"
+				},
+				{
+					"card": "01092",
+					"owner_hero_id": 1,
+					"_comments": "Helicarrier"
+				},
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "10005",
+					"owner_hero_id": 1,
+					"_comments": "Thunderclap"
+				},
+				{
+					"card": "10004",
+					"owner_hero_id": 1,
+					"_comments": "Sub-Orbital Leap"
+				},
+				{
+					"card": "10005",
+					"owner_hero_id": 1,
+					"_comments": "Thunderclap"
+				},
+				{
+					"card": "10019",
+					"owner_hero_id": 1,
+					"_comments": "To the Rescue!"
+				},
+				{
+					"card": "10015",
+					"owner_hero_id": 1,
+					"_comments": "Toe to Toe"
+				},
+				{
+					"card": "10004",
+					"owner_hero_id": 1,
+					"_comments": "Sub-Orbital Leap"
+				},
+				{
+					"card": "10003",
+					"owner_hero_id": 1,
+					"_comments": "Hulk Smash"
+				},
+				{
+					"card": "10018",
+					"owner_hero_id": 1,
+					"_comments": "Martial Prowess"
+				},
+				{
+					"card": "10008",
+					"owner_hero_id": 1,
+					"_comments": "Banner's Laboratory"
+				},
+				{
+					"card": "10015",
+					"owner_hero_id": 1,
+					"_comments": "Toe to Toe"
+				},
+				{
+					"card": "10018",
+					"owner_hero_id": 1,
+					"_comments": "Martial Prowess"
+				},
+				{
+					"card": "10014",
+					"owner_hero_id": 1,
+					"_comments": "Drop Kick"
+				},
+				{
+					"card": "10012",
+					"owner_hero_id": 1,
+					"_comments": "Sentry - Robert Reynolds"
+				},
+				{
+					"card": "01091",
+					"owner_hero_id": 1,
+					"_comments": "Avengers Mansion"
+				},
+				{
+					"card": "10002",
+					"owner_hero_id": 1,
+					"_comments": "Crushing Blow"
+				},
+				{
+					"card": "10016",
+					"owner_hero_id": 1,
+					"_comments": "\"You'll Pay for That!\""
+				},
+				{
+					"card": "10013",
+					"owner_hero_id": 1,
+					"_comments": "She-Hulk - Jennifer Walters"
+				},
+				{
+					"card": "10009",
+					"owner_hero_id": 1,
+					"_comments": "Boundless Rage"
+				},
+				{
+					"card": "10006",
+					"owner_hero_id": 1,
+					"_comments": "Unstoppable Force"
+				},
+				{
+					"card": "01088",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "01055",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Aggression"
+				},
+				{
+					"card": "10011",
+					"owner_hero_id": 1,
+					"_comments": "Brawn - Amadeus Cho"
+				},
+				{
+					"card": "10002",
+					"owner_hero_id": 1,
+					"_comments": "Crushing Blow"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "10001b",
+					"owner_hero_id": 1,
+					"_comments": "Bruce Banner",
+					"tokens": {
+						"__experimental_research": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "16142",
+					"owner_hero_id": 0,
+					"_comments": "Milano",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "01055",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Aggression"
+				},
+				{
+					"card": "10016",
+					"owner_hero_id": 1,
+					"_comments": "\"You'll Pay for That!\""
+				},
+				{
+					"card": "01089",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "10007",
+					"owner_hero_id": 1,
+					"_comments": "Limitless Strength"
+				},
+				{
+					"card": "10019",
+					"owner_hero_id": 1,
+					"_comments": "To the Rescue!"
+				}
+			],
+			"others": [
+				{
+					"card": "16149",
+					"owner_hero_id": 0,
+					"_comments": "Power Stone",
+					"tokens": {
+						"__can_change_form": 1
+					},
+					"host": "16088"
+				}
+			]
+		}
+	}
+}

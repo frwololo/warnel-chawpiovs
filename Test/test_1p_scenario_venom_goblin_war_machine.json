@@ -1,0 +1,568 @@
+{
+	"_comments": "Scenario Start Test : Venom Goblin vs War Machine",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "War Machine",
+					"deck_id": 14192
+				}
+			}
+		],
+		"scenario": {
+			"name": "Skies Over New York"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 14192,
+					"hero": "23001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "27139",
+					"owner_hero_id": 0,
+					"_comments": "Smoke Bombs"
+				},
+				{
+					"card": "27165",
+					"owner_hero_id": 0,
+					"_comments": "Violent Tendencies"
+				},
+				{
+					"card": "27123",
+					"owner_hero_id": 0,
+					"_comments": "Symbiotic Thrall"
+				},
+				{
+					"card": "23028",
+					"owner_hero_id": 0,
+					"_comments": "Equipment Malfunction"
+				},
+				{
+					"card": "27126",
+					"owner_hero_id": 0,
+					"_comments": "Spreading Panic"
+				},
+				{
+					"card": "27123",
+					"owner_hero_id": 0,
+					"_comments": "Symbiotic Thrall"
+				},
+				{
+					"card": "27125",
+					"owner_hero_id": 0,
+					"_comments": "Joy Ride"
+				},
+				{
+					"card": "27123",
+					"owner_hero_id": 0,
+					"_comments": "Symbiotic Thrall"
+				},
+				{
+					"card": "27122",
+					"owner_hero_id": 0,
+					"_comments": "Symbiotic Monstrosity"
+				},
+				{
+					"card": "27167",
+					"owner_hero_id": 0,
+					"_comments": "Enraged Symbiote"
+				},
+				{
+					"card": "27167",
+					"owner_hero_id": 0,
+					"_comments": "Enraged Symbiote"
+				},
+				{
+					"card": "27137",
+					"owner_hero_id": 0,
+					"_comments": "Concussive Bombs"
+				},
+				{
+					"card": "27136",
+					"owner_hero_id": 0,
+					"_comments": "Advanced Glider"
+				},
+				{
+					"card": "27121",
+					"owner_hero_id": 0,
+					"_comments": "Symbiotic Berserker"
+				},
+				{
+					"card": "27121",
+					"owner_hero_id": 0,
+					"_comments": "Symbiotic Berserker"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "27167",
+					"owner_hero_id": 0,
+					"_comments": "Enraged Symbiote"
+				},
+				{
+					"card": "27138",
+					"owner_hero_id": 0,
+					"_comments": "Incendiary Bombs"
+				},
+				{
+					"card": "27166",
+					"owner_hero_id": 0,
+					"_comments": "Webbed Up"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "27141",
+					"owner_hero_id": 0,
+					"_comments": "Remote Navigation"
+				},
+				{
+					"card": "27140",
+					"owner_hero_id": 0,
+					"_comments": "Limitless Supply"
+				},
+				{
+					"card": "27124",
+					"owner_hero_id": 0,
+					"_comments": "Festering Mass"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "27168",
+					"owner_hero_id": 0,
+					"_comments": "Swinging Assault"
+				},
+				{
+					"card": "27126",
+					"owner_hero_id": 0,
+					"_comments": "Spreading Panic"
+				},
+				{
+					"card": "27169",
+					"owner_hero_id": 0,
+					"_comments": "Unstable Sentience"
+				},
+				{
+					"card": "27168",
+					"owner_hero_id": 0,
+					"_comments": "Swinging Assault"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "27120",
+					"owner_hero_id": 0,
+					"_comments": "We Are One"
+				},
+				{
+					"card": "27123",
+					"owner_hero_id": 0,
+					"_comments": "Symbiotic Thrall"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "27164",
+					"owner_hero_id": 0,
+					"_comments": "Improvised Weapons"
+				}
+			],
+			"villain": [
+				{
+					"card": "27113",
+					"owner_hero_id": 0,
+					"_comments": "Venom Goblin - 1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "27117a",
+					"owner_hero_id": 0,
+					"_comments": "Lower Manhattan - B",
+					"tokens": {
+						"threat": 1,
+						"__can_change_form": 1
+					}
+				},
+				{
+					"card": "27118a",
+					"owner_hero_id": 0,
+					"_comments": "Midtown Manhattan - C",
+					"tokens": {
+						"glider": 1,
+						"threat": 2,
+						"__can_change_form": 1
+					}
+				},
+				{
+					"card": "27119a",
+					"owner_hero_id": 0,
+					"_comments": "Upper Manhattan - D",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "27116b",
+					"owner_hero_id": 0,
+					"_comments": "Skies Over New York",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "23001a",
+					"owner_hero_id": 1,
+					"_comments": "War Machine"
+				},
+				{
+					"card": "23029",
+					"owner_hero_id": 0,
+					"_comments": "Living Laser"
+				},
+				{
+					"card": "23030",
+					"owner_hero_id": 0,
+					"_comments": "Deadly Light Show"
+				},
+				{
+					"card": "23031",
+					"owner_hero_id": 0,
+					"_comments": "Laser Strike"
+				},
+				{
+					"card": "23031",
+					"owner_hero_id": 0,
+					"_comments": "Laser Strike"
+				},
+				{
+					"card": "23031",
+					"owner_hero_id": 0,
+					"_comments": "Laser Strike"
+				},
+				{
+					"card": "27114",
+					"owner_hero_id": 0,
+					"_comments": "Venom Goblin - 2"
+				},
+				{
+					"card": "27115",
+					"owner_hero_id": 0,
+					"_comments": "Venom Goblin - 3"
+				},
+				{
+					"card": "27119b",
+					"owner_hero_id": 0,
+					"_comments": "Upper Manhattan"
+				},
+				{
+					"card": "27118b",
+					"owner_hero_id": 0,
+					"_comments": "Midtown Manhattan"
+				},
+				{
+					"card": "27117b",
+					"owner_hero_id": 0,
+					"_comments": "Lower Manhattan"
+				},
+				{
+					"card": "27116a",
+					"owner_hero_id": 0,
+					"_comments": "Skies Over New York - A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "23024",
+					"owner_hero_id": 1,
+					"_comments": "Two Against the World"
+				},
+				{
+					"card": "23021",
+					"owner_hero_id": 1,
+					"_comments": "Innovation"
+				},
+				{
+					"card": "23018",
+					"owner_hero_id": 1,
+					"_comments": "Save the Day"
+				},
+				{
+					"card": "23014",
+					"owner_hero_id": 1,
+					"_comments": "Falcon - Sam Wilson"
+				},
+				{
+					"card": "23018",
+					"owner_hero_id": 1,
+					"_comments": "Save the Day"
+				},
+				{
+					"card": "23019",
+					"owner_hero_id": 1,
+					"_comments": "Go Down Swinging"
+				},
+				{
+					"card": "23012",
+					"owner_hero_id": 1,
+					"_comments": "Black Panther - T'Challa"
+				},
+				{
+					"card": "23026",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "23009",
+					"owner_hero_id": 1,
+					"_comments": "Targeted Strike"
+				},
+				{
+					"card": "23016",
+					"owner_hero_id": 1,
+					"_comments": "Command Team"
+				},
+				{
+					"card": "23007",
+					"owner_hero_id": 1,
+					"_comments": "Shoulder Cannon"
+				},
+				{
+					"card": "23005",
+					"owner_hero_id": 1,
+					"_comments": "Gauntlet Gun"
+				},
+				{
+					"card": "23011",
+					"owner_hero_id": 1,
+					"_comments": "Full Auto"
+				},
+				{
+					"card": "23010",
+					"owner_hero_id": 1,
+					"_comments": "Scorched Earth"
+				},
+				{
+					"card": "23011",
+					"owner_hero_id": 1,
+					"_comments": "Full Auto"
+				},
+				{
+					"card": "23027",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "23019",
+					"owner_hero_id": 1,
+					"_comments": "Go Down Swinging"
+				},
+				{
+					"card": "23010",
+					"owner_hero_id": 1,
+					"_comments": "Scorched Earth"
+				},
+				{
+					"card": "23009",
+					"owner_hero_id": 1,
+					"_comments": "Targeted Strike"
+				},
+				{
+					"card": "23022",
+					"owner_hero_id": 1,
+					"_comments": "Mockingbird - Bobbi Morse"
+				},
+				{
+					"card": "23016",
+					"owner_hero_id": 1,
+					"_comments": "Command Team"
+				},
+				{
+					"card": "23019",
+					"owner_hero_id": 1,
+					"_comments": "Go Down Swinging"
+				},
+				{
+					"card": "23023",
+					"owner_hero_id": 1,
+					"_comments": "Quincarrier"
+				},
+				{
+					"card": "23018",
+					"owner_hero_id": 1,
+					"_comments": "Save the Day"
+				},
+				{
+					"card": "23017",
+					"owner_hero_id": 1,
+					"_comments": "Sneak Attack"
+				},
+				{
+					"card": "23006",
+					"owner_hero_id": 1,
+					"_comments": "Missile Launcher"
+				},
+				{
+					"card": "23008",
+					"owner_hero_id": 1,
+					"_comments": "Repulsor Beam"
+				},
+				{
+					"card": "23020",
+					"owner_hero_id": 1,
+					"_comments": "Make the Call"
+				},
+				{
+					"card": "23017",
+					"owner_hero_id": 1,
+					"_comments": "Sneak Attack"
+				},
+				{
+					"card": "23016",
+					"owner_hero_id": 1,
+					"_comments": "Command Team"
+				},
+				{
+					"card": "23013",
+					"owner_hero_id": 1,
+					"_comments": "Captain Marvel - Carol Danvers"
+				},
+				{
+					"card": "23004",
+					"owner_hero_id": 1,
+					"_comments": "Upgraded Chassis"
+				},
+				{
+					"card": "23003",
+					"owner_hero_id": 1,
+					"_comments": "Munitions Bunker"
+				},
+				{
+					"card": "23017",
+					"owner_hero_id": 1,
+					"_comments": "Sneak Attack"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "23001b",
+					"owner_hero_id": 1,
+					"_comments": "James Rhodes",
+					"tokens": {
+						"_war_machine": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "23002",
+					"owner_hero_id": 1,
+					"_comments": "Iron Man - Tony Stark"
+				},
+				{
+					"card": "23020",
+					"owner_hero_id": 1,
+					"_comments": "Make the Call"
+				},
+				{
+					"card": "23005",
+					"owner_hero_id": 1,
+					"_comments": "Gauntlet Gun"
+				},
+				{
+					"card": "23015",
+					"owner_hero_id": 1,
+					"_comments": "Goliath - Bill Foster"
+				},
+				{
+					"card": "23025",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "23008",
+					"owner_hero_id": 1,
+					"_comments": "Repulsor Beam"
+				}
+			]
+		}
+	}
+}

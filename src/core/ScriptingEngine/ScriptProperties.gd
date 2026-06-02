@@ -1695,7 +1695,6 @@ static func preprocess_numbers(state_filter, _card = null, _owner_card = null):
 		if (typeof(value) == TYPE_DICTIONARY) and value.has("func_name"):
 			var params = value.get("func_params", {})
 			value = cfc.ov_utils.func_name_run(_owner_card, value["func_name"], params)
-			var _tmp = 1
 		result[key] = value
 	return result
 

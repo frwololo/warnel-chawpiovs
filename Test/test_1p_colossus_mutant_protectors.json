@@ -1,0 +1,142 @@
+{
+	"_comments": "Bug: Mutant Protectors hangs the game",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},	
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Colossus"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Colossus",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Mutant Protectors"
+				},
+				{
+					"card": "Combat Training"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "Colossus"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Colossus"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Colossus",
+					"tokens": {
+						"damage": 1
+					},
+					"exhausted": true
+				}
+			],
+			"upgrade_support1": [
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Mutant Protectors"
+				},
+				{
+					"card": "Combat Training"
+				}
+			]
+		}
+	}
+}

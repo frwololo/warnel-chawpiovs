@@ -1,0 +1,572 @@
+{
+	"_comments": "Scenario Start Test : Tower Defense vs Quicksilver",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Quicksilver",
+					"deck_id": 6893
+				}
+			}
+		],
+		"scenario": {
+			"name": "Under Siege",
+			"options": {
+				"tower_initial_damage": 1
+			}
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "choose",
+			"value": "Take 2 Damage",
+			"_comments": "Take 2 damage from order besieger"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 6893,
+					"hero": "14001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "21108",
+					"owner_hero_id": 0,
+					"_comments": "Bound by Blood"
+				},
+				{
+					"card": "21109",
+					"owner_hero_id": 0,
+					"_comments": "Rain Fire"
+				},
+				{
+					"card": "21089",
+					"owner_hero_id": 0,
+					"_comments": "Black Order Infantry"
+				},
+				{
+					"card": "21091",
+					"owner_hero_id": 0,
+					"_comments": "Landing Craft"
+				},
+				{
+					"card": "21091",
+					"owner_hero_id": 0,
+					"_comments": "Landing Craft"
+				},
+				{
+					"card": "21110",
+					"owner_hero_id": 0,
+					"_comments": "City Under Attack"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "21105",
+					"owner_hero_id": 0,
+					"_comments": "Direct Assault"
+				},
+				{
+					"card": "21103",
+					"owner_hero_id": 0,
+					"_comments": "Proxima's Spear"
+				},
+				{
+					"card": "21107",
+					"owner_hero_id": 0,
+					"_comments": "Corvus's Cunning"
+				},
+				{
+					"card": "21102",
+					"owner_hero_id": 0,
+					"_comments": "Black Order Besieger"
+				},
+				{
+					"card": "21106",
+					"owner_hero_id": 0,
+					"_comments": "Proxima's Power"
+				},
+				{
+					"card": "21090",
+					"owner_hero_id": 0,
+					"_comments": "Outrider"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "21089",
+					"owner_hero_id": 0,
+					"_comments": "Black Order Infantry"
+				},
+				{
+					"card": "21109",
+					"owner_hero_id": 0,
+					"_comments": "Rain Fire"
+				},
+				{
+					"card": "21110",
+					"owner_hero_id": 0,
+					"_comments": "City Under Attack"
+				},
+				{
+					"card": "21106",
+					"owner_hero_id": 0,
+					"_comments": "Proxima's Power"
+				},
+				{
+					"card": "21105",
+					"owner_hero_id": 0,
+					"_comments": "Direct Assault"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "21104",
+					"owner_hero_id": 0,
+					"_comments": "Corvus's Glaive"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "21090",
+					"owner_hero_id": 0,
+					"_comments": "Outrider"
+				},
+				{
+					"card": "14024",
+					"owner_hero_id": 0,
+					"_comments": "Need for Speed"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "21102",
+					"owner_hero_id": 0,
+					"_comments": "Black Order Besieger"
+				},
+				{
+					"card": "21107",
+					"owner_hero_id": 0,
+					"_comments": "Corvus's Cunning"
+				},
+				{
+					"card": "21102",
+					"owner_hero_id": 0,
+					"_comments": "Black Order Besieger"
+				}
+			],
+			"villain": [
+				{
+					"card": "21092",
+					"owner_hero_id": 0,
+					"_comments": "Proxima Midnight - 1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				},
+				{
+					"card": "21095",
+					"owner_hero_id": 0,
+					"_comments": "Corvus Glaive - 1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "21098b",
+					"owner_hero_id": 0,
+					"_comments": "Under Siege - 1B",
+					"tokens": {
+						"threat": 1,
+						"__can_change_form": 1
+					}
+				},
+				{
+					"card": "21099b",
+					"owner_hero_id": 0,
+					"_comments": "The Armies of Thanos - 2B",
+					"tokens": {
+						"threat": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "21100a",
+					"owner_hero_id": 0,
+					"_comments": "Avengers Tower",
+					"tokens": {
+						"damage": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "14001a",
+					"owner_hero_id": 1,
+					"_comments": "Quicksilver"
+				},
+				{
+					"card": "14025",
+					"owner_hero_id": 0,
+					"_comments": "Extortion of Seismic Proportion"
+				},
+				{
+					"card": "14026",
+					"owner_hero_id": 0,
+					"_comments": "Avalanche"
+				},
+				{
+					"card": "14027",
+					"owner_hero_id": 0,
+					"_comments": "Vibration Resistance"
+				},
+				{
+					"card": "14028",
+					"owner_hero_id": 0,
+					"_comments": "Earthquake"
+				},
+				{
+					"card": "14028",
+					"owner_hero_id": 0,
+					"_comments": "Earthquake"
+				},
+				{
+					"card": "21093",
+					"owner_hero_id": 0,
+					"_comments": "Proxima Midnight - 2"
+				},
+				{
+					"card": "21094",
+					"owner_hero_id": 0,
+					"_comments": "Proxima Midnight - 3"
+				},
+				{
+					"card": "21096",
+					"owner_hero_id": 0,
+					"_comments": "Corvus Glaive - 2"
+				},
+				{
+					"card": "21097",
+					"owner_hero_id": 0,
+					"_comments": "Corvus Glaive - 3"
+				},
+				{
+					"card": "21098a",
+					"owner_hero_id": 0,
+					"_comments": "Under Siege - 1A"
+				},
+				{
+					"card": "21099a",
+					"owner_hero_id": 0,
+					"_comments": "The Armies of Thanos - 2A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "14022",
+					"owner_hero_id": 1,
+					"_comments": "Adrenaline Rush"
+				},
+				{
+					"card": "14018",
+					"owner_hero_id": 1,
+					"_comments": "Order and Chaos"
+				},
+				{
+					"card": "14014",
+					"owner_hero_id": 1,
+					"_comments": "Never Back Down"
+				},
+				{
+					"card": "14009",
+					"owner_hero_id": 1,
+					"_comments": "Friction Resistance"
+				},
+				{
+					"card": "14014",
+					"owner_hero_id": 1,
+					"_comments": "Never Back Down"
+				},
+				{
+					"card": "14015",
+					"owner_hero_id": 1,
+					"_comments": "Side Step"
+				},
+				{
+					"card": "14007",
+					"owner_hero_id": 1,
+					"_comments": "Serval Industries"
+				},
+				{
+					"card": "14023",
+					"owner_hero_id": 1,
+					"_comments": "Civic Duty"
+				},
+				{
+					"card": "14004",
+					"owner_hero_id": 1,
+					"_comments": "Double Time"
+				},
+				{
+					"card": "14012",
+					"owner_hero_id": 1,
+					"_comments": "Multiple Man - Jamie Madrox"
+				},
+				{
+					"card": "14003",
+					"owner_hero_id": 1,
+					"_comments": "Always Be Running"
+				},
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "14005",
+					"owner_hero_id": 1,
+					"_comments": "Maximum Velocity"
+				},
+				{
+					"card": "14004",
+					"owner_hero_id": 1,
+					"_comments": "Double Time"
+				},
+				{
+					"card": "14006",
+					"owner_hero_id": 1,
+					"_comments": "Speed Cyclone"
+				},
+				{
+					"card": "14023",
+					"owner_hero_id": 1,
+					"_comments": "Civic Duty"
+				},
+				{
+					"card": "14017",
+					"owner_hero_id": 1,
+					"_comments": "Nerves of Steel"
+				},
+				{
+					"card": "14005",
+					"owner_hero_id": 1,
+					"_comments": "Maximum Velocity"
+				},
+				{
+					"card": "14003",
+					"owner_hero_id": 1,
+					"_comments": "Always Be Running"
+				},
+				{
+					"card": "14022",
+					"owner_hero_id": 1,
+					"_comments": "Adrenaline Rush"
+				},
+				{
+					"card": "14011",
+					"owner_hero_id": 1,
+					"_comments": "Reinforced Sinew"
+				},
+				{
+					"card": "14015",
+					"owner_hero_id": 1,
+					"_comments": "Side Step"
+				},
+				{
+					"card": "14022",
+					"owner_hero_id": 1,
+					"_comments": "Adrenaline Rush"
+				},
+				{
+					"card": "14015",
+					"owner_hero_id": 1,
+					"_comments": "Side Step"
+				},
+				{
+					"card": "14013",
+					"owner_hero_id": 1,
+					"_comments": "Warlock"
+				},
+				{
+					"card": "14002",
+					"owner_hero_id": 1,
+					"_comments": "Scarlet Witch - Wanda Maximoff"
+				},
+				{
+					"card": "14003",
+					"owner_hero_id": 1,
+					"_comments": "Always Be Running"
+				},
+				{
+					"card": "14017",
+					"owner_hero_id": 1,
+					"_comments": "Nerves of Steel"
+				},
+				{
+					"card": "14014",
+					"owner_hero_id": 1,
+					"_comments": "Never Back Down"
+				},
+				{
+					"card": "14012",
+					"owner_hero_id": 1,
+					"_comments": "Multiple Man - Jamie Madrox"
+				},
+				{
+					"card": "14008",
+					"owner_hero_id": 1,
+					"_comments": "Accelerated Reflex"
+				},
+				{
+					"card": "01088",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "01081",
+					"owner_hero_id": 1,
+					"_comments": "Armored Vest"
+				},
+				{
+					"card": "14012",
+					"owner_hero_id": 1,
+					"_comments": "Multiple Man - Jamie Madrox"
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "21102",
+					"owner_hero_id": 0,
+					"_comments": "Black Order Besieger",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "14001b",
+					"owner_hero_id": 1,
+					"_comments": "Pietro Maximoff",
+					"tokens": {
+						"__superpowered_siblings": 1,
+						"damage": 2,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "01081",
+					"owner_hero_id": 1,
+					"_comments": "Armored Vest"
+				},
+				{
+					"card": "14017",
+					"owner_hero_id": 1,
+					"_comments": "Nerves of Steel"
+				},
+				{
+					"card": "01089",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "14010",
+					"owner_hero_id": 1,
+					"_comments": "Hyper Perception"
+				},
+				{
+					"card": "14023",
+					"owner_hero_id": 1,
+					"_comments": "Civic Duty"
+				},
+				{
+					"card": "14003",
+					"owner_hero_id": 1,
+					"_comments": "Always Be Running"
+				}
+			],
+			"others": [
+				{
+					"card": "21101",
+					"owner_hero_id": 0,
+					"_comments": "Focused Defense",
+					"tokens": {
+						"__can_change_form": 1
+					},
+					"host": "21099b"
+				}
+			]
+		}
+	}
+}

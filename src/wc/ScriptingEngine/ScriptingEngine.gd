@@ -34,8 +34,8 @@ func pay_as_resource(script: ScriptTask) -> int:
 		return retcode
 
 	var resources_paid := []
-	if !script.subjects:
-		var _tmp = 1
+#	if !script.subjects:
+#		var _tmp = 1
 	for subject in script.subjects:
 		var resource = subject.pay_as_resource(script)
 		resources_paid.append({"source": subject, "resource" : resource})
@@ -1547,13 +1547,20 @@ func villain_and_enemies_attack_you(script:ScriptTask) ->int:
 #the ability that is triggered by enemy_attack
 func enemy_attack(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
+
+	var attacker = script.owner
+	#check if subjects have been "inserted" into the activity script instead of the new attack script
+	#e.g. with Mutant Protectors
+	if attacker.activity_script	and attacker.activity_script.subjects:
+		script.subjects = attacker.activity_script.subjects
+	
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		for card in script.subjects:
 			if (not card.can_defend()):
 				return CFConst.ReturnCode.FAILED
 		return retcode
 		
-	var attacker = script.owner
+
 	var defender = script.subjects[0] if script.subjects else null
 		
 	if defender:
@@ -1638,8 +1645,8 @@ func set_defender(script: ScriptTask) -> int:
 	#when no defender was previously set
 	attack_script.set_subjects([])
 	attack_script.subjects.append(defender)
-	attack_script.definition["exhaust_defenders"] = false
-	attack_script.definition["basic_defense"] = false
+	attack_script.script_definition["exhaust_defenders"] = false
+	attack_script.script_definition["basic_defense"] = false
 	
 	return CFConst.ReturnCode.CHANGED
 	

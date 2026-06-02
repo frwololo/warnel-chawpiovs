@@ -285,8 +285,7 @@ static func sort_cards(a, b):
 static func to_grayscale(_texture : Texture) -> Texture:
 	var texture = _texture
 	if _texture as AtlasTexture:
-		texture = _texture.get_atlas()
-		var _tmp = 1		
+		texture = _texture.get_atlas()	
 	else:
 		pass
 	if !texture:
@@ -420,8 +419,6 @@ static func search_and_replace (script_definition, from: String, to, exact_match
 			if (!exact_match):
 				result = script_definition.replace(from, to)	
 			elif (script_definition == from):
-				if from == "response":
-					var _tmp = 1
 				result = to
 			else:
 				result = script_definition
@@ -675,7 +672,6 @@ static func check_delete_all_pck():
 				var filename = folder + set + format
 				if file.file_exists(filename):
 					var result = dir.remove(filename)
-					var _tmp = result
 	
 	dir.remove(delete_pck_mark)
 	return

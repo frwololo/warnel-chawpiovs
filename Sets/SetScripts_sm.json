@@ -6357,7 +6357,7 @@
 					"subject": "self"
 				},
 				{
-					"_comments": "not sure why these cards end up in the villain's pile at setup, butI found the easiest way to deal with it is to move them to set_aside",
+					"_comments": "back side of cards end up in the villain's pile at setup,I found the easiest way to deal with it is to move them to set_aside",
 					"name": "move_card_to_container",
 					"subject": "tutor",
 					"subject_count": "all",

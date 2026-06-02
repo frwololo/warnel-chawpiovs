@@ -1,0 +1,589 @@
+{
+	"_comments": "Scenario Start Test : Collector 2 vs Hawkeye",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hawkeye",
+					"deck_id": 3483
+				}
+			}
+		],
+		"scenario": {
+			"name": "The Missing Milano"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 3483,
+					"hero": "04001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "16086",
+					"owner_hero_id": 0,
+					"_comments": "\"I Have You Now!\""
+				},
+				{
+					"card": "16124",
+					"owner_hero_id": 0,
+					"_comments": "The Beyonder's Blazer"
+				},
+				{
+					"card": "16137",
+					"owner_hero_id": 0,
+					"_comments": "Starshark"
+				},
+				{
+					"card": "16128",
+					"owner_hero_id": 0,
+					"_comments": "Magical Teapot"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "16137",
+					"owner_hero_id": 0,
+					"_comments": "Starshark"
+				},
+				{
+					"card": "16135",
+					"owner_hero_id": 0,
+					"_comments": "Psionic Ghost"
+				},
+				{
+					"card": "16127",
+					"owner_hero_id": 0,
+					"_comments": "Hujahdarian Monarch Egg"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "16130",
+					"owner_hero_id": 0,
+					"_comments": "Crystal Ball"
+				},
+				{
+					"card": "16086",
+					"owner_hero_id": 0,
+					"_comments": "\"I Have You Now!\""
+				},
+				{
+					"card": "16135",
+					"owner_hero_id": 0,
+					"_comments": "Psionic Ghost"
+				},
+				{
+					"card": "16086",
+					"owner_hero_id": 0,
+					"_comments": "\"I Have You Now!\""
+				},
+				{
+					"card": "16136",
+					"owner_hero_id": 0,
+					"_comments": "Servant Bot"
+				},
+				{
+					"card": "04026",
+					"owner_hero_id": 0,
+					"_comments": "Criminal Past"
+				},
+				{
+					"card": "16129",
+					"owner_hero_id": 0,
+					"_comments": "Philosopher's Stone"
+				},
+				{
+					"card": "16135",
+					"owner_hero_id": 0,
+					"_comments": "Psionic Ghost"
+				},
+				{
+					"card": "16126",
+					"owner_hero_id": 0,
+					"_comments": "Vandarian Power Stone"
+				},
+				{
+					"card": "16087",
+					"owner_hero_id": 0,
+					"_comments": "Impossible Geometry"
+				},
+				{
+					"card": "16136",
+					"owner_hero_id": 0,
+					"_comments": "Servant Bot"
+				},
+				{
+					"card": "16135",
+					"owner_hero_id": 0,
+					"_comments": "Psionic Ghost"
+				},
+				{
+					"card": "16123",
+					"owner_hero_id": 0,
+					"_comments": "Obedience Potion"
+				},
+				{
+					"card": "16125",
+					"owner_hero_id": 0,
+					"_comments": "The Poison"
+				},
+				{
+					"card": "16087",
+					"owner_hero_id": 0,
+					"_comments": "Impossible Geometry"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "16136",
+					"owner_hero_id": 0,
+					"_comments": "Servant Bot"
+				},
+				{
+					"card": "16087",
+					"owner_hero_id": 0,
+					"_comments": "Impossible Geometry"
+				},
+				{
+					"card": "16122",
+					"owner_hero_id": 0,
+					"_comments": "Cloak of Hercules"
+				},
+				{
+					"card": "16085b",
+					"owner_hero_id": 0,
+					"_comments": "Museum Ship"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				}
+			],
+			"villain": [
+				{
+					"card": "16080a",
+					"owner_hero_id": 0,
+					"_comments": "Collector - A1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "16082b",
+					"owner_hero_id": 0,
+					"_comments": "The Missing Milano - 1B",
+					"tokens": {
+						"threat": 7,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "16085a",
+					"owner_hero_id": 0,
+					"_comments": "Library Labyrinth",
+					"tokens": {
+						"__player_token1": 1,
+						"__player_token2": 1,
+						"__player_token3": 1,
+						"__player_token4": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "04001a",
+					"owner_hero_id": 1,
+					"_comments": "Hawkeye"
+				},
+				{
+					"card": "04027",
+					"owner_hero_id": 0,
+					"_comments": "Crossfire"
+				},
+				{
+					"card": "04028",
+					"owner_hero_id": 0,
+					"_comments": "Marked for Death"
+				},
+				{
+					"card": "04029",
+					"owner_hero_id": 0,
+					"_comments": "Crossfire's Rifle"
+				},
+				{
+					"card": "04030",
+					"owner_hero_id": 0,
+					"_comments": "Sniper Shot"
+				},
+				{
+					"card": "04030",
+					"owner_hero_id": 0,
+					"_comments": "Sniper Shot"
+				},
+				{
+					"card": "16080b",
+					"owner_hero_id": 0,
+					"_comments": "Collector - A2"
+				},
+				{
+					"card": "16081a",
+					"owner_hero_id": 0,
+					"_comments": "Collector - B1"
+				},
+				{
+					"card": "16081b",
+					"owner_hero_id": 0,
+					"_comments": "Collector - B2"
+				},
+				{
+					"card": "16083a",
+					"owner_hero_id": 0,
+					"_comments": "Lost in the Museum - 2A"
+				},
+				{
+					"card": "16083b",
+					"owner_hero_id": 0,
+					"_comments": "Lost in the Museum - 2B"
+				},
+				{
+					"card": "16084a",
+					"owner_hero_id": 0,
+					"_comments": "The Great Escape - 3A"
+				},
+				{
+					"card": "16084b",
+					"owner_hero_id": 0,
+					"_comments": "The Great Escape - 3B"
+				},
+				{
+					"card": "16142",
+					"owner_hero_id": 0,
+					"_comments": "Milano"
+				},
+				{
+					"card": "16148",
+					"owner_hero_id": 0,
+					"_comments": "Special Delivery"
+				},
+				{
+					"card": "16144",
+					"owner_hero_id": 0,
+					"_comments": "Cannonade"
+				},
+				{
+					"card": "16145",
+					"owner_hero_id": 0,
+					"_comments": "Blind Side"
+				},
+				{
+					"card": "16143",
+					"owner_hero_id": 0,
+					"_comments": "Rogue Vessel"
+				},
+				{
+					"card": "16147",
+					"owner_hero_id": 0,
+					"_comments": "Power Siphon"
+				},
+				{
+					"card": "16146",
+					"owner_hero_id": 0,
+					"_comments": "Hull Breach"
+				},
+				{
+					"card": "16082a",
+					"owner_hero_id": 0,
+					"_comments": "The Missing Milano - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "04020",
+					"owner_hero_id": 1,
+					"_comments": "War Machine - James Rhodes"
+				},
+				{
+					"card": "04017",
+					"owner_hero_id": 1,
+					"_comments": "Ready for Action"
+				},
+				{
+					"card": "04013",
+					"owner_hero_id": 1,
+					"_comments": "Goliath - Bill Foster"
+				},
+				{
+					"card": "04008",
+					"owner_hero_id": 1,
+					"_comments": "Cable Arrow"
+				},
+				{
+					"card": "04014",
+					"owner_hero_id": 1,
+					"_comments": "U.S. Agent - John Walker"
+				},
+				{
+					"card": "04015",
+					"owner_hero_id": 1,
+					"_comments": "Sky Cycle"
+				},
+				{
+					"card": "04007",
+					"owner_hero_id": 1,
+					"_comments": "Electric Arrow"
+				},
+				{
+					"card": "04022",
+					"owner_hero_id": 1,
+					"_comments": "Earth's Mightiest Heroes"
+				},
+				{
+					"card": "04004",
+					"owner_hero_id": 1,
+					"_comments": "Mockingbird - Bobbi Morse"
+				},
+				{
+					"card": "04010",
+					"owner_hero_id": 1,
+					"_comments": "Expert Marksman"
+				},
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "01088",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "04006",
+					"owner_hero_id": 1,
+					"_comments": "Explosive Arrow"
+				},
+				{
+					"card": "04005",
+					"owner_hero_id": 1,
+					"_comments": "Sonic Arrow"
+				},
+				{
+					"card": "04006",
+					"owner_hero_id": 1,
+					"_comments": "Explosive Arrow"
+				},
+				{
+					"card": "04022",
+					"owner_hero_id": 1,
+					"_comments": "Earth's Mightiest Heroes"
+				},
+				{
+					"card": "04016",
+					"owner_hero_id": 1,
+					"_comments": "Team Training"
+				},
+				{
+					"card": "04005",
+					"owner_hero_id": 1,
+					"_comments": "Sonic Arrow"
+				},
+				{
+					"card": "04003",
+					"owner_hero_id": 1,
+					"_comments": "Hawkeye's Quiver"
+				},
+				{
+					"card": "04017",
+					"owner_hero_id": 1,
+					"_comments": "Ready for Action"
+				},
+				{
+					"card": "04009",
+					"owner_hero_id": 1,
+					"_comments": "Vibranium Arrow"
+				},
+				{
+					"card": "04015",
+					"owner_hero_id": 1,
+					"_comments": "Sky Cycle"
+				},
+				{
+					"card": "04017",
+					"owner_hero_id": 1,
+					"_comments": "Ready for Action"
+				},
+				{
+					"card": "04015",
+					"owner_hero_id": 1,
+					"_comments": "Sky Cycle"
+				},
+				{
+					"card": "04011",
+					"owner_hero_id": 1,
+					"_comments": "Hawkeye - Kate Bishop"
+				},
+				{
+					"card": "01089",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "04002",
+					"owner_hero_id": 1,
+					"_comments": "Hawkeye's Bow"
+				},
+				{
+					"card": "04016",
+					"owner_hero_id": 1,
+					"_comments": "Team Training"
+				},
+				{
+					"card": "04012",
+					"owner_hero_id": 1,
+					"_comments": "Black Knight - Dane Whitman"
+				},
+				{
+					"card": "04009",
+					"owner_hero_id": 1,
+					"_comments": "Vibranium Arrow"
+				},
+				{
+					"card": "04007",
+					"owner_hero_id": 1,
+					"_comments": "Electric Arrow"
+				},
+				{
+					"card": "01072",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Leadership"
+				},
+				{
+					"card": "01070",
+					"owner_hero_id": 1,
+					"_comments": "Lead from the Front"
+				},
+				{
+					"card": "04010",
+					"owner_hero_id": 1,
+					"_comments": "Expert Marksman"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "04001b",
+					"owner_hero_id": 1,
+					"_comments": "Clint Barton",
+					"tokens": {
+						"_weapon_of_choice": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "01070",
+					"owner_hero_id": 1,
+					"_comments": "Lead from the Front"
+				},
+				{
+					"card": "04016",
+					"owner_hero_id": 1,
+					"_comments": "Team Training"
+				},
+				{
+					"card": "01072",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Leadership"
+				},
+				{
+					"card": "04008",
+					"owner_hero_id": 1,
+					"_comments": "Cable Arrow"
+				},
+				{
+					"card": "04022",
+					"owner_hero_id": 1,
+					"_comments": "Earth's Mightiest Heroes"
+				},
+				{
+					"card": "04021",
+					"owner_hero_id": 1,
+					"_comments": "Avengers Tower"
+				}
+			]
+		}
+	}
+}

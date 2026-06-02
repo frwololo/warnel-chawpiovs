@@ -1,0 +1,541 @@
+{
+	"_comments": "Scenario Start Test : Ebony Maw vs Ms. Marvel",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ms. Marvel",
+					"deck_id": 272
+				}
+			}
+		],
+		"scenario": {
+			"name": "Attack on Knowhere"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 272,
+					"hero": "05001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "21077",
+					"owner_hero_id": 0,
+					"_comments": "Manipulation"
+				},
+				{
+					"card": "21084",
+					"owner_hero_id": 0,
+					"_comments": "Reactor Overload"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "21080",
+					"owner_hero_id": 0,
+					"_comments": "Agent of Thanos"
+				},
+				{
+					"card": "21076",
+					"owner_hero_id": 0,
+					"_comments": "Fireball"
+				},
+				{
+					"card": "21082",
+					"owner_hero_id": 0,
+					"_comments": "Abjuration"
+				},
+				{
+					"card": "21091",
+					"owner_hero_id": 0,
+					"_comments": "Landing Craft"
+				},
+				{
+					"card": "21084",
+					"owner_hero_id": 0,
+					"_comments": "Reactor Overload"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "21081",
+					"owner_hero_id": 0,
+					"_comments": "Channeling Trance"
+				},
+				{
+					"card": "21085",
+					"owner_hero_id": 0,
+					"_comments": "Black Dwarf"
+				},
+				{
+					"card": "21078",
+					"owner_hero_id": 0,
+					"_comments": "Pacification"
+				},
+				{
+					"card": "21077",
+					"owner_hero_id": 0,
+					"_comments": "Manipulation"
+				},
+				{
+					"card": "21090",
+					"owner_hero_id": 0,
+					"_comments": "Outrider"
+				},
+				{
+					"card": "21079",
+					"owner_hero_id": 0,
+					"_comments": "Rubblestorm"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "21086",
+					"owner_hero_id": 0,
+					"_comments": "Supergiant"
+				},
+				{
+					"card": "21090",
+					"owner_hero_id": 0,
+					"_comments": "Outrider"
+				},
+				{
+					"card": "21089",
+					"owner_hero_id": 0,
+					"_comments": "Black Order Infantry"
+				},
+				{
+					"card": "21083",
+					"owner_hero_id": 0,
+					"_comments": "Restrained"
+				},
+				{
+					"card": "21078",
+					"owner_hero_id": 0,
+					"_comments": "Pacification"
+				},
+				{
+					"card": "21091",
+					"owner_hero_id": 0,
+					"_comments": "Landing Craft"
+				},
+				{
+					"card": "21080",
+					"owner_hero_id": 0,
+					"_comments": "Agent of Thanos"
+				},
+				{
+					"card": "21088",
+					"owner_hero_id": 0,
+					"_comments": "Blood to Spare"
+				},
+				{
+					"card": "21076",
+					"owner_hero_id": 0,
+					"_comments": "Fireball"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "21081",
+					"owner_hero_id": 0,
+					"_comments": "Channeling Trance"
+				},
+				{
+					"card": "21081",
+					"owner_hero_id": 0,
+					"_comments": "Channeling Trance"
+				},
+				{
+					"card": "21089",
+					"owner_hero_id": 0,
+					"_comments": "Black Order Infantry"
+				},
+				{
+					"card": "21087",
+					"owner_hero_id": 0,
+					"_comments": "The Black Order"
+				},
+				{
+					"card": "05025",
+					"owner_hero_id": 0,
+					"_comments": "Home by Dawn"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				}
+			],
+			"villain": [
+				{
+					"card": "21071",
+					"owner_hero_id": 0,
+					"_comments": "Ebony Maw - 1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "21074b",
+					"owner_hero_id": 0,
+					"_comments": "Attack on Knowhere - 1B",
+					"tokens": {
+						"threat": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "05001a",
+					"owner_hero_id": 1,
+					"_comments": "Ms. Marvel"
+				},
+				{
+					"card": "05026",
+					"owner_hero_id": 0,
+					"_comments": "Generation Why?"
+				},
+				{
+					"card": "05027",
+					"owner_hero_id": 0,
+					"_comments": "Thomas Edison"
+				},
+				{
+					"card": "05028",
+					"owner_hero_id": 0,
+					"_comments": "Edison's Giant Robot"
+				},
+				{
+					"card": "05029",
+					"owner_hero_id": 0,
+					"_comments": "Harvest"
+				},
+				{
+					"card": "05029",
+					"owner_hero_id": 0,
+					"_comments": "Harvest"
+				},
+				{
+					"card": "21072",
+					"owner_hero_id": 0,
+					"_comments": "Ebony Maw - 2"
+				},
+				{
+					"card": "21073",
+					"owner_hero_id": 0,
+					"_comments": "Ebony Maw - 3"
+				},
+				{
+					"card": "21075a",
+					"owner_hero_id": 0,
+					"_comments": "The Power Stone - 2A"
+				},
+				{
+					"card": "21075b",
+					"owner_hero_id": 0,
+					"_comments": "The Power Stone - 2B"
+				},
+				{
+					"card": "21074a",
+					"owner_hero_id": 0,
+					"_comments": "Attack on Knowhere - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "05023",
+					"owner_hero_id": 1,
+					"_comments": "Endurance"
+				},
+				{
+					"card": "05018",
+					"owner_hero_id": 1,
+					"_comments": "Lockjaw"
+				},
+				{
+					"card": "05014",
+					"owner_hero_id": 1,
+					"_comments": "Preemptive Strike"
+				},
+				{
+					"card": "05006",
+					"owner_hero_id": 1,
+					"_comments": "Aamir Khan"
+				},
+				{
+					"card": "05014",
+					"owner_hero_id": 1,
+					"_comments": "Preemptive Strike"
+				},
+				{
+					"card": "05015",
+					"owner_hero_id": 1,
+					"_comments": "Tackle"
+				},
+				{
+					"card": "05005",
+					"owner_hero_id": 1,
+					"_comments": "Wiggle Room"
+				},
+				{
+					"card": "05024",
+					"owner_hero_id": 1,
+					"_comments": "Enhanced Reflexes"
+				},
+				{
+					"card": "05003",
+					"owner_hero_id": 1,
+					"_comments": "Big Hands"
+				},
+				{
+					"card": "05010",
+					"owner_hero_id": 1,
+					"_comments": "Embiggen!"
+				},
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "01088",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "05004",
+					"owner_hero_id": 1,
+					"_comments": "Sneak By"
+				},
+				{
+					"card": "05003",
+					"owner_hero_id": 1,
+					"_comments": "Big Hands"
+				},
+				{
+					"card": "05004",
+					"owner_hero_id": 1,
+					"_comments": "Sneak By"
+				},
+				{
+					"card": "05024",
+					"owner_hero_id": 1,
+					"_comments": "Enhanced Reflexes"
+				},
+				{
+					"card": "05017",
+					"owner_hero_id": 1,
+					"_comments": "Energy Barrier"
+				},
+				{
+					"card": "05004",
+					"owner_hero_id": 1,
+					"_comments": "Sneak By"
+				},
+				{
+					"card": "05003",
+					"owner_hero_id": 1,
+					"_comments": "Big Hands"
+				},
+				{
+					"card": "05023",
+					"owner_hero_id": 1,
+					"_comments": "Endurance"
+				},
+				{
+					"card": "05008",
+					"owner_hero_id": 1,
+					"_comments": "Nakia Bahadir"
+				},
+				{
+					"card": "05015",
+					"owner_hero_id": 1,
+					"_comments": "Tackle"
+				},
+				{
+					"card": "05023",
+					"owner_hero_id": 1,
+					"_comments": "Endurance"
+				},
+				{
+					"card": "05015",
+					"owner_hero_id": 1,
+					"_comments": "Tackle"
+				},
+				{
+					"card": "05012",
+					"owner_hero_id": 1,
+					"_comments": "Nova - Sam Alexander"
+				},
+				{
+					"card": "01089",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "05002",
+					"owner_hero_id": 1,
+					"_comments": "Red Dagger"
+				},
+				{
+					"card": "05017",
+					"owner_hero_id": 1,
+					"_comments": "Energy Barrier"
+				},
+				{
+					"card": "05014",
+					"owner_hero_id": 1,
+					"_comments": "Preemptive Strike"
+				},
+				{
+					"card": "05009",
+					"owner_hero_id": 1,
+					"_comments": "Biokinetic Polymer Suit"
+				},
+				{
+					"card": "05005",
+					"owner_hero_id": 1,
+					"_comments": "Wiggle Room"
+				},
+				{
+					"card": "01079",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Protection"
+				},
+				{
+					"card": "01078",
+					"owner_hero_id": 1,
+					"_comments": "Get Behind Me!"
+				},
+				{
+					"card": "05011",
+					"owner_hero_id": 1,
+					"_comments": "Shrink"
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "21079",
+					"owner_hero_id": 0,
+					"_comments": "Rubblestorm",
+					"tokens": {
+						"invocation": 3,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "05001b",
+					"owner_hero_id": 1,
+					"_comments": "Kamala Khan",
+					"tokens": {
+						"_teen_spirit": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "01078",
+					"owner_hero_id": 1,
+					"_comments": "Get Behind Me!"
+				},
+				{
+					"card": "05017",
+					"owner_hero_id": 1,
+					"_comments": "Energy Barrier"
+				},
+				{
+					"card": "01079",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Protection"
+				},
+				{
+					"card": "05007",
+					"owner_hero_id": 1,
+					"_comments": "Bruno Carrelli"
+				},
+				{
+					"card": "05024",
+					"owner_hero_id": 1,
+					"_comments": "Enhanced Reflexes"
+				},
+				{
+					"card": "01091",
+					"owner_hero_id": 1,
+					"_comments": "Avengers Mansion"
+				}
+			]
+		}
+	}
+}

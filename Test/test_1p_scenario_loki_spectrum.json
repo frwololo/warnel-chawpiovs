@@ -1,0 +1,596 @@
+{
+	"_comments": "Scenario Start Test : Loki vs Spectrum",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spectrum",
+					"deck_id": 31508
+				}
+			}
+		],
+		"scenario": {
+			"name": "All Hail King Loki",
+			"options": {
+				"loki_victory": 2
+			}
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 31508,
+					"hero": "21001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "21173",
+					"owner_hero_id": 0,
+					"_comments": "Master of Illusions"
+				},
+				{
+					"card": "21179",
+					"owner_hero_id": 0,
+					"_comments": "Seduced"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "21176",
+					"owner_hero_id": 0,
+					"_comments": "The Trickster"
+				},
+				{
+					"card": "21175",
+					"owner_hero_id": 0,
+					"_comments": "Infinite Mischief"
+				},
+				{
+					"card": "21157",
+					"owner_hero_id": 0,
+					"_comments": "Frost Giant"
+				},
+				{
+					"card": "21026",
+					"owner_hero_id": 0,
+					"_comments": "Loss of Control"
+				},
+				{
+					"card": "21169",
+					"owner_hero_id": 0,
+					"_comments": "Open the Bifrost"
+				},
+				{
+					"card": "21159",
+					"owner_hero_id": 0,
+					"_comments": "Unnatural Storm"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "21168",
+					"owner_hero_id": 0,
+					"_comments": "Madness on Midgard"
+				},
+				{
+					"card": "21175",
+					"owner_hero_id": 0,
+					"_comments": "Infinite Mischief"
+				},
+				{
+					"card": "21171",
+					"owner_hero_id": 0,
+					"_comments": "Loki's Crown"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "21158",
+					"owner_hero_id": 0,
+					"_comments": "Frozen"
+				},
+				{
+					"card": "21158",
+					"owner_hero_id": 0,
+					"_comments": "Frozen"
+				},
+				{
+					"card": "21177",
+					"owner_hero_id": 0,
+					"_comments": "Enchantress"
+				},
+				{
+					"card": "21176",
+					"owner_hero_id": 0,
+					"_comments": "The Trickster"
+				},
+				{
+					"card": "21174",
+					"owner_hero_id": 0,
+					"_comments": "Devious Sorcery"
+				},
+				{
+					"card": "21166",
+					"owner_hero_id": 0,
+					"_comments": "Casket of Ancient Winters"
+				},
+				{
+					"card": "21156",
+					"owner_hero_id": 0,
+					"_comments": "Laufey"
+				},
+				{
+					"card": "21178",
+					"owner_hero_id": 0,
+					"_comments": "Beguiled"
+				},
+				{
+					"card": "21179",
+					"owner_hero_id": 0,
+					"_comments": "Seduced"
+				},
+				{
+					"card": "21170",
+					"owner_hero_id": 0,
+					"_comments": "Loki's Staff"
+				},
+				{
+					"card": "21176",
+					"owner_hero_id": 0,
+					"_comments": "The Trickster"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "21172",
+					"owner_hero_id": 0,
+					"_comments": "Loki's Cape"
+				},
+				{
+					"card": "21157",
+					"owner_hero_id": 0,
+					"_comments": "Frost Giant"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "21178",
+					"owner_hero_id": 0,
+					"_comments": "Beguiled"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "21174",
+					"owner_hero_id": 0,
+					"_comments": "Devious Sorcery"
+				}
+			],
+			"villain": [
+				{
+					"card": "21162",
+					"owner_hero_id": 0,
+					"_comments": "Loki - 1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "21165b",
+					"owner_hero_id": 0,
+					"_comments": "All Hail King Loki - 1B",
+					"tokens": {
+						"threat": 1,
+						"__can_change_form": 1
+					}
+				},
+				{
+					"card": "21167",
+					"owner_hero_id": 0,
+					"_comments": "War in Asgard",
+					"tokens": {
+						"threat": 7,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "21002",
+					"owner_hero_id": 1,
+					"_comments": "Gamma"
+				},
+				{
+					"card": "21003",
+					"owner_hero_id": 1,
+					"_comments": "Photon"
+				},
+				{
+					"card": "21004",
+					"owner_hero_id": 1,
+					"_comments": "Pulsar"
+				},
+				{
+					"card": "21001a",
+					"owner_hero_id": 1,
+					"_comments": "Spectrum"
+				},
+				{
+					"card": "21027",
+					"owner_hero_id": 0,
+					"_comments": "Radioactive Man"
+				},
+				{
+					"card": "21028",
+					"owner_hero_id": 0,
+					"_comments": "Reactor Meltdown"
+				},
+				{
+					"card": "21029",
+					"owner_hero_id": 0,
+					"_comments": "Sap Power"
+				},
+				{
+					"card": "21029",
+					"owner_hero_id": 0,
+					"_comments": "Sap Power"
+				},
+				{
+					"card": "21030",
+					"owner_hero_id": 0,
+					"_comments": "Radioactive Blast"
+				},
+				{
+					"card": "21160",
+					"owner_hero_id": 0,
+					"_comments": "Loki - 1"
+				},
+				{
+					"card": "21161",
+					"owner_hero_id": 0,
+					"_comments": "Loki - 1"
+				},
+				{
+					"card": "21163",
+					"owner_hero_id": 0,
+					"_comments": "Loki - 1"
+				},
+				{
+					"card": "21164",
+					"owner_hero_id": 0,
+					"_comments": "Loki - 1"
+				},
+				{
+					"card": "21165a",
+					"owner_hero_id": 0,
+					"_comments": "All Hail King Loki - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"deck_infinity_stone": [
+				{
+					"card": "21132",
+					"owner_hero_id": 0,
+					"_comments": "Reality Stone"
+				},
+				{
+					"card": "21134",
+					"owner_hero_id": 0,
+					"_comments": "Space Stone"
+				},
+				{
+					"card": "21133",
+					"owner_hero_id": 0,
+					"_comments": "Soul Stone"
+				},
+				{
+					"card": "21135",
+					"owner_hero_id": 0,
+					"_comments": "Time Stone"
+				},
+				{
+					"card": "21130",
+					"owner_hero_id": 0,
+					"_comments": "Mind Stone"
+				},
+				{
+					"card": "21131",
+					"owner_hero_id": 0,
+					"_comments": "Power Stone"
+				}
+			],
+			"discard_infinity_stone": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "21019",
+					"owner_hero_id": 1,
+					"_comments": "Blade - Eric Brooks"
+				},
+				{
+					"card": "21018",
+					"owner_hero_id": 1,
+					"_comments": "Band Together"
+				},
+				{
+					"card": "21013",
+					"owner_hero_id": 1,
+					"_comments": "White Tiger - Ava Ayala"
+				},
+				{
+					"card": "21009",
+					"owner_hero_id": 1,
+					"_comments": "Pulsar Shield"
+				},
+				{
+					"card": "21014",
+					"owner_hero_id": 1,
+					"_comments": "Kaluu"
+				},
+				{
+					"card": "21015",
+					"owner_hero_id": 1,
+					"_comments": "Mighty Avengers"
+				},
+				{
+					"card": "21008",
+					"owner_hero_id": 1,
+					"_comments": "Photon Speed"
+				},
+				{
+					"card": "21022",
+					"owner_hero_id": 1,
+					"_comments": "Ready to Rumble"
+				},
+				{
+					"card": "21006",
+					"owner_hero_id": 1,
+					"_comments": "Energy Duplication"
+				},
+				{
+					"card": "21010",
+					"owner_hero_id": 1,
+					"_comments": "Speed of Light"
+				},
+				{
+					"card": "21017",
+					"owner_hero_id": 1,
+					"_comments": "Moxie"
+				},
+				{
+					"card": "03024",
+					"owner_hero_id": 1,
+					"_comments": "Avengers Tower"
+				},
+				{
+					"card": "21007",
+					"owner_hero_id": 1,
+					"_comments": "Gamma Blast"
+				},
+				{
+					"card": "21007",
+					"owner_hero_id": 1,
+					"_comments": "Gamma Blast"
+				},
+				{
+					"card": "21008",
+					"owner_hero_id": 1,
+					"_comments": "Photon Speed"
+				},
+				{
+					"card": "21022",
+					"owner_hero_id": 1,
+					"_comments": "Ready to Rumble"
+				},
+				{
+					"card": "21016",
+					"owner_hero_id": 1,
+					"_comments": "Mass Attack"
+				},
+				{
+					"card": "21007",
+					"owner_hero_id": 1,
+					"_comments": "Gamma Blast"
+				},
+				{
+					"card": "21006",
+					"owner_hero_id": 1,
+					"_comments": "Energy Duplication"
+				},
+				{
+					"card": "21018",
+					"owner_hero_id": 1,
+					"_comments": "Band Together"
+				},
+				{
+					"card": "21009",
+					"owner_hero_id": 1,
+					"_comments": "Pulsar Shield"
+				},
+				{
+					"card": "21015",
+					"owner_hero_id": 1,
+					"_comments": "Mighty Avengers"
+				},
+				{
+					"card": "21018",
+					"owner_hero_id": 1,
+					"_comments": "Band Together"
+				},
+				{
+					"card": "21015",
+					"owner_hero_id": 1,
+					"_comments": "Mighty Avengers"
+				},
+				{
+					"card": "21011",
+					"owner_hero_id": 1,
+					"_comments": "Captain America - Steve Rogers"
+				},
+				{
+					"card": "21017",
+					"owner_hero_id": 1,
+					"_comments": "Moxie"
+				},
+				{
+					"card": "21005",
+					"owner_hero_id": 1,
+					"_comments": "Blue Marvel - Adam Brashear"
+				},
+				{
+					"card": "21016",
+					"owner_hero_id": 1,
+					"_comments": "Mass Attack"
+				},
+				{
+					"card": "21012",
+					"owner_hero_id": 1,
+					"_comments": "Power Man - Victor Alvarez"
+				},
+				{
+					"card": "21010",
+					"owner_hero_id": 1,
+					"_comments": "Speed of Light"
+				},
+				{
+					"card": "21008",
+					"owner_hero_id": 1,
+					"_comments": "Photon Speed"
+				},
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "01089",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "21010",
+					"owner_hero_id": 1,
+					"_comments": "Speed of Light"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "21001b",
+					"owner_hero_id": 1,
+					"_comments": "Monica Rambeau",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "01088",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "21016",
+					"owner_hero_id": 1,
+					"_comments": "Mass Attack"
+				},
+				{
+					"card": "01091",
+					"owner_hero_id": 1,
+					"_comments": "Avengers Mansion"
+				},
+				{
+					"card": "21009",
+					"owner_hero_id": 1,
+					"_comments": "Pulsar Shield"
+				},
+				{
+					"card": "21022",
+					"owner_hero_id": 1,
+					"_comments": "Ready to Rumble"
+				},
+				{
+					"card": "21017",
+					"owner_hero_id": 1,
+					"_comments": "Moxie"
+				}
+			],
+			"others": [
+				{
+					"card": "21129",
+					"owner_hero_id": 0,
+					"_comments": "Infinity Gauntlet",
+					"tokens": {
+						"__can_change_form": 1
+					},
+					"host": "21162"
+				}
+			]
+		}
+	}
+}

@@ -54,8 +54,8 @@ func compute_authority() -> Dictionary:
 		authority_cache["error"] = "Requesting card has no owner"
 		return authority_cache
 	
-	if owner_card.canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME and trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME:
-		var _tmp = 1
+#	if owner_card.canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME and trigger == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME:
+#		var _tmp = 1
 
 	var override_controller_id = trigger_details.get("override_controller_id", 0)
 	var for_hero_id = trigger_details.get("for_hero_id", 0)

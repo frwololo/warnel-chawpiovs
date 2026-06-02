@@ -135,7 +135,7 @@ func _compute_columns():
 			
 	if counts:
 		_card_grid.columns =  min (_card_grid.columns, most_kids_per_parent )
-	var _tmp =1
+#	var _tmp =1
 
 # Populates the selection window with duplicates of the possible cards
 # Then displays them in a popup for the player to select them.

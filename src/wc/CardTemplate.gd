@@ -1347,8 +1347,8 @@ func execute_scripts(
 		orig_trigger_details: Dictionary = {},
 		run_type := CFInt.RunType.NORMAL):
 
-	if (trigger == "card_dies"):
-		var _tmp = 1
+#	if (trigger == "card_dies"):
+#		var _tmp = 1
 
 	if script_exec_temporarily_blocked(run_type):
 		if get_parent() and !("tree_" in trigger): #dirty check to avoid crashes
@@ -1873,8 +1873,7 @@ func _on_Card_gui_input(event) -> void:
 	elif event is InputEvent:
 		if event.is_action_pressed("ui_accept"):
 			attempt_to_play(true)
-	else:
-		var _tmp = 1
+			
 	cfc.remove_ongoing_process(self, "_on_Card_gui_input_"  + canonical_name)	
 
 # Game specific code and/or shortcuts
@@ -1891,6 +1890,8 @@ func readyme(toggle := false,
 		if (is_exhausted()):			
 			rot = randi() % 11 - 5
 			tags = tags + ["force"]
+	
+	_set_target_rotation(rot)
 			
 	var retcode = set_card_rotation(rot, toggle, start_tween, check, tags)
 	if !check and retcode != CFConst.ReturnCode.FAILED:
@@ -1910,6 +1911,8 @@ func exhaustme(toggle := false,
 		if (!is_exhausted()):			
 			rot = randi() % 16 + 80
 			tags = tags + ["force"]
+	
+	_set_target_rotation(rot)
 			
 	if 	is_exhausted()	and not toggle:
 		return CFConst.ReturnCode.OK		
@@ -2308,6 +2311,10 @@ func common_pre_run(sceng) -> void:
 				new_queue.append(script)
 			"enemy_attack":
 				var attacker = script.owner
+				if attacker.activity_script and attacker.activity_script.subjects:
+					#erase subject selection if we already have one
+					script.script_definition.erase("subject")
+					
 				var modifiers = attacker.retrieve_scripts("modifiers")
 				var defense_selection_modifier = modifiers.get("defense_selection", "")
 				match defense_selection_modifier:
@@ -3336,10 +3343,10 @@ func current_activation_status(params:Dictionary, _script:ScriptTask = null) -> 
 #e.g if you paid 3 physical plus 1 mental for a card, 
 #it would say true to {"mental": 1}, to {"physical" : 2}, or to {"mental" :1, "physical": 1}
 #but false to {"mental": 2}, or {"mental": 1, "wild": 1} 
-func paid_with_includes(params:Dictionary, script:ScriptTask = null) -> bool:
+func paid_with_includes(params:Dictionary, script:ScriptTask = null) -> int:
 	var subject = get_param_subject(params, script)
 	if !subject:
-		return false
+		return 0
 		
 	var paid_with = ManaPool.new()
 	for data in subject._last_paid_with:
@@ -3351,19 +3358,19 @@ func paid_with_includes(params:Dictionary, script:ScriptTask = null) -> bool:
 	
 	var result = paid_with.can_pay_total_cost(compared_to)
 	if !result:
-		return false
+		return 0
 	
 	if !params.has("filter_state_source"):
 		#no additional checks and we passed the rest
-		return true
+		return 1
 	
 	for data in subject._last_paid_with:
 		var source = data["source"]
 		var owner = script.owner if script else subject
 		if SP.check_validity(source, params, "source", owner):
-			return true	
+			return 1
 	
-	return false
+	return 0
 	
 func get_overpaid_amount(params:Dictionary, script:ScriptTask = null) -> int:
 	if ! _last_cost:
@@ -3574,8 +3581,7 @@ func pay_as_resource(script):
 	var state_exec = get_state_exec()
 	if state_exec == "hand":	
 		self.discard()
-	else:
-		var _tmp = 1
+
 	
 	remove_resource_lock()
 	
@@ -3647,8 +3653,8 @@ func get_resource_value_as_mana(script):
 	
 	#if the compute didn't get through, we return the regular printed value
 	if (my_state) == "hand":
-		if (canonical_name == "The Power of Justice" and get_state_exec() == "hand"):
-			var _tmp = 1	
+#		if (canonical_name == "The Power of Justice" and get_state_exec() == "hand"):
+#			var _tmp = 1	
 		_cache_resource_value[cache_key]  = get_printed_resource_value_as_mana(script)	
 		return _cache_resource_value[cache_key]
 	
@@ -3656,8 +3662,8 @@ func get_resource_value_as_mana(script):
 	return _cache_resource_value[cache_key]
 
 func get_resource_value_as_int(script):
-	if (canonical_name == "The Power of Justice" and get_state_exec() == "hand"):
-		var _tmp = 1
+#	if (canonical_name == "The Power of Justice" and get_state_exec() == "hand"):
+#		var _tmp = 1
 	var result_mana:ManaCost = get_resource_value_as_mana(script)
 	
 	if !result_mana:		

@@ -534,8 +534,8 @@ func _tutor_subjects(stored_integer: int) -> Array:
 	# When we're tutoring for a subjects, we expect a
 	# source CardContainer to have been provided.
 	var subject_count = get_property(SP.KEY_SUBJECT_COUNT)
-	if (owner.canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME ):
-		var _tmp = 1
+#	if (owner.canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME ):
+#		var _tmp = 1
 	if SP.VALUE_PER in str(subject_count):
 		subject_count = count_per(
 				get_property(SP.KEY_SUBJECT_COUNT),

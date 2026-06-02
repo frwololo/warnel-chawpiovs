@@ -1,0 +1,610 @@
+{
+	"_comments": "Scenario Start Test : Red Skull vs Doctor Strange",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange",
+					"deck_id": 1752
+				}
+			}
+		],
+		"scenario": {
+			"name": "The Rise of Red Skull"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 1752,
+					"hero": "09001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "04138",
+					"owner_hero_id": 0,
+					"_comments": "Infinite Power"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "04132",
+					"owner_hero_id": 0,
+					"_comments": "Red Skull's Luger"
+				},
+				{
+					"card": "04147",
+					"owner_hero_id": 0,
+					"_comments": "Hail Hydra!"
+				},
+				{
+					"card": "04145",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Flame-Soldier"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "04131",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Exo-Soldier"
+				},
+				{
+					"card": "04145",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Flame-Soldier"
+				},
+				{
+					"card": "04138",
+					"owner_hero_id": 0,
+					"_comments": "Infinite Power"
+				},
+				{
+					"card": "04152",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Regular"
+				},
+				{
+					"card": "04133",
+					"owner_hero_id": 0,
+					"_comments": "Red Skull's Right Hook"
+				},
+				{
+					"card": "04133",
+					"owner_hero_id": 0,
+					"_comments": "Red Skull's Right Hook"
+				},
+				{
+					"card": "04137",
+					"owner_hero_id": 0,
+					"_comments": "Spreading Lies"
+				},
+				{
+					"card": "04134",
+					"owner_hero_id": 0,
+					"_comments": "Master Strategist"
+				},
+				{
+					"card": "04146",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Jet-Trooper"
+				},
+				{
+					"card": "04131",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Exo-Soldier"
+				},
+				{
+					"card": "04135",
+					"owner_hero_id": 0,
+					"_comments": "Twisted Reality"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "04153",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Soldier"
+				},
+				{
+					"card": "04153",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Soldier"
+				},
+				{
+					"card": "04152",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Regular"
+				},
+				{
+					"card": "04131",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Exo-Soldier"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "04145",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Flame-Soldier"
+				},
+				{
+					"card": "04136",
+					"owner_hero_id": 0,
+					"_comments": "Bitter Rival"
+				},
+				{
+					"card": "04146",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Jet-Trooper"
+				},
+				{
+					"card": "04136",
+					"owner_hero_id": 0,
+					"_comments": "Bitter Rival"
+				},
+				{
+					"card": "09027",
+					"owner_hero_id": 0,
+					"_comments": "Physical Toll"
+				},
+				{
+					"card": "04135",
+					"owner_hero_id": 0,
+					"_comments": "Twisted Reality"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "04134",
+					"owner_hero_id": 0,
+					"_comments": "Master Strategist"
+				},
+				{
+					"card": "04137",
+					"owner_hero_id": 0,
+					"_comments": "Spreading Lies"
+				},
+				{
+					"card": "04153",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Soldier"
+				}
+			],
+			"villain": [
+				{
+					"card": "04125",
+					"owner_hero_id": 0,
+					"_comments": "Red Skull - 1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "04128b",
+					"owner_hero_id": 0,
+					"_comments": "The Rise of Red Skull - 1B",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				},
+				{
+					"card": "04139",
+					"owner_hero_id": 0,
+					"_comments": "The Red House",
+					"tokens": {
+						"threat": 3,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "09001a",
+					"owner_hero_id": 1,
+					"_comments": "Doctor Strange"
+				},
+				{
+					"card": "09028",
+					"owner_hero_id": 0,
+					"_comments": "Baron Mordo"
+				},
+				{
+					"card": "09029",
+					"owner_hero_id": 0,
+					"_comments": "Open the Dark Dimension"
+				},
+				{
+					"card": "09030",
+					"owner_hero_id": 0,
+					"_comments": "Counterspell"
+				},
+				{
+					"card": "09030",
+					"owner_hero_id": 0,
+					"_comments": "Counterspell"
+				},
+				{
+					"card": "09031",
+					"owner_hero_id": 0,
+					"_comments": "Thoughtcasting"
+				},
+				{
+					"card": "04126",
+					"owner_hero_id": 0,
+					"_comments": "Red Skull - 2"
+				},
+				{
+					"card": "04127",
+					"owner_hero_id": 0,
+					"_comments": "Red Skull - 3"
+				},
+				{
+					"card": "04129a",
+					"owner_hero_id": 0,
+					"_comments": "New World Hydra - 2A"
+				},
+				{
+					"card": "04129b",
+					"owner_hero_id": 0,
+					"_comments": "New World Hydra - 2B"
+				},
+				{
+					"card": "04130",
+					"owner_hero_id": 0,
+					"_comments": "The Sleeper"
+				},
+				{
+					"card": "04128a",
+					"owner_hero_id": 0,
+					"_comments": "The Rise of Red Skull - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"deck_side_schemes": [
+				{
+					"card": "04143",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Reinforcements"
+				},
+				{
+					"card": "04142",
+					"owner_hero_id": 0,
+					"_comments": "Censor the Past"
+				},
+				{
+					"card": "04154",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Patrol"
+				},
+				{
+					"card": "04141",
+					"owner_hero_id": 0,
+					"_comments": "Prison Camps"
+				},
+				{
+					"card": "04144",
+					"owner_hero_id": 0,
+					"_comments": "Mass Chaos"
+				},
+				{
+					"card": "04140",
+					"owner_hero_id": 0,
+					"_comments": "The Sleeper Awakened"
+				}
+			],
+			"discard_side_schemes": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "09021",
+					"owner_hero_id": 1,
+					"_comments": "Warning"
+				},
+				{
+					"card": "09020",
+					"owner_hero_id": 1,
+					"_comments": "Unflappable"
+				},
+				{
+					"card": "09014",
+					"owner_hero_id": 1,
+					"_comments": "Iron Fist - Danny Rand"
+				},
+				{
+					"card": "09007",
+					"owner_hero_id": 1,
+					"_comments": "Protective Ward"
+				},
+				{
+					"card": "09015",
+					"owner_hero_id": 1,
+					"_comments": "Desperate Defense"
+				},
+				{
+					"card": "09016",
+					"owner_hero_id": 1,
+					"_comments": "Momentum Shift"
+				},
+				{
+					"card": "09006",
+					"owner_hero_id": 1,
+					"_comments": "Mystical Studies"
+				},
+				{
+					"card": "09021",
+					"owner_hero_id": 1,
+					"_comments": "Warning"
+				},
+				{
+					"card": "09003",
+					"owner_hero_id": 1,
+					"_comments": "Astral Projection"
+				},
+				{
+					"card": "09010",
+					"owner_hero_id": 1,
+					"_comments": "Magical Enhancements"
+				},
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "01088",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "09005",
+					"owner_hero_id": 1,
+					"_comments": "Master of the Mystic Arts"
+				},
+				{
+					"card": "09004",
+					"owner_hero_id": 1,
+					"_comments": "Magic Blast"
+				},
+				{
+					"card": "09005",
+					"owner_hero_id": 1,
+					"_comments": "Master of the Mystic Arts"
+				},
+				{
+					"card": "09026",
+					"owner_hero_id": 1,
+					"_comments": "The Sorcerer Supreme"
+				},
+				{
+					"card": "09016",
+					"owner_hero_id": 1,
+					"_comments": "Momentum Shift"
+				},
+				{
+					"card": "09004",
+					"owner_hero_id": 1,
+					"_comments": "Magic Blast"
+				},
+				{
+					"card": "09003",
+					"owner_hero_id": 1,
+					"_comments": "Astral Projection"
+				},
+				{
+					"card": "09020",
+					"owner_hero_id": 1,
+					"_comments": "Unflappable"
+				},
+				{
+					"card": "09009",
+					"owner_hero_id": 1,
+					"_comments": "Cloak of Levitation"
+				},
+				{
+					"card": "09015",
+					"owner_hero_id": 1,
+					"_comments": "Desperate Defense"
+				},
+				{
+					"card": "09020",
+					"owner_hero_id": 1,
+					"_comments": "Unflappable"
+				},
+				{
+					"card": "09015",
+					"owner_hero_id": 1,
+					"_comments": "Desperate Defense"
+				},
+				{
+					"card": "09012",
+					"owner_hero_id": 1,
+					"_comments": "Brother Voodoo - Jericho Drumm"
+				},
+				{
+					"card": "01089",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "09002",
+					"owner_hero_id": 1,
+					"_comments": "Wong"
+				},
+				{
+					"card": "09016",
+					"owner_hero_id": 1,
+					"_comments": "Momentum Shift"
+				},
+				{
+					"card": "09013",
+					"owner_hero_id": 1,
+					"_comments": "Clea"
+				},
+				{
+					"card": "09010",
+					"owner_hero_id": 1,
+					"_comments": "Magical Enhancements"
+				},
+				{
+					"card": "09007",
+					"owner_hero_id": 1,
+					"_comments": "Protective Ward"
+				},
+				{
+					"card": "01080",
+					"owner_hero_id": 1,
+					"_comments": "Med Team"
+				},
+				{
+					"card": "01079",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Protection"
+				},
+				{
+					"card": "09011",
+					"owner_hero_id": 1,
+					"_comments": "The Eye of Agamotto"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "09001b",
+					"owner_hero_id": 1,
+					"_comments": "Stephen Strange",
+					"tokens": {
+						"_natural_talent": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"discard_invocation1": [],
+			"deck_invocation1": [
+				{
+					"card": "09035",
+					"owner_hero_id": 1,
+					"_comments": "Vapors of Valtorr"
+				},
+				{
+					"card": "09033",
+					"owner_hero_id": 1,
+					"_comments": "Images of Ikonn"
+				},
+				{
+					"card": "09034",
+					"owner_hero_id": 1,
+					"_comments": "Seven Rings of Raggadorr"
+				},
+				{
+					"card": "09032",
+					"owner_hero_id": 1,
+					"_comments": "Crimson Bands of Cyttorak"
+				},
+				{
+					"card": "09036",
+					"owner_hero_id": 1,
+					"_comments": "Winds of Watoomb"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01079",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Protection"
+				},
+				{
+					"card": "09019",
+					"owner_hero_id": 1,
+					"_comments": "The Night Nurse"
+				},
+				{
+					"card": "01080",
+					"owner_hero_id": 1,
+					"_comments": "Med Team"
+				},
+				{
+					"card": "09008",
+					"owner_hero_id": 1,
+					"_comments": "Sanctum Sanctorum"
+				},
+				{
+					"card": "09021",
+					"owner_hero_id": 1,
+					"_comments": "Warning"
+				},
+				{
+					"card": "01091",
+					"owner_hero_id": 1,
+					"_comments": "Avengers Mansion"
+				}
+			]
+		}
+	}
+}

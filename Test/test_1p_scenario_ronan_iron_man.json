@@ -1,0 +1,580 @@
+{
+	"_comments": "Scenario Start Test : Ronan vs Iron Man",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man",
+					"deck_id": 4
+				}
+			}
+		],
+		"scenario": {
+			"name": "Interception Imminent"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 4,
+					"hero": "01029a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "16145",
+					"owner_hero_id": 0,
+					"_comments": "Blind Side"
+				},
+				{
+					"card": "16148",
+					"owner_hero_id": 0,
+					"_comments": "Special Delivery"
+				},
+				{
+					"card": "16132",
+					"owner_hero_id": 0,
+					"_comments": "Kree Commando"
+				},
+				{
+					"card": "16133",
+					"owner_hero_id": 0,
+					"_comments": "Kree Lieutenant"
+				},
+				{
+					"card": "16134",
+					"owner_hero_id": 0,
+					"_comments": "Kree Private"
+				},
+				{
+					"card": "16110",
+					"owner_hero_id": 0,
+					"_comments": "Fanaticism"
+				},
+				{
+					"card": "16114",
+					"owner_hero_id": 0,
+					"_comments": "Single-Minded Fury"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "16115",
+					"owner_hero_id": 0,
+					"_comments": "Kree Physiology"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "16143",
+					"owner_hero_id": 0,
+					"_comments": "Rogue Vessel"
+				},
+				{
+					"card": "16133",
+					"owner_hero_id": 0,
+					"_comments": "Kree Lieutenant"
+				},
+				{
+					"card": "16134",
+					"owner_hero_id": 0,
+					"_comments": "Kree Private"
+				},
+				{
+					"card": "16115",
+					"owner_hero_id": 0,
+					"_comments": "Kree Physiology"
+				},
+				{
+					"card": "16116",
+					"owner_hero_id": 0,
+					"_comments": "\"You Stand Accused!\""
+				},
+				{
+					"card": "16116",
+					"owner_hero_id": 0,
+					"_comments": "\"You Stand Accused!\""
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "16113",
+					"owner_hero_id": 0,
+					"_comments": "Superior Tactics"
+				},
+				{
+					"card": "16134",
+					"owner_hero_id": 0,
+					"_comments": "Kree Private"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "16144",
+					"owner_hero_id": 0,
+					"_comments": "Cannonade"
+				},
+				{
+					"card": "16146",
+					"owner_hero_id": 0,
+					"_comments": "Hull Breach"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "16110",
+					"owner_hero_id": 0,
+					"_comments": "Fanaticism"
+				},
+				{
+					"card": "16112",
+					"owner_hero_id": 0,
+					"_comments": "Pincer Maneuver"
+				},
+				{
+					"card": "01170",
+					"owner_hero_id": 0,
+					"_comments": "Business Problems"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "16112",
+					"owner_hero_id": 0,
+					"_comments": "Pincer Maneuver"
+				},
+				{
+					"card": "16132",
+					"owner_hero_id": 0,
+					"_comments": "Kree Commando"
+				},
+				{
+					"card": "16147",
+					"owner_hero_id": 0,
+					"_comments": "Power Siphon"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "16111",
+					"owner_hero_id": 0,
+					"_comments": "Cut the Power"
+				},
+				{
+					"card": "16116",
+					"owner_hero_id": 0,
+					"_comments": "\"You Stand Accused!\""
+				},
+				{
+					"card": "16114",
+					"owner_hero_id": 0,
+					"_comments": "Single-Minded Fury"
+				},
+				{
+					"card": "16132",
+					"owner_hero_id": 0,
+					"_comments": "Kree Commando"
+				},
+				{
+					"card": "16131",
+					"owner_hero_id": 0,
+					"_comments": "Kree Combat Armor"
+				}
+			],
+			"villain": [
+				{
+					"card": "16103",
+					"owner_hero_id": 0,
+					"_comments": "Ronan the Accuser - 1",
+					"tokens": {
+						"tough": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "16106b",
+					"owner_hero_id": 0,
+					"_comments": "Interception Imminent - 1B",
+					"tokens": {
+						"threat": 2,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "16108",
+					"owner_hero_id": 0,
+					"_comments": "Kree Command Ship",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "01029a",
+					"owner_hero_id": 1,
+					"_comments": "Iron Man"
+				},
+				{
+					"card": "01171",
+					"owner_hero_id": 0,
+					"_comments": "Imminent Overload"
+				},
+				{
+					"card": "01172",
+					"owner_hero_id": 0,
+					"_comments": "Whiplash"
+				},
+				{
+					"card": "01173",
+					"owner_hero_id": 0,
+					"_comments": "Electric Whip Attack"
+				},
+				{
+					"card": "01173",
+					"owner_hero_id": 0,
+					"_comments": "Electric Whip Attack"
+				},
+				{
+					"card": "01174",
+					"owner_hero_id": 0,
+					"_comments": "Electromagnetic Backlash"
+				},
+				{
+					"card": "16104",
+					"owner_hero_id": 0,
+					"_comments": "Ronan the Accuser - 2"
+				},
+				{
+					"card": "16105",
+					"owner_hero_id": 0,
+					"_comments": "Ronan the Accuser - 3"
+				},
+				{
+					"card": "16107a",
+					"owner_hero_id": 0,
+					"_comments": "\"Take What Is Mine\" - 2A"
+				},
+				{
+					"card": "16107b",
+					"owner_hero_id": 0,
+					"_comments": "\"Take What Is Mine\" - 2B"
+				},
+				{
+					"card": "16106a",
+					"owner_hero_id": 0,
+					"_comments": "Interception Imminent - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "01087",
+					"owner_hero_id": 1,
+					"_comments": "Haymaker"
+				},
+				{
+					"card": "01056",
+					"owner_hero_id": 1,
+					"_comments": "Tac Team"
+				},
+				{
+					"card": "01052",
+					"owner_hero_id": 1,
+					"_comments": "Chase Them Down"
+				},
+				{
+					"card": "01056",
+					"owner_hero_id": 1,
+					"_comments": "Tac Team"
+				},
+				{
+					"card": "01083",
+					"owner_hero_id": 1,
+					"_comments": "Mockingbird - Bobbi Morse"
+				},
+				{
+					"card": "01050",
+					"owner_hero_id": 1,
+					"_comments": "Hulk - Bruce Banner"
+				},
+				{
+					"card": "01092",
+					"owner_hero_id": 1,
+					"_comments": "Helicarrier"
+				},
+				{
+					"card": "01037",
+					"owner_hero_id": 1,
+					"_comments": "Mark V Helmet"
+				},
+				{
+					"card": "01054",
+					"owner_hero_id": 1,
+					"_comments": "Uppercut"
+				},
+				{
+					"card": "01033",
+					"owner_hero_id": 1,
+					"_comments": "Pepper Potts"
+				},
+				{
+					"card": "01032",
+					"owner_hero_id": 1,
+					"_comments": "Supersonic Punch"
+				},
+				{
+					"card": "01039",
+					"owner_hero_id": 1,
+					"_comments": "Rocket Boots"
+				},
+				{
+					"card": "01038",
+					"owner_hero_id": 1,
+					"_comments": "Powered Gauntlets"
+				},
+				{
+					"card": "01039",
+					"owner_hero_id": 1,
+					"_comments": "Rocket Boots"
+				},
+				{
+					"card": "01093",
+					"owner_hero_id": 1,
+					"_comments": "Tenacity"
+				},
+				{
+					"card": "01084",
+					"owner_hero_id": 1,
+					"_comments": "Nick Fury"
+				},
+				{
+					"card": "01038",
+					"owner_hero_id": 1,
+					"_comments": "Powered Gauntlets"
+				},
+				{
+					"card": "01036",
+					"owner_hero_id": 1,
+					"_comments": "Mark V Armor"
+				},
+				{
+					"card": "01088",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "01053",
+					"owner_hero_id": 1,
+					"_comments": "Relentless Assault"
+				},
+				{
+					"card": "01057",
+					"owner_hero_id": 1,
+					"_comments": "Combat Training"
+				},
+				{
+					"card": "01089",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "01057",
+					"owner_hero_id": 1,
+					"_comments": "Combat Training"
+				},
+				{
+					"card": "01055",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Aggression"
+				},
+				{
+					"card": "01032",
+					"owner_hero_id": 1,
+					"_comments": "Supersonic Punch"
+				},
+				{
+					"card": "01035",
+					"owner_hero_id": 1,
+					"_comments": "Arc Reactor"
+				},
+				{
+					"card": "01085",
+					"owner_hero_id": 1,
+					"_comments": "Emergency"
+				},
+				{
+					"card": "01055",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Aggression"
+				},
+				{
+					"card": "01053",
+					"owner_hero_id": 1,
+					"_comments": "Relentless Assault"
+				},
+				{
+					"card": "01051",
+					"owner_hero_id": 1,
+					"_comments": "Tigra - Greer Grant Nelson"
+				},
+				{
+					"card": "01031",
+					"owner_hero_id": 1,
+					"_comments": "Repulsor Blast"
+				},
+				{
+					"card": "01031",
+					"owner_hero_id": 1,
+					"_comments": "Repulsor Blast"
+				},
+				{
+					"card": "01054",
+					"owner_hero_id": 1,
+					"_comments": "Uppercut"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "01029b",
+					"owner_hero_id": 1,
+					"_comments": "Tony Stark",
+					"tokens": {
+						"_futurist": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "16142",
+					"owner_hero_id": 0,
+					"_comments": "Milano",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "01030",
+					"owner_hero_id": 1,
+					"_comments": "War Machine - James Rhodes"
+				},
+				{
+					"card": "01086",
+					"owner_hero_id": 1,
+					"_comments": "First Aid"
+				},
+				{
+					"card": "01031",
+					"owner_hero_id": 1,
+					"_comments": "Repulsor Blast"
+				},
+				{
+					"card": "01052",
+					"owner_hero_id": 1,
+					"_comments": "Chase Them Down"
+				},
+				{
+					"card": "01091",
+					"owner_hero_id": 1,
+					"_comments": "Avengers Mansion"
+				},
+				{
+					"card": "01034",
+					"owner_hero_id": 1,
+					"_comments": "Stark Tower"
+				}
+			],
+			"others": [
+				{
+					"card": "16109",
+					"owner_hero_id": 0,
+					"_comments": "Universal Weapon",
+					"tokens": {
+						"__can_change_form": 1
+					},
+					"host": "16103"
+				},
+				{
+					"card": "16149",
+					"owner_hero_id": 0,
+					"_comments": "Power Stone",
+					"tokens": {
+						"__can_change_form": 1
+					},
+					"host": "01029b"
+				}
+			]
+		}
+	}
+}

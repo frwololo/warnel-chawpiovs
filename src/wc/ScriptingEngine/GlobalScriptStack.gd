@@ -196,7 +196,6 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			var stack_object = trigger_details.get("stack_object", null)
 			if stack_object:
 				remote_trigger_details["stack_object"] = stack_object.stack_uid
-				var _tmp = 1
 				var task_object = trigger_details.get("event_object", null)
 				if task_object:
 					var tasks = stack_object.get_tasks()
@@ -469,7 +468,6 @@ func client_create_script(details):
 	var stack_object_uid = remote_trigger_details.get("stack_object", null)
 	if stack_object_uid:
 		var convert_success = false
-		var _tmp = 1
 		var stack_object = get_stack_object_by_uid(stack_object_uid)
 		if stack_object:
 			remote_trigger_details["stack_object"] = stack_object
@@ -873,9 +871,9 @@ func compute_interrupts(script):
 				for card in cards_to_check :
 					if (card in card_already_played_for_stack_uid.get(script_uid, [])):
 						continue
-					if (task.script_name == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME):
-						if (card.canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME):
-							var _tmp = 1
+#					if (task.script_name == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME):
+#						if (card.canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME):
+#							var _tmp = 1
 					var can_interrupt = card.can_interrupt(hero_id,task.owner, _current_interrupted_event)
 					if can_interrupt == INTERRUPT_FILTER[mode]:
 						var guid = guidMaster.get_guid(card)
@@ -967,8 +965,8 @@ func set_run_mode(new_value, caller = ""):
 	if !run_mode in [RUN_MODE.PENDING_USER_INTERACTION, RUN_MODE.PENDING_REQUEST_ACK]:
 		reset_interrupt_states()
 	
-	if run_mode == RUN_MODE.PENDING_USER_INTERACTION:
-		var _tmp =1
+#	if run_mode == RUN_MODE.PENDING_USER_INTERACTION:
+#		var _tmp =1
 	gameData.game_state_changed()
 	cfc._rpc(self,"client_run_mode_changed", all_clients_status[cfc.get_network_unique_id()])
 

@@ -1,0 +1,567 @@
+{
+	"_comments": "Scenario Start Test : Thanos vs Rocket Raccoon",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a",
+					"deck_id": 8460
+				}
+			}
+		],
+		"scenario": {
+			"name": "The Infinity Stones"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 8460,
+					"hero": "16029a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "21120",
+					"owner_hero_id": 0,
+					"_comments": "Avatar of Death"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "21119",
+					"owner_hero_id": 0,
+					"_comments": "Master of the Stones"
+				},
+				{
+					"card": "21088",
+					"owner_hero_id": 0,
+					"_comments": "Blood to Spare"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "21122",
+					"owner_hero_id": 0,
+					"_comments": "\"I Am Inevitable\""
+				},
+				{
+					"card": "21117",
+					"owner_hero_id": 0,
+					"_comments": "Thanos's Armor"
+				},
+				{
+					"card": "21120",
+					"owner_hero_id": 0,
+					"_comments": "Avatar of Death"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "21122",
+					"owner_hero_id": 0,
+					"_comments": "\"I Am Inevitable\""
+				},
+				{
+					"card": "21085",
+					"owner_hero_id": 0,
+					"_comments": "Black Dwarf"
+				},
+				{
+					"card": "21124",
+					"owner_hero_id": 0,
+					"_comments": "The Titan's Throne"
+				},
+				{
+					"card": "21123",
+					"owner_hero_id": 0,
+					"_comments": "The Mad Titan"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "21121",
+					"owner_hero_id": 0,
+					"_comments": "Deviant Syndrome"
+				},
+				{
+					"card": "21128",
+					"owner_hero_id": 0,
+					"_comments": "Tribute"
+				},
+				{
+					"card": "21123",
+					"owner_hero_id": 0,
+					"_comments": "The Mad Titan"
+				},
+				{
+					"card": "21121",
+					"owner_hero_id": 0,
+					"_comments": "Deviant Syndrome"
+				},
+				{
+					"card": "21128",
+					"owner_hero_id": 0,
+					"_comments": "Tribute"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "21086",
+					"owner_hero_id": 0,
+					"_comments": "Supergiant"
+				},
+				{
+					"card": "21127",
+					"owner_hero_id": 0,
+					"_comments": "Ebony Maw"
+				},
+				{
+					"card": "21087",
+					"owner_hero_id": 0,
+					"_comments": "The Black Order"
+				},
+				{
+					"card": "21119",
+					"owner_hero_id": 0,
+					"_comments": "Master of the Stones"
+				},
+				{
+					"card": "16053",
+					"owner_hero_id": 0,
+					"_comments": "Crisis on Halfworld"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "21125",
+					"owner_hero_id": 0,
+					"_comments": "Corvus Glaive"
+				},
+				{
+					"card": "21126",
+					"owner_hero_id": 0,
+					"_comments": "Proxima Midnight"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "21118",
+					"owner_hero_id": 0,
+					"_comments": "Thanos's Helmet"
+				}
+			],
+			"villain": [
+				{
+					"card": "21111",
+					"owner_hero_id": 0,
+					"_comments": "Thanos - 1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "21114b",
+					"owner_hero_id": 0,
+					"_comments": "The Infinity Stones - 1B",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				},
+				{
+					"card": "21116",
+					"owner_hero_id": 0,
+					"_comments": "Sanctuary",
+					"tokens": {
+						"threat": 4,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "21132",
+					"owner_hero_id": 0,
+					"_comments": "Reality Stone",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "16029a",
+					"owner_hero_id": 1,
+					"_comments": "Rocket Raccoon"
+				},
+				{
+					"card": "16054",
+					"owner_hero_id": 0,
+					"_comments": "Vendetta"
+				},
+				{
+					"card": "16055",
+					"owner_hero_id": 0,
+					"_comments": "Blackjack O'Hare"
+				},
+				{
+					"card": "16056",
+					"owner_hero_id": 0,
+					"_comments": "Blackjack's Bazooka"
+				},
+				{
+					"card": "16057",
+					"owner_hero_id": 0,
+					"_comments": "Planetary Invasion"
+				},
+				{
+					"card": "16057",
+					"owner_hero_id": 0,
+					"_comments": "Planetary Invasion"
+				},
+				{
+					"card": "21112",
+					"owner_hero_id": 0,
+					"_comments": "Thanos - 2"
+				},
+				{
+					"card": "21113",
+					"owner_hero_id": 0,
+					"_comments": "Thanos - 3"
+				},
+				{
+					"card": "21115a",
+					"owner_hero_id": 0,
+					"_comments": "Balance the Scales - 2A"
+				},
+				{
+					"card": "21115b",
+					"owner_hero_id": 0,
+					"_comments": "Balance the Scales - 2B"
+				},
+				{
+					"card": "21114a",
+					"owner_hero_id": 0,
+					"_comments": "The Infinity Stones - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"deck_infinity_stone": [
+				{
+					"card": "21130",
+					"owner_hero_id": 0,
+					"_comments": "Mind Stone"
+				},
+				{
+					"card": "21135",
+					"owner_hero_id": 0,
+					"_comments": "Time Stone"
+				},
+				{
+					"card": "21131",
+					"owner_hero_id": 0,
+					"_comments": "Power Stone"
+				},
+				{
+					"card": "21133",
+					"owner_hero_id": 0,
+					"_comments": "Soul Stone"
+				},
+				{
+					"card": "21134",
+					"owner_hero_id": 0,
+					"_comments": "Space Stone"
+				}
+			],
+			"discard_infinity_stone": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "16048",
+					"owner_hero_id": 1,
+					"_comments": "Flora and Fauna"
+				},
+				{
+					"card": "16046",
+					"owner_hero_id": 1,
+					"_comments": "Hand Cannon"
+				},
+				{
+					"card": "16040",
+					"owner_hero_id": 1,
+					"_comments": "Bug"
+				},
+				{
+					"card": "16034",
+					"owner_hero_id": 1,
+					"_comments": "Battery Pack"
+				},
+				{
+					"card": "16043",
+					"owner_hero_id": 1,
+					"_comments": "Looking for Trouble"
+				},
+				{
+					"card": "16045",
+					"owner_hero_id": 1,
+					"_comments": "Follow Through"
+				},
+				{
+					"card": "16033",
+					"owner_hero_id": 1,
+					"_comments": "Salvage"
+				},
+				{
+					"card": "16052",
+					"owner_hero_id": 1,
+					"_comments": "Booster Boots"
+				},
+				{
+					"card": "16030",
+					"owner_hero_id": 1,
+					"_comments": "I've Got a Plan"
+				},
+				{
+					"card": "16037",
+					"owner_hero_id": 1,
+					"_comments": "Rocket Launcher"
+				},
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "01088",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "16031",
+					"owner_hero_id": 1,
+					"_comments": "Reload"
+				},
+				{
+					"card": "16030",
+					"owner_hero_id": 1,
+					"_comments": "I've Got a Plan"
+				},
+				{
+					"card": "16032",
+					"owner_hero_id": 1,
+					"_comments": "Schadenfreude"
+				},
+				{
+					"card": "16052",
+					"owner_hero_id": 1,
+					"_comments": "Booster Boots"
+				},
+				{
+					"card": "16045",
+					"owner_hero_id": 1,
+					"_comments": "Follow Through"
+				},
+				{
+					"card": "16031",
+					"owner_hero_id": 1,
+					"_comments": "Reload"
+				},
+				{
+					"card": "16042",
+					"owner_hero_id": 1,
+					"_comments": "Into the Fray"
+				},
+				{
+					"card": "16046",
+					"owner_hero_id": 1,
+					"_comments": "Hand Cannon"
+				},
+				{
+					"card": "16035",
+					"owner_hero_id": 1,
+					"_comments": "Cybernetic Skeleton"
+				},
+				{
+					"card": "16043",
+					"owner_hero_id": 1,
+					"_comments": "Looking for Trouble"
+				},
+				{
+					"card": "16047",
+					"owner_hero_id": 1,
+					"_comments": "Groot"
+				},
+				{
+					"card": "16043",
+					"owner_hero_id": 1,
+					"_comments": "Looking for Trouble"
+				},
+				{
+					"card": "16038",
+					"owner_hero_id": 1,
+					"_comments": "Rocket's Pistol"
+				},
+				{
+					"card": "01089",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "16042",
+					"owner_hero_id": 1,
+					"_comments": "Into the Fray"
+				},
+				{
+					"card": "16045",
+					"owner_hero_id": 1,
+					"_comments": "Follow Through"
+				},
+				{
+					"card": "16039",
+					"owner_hero_id": 1,
+					"_comments": "Thruster Boots"
+				},
+				{
+					"card": "16036",
+					"owner_hero_id": 1,
+					"_comments": "Particle Cannon"
+				},
+				{
+					"card": "16033",
+					"owner_hero_id": 1,
+					"_comments": "Salvage"
+				},
+				{
+					"card": "01053",
+					"owner_hero_id": 1,
+					"_comments": "Relentless Assault"
+				},
+				{
+					"card": "01052",
+					"owner_hero_id": 1,
+					"_comments": "Chase Them Down"
+				},
+				{
+					"card": "16038",
+					"owner_hero_id": 1,
+					"_comments": "Rocket's Pistol"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "16029b",
+					"owner_hero_id": 1,
+					"_comments": "Rocket Raccoon",
+					"tokens": {
+						"_tinkering": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "01052",
+					"owner_hero_id": 1,
+					"_comments": "Chase Them Down"
+				},
+				{
+					"card": "16046",
+					"owner_hero_id": 1,
+					"_comments": "Hand Cannon"
+				},
+				{
+					"card": "01053",
+					"owner_hero_id": 1,
+					"_comments": "Relentless Assault"
+				},
+				{
+					"card": "16034",
+					"owner_hero_id": 1,
+					"_comments": "Battery Pack"
+				},
+				{
+					"card": "16052",
+					"owner_hero_id": 1,
+					"_comments": "Booster Boots"
+				},
+				{
+					"card": "16042",
+					"owner_hero_id": 1,
+					"_comments": "Into the Fray"
+				}
+			],
+			"others": [
+				{
+					"card": "21129",
+					"owner_hero_id": 0,
+					"_comments": "Infinity Gauntlet",
+					"tokens": {
+						"__can_change_form": 1
+					},
+					"host": "21111"
+				}
+			]
+		}
+	}
+}

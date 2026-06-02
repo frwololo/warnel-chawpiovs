@@ -207,12 +207,12 @@ func re_place() -> void:
 		# doesn't expand too much
 		yield(get_tree(), "idle_frame")
 		var new_rect_size = get_parent().rect_size
-		var _tmp = self.name
+#		var _tmp = self.name
 		$Control.call_deferred("set_size", new_rect_size)
 #		$Control.rect_size = get_parent().rect_size
 #		print_debug(get_parent().rect_size)
 	# We also need to adjust the hand's collision area to match its new size
-	var _tmp = self.name
+#	var _tmp = self.name
 	call_deferred("_adjust_collision_area")
 
 	# If the hand is supposed to be shifted slightly outside the viewport

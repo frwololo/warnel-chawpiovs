@@ -1,0 +1,525 @@
+{
+	"_comments": "Scenario Start Test : Sandman vs Miles Morales",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man #27030a",
+					"deck_id": 18101
+				}
+			}
+		],
+		"scenario": {
+			"name": "Hapless Pedestrians"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 18101,
+					"hero": "27030a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "27130",
+					"owner_hero_id": 0,
+					"_comments": "Now or Never"
+				},
+				{
+					"card": "27070",
+					"owner_hero_id": 0,
+					"_comments": "Sandslide"
+				},
+				{
+					"card": "27131",
+					"owner_hero_id": 0,
+					"_comments": "Common Criminal"
+				},
+				{
+					"card": "27131",
+					"owner_hero_id": 0,
+					"_comments": "Common Criminal"
+				},
+				{
+					"card": "27128",
+					"owner_hero_id": 0,
+					"_comments": "Rhino"
+				},
+				{
+					"card": "27056",
+					"owner_hero_id": 0,
+					"_comments": "Keeping Secrets"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "27135",
+					"owner_hero_id": 0,
+					"_comments": "Loose Ends"
+				},
+				{
+					"card": "27134",
+					"owner_hero_id": 0,
+					"_comments": "\"Threat or Menace?\""
+				},
+				{
+					"card": "27129",
+					"owner_hero_id": 0,
+					"_comments": "Calling in Favors"
+				},
+				{
+					"card": "27067",
+					"owner_hero_id": 0,
+					"_comments": "Sand Clone"
+				},
+				{
+					"card": "27131",
+					"owner_hero_id": 0,
+					"_comments": "Common Criminal"
+				},
+				{
+					"card": "27066",
+					"owner_hero_id": 0,
+					"_comments": "Sand Form"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "27067",
+					"owner_hero_id": 0,
+					"_comments": "Sand Clone"
+				},
+				{
+					"card": "27067",
+					"owner_hero_id": 0,
+					"_comments": "Sand Clone"
+				},
+				{
+					"card": "27132",
+					"owner_hero_id": 0,
+					"_comments": "Friends and Family"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "27068",
+					"owner_hero_id": 0,
+					"_comments": "Dirt Trap"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "27072",
+					"owner_hero_id": 0,
+					"_comments": "Sand Smash"
+				},
+				{
+					"card": "27130",
+					"owner_hero_id": 0,
+					"_comments": "Now or Never"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "27069",
+					"owner_hero_id": 0,
+					"_comments": "Tidal Sands"
+				},
+				{
+					"card": "27067",
+					"owner_hero_id": 0,
+					"_comments": "Sand Clone"
+				},
+				{
+					"card": "27071",
+					"owner_hero_id": 0,
+					"_comments": "Sand Storm"
+				},
+				{
+					"card": "27066",
+					"owner_hero_id": 0,
+					"_comments": "Sand Form"
+				},
+				{
+					"card": "27072",
+					"owner_hero_id": 0,
+					"_comments": "Sand Smash"
+				},
+				{
+					"card": "27133",
+					"owner_hero_id": 0,
+					"_comments": "Volunteer Work"
+				},
+				{
+					"card": "27127",
+					"owner_hero_id": 0,
+					"_comments": "Panic in the Streets"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "27068",
+					"owner_hero_id": 0,
+					"_comments": "Dirt Trap"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				}
+			],
+			"villain": [
+				{
+					"card": "27061",
+					"owner_hero_id": 0,
+					"_comments": "Sandman - 1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "27064b",
+					"owner_hero_id": 0,
+					"_comments": "Hapless Pedestrians - 1B",
+					"tokens": {
+						"threat": 2,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "27065",
+					"owner_hero_id": 0,
+					"_comments": "City Streets",
+					"tokens": {
+						"sand": 4,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "27030a",
+					"owner_hero_id": 1,
+					"_comments": "Spider-Man"
+				},
+				{
+					"card": "27057",
+					"owner_hero_id": 0,
+					"_comments": "Tracking Prey"
+				},
+				{
+					"card": "27058",
+					"owner_hero_id": 0,
+					"_comments": "Prowler"
+				},
+				{
+					"card": "27059",
+					"owner_hero_id": 0,
+					"_comments": "Razor Claws"
+				},
+				{
+					"card": "27060",
+					"owner_hero_id": 0,
+					"_comments": "Slice and Dice"
+				},
+				{
+					"card": "27060",
+					"owner_hero_id": 0,
+					"_comments": "Slice and Dice"
+				},
+				{
+					"card": "27062",
+					"owner_hero_id": 0,
+					"_comments": "Sandman - 2"
+				},
+				{
+					"card": "27063",
+					"owner_hero_id": 0,
+					"_comments": "Sandman - 3"
+				},
+				{
+					"card": "27064a",
+					"owner_hero_id": 0,
+					"_comments": "Hapless Pedestrians - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "27054",
+					"owner_hero_id": 1,
+					"_comments": "Government Liaison"
+				},
+				{
+					"card": "27047",
+					"owner_hero_id": 1,
+					"_comments": "Dum Dum Dugan"
+				},
+				{
+					"card": "27043",
+					"owner_hero_id": 1,
+					"_comments": "Global Logistics"
+				},
+				{
+					"card": "27039",
+					"owner_hero_id": 1,
+					"_comments": "Web-Shooter"
+				},
+				{
+					"card": "27043",
+					"owner_hero_id": 1,
+					"_comments": "Global Logistics"
+				},
+				{
+					"card": "27044",
+					"owner_hero_id": 1,
+					"_comments": "Field Agent"
+				},
+				{
+					"card": "27037",
+					"owner_hero_id": 1,
+					"_comments": "Power Within"
+				},
+				{
+					"card": "27054",
+					"owner_hero_id": 1,
+					"_comments": "Government Liaison"
+				},
+				{
+					"card": "27034",
+					"owner_hero_id": 1,
+					"_comments": "Web-Shot"
+				},
+				{
+					"card": "27042",
+					"owner_hero_id": 1,
+					"_comments": "Homeland Intervention"
+				},
+				{
+					"card": "27032",
+					"owner_hero_id": 1,
+					"_comments": "Double Life"
+				},
+				{
+					"card": "27031",
+					"owner_hero_id": 1,
+					"_comments": "Arachnobatics"
+				},
+				{
+					"card": "27035",
+					"owner_hero_id": 1,
+					"_comments": "Ganke Lee"
+				},
+				{
+					"card": "27034",
+					"owner_hero_id": 1,
+					"_comments": "Web-Shot"
+				},
+				{
+					"card": "27036",
+					"owner_hero_id": 1,
+					"_comments": "Jefferson Davis"
+				},
+				{
+					"card": "27055",
+					"owner_hero_id": 1,
+					"_comments": "Sky-Destroyer"
+				},
+				{
+					"card": "27045",
+					"owner_hero_id": 1,
+					"_comments": "Surveillance Team"
+				},
+				{
+					"card": "27034",
+					"owner_hero_id": 1,
+					"_comments": "Web-Shot"
+				},
+				{
+					"card": "27033",
+					"owner_hero_id": 1,
+					"_comments": "Swing In"
+				},
+				{
+					"card": "27048",
+					"owner_hero_id": 1,
+					"_comments": "Ghost-Spider - Gwen Stacy"
+				},
+				{
+					"card": "27040",
+					"owner_hero_id": 1,
+					"_comments": "Monica Chang"
+				},
+				{
+					"card": "27044",
+					"owner_hero_id": 1,
+					"_comments": "Field Agent"
+				},
+				{
+					"card": "27049",
+					"owner_hero_id": 1,
+					"_comments": "Spider-Man - Peter Parker"
+				},
+				{
+					"card": "27044",
+					"owner_hero_id": 1,
+					"_comments": "Field Agent"
+				},
+				{
+					"card": "27042",
+					"owner_hero_id": 1,
+					"_comments": "Homeland Intervention"
+				},
+				{
+					"card": "27031",
+					"owner_hero_id": 1,
+					"_comments": "Arachnobatics"
+				},
+				{
+					"card": "27033",
+					"owner_hero_id": 1,
+					"_comments": "Swing In"
+				},
+				{
+					"card": "27045",
+					"owner_hero_id": 1,
+					"_comments": "Surveillance Team"
+				},
+				{
+					"card": "27043",
+					"owner_hero_id": 1,
+					"_comments": "Global Logistics"
+				},
+				{
+					"card": "27041",
+					"owner_hero_id": 1,
+					"_comments": "Spider-Woman - Jessica Drew"
+				},
+				{
+					"card": "27038",
+					"owner_hero_id": 1,
+					"_comments": "Defense Mechanism"
+				},
+				{
+					"card": "27021",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "27020",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "27042",
+					"owner_hero_id": 1,
+					"_comments": "Homeland Intervention"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "27030b",
+					"owner_hero_id": 1,
+					"_comments": "Miles Morales",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "27019",
+					"owner_hero_id": 1,
+					"_comments": "Young Love"
+				},
+				{
+					"card": "27046",
+					"owner_hero_id": 1,
+					"_comments": "Agent 13 - Sharon Carter"
+				},
+				{
+					"card": "27022",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "27039",
+					"owner_hero_id": 1,
+					"_comments": "Web-Shooter"
+				},
+				{
+					"card": "27054",
+					"owner_hero_id": 1,
+					"_comments": "Government Liaison"
+				},
+				{
+					"card": "27032",
+					"owner_hero_id": 1,
+					"_comments": "Double Life"
+				}
+			]
+		}
+	}
+}

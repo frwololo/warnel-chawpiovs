@@ -318,8 +318,8 @@ func add_event_to_ignore_list(owner_card, stack_event):
 			root[key] = true
 		root = root[key]
 
-	var _tmp = ignore_stack_events
-	_tmp = 1
+#	var _tmp = ignore_stack_events
+#	_tmp = 1
 
 
 func can_display_stack_event(stack_object, mode = GlobalScriptStack.InterruptMode.NONE) -> bool:
@@ -348,8 +348,8 @@ func can_display_stack_event(stack_object, mode = GlobalScriptStack.InterruptMod
 	if !trigger:
 		trigger = script_name
 	
-	if trigger == "card_defeated":
-		var _tmp = 1
+#	if trigger == "card_defeated":
+#		var _tmp = 1
 			
 	if ignore_stack_events["trigger"].get(trigger, false):
 		return false
@@ -384,8 +384,8 @@ func show_stack_announce(stack_object, mode = GlobalScriptStack.InterruptMode.NO
 	#if we're interrupting, we'll be showing another message 
 	if mode == GlobalScriptStack.InterruptMode.OPTIONAL_INTERRUPT_CHECK:
 		return false
-	if mode == GlobalScriptStack.InterruptMode.FORCED_INTERRUPT_CHECK:
-		var _tmp = 1
+#	if mode == GlobalScriptStack.InterruptMode.FORCED_INTERRUPT_CHECK:
+#		var _tmp = 1
 	
 	if !can_display_stack_event(stack_object, mode):
 		return false

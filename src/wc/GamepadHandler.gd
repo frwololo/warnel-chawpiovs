@@ -57,7 +57,6 @@ func gui_focus_changed(control):
 			approx_position = current_focused_control.get_global_center() 
 		else:
 			approx_position = current_focused_control.get_global_position() + Vector2(10, 10)
-			var _tmp = 1
 	else:
 		approx_position = Vector2(0,0)
 		
@@ -65,7 +64,6 @@ func get_approx_position():
 	if current_focused_control == null:
 		return Vector2(0,0)
 	else:
-		var _tmp = typeof(current_focused_control)
 		return approx_position
 
 func _check_input_device():

@@ -507,7 +507,6 @@ func unrequest_next_phase():
 
 func set_current_step_complete(value:bool, caller = ""):
 	if value:
-		var _tmp = 1
 		if !caller:
 			caller = "unknown"
 	display_debug("marking current_step_complete as " + str(value) + " per request of " + caller )
@@ -601,7 +600,7 @@ func loadstate_from_json(json:Dictionary):
 		return #TODO Error msg
 
 	current_step = step_string_to_step_id(json_data)
-
+	set_current_step_complete(true, "loadstate_from_json")
 
 func _systems_check():
 	gameData.systems_check()

@@ -1,0 +1,510 @@
+{
+	"_comments": "Scenario Start Test : Rhino vs Spider Man",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man",
+					"deck_id": 5
+				}
+			}
+		],
+		"scenario": {
+			"name": "The Break-In!"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 5,
+					"hero": "01001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "01110",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Bomber"
+				},
+				{
+					"card": "01101",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Mercenary"
+				},
+				{
+					"card": "01105",
+					"owner_hero_id": 0,
+					"_comments": "\"I'm Tough\""
+				},
+				{
+					"card": "01111",
+					"owner_hero_id": 0,
+					"_comments": "Explosion"
+				},
+				{
+					"card": "01102",
+					"owner_hero_id": 0,
+					"_comments": "Sandman"
+				},
+				{
+					"card": "01101",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Mercenary"
+				},
+				{
+					"card": "01106",
+					"owner_hero_id": 0,
+					"_comments": "Stampede"
+				},
+				{
+					"card": "01099",
+					"owner_hero_id": 0,
+					"_comments": "Charge"
+				},
+				{
+					"card": "01109",
+					"owner_hero_id": 0,
+					"_comments": "Bomb Scare"
+				},
+				{
+					"card": "01105",
+					"owner_hero_id": 0,
+					"_comments": "\"I'm Tough\""
+				},
+				{
+					"card": "01165",
+					"owner_hero_id": 0,
+					"_comments": "Eviction Notice"
+				},
+				{
+					"card": "01106",
+					"owner_hero_id": 0,
+					"_comments": "Stampede"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "01103",
+					"owner_hero_id": 0,
+					"_comments": "Shocker"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "01107",
+					"owner_hero_id": 0,
+					"_comments": "Breakin' & Takin'"
+				},
+				{
+					"card": "01104",
+					"owner_hero_id": 0,
+					"_comments": "Hard to Keep Down"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "01098",
+					"owner_hero_id": 0,
+					"_comments": "Armored Rhino Suit"
+				},
+				{
+					"card": "01106",
+					"owner_hero_id": 0,
+					"_comments": "Stampede"
+				},
+				{
+					"card": "01100",
+					"owner_hero_id": 0,
+					"_comments": "Enhanced Ivory Horn"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "01112",
+					"owner_hero_id": 0,
+					"_comments": "False Alarm"
+				},
+				{
+					"card": "01099",
+					"owner_hero_id": 0,
+					"_comments": "Charge"
+				},
+				{
+					"card": "01110",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Bomber"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "01112",
+					"owner_hero_id": 0,
+					"_comments": "False Alarm"
+				},
+				{
+					"card": "01104",
+					"owner_hero_id": 0,
+					"_comments": "Hard to Keep Down"
+				},
+				{
+					"card": "01108",
+					"owner_hero_id": 0,
+					"_comments": "Crowd Control"
+				}
+			],
+			"villain": [
+				{
+					"card": "01094",
+					"owner_hero_id": 0,
+					"_comments": "Rhino - 1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"owner_hero_id": 0,
+					"_comments": "The Break-In! - 1B",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "01001a",
+					"owner_hero_id": 1,
+					"_comments": "Spider-Man"
+				},
+				{
+					"card": "01166",
+					"owner_hero_id": 0,
+					"_comments": "Highway Robbery"
+				},
+				{
+					"card": "01167",
+					"owner_hero_id": 0,
+					"_comments": "Vulture"
+				},
+				{
+					"card": "01168",
+					"owner_hero_id": 0,
+					"_comments": "Sweeping Swoop"
+				},
+				{
+					"card": "01168",
+					"owner_hero_id": 0,
+					"_comments": "Sweeping Swoop"
+				},
+				{
+					"card": "01169",
+					"owner_hero_id": 0,
+					"_comments": "The Vulture's Plans"
+				},
+				{
+					"card": "01095",
+					"owner_hero_id": 0,
+					"_comments": "Rhino - 2"
+				},
+				{
+					"card": "01096",
+					"owner_hero_id": 0,
+					"_comments": "Rhino - 3"
+				},
+				{
+					"card": "01097a",
+					"owner_hero_id": 0,
+					"_comments": "The Break-In! - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+
+				{
+					"card": "01093",
+					"owner_hero_id": 1,
+					"_comments": "Tenacity"
+				},
+				{
+					"card": "01064",
+					"owner_hero_id": 1,
+					"_comments": "Surveillance Team"
+				},
+				{
+					"card": "01085",
+					"owner_hero_id": 1,
+					"_comments": "Emergency"
+				},
+				{
+					"card": "01009",
+					"owner_hero_id": 1,
+					"_comments": "Webbed Up"
+				},
+				{
+					"card": "01003",
+					"owner_hero_id": 1,
+					"_comments": "Backflip"
+				},
+				{
+					"card": "01083",
+					"owner_hero_id": 1,
+					"_comments": "Mockingbird - Bobbi Morse"
+				},
+				{
+					"card": "01060",
+					"owner_hero_id": 1,
+					"_comments": "For Justice!"
+				},
+				{
+					"card": "01087",
+					"owner_hero_id": 1,
+					"_comments": "Haymaker"
+				},
+				{
+					"card": "01063",
+					"owner_hero_id": 1,
+					"_comments": "Interrogation Room"
+				},
+				{
+					"card": "01088",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "01062",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Justice"
+				},
+				{
+					"card": "01008",
+					"owner_hero_id": 1,
+					"_comments": "Web-Shooter"
+				},
+
+				{
+					"card": "01007",
+					"owner_hero_id": 1,
+					"_comments": "Spider-Tracer"
+				},
+				{
+					"card": "01062",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Justice"
+				},
+				{
+					"card": "01005",
+					"owner_hero_id": 1,
+					"_comments": "Swinging Web Kick"
+				},
+				{
+					"card": "01006",
+					"owner_hero_id": 1,
+					"_comments": "Aunt May"
+				},
+				{
+					"card": "01009",
+					"owner_hero_id": 1,
+					"_comments": "Webbed Up"
+				},
+
+				{
+					"card": "01007",
+					"owner_hero_id": 1,
+					"_comments": "Spider-Tracer"
+				},
+				{
+					"card": "01059",
+					"owner_hero_id": 1,
+					"_comments": "Jessica Jones"
+				},
+				{
+					"card": "01064",
+					"owner_hero_id": 1,
+					"_comments": "Surveillance Team"
+				},
+				{
+					"card": "01065",
+					"owner_hero_id": 1,
+					"_comments": "Heroic Intuition"
+				},
+				{
+					"card": "01061",
+					"owner_hero_id": 1,
+					"_comments": "Great Responsibility"
+				},
+				{
+					"card": "01089",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "01065",
+					"owner_hero_id": 1,
+					"_comments": "Heroic Intuition"
+				},
+
+
+				{
+					"card": "01003",
+					"owner_hero_id": 1,
+					"_comments": "Backflip"
+				},
+				{
+					"card": "01084",
+					"owner_hero_id": 1,
+					"_comments": "Nick Fury"
+				},
+				{
+					"card": "01061",
+					"owner_hero_id": 1,
+					"_comments": "Great Responsibility"
+				},
+				{
+					"card": "01063",
+					"owner_hero_id": 1,
+					"_comments": "Interrogation Room"
+				},
+				{
+					"card": "01004",
+					"owner_hero_id": 1,
+					"_comments": "Enhanced Spider-Sense"
+				},
+				{
+					"card": "01005",
+					"owner_hero_id": 1,
+					"_comments": "Swinging Web Kick"
+				},
+				{
+					"card": "01058",
+					"owner_hero_id": 1,
+					"_comments": "Daredevil - Matt Murdock"
+				},
+				{
+					"card": "01008",
+					"owner_hero_id": 1,
+					"_comments": "Web-Shooter"
+				},
+				{
+					"card": "01092",
+					"owner_hero_id": 1,
+					"_comments": "Helicarrier"
+				}				
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "01001b",
+					"owner_hero_id": 1,
+					"_comments": "Peter Parker",
+					"tokens": {
+						"_peter_resource": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "01005",
+					"owner_hero_id": 1,
+					"_comments": "Swinging Web Kick"
+				},
+				{
+					"card": "01002",
+					"owner_hero_id": 1,
+					"_comments": "Black Cat - Felicia Hardy"
+				},	
+				{
+					"card": "01004",
+					"owner_hero_id": 1,
+					"_comments": "Enhanced Spider-Sense"
+				},	
+				{
+					"card": "01060",
+					"owner_hero_id": 1,
+					"_comments": "For Justice!"
+				},	
+				{
+					"card": "01091",
+					"owner_hero_id": 1,
+					"_comments": "Avengers Mansion"
+				},
+				{
+					"card": "01086",
+					"owner_hero_id": 1,
+					"_comments": "First Aid"
+				},				
+			]
+		}
+	}
+}

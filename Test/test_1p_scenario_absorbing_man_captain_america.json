@@ -1,0 +1,531 @@
+{
+	"_comments": "Scenario Start Test : Absorbing Man vs Captain America",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain America",
+					"deck_id": 31395
+				}
+			}
+		],
+		"scenario": {
+			"name": "None Shall Pass"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 31395,
+					"hero": "03001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "04092",
+					"owner_hero_id": 0,
+					"_comments": "Super Absorbing Power"
+				},
+				{
+					"card": "04085",
+					"owner_hero_id": 0,
+					"_comments": "Stall Tactics"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "03026",
+					"owner_hero_id": 0,
+					"_comments": "Man Out of Time"
+				},
+				{
+					"card": "04153",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Soldier"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "04088",
+					"owner_hero_id": 0,
+					"_comments": "Piercing Thorns"
+				},
+				{
+					"card": "04087",
+					"owner_hero_id": 0,
+					"_comments": "Steel Kick"
+				},
+				{
+					"card": "04091",
+					"owner_hero_id": 0,
+					"_comments": "Avalanche!"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "04086",
+					"owner_hero_id": 0,
+					"_comments": "Swinging Stone"
+				},
+				{
+					"card": "04086",
+					"owner_hero_id": 0,
+					"_comments": "Swinging Stone"
+				},
+				{
+					"card": "04089",
+					"owner_hero_id": 0,
+					"_comments": "Omni-Morph Duplication"
+				},
+				{
+					"card": "04085",
+					"owner_hero_id": 0,
+					"_comments": "Stall Tactics"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "04084",
+					"owner_hero_id": 0,
+					"_comments": "Ball and Chain"
+				},
+				{
+					"card": "04091",
+					"owner_hero_id": 0,
+					"_comments": "Avalanche!"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "04152",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Regular"
+				},
+				{
+					"card": "04154",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Patrol"
+				},
+				{
+					"card": "04089",
+					"owner_hero_id": 0,
+					"_comments": "Omni-Morph Duplication"
+				},
+				{
+					"card": "04153",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Soldier"
+				},
+				{
+					"card": "04152",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Regular"
+				},
+				{
+					"card": "04080",
+					"owner_hero_id": 0,
+					"_comments": "Dense Forest"
+				},
+				{
+					"card": "04090",
+					"owner_hero_id": 0,
+					"_comments": "Icy Grip"
+				},
+				{
+					"card": "04153",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Soldier"
+				},
+				{
+					"card": "04083",
+					"owner_hero_id": 0,
+					"_comments": "Abandoned Facility"
+				},
+				{
+					"card": "04082",
+					"owner_hero_id": 0,
+					"_comments": "Rocky Outcrop"
+				},
+				{
+					"card": "04089",
+					"owner_hero_id": 0,
+					"_comments": "Omni-Morph Duplication"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "04090",
+					"owner_hero_id": 0,
+					"_comments": "Icy Grip"
+				},
+				{
+					"card": "04087",
+					"owner_hero_id": 0,
+					"_comments": "Steel Kick"
+				},
+				{
+					"card": "04088",
+					"owner_hero_id": 0,
+					"_comments": "Piercing Thorns"
+				}
+			],
+			"villain": [
+				{
+					"card": "04076",
+					"owner_hero_id": 0,
+					"_comments": "Absorbing Man - 1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "04079b",
+					"owner_hero_id": 0,
+					"_comments": "None Shall Pass - 1B",
+					"tokens": {
+						"threat": 2,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "04081",
+					"owner_hero_id": 0,
+					"_comments": "Snowy Hillside",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "03001a",
+					"owner_hero_id": 1,
+					"_comments": "Captain America"
+				},
+				{
+					"card": "03027",
+					"owner_hero_id": 0,
+					"_comments": "Hit Squad"
+				},
+				{
+					"card": "03028",
+					"owner_hero_id": 0,
+					"_comments": "Baron Zemo"
+				},
+				{
+					"card": "03029",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Soldier"
+				},
+				{
+					"card": "03029",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Soldier"
+				},
+				{
+					"card": "03030",
+					"owner_hero_id": 0,
+					"_comments": "Hail Hydra!"
+				},
+				{
+					"card": "04077",
+					"owner_hero_id": 0,
+					"_comments": "Absorbing Man - 2"
+				},
+				{
+					"card": "04078",
+					"owner_hero_id": 0,
+					"_comments": "Absorbing Man - 3"
+				},
+				{
+					"card": "04079a",
+					"owner_hero_id": 0,
+					"_comments": "None Shall Pass - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "03024",
+					"owner_hero_id": 1,
+					"_comments": "Avengers Tower"
+				},
+				{
+					"card": "03019",
+					"owner_hero_id": 1,
+					"_comments": "Quinjet"
+				},
+				{
+					"card": "03013",
+					"owner_hero_id": 1,
+					"_comments": "Squirrel Girl - Doreen Green"
+				},
+				{
+					"card": "03006",
+					"owner_hero_id": 1,
+					"_comments": "Shield Toss"
+				},
+				{
+					"card": "03014",
+					"owner_hero_id": 1,
+					"_comments": "Wonder Man - Simon Williams"
+				},
+				{
+					"card": "03015",
+					"owner_hero_id": 1,
+					"_comments": "Avengers Assemble!"
+				},
+				{
+					"card": "03005",
+					"owner_hero_id": 1,
+					"_comments": "Shield Block"
+				},
+				{
+					"card": "03025",
+					"owner_hero_id": 1,
+					"_comments": "Honorary Avenger"
+				},
+				{
+					"card": "03003",
+					"owner_hero_id": 1,
+					"_comments": "Fearless Determination"
+				},
+				{
+					"card": "01088",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "01072",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Leadership"
+				},
+				{
+					"card": "03004",
+					"owner_hero_id": 1,
+					"_comments": "Heroic Strike"
+				},
+				{
+					"card": "03003",
+					"owner_hero_id": 1,
+					"_comments": "Fearless Determination"
+				},
+				{
+					"card": "03004",
+					"owner_hero_id": 1,
+					"_comments": "Heroic Strike"
+				},
+				{
+					"card": "03025",
+					"owner_hero_id": 1,
+					"_comments": "Honorary Avenger"
+				},
+				{
+					"card": "03017",
+					"owner_hero_id": 1,
+					"_comments": "Strength In Numbers"
+				},
+				{
+					"card": "03004",
+					"owner_hero_id": 1,
+					"_comments": "Heroic Strike"
+				},
+				{
+					"card": "03002",
+					"owner_hero_id": 1,
+					"_comments": "Agent 13 - Sharon Carter"
+				},
+				{
+					"card": "03019",
+					"owner_hero_id": 1,
+					"_comments": "Quinjet"
+				},
+				{
+					"card": "03007",
+					"owner_hero_id": 1,
+					"_comments": "Steve's Apartment"
+				},
+				{
+					"card": "03015",
+					"owner_hero_id": 1,
+					"_comments": "Avengers Assemble!"
+				},
+				{
+					"card": "03019",
+					"owner_hero_id": 1,
+					"_comments": "Quinjet"
+				},
+				{
+					"card": "03015",
+					"owner_hero_id": 1,
+					"_comments": "Avengers Assemble!"
+				},
+				{
+					"card": "03010",
+					"owner_hero_id": 1,
+					"_comments": "Super-Soldier Serum"
+				},
+				{
+					"card": "01083",
+					"owner_hero_id": 1,
+					"_comments": "Mockingbird - Bobbi Morse"
+				},
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "03017",
+					"owner_hero_id": 1,
+					"_comments": "Strength In Numbers"
+				},
+				{
+					"card": "03011",
+					"owner_hero_id": 1,
+					"_comments": "Falcon - Sam Wilson"
+				},
+				{
+					"card": "03008",
+					"owner_hero_id": 1,
+					"_comments": "Captain America's Helmet"
+				},
+				{
+					"card": "03005",
+					"owner_hero_id": 1,
+					"_comments": "Shield Block"
+				},
+				{
+					"card": "01071",
+					"owner_hero_id": 1,
+					"_comments": "Make the Call"
+				},
+				{
+					"card": "01071",
+					"owner_hero_id": 1,
+					"_comments": "Make the Call"
+				},
+				{
+					"card": "03010",
+					"owner_hero_id": 1,
+					"_comments": "Super-Soldier Serum"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "03001b",
+					"owner_hero_id": 1,
+					"_comments": "Steve Rogers",
+					"tokens": {
+						"__ally_cost_reduction": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "01066",
+					"owner_hero_id": 1,
+					"_comments": "Hawkeye - Clint Barton"
+				},
+				{
+					"card": "03017",
+					"owner_hero_id": 1,
+					"_comments": "Strength In Numbers"
+				},
+				{
+					"card": "01072",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Leadership"
+				},
+				{
+					"card": "03006",
+					"owner_hero_id": 1,
+					"_comments": "Shield Toss"
+				},
+				{
+					"card": "03025",
+					"owner_hero_id": 1,
+					"_comments": "Honorary Avenger"
+				},
+				{
+					"card": "01089",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "03009",
+					"owner_hero_id": 1,
+					"_comments": "Captain America's Shield"
+				}
+			]
+		}
+	}
+}

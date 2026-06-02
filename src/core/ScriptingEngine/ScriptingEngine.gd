@@ -266,8 +266,8 @@ func execute(_run_type) -> void:
 	var only_cost_check = ((run_type == CFInt.RunType.COST_CHECK) or
 		 (run_type == CFInt.RunType.BACKGROUND_COST_CHECK))
 	
-	if (owner.canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME ):
-		var _tmp = 1
+#	if (owner.canonical_name == CFConst.SCRIPT_BREAKPOINT_CARD_NAME ):
+#		var _tmp = 1
 			
 	cfc.add_ongoing_process(self, "scriptingengine execute")
 	# We execute the scripts locally, but in multiplayer only one player has to select

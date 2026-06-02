@@ -168,8 +168,8 @@ func get_display_text():
 func _get_display_text_nocache():	
 	var task = get_first_task()
 	var result = get_display_name()
-	if result == "conditional script":
-		var _tmp = 1
+#	if result == "conditional script":
+#		var _tmp = 1
 	var subjects = ""	
 	if task: 	
 		var owner = task.owner
@@ -215,8 +215,8 @@ func _get_display_text_nocache():
 		
 		var macro_name = task.trigger_details.get("macro_name", "")
 		var display_section = task.trigger_details.get("display_section", "")
-		if macro_name:
-			var _tmp = 1							
+#		if macro_name:
+#			var _tmp = 1							
 		var trigger = self.get_trigger()
 
 		if trigger.begins_with("interrupt"):
@@ -242,15 +242,15 @@ func _get_display_text_nocache():
 						return text												
 	result = result.replace("_", " ")
 	result = result + subjects
-	if "conditional script" in result:
-		var _tmp =1
+#	if "conditional script" in result:
+#		var _tmp =1
 	return result
 			
 
 
 func set_display_name(_name):
-	if "constraints" in _name:
-		var _tmp = 1
+#	if "constraints" in _name:
+#		var _tmp = 1
 	display_name = _name
 
 func get_first_task_name(meaningful = true):

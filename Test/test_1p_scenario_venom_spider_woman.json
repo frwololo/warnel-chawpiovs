@@ -1,0 +1,526 @@
+{
+	"_comments": "Scenario Start Test : Venom vs Spider-Woman",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman",
+					"deck_id": 3390
+				}
+			}
+		],
+		"scenario": {
+			"name": "Leave Us Alone!"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 3390,
+					"hero": "04031a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "27169",
+					"owner_hero_id": 0,
+					"_comments": "Unstable Sentience"
+				},
+				{
+					"card": "27164",
+					"owner_hero_id": 0,
+					"_comments": "Improvised Weapons"
+				},
+				{
+					"card": "27131",
+					"owner_hero_id": 0,
+					"_comments": "Common Criminal"
+				},
+				{
+					"card": "27131",
+					"owner_hero_id": 0,
+					"_comments": "Common Criminal"
+				},
+				{
+					"card": "27167",
+					"owner_hero_id": 0,
+					"_comments": "Enraged Symbiote"
+				},
+				{
+					"card": "04053",
+					"owner_hero_id": 0,
+					"_comments": "Uncertain Loyalties"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "27135",
+					"owner_hero_id": 0,
+					"_comments": "Loose Ends"
+				},
+				{
+					"card": "27134",
+					"owner_hero_id": 0,
+					"_comments": "\"Threat or Menace?\""
+				},
+				{
+					"card": "27168",
+					"owner_hero_id": 0,
+					"_comments": "Swinging Assault"
+				},
+				{
+					"card": "27082",
+					"owner_hero_id": 0,
+					"_comments": "Biting Retort"
+				},
+				{
+					"card": "27131",
+					"owner_hero_id": 0,
+					"_comments": "Common Criminal"
+				},
+				{
+					"card": "27078",
+					"owner_hero_id": 0,
+					"_comments": "\"Now We're Angry!\""
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "27080",
+					"owner_hero_id": 0,
+					"_comments": "Lashing Out"
+				},
+				{
+					"card": "27081",
+					"owner_hero_id": 0,
+					"_comments": "Tooth and Nail"
+				},
+				{
+					"card": "27132",
+					"owner_hero_id": 0,
+					"_comments": "Friends and Family"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "27082",
+					"owner_hero_id": 0,
+					"_comments": "Biting Retort"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "27167",
+					"owner_hero_id": 0,
+					"_comments": "Enraged Symbiote"
+				},
+				{
+					"card": "27168",
+					"owner_hero_id": 0,
+					"_comments": "Swinging Assault"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "27083",
+					"owner_hero_id": 0,
+					"_comments": "For Whom the Bell Tolls"
+				},
+				{
+					"card": "27079",
+					"owner_hero_id": 0,
+					"_comments": "Guard the Bell Tower"
+				},
+				{
+					"card": "27165",
+					"owner_hero_id": 0,
+					"_comments": "Violent Tendencies"
+				},
+				{
+					"card": "27078",
+					"owner_hero_id": 0,
+					"_comments": "\"Now We're Angry!\""
+				},
+				{
+					"card": "27166",
+					"owner_hero_id": 0,
+					"_comments": "Webbed Up"
+				},
+				{
+					"card": "27133",
+					"owner_hero_id": 0,
+					"_comments": "Volunteer Work"
+				},
+				{
+					"card": "27167",
+					"owner_hero_id": 0,
+					"_comments": "Enraged Symbiote"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "27083",
+					"owner_hero_id": 0,
+					"_comments": "For Whom the Bell Tolls"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				}
+			],
+			"villain": [
+				{
+					"card": "27073",
+					"owner_hero_id": 0,
+					"_comments": "Venom - 1",
+					"tokens": {
+						"tough": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "27076b",
+					"owner_hero_id": 0,
+					"_comments": "\"Leave Us Alone!\" - 1B",
+					"tokens": {
+						"threat": 2,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "27077a",
+					"owner_hero_id": 0,
+					"_comments": "Bell Tower",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "04031a",
+					"owner_hero_id": 1,
+					"_comments": "Spider-Woman"
+				},
+				{
+					"card": "04054",
+					"owner_hero_id": 0,
+					"_comments": "The Viper"
+				},
+				{
+					"card": "04055",
+					"owner_hero_id": 0,
+					"_comments": "The Viper's Ambition"
+				},
+				{
+					"card": "04056",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Regular"
+				},
+				{
+					"card": "04056",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Regular"
+				},
+				{
+					"card": "04057",
+					"owner_hero_id": 0,
+					"_comments": "Hail Hydra!"
+				},
+				{
+					"card": "27074",
+					"owner_hero_id": 0,
+					"_comments": "Venom - 2"
+				},
+				{
+					"card": "27075",
+					"owner_hero_id": 0,
+					"_comments": "Venom - 3"
+				},
+				{
+					"card": "27076a",
+					"owner_hero_id": 0,
+					"_comments": "\"Leave Us Alone!\" - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "04047",
+					"owner_hero_id": 1,
+					"_comments": "Skilled Investigator"
+				},
+				{
+					"card": "04045",
+					"owner_hero_id": 1,
+					"_comments": "Spider-Man - Peter Parker"
+				},
+				{
+					"card": "04039",
+					"owner_hero_id": 1,
+					"_comments": "Self-Propelled Glide"
+				},
+				{
+					"card": "04036",
+					"owner_hero_id": 1,
+					"_comments": "Pheromones"
+				},
+				{
+					"card": "04040",
+					"owner_hero_id": 1,
+					"_comments": "Spider-Girl - Anya Corazon"
+				},
+				{
+					"card": "04043",
+					"owner_hero_id": 1,
+					"_comments": "Press the Advantage"
+				},
+				{
+					"card": "04035",
+					"owner_hero_id": 1,
+					"_comments": "Venom Blast"
+				},
+				{
+					"card": "04049",
+					"owner_hero_id": 1,
+					"_comments": "Clear the Area"
+				},
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "04038",
+					"owner_hero_id": 1,
+					"_comments": "Inconspicuous"
+				},
+				{
+					"card": "01065",
+					"owner_hero_id": 1,
+					"_comments": "Heroic Intuition"
+				},
+				{
+					"card": "01063",
+					"owner_hero_id": 1,
+					"_comments": "Interrogation Room"
+				},
+				{
+					"card": "04033",
+					"owner_hero_id": 1,
+					"_comments": "Finesse"
+				},
+				{
+					"card": "04032",
+					"owner_hero_id": 1,
+					"_comments": "Captain Marvel - Carol Danvers"
+				},
+				{
+					"card": "04034",
+					"owner_hero_id": 1,
+					"_comments": "Jessica Drew's Apartment"
+				},
+				{
+					"card": "04049",
+					"owner_hero_id": 1,
+					"_comments": "Clear the Area"
+				},
+				{
+					"card": "04044",
+					"owner_hero_id": 1,
+					"_comments": "Piercing Strike"
+				},
+				{
+					"card": "04033",
+					"owner_hero_id": 1,
+					"_comments": "Finesse"
+				},
+				{
+					"card": "01089",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "04047",
+					"owner_hero_id": 1,
+					"_comments": "Skilled Investigator"
+				},
+				{
+					"card": "04037",
+					"owner_hero_id": 1,
+					"_comments": "Contaminant Immunity"
+				},
+				{
+					"card": "04043",
+					"owner_hero_id": 1,
+					"_comments": "Press the Advantage"
+				},
+				{
+					"card": "04047",
+					"owner_hero_id": 1,
+					"_comments": "Skilled Investigator"
+				},
+				{
+					"card": "04043",
+					"owner_hero_id": 1,
+					"_comments": "Press the Advantage"
+				},
+				{
+					"card": "04039",
+					"owner_hero_id": 1,
+					"_comments": "Self-Propelled Glide"
+				},
+				{
+					"card": "01063",
+					"owner_hero_id": 1,
+					"_comments": "Interrogation Room"
+				},
+				{
+					"card": "01088",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "04044",
+					"owner_hero_id": 1,
+					"_comments": "Piercing Strike"
+				},
+				{
+					"card": "04039",
+					"owner_hero_id": 1,
+					"_comments": "Self-Propelled Glide"
+				},
+				{
+					"card": "04037",
+					"owner_hero_id": 1,
+					"_comments": "Contaminant Immunity"
+				},
+				{
+					"card": "04035",
+					"owner_hero_id": 1,
+					"_comments": "Venom Blast"
+				},
+				{
+					"card": "01057",
+					"owner_hero_id": 1,
+					"_comments": "Combat Training"
+				},
+				{
+					"card": "01056",
+					"owner_hero_id": 1,
+					"_comments": "Tac Team"
+				},
+				{
+					"card": "04038",
+					"owner_hero_id": 1,
+					"_comments": "Inconspicuous"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "04031b",
+					"owner_hero_id": 1,
+					"_comments": "Jessica Drew",
+					"tokens": {
+						"_peek": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "01056",
+					"owner_hero_id": 1,
+					"_comments": "Tac Team"
+				},
+				{
+					"card": "04044",
+					"owner_hero_id": 1,
+					"_comments": "Piercing Strike"
+				},
+				{
+					"card": "01057",
+					"owner_hero_id": 1,
+					"_comments": "Combat Training"
+				},
+				{
+					"card": "04036",
+					"owner_hero_id": 1,
+					"_comments": "Pheromones"
+				},
+				{
+					"card": "04049",
+					"owner_hero_id": 1,
+					"_comments": "Clear the Area"
+				},
+				{
+					"card": "01065",
+					"owner_hero_id": 1,
+					"_comments": "Heroic Intuition"
+				}
+			]
+		}
+	}
+}

@@ -671,8 +671,6 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	if (card_data.get("subname", "")):
 		card_data["Name"] += " - " + card_data["subname"]	
 		subname_to_name[card_data["subname"].to_lower()] = card_data["Name"]
-		var _tmp = card_data["Name"]
-		var _error = 0
 	#Villains: multiple cards have the same name.
 	#Hack to "fix" this by adding stage number
 	#e.g. "Rhino_2"
@@ -1451,7 +1449,7 @@ func instance_ghost_card(original_card, controller_id) -> Card:
 
 	#TODO We set GUID here in the hope that all clients create their cards in the exact 
 	#same order. This might be a very flawed assertion could need a significant overhaul	
-	var _tmp = guidMaster.set_guid(card)
+	var _guid = guidMaster.set_guid(card)
 	card.init_owner_hero_id(controller_id)
 	card.set_controller_hero_id(controller_id)	
 
@@ -1473,7 +1471,7 @@ func instance_card(card_id: String, owner_id:int) -> Card:
 	#we also don't assign a GUID to cards created without an owner, those are usually
 	#used for local targeting, etc...
 	if (owner_id >=0):	
-		var _tmp = guidMaster.set_guid(card)
+		var _guid = guidMaster.set_guid(card)
 	card.init_owner_hero_id(owner_id)
 	card.set_controller_hero_id(owner_id)
 	
@@ -1616,7 +1614,6 @@ func preload_pck():
 				var filename = folder + set + format
 				if file.file_exists(filename):
 					var _success_res = ProjectSettings.load_resource_pack(filename)
-					var _tmp = 0
 	return
 
 func play_sfx(string):

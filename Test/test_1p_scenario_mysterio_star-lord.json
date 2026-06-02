@@ -1,0 +1,520 @@
+{
+	"_comments": "Scenario Start Test : Mysterio vs Star-Lord",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Star-Lord",
+					"deck_id": 9907
+				}
+			}
+		],
+		"scenario": {
+			"name": "Maze of Mirrors"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 9907,
+					"hero": "17001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "27157",
+					"owner_hero_id": 0,
+					"_comments": "Deepest Fears"
+				},
+				{
+					"card": "27173",
+					"owner_hero_id": 0,
+					"_comments": "Analysis Paralysis"
+				},
+				{
+					"card": "27172",
+					"owner_hero_id": 0,
+					"_comments": "Old Grudge"
+				},
+				{
+					"card": "27171",
+					"owner_hero_id": 0,
+					"_comments": "Manipulated Mind"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "27153",
+					"owner_hero_id": 0,
+					"_comments": "Induced Panic"
+				},
+				{
+					"card": "27156",
+					"owner_hero_id": 0,
+					"_comments": "Weakness from Within"
+				},
+				{
+					"card": "27170",
+					"owner_hero_id": 0,
+					"_comments": "Delusion of Collusion"
+				},
+				{
+					"card": "27154",
+					"owner_hero_id": 0,
+					"_comments": "Evil Doppelgänger"
+				},
+				{
+					"card": "27154",
+					"owner_hero_id": 0,
+					"_comments": "Evil Doppelgänger"
+				},
+				{
+					"card": "27093",
+					"owner_hero_id": 0,
+					"_comments": "Fearmonger"
+				},
+				{
+					"card": "27091",
+					"owner_hero_id": 0,
+					"_comments": "Shifting Apparition"
+				},
+				{
+					"card": "27157",
+					"owner_hero_id": 0,
+					"_comments": "Deepest Fears"
+				},
+				{
+					"card": "27092",
+					"owner_hero_id": 0,
+					"_comments": "Déjà Vu"
+				},
+				{
+					"card": "27155",
+					"owner_hero_id": 0,
+					"_comments": "Fool's Paradise"
+				},
+				{
+					"card": "27091",
+					"owner_hero_id": 0,
+					"_comments": "Shifting Apparition"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "27092",
+					"owner_hero_id": 0,
+					"_comments": "Déjà Vu"
+				},
+				{
+					"card": "27091",
+					"owner_hero_id": 0,
+					"_comments": "Shifting Apparition"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "27090",
+					"owner_hero_id": 0,
+					"_comments": "Masterful Mirage"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "27089",
+					"owner_hero_id": 0,
+					"_comments": "Humongous Hallucination"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "27093",
+					"owner_hero_id": 0,
+					"_comments": "Fearmonger"
+				},
+				{
+					"card": "17024",
+					"owner_hero_id": 0,
+					"_comments": "Banishment"
+				},
+				{
+					"card": "27170",
+					"owner_hero_id": 0,
+					"_comments": "Delusion of Collusion"
+				},
+				{
+					"card": "27090",
+					"owner_hero_id": 0,
+					"_comments": "Masterful Mirage"
+				}
+			],
+			"villain": [
+				{
+					"card": "27084",
+					"owner_hero_id": 0,
+					"_comments": "Mysterio - 1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "27087b",
+					"owner_hero_id": 0,
+					"_comments": "Maze of Mirrors - 1B",
+					"tokens": {
+						"threat": 2,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "17001a",
+					"owner_hero_id": 1,
+					"_comments": "Star-Lord"
+				},
+				{
+					"card": "17025",
+					"owner_hero_id": 0,
+					"_comments": "Budding Crime Syndicate"
+				},
+				{
+					"card": "17026",
+					"owner_hero_id": 0,
+					"_comments": "Mister Knife"
+				},
+				{
+					"card": "17027",
+					"owner_hero_id": 0,
+					"_comments": "Spartoi Cunning"
+				},
+				{
+					"card": "17027",
+					"owner_hero_id": 0,
+					"_comments": "Spartoi Cunning"
+				},
+				{
+					"card": "17027",
+					"owner_hero_id": 0,
+					"_comments": "Spartoi Cunning"
+				},
+				{
+					"card": "27085",
+					"owner_hero_id": 0,
+					"_comments": "Mysterio - 2"
+				},
+				{
+					"card": "27086",
+					"owner_hero_id": 0,
+					"_comments": "Mysterio - 3"
+				},
+				{
+					"card": "27088a",
+					"owner_hero_id": 0,
+					"_comments": "Edge of Reality - 2A"
+				},
+				{
+					"card": "27088b",
+					"owner_hero_id": 0,
+					"_comments": "Edge of Reality - 2B"
+				},
+				{
+					"card": "27087a",
+					"owner_hero_id": 0,
+					"_comments": "Maze of Mirrors - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "17022",
+					"owner_hero_id": 1,
+					"_comments": "Knowhere"
+				},
+				{
+					"card": "17019",
+					"owner_hero_id": 1,
+					"_comments": "Laser Blaster"
+				},
+				{
+					"card": "17015",
+					"owner_hero_id": 1,
+					"_comments": "Blaze of Glory"
+				},
+				{
+					"card": "17009",
+					"owner_hero_id": 1,
+					"_comments": "Leader of the Guardians"
+				},
+				{
+					"card": "17015",
+					"owner_hero_id": 1,
+					"_comments": "Blaze of Glory"
+				},
+				{
+					"card": "17017",
+					"owner_hero_id": 1,
+					"_comments": "Target Practice"
+				},
+				{
+					"card": "17023",
+					"owner_hero_id": 1,
+					"_comments": "Pulse Grenade"
+				},
+				{
+					"card": "17005",
+					"owner_hero_id": 1,
+					"_comments": "Sliding Shot"
+				},
+				{
+					"card": "17013",
+					"owner_hero_id": 1,
+					"_comments": "Yondu"
+				},
+				{
+					"card": "17003",
+					"owner_hero_id": 1,
+					"_comments": "Daring Escape"
+				},
+				{
+					"card": "17002",
+					"owner_hero_id": 1,
+					"_comments": "Nova Prime - Richard Rider"
+				},
+				{
+					"card": "17006",
+					"owner_hero_id": 1,
+					"_comments": "Bad Boy"
+				},
+				{
+					"card": "17005",
+					"owner_hero_id": 1,
+					"_comments": "Sliding Shot"
+				},
+				{
+					"card": "17007",
+					"owner_hero_id": 1,
+					"_comments": "Element Gun"
+				},
+				{
+					"card": "17023",
+					"owner_hero_id": 1,
+					"_comments": "Pulse Grenade"
+				},
+				{
+					"card": "17017",
+					"owner_hero_id": 1,
+					"_comments": "Target Practice"
+				},
+				{
+					"card": "17005",
+					"owner_hero_id": 1,
+					"_comments": "Sliding Shot"
+				},
+				{
+					"card": "17004",
+					"owner_hero_id": 1,
+					"_comments": "Gutsy Move"
+				},
+				{
+					"card": "17020",
+					"owner_hero_id": 1,
+					"_comments": "Cosmo"
+				},
+				{
+					"card": "17011",
+					"owner_hero_id": 1,
+					"_comments": "Adam Warlock"
+				},
+				{
+					"card": "17017",
+					"owner_hero_id": 1,
+					"_comments": "Target Practice"
+				},
+				{
+					"card": "17021",
+					"owner_hero_id": 1,
+					"_comments": "C.I.T.T."
+				},
+				{
+					"card": "17015",
+					"owner_hero_id": 1,
+					"_comments": "Blaze of Glory"
+				},
+				{
+					"card": "17014",
+					"owner_hero_id": 1,
+					"_comments": "Air Supremacy"
+				},
+				{
+					"card": "17003",
+					"owner_hero_id": 1,
+					"_comments": "Daring Escape"
+				},
+				{
+					"card": "17004",
+					"owner_hero_id": 1,
+					"_comments": "Gutsy Move"
+				},
+				{
+					"card": "17019",
+					"owner_hero_id": 1,
+					"_comments": "Laser Blaster"
+				},
+				{
+					"card": "17014",
+					"owner_hero_id": 1,
+					"_comments": "Air Supremacy"
+				},
+				{
+					"card": "17012",
+					"owner_hero_id": 1,
+					"_comments": "Beta Ray Bill"
+				},
+				{
+					"card": "17008",
+					"owner_hero_id": 1,
+					"_comments": "Jet Boots"
+				},
+				{
+					"card": "01072",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Leadership"
+				},
+				{
+					"card": "01069",
+					"owner_hero_id": 1,
+					"_comments": "Get Ready"
+				},
+				{
+					"card": "17014",
+					"owner_hero_id": 1,
+					"_comments": "Air Supremacy"
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "27091",
+					"owner_hero_id": 0,
+					"_comments": "Shifting Apparition",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "17001b",
+					"owner_hero_id": 1,
+					"_comments": "Peter Quill",
+					"tokens": {
+						"__smooth_talker": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "01069",
+					"owner_hero_id": 1,
+					"_comments": "Get Ready"
+				},
+				{
+					"card": "17019",
+					"owner_hero_id": 1,
+					"_comments": "Laser Blaster"
+				},
+				{
+					"card": "01072",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Leadership"
+				},
+				{
+					"card": "17010",
+					"owner_hero_id": 1,
+					"_comments": "Star-Lord's Helmet"
+				},
+				{
+					"card": "17023",
+					"owner_hero_id": 1,
+					"_comments": "Pulse Grenade"
+				},
+				{
+					"card": "17003",
+					"owner_hero_id": 1,
+					"_comments": "Daring Escape"
+				},
+				{
+					"card": "17007",
+					"owner_hero_id": 1,
+					"_comments": "Element Gun"
+				}
+			]
+		}
+	}
+}

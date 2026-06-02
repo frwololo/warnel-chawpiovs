@@ -1,0 +1,545 @@
+{
+	"_comments": "Scenario Start Test : Taskmaster vs Captain Marvel",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel",
+					"deck_id": 2
+				}
+			}
+		],
+		"scenario": {
+			"name": "Hunting Down Heroes"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 2,
+					"hero": "01010a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "04107",
+					"owner_hero_id": 0,
+					"_comments": "Captured by Hydra"
+				},
+				{
+					"card": "04152",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Regular"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "04149",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Sidearm"
+				},
+				{
+					"card": "04150",
+					"owner_hero_id": 0,
+					"_comments": "Weapon Master"
+				},
+				{
+					"card": "04104",
+					"owner_hero_id": 0,
+					"_comments": "Photographic Reflexes"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "04105",
+					"owner_hero_id": 0,
+					"_comments": "Mimicry"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "04107",
+					"owner_hero_id": 0,
+					"_comments": "Captured by Hydra"
+				},
+				{
+					"card": "04148",
+					"owner_hero_id": 0,
+					"_comments": "Combat Knife"
+				},
+				{
+					"card": "04151",
+					"owner_hero_id": 0,
+					"_comments": "Concussion Grenade"
+				},
+				{
+					"card": "04105",
+					"owner_hero_id": 0,
+					"_comments": "Mimicry"
+				},
+				{
+					"card": "04106",
+					"owner_hero_id": 0,
+					"_comments": "Hunted by Hydra"
+				},
+				{
+					"card": "04107",
+					"owner_hero_id": 0,
+					"_comments": "Captured by Hydra"
+				},
+				{
+					"card": "04103",
+					"owner_hero_id": 0,
+					"_comments": "Taskmaster's Shield"
+				},
+				{
+					"card": "04150",
+					"owner_hero_id": 0,
+					"_comments": "Weapon Master"
+				},
+				{
+					"card": "04153",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Soldier"
+				},
+				{
+					"card": "04107",
+					"owner_hero_id": 0,
+					"_comments": "Captured by Hydra"
+				},
+				{
+					"card": "04108",
+					"owner_hero_id": 0,
+					"_comments": "Taskmaster's Training Camp"
+				},
+				{
+					"card": "04153",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Soldier"
+				},
+				{
+					"card": "04101",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Hunter"
+				},
+				{
+					"card": "01175",
+					"owner_hero_id": 0,
+					"_comments": "Family Emergency"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "04102",
+					"owner_hero_id": 0,
+					"_comments": "Taskmaster's Sword"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "04152",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Regular"
+				},
+				{
+					"card": "04153",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Soldier"
+				},
+				{
+					"card": "04101",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Hunter"
+				},
+				{
+					"card": "04106",
+					"owner_hero_id": 0,
+					"_comments": "Hunted by Hydra"
+				},
+				{
+					"card": "04104",
+					"owner_hero_id": 0,
+					"_comments": "Photographic Reflexes"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				}
+			],
+			"villain": [
+				{
+					"card": "04093",
+					"owner_hero_id": 0,
+					"_comments": "Taskmaster - 1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "04096b",
+					"owner_hero_id": 0,
+					"_comments": "Hunting Down Heroes - 1B",
+					"tokens": {
+						"threat": 1,
+						"__can_change_form": 1
+					}
+				},
+				{
+					"card": "04154",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Patrol",
+					"tokens": {
+						"threat": 2,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "01010a",
+					"owner_hero_id": 1,
+					"_comments": "Captain Marvel"
+				},
+				{
+					"card": "01176",
+					"owner_hero_id": 0,
+					"_comments": "The Psyche-Magnitron"
+				},
+				{
+					"card": "01177",
+					"owner_hero_id": 0,
+					"_comments": "Yon-Rogg"
+				},
+				{
+					"card": "01178",
+					"owner_hero_id": 0,
+					"_comments": "Kree Manipulator"
+				},
+				{
+					"card": "01178",
+					"owner_hero_id": 0,
+					"_comments": "Kree Manipulator"
+				},
+				{
+					"card": "01179",
+					"owner_hero_id": 0,
+					"_comments": "Yon-Rogg's Treason"
+				},
+				{
+					"card": "04094",
+					"owner_hero_id": 0,
+					"_comments": "Taskmaster - 2"
+				},
+				{
+					"card": "04095",
+					"owner_hero_id": 0,
+					"_comments": "Taskmaster - 3"
+				},
+				{
+					"card": "04100",
+					"owner_hero_id": 0,
+					"_comments": "Elektra"
+				},
+				{
+					"card": "04097",
+					"owner_hero_id": 0,
+					"_comments": "Moon Knight - Marc Spector"
+				},
+				{
+					"card": "04099",
+					"owner_hero_id": 0,
+					"_comments": "White Tiger - Angela Del Toro"
+				},
+				{
+					"card": "04098",
+					"owner_hero_id": 0,
+					"_comments": "Shang-Chi"
+				},
+				{
+					"card": "04096a",
+					"owner_hero_id": 0,
+					"_comments": "Hunting Down Heroes - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "01087",
+					"owner_hero_id": 1,
+					"_comments": "Haymaker"
+				},
+				{
+					"card": "01072",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Leadership"
+				},
+				{
+					"card": "01068",
+					"owner_hero_id": 1,
+					"_comments": "Vision"
+				},
+				{
+					"card": "01073",
+					"owner_hero_id": 1,
+					"_comments": "The Triskelion"
+				},
+				{
+					"card": "01083",
+					"owner_hero_id": 1,
+					"_comments": "Mockingbird - Bobbi Morse"
+				},
+				{
+					"card": "01066",
+					"owner_hero_id": 1,
+					"_comments": "Hawkeye - Clint Barton"
+				},
+				{
+					"card": "01092",
+					"owner_hero_id": 1,
+					"_comments": "Helicarrier"
+				},
+				{
+					"card": "01016",
+					"owner_hero_id": 1,
+					"_comments": "Captain Marvel's Helmet"
+				},
+				{
+					"card": "01070",
+					"owner_hero_id": 1,
+					"_comments": "Lead from the Front"
+				},
+				{
+					"card": "01013",
+					"owner_hero_id": 1,
+					"_comments": "Photonic Blast"
+				},
+				{
+					"card": "01013",
+					"owner_hero_id": 1,
+					"_comments": "Photonic Blast"
+				},
+				{
+					"card": "01018",
+					"owner_hero_id": 1,
+					"_comments": "Energy Channel"
+				},
+				{
+					"card": "01017",
+					"owner_hero_id": 1,
+					"_comments": "Cosmic Flight"
+				},
+				{
+					"card": "01018",
+					"owner_hero_id": 1,
+					"_comments": "Energy Channel"
+				},
+				{
+					"card": "01093",
+					"owner_hero_id": 1,
+					"_comments": "Tenacity"
+				},
+				{
+					"card": "01084",
+					"owner_hero_id": 1,
+					"_comments": "Nick Fury"
+				},
+				{
+					"card": "01017",
+					"owner_hero_id": 1,
+					"_comments": "Cosmic Flight"
+				},
+				{
+					"card": "01015",
+					"owner_hero_id": 1,
+					"_comments": "Alpha Flight Station"
+				},
+				{
+					"card": "01088",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "01069",
+					"owner_hero_id": 1,
+					"_comments": "Get Ready"
+				},
+				{
+					"card": "01074",
+					"owner_hero_id": 1,
+					"_comments": "Inspired"
+				},
+				{
+					"card": "01089",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "01074",
+					"owner_hero_id": 1,
+					"_comments": "Inspired"
+				},
+				{
+					"card": "01071",
+					"owner_hero_id": 1,
+					"_comments": "Make the Call"
+				},
+				{
+					"card": "01013",
+					"owner_hero_id": 1,
+					"_comments": "Photonic Blast"
+				},
+				{
+					"card": "01014",
+					"owner_hero_id": 1,
+					"_comments": "Energy Absorption"
+				},
+				{
+					"card": "01085",
+					"owner_hero_id": 1,
+					"_comments": "Emergency"
+				},
+				{
+					"card": "01072",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Leadership"
+				},
+				{
+					"card": "01070",
+					"owner_hero_id": 1,
+					"_comments": "Lead from the Front"
+				},
+				{
+					"card": "01067",
+					"owner_hero_id": 1,
+					"_comments": "Maria Hill"
+				},
+				{
+					"card": "01012",
+					"owner_hero_id": 1,
+					"_comments": "Crisis Interdiction"
+				},
+				{
+					"card": "01012",
+					"owner_hero_id": 1,
+					"_comments": "Crisis Interdiction"
+				},
+				{
+					"card": "01071",
+					"owner_hero_id": 1,
+					"_comments": "Make the Call"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "01010b",
+					"owner_hero_id": 1,
+					"_comments": "Carol Danvers",
+					"tokens": {
+						"_carol_draw": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "01011",
+					"owner_hero_id": 1,
+					"_comments": "Spider-Woman - Jessica Drew"
+				},
+				{
+					"card": "01086",
+					"owner_hero_id": 1,
+					"_comments": "First Aid"
+				},
+				{
+					"card": "01012",
+					"owner_hero_id": 1,
+					"_comments": "Crisis Interdiction"
+				},
+				{
+					"card": "01069",
+					"owner_hero_id": 1,
+					"_comments": "Get Ready"
+				},
+				{
+					"card": "01091",
+					"owner_hero_id": 1,
+					"_comments": "Avengers Mansion"
+				},
+				{
+					"card": "01014",
+					"owner_hero_id": 1,
+					"_comments": "Energy Absorption"
+				}
+			]
+		}
+	}
+}

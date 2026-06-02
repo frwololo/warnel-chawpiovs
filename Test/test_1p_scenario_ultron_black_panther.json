@@ -1,0 +1,561 @@
+{
+	"_comments": "Scenario Start Test : Ultron vs Black Panther",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Black Panther",
+					"deck_id": 1
+				}
+			}
+		],
+		"scenario": {
+			"name": "The Crimson Cowl"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "select",
+			"value": "Energy Daggers",
+			"_comments": "choose an upgrade"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 1,
+					"hero": "01040a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "01144c",
+					"owner_hero_id": 0,
+					"_comments": "Android Efficiency"
+				},
+				{
+					"card": "01148",
+					"owner_hero_id": 0,
+					"_comments": "Drone Factory"
+				},
+				{
+					"card": "01153",
+					"owner_hero_id": 0,
+					"_comments": "Concussion Blasters"
+				},
+				{
+					"card": "01143",
+					"owner_hero_id": 0,
+					"_comments": "Advanced Ultron Drone"
+				},
+				{
+					"card": "01145",
+					"owner_hero_id": 0,
+					"_comments": "Rage of Ultron"
+				},
+				{
+					"card": "01142",
+					"owner_hero_id": 0,
+					"_comments": "Upgraded Drones"
+				},
+				{
+					"card": "01147",
+					"owner_hero_id": 0,
+					"_comments": "Swarm Attack"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "01147",
+					"owner_hero_id": 0,
+					"_comments": "Swarm Attack"
+				},
+				{
+					"card": "01146",
+					"owner_hero_id": 0,
+					"_comments": "Repair Sequence"
+				},
+				{
+					"card": "01143",
+					"owner_hero_id": 0,
+					"_comments": "Advanced Ultron Drone"
+				},
+				{
+					"card": "01143",
+					"owner_hero_id": 0,
+					"_comments": "Advanced Ultron Drone"
+				},
+				{
+					"card": "01151",
+					"owner_hero_id": 0,
+					"_comments": "Under Attack"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "01150",
+					"owner_hero_id": 0,
+					"_comments": "Ultron's Imperative"
+				},
+				{
+					"card": "01146",
+					"owner_hero_id": 0,
+					"_comments": "Repair Sequence"
+				},
+				{
+					"card": "01152",
+					"owner_hero_id": 0,
+					"_comments": "Vibranium Armor"
+				},
+				{
+					"card": "01154",
+					"owner_hero_id": 0,
+					"_comments": "Concussive Blast"
+				},
+				{
+					"card": "01154",
+					"owner_hero_id": 0,
+					"_comments": "Concussive Blast"
+				},
+				{
+					"card": "01155",
+					"owner_hero_id": 0,
+					"_comments": "Affairs of State"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "01149",
+					"owner_hero_id": 0,
+					"_comments": "Invasive AI"
+				},
+				{
+					"card": "01145",
+					"owner_hero_id": 0,
+					"_comments": "Rage of Ultron"
+				},
+				{
+					"card": "01141",
+					"owner_hero_id": 0,
+					"_comments": "Program Transmitter"
+				},
+				{
+					"card": "01144a",
+					"owner_hero_id": 0,
+					"_comments": "Android Efficiency"
+				},
+				{
+					"card": "01144b",
+					"owner_hero_id": 0,
+					"_comments": "Android Efficiency"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "01142",
+					"owner_hero_id": 0,
+					"_comments": "Upgraded Drones"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				}
+			],
+			"villain": [
+				{
+					"card": "01134",
+					"owner_hero_id": 0,
+					"_comments": "Ultron - 1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01137b",
+					"owner_hero_id": 0,
+					"_comments": "The Crimson Cowl - 1B",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "01140",
+					"owner_hero_id": 0,
+					"_comments": "Ultron Drones",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "01040a",
+					"owner_hero_id": 1,
+					"_comments": "Black Panther"
+				},
+				{
+					"card": "01156",
+					"owner_hero_id": 0,
+					"_comments": "Usurp The Throne"
+				},
+				{
+					"card": "01157",
+					"owner_hero_id": 0,
+					"_comments": "Killmonger"
+				},
+				{
+					"card": "01158",
+					"owner_hero_id": 0,
+					"_comments": "Heart-Shaped Herb"
+				},
+				{
+					"card": "01159",
+					"owner_hero_id": 0,
+					"_comments": "Ritual Combat"
+				},
+				{
+					"card": "01159",
+					"owner_hero_id": 0,
+					"_comments": "Ritual Combat"
+				},
+				{
+					"card": "01135",
+					"owner_hero_id": 0,
+					"_comments": "Ultron - 2"
+				},
+				{
+					"card": "01136",
+					"owner_hero_id": 0,
+					"_comments": "Ultron - 3"
+				},
+				{
+					"card": "01138a",
+					"owner_hero_id": 0,
+					"_comments": "Assault on NORAD - 2A"
+				},
+				{
+					"card": "01138b",
+					"owner_hero_id": 0,
+					"_comments": "Assault on NORAD - 2B"
+				},
+				{
+					"card": "01139a",
+					"owner_hero_id": 0,
+					"_comments": "Countdown to Oblivion - 3A"
+				},
+				{
+					"card": "01139b",
+					"owner_hero_id": 0,
+					"_comments": "Countdown to Oblivion - 3B"
+				},
+				{
+					"card": "01137a",
+					"owner_hero_id": 0,
+					"_comments": "The Crimson Cowl - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "01083",
+					"owner_hero_id": 1,
+					"_comments": "Mockingbird - Bobbi Morse"
+				},
+				{
+					"card": "01082",
+					"owner_hero_id": 1,
+					"_comments": "Indomitable"
+				},
+				{
+					"card": "01076",
+					"owner_hero_id": 1,
+					"_comments": "Luke Cage"
+				},
+				{
+					"card": "01085",
+					"owner_hero_id": 1,
+					"_comments": "Emergency"
+				},
+				{
+					"card": "01043d",
+					"owner_hero_id": 1,
+					"_comments": "Wakanda Forever!"
+				},
+				{
+					"card": "01043a",
+					"owner_hero_id": 1,
+					"_comments": "Wakanda Forever!"
+				},
+				{
+					"card": "01088",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "01081",
+					"owner_hero_id": 1,
+					"_comments": "Armored Vest"
+				},
+				{
+					"card": "01084",
+					"owner_hero_id": 1,
+					"_comments": "Nick Fury"
+				},
+				{
+					"card": "01044",
+					"owner_hero_id": 1,
+					"_comments": "Vibranium"
+				},
+				{
+					"card": "01082",
+					"owner_hero_id": 1,
+					"_comments": "Indomitable"
+				},
+				{
+					"card": "01049",
+					"owner_hero_id": 1,
+					"_comments": "Vibranium Suit"
+				},
+				{
+					"card": "01087",
+					"owner_hero_id": 1,
+					"_comments": "Haymaker"
+				},
+				{
+					"card": "01077",
+					"owner_hero_id": 1,
+					"_comments": "Counter-Punch"
+				},
+				{
+					"card": "01045",
+					"owner_hero_id": 1,
+					"_comments": "The Golden City"
+				},
+				{
+					"card": "01043c",
+					"owner_hero_id": 1,
+					"_comments": "Wakanda Forever!"
+				},
+				{
+					"card": "01042",
+					"owner_hero_id": 1,
+					"_comments": "Ancestral Knowledge"
+				},
+				{
+					"card": "01044",
+					"owner_hero_id": 1,
+					"_comments": "Vibranium"
+				},
+
+				{
+					"card": "01092",
+					"owner_hero_id": 1,
+					"_comments": "Helicarrier"
+				},
+				{
+					"card": "01047",
+					"owner_hero_id": 1,
+					"_comments": "Panther Claws"
+				},
+				{
+					"card": "01078",
+					"owner_hero_id": 1,
+					"_comments": "Get Behind Me!"
+				},
+
+				{
+					"card": "01093",
+					"owner_hero_id": 1,
+					"_comments": "Tenacity"
+				},
+
+				{
+					"card": "01043d",
+					"owner_hero_id": 1,
+					"_comments": "Wakanda Forever!"
+				},
+				{
+					"card": "01075",
+					"owner_hero_id": 1,
+					"_comments": "Black Widow - Natasha Romanoff"
+				},
+				{
+					"card": "01048",
+					"owner_hero_id": 1,
+					"_comments": "Tactical Genius"
+				},
+				{
+					"card": "01081",
+					"owner_hero_id": 1,
+					"_comments": "Armored Vest"
+				},
+
+				{
+					"card": "01079",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Protection"
+				},
+				{
+					"card": "01080",
+					"owner_hero_id": 1,
+					"_comments": "Med Team"
+				},
+				{
+					"card": "01080",
+					"owner_hero_id": 1,
+					"_comments": "Med Team"
+				},
+			
+				{
+					"card": "01078",
+					"owner_hero_id": 1,
+					"_comments": "Get Behind Me!"
+				},				
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "01089",
+					"owner_hero_id": 1,
+					"_comments": "Genius",
+				}				
+			],
+			"discard1": [],
+			"enemies1": [
+			{
+				"card": "01079",
+				"owner_hero_id": 1,
+				"_comments": "The Power of Protection",
+				"tokens": {
+					"__can_change_form": 1
+				},
+				"facedown_properties": {
+					"_code": "01079",
+					"code": "01079",
+					"attack": 0,
+					"health": 0,
+					"scheme": 0,
+					"shortname": "Drone",
+					"trait_drone": 1,
+					"type_code": "minion",
+					"macro_name": "ultron_drone"
+				}
+			}			
+
+			],
+			"identity1": [
+				{
+					"card": "01040b",
+					"owner_hero_id": 1,
+					"_comments": "T'Challa",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+
+				{
+					"card": "01043b",
+					"owner_hero_id": 1,
+					"_comments": "Wakanda Forever!"
+				}	,			
+				{
+					"card": "01086",
+					"owner_hero_id": 1,
+					"_comments": "First Aid"
+				},
+
+				{
+					"card": "01046",
+					"owner_hero_id": 1,
+					"_comments": "Energy Daggers"
+				},
+				{
+					"card": "01041",
+					"owner_hero_id": 1,
+					"_comments": "Shuri"
+				},	
+				{
+					"card": "01044",
+					"owner_hero_id": 1,
+					"_comments": "Vibranium"
+				},
+				{
+					"card": "01077",
+					"owner_hero_id": 1,
+					"_comments": "Counter-Punch"
+				},
+				{
+					"card": "01091",
+					"owner_hero_id": 1,
+					"_comments": "Avengers Mansion"
+				},				
+			]
+		}
+	}
+}

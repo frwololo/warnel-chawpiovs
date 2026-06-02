@@ -44,6 +44,9 @@ var card_focus_allowed = true
 var _cached_pile_data = {}
 var current_containers = []
 
+var _extra_deck_names_cache = {}
+var _hero_grid_layout_cache = {}
+
 func get_team_size():
 	if !_team_size:
 		_team_size = gameData.get_team_size()
@@ -69,12 +72,28 @@ func _ready() -> void:
 
 	$Debug.pressed = cfc._debug
 	
-	_has_victory_cards = false
-	grid_setup()
-	ui_setup()
-	cfc._rpc(self,"ready_for_step", LOADING_STEPS.RNG_INIT)	
+	_has_victory_cards = false	
+
+	#Signals
 	scripting_bus.connect("initiated_targeting", self, "_initiated_targeting")
 	scripting_bus.connect("target_selected", self, "_target_selected")
+	scripting_bus.connect("current_playing_hero_changed", self, "_current_playing_hero_changed")
+	#setup the controller handler
+	gamepadHandler.connect_viewport()	
+		
+	board_ready()
+
+
+		
+func board_ready(init_rng = true):
+	_extra_deck_names_cache = {}
+	_hero_grid_layout_cache = {}
+	grid_setup()
+	ui_setup()
+	if init_rng:
+		cfc._rpc(self,"ready_for_step", LOADING_STEPS.RNG_INIT)	
+	else:
+		cfc._rpc(self,"ready_for_step", LOADING_STEPS.READY_TO_LOAD)	
 
 var _clients_ready_for_step = {}
 remotesync func ready_for_step(next_step):
@@ -92,8 +111,6 @@ remotesync func ready_for_step(next_step):
 func load_next_step(next_step):
 	match next_step:
 		LOADING_STEPS.RNG_INIT:
-			#setup the controller handler
-			gamepadHandler.connect_viewport()
 			if cfc.is_game_master():
 				var my_seed = CFUtils.generate_random_seed()
 				cfc._rpc(self,"set_random_seed", my_seed)
@@ -335,7 +352,7 @@ func grid_setup():
 	init_board_organizers(1)
 #	board_organizer.organize()
 
-var _hero_grid_layout_cache = {}
+
 func get_hero_grid_setup() :
 	if _hero_grid_layout_cache:
 		return _hero_grid_layout_cache
@@ -353,7 +370,7 @@ func get_hero_grid_setup() :
 			}	
 	return _hero_grid_layout_cache
 	
-var _extra_deck_names_cache = {}
+
 func heroes_extra_deck_names():
 	if _extra_deck_names_cache:
 		return _extra_deck_names_cache ["names"]
@@ -471,9 +488,6 @@ func init_board_organizers(current_hero_id):
 	
 
 func post_cards_moved_load():
-	#Signals
-	scripting_bus.connect("current_playing_hero_changed", self, "_current_playing_hero_changed")
-
 	hide_all_hands()
 	gameData.assign_starting_hero()
 
@@ -1597,7 +1611,7 @@ func enable_focus_mode(cards = null, default_grab = null):
 	if !cards:
 		cards_only = false
 		cards = get_all_focusable_cards()
-	var _tmp = 1
+
 	for card in cards:
 		card.enable_focus_mode()
 
@@ -1628,7 +1642,7 @@ func enable_focus_mode(cards = null, default_grab = null):
 # disabling all the elements... focus layer?
 func disable_focus_mode():
 	var cards = get_all_cards(true)
-	var _tmp = 1
+
 	for card in cards:
 		card.disable_focus_mode()
 

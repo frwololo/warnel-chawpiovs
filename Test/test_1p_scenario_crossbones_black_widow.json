@@ -1,0 +1,588 @@
+{
+	"_comments": "Scenario Start Test : Crossbones vs Black Widow",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Black Widow",
+					"deck_id": 1126
+				}
+			}
+		],
+		"scenario": {
+			"name": "Attack on Mount Athena"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 1126,
+					"hero": "08001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "04068",
+					"owner_hero_id": 0,
+					"_comments": "Hard as Nails"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "04150",
+					"owner_hero_id": 0,
+					"_comments": "Weapon Master"
+				},
+				{
+					"card": "04153",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Soldier"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "01181",
+					"owner_hero_id": 0,
+					"_comments": "Madame Hydra"
+				},
+				{
+					"card": "04150",
+					"owner_hero_id": 0,
+					"_comments": "Weapon Master"
+				},
+				{
+					"card": "04066",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Bomber"
+				},
+				{
+					"card": "08025",
+					"owner_hero_id": 0,
+					"_comments": "Burn Notice"
+				},
+				{
+					"card": "04071",
+					"owner_hero_id": 0,
+					"_comments": "Cornered Staff"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "01182",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Soldier"
+				},
+				{
+					"card": "04070",
+					"owner_hero_id": 0,
+					"_comments": "Crossbones' Assault"
+				},
+				{
+					"card": "01182",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Soldier"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "04069",
+					"owner_hero_id": 0,
+					"_comments": "Raid the Armory"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "04067",
+					"owner_hero_id": 0,
+					"_comments": "Full Auto"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "04067",
+					"owner_hero_id": 0,
+					"_comments": "Full Auto"
+				},
+				{
+					"card": "04065",
+					"owner_hero_id": 0,
+					"_comments": "Crossbones' Armor"
+				},
+				{
+					"card": "04153",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Soldier"
+				},
+				{
+					"card": "01180",
+					"owner_hero_id": 0,
+					"_comments": "Legions of Hydra"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "04148",
+					"owner_hero_id": 0,
+					"_comments": "Combat Knife"
+				},
+				{
+					"card": "04149",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Sidearm"
+				},
+				{
+					"card": "01182",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Soldier"
+				},
+				{
+					"card": "04151",
+					"owner_hero_id": 0,
+					"_comments": "Concussion Grenade"
+				},
+				{
+					"card": "01180",
+					"owner_hero_id": 0,
+					"_comments": "Legions of Hydra"
+				},
+				{
+					"card": "04068",
+					"owner_hero_id": 0,
+					"_comments": "Hard as Nails"
+				},
+				{
+					"card": "04152",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Regular"
+				},
+				{
+					"card": "04066",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Bomber"
+				},
+				{
+					"card": "04154",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Patrol"
+				},
+				{
+					"card": "04152",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Regular"
+				},
+				{
+					"card": "04153",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Soldier"
+				},
+				{
+					"card": "04070",
+					"owner_hero_id": 0,
+					"_comments": "Crossbones' Assault"
+				},
+				{
+					"card": "04064",
+					"owner_hero_id": 0,
+					"_comments": "Crossbones' Machine Gun"
+				},
+				{
+					"card": "04069",
+					"owner_hero_id": 0,
+					"_comments": "Raid the Armory"
+				}
+			],
+			"villain": [
+				{
+					"card": "04058",
+					"owner_hero_id": 0,
+					"_comments": "Crossbones - 1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "04061b",
+					"owner_hero_id": 0,
+					"_comments": "Attack on Mount Athena - 1B",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "08001a",
+					"owner_hero_id": 1,
+					"_comments": "Black Widow"
+				},
+				{
+					"card": "08026",
+					"owner_hero_id": 0,
+					"_comments": "Taskmaster"
+				},
+				{
+					"card": "08027",
+					"owner_hero_id": 0,
+					"_comments": "Killer for Hire"
+				},
+				{
+					"card": "08028",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Mercenary"
+				},
+				{
+					"card": "08028",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Mercenary"
+				},
+				{
+					"card": "08029",
+					"owner_hero_id": 0,
+					"_comments": "Deadly Shot"
+				},
+				{
+					"card": "04059",
+					"owner_hero_id": 0,
+					"_comments": "Crossbones - 2"
+				},
+				{
+					"card": "04060",
+					"owner_hero_id": 0,
+					"_comments": "Crossbones - 3"
+				},
+				{
+					"card": "04062a",
+					"owner_hero_id": 0,
+					"_comments": "The Infinity Stone - 2A"
+				},
+				{
+					"card": "04062b",
+					"owner_hero_id": 0,
+					"_comments": "The Infinity Stone - 2B"
+				},
+				{
+					"card": "04063a",
+					"owner_hero_id": 0,
+					"_comments": "The Getaway - 3A"
+				},
+				{
+					"card": "04063b",
+					"owner_hero_id": 0,
+					"_comments": "The Getaway - 3B"
+				},
+				{
+					"card": "04061a",
+					"owner_hero_id": 0,
+					"_comments": "Attack on Mount Athena - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"deck_experimental_weapons": [
+				{
+					"card": "04073",
+					"owner_hero_id": 0,
+					"_comments": "Energy Shield"
+				},
+				{
+					"card": "04075",
+					"owner_hero_id": 0,
+					"_comments": "Exo-Suit"
+				},
+				{
+					"card": "04074",
+					"owner_hero_id": 0,
+					"_comments": "Power Gauntlets"
+				}
+			],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "08023",
+					"owner_hero_id": 1,
+					"_comments": "Quincarrier"
+				},
+				{
+					"card": "08018",
+					"owner_hero_id": 1,
+					"_comments": "Spycraft"
+				},
+				{
+					"card": "08011",
+					"owner_hero_id": 1,
+					"_comments": "Agent Coulson"
+				},
+				{
+					"card": "08006",
+					"owner_hero_id": 1,
+					"_comments": "Attacrobatics"
+				},
+				{
+					"card": "08012",
+					"owner_hero_id": 1,
+					"_comments": "Quake - Daisy Johnson"
+				},
+				{
+					"card": "08013",
+					"owner_hero_id": 1,
+					"_comments": "Stealth Strike"
+				},
+				{
+					"card": "08005",
+					"owner_hero_id": 1,
+					"_comments": "Safe House #29"
+				},
+				{
+					"card": "08024",
+					"owner_hero_id": 1,
+					"_comments": "Target Acquired"
+				},
+				{
+					"card": "08002",
+					"owner_hero_id": 1,
+					"_comments": "Winter Soldier - Bucky Barnes"
+				},
+				{
+					"card": "08008",
+					"owner_hero_id": 1,
+					"_comments": "Grappling Hook"
+				},
+				{
+					"card": "01084",
+					"owner_hero_id": 1,
+					"_comments": "Nick Fury"
+				},
+				{
+					"card": "01064",
+					"owner_hero_id": 1,
+					"_comments": "Surveillance Team"
+				},
+				{
+					"card": "08004",
+					"owner_hero_id": 1,
+					"_comments": "Dance of Death"
+				},
+				{
+					"card": "08003",
+					"owner_hero_id": 1,
+					"_comments": "Covert Ops"
+				},
+				{
+					"card": "08004",
+					"owner_hero_id": 1,
+					"_comments": "Dance of Death"
+				},
+				{
+					"card": "08024",
+					"owner_hero_id": 1,
+					"_comments": "Target Acquired"
+				},
+				{
+					"card": "08017",
+					"owner_hero_id": 1,
+					"_comments": "Counterintelligence"
+				},
+				{
+					"card": "08003",
+					"owner_hero_id": 1,
+					"_comments": "Covert Ops"
+				},
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "08018",
+					"owner_hero_id": 1,
+					"_comments": "Spycraft"
+				},
+				{
+					"card": "08007",
+					"owner_hero_id": 1,
+					"_comments": "Black Widow's Gauntlet"
+				},
+				{
+					"card": "08013",
+					"owner_hero_id": 1,
+					"_comments": "Stealth Strike"
+				},
+				{
+					"card": "08018",
+					"owner_hero_id": 1,
+					"_comments": "Spycraft"
+				},
+				{
+					"card": "08013",
+					"owner_hero_id": 1,
+					"_comments": "Stealth Strike"
+				},
+				{
+					"card": "08010",
+					"owner_hero_id": 1,
+					"_comments": "Widow's Bite"
+				},
+				{
+					"card": "01064",
+					"owner_hero_id": 1,
+					"_comments": "Surveillance Team"
+				},
+				{
+					"card": "01089",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "08017",
+					"owner_hero_id": 1,
+					"_comments": "Counterintelligence"
+				},
+				{
+					"card": "08010",
+					"owner_hero_id": 1,
+					"_comments": "Widow's Bite"
+				},
+				{
+					"card": "08008",
+					"owner_hero_id": 1,
+					"_comments": "Grappling Hook"
+				},
+				{
+					"card": "08006",
+					"owner_hero_id": 1,
+					"_comments": "Attacrobatics"
+				},
+				{
+					"card": "01063",
+					"owner_hero_id": 1,
+					"_comments": "Interrogation Room"
+				},
+				{
+					"card": "01062",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Justice"
+				},
+				{
+					"card": "08009",
+					"owner_hero_id": 1,
+					"_comments": "Synth-Suit"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "08001b",
+					"owner_hero_id": 1,
+					"_comments": "Natasha Romanoff",
+					"tokens": {
+						"__mission_prep": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "01062",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Justice"
+				},
+				{
+					"card": "08017",
+					"owner_hero_id": 1,
+					"_comments": "Counterintelligence"
+				},
+				{
+					"card": "01063",
+					"owner_hero_id": 1,
+					"_comments": "Interrogation Room"
+				},
+				{
+					"card": "08007",
+					"owner_hero_id": 1,
+					"_comments": "Black Widow's Gauntlet"
+				},
+				{
+					"card": "08024",
+					"owner_hero_id": 1,
+					"_comments": "Target Acquired"
+				},
+				{
+					"card": "01088",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				}
+			],
+			"others": [
+				{
+					"card": "04072",
+					"owner_hero_id": 0,
+					"_comments": "Laser Rifle",
+					"tokens": {
+						"__can_change_form": 1
+					},
+					"host": "04058"
+				}
+			]
+		}
+	}
+}

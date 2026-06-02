@@ -39,7 +39,7 @@ func replace_ability(new_ability:String, task_object = null):
 		task.script_name = new_ability
 		task.script_definition["name"] = new_ability
 
-	var _tmp = sceng	
+	return	
 
 func prevent_value(property, amount_prevented, task_object = null):
 	var prevented = 0

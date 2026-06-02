@@ -103,7 +103,6 @@ func re_place() -> void:
 	# Finally we make sure the cards organize according to the new
 	# hand-size.
 
-	var _tmp = self.name
 	_adjust_collision_area()
 
 	if not cfc.ut:

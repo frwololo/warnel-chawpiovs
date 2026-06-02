@@ -1,0 +1,181 @@
+{
+	"_comments": "Automated Test for Mutants at the Mall",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},	
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Sentinel - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Sentinel Mark IV"
+				},
+				{
+					"card": "Sentinel Mark III"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Jubilee - Jubilation Lee"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Night of the Sentinels - 1B",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Mutants at the Mall",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Sentinel Mark II #32101"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Spider-Man"
+		},
+		{
+			"type": "choose",
+			"value": "Thwart"
+		},
+		{
+			"type": "target",
+			"value": "Mutants at the Mall"
+		},
+		{
+			"type": "select",
+			"value": "Sentinel Mark IV"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Sentinel - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Sentinel Mark III"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Mutants at the Mall"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Night of the Sentinels - 1B",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Sentinel Mark II #32101"
+				},
+				{
+					"card": "Sentinel Mark IV"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jubilee - Jubilation Lee"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

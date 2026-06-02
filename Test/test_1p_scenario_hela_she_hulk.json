@@ -1,0 +1,560 @@
+{
+	"_comments": "Scenario Start Test : Hela vs She Hulk",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk",
+					"deck_id": 3
+				}
+			}
+		],
+		"scenario": {
+			"name": "Odin's Torment"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "activate",
+			"value": "Jennifer Walters",
+			"_comments": "prevent one threat"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 3,
+					"hero": "01019a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "21151",
+					"owner_hero_id": 0,
+					"_comments": "The Wastes of Niffleheim"
+				},
+				{
+					"card": "21156",
+					"owner_hero_id": 0,
+					"_comments": "Laufey"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "21152",
+					"owner_hero_id": 0,
+					"_comments": "Draugr"
+				},
+				{
+					"card": "21148",
+					"owner_hero_id": 0,
+					"_comments": "Hela's Cloak"
+				},
+				{
+					"card": "21151",
+					"owner_hero_id": 0,
+					"_comments": "The Wastes of Niffleheim"
+				},
+				{
+					"card": "21152",
+					"owner_hero_id": 0,
+					"_comments": "Draugr"
+				},
+				{
+					"card": "21149",
+					"owner_hero_id": 0,
+					"_comments": "Hela's Domain"
+				},
+				{
+					"card": "21154",
+					"owner_hero_id": 0,
+					"_comments": "No Place for the Living"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "21150",
+					"owner_hero_id": 0,
+					"_comments": "The Queen of Hel"
+				},
+				{
+					"card": "21150",
+					"owner_hero_id": 0,
+					"_comments": "The Queen of Hel"
+				},
+				{
+					"card": "21153",
+					"owner_hero_id": 0,
+					"_comments": "Fallen Warrior"
+				},
+				{
+					"card": "21146",
+					"owner_hero_id": 0,
+					"_comments": "Nightsword"
+				},
+				{
+					"card": "21158",
+					"owner_hero_id": 0,
+					"_comments": "Frozen"
+				},
+				{
+					"card": "21149",
+					"owner_hero_id": 0,
+					"_comments": "Hela's Domain"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "21147",
+					"owner_hero_id": 0,
+					"_comments": "Hela's Crown"
+				},
+				{
+					"card": "21159",
+					"owner_hero_id": 0,
+					"_comments": "Unnatural Storm"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "21155",
+					"owner_hero_id": 0,
+					"_comments": "Legions of Hel"
+				},
+				{
+					"card": "21158",
+					"owner_hero_id": 0,
+					"_comments": "Frozen"
+				},
+				{
+					"card": "21155",
+					"owner_hero_id": 0,
+					"_comments": "Legions of Hel"
+				},
+				{
+					"card": "01160",
+					"owner_hero_id": 0,
+					"_comments": "Legal Work"
+				},
+				{
+					"card": "21153",
+					"owner_hero_id": 0,
+					"_comments": "Fallen Warrior"
+				},
+				{
+					"card": "21157",
+					"owner_hero_id": 0,
+					"_comments": "Frost Giant"
+				},
+				{
+					"card": "21157",
+					"owner_hero_id": 0,
+					"_comments": "Frost Giant"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				}
+			],
+			"villain": [
+				{
+					"card": "21136a",
+					"owner_hero_id": 0,
+					"_comments": "Hela - A1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "21138b",
+					"owner_hero_id": 0,
+					"_comments": "Odin's Torment - 1B",
+					"tokens": {
+						"threat": 1,
+						"__can_change_form": 1
+					}
+				},
+				{
+					"card": "21140",
+					"owner_hero_id": 0,
+					"_comments": "Gnipahellir",
+					"tokens": {
+						"threat": 2,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "01019a",
+					"owner_hero_id": 1,
+					"_comments": "She-Hulk"
+				},
+				{
+					"card": "01161",
+					"owner_hero_id": 0,
+					"_comments": "Personal Challenge"
+				},
+				{
+					"card": "01162",
+					"owner_hero_id": 0,
+					"_comments": "Titania"
+				},
+				{
+					"card": "01163",
+					"owner_hero_id": 0,
+					"_comments": "Genetically Enhanced"
+				},
+				{
+					"card": "01164",
+					"owner_hero_id": 0,
+					"_comments": "Titania's Fury"
+				},
+				{
+					"card": "01164",
+					"owner_hero_id": 0,
+					"_comments": "Titania's Fury"
+				},
+				{
+					"card": "21136b",
+					"owner_hero_id": 0,
+					"_comments": "Hela - A2"
+				},
+				{
+					"card": "21137a",
+					"owner_hero_id": 0,
+					"_comments": "Hela - B1"
+				},
+				{
+					"card": "21137b",
+					"owner_hero_id": 0,
+					"_comments": "Hela - B2"
+				},
+				{
+					"card": "21145",
+					"owner_hero_id": 0,
+					"_comments": "Nidhogg"
+				},
+				{
+					"card": "21142",
+					"owner_hero_id": 0,
+					"_comments": "Gjallerbru"
+				},
+				{
+					"card": "21144",
+					"owner_hero_id": 0,
+					"_comments": "Skurge"
+				},
+				{
+					"card": "21141",
+					"owner_hero_id": 0,
+					"_comments": "Hall of Nastrond"
+				},
+				{
+					"card": "21138a",
+					"owner_hero_id": 0,
+					"_comments": "Odin's Torment - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "01087",
+					"owner_hero_id": 1,
+					"_comments": "Haymaker"
+				},
+				{
+					"card": "01056",
+					"owner_hero_id": 1,
+					"_comments": "Tac Team"
+				},
+				{
+					"card": "01052",
+					"owner_hero_id": 1,
+					"_comments": "Chase Them Down"
+				},
+				{
+					"card": "01056",
+					"owner_hero_id": 1,
+					"_comments": "Tac Team"
+				},
+				{
+					"card": "01083",
+					"owner_hero_id": 1,
+					"_comments": "Mockingbird - Bobbi Morse"
+				},
+				{
+					"card": "01050",
+					"owner_hero_id": 1,
+					"_comments": "Hulk - Bruce Banner"
+				},
+				{
+					"card": "01092",
+					"owner_hero_id": 1,
+					"_comments": "Helicarrier"
+				},
+				{
+					"card": "01026",
+					"owner_hero_id": 1,
+					"_comments": "Superhuman Law Division"
+				},
+				{
+					"card": "01054",
+					"owner_hero_id": 1,
+					"_comments": "Uppercut"
+				},
+				{
+					"card": "01024",
+					"owner_hero_id": 1,
+					"_comments": "One-Two Punch"
+				},
+				{
+					"card": "01023",
+					"owner_hero_id": 1,
+					"_comments": "Legal Practice"
+				},
+				{
+					"card": "01028",
+					"owner_hero_id": 1,
+					"_comments": "Superhuman Strength"
+				},
+				{
+					"card": "01027",
+					"owner_hero_id": 1,
+					"_comments": "Focused Rage"
+				},
+				{
+					"card": "01028",
+					"owner_hero_id": 1,
+					"_comments": "Superhuman Strength"
+				},
+				{
+					"card": "01093",
+					"owner_hero_id": 1,
+					"_comments": "Tenacity"
+				},
+				{
+					"card": "01084",
+					"owner_hero_id": 1,
+					"_comments": "Nick Fury"
+				},
+				{
+					"card": "01027",
+					"owner_hero_id": 1,
+					"_comments": "Focused Rage"
+				},
+				{
+					"card": "01025",
+					"owner_hero_id": 1,
+					"_comments": "Split Personality"
+				},
+				{
+					"card": "01088",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "01053",
+					"owner_hero_id": 1,
+					"_comments": "Relentless Assault"
+				},
+				{
+					"card": "01057",
+					"owner_hero_id": 1,
+					"_comments": "Combat Training"
+				},
+				{
+					"card": "01089",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "01057",
+					"owner_hero_id": 1,
+					"_comments": "Combat Training"
+				},
+				{
+					"card": "01055",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Aggression"
+				},
+				{
+					"card": "01023",
+					"owner_hero_id": 1,
+					"_comments": "Legal Practice"
+				},
+				{
+					"card": "01024",
+					"owner_hero_id": 1,
+					"_comments": "One-Two Punch"
+				},
+				{
+					"card": "01085",
+					"owner_hero_id": 1,
+					"_comments": "Emergency"
+				},
+				{
+					"card": "01055",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Aggression"
+				},
+				{
+					"card": "01053",
+					"owner_hero_id": 1,
+					"_comments": "Relentless Assault"
+				},
+				{
+					"card": "01051",
+					"owner_hero_id": 1,
+					"_comments": "Tigra - Greer Grant Nelson"
+				},
+				{
+					"card": "01022",
+					"owner_hero_id": 1,
+					"_comments": "Ground Stomp"
+				},
+				{
+					"card": "01021",
+					"owner_hero_id": 1,
+					"_comments": "Gamma Slam"
+				},
+				{
+					"card": "01054",
+					"owner_hero_id": 1,
+					"_comments": "Uppercut"
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "21143",
+					"owner_hero_id": 0,
+					"_comments": "Garm",
+					"tokens": {
+						"tough": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "01019b",
+					"owner_hero_id": 1,
+					"_comments": "Jennifer Walters",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "01020",
+					"owner_hero_id": 1,
+					"_comments": "Hellcat - Patsy Walker"
+				},
+				{
+					"card": "01086",
+					"owner_hero_id": 1,
+					"_comments": "First Aid"
+				},
+				{
+					"card": "01022",
+					"owner_hero_id": 1,
+					"_comments": "Ground Stomp"
+				},
+				{
+					"card": "01052",
+					"owner_hero_id": 1,
+					"_comments": "Chase Them Down"
+				},
+				{
+					"card": "01091",
+					"owner_hero_id": 1,
+					"_comments": "Avengers Mansion"
+				},
+				{
+					"card": "01024",
+					"owner_hero_id": 1,
+					"_comments": "One-Two Punch"
+				}
+			],
+			"others": [
+				{
+					"card": "21139a",
+					"owner_hero_id": 0,
+					"_comments": "Odin - All-Father",
+					"tokens": {
+						"__can_change_form": 1
+					},
+					"host": "21138b"
+				}
+			]
+		}
+	}
+}

@@ -1,0 +1,578 @@
+{
+	"_comments": "Scenario Start Test : Sentinel vs Winter soldier",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Winter soldier",
+					"deck_id": 51163
+				}
+			}
+		],
+		"scenario": {
+			"name": "Night of the Sentinels"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_lot"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 51163,
+					"hero": "54001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "32101",
+					"owner_hero_id": 0,
+					"_comments": "Sentinel Mark II"
+				},
+				{
+					"card": "32099",
+					"owner_hero_id": 0,
+					"_comments": "Warn the Others"
+				},
+				{
+					"card": "32102",
+					"owner_hero_id": 0,
+					"_comments": "Sentinel Mark III"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "32105",
+					"owner_hero_id": 0,
+					"_comments": "Sentinel Mark V"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "32103",
+					"owner_hero_id": 0,
+					"_comments": "Energy Barrier"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "32100",
+					"owner_hero_id": 0,
+					"_comments": "Abduction Protocols"
+				},
+				{
+					"card": "32099",
+					"owner_hero_id": 0,
+					"_comments": "Warn the Others"
+				},
+				{
+					"card": "32108",
+					"owner_hero_id": 0,
+					"_comments": "Relentless Robots"
+				},
+				{
+					"card": "32106",
+					"owner_hero_id": 0,
+					"_comments": "Sentinel Mark VI"
+				},
+				{
+					"card": "32093",
+					"owner_hero_id": 0,
+					"_comments": "Sentinel Mark IV"
+				},
+				{
+					"card": "32100",
+					"owner_hero_id": 0,
+					"_comments": "Abduction Protocols"
+				},
+				{
+					"card": "32098",
+					"owner_hero_id": 0,
+					"_comments": "Mutant Detected"
+				},
+				{
+					"card": "32094",
+					"owner_hero_id": 0,
+					"_comments": "Gauntlet Beam"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "32094",
+					"owner_hero_id": 0,
+					"_comments": "Gauntlet Beam"
+				},
+				{
+					"card": "32103",
+					"owner_hero_id": 0,
+					"_comments": "Energy Barrier"
+				},
+				{
+					"card": "32101",
+					"owner_hero_id": 0,
+					"_comments": "Sentinel Mark II"
+				},
+				{
+					"card": "32106",
+					"owner_hero_id": 0,
+					"_comments": "Sentinel Mark VI"
+				},
+				{
+					"card": "32107",
+					"owner_hero_id": 0,
+					"_comments": "Targeted for Elimination"
+				},
+				{
+					"card": "32105",
+					"owner_hero_id": 0,
+					"_comments": "Sentinel Mark V"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "32100",
+					"owner_hero_id": 0,
+					"_comments": "Abduction Protocols"
+				},
+				{
+					"card": "32097",
+					"owner_hero_id": 0,
+					"_comments": "Self-Repair"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "32096",
+					"owner_hero_id": 0,
+					"_comments": "Adaptive Armor"
+				},
+				{
+					"card": "54027",
+					"owner_hero_id": 0,
+					"_comments": "Red Room Programming"
+				},
+				{
+					"card": "32095",
+					"owner_hero_id": 0,
+					"_comments": "Learning A.I."
+				},
+				{
+					"card": "32102",
+					"owner_hero_id": 0,
+					"_comments": "Sentinel Mark III"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "32093",
+					"owner_hero_id": 0,
+					"_comments": "Sentinel Mark IV"
+				},
+				{
+					"card": "32098",
+					"owner_hero_id": 0,
+					"_comments": "Mutant Detected"
+				},
+				{
+					"card": "32107",
+					"owner_hero_id": 0,
+					"_comments": "Targeted for Elimination"
+				}
+			],
+			"villain": [
+				{
+					"card": "32084",
+					"owner_hero_id": 0,
+					"_comments": "Sentinel - 1",
+					"tokens": {
+						"tough": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "32087b",
+					"owner_hero_id": 0,
+					"_comments": "Night of the Sentinels - 1B",
+					"tokens": {
+						"threat": 1,
+						"__can_change_form": 1
+					}
+				},
+				{
+					"card": "32100",
+					"owner_hero_id": 0,
+					"_comments": "Abduction Protocols",
+					"tokens": {
+						"threat": 4,
+						"__can_change_form": 1
+					}
+				},
+				{
+					"card": "32104",
+					"owner_hero_id": 0,
+					"_comments": "Operation Zero Tolerance",
+					"tokens": {
+						"threat": 3,
+						"__can_change_form": 1
+					}
+				},
+				{
+					"card": "32088a",
+					"owner_hero_id": 0,
+					"_comments": "Mutants at the Mall",
+					"tokens": {
+						"threat": 4,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "54001a",
+					"owner_hero_id": 1,
+					"_comments": "Winter Soldier"
+				},
+				{
+					"card": "54028",
+					"owner_hero_id": 0,
+					"_comments": "Crossbones"
+				},
+				{
+					"card": "54029",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Hit Squad"
+				},
+				{
+					"card": "54030",
+					"owner_hero_id": 0,
+					"_comments": "High-Tech Armament"
+				},
+				{
+					"card": "54031",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Mercenary"
+				},
+				{
+					"card": "54031",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Mercenary"
+				},
+				{
+					"card": "32085",
+					"owner_hero_id": 0,
+					"_comments": "Sentinel - 2"
+				},
+				{
+					"card": "32086",
+					"owner_hero_id": 0,
+					"_comments": "Sentinel - 3"
+				},
+				{
+					"card": "32091",
+					"owner_hero_id": 0,
+					"_comments": "Cannonball - Sam Guthrie"
+				},
+				{
+					"card": "32090",
+					"owner_hero_id": 0,
+					"_comments": "Boom Boom - Tabitha Smith"
+				},
+				{
+					"card": "32092",
+					"owner_hero_id": 0,
+					"_comments": "Wolfsbane - Rahne Sinclair"
+				},
+				{
+					"card": "32089",
+					"owner_hero_id": 0,
+					"_comments": "Rictor - Julio Richter"
+				},
+				{
+					"card": "32087a",
+					"owner_hero_id": 0,
+					"_comments": "Night of the Sentinels - 1A"
+				},
+				{
+					"card": "32088b",
+					"owner_hero_id": 0,
+					"_comments": "Jubilee - Jubilation Lee"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "54023",
+					"owner_hero_id": 1,
+					"_comments": "Winter, Widow, Soldier, Spy"
+				},
+				{
+					"card": "54020",
+					"owner_hero_id": 1,
+					"_comments": "S.H.I.E.L.D. Sidearm"
+				},
+				{
+					"card": "54016",
+					"owner_hero_id": 1,
+					"_comments": "Spoiling for a Fight"
+				},
+				{
+					"card": "54014",
+					"owner_hero_id": 1,
+					"_comments": "Firepower"
+				},
+				{
+					"card": "54017",
+					"owner_hero_id": 1,
+					"_comments": "Aggressive Stance"
+				},
+				{
+					"card": "54018",
+					"owner_hero_id": 1,
+					"_comments": "Bambino"
+				},
+				{
+					"card": "54012",
+					"owner_hero_id": 1,
+					"_comments": "Captain America - Steve Rogers"
+				},
+				{
+					"card": "54025",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "54008",
+					"owner_hero_id": 1,
+					"_comments": "Silent Infiltration"
+				},
+				{
+					"card": "54015",
+					"owner_hero_id": 1,
+					"_comments": "One by One"
+				},
+				{
+					"card": "54005",
+					"owner_hero_id": 1,
+					"_comments": "Metal Punch"
+				},
+				{
+					"card": "54005",
+					"owner_hero_id": 1,
+					"_comments": "Metal Punch"
+				},
+				{
+					"card": "54010",
+					"owner_hero_id": 1,
+					"_comments": "Winter Mask"
+				},
+				{
+					"card": "54008",
+					"owner_hero_id": 1,
+					"_comments": "Silent Infiltration"
+				},
+				{
+					"card": "54011",
+					"owner_hero_id": 1,
+					"_comments": "Winter Rifle"
+				},
+				{
+					"card": "54026",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "54019",
+					"owner_hero_id": 1,
+					"_comments": "Man on the Wall"
+				},
+				{
+					"card": "54009",
+					"owner_hero_id": 1,
+					"_comments": "Winter Armor"
+				},
+				{
+					"card": "54007",
+					"owner_hero_id": 1,
+					"_comments": "Safe House #30"
+				},
+				{
+					"card": "54021",
+					"owner_hero_id": 1,
+					"_comments": "Nick Fury, Sr."
+				},
+				{
+					"card": "54014",
+					"owner_hero_id": 1,
+					"_comments": "Firepower"
+				},
+				{
+					"card": "54017",
+					"owner_hero_id": 1,
+					"_comments": "Aggressive Stance"
+				},
+				{
+					"card": "54022",
+					"owner_hero_id": 1,
+					"_comments": "Super-Soldiers"
+				},
+				{
+					"card": "54017",
+					"owner_hero_id": 1,
+					"_comments": "Aggressive Stance"
+				},
+				{
+					"card": "54016",
+					"owner_hero_id": 1,
+					"_comments": "Spoiling for a Fight"
+				},
+				{
+					"card": "54005",
+					"owner_hero_id": 1,
+					"_comments": "Metal Punch"
+				},
+				{
+					"card": "54006",
+					"owner_hero_id": 1,
+					"_comments": "Electrical Discharge"
+				},
+				{
+					"card": "54020",
+					"owner_hero_id": 1,
+					"_comments": "S.H.I.E.L.D. Sidearm"
+				},
+				{
+					"card": "54016",
+					"owner_hero_id": 1,
+					"_comments": "Spoiling for a Fight"
+				},
+				{
+					"card": "54015",
+					"owner_hero_id": 1,
+					"_comments": "One by One"
+				},
+				{
+					"card": "54013",
+					"owner_hero_id": 1,
+					"_comments": "Deathlok - Henry Hayes"
+				},
+				{
+					"card": "54004",
+					"owner_hero_id": 1,
+					"_comments": "Arm Block"
+				},
+				{
+					"card": "54003",
+					"owner_hero_id": 1,
+					"_comments": "Black Widow - Natasha Romanoff"
+				},
+				{
+					"card": "54015",
+					"owner_hero_id": 1,
+					"_comments": "One by One"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "54001b",
+					"owner_hero_id": 1,
+					"_comments": "Bucky Barnes",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "54002",
+					"owner_hero_id": 1,
+					"_comments": "Cybernetic Arm"
+				},
+				{
+					"card": "54020",
+					"owner_hero_id": 1,
+					"_comments": "S.H.I.E.L.D. Sidearm"
+				},
+				{
+					"card": "54004",
+					"owner_hero_id": 1,
+					"_comments": "Arm Block"
+				},
+				{
+					"card": "54014",
+					"owner_hero_id": 1,
+					"_comments": "Firepower"
+				},
+				{
+					"card": "54024",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "54006",
+					"owner_hero_id": 1,
+					"_comments": "Electrical Discharge"
+				}
+			]
+		}
+	}
+}

@@ -378,8 +378,8 @@
 	"Armor Up": {
 		"interrupt": {
 			"event_name": [
-				"commit_scheme",
-				"enemy_attack"
+				"enemy_initiates_attack",
+				"enemy_initiates_scheme"
 			],
 			"trigger": "villain",
 			"is_optional_hand": true,
@@ -605,6 +605,13 @@
 	"Bait and Switch": {
 		"manual": {
 			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},			
 				{
 					"name": "villain_attacks_you"
 				},
@@ -1126,7 +1133,7 @@
 			]
 		},
 		"card_attached": {
-			"subject": "self",
+			"trigger": "self",
 			"board": [
 				{
 					"name": "mod_tokens",
@@ -1478,7 +1485,7 @@
 			"all": [
 				{
 					"name": "exhaust_card",
-					"subject": "my_identity"
+					"subject": "current_hero_target"
 				}
 			]
 		}
@@ -3158,13 +3165,14 @@
 		}
 	},
 	"Mutant Protectors": {
-		"interrupt_enemy_attack": {
+		"interrupt_enemy_initiates_attack": {
 			"condition_hand": {
 				"func_name": "identity_has_trait",
 				"func_params": {
 					"trait": "x-men"
 				}
 			},
+			"is_optional_hand": true,
 			"hand": [
 				{
 					"name": "constraints",
@@ -3177,8 +3185,10 @@
 					"name": "move_card_to_board",
 					"grid_name": "allies_my_hero",
 					"subject": "tutor",
+					"src_container": "hand",
 					"subject_count": "all",
 					"needs_selection": true,
+					"selection_count": 1,
 					"is_cost": true,
 					"filter_state_tutor": [
 						{
@@ -3258,7 +3268,7 @@
 		}
 	},
 	"Mutants at the Mall": {
-		"interrupt_card_defeated": {
+		"interrupt_card_dies": {
 			"trigger": "self",
 			"all": [
 				{
@@ -3446,6 +3456,25 @@
 					"name": "flip_doublesided_card",
 					"subject": "self"
 				}
+			]
+		},
+		"post_setup": {
+			"all": [
+				{
+					"_comments": "back side of cards end up in the villain's pile at setup,I found the easiest way to deal with it is to move them to set_aside",
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck_villain",
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Jubilee - Jubilation Lee"
+							}
+						},
+					]
+				},
 			]
 		}
 	},
@@ -3996,6 +4025,7 @@
 					"name": "move_card_to_container",
 					"subject": "tutor",
 					"src_container": "deck",
+					"dest_container": "hand",
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -4118,7 +4148,7 @@
 						"name": "mod_tokens",
 						"token_name": "confused",
 						"modification": 1,
-						"subject": "Villain"
+						"subject": "villain"
 					}
 				],
 				"Stun a Minion": [
@@ -4571,6 +4601,7 @@
 					"name": "deal_damage",
 					"amount": 1,
 					"subject": "boardseek",
+					"subject_count": "all",
 					"filter_state_seek": [
 						{
 							"filter_properties": {
@@ -5111,7 +5142,11 @@
 								"Name": "Energy Barrier"
 							}
 						}
-					]
+					],
+					"tags": [
+						"disable_attach_trigger"
+					],
+					"_comments": "disable_attach_trigger in tags prevents the attachment from moving somewhere else as it comes into play"					
 				}
 			]
 		},
@@ -5164,7 +5199,7 @@
 									"filter_state_attachment": [
 										{
 											"filter_properties": {
-												"Name": "Targeted For Elimination"
+												"Name": "Targeted for Elimination"
 											}
 										}
 									]
@@ -5190,7 +5225,7 @@
 							"filter_state_tutor": [
 								{
 									"filter_properties": {
-										"Name": "Targeted For Elimination"
+										"Name": "Targeted for Elimination"
 									}
 								}
 							]
@@ -5939,7 +5974,7 @@
 							"subject": "boardseek",
 							"filter_state_seek": [
 								{
-									"filter_group": "enemies_my_hero",
+									"filter_group": "group_enemies_my_hero",
 									"filter_properties": {
 										"trait_sentinel": 1,
 										"comparison": "ge"

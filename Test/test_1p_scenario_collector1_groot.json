@@ -1,0 +1,532 @@
+{
+	"_comments": "Scenario Start Test : Collector 1 vs Groot",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Groot",
+					"deck_id": 8441
+				}
+			}
+		],
+		"scenario": {
+			"name": "The Grand Collection"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 8441,
+					"hero": "16001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "16076",
+					"owner_hero_id": 0,
+					"_comments": "Inconspicuous Box"
+				},
+				{
+					"card": "16129",
+					"owner_hero_id": 0,
+					"_comments": "Philosopher's Stone"
+				},
+				{
+					"card": "16130",
+					"owner_hero_id": 0,
+					"_comments": "Crystal Ball"
+				},
+				{
+					"card": "16079",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "16074",
+					"owner_hero_id": 0,
+					"_comments": "Biogram Image"
+				},
+				{
+					"card": "16126",
+					"owner_hero_id": 0,
+					"_comments": "Vandarian Power Stone"
+				},
+				{
+					"card": "16136",
+					"owner_hero_id": 0,
+					"_comments": "Servant Bot"
+				},
+				{
+					"card": "16128",
+					"owner_hero_id": 0,
+					"_comments": "Magical Teapot"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "16125",
+					"owner_hero_id": 0,
+					"_comments": "The Poison"
+				},
+				{
+					"card": "16136",
+					"owner_hero_id": 0,
+					"_comments": "Servant Bot"
+				},
+				{
+					"card": "16077",
+					"owner_hero_id": 0,
+					"_comments": "View the Cosmos"
+				},
+				{
+					"card": "16076",
+					"owner_hero_id": 0,
+					"_comments": "Inconspicuous Box"
+				},
+				{
+					"card": "16135",
+					"owner_hero_id": 0,
+					"_comments": "Psionic Ghost"
+				},
+				{
+					"card": "16078",
+					"owner_hero_id": 0,
+					"_comments": "Stay Awhile"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "16136",
+					"owner_hero_id": 0,
+					"_comments": "Servant Bot"
+				},
+				{
+					"card": "16135",
+					"owner_hero_id": 0,
+					"_comments": "Psionic Ghost"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "16127",
+					"owner_hero_id": 0,
+					"_comments": "Hujahdarian Monarch Egg"
+				},
+				{
+					"card": "16077",
+					"owner_hero_id": 0,
+					"_comments": "View the Cosmos"
+				},
+				{
+					"card": "16135",
+					"owner_hero_id": 0,
+					"_comments": "Psionic Ghost"
+				},
+				{
+					"card": "16122",
+					"owner_hero_id": 0,
+					"_comments": "Cloak of Hercules"
+				},
+				{
+					"card": "16137",
+					"owner_hero_id": 0,
+					"_comments": "Starshark"
+				},
+				{
+					"card": "16075",
+					"owner_hero_id": 0,
+					"_comments": "Monarch Starstalker"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "16123",
+					"owner_hero_id": 0,
+					"_comments": "Obedience Potion"
+				},
+				{
+					"card": "16124",
+					"owner_hero_id": 0,
+					"_comments": "The Beyonder's Blazer"
+				},
+				{
+					"card": "16135",
+					"owner_hero_id": 0,
+					"_comments": "Psionic Ghost"
+				},
+				{
+					"card": "16137",
+					"owner_hero_id": 0,
+					"_comments": "Starshark"
+				},
+				{
+					"card": "16025",
+					"owner_hero_id": 0,
+					"_comments": "Wilt"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "16078",
+					"owner_hero_id": 0,
+					"_comments": "Stay Awhile"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				}
+			],
+			"villain": [
+				{
+					"card": "16070",
+					"owner_hero_id": 0,
+					"_comments": "Collector - 1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "16073b",
+					"owner_hero_id": 0,
+					"_comments": "The Grand Collection - 1B",
+					"tokens": {
+						"__player_token1": 1,
+						"__player_token2": 1,
+						"__player_token3": 1,
+						"__player_token4": 1,
+						"threat": 4,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "16001a",
+					"owner_hero_id": 1,
+					"_comments": "Groot"
+				},
+				{
+					"card": "16026",
+					"owner_hero_id": 0,
+					"_comments": "Blazing Inferno"
+				},
+				{
+					"card": "16027",
+					"owner_hero_id": 0,
+					"_comments": "Furnax"
+				},
+				{
+					"card": "16028",
+					"owner_hero_id": 0,
+					"_comments": "Fan the Flames"
+				},
+				{
+					"card": "16028",
+					"owner_hero_id": 0,
+					"_comments": "Fan the Flames"
+				},
+				{
+					"card": "16028",
+					"owner_hero_id": 0,
+					"_comments": "Fan the Flames"
+				},
+				{
+					"card": "16071",
+					"owner_hero_id": 0,
+					"_comments": "Collector - 2"
+				},
+				{
+					"card": "16072",
+					"owner_hero_id": 0,
+					"_comments": "Collector - 3"
+				},
+				{
+					"card": "16073a",
+					"owner_hero_id": 0,
+					"_comments": "The Grand Collection - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"the_collection": [
+				{
+					"card": "16009",
+					"owner_hero_id": 1,
+					"_comments": "Lashing Vines"
+				}
+			],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "16020",
+					"owner_hero_id": 1,
+					"_comments": "Flora and Fauna"
+				},
+				{
+					"card": "16017",
+					"owner_hero_id": 1,
+					"_comments": "Hard to Ignore"
+				},
+				{
+					"card": "16012",
+					"owner_hero_id": 1,
+					"_comments": "Starhawk - Stakar Ogord"
+				},
+				{
+					"card": "16005",
+					"owner_hero_id": 1,
+					"_comments": "Root Stomp"
+				},
+				{
+					"card": "16014",
+					"owner_hero_id": 1,
+					"_comments": "Fighting Fit"
+				},
+				{
+					"card": "16016",
+					"owner_hero_id": 1,
+					"_comments": "Dauntless"
+				},
+				{
+					"card": "16004",
+					"owner_hero_id": 1,
+					"_comments": "\"I. AM. GROOT!\""
+				},
+				{
+					"card": "16024",
+					"owner_hero_id": 1,
+					"_comments": "Deft Focus"
+				},
+				{
+					"card": "16002",
+					"owner_hero_id": 1,
+					"_comments": "Fruition"
+				},
+				{
+					"card": "16008",
+					"owner_hero_id": 1,
+					"_comments": "Entangling Vines"
+				},
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "01088",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "16003",
+					"owner_hero_id": 1,
+					"_comments": "\"I am Groot\""
+				},
+				{
+					"card": "16002",
+					"owner_hero_id": 1,
+					"_comments": "Fruition"
+				},
+				{
+					"card": "16004",
+					"owner_hero_id": 1,
+					"_comments": "\"I. AM. GROOT!\""
+				},
+				{
+					"card": "16024",
+					"owner_hero_id": 1,
+					"_comments": "Deft Focus"
+				},
+				{
+					"card": "16016",
+					"owner_hero_id": 1,
+					"_comments": "Dauntless"
+				},
+				{
+					"card": "16003",
+					"owner_hero_id": 1,
+					"_comments": "\"I am Groot\""
+				},
+				{
+					"card": "09015",
+					"owner_hero_id": 1,
+					"_comments": "Desperate Defense"
+				},
+				{
+					"card": "16017",
+					"owner_hero_id": 1,
+					"_comments": "Hard to Ignore"
+				},
+				{
+					"card": "16006",
+					"owner_hero_id": 1,
+					"_comments": "\"We Are Groot\""
+				},
+				{
+					"card": "16014",
+					"owner_hero_id": 1,
+					"_comments": "Fighting Fit"
+				},
+				{
+					"card": "16019",
+					"owner_hero_id": 1,
+					"_comments": "Rocket Raccoon"
+				},
+				{
+					"card": "16014",
+					"owner_hero_id": 1,
+					"_comments": "Fighting Fit"
+				},
+				{
+					"card": "16010",
+					"owner_hero_id": 1,
+					"_comments": "Vine Shield"
+				},
+				{
+					"card": "01089",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "09015",
+					"owner_hero_id": 1,
+					"_comments": "Desperate Defense"
+				},
+				{
+					"card": "16016",
+					"owner_hero_id": 1,
+					"_comments": "Dauntless"
+				},
+				{
+					"card": "16011",
+					"owner_hero_id": 1,
+					"_comments": "Vine Spikes"
+				},
+				{
+					"card": "16007",
+					"owner_hero_id": 1,
+					"_comments": "Fertile Ground"
+				},
+				{
+					"card": "16005",
+					"owner_hero_id": 1,
+					"_comments": "Root Stomp"
+				},
+				{
+					"card": "01082",
+					"owner_hero_id": 1,
+					"_comments": "Indomitable"
+				},
+				{
+					"card": "01079",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Protection"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "16001b",
+					"owner_hero_id": 1,
+					"_comments": "Groot",
+					"tokens": {
+						"_growth_spurt": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "01079",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Protection"
+				},
+				{
+					"card": "16017",
+					"owner_hero_id": 1,
+					"_comments": "Hard to Ignore"
+				},
+				{
+					"card": "01082",
+					"owner_hero_id": 1,
+					"_comments": "Indomitable"
+				},
+				{
+					"card": "16005",
+					"owner_hero_id": 1,
+					"_comments": "Root Stomp"
+				},
+				{
+					"card": "16024",
+					"owner_hero_id": 1,
+					"_comments": "Deft Focus"
+				},
+				{
+					"card": "09015",
+					"owner_hero_id": 1,
+					"_comments": "Desperate Defense"
+				}
+			]
+		}
+	}
+}

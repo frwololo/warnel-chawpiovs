@@ -1026,15 +1026,21 @@
 					"name": "prevent",
 					"amount": 3,
 					"subject": "interrupted_event"
-				},
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "self",
+			"condition_all": {
+				"func_name": "paid_with_includes",
+				"func_params": {
+					"energy": 1
+				}
+			},
+			"all": [
 				{
 					"name": "deal_damage",
-					"amount": {
-						"func_name": "paid_with_includes",
-						"func_params": {
-							"energy": 1
-						}
-					},
+					"amount": 1,
 					"subject": "target",
 					"needs_subject": true,
 					"filter_state_subject": [

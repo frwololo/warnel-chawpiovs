@@ -93,14 +93,7 @@ func load_sfx_collection():
 			if filters.begins_with("trait_"):
 				_sfx_collection_traits[filters] = 1
 		sfx_collection[basename] = {"filename": file}
-#		var components = basename.split("-")
-#		var current_node = sfx_collection
-#		for component in components:
-#			if !current_node.has(component):
-#				current_node[component] = {"filename": file}
-#			current_node = current_node[component]
-			
-	var _tmp = 1
+
 
 func get_available_player():
 	for player in sfx_players:

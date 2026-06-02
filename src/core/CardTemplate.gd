@@ -1644,8 +1644,8 @@ func _set_target_position(new_target_position):
 	_target_position = new_target_position
 
 func _set_target_rotation(new_target_rotation):
-	if self.canonical_name == "Charge":
-			var _tmp =1
+#	if self.canonical_name == "Shafdowcat - Kitty Pryde":
+#			var _tmp =1
 	_target_rotation = new_target_rotation
 
 # Executes the tasks defined in the card's scripts in order.

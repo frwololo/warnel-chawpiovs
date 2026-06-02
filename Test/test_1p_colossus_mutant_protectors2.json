@@ -1,0 +1,153 @@
+{
+	"_comments": "Bug: Mutant Protectors doesn't play",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Colossus"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Colossus",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [],
+			"discard1": [],
+			"hand1": [
+				{
+					"card": "Mutant Protectors"
+				},
+				{
+					"card": "Combat Training"
+				},
+				{
+					"card": "Shadowcat - Kitty Pryde"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Mutant Protectors"
+		},
+		{
+			"type": "select",
+			"value": "Combat Training"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Colossus"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				}			
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+
+
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Colossus",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [
+							{
+					"card": "Hydra Mercenary"
+				},
+			],
+			"discard1": [
+				{
+					"card": "Combat Training"
+				},			
+				{
+					"card": "Mutant Protectors"
+				},
+
+
+			],
+			"allies1": [
+							{
+					"card": "Shadowcat - Kitty Pryde",
+					"tokens": {"damage": 2},
+					"exhausted": true
+				}
+			]
+		}
+	}
+}

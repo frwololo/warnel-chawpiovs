@@ -1,0 +1,525 @@
+{
+	"_comments": "Scenario Start Test : Klaw vs Ant-Man",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ant-Man",
+					"deck_id": 5074
+				}
+			}
+		],
+		"scenario": {
+			"name": "Underground Distribution"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 5074,
+					"hero": "12001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "01119",
+					"owner_hero_id": 0,
+					"_comments": "Solid-Sound Body"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "01130",
+					"owner_hero_id": 0,
+					"_comments": "Whirlwind"
+				},
+				{
+					"card": "01123",
+					"owner_hero_id": 0,
+					"_comments": "Sonic Boom"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "01120",
+					"owner_hero_id": 0,
+					"_comments": "Armored Guard"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "12025",
+					"owner_hero_id": 0,
+					"_comments": "Care for Cassie"
+				},
+				{
+					"card": "01121",
+					"owner_hero_id": 0,
+					"_comments": "Weapons Runner"
+				},
+				{
+					"card": "01127",
+					"owner_hero_id": 0,
+					"_comments": "The \"Immortal\" Klaw"
+				},
+				{
+					"card": "01124",
+					"owner_hero_id": 0,
+					"_comments": "Sound Manipulation"
+				},
+				{
+					"card": "01133",
+					"owner_hero_id": 0,
+					"_comments": "Masters of Mayhem"
+				},
+				{
+					"card": "01120",
+					"owner_hero_id": 0,
+					"_comments": "Armored Guard"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "01122",
+					"owner_hero_id": 0,
+					"_comments": "Klaw's Vengeance"
+				},
+				{
+					"card": "01133",
+					"owner_hero_id": 0,
+					"_comments": "Masters of Mayhem"
+				},
+				{
+					"card": "01126",
+					"owner_hero_id": 0,
+					"_comments": "Illegal Arms Factory"
+				},
+				{
+					"card": "01121",
+					"owner_hero_id": 0,
+					"_comments": "Weapons Runner"
+				},
+				{
+					"card": "01120",
+					"owner_hero_id": 0,
+					"_comments": "Armored Guard"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "01123",
+					"owner_hero_id": 0,
+					"_comments": "Sonic Boom"
+				},
+				{
+					"card": "01122",
+					"owner_hero_id": 0,
+					"_comments": "Klaw's Vengeance"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "01128",
+					"owner_hero_id": 0,
+					"_comments": "The Masters of Evil"
+				},
+				{
+					"card": "01132",
+					"owner_hero_id": 0,
+					"_comments": "Melter"
+				},
+				{
+					"card": "01124",
+					"owner_hero_id": 0,
+					"_comments": "Sound Manipulation"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "01118",
+					"owner_hero_id": 0,
+					"_comments": "Sonic Converter"
+				},
+				{
+					"card": "01129",
+					"owner_hero_id": 0,
+					"_comments": "Radioactive Man"
+				}
+			],
+			"villain": [
+				{
+					"card": "01113",
+					"owner_hero_id": 0,
+					"_comments": "Klaw - 1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116b",
+					"owner_hero_id": 0,
+					"_comments": "Underground Distribution - 1B",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				},
+				{
+					"card": "01125",
+					"owner_hero_id": 0,
+					"_comments": "Defense Network",
+					"tokens": {
+						"threat": 3,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "12001c",
+					"owner_hero_id": 1,
+					"_comments": "Ant-Man"
+				},
+				{
+					"card": "12001a",
+					"owner_hero_id": 1,
+					"_comments": "Ant-Man"
+				},
+				{
+					"card": "12026",
+					"owner_hero_id": 0,
+					"_comments": "Tech Theft"
+				},
+				{
+					"card": "12027",
+					"owner_hero_id": 0,
+					"_comments": "Yellowjacket"
+				},
+				{
+					"card": "12028",
+					"owner_hero_id": 0,
+					"_comments": "Size Increase"
+				},
+				{
+					"card": "12028",
+					"owner_hero_id": 0,
+					"_comments": "Size Increase"
+				},
+				{
+					"card": "12029",
+					"owner_hero_id": 0,
+					"_comments": "Yellowjacket's Plan"
+				},
+				{
+					"card": "01114",
+					"owner_hero_id": 0,
+					"_comments": "Klaw - 2"
+				},
+				{
+					"card": "01115",
+					"owner_hero_id": 0,
+					"_comments": "Klaw - 3"
+				},
+				{
+					"card": "01117a",
+					"owner_hero_id": 0,
+					"_comments": "Secret Rendezvous - 2A"
+				},
+				{
+					"card": "01117b",
+					"owner_hero_id": 0,
+					"_comments": "Secret Rendezvous - 2B"
+				},
+				{
+					"card": "01116a",
+					"owner_hero_id": 0,
+					"_comments": "Underground Distribution - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "12015",
+					"owner_hero_id": 1,
+					"_comments": "Call for Aid"
+				},
+				{
+					"card": "12002",
+					"owner_hero_id": 1,
+					"_comments": "Wasp - Nadia Van Dyne"
+				},
+				{
+					"card": "12020",
+					"owner_hero_id": 1,
+					"_comments": "Swarm Tactics"
+				},
+				{
+					"card": "12004",
+					"owner_hero_id": 1,
+					"_comments": "Hive Mind"
+				},
+				{
+					"card": "12006",
+					"owner_hero_id": 1,
+					"_comments": "Pym Particles"
+				},
+				{
+					"card": "12003",
+					"owner_hero_id": 1,
+					"_comments": "Giant Stomp"
+				},
+				{
+					"card": "12007",
+					"owner_hero_id": 1,
+					"_comments": "Army of Ants"
+				},
+				{
+					"card": "12018",
+					"owner_hero_id": 1,
+					"_comments": "Reinforced Suit"
+				},
+				{
+					"card": "01088",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "12017",
+					"owner_hero_id": 1,
+					"_comments": "Power Gloves"
+				},
+				{
+					"card": "12012",
+					"owner_hero_id": 1,
+					"_comments": "Giant-Man"
+				},
+				{
+					"card": "12024",
+					"owner_hero_id": 1,
+					"_comments": "Team-Building Exercise"
+				},
+				{
+					"card": "12016",
+					"owner_hero_id": 1,
+					"_comments": "Moxie"
+				},
+				{
+					"card": "12008",
+					"owner_hero_id": 1,
+					"_comments": "Ant-Man's Helmet"
+				},
+				{
+					"card": "12016",
+					"owner_hero_id": 1,
+					"_comments": "Moxie"
+				},
+				{
+					"card": "12011",
+					"owner_hero_id": 1,
+					"_comments": "Ant-Man - Hank Pym"
+				},
+				{
+					"card": "12007",
+					"owner_hero_id": 1,
+					"_comments": "Army of Ants"
+				},
+				{
+					"card": "12009",
+					"owner_hero_id": 1,
+					"_comments": "Giant Strength"
+				},
+				{
+					"card": "12005",
+					"owner_hero_id": 1,
+					"_comments": "Resize"
+				},
+				{
+					"card": "12010",
+					"owner_hero_id": 1,
+					"_comments": "Wrist Gauntlets"
+				},
+				{
+					"card": "12024",
+					"owner_hero_id": 1,
+					"_comments": "Team-Building Exercise"
+				},
+				{
+					"card": "12015",
+					"owner_hero_id": 1,
+					"_comments": "Call for Aid"
+				},
+				{
+					"card": "12018",
+					"owner_hero_id": 1,
+					"_comments": "Reinforced Suit"
+				},
+				{
+					"card": "12018",
+					"owner_hero_id": 1,
+					"_comments": "Reinforced Suit"
+				},
+				{
+					"card": "01086",
+					"owner_hero_id": 1,
+					"_comments": "First Aid"
+				},
+				{
+					"card": "12014",
+					"owner_hero_id": 1,
+					"_comments": "Stinger - Cassie Lang"
+				},
+				{
+					"card": "12005",
+					"owner_hero_id": 1,
+					"_comments": "Resize"
+				},
+				{
+					"card": "12007",
+					"owner_hero_id": 1,
+					"_comments": "Army of Ants"
+				},
+				{
+					"card": "12017",
+					"owner_hero_id": 1,
+					"_comments": "Power Gloves"
+				},
+				{
+					"card": "12015",
+					"owner_hero_id": 1,
+					"_comments": "Call for Aid"
+				},
+				{
+					"card": "12016",
+					"owner_hero_id": 1,
+					"_comments": "Moxie"
+				},
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "12013",
+					"owner_hero_id": 1,
+					"_comments": "Ronin"
+				},
+				{
+					"card": "12006",
+					"owner_hero_id": 1,
+					"_comments": "Pym Particles"
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "01131",
+					"owner_hero_id": 0,
+					"_comments": "Tiger Shark"
+				}
+			],
+			"identity1": [
+				{
+					"card": "12001b",
+					"owner_hero_id": 1,
+					"_comments": "Scott Lang",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "01086",
+					"owner_hero_id": 1,
+					"_comments": "First Aid"
+				},
+				{
+					"card": "12017",
+					"owner_hero_id": 1,
+					"_comments": "Power Gloves"
+				},
+				{
+					"card": "12009",
+					"owner_hero_id": 1,
+					"_comments": "Giant Strength"
+				},
+				{
+					"card": "12003",
+					"owner_hero_id": 1,
+					"_comments": "Giant Stomp"
+				},
+				{
+					"card": "12024",
+					"owner_hero_id": 1,
+					"_comments": "Team-Building Exercise"
+				},
+				{
+					"card": "01089",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				}
+			]
+		}
+	}
+}

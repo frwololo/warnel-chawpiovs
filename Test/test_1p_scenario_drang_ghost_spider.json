@@ -1,0 +1,534 @@
+{
+	"_comments": "Scenario Start Test : Drang vs Ghost Spider",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ghost-Spider",
+					"deck_id": 18128
+				}
+			}
+		],
+		"scenario": {
+			"name": "Terrestrial Invasion"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 18128,
+					"hero": "27001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "16147",
+					"owner_hero_id": 0,
+					"_comments": "Power Siphon"
+				},
+				{
+					"card": "16065",
+					"owner_hero_id": 0,
+					"_comments": "Badoon Engineer"
+				},
+				{
+					"card": "16144",
+					"owner_hero_id": 0,
+					"_comments": "Cannonade"
+				},
+				{
+					"card": "16118",
+					"owner_hero_id": 0,
+					"_comments": "Badoon Grunt"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "16117",
+					"owner_hero_id": 0,
+					"_comments": "Badoon Assassin"
+				},
+				{
+					"card": "16148",
+					"owner_hero_id": 0,
+					"_comments": "Special Delivery"
+				},
+				{
+					"card": "16065",
+					"owner_hero_id": 0,
+					"_comments": "Badoon Engineer"
+				},
+				{
+					"card": "16146",
+					"owner_hero_id": 0,
+					"_comments": "Hull Breach"
+				},
+				{
+					"card": "16118",
+					"owner_hero_id": 0,
+					"_comments": "Badoon Grunt"
+				},
+				{
+					"card": "16068",
+					"owner_hero_id": 0,
+					"_comments": "Oppressive Armada"
+				},
+				{
+					"card": "16118",
+					"owner_hero_id": 0,
+					"_comments": "Badoon Grunt"
+				},
+				{
+					"card": "16145",
+					"owner_hero_id": 0,
+					"_comments": "Blind Side"
+				},
+				{
+					"card": "16120",
+					"owner_hero_id": 0,
+					"_comments": "Badoon Sentry"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "16067",
+					"owner_hero_id": 0,
+					"_comments": "Bombardment"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "16121",
+					"owner_hero_id": 0,
+					"_comments": "Badoon Warlord"
+				},
+				{
+					"card": "27025",
+					"owner_hero_id": 0,
+					"_comments": "Worried Father"
+				},
+				{
+					"card": "16119",
+					"owner_hero_id": 0,
+					"_comments": "Badoon Lieutenant"
+				},
+				{
+					"card": "16120",
+					"owner_hero_id": 0,
+					"_comments": "Badoon Sentry"
+				},
+				{
+					"card": "16121",
+					"owner_hero_id": 0,
+					"_comments": "Badoon Warlord"
+				},
+				{
+					"card": "16064",
+					"owner_hero_id": 0,
+					"_comments": "Drang's Spear"
+				},
+				{
+					"card": "16066",
+					"owner_hero_id": 0,
+					"_comments": "Blockade"
+				},
+				{
+					"card": "16117",
+					"owner_hero_id": 0,
+					"_comments": "Badoon Assassin"
+				},
+				{
+					"card": "16069",
+					"owner_hero_id": 0,
+					"_comments": "Spatial Positioning"
+				},
+				{
+					"card": "16143",
+					"owner_hero_id": 0,
+					"_comments": "Rogue Vessel"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				}
+			],
+			"villain": [
+				{
+					"card": "16058",
+					"owner_hero_id": 0,
+					"_comments": "Drang - 1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "16061b",
+					"owner_hero_id": 0,
+					"_comments": "Terrestrial Invasion - 1B",
+					"tokens": {
+						"threat": 2,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "16063",
+					"owner_hero_id": 0,
+					"_comments": "Badoon Ship",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "27001a",
+					"owner_hero_id": 1,
+					"_comments": "Ghost-Spider"
+				},
+				{
+					"card": "27026",
+					"owner_hero_id": 0,
+					"_comments": "Regenerative Research"
+				},
+				{
+					"card": "27027",
+					"owner_hero_id": 0,
+					"_comments": "The Lizard"
+				},
+				{
+					"card": "27028",
+					"owner_hero_id": 0,
+					"_comments": "Experimental Injection"
+				},
+				{
+					"card": "27029",
+					"owner_hero_id": 0,
+					"_comments": "In Cold Blood"
+				},
+				{
+					"card": "27029",
+					"owner_hero_id": 0,
+					"_comments": "In Cold Blood"
+				},
+				{
+					"card": "16059",
+					"owner_hero_id": 0,
+					"_comments": "Drang - 2"
+				},
+				{
+					"card": "16060",
+					"owner_hero_id": 0,
+					"_comments": "Drang - 3"
+				},
+				{
+					"card": "16062a",
+					"owner_hero_id": 0,
+					"_comments": "Protect the Planet - 2A"
+				},
+				{
+					"card": "16062b",
+					"owner_hero_id": 0,
+					"_comments": "Protect the Planet - 2B"
+				},
+				{
+					"card": "16061a",
+					"owner_hero_id": 0,
+					"_comments": "Terrestrial Invasion - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "27023",
+					"owner_hero_id": 1,
+					"_comments": "Web of Life and Destiny"
+				},
+				{
+					"card": "27020",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "27015",
+					"owner_hero_id": 1,
+					"_comments": "Return the Favor"
+				},
+				{
+					"card": "27012",
+					"owner_hero_id": 1,
+					"_comments": "Spider-UK - Billy Braddock"
+				},
+				{
+					"card": "27015",
+					"owner_hero_id": 1,
+					"_comments": "Return the Favor"
+				},
+				{
+					"card": "27016",
+					"owner_hero_id": 1,
+					"_comments": "What Doesn't Kill Me"
+				},
+				{
+					"card": "27010",
+					"owner_hero_id": 1,
+					"_comments": "Silk - Cindy Moon"
+				},
+				{
+					"card": "27024",
+					"owner_hero_id": 1,
+					"_comments": "Plan B"
+				},
+				{
+					"card": "27006",
+					"owner_hero_id": 1,
+					"_comments": "Web Binding"
+				},
+				{
+					"card": "27014",
+					"owner_hero_id": 1,
+					"_comments": "Jump Flip"
+				},
+				{
+					"card": "27004",
+					"owner_hero_id": 1,
+					"_comments": "Phantom Flip"
+				},
+				{
+					"card": "27004",
+					"owner_hero_id": 1,
+					"_comments": "Phantom Flip"
+				},
+				{
+					"card": "27009",
+					"owner_hero_id": 1,
+					"_comments": "Web-Bracelet"
+				},
+				{
+					"card": "27007",
+					"owner_hero_id": 1,
+					"_comments": "George Stacy"
+				},
+				{
+					"card": "27009",
+					"owner_hero_id": 1,
+					"_comments": "Web-Bracelet"
+				},
+				{
+					"card": "27024",
+					"owner_hero_id": 1,
+					"_comments": "Plan B"
+				},
+				{
+					"card": "27017",
+					"owner_hero_id": 1,
+					"_comments": "Spider-Man - Hobie Brown"
+				},
+				{
+					"card": "27008",
+					"owner_hero_id": 1,
+					"_comments": "Ticket to the Multiverse"
+				},
+				{
+					"card": "27006",
+					"owner_hero_id": 1,
+					"_comments": "Web Binding"
+				},
+				{
+					"card": "27021",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "27013",
+					"owner_hero_id": 1,
+					"_comments": "Bait and Switch"
+				},
+				{
+					"card": "27016",
+					"owner_hero_id": 1,
+					"_comments": "What Doesn't Kill Me"
+				},
+				{
+					"card": "27022",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "27016",
+					"owner_hero_id": 1,
+					"_comments": "What Doesn't Kill Me"
+				},
+				{
+					"card": "27014",
+					"owner_hero_id": 1,
+					"_comments": "Jump Flip"
+				},
+				{
+					"card": "27004",
+					"owner_hero_id": 1,
+					"_comments": "Phantom Flip"
+				},
+				{
+					"card": "27005",
+					"owner_hero_id": 1,
+					"_comments": "Pirouette and Punch"
+				},
+				{
+					"card": "27018",
+					"owner_hero_id": 1,
+					"_comments": "Across the Spider-Verse"
+				},
+				{
+					"card": "27015",
+					"owner_hero_id": 1,
+					"_comments": "Return the Favor"
+				},
+				{
+					"card": "27013",
+					"owner_hero_id": 1,
+					"_comments": "Bait and Switch"
+				},
+				{
+					"card": "27011",
+					"owner_hero_id": 1,
+					"_comments": "Spider-Man - Miles Morales"
+				},
+				{
+					"card": "27002",
+					"owner_hero_id": 1,
+					"_comments": "Ghost Kick"
+				},
+				{
+					"card": "27002",
+					"owner_hero_id": 1,
+					"_comments": "Ghost Kick"
+				},
+				{
+					"card": "27014",
+					"owner_hero_id": 1,
+					"_comments": "Jump Flip"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "27001b",
+					"owner_hero_id": 1,
+					"_comments": "Gwen Stacy",
+					"tokens": {
+						"_gwen_action": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "16142",
+					"owner_hero_id": 0,
+					"_comments": "Milano",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "27002",
+					"owner_hero_id": 1,
+					"_comments": "Ghost Kick"
+				},
+				{
+					"card": "27019",
+					"owner_hero_id": 1,
+					"_comments": "Young Love"
+				},
+				{
+					"card": "27003",
+					"owner_hero_id": 1,
+					"_comments": "Parental Guidance"
+				},
+				{
+					"card": "27013",
+					"owner_hero_id": 1,
+					"_comments": "Bait and Switch"
+				},
+				{
+					"card": "27024",
+					"owner_hero_id": 1,
+					"_comments": "Plan B"
+				},
+				{
+					"card": "27005",
+					"owner_hero_id": 1,
+					"_comments": "Pirouette and Punch"
+				}
+			]
+		}
+	}
+}

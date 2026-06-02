@@ -1,0 +1,573 @@
+{
+	"_comments": "Scenario Start Test : Zola vs Colossus",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Colossus",
+					"deck_id": 27026
+				}
+			}
+		],
+		"scenario": {
+			"name": "The Island of Dr. Zola"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 27026,
+					"hero": "32001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "01153",
+					"owner_hero_id": 0,
+					"_comments": "Concussion Blasters"
+				},
+				{
+					"card": "04120",
+					"owner_hero_id": 0,
+					"_comments": "Mind Ray"
+				},
+				{
+					"card": "04116",
+					"owner_hero_id": 0,
+					"_comments": "Berserk Mutate"
+				},
+				{
+					"card": "32025",
+					"owner_hero_id": 0,
+					"_comments": "Homesick"
+				},
+				{
+					"card": "04119",
+					"owner_hero_id": 0,
+					"_comments": "Neurological Implants"
+				},
+				{
+					"card": "04117",
+					"owner_hero_id": 0,
+					"_comments": "Defensive Programming"
+				},
+				{
+					"card": "04118",
+					"owner_hero_id": 0,
+					"_comments": "Pain Inhibitors"
+				},
+				{
+					"card": "04117",
+					"owner_hero_id": 0,
+					"_comments": "Defensive Programming"
+				},
+				{
+					"card": "04116",
+					"owner_hero_id": 0,
+					"_comments": "Berserk Mutate"
+				},
+				{
+					"card": "04121",
+					"owner_hero_id": 0,
+					"_comments": "Technological Enhancements"
+				},
+				{
+					"card": "04120",
+					"owner_hero_id": 0,
+					"_comments": "Mind Ray"
+				},
+				{
+					"card": "01151",
+					"owner_hero_id": 0,
+					"_comments": "Under Attack"
+				},
+				{
+					"card": "01190",
+					"owner_hero_id": 0,
+					"_comments": "Shadow of the Past"
+				},
+				{
+					"card": "04114",
+					"owner_hero_id": 0,
+					"_comments": "Ultimate Bio-Servant"
+				},
+				{
+					"card": "04114",
+					"owner_hero_id": 0,
+					"_comments": "Ultimate Bio-Servant"
+				},
+				{
+					"card": "04115",
+					"owner_hero_id": 0,
+					"_comments": "Zola's Mutate"
+				},
+				{
+					"card": "04115",
+					"owner_hero_id": 0,
+					"_comments": "Zola's Mutate"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "04121",
+					"owner_hero_id": 0,
+					"_comments": "Technological Enhancements"
+				},
+				{
+					"card": "01152",
+					"owner_hero_id": 0,
+					"_comments": "Vibranium Armor"
+				},
+				{
+					"card": "04120",
+					"owner_hero_id": 0,
+					"_comments": "Mind Ray"
+				},
+				{
+					"card": "01189",
+					"owner_hero_id": 0,
+					"_comments": "Gang-Up"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "01154",
+					"owner_hero_id": 0,
+					"_comments": "Concussive Blast"
+				},
+				{
+					"card": "01154",
+					"owner_hero_id": 0,
+					"_comments": "Concussive Blast"
+				},
+				{
+					"card": "04117",
+					"owner_hero_id": 0,
+					"_comments": "Defensive Programming"
+				},
+				{
+					"card": "01187",
+					"owner_hero_id": 0,
+					"_comments": "Assault"
+				},
+				{
+					"card": "04118",
+					"owner_hero_id": 0,
+					"_comments": "Pain Inhibitors"
+				},
+				{
+					"card": "04123",
+					"owner_hero_id": 0,
+					"_comments": "Test Subjects"
+				},
+				{
+					"card": "04123",
+					"owner_hero_id": 0,
+					"_comments": "Test Subjects"
+				},
+				{
+					"card": "04124",
+					"owner_hero_id": 0,
+					"_comments": "Zola's Experiments"
+				},
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				},
+				{
+					"card": "04115",
+					"owner_hero_id": 0,
+					"_comments": "Zola's Mutate"
+				},
+				{
+					"card": "04114",
+					"owner_hero_id": 0,
+					"_comments": "Ultimate Bio-Servant"
+				},
+				{
+					"card": "04116",
+					"owner_hero_id": 0,
+					"_comments": "Berserk Mutate"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "04119",
+					"owner_hero_id": 0,
+					"_comments": "Neurological Implants"
+				}
+			],
+			"villain": [
+				{
+					"card": "04109",
+					"owner_hero_id": 0,
+					"_comments": "Zola - 1",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "04112b",
+					"owner_hero_id": 0,
+					"_comments": "The Island of Dr. Zola - 1B",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				},
+				{
+					"card": "04122",
+					"owner_hero_id": 0,
+					"_comments": "Hydra Prison",
+					"tokens": {
+						"threat": 4,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "32001a",
+					"owner_hero_id": 1,
+					"_comments": "Colossus"
+				},
+				{
+					"card": "32026",
+					"owner_hero_id": 0,
+					"_comments": "Juggernaut"
+				},
+				{
+					"card": "32027",
+					"owner_hero_id": 0,
+					"_comments": "Rampaging Juggernaut"
+				},
+				{
+					"card": "32028",
+					"owner_hero_id": 0,
+					"_comments": "Unstoppable"
+				},
+				{
+					"card": "32028",
+					"owner_hero_id": 0,
+					"_comments": "Unstoppable"
+				},
+				{
+					"card": "32029",
+					"owner_hero_id": 0,
+					"_comments": "Slammed"
+				},
+				{
+					"card": "04110",
+					"owner_hero_id": 0,
+					"_comments": "Zola - 2"
+				},
+				{
+					"card": "04111",
+					"owner_hero_id": 0,
+					"_comments": "Zola - 3"
+				},
+				{
+					"card": "04113a",
+					"owner_hero_id": 0,
+					"_comments": "The Mad Doctor - 2A"
+				},
+				{
+					"card": "04113b",
+					"owner_hero_id": 0,
+					"_comments": "The Mad Doctor - 2B"
+				},
+				{
+					"card": "04112a",
+					"owner_hero_id": 0,
+					"_comments": "The Island of Dr. Zola - 1A"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "32013",
+					"owner_hero_id": 1,
+					"_comments": "Protective Training"
+				},
+				{
+					"card": "32017",
+					"owner_hero_id": 1,
+					"_comments": "Mutant Protectors"
+				},
+				{
+					"card": "32017",
+					"owner_hero_id": 1,
+					"_comments": "Mutant Protectors"
+				},
+				{
+					"card": "32011",
+					"owner_hero_id": 1,
+					"_comments": "Nightcrawler - Kurt Wagner"
+				},
+				{
+					"card": "32016",
+					"owner_hero_id": 1,
+					"_comments": "Perseverance"
+				},
+				{
+					"card": "32010",
+					"owner_hero_id": 1,
+					"_comments": "Armor Up"
+				},
+				{
+					"card": "32016",
+					"owner_hero_id": 1,
+					"_comments": "Perseverance"
+				},
+				{
+					"card": "32012",
+					"owner_hero_id": 1,
+					"_comments": "Polaris - Lorna Dane"
+				},
+				{
+					"card": "32004",
+					"owner_hero_id": 1,
+					"_comments": "Iron Will"
+				},
+				{
+					"card": "32021",
+					"owner_hero_id": 1,
+					"_comments": "Shadow and Steel"
+				},
+				{
+					"card": "32008",
+					"owner_hero_id": 1,
+					"_comments": "Steel Fist"
+				},
+				{
+					"card": "32018",
+					"owner_hero_id": 1,
+					"_comments": "Defensive Energy"
+				},
+				{
+					"card": "32020",
+					"owner_hero_id": 1,
+					"_comments": "The X-Jet"
+				},
+				{
+					"card": "32005",
+					"owner_hero_id": 1,
+					"_comments": "Titanium Muscles"
+				},
+				{
+					"card": "32007",
+					"owner_hero_id": 1,
+					"_comments": "Made of Rage"
+				},
+				{
+					"card": "32014",
+					"owner_hero_id": 1,
+					"_comments": "Powerful Punch"
+				},
+				{
+					"card": "32013",
+					"owner_hero_id": 1,
+					"_comments": "Protective Training"
+				},
+				{
+					"card": "32018",
+					"owner_hero_id": 1,
+					"_comments": "Defensive Energy"
+				},
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "32006",
+					"owner_hero_id": 1,
+					"_comments": "Organic Steel"
+				},
+				{
+					"card": "32010",
+					"owner_hero_id": 1,
+					"_comments": "Armor Up"
+				},
+				{
+					"card": "01089",
+					"owner_hero_id": 1,
+					"_comments": "Genius"
+				},
+				{
+					"card": "32016",
+					"owner_hero_id": 1,
+					"_comments": "Perseverance"
+				},
+				{
+					"card": "32008",
+					"owner_hero_id": 1,
+					"_comments": "Steel Fist"
+				},
+				{
+					"card": "32013",
+					"owner_hero_id": 1,
+					"_comments": "Protective Training"
+				},
+				{
+					"card": "32008",
+					"owner_hero_id": 1,
+					"_comments": "Steel Fist"
+				},
+				{
+					"card": "32009",
+					"owner_hero_id": 1,
+					"_comments": "Bulletproof Protector"
+				},
+				{
+					"card": "32015",
+					"owner_hero_id": 1,
+					"_comments": "Bait and Switch"
+				},
+				{
+					"card": "32014",
+					"owner_hero_id": 1,
+					"_comments": "Powerful Punch"
+				},
+				{
+					"card": "32015",
+					"owner_hero_id": 1,
+					"_comments": "Bait and Switch"
+				},
+				{
+					"card": "32007",
+					"owner_hero_id": 1,
+					"_comments": "Made of Rage"
+				},
+				{
+					"card": "32014",
+					"owner_hero_id": 1,
+					"_comments": "Powerful Punch"
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "04114",
+					"owner_hero_id": 0,
+					"_comments": "Ultimate Bio-Servant",
+					"tokens": {
+						"tough": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "32001b",
+					"owner_hero_id": 1,
+					"_comments": "Piotr Rasputin",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "01088",
+					"owner_hero_id": 1,
+					"_comments": "Energy"
+				},
+				{
+					"card": "32017",
+					"owner_hero_id": 1,
+					"_comments": "Mutant Protectors"
+				},
+				{
+					"card": "32015",
+					"owner_hero_id": 1,
+					"_comments": "Bait and Switch"
+				},
+				{
+					"card": "32009",
+					"owner_hero_id": 1,
+					"_comments": "Bulletproof Protector"
+				},
+				{
+					"card": "32019",
+					"owner_hero_id": 1,
+					"_comments": "Professor X - Charles Xavier"
+				},
+				{
+					"card": "32003",
+					"owner_hero_id": 1,
+					"_comments": "Piotr's Studio"
+				},
+				{
+					"card": "32006",
+					"owner_hero_id": 1,
+					"_comments": "Organic Steel"
+				}
+			],
+			"others": [
+				{
+					"card": "32002",
+					"owner_hero_id": 1,
+					"_comments": "Shadowcat - Kitty Pryde",
+					"tokens": {
+						"__can_change_form": 1
+					},
+					"host": "04122",
+					"facedown_properties": {
+						"_code": "32002",
+						"code": "32002"
+					}
+				}
+			]
+		}
+	}
+}

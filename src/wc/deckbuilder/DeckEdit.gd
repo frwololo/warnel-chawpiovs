@@ -285,7 +285,6 @@ func guess_aspect_from_deck():
 				aspect_filter.select(i)
 				filter_collection()
 				break
-	var _tmp = 1
 
 func can_add_card(card):
 	if !rules_enforced:
@@ -693,9 +692,7 @@ func _build_card_collection():
 		
 	var cost_filter = get_node("%CostFilter")
 	for key in costs:
-		cost_filter.add_item(key)	
-	
-	var _tmp =1						
+		cost_filter.add_item(key)					
 
 func filter_collection(collection:= {}):
 	var aspect_filter:OptionButton = get_node("%AspectFilter")	

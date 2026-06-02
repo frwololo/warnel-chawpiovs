@@ -350,4 +350,3 @@ func mask_image(image:Image, destination, card_key):
 func load_pending_images():
 	for card_key in cfc.card_definitions.keys():	
 		add_card(card_key)
-	var _tmp =1

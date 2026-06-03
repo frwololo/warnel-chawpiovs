@@ -222,9 +222,6 @@
 					"card": "16080a",
 					"owner_hero_id": 0,
 					"_comments": "Collector - A1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"schemes": [
@@ -234,7 +231,6 @@
 					"_comments": "The Missing Milano - 1B",
 					"tokens": {
 						"threat": 7,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -248,7 +244,6 @@
 						"__player_token2": 1,
 						"__player_token3": 1,
 						"__player_token4": 1,
-						"__can_change_form": 1
 					}
 				}
 			],

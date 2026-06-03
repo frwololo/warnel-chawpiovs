@@ -232,9 +232,6 @@
 					"card": "04125",
 					"owner_hero_id": 0,
 					"_comments": "Red Skull - 1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"schemes": [
@@ -242,9 +239,6 @@
 					"card": "04128b",
 					"owner_hero_id": 0,
 					"_comments": "The Rise of Red Skull - 1B",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				},
 				{
 					"card": "04139",
@@ -252,7 +246,6 @@
 					"_comments": "The Red House",
 					"tokens": {
 						"threat": 3,
-						"__can_change_form": 1
 					}
 				}
 			],

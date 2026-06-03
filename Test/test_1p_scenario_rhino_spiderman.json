@@ -212,9 +212,6 @@
 					"card": "01094",
 					"owner_hero_id": 0,
 					"_comments": "Rhino - 1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"schemes": [
@@ -222,9 +219,6 @@
 					"card": "01097b",
 					"owner_hero_id": 0,
 					"_comments": "The Break-In! - 1B",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"villain_misc": [],

@@ -212,9 +212,6 @@
 					"card": "27099",
 					"owner_hero_id": 0,
 					"_comments": "Vulture - 1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				},
 				{
 					"card": "27096",
@@ -222,7 +219,6 @@
 					"_comments": "Hobgoblin - 1",
 					"tokens": {
 						"active_counter": 1,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -233,7 +229,6 @@
 					"_comments": "Sinister Synchronization - 1B",
 					"tokens": {
 						"threat": 2,
-						"__can_change_form": 1
 					}
 				},
 				{
@@ -242,7 +237,6 @@
 					"_comments": "Light at the End",
 					"tokens": {
 						"threat": 20,
-						"__can_change_form": 1
 					}
 				}
 			],

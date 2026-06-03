@@ -207,9 +207,6 @@
 					"card": "21111",
 					"owner_hero_id": 0,
 					"_comments": "Thanos - 1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"schemes": [
@@ -217,9 +214,6 @@
 					"card": "21114b",
 					"owner_hero_id": 0,
 					"_comments": "The Infinity Stones - 1B",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				},
 				{
 					"card": "21116",
@@ -227,7 +221,6 @@
 					"_comments": "Sanctuary",
 					"tokens": {
 						"threat": 4,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -236,9 +229,6 @@
 					"card": "21132",
 					"owner_hero_id": 0,
 					"_comments": "Reality Stone",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"victory_display": [],
@@ -556,9 +546,6 @@
 					"card": "21129",
 					"owner_hero_id": 0,
 					"_comments": "Infinity Gauntlet",
-					"tokens": {
-						"__can_change_form": 1
-					},
 					"host": "21111"
 				}
 			]

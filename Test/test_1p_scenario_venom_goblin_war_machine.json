@@ -232,9 +232,6 @@
 					"card": "27113",
 					"owner_hero_id": 0,
 					"_comments": "Venom Goblin - 1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"schemes": [
@@ -244,7 +241,6 @@
 					"_comments": "Lower Manhattan - B",
 					"tokens": {
 						"threat": 1,
-						"__can_change_form": 1
 					}
 				},
 				{
@@ -254,16 +250,12 @@
 					"tokens": {
 						"glider": 1,
 						"threat": 2,
-						"__can_change_form": 1
 					}
 				},
 				{
 					"card": "27119a",
 					"owner_hero_id": 0,
 					"_comments": "Upper Manhattan - D",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"villain_misc": [
@@ -271,9 +263,6 @@
 					"card": "27116b",
 					"owner_hero_id": 0,
 					"_comments": "Skies Over New York",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"victory_display": [],

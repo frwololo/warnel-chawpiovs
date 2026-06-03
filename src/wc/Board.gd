@@ -519,7 +519,7 @@ func post_cards_moved_load():
 		#draw_cheat_ghost("Combat Training")
 		#draw_cheat_ghost("Jessica Jones")
 		#draw_cheat_ghost("Mockingbird")
-		#draw_cheat("Black Cat")
+		# draw_cheat("Piotr's Studio")
 		#draw_cheat("Energy")
 		#draw_cheat("Backflip")
 		#draw_cheat("Helicarrier")	
@@ -931,6 +931,7 @@ func post_load_move():
 		var data = _post_load_move[card]
 		var pile_name = data.get("grid", "")
 		var host_id = data.get("host_id", "")
+		var facedown = data.get("facedown", false)
 		
 		if (pile_name):
 			var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(pile_name)
@@ -945,6 +946,8 @@ func post_load_move():
 			var host_card = find_card_by_name(host_id)
 			if host_card:
 				card.attach_to_host(host_card)
+				if facedown:
+					card.set_is_faceup(false, false)
 				
 	for card in _post_load_move:				
 		#card.interruptTweening()
@@ -999,7 +1002,8 @@ func load_cards_to_pile(card_data:Array, pile_name):
 			card._determine_idle_state()
 			_post_load_move[card] = {
 				"grid": pile_name, 
-				"host_id":card_to_card_data[card].get("host", {})
+				"host_id":card_to_card_data[card].get("host", {}),
+				"facedown": card_to_card_data[card].get("facedown", {})
 			} 
 		card.load_from_json(card_to_card_data[card])
 

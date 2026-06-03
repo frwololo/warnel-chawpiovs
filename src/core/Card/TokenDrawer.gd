@@ -169,15 +169,15 @@ func mod_token(
 	var token : Token = get_all_tokens().get(token_name, null)
 	# If the token does not exist in the card, we add its node
 	# and set it to 1
-	if not token and mod > 0:
+	if not is_instance_valid(token) and mod > 0:
 		token = _TOKEN_SCENE.instance()
 		token.setup(token_name, self)
 		$Drawer/VBoxContainer.add_child(token)
 	# If the token node of this name has already been added to the card
 	# We just increment it by 1
-	if not token and mod == 0:
+	if not is_instance_valid(token) and mod == 0:
 		retcode = CFConst.ReturnCode.OK
-	elif not token and mod < 0:
+	elif not is_instance_valid(token) and mod < 0:
 		retcode = CFConst.ReturnCode.FAILED
 	# For cost dry-runs, we don't want to modify the tokens at all.
 	# Just check if we could.
@@ -225,7 +225,9 @@ func mod_token(
 		# in the signal even after the token is deinstanced.
 		var new_value = token.count
 		if token.count == 0:
+			token.name = token.name + "_____tmp______"			
 			token.queue_free()
+
 	# if the drawer has already been opened, we need to make sure
 	# the new token name will also appear
 		elif is_drawer_open:

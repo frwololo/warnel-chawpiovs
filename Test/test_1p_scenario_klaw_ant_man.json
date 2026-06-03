@@ -203,9 +203,6 @@
 					"card": "01113",
 					"owner_hero_id": 0,
 					"_comments": "Klaw - 1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"schemes": [
@@ -213,9 +210,6 @@
 					"card": "01116b",
 					"owner_hero_id": 0,
 					"_comments": "Underground Distribution - 1B",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				},
 				{
 					"card": "01125",
@@ -223,7 +217,6 @@
 					"_comments": "Defense Network",
 					"tokens": {
 						"threat": 3,
-						"__can_change_form": 1
 					}
 				}
 			],

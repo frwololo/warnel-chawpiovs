@@ -212,9 +212,6 @@
 					"card": "16058",
 					"owner_hero_id": 0,
 					"_comments": "Drang - 1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"schemes": [
@@ -224,7 +221,6 @@
 					"_comments": "Terrestrial Invasion - 1B",
 					"tokens": {
 						"threat": 2,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -233,9 +229,6 @@
 					"card": "16063",
 					"owner_hero_id": 0,
 					"_comments": "Badoon Ship",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"victory_display": [],
@@ -492,9 +485,6 @@
 					"card": "16142",
 					"owner_hero_id": 0,
 					"_comments": "Milano",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"hand1": [

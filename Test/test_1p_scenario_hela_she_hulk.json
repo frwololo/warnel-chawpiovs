@@ -212,9 +212,6 @@
 					"card": "21136a",
 					"owner_hero_id": 0,
 					"_comments": "Hela - A1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"schemes": [
@@ -224,7 +221,6 @@
 					"_comments": "Odin's Torment - 1B",
 					"tokens": {
 						"threat": 1,
-						"__can_change_form": 1
 					}
 				},
 				{
@@ -233,7 +229,6 @@
 					"_comments": "Gnipahellir",
 					"tokens": {
 						"threat": 2,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -496,7 +491,6 @@
 					"_comments": "Garm",
 					"tokens": {
 						"tough": 1,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -549,9 +543,6 @@
 					"card": "21139a",
 					"owner_hero_id": 0,
 					"_comments": "Odin - All-Father",
-					"tokens": {
-						"__can_change_form": 1
-					},
 					"host": "21138b"
 				}
 			]

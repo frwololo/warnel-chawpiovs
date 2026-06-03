@@ -242,9 +242,6 @@
 					"card": "04109",
 					"owner_hero_id": 0,
 					"_comments": "Zola - 1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"schemes": [
@@ -252,9 +249,6 @@
 					"card": "04112b",
 					"owner_hero_id": 0,
 					"_comments": "The Island of Dr. Zola - 1B",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				},
 				{
 					"card": "04122",
@@ -262,7 +256,6 @@
 					"_comments": "Hydra Prison",
 					"tokens": {
 						"threat": 4,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -500,7 +493,6 @@
 					"_comments": "Ultimate Bio-Servant",
 					"tokens": {
 						"tough": 1,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -558,9 +550,6 @@
 					"card": "32002",
 					"owner_hero_id": 1,
 					"_comments": "Shadowcat - Kitty Pryde",
-					"tokens": {
-						"__can_change_form": 1
-					},
 					"host": "04122",
 					"facedown_properties": {
 						"_code": "32002",

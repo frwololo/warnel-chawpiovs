@@ -1265,11 +1265,47 @@ remotesync func set_card_speeds():
 func all_clients_game_loaded(details = {}):
 	#increase speed
 	cfc._rpc(self,"set_card_speeds")
+	
+	#prevent victory/defeat triggers
+	var temporary_script = {
+		"interrupt_defeat": {
+			"all": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "defeat",
+					"modification": 1,
+					"subject": "first_player"
+				}				
+			]
+		},
+		"interrupt_victory": {
+			"all": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "victory",
+					"modification": 1,
+					"subject": "first_player"
+				}				
+			]
+		}		
+	}
+	var dummy_card = gameData.get_first_player()
+	dummy_card.add_extra_script(temporary_script)	
+	
 	#only server is allowed to run the main process	
 	if 1 != cfc.get_network_unique_id():
 		return
 			
 	game_loaded = true
+
 	for value in details.values():
 		if value != CFConst.ReturnCode.OK:
 			actions = [] #empty the actions stack, this will force a finalize test

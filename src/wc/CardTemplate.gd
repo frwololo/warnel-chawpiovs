@@ -792,7 +792,8 @@ func _game_step_about_to_start(_trigger_object, details:Dictionary):
 	match current_step:
 		CFConst.PHASE_STEP.PLAYER_TURN:
 			if is_instance_valid(tokens):
-				self.tokens.mod_token("__can_change_form", 1)
+				if get_property("type_code") in ["hero", "alter_ego"]:
+					self.tokens.mod_token("__can_change_form", 1)
 	return	
 	
 
@@ -1213,7 +1214,7 @@ func retrieve_scripts(trigger: String, filters := {}) -> Dictionary:
 	#Warning, I had an infinite loop in alterants engine here when calling get_property before checking for alterants
 	if !trigger in ["alterants"]:	
 		if self.get_property("blank_printed_trigger_abilities", 0, true):
-				var found_scripts = get_instance_runtime_scripts(trigger, filters)
+				var found_scripts = _get_extra_scripts(trigger, filters)
 				if found_scripts:
 					return found_scripts
 				var base_scripts = SetScripts_All.get_scripts({}, self.canonical_id)
@@ -1347,8 +1348,8 @@ func execute_scripts(
 		orig_trigger_details: Dictionary = {},
 		run_type := CFInt.RunType.NORMAL):
 
-#	if (trigger == "card_dies"):
-#		var _tmp = 1
+	if (trigger == "card_attached") and canonical_name == "Operation Zero Tolerance":
+		var _tmp = 1
 
 	if script_exec_temporarily_blocked(run_type):
 		if get_parent() and !("tree_" in trigger): #dirty check to avoid crashes
@@ -1885,13 +1886,18 @@ func readyme(toggle := false,
 	if get_property("cannot_ready", 0, true):
 		return CFConst.ReturnCode.FAILED
 	
+	if current_host_card:
+		#can't ready attachments
+		return CFConst.ReturnCode.FAILED
+	
 	var rot = 0
 	if CFConst.OPTIONS.get("enable_fuzzy_rotations", false):
 		if (is_exhausted()):			
 			rot = randi() % 11 - 5
 			tags = tags + ["force"]
 	
-	_set_target_rotation(rot)
+	if !check :
+		_set_target_rotation(rot)
 			
 	var retcode = set_card_rotation(rot, toggle, start_tween, check, tags)
 	if !check and retcode != CFConst.ReturnCode.FAILED:
@@ -1912,7 +1918,8 @@ func exhaustme(toggle := false,
 			rot = randi() % 16 + 80
 			tags = tags + ["force"]
 	
-	_set_target_rotation(rot)
+	if !check:
+		_set_target_rotation(rot)
 			
 	if 	is_exhausted()	and not toggle:
 		return CFConst.ReturnCode.OK		
@@ -1940,6 +1947,12 @@ func check_scheme_defeat(script):
 	#card.die(script)
 		if get_property("cannot_leave_play", 0, true):
 			return
+
+		if get_property("permanent", 0):
+			var set_code = get_property("card_set_code", "")
+			var owner_set_code = script.owner.get_property("card_set_code", "")
+			if set_code != owner_set_code:
+				return 
 			
 		var card_dies_definition = {
 			"name": "card_dies",
@@ -1990,7 +2003,7 @@ func remove_threat(modification: int, script = null) -> int:
 					
 	var token_name = "threat"
 	var current_tokens = tokens.get_token_count(token_name)
-	if current_tokens - modification < 0:
+	if current_tokens - modification <= 0:
 		modification = current_tokens
 	var result = tokens.mod_token(token_name,-modification)
 	
@@ -2076,7 +2089,9 @@ func die(script):
 	var type_code = properties.get("type_code", "")
 	var trigger_details = {}
 	if script:
-		trigger_details = script.trigger_details
+		trigger_details = script.trigger_details.duplicate()
+		if !trigger_details.get("tags", []):
+			trigger_details["tags"] = script.script_definition.get("tags", [])
 	match type_code:
 		"hero", "alter_ego":
 			gameData.hero_died(self, script)
@@ -2812,8 +2827,8 @@ func next_boost_card_to_reveal():
 		break
 	return boost_card
 
-#returns scripts specific to this instance
-func get_instance_runtime_scripts(trigger:String = "", filters:={}) -> Dictionary:
+#returns extra scripts
+func _get_extra_scripts(trigger:String = "", filters:= {}, do_merge = false) -> Dictionary:
 	#if we have no extra scripts we stick with parent behavior
 	if !extra_scripts:
 		return .get_instance_runtime_scripts(trigger)
@@ -2821,7 +2836,7 @@ func get_instance_runtime_scripts(trigger:String = "", filters:={}) -> Dictionar
 	#if we have extra scripts, we'll do a merge of extra scripts
 	#with the cards script, then retrieve from the merged dictionary
 	var merged_scripts:Dictionary = .get_instance_runtime_scripts()
-	if !merged_scripts:
+	if !merged_scripts and do_merge:
 		merged_scripts = cfc.set_scripts.get(canonical_id,{}).duplicate(true)
 	
 	#additional scripts to merge with what we found
@@ -2841,6 +2856,10 @@ func get_instance_runtime_scripts(trigger:String = "", filters:={}) -> Dictionar
 			found_scripts = merged_scripts.get(trigger,{}).duplicate(true)
 	
 	return found_scripts
+
+#returns scripts specific to this instance
+func get_instance_runtime_scripts(trigger:String = "", filters:={}) -> Dictionary:
+	return _get_extra_scripts(trigger, filters, true)
 
 
 
@@ -2938,11 +2957,8 @@ func get_stage_level(params = {}, script:ScriptObject  = null) -> int:
 	return subject.get_property("stage_int", 0)
 	
 func count_attachments(params = {}, script:ScriptObject = null) -> int:
-	var subjects = [self]
-
-	if script:
-		subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
-					
+	var subjects =  get_param_subjects(params, script)	
+				
 	if !subjects:
 		return 0	
 	

@@ -234,7 +234,6 @@
 					"_comments": "Sentinel - 1",
 					"tokens": {
 						"tough": 1,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -245,7 +244,6 @@
 					"_comments": "Night of the Sentinels - 1B",
 					"tokens": {
 						"threat": 1,
-						"__can_change_form": 1
 					}
 				},
 				{
@@ -254,7 +252,6 @@
 					"_comments": "Abduction Protocols",
 					"tokens": {
 						"threat": 4,
-						"__can_change_form": 1
 					}
 				},
 				{
@@ -263,7 +260,6 @@
 					"_comments": "Operation Zero Tolerance",
 					"tokens": {
 						"threat": 3,
-						"__can_change_form": 1
 					}
 				},
 				{
@@ -272,7 +268,6 @@
 					"_comments": "Mutants at the Mall",
 					"tokens": {
 						"threat": 4,
-						"__can_change_form": 1
 					}
 				}
 			],

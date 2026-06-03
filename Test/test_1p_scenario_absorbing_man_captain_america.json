@@ -228,9 +228,6 @@
 					"card": "04076",
 					"owner_hero_id": 0,
 					"_comments": "Absorbing Man - 1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"schemes": [
@@ -240,7 +237,6 @@
 					"_comments": "None Shall Pass - 1B",
 					"tokens": {
 						"threat": 2,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -249,9 +245,6 @@
 					"card": "04081",
 					"owner_hero_id": 0,
 					"_comments": "Snowy Hillside",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"victory_display": [],

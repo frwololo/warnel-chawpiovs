@@ -239,7 +239,6 @@
 					"_comments": "Ronan the Accuser - 1",
 					"tokens": {
 						"tough": 1,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -250,7 +249,6 @@
 					"_comments": "Interception Imminent - 1B",
 					"tokens": {
 						"threat": 2,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -259,9 +257,6 @@
 					"card": "16108",
 					"owner_hero_id": 0,
 					"_comments": "Kree Command Ship",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"victory_display": [],
@@ -518,9 +513,6 @@
 					"card": "16142",
 					"owner_hero_id": 0,
 					"_comments": "Milano",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"hand1": [
@@ -560,18 +552,12 @@
 					"card": "16109",
 					"owner_hero_id": 0,
 					"_comments": "Universal Weapon",
-					"tokens": {
-						"__can_change_form": 1
-					},
 					"host": "16103"
 				},
 				{
 					"card": "16149",
 					"owner_hero_id": 0,
 					"_comments": "Power Stone",
-					"tokens": {
-						"__can_change_form": 1
-					},
 					"host": "01029b"
 				}
 			]

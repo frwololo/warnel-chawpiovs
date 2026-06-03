@@ -225,9 +225,6 @@
 					"card": "21162",
 					"owner_hero_id": 0,
 					"_comments": "Loki - 1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"schemes": [
@@ -237,7 +234,6 @@
 					"_comments": "All Hail King Loki - 1B",
 					"tokens": {
 						"threat": 1,
-						"__can_change_form": 1
 					}
 				},
 				{
@@ -246,7 +242,6 @@
 					"_comments": "War in Asgard",
 					"tokens": {
 						"threat": 7,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -585,9 +580,6 @@
 					"card": "21129",
 					"owner_hero_id": 0,
 					"_comments": "Infinity Gauntlet",
-					"tokens": {
-						"__can_change_form": 1
-					},
 					"host": "21162"
 				}
 			]

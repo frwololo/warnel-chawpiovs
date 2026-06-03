@@ -247,9 +247,6 @@
 					"card": "04058",
 					"owner_hero_id": 0,
 					"_comments": "Crossbones - 1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"schemes": [
@@ -257,9 +254,6 @@
 					"card": "04061b",
 					"owner_hero_id": 0,
 					"_comments": "Attack on Mount Athena - 1B",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"villain_misc": [],
@@ -577,9 +571,6 @@
 					"card": "04072",
 					"owner_hero_id": 0,
 					"_comments": "Laser Rifle",
-					"tokens": {
-						"__can_change_form": 1
-					},
 					"host": "04058"
 				}
 			]

@@ -222,9 +222,6 @@
 					"card": "27061",
 					"owner_hero_id": 0,
 					"_comments": "Sandman - 1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"schemes": [
@@ -234,7 +231,6 @@
 					"_comments": "Hapless Pedestrians - 1B",
 					"tokens": {
 						"threat": 2,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -245,7 +241,6 @@
 					"_comments": "City Streets",
 					"tokens": {
 						"sand": 4,
-						"__can_change_form": 1
 					}
 				}
 			],

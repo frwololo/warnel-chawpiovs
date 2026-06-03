@@ -250,7 +250,6 @@
 					"_comments": "Nebula - 1",
 					"tokens": {
 						"__technique": 1,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -261,7 +260,6 @@
 					"_comments": "The Art of Evasion - 1B",
 					"tokens": {
 						"threat": 2,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -270,9 +268,6 @@
 					"card": "16093",
 					"owner_hero_id": 0,
 					"_comments": "Nebula's Ship",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"victory_display": [],
@@ -534,9 +529,6 @@
 					"card": "16142",
 					"owner_hero_id": 0,
 					"_comments": "Milano",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"hand1": [
@@ -571,9 +563,6 @@
 					"card": "16149",
 					"owner_hero_id": 0,
 					"_comments": "Power Stone",
-					"tokens": {
-						"__can_change_form": 1
-					},
 					"host": "16088"
 				}
 			]

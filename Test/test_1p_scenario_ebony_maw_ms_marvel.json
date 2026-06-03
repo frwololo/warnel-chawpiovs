@@ -227,9 +227,6 @@
 					"card": "21071",
 					"owner_hero_id": 0,
 					"_comments": "Ebony Maw - 1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"schemes": [
@@ -239,7 +236,6 @@
 					"_comments": "Attack on Knowhere - 1B",
 					"tokens": {
 						"threat": 1,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -487,7 +483,6 @@
 					"_comments": "Rubblestorm",
 					"tokens": {
 						"invocation": 3,
-						"__can_change_form": 1
 					}
 				}
 			],

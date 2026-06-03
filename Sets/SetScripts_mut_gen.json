@@ -611,7 +611,7 @@
 					"tags": [
 						"hero_action"
 					]
-				},			
+				},
 				{
 					"name": "villain_attacks_you"
 				},
@@ -715,7 +715,7 @@
 					},
 					"subject": "boardseek",
 					"subject_count": "all",
-					"filter_state_subject": [
+					"filter_state_seek": [
 						{
 							"filter_group": "group_enemies"
 						}
@@ -882,6 +882,13 @@
 			]
 		},
 		"interrupt_receive_damage": {
+			"condition_board": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"subject": "self",
+					"token_name": "__reduce_consequential",
+				}
+			},		
 			"event_filters": {
 				"target": "self",
 				"tags": [
@@ -1658,7 +1665,7 @@
 					"subject": "self",
 					"dest_container": "discard_villain",
 					"is_else": true
-				},				
+				},
 				{
 					"name": "surge",
 					"is_else": true
@@ -1801,7 +1808,7 @@
 				{
 					"name": "shuffle_card_into_container",
 					"subject": "self",
-					"dest_container": "deck_my_hero",
+					"dest_container": "deck_my_hero"
 				},
 				{
 					"name": "surge"
@@ -1978,7 +1985,7 @@
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
-						"action"
+						"action_ability"
 					]
 				},
 				{
@@ -2051,7 +2058,7 @@
 						"name": "constraints",
 						"is_cost": true,
 						"tags": [
-							"action"
+							"action_ability"
 						]
 					},
 					{
@@ -3131,7 +3138,7 @@
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
-						"action"
+						"action_ability"
 					]
 				}
 			]
@@ -3472,9 +3479,9 @@
 							"filter_properties": {
 								"Name": "Jubilee - Jubilation Lee"
 							}
-						},
+						}
 					]
-				},
+				}
 			]
 		}
 	},
@@ -3503,6 +3510,7 @@
 			"board": [
 				{
 					"name": "host_card",
+					"host": "Operation Zero Tolerance",
 					"tags": [
 						"facedown"
 					],
@@ -3709,8 +3717,7 @@
 			"__name__": "steel",
 			"__amount__": 2
 		},
-		"card_token_modified": {
-			"filter_count_difference": "decreased",
+		"card_token_removed": {
 			"filter_token_name": "tough",
 			"trigger": "Colossus",
 			"is_optional_board": true,
@@ -5146,7 +5153,7 @@
 					"tags": [
 						"disable_attach_trigger"
 					],
-					"_comments": "disable_attach_trigger in tags prevents the attachment from moving somewhere else as it comes into play"					
+					"_comments": "disable_attach_trigger in tags prevents the attachment from moving somewhere else as it comes into play"
 				}
 			]
 		},
@@ -5154,12 +5161,12 @@
 			"all": [
 				{
 					"name": "deal_damage",
-					"subject": "my_identity",
+					"subject": "current_hero_target",
 					"amount": {
 						"if": {
 							"func_name": "is_stunned",
 							"func_params": {
-								"subject": "my_identity"
+								"subject": "current_hero_target"
 							}
 						},
 						"then": 2,
@@ -5170,7 +5177,7 @@
 					"name": "mod_tokens",
 					"token_name": "stunned",
 					"modification": 1,
-					"subject": "my_identity"
+					"subject": "current_hero_target"
 				}
 			]
 		}
@@ -5530,7 +5537,7 @@
 						}
 					],
 					"is_else": true
-				}				
+				}
 			]
 		}
 	},
@@ -5995,7 +6002,7 @@
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
-						"action"
+						"action_ability"
 					]
 				},
 				{
@@ -6096,7 +6103,7 @@
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
-						"action"
+						"action_ability"
 					]
 				},
 				{
@@ -6581,7 +6588,7 @@
 					"name": "defeat"
 				}
 			]
-		}		
+		}
 	},
 	"The Rule of Magnus - 3A": {
 		"reveal": {
@@ -6842,7 +6849,7 @@
 							"token_name": "tough"
 						}
 					},
-					"resource_name": "phyiscal"
+					"resource_name": "physical"
 				}
 			]
 		}
@@ -7400,7 +7407,7 @@
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
-						"action"
+						"action_ability"
 					]
 				},
 				{

@@ -217,9 +217,6 @@
 					"card": "32060",
 					"owner_hero_id": 0,
 					"_comments": "Sabretooth - 1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"schemes": [
@@ -227,9 +224,6 @@
 					"card": "32063b",
 					"owner_hero_id": 0,
 					"_comments": "Stalked by Sabretooth - 1B",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				},
 				{
 					"card": "32065a",
@@ -237,7 +231,6 @@
 					"_comments": "Find the Senator",
 					"tokens": {
 						"threat": 5,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -534,9 +527,6 @@
 					"card": "32066",
 					"owner_hero_id": 0,
 					"_comments": "Robert Kelly",
-					"tokens": {
-						"__can_change_form": 1
-					},
 					"host": "32065a"
 				}
 			]

@@ -215,17 +215,11 @@
 					"card": "21092",
 					"owner_hero_id": 0,
 					"_comments": "Proxima Midnight - 1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				},
 				{
 					"card": "21095",
 					"owner_hero_id": 0,
 					"_comments": "Corvus Glaive - 1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"schemes": [
@@ -235,7 +229,6 @@
 					"_comments": "Under Siege - 1B",
 					"tokens": {
 						"threat": 1,
-						"__can_change_form": 1
 					}
 				},
 				{
@@ -244,7 +237,6 @@
 					"_comments": "The Armies of Thanos - 2B",
 					"tokens": {
 						"threat": 1,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -255,7 +247,6 @@
 					"_comments": "Avengers Tower",
 					"tokens": {
 						"damage": 1,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -505,9 +496,6 @@
 					"card": "21102",
 					"owner_hero_id": 0,
 					"_comments": "Black Order Besieger",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"identity1": [
@@ -561,9 +549,6 @@
 					"card": "21101",
 					"owner_hero_id": 0,
 					"_comments": "Focused Defense",
-					"tokens": {
-						"__can_change_form": 1
-					},
 					"host": "21099b"
 				}
 			]

@@ -461,7 +461,8 @@ func is_boost_trigger_accepted(
 	if trigger_card and is_instance_valid(trigger_card):
 		#facedown cards won't have a type_code unless they are used on the board (e.g. facedown ultron drones)
 		if !trigger_card.get_property("type_code", null):
-			return false
+			if !trigger in ["card_attached", "card_detached"]:
+				return false
 		if trigger_card.is_boost(): 
 			#... but there are exceptions
 			#resources are acceptable as they can be requested by the boost itself...?
@@ -486,7 +487,8 @@ func is_boost_trigger_accepted(
 	if owner_card and is_instance_valid(owner_card):
 		#facedown cards won't have a type_code unless they are used on the board (e.g. facedown ultron drones)
 		if !owner_card.get_property("type_code", null):
-			return false
+			if !trigger in ["card_attached", "card_detached"]:
+				return false
 		if owner_card.is_boost(): 
 			#... but there are exceptions
 			#The boost trigger is accepted

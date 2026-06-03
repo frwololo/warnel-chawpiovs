@@ -207,9 +207,6 @@
 					"card": "27084",
 					"owner_hero_id": 0,
 					"_comments": "Mysterio - 1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"schemes": [
@@ -219,7 +216,6 @@
 					"_comments": "Maze of Mirrors - 1B",
 					"tokens": {
 						"threat": 2,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -460,9 +456,6 @@
 					"card": "27091",
 					"owner_hero_id": 0,
 					"_comments": "Shifting Apparition",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"identity1": [

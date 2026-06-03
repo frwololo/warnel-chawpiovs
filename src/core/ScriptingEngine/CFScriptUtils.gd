@@ -153,7 +153,7 @@ static func get_altered_value(
 			# we evoke the AlterantEngine only if we have something to execute
 			var task_details = _generate_trigger_details(task_name, task_properties)
 			if len(state_scripts):
-#				if task_properties.get("property_name", "") == "attack" and _owner.get_property("shortname", "") == "Mystique":
+#				if task_properties.get("property_name", "") == "permanent" and _owner.get_property("shortname", "") == "Operation Zero Tolerance":
 #					var _tmp = 1				
 				var alteng = cfc.alterant_engine.new(
 						_owner,

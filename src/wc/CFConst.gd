@@ -660,7 +660,7 @@ const AUTO_KEYWORDS := {
 	"overkill" : "int",
 	"patrol" : "int",
 	"peril" : "bool",
-	"permanent" : "bool",
+	"permanent" : "int",
 	"piercing" : "bool",
 	"quickstrike" : "bool",
 	"ranged" : "bool",
@@ -1047,8 +1047,8 @@ const DEBUG_SIMULATE_NETWORK_DELAY = 1.5
 const DEBUG_NETWORK_DELAY_RANDOM = false
 const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 
-const SCRIPT_BREAKPOINT_CARD_NAME := "Avengers Tower"
-const SCRIPT_BREAKPOINT_TRIGGER_NAME := "receive_damage"
+const SCRIPT_BREAKPOINT_CARD_NAME := "Operation Zero Tolerance"
+const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_attached"
 
 const VERSION := "1.4.0"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"

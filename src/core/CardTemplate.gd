@@ -1479,13 +1479,7 @@ func move_to(targetHost: Node,
 			# We reset the position.
 				set_state(CardState.ON_PLAY_BOARD)
 			elif current_host_card:
-				var attach_index = current_host_card.attachments.find(self)
-				_set_target_position((current_host_card.global_position
-						+ Vector2(
-						(attach_index + 1) * card_size.x
-						* CFConst.ATTACHMENT_OFFSET[attachment_offset].x,
-						(attach_index + 1)* card_size.y
-						* CFConst.ATTACHMENT_OFFSET[attachment_offset].y)))
+				reposition_as_attachment()
 				set_state(CardState.ON_PLAY_BOARD)
 			else:
 				# When we drop from board to board
@@ -1644,7 +1638,7 @@ func _set_target_position(new_target_position):
 	_target_position = new_target_position
 
 func _set_target_rotation(new_target_rotation):
-#	if self.canonical_name == "Shafdowcat - Kitty Pryde":
+#	if self.canonical_name == "Piotr's Studio" and new_target_rotation != _target_rotation:
 #			var _tmp =1
 	_target_rotation = new_target_rotation
 
@@ -1851,6 +1845,27 @@ func get_state_exec() -> String:
 				state_exec = "pile"
 	return(state_exec)
 
+func reposition_as_attachment(do_rotation = true):
+	if !current_host_card:
+		return
+		
+	var count_attachments = current_host_card.attachments.size()
+	var offset_multiplier:float = (1.0 / count_attachments) if count_attachments > 2 else 1.0 
+		
+	var attach_index = current_host_card.attachments.find(self)
+	_set_target_position((current_host_card.global_position
+			+ Vector2(
+			(attach_index + 1) * card_size.x * offset_multiplier * cfc.screen_scale.x
+			* CFConst.ATTACHMENT_OFFSET[current_host_card.attachment_offset].x,
+			(attach_index + 1)* card_size.y * offset_multiplier *cfc.screen_scale.y
+			* CFConst.ATTACHMENT_OFFSET[current_host_card.attachment_offset].y)))	
+
+	if do_rotation:
+		var target_rotation = 0
+		if CFConst.OPTIONS.get("enable_fuzzy_rotations", false):
+			target_rotation = randi() % 13
+		set_card_rotation(target_rotation, false, true, false, ["force"])
+		_set_target_rotation(target_rotation)	
 
 # Handles the card becoming an attachment for a specified host Card object
 func attach_to_host(
@@ -1893,18 +1908,12 @@ func attach_to_host(
 		# The position below the host is based on how many other attachments it has
 		# We offset our position below the host based on a percentage of
 		# the card size, times the index among other attachments
-		var attach_index = current_host_card.attachments.find(self)
-		_set_target_position((current_host_card.global_position
-				+ Vector2(
-				(attach_index + 1) * card_size.x
-				* CFConst.ATTACHMENT_OFFSET[current_host_card.attachment_offset].x,
-				(attach_index + 1)* card_size.y
-				* CFConst.ATTACHMENT_OFFSET[current_host_card.attachment_offset].y)))
-		var target_rotation = 0
-		if CFConst.OPTIONS.get("enable_fuzzy_rotations", false):
-			target_rotation = randi() % 13
-		set_card_rotation(target_rotation, false, true, false, ["force"])
-		_set_target_rotation(target_rotation)		
+		reposition_as_attachment()
+#		var target_rotation = 0
+#		if CFConst.OPTIONS.get("enable_fuzzy_rotations", false):
+#			target_rotation = randi() % 13
+#		set_card_rotation(target_rotation, false, true, false, ["force"])
+#		_set_target_rotation(target_rotation)		
 		scripting_bus.emit_signal("card_attached",
 				self,
 				{"host_card": host, "tags": tags})
@@ -2246,12 +2255,13 @@ func _organize_attachments() -> void:
 			if not card.get_node('Tween').is_active() and \
 					card.state in \
 					[CardState.ON_PLAY_BOARD,CardState.FOCUSED_ON_BOARD]:
-				card._set_target_position(global_position + \
-						Vector2(
-						(attach_index + 1) * card_size.x
-						* CFConst.ATTACHMENT_OFFSET[attachment_offset].x * cfc.screen_scale.x,
-						(attach_index + 1) * card_size.y \
-						* CFConst.ATTACHMENT_OFFSET[attachment_offset].y * cfc.screen_scale.y))
+#				card._set_target_position(global_position + \
+#						Vector2(
+#						(attach_index + 1) * card_size.x
+#						* CFConst.ATTACHMENT_OFFSET[attachment_offset].x * cfc.screen_scale.x,
+#						(attach_index + 1) * card_size.y \
+#						* CFConst.ATTACHMENT_OFFSET[attachment_offset].y * cfc.screen_scale.y))
+				card.reposition_as_attachment(false)
 
 # Returns the global mouse position but ensures it does not exit the
 # viewport limits when including the card rect

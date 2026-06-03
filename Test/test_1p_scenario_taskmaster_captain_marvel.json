@@ -222,9 +222,6 @@
 					"card": "04093",
 					"owner_hero_id": 0,
 					"_comments": "Taskmaster - 1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"schemes": [
@@ -234,7 +231,6 @@
 					"_comments": "Hunting Down Heroes - 1B",
 					"tokens": {
 						"threat": 1,
-						"__can_change_form": 1
 					}
 				},
 				{
@@ -243,7 +239,6 @@
 					"_comments": "Hydra Patrol",
 					"tokens": {
 						"threat": 2,
-						"__can_change_form": 1
 					}
 				}
 			],

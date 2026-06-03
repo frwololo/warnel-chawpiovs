@@ -217,9 +217,6 @@
 					"card": "01134",
 					"owner_hero_id": 0,
 					"_comments": "Ultron - 1",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"schemes": [
@@ -227,9 +224,6 @@
 					"card": "01137b",
 					"owner_hero_id": 0,
 					"_comments": "The Crimson Cowl - 1B",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"villain_misc": [
@@ -237,9 +231,6 @@
 					"card": "01140",
 					"owner_hero_id": 0,
 					"_comments": "Ultron Drones",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"victory_display": [],
@@ -488,9 +479,6 @@
 				"card": "01079",
 				"owner_hero_id": 1,
 				"_comments": "The Power of Protection",
-				"tokens": {
-					"__can_change_form": 1
-				},
 				"facedown_properties": {
 					"_code": "01079",
 					"code": "01079",

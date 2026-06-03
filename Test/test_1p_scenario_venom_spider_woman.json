@@ -224,7 +224,6 @@
 					"_comments": "Venom - 1",
 					"tokens": {
 						"tough": 1,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -235,7 +234,6 @@
 					"_comments": "\"Leave Us Alone!\" - 1B",
 					"tokens": {
 						"threat": 2,
-						"__can_change_form": 1
 					}
 				}
 			],
@@ -244,9 +242,6 @@
 					"card": "27077a",
 					"owner_hero_id": 0,
 					"_comments": "Bell Tower",
-					"tokens": {
-						"__can_change_form": 1
-					}
 				}
 			],
 			"victory_display": [],

@@ -1,0 +1,204 @@
+{
+	"_comments": "Bug: Colossus not getting cost reduction",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},		
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Shadowcat"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Stun Beam #32116"
+				},
+				{
+					"card": "Sentinel Mark VIII #32114"
+				},
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Insert Virus Program #32120"
+				}
+			],
+			"villain": [
+				{
+					"card": "Master Mold - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Sentinel Factory - 1B",
+					"_comments": "",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"deck1": [
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "32051",
+					"owner_hero_id": 1,
+					"_comments": "Ready to Rumble"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Shadowcat #32030a"
+				}
+			],
+			"allies1": [
+				{
+					"card": "32172b",
+					"owner_hero_id": 0,
+					"_comments": "Magneto - Erik Lehnsherr"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Phased #32031b"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Toe to Toe"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Colossus #32048"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "32031a",
+					"owner_hero_id": 1,
+					"_comments": "Solid"
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "play",
+			"value": "Colossus"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Shadowcat"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Stun Beam #32116"
+				},
+				{
+					"card": "Sentinel Mark VIII #32114"
+				},
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Insert Virus Program #32120"
+				}
+			],
+			"villain": [
+				{
+					"card": "Master Mold - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Sentinel Factory - 1B",
+					"_comments": "",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"deck1": [
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "32051",
+					"owner_hero_id": 1,
+					"_comments": "Ready to Rumble"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Shadowcat #32030a"
+				}
+			],
+			"allies1": [
+				{
+					"card": "32172b",
+					"owner_hero_id": 0,
+					"_comments": "Magneto - Erik Lehnsherr"
+				},
+				{
+					"card": "Colossus #32048"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Phased #32031b"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				},			
+				{
+					"card": "Toe to Toe"
+				},
+
+			],
+			"set_aside": [
+				{
+					"card": "32031a",
+					"owner_hero_id": 1,
+					"_comments": "Solid"
+				}
+			]
+		}
+	}
+}

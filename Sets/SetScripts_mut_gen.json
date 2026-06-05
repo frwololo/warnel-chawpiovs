@@ -875,7 +875,8 @@
 					"name": "mod_tokens",
 					"token_name": "__reduce_consequential",
 					"modification": 1,
-					"set_to_mod": true
+					"set_to_mod": true,
+					"subject": "self"
 				}
 			]
 		},
@@ -898,7 +899,8 @@
 					"name": "mod_tokens",
 					"token_name": "__reduce_consequential",
 					"modification": -1,
-					"is_cost": true
+					"is_cost": true,
+					"subject": "self"
 				},
 				{
 					"name": "prevent",
@@ -944,7 +946,8 @@
 							"trait": [
 								"x-men",
 								"mutant"
-							]
+							],
+							"multiplier": -1
 						}
 					}
 				}
@@ -1438,7 +1441,7 @@
 				}
 			]
 		},
-		"interrupt_card_defeated": {
+		"interrupt_card_dies": {
 			"trigger": "host",
 			"is_optional_board": "true",
 			"board": [
@@ -2333,6 +2336,8 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"needs_selection": "true",
+					"selection_count": 1,
+					"needs_subject": true,
 					"filter_state_seek": [
 						{
 							"filter_properties": {
@@ -3578,7 +3583,7 @@
 					"subject": "self",
 					"modification": 3,
 					"set_to_mod": true,
-					"token_name": "__max_damage"
+					"token_name": "_max_damage"
 				}
 			]
 		},
@@ -3590,7 +3595,7 @@
 					"subject": "self",
 					"modification": 3,
 					"set_to_mod": true,
-					"token_name": "__max_damage"
+					"token_name": "_max_damage"
 				}
 			]
 		},
@@ -3603,25 +3608,26 @@
 					"name": "replacement_effect",
 					"subject": "interrupted_event",
 					"replacements": {
-						"subject": "self",
-						"name": "mod_tokens",
-						"modification": "interrupted_event_amount",
-						"token_name": "__max_damage",
-						"is_inverted": true
+						"max_amount": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"subject": "current_subject",
+								"token_name": "_max_damage",
+							}
+						}
 					}
 				}
 			]
 		},
-		"card_token_modified": {
-			"filter_count_difference": "decreased",
-			"filter_token_name": "__max_damage",
+		"card_damaged": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "mod_tokens",
-					"token_name": "damage",
-					"modification": "trigger_details_amount",
-					"subject": "self"
+					"subject": "self",
+					"token_name": "_max_damage",
+					"modification": "trigger_details_damage",
+					"is_inverted": true
 				}
 			]
 		}
@@ -3933,11 +3939,12 @@
 			"event_filters": {
 				"target": "my_hero"
 			},
-			"filter_state_event_target": [
-				{
-					"func_name": "is_defending"
+			"condition_board": {
+				"func_name": "is_defending",
+				"func_params": {
+					"subject": "my_hero"
 				}
-			],
+			},
 			"board": [
 				{
 					"name": "prevent",
@@ -5223,8 +5230,21 @@
 							},
 							"nested_tasks": [
 								{
-									"name": "enemy_attacks_you",
-									"subject": "self"
+									"name": "add_script",
+									"subject": "self",
+									"end_condition": "enemy_activation_finished",
+									"script": {
+										"card_moved_to_board": {
+											"trigger": "self",
+											"board": [
+												{
+													"name": "enemy_attacks_you",
+													"subject": "self"
+												}
+											]
+										}
+									},
+									"_comments": "calling enemy_attacks_you directly here doesn't work because the sentinel is still in the encounters_revealed pile. So instead we make the attack once it comes into play"
 								}
 							]
 						}
@@ -5307,7 +5327,11 @@
 								"trait_sentinel": 1
 							}
 						}
-					]
+					],
+					"tags": [
+						"disable_attach_trigger"
+					],
+					"_comments": "disable_attach_trigger in tags prevents the attachment from moving somewhere else as it comes into play"					
 				}
 			]
 		}
@@ -5574,7 +5598,7 @@
 											"filter_tokens": [
 												{
 													"filter_token_name": "tough",
-													"filter_token_count": 0
+													"filter_count": 0
 												}
 											]
 										}
@@ -7464,7 +7488,7 @@
 		"_authority_override": {
 			"func_name": "identity_has_trait",
 			"func_params": {
-				"trait": "mutant"
+				"trait": "mutant",
 			}
 		},
 		"manual": {
@@ -7483,6 +7507,7 @@
 				},
 				{
 					"name": "heal",
+					"amount" : 1,
 					"subject": "target",
 					"filter_state_subject": [
 						{

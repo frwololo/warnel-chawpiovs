@@ -1,0 +1,211 @@
+{
+	"_comments": "Test 'bypass_*' reaction",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Shadowcat"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Stun Beam #32116"
+				},
+				{
+					"card": "Sentinel Mark VIII #32114"
+				},
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Insert Virus Program #32120"
+				}
+			],
+			"villain": [
+				{
+					"card": "Master Mold - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Sentinel Factory - 1B",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"deck1": [
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "32051",
+					"owner_hero_id": 1,
+					"_comments": "Ready to Rumble"
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "Sentinel Mark IV"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Shadowcat #32030a"
+				}
+			],
+			"allies1": [
+				{
+					"card": "32172b",
+					"owner_hero_id": 0,
+					"_comments": "Magneto - Erik Lehnsherr"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Phased #32031b"
+				},
+				{
+					"card": "Acute control"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Gatekeeper"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Solid #32031a"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Shadowcat"
+		},
+		{
+			"type": "choose",
+			"value": "Attack"
+		},
+		{
+			"type": "target",
+			"value": "Master Mold"
+		},
+		{
+			"type": "activate",
+			"value": "Acute control"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Shadowcat"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Stun Beam #32116"
+				},
+				{
+					"card": "Sentinel Mark VIII #32114"
+				},
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Insert Virus Program #32120"
+				}
+			],
+			"villain": [
+				{
+					"card": "Master Mold - 1",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Sentinel Factory - 1B",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"deck1": [
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "32051",
+					"owner_hero_id": 1,
+					"_comments": "Ready to Rumble"
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "Sentinel Mark IV",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Shadowcat #32030a"
+				}
+			],
+			"allies1": [
+				{
+					"card": "32172b",
+					"owner_hero_id": 0,
+					"_comments": "Magneto - Erik Lehnsherr"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Acute control",
+					"exhausted": true
+				},
+				{
+					"card": "Solid #32031a"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Gatekeeper"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Phased #32031b"
+				}
+			]
+		}
+	}
+}

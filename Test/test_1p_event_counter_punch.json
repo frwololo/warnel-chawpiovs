@@ -51,8 +51,7 @@
 	"actions": [	
 		{
 			"type": "select",
-			"value": "cancel",
-			"_comments": "click cancel on defenders to take an undefended attack"
+			"value": "Black Panther",
 		},		
 		{
 			"type": "play",

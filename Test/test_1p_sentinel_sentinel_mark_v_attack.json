@@ -1,7 +1,11 @@
 {
-	"_comments": "Automated Test for Nimrod #32166",
+	"_comments": "Automated Test for Sentinel Mark V, when Targeted for Elimination is already in play",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},
 	"init": {
-		"phase": "PLAYER_TURN",
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -12,7 +16,7 @@
 		"board": {
 			"villain": [
 				{
-					"card": "Sabretooth - 1"
+					"card": "Sentinel - 1"
 				}
 			],
 			"deck_villain": [
@@ -20,12 +24,18 @@
 					"card": "Advance"
 				},
 				{
+					"card": "Energy Barrier #32103"
+				},
+				{
 					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Sentinel Mark V"
 				}
 			],
 			"schemes": [
 				{
-					"card": "Stalked by Sabretooth - 1A #32063a"
+					"card": "Night of the Sentinels - 1B"
 				}
 			],
 			"deck1": [
@@ -43,50 +53,32 @@
 					"card": "Combat Training"
 				}
 			],
-			"enemies1": [
+			"others": [
 				{
-					"card": "Nimrod #32166",
-					"tokens": {
-						"_max_damage": 3
-					}
+					"card": "Targeted for Elimination",
+					"host": "Spider-Man"
 				}
 			],
-			"allies1": [
+			"enemies1": [],
+			"allies1": [],
+			"hand1": [
 				{
 					"card": "Mockingbird"
-				}
-			],
-			"hand1": [
+				},
 				{
 					"card": "Strength"
 				}
 			]
 		}
 	},
-	"actions": [
+	"actions": [	
 		{
-			"type": "activate",
-			"value": "Mockingbird"
+			"type": "select",
+			"value": "cancel"
 		},
 		{
-			"type": "choose",
-			"value": "attack"
-		},
-		{
-			"type": "target",
-			"value": "Nimrod"
-		},
-		{
-			"type": "activate",
-			"value": "Spider-Man"
-		},
-		{
-			"type": "choose",
-			"value": "attack"
-		},
-		{
-			"type": "target",
-			"value": "Nimrod"
+			"type": "other",
+			"value": "wait_for_player_turn"
 		}
 	],
 	"end": {
@@ -101,7 +93,7 @@
 		"board": {
 			"villain": [
 				{
-					"card": "Sabretooth - 1"
+					"card": "Sentinel - 1"
 				}
 			],
 			"deck_villain": [
@@ -109,12 +101,15 @@
 					"card": "Advance"
 				},
 				{
+					"card": "Energy Barrier #32103"
+				},
+				{
 					"card": "Hydra Mercenary"
 				}
 			],
 			"schemes": [
 				{
-					"card": "Stalked by Sabretooth - 1A #32063a"
+					"card": "Night of the Sentinels - 1B"
 				}
 			],
 			"deck1": [
@@ -124,7 +119,10 @@
 			],
 			"identity1": [
 				{
-					"card": "Spider-Man"
+					"card": "Spider-Man",
+					"tokens": {
+						"damage": 3
+					}
 				}
 			],
 			"upgrade_support1": [
@@ -134,22 +132,20 @@
 			],
 			"enemies1": [
 				{
-					"card": "Nimrod #32166",
-					"tokens": {
-						"_max_damage": 0,
-						"damage": 3
-					}
+					"card": "Sentinel Mark V"
 				}
 			],
-			"allies1": [
+			"others": [
 				{
-					"card": "Mockingbird",
-					"tokens": {
-						"damage": 1
-					}
+					"card": "Targeted for Elimination",
+					"host": "Spider-Man"
 				}
 			],
+			"allies1": [],
 			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
 				{
 					"card": "Strength"
 				}

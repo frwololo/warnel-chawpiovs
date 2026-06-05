@@ -421,15 +421,22 @@ func attack(script: ScriptTask) -> int:
 			_add_pre_receive_damage_on_stack (damage, script, script_modifications)	
 		
 		#emit signals if this was e.g. an attack that bypassed guards
+		#bypass_guard_happened
 		for subject in script.subjects:
-			var guard_check = SP.attack_unguarded(script.owner, owner, subject)
+			var guard_check = SP.attack_unguarded(subject, owner, script.owner )
 			if guard_check:
 				var signals = guard_check.get("signals", [])
+				if signals:
+					subject.hint("Bypassed!", Color8(50, 200, 50))
+
 				for my_signal in signals:
+					var details_target = my_signal["details"].get("target", null)
+					if details_target:
+						details_target.hint("Bypassed!", Color8(50, 200, 50))
 					scripting_bus.emit_signal_on_stack(my_signal["name"], my_signal["card"], my_signal["details"])
 					
 				
-		consequential_damage(script)
+		#consequential_damage(script)
 
 	return retcode	
 
@@ -805,10 +812,11 @@ func receive_damage(script: ScriptTask) -> int:
 						
 			if ("basic power" in tags):
 				scripting_bus.emit_signal_on_stack("basic_attack_happened",  attacker,  signal_details)				
-		
-			scripting_bus.emit_signal_on_stack("defense_happened", card,  signal_details)
-			if ("basic_defense" in tags):
-				scripting_bus.emit_signal_on_stack("basic_defense_happened",  card,  signal_details)				
+				consequential_damage(script)
+			if !("undefended" in tags):
+				scripting_bus.emit_signal_on_stack("defense_happened", card,  signal_details)
+				if ("basic_defense" in tags):
+					scripting_bus.emit_signal_on_stack("basic_defense_happened",  card,  signal_details)				
 
 			#overkill attack
 			#TODO this only handles ally/hero attack for now,
@@ -1945,13 +1953,14 @@ func remove_threat(script: ScriptTask) -> int:
 			card.check_scheme_defeat(script)
 
 
-	consequential_damage(script)
+	#consequential_damage(script)
 	if (script.has_tag("basic power")):
 		var signal_details = {
 			"source": owner,
 			"amount": amount,
 		}
-		scripting_bus.emit_signal_on_stack("basic_thwart_happened",  owner,  signal_details)				
+		scripting_bus.emit_signal_on_stack("basic_thwart_happened",  owner,  signal_details)
+		consequential_damage(script)			
 	if script.has_tag("thwart"):
 		scripting_bus.emit_signal_on_stack("thwart_happened", owner, {"amount" : amount, "target" : script.subjects[0]})
 
@@ -1994,10 +2003,15 @@ func thwart(script: ScriptTask) -> int:
 			retcode = CFConst.ReturnCode.CHANGED
 		
 			#emit signals if this was e.g. a thwart that bypassed patrol
-			var patrol_check = SP.thwart_unpatroled(script.owner, owner, card)
+			var patrol_check = SP.thwart_unpatroled( card, owner,script.owner)
 			if patrol_check:
 				var signals = patrol_check.get("signals", [])
+				if signals:
+					card.hint("Bypassed!", Color8(50, 200, 50))
 				for my_signal in signals:
+					var details_target = my_signal["details"].get("target", null)
+					if details_target:
+						details_target.hint("Bypassed!", Color8(50, 200, 50))						
 					scripting_bus.emit_signal_on_stack(my_signal["name"], my_signal["card"], my_signal["details"])
 		
 
@@ -2643,8 +2657,8 @@ func constraints(script: ScriptTask) -> int:
 				#or, if a defender is set, they are controlled by me
 				#this works because any defense ability that resolves will forcefully set
 				#my hero as defender if no other defender is set yet
-				var defender = null #gameData.get_attack_defender()
-				if defender and defender.get_controller_hero_id != my_hero_id:
+				var defender = gameData.get_attack_defender()
+				if defender and defender.get_controller_hero_id() != my_hero_id:
 					return 	CFConst.ReturnCode.FAILED
 	
 	var board:Board = cfc.NMAP.board

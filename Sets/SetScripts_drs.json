@@ -1246,7 +1246,7 @@
 								"filter_tokens": [
 									{
 										"filter_token_name": "tough",
-										"filter_token_count": 1
+										"filter_count": 1
 									}
 								]
 							}
@@ -1296,7 +1296,7 @@
 								"filter_tokens": [
 									{
 										"filter_token_name": "stunned",
-										"filter_token_count": 1
+										"filter_count": 1
 									}
 								]
 							}
@@ -1346,7 +1346,7 @@
 								"filter_tokens": [
 									{
 										"filter_token_name": "confused",
-										"filter_token_count": 1
+										"filter_count": 1
 									}
 								]
 							}
@@ -1541,7 +1541,7 @@
 								"filter_tokens": [
 									{
 										"filter_token_name": "tough",
-										"filter_token_count": 1
+										"filter_count": 1
 									}
 								]
 							}
@@ -1575,7 +1575,7 @@
 								"filter_tokens": [
 									{
 										"filter_token_name": "tough",
-										"filter_token_count": 1
+										"filter_count": 1
 									}
 								]
 							}
@@ -1609,7 +1609,7 @@
 								"filter_tokens": [
 									{
 										"filter_token_name": "stunned",
-										"filter_token_count": 1
+										"filter_count": 1
 									}
 								]
 							}
@@ -1643,7 +1643,7 @@
 								"filter_tokens": [
 									{
 										"filter_token_name": "confused",
-										"filter_token_count": 1
+										"filter_count": 1
 									}
 								]
 							}
@@ -1677,7 +1677,7 @@
 								"filter_tokens": [
 									{
 										"filter_token_name": "stunned",
-										"filter_token_count": 1
+										"filter_count": 1
 									}
 								]
 							}
@@ -1711,7 +1711,7 @@
 								"filter_tokens": [
 									{
 										"filter_token_name": "confused",
-										"filter_token_count": 1
+										"filter_count": 1
 									}
 								]
 							}

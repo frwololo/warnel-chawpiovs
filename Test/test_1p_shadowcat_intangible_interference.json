@@ -1,0 +1,220 @@
+{
+	"_comments": "Test 'bypass_crisis' reaction",	
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Shadowcat"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Stun Beam #32116"
+				},
+				{
+					"card": "Sentinel Mark VIII #32114"
+				},
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Insert Virus Program #32120"
+				}
+			],
+			"villain": [
+				{
+					"card": "Master Mold - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Sentinel Factory - 1B",
+					"tokens": {
+						"threat": 5
+					}
+				},
+				{
+					"card": "Intruder Alert!",
+					"tokens": {
+						"threat": 3
+					}
+				}				
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"deck1": [
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "32051",
+					"owner_hero_id": 1,
+					"_comments": "Ready to Rumble"
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Shadowcat #32030a"
+				}
+			],
+			"allies1": [
+				{
+					"card": "32172b",
+					"owner_hero_id": 0,
+					"_comments": "Magneto - Erik Lehnsherr"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Phased #32031b"
+				},
+				{
+					"card": "Intangible Interference"
+				}				
+			],
+			"hand1": [
+				{
+					"card": "Gatekeeper"
+				},
+			],
+			"set_aside": [
+				{
+					"card": "Solid #32031a",
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "activate",
+			"value": "Shadowcat"
+		},
+		{
+			"type": "choose",
+			"value": "Thwart"
+		},
+		{
+			"type": "target",
+			"value": "The Sentinel Factory"
+		},
+		{
+			"type": "activate",
+			"value": "Intangible Interference"
+		},		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Shadowcat"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Stun Beam #32116"
+				},
+				{
+					"card": "Sentinel Mark VIII #32114"
+				},
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Insert Virus Program #32120"
+				}
+			],
+			"villain": [
+				{
+					"card": "Master Mold - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Sentinel Factory - 1B",
+					"tokens": {
+						"threat": 3
+					}
+				},
+				{
+					"card": "Intruder Alert!",
+					"tokens": {
+						"threat": 1
+					}
+				}				
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"deck1": [
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "32051",
+					"owner_hero_id": 1,
+					"_comments": "Ready to Rumble"
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Shadowcat #32030a"
+				}
+			],
+			"allies1": [
+				{
+					"card": "32172b",
+					"owner_hero_id": 0,
+					"_comments": "Magneto - Erik Lehnsherr"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Phased #32031b"
+				},
+				{
+					"card": "Intangible Interference",
+					"exhausted": true
+				}				
+			],
+			"hand1": [
+				{
+					"card": "Gatekeeper"
+				},
+			],
+			"set_aside": [
+				{
+					"card": "Solid #32031a",
+				}
+			]
+		}
+	}
+}

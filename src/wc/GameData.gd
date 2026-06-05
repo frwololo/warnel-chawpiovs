@@ -1305,6 +1305,8 @@ func get_attack_defender(script = null):
 		script = get_latest_activity_script()
 	if !script:
 		return null
+	if script.has_tag("undefended"):
+		return null
 	var defender = script.subjects[0] if script.subjects else null
 	return defender	
 

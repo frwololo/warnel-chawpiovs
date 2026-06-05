@@ -1993,6 +1993,8 @@ func remove_threat(modification: int, script = null) -> int:
 			if crisis:
 				if bypass_crisis:
 					scripting_bus.emit_signal_on_stack("bypass_crisis_happened", action_owner, {"target": card})
+					card.hint("Bypassed!", Color8(50, 200, 50))
+					self.hint("Bypassed!", Color8(50, 200, 50))				
 				else:
 					card.hint("Crisis!", Color8(200, 50, 50))
 					self.hint("Crisis!", Color8(200, 50, 50))

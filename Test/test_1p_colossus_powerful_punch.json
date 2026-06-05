@@ -1,11 +1,11 @@
 {
-	"_comments": "Never Back Down bug: Stun gets automatically removed",
+	"_comments": "Bug: Powerful punch hero gets exhausted",	
 	"init": {
 		"phase": "VILLAIN_ACTIVATES",
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Quicksilver"
+					"hero": "Colossus"
 				}
 			}
 		],
@@ -17,7 +17,7 @@
 			],
 			"deck_villain": [
 				{
-					"card": "Hydra Regular"
+					"card": "Hydra Soldier"
 				},
 				{
 					"card": "Hydra Mercenary"
@@ -30,7 +30,7 @@
 				{
 					"card": "01097b",
 					"tokens": {
-						"threat": 6
+						"threat": 1
 					}
 				}
 			],
@@ -41,39 +41,34 @@
 			],
 			"identity1": [
 				{
-					"card": "Quicksilver"
+					"card": "Colossus",
+					"tokens": {
+						"damage": 1
+					}
 				}
 			],
-			"upgrade_support1": [
-				{
-					"card": "Combat Training"
-				}
-			],
+			"upgrade_support1": [],
 			"enemies1": [],
-			"allies1": [
-				{
-					"card": "Scarlet Witch - Wanda Maximoff #14002"
-				}
-			],
+			"allies1": [],
 			"hand1": [
 				{
-					"card": "Mockingbird"
+					"card": "Powerful Punch"
 				},
 				{
-					"card": "Never Back Down"
+					"card": "Strength"
 				}
 			]
 		}
 	},
-	"actions": [
+	"actions": [	
 		{
 			"type": "select",
-			"value": "Quicksilver"
+			"value": "cancel"
 		},
 		{
 			"type": "play",
-			"value": "Never Back Down"
-		},
+			"value": "Powerful Punch"
+		},		
 		{
 			"type": "other",
 			"value": "wait_for_player_turn"
@@ -84,7 +79,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Quicksilver"
+					"hero": "Colossus"
 				}
 			}
 		],
@@ -92,9 +87,7 @@
 			"villain": [
 				{
 					"card": "Rhino - 1",
-					"tokens": {
-						"stunned": 1
-					}
+					"tokens": {"damage": 4}
 				}
 			],
 			"discard_villain": [
@@ -104,14 +97,14 @@
 			],
 			"deck_villain": [
 				{
-					"card": "Hydra Regular"
+					"card": "Hydra Soldier"
 				}
 			],
 			"schemes": [
 				{
 					"card": "01097b",
 					"tokens": {
-						"threat": 6
+						"threat": 1
 					}
 				}
 			],
@@ -122,31 +115,29 @@
 			],
 			"identity1": [
 				{
-					"card": "Quicksilver"
+					"card": "Colossus",
+					"tokens": {
+						"damage": 3
+					},
+					"exhausted": false
 				}
 			],
 			"upgrade_support1": [
-				{
-					"card": "Combat Training"
-				}
 			],
 			"enemies1": [
 				{
 					"card": "Hydra Mercenary"
 				}
 			],
-			"allies1": [
-				{
-					"card": "Scarlet Witch - Wanda Maximoff #14002"
-				}
-			],
+			"allies1": [],
 			"discard1": [
 				{
-					"card": "Mockingbird"
-				},
+					"card": "Strength"
+				},			
 				{
-					"card": "Never Back Down"
-				}
+					"card": "Powerful Punch"
+				},
+
 			]
 		}
 	}

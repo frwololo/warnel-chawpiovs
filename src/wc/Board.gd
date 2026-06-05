@@ -4,6 +4,10 @@
 # Code for a sample playspace, you're expected to provide your own ;)
 extends Board
 
+const _OPTIONAL_CONFIRM_SCENE_FILE = CFConst.PATH_CUSTOM + "OptionalConfirmation.tscn"
+const _OPTIONAL_CONFIRM_SCENE = preload(_OPTIONAL_CONFIRM_SCENE_FILE)
+
+
 var heroZone = preload("res://src/wc/board/WCHeroZone.tscn")
 var basicGrid = preload("res://src/wc/grids/BasicGrid.tscn")
 var basicPile = preload("res://src/core/Pile.tscn")
@@ -27,6 +31,7 @@ enum LOADING_STEPS {
 	CARDS_PRELOADED_SKIP_LOAD,	
 	CARDS_MOVED,
 	READY_TO_START,
+	SCENARIO_DESCRIPTION,	
 	START_GAME
 }
 
@@ -122,7 +127,7 @@ func load_next_step(next_step):
 			cfc._rpc(self,"ready_for_step", LOADING_STEPS.CARDS_MOVED)
 		LOADING_STEPS.CARDS_PRELOADED_SKIP_LOAD:
 			post_load_move()
-			cfc._rpc(self,"ready_for_step", LOADING_STEPS.START_GAME)			
+			cfc._rpc(self,"ready_for_step", LOADING_STEPS.SCENARIO_DESCRIPTION)			
 		LOADING_STEPS.CARDS_MOVED:
 			post_cards_moved_load()
 			#next step called from within function
@@ -130,7 +135,8 @@ func load_next_step(next_step):
 			offer_to_load_last_game()
 			#need to move gamePadHandler below any potential dialog box to ensure it captures events beforehand
 			get_tree().root.move_child(gamepadHandler, get_tree().root.get_children().size()-1)
-
+		LOADING_STEPS.SCENARIO_DESCRIPTION:
+			scenario_description()
 		LOADING_STEPS.START_GAME:
 			grab_default_focus()
 			
@@ -139,33 +145,52 @@ func load_next_step(next_step):
 			CFScriptUtils.init_alterants_super_cache()
 			#start game
 			gameData.start_game()
+
+func scenario_description():
+	var scenario = gameData.scenario
+	var description = scenario.get_description()
+	var msg_id = "scenario_description_" + scenario.scheme_card_id
+	#we skip the whole thing if testsuite is running
+	if !gameData.testSuite:
+		if description and !cfc.get_setting("dont_show_msg/" + msg_id):
+			description = cfc.convert_to_bbcode(description)
+			var title  = scenario.get_display_name()		
+			var confirm = _OPTIONAL_CONFIRM_SCENE.instance()
+			confirm.simple_message(title, description, msg_id)
+			# We have to wait until the player has finished selecting an option
+			yield(confirm,"selected")
+			# Garbage cleanup
+			confirm.queue_free()	
+	
+	cfc._rpc(self,"ready_for_step", LOADING_STEPS.START_GAME)	
+
 			
 func _decline_offer_to_load_last_game():
 	gameData.init_save_folder()
-	cfc._rpc(self,"ready_for_step", LOADING_STEPS.START_GAME)
+	cfc._rpc(self,"ready_for_step", LOADING_STEPS.SCENARIO_DESCRIPTION)
 	return	
 
 func _load_last_game():
 	var json_data = gameData.get_ongoing_game()
 	if !json_data:
-		cfc._rpc(self,"ready_for_step", LOADING_STEPS.START_GAME)
+		cfc._rpc(self,"ready_for_step", LOADING_STEPS.SCENARIO_DESCRIPTION)
 		return
 	gameData.load_gamedata(json_data)
 
 func offer_to_load_last_game():
 	if !cfc.is_game_master():
-		cfc._rpc(self,"ready_for_step", LOADING_STEPS.START_GAME)
+		cfc._rpc(self,"ready_for_step", LOADING_STEPS.SCENARIO_DESCRIPTION)
 		return
 		
 	var json_data = gameData.get_ongoing_game()
 	if !json_data:
-		cfc._rpc(self,"ready_for_step", LOADING_STEPS.START_GAME)
+		cfc._rpc(self,"ready_for_step", LOADING_STEPS.SCENARIO_DESCRIPTION)
 		return
 
 	#only offer to load if the previous save game had the same number of heroes
 	var hero_data:Array = json_data.get("heroes", [])	
 	if hero_data.size() != gameData.get_team_size():
-		cfc._rpc(self,"ready_for_step", LOADING_STEPS.START_GAME)
+		cfc._rpc(self,"ready_for_step", LOADING_STEPS.SCENARIO_DESCRIPTION)
 		return
 
 		

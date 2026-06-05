@@ -1,0 +1,223 @@
+{
+	"_comments": "Bug: Quick Shift no form change",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Shadowcat"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Stun Beam #32116"
+				},
+				{
+					"card": "Sentinel Mark VIII #32114"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance #01186"
+				},				
+			],
+			"villain": [
+				{
+					"card": "Master Mold - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Sentinel Factory - 1B",
+					"_comments": "",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"deck1": [
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "32051",
+					"owner_hero_id": 1,
+					"_comments": "Ready to Rumble"
+				}
+			],
+			"discard1": [
+				{
+					"card": "32046",
+					"owner_hero_id": 1,
+					"_comments": "Toe to Toe"
+				}
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Shadowcat #32030a",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "32172b",
+					"owner_hero_id": 0,
+					"_comments": "Magneto - Erik Lehnsherr",
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Solid #32031a",
+				}			
+		
+
+			],
+			"hand1": [
+				{
+					"card": "Quick Shift",
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Phased #32031b"
+				}	
+			],			
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Quick Shift"
+		},		
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}		
+		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Shadowcat"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+							{
+					"card": "Advance #01186"
+				},
+			],
+			"deck_villain": [
+				{
+					"card": "Stun Beam #32116"
+				},
+				{
+					"card": "Sentinel Mark VIII #32114"
+				},
+
+				
+			],
+			"villain": [
+				{
+					"card": "Master Mold - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Sentinel Factory - 1B",
+					"_comments": "",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"deck1": [
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "32051",
+					"owner_hero_id": 1,
+					"_comments": "Ready to Rumble"
+				}
+			],
+			"discard1": [
+				{
+					"card": "32046",
+					"owner_hero_id": 1,
+					"_comments": "Toe to Toe"
+				}
+			],
+			"enemies1": [
+							{
+					"card": "Hydra Mercenary"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Shadowcat #32030a",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "32172b",
+					"owner_hero_id": 0,
+					"_comments": "Magneto - Erik Lehnsherr",
+				}
+			],
+			"upgrade_support1": [
+					{
+					"card": "Solid #32031a",
+				}	
+		
+
+			],
+			"discard1": [
+				{
+					"card": "32046",
+					"owner_hero_id": 1,
+					"_comments": "Toe to Toe"
+				},			
+				{
+					"card": "Quick Shift",
+				}
+			],
+			"set_aside": [
+					{
+					"card": "Phased #32031b"
+				}	
+			],			
+		}
+	}	
+}

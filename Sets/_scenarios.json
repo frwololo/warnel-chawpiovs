@@ -123,7 +123,11 @@
 				"Crossbones - 2",
 				"Crossbones - 3"
 			]
-		}
+		},
+		"description": [
+			"Crossbones is attacking the Project P.E.G.A.S.U.S. facility in the Adirondack Mountains with a small army of Hydra troops. The S.H.I.E.L.D. soldiers stationed there are fighting desperately to protect the facility, but they are being overwhelmed by Hydra's blitzkrieg assault. They need your help to stop Crossbones from capturing the experimental weapons being developed in the P.E.G.A.S.U.S. labs.",
+			"<b>Experimental Weapons deck:</b>\nCards from the Experimental Weapons encounter set are initially shuffled in a separate deck from the encounter deck."
+		]
 	},
 	"04079": {
 		"code": "04079",
@@ -151,7 +155,8 @@
 				"Absorbing Man - 2",
 				"Absorbing Man - 3"
 			]
-		}
+		},
+		"description": "The tide of battle turned against Hydra after you arrived to aid the beleagured S.H.I.E.L.D. soldiers at Project P.E.G.A.S.U.S. Crossbones has been captured, and his army has been defeated, but Madame Hydra escaped the facility with an Infinity Gem. You chase her outside, but you are stopped short by the imposing form of Absorbing Man. The formidable villain has been hired by Red Skull to delay your pursuit. You will have to defeat him before you can recover the Infinity Gem."
 	},
 	"04096": {
 		"code": "04096",
@@ -181,7 +186,11 @@
 				"Taskmaster - 2",
 				"Taskmaster - 3"
 			]
-		}
+		},
+		"description": [
+			"With Absorbing Man in S.H.I.E.L.D. custody and Madame Hydra in the wind, you are flying back to Avengers Tower to plan your next move when all reality is changed in a flash of yellow light. When you reach New York City, you are shocked to find Avengers Tower emblazoned with the Hydra banner. But before you can process what has happened, an explosion rocks your Quinjet, and you crash-land in the city.",
+			"On the ground, you find that all of New York is under Hydra rule. Anti-hero propaganda is plastered on every corner, and squads of Hydra soldiers patrol the streets. They are led by the notorious Taskmaster, Hydra's new chief of police. He is going door-to-door hunting down heroes and locking them up. He fired the surface-to-air missile that brought you down, and now he is searching for you."
+		]
 	},
 	"04112": {
 		"code": "04112",
@@ -209,7 +218,8 @@
 				"Zola - 2",
 				"Zola - 3"
 			]
-		}
+		},
+		"description": "Having defeated Taskmaster, you learn that Hydra has not only captured New York City but all of the United States. It was the mad scientist, Arnim Zola, who built a machine to harness the power of the Reality Gem and tipped the balance of power in Hydra's favor. He has created a research station for himself on Ellis Island, and turned the historic port into a nightmarish prison for his unfortunate test subjects. Taskmaster was ordered to bring the heroes he captured there for experimentation. In this upside-down America, you are the only hope the captives have to escape a horrible fate."
 	},
 	"04128": {
 		"code": "04128",
@@ -272,7 +282,11 @@
 				"Red Skull - 2",
 				"Red Skull - 3"
 			]
-		}
+		},
+		"description": [
+			"You have liberated Zola's island and disarmed the mad doctor, but the Reality Gem still eludes you. You learn from Zola that the Gem resides with the true mastermind behind Hydra's ascendancy: the brilliant and nefarious Red Skull. The villain has taken up residence in Washington, D.C. and transformed the White House into his personal fortress.",
+			"But Red Skull's ambition for conquest does not end with the U.S.A. - he plans to bind every nation under Hydra rule with the power of the Reality Gem. His scientists work around the clock to make the necessary modifications to Zola's machine. Once completed, Red Skull will use the Reality Gem to conquer the whole world. If that happens, nobody will be safe from the types of atrocities you witnessed in Zola's labs. You cannot allow this to happen. You must defeat Red Skull and use the Reality Gem to set things right again."
+		]
 	},
 	"16061": {
 		"code": "16061",
@@ -302,7 +316,8 @@
 				"Drang - 2",
 				"Drang - 3"
 			]
-		}
+		},
+		"description": "The Brotherhood of Badoon has mounted a surprise attack against Earth! You and the other Guardians of the Galaxy rush to Earth’s aid, teaming up with the mighty Avengers in the process to beat back the Badoon. However, the Brotherhood of Badoon’s leader, Drang, is a skilled tactician with a fleet of powerful ships and an overwhelming number of soldiers at his side. This won’t be an easy fight."
 	},
 	"16073": {
 		"code": "16073",
@@ -339,7 +354,12 @@
 				"Collector - 2",
 				"Collector - 3"
 			]
-		}
+		},
+		"description": [
+			"Though the Badoon were formidable, the teamwork and coordination between the Avengers and Guardians was enough to quell Drang’s onslaught. After the battle, Gamora is able to extract critical information from Drang about why they attacked Earth by using a few… persuasive… interrogation techniques.",
+			"As it turns out, Taneleer Tivan—better known as the Collector— heard about the Reality Stone on Earth. Already having the Power Stone in his possession, and always looking to expand his collection, he hired the Badoon to steal Earth’s Stone. Deciding it best if the Collector has no Stones at all, you set out toward his museum",
+			"<b>The Collection</b>\nThroughout the course of the Infiltrate the Museum scenario, cards may be added to \"The Collection\". The Collection is an out-of-play game area shared by all players and specific to this scenario. If too many cards end up in The Collection, the players lose the game."
+		]
 	},
 	"16082": {
 		"code": "16082",
@@ -372,7 +392,11 @@
 				"Collector - A1",
 				"Collector - B1"
 			]
-		}
+		},
+		"description": [
+			"So... things didn’t go as planned. The good: you broke into the Collector’s museum; you beat the Collector; you know the Power Stone was here. The bad: an alarm went off as soon as you arrived, alerting the Collector to your presence; after you beat the Collector, he used his Elder God magic to trap you in his collection; also, someone else seems to have stolen the Power Stone.",
+			"Kind of a mixed bag here. On the bright side, whoever took the Power Stone cut the museum’s power as a distraction, giving you enough time to get out of captivity. Maybe, just maybe, you can leverage this luck and escape the museum before the Collector realizes what’s going on."
+		]
 	},
 	"16091": {
 		"code": "16091",
@@ -404,7 +428,11 @@
 				"Nebula - 2",
 				"Nebula - 3"
 			]
-		}
+		},
+		"description": [
+			"As you get out of range of the museum, the Milano’s sensors pick up another speeding ship within your vicinity. Assuming it must be the thief who stole the Stone, you crank up the hyper thrusters and ride the ship’s tail. When you get close, you realize you’re chasing Nebula, daughter of Thanos, and Gamora’s dear sister.",
+			"It would be best if she didn’t have the Power Stone, either."
+		]
 	},
 	"16106": {
 		"code": "16106",
@@ -436,7 +464,13 @@
 				"Ronan the Accuser - 2",
 				"Ronan the Accuser - 3"
 			]
-		}
+		},
+		"description": [
+			"With a sigh of relief, you kick back in your pilot seat and set course for Knowhere. You have the Power Stone and you’ve captured Nebula. After a discussion with the other Guardians, you decide it best to hand both over to the authorities... because it’s the right thing to do.",
+			"The reward money may also be an incentive.",
+			"As Knowhere comes into sight, a massive Kree warship suddenly drops out of hyperspace in front of you, intercepting your course. Ronan the Accuser. He sends a brief transmission through your comms relay—something about standing accused? Yeah, that seems appropriate.",
+			"Then, he attacks."
+		]
 	},
 	"21074": {
 		"code": "21074",
@@ -467,7 +501,15 @@
 				"Ebony Maw - 2",
 				"Ebony Maw - 3"
 			]
-		}
+		},
+		"description": [
+			"The Mad Titan, Thanos, is on a quest to collect all six Infinity Stones and join them together in the Infinity Gauntlet. If he succeeds, Thanos will have the power to control the universe — or destroy it.",
+			"His fanatical followers, the Black Order, have pledged their lives to the Titan’s cause, and they scour the universe for the only two stones that their master still needs to complete the Gauntlet: the Power Stone and the Reality Stone.",
+			"One of those followers, Ebony Maw, has discovered that the Power Stone is being kept in a secure vault on Knowhere. Now, the Black Order’s sorcerer is leading an army of Thanos in a direct assault on the space station. Cosmo and the rest of the Knowhere Corps are doing what they can to defend the station, but they won’t last long against Maw without your help!",
+			"<b>Spell Environment cards</b>\nEbony Maw is a servant of Thanos and a powerful sorcerer. To represent his deadly magic in the game, Ebony Maw’s set contains eight Spell environment cards. When a player reveals a Spell environment, they place that card in front of them in their play area.",
+			"Each of these Spell environments enters play with a specified number of \"invocation counters\" on them.",
+			"When Ebony Maw activates against a player, his ability text triggers: \"Forced Interrupt: When Ebony Maw activates against you, remove an invocation counter from each Spell in your play area.\""
+		]
 	},
 	"21098": {
 		"code": "21098",
@@ -561,7 +603,12 @@
 					"Corvus Glaive - 3"
 				]
 			]
-		}
+		},
+		"description": [
+			"Ebony Maw failed to capture the Power Stone, but in an unexpected twist, it was delivered to Thanos by Loki, the God of Mischief. The outcast prince of Asgard also revealed to Thanos that the Reality Stone could be found in Avengers Tower on Earth. The Mad Titan immediately ordered Corvus Glaive and Proxima Midnight, his two most trusted generals, to attack the Avengers and seize the last Infinity Stone. Now it’s up to Earth’s mightiest heroes to protect the Stone, and their home, from the Black Order.",
+			"<b>Two main schemes</b>\nThis scenario has two main scheme cards in play at the same time: Stage 1B and Stage 2B. Both main schemes are active each round. Encounter cards that refer to \"the main scheme\" refer to both main scheme cards. Each main scheme gains threat during step 1 of the villain phase, and they are each affected by any acceleration and crisis icons in play.",
+			"<b>Two villains</b>\nThis scenario has two villains: Proxima Midnight and Corvus Glaive. Each of these villains is paired with one of the main schemes. Stage 1B is identified as Proxima Midnight’s scheme, and stage 2B is identified as Corvus Glaive’s scheme. When either of the two villains schemes, threat is placed on their matching main scheme card only. For example, when Proxima Midnight schemes, threat is placed only on stage 1B."
+		]
 	},
 	"21114": {
 		"code": "21114",
@@ -593,7 +640,14 @@
 				"Thanos - 2",
 				"Thanos - 3"
 			]
-		}
+		},
+		"description": [
+			"The Black Order’s assault on Avengers Tower was brutal, but the Avengers stood firm in the defense. The tide of battle turned when the Guardians of the Galaxy arrived to lift the seige. The combined forces of the Guardians and the Avengers was enough to drive back the armies of Thanos. Yet in the midst of that chaos, the Mad Titan used the Space Stone to teleport directly into Avengers Tower. Once inside, he seized the Reality Stone and teleported back to his enormous space ship, Sanctuary.",
+			"With all six Infinity Stones in his possession, it is only a matter of time before Thanos masters the power of the Infinity Gauntlet and wreaks havoc on the universe. You only have one shot at stopping him before it’s too late!",
+			"<b>The Infinity Gauntlet encounter Set</b>\nThe Infinity Gauntlet is one of the most powerful artifacts in the Marvel universe. To represent its unique and unprecedented power, the Infinity Gauntlet has its own encounter set.",
+			"The Infinity Stone deck has its own discard pile. When an Infinity Stone environment is discarded, it is placed in the Infinity Stone deck discard pile. If the Infinity Stone deck is ever empty, the Infinity Stone deck discard pile is shuffled back into the Infinity Stone deck.",
+			"Each Infinity Stone environment has a unique Special effect that is triggered by the Infinity Gauntlet when the attached villain activates. If there are no Infinity Stone environment cards in play when the villain activates, the Infinity Gauntlet’s ability places the top card of the Infinity Stone deck into play instead."
+		]
 	},
 	"21138": {
 		"code": "21138",
@@ -622,7 +676,15 @@
 			"villains": [
 				"Hela - B1"
 			]
-		}
+		},
+		"description": [
+			"Against all odds, Thanos has been defeated and the Infinity Gauntlet wrested from his hand! The combined power of the Guardians of the Galaxy and the Avengers was just enough to save the universe from the Mad Titan. The heroes all breathe a huge sigh of relief, but they have to decide what to do with the Infinity Gauntlet.",
+			"Tensions rise among the super-powered friends as an impassioned debate breaks out. Before the argument can spiral further out of control, the enigmatic Adam Warlock steps forward to offer his stewardship. His unique connection to the Soul Stone makes him the ideal candidate to safeguard the Gauntlet. The gathered Avengers and Guardians agree to this, and the Gauntlet is entrusted to Warlock’s care.",
+			"Relieved to have the mattered settled, the exhausted heroes move to the lounge to eat and celebrate their victory. After they leave, the stoic figure of Adam Warlock is replaced by the grinning God of Mischief. Loki used his magic arts to impersonate Warlock and fool the heroes into giving him the Infinity Gauntlet!",
+			"The trickster uses the power of the Gauntlet to enact the final part of his plan: to usurp the Throne of Asgard from Odin. He casts the All-Father down to Hel, consigning him to the cruel ministrations of Hela, goddess of death. Only the stalwart watchman of Asgard, Heimdall, escapes to bring news of Loki’s treachery to Avengers Tower. He warns that only Odin has the power to defeat Loki and insists that the heroes journey into Hel to rescue the All-Father from Hela’s grasp.",
+			"<b>Infinite hit points</b>\nIn this scenario, the villain has infinite hit points. A character with infinite hit points cannot be defeated by taking damage. However, damage may still be dealt to that character through attacks and card abilities. ",
+			"If the players want to defeat Hela, they must rescue Odin first."
+		]
 	},
 	"21165": {
 		"code": "21165",
@@ -658,7 +720,7 @@
 							]
 						}
 					]
-				},				
+				}
 			}
 		],
 		"options": [
@@ -709,7 +771,12 @@
 				"Loki - 1 #21163",
 				"Loki - 1 #21164"
 			]
-		}
+		},
+		"description": [
+			"The heroes have defeated Hela and rescued Odin from the dungeons of Hel, but Loki still sits on the throne of Asgard with the Infinity Gauntlet. Heimdall can take you to the Golden Realm, and the All-Father can offer you some protection from Loki’s magic, but it is up to you to defeat the trickster god and secure the Infinity Stones.",
+			"<b>The God of Mischief</b>\nLoki does not have ordinary villain stages. Instead, Loki has five different stage-I villain cards. When the players defeat Loki, instead of revealing the next villain stage, the players reveal one of the set-aside versions of Loki at random.",
+			"<b>Modular Difficulty</b>\nTo win the game, the players must defeat a certain number of Loki villains, determined by the players before the game begins (Team Selection screen)."
+		]
 	},
 	"27064": {
 		"code": "27064",
@@ -739,7 +806,8 @@
 				"Sandman - 2",
 				"Sandman - 3"
 			]
-		}
+		},
+		"description": "Almost as if he were prepared for a fight, Sandman unleashes a deluge of dust upon you, sand blasting the surrounding buildings and filling large portions of the streets with tidal sands. Though people in the area try their hardest to escape, the surging sands become too much as the battle rages on. There are civilians in desperate need of rescue!"
 	},
 	"27076": {
 		"code": "27076",
@@ -769,7 +837,12 @@
 				"Venom - 2",
 				"Venom - 3"
 			]
-		}
+		},
+		"description": [
+			"Phew, that was close! Blinded by rage, Venom charges at you, shouting something-or-other about how you won’t capture him again. Every attempt you make to repel the onslaught is ultimately in vain, enraging him further with each hit, and the brutality of his blitz starts to overwhelm you.",
+			"However, from high atop Oscorp, you see an old bell tower not too far away. If you can lure Venom in that direction—which shouldn’t be hard given his frenzied fervor—you may be able to use the bell’s sonic vibrations to your advantage.",
+			"<b>Boost Cards on your Identity</b>\nDuring this scenario, boost cards may be placed on your identity. That boost card remains on your identity until a card ability moves that card to Venom during an activation."
+		]
 	},
 	"27087": {
 		"code": "27087",
@@ -799,7 +872,11 @@
 				"Mysterio - 2",
 				"Mysterio - 3"
 			]
-		}
+		},
+		"description": [
+			"Delving deeper into Oscorp, a maze of mirrors and phantom phobias obscure your path, confusing your perspective and forcing you to fight through a neverending horde of hallucinations. The illusions begin to distort your sense of reality, eroding the shoreline between your rational, conscious self and a subliminal torrent of your basest fears.",
+			"<b>Encounter cards in your player deck</b>\nThroughout this scenario, cards from the encounter deck may be added to your player deck, hand, or discard pile."
+		]
 	},
 	"27100": {
 		"code": "27100",
@@ -921,7 +998,12 @@
 					"Vulture - 1"
 				]
 			]
-		}
+		},
+		"description": [
+			"Mysterio disappears in a puff of smoke, revealing that you’ve been led into an underground silo. The stillness in the room quickly erupts into a chaotic melee as each member of the Sinister Six bursts from the darkness.",
+			"<b>The Active Counter</b>\nDuring this scenario, there may be more than one villain in play. However, only one villain at a time will have the active counter, which is placed on a villain at the start of the scenario and will move between villains through card abilities.",
+			"The active counter determines which villain is considered active. This is the only villain that activates during step 2 of the villain phase. Encounter card effects that refer to \"the villain\" without a qualifier refer only to the active villain. Card effects that specify \"the villain\" who best meets a certain condition (such as \"the villain with the highest activation order value\" or \"the villain with the most remaining hit points\") refer to the specified villain regardless of which villain is active."
+		]
 	},
 	"27116": {
 		"code": "27116",
@@ -951,7 +1033,14 @@
 				"Venom Goblin - 2",
 				"Venom Goblin - 3"
 			]
-		}
+		},
+		"description": [
+			"Using a device he completed during your slog through Oscorp, Norman Osborn finally twists the Venom symbiote to his will, binding with it. This triumvirate of terror takes to the skies of New York City, dropping symbiotic goo on unsuspecting citizens, attempting to create the army he was previously denied.",
+			"<b>The glider Counter</b>\nThere are three main schemes in play at the start of this scenario. However, only one main scheme at a time will have the glider counter, which is placed on Midtown Manhattan at the start of the scenario and will move between the main schemes through card abilities.",
+			"When threat would be placed on \"the main scheme\" by an enemy activation, card ability, or acceleration icon, it is placed on the scheme with the glider counter. Additionally, when an acceleration token would be placed on \"the main scheme\", it is placed on the scheme with the glider counter.",
+			"Any encounter card that refers to \"the main scheme\" without a qualifier refers to the main scheme with the glider counter. Encounter cards that refer to \"the main scheme\" that best meet a certain condition (such as \"the main scheme with the least threat\") refer to that scheme regardless of which main scheme the glider counter is on.",
+			"During step 1 of the villain phase, threat is placed on each main scheme according to its own acceleration value, without reference to the acceleration values of other main schemes. Likewise, each acceleration token places additional threat only on the main scheme it is on. When a main scheme is completed, it is flipped to its environment side."
+		]
 	},
 	"32063": {
 		"code": "32063",
@@ -982,7 +1071,36 @@
 				"Sabretooth - 2",
 				"Sabretooth - 3"
 			]
-		}
+		},
+		"options": [
+			{
+				"name": "kelly_initial_damage",
+				"display_name": "R. Kelly start DMG",
+				"type": "option_button",
+				"options": [
+					{
+						"display_name": "Skirmish (0)",
+						"value": 0
+					},
+					{
+						"display_name": "Standard (1)",
+						"value": 1
+					},
+					{
+						"display_name": "Expert (2)",
+						"value": 2
+					},
+					{
+						"display_name": "Heroic (3)",
+						"value": 3
+					}
+				]
+			}
+		],
+		"description": [
+			"Anti-mutant hysteria is sweeping across America. The public lives in fear that their neighbor or child could be a mutant. Senator Robert Kelly has seized the spotlight by spouting pro-human rhetoric and advocating for the Mutant Registration Act. His public address draws the attention of both the X-Men and the Brotherhood of Mutants.",
+			"<b>Robert Kelly</b>\nIf Robert Kelly leaves play, the players lose the game, so it is critical that the players protect him."
+		]
 	},
 	"32087": {
 		"code": "32087",
@@ -1012,7 +1130,13 @@
 				"Sentinel - 2",
 				"Sentinel - 3"
 			]
-		}
+		},
+		"description": [
+			"Even though the X-Men rescued Robert Kelly from Sabretooth's attack, the Senator's prejudice against mutants is only intensified by the attempt on his life. He contacts Henry Gyrich, head of the top-secret commission \"Project Wideawake,\" to discuss their response to the escalating conflict. The two men agree that the mutant menace is out of control and they can no longer afford to wait for legislation to pass-they need to activate the Sentinels immediately.",
+			"Later that night, mutant-hunting robots deploy across the United States. Utilizing their sophisticated scanners, the Sentinels begin hunting down unsuspecting mutants.",
+			"The surge in psionic energy caused by these mutants' primal terror alerts Professor X to their plight. Using his telepathy, he directs the X-Men to stop the Sentinels and rescue as many of the captured mutants as they can.",
+			"<b>Operation Zero Tolerance</b>\nThis side scheme introduces an alternative loss condition for the players to avoid: <i>After an enemy attacks and defeats an ally, place that ally facedown under this scheme.If there are X facedown cards under this scheme, the players lose the game. X is 3 more than the number of players.</i>\nOperation Zero Tolerance cannot leave play during the scenario. That means the players will need to defeat the Sentinel villain before too many cards are placed under Operation Zero Tolerance."
+		]
 	},
 	"32112": {
 		"code": "32112",
@@ -1045,7 +1169,12 @@
 				"Master Mold - 2",
 				"Master Mold - 3"
 			]
-		}
+		},
+		"description": [
+			"The marauding Sentinels have been destroyed thanks in part to Magneto’s surprise assistance. The Master of Magnetism reveals that he has discovered the secret location of the Sentinel factory, and suggests he and the X-Men join forces to defeat their common foe. Angered and dismayed by the brazen attack against their fellow mutants, the X-Men agree and follow Magneto to the factory",
+			"<b>Master Mold's Minions</b>\nMaster Mold brings minions to play when he Schemes. The minion that enters play through this ability activates against you as normal after Master Mold’s activation, so be careful how often you allow Master Mold to scheme",
+			"Additionally, main schemes 1B and 2B both have the text: \"Each SENTINEL minion gains guard.\" This means you will need to defeat each SENTINEL minion engaged with you before you can attack Master Mold directly."
+		]
 	},
 	"32125": {
 		"code": "32125",
@@ -1104,7 +1233,7 @@
 							]
 						}
 					]
-				}				
+				}
 			}
 		],
 		"options": [
@@ -1146,12 +1275,21 @@
 				"Pyro - B",
 				"Toad - B"
 			]
-		}
+		},
+		"description": [
+			"The combined powers of Magneto and the X-Men prove too much for Master Mold and its army of Sentinels to withstand, and the mutants triumph over the machines. But instead of destroying the Sentinel factory as agreed, Magneto used his power of magnetism to lift Master Mold out of its subterranean facility and fly it to his orbital fortress, Asteroid M.",
+			"The X-Men try to prevent Magneto from escaping, but they are summoned back to the X-Mansion by a telepathic distress call from Professor X. The Xavier Institute is under attack! Magneto has ordered his Brotherhood to assault the school in order to draw off his pursuers and buy him time to reprogram Master Mold.",
+			"The X-Men give up their pursuit and race back to the X-Mansion to confront the Brotherhood of Mutants.",
+			"<b>Multiple Villains</b>\nOnly one villain will be in play at a time, but the order is randomized so players never know who will appear next. In order to win the scenario, the players must defeat a certain number of villains. That number is determined by the chosen difficulty",
+			"<b>Variable Main Schemes</b>\nMansion Attack also confronts the players with four different versions of main scheme 2B. These four main schemes represent the different parts of the Xavier Institute under attack by the Brotherhood. They are shuffled together during Setup so that the players never know where the villains will strike next. If the villains complete 2 versions of scheme 2B, the players lose the game."
+		]
 	},
 	"32141": {
 		"code": "32141",
 		"name": "Asteroid M",
-		"modular_default": ["acolytes"],
+		"modular_default": [
+			"acolytes"
+		],
 		"encounter_sets": [
 			"magneto",
 			"Standard",
@@ -1172,6 +1310,11 @@
 				"Magneto - 2",
 				"Magneto - 3"
 			]
-		}
+		},
+		"description": [
+			"Magneto sent his Brotherhood of Mutants against Xavier’s school in order to draw the X-Men away while he escaped with Master Mold. The Master of Magnetism used that time to install Master Mold into his orbital fortress, Asteroid M. Now safely out of reach of the world’s governments, Magneto begins reprogramming the Sentinel factory to create new M-Type Sentinels: human-hunting robots. Once complete, he will drop his Sentinels onto the planet below, clearing away human resistance and bringing about his dream of mutant dominion over the world.",
+			"Back at the X-Mansion, the mutant Forge finishes making upgrades to the X-Men’s supersonic jet, the X-Jet, enabling it to escape Earth’s gravity and reach Asteroid M. Professor X wishes his team luck as they blast off to confront his old friend and deadliest foe.",
+			"<b>Race against Magneto</b>\nSome side schemes has text that prevents Magneto from taking fatal damage, preventing the players from defeating him until the side schemes are defeated. In order to win the scenario in standard mode, the players must defeat each of the side schemes before Magneto completes his main schemes. They must then take advantage of Magneto’s weakened state to defeat him."
+		]
 	}
 }

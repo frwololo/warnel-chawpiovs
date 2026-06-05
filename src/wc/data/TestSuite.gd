@@ -986,7 +986,14 @@ func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
 	match typeof(element1):	
 		TYPE_DICTIONARY:
 			var ignore_order = test_conditions.get("ignore_order", [])
+	
 			for key in element1:
+				#special case to test for exhausted = false
+				if key =="exhausted":
+					var value = element1[key]
+					if value == false:
+						if !element2.has(key):
+							element2[key] = false				
 				if not element2.has(key):
 					failed_reason.append ("missing key :" + key)
 					return false
@@ -1007,7 +1014,7 @@ func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
 							var el2_tokens = element2[key]
 							if !el2_tokens.has(child_key):
 								el2_tokens[child_key] = 0
-				
+			
 				if key in (ignore_order):
 					if (typeof(val1) == TYPE_ARRAY and typeof(val2) == TYPE_ARRAY):
 							sort_card_array(val1)

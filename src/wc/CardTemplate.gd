@@ -1353,7 +1353,8 @@ func execute_scripts(
 
 	if script_exec_temporarily_blocked(run_type):
 		if get_parent() and !("tree_" in trigger): #dirty check to avoid crashes
-			gameData.add_script_to_execute(self, trigger_card, trigger, orig_trigger_details, run_type)
+			if get_potential_scripts(trigger):
+				gameData.add_script_to_execute(self, trigger_card, trigger, orig_trigger_details, run_type)
 			return null
 		else:
 			return null
@@ -3113,6 +3114,9 @@ func get_subject_int_property(params, script:ScriptObject= null) -> int:
 	
 func get_subject_int_printed_property(params, script:ScriptObject = null) -> int:
 	var subject = get_param_subject(params, script)
+	
+	if !subject:
+		return 0
 	
 	var property = params.get("property", "")
 	if !property:

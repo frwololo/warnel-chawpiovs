@@ -233,14 +233,15 @@ func mod_token(
 		elif is_drawer_open:
 			token.expand()
 		retcode = CFConst.ReturnCode.CHANGED
-		scripting_bus.emit_signal(
-				"card_token_modified",
-				owner_card,
-				{SP.TRIGGER_TOKEN_NAME: token.get_token_name(),
-				SP.TRIGGER_PREV_COUNT: prev_value,
-				SP.TRIGGER_NEW_COUNT: new_value,
-				"amount": int(abs(prev_value - new_value)),
-				"tags": tags})
+		if new_value != prev_value:
+			scripting_bus.emit_signal(
+					"card_token_modified",
+					owner_card,
+					{SP.TRIGGER_TOKEN_NAME: token.get_token_name(),
+					SP.TRIGGER_PREV_COUNT: prev_value,
+					SP.TRIGGER_NEW_COUNT: new_value,
+					"amount": int(abs(prev_value - new_value)),
+					"tags": tags})
 		if new_value > prev_value:
 			for i in (new_value - prev_value):
 				scripting_bus.emit_signal(

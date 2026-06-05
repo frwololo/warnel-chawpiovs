@@ -121,10 +121,12 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 		SP.KEY_SUBJECT_V_ATTACHMENTS:
 			var host = script.script_definition.get(SP.KEY_ATTACHMENTS_HOST, "self")
 			host = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : host})
-			var subjects_array = host.attachments
-			for c in subjects_array:
-				if SP.check_validity(c, script.script_definition, "attachment", owner):
-					results.append(c)			
+			if host:
+				host = host[0]
+				var subjects_array = host.attachments
+				for c in subjects_array:
+					if SP.check_validity(c, script.script_definition, "attachment", owner):
+						results.append(c)			
 		SP.KEY_SUBJECT_V_MY_HERO:
 			var hero_card = get_script_identity(script, trigger_details)
 			if (hero_card and hero_card.is_hero_form()):

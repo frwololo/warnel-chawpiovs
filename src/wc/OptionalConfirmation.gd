@@ -8,6 +8,18 @@ var is_accepted := false
 var is_master := true
 var dialog_text
 var has_been_centered = false
+var _msg_id = ""
+
+enum MODES {
+	OPTIONAL_CONFIRMATION,
+	MESSAGE
+}
+
+func get_checkbox():
+	return get_node("%CheckBox")
+
+func get_msgbox():
+	return get_node("%RichMessage")
 
 func get_cancel():
 	return get_node("%NoButton")
@@ -17,9 +29,8 @@ func get_ok():
 
 func _ready() -> void:
 	var no_button = get_cancel()
-	var yes_button = get_ok()	
+	var yes_button = get_ok()
 	no_button.text = "No"
-	yes_button.text = "Yes"
 	
 	# warning-ignore:return_value_discarded
 	no_button.connect("pressed", self, "_on_OptionalConfirmation_cancelled")
@@ -33,6 +44,9 @@ func _ready() -> void:
 func prep(card_name: String, task_name: String, _is_master:bool = true) -> void:
 		dialog_text =  card_name + ": Do you want to activate " + task_name + "?"
 		get_node("%Title").text = dialog_text
+
+		set_mode(MODES.OPTIONAL_CONFIRMATION)
+
 		
 		#cfc.NMAP.board.add_child(self) #TODO shouldn't that be removed from the board eventually ?
 		cfc.NMAP.board.add_child_to_top_layer(self)		
@@ -51,6 +65,30 @@ func prep(card_name: String, task_name: String, _is_master:bool = true) -> void:
 			self,
 			{"card_name": card_name, "is_master": is_master}
 		)		
+
+func set_mode(mode):
+	var msgbox = get_msgbox()	
+	match mode:
+		MODES.OPTIONAL_CONFIRMATION:
+			msgbox.visible = false
+			get_checkbox().visible = false
+			get_ok().text = "Yes"
+		MODES.MESSAGE:
+			$Panel.rect_min_size.x = 850
+			msgbox.visible = true			
+			get_cancel().visible = false
+			get_ok().text = "  OK  "
+			get_checkbox().visible = true				
+
+func simple_message(title, message, msg_id):
+	_msg_id = msg_id
+	get_node("%Title").text = title	
+	set_mode(MODES.MESSAGE)
+	if message.length() > 1000:
+		get_ok().text = "I ain't reading all that. I'm happy for U tho"
+	var msgbox = get_msgbox()	
+	msgbox.bbcode_text = message
+	cfc.NMAP.board.add_child_to_top_layer(self)		
 
 func _process(_delta):
 	popup_centered()
@@ -89,6 +127,8 @@ func _on_OptionalConfirmation_cancelled() -> void:
 
 remotesync func confirmed() -> void:
 	is_accepted = true
+	if _msg_id and get_checkbox().pressed:
+		cfc.set_setting('dont_show_msg/' + _msg_id, true)
 	GameRecorder.add_entry(GameRecorder.ACTIONS.CHOOSE, "yes", dialog_text)
 	emit_signal("selected")
 	scripting_bus.emit_signal(

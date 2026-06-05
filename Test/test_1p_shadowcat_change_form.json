@@ -1,0 +1,243 @@
+{
+	"_comments": "Bug: Changing from Solid to Phased switches back to Solid again",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Shadowcat"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Stun Beam #32116"
+				},
+				{
+					"card": "Sentinel Mark VIII #32114"
+				},
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Insert Virus Program #32120"
+				}
+			],
+			"villain": [
+				{
+					"card": "Master Mold - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Sentinel Factory - 1B",
+					"_comments": "",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"deck1": [
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "32051",
+					"owner_hero_id": 1,
+					"_comments": "Ready to Rumble"
+				}
+			],
+			"discard1": [
+				{
+					"card": "32046",
+					"owner_hero_id": 1,
+					"_comments": "Toe to Toe"
+				}
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "32030b",
+					"_comments": "Kitty Pride",
+					"tokens": {
+						"__phase_control": 1,
+						"damage": 3
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "32172b",
+					"owner_hero_id": 0,
+					"_comments": "Magneto - Erik Lehnsherr",
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Phased #32031b"
+				}			
+
+			],
+			"hand1": [
+				{
+					"card": "32038",
+					"owner_hero_id": 1,
+					"_comments": "Phased Strike"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "32031a",
+					"owner_hero_id": 1,
+					"_comments": "Solid"
+				}
+			],			
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Kitty Pryde"
+		},	
+		{
+			"type": "choose",
+			"value": "Phase Control"
+		},	
+		{
+			"type": "activate",
+			"value": "Kitty Pryde"
+		},	
+		{
+			"type": "choose",
+			"value": "Change Form"
+		},		
+		{
+			"type": "activate",
+			"value": "Shadowcat"
+		},
+		{
+			"type": "choose",
+			"value": "Attack"
+		},
+		{
+			"type": "target",
+			"value": "Master Mold"
+		},
+		{
+			"type": "choose",
+			"value": "yes"
+		}		
+		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Shadowcat"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Stun Beam #32116"
+				},
+				{
+					"card": "Sentinel Mark VIII #32114"
+				},
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Insert Virus Program #32120"
+				}
+			],
+			"villain": [
+				{
+					"card": "Master Mold - 1",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Sentinel Factory - 1B",
+					"_comments": "",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "32031a",
+					"owner_hero_id": 1,
+					"_comments": "Solid"
+				}			
+
+			],
+			"deck1": [
+				{
+					"card": "01090",
+					"owner_hero_id": 1,
+					"_comments": "Strength"
+				},
+				{
+					"card": "32051",
+					"owner_hero_id": 1,
+					"_comments": "Ready to Rumble"
+				}
+			],
+			"discard1": [
+				{
+					"card": "32046",
+					"owner_hero_id": 1,
+					"_comments": "Toe to Toe"
+				}
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "32030a",
+					"_comments": "Shadowcat",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "32172b",
+					"owner_hero_id": 0,
+					"_comments": "Magneto - Erik Lehnsherr",
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Phased #32031b"
+				}
+			],
+			"hand1": [
+				{
+					"card": "32038",
+					"owner_hero_id": 1,
+					"_comments": "Phased Strike"
+				}
+			]
+		}
+	}	
+}

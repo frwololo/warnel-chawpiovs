@@ -226,9 +226,7 @@
 					"subject": "trigger",
 					"filter_state_source": [
 						{
-							"filter_properties": {
-								"Name": "Aggressive Energy"
-							}
+							"is_script_owner": true
 						}
 					]
 				}
@@ -886,9 +884,9 @@
 				"func_name": "count_tokens",
 				"func_params": {
 					"subject": "self",
-					"token_name": "__reduce_consequential",
+					"token_name": "__reduce_consequential"
 				}
-			},		
+			},
 			"event_filters": {
 				"target": "self",
 				"tags": [
@@ -2032,6 +2030,11 @@
 		}
 	},
 	"Kitty Pryde": {
+		"additional_cards_set_aside": [
+			{
+				"card": "Phased #32031b"
+			}
+		],
 		"setup": {
 			"all": [
 				{
@@ -2053,7 +2056,7 @@
 		},
 		"manual": {
 			"board": {
-				"Phase control": [
+				"Phase Control": [
 					{
 						"name": "constraints",
 						"is_cost": true,
@@ -3756,7 +3759,8 @@
 				},
 				{
 					"name": "change_form",
-					"form_name": "phased"
+					"form_name": "Phased",
+					"subject": "my_identity"
 				},
 				{
 					"name": "move_card_to_container",
@@ -3926,7 +3930,9 @@
 			]
 		},
 		"interrupt_receive_damage": {
-			"target": "my_hero",
+			"event_filters": {
+				"target": "my_hero"
+			},
 			"filter_state_event_target": [
 				{
 					"func_name": "is_defending"
@@ -3945,7 +3951,8 @@
 			"board": [
 				{
 					"name": "change_form",
-					"form_name": "Solid"
+					"form_name": "Solid",
+					"subject": "my_identity"
 				}
 			]
 		},
@@ -3954,7 +3961,8 @@
 			"board": [
 				{
 					"name": "change_form",
-					"form_name": "Solid"
+					"form_name": "Solid",
+					"subject": "my_identity"
 				}
 			]
 		}
@@ -4458,7 +4466,7 @@
 		}
 	},
 	"Quick Shift": {
-		"interrupt_enemy_attack": {
+		"interrupt_enemy_initiates_attack": {
 			"is_optional_hand": true,
 			"hand": [
 				{
@@ -4489,7 +4497,8 @@
 							"nested_tasks": [
 								{
 									"name": "change_form",
-									"form_name": "phased"
+									"form_name": "Phased",
+									"subject": "my_identity"
 								}
 							]
 						}
@@ -5694,6 +5703,11 @@
 					]
 				},
 				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
 					"name": "add_resource",
 					"amount": 1,
 					"resource_name": "physical"
@@ -5706,7 +5720,8 @@
 			"board": [
 				{
 					"name": "change_form",
-					"form_name": "Phased"
+					"form_name": "Phased",
+					"subject": "my_identity"
 				}
 			]
 		},
@@ -5716,7 +5731,8 @@
 			"board": [
 				{
 					"name": "change_form",
-					"form_name": "Phased"
+					"form_name": "Phased",
+					"subject": "my_identity"
 				}
 			]
 		}
@@ -5749,6 +5765,21 @@
 							}
 						}
 					]
+				}
+			]
+		},
+		"post_setup": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"action_owner": "villain",
+					"amount": {
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "kelly_initial_damage"
+						}
+					},
+					"subject": "Robert Kelly"
 				},
 				{
 					"name": "flip_doublesided_card",
@@ -6722,7 +6753,7 @@
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
-								"Name": "Magneto"
+								"shortname": "Magneto"
 							},
 							"filter_properties2": {
 								"type_code": "ally"

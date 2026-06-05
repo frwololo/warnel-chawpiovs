@@ -273,9 +273,52 @@ static func get_schemes(scheme_id):
 	my_schemes.sort_custom(WCUtils, "sort_stage")
 	return my_schemes
 
+func get_setting(key, default = null):
+	return scenario_data.get("settings", {}).get(key, default)	
+
+func get_value(key):
+	return scenario_data.get(key, "")
 
 func get_scenario_option(key):
 	return scenario_options.get(key, 0)
+
+func get_description():
+	var description = get_value("description")
+	if !description:
+		description = []
+		var a_side_code = _get_corrected_scheme_card_id(scheme_card_id)
+		var a_side_data = cfc.get_card_by_id(a_side_code)
+		if a_side_data:
+			var flavor = a_side_data.get("flavor", "")
+			if flavor:
+				description.append(flavor)
+			var b_side_code = a_side_data.get("back_card_code", "")
+			if b_side_code:
+				var b_side_data = cfc.get_card_by_id(b_side_code)
+				var flavor_b = b_side_data.get("flavor", "")
+				if flavor_b:
+					description.append(flavor_b)
+	
+	if !description:
+		return ""
+						
+	match typeof(description):
+		TYPE_ARRAY:
+			var compiled_name: PoolStringArray = description
+			var result = compiled_name.join("\n\n")
+			return result
+		TYPE_STRING:
+			return description
+		_:
+			return ""
+
+func get_display_name():
+	var display_name = get_value("scenario_display_name")
+	if !display_name:
+		var villain = _villains[0][0]
+		var shortname = villain["shortname"]
+		display_name = get_value("name") + " - " + shortname
+	return display_name
 
 func _load_extra_rules_from_encounters():
 	var the_deck: Array = get_encounter_deck()
@@ -420,8 +463,6 @@ func get_aside_deck():
 		
 	return set_aside
 
-func get_setting(key, default = null):
-	return scenario_data.get("settings", {}).get(key, default)	
 		
 func get_encounter_deck():
 	if (not encounter_deck.empty()):

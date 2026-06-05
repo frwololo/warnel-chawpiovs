@@ -382,9 +382,32 @@ func save_settings():
 # Whenever a setting is changed via this function, it also stores it
 # permanently on-disk.
 func set_setting(setting_name: String, value) -> void:
+	if "/" in setting_name:
+		var settings = setting_name.split("/")
+		if settings.size() > 1:
+			set_child_setting(settings[0], settings[1], value)
+			return
 	game_settings[setting_name] = value
 	save_settings()
 
+func set_child_setting(key: String, setting_name: String, value) -> void:
+	if not game_settings.has(key):
+		game_settings[key] = {}
+	game_settings[key][setting_name] = value
+	save_settings()
+
+func get_setting(setting_name: String):
+	if "/" in setting_name:
+		var settings = setting_name.split("/")
+		if settings.size() > 1:
+			return get_child_setting(settings[0], settings[1])
+	return game_settings.get(setting_name, "")
+
+	
+func get_child_setting(key: String, setting_name: String):
+	if not game_settings.has(key):
+		return ""
+	return game_settings[key].get(setting_name, "")	
 
 # Initiates game_settings from the contents of CFConst.SETTINGS_FILENAME
 func init_settings_from_file() -> void:

@@ -420,23 +420,14 @@ func attack(script: ScriptTask) -> int:
 			}
 			_add_pre_receive_damage_on_stack (damage, script, script_modifications)	
 		
-#		#TODO everything below this line might have to move to the actual receive_damage section?
-#		var overkill = owner.get_property("overkill", 0, true) or (script.retrieve_integer_property("overkill"))	
-#		if overkill:
-#			var defender = script.subjects[0]
-#			var defender_type = defender.get_property("type_code")
-#			if defender_type in ["minion"]:
-#				var overkill_amount = damage - defender.get_remaining_damage()
-#				overkill_amount = max(0, overkill_amount)
-#				if overkill_amount:
-#					var villain = gameData.get_villain()
-#					var overkill_subjects = [villain] if villain else []
-#					var script_modifications = {
-#						"tags" : ["Scripted", "overkill"], #notably, overkill isn't an attack
-#						"subjects": overkill_subjects
-#					}
-#					_add_pre_receive_damage_on_stack (overkill_amount, script, script_modifications)
-#
+		#emit signals if this was e.g. an attack that bypassed guards
+		for subject in script.subjects:
+			var guard_check = SP.attack_unguarded(script.owner, owner, subject)
+			if guard_check:
+				var signals = guard_check.get("signals", [])
+				for my_signal in signals:
+					scripting_bus.emit_signal_on_stack(my_signal["name"], my_signal["card"], my_signal["details"])
+					
 				
 		consequential_damage(script)
 
@@ -1549,10 +1540,14 @@ func enemy_attack(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
 	var attacker = script.owner
+	#this is a pre_initialized activity script, designed to allow for
+	#defense abilities to modify the attack before it begins
+	#see set_defender() and gameData.enemy_activates()
+	var activity_script = attacker.activity_script
 	#check if subjects have been "inserted" into the activity script instead of the new attack script
 	#e.g. with Mutant Protectors
-	if attacker.activity_script	and attacker.activity_script.subjects:
-		script.subjects = attacker.activity_script.subjects
+	if activity_script	and activity_script.subjects:
+		script.subjects = activity_script.subjects
 	
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		for card in script.subjects:
@@ -1564,11 +1559,17 @@ func enemy_attack(script: ScriptTask) -> int:
 	var defender = script.subjects[0] if script.subjects else null
 		
 	if defender:
-		if script.script_definition.get("exhaust_defenders", true):
+		if activity_script:
+			if activity_script.script_definition.get("exhaust_defenders", true):
+				defender.exhaustme()
+			if activity_script.script_definition.get("basic_defense", true):	
+				if !script.has_tag("basic_defense"):
+					script.script_definition["tags"].append("basic_defense")
+		else:
+			#old school mecanism, shouldn't happen
+			var _error = 1
 			defender.exhaustme()
-		if script.script_definition.get("basic_defense", true):	
-			if !script.has_tag("basic_defense"):
-				script.script_definition["tags"].append("basic_defense")
+			script.script_definition["tags"].append("basic_defense")
 
 	if !script.has_tag("attack"):
 		script.script_definition["tags"].append("attack")
@@ -1688,10 +1689,11 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 	if defender:
 		if defender_type == "ally":
 			my_hero = defender.get_controller_hero_card()
-		var damage_reduction = defender.get_property("defense", 0)
-		amount = max(amount-damage_reduction, 0)
-		if damage_reduction and (amount == 0):
-			gameData.play_sfx("hint_tough")	
+		if script.has_tag("basic_defense"):
+			var damage_reduction = defender.get_property("defense", 0)
+			amount = max(amount-damage_reduction, 0)
+			if damage_reduction and (amount == 0):
+				gameData.play_sfx("hint_tough")	
 	else:
 		script.subjects.append(target_friendly)
 		script.script_definition["tags"].append("undefended")
@@ -1990,6 +1992,14 @@ func thwart(script: ScriptTask) -> int:
 			}			
 			_add_remove_threat_on_stack(amount, script, script_modifications )
 			retcode = CFConst.ReturnCode.CHANGED
+		
+			#emit signals if this was e.g. a thwart that bypassed patrol
+			var patrol_check = SP.thwart_unpatroled(script.owner, owner, card)
+			if patrol_check:
+				var signals = patrol_check.get("signals", [])
+				for my_signal in signals:
+					scripting_bus.emit_signal_on_stack(my_signal["name"], my_signal["card"], my_signal["details"])
+		
 
 	return retcode	
 

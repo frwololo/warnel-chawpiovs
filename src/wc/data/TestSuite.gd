@@ -947,7 +947,12 @@ remotesync func finalize_test_allclients(force_status:int, attempts = 1):
 func sort_card_array(array):
 	var result = []
 	for card in array:
-		card["card"] = get_corrected_card_id(card["card"])
+		var card_id = get_corrected_card_id(card["card"])
+		var card_data = cfc.get_card_by_id(card_id)
+		var card_display_name = card_id
+		if card_data:
+			card_display_name = card_data["Name"] + " #" + card_id
+		card["card"] = card_display_name
 	array.sort_custom(WCUtils, "sort_cards")		
 
 #card here is either a card id or a card name, we try to accomodate for both
@@ -986,6 +991,7 @@ func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
 	match typeof(element1):	
 		TYPE_DICTIONARY:
 			var ignore_order = test_conditions.get("ignore_order", [])
+			ignore_order.append("others")
 	
 			for key in element1:
 				#special case to test for exhausted = false

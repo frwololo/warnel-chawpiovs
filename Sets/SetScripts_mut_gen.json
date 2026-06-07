@@ -6411,7 +6411,7 @@
 				"Deal encounter": [
 					{
 						"name": "deal_encounter",
-						"subject": "my_hero"
+						"subject": "my_identity"
 					}
 				]
 			}

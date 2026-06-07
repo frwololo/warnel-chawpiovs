@@ -1,0 +1,264 @@
+{
+	"_comments": "Automated Test for Wasp Surprise Attack",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wasp #13001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "32131",
+					"owner_hero_id": 0,
+					"_comments": "Brotherhood Beatdown"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "32137",
+					"owner_hero_id": 0,
+					"_comments": "Under Siege"
+				},
+				{
+					"card": "32076",
+					"owner_hero_id": 0,
+					"_comments": "Toad"
+				}
+			],
+			"villain": [
+				{
+					"card": "Avalanche - A #32121a",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Cafeteria - 2B #32127b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Save the School #32130",
+					"owner_hero_id": 0
+				}
+			],
+			"victory_display": [
+				{
+					"card": "32125b",
+					"owner_hero_id": 0,
+					"_comments": "The Brotherhood Strikes! - 1B"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "13001c",
+					"owner_hero_id": 1,
+					"_comments": "Wasp"
+				},
+				{
+					"card": "13001a",
+					"owner_hero_id": 1,
+					"_comments": "Wasp"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				}
+			],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "13017",
+					"owner_hero_id": 1,
+					"_comments": "Lie in Wait"
+				},
+				{
+					"card": "13011",
+					"owner_hero_id": 1,
+					"_comments": "Thor - Jane Foster"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Nadia Van Dyne #13001b",
+					"tokens": {
+						"__girl": 1,
+						"__can_change_form": 1,
+						"damage": 2
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Surprise Attack #13014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Pym Particles #13007",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Nadia Van Dyne"
+		},
+		{
+			"type": "choose",
+			"value": "Change Form (Tiny)"
+		},
+		{
+			"type": "play",
+			"value": "Surprise Attack"
+		},
+		{
+			"type": "target",
+			"value": "Avalanche"
+		},
+		{
+			"type": "choose",
+			"value": "No",
+			"_comments": "don't use py particles trigger"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wasp #13001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "32131",
+					"owner_hero_id": 0,
+					"_comments": "Brotherhood Beatdown"
+				},
+				{
+					"card": "01186",
+					"owner_hero_id": 0,
+					"_comments": "Advance"
+				},
+				{
+					"card": "32137",
+					"owner_hero_id": 0,
+					"_comments": "Under Siege"
+				},
+				{
+					"card": "32076",
+					"owner_hero_id": 0,
+					"_comments": "Toad"
+				}
+			],
+			"villain": [
+				{
+					"card": "Avalanche - A #32121a",
+					"tokens": {
+						"damage": 7
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Cafeteria - 2B #32127b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Save the School #32130",
+					"owner_hero_id": 0
+				}
+			],
+			"victory_display": [
+				{
+					"card": "32125b",
+					"owner_hero_id": 0,
+					"_comments": "The Brotherhood Strikes! - 1B"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Wasp #13001c"
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [
+				{
+					"card": "01188",
+					"owner_hero_id": 0,
+					"_comments": "Caught Off Guard"
+				}
+			],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "13017",
+					"owner_hero_id": 1,
+					"_comments": "Lie in Wait"
+				},
+				{
+					"card": "13011",
+					"owner_hero_id": 1,
+					"_comments": "Thor - Jane Foster"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Wasp #13001a",
+					"tokens": {
+						"damage": 3
+					},
+					"_comments": "took one damage from cafeteria retaliate"
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"discard1": [
+				{
+					"card": "Pym Particles #13007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Surprise Attack #13014",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

@@ -34,6 +34,7 @@ var _is_inactive_attachment:= false
 var _last_paid_with := []
 var _last_cost: ManaCost = null
 var last_overpay
+var my_last_target = null
 
 var extra_scripts := {}
 var extra_script_uid := 0
@@ -254,14 +255,15 @@ func check_death(script = null) -> bool:
 		return false
 		
 	var total_damage:int =  tokens.get_token_count("damage")
-	var health = get_property("health", 0)
+	var health = get_property("health", null)
 	
 	#things that don't have health cannot die
-	if !health:
+	if health == null:
 		return false
 
 	if total_damage < health:
 		return false
+
 	
 	var excess_damage = total_damage - health
 	
@@ -1148,7 +1150,7 @@ func execute_scripts_no_stack(
 	return execute_scripts(trigger_card, trigger, new_trigger_details, run_type)	
 
 
-func retrieve_altered_scripts(trigger: String, filters := {}):
+func retrieve_altered_scripts(trigger: String, filters := {}):	
 	var alterant_cache_key = {
 		"trigger": trigger,
 		"filters": filters,
@@ -1156,12 +1158,8 @@ func retrieve_altered_scripts(trigger: String, filters := {}):
 	
 	if _script_alter_cache.has(alterant_cache_key):
 		return _script_alter_cache[alterant_cache_key]
-	
-	var scriptables_array :Array =\
-		cfc.get_tree().get_nodes_in_group("scriptables")
-		
-	scriptables_array +=\
-			cfc.get_tree().get_nodes_in_group("cards")
+
+	var scriptables_array :Array = CFScriptUtils.game_has_script_alterants(trigger).keys()
 		
 	#remove duplicates
 	var unique:= {}
@@ -1172,12 +1170,12 @@ func retrieve_altered_scripts(trigger: String, filters := {}):
 	var result = {}
 		
 	for obj in scriptables_array:			
-		var scripts = obj.retrieve_scripts("script_alterants")
-		if !scripts:
+		var obj_scripts = obj.retrieve_scripts("script_alterants")
+		if !obj_scripts:
 			continue
 		# We select which scripts to run from the card, based on it state
-		var any_state_scripts = scripts.get('all', [])
-		var state_scripts = scripts.get(obj.get_state_exec(), any_state_scripts)			
+		var any_state_scripts = obj_scripts.get('all', [])
+		var state_scripts = obj_scripts.get(obj.get_state_exec(), any_state_scripts)			
 
 		for script in state_scripts:
 			if not SP.filter_trigger(
@@ -1188,7 +1186,7 @@ func retrieve_altered_scripts(trigger: String, filters := {}):
 				continue
 			#this card is considered a valid target for alteration by obj
 			result = WCUtils.merge_dict(result, script.get("script", {}), true)
-	
+		
 	result = result.get(trigger, {})
 	_script_alter_cache[alterant_cache_key] = result
 	return 	_script_alter_cache[alterant_cache_key]
@@ -1199,7 +1197,7 @@ func retrieve_scripts(trigger: String, filters := {}) -> Dictionary:
 	
 	var result = .retrieve_scripts(trigger, filters)
 	
-	if CFScriptUtils.game_has_script_alterants() and (trigger != "script_alterants"): #avoiding an infinite loop
+	if CFScriptUtils.game_has_script_alterants(trigger):
 		var altered_results = retrieve_altered_scripts(trigger, filters)
 		if altered_results:
 			result = WCUtils.merge_dict(result, altered_results.duplicate(), true)
@@ -2094,7 +2092,7 @@ func die(script):
 	if script:
 		trigger_details = script.trigger_details.duplicate()
 		if !trigger_details.get("tags", []):
-			trigger_details["tags"] = script.script_definition.get("tags", [])
+			trigger_details["tags"] = script.get_property("tags", [])
 	match type_code:
 		"hero", "alter_ego":
 			gameData.hero_died(self, script)
@@ -3403,13 +3401,17 @@ func get_overpaid_amount(params:Dictionary, script:ScriptTask = null) -> int:
 		var resource = data.get("resource", "")
 		paid_with.add_manacost(resource)
 		
-	var result = paid_with.can_pay_total_cost(_last_cost)
+	var remaining_mana = paid_with.can_pay_total_cost(_last_cost)
+	var result = 0
 	
 	var resource_type = params.get("resource", "")
 	if resource_type:
-		result = result.get_resource(resource_type)
+		result = remaining_mana.get_resource(resource_type)
+		if resource_type != "wild":
+			result += remaining_mana.get_resource("WILD")
+			
 	else:
-		result = result.converted_mana_cost()
+		result = remaining_mana.converted_mana_cost()
 	return result
 	
 func count_paid_resources(params:Dictionary, script:ScriptTask = null) -> bool:
@@ -3767,9 +3769,8 @@ func export_to_json():
 	var card_id = self.properties.get("_code")
 	var tokens_to_json = self.tokens.export_to_json()
 	var card_description = {
-		"card" : card_id,
+		"card" : canonical_name + " #" + card_id,
 		"owner_hero_id": owner_hero_id,
-		"_comments": canonical_name
 	}
 	if is_exhausted():
 		card_description["exhausted"] = true

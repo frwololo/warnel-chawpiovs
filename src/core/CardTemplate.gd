@@ -85,6 +85,9 @@ signal scripts_executed(card, sceng, trigger)
 #horizontal cards
 var _horizontal:= false
 
+#keeps a record of the last subjects chosen by a scrpt on this card
+var last_subjects:= []
+
 #when creating duplicates, this can be used to track the original card
 var is_duplicate_of = null
 

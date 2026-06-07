@@ -563,7 +563,8 @@
 					},
 					{
 						"display_name": "Standard (1)",
-						"value": 1
+						"value": 1,
+						"default": true
 					},
 					{
 						"display_name": "Expert (2)",
@@ -735,7 +736,8 @@
 					},
 					{
 						"display_name": "Standard Mode",
-						"value": 2
+						"value": 2,
+						"default": true
 					},
 					{
 						"display_name": "Expert Mode",
@@ -1084,7 +1086,8 @@
 					},
 					{
 						"display_name": "Standard (1)",
-						"value": 1
+						"value": 1,
+						"default": true
 					},
 					{
 						"display_name": "Expert (2)",
@@ -1179,6 +1182,7 @@
 	"32125": {
 		"code": "32125",
 		"name": "The Brotherhood Strikes!",
+		"scenario_display_name": "Mansion Attack",
 		"modular_default": [
 			"mystique"
 		],
@@ -1248,7 +1252,8 @@
 					},
 					{
 						"display_name": "Standard Mode",
-						"value": 2
+						"value": 2,
+						"default": true
 					},
 					{
 						"display_name": "Expert Mode",
@@ -1280,7 +1285,7 @@
 			"The combined powers of Magneto and the X-Men prove too much for Master Mold and its army of Sentinels to withstand, and the mutants triumph over the machines. But instead of destroying the Sentinel factory as agreed, Magneto used his power of magnetism to lift Master Mold out of its subterranean facility and fly it to his orbital fortress, Asteroid M.",
 			"The X-Men try to prevent Magneto from escaping, but they are summoned back to the X-Mansion by a telepathic distress call from Professor X. The Xavier Institute is under attack! Magneto has ordered his Brotherhood to assault the school in order to draw off his pursuers and buy him time to reprogram Master Mold.",
 			"The X-Men give up their pursuit and race back to the X-Mansion to confront the Brotherhood of Mutants.",
-			"<b>Multiple Villains</b>\nOnly one villain will be in play at a time, but the order is randomized so players never know who will appear next. In order to win the scenario, the players must defeat a certain number of villains. That number is determined by the chosen difficulty",
+			"<b>Multiple Villains</b>\nMansion Attack has four different villlains. Only one villain will be in play at a time, but the order is randomized so players never know who will appear next. In order to win the scenario, the players must defeat a certain number of villains. That number is determined by the chosen difficulty",
 			"<b>Variable Main Schemes</b>\nMansion Attack also confronts the players with four different versions of main scheme 2B. These four main schemes represent the different parts of the Xavier Institute under attack by the Brotherhood. They are shuffled together during Setup so that the players never know where the villains will strike next. If the villains complete 2 versions of scheme 2B, the players lose the game."
 		]
 	},

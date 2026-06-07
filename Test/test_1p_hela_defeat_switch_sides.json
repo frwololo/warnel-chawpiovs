@@ -31,7 +31,10 @@
 				},
 				{
 					"card": "Nidhogg"
-				}
+				},
+				{
+					"card": "Hela - A2",
+				}				
 			],
 			"villain": [
 				{
@@ -41,6 +44,7 @@
 					}
 				}
 			],
+
 			"others": [
 				{
 					"card": "21139a",

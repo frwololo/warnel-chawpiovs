@@ -429,6 +429,7 @@ func execute(_run_type) -> void:
 					retcode = yield(retcode, "completed")
 				# We set the previous subjects only after the execution, because some tasks
 				# might change the previous subjects for the future tasks
+				script.owner.last_subjects = script.subjects
 				if not script.get_property(SP.KEY_PROTECT_PREVIOUS):
 					prev_subjects = script.subjects
 				if costs_dry_run():

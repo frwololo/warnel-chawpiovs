@@ -299,6 +299,7 @@ func _target_selected(owner_card, details) -> void:
 	_targeting_ongoing = null
 	last_target = details.get("target")
 	if last_target:
+		owner_card.my_last_target = last_target
 		var parent = last_target.get_parent()
 		if parent and parent!= cfc.NMAP.board:
 			last_target_container = parent
@@ -497,6 +498,7 @@ func _scripting_event_triggered(trigger_object = null,
 				"card_token_modified",\
 				"step_started" :		
 			game_state_changed(trigger_object, trigger, _trigger_details)
+
 	return
 
 #a function that checks if any deck becomes empty after a card is moved,
@@ -968,8 +970,6 @@ func ready_all_player_cards():
 			if card.get_controller_hero_id() > 0:
 				if not card._horizontal:
 					card.readyme()	
-
-
 
 
 func end_round():
@@ -1771,6 +1771,7 @@ func reveal_encounter(target_id = 0):
 				_current_encounter.hint("Unique!", Color8(200,50,50))
 				cancel_current_encounter()
 				deal_one_encounter_to(target_id)
+				return
 				
 			scripting_bus.emit_signal_on_stack("about_to_reveal", _current_encounter)	
 			_current_encounter.encounter_status = EncounterStatus.ABOUT_TO_REVEAL
@@ -2210,6 +2211,7 @@ func swap_villain(current_villain, next_villain_key, options = {}):
 	if unique_conflict:
 		unique_conflict.hint("Unique!", Color8(200,50,50))
 		scripting_bus.emit_signal_on_stack("villain_unique_card_conflict", unique_conflict, {"controller_id": unique_conflict.get_controller_hero_id()})
+
 	return new_card
 		
 func move_to_next_villain(current_villain):

@@ -1741,7 +1741,7 @@ func _modify_script(script, modifications:Dictionary = {}, script_definition_rep
 
 		var add_tags = modifications.get("additional_tags", [])
 		if add_tags:
-			output.script_definition["tags"] = script.script_definition.get("tags", []) + add_tags
+			output.script_definition["tags"] = script.get_property("tags", []) + add_tags
 			
 		output.set_subjects (modifications.get("subjects", output.subjects))
 		output.owner =  modifications.get("owner", output.owner)	
@@ -1922,6 +1922,7 @@ func enemy_activates(script: ScriptTask) -> int:
 	var target_hero_id = script.retrieve_integer_property("target_hero_id")
 	if script.get_property("target_identity"):
 		var target_identity = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : script.get_property("target_identity")})
+		target_identity = target_identity[0] if target_identity else null
 		target_hero_id = target_identity.get_controller_hero_id() if target_identity else 1				
 	
 	for card in script.subjects:

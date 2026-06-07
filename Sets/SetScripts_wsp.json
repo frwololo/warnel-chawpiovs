@@ -503,8 +503,8 @@
 		"additional_cards_set_aside": [
 			{
 				"card": "Wasp #13001c"
-			},
-		],	
+			}
+		],
 		"once_per_round": {
 			"__name__": "__girl"
 		},
@@ -540,6 +540,42 @@
 									"comparison": "ge"
 								}
 							}
+						]
+					}
+				],
+				"Change Form (Tiny)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "self",
+						"change_to": "#13001a",
+						"is_cost": true,
+						"tags": [
+							"player_initiated"
+						]
+					}
+				],
+				"Change Form (Giant)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "self",
+						"change_to": "#13001c",
+						"is_cost": true,
+						"tags": [
+							"player_initiated"
 						]
 					}
 				]
@@ -583,7 +619,7 @@
 					"plus_amount": {
 						"func_name": "identity_has_trait",
 						"func_params": {
-							"trait": "giant"
+							"trait": "tiny"
 						}
 					},
 					"tags": {
@@ -1059,14 +1095,23 @@
 					]
 				},
 				{
-					"name": "attack",
+					"name": "nop",
 					"subject": "target",
 					"needs_subject": true,
 					"filter_state_subject": [
 						{
 							"filter_group": "group_enemies"
 						}
-					],
+					]
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "attack",
+					"subject": "my_last_target",
 					"amount": {
 						"if": {
 							"func_name": "paid_with_includes",
@@ -1203,9 +1248,89 @@
 					"subject": "villain"
 				}
 			]
+		},
+		"manual": {
+			"board": {
+				"Change Form (Alter-Ego)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "self",
+						"change_to": "#13001b",
+						"is_cost": true,
+						"tags": [
+							"player_initiated"
+						]
+					}
+				],
+				"Change Form (Giant)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "self",
+						"change_to": "#13001c",
+						"is_cost": true,
+						"tags": [
+							"player_initiated"
+						]
+					}
+				]
+			}
 		}
 	},
 	"Wasp #13001c": {
+		"manual": {
+			"board": {
+				"Change Form (Alter-Ego)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "self",
+						"change_to": "#13001b",
+						"is_cost": true,
+						"tags": [
+							"player_initiated"
+						]
+					}
+				],
+				"Change Form (Tiny)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "self",
+						"change_to": "#13001a",
+						"is_cost": true,
+						"tags": [
+							"player_initiated"
+						]
+					}
+				]
+			}
+		},
 		"interrupt_remove_threat": {
 			"trigger": "self",
 			"event_filters": {
@@ -1360,7 +1485,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "thwart",
-					"trigger": "self",
+					"trigger": "my_hero",
 					"alteration": {
 						"func_name": "identity_has_trait",
 						"func_params": {
@@ -1371,7 +1496,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "attack",
-					"trigger": "self",
+					"trigger": "my_hero",
 					"alteration": {
 						"func_name": "identity_has_trait",
 						"func_params": {

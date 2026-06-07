@@ -111,7 +111,14 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 		"last_target":
 			var card = gameData.last_target
 			if card:
-				results.append(card)					
+				results.append(card)	
+		"my_last_target":
+			var card = owner.my_last_target
+			if card:
+				results.append(card)		
+		"my_last_subjects":
+			if owner.last_subjects:
+				results.append(owner.last_subjects.duplicate())												
 		#when an existing subject already exists for the script
 		"current_subject":
 			results = script.subjects		

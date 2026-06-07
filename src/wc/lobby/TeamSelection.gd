@@ -489,6 +489,8 @@ func load_scenario_options(_scenario_id):
 		for option_item in option_data["options"]:
 			option_menu.add_item(option_item.get("display_name", "error"))
 			option_menu.set_item_metadata(index, option_item["value"])
+			if option_item.get("default", false):
+				option_menu.select(index)
 			index+=1
 		
 		h_container.add_child(label)

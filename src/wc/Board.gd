@@ -1352,7 +1352,11 @@ func flip_doublesided_card(card:WCCard, to_card_id = ""):
 
 			var func_return = new_card.execute_scripts(new_card, "reveal")
 			while func_return is GDScriptFunctionState && func_return.is_valid():
-				func_return = func_return.resume()					
+				func_return = func_return.resume()	
+				
+			func_return = new_card.execute_scripts(new_card, "post_reveal")
+			while func_return is GDScriptFunctionState && func_return.is_valid():
+				func_return = func_return.resume()									
 			#new_card.reorganize_self()
 			return new_card
 		

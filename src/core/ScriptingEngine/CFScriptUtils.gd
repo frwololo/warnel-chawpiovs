@@ -11,7 +11,7 @@ const _alteration_super_cache := {
 	"properties": {},
 	"wildcard_properties" : {},
 	"container_names": [],
-	"has_script_alterants": false,
+	"script_alterants": {},
 	"initialized": false
 }
 
@@ -37,16 +37,16 @@ static func find_all_values_by_key(container, target_key: String) -> Array:
 
 	return results
 
-static func game_has_script_alterants():
+static func game_has_script_alterants(trigger):
 	if !_alteration_super_cache["initialized"]:
 		return {}
-	return _alteration_super_cache["has_script_alterants"]
+	return _alteration_super_cache["script_alterants"].get(trigger, {})
 
 static func init_alterants_super_cache():
 	_alteration_super_cache["properties"] = {}
 	_alteration_super_cache["wildcard_properties"] = {}
 	_alteration_super_cache["container_names"] = []
-	_alteration_super_cache["has_script_alterants"] = false
+	_alteration_super_cache["script_alterants"] = {}
 		
 	var scriptables_array :Array =\
 		cfc.get_tree().get_nodes_in_group("scriptables")
@@ -57,7 +57,15 @@ static func init_alterants_super_cache():
 	for obj in scriptables_array:
 		var all_scripts = obj.retrieve_all_scripts()
 		if all_scripts.has("script_alterants"):
-			_alteration_super_cache["has_script_alterants"] = true
+			var data = all_scripts["script_alterants"]
+			for board_state in data:
+				var scripts = data[board_state]
+				for entry in scripts:
+					var script = entry["script"]
+					for trigger in script:
+						if !_alteration_super_cache["script_alterants"].has(trigger):
+							_alteration_super_cache["script_alterants"][trigger] = {}
+						_alteration_super_cache["script_alterants"][trigger][obj] = true
 			
 		var altered_properties = find_all_values_by_key(all_scripts, "filter_property_name")
 		for property in altered_properties:
@@ -153,8 +161,8 @@ static func get_altered_value(
 			# we evoke the AlterantEngine only if we have something to execute
 			var task_details = _generate_trigger_details(task_name, task_properties)
 			if len(state_scripts):
-#				if task_properties.get("property_name", "") == "permanent" and _owner.get_property("shortname", "") == "Operation Zero Tolerance":
-#					var _tmp = 1				
+				if task_properties.get("property_name", "") == "cannot_leave_play" and _owner.get_property("shortname", "") == "Hela":
+					var _tmp = 1				
 				var alteng = cfc.alterant_engine.new(
 						_owner,
 						obj,

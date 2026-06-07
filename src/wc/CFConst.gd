@@ -452,6 +452,14 @@ const GRID_SETUP := {
 		"scale" : 0.5,
 		"focusable": false
 	},
+	"removed_from_game" :{
+		"x" : 3000,
+		"y" : 700,
+		"type" : "pile",
+		"faceup" : true,
+		"scale" : 0.5,
+		"focusable": false
+	},	
 	"tmp_pile1" :{
 		"x" : 3000,
 		"y" : 0,

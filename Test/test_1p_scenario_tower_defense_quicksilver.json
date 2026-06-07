@@ -214,12 +214,12 @@
 				{
 					"card": "21092",
 					"owner_hero_id": 0,
-					"_comments": "Proxima Midnight - 1",
+					"_comments": "Proxima Midnight - 1"
 				},
 				{
 					"card": "21095",
 					"owner_hero_id": 0,
-					"_comments": "Corvus Glaive - 1",
+					"_comments": "Corvus Glaive - 1"
 				}
 			],
 			"schemes": [
@@ -228,7 +228,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Under Siege - 1B",
 					"tokens": {
-						"threat": 1,
+						"threat": 1
 					}
 				},
 				{
@@ -236,7 +236,7 @@
 					"owner_hero_id": 0,
 					"_comments": "The Armies of Thanos - 2B",
 					"tokens": {
-						"threat": 1,
+						"threat": 1
 					}
 				}
 			],
@@ -246,7 +246,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Avengers Tower",
 					"tokens": {
-						"damage": 1,
+						"damage": 1
 					}
 				}
 			],
@@ -288,20 +288,12 @@
 					"_comments": "Proxima Midnight - 2"
 				},
 				{
-					"card": "21094",
-					"owner_hero_id": 0,
-					"_comments": "Proxima Midnight - 3"
-				},
-				{
 					"card": "21096",
 					"owner_hero_id": 0,
 					"_comments": "Corvus Glaive - 2"
-				},
-				{
-					"card": "21097",
-					"owner_hero_id": 0,
-					"_comments": "Corvus Glaive - 3"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "21098a",
 					"owner_hero_id": 0,
@@ -495,7 +487,7 @@
 				{
 					"card": "21102",
 					"owner_hero_id": 0,
-					"_comments": "Black Order Besieger",
+					"_comments": "Black Order Besieger"
 				}
 			],
 			"identity1": [

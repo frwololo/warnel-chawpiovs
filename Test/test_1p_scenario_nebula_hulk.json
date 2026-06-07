@@ -249,7 +249,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Nebula - 1",
 					"tokens": {
-						"__technique": 1,
+						"__technique": 1
 					}
 				}
 			],
@@ -259,7 +259,7 @@
 					"owner_hero_id": 0,
 					"_comments": "The Art of Evasion - 1B",
 					"tokens": {
-						"threat": 2,
+						"threat": 2
 					}
 				}
 			],
@@ -267,7 +267,7 @@
 				{
 					"card": "16093",
 					"owner_hero_id": 0,
-					"_comments": "Nebula's Ship",
+					"_comments": "Nebula's Ship"
 				}
 			],
 			"victory_display": [],
@@ -308,11 +308,6 @@
 					"_comments": "Nebula - 2"
 				},
 				{
-					"card": "16090",
-					"owner_hero_id": 0,
-					"_comments": "Nebula - 3"
-				},
-				{
 					"card": "16092a",
 					"owner_hero_id": 0,
 					"_comments": "Warp Drive Initiated - 2A"
@@ -321,7 +316,9 @@
 					"card": "16092b",
 					"owner_hero_id": 0,
 					"_comments": "Warp Drive Initiated - 2B"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "16091a",
 					"owner_hero_id": 0,
@@ -528,7 +525,7 @@
 				{
 					"card": "16142",
 					"owner_hero_id": 0,
-					"_comments": "Milano",
+					"_comments": "Milano"
 				}
 			],
 			"hand1": [

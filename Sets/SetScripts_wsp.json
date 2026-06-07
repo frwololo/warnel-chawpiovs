@@ -129,10 +129,9 @@
 		}
 	},
 	"Beetle": {
-		"interrupt": {
-			"event_name": "card_dies",
+		"card_defeated": {
 			"trigger": "self",
-			"board": {
+			"all": {
 				"_rules": {
 					"forced": true
 				},
@@ -801,7 +800,8 @@
 		},
 		"interrupt_enemy_attack_damage": {
 			"event_filters": {
-				"target": "my_hero"
+				"defender": "my_hero",
+				"tags": ["basic_defense"]
 			},
 			"is_optional_hand": true,
 			"hand": [

@@ -2076,7 +2076,7 @@ func post_death_move():
 	
 	var victory_property = card.get_property("victory", null)
 	if victory_property != null:
-		card.move_to(cfc.NMAP["victory_display"])
+		gameData.move_to_victory(card)
 	else:
 		if owner_hero_id > 0:
 			card.move_to(cfc.NMAP["discard" + str(owner_hero_id)])

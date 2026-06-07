@@ -35,7 +35,7 @@
 		{
 			"type": "other",
 			"value": "wait_a_bit"
-		},		
+		}
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -211,14 +211,14 @@
 				{
 					"card": "01094",
 					"owner_hero_id": 0,
-					"_comments": "Rhino - 1",
+					"_comments": "Rhino - 1"
 				}
 			],
 			"schemes": [
 				{
 					"card": "01097b",
 					"owner_hero_id": 0,
-					"_comments": "The Break-In! - 1B",
+					"_comments": "The Break-In! - 1B"
 				}
 			],
 			"villain_misc": [],
@@ -258,12 +258,9 @@
 					"card": "01095",
 					"owner_hero_id": 0,
 					"_comments": "Rhino - 2"
-				},
-				{
-					"card": "01096",
-					"owner_hero_id": 0,
-					"_comments": "Rhino - 3"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "01097a",
 					"owner_hero_id": 0,
@@ -276,7 +273,6 @@
 			"encounters_facedown1": [],
 			"encounters_reveal1": [],
 			"deck1": [
-
 				{
 					"card": "01093",
 					"owner_hero_id": 1,
@@ -342,7 +338,6 @@
 					"owner_hero_id": 1,
 					"_comments": "Web-Shooter"
 				},
-
 				{
 					"card": "01007",
 					"owner_hero_id": 1,
@@ -368,7 +363,6 @@
 					"owner_hero_id": 1,
 					"_comments": "Webbed Up"
 				},
-
 				{
 					"card": "01007",
 					"owner_hero_id": 1,
@@ -404,8 +398,6 @@
 					"owner_hero_id": 1,
 					"_comments": "Heroic Intuition"
 				},
-
-
 				{
 					"card": "01003",
 					"owner_hero_id": 1,
@@ -450,7 +442,7 @@
 					"card": "01092",
 					"owner_hero_id": 1,
 					"_comments": "Helicarrier"
-				}				
+				}
 			],
 			"discard1": [],
 			"enemies1": [],
@@ -477,17 +469,17 @@
 					"card": "01002",
 					"owner_hero_id": 1,
 					"_comments": "Black Cat - Felicia Hardy"
-				},	
+				},
 				{
 					"card": "01004",
 					"owner_hero_id": 1,
 					"_comments": "Enhanced Spider-Sense"
-				},	
+				},
 				{
 					"card": "01060",
 					"owner_hero_id": 1,
 					"_comments": "For Justice!"
-				},	
+				},
 				{
 					"card": "01091",
 					"owner_hero_id": 1,
@@ -497,7 +489,7 @@
 					"card": "01086",
 					"owner_hero_id": 1,
 					"_comments": "First Aid"
-				},				
+				}
 			]
 		}
 	}

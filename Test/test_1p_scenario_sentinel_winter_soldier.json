@@ -233,7 +233,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Sentinel - 1",
 					"tokens": {
-						"tough": 1,
+						"tough": 1
 					}
 				}
 			],
@@ -243,7 +243,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Night of the Sentinels - 1B",
 					"tokens": {
-						"threat": 1,
+						"threat": 1
 					}
 				},
 				{
@@ -251,7 +251,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Abduction Protocols",
 					"tokens": {
-						"threat": 4,
+						"threat": 4
 					}
 				},
 				{
@@ -259,7 +259,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Operation Zero Tolerance",
 					"tokens": {
-						"threat": 3,
+						"threat": 3
 					}
 				},
 				{
@@ -267,7 +267,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Mutants at the Mall",
 					"tokens": {
-						"threat": 4,
+						"threat": 4
 					}
 				}
 			],
@@ -310,11 +310,6 @@
 					"_comments": "Sentinel - 2"
 				},
 				{
-					"card": "32086",
-					"owner_hero_id": 0,
-					"_comments": "Sentinel - 3"
-				},
-				{
 					"card": "32091",
 					"owner_hero_id": 0,
 					"_comments": "Cannonball - Sam Guthrie"
@@ -335,14 +330,16 @@
 					"_comments": "Rictor - Julio Richter"
 				},
 				{
-					"card": "32087a",
-					"owner_hero_id": 0,
-					"_comments": "Night of the Sentinels - 1A"
-				},
-				{
 					"card": "32088b",
 					"owner_hero_id": 0,
 					"_comments": "Jubilee - Jubilation Lee"
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "32087a",
+					"owner_hero_id": 0,
+					"_comments": "Night of the Sentinels - 1A"
 				}
 			],
 			"tmp_pile1": [],

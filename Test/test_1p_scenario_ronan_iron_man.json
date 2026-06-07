@@ -238,7 +238,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Ronan the Accuser - 1",
 					"tokens": {
-						"tough": 1,
+						"tough": 1
 					}
 				}
 			],
@@ -248,7 +248,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Interception Imminent - 1B",
 					"tokens": {
-						"threat": 2,
+						"threat": 2
 					}
 				}
 			],
@@ -256,7 +256,7 @@
 				{
 					"card": "16108",
 					"owner_hero_id": 0,
-					"_comments": "Kree Command Ship",
+					"_comments": "Kree Command Ship"
 				}
 			],
 			"victory_display": [],
@@ -297,11 +297,6 @@
 					"_comments": "Ronan the Accuser - 2"
 				},
 				{
-					"card": "16105",
-					"owner_hero_id": 0,
-					"_comments": "Ronan the Accuser - 3"
-				},
-				{
 					"card": "16107a",
 					"owner_hero_id": 0,
 					"_comments": "\"Take What Is Mine\" - 2A"
@@ -310,7 +305,9 @@
 					"card": "16107b",
 					"owner_hero_id": 0,
 					"_comments": "\"Take What Is Mine\" - 2B"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "16106a",
 					"owner_hero_id": 0,
@@ -512,7 +509,7 @@
 				{
 					"card": "16142",
 					"owner_hero_id": 0,
-					"_comments": "Milano",
+					"_comments": "Milano"
 				}
 			],
 			"hand1": [

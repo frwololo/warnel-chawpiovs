@@ -211,14 +211,14 @@
 				{
 					"card": "27099",
 					"owner_hero_id": 0,
-					"_comments": "Vulture - 1",
+					"_comments": "Vulture - 1"
 				},
 				{
 					"card": "27096",
 					"owner_hero_id": 0,
 					"_comments": "Hobgoblin - 1",
 					"tokens": {
-						"active_counter": 1,
+						"active_counter": 1
 					}
 				}
 			],
@@ -228,7 +228,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Sinister Synchronization - 1B",
 					"tokens": {
-						"threat": 2,
+						"threat": 2
 					}
 				},
 				{
@@ -236,7 +236,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Light at the End",
 					"tokens": {
-						"threat": 20,
+						"threat": 20
 					}
 				}
 			],
@@ -302,7 +302,9 @@
 					"card": "27101b",
 					"owner_hero_id": 0,
 					"_comments": "Sinister Beatdown - 2B"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "27100a",
 					"owner_hero_id": 0,

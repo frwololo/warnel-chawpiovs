@@ -202,21 +202,21 @@
 				{
 					"card": "01113",
 					"owner_hero_id": 0,
-					"_comments": "Klaw - 1",
+					"_comments": "Klaw - 1"
 				}
 			],
 			"schemes": [
 				{
 					"card": "01116b",
 					"owner_hero_id": 0,
-					"_comments": "Underground Distribution - 1B",
+					"_comments": "Underground Distribution - 1B"
 				},
 				{
 					"card": "01125",
 					"owner_hero_id": 0,
 					"_comments": "Defense Network",
 					"tokens": {
-						"threat": 3,
+						"threat": 3
 					}
 				}
 			],
@@ -264,11 +264,6 @@
 					"_comments": "Klaw - 2"
 				},
 				{
-					"card": "01115",
-					"owner_hero_id": 0,
-					"_comments": "Klaw - 3"
-				},
-				{
 					"card": "01117a",
 					"owner_hero_id": 0,
 					"_comments": "Secret Rendezvous - 2A"
@@ -277,7 +272,9 @@
 					"card": "01117b",
 					"owner_hero_id": 0,
 					"_comments": "Secret Rendezvous - 2B"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "01116a",
 					"owner_hero_id": 0,

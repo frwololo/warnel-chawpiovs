@@ -231,21 +231,21 @@
 				{
 					"card": "04125",
 					"owner_hero_id": 0,
-					"_comments": "Red Skull - 1",
+					"_comments": "Red Skull - 1"
 				}
 			],
 			"schemes": [
 				{
 					"card": "04128b",
 					"owner_hero_id": 0,
-					"_comments": "The Rise of Red Skull - 1B",
+					"_comments": "The Rise of Red Skull - 1B"
 				},
 				{
 					"card": "04139",
 					"owner_hero_id": 0,
 					"_comments": "The Red House",
 					"tokens": {
-						"threat": 3,
+						"threat": 3
 					}
 				}
 			],
@@ -288,11 +288,6 @@
 					"_comments": "Red Skull - 2"
 				},
 				{
-					"card": "04127",
-					"owner_hero_id": 0,
-					"_comments": "Red Skull - 3"
-				},
-				{
 					"card": "04129a",
 					"owner_hero_id": 0,
 					"_comments": "New World Hydra - 2A"
@@ -306,7 +301,9 @@
 					"card": "04130",
 					"owner_hero_id": 0,
 					"_comments": "The Sleeper"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "04128a",
 					"owner_hero_id": 0,

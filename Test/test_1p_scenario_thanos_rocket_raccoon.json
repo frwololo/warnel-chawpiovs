@@ -269,11 +269,6 @@
 					"_comments": "Thanos - 2"
 				},
 				{
-					"card": "21113",
-					"owner_hero_id": 0,
-					"_comments": "Thanos - 3"
-				},
-				{
 					"card": "21115a",
 					"owner_hero_id": 0,
 					"_comments": "Balance the Scales - 2A"
@@ -282,7 +277,8 @@
 					"card": "21115b",
 					"owner_hero_id": 0,
 					"_comments": "Balance the Scales - 2B"
-				},
+				},],
+			"removed_from_game": [
 				{
 					"card": "21114a",
 					"owner_hero_id": 0,

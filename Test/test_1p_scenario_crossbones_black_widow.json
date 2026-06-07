@@ -246,14 +246,14 @@
 				{
 					"card": "04058",
 					"owner_hero_id": 0,
-					"_comments": "Crossbones - 1",
+					"_comments": "Crossbones - 1"
 				}
 			],
 			"schemes": [
 				{
 					"card": "04061b",
 					"owner_hero_id": 0,
-					"_comments": "Attack on Mount Athena - 1B",
+					"_comments": "Attack on Mount Athena - 1B"
 				}
 			],
 			"villain_misc": [],
@@ -295,11 +295,6 @@
 					"_comments": "Crossbones - 2"
 				},
 				{
-					"card": "04060",
-					"owner_hero_id": 0,
-					"_comments": "Crossbones - 3"
-				},
-				{
 					"card": "04062a",
 					"owner_hero_id": 0,
 					"_comments": "The Infinity Stone - 2A"
@@ -318,7 +313,9 @@
 					"card": "04063b",
 					"owner_hero_id": 0,
 					"_comments": "The Getaway - 3B"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "04061a",
 					"owner_hero_id": 0,

@@ -231,7 +231,7 @@
 				{
 					"card": "16070",
 					"owner_hero_id": 0,
-					"_comments": "Collector - 1",
+					"_comments": "Collector - 1"
 				}
 			],
 			"schemes": [
@@ -244,7 +244,7 @@
 						"__player_token2": 1,
 						"__player_token3": 1,
 						"__player_token4": 1,
-						"threat": 4,
+						"threat": 4
 					}
 				}
 			],
@@ -285,12 +285,9 @@
 					"card": "16071",
 					"owner_hero_id": 0,
 					"_comments": "Collector - 2"
-				},
-				{
-					"card": "16072",
-					"owner_hero_id": 0,
-					"_comments": "Collector - 3"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "16073a",
 					"owner_hero_id": 0,

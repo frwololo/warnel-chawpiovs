@@ -303,11 +303,6 @@
 					"_comments": "Venom Goblin - 2"
 				},
 				{
-					"card": "27115",
-					"owner_hero_id": 0,
-					"_comments": "Venom Goblin - 3"
-				},
-				{
 					"card": "27119b",
 					"owner_hero_id": 0,
 					"_comments": "Upper Manhattan"
@@ -321,7 +316,8 @@
 					"card": "27117b",
 					"owner_hero_id": 0,
 					"_comments": "Lower Manhattan"
-				},
+				},],
+			"removed_from_game": [
 				{
 					"card": "27116a",
 					"owner_hero_id": 0,

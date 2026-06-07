@@ -419,6 +419,16 @@ func load_villains():
 	_villains = get_villains_from_scheme(first_scheme["_code"], is_expert_mode)
 	return _villains
 
+func villain_is_in_scenario(villain_data):
+	if _villains.empty():
+		var _error = 1
+		return false
+	for villain_group in _villains:
+		for villain in villain_group:
+			if villain["Name"] == villain_data["Name"]:
+				return true
+	return false
+
 func get_simple_encounter_deck(encounter_sets):
 	var result_deck = []
 	# Add sets (from scenario, standard + modular sets)
@@ -431,17 +441,25 @@ func get_simple_encounter_deck(encounter_sets):
 		var encounter_set : Array = cfc.get_encounter_cards(encounter_set_code)
 		
 		for card_data in encounter_set:
+			var code = card_data["code"]		
+			var added_to_scenario = true
 			var card_type = card_data["type_code"]
-			if (card_type == "main_scheme" or card_type == "villain"): #skip villain and schemes from the deck
-				if ! card_data in set_aside:
+			if (card_type == "main_scheme"): #skip villain and schemes from the deck
+				if card_data in set_aside:
+					added_to_scenario = false
+				else:
 					set_aside.append(card_data)
+			elif(card_type == "villain"):
+				if villain_is_in_scenario(card_data) and ! card_data in set_aside:
+					set_aside.append(card_data)	
+				else:
+					added_to_scenario = false			
 			else:
 				var add_to_encounter_deck = true
 				var card_set_position = card_data["set_position"]
 				if positions.has(card_set_position):
 					#conflict e.g. android efficiency
 					var existing_card_data = positions[card_set_position]
-					var code = card_data["code"]
 					var existing_code = existing_card_data["code"]
 					if code.begins_with(existing_code): #we have the more precise
 						result_deck.erase(existing_card_data)
@@ -454,7 +472,11 @@ func get_simple_encounter_deck(encounter_sets):
 						set_aside.append(card_data)
 					else:
 						result_deck.push_back(card_data)
-					positions[card_set_position] = card_data	
+					positions[card_set_position] = card_data
+				else:
+					added_to_scenario = false	
+			if added_to_scenario:
+				get_extra_cards_aside(code)	
 	return result_deck
 
 func get_aside_deck():
@@ -463,6 +485,17 @@ func get_aside_deck():
 		
 	return set_aside
 
+func get_extra_cards_aside(card_id):
+	var extra_cards_str = "additional_cards_set_aside"		
+	var extra_cards = cfc.set_scripts.get(card_id,{}).get(extra_cards_str,[]).duplicate(true)
+
+	for card in extra_cards:
+		var card_id_or_name = card.get("card", "")
+		if !card_id_or_name:
+			continue
+		var extra_card_id = cfc.get_corrected_card_id(card_id_or_name)
+		var card_data = cfc.get_card_by_id(extra_card_id)
+		set_aside.append(card_data)
 		
 func get_encounter_deck():
 	if (not encounter_deck.empty()):

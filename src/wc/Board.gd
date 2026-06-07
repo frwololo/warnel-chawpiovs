@@ -1342,7 +1342,10 @@ func flip_doublesided_card(card:WCCard, to_card_id = ""):
 					tags = ["as_boost"]	
 				attachment.attach_to_host(new_card,false, tags)			
 			
-			gameData.set_aside(card) #is more required to remove it?		
+			if type_code == "main_scheme":
+				gameData.remove_from_game(card)
+			else:
+				gameData.set_aside(card) #is more required to remove it?		
 			#new_card._determine_idle_state()
 			#new_card.move_to(cfc.NMAP.board, -1, slot)	
 			if is_instance_valid(slot):

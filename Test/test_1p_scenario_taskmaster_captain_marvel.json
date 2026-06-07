@@ -221,7 +221,7 @@
 				{
 					"card": "04093",
 					"owner_hero_id": 0,
-					"_comments": "Taskmaster - 1",
+					"_comments": "Taskmaster - 1"
 				}
 			],
 			"schemes": [
@@ -230,7 +230,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Hunting Down Heroes - 1B",
 					"tokens": {
-						"threat": 1,
+						"threat": 1
 					}
 				},
 				{
@@ -238,7 +238,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Hydra Patrol",
 					"tokens": {
-						"threat": 2,
+						"threat": 2
 					}
 				}
 			],
@@ -281,11 +281,6 @@
 					"_comments": "Taskmaster - 2"
 				},
 				{
-					"card": "04095",
-					"owner_hero_id": 0,
-					"_comments": "Taskmaster - 3"
-				},
-				{
 					"card": "04100",
 					"owner_hero_id": 0,
 					"_comments": "Elektra"
@@ -304,7 +299,9 @@
 					"card": "04098",
 					"owner_hero_id": 0,
 					"_comments": "Shang-Chi"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "04096a",
 					"owner_hero_id": 0,

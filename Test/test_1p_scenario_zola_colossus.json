@@ -241,21 +241,21 @@
 				{
 					"card": "04109",
 					"owner_hero_id": 0,
-					"_comments": "Zola - 1",
+					"_comments": "Zola - 1"
 				}
 			],
 			"schemes": [
 				{
 					"card": "04112b",
 					"owner_hero_id": 0,
-					"_comments": "The Island of Dr. Zola - 1B",
+					"_comments": "The Island of Dr. Zola - 1B"
 				},
 				{
 					"card": "04122",
 					"owner_hero_id": 0,
 					"_comments": "Hydra Prison",
 					"tokens": {
-						"threat": 4,
+						"threat": 4
 					}
 				}
 			],
@@ -298,11 +298,6 @@
 					"_comments": "Zola - 2"
 				},
 				{
-					"card": "04111",
-					"owner_hero_id": 0,
-					"_comments": "Zola - 3"
-				},
-				{
 					"card": "04113a",
 					"owner_hero_id": 0,
 					"_comments": "The Mad Doctor - 2A"
@@ -311,7 +306,9 @@
 					"card": "04113b",
 					"owner_hero_id": 0,
 					"_comments": "The Mad Doctor - 2B"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "04112a",
 					"owner_hero_id": 0,
@@ -492,7 +489,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Ultimate Bio-Servant",
 					"tokens": {
-						"tough": 1,
+						"tough": 1
 					}
 				}
 			],

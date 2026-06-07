@@ -2879,6 +2879,11 @@
 		}
 	},
 	"Hela - A1": {
+		"additional_cards_set_aside": [
+			{
+				"card": "Hela - A2 #21136b"
+			}
+		],	
 		"alterants": {
 			"board": [
 				{
@@ -2941,6 +2946,11 @@
 		}
 	},
 	"Hela - B1": {
+		"additional_cards_set_aside": [
+			{
+				"card": "Hela - B2 #21137b"
+			}
+		],	
 		"alterants": {
 			"board": [
 				{

@@ -224,7 +224,7 @@
 				{
 					"card": "21162",
 					"owner_hero_id": 0,
-					"_comments": "Loki - 1",
+					"_comments": "Loki - 1"
 				}
 			],
 			"schemes": [
@@ -233,7 +233,7 @@
 					"owner_hero_id": 0,
 					"_comments": "All Hail King Loki - 1B",
 					"tokens": {
-						"threat": 1,
+						"threat": 1
 					}
 				},
 				{
@@ -241,7 +241,7 @@
 					"owner_hero_id": 0,
 					"_comments": "War in Asgard",
 					"tokens": {
-						"threat": 7,
+						"threat": 7
 					}
 				}
 			],
@@ -312,7 +312,9 @@
 					"card": "21164",
 					"owner_hero_id": 0,
 					"_comments": "Loki - 1"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "21165a",
 					"owner_hero_id": 0,

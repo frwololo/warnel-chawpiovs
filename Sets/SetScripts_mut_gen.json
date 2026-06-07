@@ -6393,7 +6393,7 @@
 							}
 						}
 					]
-				},
+				},			
 				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
@@ -6910,12 +6910,9 @@
 		}
 	},
 	"Toad": {
-		"receive_damage": {
+		"attack_happened": {
 			"event_filters": {
-				"amount": ">0",
-				"tags": [
-					"attack"
-				]
+				"damage": ">0",
 			},
 			"trigger": "self",
 			"board": [
@@ -6924,7 +6921,7 @@
 					"subject": "index",
 					"subject_index": "random",
 					"subject_count": 1,
-					"src_container": "hand_my_hero"
+					"src_container": "hand_current_hero_target"
 				}
 			]
 		},
@@ -6941,12 +6938,9 @@
 		}
 	},
 	"Toad - A": {
-		"receive_damage": {
+		"attack_happened": {
 			"event_filters": {
-				"amount": ">0",
-				"tags": [
-					"attack"
-				]
+				"damage": ">0",
 			},
 			"trigger": "self",
 			"board": [
@@ -6961,12 +6955,9 @@
 		}
 	},
 	"Toad - B": {
-		"receive_damage": {
+		"attack_happened": {
 			"event_filters": {
-				"amount": ">0",
-				"tags": [
-					"attack"
-				]
+				"damage": ">0",
 			},
 			"trigger": "self",
 			"board": [

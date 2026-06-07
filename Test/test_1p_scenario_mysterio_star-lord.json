@@ -206,7 +206,7 @@
 				{
 					"card": "27084",
 					"owner_hero_id": 0,
-					"_comments": "Mysterio - 1",
+					"_comments": "Mysterio - 1"
 				}
 			],
 			"schemes": [
@@ -215,7 +215,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Maze of Mirrors - 1B",
 					"tokens": {
-						"threat": 2,
+						"threat": 2
 					}
 				}
 			],
@@ -258,11 +258,6 @@
 					"_comments": "Mysterio - 2"
 				},
 				{
-					"card": "27086",
-					"owner_hero_id": 0,
-					"_comments": "Mysterio - 3"
-				},
-				{
 					"card": "27088a",
 					"owner_hero_id": 0,
 					"_comments": "Edge of Reality - 2A"
@@ -271,7 +266,9 @@
 					"card": "27088b",
 					"owner_hero_id": 0,
 					"_comments": "Edge of Reality - 2B"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "27087a",
 					"owner_hero_id": 0,
@@ -455,7 +452,7 @@
 				{
 					"card": "27091",
 					"owner_hero_id": 0,
-					"_comments": "Shifting Apparition",
+					"_comments": "Shifting Apparition"
 				}
 			],
 			"identity1": [

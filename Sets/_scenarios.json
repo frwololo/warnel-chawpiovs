@@ -1232,6 +1232,9 @@
 								{
 									"filter_properties": {
 										"type_code": "main_scheme"
+									},
+									"filter_properties2": {
+										"stage": "2A"
 									}
 								}
 							]

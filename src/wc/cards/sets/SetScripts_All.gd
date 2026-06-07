@@ -3,11 +3,12 @@ extends Reference
 
 
 static func has_interrupt(script:Dictionary) -> String:
+	var results = []
 	for _k in script.keys():
 		var k:String = _k
 		if (k.begins_with("interrupt")):
-			return k
-	return ""
+			results.append(k)
+	return results
 
 static func keyword_to_script(keyword, _value):
 	match keyword:
@@ -122,9 +123,9 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 			}			
 		)
 	#interrupt or response replacements
-	var interrupt_script = has_interrupt(script)
+	var interrupt_scripts = has_interrupt(script)
 	var has_manual_hand = script.get("manual", {}).get("hand", {})
-	if (type_code == "event" && interrupt_script && !has_manual_hand):
+	if (type_code == "event" && interrupt_scripts && !has_manual_hand):
 		var playFromHand: Array = hand_constraints
 		if (cost):
 			playFromHand +=  [
@@ -142,12 +143,12 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 		
 		playFromHand += post_play_actions
 					
-		var playInterrupt: Dictionary = {
+		var playInterrupt: Dictionary = {}
+		for interrupt_script in interrupt_scripts:			
 			#TODO add trigger filters + interrupt data
-			interrupt_script: {
+			playInterrupt[interrupt_script] =  {
 				"hand" : playFromHand
 			} 
-		}
 		script = WCUtils.merge_dict(script, playInterrupt, true)
 	else: #Regular cards
 		#Play From hand: discard a specific number of cards to play
@@ -422,6 +423,11 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 				}
 			}
 			script = WCUtils.merge_dict(script,a_script, true)
+	
+#	if card["Name"] == "Rapid Growth":
+#		var string = JSON.print(script, '\t')			
+#		var _tmp = 1
+	
 	return script
 
 static func get_enemy_scripts():

@@ -221,7 +221,7 @@
 				{
 					"card": "27061",
 					"owner_hero_id": 0,
-					"_comments": "Sandman - 1",
+					"_comments": "Sandman - 1"
 				}
 			],
 			"schemes": [
@@ -230,7 +230,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Hapless Pedestrians - 1B",
 					"tokens": {
-						"threat": 2,
+						"threat": 2
 					}
 				}
 			],
@@ -240,7 +240,7 @@
 					"owner_hero_id": 0,
 					"_comments": "City Streets",
 					"tokens": {
-						"sand": 4,
+						"sand": 4
 					}
 				}
 			],
@@ -280,12 +280,9 @@
 					"card": "27062",
 					"owner_hero_id": 0,
 					"_comments": "Sandman - 2"
-				},
-				{
-					"card": "27063",
-					"owner_hero_id": 0,
-					"_comments": "Sandman - 3"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "27064a",
 					"owner_hero_id": 0,

@@ -216,21 +216,21 @@
 				{
 					"card": "32060",
 					"owner_hero_id": 0,
-					"_comments": "Sabretooth - 1",
+					"_comments": "Sabretooth - 1"
 				}
 			],
 			"schemes": [
 				{
 					"card": "32063b",
 					"owner_hero_id": 0,
-					"_comments": "Stalked by Sabretooth - 1B",
+					"_comments": "Stalked by Sabretooth - 1B"
 				},
 				{
 					"card": "32065a",
 					"owner_hero_id": 0,
 					"_comments": "Find the Senator",
 					"tokens": {
-						"threat": 5,
+						"threat": 5
 					}
 				}
 			],
@@ -278,11 +278,6 @@
 					"_comments": "Sabretooth - 2"
 				},
 				{
-					"card": "32062",
-					"owner_hero_id": 0,
-					"_comments": "Sabretooth - 3"
-				},
-				{
 					"card": "32064a",
 					"owner_hero_id": 0,
 					"_comments": "The Injured Senator - 2A"
@@ -291,7 +286,9 @@
 					"card": "32064b",
 					"owner_hero_id": 0,
 					"_comments": "The Injured Senator - 2B"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "32063a",
 					"owner_hero_id": 0,

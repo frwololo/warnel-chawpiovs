@@ -226,7 +226,7 @@
 				{
 					"card": "21071",
 					"owner_hero_id": 0,
-					"_comments": "Ebony Maw - 1",
+					"_comments": "Ebony Maw - 1"
 				}
 			],
 			"schemes": [
@@ -235,7 +235,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Attack on Knowhere - 1B",
 					"tokens": {
-						"threat": 1,
+						"threat": 1
 					}
 				}
 			],
@@ -278,11 +278,6 @@
 					"_comments": "Ebony Maw - 2"
 				},
 				{
-					"card": "21073",
-					"owner_hero_id": 0,
-					"_comments": "Ebony Maw - 3"
-				},
-				{
 					"card": "21075a",
 					"owner_hero_id": 0,
 					"_comments": "The Power Stone - 2A"
@@ -291,7 +286,9 @@
 					"card": "21075b",
 					"owner_hero_id": 0,
 					"_comments": "The Power Stone - 2B"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "21074a",
 					"owner_hero_id": 0,
@@ -482,7 +479,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Rubblestorm",
 					"tokens": {
-						"invocation": 3,
+						"invocation": 3
 					}
 				}
 			],

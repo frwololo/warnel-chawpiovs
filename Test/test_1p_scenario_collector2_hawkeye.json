@@ -221,7 +221,7 @@
 				{
 					"card": "16080a",
 					"owner_hero_id": 0,
-					"_comments": "Collector - A1",
+					"_comments": "Collector - A1"
 				}
 			],
 			"schemes": [
@@ -230,7 +230,7 @@
 					"owner_hero_id": 0,
 					"_comments": "The Missing Milano - 1B",
 					"tokens": {
-						"threat": 7,
+						"threat": 7
 					}
 				}
 			],
@@ -243,7 +243,7 @@
 						"__player_token1": 1,
 						"__player_token2": 1,
 						"__player_token3": 1,
-						"__player_token4": 1,
+						"__player_token4": 1
 					}
 				}
 			],
@@ -280,19 +280,9 @@
 					"_comments": "Sniper Shot"
 				},
 				{
-					"card": "16080b",
-					"owner_hero_id": 0,
-					"_comments": "Collector - A2"
-				},
-				{
 					"card": "16081a",
 					"owner_hero_id": 0,
 					"_comments": "Collector - B1"
-				},
-				{
-					"card": "16081b",
-					"owner_hero_id": 0,
-					"_comments": "Collector - B2"
 				},
 				{
 					"card": "16083a",
@@ -348,7 +338,9 @@
 					"card": "16146",
 					"owner_hero_id": 0,
 					"_comments": "Hull Breach"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "16082a",
 					"owner_hero_id": 0,

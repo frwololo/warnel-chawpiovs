@@ -211,7 +211,7 @@
 				{
 					"card": "21136a",
 					"owner_hero_id": 0,
-					"_comments": "Hela - A1",
+					"_comments": "Hela - A1"
 				}
 			],
 			"schemes": [
@@ -220,7 +220,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Odin's Torment - 1B",
 					"tokens": {
-						"threat": 1,
+						"threat": 1
 					}
 				},
 				{
@@ -228,7 +228,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Gnipahellir",
 					"tokens": {
-						"threat": 2,
+						"threat": 2
 					}
 				}
 			],
@@ -271,16 +271,6 @@
 					"_comments": "Hela - A2"
 				},
 				{
-					"card": "21137a",
-					"owner_hero_id": 0,
-					"_comments": "Hela - B1"
-				},
-				{
-					"card": "21137b",
-					"owner_hero_id": 0,
-					"_comments": "Hela - B2"
-				},
-				{
 					"card": "21145",
 					"owner_hero_id": 0,
 					"_comments": "Nidhogg"
@@ -299,7 +289,9 @@
 					"card": "21141",
 					"owner_hero_id": 0,
 					"_comments": "Hall of Nastrond"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "21138a",
 					"owner_hero_id": 0,
@@ -490,7 +482,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Garm",
 					"tokens": {
-						"tough": 1,
+						"tough": 1
 					}
 				}
 			],

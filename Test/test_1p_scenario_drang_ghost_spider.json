@@ -211,7 +211,7 @@
 				{
 					"card": "16058",
 					"owner_hero_id": 0,
-					"_comments": "Drang - 1",
+					"_comments": "Drang - 1"
 				}
 			],
 			"schemes": [
@@ -220,7 +220,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Terrestrial Invasion - 1B",
 					"tokens": {
-						"threat": 2,
+						"threat": 2
 					}
 				}
 			],
@@ -228,7 +228,7 @@
 				{
 					"card": "16063",
 					"owner_hero_id": 0,
-					"_comments": "Badoon Ship",
+					"_comments": "Badoon Ship"
 				}
 			],
 			"victory_display": [],
@@ -269,11 +269,6 @@
 					"_comments": "Drang - 2"
 				},
 				{
-					"card": "16060",
-					"owner_hero_id": 0,
-					"_comments": "Drang - 3"
-				},
-				{
 					"card": "16062a",
 					"owner_hero_id": 0,
 					"_comments": "Protect the Planet - 2A"
@@ -282,7 +277,9 @@
 					"card": "16062b",
 					"owner_hero_id": 0,
 					"_comments": "Protect the Planet - 2B"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "16061a",
 					"owner_hero_id": 0,
@@ -484,7 +481,7 @@
 				{
 					"card": "16142",
 					"owner_hero_id": 0,
-					"_comments": "Milano",
+					"_comments": "Milano"
 				}
 			],
 			"hand1": [

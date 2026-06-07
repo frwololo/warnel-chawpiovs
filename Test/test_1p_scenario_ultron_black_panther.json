@@ -216,21 +216,21 @@
 				{
 					"card": "01134",
 					"owner_hero_id": 0,
-					"_comments": "Ultron - 1",
+					"_comments": "Ultron - 1"
 				}
 			],
 			"schemes": [
 				{
 					"card": "01137b",
 					"owner_hero_id": 0,
-					"_comments": "The Crimson Cowl - 1B",
+					"_comments": "The Crimson Cowl - 1B"
 				}
 			],
 			"villain_misc": [
 				{
 					"card": "01140",
 					"owner_hero_id": 0,
-					"_comments": "Ultron Drones",
+					"_comments": "Ultron Drones"
 				}
 			],
 			"victory_display": [],
@@ -271,11 +271,6 @@
 					"_comments": "Ultron - 2"
 				},
 				{
-					"card": "01136",
-					"owner_hero_id": 0,
-					"_comments": "Ultron - 3"
-				},
-				{
 					"card": "01138a",
 					"owner_hero_id": 0,
 					"_comments": "Assault on NORAD - 2A"
@@ -294,7 +289,9 @@
 					"card": "01139b",
 					"owner_hero_id": 0,
 					"_comments": "Countdown to Oblivion - 3B"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "01137a",
 					"owner_hero_id": 0,
@@ -397,7 +394,6 @@
 					"owner_hero_id": 1,
 					"_comments": "Vibranium"
 				},
-
 				{
 					"card": "01092",
 					"owner_hero_id": 1,
@@ -413,13 +409,11 @@
 					"owner_hero_id": 1,
 					"_comments": "Get Behind Me!"
 				},
-
 				{
 					"card": "01093",
 					"owner_hero_id": 1,
 					"_comments": "Tenacity"
 				},
-
 				{
 					"card": "01043d",
 					"owner_hero_id": 1,
@@ -440,7 +434,6 @@
 					"owner_hero_id": 1,
 					"_comments": "Armored Vest"
 				},
-
 				{
 					"card": "01079",
 					"owner_hero_id": 1,
@@ -456,12 +449,11 @@
 					"owner_hero_id": 1,
 					"_comments": "Med Team"
 				},
-			
 				{
 					"card": "01078",
 					"owner_hero_id": 1,
 					"_comments": "Get Behind Me!"
-				},				
+				},
 				{
 					"card": "01090",
 					"owner_hero_id": 1,
@@ -470,28 +462,27 @@
 				{
 					"card": "01089",
 					"owner_hero_id": 1,
-					"_comments": "Genius",
-				}				
+					"_comments": "Genius"
+				}
 			],
 			"discard1": [],
 			"enemies1": [
-			{
-				"card": "01079",
-				"owner_hero_id": 1,
-				"_comments": "The Power of Protection",
-				"facedown_properties": {
-					"_code": "01079",
-					"code": "01079",
-					"attack": 0,
-					"health": 0,
-					"scheme": 0,
-					"shortname": "Drone",
-					"trait_drone": 1,
-					"type_code": "minion",
-					"macro_name": "ultron_drone"
+				{
+					"card": "01079",
+					"owner_hero_id": 1,
+					"_comments": "The Power of Protection",
+					"facedown_properties": {
+						"_code": "01079",
+						"code": "01079",
+						"attack": 0,
+						"health": 0,
+						"scheme": 0,
+						"shortname": "Drone",
+						"trait_drone": 1,
+						"type_code": "minion",
+						"macro_name": "ultron_drone"
+					}
 				}
-			}			
-
 			],
 			"identity1": [
 				{
@@ -506,18 +497,16 @@
 			"allies1": [],
 			"upgrade_support1": [],
 			"hand1": [
-
 				{
 					"card": "01043b",
 					"owner_hero_id": 1,
 					"_comments": "Wakanda Forever!"
-				}	,			
+				},
 				{
 					"card": "01086",
 					"owner_hero_id": 1,
 					"_comments": "First Aid"
 				},
-
 				{
 					"card": "01046",
 					"owner_hero_id": 1,
@@ -527,7 +516,7 @@
 					"card": "01041",
 					"owner_hero_id": 1,
 					"_comments": "Shuri"
-				},	
+				},
 				{
 					"card": "01044",
 					"owner_hero_id": 1,
@@ -542,7 +531,7 @@
 					"card": "01091",
 					"owner_hero_id": 1,
 					"_comments": "Avengers Mansion"
-				},				
+				}
 			]
 		}
 	}

@@ -223,7 +223,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Venom - 1",
 					"tokens": {
-						"tough": 1,
+						"tough": 1
 					}
 				}
 			],
@@ -233,7 +233,7 @@
 					"owner_hero_id": 0,
 					"_comments": "\"Leave Us Alone!\" - 1B",
 					"tokens": {
-						"threat": 2,
+						"threat": 2
 					}
 				}
 			],
@@ -241,7 +241,7 @@
 				{
 					"card": "27077a",
 					"owner_hero_id": 0,
-					"_comments": "Bell Tower",
+					"_comments": "Bell Tower"
 				}
 			],
 			"victory_display": [],
@@ -280,12 +280,9 @@
 					"card": "27074",
 					"owner_hero_id": 0,
 					"_comments": "Venom - 2"
-				},
-				{
-					"card": "27075",
-					"owner_hero_id": 0,
-					"_comments": "Venom - 3"
-				},
+				}
+			],
+			"removed_from_game": [
 				{
 					"card": "27076a",
 					"owner_hero_id": 0,

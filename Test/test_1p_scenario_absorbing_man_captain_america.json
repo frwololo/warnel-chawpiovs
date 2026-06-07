@@ -284,11 +284,8 @@
 					"owner_hero_id": 0,
 					"_comments": "Absorbing Man - 2"
 				},
-				{
-					"card": "04078",
-					"owner_hero_id": 0,
-					"_comments": "Absorbing Man - 3"
-				},
+			],
+			"removed_from_game": [
 				{
 					"card": "04079a",
 					"owner_hero_id": 0,

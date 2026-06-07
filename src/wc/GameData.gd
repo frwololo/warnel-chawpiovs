@@ -489,6 +489,11 @@ func _scripting_event_triggered(trigger_object = null,
 		"stage_completed": 
 			main_scheme_stage_completed(trigger_object)				
 
+	match trigger:
+		"card_moved_to_pile":
+			if _trigger_details["destination"] == "victory_display":
+				cleanup_post_victory_display_move(trigger_object)
+
 	#Game state changed signal (to compute card costs, etc...)
 	match trigger:
 		"card_reloaded",\
@@ -498,6 +503,8 @@ func _scripting_event_triggered(trigger_object = null,
 				"card_token_modified",\
 				"step_started" :		
 			game_state_changed(trigger_object, trigger, _trigger_details)
+
+	
 
 	return
 
@@ -1403,8 +1410,20 @@ func defenders_chosen():
 func set_aside(card):
 	card.move_to(cfc.NMAP["set_aside"])
 
+func remove_from_game(card):
+	card.move_to(cfc.NMAP["removed_from_game"])
+
 func move_to_victory(card):
 	card.move_to(cfc.NMAP["victory_display"])
+	cleanup_post_victory_display_move(card)
+
+func cleanup_post_victory_display_move(card):	
+	#remove its back code from set_aside to avoid any confusion
+	var back_code = card.get_card_back_code()
+	if back_code:
+		var back_card = cfc.NMAP["set_aside"].has_card_id(back_code)
+		if back_card:
+			back_card.move_to(cfc.NMAP["removed_from_game"])
 
 func retrieve_from_side_or_instance(card_id, owner_id):
 	var card = cfc.NMAP["set_aside"].has_card_id(card_id)

@@ -1,7 +1,11 @@
 {
-	"_comments": "Automated Test for Rapid Growth #13005",
+	"_comments": "Automated Test for Rapid Growth #13005 - Defense bug when defending with ally",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},		
 	"init": {
-		"phase": "PLAYER_TURN",
+		"phase": "VILLAIN_ACTIVATES",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -12,15 +16,18 @@
 		"board": {
 			"villain": [
 				{
-					"card": "Rhino - 1"
+					"card": "Rhino - 2"
 				}
 			],
 			"deck_villain": [
 				{
-					"card": "Advance"
+					"card": "Hydra Regular"
 				},
 				{
 					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Mother's Orders"
 				}
 			],
 			"schemes": [
@@ -33,6 +40,11 @@
 					"card": "Energy"
 				}
 			],
+			"set_aside": [
+				{
+					"card": "Wasp #13001c"
+				}
+			],
 			"identity1": [
 				{
 					"card": "Wasp #13001a"
@@ -43,13 +55,11 @@
 					"card": "Combat Training"
 				}
 			],
-			"enemies1": [
-				{
-					"card": "Hydra Regular"
-				}
-			],
+			"enemies1": [],
 			"allies1": [
-
+			{
+				"card": "Jessica Jones"
+			}
 			],
 			"hand1": [
 				{
@@ -63,25 +73,13 @@
 	},
 	"actions": [
 		{
-			"type": "activate",
-			"value": "Wasp #13001a"
-		},
-		{
-			"type": "choose",
-			"value": "attack"
-		},	
-		{
-			"type": "target",
-			"value": "Rhino - 1"
-		},
-		{
-			"type": "play",
-			"value": "Rapid Growth"
-		},
-		{
 			"type": "select",
-			"value": ["Rhino - 1","Rhino - 1","Rhino - 1","Hydra Regular","Hydra Regular"]
-		},		
+			"value": "Jessica Jones"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -95,16 +93,12 @@
 		"board": {
 			"villain": [
 				{
-					"card": "Rhino - 1",
-					"tokens": {"damage": 3}
+					"card": "Rhino - 2"
 				}
 			],
 			"deck_villain": [
 				{
-					"card": "Advance"
-				},
-				{
-					"card": "Hydra Mercenary"
+					"card": "Hydra Regular"
 				}
 			],
 			"schemes": [
@@ -119,7 +113,7 @@
 			],
 			"identity1": [
 				{
-					"card": "Wasp #13001c"
+					"card": "Wasp #13001a",
 				}
 			],
 			"upgrade_support1": [
@@ -127,15 +121,18 @@
 					"card": "Combat Training"
 				}
 			],
-			"discard_villain": [
+			"enemies1": [
 				{
-					"card": "Hydra Regular"
+					"card": "Hydra Mercenary"
 				}
 			],
-			"allies1": [
-
-			],
 			"discard1": [
+						{
+				"card": "Jessica Jones"
+			}
+			],
+			"allies1": [],
+			"hand1": [
 				{
 					"card": "Mockingbird"
 				},

@@ -139,6 +139,7 @@ static func get_altered_value(
 		
 		if _alteration_super_cache["container_names"]:
 			scriptables_array += cfc.get_all_cards_from_containers(_alteration_super_cache["container_names"])
+			scriptables_array += gameData.theGameObserver.get_cards_with_extra_scripts()
 		else:
 			scriptables_array +=\
 					cfc.get_tree().get_nodes_in_group("cards")
@@ -148,6 +149,9 @@ static func get_altered_value(
 		for key in scriptables_array:
 			unique[key] = true
 		scriptables_array = unique.keys()
+
+#		if task_properties.get("property_name", "") == "thwart" and _owner.get_property("shortname", "") == "Rocket Raccoon":
+#			var _tmp = 1
 		
 		for obj in scriptables_array:
 			var alterants_key = obj.get_alterants_key()
@@ -161,8 +165,8 @@ static func get_altered_value(
 			# we evoke the AlterantEngine only if we have something to execute
 			var task_details = _generate_trigger_details(task_name, task_properties)
 			if len(state_scripts):
-				if task_properties.get("property_name", "") == "cannot_leave_play" and _owner.get_property("shortname", "") == "Hela":
-					var _tmp = 1				
+#				if task_properties.get("property_name", "") == "thwart" and _owner.get_property("shortname", "") == "Rocket Raccoon":
+#					var _tmp = 1				
 				var alteng = cfc.alterant_engine.new(
 						_owner,
 						obj,

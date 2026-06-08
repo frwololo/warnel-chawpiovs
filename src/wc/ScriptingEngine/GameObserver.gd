@@ -11,6 +11,7 @@ extends Node2D
 var _objects:= []
 var removal_conditions:= []
 var extra_script_removal_conditions:= []
+var cards_with_extra_scripts:= []
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -52,6 +53,7 @@ func _remove_all_children():
 
 	removal_conditions = []
 	extra_script_removal_conditions = []
+	cards_with_extra_scripts = []
 	for child in get_children():
 		remove_child(child)
 		child.queue_free()
@@ -88,6 +90,7 @@ func add_script_removal_effect(_parent_script,subject, script_id = 0, remove_con
 	for remove_condition_str in remove_condition_arr:
 		if script_id:
 			extra_script_removal_conditions.append({"trigger": remove_condition_str, "event_filters": filters, "card": subject, "script_id": script_id})
+			cards_with_extra_scripts.append(subject)
 		else:
 			removal_conditions.append({"trigger": remove_condition_str, "filters": filters, "object": subject})
 
@@ -129,8 +132,12 @@ func removal_checks(
 			var script_id = removal_condition["script_id"]
 			card.remove_extra_script(script_id)
 			to_remove.append(removal_condition)
+			cards_with_extra_scripts.erase(card)
 	for v in to_remove:
 		extra_script_removal_conditions.erase(v)	
+
+func get_cards_with_extra_scripts():
+	return cards_with_extra_scripts
 
 func matches_condition(
 		trigger_card = null,

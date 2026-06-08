@@ -297,7 +297,7 @@ func get_all_cards_from_containers(container_names) -> Array:
 		var container = NMAP.get(container_name, null)
 		if !container:
 			container = NMAP.board.get_grid(container_name)
-		if container:
+		if is_instance_valid(container):
 			all_cards += container.get_all_cards()
 	
 	return all_cards

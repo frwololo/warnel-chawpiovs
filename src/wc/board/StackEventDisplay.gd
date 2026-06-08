@@ -237,7 +237,7 @@ func load_text():
 				return
 		else: #there are cases where an interrupt is coming but we're not in interrupt mode, so
 			#I am forced to guess this is what's happening here
-			var sections = ["forced interrupt", "interrupt", "forced response", "response"]
+			var sections = CFConst.INTERRUPT_SECTION_KEYWORDS
 			if trigger:
 				var potential_scripts = owner_card.retrieve_scripts(trigger)
 				if potential_scripts and typeof(potential_scripts) == TYPE_DICTIONARY:

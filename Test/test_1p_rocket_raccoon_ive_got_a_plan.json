@@ -1,0 +1,165 @@
+{
+	"_comments": "Bug: I've got a plan not giving additional thwart",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}
+			],
+			"villain": [
+				{
+					"card": "Drang - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Terrestrial Invasion",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "I've got a plan"
+				},
+				{
+					"card": "Follow Through"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Badoon Ship",
+					"tokens": {
+						"barrage": 1
+					}
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Rocket Raccoon"
+		},
+		{
+			"type": "choose",
+			"value": "thwart"
+		},
+		{
+			"type": "target",
+			"value": "Terrestrial Invasion"
+		},
+		{
+			"type": "play",
+			"value": "I've got a plan"
+		},
+		{
+			"type": "activate",
+			"value": "Rocket Raccoon"
+		},
+		{
+			"type": "choose",
+			"value": "thwart"
+		},
+		{
+			"type": "target",
+			"value": "Terrestrial Invasion"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}
+			],
+			"villain": [
+				{
+					"card": "Drang - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Terrestrial Invasion",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"upgrade_support1": [],
+			"discard1": [
+				{
+					"card": "Follow Through"
+				},
+				{
+					"card": "I've got a plan"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Badoon Ship",
+					"tokens": {
+						"barrage": 1
+					}
+				}
+			]
+		}
+	}
+}

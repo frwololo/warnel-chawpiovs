@@ -1442,8 +1442,9 @@ func execute_scripts(
 			return null
 
 		#skip optional confirmation menu for interrupts,
-		#we have a different gui signal	
-		show_optional_confirmation_menu = false	
+		#we have a different gui signal
+		if get_state_exec()	in ["hand", "board"]:
+			show_optional_confirmation_menu = false	
 		orig_trigger_details["is_interrupt_or_response"] = true
 
 	if ! get_potential_scripts(trigger):
@@ -3610,7 +3611,9 @@ func pay_as_resource(script):
 	remove_resource_lock()
 	
 	cfc.remove_ongoing_process(self, "pay_as_resource")
-	scripting_bus.emit_signal_on_stack("paid_as_resource", self, script.trigger_details)
+	var trigger_details = script.trigger_details.duplicate()
+	trigger_details.erase("network_prepaid")
+	scripting_bus.emit_signal_on_stack("paid_as_resource", self, trigger_details)
 	return result_mana
 
 func _get_resource_sceng(script = null):	
@@ -3865,28 +3868,57 @@ func get_global_center():
 func serialize_to_json():
 	return export_to_json()
 
-var _cached_printed_text = {}
+var _cached_printed_text = { "_initialized": false}
 func get_printed_text(section = ""):
+	var section_l = section.to_lower()
 	if !section:
 		return get_property("text","")
-	if _cached_printed_text.has(section):
-		return _cached_printed_text[section]
+
+
+	if !_cached_printed_text["_initialized"]:
+		var full_text:String = get_property("text", "")
+		var paragraphs = full_text.split("[b]")
+		var i = 0
+		for paragraph in paragraphs:
+			if !paragraph:
+				continue
+			var paragraph_l:String = paragraph.to_lower()
+			var position = paragraph.findn("[/b]")
+			if position == -1:
+				var found_keyword = false
+				if i == 0: #first line might be the traits and keywords line
+					for keyword in CFConst.AUTO_KEYWORDS.keys():
+						if paragraph_l.begins_with(keyword):
+							_cached_printed_text["keywords"] = paragraph
+							found_keyword = true
+							break
+				if !found_keyword:
+					if !_cached_printed_text.has("generic"):
+						 _cached_printed_text["generic"] = ""
+					else:
+						_cached_printed_text["multiple_generic"] = true
+					_cached_printed_text["generic"] += paragraph
+			else:
+				var paragraph_name = paragraph_l.substr(0, position)
+				#due to some typos, some sections have the ":" inside the bold, others don't
+				#e.g. <b>When Revealed:</b> and <b>When Revealed</b>: are both possible occurrences
+				paragraph_name = paragraph_name.replace(":", "") 
+				if !_cached_printed_text.has(paragraph_name):
+						_cached_printed_text[paragraph_name] = ""
+				else:
+					_cached_printed_text["multiple_" + paragraph_name] = true		
+				_cached_printed_text[paragraph_name] += "[b]" + paragraph
+			i+= 1		
+
+		_cached_printed_text["_initialized"] = true
+		_cached_printed_text["all"] = full_text
+		_cached_printed_text["all_excluding_keywords"] = full_text
+		if _cached_printed_text.has("keywords"):
+			_cached_printed_text["all_excluding_keywords"] = full_text.replace(_cached_printed_text["keywords"], "")
+
+	if _cached_printed_text.has(section_l):
+		return _cached_printed_text[section_l]
 	
-	var result = ""
-	var full_text:String = get_property("text", "")
-	var searching:String = "[b]" + section.to_lower() + "[/b]:"
-	var position = full_text.findn(searching)
-	if position == -1:
-		result = ""
-	else:
-		var substring = full_text.substr(position + searching.length())
-		var end = substring.find("\n")
-		if end == -1:
-			result = substring
-		else:
-			result = substring.substr(0, end)
-	_cached_printed_text[section] = result
-	return result	
 
 func queue_free():
 	scripting_bus.unregister_card(self)

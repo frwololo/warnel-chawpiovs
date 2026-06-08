@@ -528,6 +528,7 @@
 						"name": "shuffle_card_into_container",
 						"dest_container": "deck",
 						"src_container": "discard",
+						"subject": "tutor",
 						"subject_count": "all",
 						"selection_count": 2,
 						"selection_type": "max",
@@ -625,7 +626,7 @@
 						"if": {
 							"func_name": "identity_has_trait",
 							"func_params": {
-								"trait": "giant"
+								"trait": "tiny"
 							}
 						},
 						"then": [
@@ -1046,7 +1047,7 @@
 						"name": "add_script",
 						"end_condition": "phase_ended",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{
@@ -1065,7 +1066,7 @@
 						"name": "add_script",
 						"end_condition": "phase_ended",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{

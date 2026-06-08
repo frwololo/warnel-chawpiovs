@@ -569,6 +569,19 @@ func post_cards_moved_load():
 	if func_return is GDScriptFunctionState && func_return.is_valid():
 		yield(func_return, "completed")		
 		
+
+	#test printed texts output
+#	var all_printed_text = {}
+#	for card in get_all_cards(true):
+#		card.get_printed_text("no_an_actual_id")
+#		all_printed_text[card.canonical_name + " #" + card.canonical_id] = card._cached_printed_text
+#
+#	var file:File = File.new()
+#	var error = file.open("user://printed_texts.json", File.WRITE)
+#	if error == OK:
+#		file.store_string(JSON.print(all_printed_text, '\t'))
+#		file.close()	
+	
 		
 	#execute setup for remaining cards, if any
 	execute_cards_on_load()

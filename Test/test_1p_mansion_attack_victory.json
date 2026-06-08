@@ -1,0 +1,328 @@
+{
+	"_comments": "Automated Test for Mansion Attack - Victory condition",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wasp"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"villain": [
+				{
+					"card": "Avalanche - A #32121a",
+					"owner_hero_id": 0,
+					"tokens": {
+						"damage": 14
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Basketball Court - 2B #32128b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Save the School #32130",
+					"owner_hero_id": 0
+				}
+			],
+			"victory_display": [
+				{
+					"card": "The Brotherhood Strikes! - 1B #32125b",
+					"owner_hero_id": 0
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Wasp #13001c",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Wasp #13001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mother's Orders #13027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Beetle #13028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Beetle Armor MK IV #13029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Beetle Mania #13030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Beetle Mania #13030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Blob - A #32122a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pyro - A #32123a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Toad - A #32124a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Atrium - 2A #32126a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Atrium - 2B #32126b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Cafeteria - 2A #32127a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Cafeteria - 2B #32127b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Courtyard - 2A #32129a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Courtyard - 2B #32129b",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Brotherhood Strikes! - 1A #32125a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Basketball Court - 2A #32128a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Rapid Growth #13005",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Wasp #13001a"
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Ant-Man - Scott Lang #13002",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Wasp"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Avalanche"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wasp"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},				
+				{
+					"card": "Advance"
+				}				
+			],
+			"villain": [
+				{
+					"card": "Toad - A #32124a",
+				},
+			],
+			"schemes": [
+				{
+					"card": "The Basketball Court - 2B #32128b"
+				},			
+			],
+			"villain_misc": [
+				{
+					"card": "Save the School #32130",
+					"owner_hero_id": 0
+				}
+			],
+			"victory_display": [
+				{
+					"card": "The Brotherhood Strikes! - 1B #32125b",
+					"owner_hero_id": 0
+				},
+
+				{
+					"card": "Avalanche - A #32121a",
+				}				
+			],
+			"set_aside": [
+				{
+					"card": "Wasp #13001c",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Wasp #13001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mother's Orders #13027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Beetle #13028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Beetle Armor MK IV #13029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Beetle Mania #13030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Beetle Mania #13030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Blob - A #32122a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pyro - A #32123a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Atrium - 2A #32126a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Atrium - 2B #32126b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Cafeteria - 2A #32127a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Cafeteria - 2B #32127b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Courtyard - 2A #32129a",
+					"owner_hero_id": 0
+				},				
+				{
+					"card": "The Courtyard - 2B #32129b",
+					"owner_hero_id": 0
+				}				
+			],
+			"removed_from_game": [
+				{
+					"card": "The Brotherhood Strikes! - 1A #32125a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Basketball Court - 2A #32128a",
+					"owner_hero_id": 0
+				},
+
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Rapid Growth #13005",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+
+			],
+			"identity1": [
+				{
+					"card": "Wasp #13001a",
+					"tokens": {
+						"victory": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Ant-Man - Scott Lang #13002",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

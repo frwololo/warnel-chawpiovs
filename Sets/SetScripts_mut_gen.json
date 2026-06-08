@@ -576,7 +576,8 @@
 					"selection_type": "equal",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_friendly_my_hero"
+							"filter_group": "group_friendly_my_hero",
+							"filter_is_exhausted": true
 						}
 					]
 				}
@@ -1650,7 +1651,9 @@
 					"selection_type": "equal",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_minions"
+							"filter_properties": {
+								"type_code": "minion"
+							}
 						}
 					],
 					"is_cost": true
@@ -1694,7 +1697,9 @@
 					"selection_type": "equal",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_minions"
+							"filter_properties": {
+								"type_code": "minion"
+							}
 						}
 					],
 					"is_cost": true
@@ -3612,7 +3617,7 @@
 							"func_name": "count_tokens",
 							"func_params": {
 								"subject": "current_subject",
-								"token_name": "_max_damage",
+								"token_name": "_max_damage"
 							}
 						}
 					}
@@ -4303,6 +4308,11 @@
 				{
 					"name": "move_card_to_container",
 					"subject": "tutor",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_type": "max",
+					"selection_optional": true,
+					"selection_count": 1,
 					"src_container": [
 						"discard_event_source_hero",
 						"deck_event_source_hero"
@@ -4898,7 +4908,7 @@
 				}
 			]
 		},
-		"deal_encounter": {
+		"deal_encounters": {
 			"all": {
 				"_rules": {
 					"for_each_player": true,
@@ -5331,7 +5341,7 @@
 					"tags": [
 						"disable_attach_trigger"
 					],
-					"_comments": "disable_attach_trigger in tags prevents the attachment from moving somewhere else as it comes into play"					
+					"_comments": "disable_attach_trigger in tags prevents the attachment from moving somewhere else as it comes into play"
 				}
 			]
 		}
@@ -6393,7 +6403,7 @@
 							}
 						}
 					]
-				},			
+				},
 				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
@@ -6912,7 +6922,7 @@
 	"Toad": {
 		"attack_happened": {
 			"event_filters": {
-				"damage": ">0",
+				"damage": ">0"
 			},
 			"trigger": "self",
 			"board": [
@@ -6940,7 +6950,7 @@
 	"Toad - A": {
 		"attack_happened": {
 			"event_filters": {
-				"damage": ">0",
+				"damage": ">0"
 			},
 			"trigger": "self",
 			"board": [
@@ -6957,7 +6967,7 @@
 	"Toad - B": {
 		"attack_happened": {
 			"event_filters": {
-				"damage": ">0",
+				"damage": ">0"
 			},
 			"trigger": "self",
 			"board": [
@@ -7479,7 +7489,7 @@
 		"_authority_override": {
 			"func_name": "identity_has_trait",
 			"func_params": {
-				"trait": "mutant",
+				"trait": "mutant"
 			}
 		},
 		"manual": {
@@ -7498,7 +7508,7 @@
 				},
 				{
 					"name": "heal",
-					"amount" : 1,
+					"amount": 1,
 					"subject": "target",
 					"filter_state_subject": [
 						{

@@ -227,7 +227,7 @@ func _get_display_text_nocache():
 					var tags = PoolStringArray(additional_tags).join(", ")
 					return owner_name + " - attacks gain " + tags
 			if owner:
-				var sections = ["forced interrupt", "interrupt", "forced response", "response"]
+				var sections = CFConst.INTERRUPT_SECTION_KEYWORDS
 				if display_section:
 					sections = [display_section] + sections
 				for id in sections:

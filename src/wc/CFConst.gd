@@ -285,18 +285,29 @@ const Z_INDEX_HAND_CARDS_NORMAL :=200
 # In particular DO NOT ADD:
 # enemy_initiates*
 # enemy_*_happened
+# basic_defense_happened,
+# basic_attack_happened,
+# basic_thwart_happened,
 const OPTIONAL_SIGNALS:= [
 	"about_to_reveal",
+	
 	"boost_card_resolved",
 	"bypass_guard_happened", 
 	"bypass_crisis_happened",
-	"bypass_patrol_happened", 	
+	"bypass_patrol_happened",
+
+	"card_exhausted",
 	"card_leaves_play",
-	"card_played",	
+	"card_played",
+	"card_readied",
+		
 	"identity_changed_form",
+	
 	"paid_as_resource",
 	"pile_emptied",
+	
 	"script_executed",
+	
 	"villain_unique_card_conflict",
 ]
 #unless a card registers an interrupt, these signals will
@@ -633,9 +644,11 @@ const TOKENS_ONLY_ON_BOARD_EXCEPTIONS:= [
 ]
 
 #list of non board zones that can have alterants (performance: piles not in this list will be excluded from the alterants loop)
+#exception: cards that explicitly add a script with the "add_script" script will be taken into account no matter what
+
 #leave empty == all cards will be considered for alterants
 const ALTERANTS_ALLOWED_PILES:= [
-	"hand"
+	"hand",
 ]
 
 #list of non board zones that can have interrupts (performance: piles not in this list will be excluded from the alterants loop)
@@ -726,6 +739,17 @@ const AUTO_KEYWORDS := {
 	"invincible": "int",		
 }
 
+const INTERRUPT_SECTION_KEYWORDS:= [
+	"forced interrupt", 
+	"interrupt",
+	"hero interrupt",
+	"alter-ego interrupt",
+	"forced response", 
+	"response",
+	"hero response",
+	"alter-ego response",	
+]
+
 #list of events for which we don't show a GUI announce to the user by default
 #(interrupts override this)
 const SKIP_ANNOUNCE_CHOICE_MENU:= {
@@ -794,6 +818,8 @@ const SCENG_TRIGGER_DETAILS_ERASE_FROM_CHILDREN_SCRIPTS := [
 	"is_interrupt_or_response"
 ]
 
+#damages get split into multiple scripts (pre_receive_damage, receive_damage, etc...)
+#they need to transfer some of their properties to the children scripts
 const DAMAGE_TRANSFER_SCRIPT_PROPERTIES:= [
 	"if_damage",
 	"if_no_damage",
@@ -1056,8 +1082,8 @@ const DEBUG_SIMULATE_NETWORK_DELAY = 1.5
 const DEBUG_NETWORK_DELAY_RANDOM = false
 const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 
-const SCRIPT_BREAKPOINT_CARD_NAME := "Operation Zero Tolerance"
-const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_attached"
+const SCRIPT_BREAKPOINT_CARD_NAME := "Pym Particles"
+const SCRIPT_BREAKPOINT_TRIGGER_NAME := "paid_as_resource"
 
 const VERSION := "1.4.0"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"

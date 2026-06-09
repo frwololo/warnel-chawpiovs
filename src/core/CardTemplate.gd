@@ -1462,7 +1462,7 @@ func move_to(targetHost: Node,
 			if is_instance_valid(tokens):
 				if CFConst.TOKENS_ONLY_ON_BOARD and cfc._ut_tokens_only_on_board:
 					for token in tokens.get_all_tokens().values():
-						print_debug(cfc._ut_tokens_only_on_board)
+#						print_debug(cfc._ut_tokens_only_on_board)
 						token.queue_free()
 			# If the card was hosted in a board placement grid
 			# we clean the references.

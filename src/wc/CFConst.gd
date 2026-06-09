@@ -324,6 +324,11 @@ const NO_STACK_BY_DEFAULT_SIGNALS:= [
 	"step_started",	
 ]
 
+#signals that will always be added to the top of the stack when they're emitted
+const FORCE_INTERRUPT_SIGNALS:= [
+	"paid_as_resource"
+]
+
 const TYPES_TO_GROUPS := {
 	"upgrade": ["group_upgrade_support", "play_area"],
 	"support": ["group_upgrade_support", "play_area"],

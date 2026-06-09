@@ -518,16 +518,17 @@ func add_event_to_stack(stackEvent, checksum = ""):
 			result["is_interrupt"] = true
 			display_debug("add_event_to_stack: found a card to add")
 			var script_uid = script_being_interrupted.stack_uid
-			if (!card_already_played_for_stack_uid.has(script_uid)):
-				card_already_played_for_stack_uid[script_uid] = []
-			card_already_played_for_stack_uid[script_uid].append(stackEvent.sceng.owner)
+			add_card_already_played(script_uid, stackEvent.sceng.owner)
 			display_debug("add_event_to_stack: added " + stackEvent.get_display_name())
 			#reset_interrupt_states()
 
 	
+	var priority_signal = false
+	if stackEvent as SignalStackScript:
+		if stackEvent.script_name in CFConst.FORCE_INTERRUPT_SIGNALS:
+			priority_signal = true 
 
-
-	if is_interrupt_mode():
+	if is_interrupt_mode() or priority_signal:
 		var buffer = StackObject.new()
 		buffer.interrupt_marker = true
 		insert_event_into_stack(buffer)
@@ -545,6 +546,12 @@ func add_event_to_stack(stackEvent, checksum = ""):
 	emit_signal("script_added_to_stack",stackEvent)
 	display_debug("added script to stack - " + checksum + ". my current_stack_uid is " + str(current_stack_uid) )
 	return result
+
+func add_card_already_played(script_uid, card):
+	if (!card_already_played_for_stack_uid.has(script_uid)):
+		card_already_played_for_stack_uid[script_uid] = []
+	card_already_played_for_stack_uid[script_uid].append(card)
+
 
 func insert_event_into_stack(stackEvent, pos = -1):
 	stackEvent.stack_uid = get_next_stack_uid()
@@ -718,7 +725,7 @@ func reset_interrupt_states():
 # TODO run_mode ?
 #	_current_interrupting_mode = InterruptMode.NONE	
 
-#pass my opportunity to interrupt 
+#pass my opportunity to interrupt
 func pass_interrupt (hero_id):
 	if not hero_id in gameData.get_my_heroes():
 		cfc.LOG("{error}: pass_interrupt called for hero_id by non controlling player")
@@ -741,10 +748,31 @@ remotesync func clients_pass_interrupt (hero_id):
 		yield_wait_time+= 0.1
 	remove_yield_counter("clients_pass_interrupt")
 	
+
 	#TODO ensure that caller network id actually controls that hero
 	reset_phase_buttons()
 	_heroes_passed_optional_interrupt[hero_id] = true
 	set_run_mode(RUN_MODE.NO_BRAKES, "clients_pass_interrupt")
+
+func pass_interrupt_for_card (event, card):
+	var guid = guidMaster.get_guid(card)
+	cfc._rpc(self,"clients_pass_interrupt_for_card", event.stack_uid, guid)
+
+#call to all when I've chosen to pass my opportunity to interrupt 
+remotesync func clients_pass_interrupt_for_card (event_uid, card_guid):
+	var client_id = cfc.get_rpc_sender_id()
+	var card = guidMaster.get_object_by_guid(card_guid)
+	display_debug(str(client_id) + " wants to pass for card:" + card.canonical_name )
+
+	add_yield_counter("clients_pass_interrupt_for_card")
+	while (yield_wait_time < yield_max_wait_time) and run_mode != RUN_MODE.PENDING_USER_INTERACTION:
+		display_debug("yield for PENDING_USER_INTERACTION in clients_pass_interrupt")
+		yield(get_tree().create_timer(0.1), "timeout")
+		yield_wait_time+= 0.1
+	remove_yield_counter("clients_pass_interrupt_for_card")
+	
+
+	add_card_already_played(event_uid, card)
 
 
 #forced activation of card for forced interrupt
@@ -786,35 +814,41 @@ func flush_script(stack_object):
 		return
 	
 	for t in stack_object.get_tasks():
-		gameData.play_sfx(t)	
+		if t.script_name =="temporary_effect":
+			var _tmp = 1
+	var execute_mode = stack_object.next_execute_mode()
+	if execute_mode != CFInt.RunMode.COST_SCRIPTS_ONLY:
+		for t in stack_object.get_tasks():
+			gameData.play_sfx(t)	
 	var func_return = stack_object.execute()	
 	if func_return is GDScriptFunctionState && func_return.is_valid():
 		func_return = yield(func_return, "completed")
 
-	var sceng = stack_object.get_sceng()
-	if stack_object.get_first_task_name() != "script_executed" and sceng: # and sceng.trigger_details.get("action_name_id", ""):
-		var trigger_details = sceng.trigger_details.duplicate()
-		#the trigger details of sceng might contain information about the interrupted
-		#event rather than the event that was just executed
-		#not sure what's a proper way to address that, for now I'm overwriting the values here
-		trigger_details["stack_object"] = stack_object
-		trigger_details["event_object"] = stack_object.get_first_task()
-		scripting_bus.emit_signal_on_stack("script_executed", sceng.owner, trigger_details)
+	if execute_mode != CFInt.RunMode.COST_SCRIPTS_ONLY:
+		var sceng = stack_object.get_sceng()
+		if stack_object.get_first_task_name() != "script_executed" and sceng: # and sceng.trigger_details.get("action_name_id", ""):
+			var trigger_details = sceng.trigger_details.duplicate()
+			#the trigger details of sceng might contain information about the interrupted
+			#event rather than the event that was just executed
+			#not sure what's a proper way to address that, for now I'm overwriting the values here
+			trigger_details["stack_object"] = stack_object
+			trigger_details["event_object"] = stack_object.get_first_task()
+			scripting_bus.emit_signal_on_stack("script_executed", sceng.owner, trigger_details)
+			
+	#	var user_interaction_status = stack_object.get_user_interaction_status()
+		#something todo here ???
+		interrupt_mode = InterruptMode.NONE
 		
-#	var user_interaction_status = stack_object.get_user_interaction_status()
-	#something todo here ???
-	interrupt_mode = InterruptMode.NONE
-	
-#	if run_mode != RUN_MODE.NO_BRAKES:		
-#		var _error = 1
-#		display_debug("called to flush script but not allowed because run_mode is" + RunModeStr[run_mode])
-#		return	
-	
-	history[stack_object.stack_uid]["done"] = true
-	stack.erase(stack_object)
-#	if stack.empty():
-#		set_run_mode(RUN_MODE.NOTHING_TO_RUN, "flush_script " + stack_object.get_display_name())
-	emit_signal("script_executed_from_stack", stack_object )		
+	#	if run_mode != RUN_MODE.NO_BRAKES:		
+	#		var _error = 1
+	#		display_debug("called to flush script but not allowed because run_mode is" + RunModeStr[run_mode])
+	#		return	
+		
+		history[stack_object.stack_uid]["done"] = true
+		stack.erase(stack_object)
+	#	if stack.empty():
+	#		set_run_mode(RUN_MODE.NOTHING_TO_RUN, "flush_script " + stack_object.get_display_name())
+		emit_signal("script_executed_from_stack", stack_object )		
 	_pending_flush.erase(uid)	
 
 func compute_interrupts(script):

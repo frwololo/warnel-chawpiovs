@@ -1346,8 +1346,8 @@ func execute_scripts(
 		orig_trigger_details: Dictionary = {},
 		run_type := CFInt.RunType.NORMAL):
 
-	if (trigger == "card_attached") and canonical_name == "Operation Zero Tolerance":
-		var _tmp = 1
+#	if (trigger == "manual") and canonical_name == "Mean Swing" and run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
+#		var _tmp = 1
 
 	if script_exec_temporarily_blocked(run_type):
 		if get_parent() and !("tree_" in trigger): #dirty check to avoid crashes
@@ -1438,6 +1438,8 @@ func execute_scripts(
 		if (!trigger):
 			return null
 		orig_trigger_details.merge(gameData.theStack.get_current_interrupted_event(), true)
+		#network_prepaid causing trouble as usual...
+		orig_trigger_details.erase("network_prepaid")
 		if (!orig_trigger_details):
 			return null
 
@@ -1597,6 +1599,8 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 			# If the player chooses not to play an optional cost
 			# We consider the whole cost dry run unsuccesful
 			if not confirm_return:
+				if origin_event and trigger_details.get("is_interrupt_or_response", false):
+					gameData.theStack.pass_interrupt_for_card(origin_event, self)
 				gameData.theStack.resume_operations_to_all(checksum)
 				state_scripts = []
 	
@@ -2202,6 +2206,8 @@ func check_play_costs(params:Dictionary = {}, _debug = false) -> Color:
 		return _check_play_costs_cache[hero_id]
 	
 	if (sceng.can_all_costs_be_paid):
+#		if canonical_name == "Mean Swing":
+#			var _tmp = 1
 		_check_play_costs_cache[hero_id] = CFConst.CostsState.OK
 
 

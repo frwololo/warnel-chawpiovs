@@ -140,8 +140,8 @@ func _compute_columns():
 # Populates the selection window with duplicates of the possible cards
 # Then displays them in a popup for the player to select them.
 func initiate_selection(_card_array: Array) -> void:
-	if OS.has_feature("debug") and not cfc.is_testing:
-		print("DEBUG INFO:SelectionWindow: Initiated Selection")
+#	if OS.has_feature("debug") and not cfc.is_testing:
+#		print("DEBUG INFO:SelectionWindow: Initiated Selection")
 	
 	#only include cards that can actually be used 
 	card_array = []
@@ -250,8 +250,8 @@ func initiate_selection(_card_array: Array) -> void:
 			self,
 			{"card_selection_options": _card_dupe_map.keys()}
 	)
-	if OS.has_feature("debug") and not cfc.is_testing:
-		print("DEBUG INFO:SelectionWindow: Started Card Display with a %s card selection" % [_card_grid.get_child_count()])
+#	if OS.has_feature("debug") and not cfc.is_testing:
+#		print("DEBUG INFO:SelectionWindow: Started Card Display with a %s card selection" % [_card_grid.get_child_count()])
 
 func popup_centered():
 	if has_been_centered:

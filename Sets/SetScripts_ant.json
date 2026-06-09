@@ -777,7 +777,7 @@
 		}
 	},
 	"Pym Particles": {
-		"paid_as_resource": {
+		"interrupt_paid_as_resource": {
 			"trigger": "self",
 			"is_optional_all": true,
 			"all": [

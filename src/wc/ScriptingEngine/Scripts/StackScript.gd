@@ -8,7 +8,7 @@ var sceng
 var run_type
 var trigger
 var trigger_details
-
+var costs_executed = false
 
 func _init(_sceng = null, _run_type = 0, _trigger = "", _trigger_details = {}):
 	sceng = _sceng
@@ -110,7 +110,20 @@ func remove_non_cost_tasks():
 	for task in to_remove:
 		sceng.remove_script(task)
 
+func next_execute_mode():
+	if run_type != CFInt.RunType.NORMAL:
+		return CFInt.RunMode.BOTH
+
+	if costs_executed:
+		return CFInt.RunMode.NON_COST_SCRIPTS_ONLY
+	return CFInt.RunMode.COST_SCRIPTS_ONLY	
+
 func execute():
+	var run_mode = next_execute_mode()
+
+	if run_mode == 	CFInt.RunMode.BOTH:
+		return execute_both()
+	
 	cfc.add_ongoing_process(self)
 	var owner = sceng.owner
 
@@ -118,6 +131,75 @@ func execute():
 		var _error = 1
 		cfc.remove_ongoing_process(self)
 		return
+	if run_mode == CFInt.RunMode.COST_SCRIPTS_ONLY:
+		#we re-run some pre-execution scripts here to set everything right
+		owner.common_pre_run(sceng)
+		# In case the script involves targetting, we need to wait on further
+		# execution until targetting has completed
+		sceng.execute(CFInt.RunType.COST_CHECK)
+		if not sceng.all_tasks_completed:
+			#TODO this shouldn't happen because at this stage all costs should have been prepaid
+			var _error = 1
+			yield(sceng,"tasks_completed")	
+		
+		if sceng.can_all_costs_be_paid:
+
+			#1.5) We run the script in "prime" mode again to choose targets
+			# for all tasks that aren't costs but still need targets
+			# (is_cost = false and needs_subject = false)
+			sceng.execute(CFInt.RunType.PRIME_ONLY)
+			if not sceng.all_tasks_completed:
+				yield(sceng,"tasks_completed")
+	
+			sceng.execute(run_type, run_mode)
+			if not sceng.all_tasks_completed:
+				yield(sceng,"tasks_completed")
+			# warning-ignore:void_assignment
+			var func_return = owner.common_post_execution_scripts(trigger)
+			# We make sure this function does to return until all
+			# custom post execution scripts have also finished
+			if func_return is GDScriptFunctionState: # Still working.
+				func_return = yield(func_return, "completed")
+		costs_executed = true
+	else:
+		if sceng.can_all_costs_be_paid:
+
+			#1.5) We run the script in "prime" mode again to choose targets
+			# for all tasks that aren't costs but still need targets
+			# (is_cost = false and needs_subject = false)
+			sceng.execute(CFInt.RunType.PRIME_ONLY)
+			if not sceng.all_tasks_completed:
+				yield(sceng,"tasks_completed")
+	
+			sceng.execute(run_type, run_mode)
+			if not sceng.all_tasks_completed:
+				yield(sceng,"tasks_completed")
+			# warning-ignore:void_assignment
+			var func_return = owner.common_post_execution_scripts(trigger)
+			# We make sure this function does to return until all
+			# custom post execution scripts have also finished
+			if func_return is GDScriptFunctionState: # Still working.
+				func_return = yield(func_return, "completed")		
+		# This will only trigger when costs could not be paid, and will
+		# execute the "is_else" tasks
+		else:
+			#print("DEBUG:" + str(state_scripts))
+			sceng.execute(CFInt.RunType.ELSE)
+			if not sceng.all_tasks_completed:
+				yield(sceng,"tasks_completed")	
+				
+	cfc.remove_ongoing_process(self)
+	return run_mode
+
+func execute_both():
+	cfc.add_ongoing_process(self)
+	var owner = sceng.owner
+
+	if !is_instance_valid(owner):
+		var _error = 1
+		cfc.remove_ongoing_process(self)
+		return
+
 	#we re-run some pre-execution scripts here to set everything right
 	owner.common_pre_run(sceng)
 	# In case the script involves targetting, we need to wait on further
@@ -136,7 +218,7 @@ func execute():
 		sceng.execute(CFInt.RunType.PRIME_ONLY)
 		if not sceng.all_tasks_completed:
 			yield(sceng,"tasks_completed")
-	
+
 		sceng.execute(run_type)
 		if not sceng.all_tasks_completed:
 			yield(sceng,"tasks_completed")
@@ -146,13 +228,13 @@ func execute():
 		# custom post execution scripts have also finished
 		if func_return is GDScriptFunctionState: # Still working.
 			func_return = yield(func_return, "completed")
-	# This will only trigger when costs could not be paid, and will
-	# execute the "is_else" tasks
+		
 	else:
 		#print("DEBUG:" + str(state_scripts))
 		sceng.execute(CFInt.RunType.ELSE)
 		if not sceng.all_tasks_completed:
 			yield(sceng,"tasks_completed")	
+				
 	cfc.remove_ongoing_process(self)
 
 func get_tasks() -> Array:

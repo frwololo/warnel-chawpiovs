@@ -1,0 +1,151 @@
+{
+	"_comments": "Automated Test for Rapid Growth #13005 - Pym particles bug: should draw while still in tiny form (before changing to giant)",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wasp"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 2"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Mother's Orders"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Wasp #13001c"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Wasp #13001a"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Pym particles"
+				},
+				{
+					"card": "Rapid Growth #13005"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "Wasp #13001a"
+		},
+		{
+			"type": "play",
+			"value": "Rapid Growth"
+		},
+		{
+			"type": "choose",
+			"value": "yes"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wasp"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 2"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Wasp #13001c",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"allies1": [],
+			"discard1": [
+				{
+					"card": "pym particles"
+				},
+				{
+					"card": "Rapid Growth #13005"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

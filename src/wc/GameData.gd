@@ -501,6 +501,7 @@ func _scripting_event_triggered(trigger_object = null,
 		"card_moved_to_board", \
 				"card_played", \
 				"card_token_modified",\
+				"card_properties_modified",\
 				"step_started" :		
 			game_state_changed(trigger_object, trigger, _trigger_details)
 
@@ -690,6 +691,7 @@ func game_state_changed(_trigger_object = null,
 		trigger: String = "manual",
 		_trigger_details: Dictionary = {}):
 	emit_signal("game_state_changed",{})
+	cfc.flush_cache()
 
 func init_network_players(players:Dictionary):
 	for player_network_id in players:

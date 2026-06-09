@@ -70,15 +70,17 @@
 		{
 			"type": "activate",
 			"value": "Wrist Gauntlets",
-			"expected_to_fail": "true"
+			"expected_to_fail": true
 		},
 		{
 			"type": "choose",
-			"value": "Stun"
+			"value": "Stun",
+			"expected_to_fail": true			
 		},
 		{
 			"type": "target",
-			"value": "Rhino"
+			"value": "Rhino",
+			"expected_to_fail": true
 		}
 	],
 	"end": {

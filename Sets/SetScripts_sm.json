@@ -2024,7 +2024,7 @@
 									"name": "modify_properties",
 									"_silent": true,
 									"tags": [
-										"Init"
+										"Init", "emit_signal"
 									],
 									"subject": "self",
 									"set_properties": {
@@ -2039,7 +2039,7 @@
 							"name": "modify_properties",
 							"_silent": true,
 							"tags": [
-								"Init"
+								"Init", "emit_signal"
 							],
 							"subject": "self",
 							"set_properties": {
@@ -2081,7 +2081,7 @@
 									"name": "modify_properties",
 									"_silent": true,
 									"tags": [
-										"Init"
+										"Init", "emit_signal"
 									],
 									"subject": "self",
 									"set_properties": {
@@ -2096,7 +2096,7 @@
 							"name": "modify_properties",
 							"_silent": true,
 							"tags": [
-								"Init"
+								"Init", "emit_signal"
 							],
 							"subject": "self",
 							"set_properties": {

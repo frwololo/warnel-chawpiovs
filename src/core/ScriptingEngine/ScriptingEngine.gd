@@ -66,6 +66,8 @@ var owner
 var trigger
 var trigger_object
 var state_scripts
+var costs_executed = false
+var non_costs_executed = false
 
 # Simply initiates the [run_next_script()](#run_next_script) loop
 func _init(_state_scripts: Array,
@@ -259,7 +261,12 @@ func precompute(script):
 # It receives array with all the tasks to execute,
 # then turns each array element into a [ScriptTask] object and
 # send it to the appropriate tasks.
-func execute(_run_type) -> void:
+#
+# execute_mode is only used when _run_type is set to CFInt.RunType.NORMAL
+# BOTH: executes both costs and non costs, this is the default
+# COST_SCRIPTS_ONLY,  NON_COST_SCRIPTS_ONLY: self exeplanatory. 2 executes should be called in a row
+# variables costs_executed and non_costs_executed will be set to "true" accordingly after running
+func execute(_run_type, execute_mode = CFInt.RunMode.BOTH) -> void:
 	snapshot_id = rand_range(1,10000000)
 	all_tasks_completed = false
 	run_type = _run_type	
@@ -424,9 +431,29 @@ func execute(_run_type) -> void:
 						"requesting_object": script.owner,
 						"modifier": _retrieve_temp_modifiers(script, "properties")
 					}
-				var retcode = call_task(script.script_name, script)
-				if retcode is GDScriptFunctionState:
-					retcode = yield(retcode, "completed")
+					
+				var do_execute = true
+				var retcode
+					
+				if run_type ==	CFInt.RunType.NORMAL:
+					match execute_mode:
+						CFInt.RunMode.BOTH:
+							do_execute = true
+							costs_executed = true
+							non_costs_executed = true
+						CFInt.RunMode.COST_SCRIPTS_ONLY:
+							do_execute = (script.is_cost)
+							costs_executed = true
+						CFInt.RunMode.NON_COST_SCRIPTS_ONLY:
+							do_execute = !(script.is_cost)
+							non_costs_executed = true
+				if do_execute:
+					retcode = call_task(script.script_name, script)
+					if retcode is GDScriptFunctionState:
+						retcode = yield(retcode, "completed")
+				else:
+					var _skipped = script.script_name
+					var _tmp =1
 				# We set the previous subjects only after the execution, because some tasks
 				# might change the previous subjects for the future tasks
 				script.owner.last_subjects = script.subjects

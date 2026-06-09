@@ -52,7 +52,8 @@ func init_task_from_script_definition(definition:Dictionary, _owner, _trigger_ob
 func get_tasks() -> Array:
 	return tasks
 
-
+func next_execute_mode():
+	return CFInt.RunMode.BOTH
 	
 func execute():
 	if (!task.is_primed):

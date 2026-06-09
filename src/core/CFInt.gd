@@ -30,6 +30,12 @@ enum RunType{
 	BACKGROUND_COST_CHECK
 	PRECOMPUTE
 }
+
+enum RunMode{
+	BOTH,
+	COST_SCRIPTS_ONLY,
+	NON_COST_SCRIPTS_ONLY
+}
 # The focus style used by the engine
 # * SCALED means that the cards simply scale up when moused over in the hand
 # * VIEWPORT means that a larger version of the card appears when mousing over it

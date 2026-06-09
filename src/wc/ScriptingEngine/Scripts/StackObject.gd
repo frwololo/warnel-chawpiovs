@@ -41,6 +41,8 @@ func get_user_interaction_status():
 	
 	return status
 		
+func next_execute_mode():
+	return CFInt.RunMode.BOTH
 
 #can be overriden by children classes
 func execute():

@@ -1,0 +1,172 @@
+{
+	"_comments": "Automated Test for Cybernetic Arm #54002",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Winter Soldier"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Winter Soldier"
+				}
+			],
+			"upgrade_support1": [
+			],
+			"enemies1": [
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Weapons Runner"
+				}
+			],
+			"others": [
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "S.H.I.E.L.D. Sidearm",
+				},
+				{
+					"card": "Spoiling for a fight"
+				},				
+				{
+					"card": "One by One"
+				},
+				{
+					"card": "Firepower"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "S.H.I.E.L.D. Sidearm"
+		},
+		{
+			"type": "select",
+			"value": "Spoiling for a fight",
+			"_comments": "pay for sidearm"
+		},
+		{
+			"type": "target",
+			"value": "Winter Soldier",
+			"_comments": "play Sidearm on Winter soldier"
+		},		
+		{
+			"type": "play",
+			"value": "Firepower"
+		},
+		{
+			"type": "select",
+			"value": "S.H.I.E.L.D. Sidearm"
+		},
+		{
+			"type": "target",
+			"value": "Armored Guard"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Winter Soldier"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Armored Guard"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Winter Soldier"
+				}
+			],
+			"upgrade_support1": [
+			],
+			"enemies1": [
+				{
+					"card": "Weapons Runner"
+				}
+			],
+			"others": [
+				{
+					"card": "S.H.I.E.L.D. Sidearm",
+					"host": "Winter Soldier",
+					"tokens": {
+						"ammo": 3
+					},
+					"exhausted": true
+				}
+			],
+			"allies1": [],
+			"discard1": [
+				{
+					"card": "Spoiling for a fight"
+				},			
+				{
+					"card": "One by One"
+				},
+				{
+					"card": "Firepower"
+				}
+			]
+		}
+	}
+}

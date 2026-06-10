@@ -104,7 +104,6 @@ func get_property(property: String, default = null, subscript_definition = null,
 	else:
 		result = script_definition.get(property,default)
 	
-
 	if (typeof (result) == TYPE_STRING) and result.begins_with("trigger_details_"):
 		result = result.replace("trigger_details_", "")
 		result = trigger_details.get(result)	
@@ -747,6 +746,11 @@ func retrieve_integer_property(property, stored_integer:int = 0,root = null):
 	if value == null:
 		return 0
 	
+	var int_multiplier = 1
+	if typeof (value) == TYPE_STRING and value.begins_with("-"):
+		value = value.substr(1)
+		int_multiplier = -1
+		
 	var value_str = str(value)	
 	if SP.VALUE_PER in value_str:
 		var per_property = get_property(value)
@@ -765,12 +769,25 @@ func retrieve_integer_property(property, stored_integer:int = 0,root = null):
 	else:
 		value = get_int_value (value, stored_integer)
 
+	value *= int_multiplier
+
 	var plus_value = retrieve_integer_property("plus_" + property, stored_integer, root )
 	if plus_value:
 		value += plus_value		
 	
-	var max_value = retrieve_integer_property("max_" + property, stored_integer, root)
-	if max_value:
+	#done differently here for max_ to allow values of zero
+	# zero means max_amount is literally zero, while non defined means there is no max
+	var has_max = false
+	var max_name = "max_" + property
+	if root:
+		has_max = root.has(max_name)
+	else:
+		has_max = script_definition.has(max_name) 
+	if has_max:
+		var max_value = retrieve_integer_property(max_name, stored_integer, root)
+		#only positive numbers accepted. Todo might want to verify this is always true?
+		if max_value < 0:
+			max_value = 0
 		value = min(value, max_value)
 
 	var min_value = retrieve_integer_property("min_" + property, stored_integer, root)
@@ -780,6 +797,7 @@ func retrieve_integer_property(property, stored_integer:int = 0,root = null):
 	var multiplier_value = retrieve_integer_property("multiplier_" + property, stored_integer, root)
 	if multiplier_value:
 		value = value * multiplier_value
+	
 		
 	return value	
 

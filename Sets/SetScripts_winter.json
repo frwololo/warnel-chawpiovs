@@ -54,7 +54,7 @@
 		}
 	},
 	"Arm Block": {
-		"interrupt_enemy_attack_damage": {
+		"interrupt_enemy_initiates_attack": {
 			"is_optional_hand": true,
 			"hand": [
 				{
@@ -70,25 +70,45 @@
 					"subject": "trigger"
 				},
 				{
-					"name": "prevent",
-					"subject": "interrupted_event",
-					"amount": {
-						"if": {
-							"func_name": "paid_with_includes",
-							"func_params": {
-								"filter_state_source": [
-									{
-										"filter_properties": {
-											"Name": "Cybernetic Arm"
-										},
-										"filter_parent": "board"
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "paid_with_includes",
+								"func_params": {
+									"filter_state_source": [
+										{
+											"filter_properties": {
+												"Name": "Cybernetic Arm"
+											},
+											"filter_parent": "board"
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_script",
+									"end_condition": "enemy_activation_finished",
+									"subject": "self",
+									"script": {
+										"interrupt_receive_damage": {
+											"event_filters": {
+												"tags": ["enemy_attack"]
+											},
+											"all": [
+												{
+													"name": "prevent",
+													"subject": "interrupted_event",
+													"amount": "all"
+												}
+											]
+										}
 									}
-								]
-							}
-						},
-						"then": "all",
-						"else": 0
-					}
+								}
+							]
+						}
+					]
 				}
 			]
 		}
@@ -245,6 +265,7 @@
 					{
 						"name": "move_card_to_board",
 						"subject": "tutor",
+						"needs_subject": true,
 						"src_container": [
 							"deck",
 							"discard"
@@ -522,7 +543,7 @@
 					"needs_selection": true,
 					"filter_state_seek": [
 						{
-							"filter_group": "upgrade_support_my_hero",
+							"filter_group": "group_upgrade_support_my_hero",
 							"filter_is_exhausted": false,
 							"filter_properties": {
 								"trait_weapon": 1,

@@ -73,16 +73,16 @@ var my_script_requests_pending_execution: = 0
 var  _interrupt_cache = {
 	"zones" : [],
 	"additional_cards": [],
-	"initialized": false
+	"needs_refresh": true
 }
 func init_interruptable_cache():
-	if _interrupt_cache["initialized"]:
+	if !_interrupt_cache["needs_refresh"]:
 		return	
 	_interrupt_cache["zones"] = []
 	_interrupt_cache["additional_cards"] = []
 
 	if !CFConst.INTERRUPT_ALLOWED_PILES:
-		_interrupt_cache["initialized"] = true
+		_interrupt_cache["needs_refresh"] = false
 		return
 	
 	var scriptables_array :Array =\
@@ -110,14 +110,16 @@ func init_interruptable_cache():
 		for zone in CFConst.INTERRUPT_ALLOWED_PILES:
 			_interrupt_cache["zones"].append(zone + str(hero_id))
 
-	_interrupt_cache["initialized"] = true
+	_interrupt_cache["needs_refresh"] = false
 	return
 
 
 
 func _ready():
 	scripting_bus.connect("step_started", self, "_step_started")
-
+	scripting_bus.connect("card_script_added", self, "_card_script_added")
+	scripting_bus.connect("card_script_removed", self, "_card_script_removed")
+		
 func _step_started(_trigger_object, details:Dictionary):
 	var current_step = details["step"]
 	match current_step:
@@ -125,6 +127,16 @@ func _step_started(_trigger_object, details:Dictionary):
 			disable_sync()
 		_:
 			enable_sync()
+
+		
+func _card_script_added(_trigger_object, details:Dictionary):
+	_refresh_interrupt_cache()
+	
+func _card_script_removed(_trigger_object, details:Dictionary):
+	_refresh_interrupt_cache()
+
+func _refresh_interrupt_cache():
+	_interrupt_cache["needs_refresh"] = true
 
 func add_yield_counter(name):
 	yield_wait_time = 0
@@ -865,9 +877,11 @@ func compute_interrupts(script):
 	#this is a very heavy call that happens a lot
 	#we need to minimize how many cards we check interrupts for
 	#this is done currently by only checking for 
-	# 1) Scriptables (temporary effects), 2) cards on Board and 3) cards in hands
+	# 1) Scriptables (temporary effects), 
+	# 2) cards on Board & cards in hands (can be Tweaked in CFConst.INTERRUPT_ALLOWED_PILES)
+	# 3) additional cards computed at runtime in init_interruptable_cache() 
 	# Everything else, in particular piles, is ignored
-	#can be Tweaked in CFConst.INTERRUPT_ALLOWED_PILES	
+	# OVerride: if CFConst.INTERRUPT_ALLOWED_PILES is empty, all cards are used
 	var cards_to_check = get_tree().get_nodes_in_group("scriptables")
 
 	init_interruptable_cache()
@@ -886,9 +900,14 @@ func compute_interrupts(script):
 		interrupt_mode = mode
 		run_mode = RUN_MODE.PENDING_USER_INTERACTION
 		var tasks = script.get_tasks()
-		
+		var script_execute_mode = script.next_execute_mode()
 		for task in tasks:
+			if (script_execute_mode == CFInt.RunMode.COST_SCRIPTS_ONLY) and !task.is_cost:
+				continue
+			if (script_execute_mode == CFInt.RunMode.NON_COST_SCRIPTS_ONLY) and task.is_cost:
+				continue				
 			_current_interrupted_event = task.script_definition.duplicate()
+			_current_interrupted_event.erase("network_prepaid")
 			_current_interrupted_event["event_name"] = task.script_name
 			_current_interrupted_event["event_object"] = task
 			_current_interrupted_event["stack_object"] = script
@@ -1348,7 +1367,7 @@ func reset():
 	
 	_interrupt_cache["zones"] = []
 	_interrupt_cache["additional_cards"] = []
-	_interrupt_cache["initialized"] = false
+	_interrupt_cache["needs_refresh"] = true
 
 
 func flush_logs():

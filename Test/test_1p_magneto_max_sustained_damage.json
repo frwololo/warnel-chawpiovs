@@ -1,0 +1,227 @@
+{
+	"_comments": "Magentoside scheme max damage",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Winter Soldier"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Amelia Voght #32160",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Magneto - 1 #32138"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Asteroid M - 1B #32141b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				},
+				{
+					"card": "Boarding Party #32144a",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [],
+			"removed_from_game": [],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Metal Punch",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Deathlok - Henry Hayes #54013",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Delgado"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Winter Soldier #54001a",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Cybernetic Arm #54002",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Metal Punch",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Metal Punch"
+		},
+		{
+			"type": "target",
+			"value": "Magneto"
+		},
+		{
+			"type": "activate",
+			"value": "Winter Soldier"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},		
+		{
+			"type": "target",
+			"value": "Magneto"
+		}		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Winter Soldier"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Amelia Voght #32160",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Magneto - 1 #32138",
+					"tokens": {
+						"damage": 6
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Asteroid M - 1B #32141b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				},
+				{
+					"card": "Boarding Party #32144a",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [],
+			"removed_from_game": [],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [],
+			"discard1": [
+				{
+					"card": "Deathlok - Henry Hayes #54013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Metal Punch",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Delgado"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Winter Soldier #54001a",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Cybernetic Arm #54002",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": []
+		}
+	}
+}

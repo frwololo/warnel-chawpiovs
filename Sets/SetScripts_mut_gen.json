@@ -18,6 +18,7 @@
 			}
 		],
 		"_magneto_damage_limit": {
+			"_comments": "this limits max sustained damage to a certain threshold by preventing any damage above that threshold",
 			"interrupt_receive_damage": {
 				"event_filters": {
 					"filter_state_event_target": [
@@ -29,26 +30,26 @@
 					]
 				},
 				"condition_board": {
-					"func_name": "get_sustained_damage",
+					"func_name": "get_sustained_damage>__limit__",
 					"func_params": {
 						"subject": "Magneto",
 						"plus": "trigger_details_amount"
-					},
-					"comparison": "ge",
-					"comparison_value": "__limit__"
+					}
 				},
 				"board": [
 					{
-						"name": "prevent",
+						"name": "replacement_effect",
 						"subject": "interrupted_event",
-						"amount": "all"
-					},
-					{
-						"name": "mod_tokens",
-						"subject": "Magneto",
-						"modification": "__limit__",
-						"token_name": "damage",
-						"set_to_mod": true
+						"replacements": {
+							"max_amount": {
+								"func_name": "get_sustained_damage",
+								"func_params": {
+									"subject": "Magneto",
+									"plus": "-__limit__",
+									"multiplier": -1
+								}
+							}
+						}
 					}
 				]
 			}
@@ -410,6 +411,11 @@
 							"filter_properties": {
 								"Name": "Orbital Decay"
 							}
+						},
+						{
+							"filter_properties": {
+								"Name": "Sabotage Master Mold"
+							}
 						}
 					]
 				},
@@ -438,49 +444,40 @@
 			"filter_count_difference": "increased",
 			"filter_token_name": "magnet",
 			"trigger": "self",
+			"condition_board": {
+				"func_name": "count_tokens>=3",
+				"func_params": {
+					"token_name": "magnet",
+					"subject": "self"
+				}
+			},
 			"board": [
 				{
-					"name": "conditional_script",
-					"options": [
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
 						{
-							"condition": {
-								"func_name": "count_tokens>=3",
-								"func_params": {
-									"token_name": "magnet",
-									"subject": "self"
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "move_card_to_container",
-									"subject": "grab_until",
-									"src_container": "deck_villain",
-									"dest_container": "discard_villain",
-									"filter_state_grab_until": [
-										{
-											"filter_properties": {
-												"trait_magnetic": 1
-											}
-										}
-									]
-								},
-								{
-									"name": "deal_encounter",
-									"immediate_reveal": true,
-									"subject": "index",
-									"subject_count": 1,
-									"subject_index": "retrieve_integer",
-									"src_container": "deck_villain"
-								},
-								{
-									"name": "mod_tokens",
-									"token_name": "magnet",
-									"subject": "self",
-									"modification": -3
-								}
-							]
+							"filter_properties": {
+								"trait_magnetic": 1
+							}
 						}
 					]
+				},
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "magnet",
+					"subject": "self",
+					"modification": -3
 				}
 			]
 		}
@@ -669,12 +666,18 @@
 		}
 	},
 	"Boarding Party": {
-		"card_defeated": {
+		"interrupt_card_dies": {
 			"trigger": "self",
-			"all": {
-				"name": "flip_doublesided_card",
-				"subject": "self"
-			}
+			"all": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
 		},
 		"_magneto_damage_limit": {
 			"__limit__": "6p"
@@ -1084,7 +1087,7 @@
 					"subject_count": "all",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_update_support_my_hero"
+							"filter_group": "group_upgrade_support_my_hero"
 						}
 					]
 				},
@@ -1100,7 +1103,7 @@
 			"all": [
 				{
 					"name": "exhaust_card",
-					"subject": "my_identity"
+					"subject": "current_hero_target"
 				}
 			]
 		}
@@ -1280,49 +1283,40 @@
 			"filter_count_difference": "increased",
 			"filter_token_name": "magnet",
 			"trigger": "self",
+			"condition_board": {
+				"func_name": "count_tokens>=3",
+				"func_params": {
+					"token_name": "magnet",
+					"subject": "self"
+				}
+			},
 			"board": [
 				{
-					"name": "conditional_script",
-					"options": [
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
 						{
-							"condition": {
-								"func_name": "count_tokens>=3",
-								"func_params": {
-									"token_name": "magnet",
-									"subject": "self"
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "move_card_to_container",
-									"subject": "grab_until",
-									"src_container": "deck_villain",
-									"dest_container": "discard_villain",
-									"filter_state_grab_until": [
-										{
-											"filter_properties": {
-												"trait_magnetic": 1
-											}
-										}
-									]
-								},
-								{
-									"name": "deal_encounter",
-									"immediate_reveal": true,
-									"subject": "index",
-									"subject_count": 1,
-									"subject_index": "retrieve_integer",
-									"src_container": "deck_villain"
-								},
-								{
-									"name": "mod_tokens",
-									"token_name": "magnet",
-									"subject": "self",
-									"modification": -3
-								}
-							]
+							"filter_properties": {
+								"trait_magnetic": 1
+							}
 						}
 					]
+				},
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "magnet",
+					"subject": "self",
+					"modification": -3
 				}
 			]
 		}
@@ -1823,6 +1817,7 @@
 		},
 		"card_moved_to_hand": {
 			"subject": "self",
+			"display_section": "Forced Response",
 			"hand": [
 				{
 					"name": "discard",
@@ -1837,7 +1832,7 @@
 							"filter_group": "group_allies_my_hero"
 						},
 						{
-							"filter_group": "group_update_support_my_hero",
+							"filter_group": "group_upgrade_support_my_hero",
 							"filter_properties": {
 								"type_code": "support"
 							}
@@ -3074,7 +3069,7 @@
 					"subject_count": "all",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_characters_my_hero"
+							"filter_group": "group_friendly_my_hero"
 						}
 					]
 				},
@@ -6726,49 +6721,40 @@
 			"filter_count_difference": "increased",
 			"filter_token_name": "magnet",
 			"trigger": "self",
+			"condition_board": {
+				"func_name": "count_tokens>=3",
+				"func_params": {
+					"token_name": "magnet",
+					"subject": "self"
+				}
+			},
 			"board": [
 				{
-					"name": "conditional_script",
-					"options": [
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
 						{
-							"condition": {
-								"func_name": "count_tokens>=3",
-								"func_params": {
-									"token_name": "magnet",
-									"subject": "self"
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "move_card_to_container",
-									"subject": "grab_until",
-									"src_container": "deck_villain",
-									"dest_container": "discard_villain",
-									"filter_state_grab_until": [
-										{
-											"filter_properties": {
-												"trait_magnetic": 1
-											}
-										}
-									]
-								},
-								{
-									"name": "deal_encounter",
-									"immediate_reveal": true,
-									"subject": "index",
-									"subject_count": 1,
-									"subject_index": "retrieve_integer",
-									"src_container": "deck_villain"
-								},
-								{
-									"name": "mod_tokens",
-									"token_name": "magnet",
-									"subject": "self",
-									"modification": -3
-								}
-							]
+							"filter_properties": {
+								"trait_magnetic": 1
+							}
 						}
 					]
+				},
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "magnet",
+					"subject": "self",
+					"modification": -3
 				}
 			]
 		}

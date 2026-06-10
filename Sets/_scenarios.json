@@ -1299,7 +1299,7 @@
 			"acolytes"
 		],
 		"encounter_sets": [
-			"magneto",
+			"magneto_villain",
 			"Standard",
 			"Modular"
 		],
@@ -1309,7 +1309,7 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"magneto",
+				"magneto_villain",
 				"Standard",
 				"modular",
 				"expert"
@@ -1322,7 +1322,7 @@
 		"description": [
 			"Magneto sent his Brotherhood of Mutants against Xavier’s school in order to draw the X-Men away while he escaped with Master Mold. The Master of Magnetism used that time to install Master Mold into his orbital fortress, Asteroid M. Now safely out of reach of the world’s governments, Magneto begins reprogramming the Sentinel factory to create new M-Type Sentinels: human-hunting robots. Once complete, he will drop his Sentinels onto the planet below, clearing away human resistance and bringing about his dream of mutant dominion over the world.",
 			"Back at the X-Mansion, the mutant Forge finishes making upgrades to the X-Men’s supersonic jet, the X-Jet, enabling it to escape Earth’s gravity and reach Asteroid M. Professor X wishes his team luck as they blast off to confront his old friend and deadliest foe.",
-			"<b>Race against Magneto</b>\nSome side schemes has text that prevents Magneto from taking fatal damage, preventing the players from defeating him until the side schemes are defeated. In order to win the scenario in standard mode, the players must defeat each of the side schemes before Magneto completes his main schemes. They must then take advantage of Magneto’s weakened state to defeat him."
+			"<b>Race against Magneto</b>\nSome side schemes have text that shield Magneto from taking fatal damage, preventing the players from defeating him until the side schemes are defeated. In order to win the scenario in standard mode, the players must defeat each of the side schemes before Magneto completes his main schemes. They must then take advantage of Magneto’s weakened state to defeat him."
 		]
 	}
 }

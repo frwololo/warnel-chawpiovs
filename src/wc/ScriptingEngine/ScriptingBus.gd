@@ -43,7 +43,10 @@ signal current_playing_hero_changed(details) #before, after
 
 # warning-ignore:unused_signal
 signal stack_event_display_finished(details) #before, after
-
+# warning-ignore:unused_signal
+signal card_script_added(card, details)
+# warning-ignore:unused_signal
+signal card_script_removed(card, details)
 # warning-ignore:unused_signal
 signal about_to_reveal(encounter, details)
 

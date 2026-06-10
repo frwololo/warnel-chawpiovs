@@ -118,11 +118,15 @@ func add_extra_script(script_definition, allowed_hero_id = 0):
 		
 	check_ghost_card()
 	register_signals()
+	
+	scripting_bus.emit_signal("card_script_added", self, extra_scripts[extra_script_uid])
 	return extra_script_uid
 
 func remove_extra_script(script_uid):
+	var details = extra_scripts.get(extra_script_uid, {})
 	extra_scripts.erase(script_uid)
 	check_ghost_card()
+	scripting_bus.emit_signal("card_script_removed", self, details)
 	return extra_script_uid
 
 func set_is_inactive_attachment(value:=true):
@@ -1346,7 +1350,7 @@ func execute_scripts(
 		orig_trigger_details: Dictionary = {},
 		run_type := CFInt.RunType.NORMAL):
 
-#	if (trigger == "manual") and canonical_name == "Mean Swing" and run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
+#	if (trigger == "receive_damage") and canonical_name == "Arm Block":# and run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
 #		var _tmp = 1
 
 	if script_exec_temporarily_blocked(run_type):
@@ -1890,8 +1894,9 @@ func readyme(toggle := false,
 	if get_property("cannot_ready", 0, true):
 		return CFConst.ReturnCode.FAILED
 	
-	if current_host_card:
-		#can't ready attachments
+	if current_host_card and (is_inactive_attachment() or !is_faceup):
+		#we won't ready inactive/facedown attachments
+		#this is a cosmetic thing to avoid them switching to 90 degrees at the beginning of phase
 		return CFConst.ReturnCode.FAILED
 	
 	var rot = 0
@@ -3883,6 +3888,7 @@ func get_printed_text(section = ""):
 
 	if !_cached_printed_text["_initialized"]:
 		var full_text:String = get_property("text", "")
+		full_text = full_text.replace("\n[hr /]\n*", "") 
 		var paragraphs = full_text.split("[b]")
 		var i = 0
 		for paragraph in paragraphs:

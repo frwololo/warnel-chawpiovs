@@ -396,9 +396,10 @@ func attack(script: ScriptTask) -> int:
 	if !type in ["hero", "ally"]:
 		owner = _get_identity_from_script(script)	
 	
+	if owner.get_property("cannot_attack", 0, true):
+		return CFConst.ReturnCode.FAILED 	
+	
 	if (costs_dry_run()):
-		if owner.get_property("cannot_attack", 0, true):
-			return CFConst.ReturnCode.FAILED 
 		return retcode	
 
 
@@ -1203,22 +1204,16 @@ func increase(script: ScriptTask) -> int:
 func prevent(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
-
-	if script.script_definition.has("amount"): #this is a partial prevention effect
-		if typeof(script.script_definition["amount"]) == TYPE_STRING:
-			if script.script_definition["amount"] == "all":
-				script.script_definition["amount"] = 666 #TODO hack		
-			else: #unsupported values
-				var amount = script.retrieve_integer_property("amount")
-				script.script_definition["amount"] = amount
-				#script.script_definition["amount"] = 0 
-
+	var amount = null
+	if script.script_definition.has("amount"): #force compute the amount
+		amount = script.retrieve_integer_property("amount")
+		script.script_definition["amount"] = script.retrieve_integer_property("amount")
 
 	var subject_target = script.script_definition.get("subject")
 	var amount_prevented = 0
 	match subject_target:
 		"current_activation":
-			if script.script_definition.has("amount"): #this is a partial prevention effect		
+			if amount != null : #this is a partial prevention effect		
 				if (costs_dry_run()):
 					return retcode	
 				gameData.apply_mods_to_current_activity_script(script)	
@@ -1233,7 +1228,7 @@ func prevent(script: ScriptTask) -> int:
 			#var stack_object = gameData.theStack.find_last_event_before_me(script)
 			if (!stack_object):	
 				return CFConst.ReturnCode.FAILED			
-			if script.script_definition.has("amount"): #this is a partial prevention effect
+			if amount != null: #this is a partial prevention effect
 
 				if (costs_dry_run()):
 					return retcode					
@@ -1711,7 +1706,7 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 #	if amount: #we want to send the damage even if zero, to trigger retaliate, etc...
 	if true:
 		var script_modifications = {
-			"additional_tags" : ["attack", "Scripted"],
+			"additional_tags" : ["attack", "Scripted", "enemy_attack"],
 		}
 		_add_pre_receive_damage_on_stack (amount, script, script_modifications)
 	
@@ -2202,7 +2197,9 @@ func deal_encounter(script: ScriptTask) -> int:
 				var target_hero_id = script.get_property("target_hero_id", owner_hero_id)
 				if script.get_property("target_identity"):
 					var target_identity = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : script.get_property("target_identity")})
-					target_hero_id = target_identity.get_controller_hero_id() if target_identity else 1				
+					if target_identity:
+						target_identity = target_identity[0]
+						target_hero_id = target_identity.get_controller_hero_id() if target_identity else 1				
 				gameData.deal_one_encounter_to(target_hero_id, immediate_reveal, subject)
 		
 		retcode = CFConst.ReturnCode.CHANGED

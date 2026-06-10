@@ -280,12 +280,13 @@
 					"options": [
 						{
 							"condition": {
-								"func_name": "count_cards",
+								"func_name": "count_cards>1",
 								"func_params": {
 									"subject": "boardseek",
+									"subject_count": "all",
 									"filter_state_seek": [
 										{
-											"filter_group": "group_enemies_my_hero",
+											"filter_group": "group_enemies",
 											"filter_properties": {
 												"type_code": "minion"
 											},

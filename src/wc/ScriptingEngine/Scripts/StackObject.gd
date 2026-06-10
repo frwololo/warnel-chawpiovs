@@ -185,7 +185,13 @@ func _get_display_text_nocache():
 				separator = ", "
 			if subjects:
 				subjects = " (" + subjects + ")"
-			
+
+		var display_section = task.trigger_details.get("display_section", "")
+		if display_section and owner:
+			var text = owner.get_printed_text(display_section)
+			if text:
+				return text
+										
 		match task.script_name:
 			"add_threat":
 				var amount = task.retrieve_integer_property("amount", 0)
@@ -199,7 +205,7 @@ func _get_display_text_nocache():
 					var text1 = owner.get_printed_text("When Revealed (Alter-Ego)")	
 					var text2 = owner.get_printed_text("When Revealed (Hero)")
 					if text1 or text2:
-						return "(Alter-Ego) " + text1 + "\n(Hero) " + text2
+						 return text1 + text2
 			"surge":
 				result = owner_name + " - Surge"
 				return result
@@ -216,7 +222,7 @@ func _get_display_text_nocache():
 							return result
 		
 		var macro_name = task.trigger_details.get("macro_name", "")
-		var display_section = task.trigger_details.get("display_section", "")
+
 #		if macro_name:
 #			var _tmp = 1							
 		var trigger = self.get_trigger()
@@ -229,10 +235,7 @@ func _get_display_text_nocache():
 					var tags = PoolStringArray(additional_tags).join(", ")
 					return owner_name + " - attacks gain " + tags
 			if owner:
-				var sections = CFConst.INTERRUPT_SECTION_KEYWORDS
-				if display_section:
-					sections = [display_section] + sections
-				for id in sections:
+				for id in CFConst.INTERRUPT_SECTION_KEYWORDS:
 					var text = owner.get_printed_text(id)
 					if text:
 						return text		

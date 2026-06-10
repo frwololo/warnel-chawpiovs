@@ -312,9 +312,16 @@ static func func_name_run(object, func_name, func_params, script = null):
 		else:
 			result = 0
 
-	var multiplier = func_params.get("multiplier", 1)
-	var divider:int = int(func_params.get("divider", 1))
-	var plus:int = int(func_params.get("plus", 0))		
+	var multiplier = 1
+	var divider: int = 1
+	var plus:int = 0
+	if func_params.has("multiplier"):
+		multiplier = script.retrieve_integer_property("multiplier",0, func_params)
+	if func_params.has("divider"):
+		multiplier = script.retrieve_integer_property("divider",0, func_params)
+	if func_params.has("plus"):
+		plus = script.retrieve_integer_property("plus",0, func_params)
+		
 	if typeof(result) in [TYPE_INT]:
 		result = (result + plus) * multiplier / divider
 	

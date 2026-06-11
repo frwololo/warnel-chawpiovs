@@ -1,0 +1,221 @@
+{
+	"_comments": "Automated Test for Winter Soldier Arm Block - Bug when killing the enemy before attack",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Winter Soldier"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Amelia Voght #32160",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"villain": [
+				{
+					"card": "Magneto - 1 #32138",
+					"tokens": {
+						"stunned": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Asteroid M - 1B #32141b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				},
+				{
+					"card": "Boarding Party #32144a",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [],
+			"removed_from_game": [],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Firepower #54014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Winter, Widow, Soldier, Spy #54023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "One by One #54015",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "Deathlok - Henry Hayes #54013",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [
+				{
+					"card": "M-Type Sentinel",
+					"tokens": {
+						"damage": 4
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Winter Soldier #54001a",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Cybernetic Arm #54002",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Arm Block"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Arm Block",
+			"_comments": "Arm block will negate all damage to Winter soldier. Then do 3+1 damage to Sentinel. +1 thanks to cybernetic arm"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Winter Soldier"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "M-Type Sentinel",
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Amelia Voght #32160",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Magneto - 1 #32138",
+				}
+			],
+			"schemes": [
+				{
+					"card": "Asteroid M - 1B #32141b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				},
+				{
+					"card": "Boarding Party #32144a",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [],
+			"removed_from_game": [],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Firepower #54014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Winter, Widow, Soldier, Spy #54023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "One by One #54015",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "Deathlok - Henry Hayes #54013"
+				},
+				{
+					"card": "Arm Block"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Winter Soldier #54001a",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Cybernetic Arm #54002",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": []
+		}
+	}
+}

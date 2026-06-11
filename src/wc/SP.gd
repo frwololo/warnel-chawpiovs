@@ -334,9 +334,9 @@ static func thwart_unpatroled(card, action_character, owner_card):
 						return false
 	return result
 #returns false if attack is blocked by guard, a dictionary with details otherwise
-static func attack_unguarded(card, action_character, owner_card): # , card_scripts, type := "trigger", owner_card = null):
+static func attack_guarded_status(card, action_character, owner_card): # , card_scripts, type := "trigger", owner_card = null):
 	var result = {
-		"result": "ok",
+		"is_guarded": false,
 		"signals": [] 
 	}
 	var bypass_guard = action_character.get_property("bypass_guard", 0, true) if action_character else 0
@@ -349,7 +349,8 @@ static func attack_unguarded(card, action_character, owner_card): # , card_scrip
 			if other_card == card:
 				continue
 			if other_card.get_property("guard_all", 0, true) and other_card.is_faceup: #TODO better way to ignore face down cards?
-				return false
+				result["is_guarded"] = other_card
+				return result
 		
 		#guard keyword				
 		if owner_card:		
@@ -365,7 +366,8 @@ static func attack_unguarded(card, action_character, owner_card): # , card_scrip
 					#if another villain has "guard" and I don't have it myself,
 					#it means that other villain is protecting me
 					if !card.get_property("guard", 0, true):
-						return false
+						result["is_guarded"] = other_card
+						return result
 				else:
 					if bypass_guard:
 						result["signals"].append({
@@ -374,7 +376,8 @@ static func attack_unguarded(card, action_character, owner_card): # , card_scrip
 							"details": {"target": other_card}
 						})
 					else:
-						return false
+						result["is_guarded"] = other_card
+						return result
 	return result	
 # Check if the card is a valid subject or trigger, according to its state.
 static func check_validity(card, card_scripts, type := "trigger", owner_card = null) -> bool:
@@ -465,7 +468,8 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 					return false
 		
 		#attack is guarded and cannot proceed
-		if !attack_unguarded(card, action_character, owner_card):
+		var guard_status = attack_guarded_status(card, action_character, owner_card)
+		if guard_status.get("is_guarded", false):
 			return false
 
 	#check for condition preventing thwart

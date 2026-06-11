@@ -1182,6 +1182,10 @@ func enemy_activates() :
 	var guid = guidMaster.get_guid(enemy)
 	cfc._rpc(self,"set_client_status",  "activation", guid,  _current_enemy_attack_step)	
 
+	if !enemy.is_onboard():
+		current_enemy_finished()
+		return	
+
 	match _current_enemy_attack_step:
 		EnemyAttackStatus.NONE:	
 				#check for stun/confused

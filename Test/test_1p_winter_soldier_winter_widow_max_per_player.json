@@ -1,5 +1,10 @@
 {
-	"_comments": "Automated Test for Cybernetic Arm #54002",
+	"_comments": "Automated Test Winter,Widow for max 1 per player preparation",
+	"test_conditions": {
+		"ignore_order" : [
+			"discard1"
+		],
+	},		
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -40,7 +45,7 @@
 			],
 			"upgrade_support1": [
 				{
-					"card": "Cybernetic Arm #54002"
+					"card": "Aggressive Stance"
 				}
 			],
 			"enemies1": [
@@ -49,31 +54,38 @@
 				},
 				{
 					"card": "Weapons Runner"
-				}				
+				}
 			],
+			"discard1": [
+				{
+					"card": "Aggressive Stance"
+				}
+			],
+			"others": [],
 			"allies1": [
-
+				{
+					"card": "Black Widow #54003"
+				}
 			],
 			"hand1": [
 				{
-					"card": "One by One"
-				},			
+					"card": "Strength"
+				},
+				{
+					"card": "Winter, Widow, Soldier, Spy"
+				}
 			]
 		}
 	},
 	"actions": [
 		{
 			"type": "play",
-			"value": "One by One"
+			"value": "Winter, Widow, Soldier, Spy"
 		},
 		{
 			"type": "target",
 			"value": "Armored Guard"
-		},	
-		{
-			"type": "target",
-			"value": "Weapons Runner"
-		},			
+		}
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -98,6 +110,11 @@
 					"card": "Hydra Mercenary"
 				}
 			],
+			"discard_villain": [
+				{
+					"card": "Armored Guard"
+				}
+			],
 			"schemes": [
 				{
 					"card": "01097b"
@@ -115,26 +132,29 @@
 			],
 			"upgrade_support1": [
 				{
-					"card": "Cybernetic Arm #54002",
-					"exhausted": true
+					"card": "Aggressive Stance"
 				}
 			],
-			"discard_villain": [
-				{
-					"card": "Armored Guard"
-				},			
+			"enemies1": [
 				{
 					"card": "Weapons Runner"
-				},
-				
+				}
 			],
 			"allies1": [
-
+				{
+					"card": "Black Widow #54003"
+				}
 			],
 			"discard1": [
 				{
-					"card": "One by One"
+					"card": "Aggressive Stance"
+				},			
+				{
+					"card": "Strength"
 				},
+				{
+					"card": "Winter, Widow, Soldier, Spy"
+				}
 			]
 		}
 	}

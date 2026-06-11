@@ -829,14 +829,27 @@ func flush_script(stack_object):
 		if t.script_name =="temporary_effect":
 			var _tmp = 1
 	var execute_mode = stack_object.next_execute_mode()
-	if execute_mode != CFInt.RunMode.COST_SCRIPTS_ONLY:
-		for t in stack_object.get_tasks():
-			gameData.play_sfx(t)	
+
 	var func_return = stack_object.execute()	
 	if func_return is GDScriptFunctionState && func_return.is_valid():
 		func_return = yield(func_return, "completed")
 
+	#attempt to fast track: if this was a cost and the stack hasn't changed + nothing to interrupt we run the second half (effects) of the script
+	if execute_mode == CFInt.RunMode.COST_SCRIPTS_ONLY:
+		if stack_object == stack.back():
+			var _interrupt_state = compute_interrupts(stack_object)		
+			var _interrupt_mode = _interrupt_state.get("interrupt_mode",InterruptMode.NONE)
+			if !_interrupt_mode in [InterruptMode.FORCED_INTERRUPT_CHECK, InterruptMode.OPTIONAL_INTERRUPT_CHECK]:
+				execute_mode = stack_object.next_execute_mode()
+				func_return = stack_object.execute()	
+				if func_return is GDScriptFunctionState && func_return.is_valid():
+					func_return = yield(func_return, "completed")
+
+	#if either execute_both or non_costs part of the execution
 	if execute_mode != CFInt.RunMode.COST_SCRIPTS_ONLY:
+		for t in stack_object.get_tasks():
+			gameData.play_sfx(t)	
+					
 		var sceng = stack_object.get_sceng()
 		if stack_object.get_first_task_name() != "script_executed" and sceng: # and sceng.trigger_details.get("action_name_id", ""):
 			var trigger_details = sceng.trigger_details.duplicate()

@@ -5,6 +5,9 @@
 class_name Announcer
 extends Node
 
+# warning-ignore:unused_signal
+signal announce_text_loaded(announce_object, text)
+
 var ignore_stack_events := {}
 
 var default_announcer_minimum_time: float= 2
@@ -101,8 +104,8 @@ func _stack_event_deleted(event):
 
 
 func _step_started(_trigger_object, details:Dictionary):
-	if (_skip_announcer):
-		return
+#	if (_skip_announcer):
+#		return
 
 	var current_step = details["step"]
 	var settings = {}
@@ -158,8 +161,14 @@ func _process(delta: float):
 			var ongoing_announce_object = announce["object"]
 			if typeof(ongoing_announce_object) == TYPE_DICTIONARY and ongoing_announce_object.get("_forced", false):
 				break
-			else:			
-				to_cleanup.append(announce)
+			else:
+				var storage = announce["storage"]
+				var scene = storage.get("scene", null)
+				if scene and scene as StackEventDisplay:
+					if scene.text_loaded:
+						to_cleanup.append(announce)
+				else:	
+					to_cleanup.append(announce)
 		for announce in to_cleanup:		
 			cleanup(announce)
 		to_cleanup = []		
@@ -323,8 +332,8 @@ func add_event_to_ignore_list(owner_card, stack_event):
 
 
 func can_display_stack_event(stack_object, mode = GlobalScriptStack.InterruptMode.NONE) -> bool:
-	if (_skip_announcer):
-		return false
+#	if (_skip_announcer):
+#		return false
 
 	if is_right_side_announce_ongoing():
 		#already showing something and for now I don't have a good
@@ -422,8 +431,8 @@ func init_generic_stack_display(stack_object, show_ok):
 	return #exit after the first one			
 
 func announce_from_stack(script):
-	if (_skip_announcer):
-		return
+#	if (_skip_announcer):
+#		return
 			
 	var tasks = script.get_tasks()
 	for task in tasks:		

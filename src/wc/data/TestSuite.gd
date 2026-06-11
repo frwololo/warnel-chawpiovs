@@ -34,6 +34,8 @@ var last_rng_state = 0
 var start_time = 0
 var end_time = 0
 var test_list_filter = ""
+var _last_announce_text = ""
+var text_errors = {}
 
 enum TestStatus {
 	NONE,
@@ -132,7 +134,11 @@ func _init():
 	scripting_bus.connect("card_selected", self, "_selection_window_closed")
 	scripting_bus.connect("selection_window_canceled", self, "_selection_window_closed")
 	scripting_bus.connect("initiated_targeting", self, "_initiated_targeting")	
+	gameData.theAnnouncer.connect("announce_text_loaded", self, "_announce_text_loaded")
 	create_text_edit()
+
+func _announce_text_loaded(object, text):
+	_last_announce_text = text.to_lower()
 
 func reset_between_tests():
 	start_timer("reset_between_tests")
@@ -637,6 +643,8 @@ remotesync func run_action(my_action:Dictionary,  skip_play_tests:= false):
 			action_pass(action_hero)			
 		"other":
 			action_other(my_action)
+		"assert_announce_text":
+			action_assert_announce_text(my_action)			
 		_:
 			#TODO error
 			var _error = 1
@@ -768,6 +776,15 @@ func action_pass(hero_id):
 	var heroPhase:HeroPhase = phaseContainer().heroesStatus[hero_id -1]
 	var result = heroPhase.heroPhase_action()
 	return		
+
+func action_assert_announce_text(action):
+	var my_text = action.get("value")
+	my_text = my_text.to_lower()
+	if !my_text in _last_announce_text:
+		if !text_errors.has(current_test_file):
+			text_errors[current_test_file] = []
+		text_errors[current_test_file].append("expected:\n" + my_text + "\n" + "actual:\n" + _last_announce_text+"\n\n")
+	return
 
 func get_default_hero() -> int:
 	#TODO error handling
@@ -1386,6 +1403,14 @@ remotesync func save_results():
 		
 	to_print = to_print +  "###\nfailed: " + str(failed.size()) + "\n"
 
+	if text_errors:
+		to_print+= "###\nText Errors\n"
+		for key in text_errors:
+			to_print+= "#" + key + "\n"
+			var errors = text_errors[key]
+			for error in errors:
+				to_print+= error
+
 	i = 0;
 	for failed_file in failed:
 		to_print = to_print + "\t" + failed_file + "\n"
@@ -1409,6 +1434,9 @@ remotesync func save_results():
 
 	for key in delays_timer:
 		to_print+= key + " - " + str(delays_timer[key]["total"]) + " calls  - " +  str(delays_timer[key]["time"]) +  " ms\n"
+
+
+		
 
 	var player = gameData.get_player_by_network_id(cfc.get_network_unique_id())
 	var player_id = player.get_id()

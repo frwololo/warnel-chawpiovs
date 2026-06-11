@@ -20,6 +20,7 @@
 		"_magneto_damage_limit": {
 			"_comments": "this limits max sustained damage to a certain threshold by preventing any damage above that threshold",
 			"interrupt_receive_damage": {
+				"display_section": "generic",
 				"event_filters": {
 					"filter_state_event_target": [
 						{
@@ -441,6 +442,7 @@
 	},
 	"Asteroid M - 1B": {
 		"card_token_modified": {
+			"display_section": "Forced Response",
 			"filter_count_difference": "increased",
 			"filter_token_name": "magnet",
 			"trigger": "self",
@@ -1009,6 +1011,7 @@
 			]
 		},
 		"when_defeated": {
+			"_silent": true,
 			"all": [
 				{
 					"name": "mod_tokens",
@@ -1280,6 +1283,7 @@
 			]
 		},
 		"card_token_modified": {
+			"display_section": "Forced Response",		
 			"filter_count_difference": "increased",
 			"filter_token_name": "magnet",
 			"trigger": "self",
@@ -3018,6 +3022,7 @@
 				{
 					"name": "move_card_to_container",
 					"subject": "tutor",
+					"is_cost": true,
 					"sort_descending": true,
 					"src_container": "discard_villain",
 					"dest_container": "deck_villain",
@@ -3036,6 +3041,12 @@
 				{
 					"name": "enemy_activates",
 					"subject": "villain"
+				},
+				{
+					"name": "enemy_activates",
+					"subject": "villain",
+					"is_else": true,
+					"_comments": "if the facedown boost card could not be given, the villain still activates"
 				}
 			]
 		}
@@ -3708,9 +3719,13 @@
 		}
 	},
 	"Orbital Decay": {
-		"card_defeated": {
+		"interrupt_card_dies": {
 			"trigger": "self",
 			"all": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
 				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
@@ -6206,9 +6221,10 @@
 				{
 					"name": "shuffle_card_into_container",
 					"dest_container": "deck_villain",
-					"subject": "boardseek",
+					"subject": "tutor",
+					"src_container": "discard_villain",
 					"subject_count": "all",
-					"filter_state_seek": [
+					"filter_state_tutor": [
 						{
 							"filter_properties": {
 								"type_code": "minion"
@@ -6672,8 +6688,7 @@
 							},
 							"nested_tasks": [
 								{
-									"name": "host_card",
-									"host": "Magneto",
+									"name": "reveal_encounter",
 									"subject": "tutor",
 									"subject_count": "all",
 									"needs_selection": true,
@@ -6718,6 +6733,7 @@
 			]
 		},
 		"card_token_modified": {
+			"display_section": "Forced Response",		
 			"filter_count_difference": "increased",
 			"filter_token_name": "magnet",
 			"trigger": "self",

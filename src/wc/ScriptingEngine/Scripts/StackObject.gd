@@ -177,57 +177,19 @@ func _get_display_text_nocache():
 		var owner = task.owner
 		var owner_name = owner.get_property("shortname", "") if owner else ""
 
-		var separator = ""
-		if "subjects" in task:
-			for subject in task.subjects:
-				var shortname = subject.get_property("shortname","") if subject.is_faceup else "facedown card"
-				subjects += separator + shortname
-				separator = ", "
-			if subjects:
-				subjects = " (" + subjects + ")"
-
+		#display_section override in script json always gets precedence
 		var display_section = task.trigger_details.get("display_section", "")
 		if display_section and owner:
 			var text = owner.get_printed_text(display_section)
 			if text:
 				return text
-										
-		match task.script_name:
-			"add_threat":
-				var amount = task.retrieve_integer_property("amount", 0)
-				result = owner_name + " adds " + str(amount) + " threat" + subjects
-				return result			
-			"reveal_encounter":
-				if owner:
-					var text = owner.get_printed_text("when revealed")
-					if text:
-						return text
-					var text1 = owner.get_printed_text("When Revealed (Alter-Ego)")	
-					var text2 = owner.get_printed_text("When Revealed (Hero)")
-					if text1 or text2:
-						 return text1 + text2
-			"surge":
-				result = owner_name + " - Surge"
-				return result
-			"mod_tokens":
-				var token_name = task.get_property("token_name", "")
-				var modification = task.retrieve_integer_property("modification", 0)
-				if modification:
-					match token_name:
-						"stunned", "confused", "tough":
-							var action = "add status:"
-							if modification < 0:
-								action = "remove status:"						
-							result = owner_name + " - " + action + token_name + subjects
-							return result
-		
-		var macro_name = task.trigger_details.get("macro_name", "")
 
-#		if macro_name:
-#			var _tmp = 1							
+
+		#very specific trigger displays				
 		var trigger = self.get_trigger()
 
 		if trigger.begins_with("interrupt"):
+			var macro_name = task.trigger_details.get("macro_name", "")
 			match macro_name:
 				"attacks_gain":
 					var replacements = task.get_property("replacements", {})
@@ -244,7 +206,57 @@ func _get_display_text_nocache():
 				if owner:
 					var text = owner.get_printed_text("boost")
 					if text:
-						return text												
+						return text					
+			"card_defeated", "card_dies":
+				if owner:
+					var text = owner.get_printed_text("When Defeated")
+					if text:
+						return text		
+									
+		var separator = ""
+		if "subjects" in task:
+			for subject in task.subjects:
+				var shortname = subject.get_property("shortname","") if subject.is_faceup else "facedown card"
+				subjects += separator + shortname
+				separator = ", "
+			if subjects:
+				subjects = " (" + subjects + ")"
+										
+		match task.script_name:
+			"add_threat":
+				var amount = task.retrieve_integer_property("amount", 0)
+				result = owner_name + " adds " + str(amount) + " threat" + subjects
+				return result			
+			"reveal_encounter":
+				if owner:
+					var text = owner.get_printed_text("when revealed")
+					if text:
+						return text
+					var text_alter_ego = owner.get_printed_text("When Revealed (Alter-Ego)")	
+					var text_hero = owner.get_printed_text("When Revealed (Hero)")
+					var controller_hero = owner.get_controller_hero_card()
+					if !controller_hero:
+						return text_alter_ego + text_hero
+					if controller_hero.is_alter_ego_form() and text_alter_ego:
+						return text_alter_ego
+					elif text_hero:
+						return text_hero
+			"surge":
+				result = owner_name + " - Surge"
+				return result
+			"mod_tokens":
+				var token_name = task.get_property("token_name", "")
+				var modification = task.retrieve_integer_property("modification", 0)
+				if modification:
+					match token_name:
+						"stunned", "confused", "tough":
+							var action = "add status:"
+							if modification < 0:
+								action = "remove status:"						
+							result = owner_name + " - " + action + token_name + subjects
+							return result
+		
+							
 	result = result.replace("_", " ")
 	result = result + subjects
 #	if "conditional script" in result:

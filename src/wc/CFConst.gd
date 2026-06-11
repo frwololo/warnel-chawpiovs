@@ -683,6 +683,7 @@ const AUTO_KEYWORDS := {
 	"hinder" : "int",
 	"incite" : "int",
 	"linked" : "string",
+	"max 1 per player": "int",
 	"overkill" : "int",
 	"patrol" : "int",
 	"peril" : "bool",
@@ -703,9 +704,9 @@ const AUTO_KEYWORDS := {
 	"toughness" : "bool",
 	"uses" : "string",
 	"victory" : "int_no_alterant", #victory 0 is different from no Victory, so we don't want to init it at 0
-	"villainous" : "int",	
-	
-#additional ones not officially in the game
+	"villainous" : "int",
+		
+#additional keywords not officially in the game, for alterants
 	"attack_indirect_damage": "int",
 	"blank_abilities": "int",
 	"blank_printed_trigger_abilities": "int",

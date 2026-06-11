@@ -1,5 +1,5 @@
 {
-	"_comments": "Automated Test for Cybernetic Arm #54002",
+	"_comments": "Automated Test Winter Rifle when not Stunned",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -40,7 +40,7 @@
 			],
 			"upgrade_support1": [
 				{
-					"card": "Cybernetic Arm #54002"
+					"card": "Winter Rifle"
 				}
 			],
 			"enemies1": [
@@ -49,31 +49,40 @@
 				},
 				{
 					"card": "Weapons Runner"
-				}				
+				}
 			],
-			"allies1": [
-
-			],
+			"others": [],
+			"allies1": [],
 			"hand1": [
 				{
+					"card": "S.H.I.E.L.D. Sidearm"
+				},
+				{
+					"card": "Spoiling for a fight"
+				},
+				{
 					"card": "One by One"
-				},			
+				}
 			]
 		}
 	},
 	"actions": [
 		{
-			"type": "play",
-			"value": "One by One"
+			"type": "activate",
+			"value": "Winter Soldier"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
 		},
 		{
 			"type": "target",
 			"value": "Armored Guard"
-		},	
+		},
 		{
-			"type": "target",
-			"value": "Weapons Runner"
-		},			
+			"type": "activate",
+			"value": "Winter Rifle"
+		}
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -85,6 +94,11 @@
 			}
 		],
 		"board": {
+			"discard_villain": [
+				{
+					"card": "Armored Guard"
+				}
+			],
 			"villain": [
 				{
 					"card": "Rhino - 1"
@@ -110,31 +124,32 @@
 			],
 			"identity1": [
 				{
-					"card": "Winter Soldier"
+					"card": "Winter Soldier",
+					"exhausted": true
 				}
 			],
 			"upgrade_support1": [
 				{
-					"card": "Cybernetic Arm #54002",
+					"card": "Winter Rifle",
 					"exhausted": true
 				}
 			],
-			"discard_villain": [
-				{
-					"card": "Armored Guard"
-				},			
+			"enemies1": [
 				{
 					"card": "Weapons Runner"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "S.H.I.E.L.D. Sidearm"
 				},
-				
-			],
-			"allies1": [
-
-			],
-			"discard1": [
+				{
+					"card": "Spoiling for a fight"
+				},
 				{
 					"card": "One by One"
-				},
+				}
 			]
 		}
 	}

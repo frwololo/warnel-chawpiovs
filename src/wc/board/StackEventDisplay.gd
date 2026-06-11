@@ -220,6 +220,9 @@ func load_card_texture() -> bool:
 	card_texture.self_modulate = Color(1,1,1)
 	return true
 
+func set_text_loaded():
+	text_loaded = true
+	gameData.theAnnouncer.emit_signal("announce_text_loaded", self, display_text.bbcode_text)
 func load_text():
 	if !display_text:
 		return
@@ -227,13 +230,12 @@ func load_text():
 	if text_loaded:
 		return
 
-	text_loaded = true
-
 	if prioritize_text_from_owner_card and owner_card:
 		if owner_card.is_boost():
 			var text = owner_card.get_printed_text("boost")
 			if text:
 				display_text.bbcode_text = text
+				set_text_loaded()
 				return
 		else: #there are cases where an interrupt is coming but we're not in interrupt mode, so
 			#I am forced to guess this is what's happening here
@@ -248,8 +250,10 @@ func load_text():
 				var text = owner_card.get_printed_text(id)
 				if text:
 					display_text.bbcode_text = text
+					set_text_loaded()
 					return		
 		display_text.bbcode_text = owner_card.get_printed_text()
+		set_text_loaded()
 		return
 			
 	if stack_event:
@@ -260,7 +264,7 @@ func load_text():
 		else:
 			display_text.bbcode_text = "---"
 
-		
+	set_text_loaded()	
 
 func load_from_event(event):
 	stack_event = event

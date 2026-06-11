@@ -23,6 +23,13 @@
 			"is_optional_board": true,
 			"board": [
 				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
 					"name": "discard",
 					"subject": "self"
 				},
@@ -94,7 +101,9 @@
 									"script": {
 										"interrupt_receive_damage": {
 											"event_filters": {
-												"tags": ["enemy_attack"]
+												"tags": [
+													"enemy_attack"
+												]
 											},
 											"all": [
 												{
@@ -681,7 +690,7 @@
 					"needs_selection": true,
 					"selection_count": 1,
 					"selection_type": "equal",
-					"filter_state_seek": [
+					"filter_state_tutor": [
 						{
 							"filter_properties": {
 								"type_code": "minion"
@@ -907,7 +916,7 @@
 				}
 			]
 		},
-		"interrupt_card_dies": {
+		"card_defeated": {
 			"event_filters": {
 				"secondary_source": "self",
 				"tags": [
@@ -931,7 +940,7 @@
 	},
 	"Red Room Programming": {
 		"give_obligation": {
-			"__to__": "Buvky Barnes"
+			"__to__": "Bucky Barnes"
 		},
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -974,7 +983,8 @@
 						"amount": {
 							"func_name": "get_subject_int_printed_property",
 							"func_params": {
-								"subject": "previous"
+								"subject": "previous",
+								"property": "cost"
 							}
 						},
 						"subject": "my_identity"
@@ -1003,7 +1013,8 @@
 						"amount": {
 							"func_name": "get_subject_int_printed_property",
 							"func_params": {
-								"subject": "previous"
+								"subject": "previous",
+								"property": "cost"
 							}
 						},
 						"subject": "my_identity"
@@ -1462,7 +1473,7 @@
 	},
 	"Winter Rifle": {
 		"interrupt": {
-			"event_name": "attack",
+			"event_name": "attack_started",
 			"trigger": "my_hero",
 			"event_filters": {
 				"tags": [
@@ -1565,6 +1576,7 @@
 				{
 					"name": "move_card_to_board",
 					"subject": "tutor",
+					"src_container": "discard",
 					"subject_count": "all",
 					"needs_selection": true,
 					"selection_count": 1,

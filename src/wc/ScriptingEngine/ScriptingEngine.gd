@@ -74,10 +74,36 @@ func add_resource(script: ScriptTask) -> int:
 	
 	return retcode	
 
+static func _compute_move_zones(subject, script):
+	var script_definition = script.script_definition.duplicate()
+	var override_properties = script.get_property("set_properties", {})	
+	
+	if !script.get_property("grid_name"):
+		var type_code = override_properties.get("type_code", subject.get_property("type_code"))
+		if CFConst.TYPECODE_TO_GRID.has(type_code):
+			script_definition["grid_name"] = CFConst.TYPECODE_TO_GRID[type_code]
+
+
+	#Replace all occurrences of un_numberd "discard", etc... with the actual id
+	#This ensures we use e.g. the correct discard pile, etc...
+	var owner_hero_id = script.trigger_details.get("override_controller_id")
+	if !owner_hero_id and subject:
+		owner_hero_id = subject.get_controller_hero_id()
+	if !owner_hero_id:
+		owner_hero_id = script.owner.get_owner_hero_id()
+	if !owner_hero_id:
+		owner_hero_id = gameData.get_villain_current_hero_target()
+	
+	var replacements = {}	
+	for zone in CFConst.HERO_GRID_SETUP:
+		replacements[zone] = zone+str(owner_hero_id)
+		
+	return WCUtils.search_and_replace_multi(script_definition, replacements, true)
+
 #override for parent
 func move_card_to_board(script: ScriptTask) -> int:
 
-	#unique rule
+	#unique rule, max 1 per player, etc...
 	var to_remove = []
 	for card in script.subjects:
 		var type_code = card.get_property("type_code")
@@ -86,6 +112,18 @@ func move_card_to_board(script: ScriptTask) -> int:
 			continue
 		if cfc.NMAP.board.unique_card_in_play(card):
 			to_remove.append(card)
+		
+		#If attempt to move card to board, that has "max 1 per player"	
+		if card.get_property("max 1 per player", 0, true):
+			var finalized_script_definition =  _compute_move_zones(card, script)
+			var grid_name = finalized_script_definition.get("grid_name", "")
+			if grid_name:
+				var hero_id = gameData.get_grid_controller_hero_id(grid_name)
+				if hero_id:
+					var existing = cfc.NMAP.board.count_card_per_player_in_play(card, hero_id)
+					if existing: 
+						to_remove.append(card)
+						
 	for card in to_remove:
 		script.subjects.erase(card)
 
@@ -107,50 +145,11 @@ func move_card_to_board(script: ScriptTask) -> int:
 	
 		script.script_definition = backup.duplicate()
 
-		var override_properties = script.get_property("set_properties", {})
-	
 		var subject = card
 		script.set_subjects(subject)
-		#we force a grid container in all cases
-		if !script.get_property("grid_name"):
-			var type_code = override_properties.get("type_code", subject.get_property("type_code"))
-			if CFConst.TYPECODE_TO_GRID.has(type_code):
-				script.script_definition["grid_name"] = CFConst.TYPECODE_TO_GRID[type_code]
 
-	
-		#Replace all occurrences of un_numberd "discard", etc... with the actual id
-		#This ensures we use e.g. the correct discard pile, etc...
-		var owner_hero_id = script.trigger_details.get("override_controller_id")
-		if !owner_hero_id and subject:
-			owner_hero_id = subject.get_controller_hero_id()
-		if !owner_hero_id:
-			owner_hero_id = script.owner.get_owner_hero_id()
-		if !owner_hero_id:
-			owner_hero_id = gameData.get_villain_current_hero_target()
-		
-		var replacements = {}	
-		for zone in CFConst.HERO_GRID_SETUP:
-			replacements[zone] = zone+str(owner_hero_id)
+		script.script_definition = _compute_move_zones(subject, script)	
 
-#		var zone_replacements = [
-#	#		{"from":"_my_hero" , "to": controller_hero_id },
-#			{"from":"_first_player" , "to": gameData.first_player_hero_id() },		
-#	#		{"from":"_previous_subject" , "to": previous_hero_id},
-#	#		{"from":"_current_hero_target" , "to": current_hero_target},
-#	#		{"from":"_event_source_hero" , "to": event_source_hero_id},					
-#		]
-#
-#		for zone in ["hand"] + CFConst.HERO_GRID_SETUP.keys() + CFConst.ALL_TYPE_GROUPS:
-#			for replacement in zone_replacements:
-#				var from_str = replacement["from"]
-#				var to = replacement["to"]
-#				if !to:
-#					continue
-#				replacements[zone + from_str] = zone+str(to)
-
-			
-		script.script_definition = WCUtils.search_and_replace_multi(script.script_definition, replacements, true)
-	
 		if card.is_boost():
 			card.set_is_boost(false)
 			card._clear_attachment_status()
@@ -162,7 +161,7 @@ func move_card_to_board(script: ScriptTask) -> int:
 			result = CFConst.ReturnCode.CHANGED
 		else:
 			result = .move_card_to_board(script)
-		if override_properties:
+		if script.get_property("set_properties", {}):
 			var tags: Array = ["emit_signal"] + script.get_property(SP.KEY_TAGS)
 			script.script_definition[SP.KEY_TAGS] = tags
 			modify_properties(script)
@@ -402,42 +401,90 @@ func attack(script: ScriptTask) -> int:
 	if (costs_dry_run()):
 		return retcode	
 
+	if (owner.is_stunned()):
+		owner.hint("Stunned!", Color8(50,200,50))
+		owner.remove_stun()
+		return CFConst.ReturnCode.FAILED
+		
 
+
+	var new_script = duplicate_script(script)
+	new_script.script_name = "attack_started"
+	new_script.script_definition["name"] = new_script.script_name
+
+	#
+	# Hacks
+	#
+	# Below are a few things we do to massage the new script
+	# I'm not always sure they make sense but they've been necessary to
+	# get some tests to pass
+	
+	# at least One by One needs us to stop transmitting tags endlesly
+	# see test_1p_winter_soldier_cybernetic_arm.json
+	new_script.trigger_details.erase("tags")
+	#here we precompute the damage because some cards
+	#rely on the amount being calculated based on some conditions
+	#of the board *before* the next event resolves.
+	#for example Hawkeye's Sonic Arrow which checks if enemy is confused 
+	if new_script.script_definition.has("amount"):
+		new_script.script_definition["amount"] = script.retrieve_integer_property("amount")	
+		for value in ["plus_amount", "multiplier_amount"]:
+			new_script.script_definition.erase(value)
+	#
+	# END Hacks
+	#		
+			
+	var task_event = SimplifiedStackScript.new(new_script)
+	gameData.theStack.add_script(task_event)
+	return retcode			
+
+func attack_started(script) -> int:	
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+
+	var owner = script.owner	
+
+	var type = owner.get_property("type_code", "")
+	if !type in ["hero", "ally"]:
+		owner = _get_identity_from_script(script)	
+
+	if (costs_dry_run()):
+		return retcode		
 	
 	var damage = 0
 	if script.script_definition.has("amount"):
 		damage = script.retrieve_integer_property("amount")
 	else:
-		damage = owner.get_property("attack", 0)
+		damage = owner.get_property("attack", 0)		
+	if (damage):	
+		var script_modifications = {
+			"additional_tags" : ["attack", "Scripted"],
+		}
+		_add_pre_receive_damage_on_stack (damage, script, script_modifications)	
+	
+	#emit signals if this was e.g. an attack that bypassed guards
+	#bypass_guard_happened
+	for subject in script.subjects:
+		var guard_check = SP.attack_guarded_status(subject, owner, script.owner )
+		var is_guarded = guard_check.get("is_guarded", false)
+		if is_guarded:
+			is_guarded.hint("Guard!", Color8(200, 5, 50))
+			subject.hint("Guarded!", Color8(200, 5, 50))
+		else:
+			var signals = guard_check.get("signals", [])
+			if signals:
+				subject.hint("Bypassed!", Color8(50, 200, 50))
 
-	if (owner.is_stunned()):
-		owner.hint("Stunned!", Color8(50,200,50))
-		owner.remove_stun()
-		
-	else:
-		if (damage):	
-			var script_modifications = {
-				"additional_tags" : ["attack", "Scripted"],
-			}
-			_add_pre_receive_damage_on_stack (damage, script, script_modifications)	
-		
-		#emit signals if this was e.g. an attack that bypassed guards
-		#bypass_guard_happened
-		for subject in script.subjects:
-			var guard_check = SP.attack_unguarded(subject, owner, script.owner )
-			if guard_check:
-				var signals = guard_check.get("signals", [])
-				if signals:
-					subject.hint("Bypassed!", Color8(50, 200, 50))
-
-				for my_signal in signals:
-					var details_target = my_signal["details"].get("target", null)
-					if details_target:
-						details_target.hint("Bypassed!", Color8(50, 200, 50))
-					scripting_bus.emit_signal_on_stack(my_signal["name"], my_signal["card"], my_signal["details"])
-					
+			for my_signal in signals:
+				var details_target = my_signal["details"].get("target", null)
+				if details_target:
+					details_target.hint("Bypassed!", Color8(50, 200, 50))
+				scripting_bus.emit_signal_on_stack(my_signal["name"], my_signal["card"], my_signal["details"])
 				
-		#consequential_damage(script)
+			
+	#consequential_damage(script)
 
 	return retcode	
 

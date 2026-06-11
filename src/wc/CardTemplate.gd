@@ -3930,6 +3930,7 @@ func get_printed_text(section = ""):
 
 	if _cached_printed_text.has(section_l):
 		return _cached_printed_text[section_l]
+	return ""
 	
 
 func queue_free():

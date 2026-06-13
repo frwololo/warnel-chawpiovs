@@ -15,6 +15,7 @@ var play_all_random_mode = false
 
 const SFX_CHANNELS = 8
 var last_sound_played = 0
+var last_sfx_stream_played = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -28,8 +29,8 @@ func _ready():
 		add_child(player)
 
 	music_player.connect("finished", self, "song_finished")
-	scripting_bus.connect("card_moved_to_board", self,  "_card_moved_to_board")
-	scripting_bus.connect("card_moved_to_pile", self,  "_card_moved_to_pile")
+	#scripting_bus.connect("card_moved_to_board", self,  "_card_moved_to_board")
+	#scripting_bus.connect("card_moved_to_pile", self,  "_card_moved_to_pile")
 	
 	
 
@@ -44,29 +45,29 @@ func reset():
 
 		
 
-func _card_moved_to_pile(card_owner, details):
-	#moving a lot of cards early game, too noisy
-	if !gameData._game_started:
-		return
-	
-	var source = details["source"].to_lower()
-	var destination = details["destination"].to_lower()
-	#gets annoying quickly since the game makes us discard a lot to play
-	if source.begins_with("hand"):
-		return
-	
-	#When shuffling discard into deck this gets annoying,
-	#so deactivating this use case for now
-	if source.begins_with("discard") and destination.begins_with("deck"):
-		return	
-		
-	play_sfx_from_path(["card_moved_to_pile"], card_owner)
-	
-func _card_moved_to_board(card_owner, _details):
-	if card_owner.is_boost():
-		return
-	
-	play_sfx_from_path(["card_moved_to_board"], card_owner)
+#func _card_moved_to_pile(card_owner, details):
+#	#moving a lot of cards early game, too noisy
+#	if !gameData._game_started:
+#		return
+#
+#	var source = details["source"].to_lower()
+#	var destination = details["destination"].to_lower()
+#	#gets annoying quickly since the game makes us discard a lot to play
+#	if source.begins_with("hand"):
+#		return
+#
+#	#When shuffling discard into deck this gets annoying,
+#	#so deactivating this use case for now
+#	if source.begins_with("discard") and destination.begins_with("deck"):
+#		return	
+#
+#	play_sfx_from_path(["card_moved_to_pile"], card_owner)
+#
+#func _card_moved_to_board(card_owner, _details):
+#	if card_owner.is_boost():
+#		return
+#
+#	play_sfx_from_path(["card_moved_to_board"], card_owner)
 
 #TODO
 func load_sfx_collection():
@@ -119,11 +120,18 @@ func load_stream(sfx_collection_node):
 	
 	return stream
 	
+func is_allowed_specific_sounds(card):
+	if !is_instance_valid(card):
+		return false
+	if card.is_boost():
+		return false
+		
+	return true
 
 func find_sound_for_card_event(event_name, card_owner = null):
 	var shortname = ""
 	var type_code = ""
-	if is_instance_valid(card_owner):
+	if is_allowed_specific_sounds(card_owner):
 		shortname = card_owner.get_property("shortname", "").to_lower()
 		type_code = card_owner.get_property("type_code", "").to_lower()	
 	
@@ -132,7 +140,7 @@ func find_sound_for_card_event(event_name, card_owner = null):
 		if sfx_collection.has(fullname):
 			return load_random_sfx_starts_with(fullname)
 
-	if is_instance_valid(card_owner):
+	if is_allowed_specific_sounds(card_owner):
 		for trait in _sfx_collection_traits:
 			if card_owner.get_property(trait, 0, true):
 				var fullname = trait + "-" + event_name
@@ -149,6 +157,8 @@ func find_sound_for_event(event):
 	var card_owner = event.owner
 	var event_name = event.script_name.to_lower()
 	
+	if event.script_name =="about_to_reveal":
+		var _tmp =1
 	return find_sound_for_card_event(event_name, card_owner)
 	
 
@@ -208,6 +218,11 @@ func play_sfx_stream(stream):
 	
 	var now = Time.get_ticks_msec()
 	while now - last_sound_played < 50:
+		#avoid duplicate within a few milisecconds
+		if stream == last_sfx_stream_played:
+			last_sfx_stream_played = null
+			return
+		
 		now = Time.get_ticks_msec()
 		yield(get_tree().create_timer(0.01), "timeout")
 		
@@ -219,6 +234,7 @@ func play_sfx_stream(stream):
 	player.volume_db = linear2db(float(sfx_volume) / 100.0)	
 	player.play()
 	self.last_sound_played = Time.get_ticks_msec()
+	self.last_sfx_stream_played = stream
 		
 
 func load_music_collection():

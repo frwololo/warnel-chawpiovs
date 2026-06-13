@@ -129,10 +129,10 @@ func _step_started(_trigger_object, details:Dictionary):
 			enable_sync()
 
 		
-func _card_script_added(_trigger_object, details:Dictionary):
+func _card_script_added(_trigger_object, _details:Dictionary):
 	_refresh_interrupt_cache()
 	
-func _card_script_removed(_trigger_object, details:Dictionary):
+func _card_script_removed(_trigger_object, _details:Dictionary):
 	_refresh_interrupt_cache()
 
 func _refresh_interrupt_cache():
@@ -846,10 +846,7 @@ func flush_script(stack_object):
 					func_return = yield(func_return, "completed")
 
 	#if either execute_both or non_costs part of the execution
-	if execute_mode != CFInt.RunMode.COST_SCRIPTS_ONLY:
-		for t in stack_object.get_tasks():
-			gameData.play_sfx(t)	
-					
+	if execute_mode != CFInt.RunMode.COST_SCRIPTS_ONLY:					
 		var sceng = stack_object.get_sceng()
 		if stack_object.get_first_task_name() != "script_executed" and sceng: # and sceng.trigger_details.get("action_name_id", ""):
 			var trigger_details = sceng.trigger_details.duplicate()

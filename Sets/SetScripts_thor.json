@@ -135,36 +135,70 @@
 					]
 				},
 				{
-					"name": "move_card_to_container",
-					"subject": "grab_until",
-					"src_container": "deck_villain",
-					"dest_container": "discard_villain",
-					"is_cost": true,
-					"filter_state_grab_until": [
+					"name": "conditional_script",
+					"options": [
 						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": "deck_villain",
+									"filter_state_tutor": [
+										{
+											"filter_properties": {
+												"type_code": "minion"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [				
+								{
+									"name": "dicscard",
+									"subject": "grab_until",
+									"src_container": "deck_villain",
+									"filter_state_grab_until": [
+										{
+											"filter_properties": {
+												"type_code": "minion"
+											}
+										}
+									]
+								},
+								{
+									"name": "move_card_to_board",
+									"grid_name": "enemies_my_hero",
+									"subject": "index",
+									"subject_count": 1,
+									"subject_index": "retrieve_integer",
+									"src_container": "deck_villain"
+								},
+								{
+									"name": "thwart",
+									"amount": 3,
+									"subject": "target",
+									"filter_state_subject": [
+										{
+											"filter_group": "group_schemes"
+										}
+									]
+								}
+							]
 						}
-					]
-				},
-				{
-					"name": "move_card_to_board",
-					"grid_name": "enemies_my_hero",
-					"subject": "index",
-					"subject_count": 1,
-					"is_cost": true,
-					"subject_index": "retrieve_integer",
-					"src_container": "deck_villain"
-				},
-				{
-					"name": "thwart",
-					"amount": 3,
-					"subject": "target",
-					"filter_state_subject": [
+					],
+					"else": [
 						{
-							"filter_group": "group_schemes"
-						}
+							"name": "dicscard",
+							"subject": "grab_until",
+							"src_container": "deck_villain",
+							"filter_state_grab_until": [
+								{
+									"filter_properties": {
+										"type_code": "minion"
+									}
+								}
+							]
+						},					
 					]
 				}
 			]

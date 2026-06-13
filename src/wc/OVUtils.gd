@@ -87,6 +87,11 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 		return results	
 	
 	var owner:WCCard = script.owner
+	
+	var res = owner.script_variables.get(_subject_request, null)
+	if res and typeof(res) == TYPE_ARRAY:
+		results = res.duplicate()
+		return results
 					
 	match _subject_request:
 		"function":
@@ -276,6 +281,20 @@ static func next_activation_order_villain(func_params, _script = null):
 		
 
 static func func_name_run(object, func_name, func_params, script = null):
+	if "||" in func_name:
+		var func_names = func_name.split("||")
+		var result = false
+		for fn in func_names:
+			result = result or func_name_run(object, fn, func_params, script)
+		return result
+		
+	if "&&" in func_name:
+		var func_names = func_name.split("&&")
+		var result = true
+		for fn in func_names:
+			result = result and func_name_run(object, fn, func_params, script)
+		return result		
+	
 	var reverse_result = false
 	if func_name.begins_with("!"):
 		func_name = func_name.substr(1)
@@ -822,14 +841,23 @@ static func static_pre_task_prime(script_definition, owner, script = null, prev_
 
 static func get_event_source_hero_id(trigger_details):
 	var event_source_hero_id = gameData.get_current_local_hero_id()
+	
+	var source = null
 	if trigger_details.has("event_object"):
 		var event_object = trigger_details.get("event_object")		
 		if "trigger_details" in event_object and event_object.trigger_details.has("source"):
-			var source = event_object.trigger_details.get("source", null)
-			if guidMaster.is_guid(source):
-				source = guidMaster.get_object_by_guid(source)
-			if source and typeof(source) == TYPE_OBJECT:
-				var hero_id = source.get_controller_hero_id()
-				if hero_id > 0:
-					event_source_hero_id = hero_id
+			source = event_object.trigger_details.get("source", null)
+	elif trigger_details.has("triggered_by_card"):
+		#this one is set e.g. in gameData.start_play_sequence()
+		#used for example in mutants genesis "Zeal for the Cause"
+		source = trigger_details["triggered_by_card"]
+		
+	if source:	
+		if guidMaster.is_guid(source):
+			source = guidMaster.get_object_by_guid(source)
+		if source and typeof(source) == TYPE_OBJECT:
+			var hero_id = source.get_controller_hero_id()
+			if hero_id > 0:
+				event_source_hero_id = hero_id		
+		
 	return event_source_hero_id

@@ -7341,8 +7341,7 @@
 				},
 				{
 					"name": "enemy_activates",
-					"subject": "previous",
-					"_comments": "need to use previous here because villain still points to former villain"
+					"subject": "villain",
 				}
 			]
 		},

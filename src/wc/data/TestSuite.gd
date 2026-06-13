@@ -747,8 +747,16 @@ func cancel_current_selection_window(force_cancel = true):
 	else:
 		#TODO error handling
 		var _error =1
+
+func cancel_targeting():
+	if (_current_targeting_card):
+		var result = _current_targeting_card.targeting_arrow.cancel_targeting()
+		_current_targeting_card = null	
 	
 func action_target(hero_id, action_value):
+	if action_value.to_lower() == "cancel":
+		cancel_targeting()
+		return
 	var target_card = get_card(action_value, hero_id)
 
 	if (_current_targeting_card):
@@ -928,6 +936,8 @@ mastersync func test_finalized(result):
 
 remotesync func finalize_test_allclients(force_status:int, attempts = 1):
 	var result = force_status
+	#last minute cleanup
+	cancel_targeting()
 	
 	if (force_status != TestStatus.NONE):
 		match force_status:

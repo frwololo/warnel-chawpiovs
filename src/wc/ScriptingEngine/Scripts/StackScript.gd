@@ -121,6 +121,10 @@ func next_execute_mode():
 func execute():
 	var run_mode = next_execute_mode()
 
+	if run_mode != CFInt.RunMode.COST_SCRIPTS_ONLY:
+		for t in get_tasks():
+			gameData.play_sfx(t)	
+
 	if run_mode == 	CFInt.RunMode.BOTH:
 		return execute_both()
 	

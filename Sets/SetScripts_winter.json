@@ -145,6 +145,19 @@
 				}
 			]
 		},
+		"card_attached": {
+			"trigger": "self",
+			"_silent": true,
+			"board": [
+				{
+					"name": "save_variable",
+					"var_name": "my_current_host",
+					"var_type": "subject",
+					"value": "host",
+					"_comments": "because bambino gets detached from its host when its last ammo is used, using 'host' as the alterant trigger doesn't work. Instead we save it in a temp variable here"
+				}
+			]
+		},
 		"interrupt": {
 			"event_name": "attack",
 			"trigger": "host",
@@ -172,13 +185,13 @@
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "attack",
-									"trigger": "host",
-									"alteration": 2
+									"trigger": "my_current_host",
+									"alteration": 3
 								},
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "overkill",
-									"trigger": "host",
+									"trigger": "my_current_host",
 									"alteration": 1
 								}
 							]
@@ -593,7 +606,7 @@
 				},
 				{
 					"name": "attach_to_card",
-					"subject": "Villain",
+					"subject": "villain",
 					"is_else": true
 				}
 			]
@@ -1131,7 +1144,7 @@
 			]
 		}
 	},
-	"Safe House #30": {
+	"Safe House #30 #54007": {
 		"manual": {
 			"board": [
 				{
@@ -1148,12 +1161,12 @@
 				},
 				{
 					"name": "move_card_to_board",
-					"is_cost": true,
 					"subject": "tutor",
 					"src_container": "deck_villain",
 					"subject_count": "all",
 					"needs_selection": true,
 					"selection_type": "equal",
+					"is_cost": true,
 					"selection_count": 1,
 					"filter_state_tutor": [
 						{
@@ -1170,7 +1183,8 @@
 				{
 					"name": "draw_cards",
 					"amount": 1
-				}
+				},
+				
 			]
 		}
 	},
@@ -1236,32 +1250,67 @@
 					]
 				},
 				{
-					"name": "move_card_to_container",
-					"subject": "grab_until",
-					"src_container": "deck_villain",
-					"dest_container": "discard_villain",
-					"is_cost": true,
-					"filter_state_grab_until": [
+					"name": "conditional_script",
+					"options": [
 						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": "deck_villain",
+									"filter_state_tutor": [
+										{
+											"filter_properties": {
+												"type_code": "minion"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "discard",
+									"subject": "grab_until",
+									"src_container": "deck_villain",
+									"filter_state_grab_until": [
+										{
+											"filter_properties": {
+												"type_code": "minion"
+											}
+										}
+									]
+								},
+								{
+									"name": "move_card_to_board",
+									"grid_name": "enemies_my_hero",
+									"subject": "index",
+									"subject_count": 1,
+									"subject_index": "retrieve_integer",
+									"src_container": "deck_villain",
+								},
+								{
+									"name": "ready_card",
+									"subject": "my_hero"
+								}
+							]
+						},
+					],
+					"else": [
+						{
+							"name": "discard",
+							"subject": "grab_until",
+							"src_container": "deck_villain",
+							"filter_state_grab_until": [
+								{
+									"filter_properties": {
+										"type_code": "minion"
+									}
+								}
+							]
+						},					
 					]
-				},
-				{
-					"name": "move_card_to_board",
-					"grid_name": "enemies_my_hero",
-					"subject": "index",
-					"subject_count": 1,
-					"subject_index": "retrieve_integer",
-					"src_container": "deck_villain",
-					"is_cost": true
-				},
-				{
-					"name": "ready_card",
-					"subject": "my_hero"
 				}
+					
 			]
 		}
 	},
@@ -1462,7 +1511,8 @@
 			"board": [
 				{
 					"name": "exhaust_card",
-					"subject": "self"
+					"subject": "self",
+					"is_cost": true
 				},
 				{
 					"name": "draw_cards",
@@ -1535,16 +1585,15 @@
 		}
 	},
 	"Winter Soldier": {
-		"response": {
-			"event_name": "enemy_died",
+		"enemy_died": {
 			"event_filters": {
 				"source": "self",
 				"tags": [
 					"attack"
 				]
 			},
-			"is_optional_hand": true,
-			"hand": [
+			"is_optional_board": true,
+			"board": [
 				{
 					"name": "remove_threat",
 					"amount": 2,

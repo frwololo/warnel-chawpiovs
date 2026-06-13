@@ -107,21 +107,27 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 	var post_play_actions = []
 	var hand_constraints = []
 
-	var is_defense = card.get("trait_defense", 0)
-	if (type_code == "event" && is_defense):
-		post_play_actions.append(
-			{
-				"name": "set_defender",
-				"subject": "my_identity"
-			}
-		)
-		hand_constraints.append(
-			{	
-				"name": "constraints",
-				"is_cost": true,
-				"tags": ["defense_ability"]
-			}			
-		)
+	
+	if (type_code == "event"):
+		var is_defense = card.get("trait_defense", 0)
+		if is_defense:
+			post_play_actions.append(
+				{
+					"name": "set_defender",
+					"subject": "my_identity"
+				}
+			)
+			
+		for trait in ["defense", "thwart", "attack"]:
+			var has_trait = card.get("trait_" + trait, 0)
+			if has_trait:
+				hand_constraints.append(
+					{	
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [trait + "_ability"]
+					}			
+				)			
 	#interrupt or response replacements
 	var interrupt_scripts = has_interrupt(script)
 	var has_manual_hand = script.get("manual", {}).get("hand", {})

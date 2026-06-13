@@ -58,6 +58,8 @@ func next_execute_mode():
 func execute():
 	if (!task.is_primed):
 		task.prime([],run_type,0, [])
+
+	gameData.play_sfx(task)
 	
 	var _retcode = sceng.call_task(task_name, task)
 

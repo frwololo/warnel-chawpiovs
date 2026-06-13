@@ -1853,7 +1853,7 @@ func reposition_as_attachment(do_rotation = true):
 		return
 		
 	var count_attachments = current_host_card.attachments.size()
-	var offset_multiplier:float = (1.0 / count_attachments) if count_attachments > 2 else 1.0 
+	var offset_multiplier:float = ((1 + (0.3 * count_attachments))  / count_attachments) if count_attachments > 2 else 1.0 
 		
 	var attach_index = current_host_card.attachments.find(self)
 	_set_target_position((current_host_card.global_position

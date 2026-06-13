@@ -642,6 +642,29 @@ const HERO_GRID_LAYOUT := {
 	]
 }
 
+const TRANSITION_HIGHLIGHT_COLORS:= {
+	"default": Color(0, 0.5, 1) * 10,	
+	"villain": Color(1, 0.1, 1) * 10,
+
+}
+
+const TRANSITION_SHADER_PARAMS:= {
+	"default": {
+		"transition_type": 2,	
+		"position": Vector2(0.5,0.5),
+		"grid_size":Vector2(0.5, 50.0),	
+		"edges": 3,
+		"shape_feather": 0.0,		
+	},
+	"villain": {
+		"transition_type": 2,	
+		"position": Vector2(0.5,0.5),	
+		"grid_size":Vector2(50.0, 50.0),	
+		"edges": 3,	
+		"flip_frequency": Vector2(2.0, 1.0)		
+	}
+
+}
 
 const TOKENS_ONLY_ON_BOARD_EXCEPTIONS:= [
 	"encounters_facedown",

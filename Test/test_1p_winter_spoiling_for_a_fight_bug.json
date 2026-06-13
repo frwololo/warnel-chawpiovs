@@ -1,5 +1,5 @@
 {
-	"_comments": "Automated Test for Cybernetic Arm #54002",
+	"_comments": "Automated Test for Spoiling for a fight",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -21,14 +21,17 @@
 				},
 				{
 					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Weapons Runner"
 				}
 			],
 			"schemes": [
 				{
-					"card": "01097b",
-					"tokens": {
-						"threat": 5
-					}
+					"card": "01097b"
 				}
 			],
 			"deck1": [
@@ -41,23 +44,13 @@
 					"card": "Winter Soldier"
 				}
 			],
-			"upgrade_support1": [
-				{
-					"card": "Cybernetic Arm #54002"
-				}
-			],
-			"enemies1": [
-				{
-					"card": "Armored Guard"
-				},
-				{
-					"card": "Weapons Runner"
-				}
-			],
+			"upgrade_support1": [],
+			"enemies1": [],
+			"others": [],
 			"allies1": [],
 			"hand1": [
 				{
-					"card": "One by One"
+					"card": "Spoiling for a fight"
 				}
 			]
 		}
@@ -65,23 +58,7 @@
 	"actions": [
 		{
 			"type": "play",
-			"value": "One by One"
-		},
-		{
-			"type": "target",
-			"value": "Armored Guard"
-		},
-		{
-			"type": "target",
-			"value": "Weapons Runner"
-		},
-		{
-			"type": "target",
-			"value": "01097b"
-		},
-		{
-			"type": "target",
-			"value": "01097b"
+			"value": "Spoiling for a fight"
 		}
 	],
 	"end": {
@@ -105,14 +82,14 @@
 				},
 				{
 					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
 				}
 			],
 			"schemes": [
 				{
-					"card": "01097b",
-					"tokens": {
-						"threat": 1
-					}
+					"card": "01097b"
 				}
 			],
 			"deck1": [
@@ -125,16 +102,8 @@
 					"card": "Winter Soldier"
 				}
 			],
-			"upgrade_support1": [
-				{
-					"card": "Cybernetic Arm #54002",
-					"exhausted": true
-				}
-			],
-			"discard_villain": [
-				{
-					"card": "Armored Guard"
-				},
+			"upgrade_support1": [],
+			"enemies1": [
 				{
 					"card": "Weapons Runner"
 				}
@@ -142,7 +111,7 @@
 			"allies1": [],
 			"discard1": [
 				{
-					"card": "One by One"
+					"card": "Spoiling for a fight"
 				}
 			]
 		}

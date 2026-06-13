@@ -2024,7 +2024,8 @@
 									"name": "modify_properties",
 									"_silent": true,
 									"tags": [
-										"Init", "emit_signal"
+										"Init",
+										"emit_signal"
 									],
 									"subject": "self",
 									"set_properties": {
@@ -2039,7 +2040,8 @@
 							"name": "modify_properties",
 							"_silent": true,
 							"tags": [
-								"Init", "emit_signal"
+								"Init",
+								"emit_signal"
 							],
 							"subject": "self",
 							"set_properties": {
@@ -2081,7 +2083,8 @@
 									"name": "modify_properties",
 									"_silent": true,
 									"tags": [
-										"Init", "emit_signal"
+										"Init",
+										"emit_signal"
 									],
 									"subject": "self",
 									"set_properties": {
@@ -2096,7 +2099,8 @@
 							"name": "modify_properties",
 							"_silent": true,
 							"tags": [
-								"Init", "emit_signal"
+								"Init",
+								"emit_signal"
 							],
 							"subject": "self",
 							"set_properties": {
@@ -5962,11 +5966,8 @@
 					"subject": "trigger_details_target",
 					"amount": {
 						"if": {
-							"func_name": "count_tokens",
+							"func_name": "is_stunned",
 							"func_params": {
-								"token_name": [
-									"stunned"
-								],
 								"subject": "trigger_details_target"
 							}
 						},

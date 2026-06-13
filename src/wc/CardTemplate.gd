@@ -38,6 +38,7 @@ var my_last_target = null
 
 var extra_scripts := {}
 var extra_script_uid := 0
+var script_variables = {}
 
 # The node with number manipulation box on this card
 var spinbox = null
@@ -204,6 +205,7 @@ func refresh_cache(forced=false):
 	_cache_resource_value = {}
 	_state_exec_cache = ""
 	side_icons.update_state(true)
+	tokens.refresh_display()
 	_cache_refresh_needed = false
 	_cached_all_traits = null
 	_script_alter_cache = {}
@@ -2930,6 +2932,12 @@ func is_token_status(params := {}, script:ScriptObject= null) -> int:
 	var forced_status = subject.get_property("force_" + token_name, 0)
 	if forced_status:
 		return 1
+	
+	#if a card gains stalwart, we remove its stunned and confused tokens immediately
+	#I found that the easiest way to do it is to do it any time we check for the stunned/confused status
+	if token_name in ["stunned", "confused"]:
+		if subject.get_property("stalwart", 0, true):
+			subject.tokens.mod_token(token_name, 0, true)			
 	
 	var trigger_value = subject.get_max_tokens(token_name)
 

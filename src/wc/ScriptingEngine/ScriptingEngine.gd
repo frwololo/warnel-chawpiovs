@@ -504,6 +504,39 @@ func character_died(script: ScriptTask) -> int:
 	
 	return retcode
 
+func save_variable(script:ScriptTask) -> int:
+	var retcode = CFConst.ReturnCode.CHANGED
+
+	var var_name = script.script_definition.get("var_name", "")
+	if !var_name:
+		return CFConst.ReturnCode.FAILED
+
+	var var_type = script.script_definition.get("var_type", "")
+	if !var_type in ["subject"]:
+		return CFConst.ReturnCode.FAILED
+
+	var value = script.script_definition.get("value", "")
+	if !value:
+		return CFConst.ReturnCode.FAILED
+		
+	if costs_dry_run():
+		return retcode
+	
+
+	var result = null 
+	
+	match var_type:
+		"subject":
+			result = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : value})
+		_:
+			return CFConst.ReturnCode.FAILED
+
+	if !result:
+		return CFConst.ReturnCode.FAILED
+		
+	script.owner.script_variables[var_name] = result
+	return retcode
+
 func deal_damage(script:ScriptTask) -> int:
 	var retcode = CFConst.ReturnCode.FAILED
 
@@ -1376,20 +1409,31 @@ func discard(script: ScriptTask):
 		if script.subjects:
 			return CFConst.ReturnCode.CHANGED
 		return CFConst.ReturnCode.FAILED
-	
-	for card in script.subjects:
-		card.discard()
-		retcode = CFConst.ReturnCode.CHANGED
-	return retcode	
 
-static func simple_discard_task(target_card):	
+	if script.subjects.size() == 1:
+		var card = script.subjects[0]
+		card.discard()
+		return CFConst.ReturnCode.CHANGED
+
+	#slightly cool effect to delay when discarding multiple cards		
+	for card in script.subjects:
+		var discard_event = simple_discard_task(card, {"_silent": true})
+		gameData.theStack.add_script(discard_event)	
+	return CFConst.ReturnCode.CHANGED	
+
+
+static func simple_discard_task(target_card, details = {}):	
 	var discard_script  = {
 				"name": "discard",
 	}
+	for detail in details:
+		discard_script[detail] = details[detail]
+		
 	var discard_task = ScriptTask.new(target_card, discard_script, target_card, {})	
 	discard_task.set_subjects([target_card])
 	var task_event = SimplifiedStackScript.new(discard_task)
 	return task_event
+
 
 #adds attackers against you
 func enemy_attacks_you(script: ScriptTask) -> int:
@@ -2704,6 +2748,11 @@ func constraints(script: ScriptTask) -> int:
 				#my hero as defender if no other defender is set yet
 				var defender = gameData.get_attack_defender()
 				if defender and defender.get_controller_hero_id() != my_hero_id:
+					return 	CFConst.ReturnCode.FAILED
+					
+		for trait in ["attack", "defense", "thwart"]:
+			if tag == trait + "_ability":			
+				if my_hero_card and my_hero_card.get_property("cannot_" + trait, 0, true):
 					return 	CFConst.ReturnCode.FAILED
 	
 	var board:Board = cfc.NMAP.board

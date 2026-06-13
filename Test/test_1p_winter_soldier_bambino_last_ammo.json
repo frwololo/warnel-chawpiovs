@@ -1,5 +1,5 @@
 {
-	"_comments": "Automated Test for Cybernetic Arm #54002",
+	"_comments": "Automated Test Bambino last ammo",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -39,7 +39,15 @@
 					"card": "Winter Soldier"
 				}
 			],
-			"upgrade_support1": [
+			"others": [
+				{
+					"card": "Bambino",
+					"owner_hero_id": 1,
+					"host": "Winter Soldier",
+					"tokens": {
+						"ammo": 1
+					}
+				}
 			],
 			"enemies1": [
 				{
@@ -49,55 +57,41 @@
 					"card": "Weapons Runner"
 				}
 			],
-			"others": [
-			],
 			"allies1": [],
 			"hand1": [
 				{
-					"card": "S.H.I.E.L.D. Sidearm",
+					"card": "S.H.I.E.L.D. Sidearm"
 				},
 				{
 					"card": "Spoiling for a fight"
-				},				
-				{
-					"card": "One by One"
 				},
 				{
-					"card": "Firepower"
+					"card": "One by One"
 				}
 			]
 		}
 	},
 	"actions": [
 		{
-			"type": "play",
-			"value": "S.H.I.E.L.D. Sidearm"
+			"type": "activate",
+			"value": "Winter Soldier"
 		},
 		{
-			"type": "select",
-			"value": "Spoiling for a fight",
-			"_comments": "pay for sidearm"
-		},
-		{
-			"type": "target",
-			"value": "Winter Soldier",
-			"_comments": "play Sidearm on Winter soldier"
-		},		
-		{
-			"type": "play",
-			"value": "Firepower"
-		},
-		{
-			"type": "select",
-			"value": "S.H.I.E.L.D. Sidearm"
+			"type": "choose",
+			"value": "attack"
 		},
 		{
 			"type": "target",
 			"value": "Armored Guard"
 		},
 		{
+			"type": "activate",
+			"value": "Bambino"
+		},
+		{
 			"type": "target",
-			"value": "01097b"
+			"value": "01097b",
+			"_comments": "Winter soldier removes threat when killing a minion"
 		}		
 	],
 	"end": {
@@ -110,14 +104,17 @@
 			}
 		],
 		"board": {
-			"villain": [
-				{
-					"card": "Rhino - 1"
-				}
-			],
 			"discard_villain": [
 				{
 					"card": "Armored Guard"
+				}
+			],
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 2
+					}
 				}
 			],
 			"deck_villain": [
@@ -131,7 +128,7 @@
 			"schemes": [
 				{
 					"card": "01097b",
-					"tokens": {"threat": 1}					
+					"tokens": {"threat": 1}
 				}
 			],
 			"deck1": [
@@ -144,33 +141,26 @@
 					"card": "Winter Soldier"
 				}
 			],
-			"upgrade_support1": [
+			"discard1": [
+				{
+					"card": "Bambino"
+				}
 			],
 			"enemies1": [
 				{
 					"card": "Weapons Runner"
 				}
 			],
-			"others": [
-				{
-					"card": "S.H.I.E.L.D. Sidearm",
-					"host": "Winter Soldier",
-					"tokens": {
-						"ammo": 3
-					},
-					"exhausted": true
-				}
-			],
 			"allies1": [],
-			"discard1": [
+			"hand1": [
 				{
-					"card": "Spoiling for a fight"
-				},			
-				{
-					"card": "One by One"
+					"card": "S.H.I.E.L.D. Sidearm"
 				},
 				{
-					"card": "Firepower"
+					"card": "Spoiling for a fight"
+				},
+				{
+					"card": "One by One"
 				}
 			]
 		}

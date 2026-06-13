@@ -164,6 +164,9 @@ func mod_token(
 		var prevention_properties = CFConst.TOKENS_INCREASE_PREVENTION_PROPERTIES.get(token_name, [])
 		for property in prevention_properties:
 			if owner_card.get_property(property, 0, true):
+				if !check:
+					var property_str = property.replace("_", " ")
+					owner_card.hint(property_str, Color8(200,200,200))
 				return CFConst.ReturnCode.FAILED
 	
 	var token : Token = get_all_tokens().get(token_name, null)
@@ -207,7 +210,6 @@ func mod_token(
 					retcode = CFConst.ReturnCode.FAILED
 					
 	else:
-		cfc.flush_cache()
 		var prev_value = token.count
 		var max_tokens = get_max(token_name)
 		# The set_to_mod value means that we want to set the tokens to the
@@ -234,6 +236,7 @@ func mod_token(
 			token.expand()
 		retcode = CFConst.ReturnCode.CHANGED
 		if new_value != prev_value:
+			cfc.flush_cache()
 			scripting_bus.emit_signal(
 					"card_token_modified",
 					owner_card,
@@ -242,23 +245,26 @@ func mod_token(
 					SP.TRIGGER_NEW_COUNT: new_value,
 					"amount": int(abs(prev_value - new_value)),
 					"tags": tags})
-		if new_value > prev_value:
-			for i in (new_value - prev_value):
-				scripting_bus.emit_signal(
-						"card_token_added",
-						owner_card,
-						{SP.TRIGGER_TOKEN_NAME: token.get_token_name(),
-						"tags": tags})	
-		elif prev_value > new_value:
-			for i in ( prev_value - new_value):
-				scripting_bus.emit_signal(
-						"card_token_removed",
-						owner_card,
-						{SP.TRIGGER_TOKEN_NAME: token.get_token_name(),
-						"tags": tags})					
+					
+			if new_value > prev_value:
+				for i in (new_value - prev_value):
+					scripting_bus.emit_signal(
+							"card_token_added",
+							owner_card,
+							{SP.TRIGGER_TOKEN_NAME: token.get_token_name(),
+							"tags": tags})	
+			elif prev_value > new_value:
+				for i in ( prev_value - new_value):
+					scripting_bus.emit_signal(
+							"card_token_removed",
+							owner_card,
+							{SP.TRIGGER_TOKEN_NAME: token.get_token_name(),
+							"tags": tags})					
 	return(retcode)
 
-
+func refresh_display():
+	for token in $Drawer/VBoxContainer.get_children():
+		token.refresh_display()
 
 # Returns a dictionary of card tokens name on this card.
 #

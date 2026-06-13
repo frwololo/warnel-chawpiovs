@@ -1,0 +1,459 @@
+{
+	"_comments": "Scenario Start Test : Master Mold vs Shadowcat",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Shadowcat",
+					"deck_id": 27027
+				}
+			}
+		],
+		"scenario": {
+			"name": "The Sentinel Factory"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 27027,
+					"hero": "32030a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sentinel Mark III #32102",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Intruder Alert! #32119",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Barrier #32103",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sentinel Mark VI #32106",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Unit Upgrade #32115",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Master Mold's Children #32117",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sentinel Mark III #32102",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Targeted for Elimination #32107",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sentinel Mark V #32105",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sentinel Mark II #32101",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Insert Virus Program #32120",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Stun Beam #32116",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shields Up #32118",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sentinel Mark VIII #32114",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Operation Zero Tolerance #32104",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Targeted for Elimination #32107",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shields Up #32118",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Unit Upgrade #32115",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Insert Virus Program #32120",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Relentless Robots #32108",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Permanently Phased #32055",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Master Mold's Children #32117",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sentinel Mark VI #32106",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sentinel Mark V #32105",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Stun Beam #32116",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sentinel Mark VIII #32114",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Barrier #32103",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Master Mold - 1 #32109",
+					"owner_hero_id": 0,
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Sentinel Factory - 1B #32112b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Phased #32031b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Shadowcat #32030a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "White Queen #32056",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Hellfire Club #32057",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hellfire Pawn #32058",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hellfire Pawn #32058",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Telepathic Restraint #32059",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Master Mold - 2 #32110",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Master Mold's Agenda - 2A #32113a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Master Mold's Agenda - 2B #32113b",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Sentinel Factory - 1A #32112a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "X-Mansion #32049",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Aggressive Energy #32047",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Gatekeeper #32044",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Quick Shift #32040",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Gatekeeper #32044",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Team Strike #32045",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Airwalk #32039",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ready to Rumble #32051",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Shadowcat Surprise #32037",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Attack Training #32043",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Acute Control #32034",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Lockheed #32032",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Phased Strike #32038",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Shadowcat Surprise #32037",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Phased Strike #32038",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ready to Rumble #32051",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Toe to Toe #32046",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Shadowcat Surprise #32037",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Phased and Confused #32036",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Aggressive Energy #32047",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Wolverine - Logan #32041",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Team Strike #32045",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Colossus - Piotr Rasputin #32048",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Team Strike #32045",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Attack Training #32043",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Kitty's Room #32033",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Phased and Confused #32036",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Toe to Toe #32046",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Gatekeeper #32044",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Magik - Illyana Rasputin #32042",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Airwalk #32039",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Strength #01090",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Genius #01089",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Attack Training #32043",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "Sentinel Mark II #32101",
+					"owner_hero_id": 0
+				}
+			],
+			"identity1": [
+				{
+					"card": "Kitty Pryde #32030b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__phase_control": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Magneto - Erik Lehnsherr #32172b",
+					"owner_hero_id": 0
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Solid #32031a",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Energy #01088",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Toe to Toe #32046",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Shadow and Steel #32021",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Quick Shift #32040",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ready to Rumble #32051",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Intangible Interference #32035",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

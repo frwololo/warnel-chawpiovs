@@ -94,7 +94,9 @@
 					}
 				}
 			],
-			"allies1": [],
+			"allies1": [{
+			"card": "Mockingbird"}
+			],
 			"upgrade_support1": [
 				{
 					"card": "Cybernetic Arm #54002",
@@ -107,7 +109,7 @@
 	"actions": [	
 		{
 			"type": "activate",
-			"value": "Winter Soldier"
+			"value": "Mockingbird"
 		},
 		{
 			"type": "choose",
@@ -120,7 +122,7 @@
 		{
 			"type": "assert_announce_text",
 			"value": "Discard each stunned and confused"
-		}
+		},	
 	],
 	"end": {
 		"phase": "PLAYER_TURN",	
@@ -215,7 +217,9 @@
 					}
 				}
 			],
-			"allies1": [],
+			"allies1": [{
+			"card": "Mockingbird"}
+			],
 			"upgrade_support1": [
 				{
 					"card": "Cybernetic Arm #54002",

@@ -1291,6 +1291,7 @@ func load_script_definitions() -> void:
 	
 	#load additional stuff
 	load_deck_definitions()
+	_sanity_check_scripts()
 	
 	scripts_loading = false	
 	var load_end_time = OS.get_ticks_msec()	
@@ -1298,13 +1299,78 @@ func load_script_definitions() -> void:
 		
 	emit_signal("scripts_loaded")
 
+func _sanity_check_scripts():
+	if !OS.has_feature("debug"):
+		return
+		
+	var file = File.new()
+	file.open("user://scripts_sanity_check.txt", File.WRITE)
+	for card_id in set_scripts:
+		var card_data = get_card_by_id(card_id)
+		if !card_data:
+			continue
+		var card_name = card_data["Name"]
+		var scripts = set_scripts[card_id]
+		for trigger in scripts:
+			var script = scripts[trigger]
+			match typeof(script):
+				TYPE_DICTIONARY:
+					for state in ["all", "pile", "hand", "board"]:
+						var result = ""
+						var scripts_list = script.get(state, [])
+						if !scripts_list:
+							continue
+						match typeof(scripts_list):
+							TYPE_DICTIONARY:
+								for key in scripts_list:
+									result += _sanity_check_script(scripts_list[key], trigger)
+							TYPE_ARRAY:
+								result += _sanity_check_script(scripts_list, trigger)
+							_:
+								continue
+						if result:
+							result = card_name + " - " + card_id + " " + result			
+							file.store_string(result + "\n")
+				TYPE_ARRAY:
+					pass
+					#todo
+				_:
+					pass
+	file.close()	
+
+func _sanity_check_script(scripts_array, trigger):
+	var result = ""
+	match typeof(scripts_array):
+		TYPE_ARRAY:
+			for script in scripts_array:
+				var script_name = script.get("name", "")
+				#all scripts except alterants should have a name
+				if !script_name and !trigger in ["alterants", "boost_alterants", "script_alterants"]:
+					result += "script_name missing\n"
+					return result
+				var subject = script.get("subject", "")
+				var is_cost = script.get("is_cost", false)
+				match subject:
+					"grab_until":
+						if is_cost:
+							result += "Warning: grab_until should probably not be a cost. check Return the Favor in SetScripts_sm.json to see how to express grab_until as a cost\n"
+			return result
+		TYPE_DICTIONARY:
+			pass
+			#TODO
+		_:
+			pass
+			#TODO
+	return result
+
 func retrieve_card_info_from_fuzzy_name(fuzzy_card_name):
 	var card_name = fuzzy_card_name.strip_edges()
 	var card_code = ""
 	if "#" in card_name:
 		var values = card_name.split("#")
-		card_name = values[0].strip_edges()
-		card_code = values[1].strip_edges()
+		card_code = values[values.size()-1].strip_edges()
+		values.resize(values.size()-1)
+		card_name = values.join("#").strip_edges()
 	return {
 		"name" : card_name,
 		"code" : card_code	

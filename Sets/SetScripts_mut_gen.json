@@ -8,6 +8,7 @@
 				"subject_count": "all",
 				"needs_selection": true,
 				"selection_optional": false,
+				"is_cost": true,
 				"selection_count": "__discard__",
 				"selection_type": "equal"
 			},
@@ -291,15 +292,6 @@
 			"trigger": "self",
 			"all": [
 				{
-					"name": "sequence",
-					"sequence_ability": "when_defeated",
-					"subject": "self"
-				}
-			]
-		},
-		"when_defeated": {
-			"all": [
-				{
 					"name": "add_threat",
 					"subject": "main_scheme",
 					"amount": {
@@ -535,7 +527,8 @@
 					"selection_type": "equal",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_allies_current_hero_target"
+							"filter_group": "group_allies_current_hero_target",
+							"filter_is_exhausted": false
 						}
 					]
 				}
@@ -555,7 +548,8 @@
 					"selection_type": "equal",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_allies_current_hero_target"
+							"filter_group": "group_allies_current_hero_target",
+							"filter_is_exhausted": false
 						}
 					]
 				}
@@ -576,7 +570,7 @@
 					"filter_state_seek": [
 						{
 							"filter_group": "group_friendly_my_hero",
-							"filter_is_exhausted": true
+							"filter_is_exhausted": false
 						}
 					]
 				}
@@ -672,6 +666,7 @@
 			"trigger": "self",
 			"all": [
 				{
+					"_silent": true,
 					"name": "prevent",
 					"subject": "interrupted_event"
 				},
@@ -1004,16 +999,6 @@
 			"trigger": "self",
 			"all": [
 				{
-					"name": "sequence",
-					"sequence_ability": "when_defeated",
-					"subject": "self"
-				}
-			]
-		},
-		"when_defeated": {
-			"_silent": true,
-			"all": [
-				{
 					"name": "mod_tokens",
 					"token_name": "confused",
 					"modification": 0,
@@ -1176,15 +1161,6 @@
 		},
 		"card_defeated": {
 			"trigger": "self",
-			"all": [
-				{
-					"name": "sequence",
-					"sequence_ability": "when_defeated",
-					"subject": "self"
-				}
-			]
-		},
-		"when_defeated": {
 			"all": [
 				{
 					"name": "move_card_to_container",
@@ -2370,7 +2346,7 @@
 					"filter_property_name": "retaliate",
 					"trigger": "host",
 					"alteration": 1
-				}
+				},			
 			]
 		},
 		"card_moved_to_board": {
@@ -2399,12 +2375,16 @@
 			},
 			"board": [
 				{
-					"name": "replacement_effect",
+					"name": "deal_damage",
+					"subject": "self",
+					"amount": "trigger_details_amount"
+				},				
+				{
+					"name": "prevent",
 					"subject": "interrupted_event",
-					"replacements": {
-						"subject": "self"
-					}
-				}
+					"amount": "all"
+				},
+			
 			]
 		}
 	},
@@ -2468,6 +2448,19 @@
 		},
 		"missile": {
 			"all": {
+				"Discard 5, Take 0 Damage": [
+					{
+						"name": "discard",
+						"subject": "tutor",
+						"src_container": "hand_my_hero",
+						"subject_count": "all",
+						"needs_selection": true,
+						"is_cost": true,
+						"selection_optional": false,
+						"selection_count": 5,
+						"selection_type": "equal"
+					},
+				],			
 				"Discard 4, Take 1 Damage": {
 					"_magnetic_missile": {
 						"__damage__": 1,
@@ -2508,7 +2501,7 @@
 				{
 					"name": "add_threat",
 					"subject": "self",
-					"modification": "per_boardseek",
+					"amount": "per_boardseek",
 					"per_boardseek": {
 						"subject": "boardseek",
 						"subject_count": "all",
@@ -3724,7 +3717,8 @@
 			"all": [
 				{
 					"name": "prevent",
-					"subject": "interrupted_event"
+					"subject": "interrupted_event",
+					"_silent": true,
 				},
 				{
 					"name": "flip_doublesided_card",
@@ -5366,15 +5360,6 @@
 		},
 		"card_defeated": {
 			"trigger": "self",
-			"all": [
-				{
-					"name": "sequence",
-					"sequence_ability": "when_defeated",
-					"subject": "self"
-				}
-			]
-		},
-		"when_defeated": {
 			"all": [
 				{
 					"name": "deal_damage",
@@ -7260,15 +7245,6 @@
 			"trigger": "self",
 			"all": [
 				{
-					"name": "sequence",
-					"sequence_ability": "when_defeated",
-					"subject": "self"
-				}
-			]
-		},
-		"when_defeated": {
-			"all": [
-				{
 					"name": "conditional_script",
 					"options": [
 						{
@@ -7536,7 +7512,8 @@
 				{
 					"name": "sequence",
 					"subject": "boardseek",
-					"sequence_ability": "when_defeated",
+					"subject_count": "all",
+					"sequence_ability": "card_defeated",
 					"is_cost": true,
 					"filter_state_seek": [
 						{

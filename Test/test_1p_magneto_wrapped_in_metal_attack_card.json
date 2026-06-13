@@ -1,7 +1,7 @@
 {
-	"_comments": "Automated Test for Winter Soldier Arm Block - Bug when killing the enemy before attack",
+	"_comments": "Automated Test for Wrapped in Metal",
 	"init": {
-		"phase": "VILLAIN_ACTIVATES",
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -13,22 +13,26 @@
 			"discard_villain": [],
 			"deck_villain": [
 				{
-					"card": "Amelia Voght #32160",
-					"owner_hero_id": 0
-				},
-				{
 					"card": "Gang-Up #01189",
 					"owner_hero_id": 0
 				},
 				{
 					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Wrapped in Metal",
+					"owner_hero_id": 0
 				}
 			],
 			"villain": [
 				{
 					"card": "Magneto - 1 #32138",
 					"tokens": {
-						"stunned": 2
+						"damage": 1
 					}
 				}
 			],
@@ -61,14 +65,6 @@
 				{
 					"card": "Firepower #54014",
 					"owner_hero_id": 1
-				},
-				{
-					"card": "Winter, Widow, Soldier, Spy #54023",
-					"owner_hero_id": 1
-				},
-				{
-					"card": "One by One #54015",
-					"owner_hero_id": 1
 				}
 			],
 			"discard1": [
@@ -79,10 +75,7 @@
 			],
 			"enemies1": [
 				{
-					"card": "M-Type Sentinel",
-					"tokens": {
-						"damage": 4
-					}
+					"card": "Delgado"
 				}
 			],
 			"identity1": [
@@ -102,25 +95,30 @@
 			],
 			"hand1": [
 				{
-					"card": "Arm Block"
+					"card": "Strength",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Metal Punch",
+					"owner_hero_id": 1
 				}
 			]
 		}
 	},
 	"actions": [
 		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		},
+		{
 			"type": "play",
-			"value": "Arm Block",
-			"_comments": "Arm block will negate all damage to Winter soldier. Then do 3+1 damage to Sentinel. +1 thanks to cybernetic arm"
+			"value": "Metal Punch",
+			"expected_to_fail": true
 		},
 		{
 			"type": "target",
-			"value": "Boarding Party",
-			"_comments": "Winter Soldier thwart response"
-		},
-		{
-			"type": "other",
-			"value": "wait_for_player_turn"
+			"value": "Magneto",
+			"expected_to_fail": true
 		}
 	],
 	"end": {
@@ -133,24 +131,27 @@
 			}
 		],
 		"board": {
-			"discard_villain": [
-				{
-					"card": "M-Type Sentinel",
-				}
-			],
+			"discard_villain": [],
 			"deck_villain": [
-				{
-					"card": "Amelia Voght #32160",
-					"owner_hero_id": 0
-				},
 				{
 					"card": "Gang-Up #01189",
 					"owner_hero_id": 0
-				}
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+
 			],
 			"villain": [
 				{
 					"card": "Magneto - 1 #32138",
+					"tokens": {
+						"damage": 1
+					}
 				}
 			],
 			"schemes": [
@@ -165,7 +166,7 @@
 					"card": "Boarding Party #32144a",
 					"owner_hero_id": 0,
 					"tokens": {
-						"threat": 1
+						"threat": 3
 					}
 				}
 			],
@@ -182,27 +183,24 @@
 				{
 					"card": "Firepower #54014",
 					"owner_hero_id": 1
-				},
-				{
-					"card": "Winter, Widow, Soldier, Spy #54023",
-					"owner_hero_id": 1
-				},
-				{
-					"card": "One by One #54015",
-					"owner_hero_id": 1
 				}
 			],
 			"discard1": [
 				{
-					"card": "Deathlok - Henry Hayes #54013"
-				},
-				{
-					"card": "Arm Block"
+					"card": "Deathlok - Henry Hayes #54013",
+					"owner_hero_id": 1
 				}
 			],
 			"enemies1": [
 				{
-					"card": "Hydra Mercenary"
+					"card": "Delgado"
+				}
+			],
+			"others": [
+							{
+					"card": "Wrapped in Metal",
+					"host": "Winter soldier"
+				
 				}
 			],
 			"identity1": [
@@ -220,7 +218,16 @@
 					"owner_hero_id": 1
 				}
 			],
-			"hand1": []
+			"hand1": [
+				{
+					"card": "Strength",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Metal Punch",
+					"owner_hero_id": 1
+				}
+			]
 		}
 	}
 }

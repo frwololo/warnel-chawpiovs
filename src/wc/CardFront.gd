@@ -116,7 +116,12 @@ func _transition_texture(texture):
 	set_texture(art_transition, art.texture)	
 	set_texture(art, texture)
 	art_transition.visible = true
-	art.modulate = Color(0, 0.5, 1) * 10
+	
+	#highlight colorfor card transition
+	var default_color = CFConst.TRANSITION_HIGHLIGHT_COLORS.get("default")
+	var card_type = card_owner.get_property("type_code", "")
+	var modulate_color = CFConst.TRANSITION_HIGHLIGHT_COLORS.get(card_type, default_color)
+	art.modulate = modulate_color
 
 	$Tween.interpolate_property(
 		art,
@@ -130,14 +135,18 @@ func _transition_texture(texture):
 	$Tween.start()
 	
 	if !shader_loaded:
+		#this uses https://github.com/cashew-olddew/Universal-Transition-Shader
 		var material = load(CFConst.PATH_CUSTOM + "shaders/transition.gdshader")
 		art_transition.material = ShaderMaterial.new()
 		art_transition.material.set("shader", material)
-		art_transition.material.set_shader_param("transition_type", 2)	
-		art_transition.material.set_shader_param("position", Vector2(0.5,0.5) )	
-		art_transition.material.set_shader_param("grid_size",Vector2(0.5, 50.0) )	
-		art_transition.material.set_shader_param("edges", 3)	
-		art_transition.material.set_shader_param("shape_feather", 0.0)
+		var default_settings = CFConst.TRANSITION_SHADER_PARAMS.get("default")
+		var shader_settings = 	CFConst.TRANSITION_SHADER_PARAMS.get(card_type, default_settings)
+		for setting in shader_settings:
+			var value = shader_settings[setting]
+			if typeof(value) == TYPE_DICTIONARY:
+				continue
+			art_transition.material.set_shader_param(setting,value) 
+			
 		art_transition.material.set_shader_param("progress", 0.0)		
 		shader_loaded = true
 	shader_active = true

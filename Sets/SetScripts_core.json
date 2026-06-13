@@ -381,12 +381,15 @@
 			},
 			"board": [
 				{
-					"name": "replacement_effect",
+					"name": "deal_damage",
+					"subject": "self",
+					"amount": "trigger_details_amount"
+				},				
+				{
+					"name": "prevent",
 					"subject": "interrupted_event",
-					"replacements": {
-						"subject": "self"
-					}
-				}
+					"amount": "all"
+				},
 			]
 		}
 	},

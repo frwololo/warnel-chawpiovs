@@ -145,6 +145,10 @@ static func _get_subjects_simplified(string_value, owner_card):
 	if string_value.begins_with("identity_"):
 		var hero_id = int(string_value.substr(9))
 		return gameData.get_identity_card(hero_id)
+
+	var res = owner_card.script_variables.get(string_value, null)
+	if res and typeof(res) == TYPE_ARRAY:
+		return res.duplicate()
 		
 	match string_value:
 		KEY_SUBJECT_V_MY_HERO:

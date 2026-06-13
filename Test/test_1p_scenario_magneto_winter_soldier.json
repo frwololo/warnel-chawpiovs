@@ -1,0 +1,478 @@
+{
+	"_comments": "Scenario Start Test : Magneto vs Winter Soldier",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Winter Soldier",
+					"deck_id": 51163
+				}
+			}
+		],
+		"scenario": {
+			"name": "Asteroid M"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 51163,
+					"hero": "54001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "M-Type Sentinel #32146",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Wrapped in Metal #32150",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Acolytes #32165",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Electric Shock #32152",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Magnetic Mayhem #32156",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Magnetically Sealed #32157",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Seized! #32158",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Zeal for the Cause #32164",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Fabian Cortez #32159",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Master of Magnetism #32151",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Electromagnetic Blast #32153",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "M-Type Sentinel #32146",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Amelia Voght #32160",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Senyaka #32161",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Metal Shards #32154",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Red Room Programming #54027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Electric Shock #32152",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Metal Shards #32154",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Master of Magnetism #32151",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "M-Type Sentinel #32146",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Unuscione #32163",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Magnetic Bubble #32149",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Master of Magnetism #32151",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Electromagnetic Blast #32153",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "M-Type Sentinel #32146",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Magnetic Missile #32155",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Delgado #32162",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Magneto's Helmet #32147",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Magnetic Missile #32155",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Magneto's Armor #32148",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Magneto - 1 #32138",
+					"owner_hero_id": 0,
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Asteroid M - 1B #32141b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				},
+				{
+					"card": "Boarding Party #32144a",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Winter Soldier #54001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Crossbones #54028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hydra Hit Squad #54029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "High-Tech Armament #54030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hydra Mercenary #54031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hydra Mercenary #54031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Magneto - 2 #32139",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Factory Online - 2A #32142a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Factory Online - 2B #32142b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Rule of Magnus - 3A #32143a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Rule of Magnus - 3B #32143b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Physical Strain #32145b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Orbital Decay #32145a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sabotage Master Mold #32144b",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Asteroid M - 1A #32141a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Winter, Widow, Soldier, Spy #54023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "S.H.I.E.L.D. Sidearm #54020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Spoiling for a Fight #54016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Firepower #54014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Aggressive Stance #54017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Bambino #54018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Captain America - Steve Rogers #54012",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Genius #54025",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Silent Infiltration #54008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "One by One #54015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Metal Punch #54005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Metal Punch #54005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Winter Mask #54010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Silent Infiltration #54008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Winter Rifle #54011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Strength #54026",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Man on the Wall #54019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Winter Armor #54009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Safe House #30 #54007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Nick Fury, Sr. #54021",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Firepower #54014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Aggressive Stance #54017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Super-Soldiers #54022",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Aggressive Stance #54017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Spoiling for a Fight #54016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Metal Punch #54005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Electrical Discharge #54006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "S.H.I.E.L.D. Sidearm #54020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Spoiling for a Fight #54016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "One by One #54015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Deathlok - Henry Hayes #54013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Arm Block #54004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Black Widow - Natasha Romanoff #54003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "One by One #54015",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Bucky Barnes #54001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Cybernetic Arm #54002",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "S.H.I.E.L.D. Sidearm #54020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Arm Block #54004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Firepower #54014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy #54024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Electrical Discharge #54006",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

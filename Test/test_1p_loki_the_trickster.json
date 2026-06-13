@@ -13,31 +13,33 @@
 			"deck_villain": [
 				{
 					"card": "Hydra Soldier"
-				},	
+				},
 				{
 					"card": "Hydra Mercenary"
-				},					
+				},
 				{
 					"card": "The Trickster"
-				},					
+				}
 			],
 			"set_aside": [
 				{
-					"card": "Loki - 1 #21160",				
-				},				
+					"card": "Loki - 1 #21160"
+				}
 			],
 			"villain": [
 				{
-					"card": "Loki - 1 #21161"
+					"card": "Loki - 1 #21161",
+					"tokens": {
+						"damage": 1
+					}
 				}
 			],
 			"schemes": [
 				{
 					"card": "All Hail King Loki"
-				},						
+				}
 			],
-			"victory_display": [			
-			],
+			"victory_display": [],
 			"deck1": [
 				{
 					"card": "Mockingbird"
@@ -52,21 +54,21 @@
 			"hand1": [
 				{
 					"card": "Strength"
-				},			
+				}
 			]
 		}
 	},
 	"actions": [
 		{
 			"type": "select",
-			"value": "cancel", 
+			"value": "cancel",
 			"_comments": "undefended attack"
-		},		
+		},
 		{
 			"type": "other",
-			"value": "wait_for_player_turn",
-		},			
-	] ,
+			"value": "wait_for_player_turn"
+		}
+	],
 	"end": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -80,33 +82,35 @@
 			"discard_villain": [
 				{
 					"card": "Hydra Mercenary"
-				},				
+				},
 				{
 					"card": "The Trickster"
-				},					
+				}
 			],
 			"deck_villain": [
 				{
 					"card": "Hydra Soldier"
-				},					
+				}
 			],
 			"set_aside": [
 				{
-					"card": "Loki - 1 #21161",				
-				},				
+					"card": "Loki - 1 #21161"
+				}
 			],
 			"villain": [
 				{
-					"card": "Loki - 1 #21160"
+					"card": "Loki - 1 #21160",
+					"tokens": {
+						"damage": 1
+					}
 				}
 			],
 			"schemes": [
 				{
 					"card": "All Hail King Loki"
-				},						
+				}
 			],
-			"victory_display": [			
-			],
+			"victory_display": [],
 			"deck1": [
 				{
 					"card": "Mockingbird"
@@ -116,13 +120,15 @@
 				{
 					"card": "21031a",
 					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id",
-					"tokens": {"damage": 3}
+					"tokens": {
+						"damage": 3
+					}
 				}
 			],
 			"hand1": [
 				{
 					"card": "Strength"
-				},			
+				}
 			]
 		}
 	}

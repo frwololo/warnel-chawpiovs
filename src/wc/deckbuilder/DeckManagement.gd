@@ -18,7 +18,7 @@ var deckData = preload("res://src/wc/deckbuilder/DeckData.tscn")
 #data
 #
 var all_decks := {} #deckData components
-var names_to_id:= {} #hero display name to id
+var hero_names_to_id:= {} #hero display name to id
 var hero_id_to_display_name:= {} #hero display name to id
 
 var ERROR_COLOR := 	Color(1,0.11,0.1)
@@ -269,11 +269,11 @@ func _load_heroes():
 		var display_name = hero_name + " - " + alter_ego_name
 		if hero_name == alter_ego_name:
 			display_name = hero_name
-		names_to_id[display_name] = hero_id
+		hero_names_to_id[display_name] = hero_id
 		hero_id_to_display_name[hero_id] = display_name
 	
 	#sort by hero name and build the optionsMenu
-	var ordered_names = names_to_id.keys()
+	var ordered_names = hero_names_to_id.keys()
 	ordered_names.sort()	
 		
 	for display_name in ordered_names:
@@ -441,7 +441,7 @@ func get_current_filter_hero_id():
 	if !index:
 		return ""
 	var hero_name = heroes_filter.get_item_text(index)
-	var hero_id = names_to_id[hero_name]
+	var hero_id = hero_names_to_id[hero_name]
 	return hero_id
 
 func _on_DownloadDeck_pressed():
@@ -606,7 +606,7 @@ func _filter_by_hero(index):
 		
 	#specific hero id
 	var hero_name = heroes_filter.get_item_text(index)
-	var hero_id = names_to_id[hero_name]
+	var hero_id = hero_names_to_id[hero_name]
 	_filter_decks(hero_id)
 	
 func _on_HeroesFilter_item_selected(index):
@@ -621,7 +621,7 @@ func _on_HeroesFilter_item_selected(index):
 
 func _on_DeckCreateHeroButton_pressed():
 	var hero_name = heroes_filter2.get_item_text(heroes_filter2.get_selected())
-	var hero_id = names_to_id[hero_name]
+	var hero_id = hero_names_to_id[hero_name]
 	create_and_edit_new_deck(hero_id)
 
 

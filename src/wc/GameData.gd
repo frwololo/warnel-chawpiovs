@@ -1575,7 +1575,7 @@ func reveal_current_encounter(target_id = 0):
 		#this is a bug. This function should only be called when there's an encounter about to be revealed
 		return
 
-
+	theAudioManager.play_sfx_from_path(["reveal"], _current_encounter)
 	_current_encounter.execute_scripts(_current_encounter, "reveal") 
 #	_current_encounter.execute_scripts(_current_encounter, "post_reveal") 
 
@@ -2150,13 +2150,12 @@ func play_scripted_sequence():
 	var subject = next_play_event["card"]
 	var trigger = next_play_event["trigger"]	
 		
-	var trigger_details = {
-		"additional_script_definition": {
-			"sequence_trigger": trigger,
-			"is_sequence": true,
-			"sequence_is_last": (scripted_play_sequence.empty())
-		} 
-	}
+	var trigger_details = next_play_event["trigger_details"]
+	trigger_details["additional_script_definition"] =  {
+		"sequence_trigger": trigger,
+		"is_sequence": true,
+		"sequence_is_last": (scripted_play_sequence.empty())
+	} 
 	var func_return = subject.execute_scripts(subject, trigger, trigger_details)
 	if func_return is GDScriptFunctionState: # Still working.
 		func_return = yield(func_return, "completed")
@@ -2180,7 +2179,10 @@ func start_play_sequence(cards, trigger, script):
 		scripted_play_sequence.append({
 			"card" : subject,
 			"trigger" : trigger,
-			"is_villain": is_villain
+			"is_villain": is_villain,
+			"trigger_details": {
+				"triggered_by_card": script.owner
+			}
 		})
 
 	
@@ -2196,38 +2198,68 @@ func hero_died(card:Card, script = null):
 		defeat()
 
 func swap_villain(current_villain, next_villain_key, options = {}):
-	#hacky way to move the current card out of the way
-	#while still leaving it on the board
-	if current_villain._placement_slot:
-		current_villain._placement_slot.remove_occupying_card(current_villain)
-	cfc.NMAP.board.set_active_villain(null)
+
+	var next_villain_data = cfc.get_card_by_id(next_villain_key)
+	var previous_card = current_villain
+	var new_card = null
+
 	
-	var new_card = cfc.NMAP.board.load_villain(next_villain_key)
-	
-	var copy_damage = options.get("copy_damage", false)
-	var copy_token_options = {}
-	if !copy_damage:
-		copy_token_options["exclude"]  = ["damage"]
+	#if it's the same villain name, per the rules, it is considered to be the same character
+	#we address this by doing a swap of their rather than changing the card
+	if next_villain_data["shortname"] == current_villain.get_property("shortname"):
+		new_card = current_villain
+		previous_card = gameData.retrieve_from_side_or_instance(next_villain_key, 0)
+		previous_card.load_from_card_id(new_card.canonical_id)		
+		new_card.load_from_card_id(next_villain_key)
+		var copy_damage = options.get("copy_damage", false)
+		if !copy_damage:
+			new_card.tokens.mod_token("damage", 0, true)
+		#TODO Historically swapping villain meant triggering the "card_moved_to_board" and "self_moved_to_board"
+		#signals. Is this required ? Not sure. Weird in particular since it happens before the reveal effect
+		scripting_bus.emit_signal_on_stack(
+			"card_moved_to_board",
+			new_card,
+			 {
+				"destination": "board",
+				"destination_grid": "",
+				"source": "board",
+				"tags": ["change_form"]
+			}
+		)
+		new_card.execute_scripts(new_card, "self_moved_to_board")
+	else:	
+		#hacky way to move the current card out of the way
+		#while still leaving it on the board		
+		if current_villain._placement_slot:
+			current_villain._placement_slot.remove_occupying_card(current_villain)
+		cfc.NMAP.board.set_active_villain(null)
 		
-	current_villain.copy_tokens_to(new_card, copy_token_options)
-	var attachments_to_move = []
-	for attachment in current_villain.attachments:
-		if attachment.is_boost():
-			continue
-		attachments_to_move.append(attachment)
-	for attachment in attachments_to_move:	
-		attachment.attach_to_host(new_card)
-	
+		new_card = cfc.NMAP.board.load_villain(next_villain_key)
+		
+		var copy_damage = options.get("copy_damage", false)
+		var copy_token_options = {}
+		if !copy_damage:
+			copy_token_options["exclude"]  = ["damage"]
+			
+		current_villain.copy_tokens_to(new_card, copy_token_options)
+		var attachments_to_move = []
+		for attachment in current_villain.attachments:
+			if attachment.is_boost():
+				continue
+			attachments_to_move.append(attachment)
+		for attachment in attachments_to_move:	
+			attachment.attach_to_host(new_card)
+
 	var died = options.get("died", false)
 	if died:
-		var has_victory = current_villain.get_property("victory", null)
+		var has_victory = previous_card.get_property("victory", null)		
 		if has_victory != null:
-			move_to_victory(current_villain)
+			move_to_victory(previous_card)
 		else:
-			set_aside(current_villain) #todo remove from game
+			set_aside(previous_card) #todo remove from game
 	else:
 		scripting_bus.emit_signal_on_stack("villain_swapped", new_card, {})
-		set_aside(current_villain)	
+		set_aside(previous_card)	
 	var func_return = new_card.execute_scripts(new_card, "reveal")
 	while func_return is GDScriptFunctionState && func_return.is_valid():
 		func_return = func_return.resume()	

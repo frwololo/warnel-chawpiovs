@@ -855,7 +855,7 @@ static func get_event_source_hero_id(trigger_details):
 	if source:	
 		if guidMaster.is_guid(source):
 			source = guidMaster.get_object_by_guid(source)
-		if source and typeof(source) == TYPE_OBJECT:
+		if (is_instance_valid(source)) and (typeof(source) == TYPE_OBJECT) and (source as WCCard):
 			var hero_id = source.get_controller_hero_id()
 			if hero_id > 0:
 				event_source_hero_id = hero_id		

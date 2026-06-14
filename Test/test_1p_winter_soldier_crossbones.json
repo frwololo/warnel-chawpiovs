@@ -1,0 +1,235 @@
+{
+	"_comments": "Automated Test for Crossbones: Quickstrike should happen before revealing scheme",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Winter Soldier"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Magnetic Bubble"
+				},				
+				{
+					"card": "Shadow of the past"
+				}
+			],
+			"villain": [
+				{
+					"card": "Magneto - 1 #32138",
+					"tokens": {
+						"damage": 17
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Asteroid M - 1B #32141b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1,
+						"magnet": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Crossbones #54028"
+				},
+				{
+					"card": "Hydra Hit Squad #54029"
+				},
+				{
+					"card": "High-Tech Armamement #54030"
+				},
+				{
+					"card": "Hydra Mercenary #54031"
+				},
+				{
+					"card": "Hydra Mercenary #54031"
+				}
+			],
+			"removed_from_game": [],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "MockingBird"
+				}
+			],
+			"hand1": [],
+			"discard1": [
+				{
+					"card": "Deathlok - Henry Hayes #54013",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Winter Soldier #54001a",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Cybernetic Arm #54002",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comment": "unblocked attack from Crossbones Quickstrike"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Winter Soldier"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Shadow of the past"
+				}
+			],
+			"deck_villain": [
+			{
+				"card": "Magnetic Bubble #32149",
+				"owner_hero_id": 0
+			},
+			{
+				"card": "Advance #01186",
+				"owner_hero_id": 0
+			},
+			{
+				"card": "Hydra Mercenary #54031",
+				"owner_hero_id": 0
+			},
+			{
+				"card": "Hydra Regular #04056",
+				"owner_hero_id": 0
+			},
+			{
+				"card": "High-Tech Armament #54030",
+				"owner_hero_id": 0
+			},
+			{
+				"card": "Hydra Mercenary #54031",
+				"owner_hero_id": 0
+			},
+			{
+				"card": "Gang-Up #01189",
+				"owner_hero_id": 0
+			}				
+			],
+			"villain": [
+				{
+					"card": "Magneto - 1 #32138",
+					"tokens": {
+						"damage": 17
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Asteroid M - 1B #32141b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1,
+						"magnet": 1
+					}
+				},
+				{
+					"card": "Hydra Hit Squad #54029",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+
+			],
+			"removed_from_game": [],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "MockingBird"
+				}
+			],
+			"hand1": [],
+			"discard1": [
+				{
+					"card": "Deathlok - Henry Hayes #54013",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [
+							{
+					"card": "Crossbones #54028"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Winter Soldier #54001a",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Cybernetic Arm #54002",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

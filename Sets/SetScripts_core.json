@@ -384,12 +384,12 @@
 					"name": "deal_damage",
 					"subject": "self",
 					"amount": "trigger_details_amount"
-				},				
+				},
 				{
 					"name": "prevent",
 					"subject": "interrupted_event",
 					"amount": "all"
-				},
+				}
 			]
 		}
 	},
@@ -3810,45 +3810,61 @@
 		}
 	},
 	"Rage of Ultron": {
-		"reveal": {
+		"reveal_hero": {
 			"all": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_form"
-					]
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"card_damaged": {
+							"event_filters": {
+								"attacker": "villain",
+								"damage": ">0"
+							},
+							"all": [
+								{
+									"name": "discard",
+									"subject": "index",
+									"subject_count": "trigger_details_damage",
+									"subject_index": "top",
+									"src_container": "deck_current_hero_target"
+								}
+							]
+						}
+					}
 				},
 				{
-					"name": "villain_attacks_you",
-					"if_damage": {
-						"trigger": "post_activity_trigger",
-						"func_params": {
-							"subject_count": "damage"
+					"name": "villain_attacks_you"
+				}
+			]
+		},
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"card_token_modified": {
+							"filter_count_difference": "increased",
+							"filter_token_name": "threat",
+							"trigger": "main_scheme",
+							"all": [
+								{
+									"name": "discard",
+									"subject": "index",
+									"subject_count": "trigger_details_amount",
+									"subject_index": "top",
+									"src_container": "deck_current_hero_target"
+								}
+							]
 						}
 					}
 				},
 				{
 					"name": "enemy_schemes",
-					"if_threat": {
-						"trigger": "post_activity_trigger",
-						"func_params": {
-							"subject_count": "threat"
-						}
-					},
-					"subject": "villain",
-					"is_else": true
-				}
-			]
-		},
-		"post_activity_trigger": {
-			"all": [
-				{
-					"name": "move_card_to_container",
-					"subject": "tutor",
-					"subject_index": "top",
-					"src_container": "deck",
-					"dest_container": "discard"
+					"subject": "villain"
 				}
 			]
 		}
@@ -4188,6 +4204,32 @@
 				{
 					"name": "reveal_nemesis",
 					"surge_on_failure": true
+				},
+				{
+					"name": "sequence",
+					"delay_until_no_activity": true,
+					"sequence_ability": "reveal_nemesis_scheme",
+					"subject": "self"
+				},
+				{
+					"name": "sequence",
+					"delay_until_no_activity": true,
+					"sequence_ability": "shuffle_nemesis_other",
+					"subject": "self"
+				}
+			]
+		},
+		"reveal_nemesis_scheme": {
+			"all": [
+				{
+					"name": "reveal_nemesis_scheme"
+				}
+			]
+		},
+		"shuffle_nemesis_other": {
+			"all": [
+				{
+					"name": "shuffle_nemesis_other"
 				}
 			]
 		}

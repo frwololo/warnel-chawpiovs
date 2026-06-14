@@ -1,0 +1,158 @@
+{
+	"_comments": "Tests Rage of Ultron discard",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Armored Guard"
+				},				
+				{
+					"card": "Rage of Ultron"
+				}
+			],
+			"villain": [
+				{
+					"card": "01134"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Assault on NORAD",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Jennifer Walters"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Nick Fury"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01056"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Ultron Drones"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Armored Guard"
+				},			
+				{
+					"card": "Rage of Ultron"
+				},
+
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}				
+
+			],
+			"villain": [
+				{
+					"card": "01134"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Assault on NORAD",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Jennifer Walters"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				},			
+				{
+					"card": "Nick Fury"
+				},
+
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01056"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Ultron Drones"
+				}
+			]
+		}
+	}
+}

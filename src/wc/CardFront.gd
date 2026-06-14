@@ -22,6 +22,11 @@ func _process(delta:float):
 		shader_progress += delta * 3.0
 		if shader_progress > 4.0:
 			end_texture_transition()	
+	
+	if !$Tween.is_active():
+		if art.texture:
+			art.self_modulate = Color(1,1,1)	
+			art.modulate = Color(1,1,1)
 
 func _handle_horizontal_card():
 	if !text_enabled:

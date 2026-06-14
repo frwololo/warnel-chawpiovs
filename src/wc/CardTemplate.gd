@@ -3896,8 +3896,37 @@ func get_printed_text(section = ""):
 
 	if !_cached_printed_text["_initialized"]:
 		var full_text:String = get_property("text", "")
-		full_text = full_text.replace("\n[hr /]\n*", "") 
-		var paragraphs = full_text.split("[b]")
+		
+		#remove boost text delimiter
+		full_text = full_text.replace("\n[hr /]\n*", "\n")
+		#stars might have their utility but removing them from now 
+		full_text = full_text.replace("*", "") 
+		full_text = full_text.trim_prefix(" ")
+		full_text = full_text.trim_suffix(" ")		
+		var pre_paragraphs = full_text.split("[b]")
+		var paragraphs:PoolStringArray = []
+		
+		#some lines contain "[b]" which are not actually section names
+		#so we need to make sure that sections actually also are delimited by a 
+		# carriage return somewhere (or beginning/end of card text)
+		#this is what this piece of code attempts to do
+		#example:
+		#"Permanent. Setup\n* [b]Forced Response[/b]: After attached villain activates against you, resolve the [b]Special[/b] ability of each [i]infinity stone[/i] in play. Otherwise, put the top card of the [i]infinity stone[/i] deck into play."
+		var previous = ""
+		for paragraph in pre_paragraphs:
+			paragraph = paragraph.trim_prefix(" ")
+			paragraph = paragraph.trim_suffix(" ")
+			if previous:
+				if !"\n" in previous:
+					previous = previous + "[b]" +  paragraph
+				else:
+					paragraphs.append(previous.strip_edges())
+					previous = paragraph
+			else:
+				previous = paragraph
+		if previous:
+			paragraphs.append(previous.strip_edges())
+			
 		var i = 0
 		for paragraph in paragraphs:
 			if !paragraph:
@@ -3922,7 +3951,8 @@ func get_printed_text(section = ""):
 				var paragraph_name = paragraph_l.substr(0, position)
 				#due to some typos, some sections have the ":" inside the bold, others don't
 				#e.g. <b>When Revealed:</b> and <b>When Revealed</b>: are both possible occurrences
-				paragraph_name = paragraph_name.replace(":", "") 
+				paragraph_name = paragraph_name.replace(":", "")
+				paragraph_name = paragraph_name.strip_edges() 
 				if !_cached_printed_text.has(paragraph_name):
 						_cached_printed_text[paragraph_name] = ""
 				else:

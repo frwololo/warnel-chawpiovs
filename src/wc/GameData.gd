@@ -2132,10 +2132,17 @@ func play_scripted_sequence():
 	if !_ready_for_next_sequence:
 		return
 		
-	if gameData.is_targeting_ongoing() or gameData.targeting_happened_too_recently():
+	if is_targeting_ongoing() or targeting_happened_too_recently():
 		return
+	
 		
 	var next_play_event = scripted_play_sequence.front()
+	if next_play_event["delay_until_no_activity"]:
+		if immediate_encounters:
+			return	
+		if attackers:
+			return
+	
 	if next_play_event["is_villain"]:
 		pass
 	else:	
@@ -2179,6 +2186,7 @@ func start_play_sequence(cards, trigger, script):
 		scripted_play_sequence.append({
 			"card" : subject,
 			"trigger" : trigger,
+			"delay_until_no_activity": script.get_property("delay_until_no_activity", false),
 			"is_villain": is_villain,
 			"trigger_details": {
 				"triggered_by_card": script.owner
@@ -2227,6 +2235,10 @@ func swap_villain(current_villain, next_villain_key, options = {}):
 			}
 		)
 		new_card.execute_scripts(new_card, "self_moved_to_board")
+		#TODO hack here otherwise it then refuses to die
+		new_card._died_signal_sent = false
+		var event = SignalStackScript.new("next_stage", new_card)
+		play_sfx(event)
 	else:	
 		#hacky way to move the current card out of the way
 		#while still leaving it on the board		

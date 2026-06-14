@@ -984,18 +984,7 @@ func _receive_threat(script: ScriptTask) -> int:
 			card.warning()				
 			if "villain_step_one_threat" in script.get_property(SP.KEY_TAGS):
 #			if gameData.phaseContainer.current_step == CFConst.PHASE_STEP.VILLAIN_THREAT:
-				scripting_bus.emit_signal_on_stack("villain_step_one_threat_added", card, {"amount" : threat_amount})
-					
-			var if_threat: Dictionary = script.get_property("if_threat", {})
-			if if_threat:
-				var post_threat_trigger = if_threat["trigger"]
-				var params = if_threat.get("func_params", {})
-				params = WCUtils.search_and_replace(params, "threat", threat_amount, true)
-				var trigger_details = {}
-				if params:
-					trigger_details["additional_script_definition"] = params
-				script.owner.execute_scripts(script.owner, post_threat_trigger, trigger_details)
-					
+				scripting_bus.emit_signal_on_stack("villain_step_one_threat_added", card, {"amount" : threat_amount})					
 						
 	return retcode
 
@@ -1159,10 +1148,11 @@ func conditional_script(script:ScriptTask) -> int:
 	var options = script.get_property("options")
 
 	#erase inconvenient variables temporarily
-	var backup = {
-		"trigger_details": script.trigger_details
-	}
-	script.trigger_details = {}
+	var backup = script.trigger_details
+	
+	script.trigger_details = backup.duplicate()
+	script.trigger_details.erase("network_prepaid")
+	script.trigger_details.erase("action_name_id")
 	
 	var at_least_one_condition_met = false
 	
@@ -1180,7 +1170,7 @@ func conditional_script(script:ScriptTask) -> int:
 			script.script_definition["nested_tasks"] = else_script
 			nested_script(script)
 			
-	script.trigger_details = backup["trigger_details"]
+	script.trigger_details = backup
 	return retcode
 
 func move_token_to(script: ScriptTask) -> int:
@@ -2310,7 +2300,7 @@ func sequence(script: ScriptTask) -> int:
 	if (costs_dry_run()): #not allowed ?
 		return retcode
 
-	gameData.start_play_sequence(script.subjects, ability, self)
+	gameData.start_play_sequence(script.subjects, ability, script)
 
 
 	
@@ -2590,11 +2580,7 @@ func engage_nemesis (script:ScriptTask) -> int:
 	script.script_definition["put_into_play_only"] = true
 	return reveal_nemesis(script)
 
-func reveal_nemesis (script:ScriptTask) -> int:
-	var retcode: int = CFConst.ReturnCode.CHANGED
-	if (costs_dry_run()): #Shouldn't be allowed as a cost?
-		return retcode
-
+func get_nemesis_data(script:ScriptTask):
 	var my_hero_card = _get_identity_from_script(script)
 	var my_hero_id = my_hero_card.get_controller_hero_id()	
 	var my_nemesis_set = my_hero_card.get_property("card_set_code","") + "_nemesis"
@@ -2602,11 +2588,7 @@ func reveal_nemesis (script:ScriptTask) -> int:
 	var my_nemesis = null
 	var my_nemesis_scheme = null
 	var other_nemesis_cards = []	
-	var do_surge = false
 
-	var type_codes = script.get_property("type_codes", [])
-	var nemesis_only = script.get_property("nemesis_only", false)
-	var put_into_play_only = script.get_property("put_into_play_only", false)
 	var src_containers = script.get_property("src_container", "set_aside")
 	if typeof(src_containers) == TYPE_STRING:
 		src_containers = [src_containers]
@@ -2631,23 +2613,32 @@ func reveal_nemesis (script:ScriptTask) -> int:
 		for card in cfc.NMAP[src_container].get_all_cards():		
 			if card.get_property("card_set_code", "") == my_nemesis_set:
 				var type_code = card.get_property("type_code")
-				if type_codes and !(type_code in type_codes):
-					continue
 				if card.canonical_id == nemesis_id:
 					my_nemesis = card
 				elif type_code == "side_scheme":
 					my_nemesis_scheme = card
 				else:
-					other_nemesis_cards.append(card)			
+					other_nemesis_cards.append(card)	
+	return {
+		"nemesis":my_nemesis,
+		"nemesis_scheme":my_nemesis_scheme,
+		"nemesis_other":other_nemesis_cards
+	}	
 
-	if (my_nemesis_scheme and !nemesis_only):
-		if put_into_play_only:
-			script.subjects = [my_nemesis_scheme]
-			script.script_definition.name="move_card_to_board"
-			retcode = move_card_to_container(script)	
-		else:
-			gameData.deal_one_encounter_to(my_hero_id, true, my_nemesis_scheme)	
+func reveal_nemesis (script:ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
 
+	var do_surge = false
+	var nemesis_data = get_nemesis_data(script)
+	var my_nemesis = nemesis_data["nemesis"]	
+
+	var my_hero_card = _get_identity_from_script(script)
+	var my_hero_id = my_hero_card.get_controller_hero_id()	
+
+	var put_into_play_only = script.get_property("put_into_play_only", false)
+	
 	if (my_nemesis):
 		if put_into_play_only:
 			script.subjects = [my_nemesis]
@@ -2658,18 +2649,57 @@ func reveal_nemesis (script:ScriptTask) -> int:
 	else:
 		do_surge = script.get_property("surge_on_failure", false)
 
-		
-	var do_shuffle = false
-	if !nemesis_only:
-		for card in other_nemesis_cards:
-			card.move_to(cfc.NMAP["deck_villain"])
-			do_shuffle = true
-	
-	if do_shuffle:
-		cfc.NMAP["deck_villain"].shuffle_cards()	
 	
 	if (do_surge):
 		return surge(script)
+
+	return retcode	
+
+func reveal_nemesis_scheme (script:ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode	
+	
+	var nemesis_data = get_nemesis_data(script)
+	var my_nemesis_scheme = nemesis_data["nemesis_scheme"]	
+	var put_into_play_only = script.get_property("put_into_play_only", false)
+		
+	if (my_nemesis_scheme):
+		var scheme_script = {
+				"name": "deal_encounter",
+				"immediate_reveal": true
+		}		
+
+		if put_into_play_only:
+			scheme_script  = {
+				"name": "move_card_to_board",
+			}		
+		var scheme_task = ScriptTask.new(script.owner, scheme_script, script.owner, {})	
+		scheme_task.set_subjects([my_nemesis_scheme])
+		var task_event = SimplifiedStackScript.new(scheme_task)		
+		gameData.theStack.add_script(task_event)	
+	
+	return retcode
+
+func shuffle_nemesis_other (script:ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode	
+	
+	var nemesis_data = get_nemesis_data(script)
+	var other_nemesis_cards = nemesis_data["nemesis_other"]	
+			
+	if other_nemesis_cards:
+		var other_script = {
+				"name": "shuffle_card_into_container",
+				"dest_container": "deck_villain"
+		}	
+		var other_task = ScriptTask.new(script.owner, other_script, script.owner, {})	
+		other_task.set_subjects(other_nemesis_cards)
+		var task_event = SimplifiedStackScript.new(other_task)		
+		gameData.theStack.add_script(task_event)	
+	
+
 
 	return retcode	
 

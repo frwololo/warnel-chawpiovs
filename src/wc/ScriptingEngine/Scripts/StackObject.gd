@@ -201,17 +201,19 @@ func _get_display_text_nocache():
 					var text = owner.get_printed_text(id)
 					if text:
 						return text		
-		match trigger:							
-			"boost":
-				if owner:
-					var text = owner.get_printed_text("boost")
-					if text:
-						return text					
+		match trigger:	
+			"":
+				pass								
 			"card_defeated", "card_dies":
 				if owner:
 					var text = owner.get_printed_text("When Defeated")
 					if text:
-						return text		
+						return text	
+			_:
+				var trigger_str = trigger.replace("_", " ")
+				var text = owner.get_printed_text(trigger_str)
+				if text:
+					return text						
 									
 		var separator = ""
 		if "subjects" in task:

@@ -548,15 +548,12 @@
 					}
 				},
 				{
-					"name": "reveal_nemesis",
+					"name": "reveal_nemesis_scheme",
 					"src_container": [
 						"deck_villain",
 						"set_aside",
 						"discard_villain"
 					],
-					"type_codes": [
-						"side_scheme"
-					]
 				}
 			]
 		}
@@ -4740,7 +4737,6 @@
 						"set_aside",
 						"discard_villain"
 					],
-					"nemesis_only": true
 				}
 			]
 		},

@@ -214,8 +214,8 @@
 		"boost": {
 			"all": [
 				{
-					"name": "exhaust_card",
-					"subject": "my_identity"
+					"name": "attach_to_card",
+					"subject": "villain"
 				}
 			]
 		}
@@ -2167,8 +2167,8 @@
 		"boost": {
 			"all": [
 				{
-					"name": "exhaust_card",
-					"subject": "my_identity"
+					"name": "attach_to_card",
+					"subject": "villain"
 				}
 			]
 		}
@@ -5769,6 +5769,20 @@
 	"Stalked by Sabretooth - 1A": {
 		"setup": {
 			"board": [
+				{
+					"name": "move_card_to_container",
+					"src_container": "deck_villain",
+					"dest_container": "set_aside",
+					"subject": "tutor",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Protect the Senator"
+							}
+						},
+					]
+				},			
 				{
 					"name": "move_card_to_board",
 					"subject": "tutor",

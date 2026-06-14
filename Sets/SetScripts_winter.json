@@ -159,7 +159,7 @@
 			]
 		},
 		"interrupt": {
-			"event_name": "attack",
+			"event_name": "attack_started",
 			"trigger": "host",
 			"event_filters": {
 				"tags": [
@@ -1110,7 +1110,7 @@
 			]
 		},
 		"interrupt": {
-			"event_name": "attack",
+			"event_name": "attack_started",
 			"trigger": "host",
 			"event_filters": {
 				"tags": [

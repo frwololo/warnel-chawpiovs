@@ -52,183 +52,144 @@
 			"discard_villain": [],
 			"deck_villain": [
 				{
-					"card": "01189",
-					"owner_hero_id": 0,
-					"_comments": "Gang-Up"
+					"card": "Adamantium Claws #32067",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32071",
-					"owner_hero_id": 0,
-					"_comments": "Medical Emergency"
+					"card": "Advance #01186",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32078",
-					"owner_hero_id": 0,
-					"_comments": "Mutant Terrorists"
+					"card": "Advance #01186",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32080",
-					"owner_hero_id": 0,
-					"_comments": "Mystique"
+					"card": "Animal Ferocity #32068",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "01187",
-					"owner_hero_id": 0,
-					"_comments": "Assault"
+					"card": "Assault #01187",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "13026",
-					"owner_hero_id": 0,
-					"_comments": "Red Dreams"
+					"card": "Assault #01187",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32077",
-					"owner_hero_id": 0,
-					"_comments": "Homo Superior"
+					"card": "Avalanche #32073",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32083",
-					"owner_hero_id": 0,
-					"_comments": "Shapeshifter Surprise"
+					"card": "Blob #32074",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32082",
-					"owner_hero_id": 0,
-					"_comments": "Infiltration"
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "01187",
-					"owner_hero_id": 0,
-					"_comments": "Assault"
+					"card": "Feral Rage #32072",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32069",
-					"owner_hero_id": 0,
-					"_comments": "Sabretooth Strikes"
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32079",
-					"owner_hero_id": 0,
-					"_comments": "The Brotherhood"
+					"card": "Homo Superior #32077",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32065b",
-					"owner_hero_id": 0,
-					"_comments": "Protect the Senator"
+					"card": "Homo Superior #32077",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32076",
-					"owner_hero_id": 0,
-					"_comments": "Toad"
+					"card": "Infiltration #32082",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32068",
-					"owner_hero_id": 0,
-					"_comments": "Animal Ferocity"
+					"card": "Infiltration #32082",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32069",
-					"owner_hero_id": 0,
-					"_comments": "Sabretooth Strikes"
+					"card": "Medical Emergency #32071",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32081",
-					"owner_hero_id": 0,
-					"_comments": "Metamorphic Mayhem"
+					"card": "Medical Emergency #32071",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32077",
-					"owner_hero_id": 0,
-					"_comments": "Homo Superior"
+					"card": "Metamorphic Mayhem #32081",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32070",
-					"owner_hero_id": 0,
-					"_comments": "Unrelenting Savage"
+					"card": "Mutant Terrorists #32078",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32073",
-					"owner_hero_id": 0,
-					"_comments": "Avalanche"
+					"card": "Mystique #32080",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "01186",
-					"owner_hero_id": 0,
-					"_comments": "Advance"
+					"card": "Pyro #32075",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "01188",
-					"owner_hero_id": 0,
-					"_comments": "Caught Off Guard"
+					"card": "Red Dreams #13026",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32074",
-					"owner_hero_id": 0,
-					"_comments": "Blob"
+					"card": "Sabretooth Strikes #32069",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32070",
-					"owner_hero_id": 0,
-					"_comments": "Unrelenting Savage"
+					"card": "Sabretooth Strikes #32069",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32067",
-					"owner_hero_id": 0,
-					"_comments": "Adamantium Claws"
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32071",
-					"owner_hero_id": 0,
-					"_comments": "Medical Emergency"
+					"card": "Shapeshifter Surprise #32083",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32072",
-					"owner_hero_id": 0,
-					"_comments": "Feral Rage"
+					"card": "The Brotherhood #32079",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32082",
-					"owner_hero_id": 0,
-					"_comments": "Infiltration"
+					"card": "Toad #32076",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "01186",
-					"owner_hero_id": 0,
-					"_comments": "Advance"
+					"card": "Unrelenting Savage #32070",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "01190",
-					"owner_hero_id": 0,
-					"_comments": "Shadow of the Past"
+					"card": "Unrelenting Savage #32070",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32070",
-					"owner_hero_id": 0,
-					"_comments": "Unrelenting Savage"
-				},
-				{
-					"card": "32075",
-					"owner_hero_id": 0,
-					"_comments": "Pyro"
+					"card": "Unrelenting Savage #32070",
+					"owner_hero_id": 0
 				}
 			],
 			"villain": [
 				{
-					"card": "32060",
-					"owner_hero_id": 0,
-					"_comments": "Sabretooth - 1"
+					"card": "Sabretooth - 1 #32060",
+					"owner_hero_id": 0
 				}
 			],
 			"schemes": [
 				{
-					"card": "32063b",
-					"owner_hero_id": 0,
-					"_comments": "Stalked by Sabretooth - 1B"
+					"card": "Stalked by Sabretooth - 1B #32063b",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32065a",
+					"card": "Find the Senator #32065a",
 					"owner_hero_id": 0,
-					"_comments": "Find the Senator",
 					"tokens": {
 						"threat": 5
 					}
@@ -238,61 +199,54 @@
 			"victory_display": [],
 			"set_aside": [
 				{
-					"card": "13001c",
-					"owner_hero_id": 1,
-					"_comments": "Wasp"
+					"card": "Wasp #13001c",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13001a",
-					"owner_hero_id": 1,
-					"_comments": "Wasp"
+					"card": "Wasp #13001a",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13027",
-					"owner_hero_id": 0,
-					"_comments": "Mother's Orders"
+					"card": "Mother's Orders #13027",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "13028",
-					"owner_hero_id": 0,
-					"_comments": "Beetle"
+					"card": "Beetle #13028",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "13029",
-					"owner_hero_id": 0,
-					"_comments": "Beetle Armor MK IV"
+					"card": "Beetle Armor MK IV #13029",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "13030",
-					"owner_hero_id": 0,
-					"_comments": "Beetle Mania"
+					"card": "Beetle Mania #13030",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "13030",
-					"owner_hero_id": 0,
-					"_comments": "Beetle Mania"
+					"card": "Beetle Mania #13030",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32061",
-					"owner_hero_id": 0,
-					"_comments": "Sabretooth - 2"
+					"card": "Sabretooth - 2 #32061",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32064a",
-					"owner_hero_id": 0,
-					"_comments": "The Injured Senator - 2A"
+					"card": "The Injured Senator - 2A #32064a",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "32064b",
-					"owner_hero_id": 0,
-					"_comments": "The Injured Senator - 2B"
+					"card": "The Injured Senator - 2B #32064b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Protect the Senator #32065b",
+					"owner_hero_id": 0
 				}
 			],
 			"removed_from_game": [
 				{
-					"card": "32063a",
-					"owner_hero_id": 0,
-					"_comments": "Stalked by Sabretooth - 1A"
+					"card": "Stalked by Sabretooth - 1A #32063a",
+					"owner_hero_id": 0
 				}
 			],
 			"tmp_pile1": [],
@@ -302,183 +256,148 @@
 			"encounters_reveal1": [],
 			"deck1": [
 				{
-					"card": "13020",
-					"owner_hero_id": 1,
-					"_comments": "Swarm Tactics"
+					"card": "Swarm Tactics #13020",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13017",
-					"owner_hero_id": 1,
-					"_comments": "Lie in Wait"
+					"card": "Lie in Wait #13017",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13014",
-					"owner_hero_id": 1,
-					"_comments": "Surprise Attack"
+					"card": "Surprise Attack #13014",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13008",
-					"owner_hero_id": 1,
-					"_comments": "Red Room Training"
+					"card": "Red Room Training #13008",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13014",
-					"owner_hero_id": 1,
-					"_comments": "Surprise Attack"
+					"card": "Surprise Attack #13014",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13016",
-					"owner_hero_id": 1,
-					"_comments": "Boot Camp"
+					"card": "Boot Camp #13016",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13007",
-					"owner_hero_id": 1,
-					"_comments": "Pym Particles"
+					"card": "Pym Particles #13007",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13024",
-					"owner_hero_id": 1,
-					"_comments": "The Power in All of Us"
+					"card": "The Power in All of Us #13024",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13004",
-					"owner_hero_id": 1,
-					"_comments": "Pinpoint Strike"
+					"card": "Pinpoint Strike #13004",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13012",
-					"owner_hero_id": 1,
-					"_comments": "Wasp - Janet Van Dyne"
+					"card": "Wasp - Janet Van Dyne #13012",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13003",
-					"owner_hero_id": 1,
-					"_comments": "Giant Help"
+					"card": "Giant Help #13003",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "01090",
-					"owner_hero_id": 1,
-					"_comments": "Strength"
+					"card": "Strength #01090",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13006",
-					"owner_hero_id": 1,
-					"_comments": "Wasp Sting"
+					"card": "Wasp Sting #13006",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13005",
-					"owner_hero_id": 1,
-					"_comments": "Rapid Growth"
+					"card": "Rapid Growth #13005",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13006",
-					"owner_hero_id": 1,
-					"_comments": "Wasp Sting"
+					"card": "Wasp Sting #13006",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13025",
-					"owner_hero_id": 1,
-					"_comments": "Quincarrier"
+					"card": "Quincarrier #13025",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13016",
-					"owner_hero_id": 1,
-					"_comments": "Boot Camp"
+					"card": "Boot Camp #13016",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13005",
-					"owner_hero_id": 1,
-					"_comments": "Rapid Growth"
+					"card": "Rapid Growth #13005",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13004",
-					"owner_hero_id": 1,
-					"_comments": "Pinpoint Strike"
+					"card": "Pinpoint Strike #13004",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13018",
-					"owner_hero_id": 1,
-					"_comments": "Ironheart"
+					"card": "Ironheart #13018",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13010",
-					"owner_hero_id": 1,
-					"_comments": "Wasp's Helmet"
+					"card": "Wasp's Helmet #13010",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13016",
-					"owner_hero_id": 1,
-					"_comments": "Boot Camp"
+					"card": "Boot Camp #13016",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13019",
-					"owner_hero_id": 1,
-					"_comments": "Spider-Man - Miles Morales"
+					"card": "Spider-Man - Miles Morales #13019",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13014",
-					"owner_hero_id": 1,
-					"_comments": "Surprise Attack"
+					"card": "Surprise Attack #13014",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13013",
-					"owner_hero_id": 1,
-					"_comments": "Into the Fray"
+					"card": "Into the Fray #13013",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13002",
-					"owner_hero_id": 1,
-					"_comments": "Ant-Man - Scott Lang"
+					"card": "Ant-Man - Scott Lang #13002",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13004",
-					"owner_hero_id": 1,
-					"_comments": "Pinpoint Strike"
+					"card": "Pinpoint Strike #13004",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13017",
-					"owner_hero_id": 1,
-					"_comments": "Lie in Wait"
+					"card": "Lie in Wait #13017",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13013",
-					"owner_hero_id": 1,
-					"_comments": "Into the Fray"
+					"card": "Into the Fray #13013",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13011",
-					"owner_hero_id": 1,
-					"_comments": "Thor - Jane Foster"
+					"card": "Thor - Jane Foster #13011",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13007",
-					"owner_hero_id": 1,
-					"_comments": "Pym Particles"
+					"card": "Pym Particles #13007",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "01088",
-					"owner_hero_id": 1,
-					"_comments": "Energy"
+					"card": "Energy #01088",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "01055",
-					"owner_hero_id": 1,
-					"_comments": "The Power of Aggression"
+					"card": "The Power of Aggression #01055",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13013",
-					"owner_hero_id": 1,
-					"_comments": "Into the Fray"
+					"card": "Into the Fray #13013",
+					"owner_hero_id": 1
 				}
 			],
 			"discard1": [],
 			"enemies1": [],
 			"identity1": [
 				{
-					"card": "13001b",
+					"card": "Nadia Van Dyne #13001b",
 					"owner_hero_id": 1,
-					"_comments": "Nadia Van Dyne",
 					"tokens": {
 						"__girl": 1,
 						"__can_change_form": 1
@@ -489,41 +408,34 @@
 			"upgrade_support1": [],
 			"hand1": [
 				{
-					"card": "01055",
-					"owner_hero_id": 1,
-					"_comments": "The Power of Aggression"
+					"card": "The Power of Aggression #01055",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13017",
-					"owner_hero_id": 1,
-					"_comments": "Lie in Wait"
+					"card": "Lie in Wait #13017",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "01089",
-					"owner_hero_id": 1,
-					"_comments": "Genius"
+					"card": "Genius #01089",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13009",
-					"owner_hero_id": 1,
-					"_comments": "Bio-Synthetic Wings"
+					"card": "Bio-Synthetic Wings #13009",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13024",
-					"owner_hero_id": 1,
-					"_comments": "The Power in All of Us"
+					"card": "The Power in All of Us #13024",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "13003",
-					"owner_hero_id": 1,
-					"_comments": "Giant Help"
+					"card": "Giant Help #13003",
+					"owner_hero_id": 1
 				}
 			],
 			"others": [
 				{
-					"card": "32066",
+					"card": "Robert Kelly #32066",
 					"owner_hero_id": 0,
-					"_comments": "Robert Kelly",
 					"host": "32065a"
 				}
 			]

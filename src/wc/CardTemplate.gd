@@ -2100,11 +2100,8 @@ func post_death_move():
 
 func die(script):
 	var type_code = properties.get("type_code", "")
-	var trigger_details = {}
-	if script:
-		trigger_details = script.trigger_details.duplicate()
-		if !trigger_details.get("tags", []):
-			trigger_details["tags"] = script.get_property("tags", [])
+	if script and !script.trigger_details.get("tags", []):
+		script.trigger_details["tags"] = script.get_property("tags", [])
 	match type_code:
 		"hero", "alter_ego":
 			gameData.hero_died(self, script)
@@ -2118,7 +2115,7 @@ func die(script):
 		_:
 			self.discard()
 
-	scripting_bus.emit_signal_on_stack("card_defeated", self, trigger_details)			
+	scripting_bus.emit_signal_on_stack("card_defeated", self, script.trigger_details)			
 	#scripting_bus.emit_signal("card_defeated", self, trigger_details)			
 	return CFConst.ReturnCode.OK		
 
@@ -3899,8 +3896,6 @@ func get_printed_text(section = ""):
 		
 		#remove boost text delimiter
 		full_text = full_text.replace("\n[hr /]\n*", "\n")
-		#stars might have their utility but removing them from now 
-		full_text = full_text.replace("*", "") 
 		full_text = full_text.trim_prefix(" ")
 		full_text = full_text.trim_suffix(" ")		
 		var pre_paragraphs = full_text.split("[b]")
@@ -3920,11 +3915,17 @@ func get_printed_text(section = ""):
 				if !"\n" in previous:
 					previous = previous + "[b]" +  paragraph
 				else:
+					previous = previous.strip_edges()
+					previous = previous.trim_prefix("*")
+					previous = previous.trim_suffix("*")	
 					paragraphs.append(previous.strip_edges())
 					previous = paragraph
 			else:
 				previous = paragraph
 		if previous:
+			previous = previous.strip_edges()
+			previous = previous.trim_prefix("*")
+			previous = previous.trim_suffix("*")				
 			paragraphs.append(previous.strip_edges())
 			
 		var i = 0

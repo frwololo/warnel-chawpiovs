@@ -40,7 +40,7 @@
 					"card": "Asteroid M - 1B #32141b",
 					"owner_hero_id": 0,
 					"tokens": {
-						"threat": 1,
+						"threat": 3,
 						"magnet": 1
 					}
 				}
@@ -98,6 +98,10 @@
 			"type": "play",
 			"value": "Arm Block"
 		},
+		{
+			"type": "target",
+			"value": "Asteroid M"
+		},		
 		{
 			"type": "other",
 			"value": "wait_for_player_turn"

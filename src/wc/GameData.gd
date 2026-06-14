@@ -2281,7 +2281,10 @@ func swap_villain(current_villain, next_villain_key, options = {}):
 		unique_conflict.hint("Unique!", Color8(200,50,50))
 		scripting_bus.emit_signal_on_stack("villain_unique_card_conflict", unique_conflict, {"controller_id": unique_conflict.get_controller_hero_id()})
 
-	return new_card
+	return {
+		"previous": previous_card, 
+		"new": new_card
+	}
 		
 func move_to_next_villain(current_villain):
 	cfc.add_ongoing_process(self, "move_to_next_villain")
@@ -2312,16 +2315,17 @@ func move_to_next_villain(current_villain):
 		
 		ckey = new_villain_data["_code"] 		
 
-	var new_card = swap_villain(current_villain, ckey, {"died": true})
-	
-	
+	var result = swap_villain(current_villain, ckey, {"died": true})
+		
 	cfc.remove_ongoing_process(self, "move_to_next_villain")
-	return new_card			
+	return result		
 
 func villain_died(card:Card, script = null):
-	if (!move_to_next_villain(card)):
+	var villain_died_data = move_to_next_villain(card)
+	if !villain_died_data or !villain_died_data.get("new", null):
 		victory()
 	else:
+		scripting_bus.emit_signal_on_stack("enemy_died", villain_died_data["previous"], script.trigger_details)			
 		var villain = 	get_villain()
 		var texture_filename = villain.get_art_filename() if villain else ""
 		var announce_settings = {

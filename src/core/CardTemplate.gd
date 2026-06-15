@@ -795,6 +795,9 @@ func modify_property(
 func refresh_property_label(property: String) -> void:
 	if not is_instance_valid(card_front) or not card_front.card_labels.has(property):
 		return
+	if not is_instance_valid(card_front.card_labels[property]):
+		return
+		
 	var label_node = card_front.card_labels[property]
 	var value_for_label = str(properties[property])
 	if property in CardConfig.PROPERTIES_NUMBERS:
@@ -1087,13 +1090,14 @@ func get_is_viewed() -> bool:
 func set_card_name(value : String, set_label := true) -> void:
 	# if the card_front.card_labels variable is not set it means ready() has not
 	# run yet, so we just store the card name for later.
-	if card_front:
+	if is_instance_valid(card_front):
 		# We set all areas of the card to match the canonical name.
 		var name_label = card_front.card_labels.get("Name", null)
-		if set_label and name_label as RichTextLabel:
-			card_front.set_rich_label_text(name_label,value)
-		elif set_label:
-			card_front.set_label_text(name_label,value)
+		if is_instance_valid(name_label):
+			if set_label and name_label as RichTextLabel:
+				card_front.set_rich_label_text(name_label,value)
+			elif set_label:
+				card_front.set_label_text(name_label,value)
 	name = value
 	canonical_name = value
 	properties["Name"] = value

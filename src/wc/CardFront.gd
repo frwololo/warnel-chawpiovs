@@ -173,7 +173,9 @@ func _enable_texture(texture):
 		text_enabled = false
 		_perf_hacks_done = true
 
-func card_image_download_complete(_card_id):
+func card_image_download_complete(card_id):
+	if card_owner.canonical_id != card_id:
+		return
 	if !art_filename:
 		return
 	var texture = cfc.get_external_texture(art_filename)	

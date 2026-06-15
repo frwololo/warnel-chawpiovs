@@ -1631,7 +1631,7 @@ func enemy_attack(script: ScriptTask) -> int:
 	#check if subjects have been "inserted" into the activity script instead of the new attack script
 	#e.g. with Mutant Protectors
 	if activity_script	and activity_script.subjects:
-		script.subjects = activity_script.subjects
+		script.set_subjects(activity_script.subjects)
 	
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		for card in script.subjects:
@@ -1928,7 +1928,7 @@ func consequential_damage(script: ScriptTask) -> int:
 		{"name": "pre_receive_damage", "amount" : damage, "subject" : "self", "tags" : new_tags}, 
 		script.trigger_object,
 		script.trigger_details)
-	additional_task.subjects = [script.owner]
+	additional_task.set_subjects(script.owner)
 	#additional_task.prime([], CFInt.RunType.NORMAL,0, []) #TODO gross
 	#retcode = receive_damage(additional_task)	
 	_add_pre_receive_damage_on_stack (damage, additional_task, {})	
@@ -2641,7 +2641,7 @@ func reveal_nemesis (script:ScriptTask) -> int:
 	
 	if (my_nemesis):
 		if put_into_play_only:
-			script.subjects = [my_nemesis]
+			script.set_subjects(my_nemesis)
 			script.script_definition.name="move_card_to_board"
 			retcode = move_card_to_container(script)				
 		else:	

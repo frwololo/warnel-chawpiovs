@@ -25,9 +25,15 @@ func replace_subjects(new_subjects:Array, task_object = null):
 		if task_object and task != task_object:
 			continue		
 		task.set_subjects(new_subjects)
-		#TODO hack force select...
-		#not sure why I have to do this but
-		#this is being called beofre prime in some cases
+		#TODO hack
+		#we erase network prepaid to bypass the sanity check that confirms subjects
+		#match their predefined value. 
+		#Might have to just edit its content instead of deleting ?
+		#or more globally, cleanup/erase network_prepaid once its fulfuilled its purpose
+		task.trigger_details.erase("network_prepaid")
+		task.script_definition.erase("network_prepaid")
+		get_sceng().trigger_details.erase("network_prepaid")
+		#Marking it as primed ensure the subjects aren't recalculated later on
 		task.is_primed = true
 
 #replacement task

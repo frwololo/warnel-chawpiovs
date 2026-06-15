@@ -5128,9 +5128,9 @@
 				}
 			]
 		},
-		"card_moved_to_board": {
+		"card_played": {
 			"trigger": "self",
-			"board": [
+			"all": [
 				{
 					"name": "move_to_player_zone",
 					"subject": "boardseek",

@@ -64,34 +64,7 @@
 		}
 	},
 	"Armored Vest": {
-		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"max_per_hero_any": 1
-				}
-			]
-		},
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
-				{
-					"name": "move_to_player_zone",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"selection_count": 1,
-					"selection_type": "equal",
-					"needs_selection": true,
-					"filter_state_seek": [
-						{
-							"filter_group": "group_identities",
-							"filter_max_per_hero": 1
-						}
-					]
-				}
-			]
-		},
+		"give_to_player_max1": {},
 		"alterants": {
 			"board": [
 				{
@@ -601,34 +574,7 @@
 		}
 	},
 	"Nerves of Steel": {
-		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"max_per_hero_any": 1
-				}
-			]
-		},
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
-				{
-					"name": "move_to_player_zone",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"selection_count": 1,
-					"selection_type": "equal",
-					"needs_selection": true,
-					"filter_state_seek": [
-						{
-							"filter_group": "group_identities",
-							"filter_max_per_hero": 1
-						}
-					]
-				}
-			]
-		},
+		"give_to_player_max1": {},
 		"resource": {
 			"board": [
 				{
@@ -925,34 +871,7 @@
 		}
 	},
 	"Sense of Justice": {
-		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"max_per_hero_any": 1
-				}
-			]
-		},
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
-				{
-					"name": "move_to_player_zone",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"selection_count": 1,
-					"selection_type": "equal",
-					"needs_selection": true,
-					"filter_state_seek": [
-						{
-							"filter_group": "group_identities",
-							"filter_max_per_hero": 1
-						}
-					]
-				}
-			]
-		},
+		"give_to_player_max1": {},
 		"resource": {
 			"board": [
 				{

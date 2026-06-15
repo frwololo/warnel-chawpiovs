@@ -1,0 +1,259 @@
+{
+	"_comments": "Tests villain next stage in 2p mode",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {
+						"damage": 27
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Rhino - 2"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "advance"
+				},
+				{
+					"card": "hydra mercenary"
+				},
+				{
+					"card": "hydra soldier"
+				},
+				{
+					"card": "Caught off guard"
+				},
+				{
+					"card": "Breakin' & Takin'"
+				},
+				{
+					"card": "Gang-Up"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Energy Absorption"
+				},
+				{
+					"card": "Swinging Web Kick"
+				},
+				{
+					"card": "Swinging Web Kick"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Hawkeye - Clint Barton"
+				},
+				{
+					"card": "Make the call"
+				},
+				{
+					"card": "Lead from the front"
+				},
+				{
+					"card": "The Triskelion"
+				},
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Spider-Man",
+			"hero_id": "1"
+		},
+		{
+			"type": "choose",
+			"value": "attack",
+			"hero_id": "1"
+		},
+		{
+			"type": "target",
+			"value": "Rhino",
+			"hero_id": "1"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "play",
+			"value": "Swinging Web Kick",
+			"hero_id": "1"
+		},
+		{
+			"type": "select",
+			"value": "Energy Absorption",
+			"hero_id": "1"
+		},
+		{
+			"type": "target",
+			"value": "Rhino",
+			"hero_id": "1"
+		},
+		{
+			"type": "play",
+			"value": "Swinging Web Kick",
+			"hero_id": "1"
+		},
+		{
+			"type": "target",
+			"value": "Rhino",
+			"hero_id": "1"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 2",
+					"tokens": {
+						"damage": 16
+					}
+				}
+			],
+			"enemies1": [
+			],
+			"discard_villain": [
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				},
+				{
+					"card": "Breakin' & Takin'"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+				}
+			],
+			"deck2": [
+				{
+					"card": "Hawkeye - Clint Barton"
+				}
+			],
+			"enemies2": [
+			],
+			"identity2": [
+				{
+					"card": "Captain Marvel",
+				}
+			],
+			"discard1": [
+			{
+				"card": "Energy Absorption #01014",
+				"owner_hero_id": 1
+			},
+			{
+				"card": "Swinging Web Kick #01005",
+				"owner_hero_id": 1
+			},
+			{
+				"card": "Energy #12021",
+				"owner_hero_id": 1
+			},
+			{
+				"card": "Mockingbird - Bobbi Morse #03020",
+				"owner_hero_id": 1
+			},
+			{
+				"card": "Swinging Web Kick #01005",
+				"owner_hero_id": 1
+			}
+			],
+			"hand2": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	}
+}

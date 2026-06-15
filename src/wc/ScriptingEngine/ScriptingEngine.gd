@@ -2509,26 +2509,27 @@ func move_to_player_zone(script: ScriptTask) -> int:
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
 
-	var this_card= script.owner
+	var this_card = script.owner
 	
 	for subject in script.subjects:
 		retcode = CFConst.ReturnCode.FAILED
 		var hero = subject
-		
-		#Get my current zone
-		var current_grid_name = this_card.get_grid_name()
-		if (current_grid_name):
-			#hack to new zone
-			var new_grid_name = current_grid_name.left(current_grid_name.length() -1)
-			new_grid_name = new_grid_name + str(hero.get_owner_hero_id())
-			if (new_grid_name == current_grid_name):
-				continue
-			var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(new_grid_name)
-			var slot: BoardPlacementSlot
-			if grid:
-				slot = grid.find_available_slot()			
-				this_card.move_to(cfc.NMAP.board, -1, slot)
-				retcode = CFConst.ReturnCode.CHANGED	
+		if hero == this_card.get_controller_hero_card() and this_card.is_onboard():
+			continue
+		#Get expected zone
+		var type_code:String = script.owner.get_property("type_code", "")
+		var grid_name = CFConst.TYPECODE_TO_GRID.get(type_code, "")
+		if !grid_name:
+			var _error = 1
+			retcode = CFConst.ReturnCode.FAILED	
+			continue
+		grid_name += str(hero.get_owner_hero_id())
+		var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(grid_name)
+		var slot: BoardPlacementSlot
+		if grid:
+			slot = grid.find_available_slot()			
+			this_card.move_to(cfc.NMAP.board, -1, slot)
+			retcode = CFConst.ReturnCode.CHANGED	
 
 	return retcode
 

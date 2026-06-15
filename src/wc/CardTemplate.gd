@@ -386,6 +386,7 @@ func load_from_card_id(card_id):
 	_init_card_name()
 	#force reload card art
 	set_card_art(true)
+	_runtime_properties_setup()
 	update_groups()
 	side_icons.set_icons()
 	_duplicate = null

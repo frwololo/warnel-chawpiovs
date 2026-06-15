@@ -996,14 +996,14 @@ const DEFAULT_SETTINGS:= {
 #		"spiderham": "https://marvelcdb.com/api/public/cards/spiderham.json", #Spiderham Hero Pack	
 #		"spdr": "https://marvelcdb.com/api/public/cards/spdr.json", #SP//DR Hero Pack	
 #cycle 6
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+		"mut_gen": "https://marvelcdb.com/api/public/cards/mut_gen.json", #Mutant Genesis Expansion Box	
+#		"cyclops": "https://marvelcdb.com/api/public/cards/cyclops.json", #Cyclops Hero Pack
+#		"phoenix": "https://marvelcdb.com/api/public/cards/phoenix.json", #Phoenix Hero Pack	
+#		"wolv": "https://marvelcdb.com/api/public/cards/wolv.json", #Wolverine Hero Pack	
+#		"storm": "https://marvelcdb.com/api/public/cards/storm.json", #Storm Hero Pack	
+#		"gambit": "https://marvelcdb.com/api/public/cards/gambit.json", #Gambit Hero Pack	
+#		"rogue": "https://marvelcdb.com/api/public/cards/rogue.json", #Rogue Hero Pack
+#		"mojo": "https://marvelcdb.com/api/public/cards/mojo.json",  #Mojo Scenario Pack	
 #cycle 7
 #		"": "https://marvelcdb.com/api/public/cards/.json", #	
 #		"": "https://marvelcdb.com/api/public/cards/.json", #	

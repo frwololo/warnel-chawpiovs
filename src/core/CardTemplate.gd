@@ -351,7 +351,7 @@ func _ready() -> void:
 	_class_specific_ready()
 	var settings_focused_scale = cfc.game_settings.get("gui_card_focused_scale", 0)
 	if settings_focused_scale:
-		focused_scale = settings_focused_scale
+		focused_scale = settings_focused_scale * cfc.screen_scale.x
 
 func get_card_back():
 	if !card_back:

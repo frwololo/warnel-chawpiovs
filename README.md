@@ -5,7 +5,7 @@
 
 ![Warnel Chawpiovs preview image](preview.png "Warnel Chawpiovs preview image")
 
-A digital card game based on the Marvel Champions board game, with full rules enforcement, ideal for true solo or two-handed (but supports up to a full team of 4 heroes). Runs on Windows, Linux, MacOS, and Nintendo Switch.
+A digital card game based on the Marvel Champions board game, with full rules enforcement, ideal for true solo or two-handed (but also supports up to a full team of 4 heroes). Runs on Windows, Linux, Android, MacOS, and Nintendo Switch.
 
 ## Quickstart
 To play this game, all you need is to [download the game from the release page](https://github.com/frwololo/warnel-chawpiovs/releases), extract the zip to any folder on your machine, and run the executable.
@@ -30,21 +30,34 @@ Other than that, here are known limitations with the engine at the moment:
 
 ## Current Status (General)
 ![Warnel Chawpiovs Supported Characters and Scenarios](doc/pictures/characters_and_scenarios.jpg "Warnel Chawpiovs Supported Characters and Scenarios")
-This simulator supports the following cards from the original game (current total 20 heroes, 23 villains, as well as associated player cards and encounters):
-* Core box (5 heroes, 3 villains)
-* Captain America (1 Hero)
-* Ms. Marvel (1 Hero)
-* Thor (1 Hero)
-* Black Widow (1 Hero)
-* Hulk (1 Hero)
-* Doctor Strange (1 Hero)
-* The Rise of Red skull ( 2 heroes, 5 villains)
-* The Galaxy's Most Wanted (2 heroes, 5 villains)
-* The Mad Titan's Shadow ( 2 heroes, 5 villains)
-* War Machine (1 Hero)
-* Sinister Motives ( 2 heroes, 5 villains)
+This simulator supports the following cards from the original game (current total 27 heroes, 28 villains, as well as associated player cards and encounters):
+* Cycle 1:
+  * Core box (5 heroes, 3 villains)
+  * Captain America (1 Hero)
+  * Ms. Marvel (1 Hero)
+  * Thor (1 Hero)
+  * Black Widow (1 Hero)
+  * Hulk (1 Hero)
+  * Doctor Strange (1 Hero)
+* Cycle 2: 
+  * The Rise of Red skull ( 2 heroes, 5 villains)
+  * Ant-Man (1 Hero)
+  * Wasp (1 Hero)
+  * Quicksilver (1 Hero)
+* Cycle 3:
+  * The Galaxy's Most Wanted (2 heroes, 5 villains)
+  * Quicksilver (1 Hero)
+* Cycle 4:
+  * The Mad Titan's Shadow ( 2 heroes, 5 villains)
+  * War Machine (1 Hero)
+* Cycle 5:
+  * Sinister Motives ( 2 heroes, 5 villains)
+* Cycle 6:
+  * Mutant Genesis ( 2 heroes, 5 villains)
+* Cycle 9:
+  * Winter soldier (1 Hero)  
 
-This represents roughly 25% of all official cards at the time of this writing.
+This represents roughly 35% of all official cards (excluding campaigns) at the time of this writing.
 
 There is no tutorial included, and, although the rules are automatically handled by the engine, it will quickly become confusing if you are not already familar with the original game.
 
@@ -67,17 +80,19 @@ Playing with more than one hero adds to the CPU load...It works, it just gets si
 I have personally seen the multiplayer mode (between a PC - as the host of course - and a Nintendo Switch) working on my local network. So I know this works, but the console has to be overclocked, otherwise it loses its connection eventually. This might be fixable, but if you really wish to test multiplayer on a Switch (I don't currently recommend this, with both the Switch port AND multiplayer being quite rough around the edges), for now please overclock the console.
 
 ### Linux and Mac Ports
-I do distributes binaries for Mac and Linux, but those are mostly untested. On Linux I check that the game actually runs. I do not have a Mac so I cannot test the MacOS version myself.
+I do distributes binaries for Mac and Linux, but those are mostly untested. On Linux I check that the game actually runs. I do not have a Mac so I cannot test the MacOS version myself abd it should be considered unsupported.
 
+### Android Port
+The game works on Android but you will need to install the apk manually, as I do not plan to distribute the game on the Google Play store. You wil need to enable "Unknown sources" in your phone's settins, and install the apk from your file manager
 
 ## Users: Installing the Game
-1. Download the binary and the pck file from the [releases section](https://github.com/frwololo/warnel-chawpiovs/releases), and copy them to any folder on your device (on the Switch, this should probably be in the "switch" folder of your SD card)
+1. Download the binary and the pck file from the [releases section](https://github.com/frwololo/warnel-chawpiovs/releases), and copy them to any folder on your device (on the **Switch**, this should probably be in the "switch" folder of your SD card. On **Android**, copy the .apk to your phone then install using your file manager. Make sure to enable "unknown sources))
 2. That's it, you can run the game. (On Switch, you need to launch it from the homebrew menu - not in applet mode! -)
 
 ## Users: Running the game
 ### Downloading Images and other resources
 When you run the game for the first time, Warnel Chawpiovs needs to download some data, including card definitions and card pictures. By default, most of this data is downloaded from https://marvelcdb.com.
-Image downloads in particular might take some time, but this should only happen the first time you run the game. This will happen in the background and you can play the game while pictures get downloaded.
+Image downloads in particular might take some time, but this will happen in the background and you can play the game while pictures get downloaded.
 
 **Alternatively**, it is possible to have all the images packed either in a PCK or a ZIP file at the root of the user folder (PCK are the DLC file format for Godot) with the right structure. See below for folder structure.
 
@@ -198,6 +213,12 @@ The "single player" test suite actually also run multi-hero tests on a single ma
 New tests can be added in the Test subfolder of the project. They are json files with a simple structure (TODO). Best way to create a new test is to copy/paste and exsiting one and modify it as needed.
 test file names need to start with "test_" to b automatically included in the test suite.
 Note: If a file named "_tests.txt" exists in the Test folder, it will be used in priority as a list of tests to run. One test file name per line. This can be used e.g. to run a single test to debug issues
+
+## Developers: Compiling for your platform
+Any platform for which you have a Godot 3.x template should, generally speaking, be compatible with this game. Make sure to enable *.json, *.txt in the resources section, otherwise the game will not include necessary files to be able to start. As shown below:
+![Compile resources](doc/pictures/compile_resources.png "Warnel Chawpiovs Compile Resources")
+
+On Nintendo Switch, for performance reasons, in project settings, change Display/Window size to 1280x720 (instead of the default which is probably 1920x1080). Resolution has a massive impact on performance on the Switch. 
 
 ## Developers FAQ
 * Why Godot 3.x ?

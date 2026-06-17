@@ -296,6 +296,7 @@ func check_death(script = null) -> bool:
 	var card_dies_definition = {
 		"name": "card_dies",
 		"tags": tags,
+		"excess_damage": excess_damage
 	}
 	for param in ["source", "secondary_source"]:
 		if trigger_details.has(param):

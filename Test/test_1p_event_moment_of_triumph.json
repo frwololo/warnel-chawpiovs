@@ -1,0 +1,192 @@
+{
+	"_comments": "Test for Moment of Triumph",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Stampede"
+				}
+			],
+			"villain": [
+				{
+					"card": "01113"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116b",
+					"tokens": {
+						"threat": 3
+					}
+				},
+				{
+					"card": "01126",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Moment of Triumph"
+				},
+				{
+					"card": "Supersonic Punch"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"upgrade_suport1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Iron Man",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Relentless Assault"
+				},
+				{
+					"card": "Tac Team"
+				},
+				{
+					"card": "Combat Training"
+				},
+				{
+					"card": "Uppercut"
+				},
+				{
+					"card": "Chase Them down"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Supersonic Punch"
+		},
+		{
+			"type": "select",
+			"value": "Strength"
+		},
+		{
+			"type": "target",
+			"value": "Hydra Regular"
+		},
+		{
+			"type": "play",
+			"value": "Moment of Triumph"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Shocker"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Stampede"
+				}
+			],
+			"villain": [
+				{
+					"card": "01113"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116b",
+					"tokens": {
+						"threat": 3
+					}
+				},
+				{
+					"card": "01126",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Supersonic Punch"
+				},
+				{
+					"card": "Moment of Triumph"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Iron Man",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Relentless Assault"
+				},
+				{
+					"card": "Tac Team"
+				},
+				{
+					"card": "Combat Training"
+				},
+				{
+					"card": "Uppercut"
+				},
+				{
+					"card": "Chase Them down"
+				}
+			]
+		}
+	}
+}

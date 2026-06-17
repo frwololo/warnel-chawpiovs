@@ -2125,6 +2125,18 @@ func get_ordered_hero_id(i):
 	return hero_id
 
 var _ready_for_next_sequence = true
+func get_sequence_scripts(include_low_priority = false):
+	if include_low_priority:
+		return scripted_play_sequence
+		
+	var results = []
+	for event in scripted_play_sequence:
+		if event["delay_until_no_activity"]:
+			continue
+		results.append(event)
+	
+	return results
+
 func play_scripted_sequence():
 	if !scripted_play_sequence:
 		return

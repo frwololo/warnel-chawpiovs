@@ -221,8 +221,17 @@
 		}
 	},
 	"Aggressive Energy": {
-		"todo": "filter correctly",
 		"interrupt_pre_receive_damage": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "event"
+					},
+					"filter_properties2": {
+						"trait_attack": 1
+					}
+				}
+			],
 			"condition_all": {
 				"func_name": "paid_with_includes",
 				"func_params": {
@@ -1259,7 +1268,7 @@
 			]
 		},
 		"card_token_modified": {
-			"display_section": "Forced Response",		
+			"display_section": "Forced Response",
 			"filter_count_difference": "increased",
 			"filter_token_name": "magnet",
 			"trigger": "self",
@@ -2346,7 +2355,7 @@
 					"filter_property_name": "retaliate",
 					"trigger": "host",
 					"alteration": 1
-				},			
+				}
 			]
 		},
 		"card_moved_to_board": {
@@ -2378,13 +2387,12 @@
 					"name": "deal_damage",
 					"subject": "self",
 					"amount": "trigger_details_amount"
-				},				
+				},
 				{
 					"name": "prevent",
 					"subject": "interrupted_event",
 					"amount": "all"
-				},
-			
+				}
 			]
 		}
 	},
@@ -2459,8 +2467,8 @@
 						"selection_optional": false,
 						"selection_count": 5,
 						"selection_type": "equal"
-					},
-				],			
+					}
+				],
 				"Discard 4, Take 1 Damage": {
 					"_magnetic_missile": {
 						"__damage__": 1,
@@ -3718,7 +3726,7 @@
 				{
 					"name": "prevent",
 					"subject": "interrupted_event",
-					"_silent": true,
+					"_silent": true
 				},
 				{
 					"name": "flip_doublesided_card",
@@ -4077,6 +4085,9 @@
 					"dest_container": "deck",
 					"subject_count": "all",
 					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "max",
+					"selection_optional": true,
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -5780,9 +5791,9 @@
 							"filter_properties": {
 								"Name": "Protect the Senator"
 							}
-						},
+						}
 					]
-				},			
+				},
 				{
 					"name": "move_card_to_board",
 					"subject": "tutor",
@@ -6732,7 +6743,7 @@
 			]
 		},
 		"card_token_modified": {
-			"display_section": "Forced Response",		
+			"display_section": "Forced Response",
 			"filter_count_difference": "increased",
 			"filter_token_name": "magnet",
 			"trigger": "self",

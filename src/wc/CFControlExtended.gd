@@ -496,7 +496,8 @@ func cleanup_bb_code(text):
 		"[[": "[i]",
 		"]]": "[/i]",
 		"[star]": "*",	
-		"→": "-->",	
+		"→": "-->",
+		"—": "-",	
 	}
 	for key in replacements:
 		result = result.replace(key, replacements[key])

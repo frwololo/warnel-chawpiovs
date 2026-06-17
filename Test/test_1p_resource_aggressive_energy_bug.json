@@ -1,0 +1,271 @@
+{
+	"_comments": "Bug Test: wolverine taking damage from Aggressive Energy",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"villain": [
+				{
+					"card": "Avalanche - A #32121a",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Cafeteria - 2B",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Save the School #32130",
+					"owner_hero_id": 0
+				}
+			],
+			"victory_display": [
+				{
+					"card": "The Brotherhood Strikes! - 1B #32125b",
+					"owner_hero_id": 0
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Blob - A #32122a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pyro - A #32123a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Toad - A #32124a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Atrium - 2A #32126a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Atrium - 2B #32126b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Courtyard - 2A #32129a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Courtyard - 2B #32129b",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Brotherhood Strikes! - 1A #32125a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Cafeteria - 2A",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Strength"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Wolverine"
+				},
+				{
+					"card": "Aggressive Energy"
+				},
+				{
+					"card": "Energy Absorption"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Wolverine"
+		},
+		{
+			"type": "activate",
+			"value": "Wolverine"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Avalanche"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"villain": [
+				{
+					"card": "Avalanche - A #32121a",
+					"tokens": {
+						"damage": 3
+					},
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Cafeteria - 2B",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Save the School #32130",
+					"owner_hero_id": 0
+				}
+			],
+			"victory_display": [
+				{
+					"card": "The Brotherhood Strikes! - 1B #32125b",
+					"owner_hero_id": 0
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Blob - A #32122a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pyro - A #32123a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Toad - A #32124a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Atrium - 2A #32126a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Atrium - 2B #32126b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Courtyard - 2A #32129a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Courtyard - 2B #32129b",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Brotherhood Strikes! - 1A #32125a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Cafeteria - 2A",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Strength"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Wolverine",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"upgrade_support1": [],
+			"discard1": [
+				{
+					"card": "Energy Absorption"
+				},			
+				{
+					"card": "Aggressive Energy"
+				},
+
+			]
+		}
+	}
+}

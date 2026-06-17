@@ -156,15 +156,22 @@ func move_card_to_board(script: ScriptTask) -> int:
 			script.script_definition[SP.KEY_TAGS] = ["force_emit_card_moved_signal"] +  script.get_property(SP.KEY_TAGS)
 
 		var type_code = card.get_property("type_code", "")
+		var set_properties =  script.get_property("set_properties", {})	
 		if type_code == "villain":
 			cfc.NMAP.board.load_villain(card.canonical_id)
 			result = CFConst.ReturnCode.CHANGED
 		else:
+			if set_properties:
+				#if setting properties, we'll emit the "card moved to board" signal *after* setting the properties
+				script.script_definition[SP.KEY_TAGS].append("disable_move_signals")
 			result = .move_card_to_board(script)
-		if script.get_property("set_properties", {}):
-			var tags: Array = ["emit_signal"] + script.get_property(SP.KEY_TAGS)
-			script.script_definition[SP.KEY_TAGS] = tags
-			modify_properties(script)
+			
+			if set_properties:
+				var tags: Array = ["emit_signal"] + script.get_property(SP.KEY_TAGS)
+				script.script_definition[SP.KEY_TAGS] = tags
+				modify_properties(script)
+				scripting_bus.emit_signal_on_stack("card_moved_to_board",card,card.last_move_result)
+
 	
 	script.set_subjects(subjects)
 	script.script_definition = backup

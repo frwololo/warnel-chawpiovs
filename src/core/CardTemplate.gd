@@ -87,6 +87,7 @@ var _horizontal:= false
 
 #keeps a record of the last subjects chosen by a scrpt on this card
 var last_subjects:= []
+var last_move_result = {}
 
 #when creating duplicates, this can be used to track the original card
 var is_duplicate_of = null
@@ -1266,6 +1267,7 @@ func move_to(targetHost: Node,
 	var emit_signals = false
 	var signal_to_emit = ""
 	var destination_grid = ""	
+
 	var execute_self_moved_to_board = false
 	if targetHost == cfc.NMAP.board and not board_position:
 		match board_placement:
@@ -1527,10 +1529,16 @@ func move_to(targetHost: Node,
 		elif "CardPopUpSlot" in parentHost.name:
 			set_state(CardState.IN_POPUP)
 	common_post_move_scripts(targetHost.name, parentHost.name, tags)
+	var destination_str = targetHost.name
+	if destination_str.to_lower() == "board" and !considered_in_play():
+		destination_str = "void"	
+
+	if !destination_grid:
+		if is_instance_valid(board_position):
+			if board_position as BoardPlacementSlot:
+				destination_grid = board_position.get_grid_name()
+	
 	if signal_to_emit:
-		var destination_str = targetHost.name
-		if destination_str.to_lower() == "board" and !considered_in_play():
-			destination_str = "void"
 		scripting_bus.emit_signal_on_stack(signal_to_emit,
 				self,
 				 {
@@ -1542,6 +1550,14 @@ func move_to(targetHost: Node,
 		)		
 	if execute_self_moved_to_board:		
 		self.execute_scripts(self, "self_moved_to_board")
+	
+	self.last_move_result =	{
+		"destination": destination_str,
+		"destination_grid": destination_grid,					
+		"source": source_str,
+		"tags": tags
+	}		
+		
 	cfc.remove_ongoing_process(self)
 
 func set_scale(value):		

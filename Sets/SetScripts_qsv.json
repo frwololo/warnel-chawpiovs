@@ -913,6 +913,11 @@
 					]
 				},
 				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},				
+				{
 					"name": "shuffle_card_into_container",
 					"subject": "tutor",
 					"src_container": "discard",

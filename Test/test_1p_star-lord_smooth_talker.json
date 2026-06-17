@@ -1,0 +1,142 @@
+{
+	"_comments": "Automated Test for Smooth Talker",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Star-Lord"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Peter Quill",
+					"tokens": {"__smooth_talker": 1}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Cosmo #17020"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Peter Quill"
+		},
+		{
+			"type": "choose",
+			"value": "Smooth Talker"
+		},
+		{
+			"type": "select",
+			"value": "Cosmo"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Star-Lord"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Cosmo #17020"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Peter Quill"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				}
+			]
+		}
+	}
+}

@@ -585,6 +585,11 @@
 						"__type_code__": "environment"
 					}
 				},
+				"Minion": {
+					"__cosmo": {
+						"__type_code__": "minion"
+					}
+				},				
 				"Side Scheme": {
 					"__cosmo": {
 						"__type_code__": "side_scheme"
@@ -900,7 +905,7 @@
 			]
 		},
 		"card_played": {
-			"filter_state_triggert": [
+			"filter_state_trigger": [
 				{
 					"filter_properties": {
 						"type_code": "ally"
@@ -920,12 +925,7 @@
 				},
 				{
 					"name": "draw_cards",
-					"subject": "boardseek",
-					"filter_state_seek": [
-						{
-							"filter_group": "group_identities_event_source_hero"
-						}
-					],
+					"subject": "event_source_hero",
 					"amount": 1
 				}
 			]
@@ -1074,7 +1074,7 @@
 						"name": "constraints",
 						"is_cost": true,
 						"tags": [
-							"action"
+							"action_ability"
 						]
 					},
 					{
@@ -1091,17 +1091,20 @@
 						"subject_count": "all",
 						"src_container": "hand",
 						"needs_selection": true,
+						"selection_count": 1,
 						"selection_type": "equal"
-					},
-					{
-						"name": "draw_cards",
-						"amount": 1
 					},
 					{
 						"name": "move_card_to_container",
 						"subject": "previous",
-						"dest_container": "hand"
-					}
+						"dest_container": "deck"
+					},					
+					{
+						"name": "draw_cards",
+						"is_cost": true,
+						"amount": 1
+					},
+
 				]
 			}
 		}

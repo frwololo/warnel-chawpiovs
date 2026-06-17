@@ -1,0 +1,162 @@
+{
+	"_comments": "Automated Test for Knowhere",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Star-Lord"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Star-Lord"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Cosmo"
+				},				
+				{
+					"card": "Knowhere"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Knowhere"
+		},
+		{
+			"type": "select",
+			"value": "Genius"
+		},
+		{
+			"type": "play",
+			"value": "Cosmo"
+		},
+		{
+			"type": "choose",
+			"value": "Yes"
+		}		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Star-Lord"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+
+			],
+			"identity1": [
+				{
+					"card": "Star-Lord"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Combat Training"
+				},
+				{
+					"card": "Knowhere",
+					"exhausted": true
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [
+							{
+					"card": "Cosmo"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Genius"
+				},			
+				{
+					"card": "Strength"
+				}
+			],
+			"hand1": [
+							{
+					"card": "Energy"
+				}
+			],
+		}
+	}
+}

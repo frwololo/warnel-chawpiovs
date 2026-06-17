@@ -1,0 +1,167 @@
+{
+	"_comments": "Tests Ultron Drones",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}
+			],
+			"discard_villain": [],
+			"villain": [
+				{
+					"card": "01134"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01137b"
+				}
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "One by One"
+				},
+				{
+					"card": "the Power of Aggression"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "aggressive stance"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01056"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Ultron Drones"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "take undefended attack against Ultron"
+		},
+		{
+			"type": "choose",
+			"value": "Drone",
+			"_comments": "choose to get a drone"
+		},
+		{
+			"type": "choose",
+			"value": "Yes",
+			"_comments": "choose to use aggressive stance"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "take undefended attack against Drone 2"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "Wait until player turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Armored Guard"
+				}
+			],
+			"villain": [
+				{
+					"card": "01134"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01137b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"discard1": [
+				{
+					"card": "aggressive stance"
+				}
+			],			
+			"identity1": [
+				{
+					"card": "She-Hulk",
+					"tokens": {
+						"damage": 4
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "01056"
+				},
+				{
+					"card": "One by One"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Ultron Drones"
+				}
+			]
+		}
+	}
+}

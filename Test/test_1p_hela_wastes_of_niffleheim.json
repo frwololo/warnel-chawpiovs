@@ -76,7 +76,7 @@
 	"actions": [
 		{
 			"type": "select",
-			"value": ["Adam Warlock","Adam Warlock"], 
+			"value": ["Adam Warlock #21031a","Adam Warlock #21031a"], 
 			"_comments": "take 2 indirect damage"
 		},		
 		{

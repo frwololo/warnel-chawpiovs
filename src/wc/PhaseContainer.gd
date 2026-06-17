@@ -269,7 +269,7 @@ func _process(_delta: float) -> void:
 	if (!current_step_complete) :
 		return		
 
-	if gameData.scripted_play_sequence:
+	if gameData.get_sequence_scripts(true):
 		return
 		
 	match current_step:

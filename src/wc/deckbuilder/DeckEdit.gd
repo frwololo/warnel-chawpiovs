@@ -134,8 +134,8 @@ func _process(delta:float):
 		large_picture.rect_position = get_tree().current_scene.get_global_mouse_position() + Vector2(20, 20)
 	else:
 		var focused = get_focus_owner()
-		mouse_pos = focused.get_global_position() + focused.rect_size/2
 		if focused:
+			mouse_pos = focused.get_global_position() + focused.rect_size/2
 			large_picture.rect_position = mouse_pos + Vector2(20, 20)
 	large_picture.rect_size = PREVIEW_CARD_SIZE
 	large_picture.rect_scale = cfc.screen_scale

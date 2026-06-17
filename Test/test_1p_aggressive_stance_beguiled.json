@@ -1,0 +1,147 @@
+{
+	"_comments": "Tests Beguiled vs Aggressive Stance",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Beguiled"
+				}
+			],
+			"discard_villain": [],
+			"villain": [
+				{
+					"card": "01134"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01137b"
+				}
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"deck1": [
+				{
+					"card": "One by One"
+				},
+				{
+					"card": "the Power of Aggression"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "aggressive stance"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Mockingbird"
+				},
+			],
+			"villain_misc": [
+				{
+					"card": "Ultron Drones"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "choose",
+			"value": "Yes",
+			"_comments": "choose to use aggressive stance"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "Wait until player turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		
+		"board": {
+			"discard_villain": [
+							{
+					"card": "Beguiled"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+
+			],
+			"discard_villain": [],
+			"villain": [
+				{
+					"card": "01134"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01137b"
+				}
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				}
+			],
+			"discard1": [
+				{
+					"card": "aggressive stance"
+				}
+			],
+			"hand1": [
+				{
+					"card": "One by One"
+				},
+			],
+			"enemies1": [
+				{
+					"card": "Mockingbird"
+				},
+			],
+			"villain_misc": [
+				{
+					"card": "Ultron Drones"
+				}
+			]
+		}
+	}
+}

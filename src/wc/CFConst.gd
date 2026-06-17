@@ -1114,7 +1114,7 @@ const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 const SCRIPT_BREAKPOINT_CARD_NAME := "Pym Particles"
 const SCRIPT_BREAKPOINT_TRIGGER_NAME := "paid_as_resource"
 
-const VERSION := "1.4.0"
+const VERSION := "1.4.1"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
 const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 

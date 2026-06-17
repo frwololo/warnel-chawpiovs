@@ -113,7 +113,12 @@ func _step_started(_trigger_object, details:Dictionary):
 		CFConst.PHASE_STEP.PLAYER_TURN:
 			settings["text"] = "Player Phase"
 			var my_heroes = gameData.get_my_heroes()
-			var hero_to_display = my_heroes[0] if my_heroes else 1
+			var first_player_id = gameData.first_player_hero_id()
+			var hero_to_display = 1
+			if first_player_id in my_heroes:
+				hero_to_display = first_player_id
+			elif my_heroes:
+				hero_to_display = my_heroes[0]
 			var hero_card = gameData.get_identity_card(hero_to_display)
 			var filename = hero_card.get_art_filename()
 			settings["top_texture_filename"] = filename

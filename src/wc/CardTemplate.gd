@@ -1028,7 +1028,7 @@ func attempt_to_play(user_click:bool = false, origin_event = null):
 			return
 		
 		#gamedata is running some automated clicks from a previous request	
-		if gameData.scripted_play_sequence:
+		if gameData.get_sequence_scripts():
 			return	
 		
 	#for manual attempts to play we only allow board or hand
@@ -1490,6 +1490,7 @@ func execute_scripts(
 	trigger_details["_display_name"] = card_scripts.get("display_name", trigger_details.get("_display_name", ""))
 
 	var script_is_optional = card_scripts.get("is_optional_" + get_state_exec(), false) or  card_scripts.get("is_optional_all", false)
+
 	show_optional_confirmation_menu = show_optional_confirmation_menu and script_is_optional		
 
 	exec_config = {
@@ -1910,6 +1911,9 @@ func readyme(toggle := false,
 	
 	if !check :
 		_set_target_rotation(rot)
+		
+	if 	!is_exhausted()	and not toggle:
+		return CFConst.ReturnCode.OK		
 			
 	var retcode = set_card_rotation(rot, toggle, start_tween, check, tags)
 	if !check and retcode != CFConst.ReturnCode.FAILED:
@@ -2670,7 +2674,6 @@ func change_form(voluntary = true, to_card_id = "") -> bool:
 	if (voluntary):
 		self.tokens.mod_token("__can_change_form", 0, true)
 
-	cfc.play_sfx("change_form")
 	return flip_doublesided_card(to_card_id)
 	
 
@@ -3900,47 +3903,89 @@ func get_printed_text(section = ""):
 		full_text = full_text.trim_prefix(" ")
 		full_text = full_text.trim_suffix(" ")		
 		var pre_paragraphs = full_text.split("[b]")
-		var paragraphs:PoolStringArray = []
-		
+		var paragraphs:Array = []
+
+
+		for j in pre_paragraphs.size():
+			pre_paragraphs[j] = pre_paragraphs[j].trim_prefix(" ")
+			pre_paragraphs[j]  = pre_paragraphs[j].trim_suffix(" ")
+			pre_paragraphs[j]  = pre_paragraphs[j].replace("\"","")
+
+		#address the case where triggers start with [i]something[/i] -
+		var i = 1
+		var processed_paragraphs = []
+		var prefixes = [""]
+		for paragraph in pre_paragraphs:
+			if paragraph.ends_with("-"):
+				var pos = paragraph.find_last("[i]")
+				if pos < 0: 
+					pos = 0
+				if i < pre_paragraphs.size():
+					prefixes.append(paragraph.substr(pos))
+					paragraph = paragraph.replace(prefixes[i], "")
+			elif paragraph.begins_with("[i]"):
+				var end_pos = paragraph.find("-")
+				if end_pos >= 0:
+					prefixes[i-1] = paragraph.substr(0, end_pos + 1)
+					paragraph = paragraph.replace(prefixes[i-1], "")				
+			else:
+				prefixes.append("")
+			processed_paragraphs.append({"paragraph": paragraph})				
+			i+= 1	
+		for j in processed_paragraphs.size():
+			processed_paragraphs[j]["prefix"] = prefixes[j]
+			
+		pre_paragraphs = processed_paragraphs
 		#some lines contain "[b]" which are not actually section names
 		#so we need to make sure that sections actually also are delimited by a 
 		# carriage return somewhere (or beginning/end of card text)
 		#this is what this piece of code attempts to do
 		#example:
 		#"Permanent. Setup\n* [b]Forced Response[/b]: After attached villain activates against you, resolve the [b]Special[/b] ability of each [i]infinity stone[/i] in play. Otherwise, put the top card of the [i]infinity stone[/i] deck into play."
-		var previous = ""
-		for paragraph in pre_paragraphs:
+		var previous = {}
+		for paragraph_data in pre_paragraphs:
+			var paragraph = paragraph_data["paragraph"]
+			var prefix = paragraph_data["prefix"]
 			paragraph = paragraph.trim_prefix(" ")
 			paragraph = paragraph.trim_suffix(" ")
-			if previous:
-				if !"\n" in previous:
-					previous = previous + "[b]" +  paragraph
+			var previous_str = previous.get("paragraph", "")			
+			if previous_str:
+				if !"\n" in previous_str:
+					previous["paragraph"] = previous_str + "[b]" +  paragraph
+					previous["prefix"]= previous["prefix"] + paragraph_data["prefix"]
 				else:
-					previous = previous.strip_edges()
-					previous = previous.trim_prefix("*")
-					previous = previous.trim_suffix("*")	
-					paragraphs.append(previous.strip_edges())
-					previous = paragraph
+					previous_str = previous_str.strip_edges()
+					previous_str = previous_str.trim_prefix("*")
+					previous_str = previous_str.trim_suffix("*")	
+					paragraphs.append({"prefix": previous["prefix"], "paragraph": previous_str.strip_edges()})
+					previous = paragraph_data
 			else:
-				previous = paragraph
-		if previous:
-			previous = previous.strip_edges()
-			previous = previous.trim_prefix("*")
-			previous = previous.trim_suffix("*")				
-			paragraphs.append(previous.strip_edges())
-			
-		var i = 0
-		for paragraph in paragraphs:
+				previous = paragraph_data
+		if previous.get("paragraph", ""):
+			var previous_str = previous["paragraph"]
+			previous_str = previous_str.strip_edges()
+			previous_str = previous_str.trim_prefix("*")
+			previous_str = previous_str.trim_suffix("*")				
+			paragraphs.append({"prefix": previous["prefix"], "paragraph": previous_str.strip_edges()})
+
+
+		i = 0
+		for paragraph_data in paragraphs:
+			var paragraph = paragraph_data["paragraph"]
+			var prefix = paragraph_data["prefix"]
 			if !paragraph:
 				continue
 			var paragraph_l:String = paragraph.to_lower()
+			if prefix:
+				var _tmp = 1
+			var pref_and_paragraph = prefix + paragraph
 			var position = paragraph.findn("[/b]")
 			if position == -1:
 				var found_keyword = false
 				if i == 0: #first line might be the traits and keywords line
 					for keyword in CFConst.AUTO_KEYWORDS.keys():
 						if paragraph_l.begins_with(keyword):
-							_cached_printed_text["keywords"] = paragraph
+							_cached_printed_text["keywords"] = pref_and_paragraph
 							found_keyword = true
 							break
 				if !found_keyword:
@@ -3948,7 +3993,7 @@ func get_printed_text(section = ""):
 						 _cached_printed_text["generic"] = ""
 					else:
 						_cached_printed_text["multiple_generic"] = true
-					_cached_printed_text["generic"] += paragraph
+					_cached_printed_text["generic"] += pref_and_paragraph
 			else:
 				var paragraph_name = paragraph_l.substr(0, position)
 				#due to some typos, some sections have the ":" inside the bold, others don't
@@ -3958,8 +4003,9 @@ func get_printed_text(section = ""):
 				if !_cached_printed_text.has(paragraph_name):
 						_cached_printed_text[paragraph_name] = ""
 				else:
-					_cached_printed_text["multiple_" + paragraph_name] = true		
-				_cached_printed_text[paragraph_name] += "[b]" + paragraph
+					_cached_printed_text["multiple_" + paragraph_name] = true
+				var bold = "" if paragraph.begins_with("[b]") else "[b]"	
+				_cached_printed_text[paragraph_name] += prefix + bold + paragraph
 			i+= 1		
 
 		_cached_printed_text["_initialized"] = true

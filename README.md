@@ -141,6 +141,9 @@ The basics to adding new cards to the game is to choose a specific set from marv
 4. Next you'll want to create a file *Sets/SetScripts_name.json* where you'll replace *name* with the actual entry key. In our example, *Sets/SetScripts_trors.json*. This should work in the User Sets folders, but has only been tested in the res folder so far. At the very minimum, this file must contain and empty json dictionary "{}" or the game will fail to load it (and complain about it)
 * Now the actual work: you'll want to add an entry for each card in *Sets/SetScripts_trors.json*, that describes the behavior of each card for the engine.
   * inspiration for how to do this can be found in the [core set](Sets/SetScripts_core.json)
+
+### Adding original cards
+Nothing prevents you from creating an entirely original set and adding it to the game. In order to work, a Set needs a SetDefinition_[name].json and a SetScripts_[name].json in the Sets subfolder of your user folder. For example, you can create a SetDefinition_myset.json and SetScripts_myset.json, and those will be loaded into the game. You will also need to provide images as those wil not be downloadable from marvelcdb or any other site that provides only official content. 
  
 ### Features
 * **Complete card rules enforcement** capacity, via provided Scripting Engine. (see [doc](doc/script_doc.html))

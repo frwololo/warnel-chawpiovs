@@ -414,7 +414,7 @@
 					"scheme"
 				]
 			},
-			"is_optional_hand": "true",
+			"is_optional_hand": true,
 			"hand": [
 				{
 					"name": "prevent",

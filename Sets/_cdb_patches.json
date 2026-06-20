@@ -291,7 +291,7 @@
 	},
 	"32048": {
 		"subname": "Piotr Rasputin"
-	},
+	},	
 	"32080" :{
 		"attack": 0,
 		"scheme": 0,
@@ -299,7 +299,10 @@
 	},
 	"32174b": {
 		"name": "Reactivate Defenses"
-	},		
+	},	
+	"35021": {
+		"subname": "Piotr Rasputin"
+	},	
 	"54021": {
 		"imagesrc": "/bundles/cards/50054.jpg"
 	}

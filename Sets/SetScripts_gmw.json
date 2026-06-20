@@ -2911,7 +2911,7 @@
 		},
 		"card_defeated": {
 			"trigger": "self",
-			"is_optional_all": "true",
+			"is_optional_all": true,
 			"all": [
 				{
 					"name": "ready_card",
@@ -3654,7 +3654,7 @@
 		},
 		"card_defeated": {
 			"trigger": "self",
-			"is_optional_all": "true",
+			"is_optional_all": true,
 			"all": [
 				{
 					"name": "heal",
@@ -3955,7 +3955,7 @@
 						"subject_count": 1,
 						"src_container": "deck",
 						"dest_container": "set_aside",
-						"is_cost": "true"
+						"is_cost": true
 					},
 					{
 						"name": "discard",
@@ -4217,7 +4217,7 @@
 		},
 		"card_defeated": {
 			"trigger": "self",
-			"is_optional_all": "true",
+			"is_optional_all": true,
 			"all": [
 				{
 					"name": "draw_cards",
@@ -5736,7 +5736,7 @@
 					"name": "move_card_to_board",
 					"subject": "previous",
 					"subject_count": "all",
-					"filter_each_previous_subject": "true",
+					"filter_each_previous_subject": true,
 					"filter_state_subject": [
 						{
 							"filter_properties": {
@@ -5868,7 +5868,7 @@
 						"name": "discard",
 						"subject": "index",
 						"subject_count": "all",
-						"needs_selection": "true",
+						"needs_selection": true,
 						"selection_count": 1,
 						"selection_type": "equal",
 						"src_container": "the_collection"
@@ -5900,7 +5900,7 @@
 						"name": "discard",
 						"subject": "index",
 						"subject_count": "all",
-						"needs_selection": "true",
+						"needs_selection": true,
 						"selection_count": 1,
 						"selection_type": "equal",
 						"src_container": "the_collection"

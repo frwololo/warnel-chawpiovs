@@ -1427,7 +1427,7 @@
 		},
 		"interrupt_card_dies": {
 			"trigger": "host",
-			"is_optional_board": "true",
+			"is_optional_board": true,
 			"board": [
 				{
 					"name": "remove_threat",
@@ -2324,7 +2324,7 @@
 					"dest_container": "deck_villain",
 					"subject": "boardseek",
 					"subject_count": "all",
-					"needs_selection": "true",
+					"needs_selection": true,
 					"selection_count": 1,
 					"needs_subject": true,
 					"filter_state_seek": [
@@ -2428,13 +2428,14 @@
 		"reveal": {
 			"all": [
 				{
-					"name": "discard",
+					"name": "card_dies",
 					"subject": "boardseek",
 					"subject_count": "all",
 					"needs_selection": true,
 					"selection_count": 1,
 					"selection_optional": false,
 					"selection_type": "equal",
+					"is_cost": true,
 					"filter_state_seek": [
 						{
 							"filter_properties": {
@@ -3917,7 +3918,7 @@
 					},
 					"subject": "attachments",
 					"attachments_host": "previous",
-					"needs_selection": "true",
+					"needs_selection": true,
 					"selection_optional": true,
 					"filter_state_attachments": [
 						{

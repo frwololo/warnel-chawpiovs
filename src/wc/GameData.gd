@@ -106,6 +106,9 @@ var _desync_recovery_enabled = true
 var last_target = null
 var last_target_container = null
 
+var cards_played_this_phase := []
+var cards_played_this_round := []
+
 var _clients_current_activation = {}
 var _clients_activation_counter = {}
 var _clients_desync_start_time: int = 0
@@ -475,7 +478,10 @@ func _scripting_event_triggered(trigger_object = null,
 	match trigger:
 		"card_moved_to_board":
 			_emit_additional_signals(trigger_object, trigger, _trigger_details)	
-			
+		"card_played":
+			add_card_played(trigger_object, _trigger_details)
+		"phase_ended":
+			cards_played_this_phase = []	
 	match trigger:
 		"card_token_modified":
 			check_main_scheme_defeat()
@@ -508,6 +514,16 @@ func _scripting_event_triggered(trigger_object = null,
 	
 
 	return
+
+func add_card_played(card, trigger_details):
+	cards_played_this_phase.append(card)
+	cards_played_this_round.append(card)
+
+func get_cards_played_this_phase():
+	return cards_played_this_phase
+	
+func get_cards_played_this_round():
+	return cards_played_this_round	
 
 #a function that checks if any deck becomes empty after a card is moved,
 #and triggers the appropriate measures as needed
@@ -983,6 +999,8 @@ func ready_all_player_cards():
 
 func end_round():
 	current_round+=1
+	cards_played_this_round = []
+	
 	reset_villain_current_hero_target(true, "end_round")
 	scripting_bus.emit_signal("round_ended")
 
@@ -2535,6 +2553,10 @@ func cleanup_post_game():
 	current_round = 1
 	last_target = null
 	last_target_container = null
+	
+	cards_played_this_phase = []
+	cards_played_this_round = []
+	
 	_multiplayer_desync = null
 	_clients_system_status = {}
 	_villain_current_hero_target = 1

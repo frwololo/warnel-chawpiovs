@@ -31,7 +31,7 @@
 	},
 	"Attacrobatics": {
 		"interrupt_boost_card_resolved": {
-			"is_optional_board": "true",
+			"is_optional_board": true,
 			"board": [
 				{
 					"name": "constraints",

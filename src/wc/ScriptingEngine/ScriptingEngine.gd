@@ -50,6 +50,7 @@ func pay_as_resource(script: ScriptTask) -> int:
 # see KEY_FAIL_COST_ON_SKIP
 func nop(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
+	
 	return retcode
 
 
@@ -388,7 +389,76 @@ func play_card(script: ScriptTask) -> int:
 	
 			
 	scripting_bus.emit_signal_on_stack("card_played", script.owner, {"from": from, "from_controller": from_controller })		
+	scripting_bus.emit_signal_on_stack(type_code + "_played", script.owner, {"from": from, "from_controller": from_controller })
 	return retcode	
+
+func force_play_card(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode		
+
+	var my_hero_id = script.owner.get_controller_hero_id()
+	
+	for subject in script.subjects:
+		
+		var fetched_script = subject.retrieve_script_by_path("manual/hand")
+		if !fetched_script:
+			retcode = CFConst.ReturnCode.FAILED
+			continue
+			
+		match typeof(fetched_script):
+			TYPE_ARRAY:
+				fetched_script = _pre_process_script_list(fetched_script, script)
+			TYPE_DICTIONARY:
+				var new_list = {}
+				for key in fetched_script:
+					new_list[key] = _pre_process_script_list(fetched_script[key], script)
+				fetched_script = new_list
+			_:
+				retcode = CFConst.ReturnCode.FAILED
+				continue			
+		
+		var subscript = {
+			"manual_override": {
+				"hand": fetched_script
+			}
+		}
+		var subscript_id = subject.add_extra_script( subscript, my_hero_id)
+		gameData.theGameObserver.add_script_removal_effect(script, subject, subscript_id, "card_played")
+		subject.attempt_to_play()			
+		
+	return retcode
+
+static func _pre_process_script_list(script_list:Array, script):
+	var result = []
+	var ignore_resource_cost = script.get_property("ignore_resource_cost", false)
+	var additional_scripts = script.get_property("additional_scripts", [])
+	var additional_tags = script.get_property("additional_tags", [])
+
+	for entry in script_list:
+		if ignore_resource_cost:
+			if entry.get("name", "") == "pay_regular_cost":
+				continue
+		if additional_tags:
+			var existing_tags = entry.get("tags", [])
+			match typeof (existing_tags):
+				TYPE_ARRAY:
+					entry["tags"] = existing_tags + additional_tags
+				#there's a special case for tags where a dictionary is accepted for if/the/else simple case	
+				TYPE_DICTIONARY:
+					for key in ["then", "else"]:
+						if existing_tags.has(key):
+							entry["tags"][key] = existing_tags.get(key) + additional_tags
+				_:
+					var _error = 1
+		result.append(entry)
+	result += additional_scripts
+	return result
+	
 
 func attack(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -418,7 +488,7 @@ func attack(script: ScriptTask) -> int:
 	var new_script = duplicate_script(script)
 	new_script.script_name = "attack_started"
 	new_script.script_definition["name"] = new_script.script_name
-
+	new_script.script_definition["attacker"] = owner
 	#
 	# Hacks
 	#
@@ -525,7 +595,8 @@ func save_variable(script:ScriptTask) -> int:
 	var value = script.script_definition.get("value", "")
 	if !value:
 		return CFConst.ReturnCode.FAILED
-		
+	
+
 	if costs_dry_run():
 		return retcode
 	
@@ -659,6 +730,29 @@ func return_attachments_to_owner(script: ScriptTask) -> int:
 	script.script_definition["return_to"] = "owner"
 	return return_attachments_to(script)	
 
+func return_to_owner_hand(script:ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+	
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+		
+	for card in script.subjects:		
+		var destination = "hand"	
+		var card_owner = card.get_owner_hero_id()
+		if card_owner < 0:
+			card_owner = 1 #TODO hack to avoid crashes
+
+		if !card_owner:
+			destination = "discard_villain"
+		else:
+			destination += str(card_owner)
+
+		card.move_to(cfc.NMAP[destination])
+
+	return retcode	
 
 func card_dies(script:ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.FAILED
@@ -670,6 +764,10 @@ func card_dies(script:ScriptTask) -> int:
 		retcode = CFConst.ReturnCode.CHANGED
 
 	return retcode
+
+#shortcut just in case these two concepts end up being different somehow
+func defeat_card(script:ScriptTask) -> int:
+	return card_dies(script)
 
 static func calculate_damage(script: ScriptTask) -> int:
 	if script.script_name != "receive_damage":
@@ -1252,7 +1350,7 @@ func increase(script: ScriptTask) -> int:
 
 	match subject_target:
 		"current_activation":
-			if script.script_definition.has("amount"): #this is a partial prevention effect		
+			if script.script_definition.has("amount"): #this is a partial increase effect		
 				if (costs_dry_run()):
 					return retcode	
 				gameData.apply_mods_to_current_activity_script(script)	
@@ -1261,7 +1359,7 @@ func increase(script: ScriptTask) -> int:
 				#unsupported
 				return CFConst.ReturnCode.FAILED
 		_:
-			if script.script_definition.has("amount"): #this is a partial prevention effect
+			if script.script_definition.has("amount"): #this is a partial increase effect
 				var stack_object = script.trigger_details.get("stack_object", null) 
 				var task_object = script.trigger_details.get("event_object", null)
 
@@ -1400,7 +1498,6 @@ func exhaust_card(script: ScriptTask) -> int:
 	return(retcode)
 
 func discard(script: ScriptTask):
-	var retcode = CFConst.ReturnCode.FAILED
 
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?	
 		if script.subjects:
@@ -1708,6 +1805,37 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 
 	return retcode
 
+func add_boost(boost_script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+
+	if !boost_script.subjects:
+		return CFConst.ReturnCode.FAILED
+	var boost_card = boost_script.subjects[0]
+	var attacker = boost_card.current_host_card
+	if !attacker:
+		return CFConst.ReturnCode.FAILED	
+	var script = attacker.activity_script
+	if !script:
+		return CFConst.ReturnCode.FAILED
+	
+	var boost_amount = boost_script.retrieve_integer_property("amount", 0)
+	
+	if (costs_dry_run()):
+		if !boost_amount:
+			return CFConst.ReturnCode.OK
+		return retcode	
+	
+	
+	var script_definition = script.script_definition
+	if !script_definition.has("boost"):
+		script_definition["boost"] = []
+		
+	
+	script_definition["boost"].append(boost_amount)
+
+
+	return retcode	
+
 #assigns defender to attack
 #this only works if there isn't a defender chosen already,
 #or if the defender was already the same as the one requested
@@ -1737,8 +1865,8 @@ func set_defender(script: ScriptTask) -> int:
 	#when no defender was previously set
 	attack_script.set_subjects([])
 	attack_script.subjects.append(defender)
-	attack_script.script_definition["exhaust_defenders"] = false
-	attack_script.script_definition["basic_defense"] = false
+	attack_script.script_definition["exhaust_defenders"] = script.get_property("exhaust_defenders",false)
+	attack_script.script_definition["basic_defense"] = script.get_property("basic_defense",false)
 	
 	return CFConst.ReturnCode.CHANGED
 	
@@ -2004,6 +2132,7 @@ func enemy_activates(script: ScriptTask) -> int:
 	
 	var target_hero_id = script.retrieve_integer_property("target_hero_id")
 	if script.get_property("target_identity"):
+		script.script_definition["search_both_sides"] = script.script_definition.get("search_both_sides", true)
 		var target_identity = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : script.get_property("target_identity")})
 		target_identity = target_identity[0] if target_identity else null
 		target_hero_id = target_identity.get_controller_hero_id() if target_identity else 1				
@@ -2033,7 +2162,7 @@ func remove_threat(script: ScriptTask) -> int:
 	for card in script.subjects:
 		retcode = card.remove_threat(amount, script)
 	
-		if "side_scheme" == card.properties.get("type_code", "false"):
+		if card.is_card_type("side_scheme"):
 			card.check_scheme_defeat(script)
 
 
@@ -2294,6 +2423,42 @@ func deal_encounter(script: ScriptTask) -> int:
 
 	return retcode
 
+#rotates a card to the next player
+# cf The Crazy Gang
+func rotate_next(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+			
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+	
+	if gameData.get_team_size() < 2:
+		return CFConst.ReturnCode.FAILED
+	
+
+
+	if (costs_dry_run()): #not allowed ?
+		return retcode	
+	
+	for subject in script.subjects:
+		var current_controller_id = subject.get_controller_hero_id()
+		var next_controller_id = current_controller_id + 1
+		if  next_controller_id > gameData.get_team_size():
+			next_controller_id = 1
+		if subject.is_onbard():
+			var current_grid_name = subject.get_grid_name()
+			var new_grid_name = current_grid_name.replace(str(current_controller_id), str(next_controller_id))
+			var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(new_grid_name)
+			var slot: BoardPlacementSlot
+			if grid:
+				slot = grid.find_available_slot()			
+				subject.move_to(cfc.NMAP.board, -1, slot)
+				retcode = CFConst.ReturnCode.CHANGED	
+		else:
+			var current_pile_name = subject.get_parent().name.to_lower()
+			var new_pile_name = current_pile_name.replace(str(current_controller_id), str(next_controller_id))
+			subject.move_to(cfc.NMAP[new_pile_name])
+	return retcode
+
 func sequence(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
@@ -2392,6 +2557,8 @@ func recovery(script: ScriptTask) -> int:
 		var hero = subject
 		
 		hero.heal(hero.get_property("recover", 0))
+		var signal_details = {}
+		scripting_bus.emit_signal_on_stack("recovery_happened",  hero,  signal_details)
 
 	return CFConst.ReturnCode.CHANGED
 
@@ -2589,8 +2756,7 @@ func engage_nemesis (script:ScriptTask) -> int:
 	return reveal_nemesis(script)
 
 func get_nemesis_data(script:ScriptTask):
-	var my_hero_card = _get_identity_from_script(script)
-	var my_hero_id = my_hero_card.get_controller_hero_id()	
+	var my_hero_card = _get_identity_from_script(script)	
 	var my_nemesis_set = my_hero_card.get_property("card_set_code","") + "_nemesis"
 
 	var my_nemesis = null
@@ -2771,6 +2937,9 @@ func constraints(script: ScriptTask) -> int:
 					return 	CFConst.ReturnCode.FAILED
 				if gameData.is_interrupt_mode():
 					return 	CFConst.ReturnCode.FAILED
+			"villain_phase":
+				if !gameData.phaseContainer.is_villain_phase():
+					return CFConst.ReturnCode.FAILED
 			"first_player":
 				var first_player_id = gameData.first_player_hero_id()
 				if !gameData.can_i_play_this_hero(first_player_id):
@@ -2807,6 +2976,17 @@ func constraints(script: ScriptTask) -> int:
 		var already_in_play = cfc.NMAP.board.count_card_per_player_in_play(this_card)
 		if already_in_play >= max_per_hero_any * gameData.get_team_size():
 			return 	CFConst.ReturnCode.FAILED		
+
+	#Max per phase rule to play
+	var max_per_phase = script.get_property("max_per_phase", 0)
+	if max_per_phase:
+		var count = 0 
+		var played_this_phase = gameData.get_cards_played_this_phase()
+		for card in played_this_phase:
+			if this_card.canonical_name == card.canonical_name:
+				count += 1
+				if count >= max_per_phase:
+					return 	CFConst.ReturnCode.FAILED	
 
 
 	var teamup = script.get_property("team_up", [])

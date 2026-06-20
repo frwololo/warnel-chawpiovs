@@ -1,0 +1,151 @@
+{
+	"_comments": "Automated Test Slice and Dice with Aggressive Energy",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wolverine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Wolverine"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Wolverine's claws"
+				},
+			],
+			"enemies1": [
+				{
+					"card": "Badoon Warlord"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Slice and Dice #35009"
+				},
+				{
+					"card": "Aggressive Energy"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Slice and Dice"
+		},
+		{
+			"type": "target",
+			"value": "Rhino"
+		},
+		{
+			"type": "target",
+			"value": "Badoon Warlord"
+		},
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wolverine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 4
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Badoon Warlord"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Wolverine"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Wolverine's claws"
+				},
+			],
+			"enemies1": [],
+			"allies1": [],
+			"discard1": [
+				{
+					"card": "Strength"
+				},			
+				{
+					"card": "Aggressive Energy"
+				},
+				{
+					"card": "Slice and Dice  #35009"
+				}
+			]
+		}
+	}
+}

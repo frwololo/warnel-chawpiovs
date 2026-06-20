@@ -1,0 +1,1409 @@
+{
+	"\"I Got Better\"": {
+		"interrupt_card_dies": {
+			"trigger": "my_identity",
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "my_identity",
+					"token_name": "damage",
+					"modification": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_identity",
+							"property": "health",
+							"plus": -5
+						}
+					},
+					"set_to_mod": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_identity"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Adamantium Skeleton": {
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"trigger": "my_hero",
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "my_identity",
+					"alteration": 4
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "my_hero",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Adamantium Upgrades": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies",
+							"filter_max_per_host": 1
+						}
+					]
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				}
+			]
+		},
+		"attacks_gain": {
+			"__trigger__": "host",
+			"__tags__": "piercing"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 1,
+						"mental": 1,
+						"physical": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Aggressive Energy": {
+		"interrupt_pre_receive_damage": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "event"
+					},
+					"filter_properties2": {
+						"trait_attack": 1
+					}
+				}
+			],
+			"condition_all": {
+				"func_name": "paid_with_includes",
+				"func_params": {
+					"subject": "trigger",
+					"filter_state_source": [
+						{
+							"is_script_owner": true
+						}
+					]
+				}
+			},
+			"all": [
+				{
+					"name": "increase",
+					"subject": "interruptd_event",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Battle Fury": {
+		"give_to_player_max1": {},
+		"response": {
+			"event_name": "enemy_died",
+			"event_filters": {
+				"source": "my_hero",
+				"tags": [
+					"attack"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Berserker Barrage": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 4,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		},
+		"card_defeated": {
+			"event_filters": {
+				"secondary_source": "self"
+			},
+			"is_optional_all": true,
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"is_cost": true,
+					"subject": "my_hero"
+				},
+				{
+					"name": "attack",
+					"amount": 4,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Berserker Frenzy": {
+		"card_damaged": {
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"trigger": "my_hero",
+			"is_optional_board": true,
+			"display_section": "hero response",
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		},
+		"identity_changed_form": {
+			"trigger": "my_identity",
+			"display_section": "forced response",
+			"event_filters": {
+				"after": "alter_ego"
+			},
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Colossus - Piotr Rasputin": {
+		"alterants": {
+			"hand": [
+				{
+					"trigger": "self",
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": {
+						"func_name": "identity_has_trait",
+						"func_params": {
+							"trait": [
+								"x-men",
+								"mutant"
+							],
+							"multiplier": -1
+						}
+					}
+				}
+			]
+		}
+	},
+	"Command Center": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero": 1
+				}
+			]
+		},
+		"card_dies": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "side_scheme"
+					}
+				}
+			],
+			"event_filters": {
+				"tags": [
+					"thwart"
+				],
+				"filter_state_event_source": [
+					{
+						"filter_properties": {
+							"type_code": "ally"
+						}
+					}
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Death Factor": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"phase_ended": {
+			"event_filters": {
+				"phase": "player_phase"
+			},
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "host"
+				}
+			]
+		},
+		"interrupt_recovery": {
+			"trigger": "host",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Fastball Special": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"team_up": [
+						"Wolverine",
+						"Colossus"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"shortname": "Wolverine"
+									}
+								},
+								{
+									"filter_properties": {
+										"shortname": "Colossus"
+									}
+								}
+							],
+							"property": "attack"
+						}
+					},
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"tags": [
+						"overkill",
+						"piercing"
+					]
+				}
+			]
+		}
+	},
+	"Hack 'n' Slash": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"src_container": "hand_my_hero",
+					"subject_index": "random",
+					"subject_count": 1
+				},
+				{
+					"name": "deal_damage",
+					"subject": "my_identity",
+					"amount": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"subject": "previous"
+						}
+					}
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"src_container": "hand_current_activation_target",
+					"subject_index": "random",
+					"subject_count": 1
+				},
+				{
+					"name": "deal_damage",
+					"subject": "current_activation_target",
+					"amount": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"subject": "previous"
+						}
+					}
+				}
+			]
+		}
+	},
+	"Jubilee - Jubilation Lee": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "nop",
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"_comments": "remembering the card for remaining use"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_enemy",
+					"var_type": "subject",
+					"value": "previous",
+					"_comments": "remembering the card for alterant use"
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "phase_ended",
+					"script": {
+						"interrupt_attack_started": {
+							"filter_state_trigger": [
+								{
+									"filter_properties": {
+										"shortname": "Wolverine"
+									}
+								},
+								{
+									"filter_properties": {
+										"shortname": "Jubilee"
+									}
+								}
+							],
+							"event_filters": {
+								"tags": [
+									"basic power"
+								],
+								"target": "my_enemy"
+							},
+							"board": [
+								{
+									"name": "increase",
+									"amount": 2,
+									"subject": "interrupted_event"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Lady Deathstrike": {
+		"quickstrike": {},
+		"card_damaged": {
+			"event_filters": {
+				"attacker": "self",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"src_container": "hand_current_activation_target",
+					"subject_index": "random",
+					"subject_count": 1
+				}
+			]
+		}
+	},
+	"Logan": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"dest_container": "hand",
+					"src_container": [
+						"deck",
+						"discard",
+						"set_aside"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Wolverine's Claws"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Logan's Cabin": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "tutor",
+					"src_container": "discard",
+					"dest_container": "deck",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "max",
+					"selection_optional": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "wolverine"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Longshot": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "x-men"
+							}
+						}
+					]
+				}
+			]
+		},
+		"attack_happened": {
+			"trigger": "self",
+			"event_filters": {
+				"filter_state_event_target": [
+					{
+						"filter_properties": {
+							"type_code": "minion"
+						},
+						"filter_properties2": {
+							"trait_elite": 0
+						}
+					}
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"src_container": "deck_villain",
+					"subject_index": "top",
+					"subject_count": 1
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_printed_property",
+								"func_params": {
+									"subject": "previous",
+									"property": "boost_star"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "defeat_card",
+									"subject": "trigger_details_target"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Lunging Strike": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 8,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"tags": {
+						"if": {
+							"func_name": "get_trigger_details_property",
+							"func_params": {
+								"property": "trigger_type",
+								"property_value": "manual_override"
+							}
+						},
+						"then": [
+							"overkill"
+						],
+						"else": []
+					}
+				}
+			]
+		}
+	},
+	"Mean Swing": {
+		"interrupt": {
+			"event_name": "attack",
+			"trigger": "my_hero",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"is_cost": 1,
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_properties2": {
+								"trait_weapon": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "attack_happened",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "my_hero",
+									"alteration": 3
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Omega Red": {
+		"interrupt_enemy_attack": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_current_hero_target"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Outta My Way!": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "nop",
+					"subject": "target",
+					"is_cost": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "attack",
+					"amount": {
+						"if": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "previous",
+								"property": "guard"
+							}
+						},
+						"then": 5,
+						"else": {
+							"if": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "previous",
+									"property": "patrol"
+								}
+							},
+							"then": 5,
+							"else": 3
+						}
+					},
+					"subject": "previous"
+				}
+			]
+		}
+	},
+	"Past Demons": {
+		"give_obligation": {
+			"__to__": "Logan"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Flip then remove from the game": {
+					"obligation_flip_remove": {}
+				},
+				"Remove from the game": {
+					"obligation_remove": {}
+				},
+				"Flip then Stun & Confuse": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "my_identity",
+						"modification": 1,
+						"token_name": "stunned"
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "my_identity",
+						"modification": 1,
+						"token_name": "confused"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				],
+				"Stun & Confuse": [
+					{
+						"name": "mod_tokens",
+						"subject": "my_identity",
+						"modification": 1,
+						"token_name": "stunned"
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "my_identity",
+						"modification": 1,
+						"token_name": "confused"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Precision Strike": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		},
+		"card_defeated": {
+			"event_filters": {
+				"secondary_source": "self"
+			},
+			"all": [
+				{
+					"name": "heal",
+					"amount": 2,
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Psylocke - Betsy Braddock": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "psionic",
+					"modification": 2,
+					"subject": "self"
+				}
+			]
+		},
+		"interrupt_pre_receive_damage": {
+			"trigger": "self",
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "psionic",
+					"modification": -1,
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "trigger_details_target"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "trigger_details_target"
+				}
+			]
+		}
+	},
+	"Regenerative Healing": {
+		"manual": {
+			"hand": {
+				"Heal": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "heal",
+						"amount": 4,
+						"subject": "my_identity"
+					}
+				],
+				"Remove Stunned/Confused": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": 0,
+						"set_to_mod": true,
+						"subject": "my_identity"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "confused",
+						"modification": 0,
+						"set_to_mod": true,
+						"subject": "my_identity"
+					}
+				]
+			}
+		}
+	},
+	"Seeking Vengeance": {
+		"reveal": {
+			"all": [
+				{
+					"name": "enemy_attacks_you",
+					"is_cost": true,
+					"subject": "Lady Deathstrike"
+				},
+				{
+					"is_else": true,
+					"name": "move_card_to_board",
+					"destination_grid": "enemies_my_hero",
+					"subject": "tutor",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Lady Deathstrike"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Slice and Dice": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 3,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 3,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Sunfire - Shiro Yoshida": {
+		"card_played": {
+			"trigger": "self",
+			"event_filters": {
+				"from": "hand"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject_count": "all",
+					"subject": "attachments",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_optional": true,
+					"filter_state_attachment": [
+						{
+							"filter_func": {
+								"func_name": "property_contains",
+								"func_params": {
+									"property": "real_text",
+									"value": [
+										"hero response",
+										"hero interrupt"
+									]
+								}
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Tentacle Strike": {
+		"reveal": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"subject": "my_identity",
+					"amount": {
+						"if": {
+							"func_name": "is_stunned",
+							"func_params": {
+								"subject": "my_identity"
+							}
+						},
+						"then": 4,
+						"else": 1
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"subject": "my_identity",
+					"modification": 1
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"subject": "current_activation_target",
+					"amount": {
+						"if": {
+							"func_name": "is_stunned",
+							"func_params": {
+								"subject": "current_activation_target"
+							}
+						},
+						"then": 4,
+						"else": 1
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"subject": "current_activation_target",
+					"modification": 1
+				}
+			]
+		}
+	},
+	"The Carbonadium Synthesizer": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_leave_play",
+					"trigger": "Omega Red",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Track by Scent": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 3,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		},
+		"last_threat_removed": {
+			"event_filters": {
+				"source": "self"
+			},
+			"all": [
+				{
+					"name": "draw_cards",
+					"amount": 2
+				}
+			]
+		}
+	},
+	"Warrior Skill": {
+		"uses": {
+			"__name__": "warrior",
+			"__amount__": 3
+		},
+		"interrupt": {
+			"event_name": "attack_started",
+			"event_filters": {
+				"attacker": "my_hero"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"token_name": "warrior",
+					"modification": -1,
+					"subject": "self"
+				},
+				{
+					"name": "increase",
+					"amount": 1,
+					"subject": "interrupted_event"
+				}
+			]
+		}
+	},
+	"Weapon X": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "mutant"
+							}
+						}
+					]
+				}
+			],
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"is_cost": true,
+					"subject": "my_identity"
+				},
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"card_set_type_name_code": "hero"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck",
+					"dest_container": "hand"
+				}
+			]
+		}
+	},
+	"Wolverine": {
+		"step_started": {
+			"event_filters": {
+				"step_name": "PLAYER_TURN"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "heal",
+					"subject": "self",
+					"is_cost": true,
+					"amount": 2
+				}
+			]
+		}
+	},
+	"Wolverine's Claws": {
+		"manual": {
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "tutor",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_attack": 1
+							},
+							"filter_properties2": {
+								"type_code": "event"
+							}
+						}
+					],
+					"src_container": "hand_my_hero"
+				}
+			},
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "nop",
+					"subject": "tutor",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_attack": 1
+							},
+							"filter_properties2": {
+								"type_code": "event"
+							}
+						}
+					],
+					"src_container": "hand",
+					"needs_subject": true,
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "max",
+					"needs_selection": true
+				},
+				{
+					"name": "force_play_card",
+					"subject": "previous",
+					"additional_tags": [
+						"piercing"
+					],
+					"ignore_resource_cost": true,
+					"additional_scripts": [
+						{
+							"name": "deal_damage",
+							"amount": {
+								"func_name": "get_subject_int_printed_property",
+								"func_params": {
+									"subject": "self",
+									"property": "cost"
+								}
+							},
+							"subject": "my_hero",
+							"is_cost": true
+						}
+					]
+				}
+			]
+		}
+	}
+}

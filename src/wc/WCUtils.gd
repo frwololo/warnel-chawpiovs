@@ -457,6 +457,7 @@ static func has_interrupt_or_response (script_definition, trigger: String) -> bo
 
 	return false
 
+#TODO call find_string_in_variant instead
 static func is_string_in_variant (script_definition, needle: String) -> bool:
 	match typeof(script_definition):
 		TYPE_DICTIONARY:
@@ -478,6 +479,30 @@ static func is_string_in_variant (script_definition, needle: String) -> bool:
 			return (needle in script_definition)
 	return false
 
+static func find_string_in_variant (script_definition, needle: String, result_path:Array = []) -> Array:
+	match typeof(script_definition):
+		TYPE_DICTIONARY:
+			for key in script_definition.keys():
+				var value = script_definition[key]
+				var result = find_string_in_variant(value, needle, result_path)
+				if result:
+					result = [key] + result
+					return result
+
+				#do the key too	
+				if ((typeof(key) == TYPE_STRING) and (needle in key)):
+					return result_path
+
+		TYPE_ARRAY:
+			for x in script_definition:
+				var result =  find_string_in_variant(x, needle, result_path)
+				if result:
+					return result
+
+		TYPE_STRING:
+			if (needle in script_definition):
+				return [script_definition]
+	return result_path
 
 #replace "REAL" (float) numbers into "INT".
 #Patch utility for json loading issues

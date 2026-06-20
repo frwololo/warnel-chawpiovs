@@ -629,6 +629,9 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	var force_horizontal = CFConst.FORCE_HORIZONTAL_CARDS.get(lc_card_type, false)
 	card_data["_horizontal"] = force_horizontal
 
+	if lc_card_type == "player_side_scheme":
+		card_data["secondary_type_code"] = "side_scheme"
+
 	var default_properties = CFConst.DEFAULT_PROPERTIES_BY_TYPE.get(lc_card_type, {})
 	for k in default_properties:
 		card_data[k] = default_properties[k] 

@@ -1,0 +1,1630 @@
+{
+	"\"Come Get Me, Bub!\"": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"destination_grid": "enemies_my_hero",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "heal",
+					"amount": 3,
+					"subject": "my_identity"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"subject": "my_identity",
+					"token_name": "tough"
+				}
+			]
+		}
+	},
+	"\"Off with His Head!\"": {
+		"reveal": {
+			"all": [
+				{
+					"name": "enemy_activates",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"'Port Away": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "discard",
+					"is_cost": true,
+					"subject": "tutor",
+					"src_container": "hand",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Bamf!"
+							}
+						}
+					]
+				},
+				{
+					"name": "change_form",
+					"subject": "my_identity"
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_identity"
+				}
+			]
+		}
+	},
+	"'Port and Punch": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 3,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 3,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_func": {
+								"func_name": "count_attachments",
+								"func_params": {
+									"subject": "trigger",
+									"filter_state_attachment": [
+										{
+											"filter_properties": {
+												"shortname": "Bamf!"
+											}
+										}
+									]
+								}
+							},
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Astonishing X-Men": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "defense_happened",
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_friendly",
+					"filter_properties": {
+						"trait_x-men": 1,
+						"comparison": "ge"
+					}
+				}
+			],
+			"event_filters": {
+				"damage": "<1"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "remove_threat",
+					"subject": "self",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Azazel": {
+		"quickstrike": {},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_have_upgrade_attachments",
+					"trigger": "self",
+					"alteration": 1
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "deal_encounter",
+					"subject": "self",
+					"target_identity": "Kurt Wagner"
+				}
+			]
+		}
+	},
+	"Azazel's Sword": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Crossfire",
+					"is_cost": true
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "villain",
+					"is_else": true
+				}
+			]
+		},
+		"attacks_gain": {
+			"__trigger__": "host",
+			"__tags__": "piercing"
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "random",
+					"src_container": "hand_current_hero_target"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Bamf!": {
+		"manual": {
+			"hand": [
+				{
+					"name": "attach_to_card",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies",
+							"filter_max_per_host": 1
+						}
+					]
+				}
+			]
+		},
+		"interrupt_enemy_initiates_attack": {
+			"trigger": "host",
+			"is_optional_board": true,
+			"action_name_id": "bamf_defense",
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "set_defender",
+					"subject": "Nightcrawler",
+					"basic_defense": true,
+					"exhaust_defenders": false
+				}
+			]
+		}
+	},
+	"Brimstone Dimension": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "deal_encounter",
+					"subject": "find",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Azazel"
+							},
+							"filter_faceup": true
+						}
+					],
+					"target_identity": "event_source_hero"
+				}
+			]
+		}
+	},
+	"Brimstone Strike": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "find",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Azazel"
+							},
+							"filter_faceup": true
+						}
+					]
+				},
+				{
+					"name": "enemy_schemes",
+					"subject": "previous"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "find",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Azazel"
+							},
+							"filter_faceup": true
+						}
+					]
+				}
+			]
+		}
+	},
+	"Change of Fortune": {
+		"give_to_player_max1": {},
+		"card_dies": {
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_enemies"
+				}
+			],
+			"event_filters": {
+				"source": "my_hero"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"villain_phase"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 2
+				}
+			]
+		}
+	},
+	"Combine Forces": {
+		"manual": {
+			"hand": [
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly",
+							"filter_properties": {
+								"trait_x-men": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly",
+							"filter_properties": {
+								"trait_x-force": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "defeat_card",
+					"needs_subject": true,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_elite": 0
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Crisis of Faith": {
+		"give_obligation": {
+			"__to__": "Kurt Wagner"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Flip then remove from the game": {
+					"obligation_flip_remove": {}
+				},
+				"Remove from the game": {
+					"obligation_remove": {}
+				},
+				"Flip then Discard all Attack/Defense": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "discard",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "hand",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "event"
+								},
+								"filter_properties2": {
+									"trait_attack": 1
+								}
+							},
+							{
+								"filter_properties": {
+									"type_code": "event"
+								},
+								"filter_properties2": {
+									"trait_defense": 1
+								}
+							}
+						]
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				],
+				"Discard all Attack/Defense": [
+					{
+						"name": "discard",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "hand",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "event"
+								},
+								"filter_properties2": {
+									"trait_attack": 1
+								}
+							},
+							{
+								"filter_properties": {
+									"type_code": "event"
+								},
+								"filter_properties2": {
+									"trait_defense": 1
+								}
+							}
+						]
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Daytripper - Amanda Sefton": {
+		"self_moved_to_board": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "nop",
+					"subject": "tutor",
+					"is_cost": true,
+					"src_container": [
+						"discard",
+						"deck"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Bamf!"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_bamf",
+					"var_type": "subject",
+					"value": "previous",
+					"_comments": "remembering the card for use. is_cost set to true to ensure this gets computed before subjects"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "host_bamf",
+					"subject": "self"
+				}
+			]
+		},
+		"host_bamf": {
+			"all": [
+				{
+					"name": "nop",
+					"subject": "target",
+					"needs_subject": true,
+					"is_cost": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "host_card",
+					"host": "previous",
+					"subject": "my_bamf",
+					"is_cost": true,
+					"tags": [
+						"disable_attach_trigger"
+					],
+					"_comments": "disable_attach_trigger in tags prevents the attachment from moving somewhere else as it comes into play"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_func": {
+								"func_name": "count_attachments",
+								"func_params": {
+									"subject": "trigger",
+									"filter_state_attachment": [
+										{
+											"filter_properties": {
+												"shortname": "Bamf!"
+											}
+										}
+									]
+								}
+							},
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Executioner": {
+		"reveal": {
+			"all": [
+				{
+					"name": "i_attack",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "get_remaining_damage",
+					"func_params": {
+						"property": "attack"
+					},
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly"
+						}
+					],
+					"tags": [
+						"executioner"
+					]
+				}
+			]
+		},
+		"card_defeated": {
+			"event_filters": {
+				"source": "self",
+				"tags": [
+					"executioner"
+				]
+			},
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "trigger",
+					"dest_container": "removed_from_game"
+				}
+			]
+		}
+	},
+	"Gambit - Remy LeBeau": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "tuck_card_under_me",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 3,
+					"src_container": "deck_villain",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_boost",
+					"var_type": "subject",
+					"value": "previous",
+					"_comments": "remembering the card for use"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "my_boost"
+						}
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "my_boost"
+						}
+					}
+				}
+			]
+		}
+	},
+	"Gunboat Diplomacy": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly",
+							"filter_properties": {
+								"trait_x-force": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_xforce_ally",
+					"var_type": "subject",
+					"value": "previous",
+					"_comments": "remembering the card for use"
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly",
+							"filter_properties": {
+								"trait_x-men": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_xmen_ally",
+					"var_type": "subject",
+					"value": "previous",
+					"_comments": "remembering the card for use"
+				},
+				{
+					"name": "thwart",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_xmen_ally",
+							"property": "thwart",
+							"plus": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "my_xforce_ally",
+									"property": "thwart"
+								}
+							}
+						}
+					},
+					"selection_type": "as_much_as_possible",
+					"selection_what_to_count": "remove_threat",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_xmen_ally",
+							"property": "thwart",
+							"plus": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "my_xforce_ally",
+									"property": "thwart"
+								}
+							}
+						}
+					},
+					"selection_type": "as_much_as_possible",
+					"selection_what_to_count": "remove_threat",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Jester": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": {
+						"func_name": "is_confused",
+						"func_params": {
+							"subject": "my_identity"
+						}
+					},
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_same_controller": true,
+							"filter_properties": {
+								"type_code": "support"
+							}
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "confused",
+					"subject": "my_identity"
+				}
+			]
+		}
+	},
+	"Kurt Wagner": {
+		"once_per_round": {
+			"__name__": "__bamf"
+		},
+		"manual": {
+			"board": {
+				"Bamf!": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": -1,
+						"token_name": "__bamf",
+						"subject": "self"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "hand",
+						"subject": "tutor",
+						"src_container": "deck",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"shortname": "Bamf!"
+								}
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Kurt's Chapel": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "recover",
+					"trigger": "my_identity",
+					"alteration": 1
+				}
+			]
+		},
+		"recovery_happened": {
+			"trigger": "my_identity",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_form"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Kurt's Cutlasses": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "restricted_limit",
+					"trigger": "my_identity",
+					"alteration": -1,
+					"_comments": "hack to make it count as 2 restricted"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "my_hero",
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"trigger": "my_hero",
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "my_hero",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Moira MacTaggert": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "mutant"
+							}
+						}
+					]
+				}
+			]
+		},
+		"interrupt_change_form": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"token_name": "__mutant",
+					"modification": {
+						"func_name": "has_trait",
+						"func_params": {
+							"subject": "trigger",
+							"trait": "mutant"
+						}
+					},
+					"set_to_mod": true
+				}
+			]
+		},
+		"response_identity_changed_form": {
+			"event_filters": {
+				"before": "alter_ego",
+				"after": "hero"
+			},
+			"is_optional_board": true,
+			"condition_board": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"subject": "self",
+					"token_name": "__mutant"
+				}
+			},
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1,
+					"subject": "trigger"
+				}
+			]
+		},
+		"identity_changed_form": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"token_name": "__mutant",
+					"modification": 0,
+					"set_to_mod": true
+				}
+			]
+		}
+	},
+	"Nightcrawler": {
+		"once_per_phase": {
+			"__name__": "__teleportation"
+		},
+		"manual": {
+			"board": {
+				"Rapid Teleportation": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 1
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": -1,
+						"token_name": "__teleportation",
+						"subject": "self"
+					},
+					{
+						"name": "move_card_to_container",
+						"needs_subject": true,
+						"subject": "tutor",
+						"src_container": "discard",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"shortname": "Bamf!"
+								}
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Northstar - Jean-Paul Beaubier": {
+		"interrupt_boost_card_resolved": {
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "deal_damage",
+					"subject": "self",
+					"amount": 1
+				},
+				{
+					"name": "prevent",
+					"subject": "current_activation",
+					"amount": "trigger_details_boost_icons"
+				}
+			]
+		}
+	},
+	"Powerful Punch": {
+		"interrupt_enemy_attack": {
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 4,
+					"subject": "trigger"
+				}
+			]
+		}
+	},
+	"Prehensile Tail": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "restricted_limit",
+					"trigger": "my_identity",
+					"alteration": -1,
+					"_comments": "hack to make it count as 2 restricted"
+				}
+			]
+		},
+		"resource": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "event"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Queen of Hearts": {
+		"reveal": {
+			"all": [
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"is_cost": true,
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "The Crazy Gang"
+							}
+						}
+					]
+				},
+				{
+					"name": "deal_encounter",
+					"subject": "my_identity",
+					"is_else": true
+				}
+			]
+		}
+	},
+	"Riposte": {
+		"interrupt": {
+			"event_name": "enemy_attack_damage",
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "set_defender",
+					"is_cost": true,
+					"subject": "my_hero",
+					"_comments": "set_defender here has a double role, 1) sets my_hero as a defender if not already the case, 2) because it is a cost, it will fail if there is already a different defender chosen"
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "enemy_activation_finished",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "defense",
+									"trigger": "my_hero",
+									"alteration": 2
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"if_no_damage": [
+							{
+								"name": "deal_damage",
+								"amount": 3,
+								"subject": "trigger"
+							}
+						]
+					}
+				}
+			]
+		}
+	},
+	"Rogue - Anna Marie": {
+		"once_per_round": {
+			"__name__": "__traits"
+		},
+		"manual": {
+			"board": {
+				"Gain Traits": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"token_name": "__traits",
+						"modification": -1,
+						"subject": "self"
+					},
+					{
+						"name": "deal_damage",
+						"is_cost": true,
+						"subject": "target",
+						"subject_exclude": "self",
+						"filter_state_subject": [
+							{
+								"filter_group": "group_friendly"
+							}
+						]
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_ally",
+						"var_type": "subject",
+						"value": "previous",
+						"_comments": "remembering the card for use"
+					},
+					{
+						"name": "add_script",
+						"end_condition": "round_ended",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"trigger": "self",
+										"alteration": {
+											"func_name": "get_subject_int_printed_property",
+											"func_params": {
+												"subject": "my_ally",
+												"property": "attack"
+											}
+										}
+									},
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "thwart",
+										"trigger": "self",
+										"alteration": {
+											"func_name": "get_subject_int_printed_property",
+											"func_params": {
+												"subject": "my_ally",
+												"property": "thwart"
+											}
+										}
+									},
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "trait_*",
+										"trigger": "self",
+										"per_boardseek": {
+											"subject": "my_ally",
+											"filter_has_requested_property": true
+										},
+										"alteration": "per_boardseek",
+										"_comments": "a bit dirty to use boardseek here but this is inspired by code that worked for TROR's Absorbing Man"
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		}
+	},
+	"Scout Ahead": {
+		"manual": {
+			"hand": {
+				"Remove 3": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "thwart",
+						"amount": 3,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_schemes"
+							}
+						]
+					}
+				],
+				"Remove 3x2": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "discard",
+						"is_cost": true,
+						"subject": "tutor",
+						"src_container": "hand",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"shortname": "Bamf!"
+								}
+							}
+						]
+					},
+					{
+						"name": "thwart",
+						"amount": 3,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_schemes"
+							}
+						]
+					},
+					{
+						"name": "thwart",
+						"amount": 3,
+						"subject": "target",
+						"subject_exclude": "previous",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_schemes"
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Tally Ho!": {
+		"response_script_executed": {
+			"event_filters": {
+				"action_name_id": "bamf_defense"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "hand",
+					"subject": "trigger"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 3,
+					"subject": "current_activation_enemy"
+				}
+			]
+		}
+	},
+	"Teleport Drop": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 8,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"is_cost": 1,
+					"selection_type": "max",
+					"filter_state_seek": [
+						{
+							"filter_func": {
+								"func_name": "count_attachments",
+								"func_params": {
+									"filter_state_attachment": [
+										{
+											"filter_properties": {
+												"shortname": "Bamf!"
+											}
+										}
+									]
+								}
+							},
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"subject": "previous",
+					"token_name": "stunned"
+				},
+				{
+					"name": "discard",
+					"subject": "attachments",
+					"attachments_host": "previous",
+					"filter_state_attachments": [
+						{
+							"filter_properties": {
+								"shortname": "Bamf!"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"The Crazy Gang": {
+		"enemy_scheme_happened": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					},
+					"filter_properties2": {
+						"trait_elite": 0
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "deal_encounter",
+					"subject": "trigger",
+					"target_identity": "current_hero_target"
+				},
+				{
+					"name": "rotate_next",
+					"subject": "trigger"
+				}
+			]
+		}
+	},
+	"The Power of Protection": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "protection"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Tweedledope": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": {
+						"func_name": "is_stunned",
+						"func_params": {
+							"subject": "my_identity"
+						}
+					},
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_same_controller": true,
+							"filter_properties": {
+								"type_code": "upgrade"
+							}
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "stunned",
+					"subject": "my_identity"
+				}
+			]
+		}
+	},
+	"Under Control": {
+		"manual": {
+			"hand": [
+				{
+					"name": "attach_to_card",
+					"subject": "target",
+					"is_cost": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_max_per_host": 1
+						}
+					]
+				}
+			]
+		},
+		"response": {
+			"event_name": "defense_happened",
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_identities"
+				}
+			],
+			"event_filters": {
+				"attacker": "host",
+				"damage": "<1"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 4,
+					"subject": "host"
+				}
+			]
+		}
+	}
+}

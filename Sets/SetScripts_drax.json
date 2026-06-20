@@ -1,0 +1,1085 @@
+{
+	"\"Bring It!\"": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "draw_cards",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_group": "group_enemies_my_hero"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"\"Fight Me, Coward!\"": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				},
+				{
+					"name": "villain_attacks_you"
+				}
+			]
+		}
+	},
+	"\"I Will Destroy You!\"": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "surge"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "enemy_attacks_you",
+					"is_cost": true,
+					"subject": "Yotat the Destroyer"
+				},
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "Yotat the Destroyer",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				},
+				{
+					"is_else": true,
+					"name": "surge"
+				}
+			]
+		}
+	},
+	"\"Think Fast!\"": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "guardian"
+							}
+						}
+					]
+				},
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "deal_damage",
+					"subject": "my_identity",
+					"amount": 1
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "villain",
+					"modification": 1,
+					"token_name": "confused"
+				}
+			]
+		}
+	},
+	"Athletic Conditioning": {
+		"manual": {
+			"hand": {
+				"Remove Stun": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"is_cost": true,
+						"modification": -1,
+						"subject": "my_hero"
+					}
+				],
+				"Remove Confused": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "confused",
+						"is_cost": true,
+						"modification": -1,
+						"subject": "my_hero"
+					}
+				]
+			}
+		}
+	},
+	"Challenge Accepted": {
+		"_surge": {},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "property",
+					"sort_name": "attack",
+					"sort_descending": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		},
+		"card_damaged": {
+			"trigger": "host",
+			"damage": ">=4",
+			"filter_state_event_attacker": [
+				{
+					"filter_properties": {
+						"shortname": "Drax"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Counter-Punch": {
+		"response": {
+			"event_name": "defense_happened",
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "attack",
+					"subject": "trigger_details_attacker"
+				}
+			]
+		}
+	},
+	"Cull the Weak": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"alteration": 2
+				}
+			]
+		}
+	},
+	"DWI Theet Mastery": {
+		"basic_attack_happened": {
+			"event_filters": {
+				"attacker": "my_hero"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Deflection": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"filter_state_event_target": [
+					{
+						"filter_group": "group_identities"
+					}
+				],
+				"tags": [
+					"attack"
+				],
+				"amount": ">0"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": 5
+				}
+			]
+		},
+		"event_prevented": {
+			"trigger": "self",
+			"event_filters": {
+				"amount_prevented": ">1"
+			},
+			"board": [
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"src_container": "deck",
+					"subject_count": "trigger_details_amount_prevented",
+					"sort_descending": true,
+					"up_to": true
+				}
+			]
+		}
+	},
+	"Drax #19001a": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "vengeance"
+					}
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "villain",
+			"event_filters": {
+				"target": "self"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_tokens<3",
+								"func_params": {
+									"subject": "self",
+									"token_name": "vengeance"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"subject": "self",
+									"modification": 1,
+									"token_name": "vengeance"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "draw_cards",
+							"amount": 1
+						}
+					]
+				}
+			]
+		}
+	},
+	"Drax #19001b": {
+		"identity_changed_form": {
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"subject": "self",
+					"token_name": "vengeance"
+				}
+			},
+			"board": [
+				{
+					"name": "heal",
+					"subject": "self",
+					"amount": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "self",
+							"token_name": "vengeance",
+							"multiplier": 2
+						}
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 0,
+					"set_to_mod": true,
+					"token_name": "vengeance"
+				}
+			]
+		}
+	},
+	"Drax's Knife": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "my_hero",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Drax's Other Knife": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "my_hero",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Enhanced Physique": {
+		"uses": {
+			"__name__": "physical",
+			"__amount__": 3
+		},
+		"resource": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_resource"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"modification": -1,
+					"is_cost": true,
+					"token_name": "physical"
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "physical"
+				}
+			]
+		}
+	},
+	"Gamora": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "guardian"
+							}
+						}
+					]
+				}
+			]
+		},
+		"response": {
+			"event_name": [
+				"thwart_happened",
+				"attack_happened"
+			],
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "event"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck",
+					"dest_container": "hand"
+				}
+			]
+		}
+	},
+	"Hard Knocks": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 4,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"event_filters": {
+				"secondary_source": "self"
+			},
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"subject": "my_identity",
+					"token_name": "tough"
+				}
+			]
+		}
+	},
+	"Indomitable": {
+		"response": {
+			"event_name": "defense_happened",
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Intimidation": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_hero",
+							"property": "attack"
+						}
+					},
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Knife Leap": {
+		"alterants": {
+			"hand": [
+				{
+					"trigger": "self",
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "Drax",
+							"token_name": "vengeance",
+							"multiplier": -1
+						}
+					}
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "attack",
+			"trigger": "my_hero",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "add_script",
+					"end_condition": "basic_attack_happened",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "my_hero",
+									"alteration": 5
+								}
+							]
+						},
+						"interrupt_pre_receive_damage": {
+							"event_filters": {
+								"tags": [
+									"attack"
+								]
+							},
+							"trigger": "my_hero",
+							"board": [
+								{
+									"name": "replacement_effect",
+									"subject": "interrupted_event",
+									"replacements": {
+										"additional_tags": [
+											"piercing",
+											"overkill"
+										]
+									}
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Leading Blow": {
+		"interrupt": {
+			"event_name": "attack",
+			"trigger": "my_hero",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_count": 1,
+					"is_cost": 1,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_discarded_encounter",
+					"var_type": "subject",
+					"value": "previous",
+					"_comments": "remembering the card for alterant use"
+				},
+				{
+					"name": "add_script",
+					"end_condition": "attack_happened",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "my_hero",
+									"alteration": {
+										"func_name": "count_boost_icons",
+										"func_params": {
+											"subject": "my_discarded_encounter",
+											"multiplier": -1
+										}
+									}
+								}
+							]
+						},
+						"interrupt_attack_happened": {
+							"event_filters": {
+								"damage": ">0"
+							},
+							"all": [
+								{
+									"name": "ready_card",
+									"subject": "my_hero"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Mantis": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "heal",
+					"amount": 3,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"need_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Martyr - Phyla-Vell": {
+		"interrupt_card_dies": {
+			"trigger": "another",
+			"event_filters": {
+				"tags": [
+					"attack"
+				],
+				"source": "self"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_enemies"
+				}
+			],
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "__get_tough",
+					"modification": 1,
+					"set_to_mod": true,
+					"subject": "self"
+				}
+			]
+		},
+		"receive_damage": {
+			"condition_board": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"subject": "self",
+					"token_name": "__get_tough"
+				}
+			},
+			"event_filters": {
+				"target": "self",
+				"tags": [
+					"consequential_damage"
+				]
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "__get_tough",
+					"modification": -1,
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Memories of Another Life": {
+		"give_obligation": {
+			"__to__": "Drax"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Flip then remove from the game": {
+					"obligation_flip_remove": {}
+				},
+				"Remove from the game": {
+					"obligation_remove": {}
+				},
+				"Flip then Stun": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "surge",
+						"amount": {
+							"if": {
+								"func_name": "is_stunned",
+								"func_params": {
+									"subject": "Drax"
+								}
+							},
+							"then": 1,
+							"else": 0
+						}
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "my_identity",
+						"modification": 1,
+						"token_name": "stunned"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				],
+				"Stun": [
+					{
+						"name": "surge",
+						"amount": {
+							"if": {
+								"func_name": "is_stunned",
+								"func_params": {
+									"subject": "Drax"
+								}
+							},
+							"then": 1,
+							"else": 0
+						}
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "my_identity",
+						"modification": 1,
+						"token_name": "stunned"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Moondragon - Heather Douglas": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"is_cost": true,
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "i_attack",
+					"action_owner": "previous",
+					"subject": "target",
+					"needs_subject": true,
+					"subject_exclude": "previous",
+					"subject_count": 1,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Parry": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "my_hero",
+				"amount": ">0"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_hero",
+							"property": "attack",
+							"multiplier": 2
+						}
+					}
+				}
+			]
+		}
+	},
+	"Payback": {
+		"enemy_attack_happened": {
+			"trigger": "villain",
+			"event_filters": {
+				"target": "self"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "attack",
+					"subject": "villain",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_hero",
+							"property": "attack"
+						}
+					}
+				}
+			]
+		}
+	},
+	"Regroup": {
+		"interrupt_card_dies": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "ally"
+					}
+				}
+			],
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "return_to_owner_hand",
+					"subject": "trigger"
+				}
+			]
+		},
+		"round_ended": {
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Subdue": {
+		"interrupt": {
+			"event_name": "enemy_initiates_attack",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "save_variable",
+					"var_name": "my_enemy",
+					"var_type": "subject",
+					"value": "trigger",
+					"_comments": "remembering the card for alterant use"
+				},
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "my_enemy",
+									"alteration": -3
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Too Stubborn to Die": {
+		"interrupt_card_dies": {
+			"trigger": "my_hero",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "my_hero",
+					"token_name": "damage",
+					"modification": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_hero",
+							"property": "health",
+							"plus": -4
+						}
+					},
+					"set_to_mod": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "removed_from_game",
+					"subject": "self"
+				}
+			]
+		}
+	}
+}

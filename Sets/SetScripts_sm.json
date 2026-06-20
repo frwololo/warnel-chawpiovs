@@ -95,7 +95,7 @@
 		},
 		"_manhattan_defeat_check": {
 			"card_moved_to_board": {
-				"_silent": "true",
+				"_silent": true,
 				"board": [
 					{
 						"name": "conditional_script",
@@ -553,7 +553,7 @@
 						"deck_villain",
 						"set_aside",
 						"discard_villain"
-					],
+					]
 				}
 			]
 		}
@@ -4736,7 +4736,7 @@
 						"deck_villain",
 						"set_aside",
 						"discard_villain"
-					],
+					]
 				}
 			]
 		},
@@ -8461,7 +8461,7 @@
 					}
 				}
 			],
-			"is_optional_board": "true",
+			"is_optional_board": true,
 			"board": [
 				{
 					"name": "draw_cards",

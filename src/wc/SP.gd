@@ -27,6 +27,8 @@ const KEY_SUBJECT_CURRENT_ACTIVATION_TARGET:= "current_activation_target"
 const KEY_SUBJECT_CURRENT_HERO_TARGET:= "current_hero_target"
 const KEY_SUBJECT_EVENT_SOURCE_HERO:= "event_source_hero"
 const KEY_SUBJECT_V_ATTACHMENTS:= "attachments"
+const KEY_SUBJECT_V_CARDS_PLAYED_THIS_PHASE:= "cards_played_this_phase"
+const  KEY_SUBJECT_V_CARDS_PLAYED_THIS_ROUND:= "cards_played_this_round"
 const KEY_ATTACHMENTS_HOST:= "attachments_host"
 
 const FILTER_HOST_OF := "filter_is_host_of"
@@ -460,7 +462,9 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 
 		if !check_attachment_validity(host, hosted):
 			return false
-					
+
+	var type_code = card.get_property("type_code", "")
+						
 	#check for special conditions if card is an attack
 	if ((script_name == "attack") or ("attack" in tags)):			
 		if action_character:
@@ -470,6 +474,9 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 				var valid_targets = _get_subjects_simplified(can_only_attack, action_character)
 				if not card in valid_targets:
 					return false
+					
+			if action_character.get_property("cannot_attack_" + type_code, 0, true):
+				return false
 		
 		#attack is guarded and cannot proceed
 		var guard_status = attack_guarded_status(card, action_character, owner_card)
@@ -481,14 +488,14 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 		if card.get_property("cannot_be_thwarted", 0, true):
 			return false
 		if owner_card and owner_card.get_property("cannot_thwart_side_schemes", 0, true):
-			if card.get_property("type_code", "") == "side_scheme":
+			if card.is_card_type("side_scheme"):
 				return false
 		
 		#thwart is patroled and cannot proceed
 		if !thwart_unpatroled(card, action_character, owner_card):
 			return false	
 
-	var type_code = card.get_property("type_code", "")
+
 	#cannot thwart side schemes
 	if ((script_name == "thwart") or ("thwart" in tags)):
 		if owner_card.get_property("cannot_thwart_" + type_code, 0, true):

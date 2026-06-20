@@ -290,7 +290,8 @@ const Z_INDEX_HAND_CARDS_NORMAL :=200
 # basic_thwart_happened,
 const OPTIONAL_SIGNALS:= [
 	"about_to_reveal",
-	
+	"ally_played",
+		
 	"boost_card_resolved",
 	"bypass_guard_happened", 
 	"bypass_crisis_happened",
@@ -298,16 +299,21 @@ const OPTIONAL_SIGNALS:= [
 
 	"card_exhausted",
 	"card_leaves_play",
-	"card_played",
 	"card_readied",
-		
+
+	"event_played",
+
 	"identity_changed_form",
 	
 	"paid_as_resource",
 	"pile_emptied",
+	"player_side_scheme_played",
 	
 	"script_executed",
-	
+	"support_played",
+
+	"upgrade_played",
+		
 	"villain_unique_card_conflict",
 ]
 #unless a card registers an interrupt, these signals will
@@ -318,6 +324,8 @@ const NO_STACK_BY_DEFAULT_SIGNALS:= [
 	"card_moved_to_board",
 	"card_moved_to_hand",	
 	"card_moved_to_pile",
+	"card_played",
+		
 	"step_about_to_end",		
 	"step_about_to_start",
 	"step_ended",	
@@ -333,7 +341,7 @@ const TYPES_TO_GROUPS := {
 	"upgrade": ["group_upgrade_support", "play_area"],
 	"support": ["group_upgrade_support", "play_area"],
 	"main_scheme" : ["group_schemes", "play_area"],
-	"player_scheme" : ["group_schemes", "play_area"],
+	"player_side_scheme" : ["group_schemes", "play_area"],
 	"side_scheme" : ["group_schemes", "group_side_schemes", "play_area"],
 	"minion" : ["group_enemies", "group_characters", "play_area"],
 	"villain" : ["group_enemies", "group_villains", "group_characters", "play_area"],
@@ -382,11 +390,12 @@ const PLAYER_CARD_TYPES:= [
 	"alter_ego", 
 	"resource", 
 	"support", 
-	"upgrade", 
+	"upgrade",
+	"player_side_scheme", 
 ]
 const FORCE_HORIZONTAL_CARDS := {
 	"main_scheme" : true,
-	"player_scheme" : true,
+	"player_side_scheme" : true,
 	"side_scheme" : true,
 }
 
@@ -420,6 +429,7 @@ const TYPECODE_TO_GRID := {
 	"support" : "upgrade_support",
 	"minion" : "enemies",
 	"side_scheme" : "schemes",
+	"player_side_scheme" : "schemes",
 	"main_scheme": "schemes",
 	"environment" : "villain_misc"
 }
@@ -699,7 +709,7 @@ const DEFAULT_TOKEN_MAX_VALUE := {
 }
 
 const AUTO_KEYWORDS := {
-	"alliance" : "bool",
+	"alliance" : "int",
 	"assault" : "bool",
 	"form" : "bool",
 	"guard" : "int",
@@ -707,6 +717,7 @@ const AUTO_KEYWORDS := {
 	"incite" : "int",
 	"linked" : "string",
 	"max 1 per player": "int",
+	"max 1 per phase": "int",	
 	"overkill" : "int",
 	"patrol" : "int",
 	"peril" : "bool",
@@ -852,6 +863,7 @@ const SCENG_TRIGGER_DETAILS_ERASE_FROM_CHILDREN_SCRIPTS := [
 const DAMAGE_TRANSFER_SCRIPT_PROPERTIES:= [
 	"if_damage",
 	"if_no_damage",
+	"increase_amount",	
 	"overkill"
 ]
 
@@ -975,16 +987,16 @@ const DEFAULT_SETTINGS:= {
 		"ant" : "https://marvelcdb.com/api/public/cards/ant.json", #Ant-Man Hero Pack
 		"wsp" : "https://marvelcdb.com/api/public/cards/wsp.json", #Wasp Hero Pack
 		"qsv" : "https://marvelcdb.com/api/public/cards/qsv.json", #Quicksilver Hero Pack						
-#		"scw": "https://marvelcdb.com/api/public/cards/scw.json", #Scarlet Witch Hero Pack
+		"scw": "https://marvelcdb.com/api/public/cards/scw.json", #Scarlet Witch Hero Pack
 #cycle 3		
 		"gmw" : "https://marvelcdb.com/api/public/cards/gmw.json", #Galaxy's Most Wanted Expansion Box				
 		"stld" : "https://marvelcdb.com/api/public/cards/stld.json", #Star-Lord Hero Pack
-#		"gam": "https://marvelcdb.com/api/public/cards/gam.json", #Gamora Hero Pack	
-#		"drax": "https://marvelcdb.com/api/public/cards/drax.json", #Drax Hero Pack	
-#		"vnm": "https://marvelcdb.com/api/public/cards/vnm.json", #Venom Hero Pack
+		"gam": "https://marvelcdb.com/api/public/cards/gam.json", #Gamora Hero Pack	
+		"drax": "https://marvelcdb.com/api/public/cards/drax.json", #Drax Hero Pack	
+		"vnm": "https://marvelcdb.com/api/public/cards/vnm.json", #Venom Hero Pack
 #cycle 4
 		"mts" : "https://marvelcdb.com/api/public/cards/mts.json", #Mad Titan's Shadow Expansion Box
-#		"nebu": "https://marvelcdb.com/api/public/cards/nebu.json", #Nebula Hero Pack	
+		"nebu": "https://marvelcdb.com/api/public/cards/nebu.json", #Nebula Hero Pack	
 		"warm" : "https://marvelcdb.com/api/public/cards/warm.json", #War Machine Hero Pack
 #		"hood": "https://marvelcdb.com/api/public/cards/hood.json", #The Hood scenario pack	
 #		"valk": "https://marvelcdb.com/api/public/cards/valk.json", #Valkyrie Hero Pack	
@@ -999,23 +1011,23 @@ const DEFAULT_SETTINGS:= {
 		"mut_gen": "https://marvelcdb.com/api/public/cards/mut_gen.json", #Mutant Genesis Expansion Box	
 #		"cyclops": "https://marvelcdb.com/api/public/cards/cyclops.json", #Cyclops Hero Pack
 #		"phoenix": "https://marvelcdb.com/api/public/cards/phoenix.json", #Phoenix Hero Pack	
-#		"wolv": "https://marvelcdb.com/api/public/cards/wolv.json", #Wolverine Hero Pack	
+		"wolv": "https://marvelcdb.com/api/public/cards/wolv.json", #Wolverine Hero Pack	
 #		"storm": "https://marvelcdb.com/api/public/cards/storm.json", #Storm Hero Pack	
 #		"gambit": "https://marvelcdb.com/api/public/cards/gambit.json", #Gambit Hero Pack	
 #		"rogue": "https://marvelcdb.com/api/public/cards/rogue.json", #Rogue Hero Pack
 #		"mojo": "https://marvelcdb.com/api/public/cards/mojo.json",  #Mojo Scenario Pack	
 #cycle 7
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"next_evol": "https://marvelcdb.com/api/public/cards/next_evol.json", #Next Evolution  Expansion Box	
+#		"psylocke": "https://marvelcdb.com/api/public/cards/psylocke.json", #Psylocke Hero Pack		
+#		"angel": "https://marvelcdb.com/api/public/cards/angel.json", #Angel Hero Pack	
+#		"x23": "https://marvelcdb.com/api/public/cards/x23.json", #X-23 Hero Pack	
+#		"deadpool": "https://marvelcdb.com/api/public/cards/deadpool.json", #Deadpool Hero Pack		
 #cycle 8
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
-#		"": "https://marvelcdb.com/api/public/cards/.json", #	
+#		"aoa": "https://marvelcdb.com/api/public/cards/aoa.json", #Age of Apocalypse Expansion Box	
+#		"iceman": "https://marvelcdb.com/api/public/cards/iceman.json", #Iceman Hero Pack	
+#		"jubilee": "https://marvelcdb.com/api/public/cards/jubilee.json", #Jubilee Hero Pack	
+		"ncrawler": "https://marvelcdb.com/api/public/cards/ncrawler.json", #NightCrawler Hero Pack	
+#		"magneto": "https://marvelcdb.com/api/public/cards/magneto.json", #Magneto Hero Pack	
 #cycle 9
 #		"aos": "https://marvelcdb.com/api/public/cards/aos.json", #Agents of Shield Expansion
 #		"bp": "https://marvelcdb.com/api/public/cards/bp.json", #Black Panther Hero Pack	

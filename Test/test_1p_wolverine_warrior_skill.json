@@ -1,0 +1,148 @@
+{
+	"_comments": "Automated Test Warrior Skill",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wolverine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Wolverine"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Wolverine's claws"
+				},
+				{
+					"card": "Warrior Skill",
+					"tokens": {
+						"warrior": 3
+					}
+				}
+			],
+			"enemies1": [],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "outta my way!"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "outta my way!"
+		},
+		{
+			"type": "target",
+			"value": "Rhino"
+		},
+		{
+			"type": "activate",
+			"value": "Warrior Skill"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wolverine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 4
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Wolverine"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Wolverine's claws"
+				},
+				{
+					"card": "Warrior Skill",
+					"tokens": {
+						"warrior": 2
+					}
+				}
+			],
+			"enemies1": [],
+			"allies1": [],
+			"discard1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "outta my way!"
+				}
+			]
+		}
+	}
+}

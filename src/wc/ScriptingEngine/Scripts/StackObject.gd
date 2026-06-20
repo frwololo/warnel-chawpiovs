@@ -80,8 +80,37 @@ func replace_script_property(key, value, task_object = null):
 			if value.begins_with("interrupted_event_"):
 				value = value.replace("interrupted_event_", "")
 				value = task_object.get_property(value)		
-		task.script_definition[key] = value
-	
+
+		#complex modification mechanism for Scarlet Witch's Crest
+		if typeof(value) == TYPE_DICTIONARY and value.get("find_in_definition",""):
+			var find_by_name = 	value.get("find_in_definition","")
+			var alteration = value.get("alteration")
+			var path:Array = WCUtils.find_string_in_variant(task.script_definition,find_by_name )
+			var modify_path_str = value.get("modify_path","")
+			var modify_path_arr:PoolStringArray = modify_path_str.split("/")
+			for modify_path in modify_path_arr:
+				match modify_path:
+					"..":
+						path.pop_back()
+					_:
+						path.append(modify_path)
+			var root = task.script_definition
+			for i in path.size():
+				var subkey = path[i]
+				if i == path.size()-1:
+					if !root.has(subkey):
+						if typeof(alteration) in [TYPE_INT, TYPE_REAL]:
+							root[subkey] = 0
+						else:
+							root[subkey] = ""
+							
+					root[subkey] = root[subkey] + alteration
+				else:
+					root = root[subkey]
+		else:								
+				
+			task.script_definition[key] = value
+
 func is_silent():
 	return false
 

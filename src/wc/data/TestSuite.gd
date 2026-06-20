@@ -1028,7 +1028,7 @@ func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
 						if !element2.has(key):
 							element2[key] = false				
 				if not element2.has(key):
-					failed_reason.append ("missing key :" + key)
+					failed_reason.append ("(" + _parent_name +")missing key :" + key)
 					return false
 				var val1 = element1[key]
 				var val2 = element2[key]

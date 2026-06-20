@@ -1,0 +1,125 @@
+{
+	"_comments": "Tests Nightcrawler Daytripper with bamf",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nightcrawler"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				},
+				{
+					"card": "Bamf!"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nightcrawler"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra bomber",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Daytripper"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "DayTripper"
+		},
+		{
+			"type": "choose",
+			"value": "Yes"
+		},		
+		{
+			"type": "target",
+			"value": "Rhino"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nightcrawler"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {"damage": 1}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nightcrawler"
+				}
+			],
+			"others": [
+				{
+					"card": "Bamf!",
+					"host": "Rhino"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra bomber",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Daytripper"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

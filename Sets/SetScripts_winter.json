@@ -1183,8 +1183,7 @@
 				{
 					"name": "draw_cards",
 					"amount": 1
-				},
-				
+				}
 			]
 		}
 	},
@@ -1286,14 +1285,14 @@
 									"subject": "index",
 									"subject_count": 1,
 									"subject_index": "retrieve_integer",
-									"src_container": "deck_villain",
+									"src_container": "deck_villain"
 								},
 								{
 									"name": "ready_card",
 									"subject": "my_hero"
 								}
 							]
-						},
+						}
 					],
 					"else": [
 						{
@@ -1307,10 +1306,9 @@
 									}
 								}
 							]
-						},					
+						}
 					]
 				}
-					
 			]
 		}
 	},

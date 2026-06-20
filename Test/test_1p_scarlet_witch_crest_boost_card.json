@@ -1,0 +1,148 @@
+{
+	"_comments": "Tests Scarlet Witch's Crest",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Scarlet Witch"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra bomber"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "The Doomsday Chair"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Scarlet Witch"
+				}
+			],
+			"enemies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Scarlet Witch's Crest"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Molecular Decay"
+				},
+				{
+					"card": "Uppercut"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel"
+		},
+		{
+			"type": "activate",
+			"value": "Scarlet Witch's Crest"
+		},
+		{
+			"type": "choose",
+			"value": "-1"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Scarlet Witch"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "The Doomsday chair"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra bomber"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Scarlet Witch",
+					"tokens": {
+						"damage": 4
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Scarlet Witch's Crest",
+					"exhausted": true
+				}
+			],
+			"hand1": [
+				{
+					"card": "Molecular Decay"
+				},
+				{
+					"card": "Uppercut"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

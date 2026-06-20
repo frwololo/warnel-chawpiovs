@@ -30,6 +30,16 @@ func preprocess_subject_definition(script: ScriptObject):
 			script_definition[SP.KEY_SUBJECT_COUNT] = "all"
 			script_definition["filter_state_seek"] = script_definition["filter_state_subject"]	
 	
+	if subject_str == "find":
+		script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_TUTOR
+		if !script_definition.has("src_contrainer"):
+			var all_containers = ["deck_villain", "discard_villain", "set_aside", "board"]
+			for i in gameData.get_team_size():
+				var hero_id = i + i
+				for zone in ["hand", "deck", "discard"]:
+					all_containers.append(zone + str(hero_id))
+			script_definition["src_container"] = all_containers
+	
 	#more than 1 villain, need to modify some cards rules in real time
 	if subject_str == SP.KEY_SUBJECT_V_VILLAIN:
 		var villains = gameData.get_villains()
@@ -138,7 +148,23 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 				var subjects_array = host.attachments
 				for c in subjects_array:
 					if SP.check_validity(c, script.script_definition, "attachment", owner):
-						results.append(c)			
+						results.append(c)
+			else:
+				for potential_host in cfc.NMAP.board.get_all_cards():
+					var subjects_array = potential_host.attachments
+					for c in subjects_array:
+						if SP.check_validity(c, script.script_definition, "attachment", owner):
+							results.append(c)				 	
+		SP.KEY_SUBJECT_V_CARDS_PLAYED_THIS_PHASE:
+			var subjects_array = gameData.get_cards_played_this_phase()
+			for c in subjects_array:
+				if SP.check_validity(c, script.script_definition, "card_played", owner):
+					results.append(c)									
+		SP.KEY_SUBJECT_V_CARDS_PLAYED_THIS_ROUND:
+			var subjects_array = gameData.get_cards_played_this_round()
+			for c in subjects_array:
+				if SP.check_validity(c, script.script_definition, "card_played", owner):
+					results.append(c)	
 		SP.KEY_SUBJECT_V_MY_HERO:
 			var hero_card = get_script_identity(script, trigger_details)
 			if (hero_card and hero_card.is_hero_form()):
@@ -186,7 +212,8 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 			pass
 		_: 
 			#anything else we try to find a card by that name on the board
-			var card = cfc.NMAP.board.find_card_by_name(_subject_request)
+			var search_both_sides = script.get_property("search_both_sides", false)
+			var card = cfc.NMAP.board.find_card_by_name(_subject_request, search_both_sides)
 			if card:
 				results.append(card)
 	return results
@@ -579,32 +606,47 @@ func filter_trigger(
 		return false
 
 	var event_name = _trigger_details["event_name"]
-	
+	var trigger_type = _trigger_details.get("trigger_type", "")
 	
 	var expected_trigger_type = card_scripts.get("event_type", "")
-	if expected_trigger_type and (expected_trigger_type != _trigger_details.get("trigger_type", "")):
+	if expected_trigger_type and (expected_trigger_type != trigger_type):
 		return false;	
 	
-	var expected_trigger_names = card_scripts.get("event_name", "")
+	var expected_trigger_names = card_scripts.get("event_name", [])
 	if typeof(expected_trigger_names) == TYPE_STRING:
 		expected_trigger_names = [expected_trigger_names]
-	for expected_trigger_name in expected_trigger_names:
+	if expected_trigger_names and !(event_name in expected_trigger_names):
+		return false
+	
+	
+	var expected_definitions = 	card_scripts.get("event_definition_contains", [])
+	if typeof(expected_definitions) == TYPE_STRING:
+		expected_definitions = [expected_definitions]
+	var found_definition = false	
+	for expected_definition in expected_definitions:
 	#skip if we're expecting an interrupt but not this one
-		if expected_trigger_name and (expected_trigger_name != event_name):
-			continue;
+		var triggered_object = _trigger_details.get("event_object", "null")
+		if !triggered_object:
+			continue
+		var script_def = triggered_object.script_definition	
+		if WCUtils.is_string_in_variant(script_def, expected_definition):
+			found_definition = true
+			break	
+	
+	if expected_definitions and !found_definition:
+		return false
 		
-
+	var event_details = {
+		"event_name":  event_name,
+		"event_type": expected_trigger_type
+	}	
 		
-		var event_details = {
-			"event_name":  expected_trigger_name,
-			"event_type": expected_trigger_type
-		}	
-			
-		var trigger_filters = card_scripts.get("event_filters", {})
-		var event = (gameData.theStack.find_event(event_details, trigger_filters, owner_card, _trigger_details))
+	var trigger_filters = card_scripts.get("event_filters", {})
+	var event = (gameData.theStack.find_event(event_details, trigger_filters, owner_card, _trigger_details))
 
-		if event:
-			return event #note: force conversion from stack event to bool
+	if event:
+		return event #note: force conversion from stack event to bool
+		
 	return false
 
 
@@ -619,6 +661,14 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 		"host": owner_card.current_host_card,
 		"current_hero_target": gameData.get_identity_card(gameData.get_current_activity_hero_target())
 	}
+	
+	for variable_name in owner_card.script_variables:
+		var subjects = owner_card.script_variables[variable_name]
+		if typeof(subjects) == TYPE_ARRAY:
+			var subject = subjects[0]
+			if typeof(subject) == TYPE_OBJECT and subject as WCCard:
+				replacements[variable_name] = subject
+	
 	if gameData.get_villain():
 		replacements["villain"] = gameData.get_villain()	
 	if (controller_hero_id > 0):

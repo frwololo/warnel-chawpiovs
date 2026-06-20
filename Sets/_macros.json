@@ -106,7 +106,7 @@
 		},
 		{
 			"name": "move_card_to_container",
-			"dest_container": "set_aside",
+			"dest_container": "removed_from_game",
 			"subject": "self"
 		}
 	],
@@ -126,7 +126,7 @@
 		},
 		{
 			"name": "move_card_to_container",
-			"dest_container": "set_aside",
+			"dest_container": "removed_from_game",
 			"subject": "self"
 		}	
 	],

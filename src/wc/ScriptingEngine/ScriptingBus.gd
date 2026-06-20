@@ -82,8 +82,7 @@ signal villain_swapped(card,details)
 # warning-ignore:unused_signal
 signal last_threat_removed(card, details)
 
-# warning-ignore:unused_signal
-signal thwart_happened (card,details)
+
 # warning-ignore:unused_signal
 signal character_dies(card, details)
 # warning-ignore:unused_signal
@@ -97,7 +96,7 @@ signal minion_moved_to_board(card,details)
 # warning-ignore:unused_signal
 signal main_scheme_moved_to_board(card,details)
 # warning-ignore:unused_signal
-signal player_scheme_moved_to_board(card,details)
+signal player_side_scheme_moved_to_board(card,details)
 # warning-ignore:unused_signal
 signal side_scheme_moved_to_board(card,details)
 # warning-ignore:unused_signal
@@ -122,6 +121,17 @@ signal obligation_moved_to_board(card,details)
 signal environment_moved_to_board(card,details)
 
 # warning-ignore:unused_signal
+signal event_played(card,details)
+# warning-ignore:unused_signal
+signal player_side_scheme_played(card,details)
+# warning-ignore:unused_signal
+signal ally_played(card,details)
+# warning-ignore:unused_signal
+signal upgrade_played(card,details)
+# warning-ignore:unused_signal
+signal support_played(card,details)
+
+# warning-ignore:unused_signal
 signal card_defeated(card,details)
 
 #emitted when a stage is completed on a main scheme
@@ -137,11 +147,15 @@ signal attack_happened(card, details)
 # warning-ignore:unused_signal
 signal basic_attack_happened(card, details)
 # warning-ignore:unused_signal
+signal thwart_happened (card,details)
+# warning-ignore:unused_signal
 signal basic_thwart_happened(card, details)
+# warning-ignore:unused_signal
+signal defense_happened(card, details)
 # warning-ignore:unused_signal
 signal basic_defense_happened(card, details)
 # warning-ignore:unused_signal
-signal defense_happened(card, details)
+signal recovery_happened(card, details)
 
 # warning-ignore:unused_signal
 signal event_prevented(card,details)

@@ -551,7 +551,8 @@
 			"hand": [
 				{
 					"name": "prevent",
-					"subject": "interrupted_event"
+					"subject": "interrupted_event",
+					"amount": "all"
 				}
 			]
 		}
@@ -624,7 +625,7 @@
 					"name": "move_card_to_container",
 					"subject": "previous",
 					"subject_count": "all",
-					"filter_each_previous_subject": "true",
+					"filter_each_previous_subject": true,
 					"dest_container": "hand",
 					"filter_state_subject": [
 						{

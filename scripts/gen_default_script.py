@@ -204,7 +204,7 @@ def get_base_json(card_data):
 	    "name": "constraints",
 	    "is_cost": True,
 	    "tags": [
-	      "action"
+	      "action_ability"
 	    ]
 	  }         
       )

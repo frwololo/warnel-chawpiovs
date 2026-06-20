@@ -535,7 +535,12 @@ func start_current_step():
 	step_signal("step_about_to_start")
 	step_signal("step_started")	
 	update_text()
-	
+
+func is_villain_phase():
+	return (current_step >= CFConst.PHASE_STEP.VILLAIN_THREAT)
+
+func is_player_phase():
+	return !is_villain_phase()
 
 func _player_draw():
 	gameData.draw_all_players()

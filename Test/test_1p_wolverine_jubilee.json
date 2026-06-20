@@ -1,0 +1,145 @@
+{
+	"_comments": "Tests Jubilee Bonus",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wolverine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Wolverine #35001a"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra bomber",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Wolverine's Claws"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Jubilee #35003"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Jubilee"
+		},
+		{
+			"type": "target",
+			"value": "Rhino"
+		},
+		{
+			"type": "activate",
+			"value": "Jubilee"
+		},
+		{
+			"type": "choose",
+			"value": "Attack"
+		},
+		{
+			"type": "target",
+			"value": "Rhino"
+		},
+		{
+			"type": "activate",
+			"value": "Wolverine"
+		},
+		{
+			"type": "choose",
+			"value": "Attack"
+		},
+		{
+			"type": "target",
+			"value": "Rhino"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wolverine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 7
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Wolverine #35001a"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra bomber"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Wolverine's Claws",
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jubilee"
+				}
+			]
+		}
+	}
+}

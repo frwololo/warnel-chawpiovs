@@ -1,0 +1,136 @@
+{
+	"_comments": "Tests Wolverine Claws (pay for card with damage)",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wolverine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Wolverine #35001a"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra bomber",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Wolverine's Claws"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Slice and Dice #35009"
+				},
+				{
+					"card": "Uppercut"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Wolverine's Claws"
+		},
+		{
+			"type": "select",
+			"value": "Slice and Dice #35009"
+		},
+		{
+			"type": "target",
+			"value": "Hydra Bomber"
+		},
+		{
+			"type": "target",
+			"value": "Rhino"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wolverine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Wolverine #35001a",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Hydra bomber"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Wolverine's Claws",
+					"exhausted": true
+				}
+			],
+			"discard1": [
+				{
+					"card": "Slice and Dice #35009"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Uppercut"
+				}
+			]
+		}
+	}
+}

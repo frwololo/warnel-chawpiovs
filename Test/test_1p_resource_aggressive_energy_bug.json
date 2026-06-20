@@ -110,7 +110,7 @@
 			"upgrade_support1": [],
 			"hand1": [
 				{
-					"card": "Wolverine"
+					"card": "Wolverine #32041"
 				},
 				{
 					"card": "Aggressive Energy"
@@ -124,11 +124,11 @@
 	"actions": [
 		{
 			"type": "play",
-			"value": "Wolverine"
+			"value": "Wolverine #32041"
 		},
 		{
 			"type": "activate",
-			"value": "Wolverine"
+			"value": "Wolverine #32041"
 		},
 		{
 			"type": "choose",
@@ -250,7 +250,7 @@
 			],
 			"allies1": [
 				{
-					"card": "Wolverine",
+					"card": "Wolverine #32041",
 					"tokens": {
 						"damage": 3
 					}

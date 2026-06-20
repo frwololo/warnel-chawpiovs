@@ -234,6 +234,11 @@ func is_character() -> bool:
 static func is_character_type(type_code)-> bool:
 	return type_code in ["villain", "hero", "alter_ego", "ally", "minion"]
 
+func is_card_type(type_code):
+	var result = cfc.ov_utils.compare_string_properties({
+		"type_code": type_code}, self, "type_code", "eq")	
+	return result
+
 func _stack_event_deleted(event):
 	match event.get_first_task_name():
 		"card_dies":
@@ -1044,7 +1049,13 @@ func attempt_to_play(user_click:bool = false, origin_event = null):
 			_:
 				GameRecorder.add_entry(GameRecorder.ACTIONS.ACTIVATE, canonical_id, "activating " + canonical_name)
 				
+
+	var details = {}
+	if origin_event:
+		details["origin_event"] = origin_event
 	
+	if _get_extra_scripts("manual_override"):
+		return execute_scripts(self,"manual_override", details)
 	
 	match state_exec:
 		"hand":
@@ -1057,9 +1068,6 @@ func attempt_to_play(user_click:bool = false, origin_event = null):
 
 
 	cfc.card_drag_ongoing = null
-	var details = {}
-	if origin_event:
-		details["origin_event"] = origin_event
 	execute_scripts(self,"manual",details)
 
 
@@ -1504,8 +1512,9 @@ func execute_scripts(
 	state_scripts_dict = get_state_scripts_dict(card_scripts, trigger_card, trigger_details, exec_config)
 
 	#delete this to avoid sending "script_executed" over and over
-	trigger_details["action_name_id"] = ""
-	
+	#trigger_details["action_name_id"] = ""
+	trigger_details["action_name_id"] = card_scripts.get("action_name_id","")
+		
 	var rules = state_scripts_dict.get("rules", {})
 
 	var sceng = null
@@ -1529,7 +1538,7 @@ func execute_scripts(
 	else:	
 		sceng = choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigger_details, run_type, exec_config)
 		if sceng is GDScriptFunctionState: # Still working.
-			if trigger != "manual":
+			if !trigger in ["manual", "manual_override"]:
 				var origin_event = trigger_details.get("origin_event", null)
 				gameData.theAnnouncer.choices_menu(self, trigger, origin_event, cfc.get_modal_menu())			
 			
@@ -1628,9 +1637,22 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 			force_user_interaction_required = true				
 			gameData.select_current_playing_hero(interacting_hero)
 			cfc.game_paused = true
+			
+			#enrich display title as needed
+			var msg_suffixes = rules.get("choice_msg_suffix", [])
+			if typeof(msg_suffixes) == TYPE_STRING:
+				msg_suffixes = [msg_suffixes]
+			var msg_suffix = ""	
+			if msg_suffixes:
+				for msg_fragment in msg_suffixes:
+					msg_suffix += compute_message_fragment(msg_fragment, trigger_details)
+			var title_reference = canonical_name
+			if msg_suffix:
+				title_reference += " " + msg_suffix
+				
 			var choices_menu = _CARD_CHOICES_SCENE.instance()
 			cfc.add_modal_menu(choices_menu)
-			choices_menu.prep(canonical_name,state_scripts, rules)
+			choices_menu.prep(title_reference,state_scripts, rules)
 #			if trigger != "manual":
 #				gameData.theAnnouncer.choices_menu(self, origin_event, choices_menu, interacting_hero)			
 			# We have to wait until the player has finished selecting an option
@@ -1890,6 +1912,21 @@ func _on_Card_gui_input(event) -> void:
 			
 	cfc.remove_ongoing_process(self, "_on_Card_gui_input_"  + canonical_name)	
 
+func compute_message_fragment(message_data, trigger_details):
+	var script = trigger_details.get("event_object", null)
+	match typeof(message_data):
+		TYPE_STRING:
+			if message_data.begins_with("trigger_details_"):
+				var property = message_data.replace("trigger_details_", "")
+				return str(trigger_details.get(property))				
+			return message_data
+		TYPE_INT, TYPE_REAL:
+			return str(message_data)
+		TYPE_DICTIONARY:
+			var func_name = message_data.get("func_name", "")
+			var func_params = message_data.get("func_params", "")
+			var result = self.call(func_name, func_params, script)
+			return str(result)
 # Game specific code and/or shortcuts
 func readyme(toggle := false,
 			start_tween := true,
@@ -1946,12 +1983,6 @@ func exhaustme(toggle := false,
 		_is_exhausted = true
 		scripting_bus.emit_signal_on_stack("card_exhausted", self, {})
 	return retcode	
-
-func is_ready() :
-	return !_is_exhausted
-
-func is_exhausted():
-	return _is_exhausted
 	
 func add_threat(threat : int):
 	tokens.mod_token("threat",threat)
@@ -2113,7 +2144,7 @@ func die(script):
 			gameData.hero_died(self, script)
 		"ally", "minion":
 			gameData.character_died(self, script)
-		"side_scheme":
+		"side_scheme", "player_side_scheme":
 			post_death_move()
 #			move_to(cfc.NMAP["discard_villain"])	
 		"villain":
@@ -2536,10 +2567,18 @@ func pay_regular_cost_replacement(script, trigger_details) -> Dictionary:
 	else:
 		manacost.init_from_expression(cost) #TODO better name?
 	
+	var hero_ids = [owner_hero_id]
+	if self.get_property("alliance", 0, true):
+		hero_ids = []
+		for i in gameData.get_team_size():
+			var hero_id = i+1
+			hero_ids.append(hero_id)
+				
 	var resource_container_names = ["hand", "identity","allies","upgrade_support"]
 	var resource_containers = []
 	for v in resource_container_names:
-		resource_containers.append(v + str(owner_hero_id) )
+		for h in hero_ids:
+			resource_containers.append(v + str(h) )
 			
 	var result  ={
 				"name": "pay_as_resource",
@@ -2922,6 +2961,20 @@ func get_active_main_schemes():
 # called as part of json script processing (through a .call run)
 #############################
 
+func is_ready(params := {}, script:ScriptObject= null) :
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return 0
+			
+	return !subject._is_exhausted
+
+func is_exhausted(params := {}, script:ScriptObject= null):
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return 0
+			
+	return subject._is_exhausted
+
 func is_token_status(params := {}, script:ScriptObject= null) -> int:
 	var token_name = params.get("status_name", "")
 	if !token_name:
@@ -3133,6 +3186,23 @@ func get_subject_int_property(params, script:ScriptObject= null) -> int:
 				value = 0
 		count+= value
 	return count
+
+func get_trigger_details_property(params, script:ScriptObject= null) -> int:
+	if !script:
+		return 0
+	
+	var trigger_details = script.trigger_details	
+	var property = params.get("property", "")
+	var expected_value = params.get("property_value", "")
+	if !property:
+		return 0
+	if !expected_value:
+		return 0		
+
+	var value = trigger_details.get(property, null)
+	if value == expected_value:
+		return 1
+	return 0
 	
 func get_subject_int_printed_property(params, script:ScriptObject = null) -> int:
 	var subject = get_param_subject(params, script)
@@ -3143,12 +3213,19 @@ func get_subject_int_printed_property(params, script:ScriptObject = null) -> int
 	var property = params.get("property", "")
 	if !property:
 		return 0
+		
 	var id = subject.get_property("_code", "")
 	if !id:
 		return 0
 		
 	var card_data = cfc.get_card_by_id(id)
-	return int(card_data.get(property, 0))
+	var result = card_data.get(property, 0)
+	if typeof(result) == TYPE_BOOL:
+		if result:
+			result = 1
+		else:
+			result = 0
+	return int(result)
 
 func get_scenario_option_value(params, script:ScriptObject = null) -> int:
 	if !params.has("option_name"):
@@ -3181,6 +3258,38 @@ func count_tokens(params, script:ScriptObject = null) -> int:
 			count+= subject.tokens.get_token_count(token_name)
 	
 	return count
+
+func precompute_value(params, script:ScriptObject = null):
+	if params.get("subject", "") != "interrupted_event":
+		#unsupported for now
+		return 0	
+
+	var task = script
+
+	if (!task):	
+		return 0
+
+	var find_by_name = 	params.get("func_find_in_definition","")
+	if !find_by_name:
+		return 0
+		
+	var path:Array = WCUtils.find_string_in_variant(task.script_definition,find_by_name )
+	if path.size() <2:
+		return 0
+	path.pop_back()
+	path.pop_back()
+	var root = task.script_definition
+	var to_request = ""
+	for i in path.size():
+		if i == path.size() -1:
+			to_request = path[i]
+		else:
+			var subkey = path[i]
+			root = root[subkey]
+	
+	var result = task.get_property(to_request, null, null, root)
+	return result
+
 
 #returns true if this card (or script subject)'s property contains specified text
 func property_contains(params, script:ScriptObject = null) -> int:
@@ -3349,6 +3458,7 @@ func get_interrupted_event_property(params:Dictionary, _script:ScriptTask = null
 	
 	var value = event.get(property, 0)
 	return value
+
 
 func current_activation_status(params:Dictionary, _script:ScriptTask = null) -> bool:
 #	var script = get_current_activation_details()
@@ -3946,7 +4056,6 @@ func get_printed_text(section = ""):
 		var previous = {}
 		for paragraph_data in pre_paragraphs:
 			var paragraph = paragraph_data["paragraph"]
-			var prefix = paragraph_data["prefix"]
 			paragraph = paragraph.trim_prefix(" ")
 			paragraph = paragraph.trim_suffix(" ")
 			var previous_str = previous.get("paragraph", "")			

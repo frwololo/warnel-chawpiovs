@@ -1,0 +1,124 @@
+{
+	"_comments": "Tests Nightcrawler port and punch with bamf",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nightcrawler"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nightcrawler"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra bomber",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Bamf!",
+					"host": "Rhino"
+				}
+			],
+			"hand1": [
+				{
+					"card": "'Port and Punch"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "'Port and Punch"
+		},
+		{
+			"type": "target",
+			"value": "Rhino"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nightcrawler"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 6
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nightcrawler"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra bomber",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Bamf!",
+					"host": "Rhino"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "'Port and Punch"
+				}
+			]
+		}
+	}
+}

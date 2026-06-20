@@ -1,0 +1,807 @@
+{
+	"Brains Over Brawn": {
+		"TODO": "",
+		"response": {
+			"event_name": "TODO",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				}
+			]
+		}
+	},
+	"Combat Ready": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "attachment"
+							},
+							"filter_properties2": {
+								"trait_technique": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "reveal_encounters",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "special",
+					"subject": "previous"
+				}
+			]
+		}
+	},
+	"Cosmo": {
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"target": "self",
+				"tags": [
+					"consequential_damage"
+				]
+			},
+			"is_optional_board": true,
+			"board": {
+				"Ally": {
+					"__cosmo": {
+						"__type_code__": "ally"
+					}
+				},
+				"Event": {
+					"__cosmo": {
+						"__type_code__": "event"
+					}
+				},
+				"Resource": {
+					"__cosmo": {
+						"__type_code__": "resource"
+					}
+				},
+				"Support": {
+					"__cosmo": {
+						"__type_code__": "support"
+					}
+				},
+				"Upgrade": {
+					"__cosmo": {
+						"__type_code__": "upgrade"
+					}
+				},
+				"Attachment": {
+					"__cosmo": {
+						"__type_code__": "attachment"
+					}
+				},
+				"Environment": {
+					"__cosmo": {
+						"__type_code__": "environment"
+					}
+				},
+				"Minion": {
+					"__cosmo": {
+						"__type_code__": "minion"
+					}
+				},
+				"Side Scheme": {
+					"__cosmo": {
+						"__type_code__": "side_scheme"
+					}
+				},
+				"Treachery": {
+					"__cosmo": {
+						"__type_code__": "treachery"
+					}
+				}
+			}
+		}
+	},
+	"Cutthroat Ambition": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Nebula"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "host",
+				"amount": ">5"
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"amount": 5
+					}
+				}
+			]
+		},
+		"special": {
+			"all": [
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": 1
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"nebula_attachment_boost": {}
+				}
+			]
+		}
+	},
+	"Daughters of Thanos": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Defensive Training": {
+		"TODO": "",
+		"uses": {
+			"__name__": "TODO",
+			"__amount__": "TODO"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				}
+			]
+		}
+	},
+	"Determination": {
+		"paid_as_resource": {
+			"trigger": "self",
+			"is_optional_all": true,
+			"all": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "remove_threat",
+					"amount": 1,
+					"subject": "main_scheme"
+				}
+			]
+		}
+	},
+	"Energy Spear": {
+		"TODO": "",
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "TODO",
+					"filter_state_trigger": [
+						{
+							"TODO": "TODO"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Eros": {
+		"TODO": "",
+		"response": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Evasive Maneuvering": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Nebula"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "stalwart",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"special": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "is_stunned",
+								"func_params": {
+									"subject": "current_hero_target"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "draw_boost_card",
+									"subject": "villain"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"subject": "current_hero_target",
+							"modification": 1,
+							"token_name": "stunned"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"nebula_attachment_boost": {}
+				}
+			]
+		}
+	},
+	"First Aid": {
+		"manual": {
+			"hand": [
+				{
+					"name": "heal",
+					"subject": "target",
+					"amount": 2,
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_characters"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Gamora": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "guardian"
+							}
+						}
+					]
+				}
+			]
+		},
+		"response": {
+			"event_name": [
+				"thwart_happened",
+				"attack_happened"
+			],
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "event"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck",
+					"dest_container": "hand"
+				}
+			]
+		}
+	},
+	"Guardians of the Galaxy": {
+		"TODO": "",
+		"response": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Heroic Intuition": {
+		"give_to_player_max1": {},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Honorary Guardian": {
+		"TODO": "",
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "TODO",
+					"filter_state_trigger": [
+						{
+							"TODO": "TODO"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Inferiority Complex": {
+		"TODO": "",
+		"_surge": {}
+	},
+	"Justice Served": {
+		"TODO": "",
+		"response": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				}
+			]
+		}
+	},
+	"Knowhere": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "guardian"
+							}
+						}
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "ally_limit",
+					"filter_same_controller": true,
+					"trigger": "my_identity",
+					"alteration": 1
+				}
+			]
+		},
+		"card_played": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "ally"
+					},
+					"filter_properties2": {
+						"trait_guardian": 1,
+						"comparison": "ge"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"subject": "event_source_hero",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Lethal Intent": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "attachment"
+							},
+							"filter_properties2": {
+								"trait_technique": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "reveal_encounters",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"Lethal Weapon": {
+		"TODO": "",
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "TODO"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Nebula": {
+		"TODO": "",
+		"once_per_round": {
+			"__name__": "__TODO"
+		},
+		"response": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Nebula's Ship": {
+		"interrupt_step_started": {
+			"event_filters": {
+				"step_name": "VILLAIN_THREAT"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "evasion",
+					"modification": 1,
+					"subject": "self"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Shoot the Thrusters! (1)": [
+					{
+						"name": "exhaust_card",
+						"subject": "Milano",
+						"is_cost": true
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 1
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "evasion",
+						"modification": -1,
+						"subject": "self"
+					}
+				],
+				"Shoot the Thrusters! (2)": [
+					{
+						"name": "exhaust_card",
+						"subject": "Milano",
+						"is_cost": true
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "evasion",
+						"modification": -2,
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Old Rivals": {
+		"TODO": "",
+		"_surge": {}
+	},
+	"One Way or Another": {
+		"TODO": "",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Self-Preservation": {
+		"TODO": "",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "TODO",
+					"filter_state_trigger": [
+						{
+							"TODO": "TODO"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"The Power of Justice": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "justice"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Unyielding Persistence": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Nebula"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "stalwart",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"special": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_tokens",
+								"func_params": {
+									"subject": "Nebula",
+									"token_name": "tough"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "draw_boost_card",
+									"subject": "villain"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"subject": "Nebula",
+							"modification": 1,
+							"token_name": "tough"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"nebula_attachment_boost": {}
+				}
+			]
+		}
+	},
+	"Venom - Flash Thompson": {
+		"TODO": ""
+	},
+	"Weapons Master": {
+		"TODO": ""
+	},
+	"Wide Stance": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Nebula"
+				}
+			]
+		},
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"target": "host",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": 1,
+					"subject": "interrupted_event"
+				}
+			]
+		},
+		"special": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "random",
+					"src_container": "hand_current_hero_target"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"nebula_attachment_boost": {}
+				}
+			]
+		}
+	},
+	"Wraith - Zak-Del": {
+		"TODO": "",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				}
+			]
+		}
+	}
+}

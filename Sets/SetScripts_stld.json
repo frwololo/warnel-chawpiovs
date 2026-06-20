@@ -589,7 +589,7 @@
 					"__cosmo": {
 						"__type_code__": "minion"
 					}
-				},				
+				},
 				"Side Scheme": {
 					"__cosmo": {
 						"__type_code__": "side_scheme"
@@ -1098,13 +1098,12 @@
 						"name": "move_card_to_container",
 						"subject": "previous",
 						"dest_container": "deck"
-					},					
+					},
 					{
 						"name": "draw_cards",
 						"is_cost": true,
 						"amount": 1
-					},
-
+					}
 				]
 			}
 		}

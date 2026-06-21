@@ -1358,22 +1358,6 @@
 		}
 	},
 	"The Sorcerer Supreme": {
-		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "mystic"
-							}
-						}
-					]
-				}
-			]
-		},
 		"alterants": {
 			"board": [
 				{

@@ -718,6 +718,7 @@ const AUTO_KEYWORDS := {
 	"linked" : "string",
 	"max 1 per player": "int",
 	"max 1 per phase": "int",	
+	"max 1 per round": "int",	
 	"overkill" : "int",
 	"patrol" : "int",
 	"peril" : "bool",

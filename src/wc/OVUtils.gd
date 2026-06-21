@@ -30,50 +30,64 @@ func preprocess_subject_definition(script: ScriptObject):
 			script_definition[SP.KEY_SUBJECT_COUNT] = "all"
 			script_definition["filter_state_seek"] = script_definition["filter_state_subject"]	
 	
-	if subject_str == "find":
-		script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_TUTOR
-		if !script_definition.has("src_contrainer"):
-			var all_containers = ["deck_villain", "discard_villain", "set_aside", "board"]
-			for i in gameData.get_team_size():
-				var hero_id = i + i
-				for zone in ["hand", "deck", "discard"]:
-					all_containers.append(zone + str(hero_id))
-			script_definition["src_container"] = all_containers
+	match subject_str:
+		"find":
+			script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_TUTOR
+			if !script_definition.has("src_contrainer"):
+				var all_containers = ["deck_villain", "discard_villain", "set_aside", "board"]
+				for i in gameData.get_team_size():
+					var hero_id = i + i
+					for zone in ["hand", "deck", "discard"]:
+						all_containers.append(zone + str(hero_id))
+				script_definition["src_container"] = all_containers
 	
-	#more than 1 villain, need to modify some cards rules in real time
-	if subject_str == SP.KEY_SUBJECT_V_VILLAIN:
-		var villains = gameData.get_villains()
-		if villains.size() > 1:
-			if !script.owner.is_encounter():
-				script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_BOARDSEEK
-				script_definition[SP.KEY_SELECTION_TYPE] = "equal" 
-				script_definition[SP.KEY_SELECTION_COUNT] = 1
-				script_definition[SP.KEY_NEEDS_SELECTION] = true
-				script_definition[SP.KEY_SUBJECT_COUNT] = "all"
-				script_definition["filter_state_seek"] = [
-					{
-						"filter_properties": {
-							"type_code": "villain"
+		"an_enemy":
+			script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_TARGET
+			script_definition[SP.KEY_NEEDS_SUBJECT] = script_definition.get(SP.KEY_NEEDS_SUBJECT,true)
+			script_definition[SP.FILTER_STATE + SP.KEY_SUBJECT] =\
+				script_definition.get(SP.FILTER_STATE + SP.KEY_SUBJECT, [{"filter_group": "group_enemies"}])
+
+		"a_scheme":
+			script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_TARGET
+			script_definition[SP.KEY_NEEDS_SUBJECT] = script_definition.get(SP.KEY_NEEDS_SUBJECT,true)
+			script_definition[SP.FILTER_STATE + SP.KEY_SUBJECT] =\
+				script_definition.get(SP.FILTER_STATE + SP.KEY_SUBJECT, [{"filter_group": "group_schemes"}])
+
+	
+		#more than 1 villain, need to modify some cards rules in real time
+		SP.KEY_SUBJECT_V_VILLAIN:
+			var villains = gameData.get_villains()
+			if villains.size() > 1:
+				if !script.owner.is_encounter():
+					script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_BOARDSEEK
+					script_definition[SP.KEY_SELECTION_TYPE] = "equal" 
+					script_definition[SP.KEY_SELECTION_COUNT] = 1
+					script_definition[SP.KEY_NEEDS_SELECTION] = true
+					script_definition[SP.KEY_SUBJECT_COUNT] = "all"
+					script_definition["filter_state_seek"] = [
+						{
+							"filter_properties": {
+								"type_code": "villain"
+							}
 						}
-					}
-				]
-	#more than 1 main scheme, need to modify some cards rules in real time
-	if subject_str == SP.KEY_SUBJECT_V_MAIN_SCHEME:
-		var schemes = gameData.get_main_schemes()
-		if schemes.size() > 1:
-			if !script.owner.is_encounter():
-				script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_BOARDSEEK
-				script_definition[SP.KEY_SELECTION_TYPE] = "equal" 
-				script_definition[SP.KEY_SELECTION_COUNT] = 1
-				script_definition[SP.KEY_NEEDS_SELECTION] = true
-				script_definition[SP.KEY_SUBJECT_COUNT] = "all"
-				script_definition["filter_state_seek"] = [
-					{
-						"filter_properties": {
-							"type_code": "main_scheme"
+					]
+		#more than 1 main scheme, need to modify some cards rules in real time
+		SP.KEY_SUBJECT_V_MAIN_SCHEME:
+			var schemes = gameData.get_main_schemes()
+			if schemes.size() > 1:
+				if !script.owner.is_encounter():
+					script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_BOARDSEEK
+					script_definition[SP.KEY_SELECTION_TYPE] = "equal" 
+					script_definition[SP.KEY_SELECTION_COUNT] = 1
+					script_definition[SP.KEY_NEEDS_SELECTION] = true
+					script_definition[SP.KEY_SUBJECT_COUNT] = "all"
+					script_definition["filter_state_seek"] = [
+						{
+							"filter_properties": {
+								"type_code": "main_scheme"
+							}
 						}
-					}
-				]
+					]
 						
 	return script_definition 
 

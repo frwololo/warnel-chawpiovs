@@ -49,7 +49,6 @@
 		}
 	},
 	"Browbeat": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -57,18 +56,28 @@
 					"is_cost": true,
 					"tags": [
 						"hero_action"
+					],
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "mystic"
+							}
+						}
 					]
 				},
 				{
 					"name": "attack",
-					"amount": 1,
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_enemies"
+					"amount": 2,
+					"plus_amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "villain",
+							"property": "stage_int",
+							"max": 3
 						}
-					]
+					},
+					"subject": "villain"
 				}
 			]
 		}
@@ -112,17 +121,55 @@
 		}
 	},
 	"Chaos Manipulation": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_board",
+					"destination_grid": "enemies_my_hero",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Luminous"
+							}
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"sort_descending": true,
+					"src_container": "deck_villain",
+					"up_to": true,
+					"subject_count": 2
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_boost_icons>=2",
+								"func_params": {
+									"subject": "previous"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_activates",
+									"subject": "Luminous"
+								}
+							]
+						}
+					]
 				}
 			]
 		}
 	},
 	"Crisis Averted": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -134,14 +181,20 @@
 				},
 				{
 					"name": "thwart",
-					"amount": 1,
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_schemes"
-						}
-					]
+					"amount": 6,
+					"subject": "main_scheme",
+					"tags": {
+						"if": {
+							"func_name": "paid_with_includes",
+							"func_params": {
+								"mental": 1
+							}
+						},
+						"then": [
+							"bypass_crisis"
+						],
+						"else": []
+					}
 				}
 			]
 		}
@@ -241,13 +294,7 @@
 								{
 									"name": "deal_damage",
 									"amount": 2,
-									"subject": "target",
-									"needs_subject": true,
-									"filter_state_subject": [
-										{
-											"filter_group": "group_enemies"
-										}
-									]
+									"subject": "an_enemy"
 								}
 							]
 						},
@@ -342,23 +389,15 @@
 		}
 	},
 	"Last Stand": {
-		"TODO": "",
-		"alterants": {
-			"hand": [
+		"interrupt_attack_started": {
+			"filter_state_trigger": [
 				{
-					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
-					"alteration": 1
+					"filter_same_controller": true,
+					"filter_properties": {
+						"type_code": "ally"
+					}
 				}
-			]
-		},
-		"interrupt": {
-			"event_name": "TODO",
+			],
 			"is_optional_hand": true,
 			"hand": [
 				{
@@ -367,12 +406,71 @@
 					"tags": [
 						"hero_interrupt"
 					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_ally",
+					"var_type": "subject",
+					"value": "trigger",
+					"_comments": "remembering the card for alterant use"
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "attack_happened",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "my_ally",
+									"alteration": 3
+								}
+							]
+						},
+						"interrupt_attack_happened": {
+							"all": [
+								{
+									"name": "discard",
+									"subject": "my_ally"
+								}
+							]
+						}
+					}
 				}
 			]
 		}
 	},
 	"Luminous": {
-		"TODO": ""
+		"response": {
+			"event_name": [
+				"enemy_scheme_happened",
+				"enemy_attack_happened"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"sort_descending": true,
+					"src_container": "deck_villain",
+					"up_to": true,
+					"is_cost": true,
+					"subject_count": 2
+				},
+				{
+					"name": "deal_encounter",
+					"subject": "current_activation_target",
+					"amount": {
+						"func_name": "count_boost_icons>=2",
+						"func_params": {
+							"subject": "previous"
+						}
+					}
+				}
+			]
+		}
 	},
 	"Magic Shield": {
 		"interrupt": {
@@ -399,13 +497,26 @@
 		}
 	},
 	"Magical Suspension": {
-		"TODO": "",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "my_identity"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"filter_state_trigger": [
+						{
+							"filter_same_controller": true
+						}
+					],
+					"alteration": 1
 				}
 			]
 		},
@@ -417,6 +528,15 @@
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "host"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		}
@@ -449,19 +569,12 @@
 							"subject": "previous"
 						}
 					},
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_enemies"
-						}
-					]
+					"subject": "an_enemy"
 				}
 			]
 		}
 	},
 	"Multitasking": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -473,7 +586,28 @@
 				},
 				{
 					"name": "thwart",
-					"amount": 1,
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": {
+						"if": {
+							"func_name": "paid_with_includes",
+							"func_params": {
+								"mental": 1
+							}
+						},
+						"then": 2,
+						"else": 0
+					},
+					"exclude_subject": "previous",
 					"subject": "target",
 					"needs_subject": true,
 					"filter_state_subject": [
@@ -547,7 +681,6 @@
 		}
 	},
 	"Recuperation": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -556,6 +689,17 @@
 					"tags": [
 						"alter_ego_action"
 					]
+				},
+				{
+					"name": "heal",
+					"subject": "my_identity",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_identity",
+							"property": "recover"
+						}
+					}
 				}
 			]
 		}
@@ -612,7 +756,7 @@
 			"event_definition_contains": "count_boost_icons",
 			"is_optional_board": true,
 			"condition_board": {
-				"func_name": "is_ready",
+				"func_name": "is_ready"
 			},
 			"board": {
 				"_rules": {
@@ -622,11 +766,11 @@
 							"func_name": "precompute_value",
 							"func_params": {
 								"subject": "interrupted_event",
-								"func_find_in_definition": "count_boost_icons",
+								"func_find_in_definition": "count_boost_icons"
 							}
 						},
 						")"
-					],
+					]
 				},
 				"+1": [
 					{
@@ -646,7 +790,7 @@
 						}
 					}
 				],
-				"Skip": [				
+				"Skip": [
 					{
 						"name": "nop"
 					}
@@ -656,7 +800,7 @@
 						"name": "exhaust_card",
 						"subject": "self",
 						"is_cost": true
-					},				
+					},
 					{
 						"name": "replacement_effect",
 						"subject": "interrupted_event",
@@ -674,27 +818,27 @@
 		"interrupt_boost_card_resolved": {
 			"is_optional_board": true,
 			"condition_board": {
-				"func_name": "is_ready",
-			},			
+				"func_name": "is_ready"
+			},
 			"board": {
 				"_rules": {
 					"choice_msg_suffix": [
 						"(current boost icons:",
 						"trigger_details_boost_icons",
 						")"
-					],
-				},			
+					]
+				},
 				"+1": [
 					{
 						"name": "exhaust_card",
 						"subject": "self",
 						"is_cost": true
-					},				
+					},
 					{
 						"name": "add_boost",
 						"amount": 1,
 						"subject": "trigger",
-						"force_valid_boost_target": true,
+						"force_valid_boost_target": true
 					}
 				],
 				"Skip": [
@@ -707,47 +851,155 @@
 						"name": "exhaust_card",
 						"subject": "self",
 						"is_cost": true
-					},				
+					},
 					{
 						"name": "add_boost",
 						"amount": -1,
 						"subject": "trigger",
-						"force_valid_boost_target": true,						
+						"force_valid_boost_target": true
 					}
 				]
 			}
 		}
 	},
 	"Slipping Sanity": {
-		"TODO": ""
+		"give_obligation": {
+			"__to__": "Wanda Maximoff"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Flip then remove from the game": {
+					"obligation_flip_remove": {}
+				},
+				"Remove from the game": {
+					"obligation_remove": {}
+				},
+				"Flip then Discard & Threat": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity"
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "discard",
+						"subject": "tutor",
+						"src_container": "deck_villain",
+						"subject_count": 5,
+						"up_to": true,
+						"sort_descending": true,
+						"is_cost": true
+					},
+					{
+						"name": "add_threat",
+						"subject": "main_scheme",
+						"amount": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"subject": "previous",
+								"property": "boost_star"
+							}
+						}
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				],
+				"Discard & Threat": [
+					{
+						"name": "discard",
+						"subject": "tutor",
+						"src_container": "deck_villain",
+						"subject_count": 5,
+						"up_to": true,
+						"sort_descending": true,
+						"is_cost": true
+					},
+					{
+						"name": "add_threat",
+						"subject": "main_scheme",
+						"amount": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"subject": "previous",
+								"property": "boost_star"
+							}
+						}
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				]
+			}
+		}
 	},
 	"Speed - Thomas Shepherd": {
-		"TODO": "",
 		"once_per_round": {
-			"__name__": "__TODO"
+			"__name__": "__speed"
 		},
-		"response": {
-			"event_name": "TODO",
+		"thwart_happened": {
+			"trigger": "self",
 			"is_optional_board": true,
-			"board": []
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "__speed",
+					"modification": -1,
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "ready_card",
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"Spiritual Meditation": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
-						"action"
-					]
+						"action_ability"
+					],
+				},
+				{
+					"name": "draw_cards",
+					"amount": 2,
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"src_container": "hand",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_optional": false,
+					"selection_type": "equal"
 				}
 			]
 		}
 	},
 	"Swift Retribution": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -758,21 +1010,43 @@
 					]
 				},
 				{
+					"name": "enemy_schemes",
+					"subject": "villain"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "post_scheme_attack",
+					"subject": "self"
+				}
+			]
+		},
+		"post_scheme_attack": {
+			"all": [
+				{
 					"name": "attack",
-					"amount": 1,
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_enemies"
-						}
-					]
+					"amount": 4,
+					"subject": "villain"
 				}
 			]
 		}
 	},
 	"The Next Evolution": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "boost",
+					"filter_state_trigger": [
+						{
+							"filter_func": {
+								"func_name": "is_encounter"
+							}
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
 	},
 	"The Power of Justice": {
 		"resource": {
@@ -798,11 +1072,21 @@
 		}
 	},
 	"Turn the Tide": {
-		"TODO": "",
-		"response": {
-			"event_name": "TODO",
+		"response_last_threat_removed": {
+			"event_filters": {
+				"source": "my_hero",
+				"tags": [
+					"thwart"
+				]
+			},
 			"is_optional_hand": true,
-			"hand": []
+			"hand": [
+				{
+					"name": "attack",
+					"amount": 3,
+					"subject": "an_enemy"
+				}
+			]
 		}
 	},
 	"Wanda Maximoff": {
@@ -877,11 +1161,37 @@
 		}
 	},
 	"Wiccan - William Kaplan": {
-		"TODO": "",
-		"response": {
-			"event_name": "TODO",
+		"thwart_happened": {
+			"trigger": "self",
 			"is_optional_board": true,
-			"board": []
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					},
+					"selection_type": "as_much_as_possible",
+					"selection_what_to_count": "assign_any_damage",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
 		}
 	}
 }

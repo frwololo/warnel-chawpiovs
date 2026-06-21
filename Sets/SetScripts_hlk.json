@@ -671,14 +671,6 @@
 					"tags": [
 						"hero_action"
 					],
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "avenger"
-							}
-						}
-					]
 				},
 				{
 					"name": "heal",

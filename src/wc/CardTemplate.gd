@@ -2061,7 +2061,10 @@ func remove_threat(modification: int, script = null) -> int:
 	if current_tokens > 0 and !new_amount:	
 		var signal_details = {}
 		if script:	
-			signal_details["source"] =  script.owner
+			signal_details = {
+				"source":  script.owner,
+				"tags": script.get_property(SP.KEY_TAGS)	
+			}
 		scripting_bus.emit_signal("last_threat_removed", self, signal_details)		
 	return result
 

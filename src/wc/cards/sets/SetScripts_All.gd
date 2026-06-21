@@ -107,7 +107,22 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 	var post_play_actions = []
 	var hand_constraints = []
 
-	
+	var play_only_if_traits =  card.get("play_only_if_traits", [])
+	if play_only_if_traits:
+		hand_constraints.append(
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"constraints": [
+						{
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": play_only_if_traits
+							}
+						}
+					]
+				}			
+		)		
 	if (type_code == "event"):
 		if card.get("max 1 per phase"):
 				hand_constraints.append(
@@ -116,7 +131,15 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 						"is_cost": true,
 						"max_per_phase": 1
 					}			
-				)			
+				)	
+		if card.get("max 1 per round"):
+				hand_constraints.append(
+					{	
+						"name": "constraints",
+						"is_cost": true,
+						"max_per_round": 1
+					}			
+				)							
 		var is_defense = card.get("trait_defense", 0)
 		if is_defense:
 			post_play_actions.append(

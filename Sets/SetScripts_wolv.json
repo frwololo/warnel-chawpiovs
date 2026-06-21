@@ -623,22 +623,6 @@
 		}
 	},
 	"Longshot": {
-		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "x-men"
-							}
-						}
-					]
-				}
-			]
-		},
 		"attack_happened": {
 			"trigger": "self",
 			"event_filters": {
@@ -1258,20 +1242,6 @@
 	},
 	"Weapon X": {
 		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "mutant"
-							}
-						}
-					]
-				}
-			],
 			"board": [
 				{
 					"name": "constraints",

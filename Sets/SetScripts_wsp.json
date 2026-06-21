@@ -660,22 +660,6 @@
 		}
 	},
 	"Quincarrier": {
-		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "avenger"
-							}
-						}
-					]
-				}
-			]
-		},
 		"resource": {
 			"board": [
 				{
@@ -984,14 +968,6 @@
 					"tags": [
 						"hero_action"
 					],
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "avenger"
-							}
-						}
-					]
 				},
 				{
 					"name": "thwart",

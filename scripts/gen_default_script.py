@@ -23,6 +23,7 @@ primitives = [
   'Uses (',
   'Limit once per phase',
   'Limit once per round',
+  'exhaust ',
   '<b>When Revealed</b>',
   '<b>When Revealed (Alter-Ego)</b>',
   '<b>When Revealed (Hero)</b>',    
@@ -123,7 +124,15 @@ def get_base_json(card_data):
 	  "__name__": "TODO",
 	  "__amount__": "TODO"
       }       
-
+      result["manual"][location].append(
+	  {
+	    "name": "mod_tokens",
+	    "is_cost": True,
+	    "modification": -1,
+            "token_name": "TODO",
+            "subject": "self"
+	  }         
+      )
 
     if primitive == '<b>when revealed</b>':
        result["reveal"] = {
@@ -209,6 +218,15 @@ def get_base_json(card_data):
 	  }         
       )
 
+     if primitive == 'exhaust ':
+      result["manual"][location].append(
+	  {
+	    "name": "exhaust_card",
+	    "is_cost": True,
+	    "subject": "self"
+	  }         
+      )     
+
     if primitive == '<b>hero resource':
       result["resource"] = {location: [
 	  {
@@ -237,29 +255,47 @@ def get_base_json(card_data):
       }
       
     if primitive == '<i>(attack)</i>' and "manual" in result:
-      result["manual"][location].append(
-	{
-	  "name": "attack",
-             "amount": 1,
-            "subject": "target",
-            "needs_subject": True,
-            "filter_state_subject": [
-                {"filter_group": "group_enemies"}
-            ]                  
-	}         
-      )              
+        if "an enemy" in text:
+            result["manual"][location].append(
+	        {
+	            "name": "attack",
+                    "amount": 1,
+                    "subject": "an_enemy",
+	        }         
+            )
+        else:
+            result["manual"][location].append(
+	        {
+	            "name": "attack",
+                    "amount": 1,
+                    "subject": "target",
+                    "needs_subject": True,
+                    "filter_state_subject": [
+                        {"filter_group": "group_enemies"}
+                    ]                  
+	        }         
+            )            
     if primitive == '<i>(thwart)</i>' and "manual" in result:
-      result["manual"][location].append(
-	  {
-	    "name": "thwart",
-            "amount": 1,
-            "subject": "target",
-            "needs_subject": True,
-            "filter_state_subject": [
-                {"filter_group": "group_schemes"}
-            ]
-	  }         
-      )
+         if "a scheme" in text:
+            result["manual"][location].append(
+	        {
+	            "name": "thwart",
+                    "amount": 1,
+                    "subject": "a_scheme",
+	        }         
+            )
+         else:
+             result["manual"][location].append(
+	         {
+	             "name": "thwart",
+                     "amount": 1,
+                     "subject": "target",
+                     "needs_subject": True,
+                     "filter_state_subject": [
+                         {"filter_group": "group_schemes"}
+                     ]
+	         }         
+             )
 
 
       

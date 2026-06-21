@@ -3194,12 +3194,6 @@
 	},
 	"Mutant Protectors": {
 		"interrupt_enemy_initiates_attack": {
-			"condition_hand": {
-				"func_name": "identity_has_trait",
-				"func_params": {
-					"trait": "x-men"
-				}
-			},
 			"is_optional_hand": true,
 			"hand": [
 				{
@@ -6105,12 +6099,6 @@
 	},
 	"Team Strike": {
 		"manual": {
-			"condition_hand": {
-				"func_name": "identity_has_trait",
-				"func_params": {
-					"trait": "x-men"
-				}
-			},
 			"hand": [
 				{
 					"name": "constraints",

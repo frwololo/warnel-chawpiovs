@@ -503,6 +503,14 @@ func cleanup_bb_code(text):
 		result = result.replace(key, replacements[key])
 	return result
 
+func remove_bbcode(text):
+	var result = text
+	var to_remove = ["b", "i"]
+	for stuff in to_remove:
+		result = result.replace("[" + stuff + "]", "")
+		result = result.replace("[/" + stuff + "]", "")
+	return result
+	
 func convert_to_bbcode(text):
 	var result = text
 	if !result:
@@ -612,6 +620,7 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 
 	card_data["real_text"] = text_cleanup(card_data.get("real_text", ""))
 	card_data["text"] = convert_to_bbcode(card_data.get("real_text", ""))
+	var text_lc = card_data["text"].to_lower()
 
 	card_data["aspect"] = card_data.get("faction_code", "")
 
@@ -628,6 +637,18 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	var lc_card_type = card_type.to_lower()
 	var force_horizontal = CFConst.FORCE_HORIZONTAL_CARDS.get(lc_card_type, false)
 	card_data["_horizontal"] = force_horizontal
+
+	var needle = "play only if your identity has the "
+	var play_only_if_pos = text_lc.find(needle)
+	if play_only_if_pos > -1:
+		var trait_pos = text_lc.find(" trait")
+		var startpos = play_only_if_pos + needle.length()
+		var involved_traits_str = text_lc.substr(startpos, trait_pos - startpos )
+		var involved_traits = involved_traits_str.split(" or ")
+		card_data["play_only_if_traits"] = []
+		for trait in involved_traits:
+			trait = remove_bbcode(trait)
+			card_data["play_only_if_traits"].append(trait)
 
 	if lc_card_type == "player_side_scheme":
 		card_data["secondary_type_code"] = "side_scheme"

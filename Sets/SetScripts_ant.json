@@ -688,14 +688,6 @@
 					"tags": [
 						"hero_action"
 					],
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "avenger"
-							}
-						}
-					]
 				},
 				{
 					"name": "mod_tokens",
@@ -1033,25 +1025,6 @@
 		}
 	},
 	"Stinger - Cassie Lang": {
-		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					],
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "avenger"
-							}
-						}
-					]
-				}
-			]
-		},
 		"alterants": {
 			"board": [
 				{

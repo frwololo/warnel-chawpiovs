@@ -1008,12 +1008,6 @@
 	},
 	"United We Stand": {
 		"manual": {
-			"condition_hand": {
-				"func_name": "identity_has_trait",
-				"func_params": {
-					"trait": "avenger"
-				}
-			},
 			"hand": [
 				{
 					"name": "constraints",

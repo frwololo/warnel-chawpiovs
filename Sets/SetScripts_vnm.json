@@ -1,6 +1,5 @@
 {
 	"\"Welcome Aboard\"": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -9,12 +8,34 @@
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "add_script",
+					"end_condition": "ally_played",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "cost",
+									"alteration": -1,
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"type_code": "ally"
+											}
+										}
+									]
+								}
+							]
+						}
+					}
 				}
 			]
 		}
 	},
 	"Behind Enemy Lines": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -26,20 +47,32 @@
 				},
 				{
 					"name": "thwart",
-					"amount": 1,
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_schemes"
-						}
-					]
+					"amount": 3,
+					"subject": "a_scheme"
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "self",
+			"condition_all": {
+				"func_name": "paid_with_includes",
+				"func_params": {
+					"mental": 1,
+					"type_constraint": "exclusive"
+				}
+			},
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "confused",
+					"subject": "an_enemy"
 				}
 			]
 		}
 	},
 	"Crew Quarters": {
-		"TODO": "",
+		"give_to_player_max1": {},
 		"manual": {
 			"board": [
 				{
@@ -47,6 +80,27 @@
 					"is_cost": true,
 					"tags": [
 						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_type": "equal",
+					"selection_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "alter_ego"
+							}
+						}
 					]
 				}
 			]
@@ -63,10 +117,44 @@
 		}
 	},
 	"Flash Thompson": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "restricted_limit",
+					"trigger": "my_identity",
+					"alteration": 1
+				}
+			]
+		},
+		"setup": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_properties2": {
+								"trait_weapon": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"dest_container": "hand"
+				}
+			]
+		}
 	},
 	"Fusillade": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -77,37 +165,80 @@
 					]
 				},
 				{
-					"name": "attack",
-					"amount": 1,
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"is_cost": true,
+					"filter_state_seek": [
 						{
-							"filter_group": "group_enemies"
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_properties2": {
+								"trait_weapon": 1,
+								"comparison": "ge"
+							},
+							"filter_is_exhausted": false
 						}
 					]
+				},
+				{
+					"name": "attack",
+					"amount": 5,
+					"subject": "an_enemy"
 				}
 			]
 		}
 	},
 	"Grasping Tendrils": {
-		"TODO": "",
+		"_comments": "rulings FAQ on hallofheroes say that the attack should still be considered as initiated even if cancelled , but the engine currently doesn't support that",
 		"interrupt": {
-			"event_name": "TODO",
+			"event_name": "enemy_initiates_attack",
+			"trigger": "villain",
 			"is_optional_hand": true,
 			"hand": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_interrupt"
-					]
+					"name": "prevent",
+					"subject": "interrupted_event"
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "self",
+			"condition_all": {
+				"func_name": "paid_with_includes",
+				"func_params": {
+					"physical": 1,
+					"type_constraint": "exclusive"
+				}
+			},
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"subject": "villain",
+					"token_name": "stunned"
 				}
 			]
 		}
 	},
 	"Jack Flag - Jack Harrison": {
-		"TODO": "",
+		"thwart_happened": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"token_name": "ammo"
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -116,20 +247,52 @@
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"is_cost": true,
+					"token_name": "ammo"
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"subject": "an_anemey",
+					"amount": 2
 				}
 			]
-		},
-		"response": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
 		}
 	},
 	"Klyntar Frenzy": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_remove_threat",
+					"trigger": "self",
+					"alteration": "per_boardseek",
+					"per_boardseek": {
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_enemies",
+								"filter_properties": {
+									"trait_symbiote": 1,
+									"comparison": "ge"
+								}
+							}
+						]
+					}
+				}
+			]
+		}
 	},
 	"Locked and Loaded": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -138,28 +301,38 @@
 					"tags": [
 						"action_ability"
 					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"src_container": "deck",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selectiontyp": "equal",
+					"selection_optional": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_properties2": {
+								"trait_weapon": 1
+							}
+						}
+					]
 				}
 			]
 		}
 	},
 	"Making an Entrance": {
-		"TODO": "",
-		"alterants": {
-			"hand": [
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
-					"alteration": 1
-				}
-			]
-		},
-		"interrupt": {
-			"event_name": "TODO",
+		"interrupt_thwart": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
 			"is_optional_hand": true,
 			"hand": [
 				{
@@ -168,29 +341,132 @@
 					"tags": [
 						"hero_interrupt"
 					]
+				},
+				{
+					"name": "temporary_effect",
+					"subject": "self",
+					"end_condition": "basic_thwart_happened",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"trigger": "my_hero",
+									"alteration": 2
+								}
+							]
+						},
+						"response_last_threat_removed": {
+							"event_filters": {
+								"source": "my_hero",
+								"tags": [
+									"thwart"
+								]
+							},
+							"all": [
+								{
+									"name": "heal",
+									"amount": 2,
+									"subject": "my_hero"
+								}
+							]
+						}
+					}
 				}
 			]
 		}
 	},
 	"Multi-Gun": {
-		"TODO": "",
 		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
-				}
-			]
+			"board": {
+				"Deal 2 Damage": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "deal_damage",
+						"amount": 2,
+						"subject": "an_enemy"
+					}
+				],
+				"Deal 1 Damage to all": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "nop",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"selection_count": 1,
+						"selection_type": "equal",
+						"needs_selection": true,
+						"needs_subject": true,
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						]
+					},
+					{
+						"name": "deal_damage",
+						"amount": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_enemies_previous_subject",
+								"filter_properties": {
+									"type_code": "minion"
+								}
+							}
+						]
+					}
+				],
+				"Remove 2 Threat": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "remove_threat",
+						"amount": 2,
+						"subject": "a_scheme"
+					}
+				]
+			}
 		}
 	},
 	"Plasma Pistol": {
-		"TODO": "",
 		"uses": {
-			"__name__": "TODO",
-			"__amount__": "TODO"
+			"__name__": "charge",
+			"__amount__": 3
 		},
 		"manual": {
 			"board": [
@@ -200,22 +476,61 @@
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "an_enemy"
 				}
 			]
 		}
 	},
 	"Project Rebirth 2.0": {
-		"TODO": "",
 		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"alter_ego_action"
-					]
-				}
-			]
+			"board": {
+				"Draw 1": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "draw_cards",
+						"amount": 1
+					}
+				],
+				"Heal 3": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "heal",
+						"amount": 3,
+						"subject": "my_identity"
+					}
+				]
+			}
 		}
 	},
 	"Resourceful": {
@@ -234,21 +549,6 @@
 		}
 	},
 	"Run and Gun": {
-		"TODO": "",
-		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
-				}
-			]
-		}
-	},
-	"Savage Attack": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -259,21 +559,28 @@
 					]
 				},
 				{
-					"name": "attack",
-					"amount": 1,
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
+					"name": "ready_card",
+					"subject": "my_hero"
+				},
+				{
+					"name": "ready_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
 						{
-							"filter_group": "group_enemies"
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_properties2": {
+								"trait_weapon": 1
+							}
 						}
 					]
 				}
 			]
 		}
 	},
-	"Scare Tactic": {
-		"TODO": "",
+	"Savage Attack": {
 		"manual": {
 			"hand": [
 				{
@@ -285,12 +592,46 @@
 				},
 				{
 					"name": "attack",
-					"amount": 1,
+					"amount": 5,
+					"subject": "an_enemy",
+					"tags": {
+						"if": {
+							"func_name": "paid_with_includes",
+							"func_params": {
+								"energy": 1,
+								"type_constraint": "exclusive"
+							}
+						},
+						"then": [
+							"overkill"
+						],
+						"else": []
+					}
+				}
+			]
+		}
+	},
+	"Scare Tactic": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 3,
 					"subject": "target",
 					"needs_subject": true,
 					"filter_state_subject": [
 						{
-							"filter_group": "group_enemies"
+							"filter_group": "group_enemies",
+							"func_filter": {
+								"func_name": "is_confused"
+							}
 						}
 					]
 				}
@@ -298,29 +639,44 @@
 		}
 	},
 	"Shake it Off": {
-		"TODO": "",
-		"response": {
-			"event_name": "TODO",
+		"card_damaged": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"trait_guardian": 1,
+						"comparison": "ge"
+					}
+				}
+			],
 			"is_optional_hand": true,
 			"hand": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_response"
-					]
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "trigger"
 				}
 			]
 		}
 	},
 	"Side Holster": {
-		"TODO": ""
+		"give_to_player_max1": {},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "restricted_limit",
+					"trigger": "my_identity",
+					"alteration": 1,
+					"_comments": "TODO needs to limit to the weapon trait somehow. Technically this works today because all such items except for a few signature ones are actually weapons"
+				}
+			]
+		}
 	},
 	"Sonic Rifle": {
-		"TODO": "",
 		"uses": {
-			"__name__": "TODO",
-			"__amount__": "TODO"
+			"__name__": "charge",
+			"__amount__": 2
 		},
 		"manual": {
 			"board": [
@@ -330,32 +686,233 @@
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"subject": "self",
+					"modification": -1,
+					"token_name": "charge"
+				},
+				{
+					"name": "nop",
+					"subject": "an_enemy"
+				},
+				{
+					"name": "deal_damage",
+					"subject": "previous",
+					"amount": {
+						"if": {
+							"func_name": "is_confused",
+							"func_params": {
+								"subject": "previous"
+							}
+						},
+						"then": 3,
+						"else": 0
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "previous",
+					"modification": 1,
+					"token_name": "confused"
 				}
 			]
 		}
 	},
 	"Spider-Sense": {
-		"TODO": "",
 		"interrupt": {
-			"event_name": "TODO",
+			"event_name": "enemy_initiates_attack",
+			"trigger": "villain",
 			"is_optional_board": true,
 			"board": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_interrupt"
-					]
+					"name": "draw_cards",
+					"amount": 1
 				}
 			]
 		}
 	},
 	"Star-Lord - Peter Quill": {
-		"TODO": ""
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "ranged"
+		},
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "deal_encounter",
+					"subject": "my_identity"
+				}
+			]
+		}
 	},
 	"Struggle for Control": {
-		"TODO": "",
-		"_surge": {}
+		"give_obligation": {
+			"__to__": "Flash Thompson"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Flip then Take 2 Damage": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity"
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "deal_damage",
+						"amount": 2,
+						"subject": "my_identity"
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				],
+				"Take 2 Damage": [
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity"
+					},
+					{
+						"name": "deal_damage",
+						"amount": 2,
+						"subject": "my_identity"
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				],
+				"Flip then Enraged Symbiote": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "count_cards",
+									"func_params": {
+										"subject": "tutor",
+										"src_container": "set_aside",
+										"filter_state_tutor": [
+											{
+												"filter_properties": {
+													"shortname": "Enraged Symbiote"
+												}
+											}
+										]
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "move_card_to_board",
+										"destination_grid": "enemies_first_player",
+										"subject": "tutor",
+										"src_container": "set_aside",
+										"filter_state_tutor": [
+											{
+												"filter_properties": {
+													"shortname": "Enraged Symbiote"
+												}
+											}
+										]
+									}
+								]
+							}
+						],
+						"else": [
+							{
+								"name": "surge"
+							}
+						]
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				],
+				"Enraged Symbiote": [
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "count_cards",
+									"func_params": {
+										"subject": "tutor",
+										"src_container": "set_aside",
+										"filter_state_tutor": [
+											{
+												"filter_properties": {
+													"shortname": "Enraged Symbiote"
+												}
+											}
+										]
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "move_card_to_board",
+										"destination_grid": "enemies_first_player",
+										"subject": "tutor",
+										"src_container": "set_aside",
+										"filter_state_tutor": [
+											{
+												"filter_properties": {
+													"shortname": "Enraged Symbiote"
+												}
+											}
+										]
+									}
+								]
+							}
+						],
+						"else": [
+							{
+								"name": "surge"
+							}
+						]
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				]
+			}
+		}
 	},
 	"The Power of Justice": {
 		"resource": {
@@ -381,46 +938,65 @@
 		}
 	},
 	"Venom": {
-		"TODO": "",
 		"once_per_phase": {
-			"__name__": "__TODO"
+			"__name__": "__symbiotic_bond"
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "restricted_limit",
+					"trigger": "my_identity",
+					"alteration": 1
+				}
+			]
 		},
 		"resource": {
 			"board": [
 				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"modification": -1,
+					"is_cost": true,
+					"token_name": "__symbiotic_bond",
+					"subject": "self"
+				},
+				{
 					"name": "add_resource",
 					"amount": 1,
-					"resource_name": "TODO"
+					"resource_name": "wild"
 				}
 			]
 		}
 	},
 	"Venom's Pistol": {
-		"TODO": "",
-		"alterants": {
-			"board": [
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
-					"alteration": 1
-				}
-			]
-		},
 		"interrupt": {
-			"event_name": "TODO",
+			"event_name": [
+				"attack_started",
+				"remove_threat"
+			],
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"trigger": "my_hero",
 			"is_optional_board": true,
 			"board": [
 				{
-					"name": "constraints",
+					"name": "exhaust_card",
 					"is_cost": true,
-					"tags": [
-						"hero_interrupt"
-					]
+					"subject": "self"
+				},
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": 1
 				}
 			]
 		}

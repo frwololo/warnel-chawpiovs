@@ -96,18 +96,6 @@
 				{
 					"name": "constraints",
 					"is_cost": true,
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "guardian"
-							}
-						}
-					]
-				},
-				{
-					"name": "constraints",
-					"is_cost": true,
 					"tags": [
 						"hero_action"
 					]
@@ -430,22 +418,6 @@
 		}
 	},
 	"Gamora": {
-		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "guardian"
-							}
-						}
-					]
-				}
-			]
-		},
 		"response": {
 			"event_name": [
 				"thwart_happened",

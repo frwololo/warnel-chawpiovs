@@ -187,14 +187,6 @@
 					"tags": [
 						"hero_action"
 					],
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "aerial"
-							}
-						}
-					]
 				},
 				{
 					"name": "thwart",
@@ -638,14 +630,6 @@
 					"tags": [
 						"hero_action"
 					],
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "aerial"
-							}
-						}
-					]
 				},
 				{
 					"name": "attack",
@@ -755,14 +739,6 @@
 					"tags": [
 						"hero_action"
 					],
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "aerial"
-							}
-						}
-					]
 				},
 				{
 					"name": "ready_card",
@@ -877,22 +853,6 @@
 		}
 	},
 	"Knowhere": {
-		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "guardian"
-							}
-						}
-					]
-				}
-			]
-		},
 		"alterants": {
 			"board": [
 				{

@@ -1549,6 +1549,32 @@ func enemy_attacks_you(script: ScriptTask) -> int:
 		gameData.add_enemy_activation(card, "attack", script, target_id)
 		retcode = CFConst.ReturnCode.CHANGED
 	return retcode
+
+func character_attacks_you(script: ScriptTask) -> int:
+	var retcode = CFConst.ReturnCode.FAILED
+
+	#here we try to predict if the attack will actually happen, but we'll need something better,
+	#signal based... (e.g. for Titania's Fury
+	if (costs_dry_run()):
+		if !script.subjects:
+			return CFConst.ReturnCode.FAILED
+		for card in script.subjects:
+			if (!card.is_stunned()):
+				retcode = CFConst.ReturnCode.CHANGED
+		return retcode	
+
+	var character = script.subjects[0]
+	var type_code = character.get_property("type_code", "")
+	if type_code == "ally":
+		var target = _get_identity_from_script(script)
+		script.subjects = [target]
+		script.owner = character
+		return attack(script)
+
+
+	return enemy_attacks_you(script)
+
+
 	
 func enemy_attacks_engaged_hero(script: ScriptTask) -> int:
 	var retcode = CFConst.ReturnCode.FAILED
@@ -2986,6 +3012,17 @@ func constraints(script: ScriptTask) -> int:
 			if this_card.canonical_name == card.canonical_name:
 				count += 1
 				if count >= max_per_phase:
+					return 	CFConst.ReturnCode.FAILED	
+
+	#Max per round rule to play
+	var max_per_round = script.get_property("max_per_round", 0)
+	if max_per_round:
+		var count = 0 
+		var played_this_round = gameData.get_cards_played_this_round()
+		for card in played_this_round:
+			if this_card.canonical_name == card.canonical_name:
+				count += 1
+				if count >= max_per_round:
 					return 	CFConst.ReturnCode.FAILED	
 
 

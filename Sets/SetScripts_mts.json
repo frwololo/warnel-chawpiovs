@@ -3976,14 +3976,6 @@
 					"tags": [
 						"hero_action"
 					],
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "mystic"
-							}
-						}
-					]
 				},
 				{
 					"name": "ask_integer",
@@ -6388,14 +6380,6 @@
 					"tags": [
 						"hero_interrupt"
 					],
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "mystic"
-							}
-						}
-					]
 				},
 				{
 					"name": "move_card_to_container",
@@ -6592,14 +6576,6 @@
 					"tags": [
 						"hero_action"
 					],
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "mystic"
-							}
-						}
-					]
 				},
 				{
 					"name": "move_card_to_container",
@@ -7665,14 +7641,6 @@
 					"tags": [
 						"hero_action"
 					],
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "mystic"
-							}
-						}
-					]
 				},
 				{
 					"name": "ask_integer",

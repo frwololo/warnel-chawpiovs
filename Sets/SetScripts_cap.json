@@ -643,15 +643,16 @@
 		}
 	},
 	"Honorary Avenger": {
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
+		"manual": {
+			"hand": [
 				{
 					"name": "attach_to_card",
 					"subject": "target",
+					"is_cost": true,
 					"filter_state_subject": [
 						{
-							"filter_group": "group_friendly"
+							"filter_group": "group_friendly",
+							"filter_max_per_host" : 1
 						}
 					]
 				}

@@ -937,14 +937,6 @@
 				{
 					"name": "constraints",
 					"is_cost": true,
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "guardian"
-							}
-						}
-					],
 					"max_per_hero_any": 1
 				}
 			]
@@ -2627,22 +2619,6 @@
 		}
 	},
 	"Groot #16047": {
-		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "guardian"
-							}
-						}
-					]
-				}
-			]
-		},
 		"response": {
 			"event_name": "defense_happened",
 			"trigger": "self",
@@ -4691,22 +4667,6 @@
 		}
 	},
 	"Rocket Raccoon #16019": {
-		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "guardian"
-							}
-						}
-					]
-				}
-			]
-		},
 		"interrupt": {
 			"event_name": "pre_receive_damage",
 			"trigger": "self",

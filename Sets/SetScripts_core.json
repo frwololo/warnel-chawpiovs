@@ -3968,24 +3968,6 @@
 	},
 	"Ritual Combat": {
 		"reveal": {
-			"all": [
-				{
-					"name": "move_card_to_container",
-					"subject": "index",
-					"subject_index": "top",
-					"subject_count": 1,
-					"src_container": "deck_villain",
-					"dest_container": "discard_villain",
-					"is_cost": true
-				},
-				{
-					"name": "execute_scripts",
-					"exec_trigger": "reveal_choice",
-					"subject": "self"
-				}
-			]
-		},
-		"reveal_choice": {
 			"all": {
 				"_rules": {
 					"forced": true
@@ -3997,6 +3979,14 @@
 						"tags": [
 							"hero_form"
 						]
+					},
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "top",
+						"subject_count": 1,
+						"src_container": "deck_villain",
+						"is_cost": true
 					},
 					{
 						"name": "deal_damage",
@@ -4011,6 +4001,14 @@
 					}
 				],
 				"Threat": [
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "top",
+						"subject_count": 1,
+						"src_container": "deck_villain",
+						"is_cost": true
+					},
 					{
 						"name": "add_threat",
 						"amount": {

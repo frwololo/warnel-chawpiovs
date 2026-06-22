@@ -621,12 +621,12 @@
 				},
 				"Take Damage": [
 					{
-						"name": "move_card_to_container",
+						"name": "discard",
 						"subject": "index",
 						"subject_index": "top",
 						"subject_count": 1,
 						"src_container": "deck_villain",
-						"dest_container": "discard_villain"
+						"is_cost": true
 					},
 					{
 						"name": "deal_damage",

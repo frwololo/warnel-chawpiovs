@@ -104,9 +104,19 @@ func get_property(property: String, default = null, subscript_definition = null,
 	else:
 		result = script_definition.get(property,default)
 	
-	if (typeof (result) == TYPE_STRING) and result.begins_with("trigger_details_"):
-		result = result.replace("trigger_details_", "")
-		result = trigger_details.get(result)	
+	if (typeof (result) == TYPE_STRING):
+		if result.begins_with("trigger_details_"):
+			result = result.replace("trigger_details_", "")
+			result = trigger_details.get(result)
+		elif owner.script_variables:
+			var res = owner.script_variables.get(result, null)
+			if res != null:
+				match typeof(res):
+					TYPE_ARRAY:
+						result = res.duplicate()
+						return result
+					TYPE_INT:
+						return res	
 	
 	#if then else special case. Todo could this maybe go into a more generic location to work on all script variables ?
 	if (typeof (result) == TYPE_DICTIONARY):

@@ -14,7 +14,8 @@
 					"subject": "index",
 					"subject_index": "top",
 					"subject_count": 1,
-					"src_container": "deck_villain"
+					"src_container": "deck_villain",
+					"is_cost": true,
 				},
 				{
 					"name": "thwart",

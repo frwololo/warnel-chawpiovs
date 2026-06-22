@@ -589,30 +589,41 @@ func save_variable(script:ScriptTask) -> int:
 		return CFConst.ReturnCode.FAILED
 
 	var var_type = script.script_definition.get("var_type", "")
-	if !var_type in ["subject"]:
+	if !var_type in ["subject", "int"]:
 		return CFConst.ReturnCode.FAILED
 
 	var value = script.script_definition.get("value", "")
 	if !value:
 		return CFConst.ReturnCode.FAILED
-	
+
 
 	if costs_dry_run():
 		return retcode
 	
 
 	var result = null 
-	
+	var mode =  script.script_definition.get("mode", "replace")
+	var current_value = script.owner.script_variables.get(var_name, null)	
 	match var_type:
 		"subject":
 			result = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : value})
+			if !result:
+				return CFConst.ReturnCode.FAILED
+			if current_value == null:
+				current_value = []
+		"int":
+			result = script.retrieve_integer_property("value", 0)
+			if current_value == null:
+				current_value = 0			
 		_:
 			return CFConst.ReturnCode.FAILED
 
-	if !result:
-		return CFConst.ReturnCode.FAILED
+	match mode:
+		"add":
+			script.owner.script_variables[var_name] = current_value + result
+		_: #default is replace
+			script.owner.script_variables[var_name] = result
 		
-	script.owner.script_variables[var_name] = result
 	return retcode
 
 func deal_damage(script:ScriptTask) -> int:
@@ -1261,10 +1272,18 @@ func conditional_script(script:ScriptTask) -> int:
 	
 	var at_least_one_condition_met = false
 	
+	var condition_number = null
+	var has_condition_number = script.script_definition.has("condition_number")
+	if has_condition_number:
+		condition_number =  script.retrieve_integer_property("condition_number")
+		
 	for option in options:
 		var subscript = script.get_sub_property("nested_tasks", option, {})
 		var condition = script.retrieve_integer_subproperty("condition", option, 0)
-		if condition:
+		var condition_met = condition
+		if has_condition_number:
+			condition_met = (condition == condition_number)
+		if condition_met:
 			at_least_one_condition_met = true
 			script.script_definition["nested_tasks"] = subscript
 			nested_script(script)
@@ -2492,11 +2511,12 @@ func sequence(script: ScriptTask) -> int:
 	if !ability:
 		return CFConst.ReturnCode.FAILED
 				
-	if !script.subjects:
-		return CFConst.ReturnCode.FAILED
-
 	if (costs_dry_run()): #not allowed ?
 		return retcode
+
+	if !script.subjects:
+		script.subjects = [script.owner]
+
 
 	gameData.start_play_sequence(script.subjects, ability, script)
 
@@ -2962,6 +2982,8 @@ func constraints(script: ScriptTask) -> int:
 				if cfc.is_modal_event_ongoing():
 					return 	CFConst.ReturnCode.FAILED
 				if gameData.is_interrupt_mode():
+					return 	CFConst.ReturnCode.FAILED
+				if gameData.get_sequence_scripts(true):
 					return 	CFConst.ReturnCode.FAILED
 			"villain_phase":
 				if !gameData.phaseContainer.is_villain_phase():

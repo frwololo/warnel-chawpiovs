@@ -1084,32 +1084,69 @@
 					"subject": "self"
 				},
 				{
-					"name": "discard",
-					"subject": "tutor",
-					"sort_descending": true,
-					"src_container": "deck_villain",
-					"subject_count": 2,
-					"up_to": true,
-					"needs_subject": true
+					"name": "nop",
+					"subject": "an_enemy",
+					"needs_subject": true,
+					"tags": [
+						"attack"
+					]
+				},				
+				{
+					"name": "save_variable",
+					"var_name": "my_enemy",
+					"var_type": "subject",
+					"value": "previous"
 				},
 				{
-					"name": "attack",
-					"amount": {
+					"name": "sequence",
+					"sequence_ability": "discard_and_count",
+					"subject": "self",
+					"count": 2,
+					"delay_until_no_activity": true
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_damage",
+					"subject": "self",
+					"delay_until_no_activity": true
+				}
+			]
+		},
+		"discard_and_count": {
+			"_silent": true,
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_villain",
+					"is_cost": true
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_boost_count",
+					"var_type": "int",
+					"mode": "add",
+					"value": {
 						"func_name": "count_boost_icons",
 						"func_params": {
 							"subject": "previous"
 						}
 					},
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_enemies"
-						}
-					]
+					"_comments": "remembering the card for damage"
 				}
 			]
-		}
+		},
+		"do_damage": {
+			"_silent": true,
+			"all": [
+				{
+					"name": "attack",
+					"amount": "my_boost_count",
+					"subject": "my_enemy"
+				}
+			]
+		}				
 	},
 	"Sliding Shot": {
 		"manual": {

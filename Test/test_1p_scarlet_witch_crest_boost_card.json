@@ -74,6 +74,14 @@
 			"value": "-1"
 		},
 		{
+			"type": "activate",
+			"value": "Scarlet Witch"
+		},
+		{
+			"type": "choose",
+			"value": "Skip"
+		},		
+		{
 			"type": "other",
 			"value": "wait_for_player_turn"
 		}

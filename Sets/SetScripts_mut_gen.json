@@ -3654,7 +3654,8 @@
 						"src_container": "deck_villain",
 						"subject_count": 2,
 						"sort_descending": true,
-						"up_to": true
+						"up_to": true,
+						"is_cost": true,
 					},
 					{
 						"name": "indirect_damage",
@@ -4744,7 +4745,8 @@
 					"name": "discard",
 					"subject": "index",
 					"subject_index": "top",
-					"src_container": "deck_villain"
+					"src_container": "deck_villain",
+					"is_cost": true,
 				},
 				{
 					"name": "heal",
@@ -4767,7 +4769,8 @@
 					"name": "discard",
 					"subject": "index",
 					"subject_index": "top",
-					"src_container": "deck_villain"
+					"src_container": "deck_villain",
+					"is_cost": true
 				},
 				{
 					"name": "heal",
@@ -4790,7 +4793,8 @@
 					"name": "discard",
 					"subject": "index",
 					"subject_index": "top",
-					"src_container": "deck_villain"
+					"src_container": "deck_villain",
+					"is_cost": true,
 				},
 				{
 					"name": "heal",

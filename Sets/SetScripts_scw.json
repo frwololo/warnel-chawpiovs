@@ -93,7 +93,8 @@
 					]
 				},
 				{
-					"name": "play_card",
+					"name": "force_play_card",
+					"ignore_resource_cost": true,
 					"subject": "tutor",
 					"subject_count": "all",
 					"needs_subject": true,
@@ -140,31 +141,58 @@
 					]
 				},
 				{
-					"name": "discard",
-					"subject": "tutor",
-					"sort_descending": true,
-					"src_container": "deck_villain",
-					"up_to": true,
-					"subject_count": 2
+					"name": "sequence",
+					"sequence_ability": "discard_and_count",
+					"subject": "self",
+					"count": 2,
+					"delay_until_no_activity": true
 				},
 				{
-					"name": "conditional_script",
-					"options": [
-						{
-							"condition": {
-								"func_name": "count_boost_icons>=2",
-								"func_params": {
-									"subject": "previous"
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "enemy_activates",
-									"subject": "Luminous"
-								}
-							]
+					"name": "sequence",
+					"sequence_ability": "do_attack",
+					"subject": "self",
+					"delay_until_no_activity": true
+				}
+			]
+		},
+		"discard_and_count": {
+			"_silent": true,
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_villain",
+					"is_cost": true
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_boost_count",
+					"var_type": "int",
+					"mode": "add",
+					"value": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
 						}
-					]
+					},
+					"_comments": "remembering the card for attack"
+				}
+			]
+		},
+		"do_attack": {
+			"_silent": true,
+			"condition_all": {
+				"func_name": "get_subject_int_variable>=2",
+				"func_params": {
+					"subject": "self",
+					"variable": "my_boost_count"
+				}
+			},
+			"all": [
+				{
+					"name": "enemy_activates",
+					"subject": "Luminous"
 				}
 			]
 		}
@@ -257,17 +285,9 @@
 				{
 					"name": "sequence",
 					"sequence_ability": "hex_bolt",
-					"subject": "self"
-				},
-				{
-					"name": "sequence",
-					"sequence_ability": "hex_bolt",
-					"subject": "self"
-				},
-				{
-					"name": "sequence",
-					"sequence_ability": "hex_bolt",
-					"subject": "self"
+					"subject": "self",
+					"delay_until_no_activity": true,
+					"count": 3
 				}
 			]
 		},
@@ -282,14 +302,15 @@
 				},
 				{
 					"name": "conditional_script",
+					"condition_number": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					},
 					"options": [
 						{
-							"condition": {
-								"func_name": "count_boost_icons==0",
-								"func_params": {
-									"subject": "previous"
-								}
-							},
+							"condition": 0,
 							"nested_tasks": [
 								{
 									"name": "deal_damage",
@@ -299,12 +320,7 @@
 							]
 						},
 						{
-							"condition": {
-								"func_name": "count_boost_icons==1",
-								"func_params": {
-									"subject": "previous"
-								}
-							},
+							"condition": 1,
 							"nested_tasks": [
 								{
 									"name": "remove_threat",
@@ -320,12 +336,7 @@
 							]
 						},
 						{
-							"condition": {
-								"func_name": "count_boost_icons==2",
-								"func_params": {
-									"subject": "previous"
-								}
-							},
+							"condition": 2,
 							"nested_tasks": [
 								{
 									"name": "draw_cards",
@@ -452,12 +463,10 @@
 			"board": [
 				{
 					"name": "discard",
-					"subject": "tutor",
-					"sort_descending": true,
+					"subject": "index",
+					"subject_index": "top",
 					"src_container": "deck_villain",
-					"up_to": true,
-					"is_cost": true,
-					"subject_count": 2
+					"is_cost": true
 				},
 				{
 					"name": "deal_encounter",
@@ -552,24 +561,67 @@
 					]
 				},
 				{
-					"name": "discard",
-					"subject": "tutor",
-					"sort_descending": true,
-					"src_container": "deck_villain",
-					"up_to": true,
-					"is_cost": true,
-					"subject_count": 2
+					"name": "nop",
+					"subject": "an_enemy",
+					"needs_subject": true,
+					"tags": [
+						"attack"
+					]
 				},
 				{
-					"name": "attack",
-					"amount": 5,
-					"plus_amount": {
+					"name": "save_variable",
+					"var_name": "my_enemy",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "discard_and_count",
+					"subject": "self",
+					"count": 2,
+					"delay_until_no_activity": true
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_damage",
+					"subject": "self",
+					"delay_until_no_activity": true
+				}
+			]
+		},
+		"discard_and_count": {
+			"_silent": true,
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_villain",
+					"is_cost": true
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_boost_count",
+					"var_type": "int",
+					"mode": "add",
+					"value": {
 						"func_name": "count_boost_icons",
 						"func_params": {
 							"subject": "previous"
 						}
 					},
-					"subject": "an_enemy"
+					"_comments": "remembering the card for damage"
+				}
+			]
+		},
+		"do_damage": {
+			"_silent": true,
+			"all": [
+				{
+					"name": "attack",
+					"amount": 5,
+					"plus_amount": "my_boost_count",
+					"subject": "my_enemy"
 				}
 			]
 		}
@@ -664,13 +716,14 @@
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
-						"action"
+						"action_ability"
 					]
 				},
 				{
 					"name": "mod_tokens",
 					"is_cost": true,
 					"token_name": "__ready",
+					"modification": -1,
 					"subject": "self"
 				},
 				{
@@ -708,46 +761,130 @@
 		"once_per_phase": {
 			"__name__": "__chaos_control"
 		},
-		"interrupt_boost_card_resolved": {
-			"is_optional_board": "true",
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_interrupt"
+		"interrupt": {
+			"trigger": "another",
+			"event_definition_contains": "count_boost_icons",
+			"is_optional_board": true,
+			"condition_board": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"token_name": "__chaos_control"
+				}
+			},
+			"board": {
+				"_rules": {
+					"choice_msg_suffix": [
+						"(current boost icons:",
+						{
+							"func_name": "precompute_value",
+							"func_params": {
+								"subject": "interrupted_event",
+								"func_find_in_definition": "count_boost_icons"
+							}
+						},
+						")"
 					]
 				},
-				{
-					"name": "mod_tokens",
-					"token_name": "__chaos_control",
-					"modification": -1,
-					"is_cost": true,
-					"subject": "self"
-				},
-				{
-					"name": "discard",
-					"subject": "index",
-					"subject_index": "top",
-					"src_container": "deck_villain",
-					"is_cost": true
-				},
-				{
-					"name": "increase",
-					"subject": "current_activation",
-					"amount": {
-						"func_name": "count_boost_icons",
-						"func_params": {
-							"subject": "previous"
+				"Discard another boost": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_interrupt"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "__chaos_control",
+						"modification": -1,
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "top",
+						"src_container": "deck_villain",
+						"is_cost": true
+					},
+					{
+						"name": "replacement_effect",
+						"subject": "interrupted_event",
+						"replacements": {
+							"replace": {
+								"find_in_definition": "count_boost_icons",
+								"modify_path": "../..",
+								"alteration": {
+									"func_name": "count_boost_icons",
+									"func_params": {
+										"subject": "previous"
+									}
+								}
+							}
 						}
 					}
+				],
+				"Skip": [
+					{
+						"name": "nop"
+					}
+				]
+			}
+		},
+		"interrupt_boost_card_resolved": {
+			"is_optional_board": "true",
+			"board": {
+				"_rules": {
+					"choice_msg_suffix": [
+						"(current boost icons:",
+						"trigger_details_boost_icons",
+						")"
+					]
 				},
-				{
-					"name": "prevent",
-					"subject": "current_activation",
-					"amount": "trigger_details_boost_icons"
-				}
-			]
+				"Discard another boost": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_interrupt"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "__chaos_control",
+						"modification": -1,
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "top",
+						"src_container": "deck_villain",
+						"is_cost": true
+					},
+					{
+						"name": "increase",
+						"subject": "current_activation",
+						"amount": {
+							"func_name": "count_boost_icons",
+							"func_params": {
+								"subject": "previous"
+							}
+						}
+					},
+					{
+						"name": "prevent",
+						"subject": "current_activation",
+						"amount": "trigger_details_boost_icons"
+					}
+				],
+				"Skip": [
+					{
+						"name": "nop"
+					}
+				]
+			}
 		}
 	},
 	"Scarlet Witch's Crest": {
@@ -979,13 +1116,21 @@
 					"is_cost": true,
 					"tags": [
 						"action_ability"
-					],
+					]
 				},
 				{
 					"name": "draw_cards",
 					"amount": 2,
 					"is_cost": true
 				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_discard",
+				},				
+			]
+		},
+		"do_discard":{
+			"all": [
 				{
 					"name": "discard",
 					"subject": "tutor",
@@ -1016,7 +1161,8 @@
 				{
 					"name": "sequence",
 					"sequence_ability": "post_scheme_attack",
-					"subject": "self"
+					"subject": "self",
+					"delay_until_no_activity": true,
 				}
 			]
 		},
@@ -1094,45 +1240,47 @@
 			"__name__": "__superpowered_siblings"
 		},
 		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action"
-					]
-				},
-				{
-					"name": "mod_tokens",
-					"token_name": "__superpowered_siblings",
-					"modification": -1,
-					"is_cost": true,
-					"subject": "self"
-				},
-				{
-					"name": "discard",
-					"subject": "tutor",
-					"src_container": "hand",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 2,
-					"selection_type": "equal",
-					"is_cost": true
-				},
-				{
-					"name": "draw_cards",
-					"amount": {
-						"if": {
-							"func_name": "card_is_in_play",
-							"func_params": {
-								"card_name": "Pietro Maximoff"
-							}
-						},
-						"then": 3,
-						"else": 2
+			"board": {
+				"Superpowered Siblings": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "__superpowered_siblings",
+						"modification": -1,
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "discard",
+						"subject": "tutor",
+						"src_container": "hand",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 2,
+						"selection_type": "equal",
+						"is_cost": true
+					},
+					{
+						"name": "draw_cards",
+						"amount": {
+							"if": {
+								"func_name": "card_is_in_play",
+								"func_params": {
+									"card_name": "Pietro Maximoff"
+								}
+							},
+							"then": 3,
+							"else": 2
+						}
 					}
-				}
-			]
+				]
+			}
 		}
 	},
 	"Warp Reality": {
@@ -1169,19 +1317,38 @@
 					"name": "discard",
 					"subject": "index",
 					"subject_index": "top",
-					"src_container": "deck_villain"
+					"src_container": "deck_villain",
+					"is_cost": true
 				},
 				{
-					"name": "deal_damage",
-					"amount": 1,
-					"subject": "boardseek",
-					"subject_count": "all",
-					"selection_count": {
+					"name": "save_variable",
+					"var_name": "my_boost_count",
+					"var_type": "int",
+					"mode": "add",
+					"value": {
 						"func_name": "count_boost_icons",
 						"func_params": {
 							"subject": "previous"
 						}
 					},
+					"_comments": "remembering the card for attack"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_damage",
+					"subject": "self",
+					"delay_until_no_activity": true
+				}
+			]
+		},
+		"do_damage": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": "my_boost_count",
 					"selection_type": "as_much_as_possible",
 					"selection_what_to_count": "assign_any_damage",
 					"needs_selection": true,

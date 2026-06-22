@@ -85,6 +85,8 @@ func replace_script_property(key, value, task_object = null):
 		if typeof(value) == TYPE_DICTIONARY and value.get("find_in_definition",""):
 			var find_by_name = 	value.get("find_in_definition","")
 			var alteration = value.get("alteration")
+			if typeof(alteration) == TYPE_REAL:
+				alteration = int(alteration)
 			var path:Array = WCUtils.find_string_in_variant(task.script_definition,find_by_name )
 			var modify_path_str = value.get("modify_path","")
 			var modify_path_arr:PoolStringArray = modify_path_str.split("/")
@@ -98,8 +100,8 @@ func replace_script_property(key, value, task_object = null):
 			for i in path.size():
 				var subkey = path[i]
 				if i == path.size()-1:
-					if !root.has(subkey):
-						if typeof(alteration) in [TYPE_INT, TYPE_REAL]:
+					if !root.has(subkey) or typeof(root[subkey]) != typeof(alteration):
+						if typeof(alteration) == TYPE_INT:
 							root[subkey] = 0
 						else:
 							root[subkey] = ""
@@ -161,7 +163,11 @@ func modify(script, task_object = null):
 						add_tags(value, task_object)
 						result["additional_tags"] = value #TODO only the ones that are new?
 					_:
-						replace_script_property(property, value, task_object)
+						if typeof(value) == TYPE_DICTIONARY:
+							#need to precompute here
+							if value.has("alteration"):
+								value["alteration"] = script.retrieve_integer_property("alteration",0, replacements[property])
+						replace_script_property( property, value, task_object)
 						result["TODO"] =  "todo"
 	return result
 
@@ -307,7 +313,7 @@ func get_first_task_name(meaningful = true):
 		return first_task.script_name
 	return ""
 
-const _meaningless_tasks := ["nop", "constraints"]
+const _meaningless_tasks := ["nop", "constraints", "save_variable"]
 func get_first_task(meaningful = true):
 	for skip_cost_tasks in [true, false]:
 		for task in get_tasks():

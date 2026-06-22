@@ -149,6 +149,7 @@
 					"subject": "index",
 					"subject_count": 1,
 					"subject_index": "retrieve_integer",
+					"src_container": "deck",
 					"dest_container": "hand"
 				}
 			]
@@ -482,6 +483,12 @@
 					"is_cost": true,
 					"subject": "self"
 				},
+				{
+					"name": "mod_tokens",
+					"modification": -1,
+					"token_name": "charge",
+					"subject": "self"
+				},				
 				{
 					"name": "deal_damage",
 					"amount": 1,

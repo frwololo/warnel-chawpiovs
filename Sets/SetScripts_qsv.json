@@ -827,7 +827,8 @@
 					"src_container": "deck_villain",
 					"subject_count": 1,
 					"subject": "index",
-					"subject_index": "top"
+					"subject_index": "top",
+					"is_cost": true,
 				},
 				{
 					"name": "increase",
@@ -855,7 +856,8 @@
 					"src_container": "deck_villain",
 					"subject_count": 1,
 					"subject": "index",
-					"subject_index": "top"
+					"subject_index": "top",
+					"is_cost": true,
 				},
 				{
 					"name": "increase",

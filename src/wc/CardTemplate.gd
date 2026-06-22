@@ -2405,7 +2405,7 @@ func common_pre_run(sceng) -> void:
 						script.script_name = script.get_property("name") #TODO something cleaner? Maybe part of the script itself?
 						new_queue.append(script)	
 				else:
-					new_queue.append(task)										
+					new_queue.append(task)														
 			_:
 				new_queue.append(task)
 	
@@ -3189,6 +3189,14 @@ func get_subject_int_property(params, script:ScriptObject= null) -> int:
 				value = 0
 		count+= value
 	return count
+
+func get_subject_int_variable(params, script:ScriptObject= null) -> int:
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return 0
+	
+	var var_name = params.get("variable", "")
+	return subject.script_variables.get(var_name, 0)
 
 func get_trigger_details_property(params, script:ScriptObject= null) -> int:
 	if !script:

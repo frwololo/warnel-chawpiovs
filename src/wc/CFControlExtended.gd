@@ -832,17 +832,9 @@ func save_card_definitions_to_cache(the_files):
 	
 	for i in to_save.size():
 		var data = to_save[i]
-		var file_name =	to_save_name[i] 
-		var cached_filename = get_cache_filename(file_name)
-
-		var file: File = File.new()	
-		file.open(cached_filename, File.WRITE)
-		file.store_var(data)
-		file.close()
-
-		file.open(cached_filename + ".human_readable.json", File.WRITE)
-		file.store_string(JSON.print(data, '\t'))
-		file.close()	
+		var file_name =	to_save_name[i]
+		save_data_to_cache(data, file_name) 
+	
 
 	get_cache_toc()
 	cache_toc["set_definitions"] = _get_set_definitions_md5_list(the_files)
@@ -854,6 +846,18 @@ func _get_set_definitions_md5_list(the_files):
 	for file in the_files:
 		md5_list[file] = WCUtils.get_md5("Sets/" + file)
 	return md5_list
+
+func save_data_to_cache (data, file_name):
+	var cached_filename = get_cache_filename(file_name)
+
+	var file: File = File.new()	
+	file.open(cached_filename, File.WRITE)
+	file.store_var(data)
+	file.close()
+
+	file.open(cached_filename + ".human_readable.json", File.WRITE)
+	file.store_string(JSON.print(data, '\t'))
+	file.close()	
 
 func load_data_from_cache(file_name): 
 	var cached_filename = get_cache_filename(file_name)
@@ -1248,72 +1252,104 @@ func load_script_definitions() -> void:
 	#then we load from resources (their entries will overwrite user ones only if the user entries don't exist)
 	script_definition_files += CFUtils.list_files_in_directory(
 				"res://Sets/", CFConst.SCRIPT_SET_NAME_PREPEND, true)
-	WCUtils.debug_message("Found " + str(script_definition_files.size()) + " script files")			
+	WCUtils.debug_message("Found " + str(script_definition_files.size()) + " script files")
+	var all_script_files_data = []
+	var all_cache_valid = true	
+	#preload all scripts from cache		
 	for script_file in script_definition_files:
 		var prefix_end = script_file.find(CFConst.SCRIPT_SET_NAME_PREPEND) + CFConst.SCRIPT_SET_NAME_PREPEND.length()
 		var extension_idx = script_file.find(".")
 		var box_name = script_file.substr(prefix_end, extension_idx-prefix_end)	
 		if !box_contents_by_name.has(box_name):
 			continue
-		var json_card_data: Dictionary = load_script_definition_from_cache(script_file)		
+		var json_card_data: Dictionary = load_script_definition_from_cache(script_file)
+		var index = {"file": script_file, "box_name": box_name, "data": json_card_data, "cache_valid": true}	
 		if !json_card_data:
-			json_card_data = WCUtils.read_json_file(script_file)
-			#delete comments from dictionary
-			WCUtils.erase_key_recursive(json_card_data, "_comments")
-			var local_macros = json_card_data.get("_macros", {})
-			json_card_data.erase("_macros")
-			json_card_data = WCUtils.replace_macros(json_card_data, local_macros, json_macro_data)
-			
-			#we don't support "response" yet but want to in the future. For now they're just interrupts
-			json_card_data = WCUtils.search_and_replace (json_card_data, "response", "interrupt", true)
-			json_card_data = WCUtils.search_and_replace (json_card_data, "response_", "interrupt_")
-			#bugfix: replace "floats" to "ints"
-			json_card_data = WCUtils.replace_real_to_int(json_card_data)
-			save_script_definition_to_cache(script_file, json_card_data)
-			
-#			var _text = to_json(json_card_data)
-#			var file = File.new()
-#			var fname = "user://log_" + box_name + ".json"
-#			file.open(fname, File.WRITE)
-#			file.store_string(_text)
-#			file.close() 
-
-		for fuzzy_card_name in json_card_data.keys():
-			var card_info = retrieve_card_info_from_fuzzy_name(fuzzy_card_name)
-			var card_name = card_info["name"]
-			var card_code = card_info["code"]	
-			if card_code:
-				if not combined_scripts.get(card_code): #this ensures the first data that was read gets precedence
-					var script_data = json_card_data[fuzzy_card_name]
-					combined_scripts[card_code]	= script_data
-			else:
-				var card_datas = box_contents_by_name[box_name].get(card_name, [])
-				if !card_datas:
-					var error_msg = "scripting for non existing card: " + card_name + ". Check case, character subname, etc..."
-					cfc.emit_signal("json_parse_error", error_msg)				
-				for card_data in card_datas:
-					var card_id = card_data["_code"]
-					if not combined_scripts.get(card_id):  #this ensures the first data that was read gets precedence
-						var script_data = json_card_data[card_name]
-						combined_scripts[card_id]	= script_data.duplicate(true)	
-		
-	#once everything is loaded, fill the script of cards that are duplicates
-	#we only fill with duplicate data if we don't already have info on this card
-	for card_id in duplicates:
-		var duplicate_of = duplicates[card_id]
-		if not combined_scripts.get(card_id):
-			var duplicate_data = combined_scripts.get(duplicate_of, {})	
-			combined_scripts[card_id] = duplicate_data.duplicate(true)	
-
-	for card_id in card_definitions.keys():
-		var card_script = script_overrides.get_scripts(combined_scripts, card_id)
-		var unmodified_card_script = script_overrides.get_scripts(combined_scripts, card_id, false)
-#		print(unmodified_card_script)
-		if not card_script.empty():
-			combined_scripts[card_id] = card_script
-			set_scripts[card_id] = card_script
-			unmodified_set_scripts[card_id] = unmodified_card_script
+			index["cache_valid"] = false
+			all_cache_valid = false
+		all_script_files_data.append(index)	
 	
+	#if no change, we load scripts from the global cache
+	if all_cache_valid:
+		set_scripts = load_data_from_cache("set_scripts")
+		unmodified_set_scripts = load_data_from_cache("unmodified_set_scripts")
+		if !set_scripts or !unmodified_set_scripts:
+			all_cache_valid = false
+			print_debug("WARNING: caches were valid but there's been an issue loading set_scripts and unmodified_set_scripts")
+	
+	if !all_cache_valid:			
+		for script_index_data in all_script_files_data:
+			var script_file = script_index_data["file"]
+			var json_card_data = script_index_data["data"]
+			var box_name = script_index_data["box_name"]
+			
+			if !script_index_data["cache_valid"]:
+				json_card_data = WCUtils.read_json_file(script_file)
+				#delete comments from dictionary
+				WCUtils.erase_key_recursive(json_card_data, "_comments")
+				var local_macros = json_card_data.get("_macros", {})
+				json_card_data.erase("_macros")
+				json_card_data = WCUtils.replace_macros(json_card_data, local_macros, json_macro_data)
+				
+				#we don't support "response" yet but want to in the future. For now they're just interrupts
+				json_card_data = WCUtils.search_and_replace (json_card_data, "response", "interrupt", true)
+				json_card_data = WCUtils.search_and_replace (json_card_data, "response_", "interrupt_")
+				#bugfix: replace "floats" to "ints"
+				json_card_data = WCUtils.replace_real_to_int(json_card_data)
+				
+				#discard as a cost when the next step is to count boost icons
+				
+				save_script_definition_to_cache(script_file, json_card_data)
+				
+	#			var _text = to_json(json_card_data)
+	#			var file = File.new()
+	#			var fname = "user://log_" + box_name + ".json"
+	#			file.open(fname, File.WRITE)
+	#			file.store_string(_text)
+	#			file.close() 
+
+			for fuzzy_card_name in json_card_data.keys():
+				var card_info = retrieve_card_info_from_fuzzy_name(fuzzy_card_name)
+				var card_name = card_info["name"]
+				var card_code = card_info["code"]	
+				if card_code:
+					if not combined_scripts.get(card_code): #this ensures the first data that was read gets precedence
+						var script_data = json_card_data[fuzzy_card_name]
+						combined_scripts[card_code]	= script_data
+				else:
+					var card_datas = box_contents_by_name[box_name].get(card_name, [])
+					if !card_datas:
+						var error_msg = "scripting for non existing card: " + card_name + ". Check case, character subname, etc..."
+						cfc.emit_signal("json_parse_error", error_msg)				
+					for card_data in card_datas:
+						var card_id = card_data["_code"]
+						if not combined_scripts.get(card_id):  #this ensures the first data that was read gets precedence
+							var script_data = json_card_data[card_name]
+							combined_scripts[card_id]= script_data.duplicate(true)	
+				
+		#once everything is loaded, fill the script of cards that are duplicates
+		#we only fill with duplicate data if we don't already have info on this card
+		for card_id in duplicates:
+			var duplicate_of = duplicates[card_id]
+			if not combined_scripts.get(card_id):
+				var duplicate_data = combined_scripts.get(duplicate_of, {})	
+				combined_scripts[card_id] = duplicate_data.duplicate(true)	
+
+		for card_id in card_definitions.keys():
+			var card_script = script_overrides.get_scripts(combined_scripts, card_id)
+			var unmodified_card_script = script_overrides.get_scripts(combined_scripts, card_id, false)
+	#		print(unmodified_card_script)
+			if not card_script.empty():
+				combined_scripts[card_id] = card_script
+				set_scripts[card_id] = card_script
+				unmodified_set_scripts[card_id] = unmodified_card_script
+	
+		save_data_to_cache(set_scripts, "set_scripts")
+		save_data_to_cache(unmodified_set_scripts, "unmodified_set_scripts")
+	else:
+		#cache was valid
+		print_debug("INFO: set_scripts and unmodified_set_scripts loaded from cache")
+			
 	#load additional stuff
 	load_deck_definitions()
 	_sanity_check_scripts()

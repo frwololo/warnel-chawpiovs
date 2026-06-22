@@ -90,6 +90,7 @@ var cardImageDownloader:CardImageDownloader = null
 # Hero that I am currently controlling
 var current_local_hero_id := 1
 var scripted_play_sequence:= []
+var scripted_play_sequence_low_priority:= []
 
 
 #temp vars for bean counting
@@ -2145,18 +2146,12 @@ func get_ordered_hero_id(i):
 var _ready_for_next_sequence = true
 func get_sequence_scripts(include_low_priority = false):
 	if include_low_priority:
-		return scripted_play_sequence
+		return scripted_play_sequence + scripted_play_sequence_low_priority
 		
-	var results = []
-	for event in scripted_play_sequence:
-		if event["delay_until_no_activity"]:
-			continue
-		results.append(event)
-	
-	return results
+	return scripted_play_sequence
 
 func play_scripted_sequence():
-	if !scripted_play_sequence:
+	if !scripted_play_sequence and !scripted_play_sequence_low_priority:
 		return
 
 	if !_ready_for_next_sequence:
@@ -2166,12 +2161,22 @@ func play_scripted_sequence():
 		return
 	
 		
-	var next_play_event = scripted_play_sequence.front()
-	if next_play_event["delay_until_no_activity"]:
+	var next_play_event = null
+	var is_low_priority_queue = false
+	if scripted_play_sequence:
+		next_play_event = scripted_play_sequence.front() 
+	else:
+		next_play_event = scripted_play_sequence_low_priority.front() 
+		is_low_priority_queue = true
+		
+	if is_low_priority_queue:
 		if immediate_encounters:
 			return	
 		if attackers:
 			return
+		if !theStack.is_idle():
+			return
+		var _tmp = 1
 	
 	if next_play_event["is_villain"]:
 		pass
@@ -2183,7 +2188,10 @@ func play_scripted_sequence():
 
 	
 	_ready_for_next_sequence = false
-	next_play_event = scripted_play_sequence.pop_front()
+	if is_low_priority_queue:
+		next_play_event = scripted_play_sequence_low_priority.pop_front()
+	else:
+		next_play_event = scripted_play_sequence.pop_front()
 	var subject = next_play_event["card"]
 	var trigger = next_play_event["trigger"]	
 		
@@ -2212,16 +2220,23 @@ func start_play_sequence(cards, trigger, script):
 		is_villain = true
 	if !owner_hero_id in (self.get_my_heroes()):
 		return
-	for subject in cards:
-		scripted_play_sequence.append({
-			"card" : subject,
-			"trigger" : trigger,
-			"delay_until_no_activity": script.get_property("delay_until_no_activity", false),
-			"is_villain": is_villain,
-			"trigger_details": {
-				"triggered_by_card": script.owner
-			}
-		})
+	var low_priority = script.get_property("delay_until_no_activity", false)
+	var count = 1
+	if script.script_definition.has("count"):
+		count = script.retrieve_integer_property("count")
+	for i in count:
+		for subject in cards:
+			var target_queue = scripted_play_sequence
+			if low_priority:
+				target_queue = scripted_play_sequence_low_priority
+			target_queue.append({
+				"card" : subject,
+				"trigger" : trigger,
+				"is_villain": is_villain,
+				"trigger_details": {
+					"triggered_by_card": script.owner
+				}
+			})
 
 	
 			

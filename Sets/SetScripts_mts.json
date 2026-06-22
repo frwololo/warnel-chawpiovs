@@ -1424,19 +1424,19 @@
 			"trigger": "self",
 			"board": [
 				{
-					"name": "move_card_to_container",
-					"dest_container": "discard_villain",
+					"name": "discard",
 					"src_container": "deck_villain",
 					"subject": "index",
 					"subject_index": "top",
-					"subject_count": 1
+					"subject_count": 1,
+					"is_cost": true,					
 				},
 				{
 					"name": "deal_damage",
 					"amount": {
 						"func_name": "count_boost_icons",
 						"func_params": {
-							"subject": "all_previous"
+							"subject": "previous"
 						}
 					},
 					"subject": "boardseek",
@@ -1488,19 +1488,19 @@
 			"trigger": "self",
 			"board": [
 				{
-					"name": "move_card_to_container",
-					"dest_container": "discard_villain",
+					"name": "discard",
 					"src_container": "deck_villain",
 					"subject": "index",
 					"subject_index": "top",
-					"subject_count": 1
+					"subject_count": 1,
+					"is_cost": true,					
 				},
 				{
 					"name": "deal_damage",
 					"amount": {
 						"func_name": "count_boost_icons",
 						"func_params": {
-							"subject": "all_previous"
+							"subject": "previous"
 						}
 					},
 					"subject": "boardseek",
@@ -1552,19 +1552,19 @@
 			"trigger": "self",
 			"board": [
 				{
-					"name": "move_card_to_container",
-					"dest_container": "discard_villain",
+					"name": "discard",
 					"src_container": "deck_villain",
 					"subject": "index",
 					"subject_index": "top",
-					"subject_count": 1
+					"subject_count": 1,
+					"is_cost": true,
 				},
 				{
 					"name": "deal_damage",
 					"amount": {
 						"func_name": "count_boost_icons",
 						"func_params": {
-							"subject": "all_previous"
+							"subject": "previous"
 						}
 					},
 					"subject": "boardseek",

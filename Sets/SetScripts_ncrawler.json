@@ -690,15 +690,21 @@
 					"src_container": "deck_villain",
 					"selection_count": 1,
 					"selection_type": "equal",
-					"needs_selection": true
+					"needs_selection": true,
+					"is_cost": true,
 				},
 				{
 					"name": "save_variable",
-					"var_name": "my_boost",
-					"var_type": "subject",
-					"value": "previous",
-					"_comments": "remembering the card for use"
-				}
+					"var_name": "my_boost_count",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					},
+					"_comments": "remembering the card for damage"
+				}				
 			]
 		},
 		"alterants": {
@@ -707,23 +713,13 @@
 					"filter_task": "get_property",
 					"filter_property_name": "attack",
 					"trigger": "self",
-					"alteration": {
-						"func_name": "count_boost_icons",
-						"func_params": {
-							"subject": "my_boost"
-						}
-					}
+					"alteration": "my_boost_count"
 				},
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "thwart",
 					"trigger": "self",
-					"alteration": {
-						"func_name": "count_boost_icons",
-						"func_params": {
-							"subject": "my_boost"
-						}
-					}
+					"alteration": "my_boost_count"
 				}
 			]
 		}

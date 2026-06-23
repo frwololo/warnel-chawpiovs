@@ -1,0 +1,215 @@
+{
+	"_comments": "Automated Test for Gamora's Godslayer",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 11401,
+					"hero": "18001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Hydra Mercenary #01101"
+				},
+				{
+					"card": "False Alarm #01112"
+				}
+			],
+			"villain": [
+				{
+					"card": "Taskmaster - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting Down Heroes - 1B"
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Gamora #18001b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sibling Rivalry #18025",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Nebula #18026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "In a Bind #18027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Waylay #18028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Waylay #18028",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Combat Training #01057",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Plan of Attack #18013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Genius #01089",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Gamora #18001a"
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Godslayer"
+				}
+			],
+			"hand1": []
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Gamora"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "Target",
+			"value": "Taskmaster"
+		},
+		{
+			"type": "activate",
+			"value": "Godslayer"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 11401,
+					"hero": "18001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Hydra Mercenary #01101"
+				},
+				{
+					"card": "False Alarm #01112"
+				}
+			],
+			"villain": [
+				{
+					"card": "Taskmaster - 1",
+					"tokens": {
+						"damage": 4
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting Down Heroes - 1B"
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Gamora #18001b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sibling Rivalry #18025",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Nebula #18026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "In a Bind #18027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Waylay #18028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Waylay #18028",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Combat Training #01057",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Plan of Attack #18013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Genius #01089",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Gamora #18001a"
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Godslayer",
+					"exhausted": true
+				}
+			],
+			"hand1": []
+		}
+	}
+}

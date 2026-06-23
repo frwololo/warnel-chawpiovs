@@ -1,0 +1,368 @@
+{
+	"_comments": "Automated Test Lethal Intent",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 14353,
+					"hero": "22001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary #01101",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Stampede #01106",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Charge #01099",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Rhino - 2 #01095",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Break-In! - 1B #01097b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Nebula #22001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Gamora #22028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Self-Preservation #22029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Lethal Weapon #22030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Old Rivals #22031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Old Rivals #22031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rhino - 1 #01094",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Break-In! - 1A #01097a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Weapons Master #22007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "One Way or Another #22015",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "Brains Over Brawn #22018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Power of Justice #01062",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Nebula #22001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"damage": 1,
+						"confused": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Venom - Flash Thompson #22013",
+					"owner_hero_id": 1,
+					"tokens": {
+						"damage": 1
+					}
+				},
+				{
+					"card": "Eros #22011",
+					"owner_hero_id": 1
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Nebula's Ship #22003",
+					"owner_hero_id": 1,
+					"exhausted": true
+				},
+				{
+					"card": "Unyielding Persistence #22006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Wide Stance #22008",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Lethal Intent #22010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Strength #01090",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Nebula"
+		},
+		{
+			"type": "choose",
+			"value": "change form"
+		},
+		{
+			"type": "play",
+			"value": "Lethal Intent #22010"
+		},
+		{
+			"type": "select",
+			"value": "Strength #01090"
+		},
+		{
+			"type": "select",
+			"value": [
+				"Unyielding Persistence #22006",
+				"Wide Stance #22008"
+			]
+		},
+		{
+			"type": "select",
+			"value": "Advance #01186"
+		},
+		{
+			"type": "select",
+			"value": [
+				"Stampede #01106",
+				"Charge #01099"
+			]
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 14353,
+					"hero": "22001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary #01101",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Stampede #01106",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Charge #01099",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Rhino - 2 #01095",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Break-In! - 1B #01097b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Nebula #22001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Gamora #22028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Self-Preservation #22029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Lethal Weapon #22030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Old Rivals #22031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Old Rivals #22031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rhino - 1 #01094",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Break-In! - 1A #01097a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Weapons Master #22007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "One Way or Another #22015",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "Brains Over Brawn #22018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Power of Justice #01062",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Strength #01090",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Lethal Intent #22010",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Nebula #22001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"damage": 1,
+						"confused": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Venom - Flash Thompson #22013",
+					"owner_hero_id": 1,
+					"tokens": {
+						"damage": 1
+					}
+				},
+				{
+					"card": "Eros #22011",
+					"owner_hero_id": 1
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Nebula's Ship #22003",
+					"owner_hero_id": 1,
+					"exhausted": true
+				},
+				{
+					"card": "Unyielding Persistence #22006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Wide Stance #22008",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": []
+		}
+	}
+}

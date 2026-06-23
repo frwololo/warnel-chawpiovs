@@ -1339,6 +1339,13 @@ static func filter_trigger(
 	if !check_validity(owner_card, card_scripts, "self", owner_card):
 		return false
 
+	return filter_trigger_no_validity_check(card_scripts, trigger_card, owner_card, trigger_details)
+
+static func filter_trigger_no_validity_check(
+		card_scripts,
+		trigger_card,
+		owner_card,
+		trigger_details) -> bool:
 	# Here we check that the trigger matches the _request_ for trigger
 	# A trigger which requires "another" card, should not trigger
 	# when itself causes the effect.
@@ -1700,7 +1707,7 @@ static func preprocess_numbers(state_filter, _card = null, _owner_card = null):
 
 
 # Check if the card is a valid subject or trigger, according to its state.
-static func check_validity(card, card_scripts, type := "trigger", owner_card = null) -> bool:
+static func check_validity(card, card_scripts, type := "trigger", owner_card = null, _options:= {}) -> bool:
 	var card_matches := true
 	# We use the type of seek we're doing
 	# To know which dictionary property to pass for the required dict

@@ -1391,6 +1391,8 @@ func flush_logs():
 
 
 func display_debug_info():
+	if !cfc.get_setting("enable_ingame_debug_textedit") and !gameData.testSuite:
+		return
 	#the expectation at this point is that
 	#the announcer gives enough info to not have to show this debug panel	
 	if gameData.is_announce_ongoing():

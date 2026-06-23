@@ -61,6 +61,7 @@ onready var shuffle_button := $Control/ManipulationButtons/Shuffle
 onready var highlight := $Control/Highlight
 
 var _card_count = 0
+var _is_processing:= true
 
 func _process(_delta: float) -> void:
 	# Debug labels
@@ -153,6 +154,8 @@ func _on_viewport_resized() -> void:
 
 var _are_cards_still_animating:= []
 func are_cards_still_animating() -> bool:
+	if !_is_processing:
+		return false
 	if  _are_cards_still_animating:
 		return _are_cards_still_animating[0]
 	for c in get_all_cards():
@@ -467,4 +470,5 @@ func remove_child(node) -> void:
 
 func set_process(enable:bool):
 	_are_cards_still_animating = []	
+	_is_processing = enable
 	.set_process(enable)

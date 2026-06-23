@@ -19,7 +19,7 @@ const PROPERTIES_NUMBERS := ["cost", "attack", "defense", "recover", "thwart", "
 	"attack_cost", "thwart_cost", #consequential damage
 	"cannot_attack", "cannot_thwart", "cannot_defend", "cannot_recover",  "cannot_play", "cannot_attack_minion",
 	"printed_health", #TODO maybe retrieve this one from the database directly?
-	"invincible","cannot_remove_threat", "is_unique", 
+	"invincible","cannot_remove_threat", "is_unique", "cannot_thwart_side_scheme",
 	"boost", "scheme_crisis", "scheme_amplify", "scheme_acceleration", "scheme_hazard",
 	"escalation_threat", 
 	"resource_mental", "resource_wild", "resource_energy", "resource_physical",

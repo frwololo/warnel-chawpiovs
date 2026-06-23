@@ -726,7 +726,7 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 		var subject = script.subjects[0] if subjects else null
 		if !subject:
 			return false		
-		var is_valid = SP.check_validity(subject, filters, "event_target")
+		var is_valid = SP.check_validity(subject, filters, "event_target", owner_card)
 		if !is_valid:
 			return false
 		filters.erase("filter_state_event_target")
@@ -738,7 +738,7 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 		var owner = script.owner
 		if !owner:
 			return false		
-		var is_valid = SP.check_validity(owner, filters, "event_source")
+		var is_valid = SP.check_validity(owner, filters, "event_source", owner_card)
 		if !is_valid:
 			return false
 		filters.erase("filter_state_event_source")
@@ -747,7 +747,7 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 		var attacker = trigger_details.get("attacker")
 		if !attacker:
 			return false	
-		var is_valid = SP.check_validity(attacker, filters, "event_attacker")
+		var is_valid = SP.check_validity(attacker, filters, "event_attacker", owner_card)
 		if !is_valid:
 			return false
 		filters.erase("filter_state_event_attacker")

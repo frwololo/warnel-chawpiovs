@@ -570,7 +570,7 @@ func post_cards_moved_load():
 		yield(func_return, "completed")		
 		
 
-	#test printed texts output
+#	#test printed texts output
 #	var all_printed_text = {}
 #	for card in get_all_cards(true):
 #		card.get_printed_text("no_an_actual_id")
@@ -1405,6 +1405,12 @@ func unique_card_in_play(unique_card:WCCard):
 		
 	var title = unique_card.get_property("shortname", "").to_lower()
 	var subtitle = unique_card.get_property("subname", "").to_lower()
+	var type_code = unique_card.get_property("type_code", "")
+	var alter_ego_title = ""
+	if type_code in ["hero", "alter_ego"]:
+		var alter_ego_data = cfc.get_alter_ego_data(unique_card.canonical_id)
+		alter_ego_title = alter_ego_data.get("shortname", "").to_lower()
+
 	
 	var all_cards = self.get_all_cards()
 	for card in all_cards:
@@ -1422,11 +1428,19 @@ func unique_card_in_play(unique_card:WCCard):
 			var alter_ego_data = cfc.get_alter_ego_data(card.canonical_id)
 			card_alter_ego_title = alter_ego_data.get("shortname", "").to_lower()
 	
+		#the two cards share a title, and both have no subtitle and no alter_ego title
 		if title and (title == card_title):
-			if (!subtitle and !card_subtitle and !card_alter_ego_title):
+			if (!subtitle and !card_subtitle and !card_alter_ego_title and !alter_ego_title):
 				return card
+		# The subtitle or alter-ego title of one matches the title, subtitle, or alter-ego title of the other. 		
 		if subtitle and (subtitle in [card_title, card_subtitle, card_alter_ego_title]):
 			return card
+		if alter_ego_title and (alter_ego_title in [card_title, card_subtitle, card_alter_ego_title]):
+			return card	
+		if card_subtitle and (card_subtitle in [title, subtitle, alter_ego_title]):
+			return card
+		if card_alter_ego_title and (card_alter_ego_title in [title, subtitle, alter_ego_title]):
+			return card	
 		
 	return null
 

@@ -314,8 +314,12 @@ func post_initiate_checks():
 	# We return that the selection was canceled
 	if get_count(card_array) < get_selection_count()\
 			and selection_type in ["equal", "min"]:
-		force_cancel()
-		return
+		if show_cards_with_zero_value:
+			var _button = add_cancel("Cancel")
+			hide_ok_on_zero = true	
+		else:			
+			force_cancel()
+			return
 	# If the selection count is 0 (e.g. reduced with an alterant)
 	# And we're looking for max or equal amount of cards, we return cancelled.
 	elif get_selection_count() == 0:
@@ -347,9 +351,10 @@ func post_initiate_checks():
 	# We immediately return what is there.
 	if get_count(card_array) == get_selection_count()\
 			and selection_type in ["equal", "min"]:
-		selected_cards = card_array
-		emit_signal("confirmed")
-		return
+		if !show_cards_with_zero_value:	
+			selected_cards = card_array
+			emit_signal("confirmed")
+			return
 	
 	set_window_title()
 

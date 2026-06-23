@@ -30,7 +30,7 @@
 					"name": "move_card_to_board",
 					"destination_grid": "enemies_my_hero",
 					"subject": "tutor",
-					"subject_index": "top",
+					"sort_descending": true,
 					"subject_count": 10,
 					"up_to": true,
 					"src_container": "deck_villain",
@@ -53,8 +53,17 @@
 					}
 				},
 				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
+				},
+				{
 					"name": "discard",
 					"subject": "self",
+					"is_else": true
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain",
 					"is_else": true
 				}
 			]
@@ -465,6 +474,7 @@
 			]
 		},
 		"card_played": {
+			"display_section": "response",
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
@@ -487,18 +497,14 @@
 				},
 				{
 					"name": "remove_threat",
-					"subject": "target",
-					"amount": 1,
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_schemes"
-						}
-					]
+					"subject": "a_scheme",
+					"amount": 1
 				}
 			]
 		},
 		"event_played": {
+			"display_section": "response2",
+			"filter_same_controller": true,
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
@@ -506,8 +512,7 @@
 					},
 					"filter_properties2": {
 						"trait_thwart": 1
-					},
-					"filter_same_controller": true
+					}
 				}
 			],
 			"is_optional_board": true,
@@ -521,14 +526,8 @@
 				},
 				{
 					"name": "deal_damage",
-					"subject": "target",
-					"amount": 1,
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_enemies"
-						}
-					]
+					"subject": "an_enemy",
+					"amount": 1
 				}
 			]
 		}
@@ -555,25 +554,34 @@
 						"token_name": "__draw"
 					},
 					{
-						"name": "draw_card",
-						"subject": "tutor",
+						"name": "view_card",
+						"subject": "index",
 						"subject_index": "top",
-						"subject_count": 1,
-						"up_to": true,
 						"src_container": "deck",
-						"selection_count": 1,
-						"selection_type": "max",
-						"needs_selection": true,
-						"selection_show_cards_with_zero_value": true,
-						"selection_what_to_count": {
-							"func_name": "has_trait",
-							"func_params": {
-								"trait": [
-									"attack",
-									"thwart"
+						"subject_count": 1
+					},
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "has_trait",
+									"func_params": {
+										"subject": "previous",
+										"trait": [
+											"attack",
+											"thwart"
+										]
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "draw_cards",
+										"amount": 1
+									}
 								]
 							}
-						}
+						]
 					}
 				]
 			}
@@ -581,6 +589,7 @@
 	},
 	"Gamora's Sword": {
 		"card_played": {
+			"filter_same_controller": true,
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
@@ -588,8 +597,7 @@
 					},
 					"filter_properties2": {
 						"trait_attack": 1
-					},
-					"filter_same_controller": true
+					}
 				}
 			],
 			"is_optional_board": true,
@@ -609,8 +617,7 @@
 		}
 	},
 	"Godslayer": {
-		"interrupt": {
-			"event_name": "attack",
+		"interrupt_attack_started": {
 			"trigger": "my_hero",
 			"event_filters": {
 				"tags": [
@@ -619,8 +626,7 @@
 				"filter_state_event_target": [
 					{
 						"filter_properties": {
-							"is_unique": 1,
-							"comparison": "ge"
+							"is_unique": true
 						}
 					}
 				]
@@ -836,6 +842,7 @@
 				{
 					"name": "move_card_to_container",
 					"subject": "tutor",
+					"subject_count": "all",
 					"dest_container": "hand",
 					"src_container": "deck",
 					"needs_selection": true,
@@ -932,7 +939,7 @@
 					"dest_container": "hand",
 					"src_container": "deck",
 					"subject": "tutor",
-					"subject_index": "top",
+					"sort_descending": true,
 					"subject_count": {
 						"if": {
 							"func_name": "is_alter_ego_form",
@@ -941,11 +948,11 @@
 							}
 						},
 						"then": 7,
-						"else": 5
+						"else": 4
 					},
 					"up_to": true,
 					"selection_count": 1,
-					"selection_type": "equal",
+					"selection_type": "max",
 					"needs_selection": true,
 					"selection_show_cards_with_zero_value": true,
 					"selection_what_to_count": {
@@ -997,6 +1004,7 @@
 	},
 	"Sibling Rivalry": {
 		"interrupt_remove_threat": {
+			"display_section": "generic",
 			"event_filters": {
 				"filter_state_event_target": [
 					{
@@ -1006,33 +1014,19 @@
 					}
 				]
 			},
+			"condition_board": {
+				"func_name": "!get_subject_int_property",
+				"func_params": {
+					"subject": "event_source_hero",
+					"property": "shortname",
+					"property_value": "Gamora"
+				}
+			},		
 			"board": [
 				{
-					"name": "conditional_script",
-					"options": [
-						{
-							"condition": {
-								"func_name": "get_subject_int_property",
-								"func_params": {
-									"subject": "trigger",
-									"property": "Name",
-									"property_value": "Gamora"
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "nop"
-								}
-							]
-						}
-					],
-					"else": [
-						{
-							"name": "prevent",
-							"amount": "all",
-							"subject": "interrupted_event"
-						}
-					]
+					"name": "prevent",
+					"amount": "all",
+					"subject": "interrupted_event"
 				}
 			]
 		},

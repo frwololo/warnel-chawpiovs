@@ -766,7 +766,7 @@ const AUTO_KEYWORDS := {
 	"cannot_remove_threat": "int",
 	"cannot_ready": "int",
 	"cannot_ready_by_player_card": "int",
-	"cannot_thwart_side_schemes": "int",
+	"cannot_thwart_side_scheme": "int",
 
 	"excess_damage_boost": "int", #Rocket Raccoon's Follow Through card
 	"exclude_from_ally_limit": "int",
@@ -911,8 +911,9 @@ const TARGET_ARROW_COLOR_BY_TAG: = {
 }
 
 const TARGET_ARROW_COLOR_BY_NAME: = {
-	"deal_damage" : Color(0.5, 0.1, 0.1),
-	"receive_damage" : Color(0.5, 0.1, 0.1)	
+	"attack" : Color(0.7, 0.1, 0.1) ,	
+	"deal_damage" : Color(0.7, 0.1, 0.1),
+	"receive_damage" : Color(0.7, 0.1, 0.1)	
 }
 
 const ALLOWED_PCK_NAMES:= [
@@ -1050,6 +1051,7 @@ const DEFAULT_SETTINGS:= {
 #		"": "https://marvelcdb.com/api/public/cards/.json", #
 
 	},
+	'enable_ingame_debug_textedit': false,
 	'lobby_server': {
 		'server': 'https://wololo.net/',
 		'create_room_url': 'wc/lobby.php?mode=create_room',
@@ -1124,8 +1126,8 @@ const DEBUG_SIMULATE_NETWORK_DELAY = 1.5
 const DEBUG_NETWORK_DELAY_RANDOM = false
 const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 
-const SCRIPT_BREAKPOINT_CARD_NAME := "Pym Particles"
-const SCRIPT_BREAKPOINT_TRIGGER_NAME := "paid_as_resource"
+const SCRIPT_BREAKPOINT_CARD_NAME := "Gamora"
+const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_played"
 
 const VERSION := "1.4.1"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"

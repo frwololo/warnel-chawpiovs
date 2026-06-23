@@ -4028,7 +4028,7 @@
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "cannot_thwart_side_schemes",
+					"filter_property_name": "cannot_thwart_side_scheme",
 					"filter_state_trigger": [
 						{
 							"filter_same_controller": true

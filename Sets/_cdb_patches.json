@@ -302,7 +302,10 @@
 	},	
 	"35021": {
 		"subname": "Piotr Rasputin"
-	},	
+	},
+	"35028": {
+		"is_unique": true
+	},
 	"54021": {
 		"imagesrc": "/bundles/cards/50054.jpg"
 	}

@@ -1,0 +1,489 @@
+{
+	"_comments": "Tests that Gamora unique ally cannot come into play when Gamora hero is here",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 14353,
+					"hero": "22001a"
+				}
+			},
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 11401,
+					"hero": "18001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "False Alarm #01112",
+					"owner_hero_id": 0
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Rhino - 1 #01094",
+					"owner_hero_id": 0,
+					"tokens": {
+						"damage": 7
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Break-In! - 1B #01097b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Nebula #22001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Gamora #18001a",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Gamora #22028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Self-Preservation #22029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Lethal Weapon #22030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Old Rivals #22031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Old Rivals #22031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sibling Rivalry #18025",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Nebula #18026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "In a Bind #18027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Waylay #18028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Waylay #18028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rhino - 2 #01095",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Break-In! - 1A #01097a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Unfulfilled Destiny #18024",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Combat Ready #22009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy #01088",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "Genius #01089",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Nebula #22001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"damage": 2,
+						"tough": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Justice Served #22014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Wide Stance #22008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Wide Stance #22008",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Gamora #22002",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Heroic Intuition #01065",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Cutthroat Ambition #22004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Weapons Master #22007",
+					"owner_hero_id": 1
+				}
+			],
+			"encounters_facedown2": [],
+			"encounters_reveal2": [],
+			"deck2": [
+				{
+					"card": "Crosscounter #18004",
+					"owner_hero_id": 2
+				}
+			],
+			"discard2": [
+				{
+					"card": "Combat Training #01057",
+					"owner_hero_id": 2
+				}
+			],
+			"enemies2": [],
+			"identity2": [
+				{
+					"card": "Gamora #18001a",
+					"owner_hero_id": 2,
+					"tokens": {
+						"__precision": 1,
+						"damage": 5,
+						"__finesse": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies2": [
+				{
+					"card": "Angela - Aldrif Odinsdottir #18011",
+					"owner_hero_id": 2,
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Combat Training #01057",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Keen Instincts #18009",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Conditioning Room #18008",
+					"owner_hero_id": 2
+				}
+			],
+			"hand2": [
+				{
+					"card": "Impede #18016",
+					"owner_hero_id": 2
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Gamora #22002",
+			"hero_id": 1,
+			"expected_to_fail": true
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 14353,
+					"hero": "22001a"
+				}
+			},
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 11401,
+					"hero": "18001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "False Alarm #01112",
+					"owner_hero_id": 0
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Rhino - 1 #01094",
+					"owner_hero_id": 0,
+					"tokens": {
+						"damage": 7
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Break-In! - 1B #01097b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Nebula #22001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Gamora #18001a",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Gamora #22028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Self-Preservation #22029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Lethal Weapon #22030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Old Rivals #22031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Old Rivals #22031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sibling Rivalry #18025",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Nebula #18026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "In a Bind #18027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Waylay #18028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Waylay #18028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rhino - 2 #01095",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Break-In! - 1A #01097a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Unfulfilled Destiny #18024",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Combat Ready #22009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy #01088",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "Genius #01089",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Nebula #22001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"damage": 2,
+						"tough": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Justice Served #22014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Wide Stance #22008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Wide Stance #22008",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Gamora #22002",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Heroic Intuition #01065",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Cutthroat Ambition #22004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Weapons Master #22007",
+					"owner_hero_id": 1
+				}
+			],
+			"encounters_facedown2": [],
+			"encounters_reveal2": [],
+			"deck2": [
+				{
+					"card": "Crosscounter #18004",
+					"owner_hero_id": 2
+				}
+			],
+			"discard2": [
+				{
+					"card": "Combat Training #01057",
+					"owner_hero_id": 2
+				}
+			],
+			"enemies2": [],
+			"identity2": [
+				{
+					"card": "Gamora #18001a",
+					"owner_hero_id": 2,
+					"tokens": {
+						"__precision": 1,
+						"damage": 5,
+						"__finesse": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies2": [
+				{
+					"card": "Angela - Aldrif Odinsdottir #18011",
+					"owner_hero_id": 2,
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Combat Training #01057",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Keen Instincts #18009",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Conditioning Room #18008",
+					"owner_hero_id": 2
+				}
+			],
+			"hand2": [
+				{
+					"card": "Impede #18016",
+					"owner_hero_id": 2
+				}
+			]
+		}
+	}
+}

@@ -2552,6 +2552,10 @@ func cleanup_post_game():
 	
 	GameRecorder.finalize_game()
 	
+	if is_instance_valid(_targeting_ongoing):
+		_targeting_ongoing.cancel_targeting()
+		
+	
 	attackers = []
 
 	_clients_current_activation = {}

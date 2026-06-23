@@ -162,7 +162,11 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 	#interrupt or response replacements
 	var interrupt_scripts = has_interrupt(script)
 	var has_manual_hand = script.get("manual", {}).get("hand", {})
-	if (type_code == "event" && interrupt_scripts && !has_manual_hand):
+	var process_manual_cost = true
+	if (type_code == "event" && interrupt_scripts):
+		if !has_manual_hand:
+			process_manual_cost = false
+			
 		var playFromHand: Array = hand_constraints
 		if (cost):
 			playFromHand +=  [
@@ -187,7 +191,7 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 				"hand" : playFromHand
 			} 
 		script = WCUtils.merge_dict(script, playInterrupt, true)
-	else: #Regular cards
+	if process_manual_cost: #Regular cards
 		#Play From hand: discard a specific number of cards to play
 		#TODO limit to player cards ?
 		var has_overpaid_check = WCUtils.is_string_in_variant(script, "overpaid")

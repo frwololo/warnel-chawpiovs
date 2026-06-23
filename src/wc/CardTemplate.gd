@@ -326,6 +326,11 @@ func get_controller_hero_id() -> int:
 func get_controller_hero_card():
 	return gameData.get_identity_card(_controller_hero_id)	
 
+func get_action_character():
+	var action_character = self
+	if !(get_property("type_code", "") in ["hero", "ally", "minion", "villain"]):
+		action_character = get_controller_hero_card()
+	return action_character	
 	
 func get_controller_player_network_id() -> int:
 	var player_data:PlayerData = gameData.get_hero_owner(get_controller_hero_id())
@@ -393,6 +398,7 @@ func load_from_card_id(card_id):
 	#force reload card art
 	set_card_art(true)
 	_runtime_properties_setup()
+	_cached_printed_text = { "_initialized": false}
 	update_groups()
 	side_icons.set_icons()
 	_duplicate = null
@@ -1288,6 +1294,9 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 	var card_scripts = retrieve_scripts(trigger)		
 	# We check the trigger against the filter defined
 	# If it does not match, then we don't pass any scripts for this trigger.
+	if !card_scripts:
+		return card_scripts
+		
 	if not SP.filter_trigger(
 			card_scripts,
 			trigger_card,
@@ -4125,6 +4134,8 @@ func get_printed_text(section = ""):
 						_cached_printed_text[paragraph_name] = ""
 				else:
 					_cached_printed_text["multiple_" + paragraph_name] = true
+					paragraph_name = paragraph_name + "2"
+					_cached_printed_text[paragraph_name] = ""
 				var bold = "" if paragraph.begins_with("[b]") else "[b]"	
 				_cached_printed_text[paragraph_name] += prefix + bold + paragraph
 			i+= 1		

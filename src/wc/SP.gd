@@ -56,7 +56,19 @@ static func filter_trigger(
 		trigger_card,
 		owner_card,
 		trigger_details) -> bool:
-	var is_valid := .filter_trigger(card_scripts,
+			
+	#historically this function was not checking for the is_boost and the check was performed somewhere
+	#else. We enforce a similar pattern here
+	var validity_options = {
+		"ignore_boost_check": true
+	}
+	if !check_validity(trigger_card, card_scripts, "trigger", owner_card, validity_options):
+		return false
+		
+	if !check_validity(owner_card, card_scripts, "self", owner_card, validity_options):
+		return false			
+			
+	var is_valid := .filter_trigger_no_validity_check(card_scripts,
 		trigger_card,
 		owner_card,
 		trigger_details)
@@ -386,20 +398,17 @@ static func attack_guarded_status(card, action_character, owner_card): # , card_
 						return result
 	return result	
 # Check if the card is a valid subject or trigger, according to its state.
-static func check_validity(card, card_scripts, type := "trigger", owner_card = null) -> bool:
+static func check_validity(card, card_scripts, type := "trigger", owner_card = null, options:= {}) -> bool:
+	#for legacy reasons, if the passed card is null, we consider the card valid
+	if !is_instance_valid(card):
+		return true
+		
 	var is_valid = .check_validity(card, card_scripts, type, owner_card)
 	if (!is_valid):
 		return is_valid
 
 	var tags = card_scripts.get("tags", [])
 	var script_name = card_scripts.get("name", "")
-
-	var action_character = null
-	if owner_card:
-		action_character = owner_card
-		var owner_type = owner_card.get_property("type_code", "")
-		if !owner_type in ["hero", "ally", "minion", "villain"]:
-			action_character = owner_card.get_controller_hero_card()
 
 	#more complex handling of validity for some cards that define additional filters
 	var validity_extra_scripts = card.get_potential_scripts("is_valid_target_filters") 
@@ -435,7 +444,7 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 
 	
 	#generally speaking, boost cards are not valid targets...
-	if card.is_boost() and !card_scripts.get("force_valid_boost_target", false):
+	if card.is_boost() and !card_scripts.get("force_valid_boost_target", false) and !options.get("ignore_boost_check", false):
 		#...but we want them to be able to target themselves ("put this card into play")
 		if card != owner_card:
 			return false	
@@ -451,6 +460,8 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 			pass
 		else:
 			return false	
+
+	var type_code = card.get_property("type_code", "")
 	
 	if script_name in ["attach_to_card", "host_card"]:
 		var host = card
@@ -462,11 +473,10 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 
 		if !check_attachment_validity(host, hosted):
 			return false
-
-	var type_code = card.get_property("type_code", "")
-						
+					
 	#check for special conditions if card is an attack
-	if ((script_name == "attack") or ("attack" in tags)):			
+	elif ((script_name == "attack") or ("attack" in tags)):
+		var action_character = owner_card.get_action_character() if owner_card else null					
 		if action_character:
 			#Check for "can only attack this card" restriction (e.g. Encased in Ice)	
 			var can_only_attack =  action_character.get_property("can_only_attack_card", "")
@@ -484,21 +494,18 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 			return false
 
 	#check for condition preventing thwart
-	if ((script_name == "thwart") or ("thwart" in tags)):
+	elif ((script_name == "thwart") or ("thwart" in tags)):
 		if card.get_property("cannot_be_thwarted", 0, true):
 			return false
-		if owner_card and owner_card.get_property("cannot_thwart_side_schemes", 0, true):
-			if card.is_card_type("side_scheme"):
-				return false
-		
+			
+		var action_character = owner_card.get_action_character() if owner_card else null
+		if action_character:
+			#cannot thwart side schemes
+			if action_character.get_property("cannot_thwart_" + type_code, 0, true):
+				return false	
+						
 		#thwart is patroled and cannot proceed
 		if !thwart_unpatroled(card, action_character, owner_card):
-			return false	
-
-
-	#cannot thwart side schemes
-	if ((script_name == "thwart") or ("thwart" in tags)):
-		if owner_card.get_property("cannot_thwart_" + type_code, 0, true):
 			return false	
 
 	var card_matches = true
@@ -540,7 +547,10 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 				if filter.ends_with("_same_as_identity"):
 					var property = filter.replace("filter_", "").replace("_same_as_identity", "")
 					if !check_trigger_shares_property_with_identity(card,owner_card,property):
-						card_matches = false								
+						card_matches = false
+				if filter == FILTER_SAME_CONTROLLER:
+					if !check_same_controller_filter(card,owner_card,state_filter):
+						card_matches = false														
 			if card_matches:
 				break
 	return(card_matches)

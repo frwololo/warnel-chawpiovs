@@ -1,9 +1,9 @@
 {
 	"Brains Over Brawn": {
-		"basic_thwart_happened": {
+		"response_basic_thwart_happened": {
 			"trigger": "my_hero",
-			"is_optional_board": true,
-			"board": [
+			"is_optional_hand": true,
+			"hand": [
 				{
 					"name": "constraints",
 					"is_cost": true,
@@ -39,6 +39,7 @@
 					{
 						"name": "shuffle_card_into_container",
 						"subject": "tutor",
+						"src_container": "discard",
 						"dest_container": "deck",
 						"subject_count": "all",
 						"needs_selection": "true",
@@ -519,7 +520,7 @@
 					"filter_state_subject": [
 						{
 							"filter_group": "group_friendly",
-							"filter_max_per_host" : 1
+							"filter_max_per_host": 1
 						}
 					]
 				}
@@ -723,8 +724,8 @@
 					"thwart"
 				]
 			},
-			"is_optional_hand": true,
-			"hand": [
+			"is_optional_board": true,
+			"board": [
 				{
 					"name": "discard",
 					"subject": "self"
@@ -785,6 +786,11 @@
 						"hero_action"
 					]
 				},
+			]
+		},
+		"card_played": {
+			"trigger": "self",
+			"all": [
 				{
 					"name": "sequence",
 					"sequence_ability": "special",
@@ -792,7 +798,7 @@
 					"subject_count": "all",
 					"needs_selection": true,
 					"selection_count": {
-						"func_name": "count_paid_resources"
+						"func_name": "get_overpaid_amount"
 					},
 					"selection_type": "max",
 					"filter_state_seek": [
@@ -860,7 +866,7 @@
 			]
 		}
 	},
-	"Nebula #22001ba": {
+	"Nebula #22001a": {
 		"step_started": {
 			"event_filters": {
 				"step_name": "PLAYER_TURN"
@@ -869,6 +875,31 @@
 				{
 					"name": "sequence",
 					"sequence_ability": "special",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_same_controller": true,
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_properties2": {
+								"trait_technique": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "discard_techniques"
+				}
+			]
+		},
+		"discard_techniques": {
+			"board": [
+				{
+					"name": "discard",
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
@@ -961,6 +992,11 @@
 						"hero_action"
 					]
 				},
+			]
+		},
+		"card_played": {
+			"trigger": "self",
+			"all": [
 				{
 					"name": "reveal_encounter",
 					"is_cost": true,
@@ -968,10 +1004,10 @@
 					"src_container": "deck_villain",
 					"subject_count": "all",
 					"selection_count": 1,
-					"selection_type": 1,
+					"selection_type": "equal",
 					"selection_optional": false,
 					"needs_selection": true,
-					"filter_state_seek": [
+					"filter_state_tutor": [
 						{
 							"filter_properties": {
 								"type_code": "side_scheme"

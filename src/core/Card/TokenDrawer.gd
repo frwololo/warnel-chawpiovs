@@ -50,14 +50,15 @@ func set_is_drawer_open(value: bool, forced:bool = false) -> void:
 # The drawer will not appear while another animation is ongoing
 # and it will appear only while the card is on the board.
 func token_drawer(requested_state := true, forced: bool = false) -> void:
-	# I use these vars to avoid writing it all the time and to improve readability
-
+	if !owner_card.is_a_parent_of(self):
+		return
 	#TODO this is to prevent
 	#the drawer from opening while an animation is ongoing
 	#but I feel like this is a hack
 	if cfc.is_modal_event_ongoing() and requested_state and not forced:
 		return
 
+	# I use these vars to avoid writing it all the time and to improve readability
 
 	var td := $Drawer
 	

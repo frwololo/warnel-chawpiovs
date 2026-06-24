@@ -52,7 +52,8 @@ func on_button_pressed(_button_name : String) -> void:
 			var piles = cfc.get_tree().get_nodes_in_group("piles")
 			for pile in piles:
 				pile.allow_facedown_popup = cfc._debug
-				
+			if cfc._debug:
+				cfc.output_perf_monitors()	
 			gameData.phaseContainer.toggle_display_debug(value)
 			close_me()			
 		"SaveButton":

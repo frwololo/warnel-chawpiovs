@@ -46,6 +46,9 @@ var spinbox = null
 var healthbar
 var info_icon
 var side_icons
+var _unused_nodes_detached:= false
+
+var _removed_control_nodes:= []
 
 var hints:= []
 
@@ -402,6 +405,7 @@ func load_from_card_id(card_id):
 	update_groups()
 	side_icons.set_icons()
 	_duplicate = null
+	CFScriptUtils.add_update_alterant_super_cache_object(self)
 	scripting_bus.emit_signal("card_reloaded", self, {})
 	
 func setup() -> void:
@@ -427,11 +431,19 @@ func setup() -> void:
 	scripting_bus.connect("stack_event_deleted", self, "_stack_event_deleted")
 	
 	scripting_bus.connect("card_selected", self, "_window_selection_confirmed")
+	scripting_bus.connect("current_playing_hero_changed", self, "_current_playing_hero_changed")
+	
 	attachment_mode = AttachmentMode.ATTACH_BEHIND
 	
 	#this prevents moving cards around. A bit annoying but avoids weird double click envents leading to a drag and drop
 	disable_dragging_from_board = true	
 	disable_dropping_to_cardcontainers = true
+
+
+func _current_playing_hero_changed (trigger_details: Dictionary = {}):
+	if CFConst.PERFORMANCE_HACKS:
+		if _controller_hero_id == gameData.get_current_local_hero_id():
+			set_process_recursive(true)
 
 #		scripting_bus.emit_signal(
 #				"card_properties_modified",
@@ -954,16 +966,21 @@ func attach_to_host(
 			is_following_previous_host = false,
 			tags := ["Manual"]) -> void:
 				
-	cfc.flush_cache()
+	var alterants_cache_refresh_needed = true
 					
 	if "as_boost" in tags:
+		alterants_cache_refresh_needed = false
 		set_is_boost(true)
 	else:
 		if self.is_boost():
 			set_is_boost(false)
 
 	if "as_inactive_attachment" in tags:
+		alterants_cache_refresh_needed = true
 		set_is_inactive_attachment(true)
+
+	if alterants_cache_refresh_needed:
+		cfc.flush_cache()
 
 	.attach_to_host(host, is_following_previous_host, tags)
 	host.reorganize_attachments_focus_mode()
@@ -1007,10 +1024,85 @@ func common_post_move_scripts(new_host: String, old_host: String, _move_tags: Ar
 			set_is_boost(false) 
 			set_is_inactive_attachment(false)
 
+	if CFConst.PERFORMANCE_HACKS:
+		set_process_recursive(true)
+		if get_state_exec() in ["hand", "board"]:
+			reattach_removed_nodes()						
+		else:
+			detach_unused_nodes()
+			
+
 	set_is_viewed(false)
 	
 	#determine if this card can be selected with a controller	
 	cfc.NMAP.board.update_card_focus(self, {"new_host" : new_host, "old_host": old_host} )
+
+func detach_unused_nodes():
+	if _unused_nodes_detached:
+		return
+	var to_remove = [tokens, healthbar.get_parent(), side_icons, info_icon]
+	
+	for node in _control.get_children():
+		if node in to_remove:
+			_removed_control_nodes.append(node)
+	for node in _removed_control_nodes:
+		if !is_instance_valid(node):
+			continue
+		_control.remove_child(node)
+	
+	if is_instance_valid(targeting_arrow) and !(targeting_arrow.is_targeting):	
+		if self.is_a_parent_of(targeting_arrow):
+			self.remove_child(targeting_arrow)	
+
+	_unused_nodes_detached = true
+
+func reattach_removed_nodes():
+	if !_unused_nodes_detached:
+		return	
+	
+	for node in _removed_control_nodes:
+		if !is_instance_valid(node):
+			continue		
+		if !_control.is_a_parent_of(node):			
+			_control.add_child(node)
+	_removed_control_nodes = []
+			
+	for node in [targeting_arrow]:
+		if !is_instance_valid(node):
+			continue 	
+		if !self.is_a_parent_of(node):
+			self.add_child(node)
+
+	_unused_nodes_detached = false
+
+func set_process_recursive(value, node = self):
+	if node.has_method("set_process"):
+		node.set_process(value)
+	if node.has_method("get_children"):
+		for c in node.get_children():
+			set_process_recursive(value, c)
+
+			
+#Override of the parent's
+# Retrieves the value of a property. This should always be used instead of
+# properties.get() as it takes into account the temp_properties_modifiers var
+# and also checks for alterant scripts
+func get_property(property: String, default = null, force_alterant_check = false):
+	if not (properties.has(property)) and not force_alterant_check:
+		return default
+		
+	if CFConst.PERFORMANCE_HACKS:
+		if !state in [
+				CardState.ON_PLAY_BOARD,
+				CardState.FOCUSED_ON_BOARD,
+				CardState.DROPPING_TO_BOARD,
+				CardState.IN_HAND,
+				CardState.FOCUSED_IN_HAND,
+				CardState.REORGANIZING,
+				CardState.PUSHED_ASIDE
+		]:
+			return properties.get(property, default)	
+	return(get_property_and_alterants(property, false, default).value)
 
 func register_signals():
 	scripting_bus.unregister_card(self)
@@ -2174,8 +2266,19 @@ func _process_card_state() -> void:
 	#if state hasn't changed and we're on a low fps machine,
 	#reduce calls to this function
 	if _cached_state == state:
+		if CFConst.PERFORMANCE_HACKS:
+			if state in [CardState.IN_PILE]:
+				if _controller_hero_id: 
+					if _controller_hero_id != gameData.get_current_local_hero_id():
+						set_process_recursive(false)
+						return
+				else:
+					if get_parent().name.to_lower() in ["set_aside", "removed_from_game", "tmp_pile1", "tmp_pile2" , "tmp_pile3"  ]:
+						set_process_recursive(false)
+						return		
 		if cfc.throttle_process_for_performance():
 			return
+	
 
 	_cached_state = state	
 	._process_card_state()
@@ -2194,6 +2297,8 @@ func _process_card_state() -> void:
 			#tweening never ending
 			if _horizontal and not _is_boost:
 				set_card_rotation(90, false, false)
+	
+		
 
 
 
@@ -2832,7 +2937,7 @@ func set_is_faceup(
 			
 			_hidden_properties = {}
 
-	if _before != _after and is_onboard():
+	if _before != _after and is_onboard() and !is_boost():
 		cfc.flush_cache()
 	
 	return retcode	
@@ -4149,8 +4254,9 @@ func get_printed_text(section = ""):
 	if _cached_printed_text.has(section_l):
 		return _cached_printed_text[section_l]
 	return ""
-	
+
 
 func queue_free():
+	reattach_removed_nodes()
 	scripting_bus.unregister_card(self)
 	.queue_free()

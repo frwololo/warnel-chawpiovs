@@ -212,7 +212,7 @@
 						"modification": -1,
 						"token_name": "_ready",
 						"is_cost": true
-					},
+					},				
 					{
 						"name": "move_card_to_container",
 						"dest_container": "discard",
@@ -226,8 +226,9 @@
 					},
 					{
 						"name": "ready_card",
-						"subject": "self"
-					}
+						"subject": "self",
+						"is_cost": true,
+					}	
 				]
 			}
 		}

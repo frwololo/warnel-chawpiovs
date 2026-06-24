@@ -204,6 +204,9 @@ func set_color_from_script(script_definition):
 # The top card hovered over by the mouse cursor will be highlighted
 # and will become the target when complete_targeting() is called
 func initiate_targeting(_valid_targets, _script_definition:Dictionary = {}, emit_signal = true) -> void:
+	#for performance reasons it is sometimes possible the owner has removed this arrow from its children list
+	if !owner_object.is_a_parent_of(self):
+		owner_object.add_child(self)
 	set_valid_targets(_valid_targets)
 	set_color_from_script(_script_definition)
 	if !_script_definition.get("is_optional_target", true):

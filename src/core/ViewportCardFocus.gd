@@ -235,6 +235,13 @@ func focus_card(card: Card, show_preview := true) -> void:
 	# We check if we're already focused on this card, to avoid making duplicates
 	# the whole time		
 	if not _current_focus_source == card:
+		
+		#remove children cards to always only keep one displayed
+		if vbc_position_mode:
+			for c in $VBC.get_children():
+				if c as Card:
+					$VBC.remove_child(c)
+				
 		# We make a duplicate of the card to display and add it on its own in
 		# our viewport world
 		# This way we can standardize its scale and look and not worry about
@@ -242,6 +249,8 @@ func focus_card(card: Card, show_preview := true) -> void:
 		var dupe_focus: Card
 		if _previously_focused_cards.has(card) and is_instance_valid(_previously_focused_cards[card]):
 			dupe_focus = _previously_focused_cards[card]
+			if vbc_position_mode:
+				$VBC.add_child(dupe_focus)
 			# Not sure why, but sometimes the dupe card will report is_faceup
 			# while having the card back visible. Workaround until I figure it out.
 			if dupe_focus.get_node('Control/Back').visible == dupe_focus.is_faceup:

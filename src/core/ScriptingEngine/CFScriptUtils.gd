@@ -55,25 +55,7 @@ static func init_alterants_super_cache():
 			cfc.get_tree().get_nodes_in_group("cards")
 	
 	for obj in scriptables_array:
-		var all_scripts = obj.retrieve_all_scripts()
-		if all_scripts.has("script_alterants"):
-			var data = all_scripts["script_alterants"]
-			for board_state in data:
-				var scripts = data[board_state]
-				for entry in scripts:
-					var script = entry["script"]
-					for trigger in script:
-						if !_alteration_super_cache["script_alterants"].has(trigger):
-							_alteration_super_cache["script_alterants"][trigger] = {}
-						_alteration_super_cache["script_alterants"][trigger][obj] = true
-			
-		var altered_properties = find_all_values_by_key(all_scripts, "filter_property_name")
-		for property in altered_properties:
-			if property.ends_with("*"):
-				property = property.substr(0, property.length() - 1)
-				_alteration_super_cache["wildcard_properties"][property] = true
-			else:
-				_alteration_super_cache["properties"][property] = true
+		add_update_alterant_super_cache_object(obj)
 
 	if CFConst.ALTERANTS_ALLOWED_PILES:
 		_alteration_super_cache["container_names"] = ["board"]
@@ -84,6 +66,31 @@ static func init_alterants_super_cache():
 
 	_alteration_super_cache["initialized"] = true
 	return
+
+static func add_update_alterant_super_cache_object(obj):
+	var all_scripts = obj.retrieve_all_scripts()
+	if all_scripts.has("script_alterants"):
+		var data = all_scripts["script_alterants"]
+		for board_state in data:
+			var scripts = data[board_state]
+			for entry in scripts:
+				var script = entry["script"]
+				for trigger in script:
+					if !_alteration_super_cache["script_alterants"].has(trigger):
+						_alteration_super_cache["script_alterants"][trigger] = {}
+					_alteration_super_cache["script_alterants"][trigger][obj] = true
+		
+	var altered_properties = find_all_values_by_key(all_scripts, "filter_property_name")
+	for property in altered_properties:
+		if property.ends_with("*"):
+			property = property.substr(0, property.length() - 1)
+			if ! _alteration_super_cache["wildcard_properties"].has(property):
+				_alteration_super_cache["wildcard_properties"][property] = {}
+			_alteration_super_cache["wildcard_properties"][property][obj] = true
+		else:
+			if ! _alteration_super_cache["properties"].has(property):
+				_alteration_super_cache["properties"][property] = {}				
+			_alteration_super_cache["properties"][property][obj] = true
 
 # Handles modifying the intensity of tasks based on altering scripts on cards
 #
@@ -99,18 +106,23 @@ static func get_altered_value(
 		value: int,
 		subject = null) -> Dictionary:
 
+#	var fn = "CFScriptUtils.get_altered_value"
+#	var fn_uncached = fn + " uncached"
+#	cfc.start_performance_tick(fn)
 
+	var property_name = task_properties.get(SP.KEY_PROPERTY_NAME, "")
+	var preloaded_objs = []
 	#bypass the whole calculation if we know that no item in the game alters this
-	if _alteration_super_cache["initialized"] and task_properties.has(SP.KEY_PROPERTY_NAME):
-		var property_name = task_properties[SP.KEY_PROPERTY_NAME]
-	
+	if _alteration_super_cache["initialized"] and property_name:	
 		if ! _alteration_super_cache["properties"].get(property_name):
 			for key in _alteration_super_cache["wildcard_properties"]:
 				if property_name.begins_with(key):
-					_alteration_super_cache["properties"][property_name] = true
+					_alteration_super_cache["properties"][property_name] = _alteration_super_cache["wildcard_properties"][key].duplicate()
 					break			
 
-		if ! _alteration_super_cache["properties"].get(property_name):
+		preloaded_objs = _alteration_super_cache["properties"].get(property_name, {}).keys()
+		if !preloaded_objs:
+#			cfc.stop_performance_tick(fn)
 			return {
 					"value_alteration": 0,
 					"alterants_details": {}
@@ -132,13 +144,22 @@ static func get_altered_value(
 	if cfc.alterant_cache.get(alterant_cache_key):
 		return_dict = cfc.alterant_cache[alterant_cache_key]
 	else:
+#		cfc.start_performance_tick(fn_uncached)
 		var value_alteration := 0
 		var alterants_details := {}
 		var scriptables_array :Array =\
 			cfc.get_tree().get_nodes_in_group("scriptables")
 		
-		if _alteration_super_cache["container_names"]:
-			scriptables_array += cfc.get_all_cards_from_containers(_alteration_super_cache["container_names"])
+		if preloaded_objs:
+			var container_names = _alteration_super_cache.get("container_names", [])
+			if container_names:
+				for obj in preloaded_objs:
+					if !is_instance_valid(obj):
+						continue
+					if obj.get_parent().name.to_lower() in container_names:
+						scriptables_array.append(obj)
+			else:				
+				scriptables_array += preloaded_objs
 			scriptables_array += gameData.theGameObserver.get_cards_with_extra_scripts()
 		else:
 			scriptables_array +=\
@@ -147,6 +168,8 @@ static func get_altered_value(
 		#remove duplicates
 		var unique:= {}
 		for key in scriptables_array:
+			if !is_instance_valid(key):
+				continue
 			unique[key] = true
 		scriptables_array = unique.keys()
 
@@ -198,7 +221,8 @@ static func get_altered_value(
 		# If this is the first time we discover this alteration value
 		# we also store it in our alterant cache
 		cfc.alterant_cache[alterant_cache_key] = return_dict
-
+#		cfc.stop_performance_tick(fn_uncached)
+#	cfc.stop_performance_tick(fn)
 	return(return_dict)
 
 # Parses a [ScriptTask]'s properties and extracts the details a [ScriptAlter]

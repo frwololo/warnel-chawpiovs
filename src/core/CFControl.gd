@@ -23,6 +23,7 @@ var load_start_time := OS.get_ticks_msec()
 #pointer to modal menu for potential cleanup
 var modal_menus := [] 
 
+var perf_monitors = {}
 #-----------------------------------------------------------------------------
 # BEGIN Unit Testing Variables
 #-----------------------------------------------------------------------------
@@ -156,6 +157,42 @@ func _setup() -> void:
 		set_seed(game_rng_seed)
 	if !cfc.game_settings.get("load_cards_online", true):	
 		load_cards_database()
+
+func add_performance_call_count(var_name, count = 1):
+	var_name = var_name + " (count)"
+	if !perf_monitors.has(var_name):
+		perf_monitors[var_name] = 0
+	perf_monitors[var_name] += count
+
+func start_performance_tick(var_name):
+	if !OS.is_debug_build():
+		return
+	var start = OS.get_ticks_usec()
+	perf_monitors[var_name + "_stopwatch"] = start
+
+func stop_performance_tick(var_name):
+	if !OS.is_debug_build():
+		return	
+	var stop = OS.get_ticks_usec()	
+	var timer_name = var_name + "_stopwatch"
+	if !perf_monitors.has(timer_name):
+		return
+
+	add_performance_call_count(var_name)
+	var total_time_name = var_name + " (total usec)"
+	var avg_time_name = var_name + " (avg per call usec)"	
+	if !perf_monitors.has(total_time_name):
+		perf_monitors[total_time_name] = 0
+	perf_monitors[total_time_name] += stop - perf_monitors[timer_name]
+	perf_monitors.erase(timer_name)
+	perf_monitors[avg_time_name] = perf_monitors[total_time_name] / perf_monitors[var_name + " (count)"]
+	
+	
+
+func output_perf_monitors():
+	print_debug("Performance checks:")
+	print_debug(JSON.print(perf_monitors, "\t"))
+	print_debug("END - Performance checks:")
 
 func load_scripts():
 	# Removed threading since I optimized this loading function

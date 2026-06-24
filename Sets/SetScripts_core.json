@@ -1166,11 +1166,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "trait_aerial",
-					"filter_state_trigger": [
-						{
-							"filter_card_name": "Captain Marvel"
-						}
-					],
+					"trigger": "Captain Marvel",
 					"alteration": 1
 				}
 			]
@@ -1266,9 +1262,7 @@
 							"subject_count": "all",
 							"filter_state_seek": [
 								{
-									"filter_group": "group_upgrade_support_my_hero"
-								},
-								{
+									"filter_group": "group_upgrade_support_my_hero",
 									"filter_properties": {
 										"type_code": "upgrade"
 									}
@@ -1740,7 +1734,7 @@
 	},
 	"Family Emergency": {
 		"give_obligation": {
-			"__to__": "Carol Davners"
+			"__to__": "Carol Danvers"
 		},
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -4922,14 +4916,15 @@
 					"is_cost": true
 				},
 				{
+					"name": "ready_card",
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
 					"name": "move_card_to_container",
 					"dest_container": "discard",
 					"subject": "self",
 					"is_cost": true
-				},
-				{
-					"name": "ready_card",
-					"subject": "my_hero"
 				}
 			]
 		}

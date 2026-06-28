@@ -66,8 +66,8 @@ func _process(delta):
 	if delta_total >delta_max:
 		ongoing = false
 		return
-
-	self.rect_position = get_viewport().size/2 - rect_scale*self.rect_size/2
+	var view_size =  get_viewport().size/cfc.screen_scale
+	self.rect_position = view_size/2 - rect_scale*self.rect_size/2
 
 	match _animation_style:
 		ANIMATION_STYLE.DEFAULT:
@@ -129,7 +129,8 @@ func _ready():
 	load_texture(top_texture, _top_texture_filename)
 	load_texture(bottom_texture, _bottom_texture_filename)	
 	self.fade(self, 0)
-	self.rect_position = get_viewport().size/2 - self.rect_size/2
+	var view_size =  get_viewport().size/cfc.screen_scale
+	self.rect_position = view_size/2 - self.rect_size/2
 
 func _init():
 	set_scale(1)
@@ -189,7 +190,7 @@ func set_duration(delta):
 	delta_max = delta
 	
 func set_scale(scale):
-	self.rect_scale = Vector2(scale, scale) * cfc.screen_scale
+	self.rect_scale = Vector2(scale, scale) * cfc.hardcoded_positions_modifier
 
 		
 func load_texture(target, filename):

@@ -320,17 +320,17 @@ func grid_setup():
 	var start_ys = start_coords["y"]	
 	
 	var hero_grid_setup = get_hero_grid_setup()
-	
+	var overall_scale = cfc.hardcoded_positions_modifier
 	for i in range(get_team_size()):
 		var hero_id = i+1
 		var scale = 1
-		var start_x = start_xs[i] * cfc.screen_scale.x
-		var start_y = start_ys[i] * cfc.screen_scale.y
+		var start_x = start_xs[i] * overall_scale.x
+		var start_y = start_ys[i] * overall_scale.y
 		
 		if (hero_id > 1):
 			scale = 0.3
 			start_x = start_xs[i]
-			start_y = start_ys[i] * cfc.screen_scale.y
+			start_y = start_ys[i] * overall_scale.y
 			
 		for grid_name in hero_grid_setup.keys():
 			var grid_info = hero_grid_setup[grid_name]
@@ -482,18 +482,19 @@ func init_board_organizers(current_hero_id):
 	var start_coords = get_hero_grid_start_coordinates()
 	var start_xs = start_coords["x"]
 	var start_ys = start_coords["y"]	
+	var overall_scale = cfc.hardcoded_positions_modifier
 	
 	for i in range(get_team_size()):
 		var hero_id = i+1
 		var scale = 1
-		var start_x = start_xs[0] * cfc.screen_scale.x
-		var start_y = start_ys[0] * cfc.screen_scale.y
+		var start_x = start_xs[0] * overall_scale.x
+		var start_y = start_ys[0] * overall_scale.y
 		var grid_layout = prepare_hero_grid_layout(hero_id)
 		
 		if (hero_id != current_hero_id):
 			scale = 0.3
 			start_x = start_xs[other_counter + 1]
-			start_y = start_ys[other_counter + 1] * cfc.screen_scale.y
+			start_y = start_ys[other_counter + 1] * overall_scale.y
 			other_counter+=1
 			#hacky way to force resize
 			var children = grid_layout["children"]
@@ -1754,5 +1755,11 @@ func ui_setup():
 	resize()
 
 func resize():
+	if is_instance_valid(get_viewport()):
+		var new_size = get_viewport().size / cfc.screen_scale
+		rect_min_size = new_size
+		rect_size = new_size
+
+	
 	$PhaseContainer.resize()	
-	get_node("%OptionsButton").rect_scale = cfc.screen_scale
+#	get_node("%OptionsButton").rect_scale = cfc.screen_scale

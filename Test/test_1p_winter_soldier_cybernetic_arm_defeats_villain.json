@@ -97,10 +97,15 @@
 		{
 			"type": "play",
 			"value": "Arm Block"
-		},
+		},			
 		{
 			"type": "target",
 			"value": "Asteroid M"
+		},	
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "no basic defense, already defending"
 		},		
 		{
 			"type": "other",

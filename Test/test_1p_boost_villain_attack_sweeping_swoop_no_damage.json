@@ -71,7 +71,11 @@
 			"type": "select",
 			"value": "Spider-Man",
 			"_comments": "defend with spider man, should take no damage and no stun"
-		},		
+		},	
+		{
+			"type": "other",
+			"value" : "wait_for_player_turn",
+		}		
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",

@@ -176,15 +176,15 @@ func _process(delta:float):
 		if focused:
 			large_picture.rect_position = focused.get_global_position() + focused.rect_size/2
 	large_picture.rect_size = Vector2(300, 420)
-	large_picture.rect_scale = cfc.screen_scale
+	large_picture.rect_scale = cfc.hardcoded_positions_modifier
 	large_picture.rect_rotation = _preview_rotation
 
 func resize():
 	var stretch_mode = cfc.get_screen_stretch_mode()
 
-	var screen_size = get_viewport().size
+	var screen_size = get_viewport().size/cfc.screen_scale
 	var scenario_picture:TextureRect = get_node("%ScenarioTexture") 
-	if stretch_mode == SceneTree.STRETCH_MODE_VIEWPORT and screen_size.x > 1800:
+	if screen_size.x > 1800:
 		get_node("%LeftRight").add_constant_override("separation", 50)
 		get_node("%TeamScenarioPanel").add_constant_override("separation", 10)
 		get_node("%ScenarioOverContainer").add_constant_override("separation", 10)		

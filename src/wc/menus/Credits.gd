@@ -39,10 +39,10 @@ func _on_Menu_resized() -> void:
 
 
 func resize():
-	var stretch_mode = cfc.get_screen_stretch_mode()
-	if stretch_mode != SceneTree.STRETCH_MODE_VIEWPORT:
-		return	
-	var target_size = get_viewport().size
+#	var stretch_mode = cfc.get_screen_stretch_mode()
+#	if stretch_mode != SceneTree.STRETCH_MODE_VIEWPORT:
+#		return	
+	var target_size = get_viewport().size/cfc.screen_scale
 
 	self.margin_right = target_size.x
 	self.margin_bottom = target_size.y

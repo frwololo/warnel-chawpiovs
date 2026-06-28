@@ -1078,6 +1078,7 @@
 						"needs_subject": true,
 						"subject": "tutor",
 						"src_container": "discard",
+						"dest_container": "hand",
 						"filter_state_tutor": [
 							{
 								"filter_properties": {
@@ -1265,6 +1266,7 @@
 					},
 					{
 						"name": "deal_damage",
+						"amount": 1,
 						"is_cost": true,
 						"subject": "target",
 						"subject_exclude": "self",

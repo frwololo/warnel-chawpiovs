@@ -50,7 +50,11 @@
 			"type": "select",
 			"value" : "cancel",
 			"_comments": "take undefended attack"
-		}
+		},
+		{
+			"type": "other",
+			"value" : "wait_for_player_turn",
+		}		
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",

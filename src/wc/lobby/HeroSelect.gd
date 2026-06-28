@@ -22,11 +22,11 @@ func _ready():
 
 
 func resize():
-	var stretch_mode = cfc.get_screen_stretch_mode()
-	if stretch_mode != SceneTree.STRETCH_MODE_VIEWPORT:
-		return
+#	var stretch_mode = cfc.get_screen_stretch_mode()
+#	if stretch_mode != SceneTree.STRETCH_MODE_VIEWPORT:
+#		return
 
-	var screen_size = get_viewport().size
+	var screen_size = get_viewport().size/cfc.screen_scale
 	var grid_width = 390
 	if screen_size.x > CFConst.LARGE_SCREEN_WIDTH:
 		grid_width = 650

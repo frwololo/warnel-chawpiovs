@@ -20,7 +20,7 @@ onready var focus_info := $VBC/FocusInfo
 onready var _focus_viewport := $VBC/Focus/Viewport
 onready var _focus_camera := $VBC/Focus/Viewport/Camera2D
 onready var world_environemt : WorldEnvironment = $WorldEnvironment
-onready var viewport = $ViewportContainer/Viewport
+var viewport
 
 var canonical_size:= Vector2(0,0)
 var vbc_rect_offset:= Vector2(0,0)
@@ -31,8 +31,19 @@ var vbc_rect_offset:= Vector2(0,0)
 var vbc_position_mode = true
 var show_card_focus = true
 
+func _process(delta:float):
+	var result =""
+	var vsize = get_tree().get_root().size
+	var mouse_pos = get_global_mouse_position()
+	result += "viewport size:" + str(vsize.x) + "x" + str(vsize.y) + "\n"
+	result += "cfc.screenscale" + str(cfc.screen_scale.x) + "x" + str(cfc.screen_scale.x) + "\n"
+	result += "cfc.hardcoded_pos_modifier" + str(cfc.hardcoded_positions_modifier.x) + "x" + str(cfc.hardcoded_positions_modifier.x) + "\n"	
+	result += "mouse position" + str(mouse_pos.x) + "x" + str(mouse_pos.y) + "\n"
+	$Debug.text = result
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	viewport = get_tree().get_root()
 	cfc.map_node(self)
 	var glow_enabled = cfc.game_settings.get('glow_enabled', true)
 	world_environemt.environment.glow_enabled = glow_enabled
@@ -42,7 +53,7 @@ func _ready():
 	
 	# We use the below while to wait until all the nodes we need have been mapped
 	# "hand" should be one of them.
-	$ViewportContainer/Viewport.add_child(board_scene.instance())
+	add_child(board_scene.instance())
 	if not cfc.are_all_nodes_mapped:
 		yield(cfc, "all_nodes_mapped")
 	# warning-ignore:return_value_discarded
@@ -69,7 +80,7 @@ func reposition_vbc():
 	
 	var display_size = Vector2(0,0)
 	var display_position = Vector2(0,0)
-	var viewport_size = get_viewport().size
+	var view_size = get_viewport().size / cfc.screen_scale
 	var spacer = 15
 	if _current_focus_source and is_instance_valid(_current_focus_source):	
 		var card = _current_focus_source
@@ -96,7 +107,7 @@ func reposition_vbc():
 		
 			
 		#We're showing the preview! keep processing	
-		var multiplier =  card.focused_scale * cfc.curr_scale		
+		var multiplier =  card.focused_scale #* cfc.curr_scale		
 		display_size = card.canonical_size * multiplier
 		var board_card_size = card.card_size * card.scale
 		var board_top_left_corner = card._control.get_global_position()
@@ -118,17 +129,17 @@ func reposition_vbc():
 		if gameData.theAnnouncer.is_right_side_announce_ongoing():	
 			display_position = Vector2( spacer, spacer)
 			if mouse_pos.x < display_size.x + (spacer*2) and mouse_pos.y < display_size.y + (spacer*2):
-				display_position.y = viewport.size.y -  display_size.y - spacer
-		elif mouse_pos.x + display_size.x + (spacer*2) >= viewport_size.x :
+				display_position.y = view_size.y -  display_size.y - spacer
+		elif mouse_pos.x + display_size.x + (spacer*2) >= view_size.x :
 			display_position = Vector2( spacer, spacer)
 		else:
-			display_position = Vector2(viewport_size.x - display_size.x - spacer,  spacer)
+			display_position = Vector2(view_size.x - display_size.x - spacer,  spacer)
 		
 		#last resort if I end up overlapping my own card
 		var vbc_bounding:Rect2 = Rect2(display_position, display_size)
 		if vbc_bounding.intersects( source_bounding):
 			display_position.x = board_top_left_corner.x + board_card_size.x + spacer
-			if display_position.x + display_size.x + (spacer*2) >= viewport_size.x :
+			if display_position.x + display_size.x + (spacer*2) >= view_size.x :
 				display_position.x = spacer
 		
 
@@ -166,28 +177,28 @@ func reposition():
 	else:
 		mouse_pos = gamepadHandler.get_approx_position()	
 	
-	var viewport_size = get_viewport().size
+	var view_size = get_viewport().size / cfc.screen_scale
 			
 	if _current_focus_source and is_instance_valid(_current_focus_source)\
 			and _current_focus_source.get_state_exec() != "pile"\
 			and cfc.game_settings.focus_style == CFInt.FocusStyle.BOTH_INFO_PANELS_ONLY:
-		if mouse_pos.y + focus_info.rect_size.y/2 > viewport_size.y:
-			$VBC.rect_position.y = viewport_size.y - focus_info.rect_size.y
+		if mouse_pos.y + focus_info.rect_size.y/2 > view_size.y:
+			$VBC.rect_position.y = view_size.y - focus_info.rect_size.y
 		else:
 			$VBC.rect_position.y = mouse_pos.y - focus_info.rect_size.y / 2
-		if mouse_pos.x + focus_info.rect_size.x + 60 > viewport_size.x:
-			$VBC.rect_position.x = viewport_size.x - focus_info.rect_size.x
+		if mouse_pos.x + focus_info.rect_size.x + 60 > view_size.x:
+			$VBC.rect_position.x = view_size.x - focus_info.rect_size.x
 			$VBC.rect_position.y = mouse_pos.y - 500
 		else:
 			$VBC.rect_position.x = mouse_pos.x + 60
 
 	elif _current_focus_source and is_instance_valid(_current_focus_source)\
-			and mouse_pos.x > viewport_size.x - canonical_size.x*2.5\
+			and mouse_pos.x > view_size.x - canonical_size.x*2.5\
 			and mouse_pos.y < canonical_size.y*2:
 		$VBC.rect_position.x = 0
 		$VBC.rect_position.y = 0
 	elif _current_focus_source:
-		$VBC.rect_position.x = viewport_size.x - vbc_rect_offset.x
+		$VBC.rect_position.x = view_size.x - vbc_rect_offset.x
 		$VBC.rect_position.y = 0
 
 
@@ -220,6 +231,11 @@ func garbage_collection():
 func forget_card(c):
 	var dupe = _previously_focused_cards[c]
 	if is_instance_valid(dupe):
+		#This is dumb but I have to add the child somewhere
+		#to prevent it from showing up in stray nodes
+		var parent = dupe.get_parent()
+		if !is_instance_valid(parent):
+			cfc.add_child(dupe)
 		dupe.queue_free()
 	var _found = _previously_focused_cards.erase(c)	
 	if _current_focus_source == c:
@@ -428,7 +444,7 @@ func _extra_dupe_preparation(dupe_focus: Card, card: Card) -> void:
 # warning-ignore:unused_argument
 # warning-ignore:unused_argument
 func _extra_dupe_ready(dupe_focus: Card, card: Card) -> void:
-	var multiplier =  dupe_focus.focused_scale * cfc.curr_scale
+	var multiplier =  dupe_focus.focused_scale #* cfc.curr_scale
 	if CFConst.VIEWPORT_FOCUS_ZOOM_TYPE == "scale":
 		dupe_focus.scale = Vector2(1,1) * multiplier
 	else:
@@ -459,14 +475,10 @@ func _on_Viewport_size_changed() -> void:
 	resize()
 	
 func resize():
-	var stretch_mode = cfc.get_screen_stretch_mode()
-	if stretch_mode == SceneTree.STRETCH_MODE_2D:
-		return
-
-	if is_instance_valid(get_viewport()):
-		$ViewportContainer.rect_min_size = get_viewport().size
-		$ViewportContainer.rect_size = get_viewport().size
-
+#	var stretch_mode = cfc.get_screen_stretch_mode()
+#	if stretch_mode == SceneTree.STRETCH_MODE_2D:
+#		return
+	pass
 
 
 func toggle_glow(is_enabled := true) -> void:
@@ -478,3 +490,8 @@ func show_options_menu():
 
 func get_main_viewport():
 	return viewport 
+
+func queue_free():
+	for c in _previously_focused_cards.keys():
+		forget_card(c)	
+	.queue_free()

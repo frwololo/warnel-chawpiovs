@@ -97,10 +97,11 @@ func _process(_delta) -> void:
 	pile_popup.set_as_minsize()
 	if gamepadHandler.is_mouse_input():
 		check_mouse_overlap()
-		
+	
+	var view_size = get_viewport().size / cfc.screen_scale	
 	if $ViewPopup.visible:
 		var size = $ViewPopup.rect_size * $ViewPopup.rect_scale
-		if size.y > get_viewport().size.y or size.x > get_viewport().size.x:
+		if size.y > view_size.y or size.x > view_size.x:
 			$ViewPopup.rect_scale *= 0.9
 		
 
@@ -392,8 +393,9 @@ func shuffle_cards(animate = true, shuffle_after_animation = true) -> void:
 		var init_position = position
 		# The following calculation figures out the direction
 		# towards the center of the viewport from the center of the card
+		var view_size = get_viewport().size / cfc.screen_scale
 		var shuffle_direction = (global_position + $Control.rect_size/2)\
-				.direction_to(get_viewport().size / 2)
+				.direction_to(view_size / 2)
 		# We increase the intensity of the y direction, to make the shuffle
 		# position move higher up or down respective to its position.
 		shuffle_direction.y *= 2

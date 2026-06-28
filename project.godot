@@ -644,7 +644,7 @@ window/size/height=1080
 window/size/test_width=864
 window/size/test_height=486
 window/dpi/allow_hidpi=true
-window/stretch/mode="viewport"
+window/stretch/mode="2d"
 window/stretch/aspect="keep"
 
 [editor_plugins]
@@ -654,6 +654,7 @@ enabled=PoolStringArray( "gut" )
 [global]
 
 export=false
+transp=false
 
 [input]
 

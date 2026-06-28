@@ -191,14 +191,15 @@ func re_place() -> void:
 					others_rect_y += other.control.rect_size.y
 	# If the hand is oriented horizontally, we reduce its size by other
 	# containers on the same row
+	var view_size = get_viewport().size / cfc.screen_scale	
 	if "top" in get_groups() or "bottom" in get_groups():
-		$Control.rect_size.x = get_viewport().size.x - others_rect_x
+		$Control.rect_size.x = view_size.x - others_rect_x
 		position.x = start_pos_left
 		$Control.rect_size.y = card_size.y
 	# If the hand is oriented vertically, we reduce its size by other
 	# containers on the same column
 	if "left" in get_groups() or "right" in get_groups():
-		$Control.rect_size.y = get_viewport().size.y - others_rect_y
+		$Control.rect_size.y = view_size.y - others_rect_y
 		position.x = start_pos_top
 		$Control.rect_size.x = card_size.x
 	if placement == Anchors.CONTROL:

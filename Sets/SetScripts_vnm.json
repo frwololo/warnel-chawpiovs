@@ -305,6 +305,7 @@
 				},
 				{
 					"name": "move_card_to_container",
+					"dest_container": "hand",
 					"subject": "tutor",
 					"src_container": "deck",
 					"subject_count": "all",
@@ -322,6 +323,10 @@
 							}
 						}
 					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck"
 				}
 			]
 		}
@@ -488,7 +493,7 @@
 					"modification": -1,
 					"token_name": "charge",
 					"subject": "self"
-				},				
+				},
 				{
 					"name": "deal_damage",
 					"amount": 1,

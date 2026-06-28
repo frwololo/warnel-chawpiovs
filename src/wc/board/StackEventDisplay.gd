@@ -68,20 +68,21 @@ func _ready():
 
 
 #there is an issue where the theme of this control
-#isn't the sam between godot 3.6 (default theme) and godot 3.5 (darktheme)
+#isn't the same between godot 3.6 (default theme) and godot 3.5 (darktheme)
 #possibly this ? https://github.com/godotengine/godot/pull/61588
 #this leads to size issues on 3.5 at runtime
 func handle_size_bug():
 	if tween.is_active():
 		return
 	var bottom_right = control.rect_size * control.rect_scale + control.rect_position
-	if bottom_right.y > get_viewport().size.y:
+	var view_size = get_viewport().size / cfc.screen_scale
+	if bottom_right.y >  view_size.y:
 		display_text.rect_min_size = Vector2(display_text.rect_min_size.x + 10,0)
 		display_text.rect_size = Vector2(display_text.rect_min_size.x, display_text.rect_min_size.y)
 
 	control.rect_min_size = Vector2(control.rect_min_size.x, 0)
 	control.rect_size = control.rect_min_size
-	if bottom_right.x > get_viewport().size.x:
+	if bottom_right.x >  view_size.x:
 		if get_node("%Button").text !="<":
 			control.rect_position.x -= 100	
 			set_target_position(control.rect_position)	
@@ -142,8 +143,8 @@ func init_display(forced = false):
 	initialized = load_card_texture()
 	load_text()
 	init_arrows()
-	$Control.rect_scale = Vector2(SCALE,SCALE) * cfc.screen_scale
-	$Shadow.rect_scale = Vector2(SCALE,SCALE) * cfc.screen_scale
+	$Control.rect_scale = Vector2(SCALE,SCALE) # * cfc.screen_scale
+	$Shadow.rect_scale = Vector2(SCALE,SCALE) # * cfc.screen_scale
 
 func move_to_target_position():
 	if tween.is_active():

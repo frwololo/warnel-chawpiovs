@@ -971,7 +971,7 @@
 		"reveal": {
 			"all": [
 				{
-					"name": "character_attacks_you",
+					"name": "enemy_attacks_you",
 					"is_cost": true,
 					"subject": "Gamora"
 				},

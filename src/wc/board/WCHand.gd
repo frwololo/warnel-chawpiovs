@@ -72,14 +72,15 @@ func re_place() -> void:
 
 	#$Control.rect_size.y = card_size.y	
 
+	var view_size = get_viewport().size/cfc.screen_scale
 
 	if self.name.to_lower().begins_with("ghost"):
 		#ghosthand has an absolute position
 		var total_cards = get_all_cards().size()
 		var expected_size_x = total_cards * card_size.x
 		if expected_size_x:
-			expected_size_x = max(expected_size_x, get_viewport().size.x/3)
-		expected_size_x = min (get_viewport().size.x/2, expected_size_x)
+			expected_size_x = max(expected_size_x, view_size.x/3)
+		expected_size_x = min (view_size.x/2, expected_size_x)
 		set_control_size(expected_size_x, card_size.y)
 		position.x = 100 * cfc.screen_scale.x
 	
@@ -87,7 +88,7 @@ func re_place() -> void:
 		#hand's position depends on ghosthand 
 		var offset = calculate_others_offset()
 		var offset_right = Vector2(200,0) * cfc.screen_scale
-		var control_size = get_viewport().size - offset_right  - offset
+		var control_size = view_size - offset_right  - offset
 		position.x = offset.x
 		set_control_size(control_size.x, card_size.y)
 

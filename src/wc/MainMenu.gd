@@ -68,6 +68,7 @@ func _ready() -> void:
 	self.connect("one_download_completed", self, "_one_download_completed")
 	self.connect("sets_download_completed", self, "_sets_download_completed")	
 	cfc.connect("json_parse_error", self, "loading_error")	
+	get_viewport().connect("size_changed", self, 'resize')	
 
 	_load_status = LOAD_STATUS.NOT_STARTED
 	if cfc.all_loaded:
@@ -351,10 +352,10 @@ func next_scene(scene_path):
 	_next_scene = scene_path
 
 func resize():
-	var stretch_mode = cfc.get_screen_stretch_mode()
-	if stretch_mode != SceneTree.STRETCH_MODE_VIEWPORT:
-		return	
-	var target_size = get_viewport().size
+#	var stretch_mode = cfc.get_screen_stretch_mode()
+#	if stretch_mode != SceneTree.STRETCH_MODE_VIEWPORT:
+#		return	
+	var target_size = get_viewport().size / cfc.screen_scale
 	if target_size.x > CFConst.LARGE_SCREEN_WIDTH:
 		#loading a higher res title screen
 		texture_rect.texture = load("res://assets/icons/title.png")

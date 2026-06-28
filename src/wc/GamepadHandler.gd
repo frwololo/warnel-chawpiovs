@@ -52,7 +52,7 @@ func gui_focus_changed(control):
 			#it tends to overlap cards on the board, leading to terrible
 			#GUI behavior (losing focus, etc...)
 			if parent as Card and parent.get_state_exec() == "hand":
-				approx_position.y  = get_viewport().size.y		
+				approx_position.y  = get_viewport().size.y/cfc.screen_scale.y	
 		elif current_focused_control.has_method("get_global_center"):
 			approx_position = current_focused_control.get_global_center() 
 		else:

@@ -42,32 +42,48 @@ var fps = 0
 var low_fps = false
 
 #a variable used to compare the scale of the screen to a 1920*1080 screen
-var screen_scale = 1.0
+var screen_scale = Vector2(1.0, 1.0)
+var hardcoded_positions_modifier = Vector2(1.0, 1.0)
 var screen_resolution = Vector2(1920, 1080)
 
 # warning-ignore:unused_signal
 signal json_parse_error(msg)
 
 func _ready():
-#	focused_shader = preload("res://src/wc/shaders/focused.tres")
-	screen_resolution = get_viewport().size
-	screen_scale = screen_resolution / Vector2(1920, 1080)
+	resize()
 	scale_grids()
+	
+func resize():
+	screen_resolution = get_viewport().size
+	var width = ProjectSettings.get("display/window/size/width")
+	var height = ProjectSettings.get("display/window/size/height")	
+	screen_scale = screen_resolution / Vector2(width, height)
+	
+	#some constants are defined with a 1920*1080 screen in mind. This accodmodates for this use case in case 
+	#the project is set to a different resolution
+	hardcoded_positions_modifier = 	Vector2(width, height) / Vector2(1920, 1080)	
+	var _tmp = 1
+
+func _on_viewport_resized():
+	resize()
+	._on_viewport_resized()	
 
 func scale_grids():
+	var scale = hardcoded_positions_modifier.x
 	for config in [CFConst.GRID_SETUP, CFConst.HERO_GRID_SETUP]:
 		for grid_name in config:
 			var grid_info = config[grid_name]
 			for key in ["x", "y", "scale"]:
 				if grid_info.has(key):
-					grid_info[key] = grid_info[key] * screen_scale.x 
+					grid_info[key] = grid_info[key]* scale
 				else:
 					match key:
 						"scale":
-							grid_info[key] = screen_scale.x 					
+							grid_info[key] = scale 					
 	scale_grid_layout_recursive(CFConst.HERO_GRID_LAYOUT)
 
 func scale_grid_layout_recursive(config):
+	var scale = hardcoded_positions_modifier.x
 	match typeof(config):
 		TYPE_DICTIONARY:
 			if !config.has("scale"):
@@ -75,7 +91,7 @@ func scale_grid_layout_recursive(config):
 					config["scale"] = 1.0
 			for k in config:
 				if k in ["x", "y", "scale", "max_width", "max_height"]:
-					config[k] = config[k] * screen_scale.x
+					config[k] = config[k] * scale
 				else:
 					scale_grid_layout_recursive(config[k])
 		TYPE_ARRAY:
@@ -1459,7 +1475,13 @@ func enrich_window_title(selectionWindow, script, title:String) -> String:
 			var target_str = ""
 			if script.trigger_details.has(SP.TRIGGER_TARGET_HERO):
 				target_str = " " +  script.trigger_details.get(SP.TRIGGER_TARGET_HERO)
-			result = owner.get_display_name() + " attacks" + target_str +". Choose 1 defender or cancel for undefended" 
+			var suffix = "Choose 1 defender or cancel for undefended"
+			var activity_script = gameData.get_latest_activity_script()
+			if activity_script.script_definition.has("chosen_defender"):
+				var defender = activity_script.get_property("chosen_defender")
+				var defender_name = defender.canonical_name
+				suffix = "Choose 1 defender.\n" + defender_name + " is already defending but can additionally choose to do a basic defense (cancel to skip)"
+			result = owner.get_display_name() + " attacks" + target_str +". " + suffix
 		"pay_as_resource":
 			result = owner.canonical_name + " - Select at least " + str(selectionWindow.selection_count) + " resources" + additional_constraints_str + "." 
 	match forced_title:

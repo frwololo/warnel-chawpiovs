@@ -79,8 +79,8 @@ func popup_centered():
 		return
 
 	var size = container.rect_size * self.rect_scale
-
-	self.rect_position = get_viewport().size/2	- size/2
+	var view_size =  get_viewport().size/cfc.screen_scale
+	self.rect_position = view_size/2	- size/2
 	
 	# One again we need two different Panels due to 
 	# https://github.com/godotengine/godot/issues/32030

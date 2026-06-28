@@ -352,7 +352,7 @@ func _ready() -> void:
 	_class_specific_ready()
 	var settings_focused_scale = cfc.game_settings.get("gui_card_focused_scale", 0)
 	if settings_focused_scale:
-		focused_scale = settings_focused_scale * cfc.screen_scale.x
+		focused_scale = settings_focused_scale #* cfc.screen_scale.x
 
 func get_card_back():
 	if !card_back:
@@ -2292,12 +2292,13 @@ func _organize_attachments() -> void:
 # Returns the adjusted global_mouse_position
 func _determine_board_position_from_mouse() -> Vector2:
 	var targetpos: Vector2 = cfc.NMAP.board.mouse_pointer.determine_global_mouse_pos() - (_drag_offset * scale)
-	if targetpos.x + card_size.x * scale.x >= get_viewport().size.x:
-		targetpos.x = get_viewport().size.x - card_size.x * scale.x
+	var view_size = get_viewport().size / cfc.screen_scale
+	if targetpos.x + card_size.x * scale.x >= view_size.x:
+		targetpos.x = view_size.x - card_size.x * scale.x
 	if targetpos.x < 0:
 		targetpos.x = 0
-	if targetpos.y + card_size.y * scale.y >= get_viewport().size.y:
-		targetpos.y = get_viewport().size.y - card_size.y * scale.y
+	if targetpos.y + card_size.y * scale.y >= view_size.y:
+		targetpos.y = view_size.y - card_size.y * scale.y
 	if targetpos.y < 0:
 		targetpos.y = 0
 	return targetpos
@@ -2310,14 +2311,15 @@ func _determine_target_position_from_mouse() -> void:
 	_set_target_position(_determine_board_position_from_mouse())
 
 	# The below ensures the card doesn't leave the viewport dimentions
+	var view_size = get_viewport().size / cfc.screen_scale
 	if _target_position.x + card_size.x * play_area_scale \
-			> get_viewport().size.x:
-		_target_position.x = get_viewport().size.x \
+			> view_size.x:
+		_target_position.x = view_size.x \
 				- card_size.x \
 				* play_area_scale
 	if _target_position.y + card_size.y * play_area_scale \
-			> get_viewport().size.y:
-		_target_position.y = get_viewport().size.y \
+			> view_size.y:
+		_target_position.y = view_size.y \
 				- card_size.y \
 				* play_area_scale
 
@@ -2569,6 +2571,7 @@ func _add_tween_scale(
 # its position, highlights, scaling and so on, stay as expected
 
 func _process_card_state() -> void:
+	var expected_scale = Vector2(1.0, 1.0)
 	match state:
 		CardState.IN_HAND:
 			z_index = CFConst.Z_INDEX_HAND_CARDS_NORMAL
@@ -2587,8 +2590,9 @@ func _process_card_state() -> void:
 					_add_tween_rotation($Control.rect_rotation,_target_rotation,
 						in_hand_tween_duration)
 					$Tween.start()
-			if not scale.is_equal_approx(cfc.screen_scale):
-				set_scale(cfc.screen_scale)
+		
+			if not scale.is_equal_approx(expected_scale):
+				set_scale(expected_scale)
 
 		CardState.FOCUSED_IN_HAND:
 			# Used when card is focused on by the mouse hovering over it.
@@ -2635,17 +2639,18 @@ func _process_card_state() -> void:
 						* 0.25,0))
 				# Enough with the fancy calculations. I'm just brute-forcing
 				# The card to stay at the fully within the viewport.
+				var view_size = get_viewport().size / cfc.screen_scale
 				if get_parent().placement == get_parent().Anchors.CONTROL:
 					while  get_parent().get_parent().rect_global_position.y\
 							+ get_parent().bottom_margin \
 							+ _target_position.y \
-							+ card_size.y * 1.5> get_viewport().size.y:
+							+ card_size.y * 1.5> view_size.y:
 						_target_position.y -= 1
 				else:
 					while get_parent().position.y \
 						+ get_parent().bottom_margin \
 						+ _target_position.y \
-						+ card_size.y > get_viewport().size.y:
+						+ card_size.y > view_size.y:
 						_target_position.y -= 1
 				# We need to bump up the y postion a bit based on the rotation
 				# We subtract 13 if there is no rotation
@@ -2689,6 +2694,7 @@ func _process_card_state() -> void:
 					# (My math is not the best so there's probably a more elegant formula)
 					var direction_x: int = -1
 					var direction_y: int = -1
+					var view_size = get_viewport().size / cfc.screen_scale					
 					if get_parent() != cfc.NMAP.board:
 						# We determine its center position on the viewport
 						var controlNode_center_position := \
@@ -2698,9 +2704,10 @@ func _process_card_state() -> void:
 						# we offset towards the right/bottom (+offset)
 						# If we are to the right/bottom of viewport center,
 						# we offset towards the left/top (-offset)
-						if controlNode_center_position.x < get_viewport().size.x/2:
+
+						if controlNode_center_position.x < view_size.x/2:
 							direction_x = 1
-						if controlNode_center_position.y < get_viewport().size.y/2:
+						if controlNode_center_position.y < view_size.y/2:
 							direction_y = 1
 						# The offset amount if calculated by creating a multiplier
 						# based on the distance of our target container
@@ -2710,9 +2717,9 @@ func _process_card_state() -> void:
 						# We always offset by percentages of the card size to
 						# be consistent in case the card size changes
 						var offset_x = (abs(controlNode_center_position.x
-								- get_viewport().size.x/2)) / 250 * card_size.x
+								- view_size.x/2)) / 250 * card_size.x
 						var offset_y = (abs(controlNode_center_position.y
-								- get_viewport().size.y/2)) / 250 * card_size.y
+								- view_size.y/2)) / 250 * card_size.y
 						var inter_x = controlNode_center_position.x \
 								+ direction_x * offset_x
 						var inter_y = controlNode_center_position.y \
@@ -2726,7 +2733,7 @@ func _process_card_state() -> void:
 					# The board doesn't have a node2d host container.
 					# Instead we use directly the viewport coords.
 					else:
-						intermediate_position = get_viewport().size/2
+						intermediate_position = view_size/2
 					_add_tween_global_position(global_position, intermediate_position,
 						to_container_tween_duration)
 					$Tween.start()
@@ -2755,8 +2762,8 @@ func _process_card_state() -> void:
 			if not $Tween.is_active():
 				$Tween.remove(self,'position') #
 				_add_tween_position(position, _target_position, reorganization_tween_duration)
-				if not scale.is_equal_approx(cfc.screen_scale):
-					_add_tween_scale(scale, cfc.screen_scale, reorganization_tween_duration)
+				if not scale.is_equal_approx(expected_scale):
+					_add_tween_scale(scale, expected_scale, reorganization_tween_duration)
 				_add_tween_rotation($Control.rect_rotation,_target_rotation,
 					reorganization_tween_duration)
 				$Tween.start()
@@ -2776,8 +2783,8 @@ func _process_card_state() -> void:
 					pushed_aside_tween_duration, Tween.TRANS_QUART, Tween.EASE_IN)
 				_add_tween_rotation($Control.rect_rotation, _target_rotation,
 					pushed_aside_tween_duration)
-				if not scale.is_equal_approx(cfc.screen_scale):
-					_add_tween_scale(scale, cfc.screen_scale, pushed_aside_tween_duration,
+				if not scale.is_equal_approx(expected_scale):
+					_add_tween_scale(scale, expected_scale, pushed_aside_tween_duration,
 						Tween.TRANS_QUART, Tween.EASE_IN)
 				$Tween.start()
 				# We don't change state yet,
@@ -3031,7 +3038,8 @@ func _process_card_state() -> void:
 			if not _tween.is_active()\
 					and not scale.is_equal_approx(Vector2(1,1)):
 				_add_tween_scale(scale, Vector2(1,1),0.75)
-				_add_tween_global_position(global_position, get_viewport().size/2 - CFConst.CARD_SIZE/2)
+				var view_size = get_viewport().size / cfc.screen_scale
+				_add_tween_global_position(global_position, view_size/2 - CFConst.CARD_SIZE/2)
 				_tween.start()
 				yield(_tween, "tween_all_completed")
 				_tween_stuck_time = 0

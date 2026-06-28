@@ -535,11 +535,11 @@ func attack_started(script) -> int:
 		damage = script.retrieve_integer_property("amount")
 	else:
 		damage = owner.get_property("attack", 0)		
-	if (damage):	
-		var script_modifications = {
-			"additional_tags" : ["attack", "Scripted"],
-		}
-		_add_pre_receive_damage_on_stack (damage, script, script_modifications)	
+	
+	var script_modifications = {
+		"additional_tags" : ["attack", "Scripted"],
+	}
+	_add_pre_receive_damage_on_stack (damage, script, script_modifications)	
 	
 	#emit signals if this was e.g. an attack that bypassed guards
 	#bypass_guard_happened
@@ -1009,7 +1009,7 @@ func receive_damage(script: ScriptTask) -> int:
 						
 			if ("basic power" in tags):
 				scripting_bus.emit_signal_on_stack("basic_attack_happened",  attacker,  signal_details)				
-				consequential_damage(script)
+			consequential_damage(script)
 			if !("undefended" in tags):
 				scripting_bus.emit_signal_on_stack("defense_happened", card,  signal_details)
 				if ("basic_defense" in tags):
@@ -1558,15 +1558,14 @@ func enemy_attacks_you(script: ScriptTask) -> int:
 		if !script.subjects:
 			return CFConst.ReturnCode.FAILED
 		for card in script.subjects:
-			if (!card.is_stunned()):
+			if (card.can_attack() and !card.is_stunned()):
 				retcode = CFConst.ReturnCode.CHANGED
 		return retcode	
 
 	var target_id = get_hero_id_from_script(script)
 
 	for card in script.subjects:
-		gameData.add_enemy_activation(card, "attack", script, target_id)
-		retcode = CFConst.ReturnCode.CHANGED
+		retcode = gameData.add_enemy_activation(card, "attack", script, target_id)
 	return retcode
 
 func character_attacks_you(script: ScriptTask) -> int:
@@ -1578,7 +1577,7 @@ func character_attacks_you(script: ScriptTask) -> int:
 		if !script.subjects:
 			return CFConst.ReturnCode.FAILED
 		for card in script.subjects:
-			if (!card.is_stunned()):
+			if (card.can_attack() and !card.is_stunned()):
 				retcode = CFConst.ReturnCode.CHANGED
 		return retcode	
 
@@ -1620,14 +1619,13 @@ func enemy_attacks_engaged_hero(script: ScriptTask) -> int:
 	
 	if (costs_dry_run()):
 		for card in script.subjects:
-			if (!card.is_stunned()):
+			if (card.can_attack() and !card.is_stunned()):
 				return CFConst.ReturnCode.CHANGED
 		return retcode	
 
 	for card in subjects:
 		var target_id = card.get_controller_hero_id()
-		gameData.add_enemy_activation(card, "attack", script, target_id)
-		retcode = CFConst.ReturnCode.CHANGED
+		retcode = gameData.add_enemy_activation(card, "attack", script, target_id)
 	return retcode	
 	
 #adds one attacker against multiple heroes
@@ -1647,11 +1645,10 @@ func i_attack(script: ScriptTask) -> int:
 
 	for card in script.subjects:
 		var target = card 
-		if !target.get_property("type_code") in ["ally", "alter_ego", "hero"]:
+		if !target.get_property("type_code") in ["ally", "alter_ego", "hero", "minion", "villain"]:
 			target = card.get_controller_hero_id()
 			
-		gameData.add_enemy_activation(attacker, "attack", script, target)
-		retcode = CFConst.ReturnCode.CHANGED
+		retcode = gameData.add_enemy_activation(attacker, "attack", script, target)
 	return retcode
 	
 #adds specific attacker against specific targets
@@ -1668,8 +1665,7 @@ func source_attacks_subjects(script: ScriptTask) -> int:
 		return CFConst.ReturnCode.CHANGED	
 
 	for card in script.subjects:
-		gameData.add_enemy_activation(attacker, "attack", script, card.get_controller_hero_id())
-		retcode = CFConst.ReturnCode.CHANGED
+		retcode = gameData.add_enemy_activation(attacker, "attack", script, card.get_controller_hero_id())
 	return retcode	
 
 func swap_villain(script:ScriptTask) -> int:
@@ -1779,8 +1775,13 @@ func enemy_attack(script: ScriptTask) -> int:
 	var activity_script = attacker.activity_script
 	#check if subjects have been "inserted" into the activity script instead of the new attack script
 	#e.g. with Mutant Protectors
-	if activity_script	and activity_script.subjects:
-		script.set_subjects(activity_script.subjects)
+	var non_basic_defender = null
+	if activity_script:	
+		if activity_script.subjects:
+			script.set_subjects(activity_script.subjects)
+		elif activity_script.script_definition.has("chosen_defender"):
+			non_basic_defender = activity_script.script_definition["chosen_defender"]
+			script.script_definition["chosen_defender"] = non_basic_defender
 	
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		for card in script.subjects:
@@ -1788,14 +1789,22 @@ func enemy_attack(script: ScriptTask) -> int:
 				return CFConst.ReturnCode.FAILED
 		return retcode
 		
-
-	var defender = script.subjects[0] if script.subjects else null
+	
+	var defender = null
+	var is_basic_defense = false
+	if script.subjects:
+		defender = script.subjects[0]
+		is_basic_defense = true
+	elif non_basic_defender:
+		defender = non_basic_defender
+		is_basic_defense = false	
+		script.set_subjects([defender])
 		
 	if defender:
 		if activity_script:
 			if activity_script.script_definition.get("exhaust_defenders", true):
 				defender.exhaustme()
-			if activity_script.script_definition.get("basic_defense", true):	
+			if is_basic_defense:	
 				if !script.has_tag("basic_defense"):
 					script.script_definition["tags"].append("basic_defense")
 		else:
@@ -1881,6 +1890,15 @@ func add_boost(boost_script: ScriptTask) -> int:
 
 	return retcode	
 
+
+#assigns defender to attack
+#this only works if there isn't a defender chosen already,
+#or if the defender was already the same as the one requested
+# this happens when playing a defense event
+func declare_defender(script: ScriptTask) -> int:
+	script.script_definition["basic_defense"] = true
+	return set_defender(script)
+	
 #assigns defender to attack
 #this only works if there isn't a defender chosen already,
 #or if the defender was already the same as the one requested
@@ -1903,15 +1921,23 @@ func set_defender(script: ScriptTask) -> int:
 		if attack_script.subjects[0] != defender:
 			return CFConst.ReturnCode.FAILED
 		return CFConst.ReturnCode.CHANGED
+
+	if attack_script.script_definition.has("chosen_defender"):
+		if attack_script.get_property("chosen_defender") != defender:
+			return CFConst.ReturnCode.FAILED
+		return CFConst.ReturnCode.CHANGED
 		
 	if costs_dry_run():
 		return CFConst.ReturnCode.CHANGED
 	
 	#when no defender was previously set
-	attack_script.set_subjects([])
-	attack_script.subjects.append(defender)
 	attack_script.script_definition["exhaust_defenders"] = script.get_property("exhaust_defenders",false)
-	attack_script.script_definition["basic_defense"] = script.get_property("basic_defense",false)
+	var is_basic_defense = script.get_property("basic_defense",false)
+	if is_basic_defense:
+		attack_script.subjects = [defender]
+	else:
+		attack_script.script_definition["chosen_defender"] = defender
+		attack_script.script_definition["basic_defense"] = false
 	
 	return CFConst.ReturnCode.CHANGED
 	
@@ -2087,9 +2113,9 @@ func consequential_damage(script: ScriptTask) -> int:
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
 
-	var tags = script.get_property(SP.KEY_TAGS, [])
-	if !("basic power" in tags):
-		return CFConst.ReturnCode.OK
+#	var tags = script.get_property(SP.KEY_TAGS, [])
+#	if !("basic power" in tags):
+#		return CFConst.ReturnCode.OK
 
 	var owner = script.owner
 	var damage = owner.get_property("attack_cost", 0)
@@ -2193,8 +2219,7 @@ func enemy_schemes(script: ScriptTask) -> int:
 		return retcode
 	retcode = CFConst.ReturnCode.FAILED
 	for card in script.subjects:
-		retcode = CFConst.ReturnCode.CHANGED
-		gameData.add_enemy_activation(card, "scheme", script)
+		retcode = gameData.add_enemy_activation(card, "scheme", script)
 	return retcode	
 
 func remove_threat(script: ScriptTask) -> int:
@@ -2218,7 +2243,7 @@ func remove_threat(script: ScriptTask) -> int:
 			"amount": amount,
 		}
 		scripting_bus.emit_signal_on_stack("basic_thwart_happened",  owner,  signal_details)
-		consequential_damage(script)			
+	consequential_damage(script)			
 	if script.has_tag("thwart"):
 		scripting_bus.emit_signal_on_stack("thwart_happened", owner, {"amount" : amount, "target" : script.subjects[0]})
 

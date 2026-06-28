@@ -119,7 +119,7 @@ func _ready():
 #	pass
 
 func resize():
-	var target_size = get_viewport().size
+	var target_size = get_viewport().size/cfc.screen_scale
 	$CenterContainer.rect_size = target_size
 	$CenterContainer/ColorRect.rect_min_size = $CenterContainer/MarginContainer.rect_size + Vector2(20, 20)	
 

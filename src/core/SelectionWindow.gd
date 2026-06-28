@@ -261,15 +261,16 @@ func popup_centered():
 		return
 
 	var viewport = get_viewport()
-	var size = $Panel.rect_size * self.rect_scale
+	var view_size = viewport.size/cfc.screen_scale
 	
+	var size = $Panel.rect_size * self.rect_scale
 	#we've had cases where this display is bigger than the screen,
 	#this is to accomodate for that
-	while size.x > viewport.size.x or size.y > viewport.size.y:
+	while size.x > view_size.x or size.y > view_size.y:
 		self.rect_scale *= .9
 		size = $Panel.rect_size * self.rect_scale
 
-	self.rect_position = viewport.size/2	- size/2
+	self.rect_position = view_size/(2)	- size/2
 	has_been_centered = true
 
 	call_deferred("init_default_focus")	

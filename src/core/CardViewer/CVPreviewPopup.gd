@@ -90,6 +90,7 @@ func get_preview_placement() -> Vector2:
 	var ret : Vector2
 	var focus_panel_offset = 0
 	var card_size : Vector2 = preview_card.canonical_size * preview_card.preview_scale * cfc.curr_scale
+	var view_size = get_viewport().size / cfc.screen_scale
 	# If the card width is to small, we will place the info panels instead to the left of the card preview
 	if focus_info.visible:
 		focus_panel_offset = focus_info.rect_size.x
@@ -100,7 +101,7 @@ func get_preview_placement() -> Vector2:
 			+ card_size.x\
 			+ x_offset\
 			+ focus_panel_offset\
-			> get_viewport().size.x:
+			> view_size.x:
 		ret.x = mouse_position.x - card_size.x - x_offset - focus_panel_offset
 	else:
 		ret.x = mouse_position.x + x_offset
@@ -109,13 +110,13 @@ func get_preview_placement() -> Vector2:
 	var focus_offscreen_y = mouse_position.y + focus_info.rect_size.y
 	if card_offscreen_y > focus_offscreen_y\
 			and is_instance_valid(preview_card)\
-			and card_offscreen_y > get_viewport().size.y:
-		ret.y = get_viewport().size.y\
+			and card_offscreen_y > view_size.y:
+		ret.y = view_size.y\
 				- card_size.y\
 				+ y_offset
 	elif card_offscreen_y < focus_offscreen_y\
-			and focus_offscreen_y > get_viewport().size.y:
-		ret.y = get_viewport().size.y\
+			and focus_offscreen_y > view_size.y:
+		ret.y = view_size.y\
 				- focus_info.rect_size.y + y_offset
 	else:
 		ret.y = mouse_position.y + y_offset

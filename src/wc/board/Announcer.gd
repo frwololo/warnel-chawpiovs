@@ -270,7 +270,7 @@ func init_choices_menu(stack_object, announce):
 	#var announce_scene = StackEventDisplay.new(script)
 	storage["scene"] = announce_scene
 	add_child_to_board(announce_scene)
-	announce_scene.set_target_position(GENERIC_STACK_POSITION * cfc.screen_scale)
+	announce_scene.set_target_position(GENERIC_STACK_POSITION * cfc.hardcoded_positions_modifier)
 	self.add_right_announce()	
 	return true
 	
@@ -472,7 +472,7 @@ func init_generic_stack(script, announce):
 	if announce.get("show_ok", false):
 		announce_scene.show_ok_button()	
 				
-	announce_scene.set_target_position(GENERIC_STACK_POSITION * cfc.screen_scale)
+	announce_scene.set_target_position(GENERIC_STACK_POSITION * cfc.hardcoded_positions_modifier)
 	self.add_right_announce()		
 	return true
 	
@@ -665,7 +665,7 @@ func init_black_cover(top_object, announce):
 	
 	var announce_scene = ColorRect.new()
 	announce_scene.self_modulate = Color(0,0,0,0.4)
-	var screen_size = get_viewport().size
+	var screen_size = get_viewport().size/cfc.screen_scale
 	announce_scene.rect_size = screen_size
 	announce_scene.rect_position = Vector2(0, 0)
 

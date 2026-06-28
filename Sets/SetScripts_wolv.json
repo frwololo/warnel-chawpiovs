@@ -1096,10 +1096,11 @@
 							"filter_func": {
 								"func_name": "property_contains",
 								"func_params": {
+									"subject": "trigger",
 									"property": "real_text",
 									"value": [
-										"hero response",
-										"hero interrupt"
+										"hero action",
+										"hero response"
 									]
 								}
 							}

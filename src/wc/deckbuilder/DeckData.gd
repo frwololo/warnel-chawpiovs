@@ -62,11 +62,11 @@ func get_display_name():
 	return simplified_deck_name()
 	
 func resize():
-	var stretch_mode = cfc.get_screen_stretch_mode()
-	if stretch_mode != SceneTree.STRETCH_MODE_VIEWPORT:
-		return
+#	var stretch_mode = cfc.get_screen_stretch_mode()
+#	if stretch_mode != SceneTree.STRETCH_MODE_VIEWPORT:
+#		return
 
-	var screen_size = get_viewport().size
+	var screen_size = get_viewport().size/cfc.screen_scale
 	var grid_width = screen_size.x * 0.9
 	if screen_size.x > CFConst.LARGE_SCREEN_WIDTH:
 		pass

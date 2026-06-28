@@ -146,7 +146,7 @@ func highlight_deck(deck_id):
 func resize():
 	var stretch_mode = cfc.get_screen_stretch_mode()
 
-	var screen_size = get_viewport().size
+	var screen_size = get_viewport().size/cfc.screen_scale
 	deck_scroll.rect_min_size = screen_size - Vector2(50, 20)
 	deck_scroll.rect_min_size.y -= 300
 	new_deck_menu.rect_min_size = screen_size

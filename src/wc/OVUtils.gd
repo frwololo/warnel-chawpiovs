@@ -155,8 +155,9 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 			if (owner.current_host_card):
 				results.append(owner.current_host_card)
 		SP.KEY_SUBJECT_V_ATTACHMENTS:
-			var host = script.script_definition.get(SP.KEY_ATTACHMENTS_HOST, "self")
-			host = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : host})
+			var host = script.script_definition.get(SP.KEY_ATTACHMENTS_HOST, "")
+			if host:
+				host = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : host})
 			if host:
 				host = host[0]
 				var subjects_array = host.attachments

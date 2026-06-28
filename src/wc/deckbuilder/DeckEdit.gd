@@ -82,7 +82,7 @@ func critical_error():
 func _ready():
 	
 	var loading_panel = get_node("%LoadingPanel")
-	$LoadingPanel/ColorRect.rect_min_size = get_viewport().size
+	$LoadingPanel/ColorRect.rect_min_size = get_viewport().size/cfc.screen_scale
 	loading_panel.visible = true
 	#get_viewport().connect("gui_focus_changed", self, "gui_focus_changed")	
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')
@@ -138,11 +138,11 @@ func _process(delta:float):
 			mouse_pos = focused.get_global_position() + focused.rect_size/2
 			large_picture.rect_position = mouse_pos + Vector2(20, 20)
 	large_picture.rect_size = PREVIEW_CARD_SIZE
-	large_picture.rect_scale = cfc.screen_scale
+#	large_picture.rect_scale = cfc.screen_scale
 	large_picture.rect_rotation = _preview_rotation
 	
 	#check for out of bounds preview and correct accordingly
-	var screen_size = get_viewport().size
+	var screen_size = get_viewport().size/cfc.screen_scale
 	var out_of_bounds = large_picture.rect_position + PREVIEW_CARD_SIZE
 	if out_of_bounds.x > screen_size.x:
 		large_picture.rect_position.x = mouse_pos.x - 50 - PREVIEW_CARD_SIZE.x
@@ -197,10 +197,11 @@ func display_collection_card(card_id, position_id, direction):
 	card.set_is_faceup(true,true)
 	var start_x = x
 	var start_y = y
+	var view_size =  get_viewport().size/cfc.screen_scale
 	if direction > 0:
-		start_x = x + get_viewport().size.x
+		start_x = x + view_size.x
 	elif direction < 0:
-		start_x = x - get_viewport().size.x
+		start_x = x - view_size.x
 	card.position = Vector2(start_x, start_y)
 	card.set_target_position(Vector2(x, y))	
 	#card._control.connect("mouse_entered", card, "gain_focus")	
@@ -217,13 +218,13 @@ func hide_collection_card(card, direction):
 	var start_y = card.position.y
 	var dest_x =  start_x
 	var dest_y = start_y
-	
+	var view_size =  get_viewport().size/cfc.screen_scale
 	if direction == 0:
 		dest_y = -500
 	elif direction > 0:
-		dest_x = start_x - get_viewport().size.x
+		dest_x = start_x - view_size.x
 	elif direction < 0:
-		dest_x = start_x + get_viewport().size.x
+		dest_x = start_x + view_size.x
 	card.position = Vector2(start_x, start_y)
 	card.set_target_position(Vector2(dest_x, dest_y))			
 
@@ -407,14 +408,15 @@ func reorganize_deck():
 func resize():
 	var stretch_mode = cfc.get_screen_stretch_mode()
 
-	var screen_size = get_viewport().size
+	var screen_size = get_viewport().size/cfc.screen_scale
 	
 	collection_grid.rect_min_size.y = (COLLECTION_CARD_SCALE * CFConst.CARD_SIZE.y * 2)
 	collection_grid.rect_min_size.x = screen_size.x - 100
 	
-	var lowest_point = collection_grid.rect_min_size.y + back_button.rect_global_position.y + back_button.rect_size.y - 20
+	var back_button_y = back_button.rect_global_position.y
+	var lowest_point = collection_grid.rect_min_size.y + back_button_y + back_button.rect_size.y - 20
 	var remaining_space = screen_size.y - lowest_point	
-	deck_scroll.rect_min_size.y =  remaining_space
+	deck_scroll.rect_min_size.y =  max (deck_scroll.rect_min_size.y,remaining_space)
 	deck_scroll.rect_min_size.x = screen_size.x - 100
 	if stretch_mode == SceneTree.STRETCH_MODE_VIEWPORT and screen_size.x > 1800:
 		pass

@@ -1090,14 +1090,16 @@ func pre_attack_interrupts_done():
 
 func add_enemy_activation(enemy, activation_type:String = "attack", script = null, target_id = 0):
 	attackers.append({"subject":enemy, "type": activation_type, "script" : script, "target_id" : target_id})
-
+	return CFConst.ReturnCode.CHANGED
+	
 func start_activity(enemy, action, script, target = 0):
 
 	if !target:
 		target = _villain_current_hero_target
 		
-	display_debug("drawing boost cards")	
-	if (enemy.get_property("type_code") == "villain") or enemy.get_property("villainous", 0, true):
+	display_debug("drawing boost cards")
+	var type_code = enemy.get_property("type_code")
+	if (type_code== "villain") or enemy.get_property("villainous", 0, true):
 		display_debug("villain confirmed, drawing boost cards")
 		if script and script.has_tag("no_boost"):
 			pass
@@ -1122,7 +1124,38 @@ func start_activity(enemy, action, script, target = 0):
 			next_step = EnemyAttackStatus.BOOST_CARDS
 		"attack":
 			script_name = "enemy_attack"
-			next_step = EnemyAttackStatus.PENDING_DEFENDERS
+			if !type_code in ["villain", "minion"]:
+				var attack_script = {
+					"enemy_attack": {
+						"board": [
+							{
+								"name": "enemy_attack",
+								"subject": "boardseek",	
+								"subject_count": "all",
+								"hide_ok_on_zero": true,
+								SP.KEY_NEEDS_SELECTION: true,
+								SP.KEY_SELECTION_COUNT: 1,
+								SP.KEY_SELECTION_TYPE: "max",
+								SP.KEY_SELECTION_OPTIONAL: true,
+								"filter_state_seek": [{
+									"filter_group": "group_defenders"
+								},],
+							}					
+						]
+					}
+				}
+				var subscript_id = enemy.add_extra_script(attack_script, target)
+				gameData.theGameObserver.add_script_removal_effect(script, enemy, subscript_id, "enemy_activation_finished")
+
+			if target.get_controller_hero_id():
+				next_step = EnemyAttackStatus.PENDING_DEFENDERS
+			else:
+				#attack from an enemy to an enemy (ex: Moondragon ability)
+				#we force defender to be the target, with no exhaust
+				var activity_script = enemy.activity_script
+				activity_script.subjects = [target]
+				activity_script.script_definition["exhaust_defenders"] = false
+				next_step = EnemyAttackStatus.BOOST_CARDS
 
 
 	var trigger_details = {
@@ -1340,6 +1373,8 @@ func get_attack_defender(script = null):
 	if script.has_tag("undefended"):
 		return null
 	var defender = script.subjects[0] if script.subjects else null
+	if !defender:
+		defender = script.script_definition.get("chosen_defender", null)
 	return defender	
 
 func prevent_value(script, property, amount_prevented):
@@ -2048,7 +2083,7 @@ func get_current_target_hero() -> Card:
 func compute_potential_defenders(hero_id, attacker):		
 	var board:Board = cfc.NMAP.board
 	var defenders = []
-
+	var script = gameData.get_latest_activity_script()
 
 	#clear old stuff
 	for node in cfc.get_tree().get_nodes_in_group("group_defenders"):
@@ -2057,7 +2092,19 @@ func compute_potential_defenders(hero_id, attacker):
 	if attacker.get_property("cannot_be_blocked", 0, true):
 		return []
 
-	for c in board.get_all_cards():
+	var pre_determined_defender = null
+	if script.subjects:
+		pre_determined_defender = script.subjects[0]
+	elif script.script_definition.has("chosen_defender"):
+		pre_determined_defender = script.get_property("chosen_defender")
+	
+	var all_cards = []
+	if pre_determined_defender:
+		all_cards = [pre_determined_defender]
+	else:
+		all_cards = board.get_all_cards()
+		
+	for c in all_cards:
 		if c.can_defend(): #hero_id):
 			defenders.append(c)
 

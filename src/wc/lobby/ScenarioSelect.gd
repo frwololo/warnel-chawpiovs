@@ -76,7 +76,7 @@ func _process(_delta:float):
 
 func resize():
 
-	var screen_size = get_viewport().size
+	var screen_size = get_viewport().size/cfc.screen_scale
 	var grid_width = 450
 	var grid_height = 220
 	if screen_size.x > CFConst.LARGE_SCREEN_WIDTH:

@@ -1,0 +1,330 @@
+{
+	"_comments": "Tests Old Rivals in multiplayer",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 14353,
+					"hero": "22001a"
+				}
+			},
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 11401,
+					"hero": "18001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "False Alarm",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Old Rivals",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Rhino - 1 #01094",
+					"owner_hero_id": 0,
+					"tokens": {
+						"damage": 7
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Break-In! - 1B #01097b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [],
+			"removed_from_game": [],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Combat Ready #22009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy #01088",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "Genius #01089",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Nebula #22001a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"damage": 2,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "The Power of Justice",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Brains over Brawn",
+					"owner_hero_id": 1
+				}
+			],
+			"encounters_facedown2": [],
+			"encounters_reveal2": [],
+			"deck2": [
+				{
+					"card": "Crosscounter #18004",
+					"owner_hero_id": 2
+				}
+			],
+			"discard2": [
+				{
+					"card": "Combat Training #01057",
+					"owner_hero_id": 2
+				}
+			],
+			"enemies2": [],
+			"identity2": [
+				{
+					"card": "Gamora #18001a",
+					"owner_hero_id": 2,
+					"tokens": {
+						"__precision": 1,
+						"damage": 5,
+						"__finesse": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies2": [
+				{
+					"card": "Angela - Aldrif Odinsdottir #18011",
+					"owner_hero_id": 2,
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Combat Training #01057",
+					"owner_hero_id": 2
+				}
+			],
+			"hand2": [
+				{
+					"card": "Strength",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Clobber",
+					"owner_hero_id": 2
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+			"hero_id": 1
+		},	
+		{
+			"type": "select",
+			"value": "cancel",
+			"hero_id": 1
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"hero_id": 1
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 14353,
+					"hero": "22001a"
+				}
+			},
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 11401,
+					"hero": "18001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Old Rivals",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "False Alarm",
+					"owner_hero_id": 0
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Rhino - 1 #01094",
+					"owner_hero_id": 0,
+					"tokens": {
+						"damage": 7
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Break-In! - 1B #01097b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [],
+			"removed_from_game": [],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Combat Ready #22009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy #01088",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "Genius #01089",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Nebula #22001a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"damage": 5,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "The Power of Justice",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Brains over Brawn",
+					"owner_hero_id": 1
+				}
+			],
+			"encounters_facedown2": [],
+			"encounters_reveal2": [],
+			"deck2": [
+				{
+					"card": "Crosscounter #18004",
+					"owner_hero_id": 2
+				}
+			],
+			"discard2": [
+				{
+					"card": "Combat Training #01057",
+					"owner_hero_id": 2
+				}
+			],
+			"enemies2": [],
+			"identity2": [
+				{
+					"card": "Gamora #18001a",
+					"owner_hero_id": 2,
+					"tokens": {
+						"__precision": 1,
+						"damage": 5,
+						"__finesse": 1,
+						"__can_change_form": 1,
+						"confused": 1
+					}
+				}
+			],
+			"allies2": [
+				{
+					"card": "Angela - Aldrif Odinsdottir #18011",
+					"owner_hero_id": 2,
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Combat Training #01057",
+					"owner_hero_id": 2
+				}
+			],
+			"hand2": [
+				{
+					"card": "Strength",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Clobber",
+					"owner_hero_id": 2
+				}
+			]
+		}
+	}
+}

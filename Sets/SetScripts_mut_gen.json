@@ -3225,12 +3225,9 @@
 					]
 				},
 				{
-					"name": "exhaust_card",
-					"subject": "previous"
-				},
-				{
-					"name": "set_defender",
-					"subject": "previous"
+					"name": "declare_defender",
+					"subject": "previous",
+					"exhaust_defenders": true,
 				}
 			]
 		}
@@ -3920,10 +3917,11 @@
 							"filter_func": {
 								"func_name": "property_contains",
 								"func_params": {
+									"subject": "trigger",
 									"property": "real_text",
 									"value": [
-										"hero response",
-										"hero interrupt"
+										"hero action",
+										"hero response"
 									]
 								}
 							}

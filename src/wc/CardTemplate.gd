@@ -1026,7 +1026,7 @@ func common_post_move_scripts(new_host: String, old_host: String, _move_tags: Ar
 
 	if CFConst.PERFORMANCE_HACKS:
 		set_process_recursive(true)
-		if get_state_exec() in ["hand", "board"]:
+		if ! get_state_exec() in ["pile"]:
 			reattach_removed_nodes()						
 		else:
 			detach_unused_nodes()
@@ -1040,7 +1040,7 @@ func common_post_move_scripts(new_host: String, old_host: String, _move_tags: Ar
 func detach_unused_nodes():
 	if _unused_nodes_detached:
 		return
-	var to_remove = [tokens, healthbar.get_parent(), side_icons, info_icon]
+	var to_remove = [tokens, healthbar.get_parent(),  info_icon]
 	
 	for node in _control.get_children():
 		if node in to_remove:
@@ -2182,6 +2182,16 @@ func discard():
 	set_is_boost(false)
 	set_is_inactive_attachment(false)
 
+func can_attack():
+	var atk = get_property("attack", null)
+	if atk == null:
+		return false
+
+	if get_property("cannot_attack", false):
+		return false
+	
+	return get_property("can_attack", false)
+
 #returns the amount of healing that could happen for a given heal value
 func can_heal(value):
 	var current_damage = tokens.get_token_count("damage")
@@ -2493,8 +2503,10 @@ func common_pre_run(sceng) -> void:
 			"enemy_attack":
 				var attacker = script.owner
 				if attacker.activity_script and attacker.activity_script.subjects:
-					#erase subject selection if we already have one
+					#erase subject selection if we already have a defender
+					#this bypasses the set defenders step + bypasses some interactionStatus verification 
 					script.script_definition.erase("subject")
+					script.script_definition.erase(SP.KEY_NEEDS_SELECTION)
 					
 				var modifiers = attacker.retrieve_scripts("modifiers")
 				var defense_selection_modifier = modifiers.get("defense_selection", "")
@@ -3440,7 +3452,7 @@ func property_contains(params, script:ScriptObject = null) -> int:
 		var text = subject.get_property(property, "", true)
 		text = text.to_lower()
 		for value in values:
-			value = value.to_lower
+			value = value.to_lower()
 			if and_or == "or":
 				if value in text:
 					return 1
@@ -4185,7 +4197,7 @@ func get_printed_text(section = ""):
 			paragraph = paragraph.trim_suffix(" ")
 			var previous_str = previous.get("paragraph", "")			
 			if previous_str:
-				if !"\n" in previous_str:
+				if !"\n" in previous_str:					
 					previous["paragraph"] = previous_str + "[b]" +  paragraph
 					previous["prefix"]= previous["prefix"] + paragraph_data["prefix"]
 				else:
@@ -4234,6 +4246,7 @@ func get_printed_text(section = ""):
 				#due to some typos, some sections have the ":" inside the bold, others don't
 				#e.g. <b>When Revealed:</b> and <b>When Revealed</b>: are both possible occurrences
 				paragraph_name = paragraph_name.replace(":", "")
+				paragraph_name = cfc.remove_bbcode(paragraph_name)				
 				paragraph_name = paragraph_name.strip_edges() 
 				if !_cached_printed_text.has(paragraph_name):
 						_cached_printed_text[paragraph_name] = ""

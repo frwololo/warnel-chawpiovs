@@ -1,0 +1,126 @@
+{
+	"_comments": "Tests Sunfire action",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wolverine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Wolverine #35001a"
+				}
+			],
+			"others": [
+				{
+					"card": "Adamantium Upgrades",
+					"host": "Rhino"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Wolverine's Claws"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Sunfire #35014"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Regenerative Healing"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Sunfire"
+		},
+		{
+			"type": "select",
+			"value": "Strength"
+		},
+		{
+			"type": "choose",
+			"value": "yes"
+		},
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wolverine"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Adamantium Upgrades",
+				}
+			],
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Wolverine #35001a"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Wolverine's Claws"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Sunfire #35014"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Regenerative Healing"
+				}
+			]
+		}
+	}
+}

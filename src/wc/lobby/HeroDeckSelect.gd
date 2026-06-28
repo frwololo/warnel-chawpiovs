@@ -29,7 +29,7 @@ func _ready():
 	resize()
 
 func resize():
-	var screen_size = get_viewport().size
+	var screen_size = get_viewport().size/cfc.screen_scale
 	if screen_size.x > 1800:
 		hero_picture.rect_min_size = Vector2(140, 200)
 	else:		

@@ -383,5 +383,5 @@ func _on_FileDialog_popup_hide():
 
 
 func resize():
-	self.scale = cfc.screen_scale
-
+	self.scale = cfc.hardcoded_positions_modifier
+	pass

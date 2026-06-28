@@ -263,7 +263,7 @@
 			"event_filters": {
 				"amount_prevented": ">1"
 			},
-			"board": [
+			"all": [
 				{
 					"name": "discard",
 					"subject": "tutor",
@@ -682,40 +682,42 @@
 	},
 	"Mantis": {
 		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action_ability"
-					]
-				},
-				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
-				},
-				{
-					"name": "deal_damage",
-					"amount": 1,
-					"is_cost": true,
-					"subject": "self"
-				},
-				{
-					"name": "heal",
-					"amount": 3,
-					"subject": "boardseek",
-					"subject_count": "all",
-					"need_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
-					"filter_state_seek": [
-						{
-							"filter_group": "group_identities"
-						}
-					]
-				}
-			]
+			"board": {
+				"Heal Identity": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "deal_damage",
+						"amount": 1,
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "heal",
+						"amount": 3,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"need_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						]
+					}
+				]
+			}
 		}
 	},
 	"Martyr - Phyla-Vell": {
@@ -857,50 +859,53 @@
 	},
 	"Moondragon - Heather Douglas": {
 		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action_ability"
-					]
-				},
-				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
-				},
-				{
-					"name": "discard",
-					"subject": "self"
-				},
-				{
-					"name": "nop",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"is_cost": true,
-					"needs_selection": true,
-					"selection_count": 1,
-					"filter_state_seek": [
-						{
-							"filter_group": "group_enemies"
-						}
-					]
-				},
-				{
-					"name": "i_attack",
-					"action_owner": "previous",
-					"subject": "target",
-					"needs_subject": true,
-					"subject_exclude": "previous",
-					"subject_count": 1,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_enemies"
-						}
-					]
-				}
-			]
+			"board": {
+				"Mind Control": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					},
+					{
+						"name": "nop",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"is_cost": true,
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_enemies"
+							}
+						]
+					},
+					{
+						"name": "i_attack",
+						"action_owner": "previous",
+						"subject": "target",
+						"needs_subject": true,
+						"subject_exclude": "previous",
+						"subject_count": 1,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_enemies"
+							}
+						]
+					}
+				]
+			}
 		}
 	},
 	"Parry": {
@@ -928,13 +933,13 @@
 		}
 	},
 	"Payback": {
-		"enemy_attack_happened": {
+		"response_enemy_attack_happened": {
 			"trigger": "villain",
 			"event_filters": {
-				"target": "self"
+				"target": "my_hero"
 			},
-			"is_optional_board": true,
-			"board": [
+			"is_optional_hand": true,
+			"hand": [
 				{
 					"name": "attack",
 					"subject": "villain",

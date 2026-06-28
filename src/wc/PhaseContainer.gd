@@ -623,9 +623,9 @@ func _notification(what):
 
 func resize():
 		
-	var screen_size = cfc.screen_resolution
+	var screen_size = get_viewport().size /cfc.screen_scale
 	#self.scale = cfc.screen_scale
 	var margin_container = $MarginContainer
-	margin_container.rect_scale = cfc.screen_scale
-	margin_container.margin_right = screen_size.x / cfc.screen_scale.y
-	margin_container.margin_bottom = screen_size.y / cfc.screen_scale.y
+	margin_container.rect_scale = cfc.hardcoded_positions_modifier
+	margin_container.margin_right = screen_size.x  /cfc.hardcoded_positions_modifier.x
+	margin_container.margin_bottom = screen_size.y  /cfc.hardcoded_positions_modifier.y

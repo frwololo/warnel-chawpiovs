@@ -10,25 +10,6 @@
 self_modulate = Color( 1, 1, 1, 0 )
 script = ExtResource( 1 )
 
-[node name="ViewportContainer" type="ViewportContainer" parent="."]
-margin_left = 1.5874
-margin_top = 4.76221
-margin_right = 1281.59
-margin_bottom = 724.762
-stretch = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Viewport" type="Viewport" parent="ViewportContainer"]
-size = Vector2( 1280, 720 )
-handle_input_locally = false
-render_target_update_mode = 3
-
-[node name="Camera2D" type="Camera2D" parent="ViewportContainer/Viewport"]
-anchor_mode = 0
-current = true
-
 [node name="VBC" type="VBoxContainer" parent="."]
 margin_right = 300.0
 margin_bottom = 454.0
@@ -71,5 +52,3 @@ script = ExtResource( 2 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource( 3 )
-
-[connection signal="size_changed" from="ViewportContainer/Viewport" to="." method="_on_Viewport_size_changed"]

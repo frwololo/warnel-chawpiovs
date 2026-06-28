@@ -96,8 +96,8 @@ func popup_centered():
 		return
 
 	var size = $Panel.rect_size * self.rect_scale
-
-	self.rect_position = get_viewport().size/2	- size/2
+	var view_size =  get_viewport().size/cfc.screen_scale
+	self.rect_position = view_size/2	- size/2
 	has_been_centered = true
 		
 func force_select_by_title(keyword: String):

@@ -53,11 +53,11 @@ func _launch_game():
 	get_tree().change_scene_to(game)
 	
 func resize():
-	var stretch_mode = cfc.get_screen_stretch_mode()
-	if stretch_mode != SceneTree.STRETCH_MODE_VIEWPORT:
-		return	
+#	var stretch_mode = cfc.get_screen_stretch_mode()
+#	if stretch_mode != SceneTree.STRETCH_MODE_VIEWPORT:
+#		return	
 			
-	var target_size = get_viewport().size
+	var target_size = get_viewport().size/cfc.screen_scale
 	var label = get_node("%Label")
 	label.rect_min_size = Vector2(target_size.x,label.rect_min_size.y) 
 	label.rect_size = label.rect_min_size

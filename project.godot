@@ -641,8 +641,6 @@ settings/fps/force_fps=60
 
 window/size/width=1920
 window/size/height=1080
-window/size/test_width=864
-window/size/test_height=486
 window/dpi/allow_hidpi=true
 window/stretch/mode="2d"
 window/stretch/aspect="keep"

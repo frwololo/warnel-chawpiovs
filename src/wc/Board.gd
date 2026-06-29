@@ -120,6 +120,7 @@ func load_next_step(next_step):
 				var my_seed = CFUtils.generate_random_seed()
 				cfc._rpc(self,"set_random_seed", my_seed)
 		LOADING_STEPS.READY_TO_LOAD:
+			CFScriptUtils.reset_alterants_super_cache()
 			load_cards()
 			cfc._rpc(self,"ready_for_step", LOADING_STEPS.CARDS_PRELOADED)
 		LOADING_STEPS.CARDS_PRELOADED:

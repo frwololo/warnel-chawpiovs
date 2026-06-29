@@ -143,8 +143,8 @@ func init_display(forced = false):
 	initialized = load_card_texture()
 	load_text()
 	init_arrows()
-	$Control.rect_scale = Vector2(SCALE,SCALE) # * cfc.screen_scale
-	$Shadow.rect_scale = Vector2(SCALE,SCALE) # * cfc.screen_scale
+	$Control.rect_scale = Vector2(SCALE,SCALE) *  cfc.hardcoded_positions_modifier
+	$Shadow.rect_scale = Vector2(SCALE,SCALE) *  cfc.hardcoded_positions_modifier
 
 func move_to_target_position():
 	if tween.is_active():
@@ -347,7 +347,7 @@ func set_target_position(pos):
 func _on_Button_pressed():
 	var button = get_node("%Button")
 	
-	var hidden_position = Vector2(1870 * cfc.screen_scale.x, target_position.y)
+	var hidden_position = Vector2(1870 *  cfc.hardcoded_positions_modifier.x, target_position.y)
 	var before = target_position
 	var after = hidden_position
 	match button.text:

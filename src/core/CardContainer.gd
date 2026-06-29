@@ -378,7 +378,7 @@ func reset_location():
 				# Right position always start from the right-side of the viewport
 				# minus the width of the container
 				Anchors.TOP_RIGHT, Anchors.RIGHT_MIDDLE, Anchors.BOTTOM_RIGHT:
-					place.x = view_size.x - (card_size.x * scale.x /  cfc.screen_scale.x)
+					place.x = view_size.x - (card_size.x * scale.x /  cfc.hardcoded_positions_modifier.x)
 				# Middle placement is the middle of the viewport width,
 				# minues half the height of the container
 				Anchors.TOP_MIDDLE, Anchors.BOTTOM_MIDDLE:
@@ -392,7 +392,7 @@ func reset_location():
 				# Bottom position always start from the bottom of the viewport
 				# minus the height of the container
 				Anchors.BOTTOM_LEFT, Anchors.BOTTOM_MIDDLE, Anchors.BOTTOM_RIGHT:
-					place.y = view_size.y - (card_size.y * scale.y / cfc.screen_scale.y)
+					place.y = view_size.y - (card_size.y * scale.y / cfc.hardcoded_positions_modifier.y)
 				# Middle placement is the middle of the viewport height
 				# minus half the height of the container
 				Anchors.RIGHT_MIDDLE, Anchors.LEFT_MIDDLE:

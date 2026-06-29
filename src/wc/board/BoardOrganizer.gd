@@ -37,7 +37,7 @@ func setup(def:Dictionary, hero_id, _scale = 0):
 	my_name = def.get("name", "")
 	my_scale = _scale if _scale else def.get("scale", 1)
 	
-	spacer = Vector2(50,50) * cfc.screen_scale
+	spacer = Vector2(50,50) *  cfc.hardcoded_positions_modifier.x
 	
 	box_type = string_to_box_type(def.get("type", "horizontal"))
 	var x = def.get("x", 0)

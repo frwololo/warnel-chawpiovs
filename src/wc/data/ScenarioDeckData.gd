@@ -352,14 +352,14 @@ func setup_grid():
 			spacing = 0
 			villain_space = 70
 		var villain_x = grid_setup["villain"]["x"]
-		var displacement = villain_space * (count_villains -1) * cfc.screen_scale.x
+		var displacement = villain_space * (count_villains -1) *  cfc.hardcoded_positions_modifier.x
 		for key in grid_setup: 
 			if grid_setup[key].has("x"):
 				#if it's on the left we don't move it
 				if grid_setup[key]["x"] <= villain_x:
 					continue
 				#we don't want to push stuff outside of the screen
-				if grid_setup[key]["x"] + displacement > cfc.screen_resolution.x - ((villain_space + spacing) * cfc.screen_scale.x):
+				if grid_setup[key]["x"] + displacement > cfc.screen_resolution.x - ((villain_space + spacing) *  cfc.hardcoded_positions_modifier.x):
 					pass
 				else:
 					grid_setup[key]["x"] += displacement	
@@ -391,10 +391,10 @@ func setup_grid():
 		for key in grid_setup: 
 			if grid_setup[key].has("x"):
 				#we don't want to push stuff outside of the screen
-				if grid_setup[key]["x"] > cfc.screen_resolution.x - ((villain_space + spacing) * cfc.screen_scale.x):
+				if grid_setup[key]["x"] > cfc.screen_resolution.x - ((villain_space + spacing) *  cfc.hardcoded_positions_modifier.x):
 					pass
 				else:
-					grid_setup[key]["x"] += spacing * cfc.screen_scale.x
+					grid_setup[key]["x"] += spacing *  cfc.hardcoded_positions_modifier.x
 		grid_setup[name] = {
 			"x" : x,
 			"y" : y,

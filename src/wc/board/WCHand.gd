@@ -5,7 +5,7 @@ func _ready() -> void:
 	# warning-ignore:return_value_discarded
 	$Control/ManipulationButtons/DiscardRandom.connect("pressed",self,'_on_DiscardRandom_Button_pressed')
 	excess_cards = ExcessCardsBehaviour.ALLOW
-	card_size = card_size * cfc.screen_scale
+	card_size = card_size * cfc.hardcoded_positions_modifier
 
 	scripting_bus.connect("card_moved_to_hand", self, "_on_card_moved")
 	scripting_bus.connect("card_moved_to_board", self, "_on_card_moved")
@@ -82,12 +82,12 @@ func re_place() -> void:
 			expected_size_x = max(expected_size_x, view_size.x/3)
 		expected_size_x = min (view_size.x/2, expected_size_x)
 		set_control_size(expected_size_x, card_size.y)
-		position.x = 100 * cfc.screen_scale.x
+		position.x = 100 * cfc.hardcoded_positions_modifier.x
 	
 	else:
 		#hand's position depends on ghosthand 
 		var offset = calculate_others_offset()
-		var offset_right = Vector2(200,0) * cfc.screen_scale
+		var offset_right = Vector2(200,0) *  cfc.hardcoded_positions_modifier
 		var control_size = view_size - offset_right  - offset
 		position.x = offset.x
 		set_control_size(control_size.x, card_size.y)

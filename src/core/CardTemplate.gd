@@ -352,7 +352,7 @@ func _ready() -> void:
 	_class_specific_ready()
 	var settings_focused_scale = cfc.game_settings.get("gui_card_focused_scale", 0)
 	if settings_focused_scale:
-		focused_scale = settings_focused_scale #* cfc.screen_scale.x
+		focused_scale = settings_focused_scale * cfc.hardcoded_positions_modifier.x
 
 func get_card_back():
 	if !card_back:
@@ -1878,9 +1878,9 @@ func reposition_as_attachment(do_rotation = true):
 	var attach_index = current_host_card.attachments.find(self)
 	_set_target_position((current_host_card.global_position
 			+ Vector2(
-			(attach_index + 1) * card_size.x * offset_multiplier * cfc.screen_scale.x
+			(attach_index + 1) * card_size.x * offset_multiplier *  cfc.hardcoded_positions_modifier.x
 			* CFConst.ATTACHMENT_OFFSET[current_host_card.attachment_offset].x,
-			(attach_index + 1)* card_size.y * offset_multiplier *cfc.screen_scale.y
+			(attach_index + 1)* card_size.y * offset_multiplier * cfc.hardcoded_positions_modifier.y
 			* CFConst.ATTACHMENT_OFFSET[current_host_card.attachment_offset].y)))	
 
 	if do_rotation:
@@ -2278,12 +2278,6 @@ func _organize_attachments() -> void:
 			if not card.get_node('Tween').is_active() and \
 					card.state in \
 					[CardState.ON_PLAY_BOARD,CardState.FOCUSED_ON_BOARD]:
-#				card._set_target_position(global_position + \
-#						Vector2(
-#						(attach_index + 1) * card_size.x
-#						* CFConst.ATTACHMENT_OFFSET[attachment_offset].x * cfc.screen_scale.x,
-#						(attach_index + 1) * card_size.y \
-#						* CFConst.ATTACHMENT_OFFSET[attachment_offset].y * cfc.screen_scale.y))
 				card.reposition_as_attachment(false)
 
 # Returns the global mouse position but ensures it does not exit the

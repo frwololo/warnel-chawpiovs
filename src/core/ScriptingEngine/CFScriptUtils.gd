@@ -42,11 +42,15 @@ static func game_has_script_alterants(trigger):
 		return {}
 	return _alteration_super_cache["script_alterants"].get(trigger, {})
 
-static func init_alterants_super_cache():
+static func reset_alterants_super_cache():
 	_alteration_super_cache["properties"] = {}
 	_alteration_super_cache["wildcard_properties"] = {}
 	_alteration_super_cache["container_names"] = []
 	_alteration_super_cache["script_alterants"] = {}
+	_alteration_super_cache["initialized"] = false
+	
+static func init_alterants_super_cache():
+	reset_alterants_super_cache()
 		
 	var scriptables_array :Array =\
 		cfc.get_tree().get_nodes_in_group("scriptables")
@@ -109,6 +113,9 @@ static func get_altered_value(
 #	var fn = "CFScriptUtils.get_altered_value"
 #	var fn_uncached = fn + " uncached"
 #	cfc.start_performance_tick(fn)
+
+#	if task_properties.get("property_name", "") == "health" and !_owner.is_faceup:
+#		var _tmp = 1
 
 	var property_name = task_properties.get(SP.KEY_PROPERTY_NAME, "")
 	var preloaded_objs = []
@@ -173,7 +180,7 @@ static func get_altered_value(
 			unique[key] = true
 		scriptables_array = unique.keys()
 
-#		if task_properties.get("property_name", "") == "thwart" and _owner.get_property("shortname", "") == "Rocket Raccoon":
+#		if task_properties.get("property_name", "") == "health" and !_owner.is_faceup:
 #			var _tmp = 1
 		
 		for obj in scriptables_array:

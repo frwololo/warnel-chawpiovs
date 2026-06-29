@@ -116,7 +116,7 @@ func _on_Menu_resized() -> void:
 	resize()
 	
 func resize():
-	self.rect_scale = cfc.screen_scale
+	self.rect_scale =  cfc.hardcoded_positions_modifier
 
 func register_self(info):
 	var id = cfc.get_network_unique_id()

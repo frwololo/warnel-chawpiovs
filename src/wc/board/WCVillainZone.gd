@@ -153,7 +153,7 @@ func init_scenario_villains():
 	#creating the appropriate number of slots for villains in the scenario
 	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid("villain")
 	if grid:
-		grid.set_h_separation(grid_spacer * cfc.screen_scale.x)
+		grid.set_h_separation(grid_spacer *  cfc.hardcoded_positions_modifier.x)
 		if grid.get_slot_count() != count_villains:
 			grid.delete_all_slots_but_one()
 			for i in count_villains-1:

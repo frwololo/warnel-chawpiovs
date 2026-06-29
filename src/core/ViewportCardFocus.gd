@@ -32,14 +32,37 @@ var vbc_position_mode = true
 var show_card_focus = true
 
 func _process(delta:float):
+#	display_debug_info()
+	pass
+
+func display_debug_info():
+	if !OS.has_feature("debug"):
+		return
+
+	var debug_node = get_node_or_null("Debug")	
+	
+	if !cfc._debug:
+		if debug_node:
+			debug_node.visible = false
+		return
+	
+
+	if !debug_node:
+		debug_node = Label.new()
+		debug_node.name = "Debug"
+		debug_node.rect_position = Vector2(0, 200)
+		add_child(debug_node)
+		
 	var result =""
 	var vsize = get_tree().get_root().size
 	var mouse_pos = get_global_mouse_position()
+	var hand_pos = cfc.NMAP["hand1"].global_position
 	result += "viewport size:" + str(vsize.x) + "x" + str(vsize.y) + "\n"
 	result += "cfc.screenscale" + str(cfc.screen_scale.x) + "x" + str(cfc.screen_scale.x) + "\n"
 	result += "cfc.hardcoded_pos_modifier" + str(cfc.hardcoded_positions_modifier.x) + "x" + str(cfc.hardcoded_positions_modifier.x) + "\n"	
 	result += "mouse position" + str(mouse_pos.x) + "x" + str(mouse_pos.y) + "\n"
-	$Debug.text = result
+	result += "hand_position" + str(hand_pos.x) + "x" + str(hand_pos.y) + "\n"
+	debug_node.text = result
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

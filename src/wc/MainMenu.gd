@@ -63,7 +63,7 @@ func _ready() -> void:
 	_loading_text_prefix = "Loading Card Definitions - "
 	v_folder_label.text = _loading_text_prefix
 	main_title.text = "LOADING..."
-	get_node("%VersionLabel").text = "v. " + CFConst.VERSION
+	get_node("%VersionLabel").text = "v. " + CFConst.GAME_VERSION
 		
 	self.connect("one_download_completed", self, "_one_download_completed")
 	self.connect("sets_download_completed", self, "_sets_download_completed")	
@@ -197,7 +197,7 @@ func _all_downloads_completed():
 #	texture_rect.get_parent().rect_min_size = texture_rect.rect_size * texture_rect.rect_scale
 #	texture_rect.get_parent().rect_size = texture_rect.rect_size * texture_rect.rect_scale
 	cfc.all_loaded = true
-	get_node("%VersionLabel").text = "v. " + CFConst.VERSION + " (" + str(cfc.count_unique_cards()) +" cards)"
+	get_node("%VersionLabel").text = "v. " + CFConst.GAME_VERSION + " (" + str(cfc.count_unique_cards()) +" cards)"
 	gameData.play_music("menu")
 	check_for_new_release()
 	
@@ -239,7 +239,7 @@ func _version_check_completed(result, response_code, headers, body):
 	
 	if latest_release_data:
 		var version = latest_release_data.get("tag_name", "")
-		var is_newer = cfc.v1_newer_than_v2(version, CFConst.VERSION)
+		var is_newer = cfc.v1_newer_than_v2(version, CFConst.GAME_VERSION)
 		if is_newer:
 			message_newer_version_available(version)
 

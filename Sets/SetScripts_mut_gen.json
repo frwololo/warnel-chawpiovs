@@ -4155,7 +4155,7 @@
 		}
 	},
 	"Powerful Punch": {
-		"interrupt_enemy_attack": {
+		"interrupt_enemy_initiates_attack": {
 			"is_optional_hand": true,
 			"hand": [
 				{
@@ -4166,7 +4166,7 @@
 					]
 				},
 				{
-					"name": "deal_damage",
+					"name": "attack",
 					"amount": 4,
 					"subject": "trigger"
 				}

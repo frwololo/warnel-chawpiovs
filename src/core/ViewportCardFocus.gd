@@ -31,7 +31,7 @@ var vbc_rect_offset:= Vector2(0,0)
 var vbc_position_mode = true
 var show_card_focus = true
 
-func _process(delta:float):
+func _process(_delta:float):
 #	display_debug_info()
 	pass
 

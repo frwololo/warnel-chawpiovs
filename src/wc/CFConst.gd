@@ -57,10 +57,7 @@ enum ShuffleStyle {
 	SNAP,
 	OVERHAND,
 }
-# This is used to know when to refresh the font size cache, but you can use it
-# for other purposes as well.
-# If you never adjust this, the font cache might start growing too large.
-const GAME_VERSION := "1.0.0"
+
 # The card size you want your  cards to have.
 # This will also adjust all CardContainers to match
 # If you modify this property, you **must** adjust
@@ -1129,7 +1126,8 @@ const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 const SCRIPT_BREAKPOINT_CARD_NAME := "Gamora"
 const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_played"
 
-const VERSION := "1.4.1"
+
+const GAME_VERSION := "1.5.0"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
 const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 

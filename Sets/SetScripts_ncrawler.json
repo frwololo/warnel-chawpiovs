@@ -379,7 +379,7 @@
 	},
 	"Change of Fortune": {
 		"give_to_player_max1": {},
-		"card_dies": {
+		"response_card_defeated": {
 			"filter_state_trigger": [
 				{
 					"filter_group": "group_enemies"
@@ -1114,7 +1114,7 @@
 		}
 	},
 	"Powerful Punch": {
-		"interrupt_enemy_attack": {
+		"interrupt_enemy_initiates_attack": {
 			"is_optional_hand": true,
 			"hand": [
 				{
@@ -1125,7 +1125,7 @@
 					]
 				},
 				{
-					"name": "deal_damage",
+					"name": "attack",
 					"amount": 4,
 					"subject": "trigger"
 				}
@@ -1153,6 +1153,11 @@
 				}
 			],
 			"board": [
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},			
 				{
 					"name": "add_resource",
 					"amount": 1,

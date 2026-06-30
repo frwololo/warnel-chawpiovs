@@ -180,8 +180,6 @@ func _process(delta:float):
 	large_picture.rect_rotation = _preview_rotation
 
 func resize():
-	var stretch_mode = cfc.get_screen_stretch_mode()
-
 	var screen_size = get_viewport().size/cfc.screen_scale
 	var scenario_picture:TextureRect = get_node("%ScenarioTexture") 
 	if screen_size.x > 1800:

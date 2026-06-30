@@ -4702,6 +4702,9 @@
 	},
 	"Rocket Raccoon #16029a": {
 		"card_damaged": {
+			"filter_state_trigger": [{
+				"filter_group": "group_enemies"
+			}],
 			"event_filters": {
 				"attacker": "self",
 				"excess_damage": ">0"
@@ -5106,6 +5109,7 @@
 					"subject_count": "all",
 					"needs_selection": true,
 					"selection_count": 1,
+					"selection_type": "equal",
 					"filter_state_tutor": [
 						{
 							"filter_properties": {

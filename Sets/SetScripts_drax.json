@@ -600,7 +600,7 @@
 								]
 							},
 							"trigger": "my_hero",
-							"board": [
+							"all": [
 								{
 									"name": "replacement_effect",
 									"subject": "interrupted_event",

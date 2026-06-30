@@ -1,0 +1,147 @@
+{
+	"_comments": "Tests Nightcrawler Change of Fortune (draw cards when defeating enemy during enemy phase)",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},	
+"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nightcrawler"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"stunned": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Prehensile Tail"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nightcrawler"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra bomber"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Change of Fortune"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Powerful Punch"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Powerful Punch"
+		},
+		{
+			"type": "activate",
+			"value": "Change of Fortune"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nightcrawler"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Hydra bomber"
+				}
+			],
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Genius"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nightcrawler"
+				}
+			],
+			"enemies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Change of Fortune",
+					"exhausted": true
+				}
+			],
+			"deck1": [
+				{
+					"card": "Genius"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				},			
+				{
+					"card": "Powerful Punch"
+				},
+
+			],
+			"hand1": [
+				{
+					"card": "Energy"
+				},			
+				{
+					"card": "Prehensile Tail"
+				},
+
+			]
+		}
+	}
+}

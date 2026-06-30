@@ -62,13 +62,13 @@
 	},
 	"actions": [	
 		{
+			"type": "play",
+			"value": "Powerful Punch"
+		},	
+		{
 			"type": "select",
 			"value": "cancel"
 		},
-		{
-			"type": "play",
-			"value": "Powerful Punch"
-		},		
 		{
 			"type": "other",
 			"value": "wait_for_player_turn"

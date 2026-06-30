@@ -691,7 +691,7 @@
 					"selection_count": 1,
 					"selection_type": "equal",
 					"needs_selection": true,
-					"is_cost": true,
+					"is_cost": true
 				},
 				{
 					"name": "save_variable",
@@ -704,7 +704,7 @@
 						}
 					},
 					"_comments": "remembering the card for damage"
-				}				
+				}
 			]
 		},
 		"alterants": {
@@ -1157,7 +1157,7 @@
 					"name": "exhaust_card",
 					"is_cost": true,
 					"subject": "self"
-				},			
+				},
 				{
 					"name": "add_resource",
 					"amount": 1,

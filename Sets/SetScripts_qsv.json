@@ -828,7 +828,7 @@
 					"subject_count": 1,
 					"subject": "index",
 					"subject_index": "top",
-					"is_cost": true,
+					"is_cost": true
 				},
 				{
 					"name": "increase",
@@ -857,7 +857,7 @@
 					"subject_count": 1,
 					"subject": "index",
 					"subject_index": "top",
-					"is_cost": true,
+					"is_cost": true
 				},
 				{
 					"name": "increase",
@@ -918,7 +918,7 @@
 					"name": "exhaust_card",
 					"subject": "self",
 					"is_cost": true
-				},				
+				},
 				{
 					"name": "shuffle_card_into_container",
 					"subject": "tutor",

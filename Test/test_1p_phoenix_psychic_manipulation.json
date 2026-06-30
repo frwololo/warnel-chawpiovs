@@ -1,0 +1,150 @@
+{
+	"_comments": "Test for Psychic Manipulation (remove threat)",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Phoenix"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Shocker"
+				},
+				{
+					"card": "Stampede"
+				}
+			],
+			"villain": [
+				{
+					"card": "01113"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116b",
+					"tokens": {
+						"threat": 4
+					}
+				},
+			],
+			"deck1": [
+				{
+					"card": "Relentless Assault"
+				},
+				{
+					"card": "Chase Them Down"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "The Power of Aggression"
+				}
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Jean Grey"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Psychic Manipulation"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Phoenix Firebird"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Psychic Manipulation"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Phoenix"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Stampede"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"villain": [
+				{
+					"card": "01113"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116b",
+					"tokens": {
+						"threat": 1
+					}
+				},
+			],
+			"deck1": [
+				{
+					"card": "Relentless Assault"
+				},
+				{
+					"card": "Chase Them Down"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "The Power of Aggression"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Shocker"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Jean Grey"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Phoenix Firebird"
+				},
+				{
+					"card": "Strength"
+				},				
+				{
+					"card": "Psychic Manipulation"
+				}
+			]
+		}
+	}
+}

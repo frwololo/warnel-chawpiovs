@@ -20,10 +20,7 @@
 					"card": "The Island of Dr. Zola"
 				}
 			],
-			"deck1": [
-				{
-					"card": "Vibranium Arrow"
-				},				
+			"deck1": [				
 				{
 					"card": "Ready For Action"
 				},	
@@ -38,7 +35,10 @@
 				},
 				{
 					"card": "Sky Cycle"
-				},							
+				},	
+				{
+					"card": "Vibranium Arrow"
+				},				
 			],
 			"identity1": [
 				{

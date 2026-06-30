@@ -1429,7 +1429,7 @@
 					"subject": "index",
 					"subject_index": "top",
 					"subject_count": 1,
-					"is_cost": true,					
+					"is_cost": true
 				},
 				{
 					"name": "deal_damage",
@@ -1493,7 +1493,7 @@
 					"subject": "index",
 					"subject_index": "top",
 					"subject_count": 1,
-					"is_cost": true,					
+					"is_cost": true
 				},
 				{
 					"name": "deal_damage",
@@ -1557,7 +1557,7 @@
 					"subject": "index",
 					"subject_index": "top",
 					"subject_count": 1,
-					"is_cost": true,
+					"is_cost": true
 				},
 				{
 					"name": "deal_damage",
@@ -3975,7 +3975,7 @@
 					"is_cost": true,
 					"tags": [
 						"hero_action"
-					],
+					]
 				},
 				{
 					"name": "ask_integer",
@@ -6379,7 +6379,7 @@
 					"is_cost": true,
 					"tags": [
 						"hero_interrupt"
-					],
+					]
 				},
 				{
 					"name": "move_card_to_container",
@@ -6575,7 +6575,7 @@
 					"is_cost": true,
 					"tags": [
 						"hero_action"
-					],
+					]
 				},
 				{
 					"name": "move_card_to_container",
@@ -7640,7 +7640,7 @@
 					"is_cost": true,
 					"tags": [
 						"hero_action"
-					],
+					]
 				},
 				{
 					"name": "ask_integer",

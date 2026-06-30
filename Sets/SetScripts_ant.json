@@ -687,7 +687,7 @@
 					"is_cost": true,
 					"tags": [
 						"hero_action"
-					],
+					]
 				},
 				{
 					"name": "mod_tokens",

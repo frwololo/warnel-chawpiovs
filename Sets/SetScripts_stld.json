@@ -186,7 +186,7 @@
 					"is_cost": true,
 					"tags": [
 						"hero_action"
-					],
+					]
 				},
 				{
 					"name": "thwart",
@@ -629,7 +629,7 @@
 					"is_cost": true,
 					"tags": [
 						"hero_action"
-					],
+					]
 				},
 				{
 					"name": "attack",
@@ -738,7 +738,7 @@
 					"is_cost": true,
 					"tags": [
 						"hero_action"
-					],
+					]
 				},
 				{
 					"name": "ready_card",
@@ -1090,7 +1090,7 @@
 					"tags": [
 						"attack"
 					]
-				},				
+				},
 				{
 					"name": "save_variable",
 					"var_name": "my_enemy",
@@ -1146,7 +1146,7 @@
 					"subject": "my_enemy"
 				}
 			]
-		}				
+		}
 	},
 	"Sliding Shot": {
 		"manual": {

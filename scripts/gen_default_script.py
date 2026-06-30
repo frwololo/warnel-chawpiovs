@@ -84,7 +84,7 @@ def get_base_json(card_data):
       location = "hand"
 
     
-    if primitive in ['<b>hero action', '<b>alter-ego action', '<b>action']:
+    if primitive in ['<b>hero action', '<b>alter-ego action', '<b>action', 'uses (', 'exhaust ']:
       if not "manual" in result:
         result["manual"] = {}
       if not location in result["manual"]:
@@ -218,7 +218,7 @@ def get_base_json(card_data):
 	  }         
       )
 
-     if primitive == 'exhaust ':
+    if primitive == 'exhaust ':
       result["manual"][location].append(
 	  {
 	    "name": "exhaust_card",

@@ -6620,7 +6620,7 @@
 					"sort_descending": true,
 					"subject_count": 3,
 					"up_to": true,
-					"src_container": "deck_villain",
+					"src_container": "deck_villain"
 				},
 				{
 					"name": "deal_damage",

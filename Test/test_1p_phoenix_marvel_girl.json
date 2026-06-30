@@ -1,0 +1,160 @@
+{
+	"_comments": "Test for Marvel Girl (remove threat)",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Phoenix"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker"
+				},
+				{
+					"card": "Stampede"
+				}
+			],
+			"villain": [
+				{
+					"card": "01113"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116b",
+					"tokens": {
+						"threat": 3
+					}
+				},
+				{
+					"card": "01126",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Relentless Assault"
+				},
+				{
+					"card": "Chase Them Down"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "The Power of Aggression"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Phoenix"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Marvel Girl"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Marvel Girl"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Hydra Regular"
+		},
+		{
+			"type": "activate",
+			"value": "Marvel Girl"
+		},		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Phoenix"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker"
+				},
+				{
+					"card": "Stampede"
+				}
+			],
+			"villain": [
+				{
+					"card": "01113"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116b",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "01126",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Relentless Assault"
+				},
+				{
+					"card": "Chase Them Down"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "The Power of Aggression"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Phoenix"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Marvel Girl"
+				}
+			]
+		}
+	}
+}

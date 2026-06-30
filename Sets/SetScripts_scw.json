@@ -57,14 +57,6 @@
 					"tags": [
 						"hero_action"
 					],
-					"constraints": [
-						{
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "mystic"
-							}
-						}
-					]
 				},
 				{
 					"name": "attack",
@@ -838,7 +830,7 @@
 				"func_params": {
 					"token_name": "__chaos_control"
 				}
-			},			
+			},
 			"board": {
 				"_rules": {
 					"choice_msg_suffix": [
@@ -1131,11 +1123,11 @@
 				},
 				{
 					"name": "sequence",
-					"sequence_ability": "do_discard",
-				},				
+					"sequence_ability": "do_discard"
+				}
 			]
 		},
-		"do_discard":{
+		"do_discard": {
 			"all": [
 				{
 					"name": "discard",
@@ -1168,7 +1160,7 @@
 					"name": "sequence",
 					"sequence_ability": "post_scheme_attack",
 					"subject": "self",
-					"delay_until_no_activity": true,
+					"delay_until_no_activity": true
 				}
 			]
 		},

@@ -861,12 +861,12 @@
 					"name": "sequence",
 					"sequence_ability": "discard_and_count",
 					"subject": "self",
-					"count": "count_players",
+					"count": "count_players"
 				},
 				{
 					"name": "sequence",
 					"sequence_ability": "do_threat",
-					"subject": "self",
+					"subject": "self"
 				}
 			]
 		},
@@ -1726,12 +1726,12 @@
 							"property": "attack",
 							"subject": "villain"
 						}
-					},
+					}
 				},
 				{
 					"name": "sequence",
 					"sequence_ability": "do_damage",
-					"subject": "self",
+					"subject": "self"
 				}
 			]
 		},
@@ -2052,7 +2052,7 @@
 				{
 					"name": "host_card",
 					"subject": "tutor",
-					"subject_index": "top",
+					"sort_descending": true,
 					"subject_count": 5,
 					"up_to": true,
 					"src_container": "deck",

@@ -295,10 +295,15 @@ static func check_max_per_hero(target_card, max_value, owner_card) -> bool:
 #checks if target_card already hosts equal_or_more than max_value a card named like owner_card
 static func check_max_per_host(target_card, max_value, owner_card) -> bool:
 	var attachments = target_card.attachments
+	var is_training_restriction = owner_card.get_property("trait_training", 0, true)
 	var count = 0
 	for card in attachments:
-		if card.get_unique_name() == owner_card.get_unique_name():
-			count+=1
+		if is_training_restriction:
+			if card.get_property("trait_training", 0, true):
+				count+=1
+		else:
+			if card.get_unique_name() == owner_card.get_unique_name():
+				count+=1
 	if count >= max_value:
 		return false
 	return true

@@ -212,7 +212,7 @@
 						"modification": -1,
 						"token_name": "_ready",
 						"is_cost": true
-					},				
+					},
 					{
 						"name": "move_card_to_container",
 						"dest_container": "discard",
@@ -227,8 +227,8 @@
 					{
 						"name": "ready_card",
 						"subject": "self",
-						"is_cost": true,
-					}	
+						"is_cost": true
+					}
 				]
 			}
 		}
@@ -653,7 +653,7 @@
 					"filter_state_subject": [
 						{
 							"filter_group": "group_friendly",
-							"filter_max_per_host" : 1
+							"filter_max_per_host": 1
 						}
 					]
 				}

@@ -1,0 +1,1342 @@
+{
+	"Banshee - Sean Cassidy": {
+		"thwart_happened": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "target",
+					"modification": 1,
+					"token_name": "confused",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Burning Hunger": {
+		"give_obligation": {
+			"__to__": "Jean Grey"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "identity_has_trait",
+								"func_params": {
+									"trait": "unleashed"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "reveal_encounter",
+									"subject": "tutor",
+									"ssrc_container": [
+										"deck_villain",
+										"discard_villain",
+										"set_aside"
+									],
+									"filter_state_tutor": [
+										{
+											"filter_properties": {
+												"shortname": "Dark Phoenix"
+											}
+										}
+									]
+								},
+								{
+									"name": "move_card_to_container",
+									"dest_container": "removed_from_game",
+									"subject": "self"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "identity_has_trait",
+								"func_params": {
+									"trait": "restrained"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "power",
+									"subject": "Phoenix Force",
+									"modification": -1
+								},
+								{
+									"name": "surge"
+								},
+								{
+									"name": "discard",
+									"subject": "self"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Cerebro": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "hand",
+					"subject": "tutor",
+					"sort_descending": true,
+					"subject_count": 5,
+					"up_to": true,
+					"src_container": "deck",
+					"selection_count": 1,
+					"selection_type": "max",
+					"needs_selection": true,
+					"selection_show_cards_with_zero_value": true,
+					"selection_what_to_count": {
+						"func_name": "check_validity",
+						"func_params": {
+							"filter_state_trigger": [
+								{
+									"filter_properties": {
+										"type_code": "ally"
+									},
+									"filter_properties2": {
+										"trait_x-men": 1
+									}
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Consume the World": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme_amplify",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "count_tokens==0",
+						"func_params": {
+							"subject": "self",
+							"token_name": "threat"
+						}
+					},
+					"alteration_multiplier": -1
+				}
+			]
+		},
+		"card_token_modified": {
+			"filter_count_difference": "increased",
+			"filter_token_name": "threat",
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "count_tokens>=12",
+				"func_params": {
+					"subject": "self",
+					"token_name": "threat"
+				}
+			},
+			"board": [
+				{
+					"name": "defeat"
+				}
+			]
+		}
+	},
+	"Cyclops - Scott Summers": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "power",
+					"subject": "Phoenix Force",
+					"modification": 2
+				}
+			]
+		},
+		"card_leaves_play": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "power",
+					"subject": "Phoenix Force",
+					"modification": -2
+				}
+			]
+		}
+	},
+	"Dark Phoenix": {
+		"interrupt_add_threat": {
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "card_is_in_play",
+				"func_params": {
+					"card_name": "Consume the World"
+				}
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"subject": "Consume the World"
+					}
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor",
+					"ssrc_container": [
+						"deck_villain",
+						"discard_villain",
+						"set_aside"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Dark Phoenix"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Down Time": {
+		"give_to_player_max1": {},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "recover",
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"alteration": 2
+				}
+			]
+		}
+	},
+	"Fiery Rage": {
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "card_is_in_play",
+								"func_params": {
+									"card_name": "Dark Phoenix"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_activates_against_you",
+									"is_cost": true,
+									"subject": "Dark Phoenix"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "add_threat",
+							"amount": 1,
+							"subject": "Consume the World"
+						},
+						{
+							"name": "surge"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Jean Grey": {
+		"additional_cards_set_aside": [
+			{
+				"card": "Phoenix Force #34002b"
+			}
+		],
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"code": "34002a"
+							}
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "previous",
+					"modification": 4,
+					"token_name": "power"
+				}
+			]
+		},
+		"recovery_happened": {
+			"trigger": "my_identity",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "Phoenix Force",
+					"modification": 1,
+					"token_name": "power"
+				}
+			]
+		}
+	},
+	"Marvel Girl - Rachel Summers": {
+		"interrupt_attack_started": {
+			"trigger": "self",
+			"event_filters": {
+				"filter_state_event_target": [
+					{
+						"filter_properties": {
+							"type_code": "minion"
+						}
+					}
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "remove_threat",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "trigger_details_target",
+							"property": "scheme"
+						}
+					},
+					"subject": "main_scheme"
+				}
+			]
+		}
+	},
+	"Mental Paralysis": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "target",
+					"is_cost": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_elite": 0
+							}
+						}
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_activate",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"identity_changed_form": {
+			"trigger": "my_identity",
+			"event_filters": {
+				"after": "alter_ego"
+			},
+			"board": [
+				{
+					"name": "discard",
+					"subjec": "self"
+				}
+			]
+		}
+	},
+	"Mind Control": {
+		"manual": {
+			"hand": [
+				{
+					"name": "attach_to_card",
+					"subject": "target",
+					"is_cost": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_elite": 0
+							}
+						}
+					]
+				}
+			]
+		},
+		"card_attached": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"tags": [
+						"facedown",
+						"Init"
+					],
+					"set_properties": {
+						"type_code": "ally",
+						"shortname": "Controlled",
+						"trait_controlled": 1,
+						"attack": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "attack",
+								"subject": "host"
+							}
+						},
+						"thwart": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "scheme",
+								"subject": "host"
+							}
+						},
+						"health": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "health",
+								"subject": "host"
+							}
+						},
+						"attack_cost": 1,
+						"thwart_cost": 1
+					},
+					"subject": "host"
+				}
+			]
+		}
+	},
+	"Mission Training": {
+		"manual": {
+			"hand": [
+				{
+					"name": "attach_to_card",
+					"subject": "target",
+					"is_cost": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_allies",
+							"filter_properties": {
+								"trait_x-men": 1,
+								"comparison": "ge"
+							},
+							"filter_max_per_host": 1
+						}
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"trigger": "host",
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "host",
+					"alteration": 2
+				}
+			]
+		}
+	},
+	"Mutant Peacekeepers": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_needed": true,
+					"selection_optional": true,
+					"selection_type": "min",
+					"selection_count": 1,
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero",
+							"filter_properties": {
+								"trait_x-men": 1,
+								"comparison": "ge"
+							},
+							"filter_is_exhausted": false
+						}
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "all_previous",
+							"property": "thwart"
+						}
+					},
+					"selection_type": "as_much_as_possible",
+					"selection_what_to_count": "remove_threat",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Passion for Justice": {
+		"interrupt_remove_threat": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "event"
+					},
+					"filter_properties2": {
+						"trait_thwart": 1
+					}
+				}
+			],
+			"condition_all": {
+				"func_name": "paid_with_includes",
+				"func_params": {
+					"subject": "trigger",
+					"filter_state_source": [
+						{
+							"is_script_owner": true
+						}
+					]
+				}
+			},
+			"all": [
+				{
+					"name": "increase",
+					"subject": "interruptd_event",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Phoenix": {
+		"once_per_phase": {
+			"__name__": "__psionic_bond"
+		},
+		"resource": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_resource"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"modification": -1,
+					"token_name": "__psionic_bond",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Phoenix Firebird": {
+		"manual": {
+			"hand": {
+				"Ready Phoenix": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "power",
+						"subject": "Phoenix Force",
+						"modification": -1,
+						"is_cost": true
+					},
+					{
+						"name": "ready_card",
+						"subject": "my_hero",
+						"is_cost": true
+					}
+				],
+				"Add Power Counters": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "power",
+						"subject": "Phoenix Force",
+						"modification": 2
+					}
+				]
+			}
+		}
+	},
+	"Phoenix Force #34002a": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_restrained",
+					"trigger": "my_identity",
+					"alteration": 1
+				}
+			]
+		},
+		"card_token_modified": {
+			"filter_count_difference": "decreased",
+			"filter_token_name": "power",
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "count_tokens==0",
+				"func_params": {
+					"subject": "self",
+					"token_name": "power"
+				}
+			},
+			"board": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Phoenix Force #34002b": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_unleashed",
+					"trigger": "my_identity",
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"trigger": "my_identity",
+					"alteration": -2
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "my_identity",
+					"alteration": 2
+				}
+			]
+		},
+		"card_token_modified": {
+			"filter_count_difference": "increased",
+			"filter_token_name": "power",
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "count_tokens>=4",
+				"func_params": {
+					"subject": "self",
+					"token_name": "power"
+				}
+			},
+			"board": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Phoenix Suit": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_aerial",
+					"trigger": "Phoenix",
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "steady",
+					"trigger": "my_identity",
+					"alteration": {
+						"func_name": "identity_has_trait",
+						"func_params": {
+							"trait": "restrained"
+						}
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "my_identity",
+					"alteration": {
+						"func_name": "identity_has_trait",
+						"func_params": {
+							"trait": "unleashed"
+						}
+					}
+				}
+			]
+		}
+	},
+	"Psychic Assault": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 3,
+					"subject": "an_enemy"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"subject": "previous",
+					"token_name": "confused"
+				}
+			]
+		}
+	},
+	"Psychic Blast": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 4,
+					"subject": "villain"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "identity_has_trait",
+								"func_params": {
+									"trait": "unleashed"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "deal_damage",
+									"amount": 4,
+									"subject": "boardseek",
+									"subject_count": "all",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_enemies_my_hero"
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Psychic Kicker": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_ally",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": {
+						"trigger": [
+							"attack_happened",
+							"thwart_happened"
+						]
+					},
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"trigger": "my_ally",
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"alteration": 2
+								},
+								{
+									"trigger": "my_ally",
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"alteration": 2
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Psychic Manipulation": {
+		"interrupt_commit_scheme": {
+			"trigger": "villain",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "replacement_effect",
+					"replacements": {
+						"amount_multiplier": -1
+					},
+					"subject": "interrupted_event"
+				}
+			]
+		}
+	},
+	"Psychic Misdirection": {
+		"interrupt_enemy_attack": {
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filer_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "replacement_effect",
+					"replacements": {
+						"subject": "previous"
+					},
+					"subject": "interrupted_event"
+				}
+			]
+		}
+	},
+	"Psychic Rapport": {
+		"manual": {
+			"hand": {
+				"Return Cyclops Card to Hand": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						],
+						"team_up": [
+							"Cyclops",
+							"Phoenix"
+						]
+					},
+					{
+						"name": "ready_card",
+						"subject": "Cyclops"
+					},
+					{
+						"name": "ready_card",
+						"subject": "Phoenix"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "hand",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "discard",
+						"needs_selection": true,
+						"selection_optional": true,
+						"selection_count": 1,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"card_set_code": "cyclops"
+								}
+							}
+						]
+					}
+				],
+				"2 Power counters on Phoenix Force": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						],
+						"team_up": [
+							"Cyclops",
+							"Phoenix"
+						]
+					},
+					{
+						"name": "ready_card",
+						"subject": "Cyclops"
+					},
+					{
+						"name": "ready_card",
+						"subject": "Phoenix"
+					},
+					{
+						"name": "mod_tokens",
+						"modification": 2,
+						"subject": "Phoenix Force",
+						"token_name": "power"
+					}
+				]
+			}
+		}
+	},
+	"Rise from the Ashes": {
+		"interrupt_card_dies": {
+			"trigger": "my_identity",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "my_identity",
+					"token_name": "damage",
+					"modification": 0,
+					"set_to_mod": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_identity"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "Phoenix Force",
+					"token_name": "power",
+					"modification": 0,
+					"set_to_mod": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "removed_from_game",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Soul Sisters": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"team_up": [
+						"Storm",
+						"Phoenix"
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "Storm"
+				},
+				{
+					"name": "ready_card",
+					"subject": "Phoenix"
+				},
+				{
+					"name": "heal",
+					"amount": 2,
+					"subject": "Storm"
+				},
+				{
+					"name": "heal",
+					"amount": 2,
+					"subject": "Phoenix"
+				}
+			]
+		}
+	},
+	"Storm - Ororo Munroe": {
+		"alterants": {
+			"hand": [
+				{
+					"trigger": "self",
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": {
+						"func_name": "identity_has_trait",
+						"func_params": {
+							"trait": [
+								"x-men",
+								"mutant"
+							],
+							"multiplier": -1
+						}
+					}
+				}
+			]
+		},
+		"interrupt_remove_threat": {
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "move_token_to",
+					"token_name": "threat",
+					"amount": 2,
+					"source": "trigger_details_target",
+					"subject": "a_scheme"
+				}
+			]
+		}
+	},
+	"Swift Retribution": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "enemy_schemes",
+					"subject": "villain"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "post_scheme_attack",
+					"subject": "self",
+					"delay_until_no_activity": true
+				}
+			]
+		},
+		"post_scheme_attack": {
+			"all": [
+				{
+					"name": "attack",
+					"amount": 4,
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Telekinetic Attack": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 7,
+					"subject": "an_enemy",
+					"plus_amount": {
+						"if": {
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "unleashed"
+							}
+						},
+						"then": 2,
+						"else": 0
+					},
+					"tags": {
+						"if": {
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "unleashed"
+							}
+						},
+						"then": [
+							"overkill"
+						],
+						"else": []
+					}
+				}
+			]
+		}
+	},
+	"Telekinetic Shield": {
+		"manual": {
+			"hand": [
+				{
+					"name": "attach_to_card",
+					"subject": "target",
+					"is_cost": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							},
+							"filter_max_per_host": 1
+						}
+					]
+				}
+			]
+		},
+		"card_attached": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "modify_properties",
+					"tags": [
+						"Init"
+					],
+					"subject": "self",
+					"set_properties": {
+						"health": 5
+					}
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "host"
+			},
+			"board": [
+				{
+					"name": "deal_damage",
+					"subject": "self",
+					"amount": "trigger_details_amount"
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			]
+		}
+	},
+	"Telepathic Trickery": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 4,
+					"subject": "a_scheme"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "identity_has_trait",
+								"func_params": {
+									"trait": "unleashed"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"modification": 1,
+									"token_name": "stunned",
+									"subject": "an_enemy"
+								},
+								{
+									"name": "mod_tokens",
+									"modification": 1,
+									"token_name": "confused",
+									"subject": "previous"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"White Hot Room": {
+		"manual": {
+			"board": {
+				"Power counter": [
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "power",
+						"subject": "Phoenix Force",
+						"modification": 1
+					}
+				],
+				"Heal": [
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "heal",
+						"amount": 2,
+						"subject": "my_identity"
+					}
+				]
+			}
+		}
+	}
+}

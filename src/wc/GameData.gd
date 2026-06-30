@@ -1088,6 +1088,7 @@ func pre_attack_interrupts_done():
 	display_debug("pre attack interrupts are done, OK to start attack")	
 	_current_enemy_attack_step = EnemyAttackStatus.OK_TO_START_ATTACK
 
+#activation_type accepted values: activate, attack, scheme
 func add_enemy_activation(enemy, activation_type:String = "attack", script = null, target_id = 0):
 	attackers.append({"subject":enemy, "type": activation_type, "script" : script, "target_id" : target_id})
 	return CFConst.ReturnCode.CHANGED
@@ -1237,6 +1238,10 @@ func enemy_activates() :
 	if !enemy.is_onboard():
 		current_enemy_finished()
 		return	
+
+	if enemy.get_property("cannot_activate", 0, true):
+		current_enemy_finished()
+		return		
 
 	match _current_enemy_attack_step:
 		EnemyAttackStatus.NONE:	

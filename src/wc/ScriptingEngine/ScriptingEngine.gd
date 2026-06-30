@@ -1568,6 +1568,30 @@ func enemy_attacks_you(script: ScriptTask) -> int:
 		retcode = gameData.add_enemy_activation(card, "attack", script, target_id)
 	return retcode
 
+func enemy_activates_against_you(script: ScriptTask) -> int:
+	var retcode = CFConst.ReturnCode.FAILED
+
+	#here we try to predict if the attack will actually happen, but we'll need something better,
+	#signal based... (e.g. for Titania's Fury
+	if (costs_dry_run()):
+		if !script.subjects:
+			return CFConst.ReturnCode.FAILED
+		var target_hero = _get_identity_from_script(script)
+		for card in script.subjects:
+			if target_hero.is_hero_form():
+				if (card.can_attack() and !card.is_stunned()):
+					retcode = CFConst.ReturnCode.CHANGED
+			else:
+				if (!card.is_confused()):
+					retcode = CFConst.ReturnCode.CHANGED				
+		return retcode	
+
+	var target_id = get_hero_id_from_script(script)
+
+	for card in script.subjects:
+		retcode = gameData.add_enemy_activation(card, "activate", script, target_id)
+	return retcode
+
 func character_attacks_you(script: ScriptTask) -> int:
 	var retcode = CFConst.ReturnCode.FAILED
 
@@ -2181,13 +2205,21 @@ func enemy_scheme_threat(_script: ScriptTask) -> int:
 	if !scheme_amount:
 		return CFConst.ReturnCode.OK
 	
+	#psychic manipulation converts a "add threat" into "remove threat"
+	if script.script_definition.has("amount_multiplier"):
+		var multiplier = script.retrieve_integer_property("amount_multiplier", 0)
+		scheme_amount *= multiplier	
+		
 	if costs_dry_run():
 		return retcode
 		
 	var script_modifications = {
 		"additional_tags" : ["scheme", "Scripted"],
 	}
-	_add_receive_threat_on_stack (scheme_amount, script, script_modifications)
+	if scheme_amount >=0:
+		_add_receive_threat_on_stack (scheme_amount, script, script_modifications)
+	else:
+		_add_remove_threat_on_stack (-scheme_amount, script, script_modifications)
 	attacker.set_activity_script(null)
 	
 	return retcode
@@ -3028,7 +3060,7 @@ func constraints(script: ScriptTask) -> int:
 				#my hero as defender if no other defender is set yet
 				var defender = gameData.get_attack_defender()
 				if defender and defender.get_controller_hero_id() != my_hero_id:
-					return 	CFConst.ReturnCode.FAILED
+					return 	CFConst.ReturnCode.FAILED			
 					
 		for trait in ["attack", "defense", "thwart"]:
 			if tag == trait + "_ability":			

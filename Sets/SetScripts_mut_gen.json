@@ -3227,7 +3227,7 @@
 				{
 					"name": "declare_defender",
 					"subject": "previous",
-					"exhaust_defenders": true,
+					"exhaust_defenders": true
 				}
 			]
 		}
@@ -3652,7 +3652,7 @@
 						"subject_count": 2,
 						"sort_descending": true,
 						"up_to": true,
-						"is_cost": true,
+						"is_cost": true
 					},
 					{
 						"name": "indirect_damage",
@@ -4744,7 +4744,7 @@
 					"subject": "index",
 					"subject_index": "top",
 					"src_container": "deck_villain",
-					"is_cost": true,
+					"is_cost": true
 				},
 				{
 					"name": "heal",
@@ -4792,7 +4792,7 @@
 					"subject": "index",
 					"subject_index": "top",
 					"src_container": "deck_villain",
-					"is_cost": true,
+					"is_cost": true
 				},
 				{
 					"name": "heal",

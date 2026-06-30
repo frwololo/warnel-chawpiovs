@@ -117,7 +117,7 @@
 					"tags": [
 						"alter_ego_form"
 					]
-				},			
+				},
 				{
 					"name": "exhaust_card",
 					"subject": "self",
@@ -334,11 +334,15 @@
 					},
 					"filter_state_seek": [
 						{
-							"filter_properties": {"type_code": "ally"}
+							"filter_properties": {
+								"type_code": "ally"
+							}
 						},
 						{
-							"filter_properties": {"type_code": "hero"}
-						}						
+							"filter_properties": {
+								"type_code": "hero"
+							}
+						}
 					]
 				},
 				{
@@ -439,7 +443,7 @@
 		}
 	},
 	"Electrostatic Armor": {
-				"give_to_player_max1": {},
+		"give_to_player_max1": {},
 		"response": {
 			"event_name": "defense_happened",
 			"event_filters": {
@@ -670,7 +674,7 @@
 					"is_cost": true,
 					"tags": [
 						"hero_action"
-					],
+					]
 				},
 				{
 					"name": "heal",
@@ -712,7 +716,7 @@
 		}
 	},
 	"Martial Prowess": {
-				"give_to_player_max1": {},
+		"give_to_player_max1": {},
 		"resource": {
 			"board": [
 				{

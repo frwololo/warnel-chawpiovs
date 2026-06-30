@@ -785,7 +785,7 @@
 					"tags": [
 						"hero_action"
 					]
-				},
+				}
 			]
 		},
 		"card_played": {
@@ -991,7 +991,7 @@
 					"tags": [
 						"hero_action"
 					]
-				},
+				}
 			]
 		},
 		"card_played": {

@@ -1009,7 +1009,7 @@ const DEFAULT_SETTINGS:= {
 #cycle 6
 		"mut_gen": "https://marvelcdb.com/api/public/cards/mut_gen.json", #Mutant Genesis Expansion Box	
 #		"cyclops": "https://marvelcdb.com/api/public/cards/cyclops.json", #Cyclops Hero Pack
-#		"phoenix": "https://marvelcdb.com/api/public/cards/phoenix.json", #Phoenix Hero Pack	
+		"phoenix": "https://marvelcdb.com/api/public/cards/phoenix.json", #Phoenix Hero Pack	
 		"wolv": "https://marvelcdb.com/api/public/cards/wolv.json", #Wolverine Hero Pack	
 #		"storm": "https://marvelcdb.com/api/public/cards/storm.json", #Storm Hero Pack	
 #		"gambit": "https://marvelcdb.com/api/public/cards/gambit.json", #Gambit Hero Pack	

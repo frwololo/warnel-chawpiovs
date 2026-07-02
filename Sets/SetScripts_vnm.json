@@ -241,32 +241,34 @@
 			]
 		},
 		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
-				},
-				{
-					"name": "mod_tokens",
-					"subject": "self",
-					"modification": -1,
-					"is_cost": true,
-					"token_name": "ammo"
-				},
-				{
-					"name": "exhaust_card",
-					"subject": "self",
-					"is_cost": true
-				},
-				{
-					"name": "deal_damage",
-					"subject": "an_anemey",
-					"amount": 2
-				}
-			]
+			"board": {
+				"Deal 2 Damage": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "self",
+						"modification": -1,
+						"is_cost": true,
+						"token_name": "ammo"
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "deal_damage",
+						"subject": "an_anemey",
+						"amount": 2
+					}
+				]
+			}
 		}
 	},
 	"Klyntar Frenzy": {

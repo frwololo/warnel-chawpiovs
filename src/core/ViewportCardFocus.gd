@@ -80,6 +80,7 @@ func _ready():
 	if not cfc.are_all_nodes_mapped:
 		yield(cfc, "all_nodes_mapped")
 	# warning-ignore:return_value_discarded
+	scripting_bus.connect("card_reloaded", self, "_on_card_reloaded")
 	get_viewport().connect("size_changed",self,"_on_Viewport_size_changed")
 	_on_Viewport_size_changed()
 	for container in get_tree().get_nodes_in_group("card_containers"):
@@ -264,7 +265,7 @@ func forget_card(c):
 	if _current_focus_source == c:
 		_current_focus_source = null
 	if is_instance_valid(c):	
-		c.disconnect("card_texture_changed",self , "_on_card_reloaded")	
+		c.disconnect("card_texture_changed",self , "_on_texture_reloaded")	
 
 # Displays the card closeup in the Focus viewport
 func focus_card(card: Card, show_preview := true) -> void:
@@ -302,7 +303,7 @@ func focus_card(card: Card, show_preview := true) -> void:
 			dupe_focus.tokens.load_from_json(tokens_dict)
 		else:
 			dupe_focus = card.duplicate(DUPLICATE_USE_INSTANCING)
-			card.connect("card_texture_changed", self, "_on_card_reloaded")
+			card.connect("card_texture_changed", self, "_on_texture_reloaded")
 			dupe_focus.is_duplicate_of = card
 			dupe_focus.name = dupe_focus.name + "-VBC"
 			dupe_focus.remove_from_group("cards")
@@ -404,7 +405,11 @@ func focus_card(card: Card, show_preview := true) -> void:
 		garbage_collection()
 		reposition()		
 
-func _on_card_reloaded(card):
+func _on_texture_reloaded(card):
+	if _previously_focused_cards.has(card):
+		forget_card(card)
+
+func _on_card_reloaded(card, _details):
 	if _previously_focused_cards.has(card):
 		forget_card(card)
 

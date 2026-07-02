@@ -424,6 +424,10 @@ func resize():
 		pass
 
 func show_preview(card):
+	if cfc.get_setting("disable_card_images"):
+		return
+		#TODO support for text mode
+			
 	var card_id = card.canonical_id
 	var card_data = cfc.get_card_by_id(card_id)
 	var horizontal = card_data["_horizontal"]

@@ -1,0 +1,151 @@
+{
+	"_comments": "Bug: Stampede vs retaliate stuns Rhino",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain America"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra bomber"
+				},
+				{
+					"card": "Man out of time"
+				},
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Stampede"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Captain America"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Captain America's Shield"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Press the Advantage"
+				},
+				{
+					"card": "MockingBird"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "captain America"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		},
+		{
+			"type": "play",
+			"value": "press the advantage"
+		},
+		{
+			"type": "target",
+			"value": "Rhino"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain America"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				},			
+				{
+					"card": "Stampede"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra bomber"
+				},
+				{
+					"card": "Man out of time"
+				},
+
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Captain America"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Captain America's Shield"
+				}
+			],
+			"discard1": [
+				{
+					"card": "MockingBird"
+				},
+				{
+					"card": "Press the Advantage"
+				}
+			]
+		}
+	}
+}

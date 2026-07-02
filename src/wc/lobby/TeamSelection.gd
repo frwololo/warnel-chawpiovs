@@ -880,6 +880,10 @@ func _on_OpenFolderButton_pressed():
 	pass # Replace with function body.
 
 func show_preview(card_id):
+	if cfc.get_setting("disable_card_images"):
+		return
+		#TODO support for text mode
+			
 	var large_picture = get_node("%LargePicture")
 
 	var card_data = cfc.get_card_by_id(card_id)

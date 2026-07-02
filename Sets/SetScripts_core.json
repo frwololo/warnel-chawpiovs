@@ -543,6 +543,7 @@
 			"event_name": "receive_damage",
 			"event_filters": {
 				"target": "my_hero",
+				"amount": ">0",
 				"tags": [
 					"attack"
 				]

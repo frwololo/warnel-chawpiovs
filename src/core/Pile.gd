@@ -28,7 +28,8 @@ var can_view_if_faceup := true
 
 # The popup node
 onready var pile_popup := $ViewPopup
-onready var _popup_grid := $ViewPopup/CardView
+onready var _popup_grid := $ViewPopup/Container/CardView
+onready var _popup_close_button := $ViewPopup/Container/ClosePopup
 # Popup View button for Piles
 onready var view_button := $Control/ManipulationButtons/View
 onready var view_sorted_button := $Control/ManipulationButtons/ViewSorted
@@ -182,6 +183,7 @@ func populate_popup(sorted:= sorted_popup) -> void:
 		remove_child(card)
 		_slot_card_into_popup(card)
 	# Finally we Pop the Up :)
+	_popup_close_button.icon = gamepadHandler.get_icon_for_action("ui_cancel")
 	$ViewPopup.popup_centered()
 	is_popup_open = true
 	card_count_label.text = str(get_card_count())
@@ -365,7 +367,7 @@ func _slot_card_into_popup(card: Card) -> void:
 	# We set the control container size to be equal
 	# to the card size to which the card will scale.
 	card_slot.rect_min_size = card.get_node("Control").rect_min_size * card.scale
-	$ViewPopup/CardView.add_child(card_slot)
+	_popup_grid.add_child(card_slot)
 	# Finally, the card is added to the temporary control node parent.
 	card_slot.add_child(card)
 	# warning-ignore:return_value_discarded
@@ -588,3 +590,8 @@ func check_mouse_overlap():
 			gain_focus()
 		else:
 			lose_focus() 
+
+
+func _on_ClosePopup_pressed():
+	$ViewPopup.hide()
+	pass # Replace with function body.

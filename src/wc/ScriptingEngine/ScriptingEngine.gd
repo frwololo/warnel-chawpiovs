@@ -1075,7 +1075,7 @@ func receive_damage(script: ScriptTask) -> int:
 						"subjects": [attacker],
 						"owner": card,
 					}
-					_add_pre_receive_damage_on_stack(retaliate, script, script_modifications)
+					_add_pre_receive_damage_on_stack(retaliate, null, script_modifications)
 							
 	return retcode
 
@@ -2081,7 +2081,14 @@ static func transfer_default_damage_properties(from_script, to_script):
 				_:
 					to_script.script_definition[additional_data] = from_script.script_definition[additional_data]
 
-func _add_pre_receive_damage_on_stack(amount, original_script, modifications:Dictionary = {}):		
+func _add_pre_receive_damage_on_stack(amount, original_script, modifications:Dictionary = {}):
+		if !original_script:
+			var definition = {
+				"name": "deal_damage",
+				"amount": 0
+			}
+			original_script = 	ScriptTask.new(owner, definition, owner, {})	
+				
 		var source = original_script.get_property("source", owner)
 
 		var source_character = source
@@ -2881,7 +2888,7 @@ func get_nemesis_data(script:ScriptTask):
 	var my_hero_card = _get_identity_from_script(script)	
 	var my_nemesis_set = my_hero_card.get_property("card_set_code","") + "_nemesis"
 
-	var my_nemesis = null
+	var my_nemesis = []
 	var my_nemesis_scheme = null
 	var other_nemesis_cards = []	
 
@@ -2895,6 +2902,8 @@ func get_nemesis_data(script:ScriptTask):
 	for card_data in cfc.cards_by_set[my_nemesis_set]:
 		if card_data["type_code"] != "minion":
 			continue
+		if "nemesis" in card_data.get("real_text", "").to_lower():
+			potential_nemesis_id = card_data["_code"]		
 		if !card_data.get("is_unique", false):
 			continue
 		if "nemesis" in card_data.get("real_text", "").to_lower():
@@ -2910,7 +2919,7 @@ func get_nemesis_data(script:ScriptTask):
 			if card.get_property("card_set_code", "") == my_nemesis_set:
 				var type_code = card.get_property("type_code")
 				if card.canonical_id == nemesis_id:
-					my_nemesis = card
+					my_nemesis.append(card)
 				elif type_code == "side_scheme":
 					my_nemesis_scheme = card
 				else:
@@ -2940,8 +2949,9 @@ func reveal_nemesis (script:ScriptTask) -> int:
 			script.set_subjects(my_nemesis)
 			script.script_definition.name="move_card_to_board"
 			retcode = move_card_to_container(script)				
-		else:	
-			gameData.deal_one_encounter_to(my_hero_id, true, my_nemesis)	
+		else:
+			for card in my_nemesis:	
+				gameData.deal_one_encounter_to(my_hero_id, true, card)	
 	else:
 		do_surge = script.get_property("surge_on_failure", false)
 

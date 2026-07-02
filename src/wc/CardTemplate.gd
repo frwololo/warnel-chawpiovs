@@ -383,6 +383,7 @@ func get_duplicate(refresh_variables = true):
 #this function reloads all properties
 #and cleans up temporary variables from the older card
 func load_from_card_id(card_id):
+	var previous_id = canonical_id
 	canonical_name = cfc.card_definitions[card_id]["Name"]
 	canonical_id = card_id	
 
@@ -406,7 +407,7 @@ func load_from_card_id(card_id):
 	side_icons.set_icons()
 	_duplicate = null
 	CFScriptUtils.add_update_alterant_super_cache_object(self)
-	scripting_bus.emit_signal("card_reloaded", self, {})
+	scripting_bus.emit_signal("card_reloaded", self, {"before_id": previous_id })
 	
 func setup() -> void:
 	register_signals()
@@ -845,6 +846,8 @@ func get_card_back_code() -> String:
 
 func get_art_filename(force_if_facedown: = true):
 	if force_if_facedown or is_faceup:
+		if cfc.get_setting("disable_card_images"):
+			return ""
 		var card_code = get_property("_code")
 		return cfc.get_img_filename(card_code)		
 

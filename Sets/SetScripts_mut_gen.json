@@ -2426,6 +2426,23 @@
 	"Magnetic Missile": {
 		"_surge": {},
 		"reveal": {
+			"condition_all": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_sentinel": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			},
 			"all": [
 				{
 					"name": "card_dies",
@@ -2435,7 +2452,6 @@
 					"selection_count": 1,
 					"selection_optional": false,
 					"selection_type": "equal",
-					"is_cost": true,
 					"filter_state_seek": [
 						{
 							"filter_properties": {

@@ -1583,6 +1583,9 @@ func fallback_hero_portrait(_card_id, area) -> Texture:
 	return sub_tex		
 	
 func get_sub_texture(card_id, area):
+	if cfc.get_setting("disable_card_images"):
+		return null
+			
 	var filename = get_img_filename(card_id)
 	var texture = get_external_texture(filename)
 	if !texture:

@@ -182,6 +182,10 @@ func card_image_download_complete(card_id):
 	_enable_texture(texture)
 
 func set_card_art(filename) -> void:
+	if cfc.get_setting("disable_card_images"):
+		setup_text_mode()
+		card_owner.refresh_card_front()		
+		return
 	art_filename = filename		
 	var texture = cfc.get_external_texture(art_filename)
 	if texture:

@@ -60,7 +60,7 @@
 					"card": "Genius"
 				},
 				{
-					"card": "Cosmo"
+					"card": "Cosmo #17020"
 				},				
 				{
 					"card": "Knowhere"
@@ -79,7 +79,7 @@
 		},
 		{
 			"type": "play",
-			"value": "Cosmo"
+			"value": "Cosmo #17020"
 		},
 		{
 			"type": "choose",
@@ -141,7 +141,7 @@
 			],
 			"allies1": [
 							{
-					"card": "Cosmo"
+					"card": "Cosmo #17020"
 				}
 			],
 			"discard1": [

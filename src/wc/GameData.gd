@@ -344,8 +344,11 @@ func attempt_resync(result:String):
 #	cfc.NMAP.board.add_child(end_dialog)
 #	end_dialog.popup_centered()
 
-func targeting_happened_too_recently():
+func manual_action_happened_too_recently():
 	return (_targeting_timer > 0)
+
+func restart_manual_action_stopwatch():
+	_targeting_timer = 0.2
 
 func _process(_delta: float):
 	#cache to refresh every tick:
@@ -357,7 +360,7 @@ func _process(_delta: float):
 		#mechanism to avoid processing
 		#a target click as an action click
 		if is_instance_valid(_targeting_ongoing):
-			_targeting_timer = 0.2
+			restart_manual_action_stopwatch()
 			if _targeting_ongoing.targeting_arrow.is_optional:
 				phaseContainer.show_target_cancel_button()
 		else:
@@ -974,6 +977,13 @@ func execute_priority_scripts() -> bool:
 	_current_priority_script = {}
 	return sceng
 	
+
+func players_pre_setup():
+	for hero_id in team.keys():
+		var identity = get_identity_card(hero_id)
+		var func_return = identity.execute_scripts_no_stack(identity, "pre_setup")
+		if func_return is GDScriptFunctionState && func_return.is_valid():
+			yield(func_return, "completed")		
 	
 func draw_all_players() :
 	for hero_id in team.keys():
@@ -2209,7 +2219,7 @@ func play_scripted_sequence():
 	if !_ready_for_next_sequence:
 		return
 		
-	if is_targeting_ongoing() or targeting_happened_too_recently():
+	if is_targeting_ongoing() or manual_action_happened_too_recently():
 		return
 	
 		

@@ -1,0 +1,134 @@
+{
+	"_comments": "Automated Test for The Best Defense",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Valkyrie"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Trouble in Otherworld"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Valkyrie #25001a"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Dragonfang #25006"
+				}
+			],
+			"enemies1": [],
+			"others": [],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "The Best Defense #25020"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "Valkyrie #25001a"
+		},
+		{
+			"type": "play",
+			"value": "The Best Defense #25020"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Valkyrie"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Trouble in Otherworld"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Valkyrie #25001a",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Dragonfang #25006"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"allies1": [],
+			"discard1": [
+				{
+					"card": "The Best Defense #25020"
+				}
+			]
+		}
+	}
+}

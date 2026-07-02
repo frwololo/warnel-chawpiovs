@@ -1,0 +1,162 @@
+{
+	"_comments": "Test for Burning Hunger + Dark Phoenix",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Phoenix"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker"
+				},
+				{
+					"card": "Stampede"
+				},
+				{
+					"card": "Burning Hunger"
+				}
+			],
+			"villain": [
+				{
+					"card": "01113"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Consume the World"
+				},
+				{
+					"card": "Dark Phoenix"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116b",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Relentless Assault"
+				},
+				{
+					"card": "Chase Them Down"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "The Power of Aggression"
+				}
+			],
+			"enemies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Phoenix Force #34002b"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Phoenix"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Marvel Girl"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Phoenix"
+				}
+			}
+		],
+		"board": {
+			"removed_from_game": [
+				{
+					"card": "Burning Hunger"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Shocker"
+				},
+				{
+					"card": "Stampede"
+				}
+			],
+			"villain": [
+				{
+					"card": "01113"
+				}
+			],
+			"set_aside": [],
+			"schemes": [
+				{
+					"card": "01116b",
+					"tokens": {
+						"threat": 3
+					}
+				},
+				{
+					"card": "Consume the World",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Relentless Assault"
+				},
+				{
+					"card": "Chase Them Down"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "The Power of Aggression"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Dark Phoenix"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Phoenix Force #34002b"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Phoenix"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Marvel Girl"
+				}
+			]
+		}
+	}
+}

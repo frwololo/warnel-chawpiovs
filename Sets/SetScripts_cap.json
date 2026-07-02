@@ -359,7 +359,7 @@
 		"response": {
 			"event_name": "enemy_attack_damage",
 			"event_filters": {
-				"target": "my_hero"
+				"defender": "my_hero"
 			},
 			"is_optional_hand": true,
 			"hand": [

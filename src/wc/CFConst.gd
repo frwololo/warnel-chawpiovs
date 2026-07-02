@@ -1035,10 +1035,10 @@ const DEFAULT_SETTINGS:= {
 		"winter": "https://marvelcdb.com/api/public/cards/winter.json", #Winter Soldier Hero Pack	
 #		"tt": "https://marvelcdb.com/api/public/cards/tt.json", #Trickster Takeover Scenario Pack
 #cycle 10
-#		"": "https://marvelcdb.com/api/public/cards/.json", #
-#		"": "https://marvelcdb.com/api/public/cards/.json", #
-#		"": "https://marvelcdb.com/api/public/cards/.json", #
-#		"": "https://marvelcdb.com/api/public/cards/.json", #
+#		"cw": "https://marvelcdb.com/api/public/cards/cw.json", #Civil War Expansion
+#		"synthezoid": "https://marvelcdb.com/api/public/cards/synthezoid.json", #Synthezoid smackdown Scenario Pack
+#		"wonder_man": "https://marvelcdb.com/api/public/cards/wonder_man.json", #Wonder Man Hero Pack
+#		"hercules": "https://marvelcdb.com/api/public/cards/hercules.json", #Hercules Hero Pack
 #cycle 11
 #		"": "https://marvelcdb.com/api/public/cards/.json", #
 #		"": "https://marvelcdb.com/api/public/cards/.json", #
@@ -1046,6 +1046,8 @@ const DEFAULT_SETTINGS:= {
 #		"": "https://marvelcdb.com/api/public/cards/.json", #
 #		"": "https://marvelcdb.com/api/public/cards/.json", #
 #		"": "https://marvelcdb.com/api/public/cards/.json", #
+#Print and Play
+#		"ron": "https://marvelcdb.com/api/public/cards/.json", #
 
 	},
 	'enable_ingame_debug_textedit': false,

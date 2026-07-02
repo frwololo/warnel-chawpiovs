@@ -129,7 +129,7 @@ func force_close():
 
 func init_display(forced = false):
 	#abort if not ready
-	if !owner_card or !card_texture or !display_text:
+	if !is_instance_valid(owner_card) or !card_texture or !display_text:
 		return
 
 	#abort if already initialized		

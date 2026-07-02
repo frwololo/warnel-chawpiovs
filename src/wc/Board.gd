@@ -539,6 +539,9 @@ func post_cards_moved_load():
 	while villain._post_load_move or cfc.NMAP["deck_villain"].is_shuffling:
 		yield(get_tree().create_timer(0.05), "timeout")	
 
+
+	gameData.players_pre_setup()
+
 	draw_starting_hand()	
 	#Tests
 	if gameData.get_team_size() < 2:

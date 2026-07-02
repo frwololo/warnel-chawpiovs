@@ -306,7 +306,7 @@ func get_ignore_list_path(owner_card, stack_event):
 	var trigger = stack_event.get_trigger()
 	if !trigger:
 		trigger = stack_event.get_first_task_name()
-	if owner_card and ! (trigger in _force_general_notification):
+	if is_instance_valid(owner_card) and ! (trigger in _force_general_notification):
 		card_name = owner_card.properties.get("shortname", "")
 		if owner_card.is_boost():
 			if trigger == "boost":

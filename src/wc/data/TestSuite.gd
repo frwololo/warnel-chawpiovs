@@ -1520,7 +1520,7 @@ static func generate_missing_tests():
 		if !json_card_data:
 			continue
 			
-		var tested_cards = get_all_card_ids(json_card_data)
+		var tested_cards = get_all_card_ids(json_card_data["init"])
 		for card_id_or_name in tested_cards:
 			var card_id = cfc.get_corrected_card_id(card_id_or_name)
 			if card_id:

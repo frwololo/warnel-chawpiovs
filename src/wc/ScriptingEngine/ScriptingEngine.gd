@@ -424,7 +424,7 @@ func force_play_card(script: ScriptTask) -> int:
 		
 		var subscript = {
 			"manual_override": {
-				"hand": fetched_script
+				"all": fetched_script
 			}
 		}
 		var subscript_id = subject.add_extra_script( subscript, my_hero_id)
@@ -499,14 +499,21 @@ func attack(script: ScriptTask) -> int:
 	# at least One by One needs us to stop transmitting tags endlesly
 	# see test_1p_winter_soldier_cybernetic_arm.json
 	new_script.trigger_details.erase("tags")
-	#here we precompute the damage because some cards
+	#in some cases we precompute the damage because some cards
 	#rely on the amount being calculated based on some conditions
 	#of the board *before* the next event resolves.
 	#for example Hawkeye's Sonic Arrow which checks if enemy is confused 
 	if new_script.script_definition.has("amount"):
-		new_script.script_definition["amount"] = script.retrieve_integer_property("amount")	
-		for value in ["plus_amount", "multiplier_amount"]:
-			new_script.script_definition.erase(value)
+		var needs_precompute = false
+		var def = new_script.script_definition["amount"]
+		if typeof(def) == TYPE_DICTIONARY:
+			if WCUtils.is_string_in_variant(def, "previous"):
+				needs_precompute = true
+		
+		if needs_precompute:		
+			new_script.script_definition["amount"] = script.retrieve_integer_property("amount")	
+			for value in ["plus_amount", "multiplier_amount"]:
+				new_script.script_definition.erase(value)
 	#
 	# END Hacks
 	#		
@@ -852,7 +859,10 @@ func pre_receive_damage(script: ScriptTask) -> int:
 			consolidated_subjects[card] = 0
 		consolidated_subjects[card] += 1
 	
+	var subject_counter = 0
+	var tags = script.get_property(SP.KEY_TAGS)
 	for card in consolidated_subjects.keys():
+		subject_counter +=1
 		var multiplier = consolidated_subjects[card]
 		var amount = base_amount * multiplier
 		
@@ -880,6 +890,10 @@ func pre_receive_damage(script: ScriptTask) -> int:
 		var script_modifications = {
 			"subjects": [card]
 		}
+		
+		#for an attack on multiple enemies, we do the consequential damage only for the first one
+		if "attack" in tags and subject_counter > 1:
+			script_modifications["additional_tags"] = ["skip_consequential_damage"]
 		_add_receive_damage_on_stack (amount, script, script_modifications)
 	
 	return retcode		
@@ -2134,6 +2148,11 @@ func _add_receive_threat_on_stack(amount, original_script, modifications:Diction
 	
 func consequential_damage(script: ScriptTask) -> int:	
 	var retcode: int = CFConst.ReturnCode.OK
+	
+	var tags = script.get_property(SP.KEY_TAGS)
+	if "skip_consequential_damage" in tags:
+		return CFConst.ReturnCode.FAILED
+		
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
 
@@ -2268,7 +2287,7 @@ func remove_threat(script: ScriptTask) -> int:
 			card.check_scheme_defeat(script)
 
 
-	#consequential_damage(script)
+
 	if (script.has_tag("basic power")):
 		var signal_details = {
 			"source": owner,
@@ -3182,6 +3201,30 @@ func add_script(script: ScriptTask) -> int:
 	
 	
 	return retcode		
+
+func remove_script(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+
+	var script_trigger = script.get_property("script_trigger", "")
+	if !script_trigger:
+		return CFConst.ReturnCode.FAILED
+	
+	for subject in script.subjects:
+		var uid_to_remove = 0
+		for uid in 	subject.extra_scripts:
+			var def = subject.extra_scripts[uid]["script_definition"]
+			if def and typeof(def) == TYPE_DICTIONARY:
+				if def.has(script_trigger):
+					uid_to_remove = uid
+					break
+
+		if uid_to_remove: 
+			subject.remove_extra_script(uid_to_remove)
+	
+	
+	return retcode
 
 func message(script: ScriptTask) -> int:
 	var message = script.script_definition["message"]

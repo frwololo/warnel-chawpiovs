@@ -100,8 +100,8 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 		var value = trigger_details.get(property, null)
 		if value:
 			if typeof(value) == TYPE_ARRAY:
-				return value
-			results.append(value)
+				return guidMaster.replace_guids_to_objects(value)
+			results.append(guidMaster.replace_guids_to_objects(value))
 		return results
 	
 	if _subject_request.begins_with(SP.KEY_SUBJECT_V_A_IDENTITY):
@@ -718,6 +718,26 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 
 	filters = WCUtils.search_and_replace_multi(filters, replacements, true)
 
+	#proxy for defender
+	if filters.has("defender"):
+		filters["subject"] = filters["defender"]
+		
+	if filters.has("subject"):
+		var script = trigger_details.get("event_object")
+		if !script:
+			return false
+		#switcheroo of the script for some particular events	
+		if script.script_name in ["enemy_attack_damage", "enemy_scheme_threat", "enemy_attack", "enemy_boost"]:
+			script = script.owner.activity_script
+			if !script:
+				return false
+		var subjects = script.subjects
+		var subject = script.subjects[0] if subjects else null
+		if !subject:
+			return false		
+		if subject !=  filters["subject"]:
+			return false
+		filters.erase("subject")
 	
 	if filters.has("filter_state_event_target"):
 		var script = trigger_details.get("event_object")
@@ -837,6 +857,8 @@ func compare_string_properties(property_filters, card, property, comparison_type
 #checks that some cards used for resource aren't also used for other subjects
 #in a multi-script series
 func check_validity_post_selection(card, script):
+	if !is_instance_valid(card):
+		return false
 	var trigger = script.trigger
 	if trigger == "resource":
 		return true

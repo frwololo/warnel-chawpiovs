@@ -195,6 +195,8 @@ func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false,
 		while bbcode_height == 0 or bbcode_height > 1000:
 			_retries += 1
 #			print_debug("{0} BBcode height:{1} retrying: {2}".format([card_owner.canonical_name, bbcode_height, _retries]))
+			if !get_tree():
+				return
 			yield(get_tree(), "idle_frame")
 			if !is_instance_valid(node):
 				return

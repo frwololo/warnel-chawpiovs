@@ -1,0 +1,134 @@
+{
+	"_comments": "Automated Test for Valkyri's Spear",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Valkyrie"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"stunned": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Valkyrie #25001a"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Valkyrie's Spear"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Senyaka"
+				}
+			],
+			"others": [
+				{
+					"card": "Death-Glow",
+					"host": "Rhino"
+				}
+			],
+			"allies1": [],
+			"hand1": []
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "Valkyrie #25001a"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Valkyrie"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Valkyrie #25001a",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Valkyrie's Spear"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Senyaka"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"others": [
+				{
+					"card": "Death-Glow",
+					"host": "Rhino"
+				}
+			]
+		}
+	}
+}

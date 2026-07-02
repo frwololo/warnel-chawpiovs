@@ -1120,7 +1120,7 @@ func register_signals():
 func attempt_to_play(user_click:bool = false, origin_event = null):
 	#don't try to activate the card if the click was the result of targeting
 	if user_click:
-		if gameData.is_targeting_ongoing() or gameData.targeting_happened_too_recently():
+		if gameData.is_targeting_ongoing() or gameData.manual_action_happened_too_recently():
 			return
 		#we already sent a request and should be waiting for full resolution	
 
@@ -1166,6 +1166,8 @@ func attempt_to_play(user_click:bool = false, origin_event = null):
 
 
 	cfc.card_drag_ongoing = null
+	#tells gamedata that a manual action just happened
+	gameData.restart_manual_action_stopwatch()
 	execute_scripts(self,"manual",details)
 
 

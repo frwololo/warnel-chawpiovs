@@ -1,0 +1,1407 @@
+{
+	"Angela - Aldrif Odinsdottir": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"destination_grid": "enemies_my_hero",
+					"subject": "tutor",
+					"sort_descending": true,
+					"subject_count": 10,
+					"up_to": true,
+					"src_container": "deck_villain",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"selection_show_cards_with_zero_value": true,
+					"is_cost": true,
+					"selection_what_to_count": {
+						"func_name": "check_validity",
+						"func_params": {
+							"filter_state_trigger": [
+								{
+									"filter_properties": {
+										"type_code": "minion"
+									}
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
+				},
+				{
+					"name": "discard",
+					"subject": "self",
+					"is_else": true
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain",
+					"is_else": true
+				}
+			]
+		}
+	},
+	"Annabelle Riggs": {
+		"manual": {
+			"board": {
+				"Search for a Valkyrie Card": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "hand",
+						"subject": "tutor",
+						"sort_descending": true,
+						"subject_count": 5,
+						"up_to": true,
+						"src_container": "deck",
+						"selection_count": 1,
+						"selection_type": "max",
+						"needs_selection": true,
+						"selection_show_cards_with_zero_value": true,
+						"selection_what_to_count": {
+							"func_name": "check_validity",
+							"func_params": {
+								"filter_state_trigger": [
+									{
+										"filter_properties": {
+											"card_set_code": "valk"
+										}
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "shuffle_container",
+						"dest_container": "deck"
+					}
+				]
+			}
+		}
+	},
+	"Anticipation": {
+		"response_card_moved_to_board": {
+			"event_filters": {
+				"destination_grid": "enemies_my_hero"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "ready_card",
+					"is_cost": true,
+					"subject": "my_hero"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Aragorn": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "my_identity",
+					"alteration": 4
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_aerial",
+					"trigger": "my_identity",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Audacity": {
+		"paid_as_resource": {
+			"trigger": "self",
+			"is_optional_all": true,
+			"all": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Beguiled": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "get_subject_int_printed_property",
+					"func_params": {
+						"property": "cost"
+					},
+					"sort_descending": true,
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							},
+							"filter_max_per_host": 1
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard_villain",
+					"is_else": true
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				}
+			]
+		},
+		"card_attached": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"tags": [
+						"facedown",
+						"Init"
+					],
+					"set_properties": {
+						"type_code": "minion",
+						"shortname": "Enthralled",
+						"trait_enthralled": 1,
+						"attack": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "attack",
+								"subject": "host"
+							}
+						},
+						"scheme": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "thwart",
+								"subject": "host"
+							}
+						},
+						"health": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "health",
+								"subject": "host"
+							}
+						}
+					},
+					"subject": "host"
+				}
+			]
+		}
+	},
+	"Brunnhilde": {
+		"pre_setup": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "set_aside",
+					"subject": "tutor",
+					"src_container": [
+						"deck",
+						"discard"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Death-Glow"
+							}
+						}
+					]
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Not this Day": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						],
+						"constraints": [
+							{
+								"func_name": "count_cards>0",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"shortname": "Death-Glow"
+											}
+										}
+									]
+								}
+							}
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "set_aside",
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"shortname": "Death-Glow"
+								}
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Chooser of the Slain": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"destination_grid": "enemies_my_hero",
+					"is_cost": true,
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"selection_optional": false,
+					"needs_selection": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"name": "sequence",
+					"delay_until_no_activity": true,
+					"sequence_ability": "draw_two",
+					"subject": "self"
+				}
+			]
+		},
+		"draw_two": {
+			"all": [
+				{
+					"name": "draw_cards",
+					"amount": 2
+				}
+			]
+		}
+	},
+	"Combat Training": {
+		"give_to_player_max1": {},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Cosmic Alliance": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly",
+							"filter_properties": {
+								"trait_avenger": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly",
+							"filter_properties": {
+								"trait_guardian": 1
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Death-Glow": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "an_enemy"
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "set_aside",
+					"subject": "self"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "trigger_details_source",
+									"property": "shortname",
+									"property_value": "Valkyrie"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "ready_card",
+									"subject": "Valkyrie"
+								}
+							]
+						}
+					],
+				}				
+
+			]
+		},
+	},
+	"Dragonfang": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "my_hero",
+					"alteration": 1
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "attack_started",
+			"event_filters": {
+				"filter_state_event_target": [
+					{
+						"filter_func": {
+							"func_name": "count_attachments",
+							"func_params": {
+								"subject": "trigger",
+								"filter_state_attachment": [
+									{
+										"filter_properties": {
+											"shortname": "Death-Glow"
+										}
+									}
+								]
+							}
+						}
+					}
+				],
+				"attacker": "my_hero"
+				
+			},
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "attack_happened",
+					"subject": "self",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "Valkyrie",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Enchantress": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"grid_name": "enemies_my_hero",
+					"subject": "tutor",
+					"subject_count": 1,
+					"src_container": [
+						"deck_villain",
+						"discard_villain",
+						"set_aside"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Seduced"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Flight of the Valkyrior": {
+		"response_card_dies": {
+			"filter_state_trigger": [
+				{
+					"filter_func": {
+						"func_name": "count_attachments",
+						"func_params": {
+							"subject": "trigger",
+							"filter_state_attachment": [
+								{
+									"filter_properties": {
+										"shortname": "Death-Glow"
+									}
+								}
+							]
+						}
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "remove_threat",
+					"amount": 5,
+					"subject": "a_scheme"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Godlike Stamina": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "heal",
+					"amount": 2,
+					"subject": "my_identity"
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "self",
+			"all": {
+				"Remove Stunned": [
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"token_name": "stunned",
+						"is_cost": true,
+						"subject": "my_identity"
+					}
+				],
+				"Remove Confused": [
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"token_name": "confused",
+						"is_cost": true,
+						"subject": "my_identity"
+					}
+				],
+				"Remove Tough": [
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"token_name": "tough",
+						"is_cost": true,
+						"subject": "my_identity"
+					}
+				]
+			}
+		}
+	},
+	"Hall of Heroes": {
+		"minion_died": {
+			"filter_source_controlled_by": "my_hero",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"token_name": "glory"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -3,
+					"token_name": "glory",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 3
+				}
+			]
+		}
+	},
+	"Have at Thee!": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "nop",
+					"subject": "an_enemy",
+					"is_cost": true,
+					"tags": [
+						"attack"
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_enemy",
+					"var_type": "subject",
+					"value": "previous",
+					"_comments": "remembering the card for use. is_cost set to true to ensure this gets computed before subjects"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_attack"
+				}
+			]
+		},
+		"do_attack": {
+			"all": [
+				{
+					"name": "attack",
+					"amount": 7,
+					"subject": "my_enemy",
+					"tags": {
+						"if": {
+							"func_name": "count_attachments",
+							"func_params": {
+								"subject": "my_enemy",
+								"filter_state_attachment": [
+									{
+										"filter_properties": {
+											"shortname": "Death-Glow"
+										}
+									}
+								]
+							}
+						},
+						"then": [
+							"overkill"
+						],
+						"else": []
+					}
+				}
+			]
+		}
+	},
+	"Leadership Training": {
+		"uses": {
+			"__name__": "training",
+			"__amount__": 2
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "training",
+					"subject": "self"
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "tutor",
+					"dest_container": "deck",
+					"src_container": "discard",
+					"needs_subject": true,
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_optional": true,
+					"selection_type": "equal",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"faction_code": "Leadership"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Powerful Enchantments": {
+		"TODO": "",
+		"hinder": {
+			"__amount__": 1,
+			"__each_player__": true
+		}
+	},
+	"Problem Solvers": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly",
+							"filter_properties": {
+								"trait_avenger": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly",
+							"filter_properties": {
+								"trait_guardian": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "all_previous",
+							"property": "thwart"
+						}
+					},
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Quick Strike": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_hero",
+							"property": "attack"
+						}
+					},
+					"subject": "an_enemy"
+				}
+			]
+		}
+	},
+	"Seduced": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_attack",
+					"trigger": "host",
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_play",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_attack": 1,
+								"comparison": "ge"
+							},
+							"filter_properties2": {
+								"type_code": "event"
+							},
+							"filter_same_controller": true
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1,
+						"energy": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Shieldmaiden": {
+		"interrupt_enemy_initiates_attack": {
+			"filter_state_trigger": [
+				{
+					"filter_func": {
+						"func_name": "count_attachments",
+						"func_params": {
+							"subject": "trigger",
+							"filter_state_attachment": [
+								{
+									"filter_properties": {
+										"shortname": "Death-Glow"
+									}
+								}
+							]
+						}
+					}
+				}
+			],
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "set_defender",
+					"subject": "Valkyrie",
+					"basic_defense": true,
+					"exhaust_defenders": false
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "enemy_activation_finished",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "defense",
+									"trigger": "my_hero",
+									"alteration": 2
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Smash the Problem": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "my_hero"
+				},
+				{
+					"name": "thwart",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_hero",
+							"property": "attack"
+						}
+					},
+					"subject": "a_scheme"
+				}
+			]
+		}
+	},
+	"The Best Defense…": {
+		"response": {
+			"event_name": "enemy_attack_damage",
+			"event_filters": {
+				"defender": "my_hero"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "temporary_effect",
+					"end_condition": "enemy_activation_finished",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "defense",
+									"trigger": "my_hero",
+									"alteration": {
+										"func_name": "get_subject_int_property",
+										"func_params": {
+											"subject": "my_hero",
+											"property": "attack"
+										}
+									},
+									"plus_alteration": {
+										"func_name": "get_subject_int_property",
+										"func_params": {
+											"subject": "my_hero",
+											"property": "defense",
+											"multiplier": -1
+										}
+									},
+									"_comments": "add attack and subtract defense to the alterant"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"The Bifrost": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "force_play_card",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							},
+							"filter_properties2": {
+								"trait_asgard": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck"
+				}
+			]
+		}
+	},
+	"The Power of Aggression": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "aggression"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Thor - Odinson": {
+		"interrupt_attack_started": {
+			"trigger": "self",
+			"event_filters": {
+				"filter_state_event_target": [
+					{
+						"filter_properties": {
+							"type_code": "minion"
+						}
+					}
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "nop",
+					"subject": "trigger_details_target",
+					"_comments": "nop to set the previous value to our current minion target"
+				},
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_group": "group_enemies_previous_subject"
+						}
+					],
+					"_comments": "group_enemies_previous_subject ensures we select the enemies engaged with the same hero as the previously set variable"
+				},
+				{
+					"name": "replacement_effect",
+					"replacements": {
+						"subject": "previous"
+					}
+				}
+			]
+		}
+	},
+	"Throg - Puddlegulp": {
+		"self_moved_to_board": {
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies_my_hero",
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				}
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Trouble in Otherworld": {
+		"give_obligation": {
+			"__to__": "Brunnhilde"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"card_attached": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "save_variable",
+					"var_name": "my_host",
+					"var_type": "subject",
+					"value": "host",
+					"_comments": "remembering the card for use. is_cost set to true to ensure this gets computed before subjects"
+				},
+				{
+					"name": "add_script",
+					"subject": "host",
+					"script": {
+						"is_valid_target_filters": {
+							"board": {
+								"attack": {
+									"target_condition": {
+										"func_name": "!count_attachments",
+										"func_params": {
+											"subject": "trigger",
+											"filter_state_attachment": [
+												{
+													"filter_properties": {
+														"shortname": "Death-Glow"
+													}
+												}
+											]
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			]
+		},
+		"card_detached": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "remove_script",
+					"subject": "my_host",
+					"script_trigger": "is_valid_target_filters"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1,
+						"energy": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "removed_from_game"
+				}
+			]
+		}
+	},
+	"Valhalla": {
+		"interrupt_card_dies": {
+			"filter_state_trigger": [
+				{
+					"filter_func": {
+						"func_name": "count_attachments",
+						"func_params": {
+							"subject": "trigger",
+							"filter_state_attachment": [
+								{
+									"filter_properties": {
+										"shortname": "Death-Glow"
+									}
+								}
+							]
+						}
+					}
+				}
+			],
+			"event_filters": {
+				"source": "my_hero",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				},
+				{
+					"name": "heal",
+					"amount": 2,
+					"subject": "Valkyrie"
+				}
+			]
+		}
+	},
+	"Valkyrie": {
+		"manual": {
+			"board": {
+				"Death Perception": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						],
+						"constraints": [
+							{
+								"func_name": "count_cards>0",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": "set_aside",
+									"filter_state_tutor": [
+										{
+											"filter_properties": {
+												"shortname": "Death-Glow"
+											}
+										}
+									]
+								}
+							}
+						]
+					},
+					{
+						"name": "force_play_card",
+						"subject": "tutor",
+						"src_container": "set_aside",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"shortname": "Death-Glow"
+								}
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Valkyrie's Spear": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"trigger": "my_hero",
+					"alteration": {
+						"if": {
+							"func_name": "count_attachments",
+							"func_params": {
+								"subject": "current_activation_enemy",
+								"filter_state_attachment": [
+									{
+										"filter_properties": {
+											"shortname": "Death-Glow"
+										}
+									}
+								]
+							}
+						},
+						"then": 2,
+						"else": 1
+					}
+				}
+			]
+		}
+	},
+	"Visit Valhalla": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"dest_container": "hand",
+					"src_container": "discard",
+					"needs_subject": true,
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_optional": true,
+					"selection_type": "equal",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "valk"
+							}
+						}
+					]
+				}
+			]
+		}
+	}
+}

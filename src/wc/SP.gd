@@ -427,8 +427,24 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 				
 		if found:
 			var source_validity_script = validity_extra_scripts.get("source_condition", {})
-			if !check_func_filter(owner_card,owner_card,source_validity_script):
+			if source_validity_script and !check_func_filter(owner_card,owner_card,source_validity_script):
 				return false			
+	if owner_card:
+		var action_character = owner_card.get_action_character() if owner_card else null
+		if action_character:
+			validity_extra_scripts = action_character.get_potential_scripts("is_valid_target_filters") 
+			if validity_extra_scripts:
+				var found = false
+				for key in [script_name] + tags:
+					if validity_extra_scripts.has(key):
+						validity_extra_scripts = validity_extra_scripts[key]
+						found = true
+						break
+						
+				if found:
+					var target_validity_script = validity_extra_scripts.get("target_condition", {})
+					if target_validity_script and !check_func_filter(card,action_character,target_validity_script):
+						return false	
 	
 	#For certain effects,
 	#permanent cards cannot be targeted by cards of a different set code
@@ -563,7 +579,8 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 
 #todo in the future this needs to redo targeting, etc...
 static func retrieve_subjects(value:String, script):
-	var subjects = _get_subjects_simplified(value, script.owner)
+	var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : value})
+	#var subjects = _get_subjects_simplified(value, script.owner)
 
 	if !subjects:
 		return []

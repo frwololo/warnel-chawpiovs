@@ -349,10 +349,10 @@
 					]
 				},
 				{
-					"name": "temporary_effect",
+					"name": "add_script",
 					"subject": "self",
 					"end_condition": "basic_thwart_happened",
-					"effect": {
+					"script": {
 						"alterants": {
 							"all": [
 								{
@@ -363,7 +363,7 @@
 								}
 							]
 						},
-						"response_last_threat_removed": {
+						"last_threat_removed": {
 							"event_filters": {
 								"source": "my_hero",
 								"tags": [

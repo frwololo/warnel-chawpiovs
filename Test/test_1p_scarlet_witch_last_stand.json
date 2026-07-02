@@ -1,0 +1,139 @@
+{
+	"_comments": "Tests Scarlet Witch Last Stand",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Scarlet Witch"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra bomber"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "The Doomsday Chair"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Scarlet Witch"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Scarlet Witch's Crest"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Last Stand"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Maria Hill"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Rhino"
+		},
+		{
+			"type": "play",
+			"value": "Last Stand"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Scarlet Witch"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 4
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra bomber"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "The Doomsday Chair"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Scarlet Witch"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Last Stand"
+				},
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Scarlet Witch's Crest"
+				}
+			],
+			"hand1": []
+		}
+	}
+}

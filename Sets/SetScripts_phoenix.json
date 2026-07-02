@@ -41,7 +41,7 @@
 								{
 									"name": "reveal_encounter",
 									"subject": "tutor",
-									"ssrc_container": [
+									"src_container": [
 										"deck_villain",
 										"discard_villain",
 										"set_aside"
@@ -149,7 +149,7 @@
 							"token_name": "threat"
 						}
 					},
-					"alteration_multiplier": -1
+					"multiplier_alteration": -1
 				}
 			]
 		},
@@ -218,7 +218,7 @@
 				{
 					"name": "reveal_encounter",
 					"subject": "tutor",
-					"ssrc_container": [
+					"src_container": [
 						"deck_villain",
 						"discard_villain",
 						"set_aside"
@@ -226,7 +226,7 @@
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
-								"shortname": "Dark Phoenix"
+								"shortname": "Consume the World"
 							}
 						}
 					]
@@ -529,7 +529,6 @@
 					"selection_optional": true,
 					"selection_type": "min",
 					"selection_count": 1,
-					"is_cost": true,
 					"filter_state_seek": [
 						{
 							"filter_group": "group_allies_my_hero",
@@ -617,6 +616,13 @@
 					"subject": "self",
 					"is_cost": true
 				},
+				{
+					"name": "mod_tokens",
+					"modification": -1,
+					"token_name": "power",
+					"subject": "Phoenix Force",
+					"is_cost": true
+				},				
 				{
 					"name": "add_resource",
 					"amount": 1,

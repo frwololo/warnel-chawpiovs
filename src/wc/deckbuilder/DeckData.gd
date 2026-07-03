@@ -252,7 +252,8 @@ func _on_HeroPicture_mouse_exited():
 
 func action():
 	main_screen.deck_selected(deck_id)
-	show_highlights()
+	if deck_id:
+		show_highlights()
 	
 
 func _on_Menu_resized() -> void:

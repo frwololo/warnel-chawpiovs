@@ -41,8 +41,7 @@
 			"upgrade_support1": [
 				{
 					"card": "Government Liaison"
-				},
-
+				}
 			],
 			"hand1": [
 				{
@@ -56,7 +55,7 @@
 			]
 		}
 	},
-	"actions": [	
+	"actions": [
 		{
 			"type": "activate",
 			"value": "Government Liaison"
@@ -65,6 +64,10 @@
 			"type": "Play",
 			"value": "Field Agent"
 		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -112,9 +115,7 @@
 					"card": "Field Agent"
 				}
 			],
-			"hand1": [
-
-			],
+			"hand1": [],
 			"identity1": [
 				{
 					"card": "Spider-Man #27030a"

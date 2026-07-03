@@ -238,7 +238,6 @@ func initiate_selection(_card_array: Array) -> void:
 
 	# Spawning all the duplicates is a bit heavy
 	# So we delay showing the tween to avoid having it look choppy
-	#yield(get_tree().create_timer(0.2), "timeout")
 	_tween.remove_all()
 	# We do a nice alpha-modulate tween
 	_tween.interpolate_property(self,'modulate:a',

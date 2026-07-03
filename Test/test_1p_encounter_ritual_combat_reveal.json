@@ -15,17 +15,16 @@
 					"card": "01094"
 				}
 			],
-			"deck_villain":[	
+			"deck_villain": [
 				{
 					"card": "Hydra Mercenary"
-				},	
+				},
 				{
 					"card": "Armored Guard"
-				},					
+				},
 				{
 					"card": "Ritual Combat"
-				},	
-			
+				}
 			],
 			"schemes": [
 				{
@@ -33,8 +32,10 @@
 				},
 				{
 					"card": "Bomb scare",
-					"tokens" : {"threat": 3},
-				},				
+					"tokens": {
+						"threat": 3
+					}
+				}
 			],
 			"deck1": [
 				{
@@ -63,7 +64,11 @@
 			"type": "choose",
 			"value": "Damage"
 		},
-	] ,
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
 	"end": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -73,25 +78,24 @@
 				}
 			}
 		],
-		"board":  {
+		"board": {
 			"villain": [
 				{
 					"card": "01094"
 				}
 			],
-			"discard_villain":[	
+			"discard_villain": [
 				{
 					"card": "Armored Guard"
-				},					
+				},
 				{
 					"card": "Ritual Combat"
-				},	
-			
+				}
 			],
-			"deck_villain":[	
+			"deck_villain": [
 				{
 					"card": "Hydra Mercenary"
-				},
+				}
 			],
 			"schemes": [
 				{
@@ -99,8 +103,10 @@
 				},
 				{
 					"card": "Bomb scare",
-					"tokens" : {"threat": 3},
-				},				
+					"tokens": {
+						"threat": 3
+					}
+				}
 			],
 			"deck1": [
 				{
@@ -110,12 +116,14 @@
 			"identity1": [
 				{
 					"card": "Black Panther",
-					"tokens": {"damage" : 2},
+					"tokens": {
+						"damage": 2
+					}
 				}
 			],
 			"allies1": [
 				{
-					"card": "Mockingbird",					
+					"card": "Mockingbird"
 				}
 			],
 			"hand1": [

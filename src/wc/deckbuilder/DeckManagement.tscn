@@ -295,7 +295,7 @@ margin_bottom = 40.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="NewDeckContainer"]
 margin_right = 355.0
-margin_bottom = 135.0
+margin_bottom = 197.0
 
 [node name="Label" type="Label" parent="NewDeckContainer/VBoxContainer"]
 margin_right = 355.0
@@ -313,6 +313,12 @@ margin_top = 76.0
 margin_right = 355.0
 margin_bottom = 135.0
 text = "OK"
+
+[node name="DeckCreateCancelButton" type="Button" parent="NewDeckContainer/VBoxContainer"]
+margin_top = 138.0
+margin_right = 355.0
+margin_bottom = 197.0
+text = "Cancel"
 
 [node name="ExportContainer" type="CenterContainer" parent="."]
 unique_name_in_owner = true
@@ -385,6 +391,7 @@ mouse_filter = 2
 [connection signal="item_selected" from="MainMenu/Outercontainer/FiltersContainer/Filters/HeroesFilter" to="." method="_on_HeroesFilter_item_selected"]
 [connection signal="text_entered" from="MainMenu/Outercontainer/ActionsContainer/HBoxContainer3/HBoxContainer2/DownloadDeckContainer/VBoxContainer/HBoxContainer/DownloadDeckNumber" to="." method="_on_DownloadDeckNumber_text_entered"]
 [connection signal="pressed" from="NewDeckContainer/VBoxContainer/DeckCreateHeroButton" to="." method="_on_DeckCreateHeroButton_pressed"]
+[connection signal="pressed" from="NewDeckContainer/VBoxContainer/DeckCreateCancelButton" to="." method="_on_DeckCreateCancelButton_pressed"]
 [connection signal="pressed" from="ExportContainer/HBoxContainer/VBoxContainer/HBoxContainer/CopyButton" to="." method="_on_ClipboardButton_pressed"]
 [connection signal="pressed" from="ExportContainer/HBoxContainer/VBoxContainer/HBoxContainer/CopyButton2" to="." method="_on_MCDBButton_pressed"]
 [connection signal="pressed" from="ExportContainer/HBoxContainer/VBoxContainer/HBoxContainer/CloseExportButton" to="." method="_on_CloseExportButton_pressed"]

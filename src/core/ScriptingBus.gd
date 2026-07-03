@@ -103,24 +103,7 @@ func init_scripting_event(trigger_object: Card = null, details: Dictionary = {},
 	if trigger == '':
 		push_error("WARN: scripting event received with empty trigger name")
 		return
-	# We use Godot groups to ask every card to check if they
-	# have [ScriptingEngine] triggers for this signal.
-	#
-	# I don't know why, but if I use simply call_group(), this will
-	# not execute on a "self" subject
-	# when the trigger card has a grid_autoplacement set, and the player
-	# drags the card on the grid itself. If the player drags the card
-	# To an empty spot, it works fine
-	# It also fails to execute if I use any other flag than GROUP_CALL_UNIQUE
-#	for card in cfc.get_tree().get_nodes_in_group("cards"):
-#		card.execute_scripts(trigger_object,trigger,details)
-#	# If we need other objects than cards to trigger scripts via signals
-#	# add them to the 'scriptables' group ang ensure they have
-#	# an "execute_scripts" function
-#	for card in cfc.get_tree().get_nodes_in_group("scriptables"):
-#		card.execute_scripts(trigger_object,trigger,details)
-#		cfc.get_tree().call_group_flags(SceneTree.GROUP_CALL_UNIQUE  ,"cards",
-#				"execute_scripts",trigger_card,trigger,details)
+
 
 	#cleanup manually paid stuff before propagating trigger
 	if (details.has("network_prepaid")):

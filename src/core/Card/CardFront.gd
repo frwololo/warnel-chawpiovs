@@ -48,11 +48,6 @@ onready var card_owner = get_parent().get_parent().get_parent()
 # Set a label node's text.
 # As the string becomes longer, the font size becomes smaller
 func set_label_text(node: Label, value, scale: float = 1):
-#	while font_thread and font_thread.is_active():
-#		yield(get_tree(), "idle_frame")
-#	font_thread = Thread.new()
-## warning-ignore:return_value_discarded
-#	font_thread.start(self, "_set_label_text", [node,value], Thread.PRIORITY_LOW)
 	if node in resizing_labels:
 		return
 	resizing_labels.append(node)
@@ -63,9 +58,6 @@ func set_label_text(node: Label, value, scale: float = 1):
 	if cached_font_size:
 		label_font.size = cached_font_size
 	else:
-		# We add a yield here to allow the calling function to continue
-		# and thus avoid the game waiting for the label to resize
-		#yield(get_tree(), "idle_frame")
 		var working_value: String
 		# If the label node has been set to uppercase the text
 		# Then we need to work off-of uppercased text value
@@ -131,6 +123,8 @@ func scale_to(scale_multiplier: float) -> void:
 		if scaled_fonts.get(l) != scale_multiplier:
 			scaled_fonts[l] = scale_multiplier
 			while card_labels[l] in resizing_labels:
+				if !is_inside_tree():
+					return
 				yield(get_tree(), "idle_frame")
 			if card_labels[l] as RichTextLabel:
 				var label : RichTextLabel = card_labels[l]
@@ -186,20 +180,26 @@ func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false,
 		# Rich Text has no way to grab its total size without setting the bbcode first
 		# After we set the bbcode, we need to wait for the next frame for the label to adjust
 		# and then we can grab its height
+		if !is_inside_tree():
+			return				
 		yield(get_tree(), "idle_frame")
 		if !is_instance_valid(node):
-			return		
+			return	
+		if !is_inside_tree():
+			return					
 		var _retries := 0
 		var bbcode_height = node.get_content_height()
 #		print_debug([bbcode_height, label_size.y])
 		while bbcode_height == 0 or bbcode_height > 1000:
 			_retries += 1
 #			print_debug("{0} BBcode height:{1} retrying: {2}".format([card_owner.canonical_name, bbcode_height, _retries]))
-			if !get_tree():
-				return
+			if !is_inside_tree():
+				return	
 			yield(get_tree(), "idle_frame")
 			if !is_instance_valid(node):
 				return
+			if !is_inside_tree():
+				return					
 			bbcode_height = node.get_content_height()
 #			print_debug(["Retry", _retries, "Code Height", bbcode_height])
 			if _retries >= 10:
@@ -213,7 +213,7 @@ func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false,
 		if bbcode_height > label_size.y:
 			font_adjustment = _adjust_font_size(label_fonts["normal_font"], node.text, label_size)
 			_set_card_rtl_fonts(node, label_fonts, starting_font_size + font_adjustment)
-			if (get_tree()):
+			if is_inside_tree():
 				yield(get_tree(), "idle_frame")
 				if !is_instance_valid(node):
 					return
@@ -233,7 +233,7 @@ func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false,
 			font_adjustment -= 1
 			_set_card_rtl_fonts(node, label_fonts, starting_font_size + font_adjustment)
 			_assign_bbcode_text(node, value, starting_font_size + font_adjustment)
-			if (get_tree()):
+			if is_inside_tree():
 				yield(get_tree(), "idle_frame")
 				if !is_instance_valid(node):
 					return
@@ -243,23 +243,14 @@ func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false,
 			while bbcode_height == 0 or bbcode_height > 1000:
 				_retries += 1
 #				print_debug("BBcode height:" + str(bbcode_height) + " retrying: " + str(_retries))
-				if (get_tree()):
+				if is_inside_tree():
 					yield(get_tree(), "idle_frame")
 					if !is_instance_valid(node):
 						return
 				bbcode_height = node.get_content_height()
 				if _retries >= 10:
 					break
-			# If we don't keep the card front face-up while setting the RTL,
-			# The bbcode_height will be returned as either 0 or 1000 after setting the
-			# bbcode_text. Regardless of how long we wait.
-			# The below snipper was debugging code to keep the code waiting to resize
-			# until the card was turned face-up
-	#		while bbcode_height == 0 or bbcode_height > 1000:
-	#			_set_card_rtl_fonts(node, label_fonts, starting_font_size + font_adjustment)
-	#			_assign_bbcode_text(node, value, starting_font_size + font_adjustment)
-	#			yield(get_tree(), "idle_frame")
-	#			bbcode_height = node.get_content_height()
+
 			if starting_font_size + font_adjustment == 6:
 				if small_size_retries <= 2:
 					print_debug("WARN:CGF:{0} rich text label reached minimum size (6).\nRestarting font size calulcations retry: {4}\nstarting_font_size {1}\nbbcode_height: {2} > label_size.y: {3}".format(

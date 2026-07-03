@@ -138,6 +138,14 @@ func _process(delta:float):
 		deck_picture_highlight.rect_position = current_deck.get_global_position() - size_diff/2
 		if 	deck_picture_highlight.modulate.a < 0.1:
 			stop_highlight()
+	
+	for button in [heroes_filter, heroes_filter2]:
+		var obj = button.get_popup()
+		if obj.visible:
+			var y_size = obj.rect_size.y * obj.rect_scale.y
+			var screen_size = get_viewport().size/cfc.screen_scale
+			if y_size > screen_size.y - 20:
+				obj.rect_scale = obj.rect_scale * 0.95
 
 func highlight_deck(deck_id):
 	deck_selected(deck_id)
@@ -219,6 +227,7 @@ func deck_selected(deck_id):
 		current_deck.hide_highlights()
 	
 	current_selected_deck_id = deck_id
+
 	current_deck = all_decks.get(current_selected_deck_id)
 	if current_deck:
 		current_deck.show_highlights()
@@ -624,6 +633,8 @@ func _on_DeckCreateHeroButton_pressed():
 	var hero_id = hero_names_to_id[hero_name]
 	create_and_edit_new_deck(hero_id)
 
+func _on_DeckCreateCancelButton_pressed():
+	tab_select(main_container)
 
 func _on_CloseExportButton_pressed():
 	OS.window_fullscreen = cfc.game_settings.get("fullscreen", false) 
@@ -649,3 +660,6 @@ func _on_MCDBButton_pressed():
 
 func _on_DownloadDeckNumber_text_entered(new_text):
 	_on_DownloadDeck_pressed()
+
+
+

@@ -51,6 +51,10 @@
 		}
 	},
 	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		},		
 	] ,
 	"end": {
 		"phase": "PLAYER_TURN",

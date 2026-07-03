@@ -998,7 +998,7 @@ const DEFAULT_SETTINGS:= {
 		"nebu": "https://marvelcdb.com/api/public/cards/nebu.json", #Nebula Hero Pack	
 		"warm" : "https://marvelcdb.com/api/public/cards/warm.json", #War Machine Hero Pack
 #		"hood": "https://marvelcdb.com/api/public/cards/hood.json", #The Hood scenario pack	
-#		"valk": "https://marvelcdb.com/api/public/cards/valk.json", #Valkyrie Hero Pack	
+		"valk": "https://marvelcdb.com/api/public/cards/valk.json", #Valkyrie Hero Pack	
 #		"vision": "https://marvelcdb.com/api/public/cards/vision.json", #Vision Hero Pack	
 #cycle 5
 		"sm" : "https://marvelcdb.com/api/public/cards/sm.json", #Sinister Motives Expansion Box				

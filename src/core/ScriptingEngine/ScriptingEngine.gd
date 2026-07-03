@@ -620,7 +620,6 @@ func move_card_to_container(script: ScriptTask) -> int:
 			# But we don't consider it a failed cost (as most games allow you
 			# to try and draw more cards when you're full but just won't draw any)
 			card.move_to(dest_container,dest_index, null, tags)
-			#yield(script.owner.get_tree().create_timer(0.05), "timeout")
 	return(retcode)
 
 
@@ -657,8 +656,7 @@ func move_card_to_board(script: ScriptTask) -> int:
 						#skip if we're trying to move to the same place
 						continue
 					slot = grid.find_available_slot()
-					# We need a small delay, to allow a potential new slot to instance
-					#yield(script.owner.get_tree().create_timer(0.05), "timeout")
+
 					if slot:
 						# Setting the highlight lets the move_to() method
 						# Know we're moving into that slot
@@ -681,7 +679,7 @@ func move_card_to_board(script: ScriptTask) -> int:
 			# We assume cards moving to board want to be face-up
 			if not costs_dry_run():
 				card.move_to(cfc.NMAP.board, -1, board_position, tags)
-				#yield(script.owner.get_tree().create_timer(0.05), "timeout")
+
 	return(retcode)
 
 

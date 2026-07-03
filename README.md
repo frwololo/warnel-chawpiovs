@@ -30,7 +30,7 @@ Other than that, here are known limitations with the engine at the moment:
 
 ## Current Status (General)
 ![Warnel Chawpiovs Supported Characters and Scenarios](doc/pictures/characters_and_scenarios.jpg "Warnel Chawpiovs Supported Characters and Scenarios")
-This simulator supports the following cards from the original game (current total 27 heroes, 28 villains, as well as associated player cards and encounters):
+This simulator supports the following cards from the original game (current total 36 heroes, 28 villains, as well as associated player cards and encounters):
 * Cycle 1:
   * Core box (5 heroes, 3 villains)
   * Captain America (1 Hero)
@@ -44,20 +44,30 @@ This simulator supports the following cards from the original game (current tota
   * Ant-Man (1 Hero)
   * Wasp (1 Hero)
   * Quicksilver (1 Hero)
+  * Scarlet Witch ( 1 Hero)
 * Cycle 3:
   * The Galaxy's Most Wanted (2 heroes, 5 villains)
-  * Quicksilver (1 Hero)
+  * Star-Lord (1 Hero)
+  * Gamora (1 Hero)
+  * Drax (1 Hero)
+  * Venom (1 Hero)
 * Cycle 4:
   * The Mad Titan's Shadow ( 2 heroes, 5 villains)
+  * Nebula (1 Hero)
   * War Machine (1 Hero)
+  * Valkyrie (1 Hero)
 * Cycle 5:
   * Sinister Motives ( 2 heroes, 5 villains)
 * Cycle 6:
   * Mutant Genesis ( 2 heroes, 5 villains)
+  * Phoenix (1 Hero)
+  * Wolverine (1 Hero)
+* Cycle 8:
+  * Nightcrawler (1 Hero)  
 * Cycle 9:
   * Winter soldier (1 Hero)  
 
-This represents roughly 35% of all official cards (excluding campaigns) at the time of this writing.
+This represents roughly 40% of all official cards (excluding campaigns) at the time of this writing.
 
 There is no tutorial included, and, although the rules are automatically handled by the engine, it will quickly become confusing if you are not already familar with the original game.
 

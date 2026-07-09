@@ -2498,7 +2498,8 @@ func common_pre_run(sceng) -> void:
 					script.script_name = script.get_property("name") #TODO something cleaner? Maybe part of the script itself?
 					new_queue.append(script)
 			"indirect_damage":
-				var new_script = indirect_damage_replacement(script_definition, trigger_details)
+				var subject = get_param_subject(script.script_definition, script)
+				var new_script = subject.indirect_damage_replacement(script_definition, trigger_details)
 				if (new_script) :
 					script.script_definition = new_script
 					script.script_name = script.get_property("name") #TODO something cleaner? Maybe part of the script itself?
@@ -2657,12 +2658,7 @@ func indirect_damage_replacement(script_definition: Dictionary, trigger_details)
 	if script_definition.get("all_players", false):
 		controller_hero_id = ""
 			
-	var filter_state_seek = [
-		{
-			"filter_group": "group_friendly" + str(controller_hero_id)
-		}
-	]
-	filter_state_seek = script_definition.get("filter_state_seek", {})
+	var filter_state_seek = script_definition.get("filter_state_seek", {})
 	
 	var amount = script_definition.get("amount", 1)
 	

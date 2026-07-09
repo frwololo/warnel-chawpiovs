@@ -281,7 +281,25 @@ func move_card_to_container(script: ScriptTask) -> int:
 	script.script_definition = backup
 	return result
 
-
+func return_card_to_owner_hand(script: ScriptTask) -> int:
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+		
+	if costs_dry_run():
+		return CFConst.ReturnCode.CHANGED
+	
+	var all_subjects = script.subjects.duplicate()	
+	for subject in all_subjects:
+		var owner_id = subject.get_owner_hero_id()
+		if owner_id:
+			script.script_definition["dest_container"] = "hand" + owner_id
+			script.subjects = [subject]
+			move_card_to_container(script)
+	
+	
+	script.subjects = all_subjects
+	return CFConst.ReturnCode.CHANGED
+	
 func draw_cards (script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 

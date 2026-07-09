@@ -639,7 +639,6 @@
 		}
 	},
 	"Back to the Future": {
-		"TODO": "",
 		"interrupt_remove_threat": {
 			"display_section": "generic",
 			"event_filters": {
@@ -1925,25 +1924,53 @@
 		}
 	},
 	"Dragoness": {
-		"TODO": "",
-		"alterants": {
+		"interrupt": {
+			"event_name": [
+				"commit_scheme",
+				"enemy_attack"
+			],
+			"trigger": "self",
 			"board": [
 				{
-					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": {
+										"func_name": "count_printed_resources",
+										"func_params": {
+											"resource_type": "energy",
+											"subject": "tutor",
+											"subject_count": "all",
+											"src_container": "hand_current_hero_target"
+										}
+									}
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "scheme",
+									"trigger": "self",
+									"alteration": {
+										"func_name": "count_printed_resources",
+										"func_params": {
+											"resource_type": "energy",
+											"subject": "tutor",
+											"subject_count": "all",
+											"src_container": "hand_current_hero_target"
+										}
+									}
+								}
+							]
 						}
-					],
-					"alteration": 1
+					}
 				}
 			]
-		},
-		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
 		}
 	},
 	"E.V.A.": {
@@ -2237,10 +2264,46 @@
 		}
 	},
 	"Extreme Measures": {
-		"TODO": "",
 		"hinder": {
-			"__amount__": "TODO",
+			"__amount__": 2,
 			"__each_player__": true
+		},
+		"card_moved_to_board": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "ally"
+					}
+				},
+				{
+					"filter_properties": {
+						"type_code": "player_side_scheme"
+					}
+				},
+				{
+					"filter_properties": {
+						"type_code": "support"
+					}
+				},
+				{
+					"filter_properties": {
+						"type_code": "upgrade"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "indirect_damage",
+					"subject": "trigger",
+					"amount": {
+						"func_name": "get_subject_int_printed_property",
+						"func_params": {
+							"subject": "trigger",
+							"property": "cost"
+						}
+					}
+				}
+			]
 		}
 	},
 	"Fantomex - Charlie Cluster-7": {
@@ -2512,7 +2575,27 @@
 		}
 	},
 	"Forearm": {
-		"TODO": ""
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"sort_descending": true,
+					"src_container": "deck_current_hero_target",
+					"up_to": true,
+					"subject_count": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"resource_type": "physical",
+							"subject": "tutor",
+							"subject_count": "all",
+							"src_container": "hand_current_hero_target"
+						}
+					}
+				}
+			]
+		}
 	},
 	"Frenemies": {
 		"manual": {
@@ -2556,18 +2639,7 @@
 		"TODO": "campaign mode not supported"
 	},
 	"Geared Up": {
-		"TODO": "",
-		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action_ability"
-					]
-				}
-			]
-		}
+		"TODO": "campaign mode not supported"
 	},
 	"Genetic Mastery": {
 		"reveal": {
@@ -4476,7 +4548,6 @@
 		}
 	},
 	"Luck Be a Lady": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -5242,18 +5313,7 @@
 		"TODO": "campaign mode not supported"
 	},
 	"Mission Prepped": {
-		"TODO": "",
-		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action_ability"
-					]
-				}
-			]
-		}
+		"TODO": "campaign mode not supported"
 	},
 	"Mister Sinister - 1": {
 		"card_token_modified": {
@@ -5449,12 +5509,50 @@
 		}
 	},
 	"Mutant Insurrection": {
-		"TODO": "",
-		"_surge": {},
+		"card_moved_to_board": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "trigger"
+				}
+			]
+		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "add_threat",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"multiplier": 2,
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_group": "group_characters",
+									"filter_properties": {
+										"trait_mutant_liberation_front": 1,
+										"comparison": "ge"
+									}
+								}
+							]
+						}
+					},
+					"subject": "main_scheme",
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "surge"
 				}
 			]
 		}
@@ -6012,7 +6110,6 @@
 		}
 	},
 	"Pip the Pug": {
-		"TODO": "",
 		"manual": {
 			"board": [
 				{
@@ -6109,7 +6206,7 @@
 		"TODO": "campaign mode not supported"
 	},
 	"Practiced Maneuvers": {
-		"TODO": ""
+		"TODO": "campaign mode not supported"
 	},
 	"Precognition": {
 		"manual": {
@@ -6198,21 +6295,7 @@
 		"TODO": "campaign mode not supported"
 	},
 	"Prepared Defenses": {
-		"TODO": "",
-		"alterants": {
-			"board": [
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
-					"alteration": 1
-				}
-			]
-		}
+		"TODO": "campaign mode not supported"
 	},
 	"Probability Field": {
 		"interrupt_recovery": {
@@ -6886,20 +6969,51 @@
 		}
 	},
 	"Reaper": {
-		"TODO": "",
-		"manual": {
+		"interrupt_enemy_attack": {
+			"trigger": "self",
 			"board": [
 				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_printed_resources>=2",
+								"func_params": {
+									"resource_type": "mental",
+									"subject": "tutor",
+									"subject_count": "all",
+									"src_container": "hand_current_hero_target"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "stunned",
+									"modification": 1,
+									"subject": "current_hero_target"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_printed_resources>=3",
+								"func_params": {
+									"resource_type": "mental",
+									"subject": "tutor",
+									"subject_count": "all",
+									"src_container": "hand_current_hero_target"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "exhaust_card",
+									"subject": "current_hero_target"
+								}
+							]
+						}
+					]
 				}
 			]
-		},
-		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
 		}
 	},
 	"Right Place, Right Time": {
@@ -7233,27 +7347,109 @@
 		"TODO": "campaign mode not supported"
 	},
 	"Safehouse Established": {
-		"TODO": "",
-		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action_ability"
-					]
-				}
-			]
-		}
+		"TODO": "campaign mode not supported"
 	},
 	"Samurai": {
-		"TODO": ""
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "save_variable",
+					"var_name": "my_charge",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"token_name": "charge",
+							"subject": "self"
+						}
+					},
+					"is_cost": true,
+					"_comments": "remembering  for next use"
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "charge",
+			"board": [
+				{
+					"name": "save_variable",
+					"var_name": "my_charge",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"token_name": "charge",
+							"subject": "self"
+						}
+					},
+					"is_cost": true,
+					"_comments": "remembering  for next use"
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Take Damage": [
+					{
+						"name": "deal_damage",
+						"amount": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"token_name": "charge",
+								"subject": "self"
+							}
+						},
+						"plus_amount": 1,
+						"subject": "current_hero_target"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "charge",
+						"modification": 1,
+						"subject": "self"
+					}
+				],
+				"Discard 1 Card": [
+					{
+						"name": "discard",
+						"subject": "boardseek",
+						"is_cost": true,
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"selection_optional": false,
+						"filter_state_seek": [
+							{
+								"filter_func": {
+									"func_name": "get_subject_int_printed_property>my_charge",
+									"func_params": {
+										"subject": "trigger",
+										"property": "cost"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "charge",
+						"modification": 1,
+						"subject": "self"
+					}
+				]
+			}
+		}
 	},
 	"Scrambler": {
 		"TODO": "campaign mode not supported"
 	},
 	"Seek the Weak": {
-		"TODO": "",
 		"reveal_alter_ego": {
 			"all": [
 				{
@@ -7843,13 +8039,39 @@
 		}
 	},
 	"Strobe": {
-		"TODO": "",
 		"reveal": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Stun": [
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_characters_my_hero"
+							}
+						]
+					}
+				],
+				"Deal Damage": [
+					{
+						"name": "deal_damage",
+						"amount": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_characters_my_hero"
+							}
+						]
+					}
+				]
+			}
 		}
 	},
 	"Stryfe": {
@@ -8439,18 +8661,7 @@
 		"_sinister_2a": {}
 	},
 	"Team Assembled": {
-		"TODO": "",
-		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action_ability"
-					]
-				}
-			]
-		}
+		"TODO": "campaign mode not supported"
 	},
 	"Team Investigation": {
 		"manual": {
@@ -8868,18 +9079,55 @@
 		}
 	},
 	"Tempo": {
-		"TODO": "",
 		"alterants": {
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
+					"filter_property_name": "hand_size",
+					"trigger": "my_identity",
 					"alteration": 1
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"src_container": "deck_current_hero_target",
+					"subject": "tutor",
+					"sort_descending": true,
+					"up_to": true,
+					"subject_count": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "tutor",
+							"subject_count": "all",
+							"src_container": "hand_current_hero_target",
+							"multiplier": 2
+						}
+					}
+				}
+			]
+		},
+		"enemy_thwart_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"src_container": "deck_current_hero_target",
+					"subject": "tutor",
+					"sort_descending": true,
+					"up_to": true,
+					"subject_count": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "tutor",
+							"subject_count": "all",
+							"src_container": "hand_current_hero_target",
+							"multiplier": 2
+						}
+					}
 				}
 			]
 		}
@@ -9235,11 +9483,48 @@
 		}
 	},
 	"Thumbelina": {
-		"TODO": "",
+		"interrupt_receive_damage": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"trait_tiny": 0
+					}
+				}
+			],
+			"event_filters": {
+				"target": "self",
+				"amount": ">0",
+				"tag": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": 1,
+					"subject": "interrupted_event"
+				}
+			]
+		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "return_card_to_owner_hand",
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_descending": true,
+					"sort_name": "get_subject_int_printed_property",
+					"func_params": {
+						"property": "cost"
+					},
+					"filter_state_seek": [
+						{
+							"filter_group": "upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "upgrade"
+							}
+						}
+					]
 				}
 			]
 		}
@@ -9740,13 +10025,38 @@
 		}
 	},
 	"Wildside": {
-		"TODO": "",
 		"reveal": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Wildside attacks": [
+					{
+						"name": "enemy_attacks_you",
+						"subject": "self"
+					}
+				],
+				"Return Highest Cost support": [
+					{
+						"name": "return_card_to_owner_hand",
+						"subject": "boardseek",
+						"sort_by": "function",
+						"sort_descending": true,
+						"sort_name": "get_subject_int_printed_property",
+						"func_params": {
+							"property": "cost"
+						},
+						"filter_state_seek": [
+							{
+								"filter_group": "upgrade_support_my_hero",
+								"filter_properties": {
+									"type_code": "support"
+								}
+							}
+						]
+					}
+				]
+			}
 		}
 	},
 	"Wolfsbane - Rahne Sinclair": {

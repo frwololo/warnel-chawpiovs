@@ -569,7 +569,6 @@
 				{
 					"name": "move_card_to_board",
 					"subject": "tutor",
-					"dest_container": "hand",
 					"src_container": [
 						"deck",
 						"discard",

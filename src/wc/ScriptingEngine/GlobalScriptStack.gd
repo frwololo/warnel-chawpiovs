@@ -855,6 +855,19 @@ func flush_script(stack_object):
 			#not sure what's a proper way to address that, for now I'm overwriting the values here
 			trigger_details["stack_object"] = stack_object
 			trigger_details["event_object"] = stack_object.get_first_task()
+			
+			#some cards specifically target "abilities" per opposition to "default" (basic power) actions
+#			var tags = trigger_details.get("tags", [])
+#			if tags == null:
+#				tags = []
+#			var is_ability = true
+#			if "basic power" in tags:
+#				is_ability = false
+#			if is_ability:
+##				#I'm paying the price of not understanding what is going on in CardTemplate.
+##				if !tags:
+##					tags = trigger_details["event_object"].script_definition["tags"]
+#				trigger_details["tags"] = tags.append("is_ability")
 			scripting_bus.emit_signal_on_stack("script_executed", sceng.owner, trigger_details)
 			
 	#	var user_interaction_status = stack_object.get_user_interaction_status()

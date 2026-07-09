@@ -1004,12 +1004,6 @@
 					"trigger": "host",
 					"alteration": 1
 				},
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "thwart",
-					"trigger": "host",
-					"alteration": 1
-				}
 			]
 		},
 		"attacks_gain": {

@@ -742,6 +742,7 @@ const AUTO_KEYWORDS := {
 	"attack_indirect_damage": "int",
 	"blank_abilities": "int",
 	"blank_printed_trigger_abilities": "int",
+	"blank_printed_text_box": "int",
 
 	"bypass_crisis": "int",
 	"bypass_guard": "int",
@@ -759,7 +760,8 @@ const AUTO_KEYWORDS := {
 	"cannot_have_attachments": "int",	
 	"cannot_have_player_card_attachments": "int",	
 	"cannot_have_upgrade_attachments": "int",				
-	"cannot_leave_play": "int",	
+	"cannot_leave_play": "int",
+	"cannot_leave_play_from_abilities": "int",			
 	"cannot_remove_threat": "int",
 	"cannot_ready": "int",
 	"cannot_ready_by_player_card": "int",
@@ -1016,7 +1018,7 @@ const DEFAULT_SETTINGS:= {
 #		"rogue": "https://marvelcdb.com/api/public/cards/rogue.json", #Rogue Hero Pack
 #		"mojo": "https://marvelcdb.com/api/public/cards/mojo.json",  #Mojo Scenario Pack	
 #cycle 7
-#		"next_evol": "https://marvelcdb.com/api/public/cards/next_evol.json", #Next Evolution  Expansion Box	
+		"next_evol": "https://marvelcdb.com/api/public/cards/next_evol.json", #Next Evolution Expansion Box	
 #		"psylocke": "https://marvelcdb.com/api/public/cards/psylocke.json", #Psylocke Hero Pack		
 #		"angel": "https://marvelcdb.com/api/public/cards/angel.json", #Angel Hero Pack	
 #		"x23": "https://marvelcdb.com/api/public/cards/x23.json", #X-23 Hero Pack	
@@ -1129,7 +1131,7 @@ const SCRIPT_BREAKPOINT_CARD_NAME := "Gamora"
 const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_played"
 
 
-const GAME_VERSION := "1.5.0"
+const GAME_VERSION := "1.6.0"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
 const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 

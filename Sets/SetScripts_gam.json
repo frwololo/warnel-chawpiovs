@@ -753,7 +753,7 @@
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "blank_printed_trigger_abilities",
+					"filter_property_name": "blank_printed_text_box",
 					"trigger": "host",
 					"alteration": 1
 				}

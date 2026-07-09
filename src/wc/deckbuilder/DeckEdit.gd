@@ -22,7 +22,7 @@ var current_collection_subset := []
 var current_page = 0
 var CARDS_PER_PAGE = 0
  
-const DECK_CARD_SCALE = 1.2
+const DECK_CARD_SCALE = 1.12
 const COLLECTION_CARD_SCALE = 0.65
 const WAIT_BEFORE_PREVIEW = 0.7
 const PREVIEW_CARD_SIZE = Vector2(450, 630)
@@ -394,7 +394,7 @@ func reorganize_deck():
 		var type_code = container.name
 		var label = container.get_children()[0]
 		if label.text:		
-			label.text = type_code.capitalize()
+			label.text = make_readable(type_code)
 			#don't display number for hero
 			if type_code == "hero":
 				continue
@@ -500,7 +500,7 @@ func add_deck_row(type, index = ""):
 	deck_container.add_child(container)	
 	var label:Label = Label.new()
 	if !index:
-		label.text = type.capitalize()
+		label.text = make_readable(type)
 	else:
 		label.text = ""
 	container.add_child(label)
@@ -511,18 +511,27 @@ func init_deck_container():
 	
 	var max_types = compute_max_types()
 	
-	for type in ["hero", "ally", "event", "upgrade", "support", "resource"]:
+	for type in ["hero", "ally", "event", "upgrade", "support",  "resource", "player_side_scheme",]:
 		add_deck_row(type)
 		if type in max_types:
 			add_deck_row(type, "1")
 
 var _deck_aspects := {}
-func count_deck_aspects(include_hero_cards:= true):
+func count_deck_aspects(include_hero_cards:= true, additional_rules = {}):
 	_deck_aspects = {}
 	var slots = deck_data["slots"]
+
+	var types_to_exclude = additional_rules.get("exclude_card_types", [])	
+	
 	for card_id in slots:
 		var card_data = cfc.card_definitions[card_id]
 		var aspect = card_data["faction_code"]
+	
+		if types_to_exclude:
+			var card_type = card_data["type_code"]
+			if card_type in types_to_exclude:
+				continue
+				
 		if !include_hero_cards:
 			var card_set_type_name_code =card_data.get("card_set_type_name_code","")
 			if card_set_type_name_code == "hero":
@@ -640,6 +649,24 @@ func display_deck_data():
 func _on_Menu_resized() -> void:
 	resize()
 
+const key_to_label:= {
+	"player_side_scheme" : "Side Scheme"
+}
+
+func make_readable(key):
+	if key_to_label.has(key):
+		return key_to_label[key]
+	
+	return key.replace("_", " ").capitalize()
+
+
+func make_filterable(readable_key):
+	for key in key_to_label:
+		if key_to_label[key].to_lower()==readable_key.to_lower():
+			return key
+			
+	return readable_key.replace(" ", "_").to_lower()
+
 func _build_card_collection():
 	if card_collection:
 		return
@@ -648,7 +675,7 @@ func _build_card_collection():
 		
 		#skip encounters, hero cards, etc...
 		var type_code = card_data["type_code"]
-		if !(type_code in ["ally", "event", "resource", "support", "upgrade"]):
+		if !(type_code in ["ally", "event", "resource", "support", "upgrade", "player_side_scheme"]):
 			continue 
 		var faction_code = card_data.get("faction_code", "")
 		if faction_code in ["campaign", "encounter", "hero"]:
@@ -694,7 +721,7 @@ func _build_card_collection():
 		
 	var type_filter = get_node("%TypeFilter")
 	for key in types:
-		type_filter.add_item(key)	
+		type_filter.add_item(make_readable(key))	
 		
 	var cost_filter = get_node("%CostFilter")
 	for key in costs:
@@ -711,6 +738,8 @@ func filter_collection(collection:= {}):
 	
 	var aspect = aspect_filter.get_item_text(aspect_idx) if aspect_idx else null
 	var type = type_filter.get_item_text(type_idx) if type_idx else null
+	if type:
+		type = make_filterable(type)
 	var cost = int(cost_filter.get_item_text(cost_idx)) if cost_idx else null
 	
 	current_collection_subset = []
@@ -779,8 +808,15 @@ func final_rules_check_error():
 				result = "Some cards have more than " + str(quantity_limit) + " " + copy_str +"\n"
 		
 		total_cards+= quantity
+	var additional_rules = {}
+	var hero_deck_options = hero_data.get("deck_options", [])
+	for deck_option in hero_deck_options:
+		if typeof(deck_option) != TYPE_DICTIONARY:
+			continue
+		if deck_option.has("type"):
+			additional_rules["exclude_card_types"] = deck_option["type"]
 		
-	var deck_aspects = count_deck_aspects(false)
+	var deck_aspects = count_deck_aspects(false, additional_rules)
 	if deck_aspects.size() != count_aspects:
 		var aspect_str = "aspect"
 		var comparison_str = "More"

@@ -1375,6 +1375,16 @@ func move_token_to(script: ScriptTask) -> int:
 						
 	return retcode
 
+func check_main_scheme_defeat(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+
+	if (costs_dry_run()):
+		return retcode	
+		
+	gameData.check_main_scheme_defeat()
+	return retcode
+
+	
 func increase(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
@@ -1640,13 +1650,14 @@ func enemy_attacks_engaged_hero(script: ScriptTask) -> int:
 	
 	var subjects = script.subjects
 	var to_remove = []
+	var even_alter_ego = script.get_property("even_if_alter_ego", false)	
 	for card in subjects:
 		var target = card.get_controller_hero_card()
 		if !target:
 			cfc.LOG("subject error in enemy_attacks_engaged_hero, no engaged hero for " + card.canonical_name)
 			to_remove.append(card)
 			continue
-		if !target.is_hero_form():
+		if !target.is_hero_form() and !even_alter_ego:
 			to_remove.append(card)
 
 	for c in to_remove:
@@ -1888,12 +1899,25 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 		boost_card.hint("+" + str(boost_amount), Color8(100,255,150), {"position": "bottom_right"})
 	script_definition["boost"].append(boost_amount)
 
-	var func_return = boost_card.execute_scripts(boost_card, "boost")
+	var tags = script.get_property(SP.KEY_TAGS, [])
+	var target_friendly = script.get_property("target")		
+	var defender = script.subjects[0] if script.subjects else null	
+	
+	var boost_trigger_details = {
+		"boost_amount" : boost_amount, 
+		"boost_icons": boost_icons, 
+		"tags": tags , 
+		"target": target_friendly, 
+		"attacker": attacker, 
+		"defender": defender
+	}
+	
+	var func_return = boost_card.execute_scripts(boost_card, "boost", boost_trigger_details)
 	if func_return is GDScriptFunctionState && func_return.is_valid():
 		yield(func_return, "completed")	
 	
-	var tags = script.get_property(SP.KEY_TAGS, [])
-	scripting_bus.emit_signal_on_stack("boost_card_resolved", boost_card, {"boost_amount" : boost_amount, "boost_icons": boost_icons, "tags": tags })
+
+	scripting_bus.emit_signal_on_stack("boost_card_resolved", boost_card, boost_trigger_details)
 
 	return retcode
 
@@ -2315,9 +2339,15 @@ func thwart(script: ScriptTask) -> int:
 	var owner = script.owner
 	#we can provide a thwart amount in the script,
 	#otherwise we use the thwart property if the script owner is a friendly character
-	var amount = script.retrieve_integer_property("amount")
-	if !amount:
+	var amount = 0
+	if script.script_definition.has("amount"):
+		amount = script.retrieve_integer_property("amount")
+	else:
 		amount = owner.get_property("thwart", 0)
+		if script.has_tag("basic power"):
+			var subject = script.subjects[0] if script.subjects else null
+			if subject and subject.get_property("assault", 0, true):
+				amount = owner.get_property("attack", 0)
 
 	if !amount:
 		amount = 0
@@ -2783,20 +2813,29 @@ func change_form(script: ScriptTask) -> int:
 
 			
 		var to_card_id = to_card
-		if to_card_id == "other_hero_form":
-			var found = false
-			var card_set_code = hero.get_property("card_set_code", "")
-			if !card_set_code:
-				return CFConst.ReturnCode.FAILED
-			var set_cards = cfc.cards_by_set.get(card_set_code, [])
-			for card_data in set_cards:
-				if card_data["type_code"] == "hero" and card_data["_code"]!= hero.canonical_id:
-					to_card_id = card_data["_code"]
-					found  = true
-					break
-			if !found:
-				return CFConst.ReturnCode.FAILED		
-
+		match to_card_id:
+			"other_hero_form":
+				var found = false
+				var card_set_code = hero.get_property("card_set_code", "")
+				if !card_set_code:
+					return CFConst.ReturnCode.FAILED
+				var set_cards = cfc.cards_by_set.get(card_set_code, [])
+				for card_data in set_cards:
+					if card_data["type_code"] == "hero" and card_data["_code"]!= hero.canonical_id:
+						to_card_id = card_data["_code"]
+						found  = true
+						break
+				if !found:
+					return CFConst.ReturnCode.FAILED	
+			"alter_ego":
+				#can't change from alter_ego to alter_ego
+				if hero.is_alter_ego_form():
+					return CFConst.ReturnCode.FAILED	
+			"hero":
+				#can't change from hero to hero
+				if hero.is_hero_form():
+					return CFConst.ReturnCode.FAILED
+					
 		#todo check that subject is indeed a hero
 		if !hero.can_change_form(is_manual, to_card_id):
 			return CFConst.ReturnCode.FAILED

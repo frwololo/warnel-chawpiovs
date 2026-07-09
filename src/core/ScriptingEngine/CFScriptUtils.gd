@@ -189,8 +189,8 @@ static func get_altered_value(
 				continue				
 			var scripts = obj.retrieve_scripts(alterants_key)
 			# We select which scripts to run from the card, based on it state
-			var any_state_scripts = scripts.get('all', [])
-			var state_scripts = scripts.get(obj.get_state_exec(), any_state_scripts)			
+			var state_scripts = obj.retrieve_current_state_scripts(scripts)
+			
 			# To avoid unnecessary operations
 			# we evoke the AlterantEngine only if we have something to execute
 			var task_details = _generate_trigger_details(task_name, task_properties)

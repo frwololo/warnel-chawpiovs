@@ -12,6 +12,7 @@ var _objects:= []
 var removal_conditions:= []
 var extra_script_removal_conditions:= []
 var cards_with_extra_scripts:= []
+var function_overrides:= {}
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -20,12 +21,48 @@ var cards_with_extra_scripts:= []
 func reset():
 	_objects = []
 	_remove_all_children()
+	function_overrides= {}
 
 func setup(scenario:ScenarioDeckData):
 	var extra_rules = scenario.scenario_data.get("extra_rules", [])
 	if extra_rules:
 		for extra_rule in extra_rules:
 			add_script(null, extra_rule)
+
+func add_function_overrides(owner, dict):
+	if !dict:
+		return
+	for key in dict:
+		var override_rule = dict[key]
+		if !function_overrides.has(key):
+			function_overrides[key] = []
+		function_overrides[key].append({"owner": owner, "override": dict[key].duplicate()})
+
+func remove_function_overrides(owner):
+	var to_remove = []
+		
+	for override in function_overrides:
+		if override["owner"] == owner:
+			to_remove.append(override)
+
+	for removal in to_remove:
+		function_overrides.erase(removal)
+
+func get_function_override(func_name, trigger_object):
+	if !function_overrides.has(func_name):
+		return null
+	for potential_override_data in function_overrides[func_name]:
+		var potential_override = potential_override_data["override"]
+		var owner = potential_override_data["owner"]
+		
+		#this addresses the case where the owner's card is supposed to be blanked
+		if !owner.get_potential_scripts("function_overrides"):
+			continue 
+		if potential_override.has("filter_state_trigger"):
+			var is_match = SP.check_validity(trigger_object, potential_override, "trigger", potential_override_data["owner"])
+			if is_match:
+				return potential_override
+	return null
 
 func execute_scripts(trigger):
 	for child in get_children():

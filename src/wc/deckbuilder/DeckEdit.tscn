@@ -232,7 +232,7 @@ script = ExtResource( 5 )
 
 [node name="DeckRows" type="HBoxContainer" parent="MainMenu/Outercontainer/BottomSection/VBoxContainer/DeckContainer/VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
-custom_constants/separation = 10
+custom_constants/separation = 5
 
 [node name="BottomContainer" type="MarginContainer" parent="MainMenu/Outercontainer/BottomSection/VBoxContainer"]
 margin_top = 40.0

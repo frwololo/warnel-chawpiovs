@@ -154,10 +154,22 @@
 	},
 	"actions": [
 		{
+			"type": "other",
+			"value": "wait_a_bit",
+			"hero_id": 1,
+			"_comments": "attenmpt to remove aribtrary test failure"
+		},	
+		{
 			"type": "activate",
 			"value": "Nebula",
 			"hero_id": 1
 		},
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+			"hero_id": 1,
+			"_comments": "attenmpt to remove aribtrary test failure"
+		},		
 		{
 			"type": "choose",
 			"value": "Thwart",

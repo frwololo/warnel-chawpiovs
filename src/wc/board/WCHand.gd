@@ -179,10 +179,7 @@ func retrieve_ghostable_scripts(card):
 	if !card_scripts:
 		return null
 		
-	var state_scripts = []
-	# We select which scripts to run from the card, based on it state
-	var any_state_scripts = card_scripts.get('all', [])
-	state_scripts = card_scripts.get(state_exec, any_state_scripts)
+	var state_scripts = card.retrieve_current_state_scripts(card_scripts)
 	return state_scripts
 
 func check_ghost_card(card):

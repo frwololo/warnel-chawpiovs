@@ -1254,8 +1254,17 @@ func move_to(targetHost: Node,
 	# We need to store the parent, because we won't be able to know it later
 	var parentHost = get_parent()
 	var source_str = parentHost.name
+	var target_str = targetHost.name
+	var from_top_of_deck = false
+	var to_discard = false
 	if source_str.to_lower() == "board" and !considered_in_play():
 		source_str = "void"
+	if source_str.to_lower().begins_with("deck"):
+		var top_card = parentHost.get_top_card()
+		if top_card == self:
+			from_top_of_deck = true
+	if target_str.to_lower().begins_with("discard"):
+		to_discard = true		
 	# We want to keep the token drawer closed during movement
 	if is_instance_valid(tokens):
 		tokens.set_is_drawer_open(false)
@@ -1556,13 +1565,31 @@ func move_to(targetHost: Node,
 		"destination_grid": destination_grid,					
 		"source": source_str,
 		"tags": tags
-	}		
+	}	
 		
+	if from_top_of_deck and to_discard:
+		scripting_bus.emit_signal_on_stack("card_discarded_from_top_of_deck", self,	self.last_move_result)
+				
 	cfc.remove_ongoing_process(self)
 
 func set_scale(value):		
 	scale = value
 
+
+func retrieve_current_state_scripts(card_scripts):
+	var state_exec := get_state_exec()
+
+	#e.g. "pile_victory_display"
+	if state_exec == "pile":
+		if get_parent():
+			var precise_state = state_exec + "_" + get_parent().name.to_lower()
+			var state_scripts = card_scripts.get(precise_state, [])
+			if state_scripts:
+				return state_scripts
+				
+	var any_state_scripts = card_scripts.get('all', [])
+	var state_scripts = card_scripts.get(state_exec, any_state_scripts)
+	return state_scripts
 	
 func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 	var card_scripts = retrieve_scripts(trigger)
@@ -1587,12 +1614,9 @@ func get_state_scripts(card_scripts, trigger_card, trigger_details):
 	return state_scripts_dict["state_scripts"]
 
 func get_state_scripts_dict(card_scripts, trigger_card, trigger_details, exec_config = {}):
-	var state_scripts = []
 	var action_name = ""
 	# We select which scripts to run from the card, based on it state
-	var state_exec := get_state_exec()
-	var any_state_scripts = card_scripts.get('all', [])
-	state_scripts = card_scripts.get(state_exec, any_state_scripts)
+	var state_scripts = retrieve_current_state_scripts(card_scripts)
 
 	var rules = {}
 	var show_optional_confirmation_menu = exec_config.get("show_optional_confirmation_menu", false)

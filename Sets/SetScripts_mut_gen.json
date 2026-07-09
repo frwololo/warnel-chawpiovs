@@ -486,7 +486,6 @@
 		}
 	},
 	"Attack Training": {
-		"todo": "max 1 x per ally",
 		"manual": {
 			"hand": [
 				{
@@ -4355,7 +4354,6 @@
 		}
 	},
 	"Protective Training": {
-		"todo": "max 1 x per ally",
 		"manual": {
 			"hand": [
 				{

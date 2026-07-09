@@ -827,6 +827,18 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 					if compared_to_str == comp_value:
 						filters.erase(filter_key)				
 
+	if filters.has("tags"):
+		var to_remove = []
+		var tags = filters["tags"]
+		for tag in tags:
+			if tag.begins_with("!"):
+				var real_tag = tag.substr(1)
+				if trigger_details.has(real_tag):
+					return false
+				to_remove.append(tag)
+		for tag in to_remove:
+			filters["tag"].erase(tag)
+		
 #	if (filters):
 #		var _tmp = 0	
 	#var script_details = task.script_definition

@@ -34,6 +34,8 @@ const KEY_ATTACHMENTS_HOST:= "attachments_host"
 const FILTER_HOST_OF := "filter_is_host_of"
 const FILTER_HOSTED_BY  := "filter_is_hosted_by"
 const FILTER_SAME_CONTROLLER := "filter_same_controller"
+const FILTER_CONTROLLER_NAME := "filter_controller_name"
+const FILTER_SHARES_A_TITLE := "filter_shares_a_title_with_card_in_play"
 const FILTER_EVENT_SOURCE:= "filter_event_source"
 const FILTER_SOURCE_CONTROLLED_BY := "filter_source_controlled_by"
 const FILTER_SHARES_TRAIT_WITH_IDENTITY := "filter_shares_trait_with_identity"
@@ -248,7 +250,7 @@ static func check_source_controlled_by_filter(_trigger_card, owner_card, trigger
 		_: #not implemented
 			pass
 	return false
-	
+
 # Returns true if
 static func check_filter_event_source(_trigger_card, owner_card, trigger_details, _expected_event_source) -> bool:
 	var source = trigger_details.get("source", null)
@@ -280,6 +282,22 @@ static func check_same_controller_filter(trigger_card, owner_card, true_false : 
 	var same_controller: bool = (owner_card.get_controller_hero_id() == trigger_card.get_controller_hero_id())
 	if (same_controller and true_false): return true
 	if ((not same_controller) and (not true_false)): return true
+	return false
+	
+# Returns true if the trigger' and the owner belong to the same hero, false otherwises controller name matches the filter'
+static func check_controller_name_filter(trigger_card, owner_card, expected_name: String) -> bool:
+	var hero_controller = trigger_card.get_controller_hero_card()
+	if !hero_controller:
+		return false
+	var shortname = hero_controller.get_property("shortname", "").to_lower()
+	expected_name = expected_name.to_lower()
+	return (shortname == expected_name)
+	
+# Returns true if the trigger' shares a title
+static func check_shares_title_filter(trigger_card, owner_card, true_false : bool) -> bool:
+	var shares_title_with_card_in_play: bool = cfc.NMAP.board.unique_card_in_play(trigger_card)
+	if (shares_title_with_card_in_play and true_false): return true
+	if ((not shares_title_with_card_in_play) and (not true_false)): return true
 	return false
 
 #checks if owner_card already exists equal_or_more than max_value times
@@ -449,7 +467,7 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 	#For certain effects,
 	#permanent cards cannot be targeted by cards of a different set code
 	#this is a hardcoded blacklist approach for now. Not great but...
-	if card.get_property("permanent", 0):
+	if card.get_property("permanent", 0) or card.get_property("cannot_leave_play_from_abilities", 0):
 		var check_required = false
 		if script_name in ["move_card_to_container", "discard", "shuffle_card_into_container", "tuck_under_card", "tuck_card_under_me"]:
 			check_required = true
@@ -457,7 +475,12 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 			if "facedown" in tags:
 				check_required = true
 				
-		if check_required:		
+		if check_required:
+			# "cannot_leave_play_from_abilities" use case:
+			if card.get_property("cannot_leave_play_from_abilities", 0):
+				return false
+				
+			#"permanent" use case :	
 			var set_code = card.get_property("card_set_code", "")
 			var owner_set_code = owner_card.get_property("card_set_code", "")
 			if set_code != owner_set_code:
@@ -530,7 +553,10 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 			return false	
 
 	var card_matches = true
-	if is_instance_valid(card) and card_scripts.get(ScriptProperties.FILTER_STATE + type):
+	if !is_instance_valid(card):
+		return false
+		
+	if card_scripts.get(ScriptProperties.FILTER_STATE + type):
 		# each "filter_state_" FILTER is an array.
 		# Each element in this array is dictionary of "AND" conditions
 		# The filter will fail, only if ALL the or elements in this array
@@ -571,7 +597,13 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 						card_matches = false
 				if filter == FILTER_SAME_CONTROLLER:
 					if !check_same_controller_filter(card,owner_card,state_filter):
-						card_matches = false														
+						card_matches = false	
+				if filter == FILTER_CONTROLLER_NAME:
+					if !check_controller_name_filter(card,owner_card,state_filter):
+						card_matches = false
+				if filter == FILTER_SHARES_A_TITLE:
+					if !check_shares_title_filter(card,owner_card,state_filter):
+						card_matches = false																											
 			if card_matches:
 				break
 	return(card_matches)

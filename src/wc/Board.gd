@@ -540,6 +540,7 @@ func post_cards_moved_load():
 		yield(get_tree().create_timer(0.05), "timeout")	
 
 
+	
 	gameData.players_pre_setup()
 
 	draw_starting_hand()	
@@ -600,7 +601,12 @@ func post_cards_moved_load():
 		if !type_code in ["side_scheme", "main_scheme", "hero", "alter_ego"]: 
 			func_return = card.execute_scripts_no_stack(card, "setup")
 			if func_return is GDScriptFunctionState && func_return.is_valid():
-				yield(func_return, "completed")		
+				yield(func_return, "completed")
+				
+		#function overrides e.g. for Domino		
+		var function_overrides = card.get_potential_scripts("function_overrides") 
+		if function_overrides:		
+			gameData.theGameObserver.add_function_overrides(card, function_overrides)				
 
 	func_return = scheme.execute_scripts_no_stack(scheme, "post_setup")
 	if func_return is GDScriptFunctionState && func_return.is_valid():

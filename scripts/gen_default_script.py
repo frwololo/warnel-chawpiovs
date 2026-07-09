@@ -317,7 +317,6 @@ def get_base_json(card_data):
     if primitive == '<b>forced interrupt':
       result["interrupt"] = {
 	  "event_name": "TODO",
-          "is_optional_" + location: True,
           location: []
 	}               
       

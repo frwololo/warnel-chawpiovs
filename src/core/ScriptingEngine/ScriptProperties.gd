@@ -1435,10 +1435,15 @@ static func filter_trigger_no_validity_check(
 			return false
 
 	# Token Name filter checks
-	if card_scripts.get("filter_" + TRIGGER_TOKEN_NAME) \
-			and card_scripts.get("filter_" + TRIGGER_TOKEN_NAME) != \
-			trigger_details.get(TRIGGER_TOKEN_NAME):
-		return false
+	var token_filter = card_scripts.get("filter_" + TRIGGER_TOKEN_NAME)
+	if token_filter:
+			match typeof(token_filter):
+				TYPE_ARRAY:
+					if !(trigger_details.get(TRIGGER_TOKEN_NAME) in token_filter):
+						return false
+				_:
+					if token_filter != trigger_details.get(TRIGGER_TOKEN_NAME):
+						return false
 
 	# Counter Name filter checks
 	if card_scripts.get("filter_" + TRIGGER_COUNTER_NAME) \

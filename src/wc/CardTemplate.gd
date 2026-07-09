@@ -1293,9 +1293,8 @@ func retrieve_altered_scripts(trigger: String, filters := {}):
 		if !obj_scripts:
 			continue
 		# We select which scripts to run from the card, based on it state
-		var any_state_scripts = obj_scripts.get('all', [])
-		var state_scripts = obj_scripts.get(obj.get_state_exec(), any_state_scripts)			
-
+		var state_scripts = obj.retrieve_current_state_scripts(obj_scripts)
+			
 		for script in state_scripts:
 			if not SP.filter_trigger(
 				script,
@@ -1330,7 +1329,7 @@ func retrieve_scripts(trigger: String, filters := {}) -> Dictionary:
 	#todo more triggers to ignore ?
 	#Warning, I had an infinite loop in alterants engine here when calling get_property before checking for alterants
 	if !trigger in ["alterants"]:	
-		if self.get_property("blank_printed_trigger_abilities", 0, true):
+		if self.get_property("blank_printed_trigger_abilities", 0, true) or self.get_property("blank_printed_text_box", 0, true):
 				var found_scripts = _get_extra_scripts(trigger, filters)
 				if found_scripts:
 					return found_scripts
@@ -1430,9 +1429,7 @@ func get_potential_scripts(trigger):
 	var card_scripts = retrieve_scripts(trigger)
 	if !card_scripts:
 		return false
-	var state_exec := get_state_exec()
-	var any_state_scripts = card_scripts.get('all', [])
-	var state_scripts = card_scripts.get(state_exec, any_state_scripts)
+	var state_scripts = retrieve_current_state_scripts(card_scripts)
 	return state_scripts
 
 #returns true if something is going on that prevents execution of card scripts
@@ -2107,13 +2104,25 @@ func check_scheme_defeat(script):
 			var owner_set_code = script.owner.get_property("card_set_code", "")
 			if set_code != owner_set_code:
 				return 
+
+		var tags = script.get_property(SP.KEY_TAGS)
+		var trigger_details = script.trigger_details.duplicate(true)
+		trigger_details["source"] = guidMaster.get_guid(script.owner)
+				
+		#if the damage comes from an "attack", ensure the source is properly categorized as
+		#the hero (or villain) owner rather than the event card itself
+		if ("thwart" in tags):
+			var owner = script.owner
+			var type = owner.get_property("type_code", "")
+			if !is_character_type(type):
+				owner = WCScriptingEngine._get_identity_from_script(script)	
+				trigger_details["secondary_source"] = trigger_details["source"]
+				trigger_details["source"] = guidMaster.get_guid(owner)
 			
 		var card_dies_definition = {
 			"name": "card_dies",
-			"tags": ["remove_threat", "Scripted"] + script.get_property(SP.KEY_TAGS)
+			"tags": ["remove_threat", "Scripted"] + tags
 		}
-		var trigger_details = script.trigger_details.duplicate(true)
-		trigger_details["source"] = guidMaster.get_guid(script.owner)
 
 		var card_dies_script:ScriptTask = ScriptTask.new(self, card_dies_definition, script.trigger_object, trigger_details)
 		card_dies_script.set_subjects(self)
@@ -2256,8 +2265,14 @@ func post_death_move():
 
 func die(script):
 	var type_code = properties.get("type_code", "")
-	if script and !script.trigger_details.get("tags", []):
-		script.trigger_details["tags"] = script.get_property("tags", [])
+	if !script.trigger_details:
+		script.trigger_details = {}
+#	var trigger_details = script.trigger_details.duplicate() if script.trigger_details else []
+	if !script.trigger_details.get("tags", []):
+		script.trigger_details["tags"] = []
+	script.trigger_details["tags"] += script.get_property("tags", [])
+#	if script and !script.trigger_details.get("tags", []):
+#		script.trigger_details["tags"] = script.get_property("tags", [])
 	match type_code:
 		"hero", "alter_ego":
 			gameData.hero_died(self, script)
@@ -2678,16 +2693,16 @@ func pay_regular_cost_replacement(script, trigger_details) -> Dictionary:
 	var is_optional = script_definition.get(SP.KEY_SELECTION_OPTIONAL, true)
 	#precompute cost replacement macros
 	if (typeof(cost) == TYPE_STRING):
+		var subject = self
 		match cost:
-			"card_cost":
-				cost = self.get_property("override_play_cost", self.get_property("cost"))
 			"subject_cost":
-				var subject = get_param_subject(script_definition, script)
-				if subject:
-					cost = subject.get_property("override_play_cost", subject.get_property("cost"))
-				else:
+				subject = get_param_subject(script_definition, script)
+				if !subject:
 					var _error = 1
-					cost = self.get_property("override_play_cost", self.get_property("cost"))
+					subject = self			
+		cost = subject.get_property("override_play_cost", subject.get_property("cost"))
+		if subject.get_property("cost_per_player", false):
+			cost = cost * gameData.get_team_size()
 						
 	var selection_additional_constraints = null
 
@@ -3295,6 +3310,30 @@ func count_engaged_minions(params, script:ScriptObject= null) -> int:
 		if card.get_property("type_code", "") == "minion":
 			count +=1
 	return count
+
+func count_most_common(params, script:ScriptObject= null) -> int:
+	var subjects = get_param_subjects(params, script)
+	
+	if !subjects:
+		return 0
+	
+	var counts = {}
+	var max_value = 0
+	var max_property = ""
+	var property = params.get("property", "")
+	if not property:
+		return 0
+	for card in subjects:
+		var value = card.get_property(property, "")
+		if value:
+			if !counts.has(value):
+				counts[value] = 0
+			counts[value]+= 1
+			if counts[value] > max_value:
+				max_value = counts[value]
+				max_property = value
+	return max_value
+	
 		
 func get_subject_int_property(params, script:ScriptObject= null) -> int:
 	var subjects = get_param_subjects(params, script)
@@ -3955,7 +3994,7 @@ func get_resource_value_as_mana(script):
 	if (my_state) == "hand":
 #		if (canonical_name == "The Power of Justice" and get_state_exec() == "hand"):
 #			var _tmp = 1	
-		_cache_resource_value[cache_key]  = get_printed_resource_value_as_mana(script)	
+		_cache_resource_value[cache_key]  = get_printed_resource_value_as_mana({}, script)	
 		return _cache_resource_value[cache_key]
 	
 	_cache_resource_value[cache_key] = null
@@ -3972,11 +4011,31 @@ func get_resource_value_as_int(script):
 	return result_mana.converted_mana_cost()
 		
 
-func get_printed_resource_value_as_mana(_script= null):
+func merge_params_with_override(func_name, trigger, params):
+	var function_override = gameData.theGameObserver.get_function_override(func_name, trigger)
+	if !function_override:
+		return params
+	
+	var additional_params = function_override.get("additional_params", {})
+	for key in additional_params:
+		params[key] = additional_params[key]	
+	
+	return params
+
+func get_printed_resource_value_as_mana(params:Dictionary = {}, script= null):
+	var subject = get_param_subject(params, script)
+	
+	#TODO we might have to do something more generic eventually for this
+	params = merge_params_with_override("get_printed_resource_value_as_mana", subject, params)
+				
 	var resource_dict = {}
 	for resource_name in ManaCost.RESOURCE_TEXT:
 		var lc_name = resource_name.to_lower()
 		var value = get_property("resource_" + lc_name, 0)
+		var modifiers = params.get("per_resource_modifier", {}).get(lc_name, "")
+		if modifiers:
+			var multiplier = modifiers.get("multiplier", 1)
+			value = value * multiplier
 		if value:
 			resource_dict[lc_name] = value
 	var resource_mana = ManaCost.new()

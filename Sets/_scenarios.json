@@ -1324,5 +1324,258 @@
 			"Back at the X-Mansion, the mutant Forge finishes making upgrades to the X-Men’s supersonic jet, the X-Jet, enabling it to escape Earth’s gravity and reach Asteroid M. Professor X wishes his team luck as they blast off to confront his old friend and deadliest foe.",
 			"<b>Race against Magneto</b>\nSome side schemes have text that shield Magneto from taking fatal damage, preventing the players from defeating him until the side schemes are defeated. In order to win the scenario in standard mode, the players must defeat each of the side schemes before Magneto completes his main schemes. They must then take advantage of Magneto’s weakened state to defeat him."
 		]
+	},
+	"40077": {
+		"code": "40077",
+		"name": "Knock, Knock",
+		"scenario_display_name": "Morlock Siege",
+		"modular_default": [
+			"military_grade",
+			"mutant_slayers"
+		],
+		"encounter_sets": [
+			"morlock_siege",
+			"Standard",
+			"Modular",
+			"Modular"
+		],
+		"villains": [
+			"Arclight - A",
+			"Blockbuster - A",
+			"Chimera - A",
+			"Greycrow - A",
+			"Harpoon - A",
+			"Riptide - A",
+			"Vertigo - A"
+		],
+		"extra_rules": [
+			{
+				"override_get_next_villain": {
+					"all": [
+						{
+							"name": "nop",
+							"src_container": "set_aside",
+							"needs_subject": true,
+							"subject": "tutor",
+							"sort_by": "random",
+							"subject_count": 1,
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"type_code": "villain"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"expert": {
+			"encounter_sets": [
+				"morlock_siege",
+				"Standard",
+				"modular",
+				"Modular",
+				"expert"
+			],
+			"villains": [
+				"Arclight - B",
+				"Blockbuster - B",
+				"Chimera - B",
+				"Greycrow - B",
+				"Harpoon - B",
+				"Riptide - B",
+				"Vertigo - B"
+			]
+		},
+		"description": [
+			"The Morlocks, a group of shunned mutants living in exile in forgotten tunnels beneath New York City, are under siege by the mutant mercenary group known as the Marauders. Hope Summers, member of the X-Men and adopted daughter of Cable, was checking on the Morlocks in the wake of recent Sentinel attacks when the Marauders came knocking. You leap into action to help Hope fend off the Marauders and save the Morlocks!",
+			"<b>Multiple Villains</b>\nMorlock Siege has seven different villains. Only one (randomized) villain will be in play at a time. In order to win the scenario, the players must defeat three of these villains."
+		]
+	},
+	"40103": {
+		"code": "40103",
+		"name": "Gotta Get Away",
+		"scenario_display_name": "On the Run",
+		"modular_default": [
+			"military_grade",
+			"nasty_boys"
+		],
+		"encounter_sets": [
+			"on_the_run",
+			"mutant_slayers",
+			"Standard",
+			"Modular",
+			"Modular"
+		],
+		"villains": [
+			"Arclight - A",
+			"Blockbuster - A",
+			"Chimera - A",
+			"Greycrow - A",
+			"Harpoon - A",
+			"Riptide - A",
+			"Vertigo - A"
+		],
+		"extra_rules": [
+			{
+				"override_get_next_villain": {
+					"all": [
+						{
+							"name": "nop",
+							"src_container": "set_aside",
+							"needs_subject": true,
+							"subject": "tutor",
+							"sort_by": "random",
+							"subject_count": 1,
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"type_code": "villain"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"expert": {
+			"encounter_sets": [
+				"on_the_run",
+				"mutant_slayers",
+				"Standard",
+				"Modular",
+				"Modular",
+				"expert"
+			],
+			"villains": [
+				"Arclight - B",
+				"Blockbuster - B",
+				"Chimera - B",
+				"Greycrow - B",
+				"Harpoon - B",
+				"Riptide - B",
+				"Vertigo - B"
+			]
+		},
+		"description": [
+			"You turned back the Marauders’ attack and saved many Morlock lives, but in their retreat, the Marauders captured Hope Summers. You get the feeling that she was the real reason for the attack.",
+			"You pursue the Marauders to an abandoned construction site on the surface. You crash their attempt to hand Hope over to the Nasty Boys, known henchmen of the mutant mastermind, Mister Sinister. The Marauder holding Hope captive tries to escape while the combined forces of the Nasty Boys and the other Marauders cover their retreat.",
+			"<b>Choosing a Villain</b>\nOn the Run shares the seven villains from Morlock Siege. Unlike Morlock Siege, however, only one of these villains, chosen at random, is used in On the Run. The players need to defeat the villain twice in order to win"
+		]
+	},
+	"40121": {
+		"code": "40121",
+		"name": "The Unstoppable Juggernaut",
+		"modular_default": [
+			"black_tom_cassidy"
+		],
+		"encounter_sets": [
+			"juggernaut",
+			"hope_summers",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Juggernaut - 1",
+			"Juggernaut - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"juggernaut",
+				"hope_summers",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Juggernaut - 2",
+				"Juggernaut - 3"
+			]
+		},
+		"description": [
+			"After freeing Hope from the Marauders, she helps you interrogate her captor to discover the location where they were to deliver her: the State Home for Foundlings in Omaha, Nebraska. You try to convince Hope to return to the X-Mansion while you check out the location, but she insists she is going to Omaha with or without you. You have no choice but to bring her with you in order to ensure her safety.",
+			"You travel to Omaha with Hope at your side to discover the State Home for Foundlings is a run-down, seemingly-abandoned orphanage. You are just about to enter the orphanage when the doors explode outward, sending you flying. When the dust clears, you see the doorway guarded by a hulking man in a red helmet, the Juggernaut!",
+			"<b>Momentum counters</b>\nVarious effects in this scenario place momentum counters on Juggernaut, which boost his ATK. The players can remove these counters via the hero action on Juggernaut’s Helmet. When a stage of Juggernaut is defeated, all momentum counters on him carry over to the next villain stage."
+		]
+	},
+	"40139": {
+		"code": "40139",
+		"name": "Sinister Intent",
+		"modular_default": [
+			"nasty_boys"
+		],
+		"encounter_sets": [
+			"mister_sinister",
+			"flight",
+			"super_strength",
+			"telepathy",
+			"hope_summers",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Mister Sinister - 1",
+			"Mister Sinister - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"mister_sinister",
+				"flight",
+				"super_strength",
+				"telepathy",
+				"hope_summers",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Mister Sinister - 2",
+				"Mister Sinister - 3"
+			]
+		},
+		"description": [
+			"After battling your way past the Juggernaut, you search the abandoned orphanage and discover a hidden elevator in the basement. You take the elevator down deep into the ground before it finally stops. The doors open to reveal a vast cavern system filled with high-tech equipment, glistening medical instruments, and, most disturbing, dozens of vats holding unconscious people suspended in glowing fluid. Standing in the middle of this sprawling laboratory is a grinning Mister Sinister.",
+			"<b>Sinister Experiments</b>\nMister Sinister is attempting to graft abilities from his mutant specimens onto his own genome through his experiments. He has three different Sinister Experiments main scheme cards, each with an associated modular encounter set that is set aside during setup. During setup, the order of these stages is randomized and one of the stages is removed from the game at random"
+		]
+	},
+	"40166": {
+		"code": "40166",
+		"name": "Uncontrollable Power",
+		"modular_default": [
+			"extreme_measures",
+			"mutant_insurrection"
+		],
+		"encounter_sets": [
+			"stryfe",
+			"hope_summers",
+			"Standard",
+			"Modular",
+			"Modular"
+		],
+		"villains": [
+			"Stryfe - 1",
+			"Stryfe - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"stryfe",
+				"hope_summers",
+				"Standard",
+				"Modular",
+				"Modular",
+				"expert"
+			],
+			"villains": [
+				"Stryfe - 2",
+				"Stryfe - 3"
+			]
+		},
+		"description": [
+			"Just as you are ready to take Mister Sinister into custody, a time portal opens to allow the evil genius to escape. Hope pursues Sinister through the portal, intent on putting an end to his diabolical schemes. Uncertain of what dangers await Hope on the other side of the portal, you have no choice but to follow her.",
+			"On the other side of the portal, you find an unconscious Sinister lying at the feet of the mutant Stryfe, a clone of Cable. Hope tries to mimic Stryfe’s telepathic powers to free herself from his grasp, but his power is too great and threatens to overwhelm her...with explosive results!"
+		]
 	}
 }

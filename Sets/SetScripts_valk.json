@@ -448,11 +448,10 @@
 								}
 							]
 						}
-					],
-				}				
-
+					]
+				}
 			]
-		},
+		}
 	},
 	"Dragonfang": {
 		"alterants": {
@@ -486,7 +485,6 @@
 					}
 				],
 				"attacker": "my_hero"
-				
 			},
 			"board": [
 				{

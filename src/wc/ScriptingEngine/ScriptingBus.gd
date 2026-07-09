@@ -8,6 +8,9 @@ extends ScriptingBus
 signal card_played(card,details)
 
 # warning-ignore:unused_signal
+signal card_discarded_from_top_of_deck(card,details)
+
+# warning-ignore:unused_signal
 signal card_selected(selection_window, details)
 # warning-ignore:unused_signal
 signal selection_window_canceled(selection_window, details)

@@ -2246,6 +2246,16 @@
 		}
 	},
 	"Eternity": {
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_be_canceled",
+					"alteration": 1,
+					"trigger": "self"
+				}
+			]
+		},
 		"manual": {
 			"hand": [
 				{
@@ -2256,22 +2266,17 @@
 			]
 		},
 		"reveal": {
-			"all": {
-				"_rules": {
-					"cannot_be_canceled": true
+			"all": [
+				{
+					"name": "draw_cards",
+					"amount": 1
 				},
-				"Draw": [
-					{
-						"name": "draw_cards",
-						"amount": 1
-					},
-					{
-						"name": "move_card_to_container",
-						"subject": "self",
-						"dest_container": "set_aside"
-					}
-				]
-			}
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside"
+				}
+			]
 		}
 	},
 	"Fallen Warrior": {
@@ -3150,6 +3155,16 @@
 		"TODO": "campaign mode unsupported"
 	},
 	"In-Betweener": {
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_be_canceled",
+					"alteration": 1,
+					"trigger": "self"
+				}
+			]
+		},
 		"manual": {
 			"hand": [
 				{
@@ -3160,23 +3175,18 @@
 			]
 		},
 		"reveal": {
-			"all": {
-				"_rules": {
-					"cannot_be_canceled": true
+			"all": [
+				{
+					"name": "deal_damage",
+					"subject": "villain",
+					"amount": 2
 				},
-				"Deal Damage": [
-					{
-						"name": "deal_damage",
-						"subject": "villain",
-						"amount": 2
-					},
-					{
-						"name": "move_card_to_container",
-						"subject": "self",
-						"dest_container": "set_aside"
-					}
-				]
-			}
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside"
+				}
+			]
 		}
 	},
 	"Infinite Mischief": {
@@ -3537,6 +3547,16 @@
 		}
 	},
 	"Living Tribunal": {
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_be_canceled",
+					"alteration": 1,
+					"trigger": "self"
+				}
+			]
+		},
 		"manual": {
 			"hand": [
 				{
@@ -3547,23 +3567,18 @@
 			]
 		},
 		"reveal": {
-			"all": {
-				"_rules": {
-					"cannot_be_canceled": true
+			"all": [
+				{
+					"name": "remove_threat",
+					"subject": "main_scheme",
+					"amount": 2
 				},
-				"Remove Threat": [
-					{
-						"name": "remove_threat",
-						"subject": "main_scheme",
-						"amount": 2
-					},
-					{
-						"name": "move_card_to_container",
-						"subject": "self",
-						"dest_container": "set_aside"
-					}
-				]
-			}
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside"
+				}
+			]
 		}
 	},
 	"Loki - 1 #21160": {
@@ -4345,6 +4360,7 @@
 							"trait": "avenger",
 							"and_or": "and",
 							"subject": "boardseek",
+							"subject_count": "all",
 							"filter_state_seek": [
 								{
 									"filter_group": "group_friendly_my_hero"
@@ -4368,6 +4384,7 @@
 							"trait": "avenger",
 							"and_or": "and",
 							"subject": "boardseek",
+							"subject_count": "all",
 							"filter_state_seek": [
 								{
 									"filter_group": "group_friendly_my_hero"
@@ -4677,7 +4694,16 @@
 					"trigger": "self"
 				}
 			]
-		}
+		},
+		"first_player_changed": {
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"grid_name": "allies_first_player",
+					"subject": "self"
+				}
+			]
+		}		
 	},
 	"Odin - All-Father #21139b": {
 		"TODO": "campaign mode not supported"
@@ -6953,6 +6979,16 @@
 		}
 	},
 	"The Gardener": {
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_be_canceled",
+					"alteration": 1,
+					"trigger": "self"
+				}
+			]
+		},
 		"manual": {
 			"hand": [
 				{
@@ -6963,23 +6999,18 @@
 			]
 		},
 		"reveal": {
-			"all": {
-				"_rules": {
-					"cannot_be_canceled": true
+			"all": [
+				{
+					"name": "heal",
+					"subject": "my_identity",
+					"amount": 2
 				},
-				"Heal": [
-					{
-						"name": "heal",
-						"subject": "my_identity",
-						"amount": 2
-					},
-					{
-						"name": "move_card_to_container",
-						"subject": "self",
-						"dest_container": "set_aside"
-					}
-				]
-			}
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside"
+				}
+			]
 		}
 	},
 	"The Infinity Stones - 1A": {

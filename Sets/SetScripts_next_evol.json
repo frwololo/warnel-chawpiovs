@@ -298,7 +298,7 @@
 						"selection_type": "equal",
 						"filter_state_seek": [
 							{
-								"filter_group": "group_characters_current_hero_target"
+								"filter_group": "group_friendly_current_hero_target"
 							}
 						]
 					}
@@ -308,7 +308,7 @@
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{
@@ -350,7 +350,7 @@
 						"sort_descending": true,
 						"filter_state_seek": [
 							{
-								"filter_group": "group_characters_current_hero_target"
+								"filter_group": "group_friendly_current_hero_target"
 							}
 						]
 					}
@@ -360,7 +360,7 @@
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{
@@ -400,7 +400,7 @@
 						"selection_type": "equal",
 						"filter_state_seek": [
 							{
-								"filter_group": "group_characters_current_hero_target"
+								"filter_group": "group_friendly_current_hero_target"
 							}
 						]
 					}
@@ -410,7 +410,7 @@
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{
@@ -732,7 +732,7 @@
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{
@@ -772,7 +772,7 @@
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{
@@ -818,7 +818,7 @@
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{
@@ -1231,7 +1231,7 @@
 		"once_per_phase": {
 			"__name__": "__side_defeat"
 		},
-		"card_dies": {
+		"card_defeated": {
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
@@ -1240,29 +1240,21 @@
 				}
 			],
 			"event_filters": {
-				"tags": [
-					"thwart"
-				],
-				"filter_state_event_source": [
-					{
-						"filter_properties": {
-							"type_code": "ally"
-						}
-					}
-				]
+				"source": "self"
 			},
 			"is_optional_board": true,
 			"board": [
 				{
-					"name": "ready_card",
-					"is_cost": true,
-					"subject": "self"
-				},
-				{
 					"name": "mod_tokens",
 					"modification": -1,
 					"subject": "self",
+					"is_cost": true,
 					"token_name": "__side_defeat"
+				},
+				{
+					"name": "ready_card",
+					"is_cost": true,
+					"subject": "self"
 				}
 			]
 		}
@@ -1426,7 +1418,7 @@
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{
@@ -1467,7 +1459,7 @@
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{
@@ -1508,7 +1500,7 @@
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{
@@ -1744,7 +1736,7 @@
 					"selection_type": "equal",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_characters_my_hero"
+							"filter_group": "group_friendly_my_hero"
 						}
 					]
 				},
@@ -1771,7 +1763,7 @@
 									"selection_type": "equal",
 									"filter_state_seek": [
 										{
-											"filter_group": "group_characters_my_hero"
+											"filter_group": "group_friendly_my_hero"
 										}
 									]
 								}
@@ -1811,7 +1803,7 @@
 									"selection_type": "equal",
 									"filter_state_seek": [
 										{
-											"filter_group": "group_characters_my_hero"
+											"filter_group": "group_friendly_my_hero"
 										}
 									]
 								}
@@ -1935,7 +1927,7 @@
 					"name": "add_script",
 					"end_condition": "enemy_activation_finished",
 					"subject": "self",
-					"effect": {
+					"script": {
 						"alterants": {
 							"all": [
 								{
@@ -1976,7 +1968,7 @@
 	"E.V.A.": {
 		"self_moved_to_board": {
 			"condition_board": {
-				"func_name": "!is_card_in_play",
+				"func_name": "!card_is_in_play",
 				"func_params": {
 					"card_name": "Fantomex"
 				}
@@ -1990,7 +1982,7 @@
 		},
 		"card_moved_to_pile": {
 			"condition_board": {
-				"func_name": "!is_card_in_play",
+				"func_name": "!card_is_in_play",
 				"func_params": {
 					"card_name": "Fantomex"
 				}
@@ -2004,7 +1996,7 @@
 		},
 		"card_moved_to_hand": {
 			"condition_board": {
-				"func_name": "!is_card_in_play",
+				"func_name": "!card_is_in_play",
 				"func_params": {
 					"card_name": "Fantomex"
 				}
@@ -2798,7 +2790,7 @@
 					"selection_type": "equal",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_characters_current_hero_target"
+							"filter_group": "group_friendly_current_hero_target"
 						}
 					]
 				}
@@ -2816,7 +2808,7 @@
 					"selection_type": "equal",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_characters_current_hero_target"
+							"filter_group": "group_friendly_current_hero_target"
 						}
 					]
 				}
@@ -2967,7 +2959,7 @@
 		}
 	},
 	"Graymalkin": {
-		"card_dies": {
+		"card_defeated": {
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
@@ -3032,7 +3024,7 @@
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{
@@ -3132,7 +3124,7 @@
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{
@@ -3199,7 +3191,7 @@
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{
@@ -3305,12 +3297,12 @@
 					{
 						"name": "indirect_damage",
 						"amount": 2,
-						"subject": "current_activation_target"
+						"subject": "current_hero_target"
 					}
 				],
 				"+1 Boost Card": [
 					{
-						"name": "draw_boost",
+						"name": "draw_boost_card",
 						"subject": "self"
 					}
 				]
@@ -3331,12 +3323,12 @@
 					{
 						"name": "indirect_damage",
 						"amount": 3,
-						"subject": "current_activation_target"
+						"subject": "current_hero_target"
 					}
 				],
 				"+1 Boost Card & overkill": [
 					{
-						"name": "draw_boost",
+						"name": "draw_boost_card",
 						"subject": "self"
 					},
 					{
@@ -3366,12 +3358,12 @@
 					{
 						"name": "indirect_damage",
 						"amount": 2,
-						"subject": "current_activation_target"
+						"subject": "current_hero_target"
 					}
 				],
 				"+1 Boost Card": [
 					{
-						"name": "draw_boost",
+						"name": "draw_boost_card",
 						"subject": "self"
 					}
 				]
@@ -3632,7 +3624,7 @@
 					]
 				},
 				{
-					"name": "draw_boost",
+					"name": "draw_boost_card",
 					"subject": "current_activation_enemy"
 				}
 			]
@@ -4735,7 +4727,7 @@
 					"amount": "trigger_details_boost_icons"
 				},
 				{
-					"name": "draw_boost",
+					"name": "draw_boost_card",
 					"subject": "current_activation_enemy"
 				}
 			]
@@ -5279,7 +5271,7 @@
 					"name": "add_script",
 					"end_condition": "phase_ended",
 					"subject": "self",
-					"effect": {
+					"script": {
 						"alterants": {
 							"all": [
 								{
@@ -7082,7 +7074,7 @@
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{
@@ -7134,7 +7126,7 @@
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{
@@ -7196,7 +7188,7 @@
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{
@@ -7240,8 +7232,9 @@
 				},
 				"Villain Attack": [
 					{
-						"name": "villain_activates",
-						"subject": "my_identity"
+						"name": "enemy_activates",
+						"subject": "villain",
+						"target_identity": "my_identity"
 					}
 				]
 			}
@@ -7297,8 +7290,9 @@
 				},
 				"Villain Attack": [
 					{
-						"name": "villain_activates",
-						"subject": "my_identity"
+						"name": "enemy_activates",
+						"subject": "villain",
+						"target_identity": "my_identity"
 					}
 				]
 			}
@@ -7326,7 +7320,7 @@
 					"subject_count": "all",
 					"filter_state_seek": [
 						{
-							"gilter_group": "group_characters_my_hero"
+							"gilter_group": "group_friendly_my_hero"
 						}
 					]
 				}
@@ -8053,7 +8047,7 @@
 						"subject_count": "all",
 						"filter_state_seek": [
 							{
-								"filter_group": "group_characters_my_hero"
+								"filter_group": "group_friendly_my_hero"
 							}
 						]
 					}
@@ -8066,7 +8060,7 @@
 						"subject_count": "all",
 						"filter_state_seek": [
 							{
-								"filter_group": "group_characters_my_hero"
+								"filter_group": "group_friendly_my_hero"
 							}
 						]
 					}
@@ -8693,22 +8687,18 @@
 		"interrupt_remove_threat": {
 			"display_section": "generic",
 			"event_filters": {
-				"filter_state_event_target": [
-					{
-						"filter_properties": {
-							"Name": "Technovirus Purge"
+				"subject": "self",
+				"actual_source": "!Cable",
+				"filter_state_actual_source": [{
+					"filter_func": {
+						"func_name": "is_character",
+						"func_params": {
+							"subject": "trigger"
 						}
 					}
-				]
+				}]
 			},
-			"condition_board": {
-				"func_name": "!get_subject_int_property",
-				"func_params": {
-					"subject": "event_source_hero",
-					"property": "shortname",
-					"property_value": "Cable"
-				}
-			},
+			"display_section": "characters...",
 			"board": [
 				{
 					"name": "prevent",
@@ -9278,7 +9268,7 @@
 								"subject_count": "all",
 								"filter_state_seek": [
 									{
-										"filter_group": "group_characters_my_hero",
+										"filter_group": "group_friendly_my_hero",
 										"filter_properties": {
 											"trait_posse": 1,
 											"comparison": "ge"
@@ -9881,9 +9871,10 @@
 						"selection_count": 1,
 						"selection_optional": false,
 						"selection_type": "equal",
+						"is_cost": true,
 						"filter_state_seek": [
 							{
-								"filter_group": "group_characters_current_hero_target"
+								"filter_group": "group_friendly_current_hero_target"
 							}
 						]
 					}
@@ -9893,7 +9884,7 @@
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{
@@ -9924,7 +9915,7 @@
 					{
 						"name": "mod_tokens",
 						"modification": 1,
-						"token_name": "confused",
+						"token_name": "stunned",
 						"subject": "boardseek",
 						"subject_count": 1,
 						"sort_by": "function",
@@ -9932,10 +9923,11 @@
 						"func_params": {
 							"property": "attack"
 						},
+						"is_cost": true,
 						"sort_descending": true,
 						"filter_state_seek": [
 							{
-								"filter_group": "group_characters_current_hero_target"
+								"filter_group": "group_friendly_current_hero_target"
 							}
 						]
 					}
@@ -9945,7 +9937,7 @@
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{
@@ -9981,11 +9973,12 @@
 						"subject_count": "all",
 						"needs_selection": true,
 						"selection_count": 1,
+						"is_cost": true,
 						"selection_optional": false,
 						"selection_type": "equal",
 						"filter_state_seek": [
 							{
-								"filter_group": "group_characters_current_hero_target"
+								"filter_group": "group_friendly_current_hero_target"
 							}
 						]
 					}
@@ -9995,7 +9988,7 @@
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
 						"subject": "self",
-						"effect": {
+						"script": {
 							"alterants": {
 								"all": [
 									{

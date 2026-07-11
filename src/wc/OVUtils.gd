@@ -764,48 +764,72 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 			return false
 		filters.erase("filter_state_event_source")
 
-	if filters.has("filter_state_event_attacker"):
-		var attacker = trigger_details.get("attacker")
-		if !attacker:
-			return false	
-		var is_valid = SP.check_validity(attacker, filters, "event_attacker", owner_card)
-		if !is_valid:
-			return false
-		filters.erase("filter_state_event_attacker")
+	for filter_state_name in ["actual_source", "secondary_source", "attacker"]:
+		if filters.has("filter_state_" + filter_state_name):
+			var to_validate = trigger_details.get(filter_state_name, null)
+			if !to_validate:
+				return false	
+			var is_valid = SP.check_validity(to_validate, filters, filter_state_name, owner_card)
+			if !is_valid:
+				return false
+			filters.erase("filter_state_" + filter_state_name)
+
 
 	for filter_key in filters.keys():
 		var value = filters[filter_key]
+#		var value_obj = null
+		var comparator = ""
+		if typeof(value) == TYPE_STRING:
+			for potential_comparator in ["!=", "!", ">=", "<=", ">", "<"]:
+				if value.begins_with(potential_comparator):
+					comparator = potential_comparator
+					value = value.substr(comparator.length())
+					break
+				
 		var compared_to_str = trigger_details.get(filter_key, "")
 		var compared_to_int = 0
 		match typeof(compared_to_str):
 			TYPE_STRING, TYPE_INT:
-				compared_to_int = int(compared_to_str)		
+				compared_to_int = int(compared_to_str)
+			TYPE_OBJECT:
+				if (compared_to_str as Card):
+					compared_to_str = compared_to_str.get_property("shortname", "")
+#					var subjects = SP._get_subjects_simplified(value, owner_card)
+#					if subjects:
+#						value_obj = subjects[0]		
 		
 		if typeof(value) == TYPE_STRING:
-			if value.begins_with(">="):
-				value = int(value.substr(2))
-				if compared_to_int >= value:
-					filters.erase(filter_key)
-				else:
-					return false
-			elif value.begins_with("<="):
-				value = int(value.substr(2))
-				if compared_to_int <= value:
-					filters.erase(filter_key)
-				else:
-					return false				
-			elif value.begins_with(">"):
-				value = int(value.substr(1))
-				if compared_to_int > value:
-					filters.erase(filter_key)	
-				else:
-					return false								
-			elif value.begins_with("<"):
-				value = int(value.substr(1))
-				if compared_to_int < value:
-					filters.erase(filter_key)
-				else:
-					return false
+			if comparator:
+				match comparator:
+					">=":
+						value = int(value)
+						if compared_to_int >= value:
+							filters.erase(filter_key)
+						else:
+							return false
+					"<=":
+						value = int(value)
+						if compared_to_int <= value:
+							filters.erase(filter_key)
+						else:
+							return false				
+					">":
+						value = int(value)
+						if compared_to_int > value:
+							filters.erase(filter_key)	
+						else:
+							return false								
+					"<":
+						value = int(value)
+						if compared_to_int < value:
+							filters.erase(filter_key)
+						else:
+							return false
+					"!", "!=":						
+						if value.to_lower() !=  compared_to_str.to_lower():
+							filters.erase(filter_key)	
+						else:
+							return false
 			elif value.ends_with("_any_hero"):
 				for i in gameData.get_team_size():
 					var hero_id = i+1

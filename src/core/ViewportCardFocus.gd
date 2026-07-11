@@ -119,7 +119,7 @@ func reposition_vbc():
 			show_preview = cfc.game_settings.get("show_hand_cards_preview", true)
 		
 		#if the screen is crowded with menus, we don't show the preview			
-		if gameData.theAnnouncer.is_right_side_announce_ongoing():
+		if gameData.theAnnouncer.is_right_side_announce_ongoing(false):
 			if cfc.get_modal_menu():
 				show_preview = false
 		
@@ -150,7 +150,7 @@ func reposition_vbc():
 		
 		#if announcer has an announce on the right of the screen e.g. stackeventdisplay)
 		#we don't want to cover it	
-		if gameData.theAnnouncer.is_right_side_announce_ongoing():	
+		if gameData.theAnnouncer.is_right_side_announce_ongoing(false):	
 			display_position = Vector2( spacer, spacer)
 			if mouse_pos.x < display_size.x + (spacer*2) and mouse_pos.y < display_size.y + (spacer*2):
 				display_position.y = view_size.y -  display_size.y - spacer

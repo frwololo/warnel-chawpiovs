@@ -285,7 +285,7 @@ static func check_same_controller_filter(trigger_card, owner_card, true_false : 
 	return false
 	
 # Returns true if the trigger' and the owner belong to the same hero, false otherwises controller name matches the filter'
-static func check_controller_name_filter(trigger_card, owner_card, expected_name: String) -> bool:
+static func check_controller_name_filter(trigger_card, _owner_card, expected_name: String) -> bool:
 	var hero_controller = trigger_card.get_controller_hero_card()
 	if !hero_controller:
 		return false
@@ -294,7 +294,7 @@ static func check_controller_name_filter(trigger_card, owner_card, expected_name
 	return (shortname == expected_name)
 	
 # Returns true if the trigger' shares a title
-static func check_shares_title_filter(trigger_card, owner_card, true_false : bool) -> bool:
+static func check_shares_title_filter(trigger_card, _owner_card, true_false : bool) -> bool:
 	var shares_title_with_card_in_play: bool = cfc.NMAP.board.unique_card_in_play(trigger_card)
 	if (shares_title_with_card_in_play and true_false): return true
 	if ((not shares_title_with_card_in_play) and (not true_false)): return true

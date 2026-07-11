@@ -34,6 +34,7 @@ var rect_size = Vector2(200, 200)
 var rect_position = Vector2(0, 0)
 var target_position = Vector2(0,0)
 var trigger = ""
+var is_collapsed = false
 
 #if set to true, when the stack event goes off the stack, this will close this message
 #if set to false, you need another way to call terminate()
@@ -353,10 +354,12 @@ func _on_Button_pressed():
 	match button.text:
 		">":
 			button.text = "<"
+			is_collapsed = true
 		"<":
 			before = hidden_position
 			after = target_position			
 			button.text= ">"
+			is_collapsed = false
 			
 	tween.interpolate_property(control, "rect_position",
 			before, after, 0.2,

@@ -684,6 +684,7 @@ const TOKENS_ONLY_ON_BOARD_EXCEPTIONS:= [
 #leave empty == all cards will be considered for alterants
 const ALTERANTS_ALLOWED_PILES:= [
 	"hand",
+	"victory_display"
 ]
 
 #list of non board zones that can have interrupts (performance: piles not in this list will be excluded from the alterants loop)
@@ -865,6 +866,15 @@ const DAMAGE_TRANSFER_SCRIPT_PROPERTIES:= [
 	"if_no_damage",
 	"increase_amount",	
 	"overkill"
+]
+
+const CONSIDERED_AS_ACTION_OWNER: =[
+	"hero",
+	"alter_ego", 
+	"ally", 
+	"villain", 
+	"minion", 
+	"support"
 ]
 
 enum PHASE_STEP {

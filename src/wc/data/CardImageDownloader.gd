@@ -85,7 +85,26 @@ func select_server():
 		if s.get("is_up"):
 			return s
 	return {}
-
+	
+func modify_path_for_server(path, s):
+	var result = path
+	var modifications = s.get("modifications", {})
+	var extension = modifications.get("extension", "")
+	if extension:
+		var extension_index = result.find_last(".")
+		result = result.substr(0, extension_index) + extension
+	
+	var replace_path = modifications.get("replace_path", {})
+	if replace_path:
+		var from = replace_path["from"]
+		var to = replace_path["to"]
+		to = path_variable_process(to, current_file)
+		result = result.replace(from, to)
+	
+	if !result.begins_with("http"):
+		result = s.get("url","") + result
+	return result
+	
 func process_current_file():
 
 	var path:String = current_file.get("url")
@@ -111,20 +130,8 @@ func process_current_file():
 			return
 		
 
-		
-		var modifications = s.get("modifications", {})
-		var extension = modifications.get("extension", "")
-		if extension:
-			var split_path = path.split(".")
-			path = split_path[0] + extension	
-		
-		var replace_path = modifications.get("replace_path", {})
-		if replace_path:
-			var from = replace_path["from"]
-			var to = replace_path["to"]
-			to = path_variable_process(to, current_file)
-			path = path.replace(from, to)
-		path = base_url + path
+		path = modify_path_for_server(path, s)
+
 	
 	current_file["path"] = path			
 	fileDownloader.start_download([path])
@@ -165,17 +172,14 @@ func retry_or_cancel_current_file():
 			found = true
 	
 	if !server:
+		cfc.fail_img_download(current_file.get("card_id", ""))
 		current_file = {}
 		return
 
 	var url = current_file["path"]
 	url = url.replace(previous_base, server["url"])	
 
-	var modifications = server.get("modifications", {})
-	var extension = modifications.get("extension", "")
-	if extension:
-		var split_path = url.split(".")
-		url = split_path[0] + extension	
+	url = modify_path_for_server(url, server)
 	
 	var to_add = {		
 		"url": url,

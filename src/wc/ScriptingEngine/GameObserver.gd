@@ -36,7 +36,7 @@ func add_function_overrides(owner, dict):
 		var override_rule = dict[key]
 		if !function_overrides.has(key):
 			function_overrides[key] = []
-		function_overrides[key].append({"owner": owner, "override": dict[key].duplicate()})
+		function_overrides[key].append({"owner": owner, "override": override_rule.duplicate()})
 
 func remove_function_overrides(owner):
 	var to_remove = []

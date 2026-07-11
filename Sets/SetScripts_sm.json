@@ -8603,7 +8603,7 @@
 		},
 		"interrupt_pre_receive_damage": {
 			"event_filters": {
-				"source_character": "host",
+				"actual_source": "host",
 				"tags": [
 					"attack"
 				]

@@ -175,7 +175,7 @@
 		"card_damaged": {
 			"trigger": "host",
 			"damage": ">=4",
-			"filter_state_event_attacker": [
+			"filter_state_attacker": [
 				{
 					"filter_properties": {
 						"shortname": "Drax"

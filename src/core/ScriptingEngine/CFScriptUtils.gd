@@ -62,11 +62,15 @@ static func init_alterants_super_cache():
 		add_update_alterant_super_cache_object(obj)
 
 	if CFConst.ALTERANTS_ALLOWED_PILES:
+		var hero_zones = ["hand"] + CFConst.HERO_GRID_SETUP.keys()
 		_alteration_super_cache["container_names"] = ["board"]
-		for i in gameData.get_team_size():
-			var hero_id = i+1
-			for zone in CFConst.ALTERANTS_ALLOWED_PILES:
-				_alteration_super_cache["container_names"].append(zone + str(hero_id))
+		for zone in CFConst.ALTERANTS_ALLOWED_PILES:
+			if zone in hero_zones:
+				for i in gameData.get_team_size():
+					var hero_id = i+1
+					_alteration_super_cache["container_names"].append(zone + str(hero_id))
+			else:
+				_alteration_super_cache["container_names"].append(zone)
 
 	_alteration_super_cache["initialized"] = true
 	return
@@ -180,7 +184,7 @@ static func get_altered_value(
 			unique[key] = true
 		scriptables_array = unique.keys()
 
-#		if task_properties.get("property_name", "") == "health" and !_owner.is_faceup:
+#		if task_properties.get("property_name", "") == "attack" and _owner.get_property("shortname", "") == "Cable":
 #			var _tmp = 1
 		
 		for obj in scriptables_array:

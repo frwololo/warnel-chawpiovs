@@ -4376,7 +4376,7 @@
 				"tags": [
 					"attack"
 				],
-				"filter_state_event_attacker": [
+				"filter_state_attacker": [
 					{
 						"filter_properties": {
 							"type_code": "hero"

@@ -1717,6 +1717,9 @@ func get_image_dl_url(card_id):
 			var duplicate_of = card_data.get("duplicate_of_code", "")
 			if duplicate_of:
 				return get_image_dl_url(duplicate_of)
+			elif CFConst.ATTEMPT_TO_GUESS_IMAGE_URL:
+				var url = base_url + "/bundles/cards/" + str(card_id) + ".png"
+				return url				
 			else:
 				fail_img_download(card_id)
 				return ""

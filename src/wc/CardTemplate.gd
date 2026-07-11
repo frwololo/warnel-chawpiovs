@@ -230,9 +230,7 @@ func considered_in_play()-> bool:
 		return false
 	return true
 
-func is_character() -> bool:
-	var type_code = get_property("type_code", "")
-	return is_character_type(type_code)
+
 
 static func is_character_type(type_code)-> bool:
 	return type_code in ["villain", "hero", "alter_ego", "ally", "minion"]
@@ -294,19 +292,17 @@ func check_death(script = null) -> bool:
 		#if the damage comes from an "attack", ensure the source is properly categorized as
 		#the hero (or villain) owner rather than the event card itself
 		if ("attack" in tags):
-			var owner = script.owner
-			var type = owner.get_property("type_code", "")
-			if !is_character_type(type):
-				owner = WCScriptingEngine._get_identity_from_script(script)	
-				trigger_details["secondary_source"] = trigger_details["source"]
-				trigger_details["source"] = guidMaster.get_guid(owner)
+			var owner = WCScriptingEngine.get_actual_action_source_from_script(script)	
+			trigger_details["secondary_source"] = trigger_details["source"]
+			trigger_details["source"] = guidMaster.get_guid(owner)
+			trigger_details["actual_source"] = guidMaster.get_guid(owner)
 
 	var card_dies_definition = {
 		"name": "card_dies",
 		"tags": tags,
 		"excess_damage": excess_damage
 	}
-	for param in ["source", "secondary_source"]:
+	for param in ["source", "secondary_source", "actual_source"]:
 		if trigger_details.has(param):
 			card_dies_definition[param] = trigger_details[param]
 	#force changing the trigger here. Might not be the best idea but it's useful for UI display
@@ -331,7 +327,7 @@ func get_controller_hero_card():
 
 func get_action_character():
 	var action_character = self
-	if !(get_property("type_code", "") in ["hero", "ally", "minion", "villain"]):
+	if !is_character():
 		action_character = get_controller_hero_card()
 	return action_character	
 	
@@ -2109,21 +2105,23 @@ func check_scheme_defeat(script):
 		var trigger_details = script.trigger_details.duplicate(true)
 		trigger_details["source"] = guidMaster.get_guid(script.owner)
 				
-		#if the damage comes from an "attack", ensure the source is properly categorized as
-		#the hero (or villain) owner rather than the event card itself
+		#if the threat removal comes from a "thwart", ensure the source is properly categorized as
+		#the character owner rather than the event card itself
 		if ("thwart" in tags):
-			var owner = script.owner
-			var type = owner.get_property("type_code", "")
-			if !is_character_type(type):
-				owner = WCScriptingEngine._get_identity_from_script(script)	
-				trigger_details["secondary_source"] = trigger_details["source"]
-				trigger_details["source"] = guidMaster.get_guid(owner)
+			var owner = WCScriptingEngine.get_actual_action_source_from_script(script)	
+			trigger_details["secondary_source"] = trigger_details["source"]
+			trigger_details["source"] = guidMaster.get_guid(owner)
+			trigger_details["actual_source"] = guidMaster.get_guid(owner)
 			
 		var card_dies_definition = {
 			"name": "card_dies",
 			"tags": ["remove_threat", "Scripted"] + tags
 		}
-
+		
+		for param in ["source", "secondary_source", "actual_source"]:
+			if trigger_details.has(param):
+				card_dies_definition[param] = trigger_details[param]
+			
 		var card_dies_script:ScriptTask = ScriptTask.new(self, card_dies_definition, script.trigger_object, trigger_details)
 		card_dies_script.set_subjects(self)
 
@@ -2136,7 +2134,7 @@ func remove_threat(modification: int, script = null) -> int:
 	if script:
 		action_owner = script.owner
 		var type = action_owner.get_property("type_code", "")
-		if !type in ["hero", "ally", "alter_ego"]:
+		if !type in CFConst.CONSIDERED_AS_ACTION_OWNER:
 			action_owner = WCScriptingEngine._get_identity_from_script(script)
 	
 	var bypass_crisis = action_owner.get_property("bypass_crisis", 0, true) if action_owner else 0
@@ -2552,7 +2550,15 @@ func common_pre_run(sceng) -> void:
 						script.script_name = script.get_property("name") #TODO something cleaner? Maybe part of the script itself?
 						new_queue.append(script)	
 				else:
-					new_queue.append(task)														
+					new_queue.append(task)
+			"remove_threat":
+				if !script_definition.has("source"):
+					var source = script.get_property("source", script.owner)
+
+					var source_character = WCScriptingEngine.get_actual_action_source_from_script(script)
+					script.script_definition["source"] = source
+					script.script_definition["actual_source"] = source_character		
+				new_queue.append(script)														
 			_:
 				new_queue.append(task)
 	
@@ -2703,6 +2709,10 @@ func pay_regular_cost_replacement(script, trigger_details) -> Dictionary:
 	var selection_additional_constraints = null
 
 	if (typeof(cost) == TYPE_DICTIONARY):
+		for key in cost:
+			if ManaCost.get_resource_from_keyword(key) != -1:
+				var _tmp = script.retrieve_integer_subproperty(key, cost)
+				cost[key] = _tmp
 		manacost.init_from_dictionary(cost)
 		selection_additional_constraints = {
 			"func_name": "can_pay_as_resource",
@@ -3106,6 +3116,14 @@ func get_active_main_schemes():
 # called as part of json script processing (through a .call run)
 #############################
 
+func is_character(params := {}, script:ScriptObject= null) -> bool:
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return false
+			
+	var type_code = subject.get_property("type_code", "")
+	return is_character_type(type_code)
+
 func is_ready(params := {}, script:ScriptObject= null) :
 	var subject = get_param_subject(params, script)
 	if !subject:
@@ -3315,10 +3333,10 @@ func count_most_common(params, script:ScriptObject= null) -> int:
 	
 	var counts = {}
 	var max_value = 0
-	var max_property = ""
 	var property = params.get("property", "")
 	if not property:
 		return 0
+			
 	for card in subjects:
 		var value = card.get_property(property, "")
 		if value:
@@ -3327,10 +3345,9 @@ func count_most_common(params, script:ScriptObject= null) -> int:
 			counts[value]+= 1
 			if counts[value] > max_value:
 				max_value = counts[value]
-				max_property = value
+				
 	return max_value
 	
-		
 func get_subject_int_property(params, script:ScriptObject= null) -> int:
 	var subjects = get_param_subjects(params, script)
 	
@@ -4209,7 +4226,10 @@ func get_printed_text(section = ""):
 		#remove boost text delimiter
 		full_text = full_text.replace("\n[hr /]\n*", "\n")
 		full_text = full_text.trim_prefix(" ")
-		full_text = full_text.trim_suffix(" ")		
+		full_text = full_text.trim_suffix(" ")	
+		
+		var cr_paragraphs = full_text.split("\n")
+			
 		var pre_paragraphs = full_text.split("[b]")
 		var paragraphs:Array = []
 
@@ -4323,6 +4343,13 @@ func get_printed_text(section = ""):
 		_cached_printed_text["all_excluding_keywords"] = full_text
 		if _cached_printed_text.has("keywords"):
 			_cached_printed_text["all_excluding_keywords"] = full_text.replace(_cached_printed_text["keywords"], "")
+
+		for paragraph in cr_paragraphs:
+			var words = paragraph.split(" ")
+			if words:
+				var first_word = words[0]
+				first_word = first_word.to_lower()+ "..."
+				_cached_printed_text[first_word] = paragraph
 
 	if _cached_printed_text.has(section_l):
 		return _cached_printed_text[section_l]

@@ -484,11 +484,7 @@ func attack(script: ScriptTask) -> int:
 	if !script.subjects:
 		return CFConst.ReturnCode.FAILED
 
-	var owner = script.owner	
-
-	var type = owner.get_property("type_code", "")
-	if !type in ["hero", "ally"]:
-		owner = _get_identity_from_script(script)	
+	var owner = get_actual_action_source_from_script(script)
 	
 	if owner.get_property("cannot_attack", 0, true):
 		return CFConst.ReturnCode.FAILED 	
@@ -546,11 +542,7 @@ func attack_started(script) -> int:
 	if !script.subjects:
 		return CFConst.ReturnCode.FAILED
 
-	var owner = script.owner	
-
-	var type = owner.get_property("type_code", "")
-	if !type in ["hero", "ally"]:
-		owner = _get_identity_from_script(script)	
+	var owner = get_actual_action_source_from_script(script)
 
 	if (costs_dry_run()):
 		return retcode		
@@ -813,10 +805,7 @@ static func calculate_damage(script: ScriptTask) -> int:
 		return 0
 
 	#damages don't always come from an attacker, but it's easier to compute it here
-	var attacker = script.owner
-	var type = attacker.get_property("type_code", "")
-	if !type in ["hero", "ally", "minion", "villain"]:
-		attacker = _get_identity_from_script(script)
+	#var attacker = get_actual_action_source_from_script(script)
 		
 	var base_amount = script.retrieve_integer_property("amount")
 	
@@ -861,10 +850,7 @@ func pre_receive_damage(script: ScriptTask) -> int:
 	
 
 	#damages don't always come from an attacker, but it's easier to compute it here
-	var attacker = script.owner
-	var type = attacker.get_property("type_code", "")
-	if !type in ["hero", "ally", "minion", "villain"]:
-		attacker = _get_identity_from_script(script)
+	#var attacker = get_actual_action_source_from_script(script)
 		 
 	var base_amount = script.retrieve_integer_property("amount")
 	
@@ -927,13 +913,10 @@ func receive_damage(script: ScriptTask) -> int:
 	
 
 	#damages don't always come from an attacker, but it's easier to compute it here
-	var attacker = script.owner
-	var type = attacker.get_property("type_code", "")
-	if !type in ["hero", "ally", "minion", "villain"]:
-		attacker = _get_identity_from_script(script)
-		#fallback again to script owner if we failed to get an attacker
-		if !attacker:
-			attacker = script.owner
+	var attacker = get_actual_action_source_from_script(script)
+	#fallback if null
+	if !attacker:
+		attacker = script.owner
 		
 	var tags: Array = script.get_property(SP.KEY_TAGS) 
 	var amount = script.retrieve_integer_property("amount")
@@ -1154,10 +1137,7 @@ func post_action_events(script: ScriptTask) -> int:
 		
 	if prevented_action in ["receive_damage"]:
 		if ("attack" in tags):
-			var attacker = script.owner
-			var type = attacker.get_property("type_code", "")
-			if !type in ["hero", "ally", "minion", "villain"]:
-				attacker = _get_identity_from_script(script)
+			var attacker = get_actual_action_source_from_script(script)
 								 
 			var target = script.subjects[0]	if script.subjects else null			
 			var signal_details = {
@@ -1712,7 +1692,7 @@ func i_attack(script: ScriptTask) -> int:
 
 	for card in script.subjects:
 		var target = card 
-		if !target.get_property("type_code") in ["ally", "alter_ego", "hero", "minion", "villain"]:
+		if !target.get_property("type_code") in CFConst.CONSIDERED_AS_ACTION_OWNER:
 			target = card.get_controller_hero_id()
 			
 		retcode = gameData.add_enemy_activation(attacker, "attack", script, target)
@@ -2133,16 +2113,14 @@ func _add_pre_receive_damage_on_stack(amount, original_script, modifications:Dic
 				
 		var source = original_script.get_property("source", owner)
 
-		var source_character = source
-		var type = source_character.get_property("type_code", "")
-		if !type in ["hero", "ally", "villain", "minion"]:
-			source_character = _get_identity_from_script(original_script)	
+		var source_character = get_actual_action_source_from_script(original_script)
 		
 		var receive_damage_script_definition = {
 			"name": "pre_receive_damage",
 			"amount": amount,
 			"source": source,
-			"source_character": source_character,
+			"secondary_source": source,
+			"actual_source": source_character,
 			"tags": modifications.get("tags", original_script.get_property("tags", []))
 		}
 
@@ -2173,10 +2151,20 @@ func _add_receive_damage_on_stack(amount, original_script, modifications:Diction
 		gameData.theStack.add_script(task_event)	
 
 func _add_remove_threat_on_stack(amount, original_script, modifications:Dictionary = {}):		
+		var source = original_script.get_property("source", owner)
+
+		var source_character = get_actual_action_source_from_script(original_script)
+	
 		var remove_threat_script_definition = {
 			"name": "remove_threat",
 			"amount": amount,
-		}
+			"source": source,
+			"secondary_source": source,
+			"actual_source": source_character,
+			"tags": modifications.get("tags", original_script.get_property("tags", []))
+		}	
+		
+		
 		modifications["script_definition"] =  remove_threat_script_definition	
 		var remove_threat_script = _modify_script(original_script, modifications, "replace")
 	
@@ -2370,9 +2358,7 @@ func thwart(script: ScriptTask) -> int:
 	if !amount:
 		amount = 0
 
-	var type = owner.get_property("type_code", "")
-	if !type in ["hero", "ally", "alter_ego"]:
-		owner = _get_identity_from_script(script)
+	owner = get_actual_action_source_from_script(script)
 	
 	if (costs_dry_run()):
 		if owner.get_property("cannot_thwart", 0, true):
@@ -2383,6 +2369,7 @@ func thwart(script: ScriptTask) -> int:
 		owner.remove_confused()
 		owner.hint("Confused!", Color8(240,110,255))
 	else:
+		script.script_definition["attacker"] = owner
 		for card in script.subjects:
 			var script_modifications = {
 				"additional_tags" : ["thwart"],
@@ -3335,6 +3322,29 @@ static func _get_identity_from_script(script):
 		var my_hero_card = gameData.get_identity_card(my_hero_id)	
 		return my_hero_card
 	return null
+
+#returns the action source based on a a script
+static func get_actual_action_source_from_script(script):
+	var owner = script.owner
+	
+	var type = owner.get_property("type_code", "")
+	if type in CFConst.CONSIDERED_AS_ACTION_OWNER:
+		return owner
+		
+	#not considered as an action owner, we need to dig deeper
+	
+	#if upgrades are attached to an action owner card, that card is the action owner
+	# see "You" section in FFG Rules 
+	if type == "upgrade":
+		var current_host = owner.current_host_card
+		if current_host:
+			var host_type = current_host.get_property("type_code", "")
+			if host_type in CFConst.CONSIDERED_AS_ACTION_OWNER:
+				return current_host
+	
+	#else we return the hero who owns the script
+	return _get_identity_from_script(script)		
+	
 	
 static func duplicate_script(script):
 	var result = ScriptTask.new(script.owner, script.script_definition, script.trigger_object, script.trigger_details)

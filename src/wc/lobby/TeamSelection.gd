@@ -879,7 +879,13 @@ func _on_OpenFolderButton_pressed():
 	OS.shell_open(ProjectSettings.globalize_path("user://"))
 	pass # Replace with function body.
 
+var _debug_show_preview_counter = 0
 func show_preview(card_id):
+	#there's a bug where the preview looks huge for a split second when loadingthe screen
+	#and I'm too lazy to figure it out
+	if !_debug_show_preview_counter:
+		_debug_show_preview_counter = 1
+		return
 	if cfc.get_setting("disable_card_images"):
 		return
 		#TODO support for text mode

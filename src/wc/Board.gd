@@ -154,13 +154,18 @@ func scenario_description():
 	#we skip the whole thing if testsuite is running
 	if !gameData.testSuite:
 		if description and !cfc.get_setting("dont_show_msg/" + msg_id):
+			
 			description = cfc.convert_to_bbcode(description)
-			var title  = scenario.get_display_name()		
+			var title  = scenario.get_display_name()
+			while cfc.get_modal_menu():
+				yield(cfc.get_tree(), "idle_frame")		
 			var confirm = _OPTIONAL_CONFIRM_SCENE.instance()
+			cfc.add_modal_menu(confirm)
 			confirm.simple_message(title, description, msg_id)
 			# We have to wait until the player has finished selecting an option
 			yield(confirm,"selected")
 			# Garbage cleanup
+			cfc.remove_modal_menu(confirm)
 			confirm.queue_free()	
 	
 	cfc._rpc(self,"ready_for_step", LOADING_STEPS.START_GAME)	
@@ -619,9 +624,13 @@ func post_cards_moved_load():
 
 	#TODO better way to do a reveal ?
 	var current_villain = get_villain_card()
-	func_return = current_villain.execute_scripts_no_stack(current_villain, "reveal")
-	if func_return is GDScriptFunctionState && func_return.is_valid():
-		yield(func_return, "completed")		
+	if current_villain:
+		func_return = current_villain.execute_scripts_no_stack(current_villain, "reveal")
+		if func_return is GDScriptFunctionState && func_return.is_valid():
+			yield(func_return, "completed")	
+	else:
+		var _error = 1		
+				
 
 	func_return = scheme.execute_scripts_no_stack(scheme, "reveal")
 	if func_return is GDScriptFunctionState && func_return.is_valid():

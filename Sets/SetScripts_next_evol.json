@@ -4001,7 +4001,7 @@
 						"selection_count": 1,
 						"selection_type": "equal",
 						"selection_optional": false,
-						"filter_state_subject": [
+						"filter_state_seek": [
 							{
 								"filter_group": "group_identities"
 							}
@@ -4375,6 +4375,17 @@
 		}
 	},
 	"Knock, Knock - 1B": {
+		"on_load": {
+			"all": [
+				{
+					"name": "save_variable",
+					"var_name": "was_knocked",
+					"var_type": "int",
+					"value": 0,
+					"_comments": "remembering the knock effect for next use"
+				}
+			]
+		},
 		"step_ended": {
 			"event_filters": {
 				"step_name": "VILLAIN_THREAT"
@@ -4402,6 +4413,13 @@
 			},
 			"board": [
 				{
+					"name": "save_variable",
+					"var_name": "was_knocked",
+					"var_type": "int",
+					"value": 1,
+					"_comments": "remembering the knock effect for next use"
+				},
+				{
 					"name": "move_to_next_scheme",
 					"subject": "self"
 				}
@@ -4424,6 +4442,27 @@
 			"board": [
 				{
 					"name": "victory"
+				}
+			]
+		},
+		"do_give_tough": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": "was_knocked",
+					"token_name": "tough",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Morlock"
+							},
+							"filter_properties2": {
+								"type_code": "ally"
+							}
+						}
+					]
 				}
 			]
 		}
@@ -5620,24 +5659,6 @@
 					]
 				},
 				{
-					"name": "mod_tokens",
-					"modification": 1,
-					"token_name": "tough",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"Name": "Morlock"
-							},
-							"filter_properties2": {
-								"type_code": "ally"
-							}
-						}
-					],
-					"TODO": "conditional on knock counters"
-				},
-				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
 				}
@@ -5645,6 +5666,24 @@
 		}
 	},
 	"Mutant Massacre - 2B": {
+		"reveal": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_give_tough",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"code": "40077b"
+							}
+						}
+					],
+					"_comments": "calling the tough effect on knock, knock (id 40077b) which has previously stored whether it was knocked or not"
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -5803,7 +5842,7 @@
 		}
 	},
 	"Nathan Summers": {
-		"pre_setup": {
+		"setup": {
 			"all": [
 				{
 					"name": "move_card_to_board",
@@ -6235,7 +6274,7 @@
 					"needs_selection": true,
 					"display_title": "choose card to discard",
 					"selection_count": 1,
-					"selection_type": "equal"
+					"selection_type": "max"
 				},
 				{
 					"name": "move_card_to_container",
@@ -8689,14 +8728,16 @@
 			"event_filters": {
 				"subject": "self",
 				"actual_source": "!Cable",
-				"filter_state_actual_source": [{
-					"filter_func": {
-						"func_name": "is_character",
-						"func_params": {
-							"subject": "trigger"
+				"filter_state_actual_source": [
+					{
+						"filter_func": {
+							"func_name": "is_character",
+							"func_params": {
+								"subject": "trigger"
+							}
 						}
 					}
-				}]
+				]
 			},
 			"display_section": "characters...",
 			"board": [

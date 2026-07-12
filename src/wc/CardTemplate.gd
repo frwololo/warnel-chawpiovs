@@ -3836,8 +3836,12 @@ func set_last_paid_with(manacost_array:Array, expected_cost = null):
 
 #resource lock
 #checks to see if a given card is being used a payment, in which case
-#it is locked from being used in other scripts (e.g. as a subjct, etc...)
+#it is locked from being used in other scripts ( etc...)
 var _locked_for_resource = null
+
+#checks to see if a given card is being used a payment, in which case
+#it is locked from being used in other scripts *as a subject*
+var _lockable_for_subject = true
 
 #script can either be a script object (in which case its owner will be computed)
 #or a dict script definition (in which case the owner object also needs to be passed as parameter)			
@@ -3865,9 +3869,11 @@ func set_resource_lock(script, owner = null):
 	var signature = script_signature(script, owner)
 	_locked_for_resource = signature
 
+func is_subject_locked_as_resource(script,owner = null):
+	return is_resource_locked(script, owner, true)
 #script can either be a script object (in which case its owner will be computed)
 #or a dict script definition (in which case the owner object also needs to be passed as parameter)				
-func is_resource_locked(script, owner = null):
+func is_resource_locked(script, owner = null, only_check_subject = false):
 	if !_locked_for_resource:
 		return false
 	
@@ -3883,6 +3889,8 @@ func is_resource_locked(script, owner = null):
 		
 	var signature = script_signature(script, owner)
 	if _locked_for_resource != signature:
+		if only_check_subject:
+			return _lockable_for_subject 
 		return true
 	
 	return false
@@ -3985,11 +3993,22 @@ func get_resource_value_as_mana(script):
 
 		
 	var my_state = get_state_exec()
-	var sceng = _get_resource_sceng(script)
+	var sceng:ScriptingEngine = _get_resource_sceng(script)
 	var result_mana:ManaCost = ManaCost.new()
+	
+	_lockable_for_subject = true
 	
 	if sceng:		
 		if (sceng.can_all_costs_be_paid):
+			
+			#alternate means of payment (i.e. not discarding from hand) do not discard, by default, and therefore can be subjects
+			_lockable_for_subject = false			
+			#But there are exceptions where the payment involves discarding, moving, etc...
+			#which would invalidate it as a subject
+			for script in sceng.scripts_queue:
+				if script.script_name in ["discard", "move_to_container"]:
+					_lockable_for_subject = true
+					 
 			# run in precompute mode to try and calculate how much resources this would give us
 			var func_return = sceng.execute(CFInt.RunType.PRECOMPUTE)
 			while func_return is GDScriptFunctionState && func_return.is_valid():

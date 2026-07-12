@@ -904,7 +904,7 @@ func check_validity_post_selection(card, script):
 	if card == script.owner:
 		return true
 		
-	if card.is_resource_locked(script):
+	if card.is_subject_locked_as_resource(script):
 		return false
 	return true
 

@@ -609,8 +609,8 @@ func save_variable(script:ScriptTask) -> int:
 	if !var_type in ["subject", "int"]:
 		return CFConst.ReturnCode.FAILED
 
-	var value = script.script_definition.get("value", "")
-	if !value:
+	var value = script.script_definition.get("value", null)
+	if value == null:
 		return CFConst.ReturnCode.FAILED
 
 

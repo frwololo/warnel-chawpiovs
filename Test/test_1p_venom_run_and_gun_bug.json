@@ -1,0 +1,145 @@
+{
+	"_comments": "Venom Run and Gun doesn't ready Venom if Venom was used to pay for it",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Venom"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Venom",
+					"tokens": {
+						"damage": 3,
+						"__symbiotic_bond": 1,
+					},
+					"exhausted": true					
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Multi-Gun",
+					"exhausted": true
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Run and Gun"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Run and Gun"
+		},
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Venom"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Venom",
+					"tokens": {
+						"damage": 4,
+					},
+					"exhausted": false
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Multi-Gun",
+					"exhausted": false
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [],
+			"discard1": [
+				{
+					"card": "Strength"
+				},			
+				{
+					"card": "Run and Gun"
+				},
+
+			]
+		}
+	}
+}

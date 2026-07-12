@@ -1,0 +1,181 @@
+{
+	"_comments": "Automated Test for Morlock Siege",
+	"init": {
+		"phase": "VILLAIN_THREAT",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Cable"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Arclight - A"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Routed #40081a"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Mutant Massacre #40078a"
+				},
+				{
+					"card": "Mutant Massacre #40078b"
+				},
+				{
+					"card": "Morlock #40079"
+				},
+				{
+					"card": "Morlock #40079"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Knock, Knock #40077b",
+					"tokens": {
+						"threat": 2,
+						"knock": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nathan Summers"
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+			"_comments": "after villain threat, Knock, knock will shift to mutant massacre because knock counter will reach 3. This wil bring 2 Morlocks and give them tough"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "then villain schemes and proceeds to their turn as normal, reveal encounter etc..."
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Cable"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Arclight - A"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Routed #40081a"
+				}
+			],
+			"removed_from_game": [
+							{
+					"card": "Mutant Massacre #40078a"
+				},
+			],
+			"set_aside": [
+
+				{
+					"card": "Knock, Knock #40077b"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Mutant Massacre #40078b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nathan Summers"
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Morlock #40079",
+					"tokens": {
+						"tough": 1
+					}
+				},
+				{
+					"card": "Morlock #40079",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

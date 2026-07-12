@@ -643,8 +643,11 @@
 					"filter_state_subject": [
 						{
 							"filter_group": "group_enemies",
-							"func_filter": {
-								"func_name": "is_confused"
+							"filter_func": {
+								"func_name": "is_confused",
+								"func_params": {
+									"subject": "trigger"
+								}
 							}
 						}
 					]

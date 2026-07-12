@@ -2355,19 +2355,19 @@ func swap_villain(current_villain, next_villain_key, options = {}):
 		
 		new_card = cfc.NMAP.board.load_villain(next_villain_key)
 		
-		var copy_damage = options.get("copy_damage", false)
-		var copy_token_options = {}
-		if !copy_damage:
-			copy_token_options["exclude"]  = ["damage"]
-			
-		current_villain.copy_tokens_to(new_card, copy_token_options)
-		var attachments_to_move = []
-		for attachment in current_villain.attachments:
-			if attachment.is_boost():
-				continue
-			attachments_to_move.append(attachment)
-		for attachment in attachments_to_move:	
-			attachment.attach_to_host(new_card)
+#		var copy_damage = options.get("copy_damage", false)
+#		var copy_token_options = {}
+#		if !copy_damage:
+#			copy_token_options["exclude"]  = ["damage"]
+#
+#		current_villain.copy_tokens_to(new_card, copy_token_options)
+#		var attachments_to_move = []
+#		for attachment in current_villain.attachments:
+#			if attachment.is_boost():
+#				continue
+#			attachments_to_move.append(attachment)
+#		for attachment in attachments_to_move:	
+#			attachment.attach_to_host(new_card)
 
 	var died = options.get("died", false)
 	if died:

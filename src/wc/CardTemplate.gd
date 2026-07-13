@@ -3381,13 +3381,6 @@ func get_subject_int_property(params, script:ScriptObject= null) -> int:
 		count+= value
 	return count
 
-func get_subject_variable(params, script:ScriptObject= null):
-	var subject = get_param_subject(params, script)
-	if !subject:
-		return 0
-	
-	var var_name = params.get("variable", "")
-	return subject.script_variables.get(var_name, null)
 
 func get_subject_int_variable(params, script:ScriptObject= null) -> int:
 	var subject = get_param_subject(params, script)
@@ -3395,7 +3388,14 @@ func get_subject_int_variable(params, script:ScriptObject= null) -> int:
 		return 0
 	
 	var var_name = params.get("variable", "")
-	return subject.script_variables.get(var_name, 0)
+	var result = subject.script_variables.get(var_name, 0)
+	if typeof(result) in [TYPE_INT, TYPE_REAL]:
+		return result
+
+	#for non numbers, we return a "bool" int equivalent
+	if result:
+		return 1
+	return 0
 
 func get_trigger_details_property(params, script:ScriptObject= null) -> int:
 	if !script:

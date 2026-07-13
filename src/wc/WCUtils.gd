@@ -227,6 +227,20 @@ static func merge_dict(dict_1: Dictionary, dict_2: Dictionary, deep_merge: bool 
 			new_dict[key] = dict_2[key]
 	return new_dict
 
+static func merge_variant(data1, data2, deep_merge: bool = false):
+	if typeof(data1)!= typeof(data2):
+		var _error = 1
+		return null
+	match typeof(data1):
+		TYPE_DICTIONARY:
+			return merge_dict(data1, data2, deep_merge)
+		TYPE_ARRAY:
+			return merge_array(data1, data2, deep_merge)
+	
+	var _error = 1
+	return data1
+	
+
 #check if all elements of dict1 can be found in dict2
 #This doesn't mean the dictionaries are necessarily equal
 static func is_element1_in_element2 (element1, element2, order_doesnt_matter: Array = [])-> bool:
@@ -572,9 +586,9 @@ static func replace_text_macro (replacements, macro_value):
 	for key in replacements.keys():
 		var value = replacements[key]
 		var to_replace = key
-		if typeof(value) in [TYPE_REAL,TYPE_INT,TYPE_BOOL]:
+		if typeof(value) in [TYPE_REAL,TYPE_INT,TYPE_BOOL, TYPE_ARRAY, TYPE_DICTIONARY]:
 			to_replace = "\"" + key + "\""
-			value = str(value).to_lower()
+			value = JSON.print(value).to_lower()
 		text = text.replace(to_replace, str(value))
 	
 	var result = parse_json(text)
@@ -595,7 +609,12 @@ static func replace_one_macro(script_definition, macro_key, macro_value):
 						TYPE_DICTIONARY:
 							var dict = dict_or_array
 							for replaced_key in dict.keys():
-								result[replaced_key] = dict[replaced_key]
+								if result.has(replaced_key):
+									result[replaced_key] = merge_variant(result[replaced_key], dict[replaced_key], true)
+									print_debug("macro might overwrite other data: " + key + JSON.print(result))
+								else:
+									result[replaced_key] = dict[replaced_key]
+								
 								if typeof(result[replaced_key]) == TYPE_DICTIONARY:
 									result[replaced_key]["macro_name"] = macro_key
 								else:
@@ -603,7 +622,12 @@ static func replace_one_macro(script_definition, macro_key, macro_value):
 						_: #array
 							result = dict_or_array
 				else:
-					result[key] = replace_one_macro(script_definition[key], macro_key, macro_value)
+					var replaced = replace_one_macro(script_definition[key], macro_key, macro_value)
+					if result.has(key):
+						result[key] = merge_variant(result[key], replaced, true)
+						print_debug("macro might overwrite other data: " + key + JSON.print(result))
+					else:	
+						result[key] = replaced
 		TYPE_ARRAY:	
 			result = []
 			for value in script_definition:

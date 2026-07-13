@@ -470,25 +470,18 @@
 		}
 	},
 	"Mission Training": {
-		"manual": {
-			"hand": [
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__":	[
 				{
-					"name": "attach_to_card",
-					"subject": "target",
-					"is_cost": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_allies",
-							"filter_properties": {
-								"trait_x-men": 1,
-								"comparison": "ge"
-							},
-							"filter_max_per_host": 1
-						}
-					]
+					"filter_group": "group_allies",
+					"filter_properties": {
+						"trait_x-men": 1,
+						"comparison": "ge"
+					},
+					"filter_max_per_host": 1
 				}
-			]
-		},
+			]				
+		},	
 		"alterants": {
 			"board": [
 				{
@@ -1204,23 +1197,13 @@
 		}
 	},
 	"Telekinetic Shield": {
-		"manual": {
-			"hand": [
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__":	[
 				{
-					"name": "attach_to_card",
-					"subject": "target",
-					"is_cost": true,
-					"filter_state_subject": [
-						{
-							"filter_properties": {
-								"type_code": "ally"
-							},
-							"filter_max_per_host": 1
-						}
-					]
+					"filter_group": "group_friendly",
 				}
-			]
-		},
+			]				
+		},		
 		"card_attached": {
 			"trigger": "self",
 			"board": [

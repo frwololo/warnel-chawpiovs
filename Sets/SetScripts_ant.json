@@ -715,26 +715,18 @@
 		}
 	},
 	"Power Gloves": {
-		"manual": {
-			"hand": [
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__":	[
 				{
-					"name": "attach_to_card",
-					"subject": "target",
-					"is_cost": true,
-					"filter_state_subject": [
-						{
-							"filter_properties": {
-								"type_code": "ally"
-							},
-							"filter_properties2": {
-								"trait_avenger": 1
-							},
-							"filter_max_per_host": 1
-						}
-					]
+					"filter_group": "group_allies",
+					"filter_properties": {
+						"trait_avenger": 1,
+						"comparison": "ge"
+					},
+					"filter_max_per_host": 1
 				}
-			]
-		},
+			]				
+		},		
 		"attack_happened": {
 			"trigger": "host",
 			"is_optional_board": true,
@@ -810,23 +802,7 @@
 		}
 	},
 	"Reinforced Suit": {
-		"manual": {
-			"hand": [
-				{
-					"name": "attach_to_card",
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_properties": {
-								"type_code": "ally"
-							},
-							"filter_max_per_host": 1
-						}
-					]
-				}
-			]
-		},
+		"attach_upgrade_to_ally_max_1": {},
 		"alterants": {
 			"board": [
 				{
@@ -986,8 +962,7 @@
 			"__name__": "size",
 			"__amount__": 3
 		},
-		"card_moved_to_board": {
-			"trigger": "self",
+		"self_moved_to_board": {
 			"board": [
 				{
 					"name": "attach_to_card",

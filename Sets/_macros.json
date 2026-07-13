@@ -3,9 +3,9 @@
 		"manual": {
 			"hand": [
 				{
-					"name": "nop",
+					"name": "attach_to_card",
 					"subject": "target",
-					"is_cost": true,
+					"is_cost": true,				
 					"filter_state_subject": [
 						{
 							"filter_properties": {
@@ -22,7 +22,7 @@
 					"value": "previous",
 					"is_cost": true,
 					"_comments": "remembering  for next use"
-				},				
+				}
 			]
 		},
 		"card_moved_to_board": {
@@ -30,20 +30,32 @@
 			"_silent": true,
 			"board": [
 				{
-					"name": "attach_to_card",
-					"subject": "my_target",
-					"is_cost": true,
-				},
-				{
-					"name": "forget_variable",
-					"var_name": "my_target",
-				},				
-				{
-					"name": "sequence",
-					"sequence_ability": "attempt_attach",
-					"is_else": true
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_variable",
+								"func_params": {
+									"subject": "self",
+									"variable": "my_target"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "forget_variable",
+									"var_name": "my_target"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "sequence",
+							"sequence_ability": "attempt_attach"
+						}
+					]
 				}
-			]			
+			]
 		},
 		"attempt_attach": {
 			"all": [
@@ -64,9 +76,76 @@
 					"name": "discard",
 					"subject": "self",
 					"is_else": true
-				}	
+				}
+			]
+		}
+	},
+	"attach_upgrade_to_target": {
+		"manual": {
+			"hand": [
+				{
+					"name": "attach_to_card",
+					"subject": "target",
+					"is_cost": true,
+					"filter_state_subject": "__filter_state_subject__"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_target",
+					"var_type": "subject",
+					"value": "previous",
+					"is_cost": true,
+					"_comments": "remembering  for next use"
+				}
 			]
 		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"_silent": true,
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_variable",
+								"func_params": {
+									"subject": "self",
+									"variable": "my_target"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "forget_variable",
+									"var_name": "my_target"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "sequence",
+							"sequence_ability": "attempt_attach"
+						}
+					]
+				}
+			]
+		},
+		"attempt_attach": {
+			"all": [
+				{
+					"name": "attach_to_card",
+					"subject": "target",
+					"is_cost": true,
+					"filter_state_subject": "__filter_state_subject__"
+				},
+				{
+					"name": "discard",
+					"subject": "self",
+					"is_else": true
+				}
+			]
+		}
 	},
 	"attacks_gain": {
 		"interrupt_pre_receive_damage": {
@@ -88,7 +167,7 @@
 				}
 			]
 		}
-	},	
+	},
 	"give_obligation": {
 		"about_to_reveal": {
 			"trigger": "self",
@@ -103,14 +182,14 @@
 	},
 	"give_to_player_max1": {
 		"manual": {
-				"hand": [
-					{
-						"name": "constraints",
-						"is_cost": true,
-						"max_per_hero_any": 1
-					}
-				]
-			},
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero_any": 1
+				}
+			]
+		},
 		"card_played": {
 			"trigger": "self",
 			"all": [
@@ -129,7 +208,7 @@
 					]
 				}
 			]
-		},
+		}
 	},
 	"hinder": {
 		"self_moved_to_board": {
@@ -154,7 +233,6 @@
 			]
 		}
 	},
-	
 	"obligation_flip_remove": [
 		{
 			"name": "constraints",
@@ -197,7 +275,7 @@
 			"name": "move_card_to_container",
 			"dest_container": "removed_from_game",
 			"subject": "self"
-		}	
+		}
 	],
 	"once_per_phase": {
 		"phase_ended": {
@@ -283,7 +361,7 @@
 					"modification": 1,
 					"set_to_mod": true,
 					"token_name": "__player_token4"
-				},				
+				}
 			]
 		},
 		"card_moved_to_board": {
@@ -317,10 +395,10 @@
 					"modification": 1,
 					"set_to_mod": true,
 					"token_name": "__player_token4"
-				},
+				}
 			]
 		}
-	},	
+	},
 	"on_reveal_one_threat_per_hero": {
 		"reveal": {
 			"all": [
@@ -373,7 +451,7 @@
 	},
 	"teamwork": {
 		"self_moved_to_board": {
-			"board" : [
+			"board": [
 				{
 					"name": "conditional_script",
 					"options": [
@@ -392,7 +470,7 @@
 											"filter_properties2": {
 												"trait___trait__": 1,
 												"comparison": "ge"
-											},
+											}
 										}
 									]
 								}
@@ -407,7 +485,7 @@
 					]
 				}
 			]
-		},
+		}
 	},
 	"todo": {
 		"manual": {
@@ -445,7 +523,7 @@
 			"board": [
 				{
 					"name": "discard",
-					"subject": "self",
+					"subject": "self"
 				}
 			]
 		}

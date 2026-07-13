@@ -3353,23 +3353,7 @@
 		}
 	},
 	"Inspired": {
-		"manual": {
-			"hand": [
-				{
-					"name": "attach_to_card",
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_properties": {
-								"type_code": "ally"
-							},
-							"filter_max_per_host": 1
-						}
-					]
-				}
-			]
-		},
+		"attach_upgrade_to_ally_max_1": {},
 		"alterants": {
 			"board": [
 				{

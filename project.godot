@@ -736,6 +736,13 @@ ui_focus_character={
  ]
 }
 
+[network]
+
+limits/debugger_stdout/max_chars_per_second=20000
+limits/debugger_stdout/max_messages_per_frame=5000
+limits/debugger_stdout/max_errors_per_second=10000
+limits/debugger_stdout/max_warnings_per_second=10000
+
 [rendering]
 
 environment/default_environment="res://default_env.tres"

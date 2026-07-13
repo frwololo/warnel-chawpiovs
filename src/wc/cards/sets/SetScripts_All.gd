@@ -167,37 +167,39 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 		if !has_manual_hand:
 			process_manual_cost = false
 			
-		var playFromHand: Array = hand_constraints
+		var playFromHand_pre: Array = hand_constraints
+		var playFromHand_post: Array = []
 		if (cost):
-			playFromHand +=  [
+			playFromHand_pre +=  [
 				{
 					"name": "pay_regular_cost",
 					"is_cost": true,
 					"cost" : "card_cost", #keyword here to retrieve cost realtime
 				},
-				play_action
 			]	
+			playFromHand_post += [play_action]
 		elif (card.has("Cost"))	: #Card has a cost but it's zero
-			playFromHand += [
+			playFromHand_post += [
 				play_action
 			]
 		
-		playFromHand += post_play_actions
+		playFromHand_post += post_play_actions
 					
 		var playInterrupt: Dictionary = {}
 		for interrupt_script in interrupt_scripts:			
 			#TODO add trigger filters + interrupt data
 			playInterrupt[interrupt_script] =  {
-				"hand" : playFromHand
+				"hand" : playFromHand_pre + playFromHand_post
 			} 
 		script = WCUtils.merge_dict(script, playInterrupt, true)
 	if process_manual_cost: #Regular cards
 		#Play From hand: discard a specific number of cards to play
 		#TODO limit to player cards ?
 		var has_overpaid_check = WCUtils.is_string_in_variant(script, "overpaid")
-		var playFromHand: Dictionary = { }
+		var playFromHand_pre: Dictionary = { }
+		var playFromHand_post: Dictionary = { }
 		if (cost or has_overpaid_check):
-			playFromHand = {
+			playFromHand_pre = {
 				"manual": {
 					"hand": hand_constraints + [
 						{	
@@ -210,12 +212,17 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 							"is_cost": true,
 							"cost" : "card_cost", #keyword here to retrieve cost realtime
 						},
-						play_action
-					] + post_play_actions
+						
+					] 
 				}
 			}
+			playFromHand_post = {				
+				"manual": {
+					"hand": [play_action] +  post_play_actions
+				}
+			}	
 		elif (card.has("Cost"))	: #Card has a cost but it's zero
-			playFromHand = {
+			playFromHand_pre = {
 				"manual": {
 					"hand": hand_constraints +[
 						{	
@@ -223,21 +230,27 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 							"is_cost": true,
 							"tags": ["as_action"]
 						},						
-						play_action
-					] + post_play_actions
+					]
 				}
 			}
+			playFromHand_post = {				
+				"manual": {
+					"hand": [play_action] +  post_play_actions
+				}
+			}			
 		#existing scripts are occasionally a dictionary instead of 
 		#array. e.g. Flora and Fauna. In this case the merge is a bit more complicated	
 		var hand_script = script.get("manual", {}).get("hand", [])
 		if typeof(hand_script) == TYPE_DICTIONARY:
-			var to_merge = playFromHand["manual"]["hand"]
+			var to_merge_pre = playFromHand_pre["manual"]["hand"]
+			var to_merge_post = playFromHand_post["manual"]["hand"]
 			for key in hand_script.keys():
-				hand_script[key] = to_merge + hand_script[key]
+				hand_script[key] = to_merge_pre + hand_script[key] + to_merge_post
 		else:	
 			#note: order matters here in some cases. generally speaking
 			# we want cost to be paid first, therefore be at the top of the array			
-			script = WCUtils.merge_dict( playFromHand, script, true)
+			script = WCUtils.merge_dict( playFromHand_pre, script, true)
+			script = WCUtils.merge_dict( script, playFromHand_post,  true)
 		if "scheme" in type_code:
 			var scheme_comes_to_play: Dictionary = { 
 				"self_moved_to_board": {

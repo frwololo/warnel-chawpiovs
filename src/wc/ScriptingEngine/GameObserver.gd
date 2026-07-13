@@ -118,7 +118,7 @@ func add_script_removal_effect(_parent_script,subject, script_id = 0, remove_con
 	var remove_condition_arr = remove_condition
 	var filters = {}
 	if typeof(remove_condition) == TYPE_DICTIONARY:
-		remove_condition_arr = remove_condition.get("trigger", "")
+		remove_condition_arr = remove_condition.get("event", "")
 		filters = remove_condition.get("event_filters", {})
 	
 	if typeof(remove_condition_arr) == TYPE_STRING:
@@ -126,10 +126,10 @@ func add_script_removal_effect(_parent_script,subject, script_id = 0, remove_con
 	
 	for remove_condition_str in remove_condition_arr:
 		if script_id:
-			extra_script_removal_conditions.append({"trigger": remove_condition_str, "event_filters": filters, "card": subject, "script_id": script_id})
+			extra_script_removal_conditions.append({"event": remove_condition_str, "event_filters": filters, "card": subject, "script_id": script_id})
 			cards_with_extra_scripts.append(subject)
 		else:
-			removal_conditions.append({"trigger": remove_condition_str, "filters": filters, "object": subject})
+			removal_conditions.append({"event": remove_condition_str, "filters": filters, "object": subject})
 
 func early_removal_checks(
 		trigger_card = null,
@@ -184,14 +184,21 @@ func matches_condition(
 	if !removal_condition:
 		return false
 		
-	if removal_condition.get("trigger", "") != trigger:
+	if removal_condition.get("event", "") != trigger:
 		return false
 		
-	var filters = removal_condition.get("event_filters", {})
+	var filters = removal_condition.get("event_filters", {}).duplicate()
 	if !filters:
 		return true
 
+	if filters.has("trigger"):
+		var to_compare_trigger = filters.get("trigger")
+		var owner_card = removal_condition.get("card", trigger_card)
+		to_compare_trigger = SP._get_subjects_simplified(to_compare_trigger,owner_card )
+		if to_compare_trigger != trigger_card:
+			return false
+		filters.erase("trigger")
+
 	#fishy, not sure what card to compare it to at the moment...
-	var card = removal_condition.get("card", trigger_card)
-	var result =  cfc.ov_utils.matches_filters( filters, card, trigger_details)
+	var result =  cfc.ov_utils.matches_filters( filters, trigger_card, trigger_details)
 	return result

@@ -512,7 +512,7 @@
 						"name": "add_script",
 						"subject": "my_identity",
 						"end_condition": {
-							"trigger": "phase_ended",
+							"event": "phase_ended",
 							"event_filters": {
 								"phase": "player_phase"
 							}
@@ -546,7 +546,7 @@
 						"name": "add_script",
 						"subject": "my_identity",
 						"end_condition": {
-							"trigger": "phase_ended",
+							"event": "phase_ended",
 							"event_filters": {
 								"phase": "player_phase"
 							}

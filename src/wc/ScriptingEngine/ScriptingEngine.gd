@@ -643,6 +643,21 @@ func save_variable(script:ScriptTask) -> int:
 		
 	return retcode
 
+func forget_variable(script:ScriptTask) -> int:
+	var retcode = CFConst.ReturnCode.CHANGED
+
+	var var_name = script.script_definition.get("var_name", "")
+	if !var_name:
+		return CFConst.ReturnCode.FAILED
+
+	if costs_dry_run():
+		return retcode
+	
+
+	script.owner.script_variables.erase(var_name)
+		
+	return retcode
+
 func deal_damage(script:ScriptTask) -> int:
 	var retcode = CFConst.ReturnCode.FAILED
 

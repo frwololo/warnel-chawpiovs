@@ -372,7 +372,8 @@ func _process(_delta: float):
 		return
 		
 	if _game_over: 
-		end_game("game over")
+		if _game_over in ["victory", "defeat"]:
+			end_game("game over")
 		return
 		
 	if _multiplayer_desync:
@@ -2160,6 +2161,13 @@ func character_died(card:Card, script = null):
 	theStack.add_script(task_event)
 
 func defeat():
+	erase_pending_scripts()
+
+	if testSuite:
+		_game_over = "testsuite_defeat"
+		get_first_player().tokens.mod_token("defeat",1)
+		return
+	
 	_game_over = "defeat"
 	var announce_settings = {
 		"text": "Defeat Defeat",
@@ -2169,6 +2177,13 @@ func defeat():
 	theAnnouncer.simple_announce(announce_settings, true)	
 
 func victory():
+	erase_pending_scripts()
+	
+	if testSuite:
+		_game_over = "testsuite_victory"
+		get_first_player().tokens.mod_token("victory",1)
+		return
+	
 	_game_over = "victory"
 	var announce_settings = {
 		"text": "Victory Victory",
@@ -2608,6 +2623,23 @@ func gui_activity_ongoing_no_cache()-> bool:
 	return false
 
 
+func erase_pending_scripts():
+	attackers = []
+	
+	_current_priority_script = {}
+	_priority_scripts = []
+	scripted_play_sequence = []
+	scripted_play_sequence_low_priority = []
+
+	_current_enemy_attack_step = EnemyAttackStatus.NONE
+	if _current_encounter and is_instance_valid(_current_encounter):
+		_current_encounter.encounter_status = EncounterStatus.NONE
+
+	_current_encounter = null
+	immediate_encounters = []
+	
+
+	
 func cleanup_post_game():
 	cfc.LOG("\n###\ngameData cleanup_post_game")
 	cfc.set_game_paused(true)
@@ -2618,19 +2650,12 @@ func cleanup_post_game():
 		_targeting_ongoing.cancel_targeting()
 		
 	
-	attackers = []
+	erase_pending_scripts()
+
 
 	_clients_current_activation = {}
 	_clients_activation_counter = {}	
 	
-	_current_priority_script = {}
-	_priority_scripts = []
-	
-	_current_enemy_attack_step = EnemyAttackStatus.NONE
-	if _current_encounter and is_instance_valid(_current_encounter):
-		_current_encounter.encounter_status = EncounterStatus.NONE
-	_current_encounter = null
-	immediate_encounters = []	
 	current_round = 1
 	last_target = null
 	last_target_container = null
@@ -2645,9 +2670,10 @@ func cleanup_post_game():
 	_active_main_scheme = null
 	
 	theAnnouncer.reset()
-	theStack.flush_logs()
+
+	theStack.flush_logs()	
 	flush_debug_display()
-	theStack.reset()
+	theStack.reset()		
 	
 	if cfc.NMAP.has("board") and is_instance_valid(cfc.NMAP.board):
 		if !_game_over: #in case ofgame over we want to be able to see the board post game

@@ -879,7 +879,7 @@
 					"name": "add_script",
 					"subject": "self",
 					"end_condition": {
-						"trigger": [
+						"event": [
 							"attack_happened",
 							"thwart_happened"
 						]

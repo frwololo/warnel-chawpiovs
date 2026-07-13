@@ -339,7 +339,7 @@
 							"name": "add_script",
 							"start_condition": "round_ended",
 							"end_condition": {
-								"trigger": "phase_ended",
+								"event": "phase_ended",
 								"event_filters": {
 									"phase": "player_phase"
 								}
@@ -5834,18 +5834,10 @@
 				{
 					"name": "add_script",
 					"end_condition": {
-						"trigger": "script_executed",
+						"event": "card_moved_to_pile",
 						"event_filters": {
-							"additional_script_definition": {
-								"sequence_trigger": "special"
-							},
-							"filter_state_event_source": [
-								{
-									"filter_properties": {
-										"Name": "City Streets"
-									}
-								}
-							]
+							"destination": "discard_villain",
+							"trigger": "self"
 						}
 					},
 					"subject": "self",

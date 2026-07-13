@@ -120,17 +120,16 @@
 					"card": "Captain America's Shield"
 				}
 			],
-			"discard1": [
-				{
-					"card": "Shield Toss"
-				},				
+			"discard1": [				
 				{
 					"card": "Jessica Jones"
 				},
 				{
 					"card": "Falcon - Sam Wilson"
 				},				
-
+				{
+					"card": "Shield Toss"
+				},
 			
 			]
 		}

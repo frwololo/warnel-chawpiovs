@@ -708,7 +708,7 @@
 				{
 					"name": "add_script",
 					"end_condition": {
-						"trigger": "card_moved_to_pile",
+						"event": "card_moved_to_pile",
 						"event_filters": {
 							"destination": "discard_invocation"
 						}

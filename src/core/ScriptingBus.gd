@@ -111,13 +111,14 @@ func init_scripting_event(trigger_object: Card = null, details: Dictionary = {},
 
 	#fire a first "pre" event for engine abilities that need to trigger before cards
 	var details_copy = details.duplicate(true)
+	var details_copy_post = details.duplicate(true)
 	emit_signal("scripting_event_about_to_trigger", trigger_object, trigger, details_copy)
 	
 	#then fire the actual event
 	emit_signal("scripting_event_triggered", trigger_object, trigger, details)	
 
 	#last event for things that happen right after that 
-	emit_signal("after_scripting_event_triggered", trigger_object, trigger, details_copy)	
+	emit_signal("after_scripting_event_triggered", trigger_object, trigger, details_copy_post)	
 
 func emit_signal_on_stack(signal_name, arg0 = null, arg1 = null):
 	if arg1 != null:

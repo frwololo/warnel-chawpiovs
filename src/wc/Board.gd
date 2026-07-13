@@ -559,7 +559,6 @@ func post_cards_moved_load():
 		#draw_cheat("Energy")
 		#draw_cheat("Backflip")
 		#draw_cheat("Helicarrier")	
-		#draw_cheat("Swinging Web Kick")
 		pass
 	cfc.LOG_DICT(guidMaster.guid_to_object)
 		
@@ -1435,6 +1434,8 @@ func unique_card_in_play(unique_card:WCCard):
 	var all_cards = self.get_all_cards()
 	for card in all_cards:
 		if !card.is_faceup:
+			continue
+		if card.is_inactive_attachment():
 			continue
 		if card == unique_card:
 			continue

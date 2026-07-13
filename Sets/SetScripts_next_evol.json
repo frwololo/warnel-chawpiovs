@@ -1077,8 +1077,8 @@
 						"selection_type": "max",
 						"selection_optional": true,
 						"src_container": [
-							"deck",
-							"discard"
+							"deck_my_hero",
+							"discard_my_hero"
 						],
 						"filter_state_tutor": [
 							{
@@ -1094,7 +1094,7 @@
 					},
 					{
 						"name": "shuffle_container",
-						"dest_container": "deck"
+						"dest_container": "deck_my_hero"
 					}
 				]
 			}
@@ -1322,8 +1322,8 @@
 						"selection_type": "max",
 						"selection_optional": true,
 						"src_container": [
-							"deck",
-							"discard"
+							"deck_my_hero",
+							"discard_my_hero"
 						],
 						"filter_state_tutor": [
 							{
@@ -1335,7 +1335,7 @@
 					},
 					{
 						"name": "shuffle_container",
-						"dest_container": "deck"
+						"dest_container": "deck_my_hero"
 					}
 				]
 			}
@@ -3965,7 +3965,7 @@
 						"name": "constraints",
 						"is_cost": true,
 						"tags": [
-							"hero_action"
+							"action"
 						]
 					},
 					{
@@ -4291,7 +4291,7 @@
 								"Name": "Hide!"
 							},
 							"filter_properties2": {
-								"type_code": "environment"
+								"type_code": "treachery"
 							}
 						},
 						{
@@ -4425,9 +4425,16 @@
 				}
 			]
 		},
-		"card_attached": {
+		"interrupt_card_defeated": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "villain"
+					}
+				}
+			],		
 			"condition_board": {
-				"func_name": "count_attachments>=3",
+				"func_name": "count_attachments>=2",
 				"func_params": {
 					"subject": "Routed",
 					"filter_state_attachment": [
@@ -4552,8 +4559,8 @@
 						"selection_type": "max",
 						"selection_optional": true,
 						"src_container": [
-							"deck",
-							"discard"
+							"deck_my_hero",
+							"discard_my_hero"
 						],
 						"filter_state_tutor": [
 							{
@@ -4572,7 +4579,7 @@
 					},
 					{
 						"name": "shuffle_container",
-						"dest_container": "deck"
+						"dest_container": "deck_my_hero"
 					}
 				]
 			}
@@ -5659,6 +5666,22 @@
 					]
 				},
 				{
+					"name": "shuffle_card_into_container",
+					"subject": "tutor",
+					"dest_container": "deck_villain",
+					"src_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Hide!"
+							},
+							"filter_properties2": {
+								"type_code": "treachery"
+							}
+						}
+					]
+				},			
+				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
 				}
@@ -5720,16 +5743,23 @@
 								"Name": "Hide!"
 							},
 							"filter_properties2": {
-								"type_code": "environment"
+								"type_code": "treachery"
 							}
 						}
 					]
 				}
 			]
 		},
-		"card_attached": {
+		"interrupt_card_defeated": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "villain"
+					}
+				}
+			],		
 			"condition_board": {
-				"func_name": "count_attachments>=3",
+				"func_name": "count_attachments>=2",
 				"func_params": {
 					"subject": "Routed",
 					"filter_state_attachment": [
@@ -7260,7 +7290,8 @@
 				},
 				{
 					"name": "sequence",
-					"sequence_ability": "do_villain_attack"
+					"sequence_ability": "do_villain_attack",
+					"delay_until_no_activity": true,
 				}
 			]
 		},
@@ -7579,23 +7610,7 @@
 		}
 	},
 	"Sidearm": {
-		"manual": {
-			"hand": [
-				{
-					"name": "attach_to_card",
-					"subject": "target",
-					"is_cost": true,
-					"filter_state_subject": [
-						{
-							"filter_properties": {
-								"type_code": "ally"
-							},
-							"filter_max_per_host": 1
-						}
-					]
-				}
-			]
-		},
+		"attach_upgrade_to_ally_max_1": {},
 		"alterants": {
 			"board": [
 				{

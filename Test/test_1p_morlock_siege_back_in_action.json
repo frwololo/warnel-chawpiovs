@@ -1,7 +1,7 @@
 {
 	"_comments": "Automated Test for Morlock Siege",
 	"init": {
-		"phase": "VILLAIN_THREAT",
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -17,18 +17,14 @@
 			],
 			"deck_villain": [
 				{
-					"card": "Advance"
-				},			
-				{
 					"card": "Hydra Regular"
-				},				
+				},
 				{
 					"card": "Hydra Mercenary"
 				},
-
-			],
-			"discard_villain": [
-
+				{
+					"card": "Back in Action"
+				}
 			],
 			"villain_misc": [
 				{
@@ -47,10 +43,7 @@
 				},
 				{
 					"card": "Morlock #40079"
-				},
-				{
-					"card": "Hide!"
-				}				
+				}
 			],
 			"schemes": [
 				{
@@ -59,6 +52,13 @@
 						"threat": 2,
 						"knock": 2
 					}
+				}
+			],
+			"others": [
+				{
+					"card": "Greycrow - A",
+					"host": "Routed",
+					"inactive_attachment": true
 				}
 			],
 			"deck1": [
@@ -87,13 +87,7 @@
 	"actions": [
 		{
 			"type": "other",
-			"value": "wait_a_bit",
-			"_comments": "after villain threat, Knock, knock will shift to mutant massacre because knock counter will reach 3. This wil bring 2 Morlocks and give them tough"
-		},
-		{
-			"type": "other",
-			"value": "wait_for_player_turn",
-			"_comments": "then villain schemes and proceeds to their turn as normal, reveal encounter etc..."
+			"value": "wait_for_player_turn"
 		}
 	],
 	"end": {
@@ -108,46 +102,58 @@
 		"board": {
 			"villain": [
 				{
-					"card": "Arclight - A"
+					"card": "Arclight - A",
+					"tokens": {
+						"tough": 1
+					}
 				}
 			],
 			"discard_villain": [
-			
 				{
-					"card": "Advance"
+					"card": "Back in Action"
 				}
 			],
 			"deck_villain": [
 				{
-					"card": "Hide!"
-				},				
-				{
 					"card": "Hydra Regular"
 				},
-			
+				{
+					"card": "Hydra Mercenary"
+				}
 			],
 			"villain_misc": [
 				{
 					"card": "Routed #40081a"
 				}
 			],
-			"removed_from_game": [
-							{
+			"set_aside": [
+				{
 					"card": "Mutant Massacre #40078a"
 				},
-			],
-			"set_aside": [
-
 				{
-					"card": "Knock, Knock #40077b"
+					"card": "Mutant Massacre #40078b"
+				},
+				{
+					"card": "Morlock #40079"
+				},
+				{
+					"card": "Morlock #40079"
 				}
 			],
 			"schemes": [
 				{
-					"card": "Mutant Massacre #40078b",
+					"card": "Knock, Knock #40077b",
 					"tokens": {
-						"threat": 1
+						"threat": 3,
+						"knock": 2
 					}
+				}
+			],
+			"others": [
+				{
+					"card": "Greycrow - A",
+					"host": "Routed",
+					"inactive_attachment": true
 				}
 			],
 			"deck1": [
@@ -161,25 +167,8 @@
 				}
 			],
 			"upgrade_support1": [],
-			"enemies1": [
-				{
-					"card": "Hydra Mercenary"
-				}
-			],
-			"allies1": [
-				{
-					"card": "Morlock #40079",
-					"tokens": {
-						"tough": 1
-					}
-				},
-				{
-					"card": "Morlock #40079",
-					"tokens": {
-						"tough": 1
-					}
-				}
-			],
+			"enemies1": [],
+			"allies1": [],
 			"hand1": [
 				{
 					"card": "Mockingbird"

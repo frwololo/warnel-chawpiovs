@@ -786,6 +786,7 @@ func _process(delta) -> void:
 func display_play_highlight():
 	if not gameData.is_game_started():
 		return
+
 	var can_play = check_play_costs()
 	if (can_play == CFConst.CostsState.OK):
 		#if modal menu is displayed we don't want to mess up those cards highlights
@@ -2357,7 +2358,6 @@ func check_play_costs(params:Dictionary = {}, _debug = false) -> Color:
 	#return .check_play_costs();
 	var hero_id = params.get("hero_id", gameData.get_current_local_hero_id())
 
-	
 	if (_check_play_costs_cache.get(hero_id,CFConst.CostsState.CACHE_INVALID) != CFConst.CostsState.CACHE_INVALID):
 		return _check_play_costs_cache[hero_id]
 	
@@ -2368,9 +2368,6 @@ func check_play_costs(params:Dictionary = {}, _debug = false) -> Color:
 
 	if !(state_exec in ["hand", "board"]):
 		return _check_play_costs_cache[hero_id]
-	
-
-
 	
 	var trigger_details = {
 		"for_hero_id": hero_id,
@@ -2392,8 +2389,6 @@ func check_play_costs(params:Dictionary = {}, _debug = false) -> Color:
 		return _check_play_costs_cache[hero_id]
 	
 	if (sceng.can_all_costs_be_paid):
-#		if canonical_name == "Mean Swing":
-#			var _tmp = 1
 		_check_play_costs_cache[hero_id] = CFConst.CostsState.OK
 
 
@@ -2878,6 +2873,7 @@ func export_modifiers():
 	var result = {
 		"tokens" : tokens.export_to_json(),
 		"exhausted" : self.is_exhausted(),
+		"inactive_attachment": self.is_inactive_attachment()
 	}
 	return result
 
@@ -2895,6 +2891,9 @@ func import_modifiers(modifiers:Dictionary, keep_existing = false):
 			exhaustme()
 		else:
 			readyme()
+			
+	if modifiers.has("inactive_attachment"):
+		self.set_is_inactive_attachment(modifiers["inactive_attachment"])	
 	
 func is_onboard(params = {}):
 	if state in [
@@ -3115,6 +3114,15 @@ func get_active_main_schemes():
 # These might not be always directly called by the code but instead
 # called as part of json script processing (through a .call run)
 #############################
+
+func is_attached(params := {}, script:ScriptObject= null) -> bool:
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return false
+			
+	if subject.current_host_card:
+		return true
+	return false
 
 func is_character(params := {}, script:ScriptObject= null) -> bool:
 	var subject = get_param_subject(params, script)
@@ -3372,6 +3380,14 @@ func get_subject_int_property(params, script:ScriptObject= null) -> int:
 				value = 0
 		count+= value
 	return count
+
+func get_subject_variable(params, script:ScriptObject= null):
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return 0
+	
+	var var_name = params.get("variable", "")
+	return subject.script_variables.get(var_name, null)
 
 func get_subject_int_variable(params, script:ScriptObject= null) -> int:
 	var subject = get_param_subject(params, script)
@@ -4141,6 +4157,8 @@ func export_to_json():
 	}
 	if is_exhausted():
 		card_description["exhausted"] = true
+	if is_inactive_attachment():
+		card_description["inactive_attachment"] = true		
 	if is_viewed:
 		card_description["is_viewed"] = true
 	
@@ -4184,6 +4202,9 @@ func _ready_load_from_json(card_description: Dictionary = {}):
 		exhaustme(false, false) 
 	else:
 		readyme()
+
+	var inactive_attachment = card_description.get("inactive_attachment", false)
+	set_is_inactive_attachment(inactive_attachment)
 
 	var viewed = card_description.get("is_viewed", false)
 	if viewed:

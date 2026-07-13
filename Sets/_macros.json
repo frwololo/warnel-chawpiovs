@@ -1,4 +1,73 @@
 {
+	"attach_upgrade_to_ally_max_1": {
+		"manual": {
+			"hand": [
+				{
+					"name": "nop",
+					"subject": "target",
+					"is_cost": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							},
+							"filter_max_per_host": 1
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_target",
+					"var_type": "subject",
+					"value": "previous",
+					"is_cost": true,
+					"_comments": "remembering  for next use"
+				},				
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"_silent": true,
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_target",
+					"is_cost": true,
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_target",
+				},				
+				{
+					"name": "sequence",
+					"sequence_ability": "attempt_attach",
+					"is_else": true
+				}
+			]			
+		},
+		"attempt_attach": {
+			"all": [
+				{
+					"name": "attach_to_card",
+					"subject": "target",
+					"is_cost": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							},
+							"filter_max_per_host": 1
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self",
+					"is_else": true
+				}	
+			]
+		},
+	},
 	"attacks_gain": {
 		"interrupt_pre_receive_damage": {
 			"event_filters": {

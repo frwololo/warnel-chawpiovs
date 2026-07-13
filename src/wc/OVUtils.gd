@@ -379,7 +379,7 @@ static func func_name_run(object, func_name, func_params, script = null):
 	if func_params.has("multiplier"):
 		multiplier = script.retrieve_integer_property("multiplier",0, func_params)
 	if func_params.has("divider"):
-		multiplier = script.retrieve_integer_property("divider",0, func_params)
+		divider = script.retrieve_integer_property("divider",0, func_params)
 	if func_params.has("plus"):
 		plus = script.retrieve_integer_property("plus",0, func_params)
 		

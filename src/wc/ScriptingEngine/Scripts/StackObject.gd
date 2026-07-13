@@ -313,7 +313,7 @@ func get_first_task_name(meaningful = true):
 		return first_task.script_name
 	return ""
 
-const _meaningless_tasks := ["nop", "constraints", "save_variable"]
+const _meaningless_tasks := ["nop", "constraints", "save_variable", "forget_variable"]
 func get_first_task(meaningful = true):
 	for skip_cost_tasks in [true, false]:
 		for task in get_tasks():

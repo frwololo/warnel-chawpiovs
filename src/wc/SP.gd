@@ -312,6 +312,9 @@ static func check_max_per_hero(target_card, max_value, owner_card) -> bool:
 
 #checks if target_card already hosts equal_or_more than max_value a card named like owner_card
 static func check_max_per_host(target_card, max_value, owner_card) -> bool:
+	if !max_value:
+		return true
+		
 	var attachments = target_card.attachments
 	var is_training_restriction = owner_card.get_property("trait_training", 0, true)
 	var count = 0
@@ -502,11 +505,11 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 		if card != owner_card:
 			return false	
 
-	#I've had countless bugs with Odin in Hela's scenario
-	# so this is a preventive measure: inactive attachments can only
+	# inactive attachments can only
 	#be targeted by their set (like permanents)
-	#or the card that attached them
-	if card.is_inactive_attachment():
+	#or the card that attached them,
+	#UNLESS were are explicitly counting/checking attachments
+	if card.is_inactive_attachment() and ! (type in ["attachment", "trigger"]):
 		var set_code = card.get_property("card_set_code", "")
 		var owner_set_code = owner_card.get_property("card_set_code", "")
 		if (set_code == owner_set_code) or (owner_card == card.current_host_card):

@@ -1,0 +1,225 @@
+{
+	"_comments": "Automated Test for Morlock Siege victory",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Cable"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Arclight - A",
+					"tokens": {
+						"damage": 9
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Back in Action"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Routed #40081a"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Mutant Massacre #40078a"
+				},
+				{
+					"card": "Mutant Massacre #40078b"
+				},
+				{
+					"card": "Morlock #40079"
+				},
+				{
+					"card": "Morlock #40079"
+				},
+				{
+					"card": "Harpoon - A"
+				},
+				{
+					"card": "Riptide - A"
+				},
+				{
+					"card": "Vertigo - A"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Knock, Knock #40077b",
+					"tokens": {
+						"threat": 2,
+						"knock": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Greycrow - A",
+					"host": "Routed",
+					"inactive_attachment": true
+				},
+				{
+					"card": "Chimera - A",
+					"host": "Routed",
+					"inactive_attachment": true
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Cable"
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Cable"
+		},
+		{
+			"type": "choose",
+			"value": "Attack"
+		},
+		{
+			"type": "target",
+			"value": "Arclight"
+		},
+		{
+			"type": "others",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Cable"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Vertigo - A"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Back in Action"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Routed #40081a"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Mutant Massacre #40078a"
+				},
+				{
+					"card": "Mutant Massacre #40078b"
+				},
+				{
+					"card": "Morlock #40079"
+				},
+				{
+					"card": "Morlock #40079"
+				},
+				{
+					"card": "Harpoon - A"
+				},
+				{
+					"card": "Riptide - A"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Knock, Knock #40077b",
+					"tokens": {
+						"threat": 2,
+						"knock": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Greycrow - A",
+					"host": "Routed",
+					"inactive_attachment": true
+				},
+				{
+					"card": "Chimera - A",
+					"host": "Routed",
+					"inactive_attachment": true
+				},
+				{
+					"card": "Arclight - A",
+					"host": "Routed",
+					"inactive_attachment": true
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Cable",
+					"tokens": {
+						"victory": 1
+					}
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

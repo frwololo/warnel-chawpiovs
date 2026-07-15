@@ -265,7 +265,7 @@
 	},
 	"Energy Spear": {
 		"attach_upgrade_to_target": {
-			"__filter_state_subject__":	[
+			"__filter_state_subject__": [
 				{
 					"filter_group": "group_allies",
 					"filter_properties": {
@@ -274,8 +274,8 @@
 					},
 					"filter_max_per_host": 1
 				}
-			]				
-		},	
+			]
+		},
 		"alterants": {
 			"board": [
 				{
@@ -504,18 +504,11 @@
 		}
 	},
 	"Honorary Guardian": {
-		"manual": {
-			"hand": [
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
 				{
-					"name": "attach_to_card",
-					"subject": "target",
-					"is_cost": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_friendly",
-							"filter_max_per_host": 1
-						}
-					]
+					"filter_group": "group_friendly",
+					"filter_max_per_host": 1
 				}
 			]
 		},

@@ -189,44 +189,23 @@
 	"21074a": {
 		"imagesrc": "/bundles/cards/21074.png"
 	},
-	"21074b": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21074b.webp"
-	},
 	"21075a": {
 		"imagesrc": "/bundles/cards/21075.png"
-	},
-	"21075b": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21075b.webp"
 	},
 	"21098a": {
 		"imagesrc": "/bundles/cards/21098.png"
 	},
-	"21098b": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21098b.webp"
-	},
 	"21099a": {
 		"imagesrc": "/bundles/cards/21099.png"
-	},
-	"21099b": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21099b.webp"
 	},
 	"21100a": {
 		"imagesrc": "/bundles/cards/21100.png"
 	},
-	"21100b": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21100b.webp"
-	},
 	"21114a": {
 		"imagesrc": "/bundles/cards/21114.png"
 	},
-	"21114b": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21114b.webp"
-	},
 	"21115a": {
 		"imagesrc": "/bundles/cards/21115.png"
-	},
-	"21115b": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21115b.webp"
 	},
 	"21124": {
 		"real_text": "<b>When Defeated</b>: Choose and Discard an Infinity Stone from Play"
@@ -234,23 +213,11 @@
 	"21127": {
 		"real_text": "Villainous. (When this minion activates, give it a boost card.)\n<hr />\n[star] <b>Boost</b>: Give this enemy 1 additional boost card"
 	},
-	"21136b": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21136b.webp"
-	},
-	"21137b": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21137b.webp"
-	},
 	"21138a": {
 		"imagesrc": "/bundles/cards/21138.png"
 	},
-	"21138b": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21138b.webp"
-	},
 	"21165a": {
 		"imagesrc": "/bundles/cards/21165.png"
-	},
-	"21165b": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/mts/21165b.webp"
 	},
 	"21167": {
 		"scheme_amplify": 0,
@@ -306,48 +273,6 @@
 	"35028": {
 		"is_unique": true
 	},
-	"40070a": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/next_evol/40070a.webp"
-	},
-	"40070b": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/next_evol/40070b.webp"
-	},	
-	"40071a": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/next_evol/40071a.webp"
-	},
-	"40071b": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/next_evol/40071b.webp"
-	},	
-	"40072a": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/next_evol/40072a.webp"
-	},
-	"40072b": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/next_evol/40072b.webp"
-	},	
-	"40073a": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/next_evol/40073a.webp"
-	},
-	"40073b": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/next_evol/40073b.webp"
-	},
-	"40074a": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/next_evol/40074a.webp"
-	},
-	"40074b": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/next_evol/40074b.webp"
-	},	
-	"40075a": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/next_evol/40075a.webp"
-	},
-	"40075b": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/next_evol/40075b.webp"
-	},
-	"40076a": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/next_evol/40076a.webp"
-	},
-	"40076b": {
-		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/next_evol/40076b.webp"
-	},	
 	"54021": {
 		"imagesrc": "/bundles/cards/50054.jpg"
 	}

@@ -1,0 +1,173 @@
+{
+	"_comments": "Bug: Marauder minions attack don't trigger effect",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Domino"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Arclight - A",
+					"tokens": {
+						"stunned": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Back in Action"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"others": [
+				{
+					"card": "Hope's Captor #40105a",
+					"host": "Arclight"
+				}
+			],
+			"set_aside": [],
+			"schemes": [
+				{
+					"card": "Gotta Get Away #40103b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Diamondback #40038"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Domino"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Domino's Pistol"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Riptide #40099"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Domino's Pistol"
+		},
+		{
+			"type": "target",
+			"value": "Riptide #40099"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Domino"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Arclight - A",
+					"tokens": {
+						"stunned": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Back in Action"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"others": [
+				{
+					"card": "Hope's Captor #40105a",
+					"host": "Arclight"
+				}
+			],
+			"set_aside": [],
+			"schemes": [
+				{
+					"card": "Gotta Get Away #40103b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Domino"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Domino's Pistol"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Riptide #40099",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Diamondback #40038"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

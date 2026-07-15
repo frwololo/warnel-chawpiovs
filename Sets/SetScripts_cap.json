@@ -440,20 +440,13 @@
 		}
 	},
 	"Followed": {
-		"manual": {
-			"hand": [
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
 				{
-					"name": "attach_to_card",
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_properties": {
-								"type_code": "side_scheme"
-							},
-							"filter_max_per_host": 1
-						}
-					]
+					"filter_properties": {
+						"type_code": "side_scheme"
+					},
+					"filter_max_per_host": 1
 				}
 			]
 		},
@@ -628,18 +621,11 @@
 		}
 	},
 	"Honorary Avenger": {
-		"manual": {
-			"hand": [
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
 				{
-					"name": "attach_to_card",
-					"subject": "target",
-					"is_cost": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_friendly",
-							"filter_max_per_host": 1
-						}
-					]
+					"filter_group": "group_friendly",
+					"filter_max_per_host": 1
 				}
 			]
 		},

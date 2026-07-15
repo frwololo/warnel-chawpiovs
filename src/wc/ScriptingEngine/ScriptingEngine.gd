@@ -2850,11 +2850,13 @@ func change_form(script: ScriptTask) -> int:
 			"alter_ego":
 				#can't change from alter_ego to alter_ego
 				if hero.is_alter_ego_form():
-					return CFConst.ReturnCode.FAILED	
+					return CFConst.ReturnCode.FAILED
+				to_card_id = ""	
 			"hero":
 				#can't change from hero to hero
 				if hero.is_hero_form():
 					return CFConst.ReturnCode.FAILED
+				to_card_id = ""	
 					
 		#todo check that subject is indeed a hero
 		if !hero.can_change_form(is_manual, to_card_id):

@@ -724,7 +724,8 @@
 						"name": "mod_tokens",
 						"modification": 1,
 						"token_name": "tough",
-						"subject": "self"
+						"subject": "self",
+						"is_cost": true
 					}
 				],
 				"+2 ATK": [
@@ -764,7 +765,8 @@
 						"name": "mod_tokens",
 						"modification": 1,
 						"token_name": "tough",
-						"subject": "self"
+						"subject": "self",
+						"is_cost": true
 					}
 				],
 				"+2 ATK & Overkill": [
@@ -810,7 +812,8 @@
 						"name": "mod_tokens",
 						"modification": 1,
 						"token_name": "tough",
-						"subject": "self"
+						"subject": "self",
+						"is_cost": true
 					}
 				],
 				"+2 ATK": [
@@ -1664,50 +1667,52 @@
 	},
 	"Diamondback - Rachel Leighton": {
 		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action_ability"
-					]
-				},
-				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
-				},
-				{
-					"name": "deal_damage",
-					"amount": 1,
-					"subject": "self",
-					"is_cost": true
-				},
-				{
-					"name": "discard",
-					"subject": "index",
-					"subject_index": "top",
-					"subject_count": 1,
-					"src_container": "deck",
-					"is_cost": true
-				},
-				{
-					"name": "deal_damage",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"filter_state_seek": [
-						{
-							"filter_group": "group_enemies"
-						}
-					],
-					"amount": {
-						"func_name": "count_printed_resources",
-						"func_params": {
-							"subject": "previous"
+			"board": {
+				"Damage all enemies": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "deal_damage",
+						"amount": 1,
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "top",
+						"subject_count": 1,
+						"src_container": "deck",
+						"is_cost": true
+					},
+					{
+						"name": "deal_damage",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_enemies"
+							}
+						],
+						"amount": {
+							"func_name": "count_printed_resources",
+							"func_params": {
+								"subject": "previous"
+							}
 						}
 					}
-				}
-			]
+				]
+			}
 		}
 	},
 	"Digging Deep": {
@@ -1826,8 +1831,9 @@
 				],
 				"additional_params": {
 					"per_resource_modifier": {
-						"resource_type": "wild",
-						"multiplier": 2
+						"wild": {
+							"multiplier": 2
+						}
 					}
 				}
 			}
@@ -2816,6 +2822,11 @@
 		}
 	},
 	"Gotta Get Away - 1A": {
+		"additional_cards_set_aside": [
+			{
+				"card": "Hope's Captor #40105b"
+			}
+		],	
 		"setup": {
 			"all": [
 				{
@@ -2823,6 +2834,7 @@
 					"dest_container": "removed_from_game",
 					"src_container": "set_aside",
 					"subject_count": "all",
+					"subject": "tutor",
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -2835,6 +2847,7 @@
 					"name": "move_card_to_container",
 					"dest_container": "removed_from_game",
 					"src_container": "deck_villain",
+					"subject": "tutor",
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -2848,7 +2861,7 @@
 					"name": "host_card",
 					"host": "villain",
 					"subject": "tutor",
-					"src_container": "deck_villain",
+					"src_container": "set_aside",
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -2857,19 +2870,6 @@
 						}
 					]
 				},
-				{
-					"name": "move_card_to_container",
-					"dest_container": "set_aside",
-					"subject": "tutor",
-					"src_container": "deck_villain",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"code": "40105b"
-							}
-						}
-					]
-				}
 			]
 		},
 		"post_setup": {
@@ -2967,7 +2967,6 @@
 					}
 				}
 			],
-			"is_optional_board": true,
 			"board": [
 				{
 					"name": "ready_card",
@@ -4432,7 +4431,7 @@
 						"type_code": "villain"
 					}
 				}
-			],		
+			],
 			"condition_board": {
 				"func_name": "count_attachments>=2",
 				"func_params": {
@@ -5680,7 +5679,7 @@
 							}
 						}
 					]
-				},			
+				},
 				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
@@ -5757,7 +5756,7 @@
 						"type_code": "villain"
 					}
 				}
-			],		
+			],
 			"condition_board": {
 				"func_name": "count_attachments>=2",
 				"func_params": {
@@ -6122,20 +6121,13 @@
 		"TODO": "campaign mode not supported"
 	},
 	"Overwatch": {
-		"manual": {
-			"hand": [
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
 				{
-					"name": "attach_to_card",
-					"subject": "target",
-					"is_cost": true,
-					"filter_state_subject": [
-						{
-							"filter_properties": {
-								"type_code": "side_scheme"
-							},
-							"filter_max_per_host": 1
-						}
-					]
+					"filter_properties": {
+						"filter_group": "group_schemes"
+					},
+					"filter_max_per_host": 1
 				}
 			]
 		},
@@ -7222,7 +7214,7 @@
 			}
 		}
 	},
-	"Riptide #4009": {
+	"Riptide #40099": {
 		"interrupt": {
 			"event_name": [
 				"enemy_attack"
@@ -7291,7 +7283,7 @@
 				{
 					"name": "sequence",
 					"sequence_ability": "do_villain_attack",
-					"delay_until_no_activity": true,
+					"delay_until_no_activity": true
 				}
 			]
 		},

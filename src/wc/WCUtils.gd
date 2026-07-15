@@ -81,49 +81,37 @@ static func load_img(file) -> Image :
 	else:
 		var bytes = img_file.get_buffer(img_file.get_len())
 		img_file.close()
-
+		if !bytes:
+			return null
+			
 		var PNG_HEADER = [137,80,78,71,13,10,26,10]
 		var WEBP_HEADER = [82,73,70,70]
-		var formats = ["jpg", "png", "webp"]
+		var JPEG_HEADER = [255,216,255]
+		
+		var format = "jpg"
 		
 		#guessing the format of the image based on header, can't trust the filename
-		for i in range (PNG_HEADER.size()):
-			if bytes[i] == PNG_HEADER[i]:
-				formats = ["png", "jpg", "webp"]
-			else:
-				break		
-
-		for i in range (WEBP_HEADER.size()):
-			if bytes[i] == WEBP_HEADER[i]:
-				formats = ["webp","png", "jpg"]
-			else:
-				break	
+		if bytes[0] == PNG_HEADER[0]:
+				format = "png"
+		elif bytes[0] == WEBP_HEADER[0]:
+				format = "webp"
+		elif bytes[0] == JPEG_HEADER[0]:
+				format = "jpg"
+		else:
+			return null
 
 
 		var loaded_ok = FAILED
-		var i = 0
-		while loaded_ok!=OK and i < formats.size():
-			var format = formats[i]
-			match format:
-				"png":
-					loaded_ok = img.load_png_from_buffer(bytes)
-				"jpg":
-					loaded_ok = img.load_jpg_from_buffer(bytes)
-				"webp":
-					loaded_ok = img.load_webp_from_buffer(bytes)					
-			i+=1
+		match format:
+			"png":
+				loaded_ok = img.load_png_from_buffer(bytes)
+			"jpg":
+				loaded_ok = img.load_jpg_from_buffer(bytes)
+			"webp":
+				loaded_ok = img.load_webp_from_buffer(bytes)					
 		
 		if loaded_ok != OK:
 			return null	
-		
-#		var extension = file.get_extension().to_lower()
-#		var error_code = 0
-#		if extension == "png":
-#			error_code = img.load_png_from_buffer(bytes)
-#		else:
-#			error_code = img.load_jpg_from_buffer(bytes)
-#		if error_code:
-#			return null	
 	return img	
 
 static func load_audio(file) -> AudioStream:

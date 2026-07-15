@@ -4406,19 +4406,12 @@
 		}
 	},
 	"Spider-Tracer": {
-		"manual": {
-			"hand": [
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
 				{
-					"name": "attach_to_card",
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
-					]
+					"filter_properties": {
+						"type_code": "minion"
+					}
 				}
 			]
 		},
@@ -6007,17 +6000,14 @@
 					"tags": [
 						"hero_form"
 					]
-				},
+				}
+			]
+		},
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
 				{
-					"name": "attach_to_card",
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_enemies",
-							"filter_max_per_host": 1
-						}
-					]
+					"filter_group": "group_enemies",
+					"filter_max_per_host": 1
 				}
 			]
 		},

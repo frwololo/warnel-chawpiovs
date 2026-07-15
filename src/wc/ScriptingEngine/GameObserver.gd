@@ -56,7 +56,7 @@ func get_function_override(func_name, trigger_object):
 		var owner = potential_override_data["owner"]
 		
 		#this addresses the case where the owner's card is supposed to be blanked
-		if !owner.get_potential_scripts("function_overrides"):
+		if !owner.retrieve_scripts("function_overrides"):
 			continue 
 		if potential_override.has("filter_state_trigger"):
 			var is_match = SP.check_validity(trigger_object, potential_override, "trigger", potential_override_data["owner"])

@@ -1319,6 +1319,9 @@ func retrieve_scripts(trigger: String, filters := {}) -> Dictionary:
 	
 	if !result:
 		return result
+	
+	if result.get("scripts_exist_but_not_for_your_use_case", false):
+		return {}
 
 	#Induced Panic blanks all triggered abilities
 	#we mimic that by only surfacing default "game rule" abilities when a card is impacted

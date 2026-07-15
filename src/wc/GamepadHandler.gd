@@ -36,7 +36,8 @@ func _ready():
 
 func connect_viewport():
 	var viewport = cfc.NMAP.main.get_main_viewport()
-	viewport.connect("gui_focus_changed", self, "gui_focus_changed")
+	if ! viewport.is_connected("gui_focus_changed", self, "gui_focus_changed"):
+		viewport.connect("gui_focus_changed", self, "gui_focus_changed")
 	
 	#another chance to deactivate the mouse
 	if cfc.NMAP.has("board") and !is_mouse_input():

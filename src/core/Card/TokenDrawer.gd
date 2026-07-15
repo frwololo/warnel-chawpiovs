@@ -209,7 +209,9 @@ func mod_token(
 				var max_tokens = get_max(token_name)
 				if max_tokens and ((token.count + mod > max_tokens)):
 					retcode = CFConst.ReturnCode.FAILED
-					
+		if token.count == 0:
+			token.name = token.name + "_____tmp______"			
+			token.queue_free()			
 	else:
 		var prev_value = token.count
 		var max_tokens = get_max(token_name)

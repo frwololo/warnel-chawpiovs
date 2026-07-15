@@ -607,10 +607,8 @@ func post_cards_moved_load():
 			if func_return is GDScriptFunctionState && func_return.is_valid():
 				yield(func_return, "completed")
 				
-		#function overrides e.g. for Domino		
-		var function_overrides = card.get_potential_scripts("function_overrides") 
-		if function_overrides:		
-			gameData.theGameObserver.add_function_overrides(card, function_overrides)				
+	#function overrides e.g. for Domino		
+	load_function_overrides()			
 
 	func_return = scheme.execute_scripts_no_stack(scheme, "post_setup")
 	if func_return is GDScriptFunctionState && func_return.is_valid():
@@ -800,6 +798,7 @@ func reset_board():
 	_extra_deck_names_cache = {}
 	_hero_grid_layout_cache = {}
 	_on_load_called = {}
+	_load_override_called = {}
 	gameData.stop_game()
 	CVGridCardObject.queue_free_cache()
 	delete_all_cards()
@@ -1013,6 +1012,7 @@ func post_load_move():
 	_post_load_move = {} #reset	
 	
 	execute_cards_on_load()
+	load_function_overrides()
 		
 	return			
 
@@ -1025,6 +1025,17 @@ func execute_cards_on_load():
 		_on_load_called[card] = true
 		if func_return is GDScriptFunctionState && func_return.is_valid():
 			yield(func_return, "completed")	
+
+var _load_override_called = {}
+func load_function_overrides():
+	for card in get_all_cards(true):
+		if _load_override_called.get(card,false):
+			continue
+		_load_override_called[card] = true		
+		var function_overrides = card.retrieve_scripts("function_overrides") 
+		if function_overrides:		
+			gameData.theGameObserver.add_function_overrides(card, function_overrides)
+
 
 func load_cards_to_pile(card_data:Array, pile_name):
 	var card_array = []

@@ -1326,9 +1326,14 @@ func retrieve_scripts(trigger: String, filters := {}) -> Dictionary:
 	#Induced Panic blanks all triggered abilities
 	#we mimic that by only surfacing default "game rule" abilities when a card is impacted
 	#notably, alterants has to be ignored as it is not a triggered ability
-	#todo more triggers to ignore ?
+	#Some other cards also "blank" a text box and we use the same logic for now
+	#More things we ignore when a "text box is blank" are bean counting macros
+	#for now those are "once_per_phase" and "once_per_round" which add important tokens to the card,
+	#but there might be more
 	#Warning, I had an infinite loop in alterants engine here when calling get_property before checking for alterants
-	if !trigger in ["alterants"]:	
+	var macro_name = result.get("macro_name", "")
+	var force_even_if_blank = (macro_name in ["once_per_phase", "once_per_round"]) or (trigger in ["alterants"])
+	if !force_even_if_blank:	
 		if self.get_property("blank_printed_trigger_abilities", 0, true) or self.get_property("blank_printed_text_box", 0, true):
 				var found_scripts = _get_extra_scripts(trigger, filters)
 				if found_scripts:

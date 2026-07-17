@@ -1,5 +1,5 @@
 {
-	"_comments": "Test domino's pistol",
+	"_comments": "Test domino sgharpshooter limit",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -59,7 +59,7 @@
 			],
 			"upgrade_support1": [
 				{
-					"card": "Domino's Pistol"
+					"card": "Sharpshooter"
 				}
 			],
 			"enemies1": [
@@ -70,7 +70,7 @@
 			"allies1": [],
 			"hand1": [
 				{
-					"card": "Mockingbird"
+					"card": "sharpshooter"
 				},
 				{
 					"card": "Strength"
@@ -80,12 +80,9 @@
 	},
 	"actions": [
 		{
-			"type": "activate",
-			"value": "Domino's Pistol"
-		},
-		{
-			"type": "target",
-			"value": "Riptide #40099"
+			"type": "play",
+			"value": "sharpshooter",
+			"expected_to_fail": true
 		}
 	],
 	"end": {
@@ -135,6 +132,9 @@
 			"deck1": [
 				{
 					"card": "Energy"
+				},
+				{
+					"card": "Diamondback #40038"
 				}
 			],
 			"identity1": [
@@ -144,25 +144,18 @@
 			],
 			"upgrade_support1": [
 				{
-					"card": "Domino's Pistol"
+					"card": "Sharpshooter"
 				}
 			],
 			"enemies1": [
 				{
-					"card": "Riptide #40099",
-					"tokens": {
-						"damage": 2
-					}
+					"card": "Riptide #40099"
 				}
 			],
-			"discard1": [
-				{
-					"card": "Diamondback #40038"
-				}
-			],
+			"allies1": [],
 			"hand1": [
 				{
-					"card": "Mockingbird"
+					"card": "sharpshooter"
 				},
 				{
 					"card": "Strength"

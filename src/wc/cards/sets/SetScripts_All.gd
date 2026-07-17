@@ -122,7 +122,22 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 						}
 					]
 				}			
-		)		
+		)
+		
+	#Max 1 per player constraints, when not hardcoded in script already	
+	var has_manual_hand = script.get("manual", {}).get("hand", {})		
+	var max_1_per_player = card.get("max 1 per player", 0)
+	if max_1_per_player:
+		var hand_has_max_1_per_player = WCUtils.is_string_in_variant(has_manual_hand, "max_per_hero")		
+		if !hand_has_max_1_per_player:
+			hand_constraints.append(
+				{	
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero": 1
+				}			
+			)			
+			
 	if (type_code == "event"):
 		if card.get("max 1 per phase"):
 				hand_constraints.append(
@@ -161,7 +176,7 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 				)			
 	#interrupt or response replacements
 	var interrupt_scripts = has_interrupt(script)
-	var has_manual_hand = script.get("manual", {}).get("hand", {})
+
 	var process_manual_cost = true
 	if (type_code == "event" && interrupt_scripts):
 		if !has_manual_hand:

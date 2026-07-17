@@ -1,5 +1,9 @@
 {
-	"_comments": "Test domino's pistol",
+	"_comments": "Bug: Outlaw bonus reduced",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -59,7 +63,7 @@
 			],
 			"upgrade_support1": [
 				{
-					"card": "Domino's Pistol"
+					"card": "The Painted Lady"
 				}
 			],
 			"enemies1": [
@@ -67,7 +71,11 @@
 					"card": "Riptide #40099"
 				}
 			],
-			"allies1": [],
+			"allies1": [
+				{
+					"card": "Outlaw - Inez Temple"
+				}
+			],
 			"hand1": [
 				{
 					"card": "Mockingbird"
@@ -81,11 +89,25 @@
 	"actions": [
 		{
 			"type": "activate",
-			"value": "Domino's Pistol"
+			"value": "Outlaw - Inez Temple"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
 		},
 		{
 			"type": "target",
-			"value": "Riptide #40099"
+			"value": "Arclight"
+		},
+		{
+			"type": "activate",
+			"value": "Outlaw - Inez Temple",
+			"_comments": "boost Outlaw's attack"
+		},
+		{
+			"type": "choose",
+			"value": "yes",
+			"_comments": "move card under Painted Lady"
 		}
 	],
 	"end": {
@@ -102,7 +124,8 @@
 				{
 					"card": "Arclight - A",
 					"tokens": {
-						"stunned": 1
+						"stunned": 1,
+						"damage": 3
 					}
 				}
 			],
@@ -121,6 +144,10 @@
 				{
 					"card": "Hope's Captor #40105a",
 					"host": "Arclight"
+				},
+				{
+					"card": "Diamondback #40038",
+					"host": "The Painted Lady"
 				}
 			],
 			"set_aside": [],
@@ -144,20 +171,17 @@
 			],
 			"upgrade_support1": [
 				{
-					"card": "Domino's Pistol"
+					"card": "The Painted Lady"
 				}
 			],
 			"enemies1": [
 				{
-					"card": "Riptide #40099",
-					"tokens": {
-						"damage": 2
-					}
+					"card": "Riptide #40099"
 				}
 			],
-			"discard1": [
+			"allies1": [
 				{
-					"card": "Diamondback #40038"
+					"card": "Outlaw - Inez Temple"
 				}
 			],
 			"hand1": [

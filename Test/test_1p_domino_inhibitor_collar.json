@@ -1,7 +1,7 @@
 {
-	"_comments": "Test domino's pistol",
+	"_comments": "Inhibitor collar vs Once per phase/round abilities",
 	"init": {
-		"phase": "PLAYER_TURN",
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -27,6 +27,9 @@
 				},
 				{
 					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Inhibitor Collar"
 				}
 			],
 			"others": [
@@ -80,12 +83,28 @@
 	},
 	"actions": [
 		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		},		
+		{
 			"type": "activate",
-			"value": "Domino's Pistol"
+			"value": "Inhibitor Collar"
 		},
 		{
-			"type": "target",
-			"value": "Riptide #40099"
+			"type": "choose",
+			"value": "Take 3 Damage"
+		},
+		{
+			"type": "activate",
+			"value": "Domino"
+		},
+		{
+			"type": "choose",
+			"value": "Swap Card"
+		},
+		{
+			"type": "select",
+			"value": "Mockingbird"
 		}
 	],
 	"end": {
@@ -117,6 +136,11 @@
 					"card": "Hydra Mercenary"
 				}
 			],
+			"discard_villain": [
+				{
+					"card": "Inhibitor Collar"
+				}
+			],
 			"others": [
 				{
 					"card": "Hope's Captor #40105a",
@@ -135,11 +159,15 @@
 			"deck1": [
 				{
 					"card": "Energy"
+				},
+				{
+					"card": "Mockingbird"
 				}
 			],
 			"identity1": [
 				{
-					"card": "Domino"
+					"card": "Domino",
+					"tokens": {"damage": 3}
 				}
 			],
 			"upgrade_support1": [
@@ -149,23 +177,16 @@
 			],
 			"enemies1": [
 				{
-					"card": "Riptide #40099",
-					"tokens": {
-						"damage": 2
-					}
+					"card": "Riptide #40099"
 				}
 			],
-			"discard1": [
-				{
-					"card": "Diamondback #40038"
-				}
-			],
+			"allies1": [],
 			"hand1": [
 				{
-					"card": "Mockingbird"
+					"card": "Strength"
 				},
 				{
-					"card": "Strength"
+					"card": "Diamondback #40038"
 				}
 			]
 		}

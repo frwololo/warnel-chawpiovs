@@ -469,67 +469,69 @@
 	},
 	"Atlas Bear - Shoon'kwa": {
 		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action_ability"
-					]
-				},
-				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
-				},
-				{
-					"name": "nop",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"selection_count": 1,
-					"selection_type": "equal",
-					"needs_selection": true,
-					"filter_state_seek": [
-						{
-							"filter_group": "group_identities"
-						}
-					]
-				},
-				{
-					"name": "save_variable",
-					"var_name": "my_owner",
-					"var_type": "subject",
-					"value": "previous",
-					"_comments": "remembering the card for next use"
-				},
-				{
-					"name": "view_card",
-					"subject": "index",
-					"subject_index": "top",
-					"src_container": "deck_previous_subject"
-				},
-				{
-					"name": "conditional_script",
-					"options": [
-						{
-							"condition": {
-								"func_name": "get_subject_int_property",
-								"func_params": {
-									"subject": "previous",
-									"property": "type_code",
-									"property_value": "event"
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "sequence",
-									"sequence_ability": "add_card"
-								}
-							]
-						}
-					]
-				}
-			]
+			"board": {
+				"Peek+": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "nop",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"selection_count": 1,
+						"selection_type": "equal",
+						"needs_selection": true,
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						]
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_owner",
+						"var_type": "subject",
+						"value": "previous",
+						"_comments": "remembering the card for next use"
+					},
+					{
+						"name": "view_card",
+						"subject": "index",
+						"subject_index": "top",
+						"src_container": "deck_previous_subject"
+					},
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "get_subject_int_property",
+									"func_params": {
+										"subject": "previous",
+										"property": "type_code",
+										"property_value": "event"
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "sequence",
+										"sequence_ability": "add_card"
+									}
+								]
+							}
+						]
+					}
+				]
+			}
 		},
 		"add_card": {
 			"all": {
@@ -2826,7 +2828,7 @@
 			{
 				"card": "Hope's Captor #40105b"
 			}
-		],	
+		],
 		"setup": {
 			"all": [
 				{
@@ -2869,7 +2871,7 @@
 							}
 						}
 					]
-				},
+				}
 			]
 		},
 		"post_setup": {
@@ -6087,9 +6089,14 @@
 				},
 				{
 					"name": "save_variable",
-					"var_name": "my_discarded",
-					"var_type": "subject",
-					"value": "previous",
+					"var_name": "my_discarded_value",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"subject": "previous"
+						}
+					},
 					"_comments": "remembering the card for next use"
 				},
 				{
@@ -6103,12 +6110,7 @@
 									"filter_task": "get_property",
 									"filter_property_name": "attack",
 									"trigger": "self",
-									"alteration": {
-										"func_name": "count_printed_resources",
-										"func_params": {
-											"subject": "my_discarded"
-										}
-									}
+									"alteration": "my_discarded_value"
 								}
 							]
 						}
@@ -6370,9 +6372,14 @@
 				},
 				{
 					"name": "save_variable",
-					"var_name": "my_discarded",
-					"var_type": "subject",
-					"value": "previous",
+					"var_name": "my_discarded_count",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"subject": "previous"
+						}
+					},
 					"_comments": "remembering the card for next use"
 				},
 				{
@@ -6385,13 +6392,8 @@
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "recover",
-									"trigger": "self",
-									"alteration": {
-										"func_name": "count_printed_resources",
-										"func_params": {
-											"subject": "my_discarded"
-										}
-									}
+									"trigger": "my_identity",
+									"alteration": "my_discarded_count"
 								}
 							]
 						}
@@ -6418,9 +6420,14 @@
 				},
 				{
 					"name": "save_variable",
-					"var_name": "my_discarded",
-					"var_type": "subject",
-					"value": "previous",
+					"var_name": "my_discarded_count",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"subject": "previous"
+						}
+					},
 					"_comments": "remembering the card for next use"
 				},
 				{
@@ -6433,13 +6440,8 @@
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "attack",
-									"trigger": "self",
-									"alteration": {
-										"func_name": "count_printed_resources",
-										"func_params": {
-											"subject": "my_discarded"
-										}
-									}
+									"trigger": "my_hero",
+									"alteration": "my_discarded_count"
 								}
 							]
 						}
@@ -6466,9 +6468,14 @@
 				},
 				{
 					"name": "save_variable",
-					"var_name": "my_discarded",
-					"var_type": "subject",
-					"value": "previous",
+					"var_name": "my_discarded_count",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"subject": "previous"
+						}
+					},
 					"_comments": "remembering the card for next use"
 				},
 				{
@@ -6481,13 +6488,8 @@
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "thwart",
-									"trigger": "self",
-									"alteration": {
-										"func_name": "count_printed_resources",
-										"func_params": {
-											"subject": "my_discarded"
-										}
-									}
+									"trigger": "my_hero",
+									"alteration": "my_discarded_count"
 								}
 							]
 						}
@@ -8716,6 +8718,7 @@
 				{
 					"name": "remove_threat",
 					"subject": "target",
+					"needs_subject": true,
 					"amount": 3,
 					"multiplier_amount": "count_players",
 					"filter_state_subject": [

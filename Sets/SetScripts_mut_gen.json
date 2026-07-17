@@ -4572,6 +4572,7 @@
 		"TODO": "campaign mode not supported"
 	},
 	"Ready to Rumble": {
+		"give_to_player_max1": {},	
 		"identity_changed_form": {
 			"trigger": "my_hero",
 			"is_optional_board": true,

@@ -274,7 +274,7 @@
 							"board": [
 								{
 									"filter_task": "get_property",
-									"filter_property_name": "blank_printed_text_box",
+									"filter_property_name": "blank_abilities",
 									"filter_state_trigger": [
 										{
 											"filter_properties": {

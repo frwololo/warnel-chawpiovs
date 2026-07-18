@@ -2116,6 +2116,16 @@
 		"post_reveal": {
 			"all": [
 				{
+					"name": "sequence",
+					"sequence_ability": "do_give_tough",
+					"delay_until_no_activity": true
+				},
+
+			]
+		},
+		"do_give_tough": {
+			"all": [
+				{
 					"name": "mod_tokens",
 					"token_name": "tough",
 					"modification": 1,
@@ -2136,9 +2146,9 @@
 				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
-				}
+				}				
 			]
-		}
+		}		
 	},
 	"Escaping with Hope - 2B": {
 		"alterants": {
@@ -3769,6 +3779,7 @@
 			]
 		},
 		"interrupt_card_dies": {
+			"display_section": "forced interrupt2",
 			"trigger": "host",
 			"board": [
 				{
@@ -3783,21 +3794,7 @@
 					"subject": "host"
 				},
 				{
-					"name": "host_card",
-					"host": "villain",
-					"subject": "tutor",
-					"src_container": "set_aside",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"code": "40105b"
-							}
-						}
-					]
-				},
-				{
-					"name": "move_card_to_container",
-					"dest_container": "removed_from_game",
+					"name": "flip_doublesided_card",
 					"subject": "self"
 				}
 			]
@@ -7567,12 +7564,12 @@
 	},
 	"Sharpshooter": {
 		"interrupt_receive_damage": {
-			"trigger": "my_hero",
 			"event_filters": {
 				"tags": [
 					"attack",
 					"ranged"
-				]
+				],
+				"actual_source": "my_hero"
 			},
 			"is_optional_board": true,
 			"board": [

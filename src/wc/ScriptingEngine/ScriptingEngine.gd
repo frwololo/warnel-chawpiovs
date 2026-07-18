@@ -1054,14 +1054,21 @@ func receive_damage(script: ScriptTask) -> int:
 				if overkill:
 					var defender = script.subjects[0]
 					var defender_type = defender.get_property("type_code")
-					if defender_type in ["minion"]:
-						var villain = gameData.get_villain()
-						var overkill_subjects = [villain] if villain else []
-						var script_modifications = {
-							"tags" : ["Scripted", "overkill_splash"], #notably, overkill isn't an attack
-							"subjects": overkill_subjects
-						}
-						_add_pre_receive_damage_on_stack (excess_damage, script, script_modifications)
+					if defender_type in ["minion", "ally"]:
+						var overkill_subjects = []
+						match defender_type:
+							"minion":	
+								var villain = gameData.get_villain()
+								overkill_subjects = [villain] if villain else []
+							"ally":
+								var hero = defender.get_controller_hero_card()
+								overkill_subjects = [hero] if hero else []
+						if overkill_subjects:
+							var script_modifications = {
+								"tags" : ["Scripted", "overkill_splash"], #notably, overkill isn't an attack
+								"subjects": overkill_subjects
+							}
+							_add_pre_receive_damage_on_stack (excess_damage, script, script_modifications)
 			
 		#check for death
 		var lethal = false
@@ -2037,7 +2044,7 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 	if !target_friendly:
 		target_friendly = gameData.get_current_target_hero()
 	
-	var my_hero:Card = target_friendly.get_controller_hero_card()
+#	var my_hero:Card = target_friendly.get_controller_hero_card()
 	
 	var amount = attacker.get_property("attack", 0)
 	var boost_data = script.get_property("boost", [])
@@ -2052,8 +2059,8 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 
 			
 	if defender:
-		if defender_type == "ally":
-			my_hero = defender.get_controller_hero_card()
+#		if defender_type == "ally":
+#			my_hero = defender.get_controller_hero_card()
 		if script.has_tag("basic_defense"):
 			var damage_reduction = defender.get_property("defense", 0)
 			amount = max(amount-damage_reduction, 0)
@@ -2063,7 +2070,7 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 		script.subjects.append(target_friendly)
 		script.script_definition["tags"].append("undefended")
 		
-	var overkill_amount = 0
+#	var overkill_amount = 0
 	
 #	if amount: #we want to send the damage even if zero, to trigger retaliate, etc...
 	if true:
@@ -2072,17 +2079,17 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 		}
 		_add_pre_receive_damage_on_stack (amount, script, script_modifications)
 	
-	if defender and (script.has_tag("overkill") or attacker.get_property("overkill", 0, true)):
-		if defender_type in ["minion", "ally"]:
-			overkill_amount = amount - defender.get_remaining_damage()
-			overkill_amount = max(0, overkill_amount)
-
-			var script_modifications = {
-				"tags" : ["Scripted", "overkill"], #notably, overkill isn't an attack
-				"subjects": [my_hero]
-			}
-			_add_pre_receive_damage_on_stack (overkill_amount, script, script_modifications)
-		
+#	if defender and (script.has_tag("overkill") or attacker.get_property("overkill", 0, true)):
+#		if defender_type in ["minion", "ally"]:
+#			overkill_amount = amount - defender.get_remaining_damage()
+#			overkill_amount = max(0, overkill_amount)
+#
+#			var script_modifications = {
+#				"tags" : ["Scripted", "overkill"], #notably, overkill isn't an attack
+#				"subjects": [my_hero]
+#			}
+#			_add_pre_receive_damage_on_stack (overkill_amount, script, script_modifications)
+#
 	return retcode
 
 
@@ -2150,10 +2157,15 @@ func _add_pre_receive_damage_on_stack(amount, original_script, modifications:Dic
 		gameData.theStack.add_script(task_event)			
 
 func _add_receive_damage_on_stack(amount, original_script, modifications:Dictionary = {}):		
+		var source = original_script.get_property("source", owner)
+		var source_character = get_actual_action_source_from_script(original_script)
+			
 		var receive_damage_script_definition = {
 			"name": "receive_damage",
 			"amount": amount,
-			"source": original_script.get_property("source", owner),
+			"source": source,
+			"secondary_source": source,
+			"actual_source": source_character,			
 			"tags": modifications.get("tags", original_script.get_property("tags", []))
 		}
 		

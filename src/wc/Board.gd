@@ -1370,8 +1370,13 @@ func flip_doublesided_card(card:WCCard, to_card_id = ""):
 		else:
 			var new_card = gameData.retrieve_from_side_or_instance(back_code,card.get_owner_hero_id())
 			var slot = card._placement_slot
-			if new_card.get_parent() and slot:
-				new_card.move_to(cfc.NMAP.board, -1, slot)
+			var host = card.current_host_card
+			
+			if new_card.get_parent():
+				if slot:
+					new_card.move_to(cfc.NMAP.board, -1, slot)
+				else:
+					new_card.move_to(cfc.NMAP.board, -1)
 			else:
 				add_child(new_card)
 			card.copy_modifiers_to(new_card)
@@ -1395,6 +1400,9 @@ func flip_doublesided_card(card:WCCard, to_card_id = ""):
 				new_card.position = slot.rect_global_position
 				slot.set_occupying_card(new_card)
 			new_card.set_state(Card.CardState.ON_PLAY_BOARD)
+
+			if host:
+				new_card.attach_to_host(host)
 
 			var func_return = new_card.execute_scripts(new_card, "reveal")
 			while func_return is GDScriptFunctionState && func_return.is_valid():

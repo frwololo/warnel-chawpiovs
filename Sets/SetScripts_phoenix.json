@@ -471,7 +471,7 @@
 	},
 	"Mission Training": {
 		"attach_upgrade_to_target": {
-			"__filter_state_subject__":	[
+			"__filter_state_subject__": [
 				{
 					"filter_group": "group_allies",
 					"filter_properties": {
@@ -480,8 +480,8 @@
 					},
 					"filter_max_per_host": 1
 				}
-			]				
-		},	
+			]
+		},
 		"alterants": {
 			"board": [
 				{
@@ -615,7 +615,7 @@
 					"token_name": "power",
 					"subject": "Phoenix Force",
 					"is_cost": true
-				},				
+				},
 				{
 					"name": "add_resource",
 					"amount": 1,
@@ -1198,12 +1198,12 @@
 	},
 	"Telekinetic Shield": {
 		"attach_upgrade_to_target": {
-			"__filter_state_subject__":	[
+			"__filter_state_subject__": [
 				{
-					"filter_group": "group_friendly",
+					"filter_group": "group_friendly"
 				}
-			]				
-		},		
+			]
+		},
 		"card_attached": {
 			"trigger": "self",
 			"board": [

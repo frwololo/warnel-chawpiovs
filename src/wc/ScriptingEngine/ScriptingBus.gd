@@ -122,6 +122,8 @@ signal treachery_moved_to_board(card,details)
 signal obligation_moved_to_board(card,details)
 # warning-ignore:unused_signal
 signal environment_moved_to_board(card,details)
+# warning-ignore:unused_signal
+signal resource_moved_to_board(card,details)
 
 # warning-ignore:unused_signal
 signal event_played(card,details)

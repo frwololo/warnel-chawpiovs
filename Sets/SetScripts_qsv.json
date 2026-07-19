@@ -949,6 +949,13 @@
 			"is_optional_hand": true,
 			"hand": [
 				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					],
+				},			
+				{
 					"name": "prevent",
 					"amount": 3,
 					"subject": "interrupted_event"

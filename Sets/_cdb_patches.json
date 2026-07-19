@@ -223,6 +223,60 @@
 		"scheme_amplify": 0,
 		"_comments": "https://github.com/zzorba/marvelsdb/issues/347"
 	},
+	"26002": {
+		"linked_card":
+		{
+			"pack_code": "vision",
+			"pack_name": "Vision",
+			"pack_legacy": true,
+			"pack_wave": 4,
+			"type_code": "upgrade",
+			"type_name": "Upgrade",
+			"faction_code": "hero",
+			"faction_name": "Hero",
+			"card_set_code": "vision",
+			"card_set_name": "Vision",
+			"card_set_type_name_code": "hero",
+			"position": 2,
+			"set_position": 1,
+			"code": "26002b",
+			"name": "Dense",
+			"real_name": "Dense",
+			"cost": 0,
+			"cost_per_hero": false,
+			"text": "Mass form. Permanent.\nWhile in hero form, Vision gets +2 ATK and +2 DEF.\n<b>Response:</b> After you change to this mass form, draw 1 card.",
+			"real_text": "Mass form. Permanent.\nWhile in hero form, Vision gets +2 ATK and +2 DEF.\n<b>Response:</b> After you change to this mass form, draw 1 card.",
+			"quantity": 1,
+			"health_per_group": false,
+			"health_per_hero": false,
+			"base_threat_fixed": false,
+			"base_threat_per_group": false,
+			"escalation_threat_fixed": false,
+			"threat_fixed": false,
+			"threat_per_group": false,
+			"deck_limit": 1,
+			"illustrator": "Juan Santacruz",
+			"is_unique": false,
+			"hidden": false,
+			"permanent": true,
+			"double_sided": true,
+			"back_text": null,
+			"back_name": "Intangible",
+			"octgn_id": "c7f3cb05-1e4d-4599-a0ae-2e727ae3e40b",
+			"attack_star": false,
+			"thwart_star": false,
+			"defense_star": false,
+			"health_star": false,
+			"recover_star": false,
+			"scheme_star": false,
+			"boost_star": false,
+			"threat_star": false,
+			"escalation_threat_star": false,
+			"url": "https://marvelcdb.com/card/26002",
+			"imagesrc": "/bundles/cards/26002b.png",
+			"backimagesrc": null
+		},
+	},
 	"27013": {
 		"imagesrc": "/bundles/cards/15030.png"
 	},
@@ -272,6 +326,12 @@
 	},
 	"35028": {
 		"is_unique": true
+	},
+	"40130": {
+		"attack": 0,
+		"thwart": 0,
+		"_comments": "engine considers that if those aren't defined, the character isn't able to attack/scheme"
+		
 	},
 	"54021": {
 		"imagesrc": "/bundles/cards/50054.jpg"

@@ -1,11 +1,11 @@
 {
-	"_comments": "Bug: favored weapon not giving overkill",
+	"_comments": "Test domino Overwatch",
 	"test_conditions": {
 		"bug_type": "card_json",
 		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
-	},
+	},	
 	"init": {
-		"phase": "VILLAIN_ACTIVATES",
+		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -16,7 +16,10 @@
 		"board": {
 			"villain": [
 				{
-					"card": "Arclight - A"
+					"card": "Arclight - A",
+					"tokens": {
+						"stunned": 1
+					}
 				}
 			],
 			"deck_villain": [
@@ -24,19 +27,15 @@
 					"card": "Hydra Regular"
 				},
 				{
-					"card": "Hydra Mercenary"
+					"card": "Back in Action"
 				},
 				{
-					"card": "Back in Action"
+					"card": "Hydra Mercenary"
 				}
 			],
 			"others": [
 				{
 					"card": "Hope's Captor #40105a",
-					"host": "Arclight"
-				},
-				{
-					"card": "Favored Weapon",
 					"host": "Arclight"
 				}
 			],
@@ -47,11 +46,20 @@
 					"tokens": {
 						"threat": 2
 					}
+				},
+				{
+					"card": "Take out the Guards",
+					"tokens": {
+						"threat": 3
+					}
 				}
 			],
 			"deck1": [
 				{
 					"card": "Energy"
+				},
+				{
+					"card": "Diamondback #40038"
 				}
 			],
 			"identity1": [
@@ -59,36 +67,49 @@
 					"card": "Domino"
 				}
 			],
-			"upgrade_support1": [],
-			"enemies1": [],
-			"allies1": [
+			"upgrade_support1": [
 				{
-					"card": "Outlaw #40039"
+					"card": "Domino's Pistol"
 				}
 			],
+			"enemies1": [
+			],
+			"allies1": [],
 			"hand1": [
 				{
-					"card": "Mockingbird"
-				},
-				{
-					"card": "Strength"
+					"card": "Overwatch"
 				}
 			]
 		}
 	},
 	"actions": [
 		{
-			"type": "select",
-			"value": "Outlaw #40039",
-			"_comments": "block with outlaw"
+			"type": "play",
+			"value": "Overwatch"
+		},
+		{
+			"type": "target",
+			"value": "Gotta Get Away #40103b"
+		},
+		{
+			"type": "activate",
+			"value": "Domino"
 		},
 		{
 			"type": "choose",
-			"value": "+2 ATK"
+			"value": "Thwart"
 		},
 		{
-			"type": "other",
-			"value": "wait_for_player_turn"
+			"type": "target",
+			"value": "Gotta Get Away #40103b"
+		},
+		{
+			"type": "activate",
+			"value": "Overwatch"
+		},
+		{
+			"type": "target",
+			"value": "Take out the Guards"
 		}
 	],
 	"end": {
@@ -103,26 +124,26 @@
 		"board": {
 			"villain": [
 				{
-					"card": "Arclight - A"
-				}
-			],
-			"discard_villain": [
-				{
-					"card": "Back in Action"
+					"card": "Arclight - A",
+					"tokens": {
+						"stunned": 1
+					}
 				}
 			],
 			"deck_villain": [
 				{
 					"card": "Hydra Regular"
+				},
+				{
+					"card": "Back in Action"
+				},
+				{
+					"card": "Hydra Mercenary"
 				}
 			],
 			"others": [
 				{
 					"card": "Hope's Captor #40105a",
-					"host": "Arclight"
-				},
-				{
-					"card": "Favored Weapon",
 					"host": "Arclight"
 				}
 			],
@@ -131,6 +152,12 @@
 				{
 					"card": "Gotta Get Away #40103b",
 					"tokens": {
+						"threat": 1
+					}
+				},
+				{
+					"card": "Take out the Guards",
+					"tokens": {
 						"threat": 2
 					}
 				}
@@ -138,33 +165,27 @@
 			"deck1": [
 				{
 					"card": "Energy"
+				},
+				{
+					"card": "Diamondback #40038"
 				}
 			],
 			"identity1": [
 				{
-					"card": "Domino",
-					"tokens": {
-						"damage": 2
-					}
+					"card": "Domino"
 				}
 			],
-			"upgrade_support1": [],
-			"enemies1": [
+			"upgrade_support1": [
 				{
-					"card": "Hydra Mercenary"
+					"card": "Domino's Pistol"
 				}
 			],
+			"enemies1": [
+			],
+			"allies1": [],
 			"discard1": [
 				{
-					"card": "Outlaw #40039"
-				}
-			],
-			"hand1": [
-				{
-					"card": "Mockingbird"
-				},
-				{
-					"card": "Strength"
+					"card": "Overwatch"
 				}
 			]
 		}

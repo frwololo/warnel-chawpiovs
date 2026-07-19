@@ -1,0 +1,1502 @@
+{
+	"_macros": {
+		"ultron_drone": {
+			"name": "move_card_to_board",
+			"tags": [
+				"facedown",
+				"Init"
+			],
+			"set_properties": {
+				"type_code": "minion",
+				"shortname": "Drone",
+				"trait_drone": 1,
+				"attack": 0,
+				"scheme": 0,
+				"health": 0
+			},
+			"src_container": "__src_container__",
+			"subject": "index",
+			"subject_count": "__count__",
+			"subject_index": "top",
+			"for_each_player": "__each_player__"
+		}
+	},
+	"616 Hickory Branch Lane": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "move_card_to_container",
+					"src_container": [
+						"deck",
+						"discard"
+					],
+					"dest_container": "hand",
+					"subject": "tutor",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_android": 1
+							},
+							"filter_properties2": {
+								"type_code": "ally"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck"
+				}
+			]
+		}
+	},
+	"Assault Training": {
+		"uses": {
+			"__name__": "training",
+			"__amount__": 2
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "training",
+					"subject": "self"
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "max",
+					"selection_optional": true,
+					"src_container": "discard_my_hero",
+					"dest_container": "deck_my_hero",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "event"
+							},
+							"filter_properties2": {
+								"faction_code": "aggression"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Avengers Mansion": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Chance Encounter": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_properties": {
+						"type_code": "side_scheme"
+					},
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"trigger": "host",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "max",
+					"selection_optional": true,
+					"src_container": [
+						"deck_my_hero",
+						"discard_my_hero"
+					],
+					"dest_container": "hand_my_hero",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_my_hero"
+				}
+			]
+		}
+	},
+	"Corrupted Programming": {
+		"give_obligation": {
+			"__to__": "Vision"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "blank_printed_text_box",
+					"trigger": "Dense",
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "blank_printed_text_box",
+					"trigger": "Intangible",
+					"alteration": 1
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "my_identity"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "removed_from_game",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Defiance": {
+		"interrupt_enemy_boost": {
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "discard",
+					"subject": "attachments",
+					"attachments_host": "trigger",
+					"subject_count": 1,
+					"force_valid_boost_target": true,
+					"filter_state_attachments": [
+						{
+							"filter_func": {
+								"func_name": "is_boost",
+								"func_params": {
+									"subject": "trigger"
+								}
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Dense": {
+		"on_load": {
+			"all": [
+				{
+					"name": "modify_properties",
+					"subject": "self",
+					"set_properties": {
+						"form_family": "mass"
+					},
+					"tags": [
+						"Init"
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "Vision",
+					"alteration": 2
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"trigger": "Vision",
+					"alteration": 2
+				}
+			]
+		},
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Density Control": {
+		"response_identity_changed_form": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"form_family": "mass"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "move_card_to_container",
+					"src_container": "discard",
+					"dest_container": "hand",
+					"subject": "tutor",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "vision"
+							},
+							"filter_properties2": {
+								"type_code": "event"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Flow Like Water": {
+		"give_to_player_max1": {},
+		"card_played": {
+			"filter_state_trigger": [
+				{
+					"filter_same_controller": true,
+					"filter_properties": {
+						"trait_defense": 1
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "current_activation_enemy"
+				}
+			]
+		}
+	},
+	"Get Behind Me!": {
+		"interrupt": {
+			"event_name": "reveal_encounter",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "villain_attacks_you"
+				}
+			],
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "treachery"
+					}
+				}
+			]
+		}
+	},
+	"Indomitable": {
+		"response": {
+			"event_name": "defense_happened",
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Intangible": {
+		"on_load": {
+			"all": [
+				{
+					"name": "modify_properties",
+					"subject": "self",
+					"set_properties": {
+						"form_family": "mass"
+					},
+					"tags": [
+						"Init"
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_attack",
+					"trigger": "Vision",
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_defend",
+					"trigger": "Vision",
+					"alteration": 1
+				}
+			]
+		},
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"target": "my_hero",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": 2,
+					"subject": "interrupted_event"
+				}
+			]
+		}
+	},
+	"Jocasta": {
+		"self_moved_to_board": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "host_card",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "discard",
+					"selection_count": 1,
+					"selection_type": "max",
+					"needs_selection": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_defense": 1
+							},
+							"filter_properties2": {
+								"type_code": "event"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_script",
+					"subject": "previous",
+					"fetch_script": {
+						"script_path": "manual/hand",
+						"result": {
+							"manual": {
+								"board": "__fetched_script__"
+							}
+						}
+					}
+				}
+			]
+		}
+	},
+	"Joining Forces": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "max",
+					"selection_optional": true,
+					"src_container": "any_hand",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							},
+							"filter_properties2": {
+								"trait_avenger": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "max",
+					"selection_optional": true,
+					"src_container": "hand_any",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							},
+							"filter_properties2": {
+								"trait_guardian": 1
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Just Passing Through": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"constraints": [
+						{
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_same_controller": true,
+										"filter_properties": {
+											"Name": "Intangible"
+										}
+									}
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 3,
+					"subject": "a_scheme",
+					"tags": [
+						"bypass_crisis",
+						"bypass_patrol"
+					]
+				}
+			]
+		}
+	},
+	"Machine Man - Aaron Stack": {
+		"interrupt_attack_started": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": {
+				"+1 ATK": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 1
+						},
+						"is_cost": true
+					},
+					{
+						"name": "add_script",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"trigger": "self",
+										"alteration": 1
+									}
+								]
+							}
+						},
+						"end_condition": "attack_happened"
+					}
+				],
+				"+2 ATK": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "add_script",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"trigger": "self",
+										"alteration": 2
+									}
+								]
+							}
+						},
+						"end_condition": "attack_happened"
+					}
+				],
+				"+3 ATK": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 3
+						},
+						"is_cost": true
+					},
+					{
+						"name": "add_script",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"trigger": "self",
+										"alteration": 3
+									}
+								]
+							}
+						},
+						"end_condition": "attack_happened"
+					}
+				]
+			}
+		},
+		"interrupt_thwart": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": {
+				"+1 THW": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 1
+						},
+						"is_cost": true
+					},
+					{
+						"name": "add_script",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "thwart",
+										"trigger": "self",
+										"alteration": 1
+									}
+								]
+							}
+						},
+						"end_condition": "thwart_happened"
+					}
+				],
+				"+2 THW": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "add_script",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "thwart",
+										"trigger": "self",
+										"alteration": 2
+									}
+								]
+							}
+						},
+						"end_condition": "thwart_happened"
+					}
+				],
+				"+3 THW": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 3
+						},
+						"is_cost": true
+					},
+					{
+						"name": "add_script",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "thwart",
+										"trigger": "self",
+										"alteration": 3
+									}
+								]
+							}
+						},
+						"end_condition": "thwart_happened"
+					}
+				]
+			}
+		}
+	},
+	"Mass Increase": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "my_hero",
+				"amount": ">0",
+				"tags": [
+					"attack"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					],
+					"constraints": [
+						{
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_same_controller": true,
+										"filter_properties": {
+											"Name": "Dense"
+										}
+									}
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "stunned",
+					"subject": "trigger"
+				}
+			]
+		}
+	},
+	"Meditation": {
+		"manual": {
+			"hand": [
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "my_identity"
+				},
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "add_script",
+					"end_condition": "card_played",
+					"subject": "index",
+					"src_container": "hand_event_source_hero",
+					"needs_subject": true,
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "max",
+					"needs_selection": true,
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "cost",
+									"alteration": -3,
+									"trigger": "self"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Phase Disruption": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"constraints": [
+						{
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_same_controller": true,
+										"filter_properties": {
+											"Name": "Intangible"
+										}
+									}
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "confused",
+					"subject": "an_enemy"
+				},
+				{
+					"name": "discard",
+					"subject_count": "all",
+					"subject": "attachments",
+					"attachments_host": "previous",
+					"needs_selection": true,
+					"selection_optional": true,
+					"filter_state_attachments": [
+						{
+							"filter_func": {
+								"func_name": "property_contains",
+								"func_params": {
+									"subject": "trigger",
+									"property": "real_text",
+									"value": [
+										"hero action",
+										"hero response"
+									]
+								}
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Preservation": {
+		"paid_as_resource": {
+			"trigger": "self",
+			"is_optional_all": true,
+			"all": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Protector - Alexis": {
+		"once_per_round": {
+			"__name__": "__protect"
+		},
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"target": "self",
+				"amount": ">0"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "__protect",
+					"modification": -1,
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "prevent",
+					"amount": 1,
+					"subject": "interrupted_event"
+				}
+			]
+		}
+	},
+	"Reboot": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_friendly",
+							"filter_properties": {
+								"trait_android": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "previous"
+				}
+			]
+		}
+	},
+	"Relentless Android": {
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "card_is_in_play",
+								"func_params": {
+									"card_name": "Ultron Drones"
+								}
+							},
+							"nested_tasks": [
+								{
+									"ultron_drone": {
+										"__count__": 2,
+										"__each_player__": false,
+										"__src_container__": "deck_my_hero"
+									}
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "discard",
+							"subject": "index",
+							"src_container": "hand_my_hero",
+							"subject_index": "random",
+							"subject_count": 1
+						},
+						{
+							"name": "discard",
+							"subject": "index",
+							"src_container": "hand_my_hero",
+							"subject_index": "random",
+							"subject_count": 1
+						}
+					]
+				}
+			]
+		}
+	},
+	"Side Step": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "my_hero",
+				"amount": ">0"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					],
+				},
+				{
+					"name": "prevent",
+					"amount": 3,
+					"subject": "interrupted_event"
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "self",
+			"condition_all": {
+				"func_name": "paid_with_includes",
+				"func_params": {
+					"energy": 1
+				}
+			},
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Solar Beam": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_same_controller": true,
+											"filter_properties": {
+												"Name": "Dense"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "attack",
+									"amount": 7,
+									"subject": "an_enemy"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "thwart",
+							"amount": 5,
+							"subject": "a_scheme"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Solar Gem": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_aerial",
+					"alteration": 1,
+					"trigger": "Vision"
+				}
+			]
+		},
+		"resource": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Superdense Strike": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"constraints": [
+						{
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_same_controller": true,
+										"filter_properties": {
+											"Name": "Dense"
+										}
+									}
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 5,
+					"subject": "an_enemy",
+					"tags": [
+						"piercing"
+					]
+				}
+			]
+		}
+	},
+	"Ultron": {
+		"interrupt_enemy_attack": {
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "card_is_in_play",
+				"func_params": {
+					"card_name": "Ultron Drones"
+				}
+			},
+			"board": [
+				{
+					"ultron_drone": {
+						"__count__": 1,
+						"__each_player__": false,
+						"__src_container__": "deck_current_hero_target"
+					}
+				}
+			]
+		}
+	},
+	"Ultron Drones": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_drone": 1
+							},
+							"filter_faceup": false
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_drone": 1
+							},
+							"filter_faceup": false
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_drone": 1
+							},
+							"filter_faceup": false
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Ultron Unleashed": {
+		"reveal": {
+			"all": [
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain",
+						"set_aside"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Ultron Drones"
+							}
+						}
+					]
+				},
+				{
+					"ultron_drone": {
+						"__count__": 1,
+						"__each_player__": true,
+						"__src_container__": "deck_my_hero"
+					}
+				}
+			]
+		}
+	},
+	"Victor Mancha": {
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"target": "self",
+				"amount": ">0",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": 1,
+					"subject": "interrupted_event"
+				}
+			]
+		}
+	},
+	"Vision #26001a": {
+		"once_per_round": {
+			"__name__": "__density"
+		},
+		"manual": {
+			"board": {
+				"Density Manipulation": [
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"subject": "self",
+						"token_name": "__density",
+						"is_cost": true
+					},
+					{
+						"name": "change_form",
+						"form_family": "mass",
+						"subject": "my_identity"
+					}
+				]
+			}
+		}
+	},
+	"Vision #26001b": {
+		"additional_cards_set_aside": [
+			{
+				"card": "Dense #26002b"
+			}
+		],
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Intangible"
+							}
+						}
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "recover",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"filter_state_seek": [
+								{
+									"filter_same_controller": true,
+									"filter_properties": {
+										"Name": "Dense"
+									}
+								}
+							],
+							"multiplier": 2
+						}
+					},
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "hand_size",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"filter_state_seek": [
+								{
+									"filter_same_controller": true,
+									"filter_properties": {
+										"Name": "Intangible"
+									}
+								}
+							]
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		}
+	},
+	"Vision's Cape": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"filter_state_seek": [
+								{
+									"filter_same_controller": true,
+									"filter_properties": {
+										"Name": "Dense"
+									}
+								}
+							]
+						}
+					},
+					"trigger": "Vision"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "stalwart",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"filter_state_seek": [
+								{
+									"filter_same_controller": true,
+									"filter_properties": {
+										"Name": "Intangible"
+									}
+								}
+							]
+						}
+					},
+					"trigger": "Vision"
+				}
+			]
+		}
+	},
+	"Vivian": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"filter_state_seek": [
+								{
+									"filter_same_controller": true,
+									"filter_properties": {
+										"Name": "Dense"
+									}
+								}
+							],
+							"multiplier": 2
+						}
+					},
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"filter_state_seek": [
+								{
+									"filter_same_controller": true,
+									"filter_properties": {
+										"Name": "Intangible"
+									}
+								}
+							],
+							"multiplier": 2
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		}
+	}
+}

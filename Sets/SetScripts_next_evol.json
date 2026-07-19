@@ -194,6 +194,24 @@
 					"even_if_alter_ego": true,
 					"subject": "boardseek",
 					"subject_count": "all",
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Creeping Willow"
+							}
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "move_card_to_board",
+					"destination_grid": "enemies_my_hero",
+					"subject": "tutor",
+					"src_container": [
+						"discard_villain",
+						"deck_villain"
+					],
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -201,7 +219,7 @@
 							}
 						}
 					]
-				}
+				}				
 			]
 		}
 	},
@@ -2119,8 +2137,7 @@
 					"name": "sequence",
 					"sequence_ability": "do_give_tough",
 					"delay_until_no_activity": true
-				},
-
+				}
 			]
 		},
 		"do_give_tough": {
@@ -2146,9 +2163,9 @@
 				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
-				}				
+				}
 			]
-		}		
+		}
 	},
 	"Escaping with Hope - 2B": {
 		"alterants": {
@@ -3248,13 +3265,7 @@
 							"property": "attack"
 						}
 					},
-					"subject": "boardseek",
-					"subject_count": "all",
-					"filter_state_seek": [
-						{
-							"filter_group": "group_identities"
-						}
-					]
+					"all_players": true
 				}
 			]
 		},
@@ -3546,7 +3557,12 @@
 					"name": "prevent",
 					"subject": "interrupted_event",
 					"amount": "all"
-				},
+				}
+			]
+		},
+		"card_damaged": {
+			"trigger": "self",
+			"board": [
 				{
 					"name": "conditional_script",
 					"options": [
@@ -3729,7 +3745,7 @@
 				}
 			]
 		},
-		"card_moved_to_container": {
+		"card_moved_to_pile": {
 			"trigger": "self",
 			"all": [
 				{
@@ -6123,9 +6139,7 @@
 		"attach_upgrade_to_target": {
 			"__filter_state_subject__": [
 				{
-					"filter_properties": {
-						"filter_group": "group_schemes"
-					},
+					"filter_group": "group_schemes",
 					"filter_max_per_host": 1
 				}
 			]
@@ -7563,13 +7577,12 @@
 		}
 	},
 	"Sharpshooter": {
-		"interrupt_receive_damage": {
+		"interrupt_attack_started": {
 			"event_filters": {
 				"tags": [
-					"attack",
 					"ranged"
 				],
-				"actual_source": "my_hero"
+				"attacker": "my_hero"
 			},
 			"is_optional_board": true,
 			"board": [
@@ -8552,7 +8565,7 @@
 						"selection_count": 1,
 						"selection_type": "max",
 						"selection_optional": true,
-						"filter_state_seek": [
+						"filter_state_tutor": [
 							{
 								"filter_properties": {
 									"type_code": "upgrade"

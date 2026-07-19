@@ -987,7 +987,7 @@
 					"filter_property_name": "attack",
 					"trigger": "host",
 					"alteration": 1
-				},
+				}
 			]
 		},
 		"attacks_gain": {

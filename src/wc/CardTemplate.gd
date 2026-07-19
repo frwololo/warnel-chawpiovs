@@ -163,8 +163,7 @@ func get_alterants_key():
 		return ""
 	return SP.KEY_ALTERANTS
 	
-func is_boost():
-	return self._is_boost
+
 
 func is_inactive_attachment():
 	#last minute check
@@ -2578,8 +2577,10 @@ func common_pre_run(sceng) -> void:
 	sceng.scripts_queue = new_queue	
 
 func change_form_script_replacement(script_definition: Dictionary, trigger_details) -> Dictionary:	
-	#var owner_hero_id = trigger_details.get("override_controller_id", self.get_owner_hero_id())
-
+	var controller_hero_id = trigger_details.get("override_controller_id", self.get_controller_hero_id())
+	var hero_card = gameData.get_identity_card(controller_hero_id)
+	var set_name = hero_card.get_property("card_set_code","").to_lower()
+			
 	var family = script_definition.get("form_family", "")
 	var new_form = script_definition.get("form_name", "")
 	if !family and new_form:
@@ -2590,10 +2591,12 @@ func change_form_script_replacement(script_definition: Dictionary, trigger_detai
 		return {}
 	
 	#get list of cards we can change to
+	#they are specific to the hero set, to avoid conflicts (e.g. Shadowcat and Vision both use mass)
 	var available_forms = []
 	for card in cfc.NMAP["set_aside"].get_all_cards():
 		var card_family = card.get_property("form_family", "")
-		if  card_family == family:
+		var card_set_name = card.get_property("card_set_code", "").to_lower()
+		if (card_family == family) and (card_set_name == set_name):
 			available_forms.append(card)	
 	
 	#if we can't switch to anything, we fail
@@ -2674,7 +2677,7 @@ func indirect_damage_replacement(script_definition: Dictionary, trigger_details)
 	
 	#Note: amount in this case is actually set into selection_count, 
 	# due to how "assign_" works in selectionwindow			
-	var result  =	WCScriptingEngine.indirect_damage_script_definition (amount, controller_hero_id, filter_state_seek)	
+	var result = WCScriptingEngine.indirect_damage_script_definition (amount, controller_hero_id, filter_state_seek)	
 	
 	result = WCUtils.merge_dict(script_definition, result, true)
 
@@ -3543,6 +3546,13 @@ func property_contains(params, script:ScriptObject = null) -> int:
 	if and_or =="or":
 		return 0
 	return 1
+
+func is_boost(params = {}, script:ScriptObject = null):
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return false
+			
+	return subject._is_boost
 
 #returns true if this card (or script subject) has a given trait
 func has_trait(params, script:ScriptObject = null) -> int:

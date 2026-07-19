@@ -2037,7 +2037,7 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 	transfer_default_damage_properties(_script, script)
 	var target_friendly = _script.get_property("target")		
 	var defender = script.subjects[0] if script.subjects else null
-	var defender_type = defender.get_property("type_code") if defender else ""
+#	var defender_type = defender.get_property("type_code") if defender else ""
 	
 	
 

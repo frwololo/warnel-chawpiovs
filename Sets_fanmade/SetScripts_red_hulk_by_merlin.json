@@ -171,6 +171,7 @@
 	},
 	"Fury": {
 		"cards_discarded_from_top_of_deck": {
+			"display_section": "forced response",
 			"event_filters": {
 				"deck_owner": "my_hero",
 				"amount": ">=5"
@@ -228,6 +229,7 @@
 	},
 	"Gamma Emission": {
 		"response_card_played": {
+			"trigger": "another",
 			"filter_state_trigger": [
 				{
 					"filter_same_controller": true,
@@ -448,6 +450,7 @@
 			"event_filters": {
 				"phase": "player_phase"
 			},
+			"display_section": "forced response (hero)",
 			"board": [
 				{
 					"name": "constraints",

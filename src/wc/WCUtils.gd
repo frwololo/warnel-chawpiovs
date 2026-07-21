@@ -332,10 +332,11 @@ static func search_and_replace_multi(script_definition, replacements:Dictionary,
 	var result = _search_and_replace_multi_cache[_cache_key].duplicate(true)
 	return result
 
-#stupid hardcoded exception
+#stupid hardcoded exceptions
 const _never_replace = {
 	"name": "discard",
-	"type_code": "villain"
+	"type_code": "villain",
+	"display_section": "response"
 }	
 static func search_and_replace_multi_no_cache (script_definition, replacements:Dictionary, exact_match: bool = false) -> Dictionary:
 	var result = null
@@ -712,3 +713,40 @@ static func check_delete_all_pck():
 	
 	dir.remove(delete_pck_mark)
 	return
+
+static func large_card_preview_offset(large_picture, container, preview_card_size):
+	var mouse_pos = container.get_tree().current_scene.get_global_mouse_position()
+	if gamepadHandler.is_mouse_input():		
+		large_picture.rect_position = container.get_tree().current_scene.get_global_mouse_position() + Vector2(20, 20)
+	else:
+		var focused = container.get_focus_owner()
+		if focused:
+			mouse_pos = focused.get_global_position() + focused.rect_size/2
+			large_picture.rect_position = mouse_pos + Vector2(20, 20)
+	large_picture.rect_size = preview_card_size
+#	large_picture.rect_scale = cfc.screen_scale
+#	large_picture.rect_rotation = _preview_rotation
+	
+	var correction_offset = preview_card_size
+	var top_left = large_picture.rect_position
+	var bottom_left = large_picture.rect_position + Vector2(0, large_picture.rect_size.y)
+	var top_right = large_picture.rect_position+ Vector2(large_picture.rect_size.x, 0)
+	var bottom_right = large_picture.rect_position  + large_picture.rect_size
+	
+	if large_picture.rect_rotation == 90:
+		correction_offset = Vector2(0, correction_offset.x)
+		large_picture.rect_position.x += large_picture.rect_size.y	
+		top_right = large_picture.rect_position
+		top_left = large_picture.rect_position + Vector2(-large_picture.rect_size.y, 0)
+		bottom_left = top_left + Vector2(0,large_picture.rect_size.x)
+		bottom_right = top_right + Vector2(0,large_picture.rect_size.x)
+		var _tmp = bottom_right
+	
+	#check for out of bounds preview and correct accordingly
+	var screen_size = container.get_viewport().size/cfc.screen_scale
+	var out_of_bounds = bottom_right
+	if out_of_bounds.x > screen_size.x:
+		large_picture.rect_position.x = mouse_pos.x - 50 - correction_offset.x
+
+	if out_of_bounds.y > screen_size.y:
+		large_picture.rect_position.y = screen_size.y - 50 - correction_offset.y

@@ -219,7 +219,7 @@
 							}
 						}
 					]
-				}				
+				}
 			]
 		}
 	},
@@ -987,6 +987,10 @@
 							"filter_group": "group_friendly_my_hero"
 						}
 					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		},

@@ -13,7 +13,8 @@ var hero_id = 0
 var deck_id = 0
 
 var _needs_refresh = 0
-
+var item_id_to_deck_id = {}
+var deck_id_to_item_id = {}
 #
 #shortcuts
 # 
@@ -71,12 +72,12 @@ func set_owner (id):
 func _on_deck_changed(index):
 	var my_owner_network_id = gameData.get_player_by_index(my_owner).network_id
 	if (cfc.get_network_unique_id() == my_owner_network_id) :
-		var _deck_id = deckSelect.get_item_id(index)
+		var _deck_id = item_id_to_deck_id.get(deckSelect.get_item_id(index))
 		lobby.deck_changed(_deck_id, my_index)
 
 #deck change notification from a remote caller
 func set_deck (_deck_id, caller_id):
-	var index = deckSelect.get_item_index(_deck_id)
+	var index = deck_id_to_item_id.get(_deck_id, -1)
 	if index <0: #deck doesn't exist on my side, I need to download it
 		_needs_refresh = _deck_id
 		print_debug("requesting deck download for " + str(_deck_id))		
@@ -90,13 +91,14 @@ func refresh_decks():
 	#keep the currently selected index in tmp variable,
 	#unless it was previsouly set during a download request
 	if !_needs_refresh:
-		_needs_refresh = deckSelect.get_item_id(deckSelect.get_selected())
+		var item_id = deckSelect.get_item_id(deckSelect.get_selected())
+		_needs_refresh = item_id_to_deck_id.get(item_id, 0)
 
 	#reload our hero to refresh the deck list
 	load_hero(hero_id)
 
 	#set the correct selected item again
-	var index = deckSelect.get_item_index(_needs_refresh)
+	var index = deckSelect.get_item_index(deck_id_to_item_id.get(_needs_refresh))
 	deckSelect.select(index)
 	print_debug("received download for " + str(_needs_refresh))	
 	_needs_refresh = 0
@@ -140,15 +142,21 @@ func load_hero(_hero_id):
 		hero_picture.texture = imgtex
 		#hero_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 		resize()
+		var current_idx = 0
+		item_id_to_deck_id = {}
+		deck_id_to_item_id = {}
 		for _deck_id in decks:
 			var deck_data = cfc.deck_definitions[_deck_id]
 			var hero_name = cfc.get_card_name_by_id(hero_id)
 			var deck_name: String = deck_data.name
 			deck_name = deck_name.replacen(hero_name, "").trim_prefix(" ")
 			deck_name = deck_name.trim_prefix("- ")
-			deck_select.add_item(deck_name, deck_data.id)
-			if deck_data.id == last_deck_id:
+			item_id_to_deck_id[current_idx] = deck_data.id
+			deck_id_to_item_id[deck_data.id] = current_idx
+			deck_select.add_item(deck_name, current_idx)
+			if str(deck_data.id) == str(last_deck_id):
 				deck_select.select(deck_select.get_item_count() -1)
+			current_idx += 1	
 		#force refresh of selected data	
 		_on_deck_changed(deckSelect.selected)		
 	else:

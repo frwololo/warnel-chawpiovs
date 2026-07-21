@@ -1,0 +1,203 @@
+{
+	"_comments": "Test Red Hulk fanmade thwart (assault)",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Red Hulk"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Juggernaut - 1",
+					"tokens": {
+						"damage": 1,
+						"stunned": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Back in Action"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"set_aside": [],
+			"schemes": [
+				{
+					"card": "The Unstopppable Juggernaut #40121b",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Uppercut"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Tag Team"
+				},
+				{
+					"card": "Nick Fury"
+				},
+				{
+					"card": "Avengers Mansion"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Red Hulk"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Fury"
+				},
+				{
+					"card": "Overheating",
+					"tokens": {
+						"heat": 5
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Smash"
+				},
+				{
+					"card": "Military Intelligence"
+				},
+				{
+					"card": "Gamma Base"
+				},
+				{
+					"card": "Gamma Absorption"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Red Hulk"
+		},
+		{
+			"type": "choose",
+			"value": "thwart"
+		},
+		{
+			"type": "target",
+			"value": "The Unstopppable Juggernaut #40121b"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Red Hulk"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Juggernaut - 1",
+					"tokens": {
+						"damage": 1,
+						"stunned": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Back in Action"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"set_aside": [],
+			"schemes": [
+				{
+					"card": "The Unstopppable Juggernaut #40121b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Uppercut"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Tag Team"
+				},
+				{
+					"card": "Nick Fury"
+				},
+				{
+					"card": "Avengers Mansion"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Red Hulk"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Fury"
+				},
+				{
+					"card": "Overheating",
+					"tokens": {
+						"heat": 5
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Smash"
+				},
+				{
+					"card": "Military Intelligence"
+				},
+				{
+					"card": "Gamma Base"
+				},
+				{
+					"card": "Gamma Absorption"
+				}
+			]
+		}
+	}
+}

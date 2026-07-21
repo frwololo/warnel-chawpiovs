@@ -174,6 +174,8 @@ func _load_hero_base_cards(hero_id):
 		var type = card["type_code"].to_lower()
 		if type in ["hero", "alter_ego", "obligation"]:
 			continue 
+		if !type in CFConst.PLAYER_CARD_TYPES:
+			continue
 		var quantity = card.get("quantity", 1)
 		slots[card["_code"]] = quantity
 
@@ -204,7 +206,7 @@ func edit_deck(deck_data):
 func deck_selected(deck_id):
 	#unselect
 	get_node("%DeckTitle").text = ""
-	if deck_id == -1:
+	if str(deck_id) == "-1":
 		if current_deck and is_instance_valid(current_deck):
 			current_deck.hide_highlights()		
 		current_deck = null
@@ -218,7 +220,7 @@ func deck_selected(deck_id):
 		create_and_edit_new_deck(get_current_filter_hero_id())
 		return
 		
-	if current_selected_deck_id == deck_id:
+	if str(current_selected_deck_id) == str(deck_id):
 		return
 
 	enable_deck_buttons()

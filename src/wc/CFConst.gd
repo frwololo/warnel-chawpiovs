@@ -708,7 +708,7 @@ const DEFAULT_TOKEN_MAX_VALUE := {
 
 const AUTO_KEYWORDS := {
 	"alliance" : "int",
-	"assault" : "bool",
+	"assault" : "int",
 	"form" : "bool",
 	"guard" : "int",
 	"hinder" : "int",
@@ -977,6 +977,7 @@ const DEFAULT_SETTINGS:= {
 	'sfx_volume': 10,
 	'glow_intensity' : 0.01,
 	'load_cards_online' : true,
+	'enable_fanmade_sets': false,
 	'images_base_url': "https://marvelcdb.com",
 	"decks_base_url": "https://marvelcdb.com/api/public/decklist/",
 	"decks_base_url_backup": "https://marvelcdb.com/api/public/deck/",

@@ -1100,6 +1100,15 @@ func load_test_files():
 		test_files += (CFUtils.list_files_in_directory(
 				"user://Test/", "test_", true))
 
+	var to_delete = []
+	for test_file in test_files:				
+		if "fanmade" in test_file:
+			if !cfc.get_setting("enable_fanmade_sets"):
+				to_delete.append(test_file)
+	
+	for test_file in to_delete:
+		test_files.erase(test_file)			
+
 	if (adapt_speed_to_number_of_tests):
 		if (test_files.size() >= 5) :
 			min_time_between_steps = sped_up_time_between_steps

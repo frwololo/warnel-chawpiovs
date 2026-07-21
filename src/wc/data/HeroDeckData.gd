@@ -23,7 +23,11 @@ func get_hero_card_data() -> Dictionary:
 	
 func get_alter_ego_card_data() -> Dictionary:
 	var card_data = get_hero_card_data()
-	var alter_ego_data = card_data["linked_card"]
+	var alter_ego_data = card_data.get("linked_card", {})
+	if !alter_ego_data:
+		var linked_card_id = card_data.get("linked_to_code", "")
+		if linked_card_id:
+			alter_ego_data = cfc.get_card_by_id(linked_card_id)
 	return alter_ego_data	
 
 static func _get_deck_cards(_deck_id):

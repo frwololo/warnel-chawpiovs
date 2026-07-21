@@ -1,0 +1,730 @@
+{
+	"A Little Help Here!": {
+		"give_obligation": {
+			"__to__": "Thaddeus Ross"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "my_identity",
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_conainer": "removed_from_game"
+				},
+				{
+					"is_else": true,
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"is_else": true,
+					"name": "surge"
+				}
+			]
+		}
+	},
+	"A-Bomb - Rick Jones": {
+		"attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck",
+					"dest_container": "discard"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "energy"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "deal_damage",
+									"subject": "boardseek",
+									"subject_count": "all",
+									"amount": 1,
+									"filter_state_seek": [
+										{
+											"filter_group": "group_characters"
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Annie": {
+		"manual": {
+			"board": {
+				"Shuffle Card from Discard": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "shuffle_card_into_container",
+						"dest_container": "deck",
+						"src_container": "discard",
+						"subject": "tutor",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"selection_optional": true,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"card_set_code": "red_hulk_by_merlin"
+								}
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Battle of the Hulks": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Add 2 threat to Main scheme": [
+					{
+						"name": "add_threat",
+						"amount": 2,
+						"subject": "main_scheme"
+					}
+				],
+				"Exhaust your Identty": [
+					{
+						"name": "exhaust_card",
+						"subject": "my_identity",
+						"is_cost": true
+					}
+				]
+			}
+		}
+	},
+	"Enhanced Stamina": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "my_identity",
+					"alteration": 4
+				}
+			]
+		},
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"target": "my_hero",
+				"amount": ">0"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "prevent",
+					"amount": 1,
+					"subject": "interrupted_event"
+				}
+			]
+		}
+	},
+	"Fury": {
+		"cards_discarded_from_top_of_deck": {
+			"event_filters": {
+				"deck_owner": "my_hero",
+				"amount": ">=5"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "acceleration",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Gamma Absorption": {
+		"card_discarded_from_top_of_deck": {
+			"trigger": "self",
+			"is_optional_all": true,
+			"all": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "hand"
+				},
+				{
+					"name": "heal",
+					"subject": "Red hulk",
+					"amount": 2
+				}
+			]
+		}
+	},
+	"Gamma Base": {
+		"resource": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Gamma Emission": {
+		"response_card_played": {
+			"filter_state_trigger": [
+				{
+					"filter_same_controller": true,
+					"filter_properties": {
+						"trait_gamma": 1,
+						"comparison": "ge"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"subject": "an_enemy",
+					"amount": {
+						"func_name": "get_subject_int_printed_property",
+						"func_params": {
+							"subject": "trigger",
+							"property": "cost"
+						}
+					}
+				}
+			]
+		}
+	},
+	"Gamma Radiation": {
+		"incite": {
+			"__amount__": 1
+		},
+		"_surge": {},
+		"reveal": {
+			"all": [
+				{
+					"name": "heal",
+					"amount": 2,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_optional": false,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_gamma": 1,
+								"comparison": "ge"
+							},
+							"filter_group": "group_characters"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Get Prepared": {
+		"card_discarded_from_top_of_deck": {
+			"trigger": "self",
+			"is_optional_all": true,
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "hand"
+				}
+			]
+		},
+		"manual": {
+			"hand": [
+				{
+					"name": "add_script",
+					"end_condition": "before_card_moved_to_board",
+					"is_cost": true,
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "discard",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "support"
+							}
+						},
+						{
+							"filter_properties": {
+								"type_code": "upgrade"
+							}
+						}
+					],
+					"script": {
+						"manual": {
+							"pile": [
+								{
+									"name": "pay_regular_cost",
+									"is_cost": true,
+									"cost": "card_cost"
+								},
+								{
+									"name": "move_card_to_board",
+									"subject": "self"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Hulk is Back": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"destination_grid": "enemies_my_hero",
+					"subject": "find",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Hulk"
+							}
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "surge"
+				}
+			]
+		}
+	},
+	"Machine Man - aaron stack": {
+		"manual": {
+			"board": {
+				"Flip Identity": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					},
+					{
+						"name": "change_form",
+						"subject": "my_identity"
+					}
+				]
+			}
+		}
+	},
+	"Military Intelligence": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "thwart",
+					"subject": "a_scheme",
+					"amount": 3
+				}
+			]
+		},
+		"card_discarded_from_top_of_deck": {
+			"trigger": "self",
+			"is_optional_all": true,
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "hand"
+				},
+				{
+					"name": "remove_threat",
+					"subject": "a_scheme",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Overheating": {
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_count_difference": "increased",
+			"filter_token_name": "heat",
+			"condition_board": {
+				"func_name": "count_tokens>=8",
+				"func_params": {
+					"subject": "self",
+					"token_name": "heat"
+				}
+			},
+			"board": [
+				{
+					"name": "defeat"
+				}
+			]
+		},
+		"phase_ended": {
+			"event_filters": {
+				"phase": "player_phase"
+			},
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"sort_descending": true,
+					"subject_count": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "self",
+							"token_name": "heat"
+						}
+					},
+					"src_container": "deck",
+					"up_to": true
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "heat",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Rage": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "deal_damage",
+					"subject": "villain",
+					"amount": 3
+				},
+				{
+					"name": "deal_damage",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					],
+					"amount": 1
+				}
+			]
+		},
+		"card_discarded_from_top_of_deck": {
+			"trigger": "self",
+			"is_optional_all": true,
+			"all": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "hand"
+				},
+				{
+					"name": "deal_damage",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Red Hulk": {
+		"interrupt_thwart_started": {
+			"trigger": "self",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"board": [
+				{
+					"name": "add_script",
+					"subject": "trigger_details_target",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "assault",
+									"trigger": "self",
+									"alteration": 1
+								}
+							]
+						}
+					},
+					"end_condition": "phase_ended"
+				}
+			]
+		},
+		"identity_changed_form": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"display_section": "response",
+			"board": {
+				"Add 1 Heat": [
+					{
+						"name": "mod_tokens",
+						"modification": 1,
+						"token_name": "heat",
+						"subject": "Overheating"
+					}
+				],
+				"Add 2 Heat": [
+					{
+						"name": "mod_tokens",
+						"modification": 2,
+						"token_name": "heat",
+						"subject": "Overheating"
+					}
+				],
+				"Add 3 Heat": [
+					{
+						"name": "mod_tokens",
+						"modification": 3,
+						"token_name": "heat",
+						"subject": "Overheating"
+					}
+				]
+			}
+		}
+	},
+	"Smash": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"subject": "an_enemy",
+					"amount": 7
+				}
+			]
+		},
+		"card_discarded_from_top_of_deck": {
+			"trigger": "self",
+			"is_optional_all": true,
+			"all": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "hand"
+				},
+				{
+					"name": "deal_damage",
+					"subject": "an_enemy",
+					"amount": 3
+				}
+			]
+		}
+	},
+	"Thaddeus Ross": {
+		"once_per_round": {
+			"__name__": "__tactician"
+		},
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Fury"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Overheating"
+							}
+						}
+					]
+				}
+			]
+		},
+		"identity_changed_form": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"set_to_mod": true,
+					"token_name": "heat",
+					"subject": "Overheating"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": -1,
+					"token_name": "acceleration",
+					"subject": "Fury"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Master Tactician": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"is_cost": true,
+						"token_name": "__tactician",
+						"subject": "self"
+					},
+					{
+						"name": "draw_cards",
+						"amount": 2
+					},
+					{
+						"name": "sequence",
+						"sequence_ability": "do_discard"
+					}
+				]
+			}
+		},
+		"do_discard": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_count": "all",
+					"src_container": "hand",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"selection_optional": false
+				}
+			]
+		}
+	}
+}

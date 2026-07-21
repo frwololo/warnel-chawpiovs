@@ -561,10 +561,20 @@ static func text_cleanup(text):
 	return cleaned_text
 
 var _seen_images:= {}
-func _load_one_card_definition(card_data, box_name:= "core"):
+func _load_one_card_definition(card_data, box_name:= "core", fanmade = false):
 	#linked cards might be missing preprocessing data
 	if not card_data.has("_code"):
 		card_data["_code"] = card_data.get("code", "")
+	
+	card_data["fanmade"] = fanmade	
+	if fanmade:
+		if !card_data["_code"].begins_with(box_name):
+			card_data["_code"] = box_name + "_" + card_data["_code"]
+			card_data["code"] = box_name + "_" + card_data["code"]
+		if card_data.get("linked_to_code", ""):
+			if !card_data["linked_to_code"].begins_with(box_name):
+				card_data["linked_to_code"] = box_name + "_" + card_data["linked_to_code"]
+				
 	var card_id = card_data["_code"]	
 	
 	#hardcoded patches
@@ -722,49 +732,13 @@ func _load_one_card_definition(card_data, box_name:= "core"):
 	card_data.erase("name")
 	
 		
-#	if !box_contents_by_name.has(box_name):
-#		box_contents_by_name[box_name] = {}
-#	#the same card name can happen multiple times in a single box with a different ID, 
-#	#for example "Wakanda Forever"
-#	if !box_contents_by_name[box_name].has(card_data["Name"]):
-#		box_contents_by_name[box_name][card_data["Name"]] = []
-#	box_contents_by_name[box_name][card_data["Name"]].append(card_data)	
-
 	var card_name:String = card_data["Name"]
 	
 	#caching and indexing
 	shortname_to_name[card_data["shortname"].to_lower()] = card_name
 	lowercase_card_name_to_name[card_name.to_lower()] = card_name
 	
-#	#schemes cache
-#	if (lc_card_type == "main_scheme"):
-#		if (not schemes.has(lc_set_code)):
-#			schemes[lc_set_code] = []
-#		schemes[lc_set_code].push_back(card_data)
-		
-#	var card_set_type_name_code = card_data.get("card_set_type_name_code", "")
-#	if card_set_type_name_code == "modular":
-#		if not modular_encounters.has(lc_set_code):
-#			modular_encounters[lc_set_code] = []
-#		modular_encounters[lc_set_code].append(card_data)
 	
-#	#obligations cache
-#	if (lc_card_type == "obligation"):
-#		obligations[lc_set_code] = card_data
-#		obligations[lc_set_name] = card_data
-#
-#	#encounter and set cache
-#	if (not cards_by_set.has(lc_set_code)):
-#		cards_by_set[lc_set_code] = []
-#	cards_by_set[lc_set_code].push_back(card_data)				
-#
-#	#parents set cache
-#	var card_set_parent_code = card_data.get("card_set_parent_code", "").to_lower()
-#	if card_set_parent_code:
-#		if (not cards_by_set.has(card_set_parent_code)):
-#			cards_by_set[card_set_parent_code] = []
-#
-#		cards_by_set[card_set_parent_code].push_back(card_data)			
 
 	card_data[CardConfig.SCENE_PROPERTY] = "CardTemplate"	
 
@@ -816,12 +790,12 @@ func load_one_card_extra_data(card_data):
 	cards_by_set[lc_set_code].push_back(card_data)				
 	
 	#parents set cache
-	var card_set_parent_code = card_data.get("card_set_parent_code", "").to_lower()
-	if card_set_parent_code:
-		if (not cards_by_set.has(card_set_parent_code)):
-			cards_by_set[card_set_parent_code] = []
-			
-		cards_by_set[card_set_parent_code].push_back(card_data)			
+#	var card_set_parent_code = card_data.get("card_set_parent_code", "").to_lower()
+#	if card_set_parent_code:
+#		if (not cards_by_set.has(card_set_parent_code)):
+#			cards_by_set[card_set_parent_code] = []
+#
+#		cards_by_set[card_set_parent_code].push_back(card_data)			
 	
 func load_card_definitions_extra_data():
 	for card_id in card_definitions:
@@ -860,7 +834,7 @@ func save_card_definitions_to_cache(the_files):
 func _get_set_definitions_md5_list(the_files):
 	var md5_list = {}
 	for file in the_files:
-		md5_list[file] = WCUtils.get_md5("Sets/" + file)
+		md5_list[file] = WCUtils.get_md5(file)
 	return md5_list
 
 func save_data_to_cache (data, file_name):
@@ -964,13 +938,23 @@ func load_card_definitions() -> Dictionary:
 	#load from "res://" as well
 	the_files += CFUtils.list_files_in_directory(
 			"res://Sets/", CFConst.CARD_SET_NAME_PREPEND)
+				
 	var set_files = {}
 	for file in the_files:	
-		set_files[file] = true				
+		set_files["Sets/" + file] = true	
+
+	if cfc.get_setting("enable_fanmade_sets"):
+		preload_fanmade_sets()
+		var fanmade_files = CFUtils.list_files_in_directory(
+			"user://Sets_fanmade/", CFConst.CARD_SET_NAME_PREPEND)		
+		the_files += fanmade_files
+		for file in fanmade_files:	
+			set_files["Sets_fanmade/" + file] = true			
+					
 	WCUtils.debug_message(set_files.size())	
 	var json_card_data : Dictionary = {}
 	_total_cards = 0	
-	combined_sets = load_card_definitions_from_cache(the_files)
+	combined_sets = load_card_definitions_from_cache(set_files.keys())
 	if !combined_sets or combined_sets.has("_error"):
 		print_debug("error loading from cache: " + combined_sets.get("_error", ""))
 		combined_sets = {}	
@@ -981,31 +965,48 @@ func load_card_definitions() -> Dictionary:
 		print_debug("successfully loaded card definitions from cache")	
 	else:
 		for set_file in set_files:
-			var prefix_length = CFConst.CARD_SET_NAME_PREPEND.length()
+			var fanmade = "fanmade" in set_file
+			var prefix_length = set_file.find(CFConst.CARD_SET_NAME_PREPEND) + CFConst.CARD_SET_NAME_PREPEND.length()
 			var extension_idx = set_file.find(".")
 			var box_name = set_file.substr(prefix_length, extension_idx-prefix_length)
-			var json_array = WCUtils.read_json_file_with_user_override	("Sets/" + set_file)
+			var json_array = WCUtils.read_json_file_with_user_override	(set_file)
 			_total_cards += json_array.size() 
-			json_card_data[box_name] = json_array
+			json_card_data[box_name] = {
+				"fanmade": fanmade,
+				"data": json_array
+			}
+				
 			
 		var i = 0
-		for box_name in json_card_data.keys():	
-			for card_data in (json_card_data[box_name]):
+		var linked_id_cache = {}
+		for box_name in json_card_data.keys():
+			var fanmade = json_card_data[box_name]["fanmade"]
+			for card_data in (json_card_data[box_name]["data"]):
 				i+=1
 				if dont_load_this_card(card_data):
 					continue			
-				_load_one_card_definition(card_data, box_name)	
+				_load_one_card_definition(card_data, box_name, fanmade)	
 				combined_sets[card_data["_code"]] = card_data
 				var linked_card_data = card_data.get("linked_card", {})
 				if (linked_card_data):
-					_load_one_card_definition(linked_card_data, box_name)
+					_load_one_card_definition(linked_card_data, box_name, fanmade)
 					linked_card_data["back_card_code"] = card_data["_code"]
 					card_data["back_card_code"] = linked_card_data["_code"]
 					combined_sets[linked_card_data["_code"]] = linked_card_data
-
+				else:
+					var linked_id = card_data.get("linked_to_code", "")
+					if linked_id:
+						linked_id_cache[card_data["_code"]] = linked_id
+						card_data["back_card_code"] = linked_id
 				_cards_loaded = i
+		
+		for key in linked_id_cache:	
+			combined_sets[linked_id_cache[key]]["linked_to_code"] = key	
+			combined_sets[linked_id_cache[key]]["back_card_code"] = key
 		card_definitions = combined_sets		
-		save_card_definitions_to_cache(the_files)
+
+			
+		save_card_definitions_to_cache(set_files.keys())
 
 	
 	#post load cleanup and config
@@ -1029,9 +1030,10 @@ func save_one_deck_to_file(json_deck_data, force_filename = ""):
 		if !filename.begins_with("user://"):
 			filename = "user://Decks/" + filename
 	else:
-		var deck_id: int = json_deck_data["id"]
+		var deck_id = json_deck_data["id"]
+		var deck_id_int = int(deck_id)
 		var path = str(deck_id)
-		if deck_id > CFConst.LOCAL_DECK_ID_OFFSET:
+		if deck_id_int > CFConst.LOCAL_DECK_ID_OFFSET:
 			path = "local_" + str(deck_id - CFConst.LOCAL_DECK_ID_OFFSET)
 		filename = "user://Decks/" + path + ".json"
 	var file = File.new()
@@ -1058,7 +1060,8 @@ func load_one_deck(json_deck_data, filepath = ""):
 	if !(_is_deck_valid(json_deck_data)):
 		return {}
 	json_deck_data = WCUtils.replace_real_to_int(json_deck_data)
-	var deck_id: int = json_deck_data["id"]
+	var deck_id = json_deck_data["id"]
+	#var deck_id_int = int(deck_id)
 	var hero_id = json_deck_data.get("hero_code",json_deck_data.get("investigator_code", ""))
 
 	#Begin data fixes
@@ -1088,7 +1091,7 @@ func load_deck_definitions():
 		if !deck_file.ends_with(".json"):
 			continue
 		var deck_id = deck_file.replace (".json", "")
-		deck_id = int(deck_id)
+		#var deck_id_int = int(deck_id)
 		res_deck_ids[deck_id] = true
 		if !deck_file in deck_files:
 			var json_deck_data : Dictionary = WCUtils.read_json_file("res://Decks/" + deck_file)
@@ -1106,6 +1109,23 @@ func load_deck_definitions():
 		#nothing for now
 		load_one_deck(json_deck_data, full_path)
 	return
+
+# copies Res fanmade sets into user folder
+func preload_fanmade_sets():
+	if ! self.get_setting("enable_fanmade_sets"):
+		return
+	#copy fanmade sets from Res: just in case they are missing
+	var res_files = CFUtils.list_files_in_directory("res://Sets_fanmade/")
+	# Load from external user files as well	for comparison
+	var user_files = CFUtils.list_files_in_directory("user://Sets_fanmade/")
+
+	var dir = Directory.new()
+	for my_file in res_files:
+		if !my_file.ends_with(".json"):
+			continue
+		if !my_file in user_files:
+			dir.copy("res://Sets_fanmade/" + my_file, "user://Sets_fanmade/"+ my_file)
+
 
 #card database related functions
 func get_hero_obligation(hero_id:String):
@@ -1217,12 +1237,17 @@ func clear_cards_cache(display_container= null):
 	for file in files:
 		dir.remove(cache_folder + file)
 	
-	if display_container:	
-		var message = "please restart the game for changes to take effect"
-		var msg_dialog:AcceptDialog = AcceptDialog.new()
-		msg_dialog.window_title = message
-		display_container.add_child(msg_dialog)
-		msg_dialog.popup_centered()		
+	must_restart_msg(display_container)
+
+func must_restart_msg(display_container):
+	if !display_container:
+		return
+		
+	var message = "please restart the game for changes to take effect"
+	var msg_dialog:AcceptDialog = AcceptDialog.new()
+	msg_dialog.window_title = message
+	display_container.add_child(msg_dialog)
+	msg_dialog.popup_centered()		
 
 func delete_all_images():
 	WCUtils.delete_dir_recursive("user://Sets/images")
@@ -1268,6 +1293,12 @@ func load_script_definitions() -> void:
 	#then we load from resources (their entries will overwrite user ones only if the user entries don't exist)
 	script_definition_files += CFUtils.list_files_in_directory(
 				"res://Sets/", CFConst.SCRIPT_SET_NAME_PREPEND, true)
+
+
+	if cfc.get_setting("enable_fanmade_sets"):
+		script_definition_files += CFUtils.list_files_in_directory(
+				"user://Sets_fanmade/", CFConst.SCRIPT_SET_NAME_PREPEND, true)	
+
 	WCUtils.debug_message("Found " + str(script_definition_files.size()) + " script files")
 	var all_script_files_data = []
 	var all_cache_valid = true	
@@ -1733,7 +1764,7 @@ func get_image_dl_url(card_id):
 var _cached_filesystem: Dictionary = {}
 
 func _cache_filesystem():
-	for folder in ["res://Test", "res://Sets", "res://Decks"]:
+	for folder in ["res://Test", "res://Sets", "res://Sets_fanmade", "res://Decks"]:
 		var list = CFUtils.list_files_in_directory(folder)
 		_cached_filesystem[folder] = list
 		_cached_filesystem[folder+ "/"] = list

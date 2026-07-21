@@ -129,31 +129,15 @@ func _process(delta:float):
 	
 	
 	
-	var mouse_pos = get_tree().current_scene.get_global_mouse_position()
-	if gamepadHandler.is_mouse_input():		
-		large_picture.rect_position = get_tree().current_scene.get_global_mouse_position() + Vector2(20, 20)
-	else:
-		var focused = get_focus_owner()
-		if focused:
-			mouse_pos = focused.get_global_position() + focused.rect_size/2
-			large_picture.rect_position = mouse_pos + Vector2(20, 20)
-	large_picture.rect_size = PREVIEW_CARD_SIZE
-#	large_picture.rect_scale = cfc.screen_scale
-	large_picture.rect_rotation = _preview_rotation
-	
-	#check for out of bounds preview and correct accordingly
-	var screen_size = get_viewport().size/cfc.screen_scale
-	var out_of_bounds = large_picture.rect_position + PREVIEW_CARD_SIZE
-	if out_of_bounds.x > screen_size.x:
-		large_picture.rect_position.x = mouse_pos.x - 50 - PREVIEW_CARD_SIZE.x
+	WCUtils.large_card_preview_offset(large_picture, self, PREVIEW_CARD_SIZE)
 
-	if out_of_bounds.y > screen_size.y:
-		large_picture.rect_position.y = screen_size.y - 50 - PREVIEW_CARD_SIZE.y
+
 	
 	if cache_pending:
 		var card_id = cache_pending.pop_back()
 		create_collection_card(card_id)
-	
+		
+	var screen_size = get_viewport().size/cfc.screen_scale
 	for card in collection_grid.get_children():
 		if card.is_animating():
 			continue
@@ -443,15 +427,20 @@ func show_preview(card):
 	large_picture.self_modulate = Color(1,1,1)
 	large_picture.visible = false
 	current_hover_card = card	
-	yield(get_tree().create_timer(WAIT_BEFORE_PREVIEW), "timeout")
-	if !large_picture.texture:
-		return
-	large_picture.visible = true
+	
 	if horizontal:
 		_preview_rotation = 90
 	else:
 		_preview_rotation = 0
-	large_picture.rect_size = PREVIEW_CARD_SIZE
+		
+	large_picture.rect_rotation = _preview_rotation	
+	large_picture.rect_size = PREVIEW_CARD_SIZE	
+	
+	yield(get_tree().create_timer(WAIT_BEFORE_PREVIEW), "timeout")
+	if !large_picture.texture:
+		return
+	large_picture.visible = true
+
 
 func hide_preview(card):
 	if current_hover_card != card:

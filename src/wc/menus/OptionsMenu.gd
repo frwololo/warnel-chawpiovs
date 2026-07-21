@@ -33,6 +33,7 @@ func _ready():
 	resize()
 	self.visible = false
 	select_tab("general")
+	update_mods_button_text()
 			
 func on_button_pressed(_button_name : String) -> void:
 	match _button_name:
@@ -66,6 +67,8 @@ func on_button_pressed(_button_name : String) -> void:
 			load_game()	
 		"MainMenuButton":
 			back_to_main_menu()
+		"EnableModsButton":
+			enable_disable_mods()				
 		"RestartButton":
 			restart_game()	
 		"Controls":
@@ -342,6 +345,21 @@ func show_me(container_to_disable = null):
 		cfc.NMAP.board.visible = false 		
 		
 	cfc.default_button_focus(v_box_container)	
+
+func enable_disable_mods():
+	if cfc.get_setting('enable_fanmade_sets'):
+		cfc.set_setting('enable_fanmade_sets', false)	
+	else:
+		cfc.set_setting('enable_fanmade_sets',true)
+	update_mods_button_text()
+	cfc.clear_cards_cache($PanelContainer)
+	return
+
+func update_mods_button_text():
+	if cfc.get_setting('enable_fanmade_sets'):
+		get_node("%EnableModsButton").text = "Disable Fanmade Sets"
+	else:
+		get_node("%EnableModsButton").text = "Enable Fanmade Sets"
 	
 func restart_game():
 	var path = "user://Saves/_restart.json"

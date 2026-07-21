@@ -1562,20 +1562,42 @@ func exhaust_card(script: ScriptTask) -> int:
 
 func discard(script: ScriptTask):
 
-	if (costs_dry_run()): #Shouldn't be allowed as a cost?	
-		if script.subjects:
-			return CFConst.ReturnCode.CHANGED
+	if !script.subjects:
 		return CFConst.ReturnCode.FAILED
+				
+	if (costs_dry_run()):
+		return CFConst.ReturnCode.CHANGED
+
+
+	var from_top_of_deck = false
+	var subject = script.subjects[0]
+	var parent = subject.get_parent()
+	if parent:
+		var source_str = parent.get_name().to_lower()
+		if source_str.to_lower().begins_with("deck"):
+			var top_card = parent.get_top_card()
+			for s in script.subjects:
+				if top_card == s:
+					from_top_of_deck = parent	
+
 
 	if script.subjects.size() == 1:
 		var card = script.subjects[0]
 		card.discard()
-		return CFConst.ReturnCode.CHANGED
+	else:
+		#slightly cool effect to delay when discarding multiple cards		
+		for card in script.subjects:
+			var discard_event = simple_discard_task(card, {"_silent": true})
+			gameData.theStack.add_script(discard_event)	
+	
+		if from_top_of_deck:
+			var signal_details = {
+				"amount": script.subjects.size(),
+				"source": from_top_of_deck.get_name().to_lower(),
+				"deck_owner":  script.subjects[0].get_controller_hero_card()
+			}
+			scripting_bus.emit_signal_on_stack("cards_discarded_from_top_of_deck", script.subjects[0],	signal_details)
 
-	#slightly cool effect to delay when discarding multiple cards		
-	for card in script.subjects:
-		var discard_event = simple_discard_task(card, {"_silent": true})
-		gameData.theStack.add_script(discard_event)	
 	return CFConst.ReturnCode.CHANGED	
 
 
@@ -2365,11 +2387,68 @@ func remove_threat(script: ScriptTask) -> int:
 		
 
 	return retcode	
-	
+
 func thwart(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
+	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
 
-	var owner = script.owner
+	var owner = get_actual_action_source_from_script(script)
+	
+	if owner.get_property("cannot_thwart", 0, true):
+		return CFConst.ReturnCode.FAILED 	
+	
+	if (costs_dry_run()):
+		return retcode	
+
+	if (owner.is_confused()):
+		owner.remove_confused()
+		owner.hint("Confused!", Color8(240,110,255))
+		return CFConst.ReturnCode.FAILED
+		
+
+
+	var new_script = duplicate_script(script)
+	new_script.script_name = "thwart_started"
+	new_script.script_definition["name"] = new_script.script_name
+	new_script.script_definition["attacker"] = owner
+	#
+	# Hacks
+	#
+	# Below are a few things we do to massage the new script
+	# I'm not always sure they make sense but they've been necessary to
+	# get some tests to pass
+	
+	# this is logic copied from attack, not sure if needed
+	new_script.trigger_details.erase("tags")
+	#in some cases we precompute the damage because some cards
+	#rely on the amount being calculated based on some conditions
+	#of the board *before* the next event resolves.
+	#for example Hawkeye's Sonic Arrow which checks if enemy is confused 
+	if new_script.script_definition.has("amount"):
+		var needs_precompute = false
+		var def = new_script.script_definition["amount"]
+		if typeof(def) == TYPE_DICTIONARY:
+			if WCUtils.is_string_in_variant(def, "previous"):
+				needs_precompute = true
+		
+		if needs_precompute:		
+			new_script.script_definition["amount"] = script.retrieve_integer_property("amount")	
+			for value in ["plus_amount", "multiplier_amount"]:
+				new_script.script_definition.erase(value)
+	#
+	# END Hacks
+	#		
+			
+	var task_event = SimplifiedStackScript.new(new_script)
+	gameData.theStack.add_script(task_event)
+	return retcode		
+	
+func thwart_started(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+
+	var owner = get_actual_action_source_from_script(script)
 	#we can provide a thwart amount in the script,
 	#otherwise we use the thwart property if the script owner is a friendly character
 	var amount = 0
@@ -2385,38 +2464,30 @@ func thwart(script: ScriptTask) -> int:
 	if !amount:
 		amount = 0
 
-	owner = get_actual_action_source_from_script(script)
 	
 	if (costs_dry_run()):
-		if owner.get_property("cannot_thwart", 0, true):
-			return CFConst.ReturnCode.FAILED 
 		return retcode	
 	
-	if (owner.is_confused()):
-		owner.remove_confused()
-		owner.hint("Confused!", Color8(240,110,255))
-	else:
-		script.script_definition["attacker"] = owner
-		for card in script.subjects:
-			var script_modifications = {
-				"additional_tags" : ["thwart"],
-				"subjects": [card],
-			}			
-			_add_remove_threat_on_stack(amount, script, script_modifications )
-			retcode = CFConst.ReturnCode.CHANGED
-		
-			#emit signals if this was e.g. a thwart that bypassed patrol
-			var patrol_check = SP.thwart_unpatroled( card, owner,script.owner)
-			if patrol_check:
-				var signals = patrol_check.get("signals", [])
-				if signals:
-					card.hint("Bypassed!", Color8(50, 200, 50))
-				for my_signal in signals:
-					var details_target = my_signal["details"].get("target", null)
-					if details_target:
-						details_target.hint("Bypassed!", Color8(50, 200, 50))						
-					scripting_bus.emit_signal_on_stack(my_signal["name"], my_signal["card"], my_signal["details"])
-		
+	for card in script.subjects:
+		var script_modifications = {
+			"additional_tags" : ["thwart"],
+			"subjects": [card],
+		}			
+		_add_remove_threat_on_stack(amount, script, script_modifications )
+		retcode = CFConst.ReturnCode.CHANGED
+	
+		#emit signals if this was e.g. a thwart that bypassed patrol
+		var patrol_check = SP.thwart_unpatroled( card, owner,script.owner)
+		if patrol_check:
+			var signals = patrol_check.get("signals", [])
+			if signals:
+				card.hint("Bypassed!", Color8(50, 200, 50))
+			for my_signal in signals:
+				var details_target = my_signal["details"].get("target", null)
+				if details_target:
+					details_target.hint("Bypassed!", Color8(50, 200, 50))						
+				scripting_bus.emit_signal_on_stack(my_signal["name"], my_signal["card"], my_signal["details"])
+	
 
 	return retcode	
 

@@ -1,0 +1,163 @@
+{
+	"_comments": "Test Jocasta attaching event",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Vision"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Juggernaut - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Back in Action"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"set_aside": [],
+			"schemes": [
+				{
+					"card": "The Unstopppable Juggernaut #40121b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Vision #26001a"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Side Step"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"enemies1": [],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Jocasta"
+				},
+				{
+					"card": "Indomitable"
+				},
+				{
+					"card": "Energy"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Jocasta"
+		},
+		{
+			"type": "choose",
+			"value": "Yes"
+		},
+		{
+			"type": "select",
+			"value": "Side Step"
+		}		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Vision"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Juggernaut - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Back in Action"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"set_aside": [],
+			"schemes": [
+				{
+					"card": "The Unstopppable Juggernaut #40121b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Vision #26001a"
+				}
+			],
+			"others": [
+				{
+					"card": "Side Step",
+					"host": "Jocasta"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},				
+				{
+					"card": "Indomitable"
+				},
+
+			],
+			"enemies1": [],
+			"allies1": [
+				{
+					"card": "Jocasta"
+				}
+			],
+			"hand1": []
+		}
+	}
+}

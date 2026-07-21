@@ -175,9 +175,10 @@ func _process(delta:float):
 		var focused = get_focus_owner()
 		if focused:
 			large_picture.rect_position = focused.get_global_position() + focused.rect_size/2
-	large_picture.rect_size = Vector2(300, 420)
-	large_picture.rect_scale = cfc.hardcoded_positions_modifier
+	var target_size = Vector2(450, 630) * cfc.hardcoded_positions_modifier
 	large_picture.rect_rotation = _preview_rotation
+	
+	WCUtils.large_card_preview_offset(large_picture, self, target_size)	
 
 func resize():
 	var screen_size = get_viewport().size/cfc.screen_scale

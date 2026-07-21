@@ -15,10 +15,7 @@ const servers := [
 		"health_check_url": "",		
 		"modifications": {
 			"extension": ".webp",
-			"replace_path": {
-				"from": "/bundles/cards/",
-				"to": "/bundles/cards/EN/[box_name]/"
-			}
+			"replace_path_to": "/bundles/cards/EN/[box_name]/"
 		}
 	},	
 ]
@@ -93,16 +90,19 @@ func modify_path_for_server(path, s):
 	if extension:
 		var extension_index = result.find_last(".")
 		result = result.substr(0, extension_index) + extension
+
+	if !result.begins_with("http"):
+		result = s.get("url","") + result
 	
-	var replace_path = modifications.get("replace_path", {})
-	if replace_path:
-		var from = replace_path["from"]
-		var to = replace_path["to"]
+	var to = modifications.get("replace_path_to", "")
+	if to:
+		var path_start = result.find("/", 9) #find the first "/" but skip the http portion
+		var path_end = result.find_last("/")
+		var from = result.substr(path_start, path_end-path_start + 1)
 		to = path_variable_process(to, current_file)
 		result = result.replace(from, to)
 	
-	if !result.begins_with("http"):
-		result = s.get("url","") + result
+
 	return result
 	
 func process_current_file():

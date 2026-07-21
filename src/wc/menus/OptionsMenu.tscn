@@ -30,7 +30,6 @@ theme = ExtResource( 4 )
 
 [node name="general" type="MarginContainer" parent="PanelContainer"]
 unique_name_in_owner = true
-visible = false
 margin_left = 2.0
 margin_top = 2.0
 margin_right = 1918.0
@@ -52,33 +51,33 @@ valign = 1
 
 [node name="Controls" type="Button" parent="PanelContainer/general/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 106.0
+margin_top = 90.0
 margin_right = 1896.0
-margin_bottom = 181.0
+margin_bottom = 165.0
 size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "Controls"
 
 [node name="GameplayOptionsButton" type="Button" parent="PanelContainer/general/VBoxContainer"]
-margin_top = 231.0
+margin_top = 200.0
 margin_right = 1896.0
-margin_bottom = 306.0
+margin_bottom = 275.0
 size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "Gameplay"
 
 [node name="LoadSave" type="HBoxContainer" parent="PanelContainer/general/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 332.0
+margin_top = 301.0
 margin_right = 1896.0
-margin_bottom = 431.0
+margin_bottom = 384.0
 size_flags_vertical = 3
 custom_constants/separation = 100
 
 [node name="LoadButton" type="Button" parent="PanelContainer/general/VBoxContainer/LoadSave"]
-margin_top = 24.0
+margin_top = 8.0
 margin_right = 898.0
-margin_bottom = 99.0
+margin_bottom = 83.0
 size_flags_horizontal = 3
 size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
@@ -86,9 +85,9 @@ text = "Load"
 
 [node name="SaveButton" type="Button" parent="PanelContainer/general/VBoxContainer/LoadSave"]
 margin_left = 998.0
-margin_top = 24.0
+margin_top = 8.0
 margin_right = 1896.0
-margin_bottom = 99.0
+margin_bottom = 83.0
 size_flags_horizontal = 3
 size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
@@ -96,9 +95,9 @@ text = "Save"
 
 [node name="DebugContainer" type="HBoxContainer" parent="PanelContainer/general/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 457.0
+margin_top = 410.0
 margin_right = 1896.0
-margin_bottom = 575.0
+margin_bottom = 528.0
 size_flags_vertical = 3
 custom_constants/separation = 326
 
@@ -145,27 +144,36 @@ text = "DEBUG"
 
 [node name="RestartButton" type="Button" parent="PanelContainer/general/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 625.0
+margin_top = 563.0
 margin_right = 1896.0
-margin_bottom = 700.0
+margin_bottom = 638.0
 size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "Restart"
 
+[node name="EnableModsButton" type="Button" parent="PanelContainer/general/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 672.0
+margin_right = 1896.0
+margin_bottom = 747.0
+size_flags_vertical = 10
+custom_fonts/font = SubResource( 2 )
+text = "Enable Fanmade Sets"
+
 [node name="AdvancedSettingsButton" type="Button" parent="PanelContainer/general/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 750.0
+margin_top = 782.0
 margin_right = 1896.0
-margin_bottom = 825.0
+margin_bottom = 857.0
 size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "Advanced Settings"
 
 [node name="MainMenuButton" type="Button" parent="PanelContainer/general/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 875.0
+margin_top = 891.0
 margin_right = 1896.0
-margin_bottom = 950.0
+margin_bottom = 966.0
 size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "Main Menu"
@@ -299,6 +307,7 @@ text = "BACK"
 
 [node name="advanced" type="MarginContainer" parent="PanelContainer"]
 unique_name_in_owner = true
+visible = false
 margin_left = 2.0
 margin_top = 2.0
 margin_right = 1918.0

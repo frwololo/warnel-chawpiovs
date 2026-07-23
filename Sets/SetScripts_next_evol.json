@@ -1078,7 +1078,7 @@
 						},
 						"filter_state_seek": [
 							{
-								"filter_group": "upgrade_support_my_hero"
+								"filter_group": "group_upgrade_support_my_hero"
 							}
 						],
 						"is_cost": true
@@ -1556,7 +1556,7 @@
 					"name": "mod_tokens",
 					"modification": 1,
 					"token_name": "stunned",
-					"subject": "current_activation_target"
+					"subject": "current_hero_target"
 				}
 			]
 		}
@@ -4192,6 +4192,7 @@
 	},
 	"Juggernaut Exposed": {
 		"interrupt_receive_damage": {
+			"display_section": "juggernaut...",
 			"event_filters": {
 				"target": "host",
 				"filter_state_event_source": [
@@ -9028,7 +9029,6 @@
 					"needs_selection": true
 				},
 				{
-					"name": "enemy_activates",
 					"subject": "Stryfe"
 				}
 			]
@@ -9438,7 +9438,7 @@
 					"name": "host_card",
 					"host": "Juggernaut",
 					"subject": "tutor",
-					"src_container": "deck_villain",
+					"src_container": "set_aside",
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -9507,7 +9507,7 @@
 					{
 						"name": "i_attack",
 						"action_owner": "Juggernaut",
-						"target_identity": "my_identity"
+						"subject": "my_identity"
 					}
 				]
 			}
@@ -9574,7 +9574,7 @@
 					},
 					"filter_state_seek": [
 						{
-							"filter_group": "upgrade_support_my_hero",
+							"filter_group": "group_upgrade_support_my_hero",
 							"filter_properties": {
 								"type_code": "upgrade"
 							}
@@ -10106,7 +10106,7 @@
 						},
 						"filter_state_seek": [
 							{
-								"filter_group": "upgrade_support_my_hero",
+								"filter_group": "group_upgrade_support_my_hero",
 								"filter_properties": {
 									"type_code": "support"
 								}

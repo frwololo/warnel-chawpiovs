@@ -979,6 +979,7 @@ const DEFAULT_SETTINGS:= {
 	'load_cards_online' : true,
 	'enable_fanmade_sets': false,
 	'images_base_url': "https://marvelcdb.com",
+	'fanmade_images_base_url': "https://mc4db.merlindumesnil.net",
 	"decks_base_url": "https://marvelcdb.com/api/public/decklist/",
 	"decks_base_url_backup": "https://marvelcdb.com/api/public/deck/",
 	'dont_show_msg': {},
@@ -1017,7 +1018,7 @@ const DEFAULT_SETTINGS:= {
 		"sm" : "https://marvelcdb.com/api/public/cards/sm.json", #Sinister Motives Expansion Box				
 #		"nova": "https://marvelcdb.com/api/public/cards/nova.json", #Nova Hero Pack	
 #		"ironheart": "https://marvelcdb.com/api/public/cards/ironheart.json", #Ironheart Hero Pack	
-#		"spiderham": "https://marvelcdb.com/api/public/cards/spiderham.json", #Spiderham Hero Pack	
+		"spiderham": "https://marvelcdb.com/api/public/cards/spiderham.json", #Spiderham Hero Pack	
 #		"spdr": "https://marvelcdb.com/api/public/cards/spdr.json", #SP//DR Hero Pack	
 #cycle 6
 		"mut_gen": "https://marvelcdb.com/api/public/cards/mut_gen.json", #Mutant Genesis Expansion Box	

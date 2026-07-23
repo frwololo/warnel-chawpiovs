@@ -1,5 +1,10 @@
 {
 	"_comments": "Mind Stone already confused",
+	"test_conditions": {
+		"ignore_order" : [
+			"discard_infinity_stone"
+		],
+	},		
 	"init": {
 		"phase": "VILLAIN_ACTIVATES",
 		"heroes": [
@@ -76,6 +81,7 @@
 		}
 	},
 	"actions": [
+	
 		{
 			"type": "select",
 			"value": "cancel",

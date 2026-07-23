@@ -307,9 +307,21 @@
 		"text": "Guard. Patrol. (While this minion is engaged with you, you cannot thwart the main scheme.)\n<hr />\n[star] <b>Boost</b>: Put enraged Symbiote into play engaged with you.",
 		"real_text": "Guard. Patrol. (While this minion is engaged with you, you cannot thwart the main scheme.)\n<hr />\n[star] <b>Boost</b>: Put enraged Symbiote into play engaged with you."
 	},
+	"32022": {
+		"alternate_art": true
+	},
+	"32023": {
+		"alternate_art": true
+	},
+	"32024": {
+		"alternate_art": true
+	},	
 	"32038": {
 		"name": "Phased Strike"
 	},
+	"32051": {
+		"alternate_art": true
+	},	
 	"32048": {
 		"subname": "Piotr Rasputin"
 	},	
@@ -320,6 +332,12 @@
 	},
 	"32174b": {
 		"name": "Reactivate Defenses"
+	},
+	"34024": {
+		"alternate_art": true
+	},	
+	"35019": {
+		"alternate_art": true
 	},	
 	"35021": {
 		"subname": "Piotr Rasputin"
@@ -327,12 +345,24 @@
 	"35028": {
 		"is_unique": true
 	},
+	"40030": {
+		"alternate_art": true
+	},
+	"40052": {
+		"alternate_art": true
+	},
+	"40055": {
+		"alternate_art": true
+	},	
 	"40130": {
 		"attack": 0,
 		"thwart": 0,
 		"_comments": "engine considers that if those aren't defined, the character isn't able to attack/scheme"
 		
 	},
+	"48019": {
+		"alternate_art": true
+	},	
 	"54021": {
 		"imagesrc": "/bundles/cards/50054.jpg"
 	}

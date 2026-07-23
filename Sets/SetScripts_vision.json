@@ -262,7 +262,7 @@
 					"attachments_host": "trigger",
 					"subject_count": 1,
 					"force_valid_boost_target": true,
-					"filter_state_attachments": [
+					"filter_state_attachment": [
 						{
 							"filter_func": {
 								"func_name": "is_boost",
@@ -502,13 +502,10 @@
 					"name": "add_script",
 					"subject": "previous",
 					"fetch_script": {
-						"script_path": "manual/hand",
-						"result": {
-							"manual": {
-								"board": "__fetched_script__"
-							}
-						}
+						"script_path": "*/hand",
+						"replace_to_state": "board"
 					}
+					
 				}
 			]
 		}

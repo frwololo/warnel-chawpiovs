@@ -278,6 +278,12 @@ func can_add_card(card):
 	var card_id = card.canonical_id
 	var currently_in_deck = deck_data["slots"].get(card_id, 0)
 	
+	#also need to count duplicates
+	if card.get_property("duplicate_of_code"):
+		currently_in_deck += deck_data["slots"].get(card.get_property("duplicate_of_code"), 0)
+	for duplicate_reverse_id in cfc.reverse_duplicates.get(card_id, []):
+		currently_in_deck += deck_data["slots"].get(duplicate_reverse_id, 0)
+	
 	if currently_in_deck > 2:
 		return false
 			
@@ -656,6 +662,7 @@ func make_filterable(readable_key):
 			
 	return readable_key.replace(" ", "_").to_lower()
 
+#creates the collection of player cards usable for deck editing, removing duplicates, encounter cards, etc...
 func _build_card_collection():
 	if card_collection:
 		return
@@ -676,7 +683,8 @@ func _build_card_collection():
 			
 		#skip duplicates
 		var duplicate_of = card_data.get("duplicate_of_code","")
-		if duplicate_of and cfc.card_definitions.has(duplicate_of):
+		var alternate_art = card_data.get("alternate_art",false)
+		if duplicate_of and cfc.card_definitions.has(duplicate_of) and !alternate_art:
 			continue
 		
 		var cost = card_data.get("Cost", null)

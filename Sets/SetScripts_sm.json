@@ -2501,12 +2501,8 @@
 					"name": "add_script",
 					"subject": "trigger",
 					"fetch_script": {
-						"script_path": "manual/hand",
-						"result": {
-							"manual": {
-								"board": "__fetched_script__"
-							}
-						}
+						"script_path": "*/hand",
+						"replace_to_state": "board"
 					}
 				}
 			]
@@ -3174,7 +3170,7 @@
 									"filter_group": "group_upgrade_support_my_hero"
 								},
 								{
-									"filter_group": "allies_my_hero"
+									"filter_group": "group_allies_my_hero"
 								}
 							]
 						}
@@ -3207,7 +3203,7 @@
 									"filter_group": "group_upgrade_support_my_hero"
 								},
 								{
-									"filter_group": "allies_my_hero"
+									"filter_group": "group_allies_my_hero"
 								}
 							]
 						}

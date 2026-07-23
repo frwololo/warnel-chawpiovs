@@ -81,12 +81,8 @@
 					"name": "add_script",
 					"subject": "previous",
 					"fetch_script": {
-						"script_path": "manual/hand",
-						"result": {
-							"manual": {
-								"board": "__fetched_script__"
-							}
-						}
+						"script_path": "*/hand",
+						"replace_to_state": "board"
 					}
 				}
 			]

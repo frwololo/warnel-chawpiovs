@@ -1,0 +1,1786 @@
+{
+	"_macros": {
+		"__scarlet": [
+			{
+				"name": "conditional_script",
+				"options": [
+					{
+						"condition": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "trigger",
+								"property": "type_code",
+								"property_value": "__type_code__"
+							}
+						},
+						"nested_tasks": [
+							{
+								"name": "draw_cards",
+								"amount": 1
+							},
+							{
+								"name": "deal_damage",
+								"amount": 1,
+								"subject": "self"
+							}
+						]
+					}
+				]
+			}
+		]
+	},
+	"\"Feast on This!\"": {
+		"reveal": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "my_identity"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "is_stunned",
+								"func_params": {
+									"subject": "my_identity"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "surge"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"modification": 1,
+							"token_name": "confused",
+							"subject": "my_identity"
+						}
+					]
+				}
+			]
+		}
+	},
+	"\"I Don't Think So!\"": {
+		"interrupt": {
+			"event_name": "about_to_reveal",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "mod_tokens",
+					"subject": "my_identity",
+					"token_name": "toon",
+					"modification": -1,
+					"is_cost": true
+				},
+				{
+					"name": "hint",
+					"text": "I don't think so!"
+				},
+				{
+					"name": "cancel_current_encounter"
+				}
+			]
+		}
+	},
+	"\"I Really Want a Hot Dog!\"": {
+		"give_obligation": {
+			"__to__": "Peter Porker"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Flip then remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"subject": "my_identity",
+						"token_name": "toon",
+						"modification": -1
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity",
+						"_comments": "we need to exhaust before changing form here due to a bug"
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "removed_from_game",
+						"subject": "self"
+					}
+				],
+				"Remove from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_form"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"subject": "my_identity",
+						"token_name": "toon",
+						"modification": -1
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "my_identity"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "removed_from_game",
+						"subject": "self"
+					}
+				],
+				"Stunned": [
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "is_stunned",
+									"func_params": {
+										"subject": "my_identity"
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "surge"
+									}
+								]
+							}
+						],
+						"else": [
+							{
+								"name": "mod_tokens",
+								"is_cost": true,
+								"subject": "my_identity",
+								"token_name": "stunned",
+								"modification": 1
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Bora": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme_acceleration",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_inheritor": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"reveal": {
+			"condition_all": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_web-warrior": 1,
+								"comparison": "ge"
+							},
+							"filter_group": "group_characters"
+						}
+					]
+				}
+			},
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Brix": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "patrol",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_inheritor": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"reveal": {
+			"condition_all": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_web-warrior": 1,
+								"comparison": "ge"
+							},
+							"filter_group": "group_characters"
+						}
+					]
+				}
+			},
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": 2,
+					"subject": "main_scheme"
+				}
+			]
+		}
+	},
+	"Captain Americat - Steve Mouser": {
+		"self_moved_to_board": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "hint",
+					"text": "High Five!"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "toon",
+					"modification": 1,
+					"subject": "my_identity"
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"src_container": "discard",
+					"dest_container": "deck",
+					"subject": "tutor",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "spiderham"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Cartoon Physics": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "my_hero",
+				"amount": ">0"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "trigger_details_amount",
+					"plus_amount": -1
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Daemos": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "stalwart",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_inheritor": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"reveal": {
+			"condition_all": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_web-warrior": 1,
+								"comparison": "ge"
+							},
+							"filter_group": "group_characters"
+						}
+					]
+				}
+			},
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero"
+						}
+					],
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_optional": false,
+					"selection_type": "equal"
+				}
+			]
+		}
+	},
+	"Even the Odds": {
+		"on_load": {
+			"all": [
+				{
+					"name": "init_properties",
+					"subject": "self",
+					"set_properties": {
+						"override_play_cost": {
+							"energy": 1,
+							"unc": 1
+						}
+					}
+				}
+			]
+		},
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": "count_players",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					]
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"event_filters": {
+				"secondary_source": "self"
+			},
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Followed": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_properties": {
+						"type_code": "side_scheme"
+					},
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"response": {
+			"event_name": "card_dies",
+			"trigger": "host",
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 4,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Gobbler Glider": {
+		"_surge": {},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "The Green Gobbler",
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					],
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"selection_optional": false
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_aerial",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Great Responsibility": {
+		"interrupt": {
+			"event_name": "add_threat",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"subject": "my_hero",
+						"name": "deal_damage"
+					}
+				}
+			]
+		}
+	},
+	"Ham It Up": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "my_hero",
+							"token_name": "toon"
+						}
+					},
+					"subject": "a_scheme"
+				}
+			]
+		}
+	},
+	"Hogwashed": {
+		"manual": {
+			"hand": {
+				"5 Damage": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"token_name": "toon",
+						"modification": -1,
+						"subject": "my_hero",
+						"is_cost": true
+					},
+					{
+						"name": "hint",
+						"text": "POW!"
+					},
+					{
+						"name": "hint",
+						"text": "BAM!"
+					},
+					{
+						"name": "hint",
+						"text": "WHACK!"
+					},
+					{
+						"name": "hint",
+						"text": "SMACK!"
+					},
+					{
+						"name": "hint",
+						"text": "BOINK!"
+					},
+					{
+						"name": "deal_damage",
+						"amount": 5,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_properties": {
+									"type_code": "minion"
+								}
+							}
+						]
+					}
+				],
+				"5 Threat": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"token_name": "toon",
+						"modification": -1,
+						"subject": "my_hero",
+						"is_cost": true
+					},
+					{
+						"name": "hint",
+						"text": "POW!"
+					},
+					{
+						"name": "hint",
+						"text": "BAM!"
+					},
+					{
+						"name": "hint",
+						"text": "WHACK!"
+					},
+					{
+						"name": "hint",
+						"text": "SMACK!"
+					},
+					{
+						"name": "hint",
+						"text": "BOINK!"
+					},
+					{
+						"name": "remove_threat",
+						"amount": 5,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_properties": {
+									"type_code": "side_scheme"
+								}
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Huge Wooden Hammer": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "Spider-Ham",
+					"alteration": 1
+				}
+			]
+		},
+		"interrupt_attack_started": {
+			"trigger": "Spider-Ham",
+			"event_filter": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"subject": "Spider-Ham",
+					"token_name": "toon",
+					"modification": -1
+				},
+				{
+					"name": "add_script",
+					"end_condition": "basic_attack_happened",
+					"subject": "my_hero",
+					"_comments": "normally I'd add the script to this card, but it already has an alterant",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "my_hero",
+									"alteration": 2
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "overkill",
+									"trigger": "my_hero",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Hunting the Spider-Totems": {
+		"interrupt_step_started": {
+			"event_filters": {
+				"step_name": "VILLAIN_THREAT"
+			},
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_discard",
+					"count": 3,
+					"max_count": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "index",
+							"subject_count": "all",
+							"src_container": "deck_villain"
+						}
+					}
+				}
+			]
+		},
+		"do_discard": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_villain",
+					"is_cost": true
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_discarded",
+					"var_type": "subject",
+					"value": "previous",
+					"_comments": "remembering the card for next use"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "has_trait",
+								"func_params": {
+									"subject": "my_discarded",
+									"trait": "inheritor"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_to_player_zone",
+									"action_owner": "my_discarded",
+									"subject": "boardseek",
+									"subject_count": "all",
+									"needs_selection": true,
+									"selection_count": 1,
+									"selection_type": "equal",
+									"selection_optional": false,
+									"filter_state_seek": [
+										{
+											"filter_group": "group_friendly",
+											"filter_properties": {
+												"trait_web-warrior": 1,
+												"comparison": "ge"
+											}
+										}
+									],
+									"is_cost": true
+								},
+								{
+									"is_else": true,
+									"name": "move_to_player_zone",
+									"action_owner": "my_discarded",
+									"subject": "first_player"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Jennix": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "guard",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_inheritor": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"reveal": {
+			"condition_all": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_web-warrior": 1,
+								"comparison": "ge"
+							},
+							"filter_group": "group_characters"
+						}
+					]
+				}
+			},
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"subject": "self",
+					"modification": 1
+				}
+			]
+		}
+	},
+	"Karn": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "overkill",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_inheritor": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "piercing",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_inheritor": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"reveal": {
+			"condition_all": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_web-warrior": 1,
+								"comparison": "ge"
+							},
+							"filter_group": "group_characters"
+						}
+					]
+				}
+			},
+			"all": [
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"selection_optional": false,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Lady Spider - May Reilly": {
+		"thwart_happened": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"condition_board": {
+				"func_name": "count_cards>1",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_same_controller": true,
+							"filter_properties": {
+								"trait_web-warrior": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "remove_threat",
+					"subject": "target",
+					"amount": "trigger_details_amount",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"filter_group": "group_schemes"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Making an Entrance": {
+		"interrupt_thwart": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "basic_thwart_happened",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"trigger": "my_hero",
+									"alteration": 2
+								}
+							]
+						},
+						"last_threat_removed": {
+							"event_filters": {
+								"source": "my_hero",
+								"tags": [
+									"thwart"
+								]
+							},
+							"all": [
+								{
+									"name": "heal",
+									"amount": 2,
+									"subject": "my_hero"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Morlun": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_inheritor": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"reveal": {
+			"condition_all": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_web-warrior": 1,
+								"comparison": "ge"
+							},
+							"filter_group": "group_characters"
+						}
+					]
+				}
+			},
+			"all": [
+				{
+					"name": "deal_damage",
+					"subject": "my_identity",
+					"amount": 2
+				}
+			]
+		}
+	},
+	"Nefarious Trap": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "enemy_activates",
+					"subject": "The Green Gobbler",
+					"target_identity": "event_source_hero",
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "move_card_to_board",
+					"destination_grid": "enemies_event_source_hero",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "The Green Gobbler"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"One Way or Another": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"is_cost": true,
+					"subject": "tutor",
+					"src_container": "deck_villain",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"selection_optional": false,
+					"needs_selection": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					]
+				},
+				{
+					"name": "sequence",
+					"delay_until_no_activity": true,
+					"sequence_ability": "draw_three",
+					"subject": "self"
+				}
+			]
+		},
+		"draw_three": {
+			"all": [
+				{
+					"name": "draw_cards",
+					"amount": 3
+				}
+			]
+		}
+	},
+	"Organic Webbing": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"subject": "Spider-Ham",
+					"modification": -1,
+					"token_name": "toon"
+				},
+				{
+					"name": "ready_card",
+					"subject": "Spider-Ham"
+				},
+				{
+					"name": "add_script",
+					"end_condition": "phase_ended",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "trait_aerial",
+									"trigger": "Spider-Ham",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"trigger": "Spider-Ham",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Overwatch": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_group": "group_schemes",
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"interrupt_thwart_happened": {
+			"event_filters": {
+				"target": "host"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "remove_threat",
+					"amount": "trigger_details_amount",
+					"subject": "target",
+					"subject_exclude": "host",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Peter Porker": {
+		"recovery_happened": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "toon",
+					"modification": 1,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Petulant Pig": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "hint",
+					"subject": "my_hero",
+					"text": "Pbbbt!"
+				},
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"enemy_activation_finished": {
+							"all": [
+								{
+									"name": "draw_cards",
+									"amount": 3
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "enemy_attacks_you",
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"SP//dr - Peni Parker": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"constraints": [
+						{
+							"func_name": "has_trait",
+							"func_params": {
+								"subject": "boardseek",
+								"subject_count": "all",
+								"filter_state_seek": [
+									{
+										"filter_group": "play_area_my_hero"
+									}
+								],
+								"trait": "web-warrior"
+							}
+						}
+					]
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"trigger": "self",
+			"event_filters": {
+				"tags": [
+					"consequential_damage"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "move_card_to_cntainer",
+					"subject": "self",
+					"dest_container": "hand_my_hero"
+				}
+			]
+		}
+	},
+	"Scarlet Spider - Kaine": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"constraints": [
+						{
+							"func_name": "has_trait",
+							"func_params": {
+								"subject": "boardseek",
+								"subject_count": "all",
+								"filter_state_seek": [
+									{
+										"filter_group": "play_area_my_hero"
+									}
+								],
+								"trait": "web-warrior"
+							}
+						}
+					]
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "about_to_reveal",
+			"filter_state_trigger": [
+				{
+					"filter_same_controller": true
+				}
+			],
+			"is_optional_board": true,
+			"board": {
+				"Attachment": {
+					"__scarlet": {
+						"__type_code__": "attachment"
+					}
+				},
+				"Environment": {
+					"__scarlet": {
+						"__type_code__": "environment"
+					}
+				},
+				"Minion": {
+					"__scarlet": {
+						"__type_code__": "minion"
+					}
+				},
+				"Side Scheme": {
+					"__scarlet": {
+						"__type_code__": "side_scheme"
+					}
+				},
+				"Treachery": {
+					"__scarlet": {
+						"__type_code__": "treachery"
+					}
+				}
+			}
+		}
+	},
+	"Solus": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "villainous",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_inheritor": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"reveal": {
+			"condition_all": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_web-warrior": 1,
+								"comparison": "ge"
+							},
+							"filter_group": "group_characters"
+						}
+					]
+				}
+			},
+			"all": [
+				{
+					"name": "draw_boost_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Spider-Ham": {
+		"resource": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "toon",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				}
+			]
+		},
+		"card_damaged": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "toon",
+					"modification": 1,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Spider-Man - Pavitr Prabhakar": {
+		"self_moved_to_board": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "remove_threat",
+					"subject": "a_scheme",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_same_controller": true,
+									"filter_properties": {
+										"trait_web-warrior": 1,
+										"comparison": "ge"
+									}
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Swinging Web Pig": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 6,
+					"subject": "an_enemy"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "previous"
+				}
+			]
+		}
+	},
+	"Team-Building Exercise": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "add_script",
+					"end_condition": "card_played",
+					"subject": "tutor",
+					"src_container": "hand",
+					"needs_subject": true,
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "max",
+					"needs_selection": true,
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "cost",
+									"alteration": -1,
+									"trigger": "self"
+								}
+							]
+						}
+					},
+					"filter_state_tutor": [
+						{
+							"filter_shares_trait_with_identity": true
+						}
+					]
+				}
+			]
+		}
+	},
+	"The Daily Beagle": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "my_identity",
+					"token_name": "toon",
+					"modification": 1
+				}
+			]
+		}
+	},
+	"The Green Gobbler": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "remove_all_counters",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero"
+						},
+						{
+							"filter_group": "upgrade_support_my_hero"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Verna": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_inheritor": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"reveal": {
+			"condition_all": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_web-warrior": 1,
+								"comparison": "ge"
+							},
+							"filter_group": "group_characters"
+						}
+					]
+				}
+			},
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Warrior of the Great Web": {
+		"phase_ended": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "__left_play",
+					"modification": 0,
+					"set_to_mod": true,
+					"subject": "self"
+				}
+			]
+		},
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_func": {
+						"func_name": "property_contains",
+						"func_params": {
+							"subject": "trigger",
+							"property": "Name",
+							"value": "Spider"
+						}
+					},
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_web-warrior",
+					"trigger": "host",
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "host",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "__left_play"
+					}
+				}
+			]
+		},
+		"card_leaves_play": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "ally"
+					},
+					"filter_properties2": {
+						"trait_web-warrior": 1,
+						"comparison": "ge"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "__left_play",
+					"modification": 1,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Web of Life and Destiny": {
+		"alterants": {
+			"hand": [
+				{
+					"trigger": "self",
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": {
+						"func_name": "has_trait",
+						"func_params": {
+							"subject": "my_identity",
+							"trait": "web-warrior",
+							"multiplier": -3
+						}
+					}
+				}
+			]
+		},
+		"card_leaves_play": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"trait_web-warrior": 1,
+						"comparison": "ge"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "draw_cards",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		}
+	}
+}

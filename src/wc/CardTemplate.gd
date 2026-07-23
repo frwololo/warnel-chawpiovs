@@ -1325,15 +1325,16 @@ func retrieve_scripts(trigger: String, filters := {}) -> Dictionary:
 	#Induced Panic blanks all triggered abilities
 	#we mimic that by only surfacing default "game rule" abilities when a card is impacted
 	#notably, alterants has to be ignored as it is not a triggered ability
-	#Some other cards also "blank" a text box and we use the same logic for now
+	#Some other cards also "blank" a text box and we use the same logic block
 	#More things we ignore when a "text box is blank" are bean counting macros
 	#for now those are "once_per_phase" and "once_per_round" which add important tokens to the card,
 	#but there might be more
 	#Warning, I had an infinite loop in alterants engine here when calling get_property before checking for alterants
 	var macro_name = result.get("macro_name", "")
-	var force_even_if_blank = (macro_name in ["once_per_phase", "once_per_round"]) or (trigger in ["alterants"])
+	var force_even_if_blank = (macro_name in ["once_per_phase", "once_per_round"])
+	var is_triggered_ability = !trigger in ["alterants"]
 	if !force_even_if_blank:	
-		if self.get_property("blank_printed_trigger_abilities", 0, true) or self.get_property("blank_printed_text_box", 0, true):
+		if (is_triggered_ability and self.get_property("blank_printed_trigger_abilities", 0, true)) or self.get_property("blank_printed_text_box", 0, true):
 				var found_scripts = _get_extra_scripts(trigger, filters)
 				if found_scripts:
 					return found_scripts
@@ -1355,6 +1356,26 @@ func retrieve_script_by_path(path:String):
 		found_scripts = found_scripts.get(node, {})
 	
 	return found_scripts
+
+func retrieve_scripts_by_state(seek_state:String):
+	var my_scripts = get_instance_runtime_scripts()
+	if !my_scripts:
+		# This retrieves all the script from the card, stored in cfc
+		# The seeks in them the specific trigger we're using in this
+		# execution
+		my_scripts = cfc.set_scripts.get(canonical_id,{}).duplicate(true)	
+	
+	var results = {}
+	for key in my_scripts:
+		var subscript = my_scripts[key]
+		if subscript.has(seek_state):
+			results[key] = subscript.duplicate(true)
+			for other_state in ["board", "pile", "hand", ]:
+				if other_state != seek_state:
+					results[key].erase(other_state)
+					
+	
+	return results
 
 #returns true if no condition is set for a script,
 #or if the condition is met in the current game state,
@@ -2499,6 +2520,8 @@ func common_pre_run(sceng) -> void:
 					new_queue.append(script)
 			"indirect_damage":
 				var subject = get_param_subject(script.script_definition, script)
+				if !subject:
+					subject = script.owner
 				var new_script = subject.indirect_damage_replacement(script_definition, trigger_details)
 				if (new_script) :
 					script.script_definition = new_script

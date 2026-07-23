@@ -1,7 +1,11 @@
 {
-	"_comments": "Test Jocasta attaching event",
+	"_comments": "Bug Juggernaut cances forced attack if alter ego form",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},	
 	"init": {
-		"phase": "PLAYER_TURN",
+		"phase": "VILLAIN_THREAT",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -14,27 +18,36 @@
 				{
 					"card": "Juggernaut - 1",
 					"tokens": {
-						"damage": 1
+						"damage": 1,
+						"momentum": 1
 					}
 				}
 			],
 			"deck_villain": [
 				{
-					"card": "Hydra Regular"
+					"card": "ground pound"
 				},
 				{
 					"card": "Hydra Mercenary"
 				},
 				{
+					"card": "Hydra Regular"
+				},
+				{
 					"card": "Advance"
 				}
 			],
-			"set_aside": [],
+			"others": [
+				{
+					"card": "Juggernaut's Helmet #40122a",
+					"host": "Juggernaut"
+				}
+			],
 			"schemes": [
 				{
 					"card": "The Unstopppable Juggernaut #40121b",
 					"tokens": {
-						"threat": 2
+						"threat": 6
 					}
 				}
 			],
@@ -60,7 +73,7 @@
 			],
 			"identity1": [
 				{
-					"card": "Vision #26001a",
+					"card": "Vision #26001b",
 					"tokens": {
 						"damage": 1
 					}
@@ -80,54 +93,15 @@
 			"allies1": [],
 			"hand1": [
 				{
-					"card": "Jocasta"
-				},
-				{
 					"card": "Defiance"
-				},
-				{
-					"card": "Energy"
 				}
 			]
 		}
 	},
 	"actions": [
 		{
-			"type": "play",
-			"value": "Jocasta"
-		},
-		{
-			"type": "choose",
-			"value": "Yes"
-		},
-		{
-			"type": "select",
-			"value": "Side Step"
-		},
-		{
-			"type": "next_phase",
-			"value": 1
-		},
-		{
 			"type": "other",
-			"value": "wait_a_bit"
-		},
-		{
-			"type": "select",
-			"value": "cancel",
-			"_comments": "undefended attack"
-		},
-		{
-			"type": "play",
-			"value": "Side Step"
-		},
-		{
-			"type": "select",
-			"value": "Indomitable"
-		},
-		{
-			"type": "target",
-			"value": "Juggernaut"
+			"value": "wait_for_player_turn"
 		}
 	],
 	"end": {
@@ -144,21 +118,30 @@
 				{
 					"card": "Juggernaut - 1",
 					"tokens": {
-						"damage": 2
+						"damage": 1,
+						"momentum": 2
 					}
 				}
 			],
 			"discard_villain": [
 				{
 					"card": "Advance"
-				}
-			],
-			"deck_villain": [
+				},
 				{
 					"card": "Hydra Regular"
 				}
 			],
-			"set_aside": [],
+			"deck_villain": [
+				{
+					"card": "ground pound"
+				}
+			],
+			"others": [
+				{
+					"card": "Juggernaut's Helmet #40122a",
+					"host": "Juggernaut"
+				}
+			],
 			"schemes": [
 				{
 					"card": "The Unstopppable Juggernaut #40121b",
@@ -170,26 +153,32 @@
 			"deck1": [
 				{
 					"card": "Genius"
-				}
-			],
-			"identity1": [
-				{
-					"card": "Vision #26001a",
-					"tokens": {
-						"damage": 1
-					}
-				}
-			],
-			"discard1": [
-				{
-					"card": "Energy"
-				},
-				{
-					"card": "Defiance"
 				},
 				{
 					"card": "Indomitable"
 				},
+				{
+					"card": "Get Behind Me!"
+				},
+				{
+					"card": "Preservation"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Reboot"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Vision #26001b",
+					"tokens": {
+						"damage": 5
+					}
+				}
+			],
+			"discard1": [
 				{
 					"card": "Side Step"
 				}
@@ -204,23 +193,10 @@
 					"card": "Hydra Mercenary"
 				}
 			],
-			"allies1": [
-				{
-					"card": "Jocasta"
-				}
-			],
+			"allies1": [],
 			"hand1": [
 				{
-					"card": "Reboot"
-				},
-				{
-					"card": "Strength"
-				},
-				{
-					"card": "Preservation"
-				},
-				{
-					"card": "Get Behind Me!"
+					"card": "Defiance"
 				}
 			]
 		}

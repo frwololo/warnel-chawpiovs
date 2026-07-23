@@ -53,6 +53,39 @@ func nop(script: ScriptTask) -> int:
 	
 	return retcode
 
+const _hint_counter = [0]
+const _hint_colors = [
+	Color8(50,50,255),
+	Color8(255,50,50),
+	Color8(255,200,200),		
+	Color8(255,255,50),
+	Color8(255,255,255),
+]
+func hint(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+
+	
+	var text = script.get_property("text", "")
+	if !text:
+		return  CFConst.ReturnCode.FAILED
+
+	var color = script.get_property("color", _hint_colors[_hint_counter[0]])
+
+	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+		return retcode
+	
+	var subjects = [script.owner]
+	if script.subjects:
+		subjects = script.subjects
+
+	
+	for subject in subjects:
+		subject.hint(text, color)
+	
+	_hint_counter[0] += 1
+	if _hint_counter[0] >= 	_hint_colors.size():
+		_hint_counter[0] = 0
+	return retcode
 
 #Abilities that add energy	
 func add_resource(script: ScriptTask) -> int:
@@ -1395,6 +1428,28 @@ func move_token_to(script: ScriptTask) -> int:
 						
 	return retcode
 
+func remove_all_counters(script: ScriptTask) -> int:
+	var exclude = ["stunned","damage", "confused", "tough"]
+	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+	
+	if costs_dry_run():
+		return CFConst.ReturnCode.CHANGED
+	
+	var tags = script.get_property(SP.KEY_TAGS, [])
+	var result = CFConst.ReturnCode.CHANGED
+	
+	for subject in script.subjects:
+		var tokens = subject.tokens
+		for token_name in tokens.get_all_tokens():
+			if token_name in exclude:
+				continue
+			tokens.mod_token(token_name,0,true,costs_dry_run(), tags)
+	
+	return result
+	
+	
 func check_main_scheme_defeat(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
@@ -2953,10 +3008,14 @@ func change_form(script: ScriptTask) -> int:
 	
 func move_to_player_zone(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
-	if (costs_dry_run()): #Shouldn't be allowed as a cost?
+	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+		
+	if (costs_dry_run()):
 		return retcode
 
-	var this_card = script.owner
+	var this_card = get_action_owner_from_script(script)
 	
 	for subject in script.subjects:
 		retcode = CFConst.ReturnCode.FAILED
@@ -2964,7 +3023,7 @@ func move_to_player_zone(script: ScriptTask) -> int:
 		if hero == this_card.get_controller_hero_card() and this_card.is_onboard():
 			continue
 		#Get expected zone
-		var type_code:String = script.owner.get_property("type_code", "")
+		var type_code:String = this_card.get_property("type_code", "")
 		var grid_name = CFConst.TYPECODE_TO_GRID.get(type_code, "")
 		if !grid_name:
 			var _error = 1
@@ -3326,9 +3385,23 @@ func add_script(script: ScriptTask) -> int:
 	
 	for subject in subjects:
 		if fetch_script:
-			var fetched_script = subject.retrieve_script_by_path(fetch_script["script_path"])
-			subscript = fetch_script["result"]
-			subscript = WCUtils.search_and_replace (subscript, "__fetched_script__", fetched_script, true)
+			var fetched_script_path = fetch_script["script_path"]
+			if fetched_script_path.begins_with("*/"):
+				var seek_state = fetched_script_path.substr(2)
+				var fetched_scripts = subject.retrieve_scripts_by_state(seek_state)
+				var new_state = fetch_script["replace_to_state"]
+				for key in fetched_scripts:
+					var fetched_script = fetched_scripts[key]
+					if new_state != seek_state:
+						fetched_script[new_state] = fetched_script[seek_state]
+						fetched_script.erase(seek_state)
+						if fetched_script.has("is_optional_" + seek_state):
+							fetched_script["is_optional_" + new_state] = fetched_script["is_optional_" + seek_state]
+						subscript[key] = fetched_script						
+			else:
+				var fetched_script = subject.retrieve_script_by_path()
+				subscript = fetch_script["result"]
+				subscript = WCUtils.search_and_replace (subscript, "__fetched_script__", fetched_script, true)
 		if start_condition:
 			var new_script = {
 				start_condition: {

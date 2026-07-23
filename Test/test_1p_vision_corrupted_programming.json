@@ -1,7 +1,7 @@
 {
-	"_comments": "Test Jocasta attaching event",
+	"_comments": "Corrupted Programming not working with Dense",
 	"init": {
-		"phase": "PLAYER_TURN",
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -14,22 +14,28 @@
 				{
 					"card": "Juggernaut - 1",
 					"tokens": {
-						"damage": 1
+						"damage": 1,
+						"momentum": 1
 					}
 				}
 			],
 			"deck_villain": [
 				{
-					"card": "Hydra Regular"
+					"card": "Advance"
 				},
 				{
 					"card": "Hydra Mercenary"
 				},
 				{
-					"card": "Advance"
+					"card": "Corrupted Programming"
 				}
 			],
-			"set_aside": [],
+			"others": [
+				{
+					"card": "Juggernaut's Helmet #40122a",
+					"host": "Juggernaut"
+				}
+			],
 			"schemes": [
 				{
 					"card": "The Unstopppable Juggernaut #40121b",
@@ -78,52 +84,21 @@
 			],
 			"enemies1": [],
 			"allies1": [],
-			"hand1": [
-				{
-					"card": "Jocasta"
-				},
-				{
-					"card": "Defiance"
-				},
-				{
-					"card": "Energy"
-				}
-			]
+			"hand1": []
 		}
 	},
 	"actions": [
 		{
-			"type": "play",
-			"value": "Jocasta"
+			"type": "other",
+			"value": "wait_for_player_turn"
+		},
+		{
+			"type": "activate",
+			"value": "Vision #26001a"
 		},
 		{
 			"type": "choose",
-			"value": "Yes"
-		},
-		{
-			"type": "select",
-			"value": "Side Step"
-		},
-		{
-			"type": "next_phase",
-			"value": 1
-		},
-		{
-			"type": "other",
-			"value": "wait_a_bit"
-		},
-		{
-			"type": "select",
-			"value": "cancel",
-			"_comments": "undefended attack"
-		},
-		{
-			"type": "play",
-			"value": "Side Step"
-		},
-		{
-			"type": "select",
-			"value": "Indomitable"
+			"value": "attack"
 		},
 		{
 			"type": "target",
@@ -144,32 +119,55 @@
 				{
 					"card": "Juggernaut - 1",
 					"tokens": {
-						"damage": 2
+						"damage": 1,
+						"momentum": 1
 					}
-				}
-			],
-			"discard_villain": [
-				{
-					"card": "Advance"
 				}
 			],
 			"deck_villain": [
 				{
-					"card": "Hydra Regular"
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
 				}
 			],
-			"set_aside": [],
+			"others": [
+				{
+					"card": "Juggernaut's Helmet #40122a",
+					"host": "Juggernaut"
+				},
+				{
+					"card": "Corrupted Programming",
+					"host": "Vision #26001a"
+				}
+			],
 			"schemes": [
 				{
 					"card": "The Unstopppable Juggernaut #40121b",
 					"tokens": {
-						"threat": 3
+						"threat": 2
 					}
 				}
 			],
 			"deck1": [
 				{
 					"card": "Genius"
+				},
+				{
+					"card": "Indomitable"
+				},
+				{
+					"card": "Get Behind Me!"
+				},
+				{
+					"card": "Preservation"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Reboot"
 				}
 			],
 			"identity1": [
@@ -182,15 +180,6 @@
 			],
 			"discard1": [
 				{
-					"card": "Energy"
-				},
-				{
-					"card": "Defiance"
-				},
-				{
-					"card": "Indomitable"
-				},
-				{
 					"card": "Side Step"
 				}
 			],
@@ -199,30 +188,9 @@
 					"card": "Dense"
 				}
 			],
-			"enemies1": [
-				{
-					"card": "Hydra Mercenary"
-				}
-			],
-			"allies1": [
-				{
-					"card": "Jocasta"
-				}
-			],
-			"hand1": [
-				{
-					"card": "Reboot"
-				},
-				{
-					"card": "Strength"
-				},
-				{
-					"card": "Preservation"
-				},
-				{
-					"card": "Get Behind Me!"
-				}
-			]
+			"enemies1": [],
+			"allies1": [],
+			"hand1": []
 		}
 	}
 }

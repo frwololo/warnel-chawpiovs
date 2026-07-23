@@ -4186,7 +4186,7 @@
 					"needs_selection": true,
 					"filter_state_seek": [
 						{
-							"filter_group": "allies_my_hero",
+							"filter_group": "group_allies_my_hero",
 							"filter_shares_trait_with_identity": true,
 							"filter_is_exhausted": false
 						}

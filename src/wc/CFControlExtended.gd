@@ -16,6 +16,7 @@ var idx_hero_to_deck_ids : Dictionary
 var box_contents_by_name: Dictionary
 var all_traits: Dictionary = {}
 var duplicates: Dictionary = {}
+var reverse_duplicates: Dictionary = {}
 
 var obligations : Dictionary
 var schemes: Dictionary 
@@ -743,7 +744,12 @@ func _load_one_card_definition(card_data, box_name:= "core", fanmade = false):
 	card_data[CardConfig.SCENE_PROPERTY] = "CardTemplate"	
 
 	if card_data.get("duplicate_of_code", ""):
-		duplicates[card_id] = card_data["duplicate_of_code"]
+		var duplicate_of_id = card_data["duplicate_of_code"]
+		if duplicate_of_id != card_id:
+			duplicates[card_id] = duplicate_of_id
+			if !reverse_duplicates.has(duplicate_of_id):
+				reverse_duplicates[duplicate_of_id] = []
+			reverse_duplicates[duplicate_of_id].append(card_id)	
 
 func load_one_card_extra_data(card_data):
 	var box_name = card_data["box_name"]
@@ -810,6 +816,7 @@ func save_card_definitions_to_cache(the_files):
 		shortname_to_name, 
 		lowercase_card_name_to_name,
 		duplicates,
+		reverse_duplicates
 	]
 	var to_save_name = [
 		"card_definitions", 
@@ -817,7 +824,8 @@ func save_card_definitions_to_cache(the_files):
 		"all_traits", 
 		"shortname_to_name", 
 		"lowercase_card_name_to_name",
-		"duplicates"
+		"duplicates",
+		"reverse_duplicates"
 	]
 	
 	for i in to_save.size():
@@ -921,6 +929,13 @@ func load_card_definitions_from_cache(the_files) -> Dictionary:
 	else:	
 		pass
 		#no error check for this one
+
+	result =  load_data_from_cache("reverse_duplicates")
+	if result:
+		reverse_duplicates = result
+	else:	
+		pass
+		#no error check for this one
 	
 	return card_definitions
 			
@@ -1003,6 +1018,7 @@ func load_card_definitions() -> Dictionary:
 		for key in linked_id_cache:	
 			combined_sets[linked_id_cache[key]]["linked_to_code"] = key	
 			combined_sets[linked_id_cache[key]]["back_card_code"] = key
+				
 		card_definitions = combined_sets		
 
 			
@@ -1012,6 +1028,7 @@ func load_card_definitions() -> Dictionary:
 	#post load cleanup and config
 	load_card_definitions_extra_data()	
 	setup_traits_as_alterants()
+	
 		
 	#done!
 	cards_loading = false
@@ -1737,6 +1754,8 @@ func is_image_download_failed(card_id):
 func get_image_dl_url(card_id):
 	var card_data = get_card_by_id(card_id) 
 	var base_url = game_settings.get("images_base_url")
+	if card_data.get("fanmade", false):
+		base_url = game_settings.get("fanmade_images_base_url")
 	if !base_url:
 		fail_img_download(card_id)
 		return ""

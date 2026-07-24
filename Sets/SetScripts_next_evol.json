@@ -287,7 +287,7 @@
 					"is_cost": true
 				},
 				{
-					"name": "dicard",
+					"name": "discard",
 					"subject": "self"
 				}
 			]
@@ -2829,7 +2829,8 @@
 					"selection_type": "equal",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_friendly_current_hero_target"
+							"filter_group": "group_friendly_current_hero_target",
+							"filter_is_exhausted": false
 						}
 					]
 				}
@@ -2847,7 +2848,8 @@
 					"selection_type": "equal",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_friendly_current_hero_target"
+							"filter_group": "group_friendly_current_hero_target",
+							"filter_is_exhausted": false
 						}
 					]
 				}
@@ -3278,7 +3280,7 @@
 				{
 					"name": "indirect_damage",
 					"amount": 1,
-					"subject": "my_identity"
+					"subject": "current_hero_target"
 				}
 			]
 		}
@@ -3927,7 +3929,7 @@
 					"is_cost": true
 				},
 				{
-					"name": "dicard",
+					"name": "discard",
 					"subject": "self"
 				}
 			]
@@ -6086,7 +6088,7 @@
 					"is_cost": true
 				},
 				{
-					"name": "dicard",
+					"name": "discard",
 					"subject": "self"
 				}
 			]
@@ -7412,7 +7414,7 @@
 					"name": "mod_tokens",
 					"token_name": "stunned",
 					"modification": 1,
-					"subject": "my_identity"
+					"subject": "current_hero_target"
 				}
 			]
 		}
@@ -7750,6 +7752,7 @@
 					"subject": "tutor",
 					"subject_count": "all",
 					"src_container": "deck_villain",
+					"dest_container": "set_aside",
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -7782,6 +7785,11 @@
 					]
 				},
 				{
+					"name": "shuffle_container",
+					"dest_container": "set_aside",
+					"animate": false
+				},				
+				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
 				}
@@ -7795,6 +7803,7 @@
 					"name": "move_card_to_container",
 					"subject": "tutor",
 					"dest_container": "removed_from_game",
+					"src_container": "set_aside",
 					"sort_by": "random",
 					"filter_state_tutor": [
 						{
@@ -7848,7 +7857,7 @@
 					"name": "mod_tokens",
 					"modification": 1,
 					"token_name": "confused",
-					"subject": "my_identity"
+					"subject": "current_hero_target"
 				}
 			]
 		}
@@ -7979,7 +7988,7 @@
 					"name": "mod_tokens",
 					"modification": 1,
 					"token_name": "stunned",
-					"subject": "my_identity"
+					"subject": "current_hero_target"
 				}
 			]
 		}

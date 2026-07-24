@@ -79,8 +79,9 @@
 					"is_cost": true
 				},
 				{
-					"name": "hint",
-					"text": "I don't think so!"
+					"name": "say",
+					"text": "I don't think so!",
+					"subject": "my_hero"
 				},
 				{
 					"name": "cancel_current_encounter"
@@ -290,7 +291,7 @@
 			"is_optional_board": true,
 			"board": [
 				{
-					"name": "hint",
+					"name": "say",
 					"text": "High Five!"
 				},
 				{
@@ -483,26 +484,54 @@
 			"trigger": "self",
 			"board": [
 				{
-					"name": "attach_to_card",
-					"subject": "The Green Gobbler",
-					"is_cost": true
-				},
-				{
-					"is_else": true,
-					"name": "attach_to_card",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"filter_state_seek": [
+					"name": "conditional_script",
+					"options": [
 						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"type_code": "minion"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "attach_to_card",
+									"subject": "The Green Gobbler",
+									"is_cost": true
+								},
+								{
+									"is_else": true,
+									"name": "attach_to_card",
+									"subject": "boardseek",
+									"subject_count": "all",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"type_code": "minion"
+											}
+										}
+									],
+									"needs_selection": true,
+									"selection_count": 1,
+									"selection_type": "equal",
+									"selection_optional": false
+								}
+							]
 						}
 					],
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
-					"selection_optional": false
+					"else": [
+						{
+							"name": "discard",
+							"subject": "self"
+						}
+					]
 				}
 			]
 		},
@@ -584,24 +613,29 @@
 						"is_cost": true
 					},
 					{
-						"name": "hint",
-						"text": "POW!"
+						"name": "say",
+						"text": "POW!",
+						"subject": "my_hero"
 					},
 					{
-						"name": "hint",
-						"text": "BAM!"
+						"name": "say",
+						"text": "BAM!",
+						"subject": "my_hero"
 					},
 					{
-						"name": "hint",
-						"text": "WHACK!"
+						"name": "say",
+						"text": "WHACK!",
+						"subject": "my_hero"
 					},
 					{
-						"name": "hint",
-						"text": "SMACK!"
+						"name": "say",
+						"text": "SMACK!",
+						"subject": "my_hero"
 					},
 					{
-						"name": "hint",
-						"text": "BOINK!"
+						"name": "say",
+						"text": "BOINK!",
+						"subject": "my_hero"
 					},
 					{
 						"name": "deal_damage",
@@ -634,23 +668,23 @@
 						"is_cost": true
 					},
 					{
-						"name": "hint",
+						"name": "say",
 						"text": "POW!"
 					},
 					{
-						"name": "hint",
+						"name": "say",
 						"text": "BAM!"
 					},
 					{
-						"name": "hint",
+						"name": "say",
 						"text": "WHACK!"
 					},
 					{
-						"name": "hint",
+						"name": "say",
 						"text": "SMACK!"
 					},
 					{
-						"name": "hint",
+						"name": "say",
 						"text": "BOINK!"
 					},
 					{
@@ -1271,7 +1305,7 @@
 					]
 				},
 				{
-					"name": "hint",
+					"name": "say",
 					"subject": "my_hero",
 					"text": "Pbbbt!"
 				},
@@ -1334,7 +1368,7 @@
 					"subject": "interrupted_event"
 				},
 				{
-					"name": "move_card_to_cntainer",
+					"name": "move_card_to_container",
 					"subject": "self",
 					"dest_container": "hand_my_hero"
 				}
@@ -1366,7 +1400,7 @@
 			]
 		},
 		"interrupt": {
-			"event_name": "about_to_reveal",
+			"event_name": "would_reveal",
 			"filter_state_trigger": [
 				{
 					"filter_same_controller": true

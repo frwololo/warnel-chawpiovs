@@ -1,0 +1,174 @@
+{
+	"_comments": "Bug: team building exercise allowing to select non shared traits",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Ham"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mister sinister - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Taking Off - 2B",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"others": [
+				{
+					"card": "Flight #40151",
+					"host": "Mister sinister"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Ham"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Team-Building Exercise"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Making an entrance"
+				},
+				{
+					"card": "Spider-Man - Pavitr Prabhakar"
+				},
+				{
+					"card": "Web of Life and Destiny"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Team-Building Exercise"
+		},
+		{
+			"type": "select",
+			"value": "Making an entrance",
+			"expected_to_fail": true,
+			"_comments": "trying to select a non shared trait card"
+		},
+		{
+			"type": "select",
+			"value": "Spider-Man - Pavitr Prabhakar",
+			"_comments": "selecting again, this time a valid card"
+		},
+		{
+			"type": "play",
+			"value": "Spider-Man - Pavitr Prabhakar",
+			"_comments": "Now Pavitr should cost 3 so I can play him"
+		},
+		{
+			"type": "choose",
+			"value": "Yes",
+			"_comments": "Pavitr's special ability when comes into play"
+		},
+		{
+			"type": "target",
+			"value": "Taking Off - 2B"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Ham"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mister sinister - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Taking Off - 2B",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"others": [
+				{
+					"card": "Flight #40151",
+					"host": "Mister sinister"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Ham"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Team-Building Exercise"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Web of Life and Destiny"
+				},			
+				{
+					"card": "Making an entrance"
+				},
+
+			],
+			"allies1": [
+				{
+					"card": "Spider-Man - Pavitr Prabhakar",
+					"tokens": {"damage": 0}
+				}
+			]
+		}
+	}
+}

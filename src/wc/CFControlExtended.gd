@@ -807,6 +807,14 @@ func load_card_definitions_extra_data():
 	for card_id in card_definitions:
 		var card_data = card_definitions[card_id]
 		load_one_card_extra_data(card_data)
+	
+#	var the_debug = ""	
+#	for set_code in schemes:
+#		the_debug += "*** Scheme code:" + set_code + "\n"
+#		for card in schemes[set_code]:
+#			the_debug +="-" + card["Name"] + "-" + card["stage"] + "\n"
+#	print_debug(the_debug)
+		
 		
 func save_card_definitions_to_cache(the_files):
 	var to_save = [

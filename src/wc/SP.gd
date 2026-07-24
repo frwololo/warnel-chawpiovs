@@ -602,20 +602,24 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 						card_matches =  false	
 				elif filter == "is_script_owner":
 					if (card == owner_card) != state_filter:
-						card_matches =  false													
+						card_matches =  false	
+				elif filter == FILTER_SAME_CONTROLLER:
+					if !check_same_controller_filter(card,owner_card,state_filter):
+						card_matches = false	
+				elif filter == FILTER_CONTROLLER_NAME:
+					if !check_controller_name_filter(card,owner_card,state_filter):
+						card_matches = false
+				elif filter == FILTER_SHARES_A_TITLE:
+					if !check_shares_title_filter(card,owner_card,state_filter):
+						card_matches = false	
+				elif filter == FILTER_SHARES_TRAIT_WITH_IDENTITY:
+					if !check_trigger_shares_trait_with_identity(card,owner_card,state_filter):
+						card_matches = false																									
 				if filter.ends_with("_same_as_identity"):
 					var property = filter.replace("filter_", "").replace("_same_as_identity", "")
 					if !check_trigger_shares_property_with_identity(card,owner_card,property):
 						card_matches = false
-				if filter == FILTER_SAME_CONTROLLER:
-					if !check_same_controller_filter(card,owner_card,state_filter):
-						card_matches = false	
-				if filter == FILTER_CONTROLLER_NAME:
-					if !check_controller_name_filter(card,owner_card,state_filter):
-						card_matches = false
-				if filter == FILTER_SHARES_A_TITLE:
-					if !check_shares_title_filter(card,owner_card,state_filter):
-						card_matches = false																											
+																									
 			if card_matches:
 				break
 	return(card_matches)

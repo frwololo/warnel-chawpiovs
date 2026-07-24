@@ -214,6 +214,7 @@ func refresh_cache(forced=false):
 
 func get_all_traits() -> Dictionary:
 	if _cached_all_traits == null:
+		_cached_all_traits = {}
 		for trait in cfc.all_traits:
 			var trait_property = "trait_" + trait
 			if get_property(trait_property, 0, true):

@@ -695,6 +695,7 @@ func action_select(hero_id, action_value):
 	if typeof(action_value) == TYPE_ARRAY:
 		chosen_cards = action_value
 	else:
+		action_value = action_value.to_lower()
 		match action_value:
 			"ok":
 				ok_current_selection_window()			
@@ -1028,8 +1029,12 @@ func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
 						if !element2.has(key):
 							element2[key] = false				
 				if not element2.has(key):
-					failed_reason.append ("(" + _parent_name +")missing key :" + key)
-					return false
+					#special case of missing tokens
+					if key == "tokens":
+						element2["tokens"] = {}
+					else:
+						failed_reason.append ("(" + _parent_name +")missing key :" + key)
+						return false
 				var val1 = element1[key]
 				var val2 = element2[key]
 						

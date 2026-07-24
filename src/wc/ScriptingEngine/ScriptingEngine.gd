@@ -61,7 +61,7 @@ const _hint_colors = [
 	Color8(255,255,50),
 	Color8(255,255,255),
 ]
-func hint(script: ScriptTask) -> int:
+func say(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
 	
@@ -248,8 +248,9 @@ func shuffle_container(script) -> int:
 
 	if (costs_dry_run()): 
 		return CFConst.ReturnCode.CHANGED		
-		
-	dest_container.shuffle_cards(true, false) #"true, false": force shuffling before the animation, to ensure cards are actually shuffled
+	
+	var animate = script.get_property("animate", true)	
+	dest_container.shuffle_cards(animate, false) #"true, false": force shuffling before the animation, to ensure cards are actually shuffled
 
 	return CFConst.ReturnCode.CHANGED
 	
@@ -1500,7 +1501,9 @@ func prevent(script: ScriptTask) -> int:
 	var amount = null
 	if script.script_definition.has("amount"): #force compute the amount
 		amount = script.retrieve_integer_property("amount")
-		script.script_definition["amount"] = script.retrieve_integer_property("amount")
+		for value in ["plus_amount", "multiplier_amount"]:
+			script.script_definition.erase(value)		
+		script.script_definition["amount"] = amount
 
 	var subject_target = script.script_definition.get("subject")
 	var amount_prevented = 0
@@ -2434,9 +2437,9 @@ func remove_threat(script: ScriptTask) -> int:
 			"source": owner,
 			"amount": amount,
 		}
-		scripting_bus.emit_signal_on_stack("basic_thwart_happened",  owner,  signal_details)
-	consequential_damage(script)			
+		scripting_bus.emit_signal_on_stack("basic_thwart_happened",  owner,  signal_details)			
 	if script.has_tag("thwart"):
+		consequential_damage(script)
 		scripting_bus.emit_signal_on_stack("thwart_happened", owner, {"amount" : amount, "target" : script.subjects[0]})
 
 		

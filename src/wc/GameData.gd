@@ -35,6 +35,7 @@ var _current_enemy_attack_step: int = EnemyAttackStatus.NONE
 
 enum EncounterStatus {
 	NONE,
+	BEFORE_REVEAL
 	ABOUT_TO_REVEAL,
 	PENDING_REVEAL_INTERRUPT,
 	OK_TO_EXECUTE,
@@ -46,6 +47,7 @@ enum EncounterStatus {
 
 const EncounterStatusStr = [
 	"NONE",
+	"BEFORE_REVEAL",
 	"ABOUT_TO_REVEAL",
 	"PENDING_REVEAL_INTERRUPT",
 	"OK_TO_EXECUTE",
@@ -579,6 +581,26 @@ func check_empty_decks(pile_to_check):
 			deal_one_encounter_to(int(hero_id_str))
 		return		
 
+#This is a bit of a convoluted way to retrieve the current schemes
+#for the current scenario
+#this allows for cards such as Mister sinister (Next Evolution) and his scheme randomization
+#to work without any significant changes, all we need to do is shuffle the set_aside deck
+func get_current_game_schemes(set_code):
+	var schemes = []
+	var set_aside_cards = cfc.NMAP["set_aside"].get_all_cards()
+	for card in set_aside_cards:
+		var card_set_code = card.get_property("card_set_code", "").to_lower()
+		if card_set_code != set_code:
+			continue
+		var card_type = card.get_property("type_code", "")
+		if card_type != "main_scheme":
+			continue
+		var card_stage = card.get_property("stage", "")
+		if !card_stage.ends_with("A"):
+			continue			
+		schemes.append(card)
+	return schemes
+
 var _next_scheme = null	
 func move_to_next_scheme(current_scheme):
 	var ckey
@@ -600,10 +622,11 @@ func move_to_next_scheme(current_scheme):
 		var stage = current_scheme.get_property("stage_int")
 		
 		var next_stage = stage + 1
-		var set_schemes = cfc.schemes[set_code]
+		var set_schemes = get_current_game_schemes(set_code)
+		var _tmp = cfc.schemes[set_code]
 		for scheme in set_schemes:
-			if (scheme.get("stage_int", 0) == next_stage):
-				ckey = scheme.get("_code")
+			if (scheme.get_property("stage_int", 0) == next_stage):
+				ckey = scheme.canonical_id
 				break
 		
 	if !ckey:
@@ -1855,7 +1878,10 @@ func reveal_encounter(target_id = 0):
 	#an encounter is available, proceed
 	match _current_encounter.encounter_status:
 		EncounterStatus.NONE:
-			#TODO might need to send a signal before that?
+			scripting_bus.emit_signal_on_stack("would_reveal", _current_encounter)	
+			_current_encounter.encounter_status = EncounterStatus.BEFORE_REVEAL
+			return
+		EncounterStatus.BEFORE_REVEAL:
 			var pile = get_revealed_encounters_pile(target_id)
 			_current_encounter.set_is_faceup(true,false)
 			_current_encounter.move_to(pile)

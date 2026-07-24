@@ -774,7 +774,7 @@ func select_cards_by_name(names :Array = []) -> Array:
 				else:
 					card_clicked(dupe_card, card)
 					
-	if check_ok_button():	
+	if check_ok_button() and selected_cards:	
 		emit_signal("confirmed")			
 	return(selected_cards)
 

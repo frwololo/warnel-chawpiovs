@@ -32,6 +32,14 @@
 					"card": "Advance"
 				}
 			],
+			"set_aside": [
+							{
+					"card": "Balance the Scales #21115a"
+				},
+							{
+					"card": "Balance the Scales #21115b"
+				}				
+			],
 			"villain": [
 				{
 					"card": "Thanos - 1"

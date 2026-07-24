@@ -192,7 +192,10 @@ func get_display_name():
 		
 	var task = get_first_task()
 	if is_instance_valid(task) and is_instance_valid(task.owner):
-		return task.owner.get_property("shortname", "") + "-" + task.script_name
+		var owner_name = task.owner.get_property("shortname", "")
+		if !task.owner.is_faceup and !task.owner.is_onboard():
+			 owner_name = "facedown card"		
+		return  owner_name + "-" + task.script_name
 
 	return ""
 
@@ -211,7 +214,9 @@ func _get_display_text_nocache():
 	if task: 	
 		var owner = task.owner
 		var owner_name = owner.get_property("shortname", "") if owner else ""
-
+		#facedown cards won't have a type_code unless they are used on the board (e.g. facedown ultron drones)
+		if !owner.is_faceup and !owner.is_onboard():
+			 owner_name = "facedown card"	
 		#display_section override in script json always gets precedence
 		var display_section = task.trigger_details.get("display_section", "")
 		if display_section and owner:

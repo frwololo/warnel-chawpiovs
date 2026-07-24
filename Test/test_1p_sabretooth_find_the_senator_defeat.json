@@ -40,6 +40,14 @@
 					}
 				}
 			],
+			"set_aside": [
+				{
+					"card": "The Injured Senator #32064a"
+				},
+				{
+					"card": "The Injured Senator #32064b"
+				}
+			],
 			"others": [
 				{
 					"card": "Robert Kelly",
@@ -92,7 +100,7 @@
 		{
 			"type": "other",
 			"value": "wait_a_bit"
-		}		
+		}
 	],
 	"end": {
 		"phase": "PLAYER_TURN",

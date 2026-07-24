@@ -136,6 +136,24 @@ static func ordered_hash(dict:Dictionary):
 	var sorted_dictionary = deep_dict_sort(dict)
 	return sorted_dictionary.hash()
 
+#script can either be a script object (in which case its owner will be computed)
+#or a dict script definition (in which case the owner object also needs to be passed as parameter)			
+static func script_signature(script, owner = null):
+	var definition := {}
+	if typeof(script) == TYPE_DICTIONARY:
+		definition = {
+			"owner": owner,
+			"definition": script
+		}		
+	else:			
+		definition = {
+			"owner": script.owner,
+			"definition": script.script_definition
+		}
+	var signature = ordered_hash(definition)
+	return signature
+
+
 static func deep_dict_sort(value) -> Dictionary:
 	var result
 	match typeof(value):

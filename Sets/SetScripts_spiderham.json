@@ -72,6 +72,13 @@
 			"is_optional_hand": true,
 			"hand": [
 				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
 					"name": "mod_tokens",
 					"subject": "my_identity",
 					"token_name": "toon",

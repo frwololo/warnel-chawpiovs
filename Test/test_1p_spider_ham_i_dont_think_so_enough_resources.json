@@ -1,0 +1,125 @@
+{
+	"_comments": "Bug: I don't think so double use of token",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Ham"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mister sinister - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Taking Off - 2B"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"others": [
+				{
+					"card": "Flight #40151",
+					"host": "Mister sinister"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Ham",
+					"tokens": {
+						"toon": 3
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "\"I Don't Think So!\""
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "\"I Don't Think So!\"",
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Ham"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mister sinister - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Taking Off - 2B"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"others": [
+				{
+					"card": "Flight #40151",
+					"host": "Mister sinister"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Ham",
+					"tokens": {
+						"toon": 1
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"discard1": [
+				{
+					"card": "\"I Don't Think So!\""
+				}
+			]
+		}
+	}
+}

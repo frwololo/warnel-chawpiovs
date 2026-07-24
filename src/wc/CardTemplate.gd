@@ -1933,6 +1933,7 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 					for card in prepaid_subjects:
 						if card as Card:
 							card.remove_resource_lock()
+							card.tokens.remove_resource_lock()
 	is_executing_scripts = false
 	return sceng
 
@@ -3901,22 +3902,6 @@ var _locked_for_resource = null
 #it is locked from being used in other scripts *as a subject*
 var _lockable_for_subject = true
 
-#script can either be a script object (in which case its owner will be computed)
-#or a dict script definition (in which case the owner object also needs to be passed as parameter)			
-func script_signature(script, owner = null):
-	var definition := {}
-	if typeof(script) == TYPE_DICTIONARY:
-		definition = {
-			"owner": owner,
-			"definition": script
-		}		
-	else:			
-		definition = {
-			"owner": script.owner,
-			"definition": script.script_definition
-		}
-	var signature = WCUtils.ordered_hash(definition)
-	return signature
 
 func remove_resource_lock():
 	_locked_for_resource = null
@@ -3924,8 +3909,25 @@ func remove_resource_lock():
 #script can either be a script object (in which case its owner will be computed)
 #or a dict script definition (in which case the owner object also needs to be passed as parameter)			
 func set_resource_lock(script, owner = null):
-	var signature = script_signature(script, owner)
+	
+	#special use case introduced to "lock" token uses for SpiderHam
+	#this is to avoid use cases where the player can use the same token both to pay
+	#for a card cost AND to pay for its text effect (e.g "I don't think so!")
+	var sceng = _get_resource_sceng(script)
+	if sceng:		
+		if (sceng.can_all_costs_be_paid):
+			for script in sceng.scripts_queue:
+				if script.is_cost and script.script_name in ["mod_tokens"]:
+					var token_name = script.script_definition["token_name"]
+					var modification = script.retrieve_integer_property("modification")
+					var subjects = script.subjects
+					for s in subjects:
+						s.tokens.lock_for_payment(token_name, modification, script, owner)	
+
+	var signature = WCUtils.script_signature(script, owner)
 	_locked_for_resource = signature
+	
+
 
 func is_subject_locked_as_resource(script,owner = null):
 	return is_resource_locked(script, owner, true)
@@ -3945,7 +3947,7 @@ func is_resource_locked(script, owner = null, only_check_subject = false):
 	if script_definition.has("network_prepaid"):
 		return false
 		
-	var signature = script_signature(script, owner)
+	var signature = WCUtils.script_signature(script, owner)
 	if _locked_for_resource != signature:
 		if only_check_subject:
 			return _lockable_for_subject 
@@ -4000,6 +4002,7 @@ func pay_as_resource(script):
 
 	
 	remove_resource_lock()
+	tokens.remove_resource_lock()
 	
 	cfc.remove_ongoing_process(self, "pay_as_resource")
 	var trigger_details = script.trigger_details.duplicate()

@@ -3692,13 +3692,7 @@
 						"then": 4,
 						"else": 2
 					},
-					"subject": "boardseek",
-					"subject_count": "all",
-					"filter_state_seek": [
-						{
-							"filter_group": "group_identities"
-						}
-					]
+					"all_players": true,
 				}
 			]
 		},

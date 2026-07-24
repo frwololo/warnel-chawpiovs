@@ -172,31 +172,41 @@ func execute():
 				func_return = yield(func_return, "completed")
 		costs_executed = true
 	else:
-		if sceng.can_all_costs_be_paid:
+		if (sceng.can_all_costs_be_paid or sceng.has_else_condition()):
+			if sceng.can_all_costs_be_paid:
 
-			#1.5) We run the script in "prime" mode again to choose targets
-			# for all tasks that aren't costs but still need targets
-			# (is_cost = false and needs_subject = false)
-			sceng.execute(CFInt.RunType.PRIME_ONLY)
-			if not sceng.all_tasks_completed:
-				yield(sceng,"tasks_completed")
-	
-			sceng.execute(run_type, run_mode)
-			if not sceng.all_tasks_completed:
-				yield(sceng,"tasks_completed")
-			# warning-ignore:void_assignment
-			var func_return = owner.common_post_execution_scripts(trigger)
-			# We make sure this function does to return until all
-			# custom post execution scripts have also finished
-			if func_return is GDScriptFunctionState: # Still working.
-				func_return = yield(func_return, "completed")		
-		# This will only trigger when costs could not be paid, and will
-		# execute the "is_else" tasks
+				#1.5) We run the script in "prime" mode again to choose targets
+				# for all tasks that aren't costs but still need targets
+				# (is_cost = false and needs_subject = false)
+				sceng.execute(CFInt.RunType.PRIME_ONLY)
+				if not sceng.all_tasks_completed:
+					yield(sceng,"tasks_completed")
+		
+				sceng.execute(run_type, run_mode)
+				if not sceng.all_tasks_completed:
+					yield(sceng,"tasks_completed")
+				# warning-ignore:void_assignment
+				var func_return = owner.common_post_execution_scripts(trigger)
+				# We make sure this function does to return until all
+				# custom post execution scripts have also finished
+				if func_return is GDScriptFunctionState: # Still working.
+					func_return = yield(func_return, "completed")		
+			# This will only trigger when costs could not be paid, and will
+			# execute the "is_else" tasks
+			else:
+				#print("DEBUG:" + str(state_scripts))
+				sceng.execute(CFInt.RunType.ELSE)
+				if not sceng.all_tasks_completed:
+					yield(sceng,"tasks_completed")	
 		else:
-			#print("DEBUG:" + str(state_scripts))
-			sceng.execute(CFInt.RunType.ELSE)
-			if not sceng.all_tasks_completed:
-				yield(sceng,"tasks_completed")	
+			#error case. Happens at least when trying to pay with more tokens than I can use 
+			#in SpiderHam's "I don't think so"
+			var _error = 1
+			for script in sceng.scripts_queue:
+				for card in script.subjects:
+					if card as Card:
+						card.remove_resource_lock()
+						card.tokens.remove_resource_lock()			
 				
 	cfc.remove_ongoing_process(self)
 	return run_mode

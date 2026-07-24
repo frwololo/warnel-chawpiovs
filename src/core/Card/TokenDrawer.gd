@@ -16,6 +16,7 @@ onready var owner_card = get_parent().get_parent()
 
 var _is_horizontal:= false
 var show_manipulation_buttons:= true
+var _locked_for_payment := {}
 
 
 func _ready() -> void:
@@ -361,3 +362,35 @@ func set_is_horizontal(value:bool = true):
 		$Drawer.rect_position = Vector2(115, 20)
 		$Drawer.rect_rotation = 0
 	pass
+
+func is_payment_locked(token_name, amount_to_modify, script, owner = null):
+	if !_locked_for_payment.has(token_name):
+		#not locked at all
+		return false
+		
+	var script_signature = WCUtils.script_signature(script, owner)
+	if _locked_for_payment[token_name].has(script_signature):
+		#already locked for this script
+		return false	
+		
+	var total = get_token_count(token_name)
+	for other_script in _locked_for_payment[token_name]:
+		var fragment_amount = _locked_for_payment[token_name][other_script]
+		total+= fragment_amount
+	
+	if total + amount_to_modify < 0:
+		return true
+		
+	#there are still enough unlocked tokens to pay for this	
+	return false	
+
+func lock_for_payment(token_name, amount, script, owner = null):
+	if !_locked_for_payment.has(token_name):
+		_locked_for_payment[token_name] = {}
+	var script_signature = WCUtils.script_signature(script, owner)
+	_locked_for_payment[token_name][script_signature] = amount
+	
+func remove_resource_lock():
+	if _locked_for_payment:
+		var _tmp = 1
+	_locked_for_payment = {}

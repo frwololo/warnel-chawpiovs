@@ -746,6 +746,9 @@ func mod_tokens(script: ScriptTask) -> int:
 				token_diff += -current_tokens
 			else:
 				token_diff = modification + alteration
+		if card.tokens.is_payment_locked(token_name, modification + alteration, script):
+			retcode = CFConst.ReturnCode.FAILED
+			continue
 		retcode = card.tokens.mod_token(token_name,
 				modification + alteration,set_to_mod,costs_dry_run(), tags)
 	if script.get_property(SP.KEY_STORE_INTEGER):

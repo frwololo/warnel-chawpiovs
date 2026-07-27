@@ -1026,7 +1026,7 @@ const DEFAULT_SETTINGS:= {
 		"phoenix": "https://marvelcdb.com/api/public/cards/phoenix.json", #Phoenix Hero Pack	
 		"wolv": "https://marvelcdb.com/api/public/cards/wolv.json", #Wolverine Hero Pack	
 #		"storm": "https://marvelcdb.com/api/public/cards/storm.json", #Storm Hero Pack	
-#		"gambit": "https://marvelcdb.com/api/public/cards/gambit.json", #Gambit Hero Pack	
+		"gambit": "https://marvelcdb.com/api/public/cards/gambit.json", #Gambit Hero Pack	
 #		"rogue": "https://marvelcdb.com/api/public/cards/rogue.json", #Rogue Hero Pack
 #		"mojo": "https://marvelcdb.com/api/public/cards/mojo.json",  #Mojo Scenario Pack	
 #cycle 7
@@ -1054,7 +1054,7 @@ const DEFAULT_SETTINGS:= {
 #		"wonder_man": "https://marvelcdb.com/api/public/cards/wonder_man.json", #Wonder Man Hero Pack
 #		"hercules": "https://marvelcdb.com/api/public/cards/hercules.json", #Hercules Hero Pack
 #cycle 11
-#		"": "https://marvelcdb.com/api/public/cards/.json", #
+#		"fne": "https://marvelcdb.com/api/public/cards/fne.json", #Fear No Evil Expansion
 #		"": "https://marvelcdb.com/api/public/cards/.json", #
 #		"": "https://marvelcdb.com/api/public/cards/.json", #
 #		"": "https://marvelcdb.com/api/public/cards/.json", #

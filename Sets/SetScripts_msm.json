@@ -320,9 +320,36 @@
 					"subject": "self"
 				},
 				{
+					"name": "save_variable",
+					"var_name": "my_event",
+					"var_type": "subject",
+					"value": "trigger",
+					"_comments": "remembering the card for modification use"
+				}
+			]
+		},
+		"interrupt_receive_damage": {
+			"trigger": "my_event",
+			"all": [
+				{
 					"name": "increase",
 					"amount": 2,
 					"subject": "interrupted_event"
+				}
+			]
+		},
+		"stack_idle": {
+			"condition_board": {
+				"func_name": "get_subject_int_variable",
+				"func_params": {
+					"subject": "self",
+					"variable": "my_event"
+				}
+			},
+			"board": [
+				{
+					"name": "forget_variable",
+					"var_name": "my_event"
 				}
 			]
 		}
@@ -971,9 +998,36 @@
 					"subject": "self"
 				},
 				{
+					"name": "save_variable",
+					"var_name": "my_event",
+					"var_type": "subject",
+					"value": "trigger",
+					"_comments": "remembering the card for modification use"
+				}
+			]
+		},
+		"interrupt_remove_threat": {
+			"trigger": "my_event",
+			"all": [
+				{
 					"name": "increase",
 					"amount": 2,
 					"subject": "interrupted_event"
+				}
+			]
+		},
+		"stack_idle": {
+			"condition_board": {
+				"func_name": "get_subject_int_variable",
+				"func_params": {
+					"subject": "self",
+					"variable": "my_event"
+				}
+			},
+			"board": [
+				{
+					"name": "forget_variable",
+					"var_name": "my_event"
 				}
 			]
 		}

@@ -3692,7 +3692,7 @@
 						"then": 4,
 						"else": 2
 					},
-					"all_players": true,
+					"all_players": true
 				}
 			]
 		},
@@ -7782,7 +7782,7 @@
 					"name": "shuffle_container",
 					"dest_container": "set_aside",
 					"animate": false
-				},				
+				},
 				{
 					"name": "flip_doublesided_card",
 					"subject": "self"

@@ -105,6 +105,7 @@ var immediate_encounters: = []
 var user_input_ongoing:int = 0 #ID of the current player (or remote player) doing a blocking game interraction
 var _garbage:= []
 var _targeting_ongoing= null
+
 var _desync_recovery_enabled = true
 var last_target = null
 var last_target_container = null
@@ -120,7 +121,8 @@ var _clients_desync_start_time: int = 0
 #a timer to avoid double registering a click on a target
 # as a click for its abilities
 var _targeting_timer:= 0.2
- 
+var _stack_idle_timer:= 5.0
+var _stack_idle_signal_sent = false 
 
 var _network_ack: Dictionary = {}
 var _multiplayer_desync = null
@@ -286,6 +288,7 @@ func _all_clients_game_loaded(status):
 func _script_added_to_stack (script):
 	theAnnouncer.announce_from_stack(script)
 
+
 func _script_executed_from_stack (script):
 	match script.get_first_task_name():
 		"enemy_attack":
@@ -369,6 +372,15 @@ func _process(_delta: float):
 			_targeting_timer -= _delta
 			_targeting_timer = max(0, _targeting_timer)
 			phaseContainer.hide_target_cancel_button()
+		
+		if theStack.is_idle():
+			_stack_idle_timer -= _delta
+			if _stack_idle_timer <=0 and !_stack_idle_signal_sent:
+				scripting_bus.emit_signal("stack_idle")
+				_stack_idle_signal_sent = true
+		else:
+			_stack_idle_timer = 5.0
+			_stack_idle_signal_sent = false
 		
 	if theAnnouncer.get_blocking_announce():
 		return

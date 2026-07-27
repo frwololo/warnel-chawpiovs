@@ -43,6 +43,9 @@ signal round_ended()
 # warning-ignore:unused_signal
 signal phase_ended(card, details)
 
+# warning-ignore:unused_signal
+signal stack_idle()
+
 #GUI and game Interface signals
 # warning-ignore:unused_signal
 signal current_playing_hero_changed(details) #before, after

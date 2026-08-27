@@ -1,0 +1,149 @@
+{
+	"_comments": "Automated Test for flight of the Valkyrior",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Valkyrie"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Trouble in Otherworld"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Valkyrie #25001a"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Flight of the Valkyrior"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Death-Glow",
+					"host": "Hydra Mercenary"
+				}
+			],
+			"allies1": [],
+			"hand1": []
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Valkyrie #25001a"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Hydra Mercenary"
+		},
+		{
+			"type": "choose",
+			"value": "yes"
+		},
+		{
+			"type": "target",
+			"value": "01097b"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Valkyrie"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Trouble in Otherworld"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Valkyrie #25001a"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Flight of the Valkyrior"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Death-Glow"
+				}
+			],
+			"allies1": [],
+			"hand1": []
+		}
+	}
+}

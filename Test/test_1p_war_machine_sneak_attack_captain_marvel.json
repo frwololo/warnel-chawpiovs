@@ -1,0 +1,177 @@
+{
+	"_comments": "Automated Test for Sneak Attack Captain Marvel - https://github.com/frwololo/warnel-chawpiovs/issues/26",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "War Machine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Combat Training"
+				},
+				{
+					"card": "Full Auto"
+				},
+				{
+					"card": "Make the Call"
+				},
+				{
+					"card": "Energy"
+				},				
+			],
+			"identity1": [
+				{
+					"card": "War Machine"
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Captain Marvel #23013"
+				},
+				{
+					"card": "Sneak Attack #23017"
+				},
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Goliath - Bill Foster #23015"
+				},				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Sneak Attack #23017"
+		},
+		{
+			"type": "select",
+			"value": "Jessica Jones"
+		},
+		
+		{
+			"type": "select",
+			"value": "Captain Marvel #23013"
+		},
+		{
+			"type": "target",
+			"value": "Rhino - 1"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "War Machine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 3,
+						"stunned": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Genius"
+				},
+			],
+			"identity1": [
+				{
+					"card": "War Machine"
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Captain Marvel #23013"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Sneak Attack #23017"
+				},
+				{
+					"card": "Energy"
+				},				
+				{
+					"card": "Make the Call"
+				},
+				{
+					"card": "Full Auto"
+				},				
+				{
+					"card": "Combat Training"
+				},
+
+
+			],
+			"hand1": [
+							{
+					"card": "Goliath - Bill Foster #23015"
+				},
+			]
+		}
+	}
+}

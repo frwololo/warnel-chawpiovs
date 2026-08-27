@@ -430,15 +430,24 @@ func parse_keywords(text:String) -> Dictionary:
 
 	#replace newline with space
 	lc_text = lc_text.replace("\n", " ")
-		
+	
+	#replace [i] ...[/i] with blank
+	var regex := RegEx.new()
+	var pattern = "(?s)\\[i\\].*?\\[/i\\]"
+	var error = regex.compile(pattern)
+	if error != OK:
+		push_error("Invalid regex pattern")
+	
+	# Replace all matches with an empty string
+	lc_text = regex.sub(lc_text, "", true)  # 'true' = replace all occurrences
 	var potential_keywords:PoolStringArray = lc_text.split(".")
 	for i in potential_keywords.size():
-		potential_keywords[i] = potential_keywords[i].trim_prefix(" ")
+		potential_keywords[i] = potential_keywords[i].strip_edges()
 	for _keyword in CFConst.AUTO_KEYWORDS.keys():
 		var keyword:String = _keyword.to_lower()
 		var type = CFConst.AUTO_KEYWORDS[keyword]
 		
-
+		
 		
 		match type:
 			"bool":

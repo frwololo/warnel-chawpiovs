@@ -1204,7 +1204,7 @@ func can_interrupt(
 		return CFConst.CanInterrupt.NO
 	
 	var _debug = false
-	if canonical_name == "She-Hulk" and trigger_card:
+	if canonical_name == "Upgraded Chassis" and trigger_card:
 		if trigger_details["event_name"] == "identity_changed_form":
 			_debug = true
 

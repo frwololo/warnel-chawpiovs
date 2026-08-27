@@ -1,0 +1,179 @@
+{
+	"_comments": "Tests Innovation War Machine - https://github.com/frwololo/warnel-chawpiovs/issues/27",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "War Machine"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Pacification"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Channeling Trance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Knowhere",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"villain": [
+				{
+					"card": "Ebony Maw - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "War Machine"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Zone of Silence"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Missile Launcher"
+				},
+				{
+					"card": "Innovation"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Goliath - Bill Foster #23015",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Fireball",
+					"tokens": {
+						"invocation": 2
+					}
+				},
+				{
+					"card": "RubbleStorm",
+					"tokens": {
+						"invocation": 3
+					}
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Missile Launcher"
+		},
+		{
+			"type": "target",
+			"value": "Goliath - Bill Foster #23015"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "War Machine"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Pacification"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Channeling Trance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Knowhere",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"villain": [
+				{
+					"card": "Ebony Maw - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "War Machine"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Zone of Silence"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Innovation"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Missile Launcher"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Goliath - Bill Foster #23015",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Fireball",
+					"tokens": {
+						"invocation": 2
+					}
+				},
+				{
+					"card": "RubbleStorm",
+					"tokens": {
+						"invocation": 3
+					}
+				}
+			]
+		}
+	}
+}

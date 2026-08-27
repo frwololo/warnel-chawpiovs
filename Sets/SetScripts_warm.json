@@ -1194,7 +1194,7 @@
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
-						"hero_action"
+						"hero_response"
 					]
 				},
 				{

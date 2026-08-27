@@ -36,7 +36,7 @@
 			],
 			"allies1": [
 				{
-					"card": "Vision",
+					"card": "Vision #01068",
 					"tokens": {"_vision_ability" : 1}
 				},
 			],
@@ -106,7 +106,7 @@
 			],
 			"allies1": [
 				{
-					"card": "Vision"
+					"card": "Vision #01068"
 				},
 			],
 			"discard1": [

@@ -1,0 +1,141 @@
+{
+	"_comments": "Automated Test for Upgraded Chassis - https://github.com/frwololo/warnel-chawpiovs/issues/25",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "War Machine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "James Rhodes",
+					"tokens": {"__can_change_form": 1}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Upgraded Chassis"
+				}			
+
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [
+			],
+			"hand1": [
+				{
+					"card": "Goliath - Bill Foster #23015"
+				},				
+				{
+					"card": "Sneak Attack #23017"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "James Rhodes",
+		},
+		{
+			"type": "choose",
+			"value": "Change Form",
+		},
+		{
+			"type": "activate",
+			"value": "Upgraded Chassis",
+		},		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "War Machine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "War Machine",
+					"tokens": {"tough": 1}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Upgraded Chassis",
+					"exhausted": true
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [
+			],
+			"hand1": [
+				{
+					"card": "Goliath - Bill Foster #23015"
+				},				
+				{
+					"card": "Sneak Attack #23017"
+				}
+			]
+		}
+	}
+}

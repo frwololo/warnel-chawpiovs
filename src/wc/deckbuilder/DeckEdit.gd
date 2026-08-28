@@ -284,20 +284,7 @@ func can_add_card(card):
 	for duplicate_reverse_id in cfc.reverse_duplicates.get(card_id, []):
 		currently_in_deck += deck_data["slots"].get(duplicate_reverse_id, 0)
 	
-	if currently_in_deck > 2:
-		return false
-			
-	if currently_in_deck>0 and card.get_property("is_unique", 0):	
-		return false	
-
-	var text = card.get_property("real_text", "").to_lower()
-	
-	if ("max 1 per deck" in text) and currently_in_deck > 0:
-		return false
-	if ("max 2 per deck" in text) and currently_in_deck > 1:
-		return false			
-		
-	return true
+	return WCUtils.can_add_card_to_deck(card_id, currently_in_deck)
 
 func card_clicked(object):
 	if object in collection_grid.get_children():

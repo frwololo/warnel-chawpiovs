@@ -1829,6 +1829,14 @@ func can_proceed_activation()-> bool:
 
 	return theStack.is_idle()
 
+func count_all_facedown_encounters():
+	var total = 0
+	for i in self.get_team_size():
+		var hero_id = i+1
+		var facedown_pile = get_facedown_encounters_pile(hero_id)
+		total+= facedown_pile.get_card_count()
+	return total
+
 func cancel_current_encounter():
 	if !_current_encounter:
 		return false
@@ -1873,8 +1881,16 @@ func reveal_encounter(target_id = 0):
 			display_debug(msg)
 	
 	if !_current_encounter:
-		display_debug("didn't get any encounter from the facedown pile of " + str(target_id) +", we're done here")
-		all_encounters_finished()
+		#We've done a full cycle of available encounters, 
+		#but we keep rotating on players in order until all encounters are gone
+		#(some new encounters might have been received after surge, etc...)
+		var remaining_encounters = count_all_facedown_encounters()
+		if remaining_encounters:
+			villain_next_target()
+			return
+		else:
+			display_debug("didn't get any encounter from the facedown pile of " + str(target_id) +", we're done here")
+			all_encounters_finished()
 		return
 
 	match _current_encounter.state:

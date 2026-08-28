@@ -363,7 +363,7 @@ func resize():
 		texture_rect.rect_size = texture_rect.rect_min_size
 
 
-	v_folder_label.rect_min_size.x = target_size.x - 300
+	v_folder_label.rect_min_size.x = target_size.x - 400
 	self.margin_right = target_size.x
 	self.margin_bottom = target_size.y
 	self.rect_size = target_size
@@ -386,3 +386,7 @@ func _on_FolderLabel_meta_clicked(meta):
 
 func _on_FullscreenCheck_toggled(button_pressed):
 	cfc.set_fullscreen(button_pressed)
+
+
+func _on_LinkButton_pressed():
+	OS.shell_open("https://wololo.net/warnel-chawpiovs-changelog/")

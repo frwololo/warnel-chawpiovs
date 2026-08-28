@@ -2860,8 +2860,10 @@ func surge(script: ScriptTask) -> int:
 		
 	for _i in amount:
 		owner.hint("Surge", Color8(255,50,50))
-		gameData.deal_one_encounter_to(hero_id, true)
 
+		#update 08/2026: Surge now doesn't do an immediate reveal, per v1.8 rules
+		#gameData.deal_one_encounter_to(hero_id, true)
+		gameData.deal_one_encounter_to(hero_id)
 	return CFConst.ReturnCode.CHANGED
 
 func recovery(script: ScriptTask) -> int:

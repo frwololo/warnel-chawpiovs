@@ -505,9 +505,8 @@ static func find_string_in_variant (script_definition, needle: String, result_pa
 		TYPE_DICTIONARY:
 			for key in script_definition.keys():
 				var value = script_definition[key]
-				var result = find_string_in_variant(value, needle, result_path)
+				var result = find_string_in_variant(value, needle, result_path + [key])
 				if result:
-					result = [key] + result
 					return result
 
 				#do the key too	
@@ -515,15 +514,17 @@ static func find_string_in_variant (script_definition, needle: String, result_pa
 					return result_path
 
 		TYPE_ARRAY:
+			var counter = 0
 			for x in script_definition:
-				var result =  find_string_in_variant(x, needle, result_path)
+				var result =  find_string_in_variant(x, needle, result_path + [counter])
 				if result:
 					return result
+				counter += 1
 
 		TYPE_STRING:
 			if (needle in script_definition):
-				return [script_definition]
-	return result_path
+				return result_path
+	return []
 
 #replace "REAL" (float) numbers into "INT".
 #Patch utility for json loading issues
@@ -768,3 +769,64 @@ static func large_card_preview_offset(large_picture, container, preview_card_siz
 
 	if out_of_bounds.y > screen_size.y:
 		large_picture.rect_position.y = screen_size.y - 50 - correction_offset.y
+
+#compares titles information for two unique cards, according to MC's rules
+static func unique_cards_match(unique_card, card):
+	var title = unique_card["title"]
+	var subtitle = unique_card["subtitle"]
+	var alter_ego_title = unique_card.get("alter_ego_title", "")
+
+	var card_title = card["title"]
+	var card_subtitle = card["subtitle"]
+	var card_alter_ego_title = card.get("alter_ego_title", "")
+			
+	if title and (title == card_title):
+		if (!subtitle and !card_subtitle and !card_alter_ego_title and !alter_ego_title):
+			return card
+	# The subtitle or alter-ego title of one matches the title, subtitle, or alter-ego title of the other. 		
+	if subtitle and (subtitle in [card_title, card_subtitle, card_alter_ego_title]):
+		return card
+	if alter_ego_title and (alter_ego_title in [card_title, card_subtitle, card_alter_ego_title]):
+		return card	
+	if card_subtitle and (card_subtitle in [title, subtitle, alter_ego_title]):
+		return card
+	if card_alter_ego_title and (card_alter_ego_title in [title, subtitle, alter_ego_title]):
+		return card
+	return null
+
+static func can_add_card_to_deck(card_id, currently_in_deck):
+	#if we pass an array of cards, count existing occurrences
+	if typeof(currently_in_deck) == TYPE_ARRAY:
+		var all_cards = currently_in_deck
+		currently_in_deck = 0
+		for card in all_cards:
+			if card.canonical_id == card_id:
+				currently_in_deck += 1
+				continue	
+		
+			#also need to count duplicates
+			if card.get_property("duplicate_of_code"):
+				if card_id == card.get_property("duplicate_of_code", ""):
+					currently_in_deck += 1
+					continue
+			for duplicate_reverse_id in cfc.reverse_duplicates.get(card_id, []):
+				if card.canonical_id == duplicate_reverse_id:
+						currently_in_deck += 1
+						continue
+
+	if currently_in_deck > 2:
+		return false
+	
+	var card_data = cfc.get_card_by_id(card_id)
+		
+	if currently_in_deck>0 and card_data.get("is_unique", 0):	
+		return false	
+
+	var text = card_data.get("real_text", "").to_lower()
+	
+	if ("max 1 per deck" in text) and currently_in_deck > 0:
+		return false
+	if ("max 2 per deck" in text) and currently_in_deck > 1:
+		return false			
+		
+	return true

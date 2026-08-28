@@ -805,7 +805,7 @@
 						"replacements": {
 							"replace": {
 								"find_in_definition": "count_boost_icons",
-								"modify_path": "../..",
+								"modify_path": "..",
 								"alteration": {
 									"func_name": "count_boost_icons",
 									"func_params": {
@@ -919,7 +919,7 @@
 						"replacements": {
 							"plus": {
 								"find_in_definition": "count_boost_icons",
-								"modify_path": "../../func_params/plus",
+								"modify_path": "../func_params/plus",
 								"alteration": 1
 							}
 						}
@@ -942,7 +942,7 @@
 						"replacements": {
 							"plus": {
 								"find_in_definition": "count_boost_icons",
-								"modify_path": "../../func_params/plus",
+								"modify_path": "../func_params/plus",
 								"alteration": -1
 							}
 						}

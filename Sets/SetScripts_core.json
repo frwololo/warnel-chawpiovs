@@ -2581,40 +2581,32 @@
 		}
 	},
 	"Iron Man": {
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
-				{
-					"name": "modify_properties",
-					"subject": "self",
-					"set_properties": {
-						"max_hand_size": 7
-					}
-				}
-			]
-		},
 		"alterants": {
 			"board": [
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "hand_size",
 					"trigger": "self",
-					"per_boardseek": {
-						"subject": "boardseek",
-						"subject_count": "all",
-						"filter_state_seek": [
-							{
-								"filter_properties": {
-									"comparison": "gt",
-									"trait_tech": 0
-								},
-								"filter_properties2": {
-									"type_code": "upgrade"
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"comparison": "ge",
+										"trait_tech": 1
+									},
+									"filter_properties2": {
+										"type_code": "upgrade"
+									},
+									"filter_same_controller": true,
 								}
-							}
-						]
-					},
-					"alteration": "per_boardseek"
+							],
+							"max": 6
+						}
+					}
 				}
 			]
 		}

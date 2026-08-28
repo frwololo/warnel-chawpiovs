@@ -5,7 +5,7 @@
 				{
 					"name": "attach_to_card",
 					"subject": "target",
-					"is_cost": true,				
+					"is_cost": true,
 					"filter_state_subject": [
 						{
 							"filter_properties": {
@@ -439,14 +439,17 @@
 		}
 	},
 	"_surge": {
-		"post_reveal": {
+		"reveal": {
 			"trigger": "self",
 			"all": [
 				{
 					"name": "surge"
 				}
 			],
-			"_comments": "this used to be card_moved_to_pile encounters_reveal but needed to be changed to accomodate for cards that prevent full effects such as dr strange protective ward"
+			"_comments": [
+				"this used to be card_moved_to_pile encounters_reveal but needed to be changed to accomodate for cards that prevent full effects such as dr strange protective ward",
+				"2026/08: rules v1.8 now make surge a when reveled effect. Signal used to be post_reveal but is now reveal, to allow counter by e.g. Enhanced spider-Sense"
+			]
 		}
 	},
 	"teamwork": {

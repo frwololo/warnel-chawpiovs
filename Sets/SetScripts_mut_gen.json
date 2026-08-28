@@ -2411,48 +2411,58 @@
 	"Magnetic Missile": {
 		"_surge": {},
 		"reveal": {
-			"condition_all": {
-				"func_name": "count_cards",
-				"func_params": {
-					"subject": "boardseek",
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							},
-							"filter_properties2": {
-								"trait_sentinel": 1,
-								"comparison": "ge"
-							}
-						}
-					]
-				}
-			},
 			"all": [
 				{
-					"name": "card_dies",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_optional": false,
-					"selection_type": "equal",
-					"filter_state_seek": [
+					"name": "conditional_script",
+					"options": [
 						{
-							"filter_properties": {
-								"type_code": "minion"
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"type_code": "minion"
+											},
+											"filter_properties2": {
+												"trait_sentinel": 1,
+												"comparison": "ge"
+											}
+										}
+									]
+								}
 							},
-							"filter_properties2": {
-								"trait_sentinel": 1,
-								"comparison": "ge"
-							}
+						
+							"nested_tasks": [
+								{
+									"name": "card_dies",
+									"subject": "boardseek",
+									"subject_count": "all",
+									"needs_selection": true,
+									"selection_count": 1,
+									"selection_optional": false,
+									"selection_type": "equal",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"type_code": "minion"
+											},
+											"filter_properties2": {
+												"trait_sentinel": 1,
+												"comparison": "ge"
+											}
+										}
+									]
+								},
+								{
+									"name": "sequence",
+									"sequence_ability": "missile",
+									"subject": "self"
+								}
+							]
 						}
 					]
-				},
-				{
-					"name": "sequence",
-					"sequence_ability": "missile",
-					"subject": "self"
 				}
 			]
 		},

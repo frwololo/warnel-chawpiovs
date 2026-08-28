@@ -931,7 +931,7 @@ func _on_Debug_toggled(button_pressed: bool) -> void:
 func load_cards() -> void:
 	for i in range(gameData.get_team_size()):
 		var hero_id = i+1
-		var hero_deck_data: HeroDeckData = gameData.get_team_member(hero_id)["hero_data"] #TODO actually load my player's stuff
+		var hero_deck_data: HeroDeckData = gameData.get_team_member(hero_id)["hero_data"] 
 		var card_datas = hero_deck_data.get_deck_cards()
 	
 		var card_info:Array = []
@@ -963,6 +963,130 @@ func load_cards() -> void:
 							
 		load_cards_to_pile(card_info, "deck" + str(hero_id))
 		load_cards_to_pile(set_aside_info, "set_aside")
+	unique_team_up_replace()
+
+#Since MC 1.8, when playing with multiple heroes, 
+#if one of the identity-specific allies conflicts with
+#a hero, we replace it with a team-up card
+func unique_team_up_replace():
+	if gameData.get_team_size() < 2:
+		return
+	var all_unique_allies = []
+	var to_replace = []
+	for i in range(gameData.get_team_size()):
+		var hero_id = i+1
+		var deck:Pile = cfc.NMAP.get("deck" + str(hero_id))
+		if !deck:
+			return
+		for card in deck.get_all_cards():
+			if card.get_property("type_code") == "ally":
+				if card.get_property("is_unique", false):
+					if card.get_property("faction_code", "") == "hero":
+						all_unique_allies.append({"deck_id": hero_id, "card": card})
+
+	for i in range(gameData.get_team_size()):
+		var hero_id = i+1
+		var hero_deck_data = gameData.get_team_member(hero_id)["hero_data"]
+		var hero_card_data = cfc.get_card_by_id(hero_deck_data.get_hero_id())
+		var alter_ego_id = hero_card_data.get("back_card_code", "")	
+		var alter_ego_card_data = cfc.get_card_by_id(alter_ego_id)			
+
+		var unique_data = {
+			"alter_ego_title":  alter_ego_card_data["shortname"].to_lower(),
+			"subtitle" : alter_ego_card_data.get("subname", "").to_lower(),
+			"title": hero_card_data["shortname"].to_lower()
+		}
+		for card_info in all_unique_allies:
+			var card = card_info["card"]
+			var card_data = {
+				"title":  card.get_property("shortname", "").to_lower(),
+				"subtitle" : card.get_property("subname", "").to_lower(),			
+			}
+			var card_match = WCUtils.unique_cards_match(unique_data, card_data)
+			if card_match:
+				var other_hero_id = card_info["deck_id"]
+				var other_hero_deck_data = gameData.get_team_member(other_hero_id)["hero_data"]
+				var other_hero_card_data = cfc.get_card_by_id(other_hero_deck_data.get_hero_id())
+				var other_alter_ego_id = other_hero_card_data.get("back_card_code", "")	
+				var other_alter_ego_card_data = cfc.get_card_by_id(other_alter_ego_id)			
+
+				var other_unique_data = {
+					"alter_ego_title":  other_alter_ego_card_data["shortname"].to_lower(),
+					"subtitle" : other_alter_ego_card_data.get("subname", "").to_lower(),
+					"title": other_hero_card_data["shortname"].to_lower()
+				}				
+				to_replace.append({"deck_id": card_info["deck_id"], "card": card, "team_up": [unique_data, other_unique_data]})
+
+	var replacement_happened:PoolStringArray = []
+	for replacement in to_replace:
+		var card = replacement["card"]
+		var new_code = find_team_up_card(replacement["team_up"])
+		if can_add_card_to_deck(new_code, replacement["deck_id"]):
+			var desc = card.canonical_name
+			card.load_from_card_id(new_code)
+			desc+= " --> " + card.canonical_name
+			replacement_happened.append(desc)
+	
+	if replacement_happened:
+		var description = replacement_happened.join("\n")
+		while cfc.get_modal_menu():
+			yield(cfc.get_tree(), "idle_frame")		
+		var confirm = _OPTIONAL_CONFIRM_SCENE.instance()
+		cfc.add_modal_menu(confirm)
+		confirm.simple_message("Some cards have been replaced during setup", description, "rules_1.8_teamup_replacement")
+		# We have to wait until the player has finished selecting an option
+		yield(confirm,"selected")
+		# Garbage cleanup
+		cfc.remove_modal_menu(confirm)
+		confirm.queue_free()	
+		
+
+var _enforce_deckbuilding_rules = true
+func can_add_card_to_deck(card_id, deck_id):
+	if !card_id:
+		return false
+
+	if !_enforce_deckbuilding_rules:
+		return true
+
+	var deck:Pile = cfc.NMAP.get("deck" + str(deck_id))
+	if !deck:
+		return false
+		
+	return WCUtils.can_add_card_to_deck(card_id, deck.get_all_cards())
+
+
+var _all_team_up_cards = {}
+func find_team_up_card(team_up_data):
+	var titles1 = team_up_data[0].values()
+	var titles2 = team_up_data[1].values()
+
+	if ! _all_team_up_cards:
+		for card_id in cfc.card_definitions:
+			var found_scripts = cfc.set_scripts.get(card_id,{})
+			if !found_scripts:
+				continue
+			if card_id == "32021":
+				var _tmp = 1	
+			var path:Array = WCUtils.find_string_in_variant(found_scripts,"team_up")
+			if path:
+				
+				var root = found_scripts
+				for i in path.size():
+					var subkey = path[i]
+					root = root[subkey]
+				var team_members = root["team_up"]			
+				_all_team_up_cards[card_id] = [team_members[0].to_lower(), team_members[1].to_lower()]
+	
+	for i in titles1:
+		for j in titles2:
+			for card_id in _all_team_up_cards:
+				var team_members = _all_team_up_cards[card_id]
+				if team_members[0] == i and team_members[1] == j:
+					return card_id
+				if team_members[0] == j and team_members[1] == i:
+					return card_id
+	return ""
 
 
 
@@ -1437,17 +1561,18 @@ func count_card_per_player_in_play(unique_card:WCCard, hero_id = 0, exclude_self
 			result +=1
 	return result
 	
-func unique_card_in_play(unique_card:WCCard):	
+func unique_card_in_play(unique_card:WCCard):
 	if ! unique_card.get_property("is_unique", 0, true):
 		return null
 		
-	var title = unique_card.get_property("shortname", "").to_lower()
-	var subtitle = unique_card.get_property("subname", "").to_lower()
+	var unique_data = {
+		"title":  unique_card.get_property("shortname", "").to_lower(),
+		"subtitle" : unique_card.get_property("subname", "").to_lower(),
+	}
 	var type_code = unique_card.get_property("type_code", "")
-	var alter_ego_title = ""
 	if type_code in ["hero", "alter_ego"]:
 		var alter_ego_data = cfc.get_alter_ego_data(unique_card.canonical_id)
-		alter_ego_title = alter_ego_data.get("shortname", "").to_lower()
+		unique_data["alter_ego_title"] = alter_ego_data.get("shortname", "").to_lower()
 
 	
 	var all_cards = self.get_all_cards()
@@ -1460,27 +1585,19 @@ func unique_card_in_play(unique_card:WCCard):
 			continue
 		if ! card.get_property("is_unique", 0, true):
 			continue	
-		var card_title = card.get_property("shortname", "").to_lower()
-		var card_subtitle = card.get_property("subname", "").to_lower()
+		var card_data = {
+			"title":  card.get_property("shortname", "").to_lower(),
+			"subtitle" : card.get_property("subname", "").to_lower(),
+		}			
 		var card_type_code = card.get_property("type_code", "")
-		var card_alter_ego_title = ""
 		if card_type_code in ["hero", "alter_ego"]:
 			var alter_ego_data = cfc.get_alter_ego_data(card.canonical_id)
-			card_alter_ego_title = alter_ego_data.get("shortname", "").to_lower()
+			card_data["card_alter_ego_title"] = alter_ego_data.get("shortname", "").to_lower()
 	
-		#the two cards share a title, and both have no subtitle and no alter_ego title
-		if title and (title == card_title):
-			if (!subtitle and !card_subtitle and !card_alter_ego_title and !alter_ego_title):
-				return card
-		# The subtitle or alter-ego title of one matches the title, subtitle, or alter-ego title of the other. 		
-		if subtitle and (subtitle in [card_title, card_subtitle, card_alter_ego_title]):
+		var cards_match = WCUtils.unique_cards_match(unique_data, card_data)
+		if cards_match:
 			return card
-		if alter_ego_title and (alter_ego_title in [card_title, card_subtitle, card_alter_ego_title]):
-			return card	
-		if card_subtitle and (card_subtitle in [title, subtitle, alter_ego_title]):
-			return card
-		if card_alter_ego_title and (card_alter_ego_title in [title, subtitle, alter_ego_title]):
-			return card	
+
 		
 	return null
 

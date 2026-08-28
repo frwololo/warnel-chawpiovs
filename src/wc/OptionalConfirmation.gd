@@ -78,9 +78,9 @@ func set_mode(mode):
 			msgbox.visible = true			
 			get_cancel().visible = false
 			get_ok().text = "  OK  "
-			get_checkbox().visible = true				
+			get_checkbox().visible = (_msg_id != "")				
 
-func simple_message(title, message, msg_id):
+func simple_message(title, message, msg_id = ""):
 	_msg_id = msg_id
 	get_node("%Title").text = title	
 	set_mode(MODES.MESSAGE)

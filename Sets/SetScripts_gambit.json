@@ -1,34 +1,93 @@
 {
 	"Acolyte Frenzy": {
-		"TODO": "",
-		"_surge": {},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "enemy_activates_against_you",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_assassin": 1
+							},
+							"filter_properties2": {
+								"type_code": "minion"
+							},
+							"filter_same_controller": true
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "surge"
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "current_hero_target"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "current_hero_target"
 				}
 			]
 		}
 	},
 	"Assassination Attempt": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "enemy_attacks_you",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_assassin": 1
+							},
+							"filter_properties2": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_assassin": 1
+							},
+							"filter_properties2": {
+								"type_code": "minion"
+							}
+						}
+					]
 				}
 			]
 		}
 	},
 	"Beauty and the Thief": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -36,44 +95,110 @@
 					"is_cost": true,
 					"tags": [
 						"hero_action"
+					],
+					"team_up": [
+						"Gambit",
+						"Rogue"
 					]
+				},
+				{
+					"name": "attack",
+					"amount": 4,
+					"subject": "an_enemy"
+				},
+				{
+					"name": "thwart",
+					"amount": 4,
+					"subject": "a_scheme"
 				}
 			]
 		}
 	},
 	"Belladonna": {
-		"TODO": "",
-		"quickstrike": {}
-	},
-	"Bishop - Lucas Bishop": {
-		"TODO": "",
-		"alterants": {
+		"quickstrike": {},
+		"character_died": {
+			"filter_event_source": "self",
 			"board": [
 				{
-					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
-					"alteration": 1
+					"name": "add_threat",
+					"amount": 2,
+					"subject": "main_scheme"
+				}
+			]
+		}
+	},
+	"Bishop - Lucas Bishop": {
+		"enemy_attack_happened": {
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "energy",
+					"modification": 1,
+					"subject": "self"
 				}
 			]
 		},
-		"response": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
-		},
 		"interrupt": {
-			"event_name": "TODO",
+			"event_name": "attack",
+			"trigger": "self",
 			"is_optional_board": true,
-			"board": []
+			"condition_board": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"token_name": "energy",
+					"subject": "self"
+				}
+			},
+			"board": [
+				{
+					"name": "save_variable",
+					"var_name": "my_alteration",
+					"var_type": "int",
+					"is_cost": true,
+					"value": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"token_name": "energy",
+							"subject": "self",
+							"multiplier": 2,
+							"max": 6
+						}
+					},
+					"_comments": "remembering the value for use"
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"token_name": "energy",
+					"modification": 0,
+					"set_to_mod": true,
+					"subject": "self"
+				},
+				{
+					"name": "add_script",
+					"end_condition": "basic_attack_happened",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": "my_alteration"
+								}
+							]
+						}
+					}
+				}
+			]
 		}
 	},
 	"Breaking and Entering": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -197,7 +322,6 @@
 		}
 	},
 	"Creole Charmer": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -209,26 +333,58 @@
 				},
 				{
 					"name": "thwart",
-					"amount": 1,
+					"amount": 3,
 					"subject": "a_scheme"
+				}
+			]
+		},
+		"last_threat_removed": {
+			"event_filters": {
+				"source": "self"
+			},
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "villain"
 				}
 			]
 		}
 	},
 	"Dazzler - Alison Blaire": {
-		"TODO": "",
-		"response": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "confused",
+					"subject": "an_enemy"
+				}
+			]
 		}
 	},
 	"Exodus": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "host_card",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Psionic Shield"
+							}
+						}
+					],
+					"tags": [
+						"disable_attach_trigger"
+					]
 				}
 			]
 		}
@@ -293,14 +449,14 @@
 						"var_type": "subject",
 						"value": "trigger",
 						"_comments": "remembering the card for modification use"
-					},					
+					},
 					{
 						"name": "save_variable",
 						"var_name": "my_increase",
 						"var_type": "int",
 						"value": 1,
 						"_comments": "remembering the amount for modification use"
-					},	
+					}
 				],
 				"Charge 2": [
 					{
@@ -316,14 +472,14 @@
 						"var_type": "subject",
 						"value": "trigger",
 						"_comments": "remembering the card for modification use"
-					},					
+					},
 					{
 						"name": "save_variable",
 						"var_name": "my_increase",
 						"var_type": "int",
 						"value": 2,
 						"_comments": "remembering the amount for modification use"
-					},	
+					}
 				],
 				"Charge 3": [
 					{
@@ -339,19 +495,14 @@
 						"var_type": "subject",
 						"value": "trigger",
 						"_comments": "remembering the card for modification use"
-					},					
+					},
 					{
 						"name": "save_variable",
 						"var_name": "my_increase",
 						"var_type": "int",
 						"value": 3,
 						"_comments": "remembering the amount for modification use"
-					},						
-					{
-						"name": "increase",
-						"amount": 3,
-						"subject": "interrupted_event"
-					}
+					},
 				]
 			}
 		},
@@ -360,7 +511,7 @@
 			"all": [
 				{
 					"name": "increase",
-					"amount": {	
+					"amount": {
 						"func_name": "get_subject_int_variable",
 						"func_params": {
 							"subject": "self",
@@ -385,7 +536,7 @@
 					"var_name": "my_event"
 				}
 			]
-		}		
+		}
 	},
 	"Gambit's Guild Armor": {
 		"response": {
@@ -433,35 +584,82 @@
 		}
 	},
 	"Guild Assassin": {
-		"TODO": "",
-		"quickstrike": {}
-	},
-	"Guild Business": {
-		"TODO": "",
-		"manual": {
+		"quickstrike": {},
+		"character_died": {
+			"filter_event_source": "self",
 			"board": [
 				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
-				},
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "main_scheme"
+				}
+			]
+		}
+	},
+	"Guild Business": {
+		"give_obligation": {
+			"__to__": "Remy LeBeau"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"manual": {
+			"board": [
 				{
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
 						"alter_ego_action"
 					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "my_identity"
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "removed_from_game",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Herald of Avalon": {
-		"TODO": "",
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"discard_villain",
+						"deck_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Exodus"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
 				}
 			]
 		}
@@ -502,23 +700,28 @@
 		}
 	},
 	"Molecular Acceleration": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": [
+		"interrupt_paid_as_resource": {
+			"trigger": "self",
+			"is_optional_all": true,
+			"all": [
 				{
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
-						"hero_interrupt"
+						"hero_form"
 					]
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": 1,
+					"token_name": "charge",
+					"subject": "my_hero"
 				}
 			]
 		}
 	},
 	"Mutant Education": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -527,28 +730,52 @@
 					"tags": [
 						"alter_ego_action"
 					]
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"src_container": "discard",
+					"dest_container": "deck",
+					"subject": "tutor",
+					"subject_count": "all",
+					"selection_count": 2,
+					"selection_type": "max",
+					"needs_selection": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"faction_code": "hero"
+							}
+						}
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "card_is_in_play",
+								"func_params": {
+									"card_name": "X-Mansion"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "draw_cards",
+									"amount": 1
+								}
+							]
+						}
+					]
 				}
 			]
 		}
 	},
 	"Natural Agility": {
-		"TODO": "",
-		"alterants": {
-			"hand": [
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
-					"alteration": 1
-				}
-			]
-		},
 		"interrupt": {
-			"event_name": "TODO",
+			"event_name": "enemy_attack_damage",
+			"event_filters": {
+				"target": "my_hero"
+			},
 			"is_optional_hand": true,
 			"hand": [
 				{
@@ -557,31 +784,73 @@
 					"tags": [
 						"hero_interrupt"
 					]
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": 1,
+					"token_name": "charge",
+					"subject": "my_hero"
+				},
+				{
+					"name": "set_defender",
+					"is_cost": true,
+					"subject": "my_hero",
+					"_comments": "set_defender here has a double role, 1) sets my_hero as a defender if not already the case, 2) because it is a cost, it will fail if there is already a different defender chosen"
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "enemy_activation_finished",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "defense",
+									"trigger": "my_hero",
+									"alteration": {
+										"func_name": "count_tokens",
+										"func_params": {
+											"token_name": "charge",
+											"subject": "my_hero"
+										}
+									}
+								}
+							]
+						}
+					}
 				}
 			]
 		}
 	},
 	"Operative Skill": {
-		"TODO": "",
-		"manual": {
+		"uses": {
+			"__name__": "operative",
+			"__amount__": 3
+		},
+		"interrupt_remove_threat": {
+			"event_filters": {
+				"tags": [
+					"thwart"
+				],
+				"source": "my_hero"
+			},
+			"is_optional_board": true,
 			"board": [
 				{
 					"name": "mod_tokens",
 					"is_cost": true,
 					"modification": -1,
-					"token_name": "TODO",
+					"token_name": "operative",
 					"subject": "self"
+				},
+				{
+					"name": "increase",
+					"subject": "interruptd_event",
+					"amount": 1
 				}
 			]
-		},
-		"uses": {
-			"__name__": "TODO",
-			"__amount__": "TODO"
-		},
-		"interrupt": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
 		}
 	},
 	"Passion for Justice": {
@@ -684,20 +953,50 @@
 		}
 	},
 	"Psionic Shield": {
-		"TODO": "",
-		"_surge": {},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "surge"
 				}
 			]
 		},
 		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+			"event_name": "card_dies",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "heal",
+					"subject": "host",
+					"amount": 100
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			],
+			"trigger": "host"
 		}
 	},
 	"Remy LeBeau": {
@@ -777,11 +1076,6 @@
 					"modification": 1,
 					"token_name": "charge",
 					"subject": "my_hero"
-				},				
-				{
-					"name": "attack",
-					"amount": 0,
-					"subject": "an_enemy"
 				},
 				{
 					"name": "attack",
@@ -792,7 +1086,12 @@
 					"name": "attack",
 					"amount": 0,
 					"subject": "an_enemy"
-				}				
+				},
+				{
+					"name": "attack",
+					"amount": 0,
+					"subject": "an_enemy"
+				}
 			]
 		}
 	},
@@ -838,7 +1137,28 @@
 		}
 	},
 	"The Assassins Guild": {
-		"TODO": ""
+		"response_card_dies": {
+			"event_filters": {
+				"filter_state_event_source": [
+					{
+						"filter_properties": {
+							"type_code": "minion"
+						},
+						"filter_properties2": {
+							"trait_assassin": 1,
+							"comparison": "ge"
+						}
+					}
+				]
+			},
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 2,
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"The Thieves Guild": {
 		"script_executed": {
@@ -879,20 +1199,34 @@
 		}
 	},
 	"War Room": {
-		"TODO": "",
-		"manual": {
+		"response_card_dies": {
+			"filter_state_event_source": [
+				{
+					"filter_properties": {
+						"type_code": "ally"
+					}
+				}
+			],
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					}
+				}
+			],
+			"is_optional_board": true,
 			"board": [
 				{
 					"name": "exhaust_card",
-					"is_cost": true,
+					"ais_cost": true,
 					"subject": "self"
+				},
+				{
+					"name": "remove_threat",
+					"amount": 1,
+					"subject": "a_scheme"
 				}
 			]
-		},
-		"response": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
 		}
 	},
 	"X-Mansion": {
@@ -939,7 +1273,6 @@
 		}
 	},
 	"X-Men Instruction": {
-		"TODO": "",
 		"manual": {
 			"hand": [
 				{
@@ -947,6 +1280,45 @@
 					"is_cost": true,
 					"tags": [
 						"alter_ego_action"
+					]
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"src_container": "discard",
+					"dest_container": "deck",
+					"subject": "tutor",
+					"subject_count": "all",
+					"selection_count": 2,
+					"selection_type": "max",
+					"needs_selection": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							},
+							"filter_properties2": {
+								"trait_x-men": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "card_is_in_play",
+								"func_params": {
+									"card_name": "X-Mansion"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "draw_cards",
+									"amount": 1
+								}
+							]
+						}
 					]
 				}
 			]

@@ -9032,6 +9032,7 @@
 					"needs_selection": true
 				},
 				{
+					"name": "enemy_activates_against_you",
 					"subject": "Stryfe"
 				}
 			]

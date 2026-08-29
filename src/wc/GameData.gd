@@ -253,10 +253,9 @@ func download_music():
 func _file_downloaded(url, destination):
 	if url == CFConst.RESOURCES_URL + "music.zip":
 		var dir:Directory = Directory.new()	
-		dir.rename(destination, "user://music.zip")
+		var filename = "user://music.zip"		
+		dir.rename(destination, filename)
 
-
-		var filename = "user://music.zip"
 		if WCUtils.file_exists(filename):
 			var _success_res = ProjectSettings.load_resource_pack(filename)
 			theAudioManager.reset()

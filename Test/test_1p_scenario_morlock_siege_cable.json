@@ -1,0 +1,493 @@
+{
+	"_comments": "Scenario Start Test : Morlock siege vs Cable",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Cable",
+					"deck_id": 32974
+				}
+			}
+		],
+		"scenario": {
+			"name": "Knock, Knock"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "Lock and Load",
+			"_comments": "select player side scheme for cable"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 32974,
+					"hero": "40001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Pushed to the Limit #40083",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Greycrow #40097",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Inhibitor Collar #40092",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Back in Action #40088",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Maraudin' Ain't Easy #40086",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Riptide #40099",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Technovirus Resurgence #40031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Bound by Business #40102",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Heavy Armament #40090",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Territorial Control #40087",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Bound by Business #40102",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mutant Slayers #40101",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Senator's Support #40093",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Back in Action #40088",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "In the Midst of Chaos #40085",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Harpoon #40098",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Arclight #40094",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Chimera #40096",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Seek the Weak #40089",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Seek the Weak #40089",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Seek the Weak #40089",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Bolstered by Wrath #40082",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Vertigo #40100",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Titanium Exoskeleton #40091",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Blockbuster #40095",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Inhibitor Collar #40092",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "By Any Means #40084",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Blockbuster - A #40071a",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "Knock, Knock - 1B #40077b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				},
+				{
+					"card": "Lock and Load #40019",
+					"owner_hero_id": 1,
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Routed #40081a",
+					"owner_hero_id": 0
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Cable #40001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Stryfe #40032",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Back to the Future #40033",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Telekinetic Force Field #40034",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mind Scan #40035",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Telekinetic Blast #40036",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mutant Massacre - 2A #40078a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mutant Massacre - 2B #40078b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Arclight - A #40070a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Chimera - A #40072a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Greycrow - A #40073a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Harpoon - A #40074a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Riptide - A #40075a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Vertigo - A #40076a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Morlock #40079",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Morlock #40079",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Morlock #40079",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Morlock #40079",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hide! #40080",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Knock, Knock - 1A #40077a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Psimitar #40029",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Power of the Mind #40028",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Uncanny X-Force #40022",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sunspot - Bobby Da Costa #40016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Uncanny X-Force #40022",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Deadpool - Wade Wilson #40024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Caliban #40014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sidearm #40030",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Askani'son #40009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Call for Backup #40018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Telekinetic Blast #40005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Precognition #40004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Telekinetic Force Field #40012",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Forced Amnesia #40010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Temporal Leap #40013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sidearm #40030",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Deathlok - Unit L17 #40025",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Plasma Rifle #40011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Professor #40008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Power of the Mind #40028",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mission Planning #40017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mission Leader #40023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Power of the Mind #40028",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Uncanny X-Force #40022",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Establish Perimeter #40020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Telekinetic Blast #40005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Graymalkin #40007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Frenemies #40026",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "E.V.A. #40021",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mission Planning #40017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Fantomex - Charlie Cluster-7 #40015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mind Scan #40003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mind Scan #40003",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Nathan Summers #40001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Bodyslide #40002",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Build Support #40027",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mind Scan #40003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mission Planning #40017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sidearm #40030",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Technovirus Purge #40006",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

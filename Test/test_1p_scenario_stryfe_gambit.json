@@ -1,0 +1,449 @@
+{
+	"_comments": "Scenario Start Test : Stryfe vs Gambit",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Gambit",
+					"deck_id": 28755
+				}
+			}
+		],
+		"scenario": {
+			"name": "Uncontrollable Power"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 28755,
+					"hero": "37001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Captive Hope #40131",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Cerebral Erasure #40175",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Dragoness #40185",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Extreme Measures #40184",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Forearm #40186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Guild Business #37025",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mental Transferal #40169",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mind Alteration #40170",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mind Trap #40171",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mutant Insurrection #40189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psionic Amnesia #40172",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psionic Surge #40177",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psychic Inertia #40173",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psychic Inertia #40173",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psychic Override #40178",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psychic Override #40178",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Reaper #40187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Samurai #40188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Strobe #40180",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Telekinetic Wave #40179",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Telekinetic Wave #40179",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Telekinetic Wave #40179",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Telepathic Camouflage #40176",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Tempo #40181",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Thumbelina #40182",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Wildside #40183",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Zero #40174",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Stryfe - 1 #40163",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "Uncontrollable Power - 1B #40166b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Stryfe's Grasp #40168a",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 10
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Gambit #37001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Belladonna #37026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Assassins Guild #37027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Guild Assassin #37028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Guild Assassin #37028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assassination Attempt #37029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Stryfe - 2 #40164",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Left to Your Fate - 2A #40167a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Left to Your Fate - 2B #40167b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Living Bomb #40168b",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Uncontrollable Power - 1A #40166a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Mutant Education #37021",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Hit and Run #37020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Breaking and Entering #37015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Operative Skill #37013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Passion for Justice #37016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "X-Mansion #37018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Bishop - Lucas Bishop #37011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Genius #37023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Natural Agility #37008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Stealth Strike #37014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Charged Card #37006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Charged Card #37006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Molecular Acceleration #37010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Creole Charmer #37009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Molecular Acceleration #37010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Strength #37024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Beauty and the Thief #37019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Creole Charmer #37009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Natural Agility #37008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mutant Education #37021",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Operative Skill #37013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Professor X - Charles Xavier #37017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mutant Education #37021",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Passion for Justice #37016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Breaking and Entering #37015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Charged Card #37006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Royal Flush #37007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Hit and Run #37020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Breaking and Entering #37015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Stealth Strike #37014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Dazzler - Alison Blaire #37012",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Gambit's Staff #37004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Thieves Guild #37003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Stealth Strike #37014",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Remy LeBeau #37001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Hope Summers #40130",
+					"owner_hero_id": 0
+				}
+			],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Rogue - Anna Marie #37002",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Hit and Run #37020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Gambit's Guild Armor #37005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Operative Skill #37013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy #37022",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Royal Flush #37007",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

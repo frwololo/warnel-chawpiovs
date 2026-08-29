@@ -233,7 +233,7 @@ func considered_in_play()-> bool:
 
 
 static func is_character_type(type_code)-> bool:
-	return type_code in ["villain", "hero", "alter_ego", "ally", "minion"]
+	return type_code in CFConst.CHARACTER_CARD_TYPES
 
 func is_card_type(type_code):
 	var result = cfc.ov_utils.compare_string_properties({
@@ -1285,7 +1285,10 @@ func retrieve_altered_scripts(trigger: String, filters := {}):
 	
 	var result = {}
 		
-	for obj in scriptables_array:			
+	for obj in scriptables_array:
+		if !is_instance_valid(obj):
+			var _error = 1
+			continue			
 		var obj_scripts = obj.retrieve_scripts("script_alterants")
 		if !obj_scripts:
 			continue
@@ -1297,7 +1300,7 @@ func retrieve_altered_scripts(trigger: String, filters := {}):
 				script,
 				self,
 				obj,
-				{}):
+				{"_trigger": trigger}):
 				continue
 			#this card is considered a valid target for alteration by obj
 			result = WCUtils.merge_dict(result, script.get("script", {}), true)

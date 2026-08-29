@@ -8355,7 +8355,7 @@
 				}
 			]
 		},
-		"interrupt_card_dies": {
+		"last_threat_removed": {
 			"trigger": "self",
 			"board": [
 				{
@@ -9849,9 +9849,24 @@
 					]
 				},
 				{
+					"_comments": "back side of cards end up in the villain's pile at setup,I found the easiest way to deal with it is to move them to set_aside",
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck_villain",
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Living Bomb"
+							}
+						},
+					]
+				},				
+				{
 					"name": "reveal_encounter",
 					"subject": "tutor",
-					"src_container": "deck_villain",
+					"src_container": "set_aside",
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -10101,6 +10116,7 @@
 				"Return Highest Cost support": [
 					{
 						"name": "return_card_to_owner_hand",
+						"is_cost": true,
 						"subject": "boardseek",
 						"sort_by": "function",
 						"sort_descending": true,

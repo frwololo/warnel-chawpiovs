@@ -211,16 +211,7 @@
 		}
 	},
 	"hinder": {
-		"self_moved_to_board": {
-			"board": [
-				{
-					"name": "add_threat",
-					"amount": "__amount__",
-					"subject": "self",
-					"for_each_player": "__each_player__"
-				}
-			]
-		}
+		"_comments": "to-do remove hinder from scripts, it was moved to code"
 	},
 	"incite": {
 		"reveal": {

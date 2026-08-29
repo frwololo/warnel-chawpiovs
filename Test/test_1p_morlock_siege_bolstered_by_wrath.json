@@ -1,0 +1,196 @@
+{
+	"_comments": "Automated Test for Morlock Siege - Bolstered by Wrath",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},	
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Cable"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Arclight - A"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Back in Action"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Routed #40081a"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Mutant Massacre #40078a"
+				},
+				{
+					"card": "Mutant Massacre #40078b"
+				},
+				{
+					"card": "Morlock #40079"
+				},
+				{
+					"card": "Morlock #40079"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Knock, Knock #40077b",
+					"tokens": {
+						"threat": 2,
+						"knock": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Greycrow - A",
+					"host": "Routed",
+					"inactive_attachment": true
+				},
+				{
+					"card": "Bolstered by Wrath",
+					"host": "Arclight"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Cable"
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Bolstered by Wrath"
+		},
+		{
+			"type": "select",
+			"value": "MockingBird"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Cable"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Arclight - A"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Back in Action"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Bolstered by Wrath"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Routed #40081a"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Mutant Massacre #40078a"
+				},
+				{
+					"card": "Mutant Massacre #40078b"
+				},
+				{
+					"card": "Morlock #40079"
+				},
+				{
+					"card": "Morlock #40079"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Knock, Knock #40077b",
+					"tokens": {
+						"threat": 2,
+						"knock": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Greycrow - A",
+					"host": "Routed",
+					"inactive_attachment": true
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Cable",
+					"exhausted": true,
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [],
+			"discard1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

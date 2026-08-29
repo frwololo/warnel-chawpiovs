@@ -1,0 +1,140 @@
+{
+	"_comments": "Stryfe's Psychic Inertia",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Gambit"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Stryfe - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Uncontrollable Power"
+				},
+				{
+					"card": "Stryfe's Grasp",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Gambit"
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [],
+			"others": [
+				{
+					"card": "Psychic Inertia",
+					"host": "Gambit"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Hope Summers"
+				}
+			],
+			"hand1": []
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Gambit"
+		},
+		{
+			"type": "choose",
+			"value": "Attack"
+		},
+		{
+			"type": "target",
+			"value": "Stryfe"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Gambit"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Stryfe - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Uncontrollable Power"
+				},
+				{
+					"card": "Stryfe's Grasp",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Gambit"
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [],
+			"others": [
+				{
+					"card": "Psychic Inertia",
+					"host": "Gambit"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Hope Summers"
+				}
+			],
+			"hand1": []
+		}
+	}
+}

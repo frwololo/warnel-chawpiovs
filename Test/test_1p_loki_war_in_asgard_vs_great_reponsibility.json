@@ -1,5 +1,8 @@
 {
-	"_comments": "Bug: Great Responsibility cancelling entirety of event instead of just threat aspect",
+	"_comments": [
+		"Bug: Great Responsibility cancelling entirety of event instead of just threat aspect",
+		"2026/08 as of MC 1.8, Hinder is an enter effect, not a place thrat effect, so great responsibiilty doesn't trigger anymore"
+	],
 	"init": {
 		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [
@@ -115,7 +118,7 @@
 				},	
 				{
 					"card": "War in Asgard",
-					"tokens": {"threat": 6}
+					"tokens": {"threat": 7}
 				},					
 			],
 			"victory_display": [			
@@ -128,19 +131,18 @@
 			"identity1": [
 				{
 					"card": "21031a",
-					"tokens": {"damage": 1},
 					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
 				}
 			],
 			"discard1": [
-				{
-					"card": "Great Responsibility"
-				},
 			],
 			"hand1": [
 				{
 					"card": "Strength"
-				},						
+				},	
+				{
+					"card": "Great Responsibility"
+				},				
 			]
 		}
 	}

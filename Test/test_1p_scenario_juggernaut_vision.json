@@ -1,0 +1,437 @@
+{
+	"_comments": "Scenario Start Test : Juggernaut vs Vision",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Vision #26001a",
+					"deck_id": 16198
+				}
+			}
+		],
+		"scenario": {
+			"name": "The Unstoppable Juggernaut"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 16198,
+					"hero": "26001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Trample #40128",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Corrupted Programming #26028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Ground Pound #40127",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Creeping Willow #40133",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Ground Pound #40127",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Cyttorak's Exemplar #40129",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Cyttorak's Exemplar #40129",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Breakthrough #40125",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Creeping Willow #40133",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Flatten #40126",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Cyttorak's Exemplar #40129",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Creeping Willow #40133",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Black Tom Cassidy #40132",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Captive Hope #40131",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Trample #40128",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Building Momentum #40124",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Breakthrough #40125",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Making Green #40134",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Creeping Willow #40133",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Head of Steam #40123",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "A Sound Thrashing #40135",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Flatten #40126",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Juggernaut - 1 #40118",
+					"owner_hero_id": 0,
+					"tokens": {
+						"momentum": 1,
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Unstoppable Juggernaut - 1B #40121b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Dense #26002b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Vision #26001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ultron #26029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Ultron Unleashed #26030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Ultron Drones #26031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Relentless Android #26032",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Relentless Android #26032",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Juggernaut - 2 #40119",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Juggernaut Exposed #40122b",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Unstoppable Juggernaut - 1A #40121a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Reboot #26024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Avengers Mansion #26023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Defiance #26018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Victor Mancha #26015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Side Step #26019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Get Behind Me! #26020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Jocasta #26013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Genius #26026",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Superdense Strike #26009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Indomitable #26017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Solar Beam #26008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Density Control #26007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Phase Disruption #26011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Just Passing Through #26010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mass Increase #26012",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Strength #26027",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Get Behind Me! #26020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Just Passing Through #26010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Superdense Strike #26009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Reboot #26024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Flow Like Water #26016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Side Step #26019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Reboot #26024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Side Step #26019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Defiance #26018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Density Control #26007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Solar Beam #26008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Preservation #26021",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Defiance #26018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Flow Like Water #26016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Protector - Alexis #26014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Solar Gem #26005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "616 Hickory Branch Lane #26004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Indomitable #26017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Solar Beam #26008",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Vision #26001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Hope Summers #40130",
+					"owner_hero_id": 0
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Intangible #26002",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Vivian #26003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Machine Man - Aaron Stack #26022",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Vision's Cape #26006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Flow Like Water #26016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy #26025",
+					"owner_hero_id": 1
+				}
+			],
+			"others": [
+				{
+					"card": "Juggernaut's Helmet #40122a",
+					"owner_hero_id": 0,
+					"host": "40118"
+				}
+			]
+		}
+	}
+}

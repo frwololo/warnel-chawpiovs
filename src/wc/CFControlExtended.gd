@@ -645,9 +645,11 @@ func _load_one_card_definition(card_data, box_name:= "core", fanmade = false):
 
 	if not card_data.has("Cost") and card_data.has("cost"):
 		card_data["Cost"] = card_data.get("cost")
+
+	var card_type:String = card_data["type_code"]
 	
 	for action in ["attack","thwart", "scheme"]:	
-		if card_data.has(action) and (card_data[action] != null):
+		if card_type in CFConst.CHARACTER_CARD_TYPES and card_data.has(action) and (card_data[action] != null):
 			card_data["can_" + action] = 1
 			if card_data[action] < 0: #e.g. Titania gets "-1" in marvelcdb which is a problem for alterants
 				 card_data[action] = 0
@@ -667,7 +669,7 @@ func _load_one_card_definition(card_data, box_name:= "core", fanmade = false):
 
 	###END Fixing missing data
 
-	var card_type:String = card_data["type_code"]
+
 	
 	#enriching data
 	var lc_card_type = card_type.to_lower()

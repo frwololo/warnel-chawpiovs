@@ -326,7 +326,7 @@ func return_card_to_owner_hand(script: ScriptTask) -> int:
 	for subject in all_subjects:
 		var owner_id = subject.get_owner_hero_id()
 		if owner_id:
-			script.script_definition["dest_container"] = "hand" + owner_id
+			script.script_definition["dest_container"] = "hand" + str(owner_id)
 			script.subjects = [subject]
 			move_card_to_container(script)
 	
@@ -737,7 +737,12 @@ func scheme_base_threat(script:ScriptTask) -> int:
 	var scheme = script.owner
 	var tags = script.get_property("tags", [])
 	var base_threat = scheme.get_property("base_threat", 0)
-	var retcode = scheme.tokens.mod_token("threat", base_threat, false,costs_dry_run(), tags)
+	
+	#TODO in theory hinder is not always "per hero" but in practice it is always the case
+	#for schemes as of 2026/08
+	var hinder = scheme.get_property("hinder", 0) * gameData.get_team_size()
+	
+	var retcode = scheme.tokens.mod_token("threat", base_threat + hinder, false,costs_dry_run(), tags)
 	return retcode
 
 
@@ -2424,6 +2429,11 @@ func remove_threat(script: ScriptTask) -> int:
 
 	var amount = script.retrieve_integer_property("amount")
 
+	var thwarter = get_actual_action_source_from_script(script)
+	#fallback if null
+	if !thwarter:
+		thwarter = script.owner
+
 	for card in script.subjects:
 		retcode = card.remove_threat(amount, script)
 	
@@ -2434,13 +2444,13 @@ func remove_threat(script: ScriptTask) -> int:
 
 	if (script.has_tag("basic power")):
 		var signal_details = {
-			"source": owner,
+			"source": thwarter ,
 			"amount": amount,
 		}
-		scripting_bus.emit_signal_on_stack("basic_thwart_happened",  owner,  signal_details)			
+		scripting_bus.emit_signal_on_stack("basic_thwart_happened",  thwarter ,  signal_details)			
 	if script.has_tag("thwart"):
 		consequential_damage(script)
-		scripting_bus.emit_signal_on_stack("thwart_happened", owner, {"amount" : amount, "target" : script.subjects[0]})
+		scripting_bus.emit_signal_on_stack("thwart_happened", thwarter , {"amount" : amount, "target" : script.subjects[0]})
 
 		
 

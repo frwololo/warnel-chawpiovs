@@ -476,15 +476,25 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 	
 	if type_code == "attachment":
 		var alterants = []
+		var mods = {}
 		for action in ["attack", "scheme", "thwart"]:
-			var mod = card.get(action, 0)
-			if mod:
+			mods[action] = card.get(action, 0)
+		
+		#marvelcdb sometimes uses "scheme" instead of "thwart" for some attachments	
+		if mods["scheme"] and !mods["thwart"]:
+			mods["thwart"] = mods["scheme"]
+		if mods["thwart"] and !mods["scheme"]:
+			mods["scheme"] = mods["thwart"]	
+		
+		for key in mods:		
+			var value = mods[key]
+			if value:
 				alterants.append(
 					{
 						"filter_task": "get_property",
-						"filter_property_name": action,
+						"filter_property_name": key,
 						"trigger": "host",
-						"alteration": mod
+						"alteration": value
 					}
 				)
 		if alterants:

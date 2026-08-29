@@ -62,7 +62,8 @@ static func filter_trigger(
 	#historically this function was not checking for the is_boost and the check was performed somewhere
 	#else. We enforce a similar pattern here
 	var validity_options = {
-		"ignore_boost_check": true
+		"ignore_boost_check": true,
+		"trigger_details": trigger_details
 	}
 	if !check_validity(trigger_card, card_scripts, "trigger", owner_card, validity_options):
 		return false
@@ -437,35 +438,39 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 	var script_name = card_scripts.get("name", "")
 
 	#more complex handling of validity for some cards that define additional filters
-	var validity_extra_scripts = card.get_potential_scripts("is_valid_target_filters") 
-	if validity_extra_scripts:
-		var found = false
-		for key in [script_name] + tags:
-			if validity_extra_scripts.has(key):
-				validity_extra_scripts = validity_extra_scripts[key]
-				found = true
-				break
-				
-		if found:
-			var source_validity_script = validity_extra_scripts.get("source_condition", {})
-			if source_validity_script and !check_func_filter(owner_card,owner_card,source_validity_script):
-				return false			
-	if owner_card:
-		var action_character = owner_card.get_action_character() if owner_card else null
-		if action_character:
-			validity_extra_scripts = action_character.get_potential_scripts("is_valid_target_filters") 
-			if validity_extra_scripts:
-				var found = false
-				for key in [script_name] + tags:
-					if validity_extra_scripts.has(key):
-						validity_extra_scripts = validity_extra_scripts[key]
-						found = true
-						break
-						
-				if found:
-					var target_validity_script = validity_extra_scripts.get("target_condition", {})
-					if target_validity_script and !check_func_filter(card,action_character,target_validity_script):
-						return false	
+	#attempt to avoid inifinite loop here
+	if options.get("trigger_details", {}).get("_trigger") != "is_valid_target_filters":
+		var validity_extra_scripts = card.get_potential_scripts("is_valid_target_filters") 
+		if validity_extra_scripts:
+			var found = false
+			for key in [script_name] + tags:
+				if validity_extra_scripts.has(key):
+					validity_extra_scripts = validity_extra_scripts[key]
+					found = true
+					break
+					
+			if found:
+				var source_validity_script = validity_extra_scripts.get("source_condition", {})
+				if source_validity_script and !check_func_filter(owner_card,owner_card,source_validity_script):
+					return false			
+		if owner_card and (owner_card != card):
+			#(owner_card != card) test above is to always allow the card itself to enable its own scripts
+			#I'm not really sure why I need this but otherwise it prevents even adding a given script to the card itself
+			var action_character = owner_card.get_action_character() if owner_card else null
+			if action_character:
+				validity_extra_scripts = action_character.get_potential_scripts("is_valid_target_filters") 
+				if validity_extra_scripts:
+					var found = false
+					for key in [script_name] + tags:
+						if validity_extra_scripts.has(key):
+							validity_extra_scripts = validity_extra_scripts[key]
+							found = true
+							break
+							
+					if found:
+						var target_validity_script = validity_extra_scripts.get("target_condition", {})
+						if target_validity_script and !check_func_filter(card,action_character,target_validity_script):
+							return false	
 
 	var type_code = card.get_property("type_code", "")
 	

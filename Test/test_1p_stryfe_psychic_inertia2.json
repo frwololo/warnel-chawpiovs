@@ -1,0 +1,172 @@
+{
+	"_comments": "Stryfe's Psychic Inertia - removal condition",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Gambit"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Stryfe - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Uncontrollable Power"
+				},
+				{
+					"card": "Stryfe's Grasp",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Gambit"
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [],
+			"others": [
+				{
+					"card": "Psychic Inertia",
+					"host": "Gambit"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Hope Summers"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Breaking and Entering"
+				},
+				{
+					"card": "Passion for Justice"
+				},
+				{
+					"card": "Interrogation Room"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Breaking and Entering"
+		},
+		{
+			"type": "target",
+			"value": "Stryfe's Grasp"
+		},
+		{
+			"type": "activate",
+			"value": "Gambit"
+		},
+		{
+			"type": "choose",
+			"value": "Attack"
+		},
+		{
+			"type": "target",
+			"value": "Stryfe"
+		},
+		{
+			"type": "activate",
+			"value": "Psychic Inertia"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Gambit"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Stryfe - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Psychic Inertia",
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Uncontrollable Power"
+				},
+				{
+					"card": "Stryfe's Grasp",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Gambit"
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [],
+			"allies1": [
+				{
+					"card": "Hope Summers"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Interrogation Room"
+				},			
+				{
+					"card": "Passion for Justice"
+				},
+
+				{
+					"card": "Breaking and Entering"
+				}
+			]
+		}
+	}
+}

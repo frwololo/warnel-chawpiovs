@@ -210,7 +210,7 @@
 				},
 				{
 					"name": "thwart",
-					"amount": 1,
+					"amount": 3,
 					"subject": "a_scheme"
 				}
 			]

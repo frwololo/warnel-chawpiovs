@@ -28,11 +28,6 @@
 			"value": "wait_a_bit"
 		},
 		{
-			"type": "activate",
-			"value": "Jennifer Walters",
-			"_comments": "prevent one threat"
-		},
-		{
 			"type": "select",
 			"value": "cancel",
 			"_comments": "No mulligan"
@@ -228,7 +223,7 @@
 					"owner_hero_id": 0,
 					"_comments": "Gnipahellir",
 					"tokens": {
-						"threat": 2
+						"threat": 3
 					}
 				}
 			],

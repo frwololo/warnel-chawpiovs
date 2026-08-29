@@ -29,7 +29,7 @@ var _ssl         : bool = false
 func _init() -> void:
 	set_process(false)
 	connect("request_completed", self, "_on_request_completed")
-
+	connect("download_error", self, "_download_error")
 
 func _ready() -> void:
 	set_process(false)
@@ -118,8 +118,6 @@ func _create_directory() -> void:
 	if directory.dir_exists(save_path) == false:
 		directory.make_dir(save_path)
 
-	directory.change_dir(save_path)
-
 
 func _download_next_file() -> void:
 	if _current_url:
@@ -176,5 +174,9 @@ func _notification(what):
 		for file in files:
 			dir.remove(save_path + file)
 
-#func _on_file_downloaded() -> void:
-#	_download_next_file()
+func _download_error(url, _filename):
+	if url != _current_url:
+		var _error = 1
+
+	_file.close()
+	_current_url = ""

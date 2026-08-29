@@ -1,0 +1,490 @@
+{
+	"_comments": "Scenario Start Test : On the Run vs Domino",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Domino",
+					"deck_id": 32975
+				}
+			}
+		],
+		"scenario": {
+			"name": "Gotta Get Away"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "Riptide",
+			"_comments": "choose a marauder"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 32975,
+					"hero": "40037a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Heavy Armament #40090",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Titanium Exoskeleton #40091",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Bound by Business #40102",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Ramrod #40114",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Dizzying Deeds #40110",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Ruckus #40115",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Blockbuster #40095",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Harpoon #40098",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Inhibitor Collar #40092",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gorgeous George #40112",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Bushwhack #40108",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Get Nasty #40117",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pure Force #40109",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hairbag #40113",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Chimera #40096",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Tag Team #40111",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Tag Team #40111",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hidden in the Clutter #40106",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Inhibitor Collar #40092",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hidden in the Clutter #40106",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Vertigo #40100",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Greycrow #40097",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Favored Weapon #40107",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Senator's Support #40093",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Bound by Business #40102",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Memories of Armageddon #40065",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Slab #40116",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mutant Slayers #40101",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Arclight - A #40070a",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "Gotta Get Away - 1B #40103b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Domino #40037a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Topaz #40066",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Not My Lucky Day #40067",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Prototype #40068",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Superpower Feedback #40069",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Superpower Feedback #40069",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hope's Captor #40105b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Escaping with Hope - 2A #40104a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Escaping with Hope - 2B #40104b",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Blockbuster - A #40071a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Chimera - A #40072a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Greycrow - A #40073a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Harpoon - A #40074a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Riptide - A #40075a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Vertigo - A #40076a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Arclight #40094",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gotta Get Away - 1A #40103a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Digging Deep #40060",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Superpower Training #40059",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Team Investigation #40053",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Probability Field #40049",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Take Out the Guards #40054",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Overwatch #40055",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Lucky and Good #40047",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sharpshooter #40064",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Jackpot! #40043",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Even the Odds #40052",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "A Good Workout #40040",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Outlaw - Inez Temple #40039",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Domino's Pistol #40046",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Pip the Pug #40044",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Domino's Pistol #40046",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sharpshooter #40064",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Atlas Bear - Shoon'kwa #40056",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Painted Lady #40045",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Right Place, Right Time #40042",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Digging Deep #40060",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Wolfsbane - Rahne Sinclair #40051",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Overwatch #40055",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Digging Deep #40060",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Overwatch #40055",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Team Investigation #40053",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "A Good Workout #40040",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Right Place, Right Time #40042",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "White Fox - Ami Han #40057",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Team Investigation #40053",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Even the Odds #40052",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Lucky Break #40048",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Strength #01090",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Genius #01089",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Even the Odds #40052",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "Riptide #40099",
+					"owner_hero_id": 0
+				}
+			],
+			"identity1": [
+				{
+					"card": "Neena Thurman #40037b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__swap": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Energy #01088",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Posse #40058",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Diamondback - Rachel Leighton #40038",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Feral - Maria Callasantos #40050",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sharpshooter #40064",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Luck Be a Lady #40041",
+					"owner_hero_id": 1
+				}
+			],
+			"others": [
+				{
+					"card": "Hope's Captor #40105a",
+					"owner_hero_id": 0,
+					"host": "40070a"
+				}
+			]
+		}
+	}
+}

@@ -390,6 +390,24 @@ const PLAYER_CARD_TYPES:= [
 	"upgrade",
 	"player_side_scheme", 
 ]
+
+const CONSIDERED_AS_ACTION_OWNER: =[
+	"hero",
+	"alter_ego", 
+	"ally", 
+	"villain", 
+	"minion", 
+	"support"
+]
+
+const CHARACTER_CARD_TYPES: =[
+	"hero",
+	"alter_ego", 
+	"ally", 
+	"villain", 
+	"minion", 
+]
+
 const FORCE_HORIZONTAL_CARDS := {
 	"main_scheme" : true,
 	"player_side_scheme" : true,
@@ -868,14 +886,7 @@ const DAMAGE_TRANSFER_SCRIPT_PROPERTIES:= [
 	"overkill"
 ]
 
-const CONSIDERED_AS_ACTION_OWNER: =[
-	"hero",
-	"alter_ego", 
-	"ally", 
-	"villain", 
-	"minion", 
-	"support"
-]
+
 
 enum PHASE_STEP {
 	GAME_NOT_STARTED,

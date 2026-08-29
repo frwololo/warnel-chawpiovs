@@ -363,7 +363,7 @@ func resize():
 		texture_rect.rect_size = texture_rect.rect_min_size
 
 
-	v_folder_label.rect_min_size.x = target_size.x - 400
+	v_folder_label.rect_min_size.x = target_size.x - 450
 	self.margin_right = target_size.x
 	self.margin_bottom = target_size.y
 	self.rect_size = target_size

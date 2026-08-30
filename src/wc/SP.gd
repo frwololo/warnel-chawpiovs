@@ -34,6 +34,7 @@ const KEY_ATTACHMENTS_HOST:= "attachments_host"
 const FILTER_HOST_OF := "filter_is_host_of"
 const FILTER_HOSTED_BY  := "filter_is_hosted_by"
 const FILTER_SAME_CONTROLLER := "filter_same_controller"
+const FILTER_PLAYER_CARD := "filter_player_card"
 const FILTER_CONTROLLER_NAME := "filter_controller_name"
 const FILTER_SHARES_A_TITLE := "filter_shares_a_title_with_card_in_play"
 const FILTER_EVENT_SOURCE:= "filter_event_source"
@@ -98,6 +99,11 @@ static func filter_trigger(
 	# Same Controller filter check
 	if card_scripts.get(FILTER_SAME_CONTROLLER) \
 			and !check_same_controller_filter(trigger_card,owner_card,card_scripts.get(FILTER_SAME_CONTROLLER)):
+		return false
+
+	# Player Card filter check
+	if card_scripts.get(FILTER_PLAYER_CARD) \
+			and !check_player_card_filter(trigger_card,owner_card,card_scripts.get(FILTER_PLAYER_CARD)):
 		return false
 		
 	if card_scripts.get("filter_" + TRIGGER_TARGET_HERO):
@@ -283,6 +289,13 @@ static func check_same_controller_filter(trigger_card, owner_card, true_false : 
 	var same_controller: bool = (owner_card.get_controller_hero_id() == trigger_card.get_controller_hero_id())
 	if (same_controller and true_false): return true
 	if ((not same_controller) and (not true_false)): return true
+	return false
+
+# Returns true if the trigger is a player card, flase otherwise
+static func check_player_card_filter(trigger_card, owner_card, true_false : bool) -> bool:
+	var is_player_card: bool = (trigger_card.get_property("type_code") in CFConst.PLAYER_CARD_TYPES)
+	if (is_player_card and true_false): return true
+	if ((not is_player_card) and (not true_false)): return true
 	return false
 	
 # Returns true if the trigger' and the owner belong to the same hero, false otherwises controller name matches the filter'
@@ -611,6 +624,9 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 				elif filter == FILTER_SAME_CONTROLLER:
 					if !check_same_controller_filter(card,owner_card,state_filter):
 						card_matches = false	
+				elif filter == FILTER_PLAYER_CARD:
+					if !check_player_card_filter(card,owner_card,state_filter):
+						card_matches = false							
 				elif filter == FILTER_CONTROLLER_NAME:
 					if !check_controller_name_filter(card,owner_card,state_filter):
 						card_matches = false

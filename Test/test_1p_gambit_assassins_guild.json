@@ -1,0 +1,151 @@
+{
+	"_comments": "Automated Test for Assassin's Guild",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Gambit"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Stryfe - 1",
+					"tokens": {
+						"stunned": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Uncontrollable Power"
+				},
+				{
+					"card": "The Assassins Guild",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Gambit",
+					"tokens": {
+						"charge": 3
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Belladonna"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Royal Flush #37007"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "Mockingbird",
+			"_comments": "block with Mockingbird to see assassins guild effect: it should gain 2 threat because an assassin killed an ally"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Gambit"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Stryfe - 1",
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Uncontrollable Power"
+				},
+				{
+					"card": "The Assassins Guild",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Gambit",
+					"tokens": {
+						"charge": 3
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Belladonna"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Royal Flush #37007"
+				}
+			]
+		}
+	}
+}

@@ -184,6 +184,13 @@ func _load_last_game():
 	gameData.load_gamedata(json_data)
 
 func offer_to_load_last_game():
+	#TODO: force return for now because loading games is flaky
+	#we need to resolve https://github.com/frwololo/warnel-chawpiovs/issues/2
+	#before we enable this functionality again	
+	cfc._rpc(self,"ready_for_step", LOADING_STEPS.SCENARIO_DESCRIPTION)
+	return	
+	#/TODO
+	
 	if !cfc.is_game_master():
 		cfc._rpc(self,"ready_for_step", LOADING_STEPS.SCENARIO_DESCRIPTION)
 		return

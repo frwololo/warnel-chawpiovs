@@ -40,6 +40,13 @@ var _next_scene_counter = 0
 func _ready() -> void:
 	if cfc.game_settings.has("fullscreen"):
 		cfc.set_fullscreen(cfc.game_settings["fullscreen"])
+		
+	#First run of a new version: clear some garbage/cache from previous versions
+	var first_run_check = "first_run_done/" + CFConst.GAME_VERSION	
+	if !cfc.get_setting(first_run_check):
+		cfc.clear_cards_cache()
+		cfc.set_setting(first_run_check, true)
+	
 	gameData.disconnect_from_network()
 	gameData.sanity_cleanup()	
 	create_default_folders()

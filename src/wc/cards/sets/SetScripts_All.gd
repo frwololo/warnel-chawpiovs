@@ -184,7 +184,7 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 			
 		var playFromHand_pre: Array = hand_constraints
 		var playFromHand_post: Array = []
-		if (cost):
+		if (card.has("Cost")):
 			playFromHand_pre +=  [
 				{
 					"name": "pay_regular_cost",
@@ -193,10 +193,6 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 				},
 			]	
 			playFromHand_post += [play_action]
-		elif (card.has("Cost"))	: #Card has a cost but it's zero
-			playFromHand_post += [
-				play_action
-			]
 		
 		playFromHand_post += post_play_actions
 					
@@ -209,11 +205,9 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 		script = WCUtils.merge_dict(script, playInterrupt, true)
 	if process_manual_cost: #Regular cards
 		#Play From hand: discard a specific number of cards to play
-		#TODO limit to player cards ?
-		var has_overpaid_check = WCUtils.is_string_in_variant(script, "overpaid")
 		var playFromHand_pre: Dictionary = { }
 		var playFromHand_post: Dictionary = { }
-		if (cost or has_overpaid_check):
+		if (card.has("Cost")):
 			playFromHand_pre = {
 				"manual": {
 					"hand": hand_constraints + [
@@ -229,23 +223,6 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 						},
 						
 					] 
-				}
-			}
-			playFromHand_post = {				
-				"manual": {
-					"hand": [play_action] +  post_play_actions
-				}
-			}	
-		elif (card.has("Cost"))	: #Card has a cost but it's zero
-			playFromHand_pre = {
-				"manual": {
-					"hand": hand_constraints +[
-						{	
-							"name": "constraints",
-							"is_cost": true,
-							"tags": ["as_action"]
-						},						
-					]
 				}
 			}
 			playFromHand_post = {				

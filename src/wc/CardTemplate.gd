@@ -2727,6 +2727,10 @@ func pay_regular_cost_replacement(script, trigger_details) -> Dictionary:
 	var manacost:ManaCost = ManaCost.new()
 	var cost = script_definition["cost"]
 	var is_optional = script_definition.get(SP.KEY_SELECTION_OPTIONAL, true)
+
+
+			
+
 	#precompute cost replacement macros
 	if (typeof(cost) == TYPE_STRING):
 		var subject = self
@@ -2754,6 +2758,15 @@ func pay_regular_cost_replacement(script, trigger_details) -> Dictionary:
 			"func_params": cost 
 		}
 	else:
+		#historically we do not show the pay window for zero cost cards
+		#this doesn't respect the rules but ensures smoother gameplay
+		#TODO make it an option
+		if (typeof(cost) == TYPE_INT) and cost == 0:
+			var all_my_scripts = retrieve_all_scripts()
+			var has_overpaid_check = WCUtils.is_string_in_variant(all_my_scripts, "overpaid")	
+			if !has_overpaid_check:
+				return {}
+					
 		manacost.init_from_expression(cost) #TODO better name?
 	
 	var hero_ids = [owner_hero_id]

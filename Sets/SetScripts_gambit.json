@@ -233,20 +233,6 @@
 				}
 			]
 		},
-		"interrupt_script_executed": {
-			"event_filters": {
-				"action_name_id": "throw_de_card"
-			},
-			"all": [
-				{
-					"name": "save_variable",
-					"var_name": "my_throw",
-					"var_type": "int",
-					"value": 1,
-					"_comments": "remembering the value for use"
-				}
-			]
-		},
 		"interrupt_attack_started": {
 			"trigger": "self",
 			"all": [
@@ -257,8 +243,8 @@
 							"condition": {
 								"func_name": "get_subject_int_variable==1",
 								"func_params": {
-									"subject": "self",
-									"variable": "my_throw"
+									"subject": "Gambit",
+									"variable": "my_increase"
 								}
 							},
 							"nested_tasks": [
@@ -277,8 +263,8 @@
 							"condition": {
 								"func_name": "get_subject_int_variable==2",
 								"func_params": {
-									"subject": "self",
-									"variable": "my_throw"
+									"subject": "Gambit",
+									"variable": "my_increase"
 								}
 							},
 							"nested_tasks": [
@@ -298,8 +284,8 @@
 							"condition": {
 								"func_name": "get_subject_int_variable==3",
 								"func_params": {
-									"subject": "self",
-									"variable": "my_throw"
+									"subject": "Gambit",
+									"variable": "my_increase"
 								}
 							},
 							"nested_tasks": [
@@ -419,6 +405,14 @@
 				]
 			}
 		},
+		"attack_happened": {
+			"all": [
+				{
+				"name": "forget_variable",
+				"var_name": "my_increase",
+				},
+			]
+		},
 		"interrupt_attack": {
 			"is_optional_board": true,
 			"trigger": "another",
@@ -506,8 +500,11 @@
 				]
 			}
 		},
-		"interrupt_receive_damage": {
+		"interrupt_pre_receive_damage": {
 			"trigger": "my_event",
+			"event_filters": {
+				"tags": ["attack"]
+			},
 			"all": [
 				{
 					"name": "increase",
@@ -703,14 +700,13 @@
 		"interrupt_paid_as_resource": {
 			"trigger": "self",
 			"is_optional_all": true,
+			"condition_all": {
+				"func_name": "is_hero_form",
+				"func_params": {
+					"subject": "my_identity"
+				}
+			},
 			"all": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_form"
-					]
-				},
 				{
 					"name": "mod_tokens",
 					"is_cost": true,
@@ -1142,6 +1138,13 @@
 				"filter_state_event_source": [
 					{
 						"filter_properties": {
+							"type_code": "ally"
+						},
+					}
+				],			
+				"filter_state_actual_source": [
+					{
+						"filter_properties": {
 							"type_code": "minion"
 						},
 						"filter_properties2": {
@@ -1149,7 +1152,8 @@
 							"comparison": "ge"
 						}
 					}
-				]
+				],
+				
 			},
 			"board": [
 				{

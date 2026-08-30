@@ -1,0 +1,163 @@
+{
+	"_comments": "Stryfe's Left to Your Fate: bug with 0 cost cards",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Gambit"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Stryfe - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Left to Your Fate"
+				},
+				{
+					"card": "Living Bomb",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Remy LeBeau",
+					"tokens": {
+						"charge": 1
+					}
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [],
+			"allies1": [
+				{
+					"card": "Hope Summers"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Charged Card"
+				},
+				{
+					"card": "Royal Flush"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mutant Education"
+				},
+				{
+					"card": "Molecular Acceleration"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Mutant Education"
+		},
+		{
+			"type": "select",
+			"value": "Molecular Acceleration"
+		},		
+		{
+			"type": "select",
+			"value": [
+				"Charged Card",
+				"Royal Flush"
+			]
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Gambit"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Stryfe - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Left to Your Fate"
+				},
+				{
+					"card": "Living Bomb",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Royal Flush"
+				},				
+				{
+					"card": "Charged Card"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Remy LeBeau",
+					"tokens": {
+						"charge": 1
+					}
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [],
+			"allies1": [
+				{
+					"card": "Hope Summers"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Molecular Acceleration"
+				},			
+				{
+					"card": "Mutant Education"
+				},
+
+			]
+		}
+	}
+}

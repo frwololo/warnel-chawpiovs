@@ -93,12 +93,18 @@
 				"src_container": "hand_my_hero",
 				"filter_state_tutor": [
 					{
-						"func_name": "get_subject_int_property==0",
-						"func_params": {
-							"property": "type_code",
-							"property_value": "__type_code__"
+						"filter_func": {
+							"func_name": "get_subject_int_property==0",
+							"func_params": {
+								"subject": "trigger",
+								"property": "type_code",
+								"property_value": "__type_code__"
+							}
 						}
 					}
+				],
+				"tags": [
+					"immediate"
 				]
 			},
 			{
@@ -5237,7 +5243,8 @@
 					"selection_type": "equal",
 					"filter_state_seek": [
 						{
-							"filter_same_controller": true
+							"filter_same_controller": true,
+							"filter_player_card": true
 						}
 					]
 				},
@@ -5600,7 +5607,7 @@
 							]
 						}
 					},
-					"subject": "main_scheme",
+					"subject": "self",
 					"is_cost": true
 				},
 				{
@@ -6701,9 +6708,11 @@
 		"reveal": {
 			"all": [
 				{
-					"name": "sequence",
-					"sequence_ability": "do_discard",
-					"count": {
+					"name": "discard",
+					"subject": "tutor",
+					"sort_descending": true,
+					"up_to": true,
+					"subject_count": {
 						"func_name": "count_most_common",
 						"func_params": {
 							"subject": "tutor",
@@ -6711,46 +6720,26 @@
 							"src_container": "hand_my_hero",
 							"property": "type_code"
 						}
-					}
-				}
-			]
-		},
-		"do_discard": {
-			"all": [
+					},
+					"src_container": "deck_villain",
+					"tags": ["immediate"]
+				},
 				{
-					"name": "conditional_script",
-					"options": [
+					"name": "deal_encounter",
+					"subject": "previous",
+					"subject_count": "all",
+					"filter_each_previous_subject": true,
+					"filter_state_subject": [
 						{
-							"condition": {
-								"func_name": "has_trait",
-								"func_params": {
-									"subject": "index",
-									"subject_index": "top",
-									"src_container": "deck_villain",
-									"trait": "psionic"
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "deal_encounter",
-									"subject": "previous"
-								},
-								{
-									"name": "view_card",
-									"subject": "previous"
-								}
-							]
-						}
-					],
-					"else": [
-						{
-							"name": "discard",
-							"subject": "previous"
+							"filter_properties": {
+								"trait_psionic": 1,
+								"comparison": "ge"
+							}
 						}
 					]
-				}
+				}			
 			]
-		}
+		},
 	},
 	"Psychic Inertia": {
 		"card_moved_to_board": {
@@ -9024,11 +9013,11 @@
 					"name": "move_card_to_container",
 					"dest_container": "hand",
 					"src_container": "upgrade_support",
-					"is_cost": true,
 					"subject": "index",
 					"subject_count": "all",
 					"selection_count": 1,
 					"selection_type": "equal",
+					"selection_optional": false,
 					"needs_selection": true
 				},
 				{
@@ -9860,9 +9849,9 @@
 							"filter_properties": {
 								"Name": "Living Bomb"
 							}
-						},
+						}
 					]
-				},				
+				},
 				{
 					"name": "reveal_encounter",
 					"subject": "tutor",
@@ -10109,6 +10098,13 @@
 				},
 				"Wildside attacks": [
 					{
+						"name": "save_variable",
+						"var_name": "do_attack",
+						"var_type": "int",
+						"value": 1,
+						"_comments": "remembering decision for next use"
+					},
+					{
 						"name": "enemy_attacks_you",
 						"subject": "self"
 					}
@@ -10135,6 +10131,25 @@
 					}
 				]
 			}
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "get_subject_int_variable",
+				"func_params": {
+					"variable": "do_attack"
+				}
+			},
+			"board": [
+				{
+					"name": "forget_variable",
+					"var_name": "do_attack"
+				},
+				{
+					"name": "enemy_attacks_you",
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"Wolfsbane - Rahne Sinclair": {

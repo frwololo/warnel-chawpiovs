@@ -1648,10 +1648,16 @@ func discard(script: ScriptTask):
 		var card = script.subjects[0]
 		card.discard()
 	else:
-		#slightly cool effect to delay when discarding multiple cards		
-		for card in script.subjects:
-			var discard_event = simple_discard_task(card, {"_silent": true})
-			gameData.theStack.add_script(discard_event)	
+		if script.has_tag("immediate"):
+			for card in script.subjects:
+				card.discard()
+		else:		
+			#slightly cool effect to delay when discarding multiple cards
+			#unfortunately this has side effects such as discarding cards *after* other scripts of the same sceng
+			#are being called. This causes problems e.g. if wanting to discard cards *then* move them somewhere else		
+			for card in script.subjects:
+				var discard_event = simple_discard_task(card, {"_silent": true})
+				gameData.theStack.add_script(discard_event)	
 	
 		if from_top_of_deck:
 			var signal_details = {

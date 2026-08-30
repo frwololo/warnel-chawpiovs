@@ -321,6 +321,9 @@ func _instance_card(card_id: String) -> Card:
 
 
 func get_all_cards_from_containers(container_names) -> Array:
+	if !NMAP.has('board'):
+		return []
+		
 	var all_cards = []
 	if !container_names:
 		var _error = 1

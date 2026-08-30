@@ -963,6 +963,15 @@ func load_cards() -> void:
 		set_aside_datas.append(hero_deck_data.get_hero_card_data())
 		for card_data in set_aside_datas:
 			var card_id = card_data["code"]
+			
+			#address cases where the deck info already contains the extra card_id (e.g. Vision)
+			var already_exists = false
+			for existing_card_id in set_aside_info:
+				if existing_card_id["card"] == card_id:
+					already_exists = true
+					break
+			if already_exists:
+				continue
 			set_aside_info.append({
 				"card" : card_id,
 				"owner_hero_id": hero_id

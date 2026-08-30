@@ -5242,7 +5242,8 @@
 					"filter_state_seek": [
 						{
 							"filter_same_controller": true,
-							"filter_player_card": true
+							"filter_player_card": true,
+							"filter_is_exhausted": false
 						}
 					]
 				},

@@ -131,6 +131,20 @@ static func load_audio(file) -> AudioStream:
 	result.data = bytes	
 	return result	
 
+#attempts to load a resource pack, deletes it on failure. This is to addresses failed downloads e.g. music.zip
+static func load_resource_pack_erase_on_failure(filename):
+	var file = File.new()
+	
+	if !file.file_exists(filename):
+		return false
+		
+				
+	var success_res = ProjectSettings.load_resource_pack(filename)
+	if !success_res:
+		var dir = Directory.new()
+		var _result = dir.remove(filename)
+		
+	return success_res	
 
 static func ordered_hash(dict:Dictionary):
 	var sorted_dictionary = deep_dict_sort(dict)

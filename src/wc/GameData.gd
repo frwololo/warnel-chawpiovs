@@ -256,8 +256,8 @@ func _file_downloaded(url, destination):
 		var filename = "user://music.zip"		
 		dir.rename(destination, filename)
 
-		if WCUtils.file_exists(filename):
-			var _success_res = ProjectSettings.load_resource_pack(filename)
+		var success_res = WCUtils.load_resource_pack_erase_on_failure(filename)
+		if success_res:
 			theAudioManager.reset()
 			play_music("menu")
 

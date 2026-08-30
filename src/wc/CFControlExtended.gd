@@ -1773,7 +1773,7 @@ func is_image_download_failed(card_id):
 func get_image_dl_url(card_id):
 	var card_data = get_card_by_id(card_id) 
 	var base_url = game_settings.get("images_base_url")
-	if card_data.get("fanmade", false):
+	if card_data and card_data.get("fanmade", false):
 		base_url = game_settings.get("fanmade_images_base_url")
 	if !base_url:
 		fail_img_download(card_id)
@@ -1833,11 +1833,15 @@ func preload_pck():
 	# (pck files will refuse to load if wrong godot version number for example)
 	# see https://www.reddit.com/r/godot/comments/11pfoon/comment/jbxyp2x/
 	for set in database.keys() + CFConst.ALLOWED_PCK_NAMES:
-		for folder in ["res://", "user://"]:		
+		for folder in ["res://", "user://"]:
+			var delete_on_error = (folder == "user://")		
 			for format in [".pck", ".zip"]:
 				var filename = folder + set + format
 				if file.file_exists(filename):
-					var _success_res = ProjectSettings.load_resource_pack(filename)
+					if delete_on_error:
+						var _success_res = WCUtils.load_resource_pack_erase_on_failure(filename)
+					else:
+						var _success_res = ProjectSettings.load_resource_pack(filename)
 	return
 
 func play_sfx(string):

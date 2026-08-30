@@ -293,7 +293,10 @@ func _process(delta):
 	
 	var dl_info = get_node("%DownloadInfo")
 	var dl_stats = gameData.cardImageDownloader.get_stats()
-	if dl_stats["remaining"] > 0:
+	if dl_stats.get("high_priority_error_msg"):
+		dl_info.visible = true
+		dl_info.text = dl_stats.get("high_priority_error_msg")	
+	elif dl_stats["remaining"] > 0:
 		dl_info.visible = true
 		dl_info.text = "image downloads: " + str(dl_stats["remaining"]) +\
 		 " remaining. (OK: " + str(dl_stats["downloaded_ok"]) + ", ERR: " +\

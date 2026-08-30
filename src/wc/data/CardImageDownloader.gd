@@ -32,6 +32,9 @@ var current_file = {}
 
 var dl_ok = 0
 var dl_errors = 0
+var last_error_msg := ""
+var global_error_msg := ""
+
 var http_request: HTTPRequest = null
 
 signal one_server_check_completed()
@@ -48,7 +51,9 @@ func get_stats():
 		"downloaded_ok" : dl_ok,
 		"download_errors" : dl_errors,
 		"remaining": cards_to_download.size(),
-		"current_url": current_file.get("url", "")
+		"current_url": current_file.get("url", ""),
+		"last_error_msg": last_error_msg,
+		"high_priority_error_msg": global_error_msg
 	}
 	return stats
 
@@ -81,6 +86,7 @@ func select_server():
 	for s in servers:
 		if s.get("is_up"):
 			return s
+	global_error_msg = "Image Servers down? Check your internet connection"		
 	return {}
 	
 func modify_path_for_server(path, s):

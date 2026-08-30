@@ -1972,10 +1972,13 @@ func enemy_attack(script: ScriptTask) -> int:
 			var _error = 1
 			defender.exhaustme()
 			script.script_definition["tags"].append("basic_defense")
+		scripting_bus.emit_signal_on_stack("defender_chosen", defender, {})	
 
 	if !script.has_tag("attack"):
 		script.script_definition["tags"].append("attack")
 	attacker.set_activity_script(script)
+
+
 	return retcode
 
 func enemy_boost(boost_script: ScriptTask) -> int:

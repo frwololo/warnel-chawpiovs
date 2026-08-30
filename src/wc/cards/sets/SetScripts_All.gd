@@ -85,9 +85,7 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 		return scripts.get(card_id,{})
 
 	var card = cfc.card_definitions[card_id]
-	var	cost = card["Cost"] if (card && card.has("Cost")) else 0
 	
-
 	var type_code:String = card.get("type_code", "") 
 	var play_action : Dictionary = {
 		"name": "play_card",

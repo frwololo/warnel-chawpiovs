@@ -292,7 +292,7 @@ static func check_same_controller_filter(trigger_card, owner_card, true_false : 
 	return false
 
 # Returns true if the trigger is a player card, flase otherwise
-static func check_player_card_filter(trigger_card, owner_card, true_false : bool) -> bool:
+static func check_player_card_filter(trigger_card, _owner_card, true_false : bool) -> bool:
 	var is_player_card: bool = (trigger_card.get_property("type_code") in CFConst.PLAYER_CARD_TYPES)
 	if (is_player_card and true_false): return true
 	if ((not is_player_card) and (not true_false)): return true

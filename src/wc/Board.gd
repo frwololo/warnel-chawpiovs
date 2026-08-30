@@ -191,6 +191,7 @@ func offer_to_load_last_game():
 	return	
 	#/TODO
 	
+	# warning-ignore:UNREACHABLE_CODE
 	if !cfc.is_game_master():
 		cfc._rpc(self,"ready_for_step", LOADING_STEPS.SCENARIO_DESCRIPTION)
 		return

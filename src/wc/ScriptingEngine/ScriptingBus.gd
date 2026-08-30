@@ -72,6 +72,8 @@ signal paid_as_resource(card, details)
 # warning-ignore:unused_signal
 signal enemy_initiates_attack(card,details)
 # warning-ignore:unused_signal
+signal defender_chosen(card,details)
+# warning-ignore:unused_signal
 signal enemy_initiates_scheme(card,details)
 # warning-ignore:unused_signal
 signal enemy_attack_happened (card,details)

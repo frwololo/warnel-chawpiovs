@@ -669,6 +669,11 @@ func filter_trigger(
 func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 	var filters = _filters #.duplicate(true)
 
+
+	if filters.has("_breakpoint"):
+		owner_card.script_breakpoint()
+		filters.erase("_breakpoint")
+
 	var controller_hero_id = _trigger_details.get("override_hero_id", 	owner_card.get_controller_hero_id())
 
 	var replacements = {
@@ -687,9 +692,13 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 	if gameData.get_villain():
 		replacements["villain"] = gameData.get_villain()	
 	if (controller_hero_id > 0):
+		#TODO historically my_hero here represents my_identity
+		#need to clean this up in card scripts where appropriate
 		replacements["my_hero"] = gameData.get_identity_card(controller_hero_id)
+		replacements["my_identity"] = gameData.get_identity_card(controller_hero_id)
 	else:
 		replacements["my_hero"] = gameData.get_identity_card(gameData.get_current_activity_hero_target())
+		replacements["my_identity"] = gameData.get_identity_card(gameData.get_current_activity_hero_target())
 
 	var trigger_details = guidMaster.replace_guids_to_objects(_trigger_details)
 	var event_source_hero_id = get_event_source_hero_id(trigger_details)

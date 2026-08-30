@@ -1207,7 +1207,8 @@ func start_activity(enemy, action, script, target = 0):
 	var trigger_details = {
 		"additional_tags": [],
 		"target": target_friendly,
-		SP.TRIGGER_TARGET_HERO : target_friendly.canonical_name
+		SP.TRIGGER_TARGET_HERO : target_friendly.canonical_name,
+		"target_identity": target.get_controller_hero_card()
 	}
 	if script:
 		trigger_details["additional_tags"] += script.get_property(SP.KEY_TAGS, [])
@@ -1229,6 +1230,7 @@ func get_current_attacker_data():
 func enemy_activates() :
 	var target_hero_id = _villain_current_hero_target
 	var target_friendly = null
+	var target_identity = null
 
 	var attacker_data = attackers.front() if attackers else null
 	if (typeof (attacker_data) == TYPE_STRING):
@@ -1288,6 +1290,8 @@ func enemy_activates() :
 		current_enemy_finished()
 		return		
 
+	target_identity = target_friendly.get_controller_hero_card()
+	
 	match _current_enemy_attack_step:
 		EnemyAttackStatus.NONE:	
 				#check for stun/confused
@@ -1322,7 +1326,8 @@ func enemy_activates() :
 				#Making it a local script (everyone adds it) is an attempt at fixing this
 				var details = {
 					"target" : target_friendly,
-					SP.TRIGGER_TARGET_HERO : target_friendly.canonical_name
+					SP.TRIGGER_TARGET_HERO : target_friendly.canonical_name,
+					"target_identity": target_identity
 				}
 				 #some cleanup to prevent any misunderstanding
 				 #activity script will be set once the activity actually starts (which might be a mistake...?)
@@ -1367,7 +1372,8 @@ func enemy_activates() :
 			var script_definition = {
 				"name": script_name, 
 				"target_hero_id" : target_hero_id,
-				"tags": enemy.activity_script.get_property(SP.KEY_TAGS)
+				"tags": enemy.activity_script.get_property(SP.KEY_TAGS),
+				"target_identity": target_identity
 			}
 			#most filters check on script definition instead of trigger_details (because _current_interrupted_event in globalstack script is based on script definition for some reason)
 			script_definition.merge(details)
@@ -1383,7 +1389,8 @@ func enemy_activates() :
 				gameData.theStack.add_script(discard_event)	
 			var details = {
 				"target" : target_friendly,
-				SP.TRIGGER_TARGET_HERO : target_friendly.canonical_name
+				SP.TRIGGER_TARGET_HERO : target_friendly.canonical_name,
+				"target_identity": target_identity
 			}
 			if is_instance_valid(enemy.activity_script) and enemy.activity_script.subjects:
 				details["defender"] = enemy.activity_script.subjects[0]

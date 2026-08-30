@@ -1960,6 +1960,20 @@
 			"trigger": "self",
 			"board": [
 				{
+					"name": "save_variable",
+					"var_name": "my_increase",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"resource_type": "energy",
+							"subject": "tutor",
+							"subject_count": "all",
+							"src_container": "hand_current_hero_target"
+						}
+					}
+				},
+				{
 					"name": "add_script",
 					"end_condition": "enemy_activation_finished",
 					"subject": "self",
@@ -1970,29 +1984,13 @@
 									"filter_task": "get_property",
 									"filter_property_name": "attack",
 									"trigger": "self",
-									"alteration": {
-										"func_name": "count_printed_resources",
-										"func_params": {
-											"resource_type": "energy",
-											"subject": "tutor",
-											"subject_count": "all",
-											"src_container": "hand_current_hero_target"
-										}
-									}
+									"alteration": "my_increase"
 								},
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "scheme",
 									"trigger": "self",
-									"alteration": {
-										"func_name": "count_printed_resources",
-										"func_params": {
-											"resource_type": "energy",
-											"subject": "tutor",
-											"subject_count": "all",
-											"src_container": "hand_current_hero_target"
-										}
-									}
+									"alteration": "my_increase"
 								}
 							]
 						}
@@ -6722,7 +6720,9 @@
 						}
 					},
 					"src_container": "deck_villain",
-					"tags": ["immediate"]
+					"tags": [
+						"immediate"
+					]
 				},
 				{
 					"name": "deal_encounter",
@@ -6737,9 +6737,9 @@
 							}
 						}
 					]
-				}			
+				}
 			]
-		},
+		}
 	},
 	"Psychic Inertia": {
 		"card_moved_to_board": {

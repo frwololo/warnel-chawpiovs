@@ -1189,6 +1189,9 @@ func find_interrupt_script(trigger_card, trigger_details):
 					"trigger": trigger_name
 				}
 	return {}
+
+func script_breakpoint():
+	var _tmp = 1
 	
 #returns true if this card has some ability that can interrupt
 #the current action (and if hero_id is the one who can play it)
@@ -1217,6 +1220,9 @@ func can_interrupt(
 	#select valid scripts that match the current trigger
 	var card_scripts = interrupt_data["card_scripts"]
 	var state_scripts = interrupt_data["state_scripts"]
+	
+	if card_scripts.get("_breakpoint"):
+		script_breakpoint()
 			
 	if (_debug):
 		display_debug("card_scripts: " + to_json(card_scripts))

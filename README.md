@@ -20,7 +20,7 @@ _This is a fan-created work and is not affiliated with, endorsed by, or sponsore
 * [Users FAQ and Troubleshooting](#users-faq-and-troubleshooting)
 
 ## How is Warnel Chawpiovs different from the original game?
-Generally Speaking this tries to perfectly mimic the rules of the orginal board game. There are a few intentional exceptions (see below), the rest can probably be considered bugs
+Generally Speaking this tries to perfectly mimic the rules of the orginal board game (currently supporting v1.8 of the rules). There are a few intentional exceptions (see below), the rest can probably be considered bugs
 
 * Unlike Marvel Champions, Warnel Chawpiovs allows heroes to play their turn in parallel. This is particularly obvious in Multiplayer mode. This is intentional: although the rules of the game state that each player should play their turn one player after the other (and explicitly ask other players to activate abilities or play cards as needed), in practice, most people play simultaneously and synchronize verbally. Because this is a video game, it felt important to me to minimize friction on that aspect, and allow clients to play simultaneously. If you'd rather follow the actual rules and play your turns in order, nothing prevents you from coordinating with your fellow players ;)
 * In Warnel Chawpiovs, minions attack in the order in which they appeared on the board, instead of letting the players choose the order. This is mostly a design decision for gameplay speed. It sometimes impact one's strategy but I felt the benefit was worth it
@@ -30,7 +30,7 @@ Other than that, here are known limitations with the engine at the moment:
 
 ## Current Status (General)
 ![Warnel Chawpiovs Supported Characters and Scenarios](doc/pictures/characters_and_scenarios.jpg "Warnel Chawpiovs Supported Characters and Scenarios")
-This simulator supports the following cards from the original game (current total 36 heroes, 28 villains, as well as associated player cards and encounters):
+This simulator supports the following cards from the original game (current total 41 heroes, 33 villains, as well as associated player cards and encounters):
 * Cycle 1:
   * Core box (5 heroes, 3 villains)
   * Captain America (1 Hero)
@@ -56,20 +56,25 @@ This simulator supports the following cards from the original game (current tota
   * Nebula (1 Hero)
   * War Machine (1 Hero)
   * Valkyrie (1 Hero)
+  * Vision (1 Hero)
 * Cycle 5:
   * Sinister Motives ( 2 heroes, 5 villains)
+  * Spider-Ham (1 Hero)
 * Cycle 6:
   * Mutant Genesis ( 2 heroes, 5 villains)
   * Phoenix (1 Hero)
   * Wolverine (1 Hero)
+  * Gambit (1 Hero)
+* Cycle 7:
+  * Next Evolution ( 2 Heroes, 5 villains)
 * Cycle 8:
   * Nightcrawler (1 Hero)  
 * Cycle 9:
   * Winter soldier (1 Hero)  
 
-This represents roughly 40% of all official cards (excluding campaigns) at the time of this writing.
+This represents roughly 50% of all official cards (excluding campaigns) at the time of this writing.
 
-There is no tutorial included, and, although the rules are automatically handled by the engine, it will quickly become confusing if you are not already familar with the original game.
+There is no tutorial included, and, although the rules are automatically handled by the engine, it will quickly become confusing if you are not already familiar with the original game.
 
 Rules can be found [here](https://images-cdn.fantasyflightgames.com/filer_public/ab/be/abbef836-d5ef-4241-b2bd-1062df73f367/mvc01_learn_to_play_eng-compressed.pdf). (if broken link, go to [fantasy flight's official page](https://www.fantasyflightgames.com/en/products/marvel-champions-the-card-game/), scroll down to "support/rules" and select "Learn to play"
 
@@ -152,25 +157,20 @@ The basics to adding new cards to the game is to choose a specific set from marv
 * Now the actual work: you'll want to add an entry for each card in *Sets/SetScripts_trors.json*, that describes the behavior of each card for the engine.
   * inspiration for how to do this can be found in the [core set](Sets/SetScripts_core.json)
 
-### Adding original cards
-Nothing prevents you from creating an entirely original set and adding it to the game. In order to work, a Set needs a SetDefinition_[name].json and a SetScripts_[name].json in the Sets subfolder of your user folder. For example, you can create a SetDefinition_myset.json and SetScripts_myset.json, and those will be loaded into the game. You will also need to provide images as those wil not be downloadable from marvelcdb or any other site that provides only official content. 
+### Adding original/homebrew cards (custom content)
+Warnel Chawpiovs lets you create your own cards and add them to the game.
+
+In order to work, a Set needs a SetDefinition_[name].json and a SetScripts_[name].json in the *Sets_fanmade* subfolder of your user folder. For example, you can create a SetDefinition_myset.json and SetScripts_myset.json, and those will be loaded into the game. You will also need to provide images as those will not be downloadable from marvelcdb or any other site that provides only official content.
+
+You need to activate fanmade Sets in the options in order to activate those additional sets. This is provided as a convenience to easily activate/deactivate unofficial content without having to move files around.
+
+You can see an example of fanmade set and how it's created/activated here: [https://www.youtube.com/watch?v=WDEtftUSYAA](https://www.youtube.com/watch?v=WDEtftUSYAA)
  
 ### Features
 * **Complete card rules enforcement** capacity, via provided Scripting Engine. (see [doc](doc/script_doc.html))
+* Deck Editor
+* Custom content (Homebrew cards) support
 * Multiplayer Support (Work in progress)
-
-#### Scripting Engine Features
-
-* Can define card scripts in plain text, using dictionaries.
-* Can set cards to trigger off of any board manipulation.
-* Can filter the triggers based on card properties, or a special subset.
-* Can define optional abilities.
-* Can define multiple-choice abilities.
-* Can calculate effect intensity based on state of the board during runtime.
-* Can request simple inputs from the player during execution.
-* Tag-marking scripts which can be filtered by scripts triggering off of them.
-* Can store results from one script to use in another.
-* Can be plugged into by any object, not just cards.   
 
 ## Developers: Source code Structure
 * assets: icons, textures, and fonts for the game

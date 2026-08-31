@@ -991,6 +991,7 @@ const DEFAULT_SETTINGS:= {
 	'enable_fanmade_sets': false,
 	'images_base_url': "https://marvelcdb.com",
 	'fanmade_images_base_url': "https://mc4db.merlindumesnil.net",
+	'images_lang': "EN",
 	"decks_base_url": "https://marvelcdb.com/api/public/decklist/",
 	"decks_base_url_backup": "https://marvelcdb.com/api/public/deck/",
 	'dont_show_msg': {},

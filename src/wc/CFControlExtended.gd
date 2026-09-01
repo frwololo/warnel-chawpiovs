@@ -1780,21 +1780,19 @@ func get_image_dl_url(card_id):
 		return ""
 	if !card_data:
 		if CFConst.ATTEMPT_TO_GUESS_IMAGE_URL:
-			var url = base_url + "/bundles/cards/" + str(card_id) + ".png"
+			var url = "/bundles/cards/" + str(card_id) + ".png"
 			return url
 	if !card_data.get("imagesrc", ""):
 			var duplicate_of = card_data.get("duplicate_of_code", "")
 			if duplicate_of:
 				return get_image_dl_url(duplicate_of)
 			elif CFConst.ATTEMPT_TO_GUESS_IMAGE_URL:
-				var url = base_url + "/bundles/cards/" + str(card_id) + ".png"
+				var url = "/bundles/cards/" + str(card_id) + ".png"
 				return url				
 			else:
 				fail_img_download(card_id)
 				return ""
 	var url = card_data["imagesrc"]
-	if !url.begins_with("http"):
-		url = base_url + url
 	return url
 
 #this precaches files on the system due to a bug in Godot

@@ -1,7 +1,7 @@
 class_name CardImageDownloader
 extends Node
 
-const servers := [
+var servers := [
 	{
 		"url": "https://marvelcdb.com",
 		"is_up": true,
@@ -15,7 +15,7 @@ const servers := [
 		"health_check_url": "",		
 		"modifications": {
 			"extension": ".webp",
-			"replace_path_to": "/bundles/cards/EN/[box_name]/"
+			"replace_path_to": "/bundles/cards/[lang]/[box_name]/"
 		}
 	},	
 ]
@@ -45,13 +45,32 @@ func _ready():
 	dir.make_dir_recursive("user://Sets/tmp_images")
 	fileDownloader.connect("file_downloaded", self, "_file_downloaded")
 	fileDownloader.connect("download_error", self, "_download_error")
+	_sort_servers_by_preference()
+
+# Reorder servers so the one matching images_base_url in settings comes first.
+# This ensures select_server() picks the user's preferred server,
+# and modify_path_for_server() applies its modifications (e.g. .webp for mc4db).
+func _sort_servers_by_preference():
+	var preferred_url = cfc.game_settings.get("images_base_url", "")
+	if !preferred_url:
+		return
+	for i in range(servers.size()):
+		if preferred_url.begins_with(servers[i]["url"]):
+			if i != 0:
+				var preferred = servers[i]
+				servers.erase(preferred)
+				servers.push_front(preferred)
+			break
+	print("[CardImageDownloader] Server order after preference sort:")
+	for s in servers:
+		print("  - ", s["url"])
 
 func get_stats():
 	var stats = {
 		"downloaded_ok" : dl_ok,
 		"download_errors" : dl_errors,
 		"remaining": cards_to_download.size(),
-		"current_url": current_file.get("url", ""),
+		"current_url": current_file.get("path", current_file.get("url", "")),
 		"last_error_msg": last_error_msg,
 		"high_priority_error_msg": global_error_msg
 	}
@@ -69,6 +88,10 @@ func process_next_file():
 		priority_cards_to_download = []
 	
 	if !cards_to_download:
+		if dl_ok > 0 or dl_errors > 0:
+			print("[CardImageDownloader] Queue empty. OK: %d, Errors: %d" % [dl_ok, dl_errors])
+			dl_ok = 0
+			dl_errors = 0
 		return
 
 	if !is_all_servers_checked():
@@ -86,7 +109,8 @@ func select_server():
 	for s in servers:
 		if s.get("is_up"):
 			return s
-	global_error_msg = "Image Servers down? Check your internet connection"		
+	global_error_msg = "Image Servers down? Check your internet connection"
+	print("[CardImageDownloader] ERROR: No server available!")
 	return {}
 	
 func modify_path_for_server(path, s):
@@ -139,18 +163,23 @@ func process_current_file():
 		path = modify_path_for_server(path, s)
 
 	
-	current_file["path"] = path			
+	current_file["path"] = path
+	var remaining = cards_to_download.size() + priority_cards_to_download.size()
+	print("[CardImageDownloader] [%d remaining] -> %s" % [remaining, path])
 	fileDownloader.start_download([path])
 
 func path_variable_process(to, the_current_file):
 	var card_id = the_current_file["card_id"]
 	var box_name = "core"
-	var card_data = cfc.card_definitions[card_id]
+	var card_data = cfc.card_definitions.get(card_id)
 	if card_data and card_data.get("_set", ""): 
 		box_name = card_data["_set"]
+
 	
+	var lang = cfc.game_settings.get("images_lang")
 	var replacements = {
-		"box_name": box_name
+		"box_name": box_name,
+		"lang": lang,
 	}
 	
 	for key in replacements:
@@ -164,7 +193,6 @@ func retry_or_cancel_current_file():
 	var path:String = current_file.get("path")
 	
 	var found = false
-	var previous_base = ""
 	var server = {}
 	for s in servers:
 		if !s.get("is_up"):
@@ -174,18 +202,23 @@ func retry_or_cancel_current_file():
 			break
 		var base_url = s.get("url")
 		if path.begins_with(base_url):
-			previous_base = base_url
 			found = true
 	
 	if !server:
+		# All servers failed — this is a definitive error
+		dl_errors += 1
 		cfc.fail_img_download(current_file.get("card_id", ""))
 		current_file = {}
 		return
 
-	var url = current_file["path"]
-	url = url.replace(previous_base, server["url"])	
-
-	url = modify_path_for_server(url, server)
+	# Use the original relative URL so the fallback server applies its own
+	# modifications (e.g. marvelcdb has no modifications → keeps .png)
+	var original_url: String = current_file.get("url", "")
+	for s in servers:
+		if original_url.begins_with(s["url"]):
+			original_url = original_url.substr(s["url"].length())
+			break
+	var url = modify_path_for_server(original_url, server)
 	
 	var to_add = {		
 		"url": url,
@@ -200,7 +233,7 @@ func _download_error(url, _filename):
 		var _error = 1
 		return
 
-	dl_errors += 1
+	print("[CardImageDownloader] ERROR downloading: ", url)
 	retry_or_cancel_current_file()
 
 func _file_downloaded(url, filename):
@@ -213,6 +246,9 @@ func _file_downloaded(url, filename):
 		var result = _img_download_completed(url, filename)
 		if result:
 			dl_ok += 1
+			print("[CardImageDownloader] OK [", dl_ok, "] -> ", destination)
+		else:
+			print("[CardImageDownloader] ERROR masking: ", url)
 	else:
 		destination = filename
 	emit_signal("download_complete",  current_file.get("card_id"))
@@ -225,11 +261,26 @@ func add_card(card_id, priority = false):
 	if WCUtils.file_exists(img_filename):
 		return
 	if cfc.is_image_download_failed(card_id):
+		print("[CardImageDownloader] Skipping (previously failed): ", card_id)
 		return
 	var url = cfc.get_image_dl_url(card_id)
 	if !url:
+		print("[CardImageDownloader] Skipping (no URL): ", card_id)
 		return
 	
+	# Find the card that actually owns the imagesrc for box_name resolution:
+	# follow duplicate_of_code chain until we find a card with an imagesrc
+	var source_card_id = card_id
+	var visited = [card_id]
+	var current = cfc.get_card_by_id(card_id)
+	while current and !current.get("imagesrc", "") and current.get("duplicate_of_code", ""):
+		var next_id = current["duplicate_of_code"]
+		if next_id in visited:
+			break
+		visited.append(next_id)
+		source_card_id = next_id
+		current = cfc.get_card_by_id(next_id)
+
 	#we're good to go. create folders as needed
 	create_img_folders(card_id)	
 
@@ -237,7 +288,7 @@ func add_card(card_id, priority = false):
 	var to_add = {
 		"url": url,
 		"destination": img_filename,
-		"card_id": card_id,
+		"card_id": source_card_id,
 	}
 	if priority:
 		priority_cards_to_download.append(to_add)
@@ -247,6 +298,10 @@ func add_card(card_id, priority = false):
 	check_servers_health()
 
 func is_all_servers_checked():
+	# Only require the preferred (first) server to be checked before starting downloads.
+	# Fallback servers can finish their health check in the background.
+	if servers.size() > 0 and servers[0].get("health_check") == "complete":
+		return true
 	for s in servers:
 		if s.get("health_check") != "complete":
 			return false
@@ -260,6 +315,7 @@ func check_servers_health():
 		if s.get("health_check") == "not_started":
 			s["health_check"] = "in_progress"
 			http_request = HTTPRequest.new()
+			http_request.timeout = 5
 			add_child(http_request)	
 			http_request.connect("request_completed", self, "_health_check_complete")
 			var url = s["url"] + s["health_check_url"]
@@ -286,8 +342,13 @@ func _health_check_complete(result, _response_code, _headers, _body):
 	current_server["health_check"] = "complete"
 	if result == HTTPRequest.RESULT_SUCCESS:
 		current_server["is_up"] = true
+		print("[CardImageDownloader] Health check OK: ", current_server["url"])
 	else:
 		current_server["is_up"] = false
+		print("[CardImageDownloader] Health check FAILED (result=", result, "): ", current_server["url"])
+	print("[CardImageDownloader] All servers status:")
+	for s in servers:
+		print("  - ", s["url"], " | health_check=", s["health_check"], " | is_up=", s.get("is_up"))
 
 	emit_signal("one_server_check_completed")			
 			
@@ -340,7 +401,7 @@ func mask_image(image:Image, destination, card_key):
 	#var transparent_image = Image.new()
 	#transparent_image.load(transparent_filename)
 	
-	var card_data = cfc.card_definitions[card_key]
+	var card_data = cfc.card_definitions.get(card_key)
 	if card_data and card_data.get("_horizontal", false):
 		#needs rotation
 		image = WCUtils.rotate_90(image, false)

@@ -1,83 +1,10 @@
 {
-	"_comments": "Tests Nightcrawler Change of Fortune (draw cards when defeating enemy during enemy phase)",
+	"_comments": "Nightcrawler bug: Teleport Drop not playable",
 	"test_conditions": {
 		"bug_type": "card_json",
 		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
-	},
+	},		
 	"init": {
-		"phase": "VILLAIN_ACTIVATES",
-		"heroes": [
-			{
-				"herodeckdata": {
-					"hero": "Nightcrawler"
-				}
-			}
-		],
-		"board": {
-			"villain": [
-				{
-					"card": "Rhino - 1",
-					"tokens": {
-						"stunned": 1
-					}
-				}
-			],
-			"schemes": [
-				{
-					"card": "01097b"
-				}
-			],
-			"deck1": [
-				{
-					"card": "Genius"
-				},
-				{
-					"card": "Prehensile Tail"
-				},
-				{
-					"card": "Energy"
-				}
-			],
-			"identity1": [
-				{
-					"card": "Nightcrawler"
-				}
-			],
-			"enemies1": [
-				{
-					"card": "Hydra bomber"
-				}
-			],
-			"upgrade_support1": [
-				{
-					"card": "Change of Fortune"
-				}
-			],
-			"hand1": [
-				{
-					"card": "Powerful Punch"
-				},
-				{
-					"card": "Strength"
-				}
-			]
-		}
-	},
-	"actions": [
-		{
-			"type": "play",
-			"value": "Powerful Punch"
-		},
-		{
-			"type": "activate",
-			"value": "Change of Fortune"
-		},
-		{
-			"type": "other",
-			"value": "wait_for_player_turn"
-		}
-	],
-	"end": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
@@ -87,11 +14,6 @@
 			}
 		],
 		"board": {
-			"discard_villain": [
-				{
-					"card": "Hydra bomber"
-				}
-			],
 			"villain": [
 				{
 					"card": "Rhino - 1"
@@ -104,7 +26,7 @@
 			],
 			"deck1": [
 				{
-					"card": "Genius"
+					"card": "Make the Call"
 				}
 			],
 			"identity1": [
@@ -112,16 +34,81 @@
 					"card": "Nightcrawler"
 				}
 			],
-			"enemies1": [],
-			"upgrade_support1": [
+			"enemies1": [
 				{
-					"card": "Change of Fortune",
-					"exhausted": true
+					"card": "Hydra bomber",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Bamf!",
+					"host": "Rhino",
+					"owner_hero_id": 1,
+				}
+			],
+			"hand1": [
+				{
+					"card": "Teleport Drop"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Teleport Drop"
+		},
+		{
+			"type": "select",
+			"value": "Rhino - 1"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nightcrawler"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 8,
+						"stunned": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
 				}
 			],
 			"deck1": [
 				{
-					"card": "Genius"
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nightcrawler"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra bomber",
+					"tokens": {
+						"tough": 1
+					}
 				}
 			],
 			"discard1": [
@@ -129,16 +116,11 @@
 					"card": "Strength"
 				},
 				{
-					"card": "Powerful Punch"
-				}
-			],
-			"hand1": [
-				{
-					"card": "Energy"
+					"card": "Teleport Drop"
 				},
 				{
-					"card": "Prehensile Tail"
-				}
+					"card": "Bamf!"
+				},				
 			]
 		}
 	}

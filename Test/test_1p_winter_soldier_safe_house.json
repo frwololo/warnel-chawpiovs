@@ -1,0 +1,157 @@
+{
+	"_comments": "Safe House when minion in deck",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Winter Soldier"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Weapons Runner"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Genius"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Bucky Barnes"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Winter Rifle"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Armored Guard"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Safe House #30 #54007"
+				}
+			],
+			"hand1": [
+				{
+					"card": "S.H.I.E.L.D. Sidearm"
+				},
+				{
+					"card": "Spoiling for a fight"
+				},
+				{
+					"card": "One by One"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Safe House #30 #54007"
+		},
+		{
+			"type": "select",
+			"value": "Weapons Runner"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Winter Soldier"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Bucky Barnes"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Winter Rifle"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Weapons Runner"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Safe House #30 #54007"
+				}
+			],
+			"hand1": [
+				{
+					"card": "S.H.I.E.L.D. Sidearm"
+				},
+				{
+					"card": "Spoiling for a fight"
+				},
+				{
+					"card": "One by One"
+				},
+				{
+					"card": "Genius"
+				}
+			]
+		}
+	}
+}

@@ -710,12 +710,7 @@
 				},
 				{
 					"name": "attack",
-					"subject": "target",
-					"filter_state_subject": [
-						{
-							"filter_group": "group_enemies"
-						}
-					],
+					"subject": "an_enemy",
 					"amount": 2,
 					"tags": [
 						"ranged"

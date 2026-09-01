@@ -703,26 +703,29 @@
 			"__name__": "__ready"
 		},
 		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action_ability"
-					]
-				},
-				{
-					"name": "mod_tokens",
-					"is_cost": true,
-					"token_name": "__ready",
-					"modification": -1,
-					"subject": "self"
-				},
-				{
-					"name": "ready_card",
-					"subject": "self"
-				}
-			]
+			"board": {
+				"Ready": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"token_name": "__ready",
+						"modification": -1,
+						"subject": "self"
+					},
+					{
+						"name": "ready_card",
+						"subject": "self",
+						"is_cost": true
+					}
+				]
+			}
 		}
 	},
 	"Recuperation": {

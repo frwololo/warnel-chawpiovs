@@ -1869,6 +1869,7 @@ func enable_focus_mode(cards = null, default_grab = null):
 		#Done
 	card_focus_allowed = true
 	if default_grab: # and default_grab.get_state_exec() == "board": piles are allowed in some cases...
+		default_grab.enable_focus_mode()
 		default_grab.grab_focus()
 	else:
 		grab_default_focus()

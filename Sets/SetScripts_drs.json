@@ -630,7 +630,24 @@
 		}
 	},
 	"Magical Enhancements": {
-		"give_to_player_max1": {},
+		"card_played": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_to_player_zone",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		},
 		"alterants": {
 			"board": [
 				{

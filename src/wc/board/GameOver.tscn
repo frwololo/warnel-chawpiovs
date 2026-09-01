@@ -14,19 +14,18 @@ margin_bottom = 40.0
 
 [node name="ColorRect" type="ColorRect" parent="CenterContainer"]
 margin_left = 36.0
-margin_top = 20.0
+margin_top = 21.0
 margin_right = 36.0
-margin_bottom = 20.0
+margin_bottom = 21.0
 color = Color( 0, 0, 0, 0.784314 )
 
 [node name="MarginContainer" type="MarginContainer" parent="CenterContainer"]
-margin_top = 1.0
 margin_right = 73.0
-margin_bottom = 39.0
+margin_bottom = 42.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MarginContainer"]
 margin_right = 73.0
-margin_bottom = 38.0
+margin_bottom = 42.0
 alignment = 1
 
 [node name="Title" type="Label" parent="CenterContainer/MarginContainer/VBoxContainer"]
@@ -35,12 +34,28 @@ margin_bottom = 14.0
 text = "Game Over"
 align = 1
 
-[node name="TextureRect" type="TextureRect" parent="CenterContainer/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="CenterContainer/MarginContainer/VBoxContainer"]
+margin_top = 18.0
+margin_right = 73.0
+margin_bottom = 18.0
+
+[node name="TextureRect" type="TextureRect" parent="CenterContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
 visible = false
-margin_top = 18.0
 margin_right = 256.0
-margin_bottom = 274.0
+margin_bottom = 256.0
+rect_min_size = Vector2( 256, 256 )
+size_flags_horizontal = 5
+size_flags_vertical = 5
+texture = ExtResource( 2 )
+stretch_mode = 7
+
+[node name="TextureRect2" type="TextureRect" parent="CenterContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+visible = false
+margin_left = 260.0
+margin_right = 516.0
+margin_bottom = 256.0
 rect_min_size = Vector2( 256, 256 )
 size_flags_horizontal = 5
 size_flags_vertical = 5
@@ -50,14 +65,16 @@ stretch_mode = 7
 [node name="UnlockMsg" type="Label" parent="CenterContainer/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 visible = false
-margin_top = 18.0
-margin_right = 73.0
-margin_bottom = 32.0
+margin_top = 278.0
+margin_right = 516.0
+margin_bottom = 292.0
+text = "Loot!"
+align = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/MarginContainer/VBoxContainer"]
-margin_top = 18.0
+margin_top = 22.0
 margin_right = 73.0
-margin_bottom = 38.0
+margin_bottom = 42.0
 alignment = 1
 
 [node name="OKButton" type="Button" parent="CenterContainer/MarginContainer/VBoxContainer/HBoxContainer"]

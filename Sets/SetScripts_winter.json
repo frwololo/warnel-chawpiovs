@@ -1127,29 +1127,60 @@
 					"subject": "self"
 				},
 				{
-					"name": "move_card_to_board",
-					"subject": "tutor",
-					"src_container": "deck_villain",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_type": "equal",
-					"is_cost": true,
-					"selection_count": 1,
-					"filter_state_tutor": [
+					"name": "conditional_script",
+					"options": [
 						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": "deck_villain",
+									"filter_state_tutor": [
+										{
+											"filter_properties": {
+												"type_code": "minion"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_card_to_board",
+									"subject": "tutor",
+									"src_container": "deck_villain",
+									"subject_count": "all",
+									"needs_selection": true,
+									"selection_type": "equal",
+									"selection_count": 1,
+									"selection_optional": false,
+									"filter_state_tutor": [
+										{
+											"filter_properties": {
+												"type_code": "minion"
+											}
+										}
+									]
+								},
+								{
+									"name": "draw_cards",
+									"amount": 1
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "say",
+							"text": "No luck :(",
+							"color": "#FF0000FF",
+							"sound": "hint_stunned"
 						}
 					]
 				},
 				{
 					"name": "shuffle_container",
 					"dest_container": "deck_villain"
-				},
-				{
-					"name": "draw_cards",
-					"amount": 1
 				}
 			]
 		}

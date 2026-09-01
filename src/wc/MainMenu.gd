@@ -82,6 +82,11 @@ func _ready() -> void:
 		_load_status = LOAD_STATUS.COMPLETE
 		_all_downloads_completed()		
 
+#generic function to call for random checks 
+func debug_stuff():
+	#TestSuite.generate_missing_tests()
+	pass	
+
 func init_button_signals(node):
 	if node.has_signal('pressed'):			
 		node.connect('pressed', self, 'on_button_pressed', [node.name])
@@ -207,8 +212,9 @@ func _all_downloads_completed():
 	get_node("%VersionLabel").text = "v. " + CFConst.GAME_VERSION + " (" + str(cfc.count_unique_cards()) +" cards)"
 	gameData.play_music("menu")
 	check_for_new_release()
-	
-	#TestSuite.generate_missing_tests()
+
+	debug_stuff()	
+
 
 func check_for_new_release():
 	http_request = HTTPRequest.new()

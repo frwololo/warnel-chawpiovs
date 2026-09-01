@@ -1,3 +1,4 @@
+class_name GameOver
 extends Control
 
 
@@ -5,17 +6,22 @@ extends Control
 # var a = 2
 # var b = "text"
 
-#returns true if all unlocked heroes already have at least a victory
-#this could indicate a gridlock where we are not able to unlock more
-#due to a bug 
-func hero_unlock_gridlock():
-	var hero_unlocks = cfc.game_settings["heroes_used_for_unlocks"]
+static func get_heroes_who_can_unlock():
+	var result = []
+	var hero_unlocks = cfc.game_settings.get("heroes_used_for_unlocks", {})
 	var unlocked_heroes = cfc.get_unlocked_heroes()
 	for unlocked_hero_id in unlocked_heroes:
 		var unlock = hero_unlocks.get(unlocked_hero_id, false)
 		if !unlock:
-			return false
-	return true	
+			result.append(unlocked_hero_id)
+	return result	
+#returns true if all unlocked heroes already have at least a victory
+#this could indicate a gridlock where we are not able to unlock more
+#due to a bug 
+func hero_unlock_gridlock():
+	if !get_heroes_who_can_unlock():
+		return true
+	return false
 
 #returns true if all unlocked villains already have at least a defeat
 #this could indicate a gridlock where we are not able to unlock more
@@ -35,7 +41,7 @@ func init_game_settings(keys):
 func victory():
 	if !cfc.is_adventure_mode():
 		return
-	var unlocked_hero_id = ""
+	var unlocked_hero_ids = []
 	var unlocked_scenario_id = ""
 	
 	init_game_settings([
@@ -59,8 +65,16 @@ func victory():
 	#has this hero already been used for an other hero unlock
 	var hero_used_for_unlocks = cfc.game_settings["heroes_used_for_unlocks"].get(hero_id, false)
 	if (!hero_used_for_unlocks) or hero_unlock_gridlock() :
-		unlocked_hero_id = cfc.adventure_unlock_random_hero()
+		var heroes_who_can_unlock = get_heroes_who_can_unlock()
+		var unlocked_hero_id = cfc.adventure_unlock_random_hero()
 		if unlocked_hero_id:
+			unlocked_hero_ids.append(unlocked_hero_id)
+			#add another hero for variety
+			if heroes_who_can_unlock.size() <= 1:
+				unlocked_hero_id = cfc.adventure_unlock_random_hero()
+				if unlocked_hero_id:
+					unlocked_hero_ids.append(unlocked_hero_id)
+		if unlocked_hero_ids:
 			cfc.game_settings["heroes_used_for_unlocks"][hero_id] = true
 
 	
@@ -71,7 +85,7 @@ func victory():
 		villain_defeats[scenario_id] = 0
 	villain_defeats[scenario_id] +=1
 	
-	if !unlocked_hero_id:	
+	if !unlocked_hero_ids:	
 		var villains_already_used_for_unlocks = ScenarioDeckData._get_corrected_scenario_ids("villains_used_for_unlocks")
 		var scenario_used_for_unlocks = (scenario_id in villains_already_used_for_unlocks)
 
@@ -82,26 +96,33 @@ func victory():
 
 		
 	
-	var texture = null
+	var texture1 = null
+	var texture2 = null
 	var unlockedmsg = ""
-	if unlocked_hero_id:
-		texture = cfc.get_hero_portrait(unlocked_hero_id)
+	if unlocked_hero_ids:
+		texture1 = cfc.get_hero_portrait(unlocked_hero_ids[0])
 		unlockedmsg = "New Hero Unlocked!"
+		if unlocked_hero_ids.size()> 1:
+			texture2 = cfc.get_hero_portrait(unlocked_hero_ids[1])
+			unlockedmsg = "New Heroes Unlocked!"			
 	elif unlocked_scenario_id:
 		var villain = ScenarioDeckData.get_first_villain_from_scheme(unlocked_scenario_id)
 		if (villain):
 			var display_name = villain["shortname"]
-			texture = cfc.get_villain_portrait(villain["_code"])			
+			texture1 = cfc.get_villain_portrait(villain["_code"])			
 			unlockedmsg = "New Villain Unlocked: " + display_name
 
-	if texture:
+	if texture1:
 		var texture_rect = get_node("%TextureRect")
 		var msg = get_node("%UnlockMsg")
-		texture_rect.texture = texture
+		texture_rect.texture = texture1
 		texture_rect.visible = true
 		msg.text = unlockedmsg
 		msg.visible = true
-	
+	if texture2:
+		var texture_rect = get_node("%TextureRect2")
+		texture_rect.texture = texture2
+		texture_rect.visible = true
 	
 	cfc.save_settings()
 

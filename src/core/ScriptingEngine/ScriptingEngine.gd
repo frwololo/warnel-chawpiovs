@@ -578,6 +578,13 @@ func flip_card(script: ScriptTask) -> int:
 #	* [KEY_SUBJECT](ScriptProperties#KEY_SUBJECT)
 func view_card(script: ScriptTask) -> int:
 	var retcode: int
+
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+
+	if costs_dry_run():
+		return CFConst.ReturnCode.CHANGED
+	
 	for card in script.subjects:
 		retcode = card.set_is_viewed(true)
 	return(retcode)

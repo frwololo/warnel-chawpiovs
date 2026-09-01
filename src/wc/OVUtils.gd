@@ -41,19 +41,6 @@ func preprocess_subject_definition(script: ScriptObject):
 						all_containers.append(zone + str(hero_id))
 				script_definition["src_container"] = all_containers
 	
-		"an_enemy":
-			script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_TARGET
-			script_definition[SP.KEY_NEEDS_SUBJECT] = script_definition.get(SP.KEY_NEEDS_SUBJECT,true)
-			script_definition[SP.FILTER_STATE + SP.KEY_SUBJECT] =\
-				script_definition.get(SP.FILTER_STATE + SP.KEY_SUBJECT, [{"filter_group": "group_enemies"}])
-
-		"a_scheme":
-			script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_TARGET
-			script_definition[SP.KEY_NEEDS_SUBJECT] = script_definition.get(SP.KEY_NEEDS_SUBJECT,true)
-			script_definition[SP.FILTER_STATE + SP.KEY_SUBJECT] =\
-				script_definition.get(SP.FILTER_STATE + SP.KEY_SUBJECT, [{"filter_group": "group_schemes"}])
-
-	
 		#more than 1 villain, need to modify some cards rules in real time
 		SP.KEY_SUBJECT_V_VILLAIN:
 			var villains = gameData.get_villains()

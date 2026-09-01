@@ -120,8 +120,9 @@ func _step_started(_trigger_object, details:Dictionary):
 			elif my_heroes:
 				hero_to_display = my_heroes[0]
 			var hero_card = gameData.get_identity_card(hero_to_display)
-			var filename = hero_card.get_art_filename()
-			settings["top_texture_filename"] = filename
+			if hero_card:
+				var filename = hero_card.get_art_filename()
+				settings["top_texture_filename"] = filename
 			gameData.play_sfx("player_phase")
 		CFConst.PHASE_STEP.VILLAIN_THREAT:
 			settings["text"] = "Villain Phase"

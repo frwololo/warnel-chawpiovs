@@ -1454,6 +1454,7 @@
 							"filter_func": {
 								"func_name": "count_attachments",
 								"func_params": {
+									"subject": "trigger",
 									"filter_state_attachment": [
 										{
 											"filter_properties": {

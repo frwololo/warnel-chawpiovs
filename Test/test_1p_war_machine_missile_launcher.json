@@ -1,0 +1,144 @@
+{
+	"_comments": "Test For Missile Launcher exhaust when cancel activation",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "War Machine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 2
+					}					
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "War Machine",
+					"tokens": {
+						"ammo": 5
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Missile Launcher"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Goliath - Bill Foster #23015"
+				},
+				{
+					"card": "Sneak Attack #23017"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Missile Launcher"
+		},
+		{
+			"type": "target",
+			"value": "Cancel"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "War Machine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "War Machine",
+					"tokens": {
+						"ammo": 5
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Missile Launcher",
+					"exhausted": false
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Goliath - Bill Foster #23015"
+				},
+				{
+					"card": "Sneak Attack #23017"
+				}
+			]
+		}
+	}
+}

@@ -14,7 +14,7 @@
 				{
 					"name": "move_card_to_container",
 					"subject": "self",
-					"dest_conainer": "removed_from_game"
+					"dest_container": "removed_from_game"
 				},
 				{
 					"is_else": true,

@@ -69,10 +69,13 @@ func say(script: ScriptTask) -> int:
 	if !text:
 		return  CFConst.ReturnCode.FAILED
 
-	var color = script.get_property("color", _hint_colors[_hint_counter[0]])
 
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
+	
+	var color = script.get_property("color", _hint_colors[_hint_counter[0]])
+
+	var sound = script.get_property("sound","")	
 	
 	var subjects = [script.owner]
 	if script.subjects:
@@ -81,6 +84,9 @@ func say(script: ScriptTask) -> int:
 	
 	for subject in subjects:
 		subject.hint(text, color)
+	
+	if sound:
+		cfc.play_sfx(sound)	
 	
 	_hint_counter[0] += 1
 	if _hint_counter[0] >= 	_hint_colors.size():

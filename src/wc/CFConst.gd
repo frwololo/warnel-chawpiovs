@@ -1066,8 +1066,8 @@ const DEFAULT_SETTINGS:= {
 #		"hercules": "https://marvelcdb.com/api/public/cards/hercules.json", #Hercules Hero Pack
 #cycle 11
 #		"fne": "https://marvelcdb.com/api/public/cards/fne.json", #Fear No Evil Expansion
-#		"": "https://marvelcdb.com/api/public/cards/.json", #
-#		"": "https://marvelcdb.com/api/public/cards/.json", #
+#		"jj": "https://marvelcdb.com/api/public/cards/jj.json", #Jessica Jones Hero Pack
+#		"luke_cage": "https://marvelcdb.com/api/public/cards/luke_cage.json", #Luke Cage Hero Pack
 #		"": "https://marvelcdb.com/api/public/cards/.json", #
 #		"": "https://marvelcdb.com/api/public/cards/.json", #
 #		"": "https://marvelcdb.com/api/public/cards/.json", #
@@ -1154,7 +1154,7 @@ const SCRIPT_BREAKPOINT_CARD_NAME := "Gamora"
 const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_played"
 
 
-const GAME_VERSION := "1.6.0"
+const GAME_VERSION := "1.7.0"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
 const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 

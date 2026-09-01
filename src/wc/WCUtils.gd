@@ -663,7 +663,34 @@ static func replace_macros(json_card_data, local_macro_data, json_macro_data):
 	var macro_data = merge_dict(json_macro_data, local_macro_data)
 	for macro_key in macro_data.keys():
 		result = replace_one_macro(result, macro_key, macro_data[macro_key])
+	subject_pre_processing(result)		
 	return result	
+
+#does subject preprocessing in place,
+#to replace subject macros
+static func subject_pre_processing(script_definition):
+	match typeof(script_definition):
+		TYPE_DICTIONARY:
+			for key in script_definition.keys():
+				if key == "subject":
+					match script_definition[key]:			
+						"an_enemy":
+							script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_TARGET
+							script_definition[SP.KEY_NEEDS_SUBJECT] = script_definition.get(SP.KEY_NEEDS_SUBJECT,true)
+							script_definition[SP.FILTER_STATE + SP.KEY_SUBJECT] =\
+								script_definition.get(SP.FILTER_STATE + SP.KEY_SUBJECT, [{"filter_group": "group_enemies"}])
+
+						"a_scheme":
+							script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_TARGET
+							script_definition[SP.KEY_NEEDS_SUBJECT] = script_definition.get(SP.KEY_NEEDS_SUBJECT,true)
+							script_definition[SP.FILTER_STATE + SP.KEY_SUBJECT] =\
+								script_definition.get(SP.FILTER_STATE + SP.KEY_SUBJECT, [{"filter_group": "group_schemes"}])
+				else:
+					subject_pre_processing(script_definition[key])
+		TYPE_ARRAY:	
+			for value in script_definition:
+				subject_pre_processing(value)	
+	
 
 # Recursively deletes a directory and all its contents
 static func delete_dir_recursive(path: String) -> bool:

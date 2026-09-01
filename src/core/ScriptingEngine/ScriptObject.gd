@@ -94,6 +94,9 @@ func get_property(property: String, default = null, subscript_definition = null,
 	if default == null:
 		default = SP.get_default(property)
 #	var found_value = lookup_script_property(script_definition.get(property,default))
+
+	if !owner:
+		return default
 	
 	var result = ""
 	if (subscript_definition != null):

@@ -351,6 +351,11 @@
 					]
 				},
 				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
 					"name": "add_resource",
 					"amount": 1,
 					"resource_name": "energy"

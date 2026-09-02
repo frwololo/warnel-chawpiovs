@@ -1,0 +1,201 @@
+{
+	"_comments": "Klaw avoid paying cost",
+	"test_conditions": {
+		"bug_type": "cant_repro",
+		"_comments": "cant_repro means a test was written to try and reproduce a bug report, but we couldnt confirm the issue"
+	},	
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01113"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116b",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "01117a"
+				},
+				{
+					"card": "01117b"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Weapons Runner"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Sonic Boom"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Tony Stark"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Energy Absorption"
+				},
+				{
+					"card": "Lead from the Front"
+				},
+				{
+					"card": "Make The Call"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "choose",
+			"value": "pay resources"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"expected_to_fail": true
+		},
+		{
+			"type": "select",
+			"value": [
+				"Mockingbird",
+				"Lead from the Front",
+				"Make the call"
+			]
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01113"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116b",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "01117a"
+				},
+				{
+					"card": "01117b"
+				}
+			],
+			"discard_villain": [
+							{
+					"card": "Sonic Boom"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Weapons Runner"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Advance"
+				},
+
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Tony Stark"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Lead From the Front"
+				},
+				{
+					"card": "Make The Call"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Energy Absorption"
+				}
+			]
+		}
+	}
+}

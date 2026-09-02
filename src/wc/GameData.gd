@@ -723,6 +723,9 @@ func check_restricted_limit():
 func check_main_scheme_defeat():
 	if !is_game_started():
 		return
+	if _game_over:
+		return
+		
 	var schemes = find_main_schemes()
 	if (!schemes):
 		var _error = 1 #TODO error handling
@@ -733,7 +736,7 @@ func check_main_scheme_defeat():
 		#error case: Side A improperly taken into account
 		if !scheme.get_property("threat", 0):
 			continue
-		if scheme.get_current_threat() >= scheme.get_property("threat", 0):
+		if scheme.get_current_threat() >= scheme.get_property("threat", 0, true):
 			scripting_bus.emit_signal_on_stack("stage_completed", scheme, {})
 
 func main_scheme_stage_completed(scheme):

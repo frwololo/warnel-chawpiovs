@@ -7,6 +7,9 @@ signal download_error (url, destination)
 signal downloads_finished
 signal stats_updated
 
+const LOG_FILE = "user://log_download_errors.txt"
+const ENABLE_LOGS = false
+
 export(bool)            var blind_mode : bool   = false
 export(String)          var save_path  : String = "user://dl_cache/"
 var file_urls :=[]
@@ -23,8 +26,21 @@ var _downloaded_percent : float = 0
 var _downloaded_size    : float = 0
 
 var _last_method : int
-var _ssl         : bool = false
+var _last_http_status: int = -1
+var _ssl         : bool = true
 
+const HttpStatusStr := [
+	"STATUS_DISCONNECTED",
+	"STATUS_RESOLVING",
+	"STATUS_CANT_RESOLVE",
+	"STATUS_CONNECTING",
+	"STATUS_CANT_CONNECT",
+	"STATUS_CONNECTED",
+	"STATUS_REQUESTING",
+	"STATUS_BODY",
+	"STATUS_CONNECTION_ERROR",
+	"STATUS_SSL_HANDSHAKE_ERROR"
+]
 
 func _init() -> void:
 	set_process(false)
@@ -37,8 +53,12 @@ func _ready() -> void:
 
 func _process(_delta) -> void:
 	_update_stats()
-
-
+	var status = get_http_client_status()
+	if status!= _last_http_status:
+		_last_http_status = status
+		#ignore ok cases
+		if !status in [HTTPClient.STATUS_CONNECTING,HTTPClient.STATUS_CONNECTED,HTTPClient.STATUS_REQUESTING,HTTPClient.STATUS_BODY ] :
+			LOG("http client status:" + HttpStatusStr[status]) 
 func start_download(p_urls: = []) -> void:
 	_create_directory()
 	if p_urls.empty() == false:
@@ -73,8 +93,11 @@ func _downloads_done() -> void:
 func _send_head_request() -> void:
 	# The HEAD method only gets the head and not the body. Therefore, doesn't
 	#   download the file.
-	request(_current_url, _headers, _ssl, HTTPClient.METHOD_HEAD)
+	var error = request(_current_url, _headers, _ssl, HTTPClient.METHOD_HEAD)
 	_last_method = HTTPClient.METHOD_HEAD
+	
+	if error != OK:
+		emit_signal("download_error", _current_url, download_file)
 	
 	
 func _send_get_request() -> void:
@@ -86,9 +109,9 @@ func _send_get_request() -> void:
 		return
 	
 	elif error == ERR_INVALID_PARAMETER:
-		print("Given string isn't a valid url ")
+		LOG("Given string isn't a valid url " + _current_url)
 	elif error == ERR_CANT_CONNECT:
-		print("Can't connect to host")
+		LOG("Can't connecto to host " + _current_url)
 	
 	emit_signal("download_error", _current_url, download_file)
 
@@ -144,7 +167,7 @@ func _extract_regex_from_header(p_regex  : String,
 
 
 func _on_request_completed(p_result,
-						   _p_response_code,
+						   p_response_code,
 						   p_headers,
 						   _p_body) -> void:
 	if p_result == RESULT_SUCCESS:
@@ -165,7 +188,7 @@ func _on_request_completed(p_result,
 			_download_next_file()
 	else:
 		emit_signal("download_error", _current_url, download_file)
-		print("HTTP Request error: ", p_result)
+		LOG("HTTP Request error: " +  str(p_result) + " - response code :" + str(p_response_code))
 
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
@@ -175,8 +198,29 @@ func _notification(what):
 			dir.remove(save_path + file)
 
 func _download_error(url, _filename):
+	LOG("Download error for url: " + url + " (filename: " + _filename + ") - current_url: " + _current_url)
 	if url != _current_url:
 		var _error = 1
-
+	
+	LOG("get_http_client_status: " + HttpStatusStr[get_http_client_status()])
 	_file.close()
 	_current_url = ""
+
+static func INIT_LOG():
+	if !ENABLE_LOGS:
+		return
+	var file = File.new()
+	if (file.file_exists(LOG_FILE)):
+		return
+	file.open(LOG_FILE, File.WRITE)
+	file.close() 	
+	
+static func LOG(to_print:String):
+	if !ENABLE_LOGS:
+		return	
+	INIT_LOG()
+	var file = File.new()
+	file.open(LOG_FILE, File.READ_WRITE)
+	file.seek_end()
+	file.store_string(Time.get_datetime_string_from_system() + "- " + to_print + "\n")
+	file.close() 

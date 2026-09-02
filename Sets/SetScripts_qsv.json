@@ -335,7 +335,7 @@
 				},
 				{
 					"name": "exhaust_card",
-					"subject": "my_hero"
+					"subject": "my_identity"
 				}
 			]
 		},
@@ -899,7 +899,7 @@
 				{
 					"name": "add_resource",
 					"amount": 1,
-					"resource_name": "energy"
+					"resource_name": "mental"
 				}
 			]
 		}

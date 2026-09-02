@@ -725,7 +725,20 @@ func _process(delta) -> void:
 	if cfc.game_paused:
 		return
 
-	refresh_cache()
+	var force_refresh = false
+	
+	#TODO there is a bug where some cards have the wrong information
+	#after moving zones
+	#we force refreshing the cache a few seconds after the move happened,
+	#in order to make things right
+	var current_time = Time.get_ticks_msec()
+	var move_time = last_move_result.get("time", current_time)
+	if (current_time - move_time > 2000) and !last_move_result.get("_forced_cache_refresh_happened", false):
+		last_move_result["_forced_cache_refresh_happened"] = true
+		force_refresh = true
+	#/TODO	
+		
+	refresh_cache(force_refresh)
 
 	if info_icon and info_icon.visible:
 		info_icon.modulate.a -= delta

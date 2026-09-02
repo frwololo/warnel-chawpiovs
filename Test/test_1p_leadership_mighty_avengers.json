@@ -1,0 +1,158 @@
+{
+	"_comments": "Tests Mighty Avengers",
+	"test_conditions": {
+		"bug_type": "cant_repro",
+		"_comments": "cant_repro means a test was written to try and reproduce a bug report, but we couldnt confirm the issue"
+	},		
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain America"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Captain America"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Mighty Avengers"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Falcon #03011"
+				},
+				{
+					"card": "Squirrel Girl #03013"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird #03020"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Shield Toss"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Falcon #03011"
+		},
+		{
+			"type": "choose",
+			"value": "Attack"
+		},
+		{
+			"type": "target",
+			"value": "Rhino - 1"
+		},
+		{
+			"type": "play",
+			"value": "Mockingbird #03020"
+		},
+		{
+			"type": "target",
+			"value": "Rhino - 1"
+		},
+		{
+			"type": "activate",
+			"value": "Squirrel Girl #03013"
+		},
+		{
+			"type": "choose",
+			"value": "Attack"
+		},
+		{
+			"type": "target",
+			"value": "Rhino - 1"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain America"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 4,
+						"stunned": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Captain America"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Mighty Avengers"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Falcon #03011"
+				},
+				{
+					"card": "Squirrel Girl #03013"
+				},
+				{
+					"card": "Mockingbird #03020"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Shield Toss"
+				},			
+				{
+					"card": "Strength"
+				},
+
+			]
+		}
+	}
+}

@@ -1092,17 +1092,15 @@
 		}
 	},
 	"Under Surveillance": {
-		"card_moved_to_board": [
-			{
-				"trigger": "self",
-				"board": [
-					{
-						"name": "attach_to_card",
-						"subject": "main_scheme"
-					}
-				]
-			}
-		],
+		"card_moved_to_board": { 
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "main_scheme"
+				}
+			]
+		},
 		"alterants": {
 			"board": [
 				{

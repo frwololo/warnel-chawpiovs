@@ -179,6 +179,7 @@ func retry_or_cancel_current_file():
 	
 	if !server:
 		cfc.fail_img_download(current_file.get("card_id", ""))
+		FileDownloader.LOG("retry_or_cancel_current_file: final failure for " + current_file.get("path"))					
 		current_file = {}
 		return
 
@@ -193,18 +194,23 @@ func retry_or_cancel_current_file():
 		"card_id": current_file["card_id"]				
 	}
 	
-	cards_to_download.append(to_add)	
+	cards_to_download.append(to_add)
+	#cancel failed download
+	current_file = {}	
 
-func _download_error(url, _filename):
+func _download_error(url, filename):
 	if url != current_file.get("path", ""):
+		FileDownloader.LOG("_download_error triggered but url unexpected:" + url + "(filename:" + filename + ") - expected: " + current_file.get("path", ""))	
 		var _error = 1
 		return
 
 	dl_errors += 1
+	FileDownloader.LOG("_download_error triggered for url:" + url + "(filename:" + filename + ") - doing retry or cancel")	
 	retry_or_cancel_current_file()
 
 func _file_downloaded(url, filename):
 	if url != current_file.get("path", ""):
+		FileDownloader.LOG("_file_downloaded triggered but url unexpected:" + url + "(filename:" + filename + ") - expected: " + current_file.get("path", ""))			
 		var _error = 1
 		return
 	
@@ -267,7 +273,7 @@ func check_servers_health():
 			if error != OK:
 				s["health_check"] = "complete"
 				s["is_up"] = false
-				continue
+				FileDownloader.LOG("check_servers_health error for url: " + url + "(error:" + str(error) + ")")	
 			else:
 				yield(self, "one_server_check_completed")
 			if http_request and (http_request in get_children()):
@@ -282,12 +288,14 @@ func _health_check_complete(result, _response_code, _headers, _body):
 			break
 	if !current_server:
 		var _error = 1
+		FileDownloader.LOG("Called Server Health Check complete current_server is empty")
 		return
 	current_server["health_check"] = "complete"
 	if result == HTTPRequest.RESULT_SUCCESS:
 		current_server["is_up"] = true
 	else:
 		current_server["is_up"] = false
+		FileDownloader.LOG("Server is down " + current_server.get("url", ""))
 
 	emit_signal("one_server_check_completed")			
 			

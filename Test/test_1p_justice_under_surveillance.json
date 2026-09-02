@@ -1,0 +1,185 @@
+{
+	"_comments": "Under Surveillance bug: doesn't prevent scheme defeat - https://github.com/frwololo/warnel-chawpiovs/issues/34",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Breakin' & Takin'"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Surveillance Team"
+				},
+				{
+					"card": "Nick Fury"
+				},
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Swinging Web Kick"
+				},
+				{
+					"card": "The power of Justice"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Under Surveillance"
+				}				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Under Surveillance"
+		},
+		{
+			"type": "next_phase",
+			"value": "1",
+			"_comments": "going to the next phase (ending player turn) will trigger the villain attack"
+		},
+		{
+			"type": "pass",
+			"value": "1",
+			"_comments": "click on pass to skip Spider-Man draw interrupt"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "click cancel on defenders to take an undefended attack"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Breakin' & Takin'"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 7
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Backflip"
+				}
+			],
+			"others": [
+				{
+					"card": "Under Surveillance",
+					"host": "01097b"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man",
+					"tokens": {
+						"damage": 2,
+						"defeat": 0
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				}
+			],
+			"hand1": [
+				{
+					"card": "The power of Justice"
+				},
+				{
+					"card": "Swinging Web Kick"
+				},
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Nick Fury"
+				},
+				{
+					"card": "Surveillance Team"
+				}
+			]
+		}
+	}
+}

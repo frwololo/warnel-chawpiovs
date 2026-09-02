@@ -15,16 +15,47 @@ extends Reference
 const PROPERTIES_STRINGS := ["Type", "Requirements", "Abilities", "text", "type_name", "faction_name"]
 # Properties which are converted into string using a format defined in setup()
 #WC traits and AUTO_KEYWORDS are added at runtime to this list
-const PROPERTIES_NUMBERS := ["cost", "attack", "defense", "recover", "thwart", "scheme", "health",
-	"attack_cost", "thwart_cost", #consequential damage
-	"cannot_attack", "cannot_thwart", "cannot_defend", "cannot_recover",  "cannot_play", "cannot_attack_minion", "cannot_activate",
-	"printed_health", #TODO maybe retrieve this one from the database directly?
-	"invincible","cannot_remove_threat", "is_unique", "cannot_thwart_side_scheme",
-	"boost", "scheme_crisis", "scheme_amplify", "scheme_acceleration", "scheme_hazard",
-	"escalation_threat", 
-	"resource_mental", "resource_wild", "resource_energy", "resource_physical",
-	"ally_limit", "restricted_limit", "hand_size", "boost_cards_per_attack", "boost_cards_per_scheme", "max_hand_size",
-	"max_tokens_tough"]
+const PROPERTIES_NUMBERS := [
+	"ally_limit",
+	"attack",
+	"attack_cost",
+	"boost",
+	"boost_cards_per_attack",
+	"boost_cards_per_scheme",
+	"cannot_activate",
+	"cannot_attack",
+	"cannot_attack_minion",
+	"cannot_defend",
+	"cannot_play",
+	"cannot_recover",
+	"cannot_remove_threat",
+	"cannot_thwart",
+	"cannot_thwart_side_scheme",
+	"cost",
+	"defense",
+	"escalation_threat",
+	"hand_size",
+	"health",
+	"invincible",
+	"is_unique",
+	"max_hand_size",
+	"max_tokens_tough",
+	"printed_health",
+	"recover",
+	"resource_energy",
+	"resource_mental",
+	"resource_physical",
+	"resource_wild",
+	"restricted_limit",
+	"scheme",
+	"scheme_acceleration",
+	"scheme_amplify",
+	"scheme_crisis",
+	"scheme_hazard",
+	"threat",
+	"thwart",
+	"thwart_cost"
+]
 # The name of these properties will be prepended before their value to their label.
 const NUMBER_WITH_LABEL := []
 # Properties provided in a list which are converted into a string for the

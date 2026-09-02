@@ -651,7 +651,7 @@
 						"then": 2,
 						"else": 0
 					},
-					"exclude_subject": "previous",
+					"subject_exclude": "previous",
 					"subject": "target",
 					"needs_subject": true,
 					"filter_state_subject": [

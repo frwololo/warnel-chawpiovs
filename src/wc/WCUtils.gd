@@ -754,7 +754,9 @@ static func check_delete_all_pck():
 		var _error = 1
 		#TODO error
 		return
-
+	
+	var pck_files = CFUtils.list_files_in_directory("user://", "", true, ".pck")
+	var zip_files = CFUtils.list_files_in_directory("user://", "", true, ".zip")
 	#for each set, try to load package files for it
 	#loading data from a file overrides the previous one, so a package file
 	#has higher priority (its content will override previously loaded ones if they exist)
@@ -764,12 +766,10 @@ static func check_delete_all_pck():
 	#zip files have priority because I have found they have better compatibility
 	# (pck files will refuse to load if wrong godot version number for example)
 	# see https://www.reddit.com/r/godot/comments/11pfoon/comment/jbxyp2x/
-	for set in database.keys() + CFConst.ALLOWED_PCK_NAMES:
-		for folder in ["user://"]:		
-			for format in [".pck", ".zip"]:
-				var filename = folder + set + format
-				if file.file_exists(filename):
-					var result = dir.remove(filename)
+	for filegroup in [pck_files, zip_files]:
+		for filename in filegroup:
+			if file.file_exists(filename):
+				var result = dir.remove(filename)
 	
 	dir.remove(delete_pck_mark)
 	return

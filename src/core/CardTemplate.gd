@@ -1564,7 +1564,8 @@ func move_to(targetHost: Node,
 		"destination": destination_str,
 		"destination_grid": destination_grid,					
 		"source": source_str,
-		"tags": tags
+		"tags": tags,
+		"time": Time.get_ticks_msec(),
 	}	
 		
 	if from_top_of_deck and to_discard:

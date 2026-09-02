@@ -936,22 +936,6 @@ const TARGET_ARROW_COLOR_BY_NAME: = {
 	"receive_damage" : Color(0.7, 0.1, 0.1)	
 }
 
-const ALLOWED_PCK_NAMES:= [
-	"music",
-	"cycle1",
-	"cycle2",
-	"cycle3",
-	"cycle4",
-	"cycle5",
-	"cycle6",
-	"cycle7",
-	"cycle8",
-	"cycle9",
-	"cycle10",
-	"cycle11",
-	"cycle12",
-	"cycle13",												
-]
 
 const DEACTIVATE_SLOTS_HIGHLIGHT := true
 const DISABLE_MANUAL_ATTACHMENTS : = true
@@ -1154,7 +1138,7 @@ const SCRIPT_BREAKPOINT_CARD_NAME := "Gamora"
 const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_played"
 
 
-const GAME_VERSION := "1.7.0"
+const GAME_VERSION := "1.6.1"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
 const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 

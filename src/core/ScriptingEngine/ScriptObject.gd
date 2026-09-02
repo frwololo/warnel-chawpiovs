@@ -317,6 +317,13 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 			script_definition[SP.KEY_SUBJECT_COUNT] = "all"
 			script_definition["filter_state_seek"] = script_definition["filter_state_subject"]	
 	# See SP.KEY_SUBJECT doc
+	
+	var exclude_definition = get_property("subject_exclude", null)
+	var to_exclude = []
+	if exclude_definition:
+		to_exclude = _local_find_subjects(stored_integer, run_type, {"subject" : exclude_definition, "subject_exclude" : ""})
+	
+	
 	match subject:
 		# Ever task retrieves the subjects used in the previous task.
 		# if the value "previous" is given to the "subjects" key,
@@ -364,11 +371,9 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 				return []
 			var c = null
 			if (run_type == CFInt.RunType.BACKGROUND_COST_CHECK):
-				c = _dry_run_card_targeting(script_definition)
+				c = _dry_run_card_targeting(script_definition, to_exclude)
 			else:
-				
-
-				c = _initiate_card_targeting()
+				c = _initiate_card_targeting(to_exclude)
 				if c is GDScriptFunctionState && c.is_valid(): # Still working.
 					c = yield(c, "completed")
 			# If the target is null, it means the player pointed at nothing
@@ -409,6 +414,12 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 			for c in subjects_array:
 				if not SP.check_validity(c, script_definition, "subject", owner):
 					is_valid = false
+
+	#second pass of subject exclusion for cases that need it
+	if typeof(to_exclude) == TYPE_ARRAY:
+		for exclude in to_exclude:
+			subjects_array.erase(exclude)
+
 	if get_property(SP.KEY_NEEDS_SELECTION):
 		if !interaction_authorized:
 			user_interaction_status = CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER
@@ -459,13 +470,7 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 	if user_interaction_status ==  CFConst.USER_INTERACTION_STATUS.NOT_CHECKED_YET:
 		user_interaction_status =  CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED
 
-	var to_exclude = get_property("subject_exclude", null)
-	if to_exclude:
-		var exclude_result = _local_find_subjects(stored_integer, run_type, {"subject" : to_exclude, "subject_exclude" : ""})
-		#cfc.ov_utils.get_subjects(self, to_exclude, stored_integer, run_type, trigger_details)
-		if typeof(exclude_result) == TYPE_ARRAY:
-			for exclude in exclude_result:
-				subjects_array.erase(exclude)
+
 	
 
 	#post selection validity check
@@ -684,10 +689,12 @@ func _index_seek_subjects(stored_integer: int) -> Array:
 
 #Tries to find an arbitrary valid target for an ability (for cost check purposes)
 #return the first we find on the board if we find one, null otherwise
-func _dry_run_card_targeting(_script_definition):
+func _dry_run_card_targeting(_script_definition, to_exclude = []):
 	var all_cards = cfc.NMAP.board.get_all_cards()
 	#TODO also check cards in piles ?
 	for c in all_cards:
+		if c in to_exclude:
+			continue
 		var _is_valid = SP.check_validity(c, _script_definition, "subject", owner)
 		if (_is_valid):
 			return c
@@ -697,7 +704,7 @@ func _dry_run_card_targeting(_script_definition):
 # and yields until it's found.
 #
 # Returns a Card object.
-func _initiate_card_targeting() -> Card:
+func _initiate_card_targeting(to_exclude = []) -> Card:
 	cfc.add_ongoing_process(self, owner.canonical_name)
 
 	var all_cards = [] 
@@ -711,6 +718,8 @@ func _initiate_card_targeting() -> Card:
 	var valid_targets = []
 	#TODO also check cards in piles ?
 	for c in all_cards:
+		if c in to_exclude:
+			continue		
 		var _is_valid = SP.check_validity(c, script_definition, "subject", owner)
 		if (_is_valid):
 			valid_targets.append(c)

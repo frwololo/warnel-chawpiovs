@@ -212,7 +212,8 @@ func _ready():
 	theStack.connect("script_added_to_stack", self, "_script_added_to_stack")
 
 	cardImageDownloader.connect("download_complete", self, "_card_img_download_complete")
-
+	fileDownloader.connect("file_downloaded", self, "_file_downloaded")
+	
 	self.add_child(theStack) #Stack needs to be in the tree for rpc calls	
 	self.add_child(theAnnouncer)
 	self.add_child(theGameObserver)
@@ -220,7 +221,7 @@ func _ready():
 	self.add_child(cardImageDownloader)
 	#scripting_bus.connect("optional_window_opened", self, "attempt_user_input_lock")
 	#scripting_bus.connect("optional_window_closed", self, "attempt_user_input_unlock")	
-	download_music()
+
 
 
 var _image_download_callbacks := {}
@@ -241,14 +242,6 @@ func urgent_image_download(card_id, callback_owner):
 	_image_download_callbacks[card_id].append(callback_owner)
 	cardImageDownloader.add_card(card_id, true)
 	
-func download_music():
-	if WCUtils.file_exists("music.zip"):
-		return
-	fileDownloader.connect("file_downloaded", self, "_file_downloaded")
-	
-	var music_url = CFConst.RESOURCES_URL + "music.zip"	
-	var urls = PoolStringArray([music_url])
-	fileDownloader.start_download(urls)
 
 func _file_downloaded(url, destination):
 	if url == CFConst.RESOURCES_URL + "music.zip":

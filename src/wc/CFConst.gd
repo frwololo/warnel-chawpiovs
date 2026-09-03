@@ -973,8 +973,6 @@ const DEFAULT_SETTINGS:= {
 	'glow_intensity' : 0.01,
 	'load_cards_online' : true,
 	'enable_fanmade_sets': false,
-	'images_base_url': "https://marvelcdb.com",
-	'fanmade_images_base_url': "https://mc4db.merlindumesnil.net",
 	"decks_base_url": "https://marvelcdb.com/api/public/decklist/",
 	"decks_base_url_backup": "https://marvelcdb.com/api/public/deck/",
 	'dont_show_msg': {},

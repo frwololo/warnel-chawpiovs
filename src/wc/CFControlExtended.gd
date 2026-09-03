@@ -353,6 +353,9 @@ func init_settings_from_file() -> void:
 			for key in defaults:
 				if !game_settings.has(key):
 					game_settings[key] = defaults[key]
+
+	if !game_settings.get("image_servers"):
+		game_settings["image_servers"] = CardImageDownloader.get_default_servers()
 	save_settings() #will generate settings file on disc if not exist yet
 
 func get_card_name_by_id(id):
@@ -1737,65 +1740,9 @@ func get_corrected_card_id (card, fuzzy_fallback = true) -> String:
 			
 	return ""
 
-#mark a download as failed to avoid constantly attempting it
-var failed_files:= {}
 
-func get_failed_files():
-	if failed_files:
-		return failed_files
-	var filename = "user://failed_image_downloads.json"
-	var _failed_files = WCUtils.read_json_file(filename)
-	failed_files =  _failed_files if _failed_files else {}
 
-	var last_check = failed_files.get("_last_check", 0)
-	var current_time = Time.get_unix_time_from_system()
-	var older_time = current_time - (3600 * 24 * 5)
-	if !last_check or last_check < 	older_time:
-		failed_files = {}
-		failed_files["_last_check"] = current_time
-	#return failed_files
 
-func fail_img_download(card_id):
-	var file = File.new()
-	var filename = "user://failed_image_downloads.json"
-	get_failed_files()
-	failed_files[card_id] = true
-	failed_files["_last_check"] = Time.get_unix_time_from_system()
-	var to_print = to_json(failed_files)	
-	file.open(filename, File.WRITE)
-	file.store_string(to_print)
-	file.close()  		
-
-func is_image_download_failed(card_id):
-	get_failed_files()
-	return failed_files.get(card_id, false)
-
-func get_image_dl_url(card_id):
-	var card_data = get_card_by_id(card_id) 
-	var base_url = game_settings.get("images_base_url")
-	if card_data and card_data.get("fanmade", false):
-		base_url = game_settings.get("fanmade_images_base_url")
-	if !base_url:
-		fail_img_download(card_id)
-		return ""
-	if !card_data:
-		if CFConst.ATTEMPT_TO_GUESS_IMAGE_URL:
-			var url = base_url + "/bundles/cards/" + str(card_id) + ".png"
-			return url
-	if !card_data.get("imagesrc", ""):
-			var duplicate_of = card_data.get("duplicate_of_code", "")
-			if duplicate_of:
-				return get_image_dl_url(duplicate_of)
-			elif CFConst.ATTEMPT_TO_GUESS_IMAGE_URL:
-				var url = base_url + "/bundles/cards/" + str(card_id) + ".png"
-				return url				
-			else:
-				fail_img_download(card_id)
-				return ""
-	var url = card_data["imagesrc"]
-	if !url.begins_with("http"):
-		url = base_url + url
-	return url
 
 #this precaches files on the system due to a bug in Godot
 #see https://github.com/godotengine/godot/issues/87274	
@@ -1832,7 +1779,7 @@ func preload_pck():
 	#zip files have priority because I have found they have better compatibility
 	# (pck files will refuse to load if wrong godot version number for example)
 	# see https://www.reddit.com/r/godot/comments/11pfoon/comment/jbxyp2x/
-	for folder in ["res://", "user://", "user://Mods"]:			
+	for folder in ["res://", "user://", "user://Mods/"]:			
 		var delete_on_error = (folder.begins_with("user://"))		
 		for format in [".pck", ".zip"]:
 			var files = CFUtils.list_files_in_directory(folder, "", true, format)

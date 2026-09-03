@@ -37,3 +37,7 @@ WC.apk
 WC.apk.idsig
 scripts/scenarios_mut_gen.json
 /Test/other
+/scripts/sets_raw
+scripts/.\#download_images.py
+scripts/all_images.json
+scripts/dl_errors.txt

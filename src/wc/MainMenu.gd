@@ -68,19 +68,23 @@ func _ready() -> void:
 	# warning-ignore:return_value_discarded
 	resize()
 	_loading_text_prefix = "Loading Card Definitions - "
-	v_folder_label.text = _loading_text_prefix
+	set_info_text(_loading_text_prefix)
 	main_title.text = "LOADING..."
 	get_node("%VersionLabel").text = "v. " + CFConst.GAME_VERSION
 		
 	self.connect("one_download_completed", self, "_one_download_completed")
 	self.connect("sets_download_completed", self, "_sets_download_completed")	
-	cfc.connect("json_parse_error", self, "loading_error")	
+	cfc.connect("json_parse_error", self, "loading_error")
+	fileDownloader.connect("file_downloaded", self, "_file_downloaded")	
 	get_viewport().connect("size_changed", self, 'resize')	
 
 	_load_status = LOAD_STATUS.NOT_STARTED
 	if cfc.all_loaded:
 		_load_status = LOAD_STATUS.COMPLETE
 		_all_downloads_completed()		
+
+func set_info_text(msg):
+	v_folder_label.text = msg
 
 #generic function to call for random checks 
 func debug_stuff():
@@ -115,6 +119,10 @@ func display_folder_info():
 		v_folder_label.add_color_override("font_color", Color8(255, 0,0))
 		v_folder_label.text = "There was a network error while downloading game resources. Gameplay might be impacted.\n" +  _network_error
 		return
+	var stats = fileDownloader.get_stats()
+	if "music.zip" in stats["file_name"] and stats["downloaded_percent"] < 100:	
+		set_info_text("Downloading Music/Sfx")
+		return		
 	if cfc.game_settings.get("hide_folder_label", false):
 		v_folder_label.text = " "
 	else:	
@@ -266,13 +274,33 @@ func create_default_folders():
 	var dir = Directory.new()
 	for folder in ["Sets", "Sets_fanmade", "Decks", "Saves", "Saves/current_game", "Music", "Sfx", "cache", "Mods"]:
 		dir.make_dir_recursive("user://" + folder + "/")
+
+func download_music():
+	if WCUtils.file_exists("music.zip"):
+		return ""
 	
+	var music_url = CFConst.RESOURCES_URL + "music.zip"	
+	var urls = PoolStringArray([music_url])
+	fileDownloader.start_download(urls)
+	return music_url
 
 func start_images_dl():
 	gameData.cardImageDownloader.load_pending_images()
+	
+	#we run this step here right after load_pending_images
+	#because load_pending_images is a heavy, blocking call
+	#we've had issues on Nintendo Switch where music.zip wouldn't download:
+	#the http request would timeout because of load_pending_images blocking everything and delaying http sync
+	var needs_music_download = download_music()	
+	if needs_music_download:
+		set_info_text("Downloading Music/Sfx")
 	var dl_stats = gameData.cardImageDownloader.get_stats()
 	var remaining = dl_stats["remaining"]
 	if remaining:
+		if needs_music_download:
+			set_info_text("Downloading assets")
+		else:
+			set_info_text("Downloading images")
 		var dialog:AcceptDialog = AcceptDialog.new()
 		dialog.window_title = "Image Download"
 		dialog.set_text(str(remaining) + " card images will be downloaded in the background.\nYou can play while this happens.\nMake sure you have an internet connection enabled")
@@ -286,12 +314,19 @@ func start_images_dl():
 	
 func _sets_download_completed():
 	#database download is complete, we load all sets then start the images
+	set_info_text("Loading/caching card objects. This can take a while...")
+	yield(get_tree(), "idle_frame")
+	load_cards_database()
+
+func load_cards_database():
 	cfc.load_cards_database()
 	if cfc.scripts_loading:
 		yield(cfc,"scripts_loaded")
 
 	if (_loading_error):
-		return		
+		return	
+	set_info_text("Checking for missing images/assets...")	
+	yield(get_tree(), "idle_frame")	
 	start_images_dl()
 
 func _process(delta):
@@ -325,7 +360,7 @@ func _process(delta):
 	if cfc._cards_loaded <  cfc._total_cards :
 		#warning-ignore:INTEGER_DIVISION
 		var percent_loaded:int = (100*cfc._cards_loaded) / cfc._total_cards
-		v_folder_label.text = _loading_text_prefix +  str(percent_loaded) + "%"
+		set_info_text(_loading_text_prefix +  str(percent_loaded) + "%")
 	
 	if 	_next_scene_counter:
 		_next_scene_counter-=1
@@ -338,7 +373,7 @@ func _one_download_completed():
 	if (_loading_error):
 		return
 			
-	v_folder_label.text = _loading_text_prefix +  str(_current_percent) + "% - " + _current_url
+	set_info_text(_loading_text_prefix +  str(_current_percent) + "% - " + _current_url)
 
 func on_button_pressed(_button_name : String) -> void:
 	match _button_name:
@@ -391,9 +426,11 @@ func resize():
 	$CenterContainer/LoadingPanel.rect_min_size = target_size
 	$CenterContainer/LoadingPanel.rect_size = target_size
 
-
-	
-
+func _file_downloaded(url, filename):
+	if "music.zip" in url:
+		set_info_text("Music/Sfx Downloaded")
+	else:
+		display_folder_info()
 
 func _on_FolderLabel_meta_clicked(meta):
 	# `meta` is of Variant type, so convert it to a String to avoid script errors at run-time.

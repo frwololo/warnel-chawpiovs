@@ -8,7 +8,7 @@ signal downloads_finished
 signal stats_updated
 
 const LOG_FILE = "user://log_download_errors.txt"
-const ENABLE_LOGS = false
+const LOG_ALL = false
 
 export(bool)            var blind_mode : bool   = false
 export(String)          var save_path  : String = "user://dl_cache/"
@@ -46,6 +46,7 @@ func _init() -> void:
 	set_process(false)
 	connect("request_completed", self, "_on_request_completed")
 	connect("download_error", self, "_download_error")
+	
 
 func _ready() -> void:
 	set_process(false)
@@ -53,12 +54,14 @@ func _ready() -> void:
 
 func _process(_delta) -> void:
 	_update_stats()
-	var status = get_http_client_status()
-	if status!= _last_http_status:
-		_last_http_status = status
-		#ignore ok cases
-		if !status in [HTTPClient.STATUS_CONNECTING,HTTPClient.STATUS_CONNECTED,HTTPClient.STATUS_REQUESTING,HTTPClient.STATUS_BODY ] :
-			LOG("http client status:" + HttpStatusStr[status]) 
+	
+	if LOG_ALL:
+		var status = get_http_client_status()
+		if status!= _last_http_status:
+			_last_http_status = status
+			#ignore ok cases
+			if !status in [HTTPClient.STATUS_CONNECTING,HTTPClient.STATUS_CONNECTED,HTTPClient.STATUS_REQUESTING,HTTPClient.STATUS_BODY ] :
+				LOG("http client status:" + HttpStatusStr[status]) 
 func start_download(p_urls: = []) -> void:
 	_create_directory()
 	if p_urls.empty() == false:
@@ -169,7 +172,7 @@ func _extract_regex_from_header(p_regex  : String,
 func _on_request_completed(p_result,
 						   p_response_code,
 						   p_headers,
-						   _p_body) -> void:
+						   p_body) -> void:
 	if p_result == RESULT_SUCCESS:
 		if _last_method == HTTPClient.METHOD_HEAD and blind_mode == false:
 			var regex = "(?i)content-length: [0-9]*"
@@ -188,8 +191,9 @@ func _on_request_completed(p_result,
 			_download_next_file()
 	else:
 		emit_signal("download_error", _current_url, download_file)
-		LOG("HTTP Request error: " +  str(p_result) + " - response code :" + str(p_response_code))
+		LOG("HTTP Request error: " +  str(p_result) + " - response code :" + str(p_response_code) + "\n" + JSON.print(p_headers) + "\n" + JSON.print(p_body))
 
+#clear cache folder on exit
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		var files = CFUtils.list_files_in_directory(save_path )
@@ -207,8 +211,6 @@ func _download_error(url, _filename):
 	_current_url = ""
 
 static func INIT_LOG():
-	if !ENABLE_LOGS:
-		return
 	var file = File.new()
 	if (file.file_exists(LOG_FILE)):
 		return
@@ -216,8 +218,6 @@ static func INIT_LOG():
 	file.close() 	
 	
 static func LOG(to_print:String):
-	if !ENABLE_LOGS:
-		return	
 	INIT_LOG()
 	var file = File.new()
 	file.open(LOG_FILE, File.READ_WRITE)

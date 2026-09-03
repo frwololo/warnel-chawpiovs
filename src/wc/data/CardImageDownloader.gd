@@ -1,50 +1,79 @@
 class_name CardImageDownloader
 extends Node
 
-const servers := [
-	{
-		"url": "https://marvelcdb.com",
-		"is_up": true,
-		"health_check": "not_started",
-		"health_check_url": ""		
-	},
-	{
-		"url": "https://mc4db.merlindumesnil.net",
-		"is_up": true,
-		"health_check": "not_started",	
-		"health_check_url": "",		
-		"modifications": {
-			"extension": ".webp",
-			"replace_path_to": "/bundles/cards/EN/[box_name]/"
-		}
-	},	
-]
+const default_servers := {
+	"marvelcdb": 
+		{
+			"url": "https://marvelcdb.com",
+			"path": "/bundles/cards/[card_id].png",
+			"prioritize_relative_image_src": true,		
+		},	
+	"cerebro":
+		{
+			"url": "https://cerebrodatastorage.blob.core.windows.net",
+			"path": "/cerebro-cards/official/[card_id].jpg",
+			"uppercase_card_id": true,
+			"card_id_override": "printed_card_id",					
+		},	
+	"mc4db":	
+		{
+			"url": "https://mc4db.merlindumesnil.net",
+			"fanmade_support": true,		
+			"path": "/bundles/cards/EN/[box_name]/[card_id].webp"
+		},	
+}
 
 #[
 #{
 #	"url": ,
-#	"destination":
+#	"destination":,
+#   "card_id"
 #}
 #]
 var cards_to_download = []
 var priority_cards_to_download = []
 var current_file = {}
 
+var already_tried_servers_per_card = {}
+
 var dl_ok = 0
 var dl_errors = 0
 var last_error_msg := ""
 var global_error_msg := ""
+var servers:= {}
+var tracked_urls = {}
 
 var http_request: HTTPRequest = null
 
 signal one_server_check_completed()
 signal download_complete(card_id)
 
+static func get_default_servers():
+	return default_servers
+
+func init_servers():
+	if servers:
+		return servers
+		
+	var result = cfc.get_setting("image_servers")
+	if !result:
+		result = default_servers
+	
+	servers = result.duplicate(true)
+	for server_name in servers:
+		var server = servers[server_name]
+		server["is_up"] = true #assume server is up so we can start downloading
+		server["health_check"] = "not_started"
+		if !server.has("health_check_url"):
+			server["health_check_url"] = ""
+	return servers
+
 func _ready():
 	var dir:Directory = Directory.new()
 	dir.make_dir_recursive("user://Sets/tmp_images")
 	fileDownloader.connect("file_downloaded", self, "_file_downloaded")
 	fileDownloader.connect("download_error", self, "_download_error")
+	init_servers()
 
 func get_stats():
 	var stats = {
@@ -71,7 +100,7 @@ func process_next_file():
 	if !cards_to_download:
 		return
 
-	if !is_all_servers_checked():
+	if !at_least_one_server_up():
 		return
 		
 	current_file = cards_to_download.pop_back()
@@ -82,77 +111,56 @@ func process_next_file():
 	
 	process_current_file()
 
-func select_server():
-	for s in servers:
-		if s.get("is_up"):
-			return s
-	global_error_msg = "Image Servers down? Check your internet connection"		
-	return {}
-	
-func modify_path_for_server(path, s):
-	var result = path
-	var modifications = s.get("modifications", {})
-	var extension = modifications.get("extension", "")
-	if extension:
-		var extension_index = result.find_last(".")
-		result = result.substr(0, extension_index) + extension
 
-	if !result.begins_with("http"):
-		result = s.get("url","") + result
-	
-	var to = modifications.get("replace_path_to", "")
-	if to:
-		var path_start = result.find("/", 9) #find the first "/" but skip the http portion
-		var path_end = result.find_last("/")
-		var from = result.substr(path_start, path_end-path_start + 1)
-		to = path_variable_process(to, current_file)
-		result = result.replace(from, to)
-	
-
-	return result
-	
 func process_current_file():
-
-	var path:String = current_file.get("url")
-
-
-	if path.begins_with("http"):	
-		for s in servers:
-			if path.begins_with(s["url"]):
-				if !s.get("is_up"):
-					path = path.replace(s["url"], "")
-				break
+	var card_id = current_file.get("card_id","") 
 	
-	#if path is relative, 
-	#target the appropriate server and attempt download
-	if !path.begins_with("http"):
-		var s = select_server()
-		if !s:
-			var _error = 1
-			return
-		var base_url = s.get("url","")
-		if !base_url:
-			var _error = 1
-			return
-		
-
-		path = modify_path_for_server(path, s)
-
+	if !current_file.has("url"):
+		current_file["url"] = get_next_image_dl_url(card_id)
 	
-	current_file["path"] = path			
-	fileDownloader.start_download([path])
+	var url = current_file["url"]
+	if !url:
+		#error happened without even tring a download (couldn't find dl link), we flag it
+		dl_errors += 1
+		FileDownloader.LOG("could not compute a download url for card_id:" + card_id)	
+		current_file = {}
+		return
+	
+	tracked_urls[url] = true	
+	fileDownloader.start_download([url])
 
-func path_variable_process(to, the_current_file):
-	var card_id = the_current_file["card_id"]
+
+func generate_dl_path(card_id, server_info):
 	var box_name = "core"
-	var card_data = cfc.card_definitions[card_id]
+	var card_data = cfc.card_definitions.get(card_id, {})
 	if card_data and card_data.get("_set", ""): 
 		box_name = card_data["_set"]
 	
+	var processed_card_id = card_id
+	
+	if card_data.get("fanmade", false):
+		#because we modify fanmade ids to avoid conflicts with official content,
+		# we need to un-modify them here for the original server to find them
+		processed_card_id = processed_card_id.replace(box_name + "_", "")
+
+	# ffg have reversed A/B between Hero and Alter-ego on some cards. 
+	# Some Databases choose to follow FFG, others such as marvel cdb swapped it
+	# Since we based our initial work on MarvelCDB, we have to "force" use the printed id
+	# in some cases. This is done when the image server defines a specific field (e.g. printed_card_id)
+	# to use in lieu of he card_id	
+	var card_id_override = server_info.get("card_id_override", "")
+	if card_id_override and card_data.get(card_id_override, ""):	
+		processed_card_id = card_data[card_id_override]
+
+	if server_info.get("uppercase_card_id", false):
+		processed_card_id = processed_card_id.to_upper()
+		
 	var replacements = {
-		"box_name": box_name
+		"box_name": box_name,
+		"card_id": processed_card_id
 	}
 	
+	var to = server_info["path"]
 	for key in replacements:
 		var to_seek = "[" + key + "]"
 		var replacement = replacements[key]
@@ -161,87 +169,185 @@ func path_variable_process(to, the_current_file):
 	return to
 	
 func retry_or_cancel_current_file():
-	var path:String = current_file.get("path")
-	
-	var found = false
-	var previous_base = ""
-	var server = {}
-	for s in servers:
-		if !s.get("is_up"):
-			continue		
-		if found:
-			server = s
-			break
-		var base_url = s.get("url")
-		if path.begins_with(base_url):
-			previous_base = base_url
-			found = true
-	
-	if !server:
-		cfc.fail_img_download(current_file.get("card_id", ""))
-		FileDownloader.LOG("retry_or_cancel_current_file: final failure for " + current_file.get("path"))					
-		current_file = {}
+	var card_id = current_file.get("card_id", "")	
+	var url = get_next_image_dl_url(card_id)
+	if !url:
+		FileDownloader.LOG("retry_or_cancel_current_file: final failure for " + card_id + " " + current_file.get("url"))					
 		return
 
-	var url = current_file["path"]
-	url = url.replace(previous_base, server["url"])	
-
-	url = modify_path_for_server(url, server)
-	
 	var to_add = {		
 		"url": url,
 		"destination": current_file["destination"],
-		"card_id": current_file["card_id"]				
+		"card_id": card_id				
 	}
 	
 	cards_to_download.append(to_add)
-	#cancel failed download
-	current_file = {}	
 
 func _download_error(url, filename):
-	if url != current_file.get("path", ""):
-		FileDownloader.LOG("_download_error triggered but url unexpected:" + url + "(filename:" + filename + ") - expected: " + current_file.get("path", ""))	
+	
+	if !tracked_urls.get(url, false):
+		#this failure doesn't concern us
+		return
+		
+	if url != current_file.get("url", ""):
+		FileDownloader.LOG("_download_error triggered but url unexpected:" + url + "(filename:" + filename + ") - expected: " + current_file.get("url", ""))	
 		var _error = 1
 		return
 
 	dl_errors += 1
 	FileDownloader.LOG("_download_error triggered for url:" + url + "(filename:" + filename + ") - doing retry or cancel")	
 	retry_or_cancel_current_file()
+	
+	#cancel failed download
+	current_file = {}		
 
 func _file_downloaded(url, filename):
-	if url != current_file.get("path", ""):
-		FileDownloader.LOG("_file_downloaded triggered but url unexpected:" + url + "(filename:" + filename + ") - expected: " + current_file.get("path", ""))			
+	if !tracked_urls.get(url, false):
+		#this download doesn't concern us
+		return
+			
+	var result = true
+	if url != current_file.get("url", ""):
+		FileDownloader.LOG("_file_downloaded triggered but url unexpected:" + url + "(filename:" + filename + ") - expected: " + current_file.get("url", ""))			
 		var _error = 1
+		dl_errors += 1
 		return
 	
 	var destination = current_file.get("destination")
 	if destination:
-		var result = _img_download_completed(url, filename)
+		result = _img_download_completed(url, filename)
 		if result:
 			dl_ok += 1
 	else:
 		destination = filename
-	emit_signal("download_complete",  current_file.get("card_id"))
+		#TODO error here?
+
+	if result:
+		tracked_urls.erase(url)
+		emit_signal("download_complete",  current_file.get("card_id"))
+
 	current_file = {}
 	process_next_file()
+
+func mark_server_as_tried(card_id, server):
+	if !already_tried_servers_per_card.has(card_id):
+		already_tried_servers_per_card[card_id] = {}
+		
+	already_tried_servers_per_card[card_id][server] = true	
+	
+
+func get_next_image_dl_url(card_id):	
+	var url = ""
+
+	if !already_tried_servers_per_card.has(card_id):
+		already_tried_servers_per_card[card_id] = {}
+		 
+	for server in servers:
+		if already_tried_servers_per_card[card_id].get(server, false):
+			continue
+		if !servers[server].get("is_up"):
+			continue			
+		url = _get_image_dl_url_for_server(card_id, server)
+		mark_server_as_tried(card_id, server)	
+		if url:
+			break
+
+	#if all download urls failed while we know we are online,
+	#we mark this image as failed 
+	if !url and at_least_one_server_up():
+		fail_img_download(card_id)
+	return url
+		
+func _get_image_dl_url_for_server(card_id, server):	
+	var server_info = servers.get(server, {})
+	if !server_info:
+		return ""	
+		
+	var card_data = cfc.get_card_by_id(card_id)
+	if !card_data:
+		#card data missing can happen when referencing a "duplicate_of_code"
+		#card which we don't support yet
+		#in that case we try to craft the url using normal rules
+		return server_info["url"] + generate_dl_path(card_id, server_info)
+	
+
+	
+	#if this is a fanmade card, need a server that supports those
+	if card_data.get("fanmade", false):
+		if !server_info.get("fanmade_support", false):
+			return ""
+
+	var image_src = card_data.get("imagesrc", "")
+	
+	#hardcoded absolute url, we invalidate all servers and return this url
+	if image_src.begins_with("http"): 
+		for s in servers:
+			mark_server_as_tried(card_id, s)		
+		return image_src
+		
+	if !image_src:
+		var duplicate_of = card_data.get("duplicate_of_code", "")
+		if duplicate_of:
+			return _get_image_dl_url_for_server(duplicate_of, server)
+	
+
+	if image_src and server_info.get("prioritize_relative_image_src", false):
+		# marvelcdb's image_src often overrides card_id, etc...
+		# so we use it for that server		
+		return server_info["url"] + image_src	
+
+
+	#other servers will generally craft the url based on the card id,
+	# this is the most "normal" use case
+	return server_info["url"] + generate_dl_path(card_id, server_info)
+			
+
+#mark a download as failed to avoid constantly attempting it
+var failed_files:= {}
+
+func get_failed_files():
+	if failed_files:
+		return failed_files
+	var filename = "user://failed_image_downloads.json"
+	var _failed_files = WCUtils.read_json_file(filename)
+	failed_files =  _failed_files if _failed_files else {}
+
+	var last_check = failed_files.get("_last_check", 0)
+	var current_time = Time.get_unix_time_from_system()
+	var older_time = current_time - (3600 * 24 * 5)
+	if !last_check or last_check < 	older_time:
+		failed_files = {}
+		failed_files["_last_check"] = current_time
+	#return failed_files
+
+func fail_img_download(card_id):
+	var file = File.new()
+	var filename = "user://failed_image_downloads.json"
+	get_failed_files()
+	failed_files[card_id] = true
+	failed_files["_last_check"] = Time.get_unix_time_from_system()
+	var to_print = to_json(failed_files)	
+	file.open(filename, File.WRITE)
+	file.store_string(to_print)
+	file.close()  		
+
+func is_image_download_failed(card_id):
+	get_failed_files()
+	return failed_files.get(card_id, false)
 
 
 func add_card(card_id, priority = false):
 	var img_filename = cfc.get_img_filename(card_id)
 	if WCUtils.file_exists(img_filename):
 		return
-	if cfc.is_image_download_failed(card_id):
+	if is_image_download_failed(card_id):
 		return
-	var url = cfc.get_image_dl_url(card_id)
-	if !url:
-		return
-	
+
 	#we're good to go. create folders as needed
 	create_img_folders(card_id)	
 
 	#add the card to the download list
 	var to_add = {
-		"url": url,
 		"destination": img_filename,
 		"card_id": card_id,
 	}
@@ -253,16 +359,34 @@ func add_card(card_id, priority = false):
 	check_servers_health()
 
 func is_all_servers_checked():
-	for s in servers:
+	for server_name in servers:
+		var s = servers[server_name]
 		if s.get("health_check") != "complete":
 			return false
 	return true	
+
+func at_least_one_server_up():
+	for server_name in servers:
+		var s = servers[server_name]
+		if s.get("is_up") and (s.get("health_check") == "complete"):
+			return s
+			
+	if !is_all_servers_checked():
+		return		
+	global_error_msg = "Image Servers down? Check your internet connection"		
+	return {}
+	
+	
 	
 #ping servers to see if they're ok for download
+var _health_check_started = false
 func check_servers_health():
-	if is_all_servers_checked():
+	if _health_check_started:
 		return
-	for s in servers:
+	_health_check_started = true
+
+	for server_name in servers:
+		var s = servers[server_name]
 		if s.get("health_check") == "not_started":
 			s["health_check"] = "in_progress"
 			http_request = HTTPRequest.new()
@@ -282,7 +406,8 @@ func check_servers_health():
 
 func _health_check_complete(result, _response_code, _headers, _body):
 	var current_server = {}
-	for s in servers:
+	for server_name in servers:
+		var s = servers[server_name]
 		if s.get("health_check") == "in_progress":
 			current_server = s
 			break
@@ -308,26 +433,33 @@ func create_img_folders(card_id):
 	
 	
 func _img_download_completed(url, filename):
-
 	var dir:Directory = Directory.new()
 	var destination = current_file.get("destination", "")
 	var card_key = current_file.get("card_id", "")
 	
 	if !destination or !card_key:
 		var _error = 1
+		FileDownloader.LOG("destination or card_id missing in current_file:" + JSON.print(current_file, '\t'))
 		_download_error(url, filename)
 		return false
 
 	var image = WCUtils.load_img(filename)
 	if !image:
 		var _error = 1
+		FileDownloader.LOG("unable to load img file:" + filename + " - current_file: " + JSON.print(current_file, '\t'))		
 		_download_error(url, filename)
 		return false
 
-	mask_image(image, destination, card_key)
+	var result_img = mask_image(image, destination, card_key)
+	if !result_img:
+		FileDownloader.LOG("unable to post_process img file:" + filename + " - current_file: " + JSON.print(current_file, '\t'))		
+		dl_errors += 1
+		return false
+		
 	var error = dir.remove(filename)
 	if error != OK:
-		var _tmp = 1
+		FileDownloader.LOG("warning: could not remove tmp file:" + filename)		
+		var _error = 1
 	
 	return true
 
@@ -335,7 +467,7 @@ func _img_download_completed(url, filename):
 func mask_image(image:Image, destination, card_key):
 	if not destination:
 		var _error = 1
-		return
+		return null
 	var mask_filename = "res://assets/utils/wc_card_mask.png"	
 	var mask_tex = load(mask_filename)
 	var mask_image = mask_tex.get_data()	
@@ -362,9 +494,35 @@ func mask_image(image:Image, destination, card_key):
 	#image.blit_rect(transparent_image, rect,Vector2(0,0))	
 	image.blit_rect_mask(transparent_image,mask_image, rect,Vector2(0,0))	
 	image.fix_alpha_edges()
-	image.save_png(destination)	
+	image.save_png(destination)
+	return image	
 	
 #load all images that are still missing from local folder	
 func load_pending_images():
 	for card_key in cfc.card_definitions.keys():	
 		add_card(card_key)
+	#_preprocess_all_downloads()	
+
+##Stores all download links for debug purposes
+#func _preprocess_all_downloads():
+#	var result = {}
+#	for server in servers:
+#		result[server] = []		
+#		for data in cards_to_download:
+#			var card_id = data["card_id"]
+#			var card_data = cfc.get_card_by_id(card_id)
+#			var url = _get_image_dl_url_for_server(card_id, server)
+#			if !url:
+#				continue
+#			var url_data = {
+#				"card_id": card_id,
+#				"set_name": card_data.get("_set", "_unk"), 
+#				"url": url
+#			}
+#			result[server].append(url_data)
+#
+#	var file = File.new()
+#	file.open("user://all_images.json", File.WRITE)
+#	file.store_string(JSON.print(result, '\t'))
+#	file.close()
+#	return 

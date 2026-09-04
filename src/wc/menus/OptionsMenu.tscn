@@ -110,8 +110,8 @@ unique_name_in_owner = true
 margin_right = 200.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 200, 0 )
-text = "All"
-items = [ "All", null, false, 0, false, "Sanity", null, false, 1, false, "Scenario", null, false, 2, null ]
+text = "All -cant_repro"
+items = [ "All -cant_repro", null, false, 0, false, "Sanity", null, false, 1, false, "Scenario", null, false, 2, null, "All", null, false, 3, null ]
 selected = 0
 
 [node name="TestsButton" type="Button" parent="PanelContainer/general/VBoxContainer/DebugContainer/VBoxContainer"]
@@ -124,6 +124,7 @@ custom_fonts/font = SubResource( 2 )
 text = "Tests"
 
 [node name="ForceResyncButton" type="Button" parent="PanelContainer/general/VBoxContainer/DebugContainer"]
+unique_name_in_owner = true
 margin_left = 526.0
 margin_top = 43.0
 margin_right = 1048.0

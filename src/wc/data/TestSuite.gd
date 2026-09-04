@@ -33,7 +33,7 @@ var announce_verbose_whitelist:= ["running", "rng", "error", "warning"]
 var last_rng_state = 0
 var start_time = 0
 var end_time = 0
-var test_list_filter = ""
+var test_list_filters:= []
 var _last_announce_text = ""
 var text_errors = {}
 
@@ -342,8 +342,8 @@ func get_delay_multiplier(my_action = {}):
 			wait_multiplier = wait_multiplier * 10
 	return wait_multiplier	
 
-func set_test_options(test_options:String):
-	test_list_filter = test_options
+func set_test_options(test_options:Array):
+	test_list_filters = test_options
 
 func should_wait(my_action, _delta):
 	var action_type = my_action.get("type", "")
@@ -1223,17 +1223,17 @@ func load_test(test_file)-> bool:
 		announce("skipped (file doesn't exist)\n")
 		return false
 				
-	var json_card_data:Dictionary = WCUtils.read_json_file(test_file)
-	if !json_card_data:
+	var json_test_data:Dictionary = WCUtils.read_json_file(test_file)
+	if !json_test_data:
 		skipped.append(test_file)
 		skipped_reason.append("script error")
 		announce("skipped (script error)\n")		
 		return false
-	json_card_data = WCUtils.replace_real_to_int(json_card_data)
-	WCUtils.erase_key_recursive(json_card_data, "_comments")
+	json_test_data = WCUtils.replace_real_to_int(json_test_data)
+	WCUtils.erase_key_recursive(json_test_data, "_comments")
 	
 	start_timer("test_integrity")
-	var integrity_errors = test_integrity(json_card_data)
+	var integrity_errors = test_integrity(json_test_data)
 	stop_timer("test_integrity")
 	
 	if integrity_errors:
@@ -1246,44 +1246,26 @@ func load_test(test_file)-> bool:
 		return false		
 	
 	if gameData.is_multiplayer_game:
-		var heroes = json_card_data["init"]["heroes"]
+		var heroes = json_test_data["init"]["heroes"]
 		if heroes.size() < 2:
 			skipped.append(test_file)
 			skipped_reason.append("multiplayer game - skip 1P test")
 			return false
 
-	test_conditions = json_card_data.get("test_conditions", {})
-	match test_list_filter:
-		"sanity":
-			#for sanity tests we skip bugs and scenario tests
-			var bug_type = test_conditions.get("bug_type", "")
-			if bug_type =="card_json":
-				skipped.append(test_file)
-				skipped_reason.append("Sanity checks - skip card bug test")
-				return false	
-			if json_card_data["init"].has("scenario"):
-				skipped.append(test_file)
-				skipped_reason.append("Sanity checks - skip scenario test")				
-				return false
-		"scenario":
-			#for scenario tests we only test scenarios	
-			if !json_card_data["init"].has("scenario"):
-				skipped.append(test_file)
-				skipped_reason.append("Scenario checks - skip non scenario tests")				
-				return false						
-		_:
-			#test all
-			pass
+	test_conditions = json_test_data.get("test_conditions", {})
+	for test_list_filter in test_list_filters:
+		if !test_matches_filter(test_file, json_test_data, test_list_filter):
+			return false
 	
 	announce("running test: " + test_file +"\n")	
-	initial_state = json_card_data["init"]
-	actions = json_card_data["actions"]
+	initial_state = json_test_data["init"]
+	actions = json_test_data["actions"]
 	for action in actions:
 		var type = action.get("type", "")
 		type = type.to_lower()
 		action["type"] = type
 		
-	end_state = json_card_data["end"]
+	end_state = json_test_data["end"]
 
 	
 	#init remote clients
@@ -1299,6 +1281,45 @@ func load_test(test_file)-> bool:
 	cfc._rpc(self,"initialize_clients_test", remote_init_data)
 	
 	return true
+
+func test_matches_filter(test_file, json_test_data, filter):
+	var inverse = false
+	if filter.begins_with("-"):
+		inverse = true
+		filter = filter.substr(1)
+	
+	var is_match = true
+	var skip_reason = ""
+	
+	#historically, tests with no meta information are considered engine/sanity tests
+	var bug_type = test_conditions.get("bug_type", "sanity")		
+	
+	match filter:
+		"all":
+			pass
+		"scenario":
+			#for scenario tests we only test scenarios	
+			skip_reason = "Scenario checks - skip non scenario tests"
+			if !json_test_data["init"].has("scenario"):								
+				is_match =  false						
+		_:
+			#test specific type of bug
+			#for sanity/engine tests we skip other bugs and scenario tests
+			skip_reason = filter + " checks - skip non " + filter + " tests"
+			if bug_type != filter:
+				is_match = false	
+			if json_test_data["init"].has("scenario"):			
+				is_match =  false	
+	
+	var result = is_match			
+	if inverse:
+		result = !is_match
+	
+	if !result:
+		skipped.append(test_file)
+		skipped_reason.append(skip_reason)				
+		
+	return result			
 
 remotesync func set_card_speeds():
 	if (!shorten_animations):

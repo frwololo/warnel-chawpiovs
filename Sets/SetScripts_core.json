@@ -2601,7 +2601,7 @@
 									"filter_properties2": {
 										"type_code": "upgrade"
 									},
-									"filter_same_controller": true,
+									"filter_same_controller": true
 								}
 							],
 							"max": 6

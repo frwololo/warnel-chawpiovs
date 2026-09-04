@@ -1,5 +1,9 @@
 {
-	"_comments": "Test 'bypass_*' reaction",
+	"_comments": "Bug: Shadowcat not taking retaliate damage when attacking a minion",
+	"test_conditions": {
+		"bug_type": "cant_repro",
+		"_comments": "cant_repro means a test was written to try and reproduce a bug report, but we couldnt confirm the issue"
+	},		
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -58,7 +62,7 @@
 			"discard1": [],
 			"enemies1": [
 				{
-					"card": "Sentinel Mark IV"
+					"card": "Badoon Sentry"
 				}
 			],
 			"identity1": [
@@ -68,27 +72,25 @@
 			],
 			"allies1": [
 				{
-					"card": "32172b",
-					"owner_hero_id": 0,
-					"_comments": "Magneto - Erik Lehnsherr"
+					"card": "Wolverine #32041"
 				}
 			],
 			"upgrade_support1": [
 				{
-					"card": "Phased #32031b"
+					"card": "Solid #32031a"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Team Strike"
 				},
 				{
 					"card": "Acute control"
 				}
 			],
-			"hand1": [
-				{
-					"card": "Gatekeeper"
-				}
-			],
 			"set_aside": [
 				{
-					"card": "Solid #32031a"
+					"card": "Phased #32031b"
 				}
 			]
 		}
@@ -96,19 +98,20 @@
 	"actions": [
 		{
 			"type": "activate",
-			"value": "Shadowcat"
+			"value": "Shadowcat #32030a"
 		},
 		{
 			"type": "choose",
-			"value": "Attack"
+			"value": "attack"
 		},
 		{
 			"type": "target",
-			"value": "Master Mold"
+			"value": "Badoon Sentry"
 		},
 		{
-			"type": "activate",
-			"value": "Acute control"
+			"type": "choose",
+			"value": "yes",
+			"_comments": "switch to Phased"
 		}
 	],
 	"end": {
@@ -140,7 +143,7 @@
 				{
 					"card": "Master Mold - 1",
 					"tokens": {
-						"damage": 3
+						"damage": 1
 					}
 				}
 			],
@@ -169,7 +172,7 @@
 			"discard1": [],
 			"enemies1": [
 				{
-					"card": "Sentinel Mark IV",
+					"card": "Badoon Sentry",
 					"tokens": {
 						"damage": 2
 					}
@@ -177,33 +180,33 @@
 			],
 			"identity1": [
 				{
-					"card": "Shadowcat #32030a"
+					"card": "Shadowcat #32030a",
+					"tokens": {
+						"damage": 1
+					}
 				}
 			],
 			"allies1": [
 				{
-					"card": "32172b",
-					"owner_hero_id": 0,
-					"_comments": "Magneto - Erik Lehnsherr"
+					"card": "Wolverine #32041"
 				}
 			],
 			"upgrade_support1": [
 				{
-					"card": "Solid #32031a"
-				},			
-				{
-					"card": "Acute control",
-					"exhausted": true
-				},
+					"card": "Phased #32031b"
+				}
 			],
 			"hand1": [
 				{
-					"card": "Gatekeeper"
+					"card": "Team Strike"
+				},
+				{
+					"card": "Acute control"
 				}
 			],
 			"set_aside": [
 				{
-					"card": "Phased #32031b"
+					"card": "Solid #32031a"
 				}
 			]
 		}

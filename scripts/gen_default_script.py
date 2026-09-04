@@ -94,17 +94,28 @@ def get_base_json(card_data):
       result["once_per_phase"]= {
 			"__name__": "__TODO"
 		}
+      result["manual"]["board"].append(
+          {
+            "name": "mod_tokens",
+            "is_cost": True,
+            "modification": -1,
+            "token_name": "__TODO",
+            "subject": "self"
+          }
 
     if primitive == 'limit once per round':
       result["once_per_round"]= {
 			"__name__": "__TODO"
 		}                               
-
-    if primitive == 'hinder ':
-      result["hinder"] = {
-	  "__amount__": "TODO",
-	  "__each_player__": True
-      }
+      result["manual"]["board"].append(
+          {
+            "name": "mod_tokens",
+            "is_cost": True,
+            "modification": -1,
+            "token_name": "__TODO",
+            "subject": "self"
+          }
+          
 
     if primitive == 'incite ':
       result["incite"] = {

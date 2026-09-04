@@ -2924,26 +2924,30 @@ func defeat(script: ScriptTask) -> int:
 	gameData.defeat()
 	return CFConst.ReturnCode.CHANGED	
 
-func flip_doublesided_card(script: ScriptTask) -> int:
+func flip_doublesided_card(script: ScriptTask) -> int:	
+	var subjects = []	
+	for subject in script.subjects:
+		if subject.get_property("cannot_flip", 0, true):
+			continue
+		subjects.append(subject)
 
-		if (!script.subjects):	
-			return CFConst.ReturnCode.FAILED
-			
-		if (costs_dry_run()):
-			return CFConst.ReturnCode.CHANGED
-		
-		for subject in script.subjects:
-			subject.flip_doublesided_card()
-		
+	if (!subjects):	
+		return CFConst.ReturnCode.FAILED
+	
+	if (costs_dry_run()):
 		return CFConst.ReturnCode.CHANGED
+	
+	for subject in subjects:
+		subject.flip_doublesided_card()
+	
+	return CFConst.ReturnCode.CHANGED
 
 
 func change_secondary_form(script: ScriptTask) -> int:	
+	var retcode = CFConst.ReturnCode.CHANGED
 	if !script.subjects:
 		return CFConst.ReturnCode.FAILED
 		
-	if costs_dry_run():
-		return CFConst.ReturnCode.CHANGED
 
 	var hero = null
 	var my_hero_id = get_hero_id_from_script(script)
@@ -2969,17 +2973,31 @@ func change_secondary_form(script: ScriptTask) -> int:
 		"form_family": family,
 	}
 	
-	#remove current form card
-	if current_form:
-		signal_details["before"] =  current_form.canonical_name
-		current_form.move_to(cfc.NMAP["set_aside"])
+	if current_form and current_form.get_card_back_code() == new_form.canonical_id:
+		#if this is a double sided card (e.g. shadowcat),
+		#we flip the card				
+		script.subjects = [current_form]
+		retcode = flip_doublesided_card(script)
+	else:
+		#otherwise (e.g. Spectrum), we exchange cards
+		if costs_dry_run():
+			return CFConst.ReturnCode.CHANGED
+				
+		#remove current form card
+		if current_form:
+			signal_details["before"] =  current_form.canonical_name		
+			current_form.move_to(cfc.NMAP["set_aside"])
+		
+		move_card_to_board(script)
+		#new_form.move_to(cfc.NMAP.board)
+
+	if costs_dry_run():
+		return retcode
 	
-	move_card_to_board(script)
-	#new_form.move_to(cfc.NMAP.board)
+	if retcode == CFConst.ReturnCode.CHANGED:
+		scripting_bus.emit_signal_on_stack("identity_changed_form", hero, signal_details)	
 
-	scripting_bus.emit_signal_on_stack("identity_changed_form", hero, signal_details)	
-
-	return CFConst.ReturnCode.CHANGED
+	return retcode
 		
 					
 func change_form(script: ScriptTask) -> int:

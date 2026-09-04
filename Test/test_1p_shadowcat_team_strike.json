@@ -1,5 +1,5 @@
 {
-	"_comments": "Test 'bypass_*' reaction",
+	"_comments": "Bug: Team Strike not working as expected",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -58,7 +58,7 @@
 			"discard1": [],
 			"enemies1": [
 				{
-					"card": "Sentinel Mark IV"
+					"card": "Hydra Regular"
 				}
 			],
 			"identity1": [
@@ -68,22 +68,20 @@
 			],
 			"allies1": [
 				{
-					"card": "32172b",
-					"owner_hero_id": 0,
-					"_comments": "Magneto - Erik Lehnsherr"
+					"card": "Wolverine #32041"
 				}
 			],
 			"upgrade_support1": [
 				{
 					"card": "Phased #32031b"
-				},
-				{
-					"card": "Acute control"
 				}
 			],
 			"hand1": [
 				{
-					"card": "Gatekeeper"
+					"card": "Team Strike"
+				},
+				{
+					"card": "Acute control"
 				}
 			],
 			"set_aside": [
@@ -95,20 +93,22 @@
 	},
 	"actions": [
 		{
-			"type": "activate",
-			"value": "Shadowcat"
+			"type": "play",
+			"value": "Team Strike"
 		},
 		{
-			"type": "choose",
-			"value": "Attack"
+			"type": "select",
+			"value": "Wolverine #32041"
 		},
 		{
-			"type": "target",
-			"value": "Master Mold"
-		},
-		{
-			"type": "activate",
-			"value": "Acute control"
+			"type": "select",
+			"value": [
+				"Hydra Regular",
+				"Hydra Regular",
+				"Master Mold - 1",
+				"Master Mold - 1",
+				"Master Mold - 1"
+			]
 		}
 	],
 	"end": {
@@ -121,7 +121,11 @@
 			}
 		],
 		"board": {
-			"discard_villain": [],
+			"discard_villain": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
 			"deck_villain": [
 				{
 					"card": "Stun Beam #32116"
@@ -140,7 +144,7 @@
 				{
 					"card": "Master Mold - 1",
 					"tokens": {
-						"damage": 3
+						"damage": 4
 					}
 				}
 			],
@@ -167,39 +171,32 @@
 				}
 			],
 			"discard1": [],
-			"enemies1": [
-				{
-					"card": "Sentinel Mark IV",
-					"tokens": {
-						"damage": 2
-					}
-				}
-			],
+			"enemies1": [],
 			"identity1": [
 				{
-					"card": "Shadowcat #32030a"
+					"card": "Shadowcat #32030a",
+					"exhausted": true
 				}
 			],
 			"allies1": [
 				{
-					"card": "32172b",
-					"owner_hero_id": 0,
-					"_comments": "Magneto - Erik Lehnsherr"
+					"card": "Wolverine #32041",
+					"exhausted": true
 				}
 			],
 			"upgrade_support1": [
 				{
 					"card": "Solid #32031a"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Acute control"
 				},			
 				{
-					"card": "Acute control",
-					"exhausted": true
+					"card": "Team Strike"
 				},
-			],
-			"hand1": [
-				{
-					"card": "Gatekeeper"
-				}
+
 			],
 			"set_aside": [
 				{

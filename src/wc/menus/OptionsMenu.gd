@@ -42,9 +42,15 @@ func on_button_pressed(_button_name : String) -> void:
 			close_me()
 		"TestsButton":
 			# warning-ignore:return_value_discarded
-			var test_options:OptionButton = get_node("%TestOptions")
-			var test_option = test_options.get_item_text(test_options.selected)
-			gameData.start_tests(test_option.to_lower())
+			var test_options_btn:OptionButton = get_node("%TestOptions")
+			var test_option = test_options_btn.get_item_text(test_options_btn.selected)
+			var split:PoolStringArray = test_option.split(" ")
+			var test_options:= []
+			for option in split:
+				option = option.strip_edges().to_lower()
+				if option:
+					test_options.append(option)
+			gameData.start_tests(test_options)
 			close_me()
 		"DebugButton":
 			var debug_button:CheckButton = get_node("%DebugButton")
@@ -325,10 +331,8 @@ func show_me(container_to_disable = null):
 		_temporary_disabled_nodes= cfc.disable_focus_mode(container_to_disable) 
 		disabled_container = container_to_disable
 		
-	if gamepadHandler.is_controller_input():
-		get_node("%Controls").visible = true
-	else:
-		get_node("%Controls").visible = false
+	get_node("%Controls").visible = gamepadHandler.is_controller_input()
+	get_node("%ForceResyncButton").visible = gameData.is_multiplayer_game and cfc.is_game_master()
 
 	if !cfc.NMAP.has("board"):
 		board_mode = false

@@ -2936,7 +2936,11 @@ func change_form(voluntary = true, to_card_id = "") -> bool:
 		self.tokens.mod_token("__can_change_form", 0, true)
 
 	return flip_doublesided_card(to_card_id)
+
 	
+func copy_modifiers_to(to_card:WCCard):
+	var modifiers = export_modifiers()
+	to_card.import_modifiers(modifiers)	
 
 #a way to copy all modifications of this card to another card
 #used e.g. when flipping card
@@ -3050,10 +3054,7 @@ func set_is_faceup(
 	
 	return retcode	
 		
-	
-func copy_modifiers_to(to_card:WCCard):
-	var modifiers = export_modifiers()
-	to_card.import_modifiers(modifiers)
+
 
 func draw_boost_card(src_container = ""):
 	if !src_container:

@@ -428,8 +428,8 @@
 					"name": "save_variable",
 					"var_name": "death_glow_host",
 					"var_type": "subject",
-					"value": "host",
-				},			
+					"value": "host"
+				},
 				{
 					"name": "conditional_script",
 					"options": [
@@ -455,16 +455,16 @@
 		},
 		"interrupt_character_died": {
 			"trigger": "death_glow_host",
-			"all":[
+			"all": [
 				{
 					"name": "forget_variable",
-					"var_name": "death_glow_host",
-				},				
+					"var_name": "death_glow_host"
+				},
 				{
 					"name": "move_card_to_container",
 					"dest_container": "set_aside",
 					"subject": "self"
-				},
+				}
 			]
 		}
 	},
@@ -554,7 +554,7 @@
 		}
 	},
 	"Flight of the Valkyrior": {
-		"interrupt_card_dies": {	
+		"interrupt_card_dies": {
 			"filter_state_trigger": [
 				{
 					"filter_func": {
@@ -577,7 +577,7 @@
 					"name": "save_variable",
 					"var_name": "death_glow_host",
 					"var_type": "subject",
-					"value": "trigger",
+					"value": "trigger"
 				}
 			]
 		},

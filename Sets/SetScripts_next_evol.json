@@ -8589,6 +8589,7 @@
 						"name": "enemy_activates",
 						"subject": "boardseek",
 						"subject_count": "all",
+						"is_cost": true,
 						"filter_state_seek": [
 							{
 								"filter_properties": {

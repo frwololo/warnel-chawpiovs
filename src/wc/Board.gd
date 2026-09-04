@@ -1463,6 +1463,10 @@ func loadstate_from_json(json:Dictionary):
 #The game engine doesn't really have a concept of double sided cards, so instead,
 #when flipping such a card, we destroy it and create a new card
 func flip_doublesided_card(card:WCCard, to_card_id = ""):
+
+	if card.get_property("cannot_flip", 0, true):
+		return null	
+	
 	var back_code = to_card_id if to_card_id else card.get_card_back_code()
 
 	if (back_code):

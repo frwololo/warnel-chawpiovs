@@ -749,27 +749,14 @@ static func check_delete_all_pck():
 	
 	var dir = Directory.new()
 
-	var database = cfc.game_settings.get("database", {})
-	if typeof(database) != TYPE_DICTIONARY:
-		var _error = 1
-		#TODO error
-		return
-	
-	var pck_files = CFUtils.list_files_in_directory("user://", "", true, ".pck")
-	var zip_files = CFUtils.list_files_in_directory("user://", "", true, ".zip")
-	#for each set, try to load package files for it
-	#loading data from a file overrides the previous one, so a package file
-	#has higher priority (its content will override previously loaded ones if they exist)
-	#lower priority <<< higher priority
-	#res pck <<< res zip <<< user pck <<< user zip
-	#user files have priority to let users put mods in their user folder
-	#zip files have priority because I have found they have better compatibility
-	# (pck files will refuse to load if wrong godot version number for example)
-	# see https://www.reddit.com/r/godot/comments/11pfoon/comment/jbxyp2x/
-	for filegroup in [pck_files, zip_files]:
-		for filename in filegroup:
-			if file.file_exists(filename):
-				var result = dir.remove(filename)
+	var files_to_delete = []
+	for folder in ["user://", "user://Mods/"]:
+		for extension in [".pck", ".zip"]:
+			files_to_delete += CFUtils.list_files_in_directory(folder, "", true, extension)
+
+	for filename in files_to_delete:
+		if file.file_exists(filename):
+			var result = dir.remove(filename)
 	
 	dir.remove(delete_pck_mark)
 	return

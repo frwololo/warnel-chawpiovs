@@ -41,3 +41,6 @@ scripts/scenarios_mut_gen.json
 scripts/.\#download_images.py
 scripts/all_images.json
 scripts/dl_errors.txt
+WC.exe.tmp
+scripts/scenarios_aoa.json
+scripts/SetScripts_aoa.json

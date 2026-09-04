@@ -2433,7 +2433,6 @@
 									]
 								}
 							},
-						
 							"nested_tasks": [
 								{
 									"name": "card_dies",
@@ -3788,20 +3787,6 @@
 					"name": "change_form",
 					"form_name": "Phased",
 					"subject": "my_identity"
-				},
-				{
-					"name": "move_card_to_container",
-					"dest_container": "tmp_pile1",
-					"src_container": "set_aside",
-					"subject": "tutor",
-					"subject_count": "all",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"form_family": "mass"
-							}
-						}
-					]
 				}
 			]
 		},
@@ -3820,18 +3805,10 @@
 					"alteration": 1
 				},
 				{
-					"name": "move_card_to_container",
-					"dest_container": "set_aside",
-					"src_container": "tmp_pile1",
-					"subject": "tutor",
-					"subject_count": "all",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"form_family": "mass"
-							}
-						}
-					]
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_flip",
+					"trigger": "Phased",
+					"alteration": 1
 				}
 			]
 		},
@@ -3851,7 +3828,7 @@
 				},
 				{
 					"name": "move_card_to_container",
-					"dest_container": "set_aside",
+					"dest_container": "removed_from_game",
 					"subject": "self"
 				}
 			]
@@ -4582,7 +4559,7 @@
 		"TODO": "campaign mode not supported"
 	},
 	"Ready to Rumble": {
-		"give_to_player_max1": {},	
+		"give_to_player_max1": {},
 		"identity_changed_form": {
 			"trigger": "my_hero",
 			"is_optional_board": true,
@@ -6104,6 +6081,7 @@
 		}
 	},
 	"Team Strike": {
+		"_comments": "I feel theres a more elegant way of scripting this card, but because allies can technically be 0, this makes the is_cost call more complex to handle, combined with selection_count which is done at prime time...",
 		"manual": {
 			"hand": [
 				{
@@ -6125,7 +6103,7 @@
 					"needs_selection": true,
 					"selection_optional": true,
 					"selection_type": "min",
-					"selection_count": 1,
+					"selection_count": 0,
 					"filter_state_seek": [
 						{
 							"filter_group": "group_allies",
@@ -6138,17 +6116,36 @@
 					]
 				},
 				{
-					"name": "attack",
-					"amount": {
+					"name": "save_variable",
+					"var_name": "my_amount",
+					"var_type": "int",
+					"value": {
 						"func_name": "get_subject_int_property",
 						"func_params": {
 							"subject": "all_previous",
 							"property": "attack"
 						}
 					},
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
+					"_comments": "remembering attack amount"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_damage"
+				}
+			]
+		},
+		"do_damage": {
+			"all": [
+				{
+					"name": "attack",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": "my_amount",
+					"selection_type": "as_much_as_possible",
+					"selection_what_to_count": "assign_any_damage",
+					"needs_selection": true,
+					"filter_state_seek": [
 						{
 							"filter_group": "group_enemies"
 						}

@@ -444,10 +444,10 @@ func can_i_play() -> bool:
 	
 	return true 	
 
-func start_tests(test_options = ""):
+func start_tests(test_options = []):
 	cfc._rpc(self,"init_client_tests", test_options)
 
-remotesync func init_client_tests(test_options = ""):
+remotesync func init_client_tests(test_options = []):
 	if !testSuite:
 		testSuite = TestSuite.new()
 		testSuite.name = "testSuite"

@@ -7,6 +7,7 @@ extends Reference
 var stack_uid:int = 0
 var display_name: = ""
 var interrupt_marker = false
+var owner_identity = null
 
 #task elements, generally speaking, should be ScriptTask objects
 #at the very least, they need a script_definition and a script_name value

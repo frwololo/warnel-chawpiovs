@@ -44,7 +44,7 @@ primitives = [
   '<i>(attack)</i>',
   '<i>(thwart)</i>',
   '<b>Boost</b>',
-  
+  'after this activation ends',  
 ]
 
 
@@ -430,6 +430,25 @@ def get_base_json(card_data):
 	    ]
 	}
 
+
+    if primitive == 'after this activation ends':
+        result["boost"]["all"].append(
+            {
+		"name": "add_script",
+		"end_condition": "enemy_activation_finished",
+		"subject": "self",
+		"script": {
+		    "enemy_activation_finished": {
+			"all": [
+			    {
+				"name": "TODO",
+				"subject": "self"
+			    }
+			]
+		    }
+		}
+	    }
+	)
 
 
   

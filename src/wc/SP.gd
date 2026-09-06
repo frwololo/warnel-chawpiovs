@@ -18,6 +18,7 @@ const KEY_SUBJECT_V_HOST := "host"
 const KEY_SUBJECT_V_MY_HERO := "my_hero"
 const KEY_SUBJECT_V_MY_ALTER_EGO := "my_alter_ego"
 const KEY_SUBJECT_V_MY_IDENTITY := "my_identity"
+const KEY_SUBJECT_V_MY_NEMESIS := "my_nemesis"
 const KEY_SUBJECT_V_A_IDENTITY := "identity_"
 const KEY_SUBJECT_V_VILLAIN := "villain"
 const KEY_SUBJECT_V_MAIN_SCHEME := "main_scheme"
@@ -178,7 +179,9 @@ static func _get_subjects_simplified(string_value, owner_card):
 			return owner_card.get_controller_hero_card()
 		KEY_SUBJECT_V_MY_IDENTITY:
 			#todo there should be a difference here, need to work it out
-			return owner_card.get_controller_hero_card()			
+			return owner_card.get_controller_hero_card()	
+		KEY_SUBJECT_V_MY_NEMESIS:
+			return owner_card.get_nemesis_minions()						
 		KEY_SUBJECT_V_VILLAIN:
 			return gameData.get_villains()
 		KEY_SUBJECT_V_MAIN_SCHEME:

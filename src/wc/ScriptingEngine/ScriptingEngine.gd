@@ -127,6 +127,10 @@ static func _compute_move_zones(subject, script):
 	#Replace all occurrences of un_numberd "discard", etc... with the actual id
 	#This ensures we use e.g. the correct discard pile, etc...
 	var owner_hero_id = script.trigger_details.get("override_controller_id")
+	if !owner_hero_id and script.get_property("target_identity"):
+		var target_identity = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : script.get_property("target_identity")})
+		if target_identity:
+			owner_hero_id = target_identity	
 	if !owner_hero_id and subject:
 		owner_hero_id = subject.get_controller_hero_id()
 	if !owner_hero_id:
@@ -287,6 +291,7 @@ func move_card_to_container(script: ScriptTask) -> int:
 		{"from":"" , "to": owner_hero_id },
 		{"from":"_my_hero" , "to": controller_hero_id },
 		{"from":"_first_player" , "to": gameData.first_player_hero_id() },
+		{"from":"_active_player" , "to": gameData.get_currently_acting_identity_id() },		
 		{"from":"_previous_subject" , "to": previous_hero_id},
 		{"from":"_current_hero_target" , "to": enemy_target_hero_id},			
 	]
@@ -2574,6 +2579,13 @@ func thwart_started(script: ScriptTask) -> int:
 
 	return retcode	
 
+#sends a user-created signal
+func send_signal(script: ScriptTask) -> int:
+	if (costs_dry_run()):
+		return CFConst.ReturnCode.CHANGED
+
+	scripting_bus.init_scripting_event(script.owner, script.script_definition)		
+	return CFConst.ReturnCode.CHANGED
 
 func add_properties_from(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.FAILED
@@ -2581,7 +2593,7 @@ func add_properties_from(script: ScriptTask) -> int:
 	if !script.subjects:
 		return CFConst.ReturnCode.FAILED	
 
-	var properties_list= script.get_property("properties", [])
+	var properties_list = script.get_property("properties", [])
 	if !properties_list:
 		return CFConst.ReturnCode.FAILED	
 	
@@ -3136,8 +3148,8 @@ func engage_nemesis (script:ScriptTask) -> int:
 	return reveal_nemesis(script)
 
 func get_nemesis_data(script:ScriptTask):
-	var my_hero_card = _get_identity_from_script(script)	
-	var my_nemesis_set = my_hero_card.get_property("card_set_code","") + "_nemesis"
+	var my_hero_card = _get_identity_from_script(script)
+	var nemesis_data = my_hero_card.get_nemesis_data()	
 
 	var my_nemesis = []
 	var my_nemesis_scheme = null
@@ -3147,33 +3159,15 @@ func get_nemesis_data(script:ScriptTask):
 	if typeof(src_containers) == TYPE_STRING:
 		src_containers = [src_containers]
 	
-	#finding the nemesis minion in Database
-	var nemesis_id = ""
-	var potential_nemesis_id = ""
-	for card_data in cfc.cards_by_set[my_nemesis_set]:
-		if card_data["type_code"] != "minion":
-			continue
-		if "nemesis" in card_data.get("real_text", "").to_lower():
-			potential_nemesis_id = card_data["_code"]		
-		if !card_data.get("is_unique", false):
-			continue
-		if "nemesis" in card_data.get("real_text", "").to_lower():
-			nemesis_id = card_data["_code"]
-			break
-		potential_nemesis_id = card_data["_code"]		 
-	
-	if !nemesis_id and potential_nemesis_id:
-		nemesis_id = potential_nemesis_id
-	
+	#we retrieved all of our nemesis cards in game and now filter them by container
+	#there has to be a more efficient way to do this
 	for src_container in src_containers:
 		for card in cfc.NMAP[src_container].get_all_cards():		
-			if card.get_property("card_set_code", "") == my_nemesis_set:
-				var type_code = card.get_property("type_code")
-				if card.canonical_id == nemesis_id:
+				if card in nemesis_data["nemesis"]:
 					my_nemesis.append(card)
-				elif type_code == "side_scheme":
+				elif card == nemesis_data["nemesis_scheme"]:
 					my_nemesis_scheme = card
-				else:
+				elif card in nemesis_data["nemesis_other"]:
 					other_nemesis_cards.append(card)	
 	return {
 		"nemesis":my_nemesis,
@@ -3533,6 +3527,9 @@ static func get_action_owner_from_script(script:ScriptTask):
 static func get_hero_id_from_script(script):
 	var this_card = script.owner
 	var my_hero_id = this_card.get_controller_hero_id()
+	if !my_hero_id:
+		my_hero_id = gameData.get_currently_acting_identity_id()
+		
 	return my_hero_id	
 	
 #returns thecurrent hero card based on a script.

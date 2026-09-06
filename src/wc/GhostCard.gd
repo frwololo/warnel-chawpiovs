@@ -9,6 +9,7 @@ var _real_card: WCCard setget set_real_card, get_real_card
 
 func set_real_card(card):
 	_real_card = card
+	_real_card.set_ghost_card(self)
 
 func get_real_card():
 	return _real_card

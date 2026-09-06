@@ -304,6 +304,7 @@ const OPTIONAL_SIGNALS:= [
 	
 	"paid_as_resource",
 	"pile_emptied",
+	"pile_top_card_changed",
 	"player_side_scheme_played",
 	
 	"script_executed",
@@ -544,6 +545,7 @@ const HERO_GRID_SETUP := {
 		"x" : 150,
 		"y" : 440,
 		"type" : "pile",
+		"groups" : ["player_deck"],
 		"scale" : 0.5			
 	},
 	"discard" :{

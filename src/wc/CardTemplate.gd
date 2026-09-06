@@ -36,6 +36,9 @@ var _last_cost: ManaCost = null
 var last_overpay
 var my_last_target = null
 
+#when this card gets "cloned" into a ghost card, we keep a reference here
+var _ghost_card = null
+
 var extra_scripts := {}
 var extra_script_uid := 0
 var script_variables = {}
@@ -1112,10 +1115,13 @@ func get_property(property: String, default = null, force_alterant_check = false
 				CardState.IN_HAND,
 				CardState.FOCUSED_IN_HAND,
 				CardState.REORGANIZING,
-				CardState.PUSHED_ASIDE
-		]:
-			return properties.get(property, default)	
-	return(get_property_and_alterants(property, false, default).value)
+				CardState.PUSHED_ASIDE,
+		] and !get_ghost_card():
+			return properties.get(property, default)
+				
+	return(get_property_and_alterants(property, false, default).value)		
+			
+
 
 func register_signals():
 	scripting_bus.unregister_card(self)
@@ -1391,6 +1397,9 @@ func retrieve_scripts_by_state(seek_state:String):
 	var results = {}
 	for key in my_scripts:
 		var subscript = my_scripts[key]
+		if typeof(subscript) != TYPE_DICTIONARY:
+			var _error = 1
+			continue
 		if subscript.has(seek_state):
 			results[key] = subscript.duplicate(true)
 			for other_state in ["board", "pile", "hand", ]:
@@ -2501,6 +2510,7 @@ func common_pre_run(sceng) -> void:
 		var replacements = {}
 		for v in zones:
 			replacements[v + "_first_player"] = v+str(gameData.first_player_hero_id())
+			replacements[v + "_active_player"] = v+str(gameData.get_currently_acting_identity_id())			
 		#first player explcitely mentioned
 		script_definition = WCUtils.search_and_replace_multi(script_definition, replacements , true)	
 		replacements = {}
@@ -3144,6 +3154,13 @@ func get_instance_runtime_scripts(trigger:String = "", filters:={}) -> Dictionar
 	return _get_extra_scripts(trigger, filters, true)
 
 
+func set_ghost_card(card):
+	_ghost_card = card
+
+func get_ghost_card():
+	if is_instance_valid(_ghost_card):
+		return _ghost_card
+	return null				
 
 func set_activity_script(script):
 	activity_script = script
@@ -3728,12 +3745,17 @@ func get_aspect_name(params, script:ScriptTask = null) -> String:
 	return aspect
 
 func card_is_in_play(params, script:ScriptTask = null) -> bool:
+	var subject = get_param_subject(params, script)
+			
 	var card_name = params.get("card_name", "")
-	if !card_name:
+	if card_name:
+		subject = cfc.NMAP.board.find_card_by_name(card_name)
+		
+	if !subject:
 		return false
-	var card = cfc.NMAP.board.find_card_by_name(card_name)
-	if !card:
+	if !subject.is_onboard():
 		return false
+		
 	return true
 
 func get_interrupted_event_property(params:Dictionary, _script:ScriptTask = null) -> int:
@@ -3862,8 +3884,12 @@ func count_printed_resources(params:Dictionary, script) -> int:
 		var printed_resource = subject.get_printed_resource_value_as_mana()
 		mana.add_manacost(printed_resource)
 	var count = 0
-	if params.has("resource_type"):
-		count = mana.get_resource(params["resource_type"])
+	var resource_types = params.get("resource_type", [])
+	if resource_types:
+		if typeof(resource_types) == TYPE_STRING:
+			resource_types = [resource_types]
+		for resource_type in resource_types:
+			count += mana.get_resource(params["resource_type"])
 	else:
 		count = mana.converted_mana_cost()
 	return count
@@ -4226,6 +4252,42 @@ func get_unique_name() -> String:
 	if !subname:
 		subname = ""		
 	return canonical_name + " - " + subname
+
+func get_nemesis_minions(in_play_only:= true):
+	var nemesis_data = get_nemesis_data()
+	var result = []
+	var my_nemesis = nemesis_data["nemesis"]
+	if !in_play_only:
+		return my_nemesis
+		
+	for nemesis in my_nemesis:
+		if nemesis.is_onboard():
+			result.append(nemesis)
+	return result
+
+func get_nemesis_data():	
+	var raw_nemesis_data = cfc.get_nemesis_data(canonical_id)
+	if !raw_nemesis_data:
+		return {}			
+
+	var my_nemesis = []
+	var my_nemesis_scheme = null
+	var other_nemesis_cards = []	
+	
+	for card in cfc.NMAP.board.get_all_cards(true):		
+		if card.canonical_id in raw_nemesis_data["nemesis_minions"]:
+			my_nemesis.append(card)
+		elif card.canonical_id in raw_nemesis_data["nemesis_schemes"]:
+			my_nemesis_scheme = card
+		elif card.canonical_id in raw_nemesis_data["nemesis_others"]:
+			other_nemesis_cards.append(card)
+
+	return {
+		"nemesis": my_nemesis,
+		"nemesis_scheme":my_nemesis_scheme,
+		"nemesis_other":other_nemesis_cards
+	}	
+
 
 #used for save/load	
 func export_to_json():

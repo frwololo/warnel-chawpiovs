@@ -73,6 +73,8 @@ signal target_selected(owner, details)
 
 # warning-ignore:unused_signal
 signal pile_emptied(card, details)
+# warning-ignore:unused_signal
+signal pile_top_card_changed(card, details)
 
 # warning-ignore:unused_signal
 signal script_executed(card, details)

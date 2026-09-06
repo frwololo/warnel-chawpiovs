@@ -22,6 +22,7 @@ var obligations : Dictionary
 var schemes: Dictionary 
 var modular_encounters: Dictionary = {}
 var cards_by_set: Dictionary
+var nemesis: Dictionary
 
 #Hero deck data identified by integer id (marvelcdb id)
 var deck_definitions : Dictionary
@@ -808,7 +809,7 @@ func load_one_card_extra_data(card_data):
 	if (not cards_by_set.has(lc_set_code)):
 		cards_by_set[lc_set_code] = []
 	cards_by_set[lc_set_code].push_back(card_data)				
-	
+		
 	#parents set cache
 #	var card_set_parent_code = card_data.get("card_set_parent_code", "").to_lower()
 #	if card_set_parent_code:
@@ -816,11 +817,71 @@ func load_one_card_extra_data(card_data):
 #			cards_by_set[card_set_parent_code] = []
 #
 #		cards_by_set[card_set_parent_code].push_back(card_data)			
+
+func get_nemesis_data(card_id):
+	if nemesis.has(card_id):
+		return nemesis[card_id]
+		
+	var card_data = card_definitions[card_id]
+	if !card_data["type_code"] in ["hero", "alter-ego"]:		
+		nemesis[card_id] = {}
+		return nemesis[card_id]
+			
+	var my_nemesis_set = card_data.get("card_set_code","") + "_nemesis"
+
+	var my_nemesis = []
+	var my_nemesis_scheme = []
+	var other_nemesis_cards = []	
+	
+	#finding the nemesis minion in Database
+	var nemesis_id = ""
+	var potential_nemesis_id = ""
+	
+	#identify actual nemesis minion(s)
+	for nemesis_data in cards_by_set[my_nemesis_set]:
+		if nemesis_data["type_code"] != "minion":
+			continue
+		if "nemesis" in nemesis_data.get("real_text", "").to_lower():
+			potential_nemesis_id = nemesis_data["_code"]		
+		if !nemesis_data.get("is_unique", false):
+			continue
+		if "nemesis" in nemesis_data.get("real_text", "").to_lower():
+			nemesis_id = nemesis_data["_code"]
+			break
+		potential_nemesis_id = nemesis_data["_code"]		 
+	
+	if !nemesis_id and potential_nemesis_id:
+		nemesis_id = potential_nemesis_id
+	card_definitions[nemesis_id]["is_nemesis"] = true
+
+	for nemesis_data in cards_by_set[my_nemesis_set]:
+		var type_code = nemesis_data["type_code"]
+		var id = nemesis_data["_code"]
+		if id == nemesis_id:
+			nemesis_data["is_nemesis"] = true
+			my_nemesis.append(id)
+		elif type_code == "side_scheme":
+			my_nemesis_scheme.append(id)
+		else:
+			other_nemesis_cards.append(id)	
+	
+	nemesis[card_id] = {
+			"nemesis_minions": my_nemesis,
+			"nemesis_schemes":my_nemesis_scheme,
+			"nemesis_others":other_nemesis_cards
+		}
+	return nemesis[card_id]			
 	
 func load_card_definitions_extra_data():
 	for card_id in card_definitions:
 		var card_data = card_definitions[card_id]
 		load_one_card_extra_data(card_data)
+
+	#preload nemesis data
+	#this is required to set the "is_nemesis" property accurately
+	#also needs to be after the previous loop which fills required info
+	for card_id in card_definitions:
+		get_nemesis_data(card_id)
 	
 #	var the_debug = ""	
 #	for set_code in schemes:

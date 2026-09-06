@@ -160,6 +160,13 @@ func get_container_property(value):
 			from_card = gameData.last_target
 		"last_target_container":
 			from_container = gameData.last_target_container
+		"find": 
+			var all_containers = ["deck_villain", "discard_villain", "set_aside", "board"]
+			for i in gameData.get_team_size():
+				var hero_id = i + i
+				for zone in ["hand", "deck", "discard"]:
+					all_containers.append(zone + str(hero_id))
+			return all_containers				
 				
 	if from_card:
 		from_container = from_card.get_parent()
@@ -168,7 +175,7 @@ func get_container_property(value):
 	if from_container:
 		var result =  from_container.name.to_lower()
 		return result		
-		
+	
 	return value
 	
 func get_sub_property(property: String, root, default = null):

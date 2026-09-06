@@ -9,7 +9,7 @@ signal popup_closed
 var is_popup_open := false
 # Used to avoid performance-heavy checks in process
 var _has_cards := false
-var emit_on_pile_empty = false
+var emit_pile_activity = false
 var allow_facedown_popup = false
 
 # The pile's name. If this value is changed, it will change the
@@ -156,15 +156,15 @@ func _on_ViewPopup_popup_hide() -> void:
 	if show_manipulation_buttons:
 		manipulation_buttons.visible = true
 	emit_signal("popup_closed")
-	enable_pile_emptied_signal()
+	enable_pile_activity_signals()
 	is_popup_open = false
 
 
-func disable_pile_emptied_signal():
-	emit_on_pile_empty = false
+func disable_pile_activity_signals():
+	emit_pile_activity = false
 	
-func enable_pile_emptied_signal():
-	emit_on_pile_empty = true
+func enable_pile_activity_signals():
+	emit_pile_activity = true
 
 # Populated the popup card viewer with the cards and displays them
 func populate_popup(sorted:= sorted_popup) -> void:
@@ -177,7 +177,7 @@ func populate_popup(sorted:= sorted_popup) -> void:
 	pre_sorted_order = get_all_cards()
 	if sorted:
 		card_array.sort_custom(CFUtils, "sort_scriptables_by_name")
-	disable_pile_emptied_signal()
+	disable_pile_activity_signals()
 	for card in card_array:
 		# We remove the card to rehost it in the popup grid container
 		remove_child(card)
@@ -217,6 +217,7 @@ func set_pile_name(value: String) -> void:
 # directly there in that case.
 func add_child(node, _legible_unique_name=false) -> void:
 	if not $ViewPopup.visible:
+		var current_top_card = get_top_card()
 		.add_child(node)
 		if node as Card:
 			#TODO there might be cases where this node was explicitly disabled for focus,
@@ -239,22 +240,30 @@ func add_child(node, _legible_unique_name=false) -> void:
 							Tween.TRANS_SINE, Tween.EASE_OUT)
 					_opacity_tween.start()
 			card_count_label.text = str(get_card_count())
+		check_top_card(current_top_card)
 	elif node as Card: # This triggers if the ViewPopup node is active
 		# When the player adds card while the viewpopup is active
 		# we move them automatically to the viewpopup grid.
 		_slot_card_into_popup(node)
 
+func check_top_card(last_checked):
+	var top_card = get_top_card()
+	if last_checked != top_card:
+		if emit_pile_activity:
+			scripting_bus.emit_signal_on_stack("pile_top_card_changed", top_card, {"pile_name" : self.name.to_lower(), "before": last_checked, "after": top_card} )
+	
 
 # Overrides the function which removed chilren nodes so that it detects
 # when a Card class is removed. In that case it also shows
 # this container's "floor" if it was the last card in the pile.
 func remove_child(node, _legible_unique_name=false) -> void:
+	var current_top_card = get_top_card()
 	.remove_child(node)
 	card_count_label.text = str(get_card_count())
 	# When we put the first card in the pile, we make sure the
 	# Panel is made transparent so that the card backs are seen instead
 	if get_card_count() == 0:
-		if node as Card and emit_on_pile_empty:
+		if node as Card and emit_pile_activity:
 			scripting_bus.emit_signal_on_stack("pile_emptied", node, {"pile_name" : self.name.to_lower()} )
 		_has_cards = false
 		disable_focus_mode()
@@ -269,6 +278,7 @@ func remove_child(node, _legible_unique_name=false) -> void:
 			_opacity_tween.start()
 	else:
 		$Control.self_modulate.a = 0.0
+	check_top_card(current_top_card)	
 
 
 # Rearranges the position of the contained cards slightly
@@ -308,14 +318,18 @@ func reorganize_stack() -> void:
 # Override the godot builtin move_child() method,
 # to make sure the $Control node is always drawn on top of Card nodes
 func move_child(child_node, to_position) -> void:
+	var current_top_card = get_top_card()
 	.move_child(child_node, to_position)
+	check_top_card(current_top_card)
 	$Control.raise()
 
 # The top position of a pile, is always the lowest
 func move_card_to_top(card: Card) -> void:
+	var current_top_card = get_top_card()
 	var lowest_index = get_children().size() - 1
 	move_child(card, lowest_index)
 	reorganize_stack()
+	check_top_card(current_top_card)	
 
 # Overrides [CardContainer] function to include cards in the popup window
 # Returns an array with all children nodes which are of Card class
@@ -379,6 +393,7 @@ func _slot_card_into_popup(card: Card) -> void:
 # Randomly rearranges the order of the [Card] nodes.
 # Pile shuffling includes a fancy animation
 func shuffle_cards(animate = true, shuffle_after_animation = true) -> void:
+	var current_top_card = get_top_card()
 	is_shuffling = true
 	if !shuffle_after_animation:
 		.shuffle_cards()
@@ -522,6 +537,7 @@ func shuffle_cards(animate = true, shuffle_after_animation = true) -> void:
 	is_shuffling = false
 	emit_signal("shuffle_completed", self)
 	scripting_bus.emit_signal("shuffle_completed", self, {"source": name})
+	check_top_card(current_top_card)
 
 
 # Overrides the re_place() function of [Pile] in order

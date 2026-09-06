@@ -191,14 +191,15 @@ func matches_condition(
 	if !filters:
 		return true
 
+	var owner_card = removal_condition.get("card", trigger_card)
+	
 	if filters.has("trigger"):
 		var to_compare_trigger = filters.get("trigger")
-		var owner_card = removal_condition.get("card", trigger_card)
 		to_compare_trigger = SP._get_subjects_simplified(to_compare_trigger,owner_card )
 		if to_compare_trigger != trigger_card:
 			return false
 		filters.erase("trigger")
 
 	#fishy, not sure what card to compare it to at the moment...
-	var result =  cfc.ov_utils.matches_filters( filters, trigger_card, trigger_details)
+	var result =  cfc.ov_utils.matches_filters( filters, owner_card, trigger_details)
 	return result

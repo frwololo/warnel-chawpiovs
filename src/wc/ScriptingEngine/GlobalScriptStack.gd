@@ -513,32 +513,32 @@ func add_event_to_stack(stackEvent, checksum = ""):
 	var result = {
 		"is_interrupt" : false
 	}
-	
-	if run_mode == RUN_MODE.PENDING_USER_INTERACTION:
-		display_debug("add_event_to_stack: adding a script in interrupt mode")
-		var script_being_interrupted = self.stack_back()
-		var authorized_card = true
-		var allowed_cards = get_allowed_interrupting_cards()
-		if allowed_cards:
-			var guid = guidMaster.get_guid(stackEvent.sceng.owner)
-			display_debug("add_event_to_stack: list of allowed cards: "  + stackEvent.get_display_name() + "has guid " + guid + " vs list " + to_json(allowed_cards))			
-			if !guid or !(stackEvent.sceng.owner in allowed_cards):
-				display_debug("add_event_to_stack: card is not authorized")
-				authorized_card = false
-	
-		if (script_being_interrupted and authorized_card):
-			result["is_interrupt"] = true
-			display_debug("add_event_to_stack: found a card to add")
-			var script_uid = script_being_interrupted.stack_uid
-			add_card_already_played(script_uid, stackEvent.sceng.owner)
-			display_debug("add_event_to_stack: added " + stackEvent.get_display_name())
-			#reset_interrupt_states()
 
-	
 	var priority_signal = false
 	if stackEvent as SignalStackScript:
 		if stackEvent.script_name in CFConst.FORCE_INTERRUPT_SIGNALS:
 			priority_signal = true 
+	else:
+		if run_mode == RUN_MODE.PENDING_USER_INTERACTION:
+			display_debug("add_event_to_stack: adding a script in interrupt mode")
+			var script_being_interrupted = self.stack_back()
+			var authorized_card = true
+			var allowed_cards = get_allowed_interrupting_cards()
+			if allowed_cards:
+				var guid = guidMaster.get_guid(stackEvent.sceng.owner)
+				display_debug("add_event_to_stack: list of allowed cards: "  + stackEvent.get_display_name() + "has guid " + guid + " vs list " + to_json(allowed_cards))			
+				if !guid or !(stackEvent.sceng.owner in allowed_cards):
+					display_debug("add_event_to_stack: card is not authorized")
+					authorized_card = false
+		
+			if (script_being_interrupted and authorized_card):
+				result["is_interrupt"] = true
+				display_debug("add_event_to_stack: found a card to add")
+				var script_uid = script_being_interrupted.stack_uid
+				add_card_already_played(script_uid, stackEvent.sceng.owner)
+				display_debug("add_event_to_stack: added " + stackEvent.get_display_name())
+				#reset_interrupt_states()
+
 
 	if is_interrupt_mode() or priority_signal:
 		var buffer = StackObject.new()
@@ -640,6 +640,10 @@ func _process(_delta: float):
 			return
 #		if gameData.execute_priority_scripts():
 #			return
+	
+	#signal gameData about who's currently "playing"
+	var script_identity = stack_object.owner_identity
+	gameData.set_current_acting_identity(script_identity)
 		
 	var _interrupt_state = compute_interrupts(stack_object)
 	

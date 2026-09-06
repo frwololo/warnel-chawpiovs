@@ -163,6 +163,9 @@ func clear_focus_mode(node):
 
 
 func retrieve_ghostable_scripts(card):
+	if !is_instance_valid(card):
+		return null
+		
 	var state_exec = card.get_state_exec()
 	
 	if (state_exec != "pile"):
@@ -172,7 +175,7 @@ func retrieve_ghostable_scripts(card):
 	if !parent:
 		return null
 
-	if !parent.is_in_group("player_discard"):
+	if !parent.is_in_group("player_discard") and !parent.is_in_group("player_deck"):
 		return	null
 		
 	var card_scripts = card.retrieve_scripts("manual", {"requesting_hero_id" :  get_my_hero_id()})
@@ -210,13 +213,14 @@ func check_ghost_cards():
 	if !_refresh_ghost_cards_needed:
 		return
 	var hero_id = get_my_hero_id()
-	var discard_name = "discard" + str(hero_id)
-	var pile = cfc.NMAP.get(discard_name, null)
-	if !pile:
-		return
-	var cards = pile.get_all_cards()
-	for card in cards:
-		check_ghost_card(card)
+	for pile_name_prefix in ["discard", "deck"]:
+		var pile_name = pile_name_prefix + str(hero_id)
+		var pile = cfc.NMAP.get(pile_name, null)
+		if !pile:
+			return
+		var cards = pile.get_all_cards()
+		for card in cards:
+			check_ghost_card(card)
 
 	for card in self.get_all_cards():
 		check_ghost_card(card.get_real_card())

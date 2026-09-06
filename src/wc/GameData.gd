@@ -95,9 +95,17 @@ var scripted_play_sequence:= []
 var scripted_play_sequence_low_priority:= []
 
 
+#
 #temp vars for bean counting
+#
+#Hero being currently attacked by/schemed by by the villain
 var _villain_current_hero_target :=1
+
 var _first_player_hero_id := 1
+#Hero/Identity that last played an ability, and/or is generally considered to 
+#be refrenced by "you" on cards
+var _currently_acting_hero_id:= 1
+
 #list of enemies with a current attack intent
 var attackers: = []
 #list of encounters that need to be revealed asap
@@ -149,7 +157,7 @@ func start_game():
 
 	var piles = cfc.get_tree().get_nodes_in_group("piles")
 	for pile in piles:
-		pile.enable_pile_emptied_signal()
+		pile.enable_pile_activity_signals()
 	
 	_game_started = true
 	_game_over = ""
@@ -1061,7 +1069,9 @@ func set_villain_current_hero_target(value, force_switch_ui:= true, caller:= "")
 		display_debug("(gamedata) new villain target:" + get_hero_name(value) + "(called by " + caller +")")
 	if force_switch_ui and previous!= value:
 		#in practice this will only switch for players that control the hero
-		self.select_current_playing_hero(value) 
+		self.select_current_playing_hero(value)
+		
+	set_current_acting_identity(_villain_current_hero_target)	 
 
 func get_current_activity_hero_target():
 	if attackers:
@@ -2269,6 +2279,23 @@ func next_first_player():
 		_first_player_hero_id = 1
 	if _first_player_hero_id!= previous:
 		emit_signal("first_player_changed", {"before": previous, "after": _first_player_hero_id})
+
+func get_currently_acting_identity():
+	var id = get_currently_acting_identity_id()
+	return self.get_identity_card(id)
+	
+func get_currently_acting_identity_id():
+	return _currently_acting_hero_id
+
+func set_current_acting_identity(new_id):
+	#id=0/null is the villain. It can never be the current acting player
+	if !new_id:
+		return
+		
+	if typeof(new_id) == TYPE_OBJECT:
+		new_id = new_id.get_controller_hero_id()
+			
+	_currently_acting_hero_id = new_id
 
 func get_ordered_hero_id(i):
 	var hero_id = first_player_hero_id() + i

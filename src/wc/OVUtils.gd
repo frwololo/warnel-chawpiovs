@@ -11,7 +11,7 @@ func get_script_identity(script, trigger_details):
 		hero_id = owner.get_controller_hero_id()
 	
 	if not hero_id:
-		var _error = 1 #that's a bug?
+		hero_id = gameData.get_currently_acting_identity_id()
 		
 	return gameData.get_identity_card(hero_id)
 		
@@ -175,6 +175,12 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 			var hero_card = get_script_identity(script, trigger_details)
 			if (hero_card): #At load time it is possible the hero isn't set yet
 				results.append(hero_card)
+		SP.KEY_SUBJECT_V_MY_NEMESIS:
+			var hero_card = get_script_identity(script, trigger_details)
+			if (hero_card): #At load time it is possible the hero isn't set yet			
+				var nemesis = hero_card.get_nemesis_minions()
+				if nemesis:
+					results += nemesis					
 		SP.KEY_SUBJECT_V_MY_ALTER_EGO:
 			var hero_card = get_script_identity(script, trigger_details)
 			if (hero_card and hero_card.is_alter_ego_form()):
@@ -692,7 +698,8 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 
 	var zone_replacements = [
 		{"from":"_my_hero" , "to": controller_hero_id },
-		{"from":"_first_player" , "to": gameData.first_player_hero_id() },		
+		{"from":"_first_player" , "to": gameData.first_player_hero_id() },
+		{"from":"_active_player" , "to": gameData.get_currently_acting_identity_id() },				
 #		{"from":"_previous_subject" , "to": previous_hero_id},
 #		{"from":"_current_hero_target" , "to": current_hero_target},
 		{"from":"_event_source_hero" , "to": event_source_hero_id},					
@@ -929,6 +936,7 @@ static func static_pre_task_prime(script_definition, owner, script = null, prev_
 	var _replacements = [
 		{"from":"_my_hero" , "to": controller_hero_id },
 		{"from":"_first_player" , "to": gameData.first_player_hero_id() },
+		{"from":"_active_player" , "to": gameData.get_currently_acting_identity_id() },		
 		{"from":"_previous_subject" , "to": previous_hero_id},
 		{"from":"_current_hero_target" , "to": current_hero_target},
 		{"from":"_event_source_hero" , "to": event_source_hero_id},					

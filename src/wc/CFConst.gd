@@ -1034,7 +1034,7 @@ const DEFAULT_SETTINGS:= {
 #		"x23": "https://marvelcdb.com/api/public/cards/x23.json", #X-23 Hero Pack	
 #		"deadpool": "https://marvelcdb.com/api/public/cards/deadpool.json", #Deadpool Hero Pack		
 #cycle 8
-#		"aoa": "https://marvelcdb.com/api/public/cards/aoa.json", #Age of Apocalypse Expansion Box	
+		"aoa": "https://marvelcdb.com/api/public/cards/aoa.json", #Age of Apocalypse Expansion Box	
 #		"iceman": "https://marvelcdb.com/api/public/cards/iceman.json", #Iceman Hero Pack	
 #		"jubilee": "https://marvelcdb.com/api/public/cards/jubilee.json", #Jubilee Hero Pack	
 		"ncrawler": "https://marvelcdb.com/api/public/cards/ncrawler.json", #NightCrawler Hero Pack	

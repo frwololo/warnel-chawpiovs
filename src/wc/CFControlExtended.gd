@@ -21,6 +21,7 @@ var reverse_duplicates: Dictionary = {}
 var obligations : Dictionary
 var schemes: Dictionary 
 var modular_encounters: Dictionary = {}
+var standard_encounters: Dictionary = {}
 var cards_by_set: Dictionary
 var nemesis: Dictionary
 
@@ -799,7 +800,10 @@ func load_one_card_extra_data(card_data):
 		if not modular_encounters.has(lc_set_code):
 			modular_encounters[lc_set_code] = []
 		modular_encounters[lc_set_code].append(card_data)
-
+	elif card_set_type_name_code == "standard":
+		if not standard_encounters.has(lc_set_code):
+			standard_encounters[lc_set_code] = []
+		standard_encounters[lc_set_code].append(card_data)
 	#obligations cache
 	if (lc_card_type == "obligation"):
 		obligations[lc_set_code] = card_data

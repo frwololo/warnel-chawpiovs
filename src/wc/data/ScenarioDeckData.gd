@@ -20,6 +20,8 @@ var set_aside := []
 
 const all_scenarios:= []
 const primitives:= {}
+const globals:= {}
+
 
 func _init():
 	pass
@@ -92,8 +94,45 @@ static func get_array_data(scheme_id, key):
 static func get_recommended_modular_encounters(scheme_id):
 	return get_array_data(scheme_id,"modular_default")
 
+
 static func get_scenario_options(scheme_id):
-	return get_array_data(scheme_id,"options")		
+	var the_options = get_array_data(scheme_id,"options")
+	var encounter_sets : Array = get_array_data(scheme_id,"encounter_sets")
+	
+
+	var has_standard = false
+	for encounter_set in encounter_sets:
+		if encounter_set.to_lower() == "standard":
+			has_standard = true
+			break
+	if has_standard:
+		if globals.has("standard_modular_option"):
+			the_options += globals["standard_modular_option"]
+		else:	
+			var all_standard = cfc.standard_encounters.keys()		
+			if all_standard.size() > 1:
+				all_standard.sort()					
+				var options = []
+				for key in all_standard:
+					options.append(
+						{
+							"display_name": key,
+							"value": key
+						}
+					)
+				globals["standard_modular_option"] = [
+					{
+						"name": "standard_override",
+						"display_name": "Standard Set",
+						"type": "option_button",
+						"options": options
+					}
+				]	
+				the_options += globals["standard_modular_option"]
+			else:
+				globals["standard_modular_option"] = []
+	return the_options
+		
 
 static func get_first_villain_from_scheme(scheme_id, expert_mode:= false):
 	var villains = get_villains_from_scheme(scheme_id, expert_mode)
@@ -447,6 +486,9 @@ func get_simple_encounter_deck(encounter_sets):
 		if (encounter_set_code.to_lower() == "modular"): #special case for modular sets
 			encounter_set_code = modular_sets[modular_set_count]
 			modular_set_count += 1
+		elif (encounter_set_code.to_lower() == "standard"): #special case for standard sets
+			if get_scenario_option("standard_override"):
+				encounter_set_code = get_scenario_option("standard_override")		
 		var encounter_set : Array = cfc.get_encounter_cards(encounter_set_code)
 		
 		for card_data in encounter_set:

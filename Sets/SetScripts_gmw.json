@@ -3128,22 +3128,6 @@
 					]
 				},
 				{
-					"name": "move_card_to_board",
-					"subject": "tutor",
-					"src_container": [
-						"deck_villain",
-						"set_aside"
-					],
-					"grid_name": "upgrade_support_first_player",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"Name": "Milano"
-							}
-						}
-					]
-				},
-				{
 					"name": "host_card",
 					"host": "villain",
 					"subject": "tutor",
@@ -5599,22 +5583,6 @@
 					]
 				},
 				{
-					"name": "move_card_to_board",
-					"subject": "tutor",
-					"src_container": [
-						"deck_villain",
-						"set_aside"
-					],
-					"grid_name": "upgrade_support_first_player",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"Name": "Milano"
-							}
-						}
-					]
-				},
-				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
 				}
@@ -5651,22 +5619,6 @@
 						{
 							"filter_properties": {
 								"Name": "Nebula's Ship"
-							}
-						}
-					]
-				},
-				{
-					"name": "move_card_to_board",
-					"subject": "tutor",
-					"src_container": [
-						"deck_villain",
-						"set_aside"
-					],
-					"grid_name": "upgrade_support_first_player",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"Name": "Milano"
 							}
 						}
 					]
@@ -5959,7 +5911,8 @@
 					"subject": "tutor",
 					"src_container": [
 						"deck_villain",
-						"set_aside"
+						"set_aside",
+						"board"
 					],
 					"filter_state_tutor": [
 						{
@@ -5975,7 +5928,8 @@
 					"subject_count": "all",
 					"src_container": [
 						"deck_villain",
-						"set_aside"
+						"set_aside",
+						"board",
 					],
 					"dest_container": "set_aside",
 					"filter_state_tutor": [
@@ -5985,7 +5939,7 @@
 							}
 						}
 					]
-				},
+				},			
 				{
 					"name": "flip_doublesided_card",
 					"subject": "self"

@@ -494,30 +494,31 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 	#permanent cards cannot be targeted by cards of a different set code
 	#this is a hardcoded blacklist approach for now. Not great but...
 	#the type check here is annoying, but I've had time where heroes would trigger a reaction that targeted something else but couldn't procced
-	if type in ["subject", "tutor", "seek", "index"]:
-		var needs_permanent_check = card.get_property("permanent", 0) or card.get_property("cannot_leave_play_from_abilities", 0)
-		# heroes and alter ego also cannot be moved, discard, etc...
-		if type_code in ["hero", "alter_ego"]: 
-			needs_permanent_check = true
-			
-		if needs_permanent_check:
-			var check_required = false
-			if script_name in ["move_card_to_container", "discard", "shuffle_card_into_container", "tuck_under_card", "tuck_card_under_me"]:
-				check_required = true
-			if script_name in ["attach_to_card", "host_card", "move_card_to_board"]:
-				if "facedown" in tags:
+	if gameData._game_started:
+		if type in ["subject", "tutor", "seek", "index"]:
+			var needs_permanent_check = card.get_property("permanent", 0) or card.get_property("cannot_leave_play_from_abilities", 0)
+			# heroes and alter ego also cannot be moved, discard, etc...
+			if type_code in ["hero", "alter_ego"]: 
+				needs_permanent_check = true
+				
+			if needs_permanent_check:
+				var check_required = false
+				if script_name in ["move_card_to_container", "discard", "shuffle_card_into_container", "tuck_under_card", "tuck_card_under_me"]:
 					check_required = true
-					
-			if check_required:
-				# "cannot_leave_play_from_abilities" use case:
-				if card.get_property("cannot_leave_play_from_abilities", 0):
-					return false
-					
-				#"permanent" use case :	
-				var set_code = card.get_property("card_set_code", "")
-				var owner_set_code = owner_card.get_property("card_set_code", "")
-				if set_code != owner_set_code:
-					return false
+				if script_name in ["attach_to_card", "host_card", "move_card_to_board"]:
+					if "facedown" in tags:
+						check_required = true
+						
+				if check_required:
+					# "cannot_leave_play_from_abilities" use case:
+					if card.get_property("cannot_leave_play_from_abilities", 0):
+						return false
+						
+					#"permanent" use case :	
+					var set_code = card.get_property("card_set_code", "")
+					var owner_set_code = owner_card.get_property("card_set_code", "")
+					if set_code != owner_set_code:
+						return false
 
 	
 	#generally speaking, boost cards are not valid targets...

@@ -266,7 +266,9 @@ func choices_menu(owner_card, trigger, origin_event, choices_menu, interacting_h
 	return #exit after the first one	
 
 func init_choices_menu(stack_object, announce):
-	
+	if !gameData._game_started:
+		return null
+		
 #	if stack_object and !can_display_stack_event(stack_object):
 #		return false
 		
@@ -352,6 +354,9 @@ func add_event_to_ignore_list(owner_card, stack_event):
 func can_display_stack_event(stack_object, mode = GlobalScriptStack.InterruptMode.NONE) -> bool:
 #	if (_skip_announcer):
 #		return false
+
+	if !gameData._game_started:
+		return false
 
 	if is_right_side_announce_ongoing():
 		#already showing something and for now I don't have a good

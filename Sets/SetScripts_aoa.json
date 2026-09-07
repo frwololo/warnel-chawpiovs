@@ -2939,10 +2939,21 @@
 		}
 	},
 	"Gene Pool": {
-		"setup": {
-			"all": [
+		"interrupt_card_dies": {
+			"filter_state_trigger": [
 				{
-					"name": "move_card_to_board",
+					"filter_properties": {
+						"type_code": "ally"
+					}
+				}
+			],
+			"filter_tags": [
+				"-consequential_damage"
+			],
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 3,
 					"subject": "self"
 				}
 			]
@@ -3917,15 +3928,19 @@
 					"subject": "tutor",
 					"src_container": [
 						"deck_villain",
-						"discard_villain"
+						"set_aside"
 					],
 					"filter_state_tutor": [
 						{
-							"filter_properties2": {
+							"filter_properties": {
 								"shortname": "Gene Pool"
 							}
 						}
 					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
 		},
@@ -4506,7 +4521,7 @@
 					"needs_selection": true,
 					"selection_count": 1,
 					"selection_type": "equal",
-					"filter_state_subject": [
+					"filter_state_tutor": [
 						{
 							"filter_properties": {
 								"trait_temporal": 1
@@ -5750,14 +5765,6 @@
 		}
 	},
 	"Pursued by the Past #45075a": {
-		"setup": {
-			"all": [
-				{
-					"name": "move_card_to_board",
-					"subject": "self"
-				}
-			]
-		},
 		"card_token_added": {
 			"trigger": "self",
 			"event_filters": {

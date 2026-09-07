@@ -7729,6 +7729,15 @@
 		}
 	},
 	"Sinister Intent - 1A": {
+		"extra_rules": [
+			{
+				"ignore_setup_keyword": [
+					"Flight #40151",
+					"Telepathy #40159",
+					"Super Strength #40155"
+				],
+			}
+		],	
 		"setup": {
 			"all": [
 				{

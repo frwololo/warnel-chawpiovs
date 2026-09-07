@@ -1376,13 +1376,21 @@ static func filter_trigger_no_validity_check(
 			script_tags = []
 		# FILTER_TAGS can handle one tag as a string
 		# or multiple tags as an array.
-		if typeof(filter_tags) == TYPE_ARRAY:
-			for tag in filter_tags:
+		if typeof(filter_tags) != TYPE_ARRAY:
+			filter_tags = [filter_tags]
+		for tag in filter_tags:
+			if !typeof(tag)== TYPE_STRING:
+				return false
+			var inverse = false
+			if tag.begins_with("-"):
+				tag = tag.substr(1)
+				inverse = true
+			if inverse:
+				if tag in script_tags:
+					return false
+			else:
 				if not tag in script_tags:
 					return false
-		else:
-			if not filter_tags in script_tags:
-				return false
 
 	# Card task name filter checks
 	if card_scripts.get(FILTER_TASK) \

@@ -556,17 +556,49 @@ func post_cards_moved_load():
 	
 	gameData.players_pre_setup()
 
-#TODO
+	############
 	#Setup Step 11: Put Setup Cards Into Play. Search each deck and the
 	# set aside area for any cards with the setup keyword and
 	# put them into play.
-#	for card in get_all_cards(true):
-#		var func_return = card.execute_scripts_no_stack(card, "setup_keyword")
-#		if func_return is GDScriptFunctionState && func_return.is_valid():
-#			yield(func_return, "completed")
+	#############
+	
+	#a scenario can optionally force skip the setup keyword 
+	#this is to avoid cases where we bring those to the table, only to take them
+	#back right after
+	var ignore_setup_keywords = {}
+	var ignore_setup_cards = gameData.scenario.get_scenario_option("ignore_setup_keyword")
+	if ignore_setup_cards:
+		for fuzzy_card_name in ignore_setup_cards:
+			var card_id = cfc.get_corrected_card_id(fuzzy_card_name)
+			if card_id:
+				ignore_setup_keywords[card_id] = true
+				
+	#Loop through all cards in the game to put into play those with the setup keyword			
+	for card in get_all_cards(true):
+		if ignore_setup_keywords.get(card.canonical_id):
+			continue		
+		var func_return = card.execute_scripts_no_stack(card, "setup_keyword")
+		if func_return is GDScriptFunctionState && func_return.is_valid():
+			yield(func_return, "completed")
 
+	############
+	#Setup Step 13: If playing in campaign mode,
+	# resolve the Setup campaign instructions listed for the
+	#scenario in its associated rulebook.
+	############
+	
+	#TODO
 
+	############
+	#Setup Step 14: Draw Cards. Each player draws cards from their deck
+	# until they have cards equal in number to their hand size
+	# (including modifiers), as listed near the bottom of their
+	# identity card.
+	#TODO: Needs to move after scenario setup	
+	#############
 	draw_starting_hand()	
+	
+	
 	#Tests
 	if gameData.get_team_size() < 2:
 		#draw_cheat_ghost("Web-Shooter")

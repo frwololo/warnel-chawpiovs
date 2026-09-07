@@ -2601,7 +2601,7 @@ func send_signal(script: ScriptTask) -> int:
 	if (costs_dry_run()):
 		return CFConst.ReturnCode.CHANGED
 
-	scripting_bus.init_scripting_event(script.owner, script.script_definition)		
+	scripting_bus.init_scripting_event(script.owner, script.script_definition, script.get_property("signal_name", ""))		
 	return CFConst.ReturnCode.CHANGED
 
 func add_properties_from(script: ScriptTask) -> int:

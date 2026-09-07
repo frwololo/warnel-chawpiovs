@@ -554,7 +554,7 @@
 		"options": [
 			{
 				"name": "tower_initial_damage",
-				"display_name": "Tower start DMG",
+				"display_name": "Tower DMG",
 				"type": "option_button",
 				"options": [
 					{
@@ -1080,7 +1080,7 @@
 		"options": [
 			{
 				"name": "kelly_initial_damage",
-				"display_name": "R. Kelly start DMG",
+				"display_name": "R. Kelly DMG",
 				"type": "option_button",
 				"options": [
 					{
@@ -1249,7 +1249,7 @@
 		"options": [
 			{
 				"name": "mansion_victory",
-				"display_name": "Difficulty Level",
+				"display_name": "Difficulty",
 				"type": "option_button",
 				"options": [
 					{

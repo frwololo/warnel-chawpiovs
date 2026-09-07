@@ -146,10 +146,10 @@
 		"_side_icons_meta": {
 			"overlay": "#ffA997A2"
 		}
-	},	
+	},
 	"13028": {
 		"is_unique": true
-	},	
+	},
 	"14001b": {
 		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/qsv/14001b.webp"
 	},
@@ -163,18 +163,15 @@
 	"16001b": {
 		"printed_card_id": "16001a",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
-
 	},
 	"16029a": {
 		"printed_card_id": "16029b",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
-
 	},
 	"16029b": {
 		"printed_card_id": "16029a",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
-
-	},		
+	},
 	"16056": {
 		"attack": 2
 	},
@@ -243,8 +240,7 @@
 		"_comments": "https://github.com/zzorba/marvelsdb/issues/347"
 	},
 	"26002": {
-		"linked_card":
-		{
+		"linked_card": {
 			"pack_code": "vision",
 			"pack_name": "Vision",
 			"pack_legacy": true,
@@ -294,7 +290,7 @@
 			"url": "https://marvelcdb.com/card/26002",
 			"imagesrc": "/bundles/cards/26002b.png",
 			"backimagesrc": null
-		},
+		}
 	},
 	"27013": {
 		"imagesrc": "/bundles/cards/15030.png"
@@ -329,13 +325,11 @@
 	"32001a": {
 		"printed_card_id": "32001b",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
-
 	},
 	"32001b": {
 		"printed_card_id": "32001a",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
-
-	},		
+	},
 	"32022": {
 		"alternate_art": true
 	},
@@ -348,23 +342,21 @@
 	"32030a": {
 		"printed_card_id": "32030b",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
-
 	},
 	"32030b": {
 		"printed_card_id": "32030a",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
-
-	},		
+	},
 	"32038": {
 		"name": "Phased Strike"
 	},
 	"32051": {
 		"alternate_art": true
-	},	
+	},
 	"32048": {
 		"subname": "Piotr Rasputin"
-	},	
-	"32080" :{
+	},
+	"32080": {
 		"attack": 0,
 		"scheme": 0,
 		"_comments": "engine considers that if those aren't defined, the character isn't able to attack/scheme"
@@ -375,39 +367,33 @@
 	"33001a": {
 		"printed_card_id": "33001b",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
-
 	},
 	"33001b": {
 		"printed_card_id": "33001a",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
-
 	},
 	"34001a": {
 		"printed_card_id": "34001b",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
-
 	},
 	"34001b": {
 		"printed_card_id": "34001a",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
-
-	},	
+	},
 	"34024": {
 		"alternate_art": true
 	},
 	"35001a": {
 		"printed_card_id": "35001b",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
-
 	},
 	"35001b": {
 		"printed_card_id": "35001a",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
-
-	},	
+	},
 	"35019": {
 		"alternate_art": true
-	},	
+	},
 	"35021": {
 		"subname": "Piotr Rasputin"
 	},
@@ -417,29 +403,25 @@
 	"37001a": {
 		"printed_card_id": "37001b",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
-
 	},
 	"37001b": {
 		"printed_card_id": "37001a",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
-
-	},	
+	},
 	"37014": {
 		"alternate_art": true
-	},	
+	},
 	"37020": {
 		"alternate_art": true
 	},
 	"38001a": {
 		"printed_card_id": "38001b",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
-
 	},
 	"38001b": {
 		"printed_card_id": "38001a",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
-
-	},	
+	},
 	"40030": {
 		"alternate_art": true
 	},
@@ -448,16 +430,124 @@
 	},
 	"40055": {
 		"alternate_art": true
-	},	
+	},
 	"40130": {
 		"attack": 0,
 		"thwart": 0,
 		"_comments": "engine considers that if those aren't defined, the character isn't able to attack/scheme"
-		
+	},
+	"45013": {
+		"alternate_art": true
+	},
+	"45018": {
+		"alternate_art": true
+	},
+	"45019": {
+		"alternate_art": true
+	},
+	"45046": {
+		"alternate_art": true
+	},
+	"45047": {
+		"alternate_art": true
+	},
+	"45052": {
+		"alternate_art": true
+	},
+	"45104a": {
+		"linked_to_code": "45104b",
+		"linked_to_name": "The Towering Citadel",
+		"linked_card": {
+			"pack_code": "aoa",
+			"pack_name": "Age of Apocalypse",
+			"pack_legacy": false,
+			"pack_wave": 8,
+			"type_code": "side_scheme",
+			"type_name": "Side Scheme",
+			"faction_code": "encounter",
+			"faction_name": "Encounter",
+			"card_set_code": "apocalypse",
+			"card_set_name": "Apocalypse",
+			"card_set_type_name_code": "villain",
+			"card_set_parent_code": null,
+			"position": 105,
+			"set_position": 5,
+			"code": "45104b",
+			"name": "The Towering Citadel",
+			"real_name": "The Towering Citadel",
+			"subname": null,
+			"cost": null,
+			"cost_per_hero": false,
+			"cost_star": false,
+			"text": "Threat cannot be removed from this scheme while a [[Prelate]] minion is in play.\n<b>When Defeated</b>: The first player reveals a random set-aside [[Prelate]] minion. Deal each other player an encounter card. Reveal the Tyrant's Throne side scheme and remove this card from the game.",
+			"real_text": "Threat cannot be removed from this scheme while a [[Prelate]] minion is in play.\n<b>When Defeated</b>: The first player reveals a random set-aside [[Prelate]] minion. Deal each other player an encounter card. Reveal the Tyrant's Throne side scheme and remove this card from the game.",
+			"boost": null,
+			"quantity": 1,
+			"resource_energy": null,
+			"resource_physical": null,
+			"resource_mental": null,
+			"resource_wild": null,
+			"hand_size": null,
+			"health": null,
+			"health_per_group": false,
+			"health_per_hero": false,
+			"thwart": null,
+			"thwart_cost": null,
+			"scheme": null,
+			"attack": null,
+			"attack_cost": null,
+			"defense": null,
+			"defense_cost": null,
+			"recover": null,
+			"recover_cost": null,
+			"base_threat": 3,
+			"base_threat_fixed": true,
+			"base_threat_per_group": false,
+			"base_threat_star": false,
+			"escalation_threat": null,
+			"escalation_threat_fixed": false,
+			"scheme_crisis": null,
+			"scheme_acceleration": 2,
+			"scheme_amplify": null,
+			"scheme_hazard": null,
+			"threat": null,
+			"threat_fixed": false,
+			"threat_per_group": false,
+			"deck_limit": null,
+			"stage": null,
+			"meta": null,
+			"deck_requirements": null,
+			"deck_options": null,
+			"restrictions": null,
+			"flavor": "",
+			"illustrator": "Sebastián Guidobono",
+			"is_unique": false,
+			"hidden": true,
+			"permanent": false,
+			"double_sided": false,
+			"back_text": null,
+			"back_flavor": null,
+			"back_name": null,
+			"octgn_id": "1ab538aa-6ad1-4d9d-83a6-3ebc3a045105",
+			"attack_star": false,
+			"thwart_star": false,
+			"defense_star": false,
+			"health_star": false,
+			"recover_star": false,
+			"scheme_star": false,
+			"boost_star": false,
+			"threat_star": false,
+			"escalation_threat_star": false,
+			"errata": null,
+			"url": "https://marvelcdb.com/card/45104b",
+			"imagesrc": null,
+			"spoiler": 1,
+			"backimagesrc": null
+		}
 	},
 	"48019": {
 		"alternate_art": true
-	},	
+	},
 	"54021": {
 		"imagesrc": "/bundles/cards/50054.jpg"
 	}

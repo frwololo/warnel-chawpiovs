@@ -221,6 +221,10 @@ func move_card_to_board(script: ScriptTask) -> int:
 	script.script_definition = backup
 	return result
 
+func engage_player(script: ScriptTask) -> int:
+	return move_card_to_board(script)
+		
+
 func init_properties(script: ScriptTask) -> int:
 
 	if !script.subjects:
@@ -662,6 +666,9 @@ func save_variable(script:ScriptTask) -> int:
 	if costs_dry_run():
 		return retcode
 	
+	var subjects = [script.owner]
+	if script.subjects:
+		subjects = script.subjects
 
 	var result = null 
 	var mode =  script.script_definition.get("mode", "replace")
@@ -676,15 +683,25 @@ func save_variable(script:ScriptTask) -> int:
 		"int":
 			result = script.retrieve_integer_property("value", 0)
 			if current_value == null:
-				current_value = 0			
+				current_value = 0		
+		"str":
+			var target_subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : value})
+			if !target_subjects:
+				return CFConst.ReturnCode.FAILED
+			var target_subject = target_subjects[0]
+			result = str(target_subject.get_property( script.script_definition.get("property", "")))
+			if current_value == null:
+				current_value = ""							
 		_:
 			return CFConst.ReturnCode.FAILED
 
 	match mode:
 		"add":
-			script.owner.script_variables[var_name] = current_value + result
+			for subject in subjects:
+				subject.script_variables[var_name] = current_value + result
 		_: #default is replace
-			script.owner.script_variables[var_name] = result
+			for subject in subjects:
+				subject.script_variables[var_name] = result
 		
 	return retcode
 
@@ -2815,18 +2832,75 @@ func rotate_next(script: ScriptTask) -> int:
 			subject.move_to(cfc.NMAP[new_pile_name])
 	return retcode
 
+# Task for executing scripts on subject cards.
+# * Supports [KEY_IS_COST](ScriptProperties#KEY_IS_COST). If it is set, the cost check
+#	will fail, if any of the target card's cost checks also fail.
+# * Requires the following keys:
+#	* [KEY_SUBJECT](ScriptProperties#KEY_SUBJECT)
+# * Optionally uses the following keys:
+#	* [KEY_REQUIRE_EXEC_STATE](ScriptProperties#KEY_REQUIRE_EXEC_STATE)
+#	* [KEY_EXEC_TEMP_MOD_PROPERTIES](ScriptProperties#KEY_EXEC_TEMP_MOD_PROPERTIES)
+#	* [KEY_EXEC_TEMP_MOD_COUNTERS](ScriptProperties#KEY_EXEC_TEMP_MOD_COUNTERS)
+#	* [KEY_EXEC_TRIGGER](ScriptProperties#KEY_EXEC_TRIGGER)
+func execute_scripts(script: ScriptTask) -> int:
+	cfc.add_ongoing_process(self)
+	var retcode : int = CFConst.ReturnCode.CHANGED
+	# If your subject is "self" make sure you know what you're doing
+	# or you might end up in an inifinite loop
+
+	var trigger_identity_id = 0
+	var trigger_identity = script.get_property("trigger_identity", script.owner.get_controller_hero_card())
+	if trigger_identity:
+		trigger_identity_id = trigger_identity.get_controller_hero_id()
+	
+	var _trigger_details = {
+		"prev_subjects" : script.prev_subjects,
+		"parent_script": script,
+		"trigger_identity_id": trigger_identity_id 
+	}
+	for card in script.subjects:
+		var requested_exec_state = script.get_property(SP.KEY_REQUIRE_EXEC_STATE)
+		# If not specific exec_state has been requested
+		# we execute whatever scripts of the state the card is currently in.
+		if not requested_exec_state or requested_exec_state == card.get_state_exec():
+			var sceng = card.execute_scripts(
+					script.owner,
+					script.get_property(SP.KEY_EXEC_TRIGGER),
+					_trigger_details, run_type)
+			# We make sure we wait until the execution is finished
+			# before cleaning out the temp properties/counters
+			if sceng is GDScriptFunctionState:
+				sceng = yield(sceng, "completed")
+			# Executing scripts on other cards need to noy only check their
+			# own costs are possible, but the target cards as well
+			# but only if the subject is explictly specified, such as
+			# target. We don't want to play a card which will not affect its
+			# explicit target, but we do want to be able to play a card
+			# which, for example, tries to affect all cards on the table,
+			# but none of them is actually affected.
+			if sceng and not sceng.can_all_costs_be_paid\
+					and not script.get_property(SP.KEY_SUBJECT)\
+					in [SP.KEY_SUBJECT_V_BOARDSEEK, SP.KEY_SUBJECT_V_TUTOR]:
+				retcode = CFConst.ReturnCode.FAILED
+	cfc.remove_ongoing_process(self)
+	return(retcode)
+
 func sequence(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
 	var ability = script.get_property("sequence_ability", "")
 	if !ability:
 		return CFConst.ReturnCode.FAILED
+	
+	#if we didn't explicitly pass a subject, we assume it's the script owner card
+	if !script.subjects and !script.script_definition.has("subject"):
+		script.subjects = [script.owner]
+		
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
 				
 	if (costs_dry_run()): #not allowed ?
 		return retcode
-
-	if !script.subjects:
-		script.subjects = [script.owner]
 
 
 	gameData.start_play_sequence(script.subjects, ability, script)
@@ -3027,19 +3101,19 @@ func change_form(script: ScriptTask) -> int:
 	var to_card = script.get_property("change_to", "").replace("#", "")
 	
 	for subject in script.subjects: #should be really one subject only, generally
-		var hero = subject
+		var character = subject
 
 			
 		var to_card_id = to_card
 		match to_card_id:
 			"other_hero_form":
 				var found = false
-				var card_set_code = hero.get_property("card_set_code", "")
+				var card_set_code = character.get_property("card_set_code", "")
 				if !card_set_code:
 					return CFConst.ReturnCode.FAILED
 				var set_cards = cfc.cards_by_set.get(card_set_code, [])
 				for card_data in set_cards:
-					if card_data["type_code"] == "hero" and card_data["_code"]!= hero.canonical_id:
+					if card_data["type_code"] == "hero" and card_data["_code"]!= character.canonical_id:
 						to_card_id = card_data["_code"]
 						found  = true
 						break
@@ -3047,22 +3121,37 @@ func change_form(script: ScriptTask) -> int:
 					return CFConst.ReturnCode.FAILED	
 			"alter_ego":
 				#can't change from alter_ego to alter_ego
-				if hero.is_alter_ego_form():
+				if character.is_alter_ego_form():
 					return CFConst.ReturnCode.FAILED
 				to_card_id = ""	
 			"hero":
 				#can't change from hero to hero
-				if hero.is_hero_form():
+				if character.is_hero_form():
 					return CFConst.ReturnCode.FAILED
 				to_card_id = ""	
+			_:
+				if to_card_id.begins_with("trait_"):
+					var found = false	
+					var card_set_code = character.get_property("card_set_code", "")
+					if !card_set_code:
+						return CFConst.ReturnCode.FAILED
+					var set_cards = cfc.cards_by_set.get(card_set_code, [])
+					for card_data in set_cards:
+						if card_data["Name"] == character.canonical_name and card_data["_code"]!= character.canonical_id:
+							if card_data.get(to_card_id, 0):
+								to_card_id = card_data["_code"]
+								found  = true
+								break
+					if !found:
+						return CFConst.ReturnCode.FAILED						
 					
 		#todo check that subject is indeed a hero
-		if !hero.can_change_form(is_manual, to_card_id):
+		if !character.can_change_form(is_manual, to_card_id):
 			return CFConst.ReturnCode.FAILED
 		
 		if (!costs_dry_run()):
 		#Get my current zone
-			hero.change_form(is_manual, to_card_id)
+			character.change_form(is_manual, to_card_id)
 
 	return CFConst.ReturnCode.CHANGED
 	

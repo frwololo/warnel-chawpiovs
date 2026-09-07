@@ -238,10 +238,13 @@ func load_from_dict(_scenario:Dictionary):
 	scenario_data = primitives[scheme_card_id].duplicate(true)
 	
 	is_expert_mode =  _scenario.get("expert_mode", false)
-	scenario_options["expert_mode"] = is_expert_mode
+	set_scenario_option("expert_mode",is_expert_mode)
 	
 	modular_sets = _scenario.get("modular_encounters", [])
-	scenario_options = _scenario.get("scenario_options", {})
+	
+	var my_options = _scenario.get("scenario_options", {})
+	for key in my_options:
+		set_scenario_option(key,my_options[key])
 	
 	#Preload
 	_villains = []
@@ -253,6 +256,9 @@ func load_from_dict(_scenario:Dictionary):
 	_load_extra_rules_from_encounters()
 	setup_grid()
 	gameData.theGameObserver.setup(self)	
+
+func set_scenario_option(key, value):
+	scenario_options[key] = value
 
 #returns all schemes belonging to the same collection as scheme_id,
 #sorted in expected appearance order		
@@ -337,6 +343,9 @@ func _load_extra_rules_from_encounters():
 				scenario_data["extra_rules"] = []
 			scenario_data["extra_rules"] += extra_rules			
 
+func get_grid_setup_override(name, default = null):
+	return scenario_data.get("grid_setup_overrides", {}).get(name, default)
+
 func setup_grid():
 	if (!scenario_data):
 		print_debug("data not loaded in ScenarioDeckData")
@@ -348,11 +357,11 @@ func setup_grid():
 	#shift everything to the right if there are additional villains
 	var count_villains = get_villains().size()
 	if count_villains > 1:
-		if count_villains > 3:
-			spacing = 0
-			villain_space = 70
+		spacing = 0
+		villain_space = 90
 		var villain_x = grid_setup["villain"]["x"]
-		var displacement = villain_space * (count_villains -1) *  cfc.hardcoded_positions_modifier.x
+		var displacement_count = get_grid_setup_override("x_displacement_count_villains", count_villains)
+		var displacement = villain_space * displacement_count *  cfc.hardcoded_positions_modifier.x
 		for key in grid_setup: 
 			if grid_setup[key].has("x"):
 				#if it's on the left we don't move it

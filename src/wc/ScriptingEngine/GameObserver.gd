@@ -26,8 +26,20 @@ func reset():
 func setup(scenario:ScenarioDeckData):
 	var extra_rules = scenario.scenario_data.get("extra_rules", [])
 	if extra_rules:
-		for extra_rule in extra_rules:
-			add_script(null, extra_rule)
+		for extra_rule in extra_rules:			
+			add_scenario_rule(scenario, extra_rule)
+
+func add_scenario_rule(scenario, rule):
+	if typeof(rule) != TYPE_DICTIONARY:
+		var _error = 1
+		return
+	for key in rule.keys():
+		if typeof(rule[key]) != TYPE_DICTIONARY:
+			scenario.set_scenario_option(key, rule[key])
+			rule.erase(key)
+	if rule:	
+		add_script(null, rule)
+
 
 func add_function_overrides(owner, dict):
 	if !dict:
@@ -101,6 +113,7 @@ func _remove_all_children():
 func _ready():
 	scripting_bus.connect("after_scripting_event_triggered", self, "removal_checks")
 	scripting_bus.connect("scripting_event_about_to_trigger", self, "early_removal_checks")
+
 
 func add_script(parent_script, script_definition, remove_condition = null):
 	var new_script = GameObserverItem.new()

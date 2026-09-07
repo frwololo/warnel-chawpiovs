@@ -974,6 +974,10 @@ static func get_event_source_hero_id(trigger_details):
 		var event_object = trigger_details.get("event_object")		
 		if event_object and "trigger_details" in event_object and event_object.trigger_details.has("source"):
 			source = event_object.trigger_details.get("source", null)
+	elif trigger_details.get("trigger_identity_id", 0):
+		#this one is set e.g. in gameData.start_play_sequence()
+		#used for example in mutants genesis "Zeal for the Cause"
+		event_source_hero_id = trigger_details.get("trigger_identity_id", 0)
 	elif trigger_details.has("triggered_by_card"):
 		#this one is set e.g. in gameData.start_play_sequence()
 		#used for example in mutants genesis "Zeal for the Cause"

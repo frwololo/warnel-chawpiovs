@@ -1441,6 +1441,8 @@ func load_script_definitions() -> void:
 				#we don't support "response" yet but want to in the future. For now they're just interrupts
 				json_card_data = WCUtils.search_and_replace (json_card_data, "response", "interrupt", true)
 				json_card_data = WCUtils.search_and_replace (json_card_data, "response_", "interrupt_")
+				#other replacements
+				json_card_data = WCUtils.search_and_replace (json_card_data, "card_changed_form", "identity_changed_form")
 				#bugfix: replace "floats" to "ints"
 				json_card_data = WCUtils.replace_real_to_int(json_card_data)
 				

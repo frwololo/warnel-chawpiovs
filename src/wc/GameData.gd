@@ -2384,6 +2384,12 @@ func start_play_sequence(cards, trigger, script):
 	var count = 1
 	if script.script_definition.has("count"):
 		count = script.retrieve_integer_property("count")
+
+	var trigger_identity_id = 0	
+	var trigger_identity = script.get_property("trigger_identity", script.owner.get_controller_hero_card())
+	if trigger_identity: 
+		trigger_identity_id = trigger_identity.get_controller_hero_id()
+	
 	for i in count:
 		for subject in cards:
 			var target_queue = scripted_play_sequence
@@ -2394,7 +2400,8 @@ func start_play_sequence(cards, trigger, script):
 				"trigger" : trigger,
 				"is_villain": is_villain,
 				"trigger_details": {
-					"triggered_by_card": script.owner
+					"triggered_by_card": script.owner,
+					"trigger_identity_id": trigger_identity_id
 				}
 			})
 
@@ -2452,20 +2459,6 @@ func swap_villain(current_villain, next_villain_key, options = {}):
 		cfc.NMAP.board.set_active_villain(null)
 		
 		new_card = cfc.NMAP.board.load_villain(next_villain_key)
-		
-#		var copy_damage = options.get("copy_damage", false)
-#		var copy_token_options = {}
-#		if !copy_damage:
-#			copy_token_options["exclude"]  = ["damage"]
-#
-#		current_villain.copy_tokens_to(new_card, copy_token_options)
-#		var attachments_to_move = []
-#		for attachment in current_villain.attachments:
-#			if attachment.is_boost():
-#				continue
-#			attachments_to_move.append(attachment)
-#		for attachment in attachments_to_move:	
-#			attachment.attach_to_host(new_card)
 
 	var died = options.get("died", false)
 	if died:

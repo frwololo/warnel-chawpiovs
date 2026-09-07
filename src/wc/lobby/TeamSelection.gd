@@ -184,12 +184,14 @@ func resize():
 	var screen_size = get_viewport().size/cfc.screen_scale
 	var scenario_picture:TextureRect = get_node("%ScenarioTexture") 
 	if screen_size.x > 1800:
-		get_node("%LeftRight").add_constant_override("separation", 50)
+		get_node("%LeftRight").add_constant_override("separation", 10)
 		get_node("%TeamScenarioPanel").add_constant_override("separation", 10)
 		get_node("%ScenarioOverContainer").add_constant_override("separation", 10)		
 		scenario_picture.rect_min_size = Vector2(300, 300)
 		scenario_picture.rect_size = scenario_picture.rect_min_size
-		get_node("%VBoxContainer").add_constant_override("separation", 20)
+		get_node("%VBoxContainer").add_constant_override("separation", 20)	
+		get_node("%ModularColorRect").rect_min_size = Vector2(1600, 720)	
+		
 	else:	
 		get_node("%DLLabel2").visible = false	
 		get_node("%LeftRight").add_constant_override("separation", 10)
@@ -926,3 +928,8 @@ func _on_CancelButton_pressed():
 	get_tree().change_scene(CFConst.PATH_CUSTOM + 'MainMenu.tscn')
 
 
+
+
+func _on_FolderLabel_pressed():
+	OS.shell_open(ProjectSettings.globalize_path("user://"))
+	pass # Replace with function body.

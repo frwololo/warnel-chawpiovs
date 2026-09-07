@@ -80,8 +80,8 @@ func resize():
 	var grid_width = 450
 	var grid_height = 220
 	if screen_size.x > CFConst.LARGE_SCREEN_WIDTH:
-		grid_width = 800
-		grid_height = 400
+		grid_width = 900
+		grid_height = 450
 		var dynamic_font = cfc.get_font("res://fonts/ReggaeOne-Regular.ttf", 16)	
 		scenario_name.add_font_override("font", dynamic_font)	
 		scenario_name.add_color_override("font_color", Color8(220, 220,220))			

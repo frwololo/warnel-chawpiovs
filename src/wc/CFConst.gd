@@ -798,7 +798,9 @@ const AUTO_KEYWORDS := {
 	"guard_all": "int",
 	
 	"ignore_external_acceleration": "int",		
-	"invincible": "int",		
+	"invincible": "int",
+	
+	"minimum_hit_points_override": "int"		
 }
 
 const INTERRUPT_SECTION_KEYWORDS:= [

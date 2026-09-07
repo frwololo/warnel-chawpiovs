@@ -12,50 +12,17 @@ static func has_interrupt(script:Dictionary) -> String:
 
 static func keyword_to_script(keyword, _value):
 	match keyword:
-		"alliance" :
-			pass
-		"assault" :
-			pass
-		"form" :
-			pass 
-		"hinder" :
-			pass
-		"incite" :
-			pass
-		"linked" :
-			pass 
-		"overkill" :
-			pass 
-		"patrol" :
-			pass
-		"peril" :
-			pass 
-		"permanent" :
-			pass 
-		"piercing" :
-			pass 
-		"quickstrike" :
-			pass 
-		"ranged" :
-			pass 
-		"requirement" :
-			pass 
-		"restricted" :
-			pass 
 		"setup" :
-			pass 
-		"stalwart" :
-			pass 
-		"steady" :
-			pass 
-		"surge" :
-			pass 
-		"team-up" :
-			pass 
-		"teamwork" :
-			pass 
-		"temporary" :
-			pass 
+			return { 
+				"setup_keyword": {
+					"all": [
+						{
+							"name": "move_card_to_board",
+							"subject": "self",
+						},					
+					]
+				}
+			}
 		"toughness" :
 			return { 
 				"self_moved_to_board": {
@@ -69,12 +36,6 @@ static func keyword_to_script(keyword, _value):
 					]
 				}
 			}
-		"victory" :
-			pass
-		"villainous" :
-			pass
-		_:
-			pass
 	return null		
 
 # This fuction merges text files scripts for a given card 

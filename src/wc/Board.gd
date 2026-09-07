@@ -556,6 +556,16 @@ func post_cards_moved_load():
 	
 	gameData.players_pre_setup()
 
+#TODO
+	#Setup Step 11: Put Setup Cards Into Play. Search each deck and the
+	# set aside area for any cards with the setup keyword and
+	# put them into play.
+#	for card in get_all_cards(true):
+#		var func_return = card.execute_scripts_no_stack(card, "setup_keyword")
+#		if func_return is GDScriptFunctionState && func_return.is_valid():
+#			yield(func_return, "completed")
+
+
 	draw_starting_hand()	
 	#Tests
 	if gameData.get_team_size() < 2:

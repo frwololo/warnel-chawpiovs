@@ -136,9 +136,18 @@ func load_scenario():
 	if !villains_data:
 		return null
 	
+	if scenario_data.get_scenario_option("randomize_villain_activation_order"):
+		CFUtils.shuffle_array(villains_data)
+		
 	for villain_data in villains_data:
 		var ckey = villain_data["_code"] 
 		load_villain(ckey)
+
+	if scenario_data.get_scenario_option("randomize_villain_activation_order"):
+		var i = 1
+		for card in villains.values():
+			card.properties["activation_order"] = i	
+			i += 1
 
 func init_scenario_villains():
 	var villains_data = scenario_data.get_villains()

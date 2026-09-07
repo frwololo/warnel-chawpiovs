@@ -195,7 +195,7 @@
 		}
 	},
 	"Dark Phoenix": {
-		"interrupt_add_threat": {
+		"interrupt_enemy_scheme_threat": {
 			"trigger": "self",
 			"condition_board": {
 				"func_name": "card_is_in_play",

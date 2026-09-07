@@ -10106,10 +10106,6 @@
 						"value": 1,
 						"_comments": "remembering decision for next use"
 					},
-					{
-						"name": "enemy_attacks_you",
-						"subject": "self"
-					}
 				],
 				"Return Highest Cost support": [
 					{

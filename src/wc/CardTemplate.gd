@@ -3449,9 +3449,16 @@ func get_subject_int_property(params, script:ScriptObject= null) -> int:
 	var subjects = get_param_subjects(params, script)
 	
 	var property = params.get("property", "")
-	var expected_value = params.get("property_value", "")
 	if !property:
 		return 0
+			
+	var expected_value = params.get("property_value", "")	
+	if expected_value.begins_with("__previous_"):
+		expected_value.replace("__previous_", "")
+		var previous = get_param_subject({"subject": "previous"}, script)
+		if previous:
+			expected_value = previous.get_property(expected_value)
+			
 	var count = 0
 	for subject in subjects:
 		var value = subject.get_property(property, 0)
@@ -3929,18 +3936,26 @@ func get_sustained_damage(params:Dictionary = {}, script = null) -> int:
 
 #returns how much damage this card can sustain before reaching zero life
 # returns 0 if <= 0
+#for multiple targets, returns the sum (<0 converted to 0 for each target before sum)
 func get_remaining_damage(params:Dictionary = {}, script = null) -> int:
-	var subject = get_param_subject(params, script)
+	var subjects = get_param_subjects(params, script)
 	
-	if !subject:
+	if !subjects:
 		return 0
 	
-	var current_damage = subject.tokens.get_token_count("damage")
-	var health = subject.get_property("health", 0)
-	var diff = health - current_damage
-	if diff <= 0:
-		return 0
-	return diff	
+	var total = 0
+	for subject in subjects:
+		var current_damage = subject.tokens.get_token_count("damage")
+		var health = subject.get_property("health", 0)
+		var diff = health - current_damage
+		if diff <= 0:
+			diff = 0
+		if !diff:
+			#semi hack for 4 Horsemen 
+			var minimum_override = subject.get_property("minimum_hit_points_override", 0, true)
+			diff+= minimum_override
+		total+=diff
+	return total
 
 #
 # RESOURCE FUNCTIONS

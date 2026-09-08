@@ -43,7 +43,7 @@ onready var panel_container := get_node("%PanelContainer")
 # The popup node
 onready var _opacity_tween := $OpacityTween
 onready var _tween := $Tween
-
+var on_empty_modulate = 1.0
 var pre_sorted_order: Array
 
 var is_shuffling:= false
@@ -67,7 +67,8 @@ func _ready():
 
 	if CFConst.HIDE_PILE_DETAILS:
 		pile_name_label.modulate = Color(0,0,0,0)
-		$Control.self_modulate = Color(0,0,0,0.2)
+		on_empty_modulate = 0.05
+		$Control.self_modulate = Color(0,0,0.2,on_empty_modulate)
 		panel_container.visible = false	
 		
 	$Control/Highlight.visible = false
@@ -236,7 +237,7 @@ func add_child(node, _legible_unique_name=false) -> void:
 				if not _opacity_tween.is_active():
 					_opacity_tween.remove($Control,'self_modulate:a')
 					_opacity_tween.interpolate_property($Control,'self_modulate:a',
-							$Control.self_modulate.a, 0.0, 1,
+							$Control.self_modulate.a, on_empty_modulate,1 ,
 							Tween.TRANS_SINE, Tween.EASE_OUT)
 					_opacity_tween.start()
 			card_count_label.text = str(get_card_count())
@@ -273,7 +274,7 @@ func remove_child(node, _legible_unique_name=false) -> void:
 		if not _opacity_tween.is_active():
 			_opacity_tween.remove($Control,'self_modulate:a')
 			_opacity_tween.interpolate_property($Control,'self_modulate:a',
-					$Control.self_modulate.a, 0.4, 0.5,
+					$Control.self_modulate.a, on_empty_modulate, 0.5,
 					Tween.TRANS_SINE, Tween.EASE_IN)
 			_opacity_tween.start()
 	else:

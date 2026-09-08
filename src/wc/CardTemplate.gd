@@ -674,6 +674,8 @@ func _class_specific_input(event) -> void:
 	
 
 func _class_specific_process(delta):
+	display_shadow()
+	
 	if !CFConst.PERFORMANCE_HACKS:
 		if cfc._debug and not get_parent().is_in_group("piles"):
 			var stateslist = [
@@ -724,6 +726,42 @@ func _class_specific_process(delta):
 	pass
 		
 
+func display_shadow():
+	_shadow.visible = false	
+	if is_onboard():
+		_shadow.visible = true
+		_shadow.rect_min_size = _card_front_container.rect_min_size
+		_shadow.rect_size = _shadow.rect_min_size
+		var offset = 6.0
+		if highlight.visible:
+			offset = 10.0
+		var offset_x = (sin(deg2rad(_control.rect_rotation)) + cos(deg2rad(_control.rect_rotation))) * offset
+		var offset_y = (cos(deg2rad(_control.rect_rotation)) - sin(deg2rad(_control.rect_rotation))) * offset
+		_shadow.rect_position = _control.rect_position + (Vector2(offset_x, offset_y))
+		_shadow.self_modulate.a = 1.0
+	elif get_state_exec() == "hand":
+		_shadow.visible = true
+		_shadow.rect_min_size = _card_front_container.rect_min_size
+		_shadow.rect_size = _shadow.rect_min_size
+		var offset = 20.0 * scale.x  * scale.x
+		var offset_x = (sin(deg2rad(_control.rect_rotation)) + cos(deg2rad(_control.rect_rotation))) * offset
+		var offset_y = (cos(deg2rad(_control.rect_rotation)) - sin(deg2rad(_control.rect_rotation))) * offset
+		_shadow.rect_position = _control.rect_position + (Vector2(offset_x, offset_y))
+		_shadow.self_modulate.a = 1.0 /  max(1.0, abs(offset/5.0))
+			
+	else:
+		var parent = get_parent()
+		if parent and parent.is_in_group("piles"):
+			if self == parent.get_bottom_card():
+				var offset = 6.0 + parent.get_card_count()
+				_shadow.rect_min_size = _card_front_container.rect_min_size + Vector2(offset, offset)
+				_shadow.rect_size = _shadow.rect_min_size				
+				_shadow.self_modulate.a = 1.0 / max(1.0, abs(offset/20.0))
+#				var offset_x = (sin(deg2rad(_control.rect_rotation)) + cos(deg2rad(_control.rect_rotation))) * offset
+#				var offset_y = (cos(deg2rad(_control.rect_rotation)) - sin(deg2rad(_control.rect_rotation))) * offset
+				_shadow.rect_position = _control.rect_position# + (Vector2(offset_x, offset_y))					
+				_shadow.visible = true
+	
 func _process(delta) -> void:
 	if cfc.game_paused:
 		return

@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://src/core/Card/ManipulationButtons.gd" type="Script" id=1]
 [ext_resource path="res://src/core/CardTemplate.gd" type="Script" id=2]
+[ext_resource path="res://assets/card_backs/card_shadow.png" type="Texture" id=3]
 [ext_resource path="res://src/core/Card/TokenDrawer.gd" type="Script" id=5]
 [ext_resource path="res://src/core/Highlight.tscn" type="PackedScene" id=6]
 
@@ -29,6 +30,15 @@ rect_min_size = Vector2( 150, 240 )
 __meta__ = {
 "_edit_group_": true
 }
+
+[node name="Shadow" type="TextureRect" parent="Control"]
+margin_right = 249.0
+margin_bottom = 249.0
+rect_min_size = Vector2( 200, 280 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 3 )
+expand = true
 
 [node name="Highlight" parent="Control" instance=ExtResource( 6 )]
 margin_right = 3.0

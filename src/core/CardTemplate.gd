@@ -281,6 +281,8 @@ var _card_front_container
 # This is the control node we've setup to host the card_back design
 var _card_back_container 
 
+var _shadow 
+
 # The node which hosts all manipulation buttons belonging to this card
 # as well as methods to hide/show them, and connect them to this card.
 var buttons 
@@ -298,6 +300,8 @@ func _class_specific_ready():
 	_tween = $Tween
 	_flip_tween = $Control/FlipTween
 	_control = $Control
+	_shadow = $Control/Shadow
+	
 	# This is the control node we've setup to host the card_front design
 	_card_front_container = $Control/Front
 	# This is the control node we've setup to host the card_back design
@@ -433,7 +437,7 @@ func _init_card_name() -> void:
 		set_card_name(canonical_name, false)
 
 
-func _class_specific_process(delta):
+func _class_specific_process(delta):	
 	if $Tween.is_active() and not cfc.ut: # Debug code for catch potential Tween deadlocks
 		_tween_stuck_time += delta
 		if _tween_stuck_time > 5 and int(fmod(_tween_stuck_time,3)) == 2 :
@@ -954,6 +958,7 @@ func set_card_size(value: Vector2, ignore_area = false) -> void:
 	_control.rect_pivot_offset = value/2
 	_card_back_container.rect_min_size = value
 	_card_front_container.rect_min_size = value
+
 	# We set the card's Highlight to always extend 3 pixels over
 	# Either side of the card. This way its border will appear
 	# correctly when hovering over the card.

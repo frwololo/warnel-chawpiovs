@@ -1,0 +1,179 @@
+{
+	"_comments": "Test Bishop Energy Conversion",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Bishop"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Unus - 3"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting Gene Traitors",
+					"tokens": {
+						"threat": 5
+					}
+				},
+				{
+					"card": "Gene Pool",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Infinite Hunter"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Stored Energy"
+				},
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Advanced Suit"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Team Training"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Bishop"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Energy Conversion"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Energy Conversion",
+			"_comments": "defense card Energy conversion, should limit total damage to 3"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "unblocked attack"
+		},
+		{
+			"type": "choose",
+			"value": "+2 SCH, +2 ATK",
+			"_comments": "choose boost option"
+		},
+		{
+			"type": "choose",
+			"value": "no",
+			"_comments": "dont discard"
+		},		
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Bishop"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Unus - 3"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting Gene Traitors",
+					"tokens": {
+						"threat": 5
+					}
+				},
+				{
+					"card": "Gene Pool",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Infinite Hunter"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Advanced Suit"
+				},
+				{
+					"card": "Energy Conversion"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Genius"
+				},		
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Stored Energy"
+				},				
+				{
+					"card": "Team Training"
+				},
+
+
+			],
+			"identity1": [
+				{
+					"card": "Bishop",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"hand1": []
+		}
+	}
+}

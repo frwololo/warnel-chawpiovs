@@ -1,0 +1,140 @@
+{
+	"_comments": "Test Unus infinite hunter boost",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Bishop"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Unus - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting Gene Traitors",
+					"tokens": {
+						"threat": 5
+					}
+				},
+				{
+					"card": "Gene Pool",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Infinite Hunter"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Team Training"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Bishop"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "dont block"
+		},
+		{
+			"type": "choose",
+			"value": "+2 SCH, +2 ATK",
+			"_comments": "choose boost option"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Bishop"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Unus - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting Gene Traitors",
+					"tokens": {
+						"threat": 5
+					}
+				},
+				{
+					"card": "Gene Pool",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Infinite Hunter"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Team Training"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Bishop",
+					"tokens": {
+						"damage": 4
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				}
+			]
+		}
+	}
+}

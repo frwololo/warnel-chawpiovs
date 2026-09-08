@@ -3465,10 +3465,13 @@ func get_subject_int_property(params, script:ScriptObject= null) -> int:
 		if expected_value:
 			if typeof(value) != typeof(expected_value):
 				value = 0
-			elif value != expected_value:
-				value = 0
 			else:
-				value = 1	
+				var comparison_type = params.get("comparison", "eq")
+				var property_filters = {property: expected_value}
+				if cfc.ov_utils.compare_string_properties (property_filters, subject,property, comparison_type):
+					value = 1
+				else:
+					value = 0	
 		if typeof(value) != TYPE_INT:
 			if value:
 				value = 1

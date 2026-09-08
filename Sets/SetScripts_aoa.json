@@ -1605,7 +1605,7 @@
 			"all": [
 				{
 					"name": "add_threat",
-					"amount": 4,
+					"amount": 2,
 					"subject": "Gene Pool"
 				}
 			]
@@ -4110,13 +4110,13 @@
 						"subject": "Gene Pool"
 					}
 				],
-				"+2 SCH, +2ATK": [
+				"+2 SCH, +2 ATK": [
 					{
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
 						"subject": "self",
 						"script": {
-							"alterants": {
+							"boost_alterants": {
 								"all": [
 									{
 										"filter_task": "get_property",
@@ -4886,7 +4886,7 @@
 				{
 					"name": "deal_damage",
 					"amount": 2,
-					"target": "an_enemy"
+					"subject": "an_enemy"
 				}
 			]
 		}
@@ -6298,13 +6298,13 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "health",
-					"filter_state_trigger": "host",
+					"trigger": "host",
 					"alteration": 2
 				},
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "trait_sidekick",
-					"filter_state_trigger": "host",
+					"trigger": "host",
 					"alteration": 1
 				}
 			]

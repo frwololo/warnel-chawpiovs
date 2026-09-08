@@ -7735,9 +7735,9 @@
 					"Flight #40151",
 					"Telepathy #40159",
 					"Super Strength #40155"
-				],
+				]
 			}
-		],	
+		],
 		"setup": {
 			"all": [
 				{
@@ -9812,22 +9812,39 @@
 							"filter_group": "group_allies_my_hero"
 						}
 					],
-					"alteration": {
-						"func_name": "has_trait",
-						"func_params": {
-							"trait": "x-force",
-							"and_or": "and",
-							"subject": "boardseek",
-							"subject_count": "all",
-							"filter_state_seek": [
-								{
-									"filter_group": "group_friendly_my_hero"
-								}
-							]
-						}
-					},
-					"multiplier_alteration": -1,
-					"TODO": "only when thwarting side schemes"
+					"alteration": "my_consequential_damage_alteration"
+				}
+			]
+		},
+		"interrupt_thwart": {
+			"_silent": true,
+			"board": [
+				{
+					"name": "save_variable",
+					"var_name": "my_consequential_damage_alteration",
+					"var_type": "int",
+					"value": 0
+				}
+			]
+		},
+		"interrupt_thwart_started": {
+			"board": [
+				{
+					"name": "save_variable",
+					"var_name": "my_consequential_damage_alteration",
+					"var_type": "int",
+					"value": {
+						"if": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "trigger_details_target",
+								"property": "type_code",
+								"property_value": "side_scheme"
+							}
+						},
+						"then": -1,
+						"else": 0
+					}
 				}
 			]
 		}
@@ -10114,7 +10131,7 @@
 						"var_type": "int",
 						"value": 1,
 						"_comments": "remembering decision for next use"
-					},
+					}
 				],
 				"Return Highest Cost support": [
 					{

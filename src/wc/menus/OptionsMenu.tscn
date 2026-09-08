@@ -101,11 +101,12 @@ margin_bottom = 528.0
 size_flags_vertical = 3
 custom_constants/separation = 326
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/general/VBoxContainer/DebugContainer"]
+[node name="TestContainer" type="VBoxContainer" parent="PanelContainer/general/VBoxContainer/DebugContainer"]
+unique_name_in_owner = true
 margin_right = 200.0
 margin_bottom = 118.0
 
-[node name="TestOptions" type="OptionButton" parent="PanelContainer/general/VBoxContainer/DebugContainer/VBoxContainer"]
+[node name="TestOptions" type="OptionButton" parent="PanelContainer/general/VBoxContainer/DebugContainer/TestContainer"]
 unique_name_in_owner = true
 margin_right = 200.0
 margin_bottom = 40.0
@@ -114,7 +115,7 @@ text = "All -cant_repro"
 items = [ "All -cant_repro", null, false, 0, false, "Sanity", null, false, 1, false, "Scenario", null, false, 2, null, "All", null, false, 3, null ]
 selected = 0
 
-[node name="TestsButton" type="Button" parent="PanelContainer/general/VBoxContainer/DebugContainer/VBoxContainer"]
+[node name="TestsButton" type="Button" parent="PanelContainer/general/VBoxContainer/DebugContainer/TestContainer"]
 margin_top = 43.0
 margin_right = 200.0
 margin_bottom = 118.0

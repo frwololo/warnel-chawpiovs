@@ -969,7 +969,7 @@ const OS_DEFAULT_SETTINGS := {
 		"can_toggle_fullscreen": false,
 		"gui_bigger_buttons": true,			
 		"gui_card_focused_scale": 3
-	},					
+	},				
 }
 
 const DEFAULT_SETTINGS:= {
@@ -1078,6 +1078,15 @@ const DEFAULT_SETTINGS:= {
 
 const RESOURCES_URL = "https://wololo.net/wc/resources/"
 
+const PER_OS_INTERNAL_SETTINGS = {
+	"HTML5": {
+		"exit_is_toggle_fullscreen": true,
+		"disable_fanmade": true,
+		"disable_multiplayer": true,
+		"disable_tests": true,
+		"hide_folder_label_team_selection": true
+	}
+}
 
 #if a menu only has one entry, it will auto execute it whenever possible
 
@@ -1141,7 +1150,7 @@ const SCRIPT_BREAKPOINT_CARD_NAME := "Gamora"
 const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_played"
 
 
-const GAME_VERSION := "1.6.1"
+const GAME_VERSION := "1.7.0"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
 const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 

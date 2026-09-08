@@ -102,9 +102,8 @@ func _ready():
 			suffix = " (" +str(scenarios_left_to_unlock) + " left to unlock)"
 		get_node("%ScenarioHeader").text +=  suffix
 	
-	if cfc.game_settings.get("hide_folder_label", false):
+	if cfc.game_settings.get("hide_folder_label", false) or cfc.get_internal_setting("hide_folder_label_team_selection"):
 		v_folder_label.text = ""
-		v_folder_label.get_parent().visible = false
 	else:
 		v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
 

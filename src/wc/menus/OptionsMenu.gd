@@ -34,6 +34,12 @@ func _ready():
 	self.visible = false
 	select_tab("general")
 	update_mods_button_text()
+	
+	if cfc.get_internal_setting("disable_fanmade"):
+		get_node("%EnableModsButton").visible = false
+
+	if cfc.get_internal_setting("disable_tests"):
+		get_node("%TestContainer").visible = false	
 			
 func on_button_pressed(_button_name : String) -> void:
 	match _button_name:

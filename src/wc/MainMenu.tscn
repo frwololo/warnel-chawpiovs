@@ -91,6 +91,7 @@ __meta__ = {
 }
 
 [node name="Multiplayer" type="Button" parent="CenterContainer/VBox/VButtons"]
+unique_name_in_owner = true
 margin_top = 180.0
 margin_right = 1341.0
 margin_bottom = 260.0

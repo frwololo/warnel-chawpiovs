@@ -49,6 +49,7 @@ var screen_scale = Vector2(1.0, 1.0)
 var hardcoded_positions_modifier = Vector2(1.0, 1.0)
 var screen_resolution = Vector2(1920, 1080)
 
+
 # warning-ignore:unused_signal
 signal json_parse_error(msg)
 
@@ -56,6 +57,9 @@ func _ready():
 	resize()
 	scale_grids()
 	
+func get_internal_setting(value):
+	return CFConst.PER_OS_INTERNAL_SETTINGS.get(OS.get_name(), {}).get(value, false)		
+
 func resize():
 	screen_resolution = get_viewport().size
 	var width = ProjectSettings.get("display/window/size/width")
@@ -1825,11 +1829,7 @@ func _cache_filesystem():
 func preload_pck():
 	_cache_filesystem()
 	
-	var database = cfc.game_settings.get("database", {})
-	if typeof(database) != TYPE_DICTIONARY:
-		var _error = 1
-		#TODO error
-		return
+
 	
 	var file = File.new()
 	
@@ -1859,6 +1859,11 @@ func preload_pck():
 						var _success_res = WCUtils.load_resource_pack_erase_on_failure(filename)
 					else:
 						var _success_res = ProjectSettings.load_resource_pack(filename)
+
+	#HTML5 has a problem loading files so we go another route
+	if OS.get_name() == "HTML5":
+		ProjectSettings.load_resource_pack("res://mods/images.zip")	
+
 	return
 
 func play_sfx(string):

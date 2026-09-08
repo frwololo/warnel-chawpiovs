@@ -63,6 +63,11 @@ func _ready() -> void:
 		deckbuild_button.disabled = true
 		deckbuild_button.text = "Deck Editor (not compatible with gamepad input)"
 		deckbuild_button.focus_mode = Control.FOCUS_NONE
+
+	if cfc.get_internal_setting("exit_is_toggle_fullscreen"):
+		get_node("%Exit").text = "Toggle Fullscreen"
+		
+
 		
 	init_button_signals(v_buttons)
 	# warning-ignore:return_value_discarded
@@ -186,6 +191,10 @@ func download_database():
 func _recursive_visible_buttons(node, value = true):
 	if node.has_signal('pressed'):			
 		node.visible = value	
+
+	if node.name == "Multiplayer" and cfc.get_internal_setting("disable_multiplayer"):
+		node.visible = false
+	
 
 	for child in node.get_children():
 		_recursive_visible_buttons(child, value)
@@ -390,9 +399,12 @@ func on_button_pressed(_button_name : String) -> void:
 			$OptionsMenu.show_me($CenterContainer)
 
 		"Exit":
-			if _loading_error:
-				cfc.clear_cards_cache()
-			exit()
+			if cfc.get_internal_setting("exit_is_toggle_fullscreen"):
+				cfc.set_fullscreen(!OS.is_window_fullscreen())
+			else:
+				if _loading_error:
+					cfc.clear_cards_cache()				
+				exit()
 
 func exit():
 	get_tree().quit()

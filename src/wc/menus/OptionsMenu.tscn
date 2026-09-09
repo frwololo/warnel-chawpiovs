@@ -30,6 +30,7 @@ theme = ExtResource( 4 )
 
 [node name="general" type="MarginContainer" parent="PanelContainer"]
 unique_name_in_owner = true
+visible = false
 margin_left = 2.0
 margin_top = 2.0
 margin_right = 1918.0
@@ -309,7 +310,6 @@ text = "BACK"
 
 [node name="advanced" type="MarginContainer" parent="PanelContainer"]
 unique_name_in_owner = true
-visible = false
 margin_left = 2.0
 margin_top = 2.0
 margin_right = 1918.0
@@ -367,14 +367,28 @@ size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "Delete card images"
 
-[node name="ClearCacheButton" type="Button" parent="PanelContainer/advanced/VBoxContainer"]
-margin_top = 554.0
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/advanced/VBoxContainer"]
+margin_top = 209.0
 margin_right = 1896.0
-margin_bottom = 629.0
+margin_bottom = 284.0
+custom_constants/separation = 300
+
+[node name="ClearCacheButton" type="Button" parent="PanelContainer/advanced/VBoxContainer/HBoxContainer2"]
+margin_right = 798.0
+margin_bottom = 75.0
 size_flags_horizontal = 3
 size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "Clear Cache"
+
+[node name="ClearAllButton" type="Button" parent="PanelContainer/advanced/VBoxContainer/HBoxContainer2"]
+margin_left = 1098.0
+margin_right = 1896.0
+margin_bottom = 75.0
+size_flags_horizontal = 3
+size_flags_vertical = 10
+custom_fonts/font = SubResource( 2 )
+text = "!!! Reset Everything !!!"
 
 [node name="AdvancedSettingsBackButton" type="Button" parent="PanelContainer/advanced/VBoxContainer"]
 margin_top = 1001.0

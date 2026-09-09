@@ -17,6 +17,11 @@ const SFX_CHANNELS = 8
 var last_sound_played = 0
 var last_sfx_stream_played = null
 
+func stop_all():
+	for c in get_children():
+		c.stop()
+	
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	reset()

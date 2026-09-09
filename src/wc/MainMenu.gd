@@ -9,7 +9,7 @@ const menu_switch_time = 0.35
 onready var v_buttons := $CenterContainer/VBox/VButtons
 onready var exit_button := get_node("%Exit")
 onready var v_folder_label := get_node("%FolderLabel")
-onready var main_title := $CenterContainer/VBox/Label
+onready var main_title :=  get_node("%MainTitle")
 onready var texture_rect = get_node("%TextureRect")
 onready var deckbuild_button = get_node("%DeckBuilder")
 
@@ -40,6 +40,15 @@ var _next_scene_counter = 0
 func _ready() -> void:
 	if cfc.game_settings.has("fullscreen"):
 		cfc.set_fullscreen(cfc.game_settings["fullscreen"])
+	
+	var user_locale =  cfc.get_setting("lang").to_lower()
+	if user_locale:
+		var options:OptionButton = get_node("%LangButton")
+		for i in options.get_item_count():
+			if options.get_item_text(i).to_lower() == user_locale:
+				options.select(i)
+
+		TranslationServer.set_locale(cfc.get_setting("lang"))
 		
 	#First run of a new version: clear some garbage/cache from previous versions
 	var first_run_check = "first_run_done/" + CFConst.GAME_VERSION	
@@ -66,8 +75,6 @@ func _ready() -> void:
 
 	if cfc.get_internal_setting("exit_is_toggle_fullscreen"):
 		get_node("%Exit").text = "Toggle Fullscreen"
-		
-
 		
 	init_button_signals(v_buttons)
 	# warning-ignore:return_value_discarded
@@ -294,7 +301,8 @@ func download_music():
 	return music_url
 
 func start_images_dl():
-	gameData.cardImageDownloader.load_pending_images()
+	if cfc.get_setting("dl_cards_at_startup"):
+		gameData.cardImageDownloader.load_pending_images()
 	
 	#we run this step here right after load_pending_images
 	#because load_pending_images is a heavy, blocking call
@@ -455,3 +463,8 @@ func _on_FullscreenCheck_toggled(button_pressed):
 
 func _on_LinkButton_pressed():
 	OS.shell_open("https://wololo.net/warnel-chawpiovs-changelog/")
+
+
+func _on_OptionButton_item_selected(index):
+	var new_locale = get_node("%LangButton").get_item_text(index).to_lower()
+	cfc.change_locale(new_locale)

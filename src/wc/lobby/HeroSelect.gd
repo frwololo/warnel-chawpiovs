@@ -18,7 +18,13 @@ func _ready():
 		get_viewport().connect("gui_focus_changed", self, "gui_focus_changed")
 	# warning-ignore:return_value_discarded
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')
+	cfc.connect("locale_changed", self, "_game_locale_changed")
 
+func _game_locale_changed(_new_locale):
+	#invalidate pictures
+	grayscale_tex = null
+	color_tex = null
+	reload_texture()
 
 
 func resize():

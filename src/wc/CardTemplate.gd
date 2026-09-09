@@ -579,7 +579,11 @@ func _show_spinbox():
 
 func _ready():
 	scripting_bus.connect("scripting_event_about_to_trigger", self, "execute_before_scripts")
+	cfc.connect("locale_changed", self, "_game_locale_changed")
 
+func _game_locale_changed(new_locale):
+	#force reload art
+	set_card_art(true)
 #
 # Keyboard/Gamepad focus related functions
 #
@@ -752,6 +756,9 @@ func display_shadow():
 	else:
 		var parent = get_parent()
 		if parent and parent.is_in_group("piles"):
+			if is_animating():
+				_shadow.visible = false
+				return
 			if self == parent.get_bottom_card():
 				var offset = 6.0 + parent.get_card_count()
 				_shadow.rect_min_size = _card_front_container.rect_min_size + Vector2(offset, offset)

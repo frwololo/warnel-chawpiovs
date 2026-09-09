@@ -703,6 +703,7 @@ static func delete_dir_recursive(path: String) -> bool:
 	
 	dir.list_dir_begin(true, false)
 	var file_name = dir.get_next()
+	var result = true
 	
 	while file_name != "":
 		var file_path = path.plus_file(file_name)
@@ -710,15 +711,14 @@ static func delete_dir_recursive(path: String) -> bool:
 		if dir.current_is_dir():
 			# Recursively delete subdirectory
 			if not delete_dir_recursive(file_path):
-				dir.list_dir_end()
-				return false
+				result = false
 		else:
 			# Delete file
 			var err = dir.remove(file_path)
 			if err != OK:
 				push_error("Failed to delete file: %s" % file_path)
-				dir.list_dir_end()
-				return false
+				push_error("Error: " + str(err))
+				result = false
 		
 		file_name = dir.get_next()
 	
@@ -728,9 +728,8 @@ static func delete_dir_recursive(path: String) -> bool:
 	var err = dir.remove(path)
 	if err != OK:
 		push_error("Failed to remove directory: %s" % path)
-		return false
 	
-	return true
+	return result
 
 
 #deletes all user additional resources

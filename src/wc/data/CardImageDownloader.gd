@@ -2,25 +2,45 @@ class_name CardImageDownloader
 extends Node
 
 const default_servers := {
-	"marvelcdb": 
-		{
-			"url": "https://marvelcdb.com",
-			"path": "/bundles/cards/[card_id].png",
-			"prioritize_relative_image_src": true,		
-		},	
-	"cerebro":
-		{
-			"url": "https://cerebrodatastorage.blob.core.windows.net",
-			"path": "/cerebro-cards/official/[card_id].jpg",
-			"uppercase_card_id": true,
-			"card_id_override": "printed_card_id",					
-		},	
-	"mc4db":	
-		{
-			"url": "https://mc4db.merlindumesnil.net",
-			"fanmade_support": true,		
-			"path": "/bundles/cards/EN/[box_name]/[card_id].webp"
-		},	
+	"en": {
+		"marvelcdb": 
+			{
+				"url": "https://marvelcdb.com",
+				"path": "/bundles/cards/[card_id].png",
+				"prioritize_relative_image_src": true,		
+			},	
+		"cerebro":
+			{
+				"url": "https://cerebrodatastorage.blob.core.windows.net",
+				"path": "/cerebro-cards/official/[card_id].jpg",
+				"uppercase_card_id": true,
+				"card_id_override": "printed_card_id",					
+			},	
+		"mc4db":	
+			{
+				"url": "https://mc4db.merlindumesnil.net",
+				"fanmade_support": true,		
+				"path": "/bundles/cards/EN/[box_name]/[card_id].webp"
+			},
+		"wololo": 
+			{
+				"url": "https://wololo.net",
+				"path": "/wc/images/EN/[box_name]/[card_id].jpg",	
+			},				
+	},
+	"fr": {
+		"mc4db_fr":	
+			{
+				"url": "https://mc4db.merlindumesnil.net",
+				"fanmade_support": true,		
+				"path": "/bundles/cards/FR/[box_name]/[card_id].webp"
+			},	
+		"wololo_fr": 
+			{
+				"url": "https://wololo.net",
+				"path": "/wc/images/FR/[box_name]/[card_id].jpg",	
+			},							
+	}
 }
 
 #[
@@ -42,7 +62,7 @@ var last_error_msg := ""
 var global_error_msg := ""
 var servers:= {}
 var tracked_urls = {}
-
+var health_check_results:= {}
 var http_request: HTTPRequest = null
 
 signal one_server_check_completed()
@@ -51,21 +71,39 @@ signal download_complete(card_id)
 static func get_default_servers():
 	return default_servers
 
+func get_health_status_result(server_health_url):
+	return health_check_results.get(server_health_url, {})
+
+func server_cfc_sanity_check(server_list):
+	if !server_list:
+		return false
+	if typeof(server_list) != TYPE_DICTIONARY:
+		return false
+	if !server_list.has("en"):
+		return false
+		
+	return true
+
 func init_servers():
 	if servers:
 		return servers
 		
 	var result = cfc.get_setting("image_servers")
-	if !result:
+	if !server_cfc_sanity_check(result):
 		result = default_servers
 	
 	servers = result.duplicate(true)
-	for server_name in servers:
-		var server = servers[server_name]
-		server["is_up"] = true #assume server is up so we can start downloading
-		server["health_check"] = "not_started"
-		if !server.has("health_check_url"):
-			server["health_check_url"] = ""
+	for lang in servers:
+		#for non english languages, we add all the EN servers as backups
+		if lang != "en":
+			for server_name in servers["en"]:
+				servers[lang][server_name] = servers["en"][server_name].duplicate(true)
+		for server_name in servers[lang]:
+			var server = servers[lang][server_name]
+			server["is_up"] = true #assume server is up so we can start downloading
+			server["health_check"] = "not_started"
+			if !server.has("health_check_url"):
+				server["health_check_url"] = ""
 	return servers
 
 func _ready():
@@ -73,6 +111,7 @@ func _ready():
 	dir.make_dir_recursive("user://Sets/tmp_images")
 	fileDownloader.connect("file_downloaded", self, "_file_downloaded")
 	fileDownloader.connect("download_error", self, "_download_error")
+	cfc.connect("locale_changed", self, "_game_locale_changed")
 	init_servers()
 
 func get_stats():
@@ -93,9 +132,7 @@ func process_next_file():
 	if current_file: #already processing
 		return	
 	
-	if priority_cards_to_download:
-		cards_to_download = cards_to_download + priority_cards_to_download
-		priority_cards_to_download = []
+	regroup_priority_downloads()
 	
 	if !cards_to_download:
 		return
@@ -229,11 +266,11 @@ func _file_downloaded(url, filename):
 	current_file = {}
 	process_next_file()
 
-func mark_server_as_tried(card_id, server):
+func mark_server_as_tried(card_id, server_name):
 	if !already_tried_servers_per_card.has(card_id):
 		already_tried_servers_per_card[card_id] = {}
 		
-	already_tried_servers_per_card[card_id][server] = true	
+	already_tried_servers_per_card[card_id][server_name] = true	
 	
 
 func get_next_image_dl_url(card_id):	
@@ -241,14 +278,16 @@ func get_next_image_dl_url(card_id):
 
 	if !already_tried_servers_per_card.has(card_id):
 		already_tried_servers_per_card[card_id] = {}
-		 
-	for server in servers:
-		if already_tried_servers_per_card[card_id].get(server, false):
+
+	var lang = get_dl_lang()
+	for server_name in servers[lang]:
+		var server = servers[lang][server_name]
+		if already_tried_servers_per_card[card_id].get(server_name, false):
 			continue
-		if !servers[server].get("is_up"):
+		if !server.get("is_up"):
 			continue			
-		url = _get_image_dl_url_for_server(card_id, server)
-		mark_server_as_tried(card_id, server)	
+		url = _get_image_dl_url_for_server(card_id, lang, server_name)
+		mark_server_as_tried(card_id, server_name)	
 		if url:
 			break
 
@@ -258,8 +297,8 @@ func get_next_image_dl_url(card_id):
 		fail_img_download(card_id)
 	return url
 		
-func _get_image_dl_url_for_server(card_id, server):	
-	var server_info = servers.get(server, {})
+func _get_image_dl_url_for_server(card_id, lang, server_name):	
+	var server_info = servers[lang].get(server_name, {})
 	if !server_info:
 		return ""	
 		
@@ -288,7 +327,7 @@ func _get_image_dl_url_for_server(card_id, server):
 	if !image_src:
 		var duplicate_of = card_data.get("duplicate_of_code", "")
 		if duplicate_of:
-			return _get_image_dl_url_for_server(duplicate_of, server)
+			return _get_image_dl_url_for_server(duplicate_of, lang, server_name)
 	
 
 	if image_src and server_info.get("prioritize_relative_image_src", false):
@@ -335,6 +374,31 @@ func is_image_download_failed(card_id):
 	get_failed_files()
 	return failed_files.get(card_id, false)
 
+func _game_locale_changed(_new_locale):
+	refresh_card_destinations()
+
+#when locale changes, we update all target destinations for our ongoing cards
+func refresh_card_destinations():
+	regroup_priority_downloads()
+	var to_erase = []
+	for data in cards_to_download:
+		var card_id = data["card_id"]
+		var img_filename = cfc.get_img_filename(card_id)
+		if WCUtils.file_exists(img_filename):
+			to_erase.append(data)
+			continue
+		if is_image_download_failed(card_id):
+			to_erase.append(data)
+			continue
+		data["destination"] = img_filename
+	for data in to_erase:
+		cards_to_download.erase(data)
+
+func regroup_priority_downloads():
+	if priority_cards_to_download:
+		cards_to_download = cards_to_download + priority_cards_to_download
+		priority_cards_to_download = []
+		
 
 func add_card(card_id, priority = false):
 	var img_filename = cfc.get_img_filename(card_id)
@@ -358,16 +422,25 @@ func add_card(card_id, priority = false):
 	
 	check_servers_health()
 
+#returns expected current download locale
+func get_dl_lang():
+	var locale = TranslationServer.get_locale()
+	if !servers.has(locale):
+		return "en"
+	return locale
+
 func is_all_servers_checked():
-	for server_name in servers:
-		var s = servers[server_name]
+	var lang = get_dl_lang()
+	for server_name in servers[lang]:
+		var s = servers[lang][server_name]
 		if s.get("health_check") != "complete":
 			return false
 	return true	
 
 func at_least_one_server_up():
-	for server_name in servers:
-		var s = servers[server_name]
+	var lang = get_dl_lang()
+	for server_name in servers[lang]:
+		var s = servers[lang][server_name]
 		if s.get("is_up") and (s.get("health_check") == "complete"):
 			return s
 			
@@ -385,32 +458,38 @@ func check_servers_health():
 		return
 	_health_check_started = true
 
-	for server_name in servers:
-		var s = servers[server_name]
-		if s.get("health_check") == "not_started":
-			s["health_check"] = "in_progress"
-			http_request = HTTPRequest.new()
-			add_child(http_request)	
-			http_request.connect("request_completed", self, "_health_check_complete")
+	for lang in servers:
+		for server_name in servers[lang]:
+			var s = servers[lang][server_name]
 			var url = s["url"] + s["health_check_url"]
-			var error = http_request.request(url)
-			if error != OK:
+			var known_status = get_health_status_result(url)
+			if known_status:
 				s["health_check"] = "complete"
-				s["is_up"] = false
-				FileDownloader.LOG("check_servers_health error for url: " + url + "(error:" + str(error) + ")")	
-			else:
-				yield(self, "one_server_check_completed")
-			if http_request and (http_request in get_children()):
-				remove_child(http_request)
-				http_request.queue_free()			
+				s["is_up"] = known_status["is_up"]
+			if s.get("health_check") == "not_started":
+				s["health_check"] = "in_progress"
+				http_request = HTTPRequest.new()
+				add_child(http_request)	
+				http_request.connect("request_completed", self, "_health_check_complete")
+				var error = http_request.request(url)
+				if error != OK:
+					s["health_check"] = "complete"
+					s["is_up"] = false
+					FileDownloader.LOG("check_servers_health error for url: " + url + "(error:" + str(error) + ")")	
+				else:
+					yield(self, "one_server_check_completed")
+				if http_request and (http_request in get_children()):
+					remove_child(http_request)
+					http_request.queue_free()			
 
 func _health_check_complete(result, _response_code, _headers, _body):
 	var current_server = {}
-	for server_name in servers:
-		var s = servers[server_name]
-		if s.get("health_check") == "in_progress":
-			current_server = s
-			break
+	for lang in servers:
+		for server_name in servers[lang]:
+			var s = servers[lang][server_name]
+			if s.get("health_check") == "in_progress":
+				current_server = s
+				break
 	if !current_server:
 		var _error = 1
 		FileDownloader.LOG("Called Server Health Check complete current_server is empty")
@@ -422,14 +501,24 @@ func _health_check_complete(result, _response_code, _headers, _body):
 		current_server["is_up"] = false
 		FileDownloader.LOG("Server is down " + current_server.get("url", ""))
 
+	#record result in cache
+	var url = current_server["url"] + current_server["health_check_url"]
+	health_check_results[url]= {"is_up": current_server["is_up"]}
+	
 	emit_signal("one_server_check_completed")			
 			
 				
 func create_img_folders(card_id):
 	var card_data = cfc.card_definitions[card_id]
 	if card_data and card_data.get("_set", ""):
-		var dir = Directory.new()		
+		var dir = Directory.new()	
 		dir.make_dir_recursive("user://Sets/images/" + card_data["_set"])	
+
+		#create additional folders for other languages
+		for lang in servers:
+			if lang == "en":
+				continue
+			dir.make_dir_recursive("user://Sets/images_" + lang + "/" + card_data["_set"])	
 	
 	
 func _img_download_completed(url, filename):

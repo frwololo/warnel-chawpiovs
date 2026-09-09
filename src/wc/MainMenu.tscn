@@ -34,13 +34,14 @@ alignment = 1
 
 [node name="FullscreenCheck" type="CheckButton" parent="CenterContainer/VBox"]
 unique_name_in_owner = true
-margin_left = 1181.0
+margin_left = 1084.0
 margin_right = 1341.0
 margin_bottom = 30.0
 size_flags_horizontal = 8
-text = "full screen"
+text = "BTN_FULL_SCREEN"
 
-[node name="Label" type="Label" parent="CenterContainer/VBox"]
+[node name="MainTitle" type="Label" parent="CenterContainer/VBox"]
+unique_name_in_owner = true
 margin_top = 40.0
 margin_right = 1341.0
 margin_bottom = 155.0
@@ -49,17 +50,36 @@ custom_fonts/font = SubResource( 2 )
 text = "Warnel Chawpiovs"
 align = 1
 
-[node name="TextureRect" type="TextureRect" parent="CenterContainer/VBox"]
-unique_name_in_owner = true
+[node name="TitleAndOptionsContainer" type="HBoxContainer" parent="CenterContainer/VBox"]
 margin_top = 165.0
 margin_right = 1341.0
 margin_bottom = 415.0
+alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="CenterContainer/VBox/TitleAndOptionsContainer"]
+unique_name_in_owner = true
+margin_right = 1341.0
+margin_bottom = 250.0
 rect_min_size = Vector2( 640, 250 )
-size_flags_horizontal = 5
+size_flags_horizontal = 7
 size_flags_vertical = 5
 texture = ExtResource( 4 )
 expand = true
 stretch_mode = 6
+
+[node name="MiniOptionsContainer" type="VBoxContainer" parent="CenterContainer/VBox/TitleAndOptionsContainer"]
+visible = false
+margin_left = 1297.0
+margin_right = 1341.0
+margin_bottom = 250.0
+
+[node name="LangButton" type="OptionButton" parent="CenterContainer/VBox/TitleAndOptionsContainer/MiniOptionsContainer"]
+unique_name_in_owner = true
+margin_right = 44.0
+margin_bottom = 40.0
+text = "EN"
+items = [ "EN", null, false, 0, null, "FR", null, false, 1, null ]
+selected = 0
 
 [node name="VButtons" type="VBoxContainer" parent="CenterContainer/VBox"]
 margin_top = 425.0
@@ -69,11 +89,12 @@ size_flags_horizontal = 3
 custom_constants/separation = 10
 
 [node name="SinglePlayer" type="Button" parent="CenterContainer/VBox/VButtons"]
+unique_name_in_owner = true
 margin_right = 1341.0
 margin_bottom = 80.0
 rect_min_size = Vector2( 0, 80 )
 size_flags_horizontal = 3
-text = "Sivgle Player"
+text = "BTN_SINGLE_PLAYER"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -85,7 +106,7 @@ margin_right = 1341.0
 margin_bottom = 170.0
 rect_min_size = Vector2( 0, 80 )
 size_flags_horizontal = 3
-text = "Deck Editor"
+text = "BTN_DECK_EDITOR"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -97,7 +118,7 @@ margin_right = 1341.0
 margin_bottom = 260.0
 rect_min_size = Vector2( 0, 80 )
 size_flags_horizontal = 3
-text = "Wultiplayer"
+text = "BTN_MULTIPLAYER"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -113,7 +134,7 @@ margin_right = 380.0
 margin_bottom = 80.0
 rect_min_size = Vector2( 0, 80 )
 size_flags_horizontal = 3
-text = "Options"
+text = "BTN_OPTIONS"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -124,7 +145,7 @@ margin_right = 860.0
 margin_bottom = 80.0
 rect_min_size = Vector2( 0, 80 )
 size_flags_horizontal = 3
-text = "Credits"
+text = "BTN_CREDITS"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -136,7 +157,7 @@ margin_right = 1341.0
 margin_bottom = 80.0
 rect_min_size = Vector2( 0, 80 )
 size_flags_horizontal = 3
-text = "EXIT"
+text = "BTN_EXIT"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -214,5 +235,6 @@ z_index = 0
 z_as_relative = false
 
 [connection signal="toggled" from="CenterContainer/VBox/FullscreenCheck" to="." method="_on_FullscreenCheck_toggled"]
+[connection signal="item_selected" from="CenterContainer/VBox/TitleAndOptionsContainer/MiniOptionsContainer/LangButton" to="." method="_on_OptionButton_item_selected"]
 [connection signal="meta_clicked" from="CenterContainer/VBox/HBoxContainer/LeftInfo/FolderLabel" to="." method="_on_FolderLabel_meta_clicked"]
 [connection signal="pressed" from="CenterContainer/VBox/HBoxContainer/RightInfo/LinkButton" to="." method="_on_LinkButton_pressed"]

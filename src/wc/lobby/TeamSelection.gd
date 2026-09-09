@@ -145,7 +145,7 @@ func _ready():
 		pass	
 
 	resize()
-
+	
 func enable_launch_button():
 	if !launch_button.disabled:
 		return
@@ -166,6 +166,7 @@ func disable_launch_button():
 func gui_focus_changed(control):
 	gamepadHandler.gui_focus_changed(control)
 
+var _preselected = false
 func _process(delta:float):
 	var large_picture = get_node("%LargePicture")
 	if gamepadHandler.is_mouse_input():		
@@ -178,6 +179,14 @@ func _process(delta:float):
 	large_picture.rect_rotation = _preview_rotation
 	
 	WCUtils.large_card_preview_offset(large_picture, self, target_size)	
+	
+	if !_preselected:
+		if all_scenarios_container.get_child_count() == 1:
+			all_scenarios_container.get_child(0).action()
+
+#		if all_heroes_container.get_child_count() == 1:
+#			all_heroes_container.get_child(0).action()	
+		_preselected = true	
 
 func resize():
 	var screen_size = get_viewport().size/cfc.screen_scale
@@ -617,7 +626,7 @@ remotesync func release_hero_slot(hero_id) -> int:
 	if (not cfc.is_game_master()):
 		return -1
 	if !hero_id:
-		return -1
+		return -1	
 		
 	var client_id = cfc.get_rpc_sender_id()
 

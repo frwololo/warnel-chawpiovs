@@ -90,7 +90,9 @@ func on_button_pressed(_button_name : String) -> void:
 		"GameplayOptionsButton":
 			show_gameplay_options()
 		"ClearCacheButton":
-			clear_cache()	
+			clear_cache()			
+		"ClearAllButton":
+			delete_all()				
 		"AdvancedSettingsButton":
 			show_advanced_settings()
 		"AdvancedSettingsBackButton":
@@ -152,6 +154,9 @@ func delete_resources():
 	warning ("delete resources", "This will delete all zip/pck resource files at next startup.\nYou might have to redownload them!!!", "confirm_delete_resources")
 func delete_images():
 	warning ("delete images", "This will delete all downloaded images, the game will re-create them at next launch", "confirm_delete_images")			
+func delete_all():
+	warning ("delete everything", "This will delete your entire user folder. You'll lose settings, game progress, images, etc...", "confirm_delete_all")			
+
 
 func confirm_reset_settings():
 	cfc.reset_settings_to_default()
@@ -163,6 +168,9 @@ func confirm_delete_resources():
 func confirm_delete_images():
 	cfc.delete_all_images()
 
+func confirm_delete_all():
+	gameData.theAudioManager.stop_all()	
+	cfc.delete_all_user()
 	
 func load_options():
 	var notifications_level = cfc.game_settings.get("notifications_level", "normal").to_lower()

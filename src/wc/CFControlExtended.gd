@@ -53,6 +53,8 @@ var screen_resolution = Vector2(1920, 1080)
 # warning-ignore:unused_signal
 signal json_parse_error(msg)
 
+signal locale_changed(new_locale)
+
 func _ready():
 	resize()
 	scale_grids()
@@ -1360,6 +1362,9 @@ func must_restart_msg(display_container):
 func delete_all_images():
 	WCUtils.delete_dir_recursive("user://Sets/images")
 
+func delete_all_user():
+	WCUtils.delete_dir_recursive("user://")
+
 func load_script_definition_from_cache(script_file) -> Dictionary:
 	if CFConst.DEBUG_DISABLE_SCRIPT_DATABASE_CACHE:
 		return {}
@@ -1665,7 +1670,13 @@ func get_img_filename(card_id) -> String:
 	if _img_filename_cache.has(key):
 		return _img_filename_cache[key]
 	
-	var filename = "Sets/images/" + card_set + "/" + card_code + ".png"
+	#load from language specific folder
+	var dl_language = gameData.cardImageDownloader.get_dl_lang()
+	var basepath = "Sets/images/"
+	if dl_language and dl_language != "en":
+		basepath = "Sets/images_" + dl_language + "/"
+		
+	var filename = basepath + card_set + "/" + card_code + ".png"
 	var file = File.new()
 	for prefix in["user://", "res://"]: #user has priority
 		if file.file_exists(prefix + filename):	
@@ -1682,7 +1693,19 @@ func get_img_filename(card_id) -> String:
 	_img_filename_cache[key] = "user://" + filename
 	return _img_filename_cache[key] #todo return graceful fallback
 
-
+func change_locale(new_locale):
+	var old_locale = TranslationServer.get_locale()
+	if old_locale == new_locale:
+		return
+	cfc.set_setting("lang", new_locale)
+	TranslationServer.set_locale(new_locale)
+	
+	#clear image caches
+	_card_texture_cache = {}
+	_cropped_texture_cache = {}
+	_img_filename_cache = {}		
+	
+	emit_signal("locale_changed", new_locale)
 
 func get_villain_portrait(card_id, callback_owner = null) -> Texture:
 	var area = 	Rect2 ( 65, 45, 155, 155 )

@@ -11,6 +11,7 @@ const LOG_FILE = "user://log_download_errors.txt"
 const LOG_ALL = false
 
 export(bool)            var blind_mode : bool   = false
+export(bool)            var skip_head : bool   = true
 export(String)          var save_path  : String = "user://dl_cache/"
 var file_urls :=[]
 
@@ -153,7 +154,10 @@ func _download_next_file() -> void:
 		_current_url  = file_urls.pop_back()
 		_file_name    = _current_url.get_file()
 		download_file = save_path + _file_name
-		_send_head_request()
+		if skip_head:
+			_send_get_request()
+		else:
+			_send_head_request()
 	else:
 		_downloads_done()
 

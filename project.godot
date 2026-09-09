@@ -742,6 +742,10 @@ ui_focus_character={
  ]
 }
 
+[locale]
+
+translations=PoolStringArray( "res://Lang/translation.en.en.translation", "res://Lang/translation.fr.fr.translation" )
+
 [network]
 
 limits/debugger_stdout/max_chars_per_second=20000
@@ -751,4 +755,5 @@ limits/debugger_stdout/max_warnings_per_second=10000
 
 [rendering]
 
+quality/driver/driver_name="GLES2"
 environment/default_environment="res://default_env.tres"

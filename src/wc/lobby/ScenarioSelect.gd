@@ -109,7 +109,11 @@ func resize():
 func _ready():
 	# warning-ignore:return_value_discarded
 	get_viewport().connect("gui_focus_changed", self, "gui_focus_changed")
+	cfc.connect("locale_changed", self, "_game_locale_changed")
 
+func _game_locale_changed(_new_locale):
+	reload_texture()
+	
 func gui_focus_changed(control):
 	if control == scenario_picture:
 		gain_focus()
@@ -131,16 +135,16 @@ func load_scenario(_scenario_id) -> bool:
 	return true
 	
 
-func _on_ScenarioSelect_gui_input(event):
-	if (not cfc.is_game_master()):
-		return	
-			
+func _on_ScenarioSelect_gui_input(event):		
 	if event is InputEventMouseButton: #TODO better way to handle Tablets and consoles
 		if event.button_index == BUTTON_LEFT and event.pressed:
 			#Tell the server I want this hero
 			action()
 
 func action():
+	if (not cfc.is_game_master()):
+		return	
+			
 	lobby.scenario_select(scenario_id)
 
 func _on_ScenarioPicture_mouse_entered():

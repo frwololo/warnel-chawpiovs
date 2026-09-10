@@ -2699,7 +2699,8 @@ func _process_card_state() -> void:
 		CardState.MOVING_TO_CONTAINER:
 			# Used when moving card between places
 			# (i.e. deck to hand, hand to discard etc)
-			z_index = CFConst.Z_INDEX_BOARD_CARDS_NORMAL
+			z_index = CFConst.Z_INDEX_HAND_CARDS_NORMAL + 10
+			#z_index = CFConst.Z_INDEX_BOARD_CARDS_NORMAL
 			set_focus(false)
 			clear_highlight()
 			set_control_mouse_filters(false)

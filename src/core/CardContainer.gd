@@ -234,7 +234,7 @@ func get_card_count() -> int:
 
 # Returns a card object of the card in the specified index among all cards.
 func get_card(idx: int) -> Card:
-	if idx < 0:
+	if idx < 0 or idx >=get_card_count():
 		return(null)
 	return(get_all_cards()[idx])
 

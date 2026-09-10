@@ -26,8 +26,7 @@ var OK_COLOR := 	Color(0.1,11,0.1)
 #
 # download info
 #
-var http_request: HTTPRequest = null
-
+var _current_dl_url =""
 #
 # shortcuts
 #
@@ -75,11 +74,6 @@ func _ready():
 	get_viewport().connect("gui_focus_changed", self, "gui_focus_changed")	
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')
 
-
-	http_request = HTTPRequest.new()
-	add_child(http_request)	
-	http_request.connect("request_completed", self, "_deck_download_completed")
-
 	cfc.buttons_grab_focus_on_mouse_entered(self)	
 
 	#buttons signals
@@ -105,10 +99,13 @@ func _ready():
 	loading_panel.visible = false	
 	
 	tab_select(main_container)
-
 	
 	if gameData.editor_deck_data:
 		highlight_deck(gameData.editor_deck_data["id"])
+
+	fileDownloader.connect("file_downloaded", self, "_file_downloaded")
+	fileDownloader.connect("download_error", self, "_download_error")
+
 
 func disable_deck_buttons(value = true):
 	delete_button.disabled = value
@@ -356,6 +353,11 @@ func _filter_decks(hero_id = ""):
 	if no_deck_loaded:
 		critical_error()
 
+func _on_Menu_resized() -> void:
+	resize()
+
+
+
 #
 # Deck Download functionality
 #
@@ -396,39 +398,50 @@ func refresh_deck_containers(json_deck_data):
 	
 	highlight_deck(json_deck_data["id"])
 	
-
-
-func _on_Menu_resized() -> void:
-	resize()
-
-
-
-#
-# Deck Download functions
-#
-
 var _deck_dl_backup = false
-func _deck_download_completed(result, response_code, headers, body):
-	if result != HTTPRequest.RESULT_SUCCESS:
-		push_error("Deck couldn't be downloaded.")
-	else:
-		var content = body.get_string_from_utf8()
-
-		var json_result:JSONParseResult = JSON.parse(content)
-		if (json_result.error != OK):
-			if !_deck_dl_backup:
-				_deck_dl_backup = true
-				_on_DownloadDeck_pressed()
-				return
-			push_error("DEck couldn't be downloaded.")
-		else:
-			process_deck_download(json_result.result)	 		
+func _download_error(url, filename):
+	if _current_dl_url != url:
+		#this download doesn't concern us
+		return false
 	
+	#try again with the other alternate url for decks		
+	if !_deck_dl_backup:
+		_deck_dl_backup = true
+		_on_DownloadDeck_pressed()
+		return false
+
+	push_error("Deck couldn't be downloaded.")
+
+	#if we reached this point, the download is confirmed failed
+	#so we reinit theGUI 		
+	reinit_deck_dl_gui()	
+	
+	return true
+	
+func _file_downloaded(url, filename):
+	if _current_dl_url != url:
+		#this download doesn't concern us
+		return
+			
+	var result = true
+	var content = WCUtils.read_json_file(filename)
+
+	if content:
+		process_deck_download(content)
+		#if we reached this point, the download is complete
+		#so we reinit theGUI 		
+		reinit_deck_dl_gui()			
+	else:
+		_download_error(url, filename)
+	
+	
+func reinit_deck_dl_gui():
 	_deck_dl_backup = false
 	var button = get_node("%DownloadDeckButton")
 	button.disabled = false
 	var loading_panel = get_node("%LoadingPanel")	
-	loading_panel.visible = false	
+	loading_panel.visible = false		
+
 
 func start_deck_download(deck_id_str):
 	var button = get_node("%DownloadDeckButton")
@@ -440,12 +453,9 @@ func start_deck_download(deck_id_str):
 		deck_download_error("missing download url in settings file")
 		button.disabled = false
 		return
-	var url = base_url + deck_id_str + ".json"
-	var error = http_request.request(url)
-	if error != OK:
-		deck_download_error("An error occurred in the HTTP request.")
-		button.disabled = false
-		return
+	_current_dl_url = base_url + deck_id_str + ".json"
+	
+	fileDownloader.start_download([_current_dl_url])
 	
 func get_current_filter_hero_id():
 	var index = heroes_filter.get_selected()

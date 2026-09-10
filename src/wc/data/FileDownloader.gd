@@ -13,22 +13,15 @@ const LOG_ALL = false
 export(bool)            var blind_mode : bool   = false
 export(bool)            var skip_head : bool   = true
 export(String)          var save_path  : String = "user://dl_cache/"
-var file_urls :=[]
 
-var _current_url       : String
+#TODO where to move this?
+const allowed_by_proxy = [
+	'https://marvelcdb.com',
+	'https://cerebrodatastorage.blob.core.windows.net',
+	'https://mc4db.merlindumesnil.net',
+	'https://mc-src.cgbuilder.fr'
+]
 
-var _file := File.new()
-var _file_name : String
-var _file_size : float
-
-var _headers   : Array = []
-
-var _downloaded_percent : float = 0
-var _downloaded_size    : float = 0
-
-var _last_method : int
-var _last_http_status: int = -1
-var _ssl         : bool = true
 
 const HttpStatusStr := [
 	"STATUS_DISCONNECTED",
@@ -43,6 +36,26 @@ const HttpStatusStr := [
 	"STATUS_SSL_HANDSHAKE_ERROR"
 ]
 
+var file_urls :=[]
+
+var _current_url       : String
+
+var _file := File.new()
+var _file_name : String
+var _file_size : float
+
+var _headers   : Array = []
+var use_proxy := false
+var _actual_url :=""
+
+var _downloaded_percent : float = 0
+var _downloaded_size    : float = 0
+
+var _last_method : int
+var _last_http_status: int = -1
+var _ssl         : bool = true
+
+
 func _init() -> void:
 	set_process(false)
 	connect("request_completed", self, "_on_request_completed")
@@ -51,6 +64,8 @@ func _init() -> void:
 
 func _ready() -> void:
 	set_process(false)
+	if OS.get_name() == "HTML5":
+		use_proxy = true
 
 
 func _process(_delta) -> void:
@@ -63,6 +78,9 @@ func _process(_delta) -> void:
 			#ignore ok cases
 			if !status in [HTTPClient.STATUS_CONNECTING,HTTPClient.STATUS_CONNECTED,HTTPClient.STATUS_REQUESTING,HTTPClient.STATUS_BODY ] :
 				LOG("http client status:" + HttpStatusStr[status]) 
+	
+	_download_next_file()
+
 func start_download(p_urls: = []) -> void:
 	_create_directory()
 	if p_urls.empty() == false:
@@ -105,11 +123,20 @@ func _send_head_request() -> void:
 	
 	
 func _send_get_request() -> void:
-	var error = request(_current_url, _headers, _ssl, HTTPClient.METHOD_GET)
+	_actual_url = _current_url
+	if use_proxy:
+		for allowed in allowed_by_proxy:
+			if _current_url.begins_with(allowed):
+				_headers = [
+					'Proxy-Target-URL: ' + _current_url,
+				]
+				var escaped_url = _current_url.http_escape() 
+				_actual_url = cfc.get_setting("proxy_url") + "?target_url=" + escaped_url
+				break
+	var error = request(_actual_url, _headers, _ssl, HTTPClient.METHOD_GET)
 	if error == OK:
 		emit_signal("downloads_started")
 		_last_method = HTTPClient.METHOD_GET
-		set_process(true)
 		return
 	
 	elif error == ERR_INVALID_PARAMETER:
@@ -151,7 +178,8 @@ func _download_next_file() -> void:
 		return
 		
 	if file_urls.size():
-		_current_url  = file_urls.pop_back()
+		set_process(true)
+		_current_url  = file_urls.pop_front()
 		_file_name    = _current_url.get_file()
 		download_file = save_path + _file_name
 		if skip_head:

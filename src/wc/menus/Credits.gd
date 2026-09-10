@@ -10,6 +10,16 @@ onready var v_buttons := $CenterContainer/VBox/VButtons
 onready var main_menu := $CenterContainer
 onready var v_folder_label := $CenterContainer/VBox/HBoxContainer/FolderLabel
 
+const credits := [
+	"Warnel Chawpiovs, by Wololo ([url]https://wololo.net[/url])",
+	"== Credits ==",
+	"* Uses the [url=https://godotengine.org/]Godot Engine[/url]",
+	"* [url=https://github.com/Homebrodot]Godot Switch port[/url] thanks in particular to fhidalgosola/utnad, Stary2001, cpasjuste, halotroop2288",
+	"* Uses a heavyly modified version of [url=https://github.com/db0/godot-card-game-framework]Card Game Framework[/url]",
+	"[cards_info]",
+	"== Disclaimer ==",
+	"This is free, fan-created work and is not affiliated with, endorsed by, or sponsored by Fantasy Flight Games. All characters, settings, and related elements are the property of their respective owners."
+]
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -24,9 +34,29 @@ func _ready() -> void:
 		v_folder_label.text = " "
 	else:
 		v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
+	fill_credits_text()
 	resize()
 	
-
+func fill_credits_text():
+	var label = get_node("%RichTextLabel")
+	label.bbcode_text = ""
+	var sep = ""
+	for credit in credits:
+		match credit:
+			"[cards_info]":
+				var image_credits = gameData.cardImageDownloader.get_server_credits()
+				if image_credits:
+					var separator = " "
+					credit = "* Database and images thanks to the terrific work of "
+					for image_credit in image_credits:
+						credit+= separator + "[url=" + image_credits[image_credit]+"]"+image_credit + "[/url]"
+						separator = ", "
+				else:
+					credit = ""
+		if credit.begins_with("=="):
+			credit = "\n" + credit
+		label.bbcode_text += sep + credit 
+		sep = "\n"
 
 func on_button_pressed(_button_name : String) -> void:
 	match _button_name:

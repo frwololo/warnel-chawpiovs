@@ -58,7 +58,7 @@ alignment = 2
 
 [node name="TextureRect" type="TextureRect" parent="CenterContainer/VBox/TitleAndOptionsContainer"]
 unique_name_in_owner = true
-margin_right = 1341.0
+margin_right = 1294.0
 margin_bottom = 250.0
 rect_min_size = Vector2( 640, 250 )
 size_flags_horizontal = 7
@@ -68,7 +68,6 @@ expand = true
 stretch_mode = 6
 
 [node name="MiniOptionsContainer" type="VBoxContainer" parent="CenterContainer/VBox/TitleAndOptionsContainer"]
-visible = false
 margin_left = 1297.0
 margin_right = 1341.0
 margin_bottom = 250.0

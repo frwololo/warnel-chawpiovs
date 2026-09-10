@@ -977,10 +977,10 @@ const DEFAULT_SETTINGS:= {
 	'sfx_volume': 10,
 	'glow_intensity' : 0.01,
 	'load_cards_online' : true,
-	'dl_cards_at_startup': false,
 	'enable_fanmade_sets': false,
 	"decks_base_url": "https://marvelcdb.com/api/public/decklist/",
 	"decks_base_url_backup": "https://marvelcdb.com/api/public/deck/",
+	"proxy_url": "https://wololo.net/wc/wc_proxy.php",
 	'dont_show_msg': {},
 	'database': {
 #cycle 1	

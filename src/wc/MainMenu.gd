@@ -301,8 +301,8 @@ func download_music():
 	return music_url
 
 func start_images_dl():
-	if cfc.get_setting("dl_cards_at_startup"):
-		gameData.cardImageDownloader.load_pending_images()
+	#if cfc.get_setting("dl_cards_at_startup"):
+	gameData.cardImageDownloader.load_pending_images()
 	
 	#we run this step here right after load_pending_images
 	#because load_pending_images is a heavy, blocking call
@@ -318,16 +318,16 @@ func start_images_dl():
 			set_info_text("Downloading assets")
 		else:
 			set_info_text("Downloading images")
-		var dialog:AcceptDialog = AcceptDialog.new()
-		dialog.window_title = "Image Download"
-		dialog.set_text(str(remaining) + " card images will be downloaded in the background.\nYou can play while this happens.\nMake sure you have an internet connection enabled")
-		dialog.connect("modal_closed", self, "_all_downloads_completed")
-		dialog.get_close_button().connect("pressed", self, "_all_downloads_completed")
-		dialog.connect("confirmed", self, "_all_downloads_completed")
-		add_child(dialog)
-		dialog.popup_centered()			
-	else:
-		_all_downloads_completed()
+#		var dialog:AcceptDialog = AcceptDialog.new()
+#		dialog.window_title = "Image Download"
+#		dialog.set_text(str(remaining) + " card images will be downloaded in the background.\nYou can play while this happens.\nMake sure you have an internet connection enabled")
+#		dialog.connect("modal_closed", self, "_all_downloads_completed")
+#		dialog.get_close_button().connect("pressed", self, "_all_downloads_completed")
+#		dialog.connect("confirmed", self, "_all_downloads_completed")
+#		add_child(dialog)
+#		dialog.popup_centered()			
+
+	_all_downloads_completed()
 	
 func _sets_download_completed():
 	#database download is complete, we load all sets then start the images

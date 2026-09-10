@@ -98,8 +98,9 @@ func refresh_decks():
 	load_hero(hero_id)
 
 	#set the correct selected item again
-	var index = deckSelect.get_item_index(deck_id_to_item_id.get(_needs_refresh))
-	deckSelect.select(index)
+	if deck_id_to_item_id.has(_needs_refresh):
+		var index = deckSelect.get_item_index(deck_id_to_item_id.get(_needs_refresh))
+		deckSelect.select(index)
 	print_debug("received download for " + str(_needs_refresh))	
 	_needs_refresh = 0
 	#_on_deck_changed(deckSelect.selected)	

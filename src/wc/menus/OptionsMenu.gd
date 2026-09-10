@@ -137,6 +137,11 @@ func show_advanced_settings():
 
 func clear_cache():
 	cfc.clear_cards_cache($PanelContainer)
+	
+	#also delete failed images
+	var dir = Directory.new()
+	var _op_result = dir.remove("user://failed_image_downloads.json")
+	
 
 
 func warning(title, message, action):

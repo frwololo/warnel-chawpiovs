@@ -652,6 +652,9 @@ func os_has_feature(tag_name) -> bool:
 	if _is_steam_deck():
 		if tag_name == "mobile":
 			return true
+	elif  _is_mobile_web():
+		if tag_name == "mobile":
+			return true
 			
 	return OS.has_feature(tag_name)
 
@@ -664,3 +667,17 @@ func _is_steam_deck() -> bool:
 		return true
 	else:
 		return false
+
+var _mobile_web_data: = {}
+func _is_mobile_web()-> bool:
+	
+	if _mobile_web_data.has("is_mobile"):
+		return 	_mobile_web_data["is_mobile"]
+		
+	if OS.get_name() != "HTML5":
+		_mobile_web_data["is_mobile"] = false
+		return false
+		
+	var is_mobile = JavaScript.eval("/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)", true)
+	_mobile_web_data["is_mobile"] = is_mobile
+	return is_mobile

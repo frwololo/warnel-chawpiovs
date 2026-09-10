@@ -1372,7 +1372,9 @@ func load_script_definition_from_cache(script_file) -> Dictionary:
 		return {}	
 	var cached_filename = get_cache_filename(script_file)
 	var file: File = File.new()	
-	file.open(cached_filename, File.READ)
+	var error = file.open(cached_filename, File.READ)
+	if error != OK:
+		return {}
 	var result = file.get_var()
 	file.close()
 	return result
@@ -1431,9 +1433,12 @@ func load_script_definitions() -> void:
 	
 	#if no change, we load scripts from the global cache
 	if all_cache_valid:
-		set_scripts = load_data_from_cache("set_scripts")
-		unmodified_set_scripts = load_data_from_cache("unmodified_set_scripts")
-		if !set_scripts or !unmodified_set_scripts:
+		var tmp1 = load_data_from_cache("set_scripts")
+		var tmp2 = load_data_from_cache("unmodified_set_scripts")
+		if tmp1 and tmp2 and (typeof(tmp1) == TYPE_DICTIONARY) and (typeof(tmp2) == TYPE_DICTIONARY):
+			set_scripts = tmp1
+			unmodified_set_scripts = tmp2
+		else:
 			all_cache_valid = false
 			print_debug("WARNING: caches were valid but there's been an issue loading set_scripts and unmodified_set_scripts")
 	

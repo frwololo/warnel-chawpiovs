@@ -730,43 +730,66 @@ func _class_specific_process(delta):
 	pass
 		
 
+var _last_loaded_texture = ""
+func reload_shadow_tex(file_name):
+	if file_name == _last_loaded_texture:
+		return
+	_shadow.texture = load(file_name)		
+	_last_loaded_texture = file_name
+
+	
 func display_shadow():
 	_shadow.visible = false	
 	if is_onboard():
+		reload_shadow_tex("res://assets/card_backs/card_shadow.png")
 		_shadow.visible = true
 		_shadow.rect_min_size = _card_front_container.rect_min_size
 		_shadow.rect_size = _shadow.rect_min_size
-		var offset = 6.0
+		var offset = 3.0
 		if highlight.visible:
-			offset = 10.0
+			_shadow.rect_min_size = _card_front_container.rect_min_size + Vector2(6.0, 6.0)
+			_shadow.rect_size = _shadow.rect_min_size			
+			reload_shadow_tex("res://assets/card_backs/card_shadow_highlight.png")
+			offset = 1.0
 		var offset_x = (sin(deg2rad(_control.rect_rotation)) + cos(deg2rad(_control.rect_rotation))) * offset
 		var offset_y = (cos(deg2rad(_control.rect_rotation)) - sin(deg2rad(_control.rect_rotation))) * offset
 		_shadow.rect_position = _control.rect_position + (Vector2(offset_x, offset_y))
 		_shadow.self_modulate.a = 1.0
 	elif get_state_exec() == "hand":
+		reload_shadow_tex("res://assets/card_backs/card_shadow_far.png")
 		_shadow.visible = true
-		_shadow.rect_min_size = _card_front_container.rect_min_size
+		_shadow.rect_min_size = _card_front_container.rect_min_size + Vector2(20.0, 20.0)
 		_shadow.rect_size = _shadow.rect_min_size
-		var offset = 20.0 * scale.x  * scale.x
+		var offset = 20.0
+		var alpha_modulate = 0.6
+		if scale.x > 1.0:
+			var multiplier = scale.x  * scale.x * scale.x 
+			alpha_modulate = 0.6  / (multiplier)	
+			offset *= multiplier
 		var offset_x = (sin(deg2rad(_control.rect_rotation)) + cos(deg2rad(_control.rect_rotation))) * offset
 		var offset_y = (cos(deg2rad(_control.rect_rotation)) - sin(deg2rad(_control.rect_rotation))) * offset
 		_shadow.rect_position = _control.rect_position + (Vector2(offset_x, offset_y))
-		_shadow.self_modulate.a = 1.0 /  max(1.0, abs(offset/5.0))
+
+		if alpha_modulate < 0.6:
+			var _tmp =1
+		_shadow.self_modulate.a = alpha_modulate
 			
 	else:
+		reload_shadow_tex("res://assets/card_backs/card_shadow_volume.png")
 		var parent = get_parent()
 		if parent and parent.is_in_group("piles"):
 			if is_animating():
 				_shadow.visible = false
 				return
 			if self == parent.get_bottom_card():
-				var offset = 6.0 + parent.get_card_count()
-				_shadow.rect_min_size = _card_front_container.rect_min_size + Vector2(offset, offset)
+				var offset_x = 20 + (parent.get_card_count() * 1.2)
+				var offset_y = max(30, 15 + (parent.get_card_count()))
+				_shadow.rect_min_size = _card_front_container.rect_min_size + Vector2(offset_x, offset_y)
 				_shadow.rect_size = _shadow.rect_min_size				
-				_shadow.self_modulate.a = 1.0 / max(1.0, abs(offset/20.0))
+				_shadow.self_modulate.a = 0.4 #/ max(1.0, abs(offset_x/20.0))
 #				var offset_x = (sin(deg2rad(_control.rect_rotation)) + cos(deg2rad(_control.rect_rotation))) * offset
 #				var offset_y = (cos(deg2rad(_control.rect_rotation)) - sin(deg2rad(_control.rect_rotation))) * offset
-				_shadow.rect_position = _control.rect_position# + (Vector2(offset_x, offset_y))					
+				_shadow.rect_position = _control.rect_position + (Vector2(-2.0, 0))					
 				_shadow.visible = true
 	
 func _process(delta) -> void:

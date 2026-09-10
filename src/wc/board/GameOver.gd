@@ -128,9 +128,14 @@ func victory():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if OS.get_name() =="HTML5":
+		get_node("%PromoLabel").visible = true
+	else:
+		get_node("%PromoLabel").visible = false
 	resize()
 	set_as_toplevel(true)
-	cfc.NMAP.board.disable_focus_mode()
+	if cfc.NMAP.has("board"):
+		cfc.NMAP.board.disable_focus_mode()
 	get_node("%OKButton").grab_focus()
 	pass
 

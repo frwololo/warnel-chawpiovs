@@ -800,7 +800,11 @@ const AUTO_KEYWORDS := {
 	"ignore_external_acceleration": "int",		
 	"invincible": "int",
 	
-	"minimum_hit_points_override": "int"		
+	"minimum_hit_points_override": "int",
+	
+	#fake traits used by some scripts
+	#TODO automate: add these to the list of cardconfig integers a runtime
+	"trait_sidekick": "int",		
 }
 
 const INTERRUPT_SECTION_KEYWORDS:= [

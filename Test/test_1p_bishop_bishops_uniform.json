@@ -1,0 +1,204 @@
+{
+	"_comments": "Test Bishop's Uniform",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Bishop"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Unus - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting Gene Traitors",
+					"tokens": {
+						"threat": 5
+					}
+				},
+				{
+					"card": "Gene Pool",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Infinite Hunter"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Stored Energy"
+				},
+				{
+					"card": "Advanced Suit"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Bishop's Uniform"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Team Training"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Randall"
+				},
+				{
+					"card": "Genius"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Bishop",
+					"tokens": {
+						"damage": 4
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Stored Energy"
+				},
+				{
+					"card": "Side-by-Side"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "dont block attack"
+		},
+		{
+			"type": "choose",
+			"value": "yes",
+			"_comments": "do discard"
+		},
+		{
+			"type": "activate",
+			"value": "Bishop's Uniform",
+			"_comments": "activate Bishop's Uniform to heal"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Bishop"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Unus - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting Gene Traitors",
+					"tokens": {
+						"threat": 5
+					}
+				},
+				{
+					"card": "Gene Pool",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Infinite Hunter"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Stored Energy"
+				},
+				{
+					"card": "Advanced Suit"
+				},
+				{
+					"card": "Randall"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Bishop's Uniform"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Team Training"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Bishop",
+					"tokens": {
+						"damage": 4
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Stored Energy"
+				},
+				{
+					"card": "Side-by-Side"
+				},
+				{
+					"card": "Genius"
+				}
+			]
+		}
+	}
+}

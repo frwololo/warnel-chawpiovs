@@ -1,0 +1,236 @@
+{
+	"_comments": "Test Bishop Side by Side",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Bishop"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Unus - 2"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting Gene Traitors",
+					"tokens": {
+						"threat": 5
+					}
+				},
+				{
+					"card": "Gene Pool",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Infinite Hunter"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Stored Energy"
+				},
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Advanced Suit"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Team Training"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Bishop",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Randall",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Sidekick"
+				},
+				{
+					"card": "Side-by-Side"
+				},
+				{
+					"card": "The Power of Leadership"
+				},
+				{
+					"card": "Lead from the Front"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Bishop"
+		},
+		{
+			"type": "choose",
+			"value": "Attack"
+		},
+		{
+			"type": "target",
+			"value": "Unus"
+		},
+		{
+			"type": "play",
+			"value": "Sidekick"
+		},
+		{
+			"type": "select",
+			"value": "Lead from the Front"
+		},
+		{
+			"type": "target",
+			"value": "Randall"
+		},
+		{
+			"type": "activate",
+			"value": "Randall"
+		},
+		{
+			"type": "choose",
+			"value": "Thwart"
+		},
+		{
+			"type": "target",
+			"value": "Gene Pool"
+		},
+		{
+			"type": "play",
+			"value": "Side-by-Side"
+		},
+		{
+			"type": "choose",
+			"value": "Heal"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Bishop"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Unus - 2",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting Gene Traitors",
+					"tokens": {
+						"threat": 5
+					}
+				},
+				{
+					"card": "Gene Pool",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Infinite Hunter"
+				},
+			],
+			"discard1": [
+				{
+					"card": "Stored Energy"
+				},
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Advanced Suit"
+				},
+				{
+					"card": "Lead from the Front"
+				},
+				{
+					"card": "The Power of Leadership"
+				},
+				{
+					"card": "Side-by-Side"
+				}					
+			],
+			"deck1": [
+				{
+					"card": "Team Training"
+				},
+				{
+					"card": "Mockingbird"
+				},
+			
+			],
+			"identity1": [
+				{
+					"card": "Bishop",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Randall",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Sidekick",
+					"host": "Randall"
+				}
+			]
+		}
+	}
+}

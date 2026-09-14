@@ -802,10 +802,13 @@ func init_1player():
 	var dic = {1 : {"name" : "Player1", "id" : 1}}
 	init_network_players(dic)
 	
-func init_as_server():
+func init_as_server(port = 0):
+	var my_port = CFConst.MULTIPLAYER_PORT
+	if port:
+		my_port = port
 	var peer = NetworkedMultiplayerENet.new()
 	peer.set_compression_mode(NetworkedMultiplayerENet.COMPRESS_RANGE_CODER)
-	var err = peer.create_server(CFConst.MULTIPLAYER_PORT, 4) # Maximum of 4 peers. TODO make this a config
+	var err = peer.create_server(my_port, 4) # Maximum of 4 peers. TODO make this a config
 	if err != OK:
 		return err #does this ever run?
 	get_tree().set_network_peer(peer)

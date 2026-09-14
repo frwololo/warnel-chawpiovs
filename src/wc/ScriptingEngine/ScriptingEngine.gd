@@ -2598,10 +2598,21 @@ func thwart_started(script: ScriptTask) -> int:
 
 #sends a user-created signal
 func send_signal(script: ScriptTask) -> int:
+	var user_signal = script.get_property("signal_name", "")
+	if !user_signal:
+		return CFConst.ReturnCod.FAILED
+	
 	if (costs_dry_run()):
 		return CFConst.ReturnCode.CHANGED
 
-	scripting_bus.init_scripting_event(script.owner, script.script_definition, script.get_property("signal_name", ""))		
+	
+	if !scripting_bus.has_signal(user_signal):
+		scripting_bus.add_user_signal(user_signal, [
+			{"name": "card", "type": TYPE_OBJECT}, 
+			{"name": "trigger_details", "type": TYPE_DICTIONARY }
+		])
+
+	scripting_bus.emit_signal_on_stack(user_signal, script.owner, script.script_definition )		
 	return CFConst.ReturnCode.CHANGED
 
 func add_properties_from(script: ScriptTask) -> int:

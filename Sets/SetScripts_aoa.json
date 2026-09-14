@@ -84,7 +84,7 @@
 				}
 			]
 		},
-		"card_dies": {
+		"interrupt_card_dies": {
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
@@ -120,7 +120,7 @@
 				}
 			]
 		},
-		"enemy_died": {
+		"minion_died": {
 			"event_filters": {
 				"source": "host"
 			},
@@ -864,7 +864,7 @@
 							"subject_count": "all",
 							"filter_state_tutor": [
 								{
-									"filer_properties": {
+									"filter_properties": {
 										"type_code": "resource"
 									}
 								}
@@ -889,7 +889,8 @@
 					"subject": "self"
 				},
 				{
-					"name": "draw_cards",
+					"name": "heal",
+					"subject": "Bishop",
 					"amount": {
 						"func_name": "count_cards",
 						"func_params": {
@@ -898,7 +899,7 @@
 							"subject_count": "all",
 							"filter_state_tutor": [
 								{
-									"filer_properties": {
+									"filter_properties": {
 										"type_code": "resource"
 									}
 								}
@@ -3062,6 +3063,11 @@
 				{
 					"is_else": true,
 					"name": "surge"
+				},
+				{
+					"is_else": true,
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		},
@@ -6181,7 +6187,9 @@
 								"filter_properties": {
 									"trait_sidekick": 1,
 									"comparison": "ge"
-								}
+								},
+								"filter_group": "group_allies_my_hero",
+								"filter_is_exhausted": true
 							}
 						]
 					},
@@ -6216,6 +6224,7 @@
 						"filter_state_seek": [
 							{
 								"filter_group": "group_allies_my_hero",
+								"filter_is_exhausted": true,
 								"filter_properties": {
 									"trait_sidekick": 1,
 									"comparison": "ge"
@@ -6866,9 +6875,7 @@
 									"filter_task": "get_property",
 									"filter_property_name": "attack",
 									"trigger": "my_hero",
-									"alteration": {
-										"func_name": "count_tokens"
-									}
+									"alteration": "my_increase"
 								}
 							]
 						}

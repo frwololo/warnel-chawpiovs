@@ -437,11 +437,11 @@ func play_card(script: ScriptTask) -> int:
 	if parentHost:
 		from = parentHost.name.to_lower()
 		from_controller = cfc.NMAP.board.get_controller_from_pile_name(from)
-		for i in CFConst.MAX_TEAM_SIZE:
-			var hero_id = i+1
-			if (from.ends_with(str(hero_id))):
-				from = from.trim_suffix(str(hero_id))
-				break
+#		for i in CFConst.MAX_TEAM_SIZE:
+#			var hero_id = i+1
+#			if (from.ends_with(str(hero_id))):
+#				from = from.trim_suffix(str(hero_id))
+#				break
 		
 		
 	var definition:Dictionary =  script.script_definition

@@ -1,0 +1,196 @@
+{
+	"_comments": "Test Magik Play Top card ability",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Magik"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "War - A"
+				},
+				{
+					"card": "Famine - A",
+					"tokens": {
+						"damage": 1,
+						"active_counter": 1
+					}
+				},
+				{
+					"card": "Death - A"
+				},
+				{
+					"card": "Pestilence - A"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Horsemen of Apocalypse"
+				},
+				{
+					"card": "Plague and Pestilence",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Genius"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Soul Strike"
+				},
+				{
+					"card": "Bloodgem"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Magik"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Illyana Rasputin",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Energy"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Illyana Rasputin"
+		},
+		{
+			"type": "choose",
+			"value": "Change Form"
+		},
+		{
+			"type": "play",
+			"value": "Bloodgem"
+		},
+		{
+			"type": "play",
+			"value": "Soul Strike",
+			"expected_to_fail": true
+		},
+		{
+			"type": "select",
+			"value": "Bloodgem",
+			"expected_to_fail": true
+		},
+		{
+			"type": "target",
+			"value": "Famine - A",
+			"expected_to_fail": true
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Magik"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "War - A"
+				},
+				{
+					"card": "Famine - A",
+					"tokens": {
+						"damage": 1,
+						"active_counter": 1
+					}
+				},
+				{
+					"card": "Death - A"
+				},
+				{
+					"card": "Pestilence - A"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Horsemen of Apocalypse"
+				},
+				{
+					"card": "Plague and Pestilence",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Genius"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Soul Strike"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Magik",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Bloodgem"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Energy"
+				}
+			]
+		}
+	}
+}

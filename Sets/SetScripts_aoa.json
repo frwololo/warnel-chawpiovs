@@ -3992,6 +3992,20 @@
 		"interrupt_change_form": {
 			"trigger": "self",
 			"is_optional_board": true,
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "tutor",
+					"src_container": "discard_my_hero",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_spell": 1
+							}
+						}
+					]
+				}
+			},
 			"board": [
 				{
 					"name": "mod_tokens",
@@ -4003,6 +4017,7 @@
 				{
 					"name": "move_card_to_container",
 					"subject": "tutor",
+					"src_container": "discard",
 					"subject_count": "all",
 					"dest_container": "deck",
 					"dest_index": "top",
@@ -4618,12 +4633,14 @@
 					"src_container": "deck"
 				},
 				{
-					"name": "sequence",
-					"sequence_ability": "enable_top_deck"
+					"name": "execute_scripts",
+					"subject": "self",
+					"exec_trigger": "enable_top_deck"
 				}
 			]
 		},
 		"pile_top_card_changed": {
+			"_silent": true,
 			"event_filters": {
 				"pile_name": "deck_my_hero"
 			},
@@ -4636,8 +4653,9 @@
 					"src_container": "deck"
 				},
 				{
-					"name": "sequence",
-					"sequence_ability": "enable_top_deck"
+					"name": "execute_scripts",
+					"subject": "self",
+					"exec_trigger": "enable_top_deck"
 				}
 			]
 		},
@@ -4653,6 +4671,7 @@
 			]
 		},
 		"enable_top_deck": {
+			"_silent": true,
 			"condition_board": {
 				"func_name": "count_tokens",
 				"func_params": {
@@ -4664,9 +4683,9 @@
 				{
 					"name": "add_script",
 					"end_condition": {
-						"event": "pile_top_card_changed",
+						"event": "card_played",
 						"event_filters": {
-							"before": "self",
+							"from": "deck_my_hero",
 							"_breakpoint": true
 						}
 					},
@@ -4675,7 +4694,7 @@
 					"subject_count": 1,
 					"src_container": "deck",
 					"script": {
-						"card_played": {
+						"interrupt_card_played": {
 							"trigger": "self",
 							"all": [
 								{

@@ -3968,7 +3968,7 @@ func count_printed_resources(params:Dictionary, script) -> int:
 		if typeof(resource_types) == TYPE_STRING:
 			resource_types = [resource_types]
 		for resource_type in resource_types:
-			count += mana.get_resource(params["resource_type"])
+			count += mana.get_resource(resource_type)
 	else:
 		count = mana.converted_mana_cost()
 	return count

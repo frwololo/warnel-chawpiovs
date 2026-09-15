@@ -870,7 +870,7 @@ func _file_downloaded(url, filename):
 		#this download doesn't concern us
 		return
 			
-	var result = true
+#	var result = true
 	var content = WCUtils.read_json_file(filename)
 
 	if content:

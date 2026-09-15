@@ -107,11 +107,11 @@ func _nat_session_registered():
 	add_log("session registered")
 
 func _hole_punched(own_port, host_port, host_address):
-	var result = {
-		"own_port": own_port,
-		"host_port": host_port,
-		"host_address": host_address,
-	}
+#	var result = {
+#		"own_port": own_port,
+#		"host_port": host_port,
+#		"host_address": host_address,
+#	}
 	v_folder_label.text	= "registered to signal server with ip:" + str(host_address) + ", own_port:" +str(own_port) +", host_port:" + str(host_port)
 	add_log(v_folder_label.text)
 	yield(get_tree().create_timer(0.1), 'timeout')
@@ -245,11 +245,11 @@ func compute_database_hash() -> Dictionary:
 	var card_definitions_hash = WCUtils.ordered_hash(cfc.card_definitions)
 	var card_scripts_hash = WCUtils.ordered_hash(cfc.set_scripts)
 
-	var status = {
+	var db_status = {
 		"card_definitions": card_definitions_hash,
 		"card_scripts": card_scripts_hash
 	}
-	return status
+	return db_status
 	
 remotesync func multiplayer_database_comparison():
 	var db_status = compute_database_hash()

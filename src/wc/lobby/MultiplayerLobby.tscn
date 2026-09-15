@@ -126,5 +126,5 @@ fit_content_height = true
 
 [node name="HolePunch" type="Node" parent="."]
 script = ExtResource( 4 )
-rendevouz_address = "144.217.77.217"
+rendevouz_address = "wololo.net"
 rendevouz_port = 7778

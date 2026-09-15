@@ -5,7 +5,7 @@
 			"all": [
 				{
 					"name": "discard",
-					"amount": 10,
+					"subject_count": 10,
 					"up_to": true,
 					"subject": "tutor",
 					"sort_descending": true,
@@ -1421,13 +1421,6 @@
 					]
 				},
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"as_action"
-					]
-				},
-				{
 					"name": "pay_regular_cost",
 					"is_cost": true,
 					"cost": "card_cost"
@@ -2675,7 +2668,7 @@
 				},
 				{
 					"name": "discard",
-					"amount": 10,
+					"subject_count": 10,
 					"up_to": true,
 					"subject": "tutor",
 					"sort_descending": true,
@@ -2737,7 +2730,7 @@
 				},
 				{
 					"name": "discard",
-					"amount": 10,
+					"subject_count": 10,
 					"up_to": true,
 					"subject": "tutor",
 					"sort_descending": true,
@@ -3710,7 +3703,7 @@
 							"all": [
 								{
 									"name": "enemy_activates_against_you",
-									"subject": "War",
+									"subject": "Death",
 									"tags": [
 										"no_boost"
 									]
@@ -4629,7 +4622,7 @@
 				{
 					"name": "send_signal",
 					"signal_name": "signal_disable_magik_top_deck"
-				},			
+				},
 				{
 					"name": "send_signal",
 					"signal_name": "signal_enable_magik_top_deck"
@@ -4659,9 +4652,8 @@
 				{
 					"name": "send_signal",
 					"signal_name": "signal_disable_magik_top_deck"
-				},				
+				},
 				{
-
 					"name": "send_signal",
 					"signal_name": "signal_enable_magik_top_deck"
 				}
@@ -4785,7 +4777,7 @@
 							"func_params": {
 								"subject": "index",
 								"subject_index": "top",
-								"src_container": "deck",
+								"src_container": "deck_my_hero",
 								"subject_count": 1,
 								"resource_type": [
 									"mental",
@@ -5410,12 +5402,14 @@
 					},
 					"effect": {
 						"alterants": {
-							"all": {
-								"filter_task": "get_property",
-								"filter_property_name": "blank_printed_text_box",
-								"trigger": "my_identity",
-								"alteration": 1
-							}
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "blank_printed_text_box",
+									"trigger": "my_identity",
+									"alteration": 1
+								}
+							]
 						}
 					}
 				}
@@ -6460,7 +6454,7 @@
 				},
 				{
 					"name": "attack",
-					"amount": 1,
+					"amount": 4,
 					"subject": "an_enemy"
 				},
 				{
@@ -6699,7 +6693,8 @@
 					"subject": "interrupted_event"
 				},
 				{
-					"name": "reveal_encounter",
+					"name": "deal_encounter",
+					"immediate_reveal": true,
 					"subject": "current_hero_target"
 				}
 			]
@@ -6729,7 +6724,7 @@
 					"needs_selection": true,
 					"selection_count": 1,
 					"selection_type": "equal",
-					"filter_state_subject": [
+					"filter_state_tutor": [
 						{
 							"filter_properties": {
 								"faction_code": "hero"

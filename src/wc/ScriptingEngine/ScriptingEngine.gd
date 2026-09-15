@@ -2607,10 +2607,12 @@ func send_signal(script: ScriptTask) -> int:
 
 	
 	if !scripting_bus.has_signal(user_signal):
-		scripting_bus.add_user_signal(user_signal, [
+		var args = [
 			{"name": "card", "type": TYPE_OBJECT}, 
 			{"name": "trigger_details", "type": TYPE_DICTIONARY }
-		])
+		]
+		scripting_bus.add_user_signal(user_signal, args )
+		scripting_bus.register_signal(user_signal, args)
 
 	scripting_bus.emit_signal_on_stack(user_signal, script.owner, script.script_definition )		
 	return CFConst.ReturnCode.CHANGED

@@ -97,6 +97,8 @@ func is_silent():
 		if task.trigger_details.get("_silent", false):
 			return true
 		if task.script_definition.get("_silent", false):
+			return true	
+		if task.script_name == "send_signal":
 			return true		
 		if task.script_name == "mod_tokens":
 			var token_name = task.get_property("token_name", "")

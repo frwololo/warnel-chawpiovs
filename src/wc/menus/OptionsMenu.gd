@@ -403,6 +403,9 @@ func save_game():
 	
 func load_game():
 	hide_menu()	
+#	file_dialog.set_access(FileDialog.ACCESS_FILESYSTEM)
+#	file_dialog.set_current_path(OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS))
+#	file_dialog.set_theme(load("res://themes/darktheme/darktheme.theme"))
 	file_dialog.set_current_path("user://Saves/")
 	file_dialog.mode = FileDialog.MODE_OPEN_FILE
 	file_dialog.popup_centered()

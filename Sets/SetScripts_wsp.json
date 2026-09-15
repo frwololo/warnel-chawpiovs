@@ -387,7 +387,7 @@
 	"Ironheart": {
 		"card_played": {
 			"event_filters": {
-				"from": "hand"
+				"from": "hand_my_hero"
 			},
 			"trigger": "self",
 			"is_optional_board": true,
@@ -952,7 +952,7 @@
 	"Spider-Man - Miles Morales": {
 		"card_played": {
 			"event_filters": {
-				"from": "hand"
+				"from": "hand_my_hero"
 			},
 			"trigger": "self",
 			"board": {
@@ -1116,7 +1116,7 @@
 	"Thor - Jane Foster": {
 		"card_played": {
 			"event_filters": {
-				"from": "hand"
+				"from": "hand_my_hero"
 			},
 			"trigger": "self",
 			"is_optional_board": true,

@@ -972,7 +972,7 @@
 	"Nova Prime - Richard Rider": {
 		"card_played": {
 			"event_filters": {
-				"from": "hand"
+				"from": "hand_my_hero"
 			},
 			"trigger": "self",
 			"board": [

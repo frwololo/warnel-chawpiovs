@@ -66,6 +66,7 @@ margin_right = 204.0
 margin_bottom = 568.0
 
 [node name="HeroesPanel" type="VBoxContainer" parent="MainMenu/Outercontainer/LeftRight/PanelContainer"]
+unique_name_in_owner = true
 margin_left = 2.0
 margin_top = 2.0
 margin_right = 202.0
@@ -100,6 +101,7 @@ margin_right = 348.0
 margin_bottom = 188.0
 
 [node name="TeamPanel" type="VBoxContainer" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel/PanelContainer3"]
+unique_name_in_owner = true
 margin_left = 2.0
 margin_top = 2.0
 margin_right = 346.0

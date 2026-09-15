@@ -198,7 +198,7 @@
 		"card_played": {
 			"trigger": "self",
 			"event_filters": {
-				"from": "hand"
+				"from": "hand_my_hero"
 			},
 			"board": [
 				{

@@ -424,7 +424,8 @@ func show_stack_announce(stack_object, mode = GlobalScriptStack.InterruptMode.NO
 
 	var notifications_level = cfc.game_settings.get("notifications_level", "normal").to_lower()	
 	if stack_object.is_silent() and notifications_level != "debug":
-		if mode != GlobalScriptStack.InterruptMode.FORCED_INTERRUPT_CHECK:
+		var force_show_interrupt = (mode == GlobalScriptStack.InterruptMode.FORCED_INTERRUPT_CHECK) and (!stack_object.owner or !stack_object.owner.is_player_card())
+		if !force_show_interrupt:
 			return false	
 
 	init_generic_stack_display(stack_object, true )

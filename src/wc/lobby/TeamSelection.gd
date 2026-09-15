@@ -198,7 +198,13 @@ func resize():
 		scenario_picture.rect_size = scenario_picture.rect_min_size
 		get_node("%VBoxContainer").add_constant_override("separation", 20)	
 		get_node("%ModularColorRect").rect_min_size = Vector2(1600, 720)	
-		
+		if gameData.is_multiplayer_game:
+			#squeezing as much space as we can because multiplayer has additional components
+			get_node("%TeamScenarioPanel").add_constant_override("separation", 0)
+			get_node("%HeroesPanel").add_constant_override("separation", 0)
+			$MainMenu.rect_position.y = 1
+			$MainMenu/Outercontainer.add_constant_override("separation", -4)
+			get_node("%TeamPanel").add_constant_override("separation", 2)
 	else:	
 		get_node("%DLLabel2").visible = false	
 		get_node("%LeftRight").add_constant_override("separation", 10)

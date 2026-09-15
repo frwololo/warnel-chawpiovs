@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://src/wc/lobby/MultiplayerLobby.gd" type="Script" id=1]
 [ext_resource path="res://themes/darktheme/darktheme.theme" type="Theme" id=2]
 [ext_resource path="res://themes/darktheme/fonts/Bangers/Bangers-Regular.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://addons/Holepunch/holepunch_node.gd" type="Script" id=4]
 
 [sub_resource type="DynamicFont" id=2]
 size = 200
@@ -31,62 +32,67 @@ margin_right = 1920.0
 margin_bottom = 1080.0
 color = Color( 0.0705882, 0.0705882, 0.0705882, 1 )
 
-[node name="VBox" type="VBoxContainer" parent="MainMenu"]
+[node name="HBox" type="HBoxContainer" parent="MainMenu"]
 margin_right = 1920.0
 margin_bottom = 1080.0
 
-[node name="Margin" type="MarginContainer" parent="MainMenu/VBox"]
-margin_right = 1920.0
+[node name="VBox" type="VBoxContainer" parent="MainMenu/HBox"]
+margin_right = 1417.0
+margin_bottom = 1080.0
+size_flags_horizontal = 3
+
+[node name="Margin" type="MarginContainer" parent="MainMenu/HBox/VBox"]
+margin_right = 1417.0
 margin_bottom = 309.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/margin_top = 90
 
-[node name="Label" type="Label" parent="MainMenu/VBox/Margin"]
+[node name="Label" type="Label" parent="MainMenu/HBox/VBox/Margin"]
 margin_top = 92.0
-margin_right = 1920.0
+margin_right = 1417.0
 margin_bottom = 306.0
 custom_fonts/font = SubResource( 2 )
 text = "Lobby"
 align = 1
 
-[node name="WaitingMsg" type="Label" parent="MainMenu/VBox"]
+[node name="WaitingMsg" type="Label" parent="MainMenu/HBox/VBox"]
 unique_name_in_owner = true
 margin_top = 312.0
-margin_right = 1920.0
+margin_right = 1417.0
 margin_bottom = 342.0
-text = "Waiting for Players..."
+text = "..."
 valign = 2
 
-[node name="Players" type="VBoxContainer" parent="MainMenu/VBox"]
+[node name="Players" type="VBoxContainer" parent="MainMenu/HBox/VBox"]
 margin_top = 345.0
-margin_right = 1920.0
+margin_right = 1417.0
 margin_bottom = 645.0
 rect_min_size = Vector2( 0, 300 )
 
-[node name="Center" type="CenterContainer" parent="MainMenu/VBox"]
+[node name="Center" type="CenterContainer" parent="MainMenu/HBox/VBox"]
 margin_top = 648.0
-margin_right = 1920.0
+margin_right = 1417.0
 margin_bottom = 957.0
 size_flags_vertical = 3
 
-[node name="VButtons" type="VBoxContainer" parent="MainMenu/VBox/Center"]
-margin_left = 710.0
+[node name="VButtons" type="VBoxContainer" parent="MainMenu/HBox/VBox/Center"]
+margin_left = 458.0
 margin_top = 59.0
-margin_right = 1210.0
+margin_right = 958.0
 margin_bottom = 249.0
 rect_min_size = Vector2( 192, 0 )
 custom_constants/separation = 10
 alignment = 2
 
-[node name="Launch" type="Button" parent="MainMenu/VBox/Center/VButtons"]
+[node name="Launch" type="Button" parent="MainMenu/HBox/VBox/Center/VButtons"]
 margin_right = 500.0
 margin_bottom = 90.0
 rect_min_size = Vector2( 500, 0 )
 custom_fonts/font = SubResource( 3 )
 text = "Launch"
 
-[node name="Cancel" type="Button" parent="MainMenu/VBox/Center/VButtons"]
+[node name="Cancel" type="Button" parent="MainMenu/HBox/VBox/Center/VButtons"]
 margin_top = 100.0
 margin_right = 500.0
 margin_bottom = 190.0
@@ -94,19 +100,31 @@ rect_min_size = Vector2( 500, 0 )
 custom_fonts/font = SubResource( 4 )
 text = "Cancel"
 
-[node name="Margin2" type="MarginContainer" parent="MainMenu/VBox"]
+[node name="Margin2" type="MarginContainer" parent="MainMenu/HBox/VBox"]
 margin_top = 960.0
-margin_right = 1920.0
+margin_right = 1417.0
 margin_bottom = 1080.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 custom_constants/margin_top = 90
 
-[node name="Label" type="Label" parent="MainMenu/VBox/Margin2"]
+[node name="Label" type="Label" parent="MainMenu/HBox/VBox/Margin2"]
 margin_top = 90.0
-margin_right = 1920.0
+margin_right = 1417.0
 margin_bottom = 120.0
 text = "user folder:"
 valign = 2
 
+[node name="StatusLabel" type="RichTextLabel" parent="MainMenu/HBox"]
+margin_left = 1420.0
+margin_right = 1920.0
+margin_bottom = 1080.0
+rect_min_size = Vector2( 500, 0 )
+fit_content_height = true
+
 [node name="MenuTween" type="Tween" parent="."]
+
+[node name="HolePunch" type="Node" parent="."]
+script = ExtResource( 4 )
+rendevouz_address = "144.217.77.217"
+rendevouz_port = 7778

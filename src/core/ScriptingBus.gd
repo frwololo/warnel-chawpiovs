@@ -87,19 +87,23 @@ signal after_scripting_event_triggered(trigger_card, trigger, details)
 
 func _ready():
 	for s in get_signal_list():
-		if s.name == "scripting_event_triggered":
-			continue
-		if s.name == "scripting_event_about_to_trigger":
-			continue			
-		if s.args.size() == 2:
-			# warning-ignore:return_value_discarded
-			connect(s.name, self, "init_scripting_event", [s.name])
-		elif s.args.size() == 1:
-			# This means the signal has no details being sent by defult, so we connect it using a dummy dictionary instead
-			connect(s.name, self, "init_scripting_event", [{}, s.name])
-		elif s.args.size() == 0:
-			# This means the signal sends no args by default, so we just provide dummy vars
-			connect(s.name, self, "init_scripting_event", [null, {}, s.name])
+		register_signal(s.name, s.args)
+
+func register_signal(signal_name, signal_args):
+	if signal_name == "scripting_event_triggered":
+		return
+	if signal_name == "scripting_event_about_to_trigger":
+		return			
+	if signal_args.size() == 2:
+		# warning-ignore:return_value_discarded
+		connect(signal_name, self, "init_scripting_event", [signal_name])
+	elif signal_args.size() == 1:
+		# This means the signal has no details being sent by defult, so we connect it using a dummy dictionary instead
+		connect(signal_name, self, "init_scripting_event", [{}, signal_name])
+	elif signal_args.size() == 0:
+		# This means the signal sends no args by default, so we just provide dummy vars
+		connect(signal_name, self, "init_scripting_event", [null, {}, signal_name])
+
 	
 func init_scripting_event(trigger_object: Card = null, details: Dictionary = {}, trigger: String = '') -> void:
 	if trigger == '':

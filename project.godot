@@ -655,7 +655,7 @@ window/stretch/aspect="keep"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "gut" )
+enabled=PoolStringArray( "res://addons/Holepunch/plugin.cfg" )
 
 [global]
 

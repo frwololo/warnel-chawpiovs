@@ -3,17 +3,20 @@
 
 extends Panel
 
+const ENABLE_HOLE_PUNCHING = false
+
 var ERROR_COLOR := 	Color(1,0.11,0.1)
 var OK_COLOR := 	Color(0.1,11,0.1)
 # The time it takes to switch from one menu tab to another
 const menu_switch_time = 0.35
 
-onready var v_buttons := $MainMenu/VBox/Center/VButtons
+onready var v_buttons := $MainMenu/HBox/VBox/Center/VButtons
 onready var main_menu := $MainMenu
-onready var v_folder_label := $MainMenu/VBox/Margin2/Label
-onready var status_msg := $MainMenu/VBox/WaitingMsg
-onready var players_container := $MainMenu/VBox/Players
-onready var launch_button := $MainMenu/VBox/Center/VButtons/Launch
+onready var v_folder_label := $MainMenu/HBox/VBox/Margin2/Label
+onready var status_msg := $MainMenu/HBox/VBox/WaitingMsg
+onready var players_container := $MainMenu/HBox/VBox/Players
+onready var launch_button := $MainMenu/HBox/VBox/Center/VButtons/Launch
+onready var status := $MainMenu/HBox/StatusLabel
 
 var peer = null
 # dictionary indexed by network_id for each player.
@@ -24,6 +27,10 @@ var _multiplayer_desync = null
 var person = preload("res://src/wc/lobby/Player.tscn")
 
 var http_request: HTTPRequest = null
+var is_master = false
+var my_port = 0
+var network_is_ready = false
+var master_ip = ""
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -50,18 +57,23 @@ func _ready() -> void:
 	get_tree().connect("network_peer_disconnected", self, "_player_disconnected")
 	get_tree().connect("connected_to_server", self, "_connected_ok")
 	get_tree().connect("connection_failed", self, "_connected_fail")
-	get_tree().connect("server_disconnected", self, "_server_disconnected")	
-	
+	get_tree().connect("server_disconnected", self, "_server_disconnected")
+	$HolePunch.connect("hole_punched", self, "_hole_punched")
+	$HolePunch.connect("session_registered", self, "_nat_session_registered")	
+	$HolePunch.connect("error", self, "_nat_error")	
+
 	var params = cfc.get_next_scene_params()
 	if params.has("host_ip"):
 		launch_button.hide()
-		_join_as_client(params["host_ip"])
+		is_master = false
+		master_ip = params["host_ip"]
+		add_log("joining as client. Server is:" + str(master_ip))
 	else:
-		_join_as_server()	
-	
-	register_self(my_info)		
+		is_master = true
+		add_log("joining as server")		
 
-	if cfc.is_game_master():
+	if is_master:
+		
 		http_request = HTTPRequest.new()
 		http_request.set_timeout(10.0)
 		add_child(http_request)	
@@ -69,7 +81,48 @@ func _ready() -> void:
 		var create_room_url = cfc.game_settings.get('lobby_server', {}).get('create_room_url', '')
 		var server = cfc.game_settings.get('lobby_server', {}).get('server', '')
 		if server and create_room_url:
+			add_log("connecting lobby server:" + server + create_room_url)
 			http_request.request(server + create_room_url)
+		
+		if ENABLE_HOLE_PUNCHING:	
+			add_log("starting traversal as host")
+			$HolePunch.start_traversal("wc7548", true, "Wololo")
+		else:
+			_join_as_server()
+	else:
+		if ENABLE_HOLE_PUNCHING:
+			add_log("starting traversal as client")
+			$HolePunch.start_traversal("wc7548", false, "Player2")
+		else:
+			_join_as_client(master_ip)
+
+
+func add_log(value):
+	status.text += value + "\n"
+
+func _nat_error(error_text, error_id):
+	add_log(error_text + " - ERRNO:" + str(error_id))
+
+func _nat_session_registered():
+	add_log("session registered")
+
+func _hole_punched(own_port, host_port, host_address):
+	var result = {
+		"own_port": own_port,
+		"host_port": host_port,
+		"host_address": host_address,
+	}
+	v_folder_label.text	= "registered to signal server with ip:" + str(host_address) + ", own_port:" +str(own_port) +", host_port:" + str(host_port)
+	add_log(v_folder_label.text)
+	yield(get_tree().create_timer(0.1), 'timeout')
+	if is_master:
+		_join_as_server(own_port)
+#		_join_as_server(CFConst.MULTIPLAYER_PORT)
+	else:
+		_join_as_client(host_address, host_port, own_port)
+#		_join_as_client(master_ip, CFConst.MULTIPLAYER_PORT)
+
+	
 
 func _get_data_from_signal_server(result, response_code, headers, body):
 	if result != HTTPRequest.RESULT_SUCCESS:
@@ -199,8 +252,8 @@ func compute_database_hash() -> Dictionary:
 	return status
 	
 remotesync func multiplayer_database_comparison():
-	var status = compute_database_hash()
-	cfc._rpc_id(self,1, "master_multiplayer_database_comparison", status)
+	var db_status = compute_database_hash()
+	cfc._rpc_id(self,1, "master_multiplayer_database_comparison", db_status)
 
 
 
@@ -304,33 +357,63 @@ func _set_status(text, isok):
 		status_msg.set_text(text)
 	else:
 		status_msg.set_text(text)
+	add_log(text)
 
-func _join_as_server():
-	var err = gameData.init_as_server()
-	if err != OK:
-		# Is another server running?
-		_set_status("Can't host, address in use.",false)
-		#Go back to lobby
-		get_tree().change_scene(CFConst.PATH_CUSTOM + 'lobby/MultiplayerLobby.tscn')
-		return #does this ever run?
-
-	my_info.name = "Player 1"
-	_set_status("Waiting for players...", true)
-
-
-
-func _join_as_client(host_ip):
-	var ip = host_ip
-	if not ip.is_valid_ip_address():
-		_set_status("IP address is invalid", false)
-		#Go back to lobby
-		get_tree().change_scene(CFConst.PATH_CUSTOM + 'lobby/MultiplayerLobby.tscn')		
+func _join_as_server(port = 0):
+	if network_is_ready:
 		return
+	if !port:
+		port = CFConst.MULTIPLAYER_PORT	
+	add_log("creating server on port:" + str(port))	
+	my_port = port
+	for attempt in 10:
+		var err = gameData.init_as_server(my_port)
+		if err == OK:
+			network_is_ready = true
+			break;
+		else:
+			# Is another server running?
+			add_log("Can't start host, address might be in use? ERRNO:" +str(err))	
+			_set_status("Can't host, address in use?",false)
+			yield(get_tree().create_timer(1.0), 'timeout')
+	
+	if !network_is_ready:
+		add_log("failed starting host after 10 attempts")
+	
+	my_info.name = "Player 1"	
+	_set_status("Waiting for players...", true)
+	register_self(my_info)		
 
-	peer = NetworkedMultiplayerENet.new()
-	peer.set_compression_mode(NetworkedMultiplayerENet.COMPRESS_RANGE_CODER)
-	peer.create_client(ip, CFConst.MULTIPLAYER_PORT)
+
+func _join_as_client(host_ip, host_port = 0, own_port = 0):
+	if network_is_ready:
+		return
+		
+	var ip = host_ip
+	var port = host_port
+	if !port:
+		port = CFConst.MULTIPLAYER_PORT
+	if not ip.is_valid_ip_address():
+		_set_status("IP address is invalid", false)	
+		return
+	add_log("joining as client:" + str(ip) +":" + str(port) + " (my port: )" + str(own_port))	
+	for attempt in 10:
+		peer = NetworkedMultiplayerENet.new()
+		peer.set_compression_mode(NetworkedMultiplayerENet.COMPRESS_RANGE_CODER)	
+		var result = peer.create_client(ip, port, 0, 0, own_port)
+		if result == OK:
+			network_is_ready = true
+			break
+		else:
+			add_log("could not join, ERRNO:" + str(result))
+			yield(get_tree().create_timer(1.0), 'timeout')
+	
+	if !network_is_ready:
+		add_log("failed conection after 10 attempts")
+		return
+		
 	get_tree().set_network_peer(peer)
 	my_info.name = "Player " + str(cfc.get_network_unique_id())
 	_set_status("Connecting...", true)
-
+	network_is_ready = true
+	register_self(my_info)		

@@ -2195,6 +2195,9 @@ func exhaustme(toggle := false,
 			start_tween := true,
 			check := false,
 			tags := ["Manual"]) :
+
+	if get_property("cannot_exhaust", 0, true):
+		return CFConst.ReturnCode.FAILED
 				
 	var rot = 90	
 	if CFConst.OPTIONS.get("enable_fuzzy_rotations",false):

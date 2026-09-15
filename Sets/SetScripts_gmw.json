@@ -1742,7 +1742,7 @@
 		}
 	},
 	"Dauntless": {
-				"give_to_player_max1": {},
+		"give_to_player_max1": {},
 		"alterants": {
 			"board": [
 				{
@@ -4686,9 +4686,11 @@
 	},
 	"Rocket Raccoon #16029a": {
 		"card_damaged": {
-			"filter_state_trigger": [{
-				"filter_group": "group_enemies"
-			}],
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_enemies"
+				}
+			],
 			"event_filters": {
 				"attacker": "self",
 				"excess_damage": ">0"
@@ -5929,7 +5931,7 @@
 					"src_container": [
 						"deck_villain",
 						"set_aside",
-						"board",
+						"board"
 					],
 					"dest_container": "set_aside",
 					"filter_state_tutor": [
@@ -5939,7 +5941,7 @@
 							}
 						}
 					]
-				},			
+				},
 				{
 					"name": "flip_doublesided_card",
 					"subject": "self"

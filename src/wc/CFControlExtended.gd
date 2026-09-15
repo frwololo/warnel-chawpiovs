@@ -13,6 +13,7 @@ var lowercase_card_name_to_name : Dictionary
 var shortname_to_name : Dictionary
 var subname_to_name: Dictionary
 var idx_hero_to_deck_ids : Dictionary
+var hero_ids: Dictionary
 var box_contents_by_name: Dictionary
 var all_traits: Dictionary = {}
 var duplicates: Dictionary = {}
@@ -760,7 +761,8 @@ func _load_one_card_definition(card_data, box_name:= "core", fanmade = false):
 	#caching and indexing
 	shortname_to_name[card_data["shortname"].to_lower()] = card_name
 	lowercase_card_name_to_name[card_name.to_lower()] = card_name
-	
+	if (lc_card_type == "hero" and card_id.ends_with("a")):
+		hero_ids[card_id] = true
 	
 
 	card_data[CardConfig.SCENE_PROPERTY] = "CardTemplate"	
@@ -908,6 +910,7 @@ func save_card_definitions_to_cache(the_files):
 		all_traits, 
 		shortname_to_name, 
 		lowercase_card_name_to_name,
+		hero_ids,
 		duplicates,
 		reverse_duplicates
 	]
@@ -917,6 +920,7 @@ func save_card_definitions_to_cache(the_files):
 		"all_traits", 
 		"shortname_to_name", 
 		"lowercase_card_name_to_name",
+		"hero_ids",
 		"duplicates",
 		"reverse_duplicates"
 	]
@@ -1014,6 +1018,14 @@ func load_card_definitions_from_cache(the_files) -> Dictionary:
 	else:
 		return {
 				"_error": "lowercase_card_name_to_name failed to load from cache"
+			}	
+
+	result =  load_data_from_cache("hero_ids")
+	if result:
+		hero_ids = result
+	else:
+		return {
+				"_error": "hero_ids failed to load from cache"
 			}	
 				
 	result =  load_data_from_cache("duplicates")
@@ -1162,7 +1174,9 @@ func remove_one_deck(deck_id):
 		
 	var hero_id = json_data.get("hero_code","")
 	if hero_id and idx_hero_to_deck_ids.has(hero_id):
-		idx_hero_to_deck_ids[hero_id].erase(deck_id)	
+		idx_hero_to_deck_ids[hero_id].erase(deck_id)
+		if !idx_hero_to_deck_ids[hero_id]:
+			idx_hero_to_deck_ids.erase(hero_id)	
 	
 	deck_definitions.erase(deck_id)		
 

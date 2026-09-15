@@ -4621,21 +4621,18 @@
 			"__name__": "__play_top_deck"
 		},
 		"card_token_modified": {
+			"_silent": true,
 			"trigger": "self",
 			"filter_token_name": "__play_top_deck",
 			"filter_count_difference": "increased",
 			"board": [
 				{
-					"name": "view_card",
-					"subject": "index",
-					"subject_index": "top",
-					"subject_count": 1,
-					"src_container": "deck"
-				},
+					"name": "send_signal",
+					"signal_name": "signal_disable_magik_top_deck"
+				},			
 				{
-					"name": "execute_scripts",
-					"subject": "self",
-					"exec_trigger": "enable_top_deck"
+					"name": "send_signal",
+					"signal_name": "signal_enable_magik_top_deck"
 				}
 			]
 		},
@@ -4644,6 +4641,34 @@
 			"event_filters": {
 				"pile_name": "deck_my_hero"
 			},
+			"board": [
+				{
+					"name": "send_signal",
+					"signal_name": "signal_disable_magik_top_deck"
+				},
+				{
+					"name": "send_signal",
+					"signal_name": "signal_enable_magik_top_deck"
+				}
+			]
+		},
+		"identity_changed_form": {
+			"_silent": true,
+			"trigger": "self",
+			"board": [
+				{
+					"name": "send_signal",
+					"signal_name": "signal_disable_magik_top_deck"
+				},				
+				{
+
+					"name": "send_signal",
+					"signal_name": "signal_enable_magik_top_deck"
+				}
+			]
+		},
+		"response_signal_enable_magik_top_deck": {
+			"_silent": true,
 			"board": [
 				{
 					"name": "view_card",
@@ -4670,6 +4695,28 @@
 				}
 			]
 		},
+		"card_played": {
+			"event_filters": {
+				"from": "deck_my_hero",
+				"_breakpoint": true
+			},
+			"board": [
+				{
+					"name": "send_signal",
+					"signal_name": "signal_disable_magik_top_deck"
+				}
+			]
+		},
+		"interrupt_change_form": {
+			"_silent": true,
+			"trigger": "self",
+			"board": [
+				{
+					"name": "send_signal",
+					"signal_name": "signal_disable_magik_top_deck"
+				}
+			]
+		},
 		"enable_top_deck": {
 			"_silent": true,
 			"condition_board": {
@@ -4682,13 +4729,7 @@
 			"board": [
 				{
 					"name": "add_script",
-					"end_condition": {
-						"event": "card_played",
-						"event_filters": {
-							"from": "deck_my_hero",
-							"_breakpoint": true
-						}
-					},
+					"end_condition": "signal_disable_magik_top_deck",
 					"subject": "index",
 					"subject_index": "top",
 					"subject_count": 1,
@@ -4709,12 +4750,7 @@
 				},
 				{
 					"name": "add_script",
-					"end_condition": {
-						"event": "pile_top_card_changed",
-						"event_filters": {
-							"before": "self"
-						}
-					},
+					"end_condition": "signal_disable_magik_top_deck",
 					"subject": "previous",
 					"fetch_script": {
 						"script_path": "*/hand",

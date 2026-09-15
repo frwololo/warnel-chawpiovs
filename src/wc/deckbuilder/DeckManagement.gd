@@ -265,7 +265,7 @@ func get_focus_owner():
 	return focus_owner
 
 func _load_heroes():
-	for hero_id in cfc.idx_hero_to_deck_ids:
+	for hero_id in cfc.hero_ids:
 		#skip heroes that are not implemented
 		var hero_card_data = cfc.get_card_by_id(hero_id)
 		var alter_ego_id =  hero_card_data.get("back_card_code", "undef")
@@ -321,12 +321,12 @@ func _filter_decks(hero_id = ""):
 	#show in alphabetical order
 	var decks:Array = []
 	if hero_id:
-		var deck_ids = cfc.idx_hero_to_deck_ids[hero_id]
+		var deck_ids = cfc.idx_hero_to_deck_ids.get(hero_id, [])
 		for deck_id in deck_ids:
 			decks.append(cfc.deck_definitions[deck_id])
 	else:
 		var names_to_id = {}
-		for my_hero_id in cfc.idx_hero_to_deck_ids:
+		for my_hero_id in cfc.hero_ids:
 			var hero_card_data = cfc.get_card_by_id(my_hero_id)
 			var alter_ego_id =  hero_card_data.get("back_card_code", "undef")			
 			var hero_name = cfc.get_card_name_by_id(my_hero_id)
@@ -337,7 +337,7 @@ func _filter_decks(hero_id = ""):
 		ordered_names.sort()
 		for hero_name in ordered_names:
 			var my_hero_id = names_to_id[hero_name] 		
-			var deck_ids = cfc.idx_hero_to_deck_ids[my_hero_id]
+			var deck_ids = cfc.idx_hero_to_deck_ids.get(my_hero_id, [])
 			for deck_id in deck_ids:
 				decks.append(cfc.deck_definitions[deck_id])		
 
@@ -350,7 +350,9 @@ func _filter_decks(hero_id = ""):
 			if deck_id:
 				no_deck_loaded = false
 
-	if no_deck_loaded:
+	#A single hero (esp. fanmade) can have no deck.
+	#But for all heroes combined this should not happen since at least a few have starter decks
+	if no_deck_loaded and (!hero_id): 
 		critical_error()
 
 func _on_Menu_resized() -> void:

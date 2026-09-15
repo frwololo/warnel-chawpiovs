@@ -946,6 +946,8 @@ func compute_interrupts(script):
 				var my_interrupters:= {}
 
 				for card in cards_to_check :
+					if !is_instance_valid(card):
+						continue
 					if (card in card_already_played_for_stack_uid.get(script_uid, [])):
 						continue
 #					if (task.script_name == CFConst.SCRIPT_BREAKPOINT_TRIGGER_NAME):

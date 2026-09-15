@@ -84,7 +84,7 @@ def get_base_json(card_data):
       location = "hand"
 
     
-    if primitive in ['<b>hero action', '<b>alter-ego action', '<b>action', 'uses (', 'exhaust ']:
+    if primitive in ['<b>hero action', '<b>alter-ego action', '<b>action', 'uses (', 'exhaust ', 'limit once per round', 'limit once per phase']:
       if not "manual" in result:
         result["manual"] = {}
       if not location in result["manual"]:
@@ -93,7 +93,7 @@ def get_base_json(card_data):
     if primitive == 'limit once per phase':
       result["once_per_phase"]= {
 			"__name__": "__TODO"
-		}
+		}     
       result["manual"]["board"].append(
           {
             "name": "mod_tokens",
@@ -102,12 +102,13 @@ def get_base_json(card_data):
             "token_name": "__TODO",
             "subject": "self"
           }
-
+      )
+      
     if primitive == 'limit once per round':
-      result["once_per_round"]= {
+        result["once_per_round"]= {
 			"__name__": "__TODO"
 		}                               
-      result["manual"]["board"].append(
+        result["manual"]["board"].append(
           {
             "name": "mod_tokens",
             "is_cost": True,
@@ -115,7 +116,7 @@ def get_base_json(card_data):
             "token_name": "__TODO",
             "subject": "self"
           }
-          
+      )    
 
     if primitive == 'incite ':
       result["incite"] = {

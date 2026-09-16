@@ -23,6 +23,7 @@ var selection_count : int
 #max: at most x cards
 #equal: exactly x cards
 #as_much_as_possible: as much as possible (used e.g. for bomb threat)
+#as_evenly_as_possible: as evenly as possible (used e.g. for bombshell)
 #display: only for information
 #all: need to select all cards, typically order matters
 var selection_type: String
@@ -323,7 +324,7 @@ func post_initiate_checks():
 	# If the selection count is 0 (e.g. reduced with an alterant)
 	# And we're looking for max or equal amount of cards, we return cancelled.
 	elif get_selection_count() == 0:
-		if selection_type in ["equal", "max", "as_much_as_possible"]:
+		if selection_type in ["equal", "max", "as_much_as_possible", "as_evenly_as_possible"]:
 			force_cancel()
 			return
 
@@ -371,6 +372,12 @@ func set_window_title():
 				window_title = "Assign " + str(selection_count) + " points."
 			else:
 				window_title = "Select as many as possible, up to " + str(selection_count) + " cards."
+		"as_evenly_as_possible":
+			if _assign_mode:
+				window_title = "Assign " + str(selection_count) + " points."
+			else:
+				window_title = "Select as evenly as possible, up to " + str(selection_count) + " cards."
+
 		"display":
 			window_title = "Press OK to continue"
 		"all":
@@ -449,6 +456,11 @@ func check_ok_button() -> bool:
 					get_ok().disabled = true
 				else:
 					get_ok().disabled = false
+			"as_evenly_as_possible":
+				if (current_count < get_selection_count(selected_cards) and can_still_select_more()):
+					get_ok().disabled = true
+				else:
+					get_ok().disabled = false					
 			"all":
 				if current_count < card_array.size():
 					get_ok().disabled = true
@@ -464,7 +476,7 @@ func check_ok_button() -> bool:
 #function when asked to select "as much as possible"
 #to check if we can still select more cards/points based on the constraints
 func can_still_select_more() -> bool :
-	if (selection_type != "as_much_as_possible"):
+	if !(selection_type in ["as_much_as_possible", "as_evenly_as_possible"]):
 		#basically not implemented in other cases
 		return true
 	
@@ -666,6 +678,25 @@ func dry_run(_card_array: Array) -> void:
 						selected_cards.append(_card_array[i])
 						total = get_count(selected_cards)
 						i += 1	
+			"as_evenly_as_possible":
+				if _assign_mode:
+					var remaining = get_selection_count()
+					for card in _card_array:
+						var can_assign = card.call(_assign_max_function)
+						if can_assign > remaining:
+							can_assign = remaining
+						remaining -= can_assign
+						for _i in range (can_assign):
+							selected_cards.append(card)
+						if remaining <= 0:
+							break	
+				else:
+					var total = 0
+					var i = 0
+					while total < get_selection_count() and i < _card_array.size():
+						selected_cards.append(_card_array[i])
+						total = get_count(selected_cards)
+						i += 1							
 	
 	#we tried our best, we might still be failing
 	if (!check_ok_button()):
@@ -693,7 +724,7 @@ func _extra_dupe_ready(_dupe_selection: Card, _card: Card) -> void:
 func spinbox_value_changed( new_value,  dupe_selection: Card, origin_card) -> void:
 	var current_total = get_count(card_array)
 	#we added too much, this is a problem in general. set the value again and let it call us back
-	if current_total > get_selection_count() and selection_type in ["max", "equal", "as_much_as_possible"]:
+	if current_total > get_selection_count() and selection_type in ["max", "equal", "as_much_as_possible", "as_evenly_as_possible"]:
 		var diff = current_total - get_selection_count()
 		var spinbox = dupe_selection.get_spinbox()
 		spinbox.value -= diff
@@ -716,7 +747,7 @@ func card_clicked(dupe_selection: Card, origin_card) -> void:
 	if !can_select_cards_with_zero_value:
 		if get_count([origin_card]) <= 0:
 			return
-	if selection_type == "as_much_as_possible" and _assign_mode:
+	if selection_type in ["as_much_as_possible", "as_evenly_as_possible"] and _assign_mode:
 		var current_total = get_count(card_array)
 		var spinbox = dupe_selection.get_spinbox()
 		if current_total >= get_selection_count():
@@ -741,7 +772,7 @@ func card_clicked(dupe_selection: Card, origin_card) -> void:
 	# the max, even if the OK button is disabled
 	# So whenever they exceed the max, we unselect the first card in the array.
 	#TODO should use get_count
-	if selection_type in ["equal", "max", "as_much_as_possible"]  and selected_cards.size() > get_selection_count():
+	if selection_type in ["equal", "max", "as_much_as_possible", "as_evenly_as_possible"]  and selected_cards.size() > get_selection_count():
 		var dupe = _card_dupe_map[selected_cards[0]]
 		dupe.highlight.set_highlight(false)
 		dupe.get_parent().set_selected(false)

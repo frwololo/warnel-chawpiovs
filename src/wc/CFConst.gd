@@ -806,6 +806,7 @@ const AUTO_KEYWORDS := {
 	
 	"minimum_hit_points_override": "int",
 	
+	"printed_resource_is_energy": "int",
 	#fake traits used by some scripts
 	#TODO automate: add these to the list of cardconfig integers a runtime
 	"trait_sidekick": "int",		

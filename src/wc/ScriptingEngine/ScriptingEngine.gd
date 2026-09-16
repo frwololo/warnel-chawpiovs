@@ -267,6 +267,32 @@ func shuffle_container(script) -> int:
 	dest_container.shuffle_cards(animate, false) #"true, false": force shuffling before the animation, to ensure cards are actually shuffled
 
 	return CFConst.ReturnCode.CHANGED
+
+
+func shuffle_card_into_owner_deck(script:ScriptTask) -> int:
+	var containers_to_shuffle = {}
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+		
+	var backup_subjects = script.subjects.duplicate(true)
+	for subject in backup_subjects:
+		script.set_subjects([subject])
+		var dest_container_name = "deck"
+		var owner_hero_id = subject.get_owner_hero_id()
+		if owner_hero_id:
+			dest_container_name += str(owner_hero_id)
+		else:
+			dest_container_name += "_villain"
+		script.script_definition["dest_container"] = dest_container_name
+		var result = move_card_to_container(script)
+		containers_to_shuffle[dest_container_name] = true
+	
+	for container_name in containers_to_shuffle:
+		script.script_definition["dest_container"] = container_name
+		shuffle_container(script)
+
+	
+	return CFConst.ReturnCode.CHANGED
 	
 func shuffle_card_into_container(script:ScriptTask) -> int:
 	var result = move_card_to_container(script)
@@ -3163,11 +3189,26 @@ func change_form(script: ScriptTask) -> int:
 			return CFConst.ReturnCode.FAILED
 		
 		if (!costs_dry_run()):
-		#Get my current zone
 			character.change_form(is_manual, to_card_id)
 
 	return CFConst.ReturnCode.CHANGED
+
+func swap_card(script: ScriptTask) -> int:
+	if (!script.subjects):
+		script.set_subjects(script.owner)
+
+	var to_card = script.get_property("change_to", "").replace("#", "")
 	
+	if costs_dry_run():
+		return CFConst.ReturnCode.CHANGED
+	
+	for subject in script.subjects: #should be really one subject only, generally		
+		var to_card_id = to_card
+		cfc.NMAP.board.swap_card(subject, to_card_id)
+
+
+	return CFConst.ReturnCode.CHANGED
+		
 func move_to_player_zone(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	

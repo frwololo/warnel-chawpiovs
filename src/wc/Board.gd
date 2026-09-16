@@ -1503,108 +1503,95 @@ func loadstate_from_json(json:Dictionary):
 	
 	return
 #The game engine doesn't really have a concept of double sided cards, so instead,
-#when flipping such a card, we destroy it and create a new card
+#when flipping such a card, we exchange it with a card from the set_aside board
 func flip_doublesided_card(card:WCCard, to_card_id = ""):
 
 	if card.get_property("cannot_flip", 0, true):
 		return null	
 	
 	var back_code = to_card_id if to_card_id else card.get_card_back_code()
-
-	if (back_code):
-		var type_code = card.get_property("type_code")			
-		if type_code in ["hero", "alter_ego"]:
-			card.load_from_card_id(back_code)
-			#TODO Historically changing form meant triggering the "card_moved_to_board" and "self_moved_to_board"
-			#signals. It is still required (e.g. to add specific tokens)
-			#Will want to change this in the future but for now it is needed
-			scripting_bus.emit_signal_on_stack(
-				"card_moved_to_board",
-				card,
-				 {
-					"destination": "board",
-					"destination_grid": "",
-					"source": "board",
-					"tags": ["change_form"]
-				}
-			)
-			card.execute_scripts(card, "self_moved_to_board")
-			card.changed_form({"before": type_code})
-			return card
-			
-#			var modifiers = card.export_modifiers()
-#			modifiers["callback"] = "changed_form"
-#			modifiers["callback_params"] = {"before": type_code}
-#
-#			#hacky way to move the current card out of the way
-#			#while still leaving it on the board
-#			if card._placement_slot:
-#				card._placement_slot.remove_occupying_card(card)			
-#
-#			var new_card = heroZones[card.get_owner_hero_id()].load_identity(back_code, modifiers)
-#			var attachments_to_move = []
-#			for attachment in card.attachments:
-#				attachments_to_move.append(attachment)
-#			for attachment in attachments_to_move:
-#				var tags = []
-#				if attachment.is_boost():
-#					tags = ["as_boost"]	
-#				attachment.attach_to_host(new_card,false, tags)
-#
-#			gameData.set_aside(card) 
-#
-#			return new_card	
-		else:
-			var new_card = gameData.retrieve_from_side_or_instance(back_code,card.get_owner_hero_id())
-			var slot = card._placement_slot
-			var host = card.current_host_card
-			
-			if new_card.get_parent():
-				if slot:
-					new_card.move_to(cfc.NMAP.board, -1, slot)
-				else:
-					new_card.move_to(cfc.NMAP.board, -1)
-			else:
-				add_child(new_card)
-			card.copy_modifiers_to(new_card)
-
-			var attachments_to_move = []
-			for attachment in card.attachments:
-				attachments_to_move.append(attachment)
-			for attachment in attachments_to_move:
-				var tags = []
-				if attachment.is_boost():
-					tags = ["as_boost"]	
-				attachment.attach_to_host(new_card,false, tags)			
-			
-			if type_code == "main_scheme":
-				gameData.remove_from_game(card)
-			else:
-				gameData.set_aside(card) #is more required to remove it?		
-			#new_card._determine_idle_state()
-			#new_card.move_to(cfc.NMAP.board, -1, slot)	
-			if is_instance_valid(slot):
-				new_card.position = slot.rect_global_position
-				slot.set_occupying_card(new_card)
-			new_card.set_state(Card.CardState.ON_PLAY_BOARD)
-
-			if host:
-				new_card.attach_to_host(host)
-
-			var func_return = new_card.execute_scripts(new_card, "reveal")
-			while func_return is GDScriptFunctionState && func_return.is_valid():
-				func_return = func_return.resume()	
-				
-			func_return = new_card.execute_scripts(new_card, "post_reveal")
-			while func_return is GDScriptFunctionState && func_return.is_valid():
-				func_return = func_return.resume()									
-			#new_card.reorganize_self()
-			return new_card
+	var type_code = card.get_property("type_code")	
+	
+	var result = swap_card(card, back_code)
+	if !result:
+		return null
 		
+		
+	if type_code in ["hero", "alter_ego"]:
+		result.changed_form({"before": type_code})
+
+		
+func swap_card(card:WCCard, to_card_id):
+	if !to_card_id:
+		return null
+		
+
+	var type_code = card.get_property("type_code")			
+	if type_code in ["hero", "alter_ego"]:
+		card.load_from_card_id(to_card_id)
+		#TODO Historically changing form meant triggering the "card_moved_to_board" and "self_moved_to_board"
+		#signals. It is still required (e.g. to add specific tokens)
+		#Will want to change this in the future but for now it is needed
+		scripting_bus.emit_signal_on_stack(
+			"card_moved_to_board",
+			card,
+			 {
+				"destination": "board",
+				"destination_grid": "",
+				"source": "board",
+				"tags": ["change_form"]
+			}
+		)
+		card.execute_scripts(card, "self_moved_to_board")
+		return card
 		
 	else:
-		return null
-		#TODO mabe flip anyway?
+		var new_card = gameData.retrieve_from_side_or_instance(to_card_id,card.get_owner_hero_id())
+		var slot = card._placement_slot
+		var host = card.current_host_card
+		
+		if new_card.get_parent():
+			if slot:
+				new_card.move_to(cfc.NMAP.board, -1, slot)
+			else:
+				new_card.move_to(cfc.NMAP.board, -1)
+		else:
+			add_child(new_card)
+		card.copy_modifiers_to(new_card)
+
+		var attachments_to_move = []
+		for attachment in card.attachments:
+			attachments_to_move.append(attachment)
+		for attachment in attachments_to_move:
+			var tags = []
+			if attachment.is_boost():
+				tags = ["as_boost"]	
+			attachment.attach_to_host(new_card,false, tags)			
+		
+		if type_code == "main_scheme":
+			gameData.remove_from_game(card)
+		else:
+			gameData.set_aside(card) #is more required to remove it?		
+		#new_card._determine_idle_state()
+		#new_card.move_to(cfc.NMAP.board, -1, slot)	
+		if is_instance_valid(slot):
+			new_card.position = slot.rect_global_position
+			slot.set_occupying_card(new_card)
+		new_card.set_state(Card.CardState.ON_PLAY_BOARD)
+
+		if host:
+			new_card.attach_to_host(host)
+
+		var func_return = new_card.execute_scripts(new_card, "reveal")
+		while func_return is GDScriptFunctionState && func_return.is_valid():
+			func_return = func_return.resume()	
+			
+		func_return = new_card.execute_scripts(new_card, "post_reveal")
+		while func_return is GDScriptFunctionState && func_return.is_valid():
+			func_return = func_return.resume()									
+		#new_card.reorganize_self()
+		return new_card
+
 
 func count_card_per_player_in_play(unique_card:WCCard, hero_id = 0, exclude_self = false):
 	var unique_name = unique_card.get_unique_name().to_lower()

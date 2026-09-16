@@ -1,0 +1,2389 @@
+{
+	"\"Go for Champions!\"": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": {
+						"trigger": "round_ended"
+					},
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "invincible",
+									"filter_state_trigger": [
+										{
+											"filter_group": "group_characters",
+											"filter_properties": {
+												"trait_champion": 1,
+												"comparison": "ge"
+											}
+										}
+									],
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"A Minor Setback": {
+		"give_obligation": {
+			"__to__": "Riri Williams"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "progress",
+					"modification": -1,
+					"subject": "my_identity",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"is_else": true,
+					"name": "deal_encounter",
+					"subject": "my_identity"
+				},
+				{
+					"is_else": true,
+					"name": "shuffle_card_into_container",
+					"subject": "self",
+					"dest_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"Agent 13 - Sharon Carter": {
+		"response": {
+			"event_name": [
+				"attack_happened",
+				"thwart_happened"
+			],
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "ready_card",
+					"is_cost": true,
+					"subject": "target",
+					"subject_count": 1,
+					"filter_state_subject": [
+						{
+							"filter_is_exhausted": true,
+							"filter_properties": {
+								"trait_s.h.i.e.l.d": 1,
+								"comparison": "ge"
+							},
+							"filter_properties2": {
+								"type_code": "support"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Air Static": {
+		"interrupt_step_started": {
+			"event_filters": {
+				"step_name": "VILLAIN_THREAT"
+			},
+			"board": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Indirect Damage": [
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "count_cards",
+									"func_params": {
+										"subject": "tutor",
+										"src_container": "hand_my_hero",
+										"filter_state_tutor": [
+											{
+												"filter_properties": {
+													"resource_energy": 1,
+													"comparison": "ge"
+												}
+											}
+										],
+										"plus": {
+											"func_name": "count_cards",
+											"func_params": {
+												"subject": "boardseek",
+												"filter_state_tutor": [
+													{
+														"filter_group": "play_area_my_hero",
+														"filter_properties": {
+															"resource_energy": 1,
+															"comparison": "ge"
+														}
+													}
+												]
+											}
+										}
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "indirect_damage",
+										"subject": "my_identity",
+										"amount": 2
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		},
+		"manual": {
+			"board": {
+				"Discard a card you control": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "discard",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"is_cost": true,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"resource_energy": 1,
+									"comparison": "ge"
+								}
+							}
+						]
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				],
+				"2 Indirect Damage": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "indirect_damage",
+						"subject": "my_identity",
+						"amount": 2
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Bombshell - Lana Baumgartner": {
+		"interrupt_pre_receive_damage": {
+			"trigger": "self",
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "attack",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": "trigger_details_amount",
+					"selection_type": "as_evenly_as_possible",
+					"selection_what_to_count": "assign_any_damage",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Brawn - Amadeus Cho": {
+		"resource": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"constraints": [
+						{
+							"func_name": "is_exhausted",
+							"func_params": {
+								"subject": "self"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "mental"
+				}
+			]
+		}
+	},
+	"Cloud 9 - Abby Boylen": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "phase_ended",
+					"subject": "boardseek",
+					"needs_subject": true,
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"filter_state_trigger": [
+										{
+											"filter_group": "group_characters{__subject_hero_id__}",
+											"filter_properties": {
+												"trait_aerial": 1,
+												"comparison": "ge"
+											}
+										}
+									],
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Cyborg Tech": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "count_traits",
+					"sort_descending": true,
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minions"
+							}
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "surge"
+				},
+				{
+					"is_else": true,
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "host",
+					"alteration": 3
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "deal_encounter",
+					"subject": "self",
+					"target_identity": "current_hero_target"
+				}
+			]
+		}
+	},
+	"Falcon - Joaquin Torres": {
+		"response": {
+			"event_name": [
+				"attack_happened",
+				"thwart_happened"
+			],
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "target",
+					"subject_exclude": "self",
+					"filter_state_subject": [
+						{
+							"filter_is_exhausted": true,
+							"filter_same_controller": true,
+							"filter_properties": {
+								"trait_champion": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Feedback Loop": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"add threat": [
+					{
+						"name": "add_threat",
+						"subject": "self",
+						"amount": {
+							"func_name": "count_printed_resources",
+							"func_params": {
+								"resource_type": "energy",
+								"subject": "boardseek",
+								"subject_count": "all",
+								"filter_state_seek": [
+									{
+										"filter_group": "play_area_my_hero"
+									}
+								]
+							}
+						},
+						"plus_amount": {
+							"func_name": "count_printed_resources",
+							"func_params": {
+								"resource_type": "energy",
+								"subject": "index",
+								"src_container": "hand_my_hero",
+								"subject_count": "all"
+							}
+						}
+					}
+				]
+			}
+		}
+	},
+	"Fly Over": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 3,
+					"subject": "a_scheme"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"subject": "Ironheart",
+					"token_name": "progress"
+				}
+			]
+		},
+		"last_threat_removed": {
+			"event_filters": {
+				"source": "self"
+			},
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"subject": "Ironheart",
+					"token_name": "progress"
+				}
+			]
+		}
+	},
+	"Go All Out": {
+		"on_load": {
+			"all": [
+				{
+					"name": "init_properties",
+					"subject": "self",
+					"set_properties": {
+						"override_play_cost": {
+							"energy": 1,
+							"unc": 1
+						}
+					}
+				}
+			]
+		},
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "my_hero"
+				},
+				{
+					"name": "attack",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_hero",
+							"property": "attack",
+							"plus": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "my_hero",
+									"property": "thwart",
+									"plus": {
+										"func_name": "get_subject_int_property",
+										"func_params": {
+											"subject": "my_hero",
+											"property": "defense"
+										}
+									}
+								}
+							}
+						}
+					},
+					"subject": "an_enemy"
+				}
+			]
+		}
+	},
+	"Haywire": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "printed_resource_is_energy",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_parent": "hand_my_hero"
+						}
+					]
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Discard a card you control": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "discard",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"is_cost": true,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"resource_energy": 1,
+									"comparison": "ge"
+								}
+							}
+						]
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				],
+				"2 Indirect Damage": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "indirect_damage",
+						"subject": "my_identity",
+						"amount": 2
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Helicarrier": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"set_to_mod": true,
+					"token_name": "_helicarrier"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "_helicarrier",
+						"is_inverted": true
+					}
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "another",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "_helicarrier"
+				}
+			]
+		},
+		"phase_ended": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "_helicarrier"
+				}
+			]
+		}
+	},
+	"Ingenuity": {
+		"resource": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "mental"
+				}
+			]
+		}
+	},
+	"Ironheart #29001a": {
+		"manual": {
+			"board": {
+				"Level Up!": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"token_name": "progress",
+						"subject": "self",
+						"modification": -6
+					},
+					{
+						"name": "ready_card",
+						"subject": "self"
+					},
+					{
+						"name": "swap_card",
+						"change_to": "#29002a"
+					}
+				]
+			}
+		}
+	},
+	"Ironheart #29002a": {
+		"manual": {
+			"board": {
+				"Level Up!": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"token_name": "progress",
+						"subject": "self",
+						"modification": -6
+					},
+					{
+						"name": "ready_card",
+						"subject": "self"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "tough",
+						"subject": "self",
+						"modification": 1
+					},
+					{
+						"name": "swap_card",
+						"change_to": "#29003a"
+					}
+				]
+			}
+		}
+	},
+	"Ironheart #29003a": {
+		"manual": {
+			"board": {
+				"Maximum Efficiency": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"token_name": "progress",
+						"subject": "self",
+						"modification": -1
+					},
+					{
+						"name": "deal_damage",
+						"amount": 2,
+						"subject": "an_enemy"
+					}
+				]
+			}
+		}
+	},
+	"Lucia von Bardas": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "count_tokens>=1",
+						"func_params": {
+							"subject": "self",
+							"token_name": "tough"
+						}
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "count_tokens>=1",
+						"func_params": {
+							"subject": "self",
+							"token_name": "tough"
+						}
+					}
+				}
+			]
+		},
+		"phase_ended": {
+			"event_filters": {
+				"phase": "villain_phase"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"token_name": "tough",
+					"modification": 1
+				}
+			]
+		}
+	},
+	"Morale Boost": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "round_ended",
+					"subject": "boardseek",
+					"needs_subject": true,
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities",
+							"filter_properties": {
+								"type_code": "hero"
+							}
+						}
+					],
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"filter_state_trigger": [
+										{
+											"filter_group": "group_identities{__subject_hero_id__}"
+										}
+									],
+									"alteration": 1
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"filter_state_trigger": [
+										{
+											"filter_group": "group_identities{__subject_hero_id__}"
+										}
+									],
+									"alteration": 1
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "defense",
+									"filter_state_trigger": [
+										{
+											"filter_group": "group_identities{__subject_hero_id__}"
+										}
+									],
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"New and Improved": {
+		"manual": {
+			"hand": {
+				"Ironheart Card": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						],
+						"constraints": [
+							{
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"trait_version_1": 1
+											},
+											"filter_properties2": {
+												"shortname": "Ironheart"
+											}
+										}
+									]
+								}
+							}
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"src_container": "deck",
+						"dest_container": "hand",
+						"subject": "tutor",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_optional": false,
+						"selection_type": "equal",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"faction_code": "hero"
+								}
+							}
+						]
+					}
+				],
+				"Tough": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						],
+						"constraints": [
+							{
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"trait_version_1": 1
+											},
+											"filter_properties2": {
+												"shortname": "Ironheart"
+											}
+										}
+									]
+								}
+							}
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "Ironheart",
+						"token_name": "tough",
+						"modification": 1
+					}
+				],
+				"Ready": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						],
+						"constraints": [
+							{
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"trait_version_1": 1
+											},
+											"filter_properties2": {
+												"shortname": "Ironheart"
+											}
+										}
+									]
+								}
+							}
+						]
+					},
+					{
+						"name": "ready_card",
+						"subject": "Ironheart"
+					}
+				],
+				"Ironheart Card + Tough": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						],
+						"constraints": [
+							{
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"trait_version_2": 1
+											},
+											"filter_properties2": {
+												"shortname": "Ironheart"
+											}
+										}
+									]
+								}
+							}
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"src_container": "deck",
+						"dest_container": "hand",
+						"subject": "tutor",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_optional": false,
+						"selection_type": "equal",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"faction_code": "hero"
+								}
+							}
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "Ironheart",
+						"token_name": "tough",
+						"modification": 1
+					}
+				],
+				"Ironheart Card + Ready": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						],
+						"constraints": [
+							{
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"trait_version_2": 1
+											},
+											"filter_properties2": {
+												"shortname": "Ironheart"
+											}
+										}
+									]
+								}
+							}
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"src_container": "deck",
+						"dest_container": "hand",
+						"subject": "tutor",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_optional": false,
+						"selection_type": "equal",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"faction_code": "hero"
+								}
+							}
+						]
+					},
+					{
+						"name": "ready_card",
+						"subject": "Ironheart"
+					}
+				],
+				"Ready + Tough": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						],
+						"constraints": [
+							{
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"trait_version_2": 1
+											},
+											"filter_properties2": {
+												"shortname": "Ironheart"
+											}
+										}
+									]
+								}
+							}
+						]
+					},
+					{
+						"name": "ready_card",
+						"subject": "Ironheart"
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "Ironheart",
+						"token_name": "tough",
+						"modification": 1
+					}
+				],
+				"All": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						],
+						"constraints": [
+							{
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"trait_version_3": 1
+											},
+											"filter_properties2": {
+												"shortname": "Ironheart"
+											}
+										}
+									]
+								}
+							}
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"src_container": "deck",
+						"dest_container": "hand",
+						"subject": "tutor",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_optional": false,
+						"selection_type": "equal",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"faction_code": "hero"
+								}
+							}
+						]
+					},
+					{
+						"name": "ready_card",
+						"subject": "Ironheart"
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "Ironheart",
+						"token_name": "tough",
+						"modification": 1
+					}
+				]
+			}
+		}
+	},
+	"Patriot - Rayshaun Lucas": {
+		"self_moved_to_board": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_champion": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_target",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "round_ended",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "my_target",
+									"alteration": 1
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"trigger": "my_target",
+									"alteration": 1
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "defense",
+									"trigger": "my_target",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Photon Beam": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 4,
+					"subject": "an_enemy"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"subject": "Ironheart",
+					"token_name": "progress"
+				}
+			]
+		},
+		"card_defeated": {
+			"event_filters": {
+				"secondary_source": "self"
+			},
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"subject": "Ironheart",
+					"token_name": "progress"
+				}
+			]
+		}
+	},
+	"Photon Blasters": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "my_identity",
+					"alteration": 2
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"subject": "an_enemy",
+					"amount": {
+						"if": {
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_properties": {
+											"trait_version_1": 1
+										},
+										"filter_properties2": {
+											"shortname": "Ironheart"
+										}
+									}
+								]
+							}
+						},
+						"then": 1,
+						"else": {
+							"if": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"trait_version_2": 1
+											},
+											"filter_properties2": {
+												"shortname": "Ironheart"
+											}
+										}
+									]
+								}
+							},
+							"then": 2,
+							"else": 3
+						}
+					}
+				}
+			]
+		}
+	},
+	"Pinpoint - Qureshi Gupta": {
+		"interrupt_card_moved_to_pile": {
+			"filter_state_trigger": [
+				{
+					"filter_player_card": true
+				}
+			],
+			"event_filters": {
+				"destination": "discard_any"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "shuffle_card_into_owner_deck",
+					"subject": "trigger"
+				}
+			]
+		}
+	},
+	"Political Retribution": {
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "!count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"shortname": "Lucia von Bardas"
+											}
+										},
+										{
+											"filter_properties": {
+												"shortname": "Rule by Force"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "surge"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "add_threat",
+					"subject": "Rule by Force",
+					"amount": 3
+				},
+				{
+					"name": "enemy_schemes",
+					"subject": "Lucia von Bardas"
+				}
+			]
+		}
+	},
+	"Propulsion Jets": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "my_identity",
+					"alteration": 2
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "remove_threat",
+					"subject": "a_scheme",
+					"amount": {
+						"if": {
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_properties": {
+											"trait_version_1": 1
+										},
+										"filter_properties2": {
+											"shortname": "Ironheart"
+										}
+									}
+								]
+							}
+						},
+						"then": 1,
+						"else": {
+							"if": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"trait_version_2": 1
+											},
+											"filter_properties2": {
+												"shortname": "Ironheart"
+											}
+										}
+									]
+								}
+							},
+							"then": 2,
+							"else": 3
+						}
+					}
+				}
+			]
+		}
+	},
+	"Push Ahead": {
+		"on_load": {
+			"all": [
+				{
+					"name": "init_properties",
+					"subject": "self",
+					"set_properties": {
+						"override_play_cost": {
+							"mental": 1,
+							"unc": 2
+						}
+					}
+				}
+			]
+		},
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "my_hero"
+				},
+				{
+					"name": "thwart",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_hero",
+							"property": "attack",
+							"plus": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "my_hero",
+									"property": "thwart",
+									"plus": {
+										"func_name": "get_subject_int_property",
+										"func_params": {
+											"subject": "my_hero",
+											"property": "defense"
+										}
+									}
+								}
+							}
+						}
+					},
+					"subject": "a_scheme"
+				}
+			]
+		}
+	},
+	"R&D Facility": {
+		"on_load": {
+			"all": [
+				{
+					"name": "init_properties",
+					"subject": "self",
+					"set_properties": {
+						"override_play_cost": {
+							"mental": 2,
+							"unc": 1
+						}
+					}
+				}
+			]
+		},
+		"uses": {
+			"__name__": "research",
+			"__amount__": 3
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "research",
+					"subject": "self"
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "nop",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_friendly"
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_target",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "add_script",
+					"subject": "my_target",
+					"end_condition": "round_ended",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": 1
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"trigger": "self",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Riri Williams #29001b": {
+		"additional_cards_set_aside": [
+			{
+				"card": "Ironheart #29002a"
+			},
+			{
+				"card": "Ironheart #29003a"
+			},
+			{
+				"card": "Riri Williams #29002b"
+			},
+			{
+				"card": "Riri Williams #29003b"
+			}			
+		],	
+		"once_per_round": {
+			"__name__": "__child_prodigy"
+		},
+		"manual": {
+			"board": {
+				"Child Prodigy": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": -1,
+						"token_name": "__child_prodigy",
+						"subject": "self"
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"mental": 1
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": 1,
+						"token_name": "progress",
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Riri Williams #29002b": {
+		"once_per_round": {
+			"__name__": "__child_prodigy"
+		},
+		"manual": {
+			"board": {
+				"Child Prodigy (1 mental)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": -1,
+						"token_name": "__child_prodigy",
+						"subject": "self"
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"mental": 1
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": 1,
+						"token_name": "progress",
+						"subject": "self"
+					}
+				],
+				"Child Prodigy (2 resources)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": -1,
+						"token_name": "__child_prodigy",
+						"subject": "self"
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": 1,
+						"token_name": "progress",
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Riri Williams #29003b": {
+		"once_per_round": {
+			"__name__": "__child_prodigy"
+		},
+		"manual": {
+			"board": {
+				"Child Prodigy": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": -1,
+						"token_name": "__child_prodigy",
+						"subject": "self"
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 1
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": 1,
+						"token_name": "progress",
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Ronnie Williams": {
+		"manual": {
+			"board": {
+				"Heal 2": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "heal",
+						"amount": 2,
+						"subject": "Riri Williams"
+					}
+				],
+				"Progress": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "mod_tokens",
+						"modification": 1,
+						"token_name": "progress",
+						"subject": "Riri Williams"
+					}
+				]
+			}
+		}
+	},
+	"Rule by Force": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme_hazard",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "card_is_in_play",
+						"func_params": {
+							"card_name": "Lucia von Bardas"
+						}
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme_acceleration",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "!card_is_in_play",
+						"func_params": {
+							"card_name": "Lucia von Bardas"
+						}
+					}
+				}
+			]
+		}
+	},
+	"Sector Scan": {
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"trait_version_1": 1
+									},
+									"filter_properties2": {
+										"shortname": "Ironheart"
+									}
+								}
+							],
+							"multiplier": -1
+						}
+					},
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"trait_version_2": 1
+									},
+									"filter_properties2": {
+										"shortname": "Ironheart"
+									}
+								}
+							],
+							"multiplier": -2
+						}
+					},
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"trait_version_3": 1
+									},
+									"filter_properties2": {
+										"shortname": "Ironheart"
+									}
+								}
+							],
+							"multiplier": -3
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "view_card",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "round_ended",
+					"script": {
+						"pile_top_card_changed": {
+							"_silent": true,
+							"event_filters": {
+								"pile_name": "deck_villain"
+							},
+							"all": [
+								{
+									"name": "view_card",
+									"subject": "index",
+									"subject_index": "top",
+									"subject_count": 1,
+									"src_container": "deck_villain"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Snowguard - Amka Aliyak": {
+		"self_moved_to_board": {
+			"is_optional_board": true,
+			"board": {
+				"Shift 1 (ATK)": [
+					{
+						"name": "mod_tokens",
+						"token_name": "shift",
+						"subject": "self",
+						"modification": 1
+					}
+				],
+				"Shift 2 (THW)": [
+					{
+						"name": "mod_tokens",
+						"token_name": "shift",
+						"subject": "self",
+						"modification": 2
+					}
+				],
+				"Shift 3 (Hit points)": [
+					{
+						"name": "mod_tokens",
+						"token_name": "shift",
+						"subject": "self",
+						"modification": 3
+					}
+				]
+			}
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": {
+						"func_name": "count_tokens==1",
+						"func_params": {
+							"subject": "self",
+							"token_name": "shift",
+							"multiplier": 3
+						}
+					},
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "overkill",
+					"alteration": {
+						"func_name": "count_tokens==1",
+						"func_params": {
+							"subject": "self",
+							"token_name": "shift"
+						}
+					},
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"alteration": {
+						"func_name": "count_tokens==2",
+						"func_params": {
+							"subject": "self",
+							"token_name": "shift",
+							"multiplier": 3
+						}
+					},
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_aerial",
+					"alteration": {
+						"func_name": "count_tokens==2",
+						"func_params": {
+							"subject": "self",
+							"token_name": "shift"
+						}
+					},
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"alteration": {
+						"func_name": "count_tokens==3",
+						"func_params": {
+							"subject": "self",
+							"token_name": "shift",
+							"multiplier": 5
+						}
+					},
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"alteration": {
+						"func_name": "count_tokens==3",
+						"func_params": {
+							"subject": "self",
+							"token_name": "shift"
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		}
+	},
+	"Stroke of Genius": {
+		"paid_as_resource": {
+			"trigger": "self",
+			"is_optional_all": true,
+			"all": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"subject": "my_identity",
+					"token_name": "progress"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"The Power of Leadership": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "leadership"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Tony Stark A.I.": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "hand",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck",
+					"subject_count": 2,
+					"needs_selection": true,
+					"display_title": "choose card to draw",
+					"selection_count": 1,
+					"selection_type": "equal"
+				},
+				{
+					"name": "discard",
+					"subject_exclude": "all_previous",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck",
+					"subject_count": 2
+				}
+			]
+		}
+	},
+	"Vivian": {
+		"self_moved_to_board": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "nop",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "attachment"
+							}
+						},
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_elite": 0
+							}
+						},
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							},
+							"filter_properties2": {
+								"permanent": 0
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_target",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": {
+						"trigger": "round_ended"
+					},
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "blank_printed_text_box",
+									"trigger": "my_target",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Wasp - Nadia Van Dyne": {
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "bypass_guard",
+					"alteration": 1,
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "bypass_patrol",
+					"alteration": 1,
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "bypass_crisis",
+					"alteration": 1,
+					"trigger": "self"
+				}
+			]
+		}
+	},
+	"Zzzap!": {
+		"reveal": {
+			"all": [
+				{
+					"name": "indirect_damage",
+					"subject": "current_hero_target",
+					"amount": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"resource_type": "energy",
+							"subject": "index",
+							"subject_count": "all",
+							"src_container": "hand_current_hero_target"
+						}
+					}
+				},
+				{
+					"name": "surge",
+					"amount": {
+						"func_name": "count_printed_resources<=1",
+						"func_params": {
+							"resource_type": "energy",
+							"subject": "index",
+							"subject_count": "all",
+							"src_container": "hand_current_hero_target"
+						}
+					}
+				}
+			]
+		}
+	},
+	"Zzzax": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"resource_type": "energy",
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filer_group": "play_area_my_hero"
+								}
+							]
+						}
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"resource_type": "energy",
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filer_group": "play_area_my_hero"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"boost": {
+			"condition_all": {
+				"func_name": "count_printed_resources",
+				"func_params": {
+					"resource_type": "energy",
+					"subject": "index",
+					"subject_count": "all",
+					"src_container": "hand_current_hero_target"
+				}
+			},
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self"
+				}
+			]
+		}
+	}
+}

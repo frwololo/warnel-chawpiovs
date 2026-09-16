@@ -242,6 +242,7 @@ func refresh_can_play_as_if_in_hand():
 		_can_i_play_as_if_in_hand_subscript = 0
 		
 	_can_play_as_if_in_hand = can_play_as_if_in_hand
+
 func get_all_traits() -> Dictionary:
 	if _cached_all_traits == null:
 		_cached_all_traits = {}
@@ -1215,6 +1216,19 @@ func get_property(property: String, default = null, force_alterant_check = false
 		] and !get_ghost_card()\
 		and property!= "can_play_as_if_in_hand":
 			return properties.get(property, default)
+	
+	#hack for Haywire
+	if property.begins_with("resource_"):
+		if get_property("printed_resource_is_energy", 0, true):
+			match property:
+				"resource_energy":
+					var result = 0
+					for resource_type in ManaCost.RESOURCE_TEXT:
+						resource_type = "resource_" + resource_type.to_lower()
+						result += properties.get(resource_type)
+					return result
+				_:
+					return 0
 				
 	return(get_property_and_alterants(property, false, default).value)		
 			
@@ -3544,6 +3558,15 @@ func count_most_common(params, script:ScriptObject= null) -> int:
 				max_value = counts[value]
 				
 	return max_value
+
+func count_traits(params, script:ScriptObject= null) -> int:
+	var subject = get_param_subject(params, script)
+	
+	if !subject:
+		return 0
+	var all_traits = subject.get_all_traits()
+	return all_traits.size()
+			
 	
 func get_subject_int_property(params, script:ScriptObject= null) -> int:
 	var subjects = get_param_subjects(params, script)

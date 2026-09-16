@@ -726,6 +726,8 @@ const DEFAULT_TOKEN_MAX_VALUE := {
 	"__can_change_form": 1,
 }
 
+const TUTOR_INDEX_EXCLUDE_SOURCE := true
+
 const AUTO_KEYWORDS := {
 	"alliance" : "int",
 	"assault" : "int",
@@ -789,6 +791,7 @@ const AUTO_KEYWORDS := {
 	"cannot_ready": "int",
 	"cannot_ready_by_player_card": "int",
 	"cannot_thwart_side_scheme": "int",
+	"can_play_as_if_in_hand": "int",
 
 	"excess_damage_boost": "int", #Rocket Raccoon's Follow Through card
 	"exclude_from_ally_limit": "int",

@@ -214,7 +214,34 @@ func refresh_cache(forced=false):
 	_cache_refresh_needed = false
 	_cached_all_traits = null
 	_script_alter_cache = {}
+	
+	refresh_can_play_as_if_in_hand()
 
+var _can_play_as_if_in_hand = false
+var _can_i_play_as_if_in_hand_subscript = 0
+func refresh_can_play_as_if_in_hand():
+	var can_play_as_if_in_hand = get_property("can_play_as_if_in_hand", 0, true)
+	if can_play_as_if_in_hand and !_can_play_as_if_in_hand:
+		var subscript = {}
+		var seek_state = "hand"
+		var fetched_scripts = self.retrieve_scripts_by_state(seek_state)
+		var new_state = "pile" #TODO more generic?
+		for key in fetched_scripts:
+			var fetched_script = fetched_scripts[key]
+			fetched_script[new_state] = fetched_script[seek_state]
+			fetched_script.erase(seek_state)
+			if fetched_script.has("is_optional_" + seek_state):
+				fetched_script["is_optional_" + new_state] = fetched_script["is_optional_" + seek_state]
+			subscript[key] = fetched_script
+			
+		_can_i_play_as_if_in_hand_subscript = self.add_extra_script( subscript, self.get_controller_hero_id())
+						
+
+	elif _can_play_as_if_in_hand and !can_play_as_if_in_hand:
+		self.remove_extra_script(_can_i_play_as_if_in_hand_subscript)
+		_can_i_play_as_if_in_hand_subscript = 0
+		
+	_can_play_as_if_in_hand = can_play_as_if_in_hand
 func get_all_traits() -> Dictionary:
 	if _cached_all_traits == null:
 		_cached_all_traits = {}
@@ -1185,7 +1212,8 @@ func get_property(property: String, default = null, force_alterant_check = false
 				CardState.FOCUSED_IN_HAND,
 				CardState.REORGANIZING,
 				CardState.PUSHED_ASIDE,
-		] and !get_ghost_card():
+		] and !get_ghost_card()\
+		and property!= "can_play_as_if_in_hand":
 			return properties.get(property, default)
 				
 	return(get_property_and_alterants(property, false, default).value)		

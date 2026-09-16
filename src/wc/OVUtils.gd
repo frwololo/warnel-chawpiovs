@@ -888,6 +888,11 @@ func compare_string_properties(property_filters, card, property, comparison_type
 		
 		
 	card_property = card.get_property("secondary_" + property, "", true)
+	
+	#if there's nothing to compare to for secondary, we fail
+	if !card_property:
+		return false
+		
 	return CFUtils.compare_strings(
 					str(property_filters[property]),
 					str(card_property),

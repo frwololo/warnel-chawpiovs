@@ -581,6 +581,9 @@ func _tutor_subjects(stored_integer: int) -> Array:
 	var subject_list :Array = cfc.get_all_cards_from_containers(src_container)
 	subject_list = sort_subjects(subject_list)
 	for c in subject_list:
+		if CFConst.TUTOR_INDEX_EXCLUDE_SOURCE:
+			if c == self.owner:
+				continue		
 		if SP.check_validity(c, script_definition, "tutor", owner):
 			subjects_array.append(c)
 			subject_count -= 1
@@ -608,6 +611,9 @@ func _index_seek_subjects(stored_integer: int) -> Array:
 	#validity check
 	var to_remove = []	
 	for c in all_cards:
+		if CFConst.TUTOR_INDEX_EXCLUDE_SOURCE:
+			if c == self.owner:
+				to_remove.append(c)
 		if !SP.check_validity(c, script_definition, "index", owner):
 			to_remove.append(c)
 	for c in to_remove:

@@ -1,0 +1,205 @@
+{
+	"_comments": "Test Magik Stepping Disc not allowing Stepping Disc",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Magik"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "War - A"
+				},
+				{
+					"card": "Famine - A",
+					"tokens": {
+						"damage": 1,
+						"active_counter": 1
+					}
+				},
+				{
+					"card": "Death - A"
+				},
+				{
+					"card": "Pestilence - A"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Horsemen of Apocalypse"
+				},
+				{
+					"card": "Plague and Pestilence",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Stepping Disc"
+				},
+				{
+					"card": "Scrying"
+				},
+				{
+					"card": "Mystical Armor"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Bloodgem"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Magik"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Magik",
+					"tokens": {
+						"damage": 1,
+						"__play_top_deck": 1
+					}
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Stepping Disc"
+				},
+				{
+					"card": "Soul Strike"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Stepping Disc"
+		},
+		{
+			"type": "select",
+			"value": "Stepping Disc",
+			"expected_to_fail": true
+		},
+		{
+			"type": "select",
+			"value": "Mystical Armor"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Magik"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "War - A"
+				},
+				{
+					"card": "Famine - A",
+					"tokens": {
+						"damage": 1,
+						"active_counter": 1
+					}
+				},
+				{
+					"card": "Death - A"
+				},
+				{
+					"card": "Pestilence - A"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Horsemen of Apocalypse"
+				},
+				{
+					"card": "Plague and Pestilence",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Stepping Disc"
+				},
+				{
+					"card": "Scrying"
+				},
+				{
+					"card": "Soul Strike"
+				},
+				{
+					"card": "Stepping Disc"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Bloodgem"
+				},
+				{
+					"card": "Mystical Armor"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Magik"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Magik",
+					"tokens": {
+						"damage": 1,
+						"__play_top_deck": 1
+					}
+				}
+			],
+			"allies1": [],
+			"hand1": []
+		}
+	}
+}

@@ -957,7 +957,7 @@
 				},
 				{
 					"name": "add_resource",
-					"amount": 2,
+					"amount": 1,
 					"resource_name": "wild"
 				}
 			]
@@ -3460,10 +3460,10 @@
 				},
 				{
 					"name": "save_variable",
-					"subject": "previous",
+					"subject": "host",
 					"var_name": "my_target",
 					"var_type": "subject",
-					"value": "self"
+					"value": "trigger"
 				},
 				{
 					"name": "sequence",
@@ -4613,32 +4613,12 @@
 		"once_per_phase": {
 			"__name__": "__play_top_deck"
 		},
-		"card_token_modified": {
-			"_silent": true,
-			"trigger": "self",
-			"filter_token_name": "__play_top_deck",
-			"filter_count_difference": "increased",
-			"board": [
-				{
-					"name": "send_signal",
-					"signal_name": "signal_disable_magik_top_deck"
-				},
-				{
-					"name": "send_signal",
-					"signal_name": "signal_enable_magik_top_deck"
-				}
-			]
-		},
 		"pile_top_card_changed": {
 			"_silent": true,
 			"event_filters": {
 				"pile_name": "deck_my_hero"
 			},
 			"board": [
-				{
-					"name": "send_signal",
-					"signal_name": "signal_disable_magik_top_deck"
-				},
 				{
 					"name": "send_signal",
 					"signal_name": "signal_enable_magik_top_deck"
@@ -4649,10 +4629,6 @@
 			"_silent": true,
 			"trigger": "self",
 			"board": [
-				{
-					"name": "send_signal",
-					"signal_name": "signal_disable_magik_top_deck"
-				},
 				{
 					"name": "send_signal",
 					"signal_name": "signal_enable_magik_top_deck"
@@ -4670,9 +4646,10 @@
 					"src_container": "deck"
 				},
 				{
-					"name": "execute_scripts",
-					"subject": "self",
-					"exec_trigger": "enable_top_deck"
+					"name": "save_variable",
+					"var_name": "my_top_card",
+					"var_type": "subject",
+					"value": "previous"
 				}
 			]
 		},
@@ -4683,7 +4660,26 @@
 					"trigger": "my_top_card",
 					"filter_task": "get_property",
 					"filter_property_name": "cost",
-					"alteration": -1
+					"alteration": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "self",
+							"token_name": "__play_top_deck",
+							"multiplier": -1
+						}
+					}
+				},
+				{
+					"trigger": "my_top_card",
+					"filter_task": "get_property",
+					"filter_property_name": "can_play_as_if_in_hand",
+					"alteration": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "self",
+							"token_name": "__play_top_deck"
+						}
+					}
 				}
 			]
 		},
@@ -4694,66 +4690,11 @@
 			},
 			"board": [
 				{
-					"name": "send_signal",
-					"signal_name": "signal_disable_magik_top_deck"
-				}
-			]
-		},
-		"interrupt_change_form": {
-			"_silent": true,
-			"trigger": "self",
-			"board": [
-				{
-					"name": "send_signal",
-					"signal_name": "signal_disable_magik_top_deck"
-				}
-			]
-		},
-		"enable_top_deck": {
-			"_silent": true,
-			"condition_board": {
-				"func_name": "count_tokens",
-				"func_params": {
-					"token_name": "__play_top_deck",
-					"subject": "self"
-				}
-			},
-			"board": [
-				{
-					"name": "add_script",
-					"end_condition": "signal_disable_magik_top_deck",
-					"subject": "index",
-					"subject_index": "top",
-					"subject_count": 1,
-					"src_container": "deck",
-					"script": {
-						"interrupt_card_played": {
-							"trigger": "self",
-							"all": [
-								{
-									"name": "mod_tokens",
-									"modification": -1,
-									"token_name": "__play_top_deck",
-									"subject": "my_hero"
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "add_script",
-					"end_condition": "signal_disable_magik_top_deck",
-					"subject": "previous",
-					"fetch_script": {
-						"script_path": "*/hand",
-						"replace_to_state": "pile"
-					}
-				},
-				{
-					"name": "save_variable",
-					"var_name": "my_top_card",
-					"var_type": "subject",
-					"value": "previous"
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 0,
+					"set_to_mod": true,
+					"token_name": "__play_top_deck"
 				}
 			]
 		}
@@ -5128,7 +5069,7 @@
 							"func_params": {
 								"subject": "index",
 								"subject_index": "top",
-								"src_container": "deck",
+								"src_container": "deck_my_hero",
 								"subject_count": 1,
 								"resource_type": [
 									"energy",

@@ -1,0 +1,327 @@
+{
+	"_comments": "Tests Apocalypse - Age of Apocalypse Threat max",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"deck_id": 19388,
+					"hero": "Ironheart #29001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Wolf Among Sheep #45110"
+				},
+				{
+					"card": "Biomorphing #45107"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance #01186"
+				}
+			],
+			"villain": [
+				{
+					"card": "Apocalypse - 2 #45101b",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Age of Apocalypse - 1B #45103b",
+					"tokens": {
+						"threat": 8
+					}
+				},
+				{
+					"card": "Gene Pool #45071",
+					"tokens": {
+						"threat": 4
+					}
+				},
+				{
+					"card": "Heart of the Empire #45104a",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Ironheart #29002a"
+				},
+				{
+					"card": "Ironheart #29003a"
+				},
+				{
+					"card": "Riri Williams #29002b"
+				},
+				{
+					"card": "Riri Williams #29003b"
+				},
+				{
+					"card": "Ironheart #29001a"
+				},
+				{
+					"card": "Rule by Force #29029"
+				},
+				{
+					"card": "Lucia von Bardas #29030"
+				},
+				{
+					"card": "Cyborg Tech #29031"
+				},
+				{
+					"card": "Political Retribution #29032"
+				},
+				{
+					"card": "Political Retribution #29032"
+				},
+				{
+					"card": "Apocalypse - 3 #45102a"
+				},
+				{
+					"card": "Apocalypse - IV #45102b"
+				},
+				{
+					"card": "The Towering Citadel #45104b"
+				},
+				{
+					"card": "Abyss #45181b"
+				},
+				{
+					"card": "Sugar Man #45182b"
+				},
+				{
+					"card": "No Longer Worthy #45105b"
+				},
+				{
+					"card": "Mikhail Rasputin #45183b"
+				},
+				{
+					"card": "Mister Sinister #45179b"
+				},
+				{
+					"card": "The Tyrant's Throne #45105a"
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Age of Apocalypse - 1A #45103a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Push Ahead #29018"
+				},
+				{
+					"card": "Ingenuity #29027"
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "The Shadow King #45180b",
+					"tokens": {
+						"tough": 1,
+						"confused": 1
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Riri Williams #29001b",
+					"tokens": {
+						"__child_prodigy": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "R&D Facility #29020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Push Ahead #29018",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"deck_id": 19388,
+					"hero": "Ironheart #29001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Advance #01186"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Wolf Among Sheep #45110"
+				},
+				{
+					"card": "Biomorphing #45107"
+				}
+			],
+			"villain": [
+				{
+					"card": "Apocalypse - 3 #45102a",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Age of Apocalypse - 1B #45103b",
+					"tokens": {
+						"threat": 0
+					}
+				},
+				{
+					"card": "Gene Pool #45071",
+					"tokens": {
+						"threat": 4
+					}
+				},
+				{
+					"card": "Heart of the Empire #45104a",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Ironheart #29002a"
+				},
+				{
+					"card": "Ironheart #29003a"
+				},
+				{
+					"card": "Riri Williams #29002b"
+				},
+				{
+					"card": "Riri Williams #29003b"
+				},
+				{
+					"card": "Ironheart #29001a"
+				},
+				{
+					"card": "Rule by Force #29029"
+				},
+				{
+					"card": "Lucia von Bardas #29030"
+				},
+				{
+					"card": "Cyborg Tech #29031"
+				},
+				{
+					"card": "Political Retribution #29032"
+				},
+				{
+					"card": "Political Retribution #29032"
+				},
+				{
+					"card": "Apocalypse - IV #45102b"
+				},
+				{
+					"card": "The Towering Citadel #45104b"
+				},
+				{
+					"card": "Abyss #45181b"
+				},
+				{
+					"card": "Sugar Man #45182b"
+				},
+				{
+					"card": "No Longer Worthy #45105b"
+				},
+				{
+					"card": "Mikhail Rasputin #45183b"
+				},
+				{
+					"card": "Mister Sinister #45179b"
+				},
+				{
+					"card": "The Tyrant's Throne #45105a"
+				},
+				{
+					"card": "Apocalypse - 2 #45101b"
+				},				
+			],
+			"removed_from_game": [
+				{
+					"card": "The Age of Apocalypse - 1A #45103a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Push Ahead #29018"
+				},
+				{
+					"card": "Ingenuity #29027"
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "The Shadow King #45180b",
+					"tokens": {
+						"tough": 1,
+					}
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Riri Williams #29001b",
+					"tokens": {
+						"__child_prodigy": 1,
+						"__can_change_form": 1,
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "R&D Facility #29020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Push Ahead #29018",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

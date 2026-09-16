@@ -401,7 +401,9 @@ func fix_stage(stage):
 			"II":
 				return "2"
 			"III":
-				return "3"											
+				return "3"	
+			"IV":
+				return "4"															
 			_:
 				return stage
 			
@@ -420,6 +422,8 @@ func stage_variant_to_int(stage):
 				return 2
 			"III":
 				return 3
+			"IV":
+				return 4				
 			"A1":
 				return 1
 			"B1":
@@ -835,7 +839,7 @@ func get_nemesis_data(card_id):
 		return nemesis[card_id]
 		
 	var card_data = card_definitions[card_id]
-	if !card_data["type_code"] in ["hero", "alter-ego"]:		
+	if !card_data["type_code"] in ["hero", "alter_ego"]:		
 		nemesis[card_id] = {}
 		return nemesis[card_id]
 			

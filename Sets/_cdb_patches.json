@@ -454,6 +454,10 @@
 	"45052": {
 		"alternate_art": true
 	},
+	"45103b": {
+		"threat": 0,
+		"_comments": "engine doesn't like negative threat"
+	},
 	"45104a": {
 		"linked_to_code": "45104b",
 		"linked_to_name": "The Towering Citadel",

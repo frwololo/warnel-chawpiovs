@@ -34,7 +34,7 @@
 					"filter_property_name": "health",
 					"trigger": "self",
 					"alteration": {
-						"func_name": "count_attachements",
+						"func_name": "count_attachments",
 						"func_params": {
 							"subject": "self",
 							"multiplier": 2
@@ -55,7 +55,7 @@
 					"subject": "index",
 					"subject_index": "top",
 					"subject_count": 1,
-					"src_container": "deck_current_activation_target",
+					"src_container": "deck_current_hero_target",
 					"tags": [
 						"facedown"
 					]
@@ -5718,7 +5718,7 @@
 					"name": "mod_tokens",
 					"modification": 1,
 					"token_name": "confused",
-					"subject": "current_activation_target"
+					"subject": "current_hero_target"
 				}
 			]
 		}
@@ -7067,6 +7067,7 @@
 			"all": [
 				{
 					"name": "move_card_to_container",
+					"dest_container": "set_aside",
 					"subject": "tutor",
 					"subject_count": "all",
 					"src_container": "deck_villain",
@@ -7083,7 +7084,17 @@
 							"filter_properties": {
 								"shortname": "The Tyrant's Throne"
 							}
-						}
+						},
+						{
+							"filter_properties": {
+								"shortname": "The Towering Citadel"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "No Longer Worthy"
+							}
+						}						
 					]
 				},
 				{
@@ -7137,7 +7148,7 @@
 						"func_params": {
 							"subject": "Apocalypse",
 							"property": "health",
-							"multiplier": "player_count"
+							"multiplier": "count_players"
 						}
 					}
 				}
@@ -7279,6 +7290,17 @@
 				{
 					"name": "surge",
 					"is_else": true
+				}
+			]
+		},
+		"card_attached": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name" : "tough",
+					"subject" :"host"
 				}
 			]
 		},

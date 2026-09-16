@@ -735,7 +735,7 @@ func check_main_scheme_defeat():
 	for scheme in schemes:
 		#skip schemes with no threat
 		#error case: Side A improperly taken into account
-		if !scheme.get_property("threat", 0):
+		if !scheme.get_property("threat", 0, true):
 			continue
 		if scheme.get_current_threat() >= scheme.get_property("threat", 0, true):
 			scripting_bus.emit_signal_on_stack("stage_completed", scheme, {})

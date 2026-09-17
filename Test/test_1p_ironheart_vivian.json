@@ -1,0 +1,367 @@
+{
+	"_comments": "Tests Ironheart Vivian (bug)",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"deck_id": 19388,
+					"hero": "Ironheart #29001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Wolf Among Sheep #45110"
+				},
+				{
+					"card": "Biomorphing #45107"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Shadow of the Past"
+				}
+			],
+			"villain": [
+				{
+					"card": "Apocalypse - 2 #45101b",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Age of Apocalypse - 1B #45103b",
+					"tokens": {
+						"threat": 6
+					}
+				},
+				{
+					"card": "Gene Pool #45071",
+					"tokens": {
+						"threat": 4
+					}
+				},
+				{
+					"card": "Heart of the Empire #45104a",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Ironheart #29001a"
+				},
+				{
+					"card": "Ironheart #29003a"
+				},
+				{
+					"card": "Riri Williams #29002b"
+				},
+				{
+					"card": "Riri Williams #29003b"
+				},
+				{
+					"card": "Ironheart #29001a"
+				},
+				{
+					"card": "Rule by Force #29029"
+				},
+				{
+					"card": "Lucia von Bardas #29030"
+				},
+				{
+					"card": "Cyborg Tech #29031"
+				},
+				{
+					"card": "Political Retribution #29032"
+				},
+				{
+					"card": "Political Retribution #29032"
+				},
+				{
+					"card": "Apocalypse - 3 #45102a"
+				},
+				{
+					"card": "Apocalypse - IV #45102b"
+				},
+				{
+					"card": "The Towering Citadel #45104b"
+				},
+				{
+					"card": "Abyss #45181b"
+				},
+				{
+					"card": "Sugar Man #45182b"
+				},
+				{
+					"card": "No Longer Worthy #45105b"
+				},
+				{
+					"card": "Mikhail Rasputin #45183b"
+				},
+				{
+					"card": "Mister Sinister #45179b"
+				},
+				{
+					"card": "The Tyrant's Throne #45105a"
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Age of Apocalypse - 1A #45103a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Push Ahead #29018"
+				},
+				{
+					"card": "Ingenuity #29027"
+				},
+				{
+					"card": "Fly Over"
+				},
+				{
+					"card": "Photon Beam"
+				},
+				{
+					"card": "The Power of Leadership"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Ironheart #29002a",
+					"tokens": {
+						"__child_prodigy": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Vivian #29024",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Vivian"
+		},
+		{
+			"type": "target",
+			"value": "Heart of the Empire #45104a"
+		},
+		{
+			"type": "next_phase",
+			"value": 1
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		},		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 19388,
+					"hero": "29001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Wolf Among Sheep #45110"
+				},
+				{
+					"card": "Biomorphing #45107"
+				}
+			],
+			"villain": [
+				{
+					"card": "Apocalypse - 2 #45101b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Age of Apocalypse - 1B #45103b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 7
+					}
+				},
+				{
+					"card": "Gene Pool #45071",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 4
+					}
+				},
+				{
+					"card": "Heart of the Empire #45104a",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Ironheart #29001a"
+				},
+				{
+					"card": "Ironheart #29003a"
+				},
+				{
+					"card": "Riri Williams #29002b"
+				},
+				{
+					"card": "Riri Williams #29003b"
+				},
+				{
+					"card": "Ironheart #29001a"
+				},
+				{
+					"card": "Rule by Force #29029"
+				},
+				{
+					"card": "Lucia von Bardas #29030"
+				},
+				{
+					"card": "Cyborg Tech #29031"
+				},
+				{
+					"card": "Political Retribution #29032"
+				},
+				{
+					"card": "Political Retribution #29032"
+				},
+				{
+					"card": "Apocalypse - 3 #45102a"
+				},
+				{
+					"card": "Apocalypse - IV #45102b"
+				},
+				{
+					"card": "The Towering Citadel #45104b"
+				},
+				{
+					"card": "Abyss #45181b"
+				},
+				{
+					"card": "Sugar Man #45182b"
+				},
+				{
+					"card": "No Longer Worthy #45105b"
+				},
+				{
+					"card": "Mikhail Rasputin #45183b"
+				},
+				{
+					"card": "Mister Sinister #45179b"
+				},
+				{
+					"card": "The Tyrant's Throne #45105a"
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Age of Apocalypse - 1A #45103a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Push Ahead #29018",
+					"owner_hero_id": 1
+				},
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary #08028",
+					"owner_hero_id": 0
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ironheart #29002a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__child_prodigy": 1,
+						"__can_change_form": 1,
+						"damage": 4
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Vivian"
+				}
+			],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "The Power of Leadership"
+				},
+				{
+					"card": "Photon Beam"
+				},
+				{
+					"card": "Fly Over"
+				},
+				{
+					"card": "Ingenuity #29027"
+				}
+			]
+		}
+	}
+}

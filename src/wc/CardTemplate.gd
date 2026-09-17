@@ -215,12 +215,26 @@ func refresh_cache(forced=false):
 	_cached_all_traits = null
 	_script_alter_cache = {}
 	
-	refresh_can_play_as_if_in_hand()
+	refresh_dummy_alterants()
 
-var _can_play_as_if_in_hand = false
-var _can_i_play_as_if_in_hand_subscript = 0
+
+# Functions to periodically refresh effects of complex alterants
+#This is for alterants that are "rare" but also have complicated impacts on
+#card properties, etc...
+var _dummy_alterants_cache = {}
+func refresh_dummy_alterants():
+	refresh_can_play_as_if_in_hand()
+	refresh_blank_text_box()
+	
 func refresh_can_play_as_if_in_hand():
-	var can_play_as_if_in_hand = get_property("can_play_as_if_in_hand", 0, true)
+	var alterant = "can_play_as_if_in_hand"
+	if !CFScriptUtils.game_has_alterants(alterant):
+		return	
+			
+	var can_play_as_if_in_hand = get_property(alterant, 0, true)
+	var _can_play_as_if_in_hand = _dummy_alterants_cache.get(alterant, 0)
+	
+	#newly asked to be able to play as if in hand
 	if can_play_as_if_in_hand and !_can_play_as_if_in_hand:
 		var subscript = {}
 		var seek_state = "hand"
@@ -234,14 +248,38 @@ func refresh_can_play_as_if_in_hand():
 				fetched_script["is_optional_" + new_state] = fetched_script["is_optional_" + seek_state]
 			subscript[key] = fetched_script
 			
-		_can_i_play_as_if_in_hand_subscript = self.add_extra_script( subscript, self.get_controller_hero_id())
-						
+		_dummy_alterants_cache[alterant] = self.add_extra_script( subscript, self.get_controller_hero_id())		
 
+	#conversely, when I was able to play as if in hand and am being asked to stop
 	elif _can_play_as_if_in_hand and !can_play_as_if_in_hand:
-		self.remove_extra_script(_can_i_play_as_if_in_hand_subscript)
-		_can_i_play_as_if_in_hand_subscript = 0
+		self.remove_extra_script(_can_play_as_if_in_hand)
+		_dummy_alterants_cache.erase(alterant)
+
+func refresh_blank_text_box():
+	var alterant = "blank_printed_text_box"
+	if !CFScriptUtils.game_has_alterants(alterant):
+		return	
 		
-	_can_play_as_if_in_hand = can_play_as_if_in_hand
+	var is_altered = get_property(alterant, 0, true)
+	var previous_state = _dummy_alterants_cache.get(alterant, null)
+	
+	#newly asked to blank text
+	if is_altered and (previous_state == null):
+		var backup_properties = {}
+		for keyword in cfc.TEXT_BOX_KEYWORDS:
+			var value = properties.get(keyword, 0)
+			if value:
+				backup_properties[keyword] = value 
+				properties.erase(keyword)
+		_dummy_alterants_cache[alterant] = backup_properties	
+
+	#revert properties
+	elif (previous_state != null) and !is_altered:
+		var backup_properties = previous_state
+		for keyword in backup_properties:
+			properties[keyword] = backup_properties[keyword]
+		_dummy_alterants_cache.erase(alterant)		
+
 
 func get_all_traits() -> Dictionary:
 	if _cached_all_traits == null:

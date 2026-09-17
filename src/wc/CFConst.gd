@@ -812,6 +812,14 @@ const AUTO_KEYWORDS := {
 	"trait_sidekick": "int",		
 }
 
+const EXTRA_TEXT_BOX_KEYWORDS := [
+	"scheme_acceleration",
+	"scheme_amplify",
+	"scheme_crisis",
+	"scheme_hazard"
+]
+
+
 const INTERRUPT_SECTION_KEYWORDS:= [
 	"forced interrupt", 
 	"interrupt",

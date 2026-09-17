@@ -42,6 +42,12 @@ static func game_has_script_alterants(trigger):
 		return {}
 	return _alteration_super_cache["script_alterants"].get(trigger, {})
 
+static func game_has_alterants(trigger):
+	if !_alteration_super_cache["initialized"]:
+		return {}
+	return _alteration_super_cache["properties"].get(trigger, {})
+
+
 static func reset_alterants_super_cache():
 	_alteration_super_cache["properties"] = {}
 	_alteration_super_cache["wildcard_properties"] = {}

@@ -50,6 +50,8 @@ var screen_scale = Vector2(1.0, 1.0)
 var hardcoded_positions_modifier = Vector2(1.0, 1.0)
 var screen_resolution = Vector2(1920, 1080)
 
+var TEXT_BOX_KEYWORDS
+
 
 # warning-ignore:unused_signal
 signal json_parse_error(msg)
@@ -57,6 +59,7 @@ signal json_parse_error(msg)
 signal locale_changed(new_locale)
 
 func _ready():
+	TEXT_BOX_KEYWORDS = CFConst.AUTO_KEYWORDS.keys() + CFConst.EXTRA_TEXT_BOX_KEYWORDS
 	resize()
 	scale_grids()
 	

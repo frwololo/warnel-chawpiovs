@@ -15,7 +15,7 @@
 					"end_condition": {
 						"trigger": "round_ended"
 					},
-					"effect": {
+					"script": {
 						"alterants": {
 							"all": [
 								{
@@ -244,6 +244,9 @@
 		}
 	},
 	"Brawn - Amadeus Cho": {
+		"once_per_round": {
+			"__name__": "__resource"
+		},	
 		"resource": {
 			"board": [
 				{
@@ -258,6 +261,13 @@
 						}
 					]
 				},
+				{
+					"name": "mod_tokens",
+					"modification": -1,
+					"token_name": "__resource",
+					"subject": "self",
+					"is_cost": true,
+				},				
 				{
 					"name": "add_resource",
 					"amount": 1,
@@ -1633,6 +1643,7 @@
 				{
 					"name": "nop",
 					"subject": "target",
+					"is_cost": true,					
 					"filter_state_subject": [
 						{
 							"filter_group": "group_friendly"
@@ -1640,14 +1651,8 @@
 					]
 				},
 				{
-					"name": "save_variable",
-					"var_name": "my_target",
-					"var_type": "subject",
-					"value": "previous"
-				},
-				{
 					"name": "add_script",
-					"subject": "my_target",
+					"subject": "previous",
 					"end_condition": "round_ended",
 					"script": {
 						"alterants": {
@@ -2254,10 +2259,8 @@
 				{
 					"name": "add_script",
 					"subject": "self",
-					"end_condition": {
-						"trigger": "round_ended"
-					},
-					"effect": {
+					"end_condition":  "round_ended",
+					"script": {
 						"alterants": {
 							"all": [
 								{

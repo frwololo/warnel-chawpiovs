@@ -37,6 +37,11 @@
 						"func_name": "count_attachments",
 						"func_params": {
 							"subject": "self",
+							"filter_state_attachment": [
+								{
+									"filter_faceup": false
+								}
+							],
 							"multiplier": 2
 						}
 					}
@@ -568,7 +573,7 @@
 	},
 	"Barrage": {
 		"teamwork": {
-			"__trait__": "acolyte"
+			"__trait__": "dark_riders"
 		},
 		"enemy_attack_happened": {
 			"trigger": "self",
@@ -2923,7 +2928,7 @@
 	},
 	"Gauntlet": {
 		"teamwork": {
-			"__trait__": "acolyte"
+			"__trait__": "dark_riders"
 		},
 		"enemy_attack_happened": {
 			"trigger": "self",
@@ -3504,7 +3509,7 @@
 	},
 	"Hard-Drive": {
 		"teamwork": {
-			"__trait__": "acolyte"
+			"__trait__": "dark_riders"
 		},
 		"enemy_attack_happened": {
 			"trigger": "self",
@@ -5715,7 +5720,7 @@
 	},
 	"Psynapse": {
 		"teamwork": {
-			"__trait__": "acolyte"
+			"__trait__": "dark_riders"
 		},
 		"enemy_attack_happened": {
 			"trigger": "self",
@@ -8012,7 +8017,7 @@
 	},
 	"Tusk": {
 		"teamwork": {
-			"__trait__": "acolyte"
+			"__trait__": "dark_riders"
 		},
 		"enemy_attack_happened": {
 			"trigger": "self",
@@ -8031,7 +8036,7 @@
 					"name": "mod_tokens",
 					"modification": 1,
 					"token_name": "stunned",
-					"subject": "current_activation_target"
+					"subject": "current_hero_target"
 				}
 			]
 		}

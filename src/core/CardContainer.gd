@@ -474,3 +474,13 @@ func set_process(enable:bool):
 	_are_cards_still_animating = []	
 	_is_processing = enable
 	.set_process(enable)
+
+var _base_name = ""
+func get_base_name():
+	if _base_name:
+		return _base_name
+	_base_name = name.to_lower()
+	var last_char = _base_name[_base_name.length() -1]
+	if last_char.is_valid_integer():
+		_base_name = _base_name.substr(0, _base_name.length() -1)
+	return _base_name

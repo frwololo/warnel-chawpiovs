@@ -1060,7 +1060,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "health",
-					"trigger": "Thor",
+					"trigger": "my_identity",
 					"alteration": 5
 				}
 			]

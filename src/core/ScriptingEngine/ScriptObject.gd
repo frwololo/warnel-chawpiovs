@@ -57,6 +57,7 @@ func set_prev_subjects(new_subjects):
 		#we've already forced the previous subjects in an earlier step
 		return
 	prev_subjects = new_subjects
+	parse_prev_subject_replacements()	
 
 # prepares the properties needed by the script to function.
 func _init(_owner, script: Dictionary,  _trigger_object = null, 	_trigger_details := {}) -> void:
@@ -929,15 +930,16 @@ func parse_replacements() -> void:
 					if SP.FILTER_PROPERTIES in filter:
 						var property_filters = state_filters[filter]
 						for property in property_filters:
-							if str(property_filters[property]) in\
+							var str_pty = str(property_filters[property])
+							if  str_pty in\
 									[SP.VALUE_COMPARE_WITH_OWNER,
 									SP.VALUE_COMPARE_WITH_TRIGGER]:
 								var card: Card
-								if str(property_filters[property]) ==\
-										SP.VALUE_COMPARE_WITH_OWNER:
-									card = owner
-								else:
-									card = trigger_object
+								match str_pty:
+									SP.VALUE_COMPARE_WITH_OWNER:
+										card = owner
+									SP.VALUE_COMPARE_WITH_TRIGGER:	
+										card = trigger_object
 								# Card name is always grabbed from
 								# Card.canonical_name
 								if property == "Name":
@@ -989,6 +991,43 @@ func parse_replacements() -> void:
 						if str(state_filters[filter]) == SP.VALUE_COMPARE_WITH_TRIGGER:
 							var card: Card = trigger_object
 							state_filters[filter] = card.get_parent()
+	script_definition = wip_definitions
+
+func parse_prev_subject_replacements() -> void:
+	# We need a deep copy because of all the nested dictionaries
+	var wip_definitions := script_definition.duplicate(true)
+	for key in wip_definitions:
+		# We have to go through all the state filters
+		# Because they have variable names
+		if SP.FILTER_STATE in key:
+			var state_filters_array : Array =  wip_definitions[key]
+			for state_filters in state_filters_array:
+				for filter in state_filters:
+					# This branch checks for replacements for
+					# filter_properties
+					# We have to go to each dictionary for filter_properties
+					# filters and check all values if they contain a
+					# relevant keyword
+					if SP.FILTER_PROPERTIES in filter:
+						var property_filters = state_filters[filter]
+						for property in property_filters:
+							var str_pty = str(property_filters[property])
+							if  str_pty in\
+									[SP.VALUE_COMPARE_WITH_PREVIOUS]:
+								var card: Card
+								match str_pty:
+									SP.VALUE_COMPARE_WITH_PREVIOUS:
+										card = owner
+										if prev_subjects:
+											card = prev_subjects[0]	
+								# Card name is always grabbed from
+								# Card.canonical_name
+								if property == "Name":
+									property_filters[property] =\
+											card.canonical_name
+								else:
+									property_filters[property] =\
+											card.get_property(property)
 	script_definition = wip_definitions
 
 func serialize_to_json() -> Dictionary:

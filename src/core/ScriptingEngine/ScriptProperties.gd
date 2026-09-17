@@ -774,6 +774,9 @@ const VALUE_COMPARE_WITH_OWNER := "compare_with_owner"
 # but compares against card that caused the script to trigger, rather than
 # the owner of the script
 const VALUE_COMPARE_WITH_TRIGGER := "compare_with_trigger"
+# Same as [VALUE_COMPARE_WITH_OWNER](#VALUE_COMPARE_WITH_OWNER)
+# but compares against card that was previous subject
+const VALUE_COMPARE_WITH_PREVIOUS := "compare_with_previous"
 # Value Type: bool (Default = false)
 #
 # Specifies whether this script or task can be skipped by the owner.

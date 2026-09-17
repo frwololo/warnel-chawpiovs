@@ -1690,16 +1690,9 @@
 					"subject_count": "all",
 					"filter_state_tutor": [
 						{
-							"filter_func": [
-								{
-									"func_name": "get_subject_int_property",
-									"func_params": {
-										"subject": "trigger",
-										"property": "card_set_code",
-										"expected_property": "__previous_card_set_code"
-									}
-								}
-							]
+							"filter_properties": {
+								"card_set_code":  "compare_with_previous"
+							}
 						}
 					]
 				}
@@ -1754,16 +1747,9 @@
 					"subject_count": "all",
 					"filter_state_tutor": [
 						{
-							"filter_func": [
-								{
-									"func_name": "get_subject_int_property",
-									"func_params": {
-										"subject": "trigger",
-										"property": "card_set_code",
-										"expected_property": "__previous_card_set_code"
-									}
-								}
-							]
+							"filter_properties": {
+								"card_set_code":  "compare_with_previous"
+							}
 						}
 					]
 				},
@@ -1835,16 +1821,9 @@
 					"subject_count": "all",
 					"filter_state_tutor": [
 						{
-							"filter_func": [
-								{
-									"func_name": "get_subject_int_property",
-									"func_params": {
-										"subject": "trigger",
-										"property": "card_set_code",
-										"expected_property": "__previous_card_set_code"
-									}
-								}
-							]
+							"filter_properties": {
+								"card_set_code":  "compare_with_previous"
+							}
 						}
 					]
 				},
@@ -1890,6 +1869,15 @@
 		}
 	},
 	"Dark Beast's Bogus Journey - 1A": {
+		"extra_rules": [
+			{
+				"ignore_setup_keyword": [
+					"The Savage Land #45127",
+					"Genosha #45133",
+					"Blue area of the Moon #45139"
+				]
+			}
+		],	
 		"setup": {
 			"all": [
 				{

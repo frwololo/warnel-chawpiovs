@@ -246,7 +246,7 @@
 	"Brawn - Amadeus Cho": {
 		"once_per_round": {
 			"__name__": "__resource"
-		},	
+		},
 		"resource": {
 			"board": [
 				{
@@ -266,8 +266,8 @@
 					"modification": -1,
 					"token_name": "__resource",
 					"subject": "self",
-					"is_cost": true,
-				},				
+					"is_cost": true
+				},
 				{
 					"name": "add_resource",
 					"amount": 1,
@@ -1643,7 +1643,7 @@
 				{
 					"name": "nop",
 					"subject": "target",
-					"is_cost": true,					
+					"is_cost": true,
 					"filter_state_subject": [
 						{
 							"filter_group": "group_friendly"
@@ -1689,8 +1689,8 @@
 			},
 			{
 				"card": "Riri Williams #29003b"
-			}			
-		],	
+			}
+		],
 		"once_per_round": {
 			"__name__": "__child_prodigy"
 		},
@@ -2061,10 +2061,10 @@
 						"func_name": "count_tokens==1",
 						"func_params": {
 							"subject": "self",
-							"token_name": "shift",
+							"token_name": "shift"
 						}
 					},
-					"multiplier_alteration": 3,					
+					"multiplier_alteration": 3,
 					"trigger": "self"
 				},
 				{
@@ -2086,8 +2086,7 @@
 						"func_name": "count_tokens==2",
 						"func_params": {
 							"subject": "self",
-							"token_name": "shift",
-							
+							"token_name": "shift"
 						}
 					},
 					"multiplier_alteration": 3,
@@ -2112,10 +2111,10 @@
 						"func_name": "count_tokens==3",
 						"func_params": {
 							"subject": "self",
-							"token_name": "shift",
+							"token_name": "shift"
 						}
 					},
-					"multiplier_alteration": 5,					
+					"multiplier_alteration": 5,
 					"trigger": "self"
 				},
 				{
@@ -2259,7 +2258,7 @@
 				{
 					"name": "add_script",
 					"subject": "self",
-					"end_condition":  "round_ended",
+					"end_condition": "round_ended",
 					"script": {
 						"alterants": {
 							"all": [

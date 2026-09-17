@@ -3614,11 +3614,6 @@ func get_subject_int_property(params, script:ScriptObject= null) -> int:
 		return 0
 			
 	var expected_value = params.get("property_value", "")	
-	if expected_value.begins_with("__previous_"):
-		expected_value.replace("__previous_", "")
-		var previous = get_param_subject({"subject": "previous"}, script)
-		if previous:
-			expected_value = previous.get_property(expected_value)
 			
 	var count = 0
 	for subject in subjects:

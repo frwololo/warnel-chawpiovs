@@ -128,6 +128,8 @@ func cancel_input():
 func force_cancel():
 	cancel_input()
 
+#Logic to force close the menu when clicking outside of it
+#Most of the code here is to *prevent* from closing it when it is not allowed
 func _input(event):
 	#get_viewport().set_input_as_handled()  # Prevents further propagation
 	var forced = rules.get("forced", false)
@@ -137,14 +139,19 @@ func _input(event):
 	if gamepadHandler.is_ui_cancel_pressed(event):
 		cancel_input()
 		return
+	
+	if !self.visible:
+		return
 		
 	if not event is InputEventMouseButton: return
 	if not event.pressed: return
-	var control_rect = $Panel.get_rect()
-	control_rect.position = $Panel.get_global_position()
-	control_rect.size *= SCALE
-	var local_rect = control_rect
-	var xy = cfc.NMAP.board.mouse_pointer.determine_global_mouse_pos()
-	if local_rect.has_point(xy): 
-		return
+	
+	for ui_element in [$Panel, cfc.NMAP.board.get_node("%ViewBoard")]:	
+		var control_rect = ui_element.get_rect()
+		control_rect.position = ui_element.get_global_position()
+		control_rect.size *= SCALE
+		var local_rect = control_rect
+		var xy = cfc.NMAP.board.mouse_pointer.determine_global_mouse_pos()
+		if local_rect.has_point(xy): 
+			return
 	cancel_input()

@@ -47,7 +47,7 @@
 				{
 					"card": "Thor",
 					"tokens": {
-						"_have_at_thee": 1
+						"__have_at_thee": 1
 					}
 				}
 			],
@@ -133,7 +133,7 @@
 				{
 					"card": "Thor",
 					"tokens": {
-						"_have_at_thee": 1
+						"__have_at_thee": 1
 					}
 				}
 			],

@@ -1,0 +1,1361 @@
+{
+	"Angel - Warren Worthington III": {
+		"alterants": {
+			"all": [
+				{
+					"trigger": "self",
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": {
+						"func_name": "identity_has_trait",
+						"func_params": {
+							"trait": [
+								"x-men",
+								"mutant"
+							],
+							"multiplier": -1
+						}
+					}
+				}
+			]
+		}
+	},
+	"Beast - Hank McCoy": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "hand",
+					"subject": "tutor",
+					"src_container": [
+						"deck",
+						"discard"
+					],
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "max",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "resource"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck"
+				}
+			]
+		}
+	},
+	"Befuddle": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					},
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"interrupt_attack_started": {
+			"event_filters": {
+				"target": "host",
+				"tags": [
+					"basic power"
+				]
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"amount": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"property": "thwart",
+								"subject": "trigger"
+							}
+						}
+					}
+				}
+			]
+		}
+	},
+	"Blindfold - Ruth Aldine": {
+		"self_moved_to_board": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_villain",
+					"subject_count": 5,
+					"needs_selection": true,
+					"display_title": "choose card to discard",
+					"selection_count": 1,
+					"selection_type": "equal"
+				}
+			]
+		}
+	},
+	"Concussive Force": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "card_is_in_play",
+								"func_params": {
+									"card_name": "Mister Sinister"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "Mister Sinister"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "add_threat",
+							"amount": 2,
+							"subject": "main_scheme"
+						}
+					]
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "card_is_in_play",
+								"func_params": {
+									"card_name": "Mister Sinister"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Mister Sinister"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "deal_damage",
+							"amount": 2,
+							"subject": "my_identity"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Coordinated Attack": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					},
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack_cost",
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_allies"
+						}
+					],
+					"alteration": "my_consequential_damage_alteration"
+				}
+			]
+		},
+		"interrupt_attack": {
+			"_silent": true,
+			"board": [
+				{
+					"name": "save_variable",
+					"var_name": "my_consequential_damage_alteration",
+					"var_type": "int",
+					"value": 0
+				}
+			]
+		},
+		"interrupt_attack_started": {
+			"event_filters": {
+				"target": "host"
+			},
+			"board": [
+				{
+					"name": "save_variable",
+					"var_name": "my_consequential_damage_alteration",
+					"var_type": "int",
+					"value": -1
+				}
+			]
+		}
+	},
+	"Cyclops": {
+		"once_per_round": {
+			"__name__": "__optic_blast"
+		},
+		"manual": {
+			"board": {
+				"Optic Blast": [
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": -1,
+						"token_name": "__optic_blast",
+						"subject": "self"
+					},
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 1
+						},
+						"is_cost": true
+					},
+					{
+						"name": "attack",
+						"amount": 3,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_enemies",
+								"filter_func": {
+									"func_name": "count_attachments",
+									"func_params": {
+										"subject": "trigger",
+										"filter_state_attachment": [
+											{
+												"filter_properties": {
+													"type_code": "upgrade"
+												}
+											}
+										]
+									}
+								}
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Danger Room": {
+		"_authority_override": {
+			"func_name": "identity_has_trait",
+			"func_params": {
+				"trait": "mutant"
+			}
+		},
+		"response_card_moved_to_board": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "ally"
+					},
+					"filter_properties2": {
+						"trait_x-men": 1,
+						"comparison": "ge"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_response"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "host_card",
+					"subject": "tutor",
+					"subject_count": "all",
+					"host": "trigger",
+					"src_container": [
+						"deck",
+						"discard"
+					],
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "max",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_training": 1
+							},
+							"filter_properties": {
+								"type_code": "upgrade"
+							}
+						}
+					],
+					"tags": [
+						"disable_attach_trigger"
+					]
+				}
+			]
+		}
+	},
+	"Danger Room Training": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_group": "group_allies",
+					"filter_properties": {
+						"trait_x-men": 1,
+						"comparison": "ge"
+					},
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"trigger": "host",
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "host",
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Dust - Sooraya Qadir": {
+		"interrupt_receive_damage": {
+			"trigger": "self",
+			"event_filters": {
+				"tags": [
+					"attack",
+					"!dust_interrupt"
+				],
+				"filter_state_target": [
+					{
+						"filter_properties": {
+							"type_code": "minion"
+						}
+					}
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"subject": "boardseek",
+						"subject_params": {
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"type_code": "minion"
+									}
+								}
+							]
+						},
+						"additional_tags": [
+							"dust_interrupt"
+						]
+					}
+				}
+			]
+		},
+		"interrupt_pre_receive_damage": {
+			"trigger": "self",
+			"event_filters": {
+				"tags": [
+					"consequential_damage",
+					"dust_interrupt"
+				]
+			},
+			"board": [
+				{
+					"name": "increase",
+					"amount": 1,
+					"subject": "interrupted_event"
+				}
+			]
+		}
+	},
+	"Effective Leadership": {
+		"card_moved_to_board": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "ally"
+					}
+				}
+			],
+			"condition_all": {
+				"func_name": "paid_with_includes",
+				"func_params": {
+					"subject": "trigger",
+					"filter_state_source": [
+						{
+							"is_script_owner": true
+						}
+					]
+				}
+			},
+			"all": [
+				{
+					"name": "add_script",
+					"subject": "trigger",
+					"end_condition": "phase_ended",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"trigger": "self",
+									"alteration": 1
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Exploit Weakness": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_group": "group_enemies",
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"target": "host",
+				"amount": ">0",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Field Commander": {
+		"_comments": "WC doesn't have the concept of a player turn. Players will have to agree on what to do when doing Multiplayer",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "not_temporary",
+					"filter_state_trigger": [
+						{
+							"filter_same_controler": true,
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_properties2": {
+								"card_set_code": "cyclops"
+							}
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Full Blast": {
+		"interrupt_attack_started": {
+			"trigger": "cyclops",
+			"event_filters": {
+				"tags": [
+					"!basic power"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "Cyclops"
+				},
+				{
+					"name": "increase",
+					"amount": 8,
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"overkill"
+						]
+					}
+				}
+			]
+		}
+	},
+	"Game Time": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_func": {
+								"func_name": "count_attachments",
+								"func_params": {
+									"subject": "trigger",
+									"filter_state_attachment": [
+										{
+											"filter_properties": {
+												"trait_training": 1
+											},
+											"filter_properties2": {
+												"type_code": "upgrade"
+											}
+										}
+									]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "previous"
+				}
+			]
+		}
+	},
+	"Gene Therapy": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"is_cost": true,
+					"sort_by": "function",
+					"func_name": "get_subject_int_printed_property",
+					"func_params": {
+						"property": "attack"
+					},
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies",
+							"filter_func": {
+								"func_name": "count_attachments==0",
+								"func_params": {
+									"subject": "trigger",
+									"filter_state_attachment": [
+										{
+											"filter_properties": {
+												"Name": "Gene Therapy"
+											}
+										}
+									]
+								}
+							}
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "surge"
+				},
+				{
+					"is_else": true,
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"attacks_gain": {
+			"__trigger__": "host",
+			"__tags__": "piercing\",\"overkill"
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Genetic Manipulation": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "deal_encounter",
+					"immediate_reveal": true,
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Gene Therapy"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Honorary X-Men": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_group": "group_friendly",
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "host",
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_x-men",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Lost Visor": {
+		"give_obligation": {
+			"__to__": "Scott Summers"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				},
+				{
+					"name": "host_card",
+					"subject": "tutor",
+					"src_container": [
+						"deck",
+						"discard",
+						"board"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "Ruby Quartz Visor"
+							}
+						}
+					],
+					"tags": [
+						"facedown"
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_hostage",
+					"var_type": "subject",
+					"value": "previous"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_attack",
+					"trigger": "Cyclops",
+					"alteration": 1
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "my_identity"
+				},
+				{
+					"name": "move_card_to_containers",
+					"subject": "my_hostage",
+					"dest_container": "hand"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "removed_from_game",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Marked": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					},
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"interrupt_attack_started": {
+			"event_filters": {
+				"target": "host"
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"overkill"
+						]
+					}
+				}
+			]
+		}
+	},
+	"Mister Sinister": {
+		"boost": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "is_stunned",
+								"func_params": {
+									"subject": "current_hero_target"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "deal_damage",
+									"amount": 2,
+									"subject": "current_hero_target"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"modification": 1,
+							"token_name": "stunned",
+							"subject": "current_hero_target"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Phoenix - Jean Grey": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "discard",
+					"dest_container": "hand",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "max",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"faction_code": "hero"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Pinned Down": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					},
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "host",
+					"alteration": -2
+				}
+			]
+		}
+	},
+	"Practiced Defense": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_group": "group_enemies",
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "host",
+					"alteration": -1
+				}
+			]
+		}
+	},
+	"Priority Target": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_group": "group_enemies",
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"trigger": "host",
+			"all": [
+				{
+					"name": "draw_cards",
+					"amount": 2,
+					"subject": "event_source_hero"
+				}
+			]
+		}
+	},
+	"Psychic Rapport": {
+		"manual": {
+			"hand": {
+				"Return Cyclops Card to Hand": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						],
+						"team_up": [
+							"Cyclops",
+							"Phoenix"
+						]
+					},
+					{
+						"name": "ready_card",
+						"subject": "Cyclops"
+					},
+					{
+						"name": "ready_card",
+						"subject": "Phoenix"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "hand",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "discard",
+						"needs_selection": true,
+						"selection_optional": true,
+						"selection_count": 1,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"card_set_code": "cyclops"
+								}
+							}
+						]
+					}
+				],
+				"2 Power counters on Phoenix Force": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						],
+						"team_up": [
+							"Cyclops",
+							"Phoenix"
+						]
+					},
+					{
+						"name": "ready_card",
+						"subject": "Cyclops"
+					},
+					{
+						"name": "ready_card",
+						"subject": "Phoenix"
+					},
+					{
+						"name": "mod_tokens",
+						"modification": 2,
+						"subject": "Phoenix Force",
+						"token_name": "power"
+					}
+				]
+			}
+		}
+	},
+	"Ricochet Beam": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 3,
+					"subject": "an_enemy"
+				},
+				{
+					"name": "attack",
+					"amount": 3,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_func": {
+								"func_name": "count_attachments",
+								"func_params": {
+									"subject": "trigger",
+									"filter_state_attachment": [
+										{
+											"filter_properties": {
+												"type_code": "upgrade"
+											}
+										}
+									]
+								}
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Ruby Quartz Visor": {
+		"resource": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_resource"
+					]
+				},
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"shortname": "Cyclops"
+							}
+						}
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "energy"
+				}
+			]
+		},
+		"interrupt_attack_started": {
+			"condition_board": {
+				"func_name": "paid_with_includes",
+				"func_params": {
+					"subject": "trigger",
+					"filter_state_source": [
+						{
+							"filter_properties": {
+								"Name": "Ruby Quartz Visor"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"piercing",
+							"ranged"
+						]
+					}
+				}
+			]
+		}
+	},
+	"Scott Summers": {
+		"once_per_round": {
+			"__name__": "__constant_training"
+		},
+		"manual": {
+			"board": {
+				"Constant Training": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": -1,
+						"token_name": "__constant_training",
+						"subject": "self"
+					},
+					{
+						"name": "move_card_to_container",
+						"subject": "tutor",
+						"src_container": "deck",
+						"dest_container": "hand",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_type": "equal",
+						"selection_count": 1,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"trait_tactic": 1
+								},
+								"filter_properties2": {
+									"type_code": "upgrade"
+								}
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Tactical Brilliance": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 3,
+					"subject": "a_scheme"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"src_container": "discard",
+					"dest_container": "hand",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_type": "equal",
+					"selection_count": 1,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_tactic": 1
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Teamwork": {
+		"interrupt_attack": {
+			"trigger": "my_hero",
+			"event_filters": [
+				"basic_power"
+			],
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek",
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero",
+							"filter_is_exhausted": false
+						}
+					]
+				},
+				{
+					"name": "add_script",
+					"end_condition": "attack_happened",
+					"subject": "my_hero",
+					"passthrough_subject": "previous",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": {
+										"func_name": "get_subject_int_property",
+										"func_params": {
+											"property": "attack",
+											"subject": "parent_passthrough_subject"
+										}
+									}
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"interrupt_thwart": {
+			"trigger": "my_hero",
+			"event_filters": [
+				"basic_power"
+			],
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek",
+					"needs_selection": true,
+					"selection_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero",
+							"filter_is_exhausted": false
+						}
+					]
+				},
+				{
+					"name": "add_script",
+					"end_condition": "thwart_happened",
+					"subject": "my_hero",
+					"passthrough_subject": "previous",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"trigger": "self",
+									"alteration": {
+										"func_name": "get_subject_int_property",
+										"func_params": {
+											"property": "thwart",
+											"subject": "parent_passthrough_subject"
+										}
+									}
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Utopia": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "ally_limit",
+					"trigger": "my_identity",
+					"alteration": {
+						"func_name": "has_trait",
+						"func_params": {
+							"trait": "x-men",
+							"and_or": "and",
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_group": "group_allies_my_hero"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"response_card_moved_to_board": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "ally"
+					},
+					"filter_properties2": {
+						"trait_x-men": 1,
+						"comparison": "ge"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_characters",
+							"filter_properties": {
+								"trait_x-men": 1,
+								"comparison": "ge"
+							},
+							"filter_is_exhausted": true
+						}
+					]
+				}
+			]
+		}
+	}
+}

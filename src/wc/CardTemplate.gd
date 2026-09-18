@@ -485,6 +485,7 @@ func setup() -> void:
 	
 	gameData.connect("game_state_changed", self, "_game_state_changed")
 	scripting_bus.connect("step_about_to_start", self, "_game_step_about_to_start")	
+	scripting_bus.connect("round_ended", self, "_round_ended")	
 
 	scripting_bus.connect("card_token_modified", self, "_card_token_modified")
 
@@ -967,6 +968,10 @@ func _game_state_changed(_details:Dictionary):
 
 func _cfc_cache_cleared():
 	queue_refresh_cache()
+
+func _round_ended():
+	if get_property("temporary", 0, true) and !get_property("not_temporary", 0, true):
+		self.discard()
 
 #reset some variables at new turn
 func _game_step_about_to_start(_trigger_object, details:Dictionary):
@@ -2126,6 +2131,9 @@ func add_script_to_stack(sceng, run_type, trigger, trigger_details, action_name,
 # A signal for whenever the player clicks on a card
 func _on_Card_gui_input(event) -> void:
 	if !cfc.NMAP.has("board"):
+		return
+	
+	if cfc.game_paused:
 		return
 		
 	cfc.add_ongoing_process(self, "_on_Card_gui_input_" + canonical_name)

@@ -46,7 +46,7 @@
 			"identity1": [
 				{
 					"card": "Thor",
-					"tokens": {"_have_at_thee" : 1}					
+					"tokens": {"__have_at_thee" : 1}					
 				}
 			],
 			"hand1": [

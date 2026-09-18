@@ -818,7 +818,7 @@
 	},
 	"Odinson": {
 		"once_per_round": {
-			"__name__": "_worthy"
+			"__name__": "__worthy"
 		},
 		"manual": {
 			"board": {
@@ -833,7 +833,7 @@
 					{
 						"name": "mod_tokens",
 						"subject": "self",
-						"token_name": "_worthy",
+						"token_name": "__worthy",
 						"modification": -1,
 						"is_cost": true
 					},
@@ -845,6 +845,7 @@
 						],
 						"dest_container": "hand",
 						"subject": "tutor",
+						"needs_subject": true,
 						"filter_state_tutor": [
 							{
 								"filter_properties": {
@@ -1025,7 +1026,7 @@
 	},
 	"Thor": {
 		"once_per_phase": {
-			"__name__": "_have_at_thee"
+			"__name__": "__have_at_thee"
 		},
 		"response_card_moved_to_board": {
 			"event_filters": {
@@ -1043,7 +1044,7 @@
 				{
 					"name": "mod_tokens",
 					"subject": "self",
-					"token_name": "_have_at_thee",
+					"token_name": "__have_at_thee",
 					"modification": -1,
 					"is_cost": true
 				},

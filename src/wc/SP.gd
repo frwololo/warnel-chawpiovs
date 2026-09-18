@@ -651,8 +651,9 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 
 
 #todo in the future this needs to redo targeting, etc...
-static func retrieve_subjects(value:String, script):
-	var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : value})
+static func retrieve_subjects(value:String, script, overrides := {}):
+	overrides["subject"] = value
+	var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, overrides)
 	#var subjects = _get_subjects_simplified(value, script.owner)
 
 	if !subjects:

@@ -755,7 +755,7 @@ const AUTO_KEYWORDS := {
 	"surge" : "bool",
 	"team-up" : "bool",
 	"teamwork" : "string",
-	"temporary" : "bool",
+	"temporary" : "int",
 	"toughness" : "bool",
 	"uses" : "string",
 	"victory" : "int_no_alterant", #victory 0 is different from no Victory, so we don't want to init it at 0
@@ -805,6 +805,8 @@ const AUTO_KEYWORDS := {
 	"invincible": "int",
 	
 	"minimum_hit_points_override": "int",
+	
+	"not_temporary": "int",
 	
 	"printed_resource_is_energy": "int",
 	#fake traits used by some scripts

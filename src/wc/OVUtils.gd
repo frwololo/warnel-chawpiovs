@@ -858,7 +858,7 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 		var to_remove = []
 		var tags = filters["tags"]
 		for tag in tags:
-			if tag.begins_with("!"):
+			if tag.begins_with("!") or tag.begins_with("-"):
 				var real_tag = tag.substr(1)
 				if trigger_details.has(real_tag):
 					return false

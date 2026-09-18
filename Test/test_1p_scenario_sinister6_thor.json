@@ -501,7 +501,7 @@
 					"owner_hero_id": 1,
 					"_comments": "Odinson",
 					"tokens": {
-						"_worthy": 1,
+						"__worthy": 1,
 						"__can_change_form": 1
 					}
 				}

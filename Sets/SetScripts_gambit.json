@@ -842,7 +842,7 @@
 				},
 				{
 					"name": "increase",
-					"subject": "interruptd_event",
+					"subject": "interrupted_event",
 					"amount": 1
 				}
 			]
@@ -874,7 +874,7 @@
 			"all": [
 				{
 					"name": "increase",
-					"subject": "interruptd_event",
+					"subject": "interrupted_event",
 					"amount": 1
 				}
 			]

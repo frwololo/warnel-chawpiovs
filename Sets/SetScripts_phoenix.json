@@ -583,7 +583,7 @@
 			"all": [
 				{
 					"name": "increase",
-					"subject": "interruptd_event",
+					"subject": "interrupted_event",
 					"amount": 1
 				}
 			]

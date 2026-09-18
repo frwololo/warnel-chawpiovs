@@ -246,7 +246,7 @@
 			"all": [
 				{
 					"name": "increase",
-					"subject": "interruptd_event",
+					"subject": "interrupted_event",
 					"amount": 1
 				}
 			]
@@ -937,7 +937,7 @@
 	},
 	"Colossus - Piotr Rasputin": {
 		"alterants": {
-			"hand": [
+			"all": [
 				{
 					"trigger": "self",
 					"filter_task": "get_property",

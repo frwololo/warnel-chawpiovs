@@ -238,6 +238,20 @@ func _process(delta:float):
 	if cfc.throttle_process_for_performance():
 		return
 	
+	var modal_menu = cfc.get_modal_menu()
+	var viewboard = get_node("%ViewBoard")
+	var wallpaper = get_node("%wallpaper")
+	if modal_menu:
+		if modal_menu.visible and modal_menu.rect_position and !viewboard.visible:
+#			var x = modal_menu.rect_position.x + modal_menu.rect_size.x/2 - viewboard.rect_size.x/2
+#			viewboard.rect_position = Vector2(x,modal_menu.rect_position.y - 85)
+			viewboard.visible = true
+			viewboard.self_modulate = Color(1.0,1.0,1.0)
+		wallpaper.self_modulate = Color(0.5,0.5,0.5)
+	else:
+		viewboard.visible = false
+		wallpaper.self_modulate = Color(1,1,1)
+	
 	if board_organizers:
 		for board_organizer in board_organizers:
 			board_organizer.organize()
@@ -1970,3 +1984,38 @@ func resize():
 	
 	$PhaseContainer.resize()	
 #	get_node("%OptionsButton").rect_scale = cfc.screen_scale
+
+
+var _backup_mouse_disabled = false
+func _on_ViewBoard_pressed():
+	var modal_menu = cfc.get_modal_menu()
+	var viewboard = get_node("%ViewBoard")
+	if !modal_menu:
+		var _error = 1
+		viewboard.visible = false
+		return
+	if modal_menu.visible:
+		modal_menu.visible = false
+		gameData.theAnnouncer.hide_right_announces()
+		viewboard.hint_tooltip = "View Action"
+		_backup_mouse_disabled = mouse_pointer.is_disabled
+		mouse_pointer.set_disabled(false)
+		enable_focus_mode()
+		$Tween.interpolate_property(
+					viewboard,'self_modulate', viewboard.self_modulate,
+					Color(3.0,1.0,1.0),
+					0.1, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+		$Tween.start()		
+	else:
+		modal_menu.visible = true
+		gameData.theAnnouncer.show_right_announces()		
+		viewboard.hint_tooltip = "View Board"
+		disable_focus_mode()
+		mouse_pointer.set_disabled(_backup_mouse_disabled)
+		$Tween.interpolate_property(
+					viewboard,'self_modulate', viewboard.self_modulate,
+					Color(1.0,1.0,1.0),
+					0.1, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+		$Tween.start()		
+	
+	pass # Replace with function body.

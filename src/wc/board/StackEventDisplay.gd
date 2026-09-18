@@ -345,27 +345,47 @@ func get_global_position():
 func set_target_position(pos):
 	target_position = pos
 
-func _on_Button_pressed():
-	var button = get_node("%Button")
-	
+func collapse():
+	var button = get_node("%Button")	
+	if button.text == "<":
+		return
+			
 	var hidden_position = Vector2(1870 *  cfc.hardcoded_positions_modifier.x, target_position.y)
 	var before = target_position
 	var after = hidden_position
-	match button.text:
-		">":
-			button.text = "<"
-			is_collapsed = true
-		"<":
-			before = hidden_position
-			after = target_position			
-			button.text= ">"
-			is_collapsed = false
-			
+		
+	button.text = "<"
+	is_collapsed = true		
+
 	tween.interpolate_property(control, "rect_position",
 			before, after, 0.2,
 			Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
-	tween.start()				
-	pass # Replace with function body.
+	tween.start()	
+		
+func reveal():
+	var button = get_node("%Button")	
+	if button.text == ">":
+		return
+		
+	var hidden_position = Vector2(1870 *  cfc.hardcoded_positions_modifier.x, target_position.y)
+	var before = hidden_position 
+	var after =	target_position
+	
+
+			
+	button.text = ">"
+	is_collapsed = false
+
+
+func _on_Button_pressed():
+	var button = get_node("%Button")
+
+	match button.text:
+		">":
+			collapse()
+		"<":
+			reveal()
+
 
 func show_ok_button():
 	show_ok = true

@@ -372,6 +372,9 @@
 		"printed_card_id": "33001a",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
 	},
+	"33017": {
+		"alternate_art": true
+	},	
 	"34001a": {
 		"printed_card_id": "34001b",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"

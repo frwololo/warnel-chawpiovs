@@ -107,6 +107,13 @@ func _process(_delta: float) -> void:
 		DISPLAY_MODE.SHADOW:
 			$Highlight.width = 5
 			
+			if _stored_destination and is_instance_valid(_stored_destination):
+				if _stored_destination.visible:
+					self.visible = true
+				else:
+					self.visible = false
+					return
+			
 			var min_z_index = CFConst.Z_INDEX_BOARD_CARDS_ABOVE
 			var owner_z_index = CFConst.Z_INDEX_ANNOUNCER
 			if z_index_owner_object and is_instance_valid(z_index_owner_object) and "z_index" in z_index_owner_object:

@@ -120,7 +120,8 @@ func reposition_vbc():
 		
 		#if the screen is crowded with menus, we don't show the preview			
 		if gameData.theAnnouncer.is_right_side_announce_ongoing(false):
-			if cfc.get_modal_menu():
+			var modal_menu = cfc.get_modal_menu()
+			if modal_menu and modal_menu.visible:
 				show_preview = false
 		
 		

@@ -153,8 +153,10 @@ func modify(script, task_object = null):
 			for property in replacements.keys():
 				var value = replacements[property]
 				match property:
+					"subject_params":
+						pass
 					"subject":
-						var new_subjects = SP.retrieve_subjects(value, script)
+						var new_subjects = SP.retrieve_subjects(value, script, replacements.get("subject_params", {}))
 						replace_subjects(new_subjects, task_object)
 						result["TODO"] =  "todo"
 					"name":

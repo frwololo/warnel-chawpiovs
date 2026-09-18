@@ -216,6 +216,22 @@ func add_right_announce():
 
 func remove_right_announce():
 	right_screen_announces -=1
+
+func hide_right_announces():
+	for announce in ongoing_announces:
+		var storage = announce["storage"]
+		var scene = storage.get("scene", null)
+		if scene and (scene.has_method("collapse")):
+			scene.collapse()
+	return false	
+
+func show_right_announces():
+	for announce in ongoing_announces:
+		var storage = announce["storage"]
+		var scene = storage.get("scene", null)
+		if scene and (scene.has_method("reveal")):
+			scene.reveal()
+	return false	
 	
 func is_right_side_announce_ongoing(count_hidden = true):
 	#generic case, count all

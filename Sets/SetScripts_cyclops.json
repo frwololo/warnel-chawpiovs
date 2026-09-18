@@ -525,7 +525,7 @@
 	},
 	"Full Blast": {
 		"interrupt_attack_started": {
-			"trigger": "cyclops",
+			"trigger": "Cyclops",
 			"event_filters": {
 				"tags": [
 					"!basic power"
@@ -1193,9 +1193,9 @@
 	"Teamwork": {
 		"interrupt_attack": {
 			"trigger": "my_hero",
-			"event_filters": [
-				"basic_power"
-			],
+			"event_filters": {
+				"tags": ["basic power"]
+			},
 			"is_optional_hand": true,
 			"hand": [
 				{
@@ -1246,9 +1246,9 @@
 		},
 		"interrupt_thwart": {
 			"trigger": "my_hero",
-			"event_filters": [
-				"basic_power"
-			],
+			"event_filters": {
+				"tags": ["basic power"]
+			},
 			"is_optional_hand": true,
 			"hand": [
 				{

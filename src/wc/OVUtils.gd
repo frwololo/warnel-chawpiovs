@@ -865,6 +865,8 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 				to_remove.append(tag)
 		for tag in to_remove:
 			filters["tags"].erase(tag)
+		if !filters["tags"]:
+			filters.erase("tags")
 		
 #	if (filters):
 #		var _tmp = 0	

@@ -970,8 +970,9 @@ func _cfc_cache_cleared():
 	queue_refresh_cache()
 
 func _round_ended():
-	if get_property("temporary", 0, true) and !get_property("not_temporary", 0, true):
-		self.discard()
+	if is_onboard():
+		if get_property("temporary", 0, true) and !get_property("not_temporary", 0, true):
+			self.discard()
 
 #reset some variables at new turn
 func _game_step_about_to_start(_trigger_object, details:Dictionary):

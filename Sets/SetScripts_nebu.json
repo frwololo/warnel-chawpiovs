@@ -302,7 +302,7 @@
 				{
 					"name": "mod_tokens",
 					"token_name": "confused",
-					"modifcation": 1,
+					"modification": 1,
 					"subject": "boardseek",
 					"subject_count": "all",
 					"needs_selection": true,

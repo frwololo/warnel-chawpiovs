@@ -161,7 +161,7 @@
 					],
 					"else": [
 						{
-							"name": "dicscard",
+							"name": "discard",
 							"subject": "grab_until",
 							"src_container": "deck_villain",
 							"filter_state_grab_until": [

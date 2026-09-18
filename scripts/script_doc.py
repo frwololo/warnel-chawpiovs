@@ -11,7 +11,7 @@ files = glob.glob("./project/Sets/SetScripts_*.json")
 print(files)
 
 
-definition_files = glob.glob("./sets/SetDefinition_*.json")
+definition_files = glob.glob("./project/Sets/SetDefinition_*.json")
 
 events = {}
 cards = {}
@@ -134,6 +134,7 @@ def add_definition_data(card_name, card_data, box_name):
     if card_type in ["main_scheme", "side_scheme"]:
         metadata[box_name][card_name]["img_style_suffix"] = "_horizontal"
 
+    
 def parse_definition_file(source_file):
     basename = os.path.basename(source_file)
     basename = basename[14:-5]
@@ -215,7 +216,12 @@ def get_stuff_matching_key(card_data, needle):
     if type(card_data) is dict:        
         for key,value in card_data.items():
             if key == needle:
-                result.append(value)
+                if not value.startswith("do_"): #skip all self_made functions
+                    for separator in ["==", "!=", ">", "<"]:
+                        index = value.find(separator)
+                        if index!= -1:
+                            value = value[:index]
+                    result.append(value)
             else:
                 other_abilities = get_stuff_matching_key(value, needle)
                 if other_abilities:
@@ -413,7 +419,7 @@ def cards_html():
                 box_meta = metadata[box_name]
                 if card in box_meta:
                     card_meta = box_meta[card]
-                    result+= '<img src="' + images_url + card_meta["img"] + '" class="resize' +  card_meta["img_style_suffix"] + '"/>' + "\n"
+                    result+= '<img src="' + images_url + card_meta["img"] + '" loading="lazy" class="resize' +  card_meta["img_style_suffix"] + '"/>' + "\n"
             card_code = json.dumps(card_data, indent = 2)
             for ability in comments:
                 card_code = card_code.replace('"' + ability + '"', '"<a class="tooltip" href="#' + ability +'"><span class="tooltiptext">'+ comments[ability] + '</span>' + ability + '</span></a>"')

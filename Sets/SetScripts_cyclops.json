@@ -778,7 +778,7 @@
 					"subject": "my_identity"
 				},
 				{
-					"name": "move_card_to_containers",
+					"name": "move_card_to_container",
 					"subject": "my_hostage",
 					"dest_container": "hand"
 				},

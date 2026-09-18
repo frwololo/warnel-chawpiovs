@@ -194,7 +194,7 @@
 						]
 					},
 					{
-						"name": "discard_card",
+						"name": "discard",
 						"subject": "self"
 					}
 				]

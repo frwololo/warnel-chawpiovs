@@ -1587,8 +1587,9 @@ func retrieve_current_state_scripts(card_scripts):
 
 	#e.g. "pile_victory_display"
 	if state_exec == "pile":
-		if get_parent():
-			var precise_state = state_exec + "_" + get_parent().get_base_name()
+		var parent = get_parent()
+		if parent and parent.has_method("get_base_name"):
+			var precise_state = state_exec + "_" + parent.get_base_name()
 			var state_scripts = card_scripts.get(precise_state, [])
 			if state_scripts:
 				return state_scripts

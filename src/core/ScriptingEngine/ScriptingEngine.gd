@@ -978,10 +978,10 @@ func attach_to_card(script: ScriptTask) -> int:
 # Task from making the subject card an attachment to the owner card.
 # * Requires the following keys:
 #	* [KEY_SUBJECT](ScriptProperties#KEY_SUBJECT)
-func host_card(script: ScriptTask) -> int:
-	# host_card can only ever use one subject
-	#var card: Card = script.subjects[0]
-	# We inject the tags from the script into the tags sent by the signal
+func host_card(script: ScriptTask) -> int:	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+		
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
 	
 	var host = script.owner

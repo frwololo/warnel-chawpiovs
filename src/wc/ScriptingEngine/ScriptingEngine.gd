@@ -1296,12 +1296,6 @@ func detach(script: ScriptTask) -> int:
 	return result
 	
 func attach_to_card(script: ScriptTask) -> int:
-	#TOOD: disable_attach_trigger is a hack to address a card such as Zola's Mutate
-	#which attaches an attachment to itself, overriding the attachment's own rules
-	#for now we do this by "hiding" the attachment's "card_moved_to_board" script
-	#temporarily while it's being attached, but that feels like it could lead to bugs	
-	var backup = null
-
 	if !script.subjects:
 		return CFConst.ReturnCode.FAILED
 
@@ -1311,44 +1305,65 @@ func attach_to_card(script: ScriptTask) -> int:
 	
 	if !costs_dry_run():
 		if script.has_tag("disable_attach_trigger"):
-			backup = script.owner.scripts.get("card_moved_to_board", null)
-			script.owner.scripts["card_moved_to_board"] = { "NOP": "NOP"}
+			disable_attach_triggers(script)
 	
 	var result = .attach_to_card(script)
 	
-	if !costs_dry_run() and script.has_tag("disable_attach_trigger"):
-		if backup:
-			script.owner.scripts["card_moved_to_board"] = backup
-		else:
-			script.owner.scripts.erase("card_moved_to_board")
-	
 	return result
 
+
 func host_card(script: ScriptTask) -> int:
-	var backup = []
-	#TOOD: disable_attach_trigger is a hack to address a card such as Zola's Mutate
-	#which attaches an attachment to itself, overriding the attachment's own rules
-	#for now we do this by "hiding" the attachment's "card_moved_to_board" script
-	#temporarily while it's being attached, but that feels like it could lead to bugs
 	if !costs_dry_run():
 		if script.has_tag("disable_attach_trigger"):
-			for subject in script.subjects:
-				backup.append(subject.scripts.get("card_moved_to_board", null))
-				subject.scripts["card_moved_to_board"] = { "NOP": "NOP"}
+			disable_attach_triggers(script)
 	
 	var result = .host_card(script)
 	
-	if !costs_dry_run() and script.has_tag("disable_attach_trigger"):
-		var i = 0
-		for subject in script.subjects:
-			var backup_value = backup[i]
-			if backup_value:
-				subject.scripts["card_moved_to_board"] = backup_value
-			else:
-				subject.scripts.erase("card_moved_to_board")
-			i+= 1
 	
 	return result
+
+#disable_attach_trigger is a hack to address a card such as Zola's Mutate
+#which attaches an attachment to itself, overriding the attachment's own rules
+#for now we do this by "hiding" the attachment's "card_moved_to_board" script
+#temporarily (which is done by adding a hardcoded temporary "card_moved_to_board" 
+# script to the cards scripts property) while it's being attached, but that feels like it could lead to bugs
+static func disable_attach_triggers(script: ScriptTask):
+	for subject in script.subjects:
+		var backup_script = subject.scripts.get("card_moved_to_board", null)
+		subject.scripts["card_moved_to_board"] = { 
+			"trigger": "self",
+			"board" : [
+				{
+					"name": "restore_scripts",
+					"subject" :"self",
+					"scripts": {"card_moved_to_board" : backup_script},
+				}
+			] 
+		}
+
+func restore_scripts(script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+
+	var scripts_to_restore = script.get_property("scripts")
+	if !scripts_to_restore:	
+		return CFConst.ReturnCode.FAILED
+		
+	if (costs_dry_run()): 
+		return retcode	
+		
+
+	for subject in script.subjects:
+		for key in scripts_to_restore:
+			var value = scripts_to_restore[key]
+			if value:
+				subject.scripts[key] = value
+			else:
+				subject.scripts.erase(key)
+	
+	return retcode		
 
 func set_active_villain(script:ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -2888,12 +2903,15 @@ func execute_scripts(script: ScriptTask) -> int:
 	# or you might end up in an inifinite loop
 
 	var trigger_identity_id = 0
-	var trigger_identity = script.get_property("trigger_identity", script.owner.get_controller_hero_card())
+	var trigger_identity = script.get_property("trigger_identity", null)
 	if trigger_identity:
 		trigger_identity = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : script.get_property("trigger_identity")})		
 		if trigger_identity:
 			trigger_identity = trigger_identity[0]
-			trigger_identity_id = trigger_identity.get_controller_hero_id()
+	if !trigger_identity:
+		trigger_identity = script.owner.get_controller_hero_card()
+	if trigger_identity:
+		trigger_identity_id = trigger_identity.get_controller_hero_id()
 	
 	var _trigger_details = {
 		"prev_subjects" : script.prev_subjects,

@@ -1,0 +1,236 @@
+{
+	"_comments": "Tests Cyclops Danger Room (bug)",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 23225,
+					"hero": "Cyclops #33001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Village Under Attack #45132"
+				},
+				{
+					"card": "Caught Off Guard #01188"
+				}
+			],
+			"villain": [
+				{
+					"card": "Dark Beast - 1 #45118"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Dark Beast's Bogus Journey - 1B #45121b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "The Savage Land #45127"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Priority Target #33007"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Effective Leadership"
+				},
+				{
+					"card": "Danger Room Training #33015"
+				},
+				{
+					"card": "Field Commander #33004"
+				},
+				{
+					"card": "Practiced Defense #33006"
+				},
+				{
+					"card": "Game Time #33022"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Scott Summers #33001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__constant_training": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Danger Room"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Beast - Hank McCoy #33011"
+				},
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Energy"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Beast - Hank McCoy #33011"
+		},
+		{
+			"type": "select",
+			"value": "Strength"
+		},
+		{
+			"type": "activate",
+			"value": "Danger Room"
+		},
+		{
+			"type": "select",
+			"value": "Danger Room Training #33015"
+		},
+		{
+			"type": "activate",
+			"value": "Beast - Hank McCoy #33011"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Dark Beast - 1 #45118"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 23225,
+					"hero": "Cyclops #33001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Village Under Attack #45132"
+				},
+				{
+					"card": "Caught Off Guard #01188"
+				}
+			],
+			"villain": [
+				{
+					"card": "Dark Beast - 1 #45118",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Dark Beast's Bogus Journey - 1B #45121b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "The Savage Land #45127"
+				}
+			],
+			"deck1": [
+			{
+				"card": "Game Time #33022",
+			},
+			{
+				"card": "Field Commander #33004",
+			},
+			{
+				"card": "Practiced Defense #33006",
+			},
+			{
+				"card": "Effective Leadership #33018",
+			},
+			{
+				"card": "Priority Target #33007",
+			}
+
+			],
+			"discard1": [
+				{
+					"card": "Energy"
+				},			
+				{
+					"card": "Genius"
+				},
+
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Scott Summers #33001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__constant_training": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Danger Room Training #33015",
+					"host": "Beast - Hank McCoy #33011"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Beast - Hank McCoy #33011",
+					"tokens": {"damage": 2}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Danger Room"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

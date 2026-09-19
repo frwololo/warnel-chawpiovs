@@ -2389,8 +2389,14 @@ func start_play_sequence(cards, trigger, script):
 		count = script.retrieve_integer_property("count")
 
 	var trigger_identity_id = 0	
-	var trigger_identity = script.get_property("trigger_identity", script.owner.get_controller_hero_card())
-	if trigger_identity: 
+	var trigger_identity = script.get_property("trigger_identity", null)
+	if trigger_identity:
+		trigger_identity = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : script.get_property("trigger_identity")})		
+		if trigger_identity:
+			trigger_identity = trigger_identity[0]
+	if !trigger_identity:
+		trigger_identity = script.owner.get_controller_hero_card()
+	if trigger_identity:
 		trigger_identity_id = trigger_identity.get_controller_hero_id()
 	
 	for i in count:

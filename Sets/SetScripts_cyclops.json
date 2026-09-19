@@ -322,7 +322,7 @@
 							"filter_properties": {
 								"trait_training": 1
 							},
-							"filter_properties": {
+							"filter_properties2": {
 								"type_code": "upgrade"
 							}
 						}
@@ -579,6 +579,7 @@
 					"needs_selection": true,
 					"selection_count": 1,
 					"selection_type": "equal",
+					"needs_subject": true,
 					"filter_state_seek": [
 						{
 							"filter_func": {

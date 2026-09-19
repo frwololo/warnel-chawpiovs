@@ -4747,7 +4747,7 @@
 			"trigger": "self",
 			"all": [
 				{
-					"name": "attach_to_card",
+					"name": "host_card",
 					"host": "event_source_hero",
 					"subject": "find",
 					"filter_state_tutor": [

@@ -30,6 +30,7 @@ func _ready():
 	init_button_signals(self)
 	
 	file_dialog.connect("file_selected", self, "_on_file_selected")	
+	file_dialog.set_theme(load("res://themes/darktheme/darktheme.theme"))
 	resize()
 	self.visible = false
 	select_tab("general")
@@ -300,10 +301,12 @@ func hide_menu():
 	$PanelContainer.hide()
 	
 func show_menu():
-	$PanelContainer.show()
-	
 	#doing a pause here to not react to a previous button press
 	yield(get_tree().create_timer(0.1), "timeout")
+		
+	$PanelContainer.show()
+	
+
 	cfc.default_button_focus($PanelContainer)
 	
 func _input(event):
@@ -405,7 +408,6 @@ func load_game():
 	hide_menu()	
 #	file_dialog.set_access(FileDialog.ACCESS_FILESYSTEM)
 #	file_dialog.set_current_path(OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS))
-#	file_dialog.set_theme(load("res://themes/darktheme/darktheme.theme"))
 	file_dialog.set_current_path("user://Saves/")
 	file_dialog.mode = FileDialog.MODE_OPEN_FILE
 	file_dialog.popup_centered()

@@ -1976,7 +1976,8 @@ func reveal_encounter(target_id = 0):
 			return
 			
 		EncounterStatus.ENCOUNTER_COMPLETE:
-			var target_pile = get_encounter_target_pile(_current_encounter)
+			scripting_bus.emit_signal_on_stack("encounter_complete", _current_encounter, {})		
+			var target_pile = get_encounter_target_pile(_current_encounter)		
 			if encounter_needs_to_be_discarded(_current_encounter):
 				display_debug("encounter: " + _current_encounter.canonical_name + " moving to pile. Target_id " + str(target_id))
 				_current_encounter.move_to(target_pile)

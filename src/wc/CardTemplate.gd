@@ -943,13 +943,20 @@ func display_play_highlight():
 	if (can_play == CFConst.CostsState.OK):
 		#if modal menu is displayed we don't want to mess up those cards highlights
 		var colour = can_play
+		var enable_highlight = true
 		if !gamepadHandler.is_mouse_input():
 			colour = CFConst.CostsState.OK_NO_MOUSE
 		if gameData.is_interrupt_mode():
-			colour = CFConst.CostsState.OK_INTERRUPT
-		set_target_highlight(colour)
-		if has_focus and !gamepadHandler.is_mouse_input():
-			set_target_highlight(CFConst.FOCUS_COLOUR_ACTIVE)			
+			if self in gameData.theStack.get_allowed_interrupting_cards():
+				colour = CFConst.CostsState.OK_INTERRUPT
+			else:
+				enable_highlight = false
+		if enable_highlight:		
+			set_target_highlight(colour)
+			if has_focus and !gamepadHandler.is_mouse_input():
+				set_target_highlight(CFConst.FOCUS_COLOUR_ACTIVE)	
+		else:
+			clear_highlight()		
 	else:
 		#pass
 		clear_highlight()

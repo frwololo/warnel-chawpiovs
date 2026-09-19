@@ -793,17 +793,15 @@
 		}
 	},
 	"Pete Wisdom": {
-		"script_executed": {
-			"event_filters": {
-				"filter_state_event_source": [
-					{
-						"filter_same_controller": true,
-						"filter_properties": {
-							"type_code": "treachery"
-						}
+		"encounter_complete": {
+			"filter_state_trigger": [
+				{
+					"filter_same_controller": true,
+					"filter_properties": {
+						"type_code": "treachery"
 					}
-				]
-			},
+				}
+			],
 			"is_optional_board": true,
 			"board": [
 				{
@@ -1042,7 +1040,7 @@
 								{
 									"filer_same_controller": true,
 									"filter_properties": {
-										"Name": "Psi-Knife"
+										"Name": "Psi-Katana"
 									}
 								}
 							]
@@ -1061,7 +1059,7 @@
 								{
 									"filer_same_controller": true,
 									"filter_properties": {
-										"Name": "Psi-Katana"
+										"Name": "Psi-Knife"
 									}
 								}
 							]

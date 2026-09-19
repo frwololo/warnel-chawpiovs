@@ -177,6 +177,8 @@ signal recovery_happened(card, details)
 # warning-ignore:unused_signal
 signal event_prevented(card,details)
 
+# warning-ignore:unused_signal
+signal encounter_complete(card,details)
 
 # warning-ignore:unused_signal
 signal card_readied(card,details)

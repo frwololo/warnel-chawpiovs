@@ -284,7 +284,7 @@ func shuffle_card_into_owner_deck(script:ScriptTask) -> int:
 		else:
 			dest_container_name += "_villain"
 		script.script_definition["dest_container"] = dest_container_name
-		var result = move_card_to_container(script)
+		var _result = move_card_to_container(script)
 		containers_to_shuffle[dest_container_name] = true
 	
 	for container_name in containers_to_shuffle:

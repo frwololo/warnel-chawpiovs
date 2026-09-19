@@ -370,11 +370,14 @@ func reveal():
 	var hidden_position = Vector2(1870 *  cfc.hardcoded_positions_modifier.x, target_position.y)
 	var before = hidden_position 
 	var after =	target_position
-	
-
-			
+				
 	button.text = ">"
 	is_collapsed = false
+	
+	tween.interpolate_property(control, "rect_position",
+			before, after, 0.2,
+			Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
+	tween.start()	
 
 
 func _on_Button_pressed():

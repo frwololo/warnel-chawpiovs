@@ -810,13 +810,7 @@
 						"then": 5,
 						"else": 3
 					},
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_schemes"
-						}
-					]
+					"subject": "a_scheme"
 				}
 			]
 		}

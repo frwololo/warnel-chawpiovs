@@ -1,4 +1,34 @@
 {
+	"_macros": {
+		"__cosmo": [
+			{
+				"name": "view_card",
+				"subject": "target",
+				"target_include_piles": true,
+				"target_include_board": false
+			},
+			{
+				"name": "discard",
+				"subject": "previous"
+			},
+			{
+				"name": "prevent",
+				"subject": "interrupted_event",
+				"amount": {
+					"if": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "previous",
+							"property": "type_code",
+							"property_value": "__type_code__"
+						}
+					},
+					"then": "all",
+					"else": 0
+				}
+			}
+		]
+	},
 	"Brains Over Brawn": {
 		"response_basic_thwart_happened": {
 			"trigger": "my_hero",

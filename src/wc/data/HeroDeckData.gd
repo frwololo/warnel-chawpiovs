@@ -64,6 +64,8 @@ func get_extra_deck_cards(container:= "set_aside"):
 			continue
 		var card_id = cfc.get_corrected_card_id(card_id_or_name)
 		var card_data = cfc.get_card_by_id(card_id)
+		var quantity = card.get("quantity", 1)
+		card_data["_setup_quantity"] = quantity
 		result.append(card_data)
 
 	return result

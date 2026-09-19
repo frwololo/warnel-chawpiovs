@@ -439,6 +439,9 @@
 		"thwart": 0,
 		"_comments": "engine considers that if those aren't defined, the character isn't able to attack/scheme"
 	},
+	"41014": {
+		"alternate_art": true
+	},	
 	"45013": {
 		"alternate_art": true
 	},

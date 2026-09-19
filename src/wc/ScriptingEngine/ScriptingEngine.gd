@@ -973,6 +973,19 @@ func pre_receive_damage(script: ScriptTask) -> int:
 	
 	var subject_counter = 0
 	var tags = script.get_property(SP.KEY_TAGS)
+
+	#damages don't always come from an attacker, but it's easier to compute it here
+	var attacker = get_actual_action_source_from_script(script)
+	#fallback if null
+	if !attacker:
+		attacker = script.owner
+
+	#Hack for directed force
+	var has_attack_keyword = false
+	var overkill = attacker.get_property("overkill", 0, true) or (script.retrieve_integer_property("overkill"))	or ("overkill" in tags)			
+	if script.has_tag("piercing") or script.has_tag("ranged") or overkill:
+		has_attack_keyword = true	
+	
 	for card in consolidated_subjects.keys():
 		subject_counter +=1
 		var multiplier = consolidated_subjects[card]
@@ -1000,12 +1013,17 @@ func pre_receive_damage(script: ScriptTask) -> int:
 			card.hint("Tough!", Color8(50,50,255))
 			amount = 0
 		var script_modifications = {
-			"subjects": [card]
+			"subjects": [card],
+			"additional_tags" : []
 		}
-		
+	
+ 
+		if has_attack_keyword:
+			script_modifications["additional_tags"].append("has_attack_keyword")
+			
 		#for an attack on multiple enemies, we do the consequential damage only for the first one
 		if "attack" in tags and subject_counter > 1:
-			script_modifications["additional_tags"] = ["skip_consequential_damage"]
+			script_modifications["additional_tags"].append("skip_consequential_damage")
 		_add_receive_damage_on_stack (amount, script, script_modifications)
 	
 	return retcode		
@@ -2035,13 +2053,16 @@ func enemy_attack(script: ScriptTask) -> int:
 				defender.exhaustme()
 			if is_basic_defense:	
 				if !script.has_tag("basic_defense"):
-					script.script_definition["tags"].append("basic_defense")
+					script.script_definition["tags"].append("basic_defense")					
 		else:
 			#old school mecanism, shouldn't happen
 			var _error = 1
 			defender.exhaustme()
 			script.script_definition["tags"].append("basic_defense")
-		scripting_bus.emit_signal_on_stack("defender_chosen", defender, {})	
+		var signal_trigger_details = {
+			"tags": script.script_definition["tags"]
+		}	
+		scripting_bus.emit_signal_on_stack("defender_chosen", defender, signal_trigger_details)	
 
 	if !script.has_tag("attack"):
 		script.script_definition["tags"].append("attack")
@@ -2950,6 +2971,13 @@ func sequence(script: ScriptTask) -> int:
 
 	var ability = script.get_property("sequence_ability", "")
 	if !ability:
+		return CFConst.ReturnCode.FAILED
+
+	var count = 1
+	if script.script_definition.has("count"):
+		count = script.retrieve_integer_property("count")
+
+	if !count:
 		return CFConst.ReturnCode.FAILED
 	
 	#if we didn't explicitly pass a subject, we assume it's the script owner card

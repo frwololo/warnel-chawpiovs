@@ -1028,10 +1028,12 @@ func load_cards() -> void:
 					break
 			if already_exists:
 				continue
-			set_aside_info.append({
-				"card" : card_id,
-				"owner_hero_id": hero_id
-			})					
+			var quantity = card_data.get("_setup_quantity", 1)
+			for _q in quantity:
+				set_aside_info.append({
+					"card" : card_id,
+					"owner_hero_id": hero_id
+				})					
 				
 							
 		load_cards_to_pile(card_info, "deck" + str(hero_id))

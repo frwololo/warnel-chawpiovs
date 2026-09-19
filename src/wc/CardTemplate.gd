@@ -3094,7 +3094,7 @@ func flip_doublesided_card(to_card_id = ""):
 		return false
 
 		
-	return true
+	return new_card
 
 func change_form(voluntary = true, to_card_id = "") -> bool:
 	if to_card_id == self.canonical_id:

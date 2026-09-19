@@ -743,7 +743,7 @@
 					"name": "conditional_script",
 					"options": [
 						{
-							"conditon": {
+							"condition": {
 								"func_name": "has_trait",
 								"func_params": {
 									"subject": "Apocalypse",
@@ -2342,7 +2342,7 @@
 					"name": "conditional_script",
 					"options": [
 						{
-							"conditon": {
+							"condition": {
 								"func_name": "count_tokens>=4",
 								"func_params": {
 									"subject": "self",
@@ -3200,7 +3200,7 @@
 					"name": "conditional_script",
 					"options": [
 						{
-							"conditon": {
+							"condition": {
 								"func_name": "has_trait",
 								"func_params": {
 									"subject": "Apocalypse",
@@ -3239,7 +3239,7 @@
 					"name": "conditional_script",
 					"options": [
 						{
-							"conditon": {
+							"condition": {
 								"func_name": "has_trait",
 								"func_params": {
 									"subject": "Apocalypse",
@@ -5498,7 +5498,7 @@
 					"name": "conditional_script",
 					"options": [
 						{
-							"conditon": {
+							"condition": {
 								"func_name": "has_trait",
 								"func_params": {
 									"subject": "Apocalypse",
@@ -6116,7 +6116,7 @@
 			"board": [
 				{
 					"name": "add_threat",
-					"subject": "ancient_ritual",
+					"subject": "Ancient Ritual",
 					"amount": 1,
 					"plus_amount": "my_increase"
 				},
@@ -6488,7 +6488,7 @@
 					"name": "conditional_script",
 					"options": [
 						{
-							"conditon": {
+							"condition": {
 								"func_name": "has_trait",
 								"func_params": {
 									"subject": "Apocalypse",
@@ -6922,7 +6922,7 @@
 					"name": "conditional_script",
 					"options": [
 						{
-							"conditon": {
+							"condition": {
 								"func_name": "has_trait",
 								"func_params": {
 									"subject": "Apocalypse",
@@ -7503,7 +7503,7 @@
 					"name": "conditional_script",
 					"options": [
 						{
-							"conditon": {
+							"condition": {
 								"func_name": "count_tokens>=4",
 								"func_params": {
 									"subject": "self",

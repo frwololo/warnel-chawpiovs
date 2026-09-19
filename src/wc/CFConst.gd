@@ -318,6 +318,7 @@ const OPTIONAL_SIGNALS:= [
 #be emitted directly without being added to the stack
 #this is an optimization to avoid calling the stack constantly for games that don't need it
 const NO_STACK_BY_DEFAULT_SIGNALS:= [
+	"card_changed_form",
 	"card_damaged",	
 	"card_moved_to_board",
 	"card_moved_to_hand",	

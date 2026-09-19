@@ -298,16 +298,27 @@
 			"board": [
 				{
 					"name": "nop",
-					"subject": "index",
-					"subject_index": "top",
+					"subject": "tutor",
+					"up_to": true,
+					"sort_descending": true,
 					"subject_count": 3,
 					"src_container": "deck_villain",
 					"selection_type": "display",
-					"needs_selection": true
+					"needs_selection": true,
+					"is_cost": true,
 				},
 				{
-					"name": "thwart",
-					"subject": "target",
+					"name": "nop",
+					"subject": "tutor",
+					"up_to": true,
+					"sort_descending": true,
+					"subject_count": 3,
+					"src_container": "deck_villain",
+					"is_cost": true,
+				},				
+				{
+					"name": "remove_threat",
+					"subject": "a_scheme",
 					"amount": {
 						"func_name": "get_subject_int_property",
 						"func_params": {
@@ -316,12 +327,6 @@
 							"property_value": "treachery"
 						}
 					},
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_schemes"
-						}
-					]
 				}
 			]
 		}
@@ -550,6 +555,20 @@
 	"James Rhodes": {
 		"once_per_phase": {
 			"__name__": "_war_machine"
+		},
+		"identity_changed_form": {
+			"trigger": "self",
+			"_silent": true,
+			"board": [
+				{
+					"_silent": true,
+					"name": "mod_tokens",
+					"modification": 0,
+					"set_to_mod": true,
+					"subject": "self",
+					"token_name": "ammo"
+				}
+			]
 		},
 		"manual": {
 			"board": {

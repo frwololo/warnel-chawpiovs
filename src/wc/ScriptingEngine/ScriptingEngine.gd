@@ -51,6 +51,8 @@ func pay_as_resource(script: ScriptTask) -> int:
 func nop(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	
+	var subjects = script.subjects
+	
 	return retcode
 
 const _hint_counter = [0]
@@ -3261,7 +3263,10 @@ func change_form(script: ScriptTask) -> int:
 			return CFConst.ReturnCode.FAILED
 		
 		if (!costs_dry_run()):
-			character.change_form(is_manual, to_card_id)
+			var result = character.change_form(is_manual, to_card_id)
+			if result:
+				scripting_bus.emit_signal_on_stack("card_changed_form", result, {})	
+	
 
 	return CFConst.ReturnCode.CHANGED
 

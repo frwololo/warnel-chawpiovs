@@ -156,6 +156,8 @@ signal stage_completed(card,details)
 # warning-ignore:unused_signal
 signal identity_changed_form(card, details)
 
+# warning-ignore:unused_signal
+signal card_changed_form(card, details)
 
 # warning-ignore:unused_signal
 signal attack_happened(card, details)

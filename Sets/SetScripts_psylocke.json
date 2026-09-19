@@ -146,6 +146,10 @@
 			"trigger": "self",
 			"board": [
 				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				},			
+				{
 					"name": "exhaust_card",
 					"subject": "boardseek",
 					"subject_count": "all",
@@ -404,7 +408,7 @@
 					"attack"
 				],
 				"damage": ">0",
-				"filter_state_event_target": [
+				"filter_state_trigger": [
 					{
 						"filter_func": {
 							"func_name": "is_confused",
@@ -527,63 +531,89 @@
 					"name": "attack",
 					"amount": 2,
 					"subject": "an_enemy"
-				},
-				{
-					"name": "sequence",
-					"sequence_ability": "do_confuse",
-					"count": {
-						"func_name": "count_cards",
-						"func_params": {
-							"subject": "boardseek",
-							"subject_count": "all",
-							"filter_state_seek": [
-								{
-									"filer_same_controller": true,
-									"filter_properties": {
-										"Name": "Psi-Knife"
-									}
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "sequence",
-					"sequence_ability": "do_damage",
-					"count": {
-						"func_name": "count_cards",
-						"func_params": {
-							"subject": "boardseek",
-							"subject_count": "all",
-							"filter_state_seek": [
-								{
-									"filer_same_controller": true,
-									"filter_properties": {
-										"Name": "Psi-Katana"
-									}
-								}
-							]
-						}
-					}
 				}
 			]
 		},
-		"do_damage": {
+		"card_played": {
+			"trigger": "self",
 			"all": [
 				{
-					"name": "deal_damage",
-					"amount": 2,
-					"subject": "an_enemy"
-				}
-			]
-		},
-		"do_confuse": {
-			"all": [
-				{
-					"name": "mod_tokens",
-					"token_name": "confused",
-					"modification": 1,
-					"subject": "an_enemy"
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards==2",
+								"func_params": {
+									"subject": "boardseek",
+									"subject_count": "all",
+									"filter_state_seek": [
+										{
+											"filer_same_controller": true,
+											"filter_properties": {
+												"Name": "Psi-Katana"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "deal_damage",
+									"amount": 2,
+									"subject": "an_enemy"
+								},
+								{
+									"name": "deal_damage",
+									"amount": 2,
+									"subject": "an_enemy"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_cards==2",
+								"func_params": {
+									"subject": "boardseek",
+									"subject_count": "all",
+									"filter_state_seek": [
+										{
+											"filer_same_controller": true,
+											"filter_properties": {
+												"Name": "Psi-Knife"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "confused",
+									"modification": 1,
+									"subject": "an_enemy"
+								},
+								{
+									"name": "mod_tokens",
+									"token_name": "confused",
+									"modification": 1,
+									"subject": "an_enemy"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "deal_damage",
+							"amount": 2,
+							"subject": "an_enemy"
+						},
+						{
+							"name": "mod_tokens",
+							"token_name": "confused",
+							"modification": 1,
+							"subject": "an_enemy"
+						}
+					]
 				}
 			]
 		}
@@ -704,9 +734,26 @@
 					]
 				},
 				{
+					"name": "nop",
+					"subject": "a_scheme",
+					"needs_subject": true
+				},
+				{
+					"name": "save_variable",
+					"var_type": "subject",
+					"var_name": "my_target",
+					"value": "previous",
+					"is_cost": true,
+				},					
+			]
+		},
+		"card_played": {
+			"trigger": "self",
+			"all": [
+				{
 					"name": "thwart",
 					"amount": 1,
-					"subject": "a_scheme",
+					"subject": "my_target",
 					"plus_amount": {
 						"func_name": "count_cards",
 						"func_params": {
@@ -719,7 +766,8 @@
 										"Name": "Psi-Knife"
 									}
 								}
-							]
+							],
+							"multiplier": 2
 						}
 					}
 				},
@@ -1116,7 +1164,7 @@
 						{
 							"filter_same_controller": true,
 							"filter_properties": {
-								"trait_psy-energy": 1
+								"trait_psi-energy": 1
 							},
 							"filter_properties2": {
 								"type_code": "upgrade"
@@ -1146,7 +1194,7 @@
 						{
 							"filter_same_controller": true,
 							"filter_properties": {
-								"trait_psy-energy": 1
+								"trait_psi-energy": 1
 							},
 							"filter_properties2": {
 								"type_code": "upgrade"
@@ -1293,6 +1341,8 @@
 					{
 						"name": "mod_tokens",
 						"subject": "current_hero_target",
+						"modification": 1,
+						"token_name": "confused",
 						"is_cost": true
 					}
 				]
@@ -1318,62 +1368,86 @@
 				{
 					"name": "prevent",
 					"subject": "interrupted_event"
-				},
-				{
-					"name": "sequence",
-					"sequence_ability": "do_damage",
-					"count": {
-						"func_name": "count_cards",
-						"func_params": {
-							"subject": "boardseek",
-							"subject_count": "all",
-							"filter_state_seek": [
-								{
-									"filer_same_controller": true,
-									"filter_properties": {
-										"Name": "Psi-Katana"
-									}
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "sequence",
-					"sequence_ability": "do_threat_removal",
-					"count": {
-						"func_name": "count_cards",
-						"func_params": {
-							"subject": "boardseek",
-							"subject_count": "all",
-							"filter_state_seek": [
-								{
-									"filer_same_controller": true,
-									"filter_properties": {
-										"Name": "Psi-Knife"
-									}
-								}
-							]
-						}
-					}
 				}
 			]
 		},
-		"do_damage": {
+		"card_played": {
+			"trigger": "self",
 			"all": [
 				{
-					"name": "deal_damage",
-					"amount": 2,
-					"subject": "an_enemy"
-				}
-			]
-		},
-		"do_threat_removal": {
-			"all": [
-				{
-					"name": "remove_threat",
-					"amount": 1,
-					"subject": "a_scheme"
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards==2",
+								"func_params": {
+									"subject": "boardseek",
+									"subject_count": "all",
+									"filter_state_seek": [
+										{
+											"filer_same_controller": true,
+											"filter_properties": {
+												"Name": "Psi-Katana"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "deal_damage",
+									"amount": 2,
+									"subject": "an_enemy"
+								},
+								{
+									"name": "deal_damage",
+									"amount": 2,
+									"subject": "an_enemy"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_cards==2",
+								"func_params": {
+									"subject": "boardseek",
+									"subject_count": "all",
+									"filter_state_seek": [
+										{
+											"filer_same_controller": true,
+											"filter_properties": {
+												"Name": "Psi-Knife"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "remove_threat",
+									"amount": 1,
+									"subject": "a_scheme"
+								},
+								{
+									"name": "remove_threat",
+									"amount": 1,
+									"subject": "a_scheme"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "deal_damage",
+							"amount": 2,
+							"subject": "an_enemy"
+						},
+						{
+							"name": "remove_threat",
+							"amount": 1,
+							"subject": "a_scheme"
+						}
+					]
 				}
 			]
 		}
@@ -1589,6 +1663,21 @@
 	},
 	"X-Bunker": {
 		"manual": {
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "victory_display",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					]
+				}
+			},
 			"board": [
 				{
 					"name": "exhaust_card",

@@ -619,7 +619,7 @@ func post_cards_moved_load():
 		#draw_cheat_ghost("Combat Training")
 		#draw_cheat_ghost("Jessica Jones")
 		#draw_cheat_ghost("Mockingbird")
-		# draw_cheat("Piotr's Studio")
+		#draw_cheat("Falcon")
 		#draw_cheat("Energy")
 		#draw_cheat("Backflip")
 		#draw_cheat("Helicarrier")	
@@ -1535,6 +1535,8 @@ func flip_doublesided_card(card:WCCard, to_card_id = ""):
 		
 	if type_code in ["hero", "alter_ego"]:
 		result.changed_form({"before": type_code})
+		
+	return result
 
 		
 func swap_card(card:WCCard, to_card_id):

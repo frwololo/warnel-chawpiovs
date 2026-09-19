@@ -323,6 +323,8 @@ const NO_STACK_BY_DEFAULT_SIGNALS:= [
 	"card_moved_to_hand",	
 	"card_moved_to_pile",
 	"card_played",
+
+	"last_threat_removed",
 		
 	"step_about_to_end",		
 	"step_about_to_start",

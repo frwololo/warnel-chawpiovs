@@ -1,0 +1,126 @@
+{
+	"_comments": "Tests Minion with tough vs hawkeye",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "advance"
+				},			
+				{
+					"card": "Sandman"
+				},				
+		
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Hawkeye - Clint Barton",
+					"tokens": {"arrow" : 4}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "choose",
+			"value": "ok"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		},			
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain":[
+				{
+					"card": "advance"
+				},					
+		
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Sandman",
+					"tokens": {"damage": 0, "tough": 0}
+				},		
+			],
+			"allies1": [
+				{
+					"card": "Hawkeye - Clint Barton",
+					"tokens": {"arrow" : 3}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			]
+		}
+	}
+}

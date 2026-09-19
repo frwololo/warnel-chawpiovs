@@ -510,6 +510,7 @@
 	},
 	"Jarnbjorn": {
 		"attack_happened": {
+			"trigger": "my_hero",
 			"is_optional_board": true,
 			"board": [
 				{
@@ -522,12 +523,7 @@
 				{
 					"name": "deal_damage",
 					"amount": 2,
-					"subject": "target",
-					"filter_state_subject": [
-						{
-							"filter_group": "group_enemies"
-						}
-					]
+					"subject": "an_enemy"
 				}
 			]
 		}
@@ -1093,7 +1089,7 @@
 		}
 	},
 	"Under Surveillance": {
-		"card_moved_to_board": { 
+		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{

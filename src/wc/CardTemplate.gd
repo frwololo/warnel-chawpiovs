@@ -2401,7 +2401,7 @@ func remove_threat(modification: int, script = null) -> int:
 				"source":  script.owner,
 				"tags": script.get_property(SP.KEY_TAGS)	
 			}
-		scripting_bus.emit_signal("last_threat_removed", self, signal_details)		
+		scripting_bus.emit_signal_on_stack("last_threat_removed", self, signal_details)		
 	return result
 
 func discard():	

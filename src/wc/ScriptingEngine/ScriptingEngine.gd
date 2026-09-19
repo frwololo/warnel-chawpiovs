@@ -379,13 +379,20 @@ func draw_cards (script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
 	var amount = script.retrieve_integer_property("amount")
-	if !amount:
+
+	var to_hand_size = script.get_property("to_hand_size", false)
+	
+	
+	if !amount and !to_hand_size:
 		return CFConst.ReturnCode.FAILED
 	
 	var allow_retry = script.get_property("allow_retry", true)
 	
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode			
+
+
+
 	
 	var subjects = [script.owner]	
 	if script.subjects:
@@ -393,6 +400,7 @@ func draw_cards (script: ScriptTask) -> int:
 
 	for subject in subjects:
 		var controller_id = subject.get_controller_hero_id()
+
 		if controller_id <= 0:
 			cfc.LOG("{ScriptingEngine}{error}, attempt to draw cards for villain")
 			cfc.LOG_DICT(script.serialize_to_json())
@@ -400,17 +408,43 @@ func draw_cards (script: ScriptTask) -> int:
 		var hand:Hand = cfc.NMAP["hand" + str(controller_id)]
 		var deck = cfc.NMAP["deck" + str(controller_id)]
 		var discard = cfc.NMAP["discard" + str(controller_id)]
-		for _i in range (amount):
+
+
+		var remaining_to_draw = amount
+		
+		if to_hand_size:
+			var my_hero_card = subject.get_controller_hero_card()	
+			var hand_size = my_hero_card.get_max_hand_size()		
+			var current_cards = hand.get_all_cards()
+			var current_count = 0
+			for hand_card in current_cards:
+				current_count += hand_card.get_property("count_for_hand_size", 1)
+			
+			remaining_to_draw = hand_size - current_count		
+		
+		while remaining_to_draw:
 			var card = hand.draw_card(deck)
-			if !card and allow_retry:
+			if card:
+				remaining_to_draw -= 1
+				if to_hand_size:
+					#we do a recompute every step of the way, to accomodate for cards such as
+					#Connection to the Worldmind
+					var my_hero_card = subject.get_controller_hero_card()	
+					var hand_size = my_hero_card.get_max_hand_size()		
+					var current_cards = hand.get_all_cards()
+					var current_count = 0
+					for hand_card in current_cards:
+						current_count += hand_card.get_property("count_for_hand_size", 1)
+					
+					remaining_to_draw = hand_size - current_count					
+			elif allow_retry:
 				if (discard.get_card_count() or deck.get_card_count()):
 					#draw failed while the deck was reshuffling,
 					#we attempt another draw
-					var new_amount = amount - _i
 					var definition = {
 						"name": "draw_cards",
-						"amount": new_amount,
-						"allow_retry": false, #to avoid infinite loope
+						"amount": remaining_to_draw,
+						"allow_retry": false, #to avoid infinite loops
 					}
 					var task = SimplifiedStackScript.new(definition, subject)
 					gameData.theStack.add_script(task)
@@ -424,18 +458,7 @@ func draw_to_hand_size (script: ScriptTask) -> int:
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode	
 	
-	var my_hero_id = owner.get_controller_hero_id()
-	var my_hero_card = gameData.get_identity_card(my_hero_id)	
-	var hand_size = my_hero_card.get_max_hand_size()
-	
-	var hand:Hand = cfc.NMAP["hand" + str(my_hero_id)]
-	var current_cards = hand.get_card_count()
-	
-	var amount = hand_size - current_cards
-	if (amount < 0):
-		return CFConst.ReturnCode.FAILED
-
-	script.script_definition["amount"] = amount
+	script.script_definition["to_hand_size"] = true
 	return draw_cards(script)
 
 #play card and move it either to a pile or a container

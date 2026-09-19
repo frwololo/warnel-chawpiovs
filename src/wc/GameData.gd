@@ -1030,12 +1030,8 @@ func players_pre_setup():
 func draw_all_players() :
 	for hero_id in team.keys():
 		var identity = get_identity_card(hero_id)
-		var max_hand_size = identity.get_max_hand_size()
-		var hand:Hand = cfc.NMAP["hand" + str(hero_id)]
-		var to_draw = max_hand_size - hand.get_card_count()
 		var definition = {
-			"name": "draw_cards",
-			"amount": to_draw,
+			"name": "draw_to_hand_size",
 		}
 		var task = SimplifiedStackScript.new(definition, identity)
 		task.execute()		

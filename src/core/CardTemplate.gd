@@ -1552,6 +1552,10 @@ func move_to(targetHost: Node,
 			if board_position as BoardPlacementSlot:
 				destination_grid = board_position.get_grid_name()
 	
+	if execute_self_moved_to_board:		
+		self.execute_scripts(self, "self_moved_to_board")
+	
+	
 	if signal_to_emit:
 		scripting_bus.emit_signal_on_stack(signal_to_emit,
 				self,
@@ -1562,8 +1566,6 @@ func move_to(targetHost: Node,
 					"tags": tags
 				}
 		)		
-	if execute_self_moved_to_board:		
-		self.execute_scripts(self, "self_moved_to_board")
 	
 	self.last_move_result =	{
 		"destination": destination_str,

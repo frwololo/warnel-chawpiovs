@@ -2315,32 +2315,33 @@ func get_sequence_scripts(include_low_priority = false):
 		
 	return scripted_play_sequence
 
-func play_scripted_sequence():
+func sequence_queue_is_ready():
 	if !scripted_play_sequence and !scripted_play_sequence_low_priority:
-		return
+		return false
 
 	if !_ready_for_next_sequence:
-		return
+		return false
 		
 	if is_targeting_ongoing() or manual_action_happened_too_recently():
-		return
+		return false
 	
 		
 	var next_play_event = null
-	var is_low_priority_queue = false
+
+	var result = null
 	if scripted_play_sequence:
-		next_play_event = scripted_play_sequence.front() 
+		next_play_event = scripted_play_sequence.front()
+		result = scripted_play_sequence
 	else:
 		next_play_event = scripted_play_sequence_low_priority.front() 
-		is_low_priority_queue = true
+		result = scripted_play_sequence_low_priority
 		
-	if is_low_priority_queue:
 		if immediate_encounters:
-			return	
+			return false
 		if attackers:
-			return
+			return false
 		if !theStack.is_idle():
-			return
+			return false
 		var _tmp = 1
 	
 	if next_play_event["is_villain"]:
@@ -2348,15 +2349,19 @@ func play_scripted_sequence():
 	else:	
 		#we already sent a request and should be waiting for full resolution	
 		if !gameData.theStack.is_player_allowed_to_click():
-			return		
+			return false		
 	
+	return result
 
-	
+func play_scripted_sequence():
+
+	var ok_queue = sequence_queue_is_ready()
+	if !ok_queue:
+		return
+		
 	_ready_for_next_sequence = false
-	if is_low_priority_queue:
-		next_play_event = scripted_play_sequence_low_priority.pop_front()
-	else:
-		next_play_event = scripted_play_sequence.pop_front()
+	var next_play_event = ok_queue.pop_front()
+
 	var subject = next_play_event["card"]
 	var trigger = next_play_event["trigger"]	
 		

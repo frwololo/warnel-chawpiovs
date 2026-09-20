@@ -20,7 +20,7 @@
 						},
 						"nested_tasks": [
 							{
-								"name": "replacement_effects",
+								"name": "replacement_effect",
 								"subject": "interrupted_event",
 								"replacements": {
 									"subject": "boardseek",
@@ -148,7 +148,7 @@
 				{
 					"name": "attach_to_card",
 					"subject": "my_identity"
-				},			
+				},
 				{
 					"name": "exhaust_card",
 					"subject": "boardseek",
@@ -185,6 +185,30 @@
 							}
 						}
 					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_flip",
+					"filter_state_trigger": [
+						{
+							"filter_same_controller": true,
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_properties2": {
+								"trait_psi-energy": 1,
+								"comparison": "ge"
+							},
+							"filter_properties3": {
+								"Name": "Psi-Katana"
+							}
+						}
+					],
+					"alteration": 1
 				}
 			]
 		},
@@ -407,7 +431,7 @@
 				"tags": [
 					"attack"
 				],
-				"damage": ">0",
+				"damage": ">0"
 			},
 			"filter_state_trigger": [
 				{
@@ -684,7 +708,7 @@
 			"all": [
 				{
 					"name": "deal_damage",
-					"amount": 5,
+					"amount": "5p",
 					"subject": "villain"
 				}
 			]
@@ -743,8 +767,8 @@
 					"var_type": "subject",
 					"var_name": "my_target",
 					"value": "previous",
-					"is_cost": true,
-				},					
+					"is_cost": true
+				}
 			]
 		},
 		"card_played": {
@@ -1696,6 +1720,7 @@
 					"selection_count": 1,
 					"selection_type": "equal",
 					"needs_selection": true,
+					"is_cost": true,
 					"filter_state_seek": [
 						{
 							"filter_group": "group_identities",

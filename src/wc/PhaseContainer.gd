@@ -206,7 +206,9 @@ func reset(reset_phase:= true):
 		start_current_step()
 		
 #Moving to next step needs to happen outside of the signal processing to avoid infinite loops or recursive signals
-func _process(_delta: float) -> void:
+var _dbg_cfc_ongoing_processes_timer := 0.0
+
+func _process(delta: float) -> void:
 	if !gameData.is_game_started():
 		return
 	
@@ -224,9 +226,6 @@ func _process(_delta: float) -> void:
 		
 	if cfc.get_modal_menu():
 		return
-
-	if cfc.is_process_ongoing():
-		return
 		
 	if gameData.is_announce_ongoing():
 		return	
@@ -234,8 +233,18 @@ func _process(_delta: float) -> void:
 	if gameData.pending_network_ack():
 		return	
 
+	if cfc.is_process_ongoing():
+		_dbg_cfc_ongoing_processes_timer += delta
+		if _dbg_cfc_ongoing_processes_timer > 5:
+			var _error = 1
+			print_debug("Error With ongoing processes")
+			var _tmp = cfc._ongoing_processes.duplicate(true)
+			cfc.reset_ongoing_process_stack()
+		return
+	_dbg_cfc_ongoing_processes_timer = 0.0
+
 	var forced_scripts = gameData.execute_priority_scripts()
-	if forced_scripts: #it eiter returns a bool (true if executing script) of a function (ongoing compute)
+	if forced_scripts: #it either returns a bool (true if executing script) of a function (ongoing compute)
 		return
 
 	#some encounters need to be revealed outside of their regular schedule
@@ -251,6 +260,9 @@ func _process(_delta: float) -> void:
 		gameData.enemy_activates()
 		return
 
+	#sequence scripts are willing to be played before we move on to "regular schedule"
+	if gameData.sequence_queue_is_ready():
+		return
 
 	#phases that do something particular  in their process step
 	match current_step:			
@@ -269,6 +281,7 @@ func _process(_delta: float) -> void:
 	if (!current_step_complete) :
 		return		
 
+	#sequence scripts were not ready but are still in the pipeline, we're not allowned to proceed
 	if gameData.get_sequence_scripts(true):
 		return
 		

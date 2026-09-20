@@ -1352,13 +1352,18 @@ func enemy_activates() :
 			if !enemy.activity_script:
 				display_debug("can't draw boost cards yet, enemy doesn't have an activity script")
 				return
-			if enemy.next_boost_card_to_reveal():
-				display_debug("go for one card boost reveal")
+			if enemy.activity_script.get_property("current_boost_card", null)  : #TODO better way?
+				display_debug("card boost stage 2")
 				var stackEvent = SimplifiedStackScript.new({"name": "enemy_boost"}, enemy)
 				theStack.add_script(stackEvent)
 			else:
-				display_debug("no more card boosts, going to the next step")
-				_current_enemy_attack_step = EnemyAttackStatus.DAMAGE_OR_THREAT
+				if enemy.next_boost_card_to_reveal():
+					display_debug("go for one card boost reveal")
+					var stackEvent = SimplifiedStackScript.new({"name": "enemy_boost"}, enemy)
+					theStack.add_script(stackEvent)
+				else:
+					display_debug("no more card boosts, going to the next step")
+					_current_enemy_attack_step = EnemyAttackStatus.DAMAGE_OR_THREAT
 		
 		EnemyAttackStatus.DAMAGE_OR_THREAT:
 			var script_name
@@ -2507,17 +2512,20 @@ func move_to_next_villain(current_villain):
 				ckey = potential_villain.get_property("_code")	
 		if !ckey:
 			return null	
-	else:		
-		var villains = scenario.get_villain_family(current_villain)
-		var new_villain_data = null
-		for i in range (villains.size() - 1): #-1 here because we want to get the +1 if we find it
-			if (villains[i]["Name"] == current_villain.get_property("Name", "")):
-				new_villain_data = villains[i+1]
+	else:
+		if current_villain.get_property("next_villain_on_death", ""):
+			ckey = current_villain.get_property("next_villain_on_death", "").replace("#", "")
+		else:			
+			var villains = scenario.get_villain_family(current_villain)
+			var new_villain_data = null
+			for i in range (villains.size() - 1): #-1 here because we want to get the +1 if we find it
+				if (villains[i]["Name"] == current_villain.get_property("Name", "")):
+					new_villain_data = villains[i+1]
+			
+			if !new_villain_data :
+				return null
 		
-		if !new_villain_data :
-			return null
-		
-		ckey = new_villain_data["_code"] 		
+			ckey = new_villain_data["_code"] 		
 
 	var result = swap_villain(current_villain, ckey, {"died": true})
 		
@@ -2884,6 +2892,7 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 	if scenario_data:
 		scenario.load_from_dict(scenario_data)
 	else:
+		#backup for incomplete saves, typically Testsuite
 		var villain_def = json_data.get("board", {}).get("villain", {})
 		if villain_def:
 			villain_def = villain_def[0].get("card", {})

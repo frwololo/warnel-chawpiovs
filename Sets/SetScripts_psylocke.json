@@ -408,17 +408,17 @@
 					"attack"
 				],
 				"damage": ">0",
-				"filter_state_trigger": [
-					{
-						"filter_func": {
-							"func_name": "is_confused",
-							"func_params": {
-								"subject": "trigger"
-							}
+			},
+			"filter_state_trigger": [
+				{
+					"filter_func": {
+						"func_name": "is_confused",
+						"func_params": {
+							"subject": "trigger"
 						}
 					}
-				]
-			},
+				}
+			],
 			"is_optional_board": true,
 			"board": [
 				{

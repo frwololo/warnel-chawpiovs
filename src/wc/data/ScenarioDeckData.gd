@@ -220,6 +220,14 @@ func get_villains(index = 0):
 			
 	return _villains_by_level[index]
 
+static func get_villains_ids_from_set(card_set_code):
+	var result = []
+	var card_set = cfc.cards_by_set.get(card_set_code, [])
+	for card_data in card_set:
+		var card_type = card_data["type_code"]
+		if card_type == "villain":
+			result.append(card_data["code"])
+	return result
 
 static func get_scheme_from_villain(villain_id):
 	if !primitives:
@@ -227,6 +235,12 @@ static func get_scheme_from_villain(villain_id):
 			
 	if !villain_id:
 		return {}
+		
+	var villain_data = cfc.get_card_by_id(villain_id)
+	if !villain_data:
+		return {}
+		
+	
 	for scheme_id in primitives:
 		for expert in [false, true]:
 			var villain_groups = get_villain_id_groups_from_scheme(scheme_id, expert)
@@ -237,6 +251,19 @@ static func get_scheme_from_villain(villain_id):
 						"expert": expert
 					}
 	
+	#fallback, we try all villains in the set
+	var all_associated_villains = get_villains_ids_from_set(villain_data["card_set_code"])	
+	for scheme_id in primitives:
+		for expert in [false, true]:
+			var villain_groups = get_villain_id_groups_from_scheme(scheme_id, expert)
+			for villain_ids in villain_groups:
+				for potential_match in all_associated_villains:
+					if potential_match in villain_ids:
+						return {
+							"scheme_id": scheme_id,
+							"expert": expert
+						}
+						
 	return {}
 	
 func load_from_villain(villain_id):

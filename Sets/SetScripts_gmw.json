@@ -575,9 +575,24 @@
 		"boost": {
 			"all": [
 				{
+					"name": "save_variable",
+					"var_name": "my_boost",
+					"var_type": "int",
+					"value": {
+						"if": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"subject": "villain",
+								"token_name": "tough"
+							}
+						},
+						"then": 2,
+						"else": 0
+					}
+				},
+				{
 					"name": "mod_tokens",
 					"modification": 1,
-					"is_cost": true,
 					"token_name": "tough",
 					"subject": "villain"
 				}
@@ -589,17 +604,7 @@
 					"filter_task": "get_property",
 					"filter_property_name": "boost",
 					"trigger": "self",
-					"alteration": {
-						"if": {
-							"func_name": "count_tokens",
-							"func_params": {
-								"subject": "villain",
-								"token_name": "tough"
-							}
-						},
-						"then": 2,
-						"else": 0
-					}
+					"alteration": "my_boost"
 				}
 			]
 		}

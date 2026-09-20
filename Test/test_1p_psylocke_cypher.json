@@ -1,7 +1,103 @@
 {
-	"_comments": "Test for Pete Wisdom (Psylocke)",
+	"_comments": "Test for Cypher (draw card effect)",
 	"init": {
-		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 32976,
+					"hero": "Psylocke #41001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Plugged In #45154"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance #01186"
+				}
+			],
+			"villain": [
+				{
+					"card": "Apocalypse - 1 #45184a"
+				}
+			],
+			"schemes": [
+				{
+					"card": "En Sabah Nur's Pyramid - 1B #45147b"
+				},
+				{
+					"card": "Ancient Ritual #45163",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Captain Britain - Brian Braddock #41012"
+				},
+				{
+					"card": "Psionic Redirect"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Psylocke #41001a"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Ozymandias",
+					"tokens": {
+						"damage": 2,
+						"confused": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Cypher - Doug Ramsey"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "psi-knife"
+				},
+				{
+					"card": "psi-katana"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Cypher - Doug Ramsey"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Ozymandias"
+		},
+		{
+			"type": "activate",
+			"value": "Cypher - Doug Ramsey",
+			"_comments": "activate to draw card"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -50,100 +146,23 @@
 					"card": "Psylocke #41001a"
 				}
 			],
-			"allies1": [
+			"enemies1": [
 				{
-					"card": "Pete Wisdom #41018",
+					"card": "Ozymandias",
 					"tokens": {
-						"damage": 2
+						"damage": 3,
+						"confused": 1
 					}
-				}
-			],
-			"upgrade_support1": [
-				{
-					"card": "psi-knife"
-				},
-				{
-					"card": "psi-katana"
-				}
-			]
-		}
-	},
-	"actions": [
-		{
-			"type": "other",
-			"value": "wait_a_bit"
-		},
-		{
-			"type": "choose",
-			"value": "yes",
-			"_comments": "accept to heal pete"
-		},
-		{
-			"type": "other",
-			"value": "wait_for_player_turn"
-		}
-	],
-	"end": {
-		"phase": "PLAYER_TURN",
-		"heroes": [
-			{
-				"herodeckdata": {
-					"owner": 1,
-					"deck_id": 32976,
-					"hero": "Psylocke #41001a"
-				}
-			}
-		],
-		"board": {
-			"discard_villain": [
-				{
-					"card": "Hydra Mercenary"
-				},
-				{
-					"card": "Advance #01186"
-				}
-			],
-			"deck_villain": [
-				{
-					"card": "Plugged In #45154"
-				}
-			],
-			"villain": [
-				{
-					"card": "Apocalypse - 1 #45184a"
-				}
-			],
-			"schemes": [
-				{
-					"card": "En Sabah Nur's Pyramid - 1B #45147b",
-					"tokens": {
-						"threat": 2
-					}
-				},
-				{
-					"card": "Ancient Ritual #45163",
-					"tokens": {
-						"threat": 5
-					}
-				}
-			],
-			"deck1": [
-				{
-					"card": "Captain Britain - Brian Braddock #41012"
-				}
-			],
-			"enemies1": [],
-			"identity1": [
-				{
-					"card": "Psylocke #41001a"
 				}
 			],
 			"allies1": [
 				{
-					"card": "Pete Wisdom #41018",
-					"tokens": {
-						"damage": 1
-					}
+					"card": "Cypher - Doug Ramsey"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Psionic Redirect"
 				}
 			],
 			"upgrade_support1": [

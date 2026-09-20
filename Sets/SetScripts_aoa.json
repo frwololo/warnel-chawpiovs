@@ -340,7 +340,7 @@
 			]
 		}
 	},
-	"Apocalypse - 1 #45184a": {
+	"Apocalypse - 1 #45184a": {	
 		"attacks_gain": {
 			"__trigger__": "self",
 			"__tags__": "overkill"
@@ -362,6 +362,17 @@
 		}
 	},
 	"Apocalypse - 1 #45184b": {
+		"on_load": {
+			"all": [
+				{
+					"name": "init_properties",
+					"subject": "self",
+					"set_properties": {
+						"next_villain_on_death": "#45185b"
+					}
+				}
+			]
+		},	
 		"card_changed_form": {
 			"trigger": "self",
 			"board": [
@@ -380,6 +391,17 @@
 		}
 	},
 	"Apocalypse - 1 #45184c": {
+		"on_load": {
+			"all": [
+				{
+					"name": "init_properties",
+					"subject": "self",
+					"set_properties": {
+						"next_villain_on_death": "#45185c"
+					}
+				}
+			]
+		},	
 		"card_changed_form": {
 			"trigger": "self",
 			"board": [
@@ -413,6 +435,17 @@
 		}
 	},
 	"Apocalypse - 2 #45185b": {
+		"on_load": {
+			"all": [
+				{
+					"name": "init_properties",
+					"subject": "self",
+					"set_properties": {
+						"next_villain_on_death": "#45186b"
+					}
+				}
+			]
+		},	
 		"card_changed_form": {
 			"trigger": "self",
 			"board": [
@@ -431,6 +464,17 @@
 		}
 	},
 	"Apocalypse - 2 #45185c": {
+		"on_load": {
+			"all": [
+				{
+					"name": "init_properties",
+					"subject": "self",
+					"set_properties": {
+						"next_villain_on_death": "#45186c"
+					}
+				}
+			]
+		},	
 		"card_changed_form": {
 			"trigger": "self",
 			"board": [
@@ -5300,6 +5344,7 @@
 			}
 		},
 		"boost_alterants": {
+							"_breakpoint": true,
 			"all": [
 				{
 					"filter_task": "get_property",

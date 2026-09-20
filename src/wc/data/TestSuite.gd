@@ -1040,10 +1040,12 @@ func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
 						
 				#handle special cases of card names vs id	
 				if (key in ["hero", "card", "host"]):
-#					val1 = get_corrected_card_id(val1)
-#					val2 = get_corrected_card_id(val2)
-					val1 = _get_shortname(val1)
-					val2 = _get_shortname(val2)				
+					if "#" in val1: #we are explicit for id in the test comparison
+						val1 = get_corrected_card_id(val1)
+						val2 = get_corrected_card_id(val2)
+					else:
+						val1 = _get_shortname(val1)
+						val2 = _get_shortname(val2)				
 				#special case to test for tokens 0
 				if key =="tokens":
 					for child_key in element1[key]:

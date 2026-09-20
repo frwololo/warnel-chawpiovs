@@ -1,0 +1,401 @@
+{
+	"_comments": "Test for Apocalypse next stage: does it keep the trait",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 32976,
+					"hero": "41001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Technological Interface #45151",
+					"owner_hero_id": 0
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Plugged In #45154",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Giant Growth #45155",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Apocalypse - 1 #45184b",
+					"tokens": {
+						"damage": 15
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "En Sabah Nur's Pyramid - 1B #45147b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 5,
+						"power": 3
+					}
+				},
+				{
+					"card": "Ancient Ritual #45163",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Psylocke #41001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Chimera #41026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Interdimensional Plunder #41027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psionic Illusion #41028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Telekinetic Dragon #41029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Telekinetic Dragon #41029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Rise of Apocalypse - 2A #45148a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Rise of Apocalypse - 2B #45148b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Apocalypse - 2 #45185a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Apocalypse - 2 #45185b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Apocalypse - 2 #45185c",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psi-Knife #41002a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Psi-Knife #41002a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Apocalypse - 1 #45184a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Apocalypse - 1 #45184c",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "En Sabah Nur's Pyramid - 1A #45147a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "The Power of the Mind #40028",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "Telepathy #41024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Flurry of Blades #41004",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Psylocke #41001a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"damage": 6,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Cypher - Doug Ramsey #41013",
+					"owner_hero_id": 1
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Psi-Katana #41002b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Psi-Katana #41002b",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Concussive Blow #05031",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "X-Bunker #41023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Float Like a Butterfly #41017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mental Detection #41005",
+					"owner_hero_id": 1
+				}
+			],
+			"others": [
+				{
+					"card": "Staggering Strength #45149",
+					"owner_hero_id": 0,
+					"host": "45184b"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Psylocke #41001a"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Apocalypse - 1 #45184b"
+		},
+		{
+			"type": "pass",
+			"value": 1,
+			"_comments": "Ignore Psylocke's interrupt ability"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 32976,
+					"hero": "41001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Technological Interface #45151",
+					"owner_hero_id": 0
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Plugged In #45154",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Giant Growth #45155",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Apocalypse - 1 #45185b"
+				}
+			],
+			"schemes": [
+				{
+					"card": "En Sabah Nur's Pyramid - 1B #45147b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 5,
+						"power": 3
+					}
+				},
+				{
+					"card": "Ancient Ritual #45163",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Psylocke #41001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Chimera #41026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Interdimensional Plunder #41027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psionic Illusion #41028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Telekinetic Dragon #41029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Telekinetic Dragon #41029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Rise of Apocalypse - 2A #45148a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Rise of Apocalypse - 2B #45148b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Apocalypse - 2 #45185a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Apocalypse - 2 #45185c",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psi-Knife #41002a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Psi-Knife #41002a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Apocalypse - 1 #45184a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Apocalypse - 1 #45184c",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Apocalypse - 2 #45184b",
+					"owner_hero_id": 0
+				},				
+			],
+			"removed_from_game": [
+				{
+					"card": "En Sabah Nur's Pyramid - 1A #45147a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "The Power of the Mind #40028",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "Telepathy #41024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Flurry of Blades #41004",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Psylocke #41001a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"damage": 6,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Cypher - Doug Ramsey #41013",
+					"owner_hero_id": 1
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Psi-Katana #41002b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Psi-Katana #41002b",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Concussive Blow #05031",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "X-Bunker #41023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Float Like a Butterfly #41017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mental Detection #41005",
+					"owner_hero_id": 1
+				}
+			],
+			"others": [
+				{
+					"card": "Staggering Strength #45149",
+					"owner_hero_id": 0,
+					"host": "45184b"
+				}
+			]
+		}
+	}
+}

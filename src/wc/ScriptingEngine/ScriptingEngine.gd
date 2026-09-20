@@ -49,11 +49,7 @@ func pay_as_resource(script: ScriptTask) -> int:
 #empty ability, used for filtering and script failure
 # see KEY_FAIL_COST_ON_SKIP
 func nop(script: ScriptTask) -> int:
-	var retcode: int = CFConst.ReturnCode.CHANGED
-	
-	var subjects = script.subjects
-	
-	return retcode
+	return CFConst.ReturnCode.CHANGED
 
 const _hint_counter = [0]
 const _hint_colors = [
@@ -451,6 +447,8 @@ func draw_cards (script: ScriptTask) -> int:
 					var task = SimplifiedStackScript.new(definition, subject)
 					gameData.theStack.add_script(task)
 					return retcode
+				return CFConst.ReturnCode.FAILED
+			else:
 				return CFConst.ReturnCode.FAILED				
 	return retcode
 	
@@ -2101,8 +2099,9 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 	
 	#reveal one boost card
 	var attacker = boost_script.owner
-	#the boost_script passed here is not super useful,
-	#except to retrieve the attacker's ongoing real attack script
+
+	#Retrieve the attacker's ongoing attack script,
+	#which stores all the current information for the activity
 	var script = attacker.activity_script
 	
 	var script_definition = script.script_definition
@@ -2110,24 +2109,29 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 		script_definition["boost"] = []
 	
 	
-	var boost_card = attacker.next_boost_card_to_reveal()
+	var boost_card
+	#boost reveal is done in two phases, with this function called
+	# twice at separate intervals by a GameData signal on the stack:
+	#boost ability (if the card has one),
+	#followed by boost icons
+	var current_step = "boost_ability"
+	
+	if script_definition.get("current_boost_card", null):
+		boost_card = script_definition.get("current_boost_card")
+		current_step = "boost_icons"
+	else:
+		boost_card = attacker.next_boost_card_to_reveal()
+		if !boost_card.retrieve_scripts("boost"):
+			current_step = "boost_icons"
 	
 	if !boost_card:
 		return CFConst.ReturnCode.OK
 		
 	boost_card.set_current_activation(script)	
 	boost_card.set_is_faceup(true)
-	
+
 	var boost_icons = boost_card.get_property("boost",0, true)
 	var boost_amount = boost_icons
-	boost_amount += cfc.NMAP.board.count_amplify_icons()
-	if script.has_tag("amplify"):
-		attacker.hint("Amplify", Color8(100,255,150))
-		boost_amount += 1
-	if boost_amount:
-		boost_card.hint("+" + str(boost_amount), Color8(100,255,150), {"position": "bottom_right"})
-	script_definition["boost"].append(boost_amount)
-
 	var tags = script.get_property(SP.KEY_TAGS, [])
 	var target_friendly = script.get_property("target")		
 	var defender = script.subjects[0] if script.subjects else null	
@@ -2140,13 +2144,27 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 		"attacker": attacker, 
 		"defender": defender
 	}
-	
-	var func_return = boost_card.execute_scripts(boost_card, "boost", boost_trigger_details)
-	if func_return is GDScriptFunctionState && func_return.is_valid():
-		yield(func_return, "completed")	
-	
 
-	scripting_bus.emit_signal_on_stack("boost_card_resolved", boost_card, boost_trigger_details)
+	match current_step:
+		"boost_ability":
+
+			var func_return = boost_card.execute_scripts(boost_card, "boost", boost_trigger_details)
+			if func_return is GDScriptFunctionState && func_return.is_valid():
+				yield(func_return, "completed")	
+	
+			script_definition["current_boost_card"] = boost_card
+		"boost_icons":
+			boost_amount += cfc.NMAP.board.count_amplify_icons()
+			if script.has_tag("amplify"):
+				attacker.hint("Amplify", Color8(100,255,150))
+				boost_amount += 1
+			if boost_amount:
+				boost_card.hint("+" + str(boost_amount), Color8(100,255,150), {"position": "bottom_right"})
+			script_definition["boost"].append(boost_amount)
+			script_definition.erase("current_boost_card")
+
+
+			scripting_bus.emit_signal_on_stack("boost_card_resolved", boost_card, boost_trigger_details)
 
 	return retcode
 

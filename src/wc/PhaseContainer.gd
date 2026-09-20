@@ -218,7 +218,7 @@ func _process(delta: float) -> void:
 	if !gameData.theStack.is_phasecontainer_allowed_to_process():
 		return
 			
-	if gameData.user_input_ongoing:
+	if gameData.user_input_ongoing or gameData.is_targeting_ongoing():
 		return
 		
 	if cfc.game_paused:
@@ -239,7 +239,8 @@ func _process(delta: float) -> void:
 			var _error = 1
 			print_debug("Error With ongoing processes")
 			var _tmp = cfc._ongoing_processes.duplicate(true)
-			cfc.reset_ongoing_process_stack()
+			for obj in _tmp:
+				var value = _tmp[obj]
 		return
 	_dbg_cfc_ongoing_processes_timer = 0.0
 

@@ -247,6 +247,8 @@ func _process(delta:float):
 #			viewboard.rect_position = Vector2(x,modal_menu.rect_position.y - 85)
 			viewboard.visible = true
 			viewboard.self_modulate = Color(1.0,1.0,1.0)
+			var last_index = get_child_count() - 1
+			move_child(viewboard, last_index)
 		wallpaper.self_modulate = Color(0.5,0.5,0.5)
 	else:
 		viewboard.visible = false

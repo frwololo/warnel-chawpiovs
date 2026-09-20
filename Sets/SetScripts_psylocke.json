@@ -456,7 +456,7 @@
 		"TODO": "max 1 per attack",
 		"interrupt_receive_damage": {
 			"event_filters": {
-				"attacker": "my_hero",
+				"actual_source": "my_hero",
 				"tags": [
 					"has_attack_keyword",
 					"attack"
@@ -937,7 +937,7 @@
 		},
 		"paid_as_resource": {
 			"trigger": "self",
-			"is_optional_all": true,
+			"is_optional_board": true,
 			"board": [
 				{
 					"name": "flip_doublesided_card",
@@ -980,7 +980,7 @@
 		},
 		"paid_as_resource": {
 			"trigger": "self",
-			"is_optional_all": true,
+			"is_optional_board": true,
 			"board": [
 				{
 					"name": "flip_doublesided_card",
@@ -1067,7 +1067,8 @@
 										"Name": "Psi-Katana"
 									}
 								}
-							]
+							],
+							"multiplier": 2
 						}
 					}
 				},
@@ -1242,7 +1243,9 @@
 					]
 				},
 				{
-					"name": "move_card_to_hand",
+					"name": "move_card_to_container",
+					"dest_container": "hand",
+					"src_container": "discard",
 					"subject": "tutor",
 					"subject_count": "all",
 					"filter_state_tutor": [
@@ -1254,7 +1257,10 @@
 								"type_code": "event"
 							}
 						}
-					]
+					],
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
 				},
 				{
 					"name": "ready_card",

@@ -139,16 +139,16 @@
 			"discard1": [
 				{
 					"card": "Strength"
-				},
-				{
-					"card": "Cosmic Awareness"
 				},	
 				{
 					"card": "Magic Attack"
 				},				
 				{
 					"card": "Audacity"
-				},					
+				},
+				{
+					"card": "Cosmic Awareness"
+				},				
 			],
 			"enemies1": [
 				{

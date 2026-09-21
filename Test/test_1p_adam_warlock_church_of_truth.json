@@ -137,22 +137,24 @@
 					"_comments": "Adam Warlock has the same name in alter_ego and hero form, need id"
 				}
 			],
+			"discard1": [
+							{
+					"card": "Cosmic Awareness"
+				},	
+			],
 			"deck1": [
 				{
 					"card": "Zone of Silence"
 				},
 				{
-					"card": "Cosmic Awareness"
+					"card": "Audacity"
 				},	
 				{
-					"card": "Magic Attack"
-				},					
-				{
 					"card": "Strength"
-				},			
-				{
-					"card": "Audacity"
 				},				
+				{
+					"card": "Magic Attack"
+				},									
 			],
 			"encounters_facedown1": [
 				{

@@ -125,9 +125,6 @@
 					"card": "The Power of Aggression"
 				},
 				{
-					"card": "Repulsor Blast"
-				},
-				{
 					"card": "Supersonic Punch"
 				},					
 				{
@@ -142,7 +139,9 @@
 				{
 					"card": "Uppercut"
 				},
-				
+				{
+					"card": "Repulsor Blast"
+				},				
 			],			
 			"identity1": [
 				{

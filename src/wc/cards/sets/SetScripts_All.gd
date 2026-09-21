@@ -51,7 +51,7 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 	var play_action : Dictionary = {
 		"name": "play_card",
 		"subject": "self",
-		"is_cost" : true,
+#		"is_cost" : true,
 	}	
 
 

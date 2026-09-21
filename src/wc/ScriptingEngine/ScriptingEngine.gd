@@ -2497,10 +2497,8 @@ func enemy_scheme_threat(_script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
 	var attacker = _script.owner
-	#the _script passed here is not super useful,
-	#except to retrieve the attacker's ongoing real attack script
+	#We retrieve the attacker's ongoing real attack script
 	var script = attacker.activity_script
-
 
 	var scheme_amount = attacker.get_property("scheme", 0)
 	var boost_data = script.get_property("boost", [])

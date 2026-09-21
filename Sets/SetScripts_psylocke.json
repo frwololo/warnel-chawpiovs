@@ -33,7 +33,7 @@
 										],
 										"needs_selection": true,
 										"selection_count": 1,
-										"selection_optionam": false
+										"selection_optional": false
 									}
 								}
 							},
@@ -935,7 +935,7 @@
 				}
 			]
 		},
-		"paid_as_resource": {
+		"interrupt_paid_as_resource": {
 			"trigger": "self",
 			"is_optional_board": true,
 			"board": [
@@ -978,7 +978,7 @@
 				}
 			]
 		},
-		"paid_as_resource": {
+		"interrupt_paid_as_resource": {
 			"trigger": "self",
 			"is_optional_board": true,
 			"board": [
@@ -1153,6 +1153,7 @@
 					"needs_selection": true,
 					"selection_count": 1,
 					"selection_type": "equal",
+					"selection_optional": true,
 					"filter_state_seek": [
 						{
 							"filter_same_controller": true,
@@ -1183,6 +1184,7 @@
 					"needs_selection": true,
 					"selection_count": 1,
 					"selection_type": "equal",
+					"selection_optional": true,
 					"filter_state_seek": [
 						{
 							"filter_same_controller": true,
@@ -1213,6 +1215,7 @@
 					"needs_selection": true,
 					"selection_count": 1,
 					"selection_type": "equal",
+					"selection_optional": true,
 					"filter_state_seek": [
 						{
 							"filter_same_controller": true,

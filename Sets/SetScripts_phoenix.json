@@ -206,7 +206,7 @@
 			"board": [
 				{
 					"name": "replacement_effect",
-					"subject": "interrupted_event",
+					"subject": "current_activation",
 					"replacements": {
 						"subject": "Consume the World"
 					}

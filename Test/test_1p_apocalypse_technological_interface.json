@@ -1,11 +1,7 @@
 {
-	"_comments": "Test En Sabah Nur Pyramid Power",
-	"test_conditions": {
-		"bug_type": "card_json",
-		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
-	},		
+	"_comments": "Test next main scheme bug with Apocalypse",
 	"init": {
-		"phase": "VILLAIN_THREAT",
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -37,7 +33,7 @@
 					"card": "Advance #01186"
 				},
 				{
-					"card": "Ozymandias"
+					"card": "Technological Interface"
 				}
 			],
 			"villain": [
@@ -49,7 +45,8 @@
 				{
 					"card": "En Sabah Nur's Pyramid - 1B #45147b",
 					"tokens": {
-						"power": 3
+						"power": 3,
+						"threat": 7
 					}
 				},
 				{
@@ -74,7 +71,16 @@
 			],
 			"set_aside": [
 				{
+					"card": "Apocalypse - 1 #45184b"
+				},
+				{
 					"card": "Apocalypse - 1 #45184c"
+				},				
+				{
+					"card": "The Rise of Apocalypse - 2A"
+				},
+				{
+					"card": "The Rise of Apocalypse - 2B"
 				}
 			],
 			"enemies1": [],
@@ -96,16 +102,6 @@
 	"actions": [
 		{
 			"type": "other",
-			"value": "wait_a_bit",
-			"_comments": "Pyramid's ability triggers and fetches Staggering Strength. Apocalypse switches to Giant mode"
-		},
-		{
-			"type": "select",
-			"value": "cancel",
-			"_comments": "undefended attack from Apocalypse giant"
-		},
-		{
-			"type": "other",
 			"value": "wait_for_player_turn"
 		}
 	],
@@ -123,16 +119,10 @@
 		"board": {
 			"discard_villain": [
 				{
-					"card": "Ozymandias"
-				},
-				{
 					"card": "Advance #01186"
-				},
+				},			
 				{
-					"card": "Celestial Weapon"
-				},
-				{
-					"card": "Staggering Strength"
+					"card": "Technological Interface"
 				}
 			],
 			"deck_villain": [
@@ -141,12 +131,15 @@
 				},
 				{
 					"card": "Celestial Armor"
-				}
-			],
-			"set_aside": [
+				},
 				{
-					"card": "Apocalypse - 1 #45184a"
-				}
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Celestial Weapon"
+				},
+
+
 			],
 			"villain": [
 				{
@@ -155,18 +148,15 @@
 			],
 			"schemes": [
 				{
-					"card": "En Sabah Nur's Pyramid - 1B #45147b",
-					"tokens": {
-						"power": 0,
-						"threat": 1
-					}
-				},
-				{
 					"card": "Ancient Ritual #45163",
 					"tokens": {
-						"threat": 5
+						"threat": 6
 					}
-				}
+				},			
+				{
+					"card": "The Rise of Apocalypse - 2B"
+				},
+
 			],
 			"deck1": [
 				{
@@ -178,18 +168,27 @@
 			],
 			"identity1": [
 				{
-					"card": "Psylocke #41001a",
-					"tokens": {
-						"damage": 6,
-						"stunned": 1
-					}
+					"card": "Psylocke #41001a"
 				}
 			],
-			"enemies1": [
+			"set_aside": [
 				{
-					"card": "Hydra Mercenary"
-				}
+					"card": "Apocalypse - 1 #45184a"
+				},
+				{
+					"card": "En Sabah Nur's Pyramid - 1B #45147b",
+				},				
+				{
+					"card": "Apocalypse - 1 #45184b"
+				},				
 			],
+			"others": [
+							{
+					"card": "Staggering Strength",
+					"host": "Apocalypse"
+				},
+			],
+			"enemies1": [],
 			"allies1": [
 				{
 					"card": "Cypher - Doug Ramsey"

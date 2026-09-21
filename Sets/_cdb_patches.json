@@ -374,7 +374,7 @@
 	},
 	"33017": {
 		"alternate_art": true
-	},	
+	},
 	"34001a": {
 		"printed_card_id": "34001b",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
@@ -441,7 +441,11 @@
 	},
 	"41014": {
 		"alternate_art": true
-	},	
+	},
+	"41024": {
+		"resource_energy": 0,
+		"resource_mental": 1
+	},
 	"45013": {
 		"alternate_art": true
 	},

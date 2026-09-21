@@ -340,7 +340,7 @@
 			]
 		}
 	},
-	"Apocalypse - 1 #45184a": {	
+	"Apocalypse - 1 #45184a": {
 		"attacks_gain": {
 			"__trigger__": "self",
 			"__tags__": "overkill"
@@ -372,7 +372,7 @@
 					}
 				}
 			]
-		},	
+		},
 		"card_changed_form": {
 			"trigger": "self",
 			"board": [
@@ -401,7 +401,7 @@
 					}
 				}
 			]
-		},	
+		},
 		"card_changed_form": {
 			"trigger": "self",
 			"board": [
@@ -445,7 +445,7 @@
 					}
 				}
 			]
-		},	
+		},
 		"card_changed_form": {
 			"trigger": "self",
 			"board": [
@@ -474,7 +474,7 @@
 					}
 				}
 			]
-		},	
+		},
 		"card_changed_form": {
 			"trigger": "self",
 			"board": [
@@ -1735,7 +1735,7 @@
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
-								"card_set_code":  "compare_with_previous"
+								"card_set_code": "compare_with_previous"
 							}
 						}
 					]
@@ -1792,7 +1792,7 @@
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
-								"card_set_code":  "compare_with_previous"
+								"card_set_code": "compare_with_previous"
 							}
 						}
 					]
@@ -1866,7 +1866,7 @@
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
-								"card_set_code":  "compare_with_previous"
+								"card_set_code": "compare_with_previous"
 							}
 						}
 					]
@@ -1921,7 +1921,7 @@
 					"Blue area of the Moon #45139"
 				]
 			}
-		],	
+		],
 		"setup": {
 			"all": [
 				{
@@ -2398,7 +2398,7 @@
 									"name": "mod_tokens",
 									"subject": "self",
 									"modification": -4,
-									"token_name": "power",
+									"token_name": "power"
 								},
 								{
 									"name": "move_card_to_container",
@@ -3262,15 +3262,15 @@
 					],
 					"else": [
 						{
-							"name": "change_form",
-							"subject": "Apocalypse",
-							"change_to": "trait_giant"
-						},
-						{
 							"name": "mod_tokens",
 							"modification": 1,
 							"subject": "Apocalypse",
 							"token_name": "tough"
+						},
+						{
+							"name": "change_form",
+							"subject": "Apocalypse",
+							"change_to": "trait_giant"
 						}
 					]
 				}
@@ -5309,7 +5309,7 @@
 			"board": [
 				{
 					"name": "replacement_effect",
-					"subject": "interrupted_event",
+					"subject": "current_activation",
 					"replacements": {
 						"subject": "Ancient Ritual"
 					}
@@ -5345,7 +5345,7 @@
 			}
 		},
 		"boost_alterants": {
-							"_breakpoint": true,
+			"_breakpoint": true,
 			"all": [
 				{
 					"filter_task": "get_property",
@@ -5561,15 +5561,15 @@
 					],
 					"else": [
 						{
-							"name": "change_form",
-							"subject": "Apocalypse",
-							"change_to": "trait_cyberpath"
-						},
-						{
 							"name": "mod_tokens",
 							"modification": 1,
 							"subject": "Apocalypse",
 							"token_name": "tough"
+						},
+						{
+							"name": "change_form",
+							"subject": "Apocalypse",
+							"change_to": "trait_cyberpath"
 						}
 					]
 				}
@@ -6551,15 +6551,15 @@
 					],
 					"else": [
 						{
-							"name": "change_form",
-							"subject": "Apocalypse",
-							"change_to": "trait_biomorph"
-						},
-						{
 							"name": "mod_tokens",
 							"modification": 1,
 							"subject": "Apocalypse",
 							"token_name": "tough"
+						},
+						{
+							"name": "change_form",
+							"subject": "Apocalypse",
+							"change_to": "trait_biomorph"
 						}
 					]
 				}
@@ -7561,7 +7561,7 @@
 									"name": "mod_tokens",
 									"subject": "self",
 									"modification": -4,
-									"token_name": "power",
+									"token_name": "power"
 								},
 								{
 									"name": "move_card_to_container",

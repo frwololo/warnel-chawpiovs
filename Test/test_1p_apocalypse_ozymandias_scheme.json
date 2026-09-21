@@ -1,11 +1,11 @@
 {
-	"_comments": "Test En Sabah Nur Pyramid Power",
+	"_comments": "Test for Ozymandias Scheme",
 	"test_conditions": {
 		"bug_type": "card_json",
 		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
 	},		
 	"init": {
-		"phase": "VILLAIN_THREAT",
+		"phase": "VILLAIN_ACTIVATES",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -19,38 +19,26 @@
 			"discard_villain": [],
 			"deck_villain": [
 				{
-					"card": "Plugged In #45154"
-				},
-				{
-					"card": "Celestial Armor"
+					"card": "Advance #01186"
 				},
 				{
 					"card": "Hydra Mercenary"
 				},
 				{
-					"card": "Celestial Weapon"
-				},
-				{
-					"card": "Staggering Strength"
-				},
-				{
-					"card": "Advance #01186"
-				},
-				{
-					"card": "Ozymandias"
+					"card": "Plugged In #45154"
 				}
 			],
 			"villain": [
 				{
-					"card": "Apocalypse - 1 #45184a"
+					"card": "Apocalypse - 1 #45184a",
+					"tokens": {
+						"confused": 1
+					}
 				}
 			],
 			"schemes": [
 				{
-					"card": "En Sabah Nur's Pyramid - 1B #45147b",
-					"tokens": {
-						"power": 3
-					}
+					"card": "En Sabah Nur's Pyramid - 1B #45147b"
 				},
 				{
 					"card": "Ancient Ritual #45163",
@@ -69,15 +57,14 @@
 			],
 			"identity1": [
 				{
-					"card": "Psylocke #41001a"
+					"card": "Betsy Braddock"
 				}
 			],
-			"set_aside": [
+			"enemies1": [
 				{
-					"card": "Apocalypse - 1 #45184c"
+					"card": "Ozymandias"
 				}
 			],
-			"enemies1": [],
 			"allies1": [
 				{
 					"card": "Cypher - Doug Ramsey"
@@ -94,16 +81,6 @@
 		}
 	},
 	"actions": [
-		{
-			"type": "other",
-			"value": "wait_a_bit",
-			"_comments": "Pyramid's ability triggers and fetches Staggering Strength. Apocalypse switches to Giant mode"
-		},
-		{
-			"type": "select",
-			"value": "cancel",
-			"_comments": "undefended attack from Apocalypse giant"
-		},
 		{
 			"type": "other",
 			"value": "wait_for_player_turn"
@@ -123,48 +100,27 @@
 		"board": {
 			"discard_villain": [
 				{
-					"card": "Ozymandias"
-				},
-				{
-					"card": "Advance #01186"
-				},
-				{
-					"card": "Celestial Weapon"
-				},
-				{
-					"card": "Staggering Strength"
+					"card": "Plugged In #45154"
 				}
 			],
 			"deck_villain": [
 				{
-					"card": "Plugged In #45154"
-				},
-				{
-					"card": "Celestial Armor"
-				}
-			],
-			"set_aside": [
-				{
-					"card": "Apocalypse - 1 #45184a"
+					"card": "Advance #01186"
 				}
 			],
 			"villain": [
 				{
-					"card": "Apocalypse - 1 #45184c"
+					"card": "Apocalypse - 1 #45184a",
 				}
 			],
 			"schemes": [
 				{
-					"card": "En Sabah Nur's Pyramid - 1B #45147b",
-					"tokens": {
-						"power": 0,
-						"threat": 1
-					}
+					"card": "En Sabah Nur's Pyramid - 1B #45147b"
 				},
 				{
 					"card": "Ancient Ritual #45163",
 					"tokens": {
-						"threat": 5
+						"threat": 9
 					}
 				}
 			],
@@ -178,14 +134,13 @@
 			],
 			"identity1": [
 				{
-					"card": "Psylocke #41001a",
-					"tokens": {
-						"damage": 6,
-						"stunned": 1
-					}
+					"card": "Betsy Braddock"
 				}
 			],
 			"enemies1": [
+				{
+					"card": "Ozymandias"
+				},
 				{
 					"card": "Hydra Mercenary"
 				}

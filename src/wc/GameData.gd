@@ -615,6 +615,13 @@ func get_current_game_schemes(set_code):
 
 var _next_scheme = null	
 func move_to_next_scheme(current_scheme):
+	#I've seen occasional bugs where "move_to_next_scheme"
+	#was called twice on the same scheme, causing false "defat" messages
+	var all_current_schemes = find_main_schemes()
+	if !current_scheme in all_current_schemes:
+		var _error = 1
+		return
+		
 	var ckey
 	#check to see if we have an override in the rules on how to retrieve the next villain
 	var sceng = theGameObserver._get_script_sceng("override_get_next_scheme")
@@ -1882,6 +1889,10 @@ func reveal_encounter(target_id = 0):
 		if _current_encounter == next["encounter"]:
 			#retrieve the correct target_id if _current_encounter is an immediate encounter
 			target_id = next["target_id"]
+
+	if !_current_encounter:
+		var faceup_encounters:Pile = get_revealed_encounters_pile(target_id)
+		_current_encounter = faceup_encounters.get_top_card()
 		
 	if !_current_encounter:
 		var facedown_encounters:Pile = get_facedown_encounters_pile(target_id)

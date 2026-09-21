@@ -827,7 +827,7 @@
 			}
 		},
 		"interrupt_boost_card_resolved": {
-			"is_optional_board": "true",
+			"is_optional_board": true,
 			"condition_board": {
 				"func_name": "count_tokens",
 				"func_params": {

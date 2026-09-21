@@ -1,0 +1,176 @@
+{
+	"_comments": "Tests that Pursued by the past revals Nemesis",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {
+						"damage": 12
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Breakin' & Takin'"
+				},
+				{
+					"card": "Evil Alliance"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Pursued by the Past #45075a",
+					"tokens": {
+						"pursuit": 2
+					},
+					"owner_hero_id": 0
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Highway Robbery #01166"
+				},
+				{
+					"card": "Vulture #01167"
+				},
+				{
+					"card": "Sweeping Swoop #01168"
+				},
+				{
+					"card": "Sweeping Swoop #01168"
+				},
+				{
+					"card": "The Vulture's plans #01169"
+				},
+				{
+					"card": "Pursued by the Past #45075b",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Peter Parker"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "01002"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {
+						"damage": 12
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Evil Alliance"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Breakin' & Takin'"
+				},				
+				{
+					"card": "Sweeping Swoop #01168"
+				},
+				{
+					"card": "The Vulture's plans #01169"
+				},				
+				{
+					"card": "Sweeping Swoop #01168"
+				},
+
+			],
+			"villain_misc": [
+				{
+					"card": "Pursued by the Past",
+					"owner_hero_id": 0
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Pursued by the Past #45075b",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				},
+				{
+					"card": "Highway Robbery #01166"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"others": [
+				{
+					"card": "Mockingbird",
+					"host": "Highway Robbery #01166"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Vulture #01167"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Peter PArker"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01002"
+				}
+			]
+		}
+	}
+}

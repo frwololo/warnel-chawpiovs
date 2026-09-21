@@ -164,7 +164,7 @@ func get_container_property(value):
 		"find": 
 			var all_containers = ["deck_villain", "discard_villain", "set_aside", "board"]
 			for i in gameData.get_team_size():
-				var hero_id = i + i
+				var hero_id = i + 1
 				for zone in ["hand", "deck", "discard"]:
 					all_containers.append(zone + str(hero_id))
 			return all_containers				

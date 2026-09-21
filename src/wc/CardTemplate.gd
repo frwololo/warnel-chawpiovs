@@ -1912,6 +1912,9 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 			for script in state_scripts:
 				#if the script is targeted, we have an option to cancel there
 				if script.get("subject") in ["target", "boardseek"]:
+					#This is problematic for a handful of cards. Web of Life and DEstiny is one of them:
+					#In single player, the draw isn't optional
+					#basically if boardseek has only one option, we shouldn't bail
 					show_optional_confirmation_menu = false
 	if show_optional_confirmation_menu and !is_network_call:
 		if !interaction_authorized:
@@ -2409,7 +2412,7 @@ func remove_threat(modification: int, script = null) -> int:
 				"tags": script.get_property(SP.KEY_TAGS)	
 			}
 		scripting_bus.emit_signal_on_stack("last_threat_removed", self, signal_details)		
-	return result
+	return modification
 
 func discard():	
 	#move to correct pile

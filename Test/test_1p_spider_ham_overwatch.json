@@ -1,0 +1,166 @@
+{
+	"_comments": "Bug: Overwatch not working",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Ham"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mister sinister - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Taking Off - 2B",
+					"tokens": {
+						"threat": 4
+					}
+				},
+				{
+					"card": "Bomb Scare",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"others": [
+				{
+					"card": "Flight #40151",
+					"host": "Mister sinister"
+				},
+				{
+					"card": "overwatch #30019",
+					"host": "Bomb Scare",
+					"owner_hero_id": 1
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Ham",
+					"tokens": {
+						"toon": 4
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Team-Building Exercise"
+				}
+			],
+			"hand1": [
+				{
+					"card": "ham it up"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "ham it up"
+		},
+		{
+			"type": "target",
+			"value": "bomb Scare"
+		},
+		{
+			"type": "target",
+			"value": "Taking Off - 2B"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Ham"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mister sinister - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Taking Off - 2B",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Bomb Scare"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"others": [
+				{
+					"card": "Flight #40151",
+					"host": "Mister sinister"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Ham",
+					"tokens": {
+						"toon": 4
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Team-Building Exercise"
+				}
+			],
+			"discard1": [
+				{
+					"card": "ham it up"
+				},
+				{
+					"card": "overwatch #30019"
+				}
+			]
+		}
+	}
+}

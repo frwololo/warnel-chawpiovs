@@ -6151,12 +6151,23 @@
 				}
 			]
 		},
+		"card_attached": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "save_variable",
+					"var_type": "subject",
+					"var_name": "my_host",
+					"value": "host"
+				}
+			]
+		},
 		"interrupt_thwart_happened": {
 			"event_filters": {
-				"target": "host"
+				"target": "my_host"
 			},
-			"is_optional_board": true,
-			"board": [
+			"is_optional_all": true,
+			"all": [
 				{
 					"name": "constraints",
 					"is_cost": true,
@@ -6166,7 +6177,7 @@
 				},
 				{
 					"name": "remove_threat",
-					"amount": "trigger_details_amount",
+					"amount": "trigger_details_amount_removed",
 					"subject": "target",
 					"subject_exclude": "host",
 					"filter_state_subject": [
@@ -6178,7 +6189,11 @@
 				{
 					"name": "discard",
 					"subject": "self"
-				}
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_host",
+				}				
 			]
 		}
 	},

@@ -2575,22 +2575,26 @@ func remove_threat(script: ScriptTask) -> int:
 		thwarter = script.owner
 
 	for card in script.subjects:
-		retcode = card.remove_threat(amount, script)
-	
+		var amount_removed = card.remove_threat(amount, script)
+		if amount_removed:
+			retcode = CFConst.ReturnCode.CHANGED
+
 		if card.is_card_type("side_scheme"):
 			card.check_scheme_defeat(script)
 
 
-
-	if (script.has_tag("basic power")):
 		var signal_details = {
 			"source": thwarter ,
 			"amount": amount,
+			"amount_removed": amount_removed,
+			"target" : card
 		}
-		scripting_bus.emit_signal_on_stack("basic_thwart_happened",  thwarter ,  signal_details)			
-	if script.has_tag("thwart"):
-		consequential_damage(script)
-		scripting_bus.emit_signal_on_stack("thwart_happened", thwarter , {"amount" : amount, "target" : script.subjects[0]})
+
+		if (script.has_tag("basic power")):
+			scripting_bus.emit_signal_on_stack("basic_thwart_happened",  thwarter ,  signal_details)			
+		if script.has_tag("thwart"):			
+			consequential_damage(script)
+			scripting_bus.emit_signal_on_stack("thwart_happened", thwarter ,  signal_details)
 
 		
 

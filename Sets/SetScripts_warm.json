@@ -305,7 +305,7 @@
 					"src_container": "deck_villain",
 					"selection_type": "display",
 					"needs_selection": true,
-					"is_cost": true,
+					"is_cost": true
 				},
 				{
 					"name": "nop",
@@ -314,8 +314,8 @@
 					"sort_descending": true,
 					"subject_count": 3,
 					"src_container": "deck_villain",
-					"is_cost": true,
-				},				
+					"is_cost": true
+				},
 				{
 					"name": "remove_threat",
 					"subject": "a_scheme",
@@ -326,7 +326,7 @@
 							"property": "type_code",
 							"property_value": "treachery"
 						}
-					},
+					}
 				}
 			]
 		}

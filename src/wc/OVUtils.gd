@@ -36,7 +36,7 @@ func preprocess_subject_definition(script: ScriptObject):
 			if !script_definition.has("src_contrainer"):
 				var all_containers = ["deck_villain", "discard_villain", "set_aside", "board"]
 				for i in gameData.get_team_size():
-					var hero_id = i + i
+					var hero_id = i + 1
 					for zone in ["hand", "deck", "discard"]:
 						all_containers.append(zone + str(hero_id))
 				script_definition["src_container"] = all_containers

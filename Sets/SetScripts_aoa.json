@@ -1988,7 +1988,7 @@
 				{
 					"name": "mod_tokens",
 					"modification": 1,
-					"subject": " Pursued by the Past",
+					"subject": "Pursued by the Past",
 					"token_name": "pursuit"
 				},
 				{
@@ -2003,7 +2003,7 @@
 			"condition_all": {
 				"func_name": "count_tokens>0",
 				"func_params": {
-					"subject": "Pursued by he Past",
+					"subject": "Pursued by The Past",
 					"token_name": "pursuit"
 				}
 			},
@@ -2026,7 +2026,7 @@
 								{
 									"name": "mod_tokens",
 									"modification": 1,
-									"subject": " Pursued by the Past",
+									"subject": "Pursued by the Past",
 									"token_name": "pursuit"
 								}
 							]
@@ -2261,7 +2261,6 @@
 					"src_container": "deck"
 				},
 				{
-					"is_else": true,
 					"name": "mod_tokens",
 					"modification": {
 						"func_name": "count_printed_resources",
@@ -2269,7 +2268,7 @@
 							"subject": "previous"
 						}
 					},
-					"subject": " Pursued by the Past",
+					"subject": "Pursued by the Past",
 					"token_name": "pursuit"
 				}
 			]
@@ -2597,7 +2596,7 @@
 					"is_else": true,
 					"name": "mod_tokens",
 					"modification": 3,
-					"subject": " Pursued by the Past",
+					"subject": "Pursued by the Past",
 					"token_name": "pursuit"
 				}
 			]
@@ -2614,7 +2613,7 @@
 								{
 									"name": "mod_tokens",
 									"modification": 1,
-									"subject": " Pursued by the Past",
+									"subject": "Pursued by the Past",
 									"token_name": "pursuit"
 								}
 							]
@@ -5198,12 +5197,12 @@
 		"TODO": "campaign mode not supported"
 	},
 	"Nowhere is Safe": {
-		"reveal_alter_ego": {
+		"reveal": {
 			"all": [
 				{
 					"name": "mod_tokens",
 					"modification": 1,
-					"subject": " Pursued by the Past",
+					"subject": "Pursued by the Past",
 					"token_name": "pursuit"
 				},
 				{
@@ -5218,7 +5217,7 @@
 			"condition_all": {
 				"func_name": "count_tokens>0",
 				"func_params": {
-					"subject": "Pursued by he Past",
+					"subject": "Pursued by The Past",
 					"token_name": "pursuit"
 				}
 			},
@@ -5246,7 +5245,7 @@
 								{
 									"name": "mod_tokens",
 									"modification": 1,
-									"subject": " Pursued by the Past",
+									"subject": "Pursued by the Past",
 									"token_name": "pursuit"
 								}
 							]
@@ -5816,11 +5815,10 @@
 		}
 	},
 	"Pursued by the Past #45075a": {
-		"card_token_added": {
+		"card_token_modified": {
+			"filter_count_difference": "increased",
+			"filter_token_name": "pursuit",
 			"trigger": "self",
-			"event_filters": {
-				"token_name": "pursuit"
-			},
 			"condition_board": {
 				"func_name": "count_tokens>=1p",
 				"func_params": {
@@ -6381,7 +6379,7 @@
 				{
 					"name": "mod_tokens",
 					"modification": 1,
-					"subject": " Pursued by the Past",
+					"subject": "Pursued by the Past",
 					"token_name": "pursuit"
 				},
 				{
@@ -6396,7 +6394,7 @@
 			"condition_all": {
 				"func_name": "count_tokens>0",
 				"func_params": {
-					"subject": "Pursued by he Past",
+					"subject": "Pursued by The Past",
 					"token_name": "pursuit"
 				}
 			},
@@ -6411,7 +6409,7 @@
 				{
 					"name": "mod_tokens",
 					"modification": 1,
-					"subject": " Pursued by the Past",
+					"subject": "Pursued by the Past",
 					"token_name": "pursuit"
 				},
 				{
@@ -6426,7 +6424,7 @@
 			"condition_all": {
 				"func_name": "count_tokens>0",
 				"func_params": {
-					"subject": "Pursued by he Past",
+					"subject": "Pursued by The Past",
 					"token_name": "pursuit"
 				}
 			},

@@ -22,7 +22,7 @@
 								"trait_avenger": 1,
 								"comparison": "ge"
 							},
-							"filter_is_exhausted": "false"
+							"filter_is_exhausted": false
 						}
 					]
 				},

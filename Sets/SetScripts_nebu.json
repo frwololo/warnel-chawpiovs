@@ -72,7 +72,7 @@
 						"src_container": "discard",
 						"dest_container": "deck",
 						"subject_count": "all",
-						"needs_selection": "true",
+						"needs_selection": true,
 						"selection_count": 2,
 						"selection_type": "max",
 						"filter_state_tutor": [
@@ -618,7 +618,7 @@
 						"subject_count": "all",
 						"needs_selection": 1,
 						"selection_type": "equal",
-						"selection_optional": "false",
+						"selection_optional": false,
 						"filter_state_seek": [
 							{
 								"filter_same_controller": true,
@@ -638,7 +638,7 @@
 						"subject_count": "all",
 						"needs_selection": 1,
 						"selection_type": "equal",
-						"selection_optional": "false",
+						"selection_optional": false,
 						"filter_state_seek": [
 							{
 								"filter_same_controller": true,
@@ -689,7 +689,7 @@
 						"subject_count": "all",
 						"needs_selection": 1,
 						"selection_type": "equal",
-						"selection_optional": "false",
+						"selection_optional": false,
 						"filter_state_seek": [
 							{
 								"filter_same_controller": true,
@@ -709,7 +709,7 @@
 						"subject_count": "all",
 						"needs_selection": 1,
 						"selection_type": "equal",
-						"selection_optional": "false",
+						"selection_optional": false,
 						"filter_state_seek": [
 							{
 								"filter_same_controller": true,

@@ -1263,7 +1263,7 @@
 					],
 					"needs_selection": true,
 					"selection_count": 1,
-					"selection_type": "equal",
+					"selection_type": "equal"
 				},
 				{
 					"name": "ready_card",

@@ -1287,17 +1287,17 @@
 				}
 			]
 		},
-		"interrupt_enemy_scheme": {
+		"interrupt_enemy_attack": {
 			"trigger": "host",
 			"board": [
 				{
 					"name": "sequence",
-					"sequence_ability": "do_when_scheme",
+					"sequence_ability": "do_when_attack",
 					"trigger_identity": "current_hero_target"
 				}
 			]
 		},
-		"do_when_scheme": {
+		"do_when_attack": {
 			"board": [
 				{
 					"name": "discard",
@@ -2397,7 +2397,8 @@
 								{
 									"name": "mod_tokens",
 									"subject": "self",
-									"modification": -4
+									"modification": -4,
+									"token_name": "power",
 								},
 								{
 									"name": "move_card_to_container",
@@ -2406,7 +2407,7 @@
 									"dest_container": "discard_villain",
 									"filter_state_grab_until": [
 										{
-											"filter_properties2": {
+											"filter_properties": {
 												"trait_superpower": 1,
 												"comparison": "ge"
 											}
@@ -7559,7 +7560,8 @@
 								{
 									"name": "mod_tokens",
 									"subject": "self",
-									"modification": -4
+									"modification": -4,
+									"token_name": "power",
 								},
 								{
 									"name": "move_card_to_container",
@@ -7568,7 +7570,7 @@
 									"dest_container": "discard_villain",
 									"filter_state_grab_until": [
 										{
-											"filter_properties2": {
+											"filter_properties": {
 												"trait_superpower": 1,
 												"comparison": "ge"
 											}

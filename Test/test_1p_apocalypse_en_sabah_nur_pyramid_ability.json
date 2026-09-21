@@ -1,0 +1,204 @@
+{
+	"_comments": "Test En Sabah Nur Pyramid Power",
+	"init": {
+		"phase": "VILLAIN_THREAT",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 32976,
+					"hero": "Psylocke #41001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Plugged In #45154"
+				},
+				{
+					"card": "Celestial Armor"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Celestial Weapon"
+				},
+				{
+					"card": "Staggering Strength"
+				},
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Ozymandias"
+				}
+			],
+			"villain": [
+				{
+					"card": "Apocalypse - 1 #45184a"
+				}
+			],
+			"schemes": [
+				{
+					"card": "En Sabah Nur's Pyramid - 1B #45147b",
+					"tokens": {
+						"power": 3
+					}
+				},
+				{
+					"card": "Ancient Ritual #45163",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Captain Britain - Brian Braddock #41012"
+				},
+				{
+					"card": "Psionic Redirect"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Psylocke #41001a"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Apocalypse - 1 #45184c"
+				}
+			],
+			"enemies1": [],
+			"allies1": [
+				{
+					"card": "Cypher - Doug Ramsey"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "psi-knife"
+				},
+				{
+					"card": "psi-katana"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+			"_comments": "Pyramid's ability triggers and fetches Staggering Strength. Apocalypse switches to Giant mode"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack from Apocalypse giant"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 32976,
+					"hero": "Psylocke #41001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Ozymandias"
+				},
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Celestial Weapon"
+				},
+				{
+					"card": "Staggering Strength"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Plugged In #45154"
+				},
+				{
+					"card": "Celestial Armor"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Apocalypse - 1 #45184a"
+				}
+			],
+			"villain": [
+				{
+					"card": "Apocalypse - 1 #45184c"
+				}
+			],
+			"schemes": [
+				{
+					"card": "En Sabah Nur's Pyramid - 1B #45147b",
+					"tokens": {
+						"power": 0,
+						"threat": 1
+					}
+				},
+				{
+					"card": "Ancient Ritual #45163",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Captain Britain - Brian Braddock #41012"
+				},
+				{
+					"card": "Psionic Redirect"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Psylocke #41001a",
+					"tokens": {
+						"damage": 6,
+						"stunned": 1
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Cypher - Doug Ramsey"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "psi-knife"
+				},
+				{
+					"card": "psi-katana"
+				}
+			]
+		}
+	}
+}

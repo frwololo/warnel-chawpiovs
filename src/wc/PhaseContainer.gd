@@ -10,6 +10,7 @@ var heroPhaseScene = preload("res://src/wc/board/HeroPhase.tscn")
 onready var container = $MarginContainer/VBoxContainer
 var positioned = false
 var target_cancel_button = null
+var please_start_next_step = false
 
 #debug display for 
 #TODO something fancier
@@ -241,6 +242,7 @@ func _process(delta: float) -> void:
 			var _tmp = cfc._ongoing_processes.duplicate(true)
 			for obj in _tmp:
 				var value = _tmp[obj]
+			cfc.reset_ongoing_process_stack()
 		return
 	_dbg_cfc_ongoing_processes_timer = 0.0
 
@@ -265,6 +267,10 @@ func _process(delta: float) -> void:
 	if gameData.sequence_queue_is_ready():
 		return
 
+	if please_start_next_step: 
+		request_next_phase("phaseContainer _process", 1)
+		return
+
 	#phases that do something particular  in their process step
 	match current_step:			
 		CFConst.PHASE_STEP.PLAYER_TURN:
@@ -278,6 +284,7 @@ func _process(delta: float) -> void:
 			if (!current_step_complete):
 				gameData.reveal_encounter()
 			return	
+	
 	#other phases are just constantly requesting to move to the next step if they can	
 	if (!current_step_complete) :
 		return		
@@ -463,7 +470,7 @@ func is_ready_for_next_phase() -> bool :
 	return would_be_ready_for_next_phase()	
 
 
-mastersync func client_ready_for_next_phase(current_phase):
+mastersync func client_ready_for_next_phase(current_phase, mode = 0):
 	if (not cfc.is_game_master()):
 		return -1
 	var client_id = cfc.get_rpc_sender_id() 
@@ -490,7 +497,7 @@ mastersync func client_ready_for_next_phase(current_phase):
 		else:
 			clients_ready_for_next_phase = {}
 			display_debug("everyone is ready for next phase, go")
-			cfc._rpc(self,"proceed_to_next_phase")
+			cfc._rpc(self,"proceed_to_next_phase", mode)
 		
 		
 mastersync func client_unready_for_next_phase():
@@ -503,7 +510,7 @@ mastersync func client_unready_for_next_phase():
 
 
 var _pending_next_phase_reply = false		
-func request_next_phase(caller = ""):
+func request_next_phase(caller = "", mode = 0):
 	if (!is_ready_for_next_phase()):
 		return false
 	if _pending_next_phase_reply:
@@ -512,7 +519,7 @@ func request_next_phase(caller = ""):
 	_pending_next_phase_reply = true	
 	display_debug("I'm asking the master to move to next phase (" + caller +  "). I'm currently at " + StepStrings[current_step])	
 	#set_current_step_complete(false, caller + ", request_next_phase")
-	cfc._rpc_id(self,1, "client_ready_for_next_phase", current_step)
+	cfc._rpc_id(self,1, "client_ready_for_next_phase", current_step, mode)
 	return true
 	
 func unrequest_next_phase():
@@ -529,21 +536,33 @@ func set_current_step_complete(value:bool, caller = ""):
 func step_signal(signal_name):
 	scripting_bus.emit_signal_on_stack(signal_name, null,  {"step" : current_step, "step_name":StepStrings[current_step] })
 	
-remotesync func proceed_to_next_phase():
+remotesync func proceed_to_next_phase(mode = 0):
 	_pending_next_phase_reply = false
-	set_current_step_complete(false, "proceed_to_next_phase")
-	display_debug("master tells me to move to next phase, I'm currently at " + StepStrings[current_step] )	
-	step_signal("step_about_to_end")
-	step_signal("step_ended")
-	if (current_step == CFConst.PHASE_STEP.SYSTEMS_CHECK):
-		current_step = CFConst.PHASE_STEP.PLAYER_TURN
-	elif ((current_step == CFConst.PHASE_STEP.VILLAIN_ACTIVATES) and gameData.villain_next_target(true, "proceed_to_next_phase")):
-		current_step = CFConst.PHASE_STEP.VILLAIN_ACTIVATES
-	elif ((current_step == CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER) and gameData.villain_next_target(true, "proceed_to_next_phase")):
-		current_step = CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER		
-	else:
-		current_step+=1
-	start_current_step()
+	set_current_step_complete(false, "proceed_to_next_phase")		
+	match mode:
+		0:
+			display_debug("master tells me to move to next phase, I'm currently at " + StepStrings[current_step] )	
+			step_signal("step_about_to_end")
+			step_signal("step_ended")
+			please_start_next_step = true
+			set_current_step_complete(true, "proceed_to_next_phase")
+		1:	
+			if !please_start_next_step:
+				return
+			
+			if !gameData.theStack.is_phasecontainer_allowed_to_next_step():
+				return
+				
+			please_start_next_step = false	
+			if (current_step == CFConst.PHASE_STEP.SYSTEMS_CHECK):
+				current_step = CFConst.PHASE_STEP.PLAYER_TURN
+			elif ((current_step == CFConst.PHASE_STEP.VILLAIN_ACTIVATES) and gameData.villain_next_target(true, "proceed_to_next_phase")):
+				current_step = CFConst.PHASE_STEP.VILLAIN_ACTIVATES
+			elif ((current_step == CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER) and gameData.villain_next_target(true, "proceed_to_next_phase")):
+				current_step = CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER		
+			else:
+				current_step+=1
+			start_current_step()
 
 func start_current_step():		
 	step_signal("step_about_to_start")

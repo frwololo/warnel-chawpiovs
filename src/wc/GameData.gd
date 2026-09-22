@@ -227,9 +227,8 @@ func _ready():
 	self.add_child(theGameObserver)
 	self.add_child(theAudioManager)
 	self.add_child(cardImageDownloader)
-	#scripting_bus.connect("optional_window_opened", self, "attempt_user_input_lock")
-	#scripting_bus.connect("optional_window_closed", self, "attempt_user_input_unlock")	
-
+	
+	
 
 
 var _image_download_callbacks := {}
@@ -2832,6 +2831,8 @@ func save_gamedata() -> Dictionary:
 	json_data["rng"] = cfc.game_rng_seed
 	json_data["rng_state"] = cfc.game_rng.state
 	
+	json_data["game_observer"] = theGameObserver.export_to_json()
+	
 	#encounters state
 	#TODO this has caused significant issues in game
 	#for now it's better to avoid saving in the middle of an encounter...?
@@ -2919,6 +2920,8 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 	#Board State ()
 	cfc.NMAP.board.loadstate_from_json(json_data)
 
+	#gameobserver
+	theGameObserver.load_from_json(json_data.get("game_observer", {}))
 	
 	#This reloads hero faces, etc...
 	#we don't start the phaseContainer just yet, we'll wait for other players to be ready

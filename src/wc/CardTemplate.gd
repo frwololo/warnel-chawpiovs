@@ -2401,7 +2401,7 @@ func remove_threat(modification: int, script = null) -> int:
 	var current_tokens = tokens.get_token_count(token_name)
 	if current_tokens - modification <= 0:
 		modification = current_tokens
-	var result = tokens.mod_token(token_name,-modification)
+	var _result = tokens.mod_token(token_name,-modification)
 	
 	var new_amount = tokens.get_token_count(token_name)
 	if current_tokens > 0 and !new_amount:	
@@ -4482,14 +4482,18 @@ func get_nemesis_data():
 	}	
 
 
+func get_guid():
+	return guidMaster.get_guid(self)
+
 #used for save/load	
 func export_to_json():
 	var owner_hero_id = self.get_owner_hero_id()
-	var card_id = self.properties.get("_code")
-	var tokens_to_json = self.tokens.export_to_json()
+	var card_id = self.properties.get("_code", "")
+	var tokens_to_json = self.tokens.export_to_json() if self.tokens else {}
 	var card_description = {
 		"card" : canonical_name + " #" + card_id,
 		"owner_hero_id": owner_hero_id,
+		"guid": get_guid()
 	}
 	if is_exhausted():
 		card_description["exhausted"] = true
@@ -4503,6 +4507,7 @@ func export_to_json():
 	
 	if (self.current_host_card):
 		card_description["host"] = current_host_card.properties.get("_code")
+		card_description["host_guid"] = current_host_card.get_guid()
 		
 	if self.encounter_status != gameData.EncounterStatus.NONE:
 		card_description["encounter_status"] = self.encounter_status
@@ -4510,6 +4515,23 @@ func export_to_json():
 	if is_onboard_facedown():
 		card_description["facedown_properties"] = self.properties
 	
+	if script_variables:
+		card_description["script_variables"] = {}
+		for key in script_variables:
+			var value = script_variables[key]
+			match typeof(value):
+				TYPE_ARRAY:
+					value = guidMaster.array_of_objects_to_guid(value)
+				
+			card_description["script_variables"][key] = value
+	
+	if extra_scripts:
+		card_description["extra_scripts"] = extra_scripts
+		card_description["extra_scripts_uid"] = extra_script_uid
+		
+	if _dummy_alterants_cache:
+		card_description["_dummy_alterants_cache"] = _dummy_alterants_cache
+		
 	return card_description
 
 func load_from_json(card_description):
@@ -4565,12 +4587,33 @@ func _ready_load_from_json(card_description: Dictionary = {}):
 	else:
 		if state in[CardState.ON_PLAY_BOARD, CardState.IN_HAND]:
 			set_is_faceup(true, true)
+	
+	var _extra_scripts = card_description.get("extra_scripts", [])
+	if _extra_scripts:
+		extra_scripts = card_description["extra_scripts"]
+		extra_script_uid = card_description["extra_scripts_uid"]
+		
+	var _dummy_alterants = card_description.get("_dummy_alterants_cache", {})
+	if _dummy_alterants:
+		 _dummy_alterants_cache = _dummy_alterants
 
-	#we don't handle the attachment/host content here, it is don by the board loading, after all cards are loaded
+	#we don't handle the attachment/host content here, it is done by the board loading, after all cards are loaded
 
 	return self
 
-
+#Load json content that depends on all GUIds being assigned
+func second_pass_load_json(card_description:Dictionary):
+	var _script_variables = card_description.get("script_variables", {})
+	if _script_variables:
+		for key in _script_variables:
+			var value = _script_variables[key]
+			if typeof(value) == TYPE_ARRAY:
+				var new_value = []
+				for saved_guid in value:
+					var actual_guid = cfc.NMAP.board.loadgame_translate_guid(saved_guid)
+					new_value.append(guidMaster.get_object_by_guid(actual_guid))
+				value = new_value
+			script_variables[key] = value
 
 func get_global_center():
 	var xy = get_global_position()

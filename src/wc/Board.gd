@@ -41,6 +41,8 @@ enum LOADING_STEPS {
 # a temporary variable to move cards after all clients have loaded them,
 # to avoid scripts triggering incorrectly
 var _post_load_move:= {}
+var _guid_translation = {}
+var card_to_card_data := {}
 
 var _cards_loaded:= {}
 var _hero_zones_initialized:= {}
@@ -74,6 +76,8 @@ func set_groups(grid_or_pile, additional_groups:= []):
 	
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	get_node("%Loading").visible = false
+	
 	gameData.play_music("battle*")
 	cfc.map_node(self)	
 	counters = $Counters
@@ -101,6 +105,7 @@ func _all_clients_game_loaded(_details):
 	get_node("%Loading").visible = false
 	
 
+
 func _manual_action_happened(_details):
 	_actions_happened_this_turn += 1
 	rollback_button.hint_tooltip = "Rollback to beginning of this round (" + str(gameData.current_round) + ")"
@@ -116,8 +121,12 @@ func _step_started(_trigger_object, details:Dictionary):
 			if current_round == 1:
 				gameData.save_round(0) 
 				rollback_button.visible = false
+			else:
+				rollback_button.visible = true
 			rollback_button.hint_tooltip = "Rollback to previous round (" + str(current_round - 1) + ")"
-			rollback_button.modulate =  Color(1.2, 0.7, 0.7)
+			rollback_button.modulate =  Color(1.2, 0.7, 0.7)			
+		_:
+			rollback_button.visible = false
 			
 func board_ready(init_rng = true):
 	_extra_deck_names_cache = {}
@@ -270,6 +279,7 @@ func _process(delta:float):
 	if !cfc.is_game_master():
 		rollback_button.visible = false
 	
+	#offering possibility to view board while making a modal decision
 	var modal_menu = cfc.get_modal_menu()
 	var viewboard = get_node("%ViewBoard")
 	var wallpaper = get_node("%wallpaper")
@@ -286,7 +296,25 @@ func _process(delta:float):
 		viewboard.visible = false
 		wallpaper.self_modulate = Color(1,1,1)
 	
+	#
+	#logic to rollback game
+	#
+	
+	#hide rollback button in some cases
+	if !cfc.is_game_master():
+		rollback_button.visible = false
+	if gamepadHandler.is_controller_input():
+		rollback_button.visible = false	
+	if gameData.phaseContainer.is_villain_phase():
+		rollback_button.visible = false	
+	
 	if _pending_reload:
+		if _pending_reload == 1:
+			var show_meme = randi() % 100
+			if ((_actions_happened_this_turn > 3) or (_actions_happened_this_turn == 0)) and (show_meme > 60):
+				get_node("%meme").visible = true
+			else:
+				get_node("%meme").visible = false
 		$Background.z_index = 1000
 		wallpaper.self_modulate = Color(0.5,0.5,0.5)
 		get_node("%Loading").visible = true
@@ -1231,6 +1259,7 @@ func post_load_move():
 	for card in _post_load_move:
 		var data = _post_load_move[card]
 		var pile_name = data.get("grid", "")
+		var host_guid = data.get("host_guid", "")
 		var host_id = data.get("host_id", "")
 		var facedown = data.get("facedown", false)
 		
@@ -1243,18 +1272,23 @@ func post_load_move():
 					card.move_to(cfc.NMAP.board, -1, slot)
 					if card.get_property("type_code", "") == "villain":
 						villain.add_villain(card)
-		if host_id:
-			var host_card = find_card_by_name(host_id)
-			if host_card:
-				card.attach_to_host(host_card)
-				if facedown:
-					card.set_is_faceup(false, false)
+		var host_card
+		if host_guid:
+			host_card = guidMaster.get_object_by_guid(host_guid)
+		elif host_id:
+			host_card = find_card_by_name(host_id)
+			
+		if host_card:
+			card.attach_to_host(host_card)
+			if facedown:
+				card.set_is_faceup(false, false)
 				
 	for card in _post_load_move:				
 		#card.interruptTweening()
 		card.reorganize_self()	
-		
-	_post_load_move = {} #reset	
+	 
+	#reset temp load variables	
+	_post_load_move = {}
 	
 	execute_cards_on_load()
 	load_function_overrides()
@@ -1286,7 +1320,8 @@ func load_cards_to_pile(card_data:Array, pile_name):
 	var card_array = []
 	var pile_owner = get_owner_from_pile_name(pile_name)
 	var pile_controller = get_controller_from_pile_name(pile_name)	
-	var card_to_card_data = {}
+
+
 	for card in card_data:
 		var card_id_or_name:String = card["card"]
 		var card_owner = card.get("owner_hero_id", pile_owner)
@@ -1298,6 +1333,10 @@ func load_cards_to_pile(card_data:Array, pile_name):
 			cfc.LOG("error, couldn't find card named " + str(card_id_or_name))
 			continue
 		var new_card:WCCard = cfc.instance_card(card_id, card_owner)
+		if card.has("guid"):
+			_guid_translation[card["guid"]] = new_card.get_guid()
+			#transforming inplace. Dangerous ?
+			#card["guid"] = new_card.get_guid()
 		if card_owner != pile_controller:
 			new_card.set_controller_hero_id(pile_controller)
 		#new_card.load_from_json(card)
@@ -1313,15 +1352,17 @@ func load_cards_to_pile(card_data:Array, pile_name):
 			#card.set_is_faceup(true)	
 			add_child(card)
 			card._determine_idle_state()
+			var host_guid = card_to_card_data[card].get("host_guid", "")
 			_post_load_move[card] = {
 				"grid": pile_name, 
 				"host_id":card_to_card_data[card].get("host", {}),
+				"host_guid": host_guid,
 				"facedown": card_to_card_data[card].get("facedown", {})
 			} 
 		card.load_from_json(card_to_card_data[card])
 
 		#dirty way to set some important variables
-		if (pile_name =="villain"):
+		if (pile_name == "villain"):
 			villain.set_active_villain(card)
 		if (pile_name.begins_with("identity")):
 			heroZones[pile_owner].set_identity_card(card)
@@ -1517,10 +1558,16 @@ func savestate_to_json() -> Dictionary:
 		
 	var result: Dictionary = {"board" : json_data}
 	return result
+
+#takes a saved guid (in a save file) and returns the matching guid in the current game
+func loadgame_translate_guid(saved_guid):
+	return _guid_translation.get(saved_guid, "")
 	
 func loadstate_from_json(json:Dictionary):
 	gameData.stop_game()
 	cfc.set_game_paused(true)
+	_guid_translation = {}
+	card_to_card_data = {}	
 	
 	var json_data = json.get("board", null)
 	if (null == json_data):
@@ -1560,6 +1607,17 @@ func loadstate_from_json(json:Dictionary):
 	#load cards that aren't on any grid or piles
 	var other_data = json_data.get("others", [])
 	load_cards_to_pile(other_data, "")
+	
+	#Post load once all GUIDs are setup
+	for card_obj in _post_load_move:
+		var card_data = _post_load_move[card_obj]
+		var host_guid = card_data.get("host_guid", "")
+		if host_guid:
+			card_data["host_guid"] = _guid_translation[host_guid]
+	
+	for card in card_to_card_data:
+		var card_data = card_to_card_data[card]
+		card.second_pass_load_json(card_data)
 	
 	cfc._rpc(self,"ready_for_step", LOADING_STEPS.CARDS_PRELOADED_SKIP_LOAD) #tell everyone we're done preloading
 	

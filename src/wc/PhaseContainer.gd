@@ -241,7 +241,7 @@ func _process(delta: float) -> void:
 			print_debug("Error With ongoing processes")
 			var _tmp = cfc._ongoing_processes.duplicate(true)
 			for obj in _tmp:
-				var value = _tmp[obj]
+				var _value = _tmp[obj]
 			cfc.reset_ongoing_process_stack()
 		return
 	_dbg_cfc_ongoing_processes_timer = 0.0

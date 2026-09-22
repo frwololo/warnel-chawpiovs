@@ -21,9 +21,9 @@ var SCALE = 1.2
 # It prepares the menu items based on the dictionary keys and bring the
 # popup to the front.
 func prep(title_reference: String, script_with_choices: Dictionary, _rules:Dictionary = {}) -> void:
-		var title = tr("Please choose option for {title}")
-		title = title.replace("{title}", title_reference)
-		set_title(title)
+		var my_title = tr("Please choose option for {title}")
+		my_title = my_title.replace("{title}", title_reference)
+		set_title(my_title)
 
 
 		# The dictionary passed is a card script which contains

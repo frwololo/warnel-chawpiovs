@@ -119,7 +119,7 @@ func get_property(property: String, default = null, subscript_definition = null,
 					TYPE_ARRAY:
 						result = res.duplicate()
 						return result
-					TYPE_INT:
+					_:
 						return res	
 	
 	#if then else special case. Todo could this maybe go into a more generic location to work on all script variables ?

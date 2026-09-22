@@ -216,3 +216,116 @@ func matches_condition(
 	#fishy, not sure what card to compare it to at the moment...
 	var result =  cfc.ov_utils.matches_filters( filters, owner_card, trigger_details)
 	return result
+
+func load_from_json(dict):
+	if !dict:
+		#this is a valid use case at least with Testsuite, we need to bail before reset
+		#because Testsuite has preloaded the scenario rules and we don't want to reset them
+		return
+			
+	reset()
+		
+	var _overrides = dict["function_overrides"]
+	for key in 	_overrides:
+		function_overrides[key] = []
+		var overrides = _overrides[key]
+		for override in _overrides:
+			var saved_guid = override.owner_guid
+			var actual_guid = cfc.NMAP.board.loadgame_translate_guid(saved_guid)
+			function_overrides[key].append(
+				{
+					"owner": guidMaster.get_object_by_guid(actual_guid),
+					"override": override.override
+				}
+			)
+			
+	var _my_objects = dict["_objects"]
+	for obj in _my_objects:
+		add_script(obj["parent_script"], obj["script_definition"])
+
+	var _removal_conditions = dict["removal_conditions"]
+	for removal_condition in _removal_conditions: 
+		var saved_guid = removal_condition.object_guid
+		var actual_guid = cfc.NMAP.board.loadgame_translate_guid(saved_guid)		
+		removal_conditions.append({
+			"event": removal_condition.event,
+			"filters": removal_condition.filters,
+			"object": guidMaster.get_object_by_guid(actual_guid)
+		})
+	
+
+	var _extra_script_removal_conditions = dict["extra_script_removal_conditions"]
+	for extra_script_removal_condition in _extra_script_removal_conditions: 
+		var saved_guid = extra_script_removal_condition.card_guid
+		var actual_guid = cfc.NMAP.board.loadgame_translate_guid(saved_guid)			
+		extra_script_removal_conditions.append({
+			"event": extra_script_removal_condition.event,
+			"event_filters": extra_script_removal_condition.event_filters,
+			"card": guidMaster.get_object_by_guid(actual_guid),
+			"script_id": extra_script_removal_condition.script_id
+		})	
+
+	var _cards_with_extra_scripts = dict["cards_with_extra_scripts"]
+	for card in _cards_with_extra_scripts: 
+		var saved_guid = card
+		var actual_guid = cfc.NMAP.board.loadgame_translate_guid(saved_guid)
+		_cards_with_extra_scripts.append(guidMaster.get_object_by_guid(actual_guid))
+	
+		var result = {
+		"removal_conditions": _removal_conditions,
+		"extra_script_removal_conditions":  _extra_script_removal_conditions,
+		"cards_with_extra_scripts": _cards_with_extra_scripts,
+		"function_overrides" : _overrides,
+		"_objects": _my_objects
+	}	
+
+func export_to_json():	
+	var _overrides = {}
+	for key in 	function_overrides:
+		_overrides[key] = []
+		var overrides = function_overrides[key]
+		for override in overrides:
+			_overrides[key].append(
+				{
+					"owner_guid": override.owner.get_guid(),
+					"override": override.override
+				}
+			)
+	var _my_objects = []
+	for obj in _objects:
+		var data = obj.export_to_json()
+		_my_objects.append(data)
+
+   #{"event": remove_condition_str, "filters": filters, "object": subject}
+	var _removal_conditions := []
+	for removal_condition in removal_conditions: 
+		_removal_conditions.append({
+			"event": removal_condition.event,
+			"filters": removal_condition.filters,
+			"object_guid": removal_condition.object.get_guid()
+		})
+	
+
+	#{"event": remove_condition_str, "event_filters": filters, "card": subject, "script_id": script_id}
+	var _extra_script_removal_conditions:= []
+	for extra_script_removal_condition in extra_script_removal_conditions: 
+		_extra_script_removal_conditions.append({
+			"event": extra_script_removal_condition.event,
+			"event_filters": extra_script_removal_condition.event_filters,
+			"card_guid": extra_script_removal_condition.card.get_guid(), 
+			"script_id": extra_script_removal_condition.script_id
+		})	
+
+	var _cards_with_extra_scripts:= []
+	for card in cards_with_extra_scripts: 
+		_cards_with_extra_scripts.append(card.get_guid())	
+		
+	var result = {
+		"removal_conditions": _removal_conditions,
+		"extra_script_removal_conditions":  _extra_script_removal_conditions,
+		"cards_with_extra_scripts": _cards_with_extra_scripts,
+		"function_overrides" : _overrides,
+		"_objects": _my_objects
+	}	
+	
+	return result	

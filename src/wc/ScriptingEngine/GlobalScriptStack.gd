@@ -224,7 +224,6 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			my_script_requests_pending_execution += 1
 			set_run_mode(RUN_MODE.PENDING_REQUEST_ACK, "create_and_add_script - "  + action_name)
 			cfc._rpc_id(self,1, "master_create_and_add_script", expected_run_mode, state_scripts, owner_uid, trigger_card_uid, run_type, trigger, remote_trigger_details, sceng.stored_integers, action_name, checksum)
-			emit_signal("manual_interaction_added_to_stack", yield_data)
 			#TODO should wait for ack from all clients before anybody can do anything further in the game
 		CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED:
 			var stackEvent:StackScript = StackScript.new(sceng, run_type, trigger)
@@ -418,6 +417,7 @@ remotesync func client_create_and_add_stackobject( original_requester_id, expect
 	remove_yield_counter("client_create_and_add_stackobject")
 		
 	add_event_to_stack(stackEvent, checksum)
+	emit_signal("manual_interaction_added_to_stack", details)	
 	cfc._rpc_id(self,1, "from_client_script_received_ack", expected_run_mode, checksum)
 
 func set_pending_network_interaction(_interaction_authority, checksum, reason:=""):

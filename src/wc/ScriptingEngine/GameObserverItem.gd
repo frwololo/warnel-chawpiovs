@@ -84,3 +84,13 @@ func _init_card_layout() -> void:
 	
 func set_card_size(_value: Vector2, _ignore_area = false) -> void:
 	pass
+
+func load_from_json(description):
+	.load_from_json(description)
+	set_values(description["parent_script"],description["script_definition"] )
+	
+func export_to_json():
+	var result = .export_to_json()
+	result["parent_script"] = parent_script
+	result["script_definition"] = script_definition	
+	return result

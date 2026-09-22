@@ -156,8 +156,12 @@ func removal_checks(
 		trigger: String = "manual",
 		trigger_details: Dictionary = {},
 		run_type := CFInt.RunType.NORMAL):
-	if cfc.game_paused:		
-		return
+
+#TODO maybe when game is paused, need to add a callback
+#if we give up then we lose some signals which isn't good
+#	if cfc.game_paused:		
+#		return
+
 	if run_type != CFInt.RunType.NORMAL:
 		return
 	
@@ -229,7 +233,7 @@ func load_from_json(dict):
 	for key in 	_overrides:
 		function_overrides[key] = []
 		var overrides = _overrides[key]
-		for override in _overrides:
+		for override in overrides:
 			var saved_guid = override.owner_guid
 			var actual_guid = cfc.NMAP.board.loadgame_translate_guid(saved_guid)
 			function_overrides[key].append(

@@ -1076,6 +1076,10 @@ func load_cards() -> void:
 		var set_aside_info: Array = []
 		for card_data in card_datas:
 			var card_id = card_data["code"]
+			var type_code = card_data["type_code"]
+			if type_code in ["hero", "alter_ego"]:
+				var _error = 1
+				continue
 			if card_data.get("permanent", false):
 				set_aside_info.append({
 					"card" : card_id,

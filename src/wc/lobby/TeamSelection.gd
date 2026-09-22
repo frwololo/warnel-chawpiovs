@@ -94,13 +94,13 @@ func _ready():
 		var heroes_left_to_unlock = cfc.get_locked_heroes().size()
 		if heroes_left_to_unlock:
 			suffix = " (" +str(heroes_left_to_unlock) + " left to unlock)"
-		get_node("%HeroesTitle").text += suffix
+		get_node("%HeroesTitle").text = "1) CHOOSE UP TO 4 HEROES" + suffix
 
 		suffix = " (all unlocked!)"
 		var scenarios_left_to_unlock = ScenarioDeckData.get_locked_scenarios().size()
 		if scenarios_left_to_unlock:
 			suffix = " (" +str(scenarios_left_to_unlock) + " left to unlock)"
-		get_node("%ScenarioHeader").text +=  suffix
+		get_node("%ScenarioHeader").text = "3) CHOOSE VILLAIN" +  suffix
 	
 	if cfc.game_settings.get("hide_folder_label", false) or cfc.get_internal_setting("hide_folder_label_team_selection"):
 		v_folder_label.text = ""

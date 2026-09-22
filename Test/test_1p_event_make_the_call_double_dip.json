@@ -1,0 +1,186 @@
+{
+	"_comments": "Bug: Make the Call on Nick Fury lets me play a second ally",
+	"test_conditions": {
+		"ignore_order": [
+			"hand1",
+			"discard1"
+		]
+	},
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "The Power of Justice"
+				},
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Vision"
+				},
+				{
+					"card": "Maria Hill"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Hawkeye - Clint Barton"
+				},
+				{
+					"card": "Get Ready"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Make the Call"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"discard1": [
+				{
+					"card": "The Triskelion"
+				},
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Nick Fury"
+				},
+				{
+					"card": "Black Cat"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Make the Call"
+		},
+		{
+			"type": "play",
+			"value": "Nick Fury"
+		},
+		{
+			"type": "choose",
+			"value": "Draw 3"
+		},
+		{
+			"type": "play",
+			"value": "Black Cat",
+			"expected_to_fail": true
+		},
+		{
+			"type": "select",
+			"value": ["Mockingbird", "Get Ready"],
+			"expected_to_fail": true
+		}		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "The Power of Justice"
+				},
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Vision"
+				},
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Nick Fury"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Hawkeye - Clint Barton"
+				},
+				{
+					"card": "Get Ready"
+				}
+			],
+			"discard1": [
+				{
+					"card": "The Triskelion"
+				},
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Make the Call"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				}
+			]
+		}
+	}
+}

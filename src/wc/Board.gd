@@ -13,10 +13,13 @@ var basicGrid = preload("res://src/wc/grids/BasicGrid.tscn")
 var basicPile = preload("res://src/core/Pile.tscn")
 
 onready var villain := $VillainZone
+onready var rollback_button := get_node("%RollbackButton")
 
 onready var _server_activity = get_node("%ServerActivity")
 var board_organizers: Array = []
 var _has_victory_cards = false
+var _actions_happened_this_turn = 0
+var _pending_reload = 0
 
 # heroZones is 1 indexed (index is hero_id)
 var heroZones: Dictionary = {}
@@ -83,13 +86,39 @@ func _ready() -> void:
 	scripting_bus.connect("initiated_targeting", self, "_initiated_targeting")
 	scripting_bus.connect("target_selected", self, "_target_selected")
 	scripting_bus.connect("current_playing_hero_changed", self, "_current_playing_hero_changed")
+
+	scripting_bus.connect("step_started", self, "_step_started")
+	scripting_bus.connect("all_clients_game_loaded", self, "_all_clients_game_loaded")	
+	gameData.theStack.connect("manual_interaction_added_to_stack", self, "_manual_action_happened")	
 	#setup the controller handler
 	gamepadHandler.connect_viewport()	
 		
 	board_ready()
 
+func _all_clients_game_loaded(_details):
+	_pending_reload = 0
+	$Background.z_index = -5
+	get_node("%Loading").visible = false
+	
 
-		
+func _manual_action_happened(_details):
+	_actions_happened_this_turn += 1
+	rollback_button.hint_tooltip = "Rollback to beginning of this round (" + str(gameData.current_round) + ")"
+	rollback_button.visible = true
+	rollback_button.modulate = Color(1.0, 1.0, 1.0)
+	
+func _step_started(_trigger_object, details:Dictionary):
+	var current_step = details["step"]
+	match current_step:
+		CFConst.PHASE_STEP.PLAYER_TURN:
+			_actions_happened_this_turn = 0
+			var current_round = gameData.current_round
+			if current_round == 1:
+				gameData.save_round(0) 
+				rollback_button.visible = false
+			rollback_button.hint_tooltip = "Rollback to previous round (" + str(current_round - 1) + ")"
+			rollback_button.modulate =  Color(1.2, 0.7, 0.7)
+			
 func board_ready(init_rng = true):
 	_extra_deck_names_cache = {}
 	_hero_grid_layout_cache = {}
@@ -238,6 +267,9 @@ func _process(delta:float):
 	if cfc.throttle_process_for_performance():
 		return
 	
+	if !cfc.is_game_master():
+		rollback_button.visible = false
+	
 	var modal_menu = cfc.get_modal_menu()
 	var viewboard = get_node("%ViewBoard")
 	var wallpaper = get_node("%wallpaper")
@@ -253,6 +285,18 @@ func _process(delta:float):
 	else:
 		viewboard.visible = false
 		wallpaper.self_modulate = Color(1,1,1)
+	
+	if _pending_reload:
+		$Background.z_index = 1000
+		wallpaper.self_modulate = Color(0.5,0.5,0.5)
+		get_node("%Loading").visible = true
+		_pending_reload+= 1
+		if _pending_reload == 5:
+			var target_round_id = gameData.current_round - 1
+			if !_actions_happened_this_turn:
+				target_round_id -= 1		
+			gameData.reload_round_savegame(target_round_id)
+		
 	
 	if board_organizers:
 		for board_organizer in board_organizers:
@@ -2025,3 +2069,7 @@ func _on_ViewBoard_pressed():
 		$Tween.start()		
 	
 	pass # Replace with function body.
+
+
+func _on_RollbackButton_pressed():
+	_pending_reload = 1

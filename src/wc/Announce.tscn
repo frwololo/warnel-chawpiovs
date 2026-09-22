@@ -1,11 +1,16 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://src/wc/Announce.gd" type="Script" id=1]
 [ext_resource path="res://themes/darktheme/fonts/Bangers/Bangers-Regular.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://fonts/Bangers-Regular.ttf" type="DynamicFontData" id=3]
 
 [sub_resource type="DynamicFont" id=2]
 size = 200
 font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 32
+font_data = ExtResource( 3 )
 
 [node name="Announce" type="Container"]
 margin_right = 6000.0
@@ -48,6 +53,15 @@ size_flags_horizontal = 2
 custom_fonts/font = SubResource( 2 )
 text = "Hello"
 align = 1
+
+[node name="Label2" type="Label" parent="Top/Margin"]
+margin_left = 400.0
+margin_top = 10.0
+margin_right = 1993.0
+margin_bottom = 45.0
+custom_colors/font_color = Color( 0.9, 0.49, 0.31, 1 )
+custom_fonts/font = SubResource( 3 )
+text = "Subtitle"
 
 [node name="TextureRect" type="TextureRect" parent="Top"]
 anchor_left = 0.293

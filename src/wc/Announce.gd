@@ -10,6 +10,7 @@ onready var top_texture = $Top/TextureRect
 onready var bottom_texture = $Bottom/TextureRect
 onready var top = $Top
 onready var bottom = $Bottom
+onready var subtitle_text = $Top/Margin/Label2
 
 enum ANIMATION_STYLE {
 	DEFAULT,
@@ -19,6 +20,7 @@ enum ANIMATION_STYLE {
 
 var _top_text := ""
 var _bottom_text:= ""
+var _subtitle_text:= ""
 var _top_texture_filename := ""
 var _bottom_texture_filename:= ""
 var _top_color:= Color8(50, 50, 50, 255)
@@ -119,10 +121,14 @@ func _process(delta):
 			bottom.rect_position = Vector2(pos_bottom_x, bottom.rect_position.y)			
 		
 	top_text.rect_position.x  = top_texture.rect_position.x + top_texture.rect_size.x + 20			
-
+	subtitle_text.rect_position.x = top_text.rect_position.x + 700 - (delta_total * 100)
+	subtitle_text.rect_position.y = top_text.rect_position.y + 180
 func _ready():
 	top_text.text = _top_text
 	bottom_text.text = _bottom_text
+	
+	subtitle_text.visible = true if _subtitle_text else false
+	subtitle_text.text = _subtitle_text
 	top_color.color = _top_color
 	bottom_color.color = _bottom_color
 	bg_color.color = _bg_color
@@ -153,6 +159,12 @@ func set_text_top(text):
 	_top_text = text
 	if top_text:
 		top_text.text = _top_text
+
+func set_text_subtitle (text):
+	_subtitle_text = text
+	if subtitle_text:
+		subtitle_text.visible = true if _subtitle_text else false
+		subtitle_text.text = _subtitle_text
 
 func set_text_bottom(text):
 	_bottom_text = text

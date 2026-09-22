@@ -112,6 +112,7 @@ func _step_started(_trigger_object, details:Dictionary):
 	match current_step:
 		CFConst.PHASE_STEP.PLAYER_TURN:
 			settings["text"] = "Player Phase"
+			settings["subtitle_text"] = "Round " + str(gameData.current_round)
 			var my_heroes = gameData.get_my_heroes()
 			var first_player_id = gameData.first_player_hero_id()
 			var hero_to_display = 1
@@ -126,6 +127,7 @@ func _step_started(_trigger_object, details:Dictionary):
 			gameData.play_sfx("player_phase")
 		CFConst.PHASE_STEP.VILLAIN_THREAT:
 			settings["text"] = "Villain Phase"
+			settings["subtitle_text"] = "Round " + str(gameData.current_round)
 			var villain_card = gameData.get_villain()
 			if villain_card:
 				var filename = villain_card.get_art_filename()
@@ -637,6 +639,9 @@ func init_simple_announce(settings:Dictionary, announce):
 
 	if (settings.has("top_text")):
 		 announce_scene .set_text_top(settings["top_text"])	
+
+	if (settings.has("subtitle_text")):
+		 announce_scene .set_text_subtitle(settings["subtitle_text"])	
 	
 	if (settings.has("animation_style")):
 		announce_scene .set_animation_style(settings["animation_style"])

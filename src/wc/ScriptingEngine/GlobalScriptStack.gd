@@ -7,6 +7,7 @@ extends Node2D
 signal script_added_to_stack(script)
 signal stack_interrupt(script, mode)
 signal script_executed_from_stack(script)
+signal manual_interaction_added_to_stack(details)
 
 #display
 #TODO something fancier
@@ -223,6 +224,7 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			my_script_requests_pending_execution += 1
 			set_run_mode(RUN_MODE.PENDING_REQUEST_ACK, "create_and_add_script - "  + action_name)
 			cfc._rpc_id(self,1, "master_create_and_add_script", expected_run_mode, state_scripts, owner_uid, trigger_card_uid, run_type, trigger, remote_trigger_details, sceng.stored_integers, action_name, checksum)
+			emit_signal("manual_interaction_added_to_stack", yield_data)
 			#TODO should wait for ack from all clients before anybody can do anything further in the game
 		CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED:
 			var stackEvent:StackScript = StackScript.new(sceng, run_type, trigger)

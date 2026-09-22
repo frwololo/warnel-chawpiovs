@@ -1971,7 +1971,7 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 			if msg_suffixes:
 				for msg_fragment in msg_suffixes:
 					msg_suffix += compute_message_fragment(msg_fragment, trigger_details)
-			var title_reference = canonical_name
+			var title_reference = WCUtils.get_translated_property(canonical_id, "Name")
 			if msg_suffix:
 				title_reference += " " + msg_suffix
 				

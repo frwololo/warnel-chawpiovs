@@ -78,7 +78,7 @@ custom_constants/separation = 20
 unique_name_in_owner = true
 margin_right = 200.0
 margin_bottom = 62.0
-text = "1) CHOOSE UP TO 4 HEROES"
+text = "TITLE_CHOOSE_4_HEROES"
 align = 1
 autowrap = true
 
@@ -110,7 +110,7 @@ margin_bottom = 186.0
 [node name="Label" type="Label" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel/PanelContainer3/TeamPanel"]
 margin_right = 344.0
 margin_bottom = 30.0
-text = "2) CHOOSE DECKS"
+text = "TITLE_CHOOSE_DECKS"
 align = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel/PanelContainer3/TeamPanel"]
@@ -203,7 +203,7 @@ custom_constants/separation = 20
 unique_name_in_owner = true
 margin_right = 344.0
 margin_bottom = 30.0
-text = "3) CHOOSE VILLAIN"
+text = "TITLE_CHOOSE_VILLAIN"
 align = 1
 
 [node name="MarginContainer2" type="MarginContainer" parent="MainMenu/Outercontainer/LeftRight/TeamScenarioPanel/PanelContainer/ScenarioOverContainer"]
@@ -326,7 +326,7 @@ margin_right = 500.0
 margin_bottom = 59.0
 rect_min_size = Vector2( 500, 0 )
 size_flags_horizontal = 0
-text = "Back to main menu"
+text = "BTN_BACK_TO_MAIN_MENU"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/Margin2/HBoxContainer"]
 margin_left = 550.0

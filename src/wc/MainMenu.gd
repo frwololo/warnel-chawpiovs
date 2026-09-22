@@ -41,15 +41,15 @@ func _ready() -> void:
 	if cfc.game_settings.has("fullscreen"):
 		cfc.set_fullscreen(cfc.game_settings["fullscreen"])
 	
-	var user_locale =  cfc.get_setting("lang").to_lower()
+	var user_locale = cfc.get_setting("lang").to_lower()
 	if user_locale:
 		var options:OptionButton = get_node("%LangButton")
 		for i in options.get_item_count():
 			if options.get_item_text(i).to_lower() == user_locale:
 				options.select(i)
-
 		TranslationServer.set_locale(cfc.get_setting("lang"))
-		
+		if user_locale != "en":
+			cfc.load_card_translations()		
 	#First run of a new version: clear some garbage/cache from previous versions
 	var first_run_check = "first_run_done/" + CFConst.GAME_VERSION	
 	if !cfc.get_setting(first_run_check):

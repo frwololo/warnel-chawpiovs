@@ -21,7 +21,9 @@ var SCALE = 1.2
 # It prepares the menu items based on the dictionary keys and bring the
 # popup to the front.
 func prep(title_reference: String, script_with_choices: Dictionary, _rules:Dictionary = {}) -> void:
-		set_title("Please choose option for " + title_reference)
+		var title = tr("Please choose option for {title}")
+		title = title.replace("{title}", title_reference)
+		set_title(title)
 
 
 		# The dictionary passed is a card script which contains
@@ -56,10 +58,12 @@ func _ready():
 		button.connect("pressed", self, "_button_pressed", [button])
 		# warning-ignore:return_value_discarded
 		button.connect("mouse_entered", self, "_mouse_entered", [button])
-		button.text = item
-		if item == "cancel":
-			button.icon = gamepadHandler.get_icon_for_action("ui_cancel")		
-		text_to_id[item.to_lower()] = i		
+		button.text = item.display_text	
+		text_to_id[item.display_text.to_lower()] = i
+		if item.code == "cancel":
+			button.icon = gamepadHandler.get_icon_for_action("ui_cancel")
+			text_to_id[item.display_text.to_lower()] = 0	
+				
 		menu.add_child(button)
 		
 	cfc.default_button_focus(menu)
@@ -86,7 +90,12 @@ func set_title(text):
 	title = text
 
 func add_item(text):
-	items.append(text)
+	items.append(
+		{
+			"code": text,
+			"display_text": tr(text)
+		}
+	)
 
 func popup_centered():
 	if has_been_centered:
@@ -115,7 +124,7 @@ func select_by_title(keyword):
 	id_selected = id
 	
 	if id_selected:
-		selected_key = items[id_selected-1]
+		selected_key = items[id_selected-1].code
 	
 
 	emit_signal("id_pressed", id_selected)

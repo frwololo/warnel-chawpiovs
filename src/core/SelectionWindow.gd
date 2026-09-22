@@ -302,7 +302,7 @@ func post_initiate_checks():
 	# If the selection is optional, we allow the player to cancel out
 	# of the popup	
 	if is_selection_optional:	
-		var _button = add_cancel("Cancel")
+		var _button = add_cancel(tr("Cancel"))
 
 	if alternative_ok:
 		for key in alternative_ok:
@@ -316,7 +316,7 @@ func post_initiate_checks():
 	if get_count(card_array) < get_selection_count()\
 			and selection_type in ["equal", "min"]:
 		if show_cards_with_zero_value:
-			var _button = add_cancel("Cancel")
+			var _button = add_cancel(tr("Cancel"))
 			hide_ok_on_zero = true	
 		else:			
 			force_cancel()

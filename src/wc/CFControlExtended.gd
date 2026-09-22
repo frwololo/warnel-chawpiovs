@@ -34,6 +34,8 @@ var _ongoing_processes:= {}
 var _total_cards:int = 0
 var _cards_loaded: int = 0
 
+var card_translations = {}
+
 var _card_texture_cache:= {}
 var _cropped_texture_cache:= {}
 var fonts = {}
@@ -1651,7 +1653,8 @@ func enrich_window_title(selectionWindow, script, title:String) -> String:
 			if activity_script.script_definition.has("chosen_defender"):
 				var defender = activity_script.get_property("chosen_defender")
 				var defender_name = defender.canonical_name
-				suffix = "Choose 1 defender.\n" + defender_name + " is already defending but can additionally choose to do a basic defense (cancel to skip)"
+				suffix = tr("Choose 1 defender.\n{defender_name} is already defending but can additionally choose to do a basic defense (cancel to skip)")
+				suffix = suffix.replace("{defender_name}", defender_name)
 			result = owner.get_display_name() + " attacks" + target_str +". " + suffix
 		"pay_as_resource":
 			result = owner.canonical_name + " - Select at least " + str(selectionWindow.selection_count) + " resources" + additional_constraints_str + "." 
@@ -1664,8 +1667,9 @@ func enrich_window_title(selectionWindow, script, title:String) -> String:
 		"__mulligan__":
 			var cancel_str = "."
 			if selectionWindow.cancel_button.visible:
-				cancel_str = " or cancel to keep your hand"
-			result = owner.get_display_name() + ": Mulligan. Choose cards to discard" +cancel_str			
+				cancel_str = tr(" or cancel to keep your hand")
+			result = tr("{name}: Mulligan. Choose cards to discard") + cancel_str	
+			result = result.replace("{name}", owner.get_display_name())		
 	return result;
 
 #A poor man's mechanism to pass parameters betwen scenes
@@ -1724,13 +1728,22 @@ func change_locale(new_locale):
 		return
 	cfc.set_setting("lang", new_locale)
 	TranslationServer.set_locale(new_locale)
-	
+	load_card_translations()
 	#clear image caches
 	_card_texture_cache = {}
 	_cropped_texture_cache = {}
 	_img_filename_cache = {}		
 	
 	emit_signal("locale_changed", new_locale)
+
+func load_card_translations():
+	var locale = TranslationServer.get_locale()
+	if card_translations.has(locale):
+		return
+	var translation_filename = "card_data_" + locale + ".json"	
+	var tr_json = WCUtils.read_json_file_with_user_override("Lang/" + translation_filename)
+	card_translations[locale] = tr_json
+
 
 func get_villain_portrait(card_id, callback_owner = null) -> Texture:
 	var area = 	Rect2 ( 65, 45, 155, 155 )

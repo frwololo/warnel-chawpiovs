@@ -11,7 +11,9 @@ var rules: Dictionary = {}
 # It prepares the menu items based on the dictionary keys and bring the
 # popup to the front.
 func prep(title_reference: String, script_with_choices: Dictionary, _rules:Dictionary = {}) -> void:
-		set_item_text(0, "Please choose option for " + title_reference)
+		var title = tr("Please choose option for {title}")
+		title = title.replace("{title}", title_reference)
+		set_item_text(0, title)
 		rules = _rules
 		if (rules.get("forced", false)):
 			self.remove_item(1)

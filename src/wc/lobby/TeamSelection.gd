@@ -263,8 +263,8 @@ func _create_hero_container():
 		if !cfc.unmodified_set_scripts.get(hero_id,{}) and\
 			 !cfc.unmodified_set_scripts.get(alter_ego_id,{}):
 			continue
-		var hero_name = cfc.get_card_name_by_id(hero_id)
-		var alter_ego_name = cfc.get_card_name_by_id(alter_ego_id)
+		var hero_name = WCUtils.get_translated_property(hero_id, "Name")
+		var alter_ego_name = WCUtils.get_translated_property(alter_ego_id, "Name")
 		names_to_id[hero_name + " - " + alter_ego_name] = hero_id
 		
 	var ordered_names = names_to_id.keys()

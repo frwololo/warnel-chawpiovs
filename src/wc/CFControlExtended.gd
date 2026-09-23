@@ -1898,6 +1898,13 @@ func preload_pck():
 	#checks if usr pck are marked for deletion and deletes them appropriately
 	WCUtils.check_delete_all_pck()
 
+
+	#CFUtils.list_files_in_directory seems to not work when in "executable" mode for the res:// folder
+	#instead we have to force to the OS listing
+	var res_folder = "res://"
+	if OS.has_feature("standalone"):
+		res_folder = OS.get_executable_path().get_base_dir()
+
 	#for each set, try to load package files for it
 	#loading data from a file overrides the previous one, so a package file
 	#has higher priority (its content will override previously loaded ones if they exist)
@@ -1906,8 +1913,8 @@ func preload_pck():
 	#user files have priority to let users put mods in their user folder
 	#zip files have priority because I have found they have better compatibility
 	# (pck files will refuse to load if wrong godot version number for example)
-	# see https://www.reddit.com/r/godot/comments/11pfoon/comment/jbxyp2x/
-	for folder in ["res://", "user://", "user://Mods/"]:			
+	# see https://www.reddit.com/r/godot/comments/11pfoon/comment/jbxyp2x/		
+	for folder in [res_folder, "user://", "user://Mods/"]:			
 		var delete_on_error = (folder.begins_with("user://"))		
 		for format in [".pck", ".zip"]:
 			var files = CFUtils.list_files_in_directory(folder, "", true, format)

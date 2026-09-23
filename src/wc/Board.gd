@@ -304,7 +304,9 @@ func _process(delta:float):
 	if !cfc.is_game_master():
 		rollback_button.visible = false
 	if gamepadHandler.is_controller_input():
+		#TODO support these buttons in controller mode
 		rollback_button.visible = false	
+		viewboard.visible = false
 	if gameData.phaseContainer.is_villain_phase():
 		rollback_button.visible = false	
 	

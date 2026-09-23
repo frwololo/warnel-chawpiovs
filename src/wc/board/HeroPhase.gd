@@ -113,6 +113,11 @@ func _on_HeroPhase_gui_input(event):
 	elif event is InputEvent:
 		if event.is_action_pressed("ui_accept"):
 			var _result = heroPhase_action()
+			if _result:
+				#the black cover event (used in gamepad input)
+				#prevents the game from proceeding because it is an Announcer's announce
+				#we force remove it here to proceed to next phase or interrupt 
+				gameData.theAnnouncer.stop_black_cover()
 
 func can_hero_phase_action() -> bool:
 	if !gameData.theStack.is_player_allowed_to_click():

@@ -668,24 +668,29 @@ func load_pending_images():
 
 ##Stores all download links for debug purposes
 #func _preprocess_all_downloads():
+#	for card_key in cfc.card_definitions.keys():	
+#		add_card(card_key)
+#
 #	var result = {}
-#	for server in servers:
-#		result[server] = []		
-#		for data in cards_to_download:
-#			var card_id = data["card_id"]
-#			var card_data = cfc.get_card_by_id(card_id)
-#			var url = _get_image_dl_url_for_server(card_id, server)
-#			if !url:
-#				continue
-#			var url_data = {
-#				"card_id": card_id,
-#				"set_name": card_data.get("_set", "_unk"), 
-#				"url": url
-#			}
-#			result[server].append(url_data)
+#	for lang in servers:	
+#		for server_name in servers[lang]:
+#			result[server_name] = []		
+#			for data in cards_to_download:
+#				var card_id = data["card_id"]
+#				var card_data = cfc.get_card_by_id(card_id)
+#				var url = _get_image_dl_url_for_server(card_id, lang, server_name)
+#				if !url:
+#					continue
+#				var url_data = {
+#					"card_id": card_id,
+#					"set_name": card_data.get("_set", "_unk"), 
+#					"url": url
+#				}
+#				result[server_name].append(url_data)
 #
 #	var file = File.new()
 #	file.open("user://all_images.json", File.WRITE)
 #	file.store_string(JSON.print(result, '\t'))
 #	file.close()
+#	cards_to_download = []	
 #	return 

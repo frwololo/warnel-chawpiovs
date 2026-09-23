@@ -85,6 +85,9 @@ static func list_files_in_directory(path: String, prepend_needed := "", full_pat
 	var files := []
 	var dir := Directory.new()
 	# warning-ignore:return_value_discarded
+
+	if full_path and !path.ends_with("/"):
+		path+= "/"
 	dir.open(path)
 	# warning-ignore:return_value_discarded
 	dir.list_dir_begin()

@@ -124,9 +124,6 @@ func _ready():
 
 	cfc.buttons_grab_focus_on_mouse_entered(self)	
 	disable_launch_button()
-	
-	if gamepadHandler.is_controller_input():
-		get_node("%OpenFolderButton").visible = true	
 
 #Quickstart for tests
 #TODO remove
@@ -213,6 +210,7 @@ func resize():
 		get_node("%VBoxContainer").add_constant_override("separation", 5)
 		get_node("%MarginContainer").add_constant_override("margin_top", 5)
 		get_node("%MarginContainer").add_constant_override("margin_bottom", 5)
+		v_folder_label.visible = false
 		scenario_picture.rect_min_size = Vector2(200, 200)
 		scenario_picture.rect_size = scenario_picture.rect_min_size
 		$MainMenu.rect_position.y = 5
@@ -911,10 +909,6 @@ func _on_DownloadDeck_pressed():
 	start_deck_download(to_download.text)
 	pass # Replace with function body.
 
-
-func _on_OpenFolderButton_pressed():
-	OS.shell_open(ProjectSettings.globalize_path("user://"))
-	pass # Replace with function body.
 
 var _debug_show_preview_counter = 0
 func show_preview(card_id):

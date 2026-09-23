@@ -8,7 +8,9 @@
 A digital card game based on the Marvel Champions board game, with full rules enforcement, ideal for true solo or two-handed (but also supports up to a full team of 4 heroes). Runs on Windows, Linux, Android, MacOS, and Nintendo Switch.
 
 ## Quickstart
-To play this game, all you need is to [download the game from the release page](https://github.com/frwololo/warnel-chawpiovs/releases), extract the zip to any folder on your machine, and run the executable.
+You can try this game in your browser at https://wololo.net/wc
+
+I do recommend however to download local binaries for your system of choice. Those have better performance and will let you play offline. to do this, [download the game from the release page](https://github.com/frwololo/warnel-chawpiovs/releases), extract the zip to any folder on your machine, and run the executable.
 
 If you need more details, read along
 
@@ -59,20 +61,24 @@ This simulator supports the following cards from the original game (current tota
   * Vision (1 Hero)
 * Cycle 5:
   * Sinister Motives ( 2 heroes, 5 villains)
+  * Ironheart (1 Hero) 
   * Spider-Ham (1 Hero)
 * Cycle 6:
   * Mutant Genesis ( 2 heroes, 5 villains)
+  * Cyclops (1 Hero)
   * Phoenix (1 Hero)
   * Wolverine (1 Hero)
   * Gambit (1 Hero)
 * Cycle 7:
   * Next Evolution ( 2 Heroes, 5 villains)
+  * Psylocke (1 Hero)
 * Cycle 8:
+  * The Age of Apocalypse ( 2 Heroes, 5 villains)
   * Nightcrawler (1 Hero)  
 * Cycle 9:
   * Winter soldier (1 Hero)  
 
-This represents roughly 50% of all official cards (excluding campaigns) at the time of this writing.
+This represents roughly 55% of all official cards (excluding campaigns) at the time of this writing.
 
 There is no tutorial included, and, although the rules are automatically handled by the engine, it will quickly become confusing if you are not already familiar with the original game.
 
@@ -99,6 +105,9 @@ I do distributes binaries for Mac and Linux, but those are mostly untested. On L
 
 ### Android Port
 The game works on Android but you will need to install the apk manually, as I do not plan to distribute the game on the Google Play store. You wil need to enable "Unknown sources" in your phone's settins, and install the apk from your file manager
+
+### Web Version
+A Web version of the game is available at https://wololo.net/wc/ . Although I'd still recommend getting a native version of the game installed on your platform of choice, this is a convenient way to test the game if you're willing to try it. 
 
 ## Users: Installing the Game
 1. Download the binary and the pck file from the [releases section](https://github.com/frwololo/warnel-chawpiovs/releases), and copy them to any folder on your device (on the **Switch**, this should probably be in the "switch" folder of your SD card. On **Android**, copy the .apk to your phone then install using your file manager. Make sure to enable "unknown sources))
@@ -248,7 +257,9 @@ Uses the Godot Engine (https://godotengine.org/)
 
 Godot Switch port (https://github.com/Homebrodot)  thanks in particular to fhidalgosola/utnad, Stary2001, cpasjuste, halotroop2288
 
-Card data mostly comes from MarvelCDB (https://marvelcdb.com/)
+Card data, for the most part, comes from MarvelCDB (https://marvelcdb.com/)
+
+Card pictures are not included in the game, but can be acquired on sites such as [MarvelCDB](https://marvelcdb.com/), [Cerebro](https://github.com/UnicornSnuggler/Cerebro),[MC4DB](https://mc4db.merlindumesnil.net/), and [cgbuilder](https://mc.cgbuilder.fr/). When possible, the game will attempt to download pictures automatically from these locations.
 
 ### Disclaimer
 This is a fan-created work and is not affiliated with, endorsed by, or sponsored by Fantasy Flight Games. All characters, settings, and related elements are the property of their respective owners.

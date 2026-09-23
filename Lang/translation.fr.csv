@@ -290,7 +290,7 @@ keys,fr
 "remove 2 threat","Retirer 2 menaces"
 "remove 3 threat","Retirer 3 menaces"
 "thwart","contrer"
-"{name}, Mulligan. Choose cards to discard","{name}, Mulligan. Choisissez des cartes à défausser"
+"{name}: Mulligan. Choose cards to discard","{name}: Mulligan. Choisissez des cartes à défausser"
 BTN_CREDITS,"Crédits"
 BTN_DECK_EDITOR,"Editeur de deck"
 BTN_EXIT,"Quitter"

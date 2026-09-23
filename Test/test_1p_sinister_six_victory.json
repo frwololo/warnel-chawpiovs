@@ -1,0 +1,197 @@
+{
+	"_comments": "Bug: defeating light at the end doesn't grant victory",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Doctor Octopus - 1",
+					"tokens": {
+						"damage": 7,
+						"active_counter": 1
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Electro - 1"
+				},
+				{
+					"card": "Vulture - 1"
+				},
+				{
+					"card": "Hobgoblin - 1"
+				},
+				{
+					"card": "Kraven the Hunter - 1"
+				},
+				{
+					"card": "Scorpion - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Frequent Flyers"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Sinister Synchronization",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Light at the End #27102b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Power within"
+				},
+				{
+					"card": "Defense Mechanism"
+				},
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Jefferson Davis"
+				},
+				{
+					"card": "Ganke Lee"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Spider-Man #27030a"
+		},
+		{
+			"type": "choose",
+			"value": "thwart"
+		},
+		{
+			"type": "target",
+			"value": "Light at the End #27102b"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Doctor Octopus - 1",
+					"tokens": {
+						"damage": 7,
+						"active_counter": 1
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Electro - 1"
+				},
+				{
+					"card": "Vulture - 1"
+				},
+				{
+					"card": "Hobgoblin - 1"
+				},
+				{
+					"card": "Kraven the Hunter - 1"
+				},
+				{
+					"card": "Scorpion - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Frequent Flyers"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Sinister Synchronization",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Light at the End #27102b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Power within"
+				},
+				{
+					"card": "Defense Mechanism"
+				},
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Jefferson Davis"
+				},
+				{
+					"card": "Ganke Lee"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a",
+					"tokens": {
+						"victory": 1
+					}
+				}
+			]
+		}
+	}
+}

@@ -140,9 +140,6 @@ func _ready():
 	pass
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
 
 func resize():
 	var target_size = get_viewport().size/cfc.screen_scale
@@ -151,4 +148,7 @@ func resize():
 
 func _on_Button_pressed():
 	cfc.NMAP.board._close_game()
-	pass # Replace with function body.
+
+
+func _on_Link_pressed():
+	OS.shell_open(get_node("%Link").text)

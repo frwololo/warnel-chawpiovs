@@ -4044,11 +4044,7 @@
 		}
 	},
 	"Light at the End #27102a": {
-		"hinder": {
-			"__amount__": 10,
-			"__each_player__": true
-		},
-		"interrupt_card_dies": {
+		"last_threat_removed": {
 			"trigger": "self",
 			"all": [
 				{
@@ -4064,11 +4060,7 @@
 		}
 	},
 	"Light at the End #27102b": {
-		"hinder": {
-			"__amount__": 10,
-			"__each_player__": true
-		},
-		"card_defeated": {
+		"last_threat_removed": {
 			"trigger": "self",
 			"all": [
 				{

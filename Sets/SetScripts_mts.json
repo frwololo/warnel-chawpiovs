@@ -712,9 +712,8 @@
 		}
 	},
 	"Avengers Tower #21100a": {
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
+		"on_load": {
+			"all": [
 				{
 					"name": "modify_properties",
 					"tags": [
@@ -783,9 +782,8 @@
 		}
 	},
 	"Avengers Tower #21100b": {
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
+		"on_load": {
+			"all": [
 				{
 					"name": "modify_properties",
 					"tags": [

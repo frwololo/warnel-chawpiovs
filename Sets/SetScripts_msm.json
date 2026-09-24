@@ -328,7 +328,7 @@
 				}
 			]
 		},
-		"interrupt_receive_damage": {
+		"interrupt_attack_started": {
 			"trigger": "my_event",
 			"all": [
 				{
@@ -570,7 +570,6 @@
 						"name": "discard",
 						"subject": "boardseek",
 						"subject_count": "all",
-						"is_cost": true,
 						"needs_selection": true,
 						"selection_count": 1,
 						"filter_state_seek": [
@@ -586,21 +585,21 @@
 						]
 					},
 					{
+						"name": "surge",
+						"amount": "!count_previous_subjects"
+					},					
+					{
 						"name": "move_card_to_container",
 						"dest_container": "discard_villain",
 						"subject": "self"
 					},
-					{
-						"name": "surge",
-						"is_else": true
-					}
+
 				],
 				"Discard 1": [
 					{
 						"name": "discard",
 						"subject": "boardseek",
 						"subject_count": "all",
-						"is_cost": true,
 						"needs_selection": true,
 						"selection_count": 1,
 						"filter_state_seek": [
@@ -616,14 +615,14 @@
 						]
 					},
 					{
+						"name": "surge",
+						"amount": "!count_previous_subjects"
+					},					
+					{
 						"name": "move_card_to_container",
 						"dest_container": "discard_villain",
 						"subject": "self"
 					},
-					{
-						"name": "surge",
-						"is_else": true
-					}
 				]
 			}
 		}

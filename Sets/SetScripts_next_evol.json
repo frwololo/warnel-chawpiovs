@@ -3520,9 +3520,8 @@
 		}
 	},
 	"Hidden in the Clutter": {
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
+		"on_load": {
+			"all": [
 				{
 					"name": "modify_properties",
 					"tags": [
@@ -3532,7 +3531,12 @@
 					"set_properties": {
 						"health": 666
 					}
-				},
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
 				{
 					"name": "attach_to_card",
 					"subject": "boardseek",
@@ -6192,8 +6196,8 @@
 				},
 				{
 					"name": "forget_variable",
-					"var_name": "my_host",
-				}				
+					"var_name": "my_host"
+				}
 			]
 		}
 	},

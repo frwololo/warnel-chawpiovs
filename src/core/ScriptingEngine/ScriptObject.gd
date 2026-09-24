@@ -783,9 +783,15 @@ func retrieve_integer_property(property, stored_integer:int = 0,root = null):
 		return 0
 	
 	var int_multiplier = 1
+	var reverse_result = false
+	
 	if typeof (value) == TYPE_STRING and value.begins_with("-"):
 		value = value.substr(1)
 		int_multiplier = -1
+
+	if typeof (value) == TYPE_STRING and value.begins_with("!"):
+		value = value.substr(1)
+		reverse_result = true
 		
 	var value_str = str(value)	
 	if SP.VALUE_PER in value_str:
@@ -833,7 +839,13 @@ func retrieve_integer_property(property, stored_integer:int = 0,root = null):
 	var multiplier_value = retrieve_integer_property("multiplier_" + property, stored_integer, root)
 	if multiplier_value:
 		value = value * multiplier_value
-	
+
+
+	if typeof(value) in [TYPE_INT, TYPE_BOOL] and reverse_result:
+		if value:
+			value = 0
+		else:
+			value = 1	
 		
 	return value	
 

@@ -1112,9 +1112,8 @@
 		}
 	},
 	"Crossbones' Armor": {
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
+		"on_load": {
+			"all": [
 				{
 					"name": "modify_properties",
 					"tags": [
@@ -1125,6 +1124,12 @@
 						"health": 5
 					}
 				},
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+
 				{
 					"name": "attach_to_card",
 					"subject": "villain"

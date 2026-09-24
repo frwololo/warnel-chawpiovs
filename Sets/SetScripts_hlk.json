@@ -229,7 +229,7 @@
 			"board": [
 				{
 					"name": "discard",
-					"subject_index": "self"
+					"subject": "self"
 				}
 			]
 		}
@@ -635,9 +635,12 @@
 								{
 									"name": "discard",
 									"subject": "tutor",
+									"src_container": "hand_my_hero",
 									"subject_count": "all",
 									"needs_selection": true,
-									"selection_count": 2
+									"selection_count": 2,
+									"selection_type": "equal",
+									"selection_optional": false
 								},
 								{
 									"name": "discard",
@@ -649,7 +652,6 @@
 					"else": [
 						{
 							"name": "exhaust_card",
-							"is_cost": true,
 							"subject": "my_identity",
 							"_comments": "we need to exhaust before changing form here due to a bug"
 						},

@@ -417,7 +417,8 @@ remotesync func client_create_and_add_stackobject( original_requester_id, expect
 	remove_yield_counter("client_create_and_add_stackobject")
 		
 	add_event_to_stack(stackEvent, checksum)
-	emit_signal("manual_interaction_added_to_stack", details)	
+	if details.get("trigger", "") == "manual":
+		emit_signal("manual_interaction_added_to_stack", details)	
 	cfc._rpc_id(self,1, "from_client_script_received_ack", expected_run_mode, checksum)
 
 func set_pending_network_interaction(_interaction_authority, checksum, reason:=""):
@@ -870,7 +871,7 @@ func flush_script(stack_object):
 			if "basic power" in tags:
 				is_ability = false
 			if is_ability:
-				trigger_details["tags"] = tags.append("is_ability")
+				trigger_details["tags"] = WCScriptingEngine.add_tags_to_tags(tags, ["is_ability"])				
 			scripting_bus.emit_signal_on_stack("script_executed", sceng.owner, trigger_details)
 			
 	#	var user_interaction_status = stack_object.get_user_interaction_status()

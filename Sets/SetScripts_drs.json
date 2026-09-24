@@ -1064,9 +1064,9 @@
 			"is_optional_hand": true,
 			"hand": [
 				{
-					"name": "replacement_effect",
+					"name": "increase",
 					"subject": "interrupted_event",
-					"increase": 2
+					"amount": 2
 				}
 			]
 		}

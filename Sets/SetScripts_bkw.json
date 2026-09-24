@@ -1043,7 +1043,7 @@
 		}
 	},
 	"Widow's Bite": {
-		"card_moved_to_board": {
+		"response_card_moved_to_board": {
 			"filter_state_trigger": [
 				{
 					"filter_properties": {

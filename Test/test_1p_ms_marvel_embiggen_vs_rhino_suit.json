@@ -1,0 +1,155 @@
+{
+	"_comments": "Bug: embiggen vs Rhino suit",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ms. Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ms. Marvel"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Embiggen! #05010"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Badoon Headhunter"
+				}
+			],
+			"others": [
+				{
+					"card": "Armored Rhino Suit",
+					"host": "Rhino - 1"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Big Hands"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Big hands"
+		},
+		{
+			"type": "target",
+			"value": "Rhino - 1"
+		},
+		{
+			"type": "activate",
+			"value": "Embiggen!"
+		},		
+		{
+			"type": "choose",
+			"value": "No"
+		},
+
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ms. Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Armored Rhino Suit"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ms. Marvel"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Embiggen! #05010"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Badoon Headhunter"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Big Hands"
+				}
+			]
+		}
+	}
+}

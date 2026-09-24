@@ -303,7 +303,7 @@ func _process(delta:float):
 	#hide rollback button in some cases
 	if !cfc.is_game_master():
 		rollback_button.visible = false
-	if gamepadHandler.is_controller_input():
+	if gamepadHandler.is_controller_input() or gameData.testSuite:
 		#TODO support these buttons in controller mode
 		rollback_button.visible = false	
 		viewboard.visible = false

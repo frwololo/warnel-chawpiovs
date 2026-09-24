@@ -344,7 +344,7 @@
 					"filter_state_seek": [
 						{
 							"filter_properties": {
-								"type_code": "minions"
+								"type_code": "minion"
 							}
 						}
 					]

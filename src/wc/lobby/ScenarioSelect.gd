@@ -57,7 +57,7 @@ func _process(_delta:float):
 		if (villain):
 			var my_villain_id = villain["_code"]
 			if !display_name:
-				display_name = WCUtils.get_translated_property(my_villain_id, "Name")
+				display_name = WCUtils.get_translated_property(my_villain_id, "shortname")
 			
 			picture_card_id = my_villain_id
 			texture = cfc.get_villain_portrait(picture_card_id, self)
@@ -67,7 +67,7 @@ func _process(_delta:float):
 			_rotation = 90
 
 		if !display_name:
-			display_name = WCUtils.get_translated_property(scenario_id, "Name")
+			display_name = WCUtils.get_translated_property(scenario_id, "shortname")
 		set_display_name(display_name)
 		 
 		if (texture):

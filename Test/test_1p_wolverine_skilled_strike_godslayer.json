@@ -1,0 +1,121 @@
+{
+	"_comments": "Bug: Godslayer and Skilled Strike do not add up",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wolverine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "The Power of Aggression"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Wolverine #35001a"
+				}
+			],
+			"enemies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Wolverine's Claws"
+				},
+				{
+					"card": "Godslayer"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Skilled Strike"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Wolverine"
+		},
+		{
+			"type": "choose",
+			"value": "Attack"
+		},
+		{
+			"type": "target",
+			"value": "Rhino - 1"
+		},
+		{
+			"type": "activate",
+			"value": "Godslayer"
+		},		
+		{
+			"type": "play",
+			"value": "Skilled Strike"
+		},
+
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wolverine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 6
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "The Power of Aggression"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Wolverine #35001a"
+				}
+			],
+			"enemies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Wolverine's Claws"
+				},
+				{
+					"card": "Godslayer"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Skilled Strike"
+				}
+			]
+		}
+	}
+}

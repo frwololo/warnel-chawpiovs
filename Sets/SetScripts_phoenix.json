@@ -1197,16 +1197,8 @@
 		}
 	},
 	"Telekinetic Shield": {
-		"attach_upgrade_to_target": {
-			"__filter_state_subject__": [
-				{
-					"filter_group": "group_friendly"
-				}
-			]
-		},
-		"card_attached": {
-			"trigger": "self",
-			"board": [
+		"on_load": {
+			"all": [
 				{
 					"name": "modify_properties",
 					"tags": [
@@ -1216,6 +1208,13 @@
 					"set_properties": {
 						"health": 5
 					}
+				}
+			]
+		},	
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_group": "group_friendly"
 				}
 			]
 		},

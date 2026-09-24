@@ -870,6 +870,10 @@ static func get_translated_property(card_id, property):
 		return card_data.get(property, "")
 	
 	var translated_card_data = card_translations[locale].get(card_id, {})
+	
+	#hack to return shortname when needed
+	if property == "shortname":
+		property = "Name"
 	if !translated_card_data or !translated_card_data.has(property):
 		return card_data.get(property, "")
 	

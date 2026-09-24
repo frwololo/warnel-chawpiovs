@@ -549,6 +549,21 @@ func force_play_card(script: ScriptTask) -> int:
 		
 	return retcode
 
+static func add_tags_to_tags(existing_tags, additional_tags):
+	var result = []
+	match typeof (existing_tags):
+		TYPE_ARRAY:
+			result = existing_tags + additional_tags
+		#there's a special case for tags where a dictionary is accepted for if/the/else simple case	
+		TYPE_DICTIONARY:
+			result = existing_tags.duplicate(true)
+			for key in ["then", "else"]:
+				if existing_tags.has(key):
+					result[key] = existing_tags.get(key) + additional_tags
+		_:
+			var _error = 1	
+	return result
+
 static func _pre_process_script_list(script_list:Array, script):
 	var result = []
 	var ignore_resource_cost = script.get_property("ignore_resource_cost", false)
@@ -561,16 +576,7 @@ static func _pre_process_script_list(script_list:Array, script):
 				continue
 		if additional_tags:
 			var existing_tags = entry.get("tags", [])
-			match typeof (existing_tags):
-				TYPE_ARRAY:
-					entry["tags"] = existing_tags + additional_tags
-				#there's a special case for tags where a dictionary is accepted for if/the/else simple case	
-				TYPE_DICTIONARY:
-					for key in ["then", "else"]:
-						if existing_tags.has(key):
-							entry["tags"][key] = existing_tags.get(key) + additional_tags
-				_:
-					var _error = 1
+			entry["tags"] = add_tags_to_tags(existing_tags, additional_tags)
 		result.append(entry)
 	result += additional_scripts
 	return result
@@ -2332,7 +2338,7 @@ func _modify_script(script, modifications:Dictionary = {}, script_definition_rep
 
 		var add_tags = modifications.get("additional_tags", [])
 		if add_tags:
-			output.script_definition["tags"] = script.get_property("tags", []) + add_tags
+			output.script_definition["tags"] = add_tags_to_tags(script.get_property("tags", []), add_tags)
 			
 		output.set_subjects (modifications.get("subjects", output.subjects))
 		output.owner =  modifications.get("owner", output.owner)	

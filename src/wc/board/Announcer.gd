@@ -536,7 +536,6 @@ func init_receive_damage(script:ScriptTask, announce:Dictionary) -> bool:
 	var storage = announce["storage"]
 	storage["arrows"] = []
 		
-	var tags: Array = script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
 
 	var owner = script.owner
 	var hero_id = owner.get_controller_hero_id()

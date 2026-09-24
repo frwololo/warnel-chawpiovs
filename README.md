@@ -32,7 +32,7 @@ Other than that, here are known limitations with the engine at the moment:
 
 ## Current Status (General)
 ![Warnel Chawpiovs Supported Characters and Scenarios](doc/pictures/characters_and_scenarios.jpg "Warnel Chawpiovs Supported Characters and Scenarios")
-This simulator supports the following cards from the original game (current total 41 heroes, 33 villains, as well as associated player cards and encounters):
+This simulator supports the following cards from the original game (current total 46 heroes, 38 villains, as well as associated player cards and encounters):
 * Cycle 1:
   * Core box (5 heroes, 3 villains)
   * Captain America (1 Hero)

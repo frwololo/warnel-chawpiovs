@@ -1748,6 +1748,7 @@
 					"subject": "index",
 					"subject_index": "top",
 					"src_container": "deck_villain",
+					"immediate": true,
 					"is_cost": true
 				},
 				{
@@ -1770,7 +1771,8 @@
 			"all": [
 				{
 					"name": "indirect_damage",
-					"amount": "my_boost_count"
+					"amount": "my_boost_count",
+					"subject": "my_identity"
 				}
 			]
 		}

@@ -67,7 +67,7 @@
 			]
 		}
 	},
-	"actions": [
+	"actions": [	
 		{
 			"type": "select",
 			"value": "cancel",
@@ -98,14 +98,14 @@
 		"board": {
 			"discard_villain": [
 				{
+					"card": "Advance"
+				},			
+				{
 					"card": "Caught Off guard"
 				},
 				{
 					"card": "Assault"
 				},				
-				{
-					"card": "Advance"
-				},
 
 			],
 			"deck_villain": [

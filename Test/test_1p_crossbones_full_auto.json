@@ -1,0 +1,161 @@
+{
+	"_comments": "Bug Crossbones full auto",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 2"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "hydra regular"
+				},
+				{
+					"card": "hydra mercenary"
+				},
+				{
+					"card": "Cornered Staff"
+				},
+				{
+					"card": "Full Auto"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Nick Fury"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Clear the Area"
+				},
+				{
+					"card": "Pheromones"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"others": [
+				{
+					"card": "Crossbones' Machine Gun",
+					"host": "Crossbones - 2",
+					"tokens": {
+						"ammo": 2
+					}
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": [
+				"Jessica Jones",
+				"Jessica Jones",
+				"Spider-Woman"
+			]
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Crossbones - 2"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Cornered Staff"
+				},
+				{
+					"card": "hydra mercenary"
+				},
+				{
+					"card": "Full Auto"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "hydra regular"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Attack on Mount Athena"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Nick Fury"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Clear the Area"
+				},
+				{
+					"card": "Pheromones"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman",
+					"tokens": {
+						"damage" : 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jessica Jones",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Crossbones' Machine Gun",
+					"host": "Crossbones - 2",
+					"tokens": {
+						"ammo": 2
+					}
+				}
+			]
+		}
+	}
+}

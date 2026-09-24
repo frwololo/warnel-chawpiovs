@@ -2355,7 +2355,8 @@ func sequence_queue_is_ready():
 		var _tmp = 1
 	
 	if next_play_event["is_villain"]:
-		pass
+		if !gameData.theStack.is_phasecontainer_allowed_to_next_step():
+			return false		
 	else:	
 		#we already sent a request and should be waiting for full resolution	
 		if !gameData.theStack.is_player_allowed_to_click():

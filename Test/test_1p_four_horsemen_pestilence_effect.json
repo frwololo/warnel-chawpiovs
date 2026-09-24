@@ -1,0 +1,270 @@
+{
+	"_comments": "Test Pestilence blanking ability",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Magik"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Famine - A",
+					"tokens": {
+						"damage": 1,
+						"__activation_order": 1
+					}
+				},
+				{
+					"card": "Death - A",
+					"tokens": {
+						"__activation_order": 2
+					}					
+				},
+				{
+					"card": "Pestilence - A",
+					"tokens": {
+						"__activation_order":3
+					}					
+				},
+				{
+					"card": "War - A",
+					"tokens": {
+						"active_counter": 1,
+						"__activation_order": 4						
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Horsemen of Apocalypse"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Genius"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Soul Strike"
+				},
+				{
+					"card": "Magik's Crown"
+				},
+				{
+					"card": "Limbo"
+				},
+				{
+					"card": "Bloodgem"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Magik #45030a"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Illyana Rasputin",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Golden Horse",
+					"host": "Pestilence - A"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Scrying"
+				},
+				{
+					"card": "Stepping Disc"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Illyana Rasputin"
+		},
+		{
+			"type": "choose",
+			"value": "change form"
+		},
+		{
+			"type": "activate",
+			"value": "Magik"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Pestilence - A"
+		},
+		{
+			"type": "choose",
+			"value": "Yes"
+		},
+		{
+			"type": "play",
+			"value": "Bloodgem",
+			"expected_to_fail": true
+		},
+		{
+			"type": "next_phase",
+			"value": 1
+		},
+		{
+			"type": "select",
+			"value": "Cancel"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comment": "unblocked attack"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		},
+		{
+			"type": "play",
+			"value": "Magik's Crown"
+		},
+		{
+			"type": "select",
+			"value": "Scrying"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Magik"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Golden Horse"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"villain": [
+				{
+					"card": "Famine - A",
+					"tokens": {
+						"damage": 1,
+						"active_counter": 1
+					}
+				},
+				{
+					"card": "Death - A"
+				},
+				{
+					"card": "Pestilence - A"
+				},
+				{
+					"card": "War - A"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Horsemen of Apocalypse"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Scrying"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Soul Strike"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"set_aside": [],
+			"identity1": [
+				{
+					"card": "Magik #45030a",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Magik's Crown"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Stepping Disc"
+				},
+				{
+					"card": "Bloodgem"
+				},
+				{
+					"card": "Limbo"
+				}
+			]
+		}
+	}
+}

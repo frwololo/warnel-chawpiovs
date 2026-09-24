@@ -4666,6 +4666,15 @@
 		"once_per_phase": {
 			"__name__": "__play_top_deck"
 		},
+		"unblank":{
+			"_silent": true,
+			"board": [
+				{
+					"name": "send_signal",
+					"signal_name": "signal_enable_magik_top_deck"
+				}
+			]
+		},
 		"pile_top_card_changed": {
 			"_silent": true,
 			"event_filters": {
@@ -5390,7 +5399,7 @@
 					"name": "temporary_effect",
 					"subject": "previous",
 					"end_condition": {
-						"trigger": "phase_ended",
+						"event": "phase_ended",
 						"event_filters": {
 							"phase": "player_phase"
 						}
@@ -5466,7 +5475,7 @@
 					"name": "temporary_effect",
 					"subject": "previous",
 					"end_condition": {
-						"trigger": "phase_ended",
+						"event": "phase_ended",
 						"event_filters": {
 							"phase": "player_phase"
 						}
@@ -5516,7 +5525,7 @@
 					"name": "temporary_effect",
 					"subject": "event_source_hero",
 					"end_condition": {
-						"trigger": "phase_ended",
+						"event": "phase_ended",
 						"event_filters": {
 							"phase": "player_phase"
 						}

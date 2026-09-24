@@ -212,7 +212,7 @@
 				{
 					"is_else": true,
 					"name": "move_card_to_board",
-					"destination_grid": "enemies_my_hero",
+					"grid_name": "enemies_my_hero",
 					"subject": "tutor",
 					"src_container": [
 						"discard_villain",
@@ -718,7 +718,7 @@
 			"all": [
 				{
 					"name": "move_card_to_board",
-					"destination_grid": "enemies_my_hero",
+					"grid_name": "enemies_my_hero",
 					"subject": "tutor",
 					"src_container": [
 						"discard_villain",
@@ -1044,7 +1044,7 @@
 				},
 				{
 					"name": "move_card_to_board",
-					"destination_grid": "enemies_my_hero",
+					"grid_name": "enemies_my_hero",
 					"subject": "index",
 					"subject_count": 1,
 					"subject_index": "retrieve_integer",
@@ -1208,7 +1208,7 @@
 			"all": [
 				{
 					"name": "move_card_to_board",
-					"destination_grid": "enemies_event_source_hero",
+					"grid_name": "enemies_event_source_hero",
 					"subject": "tutor",
 					"subject_count": "all",
 					"needs_selection": true,
@@ -5629,7 +5629,7 @@
 				"Morlock": [
 					{
 						"name": "move_card_to_board",
-						"destination_grid": "allies_my_hero",
+						"grid_name": "allies_my_hero",
 						"subject": "tutor",
 						"src_container": "set_aside",
 						"filter_state_tutor": [
@@ -5672,7 +5672,7 @@
 							"nested_tasks": [
 								{
 									"name": "move_card_to_board",
-									"destination_grid": "allies_my_hero",
+									"grid_name": "allies_my_hero",
 									"subject": "tutor",
 									"src_container": "set_aside",
 									"filter_state_tutor": [
@@ -7785,7 +7785,7 @@
 				},
 				{
 					"name": "move_card_to_board",
-					"destination_grid": "allies_first_player",
+					"grid_name": "allies_first_player",
 					"subject": "tutor",
 					"src_container": "deck_villain",
 					"filter_state_tutor": [
@@ -8645,7 +8645,7 @@
 						"subject": "tutor",
 						"sort_descending": true,
 						"src_container": "discard_villain",
-						"dest_grid": "enemies_my_hero",
+						"grid_name": "enemies_my_hero",
 						"filter_state_tutor": [
 							{
 								"filter_properties": {
@@ -9472,7 +9472,7 @@
 				},
 				{
 					"name": "move_card_to_board",
-					"destination_grid": "allies_first_player",
+					"grid_name": "allies_first_player",
 					"subject": "tutor",
 					"src_container": "deck_villain",
 					"filter_state_tutor": [
@@ -9873,7 +9873,7 @@
 			"all": [
 				{
 					"name": "move_card_to_board",
-					"destination_grid": "allies_first_player",
+					"grid_name": "allies_first_player",
 					"subject": "tutor",
 					"src_container": "deck_villain",
 					"filter_state_tutor": [

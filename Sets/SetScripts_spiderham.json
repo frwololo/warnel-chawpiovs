@@ -1124,7 +1124,7 @@
 				{
 					"is_else": true,
 					"name": "move_card_to_board",
-					"destination_grid": "enemies_event_source_hero",
+					"grid_name": "enemies_event_source_hero",
 					"subject": "tutor",
 					"src_container": [
 						"deck_villain",

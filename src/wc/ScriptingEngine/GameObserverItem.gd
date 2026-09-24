@@ -18,7 +18,10 @@ func set_values(_parent_script, _script: Dictionary):
 	#TODO this is fishy, rather than parent_script, might want the targeted card to own this?
 	var owner_hero_id = 0
 	if parent_script:
-		owner_hero_id = WCScriptingEngine.get_hero_id_from_script(parent_script)
+		if parent_script.subjects:
+			owner_hero_id = parent_script.subjects[0].get_controller_hero_id()
+		if !owner_hero_id:
+			owner_hero_id = WCScriptingEngine.get_hero_id_from_script(parent_script)
 	init_owner_hero_id(owner_hero_id )
 	set_controller_hero_id(owner_hero_id)
 	

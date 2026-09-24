@@ -118,7 +118,7 @@
 			"all": [
 				{
 					"name": "move_card_to_board",
-					"destination_grid": "enemies_my_hero",
+					"grid_name": "enemies_my_hero",
 					"subject": "tutor",
 					"src_container": [
 						"deck_villain",

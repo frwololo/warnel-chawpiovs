@@ -278,6 +278,7 @@ func refresh_blank_text_box():
 		var backup_properties = previous_state
 		for keyword in backup_properties:
 			properties[keyword] = backup_properties[keyword]
+		execute_scripts(self, "unblank")
 		_dummy_alterants_cache.erase(alterant)		
 
 
@@ -2765,7 +2766,7 @@ func common_pre_run(sceng) -> void:
 						var defenders = cfc.get_tree().get_nodes_in_group("group_defenders")
 						var found_ally = false
 						for c in defenders:
-							if c.get_property("type_code") == "ally":
+							if c.get_property("type_code") == "ally" and c.get_controller_hero_id() == controller_hero_id:
 								found_ally = true
 								break
 						if found_ally:

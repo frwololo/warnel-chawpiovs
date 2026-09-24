@@ -1,0 +1,150 @@
+{
+	"_comments": "Bug: Energy barrier cannot target a minion that was just revealed",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ms. Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Bomber"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ms. Marvel"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Energy Barrier",
+					"tokens": {
+						"reflection": 2
+					}
+				}
+			],
+			"enemies1": [],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Preemptive Strike #05014"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "choose",
+			"value": "Take 2 damage"
+		},
+		{
+			"type": "activate",
+			"value": "Energy Barrier"
+		},
+		{
+			"type": "target",
+			"value": "Hydra Bomber"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ms. Marvel"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ms. Marvel",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Energy Barrier",
+					"tokens": {
+						"reflection": 1
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Bomber",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Preemptive Strike #05014"
+				}
+			]
+		}
+	}
+}

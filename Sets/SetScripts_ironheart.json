@@ -13,7 +13,7 @@
 					"name": "add_script",
 					"subject": "self",
 					"end_condition": {
-						"trigger": "round_ended"
+						"event": "round_ended"
 					},
 					"script": {
 						"alterants": {

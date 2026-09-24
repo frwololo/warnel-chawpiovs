@@ -1,0 +1,193 @@
+{
+	"_comments": "Bug: City Streets should be limited to once per player per round",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ghost-Spider"
+				}
+			}
+		],
+		"board": {
+			"set_aside": [
+				{
+					"card": "Worried Father"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Loose Ends"
+				}
+			],
+			"villain": [
+				{
+					"card": "Sandman - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hapless Pedestrians",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "City Streets",
+					"tokens": {
+						"sand": 4,
+						"__player_token1": 1,
+						"__player_token2": 1,
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "George Stacy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ghost-Spider"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "For Justice!"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "City Streets"
+		},
+		{
+			"type": "select",
+			"value": "Ghost-Spider"
+		},
+		{
+			"type": "activate",
+			"value": "City Streets",
+			"expected_to_fail": true
+		},
+		{
+			"type": "select",
+			"value": "Jessica Jones",
+			"expected_to_fail": true
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ghost-Spider"
+				}
+			}
+		],
+		"board": {
+			"set_aside": [
+				{
+					"card": "Worried Father"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Loose Ends"
+				}
+			],
+			"villain": [
+				{
+					"card": "Sandman - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hapless Pedestrians",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "City Streets",
+					"tokens": {
+						"sand": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "George Stacy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ghost-Spider"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "For Justice!"
+				}
+			]
+		}
+	}
+}

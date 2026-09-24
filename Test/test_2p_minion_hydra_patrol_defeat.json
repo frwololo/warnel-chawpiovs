@@ -1,0 +1,211 @@
+{
+	"_comments": "Tests Hydra Patrol defeat",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},		
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Ironheart"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Mimicry"
+				}
+			],
+			"villain": [
+				{
+					"card": "Taskmaster - 1",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting down Heroes",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Hydra Patrol",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Spider-Man - Peter Parker"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "The Power of Aggression"
+				},
+				{
+					"card": "Heroic Intuition"
+				},
+				{
+					"card": "Press the Advantage"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Ironheart"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Ironheart",
+			"hero": 2
+		},
+		{
+			"type": "choose",
+			"value": "Thwart",
+			"hero": 2
+		},
+		{
+			"type": "target",
+			"value": "Hydra Patrol",
+			"hero": 2
+		},
+		{
+			"type": "select",
+			"value": "Hydra Regular",
+			"hero": 1
+		},
+		{
+			"type": "select",
+			"value": "Hydra Mercenary",
+			"hero": 2
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Ironheart"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Hydra Patrol"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Mimicry"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"villain": [
+				{
+					"card": "Taskmaster - 1",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting down Heroes",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Spider-Man - Peter Parker"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "The Power of Aggression"
+				},
+				{
+					"card": "Heroic Intuition"
+				},
+				{
+					"card": "Press the Advantage"
+				}
+			],
+			"enemies2": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Ironheart"
+				}
+			]
+		}
+	}
+}

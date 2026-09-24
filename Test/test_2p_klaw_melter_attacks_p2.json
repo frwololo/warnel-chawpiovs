@@ -1,0 +1,265 @@
+{
+	"_comments": "Bug: Melter (klaw) vs 2 player: If attacks player 1 and player 1 doesn't have any ally but player 2 does, I am forced to block",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Shadowcat"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01113",
+					"tokens": {
+						"stunned": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116b",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "01117a"
+				},
+				{
+					"card": "01117b"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Weapons Runner"
+				},
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Melter"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Lead from the Front"
+				},
+				{
+					"card": "Make The Call"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Strength"
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Phased"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Shadowcat"
+				}
+			],
+			"allies2": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Acute Control"
+				},
+				{
+					"card": "Shadowcat Surprise"
+				},
+				{
+					"card": "Phased Strike"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"hero": 1,
+			"_comments": "p1 doesn't block Melterattack"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"hero": 2,
+			"_comments": "p2 doesn't block Klaw attack"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Shadowcat"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01113"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116b",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "01117a"
+				},
+				{
+					"card": "01117b"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Advance"
+				},			
+				{
+					"card": "Hydra Mercenary"
+				},
+
+			],
+			"deck_villain": [
+				{
+					"card": "Weapons Runner"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Iron Man",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Melter"
+				},
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Lead from the Front"
+				},
+				{
+					"card": "Make The Call"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Strength"
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Phased"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Shadowcat",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"enemies2": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"allies2": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Acute Control"
+				},
+				{
+					"card": "Shadowcat Surprise"
+				},
+				{
+					"card": "Phased Strike"
+				}
+			]
+		}
+	}
+}

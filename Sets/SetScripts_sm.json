@@ -905,6 +905,7 @@
 		"TODO": "campaign mode not supported"
 	},
 	"City Streets": {
+		"once_per_round_per_player": {},	
 		"special": {
 			"board": [
 				{
@@ -937,6 +938,13 @@
 						"hero_action"
 					]
 				},
+				{
+					"name": "mod_tokens",
+					"token_name": "__player_token_active_player",
+					"subject": "self",
+					"modification": -1,
+					"is_cost": true
+				},				
 				{
 					"name": "exhaust_card",
 					"subject": "boardseek",

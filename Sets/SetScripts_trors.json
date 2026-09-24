@@ -2287,6 +2287,7 @@
 				"Patrol": [
 					{
 						"name": "move_card_to_board",
+						"grid_name": "enemies_my_hero",
 						"subject": "tutor",
 						"src_container": [
 							"deck_villain",

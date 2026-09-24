@@ -3471,7 +3471,7 @@
 				},
 				{
 					"name": "mod_tokens",
-					"token_name": "__player_token_my_hero",
+					"token_name": "__player_token_active_player",
 					"subject": "self",
 					"modification": -1,
 					"is_cost": true
@@ -5782,7 +5782,7 @@
 					},
 					{
 						"name": "mod_tokens",
-						"token_name": "__player_token_my_hero",
+						"token_name": "__player_token_event_source_hero",
 						"subject": "self",
 						"modification": -1,
 						"is_cost": true
@@ -5814,7 +5814,7 @@
 					},
 					{
 						"name": "mod_tokens",
-						"token_name": "__player_token_my_hero",
+						"token_name": "__player_token_event_source_hero",
 						"subject": "self",
 						"modification": -1,
 						"is_cost": true

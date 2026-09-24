@@ -297,9 +297,14 @@ static func next_activation_order_villain(func_params, _script = null):
 	var current_villains = gameData.get_villains()
 	var sorting_list:= []
 	for villain in current_villains:
+		var value = villain.get_property(counter_name, 0)
+		if !value:
+			#TODO in testsuite the activation_order property is not available
+			#the same problem will exist in savegames, this property needs to be saved somehow
+			value = villain.tokens.get_token_count("__" + counter_name)
 		sorting_list.append({
 			"card": villain,
-			"value": villain.get_property(counter_name, 0)
+			"value": value
 		})
 	sorting_list.sort_custom(CFUtils,'sort_by_card_field')	
 				

@@ -518,8 +518,13 @@ func _boardseek_subjects(stored_integer: int) -> Array:
 		if get_property(SP.KEY_IS_INVERTED):
 			subject_count *= -1
 	requested_subjects = int(subject_count)
-	var subject_list := sort_subjects(cfc.NMAP.board.get_all_scriptables())
+	var subject_list :Array = cfc.NMAP.board.get_all_scriptables()
+	
+	for pile_name in CFConst.PILES_INCLUDED_IN_BOARDSEEK:
+		if cfc.NMAP.has(pile_name):
+			subject_list += cfc.NMAP[pile_name].get_all_cards()
 
+	subject_list = sort_subjects(subject_list)
 	var to_exclude = get_property("seek_exclude", "")
 	var exclude_result = []
 	if to_exclude:
@@ -705,7 +710,11 @@ func _index_seek_subjects(stored_integer: int) -> Array:
 #return the first we find on the board if we find one, null otherwise
 func _dry_run_card_targeting(_script_definition, to_exclude = []):
 	var all_cards = cfc.NMAP.board.get_all_cards()
-	#TODO also check cards in piles ?
+
+	for pile_name in CFConst.PILES_INCLUDED_IN_BOARDSEEK:
+		if cfc.NMAP.has(pile_name):
+			all_cards += cfc.NMAP[pile_name].get_all_cards()	
+	
 	for c in all_cards:
 		if c in to_exclude:
 			continue
@@ -727,6 +736,9 @@ func _initiate_card_targeting(to_exclude = []) -> Card:
 	
 	if include_board:
 		all_cards+=	cfc.NMAP.board.get_all_cards()
+		for pile_name in CFConst.PILES_INCLUDED_IN_BOARDSEEK:
+			if cfc.NMAP.has(pile_name):
+				all_cards += cfc.NMAP[pile_name].get_all_cards()		
 	if include_piles:
 		all_cards+=cfc.NMAP.board.get_top_card_of_each_pile()
 	var valid_targets = []

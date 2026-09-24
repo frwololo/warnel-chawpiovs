@@ -856,7 +856,7 @@
 								"nested_tasks": [
 									{
 										"name": "move_card_to_board",
-										"destination_grid": "enemies_first_player",
+										"grid_name": "enemies_first_player",
 										"subject": "tutor",
 										"src_container": "set_aside",
 										"filter_state_tutor": [
@@ -903,7 +903,7 @@
 								"nested_tasks": [
 									{
 										"name": "move_card_to_board",
-										"destination_grid": "enemies_first_player",
+										"grid_name": "enemies_first_player",
 										"subject": "tutor",
 										"src_container": "set_aside",
 										"filter_state_tutor": [

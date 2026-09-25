@@ -275,13 +275,6 @@ func load_from_json(dict):
 		var actual_guid = cfc.NMAP.board.loadgame_translate_guid(saved_guid)
 		_cards_with_extra_scripts.append(guidMaster.get_object_by_guid(actual_guid))
 	
-		var result = {
-		"removal_conditions": _removal_conditions,
-		"extra_script_removal_conditions":  _extra_script_removal_conditions,
-		"cards_with_extra_scripts": _cards_with_extra_scripts,
-		"function_overrides" : _overrides,
-		"_objects": _my_objects
-	}	
 
 func export_to_json():	
 	var _overrides = {}

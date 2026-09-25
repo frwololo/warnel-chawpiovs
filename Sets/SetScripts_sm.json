@@ -296,7 +296,7 @@
 				"Change Form": [
 					{
 						"name": "change_form",
-						"subject": "my_hero"
+						"subject": "my_identity"
 					},
 					{
 						"name": "execute_scripts",
@@ -905,7 +905,7 @@
 		"TODO": "campaign mode not supported"
 	},
 	"City Streets": {
-		"once_per_round_per_player": {},	
+		"once_per_round_per_player": {},
 		"special": {
 			"board": [
 				{
@@ -944,7 +944,7 @@
 					"subject": "self",
 					"modification": -1,
 					"is_cost": true
-				},				
+				},
 				{
 					"name": "exhaust_card",
 					"subject": "boardseek",

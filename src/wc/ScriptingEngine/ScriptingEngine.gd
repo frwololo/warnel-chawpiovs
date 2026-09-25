@@ -3697,12 +3697,14 @@ func add_script(script: ScriptTask) -> int:
 				subscript = WCUtils.search_and_replace (subscript, "__fetched_script__", fetched_script, true)
 		if start_condition:
 			var new_script = {
+				#very specific stuff here to make it work with Threat or Menace.
+				#might need tobe more clever ultimately
 				start_condition: {
-					"all": [
+					"board": [
 						{
 							"name": "add_script",
 							"script": subscript,
-							"end_condition": end_condition
+							"subject": "self"
 						}
 					]
 				}
@@ -3710,7 +3712,11 @@ func add_script(script: ScriptTask) -> int:
 			#notably here the end condition is "start_condition"
 			#we're telling the GameObserver to add a script that will itself add a subscript when the start
 			#condition is triggered, then delete itself
-			gameData.theGameObserver.add_script(script, new_script, start_condition)
+			var subscript_id = subject.add_extra_script( new_script, my_hero_id)
+			if (end_condition):
+					gameData.theGameObserver.add_script_removal_effect(script, subject, subscript_id, end_condition)
+			
+			#gameData.theGameObserver.add_script(script, new_script, start_condition)
 		else:		
 			var subscript_id = subject.add_extra_script( subscript, my_hero_id)
 			if (end_condition):

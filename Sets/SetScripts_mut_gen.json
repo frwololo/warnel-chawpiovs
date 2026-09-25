@@ -7003,7 +7003,7 @@
 						"enemy_activation_finished": {
 							"all": [
 								{
-									"name": "deal_damage",
+									"name": "attack",
 									"amount": 5,
 									"subject": "trigger"
 								}

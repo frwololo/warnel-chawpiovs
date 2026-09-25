@@ -1,0 +1,148 @@
+{
+	"_comments": "Can pay for Crushing blow with Helicarrier",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hulk"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Hulk"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Helicarrier"
+				}
+			],
+			"enemies1": [],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Toe to Toe"
+				},
+				{
+					"card": "Crushing Blow"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Crushing Blow",
+			"expected_to_fail": true
+		},
+		{
+			"type": "target",
+			"value": "Rhino",
+			"expected_to_fail": true
+		},
+		{
+			"type": "activate",
+			"value": "Helicarrier"
+		},
+		{
+			"type": "play",
+			"value": "Crushing Blow"
+		},
+		{
+			"type": "target",
+			"value": "Rhino"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hulk"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Hulk"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Helicarrier"
+				}
+			],
+			"enemies1": [],
+			"hand1": [
+				{
+					"card": "Toe to Toe"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Crushing Blow"
+				}
+			]
+		}
+	}
+}

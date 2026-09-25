@@ -359,7 +359,7 @@
 					"name": "init_properties",
 					"subject": "self",
 					"set_properties": {
-						"override_play_cost": {
+						"play_cost_exclusive": {
 							"physical": 1
 						}
 					}
@@ -857,6 +857,7 @@
 					"subject_count": "all",
 					"needs_selection": true,
 					"selection_count": 3,
+					"selection_type": "max",
 					"filter_state_seek": [
 						{
 							"filter_group": "group_enemies"
@@ -908,7 +909,7 @@
 						"enemy_activation_finished": {
 							"all": [
 								{
-									"name": "deal_damage",
+									"name": "attack",
 									"amount": 5,
 									"subject": "trigger"
 								}

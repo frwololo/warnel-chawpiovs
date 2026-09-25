@@ -2945,10 +2945,10 @@ func pay_regular_cost_replacement(script, trigger_details) -> Dictionary:
 
 
 			
-
+	var subject = self
 	#precompute cost replacement macros
 	if (typeof(cost) == TYPE_STRING):
-		var subject = self
+
 		match cost:
 			"subject_cost":
 				subject = get_param_subject(script_definition, script)
@@ -2956,9 +2956,17 @@ func pay_regular_cost_replacement(script, trigger_details) -> Dictionary:
 					var _error = 1
 					subject = self			
 		cost = subject.get_property("override_play_cost", subject.get_property("cost"))
+
+	if (typeof(cost) == TYPE_INT):	
 		if subject.get_property("cost_per_player", false):
 			cost = cost * gameData.get_team_size()
-						
+			
+		var exclusive_resource = subject.get_property("play_cost_exclusive", {})
+		if exclusive_resource:
+			for key in exclusive_resource:
+				if exclusive_resource[key]:
+					exclusive_resource[key] = exclusive_resource[key] * cost
+			cost = 	exclusive_resource.duplicate(true)					
 	var selection_additional_constraints = null
 
 	if (typeof(cost) == TYPE_DICTIONARY):
@@ -2967,12 +2975,16 @@ func pay_regular_cost_replacement(script, trigger_details) -> Dictionary:
 				var _tmp = script.retrieve_integer_subproperty(key, cost)
 				cost[key] = _tmp
 		manacost.init_from_dictionary(cost)
-		selection_additional_constraints = {
-			"func_name": "can_pay_as_resource",
-			"using": "all_selection",
-			"func_params": cost 
-		}
-	else:
+		if manacost.converted_mana_cost():
+			selection_additional_constraints = {
+				"func_name": "can_pay_as_resource",
+				"using": "all_selection",
+				"func_params": cost 
+			}
+		else:
+			cost = 0
+			
+	if (typeof(cost) != TYPE_DICTIONARY):
 		#historically we do not show the pay window for zero cost cards
 		#this doesn't respect the rules but ensures smoother gameplay
 		#TODO make it an option
@@ -2981,7 +2993,8 @@ func pay_regular_cost_replacement(script, trigger_details) -> Dictionary:
 			var has_overpaid_check = WCUtils.is_string_in_variant(all_my_scripts, "overpaid")	
 			if !has_overpaid_check:
 				return {}
-					
+		
+			
 		manacost.init_from_expression(cost) #TODO better name?
 	
 	var hero_ids = [owner_hero_id]

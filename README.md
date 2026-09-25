@@ -12,7 +12,7 @@ A digital card game based on the Marvel Champions board game, with full rules en
 ## Quickstart
 You can try this game in your browser at https://wololo.net/wc
 
-I do recommend however to download local binaries for your system of choice. Those have better performance and will let you play offline. to do this, [download the game from the release page](https://github.com/frwololo/warnel-chawpiovs/releases), extract the zip to any folder on your machine, and run the executable.
+I do recommend however to download local binaries for your system of choice. Those have better performance and will let you play offline (after all assets have been downloaded). to do this, [download the game from the release page](https://github.com/frwololo/warnel-chawpiovs/releases), extract the zip to any folder on your machine, and run the executable.
 
 If you need more details, read along
 

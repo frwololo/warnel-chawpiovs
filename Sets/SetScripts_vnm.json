@@ -264,7 +264,7 @@
 					},
 					{
 						"name": "deal_damage",
-						"subject": "an_anemey",
+						"subject": "an_enemy",
 						"amount": 2
 					}
 				]

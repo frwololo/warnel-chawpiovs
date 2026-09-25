@@ -40,7 +40,10 @@ func _ready():
 		get_node("%EnableModsButton").visible = false
 
 	if cfc.get_internal_setting("disable_tests"):
-		get_node("%TestContainer").visible = false	
+		get_node("%TestContainer").visible = false
+	else:
+		var test_options_btn:OptionButton = get_node("%TestOptions")
+		test_options_btn.select(1)	
 			
 func on_button_pressed(_button_name : String) -> void:
 	match _button_name:

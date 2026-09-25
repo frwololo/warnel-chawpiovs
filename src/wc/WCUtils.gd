@@ -364,11 +364,14 @@ static func search_and_replace_multi(script_definition, replacements:Dictionary,
 	var result = _search_and_replace_multi_cache[_cache_key].duplicate(true)
 	return result
 
-#stupid hardcoded exceptions
+#hardcoded exceptions
+#for the engine to not auto-replace with "discard1", "hand1", etc...
 const _never_replace = {
+	"display_section": "response",	
 	"name": "discard",
+	"require_exec_state": "hand",
 	"type_code": "villain",
-	"display_section": "response"
+	
 }	
 static func search_and_replace_multi_no_cache (script_definition, replacements:Dictionary, exact_match: bool = false) -> Dictionary:
 	var result = null

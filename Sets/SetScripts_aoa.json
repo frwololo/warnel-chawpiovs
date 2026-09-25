@@ -1493,7 +1493,6 @@
 				{
 					"name": "play_card",
 					"subject": "self",
-					"is_cost": true
 				},
 				{
 					"name": "declare_defender",

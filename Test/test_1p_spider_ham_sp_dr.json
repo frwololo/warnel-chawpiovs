@@ -1,5 +1,9 @@
 {
-	"_comments": "Bug: team building exercise allowing to select non shared traits",
+	"_comments": "Bug: SP//DR returning to hand even if consequential damage isn't excess",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},		
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -18,6 +22,12 @@
 			"schemes": [
 				{
 					"card": "Taking Off - 2B",
+					"tokens": {
+						"threat": 4
+					}
+				},
+				{
+					"card": "Bomb Scare",
 					"tokens": {
 						"threat": 4
 					}
@@ -50,9 +60,9 @@
 					"card": "Spider-Ham"
 				}
 			],
-			"upgrade_support1": [
+			"allies1": [
 				{
-					"card": "Team-Building Exercise"
+					"card": "SP//DR Peni Parker #30021"
 				}
 			],
 			"hand1": [
@@ -68,26 +78,18 @@
 			]
 		}
 	},
-	"actions": [	
+	"actions": [
 		{
 			"type": "activate",
-			"value": "Team-Building Exercise"
+			"value": "SP//DR #30021"
 		},
 		{
-			"type": "select",
-			"value": "Making an entrance",
-			"expected_to_fail": true,
-			"_comments": "trying to select a non shared trait card"
-		},
-		{
-			"type": "select",
-			"value": "Spider-Man - Pavitr Prabhakar",
-			"_comments": "selecting again, this time a valid card"
+			"type": "choose",
+			"value": "Thwart"
 		},
 		{
 			"type": "target",
-			"value": "Taking Off - 2B",
-			"_comments": "Pavitr's special ability when comes into play"			
+			"value": "Bomb Scare"
 		}
 	],
 	"end": {
@@ -108,6 +110,12 @@
 			"schemes": [
 				{
 					"card": "Taking Off - 2B",
+					"tokens": {
+						"threat": 4
+					}
+				},
+				{
+					"card": "Bomb Scare",
 					"tokens": {
 						"threat": 2
 					}
@@ -140,24 +148,20 @@
 					"card": "Spider-Ham"
 				}
 			],
-			"upgrade_support1": [
-				{
-					"card": "Team-Building Exercise"
-				}
-			],
 			"discard1": [
 				{
-					"card": "Web of Life and Destiny"
-				},			
+					"card": "SP//DR Peni Parker #30021"
+				}
+			],
+			"hand1": [
 				{
 					"card": "Making an entrance"
 				},
-
-			],
-			"allies1": [
 				{
-					"card": "Spider-Man - Pavitr Prabhakar",
-					"tokens": {"damage": 0}
+					"card": "Spider-Man - Pavitr Prabhakar"
+				},
+				{
+					"card": "Web of Life and Destiny"
 				}
 			]
 		}

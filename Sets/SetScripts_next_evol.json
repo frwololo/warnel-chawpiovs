@@ -6571,7 +6571,7 @@
 					},
 					{
 						"name": "move_card_to_container",
-						"sr_container": [
+						"src_container": [
 							"deck",
 							"discard"
 						],

@@ -716,7 +716,7 @@
 	},
 	"Power Gloves": {
 		"attach_upgrade_to_target": {
-			"__filter_state_subject__":	[
+			"__filter_state_subject__": [
 				{
 					"filter_group": "group_allies",
 					"filter_properties": {
@@ -725,8 +725,8 @@
 					},
 					"filter_max_per_host": 1
 				}
-			]				
-		},		
+			]
+		},
 		"attack_happened": {
 			"trigger": "host",
 			"is_optional_board": true,
@@ -1079,9 +1079,17 @@
 							"filter_shares_trait_with_identity": true
 						}
 					]
+				},
+				{
+					"name": "execute_scripts",
+					"subject": "previous",
+					"require_exec_state": "hand",
+					"exec_trigger": "manual",
+					"delayed": true,
+					"_comments": "the 'delayed' keyword here makes it call a completely different code path which solves most freeze issues with execute_scripts"
 				}
 			]
-		}
+		},
 	},
 	"Tech Theft": {
 		"alterants": {

@@ -1,0 +1,198 @@
+{
+	"_comments": "Bug: playing colossus from top of deck doesn't work as expected",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Magik"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Famine - A",
+					"tokens": {
+						"damage": 1,
+						"__activation_order": 1
+					}
+				},
+				{
+					"card": "Death - A",
+					"tokens": {
+						"__activation_order": 2
+					}
+				},
+				{
+					"card": "Pestilence - A",
+					"tokens": {
+						"__activation_order": 3
+					}
+				},
+				{
+					"card": "War - A",
+					"tokens": {
+						"__activation_order": 4,
+						"active_counter": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Horsemen of Apocalypse"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Bomber"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				},				
+			],
+			"discard1": [
+				{
+					"card": "Genius"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Soul Strike"
+				},
+				{
+					"card": "Bloodgem"
+				},
+				{
+					"card": "Colossus #45031"
+				}
+			],
+			"set_aside": [],
+			"identity1": [
+				{
+					"card": "Magik",
+					"tokens": {
+						"damage": 1,
+						"__play_top_deck": 1
+					}
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Energy"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Colossus #45031"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Magik"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Famine - A",
+					"tokens": {
+						"damage": 1,
+						"__activation_order": 1,
+						"active_counter": 1
+					}
+				},
+				{
+					"card": "Death - A",
+					"tokens": {
+						"__activation_order": 2
+					}
+				},
+				{
+					"card": "Pestilence - A",
+					"tokens": {
+						"__activation_order": 3
+					}
+				},
+				{
+					"card": "War - A",
+					"tokens": {
+						"__activation_order": 4
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Horsemen of Apocalypse"
+				}
+			],
+			"discard_villain": [
+							{
+					"card": "Advance"
+				},	
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Bomber"
+				},
+
+			
+			],
+			"discard1": [
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Soul Strike"
+				},
+				{
+					"card": "Bloodgem"
+				}
+			],
+			"enemies1": [
+							{
+					"card": "Hydra Mercenary"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Magik",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Colossus #45031"
+				}
+			]
+		}
+	}
+}

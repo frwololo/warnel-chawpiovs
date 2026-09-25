@@ -1291,6 +1291,8 @@ func post_load_move():
 				
 	for card in _post_load_move:				
 		#card.interruptTweening()
+		#refresh potential abilities (used e.g. for Magik)
+		card.execute_scripts(card, "unblank")
 		card.reorganize_self()	
 	 
 	#reset temp load variables	

@@ -366,9 +366,9 @@
 					"set_properties": {
 						"health": 5
 					}
-				},
+				}
 			]
-		},	
+		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
@@ -1109,21 +1109,12 @@
 				},
 				{
 					"name": "thwart",
-					"subject": "target",
-					"amount": 2,
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_schemes"
-						}
-					],
-					"tags": [
-						"thwart"
-					]
+					"subject": "a_scheme",
+					"amount": 2
 				},
 				{
 					"name": "thwart",
-					"subject": "target",
+					"subject": "a_scheme",
 					"amount": {
 						"if": {
 							"func_name": "identity_has_trait",
@@ -1134,15 +1125,7 @@
 						"then": 2,
 						"else": 0
 					},
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_schemes"
-						}
-					],
-					"tags": [
-						"thwart"
-					]
+					"subject_exclude": "previous"
 				}
 			]
 		}

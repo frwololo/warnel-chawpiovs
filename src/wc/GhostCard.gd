@@ -45,6 +45,9 @@ func get_state_scripts(card_scripts, trigger_card, trigger_details):
 # Returns a dictionary of card scripts for this specific card
 # based on the current trigger.
 func retrieve_scripts(trigger: String, filters:={}) -> Dictionary:
+	if !is_instance_valid(_real_card):
+		var _error = 1
+		return {}
 	return _real_card.retrieve_scripts(trigger, filters)
 
 # Retrieves the card scripts either from those defined on the card
@@ -53,6 +56,9 @@ func retrieve_scripts(trigger: String, filters:={}) -> Dictionary:
 # Returns a dictionary of card scripts for this specific card
 # (based on the current trigger.all triggers)
 func retrieve_all_scripts() -> Dictionary:
+	if !is_instance_valid(_real_card):
+		var _error = 1
+		return {}	
 	return _real_card.retrieve_all_scripts()
 
 # Determines which play position (board, pile or hand)
@@ -83,6 +89,9 @@ func check_play_costs(params:Dictionary = {}, _debug = "false" ) -> Color:
 # This is used by the _on_Card_gui_input to determine if it should fire
 # scripts on the card during an attempt to drag it from hand.
 func _has_targeting_cost_hand_script() -> bool:
+	if !is_instance_valid(_real_card):
+		var _error = 1
+		return false	
 	return _real_card._has_targeting_cost_hand_script()
 
 

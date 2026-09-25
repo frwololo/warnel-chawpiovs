@@ -978,7 +978,7 @@
 		}
 	},
 	"Lady Spider - May Reilly": {
-		"thwart_happened": {
+		"response_thwart_happened": {
 			"trigger": "self",
 			"is_optional_board": true,
 			"condition_board": {
@@ -1000,15 +1000,9 @@
 			"board": [
 				{
 					"name": "remove_threat",
-					"subject": "target",
-					"amount": "trigger_details_amount",
-					"filter_state_subject": [
-						{
-							"filter_properties": {
-								"filter_group": "group_schemes"
-							}
-						}
-					]
+					"subject": "a_scheme",
+					"subject_exclude": "trigger_details_target",
+					"amount": "trigger_details_amount_removed",
 				}
 			]
 		}
@@ -1382,7 +1376,8 @@
 			"event_filters": {
 				"tags": [
 					"consequential_damage"
-				]
+				],
+				"excess_damage": ">0",
 			},
 			"board": [
 				{
@@ -1626,9 +1621,17 @@
 							"filter_shares_trait_with_identity": true
 						}
 					]
+				},
+				{
+					"name": "execute_scripts",
+					"subject": "previous",
+					"require_exec_state": "hand",
+					"exec_trigger": "manual",
+					"delayed": true,
+					"_comments": "the 'delayed' keyword here makes it call a completely different code path which solves most freeze issues with execute_scripts"
 				}
 			]
-		}
+		},
 	},
 	"The Daily Beagle": {
 		"manual": {

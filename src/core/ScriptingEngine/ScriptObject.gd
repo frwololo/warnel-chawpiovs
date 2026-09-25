@@ -329,7 +329,10 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 	var exclude_definition = get_property("subject_exclude", null)
 	var to_exclude = []
 	if exclude_definition:
-		to_exclude = _local_find_subjects(stored_integer, run_type, {"subject" : exclude_definition, "subject_exclude" : ""})
+		if typeof(exclude_definition) == TYPE_OBJECT:
+			to_exclude = [exclude_definition]
+		else:
+			to_exclude = _local_find_subjects(stored_integer, run_type, {"subject" : exclude_definition, "subject_exclude" : ""})
 	
 	
 	match subject:

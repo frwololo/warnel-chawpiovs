@@ -244,8 +244,10 @@ func refresh_can_play_as_if_in_hand():
 			var fetched_script = fetched_scripts[key]
 			fetched_script[new_state] = fetched_script[seek_state]
 			fetched_script.erase(seek_state)
-			if fetched_script.has("is_optional_" + seek_state):
-				fetched_script["is_optional_" + new_state] = fetched_script["is_optional_" + seek_state]
+			var old_is_optional = "is_optional_" + seek_state
+			if fetched_script.has(old_is_optional):
+				fetched_script["is_optional_" + new_state] = fetched_script[old_is_optional]
+				fetched_script.erase(old_is_optional)
 			subscript[key] = fetched_script
 			
 		_dummy_alterants_cache[alterant] = self.add_extra_script( subscript, self.get_controller_hero_id())		
@@ -1389,8 +1391,8 @@ func can_interrupt(
 		return CFConst.CanInterrupt.NO
 	
 	var _debug = false
-	if canonical_name == "Upgraded Chassis" and trigger_card:
-		if trigger_details["event_name"] == "identity_changed_form":
+	if canonical_name == "Colossus - Piotr Rasputin" and trigger_card:
+		if trigger_details["event_name"] == "enemy_initiates_attack":
 			_debug = true
 
 	if (_debug):
@@ -1669,6 +1671,17 @@ func script_exec_temporarily_blocked(run_type) -> bool:
 	
 	return false
 
+#cards that are considered playable:
+# cards in hand and on board
+#cards that are ghost cards 
+func is_playable_card_state():
+	if get_state_exec()	in ["hand", "board"]:
+		return true
+	if _ghost_card:
+		return true
+	if ("_real_card" in self) and self._real_card:
+		return true
+	return false
 	
 # Executes the tasks defined in the card's scripts in order.
 #
@@ -1784,7 +1797,7 @@ func execute_scripts(
 
 		#skip optional confirmation menu for interrupts,
 		#we have a different gui signal
-		if get_state_exec()	in ["hand", "board"]:
+		if is_playable_card_state():
 			show_optional_confirmation_menu = false	
 		orig_trigger_details["is_interrupt_or_response"] = true
 
@@ -2596,17 +2609,18 @@ func check_play_costs(params:Dictionary = {}, _debug = false) -> Color:
 	
 	_check_play_costs_cache[hero_id] = CFConst.CostsState.IMPOSSIBLE
 
-	#skip if card is not in hand and not on board. TODO: will have to take into account cards than can be played from other places
-	var state_exec = get_state_exec()
-
-	if !(state_exec in ["hand", "board"]):
+	#cards that can be played:
+	#cards in hand or on board
+	#cards that are "ghost" cards 
+	#(that is, cards in piles that can exceptionally be played from outside of board/hand)
+	if !is_playable_card_state():
 		return _check_play_costs_cache[hero_id]
 	
 	var trigger_details = {
 		"for_hero_id": hero_id,
 		"_debug": _debug
 	}
-		
+
 	var sceng = execute_scripts(self,"manual",trigger_details,CFInt.RunType.BACKGROUND_COST_CHECK)
 
 	if (!sceng): #TODO is this an error?

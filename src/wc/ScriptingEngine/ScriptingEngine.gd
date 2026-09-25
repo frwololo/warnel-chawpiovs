@@ -2990,30 +2990,35 @@ func execute_scripts(script: ScriptTask) -> int:
 		"parent_script": script,
 		"trigger_identity_id": trigger_identity_id 
 	}
+	var delayed = script.get_property("delayed", false)
+	
 	for card in script.subjects:
 		var requested_exec_state = script.get_property(SP.KEY_REQUIRE_EXEC_STATE)
 		# If not specific exec_state has been requested
 		# we execute whatever scripts of the state the card is currently in.
 		if not requested_exec_state or requested_exec_state == card.get_state_exec():
-			var sceng = card.execute_scripts(
-					script.owner,
-					script.get_property(SP.KEY_EXEC_TRIGGER),
-					_trigger_details, run_type)
-			# We make sure we wait until the execution is finished
-			# before cleaning out the temp properties/counters
-			if sceng is GDScriptFunctionState:
-				sceng = yield(sceng, "completed")
-			# Executing scripts on other cards need to noy only check their
-			# own costs are possible, but the target cards as well
-			# but only if the subject is explictly specified, such as
-			# target. We don't want to play a card which will not affect its
-			# explicit target, but we do want to be able to play a card
-			# which, for example, tries to affect all cards on the table,
-			# but none of them is actually affected.
-			if sceng and not sceng.can_all_costs_be_paid\
-					and not script.get_property(SP.KEY_SUBJECT)\
-					in [SP.KEY_SUBJECT_V_BOARDSEEK, SP.KEY_SUBJECT_V_TUTOR]:
-				retcode = CFConst.ReturnCode.FAILED
+			if delayed:
+				gameData.add_script_to_execute(card, script.owner, script.get_property(SP.KEY_EXEC_TRIGGER), _trigger_details, run_type)
+			else:
+				var sceng = card.execute_scripts(
+						script.owner,
+						script.get_property(SP.KEY_EXEC_TRIGGER),
+						_trigger_details, run_type)
+				# We make sure we wait until the execution is finished
+				# before cleaning out the temp properties/counters
+				while sceng is GDScriptFunctionState:
+					sceng = yield(sceng, "completed")
+				# Executing scripts on other cards need to noy only check their
+				# own costs are possible, but the target cards as well
+				# but only if the subject is explictly specified, such as
+				# target. We don't want to play a card which will not affect its
+				# explicit target, but we do want to be able to play a card
+				# which, for example, tries to affect all cards on the table,
+				# but none of them is actually affected.
+				if sceng and not sceng.can_all_costs_be_paid\
+						and not script.get_property(SP.KEY_SUBJECT)\
+						in [SP.KEY_SUBJECT_V_BOARDSEEK, SP.KEY_SUBJECT_V_TUTOR]:
+					retcode = CFConst.ReturnCode.FAILED
 	cfc.remove_ongoing_process(self)
 	return(retcode)
 

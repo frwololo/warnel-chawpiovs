@@ -6675,7 +6675,7 @@
 					"name": "init_properties",
 					"subject": "self",
 					"set_properties": {
-						"override_play_cost": {
+						"play_cost_requirements": {
 							"energy": 1,
 							"mental": 1,
 							"physical": 1
@@ -8336,9 +8336,8 @@
 					"name": "init_properties",
 					"subject": "self",
 					"set_properties": {
-						"override_play_cost": {
+						"play_cost_requirements": {
 							"mental": 1,
-							"unc": 1
 						}
 					}
 				}
@@ -8655,8 +8654,7 @@
 					"name": "init_properties",
 					"subject": "self",
 					"set_properties": {
-						"override_play_cost": {
-							"unc": 1,
+						"play_cost_requirements": {
 							"physical": 1
 						}
 					}

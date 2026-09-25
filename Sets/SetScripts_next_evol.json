@@ -2253,9 +2253,8 @@
 					"name": "init_properties",
 					"subject": "self",
 					"set_properties": {
-						"override_play_cost": {
+						"play_cost_requirements": {
 							"energy": 1,
-							"unc": 1
 						}
 					}
 				}

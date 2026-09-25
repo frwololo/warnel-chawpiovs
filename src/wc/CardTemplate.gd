@@ -2955,7 +2955,21 @@ func pay_regular_cost_replacement(script, trigger_details) -> Dictionary:
 				if !subject:
 					var _error = 1
 					subject = self			
-		cost = subject.get_property("override_play_cost", subject.get_property("cost"))
+		var int_cost = subject.get_property("cost")
+	
+		var requirements = subject.get_property("play_cost_requirements", {} )
+		if requirements:
+			requirements = requirements.duplicate(true)
+			#compare the requirements cost to actual cost,
+			#and adjust the uncolored mana requirement accordingly
+			var unc_requirements = requirements.get("unc", 0)
+			var req_manacost = ManaCost.new()
+			req_manacost.init_from_dictionary(requirements)
+			var int_req = req_manacost.converted_mana_cost()
+			if int_req < int_cost:
+				requirements["unc"] = int_cost - int_req
+				
+		cost = requirements if requirements else int_cost
 
 	if (typeof(cost) == TYPE_INT):	
 		if subject.get_property("cost_per_player", false):

@@ -331,7 +331,9 @@ func _filter_decks(hero_id = ""):
 			var alter_ego_id =  hero_card_data.get("back_card_code", "undef")			
 			var hero_name = cfc.get_card_name_by_id(my_hero_id)
 			var alter_ego_name = cfc.get_card_name_by_id(alter_ego_id)
-			names_to_id[hero_name + " - " + alter_ego_name] = my_hero_id
+			var display_name = hero_name + " - " + alter_ego_name
+			if cfc.idx_hero_to_deck_ids.has(my_hero_id):
+				names_to_id[display_name] = my_hero_id
 		
 		var ordered_names = names_to_id.keys()
 		ordered_names.sort()

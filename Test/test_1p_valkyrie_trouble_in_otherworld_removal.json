@@ -1,0 +1,263 @@
+{
+	"_comments": "Bug: Trouble in Otherworld still prevents attacking after removal",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Valkyrie"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"confused": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Trouble in Otherworld"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Brunnhilde"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Visit Valhalla"
+				},
+				{
+					"card": "Tenacity"
+				},
+				{
+					"card": "Chooser of the Slain"
+				},
+				{
+					"card": "ShieldMaiden"
+				},
+				{
+					"card": "Dragonfang"
+				},
+				{
+					"card": "Genius"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Valkyrie #25001a"
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [
+				{
+					"card": "Enchantress",
+					"tokens": {
+						"damage": 1,
+						"confused": 1
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Death-Glow",
+					"host": "enchantress"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Aragorn"
+				},
+				{
+					"card": "Annabelle Riggs"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		},
+		{
+			"type": "activate",
+			"value": "Valkyrie #25001a"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Enchantress",
+			"expected_to_fail": true
+		},
+		{
+			"type": "target",
+			"value": "Rhino - 1"
+		},
+		{
+			"type": "activate",
+			"value": "Valkyrie #25001a"
+		},
+		{
+			"type": "choose",
+			"value": "Change Form"
+		},
+		{
+			"type": "activate",
+			"value": "Trouble in Otherworld"
+		},
+		{
+			"type": "next_phase",
+			"value": 1
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		},
+		{
+			"type": "activate",
+			"value": "Brunnhilde"
+		},
+		{
+			"type": "choose",
+			"value": "Change Form"
+		},
+		{
+			"type": "activate",
+			"value": "Valkyrie #25001a"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Enchantress"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Valkyrie"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Trouble in Otherworld"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Brunnhilde"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Valkyrie #25001a"
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [
+				{
+					"card": "Enchantress",
+					"tokens": {
+						"damage": 3
+					}
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"others": [
+				{
+					"card": "Death-Glow",
+					"host": "enchantress"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Dragonfang"
+				},
+				{
+					"card": "ShieldMaiden"
+				},
+				{
+					"card": "Chooser of the Slain"
+				},
+				{
+					"card": "Tenacity"
+				},
+				{
+					"card": "Visit Valhalla"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Annabelle Riggs"
+				},			
+				{
+					"card": "Aragorn"
+				},
+
+			]
+		}
+	}
+}

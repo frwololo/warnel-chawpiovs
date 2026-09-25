@@ -1247,11 +1247,11 @@
 				}
 			]
 		},
-		"card_detached": {
+		"card_unattached": {
 			"trigger": "self",
 			"all": [
 				{
-					"name": "remove_script",
+					"name": "remove_card_script",
 					"subject": "my_host",
 					"script_trigger": "is_valid_target_filters"
 				}

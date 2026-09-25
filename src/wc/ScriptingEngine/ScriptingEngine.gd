@@ -3728,7 +3728,7 @@ func add_script(script: ScriptTask) -> int:
 	
 	return retcode		
 
-func remove_script(script: ScriptTask) -> int:
+func remove_card_script(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode

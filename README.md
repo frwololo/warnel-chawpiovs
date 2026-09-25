@@ -7,6 +7,8 @@
 
 A digital card game based on the Marvel Champions board game, with full rules enforcement, ideal for true solo or two-handed (but also supports up to a full team of 4 heroes). Runs on Windows, Linux, Android, MacOS, and Nintendo Switch.
 
+<div align="center"><b>Try it here: https://wololo.net/wc</b></div>
+
 ## Quickstart
 You can try this game in your browser at https://wololo.net/wc
 

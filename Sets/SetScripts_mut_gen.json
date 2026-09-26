@@ -6010,7 +6010,7 @@
 									"filter_state_attachment": [
 										{
 											"filter_properties": {
-												"Name": "Targeted For Elimination"
+												"Name": "Targeted for Elimination"
 											}
 										}
 									]
@@ -6027,6 +6027,10 @@
 					"else": [
 						{
 							"name": "surge"
+						},
+						{
+							"name": "discard",
+							"subject": "self"
 						}
 					]
 				}

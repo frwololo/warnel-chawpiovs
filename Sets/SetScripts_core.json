@@ -1163,9 +1163,6 @@
 			"event_name": "receive_damage",
 			"event_filters": {
 				"target": "my_hero",
-				"tags": [
-					"attack"
-				]
 			},
 			"is_optional_board": true,
 			"board": [

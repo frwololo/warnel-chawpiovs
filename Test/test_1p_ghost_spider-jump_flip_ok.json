@@ -1,0 +1,149 @@
+{
+	"_comments": "Bug: Jump Flip not removing Threat",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ghost-Spider"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Assault"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"villain": [
+				{
+					"card": "Rhino - 2"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ghost-Spider"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Jump Flip"
+				},
+				{
+					"card": "Bait and Switch"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack"
+		},
+		{
+			"type": "play",
+			"value": "Jump Flip"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ghost-Spider"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Assault"
+				},
+				{
+					"card": "Caught Off guard"
+				}
+			],
+			"villain": [
+				{
+					"card": "Rhino - 2"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Ghost-Spider",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Bait and Switch"
+				},
+				{
+					"card": "Jump Flip"
+				}
+			]
+		}
+	}
+}

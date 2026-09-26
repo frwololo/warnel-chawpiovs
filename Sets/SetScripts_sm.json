@@ -3695,7 +3695,7 @@
 			"event_name": "receive_damage",
 			"event_filters": {
 				"target": "my_hero",
-				"damage": ">0"
+				"amount": ">0"
 			},
 			"is_optional_hand": true,
 			"hand": [

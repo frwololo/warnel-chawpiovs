@@ -3007,11 +3007,11 @@ func finalize_get_my_system_status(all_status):
 	for k in all_status:
 		var other_status = all_status[k]
 		if !(WCUtils.json_equal(my_status, other_status)):
-			cfc.LOG("{error} Desync at Systems Check Step")
-			cfc.LOG("My Status:")
-			cfc.LOG_DICT(my_status)
-			cfc.LOG("Their Status:{" +str(k) +"}")
-			cfc.LOG_DICT(other_status)			
+			cfc.LOG("{error} Desync at Systems Check Step", true)
+			cfc.LOG("My Status:", true)
+			cfc.LOG_DICT(my_status, true)
+			cfc.LOG("Their Status:{" +str(k) +"}", true)
+			cfc.LOG_DICT(other_status, true)			
 			init_desync_recover()			
 			return false
 	return true

@@ -1969,11 +1969,11 @@ func INIT_LOG():
 	file.open(filename, File.WRITE)
 	file.close() 	
 	
-func LOG(to_print:String):
-	if !cfc._debug and !CFConst.FORCE_LOGS:
+func LOG(to_print:String, forced = false):
+	if !cfc._debug and !forced and !CFConst.FORCE_LOGS:
 		return
 	_log_buffer+= Time.get_datetime_string_from_system() + " - " + to_print + "\n"	
-	if _log_buffer.length() < 2000:
+	if _log_buffer.length() < 2000 and !forced:
 		return
 	FLUSH_LOG()
 	
@@ -1989,17 +1989,13 @@ func FLUSH_LOG():
 	file.close() 
 	_log_buffer = ""
 
-func LOG_VARIANT(to_print):
-#	if !cfc._debug:
-#		return
+func LOG_VARIANT(to_print, forced = false):
 	var my_json_string = JSON.print(to_print, '\t')
-	LOG(my_json_string)
+	LOG(my_json_string, forced)
 	
-func LOG_DICT(to_print:Dictionary):
-#	if !cfc._debug:
-#		return
+func LOG_DICT(to_print:Dictionary, forced = false):
 	var my_json_string = JSON.print(to_print, '\t')
-	LOG(my_json_string)
+	LOG(my_json_string, forced)
 	
 func add_ongoing_process(object, description:String = ""):
 	if (!description):

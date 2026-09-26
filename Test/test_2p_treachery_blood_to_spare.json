@@ -1,0 +1,251 @@
+{
+	"_comments": "Bug: 2p blood to spare makes p2 fetch for a minion if p1 has no minion",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Ironheart"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Outrider"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Black Order Infantry"
+				},
+				{
+					"card": "Shocker"
+				},
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Blood to Spare"
+				},
+				{
+					"card": "Caught Off Guard"
+				}
+			],
+			"villain": [
+				{
+					"card": "Taskmaster - 1",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting down Heroes",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Hydra Patrol",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Jessica Drew's Apartment"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Spider-Man - Peter Parker"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "The Power of Aggression"
+				},
+				{
+					"card": "Heroic Intuition"
+				},
+				{
+					"card": "Press the Advantage"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Ironheart"
+				}
+			],
+			"enemies2": [
+				{
+					"card": "Armored Guard"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+			"hero": 2
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"hero": 2,
+			"_comments": "Armored Guard attacks p2, we take undefended attack"
+		},
+		{
+			"type": "select",
+			"value": "Outrider",
+			"hero": 2,
+			"_comments": "Hero 1 has no enemy engaged and needs to choose a black order thing",
+			"TODO": "this should be hero 1, here is a bug in the engine"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+			"hero": 1
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Ironheart"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Caught Off Guard"
+				},
+				{
+					"card": "Blood to Spare"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Black Order Infantry"
+				},
+				{
+					"card": "Shocker"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"villain": [
+				{
+					"card": "Taskmaster - 1",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting down Heroes",
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Hydra Patrol",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Jessica Drew's Apartment"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Outrider"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Spider-Man - Peter Parker"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "The Power of Aggression"
+				},
+				{
+					"card": "Heroic Intuition"
+				},
+				{
+					"card": "Press the Advantage"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Ironheart",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"enemies2": [
+				{
+					"card": "Armored Guard"
+				}
+			]
+		}
+	}
+}

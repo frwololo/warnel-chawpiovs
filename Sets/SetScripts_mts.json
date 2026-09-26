@@ -1111,7 +1111,7 @@
 					"for_each_player": true,
 					"forced": true
 				},
-				"Black Order Attack": [
+				"Minion Attack": [
 					{
 						"name": "enemy_activates",
 						"subject": "boardseek",
@@ -1125,6 +1125,21 @@
 							}
 						]
 					},
+					{
+						"name": "sequence",
+						"sequence_ability": "do_get_minion",
+						"delay_until_no_activity": true
+					}
+				]
+			}
+		},
+		"do_get_minion": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Black Order Fetch": [
 					{
 						"name": "conditional_script",
 						"options": [
@@ -1166,6 +1181,10 @@
 												}
 											}
 										]
+									},
+									{
+										"name": "shuffle_container",
+										"dest_container": "deck_villain"
 									}
 								]
 							}
@@ -4685,7 +4704,7 @@
 					"subject": "self"
 				}
 			]
-		}		
+		}
 	},
 	"Odin - All-Father #21139b": {
 		"TODO": "campaign mode not supported"
@@ -5904,7 +5923,7 @@
 		}
 	},
 	"Ready to Rumble": {
-		"give_to_player_max1": {},	
+		"give_to_player_max1": {},
 		"identity_changed_form": {
 			"trigger": "my_hero",
 			"is_optional_board": true,

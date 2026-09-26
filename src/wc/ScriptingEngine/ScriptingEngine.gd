@@ -128,7 +128,9 @@ static func _compute_move_zones(subject, script):
 	if !owner_hero_id and script.get_property("target_identity"):
 		var target_identity = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : script.get_property("target_identity")})
 		if target_identity:
-			owner_hero_id = target_identity	
+			owner_hero_id = target_identity
+	if !owner_hero_id:
+		owner_hero_id = script.trigger_details.get("override_hero_id")	
 	if !owner_hero_id and subject:
 		owner_hero_id = subject.get_controller_hero_id()
 	if !owner_hero_id:

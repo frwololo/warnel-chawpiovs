@@ -1,5 +1,9 @@
 {
-	"_comments": "Tests Blood To Spare",
+	"_comments": "Tests biomechanical upgrades when already attached",
+	"test_conditions": {
+		"bug_type": "cant_repro",
+		"_comments": "cant_repro indicates that at the time of testing, the issue could not be reproduced"
+	},	
 	"init": {
 		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [
@@ -15,23 +19,21 @@
 					"card": "01094"
 				}
 			],
-			"discard_villain": [
-				{
-					"card": "Supergiant"
-				}
-			],
 			"deck_villain": [
-				{
-					"card": "Black Dwarf"
-				},
 				{
 					"card": "advance"
 				},
 				{
-					"card": "stampede"
+					"card": "Hydra Soldier"
 				},
 				{
-					"card": "Blood To Spare"
+					"card": "biomechanical upgrades"
+				}
+			],
+			"others": [
+				{
+					"card": "biomechanical upgrades",
+					"host": "Hydra Mercenary"
 				}
 			],
 			"schemes": [
@@ -39,14 +41,14 @@
 					"card": "01097b"
 				}
 			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
 			"deck1": [
 				{
 					"card": "Backflip"
-				}
-			],
-			"enemies1": [
-				{
-					"card": "hydra mercenary"
 				}
 			],
 			"identity1": [
@@ -65,11 +67,6 @@
 		}
 	},
 	"actions": [
-		{
-			"type": "select",
-			"value": "cancel",
-			"_comments": "undefended attack"
-		},
 		{
 			"type": "other",
 			"value": "wait_for_player_turn"
@@ -92,26 +89,31 @@
 			],
 			"discard_villain": [
 				{
-					"card": "Supergiant"
-				},
-				{
-					"card": "Blood To Spare"
+					"card": "biomechanical upgrades"
 				}
 			],
 			"deck_villain": [
 				{
-					"card": "Black Dwarf"
-				},
-				{
 					"card": "advance"
-				},
+				}
+			],
+			"others": [
 				{
-					"card": "stampede"
-				},
+					"card": "biomechanical upgrades",
+					"host": "Hydra Mercenary"
+				}
 			],
 			"schemes": [
 				{
 					"card": "01097b"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Soldier"
 				}
 			],
 			"deck1": [
@@ -119,17 +121,9 @@
 					"card": "Backflip"
 				}
 			],
-			"enemies1": [
-				{
-					"card": "hydra mercenary"
-				}
-			],
 			"identity1": [
 				{
-					"card": "Spider-Man",
-					"tokens": {
-						"damage": 1
-					}
+					"card": "Spider-Man"
 				}
 			],
 			"hand1": [

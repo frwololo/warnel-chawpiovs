@@ -18,7 +18,7 @@
 			"schemes": [
 				{
 					"card": "01097b",
-					"tokens": {"threat" : 3},					
+					"tokens": {"threat" : 5},					
 				},
 				{
 					"card": "Bomb Scare",
@@ -61,6 +61,11 @@
 		},
 		{
 			"type": "target",
+			"value": "01097b",
+			"expected_to_fail": true
+		},		
+		{
+			"type": "target",
 			"value":  "Bomb Scare"
 		},		
 	] ,
@@ -82,7 +87,7 @@
 			"schemes": [
 				{
 					"card": "01097b",
-					"tokens": {"threat" : 1},					
+					"tokens": {"threat" : 3},					
 				},
 				{
 					"card":  "Bomb Scare",

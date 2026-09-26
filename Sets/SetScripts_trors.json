@@ -2237,7 +2237,7 @@
 				{
 					"name": "constraints",
 					"is_cost": true,
-					"subject": "current_activation_target",
+					"subject": "current_hero_target",
 					"tags": [
 						"hero_form"
 					]
@@ -2245,7 +2245,7 @@
 				{
 					"name": "deal_damage",
 					"amount": 1,
-					"subject": "current_activation_target"
+					"subject": "current_hero_target"
 				},
 				{
 					"is_else": true,

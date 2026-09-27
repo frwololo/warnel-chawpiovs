@@ -336,6 +336,9 @@ static func check_max_per_host(target_card, max_value, owner_card) -> bool:
 	var is_training_restriction = owner_card.get_property("trait_training", 0, true)
 	var count = 0
 	for card in attachments:
+		if card == owner_card:
+			var _error = 1
+			continue
 		if is_training_restriction:
 			if card.get_property("trait_training", 0, true):
 				count+=1

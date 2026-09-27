@@ -86,6 +86,7 @@ var _current_selection_window = null
 var _current_targeting_card = null
 var _current_targeted_card = null
 var _action_ongoing: int = 0
+var _cards_by_nickname:= {"initialized": false} 
 
 var _allclients_finalized: = {}
 
@@ -148,7 +149,7 @@ func reset_between_tests():
 	cancel_current_selection_window()
 	game_loaded = false
 
-	
+	_cards_by_nickname = {"initialized": false} 
 	gameData.cleanup_post_game()
 	current_test_file= ""
 	forced_status = TestStatus.NONE
@@ -307,6 +308,13 @@ func _timed_process(_delta: float) -> void:
 	#Game is still loading on some clients, do not run tests yet
 	if (!game_loaded):
 		return
+		
+	if !_cards_by_nickname.get("initialized", true):		
+		_cards_by_nickname = {}
+		for card in cfc.NMAP.board.get_all_cards(true):
+			if card.properties.has("nickname"):
+				var nickname = card.properties["nickname"].to_lower()
+				_cards_by_nickname[nickname] = card	
 
 	
 	if (_action_ongoing):
@@ -801,7 +809,7 @@ func get_default_hero() -> int:
 	
 func get_card_owner_hero_id(card_id_or_name:String)-> int:
 	var card:WCCard = get_card(card_id_or_name, 1)
-	if (!card):
+	if (!is_instance_valid(card)):
 		return 0 #TODO error handling
 	return card.get_controller_hero_id()
 
@@ -821,6 +829,12 @@ func get_card_from_pile(card_id_or_name:String, pile:CardContainer):
 #Find a card object (on the board, etc...)
 #requesting_hero_id is an indicator to help choosing the right card in case there are multiple cards of the same name on the board
 func get_card(card_id_or_name:String, requesting_hero_id):
+	
+	#attempt to get by nickname first
+	var lc_card = card_id_or_name.to_lower()
+	if _cards_by_nickname.get(lc_card, null):
+		return _cards_by_nickname[lc_card]	
+	
 	var card_id = get_corrected_card_id(card_id_or_name)
 	#TODO Search in modal windows?
 	
@@ -985,7 +999,8 @@ func sort_card_array(array):
 
 #card here is either a card id or a card name, we try to accomodate for both
 func get_corrected_card_id (card) -> String:
-	if card.to_lower() == "any_card":
+	var lc_card = card.to_lower()
+	if lc_card == "any_card":
 		return "any_card"
 	return cfc.get_corrected_card_id(card)
 
@@ -1213,6 +1228,8 @@ func load_scenario(init_state):
 	gameData.phaseContainer.loadstate_from_json(init_state)
 	cfc.NMAP.board.board_ready(false)
 	#todo should be done via rpc
+	
+
 	game_loaded = true
 
 #Loads a single test file 	
@@ -1280,6 +1297,8 @@ func load_test(test_file)-> bool:
 		load_scenario(initial_state)
 	else:
 		gameData.load_gamedata(initial_state)
+		
+		
 	cfc._rpc(self,"initialize_clients_test", remote_init_data)
 	
 	return true
@@ -1355,6 +1374,7 @@ func all_clients_game_loaded(details = {}):
 			cfc._rpc(self,"add_skipped_msg", "error loading game (wrong number of players?)") #weird that I have to send this kind of info to remote clients, ideally they would compute their own issues
 			forced_status = TestStatus.SKIPPED
 			return
+							
 
 remotesync func add_skipped_msg(msg):
 	skipped_reason.append (msg)

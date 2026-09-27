@@ -42,6 +42,7 @@ var _ghost_card = null
 var extra_scripts := {}
 var extra_script_uid := 0
 var script_variables = {}
+var _get_extra_scripts_cache := {}
 
 # The node with number manipulation box on this card
 var spinbox = null
@@ -122,7 +123,8 @@ func add_extra_script(script_definition, allowed_hero_id = 0):
 	}
 	if allowed_hero_id:
 		extra_scripts[extra_script_uid]["controller_id"] = allowed_hero_id
-		
+	
+	_get_extra_scripts_cache = {}	
 	check_ghost_card()
 	register_signals()
 	
@@ -132,6 +134,7 @@ func add_extra_script(script_definition, allowed_hero_id = 0):
 func remove_extra_script(script_uid):
 	var details = extra_scripts.get(extra_script_uid, {})
 	extra_scripts.erase(script_uid)
+	_get_extra_scripts_cache = {}
 	check_ghost_card()
 	scripting_bus.emit_signal("card_script_removed", self, details)
 	return extra_script_uid
@@ -470,7 +473,12 @@ func load_from_card_id(card_id):
 	#force reload card art
 	set_card_art(true)
 	_runtime_properties_setup()
+	
+	#update cached data
 	_cached_printed_text = { "_initialized": false}
+	_get_extra_scripts_cache = {}
+	
+	
 	update_groups()
 	side_icons.set_icons()
 	_duplicate = null
@@ -3337,6 +3345,19 @@ func next_boost_card_to_reveal():
 
 #returns extra scripts
 func _get_extra_scripts(trigger:String = "", filters:= {}, do_merge = false) -> Dictionary:
+	var requesting_hero_id = filters.get("requesting_hero_id", 0)
+	var cache_key = {
+		"requesting_hero_id": requesting_hero_id,
+		"do_merge": do_merge,
+		"trigger": trigger,
+	}.hash()
+	
+	if !_get_extra_scripts_cache.has(cache_key):
+		_get_extra_scripts_cache[cache_key] = _get_extra_scripts_no_cache(trigger, requesting_hero_id, do_merge).duplicate(true)
+
+	return _get_extra_scripts_cache[cache_key].duplicate(true)
+			
+func _get_extra_scripts_no_cache(trigger, requesting_hero_id = 0, do_merge = false) -> Dictionary:
 	#if we have no extra scripts we stick with parent behavior
 	if !extra_scripts:
 		return .get_instance_runtime_scripts(trigger)
@@ -3348,22 +3369,18 @@ func _get_extra_scripts(trigger:String = "", filters:= {}, do_merge = false) -> 
 		merged_scripts = cfc.set_scripts.get(canonical_id,{}).duplicate(true)
 	
 	#additional scripts to merge with what we found
-	var requesting_hero_id = filters.get("requesting_hero_id", 0) 
 	for key in extra_scripts:
 		var extra_script = extra_scripts[key]["script_definition"]
 		var controller_id = extra_scripts[key].get("controller_id", 0)
 		if requesting_hero_id and controller_id and (requesting_hero_id != controller_id):
 			continue
-		merged_scripts = WCUtils.merge_dict(merged_scripts, extra_script, true)
+		merged_scripts = WCUtils.merge_dict(merged_scripts, extra_script, true, true)
 
-	var found_scripts = {}
 	match trigger:
 		"":
-			found_scripts = merged_scripts.duplicate(true)
+			return merged_scripts
 		_:
-			found_scripts = merged_scripts.get(trigger,{}).duplicate(true)
-	
-	return found_scripts
+			return merged_scripts.get(trigger, {})
 
 #returns scripts specific to this instance
 func get_instance_runtime_scripts(trigger:String = "", filters:={}) -> Dictionary:
@@ -4641,6 +4658,10 @@ func _ready_load_from_json(card_description: Dictionary = {}):
 	var _dummy_alterants = card_description.get("_dummy_alterants_cache", {})
 	if _dummy_alterants:
 		 _dummy_alterants_cache = _dummy_alterants
+
+	var _properties =  card_description.get("properties", {})
+	for property in _properties:
+		properties[property] = _properties[property]
 
 	#we don't handle the attachment/host content here, it is done by the board loading, after all cards are loaded
 

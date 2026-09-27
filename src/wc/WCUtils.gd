@@ -208,8 +208,14 @@ static func json_equal (lh, rh)-> bool:
 		_:
 			return(lh==rh)
 
-static func merge_array(array_1: Array, array_2: Array, deep_merge: bool = false) -> Array:
+static func merge_array(array_1: Array, array_2: Array, deep_merge: bool = false, duplicate_array_elements: bool = false) -> Array:
 	var new_array = array_1.duplicate(true)
+	
+	if duplicate_array_elements:
+		new_array += array_2.duplicate(deep_merge)
+		return new_array
+		
+	
 	var compare_array = new_array
 	var item_exists
 
@@ -233,29 +239,29 @@ static func merge_array(array_1: Array, array_2: Array, deep_merge: bool = false
 	return new_array
 
 #merges data from dict_2 into dict1 (overwriting if needed)		
-static func merge_dict(dict_1: Dictionary, dict_2: Dictionary, deep_merge: bool = false) -> Dictionary:
+static func merge_dict(dict_1: Dictionary, dict_2: Dictionary, deep_merge: bool = false, duplicate_array_elements: bool = false) -> Dictionary:
 	var new_dict = dict_1.duplicate(true)
 	for key in dict_2:
 		if key in new_dict:
 			if deep_merge and dict_1[key] is Dictionary and dict_2[key] is Dictionary:
-				new_dict[key] = merge_dict(dict_1[key], dict_2[key], deep_merge)
+				new_dict[key] = merge_dict(dict_1[key], dict_2[key], deep_merge, duplicate_array_elements)
 			elif deep_merge and dict_1[key] is Array and dict_2[key] is Array:
-				new_dict[key] = merge_array(dict_1[key], dict_2[key], deep_merge)
+				new_dict[key] = merge_array(dict_1[key], dict_2[key], deep_merge, duplicate_array_elements)
 			else:
 				new_dict[key] = dict_2[key]
 		else:
 			new_dict[key] = dict_2[key]
 	return new_dict
 
-static func merge_variant(data1, data2, deep_merge: bool = false):
+static func merge_variant(data1, data2, deep_merge: bool = false,duplicate_array_elements: bool = false):
 	if typeof(data1)!= typeof(data2):
 		var _error = 1
 		return null
 	match typeof(data1):
 		TYPE_DICTIONARY:
-			return merge_dict(data1, data2, deep_merge)
+			return merge_dict(data1, data2, deep_merge, duplicate_array_elements)
 		TYPE_ARRAY:
-			return merge_array(data1, data2, deep_merge)
+			return merge_array(data1, data2, deep_merge, duplicate_array_elements)
 	
 	var _error = 1
 	return data1

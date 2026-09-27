@@ -226,24 +226,19 @@
 			],
 			"discard1": [
 			{
-				"card": "Energy Absorption #01014",
-				"owner_hero_id": 1
+				"card": "Energy Absorption",
 			},
 			{
-				"card": "Swinging Web Kick #01005",
-				"owner_hero_id": 1
+				"card": "Swinging Web Kick",
 			},
 			{
-				"card": "Energy #12021",
-				"owner_hero_id": 1
+				"card": "Energy",
 			},
 			{
-				"card": "Mockingbird - Bobbi Morse #03020",
-				"owner_hero_id": 1
+				"card": "Mockingbird - Bobbi Morse",
 			},
 			{
-				"card": "Swinging Web Kick #01005",
-				"owner_hero_id": 1
+				"card": "Swinging Web Kick",
 			}
 			],
 			"hand2": [

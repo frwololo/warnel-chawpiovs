@@ -69,6 +69,10 @@ var state_scripts
 var costs_executed = false
 var non_costs_executed = false
 
+#adds context to an ongoing cost calculation, 
+#to avoid accepting costs that cannot be paid
+var cost_context = []
+
 # Simply initiates the [run_next_script()](#run_next_script) loop
 func _init(_state_scripts: Array,
 		_owner,
@@ -288,6 +292,7 @@ func execute(_run_type, execute_mode = CFInt.RunMode.BOTH) -> void:
 		if scripts_queue.size() != prepaid.size():
 			var _error = 1
 			print_debug ("ScriptingEngine: prepaid not same size as scripts queue" + JSON.print(trigger_details, '\t'))
+			reset_cost_context()
 			return
 		for i in range(prepaid.size()):
 			scripts_queue[i].script_definition["network_prepaid"] =  prepaid[i]		
@@ -367,8 +372,12 @@ func execute(_run_type, execute_mode = CFInt.RunMode.BOTH) -> void:
 				if idx != -1:
 					insert_scripts(script.alternate_cost_required, idx)
 					cfc.remove_ongoing_process(self, "scriptingengine execute")
+					reset_cost_context()
 					return execute(_run_type)
 			
+			for card in script.subjects:
+				if typeof(card) == TYPE_OBJECT: 
+					cost_context.append(card)
 			all_subjects_so_far += 	script.subjects
 
 		if script.is_primed:
@@ -512,6 +521,8 @@ func execute(_run_type, execute_mode = CFInt.RunMode.BOTH) -> void:
 	all_tasks_completed = true
 	if run_type in [CFInt.RunType.NORMAL, CFInt.RunType.ELSE]:
 		full_execution_complete = true
+	#reset cost context
+	reset_cost_context()
 	#all other use cases are handled above. If our user_interaction_status is still unset,
 	#it means no interaction was required
 	if self.user_interaction_status ==  CFConst.USER_INTERACTION_STATUS.NOT_CHECKED_YET:
@@ -539,6 +550,11 @@ func _execute_before_instructions(_script: ScriptTask):
 
 func post_action_events(_script: ScriptTask) -> int:
 	return CFConst.ReturnCode.OK
+
+func reset_cost_context():
+	for card in cost_context:
+		card.reset_cost_context()
+	cost_context = []
 
 # Task for rotating cards
 # * Supports [KEY_IS_COST](ScriptProperties#KEY_IS_COST).

@@ -92,6 +92,10 @@ var last_move_result = {}
 #when creating duplicates, this can be used to track the original card
 var is_duplicate_of = null
 
+#keeps track of temporary states while paying for a cost
+#this avoids e.g. allowing to exhaust twice
+var cost_context := {}
+
 # The properties dictionary will be filled in by the setup() code
 # according to the card definintion.
 export var properties : Dictionary
@@ -294,6 +298,15 @@ var highlight
 
 #can temporarily set this to true to avoid creating a tween that would rotate the card
 var _maintain_rotation_when_moving := false 
+
+func set_cost_context(key, value):
+	cost_context[key] = value
+
+func get_cost_context(key):
+	return cost_context.get(key, null)
+
+func reset_cost_context():
+	cost_context = {} 
 
 #overridable function if needed
 func _class_specific_ready():

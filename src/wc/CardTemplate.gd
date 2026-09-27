@@ -2321,13 +2321,16 @@ func exhaustme(toggle := false,
 	if !check:
 		_set_target_rotation(rot)
 			
-	if 	is_exhausted()	and not toggle:
+	if 	(is_exhausted() or get_cost_context("exhausted"))	and not toggle:
 		return CFConst.ReturnCode.OK		
 					
 	var retcode = set_card_rotation(rot, toggle, start_tween, check, tags)
-	if !check and retcode != CFConst.ReturnCode.FAILED:
-		_is_exhausted = true
-		scripting_bus.emit_signal_on_stack("card_exhausted", self, {})
+	if retcode != CFConst.ReturnCode.FAILED:
+		if check:
+			set_cost_context("exhausted", true)
+		else:
+			_is_exhausted = true
+			scripting_bus.emit_signal_on_stack("card_exhausted", self, {})
 	return retcode	
 	
 func add_threat(threat : int):

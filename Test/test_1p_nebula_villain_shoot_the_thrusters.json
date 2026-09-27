@@ -1,0 +1,174 @@
+{
+	"_comments": "Nebula Shoot the thrusters 2 instead of 1",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Lethal Intent #16099"
+				}
+			],
+			"villain": [
+				{
+					"card": "Nebula - 1"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Nebula's Ship",
+					"tokens": {
+						"evasion": 3
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Art of Evasion",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Power Stone #16149",
+					"host": "Rocket Raccoon"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Milano"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Follow Through"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Nebula's Ship"
+		},
+		{
+			"type": "choose",
+			"value": "Shoot the Thrusters! (2)",
+			"expected_to_fail": true
+		},
+		{
+			"type": "activate",
+			"value": "Nebula's Ship"
+		},		
+		{
+			"type": "choose",
+			"value": "Shoot the Thrusters! (1)"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Lethal Intent #16099"
+				}
+			],
+			"villain": [
+				{
+					"card": "Nebula - 1"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Nebula's Ship",
+					"tokens": {
+						"evasion": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Art of Evasion",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Power Stone #16149",
+					"host": "Rocket Raccoon"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Milano"
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Follow Through"
+				}
+			]
+		}
+	}
+}

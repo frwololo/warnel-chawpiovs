@@ -1116,6 +1116,9 @@ const PER_OS_INTERNAL_SETTINGS = {
 		"disable_multiplayer": true,
 		"disable_tests": true,
 		"hide_folder_label_team_selection": true
+	},
+	"Switch": {
+		"hide_whats_new": true
 	}
 }
 

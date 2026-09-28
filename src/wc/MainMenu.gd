@@ -75,6 +75,9 @@ func _ready() -> void:
 
 	if cfc.get_internal_setting("exit_is_toggle_fullscreen"):
 		get_node("%Exit").text = "Toggle Fullscreen"
+	
+	if cfc.get_internal_setting("hide_whats_new"):
+		get_node("%LinkButton").visible = false
 		
 	init_button_signals(v_buttons)
 	# warning-ignore:return_value_discarded

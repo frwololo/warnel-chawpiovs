@@ -58,6 +58,9 @@ func compute_authority() -> Dictionary:
 #		var _tmp = 1
 
 	var override_controller_id = trigger_details.get("override_controller_id", 0)
+	if !override_controller_id:
+		override_controller_id= trigger_details.get("override_hero_id", 0)
+		
 	var for_hero_id = trigger_details.get("for_hero_id", 0)
 
 	var authorized_hero_id = override_controller_id if override_controller_id else for_hero_id

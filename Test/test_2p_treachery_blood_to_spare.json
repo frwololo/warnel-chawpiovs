@@ -122,9 +122,8 @@
 		{
 			"type": "select",
 			"value": "Outrider",
-			"hero": 2,
+			"hero": 1,
 			"_comments": "Hero 1 has no enemy engaged and needs to choose a black order thing",
-			"TODO": "this should be hero 1, here is a bug in the engine"
 		},
 		{
 			"type": "other",

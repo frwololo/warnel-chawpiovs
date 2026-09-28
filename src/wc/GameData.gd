@@ -903,6 +903,7 @@ func get_current_local_hero_id():
 var _forced_currently_playing_hero_id = 0
 func force_current_playing_hero(override_hero):
 	_forced_currently_playing_hero_id = override_hero
+	select_current_playing_hero(_forced_currently_playing_hero_id)
 
 func reset_forced_current_playing_hero(override_hero = 0):
 	if override_hero != _forced_currently_playing_hero_id:
@@ -2399,8 +2400,8 @@ func start_play_sequence(cards, trigger, script):
 		if !owner_hero_id:
 			owner_hero_id = self.get_current_activity_hero_target()
 		is_villain = true
-	if !owner_hero_id in (self.get_my_heroes()):
-		return
+#	if !owner_hero_id in (self.get_my_heroes()):
+#		return
 	var low_priority = script.get_property("delay_until_no_activity", false)
 	var count = 1
 	if script.script_definition.has("count"):

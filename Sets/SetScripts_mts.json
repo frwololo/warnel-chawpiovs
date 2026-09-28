@@ -1124,14 +1124,18 @@
 								}
 							}
 						]
-					},
-					{
-						"name": "sequence",
-						"sequence_ability": "do_get_minion",
-						"delay_until_no_activity": true
 					}
 				]
 			}
+		},
+		"post_reveal": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_get_minion",
+					"delay_until_no_activity": true
+				}
+			]
 		},
 		"do_get_minion": {
 			"all": {

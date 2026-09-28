@@ -572,7 +572,7 @@ func add_card_already_played(script_uid, card):
 func open_context(event, context_name, details = {}):
 	var position = find_event_id_in_stack(event)
 	if position == -1:
-		var error = 1
+		var _error = 1
 		position = 0
 
 	var definition = {

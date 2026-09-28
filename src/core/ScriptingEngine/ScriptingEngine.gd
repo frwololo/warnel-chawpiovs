@@ -299,6 +299,10 @@ func execute(_run_type, execute_mode = CFInt.RunMode.BOTH) -> void:
 		
 	var prev_subjects := []
 	var has_else = self.has_else_condition()
+
+	if run_type in [CFInt.RunType.NORMAL, CFInt.RunType.ELSE]:
+		_pre_execution_run()
+	
 	for task in scripts_queue:
 		if !can_all_costs_be_paid and !has_else and CFConst.ABORT_EARLY_ON_COST_FAILURE:
 			break
@@ -544,6 +548,9 @@ func call_task(_script_name, script) -> int:
 		retcode = yield(retcode, "completed")
 	post_action_events(script)
 	return retcode	
+
+func _pre_execution_run():
+	pass
 
 func _execute_before_instructions(_script: ScriptTask):
 	pass

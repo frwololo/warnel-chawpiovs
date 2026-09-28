@@ -2973,7 +2973,6 @@ func pay_regular_cost_replacement(script, trigger_details) -> Dictionary:
 			requirements = requirements.duplicate(true)
 			#compare the requirements cost to actual cost,
 			#and adjust the uncolored mana requirement accordingly
-			var unc_requirements = requirements.get("unc", 0)
 			var req_manacost = ManaCost.new()
 			req_manacost.init_from_dictionary(requirements)
 			var int_req = req_manacost.converted_mana_cost()

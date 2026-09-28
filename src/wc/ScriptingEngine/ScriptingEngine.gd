@@ -17,6 +17,55 @@ func _init(state_scripts: Array,
 		_trigger_details) -> void:
 	pass
 
+func _pre_execution_run():
+	if !run_type in [CFInt.RunType.NORMAL, CFInt.RunType.ELSE]:
+		var _error = 1
+		return
+		
+	var has_attack = []
+	var has_thwart = []
+	for script in scripts_queue:
+		if script.is_cost:
+			continue
+		if run_type == CFInt.RunType.ELSE and not script.is_else:
+			continue
+		if run_type == CFInt.RunType.NORMAL and script.is_else:
+			continue
+		if script.script_name == "attack" or script.has_tag("attack"):
+			var attack_owner = get_actual_action_source_from_script(script)
+			has_attack.append(attack_owner)
+		if script.script_name == "thwart" or script.has_tag("thwart"):
+			var thwart_owner = get_actual_action_source_from_script(script)
+			has_thwart.append(thwart_owner)
+	
+	var fail_all = false
+	
+	if has_attack:
+		var attack_owner = has_attack[0]
+		if (attack_owner.is_stunned()):
+			attack_owner.hint("Stunned!", Color8(50,200,50))
+			attack_owner.remove_stun()
+			fail_all = true
+
+	if has_thwart:
+		var thwart_owner = has_thwart[0]
+		if (thwart_owner.is_confused()):
+			thwart_owner.remove_confused()
+			thwart_owner.hint("Confused!", Color8(240,110,255))
+			fail_all = true	
+	
+	if fail_all:
+		for script in scripts_queue:
+			if script.is_cost:
+				continue
+			if run_type == CFInt.RunType.ELSE and not script.is_else:
+				continue
+			if run_type == CFInt.RunType.NORMAL and script.is_else:
+				continue
+			if script.script_name in ["play_card"]:
+				continue
+			script.is_skipped = true		
+
 func _execute_before_instructions(script: ScriptTask):
 	if !is_instance_valid(script):
 		return

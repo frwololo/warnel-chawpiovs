@@ -552,7 +552,7 @@ func add_event_to_stack(stackEvent, checksum = ""):
 		var pos = 0
 		for i in stack.size():
 			var j = stack.size() - 1 - i
-			if stack[j].interrupt_marker:
+			if stack[j].interrupt_marker or stack[j].context_marker:
 				pos = j + 1
 				break
 		insert_event_into_stack(stackEvent, pos)
@@ -567,6 +567,24 @@ func add_card_already_played(script_uid, card):
 		card_already_played_for_stack_uid[script_uid] = []
 	card_already_played_for_stack_uid[script_uid].append(card)
 
+#adds a "context" event to open a context window for the current activity (e.g. attack)
+#this will allow sending a "context closed" event once the ongoing activity is finished
+func open_context(event, context_name, details = {}):
+	var position = find_event_id_in_stack(event)
+	if position == -1:
+		var error = 1
+		position = 0
+
+	var definition = {
+		"name": "context_closed",
+		"_silent": true,
+		"original_script": event,
+		"context_name": context_name,
+		"context_details": details
+	}
+	var task = SimplifiedStackScript.new(definition, event.owner)
+	task.context_marker = true
+	insert_event_into_stack(task, position)	
 
 func insert_event_into_stack(stackEvent, pos = -1):
 	stackEvent.stack_uid = get_next_stack_uid()

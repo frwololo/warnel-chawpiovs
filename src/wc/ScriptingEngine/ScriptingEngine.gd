@@ -1176,17 +1176,8 @@ func receive_damage(script: ScriptTask) -> int:
 				"target": card,
 				"damage": damage_happened,
 				"tags": tags,
-			}
-			scripting_bus.emit_signal_on_stack("attack_happened",  attacker,  signal_details)			
-						
-			if ("basic power" in tags):
-				scripting_bus.emit_signal_on_stack("basic_attack_happened",  attacker,  signal_details)				
-			consequential_damage(script)
-			if !("undefended" in tags):
-				scripting_bus.emit_signal_on_stack("defense_happened", card,  signal_details)
-				if ("basic_defense" in tags):
-					scripting_bus.emit_signal_on_stack("basic_defense_happened",  card,  signal_details)				
-
+			}			
+			gameData.theStack.open_context(script, "attack", signal_details)
 			#overkill attack
 			#TODO this only handles ally/hero attack for now,
 			#enemy overkill is handled in another part of the code
@@ -1243,6 +1234,50 @@ func receive_damage(script: ScriptTask) -> int:
 					_add_pre_receive_damage_on_stack(retaliate, null, script_modifications)
 							
 	return retcode
+
+func attack_finished(script, details)-> int:
+	var attacker = details["attacker"]
+	var card = details["target"]
+	var damage_happened = details["damage"]
+	var tags = details["tags"]
+	
+	var signal_details = {
+		"attacker": attacker,
+		"target": card,
+		"damage": damage_happened,
+		"tags": tags,
+	}
+	scripting_bus.emit_signal_on_stack("attack_happened",  attacker,  signal_details)			
+				
+	if ("basic power" in tags):
+		scripting_bus.emit_signal_on_stack("basic_attack_happened",  attacker,  signal_details)				
+	consequential_damage(script)
+	if !("undefended" in tags):
+		scripting_bus.emit_signal_on_stack("defense_happened", card,  signal_details)
+		if ("basic_defense" in tags):
+			scripting_bus.emit_signal_on_stack("basic_defense_happened",  card,  signal_details)				
+	
+	return CFConst.ReturnCode.CHANGED
+
+#called when the context window of a specific action gets closed
+#e.g. this is closed when all events related to an attack are done,
+#to allow calling the "attack happened" event			
+func context_closed(_script: ScriptTask) -> int:
+	var retcode: int = CFConst.ReturnCode.CHANGED
+	
+	if (costs_dry_run()): 
+		return retcode
+			
+	var context_name = _script.get_property("context_name", "")
+	var script = _script.get_property("original_script", _script)
+	var details = _script.get_property("context_details", "")
+	match context_name:
+		"attack":
+			return attack_finished(script, details)
+		_:
+			#unsupported
+			pass
+	return retcode		
 
 func _receive_threat(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED

@@ -1,0 +1,132 @@
+{
+	"_comments": "Superhuman Strength should not get discarded if the minion gets defeated, because there is no valid target anymore",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Superhuman Strength"
+				}
+			],
+			"identity1": [
+				{
+					"card": "She-Hulk"
+				}
+			],
+			"hand1": [
+				{
+					"card": "One-Two Punch"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "She-Hulk"
+		},
+		{
+			"type": "choose",
+			"value": "Attack"
+		},
+		{
+			"type": "target",
+			"value": "Hydra Mercenary"
+		},
+		{
+			"type": "play",
+			"value": "One-Two Punch"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "She-Hulk"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"villain": [
+				{
+					"card": "Thanos - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Infinity Stones"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Superhuman Strength"
+				}
+			],
+			"identity1": [
+				{
+					"card": "She-Hulk",
+					"exhausted": false
+				}
+			],
+			"discard1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "One-Two Punch"
+				}
+			]
+		}
+	}
+}

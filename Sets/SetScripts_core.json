@@ -327,6 +327,7 @@
 					"subject_count": "all",
 					"selection_count": 3,
 					"selection_type": "max",
+					"selection_different": true,
 					"needs_selection": true
 				}
 			]
@@ -3375,9 +3376,8 @@
 		"round_ended": {
 			"board": [
 				{
-					"name": "move_card_to_container",
+					"name": "discard",
 					"subject": "self",
-					"dest_container": "discard"
 				}
 			]
 		}

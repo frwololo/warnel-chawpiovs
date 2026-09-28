@@ -27,6 +27,7 @@ var selection_count : int
 #display: only for information
 #all: need to select all cards, typically order matters
 var selection_type: String
+var selection_different:= false
 var is_selection_optional: bool
 var is_cancelled := false
 var _card_dupe_map := {}
@@ -69,6 +70,7 @@ func init(
 	else:
 		selection_count = ScriptObject.get_int_value(params.get(SP.KEY_SELECTION_COUNT,0), stored_integer)
 
+	selection_different = params.get("selection_different", false)
 	selection_type = params.get(SP.KEY_SELECTION_TYPE, "min")
 	is_selection_optional = params.get(SP.KEY_SELECTION_OPTIONAL, false)
 	what_to_count = params.get(SP.KEY_SELECTION_WHAT_TO_COUNT, "")
@@ -468,6 +470,13 @@ func check_ok_button() -> bool:
 					get_ok().disabled = false				
 	
 	if (!get_ok().disabled):
+		if selection_different:
+			var existing = {}
+			for card in selected_cards:
+				if existing.has(card.canonical_name):
+					get_ok().disabled = true
+					return false
+				existing[card.canonical_name] = true
 		if !check_additional_constraints():
 			 get_ok().disabled = true
 	

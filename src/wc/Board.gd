@@ -690,16 +690,16 @@ func post_cards_moved_load():
 	
 	
 	#Tests
-	if gameData.get_team_size() < 2:
-		#draw_cheat_ghost("Web-Shooter")
-		#draw_cheat_ghost("Combat Training")
-		#draw_cheat_ghost("Jessica Jones")
-		#draw_cheat_ghost("Mockingbird")
-		#draw_cheat("Falcon")
-		#draw_cheat("Energy")
-		#draw_cheat("Backflip")
-		#draw_cheat("Helicarrier")	
-		pass
+	#draw_cheat_ghost("Web-Shooter")
+	#draw_cheat_ghost("Combat Training")
+	#draw_cheat_ghost("Jessica Jones")
+	#draw_cheat("Mockingbird")
+	#draw_cheat("Sector Scan", 2)
+	#draw_cheat("Energy")
+	#draw_cheat("Genius")
+	#draw_cheat("Agent 13 - Sharon Carter")
+	#draw_cheat("R&D Facility")	
+
 	cfc.LOG_DICT(guidMaster.guid_to_object)
 		
 	for i in range (get_team_size()): 
@@ -1361,12 +1361,17 @@ func load_cards_to_pile(card_data:Array, pile_name):
 			add_child(card)
 			card._determine_idle_state()
 			var host_guid = card_to_card_data[card].get("host_guid", "")
+			var host_id = card_to_card_data[card].get("host", "")
+			if host_id:
+				host_id = cfc.get_corrected_card_id(host_id)
+				
 			_post_load_move[card] = {
 				"grid": pile_name, 
-				"host_id":card_to_card_data[card].get("host", {}),
+				"host_id": host_id,
 				"host_guid": host_guid,
 				"facedown": card_to_card_data[card].get("facedown", {})
 			} 
+
 		card.load_from_json(card_to_card_data[card])
 
 		#dirty way to set some important variables
@@ -1421,12 +1426,14 @@ func draw_starting_hand() -> void:
 	gameData.draw_all_players()
 
 
-func draw_cheat(cardName : String, hand = "hand1") -> void:
+func draw_cheat(cardName : String, hero_id = 1) -> void:
+	var hero_str = str(hero_id)
 	var card_key = cfc.get_corrected_card_id(cardName)
-	var card = cfc.instance_card(card_key, 1)
-	var pile = cfc.NMAP["deck1"]
+	var card = cfc.instance_card(card_key, hero_id)
+	var pile = cfc.NMAP["deck" + hero_str]
+	var hand = cfc.NMAP["hand" + hero_str]
 	pile.add_child(card)
-	cfc.NMAP[hand].draw_card (pile)
+	hand.draw_card (pile)
 
 func draw_cheat_ghost(cardName : String) -> void:
 	draw_cheat(cardName, "ghosthand1")

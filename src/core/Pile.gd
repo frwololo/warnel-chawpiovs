@@ -395,6 +395,7 @@ func _slot_card_into_popup(card: Card) -> void:
 # Pile shuffling includes a fancy animation
 func shuffle_cards(animate = true, shuffle_after_animation = true) -> void:
 	var current_top_card = get_top_card()
+	disable_pile_activity_signals()
 	is_shuffling = true
 	if !shuffle_after_animation:
 		.shuffle_cards()
@@ -538,6 +539,7 @@ func shuffle_cards(animate = true, shuffle_after_animation = true) -> void:
 	is_shuffling = false
 	emit_signal("shuffle_completed", self)
 	scripting_bus.emit_signal("shuffle_completed", self, {"source": name})
+	enable_pile_activity_signals()
 	check_top_card(current_top_card)
 
 

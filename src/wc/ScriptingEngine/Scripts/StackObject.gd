@@ -18,6 +18,12 @@ var tasks:= []
 func get_tasks():
 	return tasks
 
+func get_owner():
+	var tasks = get_tasks()
+	if tasks:
+		return tasks[0].owner
+	return null
+
 func remove_non_cost_tasks():
 	pass
 

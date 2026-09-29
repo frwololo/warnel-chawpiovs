@@ -1,5 +1,5 @@
 {
-	"_comments": "Tests Cyclops Ricochet Beam when stunned",
+	"_comments": "Tests Cyclops Ricochet Beam when targeting 2 retaliate enemies",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -18,15 +18,12 @@
 					"card": "Advance #01186"
 				},
 				{
-					"card": "Village Under Attack #45132"
-				},
-				{
 					"card": "Caught Off Guard #01188"
 				}
 			],
 			"villain": [
 				{
-					"card": "Dark Beast - 1 #45118",
+					"card": "Loki #21161",
 					"tokens": {
 						"damage": 1
 					}
@@ -34,17 +31,13 @@
 			],
 			"schemes": [
 				{
-					"card": "Dark Beast's Bogus Journey - 1B #45121b",
+					"card": "All Hail King Loki - 1B",
 					"tokens": {
 						"threat": 1
 					}
 				}
 			],
-			"villain_misc": [
-				{
-					"card": "The Savage Land #45127"
-				}
-			],
+			"villain_misc": [],
 			"deck1": [
 				{
 					"card": "Priority Target #33007"
@@ -72,23 +65,19 @@
 			"identity1": [
 				{
 					"card": "Cyclops #33001a",
-					"owner_hero_id": 1,
-					"tokens": {
-						"stunned": 1
-					}
-
+					"owner_hero_id": 1
 				}
 			],
 			"others": [
 				{
 					"card": "Exploit Weakness",
-					"host": "Dark Beast"
+					"host": "Loki #21161"
 				}
 			],
 			"allies1": [],
 			"enemies1": [
 				{
-					"card": "Hydra Regular"
+					"card": "Arclight #40094"
 				}
 			],
 			"hand1": [
@@ -101,18 +90,18 @@
 			]
 		}
 	},
-	"actions": [	
+	"actions": [
 		{
 			"type": "play",
 			"value": "Ricochet Beam"
 		},
 		{
 			"type": "target",
-			"value": "Hydra Regular"
+			"value": "Arclight #40094"
 		},
 		{
 			"type": "target",
-			"value": "Dark Beast - 1 #45118"
+			"value": "Loki #21161"
 		}
 	],
 	"end": {
@@ -133,33 +122,26 @@
 					"card": "Advance #01186"
 				},
 				{
-					"card": "Village Under Attack #45132"
-				},
-				{
 					"card": "Caught Off Guard #01188"
 				}
 			],
 			"villain": [
 				{
-					"card": "Dark Beast - 1 #45118",
+					"card": "Loki #21161",
 					"tokens": {
-						"damage": 1
+						"damage": 5
 					}
 				}
 			],
 			"schemes": [
 				{
-					"card": "Dark Beast's Bogus Journey - 1B #45121b",
+					"card": "All Hail King Loki - 1B",
 					"tokens": {
 						"threat": 1
 					}
 				}
 			],
-			"villain_misc": [
-				{
-					"card": "The Savage Land #45127"
-				}
-			],
+			"villain_misc": [],
 			"deck1": [
 				{
 					"card": "Priority Target #33007"
@@ -188,20 +170,23 @@
 					"card": "Cyclops #33001a",
 					"owner_hero_id": 1,
 					"tokens": {
-						"stunned": 0
+						"damage": 2
 					}
 				}
 			],
 			"others": [
 				{
 					"card": "Exploit Weakness",
-					"host": "Dark Beast"
+					"host": "Loki #21161"
 				}
 			],
 			"allies1": [],
 			"enemies1": [
 				{
-					"card": "Hydra Regular"
+					"card": "Arclight #40094",
+					"tokens": {
+						"damage": 3
+					}
 				}
 			],
 			"discard1": [

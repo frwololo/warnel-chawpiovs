@@ -1026,6 +1026,7 @@
 				},
 				{
 					"name": "attack",
+					"tags": ["collateral_attack"],
 					"amount": 3,
 					"subject": "target",
 					"filter_state_subject": [

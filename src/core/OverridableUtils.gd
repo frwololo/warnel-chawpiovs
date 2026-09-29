@@ -128,7 +128,7 @@ func filter_trigger(
 		_card_scripts,
 		_trigger_card,
 		_owner_card,
-		_trigger_details) -> bool:
+		_trigger_details):
 			return true
 
 

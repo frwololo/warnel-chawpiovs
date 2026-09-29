@@ -1,5 +1,5 @@
 {
-	"_comments": "Tests Cyclops Ricochet Beam when stunned",
+	"_comments": "Tests Cyclops Ricochet Beam with Aggressive Energy",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -72,11 +72,7 @@
 			"identity1": [
 				{
 					"card": "Cyclops #33001a",
-					"owner_hero_id": 1,
-					"tokens": {
-						"stunned": 1
-					}
-
+					"owner_hero_id": 1
 				}
 			],
 			"others": [
@@ -88,7 +84,7 @@
 			"allies1": [],
 			"enemies1": [
 				{
-					"card": "Hydra Regular"
+					"card": "Mister Sinister #33028"
 				}
 			],
 			"hand1": [
@@ -96,24 +92,27 @@
 					"card": "Ricochet Beam"
 				},
 				{
-					"card": "Genius"
+					"card": "aggressive energy"
+				},
+				{
+					"card": "Practiced Defense"
 				}
 			]
 		}
 	},
-	"actions": [	
+	"actions": [
 		{
 			"type": "play",
 			"value": "Ricochet Beam"
 		},
 		{
 			"type": "target",
-			"value": "Hydra Regular"
+			"value": "Mister Sinister #33028"
 		},
 		{
 			"type": "target",
 			"value": "Dark Beast - 1 #45118"
-		}
+		},
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -143,7 +142,7 @@
 				{
 					"card": "Dark Beast - 1 #45118",
 					"tokens": {
-						"damage": 1
+						"damage": 6
 					}
 				}
 			],
@@ -201,12 +200,18 @@
 			"allies1": [],
 			"enemies1": [
 				{
-					"card": "Hydra Regular"
+					"card": "Mister Sinister #33028",
+					"tokens": {
+						"damage": 4
+					}
 				}
 			],
 			"discard1": [
 				{
-					"card": "Genius"
+					"card": "Practiced Defense"
+				},			
+				{
+					"card": "aggressive energy"
 				},
 				{
 					"card": "Ricochet Beam"

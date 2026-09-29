@@ -273,7 +273,7 @@ func emit_signal_on_stack(signal_name, arg0 = null, arg1 = null):
 	elif signal_name in CFConst.OPTIONAL_SIGNALS:
 		signal_level = get_signal_registered(signal_name)
 		if signal_level == SignalLevel.NONE:
-			return
+			return null
 			
 	var stackEvent:SignalStackScript
 
@@ -292,3 +292,5 @@ func emit_signal_on_stack(signal_name, arg0 = null, arg1 = null):
 		gameData.theStack.add_script(stackEvent)
 	else:
 		stackEvent.execute()
+	
+	return stackEvent

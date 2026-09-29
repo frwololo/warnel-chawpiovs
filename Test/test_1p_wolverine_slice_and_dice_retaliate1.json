@@ -1,0 +1,157 @@
+{
+	"_comments": "Automated Test Slice and Dice when targeting twice the same retaliate enemy",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wolverine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Loki #21161",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "All Hail King Loki - 1B",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Wolverine"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Wolverine's claws"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Badoon Warlord"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Slice and Dice #35009"
+				},
+				{
+					"card": "Lunging Strike"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Slice and Dice"
+		},
+		{
+			"type": "target",
+			"value": "Loki #21161"
+		},
+		{
+			"type": "target",
+			"value": "Loki #21161"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Wolverine"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Loki #21161",
+					"tokens": {
+						"damage": 7
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "All Hail King Loki - 1B",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Wolverine",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Wolverine's claws"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Badoon Warlord"
+				}
+			],
+			"allies1": [],
+			"discard1": [
+				{
+					"card": "Strength"
+				},			
+				{
+					"card": "Lunging Strike"
+				},
+
+				{
+					"card": "Slice and Dice #35009"
+				}
+			]
+		}
+	}
+}

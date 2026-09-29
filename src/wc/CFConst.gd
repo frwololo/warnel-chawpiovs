@@ -918,7 +918,8 @@ const DAMAGE_TRANSFER_SCRIPT_PROPERTIES:= [
 	"if_damage",
 	"if_no_damage",
 	"increase_amount",	
-	"overkill"
+	"overkill",
+	"context_uid"
 ]
 
 

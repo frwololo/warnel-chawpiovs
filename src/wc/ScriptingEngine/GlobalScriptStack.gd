@@ -507,7 +507,7 @@ func client_create_script(details):
 	return stackEvent
 
 
-func add_event_to_stack(stackEvent, checksum = ""):
+func add_event_to_stack(stackEvent, checksum = "", context= {}):
 	#if somebody is adding a script while in interrupt mode,
 	# we add the script (its owner card for now - TODO need to change?)
 	# to the list of scripts that already responded to the last event
@@ -547,15 +547,29 @@ func add_event_to_stack(stackEvent, checksum = ""):
 		var buffer = StackObject.new()
 		buffer.interrupt_marker = true
 		insert_event_into_stack(buffer)
+		if context:
+			open_context(context)
 		insert_event_into_stack(stackEvent)
 	else:
 		var pos = 0
 		for i in stack.size():
 			var j = stack.size() - 1 - i
-			if stack[j].interrupt_marker or stack[j].context_marker:
+			if stack[j].interrupt_marker:
 				pos = j + 1
 				break
+			elif stack[j].context_marker:
+				#if we're trying to open a new context while a conext of the same name already exists,
+				#for the moment we assume it needs to start after the current context
+				#Typical example is a double attack: we want the second attack lower in the stack so that it starts after the first,
+				#this is to avoid playing such events in a reverse order
+				#this might have to change in the future
+				var existing_name = stack[j].task.get_property("context_name")
+				if !context or (existing_name != context["context_name"]):
+					pos = j + 1
+					break	
 		insert_event_into_stack(stackEvent, pos)
+		if context:
+			open_context(context, pos)
 		#stack.push_front(stackEvent)
 	
 	emit_signal("script_added_to_stack",stackEvent)
@@ -569,22 +583,77 @@ func add_card_already_played(script_uid, card):
 
 #adds a "context" event to open a context window for the current activity (e.g. attack)
 #this will allow sending a "context closed" event once the ongoing activity is finished
-func open_context(event, context_name, details = {}):
-	var position = find_event_id_in_stack(event)
+func open_context( context, position =-1):
+	var event = context["stack_event"]
+	
+	#if the event already exists in the stack, we open right before it
 	if position == -1:
-		var _error = 1
-		position = 0
-
+		position = find_event_id_in_stack(event)
+	
+	var original_script = context["original_script"]
+	var context_details = context.get("details", {})
+	context_details["script_history"] = [original_script]
 	var definition = {
 		"name": "context_closed",
 		"_silent": true,
-		"original_script": event,
-		"context_name": context_name,
-		"context_details": details
+		"original_script": original_script,
+		"context_name": context["context_name"],
+		"context_details": context_details, 
 	}
-	var task = SimplifiedStackScript.new(definition, event.owner)
+	var task = SimplifiedStackScript.new(definition, event.get_owner())
 	task.context_marker = true
-	insert_event_into_stack(task, position)	
+	var stack_uid = insert_event_into_stack(task, position)
+	context["context_stack_uid"] = stack_uid
+	return stack_uid
+
+func get_context_event(stack_uid_or_context_name):
+	var event = null
+	if typeof(stack_uid_or_context_name) == TYPE_STRING:
+		for i in stack.size():
+			var j = stack.size() - 1 - i
+			var potential_event = stack[j]
+			if potential_event.context_marker and (potential_event.task.script_definition["context_name"] == stack_uid_or_context_name):
+				event = potential_event
+				break		
+	else:
+		event = get_stack_object_by_uid(stack_uid_or_context_name)
+		if !event or !event.context_marker:
+			var _error = 1
+			return	null	
+	return event
+
+func get_context_event_uid(stack_uid_or_context_name):	
+	var event = get_context_event(stack_uid_or_context_name)
+	if !event:
+		var _error = 1
+		return
+		
+	return event.stack_uid
+
+func remove_context_details (stack_uid_or_context_name, key):
+	var event = get_context_event(stack_uid_or_context_name)
+	if !event:
+		var _error = 1
+		return
+	event.task.script_definition["context_details"].erase(key)
+
+func get_context_details (stack_uid_or_context_name, key):
+	var event = get_context_event(stack_uid_or_context_name)
+	if !event:
+		var _error = 1
+		return
+	return event.task.script_definition["context_details"].get(key, null)
+			
+				
+func add_context_details (stack_uid_or_context_name, details: Dictionary):
+	var event = get_context_event(stack_uid_or_context_name)
+	if !event:
+		var _error = 1
+		return
+
+	var context_details = event.task.script_definition["context_details"]
+	event.task.script_definition["context_details"] = WCUtils.merge_dict(context_details, details, true, true)
+	
 
 func insert_event_into_stack(stackEvent, pos = -1):
 	stackEvent.stack_uid = get_next_stack_uid()
@@ -598,12 +667,14 @@ func insert_event_into_stack(stackEvent, pos = -1):
 		"stack_object": stackEvent,
 		"details": stackEvent.get_display_name(),
 		"class": stackEvent.get_class(),	
-	}	
+	}
+	
+	return stackEvent.stack_uid	
 	
 
 #wrapper around add_event_to_stack that also tries to restart the execution of scripts
-func add_script_and_run(stackEvent):
-	var result = add_event_to_stack(stackEvent)
+func add_script_and_run(stackEvent, context : = {}):
+	var result = add_event_to_stack(stackEvent, "", context)
 	if run_mode == RUN_MODE.NOTHING_TO_RUN:
 		set_run_mode(RUN_MODE.NO_BRAKES, "add_script_and_run")
 	if result.get("is_interrupt", false):
@@ -611,9 +682,19 @@ func add_script_and_run(stackEvent):
 	if run_mode!= RUN_MODE.NO_BRAKES:
 		display_debug("error add_script: expected run mode to be NO_BRAKES, but got " + RunModeStr[run_mode])
 
-#legacy
-func add_script(stackEvent):
-	add_script_and_run(stackEvent)
+
+func add_context_and_script(context_name, script):
+	var stack_event = SimplifiedStackScript.new(script)
+	var context = {
+			"context_name": context_name,
+			"original_script": script,
+			"stack_event": stack_event
+	}
+	add_script(stack_event, context)
+	return context.get("context_stack_uid", 0)
+
+func add_script(stackEvent, context:= {}):
+	add_script_and_run(stackEvent, context)
 
 var _sent_about_to_execute_signal = {}
 func _process(_delta: float):
@@ -661,7 +742,7 @@ func _process(_delta: float):
 			return
 #		if gameData.execute_priority_scripts():
 #			return
-	
+		
 	#signal gameData about who's currently "playing"
 	var script_identity = stack_object.owner_identity
 	gameData.set_current_acting_identity(script_identity)
@@ -1333,6 +1414,8 @@ func get_stack_object_by_uid(stack_uid):
 	var fallback_obj = history.get(stack_uid, null)
 	if fallback_obj:
 		return (fallback_obj.get("stack_object", null))
+	
+	return null
 
 func find_event_id_in_stack(event):
 	#the requester usually doesn't want to delete themselves
@@ -1365,8 +1448,12 @@ func find_event(_event_details, filters, owner_card, _trigger_details):
 		var task = event.get_script_by_event_details(_event_details)			
 		if (!task):
 			continue			
-		if cfc.ov_utils.matches_filters( filters, owner_card, _trigger_details):
-			return event
+		var result = cfc.ov_utils.matches_filters( filters, owner_card, _trigger_details)
+		if result:
+			return {
+				"event": event,
+				"meta": result.get("meta", {})
+			}
 	return null			
 
 

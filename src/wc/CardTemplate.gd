@@ -1370,15 +1370,31 @@ func network_request_rejected():
 
 func find_interrupt_script(trigger_card, trigger_details):
 	#select valid scripts that match the current trigger
-	for trigger_name in  ["interrupt_" + trigger_details.get("event_name", ""), "interrupt"]:
+	var event_name = trigger_details.get("event_name", "")
+	
+	#TODO move to config
+	#attack events that are "collateral" should generally not trigger interrupts
+	var is_attack_interrupt = false
+	if event_name in ["attack", "attack_started"]:
+		is_attack_interrupt = true
+		var event_object = trigger_details.get("event_object", null)
+		if is_instance_valid(event_object) and event_object.has_tag("collateral_attack"):
+			return {}
+	for trigger_name in  ["interrupt_" + event_name, "interrupt"]:
 		var card_scripts = retrieve_filtered_scripts(trigger_card, trigger_name, trigger_details)
 		if card_scripts:
 			var state_scripts = get_state_scripts(card_scripts, trigger_card, trigger_details)
 			if state_scripts:
+#				var meta = trigger_details.get("meta_response", {})
+#				if meta:
+#					is_attack_interrupt = meta.get("is_attack_filter", is_attack_interrupt)
 				return {
 					"card_scripts": card_scripts,
 					"state_scripts": state_scripts,
-					"trigger": trigger_name
+					"trigger": trigger_name,
+					"context": {
+						"is_attack_interrupt": is_attack_interrupt
+					}
 				}
 	return {}
 
@@ -1633,15 +1649,19 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 	
 	
 	#additional filter check for interrupts/responses
-	if not cfc.ov_utils.filter_trigger(
+	var event_data = cfc.ov_utils.filter_trigger(
 			trigger,
 			card_scripts,
 			trigger_card,
 			self,
-			trigger_details):
+			trigger_details)
+	if !event_data:
 		card_scripts.clear()
 		return card_scripts
 	
+	#TODO we write in the caller... not clean
+	trigger_details["meta_response"] = event_data.get("meta", {})
+		
 	var to_erase = []
 
 	for key in card_scripts:
@@ -1802,7 +1822,7 @@ func execute_scripts(
 		orig_trigger_details.erase("network_prepaid")
 		if (!orig_trigger_details):
 			return null
-
+		orig_trigger_details["context"] = interrupt_script_data.get("context", {})
 		#skip optional confirmation menu for interrupts,
 		#we have a different gui signal
 		if is_playable_card_state():

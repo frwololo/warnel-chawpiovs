@@ -1,5 +1,5 @@
 {
-	"_comments": "Tests Cyclops Ricochet Beam when stunned",
+	"_comments": "Tests Cyclops Ricochet Beam when using Warrior Skill",
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -68,14 +68,10 @@
 					"card": "Game Time #33022"
 				}
 			],
-			"discard1": [],
 			"identity1": [
 				{
 					"card": "Cyclops #33001a",
 					"owner_hero_id": 1,
-					"tokens": {
-						"stunned": 1
-					}
 
 				}
 			],
@@ -85,10 +81,18 @@
 					"host": "Dark Beast"
 				}
 			],
-			"allies1": [],
+			"upgrade_support1": [
+							{
+					"card": "Warrior Skill",
+					"tokens": {"warrior": 3}
+				}
+			],
 			"enemies1": [
 				{
-					"card": "Hydra Regular"
+					"card": "Mister Sinister #33028",
+					"tokens": {
+						"damage": 1
+					}
 				}
 			],
 			"hand1": [
@@ -108,12 +112,16 @@
 		},
 		{
 			"type": "target",
-			"value": "Hydra Regular"
+			"value": "Mister Sinister #33028"
 		},
 		{
 			"type": "target",
 			"value": "Dark Beast - 1 #45118"
-		}
+		},
+		{
+			"type": "activate",
+			"value": "Warrior Skill"
+		}		
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -143,7 +151,7 @@
 				{
 					"card": "Dark Beast - 1 #45118",
 					"tokens": {
-						"damage": 1
+						"damage": 6
 					}
 				}
 			],
@@ -187,9 +195,7 @@
 				{
 					"card": "Cyclops #33001a",
 					"owner_hero_id": 1,
-					"tokens": {
-						"stunned": 0
-					}
+
 				}
 			],
 			"others": [
@@ -198,19 +204,28 @@
 					"host": "Dark Beast"
 				}
 			],
-			"allies1": [],
+			"upgrade_support1": [
+							{
+					"card": "Warrior Skill",
+					"tokens": {"warrior": 2}
+				}
+			],
 			"enemies1": [
 				{
-					"card": "Hydra Regular"
+					"card": "Mister Sinister #33028",
+					"tokens": {
+						"damage": 5
+					}
 				}
 			],
 			"discard1": [
 				{
 					"card": "Genius"
-				},
+				},			
 				{
 					"card": "Ricochet Beam"
-				}
+				},
+
 			]
 		}
 	}

@@ -17,6 +17,18 @@ func _init(state_scripts: Array,
 		_trigger_details) -> void:
 	pass
 
+#If a player triggers a labeled ability while their identity
+#has one or more status cards that cancel any of the
+#labeled ability types, the entire ability (except for its
+#costs) is canceled.
+#» That identity is not considered to have attacked,
+#defended, or thwarted.
+#» Each status card on the player’s identity that
+#cancels any of the labeled ability’s types is removed
+#when that ability is canceled. For example, an
+#ability labeled “(attack/thwart)” would remove both
+#a confused status and a stunned status from the 
+#identity of the player who triggered the ability
 func _pre_execution_run():
 	if !run_type in [CFInt.RunType.NORMAL, CFInt.RunType.ELSE]:
 		var _error = 1
@@ -25,36 +37,38 @@ func _pre_execution_run():
 	var has_attack = []
 	var has_thwart = []
 	for script in scripts_queue:
-		if script.is_cost:
+		if script.is_cost and !(script.script_name in ["constraints"]):
 			continue
 		if run_type == CFInt.RunType.ELSE and not script.is_else:
 			continue
 		if run_type == CFInt.RunType.NORMAL and script.is_else:
 			continue
-		if script.script_name == "attack" or script.has_tag("attack"):
+		if script.script_name == "attack" or script.has_tag("attack") or script.has_tag("attack_ability"):
 			var attack_owner = get_actual_action_source_from_script(script)
 			has_attack.append(attack_owner)
-		if script.script_name == "thwart" or script.has_tag("thwart"):
+		if script.script_name == "thwart" or script.has_tag("thwart") or script.has_tag("thwart_ability"):
 			var thwart_owner = get_actual_action_source_from_script(script)
 			has_thwart.append(thwart_owner)
 	
-	var fail_all = false
+	var fail_all = {}
 	
 	if has_attack:
 		var attack_owner = has_attack[0]
 		if (attack_owner.is_stunned()):
 			attack_owner.hint("Stunned!", Color8(50,200,50))
 			attack_owner.remove_stun()
-			fail_all = true
+			fail_all["attack"] = true
 
 	if has_thwart:
 		var thwart_owner = has_thwart[0]
 		if (thwart_owner.is_confused()):
 			thwart_owner.remove_confused()
 			thwart_owner.hint("Confused!", Color8(240,110,255))
-			fail_all = true	
+			fail_all["thwart"] = true
 	
 	if fail_all:
+		var count_attacks = 0
+		var count_thwarts = 0
 		for script in scripts_queue:
 			if script.is_cost:
 				continue
@@ -64,6 +78,13 @@ func _pre_execution_run():
 				continue
 			if script.script_name in ["play_card"]:
 				continue
+			#we stop the stun if there is a second attack, and let it proceed
+			if fail_all.get("attack", false):
+				if script.script_name == "attack" and not script.has_tag("collateral_attack"):
+					count_attacks += 1
+					if count_attacks == 2:
+						break
+			#TODO thwart
 			script.is_skipped = true		
 
 func _execute_before_instructions(script: ScriptTask):
@@ -632,6 +653,11 @@ static func _pre_process_script_list(script_list:Array, script):
 	result += additional_scripts
 	return result
 	
+func is_part_of_attack_ability():
+	for script in scripts_queue:
+		if script.script_name == "attack" or script.has_tag("attack"):
+			return true			
+	return false
 
 func attack(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -687,8 +713,18 @@ func attack(script: ScriptTask) -> int:
 	# END Hacks
 	#		
 			
-	var task_event = SimplifiedStackScript.new(new_script)
-	gameData.theStack.add_script(task_event)
+
+
+	var context_uid = 0
+	if !script.has_tag("collateral_attack"):
+		context_uid = gameData.theStack.add_context_and_script("attack", new_script)
+	else:
+		var task_event = SimplifiedStackScript.new(new_script)
+		gameData.theStack.add_script(task_event)		
+		context_uid = gameData.theStack.get_context_event_uid("attack")
+	
+	script.script_definition["context_uid"] = context_uid
+	new_script.script_definition["context_uid"] = context_uid	
 	return retcode			
 
 func attack_started(script) -> int:	
@@ -702,6 +738,8 @@ func attack_started(script) -> int:
 	if (costs_dry_run()):
 		return retcode		
 	
+
+
 	var damage = 0
 	if script.script_definition.has("amount"):
 		damage = script.retrieve_integer_property("amount")
@@ -1027,6 +1065,17 @@ static func calculate_damage(script: ScriptTask) -> int:
 	return 0	
 		
 
+func get_context_increase(context_name, event_names):
+	if typeof(event_names) == TYPE_STRING:
+		event_names = [event_names]
+	var context_increase_amount = 0
+	for event_name in event_names:
+		var context_data = gameData.theStack.get_context_details(context_name, "increases_" + event_name)
+		if context_data:
+			for inc in context_data:
+				context_increase_amount+= inc
+	return context_increase_amount
+
 func pre_receive_damage(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
@@ -1065,15 +1114,25 @@ func pre_receive_damage(script: ScriptTask) -> int:
 	var overkill = attacker.get_property("overkill", 0, true) or (script.retrieve_integer_property("overkill"))	or ("overkill" in tags)			
 	if script.has_tag("piercing") or script.has_tag("ranged") or overkill:
 		has_attack_keyword = true	
-	
+
+	var context_increase = 0
+	if "attack" in tags:
+		var context_uid = script.get_property("context_uid", 0)
+		if context_uid:
+			gameData.theStack.add_context_details(context_uid, {"script_history": [script]})				
+			context_increase = get_context_increase(context_uid, ["attack_started", "pre_receive_damage"])
+			var _tmp =1
+			
 	for card in consolidated_subjects.keys():
 		subject_counter +=1
 		var multiplier = consolidated_subjects[card]
 		var amount = base_amount * multiplier
 		
+		amount += context_increase
+		
 		var increase = script.retrieve_integer_property("increase_amount", 0)	
 		if increase:
-			amount+= increase
+			amount += increase
 		
 		if card.get_property("invincible", 0):
 			continue
@@ -1126,6 +1185,14 @@ func receive_damage(script: ScriptTask) -> int:
 		
 	var tags: Array = script.get_property(SP.KEY_TAGS) 
 	var amount = script.retrieve_integer_property("amount")
+
+	var context_increase = 0
+	if "attack" in tags:
+		var context_uid = script.get_property("context_uid", 0)
+		if context_uid:	
+			gameData.theStack.add_context_details(context_uid, {"script_history": [script]})				
+			context_increase = get_context_increase(context_uid, "receive_damage")
+
 	
 	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
 	# e.g. Spider man gets 3*1 damage = 3 damage
@@ -1137,6 +1204,7 @@ func receive_damage(script: ScriptTask) -> int:
 		consolidated_subjects[card] += 1
 	
 	for card in consolidated_subjects.keys():
+		amount += context_increase
 		var damage_happened = 0
 		#indirect damage in attack, we replace all damages with an indirect damage command
 		if amount and ("attack" in tags) and (!"indirect_damage" in tags) and (attacker.get_property("attack_indirect_damage", 0, true) or ("attack_indirect_damage" in tags)):
@@ -1220,17 +1288,29 @@ func receive_damage(script: ScriptTask) -> int:
 				script.script_definition["nested_tasks"] = backup
 			
 		if ("attack" in tags):
+			var context_uid = script.get_property("context_uid", 0)
+			if context_uid:
+				var context_details = {
+					"attacks": [
+						{
+							"attacker": attacker,
+							"target": card,
+							"damage": damage_happened,
+							"tags": tags,
+						}
+					]
+				}
+				gameData.theStack.add_context_details(context_uid, context_details)			
+			#overkill attack
+			#TODO this only handles ally/hero attack for now,
+			#enemy overkill is handled in another part of the code
+			#Note that this only happens for attacks
 			var signal_details = {
 				"attacker": attacker,
 				"target": card,
 				"damage": damage_happened,
 				"tags": tags,
 			}			
-			gameData.theStack.open_context(script, "attack", signal_details)
-			#overkill attack
-			#TODO this only handles ally/hero attack for now,
-			#enemy overkill is handled in another part of the code
-			#Note that this only happens for attacks
 			if damage_happened and excess_damage:
 				var overkill = attacker.get_property("overkill", 0, true) or (script.retrieve_integer_property("overkill"))	or ("overkill" in tags)
 				if overkill:
@@ -1267,45 +1347,105 @@ func receive_damage(script: ScriptTask) -> int:
 
 			lethal = card.check_death(script)
 
-		if ("attack" in tags) and !lethal:
-			#retaliate against an attack only if I didn't die
-			var retaliate = card.get_property("retaliate", 0, true)
-			if retaliate:
-				if script.has_tag("ranged"):
-					attacker.hint("Ranged!", Color8(50,50,255))
-				else:
-					card.hint("Retaliate!", Color8(255,50,50))
-					var script_modifications = {
-						"tags" : ["retaliate", "Scripted"],
-						"subjects": [attacker],
-						"owner": card,
+		if ("enemy_attack" in tags):
+			#enemy attacks do not use the context window, so we have to call attack_finished here
+			var details = {
+				"attacks": [
+					{
+						"attacker": attacker,
+						"target": card,
+						"damage": damage_happened,
+						"tags": tags,						
 					}
-					_add_pre_receive_damage_on_stack(retaliate, null, script_modifications)
-							
+				],
+				"script_history": [
+					script
+				]
+			}
+			attack_finished(details)
+#		if ("attack" in tags) and !lethal:
+#			#retaliate against an attack only if I didn't die
+#			var retaliate = card.get_property("retaliate", 0, true)
+#			if retaliate:
+#				if script.has_tag("ranged"):
+#					attacker.hint("Ranged!", Color8(50,50,255))
+#				else:
+#					card.hint("Retaliate!", Color8(255,50,50))
+#					var script_modifications = {
+#						"tags" : ["retaliate", "Scripted"],
+#						"subjects": [attacker],
+#						"owner": card,
+#					}
+#					_add_pre_receive_damage_on_stack(retaliate, null, script_modifications)
+#
 	return retcode
 
-func attack_finished(script, details)-> int:
-	var attacker = details["attacker"]
-	var card = details["target"]
-	var damage_happened = details["damage"]
-	var tags = details["tags"]
+func attack_finished( details)-> int:
+	var attacks = details.get("attacks", [])
+	var scripts = details.get("script_history", [])
+	if !scripts:
+		var _error = 1
+		return CFConst.ReturnCode.FAILED
+	var script = scripts[scripts.size()-1]
 	
-	var signal_details = {
-		"attacker": attacker,
-		"target": card,
-		"damage": damage_happened,
-		"tags": tags,
-	}
-	scripting_bus.emit_signal_on_stack("attack_happened",  attacker,  signal_details)			
+	if !attacks:
+		var _error = 1
+		return CFConst.ReturnCode.FAILED
+		
+	var aggregated_attacks = {}
+	for attack in attacks:
+		var attacker = attack["attacker"]
+		if !aggregated_attacks.has(attacker):
+			aggregated_attacks[attacker] = {}
+		var attacker_data = aggregated_attacks[attacker]
+		var target = attack["target"]
+		if !attacker_data.has(target):
+			attacker_data[target] = {
+				"damage": 0,
+				"tags": []
+			}
+		var target_data = attacker_data[target]
+		target_data["damage"] += attack["damage"]
+		target_data["tags"] = WCUtils.merge_array(target_data["tags"], attack["tags"])
+		
+	for attacker in aggregated_attacks:
+		for target in aggregated_attacks[attacker]:
+			var attack_details = aggregated_attacks[attacker][target]
+			var damage_happened = attack_details["damage"]
+			var tags = attack_details["tags"]
+	
+			var signal_details = {
+				"attacker": attacker,
+				"target": target,
+				"damage": damage_happened,
+				"tags": tags,
+			}
+			scripting_bus.emit_signal_on_stack("attack_happened",  attacker,  signal_details)			
 				
-	if ("basic power" in tags):
-		scripting_bus.emit_signal_on_stack("basic_attack_happened",  attacker,  signal_details)				
+			if ("basic power" in tags):
+				scripting_bus.emit_signal_on_stack("basic_attack_happened",  attacker,  signal_details)				
+
+			if !("undefended" in tags):
+				scripting_bus.emit_signal_on_stack("defense_happened", target,  signal_details)
+			if ("basic_defense" in tags):
+				scripting_bus.emit_signal_on_stack("basic_defense_happened",  target,  signal_details)				
+
+			if ("attack" in tags) and target.is_onboard():
+				#retaliate against an attack only if I didn't die
+				var retaliate = target.get_property("retaliate", 0, true)
+				if retaliate:
+					if script.has_tag("ranged"):
+						attacker.hint("Ranged!", Color8(50,50,255))
+					else:
+						target.hint("Retaliate!", Color8(255,50,50))
+						var script_modifications = {
+							"tags" : ["retaliate", "Scripted"],
+							"subjects": [attacker],
+							"owner": target,
+						}
+						_add_pre_receive_damage_on_stack(retaliate, null, script_modifications)
+					
 	consequential_damage(script)
-	if !("undefended" in tags):
-		scripting_bus.emit_signal_on_stack("defense_happened", card,  signal_details)
-		if ("basic_defense" in tags):
-			scripting_bus.emit_signal_on_stack("basic_defense_happened",  card,  signal_details)				
-	
 	return CFConst.ReturnCode.CHANGED
 
 #called when the context window of a specific action gets closed
@@ -1318,11 +1458,10 @@ func context_closed(_script: ScriptTask) -> int:
 		return retcode
 			
 	var context_name = _script.get_property("context_name", "")
-	var script = _script.get_property("original_script", _script)
 	var details = _script.get_property("context_details", "")
 	match context_name:
-		"attack":
-			return attack_finished(script, details)
+		"attack", "enemy_attack":
+			return attack_finished(details)
 		_:
 			#unsupported
 			pass
@@ -1692,10 +1831,20 @@ func increase(script: ScriptTask) -> int:
 				#var stack_object = gameData.theStack.find_last_event_before_me(script)
 				if (!stack_object):	
 					return CFConst.ReturnCode.FAILED
-
+					
 				if (costs_dry_run()):
-					return retcode					
-				var _results = gameData.theStack.modify_object(stack_object, script, task_object)
+					return retcode	
+											
+				if script.trigger_details.get("context", {}).get("is_attack_interrupt", false):
+					var amount = script.retrieve_integer_property("amount")
+					var event_name = script.trigger_details.get("event_name", "")
+					var context_uid = task_object.get_property("context_uid", 0)
+					if context_uid:
+						gameData.theStack.add_context_details(context_uid, {"increases_" + event_name: [amount]})
+					else:
+						var _error = 1
+				else:					
+					var _results = gameData.theStack.modify_object(stack_object, script, task_object)
 			else:	
 				#TODO
 				#unsupported

@@ -1,6 +1,117 @@
 {
-	"_comments": "Tests Cyclops Ricochet Beam when stunned",
+	"_comments": "Tests Cyclops Toe to Toe when stunned",
 	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 23225,
+					"hero": "Cyclops #33001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Village Under Attack #45132"
+				},
+				{
+					"card": "Caught Off Guard #01188"
+				}
+			],
+			"villain": [
+				{
+					"card": "Dark Beast - 1 #45118",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Dark Beast's Bogus Journey - 1B #45121b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "The Savage Land #45127"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Priority Target #33007"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Effective Leadership"
+				},
+				{
+					"card": "Danger Room Training #33015"
+				},
+				{
+					"card": "Field Commander #33004"
+				},
+				{
+					"card": "Practiced Defense #33006"
+				},
+				{
+					"card": "Game Time #33022"
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Cyclops #33001a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"stunned": 1
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Exploit Weakness",
+					"host": "Dark Beast"
+				}
+			],
+			"allies1": [],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Toe to Toe"
+				},
+				{
+					"card": "Ricochet Beam"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Toe to Toe"
+		},
+		{
+			"type": "target",
+			"value": "Hydra Regular"
+		}
+	],
+	"end": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
@@ -74,120 +185,6 @@
 					"card": "Cyclops #33001a",
 					"owner_hero_id": 1,
 					"tokens": {
-						"stunned": 1
-					}
-
-				}
-			],
-			"others": [
-				{
-					"card": "Exploit Weakness",
-					"host": "Dark Beast"
-				}
-			],
-			"allies1": [],
-			"enemies1": [
-				{
-					"card": "Hydra Regular"
-				}
-			],
-			"hand1": [
-				{
-					"card": "Ricochet Beam"
-				},
-				{
-					"card": "Genius"
-				}
-			]
-		}
-	},
-	"actions": [	
-		{
-			"type": "play",
-			"value": "Ricochet Beam"
-		},
-		{
-			"type": "target",
-			"value": "Hydra Regular"
-		},
-		{
-			"type": "target",
-			"value": "Dark Beast - 1 #45118"
-		}
-	],
-	"end": {
-		"phase": "PLAYER_TURN",
-		"heroes": [
-			{
-				"herodeckdata": {
-					"owner": 1,
-					"deck_id": 23225,
-					"hero": "Cyclops #33001a"
-				}
-			}
-		],
-		"board": {
-			"discard_villain": [],
-			"deck_villain": [
-				{
-					"card": "Advance #01186"
-				},
-				{
-					"card": "Village Under Attack #45132"
-				},
-				{
-					"card": "Caught Off Guard #01188"
-				}
-			],
-			"villain": [
-				{
-					"card": "Dark Beast - 1 #45118",
-					"tokens": {
-						"damage": 1
-					}
-				}
-			],
-			"schemes": [
-				{
-					"card": "Dark Beast's Bogus Journey - 1B #45121b",
-					"tokens": {
-						"threat": 1
-					}
-				}
-			],
-			"villain_misc": [
-				{
-					"card": "The Savage Land #45127"
-				}
-			],
-			"deck1": [
-				{
-					"card": "Priority Target #33007"
-				},
-				{
-					"card": "Strength"
-				},
-				{
-					"card": "Effective Leadership"
-				},
-				{
-					"card": "Danger Room Training #33015"
-				},
-				{
-					"card": "Field Commander #33004"
-				},
-				{
-					"card": "Practiced Defense #33006"
-				},
-				{
-					"card": "Game Time #33022"
-				}
-			],
-			"identity1": [
-				{
-					"card": "Cyclops #33001a",
-					"owner_hero_id": 1,
-					"tokens": {
 						"stunned": 0
 					}
 				}
@@ -206,10 +203,10 @@
 			],
 			"discard1": [
 				{
-					"card": "Genius"
+					"card": "Ricochet Beam"
 				},
 				{
-					"card": "Ricochet Beam"
+					"card": "Toe to Toe"
 				}
 			]
 		}

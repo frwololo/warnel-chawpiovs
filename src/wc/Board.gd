@@ -1362,8 +1362,10 @@ func load_cards_to_pile(card_data:Array, pile_name):
 			card._determine_idle_state()
 			var host_guid = card_to_card_data[card].get("host_guid", "")
 			var host_id = card_to_card_data[card].get("host", "")
-			if host_id:
-				host_id = cfc.get_corrected_card_id(host_id)
+			if "#" in host_id:
+				var tmp_id = cfc.get_corrected_card_id(host_id)
+				if tmp_id:
+					host_id = tmp_id
 				
 			_post_load_move[card] = {
 				"grid": pile_name, 

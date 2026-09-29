@@ -13,32 +13,33 @@
 			"deck_villain": [
 				{
 					"card": "Hydra Soldier"
-				},	
+				},
 				{
 					"card": "Hydra Mercenary"
-				},					
+				},
 				{
 					"card": "The Trickster"
-				},					
+				}
 			],
 			"set_aside": [
 				{
-					"card": "Loki - 1 #21160",				
-				},				
+					"card": "Loki - 1 #21160"
+				}
 			],
 			"villain": [
 				{
 					"card": "Loki - 1 #21161",
-					"tokens": {"tough": 1}
+					"tokens": {
+						"tough": 1
+					}
 				}
 			],
 			"schemes": [
 				{
 					"card": "All Hail King Loki"
-				},						
+				}
 			],
-			"victory_display": [			
-			],
+			"victory_display": [],
 			"deck1": [
 				{
 					"card": "Mockingbird"
@@ -53,33 +54,33 @@
 			"allies1": [
 				{
 					"card": "Marvel Boy - Noh-Varr"
-				},			
+				}
 			],
 			"hand1": [
 				{
 					"card": "Combat Training"
-				},			
+				}
 			]
 		}
 	},
 	"actions": [
 		{
 			"type": "activate",
-			"value": "Marvel Boy", 
-		},		
+			"value": "Marvel Boy"
+		},
 		{
 			"type": "choose",
-			"value": "attack",
+			"value": "attack"
 		},
 		{
 			"type": "target",
-			"value": "Loki - 1 #21161",
-		},	
+			"value": "Loki - 1 #21161"
+		},
 		{
 			"type": "activate",
-			"value": "Marvel Boy", 
-		},			
-	] ,
+			"value": "Marvel Boy"
+		}
+	],
 	"end": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -93,32 +94,33 @@
 			"deck_villain": [
 				{
 					"card": "Hydra Soldier"
-				},	
+				},
 				{
 					"card": "Hydra Mercenary"
-				},					
+				},
 				{
 					"card": "The Trickster"
-				},					
+				}
 			],
 			"set_aside": [
 				{
-					"card": "Loki - 1 #21160",				
-				},				
+					"card": "Loki - 1 #21160"
+				}
 			],
 			"villain": [
 				{
 					"card": "Loki - 1 #21161",
-					"tokens": {"damage": 2}
+					"tokens": {
+						"damage": 2
+					}
 				}
 			],
 			"schemes": [
 				{
 					"card": "All Hail King Loki"
-				},						
+				}
 			],
-			"victory_display": [			
-			],
+			"victory_display": [],
 			"deck1": [
 				{
 					"card": "Mockingbird"
@@ -133,13 +135,15 @@
 			"allies1": [
 				{
 					"card": "Marvel Boy - Noh-Varr",
-					"tokens": {"damage": 1}
-				},			
+					"tokens": {
+						"damage": 1
+					}
+				}
 			],
 			"discard1": [
 				{
 					"card": "Combat Training"
-				},			
+				}
 			]
 		}
 	}

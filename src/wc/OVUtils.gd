@@ -586,7 +586,8 @@ func is_boost_trigger_accepted(
 					return false	
 	
 	return true
-	
+
+
 # Additional filter for triggers,
 # also see core/ScriptProperties.gd
 func filter_trigger(
@@ -594,13 +595,13 @@ func filter_trigger(
 		card_scripts,
 		trigger_card,
 		owner_card,
-		_trigger_details) -> bool:
+		_trigger_details):
 
 	#Generally speaking I don't want to trigger
 	#on facedown cards such as boost cards
 	#(e.g. bug with Hawkeye, Charge, and a bunch of others)
 	if !is_boost_trigger_accepted(trigger, card_scripts, trigger_card,owner_card, _trigger_details):
-		return false
+		return {}
 
 
 	#from this point this is only checks for interrupts
@@ -610,26 +611,28 @@ func filter_trigger(
 		var trigger_filters = card_scripts.get("event_filters", {})
 		if trigger_filters:
 			return matches_filters(trigger_filters, owner_card, _trigger_details)
-		return true
+		return {
+			"result": true,
+		}
 	
 	#If this *is* an interrupt but I don't have an answer, I'll fail it
 	
 	#if this card has no scripts to handle interrupts, we fail
 	if !card_scripts:
-		return false
+		return {}
 
 	var event_name = _trigger_details["event_name"]
 	var trigger_type = _trigger_details.get("trigger_type", "")
 	
 	var expected_trigger_type = card_scripts.get("event_type", "")
 	if expected_trigger_type and (expected_trigger_type != trigger_type):
-		return false;	
+		return {}	
 	
 	var expected_trigger_names = card_scripts.get("event_name", [])
 	if typeof(expected_trigger_names) == TYPE_STRING:
 		expected_trigger_names = [expected_trigger_names]
 	if expected_trigger_names and !(event_name in expected_trigger_names):
-		return false
+		return {}
 	
 	
 	var expected_definitions = 	card_scripts.get("event_definition_contains", [])
@@ -647,7 +650,7 @@ func filter_trigger(
 			break	
 	
 	if expected_definitions and !found_definition:
-		return false
+		return {}
 		
 	var event_details = {
 		"event_name":  event_name,
@@ -655,12 +658,12 @@ func filter_trigger(
 	}	
 		
 	var trigger_filters = card_scripts.get("event_filters", {})
-	var event = (gameData.theStack.find_event(event_details, trigger_filters, owner_card, _trigger_details))
+	var event_data = gameData.theStack.find_event(event_details, trigger_filters, owner_card, _trigger_details)
 
-	if event:
-		return event #note: force conversion from stack event to bool
+	if event_data:		
+		return event_data 
 		
-	return false
+	return {}
 
 
 
@@ -859,13 +862,20 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 					if compared_to_str == comp_value:
 						filters.erase(filter_key)				
 
+	var is_attack_filter = false
 	if filters.has("tags"):
 		var to_remove = []
 		var tags = filters["tags"]
+		
+		if "attack" in tags:
+			is_attack_filter = true
+#			if !("!collateral_attack" in tags) and !("collateral_attack" in tags):
+#				tags.append("!collateral_attack")
+			
 		for tag in tags:
 			if tag.begins_with("!") or tag.begins_with("-"):
 				var real_tag = tag.substr(1)
-				if trigger_details.has(real_tag):
+				if trigger_details.get("tags", []).has(real_tag):
 					return false
 				to_remove.append(tag)
 		for tag in to_remove:
@@ -877,8 +887,15 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 #		var _tmp = 0	
 	#var script_details = task.script_definition
 	var result = WCUtils.is_element1_in_element2(filters, trigger_details, ["tags"])
-
-	return result
+	if !result:
+		return false
+		
+	return {
+		"result":  true,
+		"meta": {
+			"is_attack_filter": is_attack_filter
+		}
+	}
 
 func compare_string_properties(property_filters, card, property, comparison_type):
 	var card_property

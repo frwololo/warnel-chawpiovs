@@ -702,7 +702,7 @@ static func subject_pre_processing(script_definition):
 	
 
 # Recursively deletes a directory and all its contents
-static func delete_dir_recursive(path: String) -> bool:
+static func delete_dir_recursive(path: String, delete_folder = true) -> bool:
 	var dir := Directory.new()
 	
 	# Try to open the directory
@@ -734,9 +734,10 @@ static func delete_dir_recursive(path: String) -> bool:
 	dir.list_dir_end()
 	
 	# Remove the now-empty directory itself
-	var err = dir.remove(path)
-	if err != OK:
-		push_error("Failed to remove directory: %s" % path)
+	if delete_folder:
+		var err = dir.remove(path)
+		if err != OK:
+			push_error("Failed to remove directory: %s" % path)
 	
 	return result
 
@@ -887,3 +888,20 @@ static func get_translated_property(card_id, property):
 		return card_data.get(property, "")
 	
 	return translated_card_data[property] 
+
+# Customization functions
+static func import_img(path, destination):
+	var img = load_img(path)
+	if !img:
+		return false
+	var dir = Directory.new()
+	var error = dir.copy(path, destination)
+	if error:
+		return false
+	return true
+	
+static func import_battle_background(path):
+	return import_img(path,"user://Gfx/wallpaper.png")
+
+static func import_card_back(path):
+	return import_img(path, "user://Gfx/card_back.png")

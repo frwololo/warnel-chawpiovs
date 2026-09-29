@@ -84,7 +84,12 @@ func _pre_execution_run():
 					count_attacks += 1
 					if count_attacks == 2:
 						break
-			#TODO thwart
+			#we stop the confused if there is a second thwart, and let it proceed
+			if fail_all.get("thwart", false):
+				if script.script_name == "thwart" and not script.has_tag("collateral_thwart"):
+					count_thwarts += 1
+					if count_thwarts == 2:
+						break
 			script.is_skipped = true		
 
 func _execute_before_instructions(script: ScriptTask):
@@ -714,7 +719,7 @@ func attack(script: ScriptTask) -> int:
 	#		
 			
 
-
+	#context creation for multiple damage attacks
 	var context_uid = 0
 	if !script.has_tag("collateral_attack"):
 		context_uid = gameData.theStack.add_context_and_script("attack", new_script)
@@ -722,9 +727,9 @@ func attack(script: ScriptTask) -> int:
 		var task_event = SimplifiedStackScript.new(new_script)
 		gameData.theStack.add_script(task_event)		
 		context_uid = gameData.theStack.get_context_event_uid("attack")
-	
 	script.script_definition["context_uid"] = context_uid
 	new_script.script_definition["context_uid"] = context_uid	
+	
 	return retcode			
 
 func attack_started(script) -> int:	
@@ -1347,8 +1352,9 @@ func receive_damage(script: ScriptTask) -> int:
 
 			lethal = card.check_death(script)
 
+		#enemy attacks do not use the context window (TODO can we migrate to it?), 
+		#so we have to call attack_finished here
 		if ("enemy_attack" in tags):
-			#enemy attacks do not use the context window, so we have to call attack_finished here
 			var details = {
 				"attacks": [
 					{
@@ -1363,23 +1369,62 @@ func receive_damage(script: ScriptTask) -> int:
 				]
 			}
 			attack_finished(details)
-#		if ("attack" in tags) and !lethal:
-#			#retaliate against an attack only if I didn't die
-#			var retaliate = card.get_property("retaliate", 0, true)
-#			if retaliate:
-#				if script.has_tag("ranged"):
-#					attacker.hint("Ranged!", Color8(50,50,255))
-#				else:
-#					card.hint("Retaliate!", Color8(255,50,50))
-#					var script_modifications = {
-#						"tags" : ["retaliate", "Scripted"],
-#						"subjects": [attacker],
-#						"owner": card,
-#					}
-#					_add_pre_receive_damage_on_stack(retaliate, null, script_modifications)
-#
+
 	return retcode
 
+func thwart_finished( details)-> int:
+	var thwarts = details.get("thwarts", [])
+	var scripts = details.get("script_history", [])
+	if !scripts:
+		var _error = 1
+		return CFConst.ReturnCode.FAILED
+	var script = scripts[scripts.size()-1]
+	
+	if !thwarts:
+		var _error = 1
+		return CFConst.ReturnCode.FAILED
+		
+	var aggregated_thwarts = {}
+	for thwart in thwarts:
+		var thwarter = thwart["actual_source"]
+		if !aggregated_thwarts.has(thwarter):
+			aggregated_thwarts[thwarter] = {}
+		var thwarter_data = aggregated_thwarts[thwarter]
+		var target = thwart["target"]
+		if !thwarter_data.has(target):
+			thwarter_data[target] = {
+				"amount": 0,
+				"amount_removed": 0,
+				"tags": []
+			}
+		var target_data = thwarter_data[target]
+		target_data["amount"] +=thwart["amount"]
+		target_data["amount_removed"] +=thwart["amount_removed"]		
+		target_data["tags"] = WCUtils.merge_array(target_data["tags"],thwart["tags"])
+		
+	for thwarter in aggregated_thwarts:
+		for target in aggregated_thwarts[thwarter]:
+			var thwart_details = aggregated_thwarts[thwarter][target]
+			var amount = thwart_details["amount"]
+			var amount_removed = thwart_details["amount_removed"]
+			var tags = thwart_details["tags"]
+	
+
+			var signal_details = {
+				"source": thwarter ,
+				"amount": amount,
+				"amount_removed": amount_removed,
+				"target" : target
+			}
+
+			if (script.has_tag("basic power")):
+				scripting_bus.emit_signal_on_stack("basic_thwart_happened",  thwarter ,  signal_details)			
+			if script.has_tag("thwart"):			
+				consequential_damage(script)
+				scripting_bus.emit_signal_on_stack("thwart_happened", thwarter ,  signal_details)
+	
+	return CFConst.ReturnCode.CHANGED
+	
 func attack_finished( details)-> int:
 	var attacks = details.get("attacks", [])
 	var scripts = details.get("script_history", [])
@@ -1460,8 +1505,10 @@ func context_closed(_script: ScriptTask) -> int:
 	var context_name = _script.get_property("context_name", "")
 	var details = _script.get_property("context_details", "")
 	match context_name:
-		"attack", "enemy_attack":
-			return attack_finished(details)
+		"attack":
+			return attack_finished(details)		
+		"thwart":
+			return thwart_finished(details)			
 		_:
 			#unsupported
 			pass
@@ -1834,16 +1881,21 @@ func increase(script: ScriptTask) -> int:
 					
 				if (costs_dry_run()):
 					return retcode	
-											
-				if script.trigger_details.get("context", {}).get("is_attack_interrupt", false):
-					var amount = script.retrieve_integer_property("amount")
-					var event_name = script.trigger_details.get("event_name", "")
-					var context_uid = task_object.get_property("context_uid", 0)
-					if context_uid:
-						gameData.theStack.add_context_details(context_uid, {"increases_" + event_name: [amount]})
-					else:
-						var _error = 1
-				else:					
+				
+				var found = false
+				for event in ["attack", "thwart"]:							
+					if script.trigger_details.get("context", {}).get("is_" + event + "_interrupt", false):
+						var amount = script.retrieve_integer_property("amount")
+						var event_name = script.trigger_details.get("event_name", "")
+						var context_uid = task_object.get_property("context_uid", 0)
+						if context_uid:
+							gameData.theStack.add_context_details(context_uid, {"increases_" + event_name: [amount]})
+							found = true
+							break
+						else:
+							var _error = 1
+
+				if !found:					
 					var _results = gameData.theStack.modify_object(stack_object, script, task_object)
 			else:	
 				#TODO
@@ -2815,6 +2867,17 @@ func remove_threat(script: ScriptTask) -> int:
 	if !thwarter:
 		thwarter = script.owner
 
+	var tags: Array = script.get_property(SP.KEY_TAGS) 
+
+	var context_increase = 0
+	if "thwart" in tags:
+		var context_uid = script.get_property("context_uid", 0)
+		if context_uid:	
+			gameData.theStack.add_context_details(context_uid, {"script_history": [script]})				
+			context_increase = get_context_increase(context_uid, "remove_threat")
+
+	amount += context_increase
+	
 	for card in script.subjects:
 		var amount_removed = card.remove_threat(amount, script)
 		if amount_removed:
@@ -2824,18 +2887,23 @@ func remove_threat(script: ScriptTask) -> int:
 			card.check_scheme_defeat(script)
 
 
-		var signal_details = {
-			"source": thwarter ,
-			"amount": amount,
-			"amount_removed": amount_removed,
-			"target" : card
-		}
+		if ("thwart" in tags):
+			var context_uid = script.get_property("context_uid", 0)
+			if context_uid:
+				var context_details = {
+					"thwarts": [
+						{
+							"actual_source": thwarter,
+							"target": card,
+							"amount": amount,
+							"amount_removed": amount_removed,
+							"tags": tags,
+						}
+					]
+				}
+				gameData.theStack.add_context_details(context_uid, context_details)			
 
-		if (script.has_tag("basic power")):
-			scripting_bus.emit_signal_on_stack("basic_thwart_happened",  thwarter ,  signal_details)			
-		if script.has_tag("thwart"):			
-			consequential_damage(script)
-			scripting_bus.emit_signal_on_stack("thwart_happened", thwarter ,  signal_details)
+
 
 		
 
@@ -2866,6 +2934,7 @@ func thwart(script: ScriptTask) -> int:
 	new_script.script_name = "thwart_started"
 	new_script.script_definition["name"] = new_script.script_name
 	new_script.script_definition["attacker"] = owner
+	new_script.script_definition["actual_source"] = owner
 	#
 	# Hacks
 	#
@@ -2893,9 +2962,18 @@ func thwart(script: ScriptTask) -> int:
 	#
 	# END Hacks
 	#		
+
+	#context creation for multiple removal thwarts
+	var context_uid = 0
+	if !script.has_tag("collateral_thwart"):
+		context_uid = gameData.theStack.add_context_and_script("thwart", new_script)
+	else:
+		var task_event = SimplifiedStackScript.new(new_script)
+		gameData.theStack.add_script(task_event)		
+		context_uid = gameData.theStack.get_context_event_uid("thwart")
+	script.script_definition["context_uid"] = context_uid
+	new_script.script_definition["context_uid"] = context_uid	
 			
-	var task_event = SimplifiedStackScript.new(new_script)
-	gameData.theStack.add_script(task_event)
 	return retcode		
 	
 func thwart_started(script: ScriptTask) -> int:
@@ -2916,6 +2994,14 @@ func thwart_started(script: ScriptTask) -> int:
 
 	if !amount:
 		amount = 0
+
+	var context_increase = 0
+	var context_uid = script.get_property("context_uid", 0)
+	if context_uid:	
+		gameData.theStack.add_context_details(context_uid, {"script_history": [script]})				
+		context_increase = get_context_increase(context_uid, "thwart_started")
+	
+	amount += context_increase
 
 	
 	if (costs_dry_run()):

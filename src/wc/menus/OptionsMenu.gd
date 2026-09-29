@@ -17,6 +17,13 @@ const NOTIFICATION_LEVELS := [
 signal exit_options_menu
 
 var board_mode = true
+enum FILE_DIALOG_MODES {
+	SAVE_GAME,
+	LOAD_GAME,
+	IMPORT_CARD_BACK,
+	IMPORT_BATTLE_BG
+}
+var file_dialog_mode = FILE_DIALOG_MODES.SAVE_GAME
 
 func init_button_signals(node):
 	if node.has_signal('pressed'):			
@@ -83,8 +90,21 @@ func on_button_pressed(_button_name : String) -> void:
 			load_game()	
 		"MainMenuButton":
 			back_to_main_menu()
+#MODS	
+		"ModsBackButton":
+			hide_mods_options()
+		"ModsButton":
+			show_mods_options()	
+		"LoadBgButton":
+			load_bg()
+		"LoadCardBackButton":
+			load_card_back()	
+		"DeleteGfxButton":
+			delete_custom_gfx()									
 		"EnableModsButton":
-			enable_disable_mods()				
+			enable_disable_mods()
+			
+							
 		"RestartButton":
 			restart_game()	
 		"Controls":
@@ -93,6 +113,7 @@ func on_button_pressed(_button_name : String) -> void:
 			hide_gameplay_options()
 		"GameplayOptionsButton":
 			show_gameplay_options()
+	
 		"ClearCacheButton":
 			clear_cache()			
 		"ClearAllButton":
@@ -123,6 +144,14 @@ func select_tab(tab_name):
 	cfc.default_button_focus(get_node("%" + tab_name))
 	#get_node("%" + tab_name).set_as_toplevel(true)	
 
+func hide_mods_options():
+	save_options()
+	select_tab("general")
+
+func show_mods_options():
+	load_options()
+	select_tab("mods")
+
 func hide_gameplay_options():
 	save_options()
 	select_tab("general")
@@ -147,6 +176,11 @@ func clear_cache():
 	var _op_result = dir.remove("user://failed_image_downloads.json")
 	
 
+func message(msg, display_container):
+	var msg_dialog:AcceptDialog = AcceptDialog.new()
+	msg_dialog.window_title = msg
+	display_container.add_child(msg_dialog)
+	msg_dialog.popup_centered()		
 
 func warning(title, message, action):
 	var dialog:ConfirmationDialog = ConfirmationDialog.new()
@@ -166,6 +200,12 @@ func delete_images():
 func delete_all():
 	warning ("delete everything", "This will delete your entire user folder. You'll lose settings, game progress, images, etc...", "confirm_delete_all")			
 
+func delete_custom_gfx():
+	var result = WCUtils.delete_dir_recursive("user://Gfx", false)
+	var msg = "NOT OK - Couldn't Delete"
+	if result:
+		msg  = "OK - Deleted Succesfully"
+	message(msg, $PanelContainer)	
 
 func confirm_reset_settings():
 	cfc.reset_settings_to_default()
@@ -301,12 +341,22 @@ func hide_controls() -> bool:
 	return false
 
 func hide_menu():
+	var overlay = get_node("%Overlay")
+	if !overlay.visible:			
+		var overlay2 = get_node("%Overlay2")
+		overlay2.visible = true
+		
 	$PanelContainer.hide()
 	
 func show_menu():
 	#doing a pause here to not react to a previous button press
 	yield(get_tree().create_timer(0.1), "timeout")
-		
+
+	var overlay = get_node("%Overlay")			
+	var overlay2 = get_node("%Overlay2")
+	overlay2.visible = false
+	overlay.visible = false
+	
 	$PanelContainer.show()
 	
 
@@ -403,6 +453,8 @@ func back_to_main_menu():
 
 func save_game():
 	hide_menu()
+	file_dialog_mode = FILE_DIALOG_MODES.SAVE_GAME
+	file_dialog.set_filters(["*.json"])
 	file_dialog.set_current_path("user://Saves/")
 	file_dialog.mode = FileDialog.MODE_SAVE_FILE
 	file_dialog.popup_centered()
@@ -411,19 +463,53 @@ func load_game():
 	hide_menu()	
 #	file_dialog.set_access(FileDialog.ACCESS_FILESYSTEM)
 #	file_dialog.set_current_path(OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS))
+	file_dialog_mode = FILE_DIALOG_MODES.LOAD_GAME
+	file_dialog.set_filters(["*.json"])
 	file_dialog.set_current_path("user://Saves/")
+	file_dialog.mode = FileDialog.MODE_OPEN_FILE
+	file_dialog.popup_centered()
+
+func load_bg():
+	hide_menu()	
+	file_dialog.set_access(FileDialog.ACCESS_FILESYSTEM)
+	file_dialog.set_filters(["*.png", "*.jpeg", "*.jpg"])
+	file_dialog.set_current_path(OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS))
+	file_dialog_mode = FILE_DIALOG_MODES.IMPORT_BATTLE_BG
+	file_dialog.mode = FileDialog.MODE_OPEN_FILE
+	file_dialog.popup_centered()
+
+func load_card_back():
+	hide_menu()	
+	file_dialog.set_access(FileDialog.ACCESS_FILESYSTEM)
+	file_dialog.set_filters(["*.png", "*.jpeg", "*.jpg"])	
+	file_dialog.set_current_path(OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS))
+	file_dialog_mode = FILE_DIALOG_MODES.IMPORT_CARD_BACK
 	file_dialog.mode = FileDialog.MODE_OPEN_FILE
 	file_dialog.popup_centered()
 
 func _on_file_selected(path):
 	show_menu()	
 	print("Selected file: ", path)
-	if (FileDialog.MODE_OPEN_FILE == file_dialog.mode):
-		var json = WCUtils.read_json_file(path)
-		gameData.load_gamedata(json)
-		close_me()	
-	else:
-		gameData.save_gamedata_to_file(path)
+	match file_dialog_mode:
+		FILE_DIALOG_MODES.LOAD_GAME:
+			var json = WCUtils.read_json_file(path)
+			gameData.load_gamedata(json)
+			close_me()	
+		FILE_DIALOG_MODES.SAVE_GAME:
+			gameData.save_gamedata_to_file(path)
+		FILE_DIALOG_MODES.IMPORT_BATTLE_BG:
+			var result = WCUtils.import_battle_background(path)
+			var msg = "NOT OK - Couldn't import"
+			if result:
+				msg  = "OK - Imported Succesfully"
+			message(msg, $PanelContainer)
+				
+		FILE_DIALOG_MODES.IMPORT_CARD_BACK:
+			var result = WCUtils.import_card_back(path)
+			var msg = "NOT OK - Couldn't import"
+			if result:
+				msg  = "OK - Imported Succesfully"
+			message(msg, $PanelContainer)
 
 
 func _on_FileDialog_popup_hide():

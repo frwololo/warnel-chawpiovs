@@ -641,6 +641,9 @@
 				},
 				{
 					"name": "thwart",
+					"tags": [
+						"collateral_thwart"
+					],
 					"amount": {
 						"if": {
 							"func_name": "paid_with_includes",

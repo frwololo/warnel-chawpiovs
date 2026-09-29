@@ -154,14 +154,14 @@ size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "Restart"
 
-[node name="EnableModsButton" type="Button" parent="PanelContainer/general/VBoxContainer"]
+[node name="ModsButton" type="Button" parent="PanelContainer/general/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 672.0
-margin_right = 1896.0
-margin_bottom = 747.0
+margin_top = 1001.0
+margin_right = 1916.0
+margin_bottom = 1076.0
 size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
-text = "Enable Fanmade Sets"
+text = "Mods"
 
 [node name="AdvancedSettingsButton" type="Button" parent="PanelContainer/general/VBoxContainer"]
 unique_name_in_owner = true
@@ -310,6 +310,7 @@ text = "BACK"
 
 [node name="advanced" type="MarginContainer" parent="PanelContainer"]
 unique_name_in_owner = true
+visible = false
 margin_left = 2.0
 margin_top = 2.0
 margin_right = 1918.0
@@ -398,6 +399,69 @@ size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "BACK"
 
+[node name="mods" type="MarginContainer" parent="PanelContainer"]
+unique_name_in_owner = true
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 1918.0
+margin_bottom = 1078.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/mods"]
+margin_right = 1916.0
+margin_bottom = 1076.0
+custom_constants/separation = 100
+
+[node name="EnableModsButton" type="Button" parent="PanelContainer/mods/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 217.0
+margin_right = 1916.0
+margin_bottom = 292.0
+size_flags_vertical = 10
+custom_fonts/font = SubResource( 2 )
+text = "Enable Fanmade Sets"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/mods/VBoxContainer"]
+margin_top = 392.0
+margin_right = 1916.0
+margin_bottom = 684.0
+size_flags_vertical = 3
+
+[node name="LoadBgButton" type="Button" parent="PanelContainer/mods/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 20.0
+margin_right = 1916.0
+margin_bottom = 95.0
+size_flags_vertical = 10
+custom_fonts/font = SubResource( 2 )
+text = "IMPORT WALLPAPER"
+
+[node name="LoadCardBackButton" type="Button" parent="PanelContainer/mods/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 118.0
+margin_right = 1916.0
+margin_bottom = 193.0
+size_flags_vertical = 10
+custom_fonts/font = SubResource( 2 )
+text = "IMPORT CARD BACK"
+
+[node name="DeleteGfxButton" type="Button" parent="PanelContainer/mods/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 217.0
+margin_right = 1916.0
+margin_bottom = 292.0
+size_flags_vertical = 10
+custom_fonts/font = SubResource( 2 )
+text = "DELETE ALL CUSTOM GFX"
+
+[node name="ModsBackButton" type="Button" parent="PanelContainer/mods/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 1001.0
+margin_right = 1916.0
+margin_bottom = 1076.0
+size_flags_vertical = 10
+custom_fonts/font = SubResource( 2 )
+text = "BACK"
+
 [node name="Overlay" type="ColorRect" parent="."]
 unique_name_in_owner = true
 visible = false
@@ -411,6 +475,15 @@ margin_right = 1896.0
 margin_bottom = 1076.0
 texture = ExtResource( 5 )
 expand = true
+
+[node name="Overlay2" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 1898.0
+margin_bottom = 1078.0
+color = Color( 0, 0, 0, 1 )
 
 [node name="FileDialog" type="FileDialog" parent="."]
 unique_name_in_owner = true

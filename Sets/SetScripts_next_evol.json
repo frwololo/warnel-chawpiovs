@@ -2662,6 +2662,7 @@
 				},
 				{
 					"name": "thwart",
+					"tags": ["collateral_thwart"],
 					"amount": 3,
 					"subject": "a_scheme",
 					"subject_exclude": "previous"

@@ -76,6 +76,7 @@ func set_groups(grid_or_pile, additional_groups:= []):
 	
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	init_wallpaper()
 	get_node("%Loading").visible = false
 	
 	gameData.play_music("battle*")
@@ -98,6 +99,16 @@ func _ready() -> void:
 	gamepadHandler.connect_viewport()	
 		
 	board_ready()
+
+func init_wallpaper():
+	var new_img = WCUtils.load_img("user://Gfx/wallpaper.png")
+	if not new_img:
+		return	
+	var imgtex = ImageTexture.new()
+	imgtex.create_from_image(new_img)
+	var wallpaper:TextureRect = get_node("%wallpaper")
+	wallpaper.texture = imgtex
+	#large_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED		
 
 func _all_clients_game_loaded(_details):
 	_pending_reload = 0

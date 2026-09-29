@@ -1,0 +1,154 @@
+{
+	"_comments": "Tests Nightcrawler Scout ahead (double thwartà with operative skill",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nightcrawler"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 5
+					}
+				},
+				{
+					"card": "Bomb Scare",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nightcrawler"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Operative Skill",
+					"tokens": {
+						"operative": 3
+					}
+				}
+			],
+			"others": [],
+			"hand1": [
+				{
+					"card": "Scout Ahead"
+				},
+				{
+					"card": "Bamf!"
+				},
+				{
+					"card": "Teleport Drop"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Scout Ahead"
+		},
+		{
+			"type": "choose",
+			"value": "Remove 3x2"
+		},		
+		{
+			"type": "select",
+			"value": "Teleport Drop",
+			"_comments": "pay cost for Scout Ahead"
+		},
+
+		{
+			"type": "target",
+			"value": "01097b"
+		},
+		{
+			"type": "target",
+			"value": "Bomb Scare"
+		},
+		{
+			"type": "activate",
+			"value": "Operative Skill",
+			"_comments": "Operative Skill will increas threat removal by 1 for both instances"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nightcrawler"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 1
+					}
+				},
+				{
+					"card": "Bomb Scare",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nightcrawler"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Operative Skill",
+					"tokens": {
+						"operative": 2
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Teleport Drop"
+				},			
+				{
+					"card": "Bamf!"
+				},
+
+				{
+					"card": "Scout Ahead"
+				}
+			]
+		}
+	}
+}

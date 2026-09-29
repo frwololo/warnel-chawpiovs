@@ -34,6 +34,7 @@ margin_right = 1920.0
 margin_bottom = 1080.0
 rect_min_size = Vector2( 1920, 1080 )
 texture = ExtResource( 1 )
+expand = true
 
 [node name="Loading" type="CenterContainer" parent="Background"]
 unique_name_in_owner = true

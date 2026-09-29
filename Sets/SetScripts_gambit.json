@@ -824,11 +824,8 @@
 			"__name__": "operative",
 			"__amount__": 3
 		},
-		"interrupt_remove_threat": {
+		"interrupt_thwart_started": {
 			"event_filters": {
-				"tags": [
-					"thwart"
-				],
 				"actual_source": "my_hero"
 			},
 			"is_optional_board": true,

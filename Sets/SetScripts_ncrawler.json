@@ -1390,6 +1390,7 @@
 					},
 					{
 						"name": "thwart",
+						"tags": ["collateral_thwart"],
 						"amount": 3,
 						"subject": "target",
 						"subject_exclude": "previous",

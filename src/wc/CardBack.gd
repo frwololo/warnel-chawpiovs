@@ -6,6 +6,7 @@ onready var art2 := $TextureRect2
 var art_filename = ""
 
 
+
 # Used for looping between brighness scales for the Cardback glow
 # The multipliers have to be small, as even small changes increase
 # brightness a lot
@@ -21,6 +22,8 @@ func _ready() -> void:
 	viewed_node = $Viewed
 	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	art2.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+
+	set_card_art("user://Gfx/card_back.png")
 
 # Reverses the card back pulse and starts it again
 func _on_Pulse_completed() -> void:
@@ -48,8 +51,11 @@ func stop_card_back_animation():
 
 	
 func set_card_art(filename) -> void:
+	var texture = cfc.get_external_texture(filename)
+	if !texture:
+		return
 	art_filename = filename		
-	art.texture = cfc.get_external_texture(art_filename)
+	art.texture = texture
 	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	# In case the generic art has been modulated, we switch it back to normal colour
 	art.self_modulate = Color(1,1,1)

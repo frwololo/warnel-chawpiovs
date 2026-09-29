@@ -1375,11 +1375,17 @@ func find_interrupt_script(trigger_card, trigger_details):
 	#TODO move to config
 	#attack events that are "collateral" should generally not trigger interrupts
 	var is_attack_interrupt = false
+	var is_thwart_interrupt = false	
 	if event_name in ["attack", "attack_started"]:
 		is_attack_interrupt = true
 		var event_object = trigger_details.get("event_object", null)
 		if is_instance_valid(event_object) and event_object.has_tag("collateral_attack"):
 			return {}
+	elif event_name in ["thwart", "thwart_started"]:
+		is_thwart_interrupt = true
+		var event_object = trigger_details.get("event_object", null)
+		if is_instance_valid(event_object) and event_object.has_tag("collateral_thwart"):
+			return {}			
 	for trigger_name in  ["interrupt_" + event_name, "interrupt"]:
 		var card_scripts = retrieve_filtered_scripts(trigger_card, trigger_name, trigger_details)
 		if card_scripts:
@@ -1393,7 +1399,8 @@ func find_interrupt_script(trigger_card, trigger_details):
 					"state_scripts": state_scripts,
 					"trigger": trigger_name,
 					"context": {
-						"is_attack_interrupt": is_attack_interrupt
+						"is_attack_interrupt": is_attack_interrupt,
+						"is_thwart_interrupt": is_thwart_interrupt						
 					}
 				}
 	return {}

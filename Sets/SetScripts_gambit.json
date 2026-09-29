@@ -1079,11 +1079,13 @@
 				},
 				{
 					"name": "attack",
+					"tags": ["collateral_attack"],
 					"amount": 0,
 					"subject": "an_enemy"
 				},
 				{
 					"name": "attack",
+					"tags": ["collateral_attack"],					
 					"amount": 0,
 					"subject": "an_enemy"
 				}

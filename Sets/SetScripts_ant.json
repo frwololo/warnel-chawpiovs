@@ -436,6 +436,7 @@
 				},
 				{
 					"name": "attack",
+					"tags": ["collateral_attack"],
 					"amount": 8,
 					"subject": "target",
 					"needs_subject": true,

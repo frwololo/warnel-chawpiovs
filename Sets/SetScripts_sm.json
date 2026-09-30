@@ -8337,7 +8337,7 @@
 					"subject": "self",
 					"set_properties": {
 						"play_cost_requirements": {
-							"mental": 1,
+							"mental": 1
 						}
 					}
 				}

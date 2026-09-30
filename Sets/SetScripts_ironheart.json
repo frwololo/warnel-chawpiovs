@@ -510,7 +510,7 @@
 					"subject": "self",
 					"set_properties": {
 						"play_cost_requirements": {
-							"energy": 1,
+							"energy": 1
 						}
 					}
 				}
@@ -1550,7 +1550,7 @@
 					"subject": "self",
 					"set_properties": {
 						"play_cost_requirements": {
-							"mental": 1,
+							"mental": 1
 						}
 					}
 				}
@@ -1606,7 +1606,7 @@
 					"subject": "self",
 					"set_properties": {
 						"play_cost_requirements": {
-							"mental": 2,
+							"mental": 2
 						}
 					}
 				}

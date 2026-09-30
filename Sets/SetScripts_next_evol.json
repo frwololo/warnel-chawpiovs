@@ -2254,7 +2254,7 @@
 					"subject": "self",
 					"set_properties": {
 						"play_cost_requirements": {
-							"energy": 1,
+							"energy": 1
 						}
 					}
 				}
@@ -2662,7 +2662,9 @@
 				},
 				{
 					"name": "thwart",
-					"tags": ["collateral_thwart"],
+					"tags": [
+						"collateral_thwart"
+					],
 					"amount": 3,
 					"subject": "a_scheme",
 					"subject_exclude": "previous"
@@ -9796,6 +9798,7 @@
 		}
 	},
 	"Uncanny X-Force": {
+		"give_to_player_max1": {},	
 		"alterants": {
 			"board": [
 				{

@@ -143,6 +143,7 @@ func mod_token(
 			tags := ["Manual"]) -> int:
 	var retcode : int
 	
+	token_name = get_real_token_name(token_name)
 	#unallowed token names
 	if !token_name:
 		return CFConst.ReturnCode.FAILED
@@ -281,8 +282,16 @@ func get_all_tokens() -> Dictionary:
 	return found_tokens
 
 
+func get_real_token_name(token_name):
+	if token_name == "all-purpose":
+		var result = owner_card.get_subject_variable({"variable": "my_all_purpose_token_name"})
+		if result:
+			return result
+	return token_name
+	
 # Returns the token node of the provided name or null if not found.
 func get_token(token_name: String) -> Token:
+	token_name = get_real_token_name(token_name)	
 	return(get_all_tokens().get(token_name,null))
 
 

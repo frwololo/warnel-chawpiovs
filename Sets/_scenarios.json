@@ -1810,5 +1810,135 @@
 			"Cable knows that only Apocalypse has the antidote, so he leads his team and the X-Men in a direct assault on the pyramid of En Sabah Nur.",
 			"<b>Three-sided Villain</b>:\nThroughout the scenario, various card abilities will cause Apocalypse to change forms between Biomorph, Cyperpath, and Giant. This is not the same as revealing or defeating the villain."
 		]
+	},
+	"50067": {
+		"code": "50067",
+		"name": "The Widow's Web",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Black Widow - 1",
+			"Black Widow - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Black Widow - 2",
+				"Black Widow - 3"
+			]
+		}
+	},
+	"50087": {
+		"code": "50087",
+		"name": "Infiltrate A.I.M. Island Embassy",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"TODO - 1",
+			"TODO - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"TODO - 2",
+				"TODO - 3"
+			]
+		}
+	},
+	"50104": {
+		"code": "50104",
+		"name": "Upgrading Adaptoids",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"TODO - 1",
+			"TODO - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"TODO - 2",
+				"TODO - 3"
+			]
+		}
+	},
+	"50130": {
+		"code": "50130",
+		"name": "Apprehending Rogue Agents",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"TODO - 1",
+			"TODO - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"TODO - 2",
+				"TODO - 3"
+			]
+		}
+	},
+	"50167": {
+		"code": "50167",
+		"name": "Zemo's Manipulations",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Baron Zemo - A1",
+			"Baron Zemo - B1"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Baron Zemo - B1",
+				"Baron Zemo - C1"
+			]
+		}
 	}
 }

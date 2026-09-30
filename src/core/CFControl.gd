@@ -613,7 +613,7 @@ func remove_modal_menu(object):
 
 func get_modal_menu():
 	if modal_menus:
-		return modal_menus[0]
+		return modal_menus.back()
 	return null	
 	
 func cleanup_modal_menu():

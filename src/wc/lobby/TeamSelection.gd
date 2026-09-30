@@ -235,6 +235,7 @@ func _load_scenarios():
 
 	var grid_columns = int(ceil(sqrt(2 * ordered_scenarios.size())))
 	grid_columns = max(grid_columns, 3)
+	grid_columns = min(9, grid_columns)
 	all_scenarios_container.columns = grid_columns
 
 	for scenario_id in ordered_scenarios:

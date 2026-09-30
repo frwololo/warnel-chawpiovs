@@ -753,6 +753,10 @@ func spinbox_value_changed( new_value,  dupe_selection: Card, origin_card) -> vo
 	pass
 	
 func card_clicked(dupe_selection: Card, origin_card) -> void:
+	#clear cache
+	_cache_count_per_card.erase(dupe_selection)
+	_cache_count_per_card.erase(origin_card)
+	
 	if !can_select_cards_with_zero_value:
 		if get_count([origin_card]) <= 0:
 			return
@@ -770,10 +774,22 @@ func card_clicked(dupe_selection: Card, origin_card) -> void:
 	var grid_card_obj = dupe_selection.get_parent()
 	
 	if origin_card in selected_cards:
+		if typeof(what_to_count) == TYPE_STRING:
+			var additional_method = what_to_count + "_special"
+			if origin_card.has_method(additional_method):
+				origin_card.call(additional_method, "cancel", my_script)		
 		selected_cards.erase(origin_card)
 		dupe_selection.highlight.set_highlight(false)
 		grid_card_obj.set_selected(false)
 	else:
+		if typeof(what_to_count) == TYPE_STRING:
+			var additional_method = what_to_count + "_special"
+			if origin_card.has_method(additional_method):
+				var ret = origin_card.call(additional_method, "prime", my_script)
+				if ret is GDScriptFunctionState && ret.is_valid(): # Still working.
+					self.visible = false
+					ret = yield(ret, "completed")
+					self.visible = true
 		selected_cards.append(origin_card)
 		dupe_selection.highlight.set_highlight(true)
 		grid_card_obj.set_selected(true)
@@ -801,8 +817,9 @@ func on_selection_gui_input(event: InputEvent, dupe_selection: Card, origin_card
 			card_clicked(dupe_selection, origin_card)
 
 #used mostly for testing
-func select_cards_by_name(names :Array = []) -> Array:
+func select_cards_by_name(names :Array = []) -> Dictionary:
 	var all_choices = _card_dupe_map.keys()
+	var ok_closed = false
 	for name_or_id in names:
 		for card in all_choices:
 			if (card.canonical_name.to_lower() == name_or_id.to_lower()) \
@@ -814,9 +831,14 @@ func select_cards_by_name(names :Array = []) -> Array:
 				else:
 					card_clicked(dupe_card, card)
 					
-	if check_ok_button() and selected_cards:	
+	if check_ok_button() and selected_cards:
+		ok_closed = true	
 		emit_signal("confirmed")			
-	return(selected_cards)
+	return({
+		"window_closed": ok_closed,
+		"selected_cards": selected_cards
+	}
+	)
 
 
 func get_all_card_options() -> Array:

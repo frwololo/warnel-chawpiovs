@@ -587,13 +587,12 @@
 					{
 						"name": "surge",
 						"amount": "!count_previous_subjects"
-					},					
+					},
 					{
 						"name": "move_card_to_container",
 						"dest_container": "discard_villain",
 						"subject": "self"
-					},
-
+					}
 				],
 				"Discard 1": [
 					{
@@ -617,12 +616,12 @@
 					{
 						"name": "surge",
 						"amount": "!count_previous_subjects"
-					},					
+					},
 					{
 						"name": "move_card_to_container",
 						"dest_container": "discard_villain",
 						"subject": "self"
-					},
+					}
 				]
 			}
 		}

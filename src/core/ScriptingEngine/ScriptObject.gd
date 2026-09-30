@@ -50,7 +50,13 @@ var alternate_cost_required = null
 var my_stored_integer = null
 
 func set_stored_integer(value:int):
-	my_stored_integer = value
+	my_stored_integer = int(value)
+	owner.script_variables["my_stored_integer"] = my_stored_integer
+
+func get_stored_integer_as_int() -> int:
+	if my_stored_integer:
+		return my_stored_integer
+	return 0
 
 func set_prev_subjects(new_subjects):
 	if prev_subjects and trigger_details["prev_subjects"]:
@@ -792,7 +798,7 @@ static func count_per(
 func retrieve_integer_subproperty(property, root, stored_integer:int = 0):
 	return retrieve_integer_property(property, stored_integer,root)
 	
-func retrieve_integer_property(property, stored_integer:int = 0,root = null):
+func retrieve_integer_property(property, stored_integer  = 0,root = null):
 	var value = get_property(property, null, null, root)
 	if value == null:
 		return 0

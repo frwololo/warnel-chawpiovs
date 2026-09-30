@@ -4348,6 +4348,7 @@
 		}
 	},
 	"Mighty Avengers": {
+		"give_to_player_max1": {},	
 		"alterants": {
 			"board": [
 				{

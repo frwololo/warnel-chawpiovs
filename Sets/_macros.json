@@ -498,6 +498,16 @@
 		}
 	},
 	"uses": {
+		"on_load": {
+			"all": [
+				{
+					"name": "save_variable",
+					"var_type": "str",
+					"var_name": "my_all_purpose_token_name",
+					"value": "__name__"
+				}
+			]
+		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"_silent": true,

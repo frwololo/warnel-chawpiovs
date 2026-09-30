@@ -575,7 +575,8 @@
 		"response": {
 			"event_name": [
 				"basic_attack_happened",
-				"basic_thwart_happened"
+				"basic_thwart_happened",
+				"basic_defense_happened"
 			],
 			"trigger": "self",
 			"board": [
@@ -1123,13 +1124,12 @@
 					"set_properties": {
 						"health": 5
 					}
-				},
+				}
 			]
 		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
-
 				{
 					"name": "attach_to_card",
 					"subject": "villain"
@@ -4054,7 +4054,7 @@
 	},
 	"Sky Cycle": {
 		"attach_upgrade_to_target": {
-			"__filter_state_subject__":	[
+			"__filter_state_subject__": [
 				{
 					"filter_group": "group_allies",
 					"filter_properties": {
@@ -4063,8 +4063,8 @@
 					},
 					"filter_max_per_host": 1
 				}
-			]				
-		},		
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -4076,7 +4076,7 @@
 					"name": "ready_card",
 					"subject": "host"
 				}
-			]			
+			]
 		},
 		"alterants": {
 			"board": [

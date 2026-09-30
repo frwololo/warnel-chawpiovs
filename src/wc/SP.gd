@@ -322,7 +322,18 @@ static func check_shares_title_filter(trigger_card, _owner_card, true_false : bo
 # of target_card's hero id
 static func check_max_per_hero(target_card, max_value, owner_card) -> bool:
 	var hero_id = target_card.get_controller_hero_id()
-	var count = cfc.NMAP.board.count_card_per_player_in_play(owner_card, hero_id, true)
+	
+	var is_team_restriction = owner_card.get_property("trait_team", 0, true)
+	
+	var count
+	if is_team_restriction:
+		var card_exists = cfc.NMAP.board.find_card_by_property("trait_team", 1, hero_id)
+		if card_exists:
+			#TODO fix hack here, we make it max even if max is more than 1
+			count = max_value
+	else:
+		count = cfc.NMAP.board.count_card_per_player_in_play(owner_card, hero_id, true)
+	
 	if count >= max_value:
 		return false
 	return true

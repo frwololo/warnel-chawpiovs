@@ -1,11 +1,11 @@
 {
-	"_comments": "Bug: I don't think so double use of token",
+	"_comments": "Team cards max 1 per player",
 	"init": {
-		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Spider-Ham"
+					"hero": "Maria Hill"
 				}
 			}
 		],
@@ -37,22 +37,31 @@
 					"host": "Mister sinister"
 				}
 			],
-			"deck1": [
-				{
-					"card": "Mockingbird"
-				}
-			],
+			"deck1": [],
 			"identity1": [
 				{
-					"card": "Spider-Ham",
-					"tokens": {
-						"toon": 3
-					}
+					"card": "Maria Hill"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Nick Fury #50002"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Mighty Avengers"
 				}
 			],
 			"hand1": [
 				{
-					"card": "\"I Don't Think So!\""
+					"card": "Agents of S.H.I.E.L.D."
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
 				}
 			]
 		}
@@ -60,27 +69,16 @@
 	"actions": [
 		{
 			"type": "play",
-			"value": "\"I Don't Think So!\"",
-		},
-		{
-			"type": "select",
-			"value": "Spider-Ham"
-		},			
-		{
-			"type": "choose",
-			"value": 1
-		},
-		{
-			"type": "select",
-			"value": "ok"
-		},		
+			"value": "Agents of S.H.I.E.L.D.",
+			"expected_to_fail": true
+		}
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Spider-Ham"
+					"hero": "Maria Hill"
 				}
 			}
 		],
@@ -101,6 +99,9 @@
 				},
 				{
 					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
 				}
 			],
 			"others": [
@@ -109,27 +110,31 @@
 					"host": "Mister sinister"
 				}
 			],
-			"deck1": [
-				{
-					"card": "Mockingbird"
-				}
-			],
+			"deck1": [],
 			"identity1": [
 				{
-					"card": "Spider-Ham",
-					"tokens": {
-						"toon": 1
-					}
+					"card": "Maria Hill"
 				}
 			],
-			"discard_villain": [
+			"allies1": [
 				{
-					"card": "Hydra Mercenary"
+					"card": "Nick Fury #50002"
 				}
 			],
-			"discard1": [
+			"upgrade_support1": [
 				{
-					"card": "\"I Don't Think So!\""
+					"card": "Mighty Avengers"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Agents of S.H.I.E.L.D."
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
 				}
 			]
 		}

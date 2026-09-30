@@ -37,7 +37,7 @@
 			],
 			"discard1": [
 				{
-					"card": "Nick Fury"
+					"card": "Nick Fury #01084"
 				},
 				{
 					"card": "Combat Training"
@@ -95,7 +95,7 @@
 		},
 		{
 			"type": "play",
-			"value": "Nick Fury",
+			"value": "Nick Fury #01084",
 			"hero": 2
 		},		
 		{
@@ -161,7 +161,7 @@
 			],
 			"allies2": [
 				{
-					"card": "Nick Fury"
+					"card": "Nick Fury #01084"
 				},
 			],
 			"hand2": [

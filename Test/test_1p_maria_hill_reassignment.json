@@ -1,11 +1,11 @@
 {
-	"_comments": "Bug: I don't think so double use of token",
+	"_comments": "all-purpose token test",
 	"init": {
-		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Spider-Ham"
+					"hero": "Maria Hill"
 				}
 			}
 		],
@@ -44,43 +44,61 @@
 			],
 			"identity1": [
 				{
-					"card": "Spider-Ham",
+					"card": "Maria Hill #50001a",
 					"tokens": {
-						"toon": 3
+						"__reassignment": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Nick Fury #50002"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Support Staff",
+					"tokens": {
+						"staff": 2
+					}
+				},
+				{
+					"card": "The Iliad",
+					"tokens": {
+						"mission": 2
 					}
 				}
 			],
 			"hand1": [
-				{
-					"card": "\"I Don't Think So!\""
-				}
+
 			]
 		}
 	},
 	"actions": [
 		{
-			"type": "play",
-			"value": "\"I Don't Think So!\"",
+			"type": "activate",
+			"value": "Maria Hill #50001a"
 		},
-		{
-			"type": "select",
-			"value": "Spider-Ham"
-		},			
 		{
 			"type": "choose",
-			"value": 1
+			"value": "Reassignment"
 		},
 		{
-			"type": "select",
-			"value": "ok"
-		},		
+			"type": "target",
+			"value": "Support Staff"
+		},
+		{
+			"type": "target",
+			"value": "The Iliad"
+		}		
 	],
 	"end": {
+		"phase": "PLAYER_TURN",
 		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Spider-Ham"
+					"hero": "Maria Hill"
 				}
 			}
 		],
@@ -101,6 +119,9 @@
 				},
 				{
 					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
 				}
 			],
 			"others": [
@@ -116,21 +137,30 @@
 			],
 			"identity1": [
 				{
-					"card": "Spider-Ham",
+					"card": "Maria Hill #50001a"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Nick Fury #50002"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Support Staff",
 					"tokens": {
-						"toon": 1
+						"staff": 1
+					}
+				},
+				{
+					"card": "The Iliad",
+					"tokens": {
+						"mission": 3
 					}
 				}
 			],
-			"discard_villain": [
-				{
-					"card": "Hydra Mercenary"
-				}
-			],
-			"discard1": [
-				{
-					"card": "\"I Don't Think So!\""
-				}
+			"hand1": [
+
 			]
 		}
 	}

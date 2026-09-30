@@ -413,7 +413,7 @@
 					"subject": "self",
 					"set_properties": {
 						"play_cost_requirements": {
-							"energy": 1,
+							"energy": 1
 						}
 					}
 				}
@@ -1001,7 +1001,7 @@
 					"name": "remove_threat",
 					"subject": "a_scheme",
 					"subject_exclude": "trigger_details_target",
-					"amount": "trigger_details_amount_removed",
+					"amount": "trigger_details_amount_removed"
 				}
 			]
 		}
@@ -1290,8 +1290,8 @@
 				},
 				{
 					"name": "forget_variable",
-					"var_name": "my_host",
-				}				
+					"var_name": "my_host"
+				}
 			]
 		}
 	},
@@ -1376,7 +1376,7 @@
 				"tags": [
 					"consequential_damage"
 				],
-				"excess_damage": ">0",
+				"excess_damage": ">0"
 			},
 			"board": [
 				{
@@ -1525,6 +1525,64 @@
 					"subject": "self"
 				}
 			]
+		},
+		"precompute_resource_special": {
+			"condition_board": {
+				"func_name": "count_tokens>1",
+				"func_params": {
+					"subject": "self",
+					"token_name": "toon"
+				}
+			},
+			"board": [
+				{
+					"name": "add_resource",
+					"amount": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "self",
+							"token_name": "toon"
+						}
+					},
+					"resource_name": "wild"
+				}
+			]
+		},
+		"resource_special": {
+			"condition_board": {
+				"func_name": "count_tokens>1",
+				"func_params": {
+					"subject": "self",
+					"token_name": "toon"
+				}
+			},
+			"board": [
+				{
+					"name": "ask_integer",
+					"is_cost": true,
+					"ask_int_min": 1,
+					"ask_int_max": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "self",
+							"token_name": "toon"
+						}
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"modification": "my_stored_integer",
+					"is_inverted": true,
+					"token_name": "toon",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": "my_stored_integer",
+					"resource_name": "wild"
+				}
+			]
 		}
 	},
 	"Spider-Man - Pavitr Prabhakar": {
@@ -1630,7 +1688,7 @@
 					"_comments": "the 'delayed' keyword here makes it call a completely different code path which solves most freeze issues with execute_scripts"
 				}
 			]
-		},
+		}
 	},
 	"The Daily Beagle": {
 		"manual": {

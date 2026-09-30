@@ -1,11 +1,11 @@
 {
-	"_comments": "Bug: I don't think so double use of token",
+	"_comments": "Organizational Support Mana resource test",
 	"init": {
-		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Spider-Ham"
+					"hero": "Maria Hill"
 				}
 			}
 		],
@@ -44,15 +44,37 @@
 			],
 			"identity1": [
 				{
-					"card": "Spider-Ham",
+					"card": "Maria Hill"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Nick Fury #50002"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Support Staff",
 					"tokens": {
-						"toon": 3
+						"staff": 1
+					}
+				},
+				{
+					"card": "The Iliad",
+					"tokens": {
+						"mission": 1
 					}
 				}
 			],
 			"hand1": [
 				{
-					"card": "\"I Don't Think So!\""
+					"card": "The douglass"
+				},
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
 				}
 			]
 		}
@@ -60,27 +82,31 @@
 	"actions": [
 		{
 			"type": "play",
-			"value": "\"I Don't Think So!\"",
+			"value": "The douglass"
 		},
 		{
 			"type": "select",
-			"value": "Spider-Ham"
-		},			
-		{
-			"type": "choose",
-			"value": 1
+			"value": "Organizational Support"
 		},
 		{
 			"type": "select",
-			"value": "ok"
-		},		
+			"value": [
+				"Nick Fury #50002",
+				"Support Staff",
+				"The Iliad"
+			]
+		},
+		{
+			"type": "select",
+			"value": "Strength"
+		}
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Spider-Ham"
+					"hero": "Maria Hill"
 				}
 			}
 		],
@@ -101,6 +127,9 @@
 				},
 				{
 					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
 				}
 			],
 			"others": [
@@ -116,20 +145,43 @@
 			],
 			"identity1": [
 				{
-					"card": "Spider-Ham",
-					"tokens": {
-						"toon": 1
-					}
+					"card": "Maria Hill"
 				}
 			],
-			"discard_villain": [
+			"allies1": [
 				{
-					"card": "Hydra Mercenary"
+					"card": "Nick Fury #50002",
+					"exhausted": true
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Support Staff",
+					"tokens": {
+						"staff": 1
+					},
+					"exhausted": true
+				},
+				{
+					"card": "The Iliad",
+					"tokens": {
+						"mission": 1
+					},
+					"exhausted": true
+				},
+				{
+					"card": "The douglass",
+					"tokens": {
+						"operation": 3
+					}
 				}
 			],
 			"discard1": [
 				{
-					"card": "\"I Don't Think So!\""
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
 				}
 			]
 		}

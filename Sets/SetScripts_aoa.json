@@ -1492,7 +1492,7 @@
 				},
 				{
 					"name": "play_card",
-					"subject": "self",
+					"subject": "self"
 				},
 				{
 					"name": "declare_defender",
@@ -4665,7 +4665,7 @@
 		"once_per_phase": {
 			"__name__": "__play_top_deck"
 		},
-		"unblank":{
+		"unblank": {
 			"_silent": true,
 			"board": [
 				{

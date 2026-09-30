@@ -404,6 +404,9 @@ func execute(_run_type, execute_mode = CFInt.RunMode.BOTH) -> void:
 			if script.my_stored_integer != null:
 				set_stored_integer(script.my_stored_integer,script)
 			
+			if script.force_run_at_prime:
+				call_task(script.script_name, script)
+			
 		if (run_type == CFInt.RunType.PRIME_ONLY):
 			#TODO There was a bug e.g. with black cat not getting its previous subjects at prime step
 			#This solves it but might lead to other issues in the future, because
@@ -423,6 +426,10 @@ func execute(_run_type, execute_mode = CFInt.RunMode.BOTH) -> void:
 			#for some scripts we have a possibility to precompute their result
 			precompute(script)
 			if (run_type == CFInt.RunType.PRECOMPUTE):
+				#need save previous subjects here since we bail before doing it
+				script.owner.last_subjects = script.subjects
+				if not script.get_property(SP.KEY_PROTECT_PREVIOUS):
+					prev_subjects = script.subjects				
 				continue
 				
 			#print("Scripting Subjects: " + str(script.subjects)) # Debug
@@ -447,7 +454,6 @@ func execute(_run_type, execute_mode = CFInt.RunMode.BOTH) -> void:
 					
 				var do_execute = true
 				var retcode
-					
 				if run_type ==	CFInt.RunType.NORMAL:
 					match execute_mode:
 						CFInt.RunMode.BOTH:
@@ -460,6 +466,11 @@ func execute(_run_type, execute_mode = CFInt.RunMode.BOTH) -> void:
 						CFInt.RunMode.NON_COST_SCRIPTS_ONLY:
 							do_execute = !(script.is_cost)
 							non_costs_executed = true
+				
+				if script.force_run_at_prime:
+					#skip execute here because this was already ran during prime
+					do_execute = false	
+												
 				if do_execute:
 					retcode = call_task(script.script_name, script)
 					if retcode is GDScriptFunctionState:

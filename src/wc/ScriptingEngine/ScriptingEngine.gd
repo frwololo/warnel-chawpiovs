@@ -173,7 +173,7 @@ func add_resource(script: ScriptTask) -> int:
 		return retcode
 
 	var counter_name: String = script.get_property("resource_name")
-	#TODO the scripting engine has better ways to handle alterations, etc... need to mimic that? See mod_counter
+	#TODO the scripting engine has better ways to handle alterations, etc... need to mimic that? See mod_counter		
 	var modification: int  = script.retrieve_integer_property("amount")
 	# var set_to_mod: bool = script.get_property(SP.KEY_SET_TO_MOD)
 	var is_cost_reduction: bool  = script.get_property("is_cost_reduction", false)
@@ -796,6 +796,7 @@ func character_died(script: ScriptTask) -> int:
 	
 	return retcode
 
+
 func save_variable(script:ScriptTask) -> int:
 	var retcode = CFConst.ReturnCode.CHANGED
 
@@ -804,7 +805,7 @@ func save_variable(script:ScriptTask) -> int:
 		return CFConst.ReturnCode.FAILED
 
 	var var_type = script.script_definition.get("var_type", "")
-	if !var_type in ["subject", "int"]:
+	if !var_type in ["subject", "int", "str"]:
 		return CFConst.ReturnCode.FAILED
 
 	var value = script.script_definition.get("value", null)
@@ -834,11 +835,7 @@ func save_variable(script:ScriptTask) -> int:
 			if current_value == null:
 				current_value = 0		
 		"str":
-			var target_subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : value})
-			if !target_subjects:
-				return CFConst.ReturnCode.FAILED
-			var target_subject = target_subjects[0]
-			result = str(target_subject.get_property( script.script_definition.get("property", "")))
+			result = str(value)
 			if current_value == null:
 				current_value = ""							
 		_:
@@ -853,6 +850,7 @@ func save_variable(script:ScriptTask) -> int:
 				subject.script_variables[var_name] = result
 		
 	return retcode
+
 
 func forget_variable(script:ScriptTask) -> int:
 	var retcode = CFConst.ReturnCode.CHANGED
@@ -1309,13 +1307,7 @@ func receive_damage(script: ScriptTask) -> int:
 			#overkill attack
 			#TODO this only handles ally/hero attack for now,
 			#enemy overkill is handled in another part of the code
-			#Note that this only happens for attacks
-			var signal_details = {
-				"attacker": attacker,
-				"target": card,
-				"damage": damage_happened,
-				"tags": tags,
-			}			
+			#Note that this only happens for attacks		
 			if damage_happened and excess_damage:
 				var overkill = attacker.get_property("overkill", 0, true) or (script.retrieve_integer_property("overkill"))	or ("overkill" in tags)
 				if overkill:
@@ -1338,7 +1330,6 @@ func receive_damage(script: ScriptTask) -> int:
 							_add_pre_receive_damage_on_stack (excess_damage, script, script_modifications)
 			
 		#check for death
-		var lethal = false
 		if damage_happened:			
 			var signal_details = {
 				"attacker": attacker,
@@ -1350,7 +1341,7 @@ func receive_damage(script: ScriptTask) -> int:
 			}
 			scripting_bus.emit_signal_on_stack("card_damaged", card, signal_details)
 
-			lethal = card.check_death(script)
+			var _lethal = card.check_death(script)
 
 		#enemy attacks do not use the context window (TODO can we migrate to it?), 
 		#so we have to call attack_finished here
@@ -1414,7 +1405,7 @@ func thwart_finished( details)-> int:
 				"source": thwarter ,
 				"amount": amount,
 				"amount_removed": amount_removed,
-				"target" : target
+				"target" : target,
 			}
 
 			if (script.has_tag("basic power")):
@@ -2635,8 +2626,8 @@ func _modify_script(script, modifications:Dictionary = {}, script_definition_rep
 			
 		return output
 
-static func transfer_default_damage_properties(from_script, to_script):
-	for additional_data in CFConst.DAMAGE_TRANSFER_SCRIPT_PROPERTIES:
+static func transfer_default_properties(from_script, to_script, properties):
+	for additional_data in properties:
 		if from_script.script_definition.has(additional_data):
 			var type = typeof(from_script.script_definition[additional_data])
 			match type:
@@ -2644,6 +2635,13 @@ static func transfer_default_damage_properties(from_script, to_script):
 					to_script.script_definition[additional_data] = from_script.script_definition[additional_data].duplicate()
 				_:
 					to_script.script_definition[additional_data] = from_script.script_definition[additional_data]
+
+static func transfer_default_damage_properties(from_script, to_script):
+	transfer_default_properties(from_script, to_script, CFConst.DAMAGE_TRANSFER_SCRIPT_PROPERTIES)
+
+static func transfer_default_thwart_properties(from_script, to_script):
+	transfer_default_properties(from_script, to_script, CFConst.THWART_TRANSFER_SCRIPT_PROPERTIES)
+
 
 func _add_pre_receive_damage_on_stack(amount, original_script, modifications:Dictionary = {}):
 		if !original_script:
@@ -2714,6 +2712,9 @@ func _add_remove_threat_on_stack(amount, original_script, modifications:Dictiona
 		
 		modifications["script_definition"] =  remove_threat_script_definition	
 		var remove_threat_script = _modify_script(original_script, modifications, "replace")
+	
+		transfer_default_thwart_properties(original_script, remove_threat_script)
+
 	
 		var task_event = SimplifiedStackScript.new(remove_threat_script)
 		gameData.theStack.add_script(task_event)
@@ -3924,9 +3925,20 @@ func constraints(script: ScriptTask) -> int:
 	#Max per player rule to play with "play under any player's control"
 	var max_per_hero_any = script.get_property("max_per_hero_any", 0)
 	if max_per_hero_any:
-		var already_in_play = cfc.NMAP.board.count_card_per_player_in_play(this_card)
-		if already_in_play >= max_per_hero_any * gameData.get_team_size():
-			return 	CFConst.ReturnCode.FAILED		
+		var is_team_restriction = this_card.get_property("trait_team", 0, true)
+		if is_team_restriction:
+			var count = 0
+			for i in gameData.get_team_size():
+				var hero_id = i + 1
+				var card_exists = cfc.NMAP.board.find_card_by_property("trait_team", 1, hero_id)
+				if card_exists:	
+					count += 1
+			if count >= gameData.get_team_size():
+				return 	CFConst.ReturnCode.FAILED
+		else:	
+			var already_in_play = cfc.NMAP.board.count_card_per_player_in_play(this_card)
+			if already_in_play >= max_per_hero_any * gameData.get_team_size():
+				return 	CFConst.ReturnCode.FAILED		
 
 	#Max per phase rule to play
 	var max_per_phase = script.get_property("max_per_phase", 0)

@@ -89,7 +89,7 @@
 			],
 			"allies1": [
 				{
-					"card": "Maria Hill",
+					"card": "Maria Hill #01067",
 					"tokens": {"damage": 1}
 				}
 			],
@@ -123,8 +123,8 @@
 	"actions": [
 		{
 			"type": "select",
-			"value": "Maria Hill",
-			"_comments": "Defend with Maria Hille"
+			"value": "Maria Hill #01067",
+			"_comments": "Defend with Maria Hill"
 		},	
 		{
 			"type": "other",
@@ -220,7 +220,7 @@
 			],
 			"discard1": [
 				{
-					"card": "Maria Hill"
+					"card": "Maria Hill #01067"
 				}
 			],
 			"identity1": [

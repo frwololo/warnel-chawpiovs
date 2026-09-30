@@ -468,7 +468,6 @@
 	},
 	"Guardians of the Galaxy": {
 		"give_to_player_max1": {},
-		"_comments": "this is not exactly the same limitation as other max 1 per player. Need to refine",
 		"card_attached": {
 			"filter_state_trigger": [
 				{

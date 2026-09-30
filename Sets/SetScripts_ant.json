@@ -436,7 +436,9 @@
 				},
 				{
 					"name": "attack",
-					"tags": ["collateral_attack"],
+					"tags": [
+						"collateral_attack"
+					],
 					"amount": 8,
 					"subject": "target",
 					"needs_subject": true,
@@ -1090,7 +1092,7 @@
 					"_comments": "the 'delayed' keyword here makes it call a completely different code path which solves most freeze issues with execute_scripts"
 				}
 			]
-		},
+		}
 	},
 	"Tech Theft": {
 		"alterants": {

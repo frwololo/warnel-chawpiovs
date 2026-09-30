@@ -43,7 +43,7 @@
 			],
 			"allies1": [
 				{
-					"card": "Maria Hill"
+					"card": "Maria Hill #01067"
 				}
 			],
 			"upgrade_support1": [
@@ -61,7 +61,7 @@
 	"actions": [
 		{
 			"type": "activate",
-			"value": "Maria Hill"
+			"value": "Maria Hill #01067"
 		},
 		{
 			"type": "choose",
@@ -125,7 +125,7 @@
 					"card": "Last Stand"
 				},
 				{
-					"card": "Maria Hill"
+					"card": "Maria Hill #01067"
 				}
 			],
 			"upgrade_support1": [

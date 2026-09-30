@@ -82,13 +82,32 @@ var game_loaded:bool = false
 var delta:float = 0
 
 #temporary variables to keep track of objects to interact with
-var _current_selection_window = null
+var _current_selection_windows = []
 var _current_targeting_card = null
 var _current_targeted_card = null
 var _action_ongoing: int = 0
 var _cards_by_nickname:= {"initialized": false} 
 
 var _allclients_finalized: = {}
+
+func get_current_selection_window():
+	if !_current_selection_windows:
+		return null
+	return _current_selection_windows.back()
+
+func remove_selection_window(object):
+	_current_selection_windows.erase(object)
+
+func clean_selection_window():
+	var to_append = []
+	for obj in _current_selection_windows:
+		if is_instance_valid(obj):
+			to_append.append(obj)
+	
+	_current_selection_windows = to_append
+
+func add_selection_window(window):
+	_current_selection_windows.append(window)		
 
 #for internal statistics to find slow stuff
 func count_delay(_name):
@@ -146,7 +165,8 @@ func reset_between_tests():
 	cfc.set_game_paused(true)
 	display_debug("reset_between_tests")
 	#force close any open window:
-	cancel_current_selection_window()
+	while _current_selection_windows:
+		cancel_current_selection_window()
 	game_loaded = false
 
 	_cards_by_nickname = {"initialized": false} 
@@ -167,7 +187,7 @@ func reset_between_tests():
 	delta = 0
 
 	#temporary variables to keep track of objects to interact with
-	_current_selection_window = null
+	_current_selection_windows = []
 	_current_targeting_card = null
 	_current_targeted_card = null
 	_action_ongoing = 0	
@@ -392,7 +412,7 @@ func should_wait(my_action, _delta):
 					count_delay("action_wait_a_bit")
 					return true					
 			"wait_for_select_menu":
-				if !is_instance_valid(_current_selection_window):
+				if !is_instance_valid(get_current_selection_window()):
 					if (!expected_to_fail) or (_delta <max_wait_time * delay_multiplier):
 						count_delay("action_wait_for_select_menu")
 						return true	
@@ -410,7 +430,7 @@ func should_wait(my_action, _delta):
 	
 		#wait a bit if we need to choose from a selection window but that window isn't there
 	if (action_type == "select"):
-		if !(is_instance_valid(_current_selection_window)):
+		if !(is_instance_valid(get_current_selection_window())):
 			if (_delta <long_wait_time  * delay_multiplier):
 				count_delay("action_select")
 				return true
@@ -712,47 +732,52 @@ func action_select(hero_id, action_value):
 			_:
 				chosen_cards = [action_value]
 	
-	if !is_instance_valid(_current_selection_window):
+	if !is_instance_valid(get_current_selection_window()):
 		var _error = 1
-		_current_selection_window = null
+		clean_selection_window()
 		return
 	
 	for i in range (chosen_cards.size()):
 		chosen_cards[i] = get_corrected_card_id(chosen_cards[i])
+	
+	var result = {}
+	var current_window = get_current_selection_window()	
+	if (chosen_cards):
+		result = current_window.select_cards_by_name(chosen_cards)
+		chosen_cards = result.get("selected_cards", [])
 		
-	if (chosen_cards):
-		chosen_cards = _current_selection_window.select_cards_by_name(chosen_cards)
-
-	if (chosen_cards):
-		_current_selection_window = null
+	if (chosen_cards and result.get("window_closed", false)):
+		remove_selection_window(current_window)
 	return
 
 func ok_current_selection_window():
-	if !is_instance_valid(_current_selection_window):
+	if !is_instance_valid(get_current_selection_window()):
 		var _error = 1
-		_current_selection_window = null
-			
-	if (_current_selection_window):
-		var closed_ok = _current_selection_window.attempt_ok()
+		clean_selection_window()
+	
+	var current_window = get_current_selection_window()		
+	if (current_window):
+		var closed_ok = current_window.attempt_ok()
 		if closed_ok:
-			_current_selection_window = null
+			remove_selection_window(current_window)
 	else:
 		#TODO error handling
 		var _error =1
 
 func cancel_current_selection_window(force_cancel = true):
-	if !is_instance_valid(_current_selection_window):
+	if !is_instance_valid(get_current_selection_window()):
 		var _error = 1
-		_current_selection_window = null
-			
-	if (_current_selection_window):
+		clean_selection_window()
+	
+	var current_window = get_current_selection_window()		
+	if (current_window):
 		var closed_ok = true
 		if force_cancel:
-			_current_selection_window.force_cancel()
+			current_window.force_cancel()
 		else:
-			closed_ok = _current_selection_window.attempt_cancel()
+			closed_ok = current_window.attempt_cancel()
 		if closed_ok:
-			_current_selection_window = null
+			remove_selection_window(current_window)
 	else:
 		#TODO error handling
 		var _error =1
@@ -785,7 +810,8 @@ func action_choose(hero_id, action_value):
 		#TODO error handling
 		var _error =1	
 		return
-				
+	if typeof(action_value) != TYPE_STRING:
+		action_value = str(action_value)			
 	menu.force_select_by_title(action_value.to_lower())
 
 #clicked on next phase. Value is the hero id	
@@ -1495,11 +1521,11 @@ func _initiated_targeting(_request_object = null):
 	if (_current_targeted_card):
 		_current_targeting_card.targeting_arrow.set_destination(_current_targeted_card.global_position + Vector2(70, 70))
 
-func _selection_window_opened(_request_object = null,details = {}):
-	_current_selection_window = _request_object
+func _selection_window_opened(request_object,details = {}):
+	add_selection_window(request_object)
 
-func _selection_window_closed(_request_object = null,details = {}):
-	_current_selection_window = null
+func _selection_window_closed(request_object,details = {}):
+	remove_selection_window(request_object)
 
 
 static func get_all_card_ids(json_data):

@@ -39,12 +39,12 @@
 			],
 			"identity1": [
 				{
-					"card": "Black Widow"
+					"card": "Black Widow #08001a"
 				}
 			],
 			"upgrade_support1": [
 				{
-					"card": "Widow's Bite"
+					"card": "Widow's Bite #08010"
 				}
 			],
 			"enemies1": [],
@@ -62,7 +62,7 @@
 	"actions": [
 		{
 			"type": "activate",
-			"value": "Widow's Bite"
+			"value": "Widow's Bite #08010"
 		},
 		{
 			"type": "target",
@@ -110,12 +110,12 @@
 			],
 			"identity1": [
 				{
-					"card": "Black Widow"
+					"card": "Black Widow #08001a"
 				}
 			],
 			"discard1": [
 				{
-					"card": "Widow's Bite"
+					"card": "Widow's Bite #08010"
 				}
 			],
 			"enemies1": [],

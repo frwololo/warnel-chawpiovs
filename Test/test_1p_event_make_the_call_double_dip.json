@@ -73,7 +73,7 @@
 					"card": "Jessica Jones"
 				},
 				{
-					"card": "Nick Fury"
+					"card": "Nick Fury #01084"
 				},
 				{
 					"card": "Black Cat"
@@ -88,7 +88,7 @@
 		},
 		{
 			"type": "play",
-			"value": "Nick Fury"
+			"value": "Nick Fury #01084"
 		},
 		{
 			"type": "choose",
@@ -147,7 +147,7 @@
 			],
 			"allies1": [
 				{
-					"card": "Nick Fury"
+					"card": "Nick Fury #01084"
 				}
 			],
 			"hand1": [

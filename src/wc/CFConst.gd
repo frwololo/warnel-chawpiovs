@@ -729,7 +729,6 @@ const TOKENS_INCREASE_PREVENTION_PROPERTIES:= {
 	"confused": ["stalwart", "cannot_be_confused"],
 }
 
-
 const DEFAULT_TOKEN_MAX_VALUE := {
 	"tough" : 1,
 	"stunned" : 1,
@@ -773,6 +772,7 @@ const AUTO_KEYWORDS := {
 	"villainous" : "int",
 		
 #additional keywords not officially in the game, for alterants
+	"all_purpose_property": "int",
 	"attack_indirect_damage": "int",
 	"blank_abilities": "int",
 	"blank_printed_trigger_abilities": "int",
@@ -922,6 +922,9 @@ const DAMAGE_TRANSFER_SCRIPT_PROPERTIES:= [
 	"context_uid"
 ]
 
+const THWART_TRANSFER_SCRIPT_PROPERTIES:= [
+	"context_uid"
+]
 
 
 enum PHASE_STEP {
@@ -1072,7 +1075,7 @@ const DEFAULT_SETTINGS:= {
 		"ncrawler": "https://marvelcdb.com/api/public/cards/ncrawler.json", #NightCrawler Hero Pack	
 #		"magneto": "https://marvelcdb.com/api/public/cards/magneto.json", #Magneto Hero Pack	
 #cycle 9
-#		"aos": "https://marvelcdb.com/api/public/cards/aos.json", #Agents of Shield Expansion
+		"aos": "https://marvelcdb.com/api/public/cards/aos.json", #Agents of Shield Expansion
 #		"bp": "https://marvelcdb.com/api/public/cards/bp.json", #Black Panther Hero Pack	
 #		"silk": "https://marvelcdb.com/api/public/cards/silk.json", #Silk Hero Pack	
 #		"falcon": "https://marvelcdb.com/api/public/cards/falcon.json", #Falcon Hero Pack	

@@ -18,6 +18,7 @@ var is_skipped := false
 var is_cost := false
 var is_else := false
 var needs_subject := false
+var force_run_at_prime := false
 
 #if this script generates some object outcome, it will be stored here
 var process_result = null
@@ -32,6 +33,7 @@ func _init(owner,
 	script_name = get_property("name")
 
 	is_cost = get_property(SP.KEY_IS_COST)
+	force_run_at_prime = get_property("force_run_at_prime", false )
 	needs_subject = get_property(SP.KEY_NEEDS_SUBJECT)
 	is_else = get_property(SP.KEY_IS_ELSE)
 	if not SP.filter_trigger(

@@ -3743,7 +3743,16 @@ func get_subject_int_property(params, script:ScriptObject= null) -> int:
 		count+= value
 	return count
 
-
+func get_subject_variable(params, script:ScriptObject= null) -> int:
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return 0
+	
+	var var_name = params.get("variable", "")
+	var result = subject.script_variables.get(var_name, 0)
+	
+	return result
+	
 func get_subject_int_variable(params, script:ScriptObject= null) -> int:
 	var subject = get_param_subject(params, script)
 	if !subject:
@@ -4339,6 +4348,8 @@ func pay_as_resource(script):
 	while exe_sceng is GDScriptFunctionState && exe_sceng.is_valid():
 		exe_sceng  = exe_sceng.resume()	
 
+	get_resource_value_as_int_special("execute", script)
+
 	var state_exec = get_state_exec()
 	if state_exec == "hand":	
 		self.discard()
@@ -4381,6 +4392,8 @@ func _get_script_sceng(trigger, script = null, run_bg_cost_check = true):
 	
 	return sceng
 
+
+
 #computes how much resources this card would generate as part of a payment
 #this uses its "resource" script in priority (for card that have either special resource abilities,
 #or cards that modify their resource based on some scripted conditions - e.g. The Power of Justice
@@ -4395,10 +4408,24 @@ func get_resource_value_as_mana(script):
 	if _cache_resource_value.has(cache_key):
 		return _cache_resource_value[cache_key]
 
+	_cache_resource_value[cache_key] = get_resource_value_as_mana_no_cache(script)
+	return _cache_resource_value[cache_key]
+
+func get_resource_value_as_mana_no_cache(script, precompute_method = ""):
+	if is_resource_locked(script):
+		return null
+	
+	if !precompute_method:		
+		var special_mana = get_resource_value_as_int_special("get_mana", script)
+		if special_mana:
+			return special_mana		
 		
 	var my_state = get_state_exec()
-	var sceng:ScriptingEngine = _get_resource_sceng(script)
-	var result_mana:ManaCost = ManaCost.new()
+	var sceng:ScriptingEngine
+	if precompute_method:
+		sceng = _get_script_sceng(precompute_method, script)
+	else:
+		sceng = _get_resource_sceng(script)
 	
 	_lockable_for_subject = true
 	
@@ -4412,30 +4439,109 @@ func get_resource_value_as_mana(script):
 			for script in sceng.scripts_queue:
 				if script.script_name in ["discard", "move_to_container"]:
 					_lockable_for_subject = true
-					 
-			# run in precompute mode to try and calculate how much resources this would give us
-			var func_return = sceng.execute(CFInt.RunType.PRECOMPUTE)
-			while func_return is GDScriptFunctionState && func_return.is_valid():
-				func_return = func_return.resume()
-				
-			var results = sceng.get_precompute_objects()
-			if (results):
-				for result in results:
-					if result as ManaCost:
-						result_mana.add_manacost(result)
-				_cache_resource_value[cache_key] = result_mana		
-				return _cache_resource_value[cache_key]			
+			
+			var result_mana = compute_resource_value_as_mana(sceng)
+			if result_mana:		 
+				return result_mana			
 	
 	#if the compute didn't get through, we return the regular printed value
-	if (my_state) == "hand":
-#		if (canonical_name == "The Power of Justice" and get_state_exec() == "hand"):
-#			var _tmp = 1	
-		_cache_resource_value[cache_key]  = get_printed_resource_value_as_mana({}, script)	
-		return _cache_resource_value[cache_key]
+	if (my_state) == "hand":	
+		return get_printed_resource_value_as_mana({}, script)	
 	
-	_cache_resource_value[cache_key] = null
-	return _cache_resource_value[cache_key]
+	#failure: not in hand, doesn't have a valid script: this isn't a valid resource
+	return null
 
+
+#computes how much mana a specific sceng would return when paid as part of a cost
+#This assumes the sceng has been primed
+func compute_resource_value_as_mana(sceng):
+	if !sceng:
+		return null
+			
+	if (!sceng.can_all_costs_be_paid):
+		return null
+								 
+	# run in precompute mode to try and calculate how much resources this would give us
+	var func_return = sceng.execute(CFInt.RunType.PRECOMPUTE)
+	while func_return is GDScriptFunctionState && func_return.is_valid():
+		func_return = func_return.resume()
+		
+	var results = sceng.get_precompute_objects()
+	if !results:
+		return null
+
+	var result_mana:ManaCost = ManaCost.new()
+	for result in results:
+		if result as ManaCost:
+			result_mana.add_manacost(result)
+	return result_mana
+
+#used by selectionWindow for special mana resources
+var _resource_special_sceng = null
+var _resource_special_precompute_cache = {}
+func get_resource_value_as_int_special(mode, script):
+	var cache_key = {
+		"owner": script.owner
+	}.hash()
+		
+	match mode:
+		"get_mana":
+			if !_resource_special_sceng: #Doesn't exist or not computed yet
+				if !get_potential_scripts("precompute_resource_special"):
+					return null
+				if _resource_special_precompute_cache.has(cache_key):
+					return _resource_special_precompute_cache[cache_key]
+				_resource_special_precompute_cache[cache_key] = get_resource_value_as_mana_no_cache(script, "precompute_resource_special")
+				return _resource_special_precompute_cache[cache_key]		
+			var result = compute_resource_value_as_mana(_resource_special_sceng)
+			if result:
+				var result_int = result.converted_mana_cost()
+				var _tmp = 1
+			return result				
+		"prime":
+			_cache_resource_value.erase(cache_key)	
+			_resource_special_precompute_cache.erase(cache_key)	
+			_resource_special_sceng = _get_script_sceng("resource_special", script, false)
+			if !_resource_special_sceng:
+				return null		
+			var sceng_return = _resource_special_sceng.execute(CFInt.RunType.PRIME_ONLY)
+			#if not sceng.all_tasks_completed:
+			if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
+				yield(sceng_return,"completed")			
+		"cancel":
+			_cache_resource_value.erase(cache_key)
+			_resource_special_precompute_cache.erase(cache_key)				
+			_resource_special_sceng = null
+		"execute":
+			_cache_resource_value.erase(cache_key)
+			_resource_special_precompute_cache.erase(cache_key)				
+			var sceng = _resource_special_sceng
+			if !sceng:
+				return null
+			#TODO more subtlety here?	
+			var force_user_interaction_required = false	
+			if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED:
+				if force_user_interaction_required:
+					sceng.user_interaction_status = CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER
+						
+			#TODO might need to use stack for other users?
+			var use_stack = false
+			var run_type = CFInt.RunType.NORMAL
+			if use_stack:
+				pass
+#				var func_return = add_script_to_stack(sceng, run_type, trigger, trigger_details, action_name, checksum)
+#				while func_return is GDScriptFunctionState && func_return.is_valid():
+#					func_return = func_return.resume()
+			else:
+				var sceng_return = sceng.execute(run_type)
+				while sceng_return is GDScriptFunctionState && sceng_return.is_valid():
+					sceng_return = sceng_return.resume()				
+			_resource_special_sceng = null
+		
+			
+		
+
+		
 func get_resource_value_as_int(script):
 #	if (canonical_name == "The Power of Justice" and get_state_exec() == "hand"):
 #		var _tmp = 1
@@ -4445,7 +4551,7 @@ func get_resource_value_as_int(script):
 		return 0
 	
 	return result_mana.converted_mana_cost()
-		
+
 
 func merge_params_with_override(func_name, trigger, params):
 	var function_override = gameData.theGameObserver.get_function_override(func_name, trigger)

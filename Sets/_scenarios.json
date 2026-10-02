@@ -1691,7 +1691,7 @@
 			"X-Force is rescued from the endless ranks of Infinites by the timely arrival of Magik and Bishop. Magik uses her power to teleport them out of danger and into the secret headquarters of the X-Men. There they learn how Apocalypse rose to power after the assassination of Professor X and how Magneto leads the X-Men now in honor of his fallen friend.",
 			"Magneto explains the long war of attrition they have been waging, and losing, to Apocalypse, and how the arrival of X-Force at this juncture could turn the tide in their favor. But before he can detail his plan, the walls of their headquarters are violently blown open. Apocalypse has located Magneto's secret headquarters and ordered his Four Horsemen to destroy the X-Men once and for all!",
 			"<b>Multiple Villains</b>:\nThe Four Horsemen scenario has four different villains: War, Famine, Pestilence, and Death. All four villains are revealed in random order and put into play in a row when setting up the scenario.",
-			"<b>Active Villain</b>:\nThere are four villains in play during the scenario, but only the active villain will activate during the villain phase.Any encounter card that refers to “the villain” only refers to the active villain.",
+			"<b>Active Villain</b>:\nThere are four villains in play during the scenario, but only the active villain will activate during the villain phase.Any encounter card that refers to 'the villain' only refers to the active villain.",
 			"When a player triggers a player card ability that refers to the villain, they choose which villain they want to be the target of that ability. Players can attack any villain they choose regardless of which villain is the active villain."
 		]
 	},
@@ -1769,8 +1769,8 @@
 			]
 		},
 		"description": [
-			"Apocalypse has been defeated and his rule ended. But there’s no time to celebrate as his vast empire is thrown into chaos. Prelates scramble to seize power and carve out their own territories, while the long-oppressed masses rise up in rebellion. In the midst of this upheaval, the members of X-Men and X-Force search for a way to undo the harm that Apocalypse has done to the world.",
-			"When they hear of a time portal installed beneath Apocalypse’s citadel, they race to find it. It is not until they reach the machine and entrust Beast to operate it that he reveals he is not their Hank McCoy, but the Dark Beast who built the device for Apocalypse! He mocks the unsuspecting X-Men and announces his intention to travel back in time and ensure that his master rises again. But before he can properly calibrate the machine, X-Force tackles him through the portal, casting all of them adrift through time and space."
+			"Apocalypse has been defeated and his rule ended. But there's no time to celebrate as his vast empire is thrown into chaos. Prelates scramble to seize power and carve out their own territories, while the long-oppressed masses rise up in rebellion. In the midst of this upheaval, the members of X-Men and X-Force search for a way to undo the harm that Apocalypse has done to the world.",
+			"When they hear of a time portal installed beneath Apocalypse's citadel, they race to find it. It is not until they reach the machine and entrust Beast to operate it that he reveals he is not their Hank McCoy, but the Dark Beast who built the device for Apocalypse! He mocks the unsuspecting X-Men and announces his intention to travel back in time and ensure that his master rises again. But before he can properly calibrate the machine, X-Force tackles him through the portal, casting all of them adrift through time and space."
 		]
 	},
 	"45147": {
@@ -1806,7 +1806,7 @@
 		},
 		"description": [
 			"Upon defeating Dark Beast, X-Force took control of his time machine and recalibrated it to return them to their past and prevent Professor X from being assassinated. Unfortunately, the unfamiliar device brought them back just in time to witness the professor being shot, putting the world on the path to the horrible future X-Force just escaped.",
-			"After rushing Xavier to the hospital where he is stabilized, the gathered members of X-Force and X-Men learn that he has been infected with the same techno-organic virus that plagues half of Cable’s body. If they cannot find the cure, the professor — and the future — are doomed.",
+			"After rushing Xavier to the hospital where he is stabilized, the gathered members of X-Force and X-Men learn that he has been infected with the same techno-organic virus that plagues half of Cable's body. If they cannot find the cure, the professor — and the future — are doomed.",
 			"Cable knows that only Apocalypse has the antidote, so he leads his team and the X-Men in a direct assault on the pyramid of En Sabah Nur.",
 			"<b>Three-sided Villain</b>:\nThroughout the scenario, various card abilities will cause Apocalypse to change forms between Biomorph, Cyperpath, and Giant. This is not the same as revealing or defeating the villain."
 		]
@@ -1814,10 +1814,14 @@
 	"50067": {
 		"code": "50067",
 		"name": "The Widow's Web",
-		"modular_default": [],
+		"modular_default": [
+			"a.i.m._abduction",
+			"a.i.m._science"
+		],
 		"encounter_sets": [
-			"TODO",
+			"black_widow_villain",
 			"Standard",
+			"Modular",
 			"Modular"
 		],
 		"villains": [
@@ -1826,119 +1830,179 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"black_widow_villain",
 				"Standard",
-				"modular",
+				"Modular",
+				"Modular",
 				"expert"
 			],
 			"villains": [
 				"Black Widow - 2",
 				"Black Widow - 3"
 			]
-		}
+		},
+		"description": [
+			"S.H.I.E.L.D. computer specialist Sarah Garza is missing. A search of her Brooklyn apartment turned up an Inhuman cocoon, evidence that Garza's previously-dormant Inhuman genes have become active. There is no telling what kind of power she may now possess.",
+			"With Garza now presenting a potential new asset, or a new threat, it is up to you to investigate her disappearance. It's also a convenient excuse to look into a disturbing rumor of a mole sitting on the S.H.I.E.L.D. Executive Board, which oversees S.H.I.E.L.D. operations and is also located in D.C.",
+			"You track Garza's cell phone to an unused stretch of subway tunnel. There you discover a temporary base of operations for the power-hungry super-scientist group, A.I.M., which is working toward unknown ends with the help of Russian spy and assassin, Yelena Belova, also known as the Black Widow.",
+			"<b>Preparation Abilities</b>:\nEncounter cards in Black Widow's encounter set have Preparation abilities in place of Boost abilities. These abilities are not resolved when the cards are turned faceup as boost cards. Instead, these abilities are only resolved by the Forced Interrupt on Black Widow's villain cards."
+		]
 	},
 	"50087": {
 		"code": "50087",
 		"name": "Infiltrate A.I.M. Island Embassy",
-		"modular_default": [],
+		"modular_default": [
+			"a.i.m._science",
+			"batrocs_brigade"
+		],
 		"encounter_sets": [
-			"TODO",
+			"batroc",
 			"Standard",
+			"Modular",
 			"Modular"
 		],
 		"villains": [
-			"TODO - 1",
-			"TODO - 2"
+			"Batroc - A"
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"batroc",
 				"Standard",
 				"modular",
+				"Modular",
 				"expert"
 			],
 			"villains": [
-				"TODO - 2",
-				"TODO - 3"
+				"Batroc - B"
 			]
-		}
+		},
+		"description": [
+			"The arrested Black Widow refuses to talk, but her A.I.M. accomplices are not so disciplined. You learn that they have been involved in a large-scale kidnapping ring all over the United States on behalf of the government of A.I.M. Island, the sovereign island nation governed by A.I.M. The evidence points to these kidnapping victims being smuggled out of the U.S. through the A.I.M. Island embassy in Washington, D.C.",
+			"You decide to infiltrate the embassy without S.H.I.E.L.D. Executive Board approval. If you are discovered inside the embassy, S.H.I.E.L.D. will disavow any knowledge of your activities and you will face legal consequences. Your mission is to locate and extract any missing persons being held inside the embassy.",
+			"<b>Infiltrating the Embassy</b>:\nThe players' objective in this scenario is not to defeat the villain, Batroc, but instead to advance through the three stages of the main scheme by reducing the threat on each stage to zero"
+		]
 	},
 	"50104": {
 		"code": "50104",
 		"name": "Upgrading Adaptoids",
-		"modular_default": [],
+		"modular_default": [
+			"scientist_supreme"
+		],
 		"encounter_sets": [
-			"TODO",
+			"m.o.d.o.k.",
 			"Standard",
 			"Modular"
 		],
 		"villains": [
-			"TODO - 1",
-			"TODO - 2"
+			"M.O.D.O.K. - A"
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"m.o.d.o.k.",
 				"Standard",
 				"modular",
 				"expert"
 			],
 			"villains": [
-				"TODO - 2",
-				"TODO - 3"
+				"M.O.D.O.K. - B"
 			]
-		}
+		},
+		"description": [
+			"You extracted the captives being held at the A.I.M. Island embassy, but Sarah Garza was not among them. Evidence you collected indicates that Garza and several other civilians, all of whom have Inhuman genes, have been shipped to A.I.M. Island to be used as genetic templates to create super-powered synthetic copies called Adaptoids. Leading the research is the Mental Organism Designed Only for Killing, a.k.a. M.O.D.O.K.",
+			"You also discovered evidence that a member of the Executive Board is involved in the plot, but you're unsure which one. You decide to launch a covert rescue mission to A.I.M. Island without permission from the Board. You're operating without a net here.",
+			"<b>The Holding Cell Deck</b>:\nThis scenario has a Holding Cell Deck. The Top card of this deck is in play",
+			"The objective of this scenario is to free all four of the Inhuman allies from their holding cells by removing the lock counters from each Holding Cell environment, and then to reduce M.O.D.O.K.'s hit points to zero. Lock counters can be removed via the Hero Action on the Holding Cells, by reducing M.O.D.O.K.'s hit points to zero, or by the effects of various encounter cards."
+		]
 	},
 	"50130": {
 		"code": "50130",
 		"name": "Apprehending Rogue Agents",
-		"modular_default": [],
+		"modular_default": [
+			"gravitational_pull",
+			"hard_sound",
+			"pale_little_spider",
+			"power_of_the_atom"
+		],
+		"modular_rules": {
+			"count": "1+1p",
+			"contains": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					},
+					"filter_properties2": {
+						"trait_elite": 1
+					},
+					"filter_properties3": {
+						"trait_thunderbolt": 1
+					}
+				}
+			]
+		},
 		"encounter_sets": [
-			"TODO",
+			"thunderbolts",
 			"Standard",
 			"Modular"
 		],
 		"villains": [
-			"TODO - 1",
-			"TODO - 2"
+			"Citizen V - A"
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"thunderbolts",
 				"Standard",
 				"modular",
 				"expert"
 			],
 			"villains": [
-				"TODO - 2",
-				"TODO - 3"
+				"Citizen V - B"
 			]
-		}
+		},
+		"description": [
+			"You defeated M.O.D.O.K. and rescued the kidnapped Inhumans from A.I.M. Island, then returned them to their homes in the U.S. Upon arriving in Washington, D.C., you are met at the airport by a group calling themselves the Thunderbolts. Their leader, Citizen V, informs you that the S.H.I.E.L.D. Executive Board has charged you with undertaking an unauthorized covert operation on foreign soil and has granted the Thunderbolts authority to place you under arrest!",
+			"<b>Thunderbolt Backup</b>:\nThe Thunderbolt Backup environment is put into play during setup with a Thunderbolt minion attached to it. The attached minion is considered to be in play, retains all tokens, status cards, and attachments on it, and can be targeted by attacks and player card abilities. The attached minion does not activate because it is not engaged with any player. However, the Forced Response on the main scheme causes any Thunderbolt minion attacked by a player to engage that player. This includes the minion attached to Thunderbolt Backup.",
+			"The Forced Interrupt on Thunderbolt Backup attaches the Thunderbolt minion in play with the most damage to the environment and heals damage from that minion. If the most damaged minion is already attached, it remains attached and heals. If an unattached minion has the most damage, it attaches to the environment and any minion already attached to the environment engages the player with whom the most-damaged minion was previously engaged."
+		]
 	},
 	"50167": {
 		"code": "50167",
 		"name": "Zemo's Manipulations",
-		"modular_default": [],
+		"modular_default": [
+			"scientist_supreme",
+			"s.h.i.e.l.d."
+		],
 		"encounter_sets": [
-			"TODO",
+			"baron_zemo",
+			"executive_board_evidence",
+			"s.h.i.e.l.d._executive_board",
 			"Standard",
 			"Modular"
 		],
 		"villains": [
 			"Baron Zemo - A1",
-			"Baron Zemo - B1"
+			"Baron Zemo - A2"
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"baron_zemo",
+				"executive_board_evidence",
+				"s.h.i.e.l.d._executive_board",
 				"Standard",
 				"modular",
 				"expert"
 			],
 			"villains": [
 				"Baron Zemo - B1",
-				"Baron Zemo - C1"
+				"Baron Zemo - B2"
 			]
-		}
+		},
+		"description": [
+			"You defeat Citizen V only to discover that his true identity is Baron Helmut Zemo, and the Thunderbolts are simply Zemo's Masters of Evil with new costumes! You're about to put him under arrest when, to your relief, a massive helicarrier and dozens of S.H.I.E.L.D. troopers arrive on the scene. Your relief quickly disappears, however, when they state that they are here to do what the Thunderbolts failed to do and bring you before the S.H.I.E.L.D. Executive Board for questioning. You decide it is best to go with them and try to sort out this situation peacefully.",
+			"Standing before the Executive Board, you are dismayed to learn that they already knew that it was Zemo who was leading the Thunderbolts, and that he was doing so with their blessing. You are certain that Zemo must be involved with A.I.M. in the abduction plot, but you need evidence to prove it. You have to act quickly because you know that Zemo is whispering poison in the board members' ears in an effort to turn them against you.",
+			"You are placed in a holding cell, but with a timely assist from Agent Coulson, you make your escape. You go on the hunt for evidence of the plot and use it to uncover the mole on the board, all while trying to avoid injuring too many of your fellow S.H.I.E.L.D. members.",
+			"<b>The S.H.I.E.L.D. Executive Board</b>:\nthe players' goal in this scenario is to determine the identity of the mole on the S.H.I.E.L.D. Executive Board",
+			"<b>Gathering Evidence</b>:\nAt the end of each player phase, the 'Response' on stage 1B of the main scheme allows the players to place two secret counters on a board member environment without any secret counters on it to gain new evidence cards. When the players gain an evidence card, they turn it faceup and cross out all combinations of means, motive, and opportunity in the campaign log that use the icon shown on the new evidence card.",
+			"<b>The Accusation</b>:\nThe 'Response' on stage 1B of the main scheme also gives the players the opportunity to advance to stage 2A to make their accusation against the mole"
+		]
 	}
 }

@@ -15,10 +15,20 @@ func _init(_sceng = null, _run_type = 0, _trigger = "", _trigger_details = {}):
 	run_type = _run_type
 	trigger = _trigger
 	trigger_details = _trigger_details
-	
+
 	if is_instance_valid(sceng):
 		var owner_card = sceng.owner
 		owner_identity = owner_card.get_controller_hero_card()
+
+func set_stack_uid(uid):
+	.set_stack_uid(uid)
+	trigger_details["parent_stack_uid"] = uid
+	if sceng:
+		sceng.add_update_trigger_details_recursive(
+			{
+				"parent_stack_uid": uid
+			}
+		)
 
 func get_sceng():
 	return sceng

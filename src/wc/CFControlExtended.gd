@@ -54,6 +54,8 @@ var screen_resolution = Vector2(1920, 1080)
 
 var TEXT_BOX_KEYWORDS
 
+var _debug_yielded:= {}
+var _debug_yielded_id:= 0
 
 # warning-ignore:unused_signal
 signal json_parse_error(msg)
@@ -573,7 +575,7 @@ func get_database_patches():
 		return _database_patches
 	
 	_database_patches = WCUtils.read_json_file_with_user_override("Sets/_cdb_patches.json")	
-
+	
 	return _database_patches
 	
 
@@ -610,6 +612,7 @@ func _load_one_card_definition(card_data, box_name:= "core", fanmade = false):
 	
 	#hardcoded patches
 	var patches = get_database_patches().get(card_id, {})
+		
 	for key in patches:
 		card_data[key] = patches[key]	
 	
@@ -873,6 +876,11 @@ func get_nemesis_data(card_id):
 	
 	if !nemesis_id and potential_nemesis_id:
 		nemesis_id = potential_nemesis_id
+	
+	if !nemesis_id:
+		print_debug("couldn't find nemesis id for " + card_id)
+		return null
+		
 	card_definitions[nemesis_id]["is_nemesis"] = true
 
 	for nemesis_data in cards_by_set[my_nemesis_set]:
@@ -978,6 +986,13 @@ func load_card_definitions_from_cache(the_files) -> Dictionary:
 	if CFConst.DEBUG_DISABLE_SCRIPT_DATABASE_CACHE:
 		return {
 			"_error": "cache is disabled in CFConst"
+		}
+
+	#if the patch file has changed, force a reload
+	var database_cache_ok = _is_md5_equal_to_cache("Sets/_cdb_patches.json")
+	if !database_cache_ok:
+		return {
+			"_error": "md5 not matching for _cdb_patches"
 		}
 			
 	var md5_list = _get_set_definitions_md5_list(the_files)
@@ -1440,6 +1455,8 @@ func load_script_definitions() -> void:
 	WCUtils.debug_message("Found " + str(script_definition_files.size()) + " script files")
 	var all_script_files_data = []
 	var all_cache_valid = true	
+	
+		
 	#preload all scripts from cache		
 	for script_file in script_definition_files:
 		var prefix_end = script_file.find(CFConst.SCRIPT_SET_NAME_PREPEND) + CFConst.SCRIPT_SET_NAME_PREPEND.length()
@@ -1746,13 +1763,25 @@ func load_card_translations():
 
 
 func get_villain_portrait(card_id, callback_owner = null) -> Texture:
-	var area = 	Rect2 ( 65, 45, 155, 155 )
+	var default_area = 	Rect2 ( 65, 45, 155, 155 )
+	var area = default_area
+	
+	var card_data = get_card_by_id(card_id)
+	var meta_info = card_data.get("wc_meta", {}).get("portrait", {}) if card_data else {}
+	if meta_info:
+		area = Rect2(
+			meta_info.get("x", default_area.position.x),
+			meta_info.get("y", default_area.position.y),
+			meta_info.get("w", default_area.size.x),
+			meta_info.get("h", default_area.size.x)
+		)	
+	
 	var result = get_sub_texture(card_id, area)
 	if result:
 		return result
 	if callback_owner:
 		gameData.urgent_image_download(card_id, callback_owner)		
-	return fallback_villain_portrait(card_id, area)
+	return fallback_villain_portrait(card_id, default_area)
 	
 func fallback_villain_portrait(_card_id, area) -> Texture:
 	var filename = "res://assets/other/villain_card.png"
@@ -1766,7 +1795,19 @@ func get_scheme_portrait(card_id) -> Texture:
 	return get_sub_texture(real_id, area)
 	
 func get_hero_portrait(card_id, callback_owner = null) -> Texture:
-	var area = 	Rect2 ( 60, 40, 170, 180 )
+	
+	var default_area:Rect2 = 	Rect2 ( 60, 40, 170, 180 )
+	var area = default_area
+	var card_data = get_card_by_id(card_id)
+
+	var meta_info = card_data.get("wc_meta", {}).get("portrait", {}) if card_data else {}
+	if meta_info:
+		area = Rect2(
+			meta_info.get("x", default_area.position.x),
+			meta_info.get("y", default_area.position.y),
+			meta_info.get("w", default_area.size.x),
+			meta_info.get("h", default_area.size.x)
+		)
 	var result = get_sub_texture(card_id, area)
 	if result:
 		return result
@@ -1774,7 +1815,7 @@ func get_hero_portrait(card_id, callback_owner = null) -> Texture:
 	#then callback the caller
 	if callback_owner:
 		gameData.urgent_image_download(card_id, callback_owner)
-	return fallback_hero_portrait(card_id, area)
+	return fallback_hero_portrait(card_id, default_area)
 
 
 	
@@ -2038,6 +2079,19 @@ func is_process_ongoing() -> int:
 
 func reset_ongoing_process_stack():
 	_ongoing_processes = {}
+
+func add_debug_yielded(function, details):
+	_debug_yielded_id += 1
+	_debug_yielded[_debug_yielded_id] ={
+			"function": function,
+			"details": details
+		}
+	return _debug_yielded_id
+
+func remove_debug_yielded(id):
+	_debug_yielded.erase(id)
+	return
+
 
 func count_players():
 	return gameData.get_team_size()

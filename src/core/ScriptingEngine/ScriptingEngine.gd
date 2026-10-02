@@ -105,6 +105,12 @@ func _init(_state_scripts: Array,
 	state_scripts = _state_scripts.duplicate() 	
 	add_scripts(state_scripts, owner,  trigger_object, children_trigger_details)
 
+func add_update_trigger_details_recursive(details):
+	for key in details:
+		trigger_details[key] = details[key]
+		for script in scripts_queue:
+			script.trigger_details[key] = details[key]
+
 func add_scripts(_state_scripts,
 		_owner,
 		_trigger_object: Node,

@@ -1,11 +1,11 @@
 # warning-ignore-all:UNUSED_ARGUMENT
 # warning-ignore-all:RETURN_VALUE_DISCARDED
-
 extends Node
 
 #
 #constants
 #
+
 var HERO_COUNT = 4 #TODO move to config
 
 #
@@ -32,6 +32,15 @@ var _rotation = 0
 var _preview_rotation = 0
 var launch_data
 
+#animation/loading
+var heroes_pipeline:= {}
+var scenarios_pipeline:= {}
+var loading = false
+const loading_delay = 0 #increase to delay displaying of each individual hero/scenario
+var current_loading_delay = 0
+var no_hero_loaded = true
+var no_scenario_loaded = true
+
 var ERROR_COLOR := 	Color(1,0.11,0.1)
 var OK_COLOR := 	Color(0.1,11,0.1)
 #
@@ -46,14 +55,13 @@ var _pending_ack:= {}
 #
 onready var main_menu := $MainMenu
 onready var expert_mode: CheckBox = get_node("%ExpertMode")
-onready var all_heroes_container = get_node("%Heroes")
+onready var all_heroes_container:GridContainer = get_node("%Heroes")
 onready var heroes_container = get_node("%TeamContainer")
 onready var launch_button = get_node("%LaunchButton")
 onready var all_scenarios_container = get_node("%Scenarios")
 onready var v_folder_label = get_node("%FolderLabel")
 onready var modular_selection = $MainMenu/ModularSelection
 
-# Called when the node enters the scene tree for the first time.
 
 var focus_chosen = false
 var large_picture_id = ""
@@ -162,8 +170,21 @@ func disable_launch_button():
 func gui_focus_changed(control):
 	gamepadHandler.gui_focus_changed(control)
 
+
 var _preselected = false
 func _process(delta:float):
+	
+	var animate_menu = cfc.get_setting("animate_menu")
+
+	if loading and !animate_menu:
+		while loading:
+			process_loading_pipelines()
+	else:
+		process_loading_pipelines()
+	
+	if loading:
+		return
+		
 	var large_picture = get_node("%LargePicture")
 	if gamepadHandler.is_mouse_input():		
 		large_picture.rect_position = get_tree().current_scene.get_global_mouse_position()
@@ -184,6 +205,96 @@ func _process(delta:float):
 #			all_heroes_container.get_child(0).action()	
 		_preselected = true	
 
+
+func process_loading_pipelines():
+	if !loading:
+		return
+	
+	if current_loading_delay:
+		current_loading_delay -= 1
+		return
+	current_loading_delay = loading_delay	
+	
+	if !heroes_pipeline and !scenarios_pipeline:
+		loading = false
+		resize()
+		if no_hero_loaded or no_scenario_loaded:
+			critical_error()
+		return
+		
+	if heroes_pipeline:
+		if !heroes_pipeline.has("animation"):
+			heroes_pipeline["animation"] = {}
+		if !heroes_pipeline["animation"].has("current_id"):
+			heroes_pipeline["animation"]["current_id"] = 0			
+		var ordered_names = heroes_pipeline["ordered_names"]
+		
+		if ordered_names:
+			var names_to_id = heroes_pipeline["names_to_id"]
+			var hero_name = ordered_names.pop_front()
+			var hero_id = names_to_id[hero_name]
+
+			var new_hero = heroSelect.instance()
+			new_hero.load_hero(hero_id)
+			#animation
+			var current_id = heroes_pipeline["animation"]["current_id"]
+			var columns = all_heroes_container.columns
+			var x = current_id % columns
+			var y = current_id / columns
+			var target_index = Vector2(x, y)
+			
+			new_hero.start_migration_to(target_index, current_id, heroes_pipeline["total_heroes"]) #, all_heroes_container)
+			all_heroes_container.add_child(new_hero)
+	#		add_child(new_hero)
+			no_hero_loaded = false
+			if !focus_chosen:
+				new_hero.grab_focus()
+				focus_chosen = true	
+			heroes_pipeline["animation"]["current_id"] +=1
+			if !ordered_names:
+				#finished
+				heroes_pipeline = {}			
+		else:
+			#finished
+			heroes_pipeline = {}
+		
+					
+
+	if scenarios_pipeline:
+		var ordered_scenarios = scenarios_pipeline["ordered_scenarios"]
+		#there is a weird bug where ordered_scenarios gets repopulated after removing the last element
+		#maybe "pop_front" isn't liked by the engine here
+		var is_last = (ordered_scenarios.size() == 1)
+		if !scenarios_pipeline.has("animation"):
+			scenarios_pipeline["animation"] = {}
+		if !scenarios_pipeline["animation"].has("current_id"):
+			scenarios_pipeline["animation"]["current_id"] = 0	
+		if ordered_scenarios:
+			var scenario_id = ordered_scenarios.pop_front()
+			var new_scenario = scenarioSelect.instance()
+			var load_success = new_scenario.load_scenario(scenario_id)
+			if load_success:
+				new_scenario.name = "scenario_" + scenario_id
+				#animation
+				var current_id = scenarios_pipeline["animation"]["current_id"]
+				var columns = all_scenarios_container.columns
+				var x = current_id % columns
+				var y = current_id / columns
+				var target_index = Vector2(x, y)
+				new_scenario.start_migration_to(target_index, current_id, scenarios_pipeline["total_scenarios"]) #,all_scenarios_container)
+				all_scenarios_container.add_child(new_scenario)
+				#add_child(new_scenario)			
+				no_scenario_loaded = false
+				scenarios_pipeline["animation"]["current_id"] +=1
+			else:
+				new_scenario.queue_free()
+		if is_last or !ordered_scenarios:
+			#finished
+			scenarios_pipeline.erase("ordered_scenarios")
+			scenarios_pipeline = {}
+
+
+
 func resize():
 	var screen_size = get_viewport().size/cfc.screen_scale
 	var scenario_picture:TextureRect = get_node("%ScenarioTexture") 
@@ -194,7 +305,8 @@ func resize():
 		scenario_picture.rect_min_size = Vector2(300, 300)
 		scenario_picture.rect_size = scenario_picture.rect_min_size
 		get_node("%VBoxContainer").add_constant_override("separation", 20)	
-		get_node("%ModularColorRect").rect_min_size = Vector2(1600, 720)	
+		get_node("%ModularColorRect").rect_min_size = Vector2(1600, 720)
+		$MainMenu.rect_position.y = 5	
 		if gameData.is_multiplayer_game:
 			#squeezing as much space as we can because multiplayer has additional components
 			get_node("%TeamScenarioPanel").add_constant_override("separation", 0)
@@ -220,8 +332,8 @@ func resize():
 	scenario_picture.rect_rotation = _rotation
 	
 func _load_scenarios():
-	
-	var no_scenario_loaded = true
+	var y_size = get_container_y_size(CFConst.TEAM_SELECTION_GUI["SCENARIO_LARGE_GRID_HEIGHT"])
+	get_node("%Scenarios").rect_min_size = Vector2(CFConst.TEAM_SELECTION_GUI["SCENARIO_LARGE_GRID_WIDTH"] + 20, y_size)
 	#sorting by alphabetical name of villain
 #	var names_to_id = {}
 #	for scenario_id in ScenarioDeckData.get_unlocked_scenarios():
@@ -238,21 +350,33 @@ func _load_scenarios():
 	grid_columns = min(9, grid_columns)
 	all_scenarios_container.columns = grid_columns
 
-	for scenario_id in ordered_scenarios:
-		var new_scenario = scenarioSelect.instance()
-		var load_success = new_scenario.load_scenario(scenario_id)
-		if !load_success:
-			continue
-		new_scenario.name = "scenario_" + scenario_id
-		all_scenarios_container.add_child(new_scenario)
-		no_scenario_loaded = false
+	scenarios_pipeline = {
+		"ordered_scenarios": ordered_scenarios,
+		"total_scenarios": ordered_scenarios.size()
+	}
+	loading = true
 	
-	if no_scenario_loaded:
-		critical_error()
+#	for scenario_id in ordered_scenarios:
+#		var new_scenario = scenarioSelect.instance()
+#		var load_success = new_scenario.load_scenario(scenario_id)
+#		if !load_success:
+#			continue
+#		new_scenario.name = "scenario_" + scenario_id
+#		all_scenarios_container.add_child(new_scenario)
+#		no_scenario_loaded = false
+#
+#	if no_scenario_loaded:
+#		critical_error()
+
+func get_container_y_size(expected_size):
+	if get_node("%AdventureModeWarning").visible:
+		return expected_size - get_node("%AdventureModeWarning").rect_size.y
+	return expected_size
 
 func _create_hero_container():
-	
-	var no_hero_loaded = true
+	var y_size = get_container_y_size(900) 
+	#TODO what about small screens
+	get_node("%HeroesPanel").rect_min_size = Vector2(CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_WIDTH"] + 20, y_size)
 	#show in alphabetical order
 	var names_to_id = {}
 	for hero_id in cfc.get_unlocked_heroes():
@@ -273,20 +397,26 @@ func _create_hero_container():
 	grid_columns = max(grid_columns, 3)
 	all_heroes_container.columns = grid_columns
 	
+	heroes_pipeline = {
+		"ordered_names": ordered_names,
+		"names_to_id": names_to_id,
+		"total_heroes":	ordered_names.size()
+	}
+	loading = true
 	
-	for hero_name in ordered_names:
-		var hero_id = names_to_id[hero_name]
-
-		var new_hero = heroSelect.instance()
-		new_hero.load_hero(hero_id)
-		all_heroes_container.add_child(new_hero)
-		no_hero_loaded = false
-		if !focus_chosen:
-			new_hero.grab_focus()
-			focus_chosen = true	
+#	for hero_name in ordered_names:
+#		var hero_id = names_to_id[hero_name]
+#
+#		var new_hero = heroSelect.instance()
+#		new_hero.load_hero(hero_id)
+#		all_heroes_container.add_child(new_hero)
+#		no_hero_loaded = false
+#		if !focus_chosen:
+#			new_hero.grab_focus()
+#			focus_chosen = true	
 	
-	if no_hero_loaded:
-		critical_error()
+#	if no_hero_loaded:
+#		critical_error()
 
 #
 # modular encounters functions
@@ -913,6 +1043,8 @@ func _on_DownloadDeck_pressed():
 
 var _debug_show_preview_counter = 0
 func show_preview(card_id):
+	if loading:
+		return
 	#there's a bug where the preview looks huge for a split second when loadingthe screen
 	#and I'm too lazy to figure it out
 	if !_debug_show_preview_counter:

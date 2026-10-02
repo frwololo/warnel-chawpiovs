@@ -34,14 +34,14 @@ anchor_bottom = 1.0
 margin_top = 20.0
 
 [node name="Outercontainer" type="VBoxContainer" parent="MainMenu"]
-margin_left = 446.0
-margin_right = 1474.0
+margin_left = 431.0
+margin_right = 1489.0
 margin_bottom = 1060.0
 size_flags_horizontal = 4
 
 [node name="AdventureModeWarning" type="Label" parent="MainMenu/Outercontainer"]
 unique_name_in_owner = true
-margin_right = 1028.0
+margin_right = 1058.0
 margin_bottom = 48.0
 rect_min_size = Vector2( 300, 0 )
 custom_colors/font_color = Color( 0.811765, 0.65098, 0.172549, 1 )
@@ -52,7 +52,7 @@ autowrap = true
 [node name="LeftRight" type="HBoxContainer" parent="MainMenu/Outercontainer"]
 unique_name_in_owner = true
 margin_top = 51.0
-margin_right = 1028.0
+margin_right = 1058.0
 margin_bottom = 619.0
 custom_constants/separation = 50
 
@@ -303,10 +303,11 @@ text = "Expert Mode"
 
 [node name="Margin2" type="MarginContainer" parent="MainMenu/Outercontainer"]
 margin_top = 622.0
-margin_right = 1028.0
+margin_right = 1058.0
 margin_bottom = 691.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
+custom_constants/margin_right = 30
 custom_constants/margin_top = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainMenu/Outercontainer/Margin2"]

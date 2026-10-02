@@ -1806,7 +1806,8 @@ func execute_scripts(
 		if gameData.is_forced_interrupt_mode():
 			force_user_interaction_required = false
 
-	orig_trigger_details["trigger_type"] = trigger
+	var actual_trigger_type = trigger
+	orig_trigger_details["trigger_type"] = actual_trigger_type
 #	orig_trigger_details.erase("is_interrupt_or_response")
 		
 	#we're playing a card manually but in interrupt mode.
@@ -1836,6 +1837,8 @@ func execute_scripts(
 			show_optional_confirmation_menu = false	
 		orig_trigger_details["is_interrupt_or_response"] = true
 
+
+	
 	if ! get_potential_scripts(trigger):
 		return null
 
@@ -1885,6 +1888,8 @@ func execute_scripts(
 	#delete this to avoid sending "script_executed" over and over
 	#trigger_details["action_name_id"] = ""
 	trigger_details["action_name_id"] = card_scripts.get("action_name_id","")
+	trigger_details.erase("script_executed_trigger")
+	trigger_details["trigger_type"] = actual_trigger_type
 		
 	var rules = state_scripts_dict.get("rules", {})
 
@@ -3774,13 +3779,15 @@ func get_trigger_details_property(params, script:ScriptObject= null) -> int:
 	
 	var trigger_details = script.trigger_details	
 	var property = params.get("property", "")
-	var expected_value = params.get("property_value", "")
+	var expected_value = params.get("property_value", null)
 	if !property:
 		return 0
-	if !expected_value:
-		return 0		
+		
 
 	var value = trigger_details.get(property, null)
+	if expected_value == null:
+		return value
+	
 	if value == expected_value:
 		return 1
 	return 0
@@ -4494,9 +4501,6 @@ func get_resource_value_as_int_special(mode, script):
 				_resource_special_precompute_cache[cache_key] = get_resource_value_as_mana_no_cache(script, "precompute_resource_special")
 				return _resource_special_precompute_cache[cache_key]		
 			var result = compute_resource_value_as_mana(_resource_special_sceng)
-			if result:
-				var result_int = result.converted_mana_cost()
-				var _tmp = 1
 			return result				
 		"prime":
 			_cache_resource_value.erase(cache_key)	

@@ -1389,24 +1389,21 @@ func thwart_finished( details)-> int:
 				"tags": []
 			}
 		var target_data = thwarter_data[target]
-		target_data["amount"] +=thwart["amount"]
-		target_data["amount_removed"] +=thwart["amount_removed"]		
+		target_data["actual_source"] = thwart["actual_source"]		
+		target_data["amount"] += thwart["amount"]
+		target_data["amount_removed"] += thwart["amount_removed"]		
 		target_data["tags"] = WCUtils.merge_array(target_data["tags"],thwart["tags"])
 		
 	for thwarter in aggregated_thwarts:
 		for target in aggregated_thwarts[thwarter]:
 			var thwart_details = aggregated_thwarts[thwarter][target]
-			var amount = thwart_details["amount"]
-			var amount_removed = thwart_details["amount_removed"]
-			var tags = thwart_details["tags"]
 	
-
 			var signal_details = {
-				"source": thwarter ,
-				"amount": amount,
-				"amount_removed": amount_removed,
+				"source": thwarter ,				
 				"target" : target,
 			}
+			for key in ["amount", "amount_removed", "actual_source"]:
+				signal_details[key] = thwart_details[key]
 
 			if (script.has_tag("basic power")):
 				scripting_bus.emit_signal_on_stack("basic_thwart_happened",  thwarter ,  signal_details)			
@@ -2895,6 +2892,7 @@ func remove_threat(script: ScriptTask) -> int:
 					"thwarts": [
 						{
 							"actual_source": thwarter,
+							"secondary_source": script.owner,
 							"target": card,
 							"amount": amount,
 							"amount_removed": amount_removed,
@@ -3291,6 +3289,9 @@ func rotate_next(script: ScriptTask) -> int:
 #	* [KEY_EXEC_TEMP_MOD_COUNTERS](ScriptProperties#KEY_EXEC_TEMP_MOD_COUNTERS)
 #	* [KEY_EXEC_TRIGGER](ScriptProperties#KEY_EXEC_TRIGGER)
 func execute_scripts(script: ScriptTask) -> int:
+	if costs_dry_run():
+		return CFConst.ReturnCode.CHANGED
+		
 	cfc.add_ongoing_process(self)
 	var retcode : int = CFConst.ReturnCode.CHANGED
 	# If your subject is "self" make sure you know what you're doing
@@ -3310,6 +3311,7 @@ func execute_scripts(script: ScriptTask) -> int:
 	var _trigger_details = {
 		"prev_subjects" : script.prev_subjects,
 		"parent_script": script,
+		"interrupt_parent_stack_uid": script.trigger_details.get("parent_stack_uid",0),
 		"trigger_identity_id": trigger_identity_id 
 	}
 	var delayed = script.get_property("delayed", false)
@@ -3328,7 +3330,7 @@ func execute_scripts(script: ScriptTask) -> int:
 						_trigger_details, run_type)
 				# We make sure we wait until the execution is finished
 				# before cleaning out the temp properties/counters
-				while sceng is GDScriptFunctionState:
+				while sceng is GDScriptFunctionState and sceng.is_valid():
 					sceng = yield(sceng, "completed")
 				# Executing scripts on other cards need to noy only check their
 				# own costs are possible, but the target cards as well
@@ -3337,6 +3339,13 @@ func execute_scripts(script: ScriptTask) -> int:
 				# explicit target, but we do want to be able to play a card
 				# which, for example, tries to affect all cards on the table,
 				# but none of them is actually affected.
+				if sceng is GDScriptFunctionState:
+					#I'm not sure why this happens, but when it does I consider the script as ok for now
+					#clearly a bug, but...
+					if !sceng.is_valid():
+						var _tmp = 1
+						cfc.remove_ongoing_process(self)
+						return(retcode)
 				if sceng and not sceng.can_all_costs_be_paid\
 						and not script.get_property(SP.KEY_SUBJECT)\
 						in [SP.KEY_SUBJECT_V_BOARDSEEK, SP.KEY_SUBJECT_V_TUTOR]:

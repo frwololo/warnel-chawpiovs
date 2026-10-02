@@ -127,7 +127,12 @@ static func load_audio(file) -> AudioStream:
 	var bytes = audio_file.get_buffer(audio_file.get_len())
 	audio_file.close()
 	
-	var result:AudioStreamMP3 = AudioStreamMP3.new()
+	var result
+	if file.ends_with(".mp3"):
+		result = AudioStreamMP3.new()
+	else:
+		result = AudioStreamSample.new()
+		result.set_format(AudioStreamSample.FORMAT_16_BITS)
 	result.data = bytes	
 	return result	
 

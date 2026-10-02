@@ -1,0 +1,202 @@
+{
+	"_comments": "Black Widow (Villain) Preparation abilities test",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Maria Hill"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Black Widow - 1 #50064"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Widow's Web - 1B #50067b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Grappling Hook #50069"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"others": [
+				{
+					"card": "Black Widow's Gauntlet #50068",
+					"host": "Black Widow"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Nick Fury #50002"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Support Staff",
+					"tokens": {
+						"staff": 1
+					}
+				},
+				{
+					"card": "The Iliad",
+					"tokens": {
+						"mission": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "The douglass"
+				},
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Super Spies"
+				}
+			]
+		}
+	},
+	"actions": [	
+		{
+			"type": "activate",
+			"value": "Maria Hill"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Black Widow",
+			"_comments": "Attacking black widow will reveal the grappling hook, which will force me to discard Super Spies"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Maria Hill"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Black Widow - 1 #50064",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Widow's Web - 1B #50067b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Grappling Hook #50069"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Maria Hill",
+					"tokens": {"damage": 1}
+				}
+			],
+			"others": [
+				{
+					"card": "Black Widow's Gauntlet #50068",
+					"host": "Black Widow"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Nick Fury #50002"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Support Staff",
+					"tokens": {
+						"staff": 1
+					}
+				},
+				{
+					"card": "The Iliad",
+					"tokens": {
+						"mission": 1
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Super Spies"
+				}
+			],
+			"hand1": [
+				{
+					"card": "The douglass"
+				},
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

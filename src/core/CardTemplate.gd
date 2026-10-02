@@ -1272,11 +1272,14 @@ func move_to(targetHost: Node,
 	# We need to store the parent, because we won't be able to know it later
 	var parentHost = get_parent()
 	var source_str = parentHost.name
+	var source_grid = ""
 	var target_str = targetHost.name
 	var from_top_of_deck = false
 	var to_discard = false
-	if source_str.to_lower() == "board" and !considered_in_play():
-		source_str = "void"
+	if source_str.to_lower() == "board":
+		source_grid = get_grid_name()
+		if !considered_in_play():
+			source_str = "void"
 	if source_str.to_lower().begins_with("deck"):
 		var top_card = parentHost.get_top_card()
 		if top_card == self:
@@ -1576,6 +1579,7 @@ func move_to(targetHost: Node,
 					"destination": destination_str,
 					"destination_grid": destination_grid,					
 					"source": source_str,
+					"source_grid": source_grid,
 					"tags": tags
 				}
 		)		

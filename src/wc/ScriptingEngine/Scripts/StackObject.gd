@@ -14,6 +14,9 @@ var owner_identity = null
 #at the very least, they need a script_definition and a script_name value
 var tasks:= []
 
+func set_stack_uid(uid):
+	stack_uid = uid
+
 #can be overriden by children classes
 func get_tasks():
 	return tasks

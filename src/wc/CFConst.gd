@@ -269,6 +269,12 @@ const TOKENS_MAP := {
 	'confused': 'purple.svg',
 }
 
+const TEAM_SELECTION_GUI:= {
+	"HEROES_LARGE_GRID_WIDTH": 700,	
+	"SCENARIO_LARGE_GRID_WIDTH":830,
+	"SCENARIO_LARGE_GRID_HEIGHT":610
+}
+
 const Z_INDEX_MOUSE_POINTER := 4050
 const Z_INDEX_TOP_MENU := 2000
 const Z_INDEX_BOARD_CARDS_ABOVE := 100
@@ -692,7 +698,13 @@ const TRANSITION_SHADER_PARAMS:= {
 		"grid_size":Vector2(50.0, 50.0),	
 		"edges": 3,	
 		"flip_frequency": Vector2(2.0, 1.0)		
-	}
+	},
+	"team_selection": {
+		"transition_type": 0,	
+		"position": Vector2(0.5,0.5),
+		"grid_size":Vector2(10.0, 10.0),	
+		"progress_bias":Vector2(-1.0, -1.0),			
+	},	
 
 }
 
@@ -909,7 +921,7 @@ enum PHASE {
 # this variable forces not passing specific variables
 # to childrend when duplicating the trigger_details variable from sceng
 const SCENG_TRIGGER_DETAILS_ERASE_FROM_CHILDREN_SCRIPTS := [
-	"is_interrupt_or_response"
+	"is_interrupt_or_response",
 ]
 
 #damages get split into multiple scripts (pre_receive_damage, receive_damage, etc...)
@@ -1007,6 +1019,7 @@ const OS_DEFAULT_SETTINGS := {
 }
 
 const DEFAULT_SETTINGS:= {
+	'animate_menu': 2,
 	'music_volume': 5,
 	'sfx_volume': 10,
 	'glow_intensity' : 0.01,

@@ -115,10 +115,13 @@ func init_button_signals(node):
 		init_button_signals(child)
 
 func loading_error(msg):
-	v_folder_label.text = "ERROR: " + msg
+	if !_loading_error:
+		v_folder_label.text = "ERROR: " + msg
 	main_title.text = "SCRIPT ERROR :("
 	exit_button.text = "Clear Cache & Exit"
 	_loading_error  = true
+	#we force deactivate fanmade mods here
+	cfc.set_setting('enable_fanmade_sets',false)
 
 func network_error(msg, high_priority = true):
 	
@@ -275,6 +278,12 @@ func _version_check_completed(result, response_code, headers, body):
 			if typeof(json_data) == TYPE_ARRAY and json_data:
 				latest_release_data = json_data[0]
 			else:
+				if typeof(json_data) == TYPE_DICTIONARY and json_data:
+					var msg = json_data.get("message", "")
+					if msg:
+						#github error. we skip this error to not frighten the user
+						emit_signal("release_check_completed")
+						return	
 				network_error("Couldn't check for version update", false)
 	
 	if latest_release_data:

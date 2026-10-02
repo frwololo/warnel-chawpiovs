@@ -61,6 +61,8 @@ margin_right = 200.0
 margin_bottom = 218.0
 clip_text = true
 
+[node name="Tween" type="Tween" parent="."]
+
 [connection signal="gui_input" from="." to="." method="_on_ScenarioSelect_gui_input"]
 [connection signal="mouse_entered" from="Panel/ScenarioPicture" to="." method="_on_ScenarioPicture_mouse_entered"]
 [connection signal="mouse_exited" from="Panel/ScenarioPicture" to="." method="_on_ScenarioPicture_mouse_exited"]

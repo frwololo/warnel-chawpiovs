@@ -13,7 +13,7 @@ var playlist_filter = ""
 var play_all_mode = false
 var play_all_random_mode = false
 
-const SFX_CHANNELS = 8
+const SFX_CHANNELS = 16
 var last_sound_played = 0
 var last_sfx_stream_played = null
 
@@ -88,7 +88,7 @@ func load_sfx_collection():
 				"user://Sfx/", "", true)				
 	var result = []	
 	for file in sfx_files:	
-		if file.ends_with(".mp3"):
+		if file.ends_with(".mp3") or file.ends_with(".wav"):
 			result.append(file)
 	
 	for file in result:
@@ -120,7 +120,7 @@ func load_stream(sfx_collection_node):
 	
 	var stream = WCUtils.load_audio(filename)
 	if stream as AudioStreamMP3:
-		stream.loop = false
+		stream.loop = false	
 	sfx_collection_node["stream"] = stream
 	
 	return stream

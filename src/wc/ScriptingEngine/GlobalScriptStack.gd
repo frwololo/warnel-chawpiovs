@@ -16,6 +16,7 @@ var stack:= []
 #stores data relevant to the ongoing interrupt signal
 var _current_interrupted_event: Dictionary = {}
 
+
 enum InterruptMode {
 	NONE,
 	FORCED_INTERRUPT_CHECK,
@@ -65,6 +66,8 @@ var pending_interaction_checksums := {}
 var sync_enabled = true
 var yielded_scripts = []
 
+var _pending_flush = {}
+var _stash_pending_flush = {}
 
 #stores unique IDs for all stack events
 var current_stack_uid:int = 0
@@ -76,6 +79,9 @@ var  _interrupt_cache = {
 	"additional_cards": [],
 	"needs_refresh": true
 }
+
+
+
 func init_interruptable_cache():
 	if !_interrupt_cache["needs_refresh"]:
 		return	
@@ -166,8 +172,17 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 		"yield_reason": "create_and_add_script",
 	}
 	if _pending_flush and sync_enabled:
-		add_yielded_script(yield_data)
-		return
+		var yield_script = true
+		# a hacky check to interrupt an ongoing activity when nothing else works
+		#currently used for Black Widow (Villain)'s execute_scripts for preparation
+		var interrupt_parent_stack_uid = trigger_details.get("interrupt_parent_stack_uid", 0)
+		if interrupt_parent_stack_uid and _pending_flush.get(interrupt_parent_stack_uid):
+			yield_script = false
+			_stash_pending_flush[interrupt_parent_stack_uid] = true
+			_pending_flush.erase(interrupt_parent_stack_uid)
+		if yield_script:
+			add_yielded_script(yield_data)
+			return
 		
 	if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER:
 		if trigger != "manual":	
@@ -517,6 +532,11 @@ func add_event_to_stack(stackEvent, checksum = "", context= {}):
 		"is_interrupt" : false
 	}
 
+	var high_priority_script = 0
+	var sceng = stackEvent.get_sceng()
+	if sceng:
+		high_priority_script = sceng.trigger_details.get("interrupt_parent_stack_uid",0)
+
 	var priority_signal = false
 	if stackEvent as SignalStackScript:
 		if stackEvent.script_name in CFConst.FORCE_INTERRUPT_SIGNALS:
@@ -543,7 +563,7 @@ func add_event_to_stack(stackEvent, checksum = "", context= {}):
 				#reset_interrupt_states()
 
 
-	if is_interrupt_mode() or priority_signal:
+	if is_interrupt_mode() or priority_signal or high_priority_script:
 		var buffer = StackObject.new()
 		buffer.interrupt_marker = true
 		insert_event_into_stack(buffer)
@@ -656,7 +676,7 @@ func add_context_details (stack_uid_or_context_name, details: Dictionary):
 	
 
 func insert_event_into_stack(stackEvent, pos = -1):
-	stackEvent.stack_uid = get_next_stack_uid()
+	stackEvent.set_stack_uid(get_next_stack_uid())
 	if pos == -1:
 		stack.append(stackEvent)
 	else:
@@ -909,7 +929,7 @@ func enable_sync():
 func disable_sync():
 	sync_enabled = false
 
-var _pending_flush = {}
+
 func flush_script(stack_object):
 
 	if stack.empty() or (stack_object != stack.back()):
@@ -918,12 +938,13 @@ func flush_script(stack_object):
 
 	var uid = stack_object.stack_uid
 	
-	if _pending_flush.get(uid, false):
+	if _pending_flush.get(uid, false) or _stash_pending_flush.get(uid, false):
 		var _error = 1
 		display_debug("called to flush script but not allowed because I already started running it" + str(uid))
 		return	
 			
 	_pending_flush[uid] = true
+	_stash_pending_flush.erase(uid)
 	
 	if run_mode != RUN_MODE.NO_BRAKES:
 		_pending_flush.erase(uid)
@@ -938,7 +959,9 @@ func flush_script(stack_object):
 
 	var func_return = stack_object.execute()	
 	if func_return is GDScriptFunctionState && func_return.is_valid():
+		var id = cfc.add_debug_yielded(func_return, "step 1")
 		func_return = yield(func_return, "completed")
+		cfc.remove_debug_yielded(id)
 
 	#attempt to fast track: if this was a cost and the stack hasn't changed + nothing to interrupt we run the second half (effects) of the script
 	if execute_mode == CFInt.RunMode.COST_SCRIPTS_ONLY:
@@ -947,13 +970,19 @@ func flush_script(stack_object):
 			var _interrupt_mode = _interrupt_state.get("interrupt_mode",InterruptMode.NONE)
 			if !_interrupt_mode in [InterruptMode.FORCED_INTERRUPT_CHECK, InterruptMode.OPTIONAL_INTERRUPT_CHECK]:
 				execute_mode = stack_object.next_execute_mode()
+				if uid == 9:
+					var _tmp = 1				
 				func_return = stack_object.execute()	
 				if func_return is GDScriptFunctionState && func_return.is_valid():
+					var id = cfc.add_debug_yielded(func_return, "step 2")
 					func_return = yield(func_return, "completed")
+					cfc.remove_debug_yielded(id)
 
 	#if either execute_both or non_costs part of the execution
 	if execute_mode != CFInt.RunMode.COST_SCRIPTS_ONLY:					
 		var sceng = stack_object.get_sceng()
+		if sceng:
+			sceng.add_update_trigger_details_recursive({"script_executed_trigger": ""})
 		if stack_object.get_first_task_name() != "script_executed" and sceng: # and sceng.trigger_details.get("action_name_id", ""):
 			var trigger_details = sceng.trigger_details.duplicate()
 			#the trigger details of sceng might contain information about the interrupted
@@ -961,7 +990,7 @@ func flush_script(stack_object):
 			#not sure what's a proper way to address that, for now I'm overwriting the values here
 			trigger_details["stack_object"] = stack_object
 			trigger_details["event_object"] = stack_object.get_first_task()
-			
+			trigger_details["script_executed_trigger"] = trigger_details.get("trigger_type", "")
 			#some cards specifically target "abilities" per opposition to "default" (basic power) actions
 			var tags = trigger_details.get("tags", [])
 			if tags == null:
@@ -970,7 +999,9 @@ func flush_script(stack_object):
 			if "basic power" in tags:
 				is_ability = false
 			if is_ability:
-				trigger_details["tags"] = WCScriptingEngine.add_tags_to_tags(tags, ["is_ability"])				
+				trigger_details["tags"] = WCScriptingEngine.add_tags_to_tags(tags, ["is_ability"])
+			if WCUtils.is_string_in_variant(trigger_details, "preparation"):
+				var _tmp = 1			
 			scripting_bus.emit_signal_on_stack("script_executed", sceng.owner, trigger_details)
 			
 	#	var user_interaction_status = stack_object.get_user_interaction_status()
@@ -987,7 +1018,8 @@ func flush_script(stack_object):
 	#	if stack.empty():
 	#		set_run_mode(RUN_MODE.NOTHING_TO_RUN, "flush_script " + stack_object.get_display_name())
 		emit_signal("script_executed_from_stack", stack_object )		
-	_pending_flush.erase(uid)	
+	_pending_flush.erase(uid)
+	_stash_pending_flush.erase(uid)	
 
 func compute_interrupts(script):
 	if !script:

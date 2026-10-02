@@ -178,6 +178,16 @@
 	"16064": {
 		"attack": 1
 	},
+	"16080a": {
+		"wc_meta": {	
+			"portrait": {
+				 "x": 120,
+				 "y": 45,
+				 "w": 150,
+				 "h": 150, 
+			}
+		}
+	},	
 	"16099": {
 		"boost": 3
 	},
@@ -192,6 +202,16 @@
 		"attack": 1,
 		"scheme": 1,
 		"thwart": 1
+	},
+	"21031a": {
+		"wc_meta": {	
+			"portrait": {
+				 "x": 100,
+				 "y": 40,
+				 "w": 100,
+				 "h": 120, 
+			}
+		}
 	},
 	"21041": {
 		"subname": "Noh-Varr",
@@ -425,6 +445,16 @@
 		"printed_card_id": "38001a",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
 	},
+	"40001a": {
+		"wc_meta": {	
+			"portrait": {
+				 "x": 150,
+				 "y": 46,
+				 "w": 140,
+				 "h": 140, 
+			}
+		}
+	},	
 	"40030": {
 		"alternate_art": true
 	},
@@ -570,6 +600,16 @@
 	},
 	"50027": {
 		"alternate_art": true
+	},
+	"50034a": {
+		"wc_meta": {	
+			"portrait": {
+				 "x": 100,
+				 "y": 40,
+				 "w": 170,
+				 "h": 180, 
+			}
+		}
 	},	
 	"54021": {
 		"imagesrc": "/bundles/cards/50054.jpg"

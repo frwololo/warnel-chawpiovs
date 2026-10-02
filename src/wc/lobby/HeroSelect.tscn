@@ -65,6 +65,8 @@ margin_top = 42.0
 margin_right = 14.0
 margin_bottom = 42.0
 
+[node name="Tween" type="Tween" parent="."]
+
 [connection signal="gui_input" from="." to="." method="_on_HeroSelect_gui_input"]
 [connection signal="mouse_entered" from="Panel/HeroPicture" to="." method="_on_HeroPicture_mouse_entered"]
 [connection signal="mouse_exited" from="Panel/HeroPicture" to="." method="_on_HeroPicture_mouse_exited"]

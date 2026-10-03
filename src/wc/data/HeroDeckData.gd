@@ -94,7 +94,7 @@ func loadstate_from_json(json:Dictionary) -> bool:
 	if (!hero):
 		#TODO error
 		return false
-	_hero_id = cfc.get_corrected_card_id(hero)
+	_hero_id = cfc.get_corrected_card_id(hero, {"type_code": "hero"})
 	return true
 
 	

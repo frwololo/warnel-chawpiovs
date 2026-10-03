@@ -606,16 +606,7 @@
 				{
 					"name": "draw_cards",
 					"amount": 1,
-					"subject": "boardseek",
-					"subject_count": "all",
-					"selection_count": 1,
-					"selection_type": "equal",
-					"needs_selection": true,
-					"filter_state_seek": [
-						{
-							"filter_group": "group_identities"
-						}
-					]
+					"subject": "a_player"
 				}
 			]
 		}
@@ -4348,7 +4339,7 @@
 		}
 	},
 	"Mighty Avengers": {
-		"give_to_player_max1": {},	
+		"give_to_player_max1": {},
 		"alterants": {
 			"board": [
 				{

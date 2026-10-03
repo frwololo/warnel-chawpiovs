@@ -51,6 +51,8 @@ const TRIGGER_SUBJECT = "trigger_subject"
 
 #stack subjects
 const KEY_SUBJECT_V_CURRENT_ACTIVATION := "current_activation"
+const KEY_SUBJECT_V_CURRENT_ATTACK := "current_attack"
+const KEY_SUBJECT_V_CURRENT_ATTACKER := "current_attacker"
 const KEY_SUBJECT_V_INTERUPTED_EVENT := "interrupted_event"
 
 # This call has been setup to call the original, and allow futher extension
@@ -184,6 +186,10 @@ static func _get_subjects_simplified(string_value, owner_card):
 			return owner_card.get_nemesis_minions()						
 		KEY_SUBJECT_V_VILLAIN:
 			return gameData.get_villains()
+		KEY_SUBJECT_V_CURRENT_ATTACKER:
+			var attacker = gameData.theStack.get_context_details("attack", "attacker")
+			if attacker:
+				return attacker
 		KEY_SUBJECT_V_MAIN_SCHEME:
 			return gameData.get_main_schemes()
 		"self":
@@ -568,6 +574,9 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 					
 	#check for special conditions if card is an attack
 	elif ((script_name == "attack") or ("attack" in tags)):
+		if card.get_property("cannot_be_attacked", 0, true):
+			return false
+					
 		var action_character = owner_card.get_action_character() if owner_card else null					
 		if action_character:
 			#Check for "can only attack this card" restriction (e.g. Encased in Ice)	
@@ -633,7 +642,7 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 				elif filter == FILTER_HOSTED_BY:
 					if !check_hosted_by_filter(card,owner_card,state_filter):
 						card_matches =  false	
-				elif filter == FILTER_FUNC:
+				elif FILTER_FUNC in filter:
 					if !check_func_filter(card,owner_card,state_filter):
 						card_matches =  false	
 				elif filter == "is_script_owner":

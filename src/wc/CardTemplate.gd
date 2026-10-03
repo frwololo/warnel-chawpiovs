@@ -340,6 +340,9 @@ func check_death(script = null) -> bool:
 	
 	if get_property("cannot_leave_play", 0, true):
 		return false
+	
+
+
 		
 	var total_damage:int =  tokens.get_token_count("damage")
 	var health = get_property("health", null)
@@ -348,9 +351,17 @@ func check_death(script = null) -> bool:
 	if health == null:
 		return false
 
-	if total_damage < health:
-		return false
+	var will_die = false
+	
+	if !script:
+		if get_property("vulnerable", 0, true) and (is_stunned() or is_confused()):
+			will_die = true
+	
+	if total_damage >= health:
+		will_die = true
 
+	if !will_die:
+		return false
 	
 	var excess_damage = total_damage - health
 	
@@ -3548,6 +3559,16 @@ func check_validity(params, script:ScriptObject= null) -> int:
 		return 1	
 	return 0 
 
+func get_property_from_current_attack(params = {}, script:ScriptObject  = null) -> int:
+	var property = params.get("property", "")
+	if !property:
+		return 0
+	var value = gameData.theStack.get_context_details("attack", property)
+	if value == null:
+		value = 0
+	return value
+	
+
 func get_stage_level(params = {}, script:ScriptObject  = null) -> int:
 	var subject = get_param_subject(params, script)
 						
@@ -3878,7 +3899,20 @@ func precompute_value(params, script:ScriptObject = null):
 	var result = task.get_property(to_request, null, null, root)
 	return result
 
+func has_printed_script(params, script:ScriptObject = null) -> int:
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return 0
+		
+	var trigger_name = params.get("trigger_name", "")
+	if !trigger_name:
+		return 0
+	
+	var potential_scripts = cfc.set_scripts.get(subject.canonical_id,{}).get(trigger_name,{})	
 
+	if potential_scripts:
+		return 1
+	return 0	
 #returns true if this card (or script subject)'s property contains specified text
 func property_contains(params, script:ScriptObject = null) -> int:
 	var subjects = get_param_subjects(params, script)

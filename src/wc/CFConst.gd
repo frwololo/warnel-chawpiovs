@@ -782,6 +782,7 @@ const AUTO_KEYWORDS := {
 	"uses" : "string",
 	"victory" : "int_no_alterant", #victory 0 is different from no Victory, so we don't want to init it at 0
 	"villainous" : "int",
+	"vulnerable": "int",
 		
 #additional keywords not officially in the game, for alterants
 	"all_purpose_property": "int",
@@ -795,6 +796,7 @@ const AUTO_KEYWORDS := {
 	"bypass_patrol": "int",
 
 
+	"cannot_be_attacked": "int",
 	"cannot_be_blocked": "int",
 	"cannot_be_canceled": "int",
 	"cannot_be_confused": "int",

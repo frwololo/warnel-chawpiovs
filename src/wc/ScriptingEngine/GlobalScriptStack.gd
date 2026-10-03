@@ -657,12 +657,16 @@ func remove_context_details (stack_uid_or_context_name, key):
 		return
 	event.task.script_definition["context_details"].erase(key)
 
-func get_context_details (stack_uid_or_context_name, key):
+func get_context_details (stack_uid_or_context_name, key = ""):
 	var event = get_context_event(stack_uid_or_context_name)
 	if !event:
 		var _error = 1
 		return
-	return event.task.script_definition["context_details"].get(key, null)
+	var details = event.task.script_definition["context_details"]
+	if !key:
+		return details
+		
+	return details.get(key, null)
 			
 				
 func add_context_details (stack_uid_or_context_name, details: Dictionary):

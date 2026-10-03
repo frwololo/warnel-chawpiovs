@@ -42,7 +42,7 @@ func _ready():
 		if use_shader:
 			self.modulate.a = 0
 			var reverse_delay = id_in_container
-			var delay = (randi() % ((total_scenarios * 3) - (reverse_delay * 2))) 
+			var delay = (randi() % ((int(total_scenarios * 2.5)) - (reverse_delay * 2))) 
 			cfc.play_sfx("shuffle")
 			yield(get_tree().create_timer(float(delay) * 0.01), "timeout")
 			#this uses https://github.com/cashew-olddew/Universal-Transition-Shader

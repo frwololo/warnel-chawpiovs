@@ -5537,7 +5537,13 @@
 					"filter_property_name": "exclude_from_ally_limit",
 					"trigger": "self",
 					"alteration": 1
-				}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_leave_play_from_abilities",
+					"trigger": "self",
+					"alteration": 1
+				}				
 			]
 		},
 		"interrupt_enemy_initiates_attack": {

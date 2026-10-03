@@ -775,6 +775,10 @@ func mod_tokens(script: ScriptTask) -> int:
 		if alteration is GDScriptFunctionState:
 			alteration = yield(alteration, "completed")
 	var token_diff := 0
+	
+	if !script.subjects and !script.script_definition.has("subject"):
+		script.subjects = [script.owner]
+		
 	for card in script.subjects:
 		var current_tokens: int
 		# If we're storing the integer, we want to store the difference
@@ -1030,6 +1034,10 @@ func host_card(script: ScriptTask) -> int:
 		host = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : host_str})
 		if host:
 			host = host[0]
+	
+	if !host:
+		return CFConst.ReturnCode.FAILED
+	
 	for card in script.subjects:
 		card.attach_to_host(host, false, tags)
 

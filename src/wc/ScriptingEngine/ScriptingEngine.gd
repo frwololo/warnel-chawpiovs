@@ -449,6 +449,25 @@ func return_card_to_owner_hand(script: ScriptTask) -> int:
 	
 	script.subjects = all_subjects
 	return CFConst.ReturnCode.CHANGED
+
+func return_card_to_owner_board(script: ScriptTask) -> int:
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+		
+	if costs_dry_run():
+		return CFConst.ReturnCode.CHANGED
+	
+	var all_subjects = script.subjects.duplicate()	
+	for subject in all_subjects:
+		var owner_id = subject.get_owner_hero_id()
+		if owner_id:
+			script.script_definition["override_controller_id"] = owner_id
+			script.subjects = [subject]
+			move_card_to_board(script)
+	
+	
+	script.subjects = all_subjects
+	return CFConst.ReturnCode.CHANGED
 	
 func draw_cards (script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -714,6 +733,13 @@ func attack(script: ScriptTask) -> int:
 			new_script.script_definition["amount"] = script.retrieve_integer_property("amount")	
 			for value in ["plus_amount", "multiplier_amount"]:
 				new_script.script_definition.erase(value)
+
+	var predicted_damage = 0 
+	if new_script.script_definition.has("amount"):
+		predicted_damage = new_script.retrieve_integer_property("amount")
+	else:
+		predicted_damage = owner.get_property("attack", 0)			
+	
 	#
 	# END Hacks
 	#		
@@ -727,6 +753,11 @@ func attack(script: ScriptTask) -> int:
 		var task_event = SimplifiedStackScript.new(new_script)
 		gameData.theStack.add_script(task_event)		
 		context_uid = gameData.theStack.get_context_event_uid("attack")
+			
+	gameData.theStack.add_context_details(context_uid, {
+		"attacker": owner, 
+		"amount": predicted_damage,  
+	})
 	script.script_definition["context_uid"] = context_uid
 	new_script.script_definition["context_uid"] = context_uid	
 	
@@ -1137,6 +1168,10 @@ func pre_receive_damage(script: ScriptTask) -> int:
 		if increase:
 			amount += increase
 		
+		#some "increases" can be negative	
+		if amount < 0:
+			amount = 0	
+		
 		if card.get_property("invincible", 0):
 			continue
 
@@ -1208,6 +1243,11 @@ func receive_damage(script: ScriptTask) -> int:
 	
 	for card in consolidated_subjects.keys():
 		amount += context_increase
+
+		#some "increases" can be negative	
+		if amount < 0:
+			amount = 0			
+		
 		var damage_happened = 0
 		#indirect damage in attack, we replace all damages with an indirect damage command
 		if amount and ("attack" in tags) and (!"indirect_damage" in tags) and (attacker.get_property("attack_indirect_damage", 0, true) or ("attack_indirect_damage" in tags)):
@@ -1849,6 +1889,9 @@ func increase(script: ScriptTask) -> int:
 	var subject_target = script.script_definition.get("subject")
 
 	match subject_target:
+		"current_attack":
+			#TODO
+			return retcode	
 		"current_activation":
 			if script.script_definition.has("amount"): #this is a partial increase effect		
 				if (costs_dry_run()):
@@ -1904,6 +1947,9 @@ func prevent(script: ScriptTask) -> int:
 	var subject_target = script.script_definition.get("subject")
 	var amount_prevented = 0
 	match subject_target:
+		"current_attack":
+			gameData.theStack.add_context_details("attack", {"increases_receive_damage": [-amount]})
+			return retcode			
 		"current_activation":
 			if amount != null : #this is a partial prevention effect		
 				if (costs_dry_run()):
@@ -1960,6 +2006,31 @@ func replacement_effect(script: ScriptTask) -> int:
 	#Find the event on the stack and modifiy it
 	#TOdo take into action subject, etc...
 	match subject:
+		SP.KEY_SUBJECT_V_CURRENT_ATTACK:
+
+			var stack_object = script.trigger_details.get("stack_object", null) 
+			var task_object = script.trigger_details.get("event_object", null)
+			var current_context = gameData.theStack.get_context_details("attack", "script_history")			
+			if current_context:
+				var latest_script = current_context.back()
+				var replacements = script.get_property("replacements", {})
+				for property in replacements.keys():
+					var value = replacements[property]
+					match property:
+						"subject_params":
+							pass
+						"subject":
+							var new_subjects = SP.retrieve_subjects(value, script, replacements.get("subject_params", {}))
+							latest_script.subjects = new_subjects
+						"name":
+							pass
+							#TODO
+						"additional_tags":
+							pass
+							#TODO
+						_:
+							pass
+			return retcode			
 		SP.KEY_SUBJECT_V_INTERUPTED_EVENT:
 			var stack_object = script.trigger_details.get("stack_object", null) 
 			var task_object = script.trigger_details.get("event_object", null)
@@ -2015,13 +2086,14 @@ func exhaust_card(script: ScriptTask) -> int:
 	return(retcode)
 
 func discard(script: ScriptTask):
+	if !script.subjects and !script.script_definition.has("subject"):
+		script.subjects = [script.owner]
 
 	if !script.subjects:
 		return CFConst.ReturnCode.FAILED
 				
 	if (costs_dry_run()):
 		return CFConst.ReturnCode.CHANGED
-
 
 	var from_top_of_deck = false
 	var subject = script.subjects[0]
@@ -2876,6 +2948,10 @@ func remove_threat(script: ScriptTask) -> int:
 
 	amount += context_increase
 	
+	#some "increases" can be negative	
+	if amount < 0:
+		amount = 0		
+	
 	for card in script.subjects:
 		var amount_removed = card.remove_threat(amount, script)
 		if amount_removed:
@@ -3002,6 +3078,9 @@ func thwart_started(script: ScriptTask) -> int:
 	
 	amount += context_increase
 
+	#some "increases" can be negative	
+	if amount < 0:
+		amount = 0	
 	
 	if (costs_dry_run()):
 		return retcode	
@@ -3486,7 +3565,11 @@ func defeat(script: ScriptTask) -> int:
 	return CFConst.ReturnCode.CHANGED	
 
 func flip_doublesided_card(script: ScriptTask) -> int:	
-	var subjects = []	
+	var subjects = []
+
+	if !script.subjects and !script.script_definition.has("subject"):
+		script.subjects = [script.owner]
+		
 	for subject in script.subjects:
 		if subject.get_property("cannot_flip", 0, true):
 			continue

@@ -138,6 +138,10 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 		#when an existing subject already exists for the script
 		"current_subject":
 			results = script.subjects		
+		SP.KEY_SUBJECT_V_CURRENT_ATTACKER:
+			var attacker = gameData.theStack.get_context_details("attack", "attacker")
+			if attacker:
+				results.append(attacker)		
 		SP.KEY_SUBJECT_V_HOST:
 			if (owner.current_host_card):
 				results.append(owner.current_host_card)

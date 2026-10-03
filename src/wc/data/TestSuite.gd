@@ -1024,11 +1024,11 @@ func sort_card_array(array):
 	array.sort_custom(WCUtils, "sort_cards")		
 
 #card here is either a card id or a card name, we try to accomodate for both
-func get_corrected_card_id (card) -> String:
+func get_corrected_card_id (card, constraints = {}) -> String:
 	var lc_card = card.to_lower()
 	if lc_card == "any_card":
 		return "any_card"
-	return cfc.get_corrected_card_id(card)
+	return cfc.get_corrected_card_id(card, constraints)
 
 
 func _get_display_name(element):

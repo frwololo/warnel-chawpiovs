@@ -41,7 +41,7 @@ func _ready():
 			self.modulate.a = 0
 			var reverse_delay = id_in_container
 			
-			var delay = (randi() % ((total_objects_in_container * 3) - (reverse_delay * 2))) 
+			var delay = (randi() % ((int(total_objects_in_container* 2.5)) - (reverse_delay * 2))) 
 			delay  = float(delay) * 0.01
 			cfc.play_sfx("shuffle")
 			yield(get_tree().create_timer(delay/2), "timeout")

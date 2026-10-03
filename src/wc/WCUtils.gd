@@ -687,18 +687,58 @@ static func subject_pre_processing(script_definition):
 		TYPE_DICTIONARY:
 			for key in script_definition.keys():
 				if key == "subject":
+					var modifiers = {}
 					match script_definition[key]:			
 						"an_enemy":
-							script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_TARGET
-							script_definition[SP.KEY_NEEDS_SUBJECT] = script_definition.get(SP.KEY_NEEDS_SUBJECT,true)
-							script_definition[SP.FILTER_STATE + SP.KEY_SUBJECT] =\
-								script_definition.get(SP.FILTER_STATE + SP.KEY_SUBJECT, [{"filter_group": "group_enemies"}])
+							modifiers = {
+								"subject": "target",
+								"needs_subject":true,
+								"filter_state_subject": [{"filter_group": "group_enemies"}]
+							}
 
 						"a_scheme":
-							script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_TARGET
-							script_definition[SP.KEY_NEEDS_SUBJECT] = script_definition.get(SP.KEY_NEEDS_SUBJECT,true)
-							script_definition[SP.FILTER_STATE + SP.KEY_SUBJECT] =\
-								script_definition.get(SP.FILTER_STATE + SP.KEY_SUBJECT, [{"filter_group": "group_schemes"}])
+							modifiers = {
+								"subject": "target",
+								"needs_subject":true,
+								"filter_state_subject": [{"filter_group": "group_schemes"}]
+							}							
+						
+						"a_player":
+							modifiers = {
+								"subject": "boardseek",
+								"subject_count": "all",
+								"needs_selection": true,
+								"selection_count": 1,
+								"selection_type": "equal",
+								"filter_state_seek": [{
+									"filter_group": "group_identities"
+								}]
+							}
+								
+						"tutor_and_choose":
+							modifiers = {
+								"subject": "tutor",
+								"subject_count": "all",
+								"needs_selection": true,
+								"selection_count": 1,
+								"selection_type": "equal",							
+							}
+							
+						"boardseek_and_choose":
+							modifiers = {
+								"boardseek": "tutor",
+								"subject_count": "all",
+								"needs_selection": true,
+								"selection_count": 1,
+								"selection_type": "equal",							
+							}
+															
+					for mod_key in modifiers:
+						if mod_key == "subject":
+							script_definition[mod_key] = modifiers[mod_key]	
+						else:
+							if not script_definition.has(mod_key):
+								script_definition[mod_key] = modifiers[mod_key]						
 				else:
 					subject_pre_processing(script_definition[key])
 		TYPE_ARRAY:	
@@ -910,3 +950,38 @@ static func import_battle_background(path):
 
 static func import_card_back(path):
 	return import_img(path, "user://Gfx/card_back.png")
+	
+#card here is either a card id or a card name, we try to accomodate for both
+static func get_corrected_card_id (card, constraints = {}, fuzzy_fallback = true) -> String:
+	#if it's in the database, it's already an id
+	if cfc.card_definitions.has(card):
+		var card_data = cfc.card_definitions[card]
+		return card_data["_code"]
+	
+	#otherwise it's a short name or a long name
+	var actual_card_name = cfc.lowercase_card_name_to_name.get(card.to_lower(), "")
+	if !actual_card_name:
+		actual_card_name = cfc.shortname_to_name.get(card.to_lower(), "")
+		
+	#we got the card's full name, now we reach for its actual id by looking in all sets
+	#in some cases this is a non unique situation, beware!
+	var boxes = cfc.box_contents_by_name
+	for box_name in boxes:
+		var box = boxes[box_name]
+		if box.has(actual_card_name):
+			var found = true
+			var card_datas = box[actual_card_name]
+			var card_data = card_datas[0]
+			for key in constraints:
+				if card_data[key] != constraints[key]:
+					found = false
+					break
+			if found:
+				return card_data["_code"]
+	
+	if fuzzy_fallback:
+		var card_info = cfc.retrieve_card_info_from_fuzzy_name(card)
+		if card_info and card_info.has("code"):
+			return card_info["code"]	
+			
+	return ""

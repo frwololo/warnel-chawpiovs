@@ -67,7 +67,24 @@ static func get_scenario_display_name(scenario_id):
 
 static func _load_card_scenarios():
 	var json_card_data : Dictionary
-	json_card_data = WCUtils.read_json_file_with_user_override("Sets/_scenarios.json")	
+	json_card_data = WCUtils.read_json_file_with_user_override("Sets/_scenarios.json")
+	
+	#load scenarios from boxes and fanmade content
+	var boxes = cfc.box_contents_by_name
+	for box_name in boxes:
+		var folders = ["Sets"]
+		if cfc.get_setting("enable_fanmade_sets"):
+			folders.append("Sets_fanmade")
+		for folder in folders:
+			var filename = folder + "/_scenarios_" + box_name + ".json"
+			if !WCUtils.file_exists(filename):
+				continue
+			var additional_json = WCUtils.read_json_file_with_user_override(filename)
+			if typeof(additional_json) != TYPE_DICTIONARY:
+				continue
+			for key in additional_json:
+				json_card_data[key] = additional_json[key]	
+		
 	for key in json_card_data:
 		var card_data = json_card_data[key]
 		#error correction
@@ -79,6 +96,8 @@ static func _load_card_scenarios():
 			continue		
 		primitives[card_code] = card_data;
 		all_scenarios.append(key)
+
+
 	
 
 static func get_array_data(scheme_id, key):

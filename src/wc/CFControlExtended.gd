@@ -1886,32 +1886,8 @@ func count_unique_cards():
 	
 	
 #card here is either a card id or a card name, we try to accomodate for both
-func get_corrected_card_id (card, fuzzy_fallback = true) -> String:
-	#if it's in the database, it's already an id
-	if self.card_definitions.has(card):
-		var card_data = self.card_definitions[card]
-		return card_data["_code"]
-	
-	#otherwise it's a short name or a long name
-	var actual_card_name = lowercase_card_name_to_name.get(card.to_lower(), "")
-	if !actual_card_name:
-		actual_card_name = shortname_to_name.get(card.to_lower(), "")
-		
-	#we got the card's full name, now we reach for its actual id by looking in all sets
-	#in some cases this is a non unique situation, beware!
-	var boxes = box_contents_by_name
-	for box_name in boxes:
-		var box = boxes[box_name]
-		if box.has(actual_card_name):
-			var card_datas = box[actual_card_name]
-			return card_datas[0]["_code"]
-	
-	if fuzzy_fallback:
-		var card_info = cfc.retrieve_card_info_from_fuzzy_name(card)
-		if card_info and card_info.has("code"):
-			return card_info["code"]	
-			
-	return ""
+func get_corrected_card_id (card, constraints = {}, fuzzy_fallback = true) -> String:
+	return WCUtils.get_corrected_card_id(card,constraints, fuzzy_fallback)
 
 
 

@@ -1,0 +1,200 @@
+{
+	"_comments": "Black Widow (Villain) Preparation abilities test: Night vision goggles",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Maria Hill"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Black Widow - 1 #50064",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Widow's Web - 1B #50067b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Caught Off Guard"
+				},				
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"others": [
+				{
+					"card": "Night Vision Goggles",
+					"host": "Black Widow"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Nick Fury #50002"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Support Staff",
+					"tokens": {
+						"staff": 1
+					}
+				},
+				{
+					"card": "The Iliad",
+					"tokens": {
+						"mission": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "The douglass"
+				},
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Super Spies"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Maria Hill"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Black Widow",
+			"_comments": "Attacking black widow will reveal the Caught Off Guard, Which will cancel damages and discard Nigh Goggles"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Maria Hill"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Black Widow - 1 #50064",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Widow's Web - 1B #50067b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Caught Off Guard"
+				},
+				{
+					"card": "Night Vision Goggles"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Nick Fury #50002"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Support Staff",
+					"tokens": {
+						"staff": 1
+					}
+				},
+				{
+					"card": "The Iliad",
+					"tokens": {
+						"mission": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "The douglass"
+				},
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Super Spies"
+				}
+			]
+		}
+	}
+}

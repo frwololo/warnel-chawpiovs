@@ -964,13 +964,14 @@ static func can_add_card_to_deck(card_id, currently_in_deck):
 	return true
 
 
-static func get_translated_property(card_id, property):
+static func get_translated_property(card_id, property, locale = ""):
+	if !locale:
+		locale = TranslationServer.get_locale()
 	var card_data = cfc.get_card_by_id(card_id)
 	var card_translations = cfc.card_translations
 	if not card_data:
 		return ""
 			
-	var locale = TranslationServer.get_locale()
 	if !card_translations.has(locale):
 		return card_data.get(property, "")
 	

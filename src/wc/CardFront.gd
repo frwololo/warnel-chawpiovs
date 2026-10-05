@@ -101,7 +101,7 @@ func setup_text_mode():
 	if !res_node.text:
 		res_node.visible = false
 		
-	card_labels["text"].text = 	card_owner.properties.get("text", "")
+	card_labels["text"].text = 	WCUtils.get_translated_property(card_owner.canonical_id, "text")
 	card_labels["text"].bbcode_text = card_labels["text"].text 
 
 func end_texture_transition():

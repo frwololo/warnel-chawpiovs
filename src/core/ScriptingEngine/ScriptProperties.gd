@@ -509,7 +509,7 @@ const KEY_ALTERATION := "alteration"
 #	]}
 #}
 #```
-# The above example can be tranlated to:
+# The above example can be translated to:
 # *"Draw 1 card for each card with 0 power on the board"*
 #
 # When used in modify_properties, the VALUE_PER can be appended by a plus sign as well
@@ -525,7 +525,7 @@ const KEY_ALTERATION := "alteration"
 #	]}
 #}
 #```
-# The above example can be tranlated to:
+# The above example can be translated to:
 # *"Increase this card's power by the amount of research you have"*
 #
 # Note using a minus-sign '-' in place of a plus-sign will not work as expected.

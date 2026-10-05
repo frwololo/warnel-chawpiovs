@@ -1759,7 +1759,13 @@ func load_card_translations():
 		return
 	var translation_filename = "card_data_" + locale + ".json"	
 	var tr_json = WCUtils.read_json_file_with_user_override("Lang/" + translation_filename)
+	for card_id in tr_json:
+		var card_data = tr_json[card_id]
+		if card_data.has("text"):
+			card_data["text"] =  text_cleanup(card_data["text"])
+			card_data["text"] = convert_to_bbcode(card_data["text"])
 	card_translations[locale] = tr_json
+	
 
 
 func get_villain_portrait(card_id, callback_owner = null) -> Texture:
@@ -1890,6 +1896,148 @@ func get_corrected_card_id (card, constraints = {}, fuzzy_fallback = true) -> St
 	return WCUtils.get_corrected_card_id(card,constraints, fuzzy_fallback)
 
 
+var _cached_printed_text = {}
+func get_printed_text_data(card_id, locale = ""):
+	if !locale:
+		locale = TranslationServer.get_locale().to_lower()
+	
+	if !_cached_printed_text.has(locale):
+		_cached_printed_text[locale] = {}
+			
+	if !_cached_printed_text[locale].has(card_id):
+		var final_data = {}
+		var full_text:String = WCUtils.get_translated_property(card_id, "text", locale)
+		
+		#remove boost text delimiter
+		full_text = full_text.replace("\n[hr /]\n*", "\n")
+		full_text = full_text.trim_prefix(" ")
+		full_text = full_text.trim_suffix(" ")	
+		
+		var cr_paragraphs = full_text.split("\n")
+			
+		var pre_paragraphs = full_text.split("[b]")
+		var paragraphs:Array = []
+
+
+		for j in pre_paragraphs.size():
+			pre_paragraphs[j] = pre_paragraphs[j].trim_prefix(" ")
+			pre_paragraphs[j]  = pre_paragraphs[j].trim_suffix(" ")
+			pre_paragraphs[j]  = pre_paragraphs[j].replace("\"","")
+
+		#address the case where triggers start with [i]something[/i] -
+		var i = 1
+		var processed_paragraphs = []
+		var prefixes = [""]
+		for paragraph in pre_paragraphs:
+			if paragraph.ends_with("-"):
+				var pos = paragraph.find_last("[i]")
+				if pos < 0: 
+					pos = 0
+				if i < pre_paragraphs.size():
+					prefixes.append(paragraph.substr(pos))
+					paragraph = paragraph.replace(prefixes[i], "")
+			elif paragraph.begins_with("[i]"):
+				var end_pos = paragraph.find("-")
+				if end_pos >= 0:
+					prefixes[i-1] = paragraph.substr(0, end_pos + 1)
+					paragraph = paragraph.replace(prefixes[i-1], "")				
+			else:
+				prefixes.append("")
+			processed_paragraphs.append({"paragraph": paragraph})				
+			i+= 1	
+		for j in processed_paragraphs.size():
+			processed_paragraphs[j]["prefix"] = prefixes[j]
+			
+		pre_paragraphs = processed_paragraphs
+		#some lines contain "[b]" which are not actually section names
+		#so we need to make sure that sections actually also are delimited by a 
+		# carriage return somewhere (or beginning/end of card text)
+		#this is what this piece of code attempts to do
+		#example:
+		#"Permanent. Setup\n* [b]Forced Response[/b]: After attached villain activates against you, resolve the [b]Special[/b] ability of each [i]infinity stone[/i] in play. Otherwise, put the top card of the [i]infinity stone[/i] deck into play."
+		var previous = {}
+		for paragraph_data in pre_paragraphs:
+			var paragraph = paragraph_data["paragraph"]
+			paragraph = paragraph.trim_prefix(" ")
+			paragraph = paragraph.trim_suffix(" ")
+			var previous_str = previous.get("paragraph", "")			
+			if previous_str:
+				if !"\n" in previous_str:					
+					previous["paragraph"] = previous_str + "[b]" +  paragraph
+					previous["prefix"]= previous["prefix"] + paragraph_data["prefix"]
+				else:
+					previous_str = previous_str.strip_edges()
+					previous_str = previous_str.trim_prefix("*")
+					previous_str = previous_str.trim_suffix("*")	
+					paragraphs.append({"prefix": previous["prefix"], "paragraph": previous_str.strip_edges()})
+					previous = paragraph_data
+			else:
+				previous = paragraph_data
+		if previous.get("paragraph", ""):
+			var previous_str = previous["paragraph"]
+			previous_str = previous_str.strip_edges()
+			previous_str = previous_str.trim_prefix("*")
+			previous_str = previous_str.trim_suffix("*")				
+			paragraphs.append({"prefix": previous["prefix"], "paragraph": previous_str.strip_edges()})
+
+
+		i = 0
+		for paragraph_data in paragraphs:
+			var paragraph = paragraph_data["paragraph"]
+			var prefix = paragraph_data["prefix"]
+			if !paragraph:
+				continue
+			var paragraph_l:String = paragraph.to_lower()
+			if prefix:
+				var _tmp = 1
+			var pref_and_paragraph = prefix + paragraph
+			var position = paragraph.findn("[/b]")
+			if position == -1:
+				var found_keyword = false
+				if i == 0: #first line might be the traits and keywords line
+					for keyword in CFConst.AUTO_KEYWORDS.keys():
+						if paragraph_l.begins_with(keyword):
+							final_data["keywords"] = pref_and_paragraph
+							found_keyword = true
+							break
+				if !found_keyword:
+					if !final_data.has("generic"):
+						 final_data["generic"] = ""
+					else:
+						final_data["multiple_generic"] = true
+					final_data["generic"] += pref_and_paragraph
+			else:
+				var paragraph_name = paragraph_l.substr(0, position)
+				#due to some typos, some sections have the ":" inside the bold, others don't
+				#e.g. <b>When Revealed:</b> and <b>When Revealed</b>: are both possible occurrences
+				paragraph_name = paragraph_name.replace(":", "")
+				paragraph_name = cfc.remove_bbcode(paragraph_name)				
+				paragraph_name = paragraph_name.strip_edges() 
+				if !final_data.has(paragraph_name):
+						final_data[paragraph_name] = ""
+				else:
+					final_data["multiple_" + paragraph_name] = true
+					paragraph_name = paragraph_name + "2"
+					final_data[paragraph_name] = ""
+				var bold = "" if paragraph.begins_with("[b]") else "[b]"	
+				final_data[paragraph_name] += prefix + bold + paragraph
+			i+= 1		
+
+		final_data["all"] = full_text
+		final_data["all_excluding_keywords"] = full_text
+		if final_data.has("keywords"):
+			final_data["all_excluding_keywords"] = full_text.replace(final_data["keywords"], "")
+
+		for paragraph in cr_paragraphs:
+			var words = paragraph.split(" ")
+			if words:
+				var first_word = words[0]
+				first_word = first_word.to_lower()+ "..."
+				final_data[first_word] = paragraph
+	
+		_cached_printed_text[locale][card_id] = final_data
+	
+	return _cached_printed_text[locale][card_id]
 
 
 

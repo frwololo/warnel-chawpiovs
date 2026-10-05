@@ -485,8 +485,6 @@ func load_from_card_id(card_id):
 	set_card_art(true)
 	_runtime_properties_setup()
 	
-	#update cached data
-	_cached_printed_text = { "_initialized": false}
 	_get_extra_scripts_cache = {}
 	
 	
@@ -4956,148 +4954,48 @@ func get_global_center():
 func serialize_to_json():
 	return export_to_json()
 
-var _cached_printed_text = { "_initialized": false}
-func get_printed_text(section = ""):
-	var section_l = section.to_lower()
+const section_name_tr := {
+	"fr": {
+		"response":"réponse",
+		"hero response": "réponse de héros",
+		"hero action" : "action de héros",
+		"hero interrupt": "interruption de héros",
+		"interrupt": "interruption",
+		"when defeated": "une fois déjouée",
+		"when revealed": "Une fois révélée",
+		"alter-ego action": "action d'alter ego",
+		"alter-ego response": "réponse d'alter ego",
+		"forced response": "réponse forcée",
+		"forced interrupt": "interruption forcée",
+		"special": "spécial",
+		"when revealed (alter-ego)": "une fois révélée (alter ego)",
+		"when revealed (hero)": "une fois révélée (héros)",
+	}
+}
+func get_printed_text(section = "", locale = ""):
+	if !locale:
+		locale = TranslationServer.get_locale().to_lower()
+	
 	if !section:
-		return get_property("text","")
+		return WCUtils.get_translated_property(canonical_id, "text")	
+	
+	var section_l = section.to_lower()
+	var data = cfc.get_printed_text_data(canonical_id, locale)
 
 
-	if !_cached_printed_text["_initialized"]:
-		var full_text:String = get_property("text", "")
-		
-		#remove boost text delimiter
-		full_text = full_text.replace("\n[hr /]\n*", "\n")
-		full_text = full_text.trim_prefix(" ")
-		full_text = full_text.trim_suffix(" ")	
-		
-		var cr_paragraphs = full_text.split("\n")
-			
-		var pre_paragraphs = full_text.split("[b]")
-		var paragraphs:Array = []
+	if section_name_tr.has(locale):
+		section_l = section_name_tr[locale].get(section_l, section_l)
 
-
-		for j in pre_paragraphs.size():
-			pre_paragraphs[j] = pre_paragraphs[j].trim_prefix(" ")
-			pre_paragraphs[j]  = pre_paragraphs[j].trim_suffix(" ")
-			pre_paragraphs[j]  = pre_paragraphs[j].replace("\"","")
-
-		#address the case where triggers start with [i]something[/i] -
-		var i = 1
-		var processed_paragraphs = []
-		var prefixes = [""]
-		for paragraph in pre_paragraphs:
-			if paragraph.ends_with("-"):
-				var pos = paragraph.find_last("[i]")
-				if pos < 0: 
-					pos = 0
-				if i < pre_paragraphs.size():
-					prefixes.append(paragraph.substr(pos))
-					paragraph = paragraph.replace(prefixes[i], "")
-			elif paragraph.begins_with("[i]"):
-				var end_pos = paragraph.find("-")
-				if end_pos >= 0:
-					prefixes[i-1] = paragraph.substr(0, end_pos + 1)
-					paragraph = paragraph.replace(prefixes[i-1], "")				
-			else:
-				prefixes.append("")
-			processed_paragraphs.append({"paragraph": paragraph})				
-			i+= 1	
-		for j in processed_paragraphs.size():
-			processed_paragraphs[j]["prefix"] = prefixes[j]
-			
-		pre_paragraphs = processed_paragraphs
-		#some lines contain "[b]" which are not actually section names
-		#so we need to make sure that sections actually also are delimited by a 
-		# carriage return somewhere (or beginning/end of card text)
-		#this is what this piece of code attempts to do
-		#example:
-		#"Permanent. Setup\n* [b]Forced Response[/b]: After attached villain activates against you, resolve the [b]Special[/b] ability of each [i]infinity stone[/i] in play. Otherwise, put the top card of the [i]infinity stone[/i] deck into play."
-		var previous = {}
-		for paragraph_data in pre_paragraphs:
-			var paragraph = paragraph_data["paragraph"]
-			paragraph = paragraph.trim_prefix(" ")
-			paragraph = paragraph.trim_suffix(" ")
-			var previous_str = previous.get("paragraph", "")			
-			if previous_str:
-				if !"\n" in previous_str:					
-					previous["paragraph"] = previous_str + "[b]" +  paragraph
-					previous["prefix"]= previous["prefix"] + paragraph_data["prefix"]
-				else:
-					previous_str = previous_str.strip_edges()
-					previous_str = previous_str.trim_prefix("*")
-					previous_str = previous_str.trim_suffix("*")	
-					paragraphs.append({"prefix": previous["prefix"], "paragraph": previous_str.strip_edges()})
-					previous = paragraph_data
-			else:
-				previous = paragraph_data
-		if previous.get("paragraph", ""):
-			var previous_str = previous["paragraph"]
-			previous_str = previous_str.strip_edges()
-			previous_str = previous_str.trim_prefix("*")
-			previous_str = previous_str.trim_suffix("*")				
-			paragraphs.append({"prefix": previous["prefix"], "paragraph": previous_str.strip_edges()})
-
-
-		i = 0
-		for paragraph_data in paragraphs:
-			var paragraph = paragraph_data["paragraph"]
-			var prefix = paragraph_data["prefix"]
-			if !paragraph:
-				continue
-			var paragraph_l:String = paragraph.to_lower()
-			if prefix:
-				var _tmp = 1
-			var pref_and_paragraph = prefix + paragraph
-			var position = paragraph.findn("[/b]")
-			if position == -1:
-				var found_keyword = false
-				if i == 0: #first line might be the traits and keywords line
-					for keyword in CFConst.AUTO_KEYWORDS.keys():
-						if paragraph_l.begins_with(keyword):
-							_cached_printed_text["keywords"] = pref_and_paragraph
-							found_keyword = true
-							break
-				if !found_keyword:
-					if !_cached_printed_text.has("generic"):
-						 _cached_printed_text["generic"] = ""
-					else:
-						_cached_printed_text["multiple_generic"] = true
-					_cached_printed_text["generic"] += pref_and_paragraph
-			else:
-				var paragraph_name = paragraph_l.substr(0, position)
-				#due to some typos, some sections have the ":" inside the bold, others don't
-				#e.g. <b>When Revealed:</b> and <b>When Revealed</b>: are both possible occurrences
-				paragraph_name = paragraph_name.replace(":", "")
-				paragraph_name = cfc.remove_bbcode(paragraph_name)				
-				paragraph_name = paragraph_name.strip_edges() 
-				if !_cached_printed_text.has(paragraph_name):
-						_cached_printed_text[paragraph_name] = ""
-				else:
-					_cached_printed_text["multiple_" + paragraph_name] = true
-					paragraph_name = paragraph_name + "2"
-					_cached_printed_text[paragraph_name] = ""
-				var bold = "" if paragraph.begins_with("[b]") else "[b]"	
-				_cached_printed_text[paragraph_name] += prefix + bold + paragraph
-			i+= 1		
-
-		_cached_printed_text["_initialized"] = true
-		_cached_printed_text["all"] = full_text
-		_cached_printed_text["all_excluding_keywords"] = full_text
-		if _cached_printed_text.has("keywords"):
-			_cached_printed_text["all_excluding_keywords"] = full_text.replace(_cached_printed_text["keywords"], "")
-
-		for paragraph in cr_paragraphs:
-			var words = paragraph.split(" ")
-			if words:
-				var first_word = words[0]
-				first_word = first_word.to_lower()+ "..."
-				_cached_printed_text[first_word] = paragraph
-
-	if _cached_printed_text.has(section_l):
-		return _cached_printed_text[section_l]
+	if data.has(section_l):
+		return data[section_l]
+	elif locale != "en":
+		#fallback to en version just in case
+		return get_printed_text(section, "en")
 	return ""
 
+#override from parent
+func get_translated_property(property):
+	return WCUtils.get_translated_property(canonical_id, property)
 
 func queue_free():
 	reattach_removed_nodes()

@@ -463,6 +463,7 @@ func unfocus_all() -> void:
 # before adding it to the scene
 func _extra_dupe_preparation(dupe_focus: Card, card: Card) -> void:
 	dupe_focus.canonical_name = card.canonical_name
+	dupe_focus.canonical_id = card.canonical_id
 	dupe_focus.properties = card.properties.duplicate()
 	if is_instance_valid(focus_info):
 		focus_info.hide_all_info()
@@ -473,6 +474,8 @@ func _extra_dupe_preparation(dupe_focus: Card, card: Card) -> void:
 # warning-ignore:unused_argument
 # warning-ignore:unused_argument
 func _extra_dupe_ready(dupe_focus: Card, card: Card) -> void:
+	dupe_focus.set_card_art()
+	dupe_focus.refresh_card_front()
 	var multiplier =  dupe_focus.focused_scale #* cfc.curr_scale
 	if CFConst.VIEWPORT_FOCUS_ZOOM_TYPE == "scale":
 		dupe_focus.scale = Vector2(1,1) * multiplier

@@ -809,6 +809,8 @@ func modify_property(
 			refresh_property_label(property)
 	return(retcode)
 
+func get_translated_property(property):
+	return properties[property]
 
 func refresh_property_label(property: String) -> void:
 	if not is_instance_valid(card_front) or not card_front.card_labels.has(property):
@@ -817,7 +819,8 @@ func refresh_property_label(property: String) -> void:
 		return
 		
 	var label_node = card_front.card_labels[property]
-	var value_for_label = str(properties[property])
+	var translated_property = get_translated_property(property)
+	var value_for_label = str(translated_property)
 	if property in CardConfig.PROPERTIES_NUMBERS:
 		if typeof(properties[property]) == TYPE_INT and properties[property] < 0:
 			value_for_label = '0'
@@ -842,9 +845,9 @@ func refresh_property_label(property: String) -> void:
 	# but this is also the fallback we use for
 	# properties undefined in CardConfig
 	elif card_front.card_labels[property] as RichTextLabel:
-		card_front.set_rich_label_text(label_node, _get_formatted_text(properties[property]))
+		card_front.set_rich_label_text(label_node, _get_formatted_text(translated_property))
 	else:
-		card_front.set_label_text(label_node, _get_formatted_text(properties[property]))
+		card_front.set_label_text(label_node, _get_formatted_text(translated_property))
 
 
 func refresh_card_front() -> void:

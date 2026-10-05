@@ -2397,7 +2397,7 @@
 	},
 	"01007": {
 		"Name": "Spider-Traceur",
-		"text": "Attachez cette carte à un sbire.\n<b>Interruption forcée</b> : quand le sbier atatché est vaincu, retirez 3 menaces d'une manigance."
+		"text": "Attachez cette carte à un sbire.\n<b>Interruption forcée</b> : quand le sbire attaché est vaincu, retirez 3 menaces d'une manigance."
 	},
 	"01008": {
 		"Name": "Lance-toile",

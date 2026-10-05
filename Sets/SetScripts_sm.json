@@ -7600,6 +7600,19 @@
 					"subject": "self"
 				}
 			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
+				}
+			]
 		}
 	},
 	"Tracking Display": {

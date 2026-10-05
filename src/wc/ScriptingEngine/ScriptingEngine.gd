@@ -202,8 +202,8 @@ static func _compute_move_zones(subject, script):
 	var owner_hero_id = script.trigger_details.get("override_controller_id")
 	if !owner_hero_id and script.get_property("target_identity"):
 		var target_identity = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : script.get_property("target_identity")})
-		if target_identity:
-			owner_hero_id = target_identity
+		target_identity = target_identity[0] if target_identity else null
+		owner_hero_id = target_identity.get_controller_hero_id() if target_identity else 0				
 	if !owner_hero_id:
 		owner_hero_id = script.trigger_details.get("override_hero_id")	
 	if !owner_hero_id and subject:
@@ -1300,6 +1300,8 @@ func receive_damage(script: ScriptTask) -> int:
 			
 			if ("stun_if_damage" in tags):
 				card.set_stunned()
+			if ("confuse_if_damage" in tags):
+				card.set_confused()				
 			if ("exhaust_if_damage" in tags):
 				card.exhaustme()
 			if ("run_post_damage_script" in tags):
@@ -1376,6 +1378,7 @@ func receive_damage(script: ScriptTask) -> int:
 				"damage_script_owner_card": script.owner, 
 				"target": card,
 				"damage": damage_happened,
+				"amount": damage_happened,
 				"excess_damage": excess_damage,
 				"tags": tags,
 			}
@@ -3337,11 +3340,19 @@ func rotate_next(script: ScriptTask) -> int:
 	if (costs_dry_run()): #not allowed ?
 		return retcode	
 	
+	#1 is clockwise, -1 is counter clockwise
+	var rotate_direction = script.get_property("direction", 1) 
+	
 	for subject in script.subjects:
 		var current_controller_id = subject.get_controller_hero_id()
-		var next_controller_id = current_controller_id + 1
+		#skip cards hat are not engaged with a player
+		if !current_controller_id:
+			continue
+		var next_controller_id = current_controller_id + rotate_direction
 		if  next_controller_id > gameData.get_team_size():
 			next_controller_id = 1
+		if  next_controller_id < 0:
+			next_controller_id = gameData.get_team_size()			
 		if subject.is_onbard():
 			var current_grid_name = subject.get_grid_name()
 			var new_grid_name = current_grid_name.replace(str(current_controller_id), str(next_controller_id))
@@ -3466,12 +3477,16 @@ func sequence(script: ScriptTask) -> int:
 func reveal_encounter(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
-	if (costs_dry_run()): #not allowed ?
+	if script.script_definition.has("subject") and !script.subjects:
+		return CFConst.ReturnCode.FAILED
+
+	if (costs_dry_run()):
 		return retcode
 	var owner = script.owner
 	var hero_id = owner.get_controller_hero_id()
 	
 	#If we passed a subject card, that's what we try to reveal
+
 	if script.subjects:
 		gameData.deal_one_encounter_to(hero_id, true, script.subjects[0])
 		return  CFConst.ReturnCode.CHANGED
@@ -4005,6 +4020,12 @@ func constraints(script: ScriptTask) -> int:
 			if tag == trait + "_ability":			
 				if my_hero_card and my_hero_card.get_property("cannot_" + trait, 0, true):
 					return 	CFConst.ReturnCode.FAILED
+		
+		if tag.begins_with("PHASE_"):
+			var actual_tag =  tag.replace("PHASE_", "")
+			if actual_tag in PhaseContainer.StepStrings:
+				if actual_tag != gameData.phaseContainer.get_current_phase_name():
+					return 	CFConst.ReturnCode.FAILED	
 	
 	var board:Board = cfc.NMAP.board
 	#Max per player rule to play

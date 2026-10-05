@@ -5,7 +5,6 @@
 class_name ScriptObject
 extends Reference
 
-
 var interaction_authorized_user_id
 var user_interaction_status =  CFConst.USER_INTERACTION_STATUS.NOT_CHECKED_YET
 
@@ -104,8 +103,20 @@ func get_property(property: String, default = null, subscript_definition = null,
 
 	if !owner:
 		return default
+
 	
 	var result = ""
+
+	if owner.script_variables:
+		var res = owner.script_variables.get(property, null)
+		if res != null:
+			match typeof(res):
+				TYPE_ARRAY:
+					result = res.duplicate()
+					return result
+				_:
+					return res	
+
 	if (subscript_definition != null):
 			#used for recursive calls of if/then/else
 		result = subscript_definition
@@ -298,6 +309,26 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 	return subjects
 
 
+func preload_hero_collection():
+	var collection = gameData.globals.get("hero_collection")
+	if collection:
+		return collection
+		
+	var existing_heroes = {}
+	var existing_cards = cfc.NMAP["removed_from_game"].get_all_cards()
+	for card in existing_cards:
+		if card.get_property("type_code") == "hero":
+			existing_heroes[card.get_property("_code")] = card
+	for hero_id in cfc.hero_ids:
+		if existing_heroes.has(hero_id):
+			continue
+		var hero_card_data = cfc.get_card_by_id(hero_id)
+		var card = cfc.instance_card(hero_id, 0)
+		cfc.NMAP["removed_from_game"].add_child(card)
+		existing_heroes[hero_id] = card
+	
+	gameData.globals["hero_collection"] = existing_heroes
+	return  gameData.globals["hero_collection"]
 
 #runs "find_subjects" locally, does not store the result
 #this allows to run a "find subjects" activity within
@@ -320,6 +351,10 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 	
 #	var subject = overrides.get("subject", get_property(SP.KEY_SUBJECT))
 	var subject = get_property_raw(SP.KEY_SUBJECT)
+
+	var preload_func = get_property_raw("preload")
+	if preload_func:
+		call(preload_func)
 	
 	#replace targeting with selection (optional)
 	if CFConst.OPTIONS.get("replace_targetting_with_selection", false):

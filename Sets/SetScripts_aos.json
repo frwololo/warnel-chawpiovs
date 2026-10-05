@@ -1,12 +1,165 @@
 {
-	"\"It's Alive!\"": {
-		"TODO": "",
-		"reveal": {
-			"all": [
+	"_macros": {
+		"__aim_interference": {
+			"Add 3 counters": [
 				{
-					"name": "TODO"
+					"name": "mod_tokens",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": "trait_board_member"
+				}
+			],
+			"Add 2 Counters (prevent 1)": [
+				{
+					"name": "pay_cost",
+					"cost": {
+						"__resource__": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 2,
+					"selection_type": "equal",
+					"selection_optional": false,
+					"filter_state_seek": "trait_board_member"
+				}
+			],
+			"Add 1 Counter (prevent 2)": [
+				{
+					"name": "pay_cost",
+					"cost": {
+						"__resource__": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"selection_optional": false,
+					"filter_state_seek": "trait_board_member"
+				}
+			],
+			"Add 0 counter (prevent all)": [
+				{
+					"name": "pay_cost",
+					"cost": {
+						"__resource__": 3
+					},
+					"is_cost": true
 				}
 			]
+		},
+		"__remove_secret": {
+			"name": "mod_tokens",
+			"amount": -1,
+			"subject": "boardseek",
+			"subject_count": "all",
+			"selection_count": "__value__",
+			"selection_type": "as_much_as_possible",
+			"selection_what_to_count": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"subject": "trigger",
+					"token_name": "secret"
+				}
+			},
+			"needs_selection": true,
+			"filter_state_seek": [
+				"trait_board_member",
+				"environment"
+			]
+		},
+		"__secret_lowest": {
+			"name": "mod_tokens",
+			"amount": "__value__",
+			"subject": "boardseek",
+			"sort_by": "function",
+			"sort_name": "count_tokens",
+			"func_params": {
+				"token_name": "secret"
+			},
+			"filter_state_seek": [
+				"trait_board_member",
+				"environment"
+			]
+		},
+		"__wits": [
+			{
+				"name": "pay_cost",
+				"cost": {
+					"mental": "__value__"
+				},
+				"is_cost": true
+			},
+			{
+				"name": "prevent",
+				"amount": "__value__",
+				"subject": "interrupted_event"
+			},
+			{
+				"name": "mod_tokens",
+				"amount": -1,
+				"subject": "boardseek",
+				"subject_count": "all",
+				"selection_count": "__value__",
+				"selection_type": "as_much_as_possible",
+				"selection_what_to_count": {
+					"func_name": "count_tokens",
+					"func_params": {
+						"subject": "trigger",
+						"token_name": "secret"
+					}
+				},
+				"needs_selection": true,
+				"filter_state_seek": [
+					"trait_board_member",
+					"environment"
+				]
+			}
+		]
+	},
+	"\"It's Alive!\"": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": "true"
+				},
+				"Fetch Adaptoid": [
+					{
+						"name": "reveal_encounter",
+						"subject": "tutor_and_choose",
+						"is_cost": true,
+						"src_container": [
+							"deck_villain",
+							"discard_villain"
+						],
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"trait_adaptoid": 1
+								},
+								"filter_properties2": {
+									"type_code": "minion"
+								}
+							}
+						]
+					},
+					{
+						"is_else": true,
+						"name": "deal_encounter",
+						"target_identity": "my_identity"
+					}
+				]
+			}
 		}
 	},
 	"A.I.M. Abductor": {
@@ -20,7 +173,7 @@
 					"sort_by": "function",
 					"sort_name": "get_remaining_damage",
 					"sort_descending": true,
-					"filter_state_boardseek": [
+					"filter_state_seek": [
 						{
 							"filter_group": "group_allies_my_hero"
 						}
@@ -71,7 +224,6 @@
 		}
 	},
 	"A.I.M. Grunt": {
-		"TODO": "replacement effect support",
 		"preparation": {
 			"all": [
 				{
@@ -90,71 +242,89 @@
 		}
 	},
 	"A.I.M. Interference ([energy])": {
-		"TODO": "",
 		"incite": {
-			"__amount__": "TODO"
+			"__amount__": 1
 		},
 		"reveal": {
-			"all": [
-				{
-					"name": "TODO"
+			"all": {
+				"__aim_interference": {
+					"__resource__": "energy"
 				}
-			]
+			}
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "sequence",
+					"sequence_ability": "reveal"
 				}
 			]
 		}
 	},
 	"A.I.M. Interference ([mental])": {
-		"TODO": "",
 		"incite": {
-			"__amount__": "TODO"
+			"__amount__": 1
 		},
 		"reveal": {
-			"all": [
-				{
-					"name": "TODO"
+			"all": {
+				"__aim_interference": {
+					"__resource__": "mental"
 				}
-			]
+			}
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "sequence",
+					"sequence_ability": "reveal"
 				}
 			]
 		}
 	},
 	"A.I.M. Interference ([physical])": {
-		"TODO": "",
 		"incite": {
-			"__amount__": "TODO"
+			"__amount__": 1
 		},
 		"reveal": {
-			"all": [
-				{
-					"name": "TODO"
+			"all": {
+				"__aim_interference": {
+					"__resource__": "physical"
 				}
-			]
+			}
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "sequence",
+					"sequence_ability": "reveal"
 				}
 			]
 		}
 	},
 	"A.I.M. Jailer": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "i_attack",
+					"is_cost": true,
+					"action_owner": "self",
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "get_remaining_damage",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies",
+							"filter_properties": {
+								"trait_rescued": 1
+							}
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "mod_tokens",
+					"modification": 1,
+					"subject": "Holding Cell"
 				}
 			]
 		}
@@ -309,25 +479,69 @@
 		}
 	},
 	"Adaptoid": {
-		"TODO": "",
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
 				{
-					"name": "TODO"
+					"name": "mod_tokens",
+					"modification": -1,
+					"token_name": "all-purpose",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "environment"
+							}
+						}
+					]
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"enemy_activation_finished": {
+							"all": [
+								{
+									"name": "shuffle_card_into_container",
+									"dest_container": "deck_villain",
+									"subject": "self"
+								}
+							]
+						}
+					}
 				}
 			]
 		}
 	},
 	"Aerial Dogfight": {
-		"TODO": ""
+		"interrupt_receive_damage": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"trait_aerial": 0
+					}
+				}
+			],
+			"event_filters": {
+				"tags": [
+					"attack",
+					"!ranged"
+				],
+				"filter_state_event_target": "trait_aerial"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": 2
+				}
+			]
+		}
 	},
 	"Agent Coulson": {
 		"self_moved_to_board": {
@@ -739,10 +953,75 @@
 		}
 	},
 	"Apprehending Rogue Agents - 1A": {
-		"TODO": ""
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck_villain",
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_elite": 1
+							},
+							"filter_properties3": {
+								"trait_thunderbolt": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor",
+					"src_container": "deck_villain",
+					"filter_state_tutor": [
+						{
+							"properties": {
+								"shortname": "Justice, Like Lightning"
+							}
+						}
+					]
+				},
+				{
+					"name": "flip_doublesided_card"
+				}
+			]
+		}
 	},
 	"Apprehending Rogue Agents - 1B": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "guard",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties3": {
+								"trait_thunderbolt": 1
+							}
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"response_attack_happened": {
+			"board": [
+				{
+					"name": "engage_player",
+					"subject": "trigger_details_target",
+					"target_identity": "current_attacker"
+				}
+			]
+		}
 	},
 	"Army of the Controlled": {
 		"reveal": {
@@ -789,7 +1068,7 @@
 		"do_token": {
 			"all": [
 				{
-					"name": "mod_token",
+					"name": "mod_tokens",
 					"modification": 1,
 					"token_name": "all-purpose",
 					"subject": "target",
@@ -805,20 +1084,60 @@
 		}
 	},
 	"Arrest Warrant": {
-		"TODO": "",
-		"manual": {
+		"card_moved_to_board": {
+			"trigger": "self",
 			"board": [
 				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
-				},
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"manual": {
+			"board": [
 				{
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
 						"alter_ego_action"
 					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities_my_hero"
+						},
+						{
+							"filter_same_controller": true,
+							"filter_properties": {
+								"trait_s.h.i.e.l.d": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor_and_choose",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						"minion",
+						"trait_s.h.i.e.l.d"
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		}
@@ -1000,13 +1319,12 @@
 		}
 	},
 	"Automated Mobile Unit": {
-		"TODO": "",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "M.O.D.O.K."
 				}
 			]
 		},
@@ -1014,52 +1332,210 @@
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
-					"alteration": 1
+					"filter_property_name": "health",
+					"trigger": "M.O.D.O.K.",
+					"alteration": 5
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "host",
+			"filter_count_difference": "decreased",
+			"filter_count": 0,
+			"filter_token_name": "damage",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Baron Zemo - A1": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
-			"board": []
-		}
-	},
-	"Baron Zemo - B1": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
-			"board": []
-		}
-	},
-	"Baron Zemo's Sword": {
-		"TODO": "",
-		"card_moved_to_board": {
+		"interrupt_card_dies": {
 			"trigger": "self",
 			"board": [
 				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 0,
+					"token_name": "damage",
+					"set_to_mod": true
+				},
+				{
+					"__remove_secret": {
+						"__value__": 3
+					}
+				}
+			]
+		}
+	},
+	"Baron Zemo - A2": {
+		"interrupt": {
+			"event_name": [
+				"enemy_attack",
+				"commit_scheme"
+			],
+			"trigger": "self",
+			"board": {
+				"Secret": [
+					{
+						"name": "mod_tokens",
+						"token_name": "secret",
+						"modification": 1,
+						"subject": "boardseek_and_choose",
+						"filter_state_seek": "trait_board_member"
+					}
+				],
+				"Boost Card": [
+					{
+						"name": "draw_boost_card",
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Baron Zemo - B1": {
+		"interrupt_card_dies": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 0,
+					"token_name": "damage",
+					"set_to_mod": true
+				},
+				{
+					"__remove_secret": {
+						"__value__": 3
+					}
+				}
+			]
+		}
+	},
+	"Baron Zemo - B2": {
+		"interrupt": {
+			"event_name": [
+				"enemy_attack",
+				"commit_scheme"
+			],
+			"trigger": "self",
+			"board": {
+				"Secret": [
+					{
+						"name": "mod_tokens",
+						"token_name": "secret",
+						"modification": 2,
+						"subject": "boardseek_and_choose",
+						"filter_state_seek": "trait_board_member"
+					}
+				],
+				"Boost Card": [
+					{
+						"name": "draw_boost_card",
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Baron Zemo's Sword": {
+		"card_moved_to_board": {
+			"board": [
+				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "Baron Zemo"
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"event_filters": {
+				"source": "host",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"__secret_lowest": {
+						"__value__": 1
+					}
 				}
 			]
 		},
 		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
-				}
-			]
+			"board": {
+				"Pay 3 Energy": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"energy": 3
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"token_name": "secret",
+						"subject": "boardseek_and_choose",
+						"filter_state_seek": [
+							"trait_board_member",
+							"environment"
+						]
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				],
+				"Pay 3 Physical": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"physical": 3
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"token_name": "secret",
+						"subject": "boardseek_and_choose",
+						"filter_state_seek": [
+							"trait_board_member",
+							"environment"
+						]
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				]
+			}
 		}
 	},
 	"Batroc - A": {
@@ -1128,42 +1604,106 @@
 			]
 		}
 	},
-	"Batroc": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+	"Batroc #50161": {
+		"response_card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "tutor_and_choose",
+					"src_container": "hand_my_hero"
+				}
+			]
 		}
 	},
 	"Batroc the Leaper": {
-		"TODO": "",
-		"_surge": {},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "reveal_encounter",
+					"subject": "find",
+					"filter_state_tutor": "Batroc"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_activate"
+				}
+			]
+		},
+		"do_activate": {
+			"all": [
+				{
+					"name": "engage_player",
+					"subject": "Batroc",
+					"target_identity": "current_hero_target"
+				},
+				{
+					"name": "enemy_activates_against_you",
+					"subject": "Batroc",
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "surge"
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "discard",
+					"subject": "tutor_and_choose",
+					"src_container": "hand_current_hero_target"
 				}
 			]
 		}
 	},
 	"Batroc's Brigade": {
-		"TODO": "",
+		"before_card_moved_to_board": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "trigger",
+					"modification": 1,
+					"token_name": "tough"
+				}
+			]
+		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "mod_tokens",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"modification": 1,
+					"token_name": "tough"
 				}
 			]
 		},
 		"interrupt": {
-			"event_name": "TODO",
+			"event_name": "about_to_reveal",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					},
+					"filter_properties2": {
+						"trait_elite": 0
+					}
+				}
+			],
 			"is_optional_board": true,
 			"board": [
 				{
@@ -1172,16 +1712,80 @@
 					"tags": [
 						"hero_interrupt"
 					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"unc": 3
+					},
+					"is_cost": true
+				},
+				{
+					"name": "cancel_current_encounter"
 				}
 			]
 		}
 	},
 	"Battle of Wits": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"interrupt_add_threat": {
+							"event_filters": {
+								"target": "main_scheme"
+							},
+							"all": {
+								"Prevent 1": {
+									"__wits": {
+										"__value__": 1
+									}
+								},
+								"Prevent 2": {
+									"__wits": {
+										"__value__": 2
+									}
+								},
+								"Prevent 3": {
+									"__wits": {
+										"__value__": 3
+									}
+								},
+								"Prevent 4": {
+									"__wits": {
+										"__value__": 4
+									}
+								},
+								"Prevent 5": {
+									"__wits": {
+										"__value__": 5
+									}
+								},
+								"Prevent 6": {
+									"__wits": {
+										"__value__": 6
+									}
+								},
+								"Prevent 7": {
+									"__wits": {
+										"__value__": 7
+									}
+								},
+								"Prevent 8": {
+									"__wits": {
+										"__value__": 8
+									}
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "enemy_schemes",
+					"subject": "Baron Zemo"
 				}
 			]
 		}
@@ -1292,7 +1896,34 @@
 		}
 	},
 	"Black Widow #50148": {
-		"TODO": "TODO"
+		"response_enemy_scheme_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "host_card",
+					"is_cost": true,
+					"subject": "tutor",
+					"src_container": [
+						"discard_villain",
+						"deck_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Handspring"
+							}
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "mod_tokens",
+					"subject": "current_hero_target",
+					"token_name": "confused",
+					"modification": 1
+				}
+			]
+		}
 	},
 	"Black Widow's Gauntlet": {
 		"self_moved_to_board": {
@@ -1367,32 +1998,94 @@
 		"TODO": ""
 	},
 	"Blasters": {
-		"TODO": "",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "MACH-IV",
+					"is_cost": true
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "villain",
+					"is_else": true
 				}
 			]
 		},
-		"response": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": [
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "overkill\",\"ranged"
+		},
+		"response_attack_happened": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"damage": ">0"
+			},
+			"event_filters": {
+				"target": "host"
+			},
+			"is_optional_hand": true,
+			"hand": [
 				{
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
 						"hero_response"
 					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Chief Medical Officer": {
-		"TODO": "",
+		"on_load": {
+			"all": [
+				{
+					"name": "save_variable",
+					"var_name": "my_threshold",
+					"var_type": "int",
+					"value": {
+						"if": {
+							"func_name": "get_scenario_option_value",
+							"func_params": {
+								"option_name": "expert_mode"
+							}
+						},
+						"then": 3,
+						"else": 4
+					}
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_count_difference": "increased",
+			"filter_token_name": "secret",
+			"condition_board": {
+				"func_name": "count_tokens>=my_threshold",
+				"func_params": {
+					"subject": "self",
+					"token_name": "secret"
+				}
+			},
+			"board": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -1401,12 +2094,67 @@
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"token_name": "secret"
+				},
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": "group_friendly"
 				}
 			]
 		}
 	},
 	"Chief Surveillance Officer": {
-		"TODO": "",
+		"on_load": {
+			"all": [
+				{
+					"name": "save_variable",
+					"var_name": "my_threshold",
+					"var_type": "int",
+					"value": {
+						"if": {
+							"func_name": "get_scenario_option_value",
+							"func_params": {
+								"option_name": "expert_mode"
+							}
+						},
+						"then": 3,
+						"else": 4
+					}
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_count_difference": "increased",
+			"filter_token_name": "secret",
+			"condition_board": {
+				"func_name": "count_tokens>=my_threshold",
+				"func_params": {
+					"subject": "self",
+					"token_name": "secret"
+				}
+			},
+			"board": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -1415,12 +2163,66 @@
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"token_name": "secret"
+				},
+				{
+					"name": "remove_threat",
+					"amount": 2,
+					"subject": "a_scheme"
 				}
 			]
 		}
 	},
 	"Chief Tactical Officer": {
-		"TODO": "",
+		"on_load": {
+			"all": [
+				{
+					"name": "save_variable",
+					"var_name": "my_threshold",
+					"var_type": "int",
+					"value": {
+						"if": {
+							"func_name": "get_scenario_option_value",
+							"func_params": {
+								"option_name": "expert_mode"
+							}
+						},
+						"then": 3,
+						"else": 4
+					}
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_count_difference": "increased",
+			"filter_token_name": "secret",
+			"condition_board": {
+				"func_name": "count_tokens>=my_threshold",
+				"func_params": {
+					"subject": "self",
+					"token_name": "secret"
+				}
+			},
+			"board": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -1429,45 +2231,204 @@
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"token_name": "secret"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "an_enemy"
 				}
 			]
 		}
 	},
 	"Citizen V - A": {
-		"TODO": "",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_leave_play",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "!count_cards",
+						"func_params": {
+							"subject": "tutor",
+							"src_container": "victory_display",
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"type_code": "minion"
+									},
+									"filter_properties3": {
+										"trait_thunderbolt": 1
+									}
+								}
+							]
+						}
+					}
+				}
+			]
+		},
 		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+			"event_name": [
+				"enemy_initiates_attack",
+				"enemy_initiates_scheme"
+			],
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies_current_hero_target",
+							"filter_properties": {
+								"trait_thunderbolt": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"PHASE_VILLAIN_ACTIVATES"
+					]
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "heal",
+					"amount": 4,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Citizen V - B": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_leave_play",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "!count_cards",
+						"func_params": {
+							"subject": "tutor",
+							"src_container": "victory_display",
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"type_code": "minion"
+									},
+									"filter_properties3": {
+										"trait_thunderbolt": 1
+									}
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": [
+				"enemy_initiates_attack",
+				"enemy_initiates_scheme"
+			],
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies_current_hero_target",
+							"filter_properties": {
+								"trait_thunderbolt": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"PHASE_VILLAIN_ACTIVATES"
+					]
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "heal",
+					"amount": 6,
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"Citizen V's Sword": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
-				}
-			]
-		},
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
-				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "Citizen V"
+				},
+				{
+					"name": "enemy_activates_against_you",
+					"subject": "Citizen V"
 				}
 			]
 		},
-		"response": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": [
+		"response_attack_happened": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"damage": ">0"
+			},
+			"event_filters": {
+				"target": "Citizen V"
+			},
+			"is_optional_hand": true,
+			"hand": [
 				{
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
 						"hero_response"
 					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		}
@@ -1814,10 +2775,37 @@
 		}
 	},
 	"Coup de Foudre": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+		"card_moved_to_board": {
+			"filter_state_trigger": "minion",
+			"board": [
+				{
+					"name": "nop",
+					"subject": "trigger"
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "trigger"
+						}
+					},
+					"src_container": "deck_previous_subject"
+				},
+				{
+					"name": "add_threat",
+					"subject": "self",
+					"amount": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"subject": "previous",
+							"resource_type": "energy"
+						}
+					}
+				}
+			]
 		}
 	},
 	"Covert Ops": {
@@ -2056,39 +3044,119 @@
 		}
 	},
 	"Diplomatic Immunity": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "mod_tokens",
+					"subject": "self",
+					"token_name": "acceleration",
+					"modification": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "tutor",
+							"subject_count": "all",
+							"src_container": "victory_display",
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"type_code": "minion"
+									},
+									"filter_properties2": {
+										"trait_a.i.m": 1
+									}
+								}
+							]
+						}
+					}
 				}
 			]
 		}
 	},
 	"Diplomatic Sanctions": {
-		"TODO": "",
 		"_surge": {},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "discard",
+					"subject": "index",
+					"src_container": "hand_my_hero",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_optional": false,
+					"selection_type": "equal",
+					"selection_count": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "tutor",
+							"subject_count": "all",
+							"src_container": "victory_display",
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"type_code": "minion"
+									},
+									"filter_properties2": {
+										"trait_a.i.m": 1
+									}
+								}
+							]
+						}
+					}
 				}
 			]
 		},
-		"boost": {
+		"boost_alterants": {
 			"all": [
 				{
-					"name": "TODO"
+					"filter_task": "get_property",
+					"filter_property_name": "boost",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "tutor",
+							"subject_count": "all",
+							"src_container": "victory_display",
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"type_code": "minion"
+									},
+									"filter_properties2": {
+										"trait_a.i.m": 1
+									}
+								}
+							]
+						}
+					}
 				}
 			]
 		}
 	},
 	"Disavowed": {
-		"TODO": "",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": 1,
+					"filter_state_trigger": "trait_s.h.i.e.l.d"
+				}
+			]
+		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "add_threat",
+					"subject": "self",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": "trait_s.h.i.e.l.d"
+						}
+					}
 				}
 			]
 		}
@@ -2188,25 +3256,121 @@
 		}
 	},
 	"Divided Loyalties": {
-		"TODO": "",
+		"script_alterants": {
+			"board": [
+				{
+					"script": {
+						"manual": {
+							"board": {
+								"attack": [
+									{
+										"name": "pay_cost",
+										"cost": {
+											"unc": 1
+										},
+										"is_cost": true
+									}
+								]
+							}
+						}
+					},
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							}
+						}
+					]
+				},
+				{
+					"script": {
+						"manual": {
+							"board": {
+								"thwart": [
+									{
+										"name": "pay_cost",
+										"cost": {
+											"unc": 1
+										},
+										"is_cost": true
+									}
+								]
+							}
+						}
+					},
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							}
+						}
+					]
+				}
+			]
+		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
 				{
-					"name": "TODO"
+					"__remove_secret": {
+						"__value__": "1p"
+					}
 				}
 			]
 		}
 	},
 	"Down but Not Out": {
-		"TODO": "",
-		"_surge": {},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "reveal_encounter",
+					"subject": "tutor",
+					"subject_index": "random",
+					"src_container": "victory_display",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_thunderbolt": 1
+							}
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"name": "save_variable",
+					"var_type": "subject",
+					"var_name": "my_minion",
+					"value": "previous"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_damage"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "removed_from_game",
+					"subject": "self"
+				},
+				{
+					"is_else": true,
+					"name": "surge"
 				}
 			]
+		},
+		"do_damage": {
+			"name": "deal_damage",
+			"subject": "my_minion",
+			"amount": {
+				"func_name": "get_subject_int_property",
+				"func_params": {
+					"subject": "my_minion",
+					"property": "health",
+					"plus": -5
+				}
+			}
 		}
 	},
 	"Dum Dum Dugan": {
@@ -2377,7 +3541,6 @@
 	},
 	"Embassy Patrol": {
 		"reveal": {
-			"trigger": "self",
 			"condition_all": {
 				"func_name": "count_cards",
 				"func_params": {
@@ -2698,61 +3861,194 @@
 		}
 	},
 	"Fighting Zemo - 3A": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "mod_tokens",
+					"token_name": "damage",
+					"set_to_mod": true,
+					"modification": 0,
+					"subject": "Baron Zemo"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "Baron Zemo"
+				},
+				{
+					"name": "host_card",
+					"host": "Baron Zemo",
+					"subject": "find",
+					"filter_state_tutor": "Baron Zemo's Sword"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Fighting Zemo - 3B": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "flip_doublesided_card",
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_func": {
+								"func_name": "count_tokens",
+								"func_params": {
+									"subject": "trigger",
+									"token_name": "the_mole"
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "add_threat",
+					"subject": "self",
+					"amount": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"token_name": "secret",
+							"filter_state_seek": [
+								"trait_board_member",
+								"attachment"
+							]
+						}
+					}
 				}
 			]
 		}
 	},
 	"Flying Inhuman": {
-		"TODO": "",
-		"response": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
-		}
-	},
-	"Flying Upgrade": {
-		"TODO": "",
-		"incite": {
-			"__amount__": "TODO"
-		},
 		"alterants": {
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "TODO",
+					"filter_property_name": "exclude_from_ally_limit",
+					"alteration": 1,
+					"trigger": "self"
+				}
+			]
+		},
+		"response_thwart_happened": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "remove_threat",
+					"amount": 1,
+					"subject": "target",
+					"subject_exclude": "trigger_details_target",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		},
+		"card_leaves_play": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"dest_container": "deck_holding_cell",
+					"dest_index": "bottom",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"code": "50105a"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Flying Upgrade": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
 					"filter_state_trigger": [
 						{
-							"TODO": "TODO"
+							"filter_properties": {
+								"shortname": "Adaptoid"
+							}
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_aerial",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"shortname": "Adaptoid"
+							}
 						}
 					],
 					"alteration": 1
 				}
 			]
+		},
+		"script_alterants": {
+			"board": [
+				{
+					"script": {
+						"reveal": {
+							"all": [
+								{
+									"name": "add_threat",
+									"amount": 1,
+									"subject": "main_scheme"
+								}
+							]
+						}
+					},
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"shortname": "Adaptoid"
+							}
+						}
+					]
+				}
+			]
 		}
 	},
 	"Focusing Crystal": {
-		"TODO": "",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "M.O.D.O.K."
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "host",
+			"filter_count_difference": "decreased",
+			"filter_count": 0,
+			"filter_token_name": "damage",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		}
@@ -3150,112 +4446,222 @@
 		}
 	},
 	"Gravitational Pull": {
-		"TODO": "",
-		"_surge": {},
-		"manual": {
-			"board": [
-				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
-				}
-			]
-		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "reveal_encounter",
+					"subject": "find",
+					"filter_state_tutor": "Moonstone"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_activate"
+				}
+			]
+		},
+		"do_activate": {
+			"all": [
+				{
+					"name": "engage_player",
+					"subject": "Moonstone",
+					"target_identity": "current_hero_target"
+				},
+				{
+					"name": "enemy_activates_against_you",
+					"subject": "Moonstone",
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "surge"
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "exhaust_card",
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_current_hero_target"
+						}
+					]
 				}
 			]
 		}
 	},
 	"Handspring": {
-		"TODO": "",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "Black widow",
+					"is_cost": true
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "villain",
+					"is_else": true
 				}
 			]
 		},
-		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"target": "host",
+				"amount": ">0",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"subject": "trigger"
+					}
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"Hard Sound": {
-		"TODO": "",
-		"_surge": {},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "reveal_encounter",
+					"subject": "find",
+					"filter_state_tutor": "Songbird"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_activate"
+				}
+			]
+		},
+		"do_activate": {
+			"all": [
+				{
+					"name": "engage_player",
+					"subject": "Songbird",
+					"target_identity": "current_hero_target"
+				},
+				{
+					"name": "enemy_activates_against_you",
+					"subject": "Songbird",
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "surge"
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "draw_boost_card",
+					"subject": "host"
 				}
 			]
 		}
 	},
 	"Hard Sound Bindings": {
-		"TODO": "",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "my_identity"
 				}
 			]
 		},
-		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+		"interrupt_attack": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "host",
+					"modification": 1,
+					"token_name": "stunned"
+				}
+			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "is_stunned",
+								"func_params": {
+									"subject": "current_hero_target"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "draw_boost_card",
+									"subject": "host"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"subject": "current_hero_target",
+							"modification": 1,
+							"token_name": "stunned"
+						}
+					]
 				}
 			]
 		}
 	},
 	"Heat-Seeking Missiles": {
-		"TODO": "",
-		"manual": {
-			"board": [
-				{
-					"name": "mod_tokens",
-					"is_cost": true,
-					"modification": -1,
-					"token_name": "TODO",
-					"subject": "self"
-				}
-			]
-		},
 		"uses": {
-			"__name__": "TODO",
-			"__amount__": "TODO"
+			"__name__": "missile",
+			"__amount__": 4
 		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "MACH-IV",
+					"is_cost": true
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "villain",
+					"is_else": true
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "missile",
+					"subject": "self"
+				},
+				{
+					"name": "indirect_damage",
+					"amount": 2,
+					"subject": "trigger_details_target"
 				}
 			]
 		}
@@ -3304,30 +4710,374 @@
 			]
 		}
 	},
-	"Holding Cell": {
-		"TODO": "",
-		"manual": {
+	"Holding Cell #50105a": {
+		"self_moved_to_board": {
 			"board": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
+					"name": "mod_tokens",
+					"token_name": "lock",
+					"modification": "2p",
+					"subject": "self"
 				}
 			]
 		},
-		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_count": 0,
+			"filter_token_name": "threat",
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Flying Inhuman"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Remove Lock (2 Energy)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"energy": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "lock",
+						"modification": -1,
+						"subject": "self"
+					}
+				],
+				"Remove Lock (3 Resources)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 3
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "lock",
+						"modification": -1,
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Holding Cell #50106a": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "lock",
+					"modification": "2p",
+					"subject": "self"
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_count": 0,
+			"filter_token_name": "threat",
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Psionic Inhuman"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Remove Lock (2 Mental)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"mental": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "lock",
+						"modification": -1,
+						"subject": "self"
+					}
+				],
+				"Remove Lock (3 Resources)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 3
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "lock",
+						"modification": -1,
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Holding Cell #50107a": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "lock",
+					"modification": "2p",
+					"subject": "self"
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_count": 0,
+			"filter_token_name": "threat",
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Sarah Garza"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Remove Lock (1 wild)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"wild": 1
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "lock",
+						"modification": -1,
+						"subject": "self"
+					}
+				],
+				"Remove Lock (3 Resources)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 3
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "lock",
+						"modification": -1,
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Holding Cell #50108a": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "lock",
+					"modification": "2p",
+					"subject": "self"
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_count": 0,
+			"filter_token_name": "threat",
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Strong Inhuman"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Remove Lock (2 Physical)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"physical": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "lock",
+						"modification": -1,
+						"subject": "self"
+					}
+				],
+				"Remove Lock (3 Resources)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 3
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "lock",
+						"modification": -1,
+						"subject": "self"
+					}
+				]
+			}
 		}
 	},
 	"Hostage Situation": {
-		"TODO": "",
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "invincible",
+					"trigger": "M.O.D.O.K.",
+					"alteration": 1
+				}
+			]
+		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "host_card",
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							},
+							"filter_properties2": {
+								"trait_rescued": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_ally",
+					"var_type": "subject",
+					"value": "previous"
 				}
 			]
 		},
@@ -3335,7 +5085,9 @@
 			"trigger": "self",
 			"all": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_board",
+					"grid_name": "allies__event_source_hero",
+					"subject": "my_ally"
 				}
 			]
 		}
@@ -3473,21 +5225,110 @@
 		}
 	},
 	"Innocent Bystanders": {
-		"TODO": "",
-		"manual": {
+		"uses": {
+			"__name__": "bystander",
+			"__amount__": 4
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
 			"board": [
 				{
-					"name": "mod_tokens",
-					"is_cost": true,
-					"modification": -1,
-					"token_name": "TODO",
-					"subject": "self"
+					"name": "attach_to_card",
+					"subject": "my_identity"
 				}
 			]
 		},
-		"uses": {
-			"__name__": "TODO",
-			"__amount__": "TODO"
+		"response_enemy_attack_happened": {
+			"event_filters": {
+				"target_identity": "my_hero"
+			},
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Spend 1 Resource": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 1
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "bystander",
+						"modification": -1,
+						"subject": "self"
+					}
+				],
+				"Add Threat": [
+					{
+						"name": "add_threat",
+						"subject": "main_scheme",
+						"amount": {
+							"if": {
+								"func_name": "get_scenario_option_value",
+								"func_params": {
+									"option_name": "expert_mode"
+								}
+							},
+							"then": 2,
+							"else": 1
+						}
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "bystander",
+						"modification": -1,
+						"subject": "self"
+					}
+				]
+			}
+		},
+		"response_attack_happened": {
+			"trigger": "my_identity",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Spend 1 Resource": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 1
+						},
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "bystander",
+						"modification": -1,
+						"subject": "self"
+					}
+				],
+				"Add Threat": [
+					{
+						"name": "add_threat",
+						"subject": "main_scheme",
+						"amount": {
+							"if": {
+								"func_name": "get_scenario_option_value",
+								"func_params": {
+									"option_name": "expert_mode"
+								}
+							},
+							"then": 2,
+							"else": 1
+						}
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "bystander",
+						"modification": -1,
+						"subject": "self"
+					}
+				]
+			}
 		}
 	},
 	"Intelligence": {
@@ -3616,38 +5457,150 @@
 		}
 	},
 	"Jolt": {
-		"TODO": "",
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": 3,
+					"subject": "main_scheme"
+				}
+			]
+		},
 		"manual": {
 			"board": [
-				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
-				},
 				{
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "my_hero"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"token_name": "parley",
+					"modification": 1
 				}
 			]
 		},
-		"card_defeated": {
+		"card_token_modified": {
 			"trigger": "self",
-			"all": [
+			"filter_count_difference": "increased",
+			"condition_board": {
+				"func_name": "count_tokens>=3",
+				"func_params": {
+					"subject": "self",
+					"token_name": "parley"
+				}
+			},
+			"board": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_container",
+					"dest_container": "removed_from_game",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Justice, Like Lightning": {
-		"TODO": "",
 		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Reveal Thunderbolt": [
+					{
+						"name": "reveal_encounter",
+						"subject": "tutor_and_choose",
+						"src_container": "set_aside",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "minion"
+								},
+								"filter_properties2": {
+									"trait_thunderbolt": 1
+								}
+							}
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "tough",
+						"modification": {
+							"if": {
+								"func_name": "get_scenario_option_value",
+								"func_params": {
+									"option_name": "expert_mode"
+								}
+							},
+							"then": 1,
+							"else": 0
+						},
+						"subject": "previous"
+					}
+				]
+			}
+		},
+		"post_reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "reveal_encounter",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_thunderbolt": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_type": "subject",
+					"var_name": "my_minion",
+					"value": "previous"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_tough"
+				}
+			]
+		},
+		"do_tough": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": {
+						"if": {
+							"func_name": "get_scenario_option_value",
+							"func_params": {
+								"option_name": "expert_mode"
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"subject": "my_minion"
+				},
+				{
+					"name": "host_card",
+					"subject": "my_minion"
+				},
+				{
+					"name": "flip_doublesided_card"
 				}
 			]
 		}
@@ -3903,14 +5856,82 @@
 		}
 	},
 	"M.O.D.O.K. - A": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+		"interrupt_card_dies": {
+			"condition_board": {
+				"func_name": "card_is_in_play",
+				"func_params": {
+					"card_name": "Holding Cell"
+				}
+			},
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "damage",
+					"set_to_mod": true,
+					"modification": 0,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": -2,
+					"token_name": "lock",
+					"subject": "Holding Cell"
+				}
+			]
+		}
+	},
+	"M.O.D.O.K. - B": {
+		"interrupt_card_dies": {
+			"condition_board": {
+				"func_name": "card_is_in_play",
+				"func_params": {
+					"card_name": "Holding Cell"
+				}
+			},
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "damage",
+					"set_to_mod": true,
+					"modification": 0,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": -2,
+					"token_name": "lock",
+					"subject": "Holding Cell"
+				}
+			]
 		}
 	},
 	"MACH-IV": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_defend_basic",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_aerial": 0
+							}
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
 	},
 	"Machete": {
 		"_surge": {},
@@ -3934,7 +5955,7 @@
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "scheme_accelerationh",
+					"filter_property_name": "scheme_acceleration",
 					"filter_state_trigger": [
 						{
 							"filter_properties": {
@@ -4089,13 +6110,56 @@
 		}
 	},
 	"Medical Officer's Aid": {
-		"TODO": "",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "villain"
+				}
+			]
+		},
+		"card_token_added": {
+			"trigger": "self",
+			"event_filters": {
+				"token_name": "secret"
+			},
+			"board": {
+				"Heal Villain": [
+					{
+						"name": "heal",
+						"amount": 2,
+						"subject": "villain",
+						"is_cost": true
+					}
+				],
+				"Deal 1 Damage": [
+					{
+						"name": "deal_damage",
+						"amount": 1,
+						"subject": "boardseek",
+						"sort_by": "function",
+						"sort_name": "get_remaining_damage",
+						"filter_state_seek": "group_friendly"
+					}
+				]
+			}
+		},
+		"card_attached": {
+			"condition_board": {
+				"func_name": "count_cards==3",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						"trait_board_member",
+						"attachment"
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "defeat"
 				}
 			]
 		}
@@ -4126,18 +6190,60 @@
 		}
 	},
 	"Might Makes Right": {
-		"TODO": "",
 		"reveal_alter_ego": {
 			"all": [
 				{
-					"name": "TODO"
+					"__secret_lowest": {
+						"__value__": 2
+					}
 				}
 			]
 		},
 		"reveal_hero": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "save_variable",
+					"var_name": "my_counters",
+					"var_type": "int",
+					"value": 3
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"interrupt_receive_damage": {
+							"trigger": "Baron Zemo",
+							"all": [
+								{
+									"name": "save_variable",
+									"var_name": "my_counters",
+									"var_type": "int",
+									"value": 0
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"enemy_activation_finished": {
+							"all": [
+								{
+									"__remove_secret": {
+										"__value__": "my_counters"
+									}
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "enemy_attacks_you",
+					"subject": "Baron Zemo"
 				}
 			]
 		}
@@ -4146,10 +6252,46 @@
 		"TODO": ""
 	},
 	"Monica Rappaccini": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "villainous",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "count_cards>0",
+						"func_params": {
+							"subject": "tutor",
+							"src_container": "victory_display",
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"shortname": "Scientist Supreme"
+									}
+								}
+							]
+						}
+					}
+				}
+			]
+		}
 	},
 	"Moonstone": {
-		"TODO": ""
+		"response": {
+			"event_name": [
+				"enemy_attack_happened",
+				"enemy_scheme_happened"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Nabbed!": {
 		"reveal": {
@@ -4228,13 +6370,38 @@
 		}
 	},
 	"Nanobots": {
-		"TODO": "",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "M.O.D.O.K."
+				}
+			]
+		},
+		"response": {
+			"event_name": [
+				"enemy_attack_happened",
+				"enemy_scheme_happened"
+			],
+			"trigger": "host",
+			"board": [
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "host"
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "host",
+			"filter_count_difference": "decreased",
+			"filter_count": 0,
+			"filter_token_name": "damage",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		}
@@ -4721,55 +6888,143 @@
 		}
 	},
 	"Pale Little Spider": {
-		"TODO": "",
-		"_surge": {},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "reveal_encounter",
+					"subject": "find",
+					"filter_state_tutor": "Black Widow"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_activate"
+				}
+			]
+		},
+		"do_activate": {
+			"all": [
+				{
+					"name": "engage_player",
+					"subject": "Black Widow",
+					"target_identity": "current_hero_target"
+				},
+				{
+					"name": "enemy_activates_against_you",
+					"subject": "Black Widow",
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "surge"
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "is_confused",
+								"func_params": {
+									"subject": "current_hero_target"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_threat",
+									"subject": "main_scheme",
+									"amount": 1
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"subject": "current_hero_target",
+							"modification": 1,
+							"token_name": "confused"
+						}
+					]
 				}
 			]
 		}
 	},
 	"Parcours du Combattant": {
-		"TODO": "",
 		"_surge": {},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "rotate_next",
+					"subject": "boardseek",
+					"direction": -1,
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "nop",
+					"subject": "boardseek",
+					"filter_state_seek": "group_enemies_my_hero"
+				},
+				{
+					"name": "engage_player",
+					"subject": "boardseek_and_choose",
+					"subject_exclude": "previous",
+					"filter_state_seek": "minion"
 				}
 			]
 		}
 	},
 	"Power of the Atom": {
-		"TODO": "",
-		"_surge": {},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "reveal_encounter",
+					"subject": "find",
+					"filter_state_tutor": "Radioactive Man"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_activate"
+				}
+			]
+		},
+		"do_activate": {
+			"all": [
+				{
+					"name": "engage_player",
+					"subject": "Radioactive Man",
+					"target_identity": "current_hero_target"
+				},
+				{
+					"name": "enemy_activates_against_you",
+					"subject": "Radioactive Man",
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "surge"
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "indirect_damage",
+					"amount": 2,
+					"subject": "current_hero_target"
 				}
 			]
 		}
@@ -4866,11 +7121,21 @@
 		}
 	},
 	"Pride of the Red Room": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "add_threat",
+					"subject": "self",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								"trait_preparation"
+							]
+						}
+					}
 				}
 			]
 		}
@@ -4921,99 +7186,271 @@
 		}
 	},
 	"Psionic Blast": {
-		"TODO": "",
 		"reveal_alter_ego": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "my_identity"
+				},
+				{
+					"name": "enemy_schemes",
+					"subject": "M.O.D.O.K."
 				}
 			]
 		},
 		"reveal_hero": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "indirect_damage",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "M.O.D.O.K.",
+							"property": "scheme"
+						}
+					},
+					"tags": [
+						"confuse_if_damage"
+					],
+					"subject": "my_identity"
 				}
 			]
 		}
 	},
 	"Psionic Enhancement": {
-		"TODO": "",
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "draw_boost_card",
+					"subject": "host"
 				}
 			]
 		}
 	},
 	"Psionic Force Field": {
-		"TODO": "",
+		"on_load": {
+			"all": [
+				{
+					"name": "modify_properties",
+					"tags": [
+						"Init"
+					],
+					"subject": "self",
+					"set_properties": {
+						"health": 5
+					}
+				}
+			]
+		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "M.O.D.O.K."
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "stalwart",
+					"trigger": "host",
+					"alteration": 1
 				}
 			]
 		},
 		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "host"
+			},
+			"board": [
+				{
+					"name": "deal_damage",
+					"subject": "self",
+					"amount": "trigger_details_amount"
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "attach_to_card",
+					"subject": "host"
 				}
 			]
 		}
 	},
 	"Psionic Inhuman": {
-		"TODO": "",
-		"response": {
-			"event_name": "TODO",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "exclude_from_ally_limit",
+					"alteration": 1,
+					"trigger": "self"
+				}
+			]
+		},
+		"response_thwart_happened": {
+			"trigger": "self",
 			"is_optional_board": true,
-			"board": []
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": -1,
+					"subject": "Holding Cell"
+				}
+			]
+		},
+		"card_leaves_play": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"dest_container": "deck_holding_cell",
+					"dest_index": "bottom",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"code": "50106a"
+							}
+						}
+					]
+				}
+			]
 		}
 	},
 	"Psionic Machetes": {
-		"TODO": "",
+		"attacks_gain": {
+			"__trigger__": "host",
+			"__tags__": "piercing"
+		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "M.O.D.O.K."
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "host",
+			"filter_count_difference": "decreased",
+			"filter_count": 0,
+			"filter_token_name": "damage",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
 				}
 			]
 		}
 	},
 	"Psionic Upgrade": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "villainous",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"shortname": "Adaptoid"
+							}
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_psionic",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"shortname": "Adaptoid"
+							}
+						}
+					],
+					"alteration": 1
+				}
+			]
+		}
 	},
 	"Psychological Manipulation": {
-		"TODO": "",
-		"_surge": {},
 		"reveal_alter_ego": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "discard",
+					"is_cost": true,
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							}
+						},
+						{
+							"filter_properties": {
+								"type_code": "support"
+							}
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "surge"
 				}
 			]
 		},
 		"reveal_hero": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "deal_damage",
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "get_remaining_damage",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly"
+						}
+					],
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_hero",
+							"property": "attack"
+						}
+					}
 				}
 			]
 		}
@@ -5043,13 +7480,47 @@
 		}
 	},
 	"Radiation Exposure": {
-		"TODO": "",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "my_identity"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "host",
+					"alteration": {
+						"if": {
+							"func_name": "has_trait",
+							"func_params": {
+								"subject": "host",
+								"trait": "gamma"
+							}
+						},
+						"then": 2,
+						"else": 0
+					}
+				}
+			]
+		},
+		"recovery_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "tutor_and_choose",
+					"src_container": "hand_my_hero",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		}
@@ -5067,6 +7538,33 @@
 					"subject": "boardseek",
 					"amount": 1,
 					"subject_count": "all",
+					"filter_state_seek": "group_friendly_my_hero"
+				}
+			]
+		}
+	},
+	"Rapido": {
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "piercing"
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack_indirect_damage",
+					"trigger": "self",
+					"alteration": 1
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"subject": "boardseek",
+					"amount": 1,
+					"subject_count": "all",
 					"filter_state_seek": [
 						{
 							"filter_group": "group_friendly_my_hero"
@@ -5084,26 +7582,9 @@
 					"subject_count": "all",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_friendly_my_hero"
+							"filter_group": "group_friendly_current_hero_target"
 						}
 					]
-				}
-			]
-		}
-	},
-	"Rapido": {
-		"TODO": "",
-		"reveal": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		},
-		"boost": {
-			"all": [
-				{
-					"name": "TODO"
 				}
 			]
 		}
@@ -5148,19 +7629,78 @@
 		}
 	},
 	"Reluctant Foe": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "nop",
+					"subject": "find_hero_in_collection"
+				},
+				{
+					"name": "save_variable",
+					"var_type": "subject",
+					"var_name": "my_host",
+					"value": "previous",
+					"force_run_at_prime": true,
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "my_host"
+				}
+			]
+		},
+		"card_attached": {
+			"_breakpoint": true,
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"tags": [
+						"facedown",
+						"Init"
+					],
+					"set_properties": {
+						"type_code": "minion",
+						"shortname": "Reluctant Foe",
+						"villainous": 1,
+						"trait_elite": 1,
+						"attack": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "attack",
+								"subject": "my_host"
+							}
+						},
+						"scheme": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "thwart",
+								"subject": "my_host"
+							}
+						},
+						"health": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "health",
+								"subject": "my_host"
+							}
+						}
+					},
+					"subject": "my_host"
 				}
 			]
 		},
 		"card_defeated": {
-			"trigger": "self",
+			"trigger": "my_host",
 			"all": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_container",
+					"dest_container": "removed_from_game",
+					"subject": "my_host"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "removed_from_game",
+					"subject": "self"
 				}
 			]
 		}
@@ -5205,11 +7745,45 @@
 		}
 	},
 	"Reverse Engineering": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "tuck_card_under_me",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties2": {
+								"type_code": "upgrade"
+							}
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"name": "save_variable",
+					"value": "previous",
+					"var_name": "my_tucked",
+					"var_type": "subject"
+				},
+				{
+					"is_else": true,
+					"name": "tuck_card_under_me",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "top",
+					"src_container": "deck_my_hero"
+				},
+				{
+					"is_else": true,
+					"name": "save_variable",
+					"value": "previous",
+					"var_name": "my_tucked",
+					"var_type": "subject"
 				}
 			]
 		},
@@ -5218,21 +7792,64 @@
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "M.O.D.O.K."
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "host",
+					"alteration": {
+						"func_name": "get_subject_int_printed_property",
+						"func_params": {
+							"subject": "my_tucked",
+							"property": "cost"
+						}
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
+					"trigger": "host",
+					"alteration": {
+						"func_name": "get_subject_int_printed_property",
+						"func_params": {
+							"subject": "my_tucked",
+							"property": "cost"
+						}
+					}
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "host",
+			"filter_count_difference": "decreased",
+			"filter_count": 0,
+			"filter_token_name": "damage",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Rule the Skies": {
-		"TODO": "",
 		"alterants": {
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "TODO",
+					"filter_property_name": "attack",
 					"filter_state_trigger": [
 						{
-							"TODO": "TODO"
+							"filter_group": "group_characters",
+							"filter_properties": {
+								"trait_aerial": 1,
+								"comparison": "ge"
+							}
 						}
 					],
 					"alteration": 1
@@ -5240,32 +7857,102 @@
 			]
 		},
 		"boost": {
+			"condition_all": {
+				"func_name": "get_subject_int_property",
+				"func_params": {
+					"subject": "host",
+					"property": "trait_aerial"
+				}
+			},
 			"all": [
 				{
-					"name": "TODO"
+					"name": "draw_boost_card",
+					"subject": "host"
 				}
 			]
 		}
 	},
 	"Rumbling Thunder": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "rotate_next",
+					"subject": "boardseek",
+					"direction": -1,
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
 				}
 			]
 		}
 	},
 	"Runaway Nuclear Reaction": {
-		"TODO": ""
+		"card_damaged": {
+			"trigger": "Radioactive Man",
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": "trigger_details_damage",
+					"subject": "self"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_explode"
+				}
+			]
+		},
+		"do_explode": {
+			"condition_board": {
+				"func_name": "count_tokens>=10",
+				"func_params": {
+					"subject": "self",
+					"token_name": "threat"
+				}
+			},
+			"board": [
+				{
+					"name": "deal_damage",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": "group_characters"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"S.H.I.E.L.D. Agent": {
-		"TODO": "",
 		"quickstrike": {},
 		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+			"event_name": [
+				"enemy_attack",
+				"commit_scheme"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"__secret_lowest": {
+						"__value__": 1
+					}
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"__secret_lowest": {
+						"__value__": 1
+					}
+				}
+			]
 		}
 	},
 	"S.H.I.E.L.D. Director": {
@@ -5304,12 +7991,41 @@
 		}
 	},
 	"S.H.I.E.L.D. Trooper": {
-		"TODO": "",
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
 				{
-					"name": "TODO"
+					"name": "discard",
+					"is_cost": true,
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero",
+							"filter_properties": {
+								"type_code": "ally"
+							},
+							"filter_properties2": {
+								"trait_s.h.i.e.l.d": 1,
+								"comparison": "ge"
+							}
+						},
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "support"
+							},
+							"filter_properties2": {
+								"trait_s.h.i.e.l.d": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "add_threat",
+					"amount": 2,
+					"subject": "main_scheme"
 				}
 			]
 		}
@@ -5368,27 +8084,105 @@
 		}
 	},
 	"Sarah Garza": {
-		"TODO": ""
-	},
-	"Sarah Garza Upgrade": {
-		"TODO": "",
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "overkill\",\"ranged"
+		},
 		"alterants": {
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "TODO",
+					"filter_property_name": "exclude_from_ally_limit",
+					"alteration": 1,
+					"trigger": "self"
+				}
+			]
+		},
+		"card_leaves_play": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"dest_container": "deck_holding_cell",
+					"dest_index": "bottom",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"code": "50107a"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Sarah Garza Upgrade": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
 					"filter_state_trigger": [
 						{
-							"TODO": "TODO"
+							"filter_properties": {
+								"shortname": "Adaptoid"
+							}
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_elite",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"shortname": "Adaptoid"
+							}
 						}
 					],
 					"alteration": 1
 				}
 			]
+		},
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"shortname": "Adaptoid"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"overkill",
+							"ranged"
+						]
+					}
+				}
+			]
 		}
 	},
 	"Scientist Supreme": {
-		"TODO": ""
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "piercing\",\"ranged"
+		}
 	},
 	"Secret Agent": {
 		"script_executed": {
@@ -5593,51 +8387,180 @@
 		}
 	},
 	"Soldiers of Fortune": {
-		"TODO": "",
-		"_surge": {},
 		"reveal": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
+			"all": {
+				"Spend 3 resources": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 3
+						},
+						"is_cost": true
+					}
+				],
+				"Reveal Mercenary": [
+					{
+						"name": "reveal_encounter",
+						"subject": "find",
+						"is_cost": true,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "minion"
+								},
+								"filter_properties2": {
+									"trait_mercenary": 1
+								}
+							}
+						]
+					},
+					{
+						"is_else": true,
+						"name": "surge"
+					}
+				]
+			}
 		},
 		"boost": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Spend 1 Resource": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 1
+						},
+						"is_cost": true
+					}
+				],
+				"Boost increase": [
+					{
+						"name": "save_variable",
+						"var_name": "my_boost",
+						"var_type": "int",
+						"value": 3
+					}
+				]
+			}
+		},
+		"boost_alterants": {
+			"_breakpoint": true,
 			"all": [
 				{
-					"name": "TODO"
+					"filter_task": "get_property",
+					"filter_property_name": "boost",
+					"trigger": "self",
+					"alteration": "my_boost"
 				}
 			]
 		}
 	},
 	"Solid Sound Constructs": {
-		"TODO": "",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "Songbird",
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "stalwart",
+					"trigger": "self",
+					"alteration": -666
+				}
+			]
+		},
+		"interrupt_mod_tokens": {
+			"event_filters": {
+				"token_name": "confused",
+				"subject": "host"
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"replacements": {
+						"modification": 0
+					},
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		},
 		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+			"event_name": "mod_tokens",
+			"event_filters": {
+				"token_name": "stunned",
+				"subject": "host"
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"replacements": {
+						"modification": 0
+					},
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"Songbird": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "boost_cards_per_attack",
+					"trigger": "self",
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "boost_cards_per_scheme",
+					"trigger": "self",
+					"alteration": 1
+				}
+			]
 		}
 	},
 	"Sonic Bubble": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"amount": ">0",
+				"filter_state_event_target": [
+					{}
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": "all",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "remove_threat",
+					"subject": "self",
+					"amount": "trigger_details_amount"
+				}
+			]
 		}
 	},
 	"Special Funding": {
@@ -5834,25 +8757,83 @@
 		}
 	},
 	"Strong Inhuman": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
-			"board": []
-		}
-	},
-	"Strong Upgrade": {
-		"TODO": "",
 		"alterants": {
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "TODO",
+					"filter_property_name": "exclude_from_ally_limit",
+					"alteration": 1,
+					"trigger": "self"
+				}
+			]
+		},
+		"card_leaves_play": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"dest_container": "deck_holding_cell",
+					"dest_index": "bottom",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"code": "50108a"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Strong Upgrade": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
 					"filter_state_trigger": [
 						{
-							"TODO": "TODO"
+							"filter_properties": {
+								"shortname": "Adaptoid"
+							}
 						}
 					],
 					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_brute",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"shortname": "Adaptoid"
+							}
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"before_card_moved_to_board": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"shortname": "Adaptoid"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "trigger",
+					"modification": 1,
+					"token_name": "tough"
 				}
 			]
 		}
@@ -5950,7 +8931,7 @@
 		"do_token": {
 			"all": [
 				{
-					"name": "mod_token",
+					"name": "mod_tokens",
 					"modification": 1,
 					"token_name": "all-purpose",
 					"subject": "target",
@@ -5977,19 +8958,48 @@
 		}
 	},
 	"Supersonic": {
-		"TODO": "",
-		"_surge": {},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "reveal_encounter",
+					"subject": "find",
+					"filter_state_tutor": "MACH-IV"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_activate"
+				}
+			]
+		},
+		"do_activate": {
+			"all": [
+				{
+					"name": "engage_player",
+					"subject": "MACH-IV",
+					"target_identity": "current_hero_target"
+				},
+				{
+					"name": "enemy_activates_against_you",
+					"subject": "MACH-IV",
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "surge"
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"overkill",
+							"ranged"
+						]
+					}
 				}
 			]
 		}
@@ -6028,55 +9038,865 @@
 		}
 	},
 	"Surveillance Officer's Aid": {
-		"TODO": "",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "villain"
+				}
+			]
+		},
+		"card_token_added": {
+			"trigger": "self",
+			"event_filters": {
+				"token_name": "secret"
+			},
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 2,
+					"subject": "main_scheme"
+				}
+			]
+		},
+		"card_attached": {
+			"condition_board": {
+				"func_name": "count_cards==3",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						"trait_board_member",
+						"attachment"
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "defeat"
 				}
 			]
 		}
 	},
 	"Tactical Officer's Aid": {
-		"TODO": "",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "villain"
+				}
+			]
+		},
+		"card_token_added": {
+			"trigger": "self",
+			"event_filters": {
+				"token_name": "secret"
+			},
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": "group_friendly"
+				}
+			]
+		},
+		"card_attached": {
+			"condition_board": {
+				"func_name": "count_cards==3",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						"trait_board_member",
+						"attachment"
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "defeat"
 				}
 			]
 		}
 	},
 	"Tap In": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "nop",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						"filter_same_controller",
+						"minion"
+					]
+				},
+				{
+					"name": "engage_player",
+					"subject": "boardseek",
+					"exclude_subject": "previous",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "damage"
+					},
+					"filter_state_seek": [
+						"minion",
+						"trait_thunderbolt"
+					]
+				},
+				{
+					"name": "enemy_activates_against_you",
+					"subject": "previous"
+				},
+				{
+					"name": "save_variable",
+					"value": "previous",
+					"var_name": "my_subject",
+					"var_type": "subjecg"
+				}
+			]
+		},
+		"post_reveal": {
+			"condition_all": {
+				"func_name": "!count_cards",
+				"func_params": {
+					"subject": "my_subject"
+				}
+			},
+			"all": [
+				{
+					"name": "enemy_activates_against_you",
+					"subject": "Citizen V"
 				}
 			]
 		}
 	},
 	"The Accusation - 2A": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": "tmp_pile1",
+									"filter_state_tutor": "Medical Records"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "save_variable",
+									"var_name": "my_actual_means",
+									"var_type": "str",
+									"value": "Medical Records"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": "tmp_pile1",
+									"filter_state_tutor": "Wiretap"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "save_variable",
+									"var_name": "my_actual_means",
+									"var_type": "str",
+									"value": "Wiretap"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": "tmp_pile1",
+									"filter_state_tutor": "Security Scanner"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "save_variable",
+									"var_name": "my_actual_means",
+									"var_type": "str",
+									"value": "Security Scanner"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": "tmp_pile1",
+									"filter_state_tutor": "Money"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "save_variable",
+									"var_name": "my_actual_motive",
+									"var_type": "str",
+									"value": "Money"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": "tmp_pile1",
+									"filter_state_tutor": "Blackmail"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "save_variable",
+									"var_name": "my_actual_motive",
+									"var_type": "str",
+									"value": "Blackmail"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": "tmp_pile1",
+									"filter_state_tutor": "Ideology"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "save_variable",
+									"var_name": "my_actual_motive",
+									"var_type": "str",
+									"value": "Ideology"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": "tmp_pile1",
+									"filter_state_tutor": "Security Clearance"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "save_variable",
+									"var_name": "my_actual_opportunity",
+									"var_type": "str",
+									"value": "Security Clearance"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": "tmp_pile1",
+									"filter_state_tutor": "Travel"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "save_variable",
+									"var_name": "my_actual_opportunity",
+									"var_type": "str",
+									"value": "Travel"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": "tmp_pile1",
+									"filter_state_tutor": "Authority"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "save_variable",
+									"var_name": "my_actual_opportunity",
+									"var_type": "str",
+									"value": "Authority"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_mole"
 				}
 			]
+		},
+		"do_mole": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_property_from_matrix",
+								"func_params": {
+									"property_value": "Chief Medical Officer",
+									"sequence": [
+										"my_actual_means",
+										"my_actual_motive",
+										"my_actual_opportunity"
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "save_variable",
+									"var_name": "my_mole",
+									"var_type": "subject",
+									"value": "Chief Medical Officer"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "get_property_from_matrix",
+								"func_params": {
+									"property_value": "Chief Surveillance Officer",
+									"sequence": [
+										"my_actual_means",
+										"my_actual_motive",
+										"my_actual_opportunity"
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "save_variable",
+									"var_name": "my_mole",
+									"var_type": "subject",
+									"value": "Chief Surveillance Officer"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "get_property_from_matrix",
+								"func_params": {
+									"property_value": "Chief Tactical Officer",
+									"sequence": [
+										"my_actual_means",
+										"my_actual_motive",
+										"my_actual_opportunity"
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "save_variable",
+									"var_name": "my_mole",
+									"var_type": "subject",
+									"value": "Chief Tactical Officer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_means"
+				}
+			]
+		},
+		"do_means": {
+			"all": {
+				"Means - Medical Records": [
+					{
+						"name": "constraints",
+						"constraints": [
+							{
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": [
+										"tmp_pile1",
+										"tmp_pile2"
+									],
+									"filter_state_tutor": "Medical Records"
+								}
+							}
+						]
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_means",
+						"var_type": "str",
+						"value": "Medical Records"
+					},
+					{
+						"name": "sequence",
+						"sequence_ability": "do_motive"
+					}
+				],
+				"Means - Wiretap": [
+					{
+						"name": "constraints",
+						"constraints": [
+							{
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": [
+										"tmp_pile1",
+										"tmp_pile2"
+									],
+									"filter_state_tutor": "Wiretap"
+								}
+							}
+						]
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_means",
+						"var_type": "str",
+						"value": "Wiretap"
+					},
+					{
+						"name": "sequence",
+						"sequence_ability": "do_motive"
+					}
+				],
+				"Means - Security Scanner": [
+					{
+						"name": "constraints",
+						"constraints": [
+							{
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": [
+										"tmp_pile1",
+										"tmp_pile2"
+									],
+									"filter_state_tutor": "Security Scanner"
+								}
+							}
+						]
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_means",
+						"var_type": "str",
+						"value": "Security Scanner"
+					},
+					{
+						"name": "sequence",
+						"sequence_ability": "do_motive"
+					}
+				]
+			}
+		},
+		"do_motive": {
+			"all": {
+				"Motive - Money": [
+					{
+						"name": "constraints",
+						"constraints": [
+							{
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": [
+										"tmp_pile1",
+										"tmp_pile2"
+									],
+									"filter_state_tutor": "Money"
+								}
+							}
+						]
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_motive",
+						"var_type": "str",
+						"value": "Money"
+					},
+					{
+						"name": "sequence",
+						"sequence_ability": "do_opportunity"
+					}
+				],
+				"Motive - Blackmail": [
+					{
+						"name": "constraints",
+						"constraints": [
+							{
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": [
+										"tmp_pile1",
+										"tmp_pile2"
+									],
+									"filter_state_tutor": "Blackmail"
+								}
+							}
+						]
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_motive",
+						"var_type": "str",
+						"value": "Blackmail"
+					},
+					{
+						"name": "sequence",
+						"sequence_ability": "do_opportunity"
+					}
+				],
+				"Motive - Ideology": [
+					{
+						"name": "constraints",
+						"constraints": [
+							{
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": [
+										"tmp_pile1",
+										"tmp_pile2"
+									],
+									"filter_state_tutor": "Ideology"
+								}
+							}
+						]
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_motive",
+						"var_type": "str",
+						"value": "Ideology"
+					},
+					{
+						"name": "sequence",
+						"sequence_ability": "do_opportunity"
+					}
+				]
+			}
+		},
+		"do_opportunity": {
+			"all": {
+				"Opportunity - Security Clearance": [
+					{
+						"name": "constraints",
+						"constraints": [
+							{
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": [
+										"tmp_pile1",
+										"tmp_pile2"
+									],
+									"filter_state_tutor": "Security Clearance"
+								}
+							}
+						]
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_opportunity",
+						"var_type": "str",
+						"value": "Security Clearance"
+					},
+					{
+						"name": "sequence",
+						"sequence_ability": "do_accused"
+					}
+				],
+				"Opportunity - Travel": [
+					{
+						"name": "constraints",
+						"constraints": [
+							{
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": [
+										"tmp_pile1",
+										"tmp_pile2"
+									],
+									"filter_state_tutor": "Travel"
+								}
+							}
+						]
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_opportunity",
+						"var_type": "str",
+						"value": "Travel"
+					},
+					{
+						"name": "sequence",
+						"sequence_ability": "do_accused"
+					}
+				],
+				"Opportunity - Authority": [
+					{
+						"name": "constraints",
+						"constraints": [
+							{
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "tutor",
+									"src_container": [
+										"tmp_pile1",
+										"tmp_pile2"
+									],
+									"filter_state_tutor": "Authority"
+								}
+							}
+						]
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_opportunity",
+						"var_type": "str",
+						"value": "Authority"
+					},
+					{
+						"name": "sequence",
+						"sequence_ability": "do_accused"
+					}
+				]
+			}
+		},
+		"do_accused": {
+			"all": {
+				"Accused - Chief Medical Officer": [
+					{
+						"name": " constraints",
+						"constraints": [
+							{
+								"func_name": "get_property_from_matrix",
+								"func_params": {
+									"property_value": "Chief Medical Officer",
+									"sequence": [
+										"my_means",
+										"my_motive",
+										"my_opportunity"
+									]
+								}
+							}
+						]
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_accused",
+						"var_type": "subject",
+						"value": "Chief Medical Officer"
+					},
+					{
+						"name": "flip_doublesided_card"
+					}
+				],
+				"Accused - Chief Surveillance Officer": [
+					{
+						"name": " constraints",
+						"constraints": [
+							{
+								"func_name": "get_property_from_matrix",
+								"func_params": {
+									"property_value": "Chief Surveillance Officer",
+									"sequence": [
+										"my_means",
+										"my_motive",
+										"my_opportunity"
+									]
+								}
+							}
+						]
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_accused",
+						"var_type": "subject",
+						"value": "Chief Surveillance Officer"
+					},
+					{
+						"name": "flip_doublesided_card"
+					}
+				],
+				"Accused - Chief Tactical Officer": [
+					{
+						"name": " constraints",
+						"constraints": [
+							{
+								"func_name": "get_property_from_matrix",
+								"func_params": {
+									"property_value": "Chief Tactical Officer",
+									"sequence": [
+										"my_means",
+										"my_motive",
+										"my_opportunity"
+									]
+								}
+							}
+						]
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_accused",
+						"var_type": "subject",
+						"value": "Chief Tactical Officer"
+					},
+					{
+						"name": "flip_doublesided_card"
+					}
+				]
+			}
 		}
 	},
 	"The Accusation - 2B": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "!compare_subject_variables",
+								"func_params": {
+									"subject": "self",
+									"variable1": "my_means",
+									"variable2": "my_actual_means"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "secret",
+									"modification": 1,
+									"subject": "boardseek",
+									"subject_count": "all",
+									"filter_state_seek": "trait_board_member"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "!compare_subject_variables",
+								"func_params": {
+									"subject": "self",
+									"variable1": "my_motive",
+									"variable2": "my_actual_motive"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "secret",
+									"modification": 1,
+									"subject": "boardseek",
+									"subject_count": "all",
+									"filter_state_seek": "trait_board_member"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "!compare_subject_variables",
+								"func_params": {
+									"subject": "self",
+									"variable1": "my_opportunity",
+									"variable2": "my_actual_opportunity"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "secret",
+									"modification": 1,
+									"subject": "boardseek",
+									"subject_count": "all",
+									"filter_state_seek": "trait_board_member"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "!compare_subject_variables",
+								"func_params": {
+									"subject": "self",
+									"variable1": "my_accused",
+									"variable2": "my_mole"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "secret",
+									"modification": 3,
+									"subject": "my_accused"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "say",
+							"text": "We found the Mole!",
+							"subject": "boardseek",
+							"filter_state_seek": "group_identities",
+							"color": "#FF00FF00"
+						}
+					]
+				},
+				{
+					"name": "say",
+					"text": "I was the Mole",
+					"subject": "my_mole",
+					"color": "#FF0000FF"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "the_mole",
+					"subject": "my_mole"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "the_accused",
+					"subject": "my_accused"
+				}
+			]
+		},
+		"post_reveal": {
+			"board": [
+				{
+					"name": "move_to_next_scheme",
+					"subject": "self"
 				}
 			]
 		}
@@ -6210,11 +10030,20 @@
 		}
 	},
 	"The Coming Storm": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "rotate_next",
+					"subject": "boardseek",
+					"direction": -1,
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
 				}
 			]
 		}
@@ -6262,13 +10091,60 @@
 		}
 	},
 	"The Ends Justify the Means": {
-		"TODO": "",
 		"reveal": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
+			"all": {
+				"Baron Zemo Schemes": [
+					{
+						"name": "defeat_card",
+						"subject": "boardseek",
+						"sort_by": "function",
+						"sort_name": "get_remaining_damage",
+						"filter_state_seek": "minion"
+					},
+					{
+						"name": "enemy_schemes",
+						"subject": "Baron Zemo"
+					}
+				],
+				"Discard Ally & remove Secret": [
+					{
+						"name": "discard",
+						"is_cost": true,
+						"subject": "boardseek_and_choose",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "ally"
+								},
+								"filter_group": "group_allies_my_hero"
+							},
+							{
+								"filter_properties": {
+									"type_code": "support"
+								},
+								"filter_group": "group_upgrade_support_my_hero"
+							}
+						]
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_count",
+						"var_type": "int",
+						"value": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"subject": "previous",
+								"property": "cost"
+							}
+						}
+					},
+					{
+						"__remove_secret": {
+							"__value__": "my_count"
+						}
+					}
+				]
+			}
 		}
 	},
 	"The Hard Call": {
@@ -6639,10 +10515,133 @@
 		}
 	},
 	"Thunderbolt Backup": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+		"round_ended": {
+			"board": [
+				{
+					"name": "save_variable",
+					"var_name": "my_minion",
+					"var_type": "subject",
+					"value": "attachments",
+					"attachments_host": "self",
+					"subject_count": 1,
+					"filter_state_attachment": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_thunderbolt": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "damage"
+					},
+					"sort_descending": true,
+					"exclude_subject": "my_minion",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_thunderbolt": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"grid_name": "enemies_previous_subject",
+					"subject": "my_minion"
+				},
+				{
+					"name": "host_card",
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "damage"
+					},
+					"sort_descending": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_thunderbolt": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_heal,"
+				}
+			]
+		},
+		"do_heal": {
+			"board": [
+				{
+					"name": "heal",
+					"subject": "my_minion",
+					"amount": {
+						"if": {
+							"func_name": "get_scenario_option_value",
+							"func_params": {
+								"option_name": "expert_mode"
+							}
+						},
+						"then": "2p",
+						"else": "1p"
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"subject": "my_minion",
+					"modification": {
+						"if": {
+							"func_name": "get_scenario_option_value",
+							"func_params": {
+								"option_name": "expert_mode"
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
+				}
+			]
+		},
+		"card_attached": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					},
+					"filter_properties2": {
+						"trait_thunderbolt": 1
+					}
+				}
+			],
+			"event_filters": {
+				"host_card": "self"
+			},
+			"board": [
+				{
+					"name": "save_variable",
+					"var_name": "my_minion",
+					"var_type": "subject",
+					"value": "trigger"
+				}
+			]
 		}
 	},
 	"Travel": {
@@ -6670,24 +10669,226 @@
 		}
 	},
 	"Undermine Support": {
-		"TODO": "",
+		"interrupt_ready_card": {
+			"filter_state_trigger": "support",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Pay 1 Resource": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 1
+						},
+						"is_cost": true
+					}
+				],
+				"Cancel": [
+					{
+						"name": "prevent",
+						"subject": "interrupted_event"
+					}
+				]
+			}
+		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
 				{
-					"name": "TODO"
+					"__remove_secret": {
+						"__value__": "1p"
+					}
 				}
 			]
 		}
 	},
 	"Upgrading Adaptoids - 1A": {
-		"TODO": ""
+		"extra_decks": [
+			{
+				"name": "deck_holding_cell"
+			}
+		],
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"src_container": "deck_villain",
+					"des_container": "deck_holding_cell",
+					"subject": "tutor",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Holding Cell"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"src_container": "deck_villain",
+					"des_container": "set_aside",
+					"subject": "tutor",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "environment"
+							},
+							"filter_properties2": {
+								"trait_adaptoid": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"src_container": "deck_villain",
+					"des_container": "set_aside",
+					"subject": "tutor",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_inhuman": 1
+							},
+							"filter_properties2": {
+								"trait_rescued": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "set_aside",
+					"animate": false
+				}
+			]
+		},
+		"post_setup": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"src_container": "deck_holding_cell",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1
+				},
+				{
+					"name": "move_card_to_board",
+					"src_container": "set_aside",
+					"subject": "tutor",
+					"sort_by": "random",
+					"subject_count": {
+						"if": {
+							"func_name": "get_scenario_option_value",
+							"func_params": {
+								"option_name": "expert_mode"
+							}
+						},
+						"then": 2,
+						"else": 1
+					},
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "environment"
+							},
+							"filter_properties2": {
+								"trait_adaptoid": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"grid_name": "enemies",
+					"subject": "tutor",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Adaptoid"
+							}
+						}
+					],
+					"for_each_player": true
+				},
+				{
+					"name": "flip_doublesided_card"
+				}
+			]
+		}
 	},
 	"Upgrading Adaptoids - 1B": {
-		"TODO": "",
 		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+			"event_name": "stage_completed",
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "count_cards>1",
+				"func_params": {
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "environment"
+							},
+							"filter_properties2": {
+								"trait_adaptoid": 1
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"set_to_mod": true,
+					"token_name": "threat",
+					"subject": "self"
+				},
+				{
+					"name": "move_card_to_board",
+					"src_container": "set_aside",
+					"subject": "tutor",
+					"sort_by": "random",
+					"subject_count": 1,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "environment"
+							},
+							"filter_properties2": {
+								"trait_adaptoid": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "discard_villain",
+					"dest_container": "deck_villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Adaptoid"
+							},
+							"filter_properties2": {
+								"type_code": "minion"
+							}
+						}
+					]
+				}
+			]
 		}
 	},
 	"Victoria Hand": {
@@ -6777,11 +10978,56 @@
 		"TODO": ""
 	},
 	"Zaran": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "tuck_card_under_me",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"trait_weapon": 1
+							},
+							"filter_properties2": {
+								"type_code": "upgrade"
+							}
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"name": "save_variable",
+					"value": "previous",
+					"var_name": "my_tucked",
+					"var_type": "subject"
+				},
+				{
+					"is_else": true,
+					"name": "tuck_card_under_me",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "top",
+					"src_container": "deck_my_hero"
+				},
+				{
+					"is_else": true,
+					"name": "save_variable",
+					"value": "previous",
+					"var_name": "my_tucked",
+					"var_type": "subject"
+				}
+			]
+		},
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "tuck_card_under_me",
+					"subject": "my_tucked"
 				}
 			]
 		},
@@ -6789,26 +11035,181 @@
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "get_subject_int_printed_property",
+						"func_params": {
+							"subject": "my_tucked",
+							"property": "cost"
 						}
-					],
-					"alteration": 1
+					}
 				}
 			]
 		}
 	},
 	"Zemo's Manipulations - 1A": {
-		"TODO": ""
+		"setup": {
+			"all": [
+				{
+					"name": "shuffle_card_into_container",
+					"dest_container": "tmp_pile2",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
+					"subject": "tutor",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "executive_board_evidence"
+							}
+						}
+					]
+				}
+			]
+		},
+		"post_setup": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"src_container": "tmp_pile2",
+					"dest_container": "tmp_pile1",
+					"subject_index": "random",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Money"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Blackmail"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Ideology"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"src_container": "tmp_pile2",
+					"dest_container": "tmp_pile1",
+					"subject_index": "random",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Medical Records"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Wiretap"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Security Scanner"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"src_container": "tmp_pile2",
+					"dest_container": "tmp_pile1",
+					"subject_index": "random",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Security Clearance"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Travel"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Authority"
+							}
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"token_name": "secret",
+					"modification": 2,
+					"filter_state_seek": "trait_board_member"
+				},
+				{
+					"name": "flip_doublesided_card"
+				}
+			]
+		}
 	},
 	"Zemo's Manipulations - 1B": {
-		"TODO": "",
-		"response": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
+		"phase_ended": {
+			"event_filters": {
+				"phase": "player_phase"
+			},
+			"board": {
+				"Acquire Evidence": [
+					{
+						"name": "mod_tokens",
+						"subject": "boardseek_and_choose",
+						"filtr_state_seek": [
+							"trait_board_member",
+							"environment"
+						],
+						"token_name": "secret",
+						"modification": 2
+					},
+					{
+						"name": "sequence",
+						"sequence_ability": "do_advance"
+					}
+				],
+				"Don't Acquire Evidence": [
+					{
+						"name": "sequence",
+						"sequence_ability": "do_advance"
+					}
+				]
+			}
+		},
+		"do_advance": {
+			"board": {
+				"Advance to Accusation": [
+					{
+						"name": "move_to_next_scheme",
+						"subject": "self"
+					}
+				],
+				"Dont Advance to Accusation": [
+					{
+						"name": "nop"
+					}
+				]
+			}
+		},
+		"response_stage_completed": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "defeat"
+				}
+			]
 		}
 	}
 }

@@ -98,6 +98,7 @@ var scripted_play_sequence_low_priority:= []
 #
 #temp vars for bean counting
 #
+var globals := {}
 #Hero being currently attacked by/schemed by by the villain
 var _villain_current_hero_target :=1
 
@@ -2759,6 +2760,7 @@ func cleanup_post_game():
 	
 	erase_pending_scripts()
 
+	globals = {}
 
 	_clients_current_activation = {}
 	_clients_activation_counter = {}	

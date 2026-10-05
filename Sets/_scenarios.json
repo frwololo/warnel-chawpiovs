@@ -1921,10 +1921,12 @@
 			"gravitational_pull",
 			"hard_sound",
 			"pale_little_spider",
-			"power_of_the_atom"
+			"power_of_the_atom",
+			"supersonic"
 		],
 		"modular_rules": {
-			"count": "1+1p",
+			"count": "1p",
+			"plus_count": 1,
 			"contains": [
 				{
 					"filter_properties": {
@@ -1942,7 +1944,7 @@
 		"encounter_sets": [
 			"thunderbolts",
 			"Standard",
-			"Modular"
+			"Modulars"
 		],
 		"villains": [
 			"Citizen V - A"
@@ -1951,7 +1953,7 @@
 			"encounter_sets": [
 				"thunderbolts",
 				"Standard",
-				"modular",
+				"modulars",
 				"expert"
 			],
 			"villains": [
@@ -1996,6 +1998,64 @@
 				"Baron Zemo - B2"
 			]
 		},
+		"grid_setup_overrides": {
+			"villain_misc": {
+				"x" : 1450,
+				"columns": 2
+			}
+		},		
+		"data": [
+			{
+				"decision_matrix": {
+					"Chief Medical Officer" : [
+						["Medical Records", "Money","Security Clearance"],
+						["Medical Records", "Money", "Travel"],
+						["Medical Records","Blackmail","Security Clearance"],
+						["Medical Records","Blackmail","Authority"],
+						["Medical Records","Ideology","Travel"],
+						["Wiretap","Money","Security Clearance"],
+						["Wiretap","Money","Travel"],
+						["Wiretap","Blackmail","Security Clearance"],
+						["Security Scanner","Money","Security Clearance"],
+					],
+					"Chief Surveillance Officer": [
+						["Medical Records","Blackmail","Travel"],
+						["Wiretap","Money","Authority"],
+						["Wiretap","Blackmail","Travel"],
+						["Wiretap","Blackmail","Authority"],
+						["Wiretap","Ideology","Security Clearance"],
+						["Wiretap","Ideology","Travel"],
+						["Security Scanner","Blackmail","Travel"],
+						["Security Scanner","Blackmail","Authority"],
+						["Security Scanner","Ideology","Travel"],
+					],
+					"Chief Tactical Officer": [
+						["Medical Records", "Money","Authority"],
+						["Medical Records","Ideology","Security Clearance"],
+						["Medical Records","Ideology","Authority"],
+						["Wiretap","Ideology","Authority"],
+						["Security Scanner","Money","Travel"],
+						["Security Scanner","Money","Authority"],
+						["Security Scanner","Blackmail","Security Clearance"],
+						["Security Scanner","Ideology","Security Clearance"],
+						["Security Scanner","Ideology","Authority"],
+					]
+					
+				}
+			},
+			{
+				"card_token_modified": {
+					"filter_count": 1,
+					"filter_token_name": "active_counter",
+					"all": [
+						{
+							"name": "set_active_villain",
+							"subject": "trigger"
+						}
+					]
+				}
+			}
+		],		
 		"description": [
 			"You defeat Citizen V only to discover that his true identity is Baron Helmut Zemo, and the Thunderbolts are simply Zemo's Masters of Evil with new costumes! You're about to put him under arrest when, to your relief, a massive helicarrier and dozens of S.H.I.E.L.D. troopers arrive on the scene. Your relief quickly disappears, however, when they state that they are here to do what the Thunderbolts failed to do and bring you before the S.H.I.E.L.D. Executive Board for questioning. You decide it is best to go with them and try to sort out this situation peacefully.",
 			"Standing before the Executive Board, you are dismayed to learn that they already knew that it was Zemo who was leading the Thunderbolts, and that he was doing so with their blessing. You are certain that Zemo must be involved with A.I.M. in the abduction plot, but you need evidence to prove it. You have to act quickly because you know that Zemo is whispering poison in the board members' ears in an effort to turn them against you.",

@@ -473,6 +473,10 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 	var tags = card_scripts.get("tags", [])
 	var script_name = card_scripts.get("name", "")
 
+	if card_scripts.get("exclude_unique_rule", false):
+		if cfc.NMAP.board.unique_card_in_play(card):
+			return false
+
 	#more complex handling of validity for some cards that define additional filters
 	#attempt to avoid inifinite loop here
 	if options.get("trigger_details", {}).get("_trigger") != "is_valid_target_filters":
@@ -518,7 +522,7 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 		if type in ["subject", "tutor", "seek", "index"]:
 			var needs_permanent_check = card.get_property("permanent", 0) or card.get_property("cannot_leave_play_from_abilities", 0)
 			# heroes and alter ego also cannot be moved, discard, etc...
-			if type_code in ["hero", "alter_ego"]: 
+			if type_code in ["hero", "alter_ego"] and card.is_onboard(): 
 				needs_permanent_check = true
 				
 			if needs_permanent_check:
@@ -690,9 +694,14 @@ static func retrieve_subjects(value:String, script, overrides := {}):
 
 static func card_matches_properties (card, filter_properties = {}):
 	for key in filter_properties:
+		var expected = filter_properties[key]
+		var default = ""
+		match typeof(expected):
+			TYPE_INT, TYPE_REAL:
+				default = 0		
 		var value
 		if typeof(card) == TYPE_DICTIONARY:
-			value = card.get(key, "")
+			value = card.get(key, default)
 		else:
 			value = card.get_property(key)
 			

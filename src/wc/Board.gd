@@ -384,6 +384,9 @@ func erase_grids_and_piles():
 		container.queue_free()
 	current_containers = []
 	_cached_pile_data = {}
+
+func get_grid_setup_override(name, default = {}):
+	return gameData.scenario.get_grid_setup_override(name, {})
 	
 func grid_setup():
 	_team_size = 0 #reset team size to fetch it from gameData
@@ -392,6 +395,9 @@ func grid_setup():
 	var GRID_SETUP = gameData.scenario.grid_setup
 	for grid_name in GRID_SETUP.keys():
 		var grid_info = GRID_SETUP[grid_name]
+		var scenario_overrides = get_grid_setup_override(grid_name)
+		var x = scenario_overrides.get("x", grid_info["x"])
+		var y = scenario_overrides.get("y", grid_info["y"])
 		if "pile" == grid_info.get("type", ""):
 			if cfc.NMAP.has(grid_name): #skip if already exists
 				continue
@@ -400,15 +406,15 @@ func grid_setup():
 			pile.add_to_group("piles")
 			pile.name = grid_name
 			pile.set_pile_name(grid_name)
-			pile.set_position(Vector2(grid_info["x"], grid_info["y"]))
-			pile.set_global_position(Vector2(grid_info["x"], grid_info["y"]))
+			pile.set_position(Vector2(x, y))
+			pile.set_global_position(Vector2(x, y))
 			var pile_scale = grid_info.get("scale", 1)
 			pile.scale = Vector2(pile_scale, pile_scale)
 			pile.faceup_cards = grid_info.get("faceup", false)
 			add_child(pile)
 			current_containers.append(pile)
 			set_groups(pile, grid_info.get("groups", []))
-			if grid_info["x"] < 0 or grid_info["y"] <0:
+			if x < 0 or y <0:
 				pile.visible = false
 		else:
 			if has_node(grid_name): #skip if already exists
@@ -416,7 +422,9 @@ func grid_setup():
 			var grid_scene = grid_info.get("scene", basicGrid)
 			var grid: BoardPlacementGrid = grid_scene.instance()
 			grid.add_to_group("placement_grid")
-			var grid_columns = grid_info.get("columns", default_grid_columns)
+			var grid_columns = scenario_overrides.get("columns", 0)
+			if !grid_columns:
+				grid_columns = grid_info.get("columns", default_grid_columns)
 			grid.set_columns(grid_columns)			
 			var grid_scale = grid_info.get("scale", 1)				
 			grid.rescale(CFConst.PLAY_AREA_SCALE  * grid_scale)
@@ -425,7 +433,7 @@ func grid_setup():
 			current_containers.append(grid)
 			grid.name = grid_name
 			grid.name_label.text = grid_name
-			grid.rect_position = Vector2(grid_info["x"], grid_info["y"])			
+			grid.rect_position = Vector2(x, y)			
 			grid.auto_extend = grid_info.get("auto_extend", true)
 			set_groups(grid, grid_info.get("groups", []))
 

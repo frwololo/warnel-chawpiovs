@@ -575,6 +575,9 @@ func is_villain_phase():
 func is_player_phase():
 	return !is_villain_phase()
 
+func get_current_phase_name():
+	return StepStrings[current_step]
+
 func _player_draw():
 	gameData.draw_all_players()
 	set_current_step_complete(true, "_player_draw")

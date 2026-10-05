@@ -674,9 +674,7 @@
 						"subject": "boardseek",
 						"subject_count": "all",
 						"filter_state_seek": [
-							{
-								"filter_group": "group_identities"
-							}
+							 "group_identities"
 						]
 					}
 				}
@@ -814,28 +812,15 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "defense",
-					"filter_state_trigger": [
-						{
-							"filter_properties": {
-								"Name": "Captain Marvel"
-							}
-						}
-					],
+					"trigger":  "Captain Marvel",
 					"alteration": 1
 				},
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "defense",
 					"filter_state_trigger": [
-						{
-							"filter_properties": {
-								"comparison": "gt",
-								"trait_aerial": 0
-							},
-							"filter_properties2": {
-								"Name": "Captain Marvel"
-							}
-						}
+						"Captain Marvel",
+						"trait_aerial",
 					],
 					"alteration": 1
 				}

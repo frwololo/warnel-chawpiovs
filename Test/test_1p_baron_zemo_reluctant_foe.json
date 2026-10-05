@@ -1,0 +1,370 @@
+{
+	"_comments": "Tests Steel Kick Damage",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 5,
+					"hero": "01001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Eviction Notice #01165"
+				},
+				{
+					"card": "Reluctant Foe #50171"
+				}
+			],
+			"villain": [
+				{
+					"card": "Baron Zemo - A1 #50165a"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Zemo's Manipulations - 1B #50167b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Chief Surveillance Officer #50182a",
+					"tokens": {
+						"secret": 2
+					},
+					"script_variables": {
+						"my_threshold": 4
+					}
+				},
+				{
+					"card": "Chief Tactical Officer #50183a",
+					"tokens": {
+						"secret": 2
+					},
+					"script_variables": {
+						"my_threshold": 4
+					}
+				},
+				{
+					"card": "Chief Medical Officer #50181a",
+					"tokens": {
+						"secret": 2
+					},
+					"script_variables": {
+						"my_threshold": 4
+					}
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Spider-Man #01001a"
+				},
+				{
+					"card": "Highway Robbery #01166"
+				},
+				{
+					"card": "Vulture #01167"
+				},
+				{
+					"card": "Sweeping Swoop #01168"
+				},
+				{
+					"card": "Sweeping Swoop #01168"
+				},
+				{
+					"card": "The Vulture's Plans #01169"
+				},
+				{
+					"card": "Baron Zemo - A2 #50165b"
+				},
+				{
+					"card": "The Accusation - 2A #50168a"
+				},
+				{
+					"card": "The Accusation - 2B #50168b"
+				},
+				{
+					"card": "Fighting Zemo - 3A #50169a"
+				},
+				{
+					"card": "Fighting Zemo - 3B #50169b"
+				},
+				{
+					"card": "Medical Officer's Aid #50181b"
+				},
+				{
+					"card": "Surveillance Officer's Aid #50182b"
+				},
+				{
+					"card": "Tactical Officer's Aid #50183b"
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Zemo's Manipulations - 1A #50167a"
+				}
+			],
+			"tmp_pile1": [
+				{
+					"card": "Ideology #50190"
+				},
+				{
+					"card": "Medical Records #50185"
+				},
+				{
+					"card": "Authority #50193"
+				}
+			],
+			"tmp_pile2": [
+				{
+					"card": "Travel #50192"
+				},
+				{
+					"card": "Wiretap #50186"
+				},
+				{
+					"card": "Blackmail #50189"
+				},
+				{
+					"card": "Money #50188"
+				},
+				{
+					"card": "Security Clearance #50191"
+				},
+				{
+					"card": "Security Scanner #50187"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Webbed Up #01009"
+				},
+				{
+					"card": "Jessica Jones #01059"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Peter Parker #01001b",
+					"tokens": {
+						"_peter_resource": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Black Cat - Felicia Hardy #01002"
+				},
+				{
+					"card": "Interrogation Room #01063"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "Ironheart"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "wait for player turn"
+		},		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 5,
+					"hero": "01001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Eviction Notice #01165"
+				},
+			],
+			"villain": [
+				{
+					"card": "Baron Zemo - A1 #50165a"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Zemo's Manipulations - 1B #50167b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Chief Surveillance Officer #50182a",
+					"tokens": {
+						"secret": 2
+					},
+					"script_variables": {
+						"my_threshold": 4
+					}
+				},
+				{
+					"card": "Chief Tactical Officer #50183a",
+					"tokens": {
+						"secret": 2
+					},
+					"script_variables": {
+						"my_threshold": 4
+					}
+				},
+				{
+					"card": "Chief Medical Officer #50181a",
+					"tokens": {
+						"secret": 2
+					},
+					"script_variables": {
+						"my_threshold": 4
+					}
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Spider-Man #01001a"
+				},
+				{
+					"card": "Highway Robbery #01166"
+				},
+				{
+					"card": "Vulture #01167"
+				},
+				{
+					"card": "Sweeping Swoop #01168"
+				},
+				{
+					"card": "Sweeping Swoop #01168"
+				},
+				{
+					"card": "The Vulture's Plans #01169"
+				},
+				{
+					"card": "Baron Zemo - A2 #50165b"
+				},
+				{
+					"card": "The Accusation - 2A #50168a"
+				},
+				{
+					"card": "The Accusation - 2B #50168b"
+				},
+				{
+					"card": "Fighting Zemo - 3A #50169a"
+				},
+				{
+					"card": "Fighting Zemo - 3B #50169b"
+				},
+				{
+					"card": "Medical Officer's Aid #50181b"
+				},
+				{
+					"card": "Surveillance Officer's Aid #50182b"
+				},
+				{
+					"card": "Tactical Officer's Aid #50183b"
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Zemo's Manipulations - 1A #50167a"
+				}
+			],
+			"tmp_pile1": [
+				{
+					"card": "Ideology #50190"
+				},
+				{
+					"card": "Medical Records #50185"
+				},
+				{
+					"card": "Authority #50193"
+				}
+			],
+			"tmp_pile2": [
+				{
+					"card": "Travel #50192"
+				},
+				{
+					"card": "Wiretap #50186"
+				},
+				{
+					"card": "Blackmail #50189"
+				},
+				{
+					"card": "Money #50188"
+				},
+				{
+					"card": "Security Clearance #50191"
+				},
+				{
+					"card": "Security Scanner #50187"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Webbed Up #01009"
+				},
+				{
+					"card": "Jessica Jones #01059"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Peter Parker #01001b",
+					"tokens": {
+						"_peter_resource": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Reluctant Foe",
+					"host": "Ironheart",
+				}
+			],
+			"enemies1": [
+							{
+					"card": "Ironheart",
+				}
+			],
+			"hand1": [
+				{
+					"card": "Black Cat - Felicia Hardy #01002"
+				},
+				{
+					"card": "Interrogation Room #01063"
+				}
+			]
+		}
+	}
+}

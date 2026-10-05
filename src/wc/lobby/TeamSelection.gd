@@ -421,11 +421,42 @@ func _create_hero_container():
 #
 # modular encounters functions
 #
+
+func is_modular_valid(set_id, rules):
+	var contain_rules = rules.get("contains", {})
+	if !contain_rules:
+		return true
+		
+	var set_cards = cfc.cards_by_set[set_id]
+
+	for card in set_cards:
+		for ruleset in contain_rules:
+			var card_matches_this_filter = true
+			for key in ruleset:
+				if key.begins_with("filter_properties"):
+					if !SP.card_matches_properties(card, ruleset[key]):
+						card_matches_this_filter = false
+						break
+			if card_matches_this_filter:
+				return true
+	return false
+
 var _mainmenu_focus_nodes = {}
 func display_modular_selection():
 	var title = get_node("%ModularSelectionTitle")
-	var default_modulars = ScenarioDeckData.get_recommended_modular_encounters(_scenario)		
+	var default_modulars = ScenarioDeckData.get_recommended_modular_encounters(_scenario, get_current_context())
+	var modular_rules = ScenarioDeckData.get_dict_data(_scenario, "modular_rules")
+
 	var nb_modulars = default_modulars.size()
+
+	if modular_rules: 
+		var count = WCUtils.retrieve_integer_property("count", modular_rules, get_current_context())			
+		if count:
+			nb_modulars = count
+	if nb_modulars > default_modulars.size():
+		var _error = 1
+		nb_modulars = default_modulars.size()
+	
 	var plural = "" if nb_modulars <= 1 else "s"
 	var villain = ScenarioDeckData.get_first_villain_from_scheme(_scenario)
 	var villain_name = ""
@@ -441,11 +472,16 @@ func display_modular_selection():
 			child.init_status(true)
 		else:
 			child.init_status(false)
+		if is_modular_valid(modular_id, modular_rules):
+			child.visible = true
+		else:
+			child.visible = false
 	modular_selection.visible = true
 	_mainmenu_focus_nodes = cfc.disable_focus_mode($MainMenu/Outercontainer) 
 	grab_default_focus()
 
 
+#load modulars
 var _modulars_init_done = false
 func _load_modulars(scenario_id):
 	if _modulars_init_done:
@@ -478,8 +514,24 @@ func _update_modular_button():
 		separator = ","		
 	button.set_tooltip(button.text)
 
+#returns a dictionary with current state of the team selection
+func get_current_context():
+	return {
+		"hero_count": get_team_size()
+	}
+
+#checks if modular selection is still valid after a change in the current context
+func check_modulars_validity():
+	var scenario_id = _scenario
+	if !scenario_id:
+		return
+	var default_modulars = ScenarioDeckData.get_recommended_modular_encounters(scenario_id, get_current_context())
+	var expected_count = default_modulars.size()
+	if default_modulars.size() != selected_modulars.size():
+		_select_default_modular(scenario_id)
+
 func _select_default_modular(scenario_id):
-	var default_modulars = ScenarioDeckData.get_recommended_modular_encounters(scenario_id)
+	var default_modulars = ScenarioDeckData.get_recommended_modular_encounters(scenario_id, get_current_context())
 	if !default_modulars:
 		return
 	reset_selected_modulars()
@@ -491,7 +543,7 @@ func reset_selected_modulars():
 	selected_modulars = []
 
 func _update_modular_data():
-	var default_modulars = ScenarioDeckData.get_recommended_modular_encounters(_scenario)		
+	var default_modulars = ScenarioDeckData.get_recommended_modular_encounters(_scenario, get_current_context())		
 	var nb_modulars = default_modulars.size()
 
 	var disable_all = false
@@ -677,6 +729,9 @@ mastersync func get_next_hero_slot(hero_id) -> int:
 			return i
 	return -1			
 
+func _hero_count_changed():
+	check_modulars_validity()
+
 remotesync func assign_hero(hero_id, slot):
 	#data update
 	var hero_deck_data: HeroDeckData = team[slot]
@@ -694,6 +749,7 @@ remotesync func assign_hero(hero_id, slot):
 		for child in all_heroes_container.get_children():
 			if child.hero_id == previous_hero_id:
 				child.enable()	
+	_hero_count_changed()
 	ack()
 
 func verify_launch_button():
@@ -749,7 +805,14 @@ func all_players_have_a_hero() -> bool:
 		return false
 	
 	return true
-	
+
+func get_team_size():
+	var count = 0
+	for i in HERO_COUNT:
+		var data: HeroDeckData = team[i]
+		if (data.get_hero_id()): 
+			count += 1
+	return count		
 	
 func request_release_hero_slot(hero_id):
 	cfc._rpc_id(self,1, "release_hero_slot",hero_id)

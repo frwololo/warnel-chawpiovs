@@ -1747,6 +1747,7 @@ func execute_scripts(
 #	if (trigger == "receive_damage") and canonical_name == "Arm Block":# and run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
 #		var _tmp = 1
 
+
 	if script_exec_temporarily_blocked(run_type):
 		if get_parent() and !("tree_" in trigger): #dirty check to avoid crashes
 			if get_potential_scripts(trigger):
@@ -1872,6 +1873,10 @@ func execute_scripts(
 	
 	#select valid scripts that match the current trigger
 	var card_scripts = retrieve_filtered_scripts(trigger_card, trigger, trigger_details)
+
+	if card_scripts.get("_breakpoint"):
+		script_breakpoint()	
+
 	
 	#tells the game engine to not display this event prominently to the users
 	if card_scripts.get("_silent", false):
@@ -2539,6 +2544,9 @@ func can_defend(hero_id = 0):
 	if hero_id:
 		if controller_hero_id != hero_id:
 			return false
+
+	if get_property("cannot_defend_basic", 0, true):
+		return false
 
 	if get_property("cannot_defend", 0, true):
 		return false
@@ -3224,7 +3232,8 @@ func export_modifiers():
 	var result = {
 		"tokens" : tokens.export_to_json(),
 		"exhausted" : self.is_exhausted(),
-		"inactive_attachment": self.is_inactive_attachment()
+		"inactive_attachment": self.is_inactive_attachment(),
+		"script_variables": self.script_variables
 	}
 	return result
 
@@ -3236,6 +3245,11 @@ func import_modifiers(modifiers:Dictionary, keep_existing = false):
 	var token_data = modifiers.get("tokens", {})
 	if token_data:
 		tokens.load_from_json(token_data, keep_existing)
+	
+	#TODO decode/encode subjects?
+	var variables =  modifiers.get("script_variables", {})
+	for key in variables:
+		self.script_variables[key] = variables[key]
 	
 	if modifiers.has("exhausted"):
 		if modifiers["exhausted"]:
@@ -3291,7 +3305,9 @@ func set_is_faceup(
 	if value:
 		#initiate the card art if it's the first time we're setting this faceup
 		set_card_art()
-			
+	else:
+		#there's a bug where sometimes the front remains visible
+		self._card_front_container.visible = false		
 	#we remove all of the card's properties as long as it's facedown on the board,
 	#to avoid triggering any weird things
 	if is_onboard_facedown():
@@ -3769,7 +3785,79 @@ func get_subject_int_property(params, script:ScriptObject= null) -> int:
 		count+= value
 	return count
 
-func get_subject_variable(params, script:ScriptObject= null) -> int:
+func get_property_from_matrix(params, script:ScriptObject = null) -> int:
+	var matrix = gameData.scenario.get_scenario_data("decision_matrix")
+	if !matrix:
+		return 0
+
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return 0
+	
+	var sequence = params.get("sequence", [])
+	if !sequence:
+		return 0
+
+	var expected_value = params.get("property_value", [])
+	if !expected_value:
+		return 0	
+	
+	var matrix_data = matrix.get(expected_value, [] )	
+	if !matrix_data:
+		return 0
+	
+	for attempt in matrix_data:
+		if attempt.size()!=sequence.size():
+			return 0
+		var found = true
+		for i in attempt.size():
+			var str1 = attempt[i].to_lower()
+			var str2 = sequence[i].to_lower()
+			if str1 != str2:
+				found = false
+				break
+		if found:
+			return 1
+	return 0
+		
+	
+	
+
+func compare_subject_variables(params, script:ScriptObject = null) -> int:
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return 0
+	
+	var var_name1 = params.get("variable1", "")
+	var var_name2 = params.get("variable2", "")
+	#TODO handle comparison
+	var comparison = params.get("comparison", "eq")
+	var result1 = subject.script_variables.get(var_name2, 0)
+	var result2 = subject.script_variables.get(var_name1, 0)
+	
+	if typeof(result1) != typeof(result2):
+		return 0
+	match typeof(result1):
+		TYPE_ARRAY:
+			if result1.size() != result2.size():
+				return 0
+			for i in result1.size():
+				var var1 = result1[i]
+				var var2 = result2[i]
+				if var1 != var2:
+					return 0
+			return 1
+		TYPE_STRING:
+			if result1.to_lower() != result2.to_lower():
+				return 0
+			return 1
+		_:
+			pass
+			#TODO	
+	
+	return 0
+
+func get_subject_variable(params, script:ScriptObject = null):
 	var subject = get_param_subject(params, script)
 	if !subject:
 		return 0

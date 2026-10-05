@@ -5352,7 +5352,6 @@
 			}
 		},
 		"boost_alterants": {
-			"_breakpoint": true,
 			"all": [
 				{
 					"filter_task": "get_property",

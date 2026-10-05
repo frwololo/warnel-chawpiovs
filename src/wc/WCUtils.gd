@@ -677,7 +677,8 @@ static func replace_macros(json_card_data, local_macro_data, json_macro_data):
 	var macro_data = merge_dict(json_macro_data, local_macro_data)
 	for macro_key in macro_data.keys():
 		result = replace_one_macro(result, macro_key, macro_data[macro_key])
-	subject_pre_processing(result)		
+	subject_pre_processing(result)
+	filter_state_pre_processing(result)		
 	return result	
 
 #does subject preprocessing in place,
@@ -726,11 +727,26 @@ static func subject_pre_processing(script_definition):
 							
 						"boardseek_and_choose":
 							modifiers = {
-								"boardseek": "tutor",
+								"subject": "boardseek",
 								"subject_count": "all",
 								"needs_selection": true,
 								"selection_count": 1,
 								"selection_type": "equal",							
+							}
+
+						"find_hero_in_collection":
+							modifiers = {
+								"subject": "tutor",
+								"preload": "preload_hero_collection",
+								"src_container": "removed_from_game",
+								"subject_count": "all",
+								"needs_selection": true,
+								"selection_count": 1,
+								"exclude_unique_rule": true,
+								"selection_type": "equal",
+								"filter_state_tutor": [{
+									"filter_properties": {"type_code" : "hero"}
+								}]							
 							}
 															
 					for mod_key in modifiers:
@@ -744,7 +760,41 @@ static func subject_pre_processing(script_definition):
 		TYPE_ARRAY:	
 			for value in script_definition:
 				subject_pre_processing(value)	
-	
+
+static func filter_state_pre_processing(script_definition):
+	match typeof(script_definition):
+		TYPE_DICTIONARY:
+			for key in script_definition.keys():
+				if key.begins_with("filter_state_"):
+					var filter_array = script_definition[key]
+					#we're looking for "simpler" filter_state definitions such as "filter_state_seek : ["a", "b", "c"]
+					if typeof(filter_array) == TYPE_STRING:
+						filter_array = [filter_array]
+					if typeof(filter_array[0]) == TYPE_STRING:
+						var values = {}
+						var properties_count = 1
+						for value in filter_array:
+							if value.begins_with("trait_"):
+								values["filter_properties" + str(properties_count)] =  {value: 1, "comparison": "ge"}
+								properties_count += 1
+							elif value.begins_with("group_"):
+								values["filter_group"] = value
+							elif (value in CFConst.PLAYER_CARD_TYPES) or (value in CFConst.ENCOUNTER_CARD_TYPES):
+								values["filter_properties" + str(properties_count)] = {"type_code": value}
+								properties_count += 1
+							elif value.begins_with("filter_"):
+								values[value] = true
+							else:
+								values["filter_properties" + str(properties_count)] = {"shortname": value}
+								properties_count += 1
+						script_definition[key] = [values]
+					else:
+						filter_state_pre_processing(script_definition[key])										
+				else:
+					filter_state_pre_processing(script_definition[key])
+		TYPE_ARRAY:	
+			for value in script_definition:
+				filter_state_pre_processing(value)		
 
 # Recursively deletes a directory and all its contents
 static func delete_dir_recursive(path: String, delete_folder = true) -> bool:
@@ -985,3 +1035,26 @@ static func get_corrected_card_id (card, constraints = {}, fuzzy_fallback = true
 			return card_info["code"]	
 			
 	return ""
+
+#TODO bring up to speed with ScriptObject's retrieve_integer_property
+static func retrieve_integer_property(property, dict, context):
+	var value = dict.get(property, null)
+	if value == null:
+		return 0
+
+	var int_multiplier = 1
+			
+	var value_str = str(value)	
+
+	if value_str.ends_with("p") and value_str.trim_suffix("p").is_valid_integer():
+			value = int(value_str.trim_suffix("p")) * context.get("hero_count", 1)				
+	else:
+		value = int(value)
+
+	value *= int_multiplier
+
+	var plus_value = retrieve_integer_property("plus_" + property, dict, context )
+	if plus_value:
+		value += plus_value	
+		
+	return value	

@@ -105,15 +105,44 @@ static func get_array_data(scheme_id, key):
 	if !scheme_primitive:
 		return []
 	
-	var data: Array = scheme_primitive.get(key, [])
+	var data = scheme_primitive.get(key, [])
 	if typeof(data) == TYPE_ARRAY:
 		return data
 	return []
 	
-static func get_recommended_modular_encounters(scheme_id):
-	return get_array_data(scheme_id,"modular_default")
+static func get_dict_data(scheme_id, key):
+	var scheme_primitive = primitives.get(scheme_id, {})
+	if !scheme_primitive:
+		return {}
+	
+	var data = scheme_primitive.get(key, {})
+	if typeof(data) == TYPE_DICTIONARY:
+		return data
+	return {}	
+	
+static func get_recommended_modular_encounters(scheme_id, context = {}):
+	var default_modulars = get_array_data(scheme_id,"modular_default")
+	var rules = get_dict_data(scheme_id, "modular_rules")
+	var how_many = default_modulars.size()
+	var result = []
+	if rules:
+		var count = WCUtils.retrieve_integer_property("count", rules, context)			
+		if count:
+			how_many = count
+		if how_many > default_modulars.size():
+			how_many = default_modulars.size()
+			var _error = 1
+	if how_many == default_modulars.size():
+		return default_modulars
+	
+	for i in how_many:
+		result.append(default_modulars[i])
+	return result
 
-
+func get_scenario_data( key):
+	var the_data = scenario_data.get("data", {})
+	return the_data.get("key", null)
+		
 static func get_scenario_options(scheme_id):
 	var the_options = get_array_data(scheme_id,"options")
 	var encounter_sets : Array = get_array_data(scheme_id,"encounter_sets")
@@ -606,9 +635,16 @@ func get_encounter_deck():
 		
 
 	var encounter_sets : Array = scenario_data["encounter_sets"]		
-
+	
 	if is_expert_mode and scenario_data.has("expert"):		
 		encounter_sets = scenario_data["expert"].get("encounter_sets", encounter_sets)
+
+	#"modulars" is replaced by a count of modular size
+	if "modulars" in encounter_sets:
+		var modulars = modular_sets.size()
+		for i in modulars:
+			encounter_sets.append("modular")
+		encounter_sets.erase("modulars")
 
 	encounter_deck = get_simple_encounter_deck(encounter_sets)
 				

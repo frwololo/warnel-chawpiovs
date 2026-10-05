@@ -824,8 +824,9 @@ func spawn_card(script: ScriptTask) -> void:
 	var count: int
 	var alteration = 0
 	var canonical_name: String = script.get_property(SP.KEY_CARD_NAME)	
+	var constraints: String = script.get_property("constraints", {})
 	#TODO this will not always work
-	var canonical_id = cfc.get_corrected_card_id(canonical_name)
+	var canonical_id = cfc.get_corrected_card_id(canonical_name, constraints)
 	var grid_name: String = script.get_property(SP.KEY_GRID_NAME)
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
 	if str(script.get_property(SP.KEY_OBJECT_COUNT)) == SP.VALUE_RETRIEVE_INTEGER:

@@ -805,6 +805,8 @@ const AUTO_KEYWORDS := {
 	"cannot_be_thwarted": "int",	
 	"cannot_change_form": "int",
 	"cannot_change_to_alter_ego": "int",
+	"cannot_defend": "int",
+	"cannot_defend_basic": "int",	
 	"cannot_exhaust": "int",	
 	"cannot_flip": "int",	
 	"cannot_have_attachments": "int",	

@@ -78,6 +78,7 @@ func set_groups(grid_or_pile, additional_groups:= []):
 func _ready() -> void:
 	init_wallpaper()
 	get_node("%Loading").visible = false
+	get_node("%GeneralError").visible = false	
 	
 	gameData.play_music("battle*")
 	cfc.map_node(self)	
@@ -292,6 +293,7 @@ func _process(delta:float):
 			get_node("%GeneralError").visible = true
 		else:
 			get_node("%GeneralError").visible = false
+
 	
 	if !cfc.is_game_master():
 		rollback_button.visible = false

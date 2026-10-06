@@ -46,6 +46,7 @@ var ping_data: = {}
 var last_ping_time:= 0
 var fps = 0
 var low_fps = false
+var low_fps_counts = 0
 
 #a variable used to compare the scale of the screen to a 1920*1080 screen
 var screen_scale = Vector2(1.0, 1.0)
@@ -340,8 +341,14 @@ func performance_checks():
 	fps = Performance.get_monitor(Performance.TIME_FPS)
 	if fps < 25:
 		low_fps = true
+		low_fps_counts += 1
 	else:
 		low_fps = false
+		low_fps_counts = 0		
+
+
+func get_low_fps_counts():
+	return low_fps_counts
 
 remote func receive_ping_request(start_time):
 	var client_id = cfc.get_rpc_sender_id() 

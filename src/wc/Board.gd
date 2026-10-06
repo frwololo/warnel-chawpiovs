@@ -287,6 +287,12 @@ func _process(delta:float):
 	if cfc.throttle_process_for_performance():
 		return
 	
+	if OS.get_name() == "HTML5":
+		if cfc.get_low_fps_counts() > 50:
+			get_node("%GeneralError").visible = true
+		else:
+			get_node("%GeneralError").visible = false
+	
 	if !cfc.is_game_master():
 		rollback_button.visible = false
 	

@@ -38,6 +38,7 @@ expand = true
 
 [node name="Loading" type="CenterContainer" parent="Background"]
 unique_name_in_owner = true
+visible = false
 margin_right = 40.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 1920, 1080 )
@@ -148,28 +149,57 @@ anchor_right = 0.971
 anchor_bottom = 0.019
 margin_right = 40.0
 margin_bottom = 40.0
+grow_horizontal = 0
 custom_constants/separation = 10
 
 [node name="OptionsButton" type="TextureButton" parent="VBoxContainer"]
 unique_name_in_owner = true
-margin_right = 76.0
+margin_left = 336.0
+margin_right = 400.0
 margin_bottom = 64.0
 rect_min_size = Vector2( 64, 64 )
 focus_mode = 0
+size_flags_horizontal = 8
 texture_normal = ExtResource( 4 )
 expand = true
 stretch_mode = 4
 
 [node name="RollbackButton" type="TextureButton" parent="VBoxContainer"]
 unique_name_in_owner = true
-visible = false
+margin_left = 336.0
 margin_top = 74.0
-margin_right = 76.0
+margin_right = 400.0
 margin_bottom = 138.0
 rect_min_size = Vector2( 64, 64 )
+size_flags_horizontal = 8
 texture_normal = ExtResource( 10 )
 expand = true
 stretch_mode = 4
+
+[node name="GeneralError" type="CenterContainer" parent="VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 148.0
+margin_right = 400.0
+margin_bottom = 248.0
+size_flags_horizontal = 8
+
+[node name="TextureRect" type="ColorRect" parent="VBoxContainer/GeneralError"]
+margin_right = 400.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 400, 100 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color( 1, 1, 0.133333, 0.560784 )
+
+[node name="Label" type="Label" parent="VBoxContainer/GeneralError"]
+margin_left = 13.0
+margin_top = 3.0
+margin_right = 387.0
+margin_bottom = 97.0
+custom_colors/font_color = Color( 0.854902, 0.168627, 0.168627, 1 )
+text = "Performance is Low.
+Try to enable graphics acceleration
+in your browser settings"
 
 [node name="ServerActivity" type="TextureRect" parent="."]
 unique_name_in_owner = true

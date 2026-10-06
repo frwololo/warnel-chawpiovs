@@ -423,6 +423,9 @@
 	"35028": {
 		"is_unique": true
 	},
+	"36026": {
+		"alternate_art": true
+	},	
 	"37001a": {
 		"printed_card_id": "37001b",
 		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"

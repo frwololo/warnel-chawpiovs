@@ -526,7 +526,6 @@ func check_modulars_validity():
 	if !scenario_id:
 		return
 	var default_modulars = ScenarioDeckData.get_recommended_modular_encounters(scenario_id, get_current_context())
-	var expected_count = default_modulars.size()
 	if default_modulars.size() != selected_modulars.size():
 		_select_default_modular(scenario_id)
 

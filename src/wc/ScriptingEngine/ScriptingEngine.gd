@@ -1372,6 +1372,7 @@ func receive_damage(script: ScriptTask) -> int:
 							_add_pre_receive_damage_on_stack (excess_damage, script, script_modifications)
 			
 		#check for death
+		var lethal = false
 		if damage_happened:			
 			var signal_details = {
 				"attacker": attacker,
@@ -1384,7 +1385,7 @@ func receive_damage(script: ScriptTask) -> int:
 			}
 			scripting_bus.emit_signal_on_stack("card_damaged", card, signal_details)
 
-			var _lethal = card.check_death(script)
+			lethal = card.check_death(script)
 
 		#enemy attacks do not use the context window (TODO can we migrate to it?), 
 		#so we have to call attack_finished here
@@ -1395,7 +1396,8 @@ func receive_damage(script: ScriptTask) -> int:
 						"attacker": attacker,
 						"target": card,
 						"damage": damage_happened,
-						"tags": tags,						
+						"tags": tags,
+						"lethal": lethal,						
 					}
 				],
 				"script_history": [
@@ -1482,18 +1484,19 @@ func attack_finished( details)-> int:
 			}
 		var target_data = attacker_data[target]
 		target_data["damage"] += attack["damage"]
+		target_data["lethal"] = attack.get("lethal", false)
 		target_data["tags"] = WCUtils.merge_array(target_data["tags"], attack["tags"])
 		
 	for attacker in aggregated_attacks:
 		for target in aggregated_attacks[attacker]:
 			var attack_details = aggregated_attacks[attacker][target]
-			var damage_happened = attack_details["damage"]
 			var tags = attack_details["tags"]
 	
 			var signal_details = {
 				"attacker": attacker,
 				"target": target,
-				"damage": damage_happened,
+				"damage": attack_details["damage"],
+				"lethal": attack_details["lethal"],
 				"tags": tags,
 			}
 			scripting_bus.emit_signal_on_stack("attack_happened",  attacker,  signal_details)			
@@ -2010,9 +2013,6 @@ func replacement_effect(script: ScriptTask) -> int:
 	#TOdo take into action subject, etc...
 	match subject:
 		SP.KEY_SUBJECT_V_CURRENT_ATTACK:
-
-			var stack_object = script.trigger_details.get("stack_object", null) 
-			var task_object = script.trigger_details.get("event_object", null)
 			var current_context = gameData.theStack.get_context_details("attack", "script_history")			
 			if current_context:
 				var latest_script = current_context.back()

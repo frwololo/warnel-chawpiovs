@@ -3829,7 +3829,7 @@ func compare_subject_variables(params, script:ScriptObject = null) -> int:
 	var var_name1 = params.get("variable1", "")
 	var var_name2 = params.get("variable2", "")
 	#TODO handle comparison
-	var comparison = params.get("comparison", "eq")
+	var _comparison = params.get("comparison", "eq")
 	var result1 = subject.script_variables.get(var_name2, 0)
 	var result2 = subject.script_variables.get(var_name1, 0)
 	

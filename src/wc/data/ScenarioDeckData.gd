@@ -141,7 +141,7 @@ static func get_recommended_modular_encounters(scheme_id, context = {}):
 
 func get_scenario_data( key):
 	var the_data = scenario_data.get("data", {})
-	return the_data.get("key", null)
+	return the_data.get(key, null)
 		
 static func get_scenario_options(scheme_id):
 	var the_options = get_array_data(scheme_id,"options")

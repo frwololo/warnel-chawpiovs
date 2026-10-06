@@ -322,7 +322,6 @@ func preload_hero_collection():
 	for hero_id in cfc.hero_ids:
 		if existing_heroes.has(hero_id):
 			continue
-		var hero_card_data = cfc.get_card_by_id(hero_id)
 		var card = cfc.instance_card(hero_id, 0)
 		cfc.NMAP["removed_from_game"].add_child(card)
 		existing_heroes[hero_id] = card

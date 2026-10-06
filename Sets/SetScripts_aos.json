@@ -600,6 +600,7 @@
 		},
 		"interrupt": {
 			"event_name": "about_to_reveal",
+			"filter_state_trigger": "filter_same_controller",
 			"is_optional_board": true,
 			"condition_board": {
 				"func_name": "get_subject_property",

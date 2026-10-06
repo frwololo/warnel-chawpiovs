@@ -881,11 +881,11 @@
 		}
 	},
 	"Teamwork": {
-		"interrupt_attack": {
+		"interrupt_attack_started": {
 			"trigger": "my_hero",
-			"event_filters": [
-				"basic_power"
-			],
+			"event_filters": {
+				"tags": ["basic power"]
+			},
 			"is_optional_hand": true,
 			"hand": [
 				{
@@ -898,9 +898,7 @@
 				{
 					"name": "exhaust_card",
 					"is_cost": true,
-					"subject": "boardseek",
-					"needs_selection": true,
-					"selection_count": 1,
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
 						{
 							"filter_group": "group_allies_my_hero",
@@ -909,22 +907,28 @@
 					]
 				},
 				{
+					"name": "save_variable",
+					"var_name": "my_ally",
+					"var_type": "subject",
+					"value": "previous",
+					"force_run_at_prime": true,
+				},
+				{
 					"name": "add_script",
 					"end_condition": "attack_happened",
-					"subject": "my_hero",
-					"passthrough_subject": "previous",
+					"subject": "self",
 					"script": {
 						"alterants": {
 							"all": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "attack",
-									"trigger": "self",
+									"trigger": "my_hero",
 									"alteration": {
 										"func_name": "get_subject_int_property",
 										"func_params": {
 											"property": "attack",
-											"subject": "parent_passthrough_subject"
+											"subject": "my_ally"
 										}
 									}
 								}
@@ -934,11 +938,11 @@
 				}
 			]
 		},
-		"interrupt_thwart": {
+		"interrupt_thwart_started": {
 			"trigger": "my_hero",
-			"event_filters": [
-				"basic_power"
-			],
+			"event_filters": {
+				"tags": ["basic power"]
+			},
 			"is_optional_hand": true,
 			"hand": [
 				{
@@ -951,9 +955,7 @@
 				{
 					"name": "exhaust_card",
 					"is_cost": true,
-					"subject": "boardseek",
-					"needs_selection": true,
-					"selection_count": 1,
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
 						{
 							"filter_group": "group_allies_my_hero",
@@ -962,22 +964,28 @@
 					]
 				},
 				{
+					"name": "save_variable",
+					"var_name": "my_ally",
+					"var_type": "subject",
+					"value": "previous",
+					"force_run_at_prime": true,
+				},
+				{
 					"name": "add_script",
 					"end_condition": "thwart_happened",
-					"subject": "my_hero",
-					"passthrough_subject": "previous",
+					"subject": "self",
 					"script": {
 						"alterants": {
 							"all": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "thwart",
-									"trigger": "self",
+									"trigger": "my_hero",
 									"alteration": {
 										"func_name": "get_subject_int_property",
 										"func_params": {
 											"property": "thwart",
-											"subject": "parent_passthrough_subject"
+											"subject": "my_ally"
 										}
 									}
 								}
@@ -986,7 +994,7 @@
 					}
 				}
 			]
-		}
+		},
 	},
 	"The Power of Aggression": {
 		"resource": {

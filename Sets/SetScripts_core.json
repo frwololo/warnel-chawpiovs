@@ -5268,6 +5268,7 @@
 						"subject": "tutor",
 						"subject_index": "top",
 						"subject_count": 3,
+						"up_to": true,
 						"src_container": "deck",
 						"dest_container": "discard"
 					},

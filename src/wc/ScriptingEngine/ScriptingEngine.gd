@@ -3278,6 +3278,16 @@ func heal(script: ScriptTask) -> int:
 	return retcode
 
 func cancel_current_encounter(script: ScriptTask) -> int:
+	
+	var current_encounter = gameData._current_encounter
+	if ! current_encounter:
+		return CFConst.ReturnCode.FAILED
+	
+	#villains and main schems cannot be canceled	
+	var type_code = current_encounter.get_property("type_code")
+	if type_code in ["villain", "main_scheme"]:
+		return CFConst.ReturnCode.FAILED
+	
 	if (costs_dry_run()): #not allowed ?
 		return CFConst.ReturnCode.CHANGED
 			

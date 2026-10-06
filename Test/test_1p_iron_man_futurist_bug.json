@@ -1,0 +1,157 @@
+{
+	"_comments": "Bug: Futurist not discarding if only 2 cards",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},		
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"set_aside": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Shocker"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Assault"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"villain": [
+				{
+					"card": "01113"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116b",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Rocket Boots"
+				},
+				{
+					"card": "Powered Gauntlets"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "The Power of Aggression"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Tony Stark",
+					"tokens": {
+						"_futurist": 1
+					}
+				}
+			],
+			"upgrade_support1": []
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Tony Stark"
+		},
+		{
+			"type": "choose",
+			"value": "Futurist"
+		},
+		{
+			"type": "select",
+			"value": "MockingBird"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"set_aside": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Shocker"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Assault"
+				}
+			],
+			"villain": [
+				{
+					"card": "01113"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116b",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"encounters_facedown1": [
+				{
+					"card": "Advance"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Rocket Boots"
+				},
+				{
+					"card": "The Power of Aggression"
+				},
+				{
+					"card": "Powered Gauntlets"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Tony Stark"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				}
+			]
+		}
+	}
+}

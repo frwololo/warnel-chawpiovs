@@ -275,8 +275,9 @@ func focus_card(card: Card, show_preview := true) -> void:
 			
 	# We check if we're already focused on this card, to avoid making duplicates
 	# the whole time		
-	if not _current_focus_source == card:
+	if _current_focus_source != card:
 		
+
 		#remove children cards to always only keep one displayed
 		if vbc_position_mode:
 			for c in $VBC.get_children():

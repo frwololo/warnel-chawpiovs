@@ -1162,6 +1162,7 @@ func attach_to_host(
 	if "as_inactive_attachment" in tags:
 		alterants_cache_refresh_needed = true
 		set_is_inactive_attachment(true)
+		tags.append("disable_move_signals")
 
 	if alterants_cache_refresh_needed:
 		cfc.flush_cache()

@@ -603,7 +603,7 @@
 			"filter_state_trigger": "filter_same_controller",
 			"is_optional_board": true,
 			"condition_board": {
-				"func_name": "get_subject_property",
+				"func_name": "get_subject_int_property",
 				"func_params": {
 					"subject": "self",
 					"property": "all_purpose_property"
@@ -1946,6 +1946,7 @@
 			]
 		},
 		"interrupt_attack": {
+			"_silent": true,
 			"board": [
 				{
 					"name": "mod_tokens",
@@ -1957,9 +1958,9 @@
 			]
 		},
 		"response_script_executed": {
+			"_silent": true,
 			"event_filters": {
-				"script_executed_trigger": "preparation",
-				"_breakpoint": true
+				"script_executed_trigger": "preparation"
 			},
 			"board": [
 				{
@@ -1971,7 +1972,9 @@
 			]
 		},
 		"response_attack_happened": {
-			"_breakpoint": true,
+			"event_filter": {
+				"target": "Black Widow"
+			},
 			"condition_board": {
 				"func_name": "!count_tokens",
 				"func_params": {
@@ -5730,6 +5733,9 @@
 	},
 	"Life Model Decoy": {
 		"interrupt_enemy_initiates_attack": {
+			"event_filters": {
+				"target_identity": "my_identity"
+			},
 			"is_optional_board": true,
 			"board": [
 				{
@@ -5740,9 +5746,25 @@
 					]
 				},
 				{
-					"name": "prevent",
-					"subject": "interrupted_event",
-					"amount": "all"
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"interrupt_receive_damage": {
+							"event_filters": {
+								"tags": [
+									"enemy_attack"
+								]
+							},
+							"all": [
+								{
+									"name": "prevent",
+									"subject": "interrupted_event",
+									"amount": "all"
+								}
+							]
+						}
+					}
 				},
 				{
 					"name": "discard",
@@ -6011,6 +6033,7 @@
 					{
 						"name": "nop",
 						"subject": "target",
+						"needs_subject": true,
 						"filter_state_subject": [
 							{
 								"filter_group": "group_upgrade_support_my_hero",
@@ -6030,6 +6053,7 @@
 						"source": "previous",
 						"subject": "target",
 						"subject_exclude": "previous",
+						"needs_subject": true,
 						"filter_state_subject": [
 							{
 								"filter_group": "group_upgrade_support_my_hero",
@@ -6177,6 +6201,13 @@
 			],
 			"trigger": "self",
 			"board": [
+				{
+					"name": "view_card",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				},
 				{
 					"name": "discard",
 					"subject": "index",
@@ -6420,15 +6451,10 @@
 					"name": "mod_tokens",
 					"token_name": "all-purpose",
 					"subject": "target",
+					"needs_subject": true,
 					"filter_state_subject": [
-						{
-							"filter_properties": {
-								"trait_s.h.i.e.l.d": 1
-							},
-							"filter_properties2": {
-								"type_code": "support"
-							}
-						}
+						"support",
+						"trait_s.h.i.e.l.d"
 					]
 				}
 			]
@@ -7641,7 +7667,7 @@
 					"var_type": "subject",
 					"var_name": "my_host",
 					"value": "previous",
-					"force_run_at_prime": true,
+					"force_run_at_prime": true
 				},
 				{
 					"name": "attach_to_card",
@@ -8338,53 +8364,67 @@
 	},
 	"Slingshot - Yo-Yo Rodriguez": {
 		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action_ability"
+			"hand": {
+				"_rules": {
+					"bypass_cost": [
+						"Special"
 					]
 				},
-				{
-					"name": "pay_cost",
-					"cost": {
-						"energy": 1
+				"Special": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
 					},
-					"is_cost": true
-				},
-				{
-					"name": "nop",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
-					"filter_state_seek": [
-						{
-							"filter_group": "group_identities"
-						}
-					]
-				},
-				{
-					"name": "move_card_to_board",
-					"subject": "self",
-					"grid_name": "allies_previous_subject"
-				},
-				{
-					"name": "add_script",
-					"subject": "self",
-					"end_condition": "phase_ended",
-					"script": {
-						"board": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"energy": 1
+						},
+						"is_cost": true
+					},
+					{
+						"name": "nop",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_seek": [
 							{
-								"name": "return_to_owner_hand",
-								"subject": "self"
+								"filter_group": "group_identities"
 							}
 						]
+					},
+					{
+						"name": "move_card_to_board",
+						"subject": "self",
+						"grid_name": "allies_previous_subject"
+					},
+					{
+						"name": "add_script",
+						"subject": "self",
+						"end_condition": "phase_ended",
+						"script": {
+							"phase_ended": {
+								"board": [
+									{
+										"name": "return_to_owner_hand",
+										"subject": "self"
+									}
+								]
+							}
+						}
 					}
-				}
-			]
+				],
+				"Normal": [
+					{
+						"name": "nop"
+					}
+				]
+			}
 		}
 	},
 	"Soldiers of Fortune": {
@@ -10079,11 +10119,8 @@
 					"name": "remove_threat",
 					"amount": 2,
 					"subject": "boardseek",
-					"filter_state_seek": [
-						{
-							"filter_group": "group_schemes"
-						}
-					],
+					"subject_count": "all",
+					"filter_state_seek": "group_schemes",
 					"tags": [
 						"bypass_crisis"
 					]
@@ -10160,21 +10197,15 @@
 				},
 				{
 					"name": "discard",
-					"subject": "boardseek",
+					"subject": "boardseek_and_choose",
 					"subject_count": "all",
 					"needs_selection": true,
 					"selection_count": 1,
 					"is_cost": true,
-					"filter_state_tutor": [
-						{
-							"filter_same_controller": true,
-							"filter_properties": {
-								"trait_s.h.i.e.l.d": 1
-							},
-							"filter_properties2": {
-								"type_code": "support"
-							}
-						}
+					"filter_state_seek": [
+						"filter_same_controller",
+						"support",
+						"trait_s.h.i.e.l.d"
 					]
 				},
 				{
@@ -10188,11 +10219,7 @@
 					},
 					"subject": "boardseek",
 					"subject_count": "all",
-					"filter_state_seek": [
-						{
-							"filter_group": "group_enemies"
-						}
-					]
+					"filter_state_seek": "group_enemies"
 				}
 			]
 		}

@@ -195,8 +195,12 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 		if typeof(hand_script) == TYPE_DICTIONARY:
 			var to_merge_pre = playFromHand_pre["manual"]["hand"]
 			var to_merge_post = playFromHand_post["manual"]["hand"]
+			var bypass_cost = hand_script.get("_rules", {}).get("bypass_cost", [])
 			for key in hand_script.keys():
-				hand_script[key] = to_merge_pre + hand_script[key] + to_merge_post
+				if key == "_rules":
+					continue
+				if !(key in bypass_cost):
+					hand_script[key] = to_merge_pre + hand_script[key] + to_merge_post
 		else:	
 			#note: order matters here in some cases. generally speaking
 			# we want cost to be paid first, therefore be at the top of the array			

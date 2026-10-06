@@ -84,7 +84,7 @@ func simple_message(title, message, msg_id = ""):
 	_msg_id = msg_id
 	get_node("%Title").text = title	
 	set_mode(MODES.MESSAGE)
-	if message.length() > 1000:
+	if message.length() > 1100:
 		get_ok().text = "I ain't reading all that. I'm happy for U tho"
 	var msgbox = get_msgbox()	
 	msgbox.bbcode_text = message

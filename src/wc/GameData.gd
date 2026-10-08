@@ -374,7 +374,7 @@ func _process(_delta: float):
 			_targeting_timer = max(0, _targeting_timer)
 			phaseContainer.hide_target_cancel_button()
 		
-		if theStack.is_idle():
+		if theStack.is_idle() and !gui_activity_ongoing():
 			_stack_idle_timer -= _delta
 			if _stack_idle_timer <=0 and !_stack_idle_signal_sent:
 				scripting_bus.emit_signal("stack_idle")

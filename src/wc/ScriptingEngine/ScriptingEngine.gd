@@ -1554,12 +1554,14 @@ func _receive_threat(script: ScriptTask) -> int:
 	
 	var tags: Array = script.get_property(SP.KEY_TAGS) #TODO Maybe inaccurate?
 	var amount = script.retrieve_integer_property("amount")
+	var increase = script.retrieve_integer_property("increase_amount", 0)	
+
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+	if !amount and !increase:
+		return CFConst.ReturnCode.FAILED
 
 	if (costs_dry_run()): 
-		if !script.subjects:
-			return CFConst.ReturnCode.FAILED
-		if !amount:
-			return CFConst.ReturnCode.FAILED
 		return retcode
 	
 	#consolidate subjects. If the same subject is chosen multiple times, we'll multipy the damage
@@ -1574,7 +1576,6 @@ func _receive_threat(script: ScriptTask) -> int:
 		var multiplier = consolidated_subjects[card]
 		var threat_amount = amount * multiplier
 		
-		var increase = script.retrieve_integer_property("increase_amount", 0)	
 		if increase:
 			threat_amount+= increase
 		

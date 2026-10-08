@@ -696,6 +696,9 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 	
 	if gameData.get_villain():
 		replacements["villain"] = gameData.get_villain()	
+	if gameData.get_main_scheme():
+		replacements["main_scheme"] = gameData.get_main_scheme()
+					
 	if (controller_hero_id > 0):
 		#TODO historically my_hero here represents my_identity
 		#need to clean this up in card scripts where appropriate

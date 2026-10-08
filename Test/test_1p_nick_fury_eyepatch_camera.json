@@ -1,0 +1,313 @@
+{
+	"_comments": "Tests Nick Fury Eyepatch Camera",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nick Fury #50034a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Discovered #50059"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Soldiers of Fortune #50102"
+				}
+			],
+			"villain": [
+				{
+					"card": "Batroc - A #50086a"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Infiltrate A.I.M. Island Embassy - 1B #50087b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Alert Level #50090a"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Nick Fury #50034b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Orion #50060",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Acquire Infinity Formula #50061",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Leviathan Soldier #50062",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Leviathan Soldier #50062",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Cold Storage #50063",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Locate Missing Person - 2A #50088a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Locate Missing Person - 2B #50088b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Extract Captives - 3A #50089a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Extract Captives - 3B #50089b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rescued Captive #50091",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rescued Captive #50091",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rescued Captive #50091",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rescued Captive #50091",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #50035a",
+					"owner_hero_id": 1
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Infiltrate A.I.M. Island Embassy - 1A #50087a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Under Surveillance #50053"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Informant #50050"
+				}
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Nick Fury #50034a"
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Stealth #50035b"
+				},
+				{
+					"card": "Eyepatch Camera"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Covert Surveillance #50038"
+				},
+				{
+					"card": "Under Surveillance #50053"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "choose",
+			"value": "Boost increase"
+		},
+		{
+			"type": "activate",
+			"value": "Eyepatch Camera"
+		},
+		{
+			"type": "choose",
+			"value": "3 Threat"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nick Fury #50034a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Discovered #50059"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Soldiers of Fortune #50102"
+				}
+			],
+			"villain": [
+				{
+					"card": "Batroc - A #50086a"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Infiltrate A.I.M. Island Embassy - 1B #50087b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Alert Level #50090a"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Nick Fury #50034b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Orion #50060",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Acquire Infinity Formula #50061",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Leviathan Soldier #50062",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Leviathan Soldier #50062",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Cold Storage #50063",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Locate Missing Person - 2A #50088a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Locate Missing Person - 2B #50088b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Extract Captives - 3A #50089a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Extract Captives - 3B #50089b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rescued Captive #50091",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rescued Captive #50091",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rescued Captive #50091",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rescued Captive #50091",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #50035a",
+					"owner_hero_id": 1
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Infiltrate A.I.M. Island Embassy - 1A #50087a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Under Surveillance #50053"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Informant #50050"
+				},
+				{
+					"card": "Eyepatch Camera"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nick Fury #50034a"
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Stealth #50035b",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Covert Surveillance #50038"
+				},
+				{
+					"card": "Under Surveillance #50053"
+				}
+			]
+		}
+	}
+}

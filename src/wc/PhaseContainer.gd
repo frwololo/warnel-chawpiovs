@@ -532,6 +532,9 @@ func set_current_step_complete(value:bool, caller = ""):
 	if value:
 		if !caller:
 			caller = "unknown"
+	else:
+		#cancel potential double-@hased ask to move to next step to avoid a deadlock
+		please_start_next_step = false
 	display_debug("marking current_step_complete as " + str(value) + " per request of " + caller )
 	current_step_complete = value
 
@@ -540,7 +543,7 @@ func step_signal(signal_name):
 	
 remotesync func proceed_to_next_phase(mode = 0):
 	_pending_next_phase_reply = false
-	set_current_step_complete(false, "proceed_to_next_phase")		
+	current_step_complete = false #hardcoded here to avoid calling the function and create a deadlock		
 	match mode:
 		0:
 			display_debug("master tells me to move to next phase, I'm currently at " + StepStrings[current_step] )	

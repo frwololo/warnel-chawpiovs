@@ -1545,7 +1545,7 @@
 	"Batroc - A": {
 		"response_enemy_attack_happened": {
 			"trigger": "self",
-			"display_section": "forced interrupt",
+			"display_section": "forced response",
 			"board": [
 				{
 					"name": "add_threat",
@@ -1579,7 +1579,7 @@
 	"Batroc - B": {
 		"response_enemy_attack_happened": {
 			"trigger": "self",
-			"display_section": "forced interrupt",			
+			"display_section": "forced response",
 			"board": [
 				{
 					"name": "add_threat",
@@ -1742,7 +1742,7 @@
 					"script": {
 						"interrupt_add_threat": {
 							"event_filters": {
-								"target": "main_scheme"
+								"subject": "main_scheme"
 							},
 							"all": {
 								"Prevent 1": {
@@ -2903,7 +2903,7 @@
 						"name": "change_form",
 						"form_name": "Assault",
 						"subject": "my_identity"
-					},					
+					}
 				]
 			}
 		}
@@ -3759,7 +3759,7 @@
 	"Eyepatch Camera": {
 		"interrupt_add_threat": {
 			"event_filters": {
-				"target": "main_scheme"
+				"subject": "main_scheme"
 			},
 			"is_optional_board": true,
 			"board": {
@@ -3778,6 +3778,10 @@
 								}
 							}
 						]
+					},
+					{
+						"name": "discard",
+						"subject": "self"
 					},
 					{
 						"name": "prevent",
@@ -3816,6 +3820,10 @@
 						]
 					},
 					{
+						"name": "discard",
+						"subject": "self"
+					},
+					{
 						"name": "prevent",
 						"subject": "interrupted_event",
 						"amount": 2
@@ -3850,6 +3858,10 @@
 								}
 							}
 						]
+					},
+					{
+						"name": "discard",
+						"subject": "self"
 					},
 					{
 						"name": "prevent",
@@ -8766,7 +8778,7 @@
 		},
 		"interrupt_add_threat": {
 			"event_filters": {
-				"target": "main_scheme"
+				"subject": "main_scheme"
 			},
 			"condition_board": {
 				"func_name": "count_tokens",

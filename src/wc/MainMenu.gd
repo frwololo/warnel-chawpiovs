@@ -213,7 +213,7 @@ func _recursive_visible_buttons(node, value = true):
 	if node.name == "Multiplayer" and cfc.get_internal_setting("disable_multiplayer"):
 		node.visible = false
 	
-	if node.name == "Test" and !cfc._debug:
+	if node.name == "Tests" and !OS.has_feature("editor"):
 		node.visible = false
 
 	for child in node.get_children():

@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://src/wc/lobby/HeroDeckSelect.gd" type="Script" id=1]
+[ext_resource path="res://src/wc/deckbuilder/DeckContainer.tscn" type="PackedScene" id=2]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 1, 1, 1, 1 )
@@ -20,21 +21,40 @@ border_color = Color( 1.5, 1.1, 2, 1 )
 corner_radius_top_left = 3
 corner_radius_bottom_right = 3
 
-[node name="HeroDeckSelect" type="VBoxContainer"]
+[node name="HeroDeckSelect" type="MarginContainer"]
+custom_constants/margin_right = -5
+custom_constants/margin_top = -5
 script = ExtResource( 1 )
 
-[node name="PlayerName" type="OptionButton" parent="."]
+[node name="PanelContainer" type="PanelContainer" parent="."]
+margin_top = -5.0
+margin_right = 174.0
+margin_bottom = 257.0
+
+[node name="Mode234" type="HBoxContainer" parent="PanelContainer"]
+unique_name_in_owner = true
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 167.0
+margin_bottom = 255.0
+custom_constants/separation = 20
+
+[node name="HeroContainer" type="VBoxContainer" parent="PanelContainer/Mode234"]
+margin_right = 140.0
+margin_bottom = 248.0
+
+[node name="PlayerName" type="OptionButton" parent="PanelContainer/Mode234/HeroContainer"]
 unique_name_in_owner = true
 margin_right = 140.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 100, 0 )
 
-[node name="Panel" type="MarginContainer" parent="."]
+[node name="Panel" type="MarginContainer" parent="PanelContainer/Mode234/HeroContainer"]
 margin_top = 24.0
 margin_right = 140.0
 margin_bottom = 224.0
 
-[node name="HeroPicture" type="TextureRect" parent="Panel"]
+[node name="HeroPicture" type="TextureRect" parent="PanelContainer/Mode234/HeroContainer/Panel"]
 unique_name_in_owner = true
 margin_right = 140.0
 margin_bottom = 200.0
@@ -43,27 +63,68 @@ focus_mode = 2
 expand = true
 stretch_mode = 7
 
-[node name="HorizontalHighlights" type="Panel" parent="Panel"]
+[node name="HeroPictureMode12" type="TextureRect" parent="PanelContainer/Mode234/HeroContainer/Panel"]
+unique_name_in_owner = true
+margin_right = 140.0
+margin_bottom = 200.0
+expand = true
+stretch_mode = 6
+
+[node name="HorizontalHighlights" type="Panel" parent="PanelContainer/Mode234/HeroContainer/Panel"]
+unique_name_in_owner = true
 visible = false
 margin_right = 140.0
 margin_bottom = 200.0
 mouse_filter = 2
 custom_styles/panel = SubResource( 1 )
 
-[node name="VerticalHighlights" type="Panel" parent="Panel"]
+[node name="VerticalHighlights" type="Panel" parent="PanelContainer/Mode234/HeroContainer/Panel"]
+unique_name_in_owner = true
 visible = false
 margin_right = 140.0
 margin_bottom = 200.0
 mouse_filter = 2
 custom_styles/panel = SubResource( 2 )
 
-[node name="DeckSelect" type="OptionButton" parent="."]
+[node name="DeckSelect" type="OptionButton" parent="PanelContainer/Mode234/HeroContainer"]
 unique_name_in_owner = true
 margin_top = 228.0
 margin_right = 140.0
 margin_bottom = 248.0
 clip_text = true
 
-[connection signal="focus_entered" from="Panel/HeroPicture" to="." method="_on_HeroPicture_focus_entered"]
-[connection signal="focus_exited" from="Panel/HeroPicture" to="." method="_on_HeroPicture_focus_exited"]
-[connection signal="gui_input" from="Panel/HeroPicture" to="." method="_on_HeroPicture_gui_input"]
+[node name="DeckContainer" parent="PanelContainer/Mode234" instance=ExtResource( 2 )]
+unique_name_in_owner = true
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 160.0
+margin_right = 160.0
+margin_bottom = 248.0
+
+[node name="Mode1" type="VBoxContainer" parent="PanelContainer"]
+unique_name_in_owner = true
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 167.0
+margin_bottom = 255.0
+custom_constants/separation = 20
+
+[node name="HeroContainer" type="VBoxContainer" parent="PanelContainer/Mode1"]
+margin_left = 80.0
+margin_right = 80.0
+size_flags_horizontal = 4
+custom_constants/separation = 10
+
+[node name="DeckContainer" type="VBoxContainer" parent="PanelContainer/Mode1"]
+margin_left = 80.0
+margin_top = 20.0
+margin_right = 80.0
+margin_bottom = 20.0
+size_flags_horizontal = 4
+
+[connection signal="focus_entered" from="PanelContainer/Mode234/HeroContainer/Panel/HeroPicture" to="." method="_on_HeroPicture_focus_entered"]
+[connection signal="focus_exited" from="PanelContainer/Mode234/HeroContainer/Panel/HeroPicture" to="." method="_on_HeroPicture_focus_exited"]
+[connection signal="gui_input" from="PanelContainer/Mode234/HeroContainer/Panel/HeroPicture" to="." method="_on_HeroPicture_gui_input"]
+[connection signal="focus_entered" from="PanelContainer/Mode234/HeroContainer/Panel/HeroPictureMode12" to="." method="_on_HeroPictureMode12_focus_entered"]
+[connection signal="focus_exited" from="PanelContainer/Mode234/HeroContainer/Panel/HeroPictureMode12" to="." method="_on_HeroPictureMode12_focus_exited"]
+[connection signal="gui_input" from="PanelContainer/Mode234/HeroContainer/Panel/HeroPictureMode12" to="." method="_on_HeroPictureMode12_gui_input"]

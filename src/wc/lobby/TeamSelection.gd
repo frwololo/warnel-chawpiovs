@@ -40,6 +40,8 @@ const loading_delay = 0 #increase to delay displaying of each individual hero/sc
 var current_loading_delay = 0
 var no_hero_loaded = true
 var no_scenario_loaded = true
+var selected_tab = "HeroSelectionTab"
+var select_tab_animating = false
 
 var ERROR_COLOR := 	Color(1,0.11,0.1)
 var OK_COLOR := 	Color(0.1,11,0.1)
@@ -58,10 +60,14 @@ onready var expert_mode: CheckBox = get_node("%ExpertMode")
 onready var all_heroes_container:GridContainer = get_node("%Heroes")
 onready var heroes_container = get_node("%TeamContainer")
 onready var launch_button = get_node("%LaunchButton")
+onready var step2_button = get_node("%ButtonNext")
 onready var all_scenarios_container = get_node("%Scenarios")
 onready var v_folder_label = get_node("%FolderLabel")
 onready var modular_selection = $MainMenu/ModularSelection
-
+onready var team_in_scenario = get_node("%TheTeam")
+onready var h_tab = get_node("%HeroSelectionTab")
+onready var s_tab = get_node("%ScenarioSelectionTab")
+onready var team_panel = get_node("%TeamPanel")
 
 var focus_chosen = false
 var large_picture_id = ""
@@ -73,6 +79,10 @@ func grab_scenario_focus():
 		return	
 
 func grab_default_focus():
+	#skip on mouse input
+	if gamepadHandler.is_mouse_input():	
+		return
+		
 	if modular_selection.visible:
 		get_node("%ModularOK").grab_focus()
 		return
@@ -94,6 +104,7 @@ func _ready():
 	# If nothing's setup, start server for Single player mode
 	if (not get_tree().get_network_peer()):
 		gameData.init_1player()
+
 	
 	var adventure_mode = cfc.is_adventure_mode()
 	get_node("%AdventureModeWarning").visible = adventure_mode
@@ -117,8 +128,8 @@ func _ready():
 
 	get_viewport().connect("gui_focus_changed", self, "gui_focus_changed")	
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')
-	_create_team_container()
 	_create_hero_container()
+	_create_team_container()
 	_load_scenarios()
 	get_node("%ModularButton").disabled = true
 	
@@ -132,7 +143,23 @@ func _ready():
 
 	cfc.buttons_grab_focus_on_mouse_entered(self)	
 	disable_launch_button()
+	disable_step2_button()
+	#select_tab("HeroSelectionTab")
+	
+	# More ui changes
+	var style_box = WCUtils.theme_flatbox_1()
+	get_node("%PanelContainerYourTeam").add_stylebox_override("panel", style_box)
+	get_node("%ScenarioOptionsContainer").add_stylebox_override("panel", style_box)
 
+	var tween_h = h_tab.get_node("Tween")
+	var tween_s = s_tab.get_node("Tween")	
+	s_tab.rect_global_position = Vector2(1921, s_tab.rect_global_position.y)
+	s_tab.visible = false
+	h_tab.visible = true
+	tween_h.connect("tween_all_completed", self, "_tween_h_completed")
+	tween_s.connect("tween_all_completed", self, "_tween_s_completed")
+	team_panel.modulate.a = 0
+	
 #Quickstart for tests
 #TODO remove
 	if (cfc.is_game_master() and CFConst.DEBUG_AUTO_START_MULTIPLAYER):
@@ -149,20 +176,42 @@ func _ready():
 		pass	
 
 	resize()
-	
-func enable_launch_button():
-	if !launch_button.disabled:
+
+func _tween_h_completed():
+	if h_tab.rect_global_position.x < 0:
+		h_tab.visible = false
+	select_tab_animating = false
+
+func _tween_s_completed():
+	if s_tab.rect_global_position.x > 1920:
+		s_tab.visible = false
+	select_tab_animating = false			
+
+func enable_button(button):
+	if !button.disabled:
 		return
 			
-	launch_button.disabled = false
-	launch_button.connect("mouse_entered", launch_button, "grab_focus")
+	button.disabled = false
+	button.connect("mouse_entered", button, "grab_focus")
 
-func disable_launch_button():
-	if launch_button.disabled:
+func enable_step2_button():
+	enable_button(step2_button)
+	
+func enable_launch_button():
+	enable_button(launch_button)
+
+func disable_button(button):
+	if button.disabled:
 		return
 		
-	launch_button.disabled = true
-	launch_button.disconnect("mouse_entered", launch_button, "grab_focus")	
+	button.disabled = true
+	button.disconnect("mouse_entered", button, "grab_focus")	
+
+func disable_launch_button():
+	disable_button(launch_button)
+
+func disable_step2_button():
+	disable_button(step2_button)
 
 #TODO: need to do this hack because gamepadHandler "gui_focus_changed" only works automatically when the
 #board has been set up
@@ -173,6 +222,12 @@ func gui_focus_changed(control):
 
 var _preselected = false
 func _process(delta:float):
+	if !select_tab_animating:
+		match selected_tab:
+			"HeroSelectionTab":
+				s_tab.visible = false
+			_:
+				h_tab.visible = false			
 	
 	var animate_menu = cfc.get_setting("animate_menu")
 
@@ -258,6 +313,15 @@ func process_loading_pipelines():
 			#finished
 			heroes_pipeline = {}
 		
+		if !heroes_pipeline:	
+			#appear team selection box
+			var tween_h = h_tab.get_node("Tween")
+			tween_h.interpolate_property(
+					team_panel,'modulate', team_panel.modulate,
+					Color(1,1,1,1),
+					1.5, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+			tween_h.start()				
+		
 					
 
 	if scenarios_pipeline:
@@ -302,7 +366,7 @@ func resize():
 		get_node("%LeftRight").add_constant_override("separation", 10)
 		get_node("%TeamScenarioPanel").add_constant_override("separation", 10)
 		get_node("%ScenarioOverContainer").add_constant_override("separation", 10)		
-		scenario_picture.rect_min_size = Vector2(300, 300)
+		scenario_picture.rect_min_size = Vector2(400, 500)
 		scenario_picture.rect_size = scenario_picture.rect_min_size
 		get_node("%VBoxContainer").add_constant_override("separation", 20)	
 		get_node("%ModularColorRect").rect_min_size = Vector2(1600, 720)
@@ -330,43 +394,37 @@ func resize():
 
 	scenario_picture.rect_pivot_offset = scenario_picture.rect_size / 2
 	scenario_picture.rect_rotation = _rotation
-	
+
+
+
+		
 func _load_scenarios():
 	var y_size = get_container_y_size(CFConst.TEAM_SELECTION_GUI["SCENARIO_LARGE_GRID_HEIGHT"])
-	get_node("%Scenarios").rect_min_size = Vector2(CFConst.TEAM_SELECTION_GUI["SCENARIO_LARGE_GRID_WIDTH"] + 20, y_size)
-	#sorting by alphabetical name of villain
-#	var names_to_id = {}
-#	for scenario_id in ScenarioDeckData.get_unlocked_scenarios():
-#		var villain = ScenarioDeckData.get_first_villain_from_scheme(scenario_id)
-#		if villain:
-#			var	villain_name = villain["shortname"]
-#			names_to_id[villain_name] = scenario_id			
+	var x_size = CFConst.TEAM_SELECTION_GUI["SCENARIO_LARGE_GRID_WIDTH"] + 20
+	get_node("%Scenarios").rect_min_size = Vector2(x_size, y_size)
+	
 
 	var ordered_scenarios = ScenarioDeckData.get_unlocked_scenarios() #names_to_id.keys()
 	ordered_scenarios.sort()
 
-	var grid_columns = int(ceil(sqrt(2 * ordered_scenarios.size())))
-	grid_columns = max(grid_columns, 3)
-	grid_columns = min(9, grid_columns)
-	all_scenarios_container.columns = grid_columns
 
+	var t = ordered_scenarios.size()
+	var a = y_size
+	var b = -30 * t #TODO magic number 30 is text height
+	var c = -x_size * t
+	var delta = b*b - (4*a*c)
+	var x1 = int( (-b -sqrt(delta))/(2*a)) 
+	var x2 = int( (-b +sqrt(delta))/(2*a)) 
+	var grid_columns = max(x1, x2) + 1
+	grid_columns = max(grid_columns, 3)
+	all_scenarios_container.columns = grid_columns
+	
 	scenarios_pipeline = {
 		"ordered_scenarios": ordered_scenarios,
 		"total_scenarios": ordered_scenarios.size()
 	}
 	loading = true
-	
-#	for scenario_id in ordered_scenarios:
-#		var new_scenario = scenarioSelect.instance()
-#		var load_success = new_scenario.load_scenario(scenario_id)
-#		if !load_success:
-#			continue
-#		new_scenario.name = "scenario_" + scenario_id
-#		all_scenarios_container.add_child(new_scenario)
-#		no_scenario_loaded = false
-#
-#	if no_scenario_loaded:
-#		critical_error()
+
 
 func get_container_y_size(expected_size):
 	if get_node("%AdventureModeWarning").visible:
@@ -375,8 +433,9 @@ func get_container_y_size(expected_size):
 
 func _create_hero_container():
 	var y_size = get_container_y_size(900) 
+	var x_size = CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_WIDTH"] + 20
 	#TODO what about small screens
-	get_node("%HeroesPanel").rect_min_size = Vector2(CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_WIDTH"] + 20, y_size)
+	get_node("%HeroesPanel").rect_min_size = Vector2(x_size, y_size)
 	#show in alphabetical order
 	var names_to_id = {}
 	for hero_id in cfc.get_unlocked_heroes():
@@ -393,9 +452,21 @@ func _create_hero_container():
 	var ordered_names = names_to_id.keys()
 	ordered_names.sort()
 
-	var grid_columns = int(ceil(sqrt(ordered_names.size())))
+
+	var t = ordered_names.size()
+	var a = y_size
+	var b = 0 #-30 * t #TODO magic number 30 is text height
+	var c = -x_size * t
+	var delta = b*b - (4*a*c)
+	var x1 = int( (-b -sqrt(delta))/(2*a)) 
+	var x2 = int( (-b +sqrt(delta))/(2*a)) 
+	var grid_columns = max(x1, x2) + 1
 	grid_columns = max(grid_columns, 3)
 	all_heroes_container.columns = grid_columns
+
+#	var grid_columns = int(ceil(sqrt(ordered_names.size())))
+#	grid_columns = max(grid_columns, 3)
+#	all_heroes_container.columns = grid_columns
 	
 	heroes_pipeline = {
 		"ordered_names": ordered_names,
@@ -404,19 +475,6 @@ func _create_hero_container():
 	}
 	loading = true
 	
-#	for hero_name in ordered_names:
-#		var hero_id = names_to_id[hero_name]
-#
-#		var new_hero = heroSelect.instance()
-#		new_hero.load_hero(hero_id)
-#		all_heroes_container.add_child(new_hero)
-#		no_hero_loaded = false
-#		if !focus_chosen:
-#			new_hero.grab_focus()
-#			focus_chosen = true	
-	
-#	if no_hero_loaded:
-#		critical_error()
 
 #
 # modular encounters functions
@@ -442,6 +500,18 @@ func is_modular_valid(set_id, rules):
 	return false
 
 var _mainmenu_focus_nodes = {}
+func display_download_menu():
+	$MainMenu/DownloadMenu.visible = true
+	get_node("%DownloadDeckNumber").text = ""
+	get_node("%DeckDownloadError").text = ""
+	
+	_mainmenu_focus_nodes = cfc.disable_focus_mode($MainMenu/Outercontainer) 
+	grab_default_focus()	
+
+func hide_download_menu():
+	cfc.enable_focus_mode(_mainmenu_focus_nodes)
+	$MainMenu/DownloadMenu.visible = false
+	
 func display_modular_selection():
 	var title = get_node("%ModularSelectionTitle")
 	var default_modulars = ScenarioDeckData.get_recommended_modular_encounters(_scenario, get_current_context())
@@ -489,7 +559,7 @@ func _load_modulars(scenario_id):
 	var grid:GridContainer = get_node("%ModularGrid")
 	var modular_sets = cfc.modular_encounters.keys()
 	modular_sets.sort()
-	var sets_per_column = 15
+	var sets_per_column = 20
 	var columns = modular_sets.size()/sets_per_column
 	if modular_sets.size() % sets_per_column:
 		columns+=1
@@ -519,6 +589,72 @@ func get_current_context():
 	return {
 		"hero_count": get_team_size()
 	}
+
+var _first_time_in_scenario_panel = true
+func select_tab(tab_name):
+	if (not cfc.is_game_master()):
+		return
+	add_pending_acks()			
+	cfc._rpc(self, "client_select_tab", tab_name)
+
+remotesync func client_select_tab(tab_name):		
+	for tab in get_node("%MainContainer").get_children():
+		tab.visible = true
+
+	selected_tab = tab_name
+	select_tab_animating = true
+
+	var tween_h = h_tab.get_node("Tween")
+	var tween_s = s_tab.get_node("Tween")	
+	match tab_name:
+		"HeroSelectionTab":
+			h_tab.rect_global_position = Vector2(-1921, h_tab.rect_global_position.y)
+			tween_h.interpolate_property(
+					h_tab,'rect_global_position', h_tab.rect_global_position,
+					Vector2(0,h_tab.rect_global_position.y),
+					0.3, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+			tween_h.start()	
+
+			tween_s.interpolate_property(
+					s_tab,'rect_global_position', s_tab.rect_global_position,
+					Vector2(1921,s_tab.rect_global_position.y),
+					0.3, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+			tween_s.start()	
+					
+		"ScenarioSelectionTab":
+			s_tab.rect_global_position = Vector2(1921, s_tab.rect_global_position.y)
+			tween_h.interpolate_property(
+					h_tab,'rect_global_position', h_tab.rect_global_position,
+					Vector2(-1921,h_tab.rect_global_position.y),
+					0.3, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+			tween_h.start()	
+
+			tween_s.interpolate_property(
+					s_tab,'rect_global_position', s_tab.rect_global_position,
+					Vector2(0,s_tab.rect_global_position.y),
+					0.3, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+			tween_s.start()		
+	#get_node("%" + tab_name).visible = true
+	cfc.default_button_focus(get_node("%" + tab_name))
+	
+	verify_launch_button()
+	verify_step2_button()
+	
+	
+	
+	if tab_name == "ScenarioSelectionTab" and _first_time_in_scenario_panel:
+		_first_time_in_scenario_panel = false
+		animate_scenario_tab()
+		
+	ack()	
+
+func animate_scenario_tab():
+	var children = all_scenarios_container.get_children()
+	children.shuffle()
+	var total_scenarios = children.size()
+	var delay_offset = (int(total_scenarios * 2.5))
+	for c in children:
+		c.do_animate(delay_offset)
 
 #checks if modular selection is still valid after a change in the current context
 func check_modulars_validity():
@@ -590,12 +726,21 @@ func _on_ModularOK_pressed():
 	modular_selection.visible = false
 	pass # Replace with function body.
 		
-func _create_team_container():	
+func _create_team_container():
 	for i in HERO_COUNT: 
-		var new_team_member = heroDeckSelect.instance()
+		var new_team_member:HeroDeckSelect = heroDeckSelect.instance()
 		new_team_member.set_idx(i)
+		if gameData.is_multiplayer_game:
+			new_team_member.players_mode = 4
+		else:
+			new_team_member.players_mode = 1
+			new_team_member.rect_min_size.y = get_node("%HeroesPanel").rect_min_size.y
+			if i > 0:
+				new_team_member.visible = false
+					
 		heroes_container.add_child(new_team_member)
 		team[i] = HeroDeckData.new()
+		
 
 	
 func scenario_select(scenario_id):
@@ -613,15 +758,21 @@ remotesync func client_scenario_select(scenario_id):
 	
 	var scenario_scene = all_scenarios_container.get_node("scenario_" + scenario_id)
 	if (scenario_scene):
-		var imgtex = scenario_scene.get_texture()
-		var scenario_picture: TextureRect = get_node("%ScenarioTexture")
-		if (imgtex):
-			scenario_picture.texture = imgtex
-#			scenario_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-#			scenario_picture.rect_size = Vector2(150, 150)
-#			_rotation = scenario_scene._rotation
-#			scenario_picture.rect_rotation = _rotation
-			resize()
+		var villain = ScenarioDeckData.get_first_villain_from_scheme(_scenario)
+		var villain_id = villain["code"]
+		var filename = cfc.get_img_filename(villain_id)	
+		var new_img = WCUtils.load_img(filename)
+		if new_img:
+			var imgtex = ImageTexture.new()
+			imgtex.create_from_image(new_img)	
+			var scenario_picture: TextureRect = get_node("%ScenarioTexture")
+			if (imgtex):
+				scenario_picture.texture = imgtex
+	#			scenario_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	#			scenario_picture.rect_size = Vector2(150, 150)
+	#			_rotation = scenario_scene._rotation
+	#			scenario_picture.rect_rotation = _rotation
+				resize()
 		var scenario_title = get_node("%ScenarioTitle")
 		scenario_title.text = scenario_scene.get_text()
 	
@@ -731,6 +882,20 @@ mastersync func get_next_hero_slot(hero_id) -> int:
 func _hero_count_changed():
 	check_modulars_validity()
 
+func heroes_container_update(hero_id, slot):
+	var hero_deck_select = heroes_container.get_child(slot)
+	if hero_id:
+		hero_deck_select.visible = true
+	else:
+		hero_deck_select.visible = false
+	
+	var count_visible = 0
+	for c in heroes_container.get_children():
+		if c.visible:
+			count_visible += 1
+	for c in heroes_container.get_children():
+		c.set_players_mode(count_visible)
+
 remotesync func assign_hero(hero_id, slot):
 	#data update
 	var hero_deck_data: HeroDeckData = team[slot]
@@ -738,6 +903,7 @@ remotesync func assign_hero(hero_id, slot):
 	hero_deck_data.set_hero_id(hero_id) #todo could use a signal here and the GUI would be listening
 	
 	#gui update
+	heroes_container_update(hero_id, slot)
 	var hero_deck_select = heroes_container.get_child(slot)
 	hero_deck_select.load_hero(hero_id)
 	if hero_id:
@@ -747,10 +913,27 @@ remotesync func assign_hero(hero_id, slot):
 	if previous_hero_id and previous_hero_id!= hero_id:
 		for child in all_heroes_container.get_children():
 			if child.hero_id == previous_hero_id:
-				child.enable()	
+				child.enable()
+				
+	#counterpart in scenario panel
+	var text_rect:TextureRect = team_in_scenario.get_children()[slot+1]
+	if hero_id:
+		text_rect.texture = cfc.get_hero_portrait(hero_id)
+		text_rect.visible = true
+	else:
+		text_rect.texture = null
+		text_rect.visible = false				
 	_hero_count_changed()
 	ack()
 
+func verify_step2_button():
+	if check_ready_for_step2():
+		enable_step2_button()
+		step2_button.grab_focus()
+	else:
+		disable_step2_button()
+		grab_default_focus()
+		
 func verify_launch_button():
 	if check_ready_to_launch():
 		enable_launch_button()
@@ -758,7 +941,7 @@ func verify_launch_button():
 	else:
 		disable_launch_button()
 		
-		if all_players_have_a_hero():
+		if all_players_have_a_hero() and (selected_tab == "ScenarioSelectionTab"):
 			grab_scenario_focus()
 		
 		if !get_focus_owner():
@@ -771,6 +954,15 @@ func get_focus_owner():
 		grab_default_focus()
 		focus_owner = launch_button.get_focus_owner()
 	return focus_owner
+
+func check_ready_for_step2() -> bool:
+	if !all_players_have_a_hero():
+		return false
+
+	if selected_tab != "HeroSelectionTab":
+		return false
+	
+	return true	
 
 func check_ready_to_launch() -> bool:
 	if !cfc.is_game_master():
@@ -785,6 +977,9 @@ func check_ready_to_launch() -> bool:
 		return false
 	
 	if !all_players_have_a_hero():
+		return false
+
+	if selected_tab != "ScenarioSelectionTab":
 		return false
 	
 	return true
@@ -837,6 +1032,7 @@ remotesync func release_hero_slot(hero_id) -> int:
 			result = i
 			break
 	verify_launch_button()
+	verify_step2_button()
 	return result			
 
 func owner_changed(id, index):
@@ -1022,6 +1218,7 @@ mastersync func master_ack():
 	var client_id = cfc.get_rpc_sender_id()
 	remove_pending_ack(client_id)
 	verify_launch_button()
+	verify_step2_button()	
 
 func are_acks_pending():
 	for client_id in gameData.network_players:
@@ -1107,6 +1304,8 @@ var _debug_show_preview_counter = 0
 func show_preview(card_id):
 	if loading:
 		return
+	if select_tab_animating:
+		return	
 	#there's a bug where the preview looks huge for a split second when loadingthe screen
 	#and I'm too lazy to figure it out
 	if !_debug_show_preview_counter:
@@ -1156,3 +1355,16 @@ func _on_CancelButton_pressed():
 func _on_FolderLabel_pressed():
 	OS.shell_open(ProjectSettings.globalize_path("user://"))
 	pass # Replace with function body.
+
+
+func _on_ButtonNext_pressed():
+	select_tab("ScenarioSelectionTab")
+
+
+func _on_ButtonBackToHeroes_pressed():
+	select_tab("HeroSelectionTab")
+
+
+
+func _on_DLCancelButton_pressed():
+	hide_download_menu()

@@ -1831,10 +1831,13 @@ func get_hero_portrait(card_id, callback_owner = null) -> Texture:
 	return fallback_hero_portrait(card_id, default_area)
 
 
-	
-func fallback_hero_portrait(_card_id, area) -> Texture:
+func fallback_hero_card_texture(_card_id) -> Texture:
 	var filename = "res://assets/other/hero_card.png"
 	var texture = get_external_texture(filename)
+	return texture
+		
+func fallback_hero_portrait(card_id, area) -> Texture:
+	var texture = fallback_hero_card_texture(card_id)
 	var sub_tex= _get_cropped_texture(texture , area)
 	return sub_tex		
 	

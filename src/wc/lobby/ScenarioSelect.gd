@@ -38,11 +38,16 @@ func _ready():
 	
 	resize()
 	#animation
+	var reverse_delay = id_in_container
+	var delay_offset = (int(total_scenarios * 2.5)) - (reverse_delay * 2)	
+	do_animate(delay_offset)
+
+
+func do_animate(delay_offset = 0):
 	if animate:
 		if use_shader:
 			self.modulate.a = 0
-			var reverse_delay = id_in_container
-			var delay = (randi() % ((int(total_scenarios * 2.5)) - (reverse_delay * 2))) 
+			var delay = randi() % delay_offset 
 			cfc.play_sfx("shuffle")
 			yield(get_tree().create_timer(float(delay) * 0.01), "timeout")
 			#this uses https://github.com/cashew-olddew/Universal-Transition-Shader
@@ -95,9 +100,6 @@ func _ready():
 					Color(1.0,1.0,1.0,1.0),
 					1, Tween.TRANS_LINEAR, Tween.EASE_OUT)								
 			$Tween.start()	
-
-
-
 func get_texture():
 	if the_picture and the_picture.texture_normal:
 		return the_picture.texture_normal
@@ -214,7 +216,7 @@ func resize():
 	
 	var rows = int(ceil(float(float(total_scenarios) /float(columns))))
 	var image_width = grid_width / columns
-	var image_height = grid_height / rows
+	var image_height = grid_height / rows - 30 #TODO magic number 30 is the size of the text
 	var image_size = min(image_width, image_height)
 	
 	the_picture.rect_min_size = Vector2(image_size, image_size)

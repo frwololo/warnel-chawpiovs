@@ -1,0 +1,81 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://src/core/Utils/TouchScrollContainer.gd" type="Script" id=1]
+[ext_resource path="res://src/wc/deckbuilder/DeckContainer.gd" type="Script" id=2]
+
+[node name="DeckContainer" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 2 )
+
+[node name="DeckContainer" type="MarginContainer" parent="."]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DeckContainer"]
+unique_name_in_owner = true
+margin_right = 522.0
+margin_bottom = 44.0
+
+[node name="InfoContainer" type="HBoxContainer" parent="DeckContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_right = 522.0
+margin_bottom = 40.0
+custom_constants/separation = 100
+
+[node name="DeckName" type="LineEdit" parent="DeckContainer/VBoxContainer/InfoContainer"]
+unique_name_in_owner = true
+margin_right = 58.0
+margin_bottom = 40.0
+size_flags_horizontal = 0
+expand_to_text_length = true
+
+[node name="DeckStatsLabel" type="Label" parent="DeckContainer/VBoxContainer/InfoContainer"]
+unique_name_in_owner = true
+margin_left = 158.0
+margin_top = 13.0
+margin_right = 236.0
+margin_bottom = 27.0
+text = "Total Cards: "
+
+[node name="HBoxContainer" type="HBoxContainer" parent="DeckContainer/VBoxContainer/InfoContainer"]
+margin_left = 336.0
+margin_right = 522.0
+margin_bottom = 40.0
+size_flags_horizontal = 10
+alignment = 2
+
+[node name="ShowHeroCards" type="CheckButton" parent="DeckContainer/VBoxContainer/InfoContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_right = 186.0
+margin_bottom = 40.0
+pressed = true
+text = "Show Hero cards"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="DeckContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 44.0
+margin_right = 522.0
+margin_bottom = 44.0
+scroll_horizontal_enabled = false
+script = ExtResource( 1 )
+
+[node name="DeckRows" type="HBoxContainer" parent="DeckContainer/VBoxContainer/ScrollContainer"]
+unique_name_in_owner = true
+custom_constants/separation = 5
+
+[node name="PanelContainer" type="PanelContainer" parent="DeckContainer"]
+unique_name_in_owner = true
+visible = false
+margin_right = 522.0
+margin_bottom = 44.0
+
+[node name="Node2D" type="Node2D" parent="."]
+z_index = 4096
+
+[node name="LargePicture" type="TextureRect" parent="Node2D"]
+unique_name_in_owner = true
+margin_right = 40.0
+margin_bottom = 40.0
+expand = true
+stretch_mode = 7
+
+[node name="Garbage" type="Node2D" parent="."]

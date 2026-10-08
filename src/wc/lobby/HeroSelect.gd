@@ -172,14 +172,15 @@ func card_image_download_complete(card_id):
 		return
 	reload_texture()
 
-func reload_texture():
+func reload_texture(callback_owner = null):
 	if !hero_id:
 		return
 		
-	var texture = cfc.get_hero_portrait(hero_id)
+	var texture = cfc.get_hero_portrait(hero_id, callback_owner)
 	if (texture):
-		color_tex = texture	
-		hero_picture.texture_normal = color_tex
+		color_tex = texture
+		if hero_picture:
+			hero_picture.texture_normal = color_tex
 		grayscale_tex = WCUtils.to_grayscale(color_tex)	
 
 func load_hero(_hero_id):
@@ -190,10 +191,7 @@ func load_hero(_hero_id):
 		hero_name = "*"	+ hero_name
 	get_node("%HeroName").set_text(hero_name)
 
-	var texture = cfc.get_hero_portrait(hero_id, self)
-	if (texture):
-		color_tex = texture	
-		grayscale_tex = WCUtils.to_grayscale(color_tex)	
+	reload_texture(self)
 
 func gui_focus_changed(control):
 	if control == hero_picture:

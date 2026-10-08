@@ -1434,7 +1434,8 @@ func thwart_finished( details)-> int:
 				"tags": []
 			}
 		var target_data = thwarter_data[target]
-		target_data["actual_source"] = thwart["actual_source"]		
+		for key in ["actual_source", "secondary_source"]:
+			target_data[key] = thwart[key]			
 		target_data["amount"] += thwart["amount"]
 		target_data["amount_removed"] += thwart["amount_removed"]		
 		target_data["tags"] = WCUtils.merge_array(target_data["tags"],thwart["tags"])
@@ -1447,7 +1448,7 @@ func thwart_finished( details)-> int:
 				"source": thwarter ,				
 				"target" : target,
 			}
-			for key in ["amount", "amount_removed", "actual_source"]:
+			for key in ["amount", "amount_removed", "actual_source", "secondary_source"]:
 				signal_details[key] = thwart_details[key]
 
 			if (script.has_tag("basic power")):

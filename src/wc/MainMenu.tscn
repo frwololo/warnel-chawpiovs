@@ -150,6 +150,19 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Tests" type="Button" parent="CenterContainer/VBox/VButtons/HBoxContainer"]
+unique_name_in_owner = true
+visible = false
+margin_left = 720.0
+margin_right = 980.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 0, 80 )
+size_flags_horizontal = 3
+text = "Tests"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Exit" type="Button" parent="CenterContainer/VBox/VButtons/HBoxContainer"]
 unique_name_in_owner = true
 margin_left = 960.0
@@ -237,5 +250,6 @@ z_as_relative = false
 
 [connection signal="toggled" from="CenterContainer/VBox/FullscreenCheck" to="." method="_on_FullscreenCheck_toggled"]
 [connection signal="item_selected" from="CenterContainer/VBox/TitleAndOptionsContainer/MiniOptionsContainer/LangButton" to="." method="_on_OptionButton_item_selected"]
+[connection signal="pressed" from="CenterContainer/VBox/VButtons/HBoxContainer/Tests" to="." method="_on_Tests_pressed"]
 [connection signal="meta_clicked" from="CenterContainer/VBox/HBoxContainer/LeftInfo/FolderLabel" to="." method="_on_FolderLabel_meta_clicked"]
 [connection signal="pressed" from="CenterContainer/VBox/HBoxContainer/RightInfo/LinkButton" to="." method="_on_LinkButton_pressed"]

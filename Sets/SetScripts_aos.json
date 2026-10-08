@@ -687,6 +687,7 @@
 					{
 						"name": "remove_threat",
 						"amount": 1,
+						"is_cost": true,
 						"subject": "self"
 					}
 				],
@@ -708,6 +709,7 @@
 					{
 						"name": "remove_threat",
 						"amount": 2,
+						"is_cost": true,
 						"subject": "self"
 					}
 				],
@@ -729,6 +731,7 @@
 					{
 						"name": "remove_threat",
 						"amount": 3,
+						"is_cost": true,
 						"subject": "self"
 					}
 				]
@@ -1542,6 +1545,7 @@
 	"Batroc - A": {
 		"response_enemy_attack_happened": {
 			"trigger": "self",
+			"display_section": "forced interrupt",
 			"board": [
 				{
 					"name": "add_threat",
@@ -1575,6 +1579,7 @@
 	"Batroc - B": {
 		"response_enemy_attack_happened": {
 			"trigger": "self",
+			"display_section": "forced interrupt",			
 			"board": [
 				{
 					"name": "add_threat",
@@ -2639,7 +2644,7 @@
 				"Change to Stealth": [
 					{
 						"name": "change_form",
-						"form_name": "Assault",
+						"form_name": "Stealth",
 						"subject": "my_identity"
 					}
 				]
@@ -2893,7 +2898,12 @@
 								}
 							}
 						]
-					}
+					},
+					{
+						"name": "change_form",
+						"form_name": "Assault",
+						"subject": "my_identity"
+					},					
 				]
 			}
 		}
@@ -5657,7 +5667,7 @@
 					],
 					"else": [
 						{
-							"name": "enemy_attacks",
+							"name": "enemy_attacks_you",
 							"subject": "Batroc"
 						}
 					]
@@ -6522,6 +6532,14 @@
 						"is_cost": true,
 						"tags": [
 							"action_ability"
+						],
+						"constraints": [
+							{
+								"func_name": "!card_is_in_play",
+								"func_params": {
+									"card_name": "Stealth"
+								}
+							}
 						]
 					},
 					{

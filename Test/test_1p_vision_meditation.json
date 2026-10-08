@@ -1,0 +1,195 @@
+{
+	"_comments": "Test Meditation cost reduction",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Vision"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Juggernaut - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"set_aside": [],
+			"schemes": [
+				{
+					"card": "The Unstopppable Juggernaut #40121b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Indomitable"
+				},
+				{
+					"card": "Get Behind Me!"
+				},
+				{
+					"card": "Preservation"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Reboot"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Vision #26001b",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Side Step"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Dense"
+				}
+			],
+			"enemies1": [],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Projector #26014"
+				},
+				{
+					"card": "Meditation"
+				},
+				{
+					"card": "Jocasta"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Meditation"
+		},
+		{
+			"type": "select",
+			"value": "Projector #26014"
+		},		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Vision"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Juggernaut - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"set_aside": [],
+			"schemes": [
+				{
+					"card": "The Unstopppable Juggernaut #40121b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Indomitable"
+				},
+				{
+					"card": "Get Behind Me!"
+				},
+				{
+					"card": "Preservation"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Reboot"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Vision #26001b",
+					"exhausted": true,
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Side Step"
+				},
+				{
+					"card": "Meditation"
+				},
+				{
+					"card": "Jocasta"
+				}				
+			],
+			"upgrade_support1": [
+				{
+					"card": "Dense"
+				}
+			],
+			"enemies1": [],
+			"allies1": [
+				{
+					"card": "Projector #26014"
+				}
+			],
+		}
+	}
+}

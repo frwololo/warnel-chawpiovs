@@ -41,6 +41,8 @@ func _ready() -> void:
 	if cfc.game_settings.has("fullscreen"):
 		cfc.set_fullscreen(cfc.game_settings["fullscreen"])
 	
+
+	
 	var user_locale = cfc.get_setting("lang").to_lower()
 	if user_locale:
 		var options:OptionButton = get_node("%LangButton")
@@ -63,6 +65,9 @@ func _ready() -> void:
 	_hide_buttons()	
 	exit_button.visible = true
 	exit_button.grab_focus()
+
+	if cfc._debug:
+		get_node("%Tests").visible = true
 
 	if gamepadHandler.is_controller_input() or !cfc.game_settings.get("can_toggle_fullscreen", true):
 			get_node("%FullscreenCheck").visible = false
@@ -208,6 +213,8 @@ func _recursive_visible_buttons(node, value = true):
 	if node.name == "Multiplayer" and cfc.get_internal_setting("disable_multiplayer"):
 		node.visible = false
 	
+	if node.name == "Test" and !cfc._debug:
+		node.visible = false
 
 	for child in node.get_children():
 		_recursive_visible_buttons(child, value)
@@ -480,3 +487,22 @@ func _on_LinkButton_pressed():
 func _on_OptionButton_item_selected(index):
 	var new_locale = get_node("%LangButton").get_item_text(index).to_lower()
 	cfc.change_locale(new_locale)
+
+
+func _on_Tests_pressed():
+	gameData.init_1player()
+	var hd = HeroDeckData.new()
+	hd.set_hero_id("01001a")
+	hd.deck_id = 5
+	gameData.set_team_data({1: hd})
+
+	var launch_data = {
+		"scheme_id" : "01097a", 
+		"modular_encounters":["bomb_scare"],
+		"expert_mode": false,
+		"scenario_options": { "testsuite" : ["sanity"]},
+	}	
+	
+	gameData.set_scenario_data(launch_data)
+	get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/GetReady.tscn')
+	self.queue_free()

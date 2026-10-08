@@ -153,7 +153,7 @@ func _ready():
 func _init():
 	scripting_bus.connect("step_started", self, "_step_started")
 	scripting_bus.connect("step_ended", self, "_step_ended")
-	if CFConst.SKIP_MULLIGAN:
+	if gameData.run_auto_tests or CFConst.SKIP_MULLIGAN:
 		current_step = CFConst.PHASE_STEP.MULLIGAN_DONE
 
 func show_target_cancel_button():
@@ -374,7 +374,9 @@ func _step_ended(
 	var step = trigger_details["step"]
 	match step:
 		CFConst.PHASE_STEP.GAME_READY:
-				
+			if gameData.run_auto_tests:
+				gameData.start_tests(gameData.run_auto_tests)
+				gameData.run_auto_tests = []	
 			pass	
 
 func deactivate_hero(hero_id):

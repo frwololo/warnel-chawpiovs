@@ -98,6 +98,7 @@ var scripted_play_sequence_low_priority:= []
 #
 #temp vars for bean counting
 #
+var run_auto_tests := []
 var globals := {}
 #Hero being currently attacked by/schemed by by the villain
 var _villain_current_hero_target :=1
@@ -789,6 +790,10 @@ func set_scenario_data(_scenario:Dictionary):
 		print_debug("scenario variable is not set")
 		return
 	scenario.load_from_dict(_scenario)
+	
+	run_auto_tests = _scenario.get("scenario_options", {}).get("testsuite", [])
+	if run_auto_tests:
+		theAnnouncer.skip_announcer()
 
 
 func get_network_id_by_hero_id(hero_id):
@@ -2761,7 +2766,8 @@ func cleanup_post_game():
 	erase_pending_scripts()
 
 	globals = {}
-
+	run_auto_tests = []
+	
 	_clients_current_activation = {}
 	_clients_activation_counter = {}	
 	

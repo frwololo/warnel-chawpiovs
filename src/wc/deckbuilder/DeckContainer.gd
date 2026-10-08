@@ -489,26 +489,27 @@ func init_deck_container():
 	if show_hero_card:
 		types = ["hero"] + types
 
-	var max_to_compute = columns - types.size()
-	var max_types = max_types_data.slice(0, max_to_compute - 1)
 	var count_types = {}
 	for i in types:
 		count_types[i] = 1
-	
-	for value in max_types:
-		count_types[value["type"]] = 2	
-	for i in max_types.size()/2:
-		var big = max_types[i]
-		var small = max_types[max_types.size() - 1 -i]
-		var big_value = -big["value"]
-		var small_value = -small["value"]
-		if (big_value / 2) > small_value:
-			count_types[big["type"]] = 3
-			count_types[small["type"]] = 1
-		else:
-			count_types[big["type"]] = 2
-			count_types[small["type"]] = 2		
-	
+
+	var max_to_compute = columns - types.size()
+	if max_to_compute > 0:
+		var max_types = max_types_data.slice(0, max_to_compute - 1)		
+		for value in max_types:
+			count_types[value["type"]] = 2	
+		for i in max_types.size()/2:
+			var big = max_types[i]
+			var small = max_types[max_types.size() - 1 -i]
+			var big_value = -big["value"]
+			var small_value = -small["value"]
+			if (big_value / 2) > small_value:
+				count_types[big["type"]] = 3
+				count_types[small["type"]] = 1
+			else:
+				count_types[big["type"]] = 2
+				count_types[small["type"]] = 2		
+		
 	for type in types:
 		var count = count_types.get(type,0)
 		for i in count:

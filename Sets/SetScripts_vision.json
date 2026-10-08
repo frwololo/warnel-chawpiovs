@@ -827,9 +827,14 @@
 				},
 				{
 					"name": "add_script",
-					"end_condition": "card_played",
-					"subject": "index",
-					"src_container": "hand_event_source_hero",
+					"end_condition": {
+						"event": "card_played",
+						"event_filters": {
+							"trigger" :"self"
+						}
+					},
+					"subject": "tutor",
+					"src_container": "hand",
 					"needs_subject": true,
 					"subject_count": "all",
 					"selection_count": 1,
@@ -846,7 +851,15 @@
 								}
 							]
 						}
-					}
+					},
+				},
+				{
+					"name": "execute_scripts",
+					"subject": "previous",
+					"require_exec_state": "hand",
+					"exec_trigger": "manual",
+					"delayed": true,
+					"_comments": "the 'delayed' keyword here makes it call a completely different code path which solves most freeze issues with execute_scripts"
 				}
 			]
 		}

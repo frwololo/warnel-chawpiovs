@@ -2038,12 +2038,16 @@ func get_printed_text_data(card_id, locale = ""):
 		if final_data.has("keywords"):
 			final_data["all_excluding_keywords"] = full_text.replace(final_data["keywords"], "")
 
+		var count = 0
 		for paragraph in cr_paragraphs:
 			var words = paragraph.split(" ")
 			if words:
+				count+=1
 				var first_word = words[0]
 				first_word = first_word.to_lower()+ "..."
+				first_word = cfc.remove_bbcode(first_word)
 				final_data[first_word] = paragraph
+				final_data["paragraph_" + str(count)] = paragraph
 	
 		_cached_printed_text[locale][card_id] = final_data
 	

@@ -105,7 +105,20 @@ func _ready():
 
 	fileDownloader.connect("file_downloaded", self, "_file_downloaded")
 	fileDownloader.connect("download_error", self, "_download_error")
+	
+	if gameData.editor_command:
+		process_command(gameData.editor_command)
+		gameData.editor_command = {}
 
+func process_command(command):
+	if typeof(command) != TYPE_DICTIONARY:
+		return
+	var show_page = command.get("page", "")
+	match show_page:
+		"create_deck":
+			var hero_id = command.get("hero_id", "")
+			if hero_id:
+				create_and_edit_new_deck(hero_id)
 
 func disable_deck_buttons(value = true):
 	delete_button.disabled = value

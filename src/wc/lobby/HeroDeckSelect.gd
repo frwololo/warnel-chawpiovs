@@ -197,9 +197,27 @@ func set_owner (id):
 func _on_deck_changed(index):
 	var my_owner_network_id = gameData.get_player_by_index(my_owner).network_id
 	var new_deck_id = item_id_to_deck_id.get(deckSelect.get_item_id(index))	
-	if typeof(new_deck_id) == TYPE_STRING and (new_deck_id == "__dl__"):
-		lobby.display_download_menu()
-		deck_select.select(0)
+	if typeof(new_deck_id) == TYPE_STRING:
+		match new_deck_id:
+			"__dl__":
+				lobby.display_download_menu()
+				deck_select.select(0)
+				return
+			"__edit__":
+				get_tree().current_scene.queue_free()	
+				gameData.disconnect_from_network()
+				gameData.editor_deck_data = deck_container.original_deck_data
+				get_tree().change_scene(CFConst.PATH_CUSTOM + 'deckbuilder/DeckEdit.tscn')
+				return	
+			"__create__":
+				get_tree().current_scene.queue_free()	
+				gameData.disconnect_from_network()
+				gameData.editor_command = {
+					"page": "create_deck",
+					"hero_id": self.hero_id
+				}
+				get_tree().change_scene(CFConst.PATH_CUSTOM + 'deckbuilder/DeckManagement.tscn')
+				return
 		return
 		
 	if (cfc.get_network_unique_id() == my_owner_network_id) :
@@ -324,9 +342,9 @@ func load_hero(_hero_id):
 		var current_idx = 0
 		item_id_to_deck_id = {}
 		deck_id_to_item_id = {}
+		var hero_name = cfc.get_card_name_by_id(hero_id)		
 		for _deck_id in decks:
 			var deck_data = cfc.deck_definitions[_deck_id]
-			var hero_name = cfc.get_card_name_by_id(hero_id)
 			var deck_name: String = deck_data.name
 			deck_name = deck_name.replacen(hero_name, "").trim_prefix(" ")
 			deck_name = deck_name.trim_prefix("- ")
@@ -336,9 +354,17 @@ func load_hero(_hero_id):
 			if str(deck_data.id) == str(last_deck_id):
 				deck_select.select(deck_select.get_item_count() -1)
 			current_idx += 1
-		deck_select.add_item("MarvelCDB Download...", current_idx)
-		item_id_to_deck_id[current_idx] = "__dl__"
-		deck_id_to_item_id["__dl__"] = current_idx				
+		
+		var additional_entries = {
+			"__dl__" : "...MarvelCDB Download",
+			"__edit__": "...Edit this Deck",
+			"__create__": "...Create a new deck for " + hero_name
+			}
+		for key in additional_entries:
+			deck_select.add_item(additional_entries[key], current_idx)
+			item_id_to_deck_id[current_idx] = key 
+			deck_id_to_item_id[key] = current_idx
+			current_idx += 1				
 		#force refresh of selected data	
 		_on_deck_changed(deckSelect.selected)		
 	else:

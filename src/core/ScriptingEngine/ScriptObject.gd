@@ -568,7 +568,7 @@ func _boardseek_subjects(stored_integer: int) -> Array:
 			subject_list += cfc.NMAP[pile_name].get_all_cards()
 
 	subject_list = sort_subjects(subject_list)
-	var to_exclude = get_property("seek_exclude", "")
+	var to_exclude = get_property("subject_exclude", "")
 	var exclude_result = []
 	if to_exclude:
 		exclude_result = _local_find_subjects(stored_integer, CFInt.RunType.NORMAL, {"subject" : to_exclude, "subject_exclude" : ""})

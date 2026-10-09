@@ -141,6 +141,7 @@ var _game_started := false
 
 #data passed to deckbuilder
 var editor_deck_data:= {}
+var editor_command:= {}
 
 func stop_game():
 	_game_started = false

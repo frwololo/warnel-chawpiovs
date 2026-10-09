@@ -1472,7 +1472,7 @@
 		}
 	},
 	"Dum Dum Dugan": {
-		"interrupt_attack": {
+		"interrupt_attack_started": {
 			"event_filters": {
 				"tags": [
 					"basic power"
@@ -1502,22 +1502,24 @@
 					]
 				},
 				{
-					"name": "temporary_effect",
+					"name": "save_variable",
+					"var_name": "my_alteration",
+					"var_type": "int",
+					"value": "count_previous_subjects",
+					"force_run_at_prime": true
+				},
+				{
+					"name": "add_script",
 					"end_condition": "attack_happened",
 					"subject": "self",
-					"passthrough_alteration": "count_previous_subjects",
-					"effect": {
+					"script": {
 						"alterants": {
 							"all": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "attack",
-									"filter_state_trigger": [
-										{
-											"filter_card_name": "Dum Dum Dugan"
-										}
-									],
-									"alteration": "parent_passthrough_alteration"
+									"trigger": "self",
+									"alteration": "my_alteration"
 								}
 							]
 						}
@@ -1525,7 +1527,7 @@
 				}
 			]
 		},
-		"interrupt_thwart": {
+		"interrupt_thwart_started": {
 			"event_filters": {
 				"tags": [
 					"basic power"
@@ -1539,6 +1541,7 @@
 					"is_cost": true,
 					"subject": "boardseek",
 					"subject_count": "all",
+					"subject_exclude": "self",
 					"selection_count": 3,
 					"selection_type": "max",
 					"needs_selection": true,
@@ -1554,21 +1557,24 @@
 					]
 				},
 				{
-					"name": "temporary_effect",
+					"name": "save_variable",
+					"var_name": "my_alteration",
+					"var_type": "int",
+					"value": "count_previous_subjects",
+					"force_run_at_prime": true
+				},
+				{
+					"name": "add_script",
 					"end_condition": "thwart_happened",
 					"subject": "self",
-					"effect": {
+					"script": {
 						"alterants": {
 							"all": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "thwart",
-									"filter_state_trigger": [
-										{
-											"filter_card_name": "Dum Dum Dugan"
-										}
-									],
-									"alteration": "count_previous_subjects"
+									"trigger": "self",
+									"alteration": "my_alteration"
 								}
 							]
 						}

@@ -704,8 +704,16 @@ static func card_matches_properties (card, filter_properties = {}):
 			value = card.get(key, default)
 		else:
 			value = card.get_property(key)
+		
+		if typeof(expected) == TYPE_STRING:
+			match expected:
+				"__nonzero__":
+					if !value:
+						return false
+					else:
+						expected = value
 			
-		if value != filter_properties[key]:
+		if value != expected:
 			return false 
 
 	return true

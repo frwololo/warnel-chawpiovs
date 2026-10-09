@@ -2888,7 +2888,7 @@ func change_form_script_replacement(script_definition: Dictionary, trigger_detai
 	var family = script_definition.get("form_family", "")
 	var new_form = script_definition.get("form_name", "")
 	if !family and new_form:
-		var new_form_card = cfc.NMAP.board.find_card_by_name(new_form, false, true)
+		var new_form_card = cfc.NMAP.board.find_card_by_name(new_form, false, true, {"form_family": "__nonzero__"})
 		family = new_form_card.get_property("form_family", "")
 			
 	if !family:
@@ -4472,11 +4472,14 @@ func pay_as_resource(script):
 		owner_card = self
 	if hero_id:
 		delegate = {"for_hero_id" : hero_id}
-	var exe_sceng = self.execute_scripts_no_stack(owner_card, "resource", delegate)				
-	while exe_sceng is GDScriptFunctionState && exe_sceng.is_valid():
-		exe_sceng  = exe_sceng.resume()	
 
-	get_resource_value_as_int_special("execute", script)
+	#either pay the special resource, or go through the normal process
+	var paid_special_resource = get_resource_value_as_int_special("execute", script)
+
+	if !paid_special_resource:
+		var exe_sceng = self.execute_scripts_no_stack(owner_card, "resource", delegate)				
+		while exe_sceng is GDScriptFunctionState && exe_sceng.is_valid():
+			exe_sceng  = exe_sceng.resume()	
 
 	var state_exec = get_state_exec()
 	if state_exec == "hand":	
@@ -4634,12 +4637,12 @@ func get_resource_value_as_int_special(mode, script):
 			if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
 				yield(sceng_return,"completed")			
 		"cancel":
-			_cache_resource_value.erase(cache_key)
-			_resource_special_precompute_cache.erase(cache_key)				
+			_cache_resource_value = {}
+			_resource_special_precompute_cache = {}				
 			_resource_special_sceng = null
 		"execute":
-			_cache_resource_value.erase(cache_key)
-			_resource_special_precompute_cache.erase(cache_key)				
+			_cache_resource_value = {}
+			_resource_special_precompute_cache = {}			
 			var sceng = _resource_special_sceng
 			if !sceng:
 				return null
@@ -4662,6 +4665,7 @@ func get_resource_value_as_int_special(mode, script):
 				while sceng_return is GDScriptFunctionState && sceng_return.is_valid():
 					sceng_return = sceng_return.resume()				
 			_resource_special_sceng = null
+			return true
 		
 			
 		

@@ -2932,6 +2932,21 @@ func enemy_schemes(script: ScriptTask) -> int:
 
 func remove_threat(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
+	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+	
+	var any_has_threat = false
+	for card in script.subjects:
+		if !card.tokens:
+			continue	
+		if card.tokens.get_token_count("threat"):
+			any_has_threat = true
+			break
+
+	if !any_has_threat:
+		return CFConst.ReturnCode.FAILED
+	
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
 

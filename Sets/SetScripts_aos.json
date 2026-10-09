@@ -1162,7 +1162,8 @@
 			]
 		},
 		"interrupt_attack_started": {
-			"trigger": "self",
+			"trigger": "my_identity",
+			"is_optional_board": true,
 			"board": {
 				"+1 ATK": [
 					{
@@ -1977,7 +1978,7 @@
 			]
 		},
 		"response_attack_happened": {
-			"event_filter": {
+			"event_filters": {
 				"target": "Black Widow"
 			},
 			"condition_board": {
@@ -2872,6 +2873,18 @@
 			"all": {
 				"Move Threat on suit form": [
 					{
+						"name": "constraints",
+						"is_cost": true,
+						"constraints": [
+							{
+								"func_name": "card_is_in_play",
+								"func_params": {
+									"card_name": "Stealth"
+								}
+							}
+						]
+					},				
+					{
 						"name": "mod_tokens",
 						"modification": "trigger_details_amount_removed",
 						"token_name": "threat",
@@ -2901,8 +2914,13 @@
 					},
 					{
 						"name": "change_form",
-						"form_name": "Assault",
+						"form_name": "Stealth",
 						"subject": "my_identity"
+					}
+				],
+				"Ignore": [
+					{
+						"name": "nop"
 					}
 				]
 			}
@@ -3388,7 +3406,7 @@
 		}
 	},
 	"Dum Dum Dugan": {
-		"interrupt_attack": {
+		"interrupt_attack_started": {
 			"event_filters": {
 				"tags": [
 					"basic power"
@@ -3418,22 +3436,24 @@
 					]
 				},
 				{
-					"name": "temporary_effect",
+					"name": "save_variable",
+					"var_name": "my_alteration",
+					"var_type": "int",
+					"value": "count_previous_subjects",
+					"force_run_at_prime": true
+				},
+				{
+					"name": "add_script",
 					"end_condition": "attack_happened",
 					"subject": "self",
-					"passthrough_alteration": "count_previous_subjects",
-					"effect": {
+					"script": {
 						"alterants": {
 							"all": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "attack",
-									"filter_state_trigger": [
-										{
-											"filter_card_name": "Dum Dum Dugan"
-										}
-									],
-									"alteration": "parent_passthrough_alteration"
+									"trigger": "self",
+									"alteration": "my_alteration"
 								}
 							]
 						}
@@ -3441,7 +3461,7 @@
 				}
 			]
 		},
-		"interrupt_thwart": {
+		"interrupt_thwart_started": {
 			"event_filters": {
 				"tags": [
 					"basic power"
@@ -3455,6 +3475,7 @@
 					"is_cost": true,
 					"subject": "boardseek",
 					"subject_count": "all",
+					"subject_exclude": "self",
 					"selection_count": 3,
 					"selection_type": "max",
 					"needs_selection": true,
@@ -3470,21 +3491,24 @@
 					]
 				},
 				{
-					"name": "temporary_effect",
+					"name": "save_variable",
+					"var_name": "my_alteration",
+					"var_type": "int",
+					"value": "count_previous_subjects",
+					"force_run_at_prime": true
+				},
+				{
+					"name": "add_script",
 					"end_condition": "thwart_happened",
 					"subject": "self",
-					"effect": {
+					"script": {
 						"alterants": {
 							"all": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "thwart",
-									"filter_state_trigger": [
-										{
-											"filter_card_name": "Dum Dum Dugan"
-										}
-									],
-									"alteration": "count_previous_subjects"
+									"trigger": "self",
+									"alteration": "my_alteration"
 								}
 							]
 						}
@@ -3729,6 +3753,7 @@
 		},
 		"last_threat_removed": {
 			"trigger": "self",
+			"display_section": "paragraph_3",
 			"all": [
 				{
 					"name": "victory"
@@ -3749,9 +3774,10 @@
 					]
 				}
 			},
+			"display_section": "paragraph_4",
 			"board": [
 				{
-					"name": "victory"
+					"name": "defeat"
 				}
 			]
 		}
@@ -5205,6 +5231,7 @@
 		"interrupt": {
 			"event_name": "stage_completed",
 			"trigger": "self",
+			"display_section": "paragraph_2",
 			"board": [
 				{
 					"name": "prevent",
@@ -5227,6 +5254,11 @@
 			]
 		},
 		"interrupt_add_threat": {
+			"event_filters": {
+				"tags": [
+					"scheme"
+				]
+			},
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
@@ -5889,6 +5921,7 @@
 		"interrupt": {
 			"event_name": "stage_completed",
 			"trigger": "self",
+			"display_section": "paragraph_2",
 			"board": [
 				{
 					"name": "prevent",

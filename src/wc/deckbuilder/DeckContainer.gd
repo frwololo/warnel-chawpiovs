@@ -21,6 +21,7 @@ const costs := []
 
 #key: card_id, value: quantity
 var deck_data := {}
+var original_deck_data := {}
 var deck_name := ""
 var hero_code := ""
 var deck_rows:= []
@@ -110,6 +111,7 @@ func setup(settings := {}):
 
 func reset():
 	deck_data = {}
+	original_deck_data = {}
 	deck_name = ""
 	hero_code = ""
 	deck_rows = []
@@ -190,6 +192,7 @@ func resize(_target_size = max_size):
 	
 func load_cards(deck_info):
 	if deck_info.has("slots"):
+		original_deck_data = deck_info
 		deck_data = deck_info["slots"].duplicate()
 		deck_name = deck_info.get("name", "")
 		hero_code = deck_info.get("hero_code", "")

@@ -303,6 +303,7 @@ const OPTIONAL_SIGNALS:= [
 	"card_exhausted",
 	"card_leaves_play",
 	"card_readied",
+	"character_dies",
 
 	"event_played",
 
@@ -852,10 +853,14 @@ const EXTRA_TEXT_BOX_KEYWORDS := [
 const INTERRUPT_SECTION_KEYWORDS:= [
 	"forced interrupt", 
 	"interrupt",
+	"forced interrupt (hero)", 
+	"forced interrupt (alter-ego)", 
 	"hero interrupt",
 	"alter-ego interrupt",
 	"forced response", 
 	"response",
+	"forced response (hero)", 
+	"forced response (alter-ego)",
 	"hero response",
 	"alter-ego response",	
 ]

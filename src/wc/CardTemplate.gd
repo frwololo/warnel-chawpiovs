@@ -398,7 +398,8 @@ func check_death(script = null) -> bool:
 	card_dies_script.set_subjects(self)
 	var task_event = SimplifiedStackScript.new(card_dies_script)
 	gameData.theStack.add_script(task_event)
-	
+
+	scripting_bus.emit_signal_on_stack("character_dies", self, card_dies_definition)
 	#TODO this might need to move to another place, there are other ways a card could leave play than dying
 	scripting_bus.emit_signal_on_stack("card_leaves_play", self, {})
 	
@@ -1158,6 +1159,7 @@ func attach_to_host(
 	else:
 		if self.is_boost():
 			set_is_boost(false)
+			tags+= ["force_emit_card_moved_signal", "force_emit_attached_signal"]
 
 	if "as_inactive_attachment" in tags:
 		alterants_cache_refresh_needed = true
@@ -1167,7 +1169,24 @@ func attach_to_host(
 	if alterants_cache_refresh_needed:
 		cfc.flush_cache()
 
-	.attach_to_host(host, is_following_previous_host, tags)
+	var result = .attach_to_host(host, is_following_previous_host, tags)
+	if !result.get("moved_to_board", false):
+		if ("force_emit_card_moved_signal" in tags) and !("disable_move_signals" in tags):
+
+			self.execute_scripts(self, "self_moved_to_board")
+	
+			scripting_bus.emit_signal_on_stack("card_moved_to_board",
+					self,
+					 {
+						"destination": "others",
+						"destination_grid": "",					
+						"source": "as_boost",
+						"source_grid": "",
+						"tags": tags
+					}
+			)
+
+
 	host.reorganize_attachments_focus_mode()
 	if "as_boost" in tags:			
 		set_is_faceup(false)
@@ -2484,6 +2503,10 @@ func remove_threat(modification: int, script = null) -> int:
 				"tags": script.get_property(SP.KEY_TAGS)	
 			}
 		scripting_bus.emit_signal_on_stack("last_threat_removed", self, signal_details)		
+
+	if self.is_card_type("side_scheme"):
+		self.check_scheme_defeat(script)
+
 	return modification
 
 func discard():	

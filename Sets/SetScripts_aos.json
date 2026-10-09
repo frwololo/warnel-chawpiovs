@@ -626,12 +626,17 @@
 		}
 	},
 	"Alert Level #50090a": {
+		"additional_cards_set_aside": [
+			{
+				"card": "Alert Level #50090b"
+			}
+		],
 		"card_token_modified": {
 			"trigger": "self",
 			"filter_count_difference": "increased",
 			"filter_token_name": "threat",
 			"condition_board": {
-				"func_name": "count_tokens>4p",
+				"func_name": "count_tokens>=4p",
 				"func_params": {
 					"subject": "self",
 					"token_name": "threat"
@@ -649,20 +654,16 @@
 				}
 			]
 		},
-		"interrupt_card_dies": {
-			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"filter_group": "group_characters"
-					}
-				}
-			],
-			"filter_tags": [
-				"-consequential_damage"
-			],
+		"response_character_dies": {
+			"event_filters": {
+				"tags": [
+					"-consequential_damage"
+				]
+			},
 			"board": [
 				{
 					"name": "add_threat",
+					"amount": 1,
 					"subject": "self"
 				}
 			]
@@ -760,7 +761,7 @@
 			"filter_count_difference": "increased",
 			"filter_token_name": "threat",
 			"condition_board": {
-				"func_name": "count_tokens>4p",
+				"func_name": "count_tokens>=4p",
 				"func_params": {
 					"subject": "self",
 					"token_name": "threat"
@@ -772,7 +773,7 @@
 				}
 			]
 		},
-		"interrupt_card_dies": {
+		"response_character_dies": {
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
@@ -780,12 +781,15 @@
 					}
 				}
 			],
-			"filter_tags": [
-				"-consequential_damage"
-			],
+			"event_filters": {
+				"tags": [
+					"-consequential_damage"
+				]
+			},
 			"board": [
 				{
 					"name": "add_threat",
+					"amount": 1,
 					"subject": "self"
 				}
 			]
@@ -809,6 +813,7 @@
 					},
 					{
 						"name": "remove_threat",
+						"is_cost": true,
 						"amount": 1,
 						"subject": "self"
 					}
@@ -830,6 +835,7 @@
 					},
 					{
 						"name": "remove_threat",
+						"is_cost": true,
 						"amount": 2,
 						"subject": "self"
 					}
@@ -851,6 +857,7 @@
 					},
 					{
 						"name": "remove_threat",
+						"is_cost": true,
 						"amount": 3,
 						"subject": "self"
 					}
@@ -1158,11 +1165,19 @@
 					"tags": [
 						"Init"
 					]
+				},
+				{
+					"name": "save_variable",
+					"var_type": "str",
+					"var_name": "my_all_purpose_token_name",
+					"value": "threat"
 				}
 			]
 		},
 		"interrupt_attack_started": {
-			"trigger": "my_identity",
+			"event_filters": {
+				"attacker": "my_identity",
+			},
 			"is_optional_board": true,
 			"board": {
 				"+1 ATK": [
@@ -2883,7 +2898,7 @@
 								}
 							}
 						]
-					},				
+					},
 					{
 						"name": "mod_tokens",
 						"modification": "trigger_details_amount_removed",
@@ -3647,9 +3662,11 @@
 					],
 					"else": [
 						{
-							"name": "add_threat",
+							"name": "mod_tokens",
 							"subject": "Alert Level",
-							"amount": "2p"
+							"modification": 0,
+							"set_to_mopd": true,
+							"token_name": "threat"
 						},
 						{
 							"name": "flip_doublesided_card",
@@ -3732,18 +3749,22 @@
 			]
 		},
 		"interrupt_enemy_initiates_attack": {
+			"event_filters": {
+				"filter_state_target": [
+					{
+						"filter_properties": {
+							"shortname": "Rescued Captive",
+							"comparison": "ne"
+						}
+					}
+				]
+			},
 			"board": [
 				{
 					"name": "i_attack",
 					"action_owner": "trigger",
 					"subject": "boardseek_and_choose",
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"shortname": "Rescued Captive"
-							}
-						}
-					]
+					"filter_state_seek": "Rescued Captive"
 				},
 				{
 					"name": "prevent",
@@ -3765,13 +3786,7 @@
 				"func_name": "!count_cards",
 				"func_params": {
 					"subject": "boardseek",
-					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"shortname": "Rescued Captive"
-							}
-						}
-					]
+					"filter_state_seek": "Rescued Captive"
 				}
 			},
 			"display_section": "paragraph_4",
@@ -5848,7 +5863,7 @@
 					{
 						"name": "move_card_to_board",
 						"grid_name": "allies_previous_subject",
-						"subject": "tutor_and_choose",
+						"subject": "tutor",
 						"src_container": "set_aside",
 						"filter_state_tutor": [
 							{
@@ -5897,7 +5912,7 @@
 					{
 						"name": "move_card_to_board",
 						"grid_name": "allies_previous_subject",
-						"subject": "tutor_and_choose",
+						"subject": "tutor",
 						"src_container": "set_aside",
 						"filter_state_tutor": [
 							{
@@ -6537,7 +6552,9 @@
 			]
 		},
 		"interrupt_attack_started": {
-			"trigger": "self",
+			"event_filters": {	
+				"attacker": "self",
+			},
 			"board": [
 				{
 					"name": "change_form",
@@ -7241,13 +7258,7 @@
 			]
 		},
 		"response_card_moved_to_board": {
-			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"code_type": "minion"
-					}
-				}
-			],
+			"filter_state_trigger": "minion",
 			"is_optional_board": true,
 			"board": [
 				{
@@ -7813,25 +7824,27 @@
 			]
 		},
 		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
-				},
-				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
-				},
-				{
-					"name": "remove_threat",
-					"amount": 1,
-					"subject": "main_scheme"
-				}
-			]
+			"board": {
+				"Remove Threat": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "remove_threat",
+						"amount": 1,
+						"subject": "main_scheme"
+					}
+				]
+			}
 		}
 	},
 	"Reverse Engineering": {
@@ -8337,7 +8350,7 @@
 					"name": "exhaust_card",
 					"subject": "boardseek",
 					"subject_count": "all",
-					"needs_selection": "true",
+					"needs_selection": true,
 					"selection_type": "min",
 					"selection_count": 1,
 					"selection_optional": true,
@@ -8717,6 +8730,7 @@
 					"needs_selection": true,
 					"selection_count": 1,
 					"selection_type": "equal",
+					"is_cost": true,
 					"filter_state_seek": [
 						{
 							"filter_group": "group_identities"
@@ -8724,7 +8738,11 @@
 					]
 				},
 				{
-					"name": "nop",
+					"name": "attack",
+					"amount": 3,
+					"tags": [
+						"ranged"
+					],					
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
@@ -8738,14 +8756,6 @@
 						}
 					]
 				},
-				{
-					"name": "attack",
-					"amount": 3,
-					"subject": "previous",
-					"tags": [
-						"ranged"
-					]
-				}
 			]
 		}
 	},
@@ -8761,6 +8771,12 @@
 					"tags": [
 						"Init"
 					]
+				},
+				{
+					"name": "save_variable",
+					"var_type": "str",
+					"var_name": "my_all_purpose_token_name",
+					"value": "threat"
 				}
 			]
 		},
@@ -10107,6 +10123,7 @@
 					"needs_selection": true,
 					"selection_count": 1,
 					"selection_type": "equal",
+					"is_cost": true,
 					"filter_state_seek": [
 						{
 							"filter_group": "group_identities"

@@ -747,17 +747,17 @@ func post_cards_moved_load():
 		yield(func_return, "completed")		
 		
 
-	#test printed texts output
-	var all_printed_text = {}
-	for card in get_all_cards(true):
-		card.get_printed_text("no_an_actual_id")
-		all_printed_text[card.canonical_name + " #" + card.canonical_id] = cfc._cached_printed_text[TranslationServer.get_locale().to_lower()][card.canonical_id]
-
-	var file:File = File.new()
-	var error = file.open("user://printed_texts.json", File.WRITE)
-	if error == OK:
-		file.store_string(JSON.print(all_printed_text, '\t'))
-		file.close()	
+#	#test printed texts output
+#	var all_printed_text = {}
+#	for card in get_all_cards(true):
+#		card.get_printed_text("no_an_actual_id")
+#		all_printed_text[card.canonical_name + " #" + card.canonical_id] = cfc._cached_printed_text[TranslationServer.get_locale().to_lower()][card.canonical_id]
+#
+#	var file:File = File.new()
+#	var error = file.open("user://printed_texts.json", File.WRITE)
+#	if error == OK:
+#		file.store_string(JSON.print(all_printed_text, '\t'))
+#		file.close()	
 	
 		
 	#execute setup for remaining cards, if any

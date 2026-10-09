@@ -1600,6 +1600,8 @@ func move_to(targetHost: Node,
 				
 	cfc.remove_ongoing_process(self)
 
+
+
 func set_scale(value):		
 	scale = value
 
@@ -1944,16 +1946,22 @@ func reposition_as_attachment(do_rotation = true):
 		_set_target_rotation(target_rotation)	
 
 # Handles the card becoming an attachment for a specified host Card object
+#returns {} if nothing happened,
+#otherwise returns a dictionary of details
 func attach_to_host(
 			host: Card,
 			is_following_previous_host = false,
-			tags := ["Manual"]) -> void:
+			tags := ["Manual"]):
+
+	var emit_attached_signal:bool = ("force_emit_attached_signal" in tags)
+	var result = {}
 	# First we check if the selected host is not the current host anyway.
 	# If it is, we do nothing else
 	if host != current_host_card:
 		# If the card is not yet on the board, we move it there
 		if get_parent() != cfc.NMAP.board:
 			move_to(cfc.NMAP.board, -1, host.position, tags)
+			result["moved_to_board"] = true
 		# If we already had a host, we clear our state with it
 		# I don't know why, but logic breaks if I don't use the is_following_previous_host flag
 		# It should work without it, but it doesn't
@@ -1989,10 +1997,15 @@ func attach_to_host(
 #		if CFConst.OPTIONS.get("enable_fuzzy_rotations", false):
 #			target_rotation = randi() % 13
 #		set_card_rotation(target_rotation, false, true, false, ["force"])
-#		_set_target_rotation(target_rotation)		
+#		_set_target_rotation(target_rotation)
+		emit_attached_signal = true
+		
+	if emit_attached_signal:		
 		scripting_bus.emit_signal("card_attached",
 				self,
 				{"host_card": host, "tags": tags})
+
+	return result
 
 
 # Overrides the built-in get_class to

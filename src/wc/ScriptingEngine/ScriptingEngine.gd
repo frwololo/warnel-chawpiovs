@@ -1838,8 +1838,11 @@ func move_token_to(script: ScriptTask) -> int:
 		
 	if source:		
 		var tokens_amount = source.tokens.get_token_count(token_name)
-		amount = min(tokens_amount, amount)		
-		source.tokens.mod_token(token_name, -amount)
+		amount = min(tokens_amount, amount)
+		if token_name == "threat":
+			source.remove_threat(amount, script)
+		else:		
+			source.tokens.mod_token(token_name, -amount)
 	
 	if token_name == "damage" and ("attack" in tags):
 		var backup = script.script_definition.duplicate()
@@ -2976,10 +2979,6 @@ func remove_threat(script: ScriptTask) -> int:
 		var amount_removed = card.remove_threat(amount, script)
 		if amount_removed:
 			retcode = CFConst.ReturnCode.CHANGED
-
-		if card.is_card_type("side_scheme"):
-			card.check_scheme_defeat(script)
-
 
 		if ("thwart" in tags):
 			var context_uid = script.get_property("context_uid", 0)

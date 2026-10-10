@@ -1080,7 +1080,7 @@ const DEFAULT_SETTINGS:= {
 		"cyclops": "https://marvelcdb.com/api/public/cards/cyclops.json", #Cyclops Hero Pack
 		"phoenix": "https://marvelcdb.com/api/public/cards/phoenix.json", #Phoenix Hero Pack	
 		"wolv": "https://marvelcdb.com/api/public/cards/wolv.json", #Wolverine Hero Pack	
-#		"storm": "https://marvelcdb.com/api/public/cards/storm.json", #Storm Hero Pack	
+		"storm": "https://marvelcdb.com/api/public/cards/storm.json", #Storm Hero Pack	
 		"gambit": "https://marvelcdb.com/api/public/cards/gambit.json", #Gambit Hero Pack	
 #		"rogue": "https://marvelcdb.com/api/public/cards/rogue.json", #Rogue Hero Pack
 #		"mojo": "https://marvelcdb.com/api/public/cards/mojo.json",  #Mojo Scenario Pack	

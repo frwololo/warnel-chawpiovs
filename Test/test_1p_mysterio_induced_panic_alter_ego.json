@@ -1,14 +1,14 @@
 {
 	"_comments": "Induced Panic shouldnt impact Alter Ego",
 	"test_conditions": {
-		"bug_type": "cant_repro",
-	},		
+		"bug_type": "cant_repro"
+	},	
 	"init": {
 		"phase": "VILLAIN_DEAL_ENCOUNTER",
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Bishop"
+					"hero": "Spider-Man"
 				}
 			}
 		],
@@ -31,7 +31,7 @@
 			],
 			"set_aside": [
 				{
-					"card": "Lucas Bishop"
+					"card": "Peter Parker"
 				}
 			],
 			"deck_villain": [
@@ -54,17 +54,10 @@
 					"card": "Induced Panic"
 				}
 			],
-			"discard1": [
-				{
-					"card": "Malcolm"
-				},
-				{
-					"card": "Randall"
-				}
-			],
+			"discard1": [],
 			"identity1": [
 				{
-					"card": "Bishop",
+					"card": "Spider-Man",
 					"tokens": {
 						"damage": 3
 					}
@@ -72,19 +65,10 @@
 			],
 			"hand1": [
 				{
-					"card": "Clea"
+					"card": "Swinging Web Kick"
 				},
 				{
-					"card": "The Power of Protection"
-				},
-				{
-					"card": "Momentum Shift"
-				},
-				{
-					"card": "Med Team"
-				},
-				{
-					"card": "Unflappable"
+					"card": "The Power of Justice"
 				}
 			]
 		}
@@ -96,19 +80,15 @@
 		},
 		{
 			"type": "activate",
-			"value": "Bishop"
+			"value": "Spider-Man"
 		},
 		{
 			"type": "choose",
 			"value": "Change Form"
 		},
 		{
-			"type": "choose",
-			"value": "Yes"
-		},
-		{
-			"type": "select",
-			"value": "Randall"
+			"type": "activate",
+			"value": "Induced Panic"
 		}
 	],
 	"end": {
@@ -116,7 +96,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Bishop"
+					"hero": "Spider-Man"
 				}
 			}
 		],
@@ -137,7 +117,16 @@
 					}
 				}
 			],
-
+			"set_aside": [
+				{
+					"card": "Peter Parker"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Induced Panic"
+				}
+			],
 			"deck_villain": [
 				{
 					"card": "Friends and Family"
@@ -157,41 +146,17 @@
 			],
 			"discard1": [
 				{
-					"card": "Malcolm"
-				}
-			],
-			"others": [
-				{
-					"card": "Induced Panic",
-					"host": "Lucas Bishop"
+					"card": "Swinging Web Kick"
 				}
 			],
 			"identity1": [
 				{
-					"card": "Lucas Bishop",
-					"tokens": {
-						"damage": 3
-					}
+					"card": "Peter Parker"
 				}
 			],
 			"hand1": [
 				{
-					"card": "Clea"
-				},
-				{
-					"card": "The Power of Protection"
-				},
-				{
-					"card": "Momentum Shift"
-				},
-				{
-					"card": "Med Team"
-				},
-				{
-					"card": "Unflappable"
-				},
-				{
-					"card": "Randall"
+					"card": "The Power of Justice"
 				}
 			]
 		}

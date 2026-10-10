@@ -1038,8 +1038,8 @@ func get_art_filename(force_if_facedown: = true):
 func get_art_texture(force_if_facedown: = true):
 	return cfc.get_card_texture(self, force_if_facedown)
 
-func get_cropped_art_texture(force_if_facedown = true):
-	return cfc.get_cropped_card_texture(self, force_if_facedown)
+func get_cropped_art_texture(force_if_facedown = true, force_cache_reset = false):
+	return cfc.get_cropped_card_texture(self, force_if_facedown, force_cache_reset)
 
 func set_card_art(forced=false):
 	if card_front.art_filename and !forced:

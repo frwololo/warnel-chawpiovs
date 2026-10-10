@@ -1492,12 +1492,12 @@ func attack_finished( details)-> int:
 		for target in aggregated_attacks[attacker]:
 			var attack_details = aggregated_attacks[attacker][target]
 			var tags = attack_details["tags"]
-	
+			var lethal = attack_details["lethal"]
 			var signal_details = {
 				"attacker": attacker,
 				"target": target,
 				"damage": attack_details["damage"],
-				"lethal": attack_details["lethal"],
+				"lethal": lethal,
 				"tags": tags,
 			}
 			scripting_bus.emit_signal_on_stack("attack_happened",  attacker,  signal_details)			
@@ -1510,8 +1510,10 @@ func attack_finished( details)-> int:
 			if ("basic_defense" in tags):
 				scripting_bus.emit_signal_on_stack("basic_defense_happened",  target,  signal_details)				
 
-			if ("attack" in tags) and target.is_onboard():
+			
+			if ("attack" in tags) and target.is_onboard() and !lethal:
 				#retaliate against an attack only if I didn't die
+				#TODO "is_onboard() check not enough it seems ? Why ?
 				var retaliate = target.get_property("retaliate", 0, true)
 				if retaliate:
 					if script.has_tag("ranged"):
@@ -2823,11 +2825,11 @@ func consequential_damage(script: ScriptTask) -> int:
 #		return CFConst.ReturnCode.OK
 
 	var owner = script.owner
-	var damage = owner.get_property("attack_cost", 0)
+	var damage = owner.get_property("attack_cost", 0, true)
 	
 	match script.script_name:
 		"thwart", "remove_threat":
-			damage = owner.get_property("thwart_cost",0)
+			damage = owner.get_property("thwart_cost",0, true)
 
 	#skip the whole thing if no consequential damage
 	if !damage:

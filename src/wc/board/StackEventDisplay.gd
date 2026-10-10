@@ -207,6 +207,18 @@ func init_one_arrow(object, color):
 	arrows.append(owner_arrow)
 
 
+func card_image_download_complete(card_id):
+	if !owner_card:
+		return false	
+
+	if !card_texture:
+		return false
+	
+	if owner_card.canonical_id != card_id:
+		return
+	
+	card_texture.texture =  owner_card.get_cropped_art_texture(false, true)
+	card_texture.self_modulate = Color(1,1,1)
 
 func load_card_texture() -> bool:
 	if !owner_card:
@@ -215,7 +227,12 @@ func load_card_texture() -> bool:
 	if !card_texture:
 		return false
 		
-	card_texture.texture =  owner_card.get_cropped_art_texture(false)
+	var tex = owner_card.get_cropped_art_texture(false)
+	if tex:
+		card_texture.texture = tex
+	else:
+		gameData.urgent_image_download(owner_card.canonical_id, self)
+		
 
 	#card_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	# In case the generic art has been modulated, we switch it back to normal colour

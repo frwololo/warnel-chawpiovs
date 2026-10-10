@@ -1,0 +1,295 @@
+{
+	"_comments": "Storm: Havok consequential damage not working",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Storm"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Diplomatic Sanctions #50128"
+				},
+				{
+					"card": "Psionic Enhancement #50122"
+				}
+			],
+			"villain": [
+				{
+					"card": "M.O.D.O.K. - A #50103a"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Upgrading Adaptoids - 1B #50104b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Holding Cell #50105a",
+					"tokens": {
+						"lock": 2
+					},
+					"script_variables": {
+						"my_all_purpose_token_name": "lock"
+					}
+				},
+				{
+					"card": "Strong Upgrade #50112"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Switchblade #36033"
+				},
+				{
+					"card": "Sarah Garza Upgrade #50111"
+				},
+				{
+					"card": "Strong Inhuman #50108b"
+				},
+				{
+					"card": "Leader of the Morlocks #36032"
+				},
+				{
+					"card": "Knife Fight #36034"
+				},
+				{
+					"card": "Storm #36001a"
+				},
+				{
+					"card": "Sarah Garza #50107b"
+				},
+				{
+					"card": "Blizzard #36005"
+				},
+				{
+					"card": "Knife Fight #36034"
+				},
+				{
+					"card": "Clear Skies #36002"
+				},
+				{
+					"card": "Callisto #36031"
+				},
+				{
+					"card": "Psionic Inhuman #50106b"
+				},
+				{
+					"card": "Flying Upgrade #50109"
+				},
+				{
+					"card": "Psionic Upgrade #50110"
+				},
+				{
+					"card": "Flying Inhuman #50105b"
+				},
+				{
+					"card": "Hurricane #36003"
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Upgrading Adaptoids - 1A #50104a"
+				}
+			],
+			"deck_holding_cell": [
+				{
+					"card": "Holding Cell #50108a",
+					"script_variables": {
+						"my_all_purpose_token_name": "lock"
+					}
+				},
+				{
+					"card": "Holding Cell #50107a",
+					"script_variables": {
+						"my_all_purpose_token_name": "lock"
+					}
+				},
+				{
+					"card": "Holding Cell #50106a",
+					"script_variables": {
+						"my_all_purpose_token_name": "lock"
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Endurance #36026"
+				}
+			],
+			"discard1": [
+				{
+					"card": "X-Mansion #36025"
+				},
+				{
+					"card": "Storm's Crown #36006"
+				},
+				{
+					"card": "Utopia #36024"
+				},
+				{
+					"card": "Forge #36022"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Adaptoid #50113",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Storm #36001a",
+					"tokens": {
+						"__weather_control": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Havok - Alex Summers #36014"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Thunderstorm #36004"
+				}
+			],
+			"hand1": [
+				{
+					"card": "\"To Me, My X-Men!\" #36020"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Havok - Alex Summers #36014"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "M.O.D.O.K. - A #50103a"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Storm"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Psionic Enhancement #50122"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Diplomatic Sanctions #50128"
+				}
+			],
+			"villain": [
+				{
+					"card": "M.O.D.O.K. - A #50103a",
+					"tokens": {
+						"damage": 4
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Upgrading Adaptoids - 1B #50104b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Holding Cell #50105a",
+					"tokens": {
+						"lock": 2
+					},
+					"script_variables": {
+						"my_all_purpose_token_name": "lock"
+					}
+				},
+				{
+					"card": "Strong Upgrade #50112"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Endurance #36026"
+				}
+			],
+			"discard1": [
+				{
+					"card": "X-Mansion #36025"
+				},
+				{
+					"card": "Storm's Crown #36006"
+				},
+				{
+					"card": "Utopia #36024"
+				},
+				{
+					"card": "Forge #36022"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Adaptoid #50113",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Storm #36001a",
+					"tokens": {
+						"__weather_control": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Havok - Alex Summers #36014",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Thunderstorm #36004"
+				}
+			],
+			"hand1": [
+				{
+					"card": "\"To Me, My X-Men!\" #36020"
+				}
+			]
+		}
+	}
+}

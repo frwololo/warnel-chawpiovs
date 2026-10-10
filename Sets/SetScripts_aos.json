@@ -305,6 +305,14 @@
 		"reveal": {
 			"all": [
 				{
+					"name": "sequence",
+					"sequence_ability": "do_attack"
+				}
+			]
+		},
+		"do_attack": {
+			"all": [
+				{
 					"name": "i_attack",
 					"is_cost": true,
 					"action_owner": "self",
@@ -7467,6 +7475,7 @@
 				{
 					"name": "mod_tokens",
 					"modification": -1,
+					"token_name": "lock",
 					"subject": "Holding Cell"
 				}
 			]

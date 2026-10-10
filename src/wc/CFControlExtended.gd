@@ -145,9 +145,9 @@ func get_external_texture_no_cache(filename):
 	imgtex.create_from_image(new_img)	
 	return imgtex
 
-func get_cropped_card_texture(card, force_if_facedown: = true):
+func get_cropped_card_texture(card, force_if_facedown: = true, force_cache_reset = false):
 	var filename = card.get_art_filename(force_if_facedown)
-	if !_cropped_texture_cache.has(filename):
+	if force_cache_reset or !_cropped_texture_cache.has(filename):
 		_cropped_texture_cache[filename] = get_cropped_card_texture_no_cache(card, filename)
 	return _cropped_texture_cache[filename]
 

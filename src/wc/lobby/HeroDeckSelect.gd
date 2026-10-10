@@ -212,7 +212,7 @@ func _on_deck_changed(index):
 			"__create__":
 				get_tree().current_scene.queue_free()	
 				gameData.disconnect_from_network()
-				gameData.editor_command = {
+				gameData.menu_command = {
 					"page": "create_deck",
 					"hero_id": self.hero_id
 				}

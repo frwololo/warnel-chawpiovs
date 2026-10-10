@@ -540,8 +540,9 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 						
 					#"permanent" use case :	
 					var set_code = card.get_property("card_set_code", "")
+					var parent_set_code = card.get_property("card_set_parent_code", "")
 					var owner_set_code = owner_card.get_property("card_set_code", "")
-					if set_code != owner_set_code:
+					if (set_code != owner_set_code) and (parent_set_code != owner_set_code):
 						return false
 
 	

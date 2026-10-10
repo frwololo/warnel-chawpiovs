@@ -72,6 +72,10 @@ var network_players := {}
 var id_to_network_id:= {}
 var is_multiplayer_game:bool = true
 
+#keep a track of those to restart a game
+var _orig_team:= {}
+var _orig_scenario:= {}
+
 #1 indexed {hero_id: {"hero_data": HeroDeckData, "manapool" : ManaPool}}
 var team := {}
 
@@ -141,7 +145,7 @@ var _game_started := false
 
 #data passed to deckbuilder
 var editor_deck_data:= {}
-var editor_command:= {}
+var menu_command:= {}
 
 func stop_game():
 	_game_started = false
@@ -321,9 +325,12 @@ func is_targeting_ongoing():
 
 func end_game(result:String):
 	var game_over_screen = _GAME_OVER_SCENE.instance()
-	if _game_over == "victory":
-		game_over_screen.victory()
-
+	match _game_over:
+		"victory":
+			game_over_screen.victory()
+		"defeat":
+			game_over_screen.defeat()
+			
 	init_save_folder()
 	cleanup_post_game()	
 	cfc.set_game_paused(true)
@@ -331,6 +338,19 @@ func end_game(result:String):
 	if cfc.NMAP.has("board") and is_instance_valid(cfc.NMAP.board):
 		cfc.NMAP.board.add_child(game_over_screen)
 
+func restart_game(requester = null):
+	if requester:
+		if cfc.NMAP.has("board") and is_instance_valid(cfc.NMAP.board):
+			cfc.NMAP.board.remove_child(requester)
+			requester.queue_free()
+
+	#stop current game
+	cfc.quit_game()	
+	#reload initial team and scenario data
+	set_team_data(_orig_team)
+	set_scenario_data(_orig_scenario)	
+	#Restart game
+	get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/GetReady.tscn')
 
 #for testing
 func disable_desync_recovery():
@@ -774,6 +794,7 @@ func init_network_players(players:Dictionary):
 
 func set_team_data(_team:Dictionary):
 	#filter out empty slots
+	_orig_team = _team
 	team = {}
 	var hero_count = 0;
 	for hero_idx in _team:
@@ -787,6 +808,7 @@ func set_team_data(_team:Dictionary):
 	return 0				
 
 func set_scenario_data(_scenario:Dictionary):
+	_orig_scenario = _scenario
 	if (!scenario):
 		print_debug("scenario variable is not set")
 		return

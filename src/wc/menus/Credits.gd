@@ -15,7 +15,7 @@ const credits := [
 	"== Credits ==",
 	"* Uses the [url=https://godotengine.org/]Godot Engine[/url]",
 	"* [url=https://github.com/Homebrodot]Godot Switch port[/url] thanks in particular to fhidalgosola/utnad, Stary2001, cpasjuste, halotroop2288",
-	"* Uses a heavyly modified version of [url=https://github.com/db0/godot-card-game-framework]Card Game Framework[/url]",
+	"* Uses a heavily modified version of [url=https://github.com/db0/godot-card-game-framework]Card Game Framework[/url]",
 	"[cards_info]",
 	"== Disclaimer ==",
 	"This is free, fan-created work and is not affiliated with, endorsed by, or sponsored by Fantasy Flight Games. All characters, settings, and related elements are the property of their respective owners."

@@ -774,13 +774,6 @@
 			]
 		},
 		"response_character_dies": {
-			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"filter_group": "group_characters"
-					}
-				}
-			],
 			"event_filters": {
 				"tags": [
 					"-consequential_damage"
@@ -3750,7 +3743,7 @@
 		},
 		"interrupt_enemy_initiates_attack": {
 			"event_filters": {
-				"filter_state_target": [
+				"filter_state_event_target": [
 					{
 						"filter_properties": {
 							"shortname": "Rescued Captive",
@@ -8352,11 +8345,11 @@
 					"subject_count": "all",
 					"needs_selection": true,
 					"selection_type": "min",
-					"selection_count": 1,
+					"selection_count": 0,
 					"selection_optional": true,
 					"filter_state_seek": [
 						{
-							"filter_group": "group_character_my_hero",
+							"filter_group": "group_characters_my_hero",
 							"filter_is_exhausted": false
 						}
 					]
@@ -8372,7 +8365,7 @@
 							"subject_count": "all",
 							"filter_state_seek": [
 								{
-									"filter_group": "group_character_my_hero"
+									"filter_group": "group_characters_my_hero"
 								}
 							],
 							"multiplier": {
@@ -8519,6 +8512,11 @@
 					{
 						"name": "reveal_encounter",
 						"subject": "find",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count" : 1,
+						"selection_optional": false,
+						"selection_type": "equal",
 						"is_cost": true,
 						"filter_state_tutor": [
 							{
@@ -10822,7 +10820,7 @@
 				{
 					"name": "move_card_to_container",
 					"src_container": "deck_villain",
-					"des_container": "deck_holding_cell",
+					"dest_container": "deck_holding_cell",
 					"subject": "tutor",
 					"subject_count": "all",
 					"filter_state_tutor": [
@@ -10836,7 +10834,7 @@
 				{
 					"name": "move_card_to_container",
 					"src_container": "deck_villain",
-					"des_container": "set_aside",
+					"dest_container": "set_aside",
 					"subject": "tutor",
 					"subject_count": "all",
 					"filter_state_tutor": [
@@ -10853,7 +10851,7 @@
 				{
 					"name": "move_card_to_container",
 					"src_container": "deck_villain",
-					"des_container": "set_aside",
+					"dest_container": "set_aside",
 					"subject": "tutor",
 					"subject_count": "all",
 					"filter_state_tutor": [
@@ -10913,6 +10911,7 @@
 					"name": "move_card_to_board",
 					"grid_name": "enemies",
 					"subject": "tutor",
+					"src_container": ["deck_villain"],
 					"filter_state_tutor": [
 						{
 							"filter_properties": {

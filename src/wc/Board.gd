@@ -1019,14 +1019,10 @@ func delete_all_cards():
 				if grid:
 					grid.delete_all_slots_but_one()								
 
-func _close_game():
+func _close_game(next_scene = "res://src/wc/MainMenu.tscn"):
 	cfc.quit_game()
-	get_tree().change_scene("res://src/wc/MainMenu.tscn")
+	get_tree().change_scene(next_scene)
 	
-func _retry_game(message:String):
-	#TODO
-	cfc.quit_game()
-	get_tree().change_scene("res://src/wc/MainMenu.tscn")	
 
 func _reload_last_save():
 	gameData.reload_round_savegame(gameData.current_round)

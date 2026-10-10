@@ -101,7 +101,22 @@ func _ready() -> void:
 	_load_status = LOAD_STATUS.NOT_STARTED
 	if cfc.all_loaded:
 		_load_status = LOAD_STATUS.COMPLETE
-		_all_downloads_completed()		
+		_all_downloads_completed()	
+		
+	if gameData.menu_command:
+		process_menu_command()
+		
+func process_menu_command():
+	if !gameData.menu_command:
+		return
+	var page = 	gameData.menu_command.get("page", "")
+	if ! page:
+		return
+	match page:
+		"options":
+			var subpage = 	gameData.menu_command.get("subpage", "")
+			show_options(subpage)
+	gameData.menu_command = {}		
 
 func set_info_text(msg):
 	v_folder_label.text = msg
@@ -423,7 +438,7 @@ func on_button_pressed(_button_name : String) -> void:
 		"Credits":
 			get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/Credits.tscn')
 		"Options":
-			$OptionsMenu.show_me($CenterContainer)
+			show_options()
 
 		"Exit":
 			if cfc.get_internal_setting("exit_is_toggle_fullscreen"):
@@ -432,6 +447,9 @@ func on_button_pressed(_button_name : String) -> void:
 				if _loading_error:
 					cfc.clear_cards_cache()				
 				exit()
+
+func show_options(subpage = ""):
+	$OptionsMenu.show_me($CenterContainer, subpage)
 
 func exit():
 	get_tree().quit()

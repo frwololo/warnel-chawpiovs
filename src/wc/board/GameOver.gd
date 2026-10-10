@@ -38,7 +38,13 @@ func init_game_settings(keys):
 	for key in keys:
 		if !cfc.game_settings.has(key):
 			cfc.game_settings[key] = {}
+
+func defeat():
+	get_node("%Title").text = "Game Over (Defeat)"
+
 func victory():
+	get_node("%Title").text = "Game Over (Victory)"
+	
 	if !cfc.is_adventure_mode():
 		return
 	var unlocked_hero_ids = []
@@ -136,6 +142,13 @@ func _ready():
 	set_as_toplevel(true)
 	if cfc.NMAP.has("board"):
 		cfc.NMAP.board.disable_focus_mode()
+	
+	#Todo add support for multiplayer as well
+	if gameData.is_multiplayer_game:
+		get_node("%RetryButton").visible = false
+		get_node("%NewGameButton").visible = false
+	
+	cfc.buttons_grab_focus_on_mouse_entered(self)		
 	get_node("%OKButton").grab_focus()
 	pass
 
@@ -152,3 +165,11 @@ func _on_Button_pressed():
 
 func _on_Link_pressed():
 	OS.shell_open(get_node("%Link").text)
+
+
+func _on_RetryButton_pressed():
+	gameData.restart_game(self)
+
+
+func _on_NewGameButton_pressed():
+	cfc.NMAP.board._close_game(CFConst.PATH_CUSTOM + 'lobby/TeamSelection.tscn')

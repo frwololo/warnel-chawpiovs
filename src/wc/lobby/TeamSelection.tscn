@@ -41,15 +41,28 @@ margin_left = 15.0
 margin_right = 1920.0
 margin_bottom = 1060.0
 
-[node name="AdventureModeWarning" type="Label" parent="MainMenu/Outercontainer"]
-unique_name_in_owner = true
+[node name="AdventureContainer" type="HFlowContainer" parent="MainMenu/Outercontainer"]
 margin_right = 1905.0
 margin_bottom = 23.0
-rect_min_size = Vector2( 300, 0 )
+
+[node name="AdventureModeWarning" type="Label" parent="MainMenu/Outercontainer/AdventureContainer"]
+unique_name_in_owner = true
+margin_right = 1170.0
+margin_bottom = 23.0
+rect_min_size = Vector2( 1170, 0 )
 custom_colors/font_color = Color( 0.811765, 0.65098, 0.172549, 1 )
 custom_fonts/font = SubResource( 4 )
 text = "Adventure mode: you will progressively unlock heroes/villains as you win games. Don't like this? Go to settings and uncheck \"adventure mode\"."
 autowrap = true
+
+[node name="LinkButton" type="LinkButton" parent="MainMenu/Outercontainer/AdventureContainer"]
+unique_name_in_owner = true
+margin_left = 1174.0
+margin_right = 1260.0
+margin_bottom = 23.0
+custom_colors/font_color = Color( 0.811765, 0.65098, 0.172549, 1 )
+custom_fonts/font = SubResource( 4 )
+text = ">>Settings"
 
 [node name="MainContainer" type="MarginContainer" parent="MainMenu/Outercontainer"]
 unique_name_in_owner = true
@@ -554,6 +567,7 @@ text = "Close"
 
 [node name="MenuTween" type="Tween" parent="."]
 
+[connection signal="pressed" from="MainMenu/Outercontainer/AdventureContainer/LinkButton" to="." method="_on_LinkButton_pressed"]
 [connection signal="pressed" from="MainMenu/Outercontainer/MainContainer/HeroSelectionTab/LeftRight/TeamButtonPanel/ButtonNext" to="." method="_on_ButtonNext_pressed"]
 [connection signal="pressed" from="MainMenu/Outercontainer/MainContainer/ScenarioSelectionTab/TeamScenarioPanel/YourTeamContainer/Container/ButtonBackToHeroes" to="." method="_on_ButtonBackToHeroes_pressed"]
 [connection signal="pressed" from="MainMenu/Outercontainer/MainContainer/ScenarioSelectionTab/TeamScenarioPanel/ScenarioOptionsVContainer/ScenarioOptionsContainer/VBoxContainer/VBoxContainer/HBoxContainer/ModularButton" to="." method="_on_ModularButton_pressed"]

@@ -761,8 +761,12 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 		var script = trigger_details.get("event_object")
 		if !script:
 			return false
-		var subjects = script.subjects
-		var subject = script.subjects[0] if subjects else null
+		var subject = null	
+		if "subjects" in script:
+			var subjects = script.subjects
+			subject = script.subjects[0] if subjects else null
+		else:
+			subject = trigger_details.get("target", null)
 		if !subject:
 			return false		
 		var is_valid = SP.check_validity(subject, filters, "event_target", owner_card)

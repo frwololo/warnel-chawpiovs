@@ -190,7 +190,11 @@
 								"modification": 1
 							}
 						]
-					}
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					},					
 				]
 			}
 		}
@@ -1439,6 +1443,11 @@
 						"__type_code__": "minion"
 					}
 				},
+				"Obligation": {
+					"__scarlet": {
+						"__type_code__": "obligation"
+					}
+				},				
 				"Side Scheme": {
 					"__scarlet": {
 						"__type_code__": "side_scheme"

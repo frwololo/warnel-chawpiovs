@@ -777,6 +777,20 @@
 		}
 	},
 	"Ororo Munroe": {
+		"additional_cards_set_aside": [
+			{
+				"card": "Clear Skies #36002"
+			},
+			{
+				"card": "Hurricane #36003"
+			},
+			{
+				"card": "Thunderstorm #36004"
+			},
+			{
+				"card": "Blizzard #36005"
+			},			
+		],	
 		"setup": {
 			"all": [
 				{

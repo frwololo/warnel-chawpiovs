@@ -106,9 +106,9 @@ func _ready():
 	fileDownloader.connect("file_downloaded", self, "_file_downloaded")
 	fileDownloader.connect("download_error", self, "_download_error")
 	
-	if gameData.editor_command:
-		process_command(gameData.editor_command)
-		gameData.editor_command = {}
+	if gameData.menu_command:
+		process_command(gameData.menu_command)
+		gameData.menu_command = {}
 
 func process_command(command):
 	if typeof(command) != TYPE_DICTIONARY:

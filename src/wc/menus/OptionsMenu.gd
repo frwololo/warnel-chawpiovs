@@ -137,6 +137,12 @@ func get_cancel_button(tab_name):
 			return get_node("%BackButton")
 
 func select_tab(tab_name):
+	match tab_name:
+		"gameplay", "mods":
+			load_options()
+		"advanced":
+			load_advanced_settings()	
+	
 	for tab in $PanelContainer.get_children():
 		tab.visible = false
 
@@ -149,7 +155,6 @@ func hide_mods_options():
 	select_tab("general")
 
 func show_mods_options():
-	load_options()
 	select_tab("mods")
 
 func hide_gameplay_options():
@@ -157,15 +162,13 @@ func hide_gameplay_options():
 	select_tab("general")
 
 func show_gameplay_options():
-	load_options()
 	select_tab("gameplay")
 
 func hide_advanced_settings():
 	save_advanced_settings()
 	select_tab("general")
 
-func show_advanced_settings():
-	load_advanced_settings()	
+func show_advanced_settings():	
 	select_tab("advanced")
 
 func clear_cache():
@@ -396,7 +399,7 @@ func close_me():
 	if disabled_container:
 		cfc.default_button_focus(disabled_container)
 
-func show_me(container_to_disable = null):
+func show_me(container_to_disable = null, subpage = ""):
 
 	get_node("%GameplayBackButton").icon = gamepadHandler.get_icon_for_action("ui_cancel")
 	get_node("%BackButton").icon = gamepadHandler.get_icon_for_action("ui_cancel")
@@ -423,7 +426,9 @@ func show_me(container_to_disable = null):
 		cfc.NMAP.board.disable_focus_mode()
 		cfc.NMAP.board.visible = false 		
 		
-	cfc.default_button_focus(v_box_container)	
+	cfc.default_button_focus(v_box_container)
+	if subpage:
+		select_tab(subpage)
 
 func enable_disable_mods():
 	if cfc.get_setting('enable_fanmade_sets'):

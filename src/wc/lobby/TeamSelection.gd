@@ -108,6 +108,7 @@ func _ready():
 	
 	var adventure_mode = cfc.is_adventure_mode()
 	get_node("%AdventureModeWarning").visible = adventure_mode
+	get_node("%LinkButton").visible = adventure_mode
 	if adventure_mode:
 		var suffix = " (all unlocked!)"
 		var heroes_left_to_unlock = cfc.get_locked_heroes().size()
@@ -1368,3 +1369,14 @@ func _on_ButtonBackToHeroes_pressed():
 
 func _on_DLCancelButton_pressed():
 	hide_download_menu()
+
+
+
+func _on_LinkButton_pressed():
+	self.queue_free()
+	gameData.disconnect_from_network()
+	gameData.menu_command = {
+		"page": "options",
+		"subpage": "gameplay"
+	}
+	get_tree().change_scene(CFConst.PATH_CUSTOM + 'MainMenu.tscn')

@@ -4416,6 +4416,13 @@ func set_resource_lock(script, owner = null):
 	#special use case introduced to "lock" token uses for SpiderHam
 	#this is to avoid use cases where the player can use the same token both to pay
 	#for a card cost AND to pay for its text effect (e.g "I don't think so!")
+	
+	#special mana: not locking for now... but this might lead to issues?
+	#TODO we should lock for special use case as well
+	var special_mana = get_resource_value_as_int_special("get_mana", script)
+	if special_mana:
+		return
+
 	var sceng = _get_resource_sceng(script)
 	if sceng:		
 		if (sceng.can_all_costs_be_paid):

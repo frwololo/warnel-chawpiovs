@@ -2236,7 +2236,8 @@ func count_players():
 
 func buttons_grab_focus_on_mouse_entered(node):
 	if node as Button:
-		node.connect("mouse_entered", node, "grab_focus")
+		if !node.is_connected("mouse_entered", node, "grab_focus"):
+			node.connect("mouse_entered", node, "grab_focus")
 	if node.has_method("get_children"):
 		for child in node.get_children():
 			buttons_grab_focus_on_mouse_entered(child)

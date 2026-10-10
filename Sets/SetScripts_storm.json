@@ -550,7 +550,8 @@
 			"board": [
 				{
 					"name": "thwart",
-					"amount": 2
+					"amount": 2,
+					"subject": "a_scheme"
 				}
 			]
 		}

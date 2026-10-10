@@ -1169,7 +1169,7 @@
 		},
 		"interrupt_attack_started": {
 			"event_filters": {
-				"attacker": "my_identity",
+				"attacker": "my_identity"
 			},
 			"is_optional_board": true,
 			"board": {
@@ -4023,6 +4023,7 @@
 				{
 					"name": "move_card_to_container",
 					"subject": "tutor",
+					"src_container": "set_aside",
 					"dest_container": "deck_holding_cell",
 					"dest_index": "bottom",
 					"filter_state_tutor": [
@@ -4771,6 +4772,16 @@
 		}
 	},
 	"Holding Cell #50105a": {
+		"on_load": {
+			"all": [
+				{
+					"name": "save_variable",
+					"var_type": "str",
+					"var_name": "my_all_purpose_token_name",
+					"value": "lock"
+				}
+			]
+		},
 		"self_moved_to_board": {
 			"board": [
 				{
@@ -4784,7 +4795,7 @@
 		"card_token_modified": {
 			"trigger": "self",
 			"filter_count": 0,
-			"filter_token_name": "threat",
+			"filter_token_name": "lock",
 			"board": [
 				{
 					"name": "move_card_to_board",
@@ -4802,6 +4813,12 @@
 					"name": "move_card_to_container",
 					"subject": "self",
 					"dest_container": "set_aside"
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_holding_cell"
 				}
 			]
 		},
@@ -4855,6 +4872,16 @@
 		}
 	},
 	"Holding Cell #50106a": {
+		"on_load": {
+			"all": [
+				{
+					"name": "save_variable",
+					"var_type": "str",
+					"var_name": "my_all_purpose_token_name",
+					"value": "lock"
+				}
+			]
+		},
 		"self_moved_to_board": {
 			"board": [
 				{
@@ -4868,7 +4895,7 @@
 		"card_token_modified": {
 			"trigger": "self",
 			"filter_count": 0,
-			"filter_token_name": "threat",
+			"filter_token_name": "lock",
 			"board": [
 				{
 					"name": "move_card_to_board",
@@ -4886,6 +4913,12 @@
 					"name": "move_card_to_container",
 					"subject": "self",
 					"dest_container": "set_aside"
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_holding_cell"
 				}
 			]
 		},
@@ -4939,6 +4972,16 @@
 		}
 	},
 	"Holding Cell #50107a": {
+		"on_load": {
+			"all": [
+				{
+					"name": "save_variable",
+					"var_type": "str",
+					"var_name": "my_all_purpose_token_name",
+					"value": "lock"
+				}
+			]
+		},
 		"self_moved_to_board": {
 			"board": [
 				{
@@ -4952,7 +4995,7 @@
 		"card_token_modified": {
 			"trigger": "self",
 			"filter_count": 0,
-			"filter_token_name": "threat",
+			"filter_token_name": "lock",
 			"board": [
 				{
 					"name": "move_card_to_board",
@@ -4970,6 +5013,12 @@
 					"name": "move_card_to_container",
 					"subject": "self",
 					"dest_container": "set_aside"
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_holding_cell"
 				}
 			]
 		},
@@ -5023,6 +5072,16 @@
 		}
 	},
 	"Holding Cell #50108a": {
+		"on_load": {
+			"all": [
+				{
+					"name": "save_variable",
+					"var_type": "str",
+					"var_name": "my_all_purpose_token_name",
+					"value": "lock"
+				}
+			]
+		},
 		"self_moved_to_board": {
 			"board": [
 				{
@@ -5036,7 +5095,7 @@
 		"card_token_modified": {
 			"trigger": "self",
 			"filter_count": 0,
-			"filter_token_name": "threat",
+			"filter_token_name": "lock",
 			"board": [
 				{
 					"name": "move_card_to_board",
@@ -5054,6 +5113,12 @@
 					"name": "move_card_to_container",
 					"subject": "self",
 					"dest_container": "set_aside"
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_holding_cell"
 				}
 			]
 		},
@@ -6545,8 +6610,8 @@
 			]
 		},
 		"interrupt_attack_started": {
-			"event_filters": {	
-				"attacker": "self",
+			"event_filters": {
+				"attacker": "self"
 			},
 			"board": [
 				{
@@ -7417,6 +7482,7 @@
 				{
 					"name": "move_card_to_container",
 					"subject": "tutor",
+					"src_container": "set_aside",
 					"dest_container": "deck_holding_cell",
 					"dest_index": "bottom",
 					"filter_state_tutor": [
@@ -8205,6 +8271,7 @@
 				{
 					"name": "move_card_to_container",
 					"subject": "tutor",
+					"src_container": "set_aside",
 					"dest_container": "deck_holding_cell",
 					"dest_index": "bottom",
 					"filter_state_tutor": [
@@ -8514,7 +8581,7 @@
 						"subject": "find",
 						"subject_count": "all",
 						"needs_selection": true,
-						"selection_count" : 1,
+						"selection_count": 1,
 						"selection_optional": false,
 						"selection_type": "equal",
 						"is_cost": true,
@@ -8740,7 +8807,7 @@
 					"amount": 3,
 					"tags": [
 						"ranged"
-					],					
+					],
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
@@ -8753,7 +8820,7 @@
 							"filter_group": "group_enemies_previous_subject"
 						}
 					]
-				},
+				}
 			]
 		}
 	},
@@ -8896,6 +8963,7 @@
 				{
 					"name": "move_card_to_container",
 					"subject": "tutor",
+					"src_container": "set_aside",
 					"dest_container": "deck_holding_cell",
 					"dest_index": "bottom",
 					"filter_state_tutor": [
@@ -10911,7 +10979,9 @@
 					"name": "move_card_to_board",
 					"grid_name": "enemies",
 					"subject": "tutor",
-					"src_container": ["deck_villain"],
+					"src_container": [
+						"deck_villain"
+					],
 					"filter_state_tutor": [
 						{
 							"filter_properties": {

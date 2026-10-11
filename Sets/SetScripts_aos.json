@@ -305,13 +305,22 @@
 		"reveal": {
 			"all": [
 				{
-					"name": "sequence",
-					"sequence_ability": "do_attack"
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "__attack",
+					"subject": "self"
 				}
 			]
 		},
-		"do_attack": {
-			"all": [
+		"self_moved_to_board": {
+			"condition_board": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"subject": "self",
+					"token_name": "__attack"
+				}
+			},
+			"board": [
 				{
 					"name": "i_attack",
 					"is_cost": true,
@@ -332,6 +341,7 @@
 					"is_else": true,
 					"name": "mod_tokens",
 					"modification": 1,
+					"token_name": "lock",
 					"subject": "Holding Cell"
 				}
 			]
@@ -10931,7 +10941,7 @@
 							}
 						}
 					]
-				},				
+				},
 				{
 					"name": "move_card_to_container",
 					"src_container": "deck_villain",

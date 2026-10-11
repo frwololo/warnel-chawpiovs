@@ -175,6 +175,18 @@
 							]
 						}
 					}
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_send_signal"
+				}
+			]
+		},
+		"do_send_signal": {
+			"all": [
+						{
+					"name": "send_signal",
+					"signal_name": "storm_weather_special_resolved"
 				}
 			]
 		}
@@ -263,12 +275,24 @@
 				{
 					"name": "draw_cards",
 					"amount": 1
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_send_signal"
+				}
+			]
+		},
+		"do_send_signal": {
+			"all": [
+						{
+					"name": "send_signal",
+					"signal_name": "storm_weather_special_resolved"
 				}
 			]
 		}
 	},
 	"Effective Leadership": {
-		"card_moved_to_board": {
+		"interrupt_card_moved_to_board": {
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
@@ -294,7 +318,7 @@
 					"end_condition": "phase_ended",
 					"script": {
 						"alterants": {
-							"board": [
+							"all": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "thwart",
@@ -333,7 +357,7 @@
 		}
 	},
 	"Flash Freeze": {
-		"interrupt_enemy_attack": {
+		"interrupt_enemy_initiates_attack": {
 			"trigger": "villain",
 			"event_filters": {
 				"target_identity": "my_identity"
@@ -353,7 +377,7 @@
 					"subject": "self",
 					"script": {
 						"alterants": {
-							"board": [
+							"all": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "attack",
@@ -553,6 +577,18 @@
 					"name": "thwart",
 					"amount": 2,
 					"subject": "a_scheme"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_send_signal"
+				}
+			]
+		},
+		"do_send_signal": {
+			"all": [
+						{
+					"name": "send_signal",
+					"signal_name": "storm_weather_special_resolved"
 				}
 			]
 		}
@@ -741,7 +777,8 @@
 		}
 	},
 	"Mirage - Dani Moonstar": {
-		"self_moved_to_board": {
+		"card_moved_to_board": {
+			"subject": "self",
 			"is_optional_board": true,
 			"board": [
 				{
@@ -766,7 +803,7 @@
 						{
 							"filter_group": "group_enemies",
 							"filter_func": {
-								"func_name": "get_subject_int_property<=my_thwart",
+								"func_name": "get_subject_int_property<my_thwart",
 								"func_params": {
 									"subject": "trigger",
 									"property": "scheme"
@@ -1046,11 +1083,7 @@
 				}
 			]
 		},
-		"response_script_executed": {
-			"event_filters": {
-				"script_executed_trigger": "special"
-			},
-			"filter_state_trigger": "trait_weather",
+		"response_storm_weather_special_resolved": {
 			"is_optional_board": true,
 			"board": [
 				{
@@ -1253,6 +1286,18 @@
 					"name": "deal_damage",
 					"amount": 2,
 					"subject": "an_enemy"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_send_signal"
+				}
+			]
+		},
+		"do_send_signal": {
+			"all": [
+						{
+					"name": "send_signal",
+					"signal_name": "storm_weather_special_resolved"
 				}
 			]
 		}

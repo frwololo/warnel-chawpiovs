@@ -428,7 +428,7 @@
 		}
 	},
 	"Effective Leadership": {
-		"card_moved_to_board": {
+		"interrupt_card_moved_to_board": {
 			"filter_state_trigger": [
 				{
 					"filter_properties": {

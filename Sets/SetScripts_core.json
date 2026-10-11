@@ -674,7 +674,7 @@
 						"subject": "boardseek",
 						"subject_count": "all",
 						"filter_state_seek": [
-							 "group_identities"
+							"group_identities"
 						]
 					}
 				}
@@ -812,7 +812,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "defense",
-					"trigger":  "Captain Marvel",
+					"trigger": "Captain Marvel",
 					"alteration": 1
 				},
 				{
@@ -820,7 +820,7 @@
 					"filter_property_name": "defense",
 					"filter_state_trigger": [
 						"Captain Marvel",
-						"trait_aerial",
+						"trait_aerial"
 					],
 					"alteration": 1
 				}
@@ -4058,14 +4058,12 @@
 					"surge_on_failure": true
 				},
 				{
-					"_silent": true,
 					"name": "sequence",
 					"delay_until_no_activity": true,
 					"sequence_ability": "reveal_nemesis_scheme",
 					"subject": "self"
 				},
 				{
-					"_silent": true,
 					"name": "sequence",
 					"delay_until_no_activity": true,
 					"sequence_ability": "shuffle_nemesis_other",
@@ -4074,6 +4072,7 @@
 			]
 		},
 		"reveal_nemesis_scheme": {
+			"_silent": true,
 			"all": [
 				{
 					"name": "reveal_nemesis_scheme"
@@ -4081,6 +4080,7 @@
 			]
 		},
 		"shuffle_nemesis_other": {
+			"_silent": true,
 			"all": [
 				{
 					"name": "shuffle_nemesis_other"

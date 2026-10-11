@@ -656,7 +656,7 @@
 		}
 	},
 	"Shake it Off": {
-		"card_damaged": {
+		"response_card_damaged": {
 			"filter_state_trigger": [
 				{
 					"filter_properties": {

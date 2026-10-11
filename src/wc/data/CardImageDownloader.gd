@@ -12,10 +12,10 @@ const default_servers := {
 					"MarvelCDB":"https://marvelcdb.com"
 				}
 						
-			},	
+			},					
 		"cerebro":
 			{
-				"url": "https://cerebrodatastorage.blob.core.windows.net",
+				"url": "https://pub-d27e6715f4ba4529bc9d8fd13938a5a1.r2.dev",
 				"health_check_url": "/cerebro-cards/official/45031.jpg",
 				"path": "/cerebro-cards/official/[card_id].jpg",
 				"uppercase_card_id": true,
@@ -34,6 +34,17 @@ const default_servers := {
 					"cgbuilder": "https://mc.cgbuilder.fr/" 
 				}				
 			},
+		"marvelsimulator": 
+			{
+				"url": "https://play.marvelsimulator.com",
+				"path": "/images/cards/[card_id].webp",
+				"card_id_override": "printed_card_id",										
+			},
+		"narwhal": 
+			{
+				"url": "https://play.narwhalchampions.com",
+				"path": "/[card_id]",									
+			},									
 		"wololo": 
 			{
 				"url": "https://wololo.net",

@@ -15,20 +15,19 @@
 				{
 					"card": "Psionic Enhancement #50122"
 				},
-								{
+				{
 					"card": "Hydra Mercenary"
 				},
-{
+				{
 					"card": "Diplomatic Sanctions #50128"
-				},
-
+				}
 			],
 			"villain": [
 				{
 					"card": "M.O.D.O.K. - A #50103a",
 					"tokens": {
 						"damage": 1
-					}					
+					}
 				}
 			],
 			"schemes": [
@@ -147,8 +146,7 @@
 					"card": "Forge #36022"
 				}
 			],
-			"enemies1": [
-			],
+			"enemies1": [],
 			"identity1": [
 				{
 					"card": "Storm #36001a",
@@ -168,8 +166,7 @@
 			"upgrade_support1": [
 				{
 					"card": "Hurricane #36003"
-				}			
-
+				}
 			],
 			"hand1": [
 				{
@@ -186,7 +183,7 @@
 		{
 			"type": "other",
 			"value": "wait_for_player_turn"
-		},
+		}
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -199,24 +196,21 @@
 		],
 		"board": {
 			"discard_villain": [
-			{
+				{
 					"card": "Diplomatic Sanctions #50128"
-				},
+				}
 			],
 			"deck_villain": [
 				{
 					"card": "Psionic Enhancement #50122"
-				},
-
-
-
+				}
 			],
 			"villain": [
 				{
 					"card": "M.O.D.O.K. - A #50103a",
 					"tokens": {
 						"damage": 1
-					}					
+					}
 				}
 			],
 			"schemes": [
@@ -260,13 +254,13 @@
 					"card": "Forge #36022"
 				},
 				{
-					"card": "Havok - Alex Summers #36014",
-				}				
+					"card": "Havok - Alex Summers #36014"
+				}
 			],
 			"enemies1": [
-			{
+				{
 					"card": "Hydra Mercenary"
-				},
+				}
 			],
 			"identity1": [
 				{
@@ -276,14 +270,11 @@
 					}
 				}
 			],
-			"allies1": [
-
-			],
+			"allies1": [],
 			"upgrade_support1": [
 				{
 					"card": "Hurricane #36003"
-				}			
-
+				}
 			],
 			"hand1": [
 				{

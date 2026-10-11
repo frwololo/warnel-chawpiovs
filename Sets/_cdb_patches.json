@@ -158,19 +158,19 @@
 	},
 	"16001a": {
 		"printed_card_id": "16001b",
-		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
 	"16001b": {
 		"printed_card_id": "16001a",
-		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
 	"16029a": {
 		"printed_card_id": "16029b",
-		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
 	"16029b": {
 		"printed_card_id": "16029a",
-		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
 	"16056": {
 		"attack": 2
@@ -344,11 +344,11 @@
 	},
 	"32001a": {
 		"printed_card_id": "32001b",
-		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
 	"32001b": {
 		"printed_card_id": "32001a",
-		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
 	"32022": {
 		"alternate_art": true
@@ -361,11 +361,11 @@
 	},
 	"32030a": {
 		"printed_card_id": "32030b",
-		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
 	"32030b": {
 		"printed_card_id": "32030a",
-		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
 	"32038": {
 		"name": "Phased Strike"
@@ -386,33 +386,33 @@
 	},
 	"33001a": {
 		"printed_card_id": "33001b",
-		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
 	"33001b": {
 		"printed_card_id": "33001a",
-		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
 	"33017": {
 		"alternate_art": true
 	},
 	"34001a": {
 		"printed_card_id": "34001b",
-		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
 	"34001b": {
 		"printed_card_id": "34001a",
-		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
 	"34024": {
 		"alternate_art": true
 	},
 	"35001a": {
 		"printed_card_id": "35001b",
-		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
 	"35001b": {
 		"printed_card_id": "35001a",
-		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
 	"35019": {
 		"alternate_art": true
@@ -423,16 +423,24 @@
 	"35028": {
 		"is_unique": true
 	},
+	"36001a": {
+		"printed_card_id": "36001b",
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
+	},
+	"36001b": {
+		"printed_card_id": "36001a",
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
+	},	
 	"36026": {
 		"alternate_art": true
 	},	
 	"37001a": {
 		"printed_card_id": "37001b",
-		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
 	"37001b": {
 		"printed_card_id": "37001a",
-		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
 	"37014": {
 		"alternate_art": true
@@ -442,11 +450,11 @@
 	},
 	"38001a": {
 		"printed_card_id": "38001b",
-		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
 	"38001b": {
 		"printed_card_id": "38001a",
-		"_comments": "ffg have reversed A/B between Hero and LAter-ego on some cards. Some Databases choose to follow FFG, others suchas marvelcdb swapped it"
+		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
 	"40001a": {
 		"wc_meta": {	

@@ -10892,14 +10892,38 @@
 				"name": "deck_holding_cell"
 			}
 		],
+		"extra_rules": [
+			{
+				"card_moved_to_pile": {
+					"_comments": "if we move a card to the holding cell deck and there's no holding cell in play, move a holding cell to play",
+					"event_filters": {
+						"destination": "deck_holding_cell"
+					},
+					"condition_all": {
+						"func_name": "!count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"filter_state_seek": "Holding Cell"
+						}
+					},
+					"all": [
+						{
+							"name": "move_card_to_board",
+							"src_container": "deck_holding_cell",
+							"subject": "index",
+							"subject_index": "top"
+						}
+					]
+				}
+			}
+		],
 		"setup": {
 			"all": [
 				{
-					"name": "move_card_to_container",
+					"name": "move_card_to_board",
 					"src_container": "deck_villain",
-					"dest_container": "deck_holding_cell",
 					"subject": "tutor",
-					"subject_count": "all",
+					"subject_index": "random",
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -10907,7 +10931,7 @@
 							}
 						}
 					]
-				},
+				},				
 				{
 					"name": "move_card_to_container",
 					"src_container": "deck_villain",
@@ -10952,11 +10976,18 @@
 		"post_setup": {
 			"all": [
 				{
-					"name": "move_card_to_board",
-					"src_container": "deck_holding_cell",
-					"subject": "index",
-					"subject_index": "top",
-					"subject_count": 1
+					"name": "shuffle_card_into_container",
+					"src_container": "deck_villain",
+					"dest_container": "deck_holding_cell",
+					"subject": "tutor",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Holding Cell"
+							}
+						}
+					]
 				},
 				{
 					"name": "move_card_to_board",

@@ -486,7 +486,7 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 		# on double-click and card was not moved
 		# Then we need to ensure it's unfocused
 		# Otherwise its z-index will make it draw on top of the popup.
-		if owner as Card:
+		if owner as Card and (run_type != CFInt.RunType.BACKGROUND_COST_CHECK):
 			if owner.state in [Card.CardState.FOCUSED_IN_HAND]:
 				# We also reorganize the whole hand to avoid it getting
 				# stuck like this.

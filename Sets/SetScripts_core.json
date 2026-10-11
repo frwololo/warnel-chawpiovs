@@ -4058,12 +4058,14 @@
 					"surge_on_failure": true
 				},
 				{
+					"_silent": true,
 					"name": "sequence",
 					"delay_until_no_activity": true,
 					"sequence_ability": "reveal_nemesis_scheme",
 					"subject": "self"
 				},
 				{
+					"_silent": true,
 					"name": "sequence",
 					"delay_until_no_activity": true,
 					"sequence_ability": "shuffle_nemesis_other",

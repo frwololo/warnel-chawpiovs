@@ -364,15 +364,22 @@ static func search_and_replace_str (orig_str:String, replacements:Dictionary, ex
 #in my tests, most calls (>90%) result in a cache hit
 const _search_and_replace_multi_cache = {}
 static func search_and_replace_multi(script_definition, replacements:Dictionary, exact_match: bool = false) -> Dictionary:
+#	var fn = "WCUtils.search_and_replace_multi"
+#	var fn_uncached = fn + "_no_cache"
+#	cfc.start_performance_tick(fn)	
 	var _cache_key = {
-		"definition": script_definition,
+		"definition": to_json(script_definition),
 		"replacements": replacements,
 		"exact_match": exact_match,
 	}.hash()
+	
 	if !_search_and_replace_multi_cache.has(_cache_key):
+#		cfc.start_performance_tick(fn_uncached)
 		_search_and_replace_multi_cache[_cache_key] = search_and_replace_multi_no_cache (script_definition, replacements, exact_match)
 	
 	var result = _search_and_replace_multi_cache[_cache_key].duplicate(true)
+#	cfc.stop_performance_tick(fn)
+#	cfc.stop_performance_tick(fn_uncached)
 	return result
 
 #hardcoded exceptions
@@ -385,6 +392,8 @@ const _never_replace = {
 	
 }	
 static func search_and_replace_multi_no_cache (script_definition, replacements:Dictionary, exact_match: bool = false) -> Dictionary:
+
+
 	var result = null
 	match typeof(script_definition):
 		TYPE_DICTIONARY:

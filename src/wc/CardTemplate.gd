@@ -167,6 +167,10 @@ func get_alterants_key():
 		if is_faceup:
 			return "boost_alterants"
 		return ""
+	
+	if is_inactive_attachment():
+		return ""	
+	
 	return SP.KEY_ALTERANTS
 	
 
@@ -205,10 +209,8 @@ func refresh_cache(forced=false):
 	if !forced and ! _cache_refresh_needed:
 		return
 		
-		
-	for i in gameData.get_team_size():
-		var hero_id = i+1
-		_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID
+	refresh_cost_cache(forced)	
+
 	check_death()
 	_cache_resource_value = {}
 	_state_exec_cache = ""
@@ -220,6 +222,14 @@ func refresh_cache(forced=false):
 	
 	refresh_dummy_alterants()
 
+func refresh_cost_cache(forced=false):
+	if !forced and ! _cache_refresh_needed:
+		return
+
+	for i in gameData.get_team_size():
+		var hero_id = i+1
+		_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID	
+	
 
 # Functions to periodically refresh effects of complex alterants
 #This is for alterants that are "rare" but also have complicated impacts on
@@ -496,9 +506,17 @@ func load_from_card_id(card_id):
 	scripting_bus.emit_signal("card_reloaded", self, {"before_id": previous_id })
 	
 func setup() -> void:
-	register_signals()
+	var ingame = cfc.NMAP.has("board")
+	
+	if ingame:
+		register_signals()
+	
 	.setup()
 	_runtime_properties_setup()
+	
+	if !ingame:
+		return
+		
 	update_groups()
 	init_token_drawer()	
 	position_ui_elements()
@@ -1058,9 +1076,14 @@ func set_state(value: int) -> void:
 	if state == CardState.DRAGGED:
 		pass
 	var prev_state = state
+	
 	state = value
-	if prev_state != state:
+	if prev_state != state:					
 		emit_signal("state_changed", self, prev_state, state)
+		
+		#TODO hack refreshing cost if we hover the card, because sometimes cost gets incorrectly stuck
+		if state in [CardState.FOCUSED_IN_HAND, CardState.FOCUSED_ON_BOARD]:
+			refresh_cost_cache(true)
 		
 		_state_exec_cache = ""
 
@@ -2683,14 +2706,17 @@ func check_play_costs_no_cache(hero_id = 0, _debug = false)-> Color:
 	_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID
 	return check_play_costs({"hero_id" : hero_id}, _debug)
 
-	
 func check_play_costs(params:Dictionary = {}, _debug = false) -> Color:
 	#return .check_play_costs();
 	var hero_id = params.get("hero_id", gameData.get_current_local_hero_id())
 
 	if (_check_play_costs_cache.get(hero_id,CFConst.CostsState.CACHE_INVALID) != CFConst.CostsState.CACHE_INVALID):
 		return _check_play_costs_cache[hero_id]
-	
+
+	var result = check_play_cost_refresh(hero_id, params, _debug)
+	return result["status"]
+
+func check_play_cost_refresh(hero_id, params:Dictionary = {}, _debug = false) -> Dictionary:
 	_check_play_costs_cache[hero_id] = CFConst.CostsState.IMPOSSIBLE
 
 	#cards that can be played:
@@ -2698,18 +2724,27 @@ func check_play_costs(params:Dictionary = {}, _debug = false) -> Color:
 	#cards that are "ghost" cards 
 	#(that is, cards in piles that can exceptionally be played from outside of board/hand)
 	if !is_playable_card_state():
-		return _check_play_costs_cache[hero_id]
+		return {
+				"reason": "is_playable_card_state",
+				"status" :_check_play_costs_cache[hero_id]
+			}
 	
 	var trigger_details = {
 		"for_hero_id": hero_id,
 		"_debug": _debug
 	}
 
+
+
 	var sceng = execute_scripts(self,"manual",trigger_details,CFInt.RunType.BACKGROUND_COST_CHECK)
 
 	if (!sceng): #TODO is this an error?
 		_check_play_costs_cache[hero_id] = CFConst.CostsState.IMPOSSIBLE	
-		return _check_play_costs_cache[hero_id]
+		return {
+				"reason": "no_manual_sceng",
+				"status" :_check_play_costs_cache[hero_id]
+			}
+
 		
 	while sceng is GDScriptFunctionState && sceng.is_valid(): # Still working.
 		sceng = sceng.resume()
@@ -2717,13 +2752,27 @@ func check_play_costs(params:Dictionary = {}, _debug = false) -> Color:
 
 	if (!sceng): #TODO is this an error?
 		_check_play_costs_cache[hero_id] = CFConst.CostsState.IMPOSSIBLE	
-		return _check_play_costs_cache[hero_id]
+		return {
+				"reason": "invalid_sceng",
+				"status" :_check_play_costs_cache[hero_id]
+			}
+
 	
-	if (sceng.can_all_costs_be_paid):
-		_check_play_costs_cache[hero_id] = CFConst.CostsState.OK
+	if (!sceng.can_all_costs_be_paid):
+		_check_play_costs_cache[hero_id] = CFConst.CostsState.IMPOSSIBLE	
+		return {
+				"reason": "cant_pay_costs",
+				"status" :_check_play_costs_cache[hero_id]
+			}
 
 
-	return _check_play_costs_cache[hero_id]
+
+
+	_check_play_costs_cache[hero_id] = CFConst.CostsState.OK
+	return {
+			"reason": "all_ok",
+			"status" :_check_play_costs_cache[hero_id]
+		}
 
 
 # This function can be overriden by any class extending Card, in order to provide

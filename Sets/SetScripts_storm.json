@@ -218,7 +218,7 @@
 					"filter_task": "get_property",
 					"filter_property_name": "cannot_change_form",
 					"alteration": 1,
-					"trigger": "my_identity"
+					"trigger": "host"
 				}
 			]
 		},
@@ -391,6 +391,7 @@
 						"deck",
 						"discard"
 					],
+					"dest_container": "hand",
 					"subject": "tutor_and_choose",
 					"filter_state_tutor": [
 						{
@@ -1046,6 +1047,9 @@
 			]
 		},
 		"response_script_executed": {
+			"event_filters": {
+				"script_executed_trigger": "special"
+			},
 			"filter_state_trigger": "trait_weather",
 			"is_optional_board": true,
 			"board": [

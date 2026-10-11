@@ -10,16 +10,21 @@ signal stats_updated
 const LOG_FILE = "user://log_download_errors.txt"
 const LOG_ALL = false
 
-export(bool)            var blind_mode : bool   = false
+#TODO I've had significant lags when setting blind_mode to false
+#using the HEAD method seems to be hit and miss,
+#and is only really required to get an idea of the remaining file size
+export(bool)            var blind_mode : bool   = true
 export(bool)            var skip_head : bool   = true
 export(String)          var save_path  : String = "user://dl_cache/"
 
 #TODO where to move this?
 const allowed_by_proxy = [
 	'https://marvelcdb.com',
-	'https://cerebrodatastorage.blob.core.windows.net',
+	'https://pub-d27e6715f4ba4529bc9d8fd13938a5a1.r2.dev',
 	'https://mc4db.merlindumesnil.net',
-	'https://mc-src.cgbuilder.fr'
+	'https://mc-src.cgbuilder.fr',
+	'https://play.marvelsimulator.com',
+	'https://play.narwhalchampions.com'
 ]
 
 

@@ -451,7 +451,7 @@ func _load_extra_rules_from_encounters():
 				scenario_data["extra_decks"] = []
 			scenario_data["extra_decks"] += encounter_extra_decks
 			
-		var extra_rules = cfc.set_scripts.get(canonical_id,{}).get("extra_rules",{}).duplicate(true)
+		var extra_rules = cfc.set_scripts.get(canonical_id,{}).get("extra_rules",[]).duplicate(true)
 		if extra_rules:
 			if ! scenario_data.has("extra_rules"):
 				scenario_data["extra_rules"] = []

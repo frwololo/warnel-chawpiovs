@@ -518,7 +518,7 @@ func select_card(
 		alternate_cost = selection.alternate_cost_chosen			
 	selection.queue_free()
 		
-	if parent_node == cfc.NMAP.get("board"):
+	if parent_node == cfc.NMAP.get("board") and cfc.game_paused:
 		cfc.game_paused = false
 		
 	cfc.remove_ongoing_process(self)

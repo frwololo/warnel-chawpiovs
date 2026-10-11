@@ -1017,7 +1017,8 @@
 						"needs_selection": true,
 						"display_title": "choose card to discard",
 						"selection_count": 1,
-						"selection_type": "equal"
+						"selection_type": "equal",
+						"is_cost": true,
 					},
 					{
 						"name": "thwart",

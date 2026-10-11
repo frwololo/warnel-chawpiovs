@@ -52,7 +52,7 @@
 				},
 				{
 					"card": "Advance"
-				},				
+				}
 			],
 			"discard1": [
 				{
@@ -92,6 +92,10 @@
 		}
 	},
 	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
 		{
 			"type": "play",
 			"value": "Colossus #45031"
@@ -145,16 +149,14 @@
 				}
 			],
 			"discard_villain": [
-							{
+				{
 					"card": "Advance"
-				},	
+				}
 			],
 			"deck_villain": [
 				{
 					"card": "Hydra Bomber"
-				},
-
-			
+				}
 			],
 			"discard1": [
 				{
@@ -176,9 +178,9 @@
 				}
 			],
 			"enemies1": [
-							{
+				{
 					"card": "Hydra Mercenary"
-				},
+				}
 			],
 			"identity1": [
 				{

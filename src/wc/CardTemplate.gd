@@ -1109,7 +1109,7 @@ func get_state_exec_no_cache() -> String:
 				CardState.DROPPING_TO_BOARD:
 			# cards that have a type_code 'i.e faceup cards and facedown cards with modifiers)
 			#are allowed to run scripts
-			if get_property("type_code", ""):
+			if get_property("type_code", "") and !is_inactive_attachment():
 				state_exec = "board"
 		CardState.IN_HAND,\
 				CardState.FOCUSED_IN_HAND,\

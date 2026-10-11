@@ -603,6 +603,10 @@
 	"48019": {
 		"alternate_art": true
 	},
+	"48021": {
+		"attack": 0,
+		"thwart": 0
+	},	
 	"50025": {
 		"alternate_art": true
 	},	

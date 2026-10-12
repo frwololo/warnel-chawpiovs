@@ -8839,7 +8839,7 @@
 				}
 			]
 		},
-		"interrupt_enemy_initiates_attack": {
+		"interrupt_enemy_would_attack": {
 			"event_filters": {
 				"target": "my_hero"
 			},

@@ -70,6 +70,11 @@ signal manapool_modified(details)
 signal paid_as_resource(card, details)
 
 # warning-ignore:unused_signal
+signal enemy_would_attack(card,details)
+# warning-ignore:unused_signal
+signal enemy_would_scheme(card,details)
+
+# warning-ignore:unused_signal
 signal enemy_initiates_attack(card,details)
 # warning-ignore:unused_signal
 signal defender_chosen(card,details)

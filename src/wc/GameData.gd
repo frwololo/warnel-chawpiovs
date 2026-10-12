@@ -12,6 +12,7 @@ extends Node
 
 enum EnemyAttackStatus {
 	NONE,
+	ENEMY_WOULD_ACTIVATE,	
 	PENDING_INTERRUPT,
 	OK_TO_START_ATTACK,
 	PENDING_DEFENDERS,
@@ -22,6 +23,7 @@ enum EnemyAttackStatus {
 }
 const EnemyAttackStatusStr =  [
 	"NONE",
+	"ENEMY_WOULD_ACTIVATE",	
 	"PENDING_INTERRUPT",
 	"OK_TO_START_ATTACK",
 	"PENDING_DEFENDERS",
@@ -529,7 +531,7 @@ func _scripting_event_triggered(trigger_object = null,
 		"card_moved_to_board",\
 				"card_moved_to_pile", \
 				"card_moved_to_hand" :
-			check_empty_decks(_trigger_details["source"])
+			check_empty_decks(_trigger_details["source"])		
 		"enemy_initiates_attack",\
 				"enemy_initiates_scheme":
 			pre_attack_interrupts_done()
@@ -1146,7 +1148,7 @@ func villain_next_target(force_switch_ui:= true, caller:= "") -> int:
 func all_attackers_finished():
 	phaseContainer.all_enemy_attacks_finished()
 
-func attack_prevented():
+func activation_prevented():
 	current_enemy_finished()
 
 func current_enemy_finished():
@@ -1374,6 +1376,17 @@ func enemy_activates() :
 				 #activity script will be set once the activity actually starts (which might be a mistake...?)
 				var tmp_script = ScriptTask.new(enemy, {"name": "uninitialized_activity_script"}, enemy, {})
 				enemy.set_activity_script(tmp_script)
+				scripting_bus.emit_signal_on_stack("enemy_would_" + action, enemy,  details)
+				_current_enemy_attack_step = EnemyAttackStatus.ENEMY_WOULD_ACTIVATE
+				return
+
+		EnemyAttackStatus.ENEMY_WOULD_ACTIVATE:
+				var details = {
+					"target" : target_friendly,
+					SP.TRIGGER_TARGET_HERO : target_friendly.canonical_name,
+					"target_identity": target_identity
+				}			
+			
 				scripting_bus.emit_signal_on_stack("enemy_initiates_" + action, enemy,  details)
 				_current_enemy_attack_step = EnemyAttackStatus.PENDING_INTERRUPT
 				return
@@ -2101,8 +2114,10 @@ func get_encounter_target_pile (encounter):
 #what happens when events get prevented
 func _stack_event_deleted(event):
 	match event.get_first_task_name():
-		"enemy_initiates_attack":
-			attack_prevented()
+		"enemy_would_attack", "enemy_initiates_attack":
+			activation_prevented()
+		"enemy_would_scheme", "enemy_initiates_scheme":
+			activation_prevented()		
 #		"enemy_attack":
 #			defenders_chosen()
 		"reveal_encounter":	

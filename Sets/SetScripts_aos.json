@@ -1003,7 +1003,7 @@
 					"src_container": "deck_villain",
 					"filter_state_tutor": [
 						{
-							"properties": {
+							"filter_properties": {
 								"shortname": "Justice, Like Lightning"
 							}
 						}
@@ -5701,9 +5701,10 @@
 		"post_reveal": {
 			"all": [
 				{
-					"name": "reveal_encounter",
+					"name": "nop",
 					"subject": "tutor",
 					"src_container": "set_aside",
+					"is_cost": true,
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -5719,34 +5720,8 @@
 					"name": "save_variable",
 					"var_type": "subject",
 					"var_name": "my_minion",
+					"force_run_at_prime": true,
 					"value": "previous"
-				},
-				{
-					"name": "sequence",
-					"sequence_ability": "do_tough"
-				}
-			]
-		},
-		"do_tough": {
-			"all": [
-				{
-					"name": "mod_tokens",
-					"token_name": "tough",
-					"modification": {
-						"if": {
-							"func_name": "get_scenario_option_value",
-							"func_params": {
-								"option_name": "expert_mode"
-							}
-						},
-						"then": 1,
-						"else": 0
-					},
-					"subject": "my_minion"
-				},
-				{
-					"name": "host_card",
-					"subject": "my_minion"
 				},
 				{
 					"name": "flip_doublesided_card"
@@ -10708,6 +10683,37 @@
 		}
 	},
 	"Thunderbolt Backup": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_host"
+				}
+			]
+		},
+		"do_host": {
+			"all": [
+				{
+					"name": "host_card",
+					"subject": "my_minion"
+				},			
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": {
+						"if": {
+							"func_name": "get_scenario_option_value",
+							"func_params": {
+								"option_name": "expert_mode"
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"subject": "my_minion"
+				}
+			]
+		},
 		"round_ended": {
 			"board": [
 				{

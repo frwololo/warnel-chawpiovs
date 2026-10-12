@@ -297,6 +297,7 @@ func move_card_to_board(script: ScriptTask) -> int:
 	return result
 
 func engage_player(script: ScriptTask) -> int:
+	script.script_definition["tags"] = add_tags_to_tags(script.get_property("tags", []), ["force_detach"])
 	return move_card_to_board(script)
 		
 
@@ -644,6 +645,7 @@ func force_play_card(script: ScriptTask) -> int:
 		subject.attempt_to_play()			
 		
 	return retcode
+
 
 static func add_tags_to_tags(existing_tags, additional_tags):
 	var result = []

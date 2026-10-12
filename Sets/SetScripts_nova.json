@@ -448,16 +448,17 @@
 		}
 	},
 	"Lightspeed Flight": {
-		"alterants": {
+		"on_load": {
 			"all": [
 				{
-					"filter_task": "get_property",
-					"filter_property_name": "double_wild_resources",
-					"trigger": "self",
-					"alteration": 1
+					"name": "init_properties",
+					"subject": "self",
+					"set_properties": {
+						"double_wild_resources": 1
+					}
 				}
 			]
-		},
+		},	
 		"manual": {
 			"hand": [
 				{
@@ -573,6 +574,7 @@
 			"board": [
 				{
 					"name": "ready_card",
+					"is_cost": true,
 					"subject": "Supernova Helmet"
 				}
 			]
@@ -647,13 +649,14 @@
 		}
 	},
 	"Pot Shot": {
-		"alterants": {
+		"on_load": {
 			"all": [
 				{
-					"filter_task": "get_property",
-					"filter_property_name": "double_wild_resources",
-					"trigger": "self",
-					"alteration": 1
+					"name": "init_properties",
+					"subject": "self",
+					"set_properties": {
+						"double_wild_resources": 1
+					}
 				}
 			]
 		},

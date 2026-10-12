@@ -213,6 +213,13 @@ static func json_equal (lh, rh)-> bool:
 		_:
 			return(lh==rh)
 
+#replaces in place strings to lowercase in an array
+static func array_to_lowercase(words: Array):
+	for i in range(words.size()):
+		if typeof(words[i]) == TYPE_STRING:
+			words[i] = words[i].to_lower() 
+	return words
+
 static func merge_array(array_1: Array, array_2: Array, deep_merge: bool = false, duplicate_array_elements: bool = false) -> Array:
 	var new_array = array_1.duplicate(true)
 	

@@ -93,12 +93,17 @@ static func _load_card_scenarios():
 			continue
 		var card_code = _get_corrected_scheme_card_id(card_data["code"])
 		if !card_code:
-			continue		
-		primitives[card_code] = card_data;
+			continue
+		if card_data.has("encounter_sets"):
+			WCUtils.array_to_lowercase(card_data["encounter_sets"])
+		var expert_data = card_data.get("expert", {})	
+		if 	expert_data and expert_data.has("encounter_sets"):
+				WCUtils.array_to_lowercase(expert_data["encounter_sets"])		
+		primitives[card_code] = card_data
 		all_scenarios.append(key)
 
 
-	
+
 
 static func get_array_data(scheme_id, key):
 	var scheme_primitive = primitives.get(scheme_id, {})

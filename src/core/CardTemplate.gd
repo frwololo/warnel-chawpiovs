@@ -1520,10 +1520,12 @@ func move_to(targetHost: Node,
 			# If we are an attachment and were moved elsewhere
 			# We reset the position.
 				set_state(CardState.ON_PLAY_BOARD)
-			elif current_host_card:
+			elif current_host_card and !("force_detach" in tags):
 				reposition_as_attachment()
 				set_state(CardState.ON_PLAY_BOARD)
 			else:
+				if current_host_card:
+					detach_self()
 				# When we drop from board to board
 				# We need to ensure the card respects its
 				# board_placement variable. So we need to check

@@ -4624,42 +4624,49 @@ func get_resource_value_as_mana(script):
 func get_resource_value_as_mana_no_cache(script, precompute_method = ""):
 	if is_resource_locked(script):
 		return null
+
+	var result_mana = null
 	
 	if !precompute_method:		
-		var special_mana = get_resource_value_as_int_special("get_mana", script)
-		if special_mana:
-			return special_mana		
+		result_mana = get_resource_value_as_int_special("get_mana", script)
+	
+	if !result_mana:		
+		var my_state = get_state_exec()
+		var sceng:ScriptingEngine
+		if precompute_method:
+			sceng = _get_script_sceng(precompute_method, script)
+		else:
+			sceng = _get_resource_sceng(script)
 		
-	var my_state = get_state_exec()
-	var sceng:ScriptingEngine
-	if precompute_method:
-		sceng = _get_script_sceng(precompute_method, script)
-	else:
-		sceng = _get_resource_sceng(script)
+		_lockable_for_subject = true
+		
+
+		
+		if sceng:		
+			if (sceng.can_all_costs_be_paid):
+				
+				#alternate means of payment (i.e. not discarding from hand) do not discard, by default, and therefore can be subjects
+				_lockable_for_subject = false			
+				#But there are exceptions where the payment involves discarding, moving, etc...
+				#which would invalidate it as a subject
+				for script in sceng.scripts_queue:
+					if script.script_name in ["discard", "move_to_container"]:
+						_lockable_for_subject = true
+				
+				result_mana = compute_resource_value_as_mana(sceng)		
+		
+		#if the compute didn't get through, we return the regular printed value
+		if !result_mana and (my_state == "hand"):	
+			result_mana = get_printed_resource_value_as_mana({}, script)	
 	
-	_lockable_for_subject = true
+	if result_mana:
+		var trigger_object = script.trigger_object
+		if trigger_object:
+			if trigger_object.get_property("double_wild_resources",0):
+				result_mana.add_resource("wild", result_mana.get_resource("wild"))
 	
-	if sceng:		
-		if (sceng.can_all_costs_be_paid):
-			
-			#alternate means of payment (i.e. not discarding from hand) do not discard, by default, and therefore can be subjects
-			_lockable_for_subject = false			
-			#But there are exceptions where the payment involves discarding, moving, etc...
-			#which would invalidate it as a subject
-			for script in sceng.scripts_queue:
-				if script.script_name in ["discard", "move_to_container"]:
-					_lockable_for_subject = true
-			
-			var result_mana = compute_resource_value_as_mana(sceng)
-			if result_mana:		 
-				return result_mana			
 	
-	#if the compute didn't get through, we return the regular printed value
-	if (my_state) == "hand":	
-		return get_printed_resource_value_as_mana({}, script)	
-	
-	#failure: not in hand, doesn't have a valid script: this isn't a valid resource
-	return null
+	return result_mana
 
 
 #computes how much mana a specific sceng would return when paid as part of a cost

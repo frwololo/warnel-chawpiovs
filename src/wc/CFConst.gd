@@ -821,6 +821,8 @@ const AUTO_KEYWORDS := {
 	"cannot_thwart_side_scheme": "int",
 	"can_play_as_if_in_hand": "int",
 
+	"double_wild_resources": "int", #Nova's Lightspeed Flight and Pot shot
+
 	"excess_damage_boost": "int", #Rocket Raccoon's Follow Through card
 	"exclude_from_ally_limit": "int",
 
@@ -1071,7 +1073,7 @@ const DEFAULT_SETTINGS:= {
 		"vision": "https://marvelcdb.com/api/public/cards/vision.json", #Vision Hero Pack	
 #cycle 5
 		"sm" : "https://marvelcdb.com/api/public/cards/sm.json", #Sinister Motives Expansion Box				
-#		"nova": "https://marvelcdb.com/api/public/cards/nova.json", #Nova Hero Pack	
+		"nova": "https://marvelcdb.com/api/public/cards/nova.json", #Nova Hero Pack	
 		"ironheart": "https://marvelcdb.com/api/public/cards/ironheart.json", #Ironheart Hero Pack	
 		"spiderham": "https://marvelcdb.com/api/public/cards/spiderham.json", #Spiderham Hero Pack	
 #		"spdr": "https://marvelcdb.com/api/public/cards/spdr.json", #SP//DR Hero Pack	

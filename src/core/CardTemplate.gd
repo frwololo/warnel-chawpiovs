@@ -921,8 +921,9 @@ func get_property_and_alterants(property: String,
 			_is_property_being_altered.erase(property)
 			# The first element is always the total modifier from all alterants
 			property_value += alteration.value_alteration
-		if property_value < 0:
-			property_value = 0
+		if !(property in CFConst.ALTERANTS_CAN_CHANGE_SIGN):
+			if property_value < 0:
+				property_value = 0
 	var return_dict := {
 		"value": property_value,
 		"alteration": alteration,
@@ -2040,6 +2041,9 @@ func reorganize_self() ->void:
 			_set_target_rotation(_recalculate_rotation())
 
 
+func stop_extra_animations():
+	pass
+
 # Stops existing card animations then makes sure they're
 # properly cleaned-up to allow future animations to play.
 func interruptTweening() ->void:
@@ -2627,6 +2631,16 @@ func _add_tween_scale(
 			trans_type, ease_type)
 
 
+
+func compute_expected_scale():
+	var target_scale = play_area_scale
+	if is_instance_valid(_placement_slot):
+		target_scale = _placement_slot.get_scale_modifier()
+	if ( current_host_card and  current_host_card._placement_slot):
+		target_scale =  current_host_card._placement_slot.get_scale_modifier()		
+
+	return target_scale
+
 # A rudimentary Finite State Engine for cards.
 #
 # Makes sure that when a card is in a specific state while
@@ -2891,11 +2905,7 @@ func _process_card_state() -> void:
 			set_control_mouse_filters(true)
 			set_manipulation_buttons_active(false)
 			#TODO this messes up attached components such as the targeting arrow
-			var target_scale = play_area_scale
-			if is_instance_valid(_placement_slot):
-				target_scale = _placement_slot.get_scale_modifier()
-			if ( current_host_card and  current_host_card._placement_slot):
-				target_scale =  current_host_card._placement_slot.get_scale_modifier()				
+			var target_scale = compute_expected_scale()		
 			if not $Tween.is_active():
 				var need_tweening = false
 				if not scale.is_equal_approx(Vector2(1,1) * target_scale):
@@ -3109,6 +3119,9 @@ func _process_card_state() -> void:
 				move_to(spawn_destination)
 				scripting_bus.emit_signal("card_spawned", self, {"tags": ["Scripted", "Spawned"]})
 				spawn_destination = null
+
+
+
 
 func is_animating():
 	if _tween and _tween.is_active():

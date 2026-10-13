@@ -270,9 +270,12 @@ const TOKENS_MAP := {
 }
 
 const TEAM_SELECTION_GUI:= {
-	"HEROES_LARGE_GRID_WIDTH": 700,	
+	"HEROES_LARGE_GRID_WIDTH": 720,	
+	"HEROES_LARGE_GRID_HEIGHT": 910,
+	"HEROES_LARGE_GRID_NAME_HEIGHT": 15,		
 	"SCENARIO_LARGE_GRID_WIDTH":1000,
-	"SCENARIO_LARGE_GRID_HEIGHT":900
+	"SCENARIO_LARGE_GRID_HEIGHT":900,
+	"SCENARIO_LARGE_GRID_NAME_HEIGHT": 15,
 }
 
 const Z_INDEX_MOUSE_POINTER := 4050
@@ -729,6 +732,13 @@ const PILES_INCLUDED_IN_BOARDSEEK:= [
 const ALTERANTS_ALLOWED_PILES:= [
 	"hand",
 	"victory_display"
+]
+
+#values that are allowed to go into negative territory when being reduced
+#this is to take into account the fact that e.g. attack can be negative before getting boosts applied
+const ALTERANTS_CAN_CHANGE_SIGN:= [
+	"attack",
+	"scheme"
 ]
 
 #list of non board zones that can have interrupts (performance: piles not in this list will be excluded from the alterants loop)

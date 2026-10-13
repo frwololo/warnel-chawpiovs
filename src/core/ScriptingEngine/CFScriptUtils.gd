@@ -190,7 +190,7 @@ static func get_altered_value(
 			unique[key] = true
 		scriptables_array = unique.keys()
 
-#		if task_properties.get("property_name", "") == "attack" and _owner.get_property("shortname", "") == "Cable":
+#		if task_properties.get("property_name", "") == "attack" and _owner.get_property("shortname", "") == "M.O.D.O.K.":
 #			var _tmp = 1
 		
 		for obj in scriptables_array:
@@ -227,11 +227,12 @@ static func get_altered_value(
 		# negative (and the other way around) due to an alteration
 		# For example: if a card says, "decrease all costs by 3",
 		# we don't want a card with 1 cost, to end up giving the player 2 money.
-		if value < 0 and value + value_alteration > 0:
-			# warning-ignore:narrowing_conversion
-			value_alteration = abs(value)
-		elif value > 0 and value + value_alteration < 0:
-			value_alteration = -value
+		if !(property_name in CFConst.ALTERANTS_CAN_CHANGE_SIGN):
+			if value < 0 and value + value_alteration > 0:
+				# warning-ignore:narrowing_conversion
+				value_alteration = abs(value)
+			elif value > 0 and value + value_alteration < 0:
+				value_alteration = -value
 		return_dict = {
 			"value_alteration": value_alteration,
 			"alterants_details": alterants_details

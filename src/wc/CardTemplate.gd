@@ -236,16 +236,28 @@ func refresh_cost_cache(forced=false):
 #card properties, etc...
 var _dummy_alterants_cache = {}
 func refresh_dummy_alterants():
-	refresh_can_play_as_if_in_hand()
-	refresh_blank_text_box()
+	for alterant in [
+		"can_play_as_if_in_hand", 
+		"blank_printed_text_box",
+		"trait_aerial"
+	]:
+		if !CFScriptUtils.game_has_alterants(alterant):
+			continue	
+
+		var before = _dummy_alterants_cache.get(alterant, null)			
+		var after = get_property(alterant, 0, true)
+
+		if ((before != null) and !after) or (after and (before == null)):
+			var func_name = "refresh_alterant_" + alterant
+			var result = self.call(func_name, before, after)
+			if result == null:
+				_dummy_alterants_cache.erase(alterant)
+			else:
+				_dummy_alterants_cache[alterant] = result
 	
-func refresh_can_play_as_if_in_hand():
-	var alterant = "can_play_as_if_in_hand"
-	if !CFScriptUtils.game_has_alterants(alterant):
-		return	
-			
-	var can_play_as_if_in_hand = get_property(alterant, 0, true)
-	var _can_play_as_if_in_hand = _dummy_alterants_cache.get(alterant, 0)
+func refresh_alterant_can_play_as_if_in_hand(before, after):		
+	var can_play_as_if_in_hand = after
+	var _can_play_as_if_in_hand = before
 	
 	#newly asked to be able to play as if in hand
 	if can_play_as_if_in_hand and !_can_play_as_if_in_hand:
@@ -263,20 +275,16 @@ func refresh_can_play_as_if_in_hand():
 				fetched_script.erase(old_is_optional)
 			subscript[key] = fetched_script
 			
-		_dummy_alterants_cache[alterant] = self.add_extra_script( subscript, self.get_controller_hero_id())		
+		return self.add_extra_script( subscript, self.get_controller_hero_id())		
 
 	#conversely, when I was able to play as if in hand and am being asked to stop
 	elif _can_play_as_if_in_hand and !can_play_as_if_in_hand:
 		self.remove_extra_script(_can_play_as_if_in_hand)
-		_dummy_alterants_cache.erase(alterant)
+		return null
 
-func refresh_blank_text_box():
-	var alterant = "blank_printed_text_box"
-	if !CFScriptUtils.game_has_alterants(alterant):
-		return	
-		
-	var is_altered = get_property(alterant, 0, true)
-	var previous_state = _dummy_alterants_cache.get(alterant, null)
+func refresh_alterant_blank_printed_text_box(before, after):	
+	var is_altered = after
+	var previous_state = before
 	
 	#newly asked to blank text
 	if is_altered and (previous_state == null):
@@ -286,7 +294,7 @@ func refresh_blank_text_box():
 			if value:
 				backup_properties[keyword] = value 
 				properties.erase(keyword)
-		_dummy_alterants_cache[alterant] = backup_properties	
+		return backup_properties	
 
 	#revert properties
 	elif (previous_state != null) and !is_altered:
@@ -294,7 +302,68 @@ func refresh_blank_text_box():
 		for keyword in backup_properties:
 			properties[keyword] = backup_properties[keyword]
 		execute_scripts(self, "unblank")
-		_dummy_alterants_cache.erase(alterant)		
+		return null	
+
+func compute_expected_scale():
+	if is_flying():
+		return scale
+			
+	return .compute_expected_scale()
+
+var _is_flying = 0
+func is_flying():
+	return _is_flying and is_onboard()
+	
+func fly_animation():
+	if !is_flying():
+		return
+	if $SpecialTween.is_active():
+		return
+	
+	var expected_scale = .compute_expected_scale()
+	match _is_flying:
+		1: 
+			$SpecialTween.interpolate_property(self,'scale',
+					scale, Vector2(expected_scale*1.05, expected_scale*1.05), 2,
+					Tween.TRANS_QUAD, Tween.EASE_IN_OUT)
+			_is_flying = 2
+		2:
+			$SpecialTween.interpolate_property(self,'scale',
+				scale, Vector2(expected_scale*1.02, expected_scale*1.02), 2,
+				Tween.TRANS_QUAD, Tween.EASE_IN_OUT)
+			_is_flying = 1	 
+	$SpecialTween.start()
+		
+func stop_fly_animation():
+	if !is_flying():
+		return
+		
+	$SpecialTween.remove_all()
+	var expected_scale = .compute_expected_scale()
+	scale = Vector2(expected_scale, expected_scale)
+	$SpecialTween.interpolate_property(self,'scale',
+			scale, Vector2(expected_scale, expected_scale), 2,
+			Tween.TRANS_QUAD, Tween.EASE_OUT)
+	$SpecialTween.start()
+
+
+func stop_extra_animations():
+	if !is_flying():
+		return
+		
+	$SpecialTween.remove_all()
+	var expected_scale = .compute_expected_scale()
+	scale = Vector2(expected_scale, expected_scale)
+
+	
+func refresh_alterant_trait_aerial(before, after):	
+	if after and !before:
+		_is_flying = 1
+		return 1
+	elif before and !after:
+		_is_flying = 0
+		stop_fly_animation()
+		return null
 
 
 func get_all_traits() -> Dictionary:
@@ -854,25 +923,40 @@ func display_shadow():
 		_shadow.rect_min_size = _card_front_container.rect_min_size
 		_shadow.rect_size = _shadow.rect_min_size
 		var offset = 3.5 / scale.x
+		var alpha_modulate = 1.0		
 		if highlight.visible:
 			_shadow.rect_min_size = _card_front_container.rect_min_size + Vector2(6.0, 6.0)
 			_shadow.rect_size = _shadow.rect_min_size			
 			reload_shadow_tex("res://assets/card_backs/card_shadow_highlight.png")
 			offset = 1.0
+			
+		if is_flying():
+			reload_shadow_tex("res://assets/card_backs/card_shadow_far.png")
+			var target_scale = .compute_expected_scale()
+			var percent_diff = 100 * (scale.x - target_scale) / target_scale
+			offset = 10.0 * percent_diff
+			alpha_modulate = 1.0 / (percent_diff * percent_diff / 13)
+#			if scale.x > 1.0:
+#				var multiplier = scale.x  * scale.x * scale.x 
+#				alpha_modulate = 0.6  / (multiplier)	
+#				offset *= multiplier		
+		if offset < 0:
+			offset = 0
+			alpha_modulate = 1.0
 		var offset_x = (sin(deg2rad(_control.rect_rotation)) + cos(deg2rad(_control.rect_rotation))) * offset
 		var offset_y = (cos(deg2rad(_control.rect_rotation)) - sin(deg2rad(_control.rect_rotation))) * offset
 		_shadow.rect_position = _control.rect_position + (Vector2(offset_x, offset_y))
-		_shadow.self_modulate.a = 1.0
+		_shadow.self_modulate.a = alpha_modulate
 	elif get_state_exec() == "hand":
 		reload_shadow_tex("res://assets/card_backs/card_shadow_far.png")
 		_shadow.visible = true
 		_shadow.rect_min_size = _card_front_container.rect_min_size + Vector2(20.0, 20.0)
 		_shadow.rect_size = _shadow.rect_min_size
 		var offset = 20.0
-		var alpha_modulate = 0.6
+		var alpha_modulate = 0.8
 		if scale.x > 1.0:
 			var multiplier = scale.x  * scale.x * scale.x 
-			alpha_modulate = 0.6  / (multiplier)	
+			alpha_modulate = 0.8  / (multiplier)	
 			offset *= multiplier
 		var offset_x = (sin(deg2rad(_control.rect_rotation)) + cos(deg2rad(_control.rect_rotation))) * offset
 		var offset_y = (cos(deg2rad(_control.rect_rotation)) - sin(deg2rad(_control.rect_rotation))) * offset
@@ -965,6 +1049,7 @@ func _process(delta) -> void:
 		hints.erase(data)
 	hints_to_erase = []
 	
+	fly_animation()
 	
 	if (cfc.is_modal_event_ongoing()):
 		return

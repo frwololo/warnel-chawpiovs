@@ -216,7 +216,7 @@ func resize():
 	
 	var rows = int(ceil(float(float(total_scenarios) /float(columns))))
 	var image_width = grid_width / columns
-	var image_height = grid_height / rows - 30 #TODO magic number 30 is the size of the text
+	var image_height = grid_height / rows - CFConst.TEAM_SELECTION_GUI["SCENARIO_LARGE_GRID_NAME_HEIGHT"]
 	var image_size = min(image_width, image_height)
 	
 	the_picture.rect_min_size = Vector2(image_size, image_size)

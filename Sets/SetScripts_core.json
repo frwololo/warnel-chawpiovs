@@ -3996,20 +3996,16 @@
 					"is_cost": true
 				},
 				{
-					"name": "temporary_effect",
+					"name": "add_script",
 					"end_condition": "phase_ended",
-					"subject": "my_hero",
-					"effect": {
+					"subject": "self",
+					"script": {
 						"alterants": {
-							"all": [
+							"board": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "trait_aerial",
-									"filter_state_trigger": [
-										{
-											"filter_card_name": "Iron Man"
-										}
-									],
+									"trigger": "my_identity",
 									"alteration": 1
 								}
 							]

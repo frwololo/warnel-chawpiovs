@@ -408,7 +408,6 @@ func _load_scenarios():
 	var ordered_scenarios = ScenarioDeckData.get_unlocked_scenarios() #names_to_id.keys()
 	ordered_scenarios.sort()
 
-
 	var t = ordered_scenarios.size()
 	var a = y_size
 	var b = -30 * t #TODO magic number 30 is text height
@@ -432,9 +431,32 @@ func get_container_y_size(expected_size):
 		return expected_size - get_node("%AdventureModeWarning").rect_size.y
 	return expected_size
 
+#calculates optimal number of columns for grid containing square items
+func calc_columns(container_size, containee_offset, total_items):
+	var t = total_items
+	var max_size = -1000
+	var cols
+	var rows
+	for i in t:
+		if !i:
+			continue
+		cols = i
+		rows = t/cols
+		var remainder = t % cols 
+		if remainder:
+			rows+=1
+		var h = container_size.y/rows - containee_offset.y
+		var w = container_size.x/cols - containee_offset.x
+		var size = min (h, w)
+		if size > max_size:
+			max_size = size
+		else:
+			break	
+	return cols
+
 func _create_hero_container():
-	var y_size = get_container_y_size(900) 
-	var x_size = CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_WIDTH"] + 20
+	var y_size = get_container_y_size(CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_HEIGHT"]) 
+	var x_size = CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_WIDTH"]
 	#TODO what about small screens
 	get_node("%HeroesPanel").rect_min_size = Vector2(x_size, y_size)
 	#show in alphabetical order
@@ -454,21 +476,10 @@ func _create_hero_container():
 	ordered_names.sort()
 
 
-	var t = ordered_names.size()
-	var a = y_size
-	var b = 0 #-30 * t #TODO magic number 30 is text height
-	var c = -x_size * t
-	var delta = b*b - (4*a*c)
-	var x1 = int( (-b -sqrt(delta))/(2*a)) 
-	var x2 = int( (-b +sqrt(delta))/(2*a)) 
-	var grid_columns = max(x1, x2) + 1
+	var grid_columns = calc_columns(Vector2(x_size, y_size), Vector2(0,CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_NAME_HEIGHT"]),  ordered_names.size())
 	grid_columns = max(grid_columns, 3)
 	all_heroes_container.columns = grid_columns
 
-#	var grid_columns = int(ceil(sqrt(ordered_names.size())))
-#	grid_columns = max(grid_columns, 3)
-#	all_heroes_container.columns = grid_columns
-	
 	heroes_pipeline = {
 		"ordered_names": ordered_names,
 		"names_to_id": names_to_id,

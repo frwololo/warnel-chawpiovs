@@ -113,6 +113,8 @@ func rescale():
 	$Highlight.rect_size = tmp2
 	
 	card_position_confirmed = false
+	if occupying_card:
+		occupying_card.stop_extra_animations()
 	
 func get_scale_modifier() -> float:
 	if (!owner_grid):

@@ -102,6 +102,8 @@ script = ExtResource( 1 )
 
 [node name="Tween" type="Tween" parent="." groups=["cgf_tween"]]
 
+[node name="SpecialTween" type="Tween" parent="." groups=["cgf_tween"]]
+
 [node name="Debug" type="VBoxContainer" parent="."]
 visible = false
 margin_left = 150.0

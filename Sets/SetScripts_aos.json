@@ -1036,6 +1036,9 @@
 			]
 		},
 		"response_attack_happened": {
+			"event_filters": {
+				"filter_state_event_target": ["trait_thunderbolt", "minion"]
+			},
 			"board": [
 				{
 					"name": "engage_player",
@@ -10718,6 +10721,7 @@
 			"board": [
 				{
 					"name": "save_variable",
+					"force_run_at_prime": true,
 					"var_name": "my_minion",
 					"var_type": "subject",
 					"value": "attachments",
@@ -10756,7 +10760,7 @@
 					]
 				},
 				{
-					"name": "move_card_to_board",
+					"name": "engage_player",
 					"grid_name": "enemies_previous_subject",
 					"subject": "my_minion"
 				},
@@ -10782,12 +10786,31 @@
 				},
 				{
 					"name": "sequence",
-					"sequence_ability": "do_heal,"
+					"sequence_ability": "do_heal"
 				}
 			]
 		},
 		"do_heal": {
 			"board": [
+				{
+					"name": "save_variable",
+					"force_run_at_prime": true,
+					"var_name": "my_minion",
+					"var_type": "subject",
+					"value": "attachments",
+					"attachments_host": "self",
+					"subject_count": 1,
+					"filter_state_attachment": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_thunderbolt": 1
+							}
+						}
+					]
+				},			
 				{
 					"name": "heal",
 					"subject": "my_minion",

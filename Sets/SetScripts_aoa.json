@@ -1076,14 +1076,8 @@
 		}
 	},
 	"Cable - Nathan Summers": {
-		"card_dies": {
-			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "side_scheme"
-					}
-				}
-			],
+		"response_card_dies": {
+			"filter_state_trigger": "side_scheme",
 			"event_filters": {
 				"tags": [
 					"thwart"
@@ -6914,6 +6908,10 @@
 							"max": 8
 						}
 					}
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				},
 				{
 					"name": "add_script",

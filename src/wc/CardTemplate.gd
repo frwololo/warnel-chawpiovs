@@ -312,7 +312,18 @@ func compute_expected_scale():
 
 var _is_flying = 0
 func is_flying():
-	return _is_flying and is_onboard()
+	if !_is_flying:
+		return false
+	
+	if !is_onboard():
+		return false
+	
+	#graphically it's awkward to show the flying effect
+	#when under another card
+	if current_host_card:
+		return false
+	
+	return true
 	
 func fly_animation():
 	if !is_flying():
@@ -2608,6 +2619,7 @@ func remove_threat(modification: int, script = null) -> int:
 		if script:	
 			signal_details = {
 				"source":  script.owner,
+				"actual_source": action_owner,
 				"tags": script.get_property(SP.KEY_TAGS)	
 			}
 		scripting_bus.emit_signal_on_stack("last_threat_removed", self, signal_details)		
@@ -3517,7 +3529,7 @@ func draw_boost_card(src_container = ""):
 #		boost_card.set_is_faceup(false)
 
 func draw_boost_cards(action_type):
-	var amount = self.get_property("boost_cards_per_" + action_type, 1)
+	var amount = self.get_property("boost_cards_per_" + action_type, 1, true)
 	for i in amount:
 		draw_boost_card()
 	#TODO if pile empty...need to reshuffle ?

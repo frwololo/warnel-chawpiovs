@@ -1380,66 +1380,8 @@
 		}
 	},
 	"Whiteout": {
-		"reveal": {
-			"all": [
-				{
-					"name": "conditional_script",
-					"options": [
-						{
-							"condition": {
-								"func_name": "card_is_in_play",
-								"func_params": {
-									"card_name": "Blizzard"
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "move_card_to_board",
-									"subject": "Blizzard",
-									"grid_name": "enemies_my_hero"
-								}
-							]
-						}
-					],
-					"else": [
-						{
-							"name": "deal_encounter",
-							"immediate_reveal": true,
-							"subject": "tutor",
-							"src_container": [
-								"deck_villain",
-								"set_aside",
-								"discard_villain"
-							],
-							"filter_state_tutor": [
-								{
-									"filter_properties": {
-										"Name": "Blizzard"
-									}
-								}
-							]
-						}
-					]
-				},
-				{
-					"name": "sequence",
-					"sequence_ability": "blizzard_activation",
-					"subject": "self"
-				}
-			]
-		},
-		"blizzard_activation": {
-			"all": [
-				{
-					"name": "enemy_activates",
-					"subject": "Blizzard",
-					"is_cost": true
-				},
-				{
-					"name": "surge",
-					"is_else": true
-				}
-			]
+		"__thunderbolt_fetch_and_activate": {
+			"__name__": "Blizzard"
 		},
 		"boost": {
 			"all": [

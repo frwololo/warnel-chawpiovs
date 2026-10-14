@@ -481,6 +481,57 @@
 			]
 		}
 	},
+	"__thunderbolt_fetch_and_activate": {
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "card_is_in_play",
+								"func_params": {
+									"card_name": "__name__"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "engage_player",
+									"subject": "__name__",
+									"target_identity": "my_identity"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "reveal_encounter",
+							"subject": "find",
+							"filter_state_tutor": "__name__"
+						}
+					]
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_activate",
+					"delay_until_no_activity": true
+				}
+			]
+		},
+		"do_activate": {
+			"all": [
+				{
+					"name": "enemy_activates_against_you",
+					"subject": "__name__",
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "surge"
+				}
+			]
+		}
+	},
 	"todo": {
 		"manual": {
 			"hand": [

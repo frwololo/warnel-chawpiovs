@@ -70,6 +70,13 @@ const default_servers := {
 				"credits": {
 					"MC4DB":"https://mc4db.merlindumesnil.net/",
 					"cgbuilder": "https://mc.cgbuilder.fr/" 
+				},
+				#mcgbuilder has slight different pack code ordering than MarvelCDB
+				"exceptions": {
+					"pack_code": {
+						"53": "54",
+						"54": "53"
+					}
 				}					
 			},				
 		"wololo_fr": 
@@ -244,7 +251,13 @@ func process_current_file():
 func generate_dl_path(card_id, server_info):
 	var box_name = "core"
 	
-	var pack_code = card_id.substr(0, 2).lstrip("0")	
+	var exceptions = server_info.get("exceptions", {})
+	
+	var pack_code = card_id.substr(0, 2).lstrip("0")
+	var pack_code_exceptions = exceptions.get("pack_code", {})
+	if pack_code_exceptions.has(pack_code):
+		pack_code = pack_code_exceptions[pack_code]
+			
 	var reduced_card_id = card_id.substr(2).lstrip("0")
 	
 	var card_data = cfc.card_definitions.get(card_id, {})

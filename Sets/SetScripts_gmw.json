@@ -1912,11 +1912,8 @@
 		}
 	},
 	"Desperate Defense": {
-		"interrupt": {
-			"event_name": "enemy_attack_damage",
-			"event_filters": {
-				"defender": "my_hero"
-			},
+		"interrupt_defender_chosen": {
+			"trigger": "my_hero",
 			"is_optional_hand": true,
 			"hand": [
 				{
@@ -1951,7 +1948,7 @@
 				},
 				{
 					"name": "replacement_effect",
-					"subject": "interrupted_event",
+					"subject": "current_activation",
 					"replacements": {
 						"if_no_damage": [
 							{

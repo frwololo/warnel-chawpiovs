@@ -855,10 +855,12 @@ func save_variable(script:ScriptTask) -> int:
 
 	var result = null 
 	var mode =  script.script_definition.get("mode", "replace")
-	var current_value = script.owner.script_variables.get(var_name, null)	
+	var current_value = script.owner.script_variables.get(var_name, null)
 	match var_type:
 		"subject":
-			result = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : value})
+			if typeof(value) == TYPE_STRING:
+				value = {"subject" : value}
+			result = script._local_find_subjects(0, CFInt.RunType.NORMAL,value )
 			if !result:
 				return CFConst.ReturnCode.FAILED
 			if current_value == null:
@@ -2448,7 +2450,8 @@ func enemy_attack(script: ScriptTask) -> int:
 			defender.exhaustme()
 			script.script_definition["tags"].append("basic_defense")
 		var signal_trigger_details = {
-			"tags": script.script_definition["tags"]
+			"tags": script.script_definition["tags"],
+			"attacker": attacker
 		}	
 		scripting_bus.emit_signal_on_stack("defender_chosen", defender, signal_trigger_details)	
 

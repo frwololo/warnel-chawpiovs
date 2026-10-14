@@ -1037,7 +1037,10 @@
 		},
 		"response_attack_happened": {
 			"event_filters": {
-				"filter_state_event_target": ["trait_thunderbolt", "minion"]
+				"filter_state_event_target": [
+					"trait_thunderbolt",
+					"minion"
+				]
 			},
 			"board": [
 				{
@@ -1653,36 +1656,8 @@
 		}
 	},
 	"Batroc the Leaper": {
-		"reveal": {
-			"all": [
-				{
-					"name": "reveal_encounter",
-					"subject": "find",
-					"filter_state_tutor": "Batroc"
-				},
-				{
-					"name": "sequence",
-					"sequence_ability": "do_activate"
-				}
-			]
-		},
-		"do_activate": {
-			"all": [
-				{
-					"name": "engage_player",
-					"subject": "Batroc",
-					"target_identity": "current_hero_target"
-				},
-				{
-					"name": "enemy_activates_against_you",
-					"subject": "Batroc",
-					"is_cost": true
-				},
-				{
-					"is_else": true,
-					"name": "surge"
-				}
-			]
+		"__thunderbolt_fetch_and_activate": {
+			"__name__": "Batroc"
 		},
 		"boost": {
 			"all": [
@@ -2321,8 +2296,8 @@
 		},
 		"interrupt": {
 			"event_name": [
-				"enemy_initiates_attack",
-				"enemy_initiates_scheme"
+				"enemy_would_attack",
+				"enemy_would_scheme"
 			],
 			"trigger": "self",
 			"condition_board": {
@@ -2389,8 +2364,8 @@
 		},
 		"interrupt": {
 			"event_name": [
-				"enemy_initiates_attack",
-				"enemy_initiates_scheme"
+				"enemy_would_attack",
+				"enemy_would_scheme"
 			],
 			"trigger": "self",
 			"condition_board": {
@@ -4528,36 +4503,8 @@
 		}
 	},
 	"Gravitational Pull": {
-		"reveal": {
-			"all": [
-				{
-					"name": "reveal_encounter",
-					"subject": "find",
-					"filter_state_tutor": "Moonstone"
-				},
-				{
-					"name": "sequence",
-					"sequence_ability": "do_activate"
-				}
-			]
-		},
-		"do_activate": {
-			"all": [
-				{
-					"name": "engage_player",
-					"subject": "Moonstone",
-					"target_identity": "current_hero_target"
-				},
-				{
-					"name": "enemy_activates_against_you",
-					"subject": "Moonstone",
-					"is_cost": true
-				},
-				{
-					"is_else": true,
-					"name": "surge"
-				}
-			]
+		"__thunderbolt_fetch_and_activate": {
+			"__name__": "Moonstone"
 		},
 		"boost": {
 			"all": [
@@ -4613,36 +4560,8 @@
 		}
 	},
 	"Hard Sound": {
-		"reveal": {
-			"all": [
-				{
-					"name": "reveal_encounter",
-					"subject": "find",
-					"filter_state_tutor": "Songbird"
-				},
-				{
-					"name": "sequence",
-					"sequence_ability": "do_activate"
-				}
-			]
-		},
-		"do_activate": {
-			"all": [
-				{
-					"name": "engage_player",
-					"subject": "Songbird",
-					"target_identity": "current_hero_target"
-				},
-				{
-					"name": "enemy_activates_against_you",
-					"subject": "Songbird",
-					"is_cost": true
-				},
-				{
-					"is_else": true,
-					"name": "surge"
-				}
-			]
+		"__thunderbolt_fetch_and_activate": {
+			"__name__": "Songbird"
 		},
 		"boost": {
 			"all": [
@@ -7049,36 +6968,8 @@
 		}
 	},
 	"Pale Little Spider": {
-		"reveal": {
-			"all": [
-				{
-					"name": "reveal_encounter",
-					"subject": "find",
-					"filter_state_tutor": "Black Widow"
-				},
-				{
-					"name": "sequence",
-					"sequence_ability": "do_activate"
-				}
-			]
-		},
-		"do_activate": {
-			"all": [
-				{
-					"name": "engage_player",
-					"subject": "Black Widow",
-					"target_identity": "current_hero_target"
-				},
-				{
-					"name": "enemy_activates_against_you",
-					"subject": "Black Widow",
-					"is_cost": true
-				},
-				{
-					"is_else": true,
-					"name": "surge"
-				}
-			]
+		"__thunderbolt_fetch_and_activate": {
+			"__name__": "Black Widow"
 		},
 		"boost": {
 			"all": [
@@ -7149,36 +7040,8 @@
 		}
 	},
 	"Power of the Atom": {
-		"reveal": {
-			"all": [
-				{
-					"name": "reveal_encounter",
-					"subject": "find",
-					"filter_state_tutor": "Radioactive Man"
-				},
-				{
-					"name": "sequence",
-					"sequence_ability": "do_activate"
-				}
-			]
-		},
-		"do_activate": {
-			"all": [
-				{
-					"name": "engage_player",
-					"subject": "Radioactive Man",
-					"target_identity": "current_hero_target"
-				},
-				{
-					"name": "enemy_activates_against_you",
-					"subject": "Radioactive Man",
-					"is_cost": true
-				},
-				{
-					"is_else": true,
-					"name": "surge"
-				}
-			]
+		"__thunderbolt_fetch_and_activate": {
+			"__name__": "Radioactive Man"
 		},
 		"boost": {
 			"all": [
@@ -9141,36 +9004,8 @@
 		}
 	},
 	"Supersonic": {
-		"reveal": {
-			"all": [
-				{
-					"name": "reveal_encounter",
-					"subject": "find",
-					"filter_state_tutor": "MACH-IV"
-				},
-				{
-					"name": "sequence",
-					"sequence_ability": "do_activate"
-				}
-			]
-		},
-		"do_activate": {
-			"all": [
-				{
-					"name": "engage_player",
-					"subject": "MACH-IV",
-					"target_identity": "current_hero_target"
-				},
-				{
-					"name": "enemy_activates_against_you",
-					"subject": "MACH-IV",
-					"is_cost": true
-				},
-				{
-					"is_else": true,
-					"name": "surge"
-				}
-			]
+		"__thunderbolt_fetch_and_activate": {
+			"__name__": "MACH-IV"
 		},
 		"boost": {
 			"all": [
@@ -10699,7 +10534,7 @@
 				{
 					"name": "host_card",
 					"subject": "my_minion"
-				},			
+				},
 				{
 					"name": "mod_tokens",
 					"token_name": "tough",
@@ -10724,19 +10559,21 @@
 					"force_run_at_prime": true,
 					"var_name": "my_minion",
 					"var_type": "subject",
-					"value": "attachments",
-					"attachments_host": "self",
-					"subject_count": 1,
-					"filter_state_attachment": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							},
-							"filter_properties2": {
-								"trait_thunderbolt": 1
+					"value": {
+						"subject": "attachments",
+						"attachments_host": "self",
+						"subject_count": 1,
+						"filter_state_attachment": [
+							{
+								"filter_properties": {
+									"type_code": "minion"
+								},
+								"filter_properties2": {
+									"trait_thunderbolt": 1
+								}
 							}
-						}
-					]
+						]
+					}
 				},
 				{
 					"name": "nop",
@@ -10797,20 +10634,22 @@
 					"force_run_at_prime": true,
 					"var_name": "my_minion",
 					"var_type": "subject",
-					"value": "attachments",
-					"attachments_host": "self",
-					"subject_count": 1,
-					"filter_state_attachment": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							},
-							"filter_properties2": {
-								"trait_thunderbolt": 1
+					"value": {
+						"subject": "attachments",
+						"attachments_host": "self",
+						"subject_count": 1,
+						"filter_state_attachment": [
+							{
+								"filter_properties": {
+									"type_code": "minion"
+								},
+								"filter_properties2": {
+									"trait_thunderbolt": 1
+								}
 							}
-						}
-					]
-				},			
+						]
+					}
+				},
 				{
 					"name": "heal",
 					"subject": "my_minion",

@@ -606,11 +606,8 @@
 		}
 	},
 	"Never Back Down": {
-		"interrupt": {
-			"event_name": "enemy_attack_damage",
-			"event_filters": {
-				"target": "my_hero"
-			},
+		"interrupt_defender_chosen": {
+			"trigger": "my_hero",
 			"is_optional_hand": true,
 			"hand": [
 				{
@@ -645,14 +642,14 @@
 				},
 				{
 					"name": "replacement_effect",
-					"subject": "interrupted_event",
+					"subject": "current_activation",
 					"replacements": {
 						"if_no_damage": [
 							{
 								"name": "mod_tokens",
 								"token_name": "stunned",
 								"modification": 1,
-								"subject": "trigger"
+								"subject": "self"
 							}
 						]
 					}

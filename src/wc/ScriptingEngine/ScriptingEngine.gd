@@ -1335,7 +1335,11 @@ func receive_damage(script: ScriptTask) -> int:
 				script.script_definition["nested_tasks"] = if_no_damage
 				nested_script(script)
 				script.script_definition["nested_tasks"] = backup
-			
+
+		#check for death
+		var lethal = false
+		if damage_happened:
+			lethal = card.check_death(script)
 		if ("attack" in tags):
 			var context_uid = script.get_property("context_uid", 0)
 			if context_uid:
@@ -1347,6 +1351,7 @@ func receive_damage(script: ScriptTask) -> int:
 							"actual_source": script.script_definition.get("actual_source", ""),
 							"target": card,
 							"damage": damage_happened,
+							"lethal": lethal,
 							"tags": tags,
 						}
 					]
@@ -1377,8 +1382,7 @@ func receive_damage(script: ScriptTask) -> int:
 							}
 							_add_pre_receive_damage_on_stack (excess_damage, script, script_modifications)
 			
-		#check for death
-		var lethal = false
+
 		if damage_happened:			
 			var signal_details = {
 				"attacker": attacker,
@@ -1390,8 +1394,6 @@ func receive_damage(script: ScriptTask) -> int:
 				"tags": tags,
 			}
 			scripting_bus.emit_signal_on_stack("card_damaged", card, signal_details)
-
-			lethal = card.check_death(script)
 
 		#enemy attacks do not use the context window (TODO can we migrate to it?), 
 		#so we have to call attack_finished here
@@ -3992,26 +3994,33 @@ const _tags_to_tags: = {
 
 #used only as a cost, checks a series of constraints to see if a card can be played or not
 func constraints(script: ScriptTask) -> int:
+	var details = script.script_definition.duplicate(true)
+	var detail_overrides = {
+		"tags": script.get_property(SP.KEY_TAGS)		
+	}
+	for key in detail_overrides:
+		details[key] = detail_overrides[key]
+		
+	return script_constraints(script.owner, details, script)
+
+static func script_constraints(subject, params, script = null) -> int:
 	var retcode = CFConst.ReturnCode.CHANGED	
 	
 
-	var this_card = script.owner
+	var this_card = subject
 	var my_hero_id = this_card.get_controller_hero_id()
 	if !my_hero_id:
 		#trying to activate on a villain card
 		my_hero_id = gameData.get_current_local_hero_id()
 	
-#	if script.subjects:
-#		my_hero_id = script.subjects[0]
-		
 		
 	var my_hero_card = gameData.get_identity_card(my_hero_id)
 	
 	if !my_hero_card:
 		cfc.LOG("{scriptEngine}{error}: missing hero card in constraints check")
-		cfc.LOG_DICT(script.serialize_to_json())
+		cfc.LOG_DICT(params)
 	
-	var _tags: Array = script.get_property(SP.KEY_TAGS)
+	var _tags: Array = params.get(SP.KEY_TAGS, [])
 	
 	var tags = []
 	for i in range (_tags.size()):
@@ -4070,14 +4079,14 @@ func constraints(script: ScriptTask) -> int:
 	
 	var board:Board = cfc.NMAP.board
 	#Max per player rule to play
-	var max_per_hero = script.get_property("max_per_hero", 0)
+	var max_per_hero = params.get("max_per_hero", 0)
 	if max_per_hero:
 		var already_in_play = board.count_card_per_player_in_play(this_card, my_hero_id)
 		if already_in_play >= max_per_hero:
 			return 	CFConst.ReturnCode.FAILED			
 
 	#Max per player rule to play with "play under any player's control"
-	var max_per_hero_any = script.get_property("max_per_hero_any", 0)
+	var max_per_hero_any = params.get("max_per_hero_any", 0)
 	if max_per_hero_any:
 		var is_team_restriction = this_card.get_property("trait_team", 0, true)
 		if is_team_restriction:
@@ -4095,7 +4104,7 @@ func constraints(script: ScriptTask) -> int:
 				return 	CFConst.ReturnCode.FAILED		
 
 	#Max per phase rule to play
-	var max_per_phase = script.get_property("max_per_phase", 0)
+	var max_per_phase = params.get("max_per_phase", 0)
 	if max_per_phase:
 		var count = 0 
 		var played_this_phase = gameData.get_cards_played_this_phase()
@@ -4106,7 +4115,7 @@ func constraints(script: ScriptTask) -> int:
 					return 	CFConst.ReturnCode.FAILED	
 
 	#Max per round rule to play
-	var max_per_round = script.get_property("max_per_round", 0)
+	var max_per_round = params.get("max_per_round", 0)
 	if max_per_round:
 		var count = 0 
 		var played_this_round = gameData.get_cards_played_this_round()
@@ -4117,14 +4126,14 @@ func constraints(script: ScriptTask) -> int:
 					return 	CFConst.ReturnCode.FAILED	
 
 
-	var teamup = script.get_property("team_up", [])
+	var teamup = params.get("team_up", [])
 	if teamup:
 		for identity_name in teamup:
 			if !board.find_card_by_name(identity_name): #TODO this should be only ally/identity
 				return 	CFConst.ReturnCode.FAILED		
 
 
-	var constraints: Array = script.get_property("constraints", [])
+	var constraints: Array = params.get("constraints", [])
 	for constraint in constraints:
 		var result = cfc.ov_utils.func_name_run(this_card, constraint["func_name"], constraint["func_params"], script)
 		if !result:

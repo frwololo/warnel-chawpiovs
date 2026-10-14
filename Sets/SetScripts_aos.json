@@ -1040,7 +1040,8 @@
 				"filter_state_event_target": [
 					"trait_thunderbolt",
 					"minion"
-				]
+				],
+				"lethal": false
 			},
 			"board": [
 				{
@@ -2300,29 +2301,32 @@
 				"enemy_would_scheme"
 			],
 			"trigger": "self",
-			"condition_board": {
-				"func_name": "count_cards",
-				"func_params": {
-					"subject": "boardseek",
-					"filter_state_seek": [
-						{
-							"filter_group": "group_enemies_current_hero_target",
-							"filter_properties": {
-								"trait_thunderbolt": 1,
-								"comparison": "ge"
-							}
-						}
-					]
-				}
-			},
-			"board": [
+			"condition_board": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"PHASE_VILLAIN_ACTIVATES"
-					]
+					"func_name": "count_cards",
+					"func_params": {
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_enemies_current_hero_target",
+								"filter_properties": {
+									"trait_thunderbolt": 1,
+									"comparison": "ge"
+								}
+							}
+						]
+					}
 				},
+				{
+					"func_name": "script_constraints",
+					"func_params": {
+						"tags": [
+							"PHASE_VILLAIN_ACTIVATES"
+						]
+					}
+				}
+			],
+			"board": [
 				{
 					"name": "prevent",
 					"subject": "interrupted_event"
@@ -4513,7 +4517,8 @@
 					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_friendly_current_hero_target"
+							"filter_group": "group_friendly_current_hero_target",
+							"filter_is_exhausted": "false"
 						}
 					]
 				}
@@ -4582,12 +4587,18 @@
 				}
 			]
 		},
-		"interrupt_attack": {
-			"trigger": "host",
+		"interrupt_attack_started": {
+			"event_filters": {
+				"attacker": "host"
+			},
 			"board": [
 				{
 					"name": "prevent",
 					"subject": "interrupted_event"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				},
 				{
 					"name": "mod_tokens",

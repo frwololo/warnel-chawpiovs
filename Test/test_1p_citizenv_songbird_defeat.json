@@ -1,10 +1,7 @@
 {
-	"_comments": "Test Citizen V's Sword (bug: attack doesn't start)",
-	"test_conditions": {
-		"bug_type": "cant_repro",
-	},		
+	"_comments": "Songbird comes back after defeat",
 	"init": {
-		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
 				"herodeckdata": {
@@ -104,7 +101,7 @@
 				{
 					"card": "Songbird #50143",
 					"tokens": {
-						"damage": 3
+						"damage": 15
 					}
 				}
 			],
@@ -134,17 +131,16 @@
 	},
 	"actions": [
 		{
-			"type": "other",
-			"value": "wait_a_bit"
+			"type": "activate",
+			"value": "Nova"
 		},
 		{
-			"type": "select",
-			"value": "cancel",
-			"_comments": "dont defend"
+			"type": "choose",
+			"value": "Attack"
 		},
 		{
-			"type": "other",
-			"value": "wait_for_player_turn"
+			"type": "target",
+			"value": "Songbird #50143"
 		}
 	],
 	"end": {
@@ -159,9 +155,9 @@
 			}
 		],
 		"board": {
-			"discard_villain": [
+			"victory_display": [
 				{
-					"card": "Advance"
+					"card": "Songbird #50143"
 				}
 			],
 			"deck_villain": [
@@ -170,6 +166,12 @@
 				},
 				{
 					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Citizen V's Sword"
 				}
 			],
 			"villain": [
@@ -242,17 +244,13 @@
 					"owner_hero_id": 1
 				}
 			],
-			"enemies1": [
-				{
-					"card": "Moonstone #50139"
-				}
-			],
+			"enemies1": [],
 			"identity1": [
 				{
 					"card": "Nova #28001a",
 					"tokens": {
 						"__can_change_form": 1,
-						"damage": 4
+						"damage": 1
 					}
 				}
 			],
@@ -265,14 +263,7 @@
 			"hand1": [],
 			"others": [
 				{
-					"card": "Citizen V's Sword",
-					"host": "Citizen V - A #50129a"
-				},
-				{
-					"card": "Songbird #50143",
-					"tokens": {
-						"damage": 2
-					},
+					"card": "Moonstone #50139",
 					"host": "50131b"
 				}
 			]

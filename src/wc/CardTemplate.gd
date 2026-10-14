@@ -1767,17 +1767,23 @@ func script_passes_condition(card_scripts, key, trigger_card, trigger_details = 
 	if typeof(card_scripts) != TYPE_DICTIONARY:
 		return true
 	
-	var condition = card_scripts.get("condition_" + key, {})
-	if !condition:
+	var conditions = card_scripts.get("condition_" + key, {})
+	if !conditions:
 		return true
-		
-	var func_name = condition.get("func_name", "")
-	if !func_name:
-		return true
-		
-	var func_params = condition.get("func_params", {})
-	var check = cfc.ov_utils.dummy_func_name_run(self, trigger_card, func_name, func_params, trigger_details)
-	return check
+	
+	if typeof(conditions) == TYPE_DICTIONARY:
+		conditions = [conditions]
+	
+	for condition in conditions: 	
+		var func_name = condition.get("func_name", "")
+		if !func_name:
+			continue
+			
+		var func_params = condition.get("func_params", {})
+		var check = cfc.ov_utils.dummy_func_name_run(self, trigger_card, func_name, func_params, trigger_details)
+		if !check:
+			return false
+	return true
 
 func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 	# I use this spot to add a breakpoint when testing script behaviour
@@ -3833,6 +3839,16 @@ func get_param_subjects(params, script:ScriptObject = null):
 		var new_subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
 		return new_subjects
 	return subjects		
+
+func script_constraints(params = {}, script:ScriptObject = null):
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return false
+		
+	var result = WCScriptingEngine.script_constraints(subject, params)
+	if result == CFConst.ReturnCode.CHANGED:
+		return true
+	return false
 
 func is_first_player(params = {}, script:ScriptObject = null):
 	var subject = get_param_subject(params, script)

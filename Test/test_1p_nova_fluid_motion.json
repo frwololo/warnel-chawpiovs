@@ -1,0 +1,284 @@
+{
+	"_comments": "Nova Bug: Flui Motion not activating",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 19389,
+					"hero": "28001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Down but Not Out #50137"
+				}
+			],
+			"villain": [
+				{
+					"card": "Citizen V - A #50129a"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Apprehending Rogue Agents - 1B #50130b",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Thunderbolt Backup #50131b"
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Sam Alexander #28001b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"Bring the War!\" #28022",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Warbringer #28023",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War Delivery #28024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War Delivery #28024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "\"The War's Been Brought\" #28025",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Justice, Like Lightning #50131a",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Apprehending Rogue Agents - 1A #50130a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Forcefield Projection #28003",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "One by One #28014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Everyday Hero #28019",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Songbird #50143"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nova #28001a",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Supernova Helmet #28009"
+				},
+				{
+					"card": "Fluid Motion"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Pot Shot"
+				}
+			],
+			"others": [
+				{
+					"card": "Moonstone #50139",
+					"host": "50131b"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Pot Shot"
+		},
+		{
+			"type": "target",
+			"value": "Songbird #50143"
+		},
+		{
+			"type": "activate",
+			"value": "Fluid Motion"
+		},
+		{
+			"type": "activate",
+			"value": "Nova"
+		},
+		{
+			"type": "choose",
+			"value": "Attack"
+		},
+		{
+			"type": "target",
+			"value": "Songbird #50143"
+		},
+		{
+			"type": "activate",
+			"value": "Nova",
+			"_comments": "untap helmet"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 19389,
+					"hero": "28001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Down but Not Out #50137"
+				}
+			],
+			"villain": [
+				{
+					"card": "Citizen V - A #50129a"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Apprehending Rogue Agents - 1B #50130b",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Thunderbolt Backup #50131b"
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Sam Alexander #28001b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"Bring the War!\" #28022",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Warbringer #28023",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War Delivery #28024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War Delivery #28024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "\"The War's Been Brought\" #28025",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Justice, Like Lightning #50131a",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Apprehending Rogue Agents - 1A #50130a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Forcefield Projection #28003",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "One by One #28014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Everyday Hero #28019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Pot Shot"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Songbird #50143",
+					"tokens": {
+						"damage": 6
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nova #28001a",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Supernova Helmet #28009"
+				},
+				{
+					"card": "Fluid Motion"
+				}
+			],
+			"hand1": [],
+			"others": [
+				{
+					"card": "Moonstone #50139",
+					"host": "50131b"
+				}
+			]
+		}
+	}
+}

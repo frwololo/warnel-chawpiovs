@@ -1343,6 +1343,8 @@ func receive_damage(script: ScriptTask) -> int:
 					"attacks": [
 						{
 							"attacker": attacker,
+							"secondary_source": script.script_definition.get("secondary_source", ""),
+							"actual_source": script.script_definition.get("actual_source", ""),
 							"target": card,
 							"damage": damage_happened,
 							"tags": tags,
@@ -1488,6 +1490,8 @@ func attack_finished( details)-> int:
 				"tags": []
 			}
 		var target_data = attacker_data[target]
+		for key in ["actual_source", "secondary_source"]:
+			target_data[key] = attack.get(key, "")				
 		target_data["damage"] += attack["damage"]
 		target_data["lethal"] = attack.get("lethal", false)
 		target_data["tags"] = WCUtils.merge_array(target_data["tags"], attack["tags"])
@@ -1504,6 +1508,10 @@ func attack_finished( details)-> int:
 				"lethal": lethal,
 				"tags": tags,
 			}
+			
+			for key in ["actual_source", "secondary_source"]:
+				signal_details[key] = attack_details[key]
+			
 			scripting_bus.emit_signal_on_stack("attack_happened",  attacker,  signal_details)			
 				
 			if ("basic power" in tags):

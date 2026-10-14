@@ -241,9 +241,6 @@
 		}
 	},
 	"Fluid Motion": {
-		"manual": {
-			"board": []
-		},
 		"response_attack_happened": {
 			"event_filters": {
 				"filter_state_secondary_source": [

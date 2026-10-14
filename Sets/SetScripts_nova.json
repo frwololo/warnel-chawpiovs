@@ -166,7 +166,7 @@
 				{
 					"name": "discard",
 					"subject": "index",
-					"src_containr": "hand_previous_subect",
+					"src_container": "hand_previous_subject",
 					"subject_count": "all",
 					"needs_selection": true,
 					"selection_count": 2,

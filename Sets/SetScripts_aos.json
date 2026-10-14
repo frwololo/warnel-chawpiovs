@@ -131,7 +131,7 @@
 			"all": {
 				"_rules": {
 					"forced": true,
-					"for_each_player": "true"
+					"for_each_player": true
 				},
 				"Fetch Adaptoid": [
 					{
@@ -915,7 +915,7 @@
 				{
 					"name": "nop",
 					"subject": "target",
-					"needs_subject": "true",
+					"needs_subject": true,
 					"filter_state_subject": [
 						{
 							"filter_group": "group_enemies"
@@ -977,6 +977,13 @@
 	"Apprehending Rogue Agents - 1A": {
 		"setup": {
 			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"src_container": "deck_villain",
+					"dest_container": "set_aside",
+					"filter_state_tutor": "Thunderbolt Backup"
+				},
 				{
 					"name": "move_card_to_container",
 					"subject": "tutor",
@@ -1915,6 +1922,7 @@
 					"name": "host_card",
 					"is_cost": true,
 					"subject": "tutor",
+					"subject_count": 1,
 					"src_container": [
 						"discard_villain",
 						"deck_villain"
@@ -4120,7 +4128,7 @@
 			"event_filters": {
 				"filter_state_event_target": [
 					{
-						"filter_same_controller": "true",
+						"filter_same_controller": true,
 						"filter_group": "play_area_my_hero"
 					}
 				]
@@ -4518,7 +4526,7 @@
 					"filter_state_seek": [
 						{
 							"filter_group": "group_friendly_current_hero_target",
-							"filter_is_exhausted": "false"
+							"filter_is_exhausted": false
 						}
 					]
 				}
@@ -10712,6 +10720,15 @@
 					"var_name": "my_minion",
 					"var_type": "subject",
 					"value": "trigger"
+				}
+			]
+		},
+		"card_unattached": {
+			"trigger": "my_minion",
+			"board": [
+				{
+					"name": "forget_variable",
+					"var_name": "my_minion"
 				}
 			]
 		}

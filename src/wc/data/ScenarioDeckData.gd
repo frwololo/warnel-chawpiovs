@@ -140,6 +140,7 @@ static func get_recommended_modular_encounters(scheme_id, context = {}):
 	if how_many == default_modulars.size():
 		return default_modulars
 	
+	default_modulars.shuffle()
 	for i in how_many:
 		result.append(default_modulars[i])
 	return result

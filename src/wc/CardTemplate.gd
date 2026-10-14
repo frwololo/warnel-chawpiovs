@@ -1461,7 +1461,7 @@ func attempt_to_play(user_click:bool = false, origin_event = null):
 	#don't try to activate the card if the click was the result of targeting
 	if user_click:
 		if gameData.is_targeting_ongoing() or gameData.manual_action_happened_too_recently():
-			return
+			return false
 		#we already sent a request and should be waiting for full resolution	
 
 		var interaction_authority:UserInteractionAuthority = UserInteractionAuthority.new(self)
@@ -1469,11 +1469,11 @@ func attempt_to_play(user_click:bool = false, origin_event = null):
 		
 		if !interaction_authorized or !gameData.theStack.is_player_allowed_to_click(self):
 			network_request_rejected()
-			return
+			return false
 		
 		#gamedata is running some automated clicks from a previous request	
 		if gameData.get_sequence_scripts():
-			return	
+			return false
 		
 	#for manual attempts to play we only allow board or hand
 	var state_exec = get_state_exec()
@@ -1508,7 +1508,7 @@ func attempt_to_play(user_click:bool = false, origin_event = null):
 	cfc.card_drag_ongoing = null
 	#tells gamedata that a manual action just happened
 	gameData.restart_manual_action_stopwatch()
-	execute_scripts(self,"manual",details)
+	return execute_scripts(self,"manual",details)
 
 
 func network_request_rejected():

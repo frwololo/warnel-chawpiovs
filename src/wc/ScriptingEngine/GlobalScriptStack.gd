@@ -925,7 +925,9 @@ func force_play_card(interrupters, stack_object):
 	
 	var card = _current_interrupting_cards[0]
 	
-	card.attempt_to_play(false, stack_object)
+	var result = card.attempt_to_play(false, stack_object)
+	if result:
+		add_card_already_played(stack_object.stack_uid, card)
 
 func enable_sync():
 	sync_enabled = true

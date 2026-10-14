@@ -155,9 +155,14 @@ func add_manacost(other_manacost):
 		pool[k] += other_manacost.pool[k]	
 
 #set to zero all types that are not explicitly enabled in the filter		
-func filter(cost_filters:Dictionary):		
+func filter(cost_filters:Dictionary):
+	var include_wild = true
+	if cost_filters.get("exclude_wild", false):
+		include_wild = false		
 	for k in ResourceMana.values():
 		var text_key = RESOURCE_TEXT[k].to_lower()
 		var include_type = cost_filters.get(text_key, false)
+		if include_wild:
+			include_type = include_type or (k == ResourceMana.WILD)
 		if !include_type:
 			pool[k] = 0			

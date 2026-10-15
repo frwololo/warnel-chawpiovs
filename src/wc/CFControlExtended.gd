@@ -2343,3 +2343,18 @@ func quit_game() -> void:
 	cfc.print_stray_nodes()	
 	print_debug("End of Stray nodes")		
 	
+func get_container(container_name):
+	var result = NMAP.get(container_name, null)
+	if result:
+		return result
+	
+	#fallback to player deck e.g. invocation deck
+	if cfc.NMAP.has("board"):
+		var hero_deck_names = cfc.NMAP.board.heroes_extra_deck_names()
+		if container_name in hero_deck_names:
+			for i in gameData.get_team_size():
+				var hero_id = i+1
+				result = NMAP.get(container_name + str(hero_id), null)
+				if result:
+					return result
+	return null

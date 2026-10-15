@@ -366,14 +366,7 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 			script_definition["filter_state_seek"] = script_definition["filter_state_subject"]	
 	# See SP.KEY_SUBJECT doc
 	
-	var exclude_definition = get_property("subject_exclude", null)
-	var to_exclude = []
-	if exclude_definition:
-		if typeof(exclude_definition) == TYPE_OBJECT:
-			to_exclude = [exclude_definition]
-		else:
-			to_exclude = _local_find_subjects(stored_integer, run_type, {"subject" : exclude_definition, "subject_exclude" : ""})
-	
+	var to_exclude = get_excluded_subjects(run_type, stored_integer)
 	
 	match subject:
 		# Ever task retrieves the subjects used in the previous task.
@@ -540,6 +533,18 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 	return(subjects_array)
 
 
+func get_excluded_subjects(run_type, stored_integer):
+	var exclude_definition = get_property("subject_exclude", null)
+	var to_exclude = []
+	if exclude_definition:
+		if typeof(exclude_definition) == TYPE_OBJECT:
+			to_exclude = [exclude_definition]
+		elif typeof(exclude_definition) == TYPE_ARRAY:
+			pass		
+		else:
+			to_exclude = _local_find_subjects(stored_integer, run_type, {"subject" : exclude_definition, "subject_exclude" : ""})
+	return to_exclude	
+
 func _boardseek_subjects(stored_integer: int) -> Array:
 	var subjects_array := []
 	var subject_count = get_property(SP.KEY_SUBJECT_COUNT)
@@ -568,13 +573,9 @@ func _boardseek_subjects(stored_integer: int) -> Array:
 			subject_list += cfc.NMAP[pile_name].get_all_cards()
 
 	subject_list = sort_subjects(subject_list)
-	var to_exclude = get_property("subject_exclude", "")
-	var exclude_result = []
-	if to_exclude:
-		exclude_result = _local_find_subjects(stored_integer, CFInt.RunType.NORMAL, {"subject" : to_exclude, "subject_exclude" : ""})
-	
+	var to_exclude = get_excluded_subjects(CFInt.RunType.NORMAL, stored_integer)
 	for c in subject_list:
-		if c in exclude_result:
+		if c in to_exclude:
 			continue
 		if SP.check_validity(c, script_definition, "seek", owner):
 			subjects_array.append(c)

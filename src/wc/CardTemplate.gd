@@ -197,7 +197,20 @@ func init_owner_hero_id(hero_id:int):
 func get_owner_hero_id() -> int:
 	return _owner_hero_id	
 
-func set_controller_hero_id(hero_id:int):
+var _controller_hero_is_locked = false
+#temporarily locks the controller id until the card moves to a pile
+func lock_controller_hero_id():
+	_controller_hero_is_locked = true
+	
+func unlock_controller_hero_id():
+	_controller_hero_is_locked = false		
+
+func set_controller_hero_id(hero_id:int, lock = false):
+	if _controller_hero_is_locked:
+		return
+	if lock:
+		lock_controller_hero_id()
+		
 	_controller_hero_id = hero_id		
 	update_hero_groups()
 
@@ -1290,6 +1303,20 @@ func attach_to_host(
 
 	var result = .attach_to_host(host, is_following_previous_host, tags)
 	if !result.get("moved_to_board", false):
+		#TODO Hack
+		#one thing we want to ensure is that encounter cards that move away from
+		#player zones are now considered to be controlled by the villain
+		#this is because a lot of logic of the game for example
+		#assumes that an enemy engaged with a player is "controlled" by that player,
+		#while an enemy in any non player zone is controlled by the villain
+		
+		#current logic is that an encounter card is controlled by the same controller
+		#as the host card. Not sure if this holds well
+		if self.is_encounter():
+			var previous_controller = get_controller_hero_id()
+			var new_controller = host.get_controller_hero_id()
+			self.set_controller_hero_id(new_controller)
+			
 		if ("force_emit_card_moved_signal" in tags) and !("disable_move_signals" in tags):
 
 			self.execute_scripts(self, "self_moved_to_board")
@@ -1311,6 +1338,17 @@ func attach_to_host(
 		set_is_faceup(false)
 		
 func common_post_move_scripts(new_host: String, old_host: String, _move_tags: Array) -> void:
+
+
+	var moved_to_board = (new_host.to_lower() == "board")
+	var moved_to_pile = !moved_to_board
+	#remove controller lock if moved out of board
+	if moved_to_pile:
+		_controller_hero_is_locked = false
+			
+	if self.canonical_name == "Advance":
+		var _tmp = 1
+		
 	#change controller as needed
 	var new_grid = get_grid_name()
 	var new_hero_id = 0
@@ -1323,6 +1361,10 @@ func common_post_move_scripts(new_host: String, old_host: String, _move_tags: Ar
 	if (new_hero_id or (self.get_controller_hero_id() < 0) ): #only change if we were able to establish an owner, or if uninitialized
 		self.set_controller_hero_id(new_hero_id)
 	
+	#kind of hack, if a card is moving to board (including from the board itself)
+	# and is an encounter, we force its controller to being the villain depending on where it lands 
+	if moved_to_board and !new_hero_id and self.is_encounter():
+		self.set_controller_hero_id(0)
 	
 	#init owner once and only once, if not already done
 	init_owner_hero_id(new_hero_id)
@@ -1334,11 +1376,10 @@ func common_post_move_scripts(new_host: String, old_host: String, _move_tags: Ar
 	display_threat()
 	
 	#cached data and flag updates for new zone
-	match new_host.to_lower():
-		"board":
+	if moved_to_board:
 			if !is_faceup:
 				get_card_back().start_card_back_animation()
-		_:
+	else:
 			_is_exhausted = false
 			#reset some cache data
 			_died_signal_sent = false
@@ -2950,15 +2991,16 @@ func common_pre_run(sceng) -> void:
 				replacements[v] = v+str(controller_hero_id)
 
 
-				#any_discard, etc gets replaced with ["discard1","discard2"] 
-				var team_size = gameData.get_team_size()
-				var any_container_def = []
-				for i in range (team_size):
-					any_container_def.append(v + str(i+1))
-				if any_container_def.size() == 1:
-					any_container_def = any_container_def[0]
-				replacements["any_" + v] = any_container_def	
-			script_definition = WCUtils.search_and_replace_multi(script_definition, replacements , true)	
+		#any_discard, etc gets replaced with ["discard1","discard2"] 
+		var team_size = gameData.get_team_size()
+		for v in zones:
+			var any_container_def = []
+			for i in range (team_size):
+				any_container_def.append(v + str(i+1))
+			if any_container_def.size() == 1:
+				any_container_def = any_container_def[0]
+			replacements["any_" + v] = any_container_def	
+		script_definition = WCUtils.search_and_replace_multi(script_definition, replacements , true)	
 	
 		#put back the modified script			
 		script.script_definition = script_definition

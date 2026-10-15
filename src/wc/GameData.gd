@@ -2015,6 +2015,10 @@ func reveal_encounter(target_id = 0):
 				display_debug("encounter: " + _current_encounter.canonical_name + "is not in " + pile.name + ". Assuming it has moved already")
 				_current_encounter.encounter_status = EncounterStatus.PENDING_COMPLETE
 				return
+			
+			#lock the encounter's controller to its current controller, so
+			#that scripts that target based on same controller still trigger until the end
+			_current_encounter.lock_controller_hero_id()
 					
 			var grid: BoardPlacementGrid = get_encounter_target_grid(_current_encounter)
 			var slot: BoardPlacementSlot = grid.find_available_slot()

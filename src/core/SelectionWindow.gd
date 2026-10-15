@@ -64,9 +64,7 @@ func init(
 
 	if _script:
 		selection_count = _script.retrieve_integer_property(SP.KEY_SELECTION_COUNT, stored_integer)
-		var to_exclude = _script.get_property("subject_exclude", null)
-		if to_exclude:
-			exclude_subjects = _script._local_find_subjects(stored_integer, CFInt.RunType.NORMAL, {"subject" : to_exclude, "subject_exclude" : ""})
+		exclude_subjects = _script.get_excluded_subjects(CFInt.RunType.NORMAL, stored_integer)
 	else:
 		selection_count = ScriptObject.get_int_value(params.get(SP.KEY_SELECTION_COUNT,0), stored_integer)
 

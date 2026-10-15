@@ -9174,7 +9174,7 @@
 				{
 					"name": "engage_player",
 					"subject": "boardseek",
-					"exclude_subject": "previous",
+					"subject_exclude": "previous",
 					"sort_by": "function",
 					"sort_name": "count_tokens",
 					"func_params": {
@@ -10603,7 +10603,7 @@
 						"token_name": "damage"
 					},
 					"sort_descending": true,
-					"exclude_subject": "my_minion",
+					"subject_exclude": "my_minion",
 					"filter_state_seek": [
 						{
 							"filter_properties": {

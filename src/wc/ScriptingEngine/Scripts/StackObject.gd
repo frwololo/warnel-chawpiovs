@@ -339,7 +339,17 @@ func get_first_task(meaningful = true):
 				continue
 			if skip_cost_tasks and task.has_method("get_property"):
 				if task.get_property("is_cost", false):
-					continue		
+					continue	
+
+			var sceng = get_sceng()
+			if sceng:
+				#trying to avoid showing "else" messages when inappropriate
+				var is_else = task.get_property("is_else", false)
+				if is_else and sceng.can_all_costs_be_paid:
+					continue
+				elif !is_else and !sceng.can_all_costs_be_paid:
+					continue	
+									
 			return task
 	return null
 

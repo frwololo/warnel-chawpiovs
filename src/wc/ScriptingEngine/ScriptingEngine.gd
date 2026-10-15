@@ -330,19 +330,24 @@ func init_properties(script: ScriptTask) -> int:
 	return(retcode)
 
 func shuffle_container(script) -> int:
-	var dest_container_str = script.get_property(SP.KEY_DEST_CONTAINER, "").to_lower()
-	var dest_container: CardContainer = cfc.NMAP.get(dest_container_str, null)
-	if not dest_container:
-		var _error = 1
-		return CFConst.ReturnCode.FAILED
-
-	if (costs_dry_run()): 
-		return CFConst.ReturnCode.CHANGED		
+	var dest_container_array = script.get_property(SP.KEY_DEST_CONTAINER, "").to_lower()
+	if typeof(dest_container_array) == TYPE_STRING:
+		dest_container_array = [dest_container_array]
 	
-	var animate = script.get_property("animate", true)	
-	dest_container.shuffle_cards(animate, false) #"true, false": force shuffling before the animation, to ensure cards are actually shuffled
+	var result = CFConst.ReturnCode.FAILED
+	for dest_container_str in dest_container_array:
+		var dest_container: CardContainer = cfc.get_container(dest_container_str)
+		if dest_container:
+			result = CFConst.ReturnCode.CHANGED
 
-	return CFConst.ReturnCode.CHANGED
+			#in cost tests we only care that at least one container is valid
+			if (costs_dry_run()): 
+				return result		
+	
+			var animate = script.get_property("animate", true)	
+			dest_container.shuffle_cards(animate, false) #"true, false": force shuffling before the animation, to ensure cards are actually shuffled
+
+	return result
 
 
 func shuffle_card_into_owner_deck(script:ScriptTask) -> int:
@@ -3844,7 +3849,7 @@ func change_controller_hero(script:ScriptTask) -> int:
 		retcode = CFConst.ReturnCode.FAILED
 	else:
 		for card in script.subjects:
-			card.set_controller_hero_id(new_controller_id)
+			card.set_controller_hero_id(new_controller_id, true)
 		retcode = CFConst.ReturnCode.CHANGED
 		
 	return retcode	

@@ -550,7 +550,14 @@
 					"attack",
 					"!ranged"
 				],
-				"filter_state_event_target": "trait_aerial"
+				"filter_state_event_target": "trait_aerial",
+				"filter_state_actual_source": [
+					{
+						"filter_properties": {
+							"trait_aerial": 0
+						}
+					}
+				],				
 			},
 			"board": [
 				{
@@ -3394,10 +3401,6 @@
 					"value": "previous"
 				},
 				{
-					"name": "sequence",
-					"sequence_ability": "do_damage"
-				},
-				{
 					"name": "move_card_to_container",
 					"dest_container": "removed_from_game",
 					"subject": "self"
@@ -3408,17 +3411,27 @@
 				}
 			]
 		},
-		"do_damage": {
-			"name": "deal_damage",
-			"subject": "my_minion",
-			"amount": {
-				"func_name": "get_subject_int_property",
-				"func_params": {
+		"before_card_moved_to_board": {
+			"trigger": "my_minion",
+			"all": [ 
+				{
+					"name": "mod_tokens",
+					"token_name": "damage",
 					"subject": "my_minion",
-					"property": "health",
-					"plus": -5
+					"modification": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_minion",
+							"property": "health",
+							"plus": -5
+						}
+					}
+				},
+				{
+					"name":"forget_variable",
+					"var_name": "my_minion"
 				}
-			}
+			]
 		}
 	},
 	"Dum Dum Dugan": {
@@ -6001,21 +6014,34 @@
 		}
 	},
 	"MACH-IV": {
-		"alterants": {
+		"interrupt_enemy_initiates_attack": {
+			"trigger": "self",
 			"board": [
 				{
-					"filter_task": "get_property",
-					"filter_property_name": "cannot_defend_basic",
-					"filter_state_trigger": [
-						{
-							"filter_properties": {
-								"trait_aerial": 0
-							}
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "cannot_defend_basic",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"trait_aerial": 0
+											}
+										}
+									],
+									"alteration": 1
+								}
+							]
 						}
-					],
-					"alteration": 1
+					}
 				}
 			]
+				
 		}
 	},
 	"Machete": {
@@ -7960,6 +7986,7 @@
 					"name": "deal_damage",
 					"subject": "boardseek",
 					"subject_count": "all",
+					"amount": 10,
 					"filter_state_seek": "group_characters"
 				},
 				{
@@ -9193,7 +9220,7 @@
 					"name": "save_variable",
 					"value": "previous",
 					"var_name": "my_subject",
-					"var_type": "subjecg"
+					"var_type": "subject"
 				}
 			]
 		},

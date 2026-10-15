@@ -1989,9 +1989,10 @@ func attach_to_host(
 		#print(current_host_card.attachments)
 		# We make existing attachments reattach to the new host directly
 		# Otherwise it becomes too complex to handle attachment indexes
-		for card in attachments:
-			card.attach_to_host(host,true)
-		attachments.clear()
+		if CFConst.FORCE_NON_RECURSIVE_ATTACHMENTS:
+			for card in attachments:
+				card.attach_to_host(host,true)
+			attachments.clear()
 		# The position below the host is based on how many other attachments it has
 		# We offset our position below the host based on a percentage of
 		# the card size, times the index among other attachments

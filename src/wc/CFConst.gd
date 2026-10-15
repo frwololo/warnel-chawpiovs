@@ -1185,6 +1185,8 @@ const LOCAL_DECK_ID_OFFSET = 1000000000
 #so this const disables the sorting
 const BUG_PATCH_IGNORE_CONTAINER_SORT := true
 
+
+const FORCE_NON_RECURSIVE_ATTACHMENTS := false
 #
 # Debugging options
 #

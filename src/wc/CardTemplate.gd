@@ -1360,6 +1360,8 @@ func common_post_move_scripts(new_host: String, old_host: String, _move_tags: Ar
 	
 	if (new_hero_id or (self.get_controller_hero_id() < 0) ): #only change if we were able to establish an owner, or if uninitialized
 		self.set_controller_hero_id(new_hero_id)
+		if moved_to_board:
+			unlock_controller_hero_id()
 	
 	#kind of hack, if a card is moving to board (including from the board itself)
 	# and is an encounter, we force its controller to being the villain depending on where it lands 

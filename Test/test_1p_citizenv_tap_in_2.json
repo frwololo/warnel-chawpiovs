@@ -1,0 +1,294 @@
+{
+	"_comments": "Test Citizen V Tap In (bug will trigger Citizen V even if minion engages player)",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},		
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 19389,
+					"hero": "28001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Down but Not Out #50137"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "caught off guard"
+				},
+				{
+					"card": "Tap In"
+				}
+			],
+			"villain": [
+				{
+					"card": "Citizen V - A #50129a",
+					"tokens": {
+						"damage": 5
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Apprehending Rogue Agents - 1B #50130b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Thunderbolt Backup #50131b"
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Sam Alexander #28001b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"Bring the War!\" #28022",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Warbringer #28023",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War Delivery #28024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War Delivery #28024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "\"The War's Been Brought\" #28025",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Justice, Like Lightning #50131a",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Apprehending Rogue Agents - 1A #50130a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "One by One #28014",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "Everyday Hero #28019",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Songbird #50143",
+					"tokens": {
+						"damage": 4
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nova #28001a",
+					"tokens": {
+						"__can_change_form": 1,
+						"damage": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Supernova Helmet #28009"
+				}
+			],
+			"hand1": [],
+			"others": [
+				{
+					"card": "Moonstone #50139",
+					"tokens": {
+						"damage": 6
+					},
+					"host": "Thunderbolt Backup #50131b"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 19389,
+					"hero": "28001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "caught off guard"
+				},
+				{
+					"card": "Tap In"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Down but Not Out #50137"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"villain": [
+				{
+					"card": "Citizen V - A #50129a",
+					"tokens": {
+						"damage": 5
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Apprehending Rogue Agents - 1B #50130b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Thunderbolt Backup #50131b"
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Sam Alexander #28001b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"Bring the War!\" #28022",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Warbringer #28023",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War Delivery #28024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War Delivery #28024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "\"The War's Been Brought\" #28025",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Justice, Like Lightning #50131a",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Apprehending Rogue Agents - 1A #50130a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "One by One #28014",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "Everyday Hero #28019",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Songbird #50143",
+					"tokens": {
+						"damage": 4
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nova #28001a",
+					"tokens": {
+						"__can_change_form": 1,
+						"damage": 4
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Supernova Helmet #28009"
+				}
+			],
+			"hand1": [],
+			"others": [
+				{
+					"card": "Moonstone #50139",
+					"tokens": {
+						"damage": 5,
+						"tough": 1
+					},
+					"host": "Thunderbolt Backup #50131b"
+				}
+			]
+		}
+	}
+}
